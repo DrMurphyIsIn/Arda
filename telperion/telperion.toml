@@ -77,3 +77,8 @@ group = "quick"    # p-adic valuation certificates (23-cancellation structure)
 name = "tax_growth"
 script = "examples/tax_growth/generate.py"
 group = "quick"    # source-grouped ledger pieces: {2,3,23} tax + growth bounds
+
+[[check]]
+name = "telescope"
+script = "examples/telescope/generate.py"
+group = "quick"    # telescoping-closure primitive (rose-tree RTree.telescope)

@@ -15,6 +15,7 @@ on:
       - "telperion/examples/exp_bracket/**"
       - "telperion/examples/padic_valuation/**"
       - "telperion/examples/tax_growth/**"
+      - "telperion/examples/telescope/**"
       - "telperion/examples/proof_audit/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
@@ -83,6 +84,31 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Compile the audit re-derivations + handoff artifacts (shed 55 + legs 48 + interp 215 + hfloors 382)
         working-directory: telperion/examples/proof_audit/lean
+        run: |
+          lake exe cache get
+          lake build
+
+  telescope-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage the frozen telescope lemma
+        run: |
+          cd telperion/examples/telescope/lean
+          mkdir -p Tele
+          cp ../frozen/Telescope.lean Tele/Telescope.lean
+      - name: Cache elan
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/telescope/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Compile the rose-tree telescoping lemma + worked instantiation
+        working-directory: telperion/examples/telescope/lean
         run: |
           lake exe cache get
           lake build

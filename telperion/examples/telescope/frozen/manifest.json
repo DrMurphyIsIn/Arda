@@ -1,0 +1,9 @@
+{
+  "family": "Telescope",
+  "input_hash": "829977b2aa0aa66d5a51871d9d9b59d117ad39149ad3cfaf70f3fbaaaa4fdcaa",
+  "tool_version": "0.1.3",
+  "files": [
+    "Telescope.lean"
+  ],
+  "n_theorems": 1
+}
