@@ -14,6 +14,8 @@ labeled trees on n vertices.  Every tree shape -- path, star, caterpillar,
 broom, spider, etc. -- is reachable, and NOTHING about any specific family is
 encoded.  The GA must discover the shape of a counterexample on its own.
 """
+from __future__ import annotations
+
 import numpy as np
 
 from .objective import score as obj_score
