@@ -12,3 +12,8 @@ group = "quick"
 name = "r47_cells"
 script = "examples/r47_cells/generate.py"
 group = "heavy"    # ~6-12 min re-certification; runs in the casestudy CI job
+
+[[check]]
+name = "r7_starofhubs"
+script = "examples/r7_starofhubs/generate.py"
+group = "heavy"    # 972-cell HypStarSymbolic discharge; ~10 min regeneration
