@@ -24,3 +24,8 @@ group = "wip"      # freeze in flight — promote to heavy when frozen/ lands;
 name = "g1_floors"
 script = "examples/g1_floors/generate.py"
 group = "quick"    # 3084 floor theorems + 176 kernel facts; ~2 s regeneration
+
+[[check]]
+name = "shed_lemmas"
+script = "examples/shed_lemmas/generate.py"
+group = "quick"    # 55 shedding re-derivations; ~3 s
