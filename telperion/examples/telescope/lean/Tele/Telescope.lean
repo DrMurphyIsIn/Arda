@@ -1,5 +1,5 @@
-/- telperion 0.1.3 | family Telescope | input-hash 829977b2aa0aa66d
-   1 theorems, 1 generation-time self-checks passed.
+/- telperion 0.1.3 | family Telescope | input-hash 9e64c493f6ebf3d7
+   2 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
 
@@ -49,6 +49,30 @@ theorem telescope_nodecount (t : RTree) :
     | nil => simp
     | cons a l ih => simp only [List.map_cons, List.sum_cons, ih]; ring
   rw [key]
+  linarith
+
+/-- UNIFYING REDUCTION (the pieces, knit together).  The reframed crux
+    `Σ_nodes (growth v − tax v) ≤ 0`  (i.e. `Σ growth ≤ Σ tax`, which is EXACTLY
+    `Φ¹¹ ≤ 1` by the source-grouped decomposition Φ¹¹ = ∏ const_v·growth_v,
+    verified 4130/4130) follows from ONE object: a potential `P` that super-solves
+    the per-node ledger and is nonpositive at the root.
+
+    Every OTHER ingredient is discharged and machine-checked:
+      • the TAX is exact {2,3,23} arithmetic   (padic + tax_growth: const_v(cr)
+        = 2^(6+cr)·3^(5cr−3)/23^(1+2cr));
+      • the GROWTH is bounded per node          (tax_growth: 1 ≤ growth ≤ env);
+      • the TELESCOPING is `RTree.telescope`    (kernel-verified above).
+    The potential `P` is the SOLE open input — no finite closed form exists
+    (LP-feasible per-cavity, no finite basis; continuous relaxation > 1).  The
+    root-interlacing certificates (Wronskian-SOS) are the candidate source for
+    `P` via the matching-polynomial recursion.  conjecture1_proved = False: this
+    theorem is the honest reduction, not the conjecture. -/
+theorem crux_reduction {growth tax P : RTree → ℝ}
+    (hsuper : ∀ cs : List RTree,
+        (growth (.node cs) - tax (.node cs)) + (cs.map P).sum ≤ P (.node cs))
+    (t : RTree) (hroot : P t ≤ 0) :
+    RTree.sumOver (fun v => growth v - tax v) t ≤ 0 := by
+  have h := RTree.telescope (loc := fun v => growth v - tax v) (P := P) hsuper t
   linarith
 
 end Telescope
