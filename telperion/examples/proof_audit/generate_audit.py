@@ -112,10 +112,12 @@ def generate() -> str:
          "recorded: some odd residues need the load-6 hub, not the defect "
          "template)"),
         ("h_floors", "Mixed-layer H-floor pieces (m in 2..7, feeds "
-         "HypAmortizedHub)", " — CROSS-SESSION DELIVERABLE: origin probe table "
-         "(their e898a452) encoded in origin H/slackForm spelling; "
-         "COMPILE-GATED green @ba3cba1 (gate caught a missing-prelude break "
-         "first, now institutionalized as emit() requires_prelude)"),
+         "HypAmortizedHub)", " — CROSS-SESSION DELIVERABLE, now CONSUMED: "
+         "origin probe table (their e898a452) encoded in origin H/slackForm "
+         "spelling; COMPILE-GATED green @ba3cba1 (gate caught a missing-prelude "
+         "break first, now institutionalized as emit() requires_prelude); this "
+         "family is the m in 2..7 complement to the origin m>=8 lemma — "
+         "together they CLOSE HypFloors origin-side (closure-r5 green)"),
     ):
         theorems, hashes = _frozen_info(example)
         if theorems:
