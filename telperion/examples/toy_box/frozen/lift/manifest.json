@@ -1,0 +1,9 @@
+{
+  "family": "ToyLift",
+  "input_hash": "5b093fb795259eeda543defc719b3c2d91cd4a6ff50b8bab08b73e1025514101",
+  "tool_version": "0.1.0",
+  "files": [
+    "Lift.lean"
+  ],
+  "n_theorems": 2
+}

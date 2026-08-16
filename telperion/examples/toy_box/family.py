@@ -115,3 +115,37 @@ def box_profile() -> LeanProfile:
 
 def direct_profile() -> LeanProfile:
     return LeanProfile(namespace=("Toy",))
+
+
+def lift_family() -> InequalityFamily:
+    """Strictly positive numerators with negative coefficients: u^2 - u + a has
+    no real roots for a >= 1, but is not Polya as spelled — auto_lift finds the
+    (1+u)^N multiple that is (N = 1 here: (u^2-u+1)(1+u) = u^3 + 1)."""
+    return InequalityFamily(
+        name="ToyLift",
+        symbols=(u,),
+        grid=GridSpec([("a", [1, 2])]),
+        lean_name=lambda pt: f"toy_lift_a{pt['a']}",
+        target=lambda pt: (u**2 - u + pt["a"]) / (u + 1),
+        auto_lift=3,
+    )
+
+
+def split_family() -> InequalityFamily:
+    """A single certifiable box instance, force-subdivided at generation time to
+    exercise the subdivision glue (`le_total` case split) in compiled Lean."""
+    return InequalityFamily(
+        name="ToySplit",
+        symbols=(u, v),
+        grid=GridSpec([("a", [1])]),
+        lean_name=lambda pt: "toy_split_a1",
+        before=lambda pt: (1 + _za(1) * q) * (1 + _zb(1) * r),
+        after=lambda pt: (
+            1 + _delta(1, 1) + (_za(1) / 2) * q + (_zb(1) / 2) * r
+            + 2 * _za(1) * _zb(1) * (q * r)
+        ),
+        box=lambda pt: (
+            BoxAxis(q, sp.Integer(0), sp.Integer(1) / (1 * (1 + v + 1))),
+            BoxAxis(r, sp.Integer(0), sp.Integer(1) / (1 * (1 + u + 1))),
+        ),
+    )

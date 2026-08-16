@@ -19,7 +19,16 @@ import sympy as sp
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from family import box_family, box_profile, direct_family, direct_profile, u, v  # noqa: E402
+from family import (  # noqa: E402
+    box_family,
+    box_profile,
+    direct_family,
+    direct_profile,
+    lift_family,
+    split_family,
+    u,
+    v,
+)
 
 from telperion import (  # noqa: E402
     BilinearBoxEmitter,
@@ -34,6 +43,8 @@ from telperion import (  # noqa: E402
     freeze,
 )
 from telperion.expr import expr_lean_factored  # noqa: E402
+from telperion import BilinearBoxEmitter as _BBE  # noqa: E402
+from telperion import SubdivisionGlueEmitter  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 
@@ -114,37 +125,58 @@ def build():
         validation,
         file_name="Box.lean",
     )
-    return res_direct, res_box
+    res_lift = emit(
+        certify(lift_family()),
+        direct_profile(),
+        [DirectPolyaEmitter()],
+        validation,
+        file_name="Lift.lean",
+    )
+    from telperion import LeanProfile
+    split_profile = LeanProfile(
+        namespace=("Toy",),
+        imports=("Mathlib", "Toy.Box"),   # reuses Box's bilinear_corner_nonneg
+    )
+    res_split = emit(
+        certify(split_family(), force_subdivide=1),
+        split_profile,
+        [BilinearBoxEmitter(), SubdivisionGlueEmitter()],
+        validation,
+        file_name="Split.lean",
+    )
+    return res_direct, res_box, res_lift, res_split
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
     args = ap.parse_args()
-    res_direct, res_box = build()
+    res_direct, res_box, res_lift, res_split = build()
     if args.check:
         ok = True
-        for res, sub in ((res_direct, "direct"), (res_box, "box")):
+        for res, sub in ((res_direct, "direct"), (res_box, "box"),
+                         (res_lift, "lift"), (res_split, "split")):
             rep = diff_frozen(res, HERE / "frozen" / sub)
             if not rep.ok:
                 ok = False
                 print(f"DRIFT in {sub}:", *rep.details, sep="\n  ")
         # the live lean copies must match the frozen text too
-        for res, fname in ((res_direct, "Direct.lean"), (res_box, "Box.lean")):
+        for res, fname in ((res_direct, "Direct.lean"), (res_box, "Box.lean"),
+                           (res_lift, "Lift.lean"), (res_split, "Split.lean")):
             live = HERE / "lean" / "Toy" / fname
             if not live.exists() or live.read_text() != res.files[fname]:
                 ok = False
                 print(f"DRIFT: lean/Toy/{fname} differs from regenerated text")
         print("check:", "OK" if ok else "FAILED")
         return 0 if ok else 1
-    for res, sub in ((res_direct, "direct"), (res_box, "box")):
+    for res, sub in ((res_direct, "direct"), (res_box, "box"),
+                     (res_lift, "lift"), (res_split, "split")):
         freeze(res, HERE / "frozen" / sub)
         for fname, text in res.files.items():
             (HERE / "lean" / "Toy" / fname).write_text(text)
     print(
-        f"wrote Direct.lean ({res_direct.n_theorems} theorems) and "
-        f"Box.lean ({res_box.n_theorems} theorems); "
-        f"hashes {res_direct.input_hash[:16]} / {res_box.input_hash[:16]}"
+        f"wrote Direct({res_direct.n_theorems}) Box({res_box.n_theorems}) "
+        f"Lift({res_lift.n_theorems}) Split({res_split.n_theorems}) theorems"
     )
     return 0
 
