@@ -1,0 +1,9 @@
+{
+  "family": "G1Anchors",
+  "input_hash": "90e189f5d07ae52077fc8453af673f51a14a68d18342a26a3958c078065a7f1d",
+  "tool_version": "0.1.0",
+  "files": [
+    "G1Anchors.lean"
+  ],
+  "n_theorems": 176
+}

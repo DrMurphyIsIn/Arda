@@ -17,3 +17,8 @@ group = "heavy"    # ~6-12 min re-certification; runs in the casestudy CI job
 name = "r7_starofhubs"
 script = "examples/r7_starofhubs/generate.py"
 group = "heavy"    # 972-cell HypStarSymbolic discharge; ~10 min regeneration
+
+[[check]]
+name = "g1_floors"
+script = "examples/g1_floors/generate.py"
+group = "quick"    # 3084 floor theorems + 176 kernel facts; ~2 s regeneration

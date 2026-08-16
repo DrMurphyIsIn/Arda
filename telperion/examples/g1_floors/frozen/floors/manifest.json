@@ -1,0 +1,9 @@
+{
+  "family": "G1Floors",
+  "input_hash": "98a5a6eb3f5eb4d52280ae0213e9a41849b613d5099bb270a1fe4798b0165a2a",
+  "tool_version": "0.1.0",
+  "files": [
+    "G1Floors.lean"
+  ],
+  "n_theorems": 3084
+}
