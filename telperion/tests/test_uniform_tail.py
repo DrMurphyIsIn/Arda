@@ -7,9 +7,11 @@ from telperion import ArmDominanceCertificate, arm_dominance_uniform  # noqa: E4
 def test_arm_dominance_at_tie():
     assert ArmDominanceCertificate("t", 0, 5).check()
 
-def test_arm_dominance_uniform_except_base():
-    holds, exc = arm_dominance_uniform(range(0,4), range(0,8))
-    assert exc == [(0,0)]                    # uniform except the single empty-hub base case
+def test_arm_dominance_NOT_uniform_tie_beats_arm():
+    # SCOPE CORRECTION: with the tie in the candidate set and k past 19, arm-dominance
+    # FAILS -- the 11-node tie N(0,5) beats the arm for all k >= 19 (marginal-tie wall).
+    holds, exc = arm_dominance_uniform(range(0,1), range(0,26))
+    assert not holds and (0,0) in exc and (0,19) in exc
 
 def test_arm_dominance_across_cherries():
     for cr in range(0,4):

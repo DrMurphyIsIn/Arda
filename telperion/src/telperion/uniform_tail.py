@@ -1,27 +1,33 @@
-"""Uniform-in-recursion monotone-tail certificate -- ARM-DOMINANCE.
+"""Arm-dominance against SMALL competitors -- a scoped sub-result (NOT uniform).
 
-The dimensional lift crosses any FIXED dimension; the general crux has unbounded
-type-dimension (each subtree a coordinate).  The uniform monotone-tail certificate
-that would close it reduces to a single, sharp, RECURSION-UNIFORM claim:
+CORRECTION (2026-08-16, after the origin session's catch): the claim that arm
+uniformly dominates EVERY added child is FALSE, and this module's scope is now
+restricted to what actually holds.
 
-  ARM-DOMINANCE: at every hub state, the ARM (the profile (1/3, phi_arm)) is the
-  optimal added child -- Phi^11(hub + arm) >= Phi^11(hub + X) for every achievable
-  child X.  (The exact marginal, INCLUDING the prod-deg penalty, not the naive
-  linearization.)
+  ARM beats a SMALL competitor X (leaf, cherry, arm2) uniformly in the hub
+  arm-count k -- Phi^11(hub + arm) >= Phi^11(hub + X) -- and that IS
+  kernel-certifiable (degree-11 all-nonneg-coefficient Polya, see
+  UniformArmDominanceCertificate).  Keep it as a correctly-scoped sub-result.
 
-If arm-dominance holds uniformly, then every non-arm direction is a monotone tail
-(steeper decrease), the all-arm near-star is the extremizer at every hub, and the
-near-star bridge closes it.  The crucial empirical finding: arm-dominance holds
-UNIFORMLY across all hub states EXCEPT the single finite base case (cr=0, k=0, the
-empty hub -- where the first child is a leaf that BUILDS an arm).  So the uniform
-tail has the SAME base + tail structure as the 1-D bridge, lifted to hub-state
-space: a finite base of exceptions + arm-dominance everywhere beyond.
+  But arm does NOT dominate ALL children.  The 11-node near-star TIE N(0,5) is a
+  tighter competitor than any small tree, and adding the tie BEATS adding the arm
+  for every hub arm-count k >= 19 (verified: crossing at k=19 in this rec model,
+  matching the origin's rational_reduction).  So "uniform arm-dominance" has an
+  INFINITE exception family (k >= 19), at the opposite end from the k=0 base case.
 
-This module certifies arm-dominance per hub state (a finite family of exact
-inequalities) and checks its uniformity + base exceptions.  A COMPLETE uniform
-proof needs (a) arm-dominance as one inequality UNIFORM in the hub state (an SOS
-over the state parameters) and (b) a size-preserving exchange to the near-star --
-the remaining open piece, now named precisely.
+This is the campaign's core wall (the marginal-tie / sharp-Psi obstruction): the
+tie has logPhi = 0 (it sits on the extremal variety), the arm has logPhi < 0, and
+in a WIDE hub the environment's sensitivity shrinks toward zero and cannot pay for
+the arm's amplitude deficit.  The double blind spot that hid it: a competitor set
+of only small trees (excluding the tie) and a k-sweep stopping short of k=19 --
+exactly the armification_probe lesson ("verify moves against LARGE C_i, not just
+small trees").
+
+Consequence for the two-lemma framing: it does NOT split into mechanical (1) +
+deep (2).  Arm-beats-any-child (uniform) is false; arm-beats-small-competitors is
+true but does NOT drive an exchange, because the exchange must dispose of
+tie-subtree children -- and disposing of large tie-children IS the hard content.
+The whole mountain is there.  conjecture1_proved = False, reinforced.
 """
 from __future__ import annotations
 
@@ -51,17 +57,27 @@ def hub_phi(cr, children):
     return _rec(cr, list(children))[1]
 
 
+TIE = (0, [ARM] * 5)   # the 11-node near-star tie N(0,5): the LARGE extremal
+                       # competitor that must be in any honest candidate set --
+                       # it beats the arm for hub arm-count k >= 19.
+
+
 def _default_children():
+    # includes the TIE so the check cannot silently exclude the large extremal
+    # subtree (the armification_probe lesson).
     return [ARM, LEAF, CHERRY,
-            (0, [(0, [(0, [])])]),          # arm-of-arm
+            (0, [(0, [(0, [])])]),          # arm-of-arm (arm2)
             (0, [(0, []), (0, [(0, [])])]),  # mixed
-            (1, [(0, [(0, [])])])]           # cherry + arm
+            (1, [(0, [(0, [])])]),           # cherry + arm
+            TIE]                             # the large tie competitor
 
 
 @dataclass(frozen=True)
 class ArmDominanceCertificate:
-    """At hub state (cr cherries, k existing arms): adding an ARM beats adding any
-    other child X, i.e. Phi^11(hub + arm) >= Phi^11(hub + X) for each X."""
+    """At hub state (cr cherries, k existing arms): whether adding an ARM beats
+    adding each candidate child (incl. the TIE).  NOTE: this HOLDS for small k but
+    FAILS for k >= 19 against the tie -- so it is a per-state check, not a uniform
+    claim.  Use it only where check() returns True (small hubs)."""
 
     name: str
     cr: int
@@ -98,8 +114,11 @@ class ArmDominanceCertificate:
         return "\n".join(lines) + "\n"
 
 
-def arm_dominance_uniform(cr_range=range(0, 4), k_range=range(0, 8)):
-    """Check arm-dominance across hub states; returns (holds_everywhere, exceptions)."""
+def arm_dominance_uniform(cr_range=range(0, 4), k_range=range(0, 26)):
+    """Check arm-dominance (against the full candidate set INCLUDING the tie) across
+    hub states; returns (holds_everywhere, exceptions).  With the tie in the set and
+    k swept past 19, this correctly reports the INFINITE exception family k >= 19
+    (plus the k=0 base case) -- i.e. arm-dominance is NOT uniform."""
     exceptions = []
     for cr in cr_range:
         for k in k_range:
@@ -148,10 +167,13 @@ def uniform_arm_dominance(competitor: str):
 
 @dataclass(frozen=True)
 class UniformArmDominanceCertificate:
-    """Arm-dominance UNIFORM in the hub arm-count k: for each competitor, the
-    degree-11 numerator num_X(anchor+u) >= 0 by positivity (all nonneg coeffs)."""
+    """Arm beats each SMALL competitor (arm2, cherry, leaf) uniformly in the hub
+    arm-count k: degree-11 numerator num_X(anchor+u) >= 0 by positivity (all nonneg
+    coeffs).  SCOPED: this is arm-vs-small-competitor ONLY.  It is NOT uniform
+    arm-dominance -- the large tie N(0,5) beats the arm for k >= 19 (an infinite
+    exception this certificate deliberately does NOT cover)."""
 
-    name: str = "uniform_armdom"
+    name: str = "uniform_armdom_small"
     competitors: tuple = ("arm2", "cherry", "leaf")
 
     def check(self) -> bool:

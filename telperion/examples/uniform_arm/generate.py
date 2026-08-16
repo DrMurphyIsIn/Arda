@@ -34,5 +34,5 @@ def main():
     if a.check:
         r = diff_frozen(res, HERE / "frozen"); print("check:", "OK" if r.ok else "FAILED"); return 0 if r.ok else 1
     freeze(res, HERE / "frozen")
-    print(f"UniformArm: {res.n_theorems} uniform-in-k arm-dominance certs (positivity), hash {res.input_hash[:16]}"); return 0
+    print(f"UniformArm: {res.n_theorems} arm-vs-SMALL-competitor certs (positivity); NOT uniform (tie beats arm k>=19), hash {res.input_hash[:16]}"); return 0
 if __name__ == "__main__": sys.exit(main())
