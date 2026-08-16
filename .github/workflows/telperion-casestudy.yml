@@ -1,0 +1,26 @@
+name: telperion-casestudy
+
+on:
+  push:
+    paths:
+      - "telperion/**"
+      - ".github/workflows/telperion-casestudy.yml"
+  pull_request:
+    paths:
+      - "telperion/**"
+      - ".github/workflows/telperion-casestudy.yml"
+  workflow_dispatch:
+
+jobs:
+  r47-regen-diff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+      - name: Re-certify the 36-cell R47 family and byte-diff against frozen
+        working-directory: telperion
+        run: python examples/r47_cells/generate.py --check

@@ -1,0 +1,9 @@
+{
+  "family": "R47Cells",
+  "input_hash": "eda4b40ce217ef408bf9e3d507b1b840dcc885aa70719e654a6630b7e85383b5",
+  "tool_version": "0.1.0",
+  "files": [
+    "R47Cells.lean"
+  ],
+  "n_theorems": 216
+}
