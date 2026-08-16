@@ -1,0 +1,1062 @@
+{
+ "interp_light_cT0_none_j0_S2_p0": [
+  4,
+  0,
+  2
+ ],
+ "interp_light_cT0_none_j0_S2_p1": [
+  4,
+  0,
+  3
+ ],
+ "interp_light_cT0_none_j0_S2_p2": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT0_none_j0_S2_p3": [
+  5,
+  0,
+  5
+ ],
+ "interp_light_cT0_none_j0_S2_p4": [
+  5,
+  0,
+  6
+ ],
+ "interp_light_cT0_none_j0_S2_p5": [
+  5,
+  0,
+  7
+ ],
+ "interp_light_cT0_none_j0_S3_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT0_none_j0_S3_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_none_j0_S3_p2": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_none_j0_S3_p3": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_none_j0_S3_p4": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_none_j0_S4_p0": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT0_none_j0_S4_p1": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_none_j0_S4_p2": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_none_j0_S4_p3": [
+  5,
+  0,
+  7
+ ],
+ "interp_light_cT0_none_j0_S5_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_none_j0_S5_p1": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_none_j0_S5_p2": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_none_j0_S6_p0": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_none_j0_S6_p1": [
+  6,
+  0,
+  7
+ ],
+ "interp_light_cT0_none_j0_S7_p0": [
+  5,
+  0,
+  8
+ ],
+ "interp_light_cT0_leaf_j1_S2_p0": [
+  6,
+  0,
+  1
+ ],
+ "interp_light_cT0_leaf_j1_S2_p1": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT0_leaf_j1_S2_p2": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_leaf_j1_S2_p3": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_leaf_j1_S2_p4": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_leaf_j1_S3_p0": [
+  5,
+  0,
+  3
+ ],
+ "interp_light_cT0_leaf_j1_S3_p1": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT0_leaf_j1_S3_p2": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_leaf_j1_S3_p3": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_leaf_j1_S4_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_leaf_j1_S4_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_leaf_j1_S4_p2": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_leaf_j1_S5_p0": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_leaf_j1_S5_p1": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_leaf_j1_S6_p0": [
+  5,
+  0,
+  7
+ ],
+ "interp_light_cT0_leaf_j2_S2_p0": [
+  4,
+  0,
+  2
+ ],
+ "interp_light_cT0_leaf_j2_S2_p1": [
+  5,
+  0,
+  3
+ ],
+ "interp_light_cT0_leaf_j2_S2_p2": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT0_leaf_j2_S2_p3": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_leaf_j2_S3_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT0_leaf_j2_S3_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_leaf_j2_S3_p2": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_leaf_j2_S4_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_leaf_j2_S4_p1": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_leaf_j2_S5_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm1_j1_S2_p0": [
+  6,
+  0,
+  1
+ ],
+ "interp_light_cT0_arm1_j1_S2_p1": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT0_arm1_j1_S2_p2": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm1_j1_S2_p3": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm1_j1_S2_p4": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm1_j1_S3_p0": [
+  5,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm1_j1_S3_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm1_j1_S3_p2": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm1_j1_S3_p3": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_arm1_j1_S4_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm1_j1_S4_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm1_j1_S4_p2": [
+  5,
+  0,
+  7
+ ],
+ "interp_light_cT0_arm1_j1_S5_p0": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm1_j1_S5_p1": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_arm1_j1_S6_p0": [
+  5,
+  0,
+  7
+ ],
+ "interp_light_cT0_arm1_j2_S2_p0": [
+  5,
+  0,
+  2
+ ],
+ "interp_light_cT0_arm1_j2_S2_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm1_j2_S2_p2": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm1_j2_S2_p3": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm1_j2_S3_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT0_arm1_j2_S3_p1": [
+  4,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm1_j2_S3_p2": [
+  5,
+  0,
+  6
+ ],
+ "interp_light_cT0_arm1_j2_S4_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm1_j2_S4_p1": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm1_j2_S5_p0": [
+  5,
+  0,
+  6
+ ],
+ "interp_light_cT0_arm1_j3_S2_p0": [
+  4,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm1_j3_S2_p1": [
+  4,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm1_j3_S2_p2": [
+  5,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm1_j3_S3_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm1_j3_S3_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm1_j3_S4_p0": [
+  5,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm1_j4_S2_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT0_arm1_j4_S2_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm1_j4_S3_p0": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm1_j5_S2_p0": [
+  5,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm2_j1_S2_p0": [
+  6,
+  0,
+  1
+ ],
+ "interp_light_cT0_arm2_j1_S2_p1": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT0_arm2_j1_S2_p2": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm2_j1_S2_p3": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm2_j1_S2_p4": [
+  5,
+  0,
+  7
+ ],
+ "interp_light_cT0_arm2_j1_S3_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm2_j1_S3_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm2_j1_S3_p2": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm2_j1_S3_p3": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_arm2_j1_S4_p0": [
+  4,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm2_j1_S4_p1": [
+  5,
+  0,
+  6
+ ],
+ "interp_light_cT0_arm2_j1_S4_p2": [
+  5,
+  0,
+  7
+ ],
+ "interp_light_cT0_arm2_j1_S5_p0": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm2_j1_S5_p1": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_arm2_j1_S6_p0": [
+  5,
+  0,
+  7
+ ],
+ "interp_light_cT0_arm2_j2_S2_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT0_arm2_j2_S2_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm2_j2_S2_p2": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm2_j2_S2_p3": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm2_j2_S3_p0": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm2_j2_S3_p1": [
+  5,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm2_j2_S3_p2": [
+  5,
+  0,
+  6
+ ],
+ "interp_light_cT0_arm2_j2_S4_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm2_j2_S4_p1": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm2_j2_S5_p0": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT0_arm2_j3_S2_p0": [
+  5,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm2_j3_S2_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm2_j3_S2_p2": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm2_j3_S3_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT0_arm2_j3_S3_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm2_j3_S4_p0": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm2_j4_S2_p0": [
+  4,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm2_j4_S2_p1": [
+  5,
+  0,
+  5
+ ],
+ "interp_light_cT0_arm2_j4_S3_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT0_arm2_j5_S2_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_none_j0_S2_p0": [
+  4,
+  0,
+  2
+ ],
+ "interp_light_cT1_none_j0_S2_p1": [
+  5,
+  0,
+  3
+ ],
+ "interp_light_cT1_none_j0_S2_p2": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT1_none_j0_S2_p3": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_none_j0_S2_p4": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT1_none_j0_S3_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT1_none_j0_S3_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_none_j0_S3_p2": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_none_j0_S3_p3": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_none_j0_S4_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_none_j0_S4_p1": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_none_j0_S4_p2": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT1_none_j0_S5_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_none_j0_S5_p1": [
+  5,
+  0,
+  7
+ ],
+ "interp_light_cT1_none_j0_S6_p0": [
+  6,
+  0,
+  6
+ ],
+ "interp_light_cT1_leaf_j1_S2_p0": [
+  6,
+  0,
+  1
+ ],
+ "interp_light_cT1_leaf_j1_S2_p1": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT1_leaf_j1_S2_p2": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_leaf_j1_S2_p3": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_leaf_j1_S3_p0": [
+  5,
+  0,
+  3
+ ],
+ "interp_light_cT1_leaf_j1_S3_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_leaf_j1_S3_p2": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_leaf_j1_S4_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_leaf_j1_S4_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_leaf_j1_S5_p0": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_leaf_j2_S2_p0": [
+  5,
+  0,
+  2
+ ],
+ "interp_light_cT1_leaf_j2_S2_p1": [
+  5,
+  0,
+  3
+ ],
+ "interp_light_cT1_leaf_j2_S2_p2": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_leaf_j2_S3_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT1_leaf_j2_S3_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_leaf_j2_S4_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm1_j1_S2_p0": [
+  6,
+  0,
+  1
+ ],
+ "interp_light_cT1_arm1_j1_S2_p1": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT1_arm1_j1_S2_p2": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_arm1_j1_S2_p3": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm1_j1_S3_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_arm1_j1_S3_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm1_j1_S3_p2": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm1_j1_S4_p0": [
+  4,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm1_j1_S4_p1": [
+  5,
+  0,
+  6
+ ],
+ "interp_light_cT1_arm1_j1_S5_p0": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm1_j2_S2_p0": [
+  5,
+  0,
+  2
+ ],
+ "interp_light_cT1_arm1_j2_S2_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_arm1_j2_S2_p2": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm1_j2_S3_p0": [
+  4,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm1_j2_S3_p1": [
+  5,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm1_j2_S4_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm1_j3_S2_p0": [
+  4,
+  0,
+  3
+ ],
+ "interp_light_cT1_arm1_j3_S2_p1": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm1_j3_S3_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_arm1_j4_S2_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT1_arm2_j1_S2_p0": [
+  4,
+  0,
+  3
+ ],
+ "interp_light_cT1_arm2_j1_S2_p1": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT1_arm2_j1_S2_p2": [
+  4,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm2_j1_S2_p3": [
+  5,
+  0,
+  6
+ ],
+ "interp_light_cT1_arm2_j1_S3_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_arm2_j1_S3_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm2_j1_S3_p2": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm2_j1_S4_p0": [
+  5,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm2_j1_S4_p1": [
+  5,
+  0,
+  6
+ ],
+ "interp_light_cT1_arm2_j1_S5_p0": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm2_j2_S2_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT1_arm2_j2_S2_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_arm2_j2_S2_p2": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm2_j2_S3_p0": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm2_j2_S3_p1": [
+  6,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm2_j2_S4_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm2_j3_S2_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT1_arm2_j3_S2_p1": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT1_arm2_j3_S3_p0": [
+  4,
+  0,
+  5
+ ],
+ "interp_light_cT1_arm2_j4_S2_p0": [
+  5,
+  0,
+  4
+ ],
+ "interp_light_cT2_none_j0_S2_p0": [
+  5,
+  0,
+  2
+ ],
+ "interp_light_cT2_none_j0_S2_p1": [
+  5,
+  0,
+  3
+ ],
+ "interp_light_cT2_none_j0_S2_p2": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT2_none_j0_S3_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT2_none_j0_S3_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT2_none_j0_S4_p0": [
+  6,
+  0,
+  4
+ ],
+ "interp_light_cT2_leaf_j1_S2_p0": [
+  6,
+  0,
+  1
+ ],
+ "interp_light_cT2_leaf_j1_S2_p1": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT2_leaf_j1_S3_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT2_leaf_j2_S2_p0": [
+  5,
+  0,
+  2
+ ],
+ "interp_light_cT2_arm1_j1_S2_p0": [
+  4,
+  0,
+  3
+ ],
+ "interp_light_cT2_arm1_j1_S2_p1": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT2_arm1_j1_S3_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT2_arm1_j2_S2_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT2_arm2_j1_S2_p0": [
+  4,
+  0,
+  3
+ ],
+ "interp_light_cT2_arm2_j1_S2_p1": [
+  4,
+  0,
+  4
+ ],
+ "interp_light_cT2_arm2_j1_S3_p0": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT2_arm2_j2_S2_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT3_none_j0_S2_p0": [
+  5,
+  0,
+  2
+ ],
+ "interp_light_cT3_none_j0_S2_p1": [
+  6,
+  0,
+  3
+ ],
+ "interp_light_cT3_none_j0_S3_p0": [
+  6,
+  0,
+  2
+ ],
+ "interp_light_cT3_leaf_j1_S2_p0": [
+  4,
+  0,
+  3
+ ],
+ "interp_light_cT3_arm1_j1_S2_p0": [
+  4,
+  0,
+  3
+ ],
+ "interp_light_cT3_arm2_j1_S2_p0": [
+  4,
+  0,
+  3
+ ],
+ "interp_light_cT4_none_j0_S2_p0": [
+  5,
+  0,
+  2
+ ]
+}

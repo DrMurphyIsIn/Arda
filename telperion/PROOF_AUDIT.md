@@ -9,9 +9,9 @@ Generated 2026-08-16 by `examples/proof_audit/generate_audit.py`; executable row
 | 36-cell unified merge table (HypStar seam) | Telperion re-derivation + stdlib recheck | RE-DERIVED: 216 theorems frozen [5645431aded2]; sampled recheck GREEN (4 cell(s)) |
 | G1 floors: dichotomy/tax/below-window + anchors (HypFloors) | Telperion re-derivation + stdlib recheck | RE-DERIVED: 3260 theorems frozen [dc72d7c87c2f, 0ace82300c53]; sampled recheck GREEN (2 cell(s)) — COMPILE-GATED green @6758e88; handoff ACCEPTED (origin bf2f0747); 1 fragile cell tripwired ((2,0,1) @0.59 width) |
 | R6 shedding lemmas (de-loading schedule) | Telperion re-derivation + stdlib recheck | RE-DERIVED: 55 theorems frozen [022ea4f8feb5]; sampled recheck GREEN (2 cell(s)) |
+| Legs certificates + the 726-digit bignum ((L) layer) | Telperion re-derivation + stdlib recheck | RE-DERIVED: 48 theorems frozen [1d128764a53d]; sampled recheck GREEN (2 cell(s)) |
+| Interpolation lemma: I1 UPGRADED TO SYMBOLIC (vs origin's 199 point checks) + I2 + 212 light-top facts with witness table | Telperion re-derivation + stdlib recheck | RE-DERIVED: 215 theorems frozen [3a6852dde1a0, 3e75efae2723, fcd5c1a23daa]; RECHECK ERROR: AttributeError — heavy-top sup + DELTA sweep are float-guarded in origin; exact counterparts routed to g1_endpoint_certificates (origin G1FIX arc) |
 | 972 star-of-hubs dominations (HypStarSymbolic) | Telperion re-derivation + stdlib recheck | IN FLIGHT — freeze not yet landed |
-| Legs certificates (42) + 726-digit bignum | planned | PLANNED — origin Lean green (R47Legs); re-derivation next in queue |
-| Interpolation lemma: sign dichotomy + 212 endpoint checks | planned | PLANNED — dichotomy glue + interval symbols ready; encoding queued |
 | G34 residual sweep (442,800 cases) | planned | PLANNED — as interchange export + stdlib recheck (not per-theorem Lean) |
 | Two-hub residual tails (per-residue comparators) | planned | PLANNED — witness API + varmap machinery ready; encoding queued |
 | Hunt-attack sweep over all certified families | planned | PLANNED — three-mode adversarial minimization; queued |

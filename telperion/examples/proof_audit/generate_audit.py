@@ -95,6 +95,13 @@ def generate() -> str:
          "(HypFloors)", " — COMPILE-GATED green @6758e88; handoff ACCEPTED "
          "(origin bf2f0747); 1 fragile cell tripwired ((2,0,1) @0.59 width)"),
         ("shed_lemmas", "R6 shedding lemmas (de-loading schedule)", ""),
+        ("legs_certs", "Legs certificates + the 726-digit bignum "
+         "((L) layer)", ""),
+        ("interp_lemma", "Interpolation lemma: I1 UPGRADED TO SYMBOLIC "
+         "(vs origin's 199 point checks) + I2 + 212 light-top facts with "
+         "witness table", " — heavy-top sup + DELTA sweep are float-guarded "
+         "in origin; exact counterparts routed to g1_endpoint_certificates "
+         "(origin G1FIX arc)"),
         ("r7_starofhubs", "972 star-of-hubs dominations (HypStarSymbolic)", ""),
     ):
         theorems, hashes = _frozen_info(example)
@@ -107,10 +114,6 @@ def generate() -> str:
 
     # --- planned strata ---
     for stratum, note in (
-        ("Legs certificates (42) + 726-digit bignum",
-         "origin Lean green (R47Legs); re-derivation next in queue"),
-        ("Interpolation lemma: sign dichotomy + 212 endpoint checks",
-         "dichotomy glue + interval symbols ready; encoding queued"),
         ("G34 residual sweep (442,800 cases)",
          "as interchange export + stdlib recheck (not per-theorem Lean)"),
         ("Two-hub residual tails (per-residue comparators)",

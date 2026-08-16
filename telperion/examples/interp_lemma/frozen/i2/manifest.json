@@ -1,0 +1,9 @@
+{
+  "family": "InterpI2",
+  "input_hash": "3e75efae272350cff6f353b8be24457a4264a289fee2c06875d8c3fc322763a5",
+  "tool_version": "0.1.1",
+  "files": [
+    "InterpI2.lean"
+  ],
+  "n_theorems": 1
+}

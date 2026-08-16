@@ -1,0 +1,9 @@
+{
+  "family": "InterpLightTop",
+  "input_hash": "fcd5c1a23daa849a5b69ecc2bb6691d14424e23370b6898f027d175065407e8d",
+  "tool_version": "0.1.1",
+  "files": [
+    "InterpLight.lean"
+  ],
+  "n_theorems": 212
+}

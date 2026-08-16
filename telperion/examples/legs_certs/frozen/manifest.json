@@ -1,0 +1,9 @@
+{
+  "family": "LegsCerts",
+  "input_hash": "1d128764a53d96c565f345b5885c6658ad25e9ce0a7ec01b6ce4cc19f805a66f",
+  "tool_version": "0.1.1",
+  "files": [
+    "LegsCerts.lean"
+  ],
+  "n_theorems": 48
+}
