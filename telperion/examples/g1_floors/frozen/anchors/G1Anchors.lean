@@ -1,4 +1,4 @@
-/- telperion 0.1.1 | family G1Anchors | input-hash dc72d7c87c2f436b
+/- telperion 0.1.2 | family G1Anchors | input-hash 37aa56a9d891ef99
    176 theorems, 176 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

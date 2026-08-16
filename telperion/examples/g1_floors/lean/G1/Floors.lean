@@ -1,4 +1,4 @@
-/- telperion 0.1.1 | family G1Floors | input-hash 0ace82300c531357
+/- telperion 0.1.2 | family G1Floors | input-hash 44ac4b329e233f9d
    3084 theorems, 2570 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

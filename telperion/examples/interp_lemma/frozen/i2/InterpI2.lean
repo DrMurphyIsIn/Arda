@@ -1,4 +1,4 @@
-/- telperion 0.1.1 | family InterpI2 | input-hash 3e75efae272350cf
+/- telperion 0.1.2 | family InterpI2 | input-hash dc31b92889441c98
    1 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

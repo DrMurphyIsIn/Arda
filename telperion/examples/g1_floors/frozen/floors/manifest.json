@@ -1,7 +1,7 @@
 {
   "family": "G1Floors",
-  "input_hash": "0ace82300c531357b0ace21fd6dc413d2a3a80475d0437cae921c7ef26f5b409",
-  "tool_version": "0.1.1",
+  "input_hash": "44ac4b329e233f9d8e5989058479ebf59c5208fa7904b73cda6c4709b6508c2d",
+  "tool_version": "0.1.2",
   "files": [
     "G1Floors.lean"
   ],

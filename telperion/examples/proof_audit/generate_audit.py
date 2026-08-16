@@ -139,9 +139,25 @@ def generate() -> str:
         rows.append(("G34 residual sweep (442,800 cases)", "planned",
                      "PLANNED — as export + fingerprint"))
 
-    # --- planned strata ---
-    rows.append(("Hunt-attack sweep over all certified families", "planned",
-                 "PLANNED — three-mode adversarial minimization; queued"))
+    # --- the adversarial stratum (exact hunts; a value < 0 would be a
+    #     theorem that the claim is false, witness attached) ---
+    hunt_frozen = TELPERION / "examples" / "proof_audit" / "frozen" / "hunt_report.json"
+    if hunt_frozen.exists():
+        hr = json.loads(hunt_frozen.read_text())
+        hunted = sum(e["cells_hunted"] for e in hr["families"].values())
+        inline = sum(e["cells_inline"] for e in hr["families"].values())
+        skipped = sum(e.get("skipped", 0) for e in hr["families"].values())
+        rows.append((
+            "Hunt-attack sweep over all certified families",
+            "three-mode exact adversarial minimization "
+            "(descent + GA/memetic + quality-diversity)",
+            f"{hr['verdict']}: {hunted} optimizer-attacked + {inline} inline "
+            f"cells across {len(hr['families'])} strata, {skipped} skipped; "
+            "existentials attacked at the pointwise max, identities at random "
+            f"rationals; fingerprint {hr['fingerprint'][:16]}"))
+    else:
+        rows.append(("Hunt-attack sweep over all certified families", "planned",
+                     "PLANNED — three-mode adversarial minimization; queued"))
 
     # --- out of scope, named honestly ---
     rows.append(("Structural inductions (telescoping, termination, "

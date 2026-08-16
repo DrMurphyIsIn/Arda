@@ -49,3 +49,8 @@ group = "heavy"    # 442,800 exact cases + fingerprint; ~2.5 min
 name = "g34_twohub"
 script = "examples/g34_twohub/generate.py"
 group = "wip"      # freeze in flight; promote to heavy when frozen/ lands
+
+[[check]]
+name = "hunt_sweep"
+script = "examples/proof_audit/hunt_sweep.py"
+group = "heavy"    # ~5 min: exact adversarial hunts over every family

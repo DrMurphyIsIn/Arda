@@ -1,0 +1,120 @@
+{
+ "seed": 47,
+ "families": {
+  "r47_cells": {
+   "cells_hunted": 24,
+   "cells_inline": 0,
+   "skipped": 0,
+   "inline_min": null,
+   "inline_where": null,
+   "identity_points": 0,
+   "disproofs": [],
+   "evaluations": 13236,
+   "tightest": {
+    "minimum": "25838420650056426643285209887/595127503716039410268679200000",
+    "cell": "tel_dT00",
+    "argmin": {
+     "u": "3305259/8192",
+     "v": "1131/2",
+     "u_sQ": "1",
+     "u_sr": "1"
+    }
+   }
+  },
+  "g1_floors": {
+   "cells_hunted": 36,
+   "cells_inline": 0,
+   "skipped": 0,
+   "inline_min": null,
+   "inline_where": null,
+   "identity_points": 0,
+   "disproofs": [],
+   "evaluations": 10564,
+   "tightest": {
+    "minimum": "45242627/8736000000000",
+    "cell": "g1_leaf_a5_nl0_m1_f27_5000_y29500069_128000000_4740011_20480000",
+    "argmin": {
+     "u_L": "0",
+     "u_G": "1"
+    }
+   }
+  },
+  "shed_lemmas": {
+   "cells_hunted": 30,
+   "cells_inline": 0,
+   "skipped": 0,
+   "inline_min": null,
+   "inline_where": null,
+   "identity_points": 0,
+   "disproofs": [],
+   "evaluations": 7350,
+   "tightest": {
+    "minimum": "33/23920",
+    "cell": "shed_L1_c0_s16",
+    "argmin": {
+     "t": "0"
+    }
+   }
+  },
+  "legs_certs": {
+   "cells_hunted": 0,
+   "cells_inline": 48,
+   "skipped": 0,
+   "inline_min": "0",
+   "inline_where": "legs_ell2_reference",
+   "identity_points": 0,
+   "disproofs": [],
+   "evaluations": 0
+  },
+  "interp_lemma": {
+   "cells_hunted": 0,
+   "cells_inline": 63,
+   "skipped": 0,
+   "inline_min": "190269/10240",
+   "inline_where": "interp_light_cT0_none_j0_S2_p0",
+   "identity_points": 120,
+   "disproofs": [],
+   "evaluations": 0
+  },
+  "g34_twohub": {
+   "cells_hunted": 48,
+   "cells_inline": 0,
+   "skipped": 0,
+   "inline_min": null,
+   "inline_where": null,
+   "identity_points": 0,
+   "disproofs": [],
+   "evaluations": 10653,
+   "tightest": {
+    "minimum": "7222305350537029499092/91384119784146890553125",
+    "cell": "twohub_T1_arm1_j5_cA0",
+    "argmin": {
+     "x": "1/6",
+     "y": "2275/2"
+    }
+   }
+  },
+  "r7_starofhubs": {
+   "cells_hunted": 6,
+   "cells_inline": 0,
+   "skipped": 0,
+   "inline_min": null,
+   "inline_where": null,
+   "identity_points": 0,
+   "disproofs": [],
+   "evaluations": 1184,
+   "tightest": {
+    "minimum": "4830335632595506821252021313/4703169829612185600000000",
+    "cell": "star_subs_S9_cT0_cB0_arm1",
+    "argmin": {
+     "x": "0",
+     "y": "0"
+    }
+   }
+  }
+ },
+ "disproofs_total": 0,
+ "verdict": "NO DISPROOF FOUND",
+ "fingerprint": "f84fc436ae3f6fe013369a5f9a92974f58c29a938000b7edd29ee4c74e6caa85",
+ "runtime_seconds": 276.3
+}
