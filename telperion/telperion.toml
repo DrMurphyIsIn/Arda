@@ -72,3 +72,8 @@ group = "quick"    # rigorous rational enclosure of exp(-theta), R47Encode far c
 name = "padic_valuation"
 script = "examples/padic_valuation/generate.py"
 group = "quick"    # p-adic valuation certificates (23-cancellation structure)
+
+[[check]]
+name = "tax_growth"
+script = "examples/tax_growth/generate.py"
+group = "quick"    # source-grouped ledger pieces: {2,3,23} tax + growth bounds
