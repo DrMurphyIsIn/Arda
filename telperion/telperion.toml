@@ -102,3 +102,8 @@ group = "quick"    # arithmetic-rigidity certificate (tie integer identity, R(5)
 name = "sos_sdp"
 script = "examples/sos_sdp/generate.py"
 group = "sdp"      # SDP-SOS (needs cvxpy; regen off the cvxpy-free CI path). Frozen Lean is compile-gated.
+
+[[check]]
+name = "mconvex"
+script = "examples/mconvex/generate.py"
+group = "quick"    # M-convexity (discrete-convex) certificates -- integer-lattice structure
