@@ -87,3 +87,8 @@ group = "quick"    # telescoping-closure primitive (rose-tree RTree.telescope)
 name = "interlacing"
 script = "examples/interlacing/generate.py"
 group = "quick"    # root-interlacing certificates via Wronskian SOS (HKO)
+
+[[check]]
+name = "lorentzian"
+script = "examples/lorentzian/generate.py"
+group = "quick"    # Lorentzian/Hodge-Riemann non-separable certificates (Hessian SOS)
