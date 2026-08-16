@@ -52,3 +52,8 @@ group = "heavy"    # 480 tails + 4176 small-donor witness certs (frozen 0.1.3)
 name = "hunt_sweep"
 script = "examples/proof_audit/hunt_sweep.py"
 group = "heavy"    # ~5 min: exact adversarial hunts over every family
+
+[[check]]
+name = "h_floors"
+script = "examples/h_floors/generate.py"
+group = "quick"    # 56 H-floor pieces + 46 anchors (origin handoff deliverable)

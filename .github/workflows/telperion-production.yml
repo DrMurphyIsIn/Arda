@@ -11,6 +11,7 @@ on:
       - "telperion/examples/shed_lemmas/**"
       - "telperion/examples/legs_certs/**"
       - "telperion/examples/interp_lemma/**"
+      - "telperion/examples/h_floors/**"
       - "telperion/examples/proof_audit/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
@@ -63,6 +64,8 @@ jobs:
           cp ../../interp_lemma/frozen/i1/InterpI1.lean     Audit/InterpI1.lean
           cp ../../interp_lemma/frozen/i2/InterpI2.lean     Audit/InterpI2.lean
           cp ../../interp_lemma/frozen/light/InterpLight.lean Audit/InterpLight.lean
+          cp ../../h_floors/frozen/floors/HFloors.lean        Audit/HFloors.lean
+          cp ../../h_floors/frozen/anchors/HFloorAnchors.lean Audit/HFloorAnchors.lean
       - name: Cache elan
         uses: actions/cache@v4
         with:
@@ -72,7 +75,7 @@ jobs:
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Compile the audit re-derivations (shed 55 + legs 48 + interp 215)
+      - name: Compile the audit re-derivations + handoff artifacts (shed 55 + legs 48 + interp 215 + hfloors 382)
         working-directory: telperion/examples/proof_audit/lean
         run: |
           lake exe cache get
