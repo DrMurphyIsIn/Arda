@@ -55,6 +55,19 @@ Corollaries you must respect:
    itself or any family: regenerate, re-freeze, and re-run verify — the
    manifest is the drift net.
 
+## Reading the mathematics back out
+
+- `telperion margins family.py:factory` (MCP: `margins`): where is the family
+  tight? Exact tie faces per certificate, constant-term floors, sample minima
+  with argmin — the extremal structure, sorted tight-first. Run it after
+  certification: the ties are where the interesting mathematics lives.
+- `telperion ties "expr"` (MCP: `ties`): exact equality cases of one claim.
+- Structural fact worth internalizing: a CERTIFIED instance can only be tight
+  on coordinate faces (nonneg-coefficient numerators cannot vanish at interior
+  points without vanishing identically). An interior tie means no Polya
+  certificate exists at that point — subdivide around it and treat the tie
+  arithmetically; do not fight the refusal.
+
 ## The spelling rules (why emitted proofs compile first-try)
 
 - Every denominator is rendered in **positive-factored form**
