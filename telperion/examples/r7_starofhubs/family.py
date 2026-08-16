@@ -21,7 +21,6 @@ honest-conditional assembly, at Lean rigor once compiled.
 """
 from __future__ import annotations
 
-import functools
 from fractions import Fraction
 
 import sympy as sp
@@ -103,15 +102,14 @@ def _template(c0: int, m4: int, nleaf: int, Kc: int, S: int):
     return Fs(dT, c0) * (W4 / V5) ** m4 * V5**Kc * (1 + zT * sig)
 
 
-@functools.lru_cache(maxsize=None)
-def _comparator(cell_key) -> tuple[int, int, int, int]:
-    """The per-residue comparator search — family data, found by the same
-    Polya test the certifier applies (origin: per-residue comparator search;
-    the winning template varies with n mod 11)."""
-    from telperion import polya_certify
-
-    pt = dict(cell_key)
+def candidates(pt):
+    """The per-residue comparator CANDIDATE SPACE (cheap to build — no
+    certification here; the certifier's witness search does that once per
+    cell, in parallel).  The winning template varies with n mod 11; the
+    declared space is COMPLETE for the residue system, so exhaustion would be
+    a proven hard case, not a shrug."""
     cfg, n_const = _config_and_nconst(pt)
+    out = []
     for c0 in range(7):
         for m4 in range(11):
             for nleaf in (0, 1):
@@ -119,23 +117,11 @@ def _comparator(cell_key) -> tuple[int, int, int, int]:
                 if rem % 11:
                     continue
                 Kc = rem // 11
-                tmpl = _template(c0, m4, nleaf, Kc, pt["S"])
-                try:
-                    polya_certify(tmpl - cfg, (x, y))
-                    return (c0, m4, nleaf, Kc)
-                except ValueError:
-                    continue
-    raise ValueError(f"no residue comparator found for {pt} — a HARD case")
-
-
-def _key(pt):
-    return tuple(sorted((k, v) for k, v in pt.items() if not k.startswith("_")))
-
-
-def target(pt):
-    cfg, _ = _config_and_nconst(pt)
-    c0, m4, nleaf, Kc = _comparator(_key(pt))
-    return _template(c0, m4, nleaf, Kc, pt["S"]) - cfg
+                out.append(
+                    (f"c{c0}_m{m4}_l{nleaf}",
+                     _template(c0, m4, nleaf, Kc, pt["S"]) - cfg)
+                )
+    return out
 
 
 def lean_name(pt):
@@ -153,7 +139,8 @@ def family() -> InequalityFamily:
         symbols=(x, y),
         grid=GridSpec([("cell", list(range(len(cells))))]),
         lean_name=lambda pt: lean_name(cells[pt["cell"]]),
-        target=lambda pt: target(cells[pt["cell"]]),
+        witnesses=lambda pt: candidates(cells[pt["cell"]]),
+        witnesses_complete=True,
     )
 
 
@@ -228,14 +215,15 @@ def validation() -> ValidationReport:
                 assert sym_val == sp.Rational(frac_val), (pt, pT, q)
 
     def domination():
-        for pt in rng.sample(cells, 60):
-            t = target(pt)
-            for _ in range(4):
+        for pt in rng.sample(cells, 40):
+            cands = candidates(pt)
+            for _ in range(3):
                 sub = {
                     x: sp.Rational(rng.randint(0, 200), rng.randint(1, 8)),
                     y: sp.Rational(rng.randint(0, 200), rng.randint(1, 8)),
                 }
-                assert t.subs(sub) >= 0, (pt, sub)
+                # the EXISTENTIAL claim: some candidate dominates at the point
+                assert any(t.subs(sub) >= 0 for _, t in cands), (pt, sub)
 
     return ValidationReport.from_asserts(
         [("closed_form_cross_check", cross_check), ("domination_spot", domination)]

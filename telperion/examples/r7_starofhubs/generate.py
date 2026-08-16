@@ -22,15 +22,25 @@ HERE = Path(__file__).resolve().parent
 
 
 def build():
+    import time as _t
+
+    marks = [("start", _t.monotonic())]
     fam = family()
-    cf = certify(fam, workers=8)
-    return emit(
+    cf = certify(fam, workers=8, cache_dir=HERE / ".telperion_cache")
+    marks.append(("certify", _t.monotonic()))
+    val = validation()
+    marks.append(("validate", _t.monotonic()))
+    res = emit(
         cf,
         profile(),
         [DirectPolyaEmitter()],
-        validation(),
+        val,
         shard=ShardSpec(max_theorems=120, module_base="R7Hyps.StarOfHubs.Cells"),
-    ), cf
+    )
+    marks.append(("hash+emit", _t.monotonic()))
+    for (label, t1), (_, t0) in zip(marks[1:], marks):
+        print(f"[phase] {label}: {t1 - t0:.0f}s", flush=True)
+    return res, cf
 
 
 def main() -> int:

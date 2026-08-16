@@ -1,0 +1,46 @@
+name: telperion-production
+
+# THE COMPILE GATE over frozen production artifacts — added per
+# REVIEW_20260816_TELPERION_G1: regen-diffs check byte-stability and tests
+# check mathematics, but only `lake build` checks that shipped Lean IS Lean.
+
+on:
+  push:
+    paths:
+      - "telperion/examples/g1_floors/**"
+      - "telperion/src/**"
+      - ".github/workflows/telperion-production.yml"
+  pull_request:
+    paths:
+      - "telperion/examples/g1_floors/**"
+      - "telperion/src/**"
+      - ".github/workflows/telperion-production.yml"
+  workflow_dispatch:
+
+jobs:
+  g1-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+      - name: Regeneration diff (the frozen artifact matches the generator)
+        working-directory: telperion
+        run: python examples/g1_floors/generate.py --check
+      - name: Cache elan
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/g1_floors/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Compile the frozen G1 artifact (3084 floors + 176 kernel facts)
+        working-directory: telperion/examples/g1_floors/lean
+        run: |
+          lake exe cache get
+          lake build

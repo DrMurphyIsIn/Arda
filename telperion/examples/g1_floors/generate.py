@@ -144,10 +144,20 @@ def main() -> int:
             if not rep.ok:
                 ok = False
                 print(f"DRIFT in {sub}:", *rep.details, sep="\n  ")
+        for res, fname, live in ((floors, "G1Floors.lean", "Floors.lean"),
+                                 (anchors, "G1Anchors.lean", "Anchors.lean")):
+            p = HERE / "lean" / "G1" / live
+            if not p.exists() or p.read_text() != res.files[fname]:
+                ok = False
+                print(f"DRIFT: lean/G1/{live} differs from regenerated text")
         print("check:", "OK" if ok else "FAILED")
         return 0 if ok else 1
     for res, sub in ((floors, "floors"), (anchors, "anchors")):
         freeze(res, HERE / "frozen" / sub)
+    lean_dir = HERE / "lean" / "G1"
+    lean_dir.mkdir(parents=True, exist_ok=True)
+    (lean_dir / "Floors.lean").write_text(floors.files["G1Floors.lean"])
+    (lean_dir / "Anchors.lean").write_text(anchors.files["G1Anchors.lean"])
     print(
         f"G1Floors: {floors.n_theorems} theorems ({floors.n_checks} checks), "
         f"hash {floors.input_hash[:16]}; G1Anchors: {anchors.n_theorems} facts, "

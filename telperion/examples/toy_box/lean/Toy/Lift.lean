@@ -1,4 +1,4 @@
-/- telperion 0.1.0 | family ToyLift | input-hash 5b093fb795259eed
+/- telperion 0.1.1 | family ToyLift | input-hash bc7dc3d2b0a8a758
    2 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

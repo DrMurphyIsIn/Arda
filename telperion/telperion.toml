@@ -16,7 +16,9 @@ group = "heavy"    # ~6-12 min re-certification; runs in the casestudy CI job
 [[check]]
 name = "r7_starofhubs"
 script = "examples/r7_starofhubs/generate.py"
-group = "heavy"    # 972-cell HypStarSymbolic discharge; ~10 min regeneration
+group = "wip"      # freeze in flight — promote to heavy when frozen/ lands;
+                   # a heavy entry without its freeze silently killed the
+                   # heavy CI gate for five pushes (2026-08-16)
 
 [[check]]
 name = "g1_floors"
