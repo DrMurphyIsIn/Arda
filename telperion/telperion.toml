@@ -2,6 +2,11 @@
 # `telperion verify` runs each entry's regeneration diff; any examples/*/
 # generate.py NOT listed here fails verification — a family cannot silently
 # fall out of the drift-check net (the 2026-08-15 re-freeze incident class).
+#
+# Groups: quick (seconds, every push via telperion-test) | heavy (r47 ~10 min,
+# every push via telperion-casestudy) | audit (heavy re-certifications +
+# adversarial hunt, telperion-audit on dispatch/weekly/own-path-change — kept
+# off the per-push path so a trivial change does not pay ~30 min of re-verify).
 
 [[check]]
 name = "toy_box"
@@ -16,7 +21,7 @@ group = "heavy"    # ~6-12 min re-certification; runs in the casestudy CI job
 [[check]]
 name = "r7_starofhubs"
 script = "examples/r7_starofhubs/generate.py"
-group = "heavy"    # 972 star-of-hubs certs, 9 shards (frozen 0.1.3)
+group = "audit"    # 972 star-of-hubs certs, 9 shards; heavy re-cert -> audit CI
 
 [[check]]
 name = "g1_floors"
@@ -41,17 +46,17 @@ group = "quick"    # I1/I2 symbolic identities + 212 light-top facts; ~0.3 s
 [[check]]
 name = "g34_sweep"
 script = "examples/g34_sweep/generate.py"
-group = "heavy"    # 442,800 exact cases + fingerprint; ~2.5 min
+group = "audit"    # 442,800 exact cases + fingerprint; ~2.5 min
 
 [[check]]
 name = "g34_twohub"
 script = "examples/g34_twohub/generate.py"
-group = "heavy"    # 480 tails + 4176 small-donor witness certs (frozen 0.1.3)
+group = "audit"    # 480 tails + 4176 small-donor witness certs (frozen 0.1.3)
 
 [[check]]
 name = "hunt_sweep"
 script = "examples/proof_audit/hunt_sweep.py"
-group = "heavy"    # ~5 min: exact adversarial hunts over every family
+group = "audit"    # ~5 min: exact adversarial hunts; audit-cadence, not per-push
 
 [[check]]
 name = "h_floors"

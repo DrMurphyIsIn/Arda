@@ -1,0 +1,36 @@
+name: telperion-audit
+
+# The heavy audit re-verifications (R7 972 + two-hub 4656 re-certification,
+# the 442,800-case G34 sweep fingerprint, and the adversarial hunt sweep).
+# These are the audit's periodic re-run — deliberately OFF the per-push path
+# (a trivial telperion change should not pay ~30 min of re-verify).  They run:
+#   * weekly (drift + Mathlib-independent regression cadence),
+#   * on demand (workflow_dispatch — e.g. before a review handoff),
+#   * on push ONLY when one of the heavy families' own files changes
+#     (re-verify the thing that changed).
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"        # Mondays 06:00 UTC
+  push:
+    paths:
+      - "telperion/examples/r7_starofhubs/**"
+      - "telperion/examples/g34_sweep/**"
+      - "telperion/examples/g34_twohub/**"
+      - "telperion/examples/proof_audit/hunt_sweep.py"
+      - ".github/workflows/telperion-audit.yml"
+
+jobs:
+  audit-reverify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+      - name: Re-verify the audit group (R7 + two-hub + G34 sweep + hunt sweep)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m telperion.cli verify --group audit
