@@ -1,0 +1,19 @@
+{
+  "family": "TwoHubSmallDonor",
+  "input_hash": "8a2a78c24ee47cc042031b9ef734f0b7d344386e35277ad561b8724613c9773c",
+  "tool_version": "0.1.3",
+  "files": [
+    "SmallDonor.lean",
+    "SmallDonor10.lean",
+    "SmallDonor11.lean",
+    "SmallDonor2.lean",
+    "SmallDonor3.lean",
+    "SmallDonor4.lean",
+    "SmallDonor5.lean",
+    "SmallDonor6.lean",
+    "SmallDonor7.lean",
+    "SmallDonor8.lean",
+    "SmallDonor9.lean"
+  ],
+  "n_theorems": 4176
+}

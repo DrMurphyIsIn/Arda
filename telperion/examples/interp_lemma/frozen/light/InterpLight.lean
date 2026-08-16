@@ -1,4 +1,4 @@
-/- telperion 0.1.2 | family InterpLightTop | input-hash 66e23f8fdc631076
+/- telperion 0.1.3 | family InterpLightTop | input-hash fc1618aec085647c
    212 theorems, 212 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

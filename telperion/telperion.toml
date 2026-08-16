@@ -16,9 +16,7 @@ group = "heavy"    # ~6-12 min re-certification; runs in the casestudy CI job
 [[check]]
 name = "r7_starofhubs"
 script = "examples/r7_starofhubs/generate.py"
-group = "wip"      # freeze in flight — promote to heavy when frozen/ lands;
-                   # a heavy entry without its freeze silently killed the
-                   # heavy CI gate for five pushes (2026-08-16)
+group = "heavy"    # 972 star-of-hubs certs, 9 shards (frozen 0.1.3)
 
 [[check]]
 name = "g1_floors"
@@ -48,7 +46,7 @@ group = "heavy"    # 442,800 exact cases + fingerprint; ~2.5 min
 [[check]]
 name = "g34_twohub"
 script = "examples/g34_twohub/generate.py"
-group = "wip"      # freeze in flight; promote to heavy when frozen/ lands
+group = "heavy"    # 480 tails + 4176 small-donor witness certs (frozen 0.1.3)
 
 [[check]]
 name = "hunt_sweep"

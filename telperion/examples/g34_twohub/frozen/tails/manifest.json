@@ -1,0 +1,9 @@
+{
+  "family": "TwoHubTails",
+  "input_hash": "5e1278d124cbd0f840263f95c21a14aef1e71bf5b8f2ef7f9b796e7230e00ae2",
+  "tool_version": "0.1.3",
+  "files": [
+    "TwoHubTails.lean"
+  ],
+  "n_theorems": 480
+}

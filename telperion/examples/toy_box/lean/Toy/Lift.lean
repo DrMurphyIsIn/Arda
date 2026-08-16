@@ -1,4 +1,4 @@
-/- telperion 0.1.1 | family ToyLift | input-hash bc7dc3d2b0a8a758
+/- telperion 0.1.3 | family ToyLift | input-hash fb909363c8cdc32d
    2 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
@@ -8,9 +8,9 @@ import Mathlib
 namespace Toy
 
 theorem toy_lift_a1 (u : ℝ) (hu : 0 ≤ u) :
-    0 ≤ (1 + u ^ 2 - u) / ((1 + u)) := by
+    0 ≤ (1 + u ^ 3) / ((1 + u) * (1 + u)) := by
   have hd1 : (1 + u : ℝ) ≠ 0 := by positivity
-  have hkey : (1 + u ^ 2 - u) / ((1 + u))
+  have hkey : (1 + u ^ 3) / ((1 + u) * (1 + u))
       = (1 + u ^ 3)
         / ((1 + u) * (1 + u)) := by
     field_simp
@@ -19,9 +19,9 @@ theorem toy_lift_a1 (u : ℝ) (hu : 0 ≤ u) :
   positivity
 
 theorem toy_lift_a2 (u : ℝ) (hu : 0 ≤ u) :
-    0 ≤ (2 + u ^ 2 - u) / ((1 + u)) := by
+    0 ≤ (2 + u + u ^ 3) / ((1 + u) * (1 + u)) := by
   have hd1 : (1 + u : ℝ) ≠ 0 := by positivity
-  have hkey : (2 + u ^ 2 - u) / ((1 + u))
+  have hkey : (2 + u + u ^ 3) / ((1 + u) * (1 + u))
       = (2 + u + u ^ 3)
         / ((1 + u) * (1 + u)) := by
     field_simp
