@@ -39,26 +39,25 @@ from telperion.telescope import TELESCOPE_LEMMA, TelescopeSpec  # noqa: E402
 HERE = Path(__file__).resolve().parent
 
 # A worked instantiation that closes: nodeCount as potential, -1 as local term.
-DEMO = """/-- Number of nodes in the subtree. -/
-def RTree.nodeCount : RTree → ℕ
-  | .node cs => 1 + (cs.map RTree.nodeCount).sum
-
-/-- Worked telescoping: local ≡ -1, potential P = -(node count).  The per-node
-    super-solution holds with equality, so telescoping gives the global bound. -/
+DEMO = """/-- Worked telescoping: local ≡ -1, potential P = -(node count), with the node
+    count itself expressed as `sumOver (fun _ => 1)` (real-valued, no ℕ casts).
+    The per-node super-solution holds with equality, so telescoping gives the
+    global bound `Σ (-1) ≤ -(node count)`. -/
 theorem telescope_nodecount (t : RTree) :
-    RTree.sumOver (fun _ => (-1 : ℝ)) t ≤ (fun s => -(RTree.nodeCount s : ℝ)) t := by
+    RTree.sumOver (fun _ => (-1 : ℝ)) t ≤ -(RTree.sumOver (fun _ => (1 : ℝ)) t) := by
   refine RTree.telescope (loc := fun _ => (-1 : ℝ))
-    (P := fun s => -(RTree.nodeCount s : ℝ)) ?_ t
+    (P := fun s => -(RTree.sumOver (fun _ => (1 : ℝ)) s)) ?_ t
   intro cs
-  simp only [RTree.nodeCount, Nat.cast_add, Nat.cast_one, Nat.cast_sum,
-             List.map_map, Function.comp]
-  push_cast
-  ring_nf
-  -- -1 + Σ (-(count c)) ≤ -(1 + Σ count c)  holds with equality
-  have : (cs.map (fun c => -(RTree.nodeCount c : ℝ))).sum
-       = -((cs.map (fun c => (RTree.nodeCount c : ℝ))).sum) := by
-    rw [← List.sum_neg]; simp [List.map_map, Function.comp]
-  linarith [this]
+  simp only [RTree.sumOver]
+  have key : ∀ l : List RTree,
+      (l.map (fun s => -(RTree.sumOver (fun _ => (1 : ℝ)) s))).sum
+        = -((l.map (RTree.sumOver (fun _ => (1 : ℝ)))).sum) := by
+    intro l
+    induction l with
+    | nil => simp
+    | cons a l ih => simp only [List.map_cons, List.sum_cons, ih]; ring
+  rw [key]
+  linarith
 """
 
 
