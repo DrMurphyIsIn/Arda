@@ -122,3 +122,8 @@ group = "quick"    # Bregman/entropy permanent bounds (degree-normalized, avenue
 name = "bridge"
 script = "examples/bridge/generate.py"
 group = "quick"    # bridge crossing (near-star span): integer-Positivstellensatz base + monotone tail
+
+[[check]]
+name = "lattice_box"
+script = "examples/lattice_box/generate.py"
+group = "quick"    # dimensional-lift certificates (1D->2D->d): base box + monotone tails

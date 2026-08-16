@@ -1,0 +1,9 @@
+{
+  "family": "LatticeBox",
+  "input_hash": "ba0a96418c06657a742b2e07e9b559e6ee1f5f53a51ccbfaa0d7450d75840a73",
+  "tool_version": "0.1.3",
+  "files": [
+    "LatticeBox.lean"
+  ],
+  "n_theorems": 18
+}

@@ -17,3 +17,4 @@ import Audit.SOSSDP
 import Audit.MConvex
 import Audit.ZeroFree
 import Audit.Entropy
+import Audit.LatticeBox
