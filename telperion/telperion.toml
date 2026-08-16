@@ -62,3 +62,8 @@ group = "audit"    # ~5 min: exact adversarial hunts; audit-cadence, not per-pus
 name = "h_floors"
 script = "examples/h_floors/generate.py"
 group = "quick"    # 56 H-floor pieces + 46 anchors (origin handoff deliverable)
+
+[[check]]
+name = "exp_bracket"
+script = "examples/exp_bracket/generate.py"
+group = "quick"    # rigorous rational enclosure of exp(-theta), R47Encode far constant

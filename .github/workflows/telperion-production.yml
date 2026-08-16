@@ -12,6 +12,7 @@ on:
       - "telperion/examples/legs_certs/**"
       - "telperion/examples/interp_lemma/**"
       - "telperion/examples/h_floors/**"
+      - "telperion/examples/exp_bracket/**"
       - "telperion/examples/proof_audit/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
@@ -66,6 +67,7 @@ jobs:
           cp ../../interp_lemma/frozen/light/InterpLight.lean Audit/InterpLight.lean
           cp ../../h_floors/frozen/floors/HFloors.lean        Audit/HFloors.lean
           cp ../../h_floors/frozen/anchors/HFloorAnchors.lean Audit/HFloorAnchors.lean
+          cp ../../exp_bracket/frozen/ExpBracket.lean            Audit/ExpBracket.lean
       - name: Cache elan
         uses: actions/cache@v4
         with:
