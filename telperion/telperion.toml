@@ -132,3 +132,8 @@ group = "quick"    # dimensional-lift certificates (1D->2D->d): base box + monot
 name = "uniform_tail"
 script = "examples/uniform_tail/generate.py"
 group = "quick"    # uniform-in-recursion monotone tail: arm-dominance across hub states
+
+[[check]]
+name = "uniform_arm"
+script = "examples/uniform_arm/generate.py"
+group = "quick"    # uniform-in-k arm-dominance (lemma 1 core): all-nonneg-coeff positivity

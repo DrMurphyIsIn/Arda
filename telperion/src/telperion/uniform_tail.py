@@ -106,3 +106,69 @@ def arm_dominance_uniform(cr_range=range(0, 4), k_range=range(0, 8)):
             if not ArmDominanceCertificate("t", cr, k).check():
                 exceptions.append((cr, k))
     return (not exceptions), exceptions
+
+
+# ---- UNIFORM arm-dominance in the hub parameter k (lemma 1) ------------------
+# The per-state checks above lift to ONE inequality uniform in k: for each
+# competitor child X, adding an arm beats adding X for all real k >= anchor,
+# certified by a degree-11 polynomial num_X(k) whose shift num_X(anchor+u) has
+# ALL NONNEGATIVE COEFFICIENTS (bare Polya / positivity) -- the same crossing
+# structure as the 1-D bridge, one level up.  The leaf's anchor is k>=1 (its k=0
+# exception is exactly the empty-hub base case that BUILDS the arm).
+
+import sympy as _sp
+
+_K, _U = _sp.symbols("k u", nonnegative=True)
+_PHI_ARM = Fr(64, 621) ** 2 * Fr(3, 2) ** 11
+_COMPETITORS = {
+    "arm2": (Fr(3, 7), Fr(64, 621) * Fr(7, 6) ** 11 * _PHI_ARM),
+    "leaf": (Fr(1), Fr(64, 621)),
+    "cherry": (Fr(3, 4), Fr(3, 2) ** 11 * Fr(64, 621) ** 3),
+}
+
+
+def _arm_dom_numerator(m, phi):
+    zp = _sp.Rational(3, 1) / (3 * (_K + 2))
+    fac = lambda mm, ph: (1 + zp * (_K * _sp.Rational(1, 3) + mm)) ** 11 * ph
+    diff = _sp.together(fac(_sp.Rational(1, 3), _PHI_ARM) - fac(m, phi))
+    return _sp.expand(_sp.fraction(diff)[0])
+
+
+def uniform_arm_dominance(competitor: str):
+    """Returns (num_poly_in_k, minimal_anchor) certifying arm >= competitor for
+    all real k >= anchor by bare Polya (num(anchor+u) has nonneg coeffs)."""
+    m, phi = _COMPETITORS[competitor]
+    num = _arm_dom_numerator(m, phi)
+    for a in range(0, 4):
+        cu = _sp.Poly(_sp.expand(num.subs(_K, a + _U)), _U).all_coeffs()
+        if all(c >= 0 for c in cu):
+            return num, a
+    return num, None
+
+
+@dataclass(frozen=True)
+class UniformArmDominanceCertificate:
+    """Arm-dominance UNIFORM in the hub arm-count k: for each competitor, the
+    degree-11 numerator num_X(anchor+u) >= 0 by positivity (all nonneg coeffs)."""
+
+    name: str = "uniform_armdom"
+    competitors: tuple = ("arm2", "cherry", "leaf")
+
+    def check(self) -> bool:
+        return all(uniform_arm_dominance(c)[1] is not None for c in self.competitors)
+
+    def lean(self) -> str:
+        lines = [
+            f"-- {self.name}: ARM-DOMINANCE UNIFORM in the hub arm-count k -- adding an\n"
+            f"-- arm beats adding competitor X for all real k >= anchor, by the\n"
+            f"-- all-nonneg-coefficient numerator (positivity).  Lemma (1) for the key\n"
+            f"-- competitors; leaf anchor k>=1 (its k=0 exception BUILDS the arm).\n"
+        ]
+        for c in self.competitors:
+            num, a = uniform_arm_dominance(c)
+            numu = _sp.expand(num.subs(_K, a + _U))
+            pl = _sp.printing.sstr(numu).replace("**", "^")
+            lines.append(
+                f"theorem {self.name}_{c} (u : ℝ) (hu : 0 ≤ u) : (0:ℝ) ≤ {pl} := by positivity"
+            )
+        return "\n".join(lines) + "\n"

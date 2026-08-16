@@ -26,6 +26,7 @@ on:
       - "telperion/examples/bridge/**"
       - "telperion/examples/lattice_box/**"
       - "telperion/examples/uniform_tail/**"
+      - "telperion/examples/uniform_arm/**"
       - "telperion/examples/proof_audit/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
@@ -142,6 +143,7 @@ jobs:
           cd telperion/examples/bridge/lean
           mkdir -p Br
           cp ../frozen/Bridge.lean Br/Bridge.lean
+          cp ../../uniform_arm/frozen/UniformArm.lean Br/UniformArm.lean
       - name: Cache elan
         uses: actions/cache@v4
         with:
