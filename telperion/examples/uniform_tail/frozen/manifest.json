@@ -1,0 +1,9 @@
+{
+  "family": "UniformTail",
+  "input_hash": "79087cf1d9d253f3097e5ebf6245221dc5132ff7632cc8698d80ce050c636455",
+  "tool_version": "0.1.3",
+  "files": [
+    "UniformTail.lean"
+  ],
+  "n_theorems": 20
+}

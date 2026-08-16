@@ -127,3 +127,8 @@ group = "quick"    # bridge crossing (near-star span): integer-Positivstellensat
 name = "lattice_box"
 script = "examples/lattice_box/generate.py"
 group = "quick"    # dimensional-lift certificates (1D->2D->d): base box + monotone tails
+
+[[check]]
+name = "uniform_tail"
+script = "examples/uniform_tail/generate.py"
+group = "quick"    # uniform-in-recursion monotone tail: arm-dominance across hub states
