@@ -78,8 +78,8 @@ theorem toy_a1b1_corner01 (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
   have hd2 : (2 + v : ℝ) ≠ 0 := by positivity
   have hkey : toy_a1b1c1 u v + toy_a1b1c2 u v * (0) + toy_a1b1c3 u v * ((1) / ((2 + u)))
         + toy_a1b1c4 u v * ((0) * ((1) / ((2 + u))))
-      = (1)
-        / (2 * (2 + u) * (2 + v)) := by
+      = (4 + 2 * u + 2 * v + u * v)
+        / (2 * (2 + u) * (2 + u) * (2 + v) * (2 + v)) := by
     simp only [toy_a1b1c1, toy_a1b1c2, toy_a1b1c3, toy_a1b1c4]
     field_simp
     try ring
@@ -93,8 +93,8 @@ theorem toy_a1b1_corner10 (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
   have hd2 : (2 + v : ℝ) ≠ 0 := by positivity
   have hkey : toy_a1b1c1 u v + toy_a1b1c2 u v * ((1) / ((2 + v))) + toy_a1b1c3 u v * (0)
         + toy_a1b1c4 u v * (((1) / ((2 + v))) * (0))
-      = (1)
-        / (2 * (2 + u) * (2 + v)) := by
+      = (4 + 2 * u + 2 * v + u * v)
+        / (2 * (2 + u) * (2 + u) * (2 + v) * (2 + v)) := by
     simp only [toy_a1b1c1, toy_a1b1c2, toy_a1b1c3, toy_a1b1c4]
     field_simp
     try ring
@@ -170,8 +170,8 @@ theorem toy_a1b2_corner01 (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
   have hd2 : (3 + v : ℝ) ≠ 0 := by positivity
   have hkey : toy_a1b2c1 u v + toy_a1b2c2 u v * (0) + toy_a1b2c3 u v * ((1) / (2 * (2 + u)))
         + toy_a1b2c4 u v * ((0) * ((1) / (2 * (2 + u))))
-      = (1)
-        / (2 * (2 + u) * (3 + v)) := by
+      = (6 + 3 * u + 2 * v + u * v)
+        / (2 * (2 + u) * (2 + u) * (3 + v) * (3 + v)) := by
     simp only [toy_a1b2c1, toy_a1b2c2, toy_a1b2c3, toy_a1b2c4]
     field_simp
     try ring
@@ -185,8 +185,8 @@ theorem toy_a1b2_corner10 (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
   have hd2 : (3 + v : ℝ) ≠ 0 := by positivity
   have hkey : toy_a1b2c1 u v + toy_a1b2c2 u v * ((1) / ((3 + v))) + toy_a1b2c3 u v * (0)
         + toy_a1b2c4 u v * (((1) / ((3 + v))) * (0))
-      = (1)
-        / (2 * (2 + u) * (3 + v)) := by
+      = (6 + 3 * u + 2 * v + u * v)
+        / (2 * (2 + u) * (2 + u) * (3 + v) * (3 + v)) := by
     simp only [toy_a1b2c1, toy_a1b2c2, toy_a1b2c3, toy_a1b2c4]
     field_simp
     try ring
@@ -262,8 +262,8 @@ theorem toy_a2b1_corner01 (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
   have hd2 : (2 + v : ℝ) ≠ 0 := by positivity
   have hkey : toy_a2b1c1 u v + toy_a2b1c2 u v * (0) + toy_a2b1c3 u v * ((1) / ((3 + u)))
         + toy_a2b1c4 u v * ((0) * ((1) / ((3 + u))))
-      = (1)
-        / (2 * (3 + u) * (2 + v)) := by
+      = (6 + 2 * u + 3 * v + u * v)
+        / (2 * (3 + u) * (3 + u) * (2 + v) * (2 + v)) := by
     simp only [toy_a2b1c1, toy_a2b1c2, toy_a2b1c3, toy_a2b1c4]
     field_simp
     try ring
@@ -277,8 +277,8 @@ theorem toy_a2b1_corner10 (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
   have hd2 : (2 + v : ℝ) ≠ 0 := by positivity
   have hkey : toy_a2b1c1 u v + toy_a2b1c2 u v * ((1) / (2 * (2 + v))) + toy_a2b1c3 u v * (0)
         + toy_a2b1c4 u v * (((1) / (2 * (2 + v))) * (0))
-      = (1)
-        / (2 * (3 + u) * (2 + v)) := by
+      = (6 + 2 * u + 3 * v + u * v)
+        / (2 * (3 + u) * (3 + u) * (2 + v) * (2 + v)) := by
     simp only [toy_a2b1c1, toy_a2b1c2, toy_a2b1c3, toy_a2b1c4]
     field_simp
     try ring
@@ -354,8 +354,8 @@ theorem toy_a2b2_corner01 (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
   have hd2 : (3 + v : ℝ) ≠ 0 := by positivity
   have hkey : toy_a2b2c1 u v + toy_a2b2c2 u v * (0) + toy_a2b2c3 u v * ((1) / (2 * (3 + u)))
         + toy_a2b2c4 u v * ((0) * ((1) / (2 * (3 + u))))
-      = (1)
-        / (2 * (3 + u) * (3 + v)) := by
+      = (9 + 3 * u + 3 * v + u * v)
+        / (2 * (3 + u) * (3 + u) * (3 + v) * (3 + v)) := by
     simp only [toy_a2b2c1, toy_a2b2c2, toy_a2b2c3, toy_a2b2c4]
     field_simp
     try ring
@@ -369,8 +369,8 @@ theorem toy_a2b2_corner10 (u v : ℝ) (hu : 0 ≤ u) (hv : 0 ≤ v) :
   have hd2 : (3 + v : ℝ) ≠ 0 := by positivity
   have hkey : toy_a2b2c1 u v + toy_a2b2c2 u v * ((1) / (2 * (3 + v))) + toy_a2b2c3 u v * (0)
         + toy_a2b2c4 u v * (((1) / (2 * (3 + v))) * (0))
-      = (1)
-        / (2 * (3 + u) * (3 + v)) := by
+      = (9 + 3 * u + 3 * v + u * v)
+        / (2 * (3 + u) * (3 + u) * (3 + v) * (3 + v)) := by
     simp only [toy_a2b2c1, toy_a2b2c2, toy_a2b2c3, toy_a2b2c4]
     field_simp
     try ring
