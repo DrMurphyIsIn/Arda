@@ -23,13 +23,17 @@ from family import box_family, box_profile, direct_family, direct_profile, u, v 
 
 from telperion import (  # noqa: E402
     BilinearBoxEmitter,
+    CaseDispatchAssemblyEmitter,
     DirectPolyaEmitter,
+    Reparam,
+    ReparamAdapterEmitter,
     ValidationReport,
     certify,
     diff_frozen,
     emit,
     freeze,
 )
+from telperion.expr import expr_lean_factored  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 
@@ -70,12 +74,36 @@ def _exact_spot_checks() -> ValidationReport:
     )
 
 
+def _toy_reparam(inst) -> Reparam:
+    """Kind-2 instance: re-state each direct certificate over n : ℕ with
+    u := (n : ℝ) - 1 under 1 ≤ n, exercising the Nat.cast_sub shape."""
+    import re
+
+    body = expr_lean_factored(inst.corners[0].expr, (u,))
+    return Reparam(
+        nat_binders="(n : ℕ) (h1 : 1 ≤ n)",
+        nat_body=re.sub(r"\bu\b", "((n : ℝ) - 1)", body),
+        cast_eq=("((n : ℝ) - 1)", "((n - 1 : ℕ) : ℝ)"),
+        cast_lemmas=("Nat.cast_sub h1",),
+        image="((n - 1 : ℕ) : ℝ)",
+    )
+
+
 def build():
     validation = _exact_spot_checks()
     res_direct = emit(
         certify(direct_family()),
         direct_profile(),
-        [DirectPolyaEmitter()],
+        [
+            DirectPolyaEmitter(),
+            ReparamAdapterEmitter(reparam=_toy_reparam),
+            CaseDispatchAssemblyEmitter(
+                name="toy_direct_all",
+                axis="a",
+                binders="(a : ℕ) (h1 : 1 ≤ a) (h3 : a ≤ 3) (u : ℝ) (hu : 0 ≤ u)",
+                body_template="(«axisR» + u) / (u + 1) - «axisR» / (u + 2)",
+            ),
+        ],
         validation,
         file_name="Direct.lean",
     )

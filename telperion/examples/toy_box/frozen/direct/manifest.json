@@ -1,9 +1,9 @@
 {
   "family": "ToyDirect",
-  "input_hash": "862b8580c8e85cd5072571cbd5e9ef2b4e41e2c5b1d61243f088d1fd1757b2b8",
+  "input_hash": "375c2b07e24c38223c6a975b5bd6e3f70fc18415d18624d0f7d91db062891301",
   "tool_version": "0.1.0",
   "files": [
     "Direct.lean"
   ],
-  "n_theorems": 3
+  "n_theorems": 7
 }
