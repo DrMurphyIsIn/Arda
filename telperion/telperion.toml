@@ -92,3 +92,8 @@ group = "quick"    # root-interlacing certificates via Wronskian SOS (HKO)
 name = "lorentzian"
 script = "examples/lorentzian/generate.py"
 group = "quick"    # Lorentzian/Hodge-Riemann non-separable certificates (Hessian SOS)
+
+[[check]]
+name = "rigidity"
+script = "examples/rigidity/generate.py"
+group = "quick"    # arithmetic-rigidity certificate (tie integer identity, R(5)=1)

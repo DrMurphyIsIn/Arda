@@ -12,3 +12,4 @@ import Audit.PadicValuation
 import Audit.TaxGrowth
 import Audit.Interlacing
 import Audit.Lorentzian
+import Audit.Rigidity

@@ -1,0 +1,9 @@
+{
+  "family": "Rigidity",
+  "input_hash": "9869549f82ed435ccc17ba8513f04bc6123a1b87549518e5fbbd451f8e6d8386",
+  "tool_version": "0.1.3",
+  "files": [
+    "Rigidity.lean"
+  ],
+  "n_theorems": 4
+}
