@@ -82,3 +82,8 @@ group = "quick"    # source-grouped ledger pieces: {2,3,23} tax + growth bounds
 name = "telescope"
 script = "examples/telescope/generate.py"
 group = "quick"    # telescoping-closure primitive (rose-tree RTree.telescope)
+
+[[check]]
+name = "interlacing"
+script = "examples/interlacing/generate.py"
+group = "quick"    # root-interlacing certificates via Wronskian SOS (HKO)

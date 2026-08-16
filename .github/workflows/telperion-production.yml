@@ -16,6 +16,7 @@ on:
       - "telperion/examples/padic_valuation/**"
       - "telperion/examples/tax_growth/**"
       - "telperion/examples/telescope/**"
+      - "telperion/examples/interlacing/**"
       - "telperion/examples/proof_audit/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
@@ -73,6 +74,7 @@ jobs:
           cp ../../exp_bracket/frozen/ExpBracket.lean            Audit/ExpBracket.lean
           cp ../../padic_valuation/frozen/PadicValuation.lean   Audit/PadicValuation.lean
           cp ../../tax_growth/frozen/TaxGrowth.lean             Audit/TaxGrowth.lean
+          cp ../../interlacing/frozen/Interlacing.lean          Audit/Interlacing.lean
       - name: Cache elan
         uses: actions/cache@v4
         with:
