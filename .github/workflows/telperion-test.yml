@@ -29,6 +29,6 @@ jobs:
       - name: Unit tests
         working-directory: telperion
         run: python -m pytest tests -q
-      - name: Toy example regeneration diff (byte-stability across sympy versions)
+      - name: Manifest verify, quick group (drift net + byte-stability across sympy versions)
         working-directory: telperion
-        run: python examples/toy_box/generate.py --check
+        run: PYTHONPATH=src python -m telperion.cli verify --group quick

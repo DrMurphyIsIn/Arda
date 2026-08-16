@@ -24,6 +24,11 @@ Corollaries you must respect:
 
 ## Workflow (in order, no skipping)
 
+0. **When anything refuses, run `telperion diagnose` FIRST** (or the
+   `diagnose` MCP tool): it distinguishes FALSE (returns an exact rational
+   counterexample — stop, the claim is wrong) from NOT_POLYA_IN_THIS_FORM
+   (with remedy hints naming the negative monomials) from tool misuse. Never
+   iterate blindly on a refusal.
 1. **Probe** one representative instance before building a family:
    `telperion probe "(1 + u)/(2 + u) - 1/(u + 3)" --symbols u`
    (or the `polya_probe` MCP tool). If a typical instance is not certifiable,
@@ -44,9 +49,11 @@ Corollaries you must respect:
 5. **Compile in CI** — never locally assume success: `lake build` against the
    pinned Mathlib is the actual verification. Budget `maxHeartbeats` via the
    profile for large batches; shard >40-theorem families across files.
-6. **Diff on every subsequent change**: `telperion diff family.py:factory
-   --frozen frozen/` — drift in family, tool, or hand-edits shows up as a
-   byte diff.
+6. **Diff on every subsequent change**: `telperion verify` (reads
+   `telperion.toml`, runs every family's regeneration diff, and FAILS if any
+   generate script is not listed in the manifest). After changing the tool
+   itself or any family: regenerate, re-freeze, and re-run verify — the
+   manifest is the drift net.
 
 ## The spelling rules (why emitted proofs compile first-try)
 

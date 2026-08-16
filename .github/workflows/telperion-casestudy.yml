@@ -21,6 +21,6 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install sympy
-      - name: Re-certify the 36-cell R47 family and byte-diff against frozen
+      - name: Manifest verify, heavy group (R47 36-cell re-certification + diff)
         working-directory: telperion
-        run: python examples/r47_cells/generate.py --check
+        run: PYTHONPATH=src python -m telperion.cli verify --group heavy

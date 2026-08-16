@@ -1,0 +1,14 @@
+# The project manifest: every family the repo freezes, in one place.
+# `telperion verify` runs each entry's regeneration diff; any examples/*/
+# generate.py NOT listed here fails verification — a family cannot silently
+# fall out of the drift-check net (the 2026-08-15 re-freeze incident class).
+
+[[check]]
+name = "toy_box"
+script = "examples/toy_box/generate.py"
+group = "quick"
+
+[[check]]
+name = "r47_cells"
+script = "examples/r47_cells/generate.py"
+group = "heavy"    # ~6-12 min re-certification; runs in the casestudy CI job
