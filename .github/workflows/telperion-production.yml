@@ -21,6 +21,8 @@ on:
       - "telperion/examples/rigidity/**"
       - "telperion/examples/sos_sdp/**"
       - "telperion/examples/mconvex/**"
+      - "telperion/examples/zerofree/**"
+      - "telperion/examples/entropy/**"
       - "telperion/examples/proof_audit/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
@@ -83,6 +85,8 @@ jobs:
           cp ../../rigidity/frozen/Rigidity.lean                Audit/Rigidity.lean
           cp ../../sos_sdp/frozen/SOSSDP.lean                    Audit/SOSSDP.lean
           cp ../../mconvex/frozen/MConvex.lean                  Audit/MConvex.lean
+          cp ../../zerofree/frozen/ZeroFree.lean                Audit/ZeroFree.lean
+          cp ../../entropy/frozen/Entropy.lean                  Audit/Entropy.lean
       - name: Cache elan
         uses: actions/cache@v4
         with:

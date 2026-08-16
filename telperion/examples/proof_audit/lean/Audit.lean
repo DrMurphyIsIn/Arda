@@ -15,3 +15,5 @@ import Audit.Lorentzian
 import Audit.Rigidity
 import Audit.SOSSDP
 import Audit.MConvex
+import Audit.ZeroFree
+import Audit.Entropy

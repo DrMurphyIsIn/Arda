@@ -107,3 +107,13 @@ group = "sdp"      # SDP-SOS (needs cvxpy; regen off the cvxpy-free CI path). Fr
 name = "mconvex"
 script = "examples/mconvex/generate.py"
 group = "quick"    # M-convexity (discrete-convex) certificates -- integer-lattice structure
+
+[[check]]
+name = "zerofree"
+script = "examples/zerofree/generate.py"
+group = "quick"    # zero-free region certificates (Lee-Yang / Barvinok, avenue B)
+
+[[check]]
+name = "entropy"
+script = "examples/entropy/generate.py"
+group = "quick"    # Bregman/entropy permanent bounds (degree-normalized, avenue C)
