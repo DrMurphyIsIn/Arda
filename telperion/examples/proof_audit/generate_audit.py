@@ -31,7 +31,8 @@ def _load_family(example: str):
     finally:
         sys.path.pop(0)
     fams = [getattr(mod, a)() for a in dir(mod)
-            if a == "family" or a.endswith("_family")]
+            if (a == "family" or a.endswith("_family"))
+            and getattr(getattr(mod, a), "__module__", None) == mod.__name__]
     if not fams:
         raise AttributeError(f"no family factory found in {p}")
     return fams
