@@ -19,6 +19,7 @@ on:
       - "telperion/examples/interlacing/**"
       - "telperion/examples/lorentzian/**"
       - "telperion/examples/rigidity/**"
+      - "telperion/examples/sos_sdp/**"
       - "telperion/examples/proof_audit/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
@@ -79,6 +80,7 @@ jobs:
           cp ../../interlacing/frozen/Interlacing.lean          Audit/Interlacing.lean
           cp ../../lorentzian/frozen/Lorentzian.lean            Audit/Lorentzian.lean
           cp ../../rigidity/frozen/Rigidity.lean                Audit/Rigidity.lean
+          cp ../../sos_sdp/frozen/SOSSDP.lean                    Audit/SOSSDP.lean
       - name: Cache elan
         uses: actions/cache@v4
         with:

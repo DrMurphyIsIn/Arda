@@ -97,3 +97,8 @@ group = "quick"    # Lorentzian/Hodge-Riemann non-separable certificates (Hessia
 name = "rigidity"
 script = "examples/rigidity/generate.py"
 group = "quick"    # arithmetic-rigidity certificate (tie integer identity, R(5)=1)
+
+[[check]]
+name = "sos_sdp"
+script = "examples/sos_sdp/generate.py"
+group = "sdp"      # SDP-SOS (needs cvxpy; regen off the cvxpy-free CI path). Frozen Lean is compile-gated.
