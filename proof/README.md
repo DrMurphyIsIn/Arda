@@ -1,0 +1,78 @@
+# The proof package
+
+Peer-review materials for the campaign on the Brualdi–Goldwasser (1984)
+Laplacian-ratio maximizer. This document maps what is machine-checked, what is
+certified at exact-arithmetic rigor in Python, and what is named-open.
+`conjecture1_proved = False` throughout — the status ledger is executable
+(`verification/conjecture1_status.py` calls the certificates it cites).
+
+## Layout
+
+| Path | Contents |
+|---|---|
+| `formalization/` | The Lean 4 project (toolchain `lean-toolchain`, Mathlib pinned in `lake-manifest.json`). Library root `R3Cert.lean` imports all 90 modules — a green `lake build` compiles everything; there are no orphaned files. |
+| `verification/` | ~130 Python modules: the load-bearing certificate/verification modules (all invoked by `../verify.py`), the certificate generator (`gen_r47cert_cells.py`, frozen for provenance), exploratory probes and honest no-go records of failed proof routes, and unit tests (`tests/`). |
+| `verify.py` | One-command verification: runs every load-bearing module's `run_all()`. Every claim is an assert; ~20–40 min. |
+| `docs/` | `RESULT_LAPLACIAN_RATIO.md` (the result document), the session report, `design/` (the formalization campaign's design + independent-review documents), `notes/` (two technical companion notes: the permanent/matching bridge and the merge-system confluence). |
+| `figures/` | TikZ sources, rendered figures, and generation scripts. |
+
+## What is machine-checked (Lean 4, no `sorry`, no added axioms)
+
+The chain, bottom to top:
+
+1. **Exact cruxes** (`ExactCruxes.lean`, `Sweep.lean`): the integer/rational
+   anchor facts, kernel-checked — including `3^317 · 2^81 ≤ 23^129` and the tie
+   identity `64 · 243 · 23 = 621 · 576`.
+2. **The permanent–matching bridge** (`Matching.lean`, `Involution.lean`,
+   `CavityTree.lean`, `BridgeStep2`–`BridgeStep4j`): `per` of an acyclic
+   support = matching sum (H1); the cavity recursion; acyclicity of the address
+   graph; the unconditional capstones `pi_litHub'` and `amplitude_bridge_real'`
+   tying the Branch cavity model to the finite `per L/∏deg` objects.
+3. **`Φ ≤ 1`** (`Potential*.lean`, capstone `PotentialFinal.lean:phi_le_one`):
+   the central inequality, unconditional over every branch, with equality
+   exactly on the six-point tie variety. No smooth certificate can prove this
+   (the continuous relaxation exceeds 1); the proof is arithmetic.
+4. **The reduction layer (R47 campaign)**: the objective `pi_utree` (= `per
+   L/∏deg` for every tree); the hub-state encoding and backbone recursion; the
+   unified topped-up merge `Step` relation (termination, fixed-`n`,
+   normal-form existence); the **36-cell bilinear certificate table** + 36
+   dispatch adapters + 72 vee/mirror branches (all generated, all
+   `positivity`-closed); **`step_mono` / `chain_to_normalForm`** — the
+   merge-layer capstone; the (L) legs layer (42 certificates + a 726-digit
+   bignum crux); the R6 shedding lemmas (55 certificates); the rate-port parse
+   (`R47Perm.lean`, `R47Parse.lean`).
+
+Generated files carry provenance headers naming the generator and its
+self-checks; regenerate and diff via
+`python3 verification/gen_r47cert_cells.py` (see file headers).
+
+## What is certified at exact-arithmetic rigor (Python, not yet Lean)
+
+Run `python3 verify.py` — 15 modules, every claim an assert, exact
+`fractions.Fraction` / sympy arithmetic (no floats in certificate paths):
+the Kelmans exchange dichotomy and unified merge table, the rate identity
+`pi = Z·R`, the slack-ledger dichotomy and amortized hub bound, the G3/G4
+domination sweeps (including a 442,800-case exact sweep), the interpolation
+lemma, and the G1 floor/endpoint certificates.
+
+## What is named-open
+
+- **`R47Rate`**: the Lean port of the rate bound `pi ≤ (4/3)·rhoB^n` (the
+  parse — its hardest seam — is already green; the remaining algebra is
+  specified in `docs/design/P5_SEAM_DESIGN.md`).
+- **The `R7'` assembly**: the honest-conditional capstone composing all layers
+  (`docs/design/R7_ASSEMBLY_DESIGN.md`) — hypotheses are named `Prop`s with
+  certificate provenance, never axioms.
+- The gap ledger with per-gap status: `docs/design/R7_ARCHITECTURE.md`
+  (including the independent review's amendments, kept verbatim).
+
+## Honesty spine
+
+- Two independent exact permanent engines (Ryser vs tree matching DP) must
+  agree (`verification/tests/test_lr.py`); the anchor
+  `pi(T(3,3,3)) = 19683/256` pins the pipeline.
+- Failed proof routes are preserved as `*_nogo*.py` / `*_probe*.py` modules —
+  the negative results are part of the record (six-plus smooth-certificate
+  routes are refuted by the tie asymptotics).
+- The independent-review documents in `docs/design/REVIEW_*.md` are included
+  unedited, including the findings that corrected earlier overclaims.

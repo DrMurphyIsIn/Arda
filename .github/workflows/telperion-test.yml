@@ -1,0 +1,34 @@
+name: telperion-test
+
+on:
+  push:
+    paths:
+      - "telperion/**"
+      - ".github/workflows/forge-test.yml"
+  pull_request:
+    paths:
+      - "telperion/**"
+      - ".github/workflows/forge-test.yml"
+  workflow_dispatch:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+        sympy: ["sympy==1.12", "sympy"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install "${{ matrix.sympy }}" pytest
+      - name: Unit tests
+        working-directory: telperion
+        run: python -m pytest tests -q
+      - name: Toy example regeneration diff (byte-stability across sympy versions)
+        working-directory: telperion
+        run: python examples/toy_box/generate.py --check

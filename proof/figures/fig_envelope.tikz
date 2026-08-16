@@ -1,0 +1,49 @@
+% Fig: the amplitude menu on (mu, ell) that the closing induction runs over, and the binding corner.
+% x = cavity mu in [0.06,0.34], y = log Phi.  x=34cm, y=42cm.
+\begin{tikzpicture}[x=34cm,y=42cm,
+  lab/.style={font=\scriptsize},
+  sm/.style={font=\tiny}]
+% axes box
+\def\xa{0.06}\def\xb{0.34}\def\ya{-0.20}\def\yb{0.012}
+\draw[->,line width=0.7pt] (\xa,\ya) -- (0.352,\ya) node[right,lab]{$\mu$};
+\draw[->,line width=0.7pt] (\xa,\ya) -- (\xa,0.017) node[above,lab]{$\log\Phi$};
+\foreach \y in {0,-0.05,-0.10,-0.15,-0.20}
+  {\draw (\xa,\y)--(\xa-0.003,\y); \node[left,sm] at (\xa-0.003,\y){$\y$};}
+\foreach \x/\t in {0.1304/{\frac{3}{23}}, 0.2/{\frac15}, 0.2732/{\mu_*}, 0.3333/{\frac13}}
+  {\draw[gray!40,line width=0.3pt,dashed] (\x,\ya)--(\x,\yb); \node[below,sm] at (\x,\ya-0.004){$\t$};}
+% forbidden band strip on axis (1/3, 2/5]  (only its left edge is in range)
+\fill[red!10] (0.3333,\ya) rectangle (0.352,\yb);
+\node[sm,red!55!black,rotate=90,anchor=south] at (0.343,-0.10){forbidden (E1)};
+% omega line
+\draw[orange!80!black,line width=1pt] (\xa,-0.0077) -- (0.352,-0.0077);
+\node[orange!70!black,lab,fill=white,inner sep=1pt] at (0.086,-0.0077){$\omega$};
+% ---- near-star curve E_ns (exact children) ----
+\draw[blue!65!black,line width=1.1pt] plot coordinates {
+(0.0650,-0.0235) (0.0730,-0.0163) (0.0810,-0.0111) (0.0890,-0.0073) (0.0970,-0.0045)
+(0.1050,-0.0026) (0.1130,-0.0013) (0.1210,-0.0004) (0.1290,-0.0000) (0.1370,0.0000)
+(0.1450,-0.0002) (0.1530,-0.0006) (0.1610,-0.0013) (0.1690,-0.0021) (0.1770,-0.0031)
+(0.1850,-0.0042) (0.1930,-0.0054) (0.2010,-0.0067) (0.2090,-0.0081) (0.2170,-0.0096)
+(0.2250,-0.0111) (0.2330,-0.0127) (0.2410,-0.0144) (0.2490,-0.0161) (0.2570,-0.0178)
+(0.2650,-0.0196) (0.2730,-0.0214) (0.2810,-0.0232) (0.2890,-0.0251) (0.2970,-0.0270)
+(0.3050,-0.0289) (0.3130,-0.0308) (0.3210,-0.0328) (0.3290,-0.0348)};
+\node[blue!55!black,lab] at (0.076,0.008){near-star curve $E_{\mathrm{ns}}$};
+% near-star integer children (dots ON the curve)
+\foreach \x/\y in {0.2000/-0.0066, 0.1579/-0.0010, 0.1111/-0.0015, 0.0968/-0.0046, 0.0857/-0.0087, 0.0769/-0.0136, 0.0698/-0.0190}
+  {\fill[blue!65!black] (\x,\y) circle (0.9pt);}
+% the tie touching ell=0
+\fill[orange!85!black] (0.1304,0) circle (1.5pt);
+\node[orange!70!black,sm,above] at (0.1304,0.001){tie $=0$};
+% ---- non-near-star envelope B(mu): flat omega up to mu*, then shape bound (E3) ----
+\draw[red!70!black,line width=1.1pt] (\xa,-0.0077) -- (0.2732,-0.0077);   % E4/E3-below-mu*: <= omega
+\draw[red!70!black,line width=1.1pt] plot coordinates {
+(0.2732,-0.0077) (0.2740,-0.0106) (0.2800,-0.0322) (0.2860,-0.0534) (0.2920,-0.0742)
+(0.2980,-0.0945) (0.3040,-0.1145) (0.3100,-0.1340) (0.3160,-0.1532) (0.3220,-0.1720)
+(0.3280,-0.1905) (0.3333,-0.2065)};
+\node[red!65!black,lab,align=left] at (0.312,-0.055){non-near-star\\ bound (E3)};
+% ---- the binding corner ----
+\fill[orange!90!black] (0.2732,-0.0077) circle (1.6pt);
+\draw[orange!85!black,line width=0.8pt] (0.2732,-0.0077) circle (3.2pt);
+\node[align=center,sm,fill=white,inner sep=1.5pt] at (0.215,-0.045)
+  {binding corner\\ $(\mu_*,\omega)$: exact\\ $132\rho^2{+}4\rho^3\le207$};
+\draw[->,gray!70,line width=0.5pt] (0.222,-0.038) -- (0.2705,-0.0083);
+\end{tikzpicture}

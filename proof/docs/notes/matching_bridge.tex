@@ -1,0 +1,185 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\per}{\operatorname{per}}
+\newcommand{\deeg}{\operatorname{deg}}
+
+\title{The matching/permanent bridge:\\
+$\pi(T)=\per L(T)/\prod\deg$ as a weighted matching sum, and its cavity recursion}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note supplies the graph--theoretic bridge underlying the Laplacian--ratio program: the fact that the
+amplitude quantity $\pi(T)=\per L(T)/\prod_v\deg(v)$ used throughout equals the value computed by the cavity
+recursion on the rooted tree. It has two halves, both proved here in full: \textbf{(H1)} for any tree (indeed
+any forest) $\per L(T)=\sum_{M}\prod_{v\notin V(M)}\deg(v)$, the sum over matchings $M$ of the product of
+degrees of the unmatched vertices --- a consequence of acyclicity (permutations contributing to the permanent
+are exactly the involutions whose transpositions are edges); and \textbf{(H2)} dividing by $\prod\deg$ gives
+$\pi(T)=\sum_M\prod_{ij\in M}\tfrac1{\deg(i)\deg(j)}$, the edge--weighted matching partition function, which
+satisfies the standard tree cavity recursion $r_v=\bigl(1+\sum_{c}w_{vc}r_c\bigr)^{-1}$ with
+$w_{ij}=\tfrac1{\deg(i)\deg(j)}$. Both identities are verified numerically to machine precision on trees up to
+$10$ vertices, and the algebraic recursion step (H2) is machine--checked in Lean~4
+(\texttt{formalization/R3Cert/Matching.lean}). Together they establish, for the \emph{raw} Laplacian weights
+$w_{ij}=1/(\deg i\,\deg j)$, that the edge--weighted cavity recursion telescopes to exactly $\pi(T)$. The
+separate identification of the DEC--\emph{dressed} R3 branch amplitude $\log\Phi$ with $\pi(T)$ is a distinct
+bridge (companion Steps 1--4): Steps 1--2 (cherry--folding) are machine--checked, Steps 3--4 (the SimpleGraph
+realisation and the $\rho_B$/hub--limit amplitude normalisation) remain open, so it is \emph{not} settled here.
+\end{abstract}
+
+\section{Setup}
+
+Let $T$ be a tree on vertex set $V$, $|V|=n$, with Laplacian $L=L(T)$: $L_{vv}=\deg(v)$, $L_{uv}=-1$ if
+$uv\in E(T)$, and $L_{uv}=0$ otherwise. The Laplacian ratio is
+\[
+  \pi(T)=\frac{\per L(T)}{\prod_{v\in V}\deg(v)},\qquad \per A=\sum_{\sigma\in S_V}\prod_{v}A_{\sigma(v),v}.
+\]
+A \emph{matching} $M\subseteq E(T)$ is a set of pairwise disjoint edges; $V(M)=\bigcup_{e\in M}e$ is the set of
+matched vertices. The empty matching is allowed.
+
+\section{(H1) The permanent is a matching sum}
+
+\begin{theorem}\label{thm:H1}
+For every forest $T$,
+\[
+  \per L(T)=\sum_{M\ \mathrm{matching}}\ \prod_{v\notin V(M)}\deg(v).
+\]
+\end{theorem}
+
+\begin{proof}
+Expand $\per L=\sum_{\sigma\in S_V}\prod_{v}L_{\sigma(v),v}$. Fix $\sigma$ and suppose its term is nonzero;
+then $L_{\sigma(v),v}\neq0$ for every $v$, i.e.\ for each $v$ either $\sigma(v)=v$ or $\sigma(v)v\in E(T)$.
+
+\emph{Claim: $\sigma$ is an involution.} Write $\sigma$ as a product of disjoint cycles and take any cycle
+$(v_0\,v_1\,\dots\,v_{k-1})$ with $\sigma(v_i)=v_{i+1}$ (indices mod $k$). If $k\ge3$, the $v_i$ are distinct
+and each $v_iv_{i+1}\in E(T)$ (a fixed point would be a $1$--cycle; a nonzero factor with $\sigma(v_i)\neq
+v_i$ forces the edge), so $v_0v_1\cdots v_{k-1}v_0$ is a cycle in $T$ --- impossible, as $T$ is acyclic. Hence
+every cycle has length $1$ or $2$, i.e.\ $\sigma^2=\mathrm{id}$.
+
+Thus the $2$--cycles of $\sigma$ are transpositions $(u\,w)$ with $uw\in E(T)$, and being disjoint they form a
+matching $M_\sigma$; the fixed points are exactly $V\setminus V(M_\sigma)$. Conversely every matching $M$
+determines the involution $\sigma_M$ swapping the endpoints of each edge of $M$ and fixing the rest, and
+$M_{\sigma_M}=M$; so $\sigma\mapsto M_\sigma$ is a bijection between the nonzero--term permutations and the
+matchings. Finally, for $\sigma=\sigma_M$,
+\[
+  \prod_v L_{\sigma(v),v}
+  =\prod_{v\notin V(M)}L_{vv}\ \cdot\!\!\prod_{(u\,w)\in M}\!\!L_{wu}L_{uw}
+  =\prod_{v\notin V(M)}\deg(v)\ \cdot\!\!\prod_{uw\in M}(-1)(-1)
+  =\prod_{v\notin V(M)}\deg(v),
+\]
+since each transposition contributes $L_{uw}L_{wu}=1$. Summing over $\sigma$ (equivalently over $M$) gives the
+claim.
+\end{proof}
+
+\begin{corollary}\label{cor:piweight}
+$\displaystyle \pi(T)=\frac{\per L(T)}{\prod_v\deg(v)}
+  =\sum_{M\ \mathrm{matching}}\ \prod_{v\in V(M)}\frac{1}{\deg(v)}
+  =\sum_{M\ \mathrm{matching}}\ \prod_{uw\in M}\frac{1}{\deg(u)\,\deg(w)}.$
+\end{corollary}
+
+\begin{proof}
+Divide Theorem~\ref{thm:H1} by $\prod_v\deg(v)$: $\prod_{v\notin V(M)}\deg(v)/\prod_v\deg(v)
+=1/\prod_{v\in V(M)}\deg(v)$, and $V(M)$ is the disjoint union of the edge endpoints of $M$.
+\end{proof}
+
+So $\pi(T)$ is the \emph{edge--weighted matching partition function} $Z(T)=\sum_M\prod_{e\in M}w_e$ with
+$w_{uw}=\tfrac1{\deg(u)\deg(w)}$.
+
+\section{(H2) The matching sum satisfies the cavity recursion}
+
+Root $T$ at a vertex $\rho$. For a vertex $v$ let $T_v$ be its subtree, and define the two partition functions
+\[
+  P_v=\sum_{M\ \mathrm{matching\ of}\ T_v}\prod_{e\in M}w_e,\qquad
+  P_v^{0}=\sum_{\substack{M\ \mathrm{matching\ of}\ T_v\\ v\notin V(M)}}\prod_{e\in M}w_e,
+\]
+the full sum and the sum restricted to matchings leaving $v$ unmatched. Set the cavity ratio
+$r_v=P_v^{0}/P_v$.
+
+\begin{lemma}\label{lem:cavity}
+For a vertex $v$ with children $c_1,\dots,c_k$ in the rooted tree,
+\[
+  P_v^{0}=\prod_{i=1}^{k}P_{c_i},\qquad
+  P_v=\Bigl(\prod_{i=1}^{k}P_{c_i}\Bigr)\Bigl(1+\sum_{i=1}^{k}w_{vc_i}\,r_{c_i}\Bigr),\qquad
+  r_v=\frac{1}{\,1+\sum_{i=1}^{k}w_{vc_i}\,r_{c_i}\,}.
+\]
+(For a leaf, $k=0$: $P_v^0=P_v=1$, $r_v=1$.)
+\end{lemma}
+
+\begin{proof}
+A matching of $T_v$ leaving $v$ unmatched is exactly a choice of a matching in each child subtree $T_{c_i}$,
+independently; hence $P_v^{0}=\prod_i P_{c_i}$ (weights multiply over the disjoint subtrees). A matching using
+$v$ must match $v$ to exactly one child $c_i$ (edges at $v$ go only to its children), contributing weight
+$w_{vc_i}$, forcing $c_i$ unmatched inside $T_{c_i}$ (weight $P_{c_i}^{0}$) while the other child subtrees are
+matched freely (weight $\prod_{j\neq i}P_{c_j}$). Summing over the choice of $c_i$ and over ``$v$ unmatched'',
+\[
+  P_v=\prod_i P_{c_i}\;+\;\sum_i w_{vc_i}P_{c_i}^{0}\prod_{j\neq i}P_{c_j}
+     =\Bigl(\prod_i P_{c_i}\Bigr)\Bigl(1+\sum_i w_{vc_i}\tfrac{P_{c_i}^{0}}{P_{c_i}}\Bigr)
+     =\Bigl(\prod_i P_{c_i}\Bigr)\Bigl(1+\sum_i w_{vc_i}r_{c_i}\Bigr).
+\]
+Dividing, $r_v=P_v^0/P_v=\bigl(1+\sum_i w_{vc_i}r_{c_i}\bigr)^{-1}$. The division step
+$r_v=P_v^0/P_v=\prod_iP_{c_i}\big/\bigl[(\prod_iP_{c_i})(1+S)\bigr]=1/(1+S)$ (with $S=\sum_iw_{vc_i}r_{c_i}$)
+is the algebraic identity machine--checked in \texttt{Matching.lean} (\texttt{cavity\_step}).
+\end{proof}
+
+\begin{theorem}\label{thm:H2}
+$\pi(T)=P_\rho$, and $\log\pi(T)=\sum_{v\in V}\log\bigl(1+\sum_{c\ \mathrm{child\ of}\ v}w_{vc}\,r_c\bigr)$.
+Thus $\pi(T)$ is computed by the cavity recursion of Lemma~\ref{lem:cavity}, evaluated once per vertex from
+the leaves to the root.
+\end{theorem}
+
+\begin{proof}
+$Z(T)=\sum_M\prod_ew_e=P_\rho$ by definition ($T_\rho=T$), and $Z(T)=\pi(T)$ by
+Corollary~\ref{cor:piweight}. Telescoping $P_v=(\prod_iP_{c_i})(1+\sum_iw_{vc_i}r_{c_i})$ down the tree, every
+$P_{c}$ appears once as a factor and once inside its parent's product, so
+$P_\rho=\prod_{v}\bigl(1+\sum_{c}w_{vc}r_c\bigr)$ (leaves contribute the empty product $=1$). Taking logs gives
+the stated sum.
+\end{proof}
+
+\section{Consequence and scope}
+
+Corollary~\ref{cor:piweight} and Theorem~\ref{thm:H2} are the matching/permanent bridge \emph{for the raw
+Laplacian weights} $w_{ij}=1/(\deg i\,\deg j)$: the quantity this edge--weighted cavity recursion
+$r_v=(1+\sum_c w_{vc}r_c)^{-1}$ telescopes --- with the per--vertex log--sum --- is \emph{exactly}
+$\pi(T)=\per L(T)/\prod\deg$ for every finite tree.
+
+\paragraph{Relation to the R3 branch amplitudes (scope).}
+The branch amplitudes $\log\Phi=\sum_v[\cdots]$ used in R3 are \emph{not} this raw cavity. They use the
+DEC--\emph{dressed} recursion, in which each length--2 cherry is folded into the vertex weight
+$z(d,c)=3/(3d+c)$ (dressed edge weight $z(d,c)\,z(d',c')$), together with the fixed $\rho_B$ amplitude
+normalisation. The dressed per--node cavity $\mathrm{rho0}$ \emph{is} a matching cavity --- but of the
+\emph{dressed} tree, not of $L(T)$: numerically the naive raw--weight cavity of the explicit cherry tree does
+\emph{not} equal $\mathrm{rho0}$ (e.g.\ a single--cherry node gives $\mathrm{rho0}=1$ vs.\ raw $6/7$). That
+identification $\mathrm{rho0}=Z_{\mathrm{open}}/Z_{\mathrm{tot}}(\mathrm{realize})$ is the machine--checked
+companion result (\texttt{Bridge.lean}/\texttt{BridgeStep2.lean}, Steps 1--2). Tying $\log\Phi$ back to
+$\pi(T)$ for a real tree is \emph{not} a fixed rescaling by a power of $\rho_B$ (empirically
+$\log_{\rho_B}(\pi/\Phi)$ is not integer): it factors through the $p\to\infty$ cherry--hub limit (Step 4),
+which is open. So this note settles the raw--weight bridge $\pi(T)=Z(T)$; it does \emph{not} by itself
+establish that the R3 dressed branch amplitude is the genuine Laplacian ratio.
+
+\paragraph{What is machine--checked, and what remains.}
+The algebraic recursion step of Lemma~\ref{lem:cavity} (the passage $P_v,P_v^0\Rightarrow r_v=1/(1+S)$) is
+proved in Lean (\texttt{cavity\_step}, no \texttt{sorry}); both identities (H1) and (H2) are verified
+numerically to machine precision on all trees up to $10$ vertices. A full Lean formalisation of (H1) --- the
+permutation cycle--decomposition over an acyclic support, using Mathlib's \texttt{Matrix.permanent},
+\texttt{SimpleGraph.IsAcyclic}, and \texttt{Equiv.Perm} cycle factors --- and of the combinatorial bijection
+in Lemma~\ref{lem:cavity} is a self--contained graph--theory development left as mechanical work; the proofs
+above are complete and standard. This is the honest boundary: the mathematics of the \emph{raw--weight}
+matching/permanent bridge (H1, H2) is settled here, and its end--to--end proof--assistant encoding is the
+remaining formalisation \emph{for that part}. The connection to the R3 dressed branch amplitude is a
+\emph{separate} bridge: Steps 1--2 (cherry--folding, $\mathrm{cav}=z\cdot\mathrm{rho0}$ and
+$\mathrm{rho0}=Z_{\mathrm{open}}/Z_{\mathrm{tot}}(\mathrm{realize})$) are machine--checked; Step 3 (the dressed
+RTree as a weighted \texttt{SimpleGraph}) and Step 4 (the $\rho_B$/$p\to\infty$ hub--limit amplitude
+normalisation tying $\log\Phi\le0$ back to $\per L(T)/\prod\deg$) remain open. $\Phi\le1$ (Conjecture~1) is not
+proved.
+\end{document}

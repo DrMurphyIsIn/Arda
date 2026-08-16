@@ -1,0 +1,89 @@
+# Arda
+
+Machine-checked progress on a 42-year-old open problem in extremal graph theory,
+and the tooling it produced.
+
+**The question (Brualdi–Goldwasser, 1984).** Which tree `T` on `n` vertices
+maximizes the Laplacian ratio
+
+```
+pi(T) = per(L(T)) / prod_v deg(v)
+```
+
+— the permanent of the Laplacian, normalized by the degree product? Equivalently
+(since `per` is multilinear in rows): which tree's simple random walk maximizes
+`per(I - P)`? The determinantal shadow of this quantity is identically zero
+(`det(I - P) = 0` for every graph); all of its content lives in what the
+determinant's sign cancellations destroy.
+
+**Status, honestly stated: the conjecture is NOT claimed proved.** This
+repository is a peer-review package for a proof campaign in progress. What *is*
+machine-checked, in Lean 4 against Mathlib with no `sorry`, no added axioms, and
+no `native_decide`:
+
+- `per(L(T)) = ` matching sum for acyclic graphs (the H1 bridge), and the exact
+  cavity recursion connecting it to a Branch model (`Matching.lean`,
+  `CavityTree.lean`, `BridgeStep2`–`4j`);
+- **`Φ ≤ 1`** — the central branch inequality, unconditional
+  (`PotentialFinal.lean:phi_le_one`), including the six-point rational tie
+  variety where `Φ = 1` exactly;
+- the **certified merge layer**: every Balanced∧Capped hub-backbone state
+  rewrites monotonically in `per L/∏deg` to an ordered-merge normal form
+  (`R47StepMono.lean:chain_to_normalForm`), via 36 + 36 + 72 generated
+  positivity certificates;
+- the (L)/(B) classification layer, the R5/R6 shedding lemmas (42 + 55
+  certificates), and the raw-tree → Branch rate-port parse.
+
+What remains open is the final honest-conditional assembly (`R7'`) and
+independent review; the named-gap ledger lives in
+[`proof/docs/design/R7_ARCHITECTURE.md`](proof/docs/design/R7_ARCHITECTURE.md)
+and `proof/verification/conjecture1_status.py` (executable — the status calls
+the certificates it cites).
+
+## Repository map
+
+| Path | What it is |
+|---|---|
+| [`proof/`](proof/) | The peer-review package: Lean 4 formalization ([`proof/formalization/`](proof/formalization/)), exact-arithmetic Python verification harnesses ([`proof/verification/`](proof/verification/), entry point [`proof/verify.py`](proof/verify.py)), design/review documents, technical notes, figures. See [`proof/README.md`](proof/README.md). |
+| [`telperion/`](telperion/) | **Telperion**, the methodological artifact: a reusable pipeline that certifies families of rational-function inequalities in sympy, validates every identity in exact arithmetic, and batch-emits kernel-checked Lean 4 — the tool this proof was the first case study for. |
+| [`CITATION.cff`](CITATION.cff) | How to cite. |
+
+## Verifying the claims
+
+Three independent one-command checks:
+
+```bash
+# 1. The Lean formalization (the trusted component; ~20 min with Mathlib cache)
+cd proof/formalization && lake exe cache get && lake build
+
+# 2. The Python verification harness (every claim an assert; ~20-40 min)
+pip install -r proof/requirements.txt
+python3 proof/verify.py
+
+# 3. The unit tests (two independent permanent engines must agree, exactly)
+cd proof && python3 -m pytest verification/tests -q
+```
+
+Both also run in CI on every push (`.github/workflows/`).
+
+## Trust model
+
+The Lean kernel is the sole trusted component. The Python layers (including the
+certificate generator that emitted ~200 of the Lean theorems) are untrusted by
+design: a defective certificate manifests as a Lean compile failure, never as a
+false theorem. The generator's sympy self-checks exist to catch errors early,
+not to establish truth. This design principle — and the discipline of validating
+every identity numerically in exact rationals *before* formalizing it — is
+generalized in [Telperion](telperion/).
+
+## Provenance
+
+This repository is a snapshot of an active campaign; development happens on the
+origin repository and is re-imported here at green milestones. Origin commit,
+CI pipeline evidence, and the re-import procedure:
+[`proof/PROVENANCE.md`](proof/PROVENANCE.md).
+
+## License
+
+Code: [Apache-2.0](LICENSE). Documentation, notes, and figures:
+[CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).

@@ -1,0 +1,97 @@
+/- Library root for the R3 (Phi <= 1) exact-arithmetic formalization. -/
+import R3Cert.ExactCruxes
+import R3Cert.DEC
+import R3Cert.Involution
+import R3Cert.Matching
+import R3Cert.CavityTree
+import R3Cert.Bridge
+import R3Cert.BridgeStep2
+import R3Cert.BridgeStep3
+import R3Cert.BridgeStep4
+import R3Cert.Sweep
+import R3Cert.Jensen
+import R3Cert.JTail
+import R3Cert.Hull
+import R3Cert.Structure
+import R3Cert.HullFull
+import R3Cert.Grid
+import R3Cert.Reach
+import R3Cert.NodesSmall
+import R3Cert.TieHarmonic
+import R3Cert.NearStar
+import R3Cert.BushBound
+import R3Cert.Locality
+import R3Cert.ChainMargin
+import R3Cert.Plainify
+import R3Cert.PlainFormula
+
+import R3Cert.LemmaA
+
+import R3Cert.Potential
+
+import R3Cert.PotentialBound
+
+import R3Cert.PotentialCrux
+
+import R3Cert.PotentialAux
+
+import R3Cert.PotentialGVal
+
+import R3Cert.PotentialNearStar
+import R3Cert.PotentialConvex
+import R3Cert.PotentialClassify
+import R3Cert.PotentialReduce
+import R3Cert.PotentialAssembly
+import R3Cert.PotentialM0
+import R3Cert.PotentialM0Region
+import R3Cert.PotentialM1
+import R3Cert.PotentialM1Fold
+import R3Cert.PotentialM1Piece
+import R3Cert.PotentialEBase
+import R3Cert.PotentialE2
+import R3Cert.PotentialE2Small
+import R3Cert.PotentialE13
+import R3Cert.PotentialFinal
+import R3Cert.BridgeStep3b
+import R3Cert.BridgeStep3c
+import R3Cert.BridgeStep3d
+import R3Cert.BridgeStep4b
+import R3Cert.BridgeStep4c
+import R3Cert.BridgeStep4d
+import R3Cert.BridgeStep3e
+import R3Cert.BridgeStep3f
+import R3Cert.BridgeStep4e
+import R3Cert.BridgeStep4f
+import R3Cert.BridgeStep4g
+import R3Cert.BridgeStep4h
+import R3Cert.BridgeStep4i
+import R3Cert.BridgeStep4j
+import R3Cert.R47Tree
+import R3Cert.R47HubState
+import R3Cert.R47HubForms
+import R3Cert.R47Backbone
+import R3Cert.R47BackboneAmp
+import R3Cert.R47Step
+import R3Cert.R47StepSize
+import R3Cert.R47Cert
+import R3Cert.R47CertB
+import R3Cert.R47CertC
+import R3Cert.R47CertD
+import R3Cert.R47Dress
+import R3Cert.R47Capped
+import R3Cert.R47Head
+import R3Cert.R47HeadId
+import R3Cert.R47Mono
+import R3Cert.R47Dispatch
+import R3Cert.R47Rotate
+import R3Cert.R47RotateV
+import R3Cert.R47OrderedStep
+import R3Cert.R47VeeId
+import R3Cert.R47MirrorId
+import R3Cert.R47VeeMono
+import R3Cert.R47VeeDispatch
+import R3Cert.R47StepMono
+import R3Cert.R47Legs
+import R3Cert.R47Shed
+import R3Cert.R47Perm
+import R3Cert.R47Parse

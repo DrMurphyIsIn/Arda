@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+title: >-
+  Arda: machine-checked progress on the Brualdi-Goldwasser (1984)
+  Laplacian-ratio maximizer for trees, and Telperion, a sympy-to-Lean
+  certificate pipeline
+authors:
+  - family-names: Murphy
+    given-names: Peter W.
+type: software
+repository-code: "https://github.com/DrMurphyIsIn/Arda"
+license: Apache-2.0
+keywords:
+  - Laplacian permanent
+  - matching polynomial
+  - extremal graph theory
+  - Lean 4
+  - Mathlib
+  - formal verification
+  - Polya certificates
+abstract: >-
+  A peer-review package for a proof campaign on the 1984 Brualdi-Goldwasser
+  question (which n-vertex tree maximizes per(L(T))/prod deg): a Lean 4 /
+  Mathlib formalization of the exact-arithmetic core (Phi <= 1, the
+  permanent-to-matching bridge, the certified merge layer), the Python
+  verification harnesses (exact rational arithmetic, every claim an assert),
+  and Telperion, the reusable pipeline that batch-compiles sympy-certified
+  rational-inequality families into kernel-checked Lean. The conjecture itself
+  is not claimed proved; the honest status ledger is part of the artifact.

@@ -1,0 +1,66 @@
+{
+  "problem": "maximize pi(T)=per(L(T))/prod deg over n-vertex trees (Brualdi-Goldwasser 1984; OPEN)",
+  "finding": "the maximizer is NOT a path-spine spider: branching-backbone trees B(3,c) (hub + 3 arm-centers, each carrying c length-2 cherries, n=8c+4) strictly exceed every path-spine spider incl Pant 2026 families A_t/B_t/C_t, for c=4..7 (n=36,44,52,60)",
+  "exact_two_engine_permanent": "tree matching-DP vs Ryser agree (tested); pi exact Fraction",
+  "positive_control": "exhaustive all-trees search n=10..20: true maximizer IS a path-spine spider and the search finds it -- so branching win is a genuine large-n phenomenon",
+  "rows": [
+    {
+      "family": "B(3,4)",
+      "n": 36,
+      "pi_branch": "48154400451/28672000",
+      "pi_branch_float": 1679.4922032296317,
+      "best_spider_pi": "5479097661/3276800",
+      "best_spider": "T(4, 4, 4, 4)",
+      "best_spider_float": 1672.0879092407226,
+      "pant_B_4": "5479097661/3276800",
+      "pant_float": 1672.0879092407226,
+      "beats_all_spiders": true,
+      "margin_float": 7.40429398890904
+    },
+    {
+      "family": "B(3,5)",
+      "n": 44,
+      "pi_branch": "292658712849/33554432",
+      "pi_branch_float": 8721.909309893847,
+      "best_spider_pi": "72878098653/8388608",
+      "best_spider": "T(4, 5, 6, 5)",
+      "best_spider_float": 8687.746364235878,
+      "pant_B_5": "892525930245/102760448",
+      "pant_float": 8685.500575522987,
+      "beats_all_spiders": true,
+      "margin_float": 34.16294565796852
+    },
+    {
+      "family": "B(3,6)",
+      "n": 52,
+      "pi_branch": "129635157244779/2877292544",
+      "pi_branch_float": 45054.56267041958,
+      "best_spider_pi": "1507692271149/33554432",
+      "best_spider": "T(5, 7, 7, 5)",
+      "best_spider_float": 44932.731126219034,
+      "pant_B_6": "1180837892027061/26306674688",
+      "pant_float": 44887.387175761505,
+      "beats_all_spiders": true,
+      "margin_float": 121.83154420055037
+    },
+    {
+      "family": "B(3,7)",
+      "n": 60,
+      "pi_branch": "159320478535687467/687194767360",
+      "pi_branch_float": 231841.80977941645,
+      "best_spider_pi": "152199300202855533/657666867200",
+      "best_spider": "T(6, 8, 8, 6)",
+      "best_spider_float": 231423.09244015923,
+      "pant_B_7": "1985057740548909/8589934592",
+      "pant_float": 231091.1357110493,
+      "beats_all_spiders": true,
+      "margin_float": 418.7173392572165
+    }
+  ],
+  "honesty": [
+    "B(3,c) proven to beat ALL path-spine spiders (exact) but NOT proven global maximum (strong explicit construction / hill-climb local max)",
+    "B(3,c) only wins in a window: at c=8 (n=68) a larger m=6 spider retakes -- the optimal branching structure must itself grow with n, exactly as spider spine length does",
+    "apparently novel: literature search (incl Pant 2026, arXiv:2605.14176) found NO discussion of a branching-backbone maximizer -- but not-found != does-not-exist",
+    "EXTERNALLY UNVERIFIED: requires independent cross-check (SageMath permanent, expert/literature review) before any formal claim"
+  ]
+}

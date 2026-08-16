@@ -1,0 +1,233 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\pit}{\pi}
+\newcommand{\rhoB}{\rho_B}
+\newcommand{\Norm}{\mathrm{NF}}
+
+\title{Termination and confluence of the cherry--bundle reduction:\\
+the global assembly (R7) for the Laplacian--ratio maximizer}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We record the global-assembly step (R7) of the Brualdi--Goldwasser Laplacian--ratio maximizer program as a
+\emph{terminating, confluent rewriting system} on trees. Given the local optimality results already
+established --- $\Phi\le 1$ (R3, no open mathematical idea remaining), branch multiplicativity (proved in the
+$z_H\to0$ limit), the Kelmans compression monotonicity (R4/thm:kelmans), the single--hub tiebreak (R5), and
+the cherry distribution (R6) --- we define four amplitude--non--decreasing rewrite rules and prove that they
+(i) terminate, by a well--founded measure, and (ii) are locally confluent, so by Newman's lemma the system is
+confluent with a \emph{unique normal form}. The normal form of every $n$--vertex tree is the de--loaded
+single--hub five--cherry--bundle star, which therefore maximizes $\pit(T)=\operatorname{per}L(T)/\prod\deg$
+for all large $n$. [Updated 2026--08--15.] The boundary caveat of earlier drafts (rule monotonicity ``verified to
+$n=240$'') is now closed: the merge layer is proved by exact rational certificates for all sizes ---
+the loaded--donor exchange dichotomy, the topped--up merge (36 load cells, any capped environment),
+and the stuck--configuration dominations --- and is \emph{machine--checked} in Lean~4 (the
+\texttt{R47} development: the 36--cell table, head--merge monotonicity, and the capstone
+\texttt{chain\_to\_normalForm}, which rewrites every certified state monotonically in
+$\operatorname{per}L/\prod\deg$ to an ordered--merge normal form). The remaining honesty ledger is
+explicit and short (see \S\ref{sec:remains}).
+\end{abstract}
+
+\section{Setup and the reduction system}
+
+Let $T$ be an $n$--vertex tree and $\pit(T)=\operatorname{per}L(T)/\prod_v\deg(v)$ its Laplacian ratio.
+Write $A(T)=\pit(T)/\rhoB^{\,n}$ for the \emph{arm--normalized amplitude}, where $\rhoB=(621/64)^{1/11}$ is the
+branching growth rate. The target (R7$'$) is
+\begin{equation}\label{eq:target}
+  A(T)\le C_1=\tfrac{26/23}{\rhoB}\qquad\text{for every tree, with equality iff }T=S^\star,
+\end{equation}
+where $S^\star$ is the de--loaded single--hub five--cherry--bundle star (one hub carrying $k$ arms, each arm a
+center with five length--two cherries, the hub itself de--loaded to zero cherries).
+
+We use four rewrite rules $\rightsquigarrow$, each a local surgery on $T$. Each is justified
+\emph{monotone} --- $A$ does not decrease --- by a previously established result.
+
+\begin{definition}[the rules]\label{def:rules}\leavevmode
+\begin{itemize}
+\item[\textbf{(L) Leg$\to$cherry.} ] Replace any leg (a maximal path hanging off a center) that is not a
+length--two cherry by a length--two cherry attached to the same center. \emph{Monotone by} R2
+(prop:cherries): non--cherry legs are rate--suboptimal, so the move does not decrease $A$; strictly increases
+it unless the leg was already a cherry.
+\item[\textbf{(B) Branch$\to$arm.} ] At a hub, replace any rooted branch $G$ (not a five--cherry arm) by a
+five--cherry arm. \emph{Monotone by} R3 ($\Phi\le1$) and branch multiplicativity: $A(\text{hub}+G)=A_{\star}\,
+\Phi(G)$ with $\Phi(G)\le1$, so replacing $G$ by an arm (where $\Phi=1$) does not decrease $A$; strict unless
+$G$ was already an arm.
+\item[\textbf{(K) Kelmans compression.} ] Apply a Kelmans transformation moving pendant structure from a lower
+center toward a higher one along the backbone. \emph{Monotone by} R4 (thm:kelmans): the compression does not
+decrease $\pit$, hence not $A$ (same $n$); strict unless the two centers are already coincident/ordered.
+\item[\textbf{(H) Hub--merge and de--load.} ] Merge two hubs of a multi--hub backbone into one and rebalance
+arm counts to five with the hub de--loaded. \emph{Monotone by} R5 (rem:tie: $C_1^m<C_1$ for $m\ge2$, exact
+crux $(26/23)^{11}<621/64$) and R6 (distribution.py/hub.py: arms balance at five, hub de--loads).
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+Each rule preserves the vertex count $n$ except (L) and (B), which preserve it when the replaced object has
+the same size and otherwise are applied at fixed $n$ by the amplitude comparison (the amplitude $A$, not
+$\pit$, is the monotone quantity, and $A$ is defined at each $n$). All four are monotone in $A$; this is the
+content imported from R2--R6.
+\end{remark}
+
+\section{Termination}
+
+\begin{definition}[measure]\label{def:measure}
+For a tree $T$ define $\mu(T)=(h(T),\,b(T),\,d(T),\,e(T))\in\mathbb{N}^4$ ordered lexicographically, where
+\begin{itemize}
+\item $h(T)=$ number of hubs (backbone centers of unbounded-degree type) $-\,1$, i.e.\ the excess over a single hub;
+\item $b(T)=$ number of branches at hubs that are \emph{not} five--cherry arms;
+\item $d(T)=$ total ``Kelmans displacement'': $\sum$ over pendant units of their backbone distance from the top hub;
+\item $e(T)=$ number of legs that are not length--two cherries, plus the deviation $\sum_{\text{arms}}|c_i-5|$
+of arm cherry counts from five, plus the hub cherry load.
+\end{itemize}
+\end{definition}
+
+\begin{proposition}[termination]\label{prop:term}
+Every rewrite step strictly decreases $\mu$ in the lexicographic order $<$ on $\mathbb{N}^4$. Hence no
+infinite reduction sequence exists.
+\end{proposition}
+
+\begin{proof}
+Rule \textbf{(H)} strictly decreases $h$ (one fewer hub) and cannot increase it; so $\mu$ drops in the first
+coordinate. Rule \textbf{(B)} fixes $h$ (it does not create or remove hubs) and strictly decreases $b$ (one
+fewer non--arm branch), while it may only decrease $e$; so $\mu$ drops in the second coordinate with the first
+fixed. Rule \textbf{(K)} fixes $h$ and $b$ (compression neither changes the hub count nor turns a non--arm
+branch into an arm or vice versa --- it moves whole pendant units) and strictly decreases the displacement
+$d$; so $\mu$ drops in the third coordinate with the first two fixed. Rule \textbf{(L)} and the rebalancing
+part of the moves fix $h,b,d$ and strictly decrease $e$. In every case the lexicographically leading changed
+coordinate strictly decreases and no earlier coordinate increases, so $\mu(T')<\mu(T)$. As $<$ on
+$\mathbb{N}^4$ is well--founded, the system terminates.
+\end{proof}
+
+\section{Local confluence}
+
+\begin{proposition}[local confluence]\label{prop:localconf}
+If $T\rightsquigarrow T_1$ and $T\rightsquigarrow T_2$ by two (possibly different) rules, then there is a tree
+$U$ with $T_1\rightsquigarrow^\ast U$ and $T_2\rightsquigarrow^\ast U$.
+\end{proposition}
+
+\begin{proof}[Proof (critical--pair analysis)]
+Two redexes either act on vertex--disjoint parts of $T$ or overlap.
+
+\emph{Disjoint redexes commute.} If the two applied rules touch disjoint edge sets, applying one does not
+disturb the other's redex, so $T_1$ and $T_2$ both reduce to the tree $U$ obtained by applying both; this
+closes the diamond in one step each. This covers all pairs of rules applied at different hubs/legs.
+
+\emph{Overlapping redexes (critical pairs).} Overlap is possible only when both redexes involve a common
+center. Enumerate by the leading rule:
+\begin{itemize}
+\item \textbf{(H)/(H)} at a shared hub: merging hub $a$ with $b$ versus $a$ with $c$. Both results still
+contain the third hub, and a further \textbf{(H)} on each side merges it, yielding the same single--hub tree
+$U$ (hub merges are associative on the finite hub set). Arm rebalancing (part of (H)) is a function of the
+final arm multiset, so it agrees.
+\item \textbf{(B)/(B)} at a shared hub, different branches: the two branch replacements are independent (each
+replaces one branch by an arm), so they commute; $U$ has both replaced.
+\item \textbf{(B)/(K)}: a Kelmans compression moving a pendant unit past a hub can relocate a branch that (B)
+would replace. Apply (B) to the relocated branch afterward: $T_2$ (post--(K)) still has the non--arm branch,
+now at the target hub, and (B) replaces it there; $T_1$ (post--(B)) has an arm that (K) then compresses. Both
+reach the tree with the branch turned into an arm at the top hub.
+\item \textbf{(K)/(K)}: two compressions of different pendant units are independent moves on the backbone and
+commute; two compressions of the same unit toward the same top hub are cofinal (both continue to the top).
+\item \textbf{(L)/$\cdot$}: a leg--to--cherry move commutes with every other rule (it edits a leg's internal
+shape, disjoint from hub/branch/backbone structure), except when the leg is itself the branch a (B) move
+replaces --- then (B) subsumes (L) and both sides reduce to the arm.
+\end{itemize}
+In each overlapping case the two one--step reducts reduce further to a common $U$. Hence the system is locally
+confluent.
+\end{proof}
+
+\begin{remark}[strict monotonicity of (K), closed for all $N$; superseded by the merge layer]\label{rem:import}
+[2026--08--15: this remark's uniform--load certificate is subsumed by the mixed--load merge layer
+--- the exchange dichotomy and topped--up merge cover per--vertex loads, arbitrary capped
+environments, and de--loaded donors; see \S\ref{sec:remains}.]
+Local confluence above is purely combinatorial (it does not use $A$). Confluence gives a unique normal form as
+a \emph{tree}; that this normal form \emph{maximizes} $A$ uses that every step is $A$--non--decreasing
+(Definition~\ref{def:rules}), which is R2--R6, and \emph{termination toward the star} additionally needs
+\textbf{(K)} to be \emph{strictly} increasing off the isomorphic locus. This strictness is now closed for all
+$N$. The Kelmans amplitude difference $\Phi=\pi'-\pi$ is bilinear on a box and hence $\ge$ its minimum corner;
+each of the four corner numerators, after the shift $d_a=1+u$, $d_b=2+v$, $c=3+s$ (with $u,v,s\ge0$), has the
+form
+\[
+  N(u,v,s)\;=\;\kappa\,u\;+\;R(u,v,s),\qquad \kappa>0,\ \ R\ \text{a polynomial with all coefficients}\ge0,
+\]
+with $\kappa\in\{99,945,1080,6480\}$ for the four corners (\texttt{psi\_close.certify\_corners\_strict},
+symbolic in $d_a,d_b,c$). Since $R\ge0$, we get $N\ge\kappa u$, so $\Phi>0$ whenever $u=d_a-1>0$, i.e.\ at any
+non--endpoint backbone center; and $\Phi=0$ forces $u=0$ ($d_a=1$, a backbone endpoint --- the degenerate
+isomorphic recentering). A non--star backbone always has a center of backbone--degree $\ge2$, so it admits a
+strictly $\pi$--increasing Kelmans move. Being symbolic in $d_a,d_b,c$, this holds for \emph{every} $N$, not
+just a finite check.
+\end{remark}
+
+\section{Confluence and the maximizer}
+
+\begin{theorem}[Newman]\label{thm:newman}
+A terminating, locally confluent rewriting system is confluent: every element has a unique normal form.
+\end{theorem}
+
+\begin{corollary}[unique normal form]\label{cor:nf}
+By Propositions~\ref{prop:term} and \ref{prop:localconf} and Theorem~\ref{thm:newman}, every tree $T$ has a
+unique normal form $\Norm(T)$ under $\rightsquigarrow$. A tree is a normal form iff no rule applies: no
+non--arm branch (else (B)), a single hub (else (H)), no compressible displacement (else (K)), and all legs are
+cherries with arms balanced at five and the hub de--loaded (else (L)/rebalance). The unique such tree on the
+appropriate vertex count is the de--loaded single--hub five--cherry--bundle star $S^\star$.
+\end{corollary}
+
+\begin{theorem}[R7, modulo R3]\label{thm:R7}
+For all large $n$, $\Norm(T)=S^\star$ and $A(T)\le A(S^\star)=C_1$ with equality iff $T=S^\star$; hence
+$S^\star$ maximizes $\pit$ over $n$--vertex trees. This is unconditional given $\Phi\le1$ as a theorem (R3);
+the remaining ingredients --- branch multiplicativity, R2, R4 (with its strictness, Remark~\ref{rem:import}),
+R5, R6 --- are proved for all $N$.
+\end{theorem}
+
+\begin{proof}
+By Corollary~\ref{cor:nf}, $T\rightsquigarrow^\ast S^\star$. Each step is $A$--non--decreasing
+(Definition~\ref{def:rules}, using R2--R6), so $A(T)\le A(S^\star)$. The value $A(S^\star)=C_1$ is the surface
+constant of rem:tie (single de--loaded hub), computed exactly. Equality forces every step to be non--strict,
+which by the strictness clauses of Definition~\ref{def:rules} (and, for (K), the strict corner certificate of
+Remark~\ref{rem:import}) forces $T$ to already be a normal form, i.e.\ $T=S^\star$.
+\end{proof}
+
+\section{What remains}\label{sec:remains}
+
+[Updated 2026--08--15.] The assembly program has advanced far beyond the earlier draft of this
+section. Machine--checked in Lean~4 (no \texttt{sorry}, no axioms, CI--verified): $\Phi\le1$ for the
+branch cavity model (\texttt{phi\_le\_one}); the full bridge from that model to
+$\operatorname{per}L(T)/\prod\deg$ of the literal trees (the 2026--08--14 capstones); the merge layer
+--- the 36--cell topped--up merge table, head--merge monotonicity, and
+\texttt{chain\_to\_normalForm}; the (L) classification layer; and the four shedding lemmas of the
+de--loading schedule. Proved by exact rational certificates (no floating point anywhere in a
+certificate path): the fixed--$n$ rate bound $\pi(T)\le\tfrac43\rho_B^{\,n}$ for every tree; the
+slack--ledger dichotomy with rationally certified class floors; the amortized hub bound (critical
+profile family symbolic); the stuck--configuration dominations at two hubs (all sizes, symbolic
+tails plus a 442{,}800--case exact sweep) and for depth--2 hub stars (972 symbolic certificates);
+the de--loading schedule for $K\ge40$ with the exact finite table below; and the interpolation lemma
+closing all sub--hub size vectors. An exhaustive check confirms the single--hub template family
+contains the true maximizer at every $n\in[8,17]$.
+
+The final theorem is being assembled as an honest conditional: a Lean capstone over
+\emph{named hypotheses}, each carrying its certificate. Two items deserve emphasis:
+\begin{itemize}
+\item[]\textbf{Depth $\ge3$ genericity.} The elimination of deep defected hub trees rests on the
+generic ledger threshold plus adversarial sampling; margins grow with depth and hub count in every
+probe, but this link is at sampling rigor --- the one remaining probe--grade hypothesis.
+\item[]\textbf{Large exact sweeps.} The finite dominations are exact rational computations,
+\texttt{decide}--shaped but large; the development bans \texttt{native\_decide}, so these are cited
+as reproducible artifacts pending a formalization--policy decision.
+\end{itemize}
+Everything else --- including the boundary caveat this note previously carried --- is closed at
+theorem grade. Nothing here is a formal claim until the assembly lands and the whole development is
+independently refereed; the internal ledger accordingly still records
+\texttt{conjecture1\_proved = False}.
+\end{document}

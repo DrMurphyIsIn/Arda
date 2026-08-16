@@ -1,0 +1,11 @@
+name = "R3Cert"
+defaultTargets = ["R3Cert"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+# Pin to a released tag; `lake update` will sync the toolchain in lean-toolchain to match.
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "R3Cert"
