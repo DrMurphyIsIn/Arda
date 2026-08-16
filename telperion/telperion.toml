@@ -39,3 +39,13 @@ group = "quick"    # 48 kernel facts incl. the 726-digit bignum; ~0.2 s
 name = "interp_lemma"
 script = "examples/interp_lemma/generate.py"
 group = "quick"    # I1/I2 symbolic identities + 212 light-top facts; ~0.3 s
+
+[[check]]
+name = "g34_sweep"
+script = "examples/g34_sweep/generate.py"
+group = "heavy"    # 442,800 exact cases + fingerprint; ~2.5 min
+
+[[check]]
+name = "g34_twohub"
+script = "examples/g34_twohub/generate.py"
+group = "wip"      # freeze in flight; promote to heavy when frozen/ lands

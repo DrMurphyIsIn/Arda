@@ -30,10 +30,11 @@ def _load_family(example: str):
         spec.loader.exec_module(mod)
     finally:
         sys.path.pop(0)
-    for attr in ("family", f"{example.split('_')[0]}_family", "r47_family"):
-        if hasattr(mod, attr):
-            return getattr(mod, attr)()
-    raise AttributeError(f"no family factory found in {p}")
+    fams = [getattr(mod, a)() for a in dir(mod)
+            if a == "family" or a.endswith("_family")]
+    if not fams:
+        raise AttributeError(f"no family factory found in {p}")
+    return fams
 
 
 def _sampled(fam, per_axis: int = 2):
@@ -63,13 +64,14 @@ def _live_recheck(example: str) -> str:
     from telperion.recheck import recheck
 
     try:
-        fam = _load_family(example)
-        small = _sampled(fam)
-        n = small.grid.size()
-        cf = certify(small)
-        problems = recheck(export_certificates(cf, "0" * 64), trials=8)
+        n = bad = 0
+        for fam in _load_family(example):
+            small = _sampled(fam)
+            n += small.grid.size()
+            cf = certify(small)
+            bad += len(recheck(export_certificates(cf, "0" * 64), trials=8))
         return (f"sampled recheck GREEN ({n} cell(s))"
-                if not problems else f"RECHECK RED ({len(problems)})")
+                if not bad else f"RECHECK RED ({bad})")
     except Exception as e:  # noqa: BLE001 — the ledger reports, never hides
         return f"RECHECK ERROR: {type(e).__name__}"
 
@@ -103,6 +105,11 @@ def generate() -> str:
          "in origin; exact counterparts routed to g1_endpoint_certificates "
          "(origin G1FIX arc)"),
         ("r7_starofhubs", "972 star-of-hubs dominations (HypStarSymbolic)", ""),
+        ("g34_twohub", "Two-hub residual tails: T1/T2/T3a symbolic + T3b "
+         "small-donor per-residue witness certificates",
+         " — witnesses_complete (residue-dependent comparator phenomenon "
+         "recorded: some odd residues need the load-6 hub, not the defect "
+         "template)"),
     ):
         theorems, hashes = _frozen_info(example)
         if theorems:
@@ -112,16 +119,28 @@ def generate() -> str:
             verdict = "IN FLIGHT — freeze not yet landed" + extra
         rows.append((stratum, "Telperion re-derivation + stdlib recheck", verdict))
 
+    # --- the finite sweep (export+fingerprint stratum, deliberately not
+    #     per-theorem Lean: 442,800 theorems would bury the kernel) ---
+    sweep_summary = TELPERION / "examples" / "g34_sweep" / "frozen" / "summary.json"
+    if sweep_summary.exists():
+        s = json.loads(sweep_summary.read_text())
+        m_num, m_den = s["tightest"][0]["margin"].split("/")
+        margin_pct = 100 * int(m_num) / int(m_den)
+        rows.append((
+            "G34 residual sweep (442,800 cases)",
+            "independent Fraction port + SHA-256 fingerprint + stdlib recheck",
+            f"RE-DERIVED: {s['cases']} cases exact, fingerprint "
+            f"{s['fingerprint'][:16]}; sampled recheck {s['sampled_recheck']} "
+            f"(500 cases, third engine); tightest margin {margin_pct:.4f}% at "
+            f"{tuple(s['tightest'][0]['case'])} — where the two-hub family "
+            "comes closest to the single-hub bound"))
+    else:
+        rows.append(("G34 residual sweep (442,800 cases)", "planned",
+                     "PLANNED — as export + fingerprint"))
+
     # --- planned strata ---
-    for stratum, note in (
-        ("G34 residual sweep (442,800 cases)",
-         "as interchange export + stdlib recheck (not per-theorem Lean)"),
-        ("Two-hub residual tails (per-residue comparators)",
-         "witness API + varmap machinery ready; encoding queued"),
-        ("Hunt-attack sweep over all certified families",
-         "three-mode adversarial minimization; queued"),
-    ):
-        rows.append((stratum, "planned", "PLANNED — " + note))
+    rows.append(("Hunt-attack sweep over all certified families", "planned",
+                 "PLANNED — three-mode adversarial minimization; queued"))
 
     # --- out of scope, named honestly ---
     rows.append(("Structural inductions (telescoping, termination, "

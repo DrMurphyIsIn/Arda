@@ -8,6 +8,10 @@ on:
   push:
     paths:
       - "telperion/examples/g1_floors/**"
+      - "telperion/examples/shed_lemmas/**"
+      - "telperion/examples/legs_certs/**"
+      - "telperion/examples/interp_lemma/**"
+      - "telperion/examples/proof_audit/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
   pull_request:
@@ -41,6 +45,35 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Compile the frozen G1 artifact (3084 floors + 176 kernel facts)
         working-directory: telperion/examples/g1_floors/lean
+        run: |
+          lake exe cache get
+          lake build
+
+  audit-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage frozen audit artifacts into the Audit project
+        run: |
+          cd telperion/examples/proof_audit/lean
+          mkdir -p Audit
+          cp ../../shed_lemmas/frozen/ShedLemmas.lean       Audit/Shed.lean
+          cp ../../legs_certs/frozen/LegsCerts.lean         Audit/Legs.lean
+          cp ../../interp_lemma/frozen/i1/InterpI1.lean     Audit/InterpI1.lean
+          cp ../../interp_lemma/frozen/i2/InterpI2.lean     Audit/InterpI2.lean
+          cp ../../interp_lemma/frozen/light/InterpLight.lean Audit/InterpLight.lean
+      - name: Cache elan
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/proof_audit/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Compile the audit re-derivations (shed 55 + legs 48 + interp 215)
+        working-directory: telperion/examples/proof_audit/lean
         run: |
           lake exe cache get
           lake build
