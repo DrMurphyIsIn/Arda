@@ -111,6 +111,11 @@ def generate() -> str:
          " — witnesses_complete (residue-dependent comparator phenomenon "
          "recorded: some odd residues need the load-6 hub, not the defect "
          "template)"),
+        ("h_floors", "Mixed-layer H-floor pieces (m in 2..7, feeds "
+         "HypAmortizedHub)", " — CROSS-SESSION DELIVERABLE: origin probe table "
+         "(their e898a452) encoded in origin H/slackForm spelling; "
+         "COMPILE-GATED green @ba3cba1 (gate caught a missing-prelude break "
+         "first, now institutionalized as emit() requires_prelude)"),
     ):
         theorems, hashes = _frozen_info(example)
         if theorems:
