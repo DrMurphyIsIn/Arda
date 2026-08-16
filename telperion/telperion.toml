@@ -67,3 +67,8 @@ group = "quick"    # 56 H-floor pieces + 46 anchors (origin handoff deliverable)
 name = "exp_bracket"
 script = "examples/exp_bracket/generate.py"
 group = "quick"    # rigorous rational enclosure of exp(-theta), R47Encode far constant
+
+[[check]]
+name = "padic_valuation"
+script = "examples/padic_valuation/generate.py"
+group = "quick"    # p-adic valuation certificates (23-cancellation structure)
