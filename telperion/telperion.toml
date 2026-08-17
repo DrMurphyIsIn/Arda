@@ -137,3 +137,33 @@ group = "quick"    # uniform-in-recursion monotone tail: arm-dominance across hu
 name = "uniform_arm"
 script = "examples/uniform_arm/generate.py"
 group = "quick"    # uniform-in-k arm-dominance (lemma 1 core): all-nonneg-coeff positivity
+
+[[check]]
+name = "gauge_lift"
+script = "examples/gauge_lift/generate.py"
+group = "quick"    # phi_arm-gauge dimensional lift (order-2 curvature tail)
+
+[[check]]
+name = "benchmark_factor"
+script = "examples/benchmark_factor/generate.py"
+group = "quick"    # benchmark-factor isolation (Laplacian flat; B carries 23-content)
+
+[[check]]
+name = "telescope_product"
+script = "examples/telescope_product/generate.py"
+group = "quick"    # product-telescope (integration end of the gauge tower)
+
+[[check]]
+name = "scope"
+script = "examples/scope/generate.py"
+group = "quick"    # termwise-scope / frustration obstruction
+
+[[check]]
+name = "matching_free_energy"
+script = "examples/matching_free_energy/generate.py"
+group = "quick"    # competitor-extremality (raw rho, monomer-dimer)
+
+[[check]]
+name = "bg_extremality"
+script = "examples/bg_extremality/generate.py"
+group = "quick"    # BG competitor extremality (rooted Phi -- correct quantity)
