@@ -136,6 +136,21 @@ siblings attain their per-message maxima on incompatible subtrees, invisible to 
 over siblings -- PROOF_STATUS dead-end #1 (collective / non-local) at the finest recursive resolution. A
 reasoned dead-end that rules out the per-message envelope class. conjecture1_proved = False.
 
+**LEWIS-RIESENFELD DEEP DIVE (`sibling_coupling.py`, `SiblingCouplingCertificate`).** Reformulate in log
+coordinates `x = -log F`: the recursion is ADDITIVE, `x_v = c0 - 11 log a_v + sum_c x_c` (`c0 = log(621/64)`,
+`a_v = 1 + S/(j+1)`, `S = sum mu_c`), and telescopes to a clean multi-variable statement:
+**BG <=> geometric mean of vertex amplitudes <= rho_B** (exact rational: `(prod a_v)^11 <= (621/64)^n`),
+equality EXACTLY at the tie. The LR structure: siblings couple ONLY through the symmetric mode `S` (`a_v`
+depends on children via `(S,j)` alone) -- a mean-field / orthogonal-decoupling setting. The decoupled
+invariant `x >= phi(mu)` is then tested: for CONVEX `phi`, Jensen reduces the j-body step to
+`G(j,S) = c0 - 11 log(1+S/(j+1)) + j phi(S/j) - phi(1/(j+1+S)) >= 0`, and the best convex `phi` is found by
+LP -- worst-case slack `t* ~ -5.2 < 0`, INFEASIBLE (reproducible: `docs/sibling_coupling_convex_lp.py`). So
+NO single-variable invariant closes it (convex via LP, non-convex via the envelope). The coupling is
+irreducibly JOINT over siblings; a closing invariant must be genuinely MULTI-VARIABLE (a quadratic/Gaussian
+form in the joint sibling state, LR-style). The deep dive FRAMES this open target precisely (reformulation +
+LR structure + single-variable no-go); it does not construct the invariant or prove BG.
+conjecture1_proved = False.
+
 ## 4. Cluster algebras / Y-systems & the Laurent-positivity phenomenon  (the cavity's natural home)
 
 **Mechanism.** Cluster mutations are subtraction-free rational maps whose iterates are Laurent polynomials
