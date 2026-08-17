@@ -59,5 +59,30 @@ theorem j2_closure :
 theorem gstep_final_integer : (64 : ℕ) ^ 3 * 50 ^ 11 < 621 ^ 3 * 27 ^ 11 := by
   norm_num
 
+/-! ### The branching (j' >= 2) g-step, reduced to two rational leaves
+
+  The g-lemma's inductive step, in the all-non-leaf branching case, is a multi-variable optimization
+  `max < gamma` (gamma = W^2 (5/3)^11).  Reduced (symmetric-argmax -> per-j' max at the crossover mu* ->
+  boost < 4/3) to the two exact rational facts below; together they give `f_{j'>=2}(mu*) = W*boost^11 <
+  W*(4/3)^11 < gamma`.  The majorization/monotonicity reduction itself is not yet formalized (see
+  telperion/src/telperion/gstep_reduction.py). -/
+
+/-- (I) `mu* < 1/3`, i.e. `gamma = W^2 (5/3)^11 < (10/9)^11`  -- so `3*mu* < 1` and the symmetric-max
+    boost `1 + (3 j' mu* + 1)/(3j'+3) < 1 + (j'+1)/(3j'+3) = 4/3`. -/
+theorem gamma_lt_ten_ninths_11 : ((64 : ℚ) / 621) ^ 2 * (5 / 3) ^ 11 < (10 / 9) ^ 11 := by
+  norm_num
+
+/-- (II) `W*(4/3)^11 < gamma`  -- so `f_{j'>=2}(mu*) = W*boost^11 < W*(4/3)^11 < gamma`. -/
+theorem W_four_thirds_11_lt_gamma :
+    ((64 : ℚ) / 621) * (4 / 3) ^ 11 < ((64 : ℚ) / 621) ^ 2 * (5 / 3) ^ 11 := by
+  norm_num
+
+/-- Cross-multiplied integer forms of the two leaves. -/
+theorem gstep_leaf_I_integer : (64 : ℕ) ^ 2 * 5 ^ 11 * 9 ^ 11 < 621 ^ 2 * 3 ^ 11 * 10 ^ 11 := by
+  norm_num
+
+theorem gstep_leaf_II_integer : (621 : ℕ) * 4 ^ 11 < 64 * 5 ^ 11 := by
+  norm_num
+
 end ArmExtremality
 end G1
