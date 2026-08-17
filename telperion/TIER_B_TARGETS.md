@@ -87,6 +87,18 @@ POSITIVITY / collectivity of the `<=` half, and `resonance_carrier.py` supplies 
 (23-adic); together they ARE PROOF_STATUS's decomposition (open `<=` crux + 23-gate equality set). Neither
 closes BG. conjecture1_proved = False.
 
+**FOLLOW-ON (`family_martingale.py`, `TieRecursiveMartingaleCertificate`): the NON-uniform bound DOES close
+the family the uniform one couldn't.** Where the Knabe uniform bound fails (the tie-recursive `D -> 1`
+family), a family-adapted MARTINGALE argument succeeds: rooted at the hub, `prod a_v = a_root(k) *
+(per_block)^k` with `per_block = (23/18)(3/2)^5 = 621/64`, so the per-block transfer factor
+`F = ((64/621)*per_block)^11 = 1` EXACTLY (each block is a tie -> zero log-drift = martingale conservation).
+All k-dependence is then the boundary `a_root(k) = 1 + 3k/(23(k+1))`, monotone and bounded by `26/23`
+(= 1 + the `3/23` cavity fixed point), giving `Phi^11_hub(k) < (64/621)(26/23)^11 = L ~ 0.397 < 1` -- the
+integer inequality `64*26^11 < 621*23^11`. Hub = argmax for `k >= 3`; `k = 1,2` are base cases. So
+`Phi^11 < 1` STRICTLY on the whole canonical near-1 family, by a martingale + bounded boundary + integer
+ceiling -- the strongest positive statement on the hardest known family. Family-adapted (F=1 is special to
+tie blocks); general competitor extremality over ALL trees stays open. conjecture1_proved = False.
+
 ## 4. Cluster algebras / Y-systems & the Laurent-positivity phenomenon  (the cavity's natural home)
 
 **Mechanism.** Cluster mutations are subtraction-free rational maps whose iterates are Laurent polynomials
