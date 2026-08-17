@@ -134,6 +134,59 @@ def classify_decay_regime(family_fn, sizes):
     }
 
 
+def default_family_zoo():
+    """Ordered..disordered growing tree families for scouting.  Disordered ones (RRT, pref-attach) are
+    seeded/incremental so each is a well-defined growing structure."""
+    import random
+
+    def comb(s):
+        e = [(i, i + 1) for i in range(s - 1)] + [(i, s + i) for i in range(s)]
+        return 2 * s, tuple(e)
+
+    def caterpillar2(s):
+        e = [(i, i + 1) for i in range(s - 1)]; nid = s
+        for i in range(s):
+            e += [(i, nid), (i, nid + 1)]; nid += 2
+        return 3 * s, tuple(e)
+
+    def rrt(s):
+        rng = random.Random(20260817)
+        return s, tuple((rng.randint(0, v - 1), v) for v in range(1, s))
+
+    def prefattach(s):
+        rng = random.Random(20260817); tg = [0]; e = []
+        for v in range(1, s):
+            p = rng.choice(tg); e.append((p, v)); tg += [p, v]
+        return s, tuple(e)
+
+    return {
+        "near-star(L2)": near_star_family, "path": path_family,
+        "legs-3": lambda s: spider_family(s, 3), "legs-5": lambda s: spider_family(s, 5),
+        "comb": comb, "caterpillar-2": caterpillar2,
+        "RRT(uniform)": rrt, "pref-attach": prefattach,
+    }
+
+
+def scout_disorder(families=None, sizes=(40, 80, 160, 320)):
+    """Scout a family space for STRETCHED-EXPONENTIAL (disordered) density decay -- the regime where an
+    anomaly could hide.  Returns {name: classify_decay_regime(...)} plus a 'flagged' list of disordered
+    families.  Ordered/Fickian families are the extremal ones; a flagged family is a counterexample-hunt
+    cue (but only a THREAT if its density is also high -- check separately)."""
+    fams = families if families is not None else default_family_zoo()
+    out = {}
+    flagged = []
+    for name, fn in fams.items():
+        try:
+            r = classify_decay_regime(fn, list(sizes))
+            out[name] = r
+            if "stretched" in r["regime"]:
+                flagged.append(name)
+        except Exception as ex:  # pragma: no cover
+            out[name] = {"error": str(ex)}
+    out["_flagged_disordered"] = flagged
+    return out
+
+
 def is_linear_in_inverse_s(family_fn, sizes):
     """Direct alpha=1 test: is D(s) linear in 1/s?  Returns (D_inf_intercept, slope_c, r2)."""
     dens = [_density(*family_fn(s)) for s in sizes]
