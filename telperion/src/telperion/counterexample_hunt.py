@@ -121,6 +121,65 @@ class CounterexampleHunt:
         }
 
 
+def near_star_seeds(n, count=40, kicks=3, seed=0):
+    """Bonsai seed set: the near-star ideal form plus `count` cultivated perturbations (each a few
+    prune-regraft 'kicks' away).  Seeds the hunt AT the peak so islands must climb ABOVE it to refute."""
+    import random
+    from .parallel_map import _prune_regraft
+    rng = random.Random(seed)
+    if n % 2 == 1:
+        _, base = near_star_edges((n - 1) // 2)
+    else:                                            # even n: near-star with one length-1 stub
+        _, ns = near_star_edges((n - 2) // 2)
+        base = ns + ((0, n - 1),)
+    out = [base]
+    for _ in range(count):
+        e = base
+        for _ in range(rng.randint(1, kicks)):
+            e2 = _prune_regraft(n, e, rng.randint(0, 999), rng.randint(0, 999))
+            if e2 is not None:
+                e = e2
+        out.append(e)
+    return out
+
+
+def scaled_hunt(n, n_islands=8, epochs=6, rounds=60, seed=0, workers=None):
+    """Scaled bonsai hunt: IslandModel (parallel MAP-Elites, migration) SEEDED at the near-star, hunting
+    for any tree whose rooted Phi^11 exceeds the near-star's.  A hit REFUTES (>near-star at n!=11, or >=1).
+    Returns the best found vs the near-star reference -- honest about whether the engine even held the peak.
+
+    NOTE: uses multiprocessing (spawn), so call it from a `if __name__ == '__main__':` guarded script,
+    not an interactive/stdin session (the workers must be able to re-import the driver module)."""
+    from .parallel_map import IslandModel
+    seeds = near_star_seeds(n, count=max(20, n_islands * 4), seed=seed)
+    arch = IslandModel(n=n, n_islands=n_islands).run(
+        epochs=epochs, rounds_per_epoch=rounds, migrants=n_islands * 2,
+        workers=workers, initial_seeds=seeds)
+    best_phi, best_e = max(arch.values(), key=lambda x: x[0])
+    ref_phi = bg_phi11_fast(*_ns_ref(n))
+    from collections import Counter
+    deg = Counter()
+    for a, b in best_e:
+        deg[a] += 1; deg[b] += 1
+    return {
+        "n": n,
+        "best_phi11": float(best_phi),
+        "near_star_phi11": float(ref_phi),
+        "held_peak": bool(best_phi >= ref_phi - 1e-12),
+        "beats_near_star": bool(best_phi > ref_phi + 1e-9),
+        "refutes_bg": bool(best_phi >= 1.0 - 1e-9 and n != 11),
+        "niches": len(arch),
+        "best_degseq": sorted(deg.values(), reverse=True),
+    }
+
+
+def _ns_ref(n):
+    if n % 2 == 1:
+        return near_star_edges((n - 1) // 2)
+    _, ns = near_star_edges((n - 2) // 2)
+    return n, ns + ((0, n - 1),)
+
+
 def probe_monotonicity(n, samples=2000, seed=0):
     """Over random general trees, sample legs-2-directed leaf relocations (reduce total |arm-2|) and
     report how often they DECREASE Phi -- does the spider per-move basis extend to general trees?"""

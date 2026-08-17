@@ -56,8 +56,10 @@ class IslandModel:
     n: int
     n_islands: int = 4
 
-    def run(self, epochs: int = 3, rounds_per_epoch: int = 40, migrants: int = 8, workers=None):
-        seeds = [[] for _ in range(self.n_islands)]
+    def run(self, epochs: int = 3, rounds_per_epoch: int = 40, migrants: int = 8, workers=None,
+            initial_seeds=None):
+        base = list(initial_seeds) if initial_seeds else []
+        seeds = [list(base) for _ in range(self.n_islands)]
         global_archive: dict = {}
         for _epoch in range(epochs):
             jobs = [(self.n, tuple(seeds[i]), rounds_per_epoch, i + 1) for i in range(self.n_islands)]
