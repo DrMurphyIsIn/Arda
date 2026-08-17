@@ -28,6 +28,17 @@ competitor extremality: n = 22, 33, ... remain open (they need the density / com
 amplitude form is verified numerically here and is the (Lean-open) input; the 11|n consequence given the
 form is a clean valuation argument (padic vocabulary).  Builds on the existing 23-adic machinery in
 padic.py.  conjecture1_proved = False.
+
+INTEGRALITY STRICTNESS (the strictness half is a freebie).  Phi^11 = N/D is a rational with integer N, D.
+GIVEN Phi^11 <= 1, a non-tie tree has N < D, hence N <= D-1 (integrality), hence
+
+    1 - Phi^11  >=  1/D  >  0,
+
+so the STRICT inequality Phi^11 < 1 for non-tie trees costs nothing beyond integrality.  This DECOMPOSES
+BG into two pieces: (i) the <= half Phi^11 <= 1 (the open collective-cancellation crux), and (ii) the
+equality set N = D, which the 23-gate constrains to 11|n.  The deficit floor 1/D shrinks as n grows
+(D grows), consistent with sup density = 1 approached; it is strictly positive at every finite tree.
+See IntegralityStrictnessCertificate.
 """
 from __future__ import annotations
 
@@ -121,4 +132,52 @@ class SporadicTieConstraintCertificate:
             "-- so 11 * v_23(prod a_v) = n * v_23(621) = n (v_23(621)=1), hence 11 | n.\n"
             "theorem v23_621 : (¬ (23^2 ∣ (621:ℤ))) ∧ (23 ∣ (621:ℤ)) := by norm_num   -- v_23(621)=1\n"
             "-- (the 11 | n step is padicValRat.mul telescoping over the rational prod a_v; see padic.py)\n"
+        )
+
+
+def deficit_lower_bound(n, edges):
+    """For a tree, Phi^11 = N/D in lowest terms; return (Phi^11, deficit = 1 - Phi^11, 1/D).  When
+    Phi^11 <= 1 and the tree is not a tie, integrality forces N <= D-1, so deficit >= 1/D > 0."""
+    from .rooted_phi import bg_phi11_fast
+    phi = bg_phi11_fast(n, edges)
+    return phi, Fr(1) - phi, Fr(1, phi.denominator)
+
+
+@dataclass(frozen=True)
+class IntegralityStrictnessCertificate:
+    """Given Phi^11 <= 1, the STRICTNESS Phi^11 < 1 for non-tie trees is an integrality freebie:
+    Phi^11 = N/D with integers N < D forces N <= D-1, so 1 - Phi^11 >= 1/D > 0.  This decomposes BG into
+    (i) the open <= half (collective cancellation) and (ii) the equality set N = D (23-gate: 11|n).  The
+    strict-inequality part costs nothing beyond integrality."""
+
+    n_max: int = 12
+
+    def _edges(self, T):
+        idx = {v: i for i, v in enumerate(T.nodes())}
+        return T.number_of_nodes(), tuple((idx[a], idx[b]) for a, b in T.edges())
+
+    def deficit_bounded_below(self) -> bool:
+        """Every non-tie tree up to n_max has 1 - Phi^11 >= 1/denominator(Phi^11) (and none exceeds 1)."""
+        import networkx as nx
+        for n in range(3, self.n_max + 1):
+            for T in nx.nonisomorphic_trees(n):
+                nn, e = self._edges(T)
+                phi, deficit, bound = deficit_lower_bound(nn, e)
+                if phi > 1:
+                    return False                     # would be a BG violation
+                if phi < 1 and deficit < bound:
+                    return False
+        return True
+
+    def check(self) -> bool:
+        return self.deficit_bounded_below()
+
+    def lean(self) -> str:
+        return (
+            "-- INTEGRALITY STRICTNESS: for Phi^11 = N/D (N,D : Nat, D > 0), Phi^11 <= 1 and N != D give\n"
+            "-- N < D, hence N + 1 <= D, hence 1 - N/D >= 1/D.  The strict deficit is an integrality freebie.\n"
+            "theorem deficit_floor (N D : ℕ) (hD : 0 < D) (hle : N ≤ D) (hne : N ≠ D) :\n"
+            "    (1 : ℚ) / D ≤ 1 - (N : ℚ) / D := by\n"
+            "  have : N + 1 ≤ D := Nat.lt_iff_add_one_le.mp (lt_of_le_of_ne hle hne)\n"
+            "  rw [div_le_iff (by exact_mod_cast hD)] <;> push_cast <;> nlinarith [this]\n"
         )
