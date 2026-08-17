@@ -22,6 +22,14 @@ INTEGRALITY = FOCK QUANTIZATION.  The continuum relaxation overshoots (Phi=1.000
 integer s obey Phi<=1.  Bosonically this is Fock number-state quantization -- integer occupation -- the
 same wall the fermionic reading called Pauli roughness, seen from the opposite statistics.
 
+FULL BOSONIC TOOLKIT (ported here, the mirror of the fermionic side): the bosonic permanent per(L) and
+its boson<->fermion seam (det=0); the HAFNIAN (Gaussian boson sampling / perfect-matching object) and the
+per = haf([[0,A],[A^T,0]]) relation; coherent-state occupations (Poissonian, mean=variance); Bose-Einstein
+thermal occupation and condensation; the Van der Waerden minimum permanent (uniform condensate); the three
+Bose-Einstein statistical attributes (symmetry, commutation, bunching); and the HARD-CORE-BOSON / Girardeau
+duality -- the tree matchings are hard-core bosons, so per(L)/prod(deg) equals the free-fermion spectral
+product prod(1+lambda^2), which is WHY the boson and fermion readings coincide on trees.
+
 DESCRIPTIVE: this is a reading of the SAME object the cavity computes, not a new proof.  It proves nothing
 the fermionic/cavity side didn't -- it makes the condensate/surface structure canonical.  conjecture1_proved
 = False.
@@ -80,6 +88,60 @@ def gross_pitaevskii_bethe(z_num, z_den, degree):
     return (-b + math.sqrt(b * b - 4 * a * c)) / (2 * a) if a else z
 
 
+def hafnian(A):
+    """Hafnian of a symmetric matrix -- the GAUSSIAN-boson-sampling object: sum over PERFECT MATCHINGS
+    (pairings) of prod A_ij.  Bosonic cousin of the Pfaffian (haf has all + signs; Pf alternates).
+    Related to the permanent by per(A) = haf([[0,A],[A^T,0]])."""
+    n = len(A)
+    if n % 2:
+        return 0
+
+    def rec(verts):
+        if not verts:
+            return 1
+        i = verts[0]
+        tot = 0
+        for k in range(1, len(verts)):
+            j = verts[k]
+            tot += A[i][j] * rec([v for v in verts[1:] if v != j])
+        return tot
+
+    return rec(list(range(n)))
+
+
+def per_from_hafnian(A):
+    """per(A) via the hafnian embedding haf([[0,A],[A^T,0]]) -- the permanent as a Gaussian-boson object."""
+    n = len(A)
+    Z = [[0] * (2 * n) for _ in range(2 * n)]
+    for i in range(n):
+        for j in range(n):
+            Z[i][n + j] = A[i][j]
+            Z[n + j][i] = A[i][j]
+    return hafnian(Z)
+
+
+def bose_einstein_occupation(eps, beta=1.0, mu=0.0):
+    """Bose-Einstein mean occupation <n> = 1/(exp(beta(eps-mu)) - 1).  Diverges as eps -> mu (the
+    condensation instability): bosons pile into the low-energy mode without bound (no Pauli cap)."""
+    import math
+    x = beta * (eps - mu)
+    return 1.0 / (math.exp(x) - 1.0) if x > 1e-12 else float("inf")
+
+
+def van_der_waerden_bound(n):
+    """The Van der Waerden lower bound per(D) >= n!/n^n for n x n doubly-stochastic D, with equality at
+    the uniform condensate D = J/n -- the bosonic 'minimum permanent' (maximally spread occupation)."""
+    import math
+    return math.factorial(n) / n ** n
+
+
+def coherent_state_occupation(alpha2, n):
+    """|<n|alpha>|^2 = e^{-|alpha|^2} |alpha|^{2n}/n! -- POISSONIAN occupation of a coherent (condensate/
+    laser) state, mean = variance = |alpha|^2 (the classic coherent-state signature).  alpha2 = |alpha|^2."""
+    import math
+    return math.exp(-alpha2) * alpha2 ** n / math.factorial(n)
+
+
 def _perm(M):
     """Exact permanent of a small matrix (brute force over permutations)."""
     import math
@@ -133,6 +195,55 @@ class BoseEinsteinStatisticsCertificate:
         return (self.exchange_symmetric()
                 and self.commutation_not_anticommutation()
                 and self.bose_einstein_bunching())
+
+
+@dataclass(frozen=True)
+class BosonicToolkitCertificate:
+    """Certifies the ported bosonic toolkit: the hafnian/permanent (Gaussian-boson) relation, the
+    Van der Waerden minimum-permanent equality, the coherent-state Poissonian signature (mean=variance),
+    Bose-Einstein condensation (occupation -> inf as eps -> mu), and the HARD-CORE-BOSON / Girardeau
+    duality that explains why the boson and fermion readings coincide on trees."""
+
+    def hafnian_permanent_relation(self) -> bool:
+        """per(A) = haf([[0,A],[A^T,0]]) -- the permanent is a Gaussian-boson (hafnian) object."""
+        A = [[1, 2], [3, 4]]
+        return _perm(A) == per_from_hafnian(A)
+
+    def van_der_waerden_equality(self, nmax: int = 5) -> bool:
+        """per(J/n) = n!/n^n: the uniform condensate attains the Van der Waerden minimum permanent."""
+        for n in range(2, nmax + 1):
+            Jn = [[1.0 / n] * n for _ in range(n)]
+            if abs(_perm(Jn) - van_der_waerden_bound(n)) > 1e-9:
+                return False
+        return True
+
+    def coherent_state_poissonian(self, alpha2: float = 2.0, nmax: int = 30) -> bool:
+        """A coherent (condensate) state has Poissonian occupation: mean = variance = |alpha|^2."""
+        p = [coherent_state_occupation(alpha2, n) for n in range(nmax)]
+        mean = sum(n * p[n] for n in range(nmax))
+        var = sum((n - mean) ** 2 * p[n] for n in range(nmax))
+        return abs(mean - alpha2) < 1e-6 and abs(var - alpha2) < 1e-6
+
+    def bose_einstein_condensation(self) -> bool:
+        """Occupation grows without bound as eps -> mu (no Pauli cap) -- the condensation signature."""
+        return bose_einstein_occupation(0.001) > 100 and bose_einstein_occupation(2.0) < 1
+
+    def hard_core_boson_duality(self) -> bool:
+        """The tree matching object is HARD-CORE bosons (each vertex in <=1 dimer): the bosonic permanent
+        per(L)/prod(deg) EQUALS the free-fermion spectral product prod(1+lambda^2) (Girardeau boson<->
+        fermion duality on the tree) -- why both readings give the same arithmetic."""
+        from fractions import Fraction as Fr
+
+        from .fractal_eigenvalue import near_star_edges
+        from .matching_free_energy import rho as matching_rho
+        from .spectral import spectral_rho
+        n, e = near_star_edges(5)
+        return abs(float(matching_rho(n, e)) - spectral_rho(n, e)) < 1e-9
+
+    def check(self) -> bool:
+        return (self.hafnian_permanent_relation() and self.van_der_waerden_equality()
+                and self.coherent_state_poissonian() and self.bose_einstein_condensation()
+                and self.hard_core_boson_duality())
 
 
 @dataclass(frozen=True)
