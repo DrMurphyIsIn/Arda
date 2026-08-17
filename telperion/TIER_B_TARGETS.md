@@ -151,6 +151,20 @@ form in the joint sibling state, LR-style). The deep dive FRAMES this open targe
 LR structure + single-variable no-go); it does not construct the invariant or prove BG.
 conjecture1_proved = False.
 
+**GAUSSIAN INVARIANT CONSTRUCTION (`gaussian_invariant.py`, `GaussianInvariantCertificate`): built, and it
+pins the meta-target.** The Lewis-Riesenfeld Gaussian is the sibling Hessian at the tie: `(99/529)*J` from
+the hub amplitude -- RANK ONE, curving only the symmetric mode `S = sum mu_c` (the near-star /
+`family_martingale` direction); the relative (asymmetric) modes get zero curvature. Decisively, a Gaussian
+invariant is SMOOTH, so it certifies the analytically-continued `x(s) = -log Phi^11(N(0,s))` -- but the tie
+is NOT a smooth critical point (`x'(5) ~ +0.0051 != 0`), and the continuum OVERSHOOTS: `min x < 0` at
+`s* ~ 4.82`, i.e. `Phi^11 ~ 1.00046 > 1` BETWEEN the integer trees. `x >= 0` holds only because `s` is an
+INTEGER (arithmetic resonance), so the smooth Gaussian certifies a FALSE continuum statement -- dead-end #2
+(smooth vs arithmetic) head-on. VERDICT (unifying): the two no-gos triangulate the meta-target -- the LR
+Gaussian gives the NON-SEPARABLE (multi-variable quadratic) structure but is smooth (not integral), and the
+23-adic `resonance_carrier` gives INTEGRAL-but-separable; BG lives at their empty intersection. A certifying
+invariant must be a DISCRETE / arithmetic Gaussian -- simultaneously multi-variable AND integrality-aware,
+which no standard framework supplies. conjecture1_proved = False.
+
 ## 4. Cluster algebras / Y-systems & the Laurent-positivity phenomenon  (the cavity's natural home)
 
 **Mechanism.** Cluster mutations are subtraction-free rational maps whose iterates are Laurent polynomials
