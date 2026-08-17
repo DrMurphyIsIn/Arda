@@ -101,3 +101,24 @@ class FermionDOFCertificate:
         pm = perfect_matching_count(self.n, self.edges) in (0, 1)   # tree exclusion extreme
         ratio, ndof = laplacian_ratio_as_fermion_sum(self.n, self.edges)
         return integer_lattice and pauli and pm and ndof == fermion_dof_count(self.n, self.edges)
+
+
+def pauli_decompose(n, edges, vertex):
+    """Decompose per(L)/prod(deg) by the PAULI STATE of `vertex`: (unmatched_sum, matched_sum, total).
+    Since a vertex lies in at most one dimer (Pauli), the matched part is the sum over the vertex's
+    single allowed dimer partners -- the hard-core cap.  total = per(L)/prod(deg)."""
+    d = degrees(n, edges)
+    unm = Fr(0)
+    mat = Fr(0)
+    for M in matchings(n, edges):
+        covered = set()
+        for a, b in M:
+            covered |= {a, b}
+        w = Fr(1)
+        for v in covered:
+            w *= Fr(1, d[v])
+        if vertex in covered:
+            mat += w
+        else:
+            unm += w
+    return unm, mat, unm + mat
