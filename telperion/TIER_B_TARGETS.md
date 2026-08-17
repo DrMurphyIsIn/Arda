@@ -112,6 +112,19 @@ single-hub family touching 1. Unifies the tie-recursive marginal family and the 
 transfer factor. Does NOT prove BG (`F_b <= 1` for ALL blocks, interior maxima, multi-level trees, non-hub
 roots open). conjecture1_proved = False.
 
+**MULTI-LEVEL LIFT + the universal bound (`recursive_transfer.py`, `RecursiveTransferCertificate`).** The
+transfer factor lifts to WHOLE trees, recursively: `F_v = (64/621) a_v^11 prod_c F_c`, `a_v = 1 + S/(j+1)`,
+`mu_v = 1/(j+1+S)` (`S = sum` child messages) -- verified `== phi11_rooted` on all trees, so the
+blocks-of-blocks lift COMPOSES exactly. On the universal bound: `F_b = phi11_rooted(block,root)` EXACTLY, so
+"`F_b <= 1` for all blocks" is `max_r phi11_rooted = bg_phi11 <= 1` -- **it IS BG**, not a weaker target, and
+is NOT proved (correcting the earlier "more local" framing). What IS gained: the induction closes at SAFE
+vertices (`a^11 <= 621/64`, since `(64/621)(621/64) = 1`) -- ~68% of vertices; the ~32% DANGEROUS ones
+(`a` up to `15/8`, sup 2) need child slack, and are unavoidable (a leaf emits `mu = 1` -> parent `a >= 3/2 >
+rho_B`). The compensation is the non-local anti-correlation "leaf children carry tiny `F = 64/621`" = dead-end
+#1 (collective cancellation) in exact recursive form; the tie's hub (`a = 23/18`, dangerous) sits at `F = 1`
+by exact slack. So the multi-level lift SUCCEEDS structurally and the crux is LOCATED to the dangerous
+minority -- but the universal bound = BG stays open. conjecture1_proved = False.
+
 ## 4. Cluster algebras / Y-systems & the Laurent-positivity phenomenon  (the cavity's natural home)
 
 **Mechanism.** Cluster mutations are subtraction-free rational maps whose iterates are Laurent polynomials
