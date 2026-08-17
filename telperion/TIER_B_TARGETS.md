@@ -125,6 +125,17 @@ rho_B`). The compensation is the non-local anti-correlation "leaf children carry
 by exact slack. So the multi-level lift SUCCEEDS structurally and the crux is LOCATED to the dangerous
 minority -- but the universal bound = BG stays open. conjecture1_proved = False.
 
+**ENVELOPE ATTEMPT (`envelope.py`, `EnvelopeCertificate`): single-variable `F <= h(mu)` proofs RULED OUT.**
+The natural way to close the dangerous vertices is an inductive envelope `h(mu)` with `F_v <= h(mu_v) <= 1`.
+Mapped: the empirical envelope `h*(mu) = sup{F : message = mu}` peaks at EXACTLY 1 at the tie (`mu = 3/23`),
+is `< 1` elsewhere, and the tie's own children (leaf `mu=1`, arm `mu=1/3`) are the extremizers -- a
+self-consistent spine. BUT it is NOT a supersolution: thousands of actual vertices have `(64/621) a^11 prod_c
+h*(mu_c) > h*(mu_v)`, overshooting by up to ~60-100x. Reason: `prod_c h(mu_c)` is not JOINTLY realizable --
+siblings attain their per-message maxima on incompatible subtrees, invisible to a `mu`-only bound (a larger
+`h` only worsens the product). So NO single-variable `h(mu)` is inductive; a closing invariant must be JOINT
+over siblings -- PROOF_STATUS dead-end #1 (collective / non-local) at the finest recursive resolution. A
+reasoned dead-end that rules out the per-message envelope class. conjecture1_proved = False.
+
 ## 4. Cluster algebras / Y-systems & the Laurent-positivity phenomenon  (the cavity's natural home)
 
 **Mechanism.** Cluster mutations are subtraction-free rational maps whose iterates are Laurent polynomials
