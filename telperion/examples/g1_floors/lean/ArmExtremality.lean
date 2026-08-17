@@ -84,5 +84,36 @@ theorem gstep_leaf_I_integer : (64 : ℕ) ^ 2 * 5 ^ 11 * 9 ^ 11 < 621 ^ 2 * 3 ^ 
 theorem gstep_leaf_II_integer : (621 : ℕ) * 4 ^ 11 < 64 * 5 ^ 11 := by
   norm_num
 
+/-! ### Coordinate-wise unimodality (replaces majorization -- g_bound is Schur-CONVEX, so Schur fails).
+
+  The global max of the branching g-step is at the symmetric crossover mu* by coordinate-wise unimodality:
+  increasing below mu* (T1), and the descent condition below (T2) above mu*.  These two rational lemmas are
+  the arithmetic engine; the over-the-reals T1/T2 at the irrational mu* and the Branch wiring remain. -/
+
+/-- **T2 descent engine.**  For `j ≥ 2` and `μ ≤ S`, the coordinate-descent condition holds:
+    `3 + μ ≤ (j+1) · boost`, where `boost = 1 + (3S+1)/(3j+3)`.  (Exactly `(j+1)·boost = (j+1) + (3S+1)/3
+    ≥ j + 4/3 + μ ≥ 3 + μ` since `j ≥ 2`.)  This forces `g_bound` to decrease toward `μ*` above it. -/
+theorem descent_engine (j : ℕ) (hj : 2 ≤ j) (S mu : ℚ) (hmu : mu ≤ S) :
+    3 + mu ≤ ((j : ℚ) + 1) * (1 + (3 * S + 1) / (3 * (j : ℚ) + 3)) := by
+  have hjq : (2 : ℚ) ≤ (j : ℚ) := by exact_mod_cast hj
+  have hden : (0 : ℚ) < 3 * (j : ℚ) + 3 := by positivity
+  have key : ((j : ℚ) + 1) * (1 + (3 * S + 1) / (3 * (j : ℚ) + 3))
+      = ((j : ℚ) + 1) + (3 * S + 1) / 3 := by
+    field_simp
+  rw [key]
+  have hfrac : (3 * mu + 1) / 3 ≤ (3 * S + 1) / 3 := by gcongr
+  have hexp : ((j : ℚ) + 1) + (3 * mu + 1) / 3 = (j : ℚ) + mu + 4 / 3 := by ring
+  linarith [hfrac, hexp, hjq]
+
+/-- **Boost bound.**  If `3S ≤ j` (all child messages `≤ 1/3`), then `boost = 1 + (3S+1)/(3j+3) ≤ 4/3`.
+    At the crossover this gives `boost(μ*) < 4/3` (via `3μ* < 1`, leaf I), hence `W·boost(μ*)^11 < W·(4/3)^11
+    < γ`. -/
+theorem boost_le_four_thirds (j : ℕ) (S : ℚ) (hS : 3 * S ≤ (j : ℚ)) :
+    1 + (3 * S + 1) / (3 * (j : ℚ) + 3) ≤ 4 / 3 := by
+  have hden : (0 : ℚ) < 3 * (j : ℚ) + 3 := by positivity
+  have h : (3 * S + 1) / (3 * (j : ℚ) + 3) ≤ 1 / 3 := by
+    rw [div_le_iff₀ hden]; linarith
+  linarith
+
 end ArmExtremality
 end G1
