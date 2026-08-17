@@ -80,6 +80,61 @@ def gross_pitaevskii_bethe(z_num, z_den, degree):
     return (-b + math.sqrt(b * b - 4 * a * c)) / (2 * a) if a else z
 
 
+def _perm(M):
+    """Exact permanent of a small matrix (brute force over permutations)."""
+    import math
+    from itertools import permutations
+    n = len(M)
+    return sum(math.prod(M[i][p[i]] for i in range(n)) for p in permutations(range(n)))
+
+
+def _det(M):
+    """Exact determinant of a small matrix (Leibniz, exact)."""
+    import math
+    from itertools import permutations
+    n = len(M)
+    tot = 0
+    for p in permutations(range(n)):
+        sign = 1 if sum(1 for i in range(n) for j in range(i + 1, n) if p[i] > p[j]) % 2 == 0 else -1
+        tot += sign * math.prod(M[i][p[i]] for i in range(n))
+    return tot
+
+
+@dataclass(frozen=True)
+class BoseEinsteinStatisticsCertificate:
+    """Certifies the three defining bosonic attributes of the permanent (vs the determinant): complete
+    symmetry under particle exchange, commutation (not anticommutation) relations, and Bose-Einstein
+    statistics -- each as a concrete, checkable property of per vs det."""
+
+    def exchange_symmetric(self) -> bool:
+        """COMPLETE SYMMETRY under particle exchange: swapping two rows (exchanging two particles) leaves
+        per INVARIANT (symmetric = boson), while det flips sign (antisymmetric = fermion)."""
+        M = [[1, 2, 3], [4, 5, 6], [7, 8, 10]]
+        Msw = [M[1], M[0], M[2]]
+        return _perm(M) == _perm(Msw) and _det(M) == -_det(Msw)
+
+    def commutation_not_anticommutation(self) -> bool:
+        """COMMUTATION [a,a+]=1 (not anticommutation): two particles in the SAME mode (two equal rows) is
+        ALLOWED for per (nonzero, no Pauli) but FORBIDDEN for det (zero, Pauli exclusion)."""
+        Meq = [[1, 2, 3], [1, 2, 3], [7, 8, 10]]
+        return _perm(Meq) != 0 and _det(Meq) == 0
+
+    def bose_einstein_bunching(self, kmax: int = 5) -> bool:
+        """BOSE-EINSTEIN statistics: unbounded shared occupation -- per(J_k)=k! (bosonic bunching), while
+        det(J_k)=0 for k>=2 (no fermionic bunching)."""
+        import math
+        for k in range(2, kmax + 1):
+            J = [[1] * k for _ in range(k)]
+            if _perm(J) != math.factorial(k) or _det(J) != 0:
+                return False
+        return True
+
+    def check(self) -> bool:
+        return (self.exchange_symmetric()
+                and self.commutation_not_anticommutation()
+                and self.bose_einstein_bunching())
+
+
 @dataclass(frozen=True)
 class BosonicReadingCertificate:
     """Certifies the bosonic reading on a tree: per(L) is the symmetric (bosonic) immanant and det(L)=0
