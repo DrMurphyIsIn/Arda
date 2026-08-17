@@ -14,7 +14,10 @@ polynomial** / its integer matching counts `m_k`. For a tree, `char poly = match
 (Heilmann–Lieb) hence **Lorentzian** (Brändén–Huh) — the canonical "discrete Gaussian" (non-separable
 Hodge–Riemann Hessian + integral M-convex support). Exact check: for N(0,s) the tie N(0,5) (`m_k=[1,10,30,40,
 25,6]`, `∏(1+λ²)=112`) is where `(64/621)^n` balances the integer object to `Φ¹¹=1`. Non-separability = sibling
-edge-competition; integrality = `m_k ∈ ℤ`.
+edge-competition; integrality = `m_k ∈ ℤ`. **Precision (T2 capstone):** the non-separability is carried by the
+**multivariate per-edge** matching polynomial (Lorentzian; Hessian couples distinct edges), NOT by the scalar
+`m_k` sequence — whose ultra-log-concavity alone is a *separable* one-variable bound (the ruled-out kind). Take
+non-separability from the multivariate object, then specialize; the `m_k` are its integral shadow.
 
 ---
 

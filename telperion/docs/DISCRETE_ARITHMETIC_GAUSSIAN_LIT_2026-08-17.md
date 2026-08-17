@@ -45,8 +45,18 @@ non-separable AND integral *by construction*:
   Genest–Vinet–Zhedanov as SO(d) rotations of binomials), living on the integer simplex — the discrete-Hermite
   eigenfunctions of the discrete Gaussian.
 
-**Non-separability = sibling edge-competition** (two sibling leaves compete for the same parent edge, so `m_k`
-does not factor across siblings). **Integrality = `m_k ∈ ℤ`.**
+**Non-separability = sibling edge-competition; integrality = `m_k ∈ ℤ`.** **Precision (T2 capstone correction —
+load-bearing).** The non-separability is carried by the **multivariate, per-edge** matching polynomial
+(`Σ_M ∏_{e∈M} w_e`, one variable per edge; Heilmann–Lieb stable ⇒ Lorentzian), whose Hessian couples *distinct
+edges* — that is the sibling-edge competition. It is **NOT** carried by the scalar sequence `m_k`: real-rootedness
+gives `m_k` ultra-log-concave (Newton), but that is a *separable* one-variable statement, i.e. exactly the kind
+of single-variable bound the arc PROVED fails. So the invariant is "the tree's **multivariate** matching
+polynomial is Lorentzian, and `= tie` iff it sits on the **boundary** of the Lorentzian cone (Hessian drops rank
+— the `(99/529)·J` degeneration)" — not "`m_k` is log-concave" (true generically, does not isolate the tie).
+The scalar `m_k` are the *integral shadow* (criterion 2); non-separability must be taken from the multivariate
+object and then specialized. Favourable note: the integrality-location gap is *smaller* here than feared — the
+matching number `k` is itself an integer tree invariant, closer to BG's arm-count resonance than a generic
+exponent-lattice support.
 
 **Exact validation (this session).** For near-stars N(0,s): the `m_k` are integers, `∏(1+λ²)=per(L)/∏deg` is
 a fixed polynomial in them (values 20, 48, **112**, 256, 576 for s=3..7 — identical to the monomer-dimer
