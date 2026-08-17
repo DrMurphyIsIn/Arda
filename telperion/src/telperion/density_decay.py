@@ -134,6 +134,25 @@ def classify_decay_regime(family_fn, sizes):
     }
 
 
+def laplace_surface_tension(family_fn, sizes):
+    """Balloon/Laplace reading of the 1/s density term: D(s) = D_inf + c/s, with c the effective
+    SURFACE TENSION (the coefficient of the surface free-energy term ~ surface/volume ~ 1/n).  Laplace's
+    law DeltaP = 2*gamma/r <=> delta(s)=c/s.  Returns dict(D_inf_bulk, tension=c, from_above=c>0,
+    r2, uniform).  c>0 => density approached FROM ABOVE (the 'inflated balloon').  `uniform` flags whether
+    the LOCAL tension c(s)=s(s+1)(D(s)-D(s+1)) is ~constant (a uniform membrane) or drifts (sub-leading
+    curvature corrections -- nonlinear wall).  DESCRIPTIVE physics, not a proof lever: it re-expresses the
+    measured 1/s relaxation as a surface-tension term.  conjecture1_proved=False."""
+    d_inf, c, r2 = is_linear_in_inverse_s(family_fn, sizes)
+    locals_ = []
+    for s in (sizes[0], sizes[len(sizes) // 2], sizes[-1]):
+        d0 = _density(*family_fn(s))
+        d1 = _density(*family_fn(s + 1))
+        locals_.append(s * (s + 1) * (d0 - d1))
+    spread = max(locals_) - min(locals_)
+    return {"D_inf_bulk": d_inf, "tension": c, "from_above": c > 0, "r2": r2,
+            "local_tensions": locals_, "uniform": spread < 0.05 * abs(c) if c else False}
+
+
 def default_family_zoo():
     """Ordered..disordered growing tree families for scouting.  Disordered ones (RRT, pref-attach) are
     seeded/incremental so each is a well-defined growing structure."""
