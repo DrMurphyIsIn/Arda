@@ -7,6 +7,18 @@ invariant `bg_phi11`, the unique tie is the near-star `N(0,5)` at `n=11`).
 `conjecture1_proved = False.` This file is the honest map: what is proven, what is ruled
 out (and why), and the one lead that remains.
 
+> **Status of the `≤ 1` bound (2026-08-17, reconciled with `PROOF_AUDIT`).** The NON-STRICT bound
+> `Φ¹¹(T) ≤ 1` for every tree is **PROVED** — the origin R3Cert `phi_le_one` (a non-smooth *hinge*
+> super-solution `P(m)=0.22·(m−T0)₊`, telescoped through the `per(L)` bridge), kernel-checked, credited
+> as such in `PROOF_AUDIT.md`. What is **open** (`conjecture1_proved = False`) is the SHARP/maximizer
+> statement: `Φ¹¹ < 1` *strictly* for every non-tie tree, `= 1` iff the six ties, and near-star
+> per-`n` competitor extremality. The dead-ends below rule out routes to that SHARP result (and to a
+> *conceptual* re-proof of the bound); they are **not** claims that `≤ 1` is unproven. In particular
+> dead-end #1 refutes the *naive per-node-non-positive decomposition* (`logΦ = Σ`(≤0 terms), false —
+> the tie-hub charge is `+0.424`); the hinge escapes it precisely by being a *discharging*
+> super-solution (it redistributes that defect through the potential), so it is not a counterexample
+> to #1.
+
 Here `Φ¹¹(T) = (64/621)ⁿ · (∏_v a_v)¹¹` where `a_v = 1 + z_v S_v` is the rational cavity
 amplitude (`z_v = 1/deg`, `m_v = z_v/a_v`), maximized over roots. The per-vertex density
 is `D(T) = Φ¹¹(T)^(1/n)`.
