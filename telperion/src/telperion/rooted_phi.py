@@ -61,6 +61,93 @@ def bg_phi11(n, edges):
     return max(phi11_rooted(n, edges, r) for r in range(n))
 
 
+def all_roots_phi11(n, edges):
+    """Phi^11 rooted at EVERY vertex, computed in O(n) total by re-rooting (message-passing) DP.
+    Returns {root: Phi^11}.  A directed-edge message from v (parent u) carries
+    (m_{v->u}, p_{v->u}) = (z/(1+zS), (64/621)(1+zS)^11 prod p_child), z=1/deg(v), S=sum child m."""
+    if n == 1:
+        return {0: _A11}
+    adj = [[] for _ in range(n)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    deg = [len(adj[v]) for v in range(n)]
+    parent = [-1] * n
+    order = [0]
+    seen = [False] * n
+    seen[0] = True
+    stack = [0]
+    while stack:
+        u = stack.pop()
+        for w in adj[u]:
+            if not seen[w]:
+                seen[w] = True
+                parent[w] = u
+                order.append(w)
+                stack.append(w)
+
+    def message(v, nbr_msgs):
+        """(m,p) for v sending toward one neighbor; nbr_msgs = incoming (m,p) from its OTHER neighbors.
+        v has a real parent here so d = deg(v)."""
+        S = sum(mm for mm, _ in nbr_msgs)
+        z = Fr(3, 3 * deg[v])
+        opz = 1 + z * S
+        pv = _A11 * opz ** 11
+        for _, pp in nbr_msgs:
+            pv *= pp
+        return (z / opz, pv)
+
+    # pass 1 (postorder): up[v] = message from v to parent(v)
+    up = [None] * n
+    for v in reversed(order):
+        kids = [c for c in adj[v] if c != parent[v]]
+        up[v] = message(v, [up[c] for c in kids])
+
+    # pass 2 (preorder): down[v] = message from parent(v) to v
+    down = [None] * n
+    for v in order:
+        nbrs = adj[v]
+        # incoming (m,p) from every neighbor of v
+        inc = []
+        for w in nbrs:
+            inc.append(up[w] if parent[w] == v else down[v])  # child -> up[w]; parent -> down[v]
+        k = len(nbrs)
+        # prefix/suffix products of p and prefix sums of m, to exclude one neighbor
+        pref_p = [Fr(1)] * (k + 1)
+        suf_p = [Fr(1)] * (k + 1)
+        for i in range(k):
+            pref_p[i + 1] = pref_p[i] * inc[i][1]
+        for i in range(k - 1, -1, -1):
+            suf_p[i] = suf_p[i + 1] * inc[i][1]
+        total_m = sum(mm for mm, _ in inc)
+        z = Fr(3, 3 * deg[v])
+        for i, w in enumerate(nbrs):
+            if parent[w] != v:
+                continue  # only send down to children
+            S = total_m - inc[i][0]
+            opz = 1 + z * S
+            pw = _A11 * opz ** 11 * pref_p[i] * suf_p[i + 1]
+            down[w] = (z / opz, pw)
+
+    # combine at each root r: d = deg(r)+1 (virtual parent)
+    res = {}
+    for r in range(n):
+        msgs = [up[w] if parent[w] == r else down[r] for w in adj[r]]
+        S = sum(mm for mm, _ in msgs)
+        z = Fr(3, 3 * (deg[r] + 1))
+        opz = 1 + z * S
+        pr = _A11 * opz ** 11
+        for _, pp in msgs:
+            pr *= pp
+        res[r] = pr
+    return res
+
+
+def bg_phi11_fast(n, edges):
+    """Brualdi-Goldwasser invariant via the O(n) re-rooting DP (max over all roots)."""
+    return max(all_roots_phi11(n, edges).values())
+
+
 def bg_phi11_argmax_root(n, edges):
     """(max Phi^11, root attaining it)."""
     best = None

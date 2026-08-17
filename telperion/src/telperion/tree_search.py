@@ -1,7 +1,8 @@
 """Tree-landscape search for competitor extremality — MAP-Elites illumination + rearrangement moves.
 
 Ideas gleaned from the ARDA evolution engine (arda-trading, read-only review), adapted to the
-Brualdi-Goldwasser tree landscape (fitness = rho(T) = per(L)/prod deg, the monomer-dimer free energy):
+Brualdi-Goldwasser tree landscape (fitness = bg_phi11(T), the ROOTED branch Phi, max over roots -- the
+CORRECT BG quantity, re-pointed 2026-08-16 from the raw monomer-dimer rho which is a different problem):
 
   * MAP-ELITES illumination (map_elites/archive.py): store the best tree per cell of a structural
     behavior grid (diameter x max-degree).  This illuminates the WHOLE landscape -- confirming the
@@ -19,7 +20,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .matching_free_energy import near_star_edges, rho
+from .matching_free_energy import near_star_edges
+from .rooted_phi import bg_phi11_fast
 
 
 def _descriptor(n, edges):
@@ -77,7 +79,7 @@ class TreeLandscapeSearch:
     archive: dict = field(default_factory=dict)
 
     def _consider(self, edges):
-        r = rho(self.n, edges)
+        r = bg_phi11_fast(self.n, edges)
         cell = _descriptor(self.n, edges)
         if cell not in self.archive or r > self.archive[cell][0]:
             self.archive[cell] = (r, edges)
@@ -113,4 +115,4 @@ class TreeLandscapeSearch:
             return False
         rho_best, _ = self.best()
         _, nse = near_star_edges((self.n - 1) // 2)
-        return rho_best == rho(self.n, nse)
+        return rho_best == bg_phi11_fast(self.n, nse)
