@@ -6,22 +6,28 @@ language the per-vertex density
     D(T) = Phi^11(T)^(1/n)
 
 IS the dominant eigenvalue of the tree's transfer operator (the bulk free-energy density).  The legs-2
-self-similar family (near-star + double-broom, the peak-shape manifold) has density UNIMODAL in size:
-it rises to EXACTLY 1 at the n=11 tie then DECREASES to the arm-transfer eigenvalue D_inf ~ 0.9585
-(= (64/621)(3/2)^(11/2); see fractal_eigenvalue.py), approached from ABOVE.  So the global sup of
-density over all trees is the FINITE n=11 tie (=1), and the asymptotic tail is bounded well below 1.
+self-similar family (near-star + double-broom) has density UNIMODAL in size: it rises to EXACTLY 1 at the
+n=11 tie then DECREASES to the arm-transfer eigenvalue D_inf ~ 0.9585 (= (64/621)(3/2)^(11/2); see
+fractal_eigenvalue.py), approached from ABOVE.
 
-    tail theorem (open): prove  sup_{n > 11, all trees T} D(T)  <  1   (rigorously).
+CORRECTION 1 (2026-08-17): an earlier version reported a family "limit ~0.964"; that was a FINITE-SIZE
+artifact (density at s~80), not the limit.  The true legs-2 limit is D_inf ~0.9585, approached from ABOVE.
 
-CORRECTION (2026-08-17): an earlier version of this module reported a family "limit ~0.964"; that was a
-FINITE-SIZE artifact (density at s~80), not the limit.  The true legs-2 limit is D_inf ~0.9585, and the
-density APPROACHES IT FROM ABOVE -- so small samples OVERESTIMATE it.  Use large sizes for the limit.
+CORRECTION 2 (2026-08-17) -- LOAD-BEARING: legs-2 is NOT the density-extremal manifold, and D_inf~0.9585 is
+NOT the global sup.  "Hub + k tie-subtrees" (a hub whose every child is a copy of the tie N(0,5)) has
+per-vertex density -> 1 (0.9998 at k=400, still climbing), HIGHER than the legs-2 D_inf.  So:
+  * D_inf~0.9585 is the near-star FAMILY's OWN limit, NOT a bound over all trees.
+  * the SUP of D(T) over all trees is 1 (approached by tie-recursive structures), NOT < 1.
+  * therefore the tail is NOT "sup density < c < 1"; the correct statement is:
 
-The transfer operator is exactly solvable PER self-similar family (its dominant eigenvalue -- and for
-legs-2 that eigenvalue < 1 is the INTEGER inequality 3^11*64^2 < 2^11*621^2, fractal_eigenvalue.py).  A
-uniform variational bound over ALL tree-tensor structures is the open research direction.  This module is
-a RESEARCH SCAFFOLD, not a certificate: it says nothing about the arithmetic TIE (23-adic).
-conjecture1_proved = False.
+    tail theorem (open):  D(T) < 1 STRICTLY for every non-tie tree, while sup_T D(T) = 1 is
+      APPROACHED (by tie-recursive structures) and REACHED only at integer resonances (11|n + the
+      specific tie; see sporadic_tie.py).  Archimedean approach + arithmetic reaching.
+
+So there is NO uniform gap below 1 to lean on -- the bulk+surface/crossover argument bounds the near-star
+FAMILY (finite crossover to its own D_inf), NOT arbitrary trees.  The wall is archimedean (density -> 1 as a
+growth-rate); the reaching is arithmetic (integrality stops the near-1 structures at 11|n).  This module is
+a RESEARCH SCAFFOLD over the legs-2 family only, NOT a global tail certificate.  conjecture1_proved = False.
 """
 from __future__ import annotations
 
@@ -67,16 +73,19 @@ class TransferTailBound:
         return res
 
     def empirical_sup(self):
-        """The largest family-limit density seen -- the empirical tail constant c (~0.964 for legs-2)."""
+        """The largest family-limit density among THIS survey's families -- a per-family limit, NOT the
+        global sup over all trees.  WARNING: the global sup of D(T) over all trees is 1 (approached by
+        tie-recursive structures such as hub+tie-subtrees, density -> 1), NOT the legs-2 D_inf~0.9585."""
         s = self.survey()
         return max(v[0] for v in s.values()) if s else None
 
     def open_statement(self) -> str:
-        return ("TAIL THEOREM (open): sup_{n>11, all trees} D(T)=Phi^11^(1/n) < 1. The legs-2 family "
-                "density is unimodal -- =1 at the n=11 tie, then decreasing FROM ABOVE to the arm-transfer "
-                "eigenvalue D_inf~0.9585 = (64/621)(3/2)^(11/2), whose <1 is the integer inequality "
-                "3^11*64^2 < 2^11*621^2 (fractal_eigenvalue.py). Open piece = a uniform bound that legs-2 "
-                "dominates ALL trees. The arithmetic TIE is separate (23-adic). conjecture1_proved=False.")
+        return ("TAIL THEOREM (open, CORRECTED): D(T)=Phi^11^(1/n) < 1 STRICTLY for every non-tie tree, "
+                "while sup_T D(T) = 1 is APPROACHED (by tie-recursive structures: hub+k tie-subtrees -> 0.9998) "
+                "and REACHED only at integer resonances (11|n + the tie; sporadic_tie.py). legs-2 is NOT the "
+                "extremal manifold and D_inf~0.9585 is only the near-star FAMILY's limit, NOT the global sup. "
+                "The wall is ARCHIMEDEAN (density -> 1 as a growth-rate); the reaching is ARITHMETIC "
+                "(integrality). No uniform gap below 1 exists. conjecture1_proved=False.")
 
 
 def default_families():
