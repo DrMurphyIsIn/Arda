@@ -89,6 +89,42 @@ class LevinsonAnalysis:
         lc_below, lc_above = self.levinson_count()
         return lc_below == len(below) and lc_above == len(above)
 
+    # ---- Friedel sum rule / Krein spectral shift ---------------------------
+    # The DISPLACED CHARGE xi(E) = N_{H0}(E) - N_H(E) equals the phase over pi:
+    #     xi(E) = (1/pi) arg(1 - V G0_rr(E+i0))            (Birman-Krein / Friedel sum rule),
+    # and xi at the band edge = the bound-state count (Levinson is its boundary value).
+    #
+    # HONEST FINDING: the displaced charge does NOT discriminate the near-star.  A positive on-site
+    # impurity creates exactly ONE bound state on EVERY tree, so xi is tree-independent.  BG's
+    # extremality lives in the AMPLITUDE R = |1+G_rr| deg/(deg+1) (the arithmetic 23/24 resonance),
+    # NOT in the phase / displaced charge.  So the counting/topological (Levinson-Friedel) invariants do
+    # not by themselves prove extremality -- the amplitude does.
+
+    def spectral_shift_count(self, E):
+        """xi(E) = N_{H0}(E) - N_H(E) (difference of eigenvalue counting functions)."""
+        lam0, _ = self._spec()
+        lam1 = self.perturbed_spectrum()
+        return int(np.sum(lam0 <= E) - np.sum(lam1 <= E))
+
+    def spectral_shift_phase(self, E, eps=1e-6):
+        """xi(E) via the Friedel phase: (1/pi) arg(1 - V G0_rr(E+i eps))."""
+        import cmath
+        lam, w = self.spectral_weights()
+        G0 = np.sum(w / (E + 1j * eps - lam))
+        return cmath.phase(1 - self.V * G0) / np.pi
+
+    def displaced_charge(self, E):
+        """The Friedel displaced charge at Fermi level E (= spectral shift xi(E))."""
+        return self.spectral_shift_count(E)
+
+    def verify_friedel_sum_rule(self, grid=None) -> bool:
+        """The Friedel sum rule: xi_count(E) == round(xi_phase(E)) across an energy grid."""
+        lo, hi = self.host_band()
+        if grid is None:
+            grid = np.linspace(lo - 2, hi + 2, 40)
+        return all(self.spectral_shift_count(E) == round(self.spectral_shift_phase(E))
+                   for E in grid)
+
 
 def tree_levinson(n, edges, site, V):
     """LevinsonAnalysis for the tree adjacency host with an on-site impurity V at `site`."""
