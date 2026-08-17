@@ -35,12 +35,30 @@ def hessian(poly: sp.Expr, xs) -> sp.Matrix:
     return sp.hessian(poly, xs)
 
 
+def real_sign(val, tol: float = 1e-25, prec: int = 50) -> int:
+    """Sign (-1, 0, +1) of a value KNOWN to be real but possibly delivered by sympy in casus-irreducibilis
+    radical form -- a real irreducible-cubic root written with radicals of complex numbers, so its imaginary
+    part is a formal artifact that cancels but which `sp.sign`/`sp.simplify` cannot cheaply resolve (and
+    `simplify` can hang).  Ported imaginary-part-handling capability: fast exact paths (rational / declared
+    real), then a high-precision numeric evaluation of the REAL part with the imaginary artifact chopped.
+
+    Correct for eigenvalues of a symmetric (Hermitian) matrix, which are guaranteed real; a genuinely zero
+    eigenvalue is an exact rational char-poly root and evaluates to ~0 far below `tol`."""
+    if getattr(val, "is_rational", False) and val.is_rational:
+        return 0 if val == 0 else (1 if val > 0 else -1)
+    if getattr(val, "is_zero", False):
+        return 0
+    r = complex(sp.N(val, prec)).real                # real part; imaginary artifact chopped
+    return 0 if abs(r) < tol else (1 if r > 0 else -1)
+
+
 def signature(H: sp.Matrix) -> tuple[int, int, int]:
-    """(n_pos, n_zero, n_neg) of a symmetric rational matrix, exact via eigenvals."""
+    """(n_pos, n_zero, n_neg) of a symmetric matrix, robust to casus-irreducibilis radical eigenvalues
+    (via `real_sign`).  A symmetric matrix has real eigenvalues; the sign of each is read exactly when
+    cheap and numerically (real part) otherwise."""
     pos = zero = neg = 0
     for val, mult in H.eigenvals().items():
-        v = sp.nsimplify(val) if not val.is_number else val
-        s = sp.sign(sp.simplify(v))
+        s = real_sign(val)
         if s > 0:
             pos += mult
         elif s < 0:
