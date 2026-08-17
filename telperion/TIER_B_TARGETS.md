@@ -74,6 +74,19 @@ point; `sup=1` is the closing of the gap in the unimodular limit.
 **First probe.** Build the dimer-model parent Hamiltonian on the tree; does `Phi^11 <= 1` follow from a
 frustration-free lower bound (Knabe-type) with equality only at the gapless tie?
 
+**First probe RESULT (`frustration_free.py`, `FrustrationFreeGapProbe`): REFRAME + OBSTRUCTION.** The
+framing is CORRECT and captured: the monomer-dimer ground state is an INTEGER-bond-dimension (=2) MPS
+(verified -- the bond-dim-2 transfer reproduces the matching partition function), and `Phi^11 <= 1` is a
+FRUSTRATION-FREE POSITIVITY `E_0 = -log Phi^11 >= 0` -- a global energy, NOT a sum of local non-positive
+terms (exactly dead-end #1's shape). BUT the Knabe local-gap -> global route to a UNIFORM certificate is
+OBSTRUCTED: the transfer gap `1 - D` closes not only at the isolated tie (near-star `D=1` at s=5) but along
+the ENTIRE tie-recursive family `hub + k*N(0,5)` (`D -> 1` as `k -> inf`: gaps 0.111, 0.057, 0.036, ...,
+0.0044 at k=20). Gapless on a positive-density set -> no uniform Knabe threshold -- the same archimedean
+wall `transfer_tail` found (`sup D = 1`), now in parent-Hamiltonian language. Net: #3 supplies the
+POSITIVITY / collectivity of the `<=` half, and `resonance_carrier.py` supplies the EQUALITY locus
+(23-adic); together they ARE PROOF_STATUS's decomposition (open `<=` crux + 23-gate equality set). Neither
+closes BG. conjecture1_proved = False.
+
 ## 4. Cluster algebras / Y-systems & the Laurent-positivity phenomenon  (the cavity's natural home)
 
 **Mechanism.** Cluster mutations are subtraction-free rational maps whose iterates are Laurent polynomials
