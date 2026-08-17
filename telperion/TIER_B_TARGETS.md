@@ -50,6 +50,16 @@ point exactly). `ehrhart.is_quasi_polynomial` / `minimal_period` are already in 
 **First probe.** Compute the Ehrhart data of the matching (or fractional-matching) polytope of `N(0,s)`;
 does the tie appear as a quasi-polynomial identity / a period-`23` phenomenon?
 
+**First probe RESULT (`ehrhart_bg.py`, `EhrhartBGProbe`): NEGATIVE -- and it's a theorem, not a data
+artifact.** The exact t-dilate count `L_P(t)` (tree-DP, validated vs brute force) has minimal Ehrhart
+period **1** for every near-star s=2..6: `L_P` is a genuine POLYNOMIAL (N(0,5): degree 10, leading coeff
+= volume 1627/518400). No period 11, no period 23. Reason: a tree is BIPARTITE, so its matching polytope is
+INTEGRAL (Edmonds/Birkhoff); the Ehrhart period is the lcm of vertex-coordinate denominators, and integral
+vertices give 1 -- so 23 is structurally unreachable through ANY tree matching polytope. Redirects to the
+carrier `ehrhart.py`'s docstring already names: a NON-matching polytope with `23 | vertex denominators`
+(cavity `m = 3/23`, or the signed `D-N` lattice count along `n = 11k+1`). `Phi^11 = 1` holds exactly at the
+tie s=5 but `L_P` is blind to it.
+
 ## 3. Frustration-free Hamiltonians / MPS parent-Hamiltonian gap methods  (the collective-cancellation's exact name)
 
 **Mechanism.** A frustration-free ground state realizes a GLOBAL minimum that is NOT a sum of
