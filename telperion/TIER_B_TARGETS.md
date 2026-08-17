@@ -99,6 +99,19 @@ integer inequality `64*26^11 < 621*23^11`. Hub = argmax for `k >= 3`; `k = 1,2` 
 ceiling -- the strongest positive statement on the hardest known family. Family-adapted (F=1 is special to
 tie blocks); general competitor extremality over ALL trees stays open. conjecture1_proved = False.
 
+**GENERALIZATION (`mixed_block_martingale.py`, `MixedBlockMartingaleCertificate`): the per-block transfer
+factor organizes ALL single-hub families.** One exact formula `Phi^11_hub = (64/621) a_hub^11 prod_b F_b`
+(verified vs `phi11_rooted`) with `F_b = (64/621)^{n_b} alpha_b^11` the per-block factor. TRICHOTOMY:
+`F_b < 1` subcritical (interior max), `F_b = 1` marginal, `F_b > 1` supercritical (would blow `Phi^11_hub`
+up -> BG violation). **No supercritical block exists** in the census up to `n_b = 11`, so `F_b <= 1` is a
+NECESSARY condition for BG, verified. Marginality first appears at `n_b = 11` and is the tie (`mu = 3/23`) --
+the SAME 23-gate (`F_b=1 => alpha_b = (621/64)^{n_b/11}` rational => `11 | n_b`), tying this to
+`resonance_carrier`. The near-star is RECOVERED as the length-2 ARM block's family (`F = 486/529`, the
+fractal-tail factor): its interior maximum is `Phi^11_hub = 1` EXACTLY at `k = 5` (the tie), the unique
+single-hub family touching 1. Unifies the tie-recursive marginal family and the near-star tie under one
+transfer factor. Does NOT prove BG (`F_b <= 1` for ALL blocks, interior maxima, multi-level trees, non-hub
+roots open). conjecture1_proved = False.
+
 ## 4. Cluster algebras / Y-systems & the Laurent-positivity phenomenon  (the cavity's natural home)
 
 **Mechanism.** Cluster mutations are subtraction-free rational maps whose iterates are Laurent polynomials
