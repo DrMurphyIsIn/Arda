@@ -35,9 +35,21 @@ without decreasing g_bound, so the box-max is g_bound(mu*,...,mu*) = W boost(mu*
 already-closed leaf (II) 621*4^11 < 64*5^11.  This closes the g-lemma's analytic residual for R1's branching
 (all-non-leaf) case.
 
-SCOPE.  This is the analytic unimodality only.  The remaining wiring into the block-level Branch induction is
-the parallel session's structural layer, and R1 is SINGLE-HUB extremality -- one front of BG, not the whole
-conjecture.  conjecture1_proved = False.
+LEAF-CHILD EXTENSION (subsumes arm_monotone's Case 2).  The descent inequality `(j'+1)boost = j'+4/3+S >
+3+mu_i` needs only `j'+4/3 >= 10/3 > 3` and `S >= mu_i` -- it holds for EVERY `mu_i <= 1`, not just the
+branching range `(0,1/2]`.  So the SAME unimodality argument covers the box `(0,1]^{j'}`, which INCLUDES a
+leaf child (message `mu = 1`): the box-max over `(0,1]^{j'}` is still the symmetric `mu*` value `< gamma`
+(a leaf coordinate, fixed at `1 > mu*`, only lowers `g_bound`).  So a block with leaf children is handled by
+the very same g-step -- no separate case -- PROVIDED the `g_bound` relaxation is valid at `mu = 1`
+(`g_bound(child msgs) >= g(C)`, verified on the census, 0 failures over 582 leaf-child blocks; its all-`n`
+proof is the parallel session's relaxation lemma extended to `mu = 1`).
+
+SCOPE.  The unimodality (over `(0,1]`) is PROVEN here; the `mu = 1` relaxation validity is verified (their
+lemma).  Together with the branching case this reduces R1's g-lemma to base (leaf: `W(4/3)^11 < gamma`) +
+chains (parallel) + this unimodality.  The g-lemma => master => single-hub BG wiring (AM-GM split) is verified
+sound on the census (0 violations, n<=11).  R1 is SINGLE-HUB extremality -- ONE front; R2 multi-hub maximality
+(the near-star beats every multi-hub tree at each n) is a SEPARATE open extremality theorem (verified n<=13),
+NOT covered here.  conjecture1_proved = False.
 """
 from __future__ import annotations
 
@@ -101,8 +113,22 @@ class BranchingUnimodalityCertificate:
                 return False
         return True
 
+    def leaf_child_extension(self) -> bool:
+        """The descent (j'+1)boost = j'+4/3+S > 3+mu_i holds for every mu_i <= 1 (not just <= 1/2), since
+        j'+4/3 >= 10/3 > 3 and S >= mu_i.  So the unimodality covers the box (0,1]^{j'} -- INCLUDING a leaf
+        child (mu = 1) -- subsuming arm_monotone's leaf-child case.  Verify the descent at mu_i = 1."""
+        for jp in range(2, 8):
+            for trial in range(1, 6):
+                mus = [Fr(1) if k == 0 else Fr(trial + k, 3 * (k + 2)) for k in range(jp)]   # one leaf child
+                S = sum(mus, Fr(0))
+                lhs = (jp + 1) * boost(mus, jp)
+                if not (lhs == jp + Fr(4, 3) + S and lhs > 3 + Fr(1)):    # descent at the leaf coordinate mu=1
+                    return False
+        return True
+
     def check(self) -> bool:
-        return self.exact_boost_identity() and self.descent_inequality() and self.box_max_is_symmetric()
+        return (self.exact_boost_identity() and self.descent_inequality()
+                and self.box_max_is_symmetric() and self.leaf_child_extension())
 
     def lean(self) -> str:
         return (
