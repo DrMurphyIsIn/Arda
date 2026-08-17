@@ -5,17 +5,23 @@ language the per-vertex density
 
     D(T) = Phi^11(T)^(1/n)
 
-IS the dominant eigenvalue of the tree's transfer operator (the bulk free-energy density).  Empirically
-every family's density is < 1 and decreasing, and the SUP over families is the legs-2 limit (near-star
-and balanced double-broom converge to the SAME value ~0.964 < 1).  So the tail theorem reads:
+IS the dominant eigenvalue of the tree's transfer operator (the bulk free-energy density).  The legs-2
+self-similar family (near-star + double-broom, the peak-shape manifold) has density UNIMODAL in size:
+it rises to EXACTLY 1 at the n=11 tie then DECREASES to the arm-transfer eigenvalue D_inf ~ 0.9585
+(= (64/621)(3/2)^(11/2); see fractal_eigenvalue.py), approached from ABOVE.  So the global sup of
+density over all trees is the FINITE n=11 tie (=1), and the asymptotic tail is bounded well below 1.
 
-    prove  sup over ALL trees of D(T)  <=  c < 1   (rigorously; empirically c ~ 0.964).
+    tail theorem (open): prove  sup_{n > 11, all trees T} D(T)  <  1   (rigorously).
 
-The transfer operator is exactly solvable PER periodic family (its dominant eigenvalue), but a uniform
-variational bound over ALL tree-tensor structures is the open research direction -- the one place the
-tensor view is not mere relabeling.  This module provides the density-survey tooling and frames the open
-problem.  It is a RESEARCH SCAFFOLD, not a certificate: it cracks nothing on its own, and it says nothing
-about the arithmetic TIE (which stays 23-adic).  conjecture1_proved = False.
+CORRECTION (2026-08-17): an earlier version of this module reported a family "limit ~0.964"; that was a
+FINITE-SIZE artifact (density at s~80), not the limit.  The true legs-2 limit is D_inf ~0.9585, and the
+density APPROACHES IT FROM ABOVE -- so small samples OVERESTIMATE it.  Use large sizes for the limit.
+
+The transfer operator is exactly solvable PER self-similar family (its dominant eigenvalue -- and for
+legs-2 that eigenvalue < 1 is the INTEGER inequality 3^11*64^2 < 2^11*621^2, fractal_eigenvalue.py).  A
+uniform variational bound over ALL tree-tensor structures is the open research direction.  This module is
+a RESEARCH SCAFFOLD, not a certificate: it says nothing about the arithmetic TIE (23-adic).
+conjecture1_proved = False.
 """
 from __future__ import annotations
 
@@ -66,11 +72,11 @@ class TransferTailBound:
         return max(v[0] for v in s.values()) if s else None
 
     def open_statement(self) -> str:
-        c = self.empirical_sup()
-        return (f"TAIL THEOREM (open): sup over all trees of D(T)=Phi^11^(1/n) <= c < 1, "
-                f"empirically c ~ {c:.4f} (legs-2 limit). Prove via a uniform variational bound on the "
-                f"transfer-operator spectrum; the arithmetic TIE is separate (23-adic). "
-                f"conjecture1_proved=False.")
+        return ("TAIL THEOREM (open): sup_{n>11, all trees} D(T)=Phi^11^(1/n) < 1. The legs-2 family "
+                "density is unimodal -- =1 at the n=11 tie, then decreasing FROM ABOVE to the arm-transfer "
+                "eigenvalue D_inf~0.9585 = (64/621)(3/2)^(11/2), whose <1 is the integer inequality "
+                "3^11*64^2 < 2^11*621^2 (fractal_eigenvalue.py). Open piece = a uniform bound that legs-2 "
+                "dominates ALL trees. The arithmetic TIE is separate (23-adic). conjecture1_proved=False.")
 
 
 def default_families():
