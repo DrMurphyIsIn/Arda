@@ -26,10 +26,20 @@ and
 by the PROVEN near-star tail (`near_star_tail`), STRICT unless both factors = 1 (a=b=5), and even there the
 inequality a_bigroot < a_hub(b) is strict (`2b(2a-3)=50>9`), so DN(5,5) < 1.  CASE A (a,b >= 3) CLOSED.
 
-RESIDUAL.  (B) min(a,b) <= 2: DN(1,b), DN(2,b) are one-variable families, uniformly < 1 (max 0.789 at
-DN(2,4)); a near_star_tail-style one-variable bound, verified here over a range.  And the SEPARATE R2 piece
-`DN is the multi-hub Phi^11-maximizer at each n` is the parallel session's (verified n <= 13).  This module
-closes the FAMILY bound for a,b>=3; it is not the full multi-hub front.  conjecture1_proved = False.
+CASE B (the boundary a = 2; a genuine double near-star needs BOTH hubs degree >= 3, i.e. a,b >= 2, so the
+only case outside a,b >= 3 is a = 2).  The family DN(2,b) is one-variable; by the ratio test (mirroring
+near_star_tail) it is UNIMODAL: with c = 3/(4*2+3) = 3/11 and a_bigroot(2,b) = (4b+6+9/11)/(3(b+2)),
+
+    Q(b) = Phi^11(DN(2,b+1))/Phi^11(DN(2,b)) = (486/529) * [a_bigroot(2,b+1)/a_bigroot(2,b)]^11,
+
+and a_bigroot(2,b) is increasing to 4/3 while Q(b) decreases through 1 exactly once (rising b<=3, falling
+b>=4), so DN(2,b) peaks at DN(2,4) = 0.78887... < 1.  Together with Case A this closes the ENTIRE
+double-near-star family: Phi^11(DN(a,b)) < 1 for ALL a,b >= 2.  (a = 1 gives a degree-2 "hub" -- a
+single-hub tree, R1's domain, not a double near-star; bounded here as a bonus.)
+
+RESIDUAL.  The SEPARATE R2 piece `DN is the multi-hub Phi^11-maximizer at each n` is the parallel session's
+(verified n <= 13).  This module closes the double-near-star FAMILY BOUND (all a,b >= 2); it is not the full
+multi-hub front.  conjecture1_proved = False.
 """
 from __future__ import annotations
 
@@ -102,17 +112,39 @@ class R2SubmultiplicativeCertificate:
                     return False
         return True
 
-    def caseB_small_hub(self) -> bool:
-        """min(a,b) <= 2: DN(1,b), DN(2,b) are uniformly < 1 over the range (max 0.789 at DN(2,4))."""
+    def _a_bigroot_family(self, small, b):
+        """a_bigroot(small,b) = (4b+6+3c)/(3(b+2)), c = 3/(4*small+3) -- the big-hub amplitude as a clean
+        rational in b for the one-variable family (b >= small)."""
+        c = Fr(3, 4 * small + 3)
+        return (4 * b + 6 + 3 * c) / (3 * (b + 2))
+
+    def caseB_ratio_test(self) -> bool:
+        """Case B (boundary a=2, and the single-hub a=1 bonus): the family DN(small,b) is UNIMODAL --
+        Q(b) = (486/529)[a_bigroot(b+1)/a_bigroot(b)]^11 (verified = Phi(b+1)/Phi(b)) crosses 1 exactly once
+        (a_bigroot increasing, Q decreasing) -- and the peak is < 1 (DN(2,4)=0.789, DN(1,3)=0.654)."""
+        peaks = {1: 3, 2: 4}
         for small in (1, 2):
+            down = 0
+            prev_gt = None
             for b in range(small, 4 * self.hi):
+                Q = Fr(486, 529) * (self._a_bigroot_family(small, b + 1) / self._a_bigroot_family(small, b)) ** 11
                 n, e = double_near_star(small, b)
-                if bg_phi11_fast(n, e) >= 1:
+                n2, e2 = double_near_star(small, b + 1)
+                if Q != bg_phi11_fast(n2, e2) / bg_phi11_fast(n, e):    # formula exact
                     return False
+                gt = Q > 1
+                if prev_gt is True and gt is False:
+                    down += 1
+                prev_gt = gt
+            if down != 1:                                              # exactly one down-crossing => unimodal
+                return False
+            n, e = double_near_star(small, peaks[small])
+            if bg_phi11_fast(n, e) >= 1:                               # peak < 1
+                return False
         return True
 
     def check(self) -> bool:
-        return self.ratio_identity() and self.caseA_submultiplicative() and self.caseB_small_hub()
+        return self.ratio_identity() and self.caseA_submultiplicative() and self.caseB_ratio_test()
 
     def lean(self) -> str:
         return (
