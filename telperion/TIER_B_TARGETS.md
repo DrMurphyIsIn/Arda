@@ -27,6 +27,15 @@ characteristic polynomial of `D+iA`, or the amplitude polynomial. The 23-adic re
 **First probe.** Compute `M(matching_polynomial)` and `M(det(xI-(D+iA)))` for near-stars `N(0,s)`; is it
 `1` (roots on the unit circle / cyclotomic) at `s=5` and gapped-away off it?
 
+**First probe RESULT (`mahler.py`, `MahlerLehmerProbe`): NEGATIVE for these two carriers.** Over
+`s=2..8` both Mahler measures grow strictly monotonically (`M(matching) ~ s+1`: 3,4,5,6,7,8.05,9.20;
+`M(D+iA)`: 24,108,432,1620,...) and the tie `s=5` is unremarkable -- no `M=1`, no cyclotomic factor,
+no gap re-crossing. Reason: the raw Mahler measure of these polys is a spectral-radius growth,
+SEPARABLE over roots -- the archimedean coordinate PROOF_STATUS dead-end #2 already refuted. The
+Lehmer `=1-or-gap` SHAPE is the right analogy but the matching / `D+iA` polys are the wrong CARRIER;
+BG's resonance appears only under the `(64/621)^n` normalization a bare Mahler measure lacks. Live
+frontier: a Mahler measure of an *amplitude-derived* polynomial whose cyclotomic locus is the 23-gate.
+
 ## 2. Ehrhart theory / lattice-point counting  (integral by construction; telperion has `ehrhart`)
 
 **Mechanism.** Ehrhart quasi-polynomials count lattice points in dilated polytopes -- INTEGER-valued with
