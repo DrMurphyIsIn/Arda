@@ -123,3 +123,18 @@ the frustration-free gap, Y-system periodicity, moment-cone atomicity, eta integ
 framework whose native gap/discreteness theorem specializes to the BG resonance -- and Mahler/Lehmer (1) is
 the closest structural twin, while Ehrhart (2) and frustration-free (3) are the most directly buildable in
 telperion.** conjecture1_proved = False.
+
+## REDIRECT RESULT (`resonance_carrier.py`): the carrier is the 23-adic absolute value
+
+Probes #1 and #2 both came back negative FOR THE SAME REASON, and both point to the same object. #1's
+Lehmer `=1`-or-gap is absent archimedean-ly (`sup D = 1` is *approached*, no gap); #2's `23 | denominator`
+is absent in the matching polytope (bipartite -> integral, Ehrhart period 1). The gap they both want lives
+at **p = 23**: with `delta(T) = v_23(Phi^11) = 11 v_23(prod a_v) - n` (integer),
+`|Phi^11|_23 = 23^(-delta)` is a discrete set with a **multiplicative gap of 23 around 1** -- the Lehmer
+SHAPE (#1) realized by literal `23`-divisibility (#2), in one object. VERIFIED (`ResonanceCarrierCertificate`):
+the adelic **product formula** `prod_v |Phi^11|_v = 1` ties the archimedean `Phi^11 <= 1` to the 23-adic
+size; the tie `N(0,5)` is the unique `|.|_23 = 1` point while off-tie near-stars sit at `|.|_23 = 23^n` (gap
+WIDENS); and this yields **categorical strictness** `Phi^11 != 1` on `11 ∤ n` (arithmetic, no size estimate).
+Net: BG SEPARATES into (a) `11 ∤ n` -- closed 23-adically given the `<=` half, and (b) `11 | n` -- the
+irreducible core (open sporadic-tie danger + the `<=`/collective-cancellation half). A reframing + verified
+identities + a half-domain strictness lemma; NOT a proof. conjecture1_proved = False.
