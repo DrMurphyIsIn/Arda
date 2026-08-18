@@ -1,7 +1,7 @@
 {
   "family": "Scope",
-  "input_hash": "eb57a8e1594954ae92ee73cfe3bfe4714d65374cab5cce55b084be33d2a47540",
-  "tool_version": "0.1.3",
+  "input_hash": "a4fb15ee46ac6b4b5d0f33404f9c62244a6c8cdda131abba9caedca54e400b02",
+  "tool_version": "0.1.4",
   "files": [
     "Scope.lean"
   ],

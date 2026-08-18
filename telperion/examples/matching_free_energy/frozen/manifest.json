@@ -1,7 +1,7 @@
 {
   "family": "CompetitorExtremality",
-  "input_hash": "b7d9267a78f0f8098daad77980b49be73602ad602a04866105fa795669b2b65c",
-  "tool_version": "0.1.3",
+  "input_hash": "b02c3bed6e065008218777c1571aef5fdd8ad9c6f9a2b3002065b335a12dbcae",
+  "tool_version": "0.1.4",
   "files": [
     "CompetitorExtremality.lean"
   ],

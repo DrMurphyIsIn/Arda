@@ -1,4 +1,4 @@
-/- telperion 0.1.3 | family R47Cells | input-hash 0b85b667e1f249d2
+/- telperion 0.1.4 | family R47Cells | input-hash 14ed5e7d4f943c65
    216 theorems, 180 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

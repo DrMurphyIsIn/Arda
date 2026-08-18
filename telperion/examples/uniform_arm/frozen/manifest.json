@@ -1,7 +1,7 @@
 {
   "family": "UniformArm",
-  "input_hash": "88de91b4e6ab2dc55f6ec2263e319aa6ff5691faac4e7d0030cb91e78ba20363",
-  "tool_version": "0.1.3",
+  "input_hash": "11ea3160938b220b53ccc237e83ff85f728de507df63e866fb9950c976b10c50",
+  "tool_version": "0.1.4",
   "files": [
     "UniformArm.lean"
   ],

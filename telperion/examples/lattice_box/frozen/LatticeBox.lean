@@ -1,4 +1,4 @@
-/- telperion 0.1.3 | family LatticeBox | input-hash ba0a96418c06657a
+/- telperion 0.1.4 | family LatticeBox | input-hash 51794234ba738812
    18 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

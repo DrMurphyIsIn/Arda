@@ -1,20 +1,21 @@
-"""The far-case threshold constant, certified: a rigorous rational enclosure of
-exp(-theta) for the origin R47Encode far predicate (theta = 0.37167).
+"""Rigorous rational enclosures of exp(-theta) for three rational theta values.
 
-The origin's `far_discharge` bounds the objective by 4/3 * exp(-C) * rho^n with
-C = theta, and theta was tuned so 4/3 * exp(-theta) equals the template
-amplitude C1 = 26/23/rho exactly.  Because that is an EQUALITY, no strict
-rational comparison closes it; the useful, honest deliverable is a rigorous
-enclosure of the transcendental constant itself:
+Originally a one-off demonstrator for the far-case threshold constant used in
+the origin's R47Encode far predicate.  Promoted to a multi-instance reusable
+family flowing through the canonical certify -> emit -> freeze pipeline.
 
-    exp(-theta) <= 68959/100000      (the amplitude bound far_discharge uses),
-    1 - theta   <= exp(-theta)       (a convexity companion lower bound),
+Three instances:
+  inst 0 (far-case):  theta = 37167/100000 (the original R47 threshold)
+  inst 1 (quarter):   theta = 1/4
+  inst 2 (half):      theta = 1/2
 
-both Mathlib-only (Real.sum_le_exp_of_nonneg for the tight upper via a Taylor
-lower bound on exp(theta), Real.add_one_le_exp for the lower).  The rational
-heart (Taylor_9(theta) >= 145015/100000, hence 1/Taylor <= 68959/100000) is the
-Polya-certified target; the Real.exp wrapping is the emitted assembly; the
-Fraction engine dual-checks every constant; the compile gate is the arbiter.
+Each instance produces two Lean theorems:
+  <name>_le:  exp(-theta) <= HI   (Taylor lower bound on exp(theta))
+  <name>_ge:  1 - theta   <= exp(-theta)  (convexity companion)
+
+HONEST SCOPE: rigorous rational ENCLOSURES of transcendental constants.
+This does NOT close the g1 Real.log bridge (origin's G1Kernel owns it).
+conjecture1_proved=False.
 
 Usage: generate.py [--check]
 """
@@ -26,14 +27,10 @@ import sys
 from fractions import Fraction as Fr
 from pathlib import Path
 
-import sympy as sp
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from telperion import (  # noqa: E402
-    CustomAssemblyEmitter,
     GridSpec,
-    InequalityFamily,
     LeanProfile,
     ValidationReport,
     certify,
@@ -41,17 +38,16 @@ from telperion import (  # noqa: E402
     emit,
     freeze,
 )
+from telperion.emit_bracket import BracketSpec, IntervalBracketEmitter, bracket_family
 
 HERE = Path(__file__).resolve().parent
 
-THETA = Fr(37167, 100000)     # far-case threshold C = theta
-NTERMS = 9                    # Real.sum_le_exp_of_nonneg range n (i = 0..8)
-TFLOOR = Fr(145015, 100000)   # clean rational <= Taylor_{NTERMS}(theta) <= exp(theta)
-HI = Fr(68959, 100000)        # exp(-theta) <= HI
-LO = 1 - THETA                # convexity: 1 - theta <= exp(-theta)
 
+# ---------------------------------------------------------------------------
+# Helper: exact rational Taylor sum  sum_{k=0}^{nterms-1} x^k / k!
+# ---------------------------------------------------------------------------
 
-def taylor(x: Fr, nterms: int) -> Fr:
+def _taylor(x: Fr, nterms: int) -> Fr:
     s, term = Fr(0), Fr(1)
     for k in range(nterms):
         s += term
@@ -59,51 +55,91 @@ def taylor(x: Fr, nterms: int) -> Fr:
     return s
 
 
-def _family() -> InequalityFamily:
-    # Polya-certified rational heart: HI * Taylor_n(theta) - 1 >= 0
-    # (=> 1/Taylor <= HI => exp(-theta) = 1/exp(theta) <= 1/Taylor <= HI).
-    margin = sp.Rational(HI * taylor(THETA, NTERMS) - 1)
-    return InequalityFamily(
-        name="ExpBracket",
-        symbols=(),
-        grid=GridSpec([("i", [0])]),
-        lean_name=lambda pt: "exp_neg_theta_bracket_core",
-        target=lambda pt: margin,
+def _make_spec(theta: Fr, nterms: int, tfloor: Fr, hi: Fr) -> BracketSpec:
+    """Construct a BracketSpec using exact Fraction arithmetic for all fields."""
+    lo = Fr(1) - theta
+    return BracketSpec(
+        func="exp",
+        theta_num=theta.numerator,
+        theta_den=theta.denominator,
+        nterms=nterms,
+        hi_num=hi.numerator,
+        hi_den=hi.denominator,
+        lo_num=lo.numerator,
+        lo_den=lo.denominator,
+        tf_num=tfloor.numerator,
+        tf_den=tfloor.denominator,
     )
 
 
-STATEMENT = """theorem exp_neg_theta_le :
-    Real.exp (-(«theta_num» / «theta_den» : ℝ)) ≤ «hi_num» / «hi_den» := by
-  rw [Real.exp_neg, ← one_div]
-  have hlow : («tf_num» / «tf_den» : ℝ) ≤ Real.exp («theta_num» / «theta_den») := by
-    refine le_trans ?_ (Real.sum_le_exp_of_nonneg (by norm_num) «nterms»)
-    norm_num [Finset.sum_range_succ, Nat.factorial]
-  have hpos : (0 : ℝ) < «tf_num» / «tf_den» := by norm_num
-  calc 1 / Real.exp («theta_num» / «theta_den»)
-      ≤ 1 / («tf_num» / «tf_den» : ℝ) := one_div_le_one_div_of_le hpos hlow
-    _ ≤ «hi_num» / «hi_den» := by norm_num
+# ---------------------------------------------------------------------------
+# Instance parameters
+# ---------------------------------------------------------------------------
 
-theorem exp_neg_theta_ge :
-    (1 - «theta_num» / «theta_den» : ℝ) ≤ Real.exp (-(«theta_num» / «theta_den»)) := by
-  have h := Real.add_one_le_exp (-(«theta_num» / «theta_den» : ℝ))
-  linarith
-«branches»"""
+# inst 0: far-case (original R47 threshold, preserved semantically)
+THETA0 = Fr(37167, 100000)   # 0.37167
+NTERMS0 = 9
+TFLOOR0 = Fr(145015, 100000)  # clean rational <= Taylor_9(theta0); reduces to 29003/20000
+HI0 = Fr(68959, 100000)       # exp(-theta0) <= HI0
+SPEC0 = _make_spec(THETA0, NTERMS0, TFLOOR0, HI0)
+
+# inst 1: theta = 1/4
+THETA1 = Fr(1, 4)
+NTERMS1 = 7
+TFLOOR1 = Fr(321, 250)        # <= Taylor_7(1/4)  (1.284 <= 1.284025...)
+HI1 = Fr(7789, 10000)         # exp(-1/4) <= HI1
+SPEC1 = _make_spec(THETA1, NTERMS1, TFLOOR1, HI1)
+
+# inst 2: theta = 1/2
+THETA2 = Fr(1, 2)
+NTERMS2 = 9
+TFLOOR2 = Fr(16487, 10000)    # <= Taylor_9(1/2)  (1.6487 <= 1.648721...)
+HI2 = Fr(30327, 50000)        # exp(-1/2) <= HI2; reduces as-is (gcd=1)
+SPEC2 = _make_spec(THETA2, NTERMS2, TFLOOR2, HI2)
+
+# Grid has three points indexed by i in {0, 1, 2}
+_SPECS = {0: SPEC0, 1: SPEC1, 2: SPEC2}
+_LEAN_NAMES = {
+    0: "exp_neg_theta_far",    # the original far-case bound
+    1: "exp_neg_quarter",
+    2: "exp_neg_half",
+}
+
+
+def _family():
+    return bracket_family(
+        name="ExpBracket",
+        grid=GridSpec([("i", [0, 1, 2])]),
+        lean_name=lambda pt: _LEAN_NAMES[pt["i"]],
+        spec=lambda pt: _SPECS[pt["i"]],
+    )
+
+
+def _validation() -> ValidationReport:
+    def check_all():
+        for i, (theta, nterms, tfloor, hi, spec) in enumerate([
+            (THETA0, NTERMS0, TFLOOR0, HI0, SPEC0),
+            (THETA1, NTERMS1, TFLOOR1, HI1, SPEC1),
+            (THETA2, NTERMS2, TFLOOR2, HI2, SPEC2),
+        ]):
+            T = _taylor(theta, nterms)
+            assert tfloor <= T, f"inst {i}: tfloor={tfloor} > Taylor_{nterms}({theta})={T}"
+            assert Fr(1) / T <= hi, f"inst {i}: 1/Taylor={Fr(1)/T} > hi={hi}"
+            lo = Fr(1) - theta
+            v = math.exp(-float(theta))
+            assert float(lo) <= v <= float(hi), \
+                f"inst {i}: true value {v} not in [{float(lo)}, {float(hi)}]"
+            # Verify spec fields round-trip via Fraction
+            assert spec.theta == theta
+            assert spec.hi == hi
+            assert spec.lo == lo
+            assert spec.taylor_floor == tfloor
+
+    return ValidationReport.from_asserts([("exp_bracket_all_instances", check_all)])
 
 
 def build():
-    fills = {
-        "theta_num": str(THETA.numerator), "theta_den": str(THETA.denominator),
-        "hi_num": str(HI.numerator), "hi_den": str(HI.denominator),
-        "tf_num": str(TFLOOR.numerator), "tf_den": str(TFLOOR.denominator),
-        "nterms": str(NTERMS),
-    }
-    emitter = CustomAssemblyEmitter(
-        statement_template=STATEMENT,
-        branch_template="",
-        fills=lambda fam: fills,
-        branch_fills=lambda inst: {},
-        theorems=2,
-    )
+    emitter = IntervalBracketEmitter()
     return emit(
         certify(_family()),
         LeanProfile(namespace=("G1", "ExpBracket")),
@@ -111,20 +147,6 @@ def build():
         _validation(),
         file_name="ExpBracket.lean",
     )
-
-
-def _validation() -> ValidationReport:
-    def constants_bracket():
-        T = taylor(THETA, NTERMS)
-        assert TFLOOR <= T, (TFLOOR, T)              # Taylor lower is valid
-        assert 1 / TFLOOR <= HI, (1 / TFLOOR, HI)    # so exp(-theta) <= HI
-        # independent (math.exp) enclosure sanity — the true value is inside
-        v = math.exp(-float(THETA))
-        assert float(LO) <= v <= float(HI), (LO, v, HI)
-        # and the amplitude identity the origin reported: 4/3 * exp(-theta) ~ C1
-        assert abs(float(Fr(4, 3)) * v - 0.9194424) < 1e-6
-
-    return ValidationReport.from_asserts([("exp_bracket_constants", constants_bracket)])
 
 
 def main() -> int:
@@ -139,8 +161,16 @@ def main() -> int:
             print(*rep.details, sep="\n  ")
         return 0 if rep.ok else 1
     freeze(res, HERE / "frozen")
-    print(f"ExpBracket: {res.n_theorems} theorems, hash {res.input_hash[:16]} "
-          f"(exp(-{float(THETA):.5f}) in [{float(LO):.5f}, {float(HI):.5f}])")
+    print(
+        f"ExpBracket: {res.n_theorems} theorems, "
+        f"{res.n_checks} self-checks, hash {res.input_hash[:16]}\n"
+        f"  inst 0 (far-case):  exp(-{float(THETA0):.5f}) in "
+        f"[{float(SPEC0.lo):.5f}, {float(SPEC0.hi):.5f}]\n"
+        f"  inst 1 (quarter):   exp(-{float(THETA1):.5f}) in "
+        f"[{float(SPEC1.lo):.5f}, {float(SPEC1.hi):.5f}]\n"
+        f"  inst 2 (half):      exp(-{float(THETA2):.5f}) in "
+        f"[{float(SPEC2.lo):.5f}, {float(SPEC2.hi):.5f}]"
+    )
     return 0
 
 

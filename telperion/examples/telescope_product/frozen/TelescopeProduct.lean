@@ -1,4 +1,4 @@
-/- telperion 0.1.3 | family TelescopeProduct | input-hash b96533932b6a8955
+/- telperion 0.1.4 | family TelescopeProduct | input-hash 6c7a2ff693ce2aad
    22 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
