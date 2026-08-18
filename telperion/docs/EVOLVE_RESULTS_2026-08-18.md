@@ -41,9 +41,9 @@ Command:
 Config: islands=4, gens=20, use_llm=False
 Trials: 5, seed=0
 
-Results:
+Results (certify_rate is the exact-arithmetic certify tier, NOT a lake build / Lean kernel run):
 
-    kernel_green_rate : 1.0         (5 / 5 trials found a certifying champion)
+    certify_rate      : 1.0         (5 / 5 trials found a certifying champion)
     median_evals      : 344         evaluations (sympy certificate calls)
     median_wall_s     : 22.544 s    per trial
     found_novel_ratio : False       (champion always came from the seed pool)
@@ -53,7 +53,7 @@ Total wall time for all 5 trials: 110.74 s
 Interpretation:
 
 - The loop reliably climbs from a failing genome to a certifying champion every trial
-  (100% green rate) across varied RNG seeds.
+  (certify_rate = 1.0, exact-arithmetic tier) across varied RNG seeds.
 - Median 344 evaluations vs. the init-only baseline of 6*islands = 24 seeds; the loop
   does non-trivial search, not just lucky initialization.
 - `found_novel_ratio = False` is expected for the structured arm: StructuredMutator
