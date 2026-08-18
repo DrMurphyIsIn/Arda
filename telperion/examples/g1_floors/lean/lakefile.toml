@@ -11,3 +11,6 @@ name = "G1"
 
 [[lean_lib]]
 name = "ArmExtremality"
+
+[[lean_lib]]
+name = "GLemma"
