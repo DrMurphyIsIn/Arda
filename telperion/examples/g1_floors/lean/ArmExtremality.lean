@@ -279,5 +279,50 @@ theorem gCoreOff_le_replicate (j : ℕ) (hj : 2 ≤ j) (γ mustar : ℝ)
       _ = gCoreOff γ j off (List.replicate (rest.length + 1) mustar) := h3
       _ = gCoreOff γ j off (List.replicate (v :: rest).length mustar) := by rw [List.length_cons]
 
+/-! ### Piece 3 (capstone): the branching g-step inequality `W · g_bound < γ`.
+
+  Combines Piece 1 (box-max = symmetric μ*) with the leaves (`boostR(j·μ*) < 4/3`, `W·(4/3)^11 < γ`) into
+  the complete inequality a block-level g-lemma applies at each all-non-leaf branching node: for `j ≥ 2`
+  children with messages `mus` (`|mus| = j`, each `≥ 0`), `W · gCoreOff γ j 0 mus < γ`.  The remaining
+  Branch-induction wiring (defining the block tree, the `g(C)` recursion, and using `phi_le_one` on children
+  to get `Φ^11(D_i) ≤ min(1, γ/(1+μ_i/3)^11) = factorR γ μ_i`) plugs this in at each node. -/
+
+/-- At the symmetric point, `boostR j (j·μ*) < 4/3` (from `μ* < 1/3`, i.e. `3μ* < 1`). -/
+theorem boostR_jmustar_lt (j : ℕ) (hj : 1 ≤ j) (mustar : ℝ) (_h0 : 0 ≤ mustar) (hlt : mustar < 1 / 3) :
+    boostR j ((j : ℝ) * mustar) < 4 / 3 := by
+  have hjq : (1 : ℝ) ≤ (j : ℝ) := by exact_mod_cast hj
+  have hden : (0 : ℝ) < 3 * (j : ℝ) + 3 := by positivity
+  unfold boostR
+  have hfrac : (3 * ((j : ℝ) * mustar) + 1) / (3 * (j : ℝ) + 3) < 1 / 3 := by
+    rw [div_lt_iff₀ hden]
+    nlinarith [mul_pos (by linarith : (0 : ℝ) < (j : ℝ)) (by linarith : (0 : ℝ) < 1 - 3 * mustar)]
+  linarith [hfrac]
+
+/-- **Piece 3 capstone -- the branching g-step inequality.**  For `j ≥ 2`, crossover `μ*` with
+    `(1+μ*/3)^11 = γ`, `0 ≤ μ* < 1/3` (leaf I), `0 < W` and `W·(4/3)^11 < γ` (leaf II), and any `j` child
+    messages `mus` (each `≥ 0`):  `W · gCoreOff γ j 0 mus < γ`.  I.e. `g_bound < γ` at every all-non-leaf
+    branching node -- the inductive step of the g-lemma. -/
+theorem gstep_lt_gamma (j : ℕ) (hj : 2 ≤ j) (γ W mustar : ℝ)
+    (h0 : 0 ≤ mustar) (hlt : mustar < 1 / 3) (hγ : (1 + mustar / 3) ^ 11 = γ)
+    (hW : 0 < W) (hWγ : W * (4 / 3) ^ 11 < γ)
+    (mus : List ℝ) (hlen : mus.length = j) (hall : ∀ v ∈ mus, 0 ≤ v) :
+    W * gCoreOff γ j 0 mus < γ := by
+  have hj1 : 1 ≤ j := by omega
+  have hP1 := gCoreOff_le_replicate j hj γ mustar hγ h0 mus hall 0 le_rfl
+  have hsym : gCoreOff γ j 0 (List.replicate mus.length mustar) = boostR j ((j : ℝ) * mustar) ^ 11 := by
+    unfold gCoreOff
+    rw [List.map_replicate, List.prod_replicate, factorR_crossover γ mustar h0 hγ, one_pow, mul_one,
+      List.sum_replicate, nsmul_eq_mul, zero_add, hlen]
+  have hbpos : 0 < boostR j ((j : ℝ) * mustar) := boostR_pos j _ (by positivity)
+  have hbound : boostR j ((j : ℝ) * mustar) ^ 11 < (4 / 3 : ℝ) ^ 11 := by
+    gcongr
+    exact boostR_jmustar_lt j hj1 mustar h0 hlt
+  calc W * gCoreOff γ j 0 mus
+      ≤ W * gCoreOff γ j 0 (List.replicate mus.length mustar) := by
+        exact mul_le_mul_of_nonneg_left hP1 hW.le
+    _ = W * boostR j ((j : ℝ) * mustar) ^ 11 := by rw [hsym]
+    _ < W * (4 / 3) ^ 11 := by exact mul_lt_mul_of_pos_left hbound hW
+    _ < γ := hWγ
+
 end ArmExtremality
 end G1
