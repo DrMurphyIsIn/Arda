@@ -33,10 +33,17 @@ THE HOLE IS NARROW, SHALLOW, AND BOUNDED (characterized).  The uncovered set is 
 hub c whose every branch is a SINGLE-HUB near-star (a "hub-star of near-stars"), with no deg>=4 hub-hub edge.
   * It does NOT recurse: 3-level nested hub-stars ARE covered (once a branch is itself multi-hub, peeling/cuts
     apply).  Verified.
-  * Its Phi^11 is bounded well below 1: peak 0.63188 over the family (at m=3 branches, k=4, plus 3 center arms,
-    n=34); Phi^11 -> 0 as m or k grows.
+  * Its Phi^11 is bounded well below 1: peak 0.68156 over the family (at m=3 branches N(0,4) + 5 center arms,
+    n=38); Phi^11 -> 0.388 as m -> infinity with tie branches N(0,5), and -> 0 as k grows.
 So closing it needs a DIRECT family bound (a transfer/amplitude argument in (m, {k_i}, center-arms), analogous
-to the proven DN and caterpillar family bounds) -- NOT a local move.  That direct bound is OPEN.
+to the proven DN and caterpillar family bounds) -- NOT a local move.  That direct bound is OPEN, and it is the
+SAME wall once more: the natural reduction `Phi^11(hubstar) <= Phi^11(N(0, m+center-arms))` (replace each
+near-star branch by a plain arm) HOLDS for m <= 20 but FLIPS at m = 21 -- the exact marginal-tie crossing the
+campaign already recorded (a near-star-tie child beats an arm child at center-degree >= ~20).  The m -> infinity
+tie-branch limit is Phi^11 -> (64/621)(26/23)^11, i.e. the integer inequality 64*26^11 < 621*23^11 ALREADY
+PROVEN by `family_martingale` (the hub + k*N(0,5) family).  So the hardest corner of this hole is a proven
+object, but the general family resists every clean reduction -- the collective-cancellation wall reproduced at
+the multi-hub level.
 
 NET.  The multi-hub reduction is NOT complete.  It is:
   (i)  exhaustively verified for all trees n <= 17;
@@ -257,11 +264,11 @@ class MultiHubReductionCertificate:
                         deg[b] += 1
                     if _nhub(G) > 2 and not _has_deg4_cut(nn, e, deg) and not reaches_two_hubs(G):
                         return False                       # a 3-level tree is uncovered => hole recurses
-        # 2-level family peak < 1
+        # 2-level family peak < 1 (true peak 0.68156 at m=3, k=4, center-arms=5)
         peak = 0.0
         for m in range(3, 8):
             for k in range(2, 8):
-                for ac in range(0, 4):
+                for ac in range(0, 8):
                     peak = max(peak, float(bg_phi11_fast(*_edges(hubstar_of_nearstars(m, k, ac)))))
         return peak < 1.0
 
