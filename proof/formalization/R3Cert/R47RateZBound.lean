@@ -28,6 +28,9 @@ import R3Cert.ExactCruxes
 -/
 
 namespace R3Cert
+namespace Step3
+
+open RTree
 
 /-- **Step 4 of the rate port**: `Ztot (dtSub t) ≤ rhoB ^ (usize t)` — the
     phantom-root partition function of any tree is bounded by `rhoB^n`, assembled
@@ -47,4 +50,5 @@ theorem Ztot_dtSub_le_rhoB_pow (t : UTree) : Ztot (dtSub t) ≤ rhoB ^ usize t :
       ≤ 1 * rhoB ^ usize t := mul_le_mul_of_nonneg_right hexp hpow
     _ = rhoB ^ usize t := one_mul _
 
+end Step3
 end R3Cert
