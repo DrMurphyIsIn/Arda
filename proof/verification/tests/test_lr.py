@@ -34,6 +34,11 @@ def test_permanent_engines_agree_on_random_trees():
         T = nx.random_labeled_tree(n, seed=int(rng.integers(1 << 30)))
         A = _adj(T)
         L = np.diag(A.sum(1)) - A
+        # RIGOR NOTE: ryser_laplacian_permanent returns a float; the round() guard
+        # is sound only while its floating-point error stays < 0.5 of the true
+        # integer, which holds comfortably for the n < 10 sampled here.  For large
+        # n the round() could silently accept a value that is not provably close;
+        # the exact-vs-exact spine is the tree DP itself + the Fraction anchors.
         assert tree_laplacian_permanent(A) == round(ryser_laplacian_permanent(L))
 
 
