@@ -115,5 +115,169 @@ theorem boost_le_four_thirds (j : ℕ) (S : ℚ) (hS : 3 * S ≤ (j : ℚ)) :
     rw [div_le_iff₀ hden]; linarith
   linarith
 
+/-! ### Piece 1: coordinate-wise unimodality of the branching g-step, over ℝ (μ* symbolic).
+
+  The box-max of `g_bound(mu_1..mu_j) = W * boostR(S)^11 * ∏ min(1, γ/(1+mu_i/3)^11)` (S = Σ mu_i) is the
+  symmetric crossover value, μ* satisfying `(1+μ*/3)^11 = γ`.  It is reached by per-coordinate two-point
+  monotonicity: T1 below μ* (child factor ≡ 1, `boostR` increasing) and T2 above μ*.  Both pointwise steps
+  are discharged here over ℝ; moving each coordinate to μ* (a list induction) then pins the box-max. -/
+
+/-- Real boost as a function of the message-sum `x`: `1 + (3x+1)/(3(j+1))`. -/
+noncomputable def boostR (j : ℕ) (x : ℝ) : ℝ := 1 + (3 * x + 1) / (3 * (j : ℝ) + 3)
+
+theorem boostR_pos (j : ℕ) (x : ℝ) (hx : 0 ≤ x) : 0 < boostR j x := by
+  have hden : (0 : ℝ) < 3 * (j : ℝ) + 3 := by positivity
+  have : (0 : ℝ) ≤ (3 * x + 1) / (3 * (j : ℝ) + 3) := by positivity
+  unfold boostR; linarith
+
+/-- **T1 (below μ*).**  `boostR` is monotone in the message-sum: `x ≤ y → boostR j x ≤ boostR j y`.  With the
+    child factor `≡ 1` for `mu ≤ μ*`, this is the T1 half (increasing in each coordinate up to μ*). -/
+theorem boostR_mono (j : ℕ) (x y : ℝ) (hxy : x ≤ y) : boostR j x ≤ boostR j y := by
+  have hden : (0 : ℝ) < 3 * (j : ℝ) + 3 := by positivity
+  unfold boostR; gcongr
+
+/-- **T2 two-point engine (the rational identity, real form).**  For `j ≥ 2`, `0 ≤ Sr`, `ms ≤ mu`:
+    `boostR j (Sr+mu) * (1 + ms/3) ≤ boostR j (Sr+ms) * (1 + mu/3)`.  The difference equals
+    `(mu - ms) * (3j + 3Sr - 5) / (3(3j+3)) ≥ 0` (nonneg since `mu ≥ ms` and `3j ≥ 6 > 5` for `j ≥ 2`). -/
+theorem boost_cross_le (j : ℕ) (hj : 2 ≤ j) (Sr mu ms : ℝ) (hSr : 0 ≤ Sr) (hle : ms ≤ mu) :
+    boostR j (Sr + mu) * (1 + ms / 3) ≤ boostR j (Sr + ms) * (1 + mu / 3) := by
+  have hjq : (2 : ℝ) ≤ (j : ℝ) := by exact_mod_cast hj
+  have hden : (0 : ℝ) < 3 * (j : ℝ) + 3 := by positivity
+  have hkey : boostR j (Sr + ms) * (1 + mu / 3) - boostR j (Sr + mu) * (1 + ms / 3)
+      = (mu - ms) * (3 * (j : ℝ) + 3 * Sr - 5) / (3 * (3 * (j : ℝ) + 3)) := by
+    unfold boostR; field_simp; ring
+  have hnn : 0 ≤ (mu - ms) * (3 * (j : ℝ) + 3 * Sr - 5) / (3 * (3 * (j : ℝ) + 3)) := by
+    apply div_nonneg
+    · exact mul_nonneg (by linarith) (by linarith)
+    · positivity
+  linarith [hkey, hnn]
+
+/-- **T2 (above μ*), the g_bound coordinate step.**  For `j ≥ 2`, `0 ≤ Sr`, `0 ≤ ms ≤ mu`:
+    `boostR j (Sr+mu)^11 * (1+ms/3)^11 ≤ boostR j (Sr+ms)^11 * (1+mu/3)^11`.  Substituting the crossover
+    `(1+ms/3)^11 = γ` this is `boostR(Sr+mu)^11 * γ/(1+mu/3)^11 ≤ boostR(Sr+ms)^11` -- moving the heavy
+    coordinate `mu` down to `μ* = ms` does not decrease `g_bound`. -/
+theorem gstep_T2_step (j : ℕ) (hj : 2 ≤ j) (Sr mu ms : ℝ)
+    (hSr : 0 ≤ Sr) (h0 : 0 ≤ ms) (hle : ms ≤ mu) :
+    boostR j (Sr + mu) ^ 11 * (1 + ms / 3) ^ 11 ≤ boostR j (Sr + ms) ^ 11 * (1 + mu / 3) ^ 11 := by
+  have hcross := boost_cross_le j hj Sr mu ms hSr hle
+  have hL : 0 ≤ boostR j (Sr + mu) * (1 + ms / 3) :=
+    mul_nonneg (boostR_pos j _ (by linarith)).le (by linarith)
+  calc boostR j (Sr + mu) ^ 11 * (1 + ms / 3) ^ 11
+      = (boostR j (Sr + mu) * (1 + ms / 3)) ^ 11 := by rw [mul_pow]
+    _ ≤ (boostR j (Sr + ms) * (1 + mu / 3)) ^ 11 := by gcongr
+    _ = boostR j (Sr + ms) ^ 11 * (1 + mu / 3) ^ 11 := by rw [mul_pow]
+
+/-- **T1 (below μ*), the g_bound coordinate step.**  With child factor `≡ 1`, `boostR^11` is increasing in
+    the message-sum: `0 ≤ x ≤ y → boostR j x ^ 11 ≤ boostR j y ^ 11`. -/
+theorem gstep_T1_step (j : ℕ) (x y : ℝ) (hx : 0 ≤ x) (hxy : x ≤ y) :
+    boostR j x ^ 11 ≤ boostR j y ^ 11 := by
+  gcongr
+  · exact (boostR_pos j x hx).le
+  · exact boostR_mono j x y hxy
+
+/-- The two-regime child factor `min(1, γ/(1+μ/3)^11)`. -/
+noncomputable def factorR (γ mu : ℝ) : ℝ := min 1 (γ / (1 + mu / 3) ^ 11)
+
+/-- At the crossover `μ*` (`(1+μ*/3)^11 = γ`), the child factor is exactly `1`. -/
+theorem factorR_crossover (γ mustar : ℝ) (hms : 0 ≤ mustar) (hγ : (1 + mustar / 3) ^ 11 = γ) :
+    factorR γ mustar = 1 := by
+  have hpos : 0 < (1 + mustar / 3) ^ 11 := by positivity
+  unfold factorR
+  rw [← hγ, div_self (ne_of_gt hpos), min_self]
+
+/-- **Coordinate-wise unimodality (the complete one-coordinate step).**  For `j ≥ 2`, `0 ≤ Sr`, `0 ≤ v`, and
+    `μ*` the crossover (`(1+μ*/3)^11 = γ`, `0 ≤ μ*`): moving a single coordinate from `v` to `μ*` does not
+    decrease the `boost^11 · factor` core, i.e.
+      `boostR j (v+Sr)^11 · factorR γ v ≤ boostR j (μ*+Sr)^11`   (and `factorR γ μ* = 1`).
+    Both regimes: `v ≤ μ*` (factor ≡ 1, T1) and `v ≥ μ*` (factor `= γ/(1+v/3)^11`, T2). -/
+theorem boost_factor_le (j : ℕ) (hj : 2 ≤ j) (γ mustar v Sr : ℝ)
+    (hγ : (1 + mustar / 3) ^ 11 = γ) (hms : 0 ≤ mustar) (hv : 0 ≤ v) (hSr : 0 ≤ Sr) :
+    boostR j (v + Sr) ^ 11 * factorR γ v ≤ boostR j (mustar + Sr) ^ 11 := by
+  have hms3 : (0 : ℝ) < 1 + mustar / 3 := by linarith
+  rcases le_total v mustar with hvm | hvm
+  · -- v ≤ μ*: factor = 1 (since (1+v/3)^11 ≤ γ), T1
+    have hv3 : (0 : ℝ) < 1 + v / 3 := by linarith
+    have hle : (1 + v / 3) ^ 11 ≤ γ := by rw [← hγ]; gcongr
+    have h1 : (1 : ℝ) ≤ γ / (1 + v / 3) ^ 11 := by
+      rw [le_div_iff₀ (by positivity)]; linarith
+    have hfac : factorR γ v = 1 := by unfold factorR; rw [min_eq_left h1]
+    rw [hfac, mul_one]
+    exact gstep_T1_step j (v + Sr) (mustar + Sr) (by linarith) (by linarith)
+  · -- v ≥ μ*: factor = γ/(1+v/3)^11, T2
+    have hv3 : (0 : ℝ) < 1 + v / 3 := by linarith
+    have hv3p : (0 : ℝ) < (1 + v / 3) ^ 11 := by positivity
+    have hge : γ ≤ (1 + v / 3) ^ 11 := by rw [← hγ]; gcongr
+    have h1 : γ / (1 + v / 3) ^ 11 ≤ 1 := by rw [div_le_one (by positivity)]; linarith
+    have hfac : factorR γ v = γ / (1 + v / 3) ^ 11 := by unfold factorR; rw [min_eq_right h1]
+    have hT2 := gstep_T2_step j hj Sr v mustar hSr hms hvm
+    rw [hγ, add_comm Sr v, add_comm Sr mustar] at hT2
+    rw [hfac, ← mul_div_assoc, div_le_iff₀ hv3p]
+    linarith [hT2]
+
+theorem factorR_nonneg (γ mu : ℝ) (hγ : 0 < γ) (hmu : 0 ≤ mu) : 0 ≤ factorR γ mu := by
+  unfold factorR
+  have h1 : (0 : ℝ) < 1 + mu / 3 := by linarith
+  exact le_min (by norm_num) (div_nonneg hγ.le (by positivity))
+
+/-- The `boost^11 · factor-product` core of `g_bound`, with a nonnegative sum-offset `off` (needed to make the
+    coordinate-replacement induction go through). -/
+noncomputable def gCoreOff (γ : ℝ) (j : ℕ) (off : ℝ) (mus : List ℝ) : ℝ :=
+  boostR j (off + mus.sum) ^ 11 * (mus.map (factorR γ)).prod
+
+/-- **Piece 1 (assembly): the box-max is the symmetric crossover value.**  For `j ≥ 2`, `μ*` the crossover
+    (`(1+μ*/3)^11 = γ`, `0 ≤ μ*`), any message list `mus` of nonnegatives, and any offset `off ≥ 0`:
+      `gCoreOff γ j off mus ≤ gCoreOff γ j off (replicate mus.length μ*)`.
+    Proved by moving each coordinate to `μ*` (one `boost_factor_le` step per element).  With `off = 0` and
+    `mus.length = j` this says the box-max of `g_bound` is the symmetric value `W · boostR j (j·μ*)^11`. -/
+theorem gCoreOff_le_replicate (j : ℕ) (hj : 2 ≤ j) (γ mustar : ℝ)
+    (hγ : (1 + mustar / 3) ^ 11 = γ) (hms : 0 ≤ mustar) :
+    ∀ mus : List ℝ, (∀ v ∈ mus, 0 ≤ v) → ∀ off : ℝ, 0 ≤ off →
+      gCoreOff γ j off mus ≤ gCoreOff γ j off (List.replicate mus.length mustar) := by
+  have hγpos : 0 < γ := by rw [← hγ]; positivity
+  intro mus
+  induction mus with
+  | nil => intro _ off _; simp [gCoreOff]
+  | cons v rest ih =>
+    intro hall off hoff
+    have hv : 0 ≤ v := hall v (List.mem_cons.mpr (Or.inl rfl))
+    have hrest : ∀ w ∈ rest, 0 ≤ w := fun w hw => hall w (List.mem_cons.mpr (Or.inr hw))
+    have hprod : 0 ≤ (rest.map (factorR γ)).prod :=
+      List.prod_nonneg (by
+        intro x hx
+        rw [List.mem_map] at hx
+        obtain ⟨w, hw, rfl⟩ := hx
+        exact factorR_nonneg γ w hγpos (hrest w hw))
+    have hSr : 0 ≤ off + rest.sum :=
+      add_nonneg hoff (List.sum_nonneg (fun w hw => hrest w hw))
+    -- Step 1: move the head v to μ*  (boost_factor_le with Sr = off + rest.sum)
+    have hstep := boost_factor_le j hj γ mustar v (off + rest.sum) hγ hms hv hSr
+    have hfacms : factorR γ mustar = 1 := factorR_crossover γ mustar hms hγ
+    have h1 : gCoreOff γ j off (v :: rest) ≤ gCoreOff γ j (off + mustar) rest := by
+      unfold gCoreOff
+      rw [List.map_cons, List.prod_cons, List.sum_cons]
+      have harr : boostR j (off + (v + rest.sum)) ^ 11 * (factorR γ v * (rest.map (factorR γ)).prod)
+          = (boostR j (v + (off + rest.sum)) ^ 11 * factorR γ v) * (rest.map (factorR γ)).prod := by
+        ring_nf
+      rw [harr]
+      have hoff2 : boostR j (off + mustar + rest.sum) = boostR j (mustar + (off + rest.sum)) := by
+        ring_nf
+      rw [hoff2]
+      exact mul_le_mul_of_nonneg_right hstep hprod
+    -- Step 2: induction on the tail with offset off + μ*
+    have h2 := ih hrest (off + mustar) (by linarith)
+    -- glue: gCoreOff (off+μ*) (replicate rest.length μ*) = gCoreOff off (replicate (rest.length+1) μ*)
+    have h3 : gCoreOff γ j (off + mustar) (List.replicate rest.length mustar)
+        = gCoreOff γ j off (List.replicate (rest.length + 1) mustar) := by
+      unfold gCoreOff
+      rw [List.replicate_succ, List.map_cons, List.prod_cons, List.sum_cons, hfacms, one_mul]
+      have : off + mustar + (List.replicate rest.length mustar).sum
+          = off + (mustar + (List.replicate rest.length mustar).sum) := by ring
+      rw [this]
+    calc gCoreOff γ j off (v :: rest)
+        ≤ gCoreOff γ j (off + mustar) rest := h1
+      _ ≤ gCoreOff γ j (off + mustar) (List.replicate rest.length mustar) := h2
+      _ = gCoreOff γ j off (List.replicate (rest.length + 1) mustar) := h3
+      _ = gCoreOff γ j off (List.replicate (v :: rest).length mustar) := by rw [List.length_cons]
+
 end ArmExtremality
 end G1
