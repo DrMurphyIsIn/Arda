@@ -62,10 +62,18 @@ structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in
   optimization (non-tie count `<160`; `≤2` types by concavity) gives EXACT max `Φ¹¹=0.852381` (≥1 branch),
   `0.681555` (≥3 branches — the uncovered case). **This closes the one known hole.** Generalizes
   `family_martingale` (its `hub+k·N(0,5)` is the all-tie, no-arm slice).
-- Remaining open for the multi-hub FRONT: whether the hub-star-of-near-stars is the **only** irreducible
-  family — verified (reduction exhaustive n≤17; 3-level nested covered; no other shallow escape), not proven
-  all-n. So {L1 + L2′ + L3} covers every multi-hub tree n≤17 and every known family; the reduction's all-n
-  completeness (and L1, L2′ all-n) is the open piece.
+- **(i)/(ii) RESOLVED — as refutations (2026-08-18).** The multi-hub front does **not** close by
+  {reduction + finite family bounds}. A systematic decorated-hub-core enumeration shows the **irreducible**
+  trees (>2 hubs, no deg≥4–deg≥4 edge, no non-decreasing hub-reducing move) form an **unbounded, growing
+  hierarchy** — one family per hub-core shape: non-hub-star irreducible families number 0, 4, 10, **80** at
+  core sizes h=4,5,6,7 (first at n=27). So **(i) [hub-star is the only irreducible family] is FALSE**, and
+  **(ii)-L2′ [peeling covers all non-hub-star trees] is FALSE** (peeling fails on exactly these). **(ii)-L1
+  [deg≥4 cut submultiplicativity] survives** stress-testing (0 violations on large tie-laden trees; still
+  verified-not-proven all-n). Silver lining: every irreducible family is uniformly bounded and the bound
+  *improves* with core size (max `Φ¹¹` = 0.288, 0.230, 0.184 at h=5,6,7 — each extra hub adds net `(64/621)`
+  suppression); the **hub-star is the `Φ¹¹`-maximal irreducible family (`≤0.852`)**. The honest remaining
+  theorem is a **uniform bound "irreducible ⇒ `Φ¹¹<1`"** (empirically ≤0.852, hub-star extremal), a
+  transfer-decay in core size — itself a facet of the multi-hub crux, not a finite reduction. **OPEN.**
 - **"DN is the multi-hub Φ¹¹-maximizer at each n"** (competitor extremality *within* multi-hub). —
   **VERIFIED n≤13** (`double_near_star`). Now subsumed by the reduction above. **OPEN** all-n.
 

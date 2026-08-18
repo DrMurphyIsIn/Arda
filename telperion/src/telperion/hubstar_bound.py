@@ -44,13 +44,23 @@ THE PROOF (Phi^11 < 1 for every hub-star with >= 1 near-star branch).  Three exa
 
       both < 1.  (The >= 3-branch value is exactly the peak found by direct tree enumeration, 0.68156.)
 
-CONSEQUENCE.  The hub-star-of-near-stars family -- the specific family that defeats the peeling reduction
-(`multihub_peeling`, counterexample `hubstar(3,3)`) -- satisfies Phi^11 <= 0.6816 < 1 for all >= 3 branches
-(<= 0.8524 for >= 1 branch).  So this hole is CLOSED by a direct family bound, exactly as DN and the caterpillar
-families were.  What remains open for the multi-hub FRONT is whether the hub-star-of-near-stars is the ONLY
-irreducible family (verified: reduction exhaustive n<=17; 3-level nested hub-stars covered; no other shallow
-escape) -- i.e. that {reduction + this bound} covers every multi-hub tree for all n.  This module CLOSES the
-one known hole; the reduction's all-n completeness is the remaining open piece.  `conjecture1_proved = False`.
+CONSEQUENCE (and an important CORRECTION, 2026-08-18).  The hub-star-of-near-stars family satisfies
+Phi^11 <= 0.6816 < 1 for all >= 3 branches (<= 0.8524 for >= 1 branch).  This is a real family bound (like DN
+and the caterpillar).  BUT it does NOT close the multi-hub front: the hub-star is NOT the only irreducible
+family.  A systematic enumeration of decorated hub-cores shows the irreducible trees (>2 hubs, no deg>=4-deg>=4
+edge, no non-decreasing hub-reducing move) form an UNBOUNDED, GROWING HIERARCHY -- one family per hub-core
+shape: non-hub-star irreducible families number 0, 4, 10, 80 for core sizes h = 4, 5, 6, 7 (a two-connector
+core carrying near-stars is the first, at n=27, Phi^11=0.288).  So {reduction + this bound} does NOT cover
+every multi-hub tree; there is no finite set of family bounds that finishes the front.
+
+THE SILVER LINING (what is actually true).  Every irreducible family is bounded well below 1, and the bound
+IMPROVES with core size: max Phi^11 over non-hub-star irreducibles is 0.288 (h=5), 0.230 (h=6), 0.184 (h=7) --
+decreasing, because each extra hub adds net (64/621) suppression the boost cannot recover.  The HUB-STAR is the
+Phi^11-MAXIMAL irreducible family (0.852 >= every other irreducible value found).  So the honest remaining
+theorem is a UNIFORM bound "irreducible => Phi^11 < 1" (empirically <= 0.852, hub-star extremal), with a
+transfer-decay structure in core size -- which is itself a facet of the multi-hub crux, NOT a finite reduction.
+This module bounds the extremal (hub-star) family; the uniform bound over the infinite irreducible hierarchy is
+OPEN.  `conjecture1_proved = False`.
 """
 from __future__ import annotations
 

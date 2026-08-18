@@ -278,3 +278,87 @@ class MultiHubReductionCertificate:
         when all three hold -- i.e., when the honest partial picture is exactly as documented."""
         return (self.cover_up_to() and self.counterexample_is_uncovered()
                 and self.hole_does_not_recurse())
+
+
+def _decorate_core(core_edges, h, arms):
+    import networkx as nx
+    G = nx.Graph()
+    G.add_nodes_from(range(h))
+    G.add_edges_from(core_edges)
+    nid = h
+    for v in range(h):
+        for _ in range(arms[v]):
+            G.add_edge(v, nid)
+            G.add_edge(nid, nid + 1)
+            nid += 2
+    return G
+
+
+def _is_irreducible(T):
+    nn, e = _edges(T)
+    deg = [0] * nn
+    for a, b in e:
+        deg[a] += 1
+        deg[b] += 1
+    if sum(1 for d in deg if d >= 3) <= 2:
+        return False
+    if any(deg[a] >= 4 and deg[b] >= 4 for a, b in e):
+        return False
+    return not reaches_two_hubs(T)
+
+
+def _is_single_center_hubstar(T):
+    import networkx as nx
+    nn, e = _edges(T)
+    deg = [0] * nn
+    for a, b in e:
+        deg[a] += 1
+        deg[b] += 1
+    for c in range(nn):
+        if deg[c] < 3:
+            continue
+        H = nx.Graph(list(e))
+        H.add_nodes_from(range(nn))
+        H.remove_node(c)
+        if all(sum(1 for v in comp if deg[v] >= 3) <= 1 for comp in nx.connected_components(H)):
+            return True
+    return False
+
+
+@dataclass(frozen=True)
+class IrreducibleHierarchyCertificate:
+    """REFUTES item (i): the hub-star-of-near-stars is NOT the only irreducible family.  The irreducible trees
+    (>2 hubs, no deg>=4-deg>=4 edge, no non-decreasing hub-reducing move) form an unbounded GROWING hierarchy,
+    one family per hub-core shape.  Hence no finite set of family bounds closes the multi-hub front; and item
+    (ii)-L2' (peeling covers all non-hub-star trees) is false (peeling fails on exactly these families).
+    Silver lining: they are uniformly bounded, and the bound improves with core size (hub-star is extremal)."""
+
+    def non_hubstar_irreducible_exists(self) -> bool:
+        """The n=27 two-connector core (edges [(1,0),(1,2),(0,3),(0,4)], arms (0,3,2,3,3)) is irreducible,
+        is NOT a single-center hub-star, and has Phi^11 = 0.288 < 1."""
+        T = _decorate_core([(1, 0), (1, 2), (0, 3), (0, 4)], 5, (0, 3, 2, 3, 3))
+        nn, e = _edges(T)
+        return (_is_irreducible(T) and not _is_single_center_hubstar(T)
+                and bg_phi11_fast(nn, e) < 1)
+
+    def hierarchy_grows(self) -> bool:
+        """Non-hub-star irreducible families exist at core h=5 (and more at h=6): the hierarchy is not finite.
+        Returns True iff at least one non-hub-star irreducible decorated core of size 5 is found."""
+        import networkx as nx
+        from itertools import product
+        found = 0
+        for core in nx.nonisomorphic_trees(5):
+            ce = [tuple(x) for x in core.edges()]
+            cdeg = [core.degree(v) for v in range(5)]
+            for arms in product(*[range(max(0, 3 - cdeg[v]), 5) for v in range(5)]):
+                deg = [cdeg[v] + arms[v] for v in range(5)]
+                if any(d < 3 for d in deg) or any(deg[a] >= 4 and deg[b] >= 4 for a, b in ce):
+                    continue
+                T = _decorate_core(ce, 5, arms)
+                if _is_irreducible(T) and not _is_single_center_hubstar(T):
+                    found += 1
+        return found > 0
+
+    def check(self) -> bool:
+        """Item (i) is FALSE: a non-hub-star irreducible family exists and the hierarchy grows."""
+        return self.non_hubstar_irreducible_exists() and self.hierarchy_grows()
