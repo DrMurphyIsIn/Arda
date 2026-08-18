@@ -1,6 +1,6 @@
 {
   "family": "TaxGrowth",
-  "input_hash": "763d0909bae50cf58daa2212c89df734e6e85c59359497ad98615b0d11d2409a",
+  "input_hash": "317f5fd03ff4851be07c43ae84f70a95dec5e241ce49c440115f10ff1b46c869",
   "tool_version": "0.1.4",
   "files": [
     "TaxGrowth.lean"

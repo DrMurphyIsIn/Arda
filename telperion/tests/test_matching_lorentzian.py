@@ -10,14 +10,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     MatchingLorentzianProbe,
     bivariate_matching_is_lorentzian,
     matching_support_vectors,
     matchings,
     support_is_m_convex,
 )
-from telperion.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
 
 
 def test_m_convexity_test_on_known_sets():

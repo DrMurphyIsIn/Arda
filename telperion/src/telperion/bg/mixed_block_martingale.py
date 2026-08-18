@@ -181,7 +181,7 @@ class MixedBlockMartingaleCertificate:
     def marginal_first_appears_at_11(self) -> bool:
         """No block with `n_b <= 10` is marginal (all `F_b < 1`); marginality first appears at `n_b = 11`
         (the tie).  This is the 23-gate: `F_b = 1 => alpha_b = (621/64)^{n_b/11}` rational => `11 | n_b`."""
-        from .padic import padic_val_frac
+        from ..padic import padic_val_frac
         for blk in _rooted_blocks(10):
             if block_factor(*blk) == 1:
                 return False

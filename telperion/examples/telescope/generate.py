@@ -34,7 +34,7 @@ from telperion import (  # noqa: E402
     freeze,
 )
 from telperion.emit_adapters import CustomAssemblyEmitter  # noqa: E402
-from telperion.telescope import TELESCOPE_LEMMA, TelescopeSpec  # noqa: E402
+from telperion.bg.telescope import TELESCOPE_LEMMA, TelescopeSpec  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 

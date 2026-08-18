@@ -10,14 +10,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     InteriorMaxCertificate,
     family_phi,
     is_large_message,
     log_concave_in_k,
     single_copy_value,
 )
-from telperion.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
 
 
 def test_log_concavity_and_single_copy_formula():

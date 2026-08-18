@@ -11,13 +11,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     ArmMaximalCertificate,
     master_upper_bound,
     satisfies_master,
 )
-from telperion.arm_maximal import F_ARM, MASTER_C  # noqa: E402
-from telperion.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.arm_maximal import F_ARM, MASTER_C  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
 
 
 def test_master_constants_and_leaf_tightness():

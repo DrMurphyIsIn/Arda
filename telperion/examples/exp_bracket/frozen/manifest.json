@@ -1,6 +1,6 @@
 {
   "family": "ExpBracket",
-  "input_hash": "6b59eef87631b2191e58c5c38b10fa6ccc976b7f14e3f1ed0835af10b45bd9f2",
+  "input_hash": "727a55ce63a152a1dd1b024f237b00ef22ef2034d2652ba7018538850a158fe5",
   "tool_version": "0.1.4",
   "files": [
     "ExpBracket.lean"

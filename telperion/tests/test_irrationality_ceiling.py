@@ -10,14 +10,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     IrrationalityCeilingCertificate,
     le_half_holds,
     liouville_lower_bound,
     rho_b_power_11,
 )
-from telperion.frustration_free import near_star_edges  # noqa: E402
-from telperion.sporadic_tie import amp_product  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.sporadic_tie import amp_product  # noqa: E402
 
 
 def test_liouville_bound_is_valid_and_positive_strictness():

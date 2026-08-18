@@ -18,7 +18,7 @@ import sympy as sp
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     ARM,
     ARM2,
     GridSpec,
@@ -34,7 +34,7 @@ from telperion import (  # noqa: E402
     per_step_multiplier_limit,
 )
 from telperion.emit_adapters import CustomAssemblyEmitter  # noqa: E402
-from telperion.gauge_lift import curvature_diff_tower  # noqa: E402
+from telperion.bg.gauge_lift import curvature_diff_tower  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 

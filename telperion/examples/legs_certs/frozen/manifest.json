@@ -1,6 +1,6 @@
 {
   "family": "LegsCerts",
-  "input_hash": "33eaf5807d6374edc53f963c994b788a97e5b51bd8502fff1a165bfafee601db",
+  "input_hash": "25658b3643117668b7aece9878b3efef2d2163a25cb08b68ae8bd928c1cd530f",
   "tool_version": "0.1.4",
   "files": [
     "LegsCerts.lean"

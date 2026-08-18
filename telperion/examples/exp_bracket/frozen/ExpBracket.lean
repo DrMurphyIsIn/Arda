@@ -1,4 +1,4 @@
-/- telperion 0.1.4 | family ExpBracket | input-hash 6b59eef87631b219
+/- telperion 0.1.4 | family ExpBracket | input-hash 727a55ce63a152a1
    6 theorems, 9 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

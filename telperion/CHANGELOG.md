@@ -1,11 +1,73 @@
 # Changelog
 
-## Unreleased (2026-08-18) — honesty patterns (methodology port)
+## 0.1.4 (2026-08-18) — Tier-1 emitters · core/bg split · soundness lint · code-fingerprint hash · honesty patterns · perf gate
+
+The strategic-plan workstreams and the parallel crux-campaign methodology port
+landed together (see the sections below): the Tier-1 first-class emitters (P2),
+the physical core/bg package split (P1), an external non-BG validation family
+(P3), a Lean soundness/honesty pre-linter (P4), an emitter-code fingerprint
+folded into the input hash (P5), plus the eight honesty-pattern modules and the
+`bench.py` perf-regression gate. P5 changes the hashing algorithm, so **every
+frozen family was regenerated and the version bumped 0.1.3 → 0.1.4**.
+
+### P1 — core/bg package split
+
+The engine's trust-model claim ("a referee audits the small engine, not the
+research accretion") was being eroded by 18k LOC of Brualdi–Goldwasser research
+probes living in the same flat namespace as the ~40-module engine. The 72
+problem-specific modules moved to a `telperion.bg` subpackage; the engine stays
+at `telperion.*`.
+
+- `import telperion` now loads **zero** bg modules (runtime-enforced) — the core
+  is sympy-only and self-contained; the bg lab (networkx/numpy) is the opt-in
+  `bg` extra (`graph` kept as a legacy alias).
+- `telperion.bg` re-exports the engine, so it is a strict **superset** namespace
+  — bg consumers import everything from one place.
+- Enforced by `tests/test_core_boundary.py`: static (no engine module imports
+  `telperion.bg` in any spelling) + dynamic (`import telperion` leaks no bg
+  module) + superset checks. Runs in the standard `telperion-test` gate.
+
+### P4 — Lean soundness pre-linter (`lean_lint.py`)
+
+`lint.py` owns the *structural* failure classes (holes, header, empty binders,
+delimiter balance, duplicate names). The new `lean_lint.py` COMPLEMENTS it with
+the *"green build ≠ actually proved"* class the origin campaign's own Lean audit
+flagged: `sorry`/`admit`, `axiom` declarations, missing type ascription, empty
+`:= by` tactic blocks (all ERROR), and the `Prop := True` / trivial-stub class
+(WARN). Comment/string-aware, dependency-free, ~230 lines. Wired into `emit()`
+(hard-blocks error-severity before freeze — validated across all 31 refrozen
+families), exported, and exposed as `telperion lint-lean <file>`.
+
+### P5 — emitter-code fingerprint in the input hash
+
+The input hash covered config fields and the manual `__version__` string but NOT
+emitter *code* — so an `emit_body` edit that produced different Lean left every
+frozen hash untouched (the mechanism behind the G1 empty-binder regression
+shipping under a stale hash). `Emitter.code_fingerprint()` folds a
+version-stable hash of the emitter class's raw source (and its telperion bases)
+into `config_fingerprint()`, which `emit()` already threads into the hash. Raw
+source, NOT `ast.dump` — whose serialization varies across Python versions and
+would break the cross-version byte-stability the CI matrix enforces (this was
+caught in testing: `verify` failed under py3.14 with the ast.dump version). Any
+edit to the emitter source moves the fingerprint (conservative for a drift net);
+a change to the base `Emitter` moves every emitter's. Known residual
+(documented): module-level helper functions the emitter *calls* are not captured
+— the compile/diff gates remain the backstop for those.
+
+### P3 — external non-BG validation family (`examples/bernoulli`)
+
+Genericity evidence: Bernoulli's inequality `(1+x)^k − 1 − k·x ≥ 0` (integer
+`k∈1..6`, `x≥0`) driven end-to-end through **core only** (`DirectPolyaEmitter`,
+never `telperion.bg`) — a textbook inequality with nothing to do with BG through
+the same certify→validate→emit→freeze machinery. 6 theorems, exact-arithmetic
+self-checks + a `emit()`-refuses-without-green-validation negative control,
+byte-stable freeze.
+
+### Honesty patterns (methodology port)
 
 Eight reusable meta-skill patterns from the Brualdi–Goldwasser crux campaign
 (20+ probes, zero false positives), ported as checkable modules — each returns a
-`ProbeVerdict` decided in exact rationals.  No emitter / frozen-artifact change,
-so no version bump.  See `docs/HONESTY_PATTERNS.md`.
+`ProbeVerdict` decided in exact rationals.  See `docs/HONESTY_PATTERNS.md`.
 
 - **`verdict.py`** (#8, load-bearing): the `VALIDATED / OBSTRUCTED_AND_LOCATED /
   NULL / RE_DERIVATION` taxonomy with structural invariants, and `require_exact`
@@ -33,10 +95,9 @@ asserts certify+emit stays sub-quadratic (measured growth ~1.09 = linear).
 Deliberately NOT a ProbeVerdict — wall-clock is empirical, not an exact-rational
 decision. Profiling confirmed no regression from the Tier-1 / pattern work; the
 hot path (`polya_certify`'s `together`) is inherent, linear, and cache-backed.
-
 `conjecture1_proved=False` throughout.
 
-## 0.1.4 (2026-08-18) — Tier-1 first-class emitters
+### P2 — Tier-1 first-class emitters
 
 Three certificate capabilities that previously bypassed the enforced pipeline
 via one-off demonstrators are now first-class: each is a pipeline-enforced
@@ -65,11 +126,12 @@ via one-off demonstrators are now first-class: each is a pipeline-enforced
 **Foundation**: `family.py` (three new modes + `kind`), `certify.py` (kind
 dispatch, serial + fork paths, `CertifiedInstance` payloads), `provenance.py`
 (`family_hash` per-kind serialization), `__init__.py` exports. The Tier-1
-emitter *code* is new but no existing family's emitted bytes changed (drift-net
-confirmed across the untouched set, incl. the 3084-theorem `g1_floors`).
-Version bumped 0.1.3 → 0.1.4 as a cohesive-species cut: `__version__` is in the
-input hash, so every frozen family was regenerated at 0.1.4 (byte-identical
-bodies; only the stamped version/hash line moves) and the drift net re-verified.
+emitter *code* is new but changed no existing family's emitted *bytes* on its
+own. Version bumped 0.1.3 → 0.1.4 and every frozen family regenerated — the
+input hashes move because P5 now folds each emitter's code fingerprint into the
+hash (not only the `__version__` string), while the emitted Lean *bodies* stay
+byte-identical (only the stamped version/hash line changes); the drift net was
+re-verified across all families.
 
 **Honesty**: `conjecture1_proved=False` untouched; scope banners on all three
 modules; each arm carries a live negative control (non-SOS refusal, false-`hi`

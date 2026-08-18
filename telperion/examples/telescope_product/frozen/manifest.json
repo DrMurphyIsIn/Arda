@@ -1,6 +1,6 @@
 {
   "family": "TelescopeProduct",
-  "input_hash": "6c7a2ff693ce2aad81536713e925d7dcfd70b8abb693030e06facc9af8d226b4",
+  "input_hash": "c4dafdea392f7b3fe6e2834323fa4cab699116f35e2e27a0a717355be8d8aeda",
   "tool_version": "0.1.4",
   "files": [
     "TelescopeProduct.lean"

@@ -10,14 +10,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     SafeHubFamilyCertificate,
     block_is_safe_hub,
     family_phi,
     is_safe_message,
     safe_hub_ceiling,
 )
-from telperion.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
 
 
 def test_safe_message_and_ceiling():

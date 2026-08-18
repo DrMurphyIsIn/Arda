@@ -1,4 +1,4 @@
-/- telperion 0.1.4 | family Lorentzian | input-hash 5455097442aa3d74
+/- telperion 0.1.4 | family Lorentzian | input-hash 7cbfa489a8c1a13b
    2 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

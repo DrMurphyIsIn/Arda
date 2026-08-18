@@ -1,6 +1,6 @@
 {
   "family": "GaugeLift",
-  "input_hash": "1c596bb3521e9f235df16d43efe95c83b2470fe1b70e54fa9975bd2dce70465c",
+  "input_hash": "2f7dc8a7d80243b3ea76ef5e112d6f75b25f581f673669b15bf19541a4c3411f",
   "tool_version": "0.1.4",
   "files": [
     "GaugeLift.lean"

@@ -15,14 +15,14 @@ nx = pytest.importorskip("networkx")  # graph certificates need networkx; skip c
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     RecursiveTransferCertificate,
     is_safe_vertex,
     transfer_factor,
     vertex_amplitudes,
 )
-from telperion.frustration_free import near_star_edges  # noqa: E402
-from telperion.rooted_phi import bg_phi11_fast, phi11_rooted  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.rooted_phi import bg_phi11_fast, phi11_rooted  # noqa: E402
 
 
 def _edges(T):

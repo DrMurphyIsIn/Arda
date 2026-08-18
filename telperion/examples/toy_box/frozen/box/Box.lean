@@ -1,4 +1,4 @@
-/- telperion 0.1.4 | family ToyBox | input-hash 508d3e3bc0b02018
+/- telperion 0.1.4 | family ToyBox | input-hash be9c8a165a1f4c68
    24 theorems, 20 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

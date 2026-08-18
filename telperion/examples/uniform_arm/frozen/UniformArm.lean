@@ -1,4 +1,4 @@
-/- telperion 0.1.4 | family UniformArm | input-hash 11ea3160938b220b
+/- telperion 0.1.4 | family UniformArm | input-hash b854ded829408e06
    3 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

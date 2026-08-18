@@ -1,4 +1,4 @@
-/- telperion 0.1.4 | family LegsCerts | input-hash 33eaf5807d6374ed
+/- telperion 0.1.4 | family LegsCerts | input-hash 25658b3643117668
    48 theorems, 48 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

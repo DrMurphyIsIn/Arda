@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     ArmLeanCertificate,
     TAIL_P_COEFFS,
     arm_B,
@@ -18,7 +18,7 @@ from telperion import (  # noqa: E402
     per_step_holds,
     tail_identity_holds,
 )
-from telperion.arm_lean_certificates import GAMMA, W, F_ARM  # noqa: E402
+from telperion.bg.arm_lean_certificates import GAMMA, W, F_ARM  # noqa: E402
 
 
 def test_tail_polya_identity_nonneg():

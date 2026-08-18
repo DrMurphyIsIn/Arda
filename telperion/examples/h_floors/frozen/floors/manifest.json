@@ -1,6 +1,6 @@
 {
   "family": "HFloors",
-  "input_hash": "6980bf4ebeb25b6a7fe141e93fb9ec64392e20da33bd76bbd9242507119fc99b",
+  "input_hash": "8ae798e9f1da7d716a18a1a1c0a42b18eed27c2f0081a9f3f7a33e6406e91553",
   "tool_version": "0.1.4",
   "files": [
     "HFloors.lean"

@@ -1,6 +1,6 @@
 {
   "family": "BenchmarkFactor",
-  "input_hash": "5933f48822da81113428e6c83436970699721e54a1f530b42453838e8564c028",
+  "input_hash": "f99b34516d449fbf4e9bd91c9f3503af248f732035b6caaa8ef31feda80e393e",
   "tool_version": "0.1.4",
   "files": [
     "BenchmarkFactor.lean"

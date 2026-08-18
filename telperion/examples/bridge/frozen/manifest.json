@@ -1,6 +1,6 @@
 {
   "family": "Bridge",
-  "input_hash": "8fd0ec5994ef0bbbaf8c6d8f066cd7e0d62d48aa1209e46bed281ba038452be6",
+  "input_hash": "cf3ce960cd316261700e74b2f944ca302bbf09a2edbf48bb98a2b5213644e578",
   "tool_version": "0.1.4",
   "files": [
     "Bridge.lean"

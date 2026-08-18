@@ -2,7 +2,7 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from telperion import ArmDominanceCertificate, arm_dominance_uniform  # noqa: E402
+from telperion.bg import ArmDominanceCertificate, arm_dominance_uniform  # noqa: E402
 
 def test_arm_dominance_at_tie():
     assert ArmDominanceCertificate("t", 0, 5).check()

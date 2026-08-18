@@ -41,7 +41,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction as Fr
 
-from .padic import padic_val_frac
+from ..padic import padic_val_frac
 
 P_BIND = 23  # the binding prime: v_23(621) = 1, so 621 = 3^3 * 23
 

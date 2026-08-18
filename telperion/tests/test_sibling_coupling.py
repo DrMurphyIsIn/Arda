@@ -14,14 +14,14 @@ pytest.importorskip("networkx")  # graph enumeration needs networkx; skip cleanl
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     RHO_B_11,
     SiblingCouplingCertificate,
     amplitude_product,
     parent_amplitude,
 )
-from telperion.frustration_free import near_star_edges  # noqa: E402
-from telperion.rooted_phi import phi11_rooted  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.rooted_phi import phi11_rooted  # noqa: E402
 
 
 def test_bg_is_geometric_mean_amplitude_bound():

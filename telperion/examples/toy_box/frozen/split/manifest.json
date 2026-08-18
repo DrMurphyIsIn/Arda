@@ -1,6 +1,6 @@
 {
   "family": "ToySplit",
-  "input_hash": "f2b76421c7d0b06942cc7657829d5e4f24d1fa90bc925c4ff71cb5b3ed3efc76",
+  "input_hash": "e01c4f084896fbead1e43d2a2f9c5e8275ff425b9901ebd02d11e24cdd289511",
   "tool_version": "0.1.4",
   "files": [
     "Split.lean"

@@ -1,6 +1,6 @@
 {
   "family": "Entropy",
-  "input_hash": "4226935c0159b8abdabd748c701b52720cbf3efa4c0b53f8ef503bd28997632c",
+  "input_hash": "9813082bd8db185569df5bff7eea1174903ea8351bac450bfa2852cb59d13500",
   "tool_version": "0.1.4",
   "files": [
     "Entropy.lean"

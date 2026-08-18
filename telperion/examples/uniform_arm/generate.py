@@ -11,7 +11,7 @@ import argparse, sys
 from pathlib import Path
 import sympy as sp
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-from telperion import (GridSpec, InequalityFamily, LeanProfile, UniformArmDominanceCertificate,  # noqa: E402
+from telperion.bg import (GridSpec, InequalityFamily, LeanProfile, UniformArmDominanceCertificate,  # noqa: E402
                        ValidationReport, certify, diff_frozen, emit, freeze)
 from telperion.emit_adapters import CustomAssemblyEmitter  # noqa: E402
 HERE = Path(__file__).resolve().parent
