@@ -41,8 +41,26 @@ structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in
 
 - **Double-near-star family bound** `Φ¹¹(DN(a,b)) < 1` for all a,b≥2, via gluing submultiplicativity
   (`2b(2a−3)≥9`) + the near-star tail, and the a=2 ratio test. — **PROVEN** (`r2_submultiplicative`).
+- **Full multi-hub reduction (100% cover)** — every tree with ≥2 hubs reduces, via `Φ¹¹`-non-decreasing
+  moves, to a proven ≤2-hub tree, by exactly one of: *2-hub base* (`DN`, proven); *deg≥4 hub-hub cut*
+  (submultiplicativity + between-hub contraction, `multihub_submultiplicative`); *peeling/contraction to
+  ≤2 hubs* (the deg-3 hub cluster, `multihub_peeling`). **0 uncovered.** — **VERIFIED n≤14**
+  (`MultiHubReductionCertificate.full_cover`). Reduces the whole front to two all-n move-lemmas:
+  (L1) deg≥4 cut submult + contraction; (L2) peeling existence (every ≥3-hub tree has a `Φ¹¹`-non-decreasing
+  hub-reducing move). Both **OPEN** all-n (verified n≤13/15). The maximizer among ≥3-hub trees is the
+  deg-3 hub *caterpillar* (per-hub transfer multiplier ρ≈0.726<1, peak `DN(2,2)=0.700`).
 - **"DN is the multi-hub Φ¹¹-maximizer at each n"** (competitor extremality *within* multi-hub). —
-  **VERIFIED n≤13** (`double_near_star`). Not proven for all n. **OPEN.**
+  **VERIFIED n≤13** (`double_near_star`). Now subsumed by the reduction above. **OPEN** all-n.
+
+### Object note (Pant reconciliation)
+`Φ¹¹ = (64/621)ⁿ(∏aᵥ)¹¹` is **not** the raw Laplacian ratio `π(T)=per(L)/∏deg`. Raw `π` is unbounded
+(star = `per(L)`-minimizer, path/spiders = maximizers) and the near-star does **not** maximize it — Pant
+(arXiv:2605.14176) refutes the subdivided-star maximizer guess for raw `π`. That refutation does **not**
+touch `Φ¹¹`: on Pant's counterexample spiders our object stays far below 1 (`T(4,4,4,4)=0.097`,
+`T(3,4,3)=0.256`), with the near-star `N(0,5)=1` the unique maximizer. The `(64/621)ⁿ` per-vertex
+normalization is exactly what makes the near-star extremal. (GTS/Kelmans are per(L)-monotone toward the
+star-as-*minimizer* — the wrong direction — confirmed computationally; they cannot crown the interior-point
+near-star.)
 
 ## The two hardest near-1 families — both PROVEN below 1
 
