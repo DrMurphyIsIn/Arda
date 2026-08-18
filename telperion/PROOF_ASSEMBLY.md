@@ -41,14 +41,20 @@ structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in
 
 - **Double-near-star family bound** `Φ¹¹(DN(a,b)) < 1` for all a,b≥2, via gluing submultiplicativity
   (`2b(2a−3)≥9`) + the near-star tail, and the a=2 ratio test. — **PROVEN** (`r2_submultiplicative`).
-- **Full multi-hub reduction (100% cover)** — every tree with ≥2 hubs reduces, via `Φ¹¹`-non-decreasing
-  moves, to a proven ≤2-hub tree, by exactly one of: *2-hub base* (`DN`, proven); *deg≥4 hub-hub cut*
-  (submultiplicativity + between-hub contraction, `multihub_submultiplicative`); *peeling/contraction to
-  ≤2 hubs* (the deg-3 hub cluster, `multihub_peeling`). **0 uncovered.** — **VERIFIED n≤14**
-  (`MultiHubReductionCertificate.full_cover`). Reduces the whole front to two all-n move-lemmas:
-  (L1) deg≥4 cut submult + contraction; (L2) peeling existence (every ≥3-hub tree has a `Φ¹¹`-non-decreasing
-  hub-reducing move). Both **OPEN** all-n (verified n≤13/15). The maximizer among ≥3-hub trees is the
-  deg-3 hub *caterpillar* (per-hub transfer multiplier ρ≈0.726<1, peak `DN(2,2)=0.700`).
+- **Multi-hub reduction (partial — cover with one named hole)** — the moves {*2-hub base* `DN`; *deg≥4 hub-hub
+  cut* + between-hub contraction, `multihub_submultiplicative`; *peeling/contraction to ≤2 hubs*,
+  `multihub_peeling`} cover **every multi-hub tree exhaustively for n≤17** (0 uncovered, 45013 three-hub trees
+  at n=17). The maximizer among ≥3-hub trees is the deg-3 hub *caterpillar* (per-hub transfer ρ≈0.726<1, peak
+  `DN(2,2)=0.700`). **CORRECTION (2026-08-18):** an earlier "100% cover" claim was an overclaim — the
+  peeling-existence lemma (L2) is **FALSE**. Counterexample: the **hub-star of near-stars** `hubstar(3,3)`
+  (n=22, hub-degrees [3,4,4,4], `Φ¹¹=0.386<1`) — no deg≥4–deg≥4 edge, every near-star-end-hub peel *decreases*
+  `Φ¹¹`, no contraction available ⇒ no non-decreasing hub-reducing move exists. This is the marginal-tie wall
+  recurring at the multi-hub level (resonant band k∈{3,5,7}; coverable again at k=1 and k≥19). The hole is
+  **narrow, non-recursing, bounded**: exactly the depth-2 hub-star-of-near-stars family (3-level nested are
+  covered; family peak `Φ¹¹=0.632<1`). Closing it needs a **direct family bound** (transfer/amplitude in
+  `(m,{kᵢ},center-arms)`, `DN`-style), not a local move. **OPEN.** So the front reduces to: (L1) deg≥4
+  submult+contraction; (L2′) peeling for trees *outside* the hub-star family; (L3) the direct hub-star-of-
+  near-stars family bound. All three **OPEN** all-n.
 - **"DN is the multi-hub Φ¹¹-maximizer at each n"** (competitor extremality *within* multi-hub). —
   **VERIFIED n≤13** (`double_near_star`). Now subsumed by the reduction above. **OPEN** all-n.
 
