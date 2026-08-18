@@ -40,12 +40,35 @@ independent review; the named-gap ledger lives in
 and `proof/verification/conjecture1_status.py` (executable — the status calls
 the certificates it cites).
 
+A second, complementary track — the exact-arithmetic **certificate campaign** in
+[`telperion/`](telperion/) — has since decomposed the `≤`-half into a strong
+induction and proven its base and analytic steps:
+
+- the **near-star spine** (the tie `Φ¹¹(N(0,5))=1`, the near-star tail
+  `Φ¹¹(N(0,s))≤1 ∀s`, and the sub-unit asymptote) — **PROVEN**, arithmetic cores
+  Lean CI-green;
+- the **integrality gate** `tie ⟹ 11 | n` (23-adic) — **PROVEN** (necessary, not
+  sufficient);
+- **R1** single-hub extremality — the branching analytic steps (g-lemma
+  unimodality over ℝ, two rational leaves) **PROVEN**; the inductive wiring
+  **OPEN**;
+- **R2** the double-near-star family bound `Φ¹¹(DN(a,b))<1 ∀a,b≥2` — **PROVEN**;
+  multi-hub *maximality* verified n≤13, **OPEN**.
+
+The crux — general competitor extremality — remains open. For the enumerated,
+tagged state of both tracks see **[`STATUS.md`](STATUS.md)** (the one-glance
+index), with the piece-by-piece detail in
+[`telperion/PROOF_STATUS.md`](telperion/PROOF_STATUS.md) and
+[`telperion/PROOF_ASSEMBLY.md`](telperion/PROOF_ASSEMBLY.md).
+
 ## Repository map
 
 | Path | What it is |
 |---|---|
+| [`STATUS.md`](STATUS.md) | **One-glance index** — enumerated, tagged state of both the proof and the engine, each row linking to the document that owns the detail. Start here. |
 | [`proof/`](proof/) | The peer-review package: Lean 4 formalization ([`proof/formalization/`](proof/formalization/)), exact-arithmetic Python verification harnesses ([`proof/verification/`](proof/verification/), entry point [`proof/verify.py`](proof/verify.py)), design/review documents, technical notes, figures. See [`proof/README.md`](proof/README.md). |
-| [`telperion/`](telperion/) | **Telperion**, the methodological artifact: a reusable pipeline that certifies families of rational-function inequalities in sympy, validates every identity in exact arithmetic, and batch-emits kernel-checked Lean 4 — the tool this proof was the first case study for. |
+| [`telperion/`](telperion/) | **Telperion**, the methodological artifact: a reusable pipeline that certifies families of rational-function inequalities in sympy, validates every identity in exact arithmetic, and batch-emits kernel-checked Lean 4 — the tool this proof was the first case study for. Proof-state maps: [`PROOF_STATUS.md`](telperion/PROOF_STATUS.md), [`PROOF_ASSEMBLY.md`](telperion/PROOF_ASSEMBLY.md). |
+| [`PUBLICATION_LEDGER.md`](PUBLICATION_LEDGER.md) | Conservative, provisional novelty tally — what could plausibly stand up in a venue, and what is explicitly still open. |
 | [`CITATION.cff`](CITATION.cff) | How to cite. |
 
 ## Verifying the claims

@@ -9,7 +9,9 @@ import sys
 from fractions import Fraction as Fr
 from pathlib import Path
 
-import networkx as nx
+import pytest
+
+nx = pytest.importorskip("networkx")  # graph certificates need networkx; skip cleanly if absent
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 

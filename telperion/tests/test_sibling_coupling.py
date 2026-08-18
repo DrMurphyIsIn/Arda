@@ -8,6 +8,10 @@ import sys
 from fractions import Fraction as Fr
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("networkx")  # graph enumeration needs networkx; skip cleanly if absent
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from telperion import (  # noqa: E402
