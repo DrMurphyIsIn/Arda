@@ -14,7 +14,11 @@ on:
 jobs:
   unit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # 25, not 15: with collection restored the suite now runs the mahler +
+    # 168s ehrhart tests for real, and the slowest matrix cell (py3.12) lands
+    # at ~14m47s -- a hair under a 15-min cap and a near-certain flake. 25 gives
+    # comfortable headroom without hiding a genuine runaway.
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
