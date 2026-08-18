@@ -95,4 +95,5 @@ import R3Cert.R47Legs
 import R3Cert.R47Shed
 import R3Cert.R47Perm
 import R3Cert.R47Parse
+import R3Cert.R47RateZBound
 import R3Cert.FractalTail
