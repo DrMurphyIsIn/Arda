@@ -37,7 +37,7 @@ from telperion import (  # noqa: E402
     freeze,
 )
 from telperion.emit_adapters import CustomAssemblyEmitter  # noqa: E402
-from telperion.interlacing import InterlacingCertificate, interlaces  # noqa: E402
+from telperion.bg.interlacing import InterlacingCertificate, interlaces  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 x = sp.symbols("x")

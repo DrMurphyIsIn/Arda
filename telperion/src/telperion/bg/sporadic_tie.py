@@ -45,7 +45,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction as Fr
 
-from .padic import padic_val_frac
+from ..padic import padic_val_frac
 
 
 def amp_product(n, edges, root=0):

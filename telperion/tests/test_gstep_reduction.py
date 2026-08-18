@@ -10,14 +10,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     GStepReductionCertificate,
     MU_STAR,
     f_sym,
     leaf_W_four_thirds_lt_gamma,
     leaf_mu_star_lt_third,
 )
-from telperion.gstep_reduction import GAMMA, W  # noqa: E402
+from telperion.bg.gstep_reduction import GAMMA, W  # noqa: E402
 
 
 def test_rational_leaves_exact():
@@ -52,7 +52,7 @@ def test_coordinate_wise_reduction_and_scope():
 
 
 def test_descent_engine_and_boost_bound_rational():
-    from telperion.gstep_reduction import descent_engine_holds, boost_le_four_thirds_when_small
+    from telperion.bg.gstep_reduction import descent_engine_holds, boost_le_four_thirds_when_small
     # T2 rational engine: (j+1)*boost >= 3+mu for j>=2, mu<=S
     assert descent_engine_holds(2, Fr(1), Fr(1, 2))
     assert all(descent_engine_holds(j, Fr(sn, 10), Fr(min(sn, 5), 10))

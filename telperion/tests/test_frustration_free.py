@@ -13,14 +13,14 @@ import sympy as sp
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     FrustrationFreeGapProbe,
     monomer_dimer_partition,
     tie_recursive_edges,
     transfer_density,
 )
-from telperion.frustration_free import near_star_edges  # noqa: E402
-from telperion.graphlimit import matching_polynomial  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.graphlimit import matching_polynomial  # noqa: E402
 
 
 def _adj(n, edges):
@@ -60,7 +60,7 @@ def test_tie_is_isolated_gapless_point_on_near_stars():
     probe = FrustrationFreeGapProbe()
     # D = 1 exactly at the tie, D < 1 (gapped) off it
     n5, e5 = near_star_edges(5)
-    from telperion.rooted_phi import bg_phi11_fast
+    from telperion.bg.rooted_phi import bg_phi11_fast
     assert bg_phi11_fast(n5, e5) == 1
     for s in (2, 3, 4, 6, 7):
         n, e = near_star_edges(s)

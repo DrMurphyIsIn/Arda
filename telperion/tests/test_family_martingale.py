@@ -11,15 +11,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     TieRecursiveMartingaleCertificate,
     family_ceiling,
     per_block_factor,
     phi11_hub,
     root_amplitude,
 )
-from telperion.frustration_free import tie_recursive_edges  # noqa: E402
-from telperion.rooted_phi import bg_phi11_fast, phi11_rooted  # noqa: E402
+from telperion.bg.frustration_free import tie_recursive_edges  # noqa: E402
+from telperion.bg.rooted_phi import bg_phi11_fast, phi11_rooted  # noqa: E402
 
 
 def test_per_block_factor_is_exactly_one():

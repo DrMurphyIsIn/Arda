@@ -10,14 +10,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     ResonanceCarrierCertificate,
     adelic_product,
     phi11_23adic_size,
     phi11_23adic_valuation,
 )
-from telperion.matching_free_energy import near_star_edges  # noqa: E402
-from telperion.sporadic_tie import amp_product  # noqa: E402
+from telperion.bg.matching_free_energy import near_star_edges  # noqa: E402
+from telperion.bg.sporadic_tie import amp_product  # noqa: E402
 from telperion.padic import padic_val_frac  # noqa: E402
 
 

@@ -11,7 +11,7 @@ import sympy as sp
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     LEHMER_CONSTANT,
     MahlerLehmerProbe,
     dpa_charpoly,
@@ -48,14 +48,14 @@ def test_cyclotomic_detector():
 
 def test_matching_poly_two_routes_agree():
     # adjacency-determinant route == k-matching-count assembly, for every near-star in the family
-    from telperion.matching_free_energy import near_star_edges
+    from telperion.bg.matching_free_energy import near_star_edges
     for s in (2, 3, 4, 5, 6):
         n, edges = near_star_edges(s)
         assert matching_poly(n, edges) == matching_poly_from_counts(n, edges)
 
 
 def test_dpa_charpoly_is_gaussian_integer_and_monic():
-    from telperion.matching_free_energy import near_star_edges
+    from telperion.bg.matching_free_energy import near_star_edges
     n, edges = near_star_edges(5)
     dp = dpa_charpoly(n, edges)
     assert dp.degree() == n

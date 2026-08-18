@@ -36,7 +36,7 @@ from telperion import (  # noqa: E402
     freeze,
 )
 from telperion.emit_adapters import CustomAssemblyEmitter  # noqa: E402
-from telperion.lorentzian import (  # noqa: E402
+from telperion.bg.lorentzian import (  # noqa: E402
     HodgeRiemannCertificate,
     hessian,
     is_lorentzian_form,

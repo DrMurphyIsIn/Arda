@@ -10,10 +10,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import EnvelopeCertificate  # noqa: E402
-from telperion.envelope import _collect_vertices, empirical_envelope  # noqa: E402
-from telperion.frustration_free import near_star_edges  # noqa: E402
-from telperion.recursive_transfer import W  # noqa: E402
+from telperion.bg import EnvelopeCertificate  # noqa: E402
+from telperion.bg.envelope import _collect_vertices, empirical_envelope  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.recursive_transfer import W  # noqa: E402
 
 
 def test_envelope_peaks_at_the_tie():

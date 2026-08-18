@@ -1,4 +1,4 @@
-/- telperion 0.1.3 | family GaugeLift | input-hash c92b273b96949703
+/- telperion 0.1.4 | family GaugeLift | input-hash 2f7dc8a7d80243b3
    90 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

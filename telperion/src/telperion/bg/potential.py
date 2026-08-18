@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import sympy as sp
 
-from .family import GridSpec, InequalityFamily
+from ..family import GridSpec, InequalityFamily
 
 INDUCTION_SKELETON = """-- The telescoping induction (instantiate per your tree type; the per-node
 -- theorems emitted by Telperion close each constructor case):

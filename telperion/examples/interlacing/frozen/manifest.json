@@ -1,7 +1,7 @@
 {
   "family": "Interlacing",
-  "input_hash": "59e0c5858321ffee1f6bd9bb7c9a533430e82f699423ecfa88543b54c8239f41",
-  "tool_version": "0.1.3",
+  "input_hash": "2bb7fddbc6b65f2c65e9803daf34932b2d34bc90c39f166807e931f4d26a9052",
+  "tool_version": "0.1.4",
   "files": [
     "Interlacing.lean"
   ],

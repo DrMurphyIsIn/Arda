@@ -40,7 +40,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction as Fr
 
-from .padic import padic_val_frac
+from ..padic import padic_val_frac
 from .sporadic_tie import amp_product
 
 

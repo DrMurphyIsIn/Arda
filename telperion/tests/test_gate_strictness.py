@@ -10,15 +10,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     GateStrictnessCertificate,
     deficit_23_valuation,
     deficit_integer,
     rho_b_power_is_rational,
     strictness_bound,
 )
-from telperion.frustration_free import near_star_edges, tie_recursive_edges  # noqa: E402
-from telperion.rooted_phi import bg_phi11_fast  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges, tie_recursive_edges  # noqa: E402
+from telperion.bg.rooted_phi import bg_phi11_fast  # noqa: E402
 
 
 def test_equality_needs_11_divides_n():

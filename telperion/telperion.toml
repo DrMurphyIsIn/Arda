@@ -14,6 +14,11 @@ script = "examples/toy_box/generate.py"
 group = "quick"
 
 [[check]]
+name = "bernoulli"
+script = "examples/bernoulli/generate.py"
+group = "quick"    # non-BG genericity witness (Bernoulli's inequality); ~0.2 s
+
+[[check]]
 name = "r47_cells"
 script = "examples/r47_cells/generate.py"
 group = "heavy"    # ~6-12 min re-certification; runs in the casestudy CI job

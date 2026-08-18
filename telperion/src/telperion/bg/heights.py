@@ -26,7 +26,7 @@ from __future__ import annotations
 import math
 from fractions import Fraction as Fr
 
-from .padic import padic_val
+from ..padic import padic_val
 
 
 def local_heights(q: Fr, primes) -> dict:

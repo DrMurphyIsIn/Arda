@@ -2,7 +2,7 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from telperion import NearStarBridgeCertificate, near_star_R, near_star_tail_poly  # noqa: E402
+from telperion.bg import NearStarBridgeCertificate, near_star_R, near_star_tail_poly  # noqa: E402
 
 def test_near_star_tie_and_base():
     assert near_star_R(5) == 1

@@ -1,7 +1,7 @@
 {
   "family": "ToyDirect",
-  "input_hash": "367e967bf19f0d74b47dd47348afc0c270e0ec49b08500cf7baa84491937bc85",
-  "tool_version": "0.1.3",
+  "input_hash": "7e943b427a07ddd87af9f64db7f041cc8230b97a6d2775333174aabd86d9b003",
+  "tool_version": "0.1.4",
   "files": [
     "Direct.lean"
   ],

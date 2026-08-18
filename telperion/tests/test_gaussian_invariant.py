@@ -11,8 +11,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import GaussianInvariantCertificate  # noqa: E402
-from telperion.gaussian_invariant import (  # noqa: E402
+from telperion.bg import GaussianInvariantCertificate  # noqa: E402
+from telperion.bg.gaussian_invariant import (  # noqa: E402
     SYMMETRIC_MODE_CURVATURE,
     continuum_minimum,
     near_star_energy,

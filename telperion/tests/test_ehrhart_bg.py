@@ -9,13 +9,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     EhrhartBGProbe,
     matching_polytope_ehrhart,
     matching_polytope_ehrhart_bruteforce,
 )
-from telperion.ehrhart import fit_polynomial, is_quasi_polynomial  # noqa: E402
-from telperion.matching_free_energy import near_star_edges  # noqa: E402
+from telperion.bg.ehrhart import fit_polynomial, is_quasi_polynomial  # noqa: E402
+from telperion.bg.matching_free_energy import near_star_edges  # noqa: E402
 
 
 def test_ehrhart_dp_matches_bruteforce():

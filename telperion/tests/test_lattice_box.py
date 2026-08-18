@@ -3,7 +3,7 @@ import sys
 from fractions import Fraction as Fr
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from telperion import LatticeBoxCertificate, near_star_R  # noqa: E402
+from telperion.bg import LatticeBoxCertificate, near_star_R  # noqa: E402
 
 ARM = Fr(64,621)*Fr(3,2)**11*Fr(64,621); LEAF = Fr(64,621)
 def phi2d(x):

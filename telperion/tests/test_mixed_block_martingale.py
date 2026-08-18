@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     MixedBlockMartingaleCertificate,
     block_amplitude_and_message,
     block_factor,
@@ -20,8 +20,8 @@ from telperion import (  # noqa: E402
     homogeneous_family_sup,
     hub_phi11,
 )
-from telperion.frustration_free import near_star_edges, tie_recursive_edges  # noqa: E402
-from telperion.rooted_phi import phi11_rooted  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges, tie_recursive_edges  # noqa: E402
+from telperion.bg.rooted_phi import phi11_rooted  # noqa: E402
 
 ARM = (2, ((0, 1),), 0)                 # length-2 arm (mid-leaf): the near-star's block
 TIE = (near_star_edges(5)[0], near_star_edges(5)[1], 0)

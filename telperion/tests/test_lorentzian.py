@@ -7,7 +7,7 @@ import sympy as sp
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     HodgeRiemannCertificate,
     displacement_convex,
     global_height_nonneg,
@@ -16,7 +16,7 @@ from telperion import (  # noqa: E402
     signature,
     wasserstein1,
 )
-from telperion.lorentzian import hessian  # noqa: E402
+from telperion.bg.lorentzian import hessian  # noqa: E402
 
 x1, x2, x3, w1, w2, w3 = sp.symbols("x1 x2 x3 w1 w2 w3")
 e2 = x1 * x2 + x1 * x3 + x2 * x3

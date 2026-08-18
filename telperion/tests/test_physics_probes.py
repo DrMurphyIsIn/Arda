@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telperion import (  # noqa: E402
+from telperion.bg import (  # noqa: E402
     DeterminantalKernelProbe,
     DiracIndexProbe,
     SusyIndexProbe,
@@ -20,8 +20,8 @@ from telperion import (  # noqa: E402
     near_star_determinant_closed_form,
     signed_matching_index,
 )
-from telperion.frustration_free import near_star_edges  # noqa: E402
-from telperion.susy_index import adjacency_nullity  # noqa: E402
+from telperion.bg.frustration_free import near_star_edges  # noqa: E402
+from telperion.bg.susy_index import adjacency_nullity  # noqa: E402
 
 
 # --- #1 SUSY / Witten index ---
