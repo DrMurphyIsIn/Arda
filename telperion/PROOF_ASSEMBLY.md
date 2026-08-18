@@ -71,9 +71,13 @@ structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in
   [deg≥4 cut submultiplicativity] survives** stress-testing (0 violations on large tie-laden trees; still
   verified-not-proven all-n). Silver lining: every irreducible family is uniformly bounded and the bound
   *improves* with core size (max `Φ¹¹` = 0.288, 0.230, 0.184 at h=5,6,7 — each extra hub adds net `(64/621)`
-  suppression); the **hub-star is the `Φ¹¹`-maximal irreducible family (`≤0.852`)**. The honest remaining
-  theorem is a **uniform bound "irreducible ⇒ `Φ¹¹<1`"** (empirically ≤0.852, hub-star extremal), a
-  transfer-decay in core size — itself a facet of the multi-hub crux, not a finite reduction. **OPEN.**
+  suppression). The `Φ¹¹`-maximal irreducible tree is **`hubstar(3,3)` itself at `Φ¹¹=0.38609`** (deg-3
+  center, three `N(0,3)` branches, no center arms; the larger `0.68/0.85` hub-stars are *reducible* — center
+  arms create a deg≥4 cut). The honest remaining theorem is a **uniform bound "irreducible ⇒ `Φ¹¹≤0.386<1`"**
+  (`hubstar(3,3)` extremal), a transfer-decay (ratio ≈0.80/core-hub). Despite the huge margin, its proof is the
+  **same collective crux** — the per-node telescoping potential verifies `≤0.93` but its per-node super-solution
+  fails on the relaxed domain (non-local coupling), and the transfer-decay is a Perron statement over arbitrary
+  core topologies. **OPEN, equivalent to the multi-hub crux.**
 - **"DN is the multi-hub Φ¹¹-maximizer at each n"** (competitor extremality *within* multi-hub). —
   **VERIFIED n≤13** (`double_near_star`). Now subsumed by the reduction above. **OPEN** all-n.
 

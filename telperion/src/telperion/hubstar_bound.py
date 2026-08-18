@@ -53,14 +53,21 @@ shape: non-hub-star irreducible families number 0, 4, 10, 80 for core sizes h = 
 core carrying near-stars is the first, at n=27, Phi^11=0.288).  So {reduction + this bound} does NOT cover
 every multi-hub tree; there is no finite set of family bounds that finishes the front.
 
-THE SILVER LINING (what is actually true).  Every irreducible family is bounded well below 1, and the bound
-IMPROVES with core size: max Phi^11 over non-hub-star irreducibles is 0.288 (h=5), 0.230 (h=6), 0.184 (h=7) --
-decreasing, because each extra hub adds net (64/621) suppression the boost cannot recover.  The HUB-STAR is the
-Phi^11-MAXIMAL irreducible family (0.852 >= every other irreducible value found).  So the honest remaining
-theorem is a UNIFORM bound "irreducible => Phi^11 < 1" (empirically <= 0.852, hub-star extremal), with a
-transfer-decay structure in core size -- which is itself a facet of the multi-hub crux, NOT a finite reduction.
-This module bounds the extremal (hub-star) family; the uniform bound over the infinite irreducible hierarchy is
-OPEN.  `conjecture1_proved = False`.
+THE SILVER LINING (what is actually true).  Every irreducible family is bounded FAR below 1, and the bound
+IMPROVES with core size.  Sharp figures (arms-decorated cores, verified): the Phi^11-MAXIMAL irreducible tree is
+`hubstar(3,3)` itself -- a deg-3 center with three N(0,3) branches, no center arms -- at Phi^11 = 0.38609; every
+other irreducible tree is strictly below (non-hub-star irreducibles: 0.288 at h=5, 0.230 at h=6, 0.184 at h=7,
+decay ratio ~0.80 per core-hub).  (NB: the larger hub-star values 0.68/0.85 are REDUCIBLE -- adding center arms
+makes the center deg>=4, creating a deg>=4 hub-hub cut -- so they are NOT irreducible; the irreducible hub-star
+sup is 0.386.)  So the honest remaining theorem is a UNIFORM bound "irreducible => Phi^11 <= 0.386 < 1"
+(hubstar(3,3) extremal), with a transfer-decay in core size.
+
+Despite the huge margin (0.386 vs 1), PROVING this uniform bound is the SAME collective-cancellation crux: the
+algebraic route (per-node telescoping potential) verifies Phi^11 <= 0.93 across the class but its per-node
+super-solution FAILS on the relaxed domain (non-local message coupling), so no per-child-independent certificate
+closes even this loose bound; and the transfer-decay is a Perron statement over arbitrary core topologies.  This
+module bounds the extremal (hub-star) family exactly; the uniform bound over the infinite irreducible hierarchy
+is OPEN and equivalent to the multi-hub crux.  `conjecture1_proved = False`.
 """
 from __future__ import annotations
 
