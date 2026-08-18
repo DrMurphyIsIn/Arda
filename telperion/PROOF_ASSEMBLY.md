@@ -51,10 +51,21 @@ structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in
   `Φ¹¹`, no contraction available ⇒ no non-decreasing hub-reducing move exists. This is the marginal-tie wall
   recurring at the multi-hub level (resonant band k∈{3,5,7}; coverable again at k=1 and k≥19). The hole is
   **narrow, non-recursing, bounded**: exactly the depth-2 hub-star-of-near-stars family (3-level nested are
-  covered; family peak `Φ¹¹=0.632<1`). Closing it needs a **direct family bound** (transfer/amplitude in
-  `(m,{kᵢ},center-arms)`, `DN`-style), not a local move. **OPEN.** So the front reduces to: (L1) deg≥4
-  submult+contraction; (L2′) peeling for trees *outside* the hub-star family; (L3) the direct hub-star-of-
-  near-stars family bound. All three **OPEN** all-n.
+  covered; family peak `Φ¹¹=0.682<1`). Closing it needs a **direct family bound**, not a local move. So the
+  front reduces to: (L1) deg≥4 submult+contraction; (L2′) peeling for trees *outside* the hub-star family;
+  (L3) the direct hub-star-of-near-stars family bound.
+- **(L3) Hub-star-of-near-stars family bound — PROVEN** (`hubstar_bound`). `Φ¹¹(hub-star) < 1` for every
+  hub-star with ≥1 near-star branch, via three exact reductions on the closed form
+  `Φ¹¹ = W(1+S/d)¹¹·∏B(kᵢ)·armᵃᶜ` (center = max root): **(A)** branches `k≥6` dominated by the `k=5` tie
+  (`s`,`B` monotone); **(B)** tie-count `t` is Möbius-monotone, so the `t→∞` limit `W(26/23)¹¹=0.397<1`
+  (⟺ proven `64·26¹¹<621·23¹¹`, `family_martingale`) never lifts the max above `t=0`; **(C)** finite `t=0`
+  optimization (non-tie count `<160`; `≤2` types by concavity) gives EXACT max `Φ¹¹=0.852381` (≥1 branch),
+  `0.681555` (≥3 branches — the uncovered case). **This closes the one known hole.** Generalizes
+  `family_martingale` (its `hub+k·N(0,5)` is the all-tie, no-arm slice).
+- Remaining open for the multi-hub FRONT: whether the hub-star-of-near-stars is the **only** irreducible
+  family — verified (reduction exhaustive n≤17; 3-level nested covered; no other shallow escape), not proven
+  all-n. So {L1 + L2′ + L3} covers every multi-hub tree n≤17 and every known family; the reduction's all-n
+  completeness (and L1, L2′ all-n) is the open piece.
 - **"DN is the multi-hub Φ¹¹-maximizer at each n"** (competitor extremality *within* multi-hub). —
   **VERIFIED n≤13** (`double_near_star`). Now subsumed by the reduction above. **OPEN** all-n.
 
