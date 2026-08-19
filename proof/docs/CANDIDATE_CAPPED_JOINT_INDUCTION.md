@@ -115,8 +115,30 @@ session's integrality probe: the dual-target + `phi_le_one` cap genuinely evades
 `k≈4.82` obstruction, which is why an analytic proof exists here where every prior route
 was blocked. Lean-formalizable (elementary + one `norm_num`). `conjecture1_proved = False`.
 
-**Remaining for the full g-step:** the `j ≥ 2` case (loose, sup ≤ 0.693, decreasing in
-`j`). In progress.
+**Remaining for the full g-step:** the `j ≥ 2` case. **Validated but not yet proven.**
+
+Characterized exactly (all `Fraction`): the g-step identity is
+`L2 = W·[(3d+3S+1)/(3d)]^11·∏Bcap` (`d=j+1`, `Bcap=W` for leaves, `min(1,glemma_ub(ν))`
+for non-leaves). The worst case is at **`p=0` (no leaves — leaves only help)**, dominated
+by **`q=2` two non-leaves near `μ≈0.31`**, sup **0.72163** (margin **0.278**), decreasing
+in `q`. BUT it **resists clean reduction**: not monotone in leaves (205/30k increase), not
+monotone in non-leaves (5151/30k), not Schur-max at equal children (380/2500) — and the
+crude `∏Bcap≤1`/`≤W^p` bound that closed the loose master step is *too weak* here (the
+g-step needs the per-child glemma suppression counted). So `j≥2` is a genuine
+loose-but-multivariate inequality (margin 0.28, holds in all n≤15 + adversarial tests).
+
+**Path:** a multi-variable argument or a **Telperion SOS/Positivstellensatz certificate**
+on the `p=0` polynomial inequality (loose ⇒ an SOS certificate should exist) — the natural
+tool for a margin-0.28 rational inequality that resists monotone reduction. Until then the
+full g-step is `j=1` PROVEN + `j≥2` VALIDATED. `conjecture1_proved = False`.
+
+## Status of the whole scheme (2026-08-19)
+- **master step (all j):** PROVEN — crude per-type bound, reduces to `[(4p+3)/(p+1)]^11 W^p ≤ 3^11`, `p=0` exact equality (parallel session).
+- **g-step, j=1 (binding):** PROVEN — this doc (`64·17^11 ≤ 621·14^11`, arm `=1`).
+- **g-step, j≥2 (loose):** VALIDATED, not proven — one multi-variable inequality, margin 0.28.
+
+The capped joint induction is proven **except the single loose j≥2 g-step**. That is the
+entire remaining distance to closing Gap 1 / R3.
 
 ## Coordination
 
