@@ -21,8 +21,23 @@ Conjecture 1 (near-star `N(0,5)` maximizes `Φ`) reduces through a 7-rung ladder
 
 Everything except R3 and R7 is proven, and R7 depends on R3. The entire problem collapses to:
 *make `Φ≤1` (R3) a formal theorem, then assemble (R7).*
-(Caveat: the R1/R2/R4/R5/R6 "PROVEN" verdicts are from the status file + spot-audits, not a fresh
-re-audit of every certificate.)
+
+**Two standards of "proven" — do not conflate them:**
+- The R1/R2/R4/R5/R6 "PROVEN" verdicts are **Python exact-certificates** (`spiders.py`,
+  `legs.py`, `psi_close.py`, `rem_tie.py`, `distribution.py`) — rigorous *if the analytic argument
+  is complete*, machine-checkable in Python, but **not** proof-assistant (Lean) terms. There are
+  currently **no Lean rung theorems** for R1/R2/R4/R5/R6. A fully *formal* proof requires their
+  Lean-ization (subsumed into the R7/G7 assembly). So "one theorem away" is the **mathematical**
+  standard (R3 + accepting the exact certificates); the **formal** standard is that theorem *plus*
+  the Lean mountain (R1–R6 formalization, Gap 2 bridge, Gap 3 G7).
+- (Caveat: these verdicts are from the status file + spot-audits, not a fresh re-audit of every
+  certificate.)
+
+**R-numbering disambiguation.** This ladder (R1–R7) is the *Conjecture-1 reduction* per
+`conjecture1_status.py` (authoritative). It is a **different axis** from the *R47 Lean
+reduction-layer campaign* (also labelled R1–R7, the stage-wise assembly formalization, = G7).
+E.g. "single-hub extremality / the master inequality" is **R3 here** but is called "R1" in some
+`R47_*`/`R1_WIRING_*` docs. When a doc says "R1", check which axis it means.
 
 ## The four remaining gaps
 
@@ -91,8 +106,10 @@ Gap 2 (bridge Step 4)  ── parallel ──────────┼──�
 Gap 3 G1/G7 (R7 Lean-ization) ── parallel ───┘
 ```
 
-**Bottom line:** the effort is one genuine theorem away from done. Gaps 2 and 3 are substantial but
-*mechanical* Lean work that can start immediately and in parallel. Everything funnels through **Gap 1**
-— `g(C) ≤ γ`, equality iff arm — real open arithmetic with a ready scaffold and a validated attack
-direction, but no breakthrough in hand. `conjecture1_proved = False` is load-bearing here and stays
-until the arithmetic closes.
+**Bottom line:** *mathematically*, the effort is one genuine theorem away from done — Gap 1
+(`g(C) ≤ γ`, equality iff arm), real open arithmetic with a ready scaffold and a validated attack
+direction, but no breakthrough in hand. *Formally* (a Lean-checked proof), "done" is that theorem
+**plus** the Lean mountain: R1–R6 are not yet formalized, Gap 2 (bridge) and Gap 3/G7 (the R47
+campaign) are substantial though *mechanical* and parallelizable. So: **one unschedulable arithmetic
+gap, plus a large but schedulable formalization mountain.** `conjecture1_proved = False` is
+load-bearing and stays until the arithmetic closes.
