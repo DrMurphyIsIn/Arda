@@ -108,5 +108,44 @@ theorem armBase_pow11_le (ell c : ℕ) (hell : 3 ≤ ell) (hc : 1 ≤ c) :
         mul_le_mul_of_nonneg_left hphi (by positivity)
     _ = (3 / 2 : ℚ) ^ 11 * (483 / 400 : ℚ) ^ (11 * c * ell) := by rw [hexp]
 
+/-- `beta^11 < rho_B^11`: the per-step ratio driving the tail. -/
+theorem beta11_lt : (483 / 400 : ℚ) ^ 11 < 621 / 64 := by norm_num
+
+/-- The tail base case `k = 22` (a `norm_num` bignum, `483^242`-class). -/
+theorem tail_base :
+    (3 / 2 : ℚ) ^ 11 * (483 / 400) ^ (11 * 22) < (621 / 64) ^ 23 := by norm_num
+
+/-- **Stage 3 — the `c·ℓ ≥ 22` tail**, as a rational induction on `k = c·ℓ`:
+    `(3/2)^11 · beta^(11k) < (621/64)^(1+k)` for `k ≥ 22`.  Base `k=22` is the
+    bignum; the step multiplies by `beta^11 < 621/64`. -/
+theorem tail_rat (k : ℕ) (hk : 22 ≤ k) :
+    (3 / 2 : ℚ) ^ 11 * (483 / 400) ^ (11 * k) < (621 / 64) ^ (1 + k) := by
+  induction k, hk using Nat.le_induction with
+  | base => simpa using tail_base
+  | succ k hk ih =>
+    have hRpos : (0 : ℚ) < (621 / 64) ^ (1 + k) := by positivity
+    have eL : (3 / 2 : ℚ) ^ 11 * (483 / 400) ^ (11 * (k + 1))
+        = ((3 / 2 : ℚ) ^ 11 * (483 / 400) ^ (11 * k)) * (483 / 400) ^ 11 := by
+      rw [Nat.mul_succ, pow_add]; ring
+    have eR : (621 / 64 : ℚ) ^ (1 + (k + 1)) = (621 / 64) ^ (1 + k) * (621 / 64) := by
+      rw [show 1 + (k + 1) = (1 + k) + 1 by omega, pow_succ]
+    rw [eL, eR]
+    calc ((3 / 2 : ℚ) ^ 11 * (483 / 400) ^ (11 * k)) * (483 / 400) ^ 11
+        < (621 / 64) ^ (1 + k) * (483 / 400) ^ 11 :=
+          mul_lt_mul_of_pos_right ih (by positivity)
+      _ ≤ (621 / 64) ^ (1 + k) * (621 / 64) :=
+          mul_le_mul_of_nonneg_left (le_of_lt beta11_lt) (le_of_lt hRpos)
+
+/-- **Stage 3 assembly**: the ℓ≥3 rate row in the tail region `c·ℓ ≥ 22`:
+    `armBase ℓ c ^ 11 < (621/64)^(1+c·ℓ)`. -/
+theorem armBase_rate_tail (ell c : ℕ) (hell : 3 ≤ ell) (hc : 1 ≤ c)
+    (hk : 22 ≤ c * ell) :
+    armBase ell c ^ 11 < (621 / 64 : ℚ) ^ (1 + c * ell) := by
+  calc armBase ell c ^ 11
+      < (3 / 2 : ℚ) ^ 11 * (483 / 400 : ℚ) ^ (11 * c * ell) :=
+        armBase_pow11_le ell c hell hc
+    _ = (3 / 2 : ℚ) ^ 11 * (483 / 400 : ℚ) ^ (11 * (c * ell)) := by rw [Nat.mul_assoc]
+    _ < (621 / 64) ^ (1 + c * ell) := tail_rat (c * ell) hk
+
 end Step3
 end R3Cert
