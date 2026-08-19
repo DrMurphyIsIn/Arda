@@ -124,8 +124,18 @@ out-of-sample validation on **achievable** configs (diverse trees to n≈30, mes
 | structural reason | for `P ≤ −σ(μ)`, the propagation worst case pins each child to its boundary `P(c)=−σ(μ_c)`, collapsing back to the separable condition — a per-block-`μ` invariant provably cannot close it. |
 | 2-param joint `σ(μ,S)` (S = own children-sum) | held-out improved to `+0.27`, but **cutting-plane does not converge**: fresh larger trees give violations `+3…+61` that the form fits in-sample but never generalizes past. |
 
+**The no-go extends to all *local* invariants, including discharging.** Any per-vertex scheme
+(potential `P≤−σ(μ)` or a charge-redistribution `child → parent`) has its propagation worst case
+at the child boundary — the induction may only assume `P(c) ≤ −σ(μ_c)`, so the tightest case is
+`P(c) = −σ(μ_c)` (zero surplus), which collapses back to the separable condition `Δ ≤ Σσ(μ_c) −
+σ(μ_B)`. Discharging cannot rely on deep children having spare credit, because the IH does not
+guarantee it; requiring it *is* a tighter separable bound, already refuted. So the genuine
+closure must be **non-local** — an invariant coupling a vertex to its descendants beyond one
+level — which is exactly the collective crux.
+
 **Result:** finite-basis potential invariants — separable *and* the `(μ,S)`-joint form — do **not**
-close the R1 wiring under cutting-plane. Each fits any finite sample and fails on the next, the
+close the R1 wiring under cutting-plane, and no *local* per-vertex invariant can (boundary
+argument above). Each fits any finite sample and fails on the next, the
 signature of the collective crux. This reproduces the program's documented no-go
 ("LP cutting-plane… no finite-basis `P` closes it") for the master formulation, and rules out the
 tractable potential-method routes constructively. The genuine closure needs the
