@@ -23,13 +23,17 @@ Everything except R3 and R7 is proven, and R7 depends on R3. The entire problem 
 *make `Φ≤1` (R3) a formal theorem, then assemble (R7).*
 
 **Two standards of "proven" — do not conflate them:**
-- The R1/R2/R4/R5/R6 "PROVEN" verdicts are **Python exact-certificates** (`spiders.py`,
-  `legs.py`, `psi_close.py`, `rem_tie.py`, `distribution.py`) — rigorous *if the analytic argument
-  is complete*, machine-checkable in Python, but **not** proof-assistant (Lean) terms. There are
-  currently **no Lean rung theorems** for R1/R2/R4/R5/R6. A fully *formal* proof requires their
-  Lean-ization (subsumed into the R7/G7 assembly). So "one theorem away" is the **mathematical**
-  standard (R3 + accepting the exact certificates); the **formal** standard is that theorem *plus*
-  the Lean mountain (R1–R6 formalization, Gap 2 bridge, Gap 3 G7).
+- The R1/R2/R4/R5/R6 "PROVEN" verdicts have their **full analytic arguments as Python exact-certificates**
+  (`spiders.py`, `legs.py`, `psi_close.py`, `rem_tie.py`, `distribution.py`) — rigorous *if the argument
+  is complete*, machine-checkable in Python. **Formalization is partial, not zero** (an earlier draft
+  here overstated it as "no Lean rung theorems"): individual crux inequalities and gadget-rate leaves
+  ARE kernel-checked — e.g. `r5_crux`/`C1_lt_one` (R5), `ell1_rate`/`legs_rate_ge3`/`legs_are_cherries`
+  (R2), and the extensive R3 scaffold (`node_le_omega`, `menuHull_cell_le`, `s_tail_ge_65`). What is
+  **not** yet in Lean is the rung-level *reduction* theorems (tying the leaves to the tree-extremality
+  statements) and R1/R4/R6's rate arguments; there the Python certificate is ground truth. So a fully
+  *formal* proof still needs that rung-reduction Lean-ization (subsumed into R7/G7). "One theorem away"
+  is the **mathematical** standard (R3 + accepting the exact certificates); the **formal** standard is
+  that theorem *plus* the remaining Lean mountain (rung reductions, R1/R4/R6, Gap 2 bridge, Gap 3 G7).
 - (Caveat: these verdicts are from the status file + spot-audits, not a fresh re-audit of every
   certificate.)
 
