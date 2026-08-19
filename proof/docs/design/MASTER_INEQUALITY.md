@@ -109,6 +109,41 @@ only**: the master inequality's hard cases are the large-n near-tie configuratio
 (n ≥ 4k+3 grows without bound), which no finite enumeration reaches. VALIDATED on
 n ≤ 12; OPEN in general.
 
+## 6c. Why every convex surrogate goes slack — the located obstruction (exact-verified)
+
+Two reduction routes were hammered this session and both dead-ended at the *same*
+integrality band. All numbers below are exact `Fraction` (no floats at decision).
+
+**Route 1 — reduce-to-homogeneous.** `F_hub ≤ max_child H(child)` with
+`H(μ,F) = max_j W(1+jμ/(j+1))^11 · F^j` passes on the entire reachable domain
+(3045 blocks, 3000 random + 84 adversarial near-star hubs, 0 violations). But it is
+the route `general_induction.py` already pinned as dead: the near-star family does
+**not** dominate at large parent activity (a bare leaf beats a cherry-arm; sup over
+*all* gadgets exceeds sup over near-stars by **+0.197 at cavity m=1/15**), a regime
+n ≤ 12 cannot reach. And even if it held, `H ≤ 1` only re-derives the weak
+`phi_le_one`, not the tight slack.
+
+**Route 2 — the g-lemma bound `F ≤ γ/(1+μ/3)^11`, `γ = W²(5/3)^11`.**
+- **Tight at the arm (real finding).** `γ/(1+μ/3)^11 |_{μ=1/3} = 486/529` *exactly*
+  ( = `W²(3/2)^11`). The g-lemma saturates along the whole arm, not just the leaf —
+  and the arm is the one case already Lean-green via `R(s)`.
+- **Loose everywhere else, and provably so.** `γ = 2.9276 > 1`, so feeding it into
+  `H_C(j)` blows up (`F^j → 10^140` at small μ). The cap `F ≤ min(1, γ/(1+μ/3)^11)`
+  also fails: at `μ* = 0.3077` the cap permits `F = 1`, giving
+  `W(1+μ*)^11 = 1.9716 > 1` at high activity — but **no real block sits at
+  (μ≈0.307, F=1)**: the real near-stars there are `(μ=0.2727, F=0.791)` and
+  `(μ=0.20, F=0.930)`. The envelope curves *down* through the mid-μ band exactly
+  where the surrogate stays flat.
+
+**The located obstruction, precisely.** The homogeneous face is unimodal in `j`
+(shape provable by crossing-once), but its *value* `max_j ≤ 1` requires the exact
+achievable envelope `Ψ(μ)` = which `(μ,F)` a real block can realize. No proven
+convex surrogate (g-lemma, cap, or their min) captures `Ψ`, because all are tight
+*only* at the arm (`μ=1/3`) and slack across the mid-μ integrality band. `Ψ` **is**
+the master inequality. This is not a gap in effort — it is the same arithmetic core
+viewed on its sharpest 1-parameter face: provable for the arm, irreducible to `Ψ`
+for every other block.
+
 ## 7. Honest boundary
 
 This document does not advance the proof of the master inequality. It states it
