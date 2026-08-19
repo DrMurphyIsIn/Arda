@@ -21,7 +21,8 @@ inequality split into two halves by the tie boundary `23·S = 3j`:
 
 ## 2. Statement
 
-For a child block `C` with cavity message `μ_C ∈ (0, 1/2]`, let `F(C)` be its
+For a child block `C` with cavity message `μ_C ∈ (0, 1]` (a bare leaf has `μ = 1`;
+deeper blocks have smaller `μ` — the earlier `(0, 1/2]` was an error), let `F(C)` be its
 F-factor and let `env★(μ)` be the **integer-achievable** F-extremal envelope at
 message `μ` — the maximum of `F` over blocks whose message is `μ`, realized by the
 near-star / tie / arm families at their integer-admissible points.
@@ -176,6 +177,39 @@ It is provable-*shaped* but not yet proven: its *value* `max_j ≤ 1` still need
 achievable envelope `Ψ(μ)` for every non-arm block, and `Ψ` **is** the master
 inequality. This face re-expresses the crux in a lower-dimensional, more attackable
 form — it does not escape it. If any piece falls next, it is this one.
+
+## 6e. Homogeneous face: tight set localized + first proven slice (exact-verified)
+
+Correct-`data` enumeration (n ≤ 11; an earlier run had a tuple-evaluation-order bug
+computing `F` before the cavity recursion mutated it — caught by minimal re-check,
+results below are the corrected ones):
+
+**Tight set is exactly the Lean-green families.** `max_j H_C(j)` is `1` only at the
+arm (`μ=1/3`, at `j=5`). The only blocks with `H > 0.37` are the arm, the bare leaf
+(`H=0.919`), and near-stars `N(0,k)` (`H ≤ 0.45`) — all in the proven family. **Every
+non-near-star block has `H ≤ 0.3637`** — a `0.63` margin. The face's entire hard
+content lives in the already-proven families.
+
+**First proven slice (needs only `phi_le_one`).** For `μ_C ≤ μ0 = (621/64)^{1/11} − 1
+≈ 0.2295` (rational under-approx `229/1000`, exact `W·(1229/1000)^11 = 0.99577 ≤ 1`):
+> `H_C(j) = W(1+jμ/(j+1))^11 · F^j ≤ W(1+μ)^11 ≤ 1`,
+because `jμ/(j+1) < μ` and `F^j ≤ 1` (the latter is `F ≤ 1 = phi_le_one`, proven).
+This disposes of the entire small-`μ` tail **including the §6c envelope-killer at
+`m=1/15`** (`W(1+1/15)^11 = 0.21`), with no envelope needed. It is the first rigorously
+proven piece of the homogeneous face — but the *easy* piece: the tight point (arm,
+`μ=1/3`) sits *above* `μ0`, so the summit stays open in the band `μ ∈ (μ0, 1]`.
+
+**A would-be closing dichotomy, refuted.** The clean split
+`j*(C) ≥ 2 ⟺ C near-star` (which would route the generic case through single-graft
+`H_C(1) ≤ 1`) is **false**: block `(μ=0.1594, F=0.7657, n=12)` has `j*=2` but is not a
+near-star (`μ ≠ 3/19`). Harmless (`H=0.18`) but it breaks the structural split — the
+fourth would-be closure this arc caught before it shipped.
+
+**Net.** The homogeneous face is localized as tightly as honest work reaches: proven
+for `μ ≤ μ0` and for the arm; its tight set fully accounted for by Lean-green families
+with a `0.63` margin to all else; but the generic non-near-star block in `(μ0, 1]`
+still needs a uniform `(μ,F)` certificate, and — the achievable set being a jagged
+discrete scatter with no closed form — that certificate is the master inequality.
 
 ## 7. Honest boundary
 
