@@ -1,4 +1,4 @@
-/- telperion 0.1.4 | family MConvex | input-hash 39a44885a99d97db
+/- telperion 0.1.5 | family MConvex | input-hash 059bf285e54d0bde
    4 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

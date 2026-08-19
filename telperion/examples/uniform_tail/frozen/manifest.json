@@ -1,7 +1,7 @@
 {
   "family": "UniformTail",
-  "input_hash": "29502279cfcbdccb293cf9ef1ac394dbad5b801d73eca5f86fe1cf4490c1647a",
-  "tool_version": "0.1.4",
+  "input_hash": "2c2bd09112a3f9304ec3a9bbc5f98a2611ed81082222aaa1d27226248c932a53",
+  "tool_version": "0.1.5",
   "files": [
     "UniformTail.lean"
   ],

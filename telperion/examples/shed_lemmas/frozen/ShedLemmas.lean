@@ -1,4 +1,4 @@
-/- telperion 0.1.4 | family ShedLemmas | input-hash 6f86e8e48b9c5179
+/- telperion 0.1.5 | family ShedLemmas | input-hash f7ad46eaa0877716
    55 theorems, 55 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

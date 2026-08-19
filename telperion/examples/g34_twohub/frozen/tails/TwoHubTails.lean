@@ -1,4 +1,4 @@
-/- telperion 0.1.4 | family TwoHubTails | input-hash fa72ae16b787954d
+/- telperion 0.1.5 | family TwoHubTails | input-hash 402e38836c9dd32d
    480 theorems, 480 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

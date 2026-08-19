@@ -1,4 +1,4 @@
-/- telperion 0.1.4 | family Interlacing | input-hash 2bb7fddbc6b65f2c
+/- telperion 0.1.5 | family Interlacing | input-hash 5a57af4a5ac386eb
    2 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

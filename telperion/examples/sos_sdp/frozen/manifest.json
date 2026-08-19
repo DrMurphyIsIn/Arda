@@ -1,7 +1,7 @@
 {
   "family": "SOSSDP",
-  "input_hash": "4ada926b4f504c15473a444b27c168758f32defe31914b4f372b292ec50ef2d4",
-  "tool_version": "0.1.4",
+  "input_hash": "2b8d2fc89e74dbf97c7b7e173a89c10e866ab6b8b52a7077089296c9ebc9406b",
+  "tool_version": "0.1.5",
   "files": [
     "SOSSDP.lean"
   ],
