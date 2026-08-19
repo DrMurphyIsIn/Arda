@@ -3,6 +3,9 @@ import R3Cert.BridgeStep4c
 import R3Cert.PotentialFinal
 import R3Cert.R47StepSize
 import R3Cert.ExactCruxes
+import R3Cert.R47Tree
+import R3Cert.R47Dress
+import R3Cert.R47BackboneAmp
 
 /-!
   # Rate port, step 4: `Z ≤ rhoB^n`
@@ -21,9 +24,12 @@ import R3Cert.ExactCruxes
       `= exp (logPhi (parseB t)) · rhoB ^ (usize t)`   (`Vb_parseB`, green)
       `≤ 1 · rhoB ^ (usize t)`                          (`phi_le_one`: exp(logPhi) ≤ 1)
 
-  Steps (1)-(3) — the phantom-root reparametrization giving `R ≤ 4/3` (the leaf
-  rooting, `A0/A1` split, `S ≤ 1` injection) — remain for the full `pi_le_rate`;
-  the ground truth is `rate_bound_fixed_n.py` (exact on every tree ≤ 9).
+  Steps (1)-(3) are then `pi_le_rate` below: the phantom-root split falls out of
+  `Ztot_single` (`Aobj (node [K]) = A0 + A1/m`, `Ztot (dtSub (node [K])) =
+  A0 + A1/(2m)`), and `pi ≤ (4/3)·Z ⟺ A1 ≤ m·A0`, which follows from
+  `Zopen_le_Ztot_dt` + `m ≥ 1` + `A0 > 0` — no `S ≤ 1` injection needed.  Ground
+  truth: `rate_bound_fixed_n.py` (exact on every tree ≤ 9).  The rooting-choice
+  seam (every ≥2-vertex tree HAS a leaf rooting) stays at `HypRatePort` assembly.
   conjecture1_proved = False.
 -/
 
@@ -49,6 +55,71 @@ theorem Ztot_dtSub_le_rhoB_pow (t : UTree) : Ztot (dtSub t) ≤ rhoB ^ usize t :
   calc Real.exp (logPhi (parseB t)) * rhoB ^ usize t
       ≤ 1 * rhoB ^ usize t := mul_le_mul_of_nonneg_right hexp hpow
     _ = rhoB ^ usize t := one_mul _
+
+/-- A single-child node's total partition function:
+    `Ztot (node [(w, c)]) = Ztot c + w · Zopen c`. -/
+theorem Ztot_single (w : ℝ) (c : RTree) :
+    Ztot (RTree.node [(w, c)]) = Ztot c + w * Zopen c := by
+  show Popen [(w, c)] + Matched [(w, c)] = Ztot c + w * Zopen c
+  rw [Popen_cons, Matched_cons]
+  simp only [Popen, Matched]
+  ring
+
+/-- **The full rate bound** `pi(T) ≤ (4/3) rhoB^n` for a leaf rooting `node [K]`.
+
+    The phantom-root split falls out of `Ztot_single`:
+    `Aobj (node [K]) = A0 + A1/m` and `Ztot (dtSub (node [K])) = A0 + A1/(2m)`,
+    with `A0 = Ztot (dtSub K)`, `A1 = Zopen (dtSub K)`, `m = udeg K`.  Then
+    `pi ≤ (4/3)·Z ⟺ A1 ≤ m·A0`, which follows from `Zopen_le_Ztot_dt` (`A1 ≤ A0`),
+    `m ≥ 1` and `A0 > 0` — no S≤1 injection needed.  Chaining step (4)
+    (`Ztot_dtSub_le_rhoB_pow` on `node [K]`) closes it.  The rooting choice (that
+    every tree with ≥2 vertices HAS a leaf rooting) stays at assembly
+    (`HypRatePort` quantifies over it). -/
+theorem pi_le_rate (K : UTree) :
+    Aobj (UTree.node [K]) ≤ 4 / 3 * rhoB ^ usize (UTree.node [K]) := by
+  have hA0pos : 0 < Ztot (dtSub K) := Ztot_dt_pos K
+  have hA1pos : 0 < Zopen (dtSub K) := Zopen_dt_pos K
+  have hle : Zopen (dtSub K) ≤ Ztot (dtSub K) := Zopen_le_Ztot_dt K
+  have hm1 : (1 : ℝ) ≤ (udeg K : ℝ) := by
+    have h := childCount_dtSub_succ K
+    have hk : 1 ≤ udeg K := by omega
+    exact_mod_cast hk
+  have hmpos : (0 : ℝ) < (udeg K : ℝ) := by linarith
+  have hm0 : (udeg K : ℝ) ≠ 0 := ne_of_gt hmpos
+  -- the two objects, unfolded via Ztot_single
+  have haobj : Aobj (UTree.node [K])
+      = Ztot (dtSub K) + (1 / (udeg K : ℝ)) * Zopen (dtSub K) := by
+    rw [Aobj, dtRealize_node, dtChildren_cons, dtChildren_nil, Ztot_single]
+    simp [List.length_cons, List.length_nil]
+  have hZobj : Ztot (dtSub (UTree.node [K]))
+      = Ztot (dtSub K) + (1 / (2 * (udeg K : ℝ))) * Zopen (dtSub K) := by
+    rw [dtSub_node, dtChildren_cons, dtChildren_nil, Ztot_single]
+    simp [List.length_cons, List.length_nil]
+  -- key algebra: A1 ≤ m·A0
+  have hkeyalg : Zopen (dtSub K) ≤ (udeg K : ℝ) * Ztot (dtSub K) := by
+    nlinarith [hle, hm1, hA0pos,
+      mul_nonneg (by linarith : (0 : ℝ) ≤ (udeg K : ℝ) - 1) (le_of_lt hA0pos)]
+  -- pi ≤ (4/3)·Z
+  have hkey : Aobj (UTree.node [K]) ≤ 4 / 3 * Ztot (dtSub (UTree.node [K])) := by
+    rw [haobj, hZobj, ← sub_nonneg]
+    have hdiff :
+        4 / 3 * (Ztot (dtSub K) + 1 / (2 * (udeg K : ℝ)) * Zopen (dtSub K))
+          - (Ztot (dtSub K) + 1 / (udeg K : ℝ) * Zopen (dtSub K))
+        = 1 / 3 * (Ztot (dtSub K) - 1 / (udeg K : ℝ) * Zopen (dtSub K)) := by
+      field_simp
+      ring
+    rw [hdiff]
+    have hpos : 0 ≤ Ztot (dtSub K) - 1 / (udeg K : ℝ) * Zopen (dtSub K) := by
+      rw [sub_nonneg, div_mul_eq_mul_div, one_mul, div_le_iff₀ hmpos]
+      linarith [hkeyalg, mul_comm (Ztot (dtSub K)) ((udeg K : ℝ))]
+    exact mul_nonneg (by norm_num) hpos
+  -- chain step (4)
+  have hstep4 : Ztot (dtSub (UTree.node [K])) ≤ rhoB ^ usize (UTree.node [K]) :=
+    Ztot_dtSub_le_rhoB_pow _
+  calc Aobj (UTree.node [K])
+      ≤ 4 / 3 * Ztot (dtSub (UTree.node [K])) := hkey
+    _ ≤ 4 / 3 * rhoB ^ usize (UTree.node [K]) :=
+        mul_le_mul_of_nonneg_left hstep4 (by norm_num)
 
 end Step3
 end R3Cert
