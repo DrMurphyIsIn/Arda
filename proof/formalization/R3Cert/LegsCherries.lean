@@ -37,7 +37,8 @@ theorem armBase_one (c : ℕ) : armBase 1 c = (1 + 2 * (c : ℚ)) / (1 + (c : �
 theorem armBase_one_rate (c : ℕ) (hc : 1 ≤ c) :
     armBase 1 c ^ 11 < (621 / 64 : ℚ) ^ (1 + c) := by
   rw [armBase_one, div_pow, div_pow,
-    div_lt_div_iff (by positivity) (by positivity)]
+    div_lt_div_iff₀ (by positivity) (by positivity)]
+  push_cast
   exact_mod_cast ell1_rate c hc
 
 /-- **R2 (legs are cherries).** Every leg of length `ℓ ≥ 1`, `ℓ ≠ 2`, is
