@@ -144,6 +144,39 @@ the master inequality. This is not a gap in effort — it is the same arithmetic
 viewed on its sharpest 1-parameter face: provable for the arm, irreducible to `Ψ`
 for every other block.
 
+## 6d. The sharpest attackable face, and a self-caught broken proof (exact-verified)
+
+Sharper localization this session, both banked so neither hardens into a false claim:
+
+**The near-star half reduces to two exact-verified statements** —
+`{reduction: F_hub ≤ max_child H(μ_i,F_i)}` + `{homogeneous bound: H ≤ 1}` ⟹
+`F_hub ≤ 1`. The reduction survived adversarial testing (0 / 4000 random hubs,
+0 / 24300 no-arm near-star mixes). **But its proof is broken and I do not have a
+correct one.** The claimed mechanism — "below-average removal drives any hub to a
+homogeneous one" — is false: below-average removal (remove children with
+`μ_i < S/(j+1)`) has **non-homogeneous fixed points**. Verified counterexamples:
+children `μ=(1/5, 2/5)` and `μ=(1/4, 7/20)` are both fixed (no child strictly below
+threshold `S/(j+1)=1/5`) yet not homogeneous. The chain halts at
+"all children ≥ threshold," which is *not* "all equal." **Reduction: VERIFIED,
+proof: OBSTRUCTED.**
+
+**The homogeneous bound is not a surrogate — it is symmetric-hub BG.** The C-broom
+(`j` copies of a real block `C`) is a real tree, and its factor equals
+`W(1+jμ_C/(j+1))^11 · F_C^j` *exactly* (verified k=2,3, j=1,3,7). So
+`H(μ_C,F_C) ≤ 1` is BG restricted to symmetric hubs, and its tightness-only-at-arm
+is arm-maximality for symmetric trees. This is the **sharpest attackable face yet**:
+
+- **1-parameter** (per block `C`, one variable `j`);
+- **unimodal in `j`** — `H_C(j+1)/H_C(j)` crosses 1 exactly once (verified k=2,3,4:
+  single sign change, argmax j=2,4,11) — the **same crossing-once `R(s)` shape
+  already Lean-green for the arm**;
+- **tight only at the arm** (`μ=1/3`, max = 1 at j=5 = tie).
+
+It is provable-*shaped* but not yet proven: its *value* `max_j ≤ 1` still needs the
+achievable envelope `Ψ(μ)` for every non-arm block, and `Ψ` **is** the master
+inequality. This face re-expresses the crux in a lower-dimensional, more attackable
+form — it does not escape it. If any piece falls next, it is this one.
+
 ## 7. Honest boundary
 
 This document does not advance the proof of the master inequality. It states it
