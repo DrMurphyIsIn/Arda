@@ -70,5 +70,43 @@ theorem armBase_lt (ell c : ℕ) (hell : 2 ≤ ell) (hc : 1 ≤ c) :
   rw [hrw]
   apply div_pos (mul_pos hPc1 (by linarith [hcoef])) (by positivity)
 
+/-- The `phiL` envelope for `ℓ ≥ 3`, reindexed off `phiL_le_beta`. -/
+theorem phiL_le_beta' (ell : ℕ) (h : 3 ≤ ell) : phiL ell ≤ (483 / 400 : ℚ) ^ ell := by
+  obtain ⟨n, rfl⟩ := Nat.exists_eq_add_of_le h
+  have e : 3 + n = n + 3 := by omega
+  rw [e]; exact phiL_le_beta n
+
+/-- `armBase` is positive. -/
+theorem armBase_pos (ell c : ℕ) : 0 < armBase ell c := by
+  have hP := phiL_pos ell
+  have hQ := phiL_pos (ell - 1)
+  simp only [armBase]
+  have h2 : 0 ≤ (c : ℚ) / (2 * (1 + c)) * phiL (ell - 1) * phiL ell ^ (c - 1) :=
+    mul_nonneg (mul_nonneg (by positivity) (le_of_lt hQ)) (le_of_lt (pow_pos hP _))
+  have h1 : 0 < phiL ell ^ c := pow_pos hP c
+  linarith
+
+/-- **Stage 2 — the envelope combination**: `armBase ℓ c ^ 11 < (3/2)^11 ·
+    beta^(11·c·ℓ)` for `ℓ ≥ 3`.  Chains `armBase_lt` (raised to the 11th power)
+    with `phiL_le_beta'`.  This is the object the `c·ℓ ≥ 22` tail bounds against
+    the `483^253` bignum. -/
+theorem armBase_pow11_le (ell c : ℕ) (hell : 3 ≤ ell) (hc : 1 ≤ c) :
+    armBase ell c ^ 11 < (3 / 2 : ℚ) ^ 11 * (483 / 400 : ℚ) ^ (11 * c * ell) := by
+  have h1 : armBase ell c < 3 / 2 * phiL ell ^ c := armBase_lt ell c (by omega) hc
+  have h0 : (0 : ℚ) ≤ armBase ell c := le_of_lt (armBase_pos ell c)
+  have hPnn : (0 : ℚ) ≤ phiL ell := le_of_lt (phiL_pos ell)
+  have hbeta : phiL ell ≤ (483 / 400 : ℚ) ^ ell := phiL_le_beta' ell hell
+  have hexp : (483 / 400 : ℚ) ^ (11 * c * ell) = ((483 / 400 : ℚ) ^ ell) ^ (11 * c) := by
+    rw [← pow_mul]; congr 1; ring
+  have hphi : phiL ell ^ (11 * c) ≤ ((483 / 400 : ℚ) ^ ell) ^ (11 * c) :=
+    pow_le_pow_left₀ hPnn hbeta (11 * c)
+  calc armBase ell c ^ 11
+      < (3 / 2 * phiL ell ^ c) ^ 11 := pow_lt_pow_left₀ h1 h0 (by norm_num)
+    _ = (3 / 2 : ℚ) ^ 11 * phiL ell ^ (11 * c) := by
+        rw [mul_pow, ← pow_mul, Nat.mul_comm c 11]
+    _ ≤ (3 / 2 : ℚ) ^ 11 * ((483 / 400 : ℚ) ^ ell) ^ (11 * c) :=
+        mul_le_mul_of_nonneg_left hphi (by positivity)
+    _ = (3 / 2 : ℚ) ^ 11 * (483 / 400 : ℚ) ^ (11 * c * ell) := by rw [hexp]
+
 end Step3
 end R3Cert
