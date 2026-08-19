@@ -64,3 +64,34 @@ accounted for (arm + near-stars, Lean-green), so a proof needs only a crude boun
 
 *Every numeric/identity claim in this document was exact-verified in `Fraction` arithmetic.
 `conjecture1_proved = False`.*
+
+## Addendum: the homogeneous face is *downstream of the g-lemma* (a robust-gap reduction)
+
+Taking the next step produced the session's strongest lead — and it consolidates rather than closes.
+
+**Finding.** Define the g-lemma functional `g(C) = F·(1+μ/3)¹¹`; the g-lemma is `g(C) ≤ γ = W²(5/3)¹¹
+= 2.92761`, **tight only at the arm** (the elementary `root+leaf` block, `n=2`; `μ=1/3` structurally
+forces the arm, so it is isolated). Over **non-near-star** blocks, `max g(C) = 1.85241` — a strict
+gap `γ−γ' = 1.075`. Under `F ≤ min(1, γ'/(1+μ/3)¹¹)` with `γ'=1.85`, the homogeneous max is
+`H ≤ 0.588 < 1` (checked over all `μ∈(0,1/2]`). So:
+
+> **homogeneous bound (non-near-star)  ⟸  [ g(C) ≤ γ'≈1.85  ∧  F ≤ 1 ]** — closes with 0.4 margin.
+
+**The gap is robust** (unlike this session's other leads, which broke at `n=22–56`):
+- Enumeration all trees `n ≤ 14`: max non-near-star `g` = `1.8524`, attained at the fixed `n=4` path;
+  it *decreases* for larger `n`.
+- Adversarial construction to `n=28` (defected near-stars `k≤40`, deep paths, arms+tie-branches):
+  max `g` stays `1.8524`; every large construction falls below. `g` does **not** creep toward `γ`.
+- Structural support: non-arm blocks near `μ=1/3` have `F≈0`; large defected near-stars have `g→0`
+  (arm factor `486/529 < 1` to the `k`). The arm is the unique, isolated g-saturator.
+
+**What this means (consolidation, not closure).** `γ' < γ` is the g-lemma *plus* its equality
+characterization (arm is the unique near-saturator) — strictly a refinement of the g-lemma, which is
+itself **open** (the R1 branching-induction residual, verified `n≤11`, see `PROOF_ASSEMBLY.md`). So the
+homogeneous face is **not an independent easier target**: it is a *loose downstream consequence of the
+g-lemma*, with a large stable margin. Both the near-star half (via {reduction}+{homogeneous}) and R1
+single-hub extremality reduce to the **same** object — the g-lemma / master-inequality branching wiring.
+
+**Redirected target for the next session.** Do not attack the homogeneous face in isolation; it falls
+automatically (with margin) once the g-lemma's branching wiring closes. The single crux to attack is
+`g(C) ≤ γ` with equality iff arm — the R1 branching residual. `conjecture1_proved = False`.
