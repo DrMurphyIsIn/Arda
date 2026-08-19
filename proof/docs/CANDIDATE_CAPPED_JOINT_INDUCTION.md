@@ -61,6 +61,36 @@ the product tractable). If they close analytically for all `n`, Gap 1 / R3 close
 they hide the same joint obstruction in the `Bcap` product, this is a strong census
 lead but not a proof. **Do not mark R3 proven until (1)+(2) are theorems.**
 
+## Validation progress (2026-08-19, same session) — a concrete proof path
+
+Attacking the two step inequalities directly (all exact `Fraction`):
+
+1. **The joint `a_B` coupling is reducible.** `a_B = 1 + S/(j+1) ≤ ∏_c (1+μ_c/(j+1))`
+   (since `∏(1+x_i) ≥ 1+Σx_i`), and this factorized bound is **tight enough** — both
+   steps still close with it (11,439 realizable multisets, worst exactly 1.0 at the arm).
+   So the proof need not keep the joint `a_B`; it becomes a per-child product.
+2. **Not Schur-maximized at equal children** (1014/16000 unequal cases exceed equal),
+   so a naive "reduce to homogeneous" fails — BUT the excesses are tiny (≤0.0055) and
+   deep in the interior where values are ≪1, so they do not threaten the margin.
+3. **The inequality splits cleanly by `j`, tight in exactly one case** (census n≤13 +
+   dense menu; g-step shown, master-step has even more margin, worst 0.562):
+
+   | case | g-step sup | role |
+   |---|---|---|
+   | `j ≥ 2` | **≤ 0.693**, decreasing in `j` (max at equal mid-μ children) | loose interior |
+   | `j = 1`, `μ_c ∈ (0,½]` | **≤ 0.872** (margin 0.128) | 1-variable inequality |
+   | `j = 1`, `μ_c = 1` (leaf child = the arm) | **= 1 exactly** | the sole equality case |
+
+**Consequence.** Proving the step reduces to: (a) a **single-variable** rational
+inequality `g_1(μ) ≤ 1` on `μ ∈ (0,½]` (Telperion-shaped), (b) the **exact** arm
+boundary (`j=1`, `μ_c=1`, `=1`), and (c) a **loose uniform bound** `g-step ≤ 0.7 < 1`
+for `j ≥ 2` (margin ≈ 0.3; the factorization + cap should give it since more children
+⇒ smaller `μ_B` ⇒ smaller prefix). No tight interior analysis, no exact worst-case.
+
+**Still not a proof.** (a)/(c) are tractable but unproven; the `j≥2` all-`n` uniform
+bound needs its argument written. But the crux is no longer "collective and joint" —
+it is a 1-D boundary inequality plus a loose interior. `conjecture1_proved = False`.
+
 ## Coordination
 
 Overlaps the parallel session's master-inequality / AM-GM line. If they have already
