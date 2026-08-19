@@ -138,9 +138,16 @@ help) splits at the cap boundary `ν* ≈ 0.307` (`Bcap(ν)=1 ⟺ (1+ν/3)^11 �
   with margin ≈ 0.28** — a tractable SOS/Positivstellensatz target (or a careful 2-var hand
   bound), plus the `q≥3 ≤ q=2` domination.
 
-**So the full remaining gap is:** (a) the 2-variable `q=2` CASE-2 inequality (SOS-shaped,
-margin 0.28), and (b) the `q≥3` CASE-2 domination. Everything else in the g-step is proven.
-`conjecture1_proved = False`.
+**Final object.** The CASE-2 `q=2` sup sits at the cap boundary `ν*≈0.308` (meeting CASE 1
+continuously), and on the equal-children diagonal has the closed form
+`g₂(ν) = W³·10¹¹·(5+3ν)¹¹ / (3¹¹·(3+ν)²²)`. So the last inequality is the **single-variable
+polynomial** `g₂(ν) ≤ 1 ⟺ W³·10¹¹·(5+3ν)¹¹ ≤ 3¹¹·(3+ν)²²` on `ν ∈ (ν*, ½]` (ratio 0.723 at
+`ν*`, 0.580 at `½`) — Telperion-shaped (DirectPolya / interval bracket).
+
+**So the full remaining gap of the entire crux is:** (a) the 1-var polynomial `g₂(ν) ≤ 1`
+(margin 0.28); (b) the both-large box-max-is-on-the-diagonal detail; (c) the `q≥3` CASE-2
+domination; and (d) Lean formalization of the whole induction. Everything else — master
+(all j), g-step j=1, g-step j≥2 CASE 1 — is proven. `conjecture1_proved = False`.
 
 ## Status of the whole scheme (2026-08-19)
 - **master step (all j):** PROVEN — crude per-type bound, reduces to `[(4p+3)/(p+1)]^11 W^p ≤ 3^11`, `p=0` exact equality (parallel session).
