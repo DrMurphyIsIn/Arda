@@ -31,7 +31,7 @@ def nsMu (k : ℕ) : ℚ := 3 / (4 * (k : ℚ) + 3)
 def nsF (k : ℕ) : ℚ := W * ((4 * (k : ℚ) + 3) / (3 * ((k : ℚ) + 1))) ^ 11 * armF ^ k
 
 /-- Tail bound: `H μ F j ≤ W(1+μ)^11 · F^j` — the amplitude never exceeds the message. -/
-lemma H_le_tail (μ F : ℚ) (hμ : 0 ≤ μ) (j : ℕ) :
+lemma H_le_tail (μ F : ℚ) (hμ : 0 ≤ μ) (hF0 : 0 ≤ F) (j : ℕ) :
     H μ F j ≤ W * (1 + μ) ^ 11 * F ^ j := by
   have hfrac : (j : ℚ) * μ / ((j : ℚ) + 1) ≤ μ := frac_mul_le μ hμ j
   have hfrac0 : (0 : ℚ) ≤ (j : ℚ) * μ / ((j : ℚ) + 1) := by positivity
@@ -40,39 +40,45 @@ lemma H_le_tail (μ F : ℚ) (hμ : 0 ≤ μ) (j : ℕ) :
   have hpow : (1 + (j : ℚ) * μ / ((j : ℚ) + 1)) ^ 11 ≤ (1 + μ) ^ 11 :=
     pow_le_pow_left₀ hbase0 hbase 11
   have hW : (0 : ℚ) ≤ W := by norm_num [W]
-  have hFj : (0 : ℚ) ≤ F ^ j := by positivity
+  have hFj : (0 : ℚ) ≤ F ^ j := pow_nonneg hF0 j
   calc H μ F j = W * (1 + (j : ℚ) * μ / ((j : ℚ) + 1)) ^ 11 * F ^ j := rfl
     _ ≤ W * (1 + μ) ^ 11 * F ^ j :=
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hpow hW) hFj
 
-set_option maxHeartbeats 1000000 in
+/-- Decreasing powers for `0 ≤ F ≤ 1`, `n ≤ j`: `F^j ≤ F^n` — via `F^j = F^n · F^(j-n)`
+    and `F^(j-n) ≤ 1`, using only `pow_le_one₀` (present in this Mathlib pin). -/
+lemma pow_le_pow_tail {F : ℚ} (hF0 : 0 ≤ F) (hF1 : F ≤ 1) {n j : ℕ} (hj : n ≤ j) :
+    F ^ j ≤ F ^ n := by
+  calc F ^ j = F ^ n * F ^ (j - n) := by rw [← pow_add]; congr 1; omega
+    _ ≤ F ^ n * 1 := mul_le_mul_of_nonneg_left (pow_le_one₀ hF0 hF1) (pow_nonneg hF0 n)
+    _ = F ^ n := mul_one _
+
+set_option maxHeartbeats 2000000 in
 /-- Homogeneous face for the near-star child `N(0,1)` (`μ = 3/7`, above the trivial zone). -/
 theorem H_nearStar_one (j : ℕ) : H (nsMu 1) (nsF 1) j ≤ 1 := by
   have hμ : (0 : ℚ) ≤ nsMu 1 := by norm_num [nsMu]
   have hF0 : (0 : ℚ) ≤ nsF 1 := by norm_num [nsF, armF, W]
   have hF1 : nsF 1 ≤ 1 := by norm_num [nsF, armF, W]
-  rcases lt_or_ge j 3 with hj | hj
+  rcases Nat.lt_or_ge j 3 with hj | hj
   · interval_cases j <;> norm_num [H, nsMu, nsF, armF, W]
   · calc H (nsMu 1) (nsF 1) j
-        ≤ W * (1 + nsMu 1) ^ 11 * (nsF 1) ^ j := H_le_tail _ _ hμ j
-      _ ≤ W * (1 + nsMu 1) ^ 11 * (nsF 1) ^ 3 := by
-          apply mul_le_mul_of_nonneg_left (pow_le_pow_right_of_le_one hF0 hF1 hj)
-          norm_num [nsMu, nsF, armF, W]
+        ≤ W * (1 + nsMu 1) ^ 11 * (nsF 1) ^ j := H_le_tail _ _ hμ hF0 j
+      _ ≤ W * (1 + nsMu 1) ^ 11 * (nsF 1) ^ 3 :=
+          mul_le_mul_of_nonneg_left (pow_le_pow_tail hF0 hF1 hj) (by norm_num [nsMu, W])
       _ ≤ 1 := by norm_num [nsMu, nsF, armF, W]
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 2000000 in
 /-- Homogeneous face for the near-star child `N(0,2)` (`μ = 3/11`, above the trivial zone). -/
 theorem H_nearStar_two (j : ℕ) : H (nsMu 2) (nsF 2) j ≤ 1 := by
   have hμ : (0 : ℚ) ≤ nsMu 2 := by norm_num [nsMu]
   have hF0 : (0 : ℚ) ≤ nsF 2 := by norm_num [nsF, armF, W]
   have hF1 : nsF 2 ≤ 1 := by norm_num [nsF, armF, W]
-  rcases lt_or_ge j 2 with hj | hj
+  rcases Nat.lt_or_ge j 2 with hj | hj
   · interval_cases j <;> norm_num [H, nsMu, nsF, armF, W]
   · calc H (nsMu 2) (nsF 2) j
-        ≤ W * (1 + nsMu 2) ^ 11 * (nsF 2) ^ j := H_le_tail _ _ hμ j
-      _ ≤ W * (1 + nsMu 2) ^ 11 * (nsF 2) ^ 2 := by
-          apply mul_le_mul_of_nonneg_left (pow_le_pow_right_of_le_one hF0 hF1 hj)
-          norm_num [nsMu, nsF, armF, W]
+        ≤ W * (1 + nsMu 2) ^ 11 * (nsF 2) ^ j := H_le_tail _ _ hμ hF0 j
+      _ ≤ W * (1 + nsMu 2) ^ 11 * (nsF 2) ^ 2 :=
+          mul_le_mul_of_nonneg_left (pow_le_pow_tail hF0 hF1 hj) (by norm_num [nsMu, W])
       _ ≤ 1 := by norm_num [nsMu, nsF, armF, W]
 
 end R3Cert.HomogeneousSlice
