@@ -64,16 +64,33 @@ certificate that would close it **is** the master inequality. The elementary cei
    recursion mutates prod) — produced a false "only-leaf" picture; caught on a 6-line
    minimal recheck before it reached the doc.
 
-## Next attackable targets (in rough order of tractability)
+## REDIRECT (parallel session, branch `feat/homogeneous-face-handoff` @ 695b42c)
 
-1. **Formalize the proven slice** (`μ ≤ μ0 ⟹ H ≤ 1`) as a Lean lemma — pure algebra
-   (`pow_le_pow_left₀` monotonicity + `F^j ≤ 1` + one `norm_num` for `W·(1229/1000)^11 ≤
-   1`). The first genuinely-provable piece of the homogeneous face. Orphan-risk: check it
-   plugs into R47 assembly before over-investing.
-2. **The leaf + near-star k=1,2 cases** (the only open-band blocks with H>0.4 besides the
-   arm) — small concrete bricks; near-stars may reduce to `nearStar_family_le_zero`.
-3. **The generic non-near-star band** (μ∈(μ0,1], H≤0.3637 empirically) — needs the uniform
-   `(μ,F)` certificate. This is the crux; do not expect elementary closure.
+**Do not attack the homogeneous face directly — attack its upstream, the g-lemma.**
+The parallel crux session found the homogeneous face is a *downstream shadow* of the
+g-lemma `g(C) = F·(1+μ/3)^11 ≤ γ`, `γ = W²(5/3)^11 = 2.9276`:
+
+- The arm is the **unique saturator**: `g(arm) = γ` exactly (independently confirmed
+  here, exact `Fraction`).
+- **Non-near-star blocks obey a strictly stronger bound**: `max g = 1.8524`, a `1.075`
+  gap below γ (confirmed here to n=12; parallel session: enumeration to n=14, adversarial
+  to n=28, no creep toward γ — the first lead to survive past the n=22–56 range where
+  every prior gap broke).
+- Under that gap the homogeneous bound closes with margin (`H ≤ 0.588 < 1`).
+
+So the g-lemma **plus its equality characterization** (`g(C) ≤ γ`, equality iff arm) is
+the real object; the homogeneous face and the near-star half both fall automatically,
+with margin, once it closes. Per the parallel session, R1 single-hub extremality reduces
+to the same object (not independently re-verified here). **Next session: attack
+`g(C) ≤ γ` with equality iff arm — the g-lemma / master-inequality branching residual.**
+
+## Superseded targets (kept for context)
+
+1. **Proven slice** (`μ ≤ μ0 ⟹ H ≤ 1`) — DONE, kernel-checked: `HomogeneousSlice.lean`
+   (`H_le_one`, `H_le_one_of_muLe`) on main. First proven piece of the homogeneous face;
+   now understood as a downstream slice, still valid.
+2. The leaf + near-star k=1,2 cases, and the generic non-near-star band — all subsumed by
+   the redirect: they are the downstream shadow, not the target. Attack the g-lemma.
 
 ## Verification
 
