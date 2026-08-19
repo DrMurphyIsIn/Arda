@@ -91,6 +91,33 @@ for `j ≥ 2` (margin ≈ 0.3; the factorization + cap should give it since more
 bound needs its argument written. But the crux is no longer "collective and joint" —
 it is a 1-D boundary inequality plus a loose interior. `conjecture1_proved = False`.
 
+## PROVEN: the j=1 g-step (the tight/binding case) — 2026-08-19
+
+The `j=1` g-lemma step (a single child, message `μ`) is now **proved analytically**,
+every step exact-verified. For one child, `μ_B=1/(2+μ)`, `a_B=(2+μ)/2`, and
+
+  `(1+μ_B/3)·a_B = (7+3μ)/6`  ⟹  `g_1(μ) = ((7+3μ)/10)^11 · Bcap(μ)/W`.
+
+- **On `μ ∈ (0,½]`** (non-leaf children): `Bcap ≤ glemma_ub`, and
+  `glemma_ub(μ)/W = W·(5/(3+μ))^11`, so
+  `g_1(μ) ≤ W·((7+3μ)/(2(3+μ)))^11`.
+  Since `14(7+3μ) ≤ 34(3+μ) ⟺ 8μ ≤ 4 ⟺ μ ≤ ½`, we get `(7+3μ)/(2(3+μ)) ≤ 17/14`, hence
+  `g_1(μ) ≤ W·(17/14)^11`, and this is `≤ 1` iff the **integer inequality**
+  **`64·17^11 ≤ 621·14^11`** (`2193401363688512 ≤ 2514779970361344` — `norm_num`).
+- **At `μ = 1`** (leaf child = the arm): `Bcap(1) = master_ub(1) = W`, so
+  `g_1(1) = ((10)/10)^11 · W/W = 1` — the exact equality. (The glemma bound is loose here,
+  `1.20`; the arm needs `master_ub`, handled by the isolated `μ=1` case — messages live in
+  `(0,½] ∪ {1}`, no gap.)
+
+This is the **binding** case (arm/tie tightness lives at `j=1`), and it holds
+**continuously** on `(0,½]` — no integer-tightness — corroborating the parallel
+session's integrality probe: the dual-target + `phi_le_one` cap genuinely evades the
+`k≈4.82` obstruction, which is why an analytic proof exists here where every prior route
+was blocked. Lean-formalizable (elementary + one `norm_num`). `conjecture1_proved = False`.
+
+**Remaining for the full g-step:** the `j ≥ 2` case (loose, sup ≤ 0.693, decreasing in
+`j`). In progress.
+
 ## Coordination
 
 Overlaps the parallel session's master-inequality / AM-GM line. If they have already
