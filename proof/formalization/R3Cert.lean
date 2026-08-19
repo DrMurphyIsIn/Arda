@@ -93,6 +93,7 @@ import R3Cert.R47VeeDispatch
 import R3Cert.R47StepMono
 import R3Cert.R47Legs
 import R3Cert.R47LegsRate
+import R3Cert.R47LegsAT
 import R3Cert.TieClosure
 import R3Cert.R47Shed
 import R3Cert.R47Perm
