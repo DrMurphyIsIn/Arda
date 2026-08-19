@@ -88,6 +88,31 @@ theorem ell1_c2 : (5 : ℕ) ^ 11 * 64 ^ 3 < 621 ^ 3 * 3 ^ 11 := by norm_num
 
 theorem ell1_c3 : (7 : ℕ) ^ 11 * 64 ^ 4 < 621 ^ 4 * 4 ^ 11 := by norm_num
 
+/-- **The general ℓ=1 rate row**: the single-legged star grows strictly slower
+    than `rho_B` for EVERY `c ≥ 1` — `((1+2c)/(1+c))^11 < (621/64)^(1+c)` cleared
+    to `ℕ`.  Upgrades the three finite `ell1_c*` checks to a statement quantified
+    over ALL `c`: the `c ≤ 3` cases are exact (`interval_cases`), and the `c ≥ 4`
+    tail is `(1+2c)^11 < 2^11 (1+c)^11` (from `1+2c < 2(1+c)`) together with
+    `2^11 · 64^(1+c) ≤ 621^(1+c)` (from `ell1_base : 2^11·64^5 < 621^5` and `ℕ`
+    monotonicity, splitting `1+c = 5 + (c-4)`).  Gadget level; the classification
+    seam ("rate-maximal families have cherry arms") is named at R7' assembly.
+    conjecture1_proved = False. -/
+theorem ell1_rate (c : ℕ) (hc : 1 ≤ c) :
+    (1 + 2 * c) ^ 11 * 64 ^ (1 + c) < 621 ^ (1 + c) * (1 + c) ^ 11 := by
+  rcases Nat.lt_or_ge c 4 with h | h
+  · interval_cases c <;> norm_num
+  · have hbase : 2 ^ 11 * 64 ^ (1 + c) ≤ 621 ^ (1 + c) := by
+      have hsplit : (1 : ℕ) + c = 5 + (c - 4) := by omega
+      rw [hsplit, pow_add, pow_add]
+      calc 2 ^ 11 * (64 ^ 5 * 64 ^ (c - 4))
+          = 2 ^ 11 * 64 ^ 5 * 64 ^ (c - 4) := by ring
+        _ ≤ 621 ^ 5 * 621 ^ (c - 4) := by gcongr <;> norm_num
+    calc (1 + 2 * c) ^ 11 * 64 ^ (1 + c)
+        < (2 * (1 + c)) ^ 11 * 64 ^ (1 + c) := by gcongr <;> omega
+      _ = (1 + c) ^ 11 * (2 ^ 11 * 64 ^ (1 + c)) := by rw [mul_pow]; ring
+      _ ≤ (1 + c) ^ 11 * 621 ^ (1 + c) := mul_le_mul_of_nonneg_left hbase (Nat.zero_le _)
+      _ = 621 ^ (1 + c) * (1 + c) ^ 11 := by ring
+
 theorem sweep_l3_c1 : (17 : ℕ) ^ 11 * 64 ^ 4 < 621 ^ 4 * 8 ^ 11 := by norm_num
 
 theorem sweep_l3_c2 : (63 : ℕ) ^ 11 * 64 ^ 7 < 621 ^ 7 * 16 ^ 11 := by norm_num
