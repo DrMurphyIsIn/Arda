@@ -97,6 +97,7 @@ import R3Cert.LegsCherries
 import R3Cert.R47LegsAT
 import R3Cert.HomogeneousSlice
 import R3Cert.NearStarBandSlice
+import R3Cert.MasterCore
 import R3Cert.TieClosure
 import R3Cert.R47Shed
 import R3Cert.R47Perm
