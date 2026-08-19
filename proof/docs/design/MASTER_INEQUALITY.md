@@ -92,6 +92,23 @@ arithmetic (integrality), not analytic.
   `μ=0.797` where the real F-max is `0.17`) that sprang three times. Any
   near-star-half search MUST run behind this guard.
 
+## 6b. Finite-domain validation (VALIDATED, not a proof)
+
+The statement's *form* was stress-tested by exact enumeration (`fractions.Fraction`,
+no floats at any decision) of **all 11,006 rooted blocks with n ≤ 12**:
+
+- **`F(C) ≤ 1` for every block** (worst `F>1` = exactly 0) — consistent with `phi_le_one`.
+- **The near-star family realizes the envelope**: at every near-star message
+  `μ_k = 3/(4k+3)`, no block exceeds `NS(k) = W·a_k^11·(486/529)^k`. The top-F
+  ladder is exactly `NS(5)=1`, `NS(4)=0.98877`, `NS(3)=0.93034`, arm `=486/529`.
+- **`F = 1` is attained only at the k=5 near-star** (n=11, μ=3/23-equivalent).
+
+This confirms the target is not mis-stated — there is no ordinary block that slips
+above the near-star envelope while staying under 1. It is **finite-domain evidence
+only**: the master inequality's hard cases are the large-n near-tie configurations
+(n ≥ 4k+3 grows without bound), which no finite enumeration reaches. VALIDATED on
+n ≤ 12; OPEN in general.
+
 ## 7. Honest boundary
 
 This document does not advance the proof of the master inequality. It states it
