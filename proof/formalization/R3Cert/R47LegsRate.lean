@@ -147,5 +147,22 @@ theorem armBase_rate_tail (ell c : ℕ) (hell : 3 ≤ ell) (hc : 1 ≤ c)
     _ = (3 / 2 : ℚ) ^ 11 * (483 / 400 : ℚ) ^ (11 * (c * ell)) := by rw [Nat.mul_assoc]
     _ < (621 / 64) ^ (1 + c * ell) := tail_rat (c * ell) hk
 
+/-- **Stage 4 — the assembled ℓ≥3 rate rows**: `armBase ℓ c ^ 11 <
+    (621/64)^(1+c·ℓ)` for EVERY `ℓ ≥ 3` and `c ≥ 1` — i.e. `rho_ℓ < rho_B`, so a
+    star whose legs have length `ℓ ≥ 3` grows strictly slower than the cherry
+    star.  The `c·ℓ ≥ 22` tail is `armBase_rate_tail`; the `c·ℓ ≤ 21` finite
+    region is closed by evaluating `armBase` (through `phiL`) per cell.  Gadget
+    level; the classification seam ("rate-maximal families have cherry arms") is
+    named at R7' assembly.  conjecture1_proved = False. -/
+theorem legs_rate_ge3 (ell c : ℕ) (hell : 3 ≤ ell) (hc : 1 ≤ c) :
+    armBase ell c ^ 11 < (621 / 64 : ℚ) ^ (1 + c * ell) := by
+  rcases Nat.lt_or_ge (c * ell) 22 with h | h
+  · have hce : c * ell ≤ 21 := by omega
+    have hue : ell ≤ 21 := le_trans (Nat.le_mul_of_pos_left ell (by omega)) hce
+    have huc : c ≤ 21 := le_trans (Nat.le_mul_of_pos_right c (by omega)) hce
+    interval_cases ell <;> interval_cases c <;>
+      first | omega | norm_num [armBase, phiL]
+  · exact armBase_rate_tail ell c hell hc h
+
 end Step3
 end R3Cert
