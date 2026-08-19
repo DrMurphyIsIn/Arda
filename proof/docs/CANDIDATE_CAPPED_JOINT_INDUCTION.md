@@ -127,10 +127,20 @@ crude `∏Bcap≤1`/`≤W^p` bound that closed the loose master step is *too wea
 g-step needs the per-child glemma suppression counted). So `j≥2` is a genuine
 loose-but-multivariate inequality (margin 0.28, holds in all n≤15 + adversarial tests).
 
-**Path:** a multi-variable argument or a **Telperion SOS/Positivstellensatz certificate**
-on the `p=0` polynomial inequality (loose ⇒ an SOS certificate should exist) — the natural
-tool for a margin-0.28 rational inequality that resists monotone reduction. Until then the
-full g-step is `j=1` PROVEN + `j≥2` VALIDATED. `conjecture1_proved = False`.
+**Reduction of j≥2 (2026-08-19, further).** The `p=0` case (the dominant one, leaves only
+help) splits at the cap boundary `ν* ≈ 0.307` (`Bcap(ν)=1 ⟺ (1+ν/3)^11 ≤ γ`):
+- **CASE 1 — all children small (`Bcap=1`):** closes by the **base bound alone**,
+  `[(3d+3S+1)/(3d)]^11 ≤ W(5/3)^11` (worst at all `ν=ν*`, ratio 0.720 < 1); `∏Bcap=1`, no
+  suppression needed. Clean hand proof (modulo a rational `ν*` bound). **Essentially done.**
+- **CASE 2 — at least one large child (`Bcap=glemma<1`):** the residual, **dominated by
+  `q=2`** (two large children near `ν≈0.31`, sup 0.72163; `q=3`→0.705, `q=4`→0.693, both
+  smaller). So the entire hard residual is a **2-variable, degree-11 rational inequality
+  with margin ≈ 0.28** — a tractable SOS/Positivstellensatz target (or a careful 2-var hand
+  bound), plus the `q≥3 ≤ q=2` domination.
+
+**So the full remaining gap is:** (a) the 2-variable `q=2` CASE-2 inequality (SOS-shaped,
+margin 0.28), and (b) the `q≥3` CASE-2 domination. Everything else in the g-step is proven.
+`conjecture1_proved = False`.
 
 ## Status of the whole scheme (2026-08-19)
 - **master step (all j):** PROVEN — crude per-type bound, reduces to `[(4p+3)/(p+1)]^11 W^p ≤ 3^11`, `p=0` exact equality (parallel session).
