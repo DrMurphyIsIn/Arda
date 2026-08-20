@@ -109,6 +109,16 @@ script = "examples/sos_sdp/generate.py"
 group = "sdp"      # SDP-SOS (needs cvxpy; regen off the cvxpy-free CI path). Frozen Lean is compile-gated.
 
 [[check]]
+name = "putinar_find"
+script = "examples/putinar_find/generate.py"
+group = "sdp"      # Putinar SDP finder (needs cvxpy; regen off the cvxpy-free CI path). Frozen Lean compile-gated.
+
+[[check]]
+name = "sos_refutation_find"
+script = "examples/sos_refutation_find/generate.py"
+group = "sdp"      # SOS-refutation SDP finder (needs cvxpy). Frozen Lean compile-gated.
+
+[[check]]
 name = "mconvex"
 script = "examples/mconvex/generate.py"
 group = "quick"    # M-convexity (discrete-convex) certificates -- integer-lattice structure

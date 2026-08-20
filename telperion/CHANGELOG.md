@@ -68,6 +68,32 @@ supply the problem, Telperion finds the certificate."
   re-verified exactly by `certify_putinar_point`, so a search miss is a refusal,
   never a wrong theorem.
 
+- **`find_sos_refutation`** — the `SOSRefutationEmitter` now SEARCHES for the
+  SOS-Positivstellensatz refutation when a family returns `sigma0 = None`: given a
+  system `{gᵢ ≥ 0} ∪ {hⱼ = 0}`, it finds SOS multipliers `σ₀, σᵢ` and FREE
+  polynomials `λⱼ` with `−1 = σ₀ + Σ σᵢ·gᵢ + Σ λⱼ·hⱼ`, AUTOMATICALLY closing the
+  ℝ-only gap the ideal refutation cannot reach (e.g. `x² + 1 = 0` → `σ₀ = x²`,
+  `λ = −1`).  Shares the Putinar finder's engine in `sos_sdp.py` — the same SDP
+  (cvxpy + SCS, trace-minimizing objective), the same denominator-ladder rounding,
+  the same rank-deficiency-tolerant `_robust_ldlt` and `_gram_terms`, the same
+  determinism (pinned solver + symmetrized Gram) — with the equality multipliers
+  `λ` carried as FREE (non-SOS) coefficient blocks rounded on the same ladder.  The
+  relaxation order defaults to 1, overridable via
+  `constants['sos_refutation_half_deg']`.  Untrusted-by-design — every found
+  refutation is re-verified exactly by `certify_sos_refutation_point`, so a search
+  miss is a refusal (the system may be ℝ-satisfiable, or need a higher order),
+  never a wrong theorem.  This completes the checker → searcher upgrade for all
+  three checker-mode emitters (Handelman via exact LP; Putinar + SOS-refutation via
+  SDP).
+
+  Two `sdp`-group examples (`examples/putinar_find`, `examples/sos_refutation_find`)
+  freeze the auto-found certificates; regeneration runs off the cvxpy-free CI path
+  and the frozen Lean is compile-gated in `audit-compiles` regardless.  The Putinar
+  and SOS-refutation SDP finders were written independently (this branch and PR #18)
+  and CONVERGED on the same design — multi-Gram SDP + trace objective +
+  multi-denominator rationalization + exact verification + PSD-singular-safe LDLᵀ;
+  this entry reconciles the two onto one shared engine with two entry points.
+
 ## Unreleased — the beyond-positivity pass (equational reasoning + real refutations)
 
 Three emitters completing the "beyond `0 ≤ p`" arc — algebraic reasoning about

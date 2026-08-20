@@ -1,0 +1,9 @@
+{
+  "family": "PutinarFind",
+  "input_hash": "ca1bd5445f57180ad417deac69b561df72e56ad486098ea00457f07db73ab52d",
+  "tool_version": "0.1.6",
+  "files": [
+    "PutinarFind.lean"
+  ],
+  "n_theorems": 3
+}

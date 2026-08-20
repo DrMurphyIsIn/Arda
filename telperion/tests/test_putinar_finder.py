@@ -40,6 +40,21 @@ def _recon(sigma0, constraints, syms):
     return sp.expand(acc)
 
 
+def test_finder_recovers_multipliers():
+    # A spread of small Putinar instances the finder must recover exactly (these
+    # need degree-1 SOS multipliers, so half_deg=2): 1-x^2 on [-1,1],
+    # x^2*y+y on {y>=0}, x(2-x) on [0,2].
+    x, y = sp.symbols("x y")
+    cases = [(1 - x ** 2, [(1 - x, "a"), (1 + x, "b")]),
+             (x ** 2 * y + y, [(y, "c")]),
+             (sp.expand(x * (2 - x)), [(x, "d"), (2 - x, "e")])]
+    for p, gens in cases:
+        res = find_putinar_certificate(p, gens, (x, y), half_deg=2)
+        assert res is not None, p
+        sigma0, constraints = res
+        assert _recon(sigma0, constraints, (x, y)) == sp.expand(p)
+
+
 def test_finder_finds_box_instance():
     # p = 2 - x^2 - y^2 >= 0 on the box [-1,1]^2 (a genuine Putinar instance:
     # nonnegative there but NOT globally — needs the constraints).

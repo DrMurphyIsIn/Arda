@@ -367,3 +367,165 @@ def find_putinar_certificate(p, constraints, syms, half_deg: int | None = None):
         ]
         return sigma0, out_constraints
     return None
+
+
+# --------------------------------------------------------------------------- #
+# SOS-Positivstellensatz REFUTATION finder: SOS σ blocks + FREE λ blocks.      #
+# --------------------------------------------------------------------------- #
+
+def find_sos_refutation(ineq_constraints, eq_constraints, syms,
+                        half_deg: int | None = None):
+    """SEARCH for an SOS-Positivstellensatz refutation of the ℝ-infeasibility of
+    ``{g_i ≥ 0} ∪ {h_j = 0}``: an exact identity
+
+        −1 = σ_0 + Σ_i σ_i·g_i + Σ_j λ_j·h_j
+
+    with every ``σ_j`` a sum of squares (PSD Gram block) and every ``λ_j`` a FREE
+    polynomial (an unconstrained coefficient block).  On the feasible set the RHS
+    is ``≥ 0`` yet equals ``−1``, a contradiction — so the system has no real
+    point.  This AUTOMATICALLY closes the real-only gap the ideal refutation
+    leaves open (e.g. ``x² + 1 = 0`` → ``σ_0 = x²``, ``λ = −1``).
+
+    ``ineq_constraints`` is a list of ``(g_i, hyp_name)`` and ``eq_constraints`` a
+    list of ``(h_j, hyp_name)``.  Returns ``(sigma0, out_ineqs, out_eqs)`` where
+    ``sigma0`` is a ``(coef, base)`` SOS term list for σ_0, ``out_ineqs`` a list of
+    ``(g_i, sigma_i, hyp)`` (SOS multiplier), and ``out_eqs`` a list of
+    ``(h_j, lambda_j, hyp)`` (the free polynomial λ_j) — exactly the shape
+    ``certify_sos_refutation_point`` re-verifies — or ``None`` (a REFUSAL, not a
+    claim of satisfiability: the SDP was infeasible, or no ladder rung rounded
+    exactly).
+
+    Route A (numeric SDP → EXACT rational rounding), sharing this module's engine
+    with ``find_putinar_certificate``: the same ``_round_matrix`` ladder for the
+    SOS Grams (LDLᵀ via ``_gram_terms``), the same SCS/symmetrize determinism, and
+    the same untrusted contract — the caller re-verifies exactly, a miss is a
+    refusal.  The λ blocks are rounded on the same ladder as plain rational
+    vectors (no PSD requirement).
+    """
+    import cvxpy as cp
+    import numpy as np
+
+    syms = tuple(syms)
+    gens = [sp.expand(sp.sympify(g)) for g, _h in ineq_constraints]
+    ghyps = [h for _g, h in ineq_constraints]
+    eqs = [sp.expand(sp.sympify(h)) for h, _h in eq_constraints]
+    ehyps = [h for _h, h in eq_constraints]
+
+    if half_deg is None:
+        half_deg = 1
+
+    # σ_i·g_i must stay within total degree; free λ_j·h_j likewise.
+    def _half_for(g):
+        gd = sp.Poly(g, *syms).total_degree() if g != 0 else 0
+        return max(0, half_deg - -(-gd // 2))
+
+    def _lin_deg_for(h):
+        hd = sp.Poly(h, *syms).total_degree() if h != 0 else 0
+        return max(0, 2 * half_deg - hd)
+
+    # SOS blocks (symmetric PSD Gram): σ_0 and each σ_i.  FREE blocks (a plain
+    # coefficient vector, no PSD constraint): each λ_j.
+    sos_bases = [(_monomials_upto(syms, half_deg), None)]        # σ_0
+    for g in gens:
+        sos_bases.append((_monomials_upto(syms, _half_for(g)), g))
+    free_bases = [(_monomials_upto(syms, _lin_deg_for(h)), h) for h in eqs]
+
+    Qvars, Cvars = [], []
+    sym_forms = []
+    for bidx, (mons, g) in enumerate(sos_bases):
+        n = len(mons)
+        Qvars.append(cp.Variable((n, n), symmetric=True))
+        qsym = sp.Matrix(n, n, lambda i, j: sp.Symbol(f"q{bidx}_{min(i,j)}_{max(i,j)}"))
+        mvec = sp.Matrix(mons)
+        form = (mvec.T * qsym * mvec)[0]
+        if g is not None:
+            form = g * form
+        sym_forms.append(sp.expand(form))
+    for fidx, (mons, h) in enumerate(free_bases):
+        Cvars.append(cp.Variable(len(mons)))
+        csym = [sp.Symbol(f"c{fidx}_{i}") for i in range(len(mons))]
+        form = h * sum(csym[i] * mons[i] for i in range(len(mons)))
+        sym_forms.append(sp.expand(form))
+
+    total = sp.expand(sum(sym_forms, sp.Integer(0)))
+    diff = sp.Poly(sp.expand(total - (-1)), *syms)
+
+    def _qsymbol(bidx, i, j):
+        return sp.Symbol(f"q{bidx}_{min(i,j)}_{max(i,j)}")
+
+    allq = {}
+    for bidx, (mons, _g) in enumerate(sos_bases):
+        n = len(mons)
+        for i in range(n):
+            for j in range(i, n):
+                allq[_qsymbol(bidx, i, j)] = 0
+    for fidx, (mons, _h) in enumerate(free_bases):
+        for i in range(len(mons)):
+            allq[sp.Symbol(f"c{fidx}_{i}")] = 0
+
+    cons = [Q >> 0 for Q in Qvars]
+    for _mono, coef in diff.terms():
+        row = 0.0
+        for bidx, (mons, _g) in enumerate(sos_bases):
+            n = len(mons)
+            for i in range(n):
+                for j in range(i, n):
+                    c = coef.coeff(_qsymbol(bidx, i, j))
+                    if c != 0:
+                        row = row + float(c) * Qvars[bidx][i, j]
+        for fidx, (mons, _h) in enumerate(free_bases):
+            for i in range(len(mons)):
+                c = coef.coeff(sp.Symbol(f"c{fidx}_{i}"))
+                if c != 0:
+                    row = row + float(c) * Cvars[fidx][i]
+        const = float(coef.subs(allq))
+        cons.append(row + const == 0)
+
+    # Trace of the SOS Grams only (the λ blocks are free); deterministic solver.
+    obj = sum(cp.trace(Q) for Q in Qvars) if Qvars else 0
+    prob = cp.Problem(cp.Minimize(obj), cons)
+    try:
+        prob.solve(solver=cp.SCS, eps=1e-9, max_iters=200000)
+    except Exception:
+        return None
+    if prob.status not in ("optimal", "optimal_inaccurate"):
+        return None
+    if any(Q.value is None or not np.all(np.isfinite(Q.value)) for Q in Qvars):
+        return None
+    if any(C.value is None or not np.all(np.isfinite(C.value)) for C in Cvars):
+        return None
+
+    Qsym = [(np.asarray(Q.value) + np.asarray(Q.value).T) / 2 for Q in Qvars]
+    Cval = [np.asarray(C.value).reshape(-1) for C in Cvars]
+
+    for denom in _DENOM_LADDER:
+        rounded = [_round_matrix(Qv, denom) for Qv in Qsym]
+        term_lists = [_gram_terms(Qr, mons)
+                      for Qr, (mons, _g) in zip(rounded, sos_bases)]
+        if any(t is None for t in term_lists):
+            continue
+        lam_polys = []
+        for cvec, (mons, _h) in zip(Cval, free_bases):
+            coeffs = [sp.Rational(round(cvec[i] * denom), denom)
+                      for i in range(len(mons))]
+            lam_polys.append(sp.expand(sum(coeffs[i] * mons[i]
+                                           for i in range(len(mons)))))
+        recon = sp.Integer(0)
+        for (coef, base) in term_lists[0]:
+            recon += coef * base ** 2
+        for k, g in enumerate(gens, start=1):
+            for (coef, base) in term_lists[k]:
+                recon += g * coef * base ** 2
+        for h, lam in zip(eqs, lam_polys):
+            recon += h * lam
+        if sp.expand(recon - (-1)) != 0:
+            continue
+        sigma0 = [(sp.Rational(c), sp.expand(b)) for c, b in term_lists[0]]
+        out_ineqs = [
+            (gens[k - 1], [(sp.Rational(c), sp.expand(b)) for c, b in term_lists[k]],
+             ghyps[k - 1])
+            for k in range(1, len(sos_bases))
+        ]
+        out_eqs = [(eqs[j], lam_polys[j], ehyps[j]) for j in range(len(eqs))]
+        return sigma0, out_ineqs, out_eqs
+    return None

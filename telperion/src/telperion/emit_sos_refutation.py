@@ -68,6 +68,26 @@ def certify_sos_refutation_point(family, pt, name):
     sigma0, ineqs, eqs = family.special[1](pt)
     syms = tuple(family.symbols)
 
+    # FINDER mode: when σ₀ is None, SEARCH for the SOS-Positivstellensatz
+    # refutation via the SDP finder, then fall through to the SAME exact
+    # verification below.  In finder mode the spec supplies ``ineqs`` as
+    # ``(g_i, hyp)`` and ``eqs`` as ``(h_j, hyp)`` (no multipliers); the finder
+    # returns them re-paired with the discovered σ_i and λ_j.  Untrusted — a bad
+    # search cannot pass the reconstruction check.
+    if sigma0 is None:
+        from .sos_sdp import find_sos_refutation
+        half_deg = family.constants.get("sos_refutation_half_deg")
+        found = find_sos_refutation(
+            list(ineqs), list(eqs), syms,
+            half_deg=int(half_deg) if half_deg is not None else None)
+        if found is None:
+            raise ValueError(
+                f"sos_refutation instance '{name}' REFUSED: no SOS-Positivstellensatz "
+                f"refutation (−1 = σ₀ + Σ σ_i·g_i + Σ λ_j·h_j) found by the SDP "
+                "finder — the system may be satisfiable over ℝ, or need a higher "
+                "relaxation order (raise 'sos_refutation_half_deg')")
+        sigma0, ineqs, eqs = found
+
     checks = _check_sos(sigma0, "σ₀", name)
     recon = _sos_expr(sigma0)
     for g, sig, _h in ineqs:
@@ -162,6 +182,15 @@ def sos_refutation_family(
     the equality constraints ``(h_j, lambda_j, hyp_name)`` with polynomial
     multipliers.  ``certify_sos_refutation_point`` verifies
     ``−1 = σ₀ + Σσ_ig_i + Σλ_jh_j`` exactly and refuses otherwise.
+
+    FINDER mode: return ``sigma0 = None`` with ``ineqs`` as ``(g_i, hyp_name)`` and
+    ``eqs`` as ``(h_j, hyp_name)`` (constraints only, no multipliers) and Telperion
+    SEARCHES for the refutation itself (`find_sos_refutation`, a numeric SDP over
+    SOS σ blocks + free λ blocks, rounded to EXACT rationals) — AUTOMATICALLY
+    closing the ℝ-only gap the ideal refutation cannot reach (e.g. ``x² + 1 = 0``).
+    The relaxation order is taken from ``constants['sos_refutation_half_deg']``
+    when set (default 1).  Either way ``certify_sos_refutation_point`` re-verifies
+    the identity exactly.
     """
     if not tuple(symbols):
         raise ValueError("SOS-refutation families require at least one symbol")
