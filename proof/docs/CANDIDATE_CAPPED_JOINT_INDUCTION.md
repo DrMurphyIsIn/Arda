@@ -176,11 +176,17 @@ is proven. `conjecture1_proved = False`.
 children, not low-dimensional**. So Case 2 does *not* reduce to a 1-var inequality like q=2;
 the glemma bound is loose there (overestimates the small children `glemma>1` and the leaf
 `glemma(1)=0.165 > Bcap(1)=W`) yet still closes. Proving it is a genuine multi-variable
-conditional inequality — the real residual difficulty, loose but not clean. Candidate
-refinements: split leaves off (`Bcap=W` tighter than `glemma`), or a per-type bound in the
-master-step's crude style (master closed loose via `∏Bcap≤W^p`; Case 2's 0.25 margin may
-admit an analogous crude reduction). Neither is in hand. This is the arc's standing lesson:
-"verified" ≠ "easy" — Case 2 is verified, its clean proof is not written.
+conditional inequality — the real residual difficulty, loose but not clean. Refinements
+tried: (i) **leaf-split** (`Bcap=W` for leaves, tighter than `glemma(1)`) lowers the worst
+to 0.6865 at q=2 (all non-leaf) — but the leaf-split bound is **not q-monotone** (adding a
+small child can raise it, 9296/21282), so it does not close by peeling to the proven q=2.
+(ii) master-style crude per-type bound — not yet worked out. Case 2 resists *every* clean
+reduction attempted: not 1-variable, not equal-maximized, not q-monotone, not peelable. It
+is a genuine loose-but-irreducible multi-variable conditional inequality (margin ~0.25).
+Realistic path: a degree-11 multi-variable **SOS/Positivstellensatz** (the loose margin
+should admit one, but it is heavy), or a decomposition not yet found. This is the arc's
+standing lesson made concrete: "verified" ≠ "easy" — Case 2 is verified, its clean proof is
+not written, and it is the single genuine analytic difficulty left in the whole crux.
 
 ## Status of the whole scheme (2026-08-19)
 - **master step (all j):** PROVEN — crude per-type bound, reduces to `[(4p+3)/(p+1)]^11 W^p ≤ 3^11`, `p=0` exact equality (parallel session).
