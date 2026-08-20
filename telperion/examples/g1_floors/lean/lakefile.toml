@@ -20,3 +20,6 @@ name = "KnapsackSOS"
 
 [[lean_lib]]
 name = "BridgeD4"
+
+[[lean_lib]]
+name = "SumEqProd"

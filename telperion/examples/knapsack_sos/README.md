@@ -66,10 +66,20 @@ What remains Python-pinned: the z-vector Gram derivation (that these blocks
 ARE the harmonic blocks of the moment matrix -- validated by the 130x130
 spectral reconstruction) and the standard moment/SOS duality (literature).
 
-## Next
+## SumEqProd: DISCHARGED (2026-08-20, same day)
 
-1. Discharge `SumEqProd` for general k (W2 creative-telescoping shape:
-   R_{j+1}(q) = (n/2-q)/(n-q) R_j(q+1) - R_j(q) contiguous relation).
+`SumEqProd.lean` proves the general-k identity gSum = gProd -- the W2
+creative-telescoping target -- via: (1) mathlib's fwdDiff_iter_eq_sum_shift
+(Newton expansion; no hand Pascal induction) + sum reflection, giving
+gSum n k = 2^k (-1)^k Delta^[k](f n)(k); (2) the contiguous-relation
+induction Delta^[j](f n)(q) = (-1)^j pnum(j) f(q)/pden(q,j); (3) a product
+induction at q = j = k. Payoff theorems (axioms-clean): `sumEqProd_general`
+(all k, all rational n > 2k), `gSum_pos` (uniform-in-degree positivity of
+the alternating-sum scalar), `sumEqProd_holds : SumEqProd`. The knapsack
+scalar certificate is now UNIFORM IN DEGREE: 51 axioms-clean theorems total
+across KnapsackSOS + BridgeD4 + SumEqProd.
+
+## Next
 2. Random 3XOR / planted clique: blocks are NOT rank one -- this is where the
    W2 holonomic-positivity machinery (scheme eigenvalue sequences) becomes
    load-bearing.

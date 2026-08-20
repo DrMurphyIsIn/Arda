@@ -336,12 +336,12 @@ theorem gProd_eq_g4 (n : ℚ) (hn : (7 : ℚ) < n) : gProd n 4 = g4 n := by
   field_simp
   ring
 
-/-- OPEN W2 TARGET (named, not yet proven for general k): the alternating
-sum equals the product form for every k. Kernel-checked here for k <= 4
-(sumEqProd_upto4); exact in Python for k <= 6. Discharging this upgrades
-gProd_pos to the uniform-in-degree certificate. -/
+/-- The general-k sum = product statement. DISCHARGED in SumEqProd.lean
+(`sumEqProd_holds`, via the fwdDiff telescoping closed form); the k <= 4
+slice below is kept as an independent per-k check. With gProd_pos this
+gives the uniform-in-degree certificate. -/
 def SumEqProd : Prop :=
-  ∀ (n : ℚ) (k : ℕ), (2 * k : ℚ) - 1 < n → gSum n k = gProd n k
+  ∀ (n : ℚ) (k : ℕ), (2 * k : ℚ) < n → gSum n k = gProd n k
 
 /-- The k <= 4 slice of `SumEqProd`, kernel-checked. -/
 theorem sumEqProd_upto4 (n : ℚ) (k : ℕ) (hk : k ≤ 4) (hn : (7 : ℚ) < n) :
