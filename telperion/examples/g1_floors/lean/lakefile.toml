@@ -14,3 +14,6 @@ name = "ArmExtremality"
 
 [[lean_lib]]
 name = "GLemma"
+
+[[lean_lib]]
+name = "FlatnessDomination"
