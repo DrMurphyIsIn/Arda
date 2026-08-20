@@ -80,9 +80,10 @@ scalar certificate is now UNIFORM IN DEGREE: 51 axioms-clean theorems total
 across KnapsackSOS + BridgeD4 + SumEqProd.
 
 ## Next
-2. Random 3XOR / planted clique: blocks are NOT rank one -- this is where the
-   W2 holonomic-positivity machinery (scheme eigenvalue sequences) becomes
-   load-bearing.
+2. Lean: generic 3XOR structure theorem (closure consistency ==> PSD) +
+   per-instance certificate emitter; asymptotic layer (expansion ==> width)
+   as honest-conditional assembly. W2/scheme-eigenvalue machinery redirected
+   to planted clique / Laurent max-cut.
 3. LRS transfer (Lee-Raghavendra-Steurer): from SOS degree bounds to
    "no polynomial-size SDP relaxation" statements (paper-level first).
 
