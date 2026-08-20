@@ -1,7 +1,7 @@
 {
   "family": "Bridge",
-  "input_hash": "da7ebcacad6c74df10d7d89493e29c68e49294cf990a52e7533ff14b6710b068",
-  "tool_version": "0.1.5",
+  "input_hash": "b352de0c25a8b08b50d9442c07bb02348bc4f274cea4d1bb7641bed13a287357",
+  "tool_version": "0.1.6",
   "files": [
     "Bridge.lean"
   ],

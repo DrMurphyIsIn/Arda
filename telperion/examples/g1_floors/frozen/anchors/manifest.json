@@ -1,7 +1,7 @@
 {
   "family": "G1Anchors",
-  "input_hash": "9d7dd6f96f1c89f93da31e73350efb9b9545303029722f9a142e9314b8b27d4d",
-  "tool_version": "0.1.5",
+  "input_hash": "b734fbe602b1a3efd545bdc60ff21d3083004e266c301c04c7344f1992bcb8c3",
+  "tool_version": "0.1.6",
   "files": [
     "G1Anchors.lean"
   ],

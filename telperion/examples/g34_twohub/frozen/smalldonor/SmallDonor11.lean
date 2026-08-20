@@ -1,4 +1,4 @@
-/- telperion 0.1.5 | family TwoHubSmallDonor | input-hash 6963009456137e1d
+/- telperion 0.1.6 | family TwoHubSmallDonor | input-hash 33c2f5fd4fb9f5bf
    176 theorems, 4176 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

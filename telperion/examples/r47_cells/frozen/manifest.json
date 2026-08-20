@@ -1,7 +1,7 @@
 {
   "family": "R47Cells",
-  "input_hash": "90bf5eba0268bd05dcbbebda0c44d23bc741311cd11a7f8f1d49a9e60d570f04",
-  "tool_version": "0.1.5",
+  "input_hash": "cd5fbf3c57bb6f936e4b0803885b36a0215151b331fa897e1c20b4118e1e4416",
+  "tool_version": "0.1.6",
   "files": [
     "R47Cells.lean"
   ],

@@ -1,4 +1,4 @@
-/- telperion 0.1.5 | family CompetitorExtremality | input-hash 3b062b2025b59999
+/- telperion 0.1.6 | family CompetitorExtremality | input-hash 3cdbdf59b3a9afc4
    8 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

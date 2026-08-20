@@ -1,7 +1,7 @@
 {
   "family": "ZeroFree",
-  "input_hash": "93932ddf5387179175d2b983f09c2ef0fe50673df173d2ced9076c459f5ae0dc",
-  "tool_version": "0.1.5",
+  "input_hash": "dc49e438efa5fbb7a778262f0b53e63818dc10ed32071185c02fd5f31a5bbba7",
+  "tool_version": "0.1.6",
   "files": [
     "ZeroFree.lean"
   ],

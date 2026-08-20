@@ -18,4 +18,6 @@ import Audit.MConvex
 import Audit.ZeroFree
 import Audit.Entropy
 import Audit.LatticeBox
+import Audit.Putinar
+import Audit.WZ
 import Audit.UniformTail

@@ -134,6 +134,16 @@ script = "examples/lattice_box/generate.py"
 group = "quick"    # dimensional-lift certificates (1D->2D->d): base box + monotone tails
 
 [[check]]
+name = "putinar"
+script = "examples/putinar/generate.py"
+group = "quick"    # constrained-SOS / Putinar certificates (p = σ0 + Σ σi·gi); ~0.2 s
+
+[[check]]
+name = "wz"
+script = "examples/wz/generate.py"
+group = "quick"    # Wilf-Zeilberger sum-identity certificates + row-invariant lemma; ~0.2 s
+
+[[check]]
 name = "uniform_tail"
 script = "examples/uniform_tail/generate.py"
 group = "quick"    # uniform-in-recursion monotone tail: arm-dominance across hub states

@@ -1,4 +1,4 @@
-/- telperion 0.1.5 | family Entropy | input-hash 2c1c3c94a48b5e4d
+/- telperion 0.1.6 | family Entropy | input-hash 1e55e8edc47070e4
    2 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
