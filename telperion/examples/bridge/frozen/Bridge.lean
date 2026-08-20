@@ -1,4 +1,4 @@
-/- telperion 0.1.5 | family Bridge | input-hash da7ebcacad6c74df
+/- telperion 0.1.6 | family Bridge | input-hash b352de0c25a8b08b
    7 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

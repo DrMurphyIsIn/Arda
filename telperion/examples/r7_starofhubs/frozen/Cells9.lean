@@ -1,4 +1,4 @@
-/- telperion 0.1.5 | family R7StarOfHubs | input-hash 95e1114868425a6c
+/- telperion 0.1.6 | family R7StarOfHubs | input-hash e9e1e534011f1223
    12 theorems, 972 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

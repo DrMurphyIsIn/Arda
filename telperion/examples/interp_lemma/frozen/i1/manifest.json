@@ -1,7 +1,7 @@
 {
   "family": "InterpI1",
-  "input_hash": "f8083fd16f9fddcb4f39b3e5a0641ca4895fc5830da76bd66b3c3529e7bf4421",
-  "tool_version": "0.1.5",
+  "input_hash": "cf4feab95013f282d03305229a5510f3b7c93dc2dc0e29f586e858dc494e236c",
+  "tool_version": "0.1.6",
   "files": [
     "InterpI1.lean"
   ],
