@@ -46,10 +46,11 @@ theorem gstep_le_one (h2 : Case2Property) {base Pbc Pgl : ℚ}
     base ^ 11 * Pbc / (W * (5 / 3) ^ 11) ≤ 1 := by
   have hden : (0 : ℚ) < W * (5 / 3) ^ 11 := by norm_num [W]
   have hb11 : (0 : ℚ) ≤ base ^ 11 := by positivity
-  rcases le_or_lt (base ^ 11) (W * (5 / 3) ^ 11) with h | h
+  by_cases h : base ^ 11 ≤ W * (5 / 3) ^ 11
   · -- Case 1: proven, no suppression needed
     exact case1_bound hb h hPbc0 hPbc1
   · -- Case 2: the hypothesis, plus `Pbc ≤ Pgl`
+    push_neg at h
     have hgl := h2 base Pgl hb hPgl0 h
     rw [div_le_one hden] at hgl ⊢
     calc base ^ 11 * Pbc
