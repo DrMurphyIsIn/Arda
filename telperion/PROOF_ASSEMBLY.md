@@ -46,10 +46,12 @@ structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in
   constraint (non-leaf messages have `μ = 1/(j+1+S) ≤ 1/2`; the only achievable `μ > 1/2` is the leaf
   `μ = 1`) — the relocated integrality content. Then, kernel-checked: `single_child_le_one`
   (`0<μ≤1/2`), `two_child_le_one` (all `a,b>0` — no achievability needed for `j'≥2`; the integrality
-  wall is a single-child phenomenon), `prodBcap_le_prodGlemma`, and the assembly bridge
-  `gstep_le_one_of_glemmaBound` reducing the config g-step at **every arity** to the single inequality
-  `W·baseOf¹¹·prodGlemma ≤ γ` = the abstract g-lemma above. **Remaining OPEN, named:** the ℚ→ℝ cast
-  seam (`baseOf = boostR`, `Bcap ≤ factorR`; recipe in PR #20) and the mixed leaf-child cases.
+  wall is a single-child phenomenon), `prodBcap_le_prodGlemma`, and the reduction
+  `gstep_le_one_of_glemmaBound` (a true theorem, but its `prodGlemma` hypothesis over-counts small-μ
+  children — `glemma(μ)>1` for `μ<μ*≈0.307` — so the closing vehicle is `Bcap ≤ factorR` instead).
+  **The closure is on the PR #20 branch, in review:** `CappedJointClosure.lean:gstep_le_one_achievable`
+  — the config g-step `≤ 1` at **every arity**, unconditionally over achievable messages (ℚ→ℝ cast +
+  arity dispatch onto the ported `gstep_lt_gamma`), kernel-clean. Pending merge.
 
 ## R2 — multi-hub extremality
 
@@ -124,10 +126,9 @@ steps.
 
 The **remaining gaps** — all structural or verified-in-range, none analytic — are:
 
-1. **R1 Branch-induction wiring** — **narrowed 2026-08-20** to two named seams: the ℚ→ℝ cast bridge
-   tying the kernel-checked any-arity reduction (`gstep_le_one_of_glemmaBound`) to the kernel-proven
-   abstract g-lemma `gV_le` (PR #20 recipe), and the mixed leaf-child cases. Mechanical Lean work, not
-   open mathematics — but not done, so still *the load-bearing open piece of R1*.
+1. **R1 Branch-induction wiring** — **narrowed 2026-08-20 on `main`, closed on the PR #20 branch**
+   (`gstep_le_one_achievable`, every arity, unconditional over achievable messages; kernel-clean).
+   Pending review + merge — until then still *the load-bearing open piece of R1 on `main`*.
 2. **R1 leaf-child case** — census-verified, needs all-n rigor.
 3. **R2 multi-hub maximality** — "DN is the multi-hub max at each n," verified n≤13, not proven.
 4. **Per-root reduction** — verified n≤10 (a restatement; likely provable but not yet).

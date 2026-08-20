@@ -25,7 +25,7 @@ where noted) · **VERIFIED** (exhaustive in a finite range only) · **OPEN**.
 | **Amplitude form** | `Φ¹¹ = (64/621)ⁿ (∏a_v)¹¹` for all trees, any root | VERIFIED n≤9 | PROOF_STATUS |
 | **Integrality gate** | `tie ⟹ 11 \| n` via 23-adic valuation; `11·v₂₃(∏a_v)−n = 0` only at `N(0,5)` (tested n≤4401) | **PROVEN** (necessary, not sufficient) | PROOF_STATUS §foothold |
 | **R1 single-hub** | master inequality `arm_maximal`: base (leaf) + chains + branching *analytic* steps (g-lemma unimodality over ℝ; two rational leaves) | analytic steps **PROVEN**; inductive wiring **NARROWED** (see next row) | PROOF_ASSEMBLY §R1 |
-| **R1 g-step reduction** (2026-08-20) | achievability-corrected capped g-step: single-child (`0<μ≤1/2`) + two-child (unconditional) kernel-checked; assembly bridge `gstep_le_one_of_glemmaBound` reduces every arity to the abstract g-lemma `gV_le` — itself kernel-proven over the cavity model (`g1_floors` pkg; R3Cert port in review, PR #20) | bridge + per-arity pieces **Lean kernel-checked**; remaining: ℚ→ℝ cast seam + mixed leaf-child cases | PROOF_ASSEMBLY §R1 |
+| **R1 g-step reduction** (2026-08-20) | achievability-corrected capped g-step: single-child (`0<μ≤1/2`) + two-child (unconditional) kernel-checked on `main`; abstract g-lemma `gV_le` kernel-proven over the cavity model (`g1_floors` pkg) | per-arity pieces **Lean kernel-checked** on `main`; the **full closure** `gstep_le_one_achievable` (every arity, unconditional over achievable messages) is on the PR #20 branch — **in review, pending merge** | PROOF_ASSEMBLY §R1 |
 | **R2 multi-hub** | double-near-star family bound `Φ¹¹(DN(a,b))<1` ∀a,b≥2 (gluing submultiplicativity + a=2 ratio test) | **PROVEN** (family bound) | PROOF_ASSEMBLY §R2 |
 | **R2 maximality** | "DN is the multi-hub Φ¹¹-maximizer at each n" | VERIFIED n≤13 — **OPEN** | PROOF_ASSEMBLY §R2 |
 | **Two hardest near-1 families** | tie-recursive `hub + k·N(0,5)`; double-near-star — both strictly `< 1` | **PROVEN** | PROOF_ASSEMBLY |
@@ -34,10 +34,10 @@ where noted) · **VERIFIED** (exhaustive in a finite range only) · **OPEN**.
 **Honest verdict** (PROOF_ASSEMBLY): the analytic content is proven; the
 structural assembly is not complete. The wall is no longer an unbroken analytic
 inequality — it is the completion of a strong-induction scaffold whose base and
-every analytic step are individually sound, awaiting (1) the remaining seams of
-the R1 branch-induction wiring (the ℚ→ℝ cast bridge + mixed leaf-child cases —
-the wiring itself now reduces, kernel-checked, to the abstract g-lemma) and
-(2) the R2 multi-hub maximality.
+every analytic step are individually sound, awaiting (1) review + merge of the
+R1 g-step closure (PR #20 — `gstep_le_one_achievable`; on `main` the wiring
+stands narrowed to that in-review theorem) plus the R1 leaf-child all-n rigor,
+and (2) the R2 multi-hub maximality.
 
 Separately machine-checked in Lean 4 (Mathlib, no `sorry`/added axioms) on the
 [`proof/`](proof/) side: `per(L(T)) =` matching sum for acyclic graphs (H1

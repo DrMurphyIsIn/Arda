@@ -94,12 +94,13 @@ FALSE on `μ ∈ (1/2,1)` (exact witness `telperion/src/telperion/bg/g_step_marg
 cavity messages satisfy `μ ≤ 1/2`, and that hypothesis is the relocated integrality content;
 (b) `R3Cert/CappedJointAchievable.lean` — `single_child_le_one`, `two_child_le_one`
 (unconditional for two children: the integrality wall is a single-child phenomenon), and the
-assembly bridge `gstep_le_one_of_glemmaBound` reducing the config g-step at every arity to the
-abstract g-lemma; (c) the abstract g-lemma `gV_le` (≤-form, all blocks) is kernel-proven over the
-`Blk` cavity model (`telperion/examples/g1_floors/lean/GLemma.lean`; R3Cert port in review,
-PR #20). Remaining mechanical seams: the ℚ→ℝ cast bridge (PR #20 recipe) + mixed leaf-child
-cases. Remaining *research* content of Gap 1: the equality characterization / strict gap and the
-child-envelope feed into `node_le_omega`.
+reduction `gstep_le_one_of_glemmaBound`; (c) the abstract g-lemma `gV_le` (≤-form, all blocks) is
+kernel-proven over the `Blk` cavity model (`telperion/examples/g1_floors/lean/GLemma.lean`), and
+the PR #20 branch (in review) carries both the `R3Cert` port and the **full closure**
+`CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step `≤ 1` at every arity,
+unconditionally over achievable messages, kernel-clean. The mechanical seams are done pending
+review + merge. Remaining *research* content of Gap 1: the equality characterization / strict gap
+and the child-envelope feed into `node_le_omega`.
 
 ### Gap 2: realization bridge (Full STEP 4)
 **Tractability: hard Lean formalization, not new mathematics** (the `p→∞` mechanism is already a

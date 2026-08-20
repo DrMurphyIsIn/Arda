@@ -19,16 +19,17 @@ green `lake build` compiles everything; there are no orphaned files).
 | **Permanent–matching bridge (H1/H2)** | `Matching.lean`, `Involution.lean`, `CavityTree.lean`, `Bridge.lean`, `BridgeStep2`–`BridgeStep4j` | `per` of an acyclic support = matching sum (the crux `acyclic_edgeSupported_involutive` is a theorem); the cavity recursion; acyclicity of the address graph; the unconditional capstones `pi_litHub'` and `amplitude_bridge_real'` tying the Branch cavity model to the finite `per L/∏deg` objects. |
 | **`Φ ≤ 1`** | `Potential*.lean` (20 modules), capstone `PotentialFinal.lean:phi_le_one` | The central branch inequality, unconditional over every branch, equality exactly on the six-point rational tie variety. No smooth certificate can prove this (the continuous relaxation exceeds 1); the proof is arithmetic — a discharging hinge super-solution. |
 | **Reduction layer (R47 campaign)** | `R47*.lean` (32 modules) | The objective `pi_utree`; hub-state encoding + backbone recursion; the unified merge `Step` relation; the 36-cell bilinear certificate table + 36 dispatch adapters + 72 vee/mirror branches (generated, `positivity`-closed); the merge capstone `chain_to_normalForm`; the (L) legs layer; R6 shedding; the rate-port parse. |
-| **Capped-joint g-step layer** (2026-08-20) | `GStepCore.lean`, `GLemmaConfig.lean`, `GLemmaAssembly.lean`, `CappedJointConfig.lean`, `CappedJointSkeleton.lean`, `CappedJointAchievable.lean` | The achievability-corrected Case-2 (`Achievable μ := 0<μ ∧ (μ≤1/2 ∨ μ=1)`; the unconstrained hypothesis is *false* on `(1/2,1)`); `single_child_le_one`, `two_child_le_one` (unconditional for two children), `prodBcap_le_prodGlemma`; the assembly bridge `gstep_le_one_of_glemmaBound` reducing the config g-step at every arity to the abstract g-lemma. |
+| **Capped-joint g-step layer** (2026-08-20) | `GStepCore.lean`, `GLemmaConfig.lean`, `GLemmaAssembly.lean`, `CappedJointConfig.lean`, `CappedJointSkeleton.lean`, `CappedJointAchievable.lean` | The achievability-corrected Case-2 (`Achievable μ := 0<μ ∧ (μ≤1/2 ∨ μ=1)`; the unconstrained hypothesis is *false* on `(1/2,1)`); `single_child_le_one`, `two_child_le_one` (unconditional for two children), `prodBcap_le_prodGlemma`; the reduction `gstep_le_one_of_glemmaBound` toward the abstract g-lemma. |
 | **Near-star / tie geometry** | `NearStar.lean`, `NearStarBandSlice.lean`, `TieClosure.lean`, `TieHarmonic.lean`, `FractalTail.lean`, `HomogeneousSlice.lean` | The near-star spine arithmetic cores, the tie-boundary closure, the homogeneous-slice bounds. |
 | **Supporting analysis** | `Jensen.lean`, `Hull*.lean`, `MasterCore.lean`, `Reach.lean`, `Structure.lean`, `Locality.lean`, and others | Convexity/hull machinery, the induction-step skeleton with its remaining hypotheses named explicitly, and the classification layers. |
 
 The abstract g-lemma itself — `gV_le : g(C) ≤ γ` over the `Blk` cavity model —
 is kernel-proven in the standalone package
-`../../telperion/examples/g1_floors/lean/GLemma.lean`; its port into this
-library (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) is in review (PR #20),
-after which the ℚ→ℝ cast seam is the named remaining connection to
-`gstep_le_one_of_glemmaBound`.
+`../../telperion/examples/g1_floors/lean/GLemma.lean`. In review (PR #20): its
+port into this library (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) plus
+the full closure `CappedJointClosure.lean:gstep_le_one_achievable` — the
+config g-step `≤ 1` at every arity, unconditionally over achievable messages
+(the ℚ→ℝ cast seam closed via `Bcap ≤ factorR` + the ported `gstep_lt_gamma`).
 
 Generated modules carry provenance headers naming the generator and its
 self-checks (regenerate and diff via `../verification/gen_r47cert_cells.py`).

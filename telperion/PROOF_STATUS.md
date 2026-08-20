@@ -60,21 +60,28 @@ where stated:
 2. **Reframe** (`e1d25e4`). The earlier *conditional* Case-2 was an artifact of the
    glemma-relaxation over-counting capped children; the REAL capped g-step (actual
    `Bcap = min`) is unconditional over achievable messages, tight only at the arm.
-3. **Kernel-checked pieces** (`R3Cert/CappedJointAchievable.lean`, axioms clean):
-   `single_child_le_one` (`0 < μ ≤ 1/2`), `two_child_le_one` (all `a,b > 0` — for two or
-   more children no achievability constraint is even needed; the integrality wall is a
-   single-child phenomenon), `prodBcap_le_prodGlemma`, and the assembly bridge
-   `gstep_le_one_of_glemmaBound`: the config g-step at **every arity** reduces to the one
-   inequality `W·baseOf(l)¹¹·prodGlemma(l) ≤ γ`.
-4. **That one inequality is the abstract g-lemma** `gV_le` — kernel-proven over the `Blk`
-   cavity model in the standalone [`examples/g1_floors/lean/`](examples/g1_floors/lean/)
-   package (`GLemma.lean`, with `muV_nonleaf_le_half` supplying achievability
-   structurally). The port into `R3Cert` (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`)
-   is in review (PR #20). **Remaining, named:** the ℚ→ℝ cast seam connecting `baseOf` to
-   `boostR` and `Bcap` to `factorR` (recipe in PR #20), and the mixed leaf-child cases.
+3. **Kernel-checked pieces on `main`** (`R3Cert/CappedJointAchievable.lean`, axioms
+   clean): `single_child_le_one` (`0 < μ ≤ 1/2`), `two_child_le_one` (all `a,b > 0` — for
+   two or more children no achievability constraint is even needed; the integrality wall
+   is a single-child phenomenon), `prodBcap_le_prodGlemma`, and the reduction
+   `gstep_le_one_of_glemmaBound` (g-step ≤ 1 given `W·baseOf¹¹·prodGlemma ≤ γ`).
+   *Caveat, found in the closure work:* that `prodGlemma` hypothesis over-counts small-μ
+   children (`glemma(μ) > 1` for `μ < μ* ≈ 0.307`), so it is not satisfiable at higher
+   arity — a true theorem, but not the closing vehicle. The correct cap is
+   `Bcap ≤ factorR` (capped at 1).
+4. **The abstract g-lemma and the closure** (in review, PR #20). `gV_le` is kernel-proven
+   over the `Blk` cavity model in the standalone
+   [`examples/g1_floors/lean/`](examples/g1_floors/lean/) package (`GLemma.lean`, with
+   `muV_nonleaf_le_half` supplying achievability structurally). The PR #20 branch ports it
+   into `R3Cert` (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) **and closes the ℚ→ℝ
+   cast seam**: `CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step is
+   `≤ 1` at **every arity**, unconditionally over achievable messages (leaf `W(4/3)¹¹<γ`;
+   single child via `single_child_le_one` + the arm `μ=1`; `|l|≥2` via the ported
+   `gstep_lt_gamma`, through `Bcap ≤ factorR`). Kernel-clean on the branch; **pending
+   review + merge**.
 
-Net: the R1 wiring is no longer an unstructured gap — it is a short, named bridge between
-two kernel-checked layers. `conjecture1_proved = False` still.
+Net: on `main` the R1 wiring is a short, named bridge between two kernel-checked layers;
+on the PR #20 branch that bridge is a theorem. `conjecture1_proved = False` still.
 
 ---
 
@@ -140,10 +147,10 @@ aware** (it is a growth-rate, not an algebraic certificate), and **integrality-b
    the tie-recursive family — that the amplitude product of any non-tie tree misses
    `(621/64)^(n/11)` by an amount bounded below by an arithmetic (not smooth, not local)
    quantity. The `sporadic_tie` gate is the anchor; the sufficiency is the research frontier.
-2. **The ≤-half assembly — finish the g-step bridge** (see the 2026-08-20 section above):
-   the ℚ→ℝ cast seam tying `gstep_le_one_of_glemmaBound` to the kernel-proven abstract
-   g-lemma `gV_le` (PR #20 recipe), plus the mixed leaf-child cases — mechanical Lean work,
-   not open mathematics, unlike lead 1.
+2. **The ≤-half assembly — land the g-step closure** (see the 2026-08-20 section above):
+   `gstep_le_one_achievable` is proven on the PR #20 branch; what remains is review +
+   merge, then composing with the leaf-child all-n case and the multi-hub side (R2) —
+   mechanical/structural work, not open mathematics, unlike lead 1.
 
 ---
 

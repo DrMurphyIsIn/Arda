@@ -38,13 +38,13 @@ no `native_decide`:
   the achievability-corrected Case-2 hypothesis (the unconstrained form is
   *false* on `μ ∈ (1/2, 1)`; non-leaf cavity messages satisfy `μ ≤ 1/2`), the
   kernel-checked single-child (`0 < μ ≤ 1/2`) and two-child (unconditional,
-  no achievability needed) g-step bounds, and the assembly bridge
-  `gstep_le_one_of_glemmaBound` reducing the config g-step at **every arity**
-  to one inequality — the ℚ-side counterpart of the abstract g-lemma `gV_le`,
-  itself kernel-proven over the cavity model in the standalone
+  no achievability needed) g-step bounds, and the assembly bridge toward the
+  abstract g-lemma `gV_le`, itself kernel-proven over the cavity model in the
+  standalone
   [`telperion/examples/g1_floors/lean/`](telperion/examples/g1_floors/lean/)
-  package (port into `R3Cert` in review, PR #20; the ℚ→ℝ cast seam is the
-  named remaining work).
+  package. In review (PR #20): the `gV_le` port into `R3Cert` **plus the full
+  closure** — `CappedJointClosure.lean:gstep_le_one_achievable`, the config
+  g-step `≤ 1` at **every arity**, unconditionally over achievable messages.
 
 What remains open is the final honest-conditional assembly (`R7'`) and
 independent review; the named-gap ledger lives in
@@ -62,11 +62,11 @@ induction and proven its base and analytic steps:
 - the **integrality gate** `tie ⟹ 11 | n` (23-adic) — **PROVEN** (necessary, not
   sufficient);
 - **R1** single-hub extremality — the branching analytic steps (g-lemma
-  unimodality over ℝ, two rational leaves) **PROVEN**; the inductive wiring
-  **NARROWED** (2026-08-20): a kernel-checked bridge reduces the capped g-step
-  at every arity to the abstract g-lemma `gV_le`, itself kernel-proven over the
-  cavity model — what remains is the ℚ→ℝ cast seam and the mixed leaf-child
-  cases (see `telperion/PROOF_ASSEMBLY.md` §R1);
+  unimodality over ℝ, two rational leaves) **PROVEN**; the inductive wiring's
+  g-step crux **NARROWED on `main`** (2026-08-20; kernel-checked per-arity
+  pieces + achievability correction) and **CLOSED on the PR #20 branch, in
+  review** (`gstep_le_one_achievable`, every arity, riding the kernel-proven
+  abstract g-lemma `gV_le` — see `telperion/PROOF_ASSEMBLY.md` §R1);
 - **R2** the double-near-star family bound `Φ¹¹(DN(a,b))<1 ∀a,b≥2` — **PROVEN**;
   multi-hub *maximality* verified n≤13, **OPEN**.
 

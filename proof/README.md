@@ -47,10 +47,11 @@ The chain, bottom to top:
    (the unconstrained form is *false* on `μ ∈ (1/2,1)`; non-leaf cavity
    messages satisfy `μ ≤ 1/2` — the relocated integrality content), the
    kernel-checked single-child (`0<μ≤1/2`) and two-child (unconditional)
-   g-step bounds, and the assembly bridge `gstep_le_one_of_glemmaBound`
-   reducing the config g-step at every arity to the abstract g-lemma `gV_le`
-   (kernel-proven in `../telperion/examples/g1_floors/lean/`; R3Cert port in
-   review, PR #20).
+   g-step bounds, and the bridge toward the abstract g-lemma `gV_le`
+   (kernel-proven in `../telperion/examples/g1_floors/lean/`). In review
+   (PR #20): the `gV_le` port plus the full closure
+   `CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step
+   `≤ 1` at every arity, unconditionally over achievable messages.
 
 Generated files carry provenance headers naming the generator and its
 self-checks; regenerate and diff via
@@ -67,10 +68,9 @@ lemma, and the G1 floor/endpoint certificates.
 
 ## What is named-open
 
-- **The g-step cast seam**: the ℚ→ℝ bridge tying `gstep_le_one_of_glemmaBound`
-  to the abstract g-lemma `gV_le` (`baseOf = boostR`, `Bcap ≤ factorR`; recipe
-  in PR #20), plus the mixed leaf-child cases — mechanical, not open
-  mathematics.
+- **The g-step closure merge**: `gstep_le_one_achievable` (the config g-step
+  `≤ 1` at every arity) is proven, kernel-clean, on the PR #20 branch — open
+  only in the sense of pending review + merge.
 - **`R47Rate`**: the Lean port of the rate bound `pi ≤ (4/3)·rhoB^n` (the
   parse — its hardest seam — is already green; the remaining algebra is
   specified in `docs/design/P5_SEAM_DESIGN.md`).
