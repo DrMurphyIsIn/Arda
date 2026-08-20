@@ -151,4 +151,63 @@ theorem two_child_le_one {a b : ℚ} (h0a : 0 < a) (h0b : 0 < b) :
     _ ≤ 1 * (W * (5 / 3) ^ 11) := mul_le_mul_of_nonneg_right hcap (le_of_lt hden)
     _ = W * (5 / 3) ^ 11 := one_mul _
 
+/-! ### General-arity assembly bridge
+
+  For arbitrary child lists, the g-step reduces to a SINGLE inequality — the
+  g-lemma with `glemma` caps, `W·baseOf(l)¹¹·∏glemma ≤ γ` — with NO dependence on
+  the (false) `Case2Property`.  Two pieces:
+
+  * `prodBcap_le_prodGlemma` — the list-level fact `∏Bcap ≤ ∏glemma` that
+    `GLemmaAssembly`'s docstring names as "the remaining bridge" (now proven).
+  * `gstep_le_one_of_glemmaBound` — given the g-lemma inequality, `gstep(l) ≤ 1`.
+
+  The remaining `W·baseOf(l)¹¹·∏glemma ≤ γ` is exactly the abstract g-lemma
+  `G1.GLemma.gV_le` (kernel-proven in `telperion/examples/g1_floors/lean/`), whose
+  port into `R3Cert` closes the config g-step for every arity.  `single_child_le_one`
+  / `two_child_le_one` are its `|l| ≤ 2` instances (via `cert_j1` / `cert_q2`).
+-/
+
+/-- `prodBcap (a :: t) = Bcap a · prodBcap t`. -/
+theorem prodBcap_cons (a : ℚ) (t : List ℚ) : prodBcap (a :: t) = Bcap a * prodBcap t := by
+  simp [prodBcap]
+
+/-- **`∏Bcap ≤ ∏glemma`** — the list-level bridge fact named in `GLemmaAssembly`. -/
+theorem prodBcap_le_prodGlemma (l : List ℚ) (hl : ∀ μ ∈ l, 0 < μ) :
+    prodBcap l ≤ (l.map glemma).prod := by
+  induction l with
+  | nil => simp [prodBcap]
+  | cons a t ih =>
+    have ha : (0 : ℚ) < a := hl a (by simp)
+    have ht : ∀ μ ∈ t, 0 < μ := fun μ hμ => hl μ (List.mem_cons_of_mem a hμ)
+    rw [prodBcap_cons, List.map_cons, List.prod_cons]
+    have hprod0 : (0 : ℚ) ≤ prodBcap t :=
+      prodBcap_nonneg t (fun μ hμ => le_of_lt (ht μ hμ))
+    have hgl0 : (0 : ℚ) ≤ glemma a := glemma_nonneg (le_of_lt ha)
+    calc Bcap a * prodBcap t
+        ≤ glemma a * prodBcap t := mul_le_mul_of_nonneg_right (Bcap_le_glemma a) hprod0
+      _ ≤ glemma a * (t.map glemma).prod := mul_le_mul_of_nonneg_left (ih ht) hgl0
+
+/-- **Reduction to the g-lemma (unconditional in `Case2Property`).** If the g-lemma
+    holds with `glemma` caps — `W·baseOf(l)¹¹·∏glemma ≤ γ` — then the g-step factor
+    is `≤ 1`.  This is the whole content of the config g-step: the crux is now the one
+    inequality `W·baseOf(l)¹¹·∏glemma ≤ γ`, not the false `Case2Property`. -/
+theorem gstep_le_one_of_glemmaBound (l : List ℚ) (hl : ∀ μ ∈ l, 0 < μ)
+    (hg : W * (baseOf l) ^ 11 * (l.map glemma).prod ≤ W ^ 2 * (5 / 3) ^ 11) :
+    (baseOf l) ^ 11 * prodBcap l / (W * (5 / 3) ^ 11) ≤ 1 := by
+  have hden : (0 : ℚ) < W * (5 / 3) ^ 11 := by norm_num [W]
+  have hWpos : (0 : ℚ) < W := by norm_num [W]
+  have hb0 : 0 ≤ baseOf l := baseOf_nonneg l (fun μ hμ => le_of_lt (hl μ hμ))
+  have hb11 : 0 ≤ (baseOf l) ^ 11 := pow_nonneg hb0 11
+  have hstep : (baseOf l) ^ 11 * prodBcap l ≤ (baseOf l) ^ 11 * (l.map glemma).prod :=
+    mul_le_mul_of_nonneg_left (prodBcap_le_prodGlemma l hl) hb11
+  have hg' : (baseOf l) ^ 11 * (l.map glemma).prod ≤ W * (5 / 3) ^ 11 := by
+    have hmul : W * ((baseOf l) ^ 11 * (l.map glemma).prod) ≤ W * (W * (5 / 3) ^ 11) := by
+      calc W * ((baseOf l) ^ 11 * (l.map glemma).prod)
+          = W * (baseOf l) ^ 11 * (l.map glemma).prod := by ring
+        _ ≤ W ^ 2 * (5 / 3) ^ 11 := hg
+        _ = W * (W * (5 / 3) ^ 11) := by ring
+    exact le_of_mul_le_mul_left hmul hWpos
+  rw [div_le_one hden]
+  exact le_trans hstep hg'
+
 end R3Cert.CappedJointConfig
