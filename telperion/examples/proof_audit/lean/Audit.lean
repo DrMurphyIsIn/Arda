@@ -20,4 +20,6 @@ import Audit.Entropy
 import Audit.LatticeBox
 import Audit.Putinar
 import Audit.WZ
+import Audit.Handelman
+import Audit.Nullstellensatz
 import Audit.UniformTail

@@ -27,6 +27,8 @@ on:
       - "telperion/examples/lattice_box/**"
       - "telperion/examples/putinar/**"
       - "telperion/examples/wz/**"
+      - "telperion/examples/handelman/**"
+      - "telperion/examples/nullstellensatz/**"
       - "telperion/examples/uniform_tail/**"
       - "telperion/examples/uniform_arm/**"
       - "telperion/examples/proof_audit/**"
@@ -96,6 +98,8 @@ jobs:
           cp ../../lattice_box/frozen/LatticeBox.lean           Audit/LatticeBox.lean
           cp ../../putinar/frozen/Putinar.lean                  Audit/Putinar.lean
           cp ../../wz/frozen/WZ.lean                            Audit/WZ.lean
+          cp ../../handelman/frozen/Handelman.lean              Audit/Handelman.lean
+          cp ../../nullstellensatz/frozen/Nullstellensatz.lean  Audit/Nullstellensatz.lean
           cp ../../uniform_tail/frozen/UniformTail.lean         Audit/UniformTail.lean
       - name: Cache elan
         uses: actions/cache@v4
