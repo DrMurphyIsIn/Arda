@@ -27,8 +27,7 @@ theorem gstep_base {d S : ℚ} (hd : 0 < d) (hS : 0 ≤ S) :
     (1 + (1 / (d + S)) / 3) * (1 + S / d) = (3 * d + 3 * S + 1) / (3 * d) := by
   have hd0 : d ≠ 0 := ne_of_gt hd
   have hds : d + S ≠ 0 := ne_of_gt (by linarith)
-  field_simp
-  ring
+  field_simp <;> ring
 
 /-- **master base identity.** With the same `μ_B, a_B`, the master normalizer
     `(2 + μ_B)·a_B` equals `(2d+2S+1)/d` — the `base` shape behind `master_core`. -/
@@ -36,8 +35,7 @@ theorem master_base {d S : ℚ} (hd : 0 < d) (hS : 0 ≤ S) :
     (2 + 1 / (d + S)) * (1 + S / d) = (2 * d + 2 * S + 1) / d := by
   have hd0 : d ≠ 0 := ne_of_gt hd
   have hds : d + S ≠ 0 := ne_of_gt (by linarith)
-  field_simp
-  ring
+  field_simp <;> ring
 
 /-- Positivity of the g-step base — needed downstream (`gstep_le_one` wants `0 ≤ base`). -/
 theorem gstep_base_pos {d S : ℚ} (hd : 0 < d) (hS : 0 ≤ S) :
