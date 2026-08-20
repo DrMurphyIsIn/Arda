@@ -46,7 +46,7 @@ of them — Telperion will certify it in exact arithmetic and emit the Lean. If 
 needs a new shape, you add an emitter (see [Extending it](#extending-it)); the
 trust model and the whole pipeline come for free.
 
-### Certificate shapes (v0.1.5)
+### Certificate shapes (v0.1.6)
 
 Each shape is an *emitter*; all flow through the same `certify → validate →
 emit → freeze` workflow.
@@ -72,6 +72,8 @@ emit → freeze` workflow.
 | `LogConcaveSinglePointEmitter` | `max_{k∈ℕ} F(k) ≤ B` reduced to a single point `k*` by log-concavity | single-point + per-step + neighbour facts (`norm_num`) |
 | `MonotoneRatioTailEmitter` | `b(s) ≤ B` for all `s ≥ s₀` via a nonincreasing tail | tail step (`positivity`) + base (`norm_num`) + `Nat.le_induction` |
 | `InterlacingEmitter` | Newton's inequalities (coefficient log-concavity) of a real-rooted polynomial | `norm_num` on exact rationals |
+| `ConstrainedSOSEmitter` | `0 ≤ p` on a semialgebraic set `{gᵢ ≥ 0}` via a Putinar certificate `p = σ₀ + Σ σᵢ·gᵢ` (SOS multipliers) | `p = σ₀ + Σ σᵢ·gᵢ := by ring`; each `σⱼ` by `positivity`, paired with `gᵢ ≥ 0` by `mul_nonneg`, summed by `linarith` |
+| `WZEmitter` | hypergeometric / binomial sum identities `Σ_k F(n,k) = rhs(n)` via a Wilf–Zeilberger mate `R(n,k)` | denominator-cleared WZ equation as an exact `ring` polynomial identity + the reusable `wz_row_invariant` telescoping-closure lemma |
 | `CustomAssemblyEmitter` | escape hatch for a hand-designed assembly | your skeleton |
 
 The Pólya engine underneath (`polya_lift`: multiply through by `(1+Σxᵢ)^N`;
@@ -87,6 +89,16 @@ theorem. The exact-arithmetic self-checks exist to catch mistakes *before* a CI
 round-trip, not to establish truth. The design corollary is that the generator
 stays small, readable, and dependency-light (sympy only) — a referee can audit
 the engine (~a few thousand lines) instead of trusting it.
+
+**The one thing the kernel can't catch — vacuity.** The kernel rejects a *false*
+theorem, but a *true-but-vacuous* one (`X = X`, `0 ≤ 0`) compiles green while
+proving nothing about the certificate — the defect lives in the statement, not
+the proof. `nonvacuity.py` is Telperion pointed at its own output: `emit()`
+refuses a reflexive emitted statement (`check_nonvacuous`), and the identity
+emitters additionally require the certificate to be *load-bearing* — a corrupted
+certificate must break the claim (`assert_certificate_sensitive`). A family that
+deliberately emits reference identities opts out with
+`LeanProfile(allow_reflexive=True)`.
 
 ## The workflow (enforced, not advisory)
 

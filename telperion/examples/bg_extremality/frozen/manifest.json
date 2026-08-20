@@ -1,7 +1,7 @@
 {
   "family": "BGExtremality",
-  "input_hash": "934883e8147e6dcd8758ecddafb18a0a63613718d1f9cbeeb146d211eafa5125",
-  "tool_version": "0.1.5",
+  "input_hash": "409c8ec24f43723aa96653013808002dd90dd17d0e04bc6222e7c0e32009b55f",
+  "tool_version": "0.1.6",
   "files": [
     "BGExtremality.lean"
   ],

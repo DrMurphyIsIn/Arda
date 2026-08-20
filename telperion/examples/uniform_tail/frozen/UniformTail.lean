@@ -1,4 +1,4 @@
-/- telperion 0.1.5 | family UniformTail | input-hash 2c2bd09112a3f930
+/- telperion 0.1.6 | family UniformTail | input-hash 4832a4469830b58a
    24 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

@@ -1,7 +1,7 @@
 {
   "family": "ToyBox",
-  "input_hash": "21755ce72b1d26ab6c0374884775df3ceb318732929f0f37af42205c3b4a4cc4",
-  "tool_version": "0.1.5",
+  "input_hash": "3e3eb03b93c9a82ef2ea5d10d15f0e8d25bd92d4840a1bddbdf50f3b27cf22cb",
+  "tool_version": "0.1.6",
   "files": [
     "Box.lean"
   ],

@@ -1,4 +1,4 @@
-/- telperion 0.1.5 | family BGExtremality | input-hash 934883e8147e6dcd
+/- telperion 0.1.6 | family BGExtremality | input-hash 409c8ec24f43723a
    8 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
