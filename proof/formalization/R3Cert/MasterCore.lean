@@ -59,13 +59,10 @@ lemma key (p : ℕ) :
 /-- `f` is antitone. -/
 lemma f_step (p : ℕ) : f (p + 1) ≤ f p := by
   have hc : (0 : ℚ) ≤ (64 / 621 : ℚ) ^ p := by positivity
-  unfold f
-  push_cast
-  rw [pow_succ]
-  have e : ((4 * ((p : ℚ) + 1) + 3) / (((p : ℚ) + 1) + 1)) ^ 11 * ((64 / 621 : ℚ) ^ p * (64 / 621))
-      = (((4 * (p : ℚ) + 7) / ((p : ℚ) + 2)) ^ 11 * (64 / 621)) * (64 / 621) ^ p := by
-    ring
-  rw [e]
+  have hfp1 : f (p + 1)
+      = ((4 * (p : ℚ) + 7) / ((p : ℚ) + 2)) ^ 11 * (64 / 621) * (64 / 621) ^ p := by
+    unfold f; rw [pow_succ]; push_cast; ring
+  rw [hfp1]; unfold f
   exact mul_le_mul_of_nonneg_right (key p) hc
 
 /-- **Master-step core.** `((4p+3)/(p+1))^11 · (64/621)^p ≤ 3^11` for all `p`. -/
