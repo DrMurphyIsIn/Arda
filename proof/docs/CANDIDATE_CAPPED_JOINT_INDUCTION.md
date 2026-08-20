@@ -144,10 +144,19 @@ continuously), and on the equal-children diagonal has the closed form
 polynomial** `g₂(ν) ≤ 1 ⟺ W³·10¹¹·(5+3ν)¹¹ ≤ 3¹¹·(3+ν)²²` on `ν ∈ (ν*, ½]` (ratio 0.723 at
 `ν*`, 0.580 at `½`) — Telperion-shaped (DirectPolya / interval bracket).
 
-**So the full remaining gap of the entire crux is:** (a) the 1-var polynomial `g₂(ν) ≤ 1`
-(margin 0.28); (b) the both-large box-max-is-on-the-diagonal detail; (c) the `q≥3` CASE-2
-domination; and (d) Lean formalization of the whole induction. Everything else — master
-(all j), g-step j=1, g-step j≥2 CASE 1 — is proven. `conjecture1_proved = False`.
+**q=2 is now PROVEN (all child messages), reusing the arm certificate.** For any two
+children `a,b`, `Bcap ≤ glemma_ub` gives the exact
+`L2([a,b]) = W³·(5/3)¹¹·[(10+3a+3b)/((3+a)(3+b))]¹¹`. The factor
+`f(a,b)=(10+3a+3b)/((3+a)(3+b))` is decreasing in each variable (`∂f/∂a=(3+b)(−1−3b)/(…)²<0`),
+so `f ≤ f(0,0) = 10/9`, hence `L2 ≤ W³·(50/27)¹¹`, which is `<1` by the **integer certificate
+`64³·50¹¹ < 621³·27¹¹`** (`= 0.9615`) — *identical* to `arm_maximal`'s final rational
+certificate. No cap needed (the single `γ` is absorbed by the constant); covers leaves too.
+
+**So the full remaining gap of the entire crux is now:** (a) the **`q≥3` CASE-2** case (large
+children with `q≥3` — the glemma bound's `γ^{q-1}` needs the cap here; CASE 1 all-small is
+done, q=2 is done, and it is dominated by q=2 empirically, sup ≤ 0.705); and (b) Lean
+formalization of the whole induction. Everything else — master (all j), g-step j=1, g-step
+j≥2 q=2, g-step j≥2 CASE 1 — is proven. `conjecture1_proved = False`.
 
 ## Status of the whole scheme (2026-08-19)
 - **master step (all j):** PROVEN — crude per-type bound, reduces to `[(4p+3)/(p+1)]^11 W^p ≤ 3^11`, `p=0` exact equality (parallel session).
