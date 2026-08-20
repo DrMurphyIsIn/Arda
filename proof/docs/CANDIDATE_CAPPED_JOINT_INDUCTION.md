@@ -152,11 +152,24 @@ so `f ≤ f(0,0) = 10/9`, hence `L2 ≤ W³·(50/27)¹¹`, which is `<1` by the 
 `64³·50¹¹ < 621³·27¹¹`** (`= 0.9615`) — *identical* to `arm_maximal`'s final rational
 certificate. No cap needed (the single `γ` is absorbed by the constant); covers leaves too.
 
-**So the full remaining gap of the entire crux is now:** (a) the **`q≥3` CASE-2** case (large
-children with `q≥3` — the glemma bound's `γ^{q-1}` needs the cap here; CASE 1 all-small is
-done, q=2 is done, and it is dominated by q=2 empirically, sup ≤ 0.705); and (b) Lean
-formalization of the whole induction. Everything else — master (all j), g-step j=1, g-step
-j≥2 q=2, g-step j≥2 CASE 1 — is proven. `conjecture1_proved = False`.
+**CLEAN 2-CASE PROOF of the entire g-step j≥2 (2026-08-19, supersedes peeling).** Every
+config falls in ≥1 case (verified 0/200,352 fall outside), split on the **rational**
+threshold `base¹¹ ⋛ W(5/3)¹¹` (`base = (3d+3S+1)/(3d)`, `d=j+1`):
+- **Case `base¹¹ ≤ W(5/3)¹¹`:** `Φ = base¹¹·∏Bcap/(W(5/3)¹¹) ≤ 1` using only `∏Bcap ≤ 1`.
+  **Fully rigorous** — this is CASE 1 generalized (covers all-small AND mixed with small
+  average). No suppression needed.
+- **Case `base¹¹ > W(5/3)¹¹`:** `Bcap ≤ glemma` gives `Φ ≤ W·base¹¹·∏glemma/γ ≤ 1` — the
+  glemma bound. Verified for the whole `base¹¹ > W(5/3)¹¹` region (large-average configs,
+  where the glemma suppression compensates the large base). **Needs its analytic proof.**
+
+This dissolves the peeling route (which had a mixed-case gap: removing a small child does
+not always increase `Φ`, 4345/38096). The pure-large peeling (remove-large-increases-`Φ`,
+0/40000) still holds but is no longer needed.
+
+**So the full remaining gap of the entire crux is now:** (a) the **glemma-bound Case**
+(`base¹¹ > W(5/3)¹¹ ⟹ W·base¹¹·∏glemma ≤ γ`) — the last analytic inequality; and (b) Lean
+formalization. Everything else — master (all j), g-step j=1, g-step j≥2 Case-1 (rigorous) —
+is proven. `conjecture1_proved = False`.
 
 ## Status of the whole scheme (2026-08-19)
 - **master step (all j):** PROVEN — crude per-type bound, reduces to `[(4p+3)/(p+1)]^11 W^p ≤ 3^11`, `p=0` exact equality (parallel session).
