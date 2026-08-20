@@ -188,6 +188,30 @@ should admit one, but it is heavy), or a decomposition not yet found. This is th
 standing lesson made concrete: "verified" ≠ "easy" — Case 2 is verified, its clean proof is
 not written, and it is the single genuine analytic difficulty left in the whole crux.
 
+## REFRAMING (2026-08-20): the conditional Case-2 was a glemma-relaxation artifact
+
+Attacking Case 2 via a variable-map/reparametrization surfaced a cleaner truth. The
+**real** g-step — with the actual `Bcap = min(master_ub, glemma, 1)`, not the glemma
+relaxation — is `Φ = base¹¹·∏Bcap / (W(5/3)¹¹) ≤ 1` **unconditionally** on the achievable
+message domain `(0,½] ∪ {1}`, **tight only at the arm** (q=1, single leaf; `Φ=1`). The q≥2
+max is **0.714** (margin 0.29, at all-equal mid children). Verified: exhaustive q≤5 +
+5×10⁵ random q≤25, exact `Fraction`.
+
+So the conditional Case-2 (`base¹¹ > W(5/3)¹¹ ⟹ …`) was **not intrinsic** — it came from
+relaxing `Bcap → glemma`, which over-counts capped children (`glemma(ν) > 1` for `ν ≤ ν*`)
+and manufactures a false `Φ_gl > 1` (unconditional max 1.96 at all-tiny) that then *needs*
+the `base > threshold` constraint. The real inequality never exceeds 1. **The target is
+now unconditional** — a cleaner certificate object (no constraint multiplier).
+
+**Still open (the honest residual).** The unconditional real g-step for `q ≥ 2` is *not*
+trivial: the crude master-style bound `∏Bcap ≤ W^{#leaves}` fails (worst 2.23 at `[½,½,½]`),
+so the mid-children `glemma` suppression is load-bearing; and `Bcap`'s `min` is piecewise
+(small children capped at 1, mid children suppressed by `glemma`), so no single polynomial
+`φ ≥ Bcap` is obviously available. The concrete next step: find a **polynomial per-child
+envelope** `Bcap(ν) ≤ φ(ν)` with `φ(0)=1` (so all-small stays bounded) and
+`base¹¹·∏φ ≤ W(5/3)¹¹` unconditionally — an unconditional DirectPolya target, margin 0.29,
+tight only at the (proven) arm. `conjecture1_proved = False`.
+
 ## Status of the whole scheme (2026-08-19)
 - **master step (all j):** PROVEN — crude per-type bound, reduces to `[(4p+3)/(p+1)]^11 W^p ≤ 3^11`, `p=0` exact equality (parallel session).
 - **g-step, j=1 (binding):** PROVEN — this doc (`64·17^11 ≤ 621·14^11`, arm `=1`).
