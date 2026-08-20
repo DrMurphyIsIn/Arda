@@ -1,0 +1,9 @@
+{
+  "family": "CGRound",
+  "input_hash": "94ce6081f5c9ce1c1492a4670a37a8dbb8d006c51e5b91f8fa4c54d511072efe",
+  "tool_version": "0.1.6",
+  "files": [
+    "CGRound.lean"
+  ],
+  "n_theorems": 2
+}
