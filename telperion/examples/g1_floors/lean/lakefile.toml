@@ -26,3 +26,6 @@ name = "SumEqProd"
 
 [[lean_lib]]
 name = "Xor3Structure"
+
+[[lean_lib]]
+name = "PetersenCertificate"
