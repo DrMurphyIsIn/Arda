@@ -102,6 +102,7 @@ import R3Cert.GStepCore
 import R3Cert.CappedJointSkeleton
 import R3Cert.CavityIdentities
 import R3Cert.GLemmaAssembly
+import R3Cert.ProdBounds
 import R3Cert.TieClosure
 import R3Cert.R47Shed
 import R3Cert.R47Perm
