@@ -26,11 +26,17 @@ namespace R3Cert.CappedJoint
 
 open R3Cert.GStepCore
 
-/-- **Case 2 — the single open hypothesis of the g-step.** For every config whose base
-    exceeds the threshold `W(5/3)^11`, the glemma-bounded g-step factor is `≤ 1`
-    (`base` = the config's cavity base, `Pgl` = its glemma product `∏ γ/(1+μ_i/3)^11`).
-    VERIFIED numerically (0 counterexamples, margin ~0.25); its analytic proof is the one
-    remaining analytic wall of the whole crux. -/
+/-- **⚠ DEPRECATED / UNSATISFIABLE — DO NOT USE as the crux's open hypothesis.**
+    This abstract form quantifies `base` and `Pgl` *independently*, and is therefore **FALSE**
+    (`base = 2, Pgl = 1` satisfies the premises but gives `72 ≤ 1`).  Real configs LINK `base`
+    and the product (`base > threshold` forces suppression), so the abstract statement drops
+    a load-bearing constraint and becomes unsatisfiable — making any theorem conditional on it
+    a hollow reduction (a false hypothesis can never be discharged).
+    **SUPERSEDED by `R3Cert.CappedJointConfig.Case2Property`**, which is config-based (`base`
+    and `∏Bcap` derived from the same `List ℚ`, so the linkage is intrinsic), uses the real
+    `Bcap` (not the glemma over-count), and is genuinely satisfiable (the true analytic wall).
+    Retained only so the older `gstep_le_one`/`glemma_step` below still typecheck; new work
+    must use the config version. -/
 def Case2Property : Prop :=
   ∀ base Pgl : ℚ, 0 ≤ base → 0 ≤ Pgl → W * (5 / 3) ^ 11 < base ^ 11 →
     base ^ 11 * Pgl / (W * (5 / 3) ^ 11) ≤ 1
