@@ -29,6 +29,10 @@ on:
       - "telperion/examples/wz/**"
       - "telperion/examples/handelman/**"
       - "telperion/examples/nullstellensatz/**"
+      - "telperion/examples/infeasible/**"
+      - "telperion/examples/consequence/**"
+      - "telperion/examples/sos_refutation/**"
+      - "telperion/examples/real_nullstellensatz/**"
       - "telperion/examples/uniform_tail/**"
       - "telperion/examples/uniform_arm/**"
       - "telperion/examples/proof_audit/**"
@@ -100,6 +104,10 @@ jobs:
           cp ../../wz/frozen/WZ.lean                            Audit/WZ.lean
           cp ../../handelman/frozen/Handelman.lean              Audit/Handelman.lean
           cp ../../nullstellensatz/frozen/Nullstellensatz.lean  Audit/Nullstellensatz.lean
+          cp ../../infeasible/frozen/Infeasible.lean             Audit/Infeasible.lean
+          cp ../../consequence/frozen/Consequence.lean          Audit/Consequence.lean
+          cp ../../sos_refutation/frozen/SOSRefutation.lean     Audit/SOSRefutation.lean
+          cp ../../real_nullstellensatz/frozen/RealNullstellensatz.lean Audit/RealNullstellensatz.lean
           cp ../../uniform_tail/frozen/UniformTail.lean         Audit/UniformTail.lean
       - name: Cache elan
         uses: actions/cache@v4

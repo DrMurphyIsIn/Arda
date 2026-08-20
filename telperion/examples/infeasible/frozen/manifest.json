@@ -1,0 +1,9 @@
+{
+  "family": "Infeasible",
+  "input_hash": "66092f47c18f707e1a0b7f7e79ae6288edb9dcbee2ee6ca60780dac970ff780f",
+  "tool_version": "0.1.6",
+  "files": [
+    "Infeasible.lean"
+  ],
+  "n_theorems": 2
+}

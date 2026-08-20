@@ -1,0 +1,9 @@
+{
+  "family": "Consequence",
+  "input_hash": "824717a06cac2424054b20ea56ed4cb4cb4b93387a79cd675ae3d247b856d834",
+  "tool_version": "0.1.6",
+  "files": [
+    "Consequence.lean"
+  ],
+  "n_theorems": 2
+}

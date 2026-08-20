@@ -154,6 +154,26 @@ script = "examples/nullstellensatz/generate.py"
 group = "quick"    # Nullstellensatz ideal-membership (p = sum h_i g_i via Groebner cofactors); ~0.2 s
 
 [[check]]
+name = "infeasible"
+script = "examples/infeasible/generate.py"
+group = "quick"    # Nullstellensatz-refutation: system {g_j=0} unsatisfiable via 1 = sum lambda_j g_j; ~0.3 s
+
+[[check]]
+name = "consequence"
+script = "examples/consequence/generate.py"
+group = "quick"    # equational consequence (lhs=rhs from {a_i=b_i} via cofactors); ~0.2 s
+
+[[check]]
+name = "sos_refutation"
+script = "examples/sos_refutation/generate.py"
+group = "quick"    # SOS-Positivstellensatz refutation (unsat over R: -1 = sig0 + sum sig_i g_i + sum lam_j h_j); ~0.2 s
+
+[[check]]
+name = "real_nullstellensatz"
+script = "examples/real_nullstellensatz/generate.py"
+group = "quick"    # Real-Nullstellensatz (p=0 on real variety via p^2m + SOS in ideal); ~0.2 s
+
+[[check]]
 name = "uniform_tail"
 script = "examples/uniform_tail/generate.py"
 group = "quick"    # uniform-in-recursion monotone tail: arm-dominance across hub states
