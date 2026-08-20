@@ -193,3 +193,24 @@ frozen a proof.
 
 **0 → (1 ‖ 2 ‖ 5) → 3 (anytime) → 4 (research) → 6 (research).**
 Start: Phase 0, `prove_goal`.
+
+## Progress log (2026-08-20)
+
+- **Phase 0 — DONE.** `prove.py` (`prove_goal`), CLI `prove`, MCP `prove_goal`;
+  emitted Lean passes the strict soundness lint. (commit 0bb34e8)
+- **Phase 1 core — DONE (local).** `backend_lift.py` (`run_backend`,
+  `lift_report`), pluggable prover seam. Measured Goedel-V2 lift + Lean tactic
+  shim remain the cloud step. (commit 0bb34e8)
+- **Phase 2 — DONE.** `benchmark.py`, CLI `benchmark`; seed corpus 8/10 solved
+  deterministically in ~0.3s, full triage reported. Real-PutnamBench ingestion
+  is the remaining data step. (commit 0bb34e8)
+- **Phase 3 — DONE.** `audit.py` (`audit_lean_text`/`_file`), CLI `audit`, MCP
+  `audit_lean`; per-theorem vacuity beyond the wholly-vacuous check. Demonstrated
+  catching sorry + reflexive tautology in a simulated LLM proof; clean on a
+  Telperion-emitted proof.
+- **Phase 5 — DONE (LLM-free core).** `formalize.py` (`formalize`, pluggable
+  `Proposer`, opt-in `ollama_proposer`). Certify-or-reject guarantee: a false
+  proposal returns the FALSE triage, never Lean. Real Ollama arm is opt-in
+  (unrun here; the evolve-doc permission issue still applies locally).
+- Remaining: Phase 0.1 (full kind-router), Phase 1 cloud measurement, Phase 4
+  (combinatorics emitters, research), Phase 6 (evolve → kernel-frozen champion).
