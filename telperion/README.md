@@ -165,8 +165,8 @@ is the non-BG example, Bernoulli's inequality end-to-end through the core engine
 New kind of statement? Write an emitter. An `Emitter` is a small class that
 turns a certified instance into Lean text; it inherits the entire pipeline —
 enforcement, provenance hashing, drift net, soundness lint, byte-stability, all
-three agent surfaces — for free. The existing thirteen emitters are the working
-examples; `docs/TACTIC_CONTRACT.md` documents the exact Mathlib tactics the
+three agent surfaces — for free. The existing emitters (the shape table above)
+are the working examples; `docs/TACTIC_CONTRACT.md` documents the exact Mathlib tactics the
 default templates assume, and `docs/METHODOLOGY.md` the discipline.
 
 ## Honest scope — what it is and isn't
