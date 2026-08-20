@@ -171,6 +171,17 @@ not always increase `Φ`, 4345/38096). The pure-large peeling (remove-large-incr
 formalization. Everything else — master (all j), g-step j=1, g-step j≥2 Case-1 (rigorous) —
 is proven. `conjecture1_proved = False`.
 
+**Case 2 is verified but NOT clean (honest, 2026-08-19).** Its worst case (0.754, margin
+0.25) is at `q=3`, config `[1/50, 2/25, 1]` — two tiny children + a leaf — **not equal
+children, not low-dimensional**. So Case 2 does *not* reduce to a 1-var inequality like q=2;
+the glemma bound is loose there (overestimates the small children `glemma>1` and the leaf
+`glemma(1)=0.165 > Bcap(1)=W`) yet still closes. Proving it is a genuine multi-variable
+conditional inequality — the real residual difficulty, loose but not clean. Candidate
+refinements: split leaves off (`Bcap=W` tighter than `glemma`), or a per-type bound in the
+master-step's crude style (master closed loose via `∏Bcap≤W^p`; Case 2's 0.25 margin may
+admit an analogous crude reduction). Neither is in hand. This is the arc's standing lesson:
+"verified" ≠ "easy" — Case 2 is verified, its clean proof is not written.
+
 ## Status of the whole scheme (2026-08-19)
 - **master step (all j):** PROVEN — crude per-type bound, reduces to `[(4p+3)/(p+1)]^11 W^p ≤ 3^11`, `p=0` exact equality (parallel session).
 - **g-step, j=1 (binding):** PROVEN — this doc (`64·17^11 ≤ 621·14^11`, arm `=1`).
