@@ -32,7 +32,19 @@ no `native_decide`:
   (`R47StepMono.lean:chain_to_normalForm`), via 36 + 36 + 72 generated
   positivity certificates;
 - the (L)/(B) classification layer, the R5/R6 shedding lemmas (42 + 55
-  certificates), and the raw-tree → Branch rate-port parse.
+  certificates), and the raw-tree → Branch rate-port parse;
+- the **capped-joint g-step layer** (2026-08-20, `GStepCore.lean`,
+  `CappedJointConfig.lean`, `CappedJointAchievable.lean`, `GLemmaAssembly.lean`):
+  the achievability-corrected Case-2 hypothesis (the unconstrained form is
+  *false* on `μ ∈ (1/2, 1)`; non-leaf cavity messages satisfy `μ ≤ 1/2`), the
+  kernel-checked single-child (`0 < μ ≤ 1/2`) and two-child (unconditional,
+  no achievability needed) g-step bounds, and the assembly bridge
+  `gstep_le_one_of_glemmaBound` reducing the config g-step at **every arity**
+  to one inequality — the ℚ-side counterpart of the abstract g-lemma `gV_le`,
+  itself kernel-proven over the cavity model in the standalone
+  [`telperion/examples/g1_floors/lean/`](telperion/examples/g1_floors/lean/)
+  package (port into `R3Cert` in review, PR #20; the ℚ→ℝ cast seam is the
+  named remaining work).
 
 What remains open is the final honest-conditional assembly (`R7'`) and
 independent review; the named-gap ledger lives in
@@ -51,7 +63,10 @@ induction and proven its base and analytic steps:
   sufficient);
 - **R1** single-hub extremality — the branching analytic steps (g-lemma
   unimodality over ℝ, two rational leaves) **PROVEN**; the inductive wiring
-  **OPEN**;
+  **NARROWED** (2026-08-20): a kernel-checked bridge reduces the capped g-step
+  at every arity to the abstract g-lemma `gV_le`, itself kernel-proven over the
+  cavity model — what remains is the ℚ→ℝ cast seam and the mixed leaf-child
+  cases (see `telperion/PROOF_ASSEMBLY.md` §R1);
 - **R2** the double-near-star family bound `Φ¹¹(DN(a,b))<1 ∀a,b≥2` — **PROVEN**;
   multi-hub *maximality* verified n≤13, **OPEN**.
 
@@ -67,7 +82,7 @@ index), with the piece-by-piece detail in
 |---|---|
 | [`STATUS.md`](STATUS.md) | **One-glance index** — enumerated, tagged state of both the proof and the engine, each row linking to the document that owns the detail. Start here. |
 | [`proof/`](proof/) | The peer-review package: Lean 4 formalization ([`proof/formalization/`](proof/formalization/)), exact-arithmetic Python verification harnesses ([`proof/verification/`](proof/verification/), entry point [`proof/verify.py`](proof/verify.py)), design/review documents, technical notes, figures. See [`proof/README.md`](proof/README.md). |
-| [`telperion/`](telperion/) | **Telperion** — a **general-purpose, standalone tool** for proving families of mathematical statements (rational-function inequalities, polynomial nonnegativity, exact identities, p-adic valuations, transcendental bounds, finite case analysis) in Lean 4, by exact-arithmetic certificate + kernel verification. Problem-agnostic: this proof was its first and largest case study, not its scope. Start at [`telperion/README.md`](telperion/README.md). BG proof-state maps: [`PROOF_STATUS.md`](telperion/PROOF_STATUS.md), [`PROOF_ASSEMBLY.md`](telperion/PROOF_ASSEMBLY.md). |
+| [`telperion/`](telperion/) | **Telperion** — a **general-purpose, standalone tool** for proving families of mathematical statements (rational-function inequalities, polynomial nonnegativity, semialgebraic positivity via the Positivstellensatz family — Handelman, Putinar, Nullstellensatz/infeasibility, SOS refutation, real Nullstellensatz, equational consequence — integer Chvátal–Gomory rounding, exact identities, p-adic valuations, transcendental bounds, finite case analysis) in Lean 4, by exact-arithmetic certificate + kernel verification, with exact/SDP certificate *finders* for the Handelman and Putinar shapes. Problem-agnostic: this proof was its first and largest case study, not its scope. Start at [`telperion/README.md`](telperion/README.md). BG proof-state maps: [`PROOF_STATUS.md`](telperion/PROOF_STATUS.md), [`PROOF_ASSEMBLY.md`](telperion/PROOF_ASSEMBLY.md). |
 | [`PUBLICATION_LEDGER.md`](PUBLICATION_LEDGER.md) | Conservative, provisional novelty tally — what could plausibly stand up in a venue, and what is explicitly still open. |
 | [`CITATION.cff`](CITATION.cff) | How to cite. |
 

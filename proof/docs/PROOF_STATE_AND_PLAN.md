@@ -3,7 +3,8 @@
 **`conjecture1_proved = False`.** This is a whole-campaign map for all sessions: what is proven,
 the exact remaining gaps, and a completion plan per gap. Built from the authoritative
 `proof/verification/conjecture1_status.py` (the R-ladder aggregator) and this arc's localization work.
-Last synthesized 2026-08-19.
+Last synthesized 2026-08-19; updated 2026-08-20 (capped-joint g-step arc — see the dated
+addendum under Gap 1).
 
 ## The reduction: the whole 1984 problem sits on one crux
 
@@ -85,6 +86,20 @@ the same object**, viewed from Python (interval cert) and Lean (open hypothesis)
 
 Steps 1–2 need a genuine integer-tight / 23-adic breakthrough. The scaffold is ready; the idea is not
 in hand. **This is the one gap that cannot be scheduled.**
+
+**Addendum 2026-08-20 (capped-joint g-step arc, landed on `main`).** The ≤-face of the g-lemma
+attack moved substantially; the *strict/equality* content above remains the unschedulable part.
+Landed, kernel-checked: (a) the achievability correction — the unconstrained `Case2Property` is
+FALSE on `μ ∈ (1/2,1)` (exact witness `telperion/src/telperion/bg/g_step_margin.py`); non-leaf
+cavity messages satisfy `μ ≤ 1/2`, and that hypothesis is the relocated integrality content;
+(b) `R3Cert/CappedJointAchievable.lean` — `single_child_le_one`, `two_child_le_one`
+(unconditional for two children: the integrality wall is a single-child phenomenon), and the
+assembly bridge `gstep_le_one_of_glemmaBound` reducing the config g-step at every arity to the
+abstract g-lemma; (c) the abstract g-lemma `gV_le` (≤-form, all blocks) is kernel-proven over the
+`Blk` cavity model (`telperion/examples/g1_floors/lean/GLemma.lean`; R3Cert port in review,
+PR #20). Remaining mechanical seams: the ℚ→ℝ cast bridge (PR #20 recipe) + mixed leaf-child
+cases. Remaining *research* content of Gap 1: the equality characterization / strict gap and the
+child-envelope feed into `node_le_omega`.
 
 ### Gap 2: realization bridge (Full STEP 4)
 **Tractability: hard Lean formalization, not new mathematics** (the `p→∞` mechanism is already a

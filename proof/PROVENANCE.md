@@ -1,8 +1,28 @@
 # Provenance
 
-This repository is a **snapshot** of an active proof campaign. Until the
-campaign completes, the source of truth is the origin repository; this package
-is re-imported at green milestones.
+This repository began as a **snapshot** of an active proof campaign (origin
+below) and has since become a live development surface in its own right: new
+work lands here directly via reviewed PRs, gated by the same `lean-verify` CI.
+For the modules that were imported, the origin remains the provenance record;
+for post-snapshot modules, this repository's PR history is the record.
+
+## Post-snapshot development in this repository
+
+Since the `b2996c79` import (2026-08-15), the following landed natively here
+(so the "byte-identical to origin" claim below applies to the *imported*
+modules at the snapshot, not to these):
+
+- `proof/formalization/R3Cert/`: the capped-joint g-step layer (`GStepCore`,
+  `GLemmaConfig`/`GLemmaAssembly`, `CappedJointConfig`/`CappedJointSkeleton`/
+  `CappedJointAchievable`) and related frontier modules — the commit series
+  `2aa7c98` → `8fb4f8d` (ending in PR #19; PR #20 in review), plus the
+  `e1d25e4` reframe.
+- `telperion/`: the Positivstellensatz emitter family, the Chvátal–Gomory
+  integer-rounding emitter, the Handelman/Putinar certificate finders, and the
+  honesty gates (nonvacuity, witnessed-bound) — PRs #8–#10, #17, #18 plus
+  direct commits (e.g. the Handelman finder, `16dbc2d`).
+
+All of it is recorded in this repository's history with green CI.
 
 ## Origin
 

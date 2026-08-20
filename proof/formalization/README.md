@@ -1,71 +1,41 @@
-# R3 (Phi <= 1) -- Lean 4 formalization pass
+# R3Cert — the Lean 4 formalization
 
-A machine-checkable formalization of the **exact-arithmetic core** of R3 (the branch bound `Phi <= 1`) from
-the Brualdi-Goldwasser Laplacian-ratio maximizer proof, plus the real-analytic bridges that this core
-supports, and an honest map of what remains.
+The machine-checked layer of the Brualdi–Goldwasser campaign: a single Lean 4
+library (`R3Cert`, 106 modules, all imported by the root `R3Cert.lean` — a
+green `lake build` compiles everything; there are no orphaned files).
 
-> **Status: BUILDS CLEAN on Lean 4 v4.32.0 + Mathlib v4.32.0.** `lake build` completes with no errors and
-> no `sorry`. `#print axioms` on `rhoB_pow11`, `rhoB_sq_ge`, `omega_neg`, `C1_lt_one`, `e2_two_rhoB_gt`
-> reports only `[propext, Classical.choice, Quot.sound]` -- the three standard Mathlib axioms, **no
-> `sorryAx`** -- so the arithmetic backbone of R3 is fully machine-verified with no gaps.
+> **Status: BUILDS CLEAN on Lean 4 v4.32.0 + pinned Mathlib.** No `sorry`, no
+> added axioms, no `native_decide`; `#print axioms` on the capstones reports
+> only `[propext, Classical.choice, Quot.sound]`. Remaining hypotheses are
+> named `Prop`s carried explicitly (never axioms).
+> `conjecture1_proved = False`: this library formalizes the layers listed
+> below, not the whole conjecture.
 
-## What is here
+## Module map (bottom to top)
 
-- **`R3Cert/ExactCruxes.lean`** -- the load-bearing content, **fully proved (no `sorry`)**:
-  - *Layer 1* (exact rational/integer cruxes, closed by `norm_num`/`decide`): `rho_B^11 = 621/64 = 3^3*23/2^6`;
-    E3 crux `(3/2)^11 <= (621/64)^2`; R5 crux `(26/23)^11 < 621/64`; E2 Pell decay `11753^2 > 2*5741^2`;
-    near-star tie `64*243*23 = 621*576`; the binding corner `(122948/100000)^11 > 621/64` and
-    `132r^2+4r^3 <= 207`; and more.
-  - *Layer 2* (real-analytic bridges, reduced to Layer 1 via `Real.rpow`/`Real.sqrt`/`Real.log` monotonicity):
-    `rho_B^2 >= 3/2` (`rhoB_sq_ge`), `omega < 0` (`omega_neg`), `C_1 = (26/23)/rho_B < 1` (`C1_lt_one`),
-    and the E2 chain decay `1 + sqrt 2 < 2*rho_B` (`e2_two_rhoB_gt`).
-- **`R3Cert/DEC.lean`** -- the DEC decomposition identity as a **fully proved** real-log identity
-  (`dec_identity`, `dec_near_star`; no `sorry`). Discharges the `DEC_identity` hypothesis of Structure.lean.
-- **`R3Cert/Matching.lean`** -- the matching/permanent bridge, with two machine-checked layers (no `sorry`):
-  - *(H2) algebraic core:* `cavity_step`, `log_telescope` -- the passage from the two subtree partition
-    functions to the cavity ratio `r_v = 1/(1+S)`, and the log-telescoping.
-  - *(H1) combinatorial framework + permanent-term arithmetic:* the Laplacian `lapl` of a `SimpleGraph` over
-    ℝ (`lapl_diag`, `lapl_adj`), `EdgeSupported`, `edgeSupported_of_term_ne_zero` (a nonzero permanent term
-    forces the support condition -- the first reduction of H1), `nonfixed_image`, and the per-factor
-    evaluation `term_factor_fixed` (`= deg v`) / `term_factor_nonfixed` (`= -1`).
-- **`R3Cert/Involution.lean`** -- the **crux of H1, now a machine-checked THEOREM** (`no sorry`):
-  `acyclic_edgeSupported_involutive` -- on an acyclic graph, an edge-supported permutation is an involution.
-  Proof: a non-involution has a σ-orbit of length `≥ 3`; `orbitWalk` iterates σ to build a closed
-  `SimpleGraph.Walk` whose tail is a path (orbit vertices distinct via
-  `Function.iterate_injOn_Iio_minimalPeriod`) of length `≥ 3`, hence a cycle
-  (`isCycle_iff_isPath_tail_and_le_length`), contradicting `IsAcyclic`. This discharges the crux
-  `AcyclicForcesInvolution` in Matching.lean (`acyclicForcesInvolution`), so it is no longer a target `Prop`.
-  Both full identities are also proved in prose in `outreach/matching_bridge.tex` and verified numerically on
-  trees up to 10 vertices; the remaining unformalized step of H1 is only the sum-reindexing bookkeeping
-  (per L = Σ over the involutions/matchings), the combinatorial heart being done.
-- **`R3Cert/Structure.lean`** -- the induction-step *skeleton*: how the proved cruxes assemble, with the
-  remaining piece isolated as an **explicit hypothesis (not an axiom)**:
-  - **(S)** the finite interval **sweep** (the `(s,j)` core `s<=64, j<=500` + two monotone tails).
+| Group | Modules | What is proved |
+|---|---|---|
+| **Exact cruxes** | `ExactCruxes.lean`, `Sweep.lean`, `Grid.lean` | The integer/rational anchor facts, kernel-checked — e.g. `3^317·2^81 ≤ 23^129`, the tie identity `64·243·23 = 621·576`, the Pell decay, the R5 crux `(26/23)¹¹ < 621/64`. |
+| **Permanent–matching bridge (H1/H2)** | `Matching.lean`, `Involution.lean`, `CavityTree.lean`, `Bridge.lean`, `BridgeStep2`–`BridgeStep4j` | `per` of an acyclic support = matching sum (the crux `acyclic_edgeSupported_involutive` is a theorem); the cavity recursion; acyclicity of the address graph; the unconditional capstones `pi_litHub'` and `amplitude_bridge_real'` tying the Branch cavity model to the finite `per L/∏deg` objects. |
+| **`Φ ≤ 1`** | `Potential*.lean` (20 modules), capstone `PotentialFinal.lean:phi_le_one` | The central branch inequality, unconditional over every branch, equality exactly on the six-point rational tie variety. No smooth certificate can prove this (the continuous relaxation exceeds 1); the proof is arithmetic — a discharging hinge super-solution. |
+| **Reduction layer (R47 campaign)** | `R47*.lean` (32 modules) | The objective `pi_utree`; hub-state encoding + backbone recursion; the unified merge `Step` relation; the 36-cell bilinear certificate table + 36 dispatch adapters + 72 vee/mirror branches (generated, `positivity`-closed); the merge capstone `chain_to_normalForm`; the (L) legs layer; R6 shedding; the rate-port parse. |
+| **Capped-joint g-step layer** (2026-08-20) | `GStepCore.lean`, `GLemmaConfig.lean`, `GLemmaAssembly.lean`, `CappedJointConfig.lean`, `CappedJointSkeleton.lean`, `CappedJointAchievable.lean` | The achievability-corrected Case-2 (`Achievable μ := 0<μ ∧ (μ≤1/2 ∨ μ=1)`; the unconstrained hypothesis is *false* on `(1/2,1)`); `single_child_le_one`, `two_child_le_one` (unconditional for two children), `prodBcap_le_prodGlemma`; the assembly bridge `gstep_le_one_of_glemmaBound` reducing the config g-step at every arity to the abstract g-lemma. |
+| **Near-star / tie geometry** | `NearStar.lean`, `NearStarBandSlice.lean`, `TieClosure.lean`, `TieHarmonic.lean`, `FractalTail.lean`, `HomogeneousSlice.lean` | The near-star spine arithmetic cores, the tie-boundary closure, the homogeneous-slice bounds. |
+| **Supporting analysis** | `Jensen.lean`, `Hull*.lean`, `MasterCore.lean`, `Reach.lean`, `Structure.lean`, `Locality.lean`, and others | Convexity/hull machinery, the induction-step skeleton with its remaining hypotheses named explicitly, and the classification layers. |
 
-Every arithmetic goal was independently verified in exact Python arithmetic before being stated -- see
-`../lemma_proofs.py`, `../e2_closure.py`, `../pell_chain_structure.py`, `../rem_tie.py`,
-`../gap_interval_certification.py`, `../adversary_sweep.py`.
+The abstract g-lemma itself — `gV_le : g(C) ≤ γ` over the `Blk` cavity model —
+is kernel-proven in the standalone package
+`../../telperion/examples/g1_floors/lean/GLemma.lean`; its port into this
+library (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) is in review (PR #20),
+after which the ℚ→ℝ cast seam is the named remaining connection to
+`gstep_le_one_of_glemmaBound`.
 
-## Honest scope
-
-- **Fully machine-checkable now:** the entire arithmetic backbone of R3 -- every "clear the 11th root => exact
-  inequality" crux, and the `omega<0 / C_1<1 / rho_B^2>=3/2 / 2 rho_B > 1+sqrt2` bridges that the structural
-  lemmas rest on. This is the part that was historically stated as "exact rational fact" and is now proved in
-  a proof assistant.
-- **Not yet formalized (remaining work, not open mathematics):**
-  - (G) requires a Lean development of trees, the Laplacian permanent, and the matching/cavity recursion to
-    state and prove the DEC identity and the E0/E1 band classifications as theorems rather than `Prop`s. The
-    Python side proves these (induction for E0/E1; a 1e-15 algebraic identity for DEC).
-  - (S) requires either an interval-arithmetic decision procedure in Lean or a hand-closed form of the
-    concave `(s,j)` maximization. The Python side certifies it rigorously (`gap_interval_certification`,
-    `ALL_INTERVAL_CERTIFIED`; worst node `-0.007808 <= omega = -0.007707`).
-
-`conjecture1_proved` remains **False**: this pass formalizes R3's exact core, not the whole conjecture.
+Generated modules carry provenance headers naming the generator and its
+self-checks (regenerate and diff via `../verification/gen_r47cert_cells.py`).
+Every arithmetic goal was independently verified in exact Python arithmetic
+before being stated (`../verify.py`).
 
 ## Build
-
-Because Mathlib and its toolchain move together, the most robust route is to scaffold with `lake` and drop in
-the two `.lean` files:
 
 ```bash
 # 1. install elan (Lean version manager), which provides lake
@@ -74,29 +44,27 @@ source "$HOME/.elan/env"
 
 # 2. fetch deps + prebuilt Mathlib, then build (confirmed working)
 cd proof/formalization
-lake update            # resolves Mathlib v4.32.0 + deps, syncs the toolchain
+lake update            # resolves Mathlib + deps, syncs the toolchain (v4.32.0)
 lake exe cache get     # downloads prebuilt Mathlib oleans (~minutes; avoids a multi-hour build)
-lake build             # checks R3Cert.lean -> ExactCruxes.lean + Structure.lean
+lake build             # compiles the full R3Cert library
 ```
 
-**macOS note.** On macOS 26 (Darwin 25)+, older Lean toolchains (e.g. v4.15.0) produce native binaries that
-`dyld` rejects with `__DATA_CONST segment missing SG_READ_ONLY flag`, which breaks `lake exe cache get`. This
-is fixed by using a recent toolchain -- the pinned **v4.32.0** builds and runs the `cache` binary correctly.
+A clean `lake build` with no errors and no `sorry` warnings means every theorem
+in the library is machine-verified. The same build runs in CI on every push
+(`lean-verify`).
 
-A clean `lake build` with no errors and no `sorry` warnings on `ExactCruxes.lean` means the exact-arithmetic
-core of R3 is machine-verified.
+**macOS note.** On macOS 26 (Darwin 25)+, older Lean toolchains (e.g. v4.15.0)
+produce native binaries that `dyld` rejects with `__DATA_CONST segment missing
+SG_READ_ONLY flag`, which breaks `lake exe cache get`. The pinned **v4.32.0**
+builds and runs the `cache` binary correctly.
 
-## Version note (Layer 2)
+## Version note
 
-**Layer 1** (the `norm_num`/`decide` cruxes) is robust across Mathlib versions -- these tactics settle the
-exact rational/integer goals regardless of library churn.
-
-**Layer 2** (the analytic bridges) uses standard monotonicity lemmas whose *names* shift between Mathlib
-releases. The build is pinned to **v4.32.0**, where the reverse-power lemmas carry the `₀` suffix:
-`le_of_pow_le_pow_left₀ (hn : n ≠ 0) (hb : 0 ≤ b) : aⁿ ≤ bⁿ → a ≤ b` and
-`lt_of_pow_lt_pow_left₀ (n : ℕ) (hb : 0 ≤ b) : aⁿ < bⁿ → a < b` (both in
-`Mathlib/Algebra/Order/GroupWithZero/Basic.lean`). The other Layer-2 lemmas
-(`Real.rpow_pos_of_pos`, `Real.rpow_natCast`, `Real.rpow_mul`, `Real.log_pow`, `Real.log_lt_log`,
-`Real.sqrt_sq`, `Real.sqrt_lt_sqrt`, `div_lt_one`) are stable. If you retarget a different Mathlib version and
-hit an unknown identifier, it is a one-line rename (`exact?` resolves it); every underlying inequality is
-verified in exact Python arithmetic, so the content is settled regardless.
+The `norm_num`/`decide` cruxes are robust across Mathlib versions. The
+real-analytic bridges use standard monotonicity lemmas whose *names* shift
+between Mathlib releases — the build is pinned to v4.32.0, where the
+reverse-power lemmas carry the `₀` suffix (`le_of_pow_le_pow_left₀`,
+`lt_of_pow_lt_pow_left₀`). If you retarget another Mathlib and hit an unknown
+identifier, it is a one-line rename (`exact?` resolves it); every underlying
+inequality is verified in exact Python arithmetic first, so the content is
+settled regardless.

@@ -33,9 +33,23 @@ structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in
 - Over-the-reals **T1/T2 unimodality** (box-max at symmetric μ*), via the exact identity `(j'+1)boost =
   j'+4/3+S` and the descent `> 3+μ_i` for j'≥2. — **PROVEN** (`branching_unimodality`).
 - Two rational leaves `μ*<1/3` and `W(4/3)¹¹<γ` (⟺ `621·4¹¹<64·5¹¹`). — **PROVEN** (`gstep_reduction`).
+- **Abstract g-lemma, kernel-proven** (2026-08-20): `gV_le` — `g(C) ≤ γ = W²(5/3)¹¹` for every block of
+  the `Blk` cavity model — is a kernel-checked Lean theorem in the standalone
+  `examples/g1_floors/lean/GLemma.lean` package (achievability supplied structurally by
+  `muV_nonleaf_le_half`). Port into `R3Cert` (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) in review
+  (PR #20).
 - **Branch-induction wiring** (that `g_bound<γ` + children-master ⟹ parent-master, exactly, all cases).
-  — **OPEN** (structural layer; the naive substitution has the `C^{j'-1}` blow-up, which the g-lemma's
-  two-regime bound is meant to defeat — the wiring makes that precise). Verified broadly (n≤11).
+  — **NARROWED** (2026-08-20; previously a monolithic OPEN). The correction-and-reduction cycle landed on
+  `main` (`R3Cert/CappedJointAchievable.lean`, kernel-checked, axioms clean):
+  the original `Case2Property` was **FALSE as stated** (g-step factor `>1` on the unachievable band
+  `μ ∈ (1/2,1)`, witnessed exactly by `bg/g_step_margin.py`); the fix is the **achievability**
+  constraint (non-leaf messages have `μ = 1/(j+1+S) ≤ 1/2`; the only achievable `μ > 1/2` is the leaf
+  `μ = 1`) — the relocated integrality content. Then, kernel-checked: `single_child_le_one`
+  (`0<μ≤1/2`), `two_child_le_one` (all `a,b>0` — no achievability needed for `j'≥2`; the integrality
+  wall is a single-child phenomenon), `prodBcap_le_prodGlemma`, and the assembly bridge
+  `gstep_le_one_of_glemmaBound` reducing the config g-step at **every arity** to the single inequality
+  `W·baseOf¹¹·prodGlemma ≤ γ` = the abstract g-lemma above. **Remaining OPEN, named:** the ℚ→ℝ cast
+  seam (`baseOf = boostR`, `Bcap ≤ factorR`; recipe in PR #20) and the mixed leaf-child cases.
 
 ## R2 — multi-hub extremality
 
@@ -110,8 +124,10 @@ steps.
 
 The **remaining gaps** — all structural or verified-in-range, none analytic — are:
 
-1. **R1 Branch-induction wiring** — assemble `g_bound<γ` + children-master into `parent-master` rigorously
-   for all cases (the parallel session's structural layer). *This is the load-bearing open piece of R1.*
+1. **R1 Branch-induction wiring** — **narrowed 2026-08-20** to two named seams: the ℚ→ℝ cast bridge
+   tying the kernel-checked any-arity reduction (`gstep_le_one_of_glemmaBound`) to the kernel-proven
+   abstract g-lemma `gV_le` (PR #20 recipe), and the mixed leaf-child cases. Mechanical Lean work, not
+   open mathematics — but not done, so still *the load-bearing open piece of R1*.
 2. **R1 leaf-child case** — census-verified, needs all-n rigor.
 3. **R2 multi-hub maximality** — "DN is the multi-hub max at each n," verified n≤13, not proven.
 4. **Per-root reduction** — verified n≤10 (a restatement; likely provable but not yet).
