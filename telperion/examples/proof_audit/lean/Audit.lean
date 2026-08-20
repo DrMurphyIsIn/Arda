@@ -26,4 +26,5 @@ import Audit.Infeasible
 import Audit.Consequence
 import Audit.SOSRefutation
 import Audit.RealNullstellensatz
+import Audit.SOSRefutationFind
 import Audit.UniformTail
