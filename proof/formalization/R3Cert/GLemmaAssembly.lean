@@ -44,4 +44,17 @@ theorem glemma_step (h2 : Case2Property) {aB PF muB Pbc Pgl : ℚ}
     _ ≤ W * (W * (5 / 3) ^ 11) := mul_le_mul_of_nonneg_left hstep hW0
     _ = W ^ 2 * (5 / 3) ^ 11 := by ring
 
+/-- **The master inductive step.** Given the recursion `F_B = W·aB¹¹·PF` and the master-base
+    inequality `((2+μ_B)·aB)¹¹·PF ≤ 3¹¹` (supplied by `master_core` + the crude per-type
+    bounds), the node satisfies the master inequality `(2+μ_B)¹¹·F_B ≤ MASTER_C = W·3¹¹`.
+    Unconditional (the master step needs no `Case2Property`). -/
+theorem master_step (aB PF muB : ℚ)
+    (hcore : ((2 + muB) * aB) ^ 11 * PF ≤ 3 ^ 11) :
+    (2 + muB) ^ 11 * (W * aB ^ 11 * PF) ≤ W * 3 ^ 11 := by
+  have hW0 : (0 : ℚ) ≤ W := by norm_num [W]
+  have hg : (2 + muB) ^ 11 * (W * aB ^ 11 * PF)
+      = W * (((2 + muB) * aB) ^ 11 * PF) := by ring
+  rw [hg]
+  exact mul_le_mul_of_nonneg_left hcore hW0
+
 end R3Cert.GLemmaAssembly
