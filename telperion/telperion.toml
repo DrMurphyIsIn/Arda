@@ -115,6 +115,21 @@ script = "examples/sos_refutation_find/generate.py"
 group = "sdp"      # SOS-refutation SDP finder (needs cvxpy). Frozen Lean compile-gated.
 
 [[check]]
+name = "bernstein"
+script = "examples/bernstein/generate.py"
+group = "quick"    # Bernstein-basis interval positivity (nonneg Bernstein coeffs, degree-elevating); ~0.3 s
+
+[[check]]
+name = "real_nullstellensatz_find"
+script = "examples/real_nullstellensatz_find/generate.py"
+group = "sdp"      # Real-Nullstellensatz SDP finder (needs cvxpy). Frozen Lean compile-gated.
+
+[[check]]
+name = "rational_sos"
+script = "examples/rational_sos/generate.py"
+group = "sdp"      # Rational-SOS / Artin denominator (nonneg-but-not-SOS via q*p SOS; needs cvxpy). Frozen Lean compile-gated.
+
+[[check]]
 name = "mconvex"
 script = "examples/mconvex/generate.py"
 group = "quick"    # M-convexity (discrete-convex) certificates -- integer-lattice structure
