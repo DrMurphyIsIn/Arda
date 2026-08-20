@@ -40,12 +40,25 @@ measures PSD failure at exactly d = 3 -- the witness genuinely discriminates.
 * verdict-path arithmetic is exact; floats only in the redundant spectral
   cross-check.
 
+## Lean status (2026-08-20): GREEN, axioms clean
+
+`telperion/examples/g1_floors/lean/KnapsackSOS.lean` (registered lean_lib in
+that workspace; verify with `lake env lean KnapsackSOS.lean` there -- mathlib
+v4.32.0 oleans cached in .lake). Kernel-checked, symbolic in n, axioms exactly
+[propext, Classical.choice, Quot.sound] for all of: constraint/ideal identity
+(telescoping), kernel recurrence (rank-1 collapse), g1..g4 closed product
+forms, g0..g4 positivity (all n > 2k-1), rank-1 quadform PSD (block0..4_psd),
+two combinatorial Gram-bridge entries (k=1 block), knapsack_unsat nonvacuity
+(odd N has no boolean solution), and the master knapsack_certificate. What
+remains Python-pinned: the general (k,i,j) Gram-formula bridge (exact on the
+grid; two entries Lean-proven as the pattern demonstration) and the standard
+moment-matrix/SOS-refutation duality (literature).
+
 ## Next
 
-1. Lean: formalize E, the telescoping constraint/kernel identities, the
-   rank-1 factorization, and per-factor positivity (emit_handelman) -->
-   kernel-checked "SOS degree > 2d for all odd n" per fixed d; then the
-   uniform-d statement.
+1. Emitter-generate the remaining 33 Gram-bridge entry identities for d=4
+   (each is field_simp/ring-shaped, same pattern as bridge_offdiag/corner);
+   then the uniform-d statement (induction on k -- W2-style telescoping).
 2. Random 3XOR / planted clique: blocks are NOT rank one -- this is where the
    W2 holonomic-positivity machinery (scheme eigenvalue sequences) becomes
    load-bearing.
