@@ -1,7 +1,7 @@
 {
   "family": "Lorentzian",
-  "input_hash": "7cbfa489a8c1a13bb95efe3ffa05c96aa27f4cbb66f504a00390d6b24cb073e1",
-  "tool_version": "0.1.4",
+  "input_hash": "305b8da3a7dbdd12f36a8729cd00f9c2029d8a18a96d3a85d4c2a784cb31e8d2",
+  "tool_version": "0.1.5",
   "files": [
     "Lorentzian.lean"
   ],

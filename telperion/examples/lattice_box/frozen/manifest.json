@@ -1,7 +1,7 @@
 {
   "family": "LatticeBox",
-  "input_hash": "2032e8ea3ba05b997426648be0ef3dff3984c975d124af9f3768556d0fd22a73",
-  "tool_version": "0.1.4",
+  "input_hash": "00b61e138db45157dd5d0b1f2a245d7e7356c6203df69d1e4c6e5c19a87ca487",
+  "tool_version": "0.1.5",
   "files": [
     "LatticeBox.lean"
   ],

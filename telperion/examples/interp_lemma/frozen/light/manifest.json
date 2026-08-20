@@ -1,7 +1,7 @@
 {
   "family": "InterpLightTop",
-  "input_hash": "ad8a6907725e868dff6388478c7df1f84a4248ad6faf94d548fb7f3a3783f65c",
-  "tool_version": "0.1.4",
+  "input_hash": "5c33fd13ef96e969fa82e5cc99031ab8f20a77204b08d8b144d1559f5fa58583",
+  "tool_version": "0.1.5",
   "files": [
     "InterpLight.lean"
   ],

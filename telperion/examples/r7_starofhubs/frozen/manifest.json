@@ -1,7 +1,7 @@
 {
   "family": "R7StarOfHubs",
-  "input_hash": "4700f6da1b6d2c84de660acaa97af82c370976a91c75f1a5ac67d789af476f14",
-  "tool_version": "0.1.4",
+  "input_hash": "95e1114868425a6c4a86f647a9e95e413fb633715ceecbd9bbbfdfda6d51a7fc",
+  "tool_version": "0.1.5",
   "files": [
     "Cells.lean",
     "Cells2.lean",

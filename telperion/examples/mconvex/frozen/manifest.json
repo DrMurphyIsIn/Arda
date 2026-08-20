@@ -1,7 +1,7 @@
 {
   "family": "MConvex",
-  "input_hash": "39a44885a99d97db927f4ace5f6497163d262e9c38aecbd6f9d48ecbc4b0d4d8",
-  "tool_version": "0.1.4",
+  "input_hash": "059bf285e54d0bde4934a519716990f3d57fe01da79a7b669dd136508b93a0fc",
+  "tool_version": "0.1.5",
   "files": [
     "MConvex.lean"
   ],

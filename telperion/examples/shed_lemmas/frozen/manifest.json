@@ -1,7 +1,7 @@
 {
   "family": "ShedLemmas",
-  "input_hash": "6f86e8e48b9c51791be104644ef45a177d44e78eaa0576437109dc300107efba",
-  "tool_version": "0.1.4",
+  "input_hash": "f7ad46eaa0877716a6e5ffc1ed05c58cf303538e7ffc793582c8875e1216a030",
+  "tool_version": "0.1.5",
   "files": [
     "ShedLemmas.lean"
   ],
