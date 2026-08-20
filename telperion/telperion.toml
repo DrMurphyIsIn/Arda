@@ -213,6 +213,11 @@ name = "bg_extremality"
 script = "examples/bg_extremality/generate.py"
 group = "quick"    # BG competitor extremality (rooted Phi -- correct quantity)
 
+[[check]]
+name = "unimodal_maximum"
+script = "examples/unimodal_maximum/generate_nearstar.py"
+group = "quick"    # near-star payoff Phi^11(N(0,n)) <= 1 (kernel-green); ~0.5 s
+
 [evolve]
 # LLM-driven evolutionary certificate search. NOT part of the trust model:
 # every candidate still passes certify -> emit -> lake build; nothing is auto-frozen.
