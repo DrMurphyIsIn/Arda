@@ -33,6 +33,7 @@ on:
       - "telperion/examples/consequence/**"
       - "telperion/examples/sos_refutation/**"
       - "telperion/examples/real_nullstellensatz/**"
+      - "telperion/examples/sos_refutation_find/**"
       - "telperion/examples/cg_round/**"
       - "telperion/examples/polya_zeros/**"
       - "telperion/examples/uniform_tail/**"
@@ -110,6 +111,7 @@ jobs:
           cp ../../consequence/frozen/Consequence.lean          Audit/Consequence.lean
           cp ../../sos_refutation/frozen/SOSRefutation.lean     Audit/SOSRefutation.lean
           cp ../../real_nullstellensatz/frozen/RealNullstellensatz.lean Audit/RealNullstellensatz.lean
+          cp ../../sos_refutation_find/frozen/SOSRefutationFind.lean Audit/SOSRefutationFind.lean
           cp ../../cg_round/frozen/CGRound.lean                 Audit/CGRound.lean
           cp ../../polya_zeros/frozen/PolyaZeros.lean           Audit/PolyaZeros.lean
           cp ../../uniform_tail/frozen/UniformTail.lean         Audit/UniformTail.lean
