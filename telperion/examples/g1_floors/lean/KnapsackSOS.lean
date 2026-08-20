@@ -261,6 +261,98 @@ theorem knapsack_unsat (N : ℕ) (hN : Odd N) (x : Fin N → ℚ)
   have h3 : 2 * c = N := by exact_mod_cast h2
   omega
 
+/-! ### Uniform-k layer: product form, positivity for every k, open target -/
+
+/-- Product-form block scalar: gProd(k) = prod_{j<k} (n-2j)/(2(n-2j-1)). -/
+def gProd (n : ℚ) : ℕ → ℚ
+  | 0 => 1
+  | k + 1 => gProd n k * (n - 2 * k) / (2 * (n - (2 * k + 1)))
+
+/-- Uniform-in-k positivity: the product-form scalar is positive for EVERY k
+and every rational n > 2k-1 -- the all-degrees half of the certificate. -/
+theorem gProd_pos (n : ℚ) (k : ℕ) (hn : (2 * k : ℚ) - 1 < n) : 0 < gProd n k := by
+  induction k with
+  | zero => norm_num [gProd]
+  | succ k ih =>
+    have hk : (2 * k : ℚ) - 1 < n := by push_cast at hn ⊢; linarith
+    have h1 : (0 : ℚ) < n - 2 * k := by push_cast at hn ⊢; linarith
+    have h2 : (0 : ℚ) < 2 * (n - (2 * k + 1)) := by push_cast at hn ⊢; linarith
+    rw [gProd]
+    exact div_pos (mul_pos (ih hk) h1) h2
+
+/-- The alternating-sum block scalar for general k (the object the Gram
+formula actually produces): 2^k sum_s (-1)^(k-s) C(k,s) f(2k-s). -/
+def gSum (n : ℚ) (k : ℕ) : ℚ :=
+  2 ^ k * ∑ s ∈ Finset.range (k + 1),
+    (-1 : ℚ) ^ (k - s) * (k.choose s : ℚ) * f n (2 * k - s)
+
+theorem gSum_zero (n : ℚ) : gSum n 0 = g0 n := by
+  norm_num [gSum, g0, f]
+
+theorem gSum_one (n : ℚ) : gSum n 1 = g1 n := by
+  norm_num [gSum, Finset.sum_range_succ, g1]
+  ring
+
+theorem gSum_two (n : ℚ) : gSum n 2 = g2 n := by
+  norm_num [gSum, Finset.sum_range_succ, g2]
+  ring
+
+theorem gSum_three (n : ℚ) : gSum n 3 = g3 n := by
+  norm_num [gSum, Finset.sum_range_succ, g3]
+  ring
+
+theorem gSum_four (n : ℚ) : gSum n 4 = g4 n := by
+  norm_num [gSum, Finset.sum_range_succ, g4, Nat.choose]
+  ring
+
+theorem gProd_eq_g1 (n : ℚ) (hn : (1 : ℚ) < n) : gProd n 1 = g1 n := by
+  rw [g1_closed n hn]
+  norm_num [gProd]
+
+theorem gProd_eq_g2 (n : ℚ) (hn : (3 : ℚ) < n) : gProd n 2 = g2 n := by
+  have h1 : n - 1 ≠ 0 := ne_of_gt (by linarith)
+  have h3 : n - 3 ≠ 0 := ne_of_gt (by linarith)
+  rw [g2_closed n hn]
+  norm_num [gProd]
+  field_simp
+  ring
+
+theorem gProd_eq_g3 (n : ℚ) (hn : (5 : ℚ) < n) : gProd n 3 = g3 n := by
+  have h1 : n - 1 ≠ 0 := ne_of_gt (by linarith)
+  have h3 : n - 3 ≠ 0 := ne_of_gt (by linarith)
+  have h5 : n - 5 ≠ 0 := ne_of_gt (by linarith)
+  rw [g3_closed n hn]
+  norm_num [gProd]
+  field_simp
+  ring
+
+theorem gProd_eq_g4 (n : ℚ) (hn : (7 : ℚ) < n) : gProd n 4 = g4 n := by
+  have h1 : n - 1 ≠ 0 := ne_of_gt (by linarith)
+  have h3 : n - 3 ≠ 0 := ne_of_gt (by linarith)
+  have h5 : n - 5 ≠ 0 := ne_of_gt (by linarith)
+  have h7 : n - 7 ≠ 0 := ne_of_gt (by linarith)
+  rw [g4_closed n hn]
+  norm_num [gProd]
+  field_simp
+  ring
+
+/-- OPEN W2 TARGET (named, not yet proven for general k): the alternating
+sum equals the product form for every k. Kernel-checked here for k <= 4
+(sumEqProd_upto4); exact in Python for k <= 6. Discharging this upgrades
+gProd_pos to the uniform-in-degree certificate. -/
+def SumEqProd : Prop :=
+  ∀ (n : ℚ) (k : ℕ), (2 * k : ℚ) - 1 < n → gSum n k = gProd n k
+
+/-- The k <= 4 slice of `SumEqProd`, kernel-checked. -/
+theorem sumEqProd_upto4 (n : ℚ) (k : ℕ) (hk : k ≤ 4) (hn : (7 : ℚ) < n) :
+    gSum n k = gProd n k := by
+  interval_cases k
+  · rw [gSum_zero]; norm_num [g0, gProd]
+  · rw [gSum_one, gProd_eq_g1 n (by linarith)]
+  · rw [gSum_two, gProd_eq_g2 n (by linarith)]
+  · rw [gSum_three, gProd_eq_g3 n (by linarith)]
+  · rw [gSum_four, gProd_eq_g4 n hn]
+
 /-! ### Master statement -/
 
 /-- Degree-8 knapsack SOS lower-bound certificate, scalar layer: for every
@@ -285,3 +377,5 @@ end KnapsackSOS
 #print axioms KnapsackSOS.bridge_corner
 #print axioms KnapsackSOS.knapsack_unsat
 #print axioms KnapsackSOS.knapsack_certificate
+#print axioms KnapsackSOS.gProd_pos
+#print axioms KnapsackSOS.sumEqProd_upto4

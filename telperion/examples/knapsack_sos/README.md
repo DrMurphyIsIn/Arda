@@ -49,16 +49,27 @@ v4.32.0 oleans cached in .lake). Kernel-checked, symbolic in n, axioms exactly
 (telescoping), kernel recurrence (rank-1 collapse), g1..g4 closed product
 forms, g0..g4 positivity (all n > 2k-1), rank-1 quadform PSD (block0..4_psd),
 two combinatorial Gram-bridge entries (k=1 block), knapsack_unsat nonvacuity
-(odd N has no boolean solution), and the master knapsack_certificate. What
-remains Python-pinned: the general (k,i,j) Gram-formula bridge (exact on the
-grid; two entries Lean-proven as the pattern demonstration) and the standard
-moment-matrix/SOS-refutation duality (literature).
+(odd N has no boolean solution), and the master knapsack_certificate.
+
+UPDATE (same day): the FULL d=4 Gram bridge is now kernel-checked --
+gen_bridge_d4.py emits BridgeD4.lean with all 35 entry identities
+(combinatorial formula = g_k * v * v, every block k <= 4), each validated in
+exact Fractions against gram_block_fast AND the rank-1 form before emission
+(anti-phantom gate + corruption negative control); all 35 axioms-clean.
+Also added, uniform-k layer in KnapsackSOS.lean: gProd (product form) with
+gProd_pos for EVERY k by induction (all rational n > 2k-1); gSum (general-k
+alternating sum) with gSum_zero..four; gProd_eq_g1..g4; and the named open
+W2 target `SumEqProd` (sum = product for all k), kernel-checked for k <= 4
+via sumEqProd_upto4. Total: 45 axioms-clean theorems, no sorryAx.
+
+What remains Python-pinned: the z-vector Gram derivation (that these blocks
+ARE the harmonic blocks of the moment matrix -- validated by the 130x130
+spectral reconstruction) and the standard moment/SOS duality (literature).
 
 ## Next
 
-1. Emitter-generate the remaining 33 Gram-bridge entry identities for d=4
-   (each is field_simp/ring-shaped, same pattern as bridge_offdiag/corner);
-   then the uniform-d statement (induction on k -- W2-style telescoping).
+1. Discharge `SumEqProd` for general k (W2 creative-telescoping shape:
+   R_{j+1}(q) = (n/2-q)/(n-q) R_j(q+1) - R_j(q) contiguous relation).
 2. Random 3XOR / planted clique: blocks are NOT rank one -- this is where the
    W2 holonomic-positivity machinery (scheme eigenvalue sequences) becomes
    load-bearing.

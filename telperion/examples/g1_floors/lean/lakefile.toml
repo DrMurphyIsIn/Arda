@@ -17,3 +17,6 @@ name = "GLemma"
 
 [[lean_lib]]
 name = "KnapsackSOS"
+
+[[lean_lib]]
+name = "BridgeD4"
