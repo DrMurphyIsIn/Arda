@@ -48,4 +48,19 @@ theorem frac_q2 {a b : ℚ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
 theorem cert_q2 : W ^ 3 * (50 / 27) ^ 11 < 1 := by
   norm_num [W]
 
+/-- **Case-1 core (rigorous, all j).** The g-step normalized factor is
+    `Φ = base^11 · P / (W·(5/3)^11)` with `P = ∏ Bcap ≤ 1` (each `Bcap ≤ 1` is `phi_le_one`).
+    In the regime `base^11 ≤ W·(5/3)^11`, `Φ ≤ 1` — no suppression needed. This is the
+    fully-rigorous half of the 2-case g-step split; abstract in `(base, P)`. -/
+theorem case1_bound {base P : ℚ} (hb : 0 ≤ base)
+    (hbase : base ^ 11 ≤ W * (5 / 3) ^ 11) (hP0 : 0 ≤ P) (hP1 : P ≤ 1) :
+    base ^ 11 * P / (W * (5 / 3) ^ 11) ≤ 1 := by
+  have hden : (0 : ℚ) < W * (5 / 3) ^ 11 := by norm_num [W]
+  have hb11 : (0 : ℚ) ≤ base ^ 11 := by positivity
+  rw [div_le_one hden]
+  calc base ^ 11 * P ≤ base ^ 11 * 1 := by
+        exact mul_le_mul_of_nonneg_left hP1 hb11
+    _ = base ^ 11 := by ring
+    _ ≤ W * (5 / 3) ^ 11 := hbase
+
 end R3Cert.GStepCore
