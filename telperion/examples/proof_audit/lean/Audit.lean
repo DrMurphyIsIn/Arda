@@ -23,4 +23,7 @@ import Audit.WZ
 import Audit.Handelman
 import Audit.Nullstellensatz
 import Audit.Infeasible
+import Audit.Consequence
+import Audit.SOSRefutation
+import Audit.RealNullstellensatz
 import Audit.UniformTail
