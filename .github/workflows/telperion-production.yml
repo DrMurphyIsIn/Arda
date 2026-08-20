@@ -34,6 +34,9 @@ on:
       - "telperion/examples/sos_refutation/**"
       - "telperion/examples/real_nullstellensatz/**"
       - "telperion/examples/sos_refutation_find/**"
+      - "telperion/examples/bernstein/**"
+      - "telperion/examples/real_nullstellensatz_find/**"
+      - "telperion/examples/rational_sos/**"
       - "telperion/examples/uniform_tail/**"
       - "telperion/examples/uniform_arm/**"
       - "telperion/examples/proof_audit/**"
@@ -110,6 +113,9 @@ jobs:
           cp ../../sos_refutation/frozen/SOSRefutation.lean     Audit/SOSRefutation.lean
           cp ../../real_nullstellensatz/frozen/RealNullstellensatz.lean Audit/RealNullstellensatz.lean
           cp ../../sos_refutation_find/frozen/SOSRefutationFind.lean Audit/SOSRefutationFind.lean
+          cp ../../bernstein/frozen/Bernstein.lean               Audit/Bernstein.lean
+          cp ../../real_nullstellensatz_find/frozen/RealNullstellensatzFind.lean Audit/RealNullstellensatzFind.lean
+          cp ../../rational_sos/frozen/RationalSOS.lean          Audit/RationalSOS.lean
           cp ../../uniform_tail/frozen/UniformTail.lean         Audit/UniformTail.lean
       - name: Cache elan
         uses: actions/cache@v4
