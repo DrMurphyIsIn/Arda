@@ -20,9 +20,15 @@ namespace R3Cert.GLemmaAssembly
 
 open R3Cert.GStepCore R3Cert.CappedJoint
 
-/-- **The g-lemma inductive step.** Given the recursion `F_B = W·aB¹¹·PF`, `PF = ∏F_c`, the
-    IH bounds `PF ≤ Pbc = ∏Bcap ≤ 1` and `Pbc ≤ Pgl = ∏glemma`, and `Case2Property`, the
-    node satisfies the g-lemma `g(B) = F_B·(1+μ_B/3)¹¹ ≤ γ = W²·(5/3)¹¹`. -/
+/-- **⚠ DEPRECATED — conditional on the unsatisfiable abstract `Case2Property`.**
+    This bridge is valid as a theorem, but its hypothesis `Case2Property` (the abstract
+    `CappedJoint` one) is FALSE, so it can never be discharged. **Use
+    `GLemmaConfig.glemma_step_config`** instead — same content, on the satisfiable config
+    `CappedJointConfig.Case2Property`. Retained only for continuity.
+
+    Given the recursion `F_B = W·aB¹¹·PF`, `PF = ∏F_c`, the IH bounds
+    `PF ≤ Pbc = ∏Bcap ≤ 1` and `Pbc ≤ Pgl = ∏glemma`, the node satisfies the g-lemma
+    `g(B) = F_B·(1+μ_B/3)¹¹ ≤ γ = W²·(5/3)¹¹`. -/
 theorem glemma_step (h2 : Case2Property) {aB PF muB Pbc Pgl : ℚ}
     (hb0 : 0 ≤ (1 + muB / 3) * aB)
     (hPbc0 : 0 ≤ Pbc) (hPFbc : PF ≤ Pbc) (hPbc1 : Pbc ≤ 1)

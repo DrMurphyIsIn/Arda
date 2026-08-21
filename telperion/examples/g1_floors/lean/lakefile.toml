@@ -29,3 +29,6 @@ name = "Xor3Structure"
 
 [[lean_lib]]
 name = "PetersenCertificate"
+
+[[lean_lib]]
+name = "FlatnessDomination"

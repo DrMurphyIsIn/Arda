@@ -108,6 +108,32 @@ name = "sos_sdp"
 script = "examples/sos_sdp/generate.py"
 group = "sdp"      # SDP-SOS (needs cvxpy; regen off the cvxpy-free CI path). Frozen Lean is compile-gated.
 
+
+[[check]]
+name = "sos_refutation_find"
+script = "examples/sos_refutation_find/generate.py"
+group = "sdp"      # SOS-refutation SDP finder (needs cvxpy). Frozen Lean compile-gated.
+
+[[check]]
+name = "bernstein"
+script = "examples/bernstein/generate.py"
+group = "quick"    # Bernstein-basis interval positivity (nonneg Bernstein coeffs, degree-elevating); ~0.3 s
+
+[[check]]
+name = "sturm_positive"
+script = "examples/sturm_positive/generate.py"
+group = "quick"    # Sturm strict-interval positivity (root exclusion + Bernstein of p-gamma); ~0.4 s
+
+[[check]]
+name = "real_nullstellensatz_find"
+script = "examples/real_nullstellensatz_find/generate.py"
+group = "sdp"      # Real-Nullstellensatz SDP finder (needs cvxpy). Frozen Lean compile-gated.
+
+[[check]]
+name = "rational_sos"
+script = "examples/rational_sos/generate.py"
+group = "sdp"      # Rational-SOS / Artin denominator (nonneg-but-not-SOS via q*p SOS; needs cvxpy). Frozen Lean compile-gated.
+
 [[check]]
 name = "mconvex"
 script = "examples/mconvex/generate.py"
@@ -174,6 +200,21 @@ script = "examples/real_nullstellensatz/generate.py"
 group = "quick"    # Real-Nullstellensatz (p=0 on real variety via p^2m + SOS in ideal); ~0.2 s
 
 [[check]]
+name = "cg_round"
+script = "examples/cg_round/generate.py"
+group = "quick"    # Chvatal-Gomory integer rounding (VIPR-style): lincomb + cg_round, omega-discharged; ~0.2 s
+
+[[check]]
+name = "polya_zeros"
+script = "examples/polya_zeros/generate.py"
+group = "quick"    # CPR Polya-with-zeros (tie-safe homogeneous lift; zeros allowed on faces); ~0.3 s
+
+[[check]]
+name = "cone"
+script = "examples/cone/generate.py"
+group = "quick"    # cone/Farkas nonneg-combination (determined + overcomplete-basis BFS); ~0.3 s
+
+[[check]]
 name = "uniform_tail"
 script = "examples/uniform_tail/generate.py"
 group = "quick"    # uniform-in-recursion monotone tail: arm-dominance across hub states
@@ -212,6 +253,11 @@ group = "quick"    # competitor-extremality (raw rho, monomer-dimer)
 name = "bg_extremality"
 script = "examples/bg_extremality/generate.py"
 group = "quick"    # BG competitor extremality (rooted Phi -- correct quantity)
+
+[[check]]
+name = "unimodal_maximum"
+script = "examples/unimodal_maximum/generate_nearstar.py"
+group = "quick"    # near-star payoff Phi^11(N(0,n)) <= 1 (kernel-green); ~0.5 s
 
 [evolve]
 # LLM-driven evolutionary certificate search. NOT part of the trust model:
