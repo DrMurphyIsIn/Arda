@@ -181,5 +181,104 @@ theorem bridgeC3 (mu : ℚ) (h0 : 1/3 ≤ mu) (h1 : mu ≤ 1/2) :
   rw [hglem, ← mul_div_assoc, div_le_iff₀ hden]
   nlinarith [hRq]
 
+/-! ## Structural helper lemmas (Bcap min-collapse, base monotonicity) -/
+
+/-- `Bcap mu ≤ glemma mu` (min never exceeds its glemma slot). -/
+theorem Bcap_le_glemma (mu : ℚ) : Bcap mu ≤ glemma mu :=
+  le_trans (min_le_right _ _) (min_le_left _ _)
+
+/-- `Bcap mu ≤ 1`. -/
+theorem Bcap_le_one (mu : ℚ) : Bcap mu ≤ 1 :=
+  le_trans (min_le_right _ _) (min_le_right _ _)
+
+/-- `glemma mu ≥ 0` for `mu ≥ 0` (in fact `> 0`). -/
+theorem glemma_nonneg (mu : ℚ) (h : 0 ≤ mu) : 0 ≤ glemma mu := by
+  unfold glemma GAMMA W
+  positivity
+
+/-- `master_ub mu ≥ 0` for `mu ≥ 0`. -/
+theorem master_ub_nonneg (mu : ℚ) (h : 0 ≤ mu) : 0 ≤ master_ub mu := by
+  unfold master_ub W
+  have : (0:ℚ) < 2 + mu := by linarith
+  positivity
+
+/-- `Bcap mu ≥ 0` for `mu ≥ 0`. -/
+theorem Bcap_nonneg (mu : ℚ) (h : 0 ≤ mu) : 0 ≤ Bcap mu := by
+  unfold Bcap
+  exact le_min (master_ub_nonneg mu h) (le_min (glemma_nonneg mu h) (by norm_num))
+
+/-- `base 1 mu = 7/6 + mu/2`. -/
+theorem base_one (mu : ℚ) : base 1 mu = 7 / 6 + mu / 2 := by
+  unfold base; push_cast; ring
+
+/-- `base 2 mu = (10 + 6 mu)/9`. -/
+theorem base_two (mu : ℚ) : base 2 mu = (10 + 6 * mu) / 9 := by
+  unfold base; push_cast; ring
+
+/-- `base k mu ≥ 0` for `mu ≥ 0`. -/
+theorem base_nonneg (k : ℕ) (mu : ℚ) (h : 0 ≤ mu) : 0 ≤ base k mu := by
+  unfold base
+  have hk : (0:ℚ) ≤ (k:ℚ) := by positivity
+  have hden : (0:ℚ) < 3 * ((k:ℚ) + 1) := by positivity
+  apply div_nonneg _ (le_of_lt hden)
+  nlinarith [hk, h]
+
+/-- k-domination for `mu ≤ 1/3`: `base k mu ≤ base 1 mu` for `k ≥ 1`.
+    From the exact identity `base 1 mu - base k mu = (k-1)(1-3mu)/(6(k+1)) ≥ 0`. -/
+theorem base_le_base_one (k : ℕ) (mu : ℚ) (hk : 1 ≤ k) (hmu : mu ≤ 1 / 3) :
+    base k mu ≤ base 1 mu := by
+  have hkQ : (1:ℚ) ≤ (k:ℚ) := by exact_mod_cast hk
+  have hden : (0:ℚ) < 3 * ((k:ℚ) + 1) := by positivity
+  rw [base_one]
+  unfold base
+  rw [div_le_iff₀ hden]
+  nlinarith [hkQ, hmu, mul_nonneg (by linarith : (0:ℚ) ≤ (k:ℚ) - 1) (by linarith : (0:ℚ) ≤ 1 - 3*mu)]
+
+/-- For `mu ≥ 1/3`: `base k mu ≤ 1 + mu` (all k).
+    From `1 + mu - base k mu = (3mu-1)/(3(k+1)) ≥ 0`. -/
+theorem base_le_one_add (k : ℕ) (mu : ℚ) (hmu : 1 / 3 ≤ mu) :
+    base k mu ≤ 1 + mu := by
+  have hkQ : (0:ℚ) ≤ (k:ℚ) := by positivity
+  have hden : (0:ℚ) < 3 * ((k:ℚ) + 1) := by positivity
+  unfold base
+  rw [div_le_iff₀ hden]
+  nlinarith [hkQ, hmu]
+
+/-! ## The arm line `mu = 1` -/
+
+/-- `master_ub 1 = W`. -/
+theorem master_ub_one : master_ub 1 = W := by unfold master_ub; norm_num
+
+/-- `glemma 1 = W^2 (5/4)^11`, and `W ≤ glemma 1` (so the min ignores glemma). -/
+theorem W_le_glemma_one : W ≤ glemma 1 := by
+  unfold glemma GAMMA W; norm_num
+
+/-- `glemma 1 ≤ 1`. -/
+theorem glemma_one_le_one : glemma 1 ≤ 1 := by
+  unfold glemma GAMMA W; norm_num
+
+/-- `Bcap 1 = W`. -/
+theorem Bcap_one : Bcap 1 = W := by
+  unfold Bcap
+  rw [master_ub_one]
+  rw [min_eq_left (le_min W_le_glemma_one (by unfold W; norm_num))]
+
+/-- `T = HomogMaster.Tval`. -/
+theorem T_eq_Tval : T = HomogMaster.Tval := by
+  unfold T W HomogMaster.Tval; norm_num
+
+/-- `GS k 1 = HomogMaster.armGS k` (arm-line identity). -/
+theorem GS_one_eq_armGS (k : ℕ) : GS k 1 = HomogMaster.armGS k := by
+  unfold GS HomogMaster.armGS
+  rw [Bcap_one]
+  congr 1
+  unfold base
+  push_cast
+  ring
+
+/-- **mu = 1 case.** `GS k 1 ≤ T` for `k ≥ 1` (via the assembled arm induction). -/
+theorem GS_arm_le (k : ℕ) (hk : 1 ≤ k) : GS k 1 ≤ T := by
+  rw [GS_one_eq_armGS, T_eq_Tval]
+  exact HomogMaster.armGS_le k hk
 
 end HomogMasterAssembled
