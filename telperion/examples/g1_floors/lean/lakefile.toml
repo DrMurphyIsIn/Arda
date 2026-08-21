@@ -32,3 +32,6 @@ name = "PetersenCertificate"
 
 [[lean_lib]]
 name = "FlatnessDomination"
+
+[[lean_lib]]
+name = "Duality"

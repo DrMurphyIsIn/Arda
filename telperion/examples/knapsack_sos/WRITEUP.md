@@ -122,8 +122,15 @@ pair-difference Gram matrices are the complete harmonic block data of M_d
 spectrum from the blocks with multiplicities, error < 1e-14, plus
 brute-force enumeration matches).
 
-Literature (standard, not formalized): the moment-matrix/SOS-refutation
-duality ("M_d PSD and constraints respected => no degree-2d refutation").
+UPDATE 2026-08-21: the moment/SOS duality is NOW FORMALIZED (Duality.lean,
+axioms-clean): SOSRefutation (squares deg <= d, cofactors deg <= 2d --
+more generous than the textbook product bound), the abstract no_refutation
+obstruction, the pseudoexpectation as a linear functional on MvPolynomial
+(boolean ideal killed unconditionally; linear constraint killed below full
+support -- the truncation is load-bearing), and the conditional master
+knapsack_no_refutation. The single remaining unformalized layer is the
+named hsq hypothesis: moment PSD in functional form (harmonic
+completeness, Python-pinned exact).
 
 ## 4. Methods: the pipeline discipline
 
@@ -162,8 +169,23 @@ duality ("M_d PSD and constraints respected => no degree-2d refutation").
 - Machine-checked SOS *upper* bounds (certificate checking) are routine;
   we are not aware of a prior kernel-checked *asymptotic lower bound*
   (nonexistence of certificates, symbolic in the instance size) in any
-  proof assistant. This claim is provisional pending a proper search of the
-  formalization literature.
+  proof assistant. A multi-angle search (2026-08-21) of the Lean/mathlib,
+  Coq/Rocq, Isabelle/AFP, ACL2 and HOL ecosystems found NO formalized
+  proof-complexity lower bound of any kind (resolution, polynomial
+  calculus, Nullstellensatz, cutting planes, Frege, SOS) and no formalized
+  pseudoexpectation/moment-duality construction; the entire formalized
+  Positivstellensatz literature (Harrison's HOL Light SOS, Coq micromega,
+  Isabelle Sum_of_Squares, leanprover/sos) is on the certificate-CHECKING
+  side. Two important adjacent priors bound the claim: Eberl's Isabelle/AFP
+  Omega(n log n) comparison-sorting bound (2017) and the Lean formalization
+  of Huang's sensitivity theorem (2019) are kernel-checked asymptotic
+  lower bounds in QUERY/decision-tree models -- so the claim must be
+  scoped to PROOF COMPLEXITY, phrased "to our knowledge", and cite both
+  preemptively. Verified proof-format checkers (LRAT/GRAT/CakeML
+  VIPR/PBLean) verify individual proofs, not nonexistence: adjacent
+  infrastructure, not overlap. Bounded-arithmetic metamathematics of
+  resolution lower bounds (arXiv:2411.15515, 2506.16956) is pen-and-paper
+  formalizability theory, related but not machine-checked.
 
 ## 6. Ceiling (read before extrapolating)
 
@@ -180,8 +202,15 @@ infrastructure (the fwdDiff/telescoping template, the emitter pattern), and
 
 1. Kernel-check the harmonic-completeness layer (the one Python pin):
    z-vector Gram derivation + multiplicity count.
-2. Formalize the moment/SOS duality to state the lower bound in refutation
-   form end-to-end.
+2. DONE (2026-08-21, Duality.lean): the moment/SOS duality layer --
+   SOSRefutation, the abstract no_refutation obstruction, the
+   pseudoexpectation as an honest linear functional on MvPolynomial with
+   unconditional boolean-ideal kill and degree-guarded linear-constraint
+   kill (the truncation is load-bearing: at full support the telescoping
+   identity genuinely fails), and the conditional master
+   knapsack_no_refutation (squares deg <= d, cofactors deg <= 2d -- more
+   generous than the textbook product bound). Residual: the named hsq
+   hypothesis = moment PSD in functional form (harmonic completeness).
 3. 3XOR: the per-instance structure theorem (conflict-free width-2d closure
    => block-rank-one PSD; see `xor3_pseudoexpectation.py` and
    `Xor3Structure.lean`) with Tseitin-on-Petersen as the canonical certified
