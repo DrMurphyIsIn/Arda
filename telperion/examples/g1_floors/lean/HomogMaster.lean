@@ -157,3 +157,71 @@ theorem base_dk_identity (k mu : ℝ) (hk : k + 1 ≠ 0) :
   ring
 
 end HomogMaster
+
+namespace HomogMaster
+
+/-- Arm-line homogeneous value: `armGS k = ((6k+4)/(3(k+1)))^11 * W^k`, `W=64/621`.
+    This is `GS(k, μ=1)` with `Bcap(1)=W`. -/
+def armGS (k : ℕ) : ℚ := ((6 * (k : ℚ) + 4) / (3 * ((k : ℚ) + 1))) ^ 11 * (64 / 621) ^ k
+
+/-- `T = (5/3)^11 * (64/621)`. -/
+def Tval : ℚ := (5 / 3) ^ 11 * (64 / 621)
+
+/-- `armGS 1 = T` exactly (the arm). -/
+theorem armGS_one : armGS 1 = Tval := by norm_num [armGS, Tval]
+
+/-- Cleared per-step: base ratio `≤ 16/15` for `k ≥ 1` (`18k²+48k-66 ≥ 0`, tight k=1). -/
+theorem arm_base_ratio_le (k : ℕ) (hk : 1 ≤ k) :
+    (6 * (k : ℚ) + 10) * (3 * (k : ℚ) + 3) * 15 ≤ 16 * (3 * (k : ℚ) + 6) * (6 * (k : ℚ) + 4) := by
+  have hk1 : (1 : ℚ) ≤ (k : ℚ) := by exact_mod_cast hk
+  nlinarith [hk1, sq_nonneg ((k : ℚ) - 1)]
+
+/-- Per-step decrease: `armGS (k+1) ≤ armGS k` for `k ≥ 1`. -/
+theorem armGS_step (k : ℕ) (hk : 1 ≤ k) : armGS (k + 1) ≤ armGS k := by
+  have hkQ : (0 : ℚ) ≤ (k : ℚ) := by positivity
+  have hden1 : (0 : ℚ) < 3 * ((k : ℚ) + 1) := by positivity
+  have hden2 : (0 : ℚ) < 3 * (((k : ℚ) + 1) + 1) := by positivity
+  -- ratio = (base(k+1)/base(k))^11 * (64/621); bound base ratio by 16/15.
+  have hbr : (6 * ((k : ℚ) + 1) + 4) / (3 * (((k : ℚ) + 1) + 1))
+      ≤ (16 / 15) * ((6 * (k : ℚ) + 4) / (3 * ((k : ℚ) + 1))) := by
+    have hk1 : (1 : ℚ) ≤ (k : ℚ) := by exact_mod_cast hk
+    have hd1 : (0 : ℚ) < 3 * (((k : ℚ) + 1) + 1) := by positivity
+    have hd2 : (0 : ℚ) < 3 * ((k : ℚ) + 1) := by positivity
+    rw [div_le_iff₀ hd1, mul_comm (16 / 15 : ℚ), mul_assoc, div_mul_eq_mul_div,
+      le_div_iff₀ hd2]
+    nlinarith [hk1, sq_nonneg ((k : ℚ) - 1), hkQ]
+  have hbase_pos : (0 : ℚ) ≤ (6 * ((k : ℚ) + 1) + 4) / (3 * (((k : ℚ) + 1) + 1)) := by positivity
+  have hpow : ((6 * ((k : ℚ) + 1) + 4) / (3 * (((k : ℚ) + 1) + 1))) ^ 11
+      ≤ ((16 / 15) * ((6 * (k : ℚ) + 4) / (3 * ((k : ℚ) + 1)))) ^ 11 :=
+    pow_le_pow_left₀ hbase_pos hbr 11
+  have hstep_cert : ((16 : ℚ) / 15) ^ 11 * (64 / 621) ≤ 1 := by norm_num
+  have hWk : (0 : ℚ) ≤ (64 / 621 : ℚ) ^ k := by positivity
+  have hbk : (0 : ℚ) ≤ ((6 * (k : ℚ) + 4) / (3 * ((k : ℚ) + 1))) ^ 11 := by positivity
+  -- expand armGS (k+1)
+  have e : armGS (k + 1)
+      = ((6 * ((k : ℚ) + 1) + 4) / (3 * (((k : ℚ) + 1) + 1))) ^ 11 * (64 / 621) * (64 / 621) ^ k := by
+    unfold armGS; push_cast; rw [pow_succ]; ring
+  rw [e]
+  calc ((6 * ((k : ℚ) + 1) + 4) / (3 * (((k : ℚ) + 1) + 1))) ^ 11 * (64 / 621) * (64 / 621) ^ k
+      ≤ ((16 / 15) * ((6 * (k : ℚ) + 4) / (3 * ((k : ℚ) + 1)))) ^ 11 * (64 / 621) * (64 / 621) ^ k := by
+        apply mul_le_mul_of_nonneg_right _ hWk
+        apply mul_le_mul_of_nonneg_right hpow (by norm_num)
+    _ = ((6 * (k : ℚ) + 4) / (3 * ((k : ℚ) + 1))) ^ 11 * ((16 / 15) ^ 11 * (64 / 621)) * (64 / 621) ^ k := by
+        rw [mul_pow]; ring
+    _ ≤ ((6 * (k : ℚ) + 4) / (3 * ((k : ℚ) + 1))) ^ 11 * 1 * (64 / 621) ^ k := by
+        apply mul_le_mul_of_nonneg_right _ hWk
+        apply mul_le_mul_of_nonneg_left hstep_cert hbk
+    _ = armGS k := by unfold armGS; ring
+
+/-- **L4 assembled (arm line).** `armGS k ≤ T` for all `k ≥ 1`, equality iff `k = 1`. -/
+theorem armGS_le (k : ℕ) (hk : 1 ≤ k) : armGS k ≤ Tval := by
+  induction k with
+  | zero => omega
+  | succ n ih =>
+    rcases Nat.lt_or_ge 1 (n + 1) with h | h
+    · have hn1 : 1 ≤ n := by omega
+      exact le_trans (armGS_step n hn1) (ih hn1)
+    · have hn0 : n = 0 := by omega
+      subst hn0; rw [armGS_one]
+
+end HomogMaster
