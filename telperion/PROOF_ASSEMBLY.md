@@ -36,8 +36,8 @@ structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in
 - **Abstract g-lemma, kernel-proven** (2026-08-20): `gV_le` — `g(C) ≤ γ = W²(5/3)¹¹` for every block of
   the `Blk` cavity model — is a kernel-checked Lean theorem in the standalone
   `examples/g1_floors/lean/GLemma.lean` package (achievability supplied structurally by
-  `muV_nonleaf_le_half`). Port into `R3Cert` (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) in review
-  (PR #20).
+  `muV_nonleaf_le_half`). Ported into `R3Cert` (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) via
+  PR #20, merged 2026-08-21.
 - **Branch-induction wiring** (that `g_bound<γ` + children-master ⟹ parent-master, exactly, all cases).
   — **NARROWED** (2026-08-20; previously a monolithic OPEN). The correction-and-reduction cycle landed on
   `main` (`R3Cert/CappedJointAchievable.lean`, kernel-checked, axioms clean):
@@ -49,9 +49,9 @@ structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in
   wall is a single-child phenomenon), `prodBcap_le_prodGlemma`, and the reduction
   `gstep_le_one_of_glemmaBound` (a true theorem, but its `prodGlemma` hypothesis over-counts small-μ
   children — `glemma(μ)>1` for `μ<μ*≈0.307` — so the closing vehicle is `Bcap ≤ factorR` instead).
-  **The closure is on the PR #20 branch, in review:** `CappedJointClosure.lean:gstep_le_one_achievable`
-  — the config g-step `≤ 1` at **every arity**, unconditionally over achievable messages (ℚ→ℝ cast +
-  arity dispatch onto the ported `gstep_lt_gamma`), kernel-clean. Pending merge.
+  **The closure is on `main`** (PR #20, merged 2026-08-21): `CappedJointClosure.lean:`
+  `gstep_le_one_achievable` — the config g-step `≤ 1` at **every arity**, unconditionally over
+  achievable messages (ℚ→ℝ cast + arity dispatch onto the ported `gstep_lt_gamma`), kernel-clean.
 
 ## R2 — multi-hub extremality
 
@@ -126,9 +126,10 @@ steps.
 
 The **remaining gaps** — all structural or verified-in-range, none analytic — are:
 
-1. **R1 Branch-induction wiring** — **narrowed 2026-08-20 on `main`, closed on the PR #20 branch**
-   (`gstep_le_one_achievable`, every arity, unconditional over achievable messages; kernel-clean).
-   Pending review + merge — until then still *the load-bearing open piece of R1 on `main`*.
+1. **R1 Branch-induction wiring** — the config-model g-step crux is **closed on `main`** (PR #20,
+   merged 2026-08-21: `gstep_le_one_achievable`, every arity, unconditional over achievable
+   messages; kernel-clean). The R1 residual is composing that closure into the rooted-tree master
+   induction, together with the leaf-child all-n case (item 2).
 2. **R1 leaf-child case** — census-verified, needs all-n rigor.
 3. **R2 multi-hub maximality** — "DN is the multi-hub max at each n," verified n≤13, not proven.
 4. **Per-root reduction** — verified n≤10 (a restatement; likely provable but not yet).

@@ -42,7 +42,8 @@ no `native_decide`:
   abstract g-lemma `gV_le`, itself kernel-proven over the cavity model in the
   standalone
   [`telperion/examples/g1_floors/lean/`](telperion/examples/g1_floors/lean/)
-  package. In review (PR #20): the `gV_le` port into `R3Cert` **plus the full
+  package. Landed via PR #20 (merged 2026-08-21): the `gV_le` port into
+  `R3Cert` (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) **plus the full
   closure** — `CappedJointClosure.lean:gstep_le_one_achievable`, the config
   g-step `≤ 1` at **every arity**, unconditionally over achievable messages.
 
@@ -63,10 +64,10 @@ induction and proven its base and analytic steps:
   sufficient);
 - **R1** single-hub extremality — the branching analytic steps (g-lemma
   unimodality over ℝ, two rational leaves) **PROVEN**; the inductive wiring's
-  g-step crux **NARROWED on `main`** (2026-08-20; kernel-checked per-arity
-  pieces + achievability correction) and **CLOSED on the PR #20 branch, in
-  review** (`gstep_le_one_achievable`, every arity, riding the kernel-proven
-  abstract g-lemma `gV_le` — see `telperion/PROOF_ASSEMBLY.md` §R1);
+  g-step crux **CLOSED** (PR #20, merged 2026-08-21: `gstep_le_one_achievable`,
+  every arity, riding the kernel-proven abstract g-lemma `gV_le`); remaining:
+  the leaf-child all-n case and composing the config-model closure into the
+  rooted-tree master induction (see `telperion/PROOF_ASSEMBLY.md` §R1);
 - **R2** the double-near-star family bound `Φ¹¹(DN(a,b))<1 ∀a,b≥2` — **PROVEN**;
   multi-hub *maximality* verified n≤13, **OPEN**.
 

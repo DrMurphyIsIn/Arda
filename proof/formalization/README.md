@@ -1,7 +1,7 @@
 # R3Cert — the Lean 4 formalization
 
 The machine-checked layer of the Brualdi–Goldwasser campaign: a single Lean 4
-library (`R3Cert`, 106 modules, all imported by the root `R3Cert.lean` — a
+library (`R3Cert`, 109 modules, all imported by the root `R3Cert.lean` — a
 green `lake build` compiles everything; there are no orphaned files).
 
 > **Status: BUILDS CLEAN on Lean 4 v4.32.0 + pinned Mathlib.** No `sorry`, no
@@ -25,11 +25,12 @@ green `lake build` compiles everything; there are no orphaned files).
 
 The abstract g-lemma itself — `gV_le : g(C) ≤ γ` over the `Blk` cavity model —
 is kernel-proven in the standalone package
-`../../telperion/examples/g1_floors/lean/GLemma.lean`. In review (PR #20): its
-port into this library (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) plus
-the full closure `CappedJointClosure.lean:gstep_le_one_achievable` — the
-config g-step `≤ 1` at every arity, unconditionally over achievable messages
-(the ℚ→ℝ cast seam closed via `Bcap ≤ factorR` + the ported `gstep_lt_gamma`).
+`../../telperion/examples/g1_floors/lean/GLemma.lean`. Landed via PR #20
+(merged 2026-08-21): its port into this library (`GArmExtAbstract.lean`,
+`GLemmaAbstract.lean`) plus the full closure
+`CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step `≤ 1`
+at every arity, unconditionally over achievable messages (the ℚ→ℝ cast seam
+closed via `Bcap ≤ factorR` + the ported `gstep_lt_gamma`).
 
 Generated modules carry provenance headers naming the generator and its
 self-checks (regenerate and diff via `../verification/gen_r47cert_cells.py`).

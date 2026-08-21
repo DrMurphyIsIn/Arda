@@ -15,8 +15,8 @@ modules at the snapshot, not to these):
 - `proof/formalization/R3Cert/`: the capped-joint g-step layer (`GStepCore`,
   `GLemmaConfig`/`GLemmaAssembly`, `CappedJointConfig`/`CappedJointSkeleton`/
   `CappedJointAchievable`) and related frontier modules — the commit series
-  `2aa7c98` → `8fb4f8d` (ending in PR #19; PR #20 in review), plus the
-  `e1d25e4` reframe.
+  `2aa7c98` → `8fb4f8d` (ending in PR #19; the g-lemma port + closure landed
+  via PR #20, merged 2026-08-21), plus the `e1d25e4` reframe.
 - `telperion/`: the Positivstellensatz emitter family, the Chvátal–Gomory
   integer-rounding emitter, the Handelman/Putinar certificate finders, and the
   honesty gates (nonvacuity, witnessed-bound) — PRs #8–#10, #17, #18 plus

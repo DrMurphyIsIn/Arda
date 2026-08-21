@@ -10,7 +10,7 @@ certified at exact-arithmetic rigor in Python, and what is named-open.
 
 | Path | Contents |
 |---|---|
-| `formalization/` | The Lean 4 project (toolchain `lean-toolchain`, Mathlib pinned in `lake-manifest.json`). Library root `R3Cert.lean` imports all 106 modules — a green `lake build` compiles everything; there are no orphaned files. |
+| `formalization/` | The Lean 4 project (toolchain `lean-toolchain`, Mathlib pinned in `lake-manifest.json`). Library root `R3Cert.lean` imports all 109 modules — a green `lake build` compiles everything; there are no orphaned files. |
 | `verification/` | ~130 Python modules: the load-bearing certificate/verification modules (all invoked by `../verify.py`), the certificate generator (`gen_r47cert_cells.py`, frozen for provenance), exploratory probes and honest no-go records of failed proof routes, and unit tests (`tests/`). |
 | `verify.py` | One-command verification: runs every load-bearing module's `run_all()`. Every claim is an assert; ~20–40 min. |
 | `docs/` | `RESULT_LAPLACIAN_RATIO.md` (the result document), the session report, `design/` (the formalization campaign's design + independent-review documents), `notes/` (two technical companion notes: the permanent/matching bridge and the merge-system confluence). |
@@ -48,8 +48,9 @@ The chain, bottom to top:
    messages satisfy `μ ≤ 1/2` — the relocated integrality content), the
    kernel-checked single-child (`0<μ≤1/2`) and two-child (unconditional)
    g-step bounds, and the bridge toward the abstract g-lemma `gV_le`
-   (kernel-proven in `../telperion/examples/g1_floors/lean/`). In review
-   (PR #20): the `gV_le` port plus the full closure
+   (kernel-proven in `../telperion/examples/g1_floors/lean/`). Landed via
+   PR #20 (merged 2026-08-21): the `gV_le` port (`GArmExtAbstract.lean`,
+   `GLemmaAbstract.lean`) plus the full closure
    `CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step
    `≤ 1` at every arity, unconditionally over achievable messages.
 
@@ -68,9 +69,10 @@ lemma, and the G1 floor/endpoint certificates.
 
 ## What is named-open
 
-- **The g-step closure merge**: `gstep_le_one_achievable` (the config g-step
-  `≤ 1` at every arity) is proven, kernel-clean, on the PR #20 branch — open
-  only in the sense of pending review + merge.
+- **The g-step composition**: `gstep_le_one_achievable` landed (PR #20); what
+  remains is composing the config-model closure into the rooted-tree master
+  induction (the remaining *tight* content is identified with the master
+  inequality in `docs/GSTEP_STEP1_IS_THE_CRUX.md`).
 - **`R47Rate`**: the Lean port of the rate bound `pi ≤ (4/3)·rhoB^n` (the
   parse — its hardest seam — is already green; the remaining algebra is
   specified in `docs/design/P5_SEAM_DESIGN.md`).

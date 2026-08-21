@@ -96,11 +96,13 @@ cavity messages satisfy `μ ≤ 1/2`, and that hypothesis is the relocated integ
 (unconditional for two children: the integrality wall is a single-child phenomenon), and the
 reduction `gstep_le_one_of_glemmaBound`; (c) the abstract g-lemma `gV_le` (≤-form, all blocks) is
 kernel-proven over the `Blk` cavity model (`telperion/examples/g1_floors/lean/GLemma.lean`), and
-the PR #20 branch (in review) carries both the `R3Cert` port and the **full closure**
+PR #20 (merged 2026-08-21) landed both the `R3Cert` port and the **full closure**
 `CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step `≤ 1` at every arity,
-unconditionally over achievable messages, kernel-clean. The mechanical seams are done pending
-review + merge. Remaining *research* content of Gap 1: the equality characterization / strict gap
-and the child-envelope feed into `node_le_omega`.
+unconditionally over achievable messages, kernel-clean on `main`. The mechanical seams are done.
+Remaining *research* content of Gap 1: the equality characterization / strict gap and the
+child-envelope feed into `node_le_omega` — which the follow-on decomposition
+(`GSTEP_2TYPE_STEP2_CLOSED.md`, `GSTEP_STEP1_IS_THE_CRUX.md`, `GSTEP_HANDELMAN_RECIPE.md`,
+2026-08-21) identifies with the master inequality: every open thread is that one crux.
 
 ### Gap 2: realization bridge (Full STEP 4)
 **Tractability: hard Lean formalization, not new mathematics** (the `p→∞` mechanism is already a

@@ -69,19 +69,21 @@ where stated:
    children (`glemma(μ) > 1` for `μ < μ* ≈ 0.307`), so it is not satisfiable at higher
    arity — a true theorem, but not the closing vehicle. The correct cap is
    `Bcap ≤ factorR` (capped at 1).
-4. **The abstract g-lemma and the closure** (in review, PR #20). `gV_le` is kernel-proven
-   over the `Blk` cavity model in the standalone
+4. **The abstract g-lemma and the closure** (PR #20, **merged 2026-08-21**). `gV_le` is
+   kernel-proven over the `Blk` cavity model in the standalone
    [`examples/g1_floors/lean/`](examples/g1_floors/lean/) package (`GLemma.lean`, with
-   `muV_nonleaf_le_half` supplying achievability structurally). The PR #20 branch ports it
-   into `R3Cert` (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) **and closes the ℚ→ℝ
-   cast seam**: `CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step is
+   `muV_nonleaf_le_half` supplying achievability structurally). PR #20 ports it into
+   `R3Cert` (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) **and closes the ℚ→ℝ cast
+   seam**: `CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step is
    `≤ 1` at **every arity**, unconditionally over achievable messages (leaf `W(4/3)¹¹<γ`;
    single child via `single_child_le_one` + the arm `μ=1`; `|l|≥2` via the ported
-   `gstep_lt_gamma`, through `Bcap ≤ factorR`). Kernel-clean on the branch; **pending
-   review + merge**.
+   `gstep_lt_gamma`, through `Bcap ≤ factorR`). Kernel-clean, on `main`.
 
-Net: on `main` the R1 wiring is a short, named bridge between two kernel-checked layers;
-on the PR #20 branch that bridge is a theorem. `conjecture1_proved = False` still.
+Net: the config g-step is a theorem on `main`. The R1 residuals are the leaf-child all-n
+case and composing the config-model closure into the rooted-tree master induction; the
+follow-on decomposition docs (`../proof/docs/GSTEP_2TYPE_STEP2_CLOSED.md`,
+`../proof/docs/GSTEP_STEP1_IS_THE_CRUX.md`, 2026-08-21) identify the remaining *tight*
+content with the master inequality. `conjecture1_proved = False` still.
 
 ---
 
@@ -147,10 +149,10 @@ aware** (it is a growth-rate, not an algebraic certificate), and **integrality-b
    the tie-recursive family — that the amplitude product of any non-tie tree misses
    `(621/64)^(n/11)` by an amount bounded below by an arithmetic (not smooth, not local)
    quantity. The `sporadic_tie` gate is the anchor; the sufficiency is the research frontier.
-2. **The ≤-half assembly — land the g-step closure** (see the 2026-08-20 section above):
-   `gstep_le_one_achievable` is proven on the PR #20 branch; what remains is review +
-   merge, then composing with the leaf-child all-n case and the multi-hub side (R2) —
-   mechanical/structural work, not open mathematics, unlike lead 1.
+2. **The ≤-half assembly — compose the landed g-step closure** (see the 2026-08-20
+   section above): `gstep_le_one_achievable` is on `main` (PR #20, merged 2026-08-21);
+   what remains is composing it with the leaf-child all-n case and the multi-hub side
+   (R2) — mechanical/structural work, not open mathematics, unlike lead 1.
 
 ---
 
