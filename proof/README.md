@@ -13,7 +13,7 @@ certified at exact-arithmetic rigor in Python, and what is named-open.
 | `formalization/` | The Lean 4 project (toolchain `lean-toolchain`, Mathlib pinned in `lake-manifest.json`). Library root `R3Cert.lean` imports all 109 modules — a green `lake build` compiles everything; there are no orphaned files. |
 | `verification/` | ~130 Python modules: the load-bearing certificate/verification modules (all invoked by `../verify.py`), the certificate generator (`gen_r47cert_cells.py`, frozen for provenance), exploratory probes and honest no-go records of failed proof routes, and unit tests (`tests/`). |
 | `verify.py` | One-command verification: runs every load-bearing module's `run_all()`. Every claim is an assert; ~20–40 min. |
-| `docs/` | `RESULT_LAPLACIAN_RATIO.md` (the result document), the session report, `design/` (the formalization campaign's design + independent-review documents), `notes/` (two technical companion notes: the permanent/matching bridge and the merge-system confluence). |
+| `docs/` | The working documents — start at the reading guide [`docs/README.md`](docs/README.md): the campaign map (`PROOF_STATE_AND_PLAN.md`), the result document (`RESULT_LAPLACIAN_RATIO.md`), the dated frontier analyses (`GSTEP_*`), candidate verdicts, `design/` (formalization design + independent reviews), `notes/` (two technical companion notes). |
 | `figures/` | TikZ sources, rendered figures, and generation scripts. |
 
 ## What is machine-checked (Lean 4, no `sorry`, no added axioms)

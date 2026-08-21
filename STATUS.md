@@ -1,15 +1,17 @@
 # Status — one-glance index
 
-A navigable summary of where the Brualdi–Goldwasser proof campaign and the
-Telperion engine stand. This page is deliberately **thin**: each row points to
-the canonical document that owns the detail, so nothing here can silently drift
-out of sync with the proof. `conjecture1_proved = False`.
+A navigable summary of where the Brualdi–Goldwasser proof campaign, the
+Telperion engine, and the proof-complexity arc stand. This page is
+deliberately **thin**: each row points to the canonical document that owns the
+detail, so nothing here can silently drift out of sync with the proof.
+`conjecture1_proved = False`.
 
 Source-of-truth documents:
 - [`telperion/PROOF_STATUS.md`](telperion/PROOF_STATUS.md) — the honest map: proven, ruled-out (with reasons), and the live leads.
 - [`telperion/PROOF_ASSEMBLY.md`](telperion/PROOF_ASSEMBLY.md) — the full ≤-half logical structure, every piece tagged PROVEN / VERIFIED-in-range / OPEN.
+- [`proof-complexity/README.md`](proof-complexity/README.md) — the P-vs-NP certificate ladder index.
 - [`PUBLICATION_LEDGER.md`](PUBLICATION_LEDGER.md) — conservative, provisional novelty tally.
-- [`proof/`](proof/) — the Lean 4 formalization snapshot (R3Cert / R47 / Φ≤1) and exact-arithmetic verification harnesses.
+- [`proof/`](proof/) — the Lean 4 formalization (R3Cert / R47 / Φ≤1 / capped-joint) and exact-arithmetic verification harnesses.
 
 ---
 
@@ -76,3 +78,22 @@ compile failure, never a false theorem. Full detail in
 Version `0.1.6`. Core dependency: sympy (`sdp` extra adds cvxpy for the SDP
 finders). The BG graph-certificate modules additionally use networkx (lazy
 import; install the `bg`/`dev` extra).
+
+---
+
+## Proof complexity — the P-vs-NP certificate ladder
+
+Kernel-checked lower bounds in proof complexity, same discipline as the BG
+campaign (exact validation first, Lean kernel second). Front door:
+[`proof-complexity/README.md`](proof-complexity/README.md); conservative
+novelty positioning in [`PUBLICATION_LEDGER.md`](PUBLICATION_LEDGER.md)
+rows 8–9. The mathematics is known (Grigoriev, Laurent, Schoenebeck,
+Kurpisz–Leppänen–Mastrolilli); the claimed contribution is the certified
+pipeline and the machine-checked symbolic-*n* statements.
+
+| Rung | Statement | Status | Canonical detail |
+|---|---|---|---|
+| **Knapsack (Grigoriev)** | symbolic-*n* SOS degree lower bound via rank-one collapse of the harmonic blocks, `g_k = ∏(n−2j)/(2(n−2j−1))`, uniform in degree | **Lean kernel-checked** (51 theorems, axioms clean; scalar layer + d=4 Gram bridge; harmonic-completeness layer Python-pinned) | [`WRITEUP.md`](telperion/examples/knapsack_sos/WRITEUP.md) |
+| **3XOR** | per-instance certified machinery: closure-consistency ⟹ block-rank-one PSD; Tseitin-on-Petersen (width exactly 6) as canonical instance | structure theorem + Petersen instance **kernel-checked**; asymptotic expansion layer not formalized | `proof-complexity/README.md` |
+| **Crystallized emitter shapes** | `finite_decide` (ℕ-table kernel `decide`), `fwd_telescope` (W2 prover), `rational_identity` (Gram-bridge shapes) | production, drift-gated | `telperion/examples/` |
+| **Next** | duality layer; LRS; generic 3XOR emitter; planted clique (W2) | **OPEN** (planned) | `proof-complexity/README.md` |
