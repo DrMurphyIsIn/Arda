@@ -267,7 +267,7 @@ exists.  First fully kernel-checked end-to-end refutation-form statement
 of the pipeline (for odd N the refuted system is genuinely infeasible:
 `KnapsackSOS.knapsack_unsat`). -/
 theorem knapsack_no_refutation_d1 (N : ℕ) (hN : 2 < N) :
-    IsEmpty (SOSRefutation (knapsackSystem N) 1 2) :=
+    IsEmpty (SOSRefutation (knapsackSystem N) 1 (fun _ => 2)) :=
   knapsack_no_refutation N 1 (by omega)
     (hsq_of_subsetForm (N : ℚ) 1 (subsetForm_d1 N hN))
 
@@ -275,7 +275,7 @@ theorem knapsack_no_refutation_d1 (N : ℕ) (hN : 2 < N) :
 finite-dimensional subset form (harmonic completeness), for general d. -/
 theorem knapsack_no_refutation_of_subsetForm (N d : ℕ) (hd : 2 * d < N)
     (H : SubsetFormPSD (N : ℚ) N d) :
-    IsEmpty (SOSRefutation (knapsackSystem N) d (2 * d)) :=
+    IsEmpty (SOSRefutation (knapsackSystem N) d (fun _ => 2 * d)) :=
   knapsack_no_refutation N d hd (hsq_of_subsetForm (N : ℚ) d H)
 
 end Duality

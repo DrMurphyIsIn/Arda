@@ -44,23 +44,23 @@ open MvPolynomial
 /-- A degree-bounded Positivstellensatz refutation of `{g i = 0}`:
 `-1 = Σ s_j² + Σ p_i·g_i` with square degrees ≤ ds, cofactor degrees ≤ dc. -/
 structure SOSRefutation {N : ℕ} {ι : Type*} [Fintype ι]
-    (g : ι → MvPolynomial (Fin N) ℚ) (ds dc : ℕ) where
+    (g : ι → MvPolynomial (Fin N) ℚ) (ds : ℕ) (dc : ι → ℕ) where
   k : ℕ
   squares : Fin k → MvPolynomial (Fin N) ℚ
   sqDeg : ∀ j, (squares j).totalDegree ≤ ds
   cof : ι → MvPolynomial (Fin N) ℚ
-  cofDeg : ∀ i, (cof i).totalDegree ≤ dc
+  cofDeg : ∀ i, (cof i).totalDegree ≤ dc i
   identity : (-1 : MvPolynomial (Fin N) ℚ)
       = (∑ j, squares j ^ 2) + ∑ i, cof i * g i
 
 /-- The abstract duality: a pseudoexpectation blocks all refutations. -/
 theorem no_refutation {N : ℕ} {ι : Type*} [Fintype ι]
-    (g : ι → MvPolynomial (Fin N) ℚ) (ds dc : ℕ)
+    (g : ι → MvPolynomial (Fin N) ℚ) (ds : ℕ) (dc : ι → ℕ)
     (E : MvPolynomial (Fin N) ℚ →ₗ[ℚ] ℚ)
     (hE1 : E 1 = 1)
     (hsq : ∀ s : MvPolynomial (Fin N) ℚ, s.totalDegree ≤ ds → 0 ≤ E (s ^ 2))
     (hker : ∀ i, ∀ p : MvPolynomial (Fin N) ℚ,
-      p.totalDegree ≤ dc → E (p * g i) = 0) :
+      p.totalDegree ≤ dc i → E (p * g i) = 0) :
     IsEmpty (SOSRefutation g ds dc) := by
   constructor
   intro R
@@ -220,8 +220,8 @@ statement is true, and low-degree SOS cannot prove it. -/
 theorem knapsack_no_refutation (N d : ℕ) (hd : 2 * d < N)
     (hsq : ∀ s : MvPolynomial (Fin N) ℚ, s.totalDegree ≤ d →
       0 ≤ pe (N : ℚ) (s ^ 2)) :
-    IsEmpty (SOSRefutation (knapsackSystem N) d (2 * d)) := by
-  refine no_refutation _ d (2 * d) (pe (N : ℚ)) (pe_one _) hsq ?_
+    IsEmpty (SOSRefutation (knapsackSystem N) d (fun _ => 2 * d)) := by
+  refine no_refutation _ d (fun _ => 2 * d) (pe (N : ℚ)) (pe_one _) hsq ?_
   rintro (i | _) p hp
   · rw [show pe (N:ℚ) (p * knapsackSystem N (.inl i))
         = pe (N:ℚ) ((X i ^ 2 - X i) * p) from by
