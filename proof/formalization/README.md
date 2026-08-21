@@ -1,7 +1,7 @@
 # R3Cert — the Lean 4 formalization
 
 The machine-checked layer of the Brualdi–Goldwasser campaign: a single Lean 4
-library (`R3Cert`, 109 modules, all imported by the root `R3Cert.lean` — a
+library (`R3Cert`, 110 modules, all imported by the root `R3Cert.lean` — a
 green `lake build` compiles everything; there are no orphaned files).
 
 > **Status: BUILDS CLEAN on Lean 4 v4.32.0 + pinned Mathlib.** No `sorry`, no
