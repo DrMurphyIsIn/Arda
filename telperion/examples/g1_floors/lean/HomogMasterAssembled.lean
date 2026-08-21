@@ -281,4 +281,94 @@ theorem GS_arm_le (k : ℕ) (hk : 1 ≤ k) : GS k 1 ≤ T := by
   rw [GS_one_eq_armGS, T_eq_Tval]
   exact HomogMaster.armGS_le k hk
 
+/-! ## The achievable region `0 < mu ≤ 1/2`, split into the four mu-intervals -/
+
+/-- **Region A** (`0 < mu ≤ 37/120`): `Bcap ≤ 1` and `base(k) ≤ base(1)` give
+    `GS k mu ≤ base(1,mu)^11 ≤ T` (CERT-A). -/
+theorem GS_regionA (k : ℕ) (mu : ℚ) (hk : 1 ≤ k) (h0 : 0 < mu) (h1 : mu ≤ 37 / 120) :
+    GS k mu ≤ T := by
+  have h0' : 0 ≤ mu := le_of_lt h0
+  have hmu13 : mu ≤ 1 / 3 := le_trans h1 (by norm_num)
+  have hbcap0 := Bcap_nonneg mu h0'
+  have hbcap1 := Bcap_le_one mu
+  have hbase0 := base_nonneg k mu h0'
+  have hbase1 := base_le_base_one k mu hk hmu13
+  calc GS k mu = (base k mu) ^ 11 * (Bcap mu) ^ k := rfl
+    _ ≤ (base 1 mu) ^ 11 * 1 := by
+        apply mul_le_mul
+        · exact pow_le_pow_left₀ hbase0 hbase1 11
+        · exact pow_le_one₀ hbcap0 hbcap1
+        · exact pow_nonneg hbcap0 k
+        · exact pow_nonneg (base_nonneg 1 mu h0') 11
+    _ = (7 / 6 + mu / 2) ^ 11 := by rw [base_one]; ring
+    _ ≤ T := bridgeA mu h0' h1
+
+/-- **Region B** (`37/120 ≤ mu ≤ 1/3`): `Bcap^k ≤ Bcap ≤ glemma` and `base(k) ≤ base(1)`
+    give `GS k mu ≤ base(1,mu)^11 * glemma mu ≤ T` (CERT-B). -/
+theorem GS_regionB (k : ℕ) (mu : ℚ) (hk : 1 ≤ k) (h0 : 37 / 120 ≤ mu) (h1 : mu ≤ 1 / 3) :
+    GS k mu ≤ T := by
+  have h0' : 0 ≤ mu := le_trans (by norm_num) h0
+  have hbcap0 := Bcap_nonneg mu h0'
+  have hbcap1 := Bcap_le_one mu
+  have hbcapg := Bcap_le_glemma mu
+  have hbase0 := base_nonneg k mu h0'
+  have hbase1 := base_le_base_one k mu hk h1
+  -- Bcap^k ≤ Bcap^1 = Bcap
+  have hpow : (Bcap mu) ^ k ≤ Bcap mu := by
+    calc (Bcap mu) ^ k ≤ (Bcap mu) ^ 1 := pow_le_pow_of_le_one hbcap0 hbcap1 hk
+      _ = Bcap mu := pow_one _
+  calc GS k mu = (base k mu) ^ 11 * (Bcap mu) ^ k := rfl
+    _ ≤ (base 1 mu) ^ 11 * glemma mu := by
+        apply mul_le_mul (pow_le_pow_left₀ hbase0 hbase1 11) (le_trans hpow hbcapg)
+        · exact pow_nonneg hbcap0 k
+        · exact pow_nonneg (base_nonneg 1 mu h0') 11
+    _ = (7 / 6 + mu / 2) ^ 11 * (glemma mu) ^ 1 := by rw [base_one]; ring
+    _ ≤ T := bridgeB mu h0 h1
+
+/-- **Region C** (`1/3 ≤ mu ≤ 1/2`): split `k = 1` (CERT-C1), `k = 2` (CERT-C2),
+    `k ≥ 3` (base `≤ 1+mu`, `Bcap^k ≤ glemma^3`, CERT-C3). -/
+theorem GS_regionC (k : ℕ) (mu : ℚ) (hk : 1 ≤ k) (h0 : 1 / 3 ≤ mu) (h1 : mu ≤ 1 / 2) :
+    GS k mu ≤ T := by
+  have h0' : 0 ≤ mu := le_trans (by norm_num) h0
+  have hbcap0 := Bcap_nonneg mu h0'
+  have hbcap1 := Bcap_le_one mu
+  have hbcapg := Bcap_le_glemma mu
+  have hglem0 := glemma_nonneg mu h0'
+  have hbase0 := base_nonneg k mu h0'
+  match k, hk with
+  | 1, _ =>
+    -- k = 1: GS = base(1)^11 * Bcap ≤ base(1)^11 * glemma ≤ T (CERT-C1)
+    calc GS 1 mu = (base 1 mu) ^ 11 * (Bcap mu) ^ 1 := rfl
+      _ ≤ (base 1 mu) ^ 11 * glemma mu := by
+          rw [pow_one]
+          apply mul_le_mul_of_nonneg_left hbcapg
+          exact pow_nonneg (base_nonneg 1 mu h0') 11
+      _ = (7 / 6 + mu / 2) ^ 11 * (glemma mu) ^ 1 := by rw [base_one]; ring
+      _ ≤ T := bridgeC1 mu h0 h1
+  | 2, _ =>
+    -- k = 2: GS = base(2)^11 * Bcap^2 ≤ base(2)^11 * glemma^2 ≤ T (CERT-C2)
+    calc GS 2 mu = (base 2 mu) ^ 11 * (Bcap mu) ^ 2 := rfl
+      _ ≤ (base 2 mu) ^ 11 * (glemma mu) ^ 2 := by
+          apply mul_le_mul_of_nonneg_left _ (pow_nonneg (base_nonneg 2 mu h0') 11)
+          exact pow_le_pow_left₀ hbcap0 hbcapg 2
+      _ = ((10 + 6 * mu) / 9) ^ 11 * (glemma mu) ^ 2 := by rw [base_two]
+      _ ≤ T := bridgeC2 mu h0 h1
+  | (n + 3), _ =>
+    -- k ≥ 3: base ≤ 1+mu, Bcap^k ≤ Bcap^3 ≤ glemma^3.
+    have hbase1mu := base_le_one_add (n + 3) mu h0
+    have hbasele : (base (n + 3) mu) ^ 11 ≤ (1 + mu) ^ 11 :=
+      pow_le_pow_left₀ hbase0 hbase1mu 11
+    have hk3 : (3 : ℕ) ≤ n + 3 := by omega
+    have hpow3 : (Bcap mu) ^ (n + 3) ≤ (Bcap mu) ^ 3 :=
+      pow_le_pow_of_le_one hbcap0 hbcap1 hk3
+    have hpowg : (Bcap mu) ^ 3 ≤ (glemma mu) ^ 3 :=
+      pow_le_pow_left₀ hbcap0 hbcapg 3
+    have hbcapk : (Bcap mu) ^ (n + 3) ≤ (glemma mu) ^ 3 := le_trans hpow3 hpowg
+    calc GS (n + 3) mu = (base (n + 3) mu) ^ 11 * (Bcap mu) ^ (n + 3) := rfl
+      _ ≤ (1 + mu) ^ 11 * (glemma mu) ^ 3 := by
+          apply mul_le_mul hbasele hbcapk
+          · exact pow_nonneg hbcap0 (n + 3)
+          · exact pow_nonneg (by linarith : (0:ℚ) ≤ 1 + mu) 11
+      _ ≤ T := bridgeC3 mu h0 h1
+
 end HomogMasterAssembled
