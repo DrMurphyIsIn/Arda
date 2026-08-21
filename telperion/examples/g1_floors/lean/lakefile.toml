@@ -47,3 +47,9 @@ name = "Xor3Mask"
 
 [[lean_lib]]
 name = "Xor3Duality"
+
+[[lean_lib]]
+name = "HeawoodCertificate"
+
+[[lean_lib]]
+name = "HeawoodDuality"
