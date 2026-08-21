@@ -1,8 +1,10 @@
 # A kernel-checked symbolic-n sum-of-squares lower bound: the Grigoriev knapsack pipeline
 
-*Draft v1, 2026-08-20. Status: complete as a certified artifact; novelty
-positioning below is calibrated against a preliminary literature check and
-follows the conservative conventions of `PUBLICATION_LEDGER.md`.*
+*Draft v2, 2026-08-21. Status: complete as a certified artifact, now
+including the moment/SOS duality layer and TWO fully unconditional
+end-to-end refutation-form theorems; novelty positioning is calibrated
+against a multi-angle formalization-literature search and follows the
+conservative conventions of `PUBLICATION_LEDGER.md`.*
 
 ## Abstract
 
@@ -131,6 +133,48 @@ support -- the truncation is load-bearing), and the conditional master
 knapsack_no_refutation. The single remaining unformalized layer is the
 named hsq hypothesis: moment PSD in functional form (harmonic
 completeness, Python-pinned exact).
+
+## 3b. The duality layer and the two unconditional theorems (2026-08-21)
+
+The moment-matrix results are lifted to REFUTATION FORM by a formalized
+duality layer (Duality.lean, Hsq.lean, QuadForm.lean, Xor3Mask.lean,
+Xor3Duality.lean; every theorem axioms-clean):
+
+* `SOSRefutation` -- degree-bounded Positivstellensatz refutations with
+  PER-CONSTRAINT cofactor degree bounds (more general than the textbook
+  single bound on products);
+* `no_refutation` -- the abstract obstruction: any linear functional with
+  E 1 = 1, nonnegativity on admissible squares, and ideal-kill at
+  admissible cofactor degrees blocks all refutations (four lines);
+* the knapsack and 3XOR pseudoexpectations as honest linear functionals
+  on MvPolynomial (support-weighting resp. parity-mask-weighting; the
+  multilinearization laws are `support(a+b) = support a UNION support b`
+  resp. `oddSet(a+b) = oddSet a DELTA oddSet b`);
+* THE TRUNCATION IS LOAD-BEARING, twice: the knapsack linear-constraint
+  kill genuinely fails at full-support monomials, and the 3XOR clause
+  kill genuinely needs parity masks within the closure width -- in both
+  cases the failure of the unguarded identity is exactly WHY these are
+  lower bounds.
+
+**Unconditional theorem 1 (knapsack, `knapsack_no_refutation_d1`).** For
+every N > 2 there is NO SOS refutation of {x_i^2 = x_i, sum x = N/2} with
+squares of degree <= 1 and cofactors of degree <= 2.  The degree-1 moment
+form is discharged outright: it equals
+(x_empty + X/2)^2 + (N*Q - X^2)/(4(N-1)), a completed square plus a
+Cauchy-Schwarz remainder with EXACT coefficient matching.  For general d
+the sole remaining hypothesis is the finite-dimensional subset form
+`SubsetFormPSD` (harmonic completeness).
+
+**Unconditional theorem 2 (3XOR, `petersen_no_refutation`).** There is NO
+SOS refutation of the Petersen Tseitin system (ten clauses x_A = e, odd
+charge, plus +-1 booleanity) with squares of degree <= 2, clause
+cofactors of degree <= 1, and boolean cofactors of degree <= 4 -- while
+the system is kernel-checked contradictory.  The PSD side is the
+width-4 closure certificate (block-rank-one over 61 classes) bridged
+through the Finset<->bitmask homomorphism maskOf(S DELTA T) =
+maskOf S XOR maskOf T and a generic quadratic-form grouping lemma; the
+chain has ZERO Python pins (index-enumeration completeness is itself
+kernel-decided, chunked).
 
 ## 4. Methods: the pipeline discipline
 
