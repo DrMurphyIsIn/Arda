@@ -104,7 +104,57 @@ not a lemma.
 
 ## Status
 
-Scoping only. Micro-facts exact and reproducible (this doc's figures were computed with
+Scoping doc. Micro-facts exact and reproducible (this doc's figures were computed with
 Fraction arithmetic; the spread/merged witnesses and the 77/250 fine max are exact).
-Next concrete step: the (a, b, nu) family scan + vertex-lemma prototype, then the
-Bernstein cells. `conjecture1_proved = False`.
+`conjecture1_proved = False`.
+
+## LANDED (2026-08-21, kernel-clean, axioms = [propext, Classical.choice, Quot.sound])
+
+Both proof obligations #1 (vertex lemma) and #3 (family certification) are now closed in
+Lean over the canonical family. No `sorry`/`admit`/`native_decide`/added axioms.
+
+**(1) THE FULL VERTEX LEMMA** — `proof/formalization/R3Cert/VertexLemmaFull.lean`
+(imported into the `R3Cert` root, so covered by the `proof-lean` CI `lake build`):
+  - `glemma_spread` — general sum-preserving two-point spread (the log-convexity engine,
+    generalizing the exact-midpoint seed `VertexLemma.glemma_two_point_spread`):
+    `a+b=c+d`, `c·d ≤ a·b` (more spread) ⇒ `glemma a · glemma b ≤ glemma c · glemma d`.
+  - `glemma_push_to_bound` — the exchange pushing one coordinate to the bound `1/2`
+    (valid for `a,b ∈ [0,1/2]` via `(1/2−a)(1/2−b) ≥ 0`).
+  - `vertex_bound` / `vertex_bound_cons` — the vertex bound by list induction:
+    `∏_{c∈a::l} glemma c ≤ glemma(1/2)^|l| · glemma(a + Σl − |l|/2)` for children in
+    `[0,1/2]` and nonnegative residual. This is exactly the doc's "clean formalization"
+    target (§Proof obligations #1). The two-region kink risk is handled by requiring the
+    box `[0,1/2]` and keeping the running free coordinate in `[0,1/2]` with residual ≥ 0
+    (below-knee children are simply not part of this above-knee `glemma` product — they
+    enter only through `base`, in the family value below).
+
+**(3) THE (a,b,nu) FAMILY CERTIFICATION** —
+`telperion/examples/g1_floors/lean/HeteroFamily.lean` (built by a new
+`telperion-production` CI step: `lake build HomogMaster HomogMasterAssembled HeteroFamily`):
+  - `nu_cell` — the interior `nu`-cell `fam(0,0,nu) ≤ T` for `nu ∈ [37/120, 1/2]`,
+    discharged by reusing the homogeneous Bernstein bridges `bridgeB` (`[37/120,1/3]`) and
+    `bridgeC1` (`[1/3,1/2]`). `fam(0,0,nu)` is exactly the homogeneous `k=1` value
+    `base(1,nu)^11 · glemma(nu)`; the family peak `fam(0,0,1/2) = GS 1 (1/2) = 0.872204·T`
+    is recorded (`fam_peak_eq_GS1`).
+  - `astep` / `bstep` — the two integer tails are monotone reductions:
+    `fam(a+1,b,nu) ≤ fam(a,b,nu)` and `fam(a,b+1,nu) ≤ fam(a,b,nu)` for `nu ≥ 37/120`.
+    Both reduce to `base`-ratio inequalities whose numerators, after `nu = 37/120 + t`,
+    have ALL-NONNEGATIVE coefficients (a-step: `23b + 120t + 3 ≥ 0`; b-step: an
+    all-nonneg-coeff polynomial), so they close by `nlinarith`/`positivity` with no huge-`T`
+    cross-multiplication. The b-step's `glemma(1/2)` factor is accounted by the exact
+    rational bound `Rb^11 · glemma(1/2) ≤ 1` with `Rb = 994/951` (`Rb_pow_glemma_half`).
+  - `family_master` — assembled: `fam(a,b,nu) ≤ T` for ALL `a,b : ℕ` and `nu ∈ [37/120, 1/2]`.
+    The integer tails collapse to the `nu`-cell (`fam_le_cell`), which is `≤ T`.
+
+Empirical backing (`proof/verification/hetero_family_scan.py`, exact `Fraction`,
+`certify()` passes): family max `0.872204·T` at `(0,0,1/2)`, 0 violations, adversarial
+arbitrary-heterogeneous max = exactly `T` at the arm only.
+
+**Scoped-open (honest).** The boundary sub-family with NO interior child
+(`GS_family_noInterior`, all children at `1/2` or below the knee) is not separately
+formalized; the scan shows its max coincides with `fam(0,0,1/2)` (the interior child sitting
+at the bound), which `family_master` covers, so it is dominated but not independently
+certified in Lean. The achievability relaxation (§What could break) is inherited from the
+homogeneous face: the family is certified over the full box `nu ∈ [37/120,1/2]`, a superset
+of the recursion-realizable messages, so no finer achievable structure is needed (the scan
+confirms 0 box-relaxation violations). `conjecture1_proved = False`.

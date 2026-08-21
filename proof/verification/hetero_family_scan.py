@@ -233,6 +233,22 @@ def certify():
     for lo, hi in [(Fr(1, 3), Fr(1, 2)), (Fr(37, 120), Fr(1, 2)), (Fr(2, 5), Fr(9, 20))]:
         m = (lo + hi) / 2
         assert glemma(lo) * glemma(hi) >= glemma(m) ** 2, "log-glemma convexity failed"
+    # --- the LANDED Lean reductions (HeteroFamily.lean), spot-checked exactly ---
+    # (a) the b-step ratio constant Rb = 994/951 satisfies Rb^11 * glemma(1/2) <= 1
+    Rb = Fr(994, 951)
+    assert Rb ** 11 * glemma(HALF) <= 1, "Rb^11 * glemma(1/2) > 1 (bstep accounting)"
+    # (b) astep/bstep monotone reductions: fam(a+1,b,nu) <= fam(a,b,nu),
+    #     fam(a,b+1,nu) <= fam(a,b,nu), for nu in [knee, 1/2] (Lean: astep/bstep).
+    for a in range(0, 6):
+        for b in range(0, 6):
+            for pnu in range(0, 5):
+                nu = KNEE_RAT + (HALF - KNEE_RAT) * Fr(pnu, 4)
+                assert GS_family(a + 1, b, nu) <= GS_family(a, b, nu), \
+                    f"astep failed at a={a},b={b},nu={nu}"
+                assert GS_family(a, b + 1, nu) <= GS_family(a, b, nu), \
+                    f"bstep failed at a={a},b={b},nu={nu}"
+                # (c) full family_master: fam(a,b,nu) <= T
+                assert GS_family(a, b, nu) <= T, f"family_master failed at {(a, b, nu)}"
     return True
 
 

@@ -109,6 +109,7 @@ import R3Cert.GArmExtAbstract
 import R3Cert.GLemmaAbstract
 import R3Cert.CappedJointClosure
 import R3Cert.VertexLemma
+import R3Cert.VertexLemmaFull
 import R3Cert.GLemmaConfig
 import R3Cert.TieClosure
 import R3Cert.R47Shed
