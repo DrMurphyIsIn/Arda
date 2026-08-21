@@ -6,11 +6,12 @@ supplied basis.  Telperion FINDS the weights exactly (rational linear solve;
 an OVERCOMPLETE basis falls through to basic-feasible-solution enumeration —
 the sympy-only vertex search that closes the former "needs LP" gap).
 
-Demonstrations:
+Demonstrations (every basis element `positivity`-provable — squares):
   * determined: `(x+y)²` via the single basis element `(x+y)²`;
-  * OVERCOMPLETE (BFS): `(x+y)²` via `{x², y², x·y, (x+y)²}` (4 elements, 3
+  * OVERCOMPLETE (BFS): `(x+y)²` via `{x², y², (x−y)², (x+y)²}` (4 elements, 3
     monomial equations — underdetermined; a vertex certificate is enumerated);
-  * OVERCOMPLETE multi-term: `x² + y²` via `{x², y², (x−y)², (x+y)²}`.
+  * OVERCOMPLETE multi-term: `x² + y²` via `{x², y², (x−y)², (x+y)²}`
+    (the vertex `x² + y²`; zero-weight elements are dropped from the emission).
 
 NEGATIVE CONTROL (in validation): `−x²` is not a nonnegative combination of
 `{x², y², (x+y)²}` — refused with a Farkas dual.
@@ -39,7 +40,7 @@ x, y = sp.symbols("x y")
 CASES = {
     0: ("cone_square_direct", (x + y) ** 2, [(x + y) ** 2]),
     1: ("cone_square_overcomplete", (x + y) ** 2,
-        [x ** 2, y ** 2, x * y, (x + y) ** 2]),
+        [x ** 2, y ** 2, (x - y) ** 2, (x + y) ** 2]),
     2: ("cone_sum_of_squares", x ** 2 + y ** 2,
         [x ** 2, y ** 2, (x - y) ** 2, (x + y) ** 2]),
 }
