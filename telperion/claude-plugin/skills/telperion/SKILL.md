@@ -107,10 +107,16 @@ the authoritative per-emitter reference.
   Infeasibility leaves — this is where `x²+1=0` succeeds). `RealNullstellensatz-
   Emitter` — `p = 0` on the REAL variety via `p^{2m} + s ∈ ⟨gₖ⟩`.
 - **Supply vs. auto:** Nullstellensatz / Consequence / Infeasibility
-  auto-compute their cofactors/refutation; `SOSRefutationEmitter` and
-  `RealNullstellensatzEmitter` take the SOS multipliers / exponent `m` as
-  INPUT — Telperion checks the certificate, it does not run an SDP solver to
-  find it. Supply the certificate; the kernel checks it.
+  auto-compute their cofactors/refutation (exact, sympy-only). The SOS-family
+  emitters — `HandelmanEmitter`, `ConstrainedSOSEmitter` (Putinar),
+  `SOSRefutationEmitter`, `RealNullstellensatzEmitter` — accept a supplied
+  certificate in checker mode, OR return the certificate slot as `None` and
+  Telperion FINDS it: `find_handelman_certificate` (exact LP, sympy-only) and
+  the SDP finders `find_putinar_certificate` (`sos_sdp.py`), `find_sos_refutation`
+  and `find_real_nullstellensatz` (`sdp_finder.py`) — numeric SDP rounded to
+  exact rationals (the cvxpy `sdp` extra). Found or supplied, the certificate is
+  re-verified exactly and the kernel checks it — a finder miss is a refusal,
+  never a false theorem.
 
 **The nonvacuity gate (runs inside `emit()`).** Emitting `X = X`, `0 ≤ 0`, or
 a claim that holds regardless of its certificate is REFUSED: a structural
