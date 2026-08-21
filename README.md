@@ -209,5 +209,16 @@ the record of post-snapshot native development:
 
 ## License
 
-Code: [Apache-2.0](LICENSE). Documentation, notes, and figures:
-[CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
+Split model — see [LICENSING.md](LICENSING.md) for details:
+
+- **All mathematics** (proof campaign, Lean formalizations, examples,
+  emitted certificates, docs): [Apache-2.0](LICENSE) /
+  [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) — 
+  unconditionally open, mathlib-compatible.
+- **The Telperion engine** (`telperion/src/` and tooling):
+  [Business Source License 1.1](telperion/LICENSE) — free for research,
+  teaching, and evaluation; commercial production use requires a license;
+  every version converts to Apache-2.0 three years after release.
+  Certificates you emit with it are yours.
+- Contributions to the engine require the [CLA](telperion/CLA.md);
+  contributions to the mathematics do not.
