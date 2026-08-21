@@ -270,3 +270,18 @@ temperatures = [0.2, 0.6, 1.0, 1.2]
 max_llm_calls = 200
 max_kernel_checks = 20
 use_llm = true
+
+[[check]]
+name = "finite_decide"
+script = "examples/finite_decide/generate.py"
+group = "quick"    # guarded decidable facts over Nat-bitmask/sign tables (kernel `decide`); ~0.3 s
+
+[[check]]
+name = "fwd_telescope"
+script = "examples/fwd_telescope/generate.py"
+group = "quick"    # forward-difference telescoping (the W2 prover; SumEqProd re-derivation baseline); ~0.3 s
+
+[[check]]
+name = "rational_identity"
+script = "examples/rational_identity/generate.py"
+group = "quick"    # rational-function identities on a ray (knapsack Gram-bridge shapes); ~0.3 s

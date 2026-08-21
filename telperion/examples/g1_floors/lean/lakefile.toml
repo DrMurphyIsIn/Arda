@@ -16,6 +16,9 @@ name = "ArmExtremality"
 name = "GLemma"
 
 [[lean_lib]]
+name = "DirectPolyaE1"
+
+[[lean_lib]]
 name = "KnapsackSOS"
 
 [[lean_lib]]
@@ -33,6 +36,7 @@ name = "PetersenCertificate"
 [[lean_lib]]
 name = "FlatnessDomination"
 
+[[lean_lib]]
 [[lean_lib]]
 name = "Duality"
 
@@ -53,3 +57,9 @@ name = "HeawoodCertificate"
 
 [[lean_lib]]
 name = "HeawoodDuality"
+
+[[lean_lib]]
+name = "HomogMaster"
+
+[[lean_lib]]
+name = "HomogMasterAssembled"
