@@ -16,4 +16,55 @@ name = "ArmExtremality"
 name = "GLemma"
 
 [[lean_lib]]
+name = "DirectPolyaE1"
+
+[[lean_lib]]
+name = "KnapsackSOS"
+
+[[lean_lib]]
+name = "BridgeD4"
+
+[[lean_lib]]
+name = "SumEqProd"
+
+[[lean_lib]]
+name = "Xor3Structure"
+
+[[lean_lib]]
+name = "PetersenCertificate"
+
+[[lean_lib]]
 name = "FlatnessDomination"
+
+[[lean_lib]]
+name = "Duality"
+
+[[lean_lib]]
+name = "Hsq"
+
+[[lean_lib]]
+name = "QuadForm"
+
+[[lean_lib]]
+name = "Xor3Mask"
+
+[[lean_lib]]
+name = "Xor3Duality"
+
+[[lean_lib]]
+name = "HeawoodCertificate"
+
+[[lean_lib]]
+name = "HeawoodDuality"
+
+[[lean_lib]]
+name = "HomogMaster"
+
+[[lean_lib]]
+name = "HomogMasterAssembled"
+
+[[lean_lib]]
+name = "Petersen2Certificate"
+
+[[lean_lib]]
+name = "Petersen2Duality"

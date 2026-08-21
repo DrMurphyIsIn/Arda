@@ -1,0 +1,275 @@
+# A kernel-checked symbolic-n sum-of-squares lower bound: the Grigoriev knapsack pipeline
+
+*Draft v2, 2026-08-21. Status: complete as a certified artifact, now
+including the moment/SOS duality layer and TWO fully unconditional
+end-to-end refutation-form theorems; novelty positioning is calibrated
+against a multi-angle formalization-literature search and follows the
+conservative conventions of `PUBLICATION_LEDGER.md`.*
+
+## Abstract
+
+We present what we believe is the first *kernel-checked, symbolic-in-n*
+lower bound in proof complexity: a Lean 4 formalization (51 theorems, axioms
+exactly `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) of the
+scalar core of Grigoriev's theorem that sum-of-squares (SOS) cannot refute
+the knapsack system `{x_i^2 = x_i, sum x_i = n/2}` below degree ~n, for
+*every* odd n and *every* degree simultaneously. The mathematical route is
+an elementary rank-one spectral decomposition of the pseudoexpectation
+moment matrix, re-derived in a form suited to kernel checking; the pipeline
+wraps it in an exact-arithmetic Python validation layer (anti-phantom gates,
+negative controls) and a certified generator that emits the 35 Gram-bridge
+identities for degree 8 as Lean theorems. The lower bound itself is due to
+Grigoriev (2001) and independently Laurent; the symmetry-reduction and
+rank-one-decomposition technique for symmetric SOS matrices is due to
+Kurpisz, Leppanen and Mastrolilli. The contribution claimed here is the
+certified pipeline and the machine-checked asymptotic statement, not the
+mathematics.
+
+## 1. The statement
+
+Work over Q. Fix odd n and the infeasible system
+
+    x_i^2 = x_i  (i = 1..n),      sum_{i=1}^n x_i = n/2.
+
+No boolean point satisfies it (the left side of the linear constraint is an
+integer, the right side is not) -- formalized as `knapsack_unsat`. An SOS
+refutation of degree 2d is an identity `-1 = s + sum_i p_i (x_i^2 - x_i) +
+q (sum x_i - n/2)` with s a sum of squares, all terms of degree <= 2d. The
+dual obstruction to such a refutation is a *pseudoexpectation*: a linear
+functional E on multilinear polynomials of degree <= 2d with E[1] = 1,
+E[(sum x - n/2) p] = 0 for deg p < 2d, and PSD moment matrix
+M_d[S,T] = E[x_S x_T].
+
+Grigoriev's witness is the fractional hypergeometric pseudoexpectation
+
+    E[x_S] = f(|S|),     f(k) = prod_{j<k} (n/2 - j)/(n - j),
+
+i.e. the moments of a "uniform random (n/2)-subset" continued to
+non-integral cardinality. The constraint identity is a one-line telescoping,
+`(n-k) f(k+1) = (n/2-k) f(k)` (`constraint_identity`); the entire content is
+PSDness of M_d, which holds for every d <= (n-1)/2, giving refutation
+degree >= n+1.
+
+## 2. The rank-one collapse
+
+S_n-symmetry block-diagonalizes M_d along the harmonic decomposition. We
+realize the level-k block concretely as the Gram matrix G_k of the moment
+form on pair-difference vectors: fix k disjoint pairs (a_j, b_j), set
+c_k(S) = prod_j ([a_j in S] - [b_j in S]), z_{k,i} = sum_{|S|=i} c_k(S) e_S,
+and G_k[i,j] = z_{k,i}^T M_d z_{k,j} for k <= i,j <= d. A closed
+combinatorial formula for G_k (validated three independent ways below) makes
+each entry an explicit rational function of n.
+
+The structural observation driving everything: **the constraint ideal
+collapses every block to rank one.** Symmetrizing the exact kernel vectors
+w_S = (sum x - n/2) x_S of M_d against the pair-difference structure yields,
+for each i, the exact identity
+
+    (i - n/2) G_k[.,i] + (i + 1 - k) G_k[.,i+1] = 0        (kernel_identity)
+
+-- d-k independent kernel vectors on a (d-k+1)-dimensional block. Hence
+G_k = g_k v v^T with v the explicit surviving direction and
+
+    g_k = 2^k sum_{s<=k} (-1)^{k-s} C(k,s) f(2k-s)
+        = prod_{j<k} (n - 2j) / (2 (n - 2j - 1)),
+
+a product of factors manifestly positive for every rational n > 2k - 1. PSD
+of the full moment matrix thus reduces to d+1 scalar positivity facts, each
+a product of positive linear factors on a ray -- the simplest imaginable
+certificate shape.
+
+The general-r form g_k = 2^k prod_{j<k} (r-j)(n-r-j)/((n-2j)(n-2j-1))
+explains the witness's teeth exactly: sign(g_k) = sign(prod_{j<k}(r-j)), so
+for r = 3/2 the level-3 block goes negative and PSD fails at exactly d = 3
+-- measured and matched in the prototype.
+
+## 3. The Lean formalization
+
+Three libraries in `telperion/examples/g1_floors/lean/` (mathlib v4.32.0),
+51 theorems total, every `#print axioms` exactly
+`[propext, Classical.choice, Quot.sound]`:
+
+**KnapsackSOS.lean** (hand-authored): `f`, `constraint_identity`,
+`pseudoexpectation_ideal`; `g0..g4` alternating sums with closed product
+forms `g1_closed..g4_closed` and positivity `g0_pos..g4_pos`; the rank-one
+direction `v` with `kernel_identity`; `rank_one_quadform_nonneg` and
+`block0_psd..block4_psd`; nonvacuity `knapsack_unsat`; the uniform-k layer
+`gProd`, `gProd_pos` (induction, every k), general-k `gSum`, and the named
+statement `SumEqProd`.
+
+**BridgeD4.lean** (generated by `gen_bridge_d4.py`): all 35 entry
+identities "combinatorial Gram formula = g_k v v^T" for d = 4, binomials in
+m = n-2k expanded to explicit polynomials, each validated in exact Fraction
+arithmetic against two independent computations (plus a corruption negative
+control) before emission; the kernel is the final gate.
+
+**SumEqProd.lean** (hand-authored): the discharge of `SumEqProd` for
+general k. Route: mathlib's `fwdDiff_iter_eq_sum_shift` (Newton expansion)
+plus a sum reflection identifies gSum with an iterated forward difference;
+the contiguous-relation induction gives the hypergeometric closed form
+`Delta^[j](f n)(q) = (-1)^j pnum(j) f(q) / pden(q,j)`; a product induction
+closes at q = j = k. Payoffs: `sumEqProd_general`, `gSum_pos` (the
+alternating-sum scalar is positive for every k and every rational n > 2k),
+`sumEqProd_holds`.
+
+### Trust ledger (what is and is not kernel-checked)
+
+Kernel-checked: the constraint/ideal identities; the rank-one collapse; the
+closed forms and positivity, uniform in degree; the 35 Gram-bridge entries
+at d = 4; PSD of the rank-one blocks; unsatisfiability of the system.
+
+Python-pinned (exact arithmetic, not yet kernel-checked): that the
+pair-difference Gram matrices are the complete harmonic block data of M_d
+(validated by exact reconstruction of the full 130x130 moment-matrix
+spectrum from the blocks with multiplicities, error < 1e-14, plus
+brute-force enumeration matches).
+
+UPDATE 2026-08-21: the moment/SOS duality is NOW FORMALIZED (Duality.lean,
+axioms-clean): SOSRefutation (squares deg <= d, cofactors deg <= 2d --
+more generous than the textbook product bound), the abstract no_refutation
+obstruction, the pseudoexpectation as a linear functional on MvPolynomial
+(boolean ideal killed unconditionally; linear constraint killed below full
+support -- the truncation is load-bearing), and the conditional master
+knapsack_no_refutation. The single remaining unformalized layer is the
+named hsq hypothesis: moment PSD in functional form (harmonic
+completeness, Python-pinned exact).
+
+## 3b. The duality layer and the two unconditional theorems (2026-08-21)
+
+The moment-matrix results are lifted to REFUTATION FORM by a formalized
+duality layer (Duality.lean, Hsq.lean, QuadForm.lean, Xor3Mask.lean,
+Xor3Duality.lean; every theorem axioms-clean):
+
+* `SOSRefutation` -- degree-bounded Positivstellensatz refutations with
+  PER-CONSTRAINT cofactor degree bounds (more general than the textbook
+  single bound on products);
+* `no_refutation` -- the abstract obstruction: any linear functional with
+  E 1 = 1, nonnegativity on admissible squares, and ideal-kill at
+  admissible cofactor degrees blocks all refutations (four lines);
+* the knapsack and 3XOR pseudoexpectations as honest linear functionals
+  on MvPolynomial (support-weighting resp. parity-mask-weighting; the
+  multilinearization laws are `support(a+b) = support a UNION support b`
+  resp. `oddSet(a+b) = oddSet a DELTA oddSet b`);
+* THE TRUNCATION IS LOAD-BEARING, twice: the knapsack linear-constraint
+  kill genuinely fails at full-support monomials, and the 3XOR clause
+  kill genuinely needs parity masks within the closure width -- in both
+  cases the failure of the unguarded identity is exactly WHY these are
+  lower bounds.
+
+**Unconditional theorem 1 (knapsack, `knapsack_no_refutation_d1`).** For
+every N > 2 there is NO SOS refutation of {x_i^2 = x_i, sum x = N/2} with
+squares of degree <= 1 and cofactors of degree <= 2.  The degree-1 moment
+form is discharged outright: it equals
+(x_empty + X/2)^2 + (N*Q - X^2)/(4(N-1)), a completed square plus a
+Cauchy-Schwarz remainder with EXACT coefficient matching.  For general d
+the sole remaining hypothesis is the finite-dimensional subset form
+`SubsetFormPSD` (harmonic completeness).
+
+**Unconditional theorem 2 (3XOR, `petersen_no_refutation`).** There is NO
+SOS refutation of the Petersen Tseitin system (ten clauses x_A = e, odd
+charge, plus +-1 booleanity) with squares of degree <= 2, clause
+cofactors of degree <= 1, and boolean cofactors of degree <= 4 -- while
+the system is kernel-checked contradictory.  The PSD side is the
+width-4 closure certificate (block-rank-one over 61 classes) bridged
+through the Finset<->bitmask homomorphism maskOf(S DELTA T) =
+maskOf S XOR maskOf T and a generic quadratic-form grouping lemma; the
+chain has ZERO Python pins (index-enumeration completeness is itself
+kernel-decided, chunked).
+
+## 4. Methods: the pipeline discipline
+
+1. *Exact prototype first.* All verdict-path arithmetic in Fractions; floats
+   only in redundant cross-checks.
+2. *Anti-phantom gates.* Every formula validated against brute force before
+   use; every validator proven able to detect a deliberately corrupted
+   input (negative controls). One genuine save: `sympy.nsimplify` silently
+   mangled a large exact rational into a bogus prime-power product inside a
+   validator; the three independent computations of the same quantity
+   localized the bug to the comparison layer in minutes.
+3. *Teeth.* The witness family is exercised where it must FAIL (integer r:
+   true distribution, always PSD; r = 3/2: PSD dies at exactly d = 3), so a
+   vacuously-green check cannot masquerade as a theorem.
+4. *Untrusted generator, trusted kernel.* The 35 bridge identities are
+   emitted by a script whose output is validated pre-emission and then
+   re-proved from scratch by the Lean kernel (Telperion's standing
+   architecture).
+
+## 5. Attribution and related work
+
+- The lower bound is **Grigoriev's** (Complexity of Positivstellensatz
+  proofs for the knapsack, 2001): any refutation of `sum x = r` has degree
+  >= ~2 min(r, n-r). **Laurent** independently obtained the ⌊n/2⌋-round
+  Lasserre bound with essentially the same construction.
+- The technique of exploiting symmetry to reduce SOS PSDness to univariate
+  positivity, including decompositions of symmetric moment matrices into
+  rank-one pieces, is developed by **Kurpisz, Leppanen and Mastrolilli**
+  (Sum-of-squares hierarchy lower bounds for symmetric formulations,
+  Math. Programming 182:369-397, 2020; arXiv:1407.1746). Blekherman et al.
+  study SOS degrees of symmetric functions in related bases
+  (arXiv:1601.02311). Our kernel-recurrence derivation of the rank-one
+  collapse (via symmetrized constraint vectors) is elementary and
+  self-contained but should be presumed a re-derivation in different
+  coordinates until a detailed comparison says otherwise.
+- Machine-checked SOS *upper* bounds (certificate checking) are routine;
+  we are not aware of a prior kernel-checked *asymptotic lower bound*
+  (nonexistence of certificates, symbolic in the instance size) in any
+  proof assistant. A multi-angle search (2026-08-21) of the Lean/mathlib,
+  Coq/Rocq, Isabelle/AFP, ACL2 and HOL ecosystems found NO formalized
+  proof-complexity lower bound of any kind (resolution, polynomial
+  calculus, Nullstellensatz, cutting planes, Frege, SOS) and no formalized
+  pseudoexpectation/moment-duality construction; the entire formalized
+  Positivstellensatz literature (Harrison's HOL Light SOS, Coq micromega,
+  Isabelle Sum_of_Squares, leanprover/sos) is on the certificate-CHECKING
+  side. Two important adjacent priors bound the claim: Eberl's Isabelle/AFP
+  Omega(n log n) comparison-sorting bound (2017) and the Lean formalization
+  of Huang's sensitivity theorem (2019) are kernel-checked asymptotic
+  lower bounds in QUERY/decision-tree models -- so the claim must be
+  scoped to PROOF COMPLEXITY, phrased "to our knowledge", and cite both
+  preemptively. Verified proof-format checkers (LRAT/GRAT/CakeML
+  VIPR/PBLean) verify individual proofs, not nonexistence: adjacent
+  infrastructure, not overlap. Bounded-arithmetic metamathematics of
+  resolution lower bounds (arXiv:2411.15515, 2506.16956) is pen-and-paper
+  formalizability theory, related but not machine-checked.
+
+## 6. Ceiling (read before extrapolating)
+
+This certifies a lower bound against the SOS proof system only.
+SOS-hardness is not hardness: random 3XOR is maximally SOS-hard yet solvable
+by Gaussian elimination. No claim about P vs NP is made or implied; the
+value is (a) a new epistemic grade for proof-complexity lower bounds
+(machine-checked nonexistence, uniform in n and degree), (b) reusable
+infrastructure (the fwdDiff/telescoping template, the emitter pattern), and
+(c) certified frontier-mapping for Telperion's own certificate search:
+"stop searching below degree n+1" is now a theorem.
+
+## 7. Future work
+
+1. Kernel-check the harmonic-completeness layer (the one Python pin):
+   z-vector Gram derivation + multiplicity count.
+2. DONE (2026-08-21, Duality.lean): the moment/SOS duality layer --
+   SOSRefutation, the abstract no_refutation obstruction, the
+   pseudoexpectation as an honest linear functional on MvPolynomial with
+   unconditional boolean-ideal kill and degree-guarded linear-constraint
+   kill (the truncation is load-bearing: at full support the telescoping
+   identity genuinely fails), and the conditional master
+   knapsack_no_refutation (squares deg <= d, cofactors deg <= 2d -- more
+   generous than the textbook product bound). Residual: the named hsq
+   hypothesis = moment PSD in functional form (harmonic completeness).
+3. 3XOR: the per-instance structure theorem (conflict-free width-2d closure
+   => block-rank-one PSD; see `xor3_pseudoexpectation.py` and
+   `Xor3Structure.lean`) with Tseitin-on-Petersen as the canonical certified
+   instance; the asymptotic expansion layer as honest-conditional assembly.
+4. Lee-Raghavendra-Steurer transfer: from certified SOS degree bounds to
+   "no polynomial-size SDP relaxation" statements.
+5. The genuine W2/scheme-eigenvalue target: planted clique / Laurent's
+   max-cut bound, where blocks are full-rank and eigenvalue sequences are
+   hypergeometric.
+
+## Reproduction
+
+    cd telperion/examples/knapsack_sos && python3 knapsack_pseudoexpectation.py --dmax 4
+    cd telperion/examples/knapsack_sos && python3 xor3_pseudoexpectation.py
+    cd telperion/examples/g1_floors/lean && lake build KnapsackSOS BridgeD4 SumEqProd
+
+(The lean workspace needs the mathlib olean cache; in a worktree, symlink
+`.lake` from the main checkout.)

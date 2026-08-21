@@ -1,0 +1,9 @@
+{
+  "family": "FiniteDecide",
+  "input_hash": "2d891c18fc13e04ebbb596ccbf688359dc910acf6410ff9a8875eaf07de7a0d6",
+  "tool_version": "0.1.6",
+  "files": [
+    "FiniteDecide.lean"
+  ],
+  "n_theorems": 1
+}

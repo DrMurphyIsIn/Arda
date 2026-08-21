@@ -1,0 +1,9 @@
+{
+  "family": "RealNSSFind",
+  "input_hash": "6bf2c7fbb6c8afd37f9f8df3e0a815f05ba5209a847e50c429a99bfb25dbf2ea",
+  "tool_version": "0.1.6",
+  "files": [
+    "RealNullstellensatzFind.lean"
+  ],
+  "n_theorems": 2
+}

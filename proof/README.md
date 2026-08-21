@@ -10,10 +10,10 @@ certified at exact-arithmetic rigor in Python, and what is named-open.
 
 | Path | Contents |
 |---|---|
-| `formalization/` | The Lean 4 project (toolchain `lean-toolchain`, Mathlib pinned in `lake-manifest.json`). Library root `R3Cert.lean` imports all 90 modules — a green `lake build` compiles everything; there are no orphaned files. |
+| `formalization/` | The Lean 4 project (toolchain `lean-toolchain`, Mathlib pinned in `lake-manifest.json`). Library root `R3Cert.lean` imports all 110 modules — a green `lake build` compiles everything; there are no orphaned files. |
 | `verification/` | ~130 Python modules: the load-bearing certificate/verification modules (all invoked by `../verify.py`), the certificate generator (`gen_r47cert_cells.py`, frozen for provenance), exploratory probes and honest no-go records of failed proof routes, and unit tests (`tests/`). |
 | `verify.py` | One-command verification: runs every load-bearing module's `run_all()`. Every claim is an assert; ~20–40 min. |
-| `docs/` | `RESULT_LAPLACIAN_RATIO.md` (the result document), the session report, `design/` (the formalization campaign's design + independent-review documents), `notes/` (two technical companion notes: the permanent/matching bridge and the merge-system confluence). |
+| `docs/` | The working documents — start at the reading guide [`docs/README.md`](docs/README.md): the campaign map (`PROOF_STATE_AND_PLAN.md`), the result document (`RESULT_LAPLACIAN_RATIO.md`), the dated frontier analyses (`GSTEP_*`), candidate verdicts, `design/` (formalization design + independent reviews), `notes/` (two technical companion notes). |
 | `figures/` | TikZ sources, rendered figures, and generation scripts. |
 
 ## What is machine-checked (Lean 4, no `sorry`, no added axioms)
@@ -41,6 +41,18 @@ The chain, bottom to top:
    merge-layer capstone; the (L) legs layer (42 certificates + a 726-digit
    bignum crux); the R6 shedding lemmas (55 certificates); the rate-port parse
    (`R47Perm.lean`, `R47Parse.lean`).
+5. **The capped-joint g-step layer** (2026-08-20; `GStepCore.lean`,
+   `GLemmaConfig.lean` / `GLemmaAssembly.lean`, `CappedJointConfig.lean`,
+   `CappedJointAchievable.lean`): the achievability-corrected Case-2 hypothesis
+   (the unconstrained form is *false* on `μ ∈ (1/2,1)`; non-leaf cavity
+   messages satisfy `μ ≤ 1/2` — the relocated integrality content), the
+   kernel-checked single-child (`0<μ≤1/2`) and two-child (unconditional)
+   g-step bounds, and the bridge toward the abstract g-lemma `gV_le`
+   (kernel-proven in `../telperion/examples/g1_floors/lean/`). Landed via
+   PR #20 (merged 2026-08-21): the `gV_le` port (`GArmExtAbstract.lean`,
+   `GLemmaAbstract.lean`) plus the full closure
+   `CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step
+   `≤ 1` at every arity, unconditionally over achievable messages.
 
 Generated files carry provenance headers naming the generator and its
 self-checks; regenerate and diff via
@@ -57,9 +69,16 @@ lemma, and the G1 floor/endpoint certificates.
 
 ## What is named-open
 
-- **`R47Rate`**: the Lean port of the rate bound `pi ≤ (4/3)·rhoB^n` (the
-  parse — its hardest seam — is already green; the remaining algebra is
-  specified in `docs/design/P5_SEAM_DESIGN.md`).
+- **The g-step composition**: `gstep_le_one_achievable` landed (PR #20); what
+  remains is composing the config-model closure into the rooted-tree master
+  induction (the remaining *tight* content is identified with the master
+  inequality in `docs/GSTEP_STEP1_IS_THE_CRUX.md`).
+- **`R47Rate`** — rate corner **landed** (PR #33, 2026-08-21:
+  `R47Rate.lean:pi_rate_leafRooted`, the bound
+  `per(L)/∏deg ≤ (4/3)·rhoB^n` on the real permanent ratio for the
+  leaf-rooted normal form, kernel-clean). Remaining by design: the
+  arbitrary-rooting generalization = graph iso-invariance of `per(L)/∏deg`,
+  deferred to assembly (the reduction picks a leaf-rooted normal form).
 - **The `R7'` assembly**: the honest-conditional capstone composing all layers
   (`docs/design/R7_ASSEMBLY_DESIGN.md`) — hypotheses are named `Prop`s with
   certificate provenance, never axioms.

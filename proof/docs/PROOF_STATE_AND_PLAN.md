@@ -3,7 +3,8 @@
 **`conjecture1_proved = False`.** This is a whole-campaign map for all sessions: what is proven,
 the exact remaining gaps, and a completion plan per gap. Built from the authoritative
 `proof/verification/conjecture1_status.py` (the R-ladder aggregator) and this arc's localization work.
-Last synthesized 2026-08-19.
+Last synthesized 2026-08-19; updated 2026-08-20 (capped-joint g-step arc — see the dated
+addendum under Gap 1).
 
 ## The reduction: the whole 1984 problem sits on one crux
 
@@ -85,6 +86,23 @@ the same object**, viewed from Python (interval cert) and Lean (open hypothesis)
 
 Steps 1–2 need a genuine integer-tight / 23-adic breakthrough. The scaffold is ready; the idea is not
 in hand. **This is the one gap that cannot be scheduled.**
+
+**Addendum 2026-08-20 (capped-joint g-step arc, landed on `main`).** The ≤-face of the g-lemma
+attack moved substantially; the *strict/equality* content above remains the unschedulable part.
+Landed, kernel-checked: (a) the achievability correction — the unconstrained `Case2Property` is
+FALSE on `μ ∈ (1/2,1)` (exact witness `telperion/src/telperion/bg/g_step_margin.py`); non-leaf
+cavity messages satisfy `μ ≤ 1/2`, and that hypothesis is the relocated integrality content;
+(b) `R3Cert/CappedJointAchievable.lean` — `single_child_le_one`, `two_child_le_one`
+(unconditional for two children: the integrality wall is a single-child phenomenon), and the
+reduction `gstep_le_one_of_glemmaBound`; (c) the abstract g-lemma `gV_le` (≤-form, all blocks) is
+kernel-proven over the `Blk` cavity model (`telperion/examples/g1_floors/lean/GLemma.lean`), and
+PR #20 (merged 2026-08-21) landed both the `R3Cert` port and the **full closure**
+`CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step `≤ 1` at every arity,
+unconditionally over achievable messages, kernel-clean on `main`. The mechanical seams are done.
+Remaining *research* content of Gap 1: the equality characterization / strict gap and the
+child-envelope feed into `node_le_omega` — which the follow-on decomposition
+(`GSTEP_2TYPE_STEP2_CLOSED.md`, `GSTEP_STEP1_IS_THE_CRUX.md`, `GSTEP_HANDELMAN_RECIPE.md`,
+2026-08-21) identifies with the master inequality: every open thread is that one crux.
 
 ### Gap 2: realization bridge (Full STEP 4)
 **Tractability: hard Lean formalization, not new mathematics** (the `p→∞` mechanism is already a
