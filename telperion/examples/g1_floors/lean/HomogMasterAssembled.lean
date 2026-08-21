@@ -371,4 +371,31 @@ theorem GS_regionC (k : ℕ) (mu : ℚ) (hk : 1 ≤ k) (h0 : 1 / 3 ≤ mu) (h1 :
           · exact pow_nonneg (by linarith : (0:ℚ) ≤ 1 + mu) 11
       _ ≤ T := bridgeC3 mu h0 h1
 
+/-! ## Main assembled theorem -/
+
+/-- **Achievable homogeneous master bound (assembled).**
+
+For every integer `k ≥ 1` and every ACHIEVABLE `mu` (`mu = 1`, or `0 < mu ≤ 1/2`),
+the homogeneous value `GS k mu = base(k,mu)^11 * Bcap(mu)^k` satisfies `GS k mu ≤ T`,
+where `T = W (5/3)^11`, `W = 64/621`.
+
+This glues the 12 kernel-green pieces of `HomogMaster.lean` (5 Bernstein interval
+certs, 3 integer certs, the d/dk identity, the assembled arm line) into one
+statement over `k : ℕ` and `mu : ℚ`.  No new mathematics; `conjecture1_proved = False`. -/
+theorem homog_master_achievable (k : ℕ) (hk : 1 ≤ k) (mu : ℚ)
+    (hach : mu = 1 ∨ (0 < mu ∧ mu ≤ 1 / 2)) :
+    GS k mu ≤ T := by
+  rcases hach with hmu1 | ⟨h0, h12⟩
+  · subst hmu1; exact GS_arm_le k hk
+  · rcases le_total mu (37 / 120) with hA | hA'
+    · exact GS_regionA k mu hk h0 hA
+    · rcases le_total mu (1 / 3) with hB | hC'
+      · exact GS_regionB k mu hk hA' hB
+      · exact GS_regionC k mu hk hC' h12
+
+/-- **Tightness witness.** `GS 1 1 = T`: the arm `(k,mu) = (1,1)` saturates the bound,
+    so `homog_master_achievable` is tight (the equality case of the strictness companion). -/
+theorem GS_arm_eq : GS 1 1 = T := by
+  rw [GS_one_eq_armGS, T_eq_Tval, HomogMaster.armGS_one]
+
 end HomogMasterAssembled
