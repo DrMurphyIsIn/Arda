@@ -63,3 +63,9 @@ name = "HomogMaster"
 
 [[lean_lib]]
 name = "HomogMasterAssembled"
+
+[[lean_lib]]
+name = "HomogMasterStrict"
+
+[[lean_lib]]
+name = "HomogMasterStrictAssembled"
