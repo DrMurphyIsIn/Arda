@@ -9,7 +9,7 @@ authors:
     given-names: Peter W.
 type: software
 repository-code: "https://github.com/DrMurphyIsIn/Arda"
-license: Apache-2.0
+license: Apache-2.0  # mathematics/proofs; the Telperion engine is BUSL-1.1, see LICENSING.md
 keywords:
   - Laplacian permanent
   - matching polynomial
