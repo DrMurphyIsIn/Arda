@@ -1,8 +1,10 @@
 {
   "name": "telperion",
-  "description": "Certify rational-inequality families in sympy and batch-emit kernel-checked Lean 4 — the certify/validate/emit/freeze discipline as a skill, plus the Telperion MCP server.",
-  "version": "0.1.0",
-  "author": { "name": "Peter W. Murphy" },
+  "description": "Certify rational-inequality families in sympy and batch-emit kernel-checked Lean 4 \u2014 the certify/validate/emit/freeze discipline as a skill, plus the Telperion MCP server.",
+  "version": "0.1.6",
+  "author": {
+    "name": "Peter W. Murphy"
+  },
   "homepage": "https://github.com/DrMurphyIsIn/Arda/tree/main/telperion",
   "mcpServers": {
     "telperion": {
