@@ -120,6 +120,11 @@ script = "examples/bernstein/generate.py"
 group = "quick"    # Bernstein-basis interval positivity (nonneg Bernstein coeffs, degree-elevating); ~0.3 s
 
 [[check]]
+name = "sturm_positive"
+script = "examples/sturm_positive/generate.py"
+group = "quick"    # Sturm strict-interval positivity (root exclusion + Bernstein of p-gamma); ~0.4 s
+
+[[check]]
 name = "real_nullstellensatz_find"
 script = "examples/real_nullstellensatz_find/generate.py"
 group = "sdp"      # Real-Nullstellensatz SDP finder (needs cvxpy). Frozen Lean compile-gated.

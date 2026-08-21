@@ -39,6 +39,7 @@ on:
       - "telperion/examples/rational_sos/**"
       - "telperion/examples/cg_round/**"
       - "telperion/examples/polya_zeros/**"
+      - "telperion/examples/sturm_positive/**"
       - "telperion/examples/uniform_tail/**"
       - "telperion/examples/uniform_arm/**"
       - "telperion/examples/proof_audit/**"
@@ -120,6 +121,7 @@ jobs:
           cp ../../rational_sos/frozen/RationalSOS.lean          Audit/RationalSOS.lean
           cp ../../cg_round/frozen/CGRound.lean                 Audit/CGRound.lean
           cp ../../polya_zeros/frozen/PolyaZeros.lean           Audit/PolyaZeros.lean
+          cp ../../sturm_positive/frozen/SturmPositive.lean      Audit/SturmPositive.lean
           cp ../../uniform_tail/frozen/UniformTail.lean         Audit/UniformTail.lean
       - name: Cache elan
         uses: actions/cache@v4
