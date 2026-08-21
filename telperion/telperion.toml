@@ -236,6 +236,12 @@ group = "audit"    # runs the structured evolve loop (~28 s) + emits the champio
                    # ratio certificate; too slow for the per-push quick path -> audit
                    # CI. (evolve->frozen milestone, seed=0, deterministic)
 
+[[check]]
+name = "tangent_sum"
+script = "examples/tangent_sum/generate.py"
+group = "quick"    # tangent-line trick: convex-quadratic symmetric-sum bounds
+                   # (Jensen for squares + a shifted quadratic); nlinarith; ~0.1 s
+
 [evolve]
 # LLM-driven evolutionary certificate search. NOT part of the trust model:
 # every candidate still passes certify -> emit -> lake build; nothing is auto-frozen.
