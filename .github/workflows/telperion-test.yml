@@ -29,7 +29,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: pip install "${{ matrix.sympy }}" pytest networkx numpy
+      # cvxpy provides the SDP backend the SOS route (prove_goal Phase 0.1 kind-
+      # router) uses to certify interior ties; without it those tests can't run.
+      - run: pip install "${{ matrix.sympy }}" pytest networkx numpy cvxpy
       - name: Unit tests
         working-directory: telperion
         # test_bellman_rigidity's two value_function(max_size=14) tests are

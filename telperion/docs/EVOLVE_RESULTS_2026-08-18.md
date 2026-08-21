@@ -6,6 +6,19 @@
 CI or added to the Lean proof. The run below is empirical evidence that the infrastructure
 works end-to-end; no sub-certificate it found was hand-reviewed for Lean-portability.
 
+**Update 2026-08-20.** The one-off run below is now a regression test
+(`tests/test_evolve_frozen.py`) and an example (`examples/evolve_nearstar/`):
+`telperion.evolve.freeze.discover_nearstar_champion` deterministically discovers
+the certifying champion (seed=0), and `build_frozen_lean` emits its reusable
+ratio certificate (Pólya step + crossings, s*=5) bundled with the
+`Telperion.unimodal_peak` prelude — soundness-lint clean. What is proven locally:
+reproducible discovery + lint-clean emission. What remains cloud-gated: the
+`lake build` kernel green (this host does not build Lean), and — by
+`UnimodalMaxEmitter`'s design — the final `unimodal_peak` application against a
+concrete non-rational `f` is the caller's line. So `conjecture1_proved` stays
+`False`; the honest gain is that the milestone is now reproducible-and-tested,
+not a manual one-off.
+
 ---
 
 ## Experiment setup
