@@ -413,6 +413,13 @@ def run_all():
         except Exception as e:  # noqa: BLE001
             ok = False
             print(f"[FAIL] {name}: {e}")
+    # MasterCore correspondence verdict
+    kr = sp.symbols("kr")
+    armb = (6 * kr + 4) / (3 * (kr + 1))
+    fb = (4 * kr + 3) / (kr + 1)
+    results["mastercore_same"] = sp.simplify(armb - fb) == 0
+    print(f"[--]  MasterCore correspondence: arm-line base {armb} vs f base {fb} "
+          f"-> same object? {results['mastercore_same']}")
     results["C_argmax"] = C_argmax()
     results["grid"] = grid_regions()
     print("C-argmax (GS/T, k, mu):", float(results['C_argmax'][0]),
