@@ -33,6 +33,14 @@ on:
       - "telperion/examples/consequence/**"
       - "telperion/examples/sos_refutation/**"
       - "telperion/examples/real_nullstellensatz/**"
+      - "telperion/examples/sos_refutation_find/**"
+      - "telperion/examples/bernstein/**"
+      - "telperion/examples/real_nullstellensatz_find/**"
+      - "telperion/examples/rational_sos/**"
+      - "telperion/examples/cg_round/**"
+      - "telperion/examples/polya_zeros/**"
+      - "telperion/examples/cone/**"
+      - "telperion/examples/sturm_positive/**"
       - "telperion/examples/uniform_tail/**"
       - "telperion/examples/uniform_arm/**"
       - "telperion/examples/proof_audit/**"
@@ -108,6 +116,14 @@ jobs:
           cp ../../consequence/frozen/Consequence.lean          Audit/Consequence.lean
           cp ../../sos_refutation/frozen/SOSRefutation.lean     Audit/SOSRefutation.lean
           cp ../../real_nullstellensatz/frozen/RealNullstellensatz.lean Audit/RealNullstellensatz.lean
+          cp ../../sos_refutation_find/frozen/SOSRefutationFind.lean Audit/SOSRefutationFind.lean
+          cp ../../bernstein/frozen/Bernstein.lean               Audit/Bernstein.lean
+          cp ../../real_nullstellensatz_find/frozen/RealNullstellensatzFind.lean Audit/RealNullstellensatzFind.lean
+          cp ../../rational_sos/frozen/RationalSOS.lean          Audit/RationalSOS.lean
+          cp ../../cg_round/frozen/CGRound.lean                 Audit/CGRound.lean
+          cp ../../polya_zeros/frozen/PolyaZeros.lean           Audit/PolyaZeros.lean
+          cp ../../cone/frozen/Cone.lean                        Audit/Cone.lean
+          cp ../../sturm_positive/frozen/SturmPositive.lean      Audit/SturmPositive.lean
           cp ../../uniform_tail/frozen/UniformTail.lean         Audit/UniformTail.lean
       - name: Cache elan
         uses: actions/cache@v4

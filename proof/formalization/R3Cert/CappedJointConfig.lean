@@ -2,18 +2,27 @@ import R3Cert.GStepCore
 import R3Cert.ProdBounds
 
 /-!
-  # Capped-joint g-step: config-based, SATISFIABLE Case 2 (corrected, 2026-08-20)
+  # Capped-joint g-step: config-based defs + (superseded) Case 2 (2026-08-20)
 
-  Fixes a real flaw in `CappedJointSkeleton`: its `Case2Property` was stated abstractly over
-  independent `(base, Pgl)` and is therefore **FALSE** (`base=2, Pgl=1` gives `72 ≤ 1`) — the
-  abstract form dropped the config linkage (`base > threshold` *forces* suppression, so `Pbc`
-  cannot be large). A false open hypothesis makes the reduction hollow.
+  This file supplies the shared config-level **definitions** — `glemma`, `master_ub`, `Bcap`,
+  `baseOf`, `prodBcap` and their nonneg/`≤ 1` lemmas — reused by `CappedJointAchievable`.
+  Those defs are correct and load-bearing; keep them.
 
-  Here `Case2Property` is over an actual config (`l : List ℚ` of child messages), with `base`
-  and `∏Bcap` **derived** from `l`, so the linkage is intrinsic. This is the genuine analytic
-  wall — the real-`Bcap` g-step for `base > threshold` configs (verified `≤ 1`; the reframe),
-  not the glemma over-count. `case1_bound` discharges the `base ≤ threshold` half; `ProdBounds`
-  supplies `∏Bcap ≤ 1`. Entirely in `ℚ`. `conjecture1_proved = False`.
+  **⚠ HONESTY CORRECTION (2026-08-20).** The `Case2Property` defined below (config over
+  `l : List ℚ` with children constrained only by `0 < μ`) was previously advertised here as
+  "SATISFIABLE / the genuine analytic wall". **That claim was wrong — `Case2Property` is still
+  FALSE.** Moving the abstract `(base, Pgl)` linkage into a config fixed *one* leak but left
+  another: `0 < μ` admits child messages `μ ∈ (1/2, 1)`, and there the single-child g-step
+  factor `baseOf([μ])^11 / (W(5/3)^11)` exceeds `1` (peak `≈ 1.076` at `μ = 13/16`). That band
+  is a GAP the cavity recursion can never realize — every message is `μ = 1/(j+1+S)`, so a leaf
+  (`j=0`) has `μ = 1` and every non-leaf (`j ≥ 1`) has `μ ≤ 1/2` (exact-enumeration cross-check:
+  all 16,755 rooted vertices with `n ≤ 10` have max non-leaf message `17/35 < 1/2`).
+
+  The genuine fix adds the **achievability** hypothesis `μ ≤ 1/2 ∨ μ = 1`. It lives in
+  `CappedJointAchievable` as `Case2PropertyAchievable` (same `R3Cert.CappedJointConfig`
+  namespace), which is the canonical open wall and which also DISCHARGES the single- and
+  two-child cases unconditionally. The `Case2Property`/`gstep_le_one` below are retained,
+  DEPRECATED, only so older bridges still typecheck. Entirely in `ℚ`. `conjecture1_proved = False`.
 -/
 
 namespace R3Cert.CappedJointConfig
@@ -72,17 +81,24 @@ theorem prodBcap_le_one (l : List ℚ) (hl : ∀ μ ∈ l, 0 ≤ μ) : prodBcap 
   R3Cert.ProdBounds.map_prod_le_one l Bcap (fun μ hμ => Bcap_nonneg (hl μ hμ))
     (fun μ _ => Bcap_le_one μ)
 
-/-- **Case 2 — the corrected, SATISFIABLE open hypothesis.** For every achievable config `l`
-    whose base exceeds the threshold, the real-`Bcap` g-step factor is `≤ 1`. `base` and
-    `∏Bcap` are both derived from `l`, so the linkage is intrinsic (unlike the FALSE abstract
-    form). This is the genuine remaining analytic wall (verified `≤ 1`, margin ~0.25). -/
+/-- **⚠ DEPRECATED / FALSE — do NOT use as the crux's open hypothesis.** This config form
+    linked `base` and `∏Bcap` (fixing the abstract `(base, Pgl)` leak) but still quantifies the
+    children only as `0 < μ`, which admits the unrealizable band `μ ∈ (1/2, 1)` where the
+    single-child g-step factor exceeds `1` (peak `≈ 1.076` at `μ = 13/16`). So this statement is
+    FALSE. **SUPERSEDED by `CappedJointAchievable.Case2PropertyAchievable`**, which adds the
+    achievability hypothesis `μ ≤ 1/2 ∨ μ = 1` (the domain the cavity recursion actually
+    realizes) and is genuinely the open analytic wall. Retained only so the deprecated
+    `gstep_le_one` below still typechecks. -/
 def Case2Property : Prop :=
   ∀ l : List ℚ, (∀ μ ∈ l, 0 < μ) → W * (5 / 3) ^ 11 < (baseOf l) ^ 11 →
     (baseOf l) ^ 11 * prodBcap l / (W * (5 / 3) ^ 11) ≤ 1
 
-/-- **g-step (config-based), conditional on the corrected Case 2.** For every achievable
-    config, the g-step factor `≤ 1` — Case 1 (`base ≤ threshold`) discharged by `case1_bound`
-    (with `∏Bcap ≤ 1`), Case 2 by the now-satisfiable hypothesis. -/
+/-- **⚠ DEPRECATED — conditional on the FALSE `Case2Property` above.** Valid as a theorem, but
+    its `Case2Property` hypothesis is false (admits the unrealizable band `μ ∈ (1/2,1)`), so it
+    can never be discharged. **Use the achievability-corrected results in
+    `CappedJointAchievable`** (`single_child_le_one`, `two_child_le_one` — proven unconditionally;
+    `gstep_le_one_of_glemmaBound` — general arity) instead. Retained for continuity.
+    Case 1 (`base ≤ threshold`) is discharged by `case1_bound` (with `∏Bcap ≤ 1`). -/
 theorem gstep_le_one (h2 : Case2Property) (l : List ℚ) (hl : ∀ μ ∈ l, 0 < μ) :
     (baseOf l) ^ 11 * prodBcap l / (W * (5 / 3) ^ 11) ≤ 1 := by
   have hl0 : ∀ μ ∈ l, 0 ≤ μ := fun μ hμ => le_of_lt (hl μ hμ)
