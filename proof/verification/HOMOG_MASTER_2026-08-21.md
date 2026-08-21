@@ -125,6 +125,54 @@ respected — achievability is load-bearing and no continuous-`(1/2,1)` certific
 1. The **heterogeneous → homogeneous reduction** (below-average chain / non-homogeneous fixed
    points) — NOT addressed here, remains the open item that turns this homogeneous face into the
    full master inequality.
-2. The **assembled single Lean theorem** over `∀ k, ∀ achievable mu` (mechanical glue, §6).
+2. ~~The **assembled single Lean theorem** over `∀ k, ∀ achievable mu` (mechanical glue, §6).~~
+   **DONE — see §8 ASSEMBLED below.**
+
+`conjecture1_proved = False`.
+
+## 8. ASSEMBLED (2026-08-21 addendum)
+
+The §6 stretch goal — the single `∀ k, ∀ achievable mu` Lean theorem — is now compiled.
+
+**File:** `telperion/examples/g1_floors/lean/HomogMasterAssembled.lean`
+(new `lean_lib HomogMasterAssembled` in that lakefile; imports `HomogMaster`).
+`lake build HomogMasterAssembled` GREEN.
+
+**Main theorem:**
+
+```
+theorem homog_master_achievable (k : ℕ) (hk : 1 ≤ k) (mu : ℚ)
+    (hach : mu = 1 ∨ (0 < mu ∧ mu ≤ 1 / 2)) :
+    GS k mu ≤ T
+```
+
+with `W`, `GAMMA`, `T`, `glemma`, `master_ub`, `Bcap`, `base`, `GS` DEFINED in this file
+over `ℚ` exactly as in the probe (cross-checked: `base 1 (1/2) = 17/12`, `base 2 (1/3) = 4/3`,
+`Bcap (1/2) = 409600000000000/762538262497263`, `GS 1 (1/2) = T·34271896307633/39293437036896`
+— the probe's exact C-argmax).
+
+**Axioms (kernel-checked):** every public theorem in the file — `homog_master_achievable`,
+`GS_arm_le`, `GS_regionA/B/C`, `GS_arm_eq`, and all five `bridgeA/B/C1/C2/C3` — reports
+`#print axioms = [propext, Classical.choice, Quot.sound]`. No `sorry`, no `admit`, no
+`native_decide` in the committed proof (`native_decide` used only in a throwaway scratch file
+for the probe cross-check, not in any committed theorem).
+
+**Bridging that was required.** `HomogMaster.lean`'s 5 Bernstein certs are stated over `ℝ` as
+`0 ≤ P(mu)` in cleared/expanded polynomial normal form. The assembly needed small `ℝ`→`ℚ`
+bridge lemmas (`bridgeA/B/C1/C2/C3`): apply the cert at `(mu:ℝ)`, `ring`-rewrite the expanded
+polynomial to its factored `T·(1+mu/3)^e − base^11·GAMMA^gp` form, cast the resulting
+inequality down to `ℚ`, then fold `GAMMA^gp/(1+mu/3)^e` back into `glemma^gp` via
+`div_le_iff₀`. The `armGS`/`armGS_le` arm line was reused directly for `mu = 1` (via
+`GS_one_eq_armGS : GS k 1 = HomogMaster.armGS k` and `Bcap_one : Bcap 1 = W`).
+
+**Decomposition wiring (as §2):** `mu = 1` → `GS_arm_le` (armGS induction); `0 < mu ≤ 1/2`
+split by `le_total` into region A (`≤ 37/120`, `Bcap ≤ 1` + k-domination + CERT-A), region B
+(`[37/120,1/3]`, `Bcap^k ≤ Bcap ≤ glemma` + CERT-B), region C (`[1/3,1/2]`, match `k = 1`/`2`/`≥3`
+to CERT-C1/C2/C3 with `base ≤ 1+mu` and geometric `Bcap^k ≤ glemma^3` decay).
+
+**Strictness companion:** the equality-witness half is proved (`GS_arm_eq : GS 1 1 = T`, the bound
+is tight at the arm). The full `GS k mu = T ↔ (k,mu)=(1,1)` was NOT assembled — its `→` direction
+needs strict Bernstein endpoint margins that are not available as certs (only the `≤` certs exist);
+this is left as the same stretch item, no new mathematics but new strict certs required.
 
 `conjecture1_proved = False`.

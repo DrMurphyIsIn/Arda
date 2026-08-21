@@ -38,3 +38,6 @@ name = "FlatnessDomination"
 
 [[lean_lib]]
 name = "HomogMaster"
+
+[[lean_lib]]
+name = "HomogMasterAssembled"
