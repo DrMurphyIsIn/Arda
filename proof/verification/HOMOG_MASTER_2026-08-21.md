@@ -174,5 +174,57 @@ to CERT-C1/C2/C3 with `base ≤ 1+mu` and geometric `Bcap^k ≤ glemma^3` decay)
 is tight at the arm). The full `GS k mu = T ↔ (k,mu)=(1,1)` was NOT assembled — its `→` direction
 needs strict Bernstein endpoint margins that are not available as certs (only the `≤` certs exist);
 this is left as the same stretch item, no new mathematics but new strict certs required.
+**UPDATE: now DONE — see §9 STRICTNESS below.**
 
 `conjecture1_proved = False`.
+
+## 9. STRICTNESS (2026-08-21 addendum)
+
+The §8 stretch item — the strict bound and the equality iff — is now compiled.
+
+**Files:**
+- `telperion/examples/g1_floors/lean/HomogMasterStrict.lean` (new `lean_lib HomogMasterStrict`):
+  the 5 strict Bernstein certs `certA/B/C1/C2/C3_strict : ∀ mu, bounds → 0 < P(mu)`.
+- `telperion/examples/g1_floors/lean/HomogMasterStrictAssembled.lean` (new `lean_lib
+  HomogMasterStrictAssembled`; imports `HomogMaster`, `HomogMasterAssembled`, `HomogMasterStrict`):
+  the strict arm tail, the strict region dispatch, and the two headline theorems.
+- `proof/verification/homog_master_strict_probe.py`: exact-Fraction verification + the Lean emitter
+  for the strict certs, plus strict-margin sanity checks (`run_all()` — ALL STRICT ASSERTIONS PASSED).
+
+`lake build HomogMasterStrict HomogMasterStrictAssembled` GREEN; every new public theorem reports
+`#print axioms = [propext, Classical.choice, Quot.sound]` (no `sorry`, `admit`, or `native_decide`).
+
+**Headline theorems (`namespace HomogMasterAssembled`):**
+
+```
+theorem homog_master_strict (k : ℕ) (hk : 1 ≤ k) (mu : ℚ)
+    (hach : mu = 1 ∨ (0 < mu ∧ mu ≤ 1 / 2)) (hne : ¬(k = 1 ∧ mu = 1)) :
+    GS k mu < T
+
+theorem homog_master_eq_iff (k : ℕ) (hk : 1 ≤ k) (mu : ℚ)
+    (hach : mu = 1 ∨ (0 < mu ∧ mu ≤ 1 / 2)) :
+    GS k mu = T ↔ (k = 1 ∧ mu = 1)
+```
+
+**How strictness was obtained (two independent slack sources, no new mathematics):**
+
+1. **Achievable region `0 < mu ≤ 1/2` (any `k`).** Each cleared cert polynomial `P(mu)` has a
+   comfortably positive exact interval minimum (A ≈ 7.06, B ≈ 20.8, C1 ≈ 19.8, C2 ≈ 85.5,
+   C3 ≈ 325.1 — computed exactly from endpoints + interior critical points). Taking `eps = 1`
+   (a simple rational below every minimum), `P(mu) − eps ≥ 0` is certified by the *same*
+   nonneg-Bernstein construction (degree elevation only for C1: `+2`, i.e. degree 13), so
+   `P(mu) = eps + Σ(nonneg terms) ≥ eps > 0`, hence the strict cert `0 < P(mu)`. Threaded through
+   the same `ℝ→ℚ` bridges (now `div_lt_iff₀` chains) as `bridge{A,B,C1,C2,C3}_strict`, and through
+   the unchanged region-chain `≤` steps, this gives `GS k mu ≤ [cert quantity] < T`, i.e.
+   `GS k mu < T` for all `k` on the region.
+2. **Arm line `mu = 1` (`k ≥ 2`).** The per-step geometric factor `(16/15)^11 · W < 1` is already
+   *strict* (`armline_ratio_cert : 64·16^11 < 621·15^11`), and `base(k)^11 · W^k > 0`, so
+   `armGS_step_strict : armGS(k+1) < armGS(k)` for `k ≥ 1`. Induction from `armGS 2 < armGS 1 = T`
+   gives `armGS_lt : armGS k < T` for `k ≥ 2`, i.e. `GS_arm_lt : GS k 1 < T`.
+
+`homog_master_strict` dispatches on `hach`: `mu = 1` forces `k ≥ 2` (from `hne`) → arm tail; the
+`0 < mu ≤ 1/2` branch reuses the region split. `homog_master_eq_iff` is then immediate — forward by
+contraposition of `homog_master_strict`, backward from `GS_arm_eq`.
+
+`conjecture1_proved = False`.  This closes the strictness of the HOMOGENEOUS face over ACHIEVABLE
+`mu` only; the heterogeneous → homogeneous reduction (§7 item 1) remains the open crux.
