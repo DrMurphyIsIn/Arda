@@ -142,6 +142,97 @@ def find_bernstein(p, a, b, n_max=26):
     return None
 
 
+# ------------------------------------------------------ Lean emission ----
+
+def _rat_lean(q):
+    q = R(q)
+    if q.q == 1:
+        return f"({q.p})"
+    return f"({q.p} / {q.q})"
+
+
+def emit_bernstein_lean(name, poly, a, b, n, betas, var="mu"):
+    """Emit a kernel-checkable Lean theorem `0 <= poly` on [a,b] from nonnegative
+    Bernstein coefficients — same tactic skeleton as the proven DirectPolya emit:
+    each basis term nonneg by mul_nonneg/pow_nonneg over (x-a)>=0,(b-x)>=0; `ring`
+    closes the identity; `linarith` sums. poly is a sympy expr in `mu`."""
+    a, b = R(a), R(b)
+    xa = f"({var} - {_rat_lean(a)})"
+    bx = f"({_rat_lean(b)} - {var})"
+    # poly as lean string (expanded rational coeffs)
+    p = sp.expand(poly)
+    p_s = str(p).replace("**", "^")
+    haves, summands = [], []
+    for i, beta in enumerate(betas):
+        if beta == 0:
+            continue
+        coef = sp.binomial(n, i) / (b - a) ** n
+        scalar = _rat_lean(R(beta) * R(coef))
+        proof = f"(by norm_num : (0:ℝ) ≤ {scalar})"
+        factors = [scalar]
+        if i > 0:
+            factors.append(f"{xa}^{i}")
+            proof = f"mul_nonneg ({proof}) (pow_nonneg hxa {i})"
+        if n - i > 0:
+            factors.append(f"{bx}^{n - i}")
+            proof = f"mul_nonneg ({proof}) (pow_nonneg hbx {n - i})"
+        term = " * ".join(factors)
+        haves.append(f"  have t{i} : (0:ℝ) ≤ {term} := {proof}")
+        summands.append(term)
+    rhs = " + ".join(summands) if summands else "0"
+    body = "\n".join(haves)
+    hb = "" if n <= 12 else f"set_option maxHeartbeats {max(400000, n * 30000)} in\n"
+    return (
+        f"-- {name}: Bernstein-basis positivity (degree {n}) on [{a}, {b}].\n"
+        f"{hb}"
+        f"theorem {name} : ∀ {var} : ℝ, {_rat_lean(a)} ≤ {var} → {var} ≤ {_rat_lean(b)}"
+        f" → (0:ℝ) ≤ ({p_s}) := by\n"
+        f"  intro {var} hlo hhi\n"
+        f"  have hxa : (0:ℝ) ≤ {xa} := by linarith\n"
+        f"  have hbx : (0:ℝ) ≤ {bx} := by linarith\n"
+        f"{body}\n"
+        f"  have hid : (({p_s}) : ℝ) = {rhs} := by ring\n"
+        f"  rw [hid]; linarith\n"
+    )
+
+
+def emit_lean_file():
+    """Assemble the g1_floors Lean file: 5 Bernstein interval certs (A,B,C1,C2,C3)
+    + integer/algebra lemmas (leaf-I, L4 ratio cert, master-inactive, base d/dk)."""
+    _, certA, _ = L1_small_mu()
+    polyA = sp.expand(T - (R(7, 6) + mu / 2) ** 11)
+    polyB, certB, _ = L2_mid()
+    c = L3_competition()
+    parts = ["import Mathlib\n\nnamespace HomogMaster\n"]
+    parts.append(emit_bernstein_lean("certA_small_mu", polyA, 0, SPLIT, certA[0], certA[1]))
+    parts.append(emit_bernstein_lean("certB_mid", polyB, R(74, 240), R(1, 3), certB[0], certB[1]))
+    parts.append(emit_bernstein_lean("certC1_k1", c["C1"][0], R(1, 3), R(1, 2), c["C1"][1][0], c["C1"][1][1]))
+    parts.append(emit_bernstein_lean("certC2_k2", c["C2"][0], R(1, 3), R(1, 2), c["C2"][1][0], c["C2"][1][1]))
+    parts.append(emit_bernstein_lean("certC3_kge3", c["C3"][0], R(1, 3), R(1, 2), c["C3"][1][0], c["C3"][1][1]))
+    # integer/algebra companion lemmas
+    parts.append(
+        "-- leaf-I integer cert: gamma < (10/9)^11  (glemma(1/3) < 1).\n"
+        "theorem leafI_cert : (64:ℕ)^2 * 5^11 * 9^11 < 621^2 * 3^11 * 10^11 := by norm_num\n"
+    )
+    parts.append(
+        "-- L4 arm-line per-step ratio cert: base ratio (16/15)^11 * W < 1.\n"
+        "theorem armline_ratio_cert : (64:ℕ) * 16^11 < 621 * 15^11 := by norm_num\n"
+    )
+    parts.append(
+        "-- master-inactive anchor (mu=1/2 tie): master_ub(1/2) >= glemma(1/2).\n"
+        "theorem master_inactive_cert : (64:ℕ) * 25^11 ≤ 621 * 21^11 := by norm_num\n"
+    )
+    parts.append(
+        "-- base d/dk exact identity: base(1,mu)-base(k,mu) = (k-1)(1-3mu)/(6(k+1)).\n"
+        "theorem base_dk_identity (k mu : ℝ) (hk : k + 1 ≠ 0) :\n"
+        "    (7/6 + mu/2) - (3*(k+1) + 3*k*mu + 1)/(3*(k+1))\n"
+        "      = (k-1)*(1-3*mu)/(6*(k+1)) := by\n"
+        "  field_simp\n  ring\n"
+    )
+    parts.append("end HomogMaster\n")
+    return "\n".join(parts)
+
+
 # ---------------------------------------------------------------- L1-L5 ----
 
 def L1_small_mu():
