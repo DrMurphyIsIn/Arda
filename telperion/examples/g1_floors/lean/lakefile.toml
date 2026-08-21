@@ -38,3 +38,12 @@ name = "Duality"
 
 [[lean_lib]]
 name = "Hsq"
+
+[[lean_lib]]
+name = "QuadForm"
+
+[[lean_lib]]
+name = "Xor3Mask"
+
+[[lean_lib]]
+name = "Xor3Duality"
