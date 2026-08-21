@@ -210,6 +210,11 @@ script = "examples/polya_zeros/generate.py"
 group = "quick"    # CPR Polya-with-zeros (tie-safe homogeneous lift; zeros allowed on faces); ~0.3 s
 
 [[check]]
+name = "cone"
+script = "examples/cone/generate.py"
+group = "quick"    # cone/Farkas nonneg-combination (determined + overcomplete-basis BFS); ~0.3 s
+
+[[check]]
 name = "uniform_tail"
 script = "examples/uniform_tail/generate.py"
 group = "quick"    # uniform-in-recursion monotone tail: arm-dominance across hub states
