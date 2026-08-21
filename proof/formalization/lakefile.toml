@@ -9,3 +9,7 @@ rev = "v4.32.0"
 
 [[lean_lib]]
 name = "R3Cert"
+
+[[lean_lib]]
+name = "R7Hyps"
+globs = ["R7Hyps.+"]
