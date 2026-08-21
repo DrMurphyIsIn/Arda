@@ -38,8 +38,8 @@ jobs:
       - name: Build (the verification — every R3Cert module compiles, no sorry)
         run: lake build
 
-      - name: Build the star-of-hubs certificates + HypStarSymbolic (972 frozen cells)
-        run: lake build R7Hyps R3Cert.HypStar
+      - name: Build the R7' hypothesis layers (star-of-hubs cells + class floors)
+        run: lake build R7Hyps R3Cert.HypStar R3Cert.HypFloors
 
       - name: Axiom / sorry scan (informational)
         run: |
