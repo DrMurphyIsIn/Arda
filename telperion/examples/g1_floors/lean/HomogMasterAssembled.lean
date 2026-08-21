@@ -273,7 +273,6 @@ theorem GS_one_eq_armGS (k : ℕ) : GS k 1 = HomogMaster.armGS k := by
   rw [Bcap_one]
   congr 1
   unfold base
-  push_cast
   ring
 
 /-- **mu = 1 case.** `GS k 1 ≤ T` for `k ≥ 1` (via the assembled arm induction). -/
