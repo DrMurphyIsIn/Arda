@@ -37,7 +37,6 @@ name = "PetersenCertificate"
 name = "FlatnessDomination"
 
 [[lean_lib]]
-[[lean_lib]]
 name = "Duality"
 
 [[lean_lib]]
@@ -63,3 +62,9 @@ name = "HomogMaster"
 
 [[lean_lib]]
 name = "HomogMasterAssembled"
+
+[[lean_lib]]
+name = "Petersen2Certificate"
+
+[[lean_lib]]
+name = "Petersen2Duality"
