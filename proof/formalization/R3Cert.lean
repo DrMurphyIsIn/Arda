@@ -104,6 +104,10 @@ import R3Cert.CavityIdentities
 import R3Cert.GLemmaAssembly
 import R3Cert.ProdBounds
 import R3Cert.CappedJointConfig
+import R3Cert.CappedJointAchievable
+import R3Cert.GArmExtAbstract
+import R3Cert.GLemmaAbstract
+import R3Cert.CappedJointClosure
 import R3Cert.GLemmaConfig
 import R3Cert.TieClosure
 import R3Cert.R47Shed

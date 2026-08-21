@@ -17,3 +17,6 @@ name = "GLemma"
 
 [[lean_lib]]
 name = "DirectPolyaE1"
+
+[[lean_lib]]
+name = "FlatnessDomination"
