@@ -30,4 +30,6 @@ import Audit.SOSRefutationFind
 import Audit.Bernstein
 import Audit.RealNullstellensatzFind
 import Audit.RationalSOS
+import Audit.CGRound
+import Audit.PolyaZeros
 import Audit.UniformTail
