@@ -19,4 +19,19 @@ name = "GLemma"
 name = "DirectPolyaE1"
 
 [[lean_lib]]
+name = "KnapsackSOS"
+
+[[lean_lib]]
+name = "BridgeD4"
+
+[[lean_lib]]
+name = "SumEqProd"
+
+[[lean_lib]]
+name = "Xor3Structure"
+
+[[lean_lib]]
+name = "PetersenCertificate"
+
+[[lean_lib]]
 name = "FlatnessDomination"

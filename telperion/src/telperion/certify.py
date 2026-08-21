@@ -130,6 +130,8 @@ _SPECIAL_KINDS = (
     "cg_round",
     # Facial-positivity emitter (2026-08-20): CPR Polya-with-zeros (tie-safe lift).
     "polya_zeros",
+    # Proof-complexity-derived emitters (2026-08-20, knapsack_sos arc).
+    "rational_identity", "finite_decide", "fwd_telescope",
 )
 
 # kind -> "module:certify_point_fn" for the generic (family.special) emitters.
@@ -154,6 +156,9 @@ _SPECIAL_DISPATCH = {
     "real_nullstellensatz": ("emit_real_nullstellensatz", "certify_real_nullstellensatz_point"),
     "cg_round": ("emit_cg_round", "certify_cg_round_point"),
     "polya_zeros": ("emit_polya_zeros", "certify_polya_zeros_point"),
+    "rational_identity": ("emit_rational_identity", "certify_rational_identity_point"),
+    "finite_decide": ("emit_finite_decide", "certify_finite_decide_point"),
+    "fwd_telescope": ("emit_fwd_telescope", "certify_fwd_telescope_point"),
 }
 
 
