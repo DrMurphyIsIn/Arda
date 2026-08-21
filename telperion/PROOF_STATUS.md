@@ -5,7 +5,17 @@ iff `T` is one of the six eleven-vertex ties (the `c+k=5` near-star family; in t
 invariant `bg_phi11`, the unique tie is the near-star `N(0,5)` at `n=11`).
 
 `conjecture1_proved = False.` This file is the honest map: what is proven, what is ruled
-out (and why), and the one lead that remains.
+out (and why), and the leads that remain.
+
+> **Reconciliation — the non-strict `≤ 1` bound (see `PROOF_AUDIT.md`).** The NON-STRICT
+> bound `Φ ≤ 1` over every branch is kernel-checked on the [`proof/`](../proof/) side
+> (`R3Cert/PotentialFinal.lean:phi_le_one`, a discharging hinge super-solution telescoped
+> through the `per(L)` bridge). What `conjecture1_proved = False` tracks is the SHARP
+> statement — strict `< 1` off the ties, equality exactly at the six ties, and per-`n`
+> competitor extremality — plus the full-tree assembly. The dead-ends below rule out routes
+> to that sharp result; they are not claims that `≤ 1` is unproven. (Dead-end #1 refutes
+> the *naive per-node-non-positive decomposition*; the hinge escapes it by being a
+> discharging potential, redistributing the tie-hub's `+0.424` defect.)
 
 Here `Φ¹¹(T) = (64/621)ⁿ · (∏_v a_v)¹¹` where `a_v = 1 + z_v S_v` is the rational cavity
 amplitude (`z_v = 1/deg`, `m_v = z_v/a_v`), maximized over roots. The per-vertex density
@@ -32,6 +42,49 @@ Stronger, empirically: `11·v₂₃(∏a_v) − n ≠ 0` on **every** non-tie tr
 `= 0` only at `N(0,5)`. This is the sole universal-looking arithmetic obstruction in the
 toolkit. **Necessary, not sufficient.**
 
+## 2026-08-20 — the capped-joint g-step arc (the R1 wiring, narrowed)
+
+The single-hub branch-induction wiring (PROOF_ASSEMBLY §R1, previously a monolithic OPEN)
+went through a correction-and-reduction cycle, all landed on `main` (the `2aa7c98` →
+`8fb4f8d` commit series, ending in PR #19, plus the `e1d25e4` reframe), kernel-checked
+where stated:
+
+1. **Correction.** The original `Case2Property` hypothesis (`CappedJointSkeleton` /
+   `CappedJointConfig`) is **FALSE as stated**: the g-step factor exceeds 1 for a single
+   child message `μ ∈ [0.6975, 0.9975]` (exact margin study `bg/g_step_margin.py`, peak
+   at `μ = 13/16`). The fix is **achievability**: non-leaf cavity messages satisfy
+   `μ = 1/(j+1+S) ≤ 1/2`; the only achievable message above `1/2` is the leaf `μ = 1`,
+   outside the violation band. The achievability hypothesis IS the relocated integrality
+   content (same obstruction as dead-end #2, now carried as a side condition rather than
+   ignored).
+2. **Reframe** (`e1d25e4`). The earlier *conditional* Case-2 was an artifact of the
+   glemma-relaxation over-counting capped children; the REAL capped g-step (actual
+   `Bcap = min`) is unconditional over achievable messages, tight only at the arm.
+3. **Kernel-checked pieces on `main`** (`R3Cert/CappedJointAchievable.lean`, axioms
+   clean): `single_child_le_one` (`0 < μ ≤ 1/2`), `two_child_le_one` (all `a,b > 0` — for
+   two or more children no achievability constraint is even needed; the integrality wall
+   is a single-child phenomenon), `prodBcap_le_prodGlemma`, and the reduction
+   `gstep_le_one_of_glemmaBound` (g-step ≤ 1 given `W·baseOf¹¹·prodGlemma ≤ γ`).
+   *Caveat, found in the closure work:* that `prodGlemma` hypothesis over-counts small-μ
+   children (`glemma(μ) > 1` for `μ < μ* ≈ 0.307`), so it is not satisfiable at higher
+   arity — a true theorem, but not the closing vehicle. The correct cap is
+   `Bcap ≤ factorR` (capped at 1).
+4. **The abstract g-lemma and the closure** (PR #20, **merged 2026-08-21**). `gV_le` is
+   kernel-proven over the `Blk` cavity model in the standalone
+   [`examples/g1_floors/lean/`](examples/g1_floors/lean/) package (`GLemma.lean`, with
+   `muV_nonleaf_le_half` supplying achievability structurally). PR #20 ports it into
+   `R3Cert` (`GArmExtAbstract.lean`, `GLemmaAbstract.lean`) **and closes the ℚ→ℝ cast
+   seam**: `CappedJointClosure.lean:gstep_le_one_achievable` — the config g-step is
+   `≤ 1` at **every arity**, unconditionally over achievable messages (leaf `W(4/3)¹¹<γ`;
+   single child via `single_child_le_one` + the arm `μ=1`; `|l|≥2` via the ported
+   `gstep_lt_gamma`, through `Bcap ≤ factorR`). Kernel-clean, on `main`.
+
+Net: the config g-step is a theorem on `main`. The R1 residuals are the leaf-child all-n
+case and composing the config-model closure into the rooted-tree master induction; the
+follow-on decomposition docs (`../proof/docs/GSTEP_2TYPE_STEP2_CLOSED.md`,
+`../proof/docs/GSTEP_STEP1_IS_THE_CRUX.md`, 2026-08-21) identify the remaining *tight*
+content with the master inequality. `conjecture1_proved = False` still.
+
 ---
 
 ## Ruled out — with reasons (this is the value)
@@ -49,6 +102,13 @@ not a mere failure to find:
    magnitude* (a growth-rate: density → 1), invisible to any p-adic/SOS/Hodge/real-stability
    certificate. The arithmetic coordinate `v₂₃(a_v)` is integer-valued hence locally constant
    (differential 0 a.e.), so any smooth Hessian/signature collapses to rank-1.
+   *Nuance (2026-08-20):* this rules out *continuous* certificates, not *integer-arithmetic*
+   ones. The Chvátal–Gomory rounding emitter (`CGRoundEmitter`) crosses exactly this wall on
+   a fragment: the continuous near-star envelope overshoots 1 between integers (max ≈1.000459
+   at s≈4.82, so no continuous certificate exists on `[4,6]`), yet the integer-window theorem
+   `∀ s : Int, 4 ≤ s ≤ 6 → phi11(s) ≤ 1` kernel-checks by rounding `s` into `{4,5,6}`
+   (`examples/cg_round/NearStarWindow.lean`). A fragment, not the conjecture — but the first
+   certificate *shape* in the toolkit that lives on the arithmetic side of the obstruction.
 3. **Uniform density gap** (`sup_T D(T) < c < 1`). **Refuted:** `sup_T D(T) = 1`. The
    tie-recursive family "hub + k tie-subtrees" (`n = 11k+1`) has density → 1 (0.9998 at
    k=400), higher than the legs-2 `D∞ = 0.9585`. There is no uniform gap. (Note: legs-2 is
@@ -83,11 +143,16 @@ argument that is simultaneously **collective** (not a sum of local terms), **arc
 aware** (it is a growth-rate, not an algebraic certificate), and **integrality-based** (the
 23-gate carves the exact-1 locus). No framework yet supplies all three.
 
-**Live lead (the single rope left hanging):** prove the deficit is `> 0` *strictly* for the
-tie-recursive family via a **23-gate-strictness lemma** — that the amplitude product of any
-non-tie tree misses `(621/64)^(n/11)` by an amount bounded below by an arithmetic (not
-smooth, not local) quantity. The `sporadic_tie` gate is the anchor; the sufficiency is the
-research frontier.
+**Live leads:**
+
+1. **The sharp side — 23-gate-strictness lemma:** prove the deficit is `> 0` *strictly* for
+   the tie-recursive family — that the amplitude product of any non-tie tree misses
+   `(621/64)^(n/11)` by an amount bounded below by an arithmetic (not smooth, not local)
+   quantity. The `sporadic_tie` gate is the anchor; the sufficiency is the research frontier.
+2. **The ≤-half assembly — compose the landed g-step closure** (see the 2026-08-20
+   section above): `gstep_le_one_achievable` is on `main` (PR #20, merged 2026-08-21);
+   what remains is composing it with the leaf-child all-n case and the multi-hub side
+   (R2) — mechanical/structural work, not open mathematics, unlike lead 1.
 
 ---
 
