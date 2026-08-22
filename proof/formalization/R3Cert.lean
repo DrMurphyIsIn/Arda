@@ -66,6 +66,7 @@ import R3Cert.BridgeStep4g
 import R3Cert.BridgeStep4h
 import R3Cert.BridgeStep4i
 import R3Cert.BridgeStep4j
+import R3Cert.BridgeStep4k
 import R3Cert.R47Tree
 import R3Cert.R47HubState
 import R3Cert.R47HubForms
