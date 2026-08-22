@@ -22,17 +22,18 @@ from telperion.lean import LeanProfile  # noqa: E402
 
 _x = sp.Symbol("x")
 _SPECS = {
-    0: ((_x**2, _x), 3, sp.Integer(3)),
-    1: ((2 * _x**2 - 3 * _x + 5, _x), 2, sp.Integer(4)),
+    0: ((_x**2, _x), 3, sp.Integer(3)),                 # Jensen for squares
+    1: ((2 * _x**2 - 3 * _x + 5, _x), 2, sp.Integer(4)),  # a shifted quadratic
+    2: ((_x**4, _x), 2, sp.Integer(2)),                 # convex quartic (deg 4)
 }
-_NAMES = {0: "jensen_sq", 1: "quad_shift"}
+_NAMES = {0: "jensen_sq", 1: "quad_shift", 2: "quartic_two"}
 _OUT = Path(__file__).resolve().parent / "lean" / "TangentSum.lean"
 
 
 def build() -> str:
     fam = tangent_sum_family(
         "TangentSum",
-        GridSpec([("case", [0, 1])]),
+        GridSpec([("case", [0, 1, 2])]),
         lambda pt: _NAMES[pt["case"]],
         spec=lambda pt: _SPECS[pt["case"]],
     )
