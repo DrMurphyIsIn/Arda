@@ -48,3 +48,28 @@ The g-step / R3 crux is closed (`gstep_le_one_achievable` + `phi_le_one`); the b
 complete than a naive grep shows (table above). The remaining distance to Conjecture 1 is **R7
 assembly** and confirming the bridge composes end-to-end — a reconciling review of `main` against
 `conjecture1_status.py`, not a fresh open-math claim from greps. `conjecture1_proved = False`.
+
+## ADDENDUM 2026-08-22 — the reconciling review this doc asked for (done)
+
+The lemma-level review of Gap 2 requested above was carried out and `conjecture1_status.py`'s
+`R3_bridge_lean` entry has been corrected. Findings (all read directly on `main`, no-`sorry` verified):
+
+- **The aggregator's "uniform O(1/p²) error constant ... the last + hardest bridge gap" was STALE and
+  is now struck.** `BridgeStep4b/4d/4j` state explicitly that *no* O(1/p²) (or O(1/p)) envelope is
+  needed — the bridge statement is a **limit**, so `Tendsto` algebra on exact rational closed forms
+  suffices. The entry predated `BridgeStep4i/4j` and `R47Tree`.
+- **The STEP-4 capstones are unconditional.** `BridgeStep4j.aGraph_realize_isAcyclic` discharges the
+  last acyclicity hypothesis of the 4i theorems, making `pi_litHub'` (per L / ∏deg = Ztot) and
+  `amplitude_bridge_real'` (real-Laplacian hub amplitude ratio → `exp(logPhi b)·rhoB^{Vb b}`, a
+  completed `Tendsto`) hypothesis-free.
+- **The permanent↔Ztot identity is proven for ALL rooted trees**, not just `litHub`:
+  `R47Tree.pi_utree : per(L(realize(dtRealize t)))/∏deg = Aobj t` for every `UTree t`.
+- **Re-pointed residual.** The bridge no longer gates the proof. What remains to a *formal* Conjecture 1
+  is (a) **R7/G7 assembly** composing `Aobj`-maximization down to the hub-amplitude form where
+  `amplitude_bridge_logPhi + phi_le_one` bite, and (b) **root-invariance** (`R47Tree`'s `Aobj` is on
+  *rooted* trees; the unrooted objective is deferred to P2). Both are the `R7_global_reduction` / G7
+  item — **not** a bridge-limit gap. Gap 1 (the R3 master inequality) is untouched: the bridge assumes
+  `phi_le_one`.
+- **One cheap missing brick:** the `le_of_tendsto` corollary `exp(logPhi b)·rhoB^{Vb b} ≤ rhoB^{Vb b}`
+  (from `amplitude_bridge_logPhi` + `phi_le_one`) is not yet stated — it would make the bridge's payoff
+  explicit and CI-checked. `conjecture1_proved = False`.
