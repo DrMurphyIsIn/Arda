@@ -83,8 +83,28 @@ degree-5 Bernstein certificates. Two refinements handle the general class:
   term is kept via `(y−T0)₊ ≥ y − T_HI` on the above-cell.
 
 Margins are wide (`≥ 0.0089` bare-leaf, `≥ 0.065` nl=2) — strictly lower-risk than
-the tight chain. Two facets are documented, not re-emitted: **m=0** (childless → a
-point `norm_num` value, `y`-independent) and the **m≥4 collapse tail** (reduces to
-`y = T0` via the collapse monotonicity `R3Cert.R7CollapseMono.g_mono`, the BG kernel
-session's brick). CI job: `bg-floor-families-compiles`. Remaining floor work: the
-six tax-window shapes, and the `m=0`/`m≥4` facets across all classes.
+the tight chain. CI job: `bg-floor-families-compiles`.
+
+## The remaining facets (`examples/bg_floor_r7_facets/`)
+
+The last three pieces of the context-free floor layer:
+
+- **m=0 (childless):** slack has no cavity `y` — a point value
+  `p·L − a·log(3/2) − log(1+u0) ≥ floor`. Emitted as **structured `norm_num`
+  rational inequalities** (bare-leaf `a∈1..9`, nl=2 `a∈0..6`, tax shape `(1,1,0)`).
+- **m≥4 (collapse tail):** the collapse monotonicity `R3Cert.R7CollapseMono.g_mono`
+  (the kernel session's brick) puts the min at `y=T0`, and `u` is monotone in `m`
+  toward `T0`, so a single **m-uniform** point bound
+  `p·L_LO − a·G_HI − log1p_upper(u_env) ≥ floor` covers all `m≥4`. Also `norm_num`.
+  Each point fact is cross-checked against the kernel's own `certify_floor_m0` /
+  `certify_collapse_m_ge_4`.
+- **tax windows:** six in-window floors (`amortized_hub` tax lemma) on the `y`-subrange
+  where the cavity meets `[T0−29/1000, T0+29/1000]`, plus the below-window `m∈{2,3}`
+  shapes. These are the **tight binding floors** (`(2,0,1)` clears by ~5·10⁻⁵), so
+  they use a **degree-9** log bound and the **exact** `cav = 1/(k+1+S)` with hinge
+  splits at `y=T0` (`T_LO/T_HI`) *and* `cav=T0` (a bracketed `y`-threshold, since
+  `(cav−T0)₊ ≤ cav−T_LO` only where `cav ≥ T_LO`) — Bernstein positivity per cell.
+
+CI job: `bg-floor-r7-facets-compiles`. With this, the context-free floor **lemma 2**
+is fully Telperion-certified across all classes; **lemma 1** (knee-critical) and the
+**G7** assembly remain (Session B). `conjecture1_proved = False`.
