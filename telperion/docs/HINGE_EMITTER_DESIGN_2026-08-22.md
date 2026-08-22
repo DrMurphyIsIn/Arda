@@ -25,15 +25,16 @@ non-convex g-step cap. `posPart` subadditivity `(Σ zᵢ)₊ ≤ Σ (zᵢ)₊` (
 `zᵢ = yᵢ − t0`) IS that Jensen fact, exact and kernel-checkable. It discharges
 R7 `HypFloors`' per-class floor cores and is reused wherever the hinge appears.
 
-## Follow-up (CI-gated) — the Lean discharge
-The emitted **statement** is correct; the emitted **discharge** currently uses a
-best-effort `posPart_sum_le`/`![…]` form that MUST be confirmed against the
-pinned Mathlib in CI (this machine can't build Lean). Options to settle (CI
-order), like the primality emitter's 3-round arc:
-1. `posPart_sum_le` (Finset sum of posPart) if it exists in the pin;
-2. fold `posPart_add_le : (a+b)⁺ ≤ a⁺ + b⁺` over the k terms;
-3. for fixed small k, case-split on the signs of `zᵢ` and `Σzᵢ` + `simp [posPart]`.
-No hinge Lean is claimed to compile until a `hinge-compiles` CI job is green.
+## DONE — Lean discharge is kernel-verified on main
+The discharge landed via `posPart_def` + `sup_le` (`Σzᵢ ≤ Σzᵢ⁺` termwise by
+`le_posPart`; `0 ≤ Σzᵢ⁺` by `positivity`) — compiled **first try**:
+- **Telperion emitter + example**: `telperion/examples/hinge_floor/` (arities
+  k=2..5), `hinge-floor-compiles` CI green (#75, on main).
+- **Native R3Cert port** (general-arity Finset, for the live proof):
+  `proof/formalization/R3Cert/HingeProfileFloor.lean` — `posPart_sum_le` by Finset
+  induction over the two-term `(a+b)⁺ ≤ a⁺ + b⁺`, plus `hinge_profile_floor` and
+  `hinge_profile_floor_mul` (#77, on main). Consumed by the crux session's
+  `full_slack_ge_floor` composition (kernel-checked on main).
 
 ## Next (this skill program)
 - L2: wire `hinge_floor` into the real G1 class-floor family (needs the G1 `φ`,

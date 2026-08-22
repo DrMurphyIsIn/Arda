@@ -6,6 +6,43 @@ Telperion certificate shapes that discharge them, so work can be split without
 collision. Source audits: `GSTEP_STEP1_IS_THE_CRUX.md`, `BRIDGE_AUDIT_20260822.md`,
 `G1_STAGE2_AUDIT_20260822.md`, `R7_ASSEMBLY_DESIGN.md`.
 
+## FINAL STATE (session close 2026-08-22) — read this first; the body below is the working history
+
+The mixed-`a=1` **collapse floor is now a kernel-checked theorem on `main`** — three
+sessions each certified one input to an agreed Prop, composed with zero collisions:
+
+```
+g_mono → cav_le → slk_min_at_knee → slk_min_at_T0 → full_slack_ge_floor
+                                     ↑ point_floor_mixed_a1
+⟹ full_slack m y ≥ 27/5000  ∀ m≥4, y≥0   (equal children)
+```
+
+| collapse input | owner | on main |
+|---|---|---|
+| `slk_min_at_T0` (min-at-real-knee) + composition `full_slack_ge_floor` | crux session (B) | ✅ |
+| `hinge_profile_floor` + `posPart_sum_le` (profile→equal, general-arity Finset) | third session | ✅ (`R3Cert/HingeProfileFloor.lean`) |
+| `point_floor_mixed_a1` (point-floor) | floor session | ✅ (`R3Cert/R7CollapsePointFloor.lean`) |
+
+**So the hinge skill (#1/#2 below) is DONE, not "remaining":** the Telperion hinge
+emitter merged (`telperion/examples/hinge_floor/`, #75) AND the native R3Cert port
+merged (#77). The "Remaining: Lean emitter + wire constants" and "L3 build note (in
+progress)" lines further down are **superseded** by this — kept only as history.
+
+**Still open (accurate as of session close):**
+- **profile→equal LIFT** — from `full_slack` (equal children) to `real_slack(unequal) ≥ floor`:
+  needs the multiset-slack model (`Σφ(cav_c)−φ(cav_v)−χ_v` over `List ℝ`, the OMEGA
+  accounting). **Crux session's lane** (real-slack derivation); `hinge_profile_floor` is
+  its tool, already on main.
+- **other m≥4 classes** (bare-leaf, nl2) — copies of `point_floor_mixed_a1` (floor
+  session's pattern), clear with more margin (mixed-a=1 was tightest, −omegaVal ≈ 0.0077 vs 0.0054).
+- **m∈{1,2,3}** — separate, heavier interval-Bernstein lift (cavity can exceed the knee; the
+  below-knee point trick doesn't apply).
+- **L3 domination-ratio unimodality** — NOT started (this session built the hinge instead). The
+  reusable Telperion piece is the `unimodal_valley` emitter (min-dual of `UnimodalMax`); math
+  exact in `depth3_rigorous.py`. Unclaimed.
+- **R7 `HypDominationSweeps`** (`FiniteDecide`) / **`HypAmortizedHub`** (`ConeFarkas`) — unstarted
+  existing-shape wins.
+
 ## State in one paragraph
 
 The Φ≤1 / g-step / master-inequality **crux is closed** (`phi_le_one`,
@@ -178,14 +215,14 @@ sessions:
   `slack(unequal) − slack(equal) = Σφ(y_c) − k·φ(ȳ) ≥ 0` = superadditivity.
 
 **Status: `hinge.py` UN-SHELVED — a confirmed BG L2 piece, statement-matched.**
-Remaining: (a) the Lean emitter for the hinge floor (CI-gated, `posPart`
-subadditivity discharge — primality-style iteration); (b) wire the real hinge
-constants (`c=22/100`, `t0=T0=rhoB−1`) and hand the emitted theorem to the crux
-session's assembly per the certify-to-the-Prop interface. Crux session to confirm
-the dichotomy invokes this at fixed cavity-sum (its lane) — which it must, since
-`cav_v` is a function of `Σy_c` alone.
+~~Remaining: (a) the Lean emitter; (b) wire the real constants.~~ **DONE (see FINAL
+STATE):** the Telperion hinge emitter merged (#75) and the native R3Cert port
+`R3Cert/HingeProfileFloor.lean` merged (#77) — general-arity, abstract in `c,t0`;
+the assembly instantiates `c=11/50, t0=T0=ρB−1` and composes at fixed cavity-sum
+(confirmed: `cav_v` is a function of `Σy_c` alone). The composition `full_slack_ge_floor`
+is a kernel-checked theorem on main.
 
-## L3 build note (this session, in progress)
+## L3 build note — SUPERSEDED (see FINAL STATE): L3 was NOT built this session (hinge was built instead); still open, unclaimed
 
 The domination ratio `r(q)` is unimodal with an interior **minimum** (`depth3_rigorous.py`,
 exact successive-difference single-crossing); obligation `min_q r(q) > 1`. Telperion's
