@@ -99,6 +99,7 @@ import R3Cert.HomogeneousSlice
 import R3Cert.NearStarBandSlice
 import R3Cert.MasterCore
 import R3Cert.R7CollapseMono
+import R3Cert.R7CollapseT0
 import R3Cert.GStep2TypeFace
 import R3Cert.GStep3TypeFace
 import R3Cert.GStepFullFace
