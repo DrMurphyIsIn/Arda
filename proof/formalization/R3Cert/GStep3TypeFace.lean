@@ -52,13 +52,13 @@ lemma base3_zero (a c : ℕ) : base3 0 a c = base2 a c := by
 
 /-- `b = 0` collapses `GS3` to `GS2`. -/
 lemma GS3_zero (a c : ℕ) : GS3 0 a c = GS2 a c := by
-  unfold GS3 GS2; rw [base3_zero, pow_zero, mul_one]
+  unfold GS3 GS2; rw [base3_zero]
 
 /-- **The cap-child step.** `base3` is decreasing in the cap-child count `b`.  The
     cross-multiplied inequality reduces exactly (b cancels) to `r(a+c+1) ≤ a/2 + c + 1/3`. -/
 lemma base3_bstep (b a c : ℕ) : base3 (b + 1) a c ≤ base3 b a c := by
   unfold base3 r
-  rw [div_le_div_iff (by positivity) (by positivity)]
+  rw [div_le_div_iff₀ (by positivity) (by positivity)]
   push_cast
   nlinarith [Nat.cast_nonneg (α := ℚ) a, Nat.cast_nonneg (α := ℚ) c,
     Nat.cast_nonneg (α := ℚ) b, mul_nonneg (Nat.cast_nonneg (α := ℚ) b) (Nat.cast_nonneg (α := ℚ) a),
@@ -70,7 +70,7 @@ lemma gs3_bstep (b a c : ℕ) : GS3 (b + 1) a c ≤ GS3 b a c := by
   have hpow : (base3 (b + 1) a c) ^ 11 ≤ (base3 b a c) ^ 11 :=
     pow_le_pow_left₀ h0 (base3_bstep b a c) 11
   have hB : (0 : ℚ) ≤ Bhalf ^ a := pow_nonneg Bhalf_nonneg a
-  have hW : (0 : ℚ) ≤ W ^ c := by positivity
+  have hW : (0 : ℚ) ≤ W ^ c := pow_nonneg (by norm_num [W]) c
   unfold GS3
   exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hpow hB) hW
 
