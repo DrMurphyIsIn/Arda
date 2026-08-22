@@ -69,3 +69,22 @@ tax-window shapes, and the `m≥4` collapse tail — each a slightly different r
 The **lemma-1 local Δslack inequality** is the parallel BG session's active
 reduction and is deliberately **not** targeted here (collision avoidance); this
 brick hardens the stable floor lemma. `conjecture1_proved = False`.
+
+## Extension: the bare-leaf and nl=2 families (`examples/bg_floor_families/`)
+
+The same recipe extends to the two main context-free classes with a child cavity
+`y ∈ (0,½]` — **bare-leaf** (`nl=1`, floor `26/500`, `a∈0..9`, `m∈{1,2,3}`) and
+**nl=2** (`nl=2`, floor `54/500`, `a∈0..6`, `m∈{1,2,3}`) — as **102** two-cell
+degree-5 Bernstein certificates. Two refinements handle the general class:
+
+- `log(3/2)` is now present (coefficient `−a`); bracket it above by `G_HI = 405466/10⁶`.
+- `cav = 1/(k+1+S)` can cross `T0` inside `(0,½]`; since `cav` *decreases* in `y`,
+  `(cav−T0)₊ ≤ (cav(0) − T_LO)₊ =: Dc`, a per-class constant. The `−m(y−T0)₊` help
+  term is kept via `(y−T0)₊ ≥ y − T_HI` on the above-cell.
+
+Margins are wide (`≥ 0.0089` bare-leaf, `≥ 0.065` nl=2) — strictly lower-risk than
+the tight chain. Two facets are documented, not re-emitted: **m=0** (childless → a
+point `norm_num` value, `y`-independent) and the **m≥4 collapse tail** (reduces to
+`y = T0` via the collapse monotonicity `R3Cert.R7CollapseMono.g_mono`, the BG kernel
+session's brick). CI job: `bg-floor-families-compiles`. Remaining floor work: the
+six tax-window shapes, and the `m=0`/`m≥4` facets across all classes.
