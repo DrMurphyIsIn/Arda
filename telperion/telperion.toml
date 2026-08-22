@@ -272,6 +272,18 @@ script = "examples/tangent_sum/generate.py"
 group = "quick"    # tangent-line trick: convex-quadratic symmetric-sum bounds
                    # (Jensen for squares + a shifted quadratic); nlinarith; ~0.1 s
 
+[[check]]
+name = "cauchy_schwarz"
+script = "examples/cauchy_schwarz/generate.py"
+group = "quick"    # Cauchy-Schwarz / QM-AM via pairwise-difference SOS
+                   # (unweighted + weighted); ring+positivity+linarith; ~0.1 s
+
+[[check]]
+name = "psd_form"
+script = "examples/psd_form/generate.py"
+group = "quick"    # positive-definite quadratic form via exact LDLT congruence
+                   # (moment-matrix / Gram-bridge PSD); ring+positivity; ~0.1 s
+
 [evolve]
 # LLM-driven evolutionary certificate search. NOT part of the trust model:
 # every candidate still passes certify -> emit -> lake build; nothing is auto-frozen.

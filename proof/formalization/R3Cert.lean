@@ -98,6 +98,9 @@ import R3Cert.R47LegsAT
 import R3Cert.HomogeneousSlice
 import R3Cert.NearStarBandSlice
 import R3Cert.MasterCore
+import R3Cert.GStep2TypeFace
+import R3Cert.GStep3TypeFace
+import R3Cert.GStepFullFace
 import R3Cert.GStepCore
 import R3Cert.CappedJointSkeleton
 import R3Cert.CavityIdentities
