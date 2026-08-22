@@ -310,3 +310,9 @@ group = "quick"    # forward-difference telescoping (the W2 prover; SumEqProd re
 name = "rational_identity"
 script = "examples/rational_identity/generate.py"
 group = "quick"    # rational-function identities on a ray (knapsack Gram-bridge shapes); ~0.3 s
+
+[[check]]
+name = "primality"
+script = "examples/primality/generate.py"
+group = "quick"    # Pratt/Lucas primality certificates via Mathlib lucas_primality
+                   # (find -> verify_pratt_certificate -> emit); small primes; ~0.1 s

@@ -157,6 +157,7 @@ from .psd import (  # noqa: F401
 from .pratt import (  # noqa: F401
     PrattCertificate, find_pratt_certificate, verify_pratt_certificate,
 )
+from .emit_primality import primality_module, primality_theorem  # noqa: F401
 from .lean_lint import (  # noqa: F401
     LeanLintError,
     LeanLintIssue,
