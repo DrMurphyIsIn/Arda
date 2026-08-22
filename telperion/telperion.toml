@@ -328,3 +328,9 @@ name = "primality"
 script = "examples/primality/generate.py"
 group = "quick"    # Pratt/Lucas primality certificates via Mathlib lucas_primality
                    # (find -> verify_pratt_certificate -> emit); small primes; ~0.1 s
+
+[[check]]
+name = "hinge_floor"
+script = "examples/hinge_floor/generate.py"
+group = "quick"    # BG G1 L2 profile->equal-children reduction (posPart subadditivity /
+                   # Jensen min-at-equal-children for the convex hinge); ~0.1 s
