@@ -72,4 +72,64 @@ theorem g_mono (m k : ℕ) (hm : 4 ≤ m) (hk : m ≤ k) (c0 : ℝ) (hc0 : 0 ≤
       = (11 / 50 : ℝ) * (m : ℝ) * y2 - (11 / 50 : ℝ) * (m : ℝ) * y1 := by ring
   linarith [hkey, hexp]
 
+/-! ### G7 assembly brick: the collapse slack attains its minimum at the knee `t`.
+
+  The `m ≥ 4` collapse reduces the floor's minimisation over `y ∈ (0, 1/2]` to the single point
+  `y = T0`, because the slack is DECREASING on `(0, T0]` and INCREASING on `[T0, ∞)`. This wires
+  `g_mono` (the increasing branch) together with the elementary `−log` decreasing branch into a
+  single min-at-the-knee statement. The additive class-constant `p·L − a·log(3/2)` is dropped (it
+  does not affect the argmin), and the cav-hinge `(cav − t)_+` is shown to vanish (`cav ≤ 1/5 ≤ t`
+  for `m ≥ 4`). -/
+
+/-- Cavity of the collapse node at child-cavity `y`: `1/((k+1) + c0 + m·y)`. `cav_le` shows it
+    stays `≤ 1/5 ≤ t` for `m ≥ 4`, so the cav-hinge `(cav−t)_+` vanishes and the slack takes the
+    `slk` form below. -/
+noncomputable def cav (m k : ℕ) (c0 y : ℝ) : ℝ := 1 / (((k : ℝ) + 1) + (c0 + (m : ℝ) * y))
+
+/-- For `m ≥ 4`, `k ≥ m`, the cavity stays `≤ 1/5 ≤ t` — the cav-hinge never activates, which is why
+    `slk` below drops the `(cav−t)_+` term. -/
+theorem cav_le (m k : ℕ) (hm : 4 ≤ m) (hk : m ≤ k) (c0 : ℝ) (hc0 : 0 ≤ c0)
+    (t : ℝ) (ht : (1 : ℝ) / 5 ≤ t) (y : ℝ) (hy : 0 ≤ y) : cav m k c0 y ≤ t := by
+  unfold cav
+  have hk4 : (4 : ℝ) ≤ (k : ℝ) := by exact_mod_cast le_trans hm hk
+  have hmy : (0 : ℝ) ≤ (m : ℝ) * y := by positivity
+  have hden : (5 : ℝ) ≤ ((k : ℝ) + 1) + (c0 + (m : ℝ) * y) := by linarith
+  have h5 : (1 : ℝ) / (((k : ℝ) + 1) + (c0 + (m : ℝ) * y)) ≤ 1 / 5 :=
+    one_div_le_one_div_of_le (by norm_num) hden
+  linarith
+
+/-- The collapse slack, with the (vanishing, by `cav_le`) cav-hinge already dropped and the additive
+    class-constant `p·L − a·log(3/2)` removed (neither affects the argmin over `y`):
+    `slk y = −log(1+u) + (11/50)·m·(y−t)_+`, `u = (c0+m·y)/(k+1)`. -/
+noncomputable def slk (m k : ℕ) (c0 t y : ℝ) : ℝ :=
+  - Real.log (1 + (c0 + (m : ℝ) * y) / ((k : ℝ) + 1)) + (11 / 50 : ℝ) * (m : ℝ) * max 0 (y - t)
+
+set_option maxHeartbeats 1000000 in
+/-- **Collapse-tail min at the knee.** For `m ≥ 4`, `k ≥ m`, `c0 ≥ 0`, `1/5 ≤ t`, the collapse slack
+    over `y ≥ 0` attains its minimum at `y = t`: `slk t ≤ slk y`. Decreasing on `(0,t]` (`u`
+    increasing ⟹ `−log` decreasing) and increasing on `[t,∞)` (`g_mono`). -/
+theorem slk_min_at_knee (m k : ℕ) (hm : 4 ≤ m) (hk : m ≤ k) (c0 : ℝ) (hc0 : 0 ≤ c0)
+    (t : ℝ) (ht : (1 : ℝ) / 5 ≤ t) (y : ℝ) (hy : 0 ≤ y) :
+    slk m k c0 t t ≤ slk m k c0 t y := by
+  have htnn : (0 : ℝ) ≤ t := le_trans (by norm_num) ht
+  have hkp : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+  have hm0 : (0 : ℝ) ≤ (m : ℝ) := by positivity
+  have hslkt : slk m k c0 t t = - Real.log (1 + (c0 + (m : ℝ) * t) / ((k : ℝ) + 1)) := by
+    unfold slk; rw [sub_self, max_self, mul_zero, add_zero]
+  rw [hslkt]; unfold slk
+  rcases le_total y t with hyt | hty
+  · -- decreasing branch: `y ≤ t`, so `max 0 (y-t) = 0`
+    rw [max_eq_left (by linarith : y - t ≤ 0), mul_zero, add_zero]
+    have hnum : (m : ℝ) * y ≤ (m : ℝ) * t := mul_le_mul_of_nonneg_left hyt hm0
+    have hmono : Real.log (1 + (c0 + (m : ℝ) * y) / ((k : ℝ) + 1))
+        ≤ Real.log (1 + (c0 + (m : ℝ) * t) / ((k : ℝ) + 1)) := by gcongr
+    linarith
+  · -- increasing branch: `t ≤ y`, use `g_mono`
+    rw [max_eq_right (by linarith : (0 : ℝ) ≤ y - t)]
+    have hg := g_mono m k hm hk c0 hc0 t y htnn hty
+    unfold g at hg
+    have hexp : (11 / 50 : ℝ) * (m : ℝ) * (y - t)
+        = (11 / 50 : ℝ) * (m : ℝ) * y - (11 / 50 : ℝ) * (m : ℝ) * t := by ring
+    linarith [hg, hexp]
+
 end R3Cert.R7CollapseMono
