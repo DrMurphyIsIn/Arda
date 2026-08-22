@@ -76,6 +76,7 @@ lemma cstep (a c : ℕ) (ha : 1 ≤ a) : GS2 a (c + 1) ≤ GS2 a c := by
           * (Bhalf ^ a * (64 / 621) ^ c) := by
     unfold GS2 base2 W; rw [pow_succ]; push_cast; ring
   rw [hfp1]; unfold GS2 base2 W
+  conv_rhs => rw [mul_assoc]
   exact mul_le_mul_of_nonneg_right (key_c a c ha) hbw
 
 /-- `GS2 a c ≤ GS2 a 0` for `a≥1`. -/
