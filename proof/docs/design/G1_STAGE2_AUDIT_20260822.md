@@ -25,7 +25,7 @@ PROVEN/UNCONDITIONAL — and it is right about `slack ≥ 0`.
 
 | # | lemma | character | evidence |
 |---|---|---|---|
-| **1** | **ledger monotone in `pL`** (chain depth) | **NOT** a corollary of `slack≥0`: adding depth shifts *ancestors'* cavities (`root_cav 0.2221→0.2189` over `pL=0..7`), so it needs a **cavity-contraction** (net telescoping change ≥ 0) | 0 violations to `pL=8000`; increments positive, shrinking to a positive limit — the ledger *converges* |
+| **1** | **ledger monotone in `pL`** (chain depth) | **NOT** a corollary of `slack≥0`, and — CORRECTED 2026-08-22 (below) — **harder than first stated**: the general "adding bundles increases the ledger" is **false at the knee**, so lemma 1 is a **family-specific** statement about `chain3p`, not a clean cavity-contraction | 0 violations to `pL=8000`; but the *local/general* version has real counterexamples near `cav≈T0` (see correction) |
 | **2** | **context-free floor** (`slack` infimum at equal children → per-class ledger floors) | core is **Jensen on the convex hinge** — and it holds **cleanly through the knee** (unlike the g-step's non-convex `min`); residual is the cavity-recursion coupling `cav_v(children)` | Jensen part **0/20000** incl. 16054 knee-straddling; per-class floors are interval-numeric (the G1 hardening target) |
 | **3** | **domination-ratio unimodality** `r(q_i)` | single-crossing of a rational function (one interior minimum) | exact successive-difference checks (`depth3_rigorous.py`) |
 
@@ -47,8 +47,30 @@ Both files are right about different things. `slack ≥ 0` is proven (Lean); the
 low-risk, no known obstruction"** — not an open-ended idea. `conjecture1_proved = False` stands until
 lemmas 1–3 are theorems (G1 symbolic hardening) and G7 Lean-izes the assembly.
 
-## Most tractable next attack
+## Most tractable next attack (as first assessed)
 
-**Lemma 1 (ledger cavity-contraction).** The converging positive increments (`d_ledger → 0⁺`) suggest a
-clean contraction: each added level's realized slack dominates the (shrinking) decrease in ancestor
-slacks. This is a single-variable transfer-operator monotonicity — see the companion attack.
+**Lemma 1 (ledger cavity-contraction).** The converging positive increments (`d_ledger → 0⁺`) suggested a
+clean contraction. **This assessment was wrong — see the correction below.**
+
+## CORRECTION 2026-08-22 — lemma 1's clean route fails; it is family-specific and knee-critical
+
+An attack on lemma 1 established, then refuted, the "clean contraction":
+
+1. **Exact local decomposition (real).** Adding a child subtree `c` at a node changes *only that node's
+   slack* (siblings'/descendants' cavities are unchanged): `d_ledger = d_slack(v) + ledger(c)`, with
+   `ledger(c) ≥ 0`. Verified exactly.
+2. **But the resulting general monotonicity is FALSE.** "Adding a bundle child increases the ledger" has
+   **real counterexamples on achievable trees** — 1431/50000, worst `d_ledger = −0.006`, concentrated at
+   `cav ≈ 0.2277 ≈ T0` (the knee). And burying the violating node under ancestors does **not** rescue it:
+   `d_ledger` stays negative (`−0.00073`, converging). So the ledger is **not** monotone under
+   bundle-addition, and lemma 1 does **not** reduce to a local or general per-node inequality.
+3. **Lemma 1 is therefore family-specific.** `chain3p`'s `pL`-monotonicity (0/8000) holds because child_B
+   accumulates *equal-cavity* `3/23` bundles, sweeping its cavity `0.47 → 0.13` **through the knee at
+   `pL≈3`** — precisely where the general case breaks. The proof must exploit that equal-bundle structure;
+   the naive cavity-contraction is refuted.
+
+**Consequence for the risk assessment.** The knee **is** load-bearing for lemma 1 (as it was for the
+g-step), contrary to the "risk downgrade" above — that downgrade is correct **only for lemma 2** (the
+Jensen floor lemma on the globally-convex hinge, which genuinely is clean through the knee, 0/20000).
+Lemma 1 is subtler than "routine cavity-contraction." `conjecture1_proved = False`; lemmas 1–3 remain
+unwritten, with lemma 1 now the *hardest* rather than the most tractable of the three.
