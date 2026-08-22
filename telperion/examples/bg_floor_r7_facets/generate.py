@@ -70,10 +70,10 @@ def _point_facts():
         # slack_lb - floor = p*L_LO - a*G_HI - log1p_upper - floor, all rationals shown.
         return (f"({p} : ℝ) * (206586 / 1000000) - ({a} : ℝ) * (405466 / 1000000)"
                 f" - ({l.numerator} / {l.denominator}) - ({fl.numerator} / {fl.denominator})")
-    # m=0 childless
+    # m=0 childless.  (The tax-window shape (1,1,0), floor 52/1000, is exactly the
+    # bare-leaf a=1,nl=1 m=0 class at 26/500 = 52/1000 -- subsumed, not re-listed.)
     m0 = [(a, 1, Fr(26, 500)) for a in range(1, 10)] \
-        + [(a, 2, Fr(54, 500)) for a in range(0, 7)] \
-        + [(1, 1, Fr(52, 1000))]                              # tax shape (1,1,0)
+        + [(a, 2, Fr(54, 500)) for a in range(0, 7)]
     for a, nl, fl in m0:
         k = a + nl
         u0 = (Fr(a, 3) + nl) / (k + 1)

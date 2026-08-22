@@ -37,7 +37,9 @@ def _mod():
 
 def test_all_point_facts_are_nonnegative():
     facts = _mod()._point_facts()
-    assert len(facts) == 17 + 23  # m=0: 9 bareleaf + 7 nl2 + 1 tax(1,1,0); m>=4: 6+10+7
+    assert len(facts) == 16 + 23  # m=0: 9 bareleaf + 7 nl2; m>=4: 6+10+7
+    names = [f[0] for f in facts]
+    assert len(names) == len(set(names)), "theorem names must be unique"
     for name, expr_s, val, comment in facts:
         assert val >= 0, (name, float(val))
 
