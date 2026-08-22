@@ -1,5 +1,12 @@
 # g-step face coverage: the `{ν*, ½, leaf}` maximizer, formalized in ℚ
 
+> **⚠ SUPERSEDED (2026-08-22).** These `{cap,½,leaf}` face bricks are a **special case** of the general
+> g-step bound already on `main`: `CappedJointConfig.gstep_le_one_achievable` proves `base^11·∏Bcap ≤ T`
+> for **every** achievable config (unconditionally), via `GArmExtAbstract.gCoreOff_le_replicate`
+> (majorization to the all-at-knee config — the vertex lemma, by an elementary induction). The bricks
+> below are redundant (valid, independently corroborating, but not needed for the crux). See
+> `design/STEP1_INTERIOR_CHILD_REDUCTION_20260822.md` and `design/BRIDGE_AUDIT_20260822.md`.
+
 **`conjecture1_proved = False`.** This documents the Lean face-decomposition of the g-step
 (`GS(children) = base^11 · ∏ Bcap(μ_i) ≤ T`, tight only at the single arm), and states precisely
 what is machine-checked vs. what remains. Synthesized 2026-08-22.
