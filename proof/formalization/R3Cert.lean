@@ -123,3 +123,4 @@ import R3Cert.R47RateZBound
 import R3Cert.R47Rate
 import R3Cert.FractalTail
 import R3Cert.HingeProfileFloor
+import R3Cert.R7CollapsePointFloor
