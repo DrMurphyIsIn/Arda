@@ -24,6 +24,8 @@ Two empirical facts drive the decomposition (`verification`-level probes, exact 
 | `a=1` slice | `{½, 1^c}` | `ThreeTypeA1Slice.gs1_le_T` | CI-green |
 | **2-type `{½, leaf}`** (all `a≥1`) | `{½^a, 1^c}` | `GStep2TypeFace.gs2_le_T` | **CI-green, on `main`** |
 | **3-type `{ν*, ½, leaf}`** (all `a≥1`) | `{cap^b, ½^a, 1^c}` | `GStep3TypeFace.gs3_le_T` | **CI-green, on `main`** |
+| pure-leaf (`a=0`), re-proved in `R3Cert` | `{cap^b, 1^c}` | `GStepFullFace.gs2_leaf_le_T` | **CI-green, on `main`** |
+| **full 3-type, ALL `a`** (capstone) | `{cap^b, ½^a, 1^c}` | `GStepFullFace.gs3_full` | **CI-green, on `main`** |
 
 Every bound is exact `ℚ`, no `rpow`.
 
@@ -55,10 +57,13 @@ For configs whose menus lie in the 3-type support `{≤ν*, ½, 1}`:
   `telperion/examples/g1_floors/lean/HomogMasterAssembled.lean`); `c=0` is `(4/3)^11 ≈ 23.6 < T`.
   This `a=0` corner is thus covered by the *existing* homogeneous brick, not re-proved here.
 
-So `{ GS_arm_le (a=0 pure leaf) } ∪ { 3-type bricks (a≥1) }` covers the whole 3-type support — **modulo
-the one open premise below.** (The formal *assembly* of these two into one statement needs the two lake
-projects importable together — a separate scoped task, since `HomogMasterAssembled` and `R3Cert`
-compile under different CI paths.)
+So `{ pure-leaf (a=0) } ∪ { 3-type bricks (a≥1) }` covers the whole 3-type support — **modulo
+the one open premise below.** This is now a **single formal statement**: `GStepFullFace.gs3_full
+(b a c) : GS3 b a c ≤ T` for *all* `a,b,c` (`a≥1` via `gs3_le_T`; `a=0` via `base3` b-antitone to the
+pure-leaf face). Rather than import `HomogMasterAssembled` (a *separate* lake project, not a
+dependency of `R3Cert`), the small pure-leaf face is re-proved directly in `R3Cert`
+(`GStepFullFace.gs2_leaf_le_T`) — `GS_leaf` rises `c=0→1` (`23.68 → T`) then falls, so its c-step is
+antitone only for `c≥1`, cleared by `84c²+224c−92 = 84(c²−c)+308c−92 ≥ 216 > 0`.
 
 ## What remains (the honest gap)
 
