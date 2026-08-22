@@ -76,14 +76,16 @@ lemma gs1_step (c : ℕ) : GS1 (c + 1) ≤ GS1 c := by
   rw [hfp1]; unfold GS1 base1 W
   exact mul_le_mul_of_nonneg_right (gs1_key c) hc
 
+/-- `GS1` is antitone in `c`: `GS1 c ≤ GS1 0`. -/
+lemma gs1_antitone (c : ℕ) : GS1 c ≤ GS1 0 := by
+  induction c with
+  | zero => exact le_refl _
+  | succ n ih => exact le_trans (gs1_step n) ih
+
 set_option maxHeartbeats 1000000 in
 /-- **The `a=1` slice.** `{1 child at μ=½} + c leaves` satisfies the g-step `≤ T` for all `c`. -/
 theorem gs1_le_T (c : ℕ) : GS1 c ≤ T := by
-  have hmono : GS1 c ≤ GS1 0 := by
-    induction c with
-    | zero => le_refl _
-    | succ n ih => exact le_trans (gs1_step n) ih
   have h0 : GS1 0 ≤ T := by norm_num [GS1, base1, Bhalf, W, T]
-  linarith
+  exact le_trans (gs1_antitone c) h0
 
 end R3Cert.ThreeTypeA1Slice
