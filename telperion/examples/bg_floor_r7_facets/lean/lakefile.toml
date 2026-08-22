@@ -1,0 +1,10 @@
+name = "BGFloorR7Facets"
+defaultTargets = ["BGFloorR7Facets"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "BGFloorR7Facets"
