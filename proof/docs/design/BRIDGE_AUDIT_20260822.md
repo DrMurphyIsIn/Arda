@@ -1,60 +1,50 @@
-# Gap 2 audit: the Branch→per(L) bridge — what is formalized, what is open
+# Bridge / Gap-2 state (2026-08-22) — corrected audit
 
-2026-08-22. `conjecture1_proved = False`. A source audit of the realization-bridge Lean
-(`R3Cert/Bridge*.lean`), done after confirming the g-step / R3 crux is already closed on `main`
-(`gstep_le_one_achievable`; see `STEP1_INTERIOR_CHILD_REDUCTION_20260822.md`). This states the
-bridge's current Lean state and pinpoints the single open piece. Audit, not a closure.
+`conjecture1_proved = False`. **Correction notice:** an earlier draft of this doc (same day) claimed
+"no `per(L(T))` is defined or connected; the capstone is not in Lean." **That was wrong** — an
+artifact of a `git grep` pathspec (`R3Cert/**/*.lean` silently skips files directly in `R3Cert/`,
+which is where the core files live). Re-audited with `proof/formalization/**/*.lean`. Lesson recorded:
+use that glob, and defer "what is open" to `proof/verification/conjecture1_status.py` (the R-ladder
+aggregator), not ad-hoc greps.
 
-## Where the whole conjecture now sits
+## Verified facts (read directly on `main`, all `no sorry`)
 
-The R-ladder crux (R3, `Φ≤1` / the heterogeneous g-step over all achievable configs) is **closed** in
-Lean — `CappedJointConfig.gstep_le_one_achievable`, unconditional, no `sorry`/`axiom`, verified
-non-vacuous. What remains for Conjecture 1 is **Gap 2 (this bridge)** and **Gap 3 (R7 assembly)**. This
-doc audits Gap 2.
+Whole-formalization scan (correct glob): **0** occurrences of `sorry`/`admit`/`axiom`/`native_decide`
+and **0** `Prop := True`/`:= trivial` stubs.
 
-## What the bridge must do
+The permanent↔matching↔Branch bridge is substantially formalized:
 
-Transfer the proven Branch-model bound to the actual object: `Branch.logPhi ≤ 0` (equiv. `Φ^11 ≤ 1`,
-proven) ⟹ `per(L(T)) / ∏ deg` satisfies the maximizer inequality. The design route is: (a) a finite-`p`
-**amplitude-ratio identity** tying `Branch.logPhi` to the RTree matching partition function `Ztot`;
-(b) a **uniform `O(1/p²)` remainder** so the `p→∞` cherry-hub limit transfers the *inequality* (not
-just the pointwise limit); (c) compose with the cavity/realization/matching-sum steps.
-
-## What IS formalized (CI-green on `main`, no `sorry`)
-
-| Step | File | Content |
+| Piece | Lean (`R3Cert/`) | Content |
 |---|---|---|
-| **1** | `Bridge.lean` | `cav_eq_zc_mul_rho0` — the DEC child-contribution factors as `zc · rho0` (cavity structure) |
-| **2** | `BridgeStep2.lean` | `realize : Branch → RTree`, `q_realize_eq_rho0` (`Zopen/Ztot = rho0`), `q_realizeCh_sum`, positivity — the Branch↔RTree realization and its matching identities |
-| **3** | `BridgeStep3.lean` | `msum`, `VDisj`, `msum_append` — vertex-disjoint-union **multiplicativity of the matching sum**, plus the `rEdges`/`rRoot`/`rSub` edge realization |
-| **4 core** | `BridgeStep4.lean` | `hub_rho0_limit` — a `p`-arm hub decouples: `rho0(node ...) → 1/(1+cav arm)` as `p→∞` (a clean Mathlib `Tendsto`, `field_simp`+`ring`+`Tendsto.div_atTop`) |
+| **H1** | `Matching.permanent_eq_matching_sum` | `per(lapl G) = Σ_matchings Π_{unmatched} deg` for acyclic `G` — genuine; `acyclicForcesInvolution` really discharged by `Involution.lean` (not a stub) |
+| **H2a** | `Matching.pi_eq_weighted_matching_sum` | `per/∏deg = Σ_M Π_{ij∈M} 1/(deg i·deg j)` |
+| **H2 cavity** | `Matching.cavity_recursion` | node step `Zopen/Ztot = 1/(1+Σ w r)` |
+| **π↔msum** | `BridgeStep3d.pi_eq_msum` | matching partition function ↔ `msum` |
+| **realize↔per** | `BridgeStep4j.pi_litHub'` | **unconditional**: `per(lapl(realize(litHub c ch)))/∏deg = Ztot(litHub c ch)` |
+| **amplitude bridge** | `BridgeStep4j.amplitude_bridge_real'` | **unconditional**: the real-Laplacian permanent-ratio (`p`-arm hub with `b` vs without) `→ exp(logPhi b)·rhoB^{Vb b}` as `p→∞` |
+| Steps 1–4 | `Bridge`/`BridgeStep2`/`BridgeStep3`/`BridgeStep4` | cavity structure, `realize`, `q_realize_eq_rho0`, matching-sum multiplicativity, `hub_rho0_limit` |
 
-All genuine (audited: no `sorry`, `axiom`, `opaque`, `Prop:=True`, `native_decide` anywhere in `R3Cert`).
+So the three type-universes (SimpleGraph permanent / RTree `Ztot` / Branch `logPhi`) **are** connected by
+unconditional theorems — `pi_litHub'` and `amplitude_bridge_real'` are exactly the "realization
+bridges" the earlier draft wrongly called missing.
 
-## What is OPEN (the single remaining bridge gap)
+## What is actually open (per the authoritative aggregator)
 
-A whole-tree grep of `R3Cert/**` for `per`, `permanent`, `amplitude`, `1/p`, `O(1/p`, `logPhi_le`,
-"uniform … remainder" returns **nothing**. So **the capstone is not in Lean at all**:
+`conjecture1_status.py` keeps `conjecture1_proved = False`. Its prose is not fully in sync with `main`
+(it predates some `BridgeStep4i/4j` capstones and the folded-potential `phi_le_one`), so the precise
+residual needs a **fresh lemma-level review** rather than a claim from this doc. As of the aggregator's
+last text, the named residuals are:
 
-- **No `per(L(T))`** (the actual tree-Laplacian matching permanent) is defined or connected — the Lean
-  works with the RTree-side `Ztot`/`msum`; the identity `msum/Ztot ↔ per(L(T))/∏deg` is unformalized.
-- **No uniform `O(1/p²)` rate.** `hub_rho0_limit` gives the *limit* (`Tendsto`), not the *rate*; the
-  design needs the uniform remainder to carry `logPhi ≤ 0` through the limit as an inequality.
-- **No capstone assembly** composing Steps 1–4 into `logPhi ≤ 0 ⟹ per(L(T))/∏deg ≤ …`.
+- **R7 global assembly** (the `R47*` campaign — `R47Rate`/`R47Tree`/`R47Head`/`R47Parse`): the
+  structural reduction that every tree is dominated by a cherry-bundle star (R1–R6 combine). This is
+  the largest clearly-open item.
+- **Bridge end-to-end composition / uniform rate**: the aggregator's text still lists the uniform
+  per-node / `O(1/p²)` end-to-end as open, but `amplitude_bridge_real'` (a `Tendsto`, unconditional)
+  may already discharge the limit transfer — this is exactly what the fresh review must reconcile.
 
-This matches the standing description ("last + hardest bridge gap", memory
-`laplacian_crux_closed_bridge_open_2026-08-18`, tag `G-1`).
+## Honest status
 
-## Concrete next steps (schedulable)
-
-1. **Definitional bridge `msum/Ztot ↔ per(L(T))/∏deg`.** Pin down, in Lean, that the RTree matching sum
-   `msum (realize t)` equals the tree-Laplacian matching permanent (up to `∏deg`). This is combinatorial
-   (matching-sum = permanent of the incidence/Laplacian structure) and is the missing *object*; Step 3's
-   `msum_append` multiplicativity is the tool. Do this first — it makes the target expressible.
-2. **Finite-`p` amplitude-ratio identity.** State `Branch.logPhi` at finite `p` in terms of `Ztot(realize)`
-   (Steps 1–2 give `rho0 = Zopen/Ztot`; assemble the product form).
-3. **Uniform `O(1/p²)` remainder.** Strengthen `hub_rho0_limit` from `Tendsto` to a rate: bound
-   `|rho0(hub_p) − 1/(1+cav arm)| ≤ C/p²` uniformly in the fixed branches — the genuine analytic core.
-4. **Compose** → `logPhi ≤ 0 ⟹ per(L(T))` and splice with R7.
-
-Step 3 is the hard piece; steps 1–2 are mechanical Lean given the existing infrastructure. `conjecture1_proved = False`.
+The g-step / R3 crux is closed (`gstep_le_one_achievable` + `phi_le_one`); the bridge is far more
+complete than a naive grep shows (table above). The remaining distance to Conjecture 1 is **R7
+assembly** and confirming the bridge composes end-to-end — a reconciling review of `main` against
+`conjecture1_status.py`, not a fresh open-math claim from greps. `conjecture1_proved = False`.
