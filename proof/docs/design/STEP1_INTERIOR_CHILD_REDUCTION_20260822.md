@@ -1,5 +1,16 @@
 # STEP-1: the canonical family's interior child dissolves into log-convexity + the j=1 g-step
 
+> **⚠ SUPERSEDED (2026-08-22, same day).** This doc pursued the *vertex/canonical-family* route to the
+> g-step bound as if STEP-1 were open. It is **not** open: an audit of `main` found the g-step is already
+> proven **unconditionally for every achievable config** — `CappedJointConfig.gstep_le_one_achievable`
+> (`CappedJointClosure.lean`), whose core is the majorization `GArmExtAbstract.gCoreOff_le_replicate`
+> ("any config ≤ all-children-at-the-knee", an elementary push-to-knee induction — the vertex lemma, done).
+> Verified genuine: no `sorry`/`axiom`/vacuous hypothesis; `muStar_crossover` real; statement non-trivially
+> true. So the vertex route below (and the `gs2`/`gs3`/`gs3_full` face bricks) is a **redundant parallel
+> route** — mathematically valid and independently corroborating, but not needed. The real open frontier is
+> **Gap 2 (the Branch→per(L) bridge)** + R7, per `PROOF_STATE_AND_PLAN.md` and memory
+> `laplacian_crux_closed_bridge_open_2026-08-18`. The analysis below is retained for the record.
+
 2026-08-22. `conjecture1_proved = False`. This ADVANCES the heterogeneous-reduction program
 (`HETERO_REDUCTION_SCOPING_20260821.md`): it collapses that doc's obligation #3 (the interior
 child of the canonical family — previously "Bernstein cells over `(a,b,ν)`") into a clean,

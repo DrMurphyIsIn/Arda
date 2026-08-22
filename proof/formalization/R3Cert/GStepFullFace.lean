@@ -5,6 +5,16 @@ import R3Cert.GStep3TypeFace
 /-!
   # g-step full 3-type face: `GS3 b a c ≤ T` for ALL `a` (capstone) — 2026-08-22
 
+  **SUPERSEDED / redundant (noted 2026-08-22).** This `{cap, ½, leaf}` face is a SPECIAL CASE of the
+  general, unconditional g-step bound `CappedJointConfig.gstep_le_one_achievable` (proven for EVERY
+  achievable config on `main`, via the majorization `GArmExtAbstract.gCoreOff_le_replicate`). `GS3` here
+  equals `baseOf^11 · prodBcap` for the `{cap, ½, leaf}` config, so these bricks are subsumed by that
+  result. They are kept as an independent corroboration on the sub-family; they are NOT needed for the
+  crux (the g-step / STEP-1 is already closed). See `docs/design/STEP1_INTERIOR_CHILD_REDUCTION_20260822.md`
+  for the correction. `conjecture1_proved = False`.
+
+  ---
+
   Assembles the `{ν*, ½, leaf}` coverage into a single statement over the whole 3-type support,
   by re-proving the `a=0` pure-leaf face directly in `R3Cert` (the homogeneous `GS_arm_le` lives in
   a *separate* lake project — `telperion/examples/g1_floors/lean` — so it cannot be imported here;
