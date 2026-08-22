@@ -74,3 +74,31 @@ g-step), contrary to the "risk downgrade" above — that downgrade is correct **
 Jensen floor lemma on the globally-convex hinge, which genuinely is clean through the knee, 0/20000).
 Lemma 1 is subtler than "routine cavity-contraction." `conjecture1_proved = False`; lemmas 1–3 remain
 unwritten, with lemma 1 now the *hardest* rather than the most tractable of the three.
+
+## FURTHER SHARPENING 2026-08-22 — lemma 1 is a 3-node NET monotonicity, not per-node
+
+Exact per-node decomposition of `ledger(chain3(pT,pM,pL))` at `(pT,pM)=(1,1)` (float, but the sign
+structure is robust): the bundles contribute **zero** ledger (`slack(BUNDLE)=0`, the tie), so the whole
+ledger is carried by the **three spine nodes** `Z` (root) → `Y` (middle) → `X` (deep tip, `= (BUNDLE)^pL`):
+`ledger = slack(Z) + slack(Y) + slack(X)` **exactly** (confirmed 0.278078 = 0.278078 at pL=5).
+
+Tracking each spine slack as `pL: 1→11`:
+
+| node | behaviour in `pL` | cavity |
+|---|---|---|
+| `slack(Z)` root | slowly **DECREASING** (0.07557 → 0.07375) | `cav_Z` ≈ flat (0.2934 → 0.2905) |
+| `slack(X)` tip | **NON-MONOTONE** — rises to a peak at `pL=3` (0.09063 → 0.11325) then **falls** (→ 0.09365) | `cav_X` sweeps `0.469 → 0.074`, crossing `T0` at `pL≈3` |
+| `slack(Y)` middle | **INCREASING** and dominant (0.06647 → 0.12237) | `cav_Y` **rises** (0.2778 → 0.3120) |
+
+So lemma 1's monotonicity is a **net effect**: adding a tie-bundle to the tip `X` lowers `cav_X`, which
+*raises* `cav_Y` (the middle node is drained less by its spine child), and `slack(Y)`'s rise **dominates**
+the tip's post-knee fall plus the root's slow drift. The tip slack peaks **exactly at the knee** (`cav_X=T0`,
+`pL≈3`), the same resonance point that breaks the general case.
+
+**Why this matters for the attack.** Lemma 1 is *not* a per-node cavity-contraction (the tip slack is
+non-monotone and the root slack moves the wrong way); it is a **coupled monotonicity through the knee** in
+which the middle node's gain must be shown to dominate. That is a collective-cancellation-flavoured
+statement — the same character as the g-step crux, not the clean-Jensen character of lemma 2. Any proof
+must track the `cav_X → cav_Y` coupling explicitly (adding a below-knee child to a node *raises* its
+parent's cavity), not bound the tip in isolation. This confirms and pins the CORRECTION above:
+lemma 1 is the hardest of the three. `conjecture1_proved = False`.
