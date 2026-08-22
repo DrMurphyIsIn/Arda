@@ -155,6 +155,42 @@ remainder is the crux-session's assembly thread, **it is NOT a needed BG L2 piec
 treat it as a general Telperion primitive, not a BG deliverable. See
 `telperion/docs/HINGE_EMITTER_DESIGN_2026-08-22.md`.
 
-**Net corrected plan:** third session takes **L3 (UnimodalMax)** + **R7
-`HypDominationSweeps` (FiniteDecide)**, claim-first on `HypAmortizedHub`; L2 stays
-with the floor + crux sessions; #2 is research-adjacent, not routine; #3 is closed.
+**Net corrected plan:** third session takes **L3 (UnimodalMax valley/min dual)** +
+**R7 `HypDominationSweeps` (FiniteDecide)** + **`HypAmortizedHub` (ConeFarkas)** —
+all three CONFIRMED unclaimed by both other sessions (2026-08-22); L2 assembly +
+lemma 1 stay with the crux session; #2 is research-adjacent; #3 is closed.
+
+## RESOLVED (three-session convergence 2026-08-22): hinge.py IS L2's missing half
+
+The "L2 fully covered" consolidation over-corrected. Confirmed across all three
+sessions:
+- The Jensen **profile→equal-children** step is **OPEN** and needed for L2 (the
+  crux session verified it in `G1_STAGE2_AUDIT`; `slk_min_at_knee` only does the
+  1-var min-over-`y` for *already-equal* children — orthogonal).
+- `hinge.py`'s superadditivity `Σ(yᵢ−t0)₊ ≥ (Σyᵢ−k·t0)₊` **is exactly** the
+  Jensen-at-mean reduction `Σφ(yᵢ) ≥ k·φ(ȳ)` the dichotomy needs — they COINCIDE
+  for the hinge by positive homogeneity: `k·(ȳ−t0)₊ = (Σyᵢ − k·t0)₊`. Independently
+  verified by two sessions (exact, 20k+5k cases) and guarded by
+  `test_hinge.py::test_superadditivity_form_equals_the_jensen_mean_reduction`. **No
+  reformulation needed.**
+- The reduction is clean because `cav_v = 1/(k+1+Σy_c)` depends on children **only
+  through Σy_c**: at fixed cavity-sum the `−φ(cav_v)−χ_v` terms cancel, leaving
+  `slack(unequal) − slack(equal) = Σφ(y_c) − k·φ(ȳ) ≥ 0` = superadditivity.
+
+**Status: `hinge.py` UN-SHELVED — a confirmed BG L2 piece, statement-matched.**
+Remaining: (a) the Lean emitter for the hinge floor (CI-gated, `posPart`
+subadditivity discharge — primality-style iteration); (b) wire the real hinge
+constants (`c=22/100`, `t0=T0=rhoB−1`) and hand the emitted theorem to the crux
+session's assembly per the certify-to-the-Prop interface. Crux session to confirm
+the dichotomy invokes this at fixed cavity-sum (its lane) — which it must, since
+`cav_v` is a function of `Σy_c` alone.
+
+## L3 build note (this session, in progress)
+
+The domination ratio `r(q)` is unimodal with an interior **minimum** (`depth3_rigorous.py`,
+exact successive-difference single-crossing); obligation `min_q r(q) > 1`. Telperion's
+`UnimodalMaxEmitter` covers *maxima* (ratio crosses 1 from above) — L3 needs the
+**valley/min dual** (`unimodal_valley`: fall-then-rise, ratio crosses 1 from below).
+Building it as the dual of `emit_unimodal.py`; the real `r(q)` (needs `z_of`/`F_of`
+from the crux session's `depth3_rigorous.py`, currently uncommitted) is the wiring
+follow-up.
