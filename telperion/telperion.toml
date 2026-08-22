@@ -296,6 +296,12 @@ script = "examples/bg_family/generate.py"
 group = "quick"    # Brualdi-Goldwasser (a,b,nu) family base-cell brick: degree-11
                    # Bernstein positivity on [37/120, 1/2] (GS(0,0,nu) <= T); ~0.3 s
 
+[[check]]
+name = "bg_floor"
+script = "examples/bg_floor/generate.py"
+group = "quick"    # Brualdi-Goldwasser R7 ledger-floor brick (chain class): two-cell
+                   # degree-6 Bernstein positivity (slack(y) >= 27/5000); ~0.4 s
+
 [evolve]
 # LLM-driven evolutionary certificate search. NOT part of the trust model:
 # every candidate still passes certify -> emit -> lake build; nothing is auto-frozen.
