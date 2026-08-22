@@ -194,3 +194,24 @@ exact successive-difference single-crossing); obligation `min_q r(q) > 1`. Telpe
 Building it as the dual of `emit_unimodal.py`; the real `r(q)` (needs `z_of`/`F_of`
 from the crux session's `depth3_rigorous.py`, currently uncommitted) is the wiring
 follow-up.
+
+## COLLAPSE SEAM CLOSED — status update (2026-08-22, post-hand-off)
+
+Superseding the "assembly in progress" framing above: the m≥4 collapse-floor
+assembly for the tightest class (mixed `a=1`) is now **a kernel-checked theorem on
+main** (`R3Cert.full_slack_ge_floor`, #79). All three certify-to-the-Prop inputs
+landed and composed exactly as the interface contracts promised:
+
+| input | lemma | owner | on main |
+|---|---|---|---|
+| min-at-T0 | `slk_min_at_T0` (via `g_mono→cav_le→slk_min_at_knee`) | crux session | ✅ #76 |
+| profile→equal | `hinge_profile_floor` (posPart subadditivity; `hinge.py` demo) | third session | ✅ #77 |
+| point-floor | `point_floor_mixed_a1` (below-knee → `omega_enclosure`, no exp-Taylor) | floor session | ✅ #78 |
+| composition | `full_slack_ge_floor` | crux session | ✅ #79 |
+
+So `hinge.py` (the L2 profile→equal half) is not merely un-shelved — its R3Cert port
+is landed and consumed. The floor **lemma-2 ingredients** (context-free floors, all
+classes) + this composition are on main. **Open:** other m≥4 classes (copies of the
+point-floor pattern), m∈{1,2,3} interval lift, the real-slack multiset model + the
+unequal-children lift, **lemma 1** (knee-critical), and the remaining certificate
+pickups (**L3 UnimodalMax-valley**, **R7 `HypDominationSweeps`**). `conjecture1_proved = False`.

@@ -108,3 +108,24 @@ The last three pieces of the context-free floor layer:
 CI job: `bg-floor-r7-facets-compiles`. With this, the context-free floor **lemma 2**
 is fully Telperion-certified across all classes; **lemma 1** (knee-critical) and the
 **G7** assembly remain (Session B). `conjecture1_proved = False`.
+
+## Collapse assembly, mixed `a=1` — CLOSED (update 2026-08-22)
+
+The G7 collapse-floor assembly for the tightest class (mixed `a=1`) is now a
+kernel-checked theorem on main. The three certify-to-the-Prop inputs landed
+independently and composed without renegotiation:
+
+- **min-at-T0** (`R3Cert.R7CollapseMono.slk_min_at_T0`) — the y-minimisation chain
+  `g_mono → cav_le → slk_min_at_knee → slk_min_at_T0` (crux session).
+- **point-floor** (`R3Cert.point_floor_mixed_a1`) — `full_slack(m,T0) ≥ 27/5000` for
+  all `m ≥ 4` (this doc's floor session). Clean proof: the collapse cavity sits *below*
+  the knee (`u < T0`, from `rhoB_gt_1229`), so `log(1+u) < log ρB = Lval` and the fact
+  reduces to `linarith` over the existing `omega_enclosure` — no `log1p_upper`, no exp-Taylor.
+- **profile→equal** (`R3Cert.HingeProfileFloor.hinge_profile_floor`) — `Σφ(yᵢ) ≥ k·φ(ȳ)`
+  by `posPart` subadditivity (third session; the Telperion `hinge.py` emitter demo).
+
+Composition (`R3Cert.full_slack_ge_floor`) gives `full_slack(y) ≥ floor` over all
+cavities `y ≥ 0` for `m ≥ 4`. **Remaining:** the other m≥4 classes (bare-leaf, nl2 —
+direct copies of `point_floor_mixed_a1`, clearing more easily), `m∈{1,2,3}` (interval-
+Bernstein, cavity can exceed the knee), the real-slack multiset model + the profile→equal
+lift to unequal children, and **lemma 1** (knee-critical). `conjecture1_proved = False`.
