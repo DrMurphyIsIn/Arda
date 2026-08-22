@@ -284,6 +284,18 @@ script = "examples/psd_form/generate.py"
 group = "quick"    # positive-definite quadratic form via exact LDLT congruence
                    # (moment-matrix / Gram-bridge PSD); ring+positivity; ~0.1 s
 
+[[check]]
+name = "xor3_moment"
+script = "examples/xor3_moment/generate.py"
+group = "quick"    # 3-XOR moment-matrix PSD via GF(2) closure -> block-rank-one
+                   # SOS (Petersen, degree 2); ring+positivity; ~0.2 s
+
+[[check]]
+name = "bg_family"
+script = "examples/bg_family/generate.py"
+group = "quick"    # Brualdi-Goldwasser (a,b,nu) family base-cell brick: degree-11
+                   # Bernstein positivity on [37/120, 1/2] (GS(0,0,nu) <= T); ~0.3 s
+
 [evolve]
 # LLM-driven evolutionary certificate search. NOT part of the trust model:
 # every candidate still passes certify -> emit -> lake build; nothing is auto-frozen.
