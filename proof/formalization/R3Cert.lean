@@ -137,3 +137,6 @@ import R3Cert.R47CampaignBrick
 
 -- LPRSC: the integrality-aware marginal-tie certificate primitive (new Telperion shape)
 import R3Cert.LPRSC
+
+-- R7' top-composition capstone: conjecture1 reduced to the two open layers (conditional)
+import R3Cert.R47TopCapstone
