@@ -69,6 +69,5 @@ theorem spider_rate_gap_pos :
 theorem branch_arm_base_factor : (621 / 64 : ℚ) = (3 ^ 3 * 23 : ℚ) / 2 ^ 6 := by
   norm_num
 
-/-- The spider argument's conjecture-level claim is NOT proved by this brick. -/
 
 end R3Cert.Step3
