@@ -127,3 +127,9 @@ import R3Cert.HingeProfileFloor
 import R3Cert.R7CollapsePointFloor
 
 import R3Cert.R7CollapseCompose
+
+-- BG closure-campaign Lean drafts (CI-gated; name-checked, not previously compiled)
+import R3Cert.NearStarUnimodal
+import R3Cert.BridgeStep4l
+import R3Cert.R47RootInvariance
+import R3Cert.R47CampaignBrick
