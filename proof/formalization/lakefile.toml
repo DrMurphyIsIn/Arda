@@ -9,6 +9,12 @@ rev = "v4.32.0"
 
 [[lean_lib]]
 name = "R3Cert"
+# Glob every module under R3Cert/ so `lake build` compiles all of them regardless of whether
+# R3Cert.lean imports them. This makes new brick files self-building: a new R3Cert/R47*.lean is
+# verified by CI without editing any shared file, so parallel formalization branches never
+# collide on the R3Cert.lean import anchor. (Root R3Cert + all submodules, incl. HypStar/HypFloors
+# which were previously built by a separate step -- both sorry-free.)
+globs = ["R3Cert.+"]
 
 [[lean_lib]]
 name = "R7Hyps"
