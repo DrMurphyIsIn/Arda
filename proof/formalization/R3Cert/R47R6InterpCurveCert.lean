@@ -18,17 +18,17 @@
 
   HONEST SCOPE.  The exact I1 sub-hub cavity curve -- one input to the same-n interpolation
   lemma feeding Hdom.  NOT the endpoint certificates, the full lemma, nor the conjecture.
-  Self-contained modulo `Reach`; genuine proofs (no `sorry`, no `axiom`, no vacuous
-  hypothesis).  conjecture1_proved = False.
+  Self-contained modulo `Reach`/`NearStar`; genuine proofs (no `sorry`, no `axiom`, no
+  vacuous hypothesis).  conjecture1_proved = False.
 -/
 import Mathlib
-import R3Cert.Reach
+import R3Cert.NearStar
 
 namespace R3Cert
 
 /-- The level-5 cherry-bundle arm `node 5 []` has cavity `3/23`. -/
 theorem cav_fiveArm : cav (Branch.node 5 []) = 3 / 23 := by
-  rw [cav_eq]; simp only [List.length_nil, cavSum]; norm_num
+  rw [cav_eq]; simp only [List.length_nil, cavSum, Nat.cast_zero]; norm_num
 
 /-- **(I1) The sub-hub curve.**  A load-0 sub-hub of `q` level-5 arms has cavity
     `23 / (26 q + 23)`. -/
@@ -36,10 +36,11 @@ theorem subhub_cav (q : ℕ) :
     cav (Branch.node 0 (List.replicate q (Branch.node 5 [])))
       = 23 / (26 * (q : ℝ) + 23) := by
   rw [cav_eq, List.length_replicate, cavSum_replicate, cav_fiveArm]
-  have h2 : (26 * (q : ℝ) + 23) ≠ 0 := by positivity
   have h1 : (3 + 3 * (q : ℝ) + 4 * ((0 : ℕ) : ℝ) + 3 * ((q : ℝ) * (3 / 23))) ≠ 0 := by
     push_cast; positivity
-  rw [div_eq_div_iff h1 h2]; push_cast; ring
+  have h2 : (26 * (q : ℝ) + 23) ≠ 0 := by positivity
+  field_simp
+  ring
 
 /-- The sub-hub opening identity `subOpen(m) * (23 + 3 m) = 26`. -/
 theorem subOpen_mul (m : ℝ) (hm : (23 : ℝ) + 3 * m ≠ 0) :
@@ -51,7 +52,7 @@ theorem subhub_cav_le (q : ℕ) (hq : 1 ≤ q) :
     cav (Branch.node 0 (List.replicate q (Branch.node 5 []))) ≤ 23 / 49 := by
   rw [subhub_cav]
   have hq1 : (1 : ℝ) ≤ (q : ℝ) := by exact_mod_cast hq
-  rw [div_le_div_iff (by positivity) (by norm_num)]
+  gcongr
   nlinarith [hq1]
 
 end R3Cert
