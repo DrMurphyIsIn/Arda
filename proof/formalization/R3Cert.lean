@@ -138,6 +138,9 @@ import R3Cert.R47CampaignBrick
 -- LPRSC: the integrality-aware marginal-tie certificate primitive (new Telperion shape)
 import R3Cert.LPRSC
 
+-- Single-hub objective in closed form (Hdom / R6 entry point)
+import R3Cert.R47SingleHub
+
 -- Merge-layer capstone restated in the real per(L)/prod-deg object (G7 composition step)
 import R3Cert.R47MergePerL
 
