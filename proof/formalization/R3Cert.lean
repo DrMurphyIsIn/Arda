@@ -137,3 +137,6 @@ import R3Cert.R47CampaignBrick
 
 -- LPRSC: the integrality-aware marginal-tie certificate primitive (new Telperion shape)
 import R3Cert.LPRSC
+
+-- Normal-form structural theory (Hdom infrastructure)
+import R3Cert.R47NormalForm
