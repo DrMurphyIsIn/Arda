@@ -143,3 +143,6 @@ import R3Cert.R47MergePerL
 
 -- R7' top-composition capstone: conjecture1 reduced to the two open layers (conditional)
 import R3Cert.R47TopCapstone
+
+-- Normal-form structural theory (Hdom infrastructure)
+import R3Cert.R47NormalForm
