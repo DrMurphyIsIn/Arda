@@ -84,6 +84,9 @@ jobs:
         working-directory: telperion/examples/g1_floors/lean
         run: |
           lake build HomogMaster HomogMasterAssembled HomogStrict HomogStrictAssembled
+      - name: Compile the heterogeneous canonical-family cell (vertex route #37)
+        working-directory: telperion/examples/g1_floors/lean
+        run: lake build HomogMaster HomogMasterAssembled HeteroFamily
 
   audit-compiles:
     runs-on: ubuntu-latest
