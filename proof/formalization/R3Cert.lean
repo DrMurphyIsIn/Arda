@@ -138,5 +138,11 @@ import R3Cert.R47CampaignBrick
 -- LPRSC: the integrality-aware marginal-tie certificate primitive (new Telperion shape)
 import R3Cert.LPRSC
 
+-- Merge-layer capstone restated in the real per(L)/prod-deg object (G7 composition step)
+import R3Cert.R47MergePerL
+
+-- R7' top-composition capstone: conjecture1 reduced to the two open layers (conditional)
+import R3Cert.R47TopCapstone
+
 -- Normal-form structural theory (Hdom infrastructure)
 import R3Cert.R47NormalForm
