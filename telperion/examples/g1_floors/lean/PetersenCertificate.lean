@@ -11,10 +11,11 @@
    the one heavy evaluation), and PSDness of the 121x121 degree-4 moment
    matrix (petersen_moment_psd) via the abstract structure theorem.
 
-   Python-pinned residual: that idxList is the COMPLETE enumeration of
-   masks of popcount <= 2 (idx_valid checks soundness of each entry, not
-   completeness -- restricting the index set only weakens the statement),
-   and the standard moment/SOS duality. -/
+   Python-pinned residual: NONE for the matrix layer -- idx_valid checks
+   entry soundness and idx_complete checks ENUMERATION COMPLETENESS
+   (every popcount-<=2 mask under 2^15 is indexed), both kernel-decided.
+   The remaining unformalized layer is the 3XOR moment/SOS duality
+   (the knapsack analog is Duality.lean; the 3XOR version is queued). -/
 import Mathlib
 import Xor3Structure
 
@@ -58,6 +59,148 @@ theorem refutation_certificate :
 
 /-- Every index mask has popcount <= 2. -/
 theorem idx_valid : ∀ t ∈ idxList, pop 16 t ≤ 2 := by decide
+
+/- COMPLETENESS sweep, chunked (List.range 32768 nests too deep for the
+elaborator; 32 x 1024 range' blocks keep recursion shallow). -/
+theorem idx_chunk_0 : ∀ m ∈ List.range' 0 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_1 : ∀ m ∈ List.range' 1024 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_2 : ∀ m ∈ List.range' 2048 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_3 : ∀ m ∈ List.range' 3072 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_4 : ∀ m ∈ List.range' 4096 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_5 : ∀ m ∈ List.range' 5120 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_6 : ∀ m ∈ List.range' 6144 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_7 : ∀ m ∈ List.range' 7168 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_8 : ∀ m ∈ List.range' 8192 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_9 : ∀ m ∈ List.range' 9216 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_10 : ∀ m ∈ List.range' 10240 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_11 : ∀ m ∈ List.range' 11264 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_12 : ∀ m ∈ List.range' 12288 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_13 : ∀ m ∈ List.range' 13312 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_14 : ∀ m ∈ List.range' 14336 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_15 : ∀ m ∈ List.range' 15360 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_16 : ∀ m ∈ List.range' 16384 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_17 : ∀ m ∈ List.range' 17408 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_18 : ∀ m ∈ List.range' 18432 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_19 : ∀ m ∈ List.range' 19456 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_20 : ∀ m ∈ List.range' 20480 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_21 : ∀ m ∈ List.range' 21504 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_22 : ∀ m ∈ List.range' 22528 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_23 : ∀ m ∈ List.range' 23552 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_24 : ∀ m ∈ List.range' 24576 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_25 : ∀ m ∈ List.range' 25600 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_26 : ∀ m ∈ List.range' 26624 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_27 : ∀ m ∈ List.range' 27648 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_28 : ∀ m ∈ List.range' 28672 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_29 : ∀ m ∈ List.range' 29696 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_30 : ∀ m ∈ List.range' 30720 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+theorem idx_chunk_31 : ∀ m ∈ List.range' 31744 1024,
+    pop 16 m ≤ 2 → m ∈ idxList := by decide
+
+/-- COMPLETENESS (kills the former Python pin): every 15-bit mask of
+popcount <= 2 appears in idxList -- the index set is the FULL degree-2
+level, so petersen_moment_psd speaks for the whole moment matrix. -/
+theorem idx_complete :
+    ∀ m : ℕ, m < 32768 → pop 16 m ≤ 2 → m ∈ idxList := by
+  have mem_helper : ∀ (s n mm : ℕ), s ≤ mm → mm < s + n →
+      mm ∈ List.range' s n := fun s n mm h1 h2 =>
+    List.mem_range'.mpr ⟨mm - s, by omega, by omega⟩
+  intro m hm hp
+  have hq : m / 1024 < 32 := by omega
+  interval_cases h : m / 1024
+  · exact idx_chunk_0 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_1 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_2 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_3 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_4 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_5 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_6 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_7 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_8 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_9 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_10 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_11 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_12 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_13 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_14 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_15 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_16 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_17 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_18 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_19 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_20 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_21 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_22 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_23 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_24 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_25 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_26 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_27 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_28 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_29 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_30 m (mem_helper _ _ _ (by omega) (by omega)) hp
+  · exact idx_chunk_31 m (mem_helper _ _ _ (by omega) (by omega)) hp
 
 /-- The closure sign table respects every clause within width 4: the
 pseudoexpectation honors the instance's constraints. Decidable guarded
@@ -128,6 +271,7 @@ theorem petersen_moment_psd (x : Fin 121 → ℚ) :
 
 end PetersenCertificate
 
+#print axioms PetersenCertificate.idx_complete
 #print axioms PetersenCertificate.refutation_certificate
 #print axioms PetersenCertificate.constraint_respect
 #print axioms PetersenCertificate.pairFact

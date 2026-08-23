@@ -60,6 +60,10 @@ from .emit_bracket import BracketSpec, IntervalBracketEmitter, bracket_family  #
 from .emit_padic import PadicValuationEmitter, valuation_family  # noqa: F401
 # BG-derived first-class emitters (2026-08-19).
 from .emit_cone import ConeFarkasEmitter, cone_family  # noqa: F401
+from .emit_tangent import TangentSumEmitter, tangent_certificate, tangent_sum_family  # noqa: F401
+from .emit_cs import CauchySchwarzEmitter, cauchy_schwarz_family, cs_certificate  # noqa: F401
+from .emit_psd_form import PSDFormEmitter, psd_certificate, psd_form_family  # noqa: F401
+from .emit_xor3 import Xor3MomentPSDEmitter, xor3_certificate, xor3_family  # noqa: F401
 from .emit_unimodal import (  # noqa: F401
     UNIMODAL_PRELUDE, UnimodalMaxEmitter, unimodal_max_family,
 )
@@ -145,6 +149,20 @@ from .formalize import (  # noqa: F401
     FormalizeResult, Proposer, formalize, ollama_proposer,
 )
 from .tactic import discharge, discharge_json  # noqa: F401
+from .hinge import (  # noqa: F401
+    HingeFloorCertificate, hinge_floor_certificate, hinge_floor_module,
+    hinge_floor_theorem, verify_hinge_floor,
+)
+from .sonc import (  # noqa: F401
+    SONCCertificate, find_circuit_certificate, verify_circuit_certificate,
+)
+from .psd import (  # noqa: F401
+    PSDCertificate, find_psd_certificate, verify_psd_certificate,
+)
+from .pratt import (  # noqa: F401
+    PrattCertificate, find_pratt_certificate, verify_pratt_certificate,
+)
+from .emit_primality import primality_module, primality_theorem  # noqa: F401
 from .lean_lint import (  # noqa: F401
     LeanLintError,
     LeanLintIssue,

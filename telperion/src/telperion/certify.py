@@ -132,6 +132,15 @@ _SPECIAL_KINDS = (
     "polya_zeros",
     # Proof-complexity-derived emitters (2026-08-20, knapsack_sos arc).
     "rational_identity", "finite_decide", "fwd_telescope",
+    # Tier-7 combinatorial symmetric-inequality emitters (2026-08-21):
+    # tangent-line + Cauchy-Schwarz (pairwise-difference SOS).
+    "tangent", "cauchy_schwarz",
+    # Tier-8 linear-algebra certificate (2026-08-21): exact-LDLT positive-definite
+    # quadratic form (moment-matrix / Gram-bridge PSD, cvxpy-free).
+    "psd_form",
+    # Tier-9 SoS / P=NP certificate (2026-08-22): 3-XOR moment-matrix PSD via
+    # GF(2) closure -> block-rank-one SOS.
+    "xor3_moment",
 )
 
 # kind -> "module:certify_point_fn" for the generic (family.special) emitters.
@@ -159,6 +168,10 @@ _SPECIAL_DISPATCH = {
     "rational_identity": ("emit_rational_identity", "certify_rational_identity_point"),
     "finite_decide": ("emit_finite_decide", "certify_finite_decide_point"),
     "fwd_telescope": ("emit_fwd_telescope", "certify_fwd_telescope_point"),
+    "tangent": ("emit_tangent", "certify_tangent_point"),
+    "cauchy_schwarz": ("emit_cs", "certify_cs_point"),
+    "psd_form": ("emit_psd_form", "certify_psd_point"),
+    "xor3_moment": ("emit_xor3", "certify_xor3_point"),
 }
 
 
