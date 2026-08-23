@@ -142,6 +142,7 @@ import R3Cert.LPRSC
 import R3Cert.R47SingleHub
 import R3Cert.R47SingleHubValue
 import R3Cert.R47SingleHubFormula
+import R3Cert.R47ArmBalance
 
 -- Merge-layer capstone restated in the real per(L)/prod-deg object (G7 composition step)
 import R3Cert.R47MergePerL
