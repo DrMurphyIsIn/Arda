@@ -64,6 +64,9 @@ name = "HomogMaster"
 name = "HomogMasterAssembled"
 
 [[lean_lib]]
+name = "HeteroFamily"
+
+[[lean_lib]]
 name = "Petersen2Certificate"
 
 [[lean_lib]]
