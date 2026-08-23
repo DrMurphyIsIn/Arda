@@ -10,6 +10,11 @@ on:
       - "proof/formalization/**"
       - ".github/workflows/proof-lean.yml"
   workflow_dispatch:
+  # Continuous, independent loop: a daily run on the default branch re-verifies the whole
+  # R3Cert/R7Hyps layer (no-sorry) AND refreshes the incremental build cache so it never goes
+  # cold (GitHub evicts caches unused for 7 days). Runs on GitHub infra -- no local machine.
+  schedule:
+    - cron: "17 6 * * *"
 
 jobs:
   lean-verify:
@@ -37,13 +42,15 @@ jobs:
 
       # Incremental project build cache: restore the most recent prior R3Cert/R7Hyps `.olean`
       # build (same toolchain + deps) so `lake build` only recompiles CHANGED modules, not all
-      # ~2575 theorems cold. Rolling key: save under the commit SHA, restore by prefix. First run
-      # after this lands is still a cold build (and seeds the cache); subsequent runs are incremental.
-      - name: Cache Lean project build (incremental)
+      # ~2575 theorems cold. Rolling key keyed on the RUN ID so EVERY run (push, PR, and the daily
+      # schedule) saves a fresh cache -- this refreshes GitHub's 7-day eviction timer, keeping the cache
+      # perpetually warm; `restore-keys` restores the most recent prior build (same toolchain + deps) so
+      # `lake build` only recompiles CHANGED modules. Toolchain/manifest change forces a full rebuild.
+      - name: Cache Lean project build (incremental, self-refreshing)
         uses: actions/cache@v4
         with:
           path: proof/formalization/.lake/build
-          key: lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-${{ github.sha }}
+          key: lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-${{ github.run_id }}
           restore-keys: |
             lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-
 
