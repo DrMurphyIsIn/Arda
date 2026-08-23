@@ -80,6 +80,10 @@ jobs:
         run: |
           lake exe cache get
           lake build
+      - name: Compile the homogeneous master certs (achievable bound + strictness-iff)
+        working-directory: telperion/examples/g1_floors/lean
+        run: |
+          lake build HomogMaster HomogMasterAssembled HomogStrict HomogStrictAssembled
       - name: Compile the heterogeneous canonical-family cell (vertex route #37)
         working-directory: telperion/examples/g1_floors/lean
         run: lake build HomogMaster HomogMasterAssembled HeteroFamily
