@@ -46,15 +46,15 @@ theorem ge_min (R : ℕ → ℚ) (ns : ℕ)
         rw [heq] at hstep
         exact le_of_lt (lt_of_le_of_lt h1 hstep)
   intro n
-  rcases le_or_lt ns n with h | h
-  · -- upward part: `ns ≤ n`
-    induction n, h using Nat.le_induction with
-    | base => exact le_refl _
-    | succ m hm ih => exact le_trans ih (hinc m hm)
+  rcases Nat.lt_or_ge n ns with h | h
   · -- `n < ns`, so `n ≤ ns`; use the downward part at `k = ns - n`
     have hk : ns - n ≤ ns := Nat.sub_le ns n
     have := hdown (ns - n) hk
     rwa [Nat.sub_sub_self (le_of_lt h)] at this
+  · -- upward part: `ns ≤ n` (from `h : n ≥ ns`)
+    induction n, h using Nat.le_induction with
+    | base => exact le_refl _
+    | succ m hm ih => exact le_trans ih (hinc m hm)
 
 /-- **LPRSC conclusion.**  With the tie value `R ns = 1`, the sequence is `≥ 1` everywhere. -/
 theorem family_ge_one (R : ℕ → ℚ) (ns : ℕ)
@@ -83,7 +83,7 @@ theorem family_gt_one_off_tie (R : ℕ → ℚ) (ns : ℕ)
     ∀ n, n ≠ ns → 1 < R n := by
   have hinc : ∀ n, ns ≤ n → R n ≤ R (n + 1) := fun n hn => le_of_lt (hincS n hn)
   intro n hn
-  rcases lt_or_gt_of_ne hn with h | h
+  rcases hn.lt_or_lt with h | h
   · -- n < ns: strict decrease gives R n > R (n+1) ≥ R ns = 1
     have hstep : R (n + 1) < R n := hdec n h
     have hge : R ns ≤ R (n + 1) := ge_min R ns hdec hinc (n + 1)
