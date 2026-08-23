@@ -134,3 +134,6 @@ import R3Cert.R7CollapseCompose
 import R3Cert.BridgeStep4l
 import R3Cert.R47RootInvariance
 import R3Cert.R47CampaignBrick
+
+-- LPRSC: the integrality-aware marginal-tie certificate primitive (new Telperion shape)
+import R3Cert.LPRSC
