@@ -259,6 +259,61 @@ name = "unimodal_maximum"
 script = "examples/unimodal_maximum/generate_nearstar.py"
 group = "quick"    # near-star payoff Phi^11(N(0,n)) <= 1 (kernel-green); ~0.5 s
 
+[[check]]
+name = "evolve_nearstar"
+script = "examples/evolve_nearstar/generate.py"
+group = "audit"    # runs the structured evolve loop (~28 s) + emits the champion's
+                   # ratio certificate; too slow for the per-push quick path -> audit
+                   # CI. (evolve->frozen milestone, seed=0, deterministic)
+
+[[check]]
+name = "tangent_sum"
+script = "examples/tangent_sum/generate.py"
+group = "quick"    # tangent-line trick: convex-quadratic symmetric-sum bounds
+                   # (Jensen for squares + a shifted quadratic); nlinarith; ~0.1 s
+
+[[check]]
+name = "cauchy_schwarz"
+script = "examples/cauchy_schwarz/generate.py"
+group = "quick"    # Cauchy-Schwarz / QM-AM via pairwise-difference SOS
+                   # (unweighted + weighted); ring+positivity+linarith; ~0.1 s
+
+[[check]]
+name = "psd_form"
+script = "examples/psd_form/generate.py"
+group = "quick"    # positive-definite quadratic form via exact LDLT congruence
+                   # (moment-matrix / Gram-bridge PSD); ring+positivity; ~0.1 s
+
+[[check]]
+name = "xor3_moment"
+script = "examples/xor3_moment/generate.py"
+group = "quick"    # 3-XOR moment-matrix PSD via GF(2) closure -> block-rank-one
+                   # SOS (Petersen, degree 2); ring+positivity; ~0.2 s
+
+[[check]]
+name = "bg_family"
+script = "examples/bg_family/generate.py"
+group = "quick"    # Brualdi-Goldwasser (a,b,nu) family base-cell brick: degree-11
+                   # Bernstein positivity on [37/120, 1/2] (GS(0,0,nu) <= T); ~0.3 s
+
+[[check]]
+name = "bg_floor"
+script = "examples/bg_floor/generate.py"
+group = "quick"    # Brualdi-Goldwasser R7 ledger-floor brick (chain class): two-cell
+                   # degree-6 Bernstein positivity (slack(y) >= 27/5000); ~0.4 s
+
+[[check]]
+name = "bg_floor_families"
+script = "examples/bg_floor_families/generate.py"
+group = "quick"    # BG R7 ledger floors, bare-leaf (nl=1) + nl=2 families: 102 two-cell
+                   # degree-5 Bernstein positivities (a in 0..9/0..6, m in 1..3); ~2 s
+
+[[check]]
+name = "bg_floor_r7_facets"
+script = "examples/bg_floor_r7_facets/generate.py"
+group = "quick"    # BG R7 floor facets: m=0 + m>=4 point norm_num facts (39) + tax-window
+                   # and below-window degree-9 Bernstein cells; needs proof/verification; ~3 s
+
 [evolve]
 # LLM-driven evolutionary certificate search. NOT part of the trust model:
 # every candidate still passes certify -> emit -> lake build; nothing is auto-frozen.
@@ -285,3 +340,15 @@ group = "quick"    # forward-difference telescoping (the W2 prover; SumEqProd re
 name = "rational_identity"
 script = "examples/rational_identity/generate.py"
 group = "quick"    # rational-function identities on a ray (knapsack Gram-bridge shapes); ~0.3 s
+
+[[check]]
+name = "primality"
+script = "examples/primality/generate.py"
+group = "quick"    # Pratt/Lucas primality certificates via Mathlib lucas_primality
+                   # (find -> verify_pratt_certificate -> emit); small primes; ~0.1 s
+
+[[check]]
+name = "hinge_floor"
+script = "examples/hinge_floor/generate.py"
+group = "quick"    # BG G1 L2 profile->equal-children reduction (posPart subadditivity /
+                   # Jensen min-at-equal-children for the convex hinge); ~0.1 s

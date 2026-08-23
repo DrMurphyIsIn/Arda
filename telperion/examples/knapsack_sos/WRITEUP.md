@@ -1,8 +1,10 @@
 # A kernel-checked symbolic-n sum-of-squares lower bound: the Grigoriev knapsack pipeline
 
-*Draft v1, 2026-08-20. Status: complete as a certified artifact; novelty
-positioning below is calibrated against a preliminary literature check and
-follows the conservative conventions of `PUBLICATION_LEDGER.md`.*
+*Draft v2, 2026-08-21. Status: complete as a certified artifact, now
+including the moment/SOS duality layer and TWO fully unconditional
+end-to-end refutation-form theorems; novelty positioning is calibrated
+against a multi-angle formalization-literature search and follows the
+conservative conventions of `PUBLICATION_LEDGER.md`.*
 
 ## Abstract
 
@@ -122,8 +124,57 @@ pair-difference Gram matrices are the complete harmonic block data of M_d
 spectrum from the blocks with multiplicities, error < 1e-14, plus
 brute-force enumeration matches).
 
-Literature (standard, not formalized): the moment-matrix/SOS-refutation
-duality ("M_d PSD and constraints respected => no degree-2d refutation").
+UPDATE 2026-08-21: the moment/SOS duality is NOW FORMALIZED (Duality.lean,
+axioms-clean): SOSRefutation (squares deg <= d, cofactors deg <= 2d --
+more generous than the textbook product bound), the abstract no_refutation
+obstruction, the pseudoexpectation as a linear functional on MvPolynomial
+(boolean ideal killed unconditionally; linear constraint killed below full
+support -- the truncation is load-bearing), and the conditional master
+knapsack_no_refutation. The single remaining unformalized layer is the
+named hsq hypothesis: moment PSD in functional form (harmonic
+completeness, Python-pinned exact).
+
+## 3b. The duality layer and the two unconditional theorems (2026-08-21)
+
+The moment-matrix results are lifted to REFUTATION FORM by a formalized
+duality layer (Duality.lean, Hsq.lean, QuadForm.lean, Xor3Mask.lean,
+Xor3Duality.lean; every theorem axioms-clean):
+
+* `SOSRefutation` -- degree-bounded Positivstellensatz refutations with
+  PER-CONSTRAINT cofactor degree bounds (more general than the textbook
+  single bound on products);
+* `no_refutation` -- the abstract obstruction: any linear functional with
+  E 1 = 1, nonnegativity on admissible squares, and ideal-kill at
+  admissible cofactor degrees blocks all refutations (four lines);
+* the knapsack and 3XOR pseudoexpectations as honest linear functionals
+  on MvPolynomial (support-weighting resp. parity-mask-weighting; the
+  multilinearization laws are `support(a+b) = support a UNION support b`
+  resp. `oddSet(a+b) = oddSet a DELTA oddSet b`);
+* THE TRUNCATION IS LOAD-BEARING, twice: the knapsack linear-constraint
+  kill genuinely fails at full-support monomials, and the 3XOR clause
+  kill genuinely needs parity masks within the closure width -- in both
+  cases the failure of the unguarded identity is exactly WHY these are
+  lower bounds.
+
+**Unconditional theorem 1 (knapsack, `knapsack_no_refutation_d1`).** For
+every N > 2 there is NO SOS refutation of {x_i^2 = x_i, sum x = N/2} with
+squares of degree <= 1 and cofactors of degree <= 2.  The degree-1 moment
+form is discharged outright: it equals
+(x_empty + X/2)^2 + (N*Q - X^2)/(4(N-1)), a completed square plus a
+Cauchy-Schwarz remainder with EXACT coefficient matching.  For general d
+the sole remaining hypothesis is the finite-dimensional subset form
+`SubsetFormPSD` (harmonic completeness).
+
+**Unconditional theorem 2 (3XOR, `petersen_no_refutation`).** There is NO
+SOS refutation of the Petersen Tseitin system (ten clauses x_A = e, odd
+charge, plus +-1 booleanity) with squares of degree <= 2, clause
+cofactors of degree <= 1, and boolean cofactors of degree <= 4 -- while
+the system is kernel-checked contradictory.  The PSD side is the
+width-4 closure certificate (block-rank-one over 61 classes) bridged
+through the Finset<->bitmask homomorphism maskOf(S DELTA T) =
+maskOf S XOR maskOf T and a generic quadratic-form grouping lemma; the
+chain has ZERO Python pins (index-enumeration completeness is itself
+kernel-decided, chunked).
 
 ## 4. Methods: the pipeline discipline
 
@@ -162,8 +213,23 @@ duality ("M_d PSD and constraints respected => no degree-2d refutation").
 - Machine-checked SOS *upper* bounds (certificate checking) are routine;
   we are not aware of a prior kernel-checked *asymptotic lower bound*
   (nonexistence of certificates, symbolic in the instance size) in any
-  proof assistant. This claim is provisional pending a proper search of the
-  formalization literature.
+  proof assistant. A multi-angle search (2026-08-21) of the Lean/mathlib,
+  Coq/Rocq, Isabelle/AFP, ACL2 and HOL ecosystems found NO formalized
+  proof-complexity lower bound of any kind (resolution, polynomial
+  calculus, Nullstellensatz, cutting planes, Frege, SOS) and no formalized
+  pseudoexpectation/moment-duality construction; the entire formalized
+  Positivstellensatz literature (Harrison's HOL Light SOS, Coq micromega,
+  Isabelle Sum_of_Squares, leanprover/sos) is on the certificate-CHECKING
+  side. Two important adjacent priors bound the claim: Eberl's Isabelle/AFP
+  Omega(n log n) comparison-sorting bound (2017) and the Lean formalization
+  of Huang's sensitivity theorem (2019) are kernel-checked asymptotic
+  lower bounds in QUERY/decision-tree models -- so the claim must be
+  scoped to PROOF COMPLEXITY, phrased "to our knowledge", and cite both
+  preemptively. Verified proof-format checkers (LRAT/GRAT/CakeML
+  VIPR/PBLean) verify individual proofs, not nonexistence: adjacent
+  infrastructure, not overlap. Bounded-arithmetic metamathematics of
+  resolution lower bounds (arXiv:2411.15515, 2506.16956) is pen-and-paper
+  formalizability theory, related but not machine-checked.
 
 ## 6. Ceiling (read before extrapolating)
 
@@ -180,8 +246,15 @@ infrastructure (the fwdDiff/telescoping template, the emitter pattern), and
 
 1. Kernel-check the harmonic-completeness layer (the one Python pin):
    z-vector Gram derivation + multiplicity count.
-2. Formalize the moment/SOS duality to state the lower bound in refutation
-   form end-to-end.
+2. DONE (2026-08-21, Duality.lean): the moment/SOS duality layer --
+   SOSRefutation, the abstract no_refutation obstruction, the
+   pseudoexpectation as an honest linear functional on MvPolynomial with
+   unconditional boolean-ideal kill and degree-guarded linear-constraint
+   kill (the truncation is load-bearing: at full support the telescoping
+   identity genuinely fails), and the conditional master
+   knapsack_no_refutation (squares deg <= d, cofactors deg <= 2d -- more
+   generous than the textbook product bound). Residual: the named hsq
+   hypothesis = moment PSD in functional form (harmonic completeness).
 3. 3XOR: the per-instance structure theorem (conflict-free width-2d closure
    => block-rank-one PSD; see `xor3_pseudoexpectation.py` and
    `Xor3Structure.lean`) with Tseitin-on-Petersen as the canonical certified

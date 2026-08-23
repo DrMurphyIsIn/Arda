@@ -37,6 +37,27 @@ name = "PetersenCertificate"
 name = "FlatnessDomination"
 
 [[lean_lib]]
+name = "Duality"
+
+[[lean_lib]]
+name = "Hsq"
+
+[[lean_lib]]
+name = "QuadForm"
+
+[[lean_lib]]
+name = "Xor3Mask"
+
+[[lean_lib]]
+name = "Xor3Duality"
+
+[[lean_lib]]
+name = "HeawoodCertificate"
+
+[[lean_lib]]
+name = "HeawoodDuality"
+
+[[lean_lib]]
 name = "HomogMaster"
 
 [[lean_lib]]
@@ -44,3 +65,9 @@ name = "HomogMasterAssembled"
 
 [[lean_lib]]
 name = "HeteroFamily"
+
+[[lean_lib]]
+name = "Petersen2Certificate"
+
+[[lean_lib]]
+name = "Petersen2Duality"

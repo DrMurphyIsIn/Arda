@@ -66,6 +66,7 @@ import R3Cert.BridgeStep4g
 import R3Cert.BridgeStep4h
 import R3Cert.BridgeStep4i
 import R3Cert.BridgeStep4j
+import R3Cert.BridgeStep4k
 import R3Cert.R47Tree
 import R3Cert.R47HubState
 import R3Cert.R47HubForms
@@ -98,6 +99,11 @@ import R3Cert.R47LegsAT
 import R3Cert.HomogeneousSlice
 import R3Cert.NearStarBandSlice
 import R3Cert.MasterCore
+import R3Cert.R7CollapseMono
+import R3Cert.R7CollapseT0
+import R3Cert.GStep2TypeFace
+import R3Cert.GStep3TypeFace
+import R3Cert.GStepFullFace
 import R3Cert.GStepCore
 import R3Cert.CappedJointSkeleton
 import R3Cert.CavityIdentities
@@ -118,3 +124,7 @@ import R3Cert.R47Parse
 import R3Cert.R47RateZBound
 import R3Cert.R47Rate
 import R3Cert.FractalTail
+import R3Cert.HingeProfileFloor
+import R3Cert.R7CollapsePointFloor
+
+import R3Cert.R7CollapseCompose

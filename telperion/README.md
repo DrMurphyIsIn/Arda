@@ -84,6 +84,10 @@ emit → freeze` workflow.
 | `SOSRefutationEmitter` | a semialgebraic system `{gᵢ ≥ 0, hⱼ = 0}` is unsatisfiable OVER ℝ via `−1 = σ₀ + Σσᵢgᵢ + Σλⱼhⱼ` (reaches positivity-only infeasibility like `x²+1=0`) — supply the certificate, or return `sigma0=None` and Telperion FINDS it (`find_sos_refutation`, SDP; auto-closes the ℝ-only gap) | `positivity`/`mul_nonneg` + `linear_combination` + `linarith` ⟹ `False` |
 | `RealNullstellensatzEmitter` | `p = 0` on the REAL variety of `⟨gₖ⟩` via `p^{2m} + s ∈ ⟨gₖ⟩` (`s` a sum of squares, cofactors computed) | `positivity` + `linear_combination` + `linarith` + `pow_eq_zero_iff` |
 | `CGRoundEmitter` | a linear goal over INTEGER variables from a Chvátal–Gomory derivation (VIPR-style): `lincomb` (nonnegative combination of prior facts) + `cg_round` (from an integer-coefficient fact `Σ cⱼxⱼ ≥ v`, the integer LHS rounds the bound up to `Σ cⱼxⱼ ≥ ⌈v⌉`); refuses non-integer or vacuous rounds, negative multipliers, undominated goals, and rounding-INSENSITIVE certificates | integer-cleared hypotheses discharged by `omega` (linear-integer decision procedure, which performs the CG rounding internally) |
+| `TangentSumEmitter` | a symmetric-sum (combinatorial) inequality `B ≤ Σf(xᵢ)` for a convex polynomial `f` of any even degree with `Σxᵢ = S`, via the tangent line at `a = S/n` — the surplus `f−L` is an exact rational SOS (factored over ℚ; double root at `a`); refuses a non-convex `f` | per-term `have … = Σcⱼ·bⱼ² := by ring; positivity`, assembled by `linarith [h₁,…, hsum]` |
+| `CauchySchwarzEmitter` | the (weighted) Cauchy–Schwarz / QM–AM inequality `(Σwᵢxᵢ)² ≤ (Σwᵢ)(Σwᵢxᵢ²)` (constraint-free) via the pairwise-difference SOS `Σ_{i<j} wᵢwⱼ(xᵢ−xⱼ)²`; refuses a non-positive weight | `have … = Σ wᵢwⱼ(xᵢ−xⱼ)² := by ring; positivity`, then `linarith` |
+| `PSDFormEmitter` | `0 ≤ xᵀMx` for an explicit rational symmetric **positive-semidefinite** matrix `M` (definite or singular), via the exact rational completing-the-square congruence `xᵀMx = Σ cᵢ·(…)²` (`cᵢ > 0`, cvxpy-free — the moment-matrix / Gram-bridge PSD primitive); refuses an indefinite matrix | `have xᵀMx = Σ cᵢ·(…)² := by ring`, then `positivity` |
+| `Xor3MomentPSDEmitter` | a degree-d SoS lower bound for an UNSAT 3-XOR (Tseitin) instance whose width-2d GF(2) closure is conflict-free — the moment matrix is **block-rank-one**, so `0 ≤ xᵀMx` emits as a compact SOS `Σ_class (Σ σ_S·x_S)²` (one square per derivability class); refuses a satisfiable instance, a width refutation, or a non-block-rank-one matrix | `have xᵀMx = Σ_class(…)² := by ring`, then `positivity` |
 | `CustomAssemblyEmitter` | escape hatch for a hand-designed assembly | your skeleton |
 
 The Pólya engine underneath (`polya_lift`: multiply through by `(1+Σxᵢ)^N`;
@@ -262,3 +266,15 @@ only if you want the research lab.
 
 The methodology — untrusted generator, trusted kernel, numeric-first discipline,
 provenance-and-drift — is written up in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md).
+
+
+## License
+
+Telperion is source-available under the
+[Business Source License 1.1](LICENSE): free for academic research,
+teaching, and evaluation; commercial production use requires a license
+from the Licensor; each version converts to Apache-2.0 three years after
+release. Emitted Lean certificates are excluded from the Licensed Work —
+your outputs are yours. The mathematical content elsewhere in this
+repository is Apache-2.0/CC-BY-4.0 (see ../LICENSING.md). Engine
+contributions require the [CLA](CLA.md).
