@@ -128,3 +128,9 @@ import R3Cert.HingeProfileFloor
 import R3Cert.R7CollapsePointFloor
 
 import R3Cert.R7CollapseCompose
+
+-- BG closure-campaign Lean drafts (CI-gated; name-checked, not previously compiled)
+-- NearStarUnimodal dropped: rewrite failure at :159 (ratio-unimodality; sibling claim refuted by campaign verify)
+import R3Cert.BridgeStep4l
+import R3Cert.R47RootInvariance
+import R3Cert.R47CampaignBrick
