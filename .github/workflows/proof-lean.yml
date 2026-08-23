@@ -35,6 +35,18 @@ jobs:
       - name: Fetch Mathlib olean cache
         run: lake exe cache get
 
+      # Incremental project build cache: restore the most recent prior R3Cert/R7Hyps `.olean`
+      # build (same toolchain + deps) so `lake build` only recompiles CHANGED modules, not all
+      # ~2575 theorems cold. Rolling key: save under the commit SHA, restore by prefix. First run
+      # after this lands is still a cold build (and seeds the cache); subsequent runs are incremental.
+      - name: Cache Lean project build (incremental)
+        uses: actions/cache@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-
+
       - name: Build (the verification — every R3Cert module compiles, no sorry)
         run: lake build
 
