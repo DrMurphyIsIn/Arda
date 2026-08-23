@@ -140,6 +140,7 @@ import R3Cert.LPRSC
 
 -- Single-hub objective in closed form (Hdom / R6 entry point)
 import R3Cert.R47SingleHub
+import R3Cert.R47SingleHubValue
 
 -- Merge-layer capstone restated in the real per(L)/prod-deg object (G7 composition step)
 import R3Cert.R47MergePerL
