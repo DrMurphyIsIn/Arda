@@ -26,6 +26,8 @@ import R3Cert.R47HubForms
 namespace R3Cert
 namespace Step3
 
+open RTree
+
 /-- **Single-hub objective split at a two-arm head.**  `D = (|a::b::rest| + c : ℕ)`. -/
 theorem Aobj_cons2 (a b : ℕ) (rest : List ℕ) (c : ℕ)
     (hd : 0 < (a :: b :: rest).length + c) :
