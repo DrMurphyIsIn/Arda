@@ -77,8 +77,23 @@ theorem Aobj_balance_le (a b : ℕ) (rest : List ℕ) (c : ℕ)
     rw [← pow_succ]; congr 1; omega
   rw [pow_succ (3 / 2 : ℝ) a, hb2]
   rw [hb2] at hpre
-  exact le_trans (le_of_eq (by ring))
-    (le_trans (mul_le_mul_of_nonneg_left hcoup hpre) (le_of_eq (by ring)))
+  -- nonzero denominators for field_simp (ring cannot factor D*(4a+3))
+  have hbge1 : (1 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hbpos
+  have e1 : (a : ℝ) + 1 ≠ 0 := by positivity
+  have e2 : (b : ℝ) + 1 ≠ 0 := by positivity
+  have e3 : (a : ℝ) + 1 + 1 ≠ 0 := by positivity
+  have e4 : (b : ℝ) - 1 + 1 ≠ 0 := by
+    have : (b : ℝ) - 1 + 1 = (b : ℝ) := by ring
+    rw [this]; linarith
+  have e5 : 4 * (a : ℝ) + 3 ≠ 0 := by positivity
+  have e6 : 4 * (b : ℝ) + 3 ≠ 0 := by positivity
+  have e7 : 4 * ((a : ℝ) + 1) + 3 ≠ 0 := by positivity
+  have e8 : 4 * ((b : ℝ) - 1) + 3 ≠ 0 := by
+    have : 4 * ((b : ℝ) - 1) + 3 = 4 * (b : ℝ) - 1 := by ring
+    rw [this]; linarith
+  have e9 : D ≠ 0 := hDpos.ne'
+  exact le_trans (le_of_eq (by field_simp; ring))
+    (le_trans (mul_le_mul_of_nonneg_left hcoup hpre) (le_of_eq (by field_simp; ring)))
 
 end Step3
 end R3Cert
