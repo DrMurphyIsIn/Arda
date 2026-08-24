@@ -39,15 +39,28 @@ theorem Aobj_balance_le (a b : ℕ) (rest : List ℕ) (c : ℕ)
   have hD6 : (6 : ℝ) ≤ D := by rw [hDdef]; exact_mod_cast hd6
   set S : ℝ := (rest.map (fun j : ℕ => 3 / (D * (4 * (j : ℝ) + 3)))).sum with hSdef
   have hSnn : 0 ≤ S := by
-    rw [hSdef]; apply List.sum_nonneg; intro x hx; simp only [List.mem_map] at hx
-    obtain ⟨j, _, rfl⟩ := hx; positivity
+    rw [hSdef]; apply List.sum_nonneg; intro x hx
+    obtain ⟨j, -, rfl⟩ := List.mem_map.1 hx; positivity
   -- environment parameters for the coupled comparison
   set P : ℝ := 1 + (S + (c : ℝ) * (1 / (3 * D))) with hPdef
-  have hP : 1 ≤ P := by rw [hPdef]; have : 0 ≤ (c : ℝ) * (1 / (3 * D)) := by positivity; linarith
-  have hz0 : 1 / D ≤ 1 / 6 := by
-    rw [div_le_div_iff hDpos (by norm_num)]; linarith
+  have hP : 1 ≤ P := by
+    rw [hPdef]; have h2 : (0 : ℝ) ≤ (c : ℝ) * (1 / (3 * D)) := by positivity
+    linarith [hSnn]
+  have hz0 : 1 / D ≤ 1 / 6 := by gcongr
+  have hbpos1 : (1 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hbpos
   -- the coupled comparison at Nat indices a, b
   have hcoup := armBalance_coupled_le_nat a b ha hb P (1 / D) hP hz0
+  -- unfold abR/abH in the coupled comparison to the raw arm form
+  have hbridge : ∀ x : ℝ, 0 ≤ x → abR x = 1 + x / (3 * (x + 1)) := by
+    intro x hx; rw [abR]
+    have h1 : (3 : ℝ) * x + 3 ≠ 0 := by positivity
+    have h2 : (3 : ℝ) * (x + 1) ≠ 0 := by positivity
+    field_simp; ring
+  have hbridgeH : ∀ x : ℝ, abH x = 3 / (4 * x + 3) := fun x => by rw [abH]
+  rw [hbridge _ (Nat.cast_nonneg a), hbridge _ (Nat.cast_nonneg b),
+    hbridge _ (by positivity : (0:ℝ) ≤ (a:ℝ) + 1),
+    hbridge _ (by linarith : (0:ℝ) ≤ (b:ℝ) - 1),
+    hbridgeH _, hbridgeH _, hbridgeH _, hbridgeH _] at hcoup
   -- split both objectives and expand the four arm values
   rw [Aobj_cons2 a b rest c hd1, Aobj_cons2 (a + 1) (b - 1) rest c hd2, hlen,
     Ztot_dtSub_armU a, Ztot_dtSub_armU b, Ztot_dtSub_armU (a + 1), Ztot_dtSub_armU (b - 1)]
@@ -57,25 +70,13 @@ theorem Aobj_balance_le (a b : ℕ) (rest : List ℕ) (c : ℕ)
   have ha1 : ((a + 1 : ℕ) : ℝ) = (a : ℝ) + 1 := by push_cast; ring
   have hb1 : ((b - 1 : ℕ) : ℝ) = (b : ℝ) - 1 := by rw [Nat.cast_sub hbpos, Nat.cast_one]
   rw [ha1, hb1]
-  -- unfold abR/abH in the coupled comparison to the raw arm form
-  have hbridge : ∀ x : ℝ, -1 < x → abR x = 1 + x / (3 * (x + 1)) := by
-    intro x hx; rw [abR]; have : (3 : ℝ) * (x + 1) ≠ 0 := by positivity; field_simp; ring
-  have hbridgeH : ∀ x : ℝ, abH x = 3 / (4 * x + 3) := fun x => by rw [abH]
-  have haR : (-1 : ℝ) < (a : ℝ) := by positivity
-  have hbR : (-1 : ℝ) < (b : ℝ) := by positivity
-  have ha1R : (-1 : ℝ) < (a : ℝ) + 1 := by positivity
-  have hb1R : (-1 : ℝ) < (b : ℝ) - 1 := by
-    have : (2 : ℝ) ≤ (b : ℝ) := by have : (a : ℝ) + 2 ≤ (b : ℝ) := by exact_mod_cast hb; positivity
-    linarith
-  rw [hbridge _ haR, hbridge _ hbR, hbridge _ ha1R, hbridge _ hb1R,
-    hbridgeH _, hbridgeH _, hbridgeH _, hbridgeH _] at hcoup
-  -- prefactor
+  -- prefactor and power identity
   have hpre : 0 ≤ armProd rest * (3 / 2 : ℝ) ^ c * ((3 / 2 : ℝ) ^ a * (3 / 2 : ℝ) ^ b) :=
     mul_nonneg (mul_nonneg (armProd_pos rest).le (by positivity)) (by positivity)
   have hpow : (3 / 2 : ℝ) ^ (a + 1) * (3 / 2 : ℝ) ^ (b - 1)
       = (3 / 2 : ℝ) ^ a * (3 / 2 : ℝ) ^ b := by
     rw [← pow_add, ← pow_add]; congr 1; omega
-  nlinarith [mul_le_mul_of_nonneg_left hcoup hpre, hpow, hDpos, sq_nonneg D]
+  nlinarith [mul_le_mul_of_nonneg_left hcoup hpre, hpow, hDpos]
 
 end Step3
 end R3Cert
