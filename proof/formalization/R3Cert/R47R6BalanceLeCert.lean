@@ -73,10 +73,12 @@ theorem Aobj_balance_le (a b : ℕ) (rest : List ℕ) (c : ℕ)
   -- prefactor and power identity
   have hpre : 0 ≤ armProd rest * (3 / 2 : ℝ) ^ c * ((3 / 2 : ℝ) ^ a * (3 / 2 : ℝ) ^ b) :=
     mul_nonneg (mul_nonneg (armProd_pos rest).le (by positivity)) (by positivity)
-  have hpow : (3 / 2 : ℝ) ^ (a + 1) * (3 / 2 : ℝ) ^ (b - 1)
-      = (3 / 2 : ℝ) ^ a * (3 / 2 : ℝ) ^ b := by
-    rw [← pow_add, ← pow_add]; congr 1; omega
-  nlinarith [mul_le_mul_of_nonneg_left hcoup hpre, hpow, hDpos]
+  -- put both power products into the common form (3/2)^a, (3/2)^(b-1), (3/2)
+  have hb2 : (3 / 2 : ℝ) ^ b = (3 / 2 : ℝ) ^ (b - 1) * (3 / 2) := by
+    rw [← pow_succ]; congr 1; omega
+  rw [pow_succ (3 / 2 : ℝ) a, hb2]
+  rw [hb2] at hpre
+  nlinarith [mul_le_mul_of_nonneg_left hcoup hpre]
 
 end Step3
 end R3Cert
