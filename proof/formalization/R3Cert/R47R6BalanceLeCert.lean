@@ -83,14 +83,13 @@ theorem Aobj_balance_le (a b : ℕ) (rest : List ℕ) (c : ℕ)
   have e2 : (b : ℝ) + 1 ≠ 0 := by positivity
   have e3 : (a : ℝ) + 1 + 1 ≠ 0 := by positivity
   have e4 : (b : ℝ) - 1 + 1 ≠ 0 := by
-    have : (b : ℝ) - 1 + 1 = (b : ℝ) := by ring
-    rw [this]; linarith
+    rw [show (b : ℝ) - 1 + 1 = (b : ℝ) from by ring]; exact (by linarith : (0 : ℝ) < (b : ℝ)).ne'
   have e5 : 4 * (a : ℝ) + 3 ≠ 0 := by positivity
   have e6 : 4 * (b : ℝ) + 3 ≠ 0 := by positivity
   have e7 : 4 * ((a : ℝ) + 1) + 3 ≠ 0 := by positivity
   have e8 : 4 * ((b : ℝ) - 1) + 3 ≠ 0 := by
-    have : 4 * ((b : ℝ) - 1) + 3 = 4 * (b : ℝ) - 1 := by ring
-    rw [this]; linarith
+    rw [show 4 * ((b : ℝ) - 1) + 3 = 4 * (b : ℝ) - 1 from by ring]
+    exact (by linarith : (0 : ℝ) < 4 * (b : ℝ) - 1).ne'
   have e9 : D ≠ 0 := hDpos.ne'
   exact le_trans (le_of_eq (by field_simp; ring))
     (le_trans (mul_le_mul_of_nonneg_left hcoup hpre) (le_of_eq (by field_simp; ring)))
