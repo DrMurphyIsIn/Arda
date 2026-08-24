@@ -78,7 +78,8 @@ theorem Aobj_balance_le (a b : ℕ) (rest : List ℕ) (c : ℕ)
     rw [← pow_succ]; congr 1; omega
   rw [pow_succ (3 / 2 : ℝ) a, hb2]
   rw [hb2] at hpre
-  nlinarith [mul_le_mul_of_nonneg_left hcoup hpre]
+  exact le_trans (le_of_eq (by ring))
+    (le_trans (mul_le_mul_of_nonneg_left hcoup hpre) (le_of_eq (by ring)))
 
 end Step3
 end R3Cert
