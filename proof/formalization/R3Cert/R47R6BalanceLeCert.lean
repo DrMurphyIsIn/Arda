@@ -30,6 +30,7 @@ theorem Aobj_balance_le (a b : ℕ) (rest : List ℕ) (c : ℕ)
     Aobj (backboneU [(a :: b :: rest, c)])
       ≤ Aobj (backboneU [((a + 1) :: (b - 1) :: rest, c)]) := by
   have hbpos : 1 ≤ b := by omega
+  have hbge1 : (1 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hbpos
   have hd1 : 0 < (a :: b :: rest).length + c := by omega
   have hd2 : 0 < ((a + 1) :: (b - 1) :: rest).length + c := by omega
   have hlen : ((a + 1) :: (b - 1) :: rest).length = (a :: b :: rest).length := by simp
@@ -78,7 +79,6 @@ theorem Aobj_balance_le (a b : ℕ) (rest : List ℕ) (c : ℕ)
   rw [pow_succ (3 / 2 : ℝ) a, hb2]
   rw [hb2] at hpre
   -- nonzero denominators for field_simp (ring cannot factor D*(4a+3))
-  have hbge1 : (1 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hbpos
   have e1 : (a : ℝ) + 1 ≠ 0 := by positivity
   have e2 : (b : ℝ) + 1 ≠ 0 := by positivity
   have e3 : (a : ℝ) + 1 + 1 ≠ 0 := by positivity
