@@ -42,14 +42,13 @@ theorem Aobj_balance_le (a b : ℕ) (rest : List ℕ) (c : ℕ)
     rw [hSdef]; apply List.sum_nonneg; intro x hx
     obtain ⟨j, -, rfl⟩ := List.mem_map.1 hx; positivity
   -- environment parameters for the coupled comparison
-  set P : ℝ := 1 + (S + (c : ℝ) * (1 / (3 * D))) with hPdef
-  have hP : 1 ≤ P := by
-    rw [hPdef]; have h2 : (0 : ℝ) ≤ (c : ℝ) * (1 / (3 * D)) := by positivity
+  have hP : (1 : ℝ) ≤ 1 + (S + (c : ℝ) * (1 / (3 * D))) := by
+    have h2 : (0 : ℝ) ≤ (c : ℝ) * (1 / (3 * D)) := by positivity
     linarith [hSnn]
   have hz0 : 1 / D ≤ 1 / 6 := by gcongr
-  have hbpos1 : (1 : ℝ) ≤ (b : ℝ) := by exact_mod_cast hbpos
-  -- the coupled comparison at Nat indices a, b
-  have hcoup := armBalance_coupled_le_nat a b ha hb P (1 / D) hP hz0
+  -- the coupled comparison at Nat indices a, b (explicit environment factor, unfolded)
+  have hcoup := armBalance_coupled_le_nat a b ha hb
+    (1 + (S + (c : ℝ) * (1 / (3 * D)))) (1 / D) hP hz0
   -- unfold abR/abH in the coupled comparison to the raw arm form
   have hbridge : ∀ x : ℝ, 0 ≤ x → abR x = 1 + x / (3 * (x + 1)) := by
     intro x hx; rw [abR]
