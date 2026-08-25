@@ -60,6 +60,47 @@ jobs:
       - name: Build the R7' hypothesis layers (star-of-hubs cells + class floors)
         run: lake build R7Hyps R3Cert.HypStar R3Cert.HypFloors
 
+      # R47 per-rule certificate leaves (R1 spider / R2 legs / R4 Kelmans corners /
+      # R5 tiebreak / R6 deload / root-invariance / collapse-floor profile). NONE of these
+      # is root-imported into R3Cert.lean, so `lake build` above never built them -- this
+      # step is what CI-verifies the family. Built as SEPARATE targets (not a shared
+      # import env): R47R6DeloadCert carries a local `conjecture1_proved` pin in
+      # `R3Cert.Step3`, so co-importing it would collide; separate targets sidestep that.
+      - name: Build the R47 per-rule certificate leaves
+        run: |
+          lake build \
+            R3Cert.R47R1SpiderCert \
+            R3Cert.R47R2LegsCert R3Cert.R47R2Legs34Cert \
+            R3Cert.R47R4KelmansCornerCert R3Cert.R47R4KelmansC1Cert \
+            R3Cert.R47R4KelmansC2Cert R3Cert.R47R4KelmansC3Cert \
+            R3Cert.R47R5TiebreakCert R3Cert.R47R5Tiebreak2Cert \
+            R3Cert.R47R6DeloadCert \
+            R3Cert.R47RootInvariance \
+            R3Cert.BridgeStep4l \
+            R3Cert.R47CampaignBrick
+
+      # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
+      # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build
+      # step above) is never compiled -- it silently ships UNVERIFIED. This step runs
+      # after all builds and fails if any R3Cert/*.lean has no corresponding olean, i.e.
+      # was built by no CI step. Fix an orphan by root-importing it or adding it to a
+      # `lake build` step above.
+      - name: No orphaned modules (every R3Cert source is CI-built)
+        run: |
+          set -uo pipefail
+          missing=""
+          while IFS= read -r src; do
+            mod="${src#R3Cert/}"; mod="${mod%.lean}"
+            [ -f ".lake/build/lib/lean/R3Cert/${mod}.olean" ] || missing="${missing}  ${src}"$'\n'
+          done < <(find R3Cert -name '*.lean' | sort)
+          if [ -n "$missing" ]; then
+            echo "::error::Orphaned R3Cert modules -- committed but compiled by NO CI step:"
+            printf '%s' "$missing"
+            echo "Wire each into R3Cert.lean (root import) or a 'lake build' step above."
+            exit 1
+          fi
+          echo "OK: every R3Cert/*.lean is built by CI ($(find R3Cert -name '*.lean' | wc -l) modules)."
+
       - name: Axiom guard (kernel axioms of the anchor theorems — fails on sorry)
         run: |
           set -euo pipefail

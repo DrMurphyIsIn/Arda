@@ -120,6 +120,14 @@ import R3Cert.GLemmaConfig
 import R3Cert.TieClosure
 import R3Cert.R47Shed
 import R3Cert.R47Perm
+-- Arm-permutation invariance of Aobj (lifts Ztot_node_perm to backboneU arms)
+import R3Cert.R47ArmPerm
+-- Arbitrary-pair balancing transfer (arm-perm o Aobj_balance_le) + its ReflTransGen engine
+import R3Cert.R47R6TransferArb
+-- Transfer progress: an unbalanced all-arms>=3 hub always admits a TransferStep
+import R3Cert.R47R6TransferProgress
+-- Single-hub Hnorm: an all-arms>=3 hub is Aobj-dominated by its balanced form (assembly)
+import R3Cert.R47R6HnormSingleHub
 import R3Cert.R47Parse
 import R3Cert.R47RateZBound
 import R3Cert.R47Rate
@@ -152,3 +160,13 @@ import R3Cert.R47TopCapstone
 
 -- Normal-form structural theory (Hdom infrastructure)
 import R3Cert.R47NormalForm
+
+-- R6 balancing-transfer induction: reflexive-transitive closure of the single-hub cherry
+-- transfer (R47R6BalanceLeCert / #118) is Aobj-monotone. Root-importing this also brings the
+-- previously-unbuilt R47R6*Cert brick chain into the CI `lake build` for the first time.
+import R3Cert.R47R6BalanceInduction
+
+-- R6 balancing-transfer termination + cherry-floor: the sum-of-squares measure strictly
+-- decreases under BalanceStep (well-founded), and the 3<=arm floor is preserved. The
+-- termination + floor halves of the Hreach reachability obligation.
+import R3Cert.R47R6BalanceTermination
