@@ -152,3 +152,8 @@ import R3Cert.R47TopCapstone
 
 -- Normal-form structural theory (Hdom infrastructure)
 import R3Cert.R47NormalForm
+
+-- R6 balancing-transfer induction: reflexive-transitive closure of the single-hub cherry
+-- transfer (R47R6BalanceLeCert / #118) is Aobj-monotone. Root-importing this also brings the
+-- previously-unbuilt R47R6*Cert brick chain into the CI `lake build` for the first time.
+import R3Cert.R47R6BalanceInduction
