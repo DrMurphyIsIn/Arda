@@ -60,6 +60,25 @@ jobs:
       - name: Build the R7' hypothesis layers (star-of-hubs cells + class floors)
         run: lake build R7Hyps R3Cert.HypStar R3Cert.HypFloors
 
+      # R47 per-rule certificate leaves (R1 spider / R2 legs / R4 Kelmans corners /
+      # R5 tiebreak / R6 deload / root-invariance / collapse-floor profile). NONE of these
+      # is root-imported into R3Cert.lean, so `lake build` above never built them -- this
+      # step is what CI-verifies the family. Built as SEPARATE targets (not a shared
+      # import env): R47R6DeloadCert carries a local `conjecture1_proved` pin in
+      # `R3Cert.Step3`, so co-importing it would collide; separate targets sidestep that.
+      - name: Build the R47 per-rule certificate leaves
+        run: |
+          lake build \
+            R3Cert.R47R1SpiderCert \
+            R3Cert.R47R2LegsCert R3Cert.R47R2Legs34Cert \
+            R3Cert.R47R4KelmansCornerCert R3Cert.R47R4KelmansC1Cert \
+            R3Cert.R47R4KelmansC2Cert R3Cert.R47R4KelmansC3Cert \
+            R3Cert.R47R5TiebreakCert R3Cert.R47R5Tiebreak2Cert \
+            R3Cert.R47R6DeloadCert \
+            R3Cert.R47RootInvariance \
+            R3Cert.BridgeStep4l \
+            R3Cert.R47CampaignBrick
+
       - name: Axiom / sorry scan (informational)
         run: |
           ! grep -rn --include="*.lean" -E "\bsorry\b|\badmit\b|^axiom " R3Cert R3Cert.lean || true
