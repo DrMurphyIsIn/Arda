@@ -122,6 +122,8 @@ import R3Cert.R47Shed
 import R3Cert.R47Perm
 -- Arm-permutation invariance of Aobj (lifts Ztot_node_perm to backboneU arms)
 import R3Cert.R47ArmPerm
+-- Arbitrary-pair balancing transfer (arm-perm o Aobj_balance_le) + its ReflTransGen engine
+import R3Cert.R47R6TransferArb
 import R3Cert.R47Parse
 import R3Cert.R47RateZBound
 import R3Cert.R47Rate
