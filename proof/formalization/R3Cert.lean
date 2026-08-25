@@ -120,6 +120,8 @@ import R3Cert.GLemmaConfig
 import R3Cert.TieClosure
 import R3Cert.R47Shed
 import R3Cert.R47Perm
+-- Arm-permutation invariance of Aobj (lifts Ztot_node_perm to backboneU arms)
+import R3Cert.R47ArmPerm
 import R3Cert.R47Parse
 import R3Cert.R47RateZBound
 import R3Cert.R47Rate
