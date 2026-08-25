@@ -124,6 +124,8 @@ import R3Cert.R47Perm
 import R3Cert.R47ArmPerm
 -- Arbitrary-pair balancing transfer (arm-perm o Aobj_balance_le) + its ReflTransGen engine
 import R3Cert.R47R6TransferArb
+-- Transfer progress: an unbalanced all-arms>=3 hub always admits a TransferStep
+import R3Cert.R47R6TransferProgress
 import R3Cert.R47Parse
 import R3Cert.R47RateZBound
 import R3Cert.R47Rate
