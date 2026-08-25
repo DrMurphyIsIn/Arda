@@ -126,6 +126,8 @@ import R3Cert.R47ArmPerm
 import R3Cert.R47R6TransferArb
 -- Transfer progress: an unbalanced all-arms>=3 hub always admits a TransferStep
 import R3Cert.R47R6TransferProgress
+-- Single-hub Hnorm: an all-arms>=3 hub is Aobj-dominated by its balanced form (assembly)
+import R3Cert.R47R6HnormSingleHub
 import R3Cert.R47Parse
 import R3Cert.R47RateZBound
 import R3Cert.R47Rate
