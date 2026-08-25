@@ -60,6 +60,32 @@ jobs:
       - name: Build the R7' hypothesis layers (star-of-hubs cells + class floors)
         run: lake build R7Hyps R3Cert.HypStar R3Cert.HypFloors
 
-      - name: Axiom / sorry scan (informational)
+      - name: Axiom guard (kernel axioms of the anchor theorems — fails on sorry)
         run: |
-          ! grep -rn --include="*.lean" -E "\bsorry\b|\badmit\b|^axiom " R3Cert R3Cert.lean || true
+          set -euo pipefail
+          # Runs AFTER `lake build`, so the R3Cert oleans exist and imports resolve.
+          # A guarded theorem that secretly depends on a `sorry` prints `sorryAx`.
+          lake env lean AxiomGuard.lean 2>&1 | tee axioms.txt
+          if grep -q 'sorryAx' axioms.txt; then
+            echo "::error::A guarded theorem depends on sorryAx (a hidden sorry). See axiom trace above."
+            exit 1
+          fi
+          echo "Axiom guard OK — no sorryAx in the capstone / Φ≤1 / g-step dependency cones."
+
+      - name: Sorry / admit / native_decide scan (repo-wide, gating)
+        run: |
+          set -uo pipefail
+          # Grep is a coarse second net (the axiom guard above is authoritative). It is
+          # filtered to drop docstring mentions: backtick-quoted `sorry`, the English word
+          # "admits", "no sorry"/"no-sorry" prose, and lines that begin with a comment
+          # marker. Scans R7Hyps too (the informational predecessor did not).
+          hits=$(grep -rnwE "sorry|admit|native_decide" R3Cert R7Hyps R3Cert.lean 2>/dev/null \
+                   | grep -v '`' \
+                   | grep -viE "admits|no.?sorry|no-sorry" \
+                   | grep -vE ":[0-9]+:[[:space:]]*(--|/-|\*|-/)" || true)
+          if [ -n "$hits" ]; then
+            echo "::error::Genuine sorry/admit/native_decide found (docstring mentions filtered):"
+            echo "$hits"
+            exit 1
+          fi
+          echo "No genuine sorry/admit/native_decide across R3Cert + R7Hyps."
