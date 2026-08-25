@@ -165,3 +165,8 @@ import R3Cert.R47NormalForm
 -- transfer (R47R6BalanceLeCert / #118) is Aobj-monotone. Root-importing this also brings the
 -- previously-unbuilt R47R6*Cert brick chain into the CI `lake build` for the first time.
 import R3Cert.R47R6BalanceInduction
+
+-- R6 balancing-transfer termination + cherry-floor: the sum-of-squares measure strictly
+-- decreases under BalanceStep (well-founded), and the 3<=arm floor is preserved. The
+-- termination + floor halves of the Hreach reachability obligation.
+import R3Cert.R47R6BalanceTermination
