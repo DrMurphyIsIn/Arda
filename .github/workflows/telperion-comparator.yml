@@ -91,7 +91,16 @@ jobs:
             https://github.com/leanprover/comparator.git "$HOME/comparator"
           cd "$HOME/comparator"
           lake build lean4export comparator
-          echo "$HOME/comparator/.lake/build/bin" >> "$GITHUB_PATH"
+          # comparator's exe lands in its own build dir; lean4export is a *dependency*,
+          # so its binary lives under .lake/packages/<pkg>/.lake/build/bin.  Locate
+          # both and hand comparator the lean4export path via COMPARATOR_LEAN4EXPORT.
+          COMPARATOR_BIN="$(find "$HOME/comparator/.lake" -type f -name comparator -path '*/bin/*' | head -1)"
+          L4X_BIN="$(find "$HOME/comparator/.lake" -type f -name lean4export -path '*/bin/*' | head -1)"
+          echo "comparator = $COMPARATOR_BIN"
+          echo "lean4export = $L4X_BIN"
+          test -x "$COMPARATOR_BIN" && test -x "$L4X_BIN"
+          echo "$(dirname "$COMPARATOR_BIN")" >> "$GITHUB_PATH"
+          echo "COMPARATOR_LEAN4EXPORT=$L4X_BIN" >> "$GITHUB_ENV"
 
       # 6. Run the judge against the built bernoulli project.
       #    `lake env` supplies the project's LEAN_PATH so comparator can locate and
@@ -101,9 +110,10 @@ jobs:
       - name: Run Comparator (independent judge)
         working-directory: telperion/examples/bernoulli/lean
         env:
-          COMPARATOR_LEAN4EXPORT: /home/runner/comparator/.lake/build/bin/lean4export
+          # COMPARATOR_LEAN4EXPORT is set from GITHUB_ENV by the build step above.
           COMPARATOR_LANDRUN: /home/runner/.local/bin/landrun
         run: |
+          echo "lean4export = $COMPARATOR_LEAN4EXPORT"
           lake env comparator Bernoulli.comparator.json
 
       # --- OPTIONAL: enable the nanoda independent kernel (2nd, non-Lean kernel) ---
