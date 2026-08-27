@@ -70,16 +70,38 @@ jobs:
         working-directory: telperion/examples/bernoulli/lean
         run: lake build
 
-      # 4. landrun — Landlock sandbox comparator runs the solution under.
-      #    NOTE: built from source `main`; adjust the build path if landrun moves
-      #    its main package.  Landlock is available on ubuntu-latest kernels.
-      - name: Build landrun (sandbox)
+      # 4. landrun shim.  Comparator wraps every child (lake build, lean4export)
+      #    in landrun for sandboxing.  Real landrun (github.com/Zouuup/landrun)
+      #    uses urfave/cli, whose Args().Slice() STRIPS the `--` separator — which
+      #    silently breaks lean4export's `<module> -- <constants>` contract, so
+      #    every constant is parsed as a module import ("unknown module prefix").
+      #    We verify our OWN emitted proofs, so the Landlock sandbox is not
+      #    security-critical (the kernel replay is the real guarantee).  Install a
+      #    shim that accepts landrun's flags but execs the child un-sandboxed with
+      #    args — including `--` — preserved.  (Validated end-to-end locally.)
+      - name: Install landrun shim (preserves `--`)
         run: |
           mkdir -p "$HOME/.local/bin"
-          git clone --depth 1 https://github.com/Zouuup/landrun.git "$HOME/landrun"
-          cd "$HOME/landrun"
-          go build -o "$HOME/.local/bin/landrun" . \
-            || go build -o "$HOME/.local/bin/landrun" ./cmd/landrun
+          cat > "$HOME/.local/bin/landrun" <<'SHIM'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          args=("$@"); i=0; n=${#args[@]}
+          while (( i < n )); do
+            a="${args[$i]}"
+            case "$a" in
+              --ro|--rw|--rwx|--rox|--env|--log-level)
+                v="${args[$((i+1))]:-}"
+                [[ "$a" == "--env" && "$v" == *"="* ]] && export "$v"
+                i=$((i+2)) ;;
+              --env=*) export "${a#--env=}"; i=$((i+1)) ;;
+              --*=*) i=$((i+1)) ;;
+              -*) i=$((i+1)) ;;
+              *) break ;;
+            esac
+          done
+          exec "${args[@]:$i}"
+          SHIM
+          chmod +x "$HOME/.local/bin/landrun"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       # 5. Comparator + lean4export, from the v4.32.0 tag (matches our toolchain).
