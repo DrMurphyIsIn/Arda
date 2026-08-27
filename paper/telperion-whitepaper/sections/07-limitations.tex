@@ -1,0 +1,42 @@
+\section{Limitations and scope}
+\label{sec:limits}
+
+We are deliberate about what \Telperion{} is not, because a tool whose purpose is
+trustworthiness must be honest about its own boundaries.
+
+\paragraph{It proves certifiable families, not arbitrary theorems.} \Telperion{}
+applies when a statement can be cast as a grid of instances, each reducible to one
+of its certificate shapes---concrete inequalities, identities, valuation facts,
+finite case analyses, and their assemblies. It is not a general-purpose prover and
+does not attempt open-ended proof search; a statement outside the shape library
+requires a new emitter (which the trust model then covers for free) or does not fit.
+
+\paragraph{Vacuity is guarded, not eliminated.} The kernel cannot detect a
+true-but-vacuous statement, and \Telperion's non-vacuity checks catch a specific
+syntactic class (reflexive statements, non-load-bearing certificates). An
+independently authored challenge module (\S\ref{sec:indep}) strengthens this to a
+generator-independent statement-identity check---but only when the statement can be
+re-stated without reusing the generator's own definitions. Where it cannot (the
+capstone of \S\ref{sec:bg}), self-check mode gives the axiom whitelist and the second
+kernel but not independent statement authorship, and we say so.
+
+\paragraph{The independent check has its own trusted surface.} The second-kernel
+guarantee rests on \code{lean4export}, the \Comparator, and \nanoda. These are
+independent of \Telperion's generator---which is the point; a common-mode bug in
+\Lean's own kernel would have to be shared by an unrelated Rust implementation to
+pass---but they are not themselves free of trust. What the layer buys is the
+reduction of a single point of failure to the intersection of two independent ones,
+not its elimination.
+
+\paragraph{Scale.} Exporting and re-checking a large proof's dependency cone is not
+free: the Brualdi--Goldwasser capstone exports to a substantial term file and takes
+minutes of the second kernel's time. This is affordable as a continuous-integration
+gate on a set of anchor theorems, but exporting every lemma of a large library on
+every commit would not be, and we do not.
+
+\paragraph{The case study is incomplete.} As \S\ref{sec:bg} states, the
+Laplacian-ratio maximizer is not determined; two layers ($H_{\mathrm{norm}}$,
+$H_{\mathrm{dom}}$) and a model-to-object identification remain open. What is
+established---an exact-rational narrowing of the problem, and a two-kernel-verified
+conditional reduction---demonstrates the methodology and the auditability of a
+partial result, not a resolution of the problem.

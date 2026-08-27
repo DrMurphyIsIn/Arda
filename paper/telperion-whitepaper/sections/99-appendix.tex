@@ -1,0 +1,109 @@
+\section{Emitter catalog}
+\label{app:emitters}
+
+Table~\ref{tab:emitters} lists the certificate shapes (``emitters'') available in
+the version described here. Each flows through the same
+\code{certify $\to$ validate $\to$ emit $\to$ freeze} workflow; ``finds'' marks
+shapes where \Telperion{} searches for the certificate (typically via an untrusted
+numeric solver, rounded and re-verified exactly) rather than requiring it as input.
+
+\begin{longtable}{@{}p{0.30\textwidth}p{0.63\textwidth}@{}}
+\toprule
+\textbf{Emitter} & \textbf{Proves} \\
+\midrule
+\endhead
+Direct P\'olya & $0 \le f(\bar x)$, $f$ rational with nonnegative-numerator /
+positive-factored-denominator form. \\
+Bilinear box & $\text{before} \le \text{after}$ on a box in two bound variables,
+via four P\'olya corner certificates. \\
+SOS & $0 \le p$ via an exact rational PSD-Gram sum of squares (reaches interior
+ties). \\
+Rational SOS (Artin) & $0 \le p$ for nonnegative-but-not-SOS $p$: finds $q > 0$
+with $q\cdot p$ a sum of squares (e.g.\ Motzkin). \\
+Constrained SOS (Putinar) & $0 \le p$ on $\{g_i \ge 0\}$; supply or \emph{find} the
+SOS multipliers. \\
+Handelman & $0 \le p$ on a polytope via nonnegative products of the constraints;
+supply or \emph{find}. \\
+Bernstein & $0 \le p$ on $[a,b]$ via nonnegative Bernstein coefficients (found by
+degree elevation). \\
+Sturm-positive & $0 < p$ (strict) on $[a,b]$ by Sturm root exclusion plus a
+Bernstein margin. \\
+Cone/Farkas & $0 \le$ target as a nonnegative combination of a positivity-provable
+basis (linear Positivstellensatz). \\
+Nullstellensatz & $p = 0$ on a variety via ideal-membership cofactors (Gr\"obner). \\
+Real-Nullstellensatz & $p = 0$ on a real variety via $p^{2m} + \sigma \in \langle
+g_k\rangle$. \\
+SOS-refutation & semialgebraic infeasibility over $\mathbb{R}$; supply or
+\emph{find} the refutation. \\
+Infeasibility & a polynomial system has no common zero (Nullstellensatz
+refutation $1 = \sum \lambda_j g_j$). \\
+Wilf--Zeilberger & hypergeometric/binomial sum identities via a WZ mate. \\
+Chv\'atal--Gomory & integer linear goals via CG rounding (VIPR-style; discharged by
+\code{omega}). \\
+Interlacing & Newton's inequalities of a real-rooted polynomial. \\
+Tangent-sum & symmetric convex-sum inequalities via the tangent line (surplus is an
+exact SOS). \\
+Cauchy--Schwarz & weighted Cauchy--Schwarz / QM--AM via the pairwise-difference SOS. \\
+PSD form & $0 \le x^{\!\top} M x$ for an explicit rational PSD matrix (completing
+the square). \\
+Identity / exact fact & integer/rational identities, powers, closed forms
+(\code{ring}/\code{norm\_num}). \\
+$p$-adic valuation & $v_p(n) = k$ as decidable divisibility. \\
+Interval bracket & rigorous two-sided rational enclosure $lo \le e^{-\theta} \le
+hi$. \\
+Unimodal / log-concave & the integer max of a (log-)concave sequence at its
+crossing point. \\
+Telescoping potential & a recursive/tree bound $\sum \text{local}(v) \le P(\text{root})$
+from per-node super-solutions. \\
+Lattice box & $f(x) \le B$ on $\mathbb{Z}^d_{\ge 0}$ (integer Positivstellensatz). \\
+Assembly shapes & finite case dispatch, subdivision-and-glue, $\forall K \ge K_0$
+tails, reparametrization, substitution glue, dichotomy glue, custom skeletons. \\
+\bottomrule
+\caption{Certificate shapes. \todo{reconcile against the released version's exact
+list and count before publication.}}
+\label{tab:emitters}
+\end{longtable}
+
+\section{Verified anchors of the case study}
+\label{app:anchors}
+
+The three \Lean{} theorems re-verified through the \Comparator{} in
+\S\ref{sec:bg-evidence}, with their exact signatures:
+
+\begin{lstlisting}
+-- R3Cert.Step3.conjecture1_of_layers  (conditional capstone)
+theorem conjecture1_of_layers (tieU : UTree)
+    (Hnorm : forall t : UTree, exists s : List Hub,
+        Balanced s /\ Capped s /\ Aobj t <= Aobj (backboneU s))
+    (Hdom : forall s : List Hub, Balanced s -> Capped s ->
+        (forall u, not (OrderedStep s u)) -> Aobj (backboneU s) <= Aobj tieU) :
+    forall t : UTree, Aobj t <= Aobj tieU
+
+-- R3Cert.phi_le_one  (the Phi <= 1 crux, on the cavity model)
+theorem phi_le_one (b : Branch) : logPhi b <= 0
+
+-- R3Cert.CappedJointConfig.gstep_le_one_achievable  (g-step / master inequality)
+theorem gstep_le_one_achievable (l : List Q) (hl : forall mu in l, Achievable mu) :
+    (baseOf l) ^ 11 * prodBcap l / (W * (5 / 3) ^ 11) <= 1
+\end{lstlisting}
+Each reports axiom trace $[\code{propext}, \code{Quot.sound}, \code{Classical.choice}]$
+under both \Lean's kernel and \nanoda---no \code{sorryAx}, no \code{ofReduceBool}.
+\todo{optionally paste the verbatim \code{\#print axioms} lines from an
+\code{AxiomGuard.lean} CI run for the record.}
+
+\section{Reproducing the verification}
+\label{app:repro}
+
+The verification results are produced by continuous integration and are reproducible
+locally. In outline (see the repository workflows for exact, pinned commands; all
+components are pinned to the same \Lean{} toolchain, \code{v4.32.0}):
+\begin{enumerate}[nosep,leftmargin=1.4em]
+  \item Build the formalization: \code{lake exe cache get} then \code{lake build}.
+  \item Build the judge from the matching tag:
+    \code{lake build lean4export comparator} in a checkout of \code{comparator@v4.32.0};
+    build \nanoda{} with \code{cargo build --release}.
+  \item Run each anchor: \code{lake env comparator <anchor>.comparator.json} from the
+    project directory, with the exporter, \nanoda, and sandbox binaries on the path.
+\end{enumerate}
+A green run reports, per anchor, that both kernels accept the exported proof and that
+its axiom set is within the whitelist.

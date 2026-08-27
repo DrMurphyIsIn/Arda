@@ -1,0 +1,82 @@
+\section{Independent verification}
+\label{sec:indep}
+
+Kernel acceptance rules out false theorems, but rests on one implementation and
+says nothing about whether the proof proves the intended statement. \Telperion{}
+closes both gaps by submitting its output to an independent judge---the
+\Comparator~\cite{comparator}, a tool from OpenAI's \emph{ten-proofs}
+release~\cite{tenproofs} that adjudicates \Lean{} proofs.
+
+\subsection{What the Comparator checks}
+
+The \Comparator{} takes two \Lean{} modules: a \emph{challenge} (the intended
+statement) and a \emph{solution} (the proof under test). It compiles both in a
+sandbox, exports both to a kernel-level term format with
+\code{lean4export}~\cite{lean4export}, and asserts three properties that an
+ordinary \code{lake build} does not:
+\begin{enumerate}[nosep,leftmargin=1.4em]
+  \item \textbf{Statement identity.} The solution proves \emph{exactly} the
+    challenge statement---not something weaker. When the challenge is authored
+    apart from the certificate, this is a generator-\emph{independent} form of the
+    vacuity guard: a drifted or hollowed emission fails the type match against a
+    reference statement the generator never touched.
+  \item \textbf{Axiom whitelist.} A per-theorem \code{\#print axioms}, admitting
+    only the axioms one lists---the clean set is
+    $[\,\code{propext},\ \code{Quot.sound},\ \code{Classical.choice}\,]$---and
+    rejecting anything else. This is stronger than a source grep for \code{sorry}:
+    it rejects a smuggled axiom, and it rejects the \code{ofReduceBool} axiom that
+    \code{native\_decide} introduces, not merely \code{sorryAx}.
+  \item \textbf{Kernel replay.} The exported proof is re-checked by \Lean's kernel
+    and, with \nanoda{} enabled, by \nanoda~\cite{nanoda}---a from-scratch
+    reimplementation of the \Lean{} kernel in Rust. A soundness bug must fool two
+    independently written kernels.
+\end{enumerate}
+The third property is the one that most exceeds ordinary peer review. A human
+referee reads the prose and, at best, trusts that the accompanying \Lean{}
+compiles; they do not re-run the kernel, let alone a second one. Here a second,
+unrelated kernel re-derives the proof term from first principles, and the axiom
+trace is checked mechanically. The result is a stronger warrant than a referee can
+personally supply.
+
+\subsection{The bridge}
+
+\Telperion{} ships a small bridge module that turns an emit result into a
+\Comparator{} challenge configuration and scaffolds the challenge module: it
+extracts the emitted theorems' fully qualified names, writes the JSON configuration
+(challenge and solution modules, theorem names, permitted axioms, whether to enable
+\nanoda), and---for the case where the statement \emph{can} be re-stated
+independently---renders a challenge module that restates the emitted signatures and
+proves them by a tactic independent of \Telperion's certificate. Sharded
+(multi-file) emissions receive one configuration per shard. A fully worked,
+continuous-integration-green example (a \Mathlib{} build, both kernels, and the
+end-to-end run) accompanies the tool.
+
+\subsection{Two modes, and an honest limit}
+
+There are two ways to use the judge, and they differ in strength.
+
+\emph{Independent challenge} (the stronger mode): the challenge module restates the
+theorem and proves it \emph{without} \Telperion's certificate. Statement identity
+then has real force---a drifted emission fails the type match against a reference
+the generator did not produce.
+
+\emph{Self-check} (\code{challenge\_module} $=$ \code{solution\_module}): used when
+a statement genuinely cannot be re-stated independently---for instance a capstone
+whose statement is \emph{about} the project's own definitions, so any restatement
+must import and reuse them. Here statement identity is trivial, but the axiom
+whitelist and the second-kernel replay remain fully independent verification. We
+are explicit about this limit in the case study of \S\ref{sec:bg}, where the
+capstone is verified in self-check mode: the second kernel and the axiom trace are
+real; independent statement authorship is not available for a statement phrased in
+the formalization's own vocabulary.
+
+\subsection{A note on the sandbox}
+
+The \Comparator{} runs its children under a sandbox. For verifying one's
+\emph{own} output the sandbox is not the security boundary---the kernel replay is
+the guarantee---so in that setting a lightweight wrapper suffices. For adjudicating
+\emph{untrusted third-party} solutions, a real sandbox is warranted, and we provide
+a bubblewrap-backed wrapper that isolates the filesystem and network while
+preserving the exporter's argument conventions. The distinction matters for anyone
+who would use the \Comparator{} as a public judge of submitted proofs, as opposed
+to a self-check on a pipeline one already controls.

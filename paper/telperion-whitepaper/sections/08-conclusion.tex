@@ -1,0 +1,38 @@
+\section{Conclusion and availability}
+\label{sec:concl}
+
+\Telperion{} is a certificate compiler for mathematics that takes trust seriously by
+giving away as little of it as possible. The generator---human-, solver-, or
+AI-driven---is untrusted; a small kernel re-derives every theorem from an exact
+certificate; and the output can be handed to an independent judge that checks
+statement identity, restricts the axioms, and replays the proof through a second,
+independently written kernel. The result is a pipeline in which correctness is a
+mechanical property, and in which---as the Brualdi--Goldwasser case study shows---the
+line between what is proved and what remains open is itself machine-checked, and so
+cannot be quietly overstated.
+
+We have argued that this integrated system, rather than any single component, is the
+contribution. The emitter library, the enforced pipeline, the non-vacuity gates, and
+the independent second kernel are individually modest; together they make ``a machine
+found this and you don't have to trust the machine'' a precise and testable claim.
+
+\paragraph{Future work.} The obvious next step for the case study is to close
+$H_{\mathrm{norm}}$ and $H_{\mathrm{dom}}$ and to formalize the model-to-object
+identification; if that succeeds, the Brualdi--Goldwasser result will be reported as
+a theorem in a separate paper, with the same two-kernel warrant applied to the
+unconditional statement. On the tool side, natural directions include broadening the
+independent-challenge mode to more families, additional emitter shapes, and coupling
+\Telperion{} to learned systems that propose families or certificate shapes for it
+to compile and independently verify.
+
+\paragraph{Availability.} \Telperion{} is open source. \todo{repository URL, release
+tag / DOI, and archived artifact.} The engine is licensed under the Business Source
+License~1.1 (research use free; converting to Apache-2.0 after the stated change
+date); the mathematical content and pre-split snapshots are Apache-2.0. \todo{confirm
+license terms and any CLA before publication.} The worked examples, the
+\Comparator{} bridge and configurations, and the continuous-integration workflows
+that produce the verification results reported here are included in the repository,
+so every claim in \S\ref{sec:worked} and \S\ref{sec:bg-evidence} is reproducible.
+
+\paragraph{Acknowledgments.} \todo{acknowledgments. Note the AI-assistance
+disclosure from the front matter and any funding/collaborators.}
