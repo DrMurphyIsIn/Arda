@@ -1,0 +1,136 @@
+name: proof-comparator
+
+# Independent re-verification of the Brualdi-Goldwasser anchor theorems by the
+# openai/ten-proofs Comparator (github.com/leanprover/comparator): over and above
+# `lake build` + the `#print axioms` AxiomGuard, this exports each anchor proof and
+#   (1) enforces a machine-checked axiom whitelist [propext, Quot.sound, Classical.choice],
+#   (2) replays it through BOTH the Lean default kernel AND nanoda -- a second,
+#       independently-written (Rust) kernel.  A soundness bug would have to fool two
+#       kernels.  The three anchors are the sorry-free, axiom-clean core:
+#         R3Cert.Step3.conjecture1_of_layers          (R7' capstone, conditional)
+#         R3Cert.phi_le_one                            (Phi <= 1 crux)
+#         R3Cert.CappedJointConfig.gstep_le_one_achievable  (g-step / master ineq)
+#
+# All pins are v4.32.0 (R3Cert toolchain, mathlib, comparator) -- see
+# proof/formalization/comparator/README.md.
+
+on:
+  push:
+    paths:
+      - "proof/formalization/**"
+      - ".github/workflows/proof-comparator.yml"
+  pull_request:
+    paths:
+      - "proof/formalization/**"
+      - ".github/workflows/proof-comparator.yml"
+  workflow_dispatch:
+
+jobs:
+  bg-comparator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: proof/formalization
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        run: lake exe cache get
+
+      # Restore the warm incremental R3Cert build that proof-lean.yml keeps refreshed
+      # (shared restore-keys prefix), so `lake build` only recompiles changed modules.
+      - name: Restore Lean project build (incremental)
+        uses: actions/cache/restore@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-${{ github.run_id }}
+          restore-keys: |
+            lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-
+
+      - name: Build R3Cert (the anchor modules + their cones)
+        run: lake build
+
+      # landrun shim: real landrun (urfave/cli) strips the `--` separator lean4export
+      # needs; we verify our OWN proofs so the sandbox is not security-critical (the
+      # kernel replay is the guarantee).  Exec the child un-sandboxed with `--` preserved.
+      - name: Install landrun shim (preserves `--`)
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cat > "$HOME/.local/bin/landrun" <<'SHIM'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          args=("$@"); i=0; n=${#args[@]}
+          while (( i < n )); do
+            a="${args[$i]}"
+            case "$a" in
+              --ro|--rw|--rwx|--rox|--env|--log-level)
+                v="${args[$((i+1))]:-}"
+                [[ "$a" == "--env" && "$v" == *"="* ]] && export "$v"
+                i=$((i+2)) ;;
+              --env=*) export "${a#--env=}"; i=$((i+1)) ;;
+              --*=*) i=$((i+1)) ;;
+              -*) i=$((i+1)) ;;
+              *) break ;;
+            esac
+          done
+          exec "${args[@]:$i}"
+          SHIM
+          chmod +x "$HOME/.local/bin/landrun"
+
+      - name: Build Comparator + lean4export (v4.32.0)
+        run: |
+          git clone --depth 1 --branch v4.32.0 \
+            https://github.com/leanprover/comparator.git "$HOME/comparator"
+          cd "$HOME/comparator"
+          lake build lean4export comparator
+          COMPARATOR_BIN="$(find "$HOME/comparator/.lake" -type f -name comparator -path '*/bin/*' | head -1)"
+          L4X_BIN="$(find "$HOME/comparator/.lake" -type f -name lean4export -path '*/bin/*' | head -1)"
+          test -x "$COMPARATOR_BIN" && test -x "$L4X_BIN"
+          echo "$(dirname "$COMPARATOR_BIN")" >> "$GITHUB_PATH"
+          echo "COMPARATOR_LEAN4EXPORT=$L4X_BIN" >> "$GITHUB_ENV"
+
+      - name: Build nanoda (2nd kernel)
+        run: |
+          git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$HOME/nanoda"
+          cd "$HOME/nanoda"
+          cargo build --release
+          NANODA_BIN="$HOME/nanoda/target/release/nanoda_bin"
+          test -x "$NANODA_BIN"
+          echo "COMPARATOR_NANODA=$NANODA_BIN" >> "$GITHUB_ENV"
+
+      - name: Comparator — verify the BG anchors (axiom whitelist + 2 kernels)
+        env:
+          COMPARATOR_LANDRUN: /home/runner/.local/bin/landrun
+        run: |
+          set -uo pipefail
+          echo "lean4export = $COMPARATOR_LEAN4EXPORT ; nanoda = $COMPARATOR_NANODA"
+          # Run each anchor independently and record pass/fail (a huge proof cone
+          # could exhaust the runner; we want ALL results, not an abort on the first).
+          # Smaller cruxes first, the conditional capstone last.
+          fail=0
+          declare -A RESULT
+          for cfg in \
+            comparator/phi_le_one.comparator.json \
+            comparator/gstep_le_one_achievable.comparator.json \
+            comparator/conjecture1_of_layers.comparator.json ; do
+            echo "==================== $cfg ===================="
+            if lake env comparator "$cfg"; then RESULT[$cfg]=PASS; else RESULT[$cfg]=FAIL; fail=1; fi
+          done
+          echo "==================== summary ===================="
+          for cfg in "${!RESULT[@]}"; do printf '%-55s %s\n' "$cfg" "${RESULT[$cfg]}"; done
+          if [ "$fail" -ne 0 ]; then
+            echo "::error::One or more BG anchors did not pass Comparator (see per-anchor logs above)."
+            exit 1
+          fi
+          echo "All BG anchors independently re-verified (axiom-clean; Lean + nanoda kernels accept)."

@@ -1,0 +1,13 @@
+{
+  "challenge_module": "R3Cert.PotentialFinal",
+  "solution_module": "R3Cert.PotentialFinal",
+  "theorem_names": [
+    "R3Cert.phi_le_one"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

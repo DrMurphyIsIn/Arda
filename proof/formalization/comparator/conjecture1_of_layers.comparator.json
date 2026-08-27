@@ -1,0 +1,13 @@
+{
+  "challenge_module": "R3Cert.R47TopCapstone",
+  "solution_module": "R3Cert.R47TopCapstone",
+  "theorem_names": [
+    "R3Cert.Step3.conjecture1_of_layers"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
