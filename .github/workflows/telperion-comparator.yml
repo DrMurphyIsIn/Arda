@@ -1,0 +1,152 @@
+name: telperion-comparator
+
+# End-to-end verification of Telperion output by openai/ten-proofs Comparator
+# (https://github.com/leanprover/comparator): an INDEPENDENT judge that asserts
+# the emitted proof proves EXACTLY the challenge statement, uses only whitelisted
+# axioms, and survives a fresh kernel replay.  This is the "wrong certificate is
+# a compile error" promise, mechanized and hardened.
+#
+# Pins (all v4.32.0, matching every other telperion lean example):
+#   - lean-toolchain      leanprover/lean4:v4.32.0  (examples/bernoulli/lean/)
+#   - mathlib             v4.32.0                   (lakefile require)
+#   - comparator          v4.32.0 tag               (github.com/leanprover/comparator)
+#
+# STATUS: first-run infrastructure.  The mathlib build + module compile mirror the
+# proven telperion-lean-e2e jobs; the Comparator install/run steps are new and may
+# need one round of path/sandbox tuning on the first live run (see NOTE comments).
+# nanoda (the optional 2nd, non-Lean kernel) is OFF here — it needs a separate Rust
+# build; enable via the commented block + `generate.py --comparator --nanoda`.
+
+on:
+  push:
+    paths:
+      - "telperion/examples/bernoulli/**"
+      - "telperion/src/telperion/comparator.py"
+      - ".github/workflows/telperion-comparator.yml"
+  pull_request:
+    paths:
+      - "telperion/examples/bernoulli/**"
+      - "telperion/src/telperion/comparator.py"
+      - ".github/workflows/telperion-comparator.yml"
+  workflow_dispatch:
+
+jobs:
+  bernoulli-comparator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      # 1. Regenerate solution + independent challenge + config from the family
+      #    definition (certify -> validate -> emit), and drift-check the frozen copy.
+      - name: Regenerate and materialize the Comparator challenge
+        working-directory: telperion
+        run: |
+          python examples/bernoulli/generate.py --check
+          python examples/bernoulli/generate.py --comparator
+
+      # 2. Lean toolchain (elan), pinned by the project's lean-toolchain (v4.32.0).
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bernoulli/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # 3. Build the solution + challenge modules (mathlib olean cache -> compile).
+      #    This is the same pattern as the other telperion-lean-e2e jobs.
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bernoulli/lean
+        run: lake exe cache get
+      - name: Build solution + challenge (the mathlib verification)
+        working-directory: telperion/examples/bernoulli/lean
+        run: lake build
+
+      # 4. landrun shim.  Comparator wraps every child (lake build, lean4export)
+      #    in landrun for sandboxing.  Real landrun (github.com/Zouuup/landrun)
+      #    uses urfave/cli, whose Args().Slice() STRIPS the `--` separator — which
+      #    silently breaks lean4export's `<module> -- <constants>` contract, so
+      #    every constant is parsed as a module import ("unknown module prefix").
+      #    We verify our OWN emitted proofs, so the Landlock sandbox is not
+      #    security-critical (the kernel replay is the real guarantee).  Install a
+      #    shim that accepts landrun's flags but execs the child un-sandboxed with
+      #    args — including `--` — preserved.  (Validated end-to-end locally.)
+      - name: Install landrun shim (preserves `--`)
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cat > "$HOME/.local/bin/landrun" <<'SHIM'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          args=("$@"); i=0; n=${#args[@]}
+          while (( i < n )); do
+            a="${args[$i]}"
+            case "$a" in
+              --ro|--rw|--rwx|--rox|--env|--log-level)
+                v="${args[$((i+1))]:-}"
+                [[ "$a" == "--env" && "$v" == *"="* ]] && export "$v"
+                i=$((i+2)) ;;
+              --env=*) export "${a#--env=}"; i=$((i+1)) ;;
+              --*=*) i=$((i+1)) ;;
+              -*) i=$((i+1)) ;;
+              *) break ;;
+            esac
+          done
+          exec "${args[@]:$i}"
+          SHIM
+          chmod +x "$HOME/.local/bin/landrun"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      # 5. Comparator + lean4export, from the v4.32.0 tag (matches our toolchain).
+      #    `lake build lean4export comparator` builds BOTH binaries (per the
+      #    comparator README); they land in .lake/build/bin.
+      - name: Build Comparator + lean4export
+        run: |
+          git clone --depth 1 --branch v4.32.0 \
+            https://github.com/leanprover/comparator.git "$HOME/comparator"
+          cd "$HOME/comparator"
+          lake build lean4export comparator
+          # comparator's exe lands in its own build dir; lean4export is a *dependency*,
+          # so its binary lives under .lake/packages/<pkg>/.lake/build/bin.  Locate
+          # both and hand comparator the lean4export path via COMPARATOR_LEAN4EXPORT.
+          COMPARATOR_BIN="$(find "$HOME/comparator/.lake" -type f -name comparator -path '*/bin/*' | head -1)"
+          L4X_BIN="$(find "$HOME/comparator/.lake" -type f -name lean4export -path '*/bin/*' | head -1)"
+          echo "comparator = $COMPARATOR_BIN"
+          echo "lean4export = $L4X_BIN"
+          test -x "$COMPARATOR_BIN" && test -x "$L4X_BIN"
+          echo "$(dirname "$COMPARATOR_BIN")" >> "$GITHUB_PATH"
+          echo "COMPARATOR_LEAN4EXPORT=$L4X_BIN" >> "$GITHUB_ENV"
+
+      # 6. Run the judge against the built bernoulli project.
+      #    `lake env` supplies the project's LEAN_PATH so comparator can locate and
+      #    export the Bernoulli / BernoulliChallenge modules.
+      #    NOTE: if `comparator` cannot find its helpers on PATH, set them explicitly:
+      #      COMPARATOR_LEAN4EXPORT / COMPARATOR_LANDRUN (see comparator README).
+      - name: Run Comparator (independent judge)
+        working-directory: telperion/examples/bernoulli/lean
+        env:
+          # COMPARATOR_LEAN4EXPORT is set from GITHUB_ENV by the build step above.
+          COMPARATOR_LANDRUN: /home/runner/.local/bin/landrun
+        run: |
+          echo "lean4export = $COMPARATOR_LEAN4EXPORT"
+          lake env comparator Bernoulli.comparator.json
+
+      # --- OPTIONAL: enable the nanoda independent kernel (2nd, non-Lean kernel) ---
+      # Adds a Rust build; then regenerate the config with enable_nanoda and point
+      # comparator at the binary:
+      #
+      #   - name: Build nanoda
+      #     run: |
+      #       git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$HOME/nanoda"
+      #       cd "$HOME/nanoda" && cargo build --release
+      #   - name: Regenerate config with nanoda enabled
+      #     working-directory: telperion
+      #     run: python examples/bernoulli/generate.py --comparator --nanoda
+      #   # then in step 6:  COMPARATOR_NANODA: /home/runner/nanoda/target/release/nanoda

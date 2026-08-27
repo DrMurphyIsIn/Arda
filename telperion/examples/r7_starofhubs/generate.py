@@ -15,10 +15,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from family import family, profile, validation  # noqa: E402
 
-from telperion import DirectPolyaEmitter, certify, diff_frozen, emit, freeze  # noqa: E402
+from telperion import (  # noqa: E402
+    DirectPolyaEmitter, certify, diff_frozen, emit, freeze,
+    render_sharded_challenge_scaffolds, sharded_challenge_configs,
+    write_challenge_config,
+)
 from telperion.workflow import ShardSpec  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
+MODULE_BASE = "R7Hyps.StarOfHubs.Cells"
 
 
 def build():
@@ -35,7 +40,7 @@ def build():
         profile(),
         [DirectPolyaEmitter()],
         val,
-        shard=ShardSpec(max_theorems=120, module_base="R7Hyps.StarOfHubs.Cells"),
+        shard=ShardSpec(max_theorems=120, module_base=MODULE_BASE),
     )
     marks.append(("hash+emit", _t.monotonic()))
     for (label, t1), (_, t0) in zip(marks[1:], marks):
@@ -43,10 +48,37 @@ def build():
     return res, cf
 
 
+def write_comparator(res, out_dir: Path) -> None:
+    """Emit one Comparator challenge per shard (config JSON + challenge module).
+
+    A sharded emit spans modules ``R7Hyps.StarOfHubs.Cells``, ``…Cells2``, …;
+    each shard DECLARES its own 120 theorems, so each becomes its own
+    ``solution_module`` with a paired ``…Challenge`` module restating just that
+    shard's statements.  `lake exe comparator <json>` then certifies each shard
+    independently (parallelizable) against the clean axiom set + nanoda kernel.
+    """
+    from family import profile as _profile
+
+    prof = _profile()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    scaffolds = render_sharded_challenge_scaffolds(res, prof, module_base=MODULE_BASE)
+    for chal_file, text in scaffolds.items():
+        (out_dir / chal_file).write_text(text)
+    configs = sharded_challenge_configs(res, prof, module_base=MODULE_BASE)
+    for cfg in configs:
+        stem = str(cfg["solution_module"]).rsplit(".", 1)[-1]
+        write_challenge_config(out_dir / f"{stem}.comparator.json", cfg)
+    total = sum(len(c["theorem_names"]) for c in configs)
+    print(f"wrote {len(configs)} shard comparator challenge(s) "
+          f"({total} theorems) + {len(scaffolds)} challenge module(s)")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--margins", action="store_true", help="tightness analysis")
+    ap.add_argument("--comparator", action="store_true",
+                    help="also emit per-shard openai/ten-proofs Comparator challenges")
     args = ap.parse_args()
     res, cf = build()
     if args.margins:
@@ -69,6 +101,8 @@ def main() -> int:
         f"wrote {len(res.files)} shard(s), {res.n_theorems} theorems, "
         f"{res.n_checks} self-checks; hash {res.input_hash[:16]}"
     )
+    if args.comparator:
+        write_comparator(res, HERE / "comparator")
     return 0
 
 
