@@ -77,22 +77,26 @@ and survives replay by a second kernel (\nanoda, an independent Rust
 reimplementation) in addition to \Lean's own. A soundness bug would have to fool
 two independently written kernels.
 
-As a flagship demonstration we report the state of a formalization of the
-Brualdi--Goldwasser extremal-tree conjecture. We are explicit about what this
-demonstrates: the conjecture is \emph{not} proved. What is proved --- a
-conditional reduction of the full conjecture to two precisely stated open layers,
-together with the two analytic cruxes it rests on --- is independently verified by
-both kernels and is axiom-clean. The contribution we emphasize is exactly this:
-a methodology in which the boundary between what is proved and what is open is
-enforced by the kernel and by an independent second kernel, and is therefore
-impossible to overstate.
+As a flagship demonstration we report the state of an attack on the
+Brualdi--Goldwasser tree Laplacian-ratio maximization problem---a live question, a
+2025 conjectured maximizer having been refuted in 2026. We are explicit about what
+this demonstrates: the maximizer is \emph{not} determined. What is established is
+(i) an exact-rational result narrowing the problem---a branching tree provably
+beats the published spider counterexamples, so the maximizer is not the
+path-spine spider it was recently conjectured to be---and (ii) a \Lean{}
+formalization, verified by both kernels and axiom-clean, of a \emph{conditional}
+reduction of a candidate's global optimality to two precisely stated open layers,
+together with the two analytic cruxes it rests on. The contribution we emphasize is
+exactly this: a methodology in which the boundary between what is proved and what
+is open is enforced by the kernel and an independent second kernel, and is
+therefore impossible to overstate.
 \end{abstract}
 
 \medskip
 \noindent\textbf{Draft scope.} This is a standalone paper about \Telperion. A
-separate paper will present the Brualdi--Goldwasser result if and when the two
-open layers are closed; here that formalization appears only as an
-in-progress case study, scoped honestly (\S\ref{sec:bg}).
+separate paper will present a theorem on the Laplacian-ratio maximizer if and
+when the two open layers are closed; here the work appears only as an in-progress
+case study, scoped honestly (\S\ref{sec:bg}).
 
 \medskip
 \noindent\textbf{Disclosure.} \Telperion{} and the accompanying formalization

@@ -47,15 +47,17 @@ axioms; and that it survives replay not only by \Lean's kernel but by \nanoda---
 independent reimplementation of the kernel in Rust~\cite{nanoda}. A soundness bug
 would have to fool two independently written kernels (\S\ref{sec:indep}).
 
-\paragraph{A flagship, honestly scoped.} We use a formalization of the
-Brualdi--Goldwasser extremal-tree conjecture as the paper's running research
-example. We state plainly, and repeatedly, what it demonstrates. The conjecture is
-\emph{not} proved. \Telperion{} and the surrounding formalization have produced a
-\emph{conditional} reduction of the full conjecture to two precisely stated open
-layers, together with the two analytic inequalities that reduction rests on; those
-theorems are sorry-free, axiom-clean, and---as we report in \S\ref{sec:bg}---accepted
-by both \Lean's kernel and \nanoda. The point of the case study is not a
-completeness claim; it is that the boundary between proved and open is here a
+\paragraph{A flagship, honestly scoped.} We use an in-progress attack on the
+Brualdi--Goldwasser tree Laplacian-ratio maximization problem as the paper's running
+research example---a live question in which a 2025 conjectured maximizer was refuted
+in 2026. We state plainly, and repeatedly, what it demonstrates. The maximizer is
+\emph{not} determined. What is established is, first, an exact-rational narrowing---a
+branching tree provably beats the published spider counterexamples---and, second, a
+\Lean{} formalization of a \emph{conditional} reduction of a candidate's global
+optimality to two precisely stated open layers, with the two analytic inequalities
+that reduction rests on; the latter are sorry-free, axiom-clean, and---as
+\S\ref{sec:bg} reports---accepted by both \Lean's kernel and \nanoda. The point is
+not a completeness claim; it is that the boundary between proved and open is here a
 machine-checked object, not a matter of a reader's charity toward prose.
 
 \paragraph{Contributions.} This paper makes no claim to a new decision procedure

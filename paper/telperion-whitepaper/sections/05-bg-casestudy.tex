@@ -1,132 +1,166 @@
-\section{Flagship case study: Brualdi--Goldwasser}
+\section{Flagship case study: the Brualdi--Goldwasser Laplacian-ratio problem}
 \label{sec:bg}
 
-We use an in-progress formalization of the Brualdi--Goldwasser extremal-tree
-conjecture as the paper's research-scale demonstration. This section states, as
-plainly as we can, what has and has not been achieved. The headline is not a
-completeness claim---\textbf{the conjecture is not proved}---but the fact that the
-boundary between proved and open is, in this formalization, a machine-checked
-object: the reader does not have to trust our prose about which lemmas are done.
+We use an in-progress attack on the Brualdi--Goldwasser tree-maximization problem
+as the paper's research-scale demonstration. The area is live and moving fast---a
+2025 conjecture about the maximizer was refuted in 2026---which makes it an
+unusually good test of the methodology's central promise: keeping a machine-checked
+boundary between what is proved and what is merely believed. We state plainly what
+is and is not established. \textbf{The maximizer is not determined here}; what is
+established is a new structural narrowing of the problem (verified in exact
+arithmetic) and a conditional formalization of a candidate's global optimality
+(verified by two kernels), with the gap between them explicit.
 
-\subsection{The conjecture and why it is hard}
+\subsection{The problem and its recent history}
 
-\todo{State the Brualdi--Goldwasser conjecture precisely, with the original
-citation~\cite{brualdigoldwasser}: the tree functional in question and the claimed
-extremal tree. Keep this to the exact published statement---do not paraphrase into
-something stronger.} At the level needed here: the conjecture asserts that a
-specific graph functional, defined on all trees of a given order, is maximized by a
-particular family of trees. The difficulty is that it is an \emph{extremal}
-statement over an unbounded, combinatorially explosive family; direct verification
-is available only for small orders (computationally, up to a bound of a few dozen
-vertices), and an unconditional proof requires a structural argument that reduces
-the arbitrary tree to a canonical extremal form.
+Brualdi and Goldwasser~\cite{brualdigoldwasser} introduced the study of the
+permanent of the Laplacian of a tree and, among other results, asked for the tree
+on $n$ vertices maximizing the \emph{Laplacian ratio}
+\[
+  \pi(T) \;=\; \frac{\operatorname{per}(L(T))}{\prod_{v} \deg(v)},
+  \qquad L = D - A .
+\]
+The maximizer is open. Wu, Dong and Lai~\cite{wudonglai} conjectured it to be a
+subdivided star. Pant~\cite{pant} refuted that conjecture in 2026 with families of
+\emph{spider} trees $T(a_1,\dots,a_m)$ (a path spine whose vertices carry length-two
+cherries) that beat the conjectured subdivided star; Pant proposes no replacement,
+and the true maximizer remains open. This is the state of the art the formalization
+engages.
 
-Internally, the formalization works with an exact-rational tree functional
-(written $\mathrm{Aobj}$) obtained by realizing a tree into a cavity/matching model.
-An important and openly documented caveat lives here: several of the analytic
-results below are proved about this \emph{model}, and the identification of the
-model with the original combinatorial object it is meant to represent is a separate
-step that is not yet formalized. We flag each such result explicitly.
+\subsection{An exact-arithmetic narrowing: branching beats spiders}
 
-\subsection{The reduction and its two open layers}
+The project's first contribution is computational but \emph{exact}---rational
+arithmetic throughout, no floating point, so ``beats'' is a strict rational
+inequality with no margin. It shows the maximizer is not a path-spine spider at all.
+Concretely, for a branching family $B(3,t)$---a degree-three hub whose four centers
+each carry $t$ cherries, on $n = 8t+4$ vertices---one has, for \emph{every} integer
+$t \ge 3$,
+\[
+  \pi\bigl(B(3,t)\bigr) - \pi\bigl(T(t,t,t,t)\bigr)
+  \;=\; \Bigl(\tfrac32\Bigr)^{4t} \cdot
+        \frac{2\,P(t)}{81\,(t+1)^3 (t+2)^2 (t+3)},
+  \qquad P(t) = 56t^4 + 72t^3 - 162t^2 - 432t - 243,
+\]
+and $P(t) > 0$ for all $t \ge 3$ (the prefactor and denominator are positive, and
+$P$ is increasing on $[3,\infty)$ with $P(3) > 0$). Since $T(t,t,t,t)$ is exactly
+Pant's flagship counterexample family, this proves \emph{no member of that family is
+the maximizer}: the maximizer is a branching tree, not a path-spine spider. This is
+a genuine advance on the published state, and it is the kind of exact-certificate
+computation \Telperion{} is built for. Two independent permanent engines (a tree
+matching-sum recursion and Ryser's formula on the full Laplacian) agree on the
+values, an exhaustive search confirms the true maximizer for small $n$ (where it
+\emph{is} a spider, exhibiting a genuine path-to-branch transition as $n$ grows), and
+the pipeline reproduces Pant's published rational values exactly.
 
-The formalization's spine is a single capstone theorem,
-\code{R3Cert.Step3.conjecture1\_of\_layers}, which is \emph{conditional}: it takes
-two hypotheses and derives the full conjecture from them. The theorem is
-sorry-free; what it establishes is a reduction, not the conjecture. The two
-hypotheses are the open layers:
-\begin{description}[leftmargin=1.2em,style=nextline]
-  \item[\normalfont$H_{\mathrm{norm}}$ (normalization).] Every tree is dominated,
-    under the functional, by a balanced, capped ``hub-state''---a canonical form.
-    Formally: for every tree $t$ there is a balanced, capped hub-state $s$ with
-    $\mathrm{Aobj}(t) \le \mathrm{Aobj}(\text{backbone}(s))$.
-  \item[\normalfont$H_{\mathrm{dom}}$ (rate domination).] Every merge-normal
-    balanced, capped state is in turn dominated by the conjectured tie value:
-    $\mathrm{Aobj} \le \mathrm{tieU}$.
-\end{description}
-Both remain open. $H_{\mathrm{norm}}$ decomposes further into sub-goals of mixed
-status: a single-hub within-one arm-balancing argument is fully formalized and
-machine-checked, but the pieces that would close the full layer---pinning the
-extremal arm rates to the specific $\{4,5\}$ profile, establishing the capping
-invariant, the tree-to-hub-state reduction, and multi-hub extremality---are
-research-open. The predicate the codebase uses to mark the end goal,
-\code{conjecture1\_proved}, is defined to be \code{False} and is asserted so by a
-unit test: the formalization does not, and does not claim to, prove the conjecture.
+We are careful about the verification \emph{tier} here: this narrowing is an
+exact-rational computation, machine-checked in the project's certified arithmetic,
+but it is a computation, not (yet) a \Lean{} kernel proof. It motivates a candidate
+maximizer---a branching-backbone family---whose \emph{global} optimality is the
+subject of the formalization below.
 
-\subsection{What Telperion certifies here}
+\subsection{The conditional formalization and its two open layers}
 
-\Telperion{} is the engine behind the concrete, certificate-bearing parts of the
-reduction: exact-rational positivity floors for the per-class ledger, the per-rule
-reduction certificates of the internal ``R47'' argument (spider, legs, Kelmans
-corners, tiebreak, de-load), and the two analytic inequalities the reduction rests
-on. Where these are inequalities over rational functions or polynomials with a
-tie/equality case, they are exactly the certificate shapes of \S\ref{sec:emitters}:
-P\'olya-with-zeros, box-corner bilinear reductions, exact SOS reaching the interior
-tie, and finite cell subdivisions glued back together. The surrounding structural
-scaffolding (the tree recursion, the cavity model, the case analysis) is
-hand-written \Lean; \Telperion{} supplies the parts that are certificate
-computations, which is where exact arithmetic and mechanical re-checking earn their
-keep.
+Establishing that the candidate is the global maximizer---$\forall t,\ \mathrm{Aobj}(t)
+\le \mathrm{Aobj}(\mathrm{tieU})$ for the candidate's value $\mathrm{tieU}$---is the
+hard, open part. The formalization's spine is a single \Lean{} theorem,
+\code{R3Cert.Step3.conjecture1\_of\_layers}, which is \emph{conditional}: it derives
+global optimality from two hypotheses, and is itself sorry-free. Verbatim, it takes a
+tie witness \code{tieU} and
+\begin{lstlisting}
+Hnorm : forall t : UTree, exists s : List Hub,
+          Balanced s /\ Capped s /\ Aobj t <= Aobj (backboneU s)
+Hdom  : forall s : List Hub, Balanced s -> Capped s ->
+          (forall u, not (OrderedStep s u)) -> Aobj (backboneU s) <= Aobj tieU
+\end{lstlisting}
+and concludes \code{forall t : UTree, Aobj t <= Aobj tieU}. The two hypotheses are the
+open layers: $H_{\mathrm{norm}}$ (every tree is dominated by a balanced, capped
+canonical hub-state) and $H_{\mathrm{dom}}$ (every merge-normal such state is
+dominated by the tie value). Both remain open; a single-hub within-one balancing
+argument inside $H_{\mathrm{norm}}$ is formalized and machine-checked, but the pieces
+that would close the layer---pinning the extremal arm rates to the specific
+$\{4,5\}$ profile, the capping invariant, the tree-to-hub reduction, and multi-hub
+extremality---are research-open. The end-goal predicate \code{conjecture1\_proved} is
+defined to be \code{False} and asserted so by a test.
+
+\Telperion{} supplies the concrete certificate-bearing pieces of the reduction: the
+exact-rational positivity floors of the per-class ledger, the per-rule reduction
+certificates of the internal argument, and the two analytic inequalities the
+reduction rests on, each an instance of the shapes of \S\ref{sec:emitters}. Two of
+those inequalities are the anchor theorems: \code{R3Cert.phi\_le\_one}, the bound
+$\log\Phi(b) \le 0$ (i.e.\ $\Phi \le 1$) for every branch, and
+\code{R3Cert.CappedJointConfig.gstep\_le\_one\_achievable}, the g-step / master
+inequality for achievable configurations.
+
+\paragraph{The model-to-object caveat.} The analytic bounds are proved about an
+exact-rational cavity/matching \emph{model} (written $\mathrm{Aobj}$). Identifying
+this model with $\pi(T)$ itself is a separate step that is not yet formalized in
+\Lean, and we flag it rather than eliding it. The model's numerics are cross-checked
+against the exact integer Laplacian permanent by the two independent engines above,
+which is evidence---but not a formal proof---of the identification.
 
 \subsection{The proved/open ledger}
 
-Table~\ref{tab:ledger} is the honest summary. Every ``proved'' row is sorry-free
-and, as reported in \S\ref{sec:bg-evidence}, accepted by both kernels with axiom
-trace exactly $[\code{propext}, \code{Quot.sound}, \code{Classical.choice}]$.
+Table~\ref{tab:ledger} is the honest summary, with the verification tier named for
+each row.
 
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{@{}p{0.34\textwidth}p{0.58\textwidth}@{}}
+\begin{tabular}{@{}p{0.30\textwidth}p{0.20\textwidth}p{0.42\textwidth}@{}}
 \toprule
-\textbf{Proved (kernel + \nanoda, axiom-clean)} & \textbf{Meaning} \\
+\textbf{Result} & \textbf{Tier} & \textbf{Meaning} \\
 \midrule
-\code{R3Cert.Step3.conjecture1\_of\_layers} & The conjecture \emph{follows from}
-$H_{\mathrm{norm}}$ and $H_{\mathrm{dom}}$. A reduction, conditional on the two
-open layers. \\
-\code{R3Cert.phi\_le\_one} ($\log\Phi \le 0$) & The $\Phi \le 1$ analytic crux
----proved about the branch-cavity \emph{model} (\todo{confirm exact statement};
-model-vs-object identification deferred). \\
-\code{R3Cert.CappedJointConfig.} \code{gstep\_le\_one\_achievable} & The g-step /
-master-inequality crux for achievable configurations. \\
+Branching $B(3,t)$ beats Pant's spider $T(t,t,t,t)$, all $t \ge 3$ &
+Exact rational (computational) &
+The published counterexample family is non-maximal; the maximizer is a branching
+tree. \\
+\code{conjecture1\_of\_layers} &
+\Lean{} kernel + \nanoda &
+Global optimality of the candidate \emph{follows from} $H_{\mathrm{norm}}$,
+$H_{\mathrm{dom}}$. Conditional. \\
+\code{phi\_le\_one} ($\log\Phi \le 0$) &
+\Lean{} kernel + \nanoda &
+The $\Phi \le 1$ crux, on the cavity model. \\
+\code{gstep\_le\_one\_achievable} &
+\Lean{} kernel + \nanoda &
+The g-step / master-inequality crux. \\
 \midrule
-\textbf{Open (research-open)} & \\
-\midrule
-$H_{\mathrm{norm}}$ (normalization layer) & $\{4,5\}$ arm-rate pinning, the capping
-invariant, tree-to-hub reduction, multi-hub extremality. Single-hub within-one
-balancing is done; the rest is open. \\
-$H_{\mathrm{dom}}$ (rate-domination layer) & Merge-normal capped states dominated
-by the tie value. Open. \\
-Model-to-object identification & Identifying $\mathrm{Aobj}$ / the cavity model with
-the original functional. Deferred. \\
+$H_{\mathrm{norm}}$, $H_{\mathrm{dom}}$ & Open &
+The two layers the reduction is conditional on. \\
+Model-to-object identification & Open &
+Identifying the cavity model with $\pi(T)$. \\
+Global maximizer & Open &
+\code{conjecture1\_proved} $=$ \code{False}. \\
 \bottomrule
 \end{tabular}
-\caption{The Brualdi--Goldwasser formalization, proved vs.\ open. \code{conjecture1\_proved}
-is \code{False}.}
+\caption{The Laplacian-ratio work, by verification tier. The exact-rational
+narrowing and the \Lean{} anchors are established; global optimality is open.}
 \label{tab:ledger}
 \end{table}
 
 \subsection{Machine-verification evidence}
 \label{sec:bg-evidence}
 
-The three ``proved'' anchors are the theorems guarded by the formalization's
-continuous integration, and they are re-verified through the \Comparator{}
-(\S\ref{sec:indep}) on every change to the formalization. For each, \code{lean4export}
-exports the proof from the built project, the axiom set is checked against the clean
-whitelist, and the exported term is replayed by both \Lean's default kernel and
-\nanoda. In our runs all three anchors pass: both kernels accept each, and each
-reports the axiom trace $[\code{propext}, \code{Quot.sound}, \code{Classical.choice}]$
----no \code{sorryAx}, no \code{native\_decide}. The conditional capstone's dependency
-cone is large but tractable: its export and two-kernel replay complete in a few
-minutes of continuous-integration time. Because these statements are phrased in the
+The three \Lean{} anchors are the theorems the formalization's continuous integration
+guards, and they are re-verified through the \Comparator{} (\S\ref{sec:indep}) on
+every change. For each, \code{lean4export} exports the proof, the axiom set is checked
+against the clean whitelist, and the exported term is replayed by both \Lean's kernel
+and \nanoda. In our runs all three pass: both kernels accept each, and each reports the
+axiom trace $[\code{propext}, \code{Quot.sound}, \code{Classical.choice}]$---no
+\code{sorryAx}, no \code{native\_decide}. The conditional capstone's dependency cone is
+large but tractable: export and two-kernel replay complete in a few minutes of
+continuous-integration time. Because these statements are phrased in the
 formalization's own vocabulary, the \Comparator{} runs them in self-check mode
-(\S\ref{sec:indep}): the axiom whitelist and the independent second kernel are real,
-independent verification; independent \emph{statement} authorship is not available
-for a statement about the project's own structures, and we do not claim it.
+(\S\ref{sec:indep}): the axiom whitelist and the independent second kernel are real
+verification; independent statement authorship is not available for a statement about
+the project's own structures, and we do not claim it.
 
-The upshot is a precise and unfakeable claim. We do not assert the
-Brualdi--Goldwasser conjecture. We assert that a specific conditional reduction and
-its two analytic cruxes are proved, sorry-free, and accepted by two independent
-kernels with a clean axiom trace---and that everything else, including the two
-layers on which the reduction depends, is open. A separate paper will present the
-result as a theorem only if and when those layers are closed.
+The resulting claim is precise and unfakeable. We do not assert the global maximizer.
+We assert: (i) in exact arithmetic, a branching tree beats the published spider
+counterexamples, narrowing the open problem; and (ii) in \Lean, verified by two
+independent kernels with a clean axiom trace, a conditional reduction of the
+candidate's global optimality to two stated layers, together with the two analytic
+cruxes it rests on. Everything else---the two layers, the model-to-object
+identification, and hence global optimality itself---is open, and the boundary is
+enforced mechanically rather than asserted in prose. A separate paper will report a
+theorem on the maximizer only if and when that boundary moves.

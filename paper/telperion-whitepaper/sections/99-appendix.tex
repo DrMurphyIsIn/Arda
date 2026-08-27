@@ -67,21 +67,29 @@ list and count before publication.}}
 \section{Verified anchors of the case study}
 \label{app:anchors}
 
-The three theorems re-verified through the \Comparator{} in \S\ref{sec:bg-evidence},
-with the statements as far as reported here (\todo{paste the exact \Lean{}
-signatures and, ideally, the verbatim \code{\#print axioms} output from a CI run}):
+The three \Lean{} theorems re-verified through the \Comparator{} in
+\S\ref{sec:bg-evidence}, with their exact signatures:
 
-\begin{itemize}[leftmargin=1.4em]
-  \item \code{R3Cert.Step3.conjecture1\_of\_layers} --- conditional capstone; takes
-    a tie witness and the two layer hypotheses $H_{\mathrm{norm}}$, $H_{\mathrm{dom}}$
-    and derives the conjecture. \todo{full signature.}
-  \item \code{R3Cert.phi\_le\_one} --- statement \code{logPhi b <= 0} for a branch
-    \code{b} (the $\Phi \le 1$ crux, on the model). \todo{confirm.}
-  \item \code{R3Cert.CappedJointConfig.gstep\_le\_one\_achievable} --- for a list of
-    rationals all \code{Achievable}, the g-step bound. \todo{full conclusion.}
-\end{itemize}
+\begin{lstlisting}
+-- R3Cert.Step3.conjecture1_of_layers  (conditional capstone)
+theorem conjecture1_of_layers (tieU : UTree)
+    (Hnorm : forall t : UTree, exists s : List Hub,
+        Balanced s /\ Capped s /\ Aobj t <= Aobj (backboneU s))
+    (Hdom : forall s : List Hub, Balanced s -> Capped s ->
+        (forall u, not (OrderedStep s u)) -> Aobj (backboneU s) <= Aobj tieU) :
+    forall t : UTree, Aobj t <= Aobj tieU
+
+-- R3Cert.phi_le_one  (the Phi <= 1 crux, on the cavity model)
+theorem phi_le_one (b : Branch) : logPhi b <= 0
+
+-- R3Cert.CappedJointConfig.gstep_le_one_achievable  (g-step / master inequality)
+theorem gstep_le_one_achievable (l : List Q) (hl : forall mu in l, Achievable mu) :
+    (baseOf l) ^ 11 * prodBcap l / (W * (5 / 3) ^ 11) <= 1
+\end{lstlisting}
 Each reports axiom trace $[\code{propext}, \code{Quot.sound}, \code{Classical.choice}]$
-under both \Lean's kernel and \nanoda.
+under both \Lean's kernel and \nanoda---no \code{sorryAx}, no \code{ofReduceBool}.
+\todo{optionally paste the verbatim \code{\#print axioms} lines from an
+\code{AxiomGuard.lean} CI run for the record.}
 
 \section{Reproducing the verification}
 \label{app:repro}
