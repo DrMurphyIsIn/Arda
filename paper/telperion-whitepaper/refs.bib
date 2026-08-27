@@ -1,12 +1,15 @@
 % Bibliography for the Telperion whitepaper (DRAFT).
-% Software entries have canonical URLs. Academic entries are best-effort and are
-% flagged in their `note` field to verify author/year/venue before submission.
+% Software entries have canonical URLs. Academic entries verified via public
+% catalogs (dblp / publisher / arXiv); a few residual `note`s flag details to
+% confirm against the version of record before submission.
+
+% --- software / tools -------------------------------------------------------
 
 @misc{comparator,
   title        = {Comparator: a trustworthy judge for {Lean} proofs},
   author       = {{Lean FRO}},
   howpublished = {\url{https://github.com/leanprover/comparator}},
-  note         = {Accessed 2026. Verify authorship/version tag (v4.32.0 used here).}
+  note         = {Accessed 2026; tag v4.32.0 used here. \todo{confirm authorship line}.}
 }
 
 @misc{tenproofs,
@@ -14,7 +17,7 @@
                   Mathematics and Theoretical Computer Science''},
   author       = {{OpenAI}},
   howpublished = {\url{https://github.com/openai/ten-proofs}},
-  note         = {Accessed 2026. Verify the exact title/citation of the companion paper.}
+  note         = {Accessed 2026. \todo{confirm the companion paper's exact title/citation}.}
 }
 
 @misc{nanoda,
@@ -31,56 +34,83 @@
   note         = {Accessed 2026.}
 }
 
+% --- theorem proving / foundations ------------------------------------------
+
 @inproceedings{lean4,
   title     = {The {Lean}~4 Theorem Prover and Programming Language},
   author    = {de Moura, Leonardo and Ullrich, Sebastian},
   booktitle = {Automated Deduction -- CADE 28},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {12699},
+  pages     = {625--635},
   year      = {2021},
-  note      = {Verify page numbers / DOI.}
+  publisher = {Springer}
 }
 
-@misc{mathlib,
-  title        = {The {Lean} Mathematical Library ({Mathlib})},
-  author       = {{The mathlib Community}},
-  howpublished = {\url{https://github.com/leanprover-community/mathlib4}},
-  note         = {Accessed 2026. A canonical CPP~2020 citation also exists; verify.}
+@inproceedings{mathlib,
+  title     = {The {Lean} Mathematical Library},
+  author    = {{The mathlib Community}},
+  booktitle = {Proceedings of the 9th ACM SIGPLAN International Conference on
+               Certified Programs and Proofs (CPP)},
+  pages     = {367--381},
+  year      = {2020}
 }
 
-@misc{debruijn,
-  title        = {The de {Bruijn} criterion: a small trusted checker for machine-checked proof},
-  author       = {\todo{cite Barendregt \& Wiedijk, ``The challenge of computer
-                  mathematics'', or Wiedijk on the de Bruijn factor/criterion}},
-  note         = {\todo{full citation}}
+@article{debruijn,
+  title   = {The challenge of computer mathematics},
+  author  = {Barendregt, Henk and Wiedijk, Freek},
+  journal = {Philosophical Transactions of the Royal Society A},
+  volume  = {363},
+  number  = {1835},
+  pages   = {2351--2375},
+  year    = {2005},
+  note    = {Source for the de~Bruijn criterion (a small trusted checker).}
 }
 
-@article{vipr,
-  title   = {Verifying Integer Programming Results ({VIPR})},
-  author  = {\todo{Cheung, Gleixner, Steffy, et al. --- verify}},
-  journal = {\todo{IPCO / Math. Prog. Comp. --- verify}},
-  year    = {\todo{}},
-  note    = {\todo{full citation}}
+% --- certificate methods / checking -----------------------------------------
+
+@inproceedings{positivstellensatz,
+  title     = {Verifying Nonlinear Real Formulas via Sums of Squares},
+  author    = {Harrison, John},
+  booktitle = {Theorem Proving in Higher Order Logics (TPHOLs 2007)},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {4732},
+  pages     = {102--118},
+  year      = {2007},
+  publisher = {Springer}
 }
 
-@misc{alphaproof,
-  title        = {{AlphaProof}: formal mathematical reasoning},
-  author       = {{Google DeepMind}},
-  howpublished = {\todo{cite the DeepMind AlphaProof/AlphaGeometry~2 report, 2024}},
-  note         = {\todo{full citation}}
+@inproceedings{vipr,
+  title     = {Verifying Integer Programming Results},
+  author    = {Cheung, Kevin K. H. and Gleixner, Ambros and Steffy, Daniel E.},
+  booktitle = {Integer Programming and Combinatorial Optimization (IPCO 2017)},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {10328},
+  pages     = {148--160},
+  year      = {2017},
+  publisher = {Springer}
+}
+
+% --- learned provers --------------------------------------------------------
+
+@article{alphaproof,
+  title   = {Olympiad-level formal mathematical reasoning with reinforcement learning},
+  author  = {{Google DeepMind AlphaProof and AlphaGeometry teams}},
+  journal = {Nature},
+  year    = {2025},
+  doi     = {10.1038/s41586-025-09833-y},
+  note    = {\todo{confirm the author list of record and volume/pages}.}
 }
 
 @misc{deepseekprover,
-  title        = {{DeepSeek-Prover}},
+  title        = {{DeepSeek-Prover-V2}: Advancing Formal Mathematical Reasoning via
+                  Reinforcement Learning for Subgoal Decomposition},
   author       = {{DeepSeek-AI}},
-  howpublished = {\todo{cite the DeepSeek-Prover / -V2 paper}},
-  note         = {\todo{full citation}}
+  howpublished = {arXiv:2504.21801},
+  year         = {2025}
 }
 
-@misc{positivstellensatz,
-  title  = {Formalized sum-of-squares / Positivstellensatz certificate checking},
-  author = {\todo{choose a representative reference, e.g. Harrison's ``Verifying
-            nonlinear real formulas via sums of squares'' (TPHOLs 2007)}},
-  note   = {\todo{full citation}}
-}
+% --- the case study's problem and its recent history ------------------------
 
 @article{brualdigoldwasser,
   title   = {Permanent of the {Laplacian} matrix of trees and bipartite graphs},
@@ -107,5 +137,5 @@
   author       = {Pant, Priyanshu},
   howpublished = {arXiv:2605.14176},
   year         = {2026},
-  note         = {\todo{confirm author list/affiliation}}
+  note         = {\todo{confirm the full author list}.}
 }
