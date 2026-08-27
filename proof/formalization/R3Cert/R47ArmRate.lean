@@ -1,6 +1,7 @@
 import Mathlib
 import R3Cert.R47RateZBound
 import R3Cert.R47HeadId
+import R3Cert.R47HubState
 
 /-!
   # Arm-load rate unimodality (Hnorm/Hdom frontier, Step 1)
@@ -117,9 +118,47 @@ theorem armVal_succ_dn (j : ℕ) (hj : 5 ≤ j) :
         norm_num
     _ = armVal j ^ 11 * (621 / 64 : ℚ) ^ 2 := by ring
 
+/-- Cross-multiplied single-step rate climb (`j ≤ 4`): the division-free form of
+    `armRate(j) ≤ armRate(j+1)`, from `armVal_succ_up` times `(621/64)^(1+2j)`. -/
+theorem armVal_cross_up (j : ℕ) (hj : j ≤ 4) :
+    armVal j ^ 11 * (621 / 64 : ℚ) ^ (1 + 2 * (j + 1))
+      ≤ armVal (j + 1) ^ 11 * (621 / 64 : ℚ) ^ (1 + 2 * j) := by
+  have h := armVal_succ_up j hj
+  have hexp : 1 + 2 * (j + 1) = (1 + 2 * j) + 2 := by ring
+  have hpos : (0 : ℚ) ≤ (621 / 64 : ℚ) ^ (1 + 2 * j) := by positivity
+  rw [hexp, pow_add]
+  calc armVal j ^ 11 * ((621 / 64 : ℚ) ^ (1 + 2 * j) * (621 / 64 : ℚ) ^ 2)
+      = (armVal j ^ 11 * (621 / 64 : ℚ) ^ 2) * (621 / 64 : ℚ) ^ (1 + 2 * j) := by ring
+    _ ≤ armVal (j + 1) ^ 11 * (621 / 64 : ℚ) ^ (1 + 2 * j) :=
+        mul_le_mul_of_nonneg_right (le_of_lt h) hpos
+
+/-- Cross-multiplied single-step rate decay (`j ≥ 5`): the division-free form of
+    `armRate(j+1) ≤ armRate(j)`, from `armVal_succ_dn` times `(621/64)^(1+2j)`. -/
+theorem armVal_cross_dn (j : ℕ) (hj : 5 ≤ j) :
+    armVal (j + 1) ^ 11 * (621 / 64 : ℚ) ^ (1 + 2 * j)
+      ≤ armVal j ^ 11 * (621 / 64 : ℚ) ^ (1 + 2 * (j + 1)) := by
+  have h := armVal_succ_dn j hj
+  have hexp : 1 + 2 * (j + 1) = (1 + 2 * j) + 2 := by ring
+  have hpos : (0 : ℚ) ≤ (621 / 64 : ℚ) ^ (1 + 2 * j) := by positivity
+  rw [hexp, pow_add]
+  calc armVal (j + 1) ^ 11 * (621 / 64 : ℚ) ^ (1 + 2 * j)
+      ≤ (armVal j ^ 11 * (621 / 64 : ℚ) ^ 2) * (621 / 64 : ℚ) ^ (1 + 2 * j) :=
+        mul_le_mul_of_nonneg_right h hpos
+    _ = armVal j ^ 11 * ((621 / 64 : ℚ) ^ (1 + 2 * j) * (621 / 64 : ℚ) ^ 2) := by ring
+
 /-- The rate-normalized 11th-power arm value `armRate(j)^11 = A(j)^11 / (621/64)^(1+2j)`.
     (Stated at the 11th power to stay rational — `621/64 = rho_B^11`.) -/
 def armRate11 (j : ℕ) : ℚ := armVal j ^ 11 / (621 / 64 : ℚ) ^ (1 + 2 * j)
+
+/-- Single-step rate monotonicity below the peak: `armRate(j) ≤ armRate(j+1)` (`j ≤ 4`). -/
+theorem armRate11_le_up (j : ℕ) (hj : j ≤ 4) : armRate11 j ≤ armRate11 (j + 1) := by
+  rw [armRate11, armRate11, div_le_div_iff (by positivity) (by positivity)]
+  exact armVal_cross_up j hj
+
+/-- Single-step rate monotonicity above the peak: `armRate(j+1) ≤ armRate(j)` (`j ≥ 5`). -/
+theorem armRate11_ge_dn (j : ℕ) (hj : 5 ≤ j) : armRate11 (j + 1) ≤ armRate11 j := by
+  rw [armRate11, armRate11, div_le_div_iff (by positivity) (by positivity)]
+  exact armVal_cross_dn j hj
 
 /-- The peak value is exactly `1`: `armRate(5)^11 = (621/64)^11 / (621/64)^11 = 1`. -/
 theorem armRate11_five : armRate11 5 = 1 := by
@@ -190,6 +229,58 @@ theorem armProd_le_rhoB_pow (arms : List ℕ) :
       _ = rhoB ^ (usize (armU a) + usizeList (rest.map armU)) := by rw [← pow_add]
       _ = rhoB ^ usizeList ((a :: rest).map armU) := by
           rw [List.map_cons, usizeList_cons]
+
+/-! ### Single-arm monotone resize: moving one arm toward the peak load 5 -/
+
+/-- Bridge: the real arm `Ztot` is the cast of the rational `armVal`. -/
+theorem armVal_cast (j : ℕ) : ((armVal j : ℚ) : ℝ) = Ztot (dtSub (armU j)) := by
+  rw [Ztot_dtSub_armU, armVal]; push_cast; ring
+
+/-- The rate-normalized arm-block objective (real), `armProd^11 / (621/64)^size`. -/
+noncomputable def armObj (arms : List ℕ) : ℝ :=
+  armProd arms ^ 11 / (621 / 64 : ℝ) ^ usizeList (arms.map armU)
+
+theorem armObj_nonneg (arms : List ℕ) : 0 ≤ armObj arms := by
+  unfold armObj
+  exact div_nonneg (pow_nonneg (armProd_nonneg arms) 11) (le_of_lt (pow_pos (by norm_num) _))
+
+/-- **The factorization**: the block objective peels one arm off the head as its own
+    rate factor, `armObj (j :: rest) = armRate(j)^11 · armObj rest`.  This is what makes
+    a single-arm resize a *local* move — the rest of the block is an untouched constant. -/
+theorem armObj_cons (j : ℕ) (rest : List ℕ) :
+    armObj (j :: rest) = (armRate11 j : ℝ) * armObj rest := by
+  have hP : armProd (j :: rest) = Ztot (dtSub (armU j)) * armProd rest := by simp [armProd]
+  have hU : usizeList ((j :: rest).map armU) = (1 + 2 * j) + usizeList (rest.map armU) := by
+    rw [List.map_cons, usizeList_cons, usize_armU]
+  have hZ : Ztot (dtSub (armU j)) = ((armVal j : ℚ) : ℝ) := (armVal_cast j).symm
+  simp only [armObj, hP, hU, hZ, armRate11]
+  push_cast
+  rw [mul_pow, pow_add]
+  ring
+
+/-- The block objective depends only on the multiset of arm loads. -/
+theorem armObj_perm {l1 l2 : List ℕ} (h : l1.Perm l2) : armObj l1 = armObj l2 := by
+  have hu : usizeList (l1.map armU) = usizeList (l2.map armU) := by
+    rw [usizeList_map_armU, usizeList_map_armU, h.length_eq, h.sum_eq]
+  unfold armObj
+  rw [armProd_perm h, hu]
+
+/-- **Monotone resize below the peak** (`j ≤ 4`): incrementing the head arm's load
+    toward 5, with the rest of the block held fixed, does not decrease the objective.
+    Via `armObj_perm`, "head" is any arm.  conjecture1_proved = False. -/
+theorem armObj_resize_up (j : ℕ) (rest : List ℕ) (hj : j ≤ 4) :
+    armObj (j :: rest) ≤ armObj ((j + 1) :: rest) := by
+  rw [armObj_cons, armObj_cons]
+  apply mul_le_mul_of_nonneg_right _ (armObj_nonneg rest)
+  exact_mod_cast armRate11_le_up j hj
+
+/-- **Monotone resize above the peak** (`j ≥ 5`): decrementing the head arm's load
+    toward 5, with the rest of the block held fixed, does not decrease the objective. -/
+theorem armObj_resize_dn (j : ℕ) (rest : List ℕ) (hj : 5 ≤ j) :
+    armObj ((j + 1) :: rest) ≤ armObj (j :: rest) := by
+  rw [armObj_cons, armObj_cons]
+  apply mul_le_mul_of_nonneg_right _ (armObj_nonneg rest)
+  exact_mod_cast armRate11_ge_dn j hj
 
 end Step3
 end R3Cert
