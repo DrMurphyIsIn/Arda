@@ -284,5 +284,25 @@ theorem armObj_resize_dn (j : ℕ) (rest : List ℕ) (hj : 5 ≤ j) :
   apply mul_le_mul_of_nonneg_right _ (armObj_nonneg rest)
   exact_mod_cast armRate11_ge_dn j hj
 
+/-- **The joint arm-block rate envelope**: `armObj arms ≤ 1` for EVERY arm-load list,
+    tight exactly when every arm sits at the peak load 5.  The product of the per-arm
+    envelope `armRate(j)^11 ≤ 1` (`armRate11_le_one`) via the `armObj_cons`
+    factorization — the closure of the marginal resize (`armObj_resize_up`/`_dn`) into
+    the joint statement for the arm block: no arm-load configuration beats all-arms-at-5.
+
+    This bounds only the arm block of a hub; the full Hnorm/Hdom layers
+    (`R47TopCapstone.conjecture1_of_layers`) still require the hub-level argument
+    (arms + cherries + backbone + rooting).  conjecture1_proved = False. -/
+theorem armObj_le_one (arms : List ℕ) : armObj arms ≤ 1 := by
+  induction arms with
+  | nil => norm_num [armObj, armProd, usizeList_nil]
+  | cons j rest ih =>
+    rw [armObj_cons]
+    have hr : (armRate11 j : ℝ) ≤ 1 := by exact_mod_cast armRate11_le_one j
+    calc (armRate11 j : ℝ) * armObj rest
+        ≤ 1 * armObj rest := mul_le_mul_of_nonneg_right hr (armObj_nonneg rest)
+      _ = armObj rest := one_mul _
+      _ ≤ 1 := ih
+
 end Step3
 end R3Cert
