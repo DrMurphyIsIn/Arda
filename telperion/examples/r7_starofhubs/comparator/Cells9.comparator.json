@@ -1,0 +1,24 @@
+{
+  "challenge_module": "R7Hyps.StarOfHubs.Cells9Challenge",
+  "solution_module": "R7Hyps.StarOfHubs.Cells9",
+  "theorem_names": [
+    "R7Hyps.StarOfHubs.star_subs_S10_cT4_cB0_leaf",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT4_cB0_arm1",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT4_cB0_arm2",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT4_cB5_leaf",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT4_cB5_arm1",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT4_cB5_arm2",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT5_cB0_leaf",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT5_cB0_arm1",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT5_cB0_arm2",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT5_cB5_leaf",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT5_cB5_arm1",
+    "R7Hyps.StarOfHubs.star_subs_S10_cT5_cB5_arm2"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
