@@ -138,9 +138,11 @@ theorem armVal_cross_dn (j : ℕ) (hj : 5 ≤ j) :
     armVal (j + 1) ^ 11 * (621 / 64 : ℚ) ^ (1 + 2 * j)
       ≤ armVal j ^ 11 * (621 / 64 : ℚ) ^ (1 + 2 * (j + 1)) := by
   have h := armVal_succ_dn j hj
-  have hexp : 1 + 2 * (j + 1) = (1 + 2 * j) + 2 := by ring
+  have hsplit : (621 / 64 : ℚ) ^ (1 + 2 * (j + 1))
+      = (621 / 64 : ℚ) ^ (1 + 2 * j) * (621 / 64 : ℚ) ^ 2 := by
+    rw [show 1 + 2 * (j + 1) = (1 + 2 * j) + 2 from by ring]; exact pow_add _ _ _
   have hpos : (0 : ℚ) ≤ (621 / 64 : ℚ) ^ (1 + 2 * j) := by positivity
-  rw [hexp, pow_add]
+  rw [hsplit]
   calc armVal (j + 1) ^ 11 * (621 / 64 : ℚ) ^ (1 + 2 * j)
       ≤ (armVal j ^ 11 * (621 / 64 : ℚ) ^ 2) * (621 / 64 : ℚ) ^ (1 + 2 * j) :=
         mul_le_mul_of_nonneg_right h hpos
@@ -152,12 +154,12 @@ def armRate11 (j : ℕ) : ℚ := armVal j ^ 11 / (621 / 64 : ℚ) ^ (1 + 2 * j)
 
 /-- Single-step rate monotonicity below the peak: `armRate(j) ≤ armRate(j+1)` (`j ≤ 4`). -/
 theorem armRate11_le_up (j : ℕ) (hj : j ≤ 4) : armRate11 j ≤ armRate11 (j + 1) := by
-  rw [armRate11, armRate11, div_le_div_iff (by positivity) (by positivity)]
+  rw [armRate11, armRate11, div_le_div_iff₀ (by positivity) (by positivity)]
   exact armVal_cross_up j hj
 
 /-- Single-step rate monotonicity above the peak: `armRate(j+1) ≤ armRate(j)` (`j ≥ 5`). -/
 theorem armRate11_ge_dn (j : ℕ) (hj : 5 ≤ j) : armRate11 (j + 1) ≤ armRate11 j := by
-  rw [armRate11, armRate11, div_le_div_iff (by positivity) (by positivity)]
+  rw [armRate11, armRate11, div_le_div_iff₀ (by positivity) (by positivity)]
   exact armVal_cross_dn j hj
 
 /-- The peak value is exactly `1`: `armRate(5)^11 = (621/64)^11 / (621/64)^11 = 1`. -/
