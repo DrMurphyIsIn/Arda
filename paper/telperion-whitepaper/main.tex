@@ -1,0 +1,120 @@
+\documentclass[11pt]{article}
+
+% ---------------------------------------------------------------------------
+% Telperion whitepaper -- first draft.
+% Build:  latexmk -pdf main.tex   (or pdflatex main; bibtex main; pdflatex x2)
+% Status: DRAFT. Placeholders are marked \todo{...}. Author/affiliation and the
+% AI-assistance disclosure need the author's sign-off before submission.
+% ---------------------------------------------------------------------------
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+% Draft-time TODO/placeholder marker. Remove \usepackage before final build to
+% make any surviving placeholder a hard error.
+\newcommand{\todo}[1]{{\color{red}\textbf{[TODO: #1]}}}
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  frame=single,
+  framesep=4pt,
+  xleftmargin=4pt,
+  aboveskip=1ex, belowskip=1ex,
+}
+
+\newcommand{\Telperion}{\textsc{Telperion}}
+\newcommand{\Comparator}{\textsc{Comparator}}
+\newcommand{\nanoda}{\texttt{nanoda}}
+\newcommand{\Lean}{Lean\,4}
+\newcommand{\Mathlib}{\textsc{Mathlib}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\title{\Telperion: An Untrusted Certificate Compiler for\\
+Kernel-Checked, Independently Re-Verified Mathematics}
+
+\author{Peter W. Murphy\thanks{\todo{affiliation, email, ORCID}. Correspondence:
+\texttt{\todo{email}}.}}
+
+\date{Draft --- \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present \Telperion, a tool that turns families of concrete mathematical
+statements into machine-checked \Lean{} theorems by \emph{exact-arithmetic
+certificate and kernel verification}. The design separates a large, replaceable
+\emph{generator} from a small \emph{trusted core}: the generator searches for and
+serializes a certificate (a sum-of-squares decomposition, a Positivstellensatz
+or Farkas combination, a Wilf--Zeilberger pair, a Chv\'atal--Gomory derivation,
+and roughly thirty other shapes), and \Lean's kernel re-derives the theorem from
+that certificate. A defective certificate is therefore a \emph{compile failure},
+never a false theorem; the generator is untrusted by construction, and the same
+pipeline proves an unrelated textbook inequality and a research-scale result
+through identical machinery.
+
+Beyond kernel acceptance, \Telperion's output can be handed to an
+\emph{independent judge}: OpenAI's \Comparator{} exports each proof and checks
+that it proves exactly the intended statement, uses only a whitelist of axioms,
+and survives replay by a second kernel (\nanoda, an independent Rust
+reimplementation) in addition to \Lean's own. A soundness bug would have to fool
+two independently written kernels.
+
+As a flagship demonstration we report the state of a formalization of the
+Brualdi--Goldwasser extremal-tree conjecture. We are explicit about what this
+demonstrates: the conjecture is \emph{not} proved. What is proved --- a
+conditional reduction of the full conjecture to two precisely stated open layers,
+together with the two analytic cruxes it rests on --- is independently verified by
+both kernels and is axiom-clean. The contribution we emphasize is exactly this:
+a methodology in which the boundary between what is proved and what is open is
+enforced by the kernel and by an independent second kernel, and is therefore
+impossible to overstate.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Draft scope.} This is a standalone paper about \Telperion. A
+separate paper will present the Brualdi--Goldwasser result if and when the two
+open layers are closed; here that formalization appears only as an
+in-progress case study, scoped honestly (\S\ref{sec:bg}).
+
+\medskip
+\noindent\textbf{Disclosure.} \Telperion{} and the accompanying formalization
+were developed with substantial assistance from AI coding agents. This is not
+incidental to the paper's thesis: the trust model is designed precisely so that
+the generator --- whether a human, a solver, or an AI --- is untrusted, and
+soundness rests only on \Lean's kernel and an independent second kernel. See
+\S\ref{sec:trust} and \todo{finalize disclosure wording with author}.
+
+\input{sections/01-intro}
+\input{sections/02-trust-model}
+\input{sections/03-emitters}
+\input{sections/04-independent-verification}
+\input{sections/05-bg-casestudy}
+\input{sections/06-related-work}
+\input{sections/07-limitations}
+\input{sections/08-conclusion}
+
+\appendix
+\input{sections/99-appendix}
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}

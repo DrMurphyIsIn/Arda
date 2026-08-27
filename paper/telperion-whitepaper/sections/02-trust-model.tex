@@ -1,0 +1,66 @@
+\section{The trust model}
+\label{sec:trust}
+
+\Telperion's design rests on a single principle: \textbf{the generator is
+untrusted, and the \Lean{} kernel is the sole trusted component.} A defective
+certificate manifests as a compile failure, never as a false theorem. Everything
+else in the tool---the search heuristics, the SDP rounding, the emitters, even the
+exact-arithmetic self-checks---exists to make the tool \emph{useful}, not to make
+its output \emph{true}. Truth is established by, and only by, the kernel
+re-deriving the theorem from the emitted certificate.
+
+This has a design corollary worth stating: because nothing the generator does is
+trusted, the generator is free to be large and heuristic while the trusted surface
+stays small. The engine is a few thousand lines of dependency-light Python (it
+uses only \texttt{sympy}); a referee who wishes to can audit the engine, but need
+not---the audit that matters is the kernel's, and it happens on every build. This
+is the same discipline that underlies certificate-checking in optimization
+(e.g.\ VIPR for mixed-integer programs~\cite{vipr}) and the ``de~Bruijn
+criterion'' in interactive theorem proving~\cite{debruijn}: a small trusted checker
+re-validates the output of an arbitrarily complex, untrusted producer.
+
+\paragraph{The self-checks are a convenience, not the guarantee.} Before emitting,
+\Telperion{} verifies the certificate numerically in exact arithmetic
+(\texttt{fractions.Fraction} and \texttt{sympy.Rational}; no floating point on any
+certificate path). This catches mistakes cheaply---before a continuous-integration
+round-trip---but establishes nothing about truth. It is important to be precise
+here, because it is a common category error: an exact-arithmetic check that ``the
+certificate reproduces the target'' is a check of the \emph{generator's} internal
+consistency. Only the kernel's re-derivation is evidence about the theorem.
+
+\paragraph{The one thing the kernel cannot catch: vacuity.} The kernel rejects a
+\emph{false} theorem. It happily accepts a \emph{true-but-vacuous} one: a reflexive
+$X = X$ or $0 \le 0$ compiles green while proving nothing about the certificate,
+because the defect lives in the \emph{statement}, not the proof. \Telperion{}
+therefore turns the tool on its own output. The emit step refuses a reflexive
+emitted statement, and the identity-style emitters additionally require the
+certificate to be \emph{load-bearing}: a corrupted certificate must break the
+claim, or emission is refused. A family that deliberately emits a reference
+identity or a degenerate boundary case opts out explicitly, declaring that intent.
+Two further local gates run before any build is attempted: a structural lint
+(unfilled template holes, unbalanced delimiters, duplicate names) and a
+\emph{soundness lint} that refuses the ``green build $\ne$ proved'' classes---a
+\code{sorry} or \code{admit}, a smuggled \code{axiom}, an empty \code{:= by}, a
+missing type ascription, a \code{Prop := True} stub.
+
+\paragraph{Provenance and drift.} Emitted files are stamped with the tool version
+and a SHA-256 hash over a canonical serialization of every instance's expressions,
+the \Lean{} profile, the proof templates, and the emitters' own code (timestamps
+excluded). A regeneration diff detects any drift byte-for-byte, so a change to
+emission logic can never ship under a stale hash, and a hand-edit to a generated
+file is flagged. There is no API path from a family definition to \Lean{} text that
+bypasses certification, and emission is refused without both a certified-family
+witness and a green validation report.
+
+\paragraph{What kernel acceptance still does not give you.} Two gaps remain, and
+they motivate \S\ref{sec:indep}. First, kernel acceptance rests on a \emph{single}
+implementation of the kernel (and the elaborator that produced the proof term);
+an implementation bug, however unlikely, is a common-mode failure. Second, the
+non-vacuity guards above are \Telperion{} checking its \emph{own} output for a
+narrow syntactic class of degeneracy; they are not an independent confirmation
+that the emitted proof proves the statement a third party \emph{intended}. Both
+gaps are closed---to the extent any finite process can---by handing the proof to
+an independent judge that re-derives the intended statement's identity, restricts
+the admissible axioms, and replays the proof through a second, independently
+written kernel. That is the subject of \S\ref{sec:indep}; we first describe how
+certificates become \Lean{} at all.

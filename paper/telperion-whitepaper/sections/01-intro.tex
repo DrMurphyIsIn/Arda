@@ -1,0 +1,80 @@
+\section{Introduction}
+\label{sec:intro}
+
+Two anxieties attend the growing use of machines in mathematical proof. The first
+is \emph{trust}: as large language models, SAT/SMT solvers, and semidefinite
+programming (SDP) tools increasingly produce candidate proofs and lemmas, how do
+we know their output is correct, and not merely plausible? The second is a
+\emph{gap}: many powerful proof techniques---sum-of-squares (SOS) certificates,
+Positivstellensatz representations, linear-programming duals---are discovered
+numerically, in floating point, and a numerically ``verified'' certificate is not
+a proof. Rounding a near-feasible SDP solution to something a proof assistant will
+accept, without silently changing the claim, is itself delicate work.
+
+\Telperion{} addresses both by committing to a strict division of labor. A large,
+freely replaceable \emph{generator} searches for a certificate and serializes it
+in exact rational arithmetic. A small \emph{trusted core}---\Lean's kernel, and
+nothing else---re-derives the theorem from that certificate. The generator is
+never trusted: if it emits a wrong certificate, the emitted \Lean{} fails to
+compile; it can never yield a false theorem. This is not a slogan but a structural
+property of the pipeline, and it is what lets the same tool prove Bernoulli's
+inequality and drive a research-scale formalization through identical machinery.
+
+Concretely, one describes a problem as a \emph{certifiable family}: a grid of
+instances, each reducible to one of \Telperion's certificate \emph{shapes}. The
+tool certifies each instance in exact arithmetic, then emits \Lean~4 that
+\Mathlib's kernel re-proves from scratch. Roughly thirty shapes are supported
+today---rational-function positivity by P\'olya lifting, exact SOS (reaching
+interior equality cases), Artin-denominator rational SOS for nonnegative-but-not-SOS
+polynomials, Putinar and Handelman certificates on semialgebraic sets, Farkas /
+linear-Positivstellensatz combinations, Nullstellensatz and real-Nullstellensatz
+ideal-membership certificates, Wilf--Zeilberger hypergeometric identities,
+Chv\'atal--Gomory integer rounding, and more (\S\ref{sec:emitters})---and where a
+statement needs a new shape, one adds an \emph{emitter}; the trust model comes
+for free.
+
+\paragraph{An independent second opinion.} Kernel acceptance already rules out
+false theorems. But a single implementation---\Lean's elaborator and kernel---is
+still a single point of trust, and kernel acceptance alone cannot certify that the
+emitted proof proves the statement one \emph{meant}, rather than a vacuous or
+weakened variant. \Telperion's output can therefore be handed to an independent
+judge: the \Comparator~\cite{comparator} from OpenAI's \emph{ten-proofs}
+project~\cite{tenproofs}. Given a \emph{challenge} module (the intended statement)
+and a \emph{solution} module (the emitted proof), the \Comparator{} exports both
+and checks three things no ordinary build can: that the solution proves
+\emph{exactly} the challenge statement; that it uses only a declared whitelist of
+axioms; and that it survives replay not only by \Lean's kernel but by \nanoda---an
+independent reimplementation of the kernel in Rust~\cite{nanoda}. A soundness bug
+would have to fool two independently written kernels (\S\ref{sec:indep}).
+
+\paragraph{A flagship, honestly scoped.} We use a formalization of the
+Brualdi--Goldwasser extremal-tree conjecture as the paper's running research
+example. We state plainly, and repeatedly, what it demonstrates. The conjecture is
+\emph{not} proved. \Telperion{} and the surrounding formalization have produced a
+\emph{conditional} reduction of the full conjecture to two precisely stated open
+layers, together with the two analytic inequalities that reduction rests on; those
+theorems are sorry-free, axiom-clean, and---as we report in \S\ref{sec:bg}---accepted
+by both \Lean's kernel and \nanoda. The point of the case study is not a
+completeness claim; it is that the boundary between proved and open is here a
+machine-checked object, not a matter of a reader's charity toward prose.
+
+\paragraph{Contributions.} This paper makes no claim to a new decision procedure
+or a new certificate class. Its contribution is an \emph{integrated system} and
+the methodology it embodies:
+\begin{enumerate}[nosep,leftmargin=1.4em]
+  \item a certificate-compilation pipeline (\S\ref{sec:emitters}) that turns
+    exact-arithmetic certificate families into kernel-checked \Lean, with a
+    composable library of $\sim$30 emitter shapes and an enforced
+    \code{certify $\to$ validate $\to$ emit $\to$ freeze} workflow;
+  \item a trust model (\S\ref{sec:trust}) in which the generator is untrusted by
+    construction and the sole trusted component is the kernel, with explicit
+    guards against the one failure the kernel cannot catch---vacuity;
+  \item an independent-verification layer (\S\ref{sec:indep}) that adds
+    statement-identity, an axiom whitelist, and a \emph{second, non-\Lean{}
+    kernel} on top of kernel acceptance; and
+  \item an end-to-end demonstration on both closed textbook problems and an
+    in-progress research formalization (\S\ref{sec:bg}), with the proved/open
+    boundary machine-enforced.
+\end{enumerate}
+\Telperion{} is a standalone, problem-agnostic artifact; nothing about the engine
+is specific to the case study. It is available as open source (\S\ref{sec:concl}).

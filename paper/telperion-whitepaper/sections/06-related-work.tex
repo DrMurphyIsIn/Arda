@@ -1,0 +1,45 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Interactive theorem proving and its libraries.} \Telperion{} targets
+\Lean~4~\cite{lean4} and \Mathlib~\cite{mathlib}; its trust argument is the
+long-standing de~Bruijn criterion~\cite{debruijn}---a small trusted kernel
+re-checks the output of untrusted producers. What \Telperion{} adds at this level
+is not a new foundation but a disciplined \emph{producer}: a certificate compiler
+whose emitted proofs use only a narrow, fixed repertoire of kernel-backed tactics,
+so that the object the kernel checks is always a certificate re-derivation rather
+than an opaque tactic script.
+
+\paragraph{Learned provers.} Recent systems---AlphaProof~\cite{alphaproof},
+DeepSeek-Prover~\cite{deepseekprover}, and related LLM-driven approaches---\emph{search}
+for proofs, typically as tactic sequences, guided by learned models. \Telperion{}
+occupies a different point in the design space: it does not search proof \emph{text};
+it computes a \emph{certificate} (often via an untrusted numeric solver) and emits a
+fixed proof skeleton that re-checks it. The two are complementary---a learned system
+could propose the family or the certificate shape, and \Telperion{} could compile
+and independently verify the result---and the independent-verification layer of
+\S\ref{sec:indep} is exactly the kind of external check that machine-proposed proofs
+most need.
+
+\paragraph{Tactic-level automation and Positivstellensatz methods.} \Lean{} and its
+neighbors provide \code{positivity}, \code{polyrith}, \code{nlinarith}, and related
+tactics; the formal-methods literature includes substantial work on
+sum-of-squares and Positivstellensatz certificates and their verified
+checking~\cite{positivstellensatz}. \Telperion's contribution relative to these is
+integrative rather than a single new procedure: it packages exact certificate
+\emph{search-and-rounding} for roughly thirty shapes behind one enforced pipeline,
+with provenance, non-vacuity gates, and independent re-verification.
+
+\paragraph{Certificate checking in optimization.} The separation of an untrusted
+solver from a trusted, exact checker is standard in optimization---VIPR~\cite{vipr}
+provides checkable certificates for mixed-integer programming, and \Telperion's
+Chv\'atal--Gomory emitter is VIPR-flavored. \Telperion{} carries that discipline
+into general theorem proving: the numeric solver is a search oracle, and only an
+exact, kernel-re-checkable certificate crosses into the trusted region.
+
+\paragraph{Independent proof judging.} The independent-verification layer builds
+directly on the \Comparator~\cite{comparator}, \code{lean4export}~\cite{lean4export},
+and \nanoda~\cite{nanoda}. Our contribution there is the \emph{bridge}---turning
+\Telperion's emit results into \Comparator{} challenges automatically---and the
+demonstration that a research-scale proof's anchors survive a second, independent
+kernel with a clean axiom trace.

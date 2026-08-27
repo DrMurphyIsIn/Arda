@@ -1,0 +1,92 @@
+\section{Certificate families and emitters}
+\label{sec:emitters}
+
+\Telperion{} turns a problem into \Lean{} when it can be expressed as a
+\emph{certifiable family}---a grid of instances, each reducible to one of a fixed
+set of certificate \emph{shapes}. This section describes the pipeline, the shapes,
+and a fully worked example.
+
+\subsection{The pipeline}
+
+Every family flows through an enforced, four-stage workflow:
+\[
+\texttt{define} \;\to\; \texttt{certify()} \;\to\; \texttt{validate} \;\to\;
+\texttt{emit()} \;\to\; \texttt{lake build} \;\to\; \texttt{freeze()}.
+\]
+\texttt{define} states the family: its symbols, the grid of parameter values, and
+a target expression per grid point. \texttt{certify()} searches for and checks a
+certificate for each instance in exact arithmetic, returning a certified-family
+witness or naming the first cell (and, where relevant, the corner) that failed.
+\texttt{validate} runs the family's own exact-numeric assertions. \texttt{emit()}
+renders the certified family into \Lean{} through the emitters; it refuses without
+both the certified-family witness and a green validation report, and it applies the
+non-vacuity and soundness gates of \S\ref{sec:trust}. \texttt{lake build}---the
+user's own continuous integration---is the trusted step: \Mathlib's kernel
+re-derives every emitted theorem. \texttt{freeze()} records the output and its
+provenance hash for drift detection.
+
+The proof text each emitter writes is deliberately narrow and uniform: identities
+are discharged by \code{simp only $\to$ push\_cast $\to$ field\_simp $\to$ ring},
+nonnegativity by \code{positivity}, finite case analysis by \code{interval\_cases},
+and so on. The generator does not emit clever proofs; it emits certificates and lets
+a small, fixed repertoire of kernel-backed tactics re-check them.
+
+\subsection{The certificate shapes}
+
+The shapes fall into a few broad families; Appendix~\ref{app:emitters} gives the
+full catalog. Positivity and inequalities are covered by rational-function
+positivity via P\'olya lifting (multiply through by $(1+\sum x_i)^N$ and reduce to
+a nonnegative-coefficient form), exact rational SOS (which reaches interior
+equality cases that P\'olya lifting cannot), Artin-denominator rational SOS for
+polynomials that are nonnegative but not SOS (\Telperion{} finds a positive
+multiplier $q$ with $q\cdot p$ a sum of squares), Putinar and Handelman
+certificates on semialgebraic and polytope constraints, Bernstein positivity on an
+interval, and Sturm-sequence root exclusion for strict positivity. Exact algebra is
+covered by identity and $p$-adic-valuation emitters, Farkas / linear-Positivstellensatz
+cone combinations, Nullstellensatz and real-Nullstellensatz ideal-membership
+certificates (cofactors computed by Gr\"obner reduction), and SOS-refutation
+certificates of semialgebraic infeasibility. Combinatorial and integer shapes
+include Wilf--Zeilberger hypergeometric-sum identities, Chv\'atal--Gomory integer
+rounding (VIPR-style), Newton/interlacing inequalities, tangent-line convex-sum
+inequalities, Cauchy--Schwarz, and explicit PSD quadratic forms. Finally, assembly
+shapes---finite case dispatch, region subdivision and gluing, $\forall K \ge K_0$
+tails, substitution glue, and custom skeletons---compose the atomic shapes into
+statements in the original variables.
+
+Where a numeric solver is involved (finding a Putinar multiplier by SDP, say), the
+solver runs untrusted: its floating-point solution is rounded to exact rationals
+and \emph{re-verified exactly} before emission, and only the exact certificate
+reaches \Lean. The SDP is a search oracle, not part of the trusted chain.
+
+\subsection{A worked example}
+\label{sec:worked}
+
+Take Bernoulli's inequality in integer form: for every integer $k \ge 2$ and real
+$x \ge 0$,
+\[
+(1+x)^k - 1 - kx \;\ge\; 0.
+\]
+Expanding, $(1+x)^k = \sum_{j=0}^{k}\binom{k}{j}x^j$; the degree-$0$ and degree-$1$
+terms cancel against $-1-kx$, leaving
+\[
+(1+x)^k - 1 - kx \;=\; \sum_{j=2}^{k}\binom{k}{j}\,x^j,
+\]
+a polynomial with nonnegative integer coefficients over $x \ge 0$. That is exactly
+a P\'olya certificate: the emitter rewrites the target into its
+nonnegative-coefficient form and closes each instance by \code{positivity}. Driving
+the grid $k \in \{2,\dots,6\}$ through the pipeline yields five \Lean{} theorems of
+the form
+\begin{lstlisting}
+theorem bernoulli_k3 (x : R) (hx : 0 <= x) :
+    0 <= 3 * x ^ 2 + x ^ 3 := by
+  ...  -- rewrite to the certified form, then `positivity`
+\end{lstlisting}
+The example is deliberately humble, but it exercises the \emph{general} core (not
+any problem-specific machinery), and it makes a soundness point concrete: the
+$k=1$ instance is the vacuous $0 \le 0$, and \Telperion{} excludes it---Bernoulli's
+inequality is nontrivial only for $k \ge 2$. Harder shapes behave identically from
+the caller's view: the Motzkin polynomial $x^4y^2 + x^2y^4 - 3x^2y^2 + 1$, the
+canonical nonnegative-but-not-SOS example, is handled by the Artin-denominator
+rational-SOS emitter, which finds a positive multiplier turning it into a sum of
+squares; the caller sees the same \code{certify $\to$ emit} interface and a
+kernel-checked theorem at the end.
