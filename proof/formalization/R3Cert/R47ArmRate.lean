@@ -109,7 +109,7 @@ theorem armVal_succ_dn (j : ℕ) (hj : 5 ≤ j) :
       ≤ ((243 / 161 : ℚ) * armVal j) ^ 11 := pow_le_pow_left₀ hpos_j1 hstep 11
     _ = (243 / 161 : ℚ) ^ 11 * armVal j ^ 11 := by rw [mul_pow]
     _ ≤ (621 / 64 : ℚ) ^ 2 * armVal j ^ 11 := by
-        apply mul_le_mul_of_nonneg_right _ (by positivity)
+        apply mul_le_mul_of_nonneg_right _ (pow_nonneg (armVal_pos j).le 11)
         norm_num
     _ = armVal j ^ 11 * (621 / 64 : ℚ) ^ 2 := by ring
 
@@ -120,6 +120,35 @@ def armRate11 (j : ℕ) : ℚ := armVal j ^ 11 / (621 / 64 : ℚ) ^ (1 + 2 * j)
 /-- The peak value is exactly `1`: `armRate(5)^11 = (621/64)^11 / (621/64)^11 = 1`. -/
 theorem armRate11_five : armRate11 5 = 1 := by
   rw [armRate11, armVal_five]; norm_num
+
+/-- **Tail envelope** (`j ≥ 5`): `armRate(j)^11 ≤ 1`, by induction from the peak
+    `armRate(5) = 1` using the decay `armVal_succ_dn` (`R(j+1) = R(j)·(621/64)^2`). -/
+theorem armRate11_le_one_tail (j : ℕ) (hj : 5 ≤ j) : armRate11 j ≤ 1 := by
+  induction j, hj using Nat.le_induction with
+  | base => exact le_of_eq armRate11_five
+  | succ k hk ih =>
+    rw [armRate11, div_le_one (by positivity)]
+    have hR : (621 / 64 : ℚ) ^ (1 + 2 * (k + 1))
+        = (621 / 64 : ℚ) ^ (1 + 2 * k) * (621 / 64 : ℚ) ^ 2 := by
+      rw [← pow_add]; congr 1; ring
+    rw [hR]
+    have hBk : armVal k ^ 11 ≤ (621 / 64 : ℚ) ^ (1 + 2 * k) := by
+      rw [armRate11, div_le_one (by positivity)] at ih; exact ih
+    calc armVal (k + 1) ^ 11
+        ≤ armVal k ^ 11 * (621 / 64 : ℚ) ^ 2 := armVal_succ_dn k hk
+      _ ≤ (621 / 64 : ℚ) ^ (1 + 2 * k) * (621 / 64 : ℚ) ^ 2 :=
+          mul_le_mul_of_nonneg_right hBk (by positivity)
+
+/-- **The rate-normalized arm-value envelope**: `armRate(j)^11 ≤ 1` for every load `j`,
+    with equality exactly at the peak `j = 5` (`armRate11_five`) — the unimodality
+    `armVal_succ_up`/`armVal_succ_dn` assembled (finite climb below the peak, monotone
+    tail above).  This ℚ envelope also follows in ℝ from
+    `R47RateZBound.Ztot_dtSub_le_rhoB_pow`; stated here on the rate axis for the
+    resize/`armProd` lift.  conjecture1_proved = False. -/
+theorem armRate11_le_one (j : ℕ) : armRate11 j ≤ 1 := by
+  rcases le_or_lt j 5 with h | h
+  · interval_cases j <;> norm_num [armRate11, armVal]
+  · exact armRate11_le_one_tail j (le_of_lt h)
 
 end Step3
 end R3Cert
