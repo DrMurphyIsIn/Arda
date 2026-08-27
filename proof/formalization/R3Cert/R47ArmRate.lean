@@ -1,4 +1,6 @@
 import Mathlib
+import R3Cert.R47RateZBound
+import R3Cert.R47HeadId
 
 /-!
   # Arm-load rate unimodality (Hnorm/Hdom frontier, Step 1)
@@ -46,6 +48,8 @@ import Mathlib
 
 namespace R3Cert
 namespace Step3
+
+open RTree
 
 /-- The rational arm value `A(j) = Ztot(dtSub(armU j)) = (3/2)^j·(1 + j/(3(j+1)))`.
     (The ℝ identity is `R47HubState.Ztot_dtSub_armU`; we work in ℚ to clear the
@@ -128,9 +132,10 @@ theorem armRate11_le_one_tail (j : ℕ) (hj : 5 ≤ j) : armRate11 j ≤ 1 := by
   | base => exact le_of_eq armRate11_five
   | succ k hk ih =>
     rw [armRate11, div_le_one (by positivity)]
+    have hexp : 1 + 2 * (k + 1) = (1 + 2 * k) + 2 := by ring
     have hR : (621 / 64 : ℚ) ^ (1 + 2 * (k + 1))
         = (621 / 64 : ℚ) ^ (1 + 2 * k) * (621 / 64 : ℚ) ^ 2 := by
-      rw [← pow_add]; congr 1; ring
+      rw [hexp, pow_add]
     rw [hR]
     have hBk : armVal k ^ 11 ≤ (621 / 64 : ℚ) ^ (1 + 2 * k) := by
       rw [armRate11, div_le_one (by positivity)] at ih; exact ih
@@ -146,9 +151,45 @@ theorem armRate11_le_one_tail (j : ℕ) (hj : 5 ≤ j) : armRate11 j ≤ 1 := by
     `R47RateZBound.Ztot_dtSub_le_rhoB_pow`; stated here on the rate axis for the
     resize/`armProd` lift.  conjecture1_proved = False. -/
 theorem armRate11_le_one (j : ℕ) : armRate11 j ≤ 1 := by
-  rcases le_or_lt j 5 with h | h
+  rcases Nat.lt_or_ge j 6 with h | h
   · interval_cases j <;> norm_num [armRate11, armVal]
-  · exact armRate11_le_one_tail j (le_of_lt h)
+  · exact armRate11_le_one_tail j (by omega)
+
+/-! ### Multi-arm lift: the arm-block rate envelope -/
+
+/-- The arm-load product is nonnegative (a product of positive arm `Ztot`s). -/
+theorem armProd_nonneg (arms : List ℕ) : 0 ≤ armProd arms := by
+  unfold armProd
+  apply List.prod_nonneg
+  intro x hx
+  simp only [List.mem_map] at hx
+  obtain ⟨j, _, rfl⟩ := hx
+  exact le_of_lt (Ztot_dt_pos (armU j))
+
+/-- **The arm-block rate envelope** (the `armProd` lift): the raw `Ztot` product of any
+    arm-load list is bounded by `rho_B` raised to the block's total size,
+    `armProd arms ≤ rho_B ^ usizeList (arms.map armU)`.  It is the product over the list
+    of the per-arm rate bound `Ztot_dtSub_le_rhoB_pow (armU j)` (the ℝ form of
+    `armRate(j) ≤ 1`), tight exactly when every arm sits at the peak load 5.
+
+    Honest boundary: this is the arm-block envelope (each arm's rate ≤ 1, multiplied),
+    NOT the joint hub optimum.  The marginal per-arm unimodality (`armVal_succ_up`/`_dn`,
+    `armRate11_le_one`) is what pins each arm's peak to load 5.  conjecture1_proved = False. -/
+theorem armProd_le_rhoB_pow (arms : List ℕ) :
+    armProd arms ≤ rhoB ^ usizeList (arms.map armU) := by
+  induction arms with
+  | nil => simp [armProd, usizeList_nil]
+  | cons a rest ih =>
+    have hstep : Ztot (dtSub (armU a)) ≤ rhoB ^ usize (armU a) :=
+      Ztot_dtSub_le_rhoB_pow (armU a)
+    have hrho : (0 : ℝ) ≤ rhoB ^ usize (armU a) := le_of_lt (pow_pos rhoB_pos _)
+    calc armProd (a :: rest)
+        = Ztot (dtSub (armU a)) * armProd rest := by simp [armProd]
+      _ ≤ rhoB ^ usize (armU a) * rhoB ^ usizeList (rest.map armU) :=
+          mul_le_mul hstep ih (armProd_nonneg rest) hrho
+      _ = rhoB ^ (usize (armU a) + usizeList (rest.map armU)) := by rw [← pow_add]
+      _ = rhoB ^ usizeList ((a :: rest).map armU) := by
+          rw [List.map_cons, usizeList_cons]
 
 end Step3
 end R3Cert
