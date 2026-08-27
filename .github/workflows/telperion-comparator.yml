@@ -23,11 +23,13 @@ on:
       - "telperion/examples/bernoulli/**"
       - "telperion/src/telperion/comparator.py"
       - ".github/workflows/telperion-comparator.yml"
+      - ".github/comparator/**"
   pull_request:
     paths:
       - "telperion/examples/bernoulli/**"
       - "telperion/src/telperion/comparator.py"
       - ".github/workflows/telperion-comparator.yml"
+      - ".github/comparator/**"
   workflow_dispatch:
 
 jobs:
@@ -44,11 +46,13 @@ jobs:
 
       # 1. Regenerate solution + independent challenge + config from the family
       #    definition (certify -> validate -> emit), and drift-check the frozen copy.
+      #    --nanoda sets enable_nanoda in the config so the judge ALSO replays the
+      #    solution through nanoda (a 2nd, non-Lean kernel; built in step 4b).
       - name: Regenerate and materialize the Comparator challenge
         working-directory: telperion
         run: |
           python examples/bernoulli/generate.py --check
-          python examples/bernoulli/generate.py --comparator
+          python examples/bernoulli/generate.py --comparator --nanoda
 
       # 2. Lean toolchain (elan), pinned by the project's lean-toolchain (v4.32.0).
       - name: Cache elan toolchain
@@ -124,29 +128,75 @@ jobs:
           echo "$(dirname "$COMPARATOR_BIN")" >> "$GITHUB_PATH"
           echo "COMPARATOR_LEAN4EXPORT=$L4X_BIN" >> "$GITHUB_ENV"
 
+      # 5b. nanoda — the 2nd, non-Lean kernel.  A small Rust build (cargo is
+      #     preinstalled on ubuntu-latest).  Validated locally: it ACCEPTS the
+      #     bernoulli solution export with the clean axiom set and REJECTS it with
+      #     an empty whitelist, so it is genuinely load-bearing.
+      - name: Build nanoda (2nd kernel)
+        run: |
+          git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$HOME/nanoda"
+          cd "$HOME/nanoda"
+          cargo build --release
+          NANODA_BIN="$HOME/nanoda/target/release/nanoda_bin"
+          test -x "$NANODA_BIN"
+          echo "nanoda = $NANODA_BIN"
+          echo "COMPARATOR_NANODA=$NANODA_BIN" >> "$GITHUB_ENV"
+
       # 6. Run the judge against the built bernoulli project.
       #    `lake env` supplies the project's LEAN_PATH so comparator can locate and
-      #    export the Bernoulli / BernoulliChallenge modules.
-      #    NOTE: if `comparator` cannot find its helpers on PATH, set them explicitly:
-      #      COMPARATOR_LEAN4EXPORT / COMPARATOR_LANDRUN (see comparator README).
-      - name: Run Comparator (independent judge)
+      #    export the Bernoulli / BernoulliChallenge modules.  With enable_nanoda in
+      #    the config + COMPARATOR_NANODA set, comparator replays the solution
+      #    through BOTH the Lean default kernel and nanoda.
+      #    NOTE: COMPARATOR_LEAN4EXPORT / COMPARATOR_NANODA come from GITHUB_ENV.
+      - name: Run Comparator (independent judge, 2 kernels)
         working-directory: telperion/examples/bernoulli/lean
         env:
-          # COMPARATOR_LEAN4EXPORT is set from GITHUB_ENV by the build step above.
           COMPARATOR_LANDRUN: /home/runner/.local/bin/landrun
         run: |
           echo "lean4export = $COMPARATOR_LEAN4EXPORT"
+          echo "nanoda      = $COMPARATOR_NANODA"
           lake env comparator Bernoulli.comparator.json
 
-      # --- OPTIONAL: enable the nanoda independent kernel (2nd, non-Lean kernel) ---
-      # Adds a Rust build; then regenerate the config with enable_nanoda and point
-      # comparator at the binary:
-      #
-      #   - name: Build nanoda
-      #     run: |
-      #       git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$HOME/nanoda"
-      #       cd "$HOME/nanoda" && cargo build --release
-      #   - name: Regenerate config with nanoda enabled
-      #     working-directory: telperion
-      #     run: python examples/bernoulli/generate.py --comparator --nanoda
-      #   # then in step 6:  COMPARATOR_NANODA: /home/runner/nanoda/target/release/nanoda
+  # Real-sandbox wrapper self-test (cheap; no mathlib).  Proves the bwrap-backed
+  # landrun replacement runs on the runner, provides isolation, and — unlike real
+  # landrun — preserves the `--` separator lean4export needs.  This is the
+  # COMPARATOR_LANDRUN to use when judging UNTRUSTED third-party solutions.
+  comparator-sandbox-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install bubblewrap + allow unprivileged userns
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bubblewrap
+          # ubuntu-24 AppArmor restricts unprivileged user namespaces; relax it so
+          # bwrap can create the sandbox (best-effort — harmless if the knob is absent).
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+          sudo sysctl -w kernel.unprivileged_userns_clone=1 || true
+          bwrap --version
+      - name: Wrapper preserves `--` and sandboxes
+        run: |
+          W=.github/comparator/landrun-bwrap.sh
+          chmod +x "$W"
+          # 1. inner `--` survives through a REAL bwrap sandbox (the landrun bug fix)
+          OUT=$("$W" --best-effort --ro / -ldd --env PATH -- /bin/bash -c 'printf "%s|" "$@"' _ A -- B)
+          echo "argv seen by command: $OUT"
+          test "$OUT" = "A|--|B|"
+          echo "OK: inner -- preserved through bwrap"
+          # 2. real isolation: writing outside the allowed paths is blocked
+          if "$W" --ro / --env PATH -- /bin/bash -c 'echo x > /usr/nope' 2>/dev/null; then
+            echo "FAIL: wrote to read-only root"; exit 1
+          fi
+          echo "OK: write to ro root blocked"
+          # 3. a --rw path IS writable (bind translation works)
+          mkdir -p "$RUNNER_TEMP/wr"
+          "$W" --ro / --rw "$RUNNER_TEMP/wr" --env PATH -- \
+            /bin/bash -c "echo ok > $RUNNER_TEMP/wr/f"
+          test "$(cat "$RUNNER_TEMP/wr/f")" = ok
+          echo "OK: --rw path writable"
+          # 4. network is unshared (no connectivity for untrusted code)
+          if "$W" --ro / --env PATH -- /bin/bash -c 'exec 3<>/dev/tcp/1.1.1.1/53' 2>/dev/null; then
+            echo "FAIL: network reachable inside sandbox"; exit 1
+          fi
+          echo "OK: network unshared"
