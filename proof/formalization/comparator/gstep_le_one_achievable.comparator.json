@@ -1,0 +1,13 @@
+{
+  "challenge_module": "R3Cert.CappedJointClosure",
+  "solution_module": "R3Cert.CappedJointClosure",
+  "theorem_names": [
+    "R3Cert.CappedJointConfig.gstep_le_one_achievable"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
