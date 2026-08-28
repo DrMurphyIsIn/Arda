@@ -1,5 +1,6 @@
-/- zeta-numerics: zeta(2) LANDED; zeta(3) conversion LANDED; need the correct
-   partial-sum <= tsum lemma name (sum_le_tsum / Finset.sum_le_tsum both absent). -/
+/- Landing genuine zeta-numerics lemmas in Mathlib v4.32.0.
+   zeta(2) bounds (from pi^2/6) and zeta(3) > 9/8 (Apery's constant, NO closed
+   form) via the Dirichlet series (zeta_eq_tsum_one_div_nat_cpow) + partial sum. -/
 import Mathlib
 open scoped Real
 
@@ -12,6 +13,7 @@ theorem riemannZeta_two_re_bounds :
   · nlinarith [Real.pi_gt_three, Real.pi_pos]
   · nlinarith [Real.pi_lt_four, Real.pi_pos]
 
+/-- zeta(3) as a real Dirichlet series (each complex term is a nonneg real cast). -/
 theorem riemannZeta_three_eq_ofReal :
     riemannZeta 3 = ((∑' n : ℕ, 1 / (n : ℝ) ^ 3 : ℝ) : ℂ) := by
   rw [zeta_eq_tsum_one_div_nat_cpow (by norm_num), Complex.ofReal_tsum]
@@ -19,12 +21,13 @@ theorem riemannZeta_three_eq_ofReal :
   rw [show (3 : ℂ) = ((3 : ℕ) : ℂ) by norm_cast, Complex.cpow_natCast]
   push_cast; ring
 
--- probe: the correct partial-sum <= tsum (and tail-split) lemma names
-#check @le_tsum
-#check @le_tsum'
-#check @tsum_le_tsum
-#check @Summable.sum_le_tsum
-#check @sum_add_tsum_nat_add
-#check @Summable.sum_add_tsum_nat_add
-#check @tsum_eq_sum_add_tsum_nat_add
-#check @Finset.sum_le_tsum
+/-- Apery's constant exceeds 9/8 (no closed form; via the first 3 series terms). -/
+theorem riemannZeta_three_re_ge : (9 : ℝ) / 8 ≤ (riemannZeta 3).re := by
+  rw [riemannZeta_three_eq_ofReal, Complex.ofReal_re]
+  have hsum : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 3) :=
+    Real.summable_one_div_nat_pow.mpr (by norm_num)
+  have h3 : (∑ n ∈ Finset.range 3, 1 / (n : ℝ) ^ 3) = 9 / 8 := by
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one]; norm_num
+  calc (9 : ℝ) / 8 = ∑ n ∈ Finset.range 3, 1 / (n : ℝ) ^ 3 := h3.symm
+    _ ≤ ∑' n : ℕ, 1 / (n : ℝ) ^ 3 :=
+        hsum.sum_le_tsum (Finset.range 3) (fun i _ => by positivity)
