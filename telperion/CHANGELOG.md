@@ -210,3 +210,17 @@ tool holds the scaffolding at each fixed k; it does not manufacture the analytic
 bound. Real next step (not shipped): *formalizing* the CNV all-k proof or the
 Griffin–Ono–Rolen–Zagier (2019) hyperbolicity theorem, with Telperion emitting
 the polynomial-inequality lemmas.
+
+**`ExpBracketCertificate`** (`exp_bracket.py`): the bespoke
+`examples/exp_bracket/` far-constant generalized into a reusable certificate —
+the rigorous rational bracket `1−θ ≤ exp(−θ) ≤ hi` for any (θ, N), emitted as the
+two Mathlib-backed theorems (`Real.sum_le_exp_of_nonneg` upper, `Real.add_one_le_exp`
+lower), with `.check()` verifying `tfloor ≤ Taylor_N(θ)` and `1/tfloor ≤ hi` in
+exact rationals and `suggest`/`build` auto-filling the numerals. Reproduces the
+committed `exp_bracket` artifact **byte-for-byte** (subsumption test). Motivation:
+the honest correction to the Turán↔BG assessment — the H2-Bridge exp sites
+(`BridgeStep4*`, `LemmaA`, `R47RateZBound`) needed a *derive-side* generalization
+of `exp_bracket`, **not** the consume-side `TuranEnclosureCertificate` (which does
+not generalize it — opposite pipeline stages; see `turan_xi/BG_APPLICABILITY.md`).
+Added additively; migrating the existing example onto the class is left to the
+Bridge/H2 owner, with the byte-subsumption test as the safety net.

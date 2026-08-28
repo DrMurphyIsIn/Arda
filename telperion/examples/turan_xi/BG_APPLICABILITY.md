@@ -8,29 +8,53 @@ the Turán/enclosure machinery added in 0.1.3 helps BG. Short version:
 
 `turan_from_enclosure` (in `src/telperion/turan.py`) is a *worst-corner
 monotonicity bridge*: given rational enclosures and a strict rational margin, a
-polynomial inequality among the enclosed (**genuinely transcendental**)
-constants follows by `norm_num`, bridged by one once-proved `nlinarith` lemma.
-The kindred BG pattern is `exp_bracket` (rigorous rational enclosure of exp(−θ),
-the R47Encode far constant); `TuranEnclosureCertificate` generalizes exactly
-that. The `bilinear_corner_nonneg` corner lemma is the same *worst-corner*
-shape but over symbolic variables, not enclosed constants.
+polynomial inequality among the enclosed constants follows by `norm_num`, bridged
+by one once-proved `nlinarith` lemma. This is the **consume** side — it takes an
+enclosure as a hypothesis and proves a product-vs-square inequality.
 
-**Correction (per BG-session review, grounded in `ExactCruxes.lean`).** The ρ_B
-`(1+t)^11 ≤ 621/64` brackets are **NOT** enclosure targets: ρ_B is *algebraic*
-and clears to exact rational via `rhoB_pow11 : rhoB^11 = 621/64`, so every ρ_B
-comparison (e.g. `26/23 < rhoB ⟺ (26/23)^11 < 621/64`) is a pure `norm_num`.
-Enclosures cross **only** where the constant is transcendental-but-boundable
-(exp(−θ)); they do **not** apply to the algebraic-and-cleared BG constants. My
-earlier listing of ρ_B here was wrong.
+**Two corrections, both grounded in the code (do not repeat these mistakes).**
 
-**So the one real reuse target is the exp brackets in the H2-Bridge layer**
-(`BridgeStep4*`, `LemmaA`, `R47RateZBound`) — a clean refactor of the bespoke
-`exp_bracket` onto the general certificate. That is the Bridge/H2 frontier (owned
-by that session), and it is infrastructure reuse, **not** a lever on the crux.
+1. *ρ_B is not an enclosure target* (per BG-session review, `ExactCruxes.lean`).
+   ρ_B is *algebraic* and clears to exact rational via `rhoB_pow11 : rhoB^11 =
+   621/64`, so every ρ_B comparison (e.g. `26/23 < rhoB ⟺ (26/23)^11 < 621/64`)
+   is a pure `norm_num`. Enclosures cross **only** where the constant is
+   transcendental-but-boundable (exp(−θ)), never the algebraic-and-cleared BG
+   constants.
 
-**Directly reusable when a BG step compares genuinely transcendental constants**
-in the shape `C_left · C_right < C_mid²` (three *enclosed* — not algebraic —
-constants). Instantiate:
+2. *`TuranEnclosureCertificate` does NOT generalize `exp_bracket`* — checked
+   against `examples/exp_bracket/`. They are opposite pipeline stages:
+   `exp_bracket` **derives** a bracket of a transcendental (`exp(−θ) ≤ hi` via a
+   Taylor lower bound on `exp(θ)`, Mathlib `Real.sum_le_exp_of_nonneg`), with
+   `Real.exp` in its statement; `TuranEnclosureCertificate` **consumes** a given
+   enclosure with no transcendental in its Lean at all. Neither generalizes the
+   other, and the H2-Bridge exp sites use the bracket as an *amplitude* bound
+   (`4/3·exp(−θ)·ρⁿ`), not a product-vs-square — so they do not even compose.
+   My earlier "clean refactor onto the general certificate" line was wrong.
+
+**The genuine reusable capability for the H2-Bridge exp sites** (`BridgeStep4*`,
+`LemmaA`, `R47RateZBound`) is therefore **not** the Turán certificate but a
+generalization of `exp_bracket`'s *own* derive-side machinery:
+`ExpBracketCertificate` (in `src/telperion/exp_bracket.py`, added alongside this).
+It emits the exact two-theorem `exp(−θ)` bracket for any (θ, N), reproduces the
+committed `examples/exp_bracket/` artifact **byte-for-byte** (subsumption test in
+`tests/test_exp_bracket.py`), and is the drop-in for each site:
+
+```python
+from telperion import ExpBracketCertificate
+c = ExpBracketCertificate.build(Fraction(37167, 100000), nterms=9,
+                                le_name="...", ge_name="...")  # auto-fills tfloor, hi
+assert c.check()          # exact-rational: tfloor <= Taylor_N(theta), 1/tfloor <= hi
+lean = c.lean()           # the two Real.exp bracket theorems
+```
+
+That is the Bridge/H2 frontier (owned by that session) — infrastructure reuse,
+**not** a lever on the crux; the migration of the existing `exp_bracket` example
+onto the class is left to them (the byte-subsumption test is the safety net).
+
+**Separately**, `TuranEnclosureCertificate` is reusable if a BG step ever
+compares *genuinely transcendental* constants in the shape `C_left · C_right <
+C_mid²` (three enclosed — not algebraic — constants). No current BG step does.
+Instantiate:
 
 ```python
 from telperion import TuranEnclosureCertificate
