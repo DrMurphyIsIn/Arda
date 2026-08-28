@@ -39,8 +39,8 @@ theorem TransferStep.stateSize_eq {s s' : List Hub} (h : TransferStep s s') :
     rw [hperm.sum_eq, hperm'.sum_eq]
     simp only [List.sum_cons]
     omega
-  simp only [stateSize, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, hubSize,
-    hlen, hsum]
+  simp only [stateSize, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, hubSize]
+  omega
 
 /-- Size is conserved along an arbitrary-pair transfer chain. -/
 theorem chain_transfer_stateSize_eq {s s' : List Hub}
