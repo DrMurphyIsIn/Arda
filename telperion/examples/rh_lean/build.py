@@ -19,7 +19,8 @@ EXAMPLES = HERE.parent
 sys.path.insert(0, str(EXAMPLES.parent / "src"))
 
 from telperion import (  # noqa: E402
-    LogBoundCertificate, PiBracketCertificate, SqrtBracketCertificate,
+    GammaHalfBracketCertificate, LogBoundCertificate, PiBracketCertificate,
+    SqrtBracketCertificate,
 )
 
 # frozen emitted Lean  ->  RH library module
@@ -55,6 +56,13 @@ def _sqrt_module() -> str:
             "import Mathlib\n\nnamespace SqrtBracket\n\n" + body + "\n\nend SqrtBracket\n")
 
 
+def _gammahalf_module() -> str:
+    thm = GammaHalfBracketCertificate(name="gamma_half_bracket").lean().rstrip()
+    return ("/- Generated: a COMPLETED in-kernel bracket of the deep transcendental\n"
+            "   Gamma(1/2) = sqrt(pi) (GammaHalfBracketCertificate). -/\n"
+            "import Mathlib\n\nnamespace GammaHalf\n\n" + thm + "\n\nend GammaHalf\n")
+
+
 def modules() -> dict:
     out = {}
     for mod, rel in FROZEN.items():
@@ -62,6 +70,7 @@ def modules() -> dict:
     out["LogBound"] = _logbound_module()
     out["PiBracket"] = _pi_module()
     out["SqrtBracket"] = _sqrt_module()
+    out["GammaHalf"] = _gammahalf_module()
     return out
 
 

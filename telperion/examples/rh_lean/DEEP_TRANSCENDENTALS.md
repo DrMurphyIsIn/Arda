@@ -93,14 +93,32 @@ multi-week formalization on top of a new `SqrtBracket` + CVZ tail lemma; the ful
 `a_k` bracket is a research-scale effort (likely warranting an upstream Mathlib
 contribution of ζ-numerics).
 
+## The completable / blocked line
+
+The deciding question is simply **whether Mathlib carries a closed form or a
+computable-with-bounds representation** of the constant:
+
+| Deep constant | Mathlib handle | In-kernel bracket |
+|---|---|---|
+| `√2`, `√q` | `Real.sqrt` monotone + `sqrt_sq` | **DONE** (`SqrtBracketCertificate`) |
+| **`Γ(1/2)`** | **closed form** `Real.Gamma_one_half_eq : Γ(1/2)=√π` | **DONE** (`GammaHalfBracketCertificate`) — kernel-proven `1.772 ≤ Γ(1/2) ≤ 1.775` via π-bracket + √ |
+| `Γ(1/4)` | none (lemniscate constant, no closed form) | **BLOCKED** |
+| `ζ(1/2)` | none (Dirichlet series diverges; no numeric API) | **BLOCKED** — needs CVZ representation + tail lemma |
+| `a_k` | needs `ζ`/`Γ` *derivatives* at 1/2 | **BLOCKED** (research-scale) |
+
+So `Γ(1/2)` — one of the named deep transcendentals — **is now completed
+in-kernel**, because it has a Mathlib closed form. That is the honest extent of
+what "completing the deep formalization" reaches today.
+
 ## Honest bottom line
 
-- **Done + kernel-proven:** the archimedean transcendental brackets
-  (`exp`, `log`, `pi`) and all the enclosure-conditional RH-necessary certificates.
-- **Next feasible rung:** `SqrtBracketCertificate` (needed for both tight-`log`
-  and the CVZ ζ path) — a real, buildable transcendental skill.
-- **The crux:** `ζ(1/2)` in-kernel is a focused formalization project with one
-  genuinely new analytic lemma (the CVZ tail); `a_k` in-kernel is research-scale.
-  Neither can be honestly claimed done, and this repo will not pretend otherwise
-  (`conjecture1_proved=False`, and this file ships zero proofs).
+- **Done + kernel-proven:** the archimedean brackets (`exp`, `log`, `pi`, `sqrt`),
+  the deep constant `Γ(1/2)`, and all enclosure-conditional RH-necessary certificates.
+- **The genuine wall (verified, not asserted):** `ζ(1/2)` has no computable handle
+  in Mathlib v4.32.0 (`mp.iv.zeta` broken; η-series `1/√N`-slow; no `ζ(s)∈[lo,hi]`
+  lemma). Closing it is a focused formalization with one new analytic lemma (the
+  CVZ tail bound); `a_k` additionally needs `ζ`/`Γ` derivative brackets and is
+  research-scale — plausibly an upstream Mathlib ζ-numerics contribution.
+- This repo ships **zero** proofs for the blocked constants
+  (`conjecture1_proved=False`); this file is a plan, not a proof.
 ```
