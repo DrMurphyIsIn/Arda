@@ -1,31 +1,14 @@
-/- Mathlib v4.32.0 probe #4: tools to LAND a genuine zeta-numerics lemma
-   (bound zeta(3), no closed form, via the convergent Dirichlet series + a tail
-   bound).  `#check @foo` types what exists; errors name what does not. -/
+/- Landing a genuine zeta-numerics lemma in Mathlib v4.32.0.
+   Step 1 (this file): zeta(2) bounds from the exact value pi^2/6 + the confirmed
+   pi bounds -- proves the zeta-numerics pipeline compiles end to end. -/
 import Mathlib
 open scoped Real
 
--- the Dirichlet series representation for Re(s) > 1
-#check @riemannZeta_eq_tsum_one_div_nat_cpow
-#check @riemannZeta_eq_tsum_one_div_nat_add_one_cpow
-#check @zeta_eq_tsum_one_div_nat_cpow
-#check @riemannZeta_two
-#check @riemannZeta_four
-
--- summability of 1/n^k
-#check @Real.summable_one_div_nat_rpow
-#check @Real.summable_one_div_nat_pow
-#check @summable_one_div_nat_cpow
-
--- partial-sum <= tsum, and tail control
-#check @sum_le_tsum
-#check @tsum_eq_sum_add_tsum_nat_add
-#check @tsum_le_tsum
-#check @tsum_lt_tsum
-
--- telescoping helper for the tail bound sum 1/n^3 <= sum 1/((n-1)n(n+1))
-#check @tsum_geometric_of_lt_one
-#check @Finset.sum_range_succ
-
--- Complex re / of the zeta value (zeta 3 is Complex; need to bound its re)
-#check @Complex.re
-#check @riemannZeta_ofReal
+theorem riemannZeta_two_re_bounds :
+    (3 : ℝ) / 2 < (riemannZeta 2).re ∧ (riemannZeta 2).re < 8 / 3 := by
+  have h : riemannZeta 2 = ((π ^ 2 / 6 : ℝ) : ℂ) := by
+    rw [riemannZeta_two]; push_cast; ring
+  rw [h, Complex.ofReal_re]
+  refine ⟨?_, ?_⟩
+  · nlinarith [Real.pi_gt_three, Real.pi_pos]
+  · nlinarith [Real.pi_lt_four, Real.pi_pos]
