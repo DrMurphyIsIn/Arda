@@ -128,5 +128,34 @@ theorem Aobj_le_rooting_rate (cs : List UTree) (hpos : 0 < cs.length) :
     _ ≤ ((cs.length : ℝ) + 1) / (cs.length : ℝ) * rhoB ^ usize (UTree.node cs) :=
         mul_le_mul_of_nonneg_left h2 hfac
 
+/-- **Capped backbone rate bound**: a nonempty backbone whose root hub carries `≥ 5`
+    arms (in particular any `Capped` state, the Hdom domain) has `Aobj ≤ (6/5)·rhoB^n`.
+    The general rooting bound at a Capped root degree `d = arms + cherries + tail ≥ 5`,
+    where `(d+1)/d ≤ 6/5`.
+
+    HONEST: `(6/5)·rhoB^n` sits ABOVE the tie `~0.92·rhoB^n`, so this does NOT close the
+    Hdom domination layer — it is the rate-assembly upper side, isolating the residual
+    rooting/Ztot trade-off as the open crux.  conjecture1_proved = False. -/
+theorem Aobj_backbone_le_rate (arms : List ℕ) (c : ℕ) (rest : List Hub)
+    (hcap : 5 ≤ arms.length) :
+    Aobj (backboneU ((arms, c) :: rest))
+      ≤ (6 / 5 : ℝ) * rhoB ^ usize (backboneU ((arms, c) :: rest)) := by
+  rw [backboneU_eq]
+  set cs := arms.map armU ++ List.replicate c cherryU ++ tailU rest with hcs
+  have h5 : 5 ≤ cs.length := by
+    rw [hcs]
+    simp only [List.length_append, List.length_map, List.length_replicate]
+    omega
+  have hpos : 0 < cs.length := by omega
+  have hdpos : (0 : ℝ) < (cs.length : ℝ) := by exact_mod_cast hpos
+  have hd : (5 : ℝ) ≤ (cs.length : ℝ) := by exact_mod_cast h5
+  have hbound := Aobj_le_rooting_rate cs hpos
+  have hfac : ((cs.length : ℝ) + 1) / (cs.length : ℝ) ≤ 6 / 5 := by
+    rw [div_le_iff₀ hdpos]; nlinarith [hd]
+  have hrho : (0 : ℝ) ≤ rhoB ^ usize (UTree.node cs) := le_of_lt (pow_pos rhoB_pos _)
+  calc Aobj (UTree.node cs)
+      ≤ ((cs.length : ℝ) + 1) / (cs.length : ℝ) * rhoB ^ usize (UTree.node cs) := hbound
+    _ ≤ (6 / 5 : ℝ) * rhoB ^ usize (UTree.node cs) := mul_le_mul_of_nonneg_right hfac hrho
+
 end Step3
 end R3Cert
