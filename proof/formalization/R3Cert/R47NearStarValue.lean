@@ -2,6 +2,8 @@ import Mathlib
 import R3Cert.R47SingleHubFormula
 import R3Cert.R47HeadId
 import R3Cert.R47HubState
+import R3Cert.R47StepSize
+import R3Cert.R47RateZBound
 
 /-!
   # The exact near-star objective value (the asymptotic Brualdi-Goldwasser tie)
@@ -46,6 +48,26 @@ theorem nearstar_arms_Aobj (K : ℕ) (hK : 0 < K) :
   push_cast
   field_simp
   ring
+
+/-- **The near-star in `rhoB`-rate form**: `Aobj = (26/23)/rhoB · rhoB^(usize)`, i.e. the
+    `rhoB`-normalized objective is exactly the asymptotic tie constant `(26/23)/rhoB`,
+    independent of `K`.  (`usize = 1 + 11K`; `rhoB^(1+11K) = rhoB·(621/64)^K`.)  This is the
+    exact tie in the rate form the conjecture and the rooting bound (`Aobj_le_rooting_rate`,
+    `≤ (6/5)·rhoB^n`) use — the near-star sits at `(26/23)/rhoB ≈ 0.919`, well below `6/5`. -/
+theorem nearstar_Aobj_rate (K : ℕ) (hK : 0 < K) :
+    Aobj (backboneU [(List.replicate K 5, 0)])
+      = (26 / 23) / rhoB * rhoB ^ usize (backboneU [(List.replicate K 5, 0)]) := by
+  have husize : usize (backboneU [(List.replicate K 5, 0)]) = 1 + 11 * K := by
+    rw [usize_backbone]
+    simp only [stateSize, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+      hubSize, List.length_replicate, List.sum_replicate, smul_eq_mul]
+    ring
+  have hrne : rhoB ≠ 0 := ne_of_gt rhoB_pos
+  rw [nearstar_arms_Aobj K hK, husize]
+  have hr : rhoB ^ (1 + 11 * K) = rhoB * (621 / 64) ^ K := by
+    rw [pow_add, pow_one, pow_mul, rhoB_pow11]
+  rw [hr]
+  field_simp
 
 end Step3
 end R3Cert
