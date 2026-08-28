@@ -167,3 +167,8 @@ group = "quick"    # competitor-extremality (raw rho, monomer-dimer)
 name = "bg_extremality"
 script = "examples/bg_extremality/generate.py"
 group = "quick"    # BG competitor extremality (rooted Phi -- correct quantity)
+
+[[check]]
+name = "turan_xi"
+script = "examples/turan_xi/generate.py"
+group = "quick"    # Riemann xi Turan/Laguerre inequalities over rational enclosures (RH-necessary; CNV 1986)

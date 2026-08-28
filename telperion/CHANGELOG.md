@@ -182,3 +182,31 @@ unimodal integer maxima (the emitted pieces close its hypotheses; the
 induction skeleton is documented); generic induction
 emission for telescoping potentials (the v2 headline); hunt over pluggable
 combinatorial domains.
+
+## 0.1.3 (2026-08-28) — first application beyond Brualdi–Goldwasser
+
+**Turán / Laguerre inequalities for the Riemann ξ** (`turan.py`,
+`examples/turan_xi/`): the exact-rational→kernel-Lean pipeline pointed at an
+RH-*adjacent* family. RH ⟹ ξ ∈ Laguerre–Pólya ⟹ its even Taylor coefficients
+`a_k = [z^{2k}] ξ(1/2+z)` satisfy `a_k² ≥ a_{k-1}a_{k+1}` (Csordas–Norfolk–Varga
+1986; *necessary*, never sufficient). `TuranEnclosureCertificate` certifies the
+finite algebraic step — given imported rational enclosures `lo_k < a_k < hi_k`,
+the strict Turán inequality follows from the worst-corner margin
+`hi_{k-1} hi_{k+1} < lo_k²` (`norm_num`), bridged by the once-proved
+`turan_from_enclosure` monotonicity lemma (`nlinarith`). Indices k=1,2,3 emitted
+(margins +7.06e-5, +5.68e-9, +2.00e-13). The transcendental import
+(`compute_enclosures.py`, mpmath Cauchy-contour Taylor extraction, two-radius
+cross-check to >40 digits) is kept OUT of the sympy-only core; the enclosures
+enter Lean as hypotheses.
+
+**Honest scope, stated in the module, the README, and here**: this is NOT
+progress toward RH. Turán is necessary-only; k=1,2,3 is finite (the all-k result
+is CNV 1986, an analytic theorem this tool does not reproduce); the enclosures
+are numerics-as-hypotheses, not interval-proven in-kernel. The genuine
+obstruction — a transcendental, zeta-zero-dependent quantity with no uniform-in-k
+rational certificate — is exactly the class of wall the Brualdi–Goldwasser crux
+also hit (no finite smooth certificate; content is arithmetic/analytic). The
+tool holds the scaffolding at each fixed k; it does not manufacture the analytic
+bound. Real next step (not shipped): *formalizing* the CNV all-k proof or the
+Griffin–Ono–Rolen–Zagier (2019) hyperbolicity theorem, with Telperion emitting
+the polynomial-inequality lemmas.

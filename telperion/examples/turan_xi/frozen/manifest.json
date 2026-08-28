@@ -1,0 +1,9 @@
+{
+  "family": "RiemannTuran",
+  "input_hash": "3ec47340b43a2ec247e22231324694396da4362e48da2ab821a3ed0a4c9dbdb4",
+  "tool_version": "0.1.3",
+  "files": [
+    "RiemannTuran.lean"
+  ],
+  "n_theorems": 4
+}

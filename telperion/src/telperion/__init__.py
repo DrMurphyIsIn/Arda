@@ -129,6 +129,7 @@ from .spectral import (  # noqa: F401
 )
 from .bridge import NearStarBridgeCertificate, near_star_R, near_star_tail_poly  # noqa: F401
 from .zerofree import ZeroFreeDiskCertificate, dominant_term_margin  # noqa: F401
+from .turan import TURAN_BRIDGE_LEMMA, TuranEnclosureCertificate  # noqa: F401
 from .entropy import (  # noqa: F401
     BregmanCertificate, bregman_bound, permanent01, shearer_holds,
 )
