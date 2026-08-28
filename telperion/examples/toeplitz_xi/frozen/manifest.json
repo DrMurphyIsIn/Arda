@@ -1,0 +1,9 @@
+{
+  "family": "ToeplitzXi",
+  "input_hash": "638cf0db730c9c0dfabf4539aa448c338623a8770efbcc154a0a7b21036765b4",
+  "tool_version": "0.1.3",
+  "files": [
+    "ToeplitzXi.lean"
+  ],
+  "n_theorems": 5
+}

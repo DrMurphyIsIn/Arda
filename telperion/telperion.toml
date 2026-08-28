@@ -177,3 +177,13 @@ group = "quick"    # Riemann xi Turan/Laguerre inequalities over rational enclos
 name = "jensen_xi"
 script = "examples/jensen_xi/generate.py"
 group = "quick"    # Riemann xi degree-3 Jensen-Polya hyperbolicity (cubic discriminant) over enclosures (RH-necessary)
+
+[[check]]
+name = "newton_xi"
+script = "examples/newton_xi/generate.py"
+group = "quick"    # Riemann xi Newton inequalities gamma_k^2>gamma_{k-1}gamma_{k+1} (Jensen-seq log-concavity; RH-necessary)
+
+[[check]]
+name = "toeplitz_xi"
+script = "examples/toeplitz_xi/generate.py"
+group = "quick"    # Riemann xi 3x3 Toeplitz minors (Polya-frequency total positivity; RH-necessary)

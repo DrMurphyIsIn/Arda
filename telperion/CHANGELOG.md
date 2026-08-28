@@ -239,3 +239,24 @@ cubics are genuinely real-rooted and a 16-corner check that `Δ_lo` is a true
 lower bound. Honest scope identical to `turan_xi` (RH-necessary, finite,
 enclosure-conditional) plus: not yet `lake`-built (bridge hand-verified, not
 machine-checked locally per the SoC hazard). Degree 4+ is the next rung.
+
+**Two more RH-necessary lenses** (`newton_xi`, `toeplitz_xi`): breadth beyond the
+Jensen-hyperbolicity ladder.
+- **Newton inequalities** (`newton_xi`): the correctly-normalized log-concavity
+  `γ_k² ≥ γ_{k-1}γ_{k+1}` on the Jensen sequence `γ_k = k!·a_k` — sharper than the
+  raw-`a_k` Turán (`a_k² ≥ ((k+1)/k)a_{k-1}a_{k+1}`) and the pairwise necessary
+  condition for hyperbolicity. Product-vs-square, so it *reuses*
+  `TuranEnclosureCertificate` (no new Lean). k=1…6.
+- **Total positivity** (`toeplitz_xi`, `toeplitz.py`): a different framework —
+  RH ⟹ `G(u)=Σa_k u^k` is a Pólya-frequency function ⟹ its Toeplitz matrix is
+  totally positive (Edrei–Thoma). New module `ToeplitzMinorCertificate` certifies
+  the 3×3 minors (`a_m³ − 2a_{m-1}a_m a_{m+1} + a_{m-1}²a_{m+2} + a_{m-2}a_{m+1}²
+  − a_{m-2}a_m a_{m+2} > 0`) for m=2…5 via a worst-corner `toeplitz3_pos_of_enclosure`
+  bridge (five `mul_le_mul` chains + `nlinarith`); tests include a 32-corner
+  lower-bound check. Same honest scope (RH-necessary, finite, enclosure-conditional,
+  not lake-built).
+
+Quartic (degree-4) Jensen hyperbolicity was validated numerically (`Δ₄>0 ∧ P<0 ∧
+D<0` for n=0…5, matching root-checks) but NOT shipped: the discriminant bridge is
+~16 monomials of degree 6, too large to hand-verify safely without a local Lean
+build. It is the first thing to build once the RH examples get a CI `lake` gate.

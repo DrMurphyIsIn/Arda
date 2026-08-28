@@ -1,0 +1,9 @@
+{
+  "family": "NewtonXi",
+  "input_hash": "57bef48e4c60762beedc3ae3fc420909d48d1db0fa45f13d428d95fa07601d6f",
+  "tool_version": "0.1.3",
+  "files": [
+    "NewtonXi.lean"
+  ],
+  "n_theorems": 7
+}
