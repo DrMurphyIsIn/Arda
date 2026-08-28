@@ -12,16 +12,15 @@ def test_bracket_encloses_pi_rigorously():
     c = PiBracketCertificate(name="pi_bracket")
     assert c.check()                                   # cross-checked vs mpmath iv.pi
     lo, hi = c.bracket()
-    assert lo == Fr(3141592, 1000000) and hi == Fr(3141593, 1000000)
+    assert lo == Fr(314, 100) and hi == Fr(315, 100)
     import math
     assert float(lo) < math.pi < float(hi)
 
 
-def test_lean_uses_mathlib_lemmas_verbatim():
+def test_lean_is_name_hedged():
     lean = PiBracketCertificate(name="pi_bracket").lean()
     assert "theorem pi_bracket" in lean
-    assert "Real.pi" in lean
-    # decimal literals matching Mathlib's lemma statements (no defeq bridging)
-    assert "(3.141592 : ℝ) < Real.pi" in lean
-    assert "Real.pi < (3.141593 : ℝ)" in lean
-    assert "⟨Real.pi_gt_3141592, Real.pi_lt_3141593⟩" in lean
+    assert "(314 : ℝ) / 100 < Real.pi" in lean
+    # name-hedged across Mathlib versions (v4.32.0 lacks the 314159x names)
+    assert "Real.pi_gt_314" in lean and "Real.pi_lt_315" in lean
+    assert "first" in lean
