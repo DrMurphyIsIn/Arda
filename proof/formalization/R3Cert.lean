@@ -131,6 +131,7 @@ import R3Cert.R47R6TransferProgress
 import R3Cert.R47R6HnormSingleHub
 -- Link: capstone BalancedArms ({4,5}) => ArmBalanced (within-1); Balanced hubs are transfer-terminal
 import R3Cert.R47R6BalancedArmsLink
+import R3Cert.R47R6HnormSized
 import R3Cert.R47Parse
 import R3Cert.R47RateZBound
 import R3Cert.R47RootRate
