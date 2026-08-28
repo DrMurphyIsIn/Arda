@@ -133,6 +133,7 @@ import R3Cert.R47R6HnormSingleHub
 import R3Cert.R47R6BalancedArmsLink
 import R3Cert.R47Parse
 import R3Cert.R47RateZBound
+import R3Cert.R47RootRate
 import R3Cert.R47Rate
 import R3Cert.FractalTail
 import R3Cert.HingeProfileFloor
