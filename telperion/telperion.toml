@@ -260,6 +260,12 @@ script = "examples/unimodal_maximum/generate_nearstar.py"
 group = "quick"    # near-star payoff Phi^11(N(0,n)) <= 1 (kernel-green); ~0.5 s
 
 [[check]]
+name = "armrate_resize"
+script = "examples/armrate_resize/generate.py"
+group = "quick"    # arm-load resize envelope armRate(n)^11 <= 1, all n (full-range
+                   # s0=0 climb+descent; same sequence as unimodal_maximum). ~0.5 s
+
+[[check]]
 name = "evolve_nearstar"
 script = "examples/evolve_nearstar/generate.py"
 group = "audit"    # runs the structured evolve loop (~28 s) + emits the champion's
