@@ -1,23 +1,31 @@
-/- Mathlib v4.32.0 API probe #3: eulerMascheroniConstant internals, to build the
-   MISSING lower bound (Mathlib has `_lt_two_thirds` but no lower bound).
-   `#print` dumps the definition; `#check` types the surrounding API. -/
+/- Mathlib v4.32.0 probe #4: tools to LAND a genuine zeta-numerics lemma
+   (bound zeta(3), no closed form, via the convergent Dirichlet series + a tail
+   bound).  `#check @foo` types what exists; errors name what does not. -/
 import Mathlib
 open scoped Real
 
--- the definition (reveals how to bound it below)
-#print Real.eulerMascheroniConstant
-#check @Real.eulerMascheroniConstant_lt_two_thirds
+-- the Dirichlet series representation for Re(s) > 1
+#check @riemannZeta_eq_tsum_one_div_nat_cpow
+#check @riemannZeta_eq_tsum_one_div_nat_add_one_cpow
+#check @zeta_eq_tsum_one_div_nat_cpow
+#check @riemannZeta_two
+#check @riemannZeta_four
 
--- lower-bound candidates (which, if any, already exist?)
-#check @Real.eulerMascheroniConstant_pos
-#check @Real.one_half_lt_eulerMascheroniConstant
-#check @Real.eulerMascheroniConstant_gt
+-- summability of 1/n^k
+#check @Real.summable_one_div_nat_rpow
+#check @Real.summable_one_div_nat_pow
+#check @summable_one_div_nat_cpow
 
--- harmonic-minus-log characterization (the standard route to bounds)
-#check @harmonic
-#check @Real.eulerMascheroniConstant_eq
-#check @Real.tendsto_eulerMascheroniSeq
-#check @Real.eulerMascheroniSeq
-#check @Real.eulerMascheroniSeq'
-#check @Real.eulerMascheroniSeq_lt_eulerMascheroniConstant
-#check @Real.eulerMascheroniConstant_lt_eulerMascheroniSeq'
+-- partial-sum <= tsum, and tail control
+#check @sum_le_tsum
+#check @tsum_eq_sum_add_tsum_nat_add
+#check @tsum_le_tsum
+#check @tsum_lt_tsum
+
+-- telescoping helper for the tail bound sum 1/n^3 <= sum 1/((n-1)n(n+1))
+#check @tsum_geometric_of_lt_one
+#check @Finset.sum_range_succ
+
+-- Complex re / of the zeta value (zeta 3 is Complex; need to bound its re)
+#check @Complex.re
+#check @riemannZeta_ofReal
