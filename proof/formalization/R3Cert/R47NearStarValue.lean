@@ -68,7 +68,6 @@ theorem nearstar_Aobj_rate (K : ℕ) (hK : 0 < K) :
     rw [pow_add, pow_one, pow_mul, rhoB_pow11]
   rw [hr]
   field_simp
-  ring
 
 end Step3
 end R3Cert
