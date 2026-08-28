@@ -86,14 +86,17 @@ theorem Ztot_node_deg (k : ℕ) (cs : List UTree) :
 theorem rooting_identity (cs : List UTree) :
     ((cs.length : ℝ) + 1) * Ztot (dtSub (UTree.node cs))
       = (cs.length : ℝ) * Aobj (UTree.node cs) + Zopen (dtSub (UTree.node cs)) := by
-  have hZopen : Zopen (dtSub (UTree.node cs)) = (cs.map fun K => Ztot (dtSub K)).prod := by
-    rw [dtSub_node, Zopen, Popen_dtChildren]
+  have hZopen : Zopen (RTree.node (dtChildren (cs.length + 1) cs))
+      = (cs.map fun K => Ztot (dtSub K)).prod := by
+    have h : Zopen (RTree.node (dtChildren (cs.length + 1) cs))
+        = Popen (dtChildren (cs.length + 1) cs) := rfl
+    rw [h, Popen_dtChildren]
   rw [Aobj, dtRealize_node, dtSub_node, Ztot_node_deg, Ztot_node_deg, hZopen]
   rcases Nat.eq_zero_or_pos cs.length with h0 | hpos
   · -- degenerate leaf-like root: cs.length = 0 forces qSum cs = 0
-    have hcs : cs = [] := List.length_eq_zero.mp h0
+    have hcs : cs = [] := List.eq_nil_of_length_eq_zero h0
     subst hcs
-    simp [qSum]
+    norm_num [qSum]
   · have hd : (cs.length : ℝ) ≠ 0 := by exact_mod_cast hpos.ne'
     push_cast
     field_simp
