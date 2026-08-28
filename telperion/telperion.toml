@@ -172,3 +172,8 @@ group = "quick"    # BG competitor extremality (rooted Phi -- correct quantity)
 name = "turan_xi"
 script = "examples/turan_xi/generate.py"
 group = "quick"    # Riemann xi Turan/Laguerre inequalities over rational enclosures (RH-necessary; CNV 1986)
+
+[[check]]
+name = "jensen_xi"
+script = "examples/jensen_xi/generate.py"
+group = "quick"    # Riemann xi degree-3 Jensen-Polya hyperbolicity (cubic discriminant) over enclosures (RH-necessary)

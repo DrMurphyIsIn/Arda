@@ -1,0 +1,9 @@
+{
+  "family": "JensenXi",
+  "input_hash": "d022e43bda8657a28c7c0f82c6e677289d5c5c6611429c00b664c39d94e7caeb",
+  "tool_version": "0.1.3",
+  "files": [
+    "CubicJensen.lean"
+  ],
+  "n_theorems": 4
+}

@@ -224,3 +224,18 @@ of `exp_bracket`, **not** the consume-side `TuranEnclosureCertificate` (which do
 not generalize it — opposite pipeline stages; see `turan_xi/BG_APPLICABILITY.md`).
 Added additively; migrating the existing example onto the class is left to the
 Bridge/H2 owner, with the byte-subsumption test as the safety net.
+
+**Degree-3 Jensen–Pólya hyperbolicity for ξ** (`jensen.py`,
+`examples/jensen_xi/`): the cubic rung above `turan_xi` (= degree 2).
+`CubicJensenCertificate` certifies the cubic Jensen polynomial `J^{3,n}` of ξ is
+hyperbolic (discriminant `Δ = 162g0g1g2g3 + 81g1²g2² − 108g0g2³ − 108g1³g3 −
+27g0²g3² > 0`, ⟺ three real roots) for shifts n=0,1,2, via an exact worst-corner
+bound (positive monomials at `lo`, negative at `hi`) and a once-proved monotone
+bridge `cubic_jensen_pos_of_enclosure` (five `mul_le_mul` monomial chains +
+`nlinarith`). Normalization fixed empirically and stated: `γ_k = k!·a_k` (EGF of
+`G(u)=Σa_k u^k`, whose Laguerre–Pólya membership ⟺ RH) gives hyperbolic Jensen
+polys; `(2k)!·a_k` does not. Tests include a numpy confirmation the certified
+cubics are genuinely real-rooted and a 16-corner check that `Δ_lo` is a true
+lower bound. Honest scope identical to `turan_xi` (RH-necessary, finite,
+enclosure-conditional) plus: not yet `lake`-built (bridge hand-verified, not
+machine-checked locally per the SoC hazard). Degree 4+ is the next rung.
