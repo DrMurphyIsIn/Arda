@@ -187,3 +187,8 @@ group = "quick"    # Riemann xi Newton inequalities gamma_k^2>gamma_{k-1}gamma_{
 name = "toeplitz_xi"
 script = "examples/toeplitz_xi/generate.py"
 group = "quick"    # Riemann xi 3x3 Toeplitz minors (Polya-frequency total positivity; RH-necessary)
+
+[[check]]
+name = "rh_lean"
+script = "examples/rh_lean/build.py"
+group = "quick"    # assembles the RH lake library from frozen Lean; lake-built by telperion-rh-lean CI (kernel gate)

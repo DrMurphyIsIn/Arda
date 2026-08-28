@@ -40,8 +40,9 @@ LOG_BOUND_TEMPLATE = """theorem {name} :
   have hinvpos : (0 : ℝ) < ({d} : ℝ) / {n} := by norm_num
   have hlow' : Real.log (({d} : ℝ) / {n}) ≤ ({d} : ℝ) / {n} - 1 :=
     Real.log_le_sub_one_of_pos hinvpos
+  have hne : (({n} : ℝ) / {d})⁻¹ = ({d} : ℝ) / {n} := by norm_num
   have hneg : Real.log (({d} : ℝ) / {n}) = - Real.log (({n} : ℝ) / {d}) := by
-    rw [← Real.log_inv]; norm_num
+    rw [← hne, Real.log_inv]
   constructor
   · nlinarith [hlow', hneg]
   · exact hupper"""

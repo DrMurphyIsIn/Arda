@@ -1,0 +1,63 @@
+name: telperion-rh-lean
+
+# THE COMPILE GATE for the RH / transcendental line: regen-diffs check that the
+# frozen Lean matches the generators, and `lake build` KERNEL-CHECKS it against
+# pinned Mathlib -- turning "hand-verified bridge" into "kernel-proven".
+
+on:
+  push:
+    paths:
+      - "telperion/examples/turan_xi/**"
+      - "telperion/examples/jensen_xi/**"
+      - "telperion/examples/toeplitz_xi/**"
+      - "telperion/examples/newton_xi/**"
+      - "telperion/examples/exp_bracket/**"
+      - "telperion/examples/rh_lean/**"
+      - "telperion/src/**"
+      - ".github/workflows/telperion-rh-lean.yml"
+  pull_request:
+    paths:
+      - "telperion/examples/rh_lean/**"
+      - "telperion/src/**"
+      - ".github/workflows/telperion-rh-lean.yml"
+  workflow_dispatch:
+
+jobs:
+  rh-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+
+      - name: Regeneration diffs (frozen Lean matches generators)
+        working-directory: telperion
+        run: |
+          python examples/turan_xi/generate.py --check
+          python examples/jensen_xi/generate.py --check
+          python examples/toeplitz_xi/generate.py --check
+          python examples/newton_xi/generate.py --check
+          python examples/exp_bracket/generate.py --check
+          python examples/rh_lean/build.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/rh_lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/rh_lean
+        run: lake exe cache get
+
+      - name: Build the emitted RH Lean (the actual kernel verification)
+        working-directory: telperion/examples/rh_lean
+        run: lake build
