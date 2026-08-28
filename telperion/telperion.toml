@@ -189,6 +189,11 @@ script = "examples/toeplitz_xi/generate.py"
 group = "quick"    # Riemann xi 3x3 Toeplitz minors (Polya-frequency total positivity; RH-necessary)
 
 [[check]]
+name = "bg_rhob_sqrt"
+script = "examples/bg_rhob_sqrt/generate.py"
+group = "quick"    # sqrt_bracket regenerates the sqrt 2 bracket of BG's e2_two_rhoB_gt (RH-toolchain reuse)
+
+[[check]]
 name = "rh_lean"
 script = "examples/rh_lean/build.py"
 group = "quick"    # assembles the RH lake library from frozen Lean; lake-built by telperion-rh-lean CI (kernel gate)

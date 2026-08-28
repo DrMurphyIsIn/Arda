@@ -4,6 +4,7 @@ import RH.Jensen
 import RH.Toeplitz
 import RH.Newton
 import RH.ExpBracket
+import RH.BGRhoBSqrt
 import RH.LogBound
 import RH.SqrtBracket
 import RH.PiBracket
