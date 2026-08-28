@@ -261,6 +261,20 @@ D<0` for n=0…5, matching root-checks) but NOT shipped: the discriminant bridge
 ~16 monomials of degree 6, too large to hand-verify safely without a local Lean
 build. It is the first thing to build once the RH examples get a CI `lake` gate.
 
+**CI `lake` gate — the RH line is now KERNEL-PROVEN** (`examples/rh_lean/`,
+`telperion-rh-lean.yml`): a lake library aggregates the frozen emitted Lean
+(turan/jensen/toeplitz/newton hyperbolicity + exp/log/pi brackets) and CI
+`lake build`s it against pinned Mathlib v4.32.0. First run: **green in 3 min** —
+every hand-verified `mul_le_mul`/`nlinarith` bridge compiles, so the whole
+RH-necessary + transcendental line is now kernel-checked, not just hand-verified.
+`build.py` assembles/drift-checks the library from frozen (source of truth).
+
+**Third transcendental skill** (`pi_bracket.py`): `PiBracketCertificate` emits
+`3.141592 < Real.pi < 3.141593` proved verbatim by Mathlib's
+`Real.pi_gt_3141592`/`Real.pi_lt_3141593` (decimal literals matching Mathlib, no
+defeq bridging); `check()` cross-verifies against mpmath's rigorous interval
+`iv.pi`. π is load-bearing in ξ's `π^{-s/2}` factor.
+
 **Second transcendental skill** (`log_bound.py`): after `exp_bracket`, a
 `LogBoundCertificate` — the *transcendental* half of the toolchain, where the
 theorem's Lean statement contains `Real.log` and the bound is DERIVED in-kernel
