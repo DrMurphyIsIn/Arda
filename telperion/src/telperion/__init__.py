@@ -134,6 +134,7 @@ from .jensen import CUBIC_JENSEN_BRIDGE_LEMMA, CubicJensenCertificate  # noqa: F
 from .toeplitz import TOEPLITZ3_BRIDGE_LEMMA, ToeplitzMinorCertificate  # noqa: F401
 from .log_bound import LOG_BOUND_TEMPLATE, LogBoundCertificate  # noqa: F401
 from .pi_bracket import PiBracketCertificate  # noqa: F401
+from .sqrt_bracket import SQRT_BRACKET_TEMPLATE, SqrtBracketCertificate  # noqa: F401
 from .exp_bracket import (  # noqa: F401
     EXP_BRACKET_TEMPLATE, ExpBracketCertificate, suggest as suggest_exp_bracket,
     taylor_exp,

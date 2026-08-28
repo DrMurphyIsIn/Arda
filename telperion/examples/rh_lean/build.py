@@ -18,7 +18,9 @@ HERE = Path(__file__).resolve().parent
 EXAMPLES = HERE.parent
 sys.path.insert(0, str(EXAMPLES.parent / "src"))
 
-from telperion import LogBoundCertificate, PiBracketCertificate  # noqa: E402
+from telperion import (  # noqa: E402
+    LogBoundCertificate, PiBracketCertificate, SqrtBracketCertificate,
+)
 
 # frozen emitted Lean  ->  RH library module
 FROZEN = {
@@ -45,12 +47,21 @@ def _pi_module() -> str:
             "import Mathlib\n\nnamespace PiBracket\n\n" + thm + "\n\nend PiBracket\n")
 
 
+def _sqrt_module() -> str:
+    samples = [("sqrt_two", 2, 1), ("sqrt_three", 3, 1), ("sqrt_ten", 10, 1)]
+    body = "\n\n".join(
+        SqrtBracketCertificate.build(nm, qn, qd).lean().rstrip() for nm, qn, qd in samples)
+    return ("/- Generated transcendental samples (SqrtBracketCertificate). -/\n"
+            "import Mathlib\n\nnamespace SqrtBracket\n\n" + body + "\n\nend SqrtBracket\n")
+
+
 def modules() -> dict:
     out = {}
     for mod, rel in FROZEN.items():
         out[mod] = (EXAMPLES / rel).read_text()
     out["LogBound"] = _logbound_module()
     out["PiBracket"] = _pi_module()
+    out["SqrtBracket"] = _sqrt_module()
     return out
 
 

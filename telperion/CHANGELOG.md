@@ -269,6 +269,18 @@ every hand-verified `mul_le_mul`/`nlinarith` bridge compiles, so the whole
 RH-necessary + transcendental line is now kernel-checked, not just hand-verified.
 `build.py` assembles/drift-checks the library from frozen (source of truth).
 
+**Fourth transcendental skill + deep-transcendental roadmap** (`sqrt_bracket.py`,
+`examples/rh_lean/DEEP_TRANSCENDENTALS.md`): `SqrtBracketCertificate` — the √
+primitive the roadmap identifies as the next rung (needed for tight-`log` range
+reduction *and* the Cohen–Villegas–Zagier path to `ζ(1/2)`). `lo ≤ √(n/d) ≤ hi`
+over exact rationals (`lo² ≤ q ≤ hi²`), proved robustly by `Real.sqrt_sq` +
+`Real.sqrt_le_sqrt` (no fragile iff-direction), cross-checked vs `iv.sqrt`. The
+roadmap grounds the honest ceiling: `iv.zeta` is broken and the η-series is too
+slow (`1/√N`), so even Python rigorous `ζ(1/2)` needs CVZ acceleration; in-kernel
+`ζ(1/2)` is a focused formalization (one new analytic tail lemma) and `a_k` is
+research-scale (needs `ζ`/`Γ` derivative brackets). Ships **zero** proofs for the
+deep gap — the doc is a plan, kept out of the kernel-proven `RH` library.
+
 **Third transcendental skill** (`pi_bracket.py`): `PiBracketCertificate` emits
 `3.141592 < Real.pi < 3.141593` proved verbatim by Mathlib's
 `Real.pi_gt_3141592`/`Real.pi_lt_3141593` (decimal literals matching Mathlib, no
