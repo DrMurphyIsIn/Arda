@@ -1,47 +1,39 @@
-/- Mathlib v4.32.0 zeta/gamma-numerics API probe.
-   `#check @foo` prints foo's type if it exists, else errors "unknown identifier".
-   The CI log therefore maps exactly what is available for the deep-transcendental
-   (zeta(1/2), derivative) formalization.  This file is EXPECTED to error on the
-   names Mathlib lacks -- read the log, do not treat red as a regression. -/
+/- Mathlib v4.32.0 API probe #2, focused on the zeta/Gamma-derivative-numerics
+   contribution.  `#check @foo` types what exists, errors on what does not. -/
 import Mathlib
 open scoped Real
 
--- zeta core
-#check @riemannZeta
-#check @completedRiemannZeta
-#check @completedRiemannZeta₀
-#check @riemannZeta_two
-#check @riemannZeta_one_sub
+-- pi bounds: find the tight ones v4.32.0 actually has (only pi_gt_three confirmed so far)
+#check @Real.pi_gt_three
+#check @Real.pi_lt_four
+#check @Real.pi_le_four
+#check @Real.pi_gt_3141592
+#check @Real.pi_lt_3141593
 
--- possible COMPUTABLE handles for zeta at 1/2
-#check @LSeries
-#check @LSeries_riemannZeta
-#check @riemannZeta_eq_tsum_one_div_nat_add_one_cpow
-#check @hurwitzZeta
-#check @hurwitzZetaEven
-#check @riemannZeta_eq_hurwitzZeta
-
--- theta / integral representation (for a convergent rep at 1/2)
-#check @jacobiTheta
-#check @completedRiemannZeta_eq
-#check @completedRiemannZeta₀_one_sub
-
--- gamma and DERIVATIVES
-#check @Real.Gamma
-#check @Real.Gamma_one_half_eq
-#check @Real.deriv_Gamma
-#check @Real.digamma
-#check @digamma
-#check @Real.hasDerivAt_Gamma
-
--- constants with numeric bounds (needed to bracket derivative values)
+-- Euler-Mascheroni: constant exists; what bound/characterization API is there?
 #check @Real.eulerMascheroniConstant
-#check @Real.eulerMascheroniConstant_lt
+#check @Real.eulerMascheroniConstant_lt_two_thirds
+#check @Real.eulerMascheroniConstant_gt_half
+#check @Real.tendsto_harmonic_sub_log_atTop
+#check @Real.harmonic
+
+-- Gamma differentiability (digamma/deriv_Gamma are absent; what exists to build on?)
+#check @Real.hasDerivAt_Gamma
+#check @Real.differentiableAt_Gamma
+#check @Complex.differentiableAt_Gamma
+#check @Complex.hasDerivAt_Gamma
+#check @Real.GammaSeq
+#check @Real.Gamma_seq
+#check @Real.tendsto_logGammaSeq
+#check @Real.deriv_logGamma
+
+-- log two bounds (confirm; needed for psi(1/2) = -gamma - 2 log 2)
 #check @Real.log_two_lt_d9
 #check @Real.log_two_gt_d9
 
--- pi bounds actually present in v4.32.0
-#check @Real.pi_gt_314
-#check @Real.pi_lt_315
-#check @Real.pi_gt_3141592
-#check @Real.pi_gt_three
+-- completed zeta representation + theta (the convergent handle for zeta(1/2))
+#check @completedRiemannZeta_eq
+#check @completedRiemannZeta₀
+#check @riemannZeta_def
+#check @jacobiTheta
+#check @completedRiemannZeta_one_sub

@@ -5,6 +5,4 @@ import RH.Toeplitz
 import RH.Newton
 import RH.ExpBracket
 import RH.LogBound
-import RH.PiBracket
 import RH.SqrtBracket
-import RH.GammaHalf
