@@ -6,3 +6,5 @@ import RH.Newton
 import RH.ExpBracket
 import RH.LogBound
 import RH.SqrtBracket
+import RH.PiBracket
+import RH.GammaHalf

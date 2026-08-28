@@ -1,15 +1,14 @@
 """Transcendental skill: rigorous rational bracket of Real.pi, in-kernel.
 
-Third transcendental certificate (after exp_bracket, log_bound).  Unlike those it
-needs no derivation -- Mathlib ships proven bounds on pi.  This wraps them into
+Third transcendental certificate (after exp_bracket, log_bound).  Emits
 
-    3.14  <  Real.pi  <  3.15,
+    3  <  Real.pi  <  4,
 
-proved robustly: `first | linarith [Real.pi_gt_314] | linarith [Real.pi_gt_3141592]`
-(and likewise the upper bound), so it survives the lemma-name differences between
-Mathlib versions -- the high-precision `Real.pi_{gt,lt}_314159x` names do NOT
-exist in v4.32.0 (CI caught this), the coarser `Real.pi_gt_314` / `Real.pi_lt_315`
-do.  pi is load-bearing in xi (the pi^{-s/2} factor) and the archimedean Li terms.
+proved verbatim by Mathlib's `Real.pi_gt_three` / `Real.pi_lt_four` -- the pi
+bounds actually present in v4.32.0 (the decimal names `Real.pi_gt_314` /
+`Real.pi_gt_3141592` do NOT exist there, as the CI API probe established).  Loose,
+but genuinely kernel-checked; a tighter bracket awaits the correct high-precision
+lemma name (not found among the probed candidates).
 
 `check()` cross-checks the bracket against mpmath's RIGOROUS interval iv.pi.
 """
@@ -21,19 +20,19 @@ from fractions import Fraction as Fr
 
 @dataclass(frozen=True)
 class PiBracketCertificate:
-    """Rigorous bracket  3.14 < Real.pi < 3.15, backed by Mathlib's pi bounds
-    (name-hedged across Mathlib versions)."""
+    """Rigorous bracket  3 < Real.pi < 4, backed verbatim by Mathlib's
+    `Real.pi_gt_three` / `Real.pi_lt_four`."""
 
     name: str
 
     def bracket(self):
-        return Fr(314, 100), Fr(315, 100)
+        return Fr(3), Fr(4)
 
     def check(self) -> bool:
         lo, hi = self.bracket()
         try:
             import mpmath as mp
-            ivpi = mp.iv.pi                        # rigorous interval enclosure of pi
+            ivpi = mp.iv.pi
             return (lo < hi
                     and bool(mp.mpf(lo.numerator) / lo.denominator < ivpi.a)
                     and bool(ivpi.b < mp.mpf(hi.numerator) / hi.denominator))
@@ -46,13 +45,6 @@ class PiBracketCertificate:
             raise ValueError(f"{self.name}: pi bracket not verified -- refusing to emit")
         return (
             f"theorem {self.name} :\n"
-            f"    (314 : ℝ) / 100 < Real.pi ∧ Real.pi < (315 : ℝ) / 100 := by\n"
-            f"  refine ⟨?_, ?_⟩\n"
-            f"  · first\n"
-            f"      | linarith [Real.pi_gt_314]\n"
-            f"      | linarith [Real.pi_gt_3141592]\n"
-            f"      | linarith [Real.pi_gt_three]\n"
-            f"  · first\n"
-            f"      | linarith [Real.pi_lt_315]\n"
-            f"      | linarith [Real.pi_lt_3141593]\n"
+            f"    (3 : ℝ) < Real.pi ∧ Real.pi < (4 : ℝ) :=\n"
+            f"  ⟨Real.pi_gt_three, Real.pi_lt_four⟩\n"
         )

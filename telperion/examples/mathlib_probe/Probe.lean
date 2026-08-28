@@ -1,39 +1,23 @@
-/- Mathlib v4.32.0 API probe #2, focused on the zeta/Gamma-derivative-numerics
-   contribution.  `#check @foo` types what exists, errors on what does not. -/
+/- Mathlib v4.32.0 API probe #3: eulerMascheroniConstant internals, to build the
+   MISSING lower bound (Mathlib has `_lt_two_thirds` but no lower bound).
+   `#print` dumps the definition; `#check` types the surrounding API. -/
 import Mathlib
 open scoped Real
 
--- pi bounds: find the tight ones v4.32.0 actually has (only pi_gt_three confirmed so far)
-#check @Real.pi_gt_three
-#check @Real.pi_lt_four
-#check @Real.pi_le_four
-#check @Real.pi_gt_3141592
-#check @Real.pi_lt_3141593
-
--- Euler-Mascheroni: constant exists; what bound/characterization API is there?
-#check @Real.eulerMascheroniConstant
+-- the definition (reveals how to bound it below)
+#print Real.eulerMascheroniConstant
 #check @Real.eulerMascheroniConstant_lt_two_thirds
-#check @Real.eulerMascheroniConstant_gt_half
-#check @Real.tendsto_harmonic_sub_log_atTop
-#check @Real.harmonic
 
--- Gamma differentiability (digamma/deriv_Gamma are absent; what exists to build on?)
-#check @Real.hasDerivAt_Gamma
-#check @Real.differentiableAt_Gamma
-#check @Complex.differentiableAt_Gamma
-#check @Complex.hasDerivAt_Gamma
-#check @Real.GammaSeq
-#check @Real.Gamma_seq
-#check @Real.tendsto_logGammaSeq
-#check @Real.deriv_logGamma
+-- lower-bound candidates (which, if any, already exist?)
+#check @Real.eulerMascheroniConstant_pos
+#check @Real.one_half_lt_eulerMascheroniConstant
+#check @Real.eulerMascheroniConstant_gt
 
--- log two bounds (confirm; needed for psi(1/2) = -gamma - 2 log 2)
-#check @Real.log_two_lt_d9
-#check @Real.log_two_gt_d9
-
--- completed zeta representation + theta (the convergent handle for zeta(1/2))
-#check @completedRiemannZeta_eq
-#check @completedRiemannZeta₀
-#check @riemannZeta_def
-#check @jacobiTheta
-#check @completedRiemannZeta_one_sub
+-- harmonic-minus-log characterization (the standard route to bounds)
+#check @harmonic
+#check @Real.eulerMascheroniConstant_eq
+#check @Real.tendsto_eulerMascheroniSeq
+#check @Real.eulerMascheroniSeq
+#check @Real.eulerMascheroniSeq'
+#check @Real.eulerMascheroniSeq_lt_eulerMascheroniConstant
+#check @Real.eulerMascheroniConstant_lt_eulerMascheroniSeq'

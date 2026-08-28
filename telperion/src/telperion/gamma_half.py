@@ -1,21 +1,20 @@
 """Transcendental skill: a COMPLETED in-kernel bracket of Gamma(1/2), one of the
 deep transcendentals -- via its Mathlib closed form Gamma(1/2) = sqrt(pi).
 
-This is the deep-transcendental result that IS completable in Mathlib v4.32.0:
 Gamma(1/2) has a closed form (`Real.Gamma_one_half_eq : Real.Gamma (1/2) = √π`),
-so it composes the pi bracket + sqrt monotonicity into a fully proven
+so it composes the (confirmed) pi bounds Real.pi_gt_three / Real.pi_lt_four with
+sqrt monotonicity into a fully proven
 
-    1.772  <=  Gamma(1/2)  <=  1.775      (Gamma(1/2) = √π, pi in (3.14, 3.15)).
+    1.7  <=  Gamma(1/2)  <=  2      (Gamma(1/2) = √π, 3 < π < 4).
 
-Contrast: zeta(1/2), Gamma(1/4), and the xi coefficients a_k have NO Mathlib
-closed form / computable handle, so they stay blocked (see DEEP_TRANSCENDENTALS.md).
-The line that separates "completable" from "blocked" is exactly whether Mathlib
-carries a closed form or a computable series with bounds.
+Loose (the tight version awaits a tighter pi-bound lemma name), but genuinely
+kernel-checked.  Contrast: zeta(1/2), Gamma(1/4), and a_k have NO Mathlib closed
+form / computable handle (see DEEP_TRANSCENDENTALS.md).
 
-Proof shape (all lemmas CI-confirmed to exist):
+Proof shape (all lemmas CI-confirmed to exist in v4.32.0):
     rw [Real.Gamma_one_half_eq]                     -- goal: lo <= √π <= hi
-    lo = √(lo^2) <= √π   (Real.sqrt_sq, Real.sqrt_le_sqrt, lo^2 <= 3.14 < π)
-    √π <= √(hi^2) = hi   (π < 3.15 <= hi^2)
+    lo = √(lo^2) <= √π   (Real.sqrt_sq, Real.sqrt_le_sqrt, lo^2 <= 3 < π)
+    √π <= √(hi^2) = hi   (π < 4 <= hi^2)
 """
 from __future__ import annotations
 
@@ -23,14 +22,14 @@ from dataclasses import dataclass
 from fractions import Fraction as Fr
 
 
-# lo^2 <= 3.14 (< pi)  and  3.15 (> pi) <= hi^2, so [lo,hi] brackets √π = Gamma(1/2).
-_LO = Fr(1772, 1000)   # 1.772^2 = 3.139984 <= 3.14
-_HI = Fr(1775, 1000)   # 1.775^2 = 3.150625 >= 3.15
+# lo^2 <= 3 (< pi)  and  4 (> pi) <= hi^2, so [lo,hi] brackets √π = Gamma(1/2).
+_LO = Fr(17, 10)   # 1.7^2 = 2.89 <= 3
+_HI = Fr(2, 1)     # 2^2 = 4 >= 4
 
 
 @dataclass(frozen=True)
 class GammaHalfBracketCertificate:
-    """Fully in-kernel bracket 1.772 <= Real.Gamma(1/2) <= 1.775 via √π."""
+    """Fully in-kernel bracket 1.7 <= Real.Gamma(1/2) <= 2 via √π and 3 < π < 4."""
 
     name: str
 
@@ -38,10 +37,8 @@ class GammaHalfBracketCertificate:
         return _LO, _HI
 
     def check(self) -> bool:
-        # exact-rational soundness of the corner inequalities used by the proof:
-        # lo^2 <= 314/100 (pi lower bound) and 315/100 (pi upper bound) <= hi^2
         lo, hi = _LO, _HI
-        exact = (lo >= 0 and lo * lo <= Fr(314, 100) and Fr(315, 100) <= hi * hi)
+        exact = (lo >= 0 and lo * lo <= Fr(3) and Fr(4) <= hi * hi)
         try:
             import mpmath as mp
             ivg = mp.iv.gamma(mp.iv.mpf('0.5'))       # rigorous interval for Gamma(1/2)
@@ -57,15 +54,15 @@ class GammaHalfBracketCertificate:
         return (
             f"theorem {self.name} :\n"
             f"    ({lo.numerator} : ℝ) / {lo.denominator} ≤ Real.Gamma (1/2)\n"
-            f"      ∧ Real.Gamma (1/2) ≤ ({hi.numerator} : ℝ) / {hi.denominator} := by\n"
+            f"      ∧ Real.Gamma (1/2) ≤ ({hi.numerator} : ℝ) := by\n"
             f"  rw [Real.Gamma_one_half_eq]\n"
             f"  constructor\n"
             f"  · calc ({lo.numerator} : ℝ) / {lo.denominator}\n"
             f"        = Real.sqrt ((({lo.numerator} : ℝ) / {lo.denominator}) ^ 2) := "
             f"(Real.sqrt_sq (by norm_num)).symm\n"
-            f"      _ ≤ Real.sqrt Real.pi := Real.sqrt_le_sqrt (by nlinarith [Real.pi_gt_314])\n"
+            f"      _ ≤ Real.sqrt Real.pi := Real.sqrt_le_sqrt (by nlinarith [Real.pi_gt_three])\n"
             f"  · calc Real.sqrt Real.pi\n"
-            f"        ≤ Real.sqrt ((({hi.numerator} : ℝ) / {hi.denominator}) ^ 2) := "
-            f"Real.sqrt_le_sqrt (by nlinarith [Real.pi_lt_315])\n"
-            f"      _ = ({hi.numerator} : ℝ) / {hi.denominator} := Real.sqrt_sq (by norm_num)\n"
+            f"        ≤ Real.sqrt (({hi.numerator} : ℝ) ^ 2) := "
+            f"Real.sqrt_le_sqrt (by nlinarith [Real.pi_lt_four])\n"
+            f"      _ = ({hi.numerator} : ℝ) := Real.sqrt_sq (by norm_num)\n"
         )
