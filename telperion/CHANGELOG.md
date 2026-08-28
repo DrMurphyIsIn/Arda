@@ -261,6 +261,17 @@ D<0` for n=0…5, matching root-checks) but NOT shipped: the discriminant bridge
 ~16 monomials of degree 6, too large to hand-verify safely without a local Lean
 build. It is the first thing to build once the RH examples get a CI `lake` gate.
 
+**Landed genuine ζ-numerics in-kernel** (`rh_lean/RH/ZetaNumerics.lean`): proved,
+against Mathlib v4.32.0, `3/2 < ζ(2) < 8/3` (from `riemannZeta_two`=π²/6 + the
+π bounds) and — the real win — **`9/8 ≤ ζ(3)`, a bound on Apéry's constant (NO
+closed form)**, via the Dirichlet series `zeta_eq_tsum_one_div_nat_cpow`, a
+Complex→real cast (`riemannZeta_three_eq_ofReal`), and `Summable.sum_le_tsum` on
+the first 3 terms. Developed by CI-iterating single files in the `mathlib_probe`
+sandbox (the real Lean checker) and promoted to the kernel-gated library. This is
+the concrete demonstration that ζ-numerics *can* be extended and landed in this
+setup — distinct from the RH-relevant `ζ(1/2)` (which needs analytic continuation,
+still hard) but the same *pipeline*.
+
 **CI `lake` gate — the RH line is now KERNEL-PROVEN** (`examples/rh_lean/`,
 `telperion-rh-lean.yml`): a lake library aggregates the frozen emitted Lean
 (turan/jensen/toeplitz/newton hyperbolicity + exp/log/pi brackets) and CI
