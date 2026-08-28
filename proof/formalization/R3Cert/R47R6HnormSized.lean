@@ -34,7 +34,7 @@ theorem TransferStep.stateSize_eq {s s' : List Hub} (h : TransferStep s s') :
     stateSize s' = stateSize s := by
   obtain ⟨a, b, rest, arms, arms', c, ha, hb, _, hperm, hperm', rfl, rfl⟩ := h
   have hlen : arms'.length = arms.length := by
-    rw [hperm.length_eq, hperm'.length_eq]
+    rw [hperm.length_eq, hperm'.length_eq]; simp
   have hsum : arms'.sum = arms.sum := by
     rw [hperm.sum_eq, hperm'.sum_eq]
     simp only [List.sum_cons]
