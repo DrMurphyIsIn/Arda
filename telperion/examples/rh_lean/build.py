@@ -30,6 +30,7 @@ FROZEN = {
     "Toeplitz": "toeplitz_xi/frozen/ToeplitzXi.lean",
     "Newton": "newton_xi/frozen/NewtonXi.lean",
     "ExpBracket": "exp_bracket/frozen/ExpBracket.lean",
+    "BGRhoBSqrt": "bg_rhob_sqrt/frozen/BGRhoBSqrt.lean",  # sqrt_bracket regenerating BG's e2 sqrt 2 crux
 }
 
 
