@@ -260,3 +260,15 @@ Quartic (degree-4) Jensen hyperbolicity was validated numerically (`Δ₄>0 ∧ 
 D<0` for n=0…5, matching root-checks) but NOT shipped: the discriminant bridge is
 ~16 monomials of degree 6, too large to hand-verify safely without a local Lean
 build. It is the first thing to build once the RH examples get a CI `lake` gate.
+
+**Second transcendental skill** (`log_bound.py`): after `exp_bracket`, a
+`LogBoundCertificate` — the *transcendental* half of the toolchain, where the
+theorem's Lean statement contains `Real.log` and the bound is DERIVED in-kernel
+(`Real.log_le_sub_one_of_pos` + `Real.log_inv`), not imported. Emits the coarse
+rigorous bracket `1 − d/n ≤ log(n/d) ≤ n/d − 1`. Honest limits: coarse (tight only
+near 1; range-reduction via Mathlib's `Real.log_two_*` + a near-1 series is the
+noted-not-shipped tight version); applies to the *archimedean* RH pieces (Li-trend
+`(n/2)(log n − …)`, zero-free constants) but NOT the deep transcendentals
+(`ζ(1/2)`, Stieltjes constants, the `a_k` themselves) — those need in-kernel
+`ζ`/`Γ`-derivative bounds Mathlib does not have. That gap is the honest ceiling on
+making the `turan_xi`/`jensen_xi`/… certificates unconditional.

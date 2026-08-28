@@ -132,6 +132,7 @@ from .zerofree import ZeroFreeDiskCertificate, dominant_term_margin  # noqa: F40
 from .turan import TURAN_BRIDGE_LEMMA, TuranEnclosureCertificate  # noqa: F401
 from .jensen import CUBIC_JENSEN_BRIDGE_LEMMA, CubicJensenCertificate  # noqa: F401
 from .toeplitz import TOEPLITZ3_BRIDGE_LEMMA, ToeplitzMinorCertificate  # noqa: F401
+from .log_bound import LOG_BOUND_TEMPLATE, LogBoundCertificate  # noqa: F401
 from .exp_bracket import (  # noqa: F401
     EXP_BRACKET_TEMPLATE, ExpBracketCertificate, suggest as suggest_exp_bracket,
     taylor_exp,
