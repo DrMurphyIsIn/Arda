@@ -8,16 +8,29 @@ the Turán/enclosure machinery added in 0.1.3 helps BG. Short version:
 
 `turan_from_enclosure` (in `src/telperion/turan.py`) is a *worst-corner
 monotonicity bridge*: given rational enclosures and a strict rational margin, a
-polynomial inequality among the enclosed (transcendental / hard-to-compute)
+polynomial inequality among the enclosed (**genuinely transcendental**)
 constants follows by `norm_num`, bridged by one once-proved `nlinarith` lemma.
-That is the dominant BG proof pattern already — `bilinear_corner_nonneg`,
-`exp_bracket` (rigorous enclosure of exp(−θ) for the R47Encode far constant),
-the ρ_B `(1+t)^11 ≤ 621/64` brackets. `TuranEnclosureCertificate` is a new
-instance of that existing pattern.
+The kindred BG pattern is `exp_bracket` (rigorous rational enclosure of exp(−θ),
+the R47Encode far constant); `TuranEnclosureCertificate` generalizes exactly
+that. The `bilinear_corner_nonneg` corner lemma is the same *worst-corner*
+shape but over symbolic variables, not enclosed constants.
 
-**Directly reusable when a BG step has the shape** `C_left · C_right < C_mid²`
-between three enclosed constants (e.g. a ρ_B / tie-constant bracket that happens
-to be a product-vs-square). Instantiate:
+**Correction (per BG-session review, grounded in `ExactCruxes.lean`).** The ρ_B
+`(1+t)^11 ≤ 621/64` brackets are **NOT** enclosure targets: ρ_B is *algebraic*
+and clears to exact rational via `rhoB_pow11 : rhoB^11 = 621/64`, so every ρ_B
+comparison (e.g. `26/23 < rhoB ⟺ (26/23)^11 < 621/64`) is a pure `norm_num`.
+Enclosures cross **only** where the constant is transcendental-but-boundable
+(exp(−θ)); they do **not** apply to the algebraic-and-cleared BG constants. My
+earlier listing of ρ_B here was wrong.
+
+**So the one real reuse target is the exp brackets in the H2-Bridge layer**
+(`BridgeStep4*`, `LemmaA`, `R47RateZBound`) — a clean refactor of the bespoke
+`exp_bracket` onto the general certificate. That is the Bridge/H2 frontier (owned
+by that session), and it is infrastructure reuse, **not** a lever on the crux.
+
+**Directly reusable when a BG step compares genuinely transcendental constants**
+in the shape `C_left · C_right < C_mid²` (three *enclosed* — not algebraic —
+constants). Instantiate:
 
 ```python
 from telperion import TuranEnclosureCertificate
