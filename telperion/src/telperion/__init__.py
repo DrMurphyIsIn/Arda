@@ -138,6 +138,7 @@ from .taylor_log import TaylorLogNear1Certificate  # noqa: F401
 from .pi_bracket import PiBracketCertificate  # noqa: F401
 from .sqrt_bracket import SQRT_BRACKET_TEMPLATE, SqrtBracketCertificate  # noqa: F401
 from .gamma_half import GammaHalfBracketCertificate  # noqa: F401
+from .zeta_bound import ZetaBoundCertificate  # noqa: F401
 from .exp_bracket import (  # noqa: F401
     EXP_BRACKET_TEMPLATE, ExpBracketCertificate, suggest as suggest_exp_bracket,
     taylor_exp,

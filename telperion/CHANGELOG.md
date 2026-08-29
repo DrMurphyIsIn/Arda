@@ -261,6 +261,18 @@ D<0` for n=0…5, matching root-checks) but NOT shipped: the discriminant bridge
 ~16 monomials of degree 6, too large to hand-verify safely without a local Lean
 build. It is the first thing to build once the RH examples get a CI `lake` gate.
 
+**`ZetaBoundCertificate` — reusable ζ-numerics emitter** (`zeta_bound.py`): turns
+the bespoke ζ(2)/ζ(3)/ζ(4) hand-proofs into a one-line emitter call for *any*
+integer k≥2. Emits a kernel-verified two-sided bound `S_M ≤ ζ(k) ≤ S_M + 1/(M-1)`
+(M = leading terms, controls tightness) via the Dirichlet series
+(`zeta_eq_tsum_one_div_nat_cpow`) + a GENERAL square-telescoping tail
+(`1/n^k ≤ 1/n² ≤ 1/((n-1)n) = 1/(n-1) − 1/n`, `pow_le_pow_right₀` +
+`Summable.tsum_le_of_sum_range_le`). Verified general by compiling k=3 and k=5 from
+the same template; `RH/ZetaEmitter.lean` ships emitter-generated bounds for ζ(5),
+ζ(6), ζ(7) (odd/higher, no closed form) into the kernel gate. Honest scope: Re>1
+convergent series, a numeric-bounds tool — not RH-frontier (ζ(1/2) needs
+continuation).
+
 **Landed genuine ζ-numerics in-kernel** (`rh_lean/RH/ZetaNumerics.lean`): proved,
 against Mathlib v4.32.0, `3/2 < ζ(2) < 8/3` (from `riemannZeta_two`=π²/6 + the
 π bounds) and — the real win — **`9/8 ≤ ζ(3)`, a bound on Apéry's constant (NO
