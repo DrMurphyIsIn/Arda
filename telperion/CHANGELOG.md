@@ -261,6 +261,21 @@ D<0` for n=0…5, matching root-checks) but NOT shipped: the discriminant bridge
 ~16 monomials of degree 6, too large to hand-verify safely without a local Lean
 build. It is the first thing to build once the RH examples get a CI `lake` gate.
 
+**`WorstCornerCertificate` (general) + degree-4 Jensen hyperbolicity**
+(`worst_corner.py`, `quartic_jensen.py`): the abstraction the bespoke
+turan/jensen/toeplitz bridges are instances of — certifies `P(g) > 0` over a
+positive box for ANY sympy polynomial, auto-generating the per-monomial
+`mul_le_mul` worst-corner chains (positive monomials at `lo`, negative at `hi`) +
+`nlinarith`. Verified it reproduces the hand-written cubic Jensen discriminant AND
+scales to the **quartic Jensen discriminant Δ₄** (16 monomials of degree 6, 30-digit
+rationals) — which compiles in ~14 s (the `nlinarith` is a *linear* certificate once
+the monomial bounds are supplied, so no blow-up). `QuarticJensenCertificate` uses it
+to certify **d=4 Jensen–Pólya hyperbolicity** (`J^{4,n}` all-real ⟺ `Δ₄>0 ∧ P<0 ∧
+D<0`, the full quartic real-rootedness criterion) for shifts n=0,1 over `γ_k=k!a_k`
+enclosures (`RH/QuarticJensen.lean`), extending the RH-necessary ladder to degree 4.
+This settles the earlier deferral: worst-corner scales to d=4 both mathematically and
+in Lean tractability. Same honest scope (RH-necessary, finite, enclosure-conditional).
+
 **`ZetaBoundCertificate` — reusable ζ-numerics emitter** (`zeta_bound.py`): turns
 the bespoke ζ(2)/ζ(3)/ζ(4) hand-proofs into a one-line emitter call for *any*
 integer k≥2. Emits a kernel-verified two-sided bound `S_M ≤ ζ(k) ≤ S_M + 1/(M-1)`

@@ -18,9 +18,22 @@ HERE = Path(__file__).resolve().parent
 EXAMPLES = HERE.parent
 sys.path.insert(0, str(EXAMPLES.parent / "src"))
 
+from fractions import Fraction as Fr  # noqa: E402
+
 from telperion import (  # noqa: E402
     GammaHalfBracketCertificate, LogBoundCertificate, PiBracketCertificate,
-    SqrtBracketCertificate, ZetaBoundCertificate,
+    QuarticJensenCertificate, SqrtBracketCertificate, ZetaBoundCertificate,
+)
+
+# gamma_k = k! a_k enclosures at 1e-30 (tight enough for the quartic Delta4's
+# delicate cancellation), k=0..5 -> certifies quartic hyperbolicity shifts n=0,1.
+_QUARTIC_GAMMAS = (
+    ("99424155637662821982554747937/200000000000000000000000000000", "248560389094157054956386869843/500000000000000000000000000000"),
+    ("1435746519696589845953117281/125000000000000000000000000000", "11485972157572718767624938249/1000000000000000000000000000000"),
+    ("123452018070318006890345791/500000000000000000000000000000", "246904036140636013780691583/1000000000000000000000000000000"),
+    ("624266611039145304003569/125000000000000000000000000000", "4994132888313162432028553/1000000000000000000000000000000"),
+    ("47906718616129646096703/500000000000000000000000000000", "95813437232259292193407/1000000000000000000000000000000"),
+    ("1753923091213315303489/1000000000000000000000000000000", "175392309121331530349/100000000000000000000000000000"),
 )
 
 # frozen emitted Lean  ->  RH library module
@@ -171,6 +184,16 @@ def _zeta_emitter_module() -> str:
             + "\n\nend ZetaEmitter\n")
 
 
+def _quartic_module() -> str:
+    enc = tuple((Fr(lo), Fr(hi)) for lo, hi in _QUARTIC_GAMMAS)
+    body = QuarticJensenCertificate(name="quartic_jensen_xi", enclosures=enc).lean().rstrip()
+    return ("/- Degree-4 Jensen-Polya hyperbolicity of xi (QuarticJensenCertificate via\n"
+            "   the general WorstCornerCertificate): J^{4,n} all-real <=> Delta4>0 & P<0 & D<0,\n"
+            "   for shifts n=0,1 over gamma_k=k!a_k enclosures. RH-necessary, finite. -/\n"
+            "import Mathlib\nopen scoped Real\n\nnamespace QuarticJensen\n\n" + body
+            + "\n\nend QuarticJensen\n")
+
+
 def _gammahalf_module() -> str:
     thm = GammaHalfBracketCertificate(name="gamma_half_bracket").lean().rstrip()
     return ("/- Generated: a COMPLETED in-kernel bracket of the deep transcendental\n"
@@ -188,6 +211,7 @@ def modules() -> dict:
     out["GammaHalf"] = _gammahalf_module()   # deep transcendental Gamma(1/2), via √π + 3<π<4
     out["ZetaNumerics"] = _zeta_module()     # zeta(2) bounds + zeta(3) > 9/8 (Apery, no closed form)
     out["ZetaEmitter"] = _zeta_emitter_module()  # reusable ZetaBoundCertificate: zeta(5),(6),(7) bounds
+    out["QuarticJensen"] = _quartic_module()     # d=4 Jensen hyperbolicity (Delta4>0 & P<0 & D<0), n=0,1
     return out
 
 
