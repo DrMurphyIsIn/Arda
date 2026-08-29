@@ -18,9 +18,14 @@ caterpillar**. `ρ*` is the exact algebraic maximum of the closed-form single-mo
     ρ(a) = [ a_spine · (3/2)^a ]^{1/(1+2a)},   a_spine = 1/((a+2)μ),
     μ = (−(d+a/3) + √((d+a/3)² + 4)) / 2,   d = a+2,     max at a* ≈ 7.02.
 
-Achievability `ρ* ≥ 1.22765` is done in closed form; globality is strongly evidenced (no broader
-family — cherry-arms, 2-level, non-uniform — exceeds it). The OPEN direction is the matching upper
-bound over ALL trees.
+Achievability `ρ* ≥ 1.22765` is done in closed form; globality is strongly evidenced. The OPEN
+direction is the matching upper bound over ALL trees.
+
+**The `poly(n)` is ESSENTIAL, not cosmetic (calibrated 2026-08-29, `BG_TRUE_MAX_PROBE.md` route (b)).**
+`per/∏deg ≤ ρ*^n` is *outright false for small trees*: `F(T) = (1/n)log Z` itself EXCEEDS `log ρ*` at
+small n (per-vertex rate peaks ~1.231 > ρ* and DECREASES to ρ* asymptotically). So any certificate must
+prove the *asymptotic* rate `≤ ρ*` while tolerating a small-n excess absorbed by the `poly(n)` — a bound
+of the naive form `≤ ρ*^n` cannot exist.
 
 ## 1. The quantity and its four exact forms
 
@@ -92,10 +97,21 @@ over tree spectral measures.
 - **M7.** Convert the measure-level max into a finite-`n` bound `Z(T) ≤ ρ*^n · poly(n)` (Benjamini–Schramm
   continuity + a finite-size correction).
 
-**Csikvári handle.** The matching measure is monotone/extremal under tree operations (Csikvári's
-`per(L)`-immanant and matching-polynomial results); the concavity-in-the-motif evidence from
-`BG_TRUE_MAX_PROBE.md` (uniform beats non-uniform) is the finite-side shadow of a free-energy
-concavity that (b2) would make rigorous.
+**Csikvári handle.** The matching measure is monotone/extremal under tree operations; the
+concavity-in-the-motif evidence (`BG_TRUE_MAX_PROBE.md`, uniform beats non-uniform) is the finite-side
+shadow of a free-energy concavity that (b2) would make rigorous.
+
+**The MOMENT concretization (calibrated 2026-08-29 — the recommended concrete handle).** Substituting
+`u = λ² ∈ [0,1]`, `F = ½∫log(1+u)dμ_{N²}`; bound `½log(1+u) ≤ Σ_k c_k u^k` by a finite polynomial
+envelope, which linearizes `F` into a combination of **walk moments** `m_k = (1/n)Tr N^{2k}` — LOCAL,
+polynomial quantities (the collective free-energy linearized; not per-vertex, so it evades (a)'s wall
+and Koiran's SOS no-go). Calibration facts to build on:
+- Jensen (`m_1` only) is valid but loose (overshoots ρ* ~0.5%).
+- Higher-moment envelopes **converge to exact** at the caterpillar (K=3 → +4e-4, **K=6 → exact**): the
+  moment route CAN represent the tight bound.
+- **The reduced open sub-problem is combinatorial, not transcendental:** bound `max_T m_k(T)` per moment
+  order `k` (a walk-count optimization over trees). This is exactly where the moment route earns its keep
+  over the failed local certificate (a) — and where the `poly(n)` slack lives (the small-n moment excess).
 
 ## 5. The tightness requirement (non-negotiable)
 
