@@ -225,6 +225,35 @@ Both are kernel-gateable with Telperion's `hankel_jensen.py` + `cone.py`. The so
 Hankel tightening of (2) and rationalizing the duals into a kernel-checked emitter. Reproductions:
 `bg_flag_lp.py` (LP + verified dual), `bg_flag_robust.py` (degree-cap robustness). `conjecture1_proved = False`.
 
+## W9 (2026-08-29): the flag-LP CONVERGES to the true cut; the exact extremizer is a *generalized* caterpillar (refines W8)
+
+Degree-cap convergence at fixed `m₁ = 0.520` sharpens the W8 caveat into a clean picture. `min m₂` decreases
+monotonically with **shrinking** increments and converges from below:
+
+    DMAX = 8, 9, 10, 11  →  min m₂ = 0.31246, 0.30784, 0.30485, 0.30251   (Δ = −4.6, −3.0, −2.3 ·10⁻³)
+
+- **It is a valid, convergent lower bound**, not a blow-up: the LP over degree-`≤DMAX` type-distributions is
+  a relaxation of the degree-`≤DMAX` tree min, and the sequence converges to the true `φ(0.520)`.
+- **The true `φ(0.520) ≈ 0.302–0.305` is BELOW the uniform caterpillar `0.30841`.** A direct search over
+  tree families finds **mixed-arm / multi-hub caterpillars beat the uniform a=7 caterpillar** at `m₁=0.520`
+  (e.g. `a1=8/a2=7` blocks → `m₂≈0.305`), confirmed valid (`LP ≤ real tree` on matched `m₁`). So the exact
+  extremal boundary is traced by **generalized (period>1, mixed-arm) caterpillars** — precisely the
+  cherry-parity / multi-hub oscillation seen in the finite-`n` maximizers (W5(iii)).
+- **W8's "tight to 10⁻⁴ at DMAX=9" was the converging sequence crossing the uniform-cat level** (`0.30784`
+  vs `0.30841`) — a coincidence of that cap, not exact tightness against the uniform family.
+
+**What this means for the proof.** The correct target is a **hierarchy limit**, exactly as W5 established
+(`log ρ*` is a thermodynamic-limit growth rate, not a finite max). Route (b) is a **convergent family of
+finite, kernel-gateable certificates** — indexed by SOS-envelope order `K` and flag/degree cap `DMAX` —
+each proving `density ≤ log ρ* + ε(K, DMAX)` with `ε → 0`. The spectral moment-SDP (§W7a) supplies the
+`m_k`-side bound; the flag-LP + its verified antisymmetric-potential dual (§W8) supplies the `m₂`-cut,
+converging to the true generalized-caterpillar boundary (§W9). This is a complete proof **structure** for
+the limit statement `sup_tree-density = log ρ*`, modulo (i) a standard hierarchy-convergence theorem and
+(ii) Hankel/2-ball acceleration to make a *low* level tight enough for a compact emitter. The uniform
+caterpillar is a near-optimal *reference*, not the exact extremizer. Reproductions: `bg_converge.py`
+(degree-cap convergence), `bg_lp_vs_real.py` (LP ≤ real-tree, generalized-caterpillar search).
+`conjecture1_proved = False`.
+
 ## W2 first result (2026-08-29): the entry moment `m_1` is bounded
 
 `m_1(T) = (2/n)Σ_e 1/(deg_i deg_j)` (exact rational). Exhaustive per n:
