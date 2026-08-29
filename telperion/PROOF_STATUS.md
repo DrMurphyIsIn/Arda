@@ -37,7 +37,9 @@ toolkit. **Necessary, not sufficient.**
 ## Ruled out — with reasons (this is the value)
 
 Each of these is a *reasoned* dead end, established by the audit and two expert councils,
-not a mere failure to find:
+not a mere failure to find. **Re-audited 2026-08-29** (exact-arithmetic reproductions):
+#1, #3, #5 confirmed rigorous; #4 confirmed in conclusion but its evidence corrected (see
+below); #2 is the only one *asserted* rather than *proven* — a reasoned no-go, not a theorem.
 
 1. **Sum-of-non-positive-local-terms** (local potentials `P(m)≥0`, per-vertex/per-node
    monotonicity, the transfer `g_v≤0`, rooted-subtree `p_S≤1`). **Refuted:** `Φ¹¹≤1` is a
@@ -45,20 +47,34 @@ not a mere failure to find:
    = 1, and the tie-hub's own naive defect is `+0.424 > 0`. The cancellation is non-local by
    nature. (Explains the campaign's `+0.199` residual stall.)
 2. **Smooth / algebraic certificates** (Hodge–Riemann, SOS, real-rootedness/interlacing,
-   single-prime p-adic Lorentzian grading). **Refuted:** the obstruction is *archimedean
-   magnitude* (a growth-rate: density → 1), invisible to any p-adic/SOS/Hodge/real-stability
-   certificate. The arithmetic coordinate `v₂₃(a_v)` is integer-valued hence locally constant
-   (differential 0 a.e.), so any smooth Hessian/signature collapses to rank-1.
+   single-prime p-adic Lorentzian grading). **No known certificate works — strong reasons,
+   not a proven no-go.** The obstruction is *archimedean magnitude* (a growth-rate: density
+   → 1; a corollary of #1 and #3), which no algebraic identity sees; and the arithmetic
+   coordinate `v₂₃(a_v)` is integer-valued hence locally constant (differential 0 a.e.), so
+   smooth Hessians/signatures collapse to rank-1 (observed: the campaign's rank-1 collapse
+   and `+0.199` stall). This is the one dead end *asserted* rather than *proven* — a genuinely
+   novel certificate is not rigorously forbidden, but must be simultaneously collective +
+   archimedean-aware + integrality-based (the crux bar). (Re-audit 2026-08-29: prong (a) is
+   a corollary of the reproduced #1/#3; prong (b) is a well-evidenced heuristic, not a theorem.)
 3. **Uniform density gap** (`sup_T D(T) < c < 1`). **Refuted:** `sup_T D(T) = 1`. The
    tie-recursive family "hub + k tie-subtrees" (`n = 11k+1`) has density → 1 (0.9998 at
    k=400), higher than the legs-2 `D∞ = 0.9585`. There is no uniform gap. (Note: legs-2 is
    NOT the extremal manifold — a correction to an earlier session premise.)
 4. **Near-star competitor extremality** (near-star maximizes at each n). **Refuted:** the
-   per-n density-maximizer is a near-star only at resonant odd n (9, 13, 15); at
-   n=4,6,8,10,11,12,14,16 a two-hub structure wins. There is no single extremal family.
+   per-n density-maximizer follows a *parity law* — near-star at **every odd n**
+   (5, 7, 9, 11, 13, 15, …), a non-near-star (multi-hub) at **every even n**
+   (4, 6, 8, 10, 12, 14, 16, …). So near-star is not universally extremal (it loses at all
+   even n), yet it *does* win at n=11, where the maximizer is the tie N(0,5) with Φ¹¹=1
+   (**not** a two-hub). There is no single extremal family. (Re-audit 2026-08-29: exact per-n
+   maximizer sweep n≤16 — no max exceeds 1; this corrects an earlier n-list that listed n=11
+   as two-hub, which read literally would be a BG counterexample, and understated near-star's
+   odd-n reach to {9,13,15}.)
 5. **Single-prime unit finiteness** (finitely many `{2,3,23}`-unit amplitude products).
    **Refuted:** the unit population is unbounded in n. The 23-gate sparsifies (~11× / ~500×
    with the full unit filter) and pins the tie uniquely at n=11, but supplies no finiteness.
+   (Re-audit 2026-08-29: the `{2,3,23}`-unit count is **root-sensitive** — over all roots it
+   grows 2, 3, 4, 6, 5, 14, 25, 32, 37 across n=7…15; a single-root count looks deceptively
+   bounded (≤5 to n=13), so count over all roots to avoid a false "re-refutation.")
 
 ---
 
