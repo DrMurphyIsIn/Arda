@@ -58,5 +58,30 @@ unimodular tree limits (Csikvári; Abért–Csikvári–Frenkel–Kun). The coll
 **Gurvits-capacity** problem (variational, not pure-SOS, so not blocked by Koiran's real-root barrier);
 strictness/exact extremal structure needs the arithmetic layer. See `~/.claude/plans/quiet-singing-kahn.md`.
 
+## The exact Φ¹¹ ↔ classical-BG bridge (2026-08-29)
+
+The repo's rooted-branch `Φ¹¹` is **not** a separate object — it is the classical BG quantity times a
+single root-local factor. Verified exactly for all trees n=4–8, all roots:
+
+- The plain cavity product `∏_v a_v` with `z_v = 1/deg_v` for **all** v **equals `per(L)/∏deg`** (the
+  classical BG quantity; root-independent).
+- `Φ¹¹`'s amplitude uses `z_root = 1/(deg_root+1)` — a **virtual-parent half-edge**, *not* a phantom
+  leaf (a phantom leaf gives `351/32 ≠ 621/64`; refuted). This changes exactly one factor:
+
+  **`Φ¹¹(T) = max_r (64/621)^n · [ (per(L)/∏deg) · g_r ]^{11}`,  `g_r = (1+S_r/(d+1))/(1+S_r/d) < 1`**
+
+  where `d = deg(root)`, `S_r = Σ` root-children cavity messages.
+
+**Consequences.**
+- `Φ¹¹` "root-closes" `per(L)/∏deg`: giving the root a virtual parent makes *every* vertex obey the
+  identical cavity recursion ⟹ cavity-factorizable ⟹ the extremality is provable (the entire
+  star-archetype / tmaxHub / IDENTITY-2 machine). Plain `per(L)/∏deg`'s max-over-roots has no such
+  closure — which is exactly why classical BG is open.
+- Exact bridge: `Φ¹¹ ≤ 1 ⟺ per(L)/∏deg ≤ ρ_B^n / g_r*` (at the deficiency-minimizing root `r*`).
+  Since `g_r* < 1`, this is *weaker* than `per ≤ ρ_B^n` (which is false ∀n≥4) — the factor `g_r`
+  absorbs the difference. This quantifies the rooted↔unrooted gap **in closed form**: it is the single
+  local factor `g_r`. Closing the gap (bounding `g_r*` structurally) is the precise, well-posed research
+  question linking the provable rooted invariant to the open classical problem.
+
 Reproduce: `girardeau.hard_core_boson_partition(n, edges)` on `_all_tree_edges(n)` (rooted_phi) and the
-`caterpillar(pendants)` builder above.
+`caterpillar(pendants)` builder above; the plain-vs-rooted cavity and the `g_r` factor are direct.
