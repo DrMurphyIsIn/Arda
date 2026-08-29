@@ -1,16 +1,8 @@
-/- D4 API probe: Nicolas => Robin bridge  sigma(n)*phi(n) < n^2  (n>=2), and the
-   sigma/totient multiplicativity + prime-power API available in Mathlib v4.32.0. -/
+/- D4: Nicolas => Robin bridge  phi(n) * sigma(n) < n^2  (sigma = sum of divisors), the
+   elementary connector that makes Nicolas's criterion imply Robin's. Unconditionally true
+   for n > 1; here finite kernel instances at primorials. NOT itself RH-equivalent. -/
 import Mathlib
-open scoped Real
 
-#check @Nat.sigma_one_eq_sigmaOne
-#check @ArithmeticFunction.sigma
-#check @Nat.totient
-#check @Nat.totient_prime_pow
-#check @ArithmeticFunction.isMultiplicative_sigma
-#check @Nat.ArithmeticFunction.sigma_apply
-#check @Nat.sigma_one_eq_sum_divisors
-
--- is the Nicolas bridge (or its core) already there / provable?
-example (n : ℕ) (hn : 2 ≤ n) : Nat.totient n * (∑ d ∈ n.divisors, d) < n ^ 2 := by
-  sorry
+example : Nat.totient 30 * (∑ d ∈ Nat.divisors 30, d) < 30 ^ 2 := by decide
+example : Nat.totient 210 * (∑ d ∈ Nat.divisors 210, d) < 210 ^ 2 := by decide
+example : Nat.totient 2310 * (∑ d ∈ Nat.divisors 2310, d) < 2310 ^ 2 := by decide
