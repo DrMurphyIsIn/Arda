@@ -47,4 +47,42 @@ theorem riemannZeta_four_re_bounds :
   · nlinarith [h9, hp]
   · nlinarith [h16, hp]
 
+/-- Apery's constant zeta(3) < 5/4 (tight two-sided with zeta(3) >= 9/8): the
+    Dirichlet-series tail 1/(n+3)^3 <= g n - g(n+1) telescopes to g 0 = 1/12. -/
+theorem riemannZeta_three_re_le : (riemannZeta 3).re < 5 / 4 := by
+  rw [riemannZeta_three_eq_ofReal, Complex.ofReal_re]
+  have hf : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 3) :=
+    Real.summable_one_div_nat_pow.mpr (by norm_num)
+  have hsplit := hf.sum_add_tsum_nat_add 3
+  have h3 : (∑ i ∈ Finset.range 3, 1 / (i : ℝ) ^ 3) = 9 / 8 := by
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one]; norm_num
+  set g : ℕ → ℝ := fun i => 1 / (2 * ((i : ℝ) + 2) * ((i : ℝ) + 3)) with hg
+  have hterm : ∀ i : ℕ, (1 / (((i + 3 : ℕ)) : ℝ) ^ 3) ≤ g i - g (i + 1) := by
+    intro i
+    have h2 : ((i : ℝ) + 2) ≠ 0 := by positivity
+    have h3' : ((i : ℝ) + 3) ≠ 0 := by positivity
+    have h4 : ((i : ℝ) + 4) ≠ 0 := by positivity
+    have e : g i - g (i + 1) = 1 / (((i : ℝ) + 2) * ((i : ℝ) + 3) * ((i : ℝ) + 4)) := by
+      simp only [hg]; push_cast; field_simp; ring
+    have hfi : (1 / (((i + 3 : ℕ)) : ℝ) ^ 3) = 1 / ((i : ℝ) + 3) ^ 3 := by push_cast; ring
+    rw [hfi, e]
+    apply one_div_le_one_div_of_le (by positivity)
+    have hid : ((i : ℝ) + 3) ^ 3 - (((i : ℝ) + 2) * ((i : ℝ) + 3) * ((i : ℝ) + 4)) = (i : ℝ) + 3 := by
+      ring
+    nlinarith [hid, (by positivity : (0 : ℝ) ≤ (i : ℝ) + 3)]
+  have htailsum : Summable (fun i : ℕ => 1 / (((i + 3 : ℕ)) : ℝ) ^ 3) :=
+    (summable_nat_add_iff 3).mpr hf
+  have htail : (∑' i : ℕ, 1 / (((i + 3 : ℕ)) : ℝ) ^ 3) ≤ 1 / 12 := by
+    apply htailsum.tsum_le_of_sum_range_le
+    intro N
+    calc ∑ i ∈ Finset.range N, 1 / (((i + 3 : ℕ)) : ℝ) ^ 3
+        ≤ ∑ i ∈ Finset.range N, (g i - g (i + 1)) := Finset.sum_le_sum (fun i _ => hterm i)
+      _ = g 0 - g N := Finset.sum_range_sub' g N
+      _ ≤ 1 / 12 := by
+          have hg0 : g 0 = 1 / 12 := by simp only [hg]; norm_num
+          have hgN : (0 : ℝ) ≤ g N := by simp only [hg]; positivity
+          rw [hg0]; linarith [hgN]
+  rw [← hsplit, h3]
+  linarith [htail]
+
 end ZetaNumerics
