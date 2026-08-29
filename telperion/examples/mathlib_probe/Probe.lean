@@ -1,18 +1,39 @@
-/- Emitter-design probe: multiple-angle machinery + nlinarith SOS reach for nonneg cosine
-   polynomials (the zero-free-region certificate family). -/
+/- Nonneg cosine polynomial emitter (zero-free-region certificate family) -- 4 instances. -/
 import Mathlib
 open scoped Real
 
-#check @Real.cos_two_mul
-#check @Real.cos_three_mul
-#check @Polynomial.Chebyshev.T_real_cos
+/-- Nonnegative cosine polynomial (zero-free-region certificate family):
+    0 <= (3 : ℝ) + (4 : ℝ) * Real.cos θ + Real.cos (2 * θ).  Markov-Lukacs manifest form on x = cos θ. Proves nothing about RH. -/
+theorem trig_nonneg_mertens_3_4_1 (θ : ℝ) : 0 ≤ (3 : ℝ) + (4 : ℝ) * Real.cos θ + Real.cos (2 * θ) := by
+  have h1 : (0:ℝ) ≤ 1 + Real.cos θ := by nlinarith [Real.neg_one_le_cos θ]
+  have h1' : (0:ℝ) ≤ 1 - Real.cos θ := by nlinarith [Real.cos_le_one θ]
+  have key : (3 : ℝ) + (4 : ℝ) * Real.cos θ + Real.cos (2 * θ) = (2 : ℝ) * (1 + Real.cos θ) * (1 + Real.cos θ) := by rw [Real.cos_two_mul]; ring
+  rw [key]
+  exact (mul_nonneg (mul_nonneg (by norm_num : (0:ℝ) ≤ (2 : ℝ)) h1) h1)
 
--- degree-3 nonneg cosine poly  |1 + e^{iθ}|^2 * (1+cosθ) style: test explicit-SOS nlinarith.
--- P = (1+cosθ)(2+2cosθ)... use a real one: 2(1+cosθ)^2*(...). Try |1+e^{iθ}+e^{2iθ}|^2-derived.
--- Fejer kernel deg2: (1 + 2/3 cosθ...)... just test the tactic reach on a known SOS:
-example (θ : ℝ) : 0 ≤ 6 + 8*Real.cos θ + 4*Real.cos (2*θ) + 2*Real.cos (3*θ) := by
-  have h2 := Real.cos_two_mul θ
-  have h3 := Real.cos_three_mul θ
-  nlinarith [h2, h3, sq_nonneg (Real.cos θ + 1), sq_nonneg (2*(Real.cos θ)^2 + Real.cos θ - 1),
-    Real.neg_one_le_cos θ, Real.cos_le_one θ, sq_nonneg (Real.cos θ - 1),
-    mul_nonneg (sub_nonneg.mpr (Real.cos_le_one θ)) (sub_nonneg.mpr (Real.neg_one_le_cos θ))]
+/-- Nonnegative cosine polynomial (zero-free-region certificate family):
+    0 <= (3 : ℝ) + (4 : ℝ) * Real.cos θ + (2 : ℝ) * Real.cos (2 * θ).  Markov-Lukacs manifest form on x = cos θ. Proves nothing about RH. -/
+theorem trig_nonneg_sq_2cos_1 (θ : ℝ) : 0 ≤ (3 : ℝ) + (4 : ℝ) * Real.cos θ + (2 : ℝ) * Real.cos (2 * θ) := by
+  have h1 : (0:ℝ) ≤ 1 + Real.cos θ := by nlinarith [Real.neg_one_le_cos θ]
+  have h1' : (0:ℝ) ≤ 1 - Real.cos θ := by nlinarith [Real.cos_le_one θ]
+  have key : (3 : ℝ) + (4 : ℝ) * Real.cos θ + (2 : ℝ) * Real.cos (2 * θ) = ((4 : ℝ) * Real.cos θ ^ 2 + (4 : ℝ) * Real.cos θ + (1 : ℝ)) := by rw [Real.cos_two_mul]; ring
+  rw [key]
+  exact (by positivity : (0:ℝ) ≤ (4 : ℝ) * Real.cos θ ^ 2 + (4 : ℝ) * Real.cos θ + (1 : ℝ))
+
+/-- Nonnegative cosine polynomial (zero-free-region certificate family):
+    0 <= (6 : ℝ) + (8 : ℝ) * Real.cos θ + (4 : ℝ) * Real.cos (2 * θ) + (2 : ℝ) * Real.cos (3 * θ).  Markov-Lukacs manifest form on x = cos θ. Proves nothing about RH. -/
+theorem trig_nonneg_cubic_6_8_4_2 (θ : ℝ) : 0 ≤ (6 : ℝ) + (8 : ℝ) * Real.cos θ + (4 : ℝ) * Real.cos (2 * θ) + (2 : ℝ) * Real.cos (3 * θ) := by
+  have h1 : (0:ℝ) ≤ 1 + Real.cos θ := by nlinarith [Real.neg_one_le_cos θ]
+  have h1' : (0:ℝ) ≤ 1 - Real.cos θ := by nlinarith [Real.cos_le_one θ]
+  have key : (6 : ℝ) + (8 : ℝ) * Real.cos θ + (4 : ℝ) * Real.cos (2 * θ) + (2 : ℝ) * Real.cos (3 * θ) = (2 : ℝ) * (1 + Real.cos θ) * ((4 : ℝ) * Real.cos θ ^ 2 + (1 : ℝ)) := by rw [Real.cos_two_mul, Real.cos_three_mul]; ring
+  rw [key]
+  exact (mul_nonneg (mul_nonneg (by norm_num : (0:ℝ) ≤ (2 : ℝ)) h1) (by positivity : (0:ℝ) ≤ (4 : ℝ) * Real.cos θ ^ 2 + (1 : ℝ)))
+
+/-- Nonnegative cosine polynomial (zero-free-region certificate family):
+    0 <= (8 : ℝ) + (12 : ℝ) * Real.cos θ + (6 : ℝ) * Real.cos (2 * θ) + (2 : ℝ) * Real.cos (3 * θ).  Markov-Lukacs manifest form on x = cos θ. Proves nothing about RH. -/
+theorem trig_nonneg_cubic_8_12_6_2 (θ : ℝ) : 0 ≤ (8 : ℝ) + (12 : ℝ) * Real.cos θ + (6 : ℝ) * Real.cos (2 * θ) + (2 : ℝ) * Real.cos (3 * θ) := by
+  have h1 : (0:ℝ) ≤ 1 + Real.cos θ := by nlinarith [Real.neg_one_le_cos θ]
+  have h1' : (0:ℝ) ≤ 1 - Real.cos θ := by nlinarith [Real.cos_le_one θ]
+  have key : (8 : ℝ) + (12 : ℝ) * Real.cos θ + (6 : ℝ) * Real.cos (2 * θ) + (2 : ℝ) * Real.cos (3 * θ) = (2 : ℝ) * (1 + Real.cos θ) * ((4 : ℝ) * Real.cos θ ^ 2 + (2 : ℝ) * Real.cos θ + (1 : ℝ)) := by rw [Real.cos_two_mul, Real.cos_three_mul]; ring
+  rw [key]
+  exact (mul_nonneg (mul_nonneg (by norm_num : (0:ℝ) ≤ (2 : ℝ)) h1) (by positivity : (0:ℝ) ≤ (4 : ℝ) * Real.cos θ ^ 2 + (2 : ℝ) * Real.cos θ + (1 : ℝ)))
