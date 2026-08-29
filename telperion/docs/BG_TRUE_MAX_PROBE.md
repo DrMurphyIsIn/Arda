@@ -115,3 +115,24 @@ non-uniform ⟹ the free-energy is **concave in the motif**, and length-2 is the
 Route: Gurvits capacity of the degree-normalized permanent (variational, not pure-SOS ⟹ not blocked by
 Koiran) and/or a free-energy concavity/entropy argument (Csikvári). This is genuine research; the target
 (ρ\*, exact) and the extremal family (~7-arm periodic caterpillar) are now pinned. `conjecture1_proved = False`.
+
+## Upper-bound attempt (a): local certificate FAILS (same collective wall as Φ¹¹)
+
+Exact Bethe form (verified all trees n≤8): `per(L)/∏deg = ∏_v V_v / ∏_e E_e`, with
+`V_v = 1+Σ_{u~v} t_{vu} g_{u→v}`, `E_e = 1+t_e g_{u→v}g_{v→u}`, `t_{uv}=1/(deg_u deg_v)`, messages
+`g_{u→v}=1/(1+Σ_{w≠v}t_{uw}g_{w→u})∈(0,1]`. Splitting each edge 50/50 gives per-vertex
+`φ_v = log V_v − ½Σ_{e∋v} log E_e` with `Σφ_v = log Z`, so `φ_v ≤ log ρ* ∀v ⟹ per/∏deg ≤ ρ*^n`.
+
+**It fails.** At the extremal ~7-arm caterpillar the split is non-uniform: `φ_leaf=0.196`,
+**`φ_mid=0.225 > log ρ*=0.205`**, `φ_spine=0.135`. Arm-mids exceed the bound; spine/leaves are below;
+they average to `log ρ*`. The relaxed max over free messages is far worse (0.35–0.44). This is the
+**same collective-cancellation obstruction the repo found for the rooted `Φ¹¹`** — classical BG is *not*
+a "nicer" object with a local bound; both are genuinely collective.
+
+**But the discharging is exactly balanced:** total mid-excess (7×0.0195=0.137) ≈ total slack
+(spine 0.070 + 7 leaves 0.067 = 0.137); each mid pulls slack from its leaf + spine-share to *zero
+margin*. So a *tight discharging / flow* certificate (non-equal edge weights) is the right structure —
+but exactly-tight (zero margin at the extremum), which is the hard collective core. **Conclusion:**
+naive approach (a) is closed off; the upper bound needs either a tight discharging argument or the
+Gurvits-capacity route (b). Both the rooted `Φ¹¹` and classical BG hit the identical wall — a unifying
+finding. `conjecture1_proved = False`.
