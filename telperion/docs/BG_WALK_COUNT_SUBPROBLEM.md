@@ -334,6 +334,37 @@ delivered what a moment hierarchy can: a convergent bound and a kernel-gated fin
 its exact closure is the cavity variational proof. Reproduction: `bg_k1_moment.py` (k=1 vacuity).
 `conjecture1_proved = False`.
 
+## W13 (2026-08-29): the exact cavity (Bethe) free energy — foundation built + ρ* localized; the naive local potential hits the same wall
+
+Built the exact cavity/Bethe machinery — the route-(a) foundation, now correct for the *matching* object.
+
+**Exact cavity free energy (verified).** Messages `x_{u→v}=Σ_{c~u,c≠v} w_{uc}/(1+x_{c→u})`, `w=1/(d_u d_c)`;
+`log Z = Σ_v log(1+Σ_a w_{va} q_{a→v}) − Σ_e log(1+w_e q_{u→v} q_{v→u})`, `q=1/(1+x)`. This reproduces
+`log(per(L)/∏deg)` **exactly** — max error `9·10⁻¹⁶` over all 47 trees `n≤8` (it is exact on trees,
+Heilmann–Lieb). Reproduction: `bg_cavity.py`.
+
+**ρ* localized as a cavity variational optimum.** The infinite length-2-arm caterpillar has an explicit
+fixed point (`x_{leaf→AM}=0`, `x_{AM→H}=½`, hub messages solving a quadratic). Its per-cell density `F(a)`
+is maximized at `a* = 7.016` with `F(a*) = log ρ* = 0.205098` (to `2·10⁻⁸`), and the integer `a=7` hits it.
+So `ρ* = max_a [infinite-caterpillar cavity density]` — a clean exact characterization. Reproduction:
+`bg_cavity_caterpillar.py`.
+
+**But the naive local cavity potential hits the SAME wall (W12 confirmed in cavity space).** The per-vertex
+free energy `pv(v)=log A_v−½Σ_a log B_{va}` plus a message-discharge `Σ_a[P(x_{a→v})−P(x_{v→a})]` (telescoping)
+and a handshake degree term `β·d` — minimized over configs `(d; {(d_a,x_a)})` — **plateaus at `0.331`**
+(`gap +0.126`, DMAX=4), not `log ρ*`. Same cause as the moment side: the per-config relaxation admits
+**non-realizable** local message configs (and the single-edge boundary `½log2`). The exact-cavity variables
+do **not** dodge the realizability wall; enforcing message realizability would converge but (W12) not finitely
+close. Reproduction: `bg_cavity_potential.py`.
+
+**The right global tool.** Heilmann–Lieb: monomer-dimer has **no phase transition** → the cavity recursion is
+a **contraction** with a *unique* fixed point. So the flag/cavity gap is realizability (which local marginals
+are genuine tree limits), *not* Gibbs multiplicity. The exact bound should therefore come from a **global
+monotone / contraction argument** on the unique cavity map (Guerra-style interpolation between `T` and the
+caterpillar, or a Lyapunov functional of the contraction) — not a local per-vertex potential, which provably
+plateaus. That is the sharp next target; the cavity foundation (exact `F`, explicit caterpillar fixed point,
+`ρ*=max_a F(a)`) is now in place to support it. `conjecture1_proved = False`.
+
 ## W2 first result (2026-08-29): the entry moment `m_1` is bounded
 
 `m_1(T) = (2/n)Σ_e 1/(deg_i deg_j)` (exact rational). Exhaustive per n:
