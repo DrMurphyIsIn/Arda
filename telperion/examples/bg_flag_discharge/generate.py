@@ -6,6 +6,11 @@ The mass-transport flag-LP dual is the antisymmetric edge-discharge potential w(
 Each emitted atom is a rational per-type inequality the Lean kernel re-checks by norm_num, tight at the
 extremal caterpillar profile.  One finite level of a convergent hierarchy -- conjecture1_proved = False.
 
+The dual (B0,B1,B2,W below) was DERIVED offline by `FlagDischargeCertificate.from_flag_lp` (needs
+numpy/scipy); it is FROZEN here as exact rationals so generation + manifest-verify need only the stdlib
+(matching telperion's sympy-only CI).  To re-derive, run `from_flag_lp(dmax=7, m1_target=_caterpillar_m1(5),
+denom=720)` and re-freeze.
+
     python3 telperion/examples/bg_flag_discharge/generate.py         # (re)freeze the module
 """
 import sys
@@ -17,13 +22,24 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from telperion.flag_discharge import FlagDischargeCertificate  # noqa: E402
 
-DMAX = 7          # a=5 caterpillar: hub degree 7, arm-mid 2, leaf 1
-DENOM = 720       # rationalization denominator for the LP dual
+DMAX = 7
 NAMESPACE = "BGFlagDischarge"
+
+# frozen flag-LP dual (exact rationals; derived offline via from_flag_lp, denom=720, m1 = caterpillar a=5)
+B0 = Fr(-1937, 3600)
+B1 = Fr(13, 360)
+B2 = Fr(1081, 720)
+W = {
+    (1, 3): Fr(9, 80), (1, 4): Fr(17, 90), (1, 5): Fr(29, 120), (1, 6): Fr(67, 240), (1, 7): Fr(221, 720),
+    (2, 3): Fr(47, 720), (2, 4): Fr(31, 720), (2, 5): Fr(1, 40), (2, 6): Fr(1, 80), (2, 7): Fr(1, 180),
+    (3, 4): Fr(19, 360), (3, 5): Fr(23, 360), (3, 6): Fr(13, 180), (3, 7): Fr(53, 720),
+    (4, 5): Fr(29, 720), (4, 6): Fr(17, 360), (4, 7): Fr(37, 720),
+    (5, 6): Fr(11, 360), (5, 7): Fr(1, 30), (6, 7): Fr(13, 720),
+}
 
 
 def _caterpillar_m1(a: int) -> Fr:
-    """Exact m_1 of the length-2-arm caterpillar with a arms per spine vertex (long spine)."""
+    """Exact m_1 of the length-2-arm caterpillar with a arms per spine vertex (long spine). stdlib only."""
     sp = 50
     edges = []
     nid = sp
@@ -46,9 +62,9 @@ def _caterpillar_m1(a: int) -> Fr:
 
 
 def certificate() -> FlagDischargeCertificate:
-    cert = FlagDischargeCertificate.from_flag_lp(
-        "bg_flag_discharge", dmax=DMAX, m1_target=_caterpillar_m1(DMAX - 2), denom=DENOM)
-    assert cert.check(), "flag-discharge certificate failed exact check"
+    """Reconstruct the certificate from the frozen rational dual (stdlib only -- no LP solve)."""
+    cert = FlagDischargeCertificate(name="bg_flag_discharge", dmax=DMAX, b0=B0, b1=B1, b2=B2, w=W)
+    assert cert.check(), "frozen flag-discharge dual failed exact check"
     return cert
 
 
