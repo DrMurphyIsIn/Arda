@@ -9,7 +9,9 @@ import sys
 from fractions import Fraction as Fr
 from pathlib import Path
 
-import networkx as nx
+import pytest
+
+nx = pytest.importorskip("networkx")  # optional dep; skip module if absent (CI has no networkx)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
