@@ -141,6 +141,7 @@ from .gamma_half import GammaHalfBracketCertificate  # noqa: F401
 from .zeta_bound import ZetaBoundCertificate  # noqa: F401
 from .worst_corner import WorstCornerCertificate  # noqa: F401
 from .quartic_jensen import QuarticJensenCertificate  # noqa: F401
+from .hankel_jensen import HankelJensenCertificate, hankel_minors  # noqa: F401
 from .exp_bracket import (  # noqa: F401
     EXP_BRACKET_TEMPLATE, ExpBracketCertificate, suggest as suggest_exp_bracket,
     taylor_exp,
