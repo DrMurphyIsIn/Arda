@@ -92,7 +92,7 @@ class ZetaBoundCertificate:
             f"      have : (0 : ℝ) ≤ (i : ℝ) := Nat.cast_nonneg i\n"
             f"      linarith\n"
             f"    have step1 : 1 / ((i : ℝ) + {M}) ^ {k} ≤ 1 / ((i : ℝ) + {M}) ^ 2 :=\n"
-            f"      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right hb (by norm_num))\n"
+            f"      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right₀ hb (by norm_num))\n"
             f"    have step2 : 1 / ((i : ℝ) + {M}) ^ 2"
             f" ≤ 1 / (((i : ℝ) + {M - 1}) * ((i : ℝ) + {M})) :=\n"
             f"      one_div_le_one_div_of_le (by positivity)"

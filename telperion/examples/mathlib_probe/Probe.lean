@@ -1,4 +1,4 @@
-/- ZetaBoundCertificate emitter test: zeta(3) and zeta(5) two-sided bounds. -/
+/- ZetaBoundCertificate emitter test: zeta(3),zeta(5). -/
 import Mathlib
 open scoped Real
 
@@ -36,7 +36,7 @@ theorem zeta_three_bound :
       have : (0 : ℝ) ≤ (i : ℝ) := Nat.cast_nonneg i
       linarith
     have step1 : 1 / ((i : ℝ) + 3) ^ 3 ≤ 1 / ((i : ℝ) + 3) ^ 2 :=
-      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right hb (by norm_num))
+      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right₀ hb (by norm_num))
     have step2 : 1 / ((i : ℝ) + 3) ^ 2 ≤ 1 / (((i : ℝ) + 2) * ((i : ℝ) + 3)) :=
       one_div_le_one_div_of_le (by positivity) (by nlinarith [(by positivity : (0 : ℝ) ≤ (i : ℝ) + 2)])
     exact le_trans step1 step2
@@ -87,7 +87,7 @@ theorem zeta_five_bound :
       have : (0 : ℝ) ≤ (i : ℝ) := Nat.cast_nonneg i
       linarith
     have step1 : 1 / ((i : ℝ) + 4) ^ 5 ≤ 1 / ((i : ℝ) + 4) ^ 2 :=
-      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right hb (by norm_num))
+      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right₀ hb (by norm_num))
     have step2 : 1 / ((i : ℝ) + 4) ^ 2 ≤ 1 / (((i : ℝ) + 3) * ((i : ℝ) + 4)) :=
       one_div_le_one_div_of_le (by positivity) (by nlinarith [(by positivity : (0 : ℝ) ≤ (i : ℝ) + 3)])
     exact le_trans step1 step2
