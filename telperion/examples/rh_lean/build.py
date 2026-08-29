@@ -23,7 +23,8 @@ from fractions import Fraction as Fr  # noqa: E402
 from telperion import (  # noqa: E402
     GammaHalfBracketCertificate, HankelJensenCertificate, LogBoundCertificate,
     PiBracketCertificate, QuarticJensenCertificate, RobinCertificate,
-    SqrtBracketCertificate, TightRobinCertificate, ZetaBoundCertificate,
+    SqrtBracketCertificate, TightRobinCertificate, TrigNonnegCertificate,
+    ZetaBoundCertificate,
 )
 
 # gamma_k = k! a_k enclosures at 1e-30 (tight enough for the quartic Delta4's
@@ -239,6 +240,26 @@ def _robin_module() -> str:
             + "\n\nend Robin\n")
 
 
+def _trig_nonneg_module() -> str:
+    """Nonnegative cosine polynomials -- the certificate family behind the classical
+    zero-free region  zeta(s) != 0 for Re > 1 - c/log|t|.  The Mertens seed 3+4cos+cos2
+    gives the classical constant; higher-degree nonneg cosine polynomials give better c
+    (arXiv:1410.3926).  A certificate ON the zero-free-region line; proves nothing about
+    RH -- the analytic assembly (zeta growth bounds) is separate (ZETA_FOUNDATION_SCOPE.md)."""
+    cases = {"mertens_3_4_1": (3, 4, 1), "sq_2cos_1": (3, 4, 2, 0),
+             "cubic_6_8_4_2": (6, 8, 4, 2), "cubic_8_12_6_2": (8, 12, 6, 2, 0)}
+    body = "\n\n".join(
+        TrigNonnegCertificate(name=f"trig_nonneg_{nm}", coeffs=c).lean().rstrip()
+        for nm, c in cases.items())
+    return ("/- Nonnegative cosine polynomials (zero-free-region certificate family):\n"
+            "   0 <= sum_k a_k cos(k theta), via the Markov-Lukacs manifest factorization on\n"
+            "   x = cos theta. Mertens 3+4cos+cos2 = 2(1+cos)^2 is the seed of the classical\n"
+            "   region; better nonneg cosine polynomials give better constants. NOT a proof of\n"
+            "   RH -- the growth-bound assembly into a region is separate. -/\n"
+            "import Mathlib\nopen scoped Real\n\nnamespace TrigNonneg\n\n" + body
+            + "\n\nend TrigNonneg\n")
+
+
 def _nicolas_module() -> str:
     """D4: the Nicolas => Robin bridge  phi(n) * sigma(n) < n^2  (sigma = sum of divisors).
     This elementary inequality (UNCONDITIONALLY true for n > 1) is exactly sigma(n)/n <
@@ -301,6 +322,7 @@ def modules() -> dict:
     out["Robin"] = _robin_module()               # Robin's criterion (RH-EQUIVALENT): comfortable n + all 13 SA numbers in (5040, 2e6]
     out["RobinReduction"] = _robin_reduction_module()  # D3: G-monotonicity reduction lemma (least counterexample is SA)
     out["NicolasBridge"] = _nicolas_module()           # D4: Nicolas=>Robin bridge phi*sigma<n^2 (primorial instances)
+    out["TrigNonneg"] = _trig_nonneg_module()          # zero-free-region certificate family: nonneg cosine polynomials
     return out
 
 
