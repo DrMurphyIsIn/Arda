@@ -61,33 +61,68 @@ class TightRobinCertificate:
     exp_nterms: int
     a2: int                # log n >= a2 log2 + a3 log3  (2^a2 3^a3 <= n)
     a3: int
-    T: int                 # integer with log n >= T
-    b3: int                # log T = b3 log3 + log(T/3^b3)
-    tl_k: int              # T/3^b3 == tl_k/(tl_k-1); loglog residual via taylor_log(1-1/tl_k)
+    b2: int                # loglog base B = 2^b2 3^b3 ; log T = b2 log2 + b3 log3 - log(1-1/k)
+    b3: int
+    tl_k: int              # T = B * k/(k-1); loglog residual via taylor_log(1-1/tl_k)
     tl_deg: int
+    T: Fr                  # rational threshold B*k/(k-1) with log n >= T
     loglog_lo: Fr          # <= log log n
 
+    @staticmethod
+    def _largest_3smooth(limit) -> tuple[int, int]:
+        """(a2, a3) maximizing 2^a2 * 3^a3 <= limit (limit int or Fraction)."""
+        best, ba, bb = Fr(0), 0, 0
+        a = 0
+        while Fr(2) ** a <= limit:
+            b = 0
+            while (Fr(2) ** a) * (Fr(3) ** b) <= limit:
+                v = (Fr(2) ** a) * (Fr(3) ** b)
+                if v > best:
+                    best, ba, bb = v, a, b
+                b += 1
+            a += 1
+        return ba, bb
+
     @classmethod
-    def for_n25200(cls) -> "TightRobinCertificate":
-        n = 25200
-        m, p = 31, 5                                    # m+1 = 32 = 2^5
-        Hm = sum((Fr(1, k) for k in range(1, m + 1)), Fr(0))
-        gamma_clean = Fr(561, 1000)
-        assert gamma_clean <= Hm - p * LOG2_HI
-        nterms = 12
-        egamma_lo = Fr(math.floor(_exp_taylor(gamma_clean, nterms) * 10 ** 6), 10 ** 6)
-        a2, a3 = 13, 1                                   # 2^13*3 = 24576 <= 25200
-        T = 10                                           # 13 log2_lo + log3_lo = 10.109... >= 10
-        b3, tl_k, tl_deg = 2, 10, 4                      # log 10 = 2 log3 + log(10/9); 10/9 = k/(k-1), k=10
+    def for_superabundant(cls, n: int, name: str | None = None,
+                          tl_deg: int = 4, grid: int = 10 ** 9) -> "TightRobinCertificate":
+        """Compute a tight recipe for a superabundant n: tight gamma via the smallest
+        m+1=2^p that closes, tight loglog via log n >= a2 log2 + a3 log3, then
+        loglog >= log(B*k/(k-1)) = b2 log2 + b3 log3 + taylor_log(k), B = 2^b2 3^b3."""
+        sig = int(sp.divisor_sigma(n))
+        a2, a3 = cls._largest_3smooth(n)
+        logn_lo = a2 * LOG2_LO + a3 * LOG3_LO
+        b2, b3 = cls._largest_3smooth(logn_lo)
+        B = (Fr(2) ** b2) * (Fr(3) ** b3)
+        r = logn_lo / B                                  # >= 1
+        # largest k/(k-1) <= r  ->  smallest k with k >= r/(r-1)
+        tl_k = math.ceil(float(r / (r - 1))) if r > 1 else 0
+        if tl_k < 2:
+            raise ValueError(f"n={n}: loglog residual degenerate (logn_lo hits a 3-smooth exactly)")
         x = Fr(1, tl_k)
         S = sum((x ** (i + 1) / (i + 1) for i in range(tl_deg)), Fr(0))
         E = x ** (tl_deg + 1) / (1 - x)
-        loglog_lo = Fr(math.floor((b3 * LOG3_LO + (S - E)) * 10 ** 9), 10 ** 9)
-        c = cls(name="robin_tight_n25200", n=n, m=m, p=p, gamma_clean=gamma_clean,
-                egamma_lo=egamma_lo, exp_nterms=nterms, a2=a2, a3=a3, T=T, b3=b3,
-                tl_k=tl_k, tl_deg=tl_deg, loglog_lo=loglog_lo)
-        assert c.check(), "n=25200 tight recipe does not close"
-        return c
+        T = B * Fr(tl_k, tl_k - 1)
+        assert T <= logn_lo, (float(T), float(logn_lo))
+        loglog_lo = Fr(math.floor((b2 * LOG2_LO + b3 * LOG3_LO + (S - E)) * grid), grid)
+        # smallest p (m+1=2^p) whose clean gamma closes sigma < E_lo * n * loglog_lo
+        for p in range(5, 14):
+            m = 2 ** p - 1
+            Hm = sum((Fr(1, k) for k in range(1, m + 1)), Fr(0))
+            gc = Fr(math.floor((Hm - p * LOG2_HI) * 1000), 1000)
+            nterms = 14
+            E_lo = Fr(math.floor(_exp_taylor(gc, nterms) * 10 ** 6), 10 ** 6)
+            if sig < E_lo * n * loglog_lo:
+                c = cls(name=name or f"robin_tight_n{n}", n=n, m=m, p=p, gamma_clean=gc,
+                        egamma_lo=E_lo, exp_nterms=nterms, a2=a2, a3=a3, b2=b2, b3=b3,
+                        tl_k=tl_k, tl_deg=tl_deg, T=T, loglog_lo=loglog_lo)
+                if c.check():
+                    return c
+        raise ValueError(f"n={n}: no tight recipe closes (margin too thin for m<=2^13-1)")
+
+    @classmethod
+    def for_n25200(cls) -> "TightRobinCertificate":
+        return cls.for_superabundant(25200, name="robin_tight_n25200")
 
     def sigma(self) -> int:
         return int(sp.divisor_sigma(self.n))
@@ -104,7 +139,8 @@ class TightRobinCertificate:
             return False
         if not (self.a2 * LOG2_LO + self.a3 * LOG3_LO >= self.T):
             return False
-        if self.T * (self.tl_k - 1) != (3 ** self.b3) * self.tl_k:   # T/3^b3 == tl_k/(tl_k-1)
+        B = (Fr(2) ** self.b2) * (Fr(3) ** self.b3)
+        if self.T * (self.tl_k - 1) != B * self.tl_k:                # T == B * tl_k/(tl_k-1)
             return False
         # exact closure
         return self.sigma() < Fr(self.egamma_lo) * self.n * Fr(self.loglog_lo)
@@ -114,8 +150,9 @@ class TightRobinCertificate:
             raise ValueError(f"{self.name}: tight recipe not certified -- refusing to emit")
         sig, N = self.sigma(), self.exp_nterms
         Hm = self._Hm()
-        E_lo, LL = _rat(self.egamma_lo), _rat(self.loglog_lo)
+        E_lo, LL, Tr = _rat(self.egamma_lo), _rat(self.loglog_lo), _rat(self.T)
         aL = _rat(self.a2 * LOG2_LO + self.a3 * LOG3_LO)
+        Bsmooth = f"2 ^ ({self.b2} : ℕ) * 3 ^ ({self.b3} : ℕ)"
         x = Fr(1, self.tl_k)
         S = sum((x ** (i + 1) / (i + 1) for i in range(self.tl_deg)), Fr(0))
         Etl = x ** (self.tl_deg + 1) / (1 - x)
@@ -156,8 +193,8 @@ class TightRobinCertificate:
             f"      rw [show (({2 ** self.a2 * 3 ** self.a3} : ℝ)) = {smooth} by norm_num,\n"
             f"        Real.log_mul (by positivity) (by norm_num), Real.log_pow, Real.log_pow]; push_cast; ring\n"
             f"    rwa [e] at h\n"
-            f"  have hlognT : ({self.T} : ℝ) ≤ Real.log ({self.n} : ℝ) := by nlinarith [hlogn, hl2lo, hl3lo]\n"
-            f"  have hll1 : Real.log ({self.T} : ℝ) ≤ Real.log (Real.log ({self.n} : ℝ)) := by gcongr\n"
+            f"  have hlognT : {Tr} ≤ Real.log ({self.n} : ℝ) := by nlinarith [hlogn, hl2lo, hl3lo]\n"
+            f"  have hll1 : Real.log {Tr} ≤ Real.log (Real.log ({self.n} : ℝ)) := by gcongr\n"
             f"  have htay := Real.abs_log_sub_add_sum_range_le (x := (1 / {self.tl_k} : ℝ)) (by norm_num) {self.tl_deg}\n"
             f"  have hsum : (∑ i ∈ Finset.range {self.tl_deg}, (1 / {self.tl_k} : ℝ) ^ (i + 1) / (i + 1)) = "
             f"{S.numerator} / {S.denominator} := by\n"
@@ -166,12 +203,13 @@ class TightRobinCertificate:
             f"{Etl.numerator} / {Etl.denominator} := by\n"
             f"    rw [show |(1 / {self.tl_k} : ℝ)| = 1 / {self.tl_k} by rw [abs_of_pos]; norm_num]; norm_num\n"
             f"  rw [hsum, herr, abs_le] at htay\n"
-            f"  have hlogT : {LL} ≤ Real.log ({self.T} : ℝ) := by\n"
-            f"    have e : Real.log ({self.T} : ℝ) = ({self.b3} : ℝ) * Real.log 3 "
+            f"  have hlogT : {LL} ≤ Real.log {Tr} := by\n"
+            f"    have e : Real.log {Tr} = ({self.b2} : ℝ) * Real.log 2 + ({self.b3} : ℝ) * Real.log 3 "
             f"- Real.log (1 - 1 / {self.tl_k} : ℝ) := by\n"
-            f"      rw [show ({self.T} : ℝ) = 3 ^ ({self.b3} : ℕ) * (1 - 1 / {self.tl_k})⁻¹ by norm_num,\n"
-            f"        Real.log_mul (by positivity) (by norm_num), Real.log_pow, Real.log_inv]; push_cast; ring\n"
-            f"    rw [e]; nlinarith [htay.2, hl3lo]\n"
+            f"      rw [show {Tr} = {Bsmooth} * (1 - 1 / {self.tl_k})⁻¹ by norm_num,\n"
+            f"        Real.log_mul (by positivity) (by norm_num), Real.log_mul (by positivity) (by norm_num),\n"
+            f"        Real.log_pow, Real.log_pow, Real.log_inv]; push_cast; ring\n"
+            f"    rw [e]; nlinarith [htay.2, hl2lo, hl3lo]\n"
             f"  have hLL : {LL} ≤ Real.log (Real.log ({self.n} : ℝ)) := le_trans hlogT hll1\n"
             f"  have hEpos : (0 : ℝ) < {E_lo} := by norm_num\n"
             f"  have hLLpos : (0 : ℝ) < {LL} := by norm_num\n"
