@@ -171,3 +171,22 @@ caterpillar boundary being tight means it's an equality-constrained optimization
 over degree sequences). (ii) the analogous `m_4` cut for the residual `+0.0008`. (iii) re-solve the SDP
 with `m_2 ≥ φ(m_1)` (+`m_4`) and a higher-K SOS envelope → confirm exact closure to `log ρ*`. Then W5
 (`poly(n)`). All finite/combinatorial. `conjecture1_proved = False`.
+
+## W4d (2026-08-29): the `m_2` cut ALONE suffices — the theorem is a single inequality
+
+SDP closure test (K=4 validated envelope): `m_1≤.52` gap +0.00426; `+ m_2≥.308` (caterpillar) gap
+**+0.00078**; `+ m_2≥.308, m_4≥.140` gap **+0.00078** (unchanged). So the `m_4` cut is *not* needed —
+the residual +0.0008 is **K=4 envelope order** (`Σc_k u^k > ½log(1+u)` slack), reducible with a higher-K
+SOS envelope, not a missing moment constraint.
+
+**Consequence — route (b) upper bound reduces to ONE theorem:**
+
+    (W4d-thm)   m_2(T) ≥ φ(m_1(T))  for every tree T,
+
+with `φ` the closed-form caterpillar boundary (W4c). Given this single per-neighborhood degree
+inequality (+ a higher-K SOS envelope for the residual + W5 poly(n)), the moment-SDP closes to `log ρ*`.
+No other moment cut, no transcendental step. The inequality is on the *explicit local formulas*
+`m_1=(2/n)Σ_e 1/(deg_i deg_j)`, `m_2=(1/n)Σ_v[(S_v/deg_v)² + Σ_{a~v}(1/(deg_v deg_a²))(S_a−1/deg_v)]`
+(`S_v=Σ_{a~v}1/deg_a`) — a finite degree-sequence optimization with the caterpillar tight, provable by
+local move / rearrangement or Lagrange conditions. **This is the sole remaining theorem of route (b).**
+`conjecture1_proved = False`.
