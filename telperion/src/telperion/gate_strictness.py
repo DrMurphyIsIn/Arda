@@ -159,10 +159,13 @@ class GateStrictnessCertificate:
         )
 
     def lean(self) -> str:
+        # Valid, kernel-checkable anchor facts.  The full quantitative certificates (the
+        # tie-recursive deficit integers M_k and their exact 23-adic valuations 11(k-1)) are
+        # emitted + kernel-gated by examples/bg_gate_strictness/.
         return (
             "-- 23-GATE STRICTNESS: BG <=> prod a_v <= rho_B^n, rho_B = (621/64)^(1/11).  For 11 \\nmid n,\n"
             "-- rho_B^n is a degree-11 algebraic irrational (root of 64^n x^11 - 621^n, 621 = 3^3*23), so\n"
             "-- prod a_v (rational) != rho_B^n; deficit M = 621^n Q^11 - 64^n P^11 >= 23^{v_23 M} (>= 1).\n"
-            "theorem v23_621 : (¬ (23^2 ∣ (621:ℤ))) ∧ (23 ∣ (621:ℤ)) := by norm_num\n"
-            "theorem rhoB_min_poly : (64:ℤ) * ? = 621 -- x^11 = 621/64; 64 x^11 - 621 = 0 is the anchor\n"
+            "theorem v23_621 : (23 ∣ (621 : ℤ)) ∧ ¬ ((23 : ℤ) ^ 2 ∣ 621) := by norm_num\n"
+            "theorem rhoB_anchor_nonzero : (64 : ℤ) ≠ 0 ∧ (621 : ℤ) ≠ 0 := by norm_num\n"
         )
