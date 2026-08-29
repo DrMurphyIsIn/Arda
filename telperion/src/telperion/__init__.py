@@ -145,6 +145,7 @@ from .hankel_jensen import HankelJensenCertificate, hankel_minors  # noqa: F401
 from .robin import RobinCertificate  # noqa: F401
 from .robin_tight import TightRobinCertificate  # noqa: F401
 from .trig_nonneg import TrigNonnegCertificate  # noqa: F401
+from .weil_positivity import WeilPositivityCertificate  # noqa: F401
 from .exp_bracket import (  # noqa: F401
     EXP_BRACKET_TEMPLATE, ExpBracketCertificate, suggest as suggest_exp_bracket,
     taylor_exp,
