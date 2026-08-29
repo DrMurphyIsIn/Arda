@@ -190,3 +190,26 @@ No other moment cut, no transcendental step. The inequality is on the *explicit 
 (`S_v=Σ_{a~v}1/deg_a`) — a finite degree-sequence optimization with the caterpillar tight, provable by
 local move / rearrangement or Lagrange conditions. **This is the sole remaining theorem of route (b).**
 `conjecture1_proved = False`.
+
+## W4d CORRECTION (2026-08-29): the cut is NOT a universal inequality
+
+**Retraction:** the preceding "route (b) reduces to ONE inequality `m_2(T) ≥ φ(m_1(T))` for every tree"
+is **overstated**. Exhaustive check n≤14: `m_2 ≥ φ(m_1)` FAILS for low-`m_1` trees (58 violations, min
+slack −0.11 at `m_1≈0.14`). The `(m_1, min-m_2)` global lower boundary is traced by **stars** at low
+`m_1` (where `m_2 = m_1`, still well above `m_1²`) and by the **caterpillar family only near `m_1≈0.52`**
+— the extremum band. Two independent implementations (this effort + a second-opinion session) converged
+on exactly this scoping.
+
+**Correct remaining theorem.** The SDP only sees the region near `m_1≈0.52` (where `F` is maximal;
+low-`m_1` trees have low `F` and don't bind). So the sole remaining theorem is:
+
+    (W4d′)  the caterpillar maximizes the LOCAL POLYNOMIAL functional  G(T) := Σ_k c_k m_k(T)  over trees
+            (asymptotically / with poly(n)), equivalently: the tree moment body's `Σc_k m_k`-max is the
+            caterpillar's — a claim scoped to the extremum `m_1` band, NOT a universal `m_2 ≥ φ(m_1)`.
+
+This is still the genuine route-(b) reduction — `G` is **local and polynomial** (walk moments), so it's a
+combinatorial optimization provable by local move / rearrangement, versus the transcendental free-energy.
+But it is the *full* extremal optimization, not a single clean cut. **Independently de-risked:** the
+decisive W4 structure (exact `m_1` formula; trees strictly above the Hankel `m_1²` floor by ≥+0.08; the
+SDP-overshoot measure genuinely unreachable by trees; caterpillar `m_2` values) was reproduced from
+scratch by a second implementation. `conjecture1_proved = False`.
