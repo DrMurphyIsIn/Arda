@@ -20,3 +20,4 @@ import RH.QuarticJensen
 import RH.HankelJensen
 import RH.Robin
 import RH.RobinReduction
+import RH.NicolasBridge

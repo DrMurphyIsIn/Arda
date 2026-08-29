@@ -239,6 +239,25 @@ def _robin_module() -> str:
             + "\n\nend Robin\n")
 
 
+def _nicolas_module() -> str:
+    """D4: the Nicolas => Robin bridge  phi(n) * sigma(n) < n^2  (sigma = sum of divisors).
+    This elementary inequality (UNCONDITIONALLY true for n > 1) is exactly sigma(n)/n <
+    n/phi(n), the connector that makes Nicolas's RH-equivalent criterion imply Robin's
+    (Nicolas 1983).  Finite kernel instances at primorials 6, 30, 210.  NOTE: this bridge is
+    NOT itself RH-equivalent (it always holds); the RH content lives in Nicolas's
+    n/phi(n) < e^gamma loglog n (which needs the tight transcendental brackets), and the
+    GENERAL phi*sigma<n^2 for all n needs the multiplicative product assembly (D2: medium)."""
+    body = "\n\n".join(
+        f"theorem nicolas_robin_bridge_{n} :\n"
+        f"    Nat.totient {n} * (∑ d ∈ Nat.divisors {n}, d) < {n} ^ 2 := by decide"
+        for n in (6, 30, 210))
+    return ("/- D4: Nicolas => Robin bridge  phi(n) * sigma(n) < n^2  (= sigma(n)/n < n/phi(n)),\n"
+            "   the elementary connector making Nicolas's RH-equivalent criterion imply Robin's.\n"
+            "   Unconditionally true; finite instances at primorials. NOT itself RH-equivalent,\n"
+            "   proves nothing about RH.  See ROBIN_RH_MAP.md (equivalences) / ROBIN_REDUCTION_D3.md. -/\n"
+            "import Mathlib\n\nnamespace NicolasBridge\n\n" + body + "\n\nend NicolasBridge\n")
+
+
 def _robin_reduction_module() -> str:
     """The G-monotonicity reduction lemma (D3): the elementary heart of 'the least Robin
     counterexample is superabundant' (Akbary-Friggstad 2009).  Reduction lemma only --
@@ -281,6 +300,7 @@ def modules() -> dict:
     out["HankelJensen"] = _hankel_module()       # d=5 Jensen hyperbolicity (Hermite/Hankel minors), n=0
     out["Robin"] = _robin_module()               # Robin's criterion (RH-EQUIVALENT): comfortable n + all 13 SA numbers in (5040, 2e6]
     out["RobinReduction"] = _robin_reduction_module()  # D3: G-monotonicity reduction lemma (least counterexample is SA)
+    out["NicolasBridge"] = _nicolas_module()           # D4: Nicolas=>Robin bridge phi*sigma<n^2 (primorial instances)
     return out
 
 
