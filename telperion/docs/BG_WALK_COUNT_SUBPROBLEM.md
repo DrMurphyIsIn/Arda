@@ -149,3 +149,25 @@ now a *finite, local, combinatorial* even-moment-cut problem.
 the local degree formulas (the caterpillar traces the boundary); (W4d) re-solve with a higher-K SOS
 envelope + both cuts, confirm exact closure; (W5) the finite-`n` `poly(n)` correction. Every remaining
 piece is finite-dimensional and combinatorial — no transcendental obstruction. `conjecture1_proved = False`.
+
+## W4c (2026-08-29): the S2 cut `φ(m_1)` in closed form
+
+The tree `(m_1,m_2)` lower boundary is the caterpillar family, now derived in closed form from the local
+degree formulas of the infinite periodic a-arm caterpillar (spine deg `d=a+2`, `a` mids deg 2, `a` leaves
+deg 1; period `1+2a`), verified against empirical to <2e-3:
+
+    m_1(a) = (2/(1+2a)) [ 1/(a+2)² + a/(2(a+2)) + a/2 ]
+    m_2(a) = [ N4_spine + a·N4_mid + a·N4_leaf ] / (1+2a),   with
+      N4_leaf  = 1/4 + 1/(4(a+2))
+      N4_mid   = (1/4)(1+1/(a+2))² + (1/(2(a+2)²))(2/(a+2) + (a−1)/2)
+      N4_spine = (1/(a+2)²)(2/(a+2)+a/2)² + (2/(a+2)³)(1/(a+2)+a/2) + a/(4(a+2))
+
+The curve runs from `(m_1,m_2) = (0.520, 0.372)` at a=1 to `(½, ¼)` as a→∞ (variance `m_2−m_1² → 0`).
+**The S2 cut is `m_2(T) ≥ φ(m_1(T))`**, `φ` = this boundary (parametric in `a`; monotone, invertible).
+
+**W4c remaining → W4d:** (i) PROVE `m_2(T) ≥ φ(m_1(T))` for all trees — a per-neighborhood inequality on
+the (now explicit) local degree formulas `m_1 = (2/n)Σ_e 1/(deg_i deg_j)`, `m_2 = (1/n)Σ_v[…]`; the
+caterpillar boundary being tight means it's an equality-constrained optimization (Lagrange/rearrangement
+over degree sequences). (ii) the analogous `m_4` cut for the residual `+0.0008`. (iii) re-solve the SDP
+with `m_2 ≥ φ(m_1)` (+`m_4`) and a higher-K SOS envelope → confirm exact closure to `log ρ*`. Then W5
+(`poly(n)`). All finite/combinatorial. `conjecture1_proved = False`.
