@@ -70,3 +70,26 @@ def test_lean_refuses_when_not_certified():
         assert False, "expected refusal on the (true) Robin exception 5040"
     except ValueError:
         pass
+
+
+def test_unconditional_emits_self_contained_theorem():
+    c = RobinCertificate.from_gamma_lower(n=5041, gamma_lo=Fr(1, 2))
+    lean = c.lean_unconditional()
+    # no free hypotheses -- the theorem statement takes no bracket args
+    assert "theorem robin_n5041 :\n" in lean
+    # both brackets discharged in-kernel
+    assert "Real.one_half_lt_eulerMascheroniConstant" in lean  # gamma>1/2
+    assert "Real.sum_le_exp_of_nonneg" in lean                 # exp Taylor lower bound
+    assert "Real.log_two_gt_d9" in lean                        # log2 d9 constant
+    assert "Real.log_pow" in lean and "gcongr" in lean         # loglog monotone chain
+
+
+def test_unconditional_requires_clean_gamma_half():
+    # a non-1/2 gamma has no clean Mathlib discharge -> refuse the unconditional emit
+    c = RobinCertificate(name="r", n=5041, egamma_lo=Fr(178, 100), loglog_lo=Fr(2079, 1000),
+                         gamma_lo=Fr(5772156649, 10 ** 10))
+    try:
+        c.lean_unconditional()
+        assert False, "expected refusal without gamma_lo=1/2"
+    except ValueError:
+        pass

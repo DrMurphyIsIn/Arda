@@ -395,3 +395,12 @@ the two bracket facts have in-kernel provenance (`e^γ` from
 The certificate correctly REFUSES n=5040 (the largest true Robin exception, where the
 inequality genuinely fails). Scope: finite per-n verification of an RH-equivalent
 condition — stronger than the necessary-only Jensen ladder, still never a proof of RH.
+
+**`lean_unconditional()` — self-contained, no free hypotheses.** For the clean case
+(γ>1/2 + coarse log-2 loglog) it discharges BOTH brackets in-kernel: `e^γ ≥ e^{1/2} ≥
+E_lo` (`Real.one_half_lt_eulerMascheroniConstant` + `Real.exp_le_exp` +
+`Real.sum_le_exp_of_nonneg` Taylor lower bound) and `log log n ≥ c·log 2 ≥ LL_lo`
+(`gcongr` + `Real.log_pow` + `Real.log_two_gt_d9`). Landed in the kernel-gated library
+(`RH/Robin.lean`, n ∈ {5041, 5042, 8192, 65537}) — the first UNCONDITIONAL Telperion
+RH-criterion instances (the hyperbolicity ladder is enclosure-conditional; Robin's
+transcendental brackets are fully discharged from Mathlib constants).

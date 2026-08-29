@@ -22,8 +22,8 @@ from fractions import Fraction as Fr  # noqa: E402
 
 from telperion import (  # noqa: E402
     GammaHalfBracketCertificate, HankelJensenCertificate, LogBoundCertificate,
-    PiBracketCertificate, QuarticJensenCertificate, SqrtBracketCertificate,
-    ZetaBoundCertificate,
+    PiBracketCertificate, QuarticJensenCertificate, RobinCertificate,
+    SqrtBracketCertificate, ZetaBoundCertificate,
 )
 
 # gamma_k = k! a_k enclosures at 1e-30 (tight enough for the quartic Delta4's
@@ -211,6 +211,25 @@ def _hankel_module() -> str:
             + "\n\nend HankelJensen\n")
 
 
+def _robin_module() -> str:
+    """Robin's criterion (RH-EQUIVALENT, arithmetic): sigma(n) < e^gamma n loglog n,
+    UNCONDITIONAL (both brackets discharged in-kernel) for a few comfortable n.  A
+    genuinely different angle from the analytic hyperbolicity ladder."""
+    from fractions import Fraction as Fr2
+    ns = (5041, 5042, 8192, 65537)
+    body = "\n\n".join(
+        RobinCertificate.from_gamma_lower(n=n, gamma_lo=Fr2(1, 2)).lean_unconditional().rstrip()
+        for n in ns)
+    return ("/- Robin's criterion for RH (Robin 1984), UNCONDITIONAL in-kernel instances:\n"
+            "   sigma(n) < e^gamma * n * log log n for n in {5041,5042,8192,65537}.  RH <=>\n"
+            "   this holds for all n >= 5041; a single violator disproves RH.  e^gamma bracket\n"
+            "   from Real.one_half_lt_eulerMascheroniConstant + Taylor exp; loglog from log-2\n"
+            "   d9.  RH-EQUIVALENT, finite, arithmetic -- a different family from the Jensen\n"
+            "   hyperbolicity ladder. -/\n"
+            "import Mathlib\nopen scoped Real\n\nnamespace Robin\n\n" + body
+            + "\n\nend Robin\n")
+
+
 def _gammahalf_module() -> str:
     thm = GammaHalfBracketCertificate(name="gamma_half_bracket").lean().rstrip()
     return ("/- Generated: a COMPLETED in-kernel bracket of the deep transcendental\n"
@@ -230,6 +249,7 @@ def modules() -> dict:
     out["ZetaEmitter"] = _zeta_emitter_module()  # reusable ZetaBoundCertificate: zeta(5),(6),(7) bounds
     out["QuarticJensen"] = _quartic_module()     # d=4 Jensen hyperbolicity (Delta4>0 & P<0 & D<0), n=0,1
     out["HankelJensen"] = _hankel_module()       # d=5 Jensen hyperbolicity (Hermite/Hankel minors), n=0
+    out["Robin"] = _robin_module()               # Robin's criterion (RH-EQUIVALENT, arithmetic), n in {5041,5042,8192,65537}
     return out
 
 
