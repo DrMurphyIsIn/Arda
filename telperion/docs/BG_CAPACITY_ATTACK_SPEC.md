@@ -109,9 +109,16 @@ and Koiran's SOS no-go). Calibration facts to build on:
 - Jensen (`m_1` only) is valid but loose (overshoots ρ* ~0.5%).
 - Higher-moment envelopes **converge to exact** at the caterpillar (K=3 → +4e-4, **K=6 → exact**): the
   moment route CAN represent the tight bound.
-- **The reduced open sub-problem is combinatorial, not transcendental:** bound `max_T m_k(T)` per moment
-  order `k` (a walk-count optimization over trees). This is exactly where the moment route earns its keep
-  over the failed local certificate (a) — and where the `poly(n)` slack lives (the small-n moment excess).
+- **The reduced open sub-problem is a JOINT MOMENT-BODY optimization, NOT per-moment** (corrected
+  2026-08-29, `BG_WALK_COUNT_SUBPROBLEM.md`): *different* trees maximize *different* `m_k` (paths → high
+  moments, hubs → low), and the extremal caterpillar maximizes **none** individually. Because the envelope
+  coeffs **alternate sign** (`c ≈ [+.50, −.24, +.12, −.035]`), the free-energy is the *balanced alternating*
+  combination `c_1 m_1 − |c_2| m_2 + …`, which the caterpillar maximizes. So the sub-problem is
+  `max_{m ∈ 𝓜_K} Σ_k c_k m_k = log ρ*` over the convex body `𝓜_K` of achievable tree spectral-moment
+  vectors — a finite SDP/moment problem with two nested relaxations: (S1) Hankel-PSD (any measure on
+  `[0,1]`), (S2) tree-specific walk-count cuts. This is where the moment route earns its keep over the
+  failed local certificate (a); the `poly(n)` slack lives in the small-n moment excess. **Live effort +
+  milestones W1–W5 + the closed W2 entry-moment bound: `BG_WALK_COUNT_SUBPROBLEM.md`.**
 
 ## 5. The tightness requirement (non-negotiable)
 
