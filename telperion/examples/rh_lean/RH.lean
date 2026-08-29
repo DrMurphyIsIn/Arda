@@ -22,3 +22,4 @@ import RH.Robin
 import RH.RobinReduction
 import RH.NicolasBridge
 import RH.TrigNonneg
+import RH.WeilPositivity

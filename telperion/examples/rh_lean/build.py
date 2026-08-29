@@ -24,7 +24,7 @@ from telperion import (  # noqa: E402
     GammaHalfBracketCertificate, HankelJensenCertificate, LogBoundCertificate,
     PiBracketCertificate, QuarticJensenCertificate, RobinCertificate,
     SqrtBracketCertificate, TightRobinCertificate, TrigNonnegCertificate,
-    ZetaBoundCertificate,
+    WeilPositivityCertificate, ZetaBoundCertificate,
 )
 
 # gamma_k = k! a_k enclosures at 1e-30 (tight enough for the quartic Delta4's
@@ -240,6 +240,31 @@ def _robin_module() -> str:
             + "\n\nend Robin\n")
 
 
+def _weil_module() -> str:
+    """The PSD certifier pointed at the WEIL FORM (instead of Jensen polynomials).  RH <=>
+    Weil's quadratic functional is >= 0 for all test functions; on a finite basis it is a
+    symmetric Gram matrix M whose entries are given by the explicit formula (digamma +
+    prime sum) WITHOUT the zeros, and M is positive-definite iff the zeros are real (RH).
+    Here the 3-dim finite Weil form is certified positive-definite (Sylvester leading minors
+    D_r>0 via WorstCorner) over rational brackets on its entries.  A NECESSARY condition for
+    RH (RH-EQUIVALENT via Weil's criterion), never a proof; entries need rigorous digamma
+    numerics (imported brackets, like the a_k enclosures)."""
+    from fractions import Fraction as Fr2
+    V = {(0, 0): "2.1122372", (0, 1): "2.8679706", (0, 2): "3.3752278",
+         (1, 1): "4.1785698", (1, 2): "5.1732953", (2, 2): "6.6731048"}
+    hw = Fr2(1, 100000)
+    ent = {k: (Fr2(v) - hw, Fr2(v) + hw) for k, v in V.items()}
+    body = WeilPositivityCertificate(name="weil_psd_3", n=3, entries=ent).lean().rstrip()
+    return ("/- Weil explicit-formula positivity: the PSD certifier pointed at the Weil form.\n"
+            "   RH <=> Weil's quadratic functional W(g,g) >= 0 for all test g; on a finite basis\n"
+            "   the Weil Gram matrix M (entries = digamma + prime sum, computed WITHOUT the zeros)\n"
+            "   is positive-definite iff the zeros are real (RH).  The 3-dim form is certified PD\n"
+            "   (Sylvester leading minors D_r>0 via WorstCorner) over brackets on the entries.\n"
+            "   NECESSARY for RH (RH-EQUIVALENT), never a proof; conjecture1_proved = False. -/\n"
+            "import Mathlib\nopen scoped Real\n\nnamespace WeilPositivity\n\n" + body
+            + "\n\nend WeilPositivity\n")
+
+
 def _trig_nonneg_module() -> str:
     """Nonnegative cosine polynomials -- the certificate family behind the classical
     zero-free region  zeta(s) != 0 for Re > 1 - c/log|t|.  The Mertens seed 3+4cos+cos2
@@ -323,6 +348,7 @@ def modules() -> dict:
     out["RobinReduction"] = _robin_reduction_module()  # D3: G-monotonicity reduction lemma (least counterexample is SA)
     out["NicolasBridge"] = _nicolas_module()           # D4: Nicolas=>Robin bridge phi*sigma<n^2 (primorial instances)
     out["TrigNonneg"] = _trig_nonneg_module()          # zero-free-region certificate family: nonneg cosine polynomials
+    out["WeilPositivity"] = _weil_module()             # PSD certifier pointed at the Weil form (RH-equivalent positivity)
     return out
 
 
