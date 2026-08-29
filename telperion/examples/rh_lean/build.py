@@ -23,7 +23,7 @@ from fractions import Fraction as Fr  # noqa: E402
 from telperion import (  # noqa: E402
     GammaHalfBracketCertificate, HankelJensenCertificate, LogBoundCertificate,
     PiBracketCertificate, QuarticJensenCertificate, RobinCertificate,
-    SqrtBracketCertificate, ZetaBoundCertificate,
+    SqrtBracketCertificate, TightRobinCertificate, ZetaBoundCertificate,
 )
 
 # gamma_k = k! a_k enclosures at 1e-30 (tight enough for the quartic Delta4's
@@ -220,12 +220,17 @@ def _robin_module() -> str:
     body = "\n\n".join(
         RobinCertificate.from_gamma_lower(n=n, gamma_lo=Fr2(1, 2)).lean_unconditional().rstrip()
         for n in ns)
+    # RH-TIGHT boundary case: n=25200 is superabundant (ratio ~1.71), unreachable by the
+    # comfortable gamma>1/2 bound -- needs tight gamma (eulerMascheroniSeq) + tight loglog.
+    body += "\n\n" + TightRobinCertificate.for_n25200().lean().rstrip()
     return ("/- Robin's criterion for RH (Robin 1984), UNCONDITIONAL in-kernel instances:\n"
-            "   sigma(n) < e^gamma * n * log log n for n in {5041,5042,8192,65537}.  RH <=>\n"
-            "   this holds for all n >= 5041; a single violator disproves RH.  e^gamma bracket\n"
-            "   from Real.one_half_lt_eulerMascheroniConstant + Taylor exp; loglog from log-2\n"
-            "   d9.  RH-EQUIVALENT, finite, arithmetic -- a different family from the Jensen\n"
-            "   hyperbolicity ladder. -/\n"
+            "   sigma(n) < e^gamma * n * log log n for n in {5041,5042,8192,65537} (comfortable)\n"
+            "   and n=25200 (SUPERABUNDANT, RH-tight regime, ratio ~1.71).  RH <=> this holds\n"
+            "   for all n >= 5041; a single violator disproves RH -- so each is a finite check\n"
+            "   consistent with (never a proof of) RH.  Comfortable n: e^gamma from\n"
+            "   Real.one_half_lt_eulerMascheroniConstant + Taylor exp, loglog from log-2 d9.\n"
+            "   n=25200: tight e^gamma from eulerMascheroniSeq 31, tight loglog from taylor_log.\n"
+            "   RH-EQUIVALENT, finite, arithmetic -- a different family from the Jensen ladder. -/\n"
             "import Mathlib\nopen scoped Real\n\nnamespace Robin\n\n" + body
             + "\n\nend Robin\n")
 
