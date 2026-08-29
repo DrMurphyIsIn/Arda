@@ -68,6 +68,22 @@ general, with the 3-4-1 Mertens polynomial as the seed and optimized higher-degr
 value-add), and (b) a scoped statement of the region-assembly it feeds, flagging the growth-bound
 dependency.
 
+### BUILT: `TrigNonnegCertificate` (`src/telperion/trig_nonneg.py`, `RH/TrigNonneg.lean`)
+
+Part (a) is done and kernel-verified in the gate. `TrigNonnegCertificate(name, coeffs)` emits a Lean
+proof of `0 <= sum_k coeffs[k] * cos(k*theta)` for any nonnegative cosine polynomial (degree <= 3):
+it computes `p(x) = sum a_k T_k(x)` (Chebyshev), factors it into the Markov-Lukacs manifest form
+`C*(1+x)^a*(1-x)^b*prod (SOS quadratics)`, rewrites `cos(k theta) -> T_k(cos theta)` via
+`Real.cos_two_mul`/`Real.cos_three_mul`, proves `P(theta) = <factored form>` by `ring`, and closes
+`0 <= <form>` with a `mul_nonneg` fold (boundary factors from `-1 <= cos theta <= 1`, squares by
+`sq_nonneg`, completed squares by `positivity`).  Instances landed: the Mertens seed `3+4cos+cos2`
+plus `3+4cos+2cos2` and two cubics exercising the boundary-factor path.
+
+**Remaining for a real region (part b, NOT done):** the analytic assembly `|zeta(σ+it)| << log|t|`
+near σ=1 (the growth bound, absent from Mathlib) + the log-derivative / `vonMangoldt` machinery to turn
+`zeta(σ)^3 |zeta(σ+it)|^4 |zeta(σ+2it)| >= 1` into a zero-free region. Medium-high; coordinate with PNT+.
+Degree > 3 (for better constants) needs `Polynomial.Chebyshev.T_real_cos` in the emitter.
+
 ## Why this is a REAL step (and its honest ceiling)
 
 A zero-free region `Re > 1 - c/log|t|` is genuine, unconditional progress about *where the zeros can
