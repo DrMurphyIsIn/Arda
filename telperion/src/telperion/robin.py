@@ -61,16 +61,23 @@ def exp_lower(x: Fr, terms: int = 40, grid: int = 10 ** 6) -> Fr:
     return Fr(math.floor(s * grid), grid)
 
 
-def coarse_loglog_lower(n: int) -> Fr:
-    """Rational LL_lo <= log log n from log 2 alone: log n >= a*log2 (2^a <= n), then
-    log log n >= c*log2 (2^c <= a*log2_lo).  Coarse but purely from Real.log_two_gt_d9."""
+def loglog_exponents(n: int) -> tuple[int, int]:
+    """(a, c) with 2^a <= n and 2^c <= a*log2_lo, so log n >= a*log2 and
+    log log n >= c*log2 -- the exponents the in-kernel loglog chain uses."""
     a = n.bit_length() - 1                       # 2^a <= n < 2^{a+1}
     logn_lo = a * LOG2_LO
     if logn_lo <= 1:
-        raise ValueError(f"coarse_loglog_lower: log n too small for n={n} (need n >= 16)")
+        raise ValueError(f"loglog_exponents: log n too small for n={n} (need n >= 16)")
     c = 0
     while Fr(2) ** (c + 1) <= logn_lo:
         c += 1
+    return a, c
+
+
+def coarse_loglog_lower(n: int) -> Fr:
+    """Rational LL_lo <= log log n from log 2 alone: log n >= a*log2 (2^a <= n), then
+    log log n >= c*log2 (2^c <= a*log2_lo).  Coarse but purely from Real.log_two_gt_d9."""
+    _, c = loglog_exponents(n)
     return c * LOG2_LO
 
 
@@ -84,15 +91,18 @@ class RobinCertificate:
     n: int
     egamma_lo: Fr
     loglog_lo: Fr
+    gamma_lo: Fr | None = None      # provenance for the unconditional emitter
+    exp_nterms: int = 12
 
     @classmethod
-    def from_gamma_lower(cls, n: int, gamma_lo: Fr, exp_terms: int = 40,
+    def from_gamma_lower(cls, n: int, gamma_lo: Fr, exp_terms: int = 12,
                          name: str | None = None) -> "RobinCertificate":
         """Build with e^gamma lower bound derived from a rational gamma lower bound
         (Taylor exp) and the coarse log-2 loglog lower bound."""
         return cls(name=name or f"robin_n{n}", n=n,
                    egamma_lo=exp_lower(Fr(gamma_lo), exp_terms),
-                   loglog_lo=coarse_loglog_lower(n))
+                   loglog_lo=coarse_loglog_lower(n),
+                   gamma_lo=Fr(gamma_lo), exp_nterms=exp_terms)
 
     def sigma(self) -> int:
         return int(sp.divisor_sigma(self.n))
@@ -134,4 +144,64 @@ class RobinCertificate:
             f"  nlinarith [hγ, hll, hE, hLL, hn, hg,\n"
             f"    mul_le_mul hγ (le_refl ({self.n} : ℝ)) (le_of_lt hn) (le_of_lt hg),\n"
             f"    mul_le_mul_of_nonneg_left hll (le_of_lt (mul_pos hg hn))]\n"
+        )
+
+    def lean_unconditional(self) -> str:
+        """Self-contained Robin theorem for the clean case (gamma>1/2 via Mathlib +
+        coarse log-2 loglog): discharges BOTH brackets in-kernel, so there are no free
+        hypotheses.  Requires gamma_lo == 1/2 (the clean Mathlib bound) and the coarse
+        loglog structure.  e^gamma bound reuses the ExpBracket Taylor pattern
+        (Real.sum_le_exp_of_nonneg); loglog bound uses gcongr + Real.log_pow +
+        Real.log_two_gt_d9.  Only certifies COMFORTABLE n (see module docstring)."""
+        if not self.check():
+            raise ValueError(f"{self.name}: not certified -- refusing to emit")
+        if self.gamma_lo != Fr(1, 2):
+            raise ValueError(f"{self.name}: unconditional emitter needs gamma_lo=1/2 "
+                             f"(the clean Mathlib bound), got {self.gamma_lo}")
+        a, c = loglog_exponents(self.n)
+        if self.loglog_lo != c * LOG2_LO:
+            raise ValueError(f"{self.name}: unconditional emitter needs the coarse log-2 loglog bound")
+        sig, N = self.sigma(), self.exp_nterms
+        E, LL = _rat(self.egamma_lo), _rat(self.loglog_lo)
+        aL = _rat(a * LOG2_LO)                       # a * log2_lo (rational)
+        return (
+            f"/-- Robin's inequality at n={self.n}, UNCONDITIONAL: sigma({self.n})={sig} < "
+            f"e^gamma * {self.n} * log log {self.n}.  Both brackets discharged in-kernel "
+            f"(gamma>1/2 via Real.one_half_lt_eulerMascheroniConstant; loglog via log-2 d9). -/\n"
+            f"theorem {self.name} :\n"
+            f"    ({sig} : ℝ) < Real.exp Real.eulerMascheroniConstant "
+            f"* ({self.n} : ℝ) * Real.log (Real.log ({self.n} : ℝ)) := by\n"
+            f"  -- e^gamma >= e^(1/2) >= E_lo  (Taylor lower bound + gamma>1/2)\n"
+            f"  have hexp : ({E}) ≤ Real.exp ((1 : ℝ) / 2) := by\n"
+            f"    refine le_trans ?_ (Real.sum_le_exp_of_nonneg (by norm_num) {N})\n"
+            f"    norm_num [Finset.sum_range_succ, Nat.factorial]\n"
+            f"  have hγ : ({E}) ≤ Real.exp Real.eulerMascheroniConstant :=\n"
+            f"    le_trans hexp (Real.exp_le_exp.mpr (le_of_lt Real.one_half_lt_eulerMascheroniConstant))\n"
+            f"  -- log n >= a * log 2 >= a * log2_lo\n"
+            f"  have hl2 := Real.log_two_gt_d9\n"
+            f"  have hlogn : ({a} : ℝ) * Real.log 2 ≤ Real.log ({self.n} : ℝ) := by\n"
+            f"    have h : Real.log ((2 : ℝ) ^ ({a} : ℕ)) ≤ Real.log ({self.n} : ℝ) := by\n"
+            f"      gcongr <;> norm_num\n"
+            f"    rw [Real.log_pow] at h\n"
+            f"    exact_mod_cast h\n"
+            f"  have hlogn_lo : ({aL}) ≤ Real.log ({self.n} : ℝ) := by nlinarith [hlogn, hl2]\n"
+            f"  -- log log n >= c * log 2 = LL_lo\n"
+            f"  have h2c : ((2 : ℝ) ^ ({c} : ℕ)) ≤ Real.log ({self.n} : ℝ) := by\n"
+            f"    have hb : ((2 : ℝ) ^ ({c} : ℕ)) ≤ ({aL}) := by norm_num\n"
+            f"    linarith [hlogn_lo, hb]\n"
+            f"  have hll : ({c} : ℝ) * Real.log 2 ≤ Real.log (Real.log ({self.n} : ℝ)) := by\n"
+            f"    have h : Real.log ((2 : ℝ) ^ ({c} : ℕ)) ≤ Real.log (Real.log ({self.n} : ℝ)) := by\n"
+            f"      gcongr\n"
+            f"    rw [Real.log_pow] at h\n"
+            f"    exact_mod_cast h\n"
+            f"  have hLL : ({LL}) ≤ Real.log (Real.log ({self.n} : ℝ)) := by nlinarith [hll, hl2]\n"
+            f"  -- positivity + exact arithmetic assembly\n"
+            f"  have hE : (0:ℝ) < {E} := by norm_num\n"
+            f"  have hLLp : (0:ℝ) < {LL} := by norm_num\n"
+            f"  have hn : (0:ℝ) < ({self.n} : ℝ) := by norm_num\n"
+            f"  have hg : (0:ℝ) < Real.exp Real.eulerMascheroniConstant := Real.exp_pos _\n"
+            f"  have harith : ({sig} : ℝ) < {E} * ({self.n} : ℝ) * {LL} := by norm_num\n"
+            f"  nlinarith [hγ, hLL, hE, hLLp, hn, hg,\n"
+            f"    mul_le_mul hγ (le_refl ({self.n} : ℝ)) (le_of_lt hn) (le_of_lt hg),\n"
+            f"    mul_le_mul_of_nonneg_left hLL (le_of_lt (mul_pos hg hn))]\n"
         )
