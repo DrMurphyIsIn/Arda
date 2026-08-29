@@ -85,3 +85,42 @@ So `m_1 ≤ 5/8` (all n; sharp at n=4) and `m_1 ≤ (small const)` asymptoticall
 controlled by a pure degree-sequence optimization under the handshake `Σdeg = 2n−2`. **W2 is essentially
 closed** (a clean rational bound); the work moves to W3 (the joint moment SDP with the alternating
 functional), where the caterpillar's balance — not any single-moment extremum — must be shown optimal.
+
+## W3 result (2026-08-29): Hankel-PSD + `m_1` OVERSHOOTS — the missing cut is an even-moment LOWER bound
+
+Two relaxations tested against `log ρ* = 0.20510`:
+- **Per-moment bounds** (`m_k ≤ β_k = max_T m_k`, K=6, grid-LP): max `F = 0.22977`, **gap +0.0247**.
+  Loose — the β_k are not jointly achievable (different trees max different `m_k`).
+- **Hankel-PSD moment SDP** (measure on [0,1], K=4 envelope) + `m_1 ≤ β_1` (cvxpy/SCS):
+  `β_1=0.625` → gap +0.038; `β_1=0.52` (caterpillar) → **+0.0043**; closes only at `β_1 ≤ 0.505`,
+  which *excludes* the caterpillar (`m_1=0.520`).
+
+**Diagnosis (the S2 cut located).** With `c_2 < 0` in the envelope, the SDP inflates `F` by pushing
+`m_2` down to the **Hankel floor `m_2 ≥ m_1²`** (`=0.270` at `m_1=0.52`) — below the caterpillar's
+`m_2 = 0.308`. No tree with `m_1=0.52` reaches `m_2 < 0.308`. So the binding missing constraint is a
+**tree-specific LOWER bound on `m_2` given `m_1`**, strictly above the Hankel floor. This is the concrete
+S2 cut to prove (W4): `m_2(T) ≥ φ(m_1(T))` for a tree function `φ` with `φ(m_1) > m_1²`, tight at the
+caterpillar. Higher even moments likely need analogous cuts. The per-vertex/degree-local nature of the
+walk moments is what makes these cuts provable (unlike the transcendental per-vertex `log a_v`).
+
+## W4 progress (2026-08-29): the S2 cut is a LOCAL even-moment lower bound (concrete + provable)
+
+The tree `(m_1, m_2)` locus (empirical): the lower boundary is traced by the **caterpillar family** as
+`a` grows. At `m_1 ≈ 0.52`, `m_2` decreases with `a` (a=7→0.308, a=10→0.296, a=13→0.287) but stays
+**strictly above the Hankel floor `m_1² = 0.270`**; length-3 arms (0.394) and paths (0.378) sit far
+higher. So trees provably do not reach the Hankel `m_2` floor that the W3 SDP-overshoot exploited.
+
+**The cut is a local degree inequality.** `m_2 = (1/n)Tr N^4` has an explicit closed form: for each
+vertex `v`, `(N^4)_{vv} = (1/deg_v²)(Σ_{a~v} 1/deg_a)² + Σ_{a~v}(1/(deg_v deg_a²))·Σ_{c~a,c≠v} 1/deg_c`
+(closed 4-walks = "cherry-returns" `v→a→v→b→v` + "neighbor-of-neighbor" `v→a→c→a→v`). So `m_2` is a
+**local, polynomial degree functional** — the S2 cut `m_2(T) ≥ φ(m_1(T))` is a per-neighborhood
+inequality, exactly the provable object route (b) promised (vs the transcendental per-vertex `log a_v`).
+
+**W4 remaining:** (i) derive the tight `φ` from the local formulas (the caterpillar boundary in closed
+form); (ii) re-solve the SDP with `m_2 ≥ φ(m_1)` added — confirm it closes to `log ρ*` at the
+caterpillar (and identify whether `m_3`,`m_4` cuts are also needed). **W5:** the finite-`n` `poly(n)`.
+
+**Status of route (b):** the upper bound is now a **finite, local, moment-SDP + walk-count-cut problem**
+— W1 (SOS envelope, ~done), W2 (`m_1` bound, done), W3 (relaxation gap measured + cut located, done),
+W4 (cut is local/provable, in progress). No transcendental obstruction remains; the open work is the
+explicit even-moment cuts and the SDP closure. `conjecture1_proved = False`.
