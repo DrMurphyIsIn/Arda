@@ -8,6 +8,7 @@ import RH.BGRhoBSqrt
 import RH.BGLogEnclosures
 import RH.BGOmegaEnclosure
 import RH.BGGateStrictness
+import RH.BGParityLaw
 import RH.LogBound
 import RH.SqrtBracket
 import RH.PiBracket
