@@ -9,6 +9,7 @@ import RH.BGLogEnclosures
 import RH.BGOmegaEnclosure
 import RH.BGGateStrictness
 import RH.BGParityLaw
+import RH.BGCollectiveCancellation
 import RH.LogBound
 import RH.SqrtBracket
 import RH.PiBracket

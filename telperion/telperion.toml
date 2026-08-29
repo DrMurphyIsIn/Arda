@@ -214,6 +214,11 @@ script = "examples/bg_parity_law/generate.py"
 group = "quick"    # per-n extremality parity law: exact extremal Phi^11 <1 (=1 @n=11) n<=14, near-star odd / multi-hub even
 
 [[check]]
+name = "bg_collective_cancellation"
+script = "examples/bg_collective_cancellation/generate.py"
+group = "quick"    # claim-1 collective-cancellation obstruction: 2 per-vertex factors >1, tie product=1
+
+[[check]]
 name = "rh_lean"
 script = "examples/rh_lean/build.py"
 group = "quick"    # assembles the RH lake library from frozen Lean; lake-built by telperion-rh-lean CI (kernel gate)
