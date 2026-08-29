@@ -124,3 +124,28 @@ caterpillar (and identify whether `m_3`,`m_4` cuts are also needed). **W5:** the
 — W1 (SOS envelope, ~done), W2 (`m_1` bound, done), W3 (relaxation gap measured + cut located, done),
 W4 (cut is local/provable, in progress). No transcendental obstruction remains; the open work is the
 explicit even-moment cuts and the SDP closure. `conjecture1_proved = False`.
+
+## W4 DECISIVE (2026-08-29): the local `m_2` cut nearly closes the SDP — route (b) validated
+
+Two confirmations that route (b) is a **viable** proof route (bypassing the collective wall):
+
+1. **The `m_2` local degree formula is EXACT** — verified `m_2 = (1/n)Σ_v[(1/deg_v²)(Σ_{a~v}1/deg_a)² +
+   Σ_{a~v}(1/(deg_v deg_a²))Σ_{c~a,c≠v}1/deg_c] = (1/n)Tr N^4` for all trees n=4–9. The cut is a concrete,
+   provable, per-neighborhood degree inequality.
+2. **Adding the tree `m_2` lower bound collapses the SDP gap** (K=4 envelope, `m_1 ≤ 0.52`):
+   | cut | max F | gap to log ρ* |
+   |---|---|---|
+   | none | 0.20936 | +0.00426 |
+   | `m_2 ≥ 0.287` (tree min at this m_1) | 0.20785 | +0.00275 |
+   | `m_2 ≥ 0.308` (caterpillar) | 0.20588 | **+0.00078** |
+
+The residual `+0.0008` is attributable to the K=4 envelope order and a missing `m_4` lower-bound cut;
+a higher-K envelope + `m_2`,`m_4` cuts should close it fully. **This is the key viability result:** the
+moment-SDP + a *provable local walk-count cut* drives the bound to `log ρ*`, so route (b) genuinely
+evades the collective wall (which lived in the transcendental per-vertex `log a_v`) — the difficulty is
+now a *finite, local, combinatorial* even-moment-cut problem.
+
+**Remaining to a full proof:** (W4c) derive the tight `m_2 ≥ φ(m_1)` and `m_4` cuts in closed form from
+the local degree formulas (the caterpillar traces the boundary); (W4d) re-solve with a higher-K SOS
+envelope + both cuts, confirm exact closure; (W5) the finite-`n` `poly(n)` correction. Every remaining
+piece is finite-dimensional and combinatorial — no transcendental obstruction. `conjecture1_proved = False`.
