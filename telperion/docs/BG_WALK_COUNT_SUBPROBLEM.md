@@ -182,6 +182,49 @@ with a dual (SOS) certificate**, NOT rearrangement (caterpillar interior, W5) an
 (too weak, W7c). Reproductions: `bg_moment_sdp.py`, `bg_k4_discharge.py`, `bg_c_convexity.py`.
 `conjecture1_proved = False`.
 
+## W8 (2026-08-29): the mass-transport flag-LP CLOSES the m₂ cut — explicit, verified dual certificate
+
+The W7 diagnosis (the discharging gap is *measure-realizability*) is now made precise and largely resolved.
+Both moments are **linear** in the vertex-type distribution `π(t)`, `t=(d;{e_1..e_d})`:
+`m₁=Σπ(t)x(t)`, `m₂=Σπ(t)(2x(t)²−q(t))`, `x(t)=(Σ1/e_i)/d`, `q(t)=(Σ1/e_i²)/d²`. So the cut is a **linear
+program** (no SDP needed at this order): `min m₂ s.t. m₁ = M` over `π ≥ 0` with the realizability
+constraints a real tree must satisfy:
+- normalization `Σπ = 1`;
+- tree handshake `Σπ(t)·d(t) = 2` (bulk mean degree);
+- **mass transport / unimodularity**: for every degree pair `d<e`,
+  `Σ_t π(t)[cnt_e(t)·1{deg=d} − cnt_d(t)·1{deg=e}] = 0` (the `(d,e)`-edge count is equal from each side).
+
+**Result — it closes.** The independent-profile discharging floored at `0.231` (W6); adding mass transport
+lifts `min m₂` onto the caterpillar boundary across the whole band: at the caterpillar's own `m₁`,
+`min m₂` equals the caterpillar `m₂` to `~10⁻⁴` (DMAX=7 `+1.4e−4`, DMAX=8 `+1.1e−4`, **DMAX=9 `+0.9e−4`**,
+shrinking), and `min m₂(M)` tracks `φ(M)` for `M∈[0.50,0.54]`.
+
+**The LP dual IS the certificate (verified).** The equality-constraint multipliers give a per-type
+inequality — valid over **all 3431 types** with worst slack `−5.6e−17` (machine zero):
+
+    m₂-contribution(t) = 2x(t)²−q(t)  ≥  β₀ + β₁·d(t) + β₂·x(t) + Σ_{a~v} w(d, e_a),
+
+with `w(d,e) = −w(e,d)` the **antisymmetric discharging potential read off from the mass-transport duals**
+(e.g. `w(1,2)=0.00066`, `w(2,7)=0.00527`, `w(2,3)=0.06539`). Summed over a tree the `w`-terms telescope to
+0, giving `m₂ ≥ β₀ + 2β₁ + β₂·m₁` — a certified linear lower bound tight at the caterpillar. This is
+exactly the folded discharging potential, now **valid** because the mass-transport duals supply the
+coupling the independent relaxation lacked.
+
+**Honest caveat — the 1-hop LP is a relaxation, not exactly tight.** Mass transport + mean-degree-2 are
+*necessary* for trees, not sufficient, so `min m₂` is a valid *lower* bound on the true tree-min and its
+gap grows mildly as the degree cap admits more types (DMAX=10 → `+3.0e−3`, up from `0.9e−4`). So the pure
+1-hop flag-LP certifies `m₂ ≥ φ(m₁) − O(10⁻³)`. Closing the residual to *exact* tightness needs
+**higher-order flag constraints — Hankel-PSD on the degree-type moments (the flag-SDP)** — the same
+`HankelJensenCertificate` machinery as the spectral side.
+
+**Route-(b) architecture, now concrete.** The full certificate is two coupled Hankel/SOS-dual objects:
+(1) the **spectral** moment-SDP on `m_k` (§W7a) — Hankel-PSD + the `m₂` cut → `G ≤ log ρ* + O(10⁻³)`; and
+(2) the **degree-distribution** flag-SDP (this section) — mass-transport LP + degree-moment Hankel →
+certifies the `m₂ ≥ φ(m₁)` cut with the explicit antisymmetric-potential dual, tight at the caterpillar.
+Both are kernel-gateable with Telperion's `hankel_jensen.py` + `cone.py`. The sole remaining work is the
+Hankel tightening of (2) and rationalizing the duals into a kernel-checked emitter. Reproductions:
+`bg_flag_lp.py` (LP + verified dual), `bg_flag_robust.py` (degree-cap robustness). `conjecture1_proved = False`.
+
 ## W2 first result (2026-08-29): the entry moment `m_1` is bounded
 
 `m_1(T) = (2/n)Σ_e 1/(deg_i deg_j)` (exact rational). Exhaustive per n:
