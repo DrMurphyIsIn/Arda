@@ -5,9 +5,12 @@ This is the abstraction the bespoke turan/jensen/toeplitz bridges are instances 
 Every monomial c * prod g_i^{e_i} (all g_i >= 0) is bounded at the WORST CORNER:
 positive-coefficient monomials at the enclosure floor (prod lo_i^{e_i}), negative
 ones at the ceiling (prod hi_i^{e_i}), each via a `mul_le_mul` product-monotonicity
-chain.  If the resulting worst-corner sum is > 0, `nlinarith` assembles the (linear)
-certificate.  Verified tractable to degree 6 / 16 monomials (the quartic Jensen
-discriminant compiled in 14s).
+chain.  The goal is then a FIXED nonnegative linear combination of those monomial
+bounds, so `linarith` (not `nlinarith`) assembles the certificate: each monomial is
+a linarith atom, the M_j bound it, and the combination is purely linear -- no
+nonlinear product search.  This is what makes it scale: the degree-5 Jensen top
+Hankel minor (degree 20, 59 monomials) compiles under `linarith` where `nlinarith`
+times out at 1.6M heartbeats on the same goal.
 
 To prove P < 0, pass -P.  The generator is untrusted; the Lean kernel is the arbiter.
 """
@@ -116,5 +119,5 @@ class WorstCornerCertificate:
             f"theorem {self.name} {{{binders} : ℝ}} {hyps} :\n"
             f"    0 < {goal} := by\n"
             f"{nlines}{''.join(mlines)}"
-            f"  nlinarith [{', '.join(hints)}]\n"
+            f"  linarith [{', '.join(hints)}]\n"
         )

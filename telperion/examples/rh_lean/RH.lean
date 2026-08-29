@@ -17,3 +17,4 @@ import RH.GammaHalf
 import RH.ZetaNumerics
 import RH.ZetaEmitter
 import RH.QuarticJensen
+import RH.HankelJensen

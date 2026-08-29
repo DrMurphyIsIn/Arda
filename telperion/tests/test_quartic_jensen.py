@@ -41,4 +41,4 @@ def test_lean_has_three_conditions_per_shift():
         assert f"quartic_jensen_xi_n{n}_disc" in lean   # Delta4 > 0
         assert f"quartic_jensen_xi_n{n}_P" in lean       # P < 0
         assert f"quartic_jensen_xi_n{n}_D" in lean       # D < 0
-    assert lean.count("nlinarith") == 6                  # 3 conditions x 2 shifts
+    assert lean.count("linarith") == 6                   # 3 conditions x 2 shifts (linarith assembly)

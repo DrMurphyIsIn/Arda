@@ -336,3 +336,36 @@ noted-not-shipped tight version); applies to the *archimedean* RH pieces (Li-tre
 (`ζ(1/2)`, Stieltjes constants, the `a_k` themselves) — those need in-kernel
 `ζ`/`Γ`-derivative bounds Mathlib does not have. That gap is the honest ceiling on
 making the `turan_xi`/`jensen_xi`/… certificates unconditional.
+
+## 0.1.4 (2026-08-29) — degree-n Jensen hyperbolicity, uniformly
+
+**`HankelJensenCertificate` (`hankel_jensen.py`)**: the UNIFORM any-degree
+generalization of `turan` (d=2) / `jensen` (d=3) / `quartic_jensen` (d=4). For
+d ≥ 5 real-rootedness has no short discriminant criterion, so the ad-hoc ladder
+ends; the correct any-degree object is **Hermite's**: a real degree-d polynomial
+is strictly hyperbolic iff its Hermite form — the `d×d` Hankel matrix
+`H = [p_{i+j}]` of the roots' Newton power sums — is positive definite, i.e. (by
+Sylvester) every leading principal minor is `> 0`. The power sums are rational in
+the coefficients (Newton's identities, denominator a power of the leading coeff
+`a_d = γ_{n+d}`); clearing via `τ_k = a_d^k p_k` gives integer-coefficient minors
+`Dτ_r = det[τ_{i+j}]_{i,j<r} = a_d^{r(r-1)} M_r`, and `a_d = γ_{n+d} > 0` makes
+`sign(Dτ_r) = sign(M_r)`. So the criterion is `Dτ_r > 0` for `r = 2..d`, each a
+polynomial in the γ enclosures certified by `WorstCornerCertificate`. This one
+emitter subsumes and re-derives d=2,3,4 and extends to any degree. Landed the
+**d=5 rung** in the kernel-gated library (`RH/HankelJensen.lean`, shift n=0, minors
+`Dτ_2..Dτ_5`). RH-necessary, finite shifts, enclosure-conditional — same honest
+scope as its predecessors (`conjecture1_proved` stays False).
+
+**`WorstCornerCertificate` now assembles via `linarith`, not `nlinarith`**: the
+worst-corner goal is a FIXED nonnegative linear combination of the per-monomial
+bounds `M_j` (each monomial is a linarith atom), so the nonlinear product search
+was pure overhead. Switching tactics is what broke the d=5 wall: the top minor
+`Dτ_5` (degree 20, 59 monomials) times out `nlinarith` at 1.6M heartbeats but
+compiles under `linarith` in seconds (full d=5, four minors, 126s end-to-end in
+the sandbox). Regenerated `QuarticJensen` under the same change (still green).
+
+**Measured walls** (`monomial_counts()`): top-minor monomial count 2 → 5 → 16 → 59
+for d=2..5; worst-corner cancellation margin 3.7e-5 → 5.0e-24 → 1.2e-67 → 1.5e-146,
+still strictly positive at the 30-digit γ enclosures. The frontier with the current
+6-enclosure table (γ_0..γ_5) is d=5; d≥6 needs an extra γ_6 enclosure and, given the
+margin trend (~1e-250 at d=6), likely tighter enclosures.

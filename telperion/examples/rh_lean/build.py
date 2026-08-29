@@ -21,8 +21,9 @@ sys.path.insert(0, str(EXAMPLES.parent / "src"))
 from fractions import Fraction as Fr  # noqa: E402
 
 from telperion import (  # noqa: E402
-    GammaHalfBracketCertificate, LogBoundCertificate, PiBracketCertificate,
-    QuarticJensenCertificate, SqrtBracketCertificate, ZetaBoundCertificate,
+    GammaHalfBracketCertificate, HankelJensenCertificate, LogBoundCertificate,
+    PiBracketCertificate, QuarticJensenCertificate, SqrtBracketCertificate,
+    ZetaBoundCertificate,
 )
 
 # gamma_k = k! a_k enclosures at 1e-30 (tight enough for the quartic Delta4's
@@ -195,6 +196,21 @@ def _quartic_module() -> str:
             + "\n\nend QuarticJensen\n")
 
 
+def _hankel_module() -> str:
+    """Degree-5 Jensen hyperbolicity via the general Hermite/Hankel-minor emitter
+    (the uniform any-degree criterion; d<=4 have short discriminant forms, d>=5 do
+    not).  Same gamma_k=k!a_k enclosures as the quartic; shift n=0 needs g_0..g_5."""
+    enc = tuple((Fr(lo), Fr(hi)) for lo, hi in _QUARTIC_GAMMAS)
+    body = HankelJensenCertificate(name="hankel_jensen_xi", enclosures=enc, degree=5).lean().rstrip()
+    return ("/- Degree-5 Jensen-Polya hyperbolicity of xi via the Hermite/Hankel-minor\n"
+            "   criterion (HankelJensenCertificate): J^{5,0} STRICTLY hyperbolic <=> the\n"
+            "   Hermite form is PD <=> every leading Hankel minor Dtau_r > 0, r=2..5.\n"
+            "   Uniform any-degree generalization of turan/cubic/quartic. RH-necessary,\n"
+            "   finite shift, enclosure-conditional. -/\n"
+            "import Mathlib\nopen scoped Real\n\nnamespace HankelJensen\n\n" + body
+            + "\n\nend HankelJensen\n")
+
+
 def _gammahalf_module() -> str:
     thm = GammaHalfBracketCertificate(name="gamma_half_bracket").lean().rstrip()
     return ("/- Generated: a COMPLETED in-kernel bracket of the deep transcendental\n"
@@ -213,6 +229,7 @@ def modules() -> dict:
     out["ZetaNumerics"] = _zeta_module()     # zeta(2) bounds + zeta(3) > 9/8 (Apery, no closed form)
     out["ZetaEmitter"] = _zeta_emitter_module()  # reusable ZetaBoundCertificate: zeta(5),(6),(7) bounds
     out["QuarticJensen"] = _quartic_module()     # d=4 Jensen hyperbolicity (Delta4>0 & P<0 & D<0), n=0,1
+    out["HankelJensen"] = _hankel_module()       # d=5 Jensen hyperbolicity (Hermite/Hankel minors), n=0
     return out
 
 

@@ -82,8 +82,8 @@ def test_lean_emits_d_minus_one_minors_per_shift():
     for n in (0, 1, 2):
         assert f"hankel_d3_n{n}_H2" in lean
         assert f"hankel_d3_n{n}_H3" in lean
-    # d-1 = 2 minors per shift, 3 shifts
-    assert lean.count("nlinarith") == 6
+    # d-1 = 2 minors per shift, 3 shifts; worst-corner assembles via linarith
+    assert lean.count("linarith") == 6
 
 
 def test_refuses_to_emit_when_not_certified():
