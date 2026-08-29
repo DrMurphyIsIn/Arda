@@ -118,6 +118,30 @@ neighbour degrees) is the residual "collective" piece the potential must absorb.
 the finite-degree feasibility LP is the entry probe). **W5** → the surface term `per/∏deg ≤ C·ρ*^n` and the
 `lim` statement (superseding the old "poly(n) correction", now understood as the from-above convergence).
 
+## W6 (2026-08-29): 1-neighbourhood K=2 discharging does NOT close — it plateaus at the small-path free energy
+
+Ran the discharging LP (`min B` over antisymmetric `w(x,y)` s.t. `g(v)−Σ_a w(d_v,d_a) ≤ B` for every
+bulk-realizable local profile, excluding all-leaf/star-center neighbourhoods). **Result: `min B = 0.23099`,
+a hard floor `+0.0259` above `log ρ* = 0.20510`.** It is pinned *exactly* — by hand — by a single profile
+pair (independent of the degree cap):
+
+- leaf `(D=1, {2})`:            `g = 0.21164`, constraint `g − w(1,2) ≤ B`;
+- path-interior `(D=2, {1,2})`: `g = 0.25034`, constraint `g + w(1,2) ≤ B`.
+  Adding: `B ≥ ½(0.21164 + 0.25034) = 0.23099` — matching the LP to 5 digits.
+
+So the **linear (discharging) relaxation alone has an integrality-gap-like plateau at ≈ the small-path
+free energy** (`F(P₃)=0.23105`, `F(P₄)=0.22907`). The independent-profile relaxation cannot tell "these two
+profiles coexist only in a low-density path" from "they tile a high-density tree", so it over-counts. The
+missing constraint is exactly **measure-realizability = the Hankel-PSD moment body** (ingredient 2): the
+tree spectral measure `μ_N` cannot simultaneously put the mass on `(1,{2})` and `(2,{1,2})` that the
+relaxation assumes. This concretely **validates the plan's emphasis on the moment-SDP Hankel constraints
+over pure discharging** — the linear cuts (ingredient 3) need the Hankel PSD (ingredient 2) to close.
+
+**Next probe:** (a) K=4 discharging (add `m_3,m_4` local terms — 2-/3-hop neighbourhoods, a tighter
+envelope) to see how far the plateau drops; (b) couple the discharging LP to the Hankel-PSD moment
+constraints (the moment-SDP proper) — the combination is the actual route-(b) certificate.
+`conjecture1_proved = False`.
+
 ## W2 first result (2026-08-29): the entry moment `m_1` is bounded
 
 `m_1(T) = (2/n)Σ_e 1/(deg_i deg_j)` (exact rational). Exhaustive per n:
