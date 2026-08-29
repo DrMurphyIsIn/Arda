@@ -220,19 +220,44 @@ def _robin_module() -> str:
     body = "\n\n".join(
         RobinCertificate.from_gamma_lower(n=n, gamma_lo=Fr2(1, 2)).lean_unconditional().rstrip()
         for n in ns)
-    # RH-TIGHT boundary case: n=25200 is superabundant (ratio ~1.71), unreachable by the
-    # comfortable gamma>1/2 bound -- needs tight gamma (eulerMascheroniSeq) + tight loglog.
-    body += "\n\n" + TightRobinCertificate.for_n25200().lean().rstrip()
+    # RH-TIGHT SUPERABUNDANT regime: every superabundant number in (5040, 2*10^6] (there are
+    # exactly 13), all beyond the comfortable gamma>1/2 bound -- tight eulerMascheroniSeq gamma
+    # + tight taylor_log loglog.  These are the numbers the SA reduction (D3) must cover.
+    SA = (10080, 15120, 25200, 27720, 55440, 110880, 166320,
+          277200, 332640, 554400, 665280, 720720, 1441440)
+    body += "\n\n" + "\n\n".join(
+        TightRobinCertificate.for_superabundant(n).lean().rstrip() for n in SA)
     return ("/- Robin's criterion for RH (Robin 1984), UNCONDITIONAL in-kernel instances:\n"
             "   sigma(n) < e^gamma * n * log log n for n in {5041,5042,8192,65537} (comfortable)\n"
-            "   and n=25200 (SUPERABUNDANT, RH-tight regime, ratio ~1.71).  RH <=> this holds\n"
-            "   for all n >= 5041; a single violator disproves RH -- so each is a finite check\n"
-            "   consistent with (never a proof of) RH.  Comfortable n: e^gamma from\n"
+            "   and for ALL 13 SUPERABUNDANT numbers in (5040, 2*10^6] (RH-tight regime).  RH <=>\n"
+            "   this holds for all n >= 5041; a single violator disproves RH -- so each is a finite\n"
+            "   check consistent with (never a proof of) RH.  Comfortable n: e^gamma from\n"
             "   Real.one_half_lt_eulerMascheroniConstant + Taylor exp, loglog from log-2 d9.\n"
-            "   n=25200: tight e^gamma from eulerMascheroniSeq 31, tight loglog from taylor_log.\n"
-            "   RH-EQUIVALENT, finite, arithmetic -- a different family from the Jensen ladder. -/\n"
+            "   Superabundant n: tight e^gamma from eulerMascheroniSeq, tight loglog from taylor_log.\n"
+            "   See ROBIN_REDUCTION_D3.md for the reduction scope (this does NOT prove all n <= X). -/\n"
             "import Mathlib\nopen scoped Real\n\nnamespace Robin\n\n" + body
             + "\n\nend Robin\n")
+
+
+def _robin_reduction_module() -> str:
+    """The G-monotonicity reduction lemma (D3): the elementary heart of 'the least Robin
+    counterexample is superabundant' (Akbary-Friggstad 2009).  Reduction lemma only --
+    proves nothing about RH."""
+    return (
+        "/- D3: G-monotonicity reduction lemma. If sigma(m)/m >= sigma(n)/n and log log m <=\n"
+        "   log log n (as when m <= n), then G(n)=sigma(n)/(n loglog n) <= G(m).  A Robin\n"
+        "   violation at n forces one at the abundancy-record m -- so the least Robin\n"
+        "   counterexample is superabundant.  Reduction lemma only; proves nothing about RH. -/\n"
+        "import Mathlib\nopen scoped Real\n\nnamespace RobinReduction\n\n"
+        "theorem robin_G_monotone\n"
+        "    {sm sn m n : ℝ} (hsm : 0 ≤ sm / m)\n"
+        "    (habund : sn / n ≤ sm / m)\n"
+        "    (hLm : 0 < Real.log (Real.log m))\n"
+        "    (hLmn : Real.log (Real.log m) ≤ Real.log (Real.log n)) :\n"
+        "    sn / (n * Real.log (Real.log n)) ≤ sm / (m * Real.log (Real.log m)) := by\n"
+        "  rw [← div_div, ← div_div]\n"
+        "  gcongr\n\n"
+        "end RobinReduction\n")
 
 
 def _gammahalf_module() -> str:
@@ -254,7 +279,8 @@ def modules() -> dict:
     out["ZetaEmitter"] = _zeta_emitter_module()  # reusable ZetaBoundCertificate: zeta(5),(6),(7) bounds
     out["QuarticJensen"] = _quartic_module()     # d=4 Jensen hyperbolicity (Delta4>0 & P<0 & D<0), n=0,1
     out["HankelJensen"] = _hankel_module()       # d=5 Jensen hyperbolicity (Hermite/Hankel minors), n=0
-    out["Robin"] = _robin_module()               # Robin's criterion (RH-EQUIVALENT, arithmetic), n in {5041,5042,8192,65537}
+    out["Robin"] = _robin_module()               # Robin's criterion (RH-EQUIVALENT): comfortable n + all 13 SA numbers in (5040, 2e6]
+    out["RobinReduction"] = _robin_reduction_module()  # D3: G-monotonicity reduction lemma (least counterexample is SA)
     return out
 
 
