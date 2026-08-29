@@ -85,3 +85,33 @@ single root-local factor. Verified exactly for all trees n=4–8, all roots:
 
 Reproduce: `girardeau.hard_core_boson_partition(n, edges)` on `_all_tree_edges(n)` (rooted_phi) and the
 `caterpillar(pendants)` builder above; the plain-vs-rooted cavity and the `g_r` factor are direct.
+
+## The g_r bridge FAILS to bound classical BG (2026-08-29, negative result)
+
+Using the exact identity `per(L)/∏deg = ρ_B^n · Φ¹¹^{1/11} / g_r*`, the rooted bound `Φ¹¹ ≤ 1` gives
+`per ≤ ρ_B^n/g_r*`. Tested on the classical maximizer `T(a,a,a)`: the overshoot `UB/per = 1/Φ¹¹^{1/11}`
+**grows** (1.05 at n=15 → 1.32 at n=123). Reason: at the classical maximizer **`Φ¹¹ → 0`** (0.59→0.049),
+because that tree is structurally far from the rooted optimum — so `Φ¹¹≤1` is nearly vacuous there and
+`g_r*` (which stays ≈1) can't help. The rooted invariant does not "see" the classical maximizer;
+`ρ_B > ρ*` makes the rooted bound overshoot by `~(ρ_B/ρ*)^n`. **The bridge cannot prove classical BG.**
+
+## Capacity attack on ρ*: exact free-energy + globality evidence (achievability done)
+
+**Closed-form free-energy** of the periodic a-arm caterpillar via the cavity fixed point (verified vs
+empirical to <1e-4):
+
+`ρ(a) = [ a_spine · (3/2)^a ]^{1/(1+2a)}`, `a_spine = 1/((a+2)μ)`,
+`μ = (-(d+a/3)+√((d+a/3)²+4))/2`, `d=a+2`.
+
+Maximized over the (continuous) motif at **a\* ≈ 7.02, ρ\* = 1.2276458** — the empirical peak, now an
+exact algebraic object. **Achievability / lower bound `ρ* ≥ 1.22765` is done in closed form.**
+
+**Globality evidence (strong):** no broader family exceeds ρ\* — cherry-arms (1.185), 2-level
+decorated (1.222–1.224), non-uniform alternating a=6/8 (1.22762, *below* uniform a=7). Uniform beats
+non-uniform ⟹ the free-energy is **concave in the motif**, and length-2 is the optimal arm length.
+
+**Remaining (the hard open direction):** the rigorous **upper bound** `per(L)/∏deg ≤ ρ*^n · poly(n)` for
+*all* trees — i.e. the matching-free-energy-per-site is globally maximized by the ~7-arm caterpillar.
+Route: Gurvits capacity of the degree-normalized permanent (variational, not pure-SOS ⟹ not blocked by
+Koiran) and/or a free-energy concavity/entropy argument (Csikvári). This is genuine research; the target
+(ρ\*, exact) and the extremal family (~7-arm periodic caterpillar) are now pinned. `conjecture1_proved = False`.
