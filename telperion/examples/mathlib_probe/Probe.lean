@@ -1,109 +1,34 @@
-/- ZetaBoundCertificate emitter test: zeta(3),zeta(5). -/
+/- Quartic Jensen d=4 tractability test: Delta4 > 0 at n=0 (16 monomials). -/
 import Mathlib
 open scoped Real
 
-namespace ZetaBoundTest
+namespace QuarticTest
 
-/-- zeta(3) as a real Dirichlet series (each complex term a nonneg real cast). -/
-theorem zeta_three_bound_eq_ofReal :
-    riemannZeta 3 = ((∑' n : ℕ, 1 / (n : ℝ) ^ 3 : ℝ) : ℂ) := by
-  rw [zeta_eq_tsum_one_div_nat_cpow (by norm_num), Complex.ofReal_tsum]
-  refine tsum_congr (fun n => ?_)
-  rw [show (3 : ℂ) = ((3 : ℕ) : ℂ) by norm_cast, Complex.cpow_natCast]
-  push_cast; ring
+set_option maxHeartbeats 1000000 in
+theorem quartic_jensen_n0 {g0 g1 g2 g3 g4 : ℝ} (a0 : (99424155637662821982554747937 : ℝ)/200000000000000000000000000000 ≤ g0) (b0 : g0 ≤ (248560389094157054956386869843 : ℝ)/500000000000000000000000000000) (a1 : (1435746519696589845953117281 : ℝ)/125000000000000000000000000000 ≤ g1) (b1 : g1 ≤ (11485972157572718767624938249 : ℝ)/1000000000000000000000000000000) (a2 : (123452018070318006890345791 : ℝ)/500000000000000000000000000000 ≤ g2) (b2 : g2 ≤ (246904036140636013780691583 : ℝ)/1000000000000000000000000000000) (a3 : (624266611039145304003569 : ℝ)/125000000000000000000000000000 ≤ g3) (b3 : g3 ≤ (4994132888313162432028553 : ℝ)/1000000000000000000000000000000) (a4 : (47906718616129646096703 : ℝ)/500000000000000000000000000000 ≤ g4) (b4 : g4 ≤ (95813437232259292193407 : ℝ)/1000000000000000000000000000000) :
+    0 < (256:ℝ)/1*g0*g0*g0*g4*g4*g4 - (3072:ℝ)/1*g0*g0*g1*g3*g4*g4 - (4608:ℝ)/1*g0*g0*g2*g2*g4*g4 + (13824:ℝ)/1*g0*g0*g2*g3*g3*g4 - (6912:ℝ)/1*g0*g0*g3*g3*g3*g3 + (13824:ℝ)/1*g0*g1*g1*g2*g4*g4 - (1536:ℝ)/1*g0*g1*g1*g3*g3*g4 - (46080:ℝ)/1*g0*g1*g2*g2*g3*g4 + (27648:ℝ)/1*g0*g1*g2*g3*g3*g3 + (20736:ℝ)/1*g0*g2*g2*g2*g2*g4 - (13824:ℝ)/1*g0*g2*g2*g2*g3*g3 - (6912:ℝ)/1*g1*g1*g1*g1*g4*g4 + (27648:ℝ)/1*g1*g1*g1*g2*g3*g4 - (16384:ℝ)/1*g1*g1*g1*g3*g3*g3 - (13824:ℝ)/1*g1*g1*g2*g2*g2*g4 + (9216:ℝ)/1*g1*g1*g2*g2*g3*g3 := by
+  have n0 : (0:ℝ) ≤ g0 := le_trans (by norm_num) a0
+  have n1 : (0:ℝ) ≤ g1 := le_trans (by norm_num) a1
+  have n2 : (0:ℝ) ≤ g2 := le_trans (by norm_num) a2
+  have n3 : (0:ℝ) ≤ g3 := le_trans (by norm_num) a3
+  have n4 : (0:ℝ) ≤ g4 := le_trans (by norm_num) a4
+  have M0 : (99424155637662821982554747937 : ℝ)/200000000000000000000000000000*(99424155637662821982554747937 : ℝ)/200000000000000000000000000000*(99424155637662821982554747937 : ℝ)/200000000000000000000000000000*(47906718616129646096703 : ℝ)/500000000000000000000000000000*(47906718616129646096703 : ℝ)/500000000000000000000000000000*(47906718616129646096703 : ℝ)/500000000000000000000000000000 ≤ g0*g0*g0*g4*g4*g4 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul a0 a0 (by norm_num) n0) a0 (by norm_num) (mul_nonneg n0 n0)) a4 (by norm_num) (mul_nonneg (mul_nonneg n0 n0) n0)) a4 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg n0 n0) n0) n4)) a4 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg n0 n0) n0) n4) n4))
+  have M1 : g0*g0*g1*g3*g4*g4 ≤ (248560389094157054956386869843 : ℝ)/500000000000000000000000000000*(248560389094157054956386869843 : ℝ)/500000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(95813437232259292193407 : ℝ)/1000000000000000000000000000000*(95813437232259292193407 : ℝ)/1000000000000000000000000000000 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul b0 b0 n0 (le_trans n0 b0)) b1 n1 (mul_nonneg (le_trans n0 b0) (le_trans n0 b0))) b3 n3 (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n0 b0)) (le_trans n1 b1))) b4 n4 (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n0 b0)) (le_trans n1 b1)) (le_trans n3 b3))) b4 n4 (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n0 b0)) (le_trans n1 b1)) (le_trans n3 b3)) (le_trans n4 b4)))
+  have M2 : g0*g0*g2*g2*g4*g4 ≤ (248560389094157054956386869843 : ℝ)/500000000000000000000000000000*(248560389094157054956386869843 : ℝ)/500000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(95813437232259292193407 : ℝ)/1000000000000000000000000000000*(95813437232259292193407 : ℝ)/1000000000000000000000000000000 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul b0 b0 n0 (le_trans n0 b0)) b2 n2 (mul_nonneg (le_trans n0 b0) (le_trans n0 b0))) b2 n2 (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n0 b0)) (le_trans n2 b2))) b4 n4 (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n0 b0)) (le_trans n2 b2)) (le_trans n2 b2))) b4 n4 (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n0 b0)) (le_trans n2 b2)) (le_trans n2 b2)) (le_trans n4 b4)))
+  have M3 : (99424155637662821982554747937 : ℝ)/200000000000000000000000000000*(99424155637662821982554747937 : ℝ)/200000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(624266611039145304003569 : ℝ)/125000000000000000000000000000*(624266611039145304003569 : ℝ)/125000000000000000000000000000*(47906718616129646096703 : ℝ)/500000000000000000000000000000 ≤ g0*g0*g2*g3*g3*g4 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul a0 a0 (by norm_num) n0) a2 (by norm_num) (mul_nonneg n0 n0)) a3 (by norm_num) (mul_nonneg (mul_nonneg n0 n0) n2)) a3 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg n0 n0) n2) n3)) a4 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg n0 n0) n2) n3) n3))
+  have M4 : g0*g0*g3*g3*g3*g3 ≤ (248560389094157054956386869843 : ℝ)/500000000000000000000000000000*(248560389094157054956386869843 : ℝ)/500000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul b0 b0 n0 (le_trans n0 b0)) b3 n3 (mul_nonneg (le_trans n0 b0) (le_trans n0 b0))) b3 n3 (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n0 b0)) (le_trans n3 b3))) b3 n3 (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n0 b0)) (le_trans n3 b3)) (le_trans n3 b3))) b3 n3 (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n0 b0)) (le_trans n3 b3)) (le_trans n3 b3)) (le_trans n3 b3)))
+  have M5 : (99424155637662821982554747937 : ℝ)/200000000000000000000000000000*(1435746519696589845953117281 : ℝ)/125000000000000000000000000000*(1435746519696589845953117281 : ℝ)/125000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(47906718616129646096703 : ℝ)/500000000000000000000000000000*(47906718616129646096703 : ℝ)/500000000000000000000000000000 ≤ g0*g1*g1*g2*g4*g4 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul a0 a1 (by norm_num) n0) a1 (by norm_num) (mul_nonneg n0 n1)) a2 (by norm_num) (mul_nonneg (mul_nonneg n0 n1) n1)) a4 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg n0 n1) n1) n2)) a4 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg n0 n1) n1) n2) n4))
+  have M6 : g0*g1*g1*g3*g3*g4 ≤ (248560389094157054956386869843 : ℝ)/500000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(95813437232259292193407 : ℝ)/1000000000000000000000000000000 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul b0 b1 n1 (le_trans n0 b0)) b1 n1 (mul_nonneg (le_trans n0 b0) (le_trans n1 b1))) b3 n3 (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n1 b1)) (le_trans n1 b1))) b3 n3 (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n1 b1)) (le_trans n1 b1)) (le_trans n3 b3))) b4 n4 (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n1 b1)) (le_trans n1 b1)) (le_trans n3 b3)) (le_trans n3 b3)))
+  have M7 : g0*g1*g2*g2*g3*g4 ≤ (248560389094157054956386869843 : ℝ)/500000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(95813437232259292193407 : ℝ)/1000000000000000000000000000000 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul b0 b1 n1 (le_trans n0 b0)) b2 n2 (mul_nonneg (le_trans n0 b0) (le_trans n1 b1))) b2 n2 (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n1 b1)) (le_trans n2 b2))) b3 n3 (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n1 b1)) (le_trans n2 b2)) (le_trans n2 b2))) b4 n4 (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n1 b1)) (le_trans n2 b2)) (le_trans n2 b2)) (le_trans n3 b3)))
+  have M8 : (99424155637662821982554747937 : ℝ)/200000000000000000000000000000*(1435746519696589845953117281 : ℝ)/125000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(624266611039145304003569 : ℝ)/125000000000000000000000000000*(624266611039145304003569 : ℝ)/125000000000000000000000000000*(624266611039145304003569 : ℝ)/125000000000000000000000000000 ≤ g0*g1*g2*g3*g3*g3 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul a0 a1 (by norm_num) n0) a2 (by norm_num) (mul_nonneg n0 n1)) a3 (by norm_num) (mul_nonneg (mul_nonneg n0 n1) n2)) a3 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg n0 n1) n2) n3)) a3 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg n0 n1) n2) n3) n3))
+  have M9 : (99424155637662821982554747937 : ℝ)/200000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(47906718616129646096703 : ℝ)/500000000000000000000000000000 ≤ g0*g2*g2*g2*g2*g4 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul a0 a2 (by norm_num) n0) a2 (by norm_num) (mul_nonneg n0 n2)) a2 (by norm_num) (mul_nonneg (mul_nonneg n0 n2) n2)) a2 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg n0 n2) n2) n2)) a4 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg n0 n2) n2) n2) n2))
+  have M10 : g0*g2*g2*g2*g3*g3 ≤ (248560389094157054956386869843 : ℝ)/500000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul b0 b2 n2 (le_trans n0 b0)) b2 n2 (mul_nonneg (le_trans n0 b0) (le_trans n2 b2))) b2 n2 (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n2 b2)) (le_trans n2 b2))) b3 n3 (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n2 b2)) (le_trans n2 b2)) (le_trans n2 b2))) b3 n3 (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n0 b0) (le_trans n2 b2)) (le_trans n2 b2)) (le_trans n2 b2)) (le_trans n3 b3)))
+  have M11 : g1*g1*g1*g1*g4*g4 ≤ (11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(95813437232259292193407 : ℝ)/1000000000000000000000000000000*(95813437232259292193407 : ℝ)/1000000000000000000000000000000 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul b1 b1 n1 (le_trans n1 b1)) b1 n1 (mul_nonneg (le_trans n1 b1) (le_trans n1 b1))) b1 n1 (mul_nonneg (mul_nonneg (le_trans n1 b1) (le_trans n1 b1)) (le_trans n1 b1))) b4 n4 (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n1 b1) (le_trans n1 b1)) (le_trans n1 b1)) (le_trans n1 b1))) b4 n4 (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n1 b1) (le_trans n1 b1)) (le_trans n1 b1)) (le_trans n1 b1)) (le_trans n4 b4)))
+  have M12 : (1435746519696589845953117281 : ℝ)/125000000000000000000000000000*(1435746519696589845953117281 : ℝ)/125000000000000000000000000000*(1435746519696589845953117281 : ℝ)/125000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(624266611039145304003569 : ℝ)/125000000000000000000000000000*(47906718616129646096703 : ℝ)/500000000000000000000000000000 ≤ g1*g1*g1*g2*g3*g4 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul a1 a1 (by norm_num) n1) a1 (by norm_num) (mul_nonneg n1 n1)) a2 (by norm_num) (mul_nonneg (mul_nonneg n1 n1) n1)) a3 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg n1 n1) n1) n2)) a4 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg n1 n1) n1) n2) n3))
+  have M13 : g1*g1*g1*g3*g3*g3 ≤ (11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000*(4994132888313162432028553 : ℝ)/1000000000000000000000000000000 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul b1 b1 n1 (le_trans n1 b1)) b1 n1 (mul_nonneg (le_trans n1 b1) (le_trans n1 b1))) b3 n3 (mul_nonneg (mul_nonneg (le_trans n1 b1) (le_trans n1 b1)) (le_trans n1 b1))) b3 n3 (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n1 b1) (le_trans n1 b1)) (le_trans n1 b1)) (le_trans n3 b3))) b3 n3 (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n1 b1) (le_trans n1 b1)) (le_trans n1 b1)) (le_trans n3 b3)) (le_trans n3 b3)))
+  have M14 : g1*g1*g2*g2*g2*g4 ≤ (11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(11485972157572718767624938249 : ℝ)/1000000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(246904036140636013780691583 : ℝ)/1000000000000000000000000000000*(95813437232259292193407 : ℝ)/1000000000000000000000000000000 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul b1 b1 n1 (le_trans n1 b1)) b2 n2 (mul_nonneg (le_trans n1 b1) (le_trans n1 b1))) b2 n2 (mul_nonneg (mul_nonneg (le_trans n1 b1) (le_trans n1 b1)) (le_trans n2 b2))) b2 n2 (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n1 b1) (le_trans n1 b1)) (le_trans n2 b2)) (le_trans n2 b2))) b4 n4 (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (le_trans n1 b1) (le_trans n1 b1)) (le_trans n2 b2)) (le_trans n2 b2)) (le_trans n2 b2)))
+  have M15 : (1435746519696589845953117281 : ℝ)/125000000000000000000000000000*(1435746519696589845953117281 : ℝ)/125000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(123452018070318006890345791 : ℝ)/500000000000000000000000000000*(624266611039145304003569 : ℝ)/125000000000000000000000000000*(624266611039145304003569 : ℝ)/125000000000000000000000000000 ≤ g1*g1*g2*g2*g3*g3 := (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul (mul_le_mul a1 a1 (by norm_num) n1) a2 (by norm_num) (mul_nonneg n1 n1)) a2 (by norm_num) (mul_nonneg (mul_nonneg n1 n1) n2)) a3 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg n1 n1) n2) n2)) a3 (by norm_num) (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg n1 n1) n2) n2) n3))
+  nlinarith [M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, M15]
 
-/-- Two-sided bound  9/8 <= zeta(3) <= 13/8  (square-telescoping tail). -/
-theorem zeta_three_bound :
-    (9 : ℝ) / 8 ≤ (riemannZeta 3).re
-      ∧ (riemannZeta 3).re ≤ (13 : ℝ) / 8 := by
-  rw [zeta_three_bound_eq_ofReal, Complex.ofReal_re]
-  have hf : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 3) :=
-    Real.summable_one_div_nat_pow.mpr (by norm_num)
-  have hsplit := hf.sum_add_tsum_nat_add 3
-  have hlead : (∑ i ∈ Finset.range 3, 1 / (i : ℝ) ^ 3) = (9 : ℝ) / 8 := by
-    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one]; norm_num
-  set g : ℕ → ℝ := fun i => 1 / ((i : ℝ) + 2) with hg
-  have hts : Summable (fun i : ℕ => 1 / (((i + 3 : ℕ)) : ℝ) ^ 3) :=
-    (summable_nat_add_iff 3).mpr hf
-  have hterm : ∀ i : ℕ, (1 / (((i + 3 : ℕ)) : ℝ) ^ 3) ≤ g i - g (i + 1) := by
-    intro i
-    have hfi : (1 / (((i + 3 : ℕ)) : ℝ) ^ 3) = 1 / ((i : ℝ) + 3) ^ 3 := by
-      push_cast; ring
-    have e : g i - g (i + 1) = 1 / (((i : ℝ) + 2) * ((i : ℝ) + 3)) := by
-      simp only [hg]; push_cast; field_simp; ring
-    rw [hfi, e]
-    have hb : (1 : ℝ) ≤ (i : ℝ) + 3 := by
-      have : (0 : ℝ) ≤ (i : ℝ) := Nat.cast_nonneg i
-      linarith
-    have step1 : 1 / ((i : ℝ) + 3) ^ 3 ≤ 1 / ((i : ℝ) + 3) ^ 2 :=
-      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right₀ hb (by norm_num))
-    have step2 : 1 / ((i : ℝ) + 3) ^ 2 ≤ 1 / (((i : ℝ) + 2) * ((i : ℝ) + 3)) :=
-      one_div_le_one_div_of_le (by positivity) (by nlinarith [(by positivity : (0 : ℝ) ≤ (i : ℝ) + 2)])
-    exact le_trans step1 step2
-  have htail : (∑' i : ℕ, 1 / (((i + 3 : ℕ)) : ℝ) ^ 3) ≤ 1 / 2 := by
-    apply hts.tsum_le_of_sum_range_le
-    intro N
-    calc ∑ i ∈ Finset.range N, 1 / (((i + 3 : ℕ)) : ℝ) ^ 3
-        ≤ ∑ i ∈ Finset.range N, (g i - g (i + 1)) := Finset.sum_le_sum (fun i _ => hterm i)
-      _ = g 0 - g N := Finset.sum_range_sub' g N
-      _ ≤ 1 / 2 := by
-          have hg0 : g 0 = 1 / 2 := by simp only [hg]; norm_num
-          have hgN : (0 : ℝ) ≤ g N := by simp only [hg]; positivity
-          rw [hg0]; linarith [hgN]
-  refine ⟨?_, ?_⟩
-  · calc (9 : ℝ) / 8 = ∑ i ∈ Finset.range 3, 1 / (i : ℝ) ^ 3 := hlead.symm
-      _ ≤ ∑' n : ℕ, 1 / (n : ℝ) ^ 3 := hf.sum_le_tsum (Finset.range 3) (fun i _ => by positivity)
-  · rw [← hsplit, hlead]; linarith [htail]
 
-/-- zeta(5) as a real Dirichlet series (each complex term a nonneg real cast). -/
-theorem zeta_five_bound_eq_ofReal :
-    riemannZeta 5 = ((∑' n : ℕ, 1 / (n : ℝ) ^ 5 : ℝ) : ℂ) := by
-  rw [zeta_eq_tsum_one_div_nat_cpow (by norm_num), Complex.ofReal_tsum]
-  refine tsum_congr (fun n => ?_)
-  rw [show (5 : ℂ) = ((5 : ℕ) : ℂ) by norm_cast, Complex.cpow_natCast]
-  push_cast; ring
-
-/-- Two-sided bound  8051/7776 <= zeta(5) <= 10643/7776  (square-telescoping tail). -/
-theorem zeta_five_bound :
-    (8051 : ℝ) / 7776 ≤ (riemannZeta 5).re
-      ∧ (riemannZeta 5).re ≤ (10643 : ℝ) / 7776 := by
-  rw [zeta_five_bound_eq_ofReal, Complex.ofReal_re]
-  have hf : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 5) :=
-    Real.summable_one_div_nat_pow.mpr (by norm_num)
-  have hsplit := hf.sum_add_tsum_nat_add 4
-  have hlead : (∑ i ∈ Finset.range 4, 1 / (i : ℝ) ^ 5) = (8051 : ℝ) / 7776 := by
-    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one]; norm_num
-  set g : ℕ → ℝ := fun i => 1 / ((i : ℝ) + 3) with hg
-  have hts : Summable (fun i : ℕ => 1 / (((i + 4 : ℕ)) : ℝ) ^ 5) :=
-    (summable_nat_add_iff 4).mpr hf
-  have hterm : ∀ i : ℕ, (1 / (((i + 4 : ℕ)) : ℝ) ^ 5) ≤ g i - g (i + 1) := by
-    intro i
-    have hfi : (1 / (((i + 4 : ℕ)) : ℝ) ^ 5) = 1 / ((i : ℝ) + 4) ^ 5 := by
-      push_cast; ring
-    have e : g i - g (i + 1) = 1 / (((i : ℝ) + 3) * ((i : ℝ) + 4)) := by
-      simp only [hg]; push_cast; field_simp; ring
-    rw [hfi, e]
-    have hb : (1 : ℝ) ≤ (i : ℝ) + 4 := by
-      have : (0 : ℝ) ≤ (i : ℝ) := Nat.cast_nonneg i
-      linarith
-    have step1 : 1 / ((i : ℝ) + 4) ^ 5 ≤ 1 / ((i : ℝ) + 4) ^ 2 :=
-      one_div_le_one_div_of_le (by positivity) (pow_le_pow_right₀ hb (by norm_num))
-    have step2 : 1 / ((i : ℝ) + 4) ^ 2 ≤ 1 / (((i : ℝ) + 3) * ((i : ℝ) + 4)) :=
-      one_div_le_one_div_of_le (by positivity) (by nlinarith [(by positivity : (0 : ℝ) ≤ (i : ℝ) + 3)])
-    exact le_trans step1 step2
-  have htail : (∑' i : ℕ, 1 / (((i + 4 : ℕ)) : ℝ) ^ 5) ≤ 1 / 3 := by
-    apply hts.tsum_le_of_sum_range_le
-    intro N
-    calc ∑ i ∈ Finset.range N, 1 / (((i + 4 : ℕ)) : ℝ) ^ 5
-        ≤ ∑ i ∈ Finset.range N, (g i - g (i + 1)) := Finset.sum_le_sum (fun i _ => hterm i)
-      _ = g 0 - g N := Finset.sum_range_sub' g N
-      _ ≤ 1 / 3 := by
-          have hg0 : g 0 = 1 / 3 := by simp only [hg]; norm_num
-          have hgN : (0 : ℝ) ≤ g N := by simp only [hg]; positivity
-          rw [hg0]; linarith [hgN]
-  refine ⟨?_, ?_⟩
-  · calc (8051 : ℝ) / 7776 = ∑ i ∈ Finset.range 4, 1 / (i : ℝ) ^ 5 := hlead.symm
-      _ ≤ ∑' n : ℕ, 1 / (n : ℝ) ^ 5 := hf.sum_le_tsum (Finset.range 4) (fun i _ => by positivity)
-  · rw [← hsplit, hlead]; linarith [htail]
-
-end ZetaBoundTest
+end QuarticTest
