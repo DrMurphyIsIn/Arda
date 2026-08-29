@@ -219,6 +219,11 @@ script = "examples/bg_collective_cancellation/generate.py"
 group = "quick"    # claim-1 collective-cancellation obstruction: 2 per-vertex factors >1, tie product=1
 
 [[check]]
+name = "bg_flag_discharge"
+script = "examples/bg_flag_discharge/generate.py"
+group = "quick"    # route-b m_2 cut: mass-transport flag-LP dual = antisymmetric discharge potential, per-type rational atoms
+
+[[check]]
 name = "rh_lean"
 script = "examples/rh_lean/build.py"
 group = "quick"    # assembles the RH lake library from frozen Lean; lake-built by telperion-rh-lean CI (kernel gate)
