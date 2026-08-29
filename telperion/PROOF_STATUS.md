@@ -11,6 +11,23 @@ Here `Φ¹¹(T) = (64/621)ⁿ · (∏_v a_v)¹¹` where `a_v = 1 + z_v S_v` is t
 amplitude (`z_v = 1/deg`, `m_v = z_v/a_v`), maximized over roots. The per-vertex density
 is `D(T) = Φ¹¹(T)^(1/n)`.
 
+> **⚠️ SCOPE CORRECTION (2026-08-29).** `Φ¹¹` (the rooted-branch cavity invariant above) is
+> **NOT** the classical Brualdi–Goldwasser quantity. BG (1984) asked for `max per(L)/∏deg`
+> over `n`-vertex trees — the "raw ρ" this repo's own `rooted_phi.py` docstring set aside.
+> The two are provably distinct (verified with the repo's own `girardeau` module vs
+> `bg_phi11`): at the tie `N(0,5)`, `per(L)/∏deg = 81/8 = 10.125` but the `Φ¹¹` amplitude is
+> `621/64 = 9.703`; at Pant's `T(3,4,3)` (n=23), `per(L)/∏deg = 116.131` (matching the
+> literature) but the `Φ¹¹` amplitude is `112.41`. In fact `per(L)/∏deg > ρ_B^n` at the
+> maximizer for **every** `n ≥ 4`, so "`per(L)/∏deg ≤ ρ_B^n`" (what `Φ¹¹ ≤ 1` would be in the
+> classical normalization) is **false for every n ≥ 4** — `Φ¹¹ ≤ 1` holds only because `Φ¹¹`
+> is the different, smaller rooted-branch invariant. Classical BG is a **separate open
+> problem**: Wu–Dong–Lai (2025) conjectured the max; **Pant (2026, arXiv:2605.14176) refuted
+> WDL** with caterpillar families `T(3,t,3)`, `T(t,t,t,t)`, `T(t,t,t+1,t)`; the true max is
+> unknown and parity-structured. **Everything below is a genuine, kernel-verified study of the
+> `Φ¹¹` invariant — a legitimate object inspired by BG, but not the BG conjecture itself.** The
+> `BG*`-named Lean gate modules certify facts about `Φ¹¹`; their results stand under this
+> corrected name.
+
 ---
 
 ## Proven (the near-star spine)
@@ -22,7 +39,7 @@ is `D(T) = Φ¹¹(T)^(1/n)`.
 | **Asymptote** | the near-star family limit `D∞ = (64/621)(3/2)^(11/2) < 1`, i.e. `3¹¹·64² < 2¹¹·621²` | exact / **Lean CI-green** | `fractal_eigenvalue`, `FractalTail.lean` |
 | **Spider competitor extremality** | over all spiders (n≤17), all arm-surgery moves are `Φ¹¹`-non-decreasing; legs-2 canonical form is the spider-max | exhaustive | `rectification` |
 | **Amplitude form** | `Φ¹¹ = (64/621)ⁿ (∏a_v)¹¹` for all trees, any root | verified n≤9 | `sporadic_tie`, `amplitude` |
-| **Girardeau duality** | `per(L)/∏deg = ∏_{λ>0}(1+λ²) = |det(I+iN)|` (hard-core boson = free fermion) | exhaustive n≤9 | `girardeau` |
+| **Girardeau duality** | `per(L)/∏deg = ∏_{λ>0}(1+λ²) = |det(I+iN)|` (hard-core boson = free fermion). **NB:** this is the classical BG `per(L)/∏deg`, which is **≠ the `Φ¹¹` amplitude** (`81/8 ≠ 621/64` at the tie) — see the SCOPE CORRECTION above. `girardeau` correctly computes classical BG; `Φ¹¹` is the separate rooted-branch invariant. | exhaustive n≤9 | `girardeau` |
 
 ## The one arithmetic foothold added this session
 

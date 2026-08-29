@@ -1,9 +1,21 @@
-"""Rooted branch Phi -- the ACTUAL Brualdi-Goldwasser quantity (not the raw matching sum).
+"""Rooted branch Phi -- a rooted-branch cavity invariant (inspired by, but NOT, Brualdi-Goldwasser).
 
-CORRECTION (2026-08-16): competitor extremality is about the rooted BRANCH value Phi, whose tree
-invariant is the MAX over roots -- NOT the raw monomer-dimer sum rho=per(L)/prod(deg) that
-matching_free_energy computes.  The two have opposite extremal structure: raw rho is maximized by
-balanced caterpillars, rooted Phi by the near-star.  BG is `max_root Phi^11 <= 1`.
+SCOPE CORRECTION (2026-08-29, supersedes the 2026-08-16 note below): the rooted-branch value Phi
+computed here is a SELF-CONTAINED invariant, NOT the classical Brualdi-Goldwasser quantity.  BG (1984)
+asked for `max per(L)/prod(deg)` over n-vertex trees -- the "raw rho" that girardeau.py computes
+correctly.  Phi^11 and per(L)/prod(deg) are provably DIFFERENT: at the tie N(0,5), per(L)/prod(deg)
+= 81/8 = 10.125 but the Phi amplitude is 621/64 = 9.703; and per(L)/prod(deg) > rho_B^n at the
+maximizer for EVERY n>=4, so `per(L)/prod(deg) <= rho_B^n` (what Phi^11 <= 1 would be in the classical
+normalization) is FALSE for every n>=4.  `Phi^11 <= 1` is a real, open, kernel-verified conjecture
+about THIS rooted-branch invariant -- keep studying it under this honest name, but do not call it BG.
+The classical BG max is a separate open problem (Wu-Dong-Lai 2025 conjecture refuted by Pant 2026,
+arXiv:2605.14176; true max unknown, parity-structured caterpillars).
+
+Historical note (2026-08-16, now corrected above): "competitor extremality is about the rooted BRANCH
+value Phi ... NOT the raw monomer-dimer sum rho=per(L)/prod(deg) ... raw rho is maximized by balanced
+caterpillars, rooted Phi by the near-star."  That observation (Phi != raw rho) was CORRECT; the
+inference that BG is `max_root Phi^11 <= 1` was NOT -- classical BG *is* the raw-rho / per(L)/prod(deg)
+problem.
 
 The rooted branch recursion (cr=0 plain-tree model): a vertex with children cavities m_c, S = sum m_c,
 degree-with-virtual-parent d = (#children)+1, z = 3/(3d),
