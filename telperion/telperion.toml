@@ -199,6 +199,11 @@ script = "examples/bg_log_enclosures/generate.py"
 group = "quick"    # TightLogCertificate regenerates BG's sweep log(3/2), log(4/3) enclosures (RH-toolchain reuse)
 
 [[check]]
+name = "bg_omega_enclosure"
+script = "examples/bg_omega_enclosure/generate.py"
+group = "quick"    # TaylorLogNear1Certificate + d9 regenerate BG's omega enclosure (RH-toolchain reuse)
+
+[[check]]
 name = "rh_lean"
 script = "examples/rh_lean/build.py"
 group = "quick"    # assembles the RH lake library from frozen Lean; lake-built by telperion-rh-lean CI (kernel gate)
