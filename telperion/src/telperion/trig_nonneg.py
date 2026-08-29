@@ -41,6 +41,17 @@ def power_poly(coeffs):
     return sp.expand(sum(sp.Rational(c) * sp.chebyshevt(k, _X) for k, c in enumerate(coeffs)))
 
 
+def _lean_linear(e) -> str:
+    """Render a linear sympy poly u*x + v as Lean `u * Real.cos θ + v` (x -> cos θ)."""
+    p = sp.Poly(e, _X)
+    u = sp.Rational(p.coeff_monomial(_X))
+    v = sp.Rational(p.coeff_monomial(1))
+    ut = "Real.cos θ" if u == 1 else f"{_ratlean(u)} * Real.cos θ"
+    if v == 0:
+        return ut
+    return f"{ut} + {_ratlean(v)}" if v > 0 else f"{ut} - {_ratlean(-v)}"
+
+
 def _lean_of_poly(e) -> str:
     """Render a sympy polynomial in x as a Lean ℝ expression with x -> Real.cos θ."""
     e = sp.expand(e)
@@ -88,13 +99,12 @@ class TrigNonnegCertificate:
             factors.append((_ratlean(C), f"(by norm_num : (0:ℝ) ≤ {_ratlean(C)})", sp.Rational(C)))
         factors += [(f"(1 + Real.cos θ)", "h1", 1 + _X)] * a
         factors += [(f"(1 - Real.cos θ)", "h1'", 1 - _X)] * b
-        for s in sos:
-            le = _lean_of_poly(s)
-            factors.append((f"({le})", f"(by positivity : (0:ℝ) ≤ {le})", s))
+        factors += sos                            # each: (lean_str, proof_str, check_expr)
         return factors, a, b
 
     def _sos(self, q):
-        """q(x) >= 0 on R -> (positive constant C, list of manifest-nonneg quadratics/squares)."""
+        """q(x) >= 0 on R -> (positive constant C, list of (lean_str, proof, check_expr)) where
+        each lean_str is a MANIFEST square `(lin)^2` or completed square `A*(lin)^2 + w`."""
         q = sp.expand(q)
         C = sp.Integer(1)
         sos = []
@@ -103,13 +113,19 @@ class TrigNonnegCertificate:
         for base, mult in facs:
             bpol = sp.Poly(base, _X)
             bd = bpol.degree()
-            lead = sp.Rational(bpol.LC())
             if bd == 1 and mult % 2 == 0:
-                sos += [sp.expand((base ** (mult // 2)) ** 2)]
+                lin = base ** (mult // 2)
+                ls = _lean_linear(sp.expand(lin))
+                sos.append((f"({ls}) ^ 2", f"(sq_nonneg ({ls}))", sp.expand(lin ** 2)))
             elif bd == 2 and sp.discriminant(bpol) < 0:
                 A, B, Cc = (sp.Rational(bpol.coeff_monomial(_X ** i)) for i in (2, 1, 0))
-                quad = sp.expand(A * (_X + B / (2 * A)) ** 2 + (Cc - B ** 2 / (4 * A)))
-                sos += [quad] * mult
+                lin = _X + B / (2 * A)
+                w = Cc - B ** 2 / (4 * A)
+                ls = _lean_linear(sp.expand(lin))
+                le = f"{_ratlean(A)} * ({ls}) ^ 2 + {_ratlean(w)}"
+                proof = f"(by positivity : (0:ℝ) ≤ {le})"
+                for _ in range(mult):
+                    sos.append((f"({le})", proof, sp.expand(A * lin ** 2 + w)))
             elif bd == 0:
                 C *= sp.Rational(base) ** mult
             else:
