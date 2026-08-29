@@ -369,3 +369,29 @@ for d=2..5; worst-corner cancellation margin 3.7e-5 → 5.0e-24 → 1.2e-67 → 
 still strictly positive at the 30-digit γ enclosures. The frontier with the current
 6-enclosure table (γ_0..γ_5) is d=5; d≥6 needs an extra γ_6 enclosure and, given the
 margin trend (~1e-250 at d=6), likely tighter enclosures.
+
+## 0.1.5 (2026-08-29) — a different RH angle: Robin's criterion (arithmetic, equivalent)
+
+The hyperbolicity ladder (`turan`…`hankel`) is analytic and RH-*necessary*; the
+**GORZ finite-residual angle was measured a NO-GO** (arxiv 1910.01227: d ≤ 8 already
+proven for all n by humans; d ≥ 9 residual `N(d)~e^{8d/9}` is worst-corner-infeasible
+— degree-`d(d−1)` minors, margin `~e^{−Θ(d²)}`, thousands of shifts). So this pivots
+to a *genuinely different* family.
+
+**`RobinCertificate` (`robin.py`)** — Robin's criterion (Robin 1984), an ELEMENTARY,
+ARITHMETIC, RH-**EQUIVALENT** condition: `RH ⟺ σ(n) < e^γ·n·log log n` for all
+n ≥ 5041 (a single violator disproves RH). Machine-verifies one instance: the left
+side `σ(n)` is an EXACT integer; the transcendental right side is lower-bounded by
+rationals, `σ(n) < E_lo·n·LL_lo ≤ e^γ·n·log log n`, given `E_lo ≤ e^γ` and
+`LL_lo ≤ log log n`. Same consume-a-bracket architecture as `TuranEnclosureCertificate`;
+the two bracket facts have in-kernel provenance (`e^γ` from
+`Real.one_half_lt_eulerMascheroniConstant` + an exp Taylor lower bound à la
+`ExpBracketCertificate`; `log log n` from `Real.log_two_gt_d9` range reduction).
+
+**Honest feasibility frontier** (measured): the clean Mathlib bound γ>1/2 gives
+`e^γ > 1.6487`, which certifies COMFORTABLE n but NOT the tight superabundant n
+(σ(n)/(n log log n) → e^γ ≈ 1.781 from below) — those need a tighter γ (from
+`eulerMascheroniSeq`) AND a tight `log log n` (range-reduced, not floor-to-power-of-2).
+The certificate correctly REFUSES n=5040 (the largest true Robin exception, where the
+inequality genuinely fails). Scope: finite per-n verification of an RH-equivalent
+condition — stronger than the necessary-only Jensen ladder, still never a proof of RH.
