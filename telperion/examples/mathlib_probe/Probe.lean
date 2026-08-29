@@ -43,19 +43,19 @@ theorem robin_tight_n25200 :
   have herr : |(1 / 10 : ℝ)| ^ (4 + 1) / (1 - |1 / 10|) = 1 / 90000 := by
     rw [show |(1 / 10 : ℝ)| = 1 / 10 by rw [abs_of_pos]; norm_num]; norm_num
   rw [hsum, herr, abs_le] at htay
-  have hlog10 : ((51807865487 : ℝ) / 22500000000) ≤ Real.log (10 : ℝ) := by
+  have hlog10 : ((2302571799 : ℝ) / 1000000000) ≤ Real.log (10 : ℝ) := by
     have e : Real.log (10 : ℝ) = 2 * Real.log 3 - Real.log (1 - 1 / 10 : ℝ) := by
       rw [show (10 : ℝ) = 3 ^ (2 : ℕ) * (1 - 1 / 10)⁻¹ by norm_num,
         Real.log_mul (by positivity) (by norm_num), Real.log_pow, Real.log_inv]
       push_cast; ring
     rw [e]; nlinarith [htay.2, hl3lo]
-  have hLL : ((51807865487 : ℝ) / 22500000000) ≤ Real.log (Real.log (25200 : ℝ)) := le_trans hlog10 hll1
+  have hLL : ((2302571799 : ℝ) / 1000000000) ≤ Real.log (Real.log (25200 : ℝ)) := le_trans hlog10 hll1
   -- ===== positivity + exact arithmetic assembly =====
   have hEpos : (0 : ℝ) < ((219053 : ℝ) / 125000) := by norm_num
-  have hLLpos : (0 : ℝ) < ((51807865487 : ℝ) / 22500000000) := by norm_num
+  have hLLpos : (0 : ℝ) < ((2302571799 : ℝ) / 1000000000) := by norm_num
   have hn : (0 : ℝ) < (25200 : ℝ) := by norm_num
   have hg : (0 : ℝ) < Real.exp Real.eulerMascheroniConstant := Real.exp_pos _
-  have harith : (99944 : ℝ) < ((219053 : ℝ) / 125000) * (25200 : ℝ) * ((51807865487 : ℝ) / 22500000000) := by norm_num
+  have harith : (99944 : ℝ) < ((219053 : ℝ) / 125000) * (25200 : ℝ) * ((2302571799 : ℝ) / 1000000000) := by norm_num
   nlinarith [hE, hLL, hEpos, hLLpos, hn, hg,
     mul_le_mul hE (le_refl (25200 : ℝ)) (le_of_lt hn) (le_of_lt hg),
     mul_le_mul_of_nonneg_left hLL (le_of_lt (mul_pos hg hn))]
