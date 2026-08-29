@@ -133,6 +133,7 @@ from .turan import TURAN_BRIDGE_LEMMA, TuranEnclosureCertificate  # noqa: F401
 from .jensen import CUBIC_JENSEN_BRIDGE_LEMMA, CubicJensenCertificate  # noqa: F401
 from .toeplitz import TOEPLITZ3_BRIDGE_LEMMA, ToeplitzMinorCertificate  # noqa: F401
 from .log_bound import LOG_BOUND_TEMPLATE, LogBoundCertificate  # noqa: F401
+from .tight_log import TightLogCertificate  # noqa: F401
 from .pi_bracket import PiBracketCertificate  # noqa: F401
 from .sqrt_bracket import SQRT_BRACKET_TEMPLATE, SqrtBracketCertificate  # noqa: F401
 from .gamma_half import GammaHalfBracketCertificate  # noqa: F401

@@ -31,6 +31,7 @@ FROZEN = {
     "Newton": "newton_xi/frozen/NewtonXi.lean",
     "ExpBracket": "exp_bracket/frozen/ExpBracket.lean",
     "BGRhoBSqrt": "bg_rhob_sqrt/frozen/BGRhoBSqrt.lean",  # sqrt_bracket regenerating BG's e2 sqrt 2 crux
+    "BGLogEnclosures": "bg_log_enclosures/frozen/BGLogEnclosures.lean",  # TightLog regenerating BG's sweep log(3/2),log(4/3)
 }
 
 
