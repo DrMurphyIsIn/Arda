@@ -204,6 +204,11 @@ script = "examples/bg_omega_enclosure/generate.py"
 group = "quick"    # TaylorLogNear1Certificate + d9 regenerate BG's omega enclosure (RH-toolchain reuse)
 
 [[check]]
+name = "bg_gate_strictness"
+script = "examples/bg_gate_strictness/generate.py"
+group = "quick"    # 23-gate-strictness deficit certs (tie-recursive M_k>0, v_23(M_k)=11(k-1)); PROOF_STATUS live lead
+
+[[check]]
 name = "rh_lean"
 script = "examples/rh_lean/build.py"
 group = "quick"    # assembles the RH lake library from frozen Lean; lake-built by telperion-rh-lean CI (kernel gate)

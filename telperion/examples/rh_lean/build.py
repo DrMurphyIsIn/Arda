@@ -33,6 +33,7 @@ FROZEN = {
     "BGRhoBSqrt": "bg_rhob_sqrt/frozen/BGRhoBSqrt.lean",  # sqrt_bracket regenerating BG's e2 sqrt 2 crux
     "BGLogEnclosures": "bg_log_enclosures/frozen/BGLogEnclosures.lean",  # TightLog regenerating BG's sweep log(3/2),log(4/3)
     "BGOmegaEnclosure": "bg_omega_enclosure/frozen/BGOmegaEnclosure.lean",  # Taylor-log+d9 regenerating BG's omega enclosure
+    "BGGateStrictness": "bg_gate_strictness/frozen/BGGateStrictness.lean",  # 23-gate-strictness deficit certs (exact bignum divisibility)
 }
 
 

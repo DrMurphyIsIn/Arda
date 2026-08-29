@@ -7,6 +7,7 @@ import RH.ExpBracket
 import RH.BGRhoBSqrt
 import RH.BGLogEnclosures
 import RH.BGOmegaEnclosure
+import RH.BGGateStrictness
 import RH.LogBound
 import RH.SqrtBracket
 import RH.PiBracket
