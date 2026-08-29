@@ -274,6 +274,32 @@ re-derivation, valid-lower-bound-at-caterpillar, atom shape, frozen==generated. 
 `examples/bg_flag_discharge/generate.py`. This is one finite level of the W9 convergent hierarchy, now
 kernel-gateable end-to-end. `conjecture1_proved = False`.
 
+## W11 (2026-08-29): the flag-SDP acceleration landscape — two natural lifts are dead, the correct object identified
+
+Pushing on tightening the 1-ball flag relaxation (which loosens with the degree cap, W9) maps the hierarchy
+cleanly — two obvious accelerations are provably wrong, which pins where the real work is.
+
+**Linear pair / 2-ball lift is VACUOUS.** Add a joint edge variable `E(a,b) ≥ 0` (density of edges between
+vertex-types a,b) with the marginals `Σ_{b: deg=k} E(a,b) = π(a)·cnt_a(k)` and symmetry `E(a,b)=E(b,a)`.
+This adds **nothing** beyond 1-hop mass transport (`min m₂` unchanged to `10⁻⁵` at DMAX=4,5): given mass
+transport the joint is always fillable (a feasible transportation problem), so the linear level-2 collapses
+to level-1. The residual gap is therefore **not** closable by any linear flag constraints.
+
+**Naive edge-matrix PSD lift is INVALID.** The genuine level is the SDP (reflection positivity), but the
+*raw* edge-type matrix `E` is the wrong object: constraining `E ⪰ 0` **overshoots** — at DMAX=4/5 it returns
+`min m₂ ≈ 0.400`, *above* a real tree (`best-real 0.368`), so it excludes real trees and is not a valid
+lower bound. Direct check: the a=2 caterpillar's `E` has eigenvalues `{−68.7, −4.6, −0.009, 4.3, 24.6, 94.5}`
+(min `−68.7`) — strongly indefinite, because `E` is a bipartite-like hub↔arm↔leaf adjacency (`±`-symmetric
+spectrum), never PSD for real trees.
+
+**The correct object.** Reflection positivity for graph limits (Lovász) is PSD on the moment matrix of
+**rooted partial-subtree homomorphism densities** `M[F,F'] = t(F∪F' at the root, T)` — NOT the raw 2-point
+adjacency. That matrix *is* PSD for every tree and is the valid flag-SDP tightening; building it (rooted-star
+features + a reliable SDP solver — SCS/Clarabel suffice numerically, exact needs care) is the genuine
+remaining construction. Until then the sound finite certificate is the degree-capped 1-ball emitter (W10),
+valid for max-degree ≤ dmax, one convergent-hierarchy level (W9). Reproductions: `bg_level2.py` (linear lift
+vacuous), `bg_psd_lift.py` (naive PSD overshoots), plus the `E`-indefiniteness check. `conjecture1_proved = False`.
+
 ## W2 first result (2026-08-29): the entry moment `m_1` is bounded
 
 `m_1(T) = (2/n)Σ_e 1/(deg_i deg_j)` (exact rational). Exhaustive per n:
