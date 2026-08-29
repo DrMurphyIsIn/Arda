@@ -29,13 +29,27 @@ beats `T(3,t,3)`:
 **4. Length-2 is the optimal pendant length** (single-hub per-vertex rate: L=1→1.023, **L=2→1.226**,
 L=3→1.207, L=4→1.209). The extremal local motif is a hub with length-2 arms.
 
-## Post-Pant conjecture (empirical, caterpillar-restricted)
+## Globality test (2026-08-29): `T(a,a,a)` is NOT the global max
 
-For large odd `n`, `max per(L)/∏deg` is attained by the **balanced 3-block caterpillar `T(a,a,a)`**,
-`a=(n-3)/6`, with per-vertex rate ≈ 1.229 (slowly decreasing; crosses the repo constant
-`ρ_B = 1.22947` near n≈30). Open: (i) whether `T(a,a,a)` is the *global* max (vs non-caterpillar trees
-or more blocks); (ii) the even-n / other-residue extremal families (Pant's `T(t,t,t,t)`, `T(t,t,t+1,t)`
-are candidates but likely also non-optimal); (iii) the exact asymptotic rate `ρ* = sup_T (per/∏deg)^{1/n}`.
+Tested `T(a,a,a)` against non-caterpillar and multi-block competitors at matched large n:
+- `T(a,a,a)` beats the near-star at matched n with **exponentially growing margin** (ratio 1.02→1.16
+  over n=27→303) — so it beats WDL and Pant, but…
+- **Rate increases with block count** (m=2→1.2254, m=3→1.2257, m=10→1.2272 at n≈300) and **with
+  arms-per-vertex up to an optimum** — so 3 equal blocks is *not* extremal.
+- The true large-n extremal is a **periodic caterpillar with ~8 length-2 arms per spine vertex**
+  (m→∞). `ρ(a)` = periodic rate peaks at **a≈8**: ρ(6)=1.22762, **ρ(8)=1.22763**, ρ(10)=1.22747.
+- Non-caterpillar competitors (star-of-k-hubs, cherry-arms) all score **lower**.
+- The per-vertex rate is **maximized at small n** (exhaustive: ~1.231 at n≤19) and **decreases
+  monotonically to ρ\* ≈ 1.22763** — the archimedean "approach, no clean finite maximizer" pattern.
+
+## The true target: ρ\* as a matching free-energy
+
+`per(L)/∏deg = ∏(1+λ²)` ⟹ `(per/∏deg)^{1/n} = exp((1/n)Σ log(1+λ²))`, so
+**`ρ* = exp( max_μ ∫ log(1+λ²) dμ )`** over unimodular (Benjamini–Schramm) tree spectral measures `μ`
+(Csikvári's matching-measure framework). Empirically `ρ* ≈ 1.22763`, achieved by the ~8-arm periodic
+caterpillar. **This — not `T(a,a,a)` — is the object the Gurvits-capacity / free-energy proof-attack
+must target.** Open: the exact `ρ*` (closed form?), the exact extremal motif, and the finite-n
+optimizer per residue class.
 
 ## Proof-attack plan (the synthesized strategy)
 
