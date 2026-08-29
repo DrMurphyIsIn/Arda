@@ -142,6 +142,46 @@ envelope) to see how far the plateau drops; (b) couple the discharging LP to the
 constraints (the moment-SDP proper) — the combination is the actual route-(b) certificate.
 `conjecture1_proved = False`.
 
+## W7 (2026-08-29): three probes — Hankel + the `m₂` cut closes it; the cut is measure-realizability, not elementary convexity
+
+Ran all three follow-ups. They converge: **the sole load-bearing lever is the tree cut `m₂ ≥ φ(m₁)`, and
+it is a measure-realizability fact — exactly the Hankel/flag-algebra structure, not local discharging.**
+
+**(a) Moment-SDP proper** (`max Σc_k m_k` over measures on `[0,1]`; Hankel moment + localizing matrices;
+cvxpy/SCS). Staged:
+- Hankel-PSD only → `½log2 = 0.34657` (gap **+0.141**): the single-atom `δ₁` (= the single edge, a genuine
+  measure) is admissible at *every* Lasserre order, so pure measure constraints never remove it.
+- `+ m₁ cut` → no change (`max_T m₁ = 1` is realized by `δ₁`).
+- `+ m₂ ≥ φ(m₁)` (convex caterpillar-boundary envelope, 9 supporting tangents) → **gap +0.0010** (K=4 & K=6),
+  with the argmax **pinned at `m₁≈0.523` = the caterpillar**. Residual `+0.001` = envelope + tangent
+  linearization order (matches prior W4 `+0.0008`). **So Hankel + the `m₂` cut closes; the cut is the
+  load-bearing constraint.**
+
+**(b) K=4 discharging.** Per-vertex `g_K(v)=Σc_k(N^{2k})_{vv}`. The tighter K=4 envelope makes the **1-hop
+antisymmetric potential TIGHT at the caterpillar**: `w=(w₁₂,w₂,ₕᵤᵦ)=(−0.0057,+0.0082)` sends *all three*
+vertex types (leaf/arm-mid/hub) to exactly `log ρ*` (max residual `3·10⁻⁵`; K=2 was not tight, residual
+`8·10⁻³`). **But the global plateau barely moves** — the P₄ binding-pair floor is `0.22913` (K=4) vs
+`0.23099` (K=2), still `+0.024` above `log ρ*`. Higher order makes the extremizer locally certifiable but
+does **not** remove the path-profile floor: the residual gap is measure-realizability, not locality/order.
+
+**(c) The `m₂ ≥ φ(m₁)` cut is NOT elementary convexity.** From the exact local formula
+`m₂ = 2·avg(x_v²) − avg(Q_v/d_v²)` (`x_v=S_v/d_v`, `Q_v=Σ1/d_a²`), Cauchy–Schwarz+Jensen give only
+`m₂ ≥ 2m₁² − m₁` — valid (0 violations / 2287 trees) but **useless at the band** (`0.021` vs true `0.308`).
+Reason: at the caterpillar the `x_v` have **negligible variance** (`avg(x²)−m₁² = 0.0015`), so
+`m₂ ≈ 2m₁² − avg(Q_v/d_v²)`, and the cut is really an **upper bound on `avg(Q_v/d_v²)` at fixed `m₁`** —
+which the elementary `avg(Q/d²) ≤ avg(x/d)` overshoots (`0.366` vs actual `0.233`). The sharp cut needs the
+**joint degree-neighbourhood distribution**, i.e. a local **flag-algebra / moment SDP on the degree
+distribution** (dual-certifiable with the same Telperion Hankel/SOS machinery, ingredient 2), not a
+standalone inequality.
+
+**Consolidated state of route (b).** The certificate architecture is **Hankel-PSD (measure realizability)
++ the `m₂ ≥ φ(m₁)` cut**; this closes to `+0.001` (envelope order). The single genuinely-open theorem is
+the cut itself — the caterpillar minimizes `m₂` (equiv. maximizes `avg(Q_v/d_v²)`) among trees at fixed
+`m₁` in the extremum band — and all three probes show its proof is a **degree-distribution moment/flag SDP
+with a dual (SOS) certificate**, NOT rearrangement (caterpillar interior, W5) and NOT elementary convexity
+(too weak, W7c). Reproductions: `bg_moment_sdp.py`, `bg_k4_discharge.py`, `bg_c_convexity.py`.
+`conjecture1_proved = False`.
+
 ## W2 first result (2026-08-29): the entry moment `m_1` is bounded
 
 `m_1(T) = (2/n)Σ_e 1/(deg_i deg_j)` (exact rational). Exhaustive per n:
