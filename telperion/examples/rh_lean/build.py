@@ -50,6 +50,7 @@ FROZEN = {
     "BGGateStrictness": "bg_gate_strictness/frozen/BGGateStrictness.lean",  # 23-gate-strictness deficit certs (exact bignum divisibility)
     "BGParityLaw": "bg_parity_law/frozen/BGParityLaw.lean",  # per-n extremality parity law: exact extremal Phi^11 <1 (=1 @n=11), n<=14
     "BGCollectiveCancellation": "bg_collective_cancellation/frozen/BGCollectiveCancellation.lean",  # claim-1 obstruction: 2 per-vertex factors >1, product=1
+    "BGFlagDischarge": "bg_flag_discharge/frozen/BGFlagDischarge.lean",  # route-b m_2 cut: mass-transport flag-LP dual = antisymmetric discharge potential, per-type rational atoms
 }
 
 

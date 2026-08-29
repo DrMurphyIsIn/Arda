@@ -254,6 +254,26 @@ caterpillar is a near-optimal *reference*, not the exact extremizer. Reproductio
 (degree-cap convergence), `bg_lp_vs_real.py` (LP ≤ real-tree, generalized-caterpillar search).
 `conjecture1_proved = False`.
 
+## W10 (2026-08-29): the flag-discharge cut, emitted as a kernel-gated Telperion certificate
+
+The W8 dual is now a first-class Telperion emitter — `telperion/src/telperion/flag_discharge.py`,
+`FlagDischargeCertificate`. `from_flag_lp(dmax, m1_target)` solves the mass-transport flag-LP, reads the
+unimodularity duals as the antisymmetric potential `w(d,e)=−w(e,d)`, rationalizes them (denominator 720),
+and sets `b0` to the **exact rational infimum** of the per-type residual, so the per-vertex inequality
+`2x²−q ≥ b0 + b1·d + b2·x + Σ_a w(d,d_a)` holds by construction. `check()` re-verifies it **exactly** over
+all 3431 degree-≤7 types (worst slack `0`, tight at the extremal caterpillar profile) plus antisymmetry.
+
+The certified cut (dmax=7): `m₂(T) ≥ −1937/3600 + (13/360)(2−2/n) + (1081/720)·m₁(T)` for every tree with
+max degree ≤ 7 — the `−2b₁/n` term is the W5 surface correction, the `Σw=0` telescoping + `Σd=2n−2`
+handshake the assembly. At the a=5 caterpillar this gives `m₂ ≥ 0.32026` vs actual `0.32164` (gap `+0.0014`
+= rationalization order). `lean_module()` emits a frozen module `examples/bg_flag_discharge/frozen/
+BGFlagDischarge.lean` of `norm_num`-checked rational atoms (leaf/arm/hub/tight profiles), wired into the
+`rh_lean` FROZEN library (`RH.BGFlagDischarge`, `build.py --check: OK`) so the kernel gate re-checks every
+atom. Tests: `tests/test_bg_flag_discharge.py` (6, green) — exact check, antisymmetry, independent per-type
+re-derivation, valid-lower-bound-at-caterpillar, atom shape, frozen==generated. Generator:
+`examples/bg_flag_discharge/generate.py`. This is one finite level of the W9 convergent hierarchy, now
+kernel-gateable end-to-end. `conjecture1_proved = False`.
+
 ## W2 first result (2026-08-29): the entry moment `m_1` is bounded
 
 `m_1(T) = (2/n)Σ_e 1/(deg_i deg_j)` (exact rational). Exhaustive per n:
