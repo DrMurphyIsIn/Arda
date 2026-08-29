@@ -136,3 +136,32 @@ but exactly-tight (zero margin at the extremum), which is the hard collective co
 naive approach (a) is closed off; the upper bound needs either a tight discharging argument or the
 Gurvits-capacity route (b). Both the rooted `Φ¹¹` and classical BG hit the identical wall — a unifying
 finding. `conjecture1_proved = False`.
+
+
+## Upper-bound attempt (b): capacity/moment calibration (2026-08-29)
+
+Route (b) uses Form-2 (`F(T)=½∫log(1+u)dμ_{N²}`, `u=λ²∈[0,1]`) and bounds `½log(1+u)` by a finite
+polynomial envelope `Σc_k u^k`, turning `F` into a linear combination of **walk moments**
+`m_k=(1/n)Tr N^{2k}` — local, polynomial quantities (the collective free-energy linearized). This is the
+principled route past the collective wall that killed (a): capacity/moment bounds are variational, not
+per-vertex, and not blocked by Koiran's SOS no-go.
+
+**Calibration results.**
+- **Jensen (2nd moment only):** `F ≤ ½log(1+m_1)`, `m_1=(2/n)Σ_e 1/(deg_i deg_j)`. Valid but loose —
+  overshoots `ρ*` by ~0.5% at the caterpillar (1.23299 vs 1.22765).
+- **Higher moments converge to exact:** for the caterpillar spectrum, the LP-optimal envelope reaches
+  the true free-energy fast — K=3 → slack +0.0004, **K=6 → exact**. So the moment route *can*
+  represent the tight bound; the achievability side is fine.
+- **DECISIVE (the target is `ρ*^n·poly(n)`, not `ρ*^n`):** a *fixed* envelope tight at the caterpillar
+  has `max_T Σc_k m_k(T) > log ρ*` for **every** small n (0.229 at n=4, still >0.205 through n=16).
+  This is not looseness — `F(T)` *itself* exceeds `log ρ*` at small n (the per-vertex rate is maximized
+  at small n, ~1.231 > ρ*, and decreases to ρ* asymptotically). **So `per/∏deg ≤ ρ*^n` is FALSE for
+  small trees; the correct bound is `per/∏deg ≤ ρ*^n · poly(n)` with an essential finite-size poly
+  factor.** Any capacity/moment certificate must therefore prove the *asymptotic* rate `≤ ρ*` while
+  tolerating the small-n excess — the poly(n) is non-negotiable, and a bound of the naive form `≤ρ*^n`
+  cannot exist.
+
+This calibrates the spec (`BG_CAPACITY_ATTACK_SPEC.md`): §5's tightness requirement is real, and §0's
+target must carry the `poly(n)`. Concrete next step for (b): characterize `max_T m_k(T)` per moment
+order (walk-count bounds over trees) — the moments are local, so this is a combinatorial (not
+transcendental) sub-problem, and is where the moment route earns its keep over (a). `conjecture1_proved = False`.
