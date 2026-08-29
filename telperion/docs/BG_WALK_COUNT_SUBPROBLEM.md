@@ -72,6 +72,51 @@ moment/SDP problem rather than an infinite-dimensional one.
 `m_k(T) = (1/n)Σ λ_i^{2k}`, `λ` = eigenvalues of `N=D^{-1/2}AD^{-1/2}`; envelope via `linprog`/SOS on
 `½log(1+u)−Σc_k u^k ≥ 0` on `[0,1]`; caterpillar builder + `girardeau.hard_core_boson_partition` and
 `rooted_phi._all_tree_edges(n)` (see `BG_TRUE_MAX_PROBE.md`, `BG_CAPACITY_ATTACK_SPEC.md`).
+Runnable: `PYTHONPATH=telperion/src python3 telperion/docs/bg_walk_counts_reproduce.py` (W5 findings below).
+
+## W5 (2026-08-29): the target is a bulk free-energy DENSITY, not a finite `max_T` — and the certificate is an edge-discharging potential
+
+Attacking the W4d′ proof surfaced a scoping error that reshapes the statement (exact-rational, reproducible).
+
+**(i) `max_T F(T)` is at the single edge, and `per/∏deg ≤ ρ*^n` is FALSE.** With `F(T)=(1/n)log(per(L)/∏deg)
+= ½∫log(1+u)dμ_N`, exhaustive enumeration gives `max_{|T|=n} F(T)` **strictly decreasing FROM ABOVE** to
+`log ρ* = 0.205098`: n=2 `½log2 = 0.34657` (single edge), n=3 `0.23105`, … n=13 `0.20927`, with even/odd
+oscillation. So **every finite tree has `F > log ρ*`**; the sup over all finite trees is the single edge
+(`(per/∏deg)^{1/n} = √2 > ρ*`), and `per/∏deg ≤ ρ*^n` is violated (ratio `1.327` at n=2). `ρ*` is a
+**thermodynamic-limit growth rate** (the free-energy-density sup over tree-realizable spectral measures
+`μ_N`), approached from above — NOT a finite maximum. The finite bound is `per/∏deg ≤ C·ρ*^n`, `C≥1.327`.
+
+**(ii) Consequence for W4d′.** "The caterpillar maximizes `G(T)=Σc_k m_k` over trees" holds only
+**asymptotically / among bulk-dominated families** — small trees exceed it exactly as they exceed `F`. The
+correct target is the **bulk (infinite periodic caterpillar) free-energy density**, with a *subextensive
+surface term* for finite trees. Confirmation: the naive discharging LP over *all* local profiles returns the
+weak bound `B = ½log2` (correct but not `log ρ*`), because it must cover the single-edge profile
+(a degree-1 vertex adjacent to a degree-1 vertex — which occurs *only* in `K₂`).
+
+**(iii) The finite-`n` maximizers are explicit — the cherry-parity oscillation.** `argmax_{|T|=n} F` is the
+length-2-arm caterpillar: a single degree-`k` hub with `k` cherry-legs for odd `n` (n=13 → deg-seq
+`(6,2,2,2,2,2,2,1,…)`, i.e. deg-6 hub + 6 length-2 arms; n=11 → deg-5 hub; n=9 → deg-4), and **two** hubs for
+even `n` (n=10 `(3,3,2,…)`, n=12 `(4,3,…)`, n=14 `(4,4,…)`). These converge to the periodic multi-hub
+caterpillar (matches the cherry-parity memory).
+
+**(iv) The certificate object — an antisymmetric edge-discharging potential.** Verified exact per-vertex
+LOCAL formulas (0 mismatches vs `Tr(N^{2k})/n`, all 47 trees n≤8):
+`m_1 = (1/n)Σ_v S_v/d_v`, `m_2 = (1/n)Σ_v[2 S_v²/d_v² − Q_v/d_v²]`, `S_v=Σ_{a~v}1/d_a`, `Q_v=Σ_{a~v}1/d_a²`.
+Both — and every `m_k` — are **averages of a local 1-neighbourhood degree functional**, so `G(T)=(1/n)Σ_v g(v)`
+with `g(v)=Σ_k c_k L_k(v)`. The upper-bound certificate is therefore an **antisymmetric potential
+`w(x,y)=−w(y,x)`** on degree-pairs with a per-vertex inequality that telescopes on any tree
+(`Σ_v Σ_{a~v} w(d_v,d_a)=0`):
+
+    prove   g(v) − Σ_{a~v} w(d_v, d_a) ≤ log ρ*   for BULK profiles,   tight at the three caterpillar
+    vertex types (spine deg `a+2`, arm-middle deg 2, leaf deg 1),   with boundary excess O(surface)=o(n).
+
+This is structurally the **folded cavity-potential / discharging certificate** that closed the Laplacian
+`Φ≤1` crux — the honest, well-posed route-(b) target. The `2c₂S_v²/d_v²` cross-term (pairwise in the
+neighbour degrees) is the residual "collective" piece the potential must absorb. `conjecture1_proved = False`.
+
+**Revised milestones.** W1–W3 unchanged. **W4** → prove the per-vertex *bulk* discharging bound (find `w`;
+the finite-degree feasibility LP is the entry probe). **W5** → the surface term `per/∏deg ≤ C·ρ*^n` and the
+`lim` statement (superseding the old "poly(n) correction", now understood as the from-above convergence).
 
 ## W2 first result (2026-08-29): the entry moment `m_1` is bounded
 
