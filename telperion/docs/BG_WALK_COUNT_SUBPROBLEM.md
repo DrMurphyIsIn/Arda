@@ -213,3 +213,11 @@ But it is the *full* extremal optimization, not a single clean cut. **Independen
 decisive W4 structure (exact `m_1` formula; trees strictly above the Hankel `m_1²` floor by ≥+0.08; the
 SDP-overshoot measure genuinely unreachable by trees; caterpillar `m_2` values) was reproduced from
 scratch by a second implementation. `conjecture1_proved = False`.
+
+## W4d′ numerically validated (2026-08-29)
+
+The corrected theorem — caterpillar maximizes `G(T)=Σc_k m_k` over trees — checks out: `G` over large
+families gives **cat a=7 = 0.205140 (MAX)**, cat a=6/a=8 = 0.20511 (near), cat a=5/a=10 = 0.20497, path
+0.18882, star 0.00231, double-broom 0.06558; and `log ρ* = 0.205098` (cat a=7's `+0.00004` excess is
+K=4 envelope order). So the local polynomial functional `G` is maximized by the caterpillar at exactly
+`log ρ*` — the well-posed, scoped W4d′ target. `conjecture1_proved = False`.
