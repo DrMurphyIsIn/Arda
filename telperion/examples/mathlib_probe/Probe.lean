@@ -1,11 +1,18 @@
-/- Zeta-foundation seed: the Mertens nonnegative trigonometric polynomial, the certificate
-   behind the classical zero-free region  zeta(s) != 0 for Re > 1 - c/log|t|. -/
+/- Emitter-design probe: multiple-angle machinery + nlinarith SOS reach for nonneg cosine
+   polynomials (the zero-free-region certificate family). -/
 import Mathlib
 open scoped Real
 
-/-- `3 + 4 cos θ + cos 2θ = 2(1 + cos θ)^2 >= 0` (Mertens). Applied to
-    Re[3 log zeta(σ) + 4 log zeta(σ+it) + log zeta(σ+2it)] this yields the classical
-    zero-free region. A nonneg-trig-polynomial certificate; proves nothing about RH. -/
-theorem mertens_three_four_one (θ : ℝ) : 0 ≤ 3 + 4 * Real.cos θ + Real.cos (2 * θ) := by
-  have h := Real.cos_two_mul θ
-  nlinarith [h, sq_nonneg (Real.cos θ + 1)]
+#check @Real.cos_two_mul
+#check @Real.cos_three_mul
+#check @Polynomial.Chebyshev.T_real_cos
+
+-- degree-3 nonneg cosine poly  |1 + e^{iθ}|^2 * (1+cosθ) style: test explicit-SOS nlinarith.
+-- P = (1+cosθ)(2+2cosθ)... use a real one: 2(1+cosθ)^2*(...). Try |1+e^{iθ}+e^{2iθ}|^2-derived.
+-- Fejer kernel deg2: (1 + 2/3 cosθ...)... just test the tactic reach on a known SOS:
+example (θ : ℝ) : 0 ≤ 6 + 8*Real.cos θ + 4*Real.cos (2*θ) + 2*Real.cos (3*θ) := by
+  have h2 := Real.cos_two_mul θ
+  have h3 := Real.cos_three_mul θ
+  nlinarith [h2, h3, sq_nonneg (Real.cos θ + 1), sq_nonneg (2*(Real.cos θ)^2 + Real.cos θ - 1),
+    Real.neg_one_le_cos θ, Real.cos_le_one θ, sq_nonneg (Real.cos θ - 1),
+    mul_nonneg (sub_nonneg.mpr (Real.cos_le_one θ)) (sub_nonneg.mpr (Real.neg_one_le_cos θ))]
