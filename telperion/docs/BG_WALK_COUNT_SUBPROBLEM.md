@@ -300,6 +300,40 @@ remaining construction. Until then the sound finite certificate is the degree-ca
 valid for max-degree ≤ dmax, one convergent-hierarchy level (W9). Reproductions: `bg_level2.py` (linear lift
 vacuous), `bg_psd_lift.py` (naive PSD overshoots), plus the `E`-indefiniteness check. `conjecture1_proved = False`.
 
+## W12 (2026-08-29): the finite flag-SDP provably cannot close it — the gap is measure-extremality (why route b is a hierarchy)
+
+Building the reflection-positive moment matrix carefully reveals a **dichotomy** that closes the question of
+whether any finite flag-SDP level exactly closes the cut. It does not, and for a structural reason.
+
+**The k=1 (single-root) moment matrix is VACUOUS.** Reflection positivity (Lovász) makes
+`M[j,k] = E_v[cnt_v(j)·cnt_v(k)]` PSD — but it is a *covariance of 1-ball features* `φ_j(v)=cnt_v(j)`, hence
+auto-PSD for **any** type distribution `π`. Adding `M ⪰ 0` to the flag-LP changes `min m₂` by `0` (DMAX=5).
+So the only *valid* PSD moment matrix over neighbourhood-types adds nothing.
+
+**The dichotomy.** Across every finite construction:
+- **single-vertex features** (k=1 moment matrix, linear moments) → the constraint is a covariance /
+  transportation feasibility, **auto-satisfied → vacuous** (W11 linear lift, W12 k=1);
+- **edge / two-vertex features** (raw `E`, cavity-pair matrices) → the matrix is a bipartite-like
+  adjacency, **indefinite for real trees → invalid** (W11).
+
+No finite matrix over local types is simultaneously valid (PSD on all trees) and biting. The reason is
+structural: mass transport + local moments enforce exactly **belief-propagation / cavity consistency**, and
+for the degree measure the BP fixed-point set is strictly larger than the set of genuine tree limits. The
+flag gap **is** the gap between *locally consistent* (BP-fixed-point) measures and *extremal tree-limit*
+measures — a **measure-extremality / Gibbs-uniqueness** phenomenon, invisible to any finite convex
+(LP/SDP) relaxation. This is exactly why route (b) is a *convergent hierarchy* (W9) with no finite exact
+level, and why `log ρ*` is a *thermodynamic limit* (W5): the same fact seen three ways.
+
+**The constructive exact path (reconnecting to route a).** Trees are **loopless**, so the cavity/BP method
+is **exact** for each tree's matching free-energy density `F(T) = ½∫log(1+u)dμ_N` — no RSB, no relaxation
+gap. The exact optimum is therefore a **variational problem over BP fixed points**: maximize the exact
+cavity free-energy functional over degree-consistent local measures, attained by the caterpillar's fixed
+point at `log ρ*`. That is precisely the folded **cavity-potential** object that closed the Laplacian
+`Φ≤1` crux — the honest exact route is the cavity/interpolation argument, not a finite moment-SDP. Route (b)
+delivered what a moment hierarchy can: a convergent bound and a kernel-gated finite certificate (W10);
+its exact closure is the cavity variational proof. Reproduction: `bg_k1_moment.py` (k=1 vacuity).
+`conjecture1_proved = False`.
+
 ## W2 first result (2026-08-29): the entry moment `m_1` is bounded
 
 `m_1(T) = (2/n)Σ_e 1/(deg_i deg_j)` (exact rational). Exhaustive per n:
