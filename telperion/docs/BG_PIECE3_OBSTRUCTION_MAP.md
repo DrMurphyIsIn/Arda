@@ -107,13 +107,33 @@ the second-order term is a message-susceptibility bounded by the SSM contraction
   **SADDLE, not a max**: `Φ''` spans `[−2.7e-5, +2.7e-5]` and some perturbations *raise* `Φ`. So the naive
   message-space concavity that a straightforward interpolation would need **does not hold** — as expected
   (the Bethe free energy is famously non-convex in raw message coordinates).
-- **G3 — redirected (the crux).** Two viable sub-routes, both bypassing the G2 saddle:
-  (a) **correct coordinates** — recoordinatize to the belief/marginal variables where the monomer-dimer free
-  energy is convex (Heilmann-Lieb real-rootedness / Lee-Yang gives the structural handle), then the caterpillar
-  is a genuine max; (b) **Guerra–Toninelli interaction-interpolation** — interpolate the *couplings/edges*
-  between a connected tree and the caterpillar and sign the derivative by correlation positivity (does NOT use
-  Bethe concavity, so the saddle is irrelevant). The interpolation stays within **connected** trees, so the
-  forest/acyclicity barrier (§3) never enters.
+- **G3 — the crux. Two advances (this session):**
+
+  **(i) The monomer-dimer reformulation (verified ~1e-16).** Working out the weighted matching polynomial at
+  `i` (`μ_N(i) = i^n Σ_k p_k`, since `i^{-2k}=(-1)^k` cancels the `(-1)^k`) gives the exact identity
+  ```
+  per(L)/∏deg = Σ_{matchings M} ∏_{e=(u,v)∈M} 1/(d_u d_v) = Σ_M ∏_{v matched by M} 1/d_v,
+  F(T) = (1/n) log of it.
+  ```
+  So `F` is *exactly* a **monomer-dimer log-partition-function** with degree-tied edge weight `1/(d_u d_v)`
+  (per-vertex form: each matched vertex contributes `1/d_v`). This is the Heilmann-Lieb (real roots, no phase
+  transition) / Guerra-Toninelli setting — cleaner than the moment or raw-cavity forms. Script:
+  `guerra/G3_monomer_dimer.py`.
+
+  **(ii) The concavity route is DEAD (coordinate-invariant saddle).** The G2 saddle is not a coordinate
+  artifact: the Hessian signature at a critical point transforms as `H → Jᵀ H J` under any smooth
+  reparametrization (Sylvester — inertia preserved), so belief/occupation variables (`t_{u→v}=d_u/μ_{u→v}`) are
+  a saddle too. The Bethe free energy is genuinely non-variational here. Route (a) must therefore use
+  **linearity, not concavity**: `F = ½∫log(1+u)dμ_N` is *linear* in the spectral measure ⟹ its max over the
+  convex hull of achievable measures is at an **extreme point** ⟹ **forests are excluded** (non-extreme convex
+  combinations of components); the remaining extreme points are ergodic trees. A dual/supporting-hyperplane
+  `ψ(u) ≥ ½log(1+u)` tight on `supp μ_caterpillar` with `∫ψ dμ_T ≤ ∫ψ dμ_C` certifies it — and a *non-polynomial*
+  `ψ` (resolvent-matched to the caterpillar spectrum) escapes the degree-`K` moment cap (§3.1).
+
+  **Remaining routes (both saddle-independent):** (a) linearity + a non-polynomial dual `ψ` (sum-rule
+  certificate on the monomer-dimer spectral measure); (b) **Guerra-Toninelli** edge/activity interpolation
+  signed by monomer-dimer correlation inequalities. Both stay within **connected** trees, so the acyclicity
+  barrier (§3) never enters.
 - **G4** — the finite-`n` surface-term version (§4) to land `F(T) ≤ logρ* + O(1/n)`, tight at the caterpillar.
 - **G5** — reduce the analytic inequality to kernel-gateable rational/enclosure atoms (turan/jensen model).
 
