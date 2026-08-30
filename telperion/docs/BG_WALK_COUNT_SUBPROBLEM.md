@@ -549,3 +549,31 @@ on the imaginary axis, and Heilmann-Lieb is precisely a **Lee-Yang / "zeros-on-a
 power-sum Hankel-PSD used in W7/W12.  Worth adding to the moment relaxation (does not exclude the single
 edge -- a real tree -- but may tighten the non-tree relaxation).  Reproduction: `bg_rh_toolkit_lead.py`.
 `conjecture1_proved = False`.
+
+## W15 (2026-08-29): Lead 1 -- the cavity is a STRONG contraction (geometric convergence); Stieltjes-realizable messages tighten the bound ~44%
+
+Pursued Lead 1 (Heilmann-Lieb Stieltjes cavity as the W13 "global contraction" + the message-realizability
+the local potential lacked).  Two concrete results.
+
+**(A) The cavity map is a strong contraction; the free energy converges geometrically.** A leaf-message
+perturbation decays with per-hop ratio **~0.008-0.045** up the caterpillar; the Bethe free energy reaches its
+fixed point in **~2-3 sweeps** (error 4e-6 -> 2e-10 -> machine zero).  So `F(T)` is determined by the
+depth-2/3 local structure (deeper terms `< 10^-4`) -- the Heilmann-Lieb "no phase transition => contraction"
+made quantitative.  This is a **geometrically-convergent** hierarchy, unlike the slow moment/flag hierarchy
+(W9).  Reproduction: `bg_cavity_contraction.py`.
+
+**(B) Stieltjes-realizable messages tighten the cavity bound ~44%.** W13's cavity potential over FREE messages
+(handshake + bulk-config restricted) gives, at DMAX=5, a density bound `0.2286` (gap `+0.0235`).  Restricting
+the incoming messages to their **realizable Stieltjes set** (each message is a continued-fraction value
+`x = Σ 1/(d·d_c·(1+x_c))` from realizable child messages, converged via the contraction) tightens it to
+`0.2182` (gap `+0.0131`) -- a **44% gap reduction**.  So the realizability constraint the local potential
+lacked (W13) genuinely helps, exactly as the RH/Stieltjes lead predicted.  Reproduction:
+`bg_stieltjes_potential.py`.
+
+**Honest status.** Lead 1 tightens but does not *alone* close (still `+0.013` at DMAX=5, coarse): the
+per-config relaxation still lacks the **joint mass-transport consistency** (W8) between a message and its
+reverse.  Per W12 no finite local relaxation closes exactly -- but the strong contraction (A) means the
+**convergence is geometric/fast**, so the natural certificate is a finite cavity level (realizable messages +
+mass transport + fine resolution) with a *certified geometric error bound* `F ≤ log ρ* + C·ρ^d`, `ρ ~ 0.03`.
+The synthesis = Lead 1 (Stieltjes messages, exact cavity, geometric error) + W8 (mass transport) + Lead 2
+(kernel-gate the finite level via the RH `WorstCorner`/real-stability machinery).  `conjecture1_proved = False`.
