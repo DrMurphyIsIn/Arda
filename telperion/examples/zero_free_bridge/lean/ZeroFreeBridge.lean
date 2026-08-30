@@ -400,4 +400,60 @@ theorem cosine_comb_zeta_nonneg (N : ℕ) (a : ℕ → ℝ)
         (Real.rpow_pos_of_pos (by exact_mod_cast hpos) _).le)
       (hP (t * Real.log m))
 
+/- ===================================================================================
+   THE HINGE.  The general positivity feeds the classical boundary conclusion: ANY admissible
+   certificate forces `ζ(1+it) ≠ 0`.  "Admissible" = coefficients `a_k ≥ 0` (residue upper bounds),
+   pointwise-nonnegative cosine polynomial (positivity), and the single inequality `a 0 < a 1`.
+   That last condition is EXACTLY the hinge: the pole residue `+a 0` at `s=1` loses to a zero
+   residue `-a 1·m` (m ≥ 1) at `1+it` precisely when `a 1 > a 0`.  The Fejer bound `a_1 < 2 a_0`
+   caps how far this can be pushed.  Still the c=0 boundary (`ζ(1+it) ≠ 0` is already in Mathlib),
+   NOT a proof of RH.  conjecture1_proved = False.
+   =================================================================================== -/
+open Finset in
+theorem admissible_boundary_contradiction (N : ℕ) (hN : 2 ≤ N) (a : ℕ → ℝ)
+    (hcoef : ∀ k, 0 ≤ a k) (hadm : a 0 < a 1)
+    (hP : ∀ φ : ℝ, 0 ≤ ∑ k ∈ range N, a k * Real.cos ((k : ℝ) * φ))
+    (t : ℝ) (r : ℕ → ℝ)
+    (hr : ∀ k ∈ range N, Tendsto (fun σ : ℝ => (σ - 1) *
+        (-deriv riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)
+          / riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)).re)
+        (𝓝[>] (1 : ℝ)) (𝓝 (r k)))
+    (hr0 : r 0 = 1) (hr1 : r 1 ≤ -1) (hrneg : ∀ k ∈ range N, 1 ≤ k → r k ≤ 0) :
+    False := by
+  have hGnn : ∀ᶠ σ : ℝ in 𝓝[>] (1 : ℝ),
+      0 ≤ ∑ k ∈ range N, a k * ((σ - 1) *
+        (-deriv riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)
+          / riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)).re) := by
+    filter_upwards [self_mem_nhdsWithin] with σ hσ
+    have h1 : (1 : ℝ) < σ := hσ
+    have hpos := cosine_comb_zeta_nonneg N a hP σ t h1
+    have heq : ∑ k ∈ range N, a k * ((σ - 1) *
+        (-deriv riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)
+          / riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)).re)
+        = (σ - 1) * ∑ k ∈ range N, a k *
+          (-deriv riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)
+            / riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)).re := by
+      rw [Finset.mul_sum]; exact Finset.sum_congr rfl (fun k _ => by ring)
+    rw [heq]; exact mul_nonneg (by linarith) hpos
+  have hlim : Tendsto (fun σ : ℝ => ∑ k ∈ range N, a k * ((σ - 1) *
+        (-deriv riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)
+          / riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)).re))
+      (𝓝[>] (1 : ℝ)) (𝓝 (∑ k ∈ range N, a k * r k)) :=
+    tendsto_finset_sum _ (fun k hk => (hr k hk).const_mul (a k))
+  have hge : (0 : ℝ) ≤ ∑ k ∈ range N, a k * r k := ge_of_tendsto hlim hGnn
+  have h01 : ({0, 1} : Finset ℕ) ⊆ range N := by
+    simp only [Finset.insert_subset_iff, Finset.singleton_subset_iff, Finset.mem_range]; omega
+  have htail : ∑ k ∈ range N \ {0, 1}, a k * r k ≤ 0 := by
+    apply Finset.sum_nonpos
+    intro k hk
+    rw [Finset.mem_sdiff, Finset.mem_range, Finset.mem_insert, Finset.mem_singleton] at hk
+    exact mul_nonpos_iff.mpr (Or.inl ⟨hcoef k,
+      hrneg k (Finset.mem_range.mpr hk.1) (by omega)⟩)
+  have hsplit : ∑ k ∈ range N, a k * r k
+      = ∑ k ∈ range N \ {0, 1}, a k * r k + (a 0 * r 0 + a 1 * r 1) := by
+    rw [← Finset.sum_sdiff h01, Finset.sum_pair (by norm_num : (0 : ℕ) ≠ 1)]
+  rw [hsplit, hr0, mul_one] at hge
+  have ha1pos : 0 < a 1 := lt_of_le_of_lt (hcoef 0) hadm
+  nlinarith [htail, hge, hadm, mul_le_mul_of_nonneg_left hr1 ha1pos.le]
+
 end ZeroFreeBridge

@@ -1,7 +1,7 @@
 # zero_free_bridge — the Mertens certificate meets ζ (kernel-gated)
 
 Hand-written, Mathlib-only frozen Lean (`lean/ZeroFreeBridge.lean`, kernel-checked by
-`telperion-lean-e2e` via `lake build`). 19 theorems, generator UNTRUSTED, the Lean kernel the sole
+`telperion-lean-e2e` via `lake build`). 20 theorems, generator UNTRUSTED, the Lean kernel the sole
 arbiter. `conjecture1_proved = False` — this is **not** a proof of RH.
 
 ## What it proves
