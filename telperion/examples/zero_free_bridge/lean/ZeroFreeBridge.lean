@@ -488,4 +488,27 @@ theorem norm_riemannZeta_le_re (s : ℂ) (hs : 1 < s.re) :
   refine (norm_tsum_le_tsum_norm hsum).trans (le_of_eq ?_)
   exact tsum_congr (fun n => norm_one_div_natAddOne_cpow n s)
 
+/- The STRIP growth bound, reduced to its two analytic inputs.  Research (agentic campaign,
+   docs/RH_ZERO_FREE_REASSESSMENT §8) confirmed Mathlib v4.32.0 has NO strip |zeta| bound and NO
+   complex fractional-part integral representation, so the crude strip growth bound
+       |zeta(sigma+it)| <= ||s||/||s-1|| + ||s||/sigma   (<< |t|, for 0 < sigma < 1)
+   must be assembled from two analytic facts still to be formalized (the identified remaining work):
+     (R) the representation  zeta(s) = s/(s-1) - s * I  with  I = integral_1^inf {x} x^{-s-1} dx
+         (Re s > 0; via Abel summation + the identity theorem -- a genuine Mathlib gap-filler), and
+     (B) the integral bound  ||I|| <= 1/Re s  (from |{x}| <= 1 and integral_1^inf x^{-sigma-1} = 1/sigma).
+   This theorem does the (high-confidence) ASSEMBLY, taking (R),(B) as hypotheses -- exactly the style
+   of `zeta_boundary_contradiction`, which likewise takes its analytic limits as hypotheses.  Crude
+   growth only (~|t|), NOT the sharp |t|^{1-sigma} nor the log|t| that feeds the region; and the VK rate
+   needs VMVT (absent from Mathlib).  conjecture1_proved = False. -/
+theorem zeta_strip_bound_of {s I : ℂ}
+    (hrepr : riemannZeta s = s / (s - 1) - s * I) (hI : ‖I‖ ≤ 1 / s.re) :
+    ‖riemannZeta s‖ ≤ ‖s‖ / ‖s - 1‖ + ‖s‖ / s.re := by
+  rw [hrepr]
+  calc ‖s / (s - 1) - s * I‖
+      ≤ ‖s / (s - 1)‖ + ‖s * I‖ := norm_sub_le _ _
+    _ = ‖s‖ / ‖s - 1‖ + ‖s‖ * ‖I‖ := by rw [norm_div, norm_mul]
+    _ ≤ ‖s‖ / ‖s - 1‖ + ‖s‖ * (1 / s.re) := by
+        have := mul_le_mul_of_nonneg_left hI (norm_nonneg s); linarith
+    _ = ‖s‖ / ‖s - 1‖ + ‖s‖ / s.re := by rw [mul_one_div]
+
 end ZeroFreeBridge
