@@ -577,3 +577,26 @@ reverse.  Per W12 no finite local relaxation closes exactly -- but the strong co
 mass transport + fine resolution) with a *certified geometric error bound* `F ≤ log ρ* + C·ρ^d`, `ρ ~ 0.03`.
 The synthesis = Lead 1 (Stieltjes messages, exact cavity, geometric error) + W8 (mass transport) + Lead 2
 (kernel-gate the finite level via the RH `WorstCorner`/real-stability machinery).  `conjecture1_proved = False`.
+
+## W16 (2026-08-29): Lead 2 -- the RH Hankel/WorstCorner PSD machinery transfers to BG (kernel-gating foundation)
+
+Demonstrated the Lead-2 transfer: the RH `hankel_minors` + `WorstCornerCertificate` machinery (Hermite's
+criterion -- a symmetric matrix is PSD iff its leading principal minors, polynomials in the entries, are
+positive over rational brackets) certifies BG moment-body facts **in exact rationals**.  The caterpillar's
+exact spectral moments `(m_1,…,m_4)` give a Hankel moment matrix `[[1,m_1,m_2],[m_1,m_2,m_3],[m_2,m_3,m_4]]`
+with leading minors `D_1=1`, `D_2=610291/8820000>0`, `D_3=116095997089/185220000000000>0` -- exactly the
+rational minor-positivity the RH `WorstCornerCertificate` gates.  So the RH real-stability/PSD toolkit
+certifies BG moment-realizability in-kernel, and the buildable kernel-gated route-(b) certificate is:
+**W10 `FlagDischargeCertificate` (the `m_2` cut atoms) + RH Hankel-minor cert (moment-body PSD) + W15's
+certified geometric error `F ≤ log ρ* + C·ρ^d`** (the fast cavity convergence), assembled at one finite
+level.  Note: the primal moment-PSD is trivially true for a real tree; the kernel-gating *value* is the
+moment-SDP **dual** bound, which combines these PSD/linear certificates -- the concrete formalization the
+RH toolkit now makes reachable.  `conjecture1_proved = False`.
+
+### Leads status (2026-08-29)
+- **Lead 1 (Stieltjes cavity, W15):** cavity is a strong contraction (geometric convergence); realizable
+  messages tighten the bound ~44%.  Real proof-progress; full closure = Stieltjes messages + mass transport
+  (W8) at fine resolution, converging geometrically.
+- **Lead 2 (kernel-gating, W16):** RH Hankel/WorstCorner machinery certifies BG rational PSD facts in-kernel;
+  the route-(b) certificate assembles W10 + Hankel-cert + geometric error at a finite level.
+- **Lead 3 (Weil-positivity template):** untried; casts caterpillar extremality as second-variation PSD.
