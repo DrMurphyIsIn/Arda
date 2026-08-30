@@ -235,9 +235,24 @@ antisymmetric potential `W` must carry the work. (b) The decisive advantage over
 the cavity messages are **bounded** (`μ_{u→v} ∈ [d_u, 2d_u−1]`) and **RDE-determined** by the local subtree —
 not the free worst-case `S_a` that made the moment discharge loose. So the **message-decorated** discharge
 (potential `W((d_v,μ_{v→a}),(d_a,μ_{a→v}))` over the bounded message pairs) is the concrete A1 test that could
-close where every density/moment method provably cannot. Building + solving that LP (does it reach `logρ*`
-with the caterpillar tight?) is the decisive next step — the point where the surface-term route either works or
-is precisely refuted. `conjecture1_proved = False`.
+close where every density/moment method provably cannot.
+
+**Result (`guerra/A1_surface_discharge.py` + msg-LP): the message discharge does NOT genuinely close.** Solving
+`min B₀+2B₁` s.t. `φ(τ) ≤ B₀+B₁d+ΣW` over a rich type census appeared to reach `logρ*` (gap 2.7e-6, caterpillar
+slack 6e-4) at fine message discretization — **but that was overfitting.** With messages rounded to 3 decimals
+the potential has ~289k free parameters against only ~896 type constraints (300×), so it can make anything
+tight. The coarse-binning stress test is decisive: as the discretization coarsens (fewer W-parameters), the
+caterpillar slack **blows up to 5.6e-2** (R=2, 52k params) and 5.8e-2 (R=1, 5.5k params) — i.e. with any
+honest, low-dimensional potential the caterpillar is *far* from tight. So the per-vertex message-discharge,
+like the moment discharge, **cannot make the caterpillar tight without overfitting** — the antisymmetric
+potential does not exist at reasonable dimension. (Verification-as-instrument caught this: the fine-grid
+closure was an artifact, exactly as the dmax=4 flag-LP tightness was.)
+
+**Net:** even the surface-term formulation — which correctly handles forests — does not close via a local
+per-vertex discharge. A1 therefore needs more than a per-vertex potential: either the full RDE/cavity
+consistency across the tree (not just local types), a Guerra-Toninelli interpolation, or a genuinely global
+argument. The surface-term insight (`§4`, `#edges=n−1`) remains the correct way to *exclude forests*, but it
+does not by itself make the local discharge tight. `conjecture1_proved = False`.
 
 ## Appendix — reproduction scripts (offline, `/tmp` during development)
 
