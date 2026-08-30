@@ -155,7 +155,16 @@ the second-order term is a message-susceptibility bounded by the SSM contraction
   **Route-(a) milestones (supersede/refine G3-G5):**
   - **A1** — prove `g_T(t) ≤ g_C(t)` for structurally-far trees (a *single* per-`t` resolvent inequality; the
     margin is large, so a loose cavity/moment bound suffices — unlike the knife-edge §3.1 which needed
-    tightness). This is where the monomer-dimer correlation structure enters.
+    tightness). **Foundation done + verified** (`guerra/A1_resolvent_cavity.py`): `g_T(t)` is an exact
+    per-vertex cavity sum, `g_T(t) = (1/n)Σ_v ρ_v(t)`, `ρ_v(t) = (1 + (1/√t)·Im G_v(i/√t))/t`, with the
+    complex cavity Green's functions `G_{u→v}(z) = 1/(z − Σ_{c≠v} (1/(d_u d_c)) G_{c→u}(z))` at `z = i/√t`
+    (verified ~1e-16 vs eigenvalues). The complex cavity is a contraction (SSM), so `ρ_v` is genuinely local.
+    Corollary (exact, via the regular-tree fixed point): the caterpillar **strictly dominates every infinite
+    `d`-regular tree** at all `t`, with `g` decreasing in `d` and the **path (`d=2`) the tightest far
+    competitor** (margin ~0.03). Per-vertex, the caterpillar's arm-mids (`ρ≈0.43`) carry the weight; high-`ρ`
+    vertices (star center `ρ≈0.67`) can't dominate a connected tree because they force low-`ρ` leaves. The
+    remaining A1 work: a per-vertex/monomer-dimer bound on `ρ_v(t)` that the caterpillar's role-mix maximizes
+    over far trees (margin makes a loose bound sufficient).
   - **A2** — the local charts: extend piece 2 to a negative-definite Hessian in *all* structural phonon modes
     (not just arm-count), gapped uniformly by SSM (piece 1) — covers the crossers.
   - **A3** — the covering/compactness: every tree is Far (A1) or Near (A2), regimes overlapping.
