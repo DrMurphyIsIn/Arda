@@ -99,6 +99,37 @@ Re(-zeta'/zeta)(σ+2it)`, via Mathlib's `LSeries_vonMangoldt_eq_deriv_riemannZet
 **exact positivity** the classical de la Vallée Poussin argument runs on -- the `vonMangoldt` machinery
 the earlier scope note listed as missing is now formalized, and it now names `riemannZeta` directly.
 
+### BUILT: `residue_logDeriv` + `zeta_boundary_contradiction` -- the bridge forces the boundary
+
+Rather than the product route, the bridge can force the **boundary** case `zeta(1+it) != 0` (the `c=0`
+edge of the region) directly, via the residues of `-zeta'/zeta`:
+
+- **`residue_logDeriv`** (gate-green, with 3 helpers `logDeriv_congr_punctured`,
+  `logDeriv_zpow_smul_split`, `tendsto_sub_mul_logDeriv_zero`): a general complex-analysis lemma --
+  for `f` meromorphic at `z0` of order `n`, `(z - z0) * logDeriv f z -> n` on the punctured
+  neighbourhood. Built from `meromorphicOrderAt_eq_int_iff` (local factorization `f = (z-z0)^n * g`).
+  This is a genuine **Mathlib v4.32.0 API gap** -- the library has only the analytic simple-zero (`n=1`)
+  case `AnalyticAt.tendsto_mul_logDeriv_simple_zero`; the general-order version is master-only. Reusable,
+  not RH-specific.
+- **`zeta_boundary_contradiction`** (committed; aggregate-gate verification queued): the classical de la
+  Vallee Poussin argument. Multiply the positivity by `(sigma-1) > 0` and take `sigma -> 1+`; the three
+  residue limits are `+1` at the simple pole `s=1` and `-k`, `-k'` at `1+it`, `1+2it` (`k` = order of a
+  zero at `1+it`). The limit `3*1 - 4k - k' >= 0` is impossible for `k >= 1`. So no zero of order `>= 1`
+  sits at `1+it`. The three residue limits enter as hypotheses -- each is the real-line restriction of
+  `residue_logDeriv` applied to `zeta` at `1`, `1+it`, `1+2it`.
+
+**What a fully unconditional `zeta(1+it) != 0` still needs** (honest gaps, all classical, none
+certificate-shaped): (a) `zeta`'s **simple-pole handle at `s=1`** -- `MeromorphicAt riemannZeta 1` +
+`meromorphicOrderAt riemannZeta 1 = -1`. This is a v4.32.0 API gap: Mathlib's `riemannZeta` carries a
+finite *junk* value at `s=1` (from `1/0 = 0`), so `(s-1)*zeta` is NOT analytic at `1` (value 0, limit 1);
+the analytic extension must be built from `completedRiemannZeta` (entire `completedRiemannZeta_0` minus
+`1/s - 1/(1-s)`, over the `Gammaℝ` factor which is `1` at `s=1`). (b) **order-finiteness** at `1+it`
+(the identity theorem: `zeta` not locally zero). (c) the `.re` / real-ray **plumbing** turning the
+complex punctured-limit into the real `sigma -> 1+` form. All mechanical-but-substantial -- and the
+unconditional theorem *already exists in Mathlib* by the product route (`riemannZeta_ne_zero_of_one_le_re`
+via `norm_LSeries_product_ge_one`), so this reproof is architecturally novel, not gap-filling for the
+theorem. See `ZERO_FREE_REGION_TERRAIN.md`.
+
 **Remaining for a real region (part b, step 2 of 2, NOT done):** two analytic pieces still unformalized:
 (i) the passage from `-zeta'/zeta` positivity to the product bound `|zeta(σ)^3 zeta(σ+it)^4
 zeta(σ+2it)| >= 1` (integrate the log-derivative; relate `LSeries(Λ)` to `zeta` off Re>1); (ii) the zeta
