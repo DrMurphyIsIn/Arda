@@ -380,7 +380,8 @@ theorem cosine_comb_zeta_nonneg (N : ℕ) (a : ℕ → ℝ)
               ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I) m).re :=
       Complex.re_tsum (ArithmeticFunction.LSeriesSummable_vonMangoldt (hre k))
     rw [h1, h2, tsum_mul_left]
-  rw [Finset.sum_congr rfl hstep, ← tsum_sum (fun k _ => (hsum k).mul_left (a k))]
+  rw [Finset.sum_congr rfl hstep,
+      ← (hasSum_sum (fun k (_ : k ∈ range N) => ((hsum k).mul_left (a k)).hasSum)).tsum_eq]
   apply tsum_nonneg
   intro m
   rcases Nat.eq_zero_or_pos m with rfl | hpos
