@@ -122,6 +122,39 @@ parallel, not the proven mechanism; the proven bottleneck of the Λ≤0 program 
 width, routing back to the campaign's starting terrain. The one solid new deliverable is C3: the Λ≤c ladder
 is a genuine unconditional weaker-than-RH structure. conjecture1_proved = False.
 
+## Dug deeper again: the proven bottleneck IS certificate-shaped (loop closes)
+
+The corrected bottleneck is the zero-free-region CONSTANT (dig #3). Is it certificate-shaped or pure
+analysis? Traced the mechanism: the de la Vallée Poussin region width comes from the nonnegative cosine
+polynomial 3+4cosθ+cos2θ ≥ 0 — literally the `zero_free_bridge` Mertens certificate. The constant is set by
+OPTIMIZING over nonnegative cosine polynomials. Derived the leading-order extremal problem:
+
+  zero-free region 1−β ≥ c/log γ,  c = (√a₁ − √a₀)² / (A·Σ_{k≥1}a_k),  A universal ⇒
+  **maximize  F(P) = (√a₁ − √a₀)² / Σ_{k≥1}a_k  over nonneg cosine polys P=Σa_k cos kθ ≥ 0, a_k ≥ 0.**
+
+Larger F ⇔ wider region ⇔ smaller R₀ (region ~ 1 − 1/(R₀ log t)). Computed (scipy, nonneg cone on a grid):
+F(dlVP 3,4,1)=0.01436 baseline; optimizing degree d gives 0.0188 (d=2) → 0.0271 (d=3) → 0.0287 (d=4) →
+0.0290 (d=8) — a ~2× improvement, saturating. [F is an illustrative LEADING-ORDER proxy — the exact O(1)
+constant handling is refined; cite the real published result for the rigorous constant.]
+
+- **This is a REAL, published, certificate-shaped program.** Mossinghoff–Trudgian 2015 (J. Number Theory
+  157) optimize exactly this nonneg-cosine cone and improve the zero-free constant to **R₀ = 5.573412** (from
+  ~5.70). Nonnegativity of a cosine polynomial ⇔ Fejér–Riesz SOS ⇔ a PSD Toeplitz condition = **exactly
+  Telperion's certificate shape**, and exactly the family the existing `zero_free_bridge` Mertens certificate
+  + the Turán/Hankel/TrigNonneg emitters already live in.
+- **The campaign loop closes.** de Bruijn–Newman bottleneck (dig #2) → zero-free-region constant (dig #3) →
+  nonnegative-cosine-polynomial certificate (this dig) → the `zero_free_bridge` Lean work + Turán/Hankel
+  emitters at the START of the campaign. RH's *approachable* frontier is precisely the certificate family
+  Telperion was built to emit. Concrete buildable next step: emit the Mossinghoff–Trudgian optimal cosine
+  polynomial as a kernel-checked Fejér–Riesz nonnegativity certificate, extending `zero_free_bridge` from the
+  degree-2 Mertens polynomial to the optimal one.
+- **HONEST reach (bounded).** This sharpens the CONSTANT in the CLASSICAL 1/log t region only. It does NOT
+  improve the Vinogradov–Korobov rate 1/(log t)^{2/3} (different, non-cosine-polynomial technology), the gain
+  is modest (~2% in R₀), and it is nowhere near Λ≤0 (= RH). It is ONE ingredient of the Λ-upper-bound
+  numerics (which lean more on numerical RH-verification + explicit formula), not the whole bottleneck. So:
+  a genuine certificate foothold on RH's proven frontier, useful for explicit zero-free constants — NOT a
+  path to RH.
+
 ## Honest verdict
 
 Not a proof, not a gap-narrowing. A genuine, attack-survived reframing: RH is BG-marginal; its ties are
