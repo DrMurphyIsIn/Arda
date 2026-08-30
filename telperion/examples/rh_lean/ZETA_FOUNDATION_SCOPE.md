@@ -93,9 +93,11 @@ Five kernel-verified theorems (generator UNTRUSTED, Lean kernel sole arbiter):
 `mertens_three_four_one` (the seed) -> `cpow_re` (`Re(n^{-s}) = n^{-σ} cos(t log n)`, the crux) ->
 `term_re` (each Dirichlet term's real part) -> `term_comb_nonneg` (per-`n` the 3-4-1 combination is
 `Λ(n) n^{-σ} · (3 + 4cos(t log n) + cos(2t log n)) >= 0`) -> `vonMangoldt_re_comb_nonneg` (sum over `n`
-via `LSeriesSummable_vonMangoldt` + `Complex.re_tsum` + `tsum_nonneg`).  This is the **exact positivity**
-the classical de la Vallée Poussin argument runs on -- the `vonMangoldt` machinery the earlier scope note
-listed as missing is now formalized.
+via `LSeriesSummable_vonMangoldt` + `Complex.re_tsum` + `tsum_nonneg`) -> `zeta_logDeriv_comb_nonneg`
+(the same bound restated **literally about ζ**: `0 <= 3 Re(-zeta'/zeta)(σ) + 4 Re(-zeta'/zeta)(σ+it) +
+Re(-zeta'/zeta)(σ+2it)`, via Mathlib's `LSeries_vonMangoldt_eq_deriv_riemannZeta_div`).  This is the
+**exact positivity** the classical de la Vallée Poussin argument runs on -- the `vonMangoldt` machinery
+the earlier scope note listed as missing is now formalized, and it now names `riemannZeta` directly.
 
 **Remaining for a real region (part b, step 2 of 2, NOT done):** two analytic pieces still unformalized:
 (i) the passage from `-zeta'/zeta` positivity to the product bound `|zeta(σ)^3 zeta(σ+it)^4
