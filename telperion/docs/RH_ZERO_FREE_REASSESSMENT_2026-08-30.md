@@ -103,6 +103,34 @@ already-shared, already-capped layer while the actual frontier (the `|ζ|` bound
 finite-certificate structure. The `1/log|t|` → `1/(log t)^{2/3}` shape improvement is *entirely* Layer 2.
 (My "positivity recursion" framing is retracted; adversarial verification caught it.)
 
+## 5c. Dig deeper again — is the MAGNITUDE layer itself certificate-shaped? (mostly no, and a 2nd overclaim caught)
+
+§5b said the magnitude layer "carries no finite-certificate structure." I challenged that too, proposing
+**van der Corput exponent pairs** (finite words in the A/B processes) as a certificate-like foothold reaching
+**Littlewood's** region. A hostile expert (Titchmarsh 1986; Tenenbaum–Iwaniec; Graham–Korolev 2014;
+Karatsuba–Voronin 1992) split the verdict:
+
+- **CONFIRMED:** exponent pairs *are* a discrete, recursively-verifiable structure — a finitely-generated
+  A/B monoid; membership is mechanically checkable.
+- **RETRACTED (overclaim #2):** calling them "certificates" repeats the previous error. Each A/B step is an
+  **analytic inequality** (Weyl differencing / Cauchy–Schwarz / Poisson summation), *not* an algebraic
+  identity. They are **discrete bookkeeping over analytic operations**, not algebraic SOS certificates.
+- **RETRACTED:** "exponent pairs reach Littlewood's `loglog t/log t`." Unsourced and likely wrong —
+  Littlewood (1922) used independent zero-density machinery; exponent-pair bounds on `|ζ|` are weaker, and
+  the intermediate exponent-pair zero-free region for ζ is *not standardly named*. The A/B semigroup is also
+  **infinite**, and optimal-pair selection is application-dependent, not one finite optimization.
+- **CONFIRMED:** the full VK `(log)^{2/3}` region genuinely needs Vinogradov's mean value theorem
+  (scale-recursive), beyond direct exponent-pair application.
+
+**Net, honestly:** the magnitude layer *does* contain discrete structure (exponent pairs), so "no finite
+structure at all" was too strong — but that structure is **analytic-operation bookkeeping, not algebraic
+SOS**, and its precise reach is not what I claimed. This actually *sharpens the Telperion-relevant line*: the
+horizon for **algebraic SOS / kernel certificates** (what Telperion and `zero_free_bridge` produce) is
+exactly the **positivity layer** (Fejér-capped). Everything past it — even the discrete exponent-pair layer —
+is *analytic*, not algebraically certifiable, and VK proper is scale-recursive. Two consecutive bold
+sharpenings, two overclaims caught by adversarial verification: the true statement is more modest and more
+precise than either attempt.
+
 ## 5. Bottom line
 
 `zero_free_bridge` is a correct, gap-free, kernel-checked formalization of the classical zero-free program's
