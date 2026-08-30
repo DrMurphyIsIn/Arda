@@ -619,3 +619,30 @@ converges **geometrically** to `log ρ*` with a certifiable error `F ≤ log ρ*
 nonlinear (Bethe-functional) optimization that closes route (b); the family confirmation (W17) + ingredient
 validation (W15/W16) show it is the right object with the caterpillar as its unique max.  `conjecture1_proved
 = False`.
+
+## W18 (2026-08-29): the combined relaxation is the tightest local bound, but per-config bounds `sup_T F` (finite) not the density -- the definitive wall
+
+Built the combined relaxation: exact cavity free energy + Stieltjes-realizable messages + **full mass-transport
+discharge `P(d,x)`** on half-edge states (sender degree + message), telescoping on trees.  Two findings.
+
+**(A) Full mass-transport `P(d,x)` beats message-only `P(x)` sharply.** At DMAX=5 the bound drops
+`0.218 → 0.209224` (gap `+0.0131 → +0.0041`, a 69% reduction).  Progression of the local bound:
+free `P(x)` (W13) `0.331` → realizable `P(x)` (W15) `0.218` → realizable `P(d,x)` (W18) `0.209`.  Each RH-lead
+ingredient (realizable messages, then full state-discharge) tightens substantially.
+
+**(B) But the bound INCREASES with the degree cap -- it bounds `sup_T F`, not `log ρ*`.** Degree-cap sweep:
+DMAX=4 `0.2047` (`−4e-4`, restricted to deg≤4 trees < caterpillar), DMAX=5 `0.2092`, DMAX=6 `0.2124`, DMAX=7
+`0.2146` -- monotone **increasing**.  The per-config bound = `sup` over degree-≤DMAX bulk trees of `F`, and
+since **every finite tree has `F > log ρ*`** (W5, approached from above), that sup exceeds `log ρ*` and grows
+as higher-degree trees are admitted.  `log ρ*` is the **n→∞ thermodynamic density**, fundamentally NOT a
+per-config/per-vertex quantity -- so no local relaxation (moment W6-W12, cavity W13, or this combined one)
+reaches it.  This is the definitive form of the W5/W12 wall.  Reproduction: `bg_combined_relaxation.py`.
+
+**Where this leaves route (b).**  The density `log ρ*` is obtained *directly* on infinite trees (W13, exact
+cavity, `F(caterpillar)=log ρ*` to 2e-8) and is maximized by the caterpillar over a rich family (W17).  The
+per-config relaxations bound the finite `sup_T F`; the RH-lead ingredients (realizable messages, full
+mass-transport) tighten that local bound dramatically but cannot cross to the density.  A finite CERTIFICATE
+of the density is obstructed by measure-extremality (W12); the honest exact route remains the **infinite-tree
+variational argument** (max over unimodular tree measures of the exact cavity density = `log ρ*`), for which
+the strong contraction (W15) gives the analytic control but not a finite convex certificate.
+`conjecture1_proved = False`.
