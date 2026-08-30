@@ -95,20 +95,30 @@ interpolation of the quadratic form. Define `Φ(t) = Bethe-free-energy[ρ_t]` an
 `F(T) ≤ F(C)`. The RDE-stationarity of `ρ_C` (caterpillar = cavity fixed point) kills the first-order term;
 the second-order term is a message-susceptibility bounded by the SSM contraction rate `< 1`.
 
-**Milestones.**
-- **G1** — write the exact per-vertex/per-edge Bethe free energy of the tree matching model in message
-  coordinates; confirm it reproduces `F` (numeric).
-- **G2** — build the interpolation `ρ_t` and compute `Φ(t)` numerically for many `(T, C)` pairs; **test
-  `Φ'(t) ≤ 0`** empirically (monotonicity probe) before any proof. A single violation kills the naive
-  interpolation and dictates the correction.
-- **G3** — identify the interpolation making `Φ'(t)` a manifest sum-of-squares / sign-definite via the
-  cavity stationarity + SSM contraction bound.
-- **G4** — the finite-`n` surface-term version (`§4`) to land `F(T) ≤ logρ* + O(1/n)`, tight at the
-  caterpillar.
+**Milestones + progress.**
+- **G1 — DONE, verified.** The exact matching free energy in cavity-message coordinates:
+  `F(T) = (1/n)[ Σ_v log(A_v/d_v) − Σ_e log(1 + 1/(μ_{u→v}μ_{v→u})) ]`, `A_v = d_v + Σ_{a~v} 1/μ_{a→v}`,
+  messages `μ_{u→v} = d_u + Σ_{c~u,c≠v} 1/μ_{c→u}` (leaves `μ = d_leaf`). Derived from the Schur/leaf-elimination
+  of `M = D − iA` (which is real: `(−i)² = −1`), edge factor identified from P3 and **verified to ~1e-16**
+  against the eigenvalue `F` on paths/stars/caterpillars/binary/30 random trees. This is the exact substrate —
+  no moments, no relaxation.
+- **G2 — DONE, decisive negative.** The Bethe functional `Φ[μ]` (evaluated at arbitrary messages) is
+  **stationary** at the caterpillar BP fixed point (`|Φ'| ~ 1e-13`, the known BP-stationarity) but it is a
+  **SADDLE, not a max**: `Φ''` spans `[−2.7e-5, +2.7e-5]` and some perturbations *raise* `Φ`. So the naive
+  message-space concavity that a straightforward interpolation would need **does not hold** — as expected
+  (the Bethe free energy is famously non-convex in raw message coordinates).
+- **G3 — redirected (the crux).** Two viable sub-routes, both bypassing the G2 saddle:
+  (a) **correct coordinates** — recoordinatize to the belief/marginal variables where the monomer-dimer free
+  energy is convex (Heilmann-Lieb real-rootedness / Lee-Yang gives the structural handle), then the caterpillar
+  is a genuine max; (b) **Guerra–Toninelli interaction-interpolation** — interpolate the *couplings/edges*
+  between a connected tree and the caterpillar and sign the derivative by correlation positivity (does NOT use
+  Bethe concavity, so the saddle is irrelevant). The interpolation stays within **connected** trees, so the
+  forest/acyclicity barrier (§3) never enters.
+- **G4** — the finite-`n` surface-term version (§4) to land `F(T) ≤ logρ* + O(1/n)`, tight at the caterpillar.
 - **G5** — reduce the analytic inequality to kernel-gateable rational/enclosure atoms (turan/jensen model).
 
-Honest risk: G3 (finding the right interpolation) is the crux and may fail; the monotonicity probe (G2) is the
-cheap decisive test. This is a genuine proof attempt, not an incremental probe. `conjecture1_proved = False`.
+Honest risk: G3 is the crux and may still fail; G2 already ruled out the naive route and pointed to (a)/(b).
+This is a genuine proof attempt. `conjecture1_proved = False`. Scripts: `bg_guerra_G1.py`, `bg_guerra_G2.py`.
 
 ## Appendix — reproduction scripts (offline, `/tmp` during development)
 
