@@ -177,6 +177,49 @@ the second-order term is a message-susceptibility bounded by the SSM contraction
 Honest risk: G3 is the crux and may still fail; G2 already ruled out the naive route and pointed to (a)/(b).
 This is a genuine proof attempt. `conjecture1_proved = False`. Scripts: `bg_guerra_G1.py`, `bg_guerra_G2.py`.
 
+## 6. Whole-proof reassessment (after G1–G3 + A1)
+
+**What is rigorously established (kernel-verified, on `main`):**
+- Piece 1 — SSM / uniform cavity contraction (Heilmann–Lieb, BGKNT 2007). Cited theorem.
+- Piece 2 — `F''(a) < 0` and strict max at `a=7` over integer arm-counts (`bg_caterpillar_concavity`, #158).
+- Piece-3 finite rung — the caterpillar strictly beats explicit distant competitors at moment-degree-3
+  (`bg_m3_moment_cut`, #161), **proven to be the exact ceiling of degree-3 / local methods** (§3.1).
+
+**New, verified infrastructure (PR #162):** the monomer-dimer identity (§G3-i), the resolvent decomposition
+`F = ½∫₀¹ g_T(t)dt` with `g_T(t)` cap-free (§G3-iii), the exact cavity forms of `F` (G1) and `g_T(t)` (A1),
+and the far/near split with the path as tightest far competitor.
+
+**The barrier, now proven intrinsic — not an artifact of any one method.** Forests and small trees have
+*higher* free-energy density than the caterpillar (P3: `F=0.231`, `g_{P3}(t) > g_C(t)` at every `t`), because
+every **local / moment / discharge / resolvent** relaxation is a per-vertex *mean* that cannot distinguish a
+connected large tree from a forest of high-density small components. The moment route is *provably* capped at
+degree 3 (§3.1); the resolvent route is cap-free but confirmed to be forest-spoofed at every `t`. So no
+local-mean method can certify the caterpillar — **connectedness (`#edges = n−1`, equivalently mean degree
+`2−2/n`) is required, and it is global.**
+
+**The one structural handle this pins down.** The density-limit constraint "mean degree = 2" is *wrong* — it
+is `#edges = n`, the *unicyclic* limit, which admits forests/loops. A connected tree has `#edges = n−1` exactly;
+the `−1` (the Euler characteristic / the `O(1/n)` surface term) is the connectedness signature. The correct
+statement is therefore **finite-`n` with the exact surface term**:
+```
+F(T) ≤ logρ* + c/n   for every connected n-vertex tree, tight at the caterpillar,
+```
+which the discharge yields via `B₁<0` (§4) — forests get the correct *weaker* bound (more components ⇒ higher
+allowed density), connected trees the tight one. This is the reformulation that excludes forests *by
+construction* rather than fighting them.
+
+**Honest verdict.** BG-classical route (b) is a genuinely hard open conjecture (post-Pant 2026). This session
+did **not** close it, and the crux — the "no distant competitor" step — remains the hard core. But the terrain
+is now fully mapped: every local family is ruled out *with proof*, the finite results are kernel-verified, and
+the attack is reduced to a concrete staged program with cap-free tools:
+- **A1** (far dominance) — `g_T(t) ≤ g_C(t)` for structurally-distant **connected** trees, via the finite-`n`
+  surface-term formulation (not a density relaxation); large margin ⇒ a loose bound suffices.
+- **A2** (near) — piece-2 Hessian negative-definite in all structural phonon modes, gapped by SSM.
+- **A3** (covering) — compactness gluing far and near.
+The realistic assessment: A1+A3 with the surface term is a substantial multi-step effort (paper-scale), not an
+incremental probe; A2 is the existing piece-2 line. Odds of near-term closure are low (it is a hard conjecture),
+but the reformulations + barrier proof + staged strategy are real, durable progress. `conjecture1_proved = False`.
+
 ## Appendix — reproduction scripts (offline, `/tmp` during development)
 
 `bg_m3_derive.py` (integrand derivation + verification), `bg_m3_flagLP2.py` / `bg_m3_flagL2.py` (reversible
