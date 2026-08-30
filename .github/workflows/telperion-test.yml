@@ -31,24 +31,23 @@ jobs:
           python-version: ${{ matrix.python }}
       # cvxpy provides the SDP backend the SOS route (prove_goal Phase 0.1 kind-
       # router) uses to certify interior ties; without it those tests can't run.
-      # pytest/numpy are PINNED: the unpinned install began pulling pytest 9.x
-      # (a major release), which aborts the run mid-suite with exit 2 and no
-      # summary on py3.11-3.13 (the suite itself is green -- 864 passed locally
-      # on pytest 8.x). Cap pytest to the supported 8.x line and numpy below the
-      # co-bumped 2.5 until the suite is audited for pytest-9 compatibility.
+      # pytest capped to 8.x as version hygiene (9.x is a major bump); this is
+      # NOT the cause of the current red -- see the DIAGNOSTIC note below.
       - run: pip install "${{ matrix.sympy }}" "pytest>=8,<9" networkx "numpy<2.5" cvxpy
       - name: Unit tests
         working-directory: telperion
+        # DIAGNOSTIC (2026-08-30): the suite aborts on py3.11-3.13 Linux with exit
+        # 2 and NO traceback after ~61 tests (~82s) -- a native interpreter crash
+        # (segfault/OOM), version-independent, byte-identical on main. It is NOT a
+        # test failure and NOT pytest 9 (reproduces under pytest 8.x). The suite is
+        # green locally (macOS py3.9/3.14). PYTHONFAULTHANDLER + -v dump the C stack
+        # and the last-started test id so the crash can be root-caused.
+        env:
+          PYTHONFAULTHANDLER: "1"
         # test_bellman_rigidity's two value_function(max_size=14) tests are
-        # intractable in CI: max_size=10 already takes ~80s and 14 runs for
-        # hours (super-exponential in the tree enumeration). They were added
-        # 2026-08-17 but never actually ran here (collection aborted first on a
-        # missing networkx import), so this is the first time the suite would
-        # reach them. Deselected until the owning proof session shrinks the
-        # enumeration size (the same assertions hold at max_size=8, ~4s); the
-        # rest of the suite runs in ~4.5 min. See telperion/CHANGELOG.md.
+        # intractable in CI (super-exponential enumeration) -- deselected.
         run: >-
-          python -m pytest tests -q
+          python -X faulthandler -m pytest tests -v -s -p no:cacheprovider
           --deselect tests/test_bellman_rigidity.py::test_value_function_and_sub_hull_gap
           --deselect tests/test_bellman_rigidity.py::test_cramer_rate_positive_below_hull
       - name: Manifest verify, quick group (drift net + byte-stability across sympy versions)
