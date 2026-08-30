@@ -358,3 +358,8 @@ name = "hinge_floor"
 script = "examples/hinge_floor/generate.py"
 group = "quick"    # BG G1 L2 profile->equal-children reduction (posPart subadditivity /
                    # Jensen min-at-equal-children for the convex hinge); ~0.1 s
+
+[[check]]
+name = "bg_flag_discharge"
+script = "examples/bg_flag_discharge/generate.py"
+group = "quick"    # route-(b) walk-count m_2 cut: mass-transport flag-LP dual = antisymmetric discharge potential; ~0.1 s
