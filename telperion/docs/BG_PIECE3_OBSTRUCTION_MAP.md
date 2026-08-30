@@ -220,6 +220,25 @@ The realistic assessment: A1+A3 with the surface term is a substantial multi-ste
 incremental probe; A2 is the existing piece-2 line. Odds of near-term closure are low (it is a hard conjecture),
 but the reformulations + barrier proof + staged strategy are real, durable progress. `conjecture1_proved = False`.
 
+### 6.1 The concrete A1 vehicle: the message-decorated surface-term discharge
+
+The exact per-vertex free energy (G1) is `F(T) = (1/n) Σ_v φ(v)`,
+`φ(v) = log(A_v/d_v) − ½ Σ_{a~v} log(1 + 1/(μ_{v→a}μ_{a→v}))`. The discharge
+`φ(v) ≤ B₀ + B₁ d_v + Σ_{a~v} W(x_v, x_a)` (antisymmetric `W` telescoping to 0) summed over a **connected**
+tree gives `F ≤ B₀ + B₁(2 − 2/n)`; with `B₁<0` this is `F ≤ logρ* + |2B₁|/n`, and forests get the correct
+weaker `+2k|B₁|/n` bound automatically (the exact handshake `Σd = 2n−2k`). **This is not a density relaxation
+and is not forest-spoofable** — it is a pointwise per-vertex inequality.
+
+Findings (`guerra/A1_surface_discharge.py`): (a) `φ(v)` is **not** degree-determined — degree-2 vertices span
+`φ ∈ [0.22, 0.31]` (caterpillar arm-mid vs L=3-arm-mid), so a degree-only bound is loose (gap +0.105); the
+antisymmetric potential `W` must carry the work. (b) The decisive advantage over the failed moment discharge:
+the cavity messages are **bounded** (`μ_{u→v} ∈ [d_u, 2d_u−1]`) and **RDE-determined** by the local subtree —
+not the free worst-case `S_a` that made the moment discharge loose. So the **message-decorated** discharge
+(potential `W((d_v,μ_{v→a}),(d_a,μ_{a→v}))` over the bounded message pairs) is the concrete A1 test that could
+close where every density/moment method provably cannot. Building + solving that LP (does it reach `logρ*`
+with the caterpillar tight?) is the decisive next step — the point where the surface-term route either works or
+is precisely refuted. `conjecture1_proved = False`.
+
 ## Appendix — reproduction scripts (offline, `/tmp` during development)
 
 `bg_m3_derive.py` (integrand derivation + verification), `bg_m3_flagLP2.py` / `bg_m3_flagL2.py` (reversible
