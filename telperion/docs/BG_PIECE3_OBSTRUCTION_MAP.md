@@ -134,6 +134,34 @@ the second-order term is a message-susceptibility bounded by the SSM contraction
   certificate on the monomer-dimer spectral measure); (b) **Guerra-Toninelli** edge/activity interpolation
   signed by monomer-dimer correlation inequalities. Both stay within **connected** trees, so the acyclicity
   barrier (§3) never enters.
+
+  **(iii) The resolvent decomposition (route (a), concrete — verified structure).** Integral representation
+  `½log(1+u) = ½∫₀¹ u/(1+tu) dt` gives
+  ```
+  F(T) = ½ ∫₀¹ g_T(t) dt,   g_T(t) := ∫ u/(1+tu) dμ_T = (1/n)Tr[N²(I+tN²)⁻¹] = Σ_{k≥1} (−t)^{k−1} m_k.
+  ```
+  `g_T(t)` is a **resolvent trace** — a *resummation of all moments*, so it escapes the degree-`K` cap of §3.1
+  by construction, and is cavity-computable (local, by SSM). Empirically (`guerra/G3_resolvent_dominance.py`):
+  **`g_T(t) ≤ g_C(t)` pointwise in `t ∈ [0,1]` for every tree `T` structurally distinct from the caterpillar**
+  (paths, regular trees, L=3/L=4 caterpillars, sparse caterpillars, 40 random trees — all dominated with
+  margin). The **only** pointwise-crossers are near-optimal caterpillar-like trees (the uniform L=2 arm-count
+  family `a≠7`, which crosses at small/large `t` as `m₁`/tail trade off, plus non-uniform generalized
+  caterpillars like "every 3rd hub 9 arms") — all within `F ~ 10⁻³` of `a=7`. This realizes the **local–global
+  split**:
+  - **Far** (structurally distinct, `F ≤ logρ* − ε`): pointwise resolvent dominance `g_T ≤ g_C ⟹ F(T) ≤ F(C)`.
+  - **Near** (the crossers, `F` within `ε`): the strict local max in *all* structural directions — piece 2 +
+    the phonon Hessian negative-definite via the SSM contraction (the W15-W20 fusion).
+
+  **Route-(a) milestones (supersede/refine G3-G5):**
+  - **A1** — prove `g_T(t) ≤ g_C(t)` for structurally-far trees (a *single* per-`t` resolvent inequality; the
+    margin is large, so a loose cavity/moment bound suffices — unlike the knife-edge §3.1 which needed
+    tightness). This is where the monomer-dimer correlation structure enters.
+  - **A2** — the local charts: extend piece 2 to a negative-definite Hessian in *all* structural phonon modes
+    (not just arm-count), gapped uniformly by SSM (piece 1) — covers the crossers.
+  - **A3** — the covering/compactness: every tree is Far (A1) or Near (A2), regimes overlapping.
+  - **A4** — kernel-gate the finite pieces (enclosure model).
+  Honest risk: A1 (per-`t` far dominance) and A3 (covering) are the open crux; A2 is the existing piece-2 line.
+  But the resolvent `g_T(t)` gives the *global* part a concrete, cap-free handle for the first time.
 - **G4** — the finite-`n` surface-term version (§4) to land `F(T) ≤ logρ* + O(1/n)`, tight at the caterpillar.
 - **G5** — reduce the analytic inequality to kernel-gateable rational/enclosure atoms (turan/jensen model).
 
