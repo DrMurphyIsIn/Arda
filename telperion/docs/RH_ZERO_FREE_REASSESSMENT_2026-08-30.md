@@ -131,12 +131,47 @@ is *analytic*, not algebraically certifiable, and VK proper is scale-recursive. 
 sharpenings, two overclaims caught by adversarial verification: the true statement is more modest and more
 precise than either attempt.
 
-## 5. Bottom line
+## 6. Final consolidated reassessment (three convergent verifications)
 
-`zero_free_bridge` is a correct, gap-free, kernel-checked formalization of the classical zero-free program's
-**Layer 1 (finite positivity)** — a layer that is *shared* with Vinogradov–Korobov and already at its Fejér
-ceiling. Its horizon (`1−O(1)/log|t|`, collapsing onto σ=1) is provably fixed not by any weakness in the
-positivity but by **Layer 2, the magnitude bound `|ζ(σ+it)|`**, which the certificate does not touch and
-which carries no finite-certificate structure. The honest posture, corrected and sharpened by adversarial
-verification: a faithful in-kernel formalization of the *positivity* layer, whose reach is capped, whose gap
-to RH is precisely the *magnitude* layer — a different object, not certificate-shaped. `conjecture1_proved = False`.
+The reassessment (§2–4) and two adversarial digs (§5b, §5c) now converge on one picture — and the honest
+"next step," after two overclaims caught, is to consolidate it rather than propose a third bold sharpening
+(the pattern says that would be a third overclaim; the discipline is to stop calling analytic methods
+"certificates" once three independent checks agree they are not).
+
+**(i) The positivity-layer formalization is COMPLETE and its limits are EXACTLY characterized.**
+`zero_free_bridge` no longer formalizes one polynomial — `cosine_comb_zeta_nonneg` is the *whole nonnegative
+cosine cone* on `−ζ'/ζ` (any pointwise-nonneg cosine polynomial, any degree). Its boundary reach is pinned by
+two exact inequalities, both now in-kernel or classical: the hinge `a₀ < a₁` (`admissible_boundary_contradiction`,
+necessary and sufficient for the residue sign-flip) and the Fejér ceiling `a₁ < 2 a₀` (the cone's cap). So the
+positivity layer is bracketed exactly: **`a₀ < a₁ < 2 a₀`**. There is nothing left to build in this layer — it
+is closed, kernel-checked (20 theorems, no `sorry`/`axiom`/stub), and capped.
+
+**(ii) This layer is load-bearing but not the frontier.** It is *shared* with Vinogradov–Korobov (VK reuses
+the same 3-4-1 positivity unchanged) — so the formalization captures a genuine, universal component of every
+zero-free-region proof, not a toy. But its contribution is a *bounded constant* within a fixed `1/log|t|`
+shape; the shape (hence every region improvement, up to and including whatever RH would need) lives entirely
+in **Layer 2, the magnitude bound `|ζ(σ+it)|`**.
+
+**(iii) The frontier beyond is ANALYTIC, not algebraically certifiable.** Layer 2 has discrete structure in
+places (van der Corput exponent pairs — a finitely-generated A/B monoid) but it is *analytic-operation
+bookkeeping*, and VK proper is scale-recursive (Vinogradov mean value theorem). Neither is a finite algebraic
+SOS certificate. Three independent verifications (this reassessment + two hostile digs) agree: the horizon for
+**algebraic / kernel-checkable certificates** — Telperion's and `zero_free_bridge`'s medium — is *exactly* the
+positivity layer. Past it there is no finite-SOS witness.
+
+**(iv) Unification with the marginality picture.** The positivity certificate is a fixed, height-blind
+object. RH is `Λ=0` (de Bruijn–Newman), height-indexed, its Lehmer-pair ties sharpening without bound with
+height. The completed, capped positivity certificate is exactly as far as height-blind algebra reaches; the
+remaining gap to RH is the height-indexed, analytic magnitude control — a different object in a different
+medium.
+
+## Bottom line
+
+`zero_free_bridge` is a **complete, gap-free, kernel-checked formalization of the entire positivity layer** of
+the classical zero-free-region method — the whole cosine cone, with its admissibility (`a₀<a₁`) and ceiling
+(`a₁<2a₀`) exactly characterized. That layer is real, universal, and reused by Vinogradov–Korobov — and also
+*finished and capped*: no better cosine polynomial, no higher degree, no cleverer SOS extends its reach past
+`1−O(1)/log|t|`. Every remaining step toward RH lives in the **magnitude layer** (`|ζ|` in the critical strip),
+which is analytic — discrete in places, scale-recursive at the VK frontier — and carries no finite algebraic
+certificate. The proof is exactly what it is and no more: the algebraic-certificate frontier of the zero-free
+region, drawn precisely, with its far edge proven. `conjecture1_proved = False`.
