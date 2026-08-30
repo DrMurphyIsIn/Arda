@@ -1,7 +1,7 @@
 # zero_free_bridge — the Mertens certificate meets ζ (kernel-gated)
 
 Hand-written, Mathlib-only frozen Lean (`lean/ZeroFreeBridge.lean`, kernel-checked by
-`telperion-lean-e2e` via `lake build`). 11 theorems, generator UNTRUSTED, the Lean kernel the sole
+`telperion-lean-e2e` via `lake build`). 16 theorems, generator UNTRUSTED, the Lean kernel the sole
 arbiter. `conjecture1_proved = False` — this is **not** a proof of RH.
 
 ## What it proves
@@ -28,6 +28,15 @@ the general-order version is master-only. Reusable, not RH-specific.
 `1+it`, `−k'` at `1+2it`), impossible for `k ≥ 1`. This routes non-vanishing through `−ζ'/ζ` — a
 *different internal path* from Mathlib's product-route `riemannZeta_ne_zero_of_one_le_re`. The three
 residue limits enter as hypotheses (each is the real-line restriction of `residue_logDeriv`).
+
+**The improved (degree-3) certificate.** The de la Vallée Poussin polynomial is *not* optimal.
+Optimizing the leading-order zero-free functional `F(P) = (√a₁−√a₀)² / Σ_{k≥1}aₖ` over nonnegative
+cosine polynomials (`aₖ ≥ 0`) — the Mossinghoff–Trudgian 2015 program (`R₀ = 5.573412`) — widens the
+region *constant*. The `(1+cos)ⁿ` family gives clean Fejér–Riesz certificates; `n=3` gives
+`20 + 30cos θ + 12cos 2θ + 2cos 3θ = 8(1+cos θ)³ ≥ 0` (`mertens_improved`), with `a₁=30 > a₀=20` and
+`F = 0.02296` vs `0.01436` (1.60× wider, leading order). Carried onto `−ζ'/ζ` in `zeta_logDeriv_comb4_nonneg`:
+`20 Re(−ζ'/ζ)(σ) + 30 Re(−ζ'/ζ)(σ+it) + 12 Re(−ζ'/ζ)(σ+2it) + 2 Re(−ζ'/ζ)(σ+3it) ≥ 0` for `σ>1`. This
+improves the classical-region **constant only** — not the Vinogradov–Korobov *rate*, and not RH.
 
 ## Honest scope
 

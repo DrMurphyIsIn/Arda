@@ -222,4 +222,104 @@ theorem zeta_boundary_contradiction (t : ℝ) (k k' : ℤ) (hk : 1 ≤ k) (hk' :
   have hk'0 : (0 : ℝ) ≤ (k' : ℝ) := by exact_mod_cast hk'
   linarith
 
+/- ===================================================================================
+   IMPROVED ZERO-FREE CERTIFICATE (degree 3).  The de la Vallee Poussin polynomial
+   3 + 4cos + cos2 = 2(1+cos)^2 is NOT optimal.  Optimizing the leading-order zero-free
+   functional  F(P) = (sqrt a_1 - sqrt a_0)^2 / sum_{k>=1} a_k  over NONNEGATIVE cosine
+   polynomials (a_k >= 0) is exactly the Mossinghoff-Trudgian 2015 program (J. Number
+   Theory 157; improved region constant R_0 = 5.573412).  The (1+cos)^n family gives clean
+   Fejer-Riesz certificates capturing most of the gain.  Here n = 3:
+       20 + 30 cos + 12 cos2 + 2 cos3  =  8 (1 + cos)^3  >= 0,   a_1 = 30 > a_0 = 20,
+   with F = 0.02296 vs 0.01436 for de la Vallee Poussin (1.60x wider region, leading order).
+   Generator UNTRUSTED, Lean kernel sole arbiter.  This still only FEEDS the classical region
+   CONSTANT -- it improves the constant, NOT the Vinogradov-Korobov rate 1/(log t)^{2/3}, and
+   is NOT a proof of RH.  conjecture1_proved = False.
+   =================================================================================== -/
+
+/-- Fejer-Riesz backbone: `(1 + cos theta)^n >= 0` -- the SOS behind every `(1+cos)^n`
+    nonnegative-cosine certificate. -/
+theorem one_add_cos_pow_nonneg (θ : ℝ) (n : ℕ) : 0 ≤ (1 + Real.cos θ) ^ n :=
+  pow_nonneg (by have := Real.neg_one_le_cos θ; linarith) n
+
+/-- The improved (degree-3) nonnegative-cosine certificate:
+    `20 + 30 cos θ + 12 cos 2θ + 2 cos 3θ = 8 (1 + cos θ)^3 ≥ 0` (Fejer-Riesz SOS). -/
+theorem mertens_improved (θ : ℝ) :
+    0 ≤ 20 + 30 * Real.cos θ + 12 * Real.cos (2 * θ) + 2 * Real.cos (3 * θ) := by
+  have h2 := Real.cos_two_mul θ
+  have h3 := Real.cos_three_mul θ
+  have hc : 0 ≤ 1 + Real.cos θ := by have := Real.neg_one_le_cos θ; linarith
+  nlinarith [h2, h3, mul_nonneg (sq_nonneg (Real.cos θ + 1)) hc]
+
+/-- Per-term nonnegativity of the improved combination on the von Mangoldt L-series terms
+    at the four shifts `σ, σ+it, σ+2it, σ+3it`. -/
+theorem term_comb4_nonneg (n : ℕ) (σ t : ℝ) :
+    0 ≤ 20 * (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) (σ : ℂ) n).re
+      + 30 * (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + (t : ℂ) * Complex.I) n).re
+      + 12 * (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I) n).re
+      + 2 * (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I) n).re := by
+  rcases Nat.eq_zero_or_pos n with rfl | hpos
+  · simp [LSeries.term]
+  · have hn : 1 ≤ n := hpos
+    rw [term_re n hn (σ : ℂ), term_re n hn ((σ : ℂ) + (t : ℂ) * Complex.I),
+        term_re n hn ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I),
+        term_re n hn ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I)]
+    simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
+      mul_zero, mul_one, zero_mul, sub_zero, add_zero, zero_add, Real.cos_zero]
+    rw [mul_assoc (2 : ℝ) t (Real.log (n : ℝ)), mul_assoc (3 : ℝ) t (Real.log (n : ℝ))]
+    have hp : (0:ℝ) < (n:ℝ) ^ (-σ) := Real.rpow_pos_of_pos (by exact_mod_cast hn) _
+    have hM : (0:ℝ) ≤ ArithmeticFunction.vonMangoldt n * (n:ℝ) ^ (-σ) :=
+      mul_nonneg ArithmeticFunction.vonMangoldt_nonneg hp.le
+    nlinarith [mul_nonneg hM (mertens_improved (t * Real.log n)), hM]
+
+/-- Summed improved positivity for the von Mangoldt L-series (Re s > 1). -/
+theorem vonMangoldt_re_comb4_nonneg (σ t : ℝ) (hσ : 1 < σ) :
+    0 ≤ 20 * (LSeries (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) (σ : ℂ)).re
+      + 30 * (LSeries (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+      + 12 * (LSeries (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)).re
+      + 2 * (LSeries (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I)).re := by
+  have hf : Summable (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) (σ : ℂ)) :=
+    ArithmeticFunction.LSeriesSummable_vonMangoldt (by simpa using hσ)
+  have hg : Summable (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + (t : ℂ) * Complex.I)) :=
+    ArithmeticFunction.LSeriesSummable_vonMangoldt (by simpa using hσ)
+  have hh : Summable (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)) :=
+    ArithmeticFunction.LSeriesSummable_vonMangoldt (by simpa using hσ)
+  have hi : Summable (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I)) :=
+    ArithmeticFunction.LSeriesSummable_vonMangoldt (by simpa using hσ)
+  have hA : Summable (fun n => (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) (σ : ℂ) n).re) := hf.map Complex.reCLM Complex.reCLM.cont
+  have hB : Summable (fun n => (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + (t : ℂ) * Complex.I) n).re) := hg.map Complex.reCLM Complex.reCLM.cont
+  have hC : Summable (fun n => (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I) n).re) := hh.map Complex.reCLM Complex.reCLM.cont
+  have hD : Summable (fun n => (LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I) n).re) := hi.map Complex.reCLM Complex.reCLM.cont
+  show 0 ≤ 20 * (∑' n, LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) (σ : ℂ) n).re
+      + 30 * (∑' n, LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + (t : ℂ) * Complex.I) n).re
+      + 12 * (∑' n, LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I) n).re
+      + 2 * (∑' n, LSeries.term (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I) n).re
+  rw [Complex.re_tsum hf, Complex.re_tsum hg, Complex.re_tsum hh, Complex.re_tsum hi,
+      ((((hA.hasSum.mul_left 20).add (hB.hasSum.mul_left 30)).add (hC.hasSum.mul_left 12)).add (hD.hasSum.mul_left 2)).tsum_eq.symm]
+  exact tsum_nonneg (fun n => term_comb4_nonneg n σ t)
+
+/-- The improved positivity, restated LITERALLY about `-zeta'/zeta`: for `Re s > 1`,
+    `20 Re(-ζ'/ζ)(σ) + 30 Re(-ζ'/ζ)(σ+it) + 12 Re(-ζ'/ζ)(σ+2it) + 2 Re(-ζ'/ζ)(σ+3it) ≥ 0`.
+    A strictly wider zero-free-region certificate than the degree-2 Mertens one -- improving the
+    region CONSTANT (Mossinghoff-Trudgian direction), NOT the rate, NOT a proof of RH. -/
+theorem zeta_logDeriv_comb4_nonneg (σ t : ℝ) (hσ : 1 < σ) :
+    0 ≤ 20 * (-deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re
+      + 30 * (-deriv riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I) / riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+      + 12 * (-deriv riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I) / riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)).re
+      + 2 * (-deriv riemannZeta ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I) / riemannZeta ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I)).re := by
+  have e1 : -deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)
+      = LSeries (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) (σ : ℂ) :=
+    (ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div (by simpa using hσ)).symm
+  have e2 : -deriv riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I) / riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)
+      = LSeries (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + (t : ℂ) * Complex.I) :=
+    (ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div (by simpa using hσ)).symm
+  have e3 : -deriv riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I) / riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)
+      = LSeries (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I) :=
+    (ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div (by simpa using hσ)).symm
+  have e4 : -deriv riemannZeta ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I) / riemannZeta ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I)
+      = LSeries (fun k => (ArithmeticFunction.vonMangoldt k : ℂ)) ((σ : ℂ) + ((3 * t : ℝ) : ℂ) * Complex.I) :=
+    (ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div (by simpa using hσ)).symm
+  rw [e1, e2, e3, e4]
+  exact vonMangoldt_re_comb4_nonneg σ t hσ
+
 end ZeroFreeBridge
