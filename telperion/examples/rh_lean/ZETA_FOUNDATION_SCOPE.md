@@ -50,9 +50,11 @@ Beyond Mathlib, two external projects (not yet merged) cover more: Kontorovich-T
 
 The classical `zeta(s) != 0 for Re > 1 - c/log|t|` proof has a clean two-part structure:
 
-1. **The certificate (our distinctive strength, LOW effort).** The Mertens inequality
-   `3 + 4 cos θ + cos 2θ = 2(1 + cos θ)^2 >= 0`. Applied to `Re[3 log zeta(σ) + 4 log zeta(σ+it) +
-   log zeta(σ+2it)]` it gives `zeta(σ)^3 |zeta(σ+it)|^4 |zeta(σ+2it)| >= 1`. **Better** nonnegative
+1. **The certificate (our distinctive strength, LOW effort -- DONE, incl. the zeta bridge).** The
+   Mertens inequality `3 + 4 cos θ + cos 2θ = 2(1 + cos θ)^2 >= 0`. Applied to `Re[-zeta'/zeta]` at
+   `σ, σ+it, σ+2it` it gives `zeta(σ)^3 |zeta(σ+it)|^4 |zeta(σ+2it)| >= 1`. The certificate is verified
+   (`TrigNonneg`) AND proven to hold on the actual `-zeta'/zeta` Dirichlet series (`ZeroFreeBridge`,
+   below). **Better** nonnegative
    trig polynomials (higher degree, optimized coeffs; a Fejér-Riesz / sum-of-squares object) give a
    **better constant c** -- and certifying nonnegativity of a trig polynomial is exactly a
    worst-corner / SOS certificate (arXiv:1410.3926). This is a genuine Telperion emitter.
@@ -79,10 +81,29 @@ it computes `p(x) = sum a_k T_k(x)` (Chebyshev), factors it into the Markov-Luka
 `sq_nonneg`, completed squares by `positivity`).  Instances landed: the Mertens seed `3+4cos+cos2`
 plus `3+4cos+2cos2` and two cubics exercising the boundary-factor path.
 
-**Remaining for a real region (part b, NOT done):** the analytic assembly `|zeta(σ+it)| << log|t|`
-near σ=1 (the growth bound, absent from Mathlib) + the log-derivative / `vonMangoldt` machinery to turn
-`zeta(σ)^3 |zeta(σ+it)|^4 |zeta(σ+2it)| >= 1` into a zero-free region. Medium-high; coordinate with PNT+.
-Degree > 3 (for better constants) needs `Polynomial.Chebyshev.T_real_cos` in the emitter.
+### BUILT: `RH/ZeroFreeBridge.lean` -- the certificate meets zeta (part b, step 1 of 2)
+
+The Markov-Lukacs certificate above proves `3 + 4 cos θ + cos 2θ >= 0` as an abstract trig fact.
+**`ZeroFreeBridge` proves that inequality actually holds on the Dirichlet series of `-zeta'/zeta`**:
+for `σ > 1` and any `t`,
+```
+    0 <= 3 Re L(σ) + 4 Re L(σ+it) + Re L(σ+2it),   L(s) = LSeries(Λ, s) = -zeta'/zeta  (Re s > 1).
+```
+Five kernel-verified theorems (generator UNTRUSTED, Lean kernel sole arbiter):
+`mertens_three_four_one` (the seed) -> `cpow_re` (`Re(n^{-s}) = n^{-σ} cos(t log n)`, the crux) ->
+`term_re` (each Dirichlet term's real part) -> `term_comb_nonneg` (per-`n` the 3-4-1 combination is
+`Λ(n) n^{-σ} · (3 + 4cos(t log n) + cos(2t log n)) >= 0`) -> `vonMangoldt_re_comb_nonneg` (sum over `n`
+via `LSeriesSummable_vonMangoldt` + `Complex.re_tsum` + `tsum_nonneg`).  This is the **exact positivity**
+the classical de la Vallée Poussin argument runs on -- the `vonMangoldt` machinery the earlier scope note
+listed as missing is now formalized.
+
+**Remaining for a real region (part b, step 2 of 2, NOT done):** two analytic pieces still unformalized:
+(i) the passage from `-zeta'/zeta` positivity to the product bound `|zeta(σ)^3 zeta(σ+it)^4
+zeta(σ+2it)| >= 1` (integrate the log-derivative; relate `LSeries(Λ)` to `zeta` off Re>1); (ii) the zeta
+growth bound `|zeta(σ+it)| << log|t|` near σ=1 (absent from Mathlib). Both medium-high; coordinate with
+PNT+. Degree > 3 (for better constants) needs `Polynomial.Chebyshev.T_real_cos` in the emitter. The
+positivity heart -- the thing certificates are uniquely good at -- is done; what remains is classical
+complex analysis, not certificate-shaped.
 
 ## Why this is a REAL step (and its honest ceiling)
 

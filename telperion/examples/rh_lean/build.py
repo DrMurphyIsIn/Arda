@@ -51,6 +51,7 @@ FROZEN = {
     "BGGateStrictness": "bg_gate_strictness/frozen/BGGateStrictness.lean",  # 23-gate-strictness deficit certs (exact bignum divisibility)
     "BGParityLaw": "bg_parity_law/frozen/BGParityLaw.lean",  # per-n extremality parity law: exact extremal Phi^11 <1 (=1 @n=11), n<=14
     "BGCollectiveCancellation": "bg_collective_cancellation/frozen/BGCollectiveCancellation.lean",  # claim-1 obstruction: 2 per-vertex factors >1, product=1
+    "ZeroFreeBridge": "zero_free_bridge/frozen/ZeroFreeBridge.lean",  # THE BRIDGE: Mertens cert meets -zeta'/zeta -- 3ReL(s)+4ReL(s+it)+ReL(s+2it)>=0
 }
 
 

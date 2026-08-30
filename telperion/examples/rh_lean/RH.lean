@@ -10,6 +10,7 @@ import RH.BGOmegaEnclosure
 import RH.BGGateStrictness
 import RH.BGParityLaw
 import RH.BGCollectiveCancellation
+import RH.ZeroFreeBridge
 import RH.LogBound
 import RH.SqrtBracket
 import RH.PiBracket
