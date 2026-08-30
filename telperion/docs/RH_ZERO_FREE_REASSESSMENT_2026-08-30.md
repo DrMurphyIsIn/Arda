@@ -204,3 +204,25 @@ the classical zero-free-region method — the whole cosine cone, with its admiss
 which is analytic — discrete in places, scale-recursive at the VK frontier — and carries no finite algebraic
 certificate. The proof is exactly what it is and no more: the algebraic-certificate frontier of the zero-free
 region, drawn precisely, with its far edge proven. `conjecture1_proved = False`.
+
+## 8. Layer 2 formalization feasibility (agentic research campaign, 2026-08-30)
+
+To actually *build* a piece of the magnitude layer, a 3-agent research campaign (+ a direct Mathlib doc fetch)
+audited what Lean 4 Mathlib v4.32.0 offers for `|ζ(σ+it)|` bounds on `0 < Re s < 1`:
+
+- **Mathlib HAS:** `riemannZeta` continued to all `s`; the functional equation (`riemannZeta_one_sub`,
+  `completedRiemannZeta_one_sub`); Hurwitz/Mellin kernels with exponential-decay bounds; `PhragmenLindelof.vertical_strip`;
+  `isBigO_riemannZeta_sub_one_div` (`ζ(s)−1/(s−1)` bounded near `s=1`); `Mathlib.NumberTheory.AbelSummation`;
+  `Int.fract`, interval integrals, `MeasureTheory.norm_integral_le_integral_norm`.
+- **Mathlib LACKS (confirmed by direct doc fetch):** any integral representation of ζ, the Dirichlet-eta
+  relation `η=(1−2^{1−s})ζ`, any strip growth bound on `‖riemannZeta‖`, and Euler–Maclaurin. So a bound-friendly
+  representation must be **built** — there is no ready-made strip bound to invoke.
+- **Overclaim caught (3rd of the session):** an agent proposed a "constant-in-t" strip bound `|ζ(σ+it)| ≤ C(σ)`
+  via the eta route. FALSE — ζ is *unbounded* on vertical strip lines. The Dirichlet-test slip treated the
+  summand as the real monotone `n^{−σ}` when it is the complex `n^{−s}`, whose smooth-part variation contributes
+  `|s|∼|t|`. Honest crude target: `≪ |t|`.
+- **Recommended route (`docs`/plan):** the fractional-part integral `ζ(s)=s/(s−1)−s∫_1^∞{x}x^{−s−1}dx` on
+  `Re s>0` (via Abel summation + identity theorem), then `|{x}|≤1` gives `|ζ(σ+it)| ≤ C(σ)(1+|t|)` on a compact
+  strip sub-interval — the honest first *growth* brick. The representation itself is a genuine Mathlib gap-filler.
+  Scope: crude `≪|t|`, not the sharp `≪|t|^{1-σ}` nor the `≪log|t|` that feeds the region; and the VK *rate*
+  needs VMVT, absent from Mathlib. `conjecture1_proved = False`.
