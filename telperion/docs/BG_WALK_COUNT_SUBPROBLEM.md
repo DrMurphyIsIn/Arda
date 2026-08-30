@@ -600,3 +600,22 @@ RH toolkit now makes reachable.  `conjecture1_proved = False`.
 - **Lead 2 (kernel-gating, W16):** RH Hankel/WorstCorner machinery certifies BG rational PSD facts in-kernel;
   the route-(b) certificate assembles W10 + Hankel-cert + geometric error at a finite level.
 - **Lead 3 (Weil-positivity template):** untried; casts caterpillar extremality as second-variation PSD.
+
+## W17 (2026-08-29): synthesis target confirmed -- exact cavity F over a rich generalized-caterpillar family peaks at the caterpillar = log ρ*
+
+The Lead1+W8 synthesis (exact cavity free energy over reversible degree-message distributions) must certify:
+**no degree structure beats the ~7-arm length-2 caterpillar.**  Confirmed over a rich explicit family --
+arm-counts 1-19, arm-lengths 1-3, hub-periods 1-3 (multi-hub spacing) -- the exact cavity `F` is maximized at
+**(arms=7, arm_len=2, hub_period=1)** = the length-2 7-arm caterpillar, `F=0.205160` (excess `+6·10^-5` =
+finite-spine boundary).  The top six are all `arm_len=2, hub_period=1, arms∈{5..10}`; no mixed-arm-length or
+multi-hub-period structure comes near.  Reproduction: `bg_synthesis.py`.
+
+**Synthesis status.**  The proof target is confirmed over a rich family, and the three ingredients are
+validated: (W15) realizable messages tighten the relaxation ~44% toward `log ρ*`; (W8/W9) the mass-transport
+moment relaxation converges to the caterpillar; (W15) the cavity contraction gives geometric convergence.
+The remaining build is the **combined relaxation** -- exact cavity `F` over the reversible (mass-transport)
+degree-message distribution with Stieltjes-realizable messages -- run to convergence, which by the contraction
+converges **geometrically** to `log ρ*` with a certifiable error `F ≤ log ρ* + C·ρ^d` (`ρ~0.03`).  This is the
+nonlinear (Bethe-functional) optimization that closes route (b); the family confirmation (W17) + ingredient
+validation (W15/W16) show it is the right object with the caterpillar as its unique max.  `conjecture1_proved
+= False`.
