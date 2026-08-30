@@ -456,4 +456,36 @@ theorem admissible_boundary_contradiction (N : ℕ) (hN : 2 ≤ N) (a : ℕ → 
   have ha1pos : 0 < a 1 := lt_of_le_of_lt (hcoef 0) hadm
   nlinarith [htail, hge, hadm, mul_le_mul_of_nonneg_left hr1 ha1pos.le]
 
+/- ===================================================================================
+   MAGNITUDE LAYER (Layer 2) -- first brick.  The reassessment
+   (docs/RH_ZERO_FREE_REASSESSMENT_2026-08-30) located the frontier BEYOND the (Fejer-capped)
+   positivity layer in the MAGNITUDE bound |zeta(sigma+it)|.  This is the sigma>1 BASE CASE: the
+   elementary Dirichlet-triangle bound  |zeta(s)| <= sum_n (n+1)^{-Re s} = zeta(Re s).  It is NOT
+   the frontier -- the zero-free-region improvement needs |zeta| growth INSIDE the critical strip
+   (|zeta(sigma+it)| << |t|^{1-sigma}, or << log|t| near sigma=1), which needs Euler-Maclaurin / the
+   {x}-integral continuation (the harder next piece, Mathlib-API dependent).  This brick is the honest
+   base: |zeta| is finite for sigma>1, and the RHS blows up like 1/(sigma-1) as sigma->1+, which is
+   exactly why the strip needs the finer bound.  A different KIND of object from the positivity certs
+   (a magnitude bound, not a positivity), opening Layer 2.  conjecture1_proved = False. -/
+
+/-- Norm of a single zeta Dirichlet-series term: `‖1/(n+1)^s‖ = (n+1)^{-Re s}`. -/
+theorem norm_one_div_natAddOne_cpow (n : ℕ) (s : ℂ) :
+    ‖(1 : ℂ) / ((n : ℂ) + 1) ^ s‖ = ((n : ℝ) + 1) ^ (-s.re) := by
+  have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  rw [norm_div, norm_one, show ((n : ℂ) + 1) = (((n : ℝ) + 1 : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_cpow_eq_rpow_re_of_pos hpos, Real.rpow_neg hpos.le, one_div]
+
+/-- The `σ>1` magnitude base case: `‖ζ(s)‖ ≤ ζ(Re s)` (Dirichlet triangle inequality). -/
+theorem norm_riemannZeta_le_re (s : ℂ) (hs : 1 < s.re) :
+    ‖riemannZeta s‖ ≤ ∑' n : ℕ, ((n : ℝ) + 1) ^ (-s.re) := by
+  have hsum : Summable (fun n : ℕ => ‖(1 : ℂ) / ((n : ℂ) + 1) ^ s‖) := by
+    have h1 : Summable (fun n : ℕ => (n : ℝ) ^ (-s.re)) := by
+      simpa [Real.rpow_neg, one_div] using Real.summable_one_div_nat_rpow.mpr hs
+    have h2 : Summable (fun n : ℕ => ((n : ℝ) + 1) ^ (-s.re)) :=
+      ((summable_nat_add_iff 1).mpr h1).congr (fun n => by push_cast; ring_nf)
+    exact h2.congr (fun n => (norm_one_div_natAddOne_cpow n s).symm)
+  rw [riemannZeta_eq_tsum_one_div_nat_add_one_cpow hs]
+  refine (norm_tsum_le_tsum_norm hsum).trans (le_of_eq ?_)
+  exact tsum_congr (fun n => norm_one_div_natAddOne_cpow n s)
+
 end ZeroFreeBridge
