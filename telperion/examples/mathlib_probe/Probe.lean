@@ -1,39 +1,26 @@
-/- PROBE 2: signatures needed to build  residue_logDeriv  (order = residue of logDeriv),
-   and to pin the three orders for riemannZeta at 1, 1+it, 1+2it. -/
+/- PROBE 3: exact sigs (logDeriv_zpow/comp, deriv_zpow, AnalyticAt.meromorphicOrderAt_eq)
+   + how Mathlib expresses riemannZeta meromorphy / the pole at s=1. -/
 import Mathlib
 open Filter Topology
 
--- is zeta globally meromorphic? and its order at the pole s=1?
-#check @meromorphic_riemannZeta
-#check @riemannZeta_residue_one
-#check @MeromorphicOn
-#check @MeromorphicAt
-
--- meromorphic <-> analytic order bridging (for the zero points where zeta is analytic):
-#check @AnalyticAt.meromorphicAt
-#check @analyticOrderAt_eq_zero_iff
-#check @meromorphicOrderAt_eq_zero_iff
-#check @AnalyticAt.meromorphicOrderAt_eq
-#check @analyticOrderAt_pos_iff
-
--- order from a nonzero limit of (z-z0)^k f  (to get order(zeta,1) = -1 from residue):
-#check @meromorphicOrderAt_eq_neg_one_iff
-#check @meromorphicOrderAt_eq_int_iff
-#check @MeromorphicAt.meromorphicOrderAt_eq
-
--- deriv/logDeriv of the shifted zpow  (z-z0)^n  and helpers:
-#check @deriv_zpow
+set_option pp.fieldNotation false in
+section sigs
 #check @logDeriv_zpow
-#check @deriv_sub_const
-#check @logDeriv_mul
-#check @logDeriv_id'
 #check @logDeriv_comp
+#check @deriv_zpow
+#check @AnalyticAt.meromorphicOrderAt_eq
+#check @EventuallyEq.deriv_eq
+end sigs
 
--- more packaged-residue guesses:
-#check @MeromorphicAt.tendsto_logDeriv
-#check @meromorphicOrderAt_eq_of_tendsto
-#check @logDeriv_sub
+-- How is zeta meromorphic at 1?  Try candidate names / provability.
+#check @meromorphicOn_riemannZeta
+#check @riemannZeta_meromorphicOn
+#check @MeromorphicOn.riemannZeta
 
--- transfer deriv/logDeriv through eventual equality:
-#check @Filter.EventuallyEq.logDeriv_eq
-#check @Filter.EventuallyEq.deriv_eq
+-- Can we get MeromorphicAt riemannZeta 1 at all?
+example : MeromorphicAt riemannZeta 1 := by
+  exact?
+
+-- Is (s-1)*zeta analytic at 1 (removable) -- the residue as an analytic handle?
+example : AnalyticAt ℂ (fun s => (s - 1) * riemannZeta s) 1 := by
+  exact?
