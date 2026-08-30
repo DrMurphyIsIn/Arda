@@ -254,6 +254,33 @@ consistency across the tree (not just local types), a Guerra-Toninelli interpola
 argument. The surface-term insight (`§4`, `#edges=n−1`) remains the correct way to *exclude forests*, but it
 does not by itself make the local discharge tight. `conjecture1_proved = False`.
 
+## 7. Phase-0 falsification battery (post-plan, majorization architecture)
+
+Following the 4-agent literature dive (which redirected away from Guerra–Toninelli interpolation — the wrong
+tool, it compares to a random reference and ignores connectedness — toward **majorization + connectedness via
+path-cover + a signed-log certificate**), Phase 0 tests the new architecture. First result:
+
+**P0.1 — the fixed-degree reduction (verified, robust; `phase0/P0_1_fixed_degree_majorization.py`).** Generating
+random trees with the caterpillar's *exact degree multiset* (via random Prüfer sequences with fixed
+multiplicities) and comparing to the caterpillar arrangement, across 5 degree sequences (300–500 samples each):
+- The **caterpillar arrangement is the F-maximizer** at fixed degree sequence — by a large margin (e.g. F=0.2053
+  vs random range [0.148, 0.179]); 0 of 500 random arrangements beat it.
+- `F ≈ 0.42·m₁ + const`, with **Spearman `corr(F, m₁) ≈ 0.99`** (F nearly *monotone* in `m₁`), where
+  `m₁ = (1/N)Tr(N²) = (2/N)Σ_edges 1/(d_u d_v)` is a **weighted Randić index**. Residual std ~5e-4, max ~1.7e-3
+  ≪ the caterpillar's F-advantage (~0.021).
+- The caterpillar is also the **m₁-maximizer** (by ~0.049, ≫ residual) in every case.
+
+**Consequence.** At a fixed degree sequence, the feared alternating-sign obstruction (ingredient IV) is *mild*:
+`F` is dominated by the first moment `m₁`, so ingredient (I)+(IV) reduces to **"the caterpillar maximizes the
+weighted Randić index `Σ 1/(d_u d_v)` among trees with a given degree sequence, and `F` is monotone in it."**
+Maximizing the Randić index over trees with a given degree sequence is a classical extremal-graph problem
+(connects to the greedy-tree / M-tree degree-sequence machinery, Andriantiana–Wagner arXiv:2008.00722); `F`'s
+near-monotonicity in `m₁` is a Schur/real-stability statement with a small, boundable residual. This is a far
+more tractable target than the "no distant competitor" barrier. Remaining: (a) confirm/prove caterpillar =
+global fixed-degree Randić-maximizer (vs a smart hub-separated arrangement, not just random samples); (b) bound
+the F–m₁ residual via Heilmann–Lieb real-rootedness; (c) ingredient (II) across degree sequences (piece 2 +
+reduction); (d) ingredient (III) connectedness via path-cover. `conjecture1_proved = False`.
+
 ## Appendix — reproduction scripts (offline, `/tmp` during development)
 
 `bg_m3_derive.py` (integrand derivation + verification), `bg_m3_flagLP2.py` / `bg_m3_flagL2.py` (reversible
