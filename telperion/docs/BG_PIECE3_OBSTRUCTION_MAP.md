@@ -281,6 +281,24 @@ global fixed-degree Randić-maximizer (vs a smart hub-separated arrangement, not
 the F–m₁ residual via Heilmann–Lieb real-rootedness; (c) ingredient (II) across degree sequences (piece 2 +
 reduction); (d) ingredient (III) connectedness via path-cover. `conjecture1_proved = False`.
 
+**P0.1b — caterpillar = fixed-degree m₁-max (verified by optimization).** Degree-preserving-swap hill-climbing
+on `m₁` yields NO improvement from the caterpillar; random starts converge back to the caterpillar's `m₁`. So
+(a) is confirmed at the local/global-empirical level: the caterpillar is the genuine fixed-degree Randić-max.
+
+**P0.1c — the moment shape + the SSD over-claim (verification caught it).** The caterpillar's measure has the
+LARGEST low moments (m₁, m₂) and the SMALLEST high moments (m₃…m₈) — the most *concentrated* spectral measure,
+exactly the shape that maximizes `∫(concave increasing)`. This suggested **second-order stochastic dominance
+(SSD)** as a clean form of ingredient (IV). SSD held for all 300 *random* same-degree trees and 8 concave φ —
+**but it is FALSE**: against F-hill-climbed (strong) competitors the caterpillar SSD-dominates only 21–104 of
+120. So SSD is *too strong*; the caterpillar wins F specifically, not every concave functional. And the crude
+log sandwich `½m₁−¼m₂ ≤ F ≤ ½m₁` is too loose to close it (`½m₂≈0.17 ≫` the ~0.049 m₁-gap). **Net honest state
+of ingredient (IV):** the fixed-degree reduction is real and strong (caterpillar = m₁-max = F-max, F~m₁ at
+corr 0.99), but the *rigorous* mechanism is the delicate m₁-dominated alternating-sign sum
+`F(cat)−F(T)=½Δm₁−¼Δm₂+⅙Δm₃−…` (Δm₁>0, Δm₂>0, Δm₃<0,… — alternating good/bad, net positive), which neither SSD
+nor a crude moment sandwich captures. Tractable (m₁ dominates) but not yet a clean theorem — the genuine
+remaining analytic content. Scripts: `phase0/P0_1b_hillclimb_m1.py` + the SSD/moment probes.
+`conjecture1_proved = False`.
+
 ## Appendix — reproduction scripts (offline, `/tmp` during development)
 
 `bg_m3_derive.py` (integrand derivation + verification), `bg_m3_flagLP2.py` / `bg_m3_flagL2.py` (reversible
