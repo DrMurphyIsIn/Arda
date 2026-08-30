@@ -31,7 +31,12 @@ jobs:
           python-version: ${{ matrix.python }}
       # cvxpy provides the SDP backend the SOS route (prove_goal Phase 0.1 kind-
       # router) uses to certify interior ties; without it those tests can't run.
-      - run: pip install "${{ matrix.sympy }}" pytest networkx numpy cvxpy
+      # pytest/numpy are PINNED: the unpinned install began pulling pytest 9.x
+      # (a major release), which aborts the run mid-suite with exit 2 and no
+      # summary on py3.11-3.13 (the suite itself is green -- 864 passed locally
+      # on pytest 8.x). Cap pytest to the supported 8.x line and numpy below the
+      # co-bumped 2.5 until the suite is audited for pytest-9 compatibility.
+      - run: pip install "${{ matrix.sympy }}" "pytest>=8,<9" networkx "numpy<2.5" cvxpy
       - name: Unit tests
         working-directory: telperion
         # test_bellman_rigidity's two value_function(max_size=14) tests are
