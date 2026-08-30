@@ -322,4 +322,81 @@ theorem zeta_logDeriv_comb4_nonneg (σ t : ℝ) (hσ : 1 < σ) :
   rw [e1, e2, e3, e4]
   exact vonMangoldt_re_comb4_nonneg σ t hσ
 
+/- ===================================================================================
+   GENERAL DEGREE-n CERTIFICATE.  Everything above is the n=2 (Mertens) and n=3 instances of
+   a single statement: ANY pointwise-nonnegative cosine polynomial
+       P(φ) = sum_{k < N} a k * cos (k φ) >= 0
+   yields the zero-free-region positivity on -zeta'/zeta.  This subsumes the (1+cos)^n family
+   (`one_add_cos_pow_nonneg`, whose cosine coefficients are all >= 0) and every Mossinghoff-Trudgian
+   optimal polynomial -- the whole certificate cone, at once, for arbitrary degree.
+   Generator UNTRUSTED, Lean kernel sole arbiter.  Still FEEDS the classical region constant only,
+   NOT the Vinogradov-Korobov rate, NOT a proof of RH.  conjecture1_proved = False.
+   =================================================================================== -/
+
+/-- Real part of the `k`-th shifted argument `σ + i k t` is `σ`. -/
+theorem shift_re (σ t : ℝ) (k : ℕ) :
+    ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I).re = σ := by
+  simp [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im]
+
+/-- Imaginary part of the `k`-th shifted argument `σ + i k t` is `k t`. -/
+theorem shift_im (σ t : ℝ) (k : ℕ) :
+    ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I).im = (k : ℝ) * t := by
+  simp [Complex.add_im, Complex.mul_im, Complex.I_re, Complex.I_im]
+
+open Finset in
+/-- GENERAL degree-`N` zero-free positivity.  For ANY coefficient sequence `a : ℕ → ℝ` whose
+    cosine polynomial is pointwise nonnegative (`∀ φ, 0 ≤ ∑_{k<N} a k · cos (k φ)`), the matching
+    `-ζ'/ζ` combination is nonnegative for `Re s > 1`:
+      `0 ≤ ∑_{k<N} a k · Re(-ζ'/ζ)(σ + i k t)`.
+    The degree-2 Mertens `(3,4,1)`, the degree-3 `(20,30,12,2)`, and the whole `2^n(1+cos)^n` family
+    are instances.  A certificate FEEDING the classical zero-free-region CONSTANT, NOT a proof of RH. -/
+theorem cosine_comb_zeta_nonneg (N : ℕ) (a : ℕ → ℝ)
+    (hP : ∀ φ : ℝ, 0 ≤ ∑ k ∈ range N, a k * Real.cos ((k : ℝ) * φ))
+    (σ t : ℝ) (hσ : 1 < σ) :
+    0 ≤ ∑ k ∈ range N, a k *
+      (-deriv riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)
+        / riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)).re := by
+  have hre : ∀ k : ℕ, 1 < ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I).re := by
+    intro k; rw [shift_re]; exact hσ
+  have hsum : ∀ k : ℕ, Summable (fun m => (LSeries.term
+      (fun j => (ArithmeticFunction.vonMangoldt j : ℂ))
+        ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I) m).re) := fun k =>
+    (ArithmeticFunction.LSeriesSummable_vonMangoldt (hre k)).map Complex.reCLM Complex.reCLM.cont
+  -- rewrite each -ζ'/ζ as the von Mangoldt L-series, then its Re as a tsum of term.re
+  have hstep : ∀ k ∈ range N,
+      a k * (-deriv riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)
+              / riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)).re
+        = ∑' m, a k * (LSeries.term (fun j => (ArithmeticFunction.vonMangoldt j : ℂ))
+              ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I) m).re := by
+    intro k _
+    have h1 : -deriv riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)
+              / riemannZeta ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)
+        = LSeries (fun j => (ArithmeticFunction.vonMangoldt j : ℂ))
+              ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I) :=
+      (ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div (hre k)).symm
+    have h2 : (LSeries (fun j => (ArithmeticFunction.vonMangoldt j : ℂ))
+              ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I)).re
+        = ∑' m, (LSeries.term (fun j => (ArithmeticFunction.vonMangoldt j : ℂ))
+              ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I) m).re :=
+      Complex.re_tsum (ArithmeticFunction.LSeriesSummable_vonMangoldt (hre k))
+    rw [h1, h2, tsum_mul_left]
+  rw [Finset.sum_congr rfl hstep, ← tsum_sum (fun k _ => (hsum k).mul_left (a k))]
+  apply tsum_nonneg
+  intro m
+  rcases Nat.eq_zero_or_pos m with rfl | hpos
+  · simp [LSeries.term]
+  · have hfac : ∀ k : ℕ, a k * (LSeries.term (fun j => (ArithmeticFunction.vonMangoldt j : ℂ))
+          ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I) m).re
+        = (ArithmeticFunction.vonMangoldt m * (m : ℝ) ^ (-σ))
+            * (a k * Real.cos ((k : ℝ) * (t * Real.log m))) := by
+      intro k
+      rw [term_re m hpos ((σ : ℂ) + (((k : ℝ) * t : ℝ) : ℂ) * Complex.I), shift_re, shift_im,
+          mul_assoc (k : ℝ) t (Real.log m)]
+      ring
+    rw [Finset.sum_congr rfl (fun k _ => hfac k), ← Finset.mul_sum]
+    exact mul_nonneg
+      (mul_nonneg ArithmeticFunction.vonMangoldt_nonneg
+        (Real.rpow_pos_of_pos (by exact_mod_cast hpos) _).le)
+      (hP (t * Real.log m))
+
 end ZeroFreeBridge

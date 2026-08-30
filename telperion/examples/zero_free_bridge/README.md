@@ -1,7 +1,7 @@
 # zero_free_bridge — the Mertens certificate meets ζ (kernel-gated)
 
 Hand-written, Mathlib-only frozen Lean (`lean/ZeroFreeBridge.lean`, kernel-checked by
-`telperion-lean-e2e` via `lake build`). 16 theorems, generator UNTRUSTED, the Lean kernel the sole
+`telperion-lean-e2e` via `lake build`). 19 theorems, generator UNTRUSTED, the Lean kernel the sole
 arbiter. `conjecture1_proved = False` — this is **not** a proof of RH.
 
 ## What it proves
@@ -37,6 +37,13 @@ region *constant*. The `(1+cos)ⁿ` family gives clean Fejér–Riesz certificat
 `F = 0.02296` vs `0.01436` (1.60× wider, leading order). Carried onto `−ζ'/ζ` in `zeta_logDeriv_comb4_nonneg`:
 `20 Re(−ζ'/ζ)(σ) + 30 Re(−ζ'/ζ)(σ+it) + 12 Re(−ζ'/ζ)(σ+2it) + 2 Re(−ζ'/ζ)(σ+3it) ≥ 0` for `σ>1`. This
 improves the classical-region **constant only** — not the Vinogradov–Korobov *rate*, and not RH.
+
+**The general degree-n certificate.** `cosine_comb_zeta_nonneg` collapses all of the above into one
+statement: for **any** coefficient sequence `a : ℕ → ℝ` whose cosine polynomial is pointwise nonnegative
+(`∀φ, 0 ≤ Σ_{k<N} a k · cos(kφ)`), the matching `−ζ'/ζ` combination `0 ≤ Σ_{k<N} a k · Re(−ζ'/ζ)(σ+ikt)`
+holds for `σ>1`. The degree-2 Mertens `(3,4,1)`, the degree-3 `(20,30,12,2)`, and the whole `2ⁿ(1+cos)ⁿ`
+family (`one_add_cos_pow_nonneg`) are instances — the entire nonnegative-cosine certificate cone, at
+arbitrary degree, in one kernel-checked theorem.
 
 ## Honest scope
 
