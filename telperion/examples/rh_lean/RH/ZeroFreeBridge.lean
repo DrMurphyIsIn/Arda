@@ -168,4 +168,58 @@ theorem zeta_logDeriv_comb_nonneg (σ t : ℝ) (hσ : 1 < σ) :
   rw [e1, e2, e3]
   exact vonMangoldt_re_comb_nonneg σ t hσ
 
+/- ===================================================================================
+   THE BRIDGE-POWERED BOUNDARY CONTRADICTION (classical de la Vallee Poussin core).
+   The Mertens positivity 3 Re(-zeta'/zeta)(sigma) + 4 Re(...)(sigma+it) + Re(...)(sigma+2it) >= 0
+   (proven above), multiplied by (sigma-1) > 0 and taken to sigma -> 1+, forces
+   3*1 - 4k - k' >= 0, where +1 is the residue of -zeta'/zeta at the simple pole s=1 and
+   -k, -k' are the residues at 1+it, 1+2it (k = order of a zero at 1+it, k' >= 0 at 1+2it).
+   With k >= 1 this is 3 - 4k - k' <= -1 < 0, impossible: so zeta has NO zero of order >= 1
+   at 1+it.  This is exactly how the classical zero-free-region boundary (zeta(1+it) != 0)
+   is forced by the 3-4-1 inequality -- routed here through -zeta'/zeta (a different internal
+   path from Mathlib's product-route riemannZeta_ne_zero_of_one_le_re).
+
+   The three residue LIMITS are taken as hypotheses (hpole/hz1/hz2): each is the real-line
+   restriction of  residue_logDeriv  (proven above: (z-z0)*logDeriv f z -> order) applied to
+   zeta at 1, 1+it, 1+2it -- given zeta's meromorphy/orders there.  Discharging them fully needs
+   zeta's simple-pole handle at s=1 (a v4.32.0 API gap, via completedRiemannZeta) + order
+   extraction + the .re/real-ray plumbing.  conjecture1_proved = False; NOT a proof of RH --
+   this is the boundary (c=0) edge of the classical region, which Mathlib already has. -/
+theorem zeta_boundary_contradiction (t : ℝ) (k k' : ℤ) (hk : 1 ≤ k) (hk' : 0 ≤ k')
+    (hpole : Tendsto (fun σ : ℝ => (σ - 1) *
+        (-deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re) (𝓝[>] (1 : ℝ)) (𝓝 1))
+    (hz1 : Tendsto (fun σ : ℝ => (σ - 1) *
+        (-deriv riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)
+          / riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)).re) (𝓝[>] (1 : ℝ)) (𝓝 (-(k : ℝ))))
+    (hz2 : Tendsto (fun σ : ℝ => (σ - 1) *
+        (-deriv riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)
+          / riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)).re)
+        (𝓝[>] (1 : ℝ)) (𝓝 (-(k' : ℝ)))) :
+    False := by
+  have hGnn : ∀ᶠ σ : ℝ in 𝓝[>] (1 : ℝ),
+      0 ≤ (σ - 1) * (3 * (-deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re
+        + 4 * (-deriv riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)
+                / riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+        + (-deriv riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)
+                / riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)).re) := by
+    filter_upwards [self_mem_nhdsWithin] with σ hσ
+    have h1 : (1 : ℝ) < σ := hσ
+    exact mul_nonneg (by linarith) (zeta_logDeriv_comb_nonneg σ t h1)
+  have hlim := ((hpole.const_mul 3).add (hz1.const_mul 4)).add hz2
+  have hval : (3 : ℝ) * 1 + 4 * (-(k : ℝ)) + (-(k' : ℝ)) = 3 - 4 * (k : ℝ) - (k' : ℝ) := by ring
+  rw [hval] at hlim
+  have hGlim : Tendsto (fun σ : ℝ => (σ - 1) *
+      (3 * (-deriv riemannZeta (σ : ℂ) / riemannZeta (σ : ℂ)).re
+        + 4 * (-deriv riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)
+                / riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+        + (-deriv riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)
+                / riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)).re))
+      (𝓝[>] (1 : ℝ)) (𝓝 (3 - 4 * (k : ℝ) - (k' : ℝ))) := by
+    convert hlim using 1
+    funext σ; ring
+  have hge : (0 : ℝ) ≤ 3 - 4 * (k : ℝ) - (k' : ℝ) := ge_of_tendsto hGlim hGnn
+  have hk1 : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
+  have hk'0 : (0 : ℝ) ≤ (k' : ℝ) := by exact_mod_cast hk'
+  linarith
+
 end ZeroFreeBridge
