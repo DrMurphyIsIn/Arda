@@ -513,3 +513,39 @@ families gives **cat a=7 = 0.205140 (MAX)**, cat a=6/a=8 = 0.20511 (near), cat a
 0.18882, star 0.00231, double-broom 0.06558; and `log ρ* = 0.205098` (cat a=7's `+0.00004` excess is
 K=4 envelope order). So the local polynomial functional `G` is maximized by the caterpillar at exactly
 `log ρ*` — the well-posed, scoped W4d′ target. `conjecture1_proved = False`.
+
+## W14 (2026-08-29): RH-toolkit review for BG leads -- Heilmann-Lieb = Lee-Yang = the W13 contraction, with real-stability certificate vocabulary
+
+Reviewed the RH-side Telperion skillset (`turan`, `jensen`, `hankel_jensen`, `interlacing`, `toeplitz`,
+`weil_positivity`, `trig_nonneg`) for leads into the BG cavity/density bound.  It is a **real-rootedness /
+PSD-positivity** vocabulary, and it plugs into BG through one deep fact.
+
+**The connecting fact (verified).** `per(L)/∏deg = ∏_{λ>0}(1+λ²) = |char_N(i)| = ∏_{all λ}√(1+λ²)`, where
+`char_N` = characteristic polynomial of `N=D^{-1/2}AD^{-1/2}`, which is **real-rooted** (N symmetric;
+equivalently the weighted matching polynomial, real-rooted by **Heilmann-Lieb 1972**).  Checked exactly on
+path/star/caterpillar (match to 1e-9).  So `F(T)=(1/n)log|char_N(i)|` is a real-rooted-polynomial evaluation
+on the imaginary axis, and Heilmann-Lieb is precisely a **Lee-Yang / "zeros-on-a-line" theorem** -- an
+*already-proven* RH-analog for the matching polynomial.
+
+**Three leads.**
+1. **(deep, frontier) Heilmann-Lieb -> Stieltjes cavity -> the W13 global contraction, made rigorous.** The
+   cavity ratio `μ(T−v)/μ(T)` is a **Stieltjes continued fraction** (Godsil interlacing + Heilmann-Lieb);
+   the cavity map `x ↦ Σ w/(1+x)` is a Stieltjes/Herglotz contraction with a *unique* fixed point (the W13
+   "no phase transition => contraction", now with a name).  Crucially, this is the **realizability
+   constraint the W13 local potential lacked**: messages are not free in [0,1], they are Stieltjes
+   continued-fraction values.  The RH `interlacing.py` (Wronskian real-stability, SOS-of-Wronskian) is the
+   certificate vocabulary for exactly this.  Resuming BG = build the Stieltjes/interlacing bound on the
+   cavity free energy (the honest exact route; local potentials provably plateau, W6-W13).
+2. **(buildable) kernel-gate the moment-SDP via `HankelJensenCertificate`/`WorstCorner`.** The RH
+   `hankel_minors` + `WorstCornerCertificate` machinery certifies Hankel-PSD over rational brackets IN-KERNEL
+   (Hermite's criterion) -- exactly the moment-realizability of W7a.  Reuse to kernel-gate the BG moment
+   bound; with the W10 flag-discharge cut cert this gives a fully kernel-gated route-(b) finite level.
+3. **(angle) Weil-positivity template.** Weil's form (PSD quadratic form <=> RH) suggests casting the BG
+   extremality as PSD of the cavity free energy's **second variation** at the caterpillar fixed point,
+   certified via `WorstCorner` -- "caterpillar is the max" as a positivity certificate.
+
+**Extra structural constraint spotted.** Real-rootedness gives the matching numbers `c_k` (`= e_k(λ²)`)
+**nonnegative + Newton log-concave** (verified) -- a constraint on the tree moment body BEYOND the generic
+power-sum Hankel-PSD used in W7/W12.  Worth adding to the moment relaxation (does not exclude the single
+edge -- a real tree -- but may tighten the non-tree relaxation).  Reproduction: `bg_rh_toolkit_lead.py`.
+`conjecture1_proved = False`.
