@@ -73,10 +73,42 @@ zero-free-region constant — is exactly what this program optimizes, and exactl
   its own controls, converge on a sharp, honest statement of where the certificate method ends and why —
   which is the deliverable. Not a proof; a map with its edges proven.
 
+## 5b. Dig deeper — CORRECTION: the mechanism is MAGNITUDE, not "positivity recursion"
+
+§2–4 asserted the gap to RH is "the rate/shape, non-certificate-shaped." That was right on the outcome
+but I tried to sharpen the *mechanism* as "finite positivity vs scale-recursive positivity" — and a
+hostile expert refuted that as a **category error** (sourced: Tenenbaum II.5; Montgomery–Vaughan 11.1;
+Iwaniec–Kowalski 5.5; Bourgain–Demeter–Guth 2016; Wooley 2018). The correct structure of Vinogradov–Korobov
+is **three separate layers**:
+
+1. **Finite positivity (the 3-4-1 / cosine-polynomial inequality)** — *UNCHANGED* between the classical
+   region and VK. Both use the *same* positivity. This is the layer `zero_free_bridge` formalizes and
+   optimizes (to the Fejér ceiling).
+2. **Magnitude bound `|ζ(σ+it)|` in the critical strip** — the layer VK *improves*, via Vinogradov's mean
+   value theorem / exponential sums (Weyl differencing, ℓ²-decoupling, Wooley efficient congruencing). These
+   are scale-recursive and *positivity-flavored* (`|S|² ≥ 0` autocorrelation; ℓ² orthogonality) but are
+   **iterated Cauchy–Schwarz / induction-on-scales, NOT finite SOS certificates**, and they bound a
+   **magnitude**, not the positivity of a Dirichlet series.
+3. **Hadamard / Borel–Carathéodory extraction** — turns the magnitude bound into the zero-free region.
+
+So the honest dichotomy is **finite positivity (shared, Fejér-capped) vs scale-recursive MAGNITUDE bound
+(the actual lever)** — not "positivity vs recursed-positivity." Calling Weyl/decoupling "positivity" or
+"certificates" overclaims: they use squares, but they are not SOS witnesses.
+
+**This STRENGTHENS the no-go.** The certificate program optimizes Layer 1 — but Layer 1 is *shared with VK
+and already at its ceiling*, so it was never the bottleneck. The entire reach beyond `1−O(1)/log|t|` is
+gated by Layer 2, the magnitude bound on `|ζ|`, which is a *different object* the positivity certificate
+does not touch at all. "Improve the certificate" is therefore provably the wrong lever: it refines an
+already-shared, already-capped layer while the actual frontier (the `|ζ|` bound) sits in a layer with no
+finite-certificate structure. The `1/log|t|` → `1/(log t)^{2/3}` shape improvement is *entirely* Layer 2.
+(My "positivity recursion" framing is retracted; adversarial verification caught it.)
+
 ## 5. Bottom line
 
-`zero_free_bridge` is a correct, gap-free, kernel-checked formalization of a classical method whose horizon
-is now *provably known* to fall infinitely short of RH — collapsing onto σ=1 at large height, capped by
-Fejér, its gap to RH being the height-dependent shape it cannot touch. The honest posture is unchanged and
-now precise: a real certificate on RH's proven frontier, with its reach measured exactly.
-`conjecture1_proved = False`.
+`zero_free_bridge` is a correct, gap-free, kernel-checked formalization of the classical zero-free program's
+**Layer 1 (finite positivity)** — a layer that is *shared* with Vinogradov–Korobov and already at its Fejér
+ceiling. Its horizon (`1−O(1)/log|t|`, collapsing onto σ=1) is provably fixed not by any weakness in the
+positivity but by **Layer 2, the magnitude bound `|ζ(σ+it)|`**, which the certificate does not touch and
+which carries no finite-certificate structure. The honest posture, corrected and sharpened by adversarial
+verification: a faithful in-kernel formalization of the *positivity* layer, whose reach is capped, whose gap
+to RH is precisely the *magnitude* layer — a different object, not certificate-shaped. `conjecture1_proved = False`.
