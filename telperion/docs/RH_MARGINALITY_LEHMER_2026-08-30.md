@@ -85,6 +85,43 @@ term has no clean heat-deformation) but the de Bruijn–Newman flow AS a backwar
 Caveats: isolated/truncated model, explicit Euler, finite zero set; the rigorous infinite-gas control is
 Rodgers–Tao. This is grounding/illustration, not a new theorem.
 
+## Dug deeper: the tie-tower CORRECTED, and the real bottleneck located
+
+Pushed the fork "does the tie-vs-repulsion balance give an unconditional handle on Λ, or re-encode RH?"
+Empirical (first 400 zeros, unfolded gaps): the minimal normalized gap DECREASES monotonically with
+height — 0.386 → 0.324 → 0.291 → 0.243 over t~14→680; the 6709/6710 pair is ~0.042. So the tightest ties
+appear to sharpen with height. A hostile skeptic then corrected the structural claims built on this:
+
+- **RETRACTED — the "ever-sharpening GUE tie-tower" as mechanism.** The min-gap ~ N^{-1/3} scaling is the
+  GUE/random-matrix EXTREME-gap prediction — **conjectural**, resting on Montgomery pair correlation (proven
+  only for restricted Fourier support). The monotone shrink in 400 zeros is a real empirical trend, NOT a
+  proof of the scaling; "infinitely many arbitrarily-tight ties" is itself conjectural. Every GUE invocation
+  must be flagged conditional.
+- **RETRACTED — Rodgers–Tao runs on the gap-tower.** RT prove Λ≥0 via zero-DENSITY / second-moment /
+  repulsion inputs (unconditional), NOT via the extremal small-gap structure. My "runs through Lehmer pairs"
+  overstated: the proven input is a weaker close-pair/density fact, not the GUE tower.
+- **CORRECTED — the Λ-upper-bound ladder's bottleneck.** Polymath15 → Platt–Trudgian (Λ≤0.2) combine (i)
+  numerical RH-verification to height T with (ii) an analytic no-collision-above-t argument — but the rate
+  c(T)→0 is governed by the **analytic zero-free-region width (~1/log T)** and log-derivative bounds, NOT by
+  gap² of a Lehmer pair. The real obstruction to Λ≤0 by current methods is the zero-free region — which is
+  exactly the classical de la Vallée Poussin / Vinogradov–Korobov terrain mapped at the START of this
+  campaign (ZERO_FREE_REGION_TERRAIN.md, zero_free_bridge). The de Bruijn–Newman program loops back to it.
+
+- **SURVIVED — the genuine finding (the plan's crux, answered).** Each bound **Λ ≤ c (c>0) is unconditional
+  and STRICTLY WEAKER than RH** (RH ⟺ Λ≤0; Rodgers–Tao Λ≥0). This is a real "weaker-suffices ladder," NOT a
+  rename of RH — a positive answer to "is there a not-known-RH-equivalent sufficient statement?" (there is a
+  whole tower of proven weaker ones). Honest caveat: unknown whether the ladder accelerates to 0 or
+  asymptotes above it; the rate is ~1/log T (slow), and reaching Λ≤0 needs control at all heights.
+- **HEDGED — "infinite tie-tower vs BG's finite tie."** A real but incomplete diagnosis of why RH is harder
+  than BG. The deeper difference: RH's zeros are a transcendental, non-finitizable object (no integrality on
+  a finite family), whereas BG reduces to a finite arithmetic configuration. The tower is a symptom, not the
+  whole cause.
+
+**Net of digging deeper:** the dig CORRECTED my own overreach — the gap-tower is a conjectural (GUE)
+parallel, not the proven mechanism; the proven bottleneck of the Λ≤0 program is the analytic zero-free-region
+width, routing back to the campaign's starting terrain. The one solid new deliverable is C3: the Λ≤c ladder
+is a genuine unconditional weaker-than-RH structure. conjecture1_proved = False.
+
 ## Honest verdict
 
 Not a proof, not a gap-narrowing. A genuine, attack-survived reframing: RH is BG-marginal; its ties are
