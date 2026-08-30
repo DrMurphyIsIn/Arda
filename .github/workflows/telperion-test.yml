@@ -31,23 +31,23 @@ jobs:
           python-version: ${{ matrix.python }}
       # cvxpy provides the SDP backend the SOS route (prove_goal Phase 0.1 kind-
       # router) uses to certify interior ties; without it those tests can't run.
-      # pytest capped to 8.x as version hygiene (9.x is a major bump); this is
-      # NOT the cause of the current red -- see the DIAGNOSTIC note below.
-      - run: pip install "${{ matrix.sympy }}" "pytest>=8,<9" networkx "numpy<2.5" cvxpy
+      # scs pinned <3.3: scs 3.3.0 (published 2026-08-30) ships a Linux wheel that
+      # links Intel MKL and references libmkl_def.so.3, which is NOT bundled -- so
+      # cp.SCS (sos_sdp.py) aborts the whole interpreter with a oneMKL FATAL ERROR
+      # (exit 2, no traceback) mid-suite on py3.11-3.13. macOS wheels use Accelerate
+      # (no MKL), which is why the suite is green locally. Pin to the last-good 3.2.9
+      # until scs fixes the 3.3.x Linux MKL packaging.
+      - run: pip install "${{ matrix.sympy }}" pytest networkx numpy cvxpy "scs<3.3"
       - name: Unit tests
         working-directory: telperion
-        # DIAGNOSTIC (2026-08-30): the suite aborts on py3.11-3.13 Linux with exit
-        # 2 and NO traceback after ~61 tests (~82s) -- a native interpreter crash
-        # (segfault/OOM), version-independent, byte-identical on main. It is NOT a
-        # test failure and NOT pytest 9 (reproduces under pytest 8.x). The suite is
-        # green locally (macOS py3.9/3.14). PYTHONFAULTHANDLER + -v dump the C stack
-        # and the last-started test id so the crash can be root-caused.
+        # faulthandler stays on as a safety net: it dumps a C stack + the running
+        # test id on any future native crash (the scs/MKL abort above surfaced only
+        # after this was added). test_bellman_rigidity's two value_function(max_size
+        # =14) tests are intractable in CI (super-exponential enumeration) -- deselected.
         env:
           PYTHONFAULTHANDLER: "1"
-        # test_bellman_rigidity's two value_function(max_size=14) tests are
-        # intractable in CI (super-exponential enumeration) -- deselected.
         run: >-
-          python -X faulthandler -m pytest tests -v -s -p no:cacheprovider
+          python -X faulthandler -m pytest tests -q
           --deselect tests/test_bellman_rigidity.py::test_value_function_and_sub_hull_gap
           --deselect tests/test_bellman_rigidity.py::test_cramer_rate_positive_below_hull
       - name: Manifest verify, quick group (drift net + byte-stability across sympy versions)
