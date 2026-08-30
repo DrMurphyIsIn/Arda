@@ -165,6 +165,35 @@ height. The completed, capped positivity certificate is exactly as far as height
 remaining gap to RH is the height-indexed, analytic magnitude control — a different object in a different
 medium.
 
+## 7. Novelty audit + convergence (the last genuinely-new angle)
+
+The layer findings force one more honest question I had not confronted: since the proof's *only* zero-free
+consequence is the boundary `ζ(1+it) ≠ 0`, and Mathlib already has that, **what does the proof actually add?**
+Grounded audit (Mathlib not in the worktree this turn — claims per the README's authoring-verified statements,
+CI-consistent, not re-grepped here):
+
+- **Genuinely new to Mathlib:** `residue_logDeriv` (+3 helpers) — the *general-order* "order = residue of
+  `logDeriv`" lemma; Mathlib v4.32.0 has only the simple-zero case (`AnalyticAt.tendsto_mul_logDeriv_simple_zero`).
+  A reusable, RH-independent gap-filler. **This is the one piece of new mathematical content.**
+- **New machinery, but capped consequence:** the positivity chain and the general cone
+  (`cosine_comb_zeta_nonneg`, hinge, degree-3) — Mathlib does not carry the cosine-cone-on-`−ζ'/ζ` positivity,
+  so the *framework* is new, but its zero-free *output* is the boundary, which is capped (the region needs the
+  unformalized magnitude bound).
+- **NOT new:** the conclusion `ζ(1+it) ≠ 0` already exists in Mathlib via the product route
+  (`riemannZeta_ne_zero_of_one_le_re`). `zeta_boundary_contradiction` is a *different internal path* to a
+  known theorem, not a new theorem.
+
+**Honest characterization of the whole proof:** it is best read not as a "zero-free-region proof" (which
+overstates novelty — its only region output duplicates Mathlib) but as **a complete, reusable, in-kernel
+*positivity-certificate library* for ζ**, plus one genuine gap-filler lemma, plus a precise map of where the
+algebraic-certificate method ends. Its worth is machinery + the frontier map, not a new fact about ζ's zeros.
+
+**Convergence.** Three verifications (the reassessment + two hostile digs) plus the consolidation plus this
+novelty audit now agree and stabilize. This audit is the last genuinely-new angle; further "reassess the
+proof" iterations would restate, not refine. The disciplined finding is that **the reassessment has
+terminated** — the picture below is stable and I will not manufacture a further "new" sharpening where none
+exists.
+
 ## Bottom line
 
 `zero_free_bridge` is a **complete, gap-free, kernel-checked formalization of the entire positivity layer** of
