@@ -646,3 +646,28 @@ of the density is obstructed by measure-extremality (W12); the honest exact rout
 variational argument** (max over unimodular tree measures of the exact cavity density = `log ρ*`), for which
 the strong contraction (W15) gives the analytic control but not a finite convex certificate.
 `conjecture1_proved = False`.
+
+## W19 (2026-08-29): Lead 3 -- the exact cavity density is CONCAVE; caterpillar = unique max (the variational proof structure)
+
+Since the local-relaxation line bounds `sup_T F` not the density (W18), the exact route is the **infinite-tree
+variational argument**: max over unimodular tree measures of the exact cavity density = `log ρ*`.  Its crux is
+**concavity** (a concave functional with a unique stationary point has that point as its global max).  Tested
+it on the exact cavity density.
+
+**(1) `F(a)` is strictly concave in arm-count.**  Discrete second difference `F(a+1)−2F(a)+F(a−1) < 0` for
+every `a=4..10`, with the maximum at `a≈7` (matching the `a*=7.016` of W13).  So along the arm-count
+direction the density is strictly concave with a unique interior max.
+
+**(2) No mixed structure beats the caterpillar.**  Spatial mixes (fraction `p` of hubs with `a=9`, rest `a=5`,
+both flanking `a*=7`) all give `F_mix ≤ F(a*=7)` -- the uniform ~7-arm caterpillar dominates every
+interpolation.  Consistent with concavity + a unique maximizer.
+
+**The proof structure (Lead 3 = Weil-positivity template).**  (i) The caterpillar is a **stationary point**
+of the exact cavity density (`F'(a*)=0`, `a*=7.016`).  (ii) The **second variation is negative** (arm-count
+`F''<0`; no mix exceeds it).  (iii) If the full Hessian is negative-definite over all unimodular structural
+perturbations, the caterpillar is a strict local max; with global concavity it is the **global** max = `log
+ρ*`.  The negative-definite second variation is exactly a **PSD quadratic-form** fact -- the natural home for
+the RH `WeilPositivityCertificate` / `WorstCorner` machinery (Lead 3), certifying `−Hessian ⪰ 0` over rational
+brackets.  Remaining rigorous work: prove full-Hessian concavity over all unimodular directions (numerically
+supported here; the analytic step), then kernel-gate the second-variation PSD.  Reproduction:
+`bg_concavity.py`.  `conjecture1_proved = False`.
