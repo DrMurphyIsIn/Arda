@@ -1,26 +1,28 @@
-/- PROBE 3: exact sigs (logDeriv_zpow/comp, deriv_zpow, AnalyticAt.meromorphicOrderAt_eq)
-   + how Mathlib expresses riemannZeta meromorphy / the pole at s=1. -/
+/- PROBE 4: how does Mathlib v4.32.0 encode riemannZeta's pole at s=1?
+   Need MeromorphicAt riemannZeta 1  (equiv: AnalyticAt (fun s => (s-1)*zeta s) 1). -/
 import Mathlib
-open Filter Topology
+open Filter Topology Complex
 
-set_option pp.fieldNotation false in
-section sigs
-#check @logDeriv_zpow
-#check @logDeriv_comp
-#check @deriv_zpow
-#check @AnalyticAt.meromorphicOrderAt_eq
-#check @EventuallyEq.deriv_eq
-end sigs
+-- completed zeta structure (entire zeta0, simple poles at 0,1):
+#check @completedRiemannZeta₀
+#check @completedRiemannZeta
+#check @differentiable_completedZeta₀
+#check @differentiable_completedRiemannZeta₀
+#check @completedRiemannZeta_eq
+#check @riemannZeta_def
+#check @riemannZeta_one_ne_zero
+#check @riemannZeta_residue_one
 
--- How is zeta meromorphic at 1?  Try candidate names / provability.
-#check @meromorphicOn_riemannZeta
-#check @riemannZeta_meromorphicOn
-#check @MeromorphicOn.riemannZeta
+-- the simple-zero residue lemma A4 found (order-1 logDeriv residue):
+#check @AnalyticAt.tendsto_mul_logDeriv_simple_zero
 
--- Can we get MeromorphicAt riemannZeta 1 at all?
+-- order-of-deriv lemmas A4 found:
+#check @meromorphicOrderAt_deriv_eq_sub_one
+
+-- Can we get zeta meromorphic at 1?  (definition: exists n, AnalyticAt (z-1)^n * zeta)
 example : MeromorphicAt riemannZeta 1 := by
-  exact?
+  apply?
 
--- Is (s-1)*zeta analytic at 1 (removable) -- the residue as an analytic handle?
-example : AnalyticAt ℂ (fun s => (s - 1) * riemannZeta s) 1 := by
-  exact?
+-- reciprocal analytic at the pole (the 1/zeta simple-zero handle for the pole term)?
+example : AnalyticAt ℂ (fun s => (riemannZeta s)⁻¹) 1 := by
+  apply?
