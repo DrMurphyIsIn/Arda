@@ -61,6 +61,30 @@ whether M_arch(t) stays PSD as t→0⁻ while the full Mₜ must fail (zeros lea
 is flow-robust and M_prime flow-fragile, the criticality lives ENTIRELY in M_prime — a concrete
 localization of the arithmetic obstruction. Either outcome is a real, honest result.
 
+## Next step taken: the zero-dynamics make the marginality QUANTITATIVE
+
+The clean, sign-checkable handle is not the Weil-form reweighting (Hₜ has no Euler product, so the prime
+term has no clean heat-deformation) but the de Bruijn–Newman flow AS a backward-heat flow on the zeros.
+
+- **Derived + sign-checked ODE.** Hₜ = e^{-t ∂_z²}Ξ ⇒ ∂_t H = -H_zz ⇒ Coulomb-gas dynamics
+  żⱼ = +2 Σ_{k≠j} 1/(zⱼ−z_k). Sign check on a ± a pair: ż(+a)=+1/a>0 ⇒ under INCREASING t zeros REPEL and
+  stay real = de Bruijn "increasing t ⇒ real zeros." Correct. Hence DECREASING t (t<0): close pairs attract,
+  collide, complexify.
+- **2-body collision law** (isolated pair, gap δ): δ(s)² = δ₀² − 8s ⇒ collision at backward-heat time
+  **s\* = δ₀²/8**. Verified numerically to ~1% (gap 0.4→s\*=2.11e-2 vs law 2.00e-2; 0.2→5.04e-3 vs 5.00e-3;
+  0.1→1.28e-3 vs 1.25e-3).
+- **Applied to the real Lehmer pair** (6709/6710, δ₀=0.0377 at T~7005, typical gap 0.895):
+  s\*_Lehmer=1.78e-4 vs s\*_typical=1.00e-1 ⇒ the Lehmer pair is **564× more fragile**, first to exit the
+  real axis; the backward-heat horizon it sets is only ~1.8e-4 of heat-time — marginal, with a number.
+- **Many-body stabilizer.** Collective Coulomb repulsion of all other zeros resists collision. Λ ≥ 0
+  (Rodgers–Tao) = repulsion WINS at t=0 (no pair collides for t≥0); RH = it wins EXACTLY to t=0 (Λ=0). The
+  Lehmer pair being 24× tighter than its neighbours means the collective repulsion barely protects it, so it
+  genuinely controls the horizon. **Marginality = the balance of tightest-tie fragility vs collective
+  repulsion** — the quantitative form of BG's "tightest tie controls the bound."
+
+Caveats: isolated/truncated model, explicit Euler, finite zero set; the rigorous infinite-gas control is
+Rodgers–Tao. This is grounding/illustration, not a new theorem.
+
 ## Honest verdict
 
 Not a proof, not a gap-narrowing. A genuine, attack-survived reframing: RH is BG-marginal; its ties are
