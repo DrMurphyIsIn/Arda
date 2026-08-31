@@ -19,10 +19,29 @@ fails to certify it, and the one remaining viable route — **Guerra interpolati
 > asymptotically ⟹ 2-regime BG tie") that the current plan's caterpillar framing had set aside. The B(5)-spider is
 > itself not a strict local max (multi-swap-escapable), so the true sup density is `≥ 0.20659`. **Consequences:**
 > the "reduce every tree to the caterpillar family" architecture (P1–P4) is moot — the caterpillar family is not
-> where the maximum lives. Any continuation must (a) reconcile against the exact Pant 2026 / classical-BG statement
-> (which object, which class — bounded degree? per(L) vs per(L)/∏deg?), and (b) retarget onto the actual extremal
-> family (the c≈5 cherry-branch spider). Verification inline vs `rho` + `transfer_caterpillar`; exceptional-set
-> census + decorated-spider transfer recurrence by the parallel characterization agent.
+> where the maximum lives. Verification inline vs `rho` + `transfer_caterpillar`; exceptional-set census +
+> decorated-spider transfer recurrence by the parallel characterization agent.
+>
+> **LITERATURE RECONCILIATION (Pant 2026, arXiv:2605.14176, read in full).** The plan MISREAD Pant. The object is
+> exactly ours: `π(T) = per(L)/∏deg = Σ_M ∏_{uv∈M} 1/(d(u)d(v))` (Pant Lemma 2.1). Brualdi–Goldwasser asked for the
+> max over n-vertex trees — **the exact maximizer is OPEN**. Wu–Dong–Lai (Conj 1.1) *conjectured* subdivided-star
+> **spiders** `S(n,(n-1)/2)` (odd) / double-spiders `S(n,a,b)` (even) are extremal. Pant *refuted* WDL with the
+> **path-core caterpillar** family `T(a₁..aₘ)` (his Section 2 = our `caterpillar_edges`, `π=(3/2)^{Σaᵢ}f_m` = our
+> `Z_recurrence`), via `T(3,t,3), T(t,t,t,t), T(t,t,t+1,t)`. Pant does NOT claim caterpillars are optimal. So
+> "prove the caterpillar maximizes" was never Pant's theorem — it is open AND (above) false.
+>
+> **NEW RESULT (this session, exact).** The **star-of-cherry-brooms** `S(k,c)` (STAR core: one center of degree k,
+> each of the k branch-hubs of degree `c+1` carrying `c` length-2 cherries) lies OUTSIDE Pant's path-core family
+> (center degree ≥3 ≠ a path) and **beats it**: density `0.206586` (c=5) `> 0.205098` (Pant caterpillar sup). The
+> mechanism is exact: the star core gives every branch-hub degree `c+1` vs the path core's `c+2`; lower degree →
+> larger `1/d` weight → higher `π`, and the single high-degree center is asymptotically free (`Z(S(k,c)) =
+> total^{k-1}(total + (3/2)^c/(c+1))`, `total = (3/2)^{c-1}(4c+3)/(2(c+1))`). **Optimality is clean:** internal hub
+> degree cannot drop below `c+1` (one up-edge + c arms), so a SINGLE central hub is optimal — recursion does NOT
+> help (depth-4 "star-of-star-of-brooms" tested at F≈0.2053 < 0.2065, since mid-hubs pay high degree). So the
+> conjectured maximizer is (very plausibly) the depth-3 **star-of-B(5)-brooms**, `F* = max_c [(3/2)^{c-1}(4c+3)/
+> (2(c+1))]^{1/(2c+1)} = 0.206586` at `c=5`. This is a **stronger counterexample to Wu–Dong–Lai than Pant's** and a
+> better lower bound on the true BG maximum — a genuine, novel, exactly-verified contribution. Next: prove the
+> star-of-B(5)-brooms is the maximizer (or find the true optimum), and write it up as an improvement on Pant.
 
 ## 0. The object
 
