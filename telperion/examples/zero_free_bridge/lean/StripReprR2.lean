@@ -34,7 +34,7 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
   -- (meas) `F w` is a.e.-strongly-measurable for every `w`, uniformly near `z`.
   have h_meas : ∀ᶠ w in 𝓝 z,
       AEStronglyMeasurable (F w) (volume.restrict (Set.Ioi (1 : ℝ))) := by
-    refine Filter.eventually_of_forall (fun w => ?_)
+    refine Filter.Eventually.of_forall (fun w => ?_)
     refine (Measurable.aestronglyMeasurable ?_)
     simp only [hFdef, fractIntegrand]
     fun_prop
@@ -46,7 +46,7 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
     refine (Integrable.mono' hbase ?_ ?_)
     · refine (Measurable.aestronglyMeasurable ?_)
       simp only [hFdef, fractIntegrand]; fun_prop
-    · refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.eventually_of_forall (fun x hx => ?_))
+    · refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun x hx => ?_))
       have hx1 : (1 : ℝ) < x := hx
       have hxpos : (0 : ℝ) < x := by linarith
       -- ‖{x}·x^{-(z+1)}‖ = {x}·‖x^{-(z+1)}‖ ≤ ‖x^{-(z+1)}‖  (since 0 ≤ {x} ≤ 1)
@@ -67,7 +67,7 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
   -- (lip) Lipschitz-in-parameter, uniformly a.e.: from the derivative bound on the convex `S`.
   have h_lip : ∀ᵐ x ∂(volume.restrict (Set.Ioi (1 : ℝ))),
       LipschitzOnWith (Real.nnabs (bound x)) (fun w => F w x) S := by
-    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.eventually_of_forall (fun x hx => ?_))
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun x hx => ?_))
     have hx1 : (1 : ℝ) < x := hx
     have hxpos : (0 : ℝ) < x := by linarith
     -- On S, ‖∂_w F‖ ≤ bound x; convexity of S + MVT gives the Lipschitz bound.
@@ -79,7 +79,7 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
   -- (diff) the a.e. w-derivative of `F` at `z` is `F'`.
   have h_diff : ∀ᵐ x ∂(volume.restrict (Set.Ioi (1 : ℝ))),
       HasDerivAt (fun w => F w x) (F' x) z := by
-    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.eventually_of_forall (fun x hx => ?_))
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun x hx => ?_))
     have hx1 : (1 : ℝ) < x := hx
     have hxpos : (0 : ℝ) < x := by linarith
     have hxne : (x : ℂ) ≠ 0 := by exact_mod_cast hxpos.ne'
@@ -103,6 +103,8 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
   -- Assemble.
   have key := hasDerivAt_integral_of_dominated_loc_of_lip hSmem h_meas h_int h_meas' h_lip h_bint h_diff
   have hd : DifferentiableAt ℂ (fun w => ∫ x in Set.Ioi (1 : ℝ), F w x) z := key.2.differentiableAt
-  simpa only [fractIntegral, hFdef] using hd
+  have hfe : (fun w => ∫ x in Set.Ioi (1 : ℝ), F w x) = fractIntegral := by
+    funext w; simp only [hFdef, fractIntegral]
+  rwa [hfe] at hd
 
 end ZeroFreeBridge
