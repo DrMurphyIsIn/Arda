@@ -119,9 +119,23 @@ log π(T) ≤ F* · n + C     for an absolute constant C,
 i.e. a discharge with `φ_v ≤ F*` for all but an `O(1)` boundary set (the `S(k,5)` bulk — branch-hub, armmids,
 leaves — must sit exactly at `≤ F*` at the cavity fixed point, with only the single center and genuine
 boundary carrying the surplus `C`). Equivalently, `F*` is the top of the spectrum of the one-vertex cavity
-transfer operator over `(degree, field)` states — the rigorous form of the branch-rate ceiling (§4.3). This is
-the Brualdi–Goldwasser maximum and remains **open**; the framework above (exact Bethe form + bulk/surface
-discharge, or the transfer-operator variational bound) is the live route.
+transfer operator over `(degree, field)` states — the rigorous form of the branch-rate ceiling (§4.3).
+
+**The discharge is feasible and TIGHT on the extremal family (new).** At the `S(k,5)` cavity fixed point the
+exact local data is `A_center = 0.12260, A_bh = 0.24705, A_arm = 0.44983, A_leaf = 0.38400` and edge terms
+`B(center,bh) = 0.001925, B(bh,arm) = 0.044364, B(arm,leaf) = 0.38400`. Solving the minimax edge-discharge LP
+over the three bulk vertex types (branch-hub, armmid, leaf; center exempt as the `O(1)` boundary) gives optimum
+```
+(a, b, g) = (0, 0.1737, 0.5380)  →  φ_bh = φ_arm = φ_leaf = F* = 0.206586  (all three saturate exactly),
+```
+with `φ_center = 0.12260 < F*`. The three bulk types being **equal at `F*`** is the hallmark of a tight extremal
+certificate (max `=` average `=` `F*`, so the discharge is optimal). This confirms `F*` is the right constant
+and reduces the upper bound to a **universal pointwise discharge inequality**: for every local configuration
+(vertex degree `d`, neighbour degrees, incoming cavity fields `h ∈ (0,1]`) there is a valid edge-split making
+`φ_v ≤ F*`, with equality only at the `B(5)` bulk. That pointwise statement — a finite-dimensional inequality
+per configuration, over the constrained field domain — is the remaining Brualdi–Goldwasser core and remains
+**open**; the framework here (exact Bethe form + tight bulk/surface discharge, or the transfer-operator
+variational bound) is the live, now-concrete route.
 
 ## 6. Novelty
 
