@@ -398,6 +398,61 @@ jobs:
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build
 
+  # Compile the DRAFTED input-(R) strip representation as its OWN target. It is sorry-free but was
+  # never built; this job turns "sorry-free" into a real kernel verdict. Isolated from the green
+  # zero-free-bridge job (own `lake build StripRepr`), so an error here does NOT redden that job.
+  strip-repr-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the drafted input-(R) assembly (StripRepr — zeta_fract_repr_of, conditional on R1/R2/R3)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripRepr
+
+  # Compile the DRAFTED Borel-Caratheodory theorem (its own lakefile/toolchain). Sorry-free, 398 lines,
+  # never built; this job produces the real verdict. The crux missing piece for the region assembly.
+  borel-caratheodory-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/borel_caratheodory/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/borel_caratheodory/lean
+        run: lake exe cache get
+
+      - name: Build the drafted Borel-Caratheodory theorem (Moebius-Schwarz, 12 theorems)
+        working-directory: telperion/examples/borel_caratheodory/lean
+        run: lake build
+
   bg-flag-discharge-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
