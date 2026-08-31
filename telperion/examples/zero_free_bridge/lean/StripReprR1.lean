@@ -11,7 +11,7 @@
      ∑_{k≤n} k^{-s}  →  0 - ∫_{t>1} (-s·t^{-s-1})·⌊t⌋ dt  =  s∫_{t>1} ⌊t⌋ t^{-s-1} dt,
      ⌊t⌋ = t - {t},  s∫_{t>1} t^{-s} dt = s/(s-1)   ⟹   ζ(s) = s/(s-1) - s∫_{t>1}{t}t^{-s-1}.
 
-   STATUS: FULLY ASSEMBLED (sorry-free, pending CI). The five analytic Abel-summation
+   STATUS: FULLY ASSEMBLED, CI-green -- no `sorry`. The five analytic Abel-summation
    hypotheses (hf_diff, hf_int, h_lim, hg_dom, hg_int) are discharged on `Re s > 1`
    via a shared derivative helper `hasDerivAt_fPow` and the partial-sum `sum_cOne`;
    part (A) `tendsto_partialSum_zeta` identifies the LHS limit as `riemannZeta s`
