@@ -373,3 +373,8 @@ group = "quick"    # route-(b) piece 2: caterpillar density concave + strict max
 name = "bg_m3_moment_cut"
 script = "examples/bg_m3_moment_cut/generate.py"
 group = "quick"    # route-(b) piece 3 (first rung): caterpillar = argmax of degree-3 moment functional vs distant competitors; ~0.1 s
+
+[[check]]
+name = "bg_arm_balancing"
+script = "examples/bg_arm_balancing/generate.py"
+group = "quick"    # route-(b): m=2 arm-balancing -- toward-balance move strictly increases Z (closed-form rationals); ~0.1 s
