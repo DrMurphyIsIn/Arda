@@ -398,6 +398,145 @@ jobs:
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build
 
+  # Compile the DRAFTED input-(R) strip representation as its OWN target. It is sorry-free but was
+  # never built; this job turns "sorry-free" into a real kernel verdict. Isolated from the green
+  # zero-free-bridge job (own `lake build StripRepr`), so an error here does NOT redden that job.
+  strip-repr-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the drafted input-(R) assembly (StripRepr — zeta_fract_repr_of, conditional on R1/R2/R3)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripRepr
+
+  # (R3) discharge: IsPreconnected stripDomain via a 4-convex-piece cover. Own target so it goes
+  # green independently of R1/R2. Removes the `IsPreconnected` hypothesis of zeta_fract_repr_of.
+  strip-repr-r3-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the (R3) preconnectedness discharge
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripReprR3
+
+  # (R2) discharge (WIP DIAGNOSTIC): DifferentiableAt fractIntegral via differentiation under the
+  # integral. May transiently carry `sorry` in h_lip/h_bint -- this job's value is verifying the
+  # OTHER 5 hypotheses (measurability, integrability, the derivative chain-rule, assembly) compile.
+  # NOT a real discharge until the file is sorry-free (checked separately below once complete).
+  strip-repr-r2-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the (R2) differentiation-under-integral discharge (WIP)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripReprR2
+
+  # (R1) discharge (WIP SKELETON): fractional-part representation of riemannZeta via Abel summation.
+  # Carries sorry placeholders for the analytic sub-obligations; this job checks the Abel-application
+  # structure typechecks. NOT a discharge until sorry-free.
+  strip-repr-r1-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the (R1) Abel-summation skeleton (WIP)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripReprR1
+
+  # Compile the DRAFTED Borel-Caratheodory theorem (its own lakefile/toolchain). Sorry-free, 398 lines,
+  # never built; this job produces the real verdict. The crux missing piece for the region assembly.
+  borel-caratheodory-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/borel_caratheodory/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/borel_caratheodory/lean
+        run: lake exe cache get
+
+      - name: Build the drafted Borel-Caratheodory theorem (Moebius-Schwarz, 12 theorems)
+        working-directory: telperion/examples/borel_caratheodory/lean
+        run: lake build
+
   bg-flag-discharge-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60

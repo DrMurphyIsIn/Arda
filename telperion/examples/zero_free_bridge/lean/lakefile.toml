@@ -8,3 +8,26 @@ rev = "v4.32.0"
 
 [[lean_lib]]
 name = "ZeroFreeBridge"
+
+# Input (R) strip-representation assembly. Standalone (imports Mathlib only, NOT ZeroFreeBridge),
+# kept OUT of `defaultTargets` so the green `zero-free-bridge-compiles` job (bare `lake build`)
+# still builds ONLY ZeroFreeBridge. Built explicitly via `lake build StripRepr` in its own CI job.
+[[lean_lib]]
+name = "StripRepr"
+
+# (R3) discharge: `IsPreconnected stripDomain`. Imports StripRepr; own CI target so it can go
+# green while R1/R2 iterate. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprR3"
+
+# (R2) discharge (WIP): DifferentiableAt fractIntegral. Own target. NOTE: may transiently carry
+# `sorry` in the two hardest hypotheses (h_lip, h_bint) as a diagnostic; NOT a real discharge until
+# sorry-free. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprR2"
+
+# (R1) discharge (WIP SKELETON): the fractional-part representation of riemannZeta on Re s>1 via
+# Abel summation. Carries `sorry` placeholders for the analytic sub-obligations; the CI job checks
+# the Abel-application structure typechecks. NOT a discharge until sorry-free. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprR1"

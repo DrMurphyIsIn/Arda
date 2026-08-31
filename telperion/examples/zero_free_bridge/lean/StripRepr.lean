@@ -39,7 +39,7 @@ open Filter Topology MeasureTheory
 namespace ZeroFreeBridge
 
 /-- The RHS integrand of the strip representation, as a function of the parameter `s`. -/
-noncomputable def fractIntegrand (s : ℂ) (x : ℝ) : ℂ := (Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)
+noncomputable def fractIntegrand (s : ℂ) (x : ℝ) : ℂ := ((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)
 
 /-- The RHS integral `I(s) = ∫_{x>1} {x} · x^{-(s+1)} dx`. -/
 noncomputable def fractIntegral (s : ℂ) : ℂ :=
@@ -54,7 +54,7 @@ def stripDomain : Set ℂ := {s : ℂ | 0 < s.re} \ {1}
 theorem isOpen_stripDomain : IsOpen stripDomain := by
   have hopen : IsOpen {s : ℂ | 0 < s.re} := isOpen_lt continuous_const Complex.continuous_re
   have hEq : stripDomain = {s : ℂ | 0 < s.re} ∩ {(1 : ℂ)}ᶜ := by
-    ext s; simp [stripDomain, Set.mem_diff, Set.mem_singleton_iff]
+    ext s; simp [stripDomain, Set.mem_singleton_iff]
   rw [hEq]; exact hopen.inter isOpen_compl_singleton
 
 theorem mem_stripDomain_of_one_lt_re {s : ℂ} (hs : 1 < s.re) : s ∈ stripDomain := by
@@ -89,10 +89,12 @@ theorem zeta_fract_repr_of
     have hne : z ≠ 1 := by simpa [stripDomain, Set.mem_singleton_iff] using hz.2
     have hsub : z - 1 ≠ 0 := sub_ne_zero.mpr hne
     have hI : DifferentiableAt ℂ fractIntegral z := hR2 hz
+    -- pin the identity function at ℂ so numeric literals / `differentiableAt_id` do not default to ℕ
+    have hid : DifferentiableAt ℂ (fun w : ℂ => w) z := differentiableAt_id
     have h1 : DifferentiableWithinAt ℂ (fun w => w / (w - 1)) stripDomain z :=
-      ((differentiableAt_id).div ((differentiableAt_id).sub_const 1) hsub).differentiableWithinAt
+      (hid.div (hid.sub_const 1) hsub).differentiableWithinAt
     have h2 : DifferentiableWithinAt ℂ (fun w => w * fractIntegral w) stripDomain z :=
-      ((differentiableAt_id).mul hI).differentiableWithinAt
+      (hid.mul hI).differentiableWithinAt
     -- `stripRHS w = w/(w-1) - w * fractIntegral w` by definition; unfold so `h1.sub h2` matches.
     -- FLAG: `stripRHS` is a `def`, so the goal is `DifferentiableWithinAt ℂ stripRHS z`; may need
     -- `show DifferentiableWithinAt ℂ (fun w => w / (w - 1) - w * fractIntegral w) z` or
