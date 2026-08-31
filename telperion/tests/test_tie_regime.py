@@ -101,22 +101,27 @@ def _hub(children):
     return ell
 
 
-def test_mixed_le_uniform():
-    """mixed <= uniform: the max-ell k-hub is uniform -- all-leaf at k=1 (= cherry), all-cherry B(k) for k>=2.
-    So ell(any mixed k-hub) <= ell(B(k)) for k in {2..20} (verified over leaf/cherry/broom mixes)."""
+def test_mixed_le_uniform_k_le_15():
+    """mixed <= B(k) for k in {2..15} ONLY -- it FAILS at k >= 20 (a hub of (k-1) cherries + one B(5)-child
+    beats B(k); mixed - B(20) = +0.00035). The mixed reduction is used only for k <= 15; the slack bound covers
+    k >= 16 (`slack_g(k) <= F*`). So no gap. (Corrects the earlier false 'k <= 20' claim -- caught by the
+    child->cherry exchange analysis.)"""
     import random
     from telperion.branch_potential import branch_ell, broom_edges
     pool = [("leaf",), ("cherry",), ("broom", 2), ("broom", 4), ("broom", 5), ("broom", 6)]
     rng = random.Random(7)
-    for k in range(2, 21):
+    for k in range(2, 16):                                     # k <= 15 (mixed<=B(k) holds; slack covers k>=16)
         ell_bk, _ = branch_ell(*broom_edges(k))
         for _ in range(300):
             ch = [rng.choice(pool) for _ in range(k)]
             assert _hub(ch) <= ell_bk + 1e-12, f"mixed hub beats B({k})"
-        for a in range(k + 1):                                # leaf/cherry mixes
+        for a in range(k + 1):
             assert _hub([("leaf",)] * a + [("cherry",)] * (k - a)) <= ell_bk + 1e-12
-    # k=1: the max-ell 1-hub is the leaf-child (= cherry), ell = -0.0077 <= 0
-    assert abs(_hub([("leaf",)]) - (-0.007707)) < 1e-5
+    # the failure at k=20 is REAL and must be recorded (not asserted away):
+    mix20 = _hub([("cherry",)] * 19 + [("broom", 5)])
+    ell_b20, _ = branch_ell(*broom_edges(20))
+    assert mix20 > ell_b20                                     # mixed BEATS B(20) -- reduction fails here
+    assert mix20 < 0                                           # but the BOUND ell <= 0 still holds
 
 
 def test_slack_regime_bound():
