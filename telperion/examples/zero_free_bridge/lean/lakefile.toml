@@ -14,3 +14,8 @@ name = "ZeroFreeBridge"
 # still builds ONLY ZeroFreeBridge. Built explicitly via `lake build StripRepr` in its own CI job.
 [[lean_lib]]
 name = "StripRepr"
+
+# (R3) discharge: `IsPreconnected stripDomain`. Imports StripRepr; own CI target so it can go
+# green while R1/R2 iterate. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprR3"
