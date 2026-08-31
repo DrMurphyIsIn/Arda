@@ -35,11 +35,13 @@ So the asymptotic upper bound reduces ENTIRELY to `ell(B) ≤ 0` for all rooted 
 ## The two remaining lemmas (verified, tie-free, to formalise)
 
 1. **`mixed ≤ B(k)` (`k ≥ 2`):** for any `k` children with `ell(c_i) ≤ 0`, `ell(hub) ≤ ell(B(k))` (the all-cherry
-   hub is the worst). Verified over leaf/cherry/broom mixes (`k ≤ 20`); the max-`ell` `k`-hub is uniform
-   (all-leaf at `k=1`, all-cherry for `k≥2`). Formalisation: the child→cherry exchange raises `ell` for `k ≥ 2`
-   (its `Δ` couples through the other children's `Σx`, so not purely per-child). **Caveat:** verified on a
-   child-pool, not proven for arbitrary children — the honest gap (and where a tangent-style overclaim could
-   hide; test exhaustively before believing).
+   hub is the worst). **EXHAUSTIVELY verified** over ALL rooted branches with root-degree `k ≤ 7` (`N ≤ 16`;
+   TIGHT: `max ell = ell(B(k))`), and **targeted** for `k = 8..20` against all envelope competitors (uniform
+   `B(j)` + random cherry/broom mixes; tightest margin `0.002` at `k = 20`). No counterexample -- contrast the
+   tangent route, which had them (`test_mixed_le_Bk_exhaustive`). The `mixed ≤ B(k)` earlier "caveat" is thus
+   discharged empirically. Formalisation still open: the max-`ell` `k`-hub is uniform (all-cherry, `k≥2`) -- a
+   knapsack-type statement (`ell(hub) = Σ ell(c_i) + log(1+Σx_i) − F*`; for fixed `Σx` maximise `Σ ell(c_i)`),
+   whose clean proof (child→cherry exchange; `Δ` couples through the other children's `Σx`) remains.
 2. **Slack bound (`k ≥ 21`):** `slack_g(k) = k·max_env(ell(c)+x_c) ≤ F*` via the branch envelope (cherry + brooms;
    larger branches have `ell` bounded away from 0). Verified (sup `0.156` at `k=21`, margin `0.05`).
 
