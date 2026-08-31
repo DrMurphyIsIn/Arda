@@ -85,8 +85,8 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
     have hxne : (x : ℂ) ≠ 0 := by exact_mod_cast hxpos.ne'
     -- d/dw of `w ↦ (x)^{-(w+1)}` via `HasDerivAt.const_cpow` (chain rule, const base x);
     -- times the constant `{x}`.
-    have hlin : HasDerivAt (fun w : ℂ => -(w + 1)) (-1) z := by
-      simpa using (((hasDerivAt_id z).add_const 1).neg)
+    have hlin : HasDerivAt (fun w : ℂ => -(w + 1)) (-1 : ℂ) z :=
+      ((hasDerivAt_id z).add_const (1 : ℂ)).neg
     have hcpow : HasDerivAt (fun w : ℂ => (x : ℂ) ^ (-(w + 1)))
         ((x : ℂ) ^ (-(z + 1)) * Complex.log (x : ℂ) * (-1)) z :=
       hlin.const_cpow (Or.inl hxne)
