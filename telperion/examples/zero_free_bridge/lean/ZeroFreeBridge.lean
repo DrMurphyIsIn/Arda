@@ -484,7 +484,7 @@ theorem norm_riemannZeta_le_re (s : ℂ) (hs : 1 < s.re) :
     have h2 : Summable (fun n : ℕ => ((n : ℝ) + 1) ^ (-s.re)) :=
       ((summable_nat_add_iff 1).mpr h1).congr (fun n => by push_cast; ring_nf)
     exact h2.congr (fun n => (norm_one_div_natAddOne_cpow n s).symm)
-  rw [riemannZeta_eq_tsum_one_div_nat_add_one_cpow hs]
+  rw [zeta_eq_tsum_one_div_nat_add_one_cpow hs]
   refine (norm_tsum_le_tsum_norm hsum).trans (le_of_eq ?_)
   exact tsum_congr (fun n => norm_one_div_natAddOne_cpow n s)
 
