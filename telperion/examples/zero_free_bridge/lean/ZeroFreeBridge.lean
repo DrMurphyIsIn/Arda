@@ -8,7 +8,7 @@
    region and NOT a proof of RH.  conjecture1_proved = False. -/
 import Mathlib
 open scoped Real
-open Filter Topology
+open Filter Topology MeasureTheory
 
 namespace ZeroFreeBridge
 
@@ -520,8 +520,8 @@ theorem zeta_repr_integral_bound {s : ℂ} (hs : 0 < s.re) :
       ‖(Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)‖ ≤ x ^ (-(s.re + 1)) := by
     intro x hx
     have hx0 : (0 : ℝ) < x := lt_trans one_pos hx
-    rw [norm_div, Complex.norm_ofReal, Complex.norm_cpow_eq_rpow_re_of_pos hx0,
-        Complex.add_re, Complex.one_re, abs_of_nonneg (Int.fract_nonneg x),
+    rw [norm_div, Complex.norm_real, Complex.norm_cpow_eq_rpow_re_of_pos hx0,
+        Complex.add_re, Complex.one_re, Real.norm_of_nonneg (Int.fract_nonneg x),
         Real.rpow_neg hx0.le, div_eq_mul_inv]
     exact mul_le_of_le_one_left (inv_nonneg.mpr (Real.rpow_pos_of_pos hx0 _).le)
       (Int.fract_lt_one x).le
