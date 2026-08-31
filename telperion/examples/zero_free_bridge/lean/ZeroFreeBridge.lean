@@ -529,9 +529,16 @@ theorem zeta_repr_integral_bound {s : ℂ} (hs : 0 < s.re) :
     integrableOn_Ioi_rpow_of_lt (by linarith) one_pos
   have hf : IntegrableOn (fun x : ℝ => ‖(Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)‖)
       (Set.Ioi (1 : ℝ)) := by
-    refine Integrable.mono' hdom ?_ (ae_restrict_of_forall_mem measurableSet_Ioi hbound)
-    exact (Complex.continuous_ofReal.comp continuous_id).aestronglyMeasurable.norm.div
-      (by fun_prop) |>.restrict
+    -- `Int.fract` is MEASURABLE (not continuous — it jumps at integers), so build measurability,
+    -- not continuity, for the integrand; its norm dominated by `x^{-(σ+1)}` (hbound).
+    have hmeas : AEStronglyMeasurable
+        (fun x : ℝ => (Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)) (volume.restrict (Set.Ioi 1)) := by
+      apply Measurable.aestronglyMeasurable
+      fun_prop  -- FLAG: relies on measurable_fract + cpow-base measurability; manual fallback if it stalls
+    refine Integrable.mono' hdom hmeas.norm ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+    exact hbound x hx
   have hval : ∫ x in Set.Ioi (1 : ℝ), x ^ (-(s.re + 1)) = 1 / s.re := by
     rw [integral_Ioi_rpow_of_lt (by linarith : -(s.re + 1) < -1) one_pos, Real.one_rpow]
     rw [show -(s.re + 1) + 1 = -s.re by ring, neg_div_neg_eq]
