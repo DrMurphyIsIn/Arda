@@ -529,3 +529,37 @@ jobs:
       - name: Build the emitted Lean (the actual verification — m=2 arm-balancing strictly increases Z)
         working-directory: telperion/examples/bg_arm_balancing/lean
         run: lake build
+
+  bg-broom-optimum-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate BG broom c=5 optimum Lean from the exact cross-exponentiated rates
+        working-directory: telperion
+        run: |
+          python examples/bg_broom_optimum/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bg_broom_optimum/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bg_broom_optimum/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — star-of-brooms c=5 optimum)
+        working-directory: telperion/examples/bg_broom_optimum/lean
+        run: lake build

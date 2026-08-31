@@ -378,3 +378,8 @@ group = "quick"    # route-(b) piece 3 (first rung): caterpillar = argmax of deg
 name = "bg_arm_balancing"
 script = "examples/bg_arm_balancing/generate.py"
 group = "quick"    # route-(b): m=2 arm-balancing -- toward-balance move strictly increases Z (closed-form rationals); ~0.1 s
+
+[[check]]
+name = "bg_broom_optimum"
+script = "examples/bg_broom_optimum/generate.py"
+group = "quick"    # route-(b) retarget: star-of-cherry-brooms c=5 optimum (cross-exponentiated rate rationals); ~0.1 s
