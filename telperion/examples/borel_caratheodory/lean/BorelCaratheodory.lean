@@ -141,6 +141,15 @@ theorem moebius_mapsTo {R B : ℝ} (hB : 0 < B) {g : ℂ → ℂ}
    BC4.  SCHWARZ ON THE MÖBIUS FUNCTION.
    `w = moebius B g` fixes 0 and maps `ball 0 R → closedBall 0 1`, so the ratio-form Schwarz
    lemma gives `‖w z‖ ≤ (1/R)·‖z‖`.
+
+   STRICTNESS NOTE.  BC2 only gives the NON-STRICT `‖w‖ ≤ 1` (equality is possible in principle,
+   iff Re g = A).  We therefore use `Complex.dist_le_div_mul_dist_of_mapsTo_ball`, whose hypothesis
+   is `MapsTo w (ball 0 R) (closedBall (w 0) 1)` — the CLOSED target ball — so the non-strict
+   bound is exactly what it consumes.  We deliberately do NOT route through
+   `Complex.norm_le_norm_of_mapsTo_ball`, which requires the OPEN target ball `ball 0 1` (strict
+   `‖w z‖ < 1`); that would force an extra maximum-modulus argument (`‖w‖=1` interior ⟹ `w` const
+   ⟹ `w≡0`, contradiction) to upgrade `≤` to `<`.  The ratio-form closed-ball variant makes that
+   step unnecessary here.
    =================================================================================== -/
 
 /-- Schwarz bound on the Möbius transform: `‖w z‖ ≤ ‖z‖ / R`. -/
