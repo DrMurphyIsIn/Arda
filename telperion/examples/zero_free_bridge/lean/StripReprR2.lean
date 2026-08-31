@@ -72,10 +72,35 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
     have hxpos : (0 : ℝ) < x := by linarith
     -- On S, ‖∂_w F‖ ≤ bound x; convexity of S + MVT gives the Lipschitz bound.
     sorry
-  -- (bint) the dominating function is integrable on `(1,∞)`.
+  -- (bint) the dominating function is integrable on `(1,∞)`: `log x · x^{-(z.re/2)-1}` is
+  -- dominated by `(4/z.re)·x^{-(z.re/4)-1}` via `log x ≤ x^{z.re/4}/(z.re/4)`.
   have h_bint : Integrable bound (volume.restrict (Set.Ioi (1 : ℝ))) := by
-    simp only [hbdef]
-    sorry
+    have hzne : z.re ≠ 0 := hz.ne'
+    have hq : (-(z.re / 4) - 1) < -1 := by linarith
+    have hg : Integrable (fun x : ℝ => (4 / z.re) * x ^ (-(z.re / 4) - 1))
+        (volume.restrict (Set.Ioi 1)) :=
+      (integrableOn_Ioi_rpow_of_lt hq one_pos).const_mul _
+    refine Integrable.mono' hg ?_ ?_
+    · simp only [hbdef]; fun_prop
+    · refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun x hx => ?_))
+      have hx1 : (1 : ℝ) < x := hx
+      have hxpos : (0 : ℝ) < x := by linarith
+      have hσ4 : (0 : ℝ) < z.re / 4 := by linarith
+      have hlog0 : 0 ≤ Real.log x := Real.log_nonneg hx1.le
+      have hp1 : (0 : ℝ) < x ^ (-(z.re / 2) - 1) := Real.rpow_pos_of_pos hxpos _
+      have hlogb : Real.log x ≤ x ^ (z.re / 4) / (z.re / 4) := by
+        have h1 : Real.log (x ^ (z.re / 4)) ≤ x ^ (z.re / 4) - 1 :=
+          Real.log_le_sub_one_of_pos (Real.rpow_pos_of_pos hxpos _)
+        rw [Real.log_rpow hxpos] at h1
+        rw [le_div_iff₀ hσ4]; nlinarith [h1]
+      have hbnn : (0 : ℝ) ≤ bound x := by rw [hbdef]; exact mul_nonneg hlog0 hp1.le
+      rw [Real.norm_of_nonneg hbnn, hbdef]
+      calc Real.log x * x ^ (-(z.re / 2) - 1)
+          ≤ (x ^ (z.re / 4) / (z.re / 4)) * x ^ (-(z.re / 2) - 1) := by gcongr
+        _ = (4 / z.re) * x ^ (-(z.re / 4) - 1) := by
+            rw [div_mul_eq_mul_div, ← Real.rpow_add hxpos,
+              show z.re / 4 + (-(z.re / 2) - 1) = -(z.re / 4) - 1 by ring]
+            field_simp; ring
   -- (diff) the a.e. w-derivative of `F` at `z` is `F'`.
   have h_diff : ∀ᵐ x ∂(volume.restrict (Set.Ioi (1 : ℝ))),
       HasDerivAt (fun w => F w x) (F' x) z := by
