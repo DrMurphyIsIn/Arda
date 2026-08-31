@@ -97,17 +97,20 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
         rw [Complex.norm_real, Real.norm_of_nonneg hf0]
       have e2 : ‖(x : ℂ) ^ (-(w + 1))‖ = x ^ (-(w.re + 1)) := by
         rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos]; congr 1
-        simp [Complex.neg_re, Complex.add_re, Complex.one_re]
       have e3 : ‖Complex.log (x : ℂ)‖ = Real.log x := by
         rw [hlogx, Complex.norm_real, Real.norm_of_nonneg hlog0]
       rw [norm_mul, norm_mul, norm_mul, norm_neg, norm_one, mul_one, e1, e2, e3, hbdef]
       have hpow_le : x ^ (-(w.re + 1)) ≤ x ^ (-(z.re / 2) - 1) :=
         Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith)
       have hpow_pos : 0 < x ^ (-(w.re + 1)) := Real.rpow_pos_of_pos hxpos _
-      calc Int.fract x * x ^ (-(w.re + 1)) * Real.log x
-          ≤ 1 * x ^ (-(z.re / 2) - 1) * Real.log x := by
-            gcongr
-        _ = Real.log x * x ^ (-(z.re / 2) - 1) := by ring
+      -- after `norm_mul` the LHS associates as `{x} * (x^.. * log x)`
+      have step1 : Int.fract x * (x ^ (-(w.re + 1)) * Real.log x)
+          ≤ x ^ (-(w.re + 1)) * Real.log x :=
+        mul_le_of_le_one_left (mul_nonneg hpow_pos.le hlog0) hf1
+      have step2 : x ^ (-(w.re + 1)) * Real.log x ≤ Real.log x * x ^ (-(z.re / 2) - 1) := by
+        rw [mul_comm (x ^ (-(w.re + 1)))]
+        exact mul_le_mul_of_nonneg_left hpow_le hlog0
+      exact le_trans step1 step2
     -- assemble via the convex derivative-bound Lipschitz lemma
     have hScvx : Convex ℝ S := by rw [hSdef]; exact convex_halfSpace_re_gt (z.re / 2)
     refine hScvx.lipschitzOnWith_of_nnnorm_hasDerivWithin_le
