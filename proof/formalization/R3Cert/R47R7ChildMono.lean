@@ -13,7 +13,7 @@
   exhibiting its local `(Ztot, Zopen)` gain; the `spine_balance_pair` induction (same file) then
   propagates a gain at any DEPTH up to the root.
 
-  What is PROVED here (sorry-free, axiom-clean):
+  What is PROVED here (no `sorry`, axiom-clean):
     * `Aobj_tail_child_replace_le` -- replacing the LAST root child monotonically;
     * `Aobj_child_replace_le`      -- replacing ANY root child (via `Aobj_node_perm`).
 

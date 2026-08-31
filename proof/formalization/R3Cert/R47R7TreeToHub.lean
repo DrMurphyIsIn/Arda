@@ -13,7 +13,7 @@
   (`single_hub_reaches_balanced`): a monotone rewrite relation + a strictly-decreasing measure
   + a progress lemma, assembled by fuel-bounded induction on the measure.
 
-  What is PROVED here (sorry-free, axiom-free):
+  What is PROVED here (no `sorry`, axiom-free):
 
     * `treeToHub_of_isHubForm` -- a tree already in hub form trivially satisfies the bound;
     * `treeToHub_of_rewrite`   -- THE SCHEMA: given any `Aobj`-monotone rewrite `R` with a
@@ -114,7 +114,7 @@ The schema `treeToHub_of_rewrite` reduces the tree->hub problem to the three pre
 stated for an arbitrary rewrite relation `R` and measure `mu`.  Discharging them (with the
 concrete Kelmans/plainification/leg-cherry rewrite) yields the unconditional `tree_to_hub`
 via `treeToHub_of_rewrite`.  These are DEFINITIONS (no proof obligation is asserted here), so
-this file stays sorry-free while making the frontier crisp and CI-guardable.
+this file stays `sorry`-free while making the frontier crisp and CI-guardable.
 -/
 
 /-- (R-mono) The rewrite never decreases the objective. -/

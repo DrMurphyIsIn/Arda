@@ -22,7 +22,7 @@
   non-Balanced-Capped-backbone tree admits a move), for the concrete Kelmans-straighten +
   arm-balance + de-load rewrite.
 
-  What is PROVED here (sorry-free, axiom-clean):
+  What is PROVED here (no `sorry`, axiom-clean):
     * `treeReduce_of_rewrite` -- the schema for an arbitrary `Normal` target;
     * `treeToHub_of_rewrite'` -- Pass-1's `IsHubForm` target recovered as a corollary;
     * `hnorm_of_rewrite`      -- `Hnorm` reduced to one Balanced+Capped-backbone-terminating
