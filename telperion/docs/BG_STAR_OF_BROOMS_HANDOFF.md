@@ -115,3 +115,44 @@ variational bound.
 **Merges:** GitHub tree→hub (PRs #166–#176, merged). GitLab MR !75 (rung2 972-cell identity) merged; MR !76
 (the `test_mcp_server.py` mcp<2.0 pin) auto-merge armed — clears the CI `test` gate for the whole branch.
 `conjecture1_proved = False`.
+
+---
+
+## Round-3 update (2026-08-31) — the branch-induction upper bound (asymptotic), mostly kernel-gated
+
+The **asymptotic** BG upper bound `F(T) ≤ F* = log(621/64)/11` now has a self-contained proof route on the
+analytic side — **independent of the parallel Lean tree→hub / Obligation A** (see `BG_BRANCH_INDUCTION_20260831.md`).
+
+**Route:** `ell(B) := log total(B) − |B|·F* ≤ 0` for all rooted branches ⟹ (boundary lemma `π/branch_total ≤ 4/3`,
+verified) ⟹ `(1/n) log π(T) ≤ F* + O(1/n) → F*`. And `ell(B) ≤ 0` is proven by induction on branch structure
+(leaf base + per-hub step).
+
+**Per-hub step ledger (the induction):**
+| k | bound | status |
+|---|---|---|
+| 1 | trivial | ✅ |
+| 2..15 | `ell(hub) ≤ ell(B(k)) ≤ 0` | broom optimum **gated** (`bg_broom_optimum`/`evolve_nearstar`); `mixed ≤ B(k)` exhaustively verified over broom pool |
+| ≥ 16 | `ell(hub) ≤ slack_g(k) − F* < 0` | **kernel-gated** (`bg_tie_slack`, frozen log-enclosures) |
+
+**Kernel gates added this campaign:** `bg_broom_optimum` (c=5, 23-adic tie), `bg_arm_balancing` (m=2), `bg_tie_cherry_worst`
+(uniform cherry-worst k≤20), `bg_bulk_discharge` (Handelman full-edge atoms, Audit lane), `bg_tie_slack` (slack
+bound k≥16). All `norm_num` / Handelman; the 23-adic arithmetic is fully discharged by `bg_broom_optimum`.
+
+**Skills:** `branch_potential.py` (`branch_ell`, `branch_total`, `broom_edges`), `tie_regime.py` (`uniform_hub_ell`,
+`cherry_vs_broom_ratio`, `slack_g`/`slack_hub_bound`, `TieCherryWorstCertificate`, `TieSlackCertificate`),
+`bg_bulk_discharge.py` (exact Bethe decomposition), `spider_broom.py`, `transfer_caterpillar.py`.
+
+**The ONE remaining tie-free piece:** `mixed ≤ B(k)` for `k ≤ 15` with **arbitrary** children — exhaustively
+verified over the broom pool, but a clean general proof is blocked by the **non-monotone child→cherry exchange**
+(the same difficulty that exposed the `mixed ≤ B(k)` FAILURE at `k ≥ 20` — a caught overclaim; the reduction
+holds only `k ≤ 15`, and the slack bound covers `k ≥ 16`, so no gap). A rigorous proof needs an extremal argument
+that the max hub avoids leaf-heavy (large-`S'`) configs. Plus the envelope-dominance completeness reductions
+(documented, verified). `conjecture1_proved = False`.
+
+**Discipline note:** 10 overclaims were caught by exhaustive/formal scrutiny this program (product bound, tangent
+route, mixed≤B(k) k≥20, …). Random-sample tests hid the mixed≤B(k) failure; the formal-proof attempt exposed it.
+Test exhaustively before believing any "worst-case is uniform/cherry" claim.
+
+**Next:** the general `mixed ≤ B(k)` (k≤15) extremal proof (last conceptual piece), or reconcile with the
+parallel Lean tree→hub for the finite-n/structural statement. Docs: `BG_BRANCH_INDUCTION_20260831.md`,
+`BG_TIE_REGIME_CAMPAIGN_20260831.md`, `BG_BROOM_DOMINANCE_20260831.md`, `BG_23ADIC_RECONCILIATION_20260831.md`.
