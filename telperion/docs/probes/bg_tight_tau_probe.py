@@ -130,3 +130,15 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# ---------------------------------------------------------------------------
+# Follow-up finding (2026-08-31): the equalizing field-tau is DETERMINED on the
+# low-degree (leaf/armmid) tree edges -- armmid->hub edges (h_armmid=2/3) all take
+# a large, smoothly-varying share (0.78-0.90 as the hub degree grows) -- but the
+# hub-HUB backbone edges are UNDERDETERMINED (tau jumps 0/1/0.52/0.77 for near-
+# identical fields; the least-squares picks an arbitrary point of the optimal
+# flow face).  So equalization alone does NOT pin a global closed-form tau: the
+# backbone has flow-freedom whose universal resolution is the arithmetic /
+# box-positivity piece (the 27*23 tie, emit_padic), not something more field-data
+# resolves.  This is why the closed form is elusive -- the resolving principle is
+# arithmetic, not analytic.  conjecture1_proved = False.

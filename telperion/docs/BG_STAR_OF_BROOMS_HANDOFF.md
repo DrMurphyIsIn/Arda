@@ -84,3 +84,34 @@ weighted by leaves) — the acyclicity/surface barrier.
 
 Verify locally (no Lean build — CI only, per the SoC-watchdog constraint): `PYTHONPATH=src python -m pytest
 tests/test_spider_broom.py tests/test_transfer_caterpillar.py -q`. `conjecture1_proved = False`.
+
+---
+
+## Round-2 update (2026-08-31) — unified ownership + upper-bound engine
+
+Now sole owner of the WHOLE BG program (analytic + Lean structural + Φ¹¹). Branch `bg/unified-program`.
+See `proof/docs/design/BG_UNIFIED_PROGRAM_20260831.md` and `docs/BG_23ADIC_RECONCILIATION_20260831.md`.
+
+**Reconciliation (done, exact):** the Φ¹¹ near-star `R(s)` **is** the classical-BG broom ratio
+`total(5)^(2s+1)/total(s)^11`; the two programs coincide on the extremal family. This gave the `c=5` optimum a
+**closed all-c proof** (single-crossing), and it is ALREADY kernel-gated — the frozen `examples/evolve_nearstar`
+champion `(486/529)(1+1/(4s²+11s+6))^11` equals `1/broom_ratio(s)` exactly (`test_evolve_nearstar_is_the_broom_c5_gate`).
+
+**Gates (kernel-gated, CI):** `bg_broom_optimum` (c=5 cross-exponent), `bg_arm_balancing` (m=2 general),
+`evolve_nearstar` (closed c=5), and **`bg_bulk_discharge`** (NEW — the free-field `τ=1` full-edge atoms for
+c=4,5 as Handelman box-positivity, wired into the Audit lake-build). The RH zero-free witness certifies via the
+same Handelman engine (`probe/bg-handelman-shared-engine`) — one box-positivity cone, `621/64 = 27·23`.
+
+**Upper-bound engine (new):** `src/telperion/bg_bulk_discharge.py` — exact Bethe decomposition
+(`prod Aarg/prod Barg == rho`, `Σφ_v == log π`) + the algebraic target `exp(11 φ_v) ≤ 621/64`.
+
+**The tight-τ crux (open, narrowed):** `docs/probes/bg_tight_tau_probe.py` — a universal *degree-only* discharge
+FAILS (`+0.0033`); a per-tree *field-adaptive* one HOLDS (`≤ F*`). So τ must be field-dependent; the equalizing
+τ is clean on low-degree (leaf/armmid) edges but the hub-hub backbone is **flow-underdetermined**, and its
+universal resolution is the arithmetic (`emit_padic`, `27·23`) / box-positivity piece — NOT more field-data.
+That is the open frontier: a universal closed-form field-`τ` on the cavity-field box, or the transfer-operator
+variational bound.
+
+**Merges:** GitHub tree→hub (PRs #166–#176, merged). GitLab MR !75 (rung2 972-cell identity) merged; MR !76
+(the `test_mcp_server.py` mcp<2.0 pin) auto-merge armed — clears the CI `test` gate for the whole branch.
+`conjecture1_proved = False`.
