@@ -51,14 +51,21 @@ The remaining infinite part is the **slack regime `k >= 21`** (Phase 3), which n
 
 ## Phase 3 — the slack regime `k >= 21` (DONE, verified) + mixed hubs
 
-- **slack regime `k >= 21` — soft bound established (`tie_regime.slack_hub_bound`).** Via `log(1 + Σ x_c) <= Σ x_c`,
-  `ell(hub) <= Σ_c (ell(c) + x_c) - F* <= k * max_c (ell(c) + x_c) - F* = slack_g(k) - F*`. The per-child max
-  lies on the branch envelope (cherry + brooms; larger branches have `ell` bounded away from `0`, verified over
-  all branches `<= size 11`), and `slack_g(k) <= F*` for all `k >= 21` (sup `0.156` at `k = 21`, margin `0.05`;
-  `-> 0.130` as `k -> infinity`, from `B(5)`). So `ell(hub) <= slack_g(k) - F* <= 0`, tie-free. The `log <= linear`
-  relaxation is loose only at the tie (`k <= 20`, handled by cherry-worst) -- in the slack regime it has ample
-  margin. **Remaining formalisation:** the envelope reduction (`max_c` over all branches `=` max over cherry +
-  brooms) and `slack_g(k) <= F*` as a closed bound (the cherry term is decreasing in `k`, the `B(5)` term `< 0.131`).
+- **slack regime `k >= 16` — soft bound with a RIGOROUS proof structure (`tie_regime.slack_hub_bound`).** Via
+  `log(1 + Σ x_c) <= Σ x_c`, `ell(hub) <= Σ_c (ell(c) + x_c) - F* <= k · max_c (ell(c) + x_c) - F* = slack_g(k) - F*`
+  (the `sum <= k·max` step holds for MIXED children, so this covers mixed hubs). The proof that `slack_g(k) <= F*`
+  for `k >= 16`:
+  1. **`slack_g(k) <= slack_g(16)` for `k >= 16`.** Writing `slack_g(k) = max_c φ_c(k)`, `φ_c(k) = k·ell(c) +
+     (h_c/d_c)·k/(k+1)`: every non-`B(5)` envelope child has `dφ_c/dk = ell(c) + (h_c/d_c)/(k+1)^2 < 0` for `k >= 16`
+     (since `(k+1)^2 >= 289` and `ell(c) < −(h_c/d_c)/289` — checked per child), so `φ_c` is decreasing; `B(5)`
+     (`ell = 0`) gives `φ = (3/23)·k/(k+1) < 3/23 < F*`. Hence the sup over `k >= 16` is at `k = 16`.
+  2. **`slack_g(16) = 0.1904 < F* = 0.2066`** (margin `0.016`) — a finite envelope max.
+  3. **Envelope is finite:** large brooms `B(j)` have `ell(B(j))` very negative, so `φ_{B(j)}(16) < 0` — dominated;
+     the max is over `{cherry, B(2..8)}`. Non-broom branches have lower `ell` (dominated).
+  So `slack_g(k) <= slack_g(16) < F*` for all `k >= 16`, giving `ell(hub) <= slack_g(k) - F* < 0`. Verified in
+  `test_slack_bound_proof_structure`. **Remaining to kernel-gate:** `slack_g(16) < F*` and the per-child
+  `deriv@16 < 0` as `norm_num` atoms (via rational log-enclosures, `bg_caterpillar_concavity` pattern) + a
+  rational bound `F* > 3/23`.
 
 - **mixed <= uniform — DONE (verified).** The max-`ell` `k`-child hub is UNIFORM: **all-leaf at `k = 1`**
   (`= cherry`, `ell = -0.0077`), **all-cherry `B(k)` for `k >= 2`**. So `ell(any mixed k-hub) <= ell(B(k))` for

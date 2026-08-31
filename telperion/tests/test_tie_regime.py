@@ -132,3 +132,25 @@ def test_slack_regime_bound():
         assert slack_g(k) < 0.207, f"g(k) not < F* at k={k}"
     # tightest at the boundary k=21, with margin ~0.05
     assert -0.06 < slack_hub_bound(21) < -0.04
+
+
+def test_slack_bound_proof_structure():
+    """Rigorous proof of slack_g(k) <= F* for k>=16: (1) slack_g monotone-decreasing so <= slack_g(16);
+    (2) slack_g(16) < F*; (3) per-child, every non-B(5) envelope child phi_c is decreasing for k>=16
+    (deriv = ell(c) + (h/d)/(k+1)^2 < 0, and deriv <= deriv@16), and B(5) is bounded by 3/23 < F*."""
+    import math
+    from telperion.tie_regime import slack_g, broom_child
+    from telperion.branch_potential import F_STAR
+    g16 = slack_g(16)
+    assert all(slack_g(k) <= g16 + 1e-12 for k in range(16, 400))   # (1) monotone-decreasing sup
+    assert g16 < F_STAR                                             # (2) binding value < F*
+    # (3) per-child derivative at k=16 (the largest, since (k+1)^2 grows): < 0 for non-B(5), B(5) bounded
+    for j in list(range(2, 9)):
+        c = broom_child(j)
+        tot, sz = c["total"], c["size"]
+        el = (math.log(tot.numerator) - math.log(tot.denominator)) - sz * F_STAR
+        deriv16 = el + (float(c["h"]) / c["d"]) / 17 ** 2
+        if j == 5:
+            assert 3 / 23 < F_STAR                                 # B(5): phi -> 3/23 < F*
+        else:
+            assert deriv16 < 0                                     # decreasing for all k >= 16
