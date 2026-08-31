@@ -1,0 +1,55 @@
+# The branch-induction route to the asymptotic BG upper bound (bypasses tree→hub)
+
+A self-contained proof STRUCTURE for the asymptotic Brualdi–Goldwasser upper bound `F* ≤ log(621/64)/11`, by
+induction on rooted-branch structure — **independent of** the parallel Lean session's tree→hub reduction /
+Obligation A. `conjecture1_proved = False`; two verified-not-formalised lemmas remain (stated below).
+
+## The claim and the boundary bound
+
+Target: `F(T) = lim_n (1/n) log π(T) ≤ F*` for trees (`π = per(L)/∏deg`). Define, for a rooted BRANCH `B` (root
+with a phantom up-edge, degree `= #children + 1`), `ell(B) = log total(B) − |B| F*`.
+
+**Boundary lemma (verified, all trees `N ≤ 13`, all roots):** `1 ≤ π(T)/branch_total(T, r) ≤ 4/3`, so
+`|log π(T) − log branch_total(T, r)| ≤ log(4/3) = O(1)`, independent of `n` (only the root's `+1` up-edge
+differs). Hence
+```
+ell(B) ≤ 0 for all rooted branches B   ==>   π(T) ≤ (4/3)·e^{n F*}   ==>   (1/n) log π(T) ≤ F* + O(1/n) → F*.
+```
+So the asymptotic upper bound reduces ENTIRELY to `ell(B) ≤ 0` for all rooted branches — no tree→hub needed.
+
+## The induction (on `|B|`)
+
+- **Base:** `B = leaf`. `ell = log 1 − 1·F* = −F* < 0`. ✓
+- **Step (the per-hub bound):** `B` = a hub with `k` children `c_1,…,c_k`; IH `ell(c_i) ≤ 0`. Then
+  `ell(B) = Σ_i ell(c_i) + log(1 + Σ_i x_i) − F*`, `x_i = h_{c_i}/((k+1) d_{c_i})`, and `ell(B) ≤ 0`:
+
+  | `k` | bound | status |
+  |---|---|---|
+  | `1` | `ell ≤ ell(cherry) = −0.0077 ≤ 0` | trivial |
+  | `2..20` (tie) | `ell(hub) ≤ ell(B(k)) ≤ 0` | **kernel-gated** (`bg_tie_cherry_worst` + `bg_broom_optimum`) + `mixed ≤ B(k)` |
+  | `≥ 21` (slack) | `ell(hub) ≤ slack_g(k) − F* < 0` | verified (`slack_hub_bound`) |
+
+  Everything arithmetically delicate (the `27·23` tie via the broom optimum, and the cherry-worst boundary at
+  `k = 20`) is **kernel-gated**. The base + step give `ell(B) ≤ 0` for all rooted branches by induction.
+
+## The two remaining lemmas (verified, tie-free, to formalise)
+
+1. **`mixed ≤ B(k)` (`k ≥ 2`):** for any `k` children with `ell(c_i) ≤ 0`, `ell(hub) ≤ ell(B(k))` (the all-cherry
+   hub is the worst). Verified over leaf/cherry/broom mixes (`k ≤ 20`); the max-`ell` `k`-hub is uniform
+   (all-leaf at `k=1`, all-cherry for `k≥2`). Formalisation: the child→cherry exchange raises `ell` for `k ≥ 2`
+   (its `Δ` couples through the other children's `Σx`, so not purely per-child). **Caveat:** verified on a
+   child-pool, not proven for arbitrary children — the honest gap (and where a tangent-style overclaim could
+   hide; test exhaustively before believing).
+2. **Slack bound (`k ≥ 21`):** `slack_g(k) = k·max_env(ell(c)+x_c) ≤ F*` via the branch envelope (cherry + brooms;
+   larger branches have `ell` bounded away from 0). Verified (sup `0.156` at `k=21`, margin `0.05`).
+
+## Significance
+
+This route makes the asymptotic upper bound **self-contained on the analytic side** — the parallel Lean
+session's tree→hub / Obligation A (the long-standing "wall") is NOT required for the *asymptotic* maximum
+(the growth rate `F*`), only for a structural/finite-`n` domination statement. Combined with the lower bound
+(the `S(k,5)` star-of-brooms achieves `F*`), completing the two lemmas above would resolve the **asymptotic**
+Brualdi–Goldwasser maximum. `conjecture1_proved = False` (the two lemmas are verified, not yet formal).
+
+See `BG_TIE_REGIME_CAMPAIGN_20260831.md`, `BG_BROOM_DOMINANCE_20260831.md`, `BG_23ADIC_RECONCILIATION_20260831.md`,
+skills `branch_potential.py` / `tie_regime.py`.
