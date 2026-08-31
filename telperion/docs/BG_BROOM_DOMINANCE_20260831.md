@@ -95,7 +95,26 @@ child sweep, not random trees, is the honest test.)
 
 **Consequence for strategy:** the smooth-analytic route is closed; the upper bound needs either (a) the
 degree-changing exchange for (A) with an integer/`23`-adic argument for the non-monotone worst child, or (b) the
-transfer-operator variational bound. Both are the genuine open frontier.
+transfer-operator variational bound. Both reduce to the same 23-adic core (a smooth transfer-operator
+eigenfunction hits the identical no-go), and non-broom branches approach `ρ*` arbitrarily closely
+(hub-of-`B(5)`, `j=40` → `1.22923`), so there is **no soft ε-margin** — the tight arithmetic is unavoidable.
+
+### The arithmetic structure — a two-regime picture (this move)
+
+For the UNIFORM hub `ell(k, τ) = k·ell(τ) + log(1 + k·x_τ) − F*` (`k` identical children `τ`), the exact
+maximiser over all `(k, τ)` is `0` at the broom (`k = 5`, `τ = cherry`), and:
+- **Tie regime** (`k = 1..6`, `ell` near `0`): the max-`ell` hub is **uniform** (all children the cherry) — the
+  broom, whose `k`-optimum is (B), closed by the `R(s)` single-crossing. Exhaustive `N ≤ 14`: the max-`ell` hub
+  per root-degree `k ≤ 6` is uniform.
+- **Slack regime** (larger `k`, or non-uniform / deeper children): `ell` is bounded well below `0`
+  (`≤ -0.14` at `k = 7`, decreasing) — the non-monotone deeper worst child only appears here, where the bound
+  has ample slack.
+
+So the plausible proof shape is **two-regime**: the tie regime reduces to the uniform/broom `R(s)` arithmetic
+(generalised to bound uniform non-cherry children), and the slack regime is a soft bound bounded away from `0`.
+This is a concrete lead — but a naive global "mixed ≤ uniform" is FALSE (fails at large `k` under size
+constraints, though only in the slack regime), so the two regimes must be separated carefully. Genuinely open;
+the tie-regime `R(s)`-generalisation is the next arithmetic target.
 
 ## Next steps
 
