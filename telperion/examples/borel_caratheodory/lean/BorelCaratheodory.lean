@@ -56,7 +56,8 @@ theorem re_le_on_closedBall_of_re_le_on_sphere
     rw [frontier_ball 0 hR.ne'] at hζ
     have hle0 : (g ζ - (B : ℂ)).re ≤ 0 := by
       simp only [Complex.sub_re, Complex.ofReal_re]; linarith [hB ζ hζ]
-    calc ‖h ζ‖ = Real.exp (g ζ - (B : ℂ)).re := by rw [hh]; exact Complex.norm_exp _
+    calc ‖h ζ‖ = Real.exp (g ζ - (B : ℂ)).re := by
+            simp only [hh]; exact Complex.norm_exp _
       _ ≤ Real.exp 0 := Real.exp_le_exp.mpr hle0
       _ = 1 := Real.exp_zero
   -- Max modulus: the bound propagates to the closure (= closed ball).
@@ -65,8 +66,9 @@ theorem re_le_on_closedBall_of_re_le_on_sphere
   have hle : ‖h z‖ ≤ 1 :=
     Complex.norm_le_of_forall_mem_frontier_norm_le isBounded_ball hdh hnorm_bound hclosure
   -- Recover `Re (g z) ≤ B` from `exp (Re (g z) − B) ≤ 1`.
-  rw [hh, Complex.norm_exp] at hle
-  have hre : (g z - (B : ℂ)).re ≤ 0 := Real.exp_le_one_iff.mp hle
+  have hlz : Real.exp (g z - (B : ℂ)).re ≤ 1 := by
+    have := hle; simp only [hh] at this; rwa [Complex.norm_exp] at this
+  have hre : (g z - (B : ℂ)).re ≤ 0 := Real.exp_le_one_iff.mp hlz
   simp only [Complex.sub_re, Complex.ofReal_re] at hre
   linarith
 
@@ -123,6 +125,7 @@ theorem moebius_differentiableOn {R B : ℝ} (hB : 0 < B) {g : ℂ → ℂ}
     DifferentiableOn ℂ (moebius B g) (ball 0 R) := by
   have hden : ∀ ζ ∈ ball (0 : ℂ) R, (2 * (B : ℂ) - g ζ) ≠ 0 :=
     fun ζ hζ => two_mul_sub_ne_zero hB (hre ζ hζ)
+  simp only [moebius]
   exact DifferentiableOn.div hg ((differentiableOn_const _).sub hg) hden
 
 /-- `moebius B g` maps `ball 0 R` into `closedBall 0 1`, given the half-plane bound. -/
@@ -131,6 +134,7 @@ theorem moebius_mapsTo {R B : ℝ} (hB : 0 < B) {g : ℂ → ℂ}
     Set.MapsTo (moebius B g) (ball 0 R) (closedBall 0 1) := by
   intro ζ hζ
   rw [mem_closedBall, dist_zero_right]
+  show ‖g ζ / (2 * (B : ℂ) - g ζ)‖ ≤ 1
   exact norm_div_two_mul_sub_le_one hB (hre ζ hζ)
 
 /- ===================================================================================
@@ -171,13 +175,16 @@ theorem moebius_inv {B : ℝ} (hB : 0 < B) {g w : ℂ}
     simp only [ne_eq, mul_eq_zero, OfNat.ofNat_ne_zero, false_or]
     exact_mod_cast hB.ne'
   subst hw
+  -- `1 + g/(2B−g) = 2B/(2B−g)`, whose numerator `2B ≠ 0` gives `1 + w ≠ 0`.
   have h1w : (1 : ℂ) + g / (2 * (B : ℂ) - g) = 2 * (B : ℂ) / (2 * (B : ℂ) - g) := by
     field_simp
-  refine ⟨?_, ?_⟩
-  · rw [h1w]
-    exact div_ne_zero hBne hden
-  · rw [h1w]
-    field_simp
+  have h1wne : (1 + g / (2 * (B : ℂ) - g)) ≠ 0 := by
+    rw [h1w]; exact div_ne_zero hBne hden
+  refine ⟨h1wne, ?_⟩
+  -- Prove `g = 2B·w/(1+w)` by clearing the (nonzero) denominator `1 + w`.
+  rw [eq_div_iff h1wne]
+  field_simp
+  ring
 
 /-- Norm bound from Schwarz + inversion: if `‖w‖ ≤ t < 1` and `g = 2B·w/(1+w)`, then
     `‖g‖ ≤ 2B·t/(1−t)`. -/
@@ -194,10 +201,10 @@ theorem norm_g_le_of_norm_w_le {B t : ℝ} (hB : 0 < B) (ht0 : 0 ≤ t) (ht1 : t
     simpa [sub_neg_eq_add] using this
   have h1mt_pos : 0 < 1 - t := by linarith
   have hlb : (1 : ℝ) - t ≤ ‖1 + w‖ := by linarith [hrev, hwt]
-  -- Numerator norm.
+  -- Numerator norm: ‖2·B·w‖ = 2·B·‖w‖  (B > 0, so ‖(B:ℂ)‖ = |B| = B; ‖(2:ℂ)‖ = 2).
   have hnum : ‖2 * (B : ℂ) * w‖ = 2 * B * ‖w‖ := by
-    rw [norm_mul, norm_mul]
-    simp [Complex.norm_ofReal, abs_of_pos hB, abs_of_pos (by norm_num : (0:ℝ) < 2)]
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hB,
+      Complex.norm_ofNat]
   rw [hg, norm_div, hnum]
   -- 2B‖w‖ / ‖1+w‖ ≤ 2B·t / (1−t).
   rw [div_le_div_iff₀ hden_pos h1mt_pos]
@@ -255,6 +262,10 @@ theorem borel_caratheodory_value
     norm_g_le_of_norm_w_le hB ht0 ht1 hschwarz h1w hginv
   -- Rewrite `2B·t/(1−t)` as `(2‖z‖/(R−‖z‖))·B`.
   have hRmz_pos : 0 < R - ‖z‖ := by linarith
+  have hRne : R ≠ 0 := hR.ne'
+  have hRmz_ne : R - ‖z‖ ≠ 0 := hRmz_pos.ne'
+  -- `1 − t > 0` (from `t < 1`), hence `≠ 0`.
+  have h1t_ne : (1 : ℝ) - t ≠ 0 := (sub_pos.mpr ht1).ne'
   have hrewrite : 2 * B * t / (1 - t) = (2 * ‖z‖ / (R - ‖z‖)) * B := by
     rw [htdef]
     field_simp
@@ -364,10 +375,12 @@ theorem borel_caratheodory_deriv
   -- Simplify the family bound at `ρ' = (R−‖z‖)/2`.
   -- `‖z‖ + ρ' = (R + ‖z‖)/2`,  `R − (‖z‖+ρ') = (R − ‖z‖)/2`,  divide by `ρ' = (R−‖z‖)/2`.
   have hRzρ_pos : 0 < R - (‖z‖ + ρ') := by rw [hρ'def]; linarith
+  have hRmz_ne : R - ‖z‖ ≠ 0 := hRmz_pos.ne'
   have hsimp :
       (2 * (‖z‖ + ρ') / (R - (‖z‖ + ρ'))) * (A - (f 0).re) / ρ'
         = (4 * (R + ‖z‖) / (R - ‖z‖) ^ 2) * (A - (f 0).re) := by
     rw [hρ'def]
+    rw [show R - (‖z‖ + (R - ‖z‖) / 2) = (R - ‖z‖) / 2 by ring]
     field_simp
     ring
   rw [hsimp] at hfam
