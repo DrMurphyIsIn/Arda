@@ -383,3 +383,8 @@ group = "quick"    # route-(b): m=2 arm-balancing -- toward-balance move strictl
 name = "bg_broom_optimum"
 script = "examples/bg_broom_optimum/generate.py"
 group = "quick"    # route-(b) retarget: star-of-cherry-brooms c=5 optimum (cross-exponentiated rate rationals); ~0.1 s
+
+[[check]]
+name = "bg_bulk_discharge"
+script = "examples/bg_bulk_discharge/generate.py"
+group = "quick"    # route-(b) upper bound: full-edge discharge atoms (c=4,5) as Handelman box-positivity; warm-up; ~0.1 s

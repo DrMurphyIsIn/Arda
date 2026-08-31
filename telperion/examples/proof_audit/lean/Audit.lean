@@ -21,6 +21,7 @@ import Audit.LatticeBox
 import Audit.Putinar
 import Audit.WZ
 import Audit.Handelman
+import Audit.BGBulkDischarge
 import Audit.Nullstellensatz
 import Audit.Infeasible
 import Audit.Consequence
