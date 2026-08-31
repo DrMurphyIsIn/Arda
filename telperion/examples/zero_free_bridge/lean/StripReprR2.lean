@@ -49,17 +49,17 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
     · refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun x hx => ?_))
       have hx1 : (1 : ℝ) < x := hx
       have hxpos : (0 : ℝ) < x := by linarith
-      -- ‖{x}·x^{-(z+1)}‖ = {x}·‖x^{-(z+1)}‖ ≤ ‖x^{-(z+1)}‖  (since 0 ≤ {x} ≤ 1)
-      simp only [hFdef, fractIntegrand, norm_div]
-      rw [Complex.norm_real]
+      -- ‖{x}·x^{-(z+1)}‖ = {x}·‖x^{z+1}‖⁻¹ ≤ ‖x^{z+1}‖⁻¹ = ‖x^{-(z+1)}‖  (since 0 ≤ {x} ≤ 1)
       have hf0 : 0 ≤ Int.fract x := Int.fract_nonneg x
       have hf1 : Int.fract x ≤ 1 := (Int.fract_lt_one x).le
-      have hxne : (x : ℂ) ^ (z + 1) ≠ 0 := by
-        simp [Complex.cpow_ne_zero_iff]; exact_mod_cast hxpos.ne'
-      rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos, ← Complex.norm_cpow_eq_rpow_re_of_pos hxpos]
-      · gcongr
-        · exact Real.norm_of_nonneg hf0 ▸ hf0
-        · simpa [Real.norm_of_nonneg hf0] using hf1
+      have hpow : ‖(x : ℂ) ^ (-(z + 1))‖ = ‖(x : ℂ) ^ (z + 1)‖⁻¹ := by
+        rw [Complex.cpow_neg, norm_inv]
+      have hcnn : (0 : ℝ) ≤ ‖(x : ℂ) ^ (z + 1)‖⁻¹ := inv_nonneg.mpr (norm_nonneg _)
+      simp only [hFdef, fractIntegrand, norm_div, Complex.norm_real, Real.norm_of_nonneg hf0]
+      rw [hpow, div_eq_mul_inv]
+      calc Int.fract x * ‖(x : ℂ) ^ (z + 1)‖⁻¹
+          ≤ 1 * ‖(x : ℂ) ^ (z + 1)‖⁻¹ := mul_le_mul_of_nonneg_right hf1 hcnn
+        _ = ‖(x : ℂ) ^ (z + 1)‖⁻¹ := one_mul _
   -- (meas') `F'` is a.e.-strongly-measurable.
   have h_meas' : AEStronglyMeasurable F' (volume.restrict (Set.Ioi (1 : ℝ))) := by
     refine (Measurable.aestronglyMeasurable ?_)
@@ -83,23 +83,21 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
     have hx1 : (1 : ℝ) < x := hx
     have hxpos : (0 : ℝ) < x := by linarith
     have hxne : (x : ℂ) ≠ 0 := by exact_mod_cast hxpos.ne'
-    -- d/dw of `w ↦ (x)^{-(w+1)}` is `-(log x) · x^{-(z+1)}`; times the constant `{x}`.
+    -- d/dw of `w ↦ (x)^{-(w+1)}` via `HasDerivAt.const_cpow` (chain rule, const base x);
+    -- times the constant `{x}`.
     have hlin : HasDerivAt (fun w : ℂ => -(w + 1)) (-1) z := by
       simpa using (((hasDerivAt_id z).add_const 1).neg)
     have hcpow : HasDerivAt (fun w : ℂ => (x : ℂ) ^ (-(w + 1)))
-        (-(Complex.log x * (x : ℂ) ^ (-(z + 1)))) z := by
-      have hconst : HasDerivAt (fun t : ℂ => (x : ℂ) ^ t)
-          ((x : ℂ) ^ (-(z + 1)) * Complex.log x) (-(z + 1)) :=
-        Complex.hasDerivAt_const_cpow (Or.inl hxne)
-      have := hconst.comp z hlin
-      simpa [mul_comm, mul_neg, neg_mul] using this
-    have hfract : HasDerivAt (fun w => F w x) (((Int.fract x : ℝ) : ℂ) * (-(Complex.log x * (x : ℂ) ^ (-(z + 1))))) z := by
-      simp only [hFdef, fractIntegrand, div_eq_mul_inv, ← Complex.cpow_neg]
-      exact hcpow.const_mul _
-    -- reconcile the two forms of the derivative value
-    convert hfract using 1
-    simp only [hF'def, div_eq_mul_inv, ← Complex.cpow_neg]
-    ring
+        ((x : ℂ) ^ (-(z + 1)) * Complex.log (x : ℂ) * (-1)) z :=
+      hlin.const_cpow (Or.inl hxne)
+    have hmul := hcpow.const_mul ((Int.fract x : ℝ) : ℂ)
+    -- massage the function into `F` and the derivative value into `F' x`.
+    have hfun : (fun w => F w x) = (fun w : ℂ => ((Int.fract x : ℝ) : ℂ) * (x : ℂ) ^ (-(w + 1))) := by
+      funext w; simp only [hFdef, fractIntegrand, div_eq_mul_inv, ← Complex.cpow_neg]
+    have hval : ((Int.fract x : ℝ) : ℂ) * ((x : ℂ) ^ (-(z + 1)) * Complex.log (x : ℂ) * (-1)) = F' x := by
+      simp only [hF'def, div_eq_mul_inv, ← Complex.cpow_neg]; ring
+    rw [hfun, ← hval]
+    exact hmul
   -- Assemble.
   have key := hasDerivAt_integral_of_dominated_loc_of_lip hSmem h_meas h_int h_meas' h_lip h_bint h_diff
   have hd : DifferentiableAt ℂ (fun w => ∫ x in Set.Ioi (1 : ℝ), F w x) z := key.2.differentiableAt
