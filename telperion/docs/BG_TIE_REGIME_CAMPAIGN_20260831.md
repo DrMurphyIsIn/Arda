@@ -49,14 +49,26 @@ inside the tie regime with room to spare. So:
 
 The remaining infinite part is the **slack regime `k >= 21`** (Phase 3), which needs only a soft bound.
 
-## Phase 3 — the slack regime `k >= 21` + mixed hubs
+## Phase 3 — the slack regime `k >= 21` (DONE, verified) + mixed hubs
 
-- **slack regime `k >= 21`** — cherry-worst may fail, but `ell(hub of k anything) <= -0.08 < 0` with a uniform
-  margin. A soft bound: for large root-degree `k`, `A_root = log(1 + Σ x_c) <= log(1 + k * max_c x_c)` is small
-  (each `x_c <= 1/(k+1)`, and the credits `Σ ψ(c)` grow), so `ell(hub)` is bounded away from `0`. Establish the
-  explicit margin (no tie here).
-- **mixed <= uniform near the tie** — exhaustive `N <= 14`: the max-`ell` hub per root-degree `k <= 6` is uniform.
-  Prove that in the tie regime the worst hub is uniform (a convexity/exchange argument on the children multiset).
+- **slack regime `k >= 21` — soft bound established (`tie_regime.slack_hub_bound`).** Via `log(1 + Σ x_c) <= Σ x_c`,
+  `ell(hub) <= Σ_c (ell(c) + x_c) - F* <= k * max_c (ell(c) + x_c) - F* = slack_g(k) - F*`. The per-child max
+  lies on the branch envelope (cherry + brooms; larger branches have `ell` bounded away from `0`, verified over
+  all branches `<= size 11`), and `slack_g(k) <= F*` for all `k >= 21` (sup `0.156` at `k = 21`, margin `0.05`;
+  `-> 0.130` as `k -> infinity`, from `B(5)`). So `ell(hub) <= slack_g(k) - F* <= 0`, tie-free. The `log <= linear`
+  relaxation is loose only at the tie (`k <= 20`, handled by cherry-worst) -- in the slack regime it has ample
+  margin. **Remaining formalisation:** the envelope reduction (`max_c` over all branches `=` max over cherry +
+  brooms) and `slack_g(k) <= F*` as a closed bound (the cherry term is decreasing in `k`, the `B(5)` term `< 0.131`).
+
+- **mixed <= uniform near the tie (the last piece)** — exhaustive `N <= 14`: the max-`ell` hub per root-degree
+  `k <= 6` is uniform. Prove that in the tie regime the worst hub is uniform (a convexity/exchange argument on
+  the children multiset), so the uniform tie-regime bound (cherry-worst + broom optimum) covers mixed hubs too.
+
+## Status
+
+Tie-tight core **fully gated**: broom optimum (`bg_broom_optimum`) + tie-regime cherry-worst k<=20
+(`bg_tie_cherry_worst`). Slack regime `k >= 21` **verified** (`slack_hub_bound < 0`). Remaining: the two
+formalisation items above (envelope reduction / `slack_g` closed bound; mixed <= uniform) -- all TIE-FREE.
 
 ## Honest scope
 

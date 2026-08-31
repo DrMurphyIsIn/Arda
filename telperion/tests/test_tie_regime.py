@@ -81,3 +81,13 @@ def test_tie_cherry_worst_certificate_k20():
     assert mod.count("by norm_num") == 19
     # k=21 is outside the tie regime -- the certificate must NOT claim it
     assert cherry_vs_broom_ratio(21, 4) < 1
+
+
+def test_slack_regime_bound():
+    """Slack regime k>=21: ell(hub) <= slack_hub_bound(k) <= 0 (tie-free soft bound); sup at k=21."""
+    from telperion.tie_regime import slack_hub_bound, slack_g
+    for k in [21, 22, 25, 30, 50, 100, 500]:
+        assert slack_hub_bound(k) < 0, f"slack bound not < 0 at k={k}"
+        assert slack_g(k) < 0.207, f"g(k) not < F* at k={k}"
+    # tightest at the boundary k=21, with margin ~0.05
+    assert -0.06 < slack_hub_bound(21) < -0.04
