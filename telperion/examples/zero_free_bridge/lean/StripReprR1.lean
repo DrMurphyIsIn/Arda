@@ -58,23 +58,26 @@ private theorem tendsto_partialSum_zeta {s : ℂ} (hs : 1 < s.re) :
     rw [Nat.cast_add_one]
   have hHSg : HasSum (fun n : ℕ => 1 / ((n : ℂ) + 1) ^ s) (riemannZeta s) := by
     rw [zeta_eq_tsum_one_div_nat_add_one_cpow hs]; exact hg_sum.hasSum
-  -- Reindex: the summand at `k = n+1` is `1/(n+1)^s`.
-  have hfun : (fun n : ℕ => fPow s (n + 1) * cOne (n + 1))
+  -- Reindex: the summand at `k = n+1` is `1/(n+1)^s`.  Write the argument as the ℕ-cast
+  -- `((n+1 : ℕ) : ℝ)` so it matches `(fun k => fPow s k * cOne k) (n+1)` verbatim.
+  have hfun : (fun n : ℕ => fPow s ((n + 1 : ℕ) : ℝ) * cOne (n + 1))
       = (fun n : ℕ => 1 / ((n : ℂ) + 1) ^ s) := by
     funext n
     have hc : cOne (n + 1) = 1 := by simp [cOne]
     simp only [fPow, hc, mul_one, one_div]
     rw [← Complex.cpow_neg]
     norm_cast
-  have hF1 : HasSum (fun n : ℕ => fPow s (n + 1) * cOne (n + 1)) (riemannZeta s) := by
+  have hF1 : HasSum (fun n : ℕ => fPow s ((n + 1 : ℕ) : ℝ) * cOne (n + 1)) (riemannZeta s) := by
     rw [hfun]; exact hHSg
   have hAsum : HasSum (fun k : ℕ => fPow s k * cOne k) (riemannZeta s) := by
     have h := (hasSum_nat_add_iff 1 (f := fun k : ℕ => fPow s k * cOne k)).mp hF1
     simpa [Finset.sum_range_one, cOne] using h
   -- Partial sums over `range` shift to `Icc 0 N = range (N+1)`.
   have hset : ∀ N : ℕ, Finset.Icc 0 N = Finset.range (N + 1) := by
-    intro N; ext k; simp [Nat.lt_succ_iff]
-  refine (hAsum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)).congr (fun N => ?_)
+    intro N; ext k; simp
+  have htend : Tendsto (fun N : ℕ => ∑ k ∈ Finset.range (N + 1), fPow s k * cOne k) atTop
+      (𝓝 (riemannZeta s)) := hAsum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+  refine htend.congr (fun N => ?_)
   rw [hset N]
 
 theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := by
