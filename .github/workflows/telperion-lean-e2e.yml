@@ -453,6 +453,35 @@ jobs:
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build StripReprR3
 
+  # (R2) discharge (WIP DIAGNOSTIC): DifferentiableAt fractIntegral via differentiation under the
+  # integral. May transiently carry `sorry` in h_lip/h_bint -- this job's value is verifying the
+  # OTHER 5 hypotheses (measurability, integrability, the derivative chain-rule, assembly) compile.
+  # NOT a real discharge until the file is sorry-free (checked separately below once complete).
+  strip-repr-r2-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the (R2) differentiation-under-integral discharge (WIP)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripReprR2
+
   # Compile the DRAFTED Borel-Caratheodory theorem (its own lakefile/toolchain). Sorry-free, 398 lines,
   # never built; this job produces the real verdict. The crux missing piece for the region assembly.
   borel-caratheodory-compiles:

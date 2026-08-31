@@ -19,3 +19,9 @@ name = "StripRepr"
 # green while R1/R2 iterate. Out of defaultTargets.
 [[lean_lib]]
 name = "StripReprR3"
+
+# (R2) discharge (WIP): DifferentiableAt fractIntegral. Own target. NOTE: may transiently carry
+# `sorry` in the two hardest hypotheses (h_lip, h_bint) as a diagnostic; NOT a real discharge until
+# sorry-free. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprR2"
