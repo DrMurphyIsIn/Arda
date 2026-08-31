@@ -4,6 +4,45 @@
 global maximizer of the matching free-energy density over all trees), why every local/combinatorial method
 fails to certify it, and the one remaining viable route — **Guerra interpolation**.
 
+> ### ⚠ PREMISE REFUTATION (2026-08-31, exact + independently reproduced) — the target as stated is FALSE
+> The length-2-arm caterpillar does **NOT** maximize `F = (1/n) log(per(L)/∏deg)` over trees. **Star-of-cherry-
+> branch spiders** `S(k,c)` (a center hub joined to `k` branch-hubs, each branch-hub of degree `c+1` carrying `c`
+> length-2 cherries) have strictly higher free-energy density. Exact `Fraction` computation via
+> `matching_free_energy.rho`, boundary-free and monotone-convergent:
+> `F(S(k,5)) → 0.206586` (S(400,5), n=4401: `F = 0.206567`) **>** caterpillar sup `F(a=7) = 0.205098` (long
+> uniform caterpillar m=400 direct: `0.205106`). The B(c)-branch per-vertex rate `[(3/2)^{c-1}(4c+3)/(2(c+1))]^{1/(2c+1)}`
+> beats the caterpillar for every `c ≥ 3`, peaking at `c=5` (1.229474 vs 1.227646). At **finite** n the caterpillar
+> wins only up to a crossover at **n ≈ 134**: the strict-single-swap-local-max spiders `S(19,3)` (n=134, exact
+> `logZ 27.5336 > 27.5259`) and `S(15,4)` (n=136, `28.020 > 27.937`) already exceed the best caterpillar. So the
+> conjectured extremal value `log ρ* ≈ 0.205098` is **not** the tree maximum, and the maximizer is **not** the
+> caterpillar for large n. This CONFIRMS + sharpens the project's own earlier note ("load-5 arms rhoB/vert overtake
+> asymptotically ⟹ 2-regime BG tie") that the current plan's caterpillar framing had set aside. The B(5)-spider is
+> itself not a strict local max (multi-swap-escapable), so the true sup density is `≥ 0.20659`. **Consequences:**
+> the "reduce every tree to the caterpillar family" architecture (P1–P4) is moot — the caterpillar family is not
+> where the maximum lives. Verification inline vs `rho` + `transfer_caterpillar`; exceptional-set census +
+> decorated-spider transfer recurrence by the parallel characterization agent.
+>
+> **LITERATURE RECONCILIATION (Pant 2026, arXiv:2605.14176, read in full).** The plan MISREAD Pant. The object is
+> exactly ours: `π(T) = per(L)/∏deg = Σ_M ∏_{uv∈M} 1/(d(u)d(v))` (Pant Lemma 2.1). Brualdi–Goldwasser asked for the
+> max over n-vertex trees — **the exact maximizer is OPEN**. Wu–Dong–Lai (Conj 1.1) *conjectured* subdivided-star
+> **spiders** `S(n,(n-1)/2)` (odd) / double-spiders `S(n,a,b)` (even) are extremal. Pant *refuted* WDL with the
+> **path-core caterpillar** family `T(a₁..aₘ)` (his Section 2 = our `caterpillar_edges`, `π=(3/2)^{Σaᵢ}f_m` = our
+> `Z_recurrence`), via `T(3,t,3), T(t,t,t,t), T(t,t,t+1,t)`. Pant does NOT claim caterpillars are optimal. So
+> "prove the caterpillar maximizes" was never Pant's theorem — it is open AND (above) false.
+>
+> **NEW RESULT (this session, exact).** The **star-of-cherry-brooms** `S(k,c)` (STAR core: one center of degree k,
+> each of the k branch-hubs of degree `c+1` carrying `c` length-2 cherries) lies OUTSIDE Pant's path-core family
+> (center degree ≥3 ≠ a path) and **beats it**: density `0.206586` (c=5) `> 0.205098` (Pant caterpillar sup). The
+> mechanism is exact: the star core gives every branch-hub degree `c+1` vs the path core's `c+2`; lower degree →
+> larger `1/d` weight → higher `π`, and the single high-degree center is asymptotically free (`Z(S(k,c)) =
+> total^{k-1}(total + (3/2)^c/(c+1))`, `total = (3/2)^{c-1}(4c+3)/(2(c+1))`). **Optimality is clean:** internal hub
+> degree cannot drop below `c+1` (one up-edge + c arms), so a SINGLE central hub is optimal — recursion does NOT
+> help (depth-4 "star-of-star-of-brooms" tested at F≈0.2053 < 0.2065, since mid-hubs pay high degree). So the
+> conjectured maximizer is (very plausibly) the depth-3 **star-of-B(5)-brooms**, `F* = max_c [(3/2)^{c-1}(4c+3)/
+> (2(c+1))]^{1/(2c+1)} = 0.206586` at `c=5`. This is a **stronger counterexample to Wu–Dong–Lai than Pant's** and a
+> better lower bound on the true BG maximum — a genuine, novel, exactly-verified contribution. Next: prove the
+> star-of-B(5)-brooms is the maximizer (or find the true optimum), and write it up as an improvement on Pant.
+
 ## 0. The object
 
 `F(T) = (1/n) log(per(L)/∏deg) = (1/2) ∫ log(1+u) dμ_N(u)`, `u = λ²`, `N = D^{-1/2} A D^{-1/2}`,
@@ -253,6 +292,93 @@ per-vertex discharge. A1 therefore needs more than a per-vertex potential: eithe
 consistency across the tree (not just local types), a Guerra-Toninelli interpolation, or a genuinely global
 argument. The surface-term insight (`§4`, `#edges=n−1`) remains the correct way to *exclude forests*, but it
 does not by itself make the local discharge tight. `conjecture1_proved = False`.
+
+## 7. Phase-0 falsification battery (post-plan, majorization architecture)
+
+Following the 4-agent literature dive (which redirected away from Guerra–Toninelli interpolation — the wrong
+tool, it compares to a random reference and ignores connectedness — toward **majorization + connectedness via
+path-cover + a signed-log certificate**), Phase 0 tests the new architecture. First result:
+
+**P0.1 — the fixed-degree reduction (verified, robust; `phase0/P0_1_fixed_degree_majorization.py`).** Generating
+random trees with the caterpillar's *exact degree multiset* (via random Prüfer sequences with fixed
+multiplicities) and comparing to the caterpillar arrangement, across 5 degree sequences (300–500 samples each):
+- The **caterpillar arrangement is the F-maximizer** at fixed degree sequence — by a large margin (e.g. F=0.2053
+  vs random range [0.148, 0.179]); 0 of 500 random arrangements beat it.
+- `F ≈ 0.42·m₁ + const`, with **Spearman `corr(F, m₁) ≈ 0.99`** (F nearly *monotone* in `m₁`), where
+  `m₁ = (1/N)Tr(N²) = (2/N)Σ_edges 1/(d_u d_v)` is a **weighted Randić index**. Residual std ~5e-4, max ~1.7e-3
+  ≪ the caterpillar's F-advantage (~0.021).
+- The caterpillar is also the **m₁-maximizer** (by ~0.049, ≫ residual) in every case.
+
+**Consequence.** At a fixed degree sequence, the feared alternating-sign obstruction (ingredient IV) is *mild*:
+`F` is dominated by the first moment `m₁`, so ingredient (I)+(IV) reduces to **"the caterpillar maximizes the
+weighted Randić index `Σ 1/(d_u d_v)` among trees with a given degree sequence, and `F` is monotone in it."**
+Maximizing the Randić index over trees with a given degree sequence is a classical extremal-graph problem
+(connects to the greedy-tree / M-tree degree-sequence machinery, Andriantiana–Wagner arXiv:2008.00722); `F`'s
+near-monotonicity in `m₁` is a Schur/real-stability statement with a small, boundable residual. This is a far
+more tractable target than the "no distant competitor" barrier. Remaining: (a) confirm/prove caterpillar =
+global fixed-degree Randić-maximizer (vs a smart hub-separated arrangement, not just random samples); (b) bound
+the F–m₁ residual via Heilmann–Lieb real-rootedness; (c) ingredient (II) across degree sequences (piece 2 +
+reduction); (d) ingredient (III) connectedness via path-cover. `conjecture1_proved = False`.
+
+**P0.1b — caterpillar = fixed-degree m₁-max (verified by optimization).** Degree-preserving-swap hill-climbing
+on `m₁` yields NO improvement from the caterpillar; random starts converge back to the caterpillar's `m₁`. So
+(a) is confirmed at the local/global-empirical level: the caterpillar is the genuine fixed-degree Randić-max.
+
+**P0.1c — the moment shape + the SSD over-claim (verification caught it).** The caterpillar's measure has the
+LARGEST low moments (m₁, m₂) and the SMALLEST high moments (m₃…m₈) — the most *concentrated* spectral measure,
+exactly the shape that maximizes `∫(concave increasing)`. This suggested **second-order stochastic dominance
+(SSD)** as a clean form of ingredient (IV). SSD held for all 300 *random* same-degree trees and 8 concave φ —
+**but it is FALSE**: against F-hill-climbed (strong) competitors the caterpillar SSD-dominates only 21–104 of
+120. So SSD is *too strong*; the caterpillar wins F specifically, not every concave functional. And the crude
+log sandwich `½m₁−¼m₂ ≤ F ≤ ½m₁` is too loose to close it (`½m₂≈0.17 ≫` the ~0.049 m₁-gap). **Net honest state
+of ingredient (IV):** the fixed-degree reduction is real and strong (caterpillar = m₁-max = F-max, F~m₁ at
+corr 0.99), but the *rigorous* mechanism is the delicate m₁-dominated alternating-sign sum
+`F(cat)−F(T)=½Δm₁−¼Δm₂+⅙Δm₃−…` (Δm₁>0, Δm₂>0, Δm₃<0,… — alternating good/bad, net positive), which neither SSD
+nor a crude moment sandwich captures. Tractable (m₁ dominates) but not yet a clean theorem — the genuine
+remaining analytic content. Scripts: `phase0/P0_1b_hillclimb_m1.py` + the SSD/moment probes.
+`conjecture1_proved = False`.
+
+**P0.1d — the Randić reduction is FALSE (definitive; verification-as-instrument, 3rd caught claim).** Tested
+"at fixed degree sequence, `argmax F = argmax m₁`" exhaustively: it holds for **all 84 degree-seq groups at
+N=9–12** (0 disagreements) — but **BREAKS at N=14**. Robust counterexample (recomputed at extended precision):
+degree sequence `(1⁸, 2³, 3, 4, 5)`, 150 trees — the F-maximizer has `m₁ = 0.4726` while the m₁-maximizer has
+`m₁ = 0.4762` (higher by 3.6e-3), yet `F(F-max) = 0.180481 > F(m₁-max) = 0.180338` (by 1.4e-4). The two are
+**different trees**: a tree with *lower* `m₁` but F-favorable higher moments wins. (Also: no single tree
+maximizes all weighted `Z_k` simultaneously in 9/74 groups, so the clean "simultaneous-matching-max" proof
+route also fails.) **Conclusion: the fixed-degree F-max is genuinely irreducible to the Randić index `m₁`.**
+The Phase-0.1 `corr(F,m₁)≈0.99` is a strong *heuristic*, exact for small/caterpillar-family degree sequences,
+but false in general — so ingredient (I)-via-`m₁` and the whole "reduce to Randić extremality" simplification
+are dead. The caterpillar remains the F-max for *caterpillar-family* degree sequences (verified), but the
+mechanism is the full alternating-sign `F` (all moments), not `m₁`. This refutes the cleanest simplification of
+ingredient (IV) and returns the fixed-degree problem to the delicate full-`F` extremal analysis — the genuine
+hard core. Script: `phase0/P0_1d_randic_counterexample.py`. `conjecture1_proved = False`.
+
+**P1 — "local Z-monotone reduction to the caterpillar family" is FALSE (definitive; 7th caught overclaim;
+independently re-verified with the repo's exact `rho`).** The reassessed proof architecture's ingredient P1
+posited a finite set of `Z`-nondecreasing local (single-edge-relocation) moves whose closure carries every tree
+into the length-2-arm caterpillar family. Exhaustive test over **all non-isomorphic trees N≤15 with the FULL
+single-edge-swap neighborhood** shows **zero** non-family strict local maxima (every non-family tree has a
+strictly `Z`-increasing single-edge escape) — which would falsely "verify" P1. It **BREAKS at N=16**: the
+balanced symmetric 3-spider `S(3;2,2,2)` (center hub + 3 branch-hubs, each carrying two length-2 cherries;
+degseq `3⁴2⁶1⁶`) has `Z = 847/32 ≈ 26.4688` (rank ≈#8 of 19320), and is a **strict local maximum under the
+entire single-edge-swap move set** — of its ~423 one-edge neighbors, **0 increase `Z`** (independently
+reconfirmed: 0 better, 402 strictly worse, rest sideways), yet it sits **strictly below** the family maximum
+`Z(T(3,4)) = 35721/1280 ≈ 27.9070`. So no purely-local `Z`-monotone move reduces it to the family; P1-as-stated
+is dead (mirrors the N=14 death of the Randić reduction). Sporadic, not broad: the trap recurs only at specific
+balanced-symmetric spiders (the `k=3, k=4` two-cherry spiders at n=16, 21), not at unbalanced cherry counts.
+**Two clean survivors** salvaged from the falsification: (a) the near-star single-hub closed form
+`Z(T(s)) = (4/3)(3/2)ˢ` (exact); (b) **`m=2` symmetric arm-balancing is genuinely `Z`-monotone** (a real
+per-move `ΔZ≥0` obligation — the S1b `vdb_exchange` operator, verified `ΔZ>0` toward balance) — but for **`m≥3`
+arm-balancing is NOT globally `Z`-monotone**: hub position modulates arm value non-monotonically (center-hub
+arms beat end-hub arms beat near-center-hub arms), so "equalize arm counts" fails as a global rule off the
+symmetric two-hub case (a further sub-overclaim corrected here). **Architecture correction:** replace P1 with a
+*local-move + characterized-exceptional-set* argument — reduce the complement by `Z`-monotone moves and dispatch
+the exceptional balanced-symmetric spiders by a **separate finite family of comparison lemmas** proving
+`Z(spider family) < Z(caterpillar family max)` directly (both are computable one-parameter transfer families, so
+this comparison is tractable), OR admit bounded non-monotone "tunnelling" compound moves (losing the per-move
+`ΔZ≥0` structure). Script: parallel P1-prover harness (`/tmp/_pinchk/{harness,moves,cavity,localmax,family}.py`);
+independent re-verification inline against `matching_free_energy.rho` + `transfer_caterpillar`.
+`conjecture1_proved = False`.
 
 ## Appendix — reproduction scripts (offline, `/tmp` during development)
 
