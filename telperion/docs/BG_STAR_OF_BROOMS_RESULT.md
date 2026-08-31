@@ -68,9 +68,12 @@ Wu–Dong–Lai subdivided star. At **finite** `n` the crossover is `n ≈ 134`:
 
 **Proposition 4.3 (branch-rate ceiling, computational).** Writing the optimal tree as "central hub + copies of a
 rooted branch `B`", the density is governed by `rate(B) = total(B)^{1/|B|}`. Over **all** rooted branches up to
-16 vertices, the *unique* maximizer is `B(5)` (`total = 621/64`, `rate = 1.2294737`); recursive/2-level branches
-(a hub of sub-brooms) score strictly lower (depth-4 `F ≈ 0.2053 < 0.2065`), because only one hub can afford high
-degree. This is strong evidence that `F* = F(5) = 0.206586` is the true tree density supremum.
+**18 vertices** (exhaustive), the *unique* maximizer is `B(5)` (`total = 621/64`, `rate = 1.2294737`, size 11);
+recursive/2-level branches (a hub of sub-brooms) score strictly lower. The ceiling is robust under every tested
+extension beyond the exhaustive range: big brooms `B(c)` decrease monotonically past `c = 5` (`rate(B(6)) =
+1.229330 < 1.229474`), and recursive `hub-of-j×B(5)` branches increase in `j` but converge to `1.229474` strictly
+**from below** (`j = 40`: `1.229232`) — as they must, since `j → ∞` is the star-of-B(5)-brooms itself. This is
+strong evidence that `F* = F(5) = log(621/64)/11 = 0.2065864` is the true tree density supremum.
 
 ## 5. What is proven vs open
 
