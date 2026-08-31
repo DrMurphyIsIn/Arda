@@ -47,12 +47,33 @@ the broom. This converts "find a universal field-`τ`" into "prove brooms domina
 structural exchange problem the tree→hub machinery is built for, with the only arithmetic (the `c=5` tie)
 already discharged.
 
+## The exchange is NOT naively monotone (proof-strategy finding)
+
+Tested the obvious move — flatten a broom-child into cherries on the root: it **decreases** `total` (it demotes
+the sub-hub to a bare leaf on the root, and a bare leaf on a hub is inefficient). This is the memory's
+"optimal child non-monotone / near-stars don't dominate" wall, confirmed in the classical-BG total. Consequences:
+- **Child-replacement** (parallel session's `R47R7ChildMono`, degree-preserving, `total` linear-nonneg in each
+  child) is monotone but only reaches DEPTH-2 recursive brooms, not the single-hub broom.
+- Reaching the single-hub broom needs a **degree-CHANGING** exchange (add children by absorbing a sub-hub's
+  cherries onto the root) — the rooted analog of the parallel session's *open* Obligation A (`pushInto`/Kelmans
+  cavity). So (A) is coupled to their open crux — but it is **tie-free** (a plain `total` comparison of a
+  size-`2c+1` broom vs same-size non-brooms; no `c=5` tie), which the smooth-certificate no-go did NOT block.
+
+## The key per-child lemma
+
+By the recursion, `ell(B) ≤ 0` is equivalent to the **per-hub capacity bound**
+```
+A_root ≤ F* + sum_c ψ(c),     ψ(c) := -ell(c) ≥ 0   (each child's accumulated credit),
+```
+verified for all trees `N ≤ 16`. A CLOSED per-child proof (each child's credit `ψ(c)` covers its marginal
+contribution to `A_root`, via concavity of `log(1+Σ w h_c)` + the matching bound `1+Σx ≤ ∏(1+x)`) would give the
+upper bound by induction — the concrete open target.
+
 ## Next steps
 
-1. **Prove (A) broom dominance** via a local exchange: any rooted branch is `total`-dominated by moving a child's
-   mass toward cherries on the root hub (the rooted `pushInto`). Candidate: adapt the parallel session's
-   `R47R7ChildMono` / `pushInto` monotonicity to the rooted-branch total.
-2. **Kernel-gate** the finite base cases of the exchange (small-branch `total` inequalities via `worst_corner`).
+1. **Prove the per-hub capacity bound** `A_root ≤ F* + Σ_c ψ(c)` per-child (concavity/subadditivity split), or
+   the degree-changing exchange for (A). Tie-free — may sidestep the `c`-optimum smooth-certificate no-go.
+2. **Kernel-gate** the finite base cases (`worst_corner`/Handelman on the field box), reusing `bg_bulk_discharge`.
 3. Fold into `BG_UNIFIED_PROGRAM`: upper bound = (A) [this] + (B) [done] + tree→hub [Lean].
 
 Skill: `src/telperion/branch_potential.py` (`branch_ell`, `branch_total`, `broom_edges`). `conjecture1_proved = False`.
