@@ -61,20 +61,41 @@ the sub-hub to a bare leaf on the root, and a bare leaf on a hub is inefficient)
 
 ## The key per-hub lemma — reduced to a single aggregate budget bound (tight at c=5)
 
-By the recursion, `ell(B) ≤ 0` is equivalent to the **per-hub capacity bound**
-`A_root ≤ F* + Σ_c ψ(c)` (`ψ(c) := -ell(c) ≥ 0`, each child's credit), verified `N ≤ 16`. Two experiments
-sharpen it:
-1. **The matching/product bound is valid and not too loose.** `A_root = log(1+Σ x_c) ≤ Σ_c log(1+x_c)`
-   (`x_c = w_{root,c} h_c`), and the relaxed `Σ_c log(1+x_c) ≤ F* + Σ_c ψ(c)` still **holds** (worst `-0.0113`).
-   So the concavity route does not lose the bound.
-2. **It is NOT per-child** — `log(1+x_c) - ψ(c)` is positive for some children (worst `+0.134`), so no termwise
-   `log(1+x_c) ≤ ψ(c)`. The proof needs the **aggregate budget**
-   ```
-   Σ_c [ log(1 + x_c) - ψ(c) ]  ≤  F*,        x_c = h_c / (d_root · d_c),
-   ```
-   which is **tight exactly at the c=5 cherries** (the broom). This is the sharp open crux: a single aggregate
-   inequality over the children, tight at the `27·23` tie — the same object as (A) broom-dominance in aggregate
-   form, with the 23-adic arithmetic localized to this one bound (and (B) already resolves the pure-cherry case).
+By the recursion, `ell(B) ≤ 0` is equivalent to the **per-hub capacity bound** (verified `N ≤ 16`, tight at the
+broom):
+```
+log(1 + Σ_c x_c)  ≤  F* + Σ_c ψ(c),        x_c = h_c / (d_root · d_c),   ψ(c) := -ell(c) ≥ 0.
+```
+**The `log(1 + Σ x_c)` (log of a SUM) is essential — the matching/product relaxation FAILS at the tie.** On the
+exact broom `B(5)` (`d=6`, five cherries `x=1/18`), `A_hub - F* = Σψ = 0.03854` (tight), but the product bound
+`Σ log(1+x_c) = 0.2705` loses `0.0252 > ` the tight margin, so `Σ log(1+x_c) - F* = 0.0638 > 0.0385 = Σψ` — the
+relaxation `1+Σx ≤ ∏(1+x)` overshoots. (An earlier random-tree test that suggested the relaxed bound held was
+misleading: random trees never contain the exact broom hub with its tight fields — an 8th caught overclaim.)
+
+So the "≤ one matched edge at the root" constraint (`log(1+Σx)`, not `Σ log(1+x)`) is **load-bearing at the tie**
+— which is exactly *why* smooth/independence relaxations overshoot (the memory's "no smooth certificate"
+no-go). The bound is genuinely aggregate (not per-child), tight at the `c=5` cherries.
+
+### The tangent-line route — TESTED and DEAD (smooth-certificate no-go, re-confirmed)
+
+The natural fix — a **tangent-line linearization** of the concave `log(1+Σx_c)` at the broom point
+`s* = k/(3(k+1))` (upper bound, affine ⟹ per-child separable, tight at `B(5)`) — reduces the induction step to
+the per-child inequality `x_c/(1+s*) - ψ(c) ≤ C(k)/k` (i.e. "the cherry maximises `x_c/(1+s*) - ψ(c)` over all
+child subtrees, for each `k`"). It passes on structured/random configs but **FAILS** on an exhaustive sweep of
+ALL rooted child-subtrees:
+- **`k = 1`:** a bare-leaf child gives per-child value `+0.2220 > 0.1352` (cherry).
+- **`k = 40`:** a size-9 child gives `+0.00188 > -0.00157` (cherry).
+
+The **optimal child is non-monotone in `k`** (small `k` favours a bare leaf, large `k` favours a deeper subtree,
+only mid-`k` favours the cherry) — precisely the memory's "near-stars don't dominate / optimal child
+non-monotone" wall. The tangent at the cherry point is too loose at low/high `k` (it fails even where the exact
+bound holds). So NO smooth (tangent/product) certificate closes the induction: the bound `log(1+Σx_c) ≤ F* +
+Σψ(c)` is genuinely arithmetic, matching the Φ¹¹ `23`-adic no-go. (Caught before overclaiming — an exhaustive
+child sweep, not random trees, is the honest test.)
+
+**Consequence for strategy:** the smooth-analytic route is closed; the upper bound needs either (a) the
+degree-changing exchange for (A) with an integer/`23`-adic argument for the non-monotone worst child, or (b) the
+transfer-operator variational bound. Both are the genuine open frontier.
 
 ## Next steps
 
