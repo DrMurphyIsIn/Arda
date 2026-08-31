@@ -48,7 +48,7 @@ private theorem sum_cOne (n : ℕ) : ∑ k ∈ Finset.Icc 0 n, cOne k = (n : ℂ
 theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := by
   have hc0 : cOne 0 = 0 := rfl
   have hs0 : s ≠ 0 := by
-    intro h; rw [h] at hs; simp [Complex.zero_re] at hs
+    rintro rfl; simp only [Complex.zero_re] at hs; linarith
   -- (hf_diff) differentiability of `x ↦ x^{-s}` on `[1,∞)`.
   have hf_diff : ∀ t ∈ Set.Ici (1 : ℝ), DifferentiableAt ℝ (fPow s) t := by
     intro t ht
@@ -95,7 +95,7 @@ theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := b
         tendsto_rpow_neg_atTop (by linarith)
       have h2 : Tendsto (fun n : ℕ => (n : ℝ)) atTop atTop := tendsto_natCast_atTop_atTop
       have h3 := h1.comp h2
-      simpa only [Function.comp, neg_sub] using h3
+      simpa only [Function.comp_def, neg_sub] using h3
     refine hlim0.congr (fun n => ?_)
     rw [sum_cOne n, hnorm_eq n]
   -- (hg_dom) `deriv f · ⌊t⌋ = -s·t^{-s-1}·⌊t⌋ =O[atTop] t^{-Re s}` (⌊t⌋ ≤ t).
@@ -111,7 +111,6 @@ theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := b
     have hcp : ‖((t : ℝ) : ℂ) ^ (-s - 1)‖ = t ^ (-s.re - 1) := by
       rw [Complex.norm_cpow_eq_rpow_re_of_pos htpos]
       congr 1
-      simp [Complex.sub_re, Complex.neg_re, Complex.one_re]
     have hgnorm : ‖t ^ (-s.re)‖ = t ^ (-s.re) := Real.norm_of_nonneg (Real.rpow_nonneg htpos.le _)
     rw [norm_mul, norm_mul, norm_neg, hcp, hfl, hgnorm]
     have hfloor : (⌊t⌋₊ : ℝ) ≤ t := Nat.floor_le htpos.le
