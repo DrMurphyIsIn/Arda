@@ -59,15 +59,22 @@ the sub-hub to a bare leaf on the root, and a bare leaf on a hub is inefficient)
   cavity). So (A) is coupled to their open crux — but it is **tie-free** (a plain `total` comparison of a
   size-`2c+1` broom vs same-size non-brooms; no `c=5` tie), which the smooth-certificate no-go did NOT block.
 
-## The key per-child lemma
+## The key per-hub lemma — reduced to a single aggregate budget bound (tight at c=5)
 
 By the recursion, `ell(B) ≤ 0` is equivalent to the **per-hub capacity bound**
-```
-A_root ≤ F* + sum_c ψ(c),     ψ(c) := -ell(c) ≥ 0   (each child's accumulated credit),
-```
-verified for all trees `N ≤ 16`. A CLOSED per-child proof (each child's credit `ψ(c)` covers its marginal
-contribution to `A_root`, via concavity of `log(1+Σ w h_c)` + the matching bound `1+Σx ≤ ∏(1+x)`) would give the
-upper bound by induction — the concrete open target.
+`A_root ≤ F* + Σ_c ψ(c)` (`ψ(c) := -ell(c) ≥ 0`, each child's credit), verified `N ≤ 16`. Two experiments
+sharpen it:
+1. **The matching/product bound is valid and not too loose.** `A_root = log(1+Σ x_c) ≤ Σ_c log(1+x_c)`
+   (`x_c = w_{root,c} h_c`), and the relaxed `Σ_c log(1+x_c) ≤ F* + Σ_c ψ(c)` still **holds** (worst `-0.0113`).
+   So the concavity route does not lose the bound.
+2. **It is NOT per-child** — `log(1+x_c) - ψ(c)` is positive for some children (worst `+0.134`), so no termwise
+   `log(1+x_c) ≤ ψ(c)`. The proof needs the **aggregate budget**
+   ```
+   Σ_c [ log(1 + x_c) - ψ(c) ]  ≤  F*,        x_c = h_c / (d_root · d_c),
+   ```
+   which is **tight exactly at the c=5 cherries** (the broom). This is the sharp open crux: a single aggregate
+   inequality over the children, tight at the `27·23` tie — the same object as (A) broom-dominance in aggregate
+   form, with the 23-adic arithmetic localized to this one bound (and (B) already resolves the pure-cherry case).
 
 ## Next steps
 
