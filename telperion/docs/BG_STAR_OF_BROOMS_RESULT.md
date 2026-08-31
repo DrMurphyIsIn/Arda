@@ -81,10 +81,47 @@ strong evidence that `F* = F(5) = log(621/64)/11 = 0.2065864` is the true tree d
   strict family dominance `F(5) > F_cat > F_WDL` and the finite-`n` crossover (4.2); the rooted-branch ceiling
   up to 16 vertices (4.3). Also: the **m=2 arm-balancing lemma** (a general `∀ a,b` monotonicity, kernel-gated
   in `bg_arm_balancing`) salvaged from the refuted "reduce to caterpillar" step.
-- **Open:** that `S(k,5)` (or any explicit family) is the **global** maximizer — i.e. that no tree beats
-  `F* = 0.206586`. This is the Brualdi–Goldwasser maximum, still formally open; (4.3) is a finite computation,
-  not a proof over all trees. The remaining rigorous target is a **branch-reduction theorem**:
-  `sup_T F(T) = sup_B rate(B)` with the sup attained at `B(5)`.
+- **Open:** that `S(k,5)` (or any explicit family) achieves the **asymptotic maximum growth rate** — i.e. that
+  `F* = lim_n (1/n) log max_{|T|=n} π(T) = 0.206586` (the `≤` direction; the `≥` is proven in §4). This is the
+  Brualdi–Goldwasser maximum, still formally open; (4.3) is a finite computation, not a proof over all trees.
+  The remaining rigorous target is the **branch-reduction / bulk-bound theorem** `log π(T) ≤ F*·n + C` — see
+  §5b for the exact Bethe framework and why per-tree density bounds cannot work (small trees exceed `F*`).
+
+## 5b. Toward the upper bound — the branch-reduction theorem (proof framework)
+
+The remaining hard direction is `F* ≤ 0.206586`. Progress and the correct framing:
+
+**Exact Bethe decomposition (verified `== rho`, all trees `n ≤ 12`).** With cavity fields
+`h_{u→v} = 1/(1 + Σ_{c∈N(u)\v} w_{uc} h_{c→u})`, `w_{uv} = 1/(d_u d_v)`, `h ∈ (0,1]`:
+```
+π(T) = ∏_{v} (1 + Σ_{u∈N(v)} w_{uv} h_{u→v})  /  ∏_{(u,v)∈E} (1 + w_{uv} h_{u→v} h_{v→u}).
+```
+So `log π(T) = Σ_v A_v − Σ_e B_e`, `A_v = log(1 + Σ_{u} w h_{u→v})`, `B_e = log(1 + w h_{u→v} h_{v→u})`.
+
+**The target is asymptotic, not per-tree.** `(1/n) log π` is NOT bounded by `F*` for every tree: e.g.
+`F(P_2) = ½ log 2 = 0.3466 > F*`, and `max_{|T|=n} (1/n) log π(T)` **decreases** monotonically from `0.347`
+(`n=2`) toward `F*` from above (`0.20805` at `n=16`). The correct statement is the growth-rate limit
+```
+F* = lim_{n→∞} (1/n) log max_{|T|=n} π(T) = log(621/64)/11 = 0.2065864,
+```
+proven `≥` by the `S(k,5)` family (§4). Notably the small-`n` maximizers are exactly the **Wu–Dong–Lai
+subdivided stars** (`n=11,13,15`: a single hub of degree `5,6,7`), overtaken by Pant's caterpillars and then by
+`S(k,5)` — a clean three-regime transition.
+
+**Why naive local bounds fail, and the correct target.** A per-vertex bound `φ_v ≤ F*` (any edge-splitting
+discharge `φ_v = A_v − Σ_u τ_{v,u} B_{uv}`) is impossible: the equal split is spoofed by high-degree stars
+(`φ_center = 0.438` on `K_{1,13}`), and degree-weighted splits are spoofed by leaves / small trees (`P_2`) —
+exactly the acyclicity/surface barrier, and correct, since those trees really do exceed `F*` in density. The
+provable target is therefore a **bulk bound with a bounded surface surplus**:
+```
+log π(T) ≤ F* · n + C     for an absolute constant C,
+```
+i.e. a discharge with `φ_v ≤ F*` for all but an `O(1)` boundary set (the `S(k,5)` bulk — branch-hub, armmids,
+leaves — must sit exactly at `≤ F*` at the cavity fixed point, with only the single center and genuine
+boundary carrying the surplus `C`). Equivalently, `F*` is the top of the spectrum of the one-vertex cavity
+transfer operator over `(degree, field)` states — the rigorous form of the branch-rate ceiling (§4.3). This is
+the Brualdi–Goldwasser maximum and remains **open**; the framework above (exact Bethe form + bulk/surface
+discharge, or the transfer-operator variational bound) is the live route.
 
 ## 6. Novelty
 
