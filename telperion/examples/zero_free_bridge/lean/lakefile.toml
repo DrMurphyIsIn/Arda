@@ -42,3 +42,9 @@ name = "StripReprAssembled"
 # ZeroFreeBridge and StripReprAssembled; own CI target. Out of defaultTargets.
 [[lean_lib]]
 name = "StripBound"
+
+# PHASE 4 (core): the de la Vallee Poussin quantitative estimate `dlvp_core_estimate` for the
+# zero-free region, conditional on the Borel-Caratheodory log-derivative bounds. Imports
+# ZeroFreeBridge; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZeroFreeRegion"
