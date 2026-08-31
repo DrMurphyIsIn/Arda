@@ -14,6 +14,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from telperion.branch_potential import branch_ell, broom_edges  # noqa: E402
 from telperion.tie_regime import (  # noqa: E402
     CHERRY,
+    TieCherryWorstCertificate,
+    binding_j,
     broom_child,
     cherry_vs_broom_ratio,
     uniform_hub_ell,
@@ -56,3 +58,26 @@ def test_cherry_beats_broom_children_ell():
         ec = uniform_hub_ell(k, CHERRY)
         for j in range(2, 10):
             assert ec >= uniform_hub_ell(k, broom_child(j)) - 1e-12, f"k={k}, j={j}"
+
+
+def test_ratio_unimodal_in_j_and_binding():
+    """cherry_vs_broom_ratio(k, .) is unimodal in j (min at binding_j(k)); ratio(k, j*) > 1 covers all j."""
+    for k in range(2, 21):
+        js = binding_j(k)
+        vals = {j: cherry_vs_broom_ratio(k, j) for j in range(1, 25)}
+        assert min(vals, key=vals.get) == js
+        assert all(vals[j] > vals[j + 1] for j in range(1, js))       # decreasing to j*
+        assert all(vals[j] < vals[j + 1] for j in range(js, 24))      # increasing after j*
+        assert vals[js] > 1                                            # binding case still cherry-worst
+
+
+def test_tie_cherry_worst_certificate_k20():
+    """The k<=20 certificate holds exactly and emits a well-formed norm_num module (19 atoms)."""
+    cert = TieCherryWorstCertificate(k_max=20)
+    assert cert.check() is True
+    assert len(cert.atoms()) == 19
+    mod = cert.lean_module()
+    assert "import Mathlib" in mod and "namespace BGTieCherryWorst" in mod
+    assert mod.count("by norm_num") == 19
+    # k=21 is outside the tie regime -- the certificate must NOT claim it
+    assert cherry_vs_broom_ratio(21, 4) < 1
