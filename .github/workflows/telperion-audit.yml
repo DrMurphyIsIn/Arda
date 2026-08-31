@@ -21,6 +21,10 @@ on:
       - "telperion/examples/proof_audit/hunt_sweep.py"
       - ".github/workflows/telperion-audit.yml"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   audit-reverify:
     runs-on: ubuntu-latest

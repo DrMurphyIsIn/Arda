@@ -11,6 +11,10 @@ on:
       - ".github/workflows/forge-lean-e2e.yml"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   toy-compiles:
     runs-on: ubuntu-latest

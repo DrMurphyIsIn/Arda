@@ -53,6 +53,10 @@ on:
       - ".github/workflows/telperion-production.yml"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   g1-compiles:
     runs-on: ubuntu-latest

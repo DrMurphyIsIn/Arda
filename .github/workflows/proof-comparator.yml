@@ -25,6 +25,10 @@ on:
       - ".github/workflows/proof-comparator.yml"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   bg-comparator:
     runs-on: ubuntu-latest
