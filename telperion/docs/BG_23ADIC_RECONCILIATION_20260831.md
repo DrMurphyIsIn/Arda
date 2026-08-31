@@ -39,9 +39,14 @@ The Φ¹¹ recurrence upgrades this to a **closed proof for every `c`**:
 - `broom_ratio(4) = 0.98877… < 1 < 1.01681… = broom_ratio(5)` (single crossing).
 - ⟹ `X` strictly decreasing on `[0,5]`, strictly increasing on `[5,∞)` ⟹ `X(s) ≥ 1`, equality iff `s = 5`.
 
-Captured in `spider_broom.broom_ratio` + `c5_unimodal_witness`. This is a `UnimodalityCertificate`-shaped fact
-(single-crossing `R(a+1)/R(a)`) — the next kernel gate (`bg_broom_c5_unimodal`) replaces the finite atoms with
-two `norm_num` rationals (`broom_ratio(4) < 1 < broom_ratio(5)`) + the `ring` identity + `g`-monotonicity.
+Captured in `spider_broom.broom_ratio` + `c5_unimodal_witness`. **This gate already exists:** the frozen
+`examples/evolve_nearstar` certificate (evolve-loop champion `ratio_src = (486/529)(1 + 1/(4s²+11s+6))^11`, peak
+`s* = 5`, emitted via `UnimodalMaxEmitter` + the `Telperion.unimodal_peak` prelude to
+`lean/EvolveNearStar.lean`) is **exactly** `1/broom_ratio(s) = f(s+1)/f(s)` for `f = 1/X` (`4s²+11s+6 = g(s)−1`;
+symbolic + exact-numeric verified in `test_spider_broom.py::test_evolve_nearstar_is_the_broom_c5_gate`). So the
+already-kernel-gated `evolve_nearstar` unimodal certificate **is** the closed all-`c` proof of the classical-BG
+`c = 5` broom optimum — the reconciliation gives that "evolve-discovered near-star" artifact its classical-BG
+meaning. (`UnimodalMaxEmitter`'s design is precisely for this: `f` is not rational, only its ratio is.)
 
 ## Consequence 2 — the 23-adic tie and `emit_padic`
 
