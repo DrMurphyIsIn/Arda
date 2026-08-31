@@ -78,9 +78,44 @@ cap-3/16 local gain.
 **On `RewriteDecreases`.** The merge sub-rewrite's measure is already proven decreasing
 (`OrderedStep.length_lt`). A single lexicographic `mu : UTree → ℕ` for the *unified* rewrite
 (straighten ∪ balance ∪ merge) can only have its strict-decrease proven once the concrete
-straighten relation is defined — that is the immediate next brick, not something to assert now.
-Candidate lexicographic order: (number of off-spine/non-canonical branches, sum-of-squares of arm
-loads, hub count) — the three components dropped by straighten, balance, merge respectively.
+straighten relation is defined. Candidate lexicographic order: (number of off-spine/non-canonical
+branches, sum-of-squares of arm loads, hub count) — the three components dropped by straighten,
+balance, merge respectively.
+
+### Pass 3 landed (`R3Cert/R47R7Straighten.lean`, no `sorry`, axiom-clean)
+
+The **off-spine measure component** and the `RewriteDecreases` obligation, discharged concretely:
+
+- Recognizers `isLeaf` / `isCherry` / `isArm` / `isPiece` for the canonical pieces
+  (`cherryU`, `armU j`), with `isArm_armU`, `isCherry_cherryU`, `isPiece_*`.
+- `strDefect : UTree → ℕ` — `(#non-piece children − 1)` (a canonical backbone layer has ≤ 1
+  non-piece child, the tail) plus the defects of the non-piece children (recursing into the tail).
+- **`strDefect_backboneU : strDefect (backboneU s) = 0`** — THE ANCHOR: the measure vanishes on
+  every hub-backbone (the tree→hub target class), by induction on the hub list.
+- `StraightStep t t' := Aobj t ≤ Aobj t' ∧ strDefect t' < strDefect t`, with
+  **`straightStep_decreases : RewriteDecreases StraightStep strDefect`** (discharged) and
+  `straightStep_monotone : RewriteMonotone StraightStep`.
+- `straighten_to_defectZero (StraightProgress) : ∀ t, ∃ n, strDefect n = 0 ∧ Aobj t ≤ Aobj n` —
+  the schema reduces every tree to a defect-zero tree, modulo the single obligation
+  `StraightProgress` (`∀ t, strDefect t ≠ 0 → ∃ t', StraightStep t t'`).
+
+So `RewriteDecreases` is **discharged** for the concrete `strDefect` measure, and
+`RewriteProgresses` is reduced to **`StraightProgress`** — the structural existence of a
+defect-reducing `Aobj`-monotone move (the Kelmans-straighten content the paper certifies).
+
+**Obstruction found (the reverse anchor).** To conclude the literal `tree_to_hub`
+(`∀ t, ∃ s, Aobj t ≤ Aobj (backboneU s)`) from `straighten_to_defectZero`, one needs a *decode*
+`strDefect t = 0 → ∃ s, Aobj t = Aobj (backboneU s)`. The natural induction **fails at the tail**:
+`Aobj`-equality of a child does NOT preserve the parent's `Aobj`, because the parent sees a child
+through `Ztot∘dtSub` / `Zopen∘dtSub` / `udeg`, not the child's root `Aobj`. So the reverse anchor
+requires **deep-permutation invariance of `Aobj`** (permuting children at *every* level, not just
+the root as `Aobj_node_perm` gives), or a structural — not `Aobj`-level — decode. This is a
+separate, named next brick.
+
+**Net remaining for Hnorm after Pass 3:** (a) `StraightProgress` — the Kelmans-straighten move
+existence (hard; degree-changing monotonicity + cap-3/16 cert); (b) the deep-perm decode anchor;
+(c) balancing + capping to reach `IsBCHubForm` (gaps i/ii); (d) the m-hub vertex-budget lemma
+(open even on paper).
 
 ## The concrete rewrite `R` — a union of Aobj-monotone moves, each with a paper certificate
 
