@@ -393,3 +393,8 @@ group = "quick"    # route-(b) upper bound: full-edge discharge atoms (c=4,5) as
 name = "bg_tie_cherry_worst"
 script = "examples/bg_tie_cherry_worst/generate.py"
 group = "quick"    # route-(b) upper bound: tie-regime cherry-worst 1<ratio(k,j*) for k<=20 (exact rationals); ~0.2 s
+
+[[check]]
+name = "bg_tie_slack"
+script = "examples/bg_tie_slack/generate.py"
+group = "quick"    # route-(b) upper bound: slack bound slack_g(k)<=F* for k>=16 (frozen log-enclosures); ~0.1 s

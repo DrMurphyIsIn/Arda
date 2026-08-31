@@ -134,6 +134,20 @@ def test_slack_regime_bound():
     assert -0.06 < slack_hub_bound(21) < -0.04
 
 
+def test_slack_certificate():
+    """TieSlackCertificate: the slack bound slack_g(k)<=F* (k>=16) via frozen log-enclosures -- checks exactly
+    and emits a well-formed norm_num module (phi16 + deriv16 + F*>3/23 atoms)."""
+    from telperion.tie_regime import TieSlackCertificate
+    cert = TieSlackCertificate()
+    assert cert.check() is True
+    names = [a[0] for a in cert.atoms()]
+    assert sum("phi16" in n for n in names) == 8                # slack_g(16)<F* per envelope child
+    assert sum("deriv16" in n for n in names) == 7              # monotone (non-B(5))
+    assert "tie_slack_Fstar_gt_3_23" in names                   # B(5) bound
+    mod = cert.lean_module()
+    assert "import Mathlib" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
 def test_slack_bound_proof_structure():
     """Rigorous proof of slack_g(k) <= F* for k>=16: (1) slack_g monotone-decreasing so <= slack_g(16);
     (2) slack_g(16) < F*; (3) per-child, every non-B(5) envelope child phi_c is decreasing for k>=16
