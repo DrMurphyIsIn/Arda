@@ -113,6 +113,20 @@ arm-count), and (b) competitor exclusion beyond the caterpillar family. Script: 
 project's own 23-adic near-tie no-go). He–Salia–Tompkins–Zhu 2026: **uniqueness can fail even when the value
 is pinned** — prove the max value/arm-count separately from uniqueness.
 
+### Phase-A gates (fail-fast; skill S0a `weighted_matching.py` built + tested)
+
+- **S0a built + verified:** `weighted_matching.matching_generating_poly` = the VDB-weighted matching
+  generating polynomial `M(T,t)=Σ_k Z_k t^k`; `M(T,1)=rho` cross-checked exhaustively to N=9 + random.
+- **GATE-1 PASS (n≤16):** the global `Z`-maximizer over *all* trees is **always** a length-2-arm caterpillar
+  `T(a₁..aₘ)`. P1's "reduce to caterpillar family" *target* is sound (contrast the Randić reduction, which
+  broke at N=14). Script `phase0/P0_3_gates.py`.
+- **GATE-2 FAIL (coefficientwise):** the toward-caterpillar (arm-balancing) move dominates in the *summed*
+  `Z=Σ_k Z_k` (P0.2, holds) but **NOT coefficientwise** — the violation is always at the *top* coefficient
+  (maximum matching), where the more-concentrated arrangement wins. So the **GTS-coefficientwise** competitor-
+  exclusion mechanism (Sh4/S4a in the plan) is **refuted** for the reciprocal weight; **P4 must use the summed
+  `Z` directly**, not coefficientwise `Z_k`. (Same reciprocal-weight non-monotonicity that killed N8.) This
+  drops the coefficientwise machinery from the plan and sharpens P4 to a summed-`Z` domination argument.
+
 ## 6. The reassessed crux (single sentence)
 
 The crux is no longer "sign the alternating-sign spectral `F`" — it is the **combinatorial lemma that the
