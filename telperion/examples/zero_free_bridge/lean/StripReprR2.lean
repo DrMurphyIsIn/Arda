@@ -70,8 +70,52 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
     refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun x hx => ?_))
     have hx1 : (1 : ℝ) < x := hx
     have hxpos : (0 : ℝ) < x := by linarith
-    -- On S, ‖∂_w F‖ ≤ bound x; convexity of S + MVT gives the Lipschitz bound.
-    sorry
+    have hxne : (x : ℂ) ≠ 0 := by exact_mod_cast hxpos.ne'
+    have hlogx : Complex.log (x : ℂ) = ((Real.log x : ℝ) : ℂ) := (Complex.ofReal_log hxpos.le).symm
+    have hlog0 : 0 ≤ Real.log x := Real.log_nonneg hx1.le
+    have hf0 : 0 ≤ Int.fract x := Int.fract_nonneg x
+    have hf1 : Int.fract x ≤ 1 := (Int.fract_lt_one x).le
+    -- the w-derivative of `fun w => F w x` at any point w (same shape as h_diff, general point)
+    have hderiv : ∀ w : ℂ, HasDerivAt (fun v => F v x)
+        (((Int.fract x : ℝ) : ℂ) * ((x : ℂ) ^ (-(w + 1)) * Complex.log (x : ℂ) * (-1))) w := by
+      intro w
+      have hlin : HasDerivAt (fun v : ℂ => -(v + 1)) (-1 : ℂ) w :=
+        ((hasDerivAt_id w).add_const (1 : ℂ)).neg
+      have hcpow : HasDerivAt (fun v : ℂ => (x : ℂ) ^ (-(v + 1)))
+          ((x : ℂ) ^ (-(w + 1)) * Complex.log (x : ℂ) * (-1)) w :=
+        hlin.const_cpow (Or.inl hxne)
+      have hmul := hcpow.const_mul ((Int.fract x : ℝ) : ℂ)
+      have hfun : (fun v => F v x) = (fun v : ℂ => ((Int.fract x : ℝ) : ℂ) * (x : ℂ) ^ (-(v + 1))) := by
+        funext v; simp only [hFdef, fractIntegrand, div_eq_mul_inv, ← Complex.cpow_neg]
+      rw [hfun]; exact hmul
+    -- the derivative norm is ≤ bound x on S
+    have hbd : ∀ w ∈ S, ‖((Int.fract x : ℝ) : ℂ) *
+        ((x : ℂ) ^ (-(w + 1)) * Complex.log (x : ℂ) * (-1))‖ ≤ bound x := by
+      intro w hw
+      rw [hSdef, Set.mem_setOf_eq] at hw
+      have e1 : ‖((Int.fract x : ℝ) : ℂ)‖ = Int.fract x := by
+        rw [Complex.norm_real, Real.norm_of_nonneg hf0]
+      have e2 : ‖(x : ℂ) ^ (-(w + 1))‖ = x ^ (-(w.re + 1)) := by
+        rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos]; congr 1
+        simp [Complex.neg_re, Complex.add_re, Complex.one_re]
+      have e3 : ‖Complex.log (x : ℂ)‖ = Real.log x := by
+        rw [hlogx, Complex.norm_real, Real.norm_of_nonneg hlog0]
+      rw [norm_mul, norm_mul, norm_mul, norm_neg, norm_one, mul_one, e1, e2, e3, hbdef]
+      have hpow_le : x ^ (-(w.re + 1)) ≤ x ^ (-(z.re / 2) - 1) :=
+        Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith)
+      have hpow_pos : 0 < x ^ (-(w.re + 1)) := Real.rpow_pos_of_pos hxpos _
+      calc Int.fract x * x ^ (-(w.re + 1)) * Real.log x
+          ≤ 1 * x ^ (-(z.re / 2) - 1) * Real.log x := by
+            gcongr
+        _ = Real.log x * x ^ (-(z.re / 2) - 1) := by ring
+    -- assemble via the convex derivative-bound Lipschitz lemma
+    have hScvx : Convex ℝ S := by rw [hSdef]; exact convex_halfSpace_re_gt (z.re / 2)
+    refine hScvx.lipschitzOnWith_of_nnnorm_hasDerivWithin_le
+      (fun w _ => (hderiv w).hasDerivWithinAt) (fun w hw => ?_)
+    have hbnn : (0 : ℝ) ≤ bound x := by
+      rw [hbdef]; exact mul_nonneg hlog0 (Real.rpow_pos_of_pos hxpos _).le
+    rw [← NNReal.coe_le_coe, coe_nnnorm, Real.coe_nnabs, abs_of_nonneg hbnn]
+    exact hbd w hw
   -- (bint) the dominating function is integrable on `(1,∞)`: `log x · x^{-(z.re/2)-1}` is
   -- dominated by `(4/z.re)·x^{-(z.re/4)-1}` via `log x ≤ x^{z.re/4}/(z.re/4)`.
   have h_bint : Integrable bound (volume.restrict (Set.Ioi (1 : ℝ))) := by
@@ -100,7 +144,7 @@ theorem differentiableAt_fractIntegral {z : ℂ} (hz : 0 < z.re) :
         _ = (4 / z.re) * x ^ (-(z.re / 4) - 1) := by
             rw [div_mul_eq_mul_div, ← Real.rpow_add hxpos,
               show z.re / 4 + (-(z.re / 2) - 1) = -(z.re / 4) - 1 by ring]
-            field_simp; ring
+            field_simp
   -- (diff) the a.e. w-derivative of `F` at `z` is `F'`.
   have h_diff : ∀ᵐ x ∂(volume.restrict (Set.Ioi (1 : ℝ))),
       HasDerivAt (fun w => F w x) (F' x) z := by
