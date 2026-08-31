@@ -299,6 +299,21 @@ nor a crude moment sandwich captures. Tractable (m₁ dominates) but not yet a c
 remaining analytic content. Scripts: `phase0/P0_1b_hillclimb_m1.py` + the SSD/moment probes.
 `conjecture1_proved = False`.
 
+**P0.1d — the Randić reduction is FALSE (definitive; verification-as-instrument, 3rd caught claim).** Tested
+"at fixed degree sequence, `argmax F = argmax m₁`" exhaustively: it holds for **all 84 degree-seq groups at
+N=9–12** (0 disagreements) — but **BREAKS at N=14**. Robust counterexample (recomputed at extended precision):
+degree sequence `(1⁸, 2³, 3, 4, 5)`, 150 trees — the F-maximizer has `m₁ = 0.4726` while the m₁-maximizer has
+`m₁ = 0.4762` (higher by 3.6e-3), yet `F(F-max) = 0.180481 > F(m₁-max) = 0.180338` (by 1.4e-4). The two are
+**different trees**: a tree with *lower* `m₁` but F-favorable higher moments wins. (Also: no single tree
+maximizes all weighted `Z_k` simultaneously in 9/74 groups, so the clean "simultaneous-matching-max" proof
+route also fails.) **Conclusion: the fixed-degree F-max is genuinely irreducible to the Randić index `m₁`.**
+The Phase-0.1 `corr(F,m₁)≈0.99` is a strong *heuristic*, exact for small/caterpillar-family degree sequences,
+but false in general — so ingredient (I)-via-`m₁` and the whole "reduce to Randić extremality" simplification
+are dead. The caterpillar remains the F-max for *caterpillar-family* degree sequences (verified), but the
+mechanism is the full alternating-sign `F` (all moments), not `m₁`. This refutes the cleanest simplification of
+ingredient (IV) and returns the fixed-degree problem to the delicate full-`F` extremal analysis — the genuine
+hard core. Script: `phase0/P0_1d_randic_counterexample.py`. `conjecture1_proved = False`.
+
 ## Appendix — reproduction scripts (offline, `/tmp` during development)
 
 `bg_m3_derive.py` (integrand derivation + verification), `bg_m3_flagLP2.py` / `bg_m3_flagL2.py` (reversible
