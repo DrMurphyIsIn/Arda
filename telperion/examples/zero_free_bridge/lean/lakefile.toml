@@ -27,7 +27,12 @@ name = "StripReprR3"
 name = "StripReprR2"
 
 # (R1) discharge (WIP SKELETON): the fractional-part representation of riemannZeta on Re s>1 via
-# Abel summation. Carries `sorry` placeholders for the analytic sub-obligations; the CI job checks
-# the Abel-application structure typechecks. NOT a discharge until sorry-free. Out of defaultTargets.
+# Abel summation. Now DISCHARGED (sorry-free): the analytic sub-obligations + the LHS->riemannZeta /
+# RHS->stripRHS assembly are all proven. Its own CI target. Out of defaultTargets.
 [[lean_lib]]
 name = "StripReprR1"
+
+# UNCONDITIONAL strip representation `zeta_fract_repr`, assembled from R1+R2+R3 via
+# `zeta_fract_repr_of`. Imports StripReprR1/R2/R3; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprAssembled"
