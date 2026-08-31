@@ -37,3 +37,25 @@ This dovetails with `BG_23ADIC_RECONCILIATION_20260831.md`: the `156/161` and th
 `R(5)=1` (`64·243·23 = 621·576`). Suggested next step: a `bg_bulk_discharge`
 kernel gate that emits the `c=5` (and neighbouring `c`) full-edge atoms via
 `handelman_family` + `emit_padic` for the `27·23` tie.
+
+## Follow-up (`bg_c6_bracket_handelman.py`): the c≠5 atoms + why c=5 is special
+
+Extends the box-positivity gate to `c≠5`, where the EXACT Bethe normalization
+`a = F/rhoB^(1+2c)` carries the irrational 11th root (the BG owner's warm-up gate
+used a `621/64` surrogate for all `c`).
+
+- **RH `IntervalBracket` route:** bracket `rhoB=(621/64)^(1/11)` by a rational `lo`,
+  use the sufficient atom `a ≤ F/lo^(1+2c)`; certifies `c=4,6,7` at Bernstein
+  **degree 3** — the c≠5 atoms enter the same Handelman cone. BUT the decimal
+  bracket **loses the 23** (`23 ∤ denom`).
+- **11th-power (`emit_padic`) route:** raising the inequality to the 11th power gives
+  `a^11 = F^11/(621/64)^(1+2c)`, which **preserves `23^(1+2c)`** (`621=27·23`), but at
+  **degree ×11**.
+
+**Finding — a certificate-level reason the maximum sits at `c=5`:** `c=5` is the
+UNIQUE cherry-count where the box-positivity certificate is *both* low-degree
+(`1+2c=11` ⟹ `rhoB^11=621/64` rational, no bracket needed) *and* carries the exact
+`23`-adic tie. For every other `c` you get one or the other, never both. So the RH
+bracket **extends** the bulk-discharge gate to all `c` (positivity), while
+`emit_padic` is the `23`-preserving route reserved for the exact tie at/near `c=5`.
+`conjecture1_proved = False`.
