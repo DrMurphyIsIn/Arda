@@ -32,24 +32,31 @@ h_tau/((k+1)d_tau)`. Established:
 
 **So the uniform tie-regime = [cherry-worst, slack, open] + [broom optimum, tight, proven].**
 
-## Phase 2 — the target: prove cherry-worst (slack, so tractable)
+## Phase 2 — the precise boundary: cherry-worst holds for `k <= 20` (FINITE), slack beyond
 
-`ell(k, cherry) >= ell(k, tau)` for all rooted branches `tau` and tie-regime `k`. Since it is slack (ratio
-`>= 1.95`), a soft/analytic argument should suffice (no delicate 23-adic single-crossing). Route:
-1. **Reduce to the envelope** — the worst `tau` per degree is `B(d-1)` (Phase 1.1); a branch off the envelope
-   has strictly lower `ell_tau` and `h_tau`, so is dominated. So it suffices to bound `tau = B(j)`.
-2. **cherry vs `B(j)`** — the rational inequality `cherry_vs_broom_ratio(k, j) >= 1` in integers `(k, j)`. With
-   `>= 1.95` slack, prove via a monotone/factorisation argument (kernel-gate the family, or a Handelman/
-   `worst_corner` bound on the exponentiated rational).
-3. **Non-envelope `tau`** — Pareto domination: `F_k(tau) = k*ell_tau + log(1+k*x_tau)` is increasing in both
-   `ell_tau` and `h_tau`; the envelope maximises `ell_tau` per degree, and a small-`h` argument caps the rest.
+Measured exactly: `cherry_vs_broom_ratio(k, j) > 1` (cherry is the worst uniform child) **for all `k <= 20`**,
+and it first FAILS at `k = 21` (a `B(4)` child, ratio `0.952`) — but there `ell(hub) <= -0.088`, deeply slack
+(both the cherry-hub and the `B(j)`-hub are `<= 0` with large margin). The tie (`ell = 0`, `k = 5`) sits deep
+inside the tie regime with room to spare. So:
 
-## Phase 3 — beyond uniform (the remaining tie-regime pieces)
+- **Tie regime `k <= 20` — FINITE.** cherry-worst is a *finite* family of rational inequalities: for each
+  `k in {2..20}`, `cherry_vs_broom_ratio(k, j) > 1` for all `j` (the ratio `-> infinity` as `j -> infinity`, so
+  the min over `j` is at a finite `j` — a bounded check). **Kernel-gateable** (à la `bg_broom_optimum`), no new
+  23-adic argument. Combined with the broom optimum `ell(B(k)) <= 0` [PROVEN], this closes the tie regime.
+- **Non-envelope `tau`** — Pareto domination: `F_k(tau) = k*ell_tau + log(1+k*x_tau)` is increasing in both
+  `ell_tau` and `h_tau`; the envelope (broom `B(d-1)`) maximises `ell_tau` per degree, so `tau = B(j)` suffices
+  (a small-`h` cap handles the rest).
 
-- **mixed <= uniform near the tie** — exhaustive `N <= 14`: the max-`ell` hub per root-degree `k <= 6` is uniform
-  (only the slack regime `k >= 7` goes non-uniform, an artifact of the size cap). Prove that near the tie the
-  worst hub is uniform (a convexity/exchange argument on the children multiset).
-- **slack regime** — `k` large or deep children: `ell` bounded `<= -0.14`, a soft bound bounded away from `0`.
+The remaining infinite part is the **slack regime `k >= 21`** (Phase 3), which needs only a soft bound.
+
+## Phase 3 — the slack regime `k >= 21` + mixed hubs
+
+- **slack regime `k >= 21`** — cherry-worst may fail, but `ell(hub of k anything) <= -0.08 < 0` with a uniform
+  margin. A soft bound: for large root-degree `k`, `A_root = log(1 + Σ x_c) <= log(1 + k * max_c x_c)` is small
+  (each `x_c <= 1/(k+1)`, and the credits `Σ ψ(c)` grow), so `ell(hub)` is bounded away from `0`. Establish the
+  explicit margin (no tie here).
+- **mixed <= uniform near the tie** — exhaustive `N <= 14`: the max-`ell` hub per root-degree `k <= 6` is uniform.
+  Prove that in the tie regime the worst hub is uniform (a convexity/exchange argument on the children multiset).
 
 ## Honest scope
 
