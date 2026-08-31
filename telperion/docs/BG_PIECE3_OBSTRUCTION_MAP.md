@@ -4,6 +4,26 @@
 global maximizer of the matching free-energy density over all trees), why every local/combinatorial method
 fails to certify it, and the one remaining viable route — **Guerra interpolation**.
 
+> ### ⚠ PREMISE REFUTATION (2026-08-31, exact + independently reproduced) — the target as stated is FALSE
+> The length-2-arm caterpillar does **NOT** maximize `F = (1/n) log(per(L)/∏deg)` over trees. **Star-of-cherry-
+> branch spiders** `S(k,c)` (a center hub joined to `k` branch-hubs, each branch-hub of degree `c+1` carrying `c`
+> length-2 cherries) have strictly higher free-energy density. Exact `Fraction` computation via
+> `matching_free_energy.rho`, boundary-free and monotone-convergent:
+> `F(S(k,5)) → 0.206586` (S(400,5), n=4401: `F = 0.206567`) **>** caterpillar sup `F(a=7) = 0.205098` (long
+> uniform caterpillar m=400 direct: `0.205106`). The B(c)-branch per-vertex rate `[(3/2)^{c-1}(4c+3)/(2(c+1))]^{1/(2c+1)}`
+> beats the caterpillar for every `c ≥ 3`, peaking at `c=5` (1.229474 vs 1.227646). At **finite** n the caterpillar
+> wins only up to a crossover at **n ≈ 134**: the strict-single-swap-local-max spiders `S(19,3)` (n=134, exact
+> `logZ 27.5336 > 27.5259`) and `S(15,4)` (n=136, `28.020 > 27.937`) already exceed the best caterpillar. So the
+> conjectured extremal value `log ρ* ≈ 0.205098` is **not** the tree maximum, and the maximizer is **not** the
+> caterpillar for large n. This CONFIRMS + sharpens the project's own earlier note ("load-5 arms rhoB/vert overtake
+> asymptotically ⟹ 2-regime BG tie") that the current plan's caterpillar framing had set aside. The B(5)-spider is
+> itself not a strict local max (multi-swap-escapable), so the true sup density is `≥ 0.20659`. **Consequences:**
+> the "reduce every tree to the caterpillar family" architecture (P1–P4) is moot — the caterpillar family is not
+> where the maximum lives. Any continuation must (a) reconcile against the exact Pant 2026 / classical-BG statement
+> (which object, which class — bounded degree? per(L) vs per(L)/∏deg?), and (b) retarget onto the actual extremal
+> family (the c≈5 cherry-branch spider). Verification inline vs `rho` + `transfer_caterpillar`; exceptional-set
+> census + decorated-spider transfer recurrence by the parallel characterization agent.
+
 ## 0. The object
 
 `F(T) = (1/n) log(per(L)/∏deg) = (1/2) ∫ log(1+u) dμ_N(u)`, `u = λ²`, `N = D^{-1/2} A D^{-1/2}`,
