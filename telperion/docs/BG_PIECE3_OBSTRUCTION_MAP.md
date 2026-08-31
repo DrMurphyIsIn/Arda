@@ -314,6 +314,33 @@ mechanism is the full alternating-sign `F` (all moments), not `m₁`. This refut
 ingredient (IV) and returns the fixed-degree problem to the delicate full-`F` extremal analysis — the genuine
 hard core. Script: `phase0/P0_1d_randic_counterexample.py`. `conjecture1_proved = False`.
 
+**P1 — "local Z-monotone reduction to the caterpillar family" is FALSE (definitive; 7th caught overclaim;
+independently re-verified with the repo's exact `rho`).** The reassessed proof architecture's ingredient P1
+posited a finite set of `Z`-nondecreasing local (single-edge-relocation) moves whose closure carries every tree
+into the length-2-arm caterpillar family. Exhaustive test over **all non-isomorphic trees N≤15 with the FULL
+single-edge-swap neighborhood** shows **zero** non-family strict local maxima (every non-family tree has a
+strictly `Z`-increasing single-edge escape) — which would falsely "verify" P1. It **BREAKS at N=16**: the
+balanced symmetric 3-spider `S(3;2,2,2)` (center hub + 3 branch-hubs, each carrying two length-2 cherries;
+degseq `3⁴2⁶1⁶`) has `Z = 847/32 ≈ 26.4688` (rank ≈#8 of 19320), and is a **strict local maximum under the
+entire single-edge-swap move set** — of its ~423 one-edge neighbors, **0 increase `Z`** (independently
+reconfirmed: 0 better, 402 strictly worse, rest sideways), yet it sits **strictly below** the family maximum
+`Z(T(3,4)) = 35721/1280 ≈ 27.9070`. So no purely-local `Z`-monotone move reduces it to the family; P1-as-stated
+is dead (mirrors the N=14 death of the Randić reduction). Sporadic, not broad: the trap recurs only at specific
+balanced-symmetric spiders (the `k=3, k=4` two-cherry spiders at n=16, 21), not at unbalanced cherry counts.
+**Two clean survivors** salvaged from the falsification: (a) the near-star single-hub closed form
+`Z(T(s)) = (4/3)(3/2)ˢ` (exact); (b) **`m=2` symmetric arm-balancing is genuinely `Z`-monotone** (a real
+per-move `ΔZ≥0` obligation — the S1b `vdb_exchange` operator, verified `ΔZ>0` toward balance) — but for **`m≥3`
+arm-balancing is NOT globally `Z`-monotone**: hub position modulates arm value non-monotonically (center-hub
+arms beat end-hub arms beat near-center-hub arms), so "equalize arm counts" fails as a global rule off the
+symmetric two-hub case (a further sub-overclaim corrected here). **Architecture correction:** replace P1 with a
+*local-move + characterized-exceptional-set* argument — reduce the complement by `Z`-monotone moves and dispatch
+the exceptional balanced-symmetric spiders by a **separate finite family of comparison lemmas** proving
+`Z(spider family) < Z(caterpillar family max)` directly (both are computable one-parameter transfer families, so
+this comparison is tractable), OR admit bounded non-monotone "tunnelling" compound moves (losing the per-move
+`ΔZ≥0` structure). Script: parallel P1-prover harness (`/tmp/_pinchk/{harness,moves,cavity,localmax,family}.py`);
+independent re-verification inline against `matching_free_energy.rho` + `transfer_caterpillar`.
+`conjecture1_proved = False`.
+
 ## Appendix — reproduction scripts (offline, `/tmp` during development)
 
 `bg_m3_derive.py` (integrand derivation + verification), `bg_m3_flagLP2.py` / `bg_m3_flagL2.py` (reversible
