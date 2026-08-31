@@ -515,9 +515,9 @@ theorem zeta_strip_bound_of {s I : ℂ}
     `1/Re s`, from `0 ≤ {x} < 1` and `∫_{x>1} x^{-Re s-1} dx = 1/Re s`.  Combined with `zeta_strip_bound_of`,
     the crude strip bound reduces to input (R) alone (the representation `ζ(s) = s/(s-1) - s·I`). -/
 theorem zeta_repr_integral_bound {s : ℂ} (hs : 0 < s.re) :
-    ‖∫ x in Set.Ioi (1 : ℝ), (Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)‖ ≤ 1 / s.re := by
+    ‖∫ x in Set.Ioi (1 : ℝ), ((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖ ≤ 1 / s.re := by
   have hbound : ∀ x ∈ Set.Ioi (1 : ℝ),
-      ‖(Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)‖ ≤ x ^ (-(s.re + 1)) := by
+      ‖((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖ ≤ x ^ (-(s.re + 1)) := by
     intro x hx
     have hx0 : (0 : ℝ) < x := lt_trans one_pos hx
     rw [norm_div, Complex.norm_real, Complex.norm_cpow_eq_rpow_re_of_pos hx0,
@@ -527,12 +527,12 @@ theorem zeta_repr_integral_bound {s : ℂ} (hs : 0 < s.re) :
       (Int.fract_lt_one x).le
   have hdom : IntegrableOn (fun x : ℝ => x ^ (-(s.re + 1))) (Set.Ioi (1 : ℝ)) :=
     integrableOn_Ioi_rpow_of_lt (by linarith) one_pos
-  have hf : IntegrableOn (fun x : ℝ => ‖(Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)‖)
+  have hf : IntegrableOn (fun x : ℝ => ‖((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖)
       (Set.Ioi (1 : ℝ)) := by
     -- `Int.fract` is MEASURABLE (not continuous — it jumps at integers), so build measurability,
     -- not continuity, for the integrand; its norm dominated by `x^{-(σ+1)}` (hbound).
     have hmeas : AEStronglyMeasurable
-        (fun x : ℝ => (Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)) (volume.restrict (Set.Ioi 1)) := by
+        (fun x : ℝ => ((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)) (volume.restrict (Set.Ioi 1)) := by
       apply Measurable.aestronglyMeasurable
       fun_prop  -- FLAG: relies on measurable_fract + cpow-base measurability; manual fallback if it stalls
     refine Integrable.mono' hdom hmeas.norm ?_
@@ -542,8 +542,8 @@ theorem zeta_repr_integral_bound {s : ℂ} (hs : 0 < s.re) :
   have hval : ∫ x in Set.Ioi (1 : ℝ), x ^ (-(s.re + 1)) = 1 / s.re := by
     rw [integral_Ioi_rpow_of_lt (by linarith : -(s.re + 1) < -1) one_pos, Real.one_rpow]
     rw [show -(s.re + 1) + 1 = -s.re by ring, neg_div_neg_eq]
-  calc ‖∫ x in Set.Ioi (1 : ℝ), (Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)‖
-      ≤ ∫ x in Set.Ioi (1 : ℝ), ‖(Int.fract x : ℂ) / (x : ℂ) ^ (s + 1)‖ :=
+  calc ‖∫ x in Set.Ioi (1 : ℝ), ((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖
+      ≤ ∫ x in Set.Ioi (1 : ℝ), ‖((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖ :=
         norm_integral_le_integral_norm _
     _ ≤ ∫ x in Set.Ioi (1 : ℝ), x ^ (-(s.re + 1)) :=
         setIntegral_mono_on hf hdom measurableSet_Ioi hbound
