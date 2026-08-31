@@ -48,6 +48,40 @@ The `RewriteMonotone` obligation is now discharged generically:
 So the concrete Kelmans rewrite inherits `Aobj`-monotonicity for free; only `RewriteDecreases`
 and `RewriteProgresses` remain, plus exhibiting each Kelmans move's local `(Ztot, Zopen)` gain.
 
+### Pass 2 landed (`R3Cert/R47R7TreeReduce.lean`, sorry-free, axiom-clean)
+
+Generalized the schema over an arbitrary target predicate and specialized it to the exact
+`Hnorm` witness class:
+
+- `treeReduce_of_rewrite (Normal) (R) (mu) …` — the schema for any target `Normal : UTree → Prop`.
+- `hnorm_of_rewrite` — **`Hnorm` reduced to a single rewrite**: if there is one
+  `Aobj`-non-decreasing, measure-decreasing rewrite whose stuck points are exactly the
+  Balanced+Capped backbones (`IsBCHubForm`), then
+  `∀ t, ∃ s, Balanced s ∧ Capped s ∧ Aobj t ≤ Aobj (backboneU s)` — the literal capstone
+  hypothesis. `#print axioms`: `[propext, Classical.choice, Quot.sound]`.
+- `treeToHub_of_rewrite'` — Pass-1's `IsHubForm` target recovered as a corollary.
+
+This folds tree→backbone straightening, arm-balancing, and capping into one monotone reduction to
+the `Hdom`-ready class. With Pass 1's `childReplace_monotone` discharging monotonicity for the
+generator, **the entire `Hnorm` layer is now reduced to exhibiting ONE rewrite** satisfying
+`RewriteDecreases` + `RewriteProgresses` with `IsBCHubForm` stuck points.
+
+**Scope correction (Pass 2).** The earlier plan's "concrete Kelmans-merge `ChildReplace` instance"
+was mis-scoped: the Kelmans **merge** is already fully proven at the `List Hub` level
+(`R47StepMono.chain_to_normalForm` / `chain_mono`, the merge-layer capstone the top capstone
+consumes), with its measure `OrderedStep.length_lt` (hub-count) and termination `orderedStep_wf`.
+It is **not** a `ChildReplace` (it is degree- and structure-changing). So the merge stage is done;
+the genuinely missing rewrite is the **tree→backbone structural straightening** (arbitrary `UTree`
+→ some backbone), which needs a degree-changing generalization of child-monotonicity plus the
+cap-3/16 local gain.
+
+**On `RewriteDecreases`.** The merge sub-rewrite's measure is already proven decreasing
+(`OrderedStep.length_lt`). A single lexicographic `mu : UTree → ℕ` for the *unified* rewrite
+(straighten ∪ balance ∪ merge) can only have its strict-decrease proven once the concrete
+straighten relation is defined — that is the immediate next brick, not something to assert now.
+Candidate lexicographic order: (number of off-spine/non-canonical branches, sum-of-squares of arm
+loads, hub count) — the three components dropped by straighten, balance, merge respectively.
+
 ## The concrete rewrite `R` — a union of Aobj-monotone moves, each with a paper certificate
 
 The key realization from `proof/verification/`: the closure is not one move but a **union of
