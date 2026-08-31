@@ -125,7 +125,7 @@ theorem moebius_differentiableOn {R B : ℝ} (hB : 0 < B) {g : ℂ → ℂ}
     DifferentiableOn ℂ (moebius B g) (ball 0 R) := by
   have hden : ∀ ζ ∈ ball (0 : ℂ) R, (2 * (B : ℂ) - g ζ) ≠ 0 :=
     fun ζ hζ => two_mul_sub_ne_zero hB (hre ζ hζ)
-  simp only [moebius]
+  unfold moebius
   exact DifferentiableOn.div hg ((differentiableOn_const _).sub hg) hden
 
 /-- `moebius B g` maps `ball 0 R` into `closedBall 0 1`, given the half-plane bound. -/
@@ -187,6 +187,7 @@ theorem moebius_inv {B : ℝ} (hB : 0 < B) {g w : ℂ}
   -- `1 + g/(2B−g) = 2B/(2B−g)`, whose numerator `2B ≠ 0` gives `1 + w ≠ 0`.
   have h1w : (1 : ℂ) + g / (2 * (B : ℂ) - g) = 2 * (B : ℂ) / (2 * (B : ℂ) - g) := by
     field_simp
+    ring
   have h1wne : (1 + g / (2 * (B : ℂ) - g)) ≠ 0 := by
     rw [h1w]; exact div_ne_zero hBne hden
   refine ⟨h1wne, ?_⟩
@@ -278,7 +279,6 @@ theorem borel_caratheodory_value
   have hrewrite : 2 * B * t / (1 - t) = (2 * ‖z‖ / (R - ‖z‖)) * B := by
     rw [htdef]
     field_simp
-    ring
   rw [hrewrite] at hgbound
   -- Finish: `‖f z − f 0‖ = ‖g z‖` and reorder.
   have : ‖f z - f 0‖ = ‖g z‖ := by rw [hgdef]
@@ -358,8 +358,8 @@ theorem borel_caratheodory_deriv_family
   have hcauchy :=
     Complex.norm_deriv_le_of_forall_mem_sphere_norm_le hρ'0 (hf_sub.sub_const (f 0)) hbdry
   rw [← hderiv_eq] at hcauchy
-  -- Rearrange `C / ρ'`.
-  rw [le_div_iff₀ hρ'0]; exact hcauchy
+  -- After the rewrite `hcauchy` is exactly the goal `‖deriv f z‖ ≤ C / ρ'`.
+  exact hcauchy
 
 /-- **Borel–Carathéodory, derivative form** (clean closed constant, `ρ' = (R−‖z‖)/2`).
     For `‖z‖ < R`:
