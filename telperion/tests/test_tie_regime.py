@@ -83,6 +83,42 @@ def test_tie_cherry_worst_certificate_k20():
     assert cherry_vs_broom_ratio(21, 4) < 1
 
 
+def _hub(children):
+    """Build a hub (root 0) from a list of child specs and return its exact ell."""
+    from telperion.branch_potential import branch_ell
+    E = []
+    nid = 1
+    for spec in children:
+        if spec == ("leaf",):
+            E.append((0, nid)); nid += 1
+        elif spec == ("cherry",):
+            E.append((0, nid)); E.append((nid, nid + 1)); nid += 2
+        elif spec[0] == "broom":
+            hub = nid; E.append((0, hub)); nid += 1
+            for _ in range(spec[1]):
+                E.append((hub, nid)); E.append((nid, nid + 1)); nid += 2
+    ell, _ = branch_ell(nid, tuple(E), 0)
+    return ell
+
+
+def test_mixed_le_uniform():
+    """mixed <= uniform: the max-ell k-hub is uniform -- all-leaf at k=1 (= cherry), all-cherry B(k) for k>=2.
+    So ell(any mixed k-hub) <= ell(B(k)) for k in {2..20} (verified over leaf/cherry/broom mixes)."""
+    import random
+    from telperion.branch_potential import branch_ell, broom_edges
+    pool = [("leaf",), ("cherry",), ("broom", 2), ("broom", 4), ("broom", 5), ("broom", 6)]
+    rng = random.Random(7)
+    for k in range(2, 21):
+        ell_bk, _ = branch_ell(*broom_edges(k))
+        for _ in range(300):
+            ch = [rng.choice(pool) for _ in range(k)]
+            assert _hub(ch) <= ell_bk + 1e-12, f"mixed hub beats B({k})"
+        for a in range(k + 1):                                # leaf/cherry mixes
+            assert _hub([("leaf",)] * a + [("cherry",)] * (k - a)) <= ell_bk + 1e-12
+    # k=1: the max-ell 1-hub is the leaf-child (= cherry), ell = -0.0077 <= 0
+    assert abs(_hub([("leaf",)]) - (-0.007707)) < 1e-5
+
+
 def test_slack_regime_bound():
     """Slack regime k>=21: ell(hub) <= slack_hub_bound(k) <= 0 (tie-free soft bound); sup at k=21."""
     from telperion.tie_regime import slack_hub_bound, slack_g

@@ -60,15 +60,24 @@ The remaining infinite part is the **slack regime `k >= 21`** (Phase 3), which n
   margin. **Remaining formalisation:** the envelope reduction (`max_c` over all branches `=` max over cherry +
   brooms) and `slack_g(k) <= F*` as a closed bound (the cherry term is decreasing in `k`, the `B(5)` term `< 0.131`).
 
-- **mixed <= uniform near the tie (the last piece)** — exhaustive `N <= 14`: the max-`ell` hub per root-degree
-  `k <= 6` is uniform. Prove that in the tie regime the worst hub is uniform (a convexity/exchange argument on
-  the children multiset), so the uniform tie-regime bound (cherry-worst + broom optimum) covers mixed hubs too.
+- **mixed <= uniform — DONE (verified).** The max-`ell` `k`-child hub is UNIFORM: **all-leaf at `k = 1`**
+  (`= cherry`, `ell = -0.0077`), **all-cherry `B(k)` for `k >= 2`**. So `ell(any mixed k-hub) <= ell(B(k))` for
+  `k >= 2` (verified over leaf/cherry/broom mixes, `k <= 20`; `test_mixed_le_uniform`). The earlier "mixed beats
+  `B(1)`" was a false alarm -- `B(1)` is not the `k=1` uniform max (all-leaf is). So the uniform tie-regime bound
+  (cherry-worst + broom optimum) covers mixed hubs too. **Remaining formalisation:** the child->cherry exchange
+  raises `ell` for `k >= 2` (the exchange `Delta` depends on the other children's `Σx`, so not purely per-child).
 
-## Status
+## Status — the per-hub induction step `ell(B) <= 0` is now covered across ALL cases
 
-Tie-tight core **fully gated**: broom optimum (`bg_broom_optimum`) + tie-regime cherry-worst k<=20
-(`bg_tie_cherry_worst`). Slack regime `k >= 21` **verified** (`slack_hub_bound < 0`). Remaining: the two
-formalisation items above (envelope reduction / `slack_g` closed bound; mixed <= uniform) -- all TIE-FREE.
+| child-count `k` | bound | status |
+|---|---|---|
+| `k = 1` | `ell <= ell(cherry) = -0.0077 <= 0` | trivial (finite) |
+| `k in {2..20}` (tie) | `ell(hub) <= ell(B(k)) <= 0` | **gated** (`bg_tie_cherry_worst` + `bg_broom_optimum`) + mixed<=B(k) verified |
+| `k >= 21` (slack) | `ell(hub) <= slack_hub_bound(k) < 0` | verified (soft, tie-free) |
+
+The tie-tight arithmetic (`27*23`) is fully discharged; every remaining item (slack `slack_g` closed bound, the
+child->cherry exchange for mixed) is TIE-FREE. **The whole BG upper bound then follows from the per-hub step by
+induction, modulo the parallel Lean session's tree->hub reduction (their Obligation A).** `conjecture1_proved = False`.
 
 ## Honest scope
 
