@@ -11,12 +11,14 @@
      ∑_{k≤n} k^{-s}  →  0 - ∫_{t>1} (-s·t^{-s-1})·⌊t⌋ dt  =  s∫_{t>1} ⌊t⌋ t^{-s-1} dt,
      ⌊t⌋ = t - {t},  s∫_{t>1} t^{-s} dt = s/(s-1)   ⟹   ζ(s) = s/(s-1) - s∫_{t>1}{t}t^{-s-1}.
 
-   STATUS: the five ANALYTIC Abel-summation hypotheses (hf_diff, hf_int, h_lim,
-   hg_dom, hg_int) are DISCHARGED (sorry-free), each on `Re s > 1`, via a shared
-   derivative helper `hasDerivAt_fPow` and the coefficient partial-sum `sum_cOne`.
-   The remaining `sorry` is the FINAL ASSEMBLY (LHS partial sums → riemannZeta,
-   RHS limit value = stripRHS), tackled next. NOT a discharge until sorry-free.
-   conjecture1_proved = False.
+   STATUS: FULLY ASSEMBLED (sorry-free, pending CI). The five analytic Abel-summation
+   hypotheses (hf_diff, hf_int, h_lim, hg_dom, hg_int) are discharged on `Re s > 1`
+   via a shared derivative helper `hasDerivAt_fPow` and the partial-sum `sum_cOne`;
+   part (A) `tendsto_partialSum_zeta` identifies the LHS limit as `riemannZeta s`
+   (Complex.summable_one_div_nat_cpow + zeta_eq_tsum... + hasSum_nat_add_iff reindex);
+   part (B) evaluates the RHS limit value = `stripRHS s` (⌊t⌋ = t - {t} split,
+   `∫_{Ioi 1}(↑t)^{-s} = 1/(s-1)` via integral_Ioi_cpow_of_lt). This discharges the
+   R1 input of `zeta_fract_repr_of`. conjecture1_proved = False.
 -/
 import StripRepr
 
@@ -165,9 +167,74 @@ theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := b
     exact integrableOn_Ioi_rpow_of_lt (by linarith) one_pos
   have habel := tendsto_sum_mul_atTop_nhds_one_sub_integral₀
     (c := cOne) (f := fPow s) hc0 hf_diff hf_int h_lim hg_dom hg_int
-  -- `habel : Tendsto (fun n => ∑ k ∈ Icc 0 n, f k * c k) atTop
-  --            (𝓝 (0 - ∫ t in Ioi 1, deriv f t * ∑ k ∈ Icc 0 ⌊t⌋₊, c k))`.
-  -- FINAL ASSEMBLY (next): LHS → riemannZeta s; RHS limit value = stripRHS s.
-  sorry
+  -- (A) LHS partial sums → riemannZeta s; identify the RHS limit value by uniqueness.
+  have hval : riemannZeta s
+      = 0 - ∫ t in Set.Ioi 1, deriv (fPow s) t * ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, cOne k :=
+    tendsto_nhds_unique (tendsto_partialSum_zeta hs) habel
+  -- (B) evaluate that RHS limit value = stripRHS s.
+  have hlt : (-s).re < -1 := by rw [Complex.neg_re]; linarith
+  have hs1 : s - 1 ≠ 0 := by
+    intro h; rw [sub_eq_zero] at h; rw [h] at hs; simp at hs
+  -- Pointwise: the integrand equals `-s·t^{-s} + s·fractIntegrand` on `Ioi 1` (⌊t⌋ = t - {t}).
+  have hIeq : Set.EqOn (fun t : ℝ => deriv (fPow s) t * ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, cOne k)
+      (fun t : ℝ => -s * ((t : ℝ) : ℂ) ^ (-s) + s * fractIntegrand s t) (Set.Ioi 1) := by
+    intro t ht
+    have htmem : (1 : ℝ) < t := ht
+    have htpos : (0 : ℝ) < t := by linarith
+    have ht0 : t ≠ 0 := htpos.ne'
+    have htc : ((t : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ht0
+    show deriv (fPow s) t * ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, cOne k
+        = -s * ((t : ℝ) : ℂ) ^ (-s) + s * fractIntegrand s t
+    rw [sum_cOne ⌊t⌋₊, (hasDerivAt_fPow hs0 ht0).deriv]
+    have hfloorR : ((⌊t⌋₊ : ℕ) : ℝ) = t - Int.fract t := by
+      rw [natCast_floor_eq_intCast_floor htpos.le]; exact (Int.self_sub_fract t).symm
+    have hfloorC : ((⌊t⌋₊ : ℕ) : ℂ) = ((t : ℝ) : ℂ) - ((Int.fract t : ℝ) : ℂ) := by
+      rw [← Complex.ofReal_natCast, hfloorR, Complex.ofReal_sub]
+    have hA1 : ((t : ℝ) : ℂ) ^ (-s - 1) * ((t : ℝ) : ℂ) = ((t : ℝ) : ℂ) ^ (-s) := by
+      have h := Complex.cpow_add (-s - 1) 1 htc
+      rw [Complex.cpow_one] at h
+      rw [← h]; congr 1; ring
+    have hexp : (-(s + 1) : ℂ) = -s - 1 := by ring
+    have hfi : fractIntegrand s t = ((Int.fract t : ℝ) : ℂ) * ((t : ℝ) : ℂ) ^ (-s - 1) := by
+      simp only [fractIntegrand, div_eq_mul_inv]
+      rw [← Complex.cpow_neg, hexp]
+    rw [hfloorC, hfi, ← hA1]; ring
+  rw [hval, MeasureTheory.setIntegral_congr_fun measurableSet_Ioi hIeq]
+  -- Integrability of the two summands, then split and evaluate.
+  have hint1 : IntegrableOn (fun t : ℝ => -s * ((t : ℝ) : ℂ) ^ (-s)) (Set.Ioi 1) :=
+    (integrableOn_Ioi_cpow_of_lt hlt one_pos).const_mul (-s)
+  have hint_frac : IntegrableOn (fractIntegrand s) (Set.Ioi 1) := by
+    have hbound : IntegrableOn (fun t : ℝ => t ^ (-(s.re + 1))) (Set.Ioi 1) :=
+      integrableOn_Ioi_rpow_of_lt (by linarith) one_pos
+    refine Integrable.mono' hbound ?_ ?_
+    · apply Measurable.aestronglyMeasurable
+      unfold fractIntegrand
+      fun_prop
+    · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+      have htmem : (1 : ℝ) < t := ht
+      have htpos : (0 : ℝ) < t := by linarith
+      have hre1 : (s + 1).re = s.re + 1 := by simp [Complex.add_re, Complex.one_re]
+      have hfract : ‖((Int.fract t : ℝ) : ℂ)‖ ≤ 1 := by
+        rw [Complex.norm_real, Real.norm_of_nonneg (Int.fract_nonneg t)]
+        exact (Int.fract_lt_one t).le
+      simp only [fractIntegrand, norm_div]
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos htpos, hre1,
+          div_le_iff₀ (Real.rpow_pos_of_pos htpos _)]
+      have hrw : t ^ (-(s.re + 1)) * t ^ (s.re + 1) = 1 := by
+        rw [← Real.rpow_add htpos]; simp
+      rw [hrw]; exact hfract
+  have hint2 : IntegrableOn (fun t : ℝ => s * fractIntegrand s t) (Set.Ioi 1) :=
+    hint_frac.const_mul s
+  rw [integral_add hint1 hint2, integral_const_mul, integral_const_mul]
+  have hFI : (∫ t in Set.Ioi 1, fractIntegrand s t) = fractIntegral s := rfl
+  have hI0 : (∫ t in Set.Ioi 1, ((t : ℝ) : ℂ) ^ (-s)) = 1 / (s - 1) := by
+    rw [integral_Ioi_cpow_of_lt hlt one_pos, Complex.ofReal_one, Complex.one_cpow]
+    have hden : (-s) + 1 ≠ 0 := by
+      have h : (-s) + 1 = -(s - 1) := by ring
+      rw [h]; exact neg_ne_zero.mpr hs1
+    field_simp
+    ring
+  rw [hI0, hFI, stripRHS]
+  ring
 
 end ZeroFreeBridge
