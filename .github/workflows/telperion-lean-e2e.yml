@@ -618,6 +618,22 @@ jobs:
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build ZeroFreeElementary
 
+      # Kernel-axiom guard: the UNCONDITIONAL RH theorems must not secretly depend on `sorry`.
+      # `#print axioms` is authoritative (a grep for "sorry" can't tell a gap from docstring prose).
+      - name: Axiom guard -- RH unconditional theorems are kernel-clean (fail on sorryAx)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: |
+          lake build StripReprAssembled StripBound
+          out="$(lake env lean AxiomGuardRH.lean 2>&1 || true)"
+          echo "$out"
+          if echo "$out" | grep -q 'sorryAx'; then
+            echo "::error::a guarded RH theorem depends on sorry (sorryAx in axiom trace)"; exit 1
+          fi
+          if echo "$out" | grep -qE 'error:'; then
+            echo "::error::AxiomGuardRH.lean did not elaborate cleanly"; exit 1
+          fi
+          echo "OK: all guarded RH theorems are kernel-clean (no sorryAx)."
+
   # Compile the DRAFTED Borel-Caratheodory theorem (its own lakefile/toolchain). Sorry-free, 398 lines,
   # never built; this job produces the real verdict. The crux missing piece for the region assembly.
   borel-caratheodory-compiles:
