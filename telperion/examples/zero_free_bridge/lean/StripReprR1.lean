@@ -250,7 +250,16 @@ theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N)
     have ht0 : t ≠ 0 := (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne'
     exact (hasDerivAt_fPow hs0 ht0).differentiableAt
   have hf_int : IntegrableOn (deriv (fPow s)) (Set.Icc (1 : ℝ) (N : ℝ)) := by
-    sorry
+    have heq : Set.EqOn (deriv (fPow s)) (fun t : ℝ => -s * ((t : ℝ) : ℂ) ^ (-s - 1))
+        (Set.Icc (1 : ℝ) (N : ℝ)) := fun t ht =>
+      (hasDerivAt_fPow hs0 (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne').deriv
+    rw [integrableOn_congr_fun heq measurableSet_Icc]
+    have hcont : ContinuousOn (fun t : ℝ => -s * ((t : ℝ) : ℂ) ^ (-s - 1))
+        (Set.Icc (1 : ℝ) (N : ℝ)) := by
+      refine continuousOn_const.mul (fun t ht => ?_)
+      have ht0 : t ≠ 0 := (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne'
+      exact (Complex.continuousAt_ofReal_cpow_const t (-s - 1) (Or.inr ht0)).continuousWithinAt
+    exact hcont.integrableOn_compact isCompact_Icc
   have habel := sum_mul_eq_sub_integral_mul₀ (c := cOne) (f := fPow s) (rfl : cOne 0 = 0)
     (N : ℝ) hf_diff hf_int
   -- LHS = ∑_{Icc 1 N} n^{-s}; fPow N·N = N^{1-s}; integrand = −s t^{-s} + s·fractIntegrand (hIeq);
