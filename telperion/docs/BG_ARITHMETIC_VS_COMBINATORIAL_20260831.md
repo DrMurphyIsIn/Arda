@@ -76,9 +76,11 @@ locally unbeatable — while the spider wins only by jumping between exchange ba
 prove (A); the proof needs this non-local spider-vs-caterpillar step, now discharged. The combinatorial analog of
 the smooth no-go: the obstruction isolated, and its arithmetic core gated.
 
-The residual for a complete (A) is now just part (i) — the exchange-reachability statement (every rich-exchange
-local max is the broom or a length-2 caterpillar, verified `n ≤ 13`) — plus the caterpillar arm-optimum (`a = 7`,
-a transfer unimodality). The spider-beats-caterpillar arithmetic is done.
+Part (ii) is now gated for **all** arm-counts (not just the sup): `a = 1..12` explicitly, and the tail `a ≥ 13`
+uniformly via `lam(a) < (4/3)(3/2)^a` (an identity, `9 < 8a+16`) + the GROWTH atom `(3/2)^11 < (621/64)²` + the
+BASE atom `(4/3)^11 (3/2)^143 < (621/64)^27`. So the residual for a complete (A) is now **just part (i)** — the
+exchange-reachability statement (every rich-exchange local max is the broom or a length-2 caterpillar, verified
+`n ≤ 13`). The spider-beats-caterpillar arithmetic is done, end to end.
 
 ## Where this leaves the campaign
 
