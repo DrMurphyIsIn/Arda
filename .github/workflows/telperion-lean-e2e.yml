@@ -634,6 +634,33 @@ jobs:
           fi
           echo "OK: all guarded RH theorems are kernel-clean (no sorryAx)."
 
+  # (RATE UPGRADE, WIP) sharp near-line bound |ζ| ≤ C(1+log|t|) via truncated Euler-Maclaurin.
+  # Carries sorry placeholders; this job checks the skeleton (truncated rep + term bounds) typechecks.
+  zeta-log-bound-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the sharp near-line bound skeleton (WIP)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build ZetaLogBound
+
   # Compile the DRAFTED Borel-Caratheodory theorem (its own lakefile/toolchain). Sorry-free, 398 lines,
   # never built; this job produces the real verdict. The crux missing piece for the region assembly.
   borel-caratheodory-compiles:
