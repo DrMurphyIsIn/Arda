@@ -109,21 +109,37 @@ Three findings:
    `≥ 0`) over the realizable sub-box `g ∈ [0.5, 0.72]` — so `φ_arm ≤ F*` there with a fixed rational
    `k/33` discharge. First certification of the hard 2-edge bulk vertex over the reachable variety.
 
-## Honest scope of the armmid result
+## Armmid local case COMPLETELY covered over its reachable range — DONE
 
-One sub-box of one local case (deg-2 armmid + leaf + deg-6 center). The full armmid still needs: (a) the
-exact reachable `g`-range (a reachability computation), (b) tiling it with finitely many sub-boxes, each a
-constant rational `τ` (the optimal `τ` drifts with `g`, so one constant `τ` leaves `+0.001` over the whole
-wide range — piecewise fixes it), and (c) the tie at `g → sup` where the tight `τ` is transcendental →
-exact `27·23` arithmetic. And there are other local cases (other neighbor-degree configs). But the METHOD
-is validated end-to-end: **realizability + finer-grid rational `τ` + Bernstein certifies bulk vertices.**
+`bg_armmid_full_cover.py` upgrades the single sub-box to the **entire reachable range**. The reachable
+field is `g = h_{center→armmid} = 1/(1+S)`, `S = Σ_{5 other center-nbrs} h/(6·d) ∈ [0, 5/6]`, so
+`g ∈ [6/11, 1)`; and the armmid floor stays `≈ −0.0078` even at `g→1` — no tie in the armmid itself. A
+**finite 2-piece cover** certifies it (degree drift of the leaf-tight `k_leaf/99` is only `52→53`):
+
+| piece (reachable `g`) | `k_leaf` | `k_other` | poly degree | Bernstein | margin `max φ−F*` |
+|---|---|---|---|---|---|
+| `[6/11, 0.745]` | 52 | 99 | 151 | 152 terms, all `≥0` | `−0.0038` |
+| `[0.745, 1]`    | 53 | 99 | 152 | 153 terms, all `≥0` | `−0.0043` |
+
+Contiguous, leaf-safe (`k_leaf/99 ≤ cap(g)` throughout), exact reconstruction. So **`φ_arm ≤ F*` on the
+whole reachable variety** with a fixed rational `k/99` discharge — a *complete* certification of the
+hardest bulk vertex, not a sub-box.
+
+## Honest scope
+
+This is the local case **deg-2 armmid + a leaf + a degree-6 center**. Other neighbor-degree configs
+(different center degree, two non-leaf neighbors, …) are separate local cases needing their own covers.
+Establishing the finite *list* of local cases and that they exhaust all tree vertices is the
+cover-completeness obligation (still open). But the per-case METHOD is now proven end-to-end:
+**realizability (pin recursion-fixed messages) + finer-grid rational `τ` (`k/99`) + a finite tiling +
+Bernstein** certifies a bulk vertex over its entire reachable range.
 
 ## Next steps
 
-1. **Reachable-range + tiling.** Compute the exact reachable `g`-interval for each local case and tile it
-   with sub-boxes, each certified by a constant `k/D` `τ` (a finite cover — `emit_preconnected_cover`
-   discipline for completeness).
-2. **The tie arithmetic.** Isolate the `g → sup` saturation and discharge it by the exact `27·23` identity
-   (`emit_padic`), not SOS — F3 proves no polynomial `τ` is tight there.
-3. **Emit Lean.** Feed the Bernstein certificates through `HandelmanEmitter` / the equality-augmented
-   `ConstrainedSOSEmitter` to kernel-gated Lean atoms.
+1. **Enumerate + cover the local cases.** Catalogue the (vertex-degree, neighbor-degree-multiset) local
+   cases, bound the reachable field ranges, and produce a finite certified cover per case (as done for the
+   armmid). Prove the catalogue exhausts all vertices (`emit_preconnected_cover` sign-cell discipline).
+2. **The tie.** Locate the vertex/config that actually saturates `F*` (not the armmid — it has slack), and
+   discharge its `g → sup` tie by the exact `27·23` identity (`emit_padic`), not SOS (F3).
+3. **Emit Lean.** Feed the Bernstein covers through `HandelmanEmitter` to kernel-gated Lean atoms
+   (`0 ≤ num` on each `[gL,gR]` box), assembling the per-case `φ_v ≤ F*` guarantees.
