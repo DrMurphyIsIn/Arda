@@ -28,7 +28,8 @@ theorem norm_natCast_cpow_one_sub_le_one {N : ℕ} (hN : 1 ≤ N) {s : ℂ} (hs 
     ‖(N : ℂ) ^ (1 - s)‖ ≤ 1 := by
   have hnR : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   have hnpos : (0 : ℝ) < (N : ℝ) := by linarith
-  rw [← Complex.ofReal_natCast, Complex.norm_cpow_eq_rpow_re_of_pos hnpos]
+  rw [show (N : ℂ) = ((N : ℝ) : ℂ) from (Complex.ofReal_natCast N).symm,
+    Complex.norm_cpow_eq_rpow_re_of_pos hnpos]
   apply Real.rpow_le_one_of_one_le_of_nonpos hnR
   simp only [Complex.sub_re, Complex.one_re]; linarith
 
