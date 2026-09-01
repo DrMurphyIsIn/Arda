@@ -100,4 +100,25 @@ vertex (to size 101) — **every** small-degree non-broom is `>= 0.06` below the
 never a residual (`test_envelope_tail_case_split_closes`).
 
 The residual for a *complete* proof is now the single refined-ceiling lemma (b) — a finite-size decay bound for
-`d_c <= 6` non-broom branches — plus the Lean assembly chaining the gates. See `BG_STAR_OF_BROOMS_HANDOFF.md`.
+`d_c <= 6` non-broom branches — plus the Lean assembly chaining the gates.
+
+## Toward a rigorous (b): the deficit view (`branch_ell_by_vertex`)
+
+The exact **cavity per-vertex decomposition** (verified `== branch_ell`, error `~2·10⁻¹⁵` over 731 branches)
+
+```
+ell(c) = Σ_v (A_v − F*),     A_v = log(1 + Σ_{children w of v} h_w/(d_v·d_w)),
+```
+
+is the deficit accounting behind (b). Each **leaf** contributes `−F*` (`A=0`); a cherry's **armmid** contributes
+`+log(3/2) − F* = +0.198`; the branch ceiling `ell(c) <= 0` says the profitable hubs cover the leaves' `F*` cost.
+`A_v` is capped by the **local** degree `d_v`: `A_v <= log((2d_v−1)/d_v)` (increasing in `d_v`, `→ log 2` as
+`d_v→∞`). The extremal per-vertex density `A_v ≈ F*` sustained across the branch requires high-degree hubs.
+
+This is exactly why (b) holds and why a low **root** degree can't break it: the make-or-break adversary — a big
+near-extremal star hung below a degree-2 root — has `ell ≈ −0.27`, because the degree-2 root and its leaves inject
+`F*`-cost the diluted top cannot offset (`test_low_degree_root_dilutes_adversarial`). A rigorous (b) should follow
+from a **per-vertex deficit lower bound** for the restricted `d_c <= 6` family: any `d_c <= 6` non-broom incurs a
+total deficit `Σ_v (F* − A_v) > ell(cherry) − small_degree_threshold` — a restricted-family free-energy bound
+(bounded root degree), more tractable than the full convergence-rate problem the general tail would need. `See
+`BG_STAR_OF_BROOMS_HANDOFF.md`.
