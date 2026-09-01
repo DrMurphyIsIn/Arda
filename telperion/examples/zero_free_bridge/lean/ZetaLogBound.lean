@@ -97,7 +97,8 @@ theorem norm_tail_term_le {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 1 ≤ N) :
   have hint_lhs : IntegrableOn
       (fun x : ℝ => ‖((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖) (Set.Ioi (N : ℝ)) := by
     have hm : AEStronglyMeasurable (fun x : ℝ => ((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1))
-        (volume.restrict (Set.Ioi (N : ℝ))) := by fun_prop
+        (volume.restrict (Set.Ioi (N : ℝ))) := by
+      apply Measurable.aestronglyMeasurable; fun_prop
     refine hint_rhs.mono' hm.norm ?_
     refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun x hx => ?_))
     rw [Real.norm_of_nonneg (norm_nonneg _)]; exact hpt x hx
