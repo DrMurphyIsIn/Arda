@@ -48,3 +48,9 @@ name = "StripBound"
 # ZeroFreeBridge; own CI target. Out of defaultTargets.
 [[lean_lib]]
 name = "ZeroFreeRegion"
+
+# ELEMENTARY (Hadamard-free) UNCONDITIONAL zero-free region assembly `zeta_zero_free_poly_of`
+# (polynomial rate Re s > 1 - c/|t|^5), from the product inequality + crude strip bound + pole +
+# Cauchy estimate. Imports ZeroFreeBridge; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZeroFreeElementary"
