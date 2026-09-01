@@ -55,4 +55,17 @@ theorem zeta_zero_free_poly_of {β γ c₁ c₂ c₄ Zσ Zσt Zσ2t : ℝ}
   rw [div_le_iff₀ (by positivity)]
   nlinarith [h1]
 
+/-- DISCHARGE of `hprod` for `riemannZeta`: the 3-4-1 product inequality
+    `|ζ(1+x)|³ |ζ(1+x+iy)|⁴ |ζ(1+x+2iy)| ≥ 1` for `x > 0`, specialized from Mathlib's Dirichlet
+    nonvanishing machinery (`DirichletCharacter.norm_LFunction_product_ge_one` at modulus `1`, where
+    `LFunction_modOne_eq` sends every mod-1 character's L-function to `riemannZeta`). -/
+theorem zeta_norm_product_ge_one {x : ℝ} (hx : 0 < x) (y : ℝ) :
+    1 ≤ ‖riemannZeta (1 + x)‖ ^ 3 * ‖riemannZeta (1 + x + Complex.I * y)‖ ^ 4
+        * ‖riemannZeta (1 + x + 2 * Complex.I * y)‖ := by
+  have h := DirichletCharacter.norm_LFunction_product_ge_one
+    (χ := (1 : DirichletCharacter ℂ 1)) hx y
+  rw [ge_iff_le] at h
+  simp only [LFunctionTrivChar, LFunction_modOne_eq, one_pow] at h
+  rwa [norm_mul, norm_mul, norm_pow, norm_pow] at h
+
 end ZeroFreeBridge
