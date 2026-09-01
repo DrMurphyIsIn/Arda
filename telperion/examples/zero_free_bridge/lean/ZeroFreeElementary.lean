@@ -202,4 +202,35 @@ theorem zeta_deriv_bound {u γ : ℝ} (hu : 3 / 4 ≤ u) (hu2 : u ≤ 2) (hγ : 
   calc ‖deriv riemannZeta w‖ ≤ 12 * γ / (1 / 2) := hcau
     _ = 24 * γ := by ring
 
+/-- hcauchy step 3 -- the segment mean-value bound at a zero.  If `ζ(β+iγ) = 0` and `3/4 ≤ β ≤ σ ≤ 2`,
+    `2 ≤ γ`, then along the horizontal segment `u ↦ ζ(u+iγ)` (whose derivative is `‖·‖ ≤ 24γ` by
+    `zeta_deriv_bound`) the mean-value inequality gives `‖ζ(σ+iγ)‖ = ‖ζ(σ+iγ) - ζ(β+iγ)‖ ≤ 24γ·(σ-β)`. -/
+theorem zeta_hcauchy {β σ γ : ℝ} (hβ : 3 / 4 ≤ β) (hσ : σ ≤ 2) (hβσ : β ≤ σ) (hγ : 2 ≤ γ)
+    (hzero : riemannZeta ((β : ℂ) + γ * Complex.I) = 0) :
+    ‖riemannZeta ((σ : ℂ) + γ * Complex.I)‖ ≤ 24 * γ * (σ - β) := by
+  set g : ℝ → ℂ := fun u => riemannZeta ((u : ℂ) + γ * Complex.I) with hg
+  have hderiv : ∀ u ∈ Set.Icc β σ,
+      HasDerivWithinAt g (deriv riemannZeta ((u : ℂ) + γ * Complex.I)) (Set.Icc β σ) u := by
+    intro u hu
+    have hune : ((u : ℂ) + γ * Complex.I) ≠ 1 := by
+      intro h; have him := congrArg Complex.im h
+      simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+        Complex.I_im, Complex.I_re, Complex.one_im] at him
+      linarith
+    have hφ : HasDerivAt (fun t : ℝ => (t : ℂ) + γ * Complex.I) 1 u := by
+      simpa using (Complex.ofRealCLM.hasDerivAt).add_const (γ * Complex.I)
+    have hζ : HasDerivAt riemannZeta (deriv riemannZeta ((u : ℂ) + γ * Complex.I))
+        ((u : ℂ) + γ * Complex.I) := (differentiableAt_riemannZeta hune).hasDerivAt
+    have hcomp := hζ.scomp u hφ
+    simp only [one_smul] at hcomp
+    exact hcomp.hasDerivWithinAt
+  have hbound : ∀ u ∈ Set.Icc β σ, ‖deriv riemannZeta ((u : ℂ) + γ * Complex.I)‖ ≤ 24 * γ := by
+    intro u hu
+    exact zeta_deriv_bound (by linarith [hu.1] : 3 / 4 ≤ u) (by linarith [hu.2] : u ≤ 2) hγ
+  have hmv := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hderiv hbound (convex_Icc β σ)
+    (Set.left_mem_Icc.mpr hβσ) (Set.right_mem_Icc.mpr hβσ)
+  simp only [hg] at hmv
+  rw [hzero, sub_zero, Real.norm_eq_abs, abs_of_nonneg (by linarith : (0 : ℝ) ≤ σ - β)] at hmv
+  linarith [hmv]
+
 end ZeroFreeBridge
