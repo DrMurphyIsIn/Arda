@@ -24,6 +24,8 @@
 -/
 import ZeroFreeBridge
 
+open Filter Topology
+
 namespace ZeroFreeBridge
 
 /-- ELEMENTARY ZERO-FREE REGION ASSEMBLY.  At `σ = 2 - β` and height `γ ≥ 1`, given the four
