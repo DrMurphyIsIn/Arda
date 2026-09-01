@@ -67,12 +67,18 @@ them (`+0.417`, `+0.521` at `n = 11, 13`). So:
 > **Obligation A reduces to:** *(i)* every rich-exchange local maximum is the broom or a length-2 caterpillar
 > (verified `n <= 13`), *and* *(ii)* the spider beats every length-2 caterpillar.
 
-Part (ii) is precisely the **spider-vs-caterpillar** comparison this campaign already established (the
-transfer-recurrence `transfer_caterpillar.py`; spiders strictly beat Pant's caterpillars). And this explains
-*why* Pant conjectured caterpillars: they are the exchange **local maxima** — locally unbeatable — while the
-spider wins only by jumping between exchange basins. A one-move exchange cannot prove (A); the proof needs the
-non-local spider-vs-caterpillar step. This is the combinatorial analog of the smooth no-go: the honest
-obstruction, isolated — and reduced to a comparison already understood to favor the broom.
+Part (ii) is precisely the **spider-vs-caterpillar** comparison — and it is now **kernel-gated**
+(`SpiderBeatsCaterpillarCertificate` / `bg_spider_vs_caterpillar`): asymptotically `F* > F(a)` for every
+arm-count `a`, cleared to `(621/64)^(2a+1) > lam(a)^11 = A + B·sqrt(D)` via the surd-cleared rational atoms
+`L>A`, `B>0`, `(L−A)² > B²D` (`a = 1..12`, covering the caterpillar sup `a = 7`; `F(a)` decreases to
+`log(3/2)/2 < F*`). This explains *why* Pant conjectured caterpillars: they are the exchange **local maxima** —
+locally unbeatable — while the spider wins only by jumping between exchange basins. A one-move exchange cannot
+prove (A); the proof needs this non-local spider-vs-caterpillar step, now discharged. The combinatorial analog of
+the smooth no-go: the obstruction isolated, and its arithmetic core gated.
+
+The residual for a complete (A) is now just part (i) — the exchange-reachability statement (every rich-exchange
+local max is the broom or a length-2 caterpillar, verified `n ≤ 13`) — plus the caterpillar arm-optimum (`a = 7`,
+a transfer unimodality). The spider-beats-caterpillar arithmetic is done.
 
 ## Where this leaves the campaign
 
