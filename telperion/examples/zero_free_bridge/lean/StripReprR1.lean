@@ -237,4 +237,33 @@ theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := b
   rw [hI0, hFI, stripRHS]
   ring
 
+/-- FINITE Euler–Maclaurin / Abel-summation identity (WIP SKELETON): the partial sum in the clean
+    closed form, the finite-`N` companion of `zeta_repr_R1`. Feeds `zeta_trunc` in `ZetaLogBound`.
+    Sub-steps are `sorry`; this validates the `sum_mul_eq_sub_integral_mul₀` application structure. -/
+theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N) :
+    ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)
+      = s / (s - 1) - (N : ℂ) ^ (1 - s) / (s - 1)
+        - s * ∫ t in Set.Ioc (1 : ℝ) (N : ℝ), fractIntegrand s t := by
+  have hs0 : s ≠ 0 := by intro h; rw [h, Complex.zero_re] at hs; linarith
+  have hf_diff : ∀ t ∈ Set.Icc (1 : ℝ) (N : ℝ), DifferentiableAt ℝ (fPow s) t := by
+    intro t ht
+    have ht0 : t ≠ 0 := (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne'
+    exact (hasDerivAt_fPow hs0 ht0).differentiableAt
+  have hf_int : IntegrableOn (deriv (fPow s)) (Set.Icc (1 : ℝ) (N : ℝ)) := by
+    have heq : Set.EqOn (deriv (fPow s)) (fun t : ℝ => -s * ((t : ℝ) : ℂ) ^ (-s - 1))
+        (Set.Icc (1 : ℝ) (N : ℝ)) := fun t ht =>
+      (hasDerivAt_fPow hs0 (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne').deriv
+    rw [integrableOn_congr_fun heq measurableSet_Icc]
+    have hcont : ContinuousOn (fun t : ℝ => -s * ((t : ℝ) : ℂ) ^ (-s - 1))
+        (Set.Icc (1 : ℝ) (N : ℝ)) := by
+      refine continuousOn_const.mul (fun t ht => ?_)
+      have ht0 : t ≠ 0 := (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne'
+      exact (Complex.continuousAt_ofReal_cpow_const t (-s - 1) (Or.inr ht0)).continuousWithinAt
+    exact hcont.integrableOn_compact isCompact_Icc
+  have habel := sum_mul_eq_sub_integral_mul₀ (c := cOne) (f := fPow s) (rfl : cOne 0 = 0)
+    (N : ℝ) hf_diff hf_int
+  -- LHS = ∑_{Icc 1 N} n^{-s}; fPow N·N = N^{1-s}; integrand = −s t^{-s} + s·fractIntegrand (hIeq);
+  -- ∫_{Ioc 1 N} t^{-s} = 1/(s-1) − N^{1-s}/(s-1); collect.
+  sorry
+
 end ZeroFreeBridge

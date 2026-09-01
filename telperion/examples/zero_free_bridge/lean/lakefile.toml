@@ -54,3 +54,9 @@ name = "ZeroFreeRegion"
 # Cauchy estimate. Imports ZeroFreeBridge; own CI target. Out of defaultTargets.
 [[lean_lib]]
 name = "ZeroFreeElementary"
+
+# (RATE UPGRADE, WIP) sharp near-line bound |ζ(σ+it)| ≤ C(1+log|t|) via truncated Euler-Maclaurin
+# (N~|t|), to improve the region rate from |t|^-5 toward the dVP log-region. Carries `sorry`
+# placeholders; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZetaLogBound"
