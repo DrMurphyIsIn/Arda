@@ -22,7 +22,7 @@
    sidestepping the Hadamard wall entirely.  This file is the ASSEMBLY (four bounds -> region);
    discharging the four bounds (all reachable) is the follow-on.  conjecture1_proved = False.
 -/
-import ZeroFreeBridge
+import StripBound
 
 open Filter Topology
 
