@@ -34,7 +34,7 @@ theorem norm_natCast_cpow_one_sub_le_one {N : ℕ} (hN : 1 ≤ N) {s : ℂ} (hs 
 
 /-- `(x:ℂ)^(-s) * x = (x:ℂ)^(1-s)` for `x ≠ 0` (the Abel-collection step). -/
 theorem cpow_neg_mul_self {x : ℂ} (hx : x ≠ 0) (s : ℂ) : x ^ (-s) * x = x ^ (1 - s) := by
-  rw [← Complex.cpow_one x, ← Complex.cpow_add _ _ hx, Complex.cpow_one]; congr 1; ring
+  rw [show (1 : ℂ) - s = -s + 1 by ring, Complex.cpow_add _ _ hx, Complex.cpow_one]
 
 /-- `|Im s| ≤ ‖s - 1‖` (the pole-denominator bound). -/
 theorem abs_im_le_norm_sub_one (s : ℂ) : |s.im| ≤ ‖s - 1‖ := by
