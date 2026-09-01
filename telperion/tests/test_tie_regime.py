@@ -148,6 +148,48 @@ def test_slack_certificate():
     assert "import Mathlib" in mod and mod.count("by norm_num") == len(cert.atoms())
 
 
+def test_mixed_kkt_reduction_concavity():
+    """The concavity tangent bound is EXACT (never violated): for arbitrary mixed hubs,
+    ell(hub) - ell(B(k)) <= sum_i (V(c_i) - V(cherry)), V(c)=ell(c)+lambda(k) x_c, lambda(k)=3(k+1)/(4k+3).
+    This is the rigorous log-concavity step that decouples the mixed-hub bound into per-child inequalities."""
+    import random
+    from telperion.branch_potential import branch_ell, broom_edges
+    from telperion.tie_regime import mixed_lambda, child_value, CHERRY, broom_child
+    from fractions import Fraction as Fr
+
+    # lambda(k) = 3(k+1)/(4k+3) exact (derivative of log(1+.) at the all-cherry point)
+    assert mixed_lambda(5) == Fr(18, 23)
+
+    specs = {("cherry",): CHERRY, ("broom", 2): broom_child(2), ("broom", 4): broom_child(4),
+             ("broom", 5): broom_child(5), ("broom", 6): broom_child(6)}
+    rng = random.Random(11)
+    for k in range(2, 16):
+        ell_bk, _ = branch_ell(*broom_edges(k))
+        vch = child_value(CHERRY, k)
+        for _ in range(200):
+            ch = [rng.choice(list(specs)) for _ in range(k)]
+            ell_hub = _hub(ch)
+            rhs = sum(child_value(specs[c], k) - vch for c in ch)          # sum (V(c_i) - V(cherry))
+            assert ell_hub - ell_bk <= rhs + 1e-12                          # concavity tangent (rigorous)
+            assert rhs <= 1e-9                                              # per-child KKT => sum <= 0
+
+
+def test_mixed_hub_kkt_certificate():
+    """MixedHubKKTCertificate: per-child V(c) < V(cherry) for every broom child and k in [2,15], via frozen
+    log-enclosures -- proving (with concavity) mixed <= B(k) for k <= 15. Checks exact + emits norm_num."""
+    from telperion.tie_regime import MixedHubKKTCertificate, cherry_is_kkt_argmax
+    cert = MixedHubKKTCertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 14 * 7                                      # k=2..15 x B(2..8)
+    # KKT (cherry = argmax V over the broom envelope) holds across the whole tie regime k<=15 ...
+    assert all(cherry_is_kkt_argmax(k) for k in range(2, 16))
+    # ... and must FAIL for large k (else it would contradict mixed<=B(k) itself failing at k>=20)
+    assert not cherry_is_kkt_argmax(20)
+    mod = cert.lean_module()
+    assert "import Mathlib" in mod and "namespace BGMixedHubKKT" in mod
+    assert mod.count("by norm_num") == len(cert.atoms())
+
+
 def test_slack_bound_proof_structure():
     """Rigorous proof of slack_g(k) <= F* for k>=16: (1) slack_g monotone-decreasing so <= slack_g(16);
     (2) slack_g(16) < F*; (3) per-child, every non-B(5) envelope child phi_c is decreasing for k>=16

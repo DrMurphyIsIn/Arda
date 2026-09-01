@@ -398,3 +398,8 @@ group = "quick"    # route-(b) upper bound: tie-regime cherry-worst 1<ratio(k,j*
 name = "bg_tie_slack"
 script = "examples/bg_tie_slack/generate.py"
 group = "quick"    # route-(b) upper bound: slack bound slack_g(k)<=F* for k>=16 (frozen log-enclosures); ~0.1 s
+
+[[check]]
+name = "bg_mixed_kkt"
+script = "examples/bg_mixed_kkt/generate.py"
+group = "quick"    # route-(b) upper bound: mixed<=B(k) k<=15 via concavity+per-child KKT V(c)<V(cherry); ~0.1 s
