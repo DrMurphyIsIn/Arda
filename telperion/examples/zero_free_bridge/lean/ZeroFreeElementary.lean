@@ -314,7 +314,7 @@ theorem riemannZeta_zero_free_poly :
       rw [le_div_iff₀ (by linarith : (0 : ℝ) < 1 - β)]
       nlinarith [h]
     have hstrip : ‖riemannZeta (((2 - β : ℝ) : ℂ) + 2 * Complex.I * γ)‖ ≤ 5 * γ := by
-      have h := zeta_strip_2t_bound (by linarith) (by linarith) hγ
+      have h := zeta_strip_2t_bound (β := β) (by linarith) (by linarith) hγ
       rw [show ((2 - β : ℝ) : ℂ) + 2 * γ * Complex.I
           = ((2 - β : ℝ) : ℂ) + 2 * Complex.I * γ by ring] at h
       exact h
@@ -329,7 +329,7 @@ theorem riemannZeta_zero_free_poly :
       (norm_nonneg _) (norm_nonneg _) (norm_nonneg _) hprod hpole hstrip hcauchy
     rw [show (16 : ℝ) * 2 ^ 3 * 5 * 24 ^ 4 * γ ^ 5 = 212336640 * γ ^ 5 by ring] at hgap
     have hle : c / γ ^ 5 ≤ 1 - β := by
-      rw [div_le_iff₀ (by positivity : (0 : ℝ) < γ ^ 5)] at hgap
+      rw [div_le_iff₀ (by positivity : (0 : ℝ) < 212336640 * γ ^ 5)] at hgap
       rw [div_le_iff₀ (by positivity : (0 : ℝ) < γ ^ 5)]
       nlinarith [hgap, hc_le2, hγ5]
     linarith
