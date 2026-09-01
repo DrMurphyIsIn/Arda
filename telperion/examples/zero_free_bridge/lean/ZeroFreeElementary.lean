@@ -285,9 +285,9 @@ theorem riemannZeta_zero_free_poly :
   have hc_le1 : c ≤ 32 * δ₁ := min_le_left _ _
   have hc_le2 : c ≤ 1 / 212336640 := min_le_right _ _
   intro β γ hzero hγ
-  have hγ5 : 32 ≤ γ ^ 5 := by
-    have h := pow_le_pow_left (by norm_num : (0 : ℝ) ≤ 2) hγ 5
-    norm_num at h; exact h
+  have hγ5 : (32 : ℝ) ≤ γ ^ 5 := by
+    calc (32 : ℝ) = 2 ^ 5 := by norm_num
+      _ ≤ γ ^ 5 := by gcongr <;> linarith
   -- `β < 1`: else `ζ(β+iγ) ≠ 0` (Re ≥ 1).
   have hβ1 : β < 1 := by
     by_contra h; push_neg at h
@@ -305,21 +305,25 @@ theorem riemannZeta_zero_free_poly :
     have hβ34 : (3 : ℝ) / 4 ≤ β := by have : δ₁ ≤ 1 / 4 := min_le_right _ _; linarith
     have hσδ₀ : 2 - β < 1 + δ₀ := by have : δ₁ ≤ δ₀ := min_le_left _ _; linarith
     have hprod := zeta_norm_product_ge_one (show (0 : ℝ) < 1 - β by linarith) γ
+    -- `he0` rewrites the common `1 + ↑(1-β)` in ALL three factors to `↑(2-β)`.
     have he0 : (1 : ℂ) + ((1 - β : ℝ) : ℂ) = ((2 - β : ℝ) : ℂ) := by push_cast; ring
-    have he1 : (1 : ℂ) + ((1 - β : ℝ) : ℂ) + Complex.I * γ
-        = ((2 - β : ℝ) : ℂ) + γ * Complex.I := by push_cast; ring
-    have he2 : (1 : ℂ) + ((1 - β : ℝ) : ℂ) + 2 * Complex.I * γ
-        = ((2 - β : ℝ) : ℂ) + 2 * γ * Complex.I := by push_cast; ring
-    rw [he0, he1, he2] at hprod
+    rw [he0] at hprod
     have hpole : ‖riemannZeta ((2 - β : ℝ) : ℂ)‖ ≤ 2 / (1 - β) := by
       have h := hpoleδ (2 - β) (by linarith) hσδ₀
+      rw [show (2 - β) - 1 = 1 - β by ring] at h
       rw [le_div_iff₀ (by linarith : (0 : ℝ) < 1 - β)]
-      rw [show (2 - β) - 1 = 1 - β by ring] at h; linarith
-    have hstrip : ‖riemannZeta (((2 - β : ℝ) : ℂ) + 2 * γ * Complex.I)‖ ≤ 5 * γ :=
-      zeta_strip_2t_bound (by linarith) (by linarith) hγ
-    have hcauchy : ‖riemannZeta (((2 - β : ℝ) : ℂ) + γ * Complex.I)‖ ≤ 2 * (1 - β) * 24 * γ := by
+      nlinarith [h]
+    have hstrip : ‖riemannZeta (((2 - β : ℝ) : ℂ) + 2 * Complex.I * γ)‖ ≤ 5 * γ := by
+      have h := zeta_strip_2t_bound (by linarith) (by linarith) hγ
+      rw [show ((2 - β : ℝ) : ℂ) + 2 * γ * Complex.I
+          = ((2 - β : ℝ) : ℂ) + 2 * Complex.I * γ by ring] at h
+      exact h
+    have hcauchy : ‖riemannZeta (((2 - β : ℝ) : ℂ) + Complex.I * γ)‖ ≤ 2 * (1 - β) * 24 * γ := by
       have h := zeta_hcauchy hβ34 (by linarith : 2 - β ≤ 2) (by linarith : β ≤ 2 - β) hγ hzero
-      rw [show 24 * γ * ((2 - β) - β) = 2 * (1 - β) * 24 * γ by ring] at h; exact h
+      rw [show 24 * γ * ((2 - β) - β) = 2 * (1 - β) * 24 * γ by ring,
+          show ((2 - β : ℝ) : ℂ) + γ * Complex.I
+          = ((2 - β : ℝ) : ℂ) + Complex.I * γ by ring] at h
+      exact h
     have hgap := zeta_zero_free_poly_of hβ1 (by linarith : (1 : ℝ) ≤ γ)
       (by norm_num : (0 : ℝ) < 2) (by norm_num : (0 : ℝ) < 5) (by norm_num : (0 : ℝ) < 24)
       (norm_nonneg _) (norm_nonneg _) (norm_nonneg _) hprod hpole hstrip hcauchy
