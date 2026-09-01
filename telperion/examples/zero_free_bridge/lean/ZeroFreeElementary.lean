@@ -171,4 +171,35 @@ theorem zeta_sphere_bound {u γ : ℝ} (hu : 3 / 4 ≤ u) (hu2 : u ≤ 2) (hγ :
     _ ≤ 4 + (4 * γ + 12) := by linarith [hb_zterm, hb_reterm]
     _ ≤ 12 * γ := by linarith
 
+/-- hcauchy step 2 -- Cauchy derivative estimate: `‖ζ'(u+iγ)‖ ≤ 24·γ`.  `ζ` is `DiffContOnCl` on the
+    radius-`1/2` disk about `w = u+iγ` (holomorphic away from `s=1`, which the disk avoids), its
+    modulus on the boundary sphere is `≤ 12·γ` (`zeta_sphere_bound`), so Cauchy's estimate
+    (`Complex.norm_deriv_le_of_forall_mem_sphere_norm_le`) gives `‖ζ'(w)‖ ≤ 12γ/(1/2) = 24γ`. -/
+theorem zeta_deriv_bound {u γ : ℝ} (hu : 3 / 4 ≤ u) (hu2 : u ≤ 2) (hγ : 2 ≤ γ) :
+    ‖deriv riemannZeta ((u : ℂ) + γ * Complex.I)‖ ≤ 24 * γ := by
+  set w : ℂ := (u : ℂ) + γ * Complex.I with hw
+  have hwim : w.im = γ := by simp [hw]
+  have hne : ∀ z ∈ Metric.closedBall w (1 / 2), z ≠ 1 := by
+    intro z hz h1
+    rw [Metric.mem_closedBall, dist_eq_norm] at hz
+    subst h1
+    have hle : |((1 : ℂ) - w).im| ≤ ‖(1 : ℂ) - w‖ := Complex.abs_im_le_norm _
+    have him : ((1 : ℂ) - w).im = -γ := by rw [Complex.sub_im, hwim]; simp
+    rw [him, abs_neg, abs_of_nonneg (by linarith : (0 : ℝ) ≤ γ)] at hle
+    linarith
+  have hd : DiffContOnCl ℂ riemannZeta (Metric.ball w (1 / 2)) := by
+    constructor
+    · intro z hz
+      exact (differentiableAt_riemannZeta
+        (hne z (Metric.ball_subset_closedBall hz))).differentiableWithinAt
+    · rw [closure_ball w (by norm_num : (1 / 2 : ℝ) ≠ 0)]
+      intro z hz
+      exact (differentiableAt_riemannZeta (hne z hz)).continuousAt.continuousWithinAt
+  have hC : ∀ z ∈ Metric.sphere w (1 / 2), ‖riemannZeta z‖ ≤ 12 * γ := fun z hz =>
+    zeta_sphere_bound hu hu2 hγ (Metric.sphere_subset_closedBall hz)
+  have hcau := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le
+    (by norm_num : (0 : ℝ) < 1 / 2) hd hC
+  calc ‖deriv riemannZeta w‖ ≤ 12 * γ / (1 / 2) := hcau
+    _ = 24 * γ := by ring
+
 end ZeroFreeBridge
