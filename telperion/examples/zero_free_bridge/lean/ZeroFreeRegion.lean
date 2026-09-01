@@ -32,7 +32,8 @@ theorem dlvp_core_estimate (σ t β : ℝ) (k : ℤ) (A L : ℝ) (hσ : 1 < σ)
                 / riemannZeta ((σ : ℂ) + ((2 * t : ℝ) : ℂ) * Complex.I)).re ≤ A * L) :
     (4 : ℝ) * ((k : ℝ) / (σ - β)) ≤ 3 / (σ - 1) + 3 * A + 5 * (A * L) := by
   have hpos := zeta_logDeriv_comb_nonneg σ t hσ
-  nlinarith [hpos, hpole, hzero, htwo]
+  rw [show (3 : ℝ) / (σ - 1) = 3 * (1 / (σ - 1)) by ring]
+  linarith [hpos, hpole, hzero, htwo]
 
 /-- REGION GAP (cleared form): with a zero of order `k ≥ 1`, the dlvp core estimate pushes the zero
     left of the 1-line by an explicit amount.  Writing `B = 3A + 5AL` and `δ = σ-1`, cross-multiplied:
@@ -53,8 +54,8 @@ theorem dlvp_region_gap (σ β A L : ℝ) (k : ℤ) (hk : 1 ≤ k) (hσ : 1 < σ
   set B := 3 * A + 5 * (A * L) with hBdef
   -- Clear denominators in `hcore`: `4·k·(σ-1) ≤ (3 + B·(σ-1))·(σ-β)`.
   have lhs_eq : 4 * ((k : ℝ) / (σ - β)) = (4 * (k : ℝ)) / (σ - β) := by ring
-  have rhs_eq : 3 / (σ - 1) + B = (3 + B * (σ - 1)) / (σ - 1) := by field_simp
-  rw [lhs_eq, rhs_eq, div_le_div_iff hsb hd] at hcore
+  have rhs_eq : 3 / (σ - 1) + B = (3 + B * (σ - 1)) / (σ - 1) := by field_simp; ring
+  rw [lhs_eq, rhs_eq, div_le_iff₀ hsb, div_mul_eq_mul_div, le_div_iff₀ hd] at hcore
   -- With `k ≥ 1`: `4·(σ-1) ≤ (3 + B·(σ-1))·(σ-β)`.
   have key : 4 * (σ - 1) ≤ (3 + B * (σ - 1)) * (σ - β) := by nlinarith [hcore, hk1, hd, hsb]
   -- `1 - β = (σ-β) - (σ-1)`, so the cleared gap follows from `key` by a ring identity.
