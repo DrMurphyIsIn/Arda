@@ -116,4 +116,56 @@ theorem zeta_pole_bound :
   rw [Metric.mem_ball, Real.dist_eq, abs_of_pos (by linarith : (0 : ℝ) < σ - 1)]
   linarith
 
+/-- Geometric input for the Cauchy estimate: on the closed disk of radius `1/2` about `w = u+iγ`
+    (with `3/4 ≤ u ≤ 2`, `2 ≤ γ`), every point `z` has `Re z ≥ 1/4 > 0`, `‖z-1‖ ≥ γ-1/2 > 0`,
+    and `‖z‖ ≤ γ + 3`, so `z ∈ stripDomain` and `zeta_strip_bound` gives `‖ζ(z)‖ ≤ 12·γ`. -/
+theorem zeta_sphere_bound {u γ : ℝ} (hu : 3 / 4 ≤ u) (hu2 : u ≤ 2) (hγ : 2 ≤ γ)
+    {z : ℂ} (hz : z ∈ Metric.closedBall ((u : ℂ) + γ * Complex.I) (1 / 2)) :
+    ‖riemannZeta z‖ ≤ 12 * γ := by
+  rw [Metric.mem_closedBall, dist_eq_norm] at hz
+  set w : ℂ := (u : ℂ) + γ * Complex.I with hw
+  have hwre : w.re = u := by simp [hw]
+  have hwim : w.im = γ := by simp [hw]
+  -- `Re z = Re w + Re (z - w)`, and `|Re (z-w)| ≤ ‖z-w‖ ≤ 1/2`.
+  have hzre_lb : (1 : ℝ) / 4 ≤ z.re := by
+    have h1 : |(z - w).re| ≤ ‖z - w‖ := Complex.abs_re_le_norm _
+    have h2 : (z - w).re = z.re - u := by rw [Complex.sub_re, hwre]
+    rw [h2] at h1
+    have := abs_le.mp (le_trans h1 hz)
+    linarith [this.1]
+  have hzim_lb : γ - 1 / 2 ≤ |z.im| := by
+    have h1 : |(z - w).im| ≤ ‖z - w‖ := Complex.abs_im_le_norm _
+    have h2 : (z - w).im = z.im - γ := by rw [Complex.sub_im, hwim]
+    rw [h2] at h1
+    have := abs_le.mp (le_trans h1 hz)
+    have : γ - 1 / 2 ≤ z.im := by linarith [this.1]
+    exact le_trans this (le_abs_self _)
+  have hzrepos : (0 : ℝ) < z.re := by linarith
+  have hzne1 : z ≠ 1 := by
+    intro h; rw [h] at hzim_lb; simp at hzim_lb; linarith
+  have hmem : z ∈ stripDomain := ⟨hzrepos, by simpa using hzne1⟩
+  -- Upper bound on `‖z‖` and lower bounds on `‖z-1‖`, `Re z`, then feed `zeta_strip_bound`.
+  have hznorm : ‖z‖ ≤ γ + 3 := by
+    have hw_norm : ‖w‖ ≤ u + γ := by
+      calc ‖w‖ ≤ ‖(u : ℂ)‖ + ‖γ * Complex.I‖ := by simpa [hw] using norm_add_le _ _
+        _ = |u| + |γ| := by rw [Complex.norm_real]; simp [Complex.norm_mul]
+        _ = u + γ := by rw [abs_of_nonneg (by linarith), abs_of_nonneg (by linarith)]
+    calc ‖z‖ ≤ ‖w‖ + ‖z - w‖ := by simpa using norm_le_norm_add_norm_sub' z w
+      _ ≤ (u + γ) + 1 / 2 := by linarith
+      _ ≤ γ + 3 := by linarith
+  have hz1_lb : γ - 1 / 2 ≤ ‖z - 1‖ := by
+    calc γ - 1 / 2 ≤ |z.im| := hzim_lb
+      _ = |(z - 1).im| := by rw [Complex.sub_im]; simp
+      _ ≤ ‖z - 1‖ := Complex.abs_im_le_norm _
+  have hsb := zeta_strip_bound hmem
+  -- `‖ζ(z)‖ ≤ ‖z‖/‖z-1‖ + ‖z‖/Re z ≤ 4 + (4γ+12) ≤ 12γ` (each division bounded via `div_le_iff₀`).
+  have hd1 : (0 : ℝ) < ‖z - 1‖ := by linarith
+  have hb_zterm : ‖z‖ / ‖z - 1‖ ≤ 4 := by
+    rw [div_le_iff₀ hd1]; nlinarith [hznorm, hz1_lb, hγ]
+  have hb_reterm : ‖z‖ / z.re ≤ 4 * γ + 12 := by
+    rw [div_le_iff₀ hzrepos]; nlinarith [hznorm, hzre_lb, hγ]
+  calc ‖riemannZeta z‖ ≤ ‖z‖ / ‖z - 1‖ + ‖z‖ / z.re := hsb
+    _ ≤ 4 + (4 * γ + 12) := by linarith [hb_zterm, hb_reterm]
+    _ ≤ 12 * γ := by linarith
+
 end ZeroFreeBridge
