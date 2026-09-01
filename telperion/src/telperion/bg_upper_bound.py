@@ -73,7 +73,7 @@ class UpperBoundReduction:
                           GATED, MixedHubKKTCertificate),
             ReductionStep("2b-hi", "envelope tail, d_c >= 7: V(c) < V(cherry) via ceiling ell<=0",
                           GATED, HighDegreeTailCertificate),
-            ReductionStep("2b-lo", "envelope tail, d_c <= 6 non-broom: ell(c) < ell(cherry) - lambda(k)/(6(k+1))",
+            ReductionStep("2b-lo", "envelope tail, d_c <= 6 non-broom: ell(c) < ell(cherry) + (d_c-3)/(d_c(4k+3))",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),

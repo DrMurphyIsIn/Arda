@@ -22,7 +22,7 @@ Brualdi–Goldwasser asymptotic maximum (extremal family: the star of `B(5)`-bro
 | **2a** | `mixed <= B(k)`, `k >= 16`: `slack_g(k) <= F*` | **GATED** `TieSlackCertificate` |
 | **2b-brooms** | `mixed <= B(k)`, `k <= 15`: per-child `V(B(j)) < V(cherry)`, `B(2..8)` | **GATED** `MixedHubKKTCertificate` |
 | **2b-hi** | envelope tail, `d_c >= 7`: `V(c) < V(cherry)` via ceiling `ell <= 0` | **GATED** `HighDegreeTailCertificate` |
-| **2b-lo** | envelope tail, `d_c <= 6` non-broom: `ell(c) < ell(cherry) − λ(k)/(6(k+1))` | **HYPOTHESIS (b)** |
+| **2b-lo** | envelope tail, `d_c <= 6` non-broom: `ell(c) < ell(cherry) + (d_c−3)/(d_c(4k+3))` (degree-dependent) | **HYPOTHESIS (b)** |
 | **3** | broom optimum: `ell(B(k)) <= 0`, `= 0` iff `k=5` (the `23`-adic tie) | **GATED** `BroomOptimumCertificate` |
 
 Step **2** proves the mixed-hub bound: for `k <= 15` by the log-concavity tangent + per-child KKT
@@ -32,13 +32,15 @@ the branch ceiling to the asymptotic bound.
 
 ## The single open input
 
-**HYPOTHESIS (b):** every small-degree (`d_c <= 6`) non-broom branch has `ell(c) < ell(cherry) − λ(k)/(6(k+1))`.
-This is the *only* non-gated, non-finite, non-`O(1)` step. Reduced from "all branches" by the three-case
-envelope split; its failure mode (a large low-root-degree near-extremal branch with `ell ≈ 0`) was **tested and
-refuted** — such branches are diluted by their low-degree root (`ell ≈ −0.27`), see `branch_ell_by_vertex` (the
-cavity deficit view). A rigorous (b) reduces to a per-vertex deficit lower bound for the bounded-root-degree
-family. Verified over all branches `<= size 14`, generalized brooms (to size 66), star-of-brooms rooted at
-low-degree vertices (to size 101).
+**HYPOTHESIS (b):** every small-degree (`d_c <= 6`) non-broom branch has
+`ell(c) < ell(cherry) + (d_c−3)/(d_c(4k+3))` (the degree-dependent refined ceiling; higher `d_c` → higher
+threshold → nearer the plain ceiling, so the binding cases are `d=2,3`). This is the *only* non-gated,
+non-finite, non-`O(1)` step. Reduced from "all branches" by the three-case envelope split; its failure mode (a
+large low-root-degree near-extremal branch with `ell ≈ 0`) was **tested and refuted** — such branches are diluted
+by their low-degree root (`ell ≈ −0.27`), see `branch_ell_by_vertex` (the cavity deficit view). A rigorous (b)
+reduces to a per-vertex deficit lower bound for the bounded-root-degree family. Verified over all branches
+`<= size 16` at every `k in [2,15]` (zero `open` non-brooms), generalized brooms (to size 66), star-of-brooms
+rooted at low-degree vertices (to size 101).
 
 ## Status
 

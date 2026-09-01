@@ -276,8 +276,8 @@ def test_envelope_tail_case_split_closes():
         else:                                                   # 'open' => must be a broom (gated), not residual
             assert round(ell, 6) in broom_ell, f"non-broom in OPEN case: d={d}, ell={ell}"
 
-    # (i) all branches up to size 14
-    for N in range(2, 15):
+    # (i) all branches up to size 16 (>= the size-16 near-broom that exposed the single-threshold bug)
+    for N in range(2, 17):
         for T in nx.nonisomorphic_trees(N):
             idx = {v: i for i, v in enumerate(T.nodes())}; ee = [(idx[a], idx[b]) for a, b in T.edges()]
             for r in T.nodes():
@@ -287,8 +287,33 @@ def test_envelope_tail_case_split_closes():
         N, ee = spider_edges(kc, 5)
         for r in range(N):
             _check(*_bd(N, ee, r))
-    # (iii) the refined-ceiling threshold is below V(cherry)-region and non-broom small-degree stays under it
-    assert small_degree_threshold(k) < _ell_of(CHERRY)
+    # (iii) the degree-dependent threshold: d=3 == ell(cherry), d>=4 above it, d=2 below it
+    assert abs(small_degree_threshold(k, 3) - _ell_of(CHERRY)) < 1e-12
+    assert small_degree_threshold(k, 2) < _ell_of(CHERRY) < small_degree_threshold(k, 6)
+
+
+def test_degree_dependent_threshold_regression():
+    """Regression for the 11th caught overclaim: the near-broom `4 cherries + B(3)` (d=6, size 16, ell=-0.0164)
+    has V(c) < V(cherry) at every k, and is correctly classified 'threshold' (covered) by the DEGREE-DEPENDENT
+    threshold at every k -- whereas the old single (d=2) threshold mis-classified it 'open' at small k."""
+    import math
+    from fractions import Fraction as Fr
+    from telperion.tie_regime import (mixed_lambda, CHERRY, child_value, broom_child, _ell_of,
+                                      envelope_tail_case, small_degree_threshold)
+    # build the child (4 cherries + 1 B(3)) as a degree-6 branch, exact
+    A = Fr(1); s = 0.0
+    kids = [CHERRY] * 4 + [broom_child(3)]
+    for c in kids:
+        s += _ell_of(c); A += Fr(c["h"], 1) / (6 * c["d"])          # hub degree d=6 (5 children + up-edge)
+    ell = s + (math.log(A.numerator) - math.log(A.denominator)) - __import__(
+        "telperion.tie_regime", fromlist=["F_STAR"]).F_STAR
+    h = float(1 / A); d = 6
+    assert abs(ell - (-0.0164)) < 5e-4
+    for k in range(2, 16):
+        V = ell + float(mixed_lambda(k)) * h / ((k + 1) * d)
+        assert V < child_value(CHERRY, k)                            # actual envelope holds
+        assert ell < small_degree_threshold(k, d)                    # covered by d-dependent threshold
+        assert envelope_tail_case(d, ell, k) == "threshold"          # correctly classified (not 'open')
 
 
 def test_slack_bound_proof_structure():

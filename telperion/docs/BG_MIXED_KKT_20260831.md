@@ -80,14 +80,25 @@ The per-child envelope `V(c) <= V(cherry)` splits by root branch-degree `d_c` in
    frozen log-enclosures; margin `≈0.0014` at `k=15`). Uses **only** `ell(c) <= 0` and `h_c <= 1`.
 2. **brooms `B(2..8)` (degrees `3..9`) — GATED (`MixedHubKKTCertificate` / `bg_mixed_kkt`).** `V(B(j)) < V(cherry)`
    directly.
-3. **`d_c <= 6`, non-broom — reduces (pure algebra) to a refined ceiling.** If
-   `ell(c) < small_degree_threshold(k) := ell(cherry) - lambda(k)/(6(k+1))`, then (using `h_c <= 1`, `d_c >= 2`)
+3. **`d_c <= 6`, non-broom — reduces (pure algebra) to a *degree-dependent* refined ceiling.** Using
+   `x_c <= 1/((k+1)d_c)` (`h_c <= 1`) and `lambda(k)/(k+1) = 3/(4k+3)`, if
+   `ell(c) < small_degree_threshold(k, d_c) := ell(cherry) + (d_c-3)/(d_c(4k+3))` then
    ```
-   V(c) <= ell(c) + lambda(k)/(2(k+1)) < [ell(cherry) - lambda(k)/(6(k+1))] + lambda(k)/(2(k+1))
-         = ell(cherry) + lambda(k)/(3(k+1)) = V(cherry).
+   V(c) <= ell(c) + lambda(k)/((k+1)d_c) < [ell(cherry) + (d_c-3)/(d_c(4k+3))] + 3/((4k+3)d_c)
+         = ell(cherry) + 1/(4k+3) = ell(cherry) + lambda(k)/(3(k+1)) = V(cherry).
    ```
-   So case 3 needs no numeric gate — just the **refined-ceiling structural fact (b)**: every small-degree
-   (`d_c <= 6`) non-broom branch has `ell(c) < small_degree_threshold(k)`.
+   Higher `d_c` → smaller `x_c` → **higher** threshold (nearer the plain ceiling): `d=3` gives exactly
+   `ell(cherry)`, `d>=4` gives above it, only `d=2` gives below (`ell(cherry) - 1/(2(4k+3))`). So case 3 needs no
+   numeric gate — just the **degree-dependent refined-ceiling fact (b)**: every small-degree (`d_c <= 6`)
+   non-broom branch has `ell(c) < small_degree_threshold(k, d_c)`.
+
+   > **Correction (11th caught overclaim).** An earlier draft used a *single* threshold
+   > `ell(cherry) - lambda(k)/(6(k+1))` (the `d=2` case) for all degrees — too strict at small `k` for
+   > higher-degree children. The size-16 near-broom `4 cherries + B(3)` (`d=6`, `ell=-0.0164`) was mis-classified
+   > `open` at `k=2`, although its *actual* `V` is `< V(cherry)` by `+0.018` (only the sufficient-condition
+   > bookkeeping failed; the size-14 exhaustive check never reached it). The degree-dependent threshold from
+   > `x_c <= 1/((k+1)d_c)` is the fix; with it **every** `d_c <= 6` non-broom is covered by case 3 directly —
+   > verified over all branches `<= size 16` at every `k in [2,15]` (zero `open` non-brooms).
 
 **Why (b) is finitely closable, not free-energy-limited.** The near-`V(cherry)` branches are *exactly* the
 brooms (finite, gated) plus high-degree hubs (gated). A large structure rooted at a *low-degree* vertex is

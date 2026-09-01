@@ -151,13 +151,17 @@ atoms). The per-child envelope tail `V(c) ≤ V(cherry)` over ALL branches is **
 the free-energy convergence rate): the near-`V(cherry)` branches are exactly the brooms. Its **high-degree half
 (`d_c ≥ 7`) is gated** (`bg_hi_degree_tail`: `V(c) ≤ lambda/(7(k+1)) < V(cherry)` from the ceiling `ell ≤ 0`
 alone). The envelope tail closes into a **three-case split** (`envelope_tail_case`): (1) `d_c ≥ 7` gated; (2)
-brooms `B(2..8)` gated; (3) `d_c ≤ 6` non-broom reduces by PURE ALGEBRA to the refined ceiling
-`ell(c) < ell_cherry − λ/(6(k+1))` (since then `V(c) ≤ ell(c) + λ/(2(k+1)) < V(cherry)`). **Open residual:** the
-single refined-ceiling fact (b) — every `d_c ≤ 6` non-broom has `ell` below that threshold — verified over all
-branches ≤ size 14, generalized brooms (hub of ≤5 `B(j)`-arms, to size 66), star-of-brooms rooted at low-degree
-vertices (to size 101); all `≥ 0.06` below threshold, and the make-or-break case (a large low-root-degree
-near-extremal branch with `ell ≈ 0` + non-tiny `x_c`) was tested and REFUTED (such branches are lopsided,
-`ell ≈ −0.10`). Needs only a finite-size decay bound for (b) + the Lean assembly. `conjecture1_proved = False`.
+brooms `B(2..8)` gated; (3) `d_c ≤ 6` non-broom reduces by PURE ALGEBRA to the DEGREE-DEPENDENT refined ceiling
+`ell(c) < ell_cherry + (d_c−3)/(d_c(4k+3))` (from `x_c ≤ 1/((k+1)d_c)`; higher `d_c` → higher threshold, so the
+binding cases are `d=2,3`). **11th caught overclaim:** the earlier SINGLE threshold `ell_cherry − λ/(6(k+1))` (the
+`d=2` case for all degrees) was too strict at small `k` — a size-16 near-broom (`4 cherries + B(3)`, `d=6`) was
+mis-classified `open` at `k=2` though its actual `V < V(cherry)` by `+0.018`; the size-14 check missed it. Fixed
+degree-dependent; **every `d_c ≤ 6` non-broom now covered directly**, re-verified over all branches ≤ size 16 at
+every `k∈[2,15]` (zero open non-brooms) + generalized brooms (to size 66) + peripheral-rooted stars (to size
+101). The actual envelope `V<V(cherry)` re-stress-tested over all non-cherry branches ≤ size 15 (2.6M checks,
+worst `−0.00167` at gated `B(4)`). **Open residual:** the size-decay tail of (b) + the Lean assembly. The
+composed reduction is `bg_upper_bound.UpperBoundReduction` (4 gated pass, 1 open hypothesis). `conjecture1_proved
+= False`.
 
 **Discipline note:** 10 overclaims were caught by exhaustive/formal scrutiny this program (product bound, tangent
 route, mixed≤B(k) k≥20, …). Random-sample tests hid the mixed≤B(k) failure; the formal-proof attempt exposed it.
