@@ -233,4 +233,37 @@ theorem zeta_hcauchy {β σ γ : ℝ} (hβ : 3 / 4 ≤ β) (hσ : σ ≤ 2) (hβ
   rw [hzero, sub_zero, Real.norm_eq_abs, abs_of_nonneg (by linarith : (0 : ℝ) ≤ σ - β)] at hmv
   linarith [hmv]
 
+/-- The `hstrip` input at the `2γ` point: `‖ζ((2-β)+2iγ)‖ ≤ 5·γ` for `0 ≤ β ≤ 1`, `2 ≤ γ`.
+    `Re s = 2-β ≥ 1 > 0`, `‖s-1‖ ≥ 2γ`, `‖s‖ ≤ 2γ+2`, so `zeta_strip_bound` gives the bound. -/
+theorem zeta_strip_2t_bound {β γ : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) (hγ : 2 ≤ γ) :
+    ‖riemannZeta ((2 - β : ℝ) + 2 * γ * Complex.I)‖ ≤ 5 * γ := by
+  set s : ℂ := ((2 - β : ℝ) : ℂ) + 2 * γ * Complex.I with hs
+  have hsre : s.re = 2 - β := by simp [hs]
+  have hsim : s.im = 2 * γ := by simp [hs]
+  have hsre_pos : (0 : ℝ) < s.re := by rw [hsre]; linarith
+  have hsne1 : s ≠ 1 := by
+    intro h; have := congrArg Complex.im h; rw [hsim] at this; simp at this; linarith
+  have hmem : s ∈ stripDomain := ⟨hsre_pos, by simpa using hsne1⟩
+  have hsnorm : ‖s‖ ≤ 2 * γ + 2 := by
+    have h1 : ‖s‖ ≤ ‖((2 - β : ℝ) : ℂ)‖ + ‖2 * γ * Complex.I‖ := by
+      simpa [hs] using norm_add_le _ _
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith : (0 : ℝ) ≤ 2 - β)] at h1
+    have h2 : ‖(2 : ℂ) * γ * Complex.I‖ = 2 * γ := by
+      rw [Complex.norm_mul, Complex.norm_mul, Complex.norm_I, mul_one, Complex.norm_ofNat,
+        Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith : (0 : ℝ) ≤ γ)]
+    rw [h2] at h1; linarith
+  have hs1_lb : 2 * γ ≤ ‖s - 1‖ := by
+    calc 2 * γ = |s.im| := by rw [hsim, abs_of_nonneg (by linarith)]
+      _ = |(s - 1).im| := by rw [Complex.sub_im]; simp
+      _ ≤ ‖s - 1‖ := Complex.abs_im_le_norm _
+  have hsb := zeta_strip_bound hmem
+  have hd1 : (0 : ℝ) < ‖s - 1‖ := by linarith
+  have hb1 : ‖s‖ / ‖s - 1‖ ≤ 2 := by
+    rw [div_le_iff₀ hd1]; nlinarith [hsnorm, hs1_lb, hγ]
+  have hb2 : ‖s‖ / s.re ≤ 2 * γ + 2 := by
+    rw [div_le_iff₀ hsre_pos, hsre]; nlinarith [hsnorm, hβ1, hβ0, hγ]
+  calc ‖riemannZeta s‖ ≤ ‖s‖ / ‖s - 1‖ + ‖s‖ / s.re := hsb
+    _ ≤ 2 + (2 * γ + 2) := by linarith [hb1, hb2]
+    _ ≤ 5 * γ := by linarith
+
 end ZeroFreeBridge
