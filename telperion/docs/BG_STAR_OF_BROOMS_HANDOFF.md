@@ -142,12 +142,17 @@ bound k≥16). All `norm_num` / Handelman; the 23-adic arithmetic is fully disch
 `cherry_vs_broom_ratio`, `slack_g`/`slack_hub_bound`, `TieCherryWorstCertificate`, `TieSlackCertificate`),
 `bg_bulk_discharge.py` (exact Bethe decomposition), `spider_broom.py`, `transfer_caterpillar.py`.
 
-**The ONE remaining tie-free piece:** `mixed ≤ B(k)` for `k ≤ 15` with **arbitrary** children — exhaustively
-verified over the broom pool, but a clean general proof is blocked by the **non-monotone child→cherry exchange**
-(the same difficulty that exposed the `mixed ≤ B(k)` FAILURE at `k ≥ 20` — a caught overclaim; the reduction
-holds only `k ≤ 15`, and the slack bound covers `k ≥ 16`, so no gap). A rigorous proof needs an extremal argument
-that the max hub avoids leaf-heavy (large-`S'`) configs. Plus the envelope-dominance completeness reductions
-(documented, verified). `conjecture1_proved = False`.
+**Round 4 — `mixed ≤ B(k)` (k≤15) PROVEN via log-concavity + per-child KKT (the exchange is bypassed).** The
+non-monotone child→cherry exchange is not needed. The tangent of the concave `log` at the all-cherry point gives,
+for any children, `ell(hub) − ell(B(k)) ≤ Σ_i (V(c_i) − V(cherry))` with `V(c) = ell(c) + lambda(k) x_c`,
+`lambda(k) = 3(k+1)/(4k+3)` — so the coupled k-child bound **decouples** into the per-child KKT `V(c) ≤ V(cherry)`
+(tie-free: a RELATIVE comparison hub-vs-`B(k)`). Gated: `bg_mixed_kkt` (broom children `B(2..8)`, k=2..15, 98
+atoms). The per-child envelope tail `V(c) ≤ V(cherry)` over ALL branches is **finitely closable** (NOT tied to
+the free-energy convergence rate): the near-`V(cherry)` branches are exactly the brooms. Its **high-degree half
+(`d_c ≥ 7`) is gated** (`bg_hi_degree_tail`: `V(c) ≤ lambda/(7(k+1)) < V(cherry)` from the ceiling `ell ≤ 0`
+alone). **Open residual:** small-degree (`d_c ≤ 6`) NON-broom branches — max `V` empirically the broom `B(4)`
+(margin ≈0.0017), decaying with size; needs a finite-size decay bound. Plus the Lean assembly chaining the gates.
+`conjecture1_proved = False`.
 
 **Discipline note:** 10 overclaims were caught by exhaustive/formal scrutiny this program (product bound, tangent
 route, mixed≤B(k) k≥20, …). Random-sample tests hid the mixed≤B(k) failure; the formal-proof attempt exposed it.

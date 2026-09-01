@@ -403,3 +403,8 @@ group = "quick"    # route-(b) upper bound: slack bound slack_g(k)<=F* for k>=16
 name = "bg_mixed_kkt"
 script = "examples/bg_mixed_kkt/generate.py"
 group = "quick"    # route-(b) upper bound: mixed<=B(k) k<=15 via concavity+per-child KKT V(c)<V(cherry); ~0.1 s
+
+[[check]]
+name = "bg_hi_degree_tail"
+script = "examples/bg_hi_degree_tail/generate.py"
+group = "quick"    # route-(b) upper bound: high-degree (d>=7) half of envelope tail V(c)<V(cherry) via ell<=0; ~0.1 s

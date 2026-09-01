@@ -190,6 +190,49 @@ def test_mixed_hub_kkt_certificate():
     assert mod.count("by norm_num") == len(cert.atoms())
 
 
+def test_high_degree_tail_certificate():
+    """HighDegreeTailCertificate: for d_c >= 7 the per-child envelope V(c) < V(cherry) holds using ONLY the
+    ceiling ell(c)<=0 and h_c<=1 -- reduces to -44/(7(4k+3)) < 11 ell(cherry), gated via log-enclosures. This
+    shrinks the open envelope tail to small-degree (d_c<=6) branches. Also verifies the bound empirically."""
+    import math
+    import networkx as nx
+    from fractions import Fraction as Fr
+    from telperion.tie_regime import HighDegreeTailCertificate, F_STAR, mixed_lambda, CHERRY, child_value
+    from telperion.bg_bulk_discharge import _adj
+
+    cert = HighDegreeTailCertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 14                                          # k=2..15
+    mod = cert.lean_module()
+    assert "namespace BGHighDegreeTail" in mod and mod.count("by norm_num") == 14
+
+    # empirical: every branch (size <= 12) with root branch-degree d_c >= 7 has V(c) < V(cherry) at the worst k
+    def _bd(N, ee, r):
+        adj = _adj(N, ee)
+        def um(u, p):
+            kids = [w for w in adj[u] if w != p]; d = len(kids) + 1
+            ch = [(w,) + um(w, u) for w in kids]; U = Fr(1); sz = 1
+            for w, Uw, Mw, tw, sw in ch: U *= tw; sz += sw
+            M = Fr(0)
+            for i, (w, Uw, Mw, tw, sw) in enumerate(ch):
+                dw = len([q for q in adj[w] if q != u]) + 1; t = Fr(1, d * dw) * Uw
+                for j2, (w2, Uw2, Mw2, tw2, sw2) in enumerate(ch):
+                    if j2 != i: t *= tw2
+                M += t
+            return U, M, U + M, sz
+        U, M, tot, sz = um(r, -1); d = len(adj[r]) + 1
+        return d, float(U / tot), (math.log(tot.numerator) - math.log(tot.denominator)) - sz * F_STAR
+
+    k = 15; lam = float(mixed_lambda(k)); vch = child_value(CHERRY, k)
+    for N in range(8, 13):
+        for T in nx.nonisomorphic_trees(N):
+            idx = {v: i for i, v in enumerate(T.nodes())}; ee = [(idx[a], idx[b]) for a, b in T.edges()]
+            for r in T.nodes():
+                d, h, ell = _bd(N, ee, idx[r])
+                if d >= 7:
+                    assert ell + lam * h / ((k + 1) * d) < vch                # V(c) < V(cherry)
+
+
 def test_slack_bound_proof_structure():
     """Rigorous proof of slack_g(k) <= F* for k>=16: (1) slack_g monotone-decreasing so <= slack_g(16);
     (2) slack_g(16) < F*; (3) per-child, every non-B(5) envelope child phi_c is decreasing for k>=16
