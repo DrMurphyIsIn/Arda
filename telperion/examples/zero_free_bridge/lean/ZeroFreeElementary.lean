@@ -266,4 +266,65 @@ theorem zeta_strip_2t_bound {β γ : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) (h
     _ ≤ 2 + (2 * γ + 2) := by linarith [hb1, hb2]
     _ ≤ 5 * γ := by linarith
 
+/-- THE ELEMENTARY UNCONDITIONAL ZERO-FREE REGION (polynomial rate, Hadamard-free).
+    There is `c > 0` such that every nontrivial-strip zero `β+iγ` of `riemannZeta` with `2 ≤ γ`
+    satisfies `β ≤ 1 - c/γ⁵` -- i.e. `Re s > 1 - c/|t|⁵` is zero-free.  Assembled from the four
+    kernel-verified elementary bounds (`zeta_norm_product_ge_one`, `zeta_pole_bound`,
+    `zeta_strip_2t_bound`, `zeta_hcauchy`) via `zeta_zero_free_poly_of`, with the far-from-line case
+    handled by Mathlib's `riemannZeta_ne_zero_of_one_le_re`.  Weaker than de la Vallee Poussin's
+    `1 - c/log|t|` (the crude `|ζ| ≤ C|t|` growth costs the rate), but UNCONDITIONAL and sidestepping
+    the Hadamard factorization entirely.  conjecture1_proved = False. -/
+theorem riemannZeta_zero_free_poly :
+    ∃ c > (0 : ℝ), ∀ β γ : ℝ,
+      riemannZeta ((β : ℂ) + γ * Complex.I) = 0 → 2 ≤ γ → β ≤ 1 - c / γ ^ 5 := by
+  obtain ⟨δ₀, hδ₀, hpoleδ⟩ := zeta_pole_bound
+  set δ₁ : ℝ := min δ₀ (1 / 4) with hδ₁
+  have hδ₁0 : 0 < δ₁ := lt_min hδ₀ (by norm_num)
+  refine ⟨min (32 * δ₁) (1 / 212336640), by positivity, ?_⟩
+  set c := min (32 * δ₁) (1 / 212336640) with hc
+  have hc_le1 : c ≤ 32 * δ₁ := min_le_left _ _
+  have hc_le2 : c ≤ 1 / 212336640 := min_le_right _ _
+  intro β γ hzero hγ
+  have hγ5 : 32 ≤ γ ^ 5 := by nlinarith [hγ]
+  -- `β < 1`: else `ζ(β+iγ) ≠ 0` (Re ≥ 1).
+  have hβ1 : β < 1 := by
+    by_contra h; push_neg at h
+    have hre : (1 : ℝ) ≤ ((β : ℂ) + γ * Complex.I).re := by
+      simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
+        Complex.I_re, Complex.I_im, mul_zero, mul_one, sub_zero, add_zero, zero_mul]; linarith
+    exact riemannZeta_ne_zero_of_one_le_re hre hzero
+  rcases le_or_lt β (1 - δ₁) with hcase | hcase
+  · -- far case: `1 - β ≥ δ₁ ≥ c/γ⁵`.
+    have hgap : c / γ ^ 5 ≤ δ₁ := by
+      rw [div_le_iff₀ (by positivity)]; nlinarith [hc_le1, hγ5, hδ₁0]
+    linarith
+  · -- near case: run the machinery at `σ = 2 - β`.
+    have hβ34 : (3 : ℝ) / 4 ≤ β := by have : δ₁ ≤ 1 / 4 := min_le_right _ _; linarith
+    have hσδ₀ : 2 - β < 1 + δ₀ := by have : δ₁ ≤ δ₀ := min_le_left _ _; linarith
+    have hprod := zeta_norm_product_ge_one (show (0 : ℝ) < 1 - β by linarith) γ
+    have he0 : (1 : ℂ) + ((1 - β : ℝ) : ℂ) = ((2 - β : ℝ) : ℂ) := by push_cast; ring
+    have he1 : (1 : ℂ) + ((1 - β : ℝ) : ℂ) + Complex.I * γ
+        = ((2 - β : ℝ) : ℂ) + γ * Complex.I := by push_cast; ring
+    have he2 : (1 : ℂ) + ((1 - β : ℝ) : ℂ) + 2 * Complex.I * γ
+        = ((2 - β : ℝ) : ℂ) + 2 * γ * Complex.I := by push_cast; ring
+    rw [he0, he1, he2] at hprod
+    have hpole : ‖riemannZeta ((2 - β : ℝ) : ℂ)‖ ≤ 2 / (1 - β) := by
+      have h := hpoleδ (2 - β) (by linarith) hσδ₀
+      rw [le_div_iff₀ (by linarith : (0 : ℝ) < 1 - β)]
+      rw [show (2 - β) - 1 = 1 - β by ring] at h; linarith
+    have hstrip : ‖riemannZeta (((2 - β : ℝ) : ℂ) + 2 * γ * Complex.I)‖ ≤ 5 * γ :=
+      zeta_strip_2t_bound (by linarith) (by linarith) hγ
+    have hcauchy : ‖riemannZeta (((2 - β : ℝ) : ℂ) + γ * Complex.I)‖ ≤ 2 * (1 - β) * 24 * γ := by
+      have h := zeta_hcauchy hβ34 (by linarith : 2 - β ≤ 2) (by linarith : β ≤ 2 - β) hγ hzero
+      rw [show 24 * γ * ((2 - β) - β) = 2 * (1 - β) * 24 * γ by ring] at h; exact h
+    have hgap := zeta_zero_free_poly_of hβ1 (by linarith : (1 : ℝ) ≤ γ)
+      (by norm_num : (0 : ℝ) < 2) (by norm_num : (0 : ℝ) < 5) (by norm_num : (0 : ℝ) < 24)
+      (norm_nonneg _) (norm_nonneg _) (norm_nonneg _) hprod hpole hstrip hcauchy
+    rw [show (16 : ℝ) * 2 ^ 3 * 5 * 24 ^ 4 * γ ^ 5 = 212336640 * γ ^ 5 by ring] at hgap
+    have hle : c / γ ^ 5 ≤ 1 - β := by
+      rw [div_le_iff₀ (by positivity : (0 : ℝ) < γ ^ 5)] at hgap
+      rw [div_le_iff₀ (by positivity : (0 : ℝ) < γ ^ 5)]
+      nlinarith [hgap, hc_le2, hγ5]
+    linarith
+
 end ZeroFreeBridge
