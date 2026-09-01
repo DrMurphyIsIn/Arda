@@ -65,7 +65,12 @@ theorem zeta_norm_product_ge_one {x : ℝ} (hx : 0 < x) (y : ℝ) :
   have h := DirichletCharacter.norm_LFunction_product_ge_one
     (χ := (1 : DirichletCharacter ℂ 1)) hx y
   rw [ge_iff_le] at h
-  simp only [LFunctionTrivChar, LFunction_modOne_eq, one_pow] at h
-  rwa [norm_mul, norm_mul, norm_pow, norm_pow] at h
+  -- `LFunctionTrivChar 1 = riemannZeta` (the mod-1 trivial character) and every mod-1
+  -- character's L-function is `riemannZeta` (`LFunction_modOne_eq`, a `@[simp]` lemma).
+  have htriv : DirichletCharacter.LFunctionTrivChar 1 = riemannZeta :=
+    DirichletCharacter.LFunction_modOne_eq
+  rw [htriv] at h
+  simp only [DirichletCharacter.LFunction_modOne_eq, norm_mul, norm_pow] at h
+  exact h
 
 end ZeroFreeBridge
