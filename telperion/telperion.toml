@@ -408,3 +408,8 @@ group = "quick"    # route-(b) upper bound: mixed<=B(k) k<=15 via concavity+per-
 name = "bg_hi_degree_tail"
 script = "examples/bg_hi_degree_tail/generate.py"
 group = "quick"    # route-(b) upper bound: high-degree (d>=7) half of envelope tail V(c)<V(cherry) via ell<=0; ~0.1 s
+
+[[check]]
+name = "bg_smooth_nogo"
+script = "examples/bg_smooth_nogo/generate.py"
+group = "quick"    # integrality-gap no-go: continuous broom relaxation f(24/5)>F* => no smooth cert can prove BG; ~0.1 s
