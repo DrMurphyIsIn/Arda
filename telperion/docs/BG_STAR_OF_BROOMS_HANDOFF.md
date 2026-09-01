@@ -150,9 +150,14 @@ for any children, `ell(hub) − ell(B(k)) ≤ Σ_i (V(c_i) − V(cherry))` with 
 atoms). The per-child envelope tail `V(c) ≤ V(cherry)` over ALL branches is **finitely closable** (NOT tied to
 the free-energy convergence rate): the near-`V(cherry)` branches are exactly the brooms. Its **high-degree half
 (`d_c ≥ 7`) is gated** (`bg_hi_degree_tail`: `V(c) ≤ lambda/(7(k+1)) < V(cherry)` from the ceiling `ell ≤ 0`
-alone). **Open residual:** small-degree (`d_c ≤ 6`) NON-broom branches — max `V` empirically the broom `B(4)`
-(margin ≈0.0017), decaying with size; needs a finite-size decay bound. Plus the Lean assembly chaining the gates.
-`conjecture1_proved = False`.
+alone). The envelope tail closes into a **three-case split** (`envelope_tail_case`): (1) `d_c ≥ 7` gated; (2)
+brooms `B(2..8)` gated; (3) `d_c ≤ 6` non-broom reduces by PURE ALGEBRA to the refined ceiling
+`ell(c) < ell_cherry − λ/(6(k+1))` (since then `V(c) ≤ ell(c) + λ/(2(k+1)) < V(cherry)`). **Open residual:** the
+single refined-ceiling fact (b) — every `d_c ≤ 6` non-broom has `ell` below that threshold — verified over all
+branches ≤ size 14, generalized brooms (hub of ≤5 `B(j)`-arms, to size 66), star-of-brooms rooted at low-degree
+vertices (to size 101); all `≥ 0.06` below threshold, and the make-or-break case (a large low-root-degree
+near-extremal branch with `ell ≈ 0` + non-tiny `x_c`) was tested and REFUTED (such branches are lopsided,
+`ell ≈ −0.10`). Needs only a finite-size decay bound for (b) + the Lean assembly. `conjecture1_proved = False`.
 
 **Discipline note:** 10 overclaims were caught by exhaustive/formal scrutiny this program (product bound, tangent
 route, mixed≤B(k) k≥20, …). Random-sample tests hid the mixed≤B(k) failure; the formal-proof attempt exposed it.

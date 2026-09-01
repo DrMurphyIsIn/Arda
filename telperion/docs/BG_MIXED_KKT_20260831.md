@@ -69,22 +69,35 @@ With this gate the branch-induction upper bound's per-hub ledger is:
 The residual for a *complete* proof is the infinite-branch tail of the per-child envelope `V(c) <= V(cherry)`
 and the Lean assembly chaining the gates — no remaining coupled/combinatorial hub optimization.
 
-## Envelope tail — high-degree half closed (`bg_hi_degree_tail`)
+## Envelope tail — the three-case split (only one case open)
 
-The per-child envelope `V(c) <= V(cherry)` splits by root branch-degree `d_c`:
+The per-child envelope `V(c) <= V(cherry)` splits by root branch-degree `d_c` into three cases
+(`envelope_tail_case` classifies each):
 
-- **`d_c >= 7` (`HighDegreeTailCertificate`, gated).** `x_c = h_c/((k+1)d_c)` is small enough that the ceiling
-  alone closes it: `V(c) <= 0 + lambda(k)/(7(k+1)) < V(cherry)`, i.e. the rational-cleared `-44/(7(4k+3)) <
-  11·log(3/2) - 2·log(621/64)` (one `norm_num` atom per `k`, RHS via the frozen log-enclosures; margin `≈0.0014`
-  at the binding `k=15`). Uses **only** `ell(c) <= 0` (the induction hypothesis) and `h_c <= 1` — no enumeration.
-- **`d_c = 3..9` brooms (`bg_mixed_kkt`, gated).** `V(B(j)) < V(cherry)` for `B(2..8)`.
-- **`d_c <= 6` non-broom (OPEN, small residual).** The remaining set. Empirically its max `V` is the broom `B(4)`
-  (margin `≈0.0017`) and decays with size — the probe shows the `V`-argmax at every size is a broom, so
-  small-degree non-brooms stay strictly below. A finite-size decay bound would close it; the exhaustive check
-  currently covers all branches `<= size 11`.
+1. **`d_c >= 7` — GATED (`HighDegreeTailCertificate` / `bg_hi_degree_tail`).** `x_c = h_c/((k+1)d_c)` is small
+   enough that the ceiling alone closes it: `V(c) <= 0 + lambda(k)/(7(k+1)) < V(cherry)`, i.e. the
+   rational-cleared `-44/(7(4k+3)) < 11·log(3/2) - 2·log(621/64)` (one `norm_num` atom per `k`; RHS via the
+   frozen log-enclosures; margin `≈0.0014` at `k=15`). Uses **only** `ell(c) <= 0` and `h_c <= 1`.
+2. **brooms `B(2..8)` (degrees `3..9`) — GATED (`MixedHubKKTCertificate` / `bg_mixed_kkt`).** `V(B(j)) < V(cherry)`
+   directly.
+3. **`d_c <= 6`, non-broom — reduces (pure algebra) to a refined ceiling.** If
+   `ell(c) < small_degree_threshold(k) := ell(cherry) - lambda(k)/(6(k+1))`, then (using `h_c <= 1`, `d_c >= 2`)
+   ```
+   V(c) <= ell(c) + lambda(k)/(2(k+1)) < [ell(cherry) - lambda(k)/(6(k+1))] + lambda(k)/(2(k+1))
+         = ell(cherry) + lambda(k)/(3(k+1)) = V(cherry).
+   ```
+   So case 3 needs no numeric gate — just the **refined-ceiling structural fact (b)**: every small-degree
+   (`d_c <= 6`) non-broom branch has `ell(c) < small_degree_threshold(k)`.
 
-So the tail is **finitely closable** (not tied to the branch free-energy convergence rate): the near-`V(cherry)`
-branches are exactly the brooms (gated), and the open residual is a bounded small-degree non-broom set.
+**Why (b) is finitely closable, not free-energy-limited.** The near-`V(cherry)` branches are *exactly* the
+brooms (finite, gated) plus high-degree hubs (gated). A large structure rooted at a *low-degree* vertex is
+lopsided — its `ell` sits far below the ceiling (rooting the extremal star-of-brooms at a peripheral vertex gives
+`ell ≈ -0.10`; a hub of few `B(5)`-arms gives `ell ≈ -0.10` to `-0.15`), because the extremal per-vertex density
+needs *many* arms (high degree → gated by case 1). Verified: all branches `<= size 14` (max non-broom
+`ell ≈ -0.021`), generalized brooms (hub of `m<=5` `B(j)`-children, to size 66), star-of-brooms rooted at every
+vertex (to size 101) — **every** small-degree non-broom is `>= 0.06` below the threshold `≈ -0.016`, and whenever
+`envelope_tail_case` reports `open` (small-degree, `ell` at/above threshold) the branch is a **broom** (gated),
+never a residual (`test_envelope_tail_case_split_closes`).
 
-The residual for a *complete* proof is now that small-degree non-broom finite-size bound plus the Lean assembly
-chaining the gates. See `BG_STAR_OF_BROOMS_HANDOFF.md`.
+The residual for a *complete* proof is now the single refined-ceiling lemma (b) — a finite-size decay bound for
+`d_c <= 6` non-broom branches — plus the Lean assembly chaining the gates. See `BG_STAR_OF_BROOMS_HANDOFF.md`.

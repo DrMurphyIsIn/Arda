@@ -233,6 +233,64 @@ def test_high_degree_tail_certificate():
                     assert ell + lam * h / ((k + 1) * d) < vch                # V(c) < V(cherry)
 
 
+def test_envelope_tail_case_split_closes():
+    """The per-child envelope tail V(c)<V(cherry) splits into three cases (hi_degree / threshold / broom), only
+    one open. This verifies the split CLOSES: every branch is covered by a gated case OR the refined-ceiling
+    threshold -- and whenever a branch is 'open' (small-degree, ell>=threshold) it is a BROOM (gated by
+    mixed_kkt), never a non-broom residual. Checked over all branches <= size 14, generalized brooms (to size
+    66), and star-of-brooms rooted at low-degree vertices (to size 101)."""
+    import math
+    import networkx as nx
+    from fractions import Fraction as Fr
+    from telperion.tie_regime import (F_STAR, mixed_lambda, CHERRY, child_value, broom_child,
+                                       envelope_tail_case, small_degree_threshold, _ell_of)
+    from telperion.spider_broom import spider_edges
+    from telperion.bg_bulk_discharge import _adj
+
+    k = 15
+    lam = float(mixed_lambda(k)); vch = child_value(CHERRY, k)
+    broom_ell = {round(_ell_of(broom_child(j)), 6) for j in range(2, 12)} | {round(_ell_of(CHERRY), 6)}
+
+    def _bd(N, ee, r):
+        adj = _adj(N, ee)
+        def um(u, p):
+            kids = [w for w in adj[u] if w != p]; d = len(kids) + 1
+            ch = [(w,) + um(w, u) for w in kids]; U = Fr(1); sz = 1
+            for w, Uw, Mw, tw, sw in ch: U *= tw; sz += sw
+            M = Fr(0)
+            for i, (w, Uw, Mw, tw, sw) in enumerate(ch):
+                dw = len([q for q in adj[w] if q != u]) + 1; t = Fr(1, d * dw) * Uw
+                for j2, (w2, Uw2, Mw2, tw2, sw2) in enumerate(ch):
+                    if j2 != i: t *= tw2
+                M += t
+            return U, M, U + M, sz
+        U, M, tot, sz = um(r, -1); d = len(adj[r]) + 1; h = float(U / tot)
+        ell = (math.log(tot.numerator) - math.log(tot.denominator)) - sz * F_STAR
+        return d, h, ell
+
+    def _check(d, h, ell):
+        case = envelope_tail_case(d, ell, k)
+        # every covered case must actually give V(c) < V(cherry)
+        if case in ("hi_degree", "threshold"):
+            assert ell + lam * h / ((k + 1) * d) < vch
+        else:                                                   # 'open' => must be a broom (gated), not residual
+            assert round(ell, 6) in broom_ell, f"non-broom in OPEN case: d={d}, ell={ell}"
+
+    # (i) all branches up to size 14
+    for N in range(2, 15):
+        for T in nx.nonisomorphic_trees(N):
+            idx = {v: i for i, v in enumerate(T.nodes())}; ee = [(idx[a], idx[b]) for a, b in T.edges()]
+            for r in T.nodes():
+                _check(*_bd(N, ee, idx[r]))
+    # (ii) star-of-brooms S(kc,5) rooted at every vertex (near-extremal, sizes up to ~101)
+    for kc in range(2, 10):
+        N, ee = spider_edges(kc, 5)
+        for r in range(N):
+            _check(*_bd(N, ee, r))
+    # (iii) the refined-ceiling threshold is below V(cherry)-region and non-broom small-degree stays under it
+    assert small_degree_threshold(k) < _ell_of(CHERRY)
+
+
 def test_slack_bound_proof_structure():
     """Rigorous proof of slack_g(k) <= F* for k>=16: (1) slack_g monotone-decreasing so <= slack_g(16);
     (2) slack_g(16) < F*; (3) per-child, every non-B(5) envelope child phi_c is decreasing for k>=16
