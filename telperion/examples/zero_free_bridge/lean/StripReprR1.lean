@@ -293,22 +293,18 @@ theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N)
       exact (Complex.continuousAt_ofReal_cpow_const t (-s) (Or.inr ht0)).continuousWithinAt
     exact (hc.integrableOn_compact isCompact_Icc).mono_set Set.Ioc_subset_Icc_self
   have hint_frac : IntegrableOn (fractIntegrand s) (Set.Ioc (1 : ℝ) (N : ℝ)) := by
+    have hbound : IntegrableOn (fun t : ℝ => t ^ (-(s.re + 1))) (Set.Ioc (1 : ℝ) (N : ℝ)) :=
+      (integrableOn_Ioi_rpow_of_lt (by linarith : -(s.re + 1) < -1) one_pos).mono_set
+        Set.Ioc_subset_Ioi_self
     have hm : AEStronglyMeasurable (fractIntegrand s) (volume.restrict (Set.Ioc (1 : ℝ) (N : ℝ))) := by
       apply Measurable.aestronglyMeasurable; unfold fractIntegrand; fun_prop
-    have hbdd : IntegrableOn (fun _ : ℝ => (1 : ℝ)) (Set.Ioc (1 : ℝ) (N : ℝ)) :=
-      integrableOn_const.mpr (Or.inr (by simp [Real.volume_Ioc]))
-    refine Integrable.mono' hbdd hm ?_
+    refine Integrable.mono' hbound hm ?_
     refine (ae_restrict_iff' measurableSet_Ioc).mpr (Filter.Eventually.of_forall (fun t ht => ?_))
-    have ht1 : (1 : ℝ) < t := (Set.mem_Ioc.mp ht).1
-    have htpos : (0 : ℝ) < t := by linarith
-    rw [Real.norm_of_nonneg (norm_nonneg _), fractIntegrand, norm_div, Complex.norm_real,
+    have htpos : (0 : ℝ) < t := lt_trans one_pos (Set.mem_Ioc.mp ht).1
+    rw [fractIntegrand, norm_div, Complex.norm_real,
       Real.norm_of_nonneg (Int.fract_nonneg t), Complex.norm_cpow_eq_rpow_re_of_pos htpos,
-      show (s + 1).re = s.re + 1 by simp [Complex.add_re]]
-    rw [div_le_one (Real.rpow_pos_of_pos htpos _)]
-    calc Int.fract t ≤ 1 := (Int.fract_lt_one t).le
-      _ ≤ t ^ (s.re + 1) := by
-          rw [show (1 : ℝ) = t ^ (0 : ℝ) by rw [Real.rpow_zero]]
-          exact Real.rpow_le_rpow_of_exponent_le (by linarith) (by linarith)
+      show (s + 1).re = s.re + 1 by simp [Complex.add_re], Real.rpow_neg htpos.le, div_eq_mul_inv]
+    exact mul_le_of_le_one_left (inv_nonneg.mpr (Real.rpow_nonneg htpos.le _)) (Int.fract_lt_one t).le
   -- (4) integrand rewrite (⌊t⌋ = t - {t}) and split on `Ioc 1 N`.
   have hInt : (∫ t in Set.Ioc (1 : ℝ) (N : ℝ), deriv (fPow s) t * ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, cOne k)
       = -s * (∫ t in Set.Ioc (1 : ℝ) (N : ℝ), ((t : ℝ) : ℂ) ^ (-s))
