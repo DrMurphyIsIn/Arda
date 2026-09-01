@@ -285,7 +285,9 @@ theorem riemannZeta_zero_free_poly :
   have hc_le1 : c ≤ 32 * δ₁ := min_le_left _ _
   have hc_le2 : c ≤ 1 / 212336640 := min_le_right _ _
   intro β γ hzero hγ
-  have hγ5 : 32 ≤ γ ^ 5 := by nlinarith [hγ]
+  have hγ5 : 32 ≤ γ ^ 5 := by
+    have h := pow_le_pow_left (by norm_num : (0 : ℝ) ≤ 2) hγ 5
+    norm_num at h; exact h
   -- `β < 1`: else `ζ(β+iγ) ≠ 0` (Re ≥ 1).
   have hβ1 : β < 1 := by
     by_contra h; push_neg at h
@@ -293,12 +295,13 @@ theorem riemannZeta_zero_free_poly :
       simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
         Complex.I_re, Complex.I_im, mul_zero, mul_one, sub_zero, add_zero, zero_mul]; linarith
     exact riemannZeta_ne_zero_of_one_le_re hre hzero
-  rcases le_or_lt β (1 - δ₁) with hcase | hcase
+  by_cases hcase : β ≤ 1 - δ₁
   · -- far case: `1 - β ≥ δ₁ ≥ c/γ⁵`.
     have hgap : c / γ ^ 5 ≤ δ₁ := by
       rw [div_le_iff₀ (by positivity)]; nlinarith [hc_le1, hγ5, hδ₁0]
     linarith
   · -- near case: run the machinery at `σ = 2 - β`.
+    push_neg at hcase
     have hβ34 : (3 : ℝ) / 4 ≤ β := by have : δ₁ ≤ 1 / 4 := min_le_right _ _; linarith
     have hσδ₀ : 2 - β < 1 + δ₀ := by have : δ₁ ≤ δ₀ := min_le_left _ _; linarith
     have hprod := zeta_norm_product_ge_one (show (0 : ℝ) < 1 - β by linarith) γ
