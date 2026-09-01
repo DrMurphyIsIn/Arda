@@ -36,3 +36,21 @@ name = "StripReprR1"
 # `zeta_fract_repr_of`. Imports StripReprR1/R2/R3; own CI target. Out of defaultTargets.
 [[lean_lib]]
 name = "StripReprAssembled"
+
+# PHASE 2: the UNCONDITIONAL crude strip growth bound `zeta_strip_bound`, from input (R)
+# `zeta_fract_repr` + input (B) `zeta_repr_integral_bound` via `zeta_strip_bound_of`. Imports both
+# ZeroFreeBridge and StripReprAssembled; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "StripBound"
+
+# PHASE 4 (core): the de la Vallee Poussin quantitative estimate `dlvp_core_estimate` for the
+# zero-free region, conditional on the Borel-Caratheodory log-derivative bounds. Imports
+# ZeroFreeBridge; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZeroFreeRegion"
+
+# ELEMENTARY (Hadamard-free) UNCONDITIONAL zero-free region assembly `zeta_zero_free_poly_of`
+# (polynomial rate Re s > 1 - c/|t|^5), from the product inequality + crude strip bound + pole +
+# Cauchy estimate. Imports ZeroFreeBridge; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZeroFreeElementary"
