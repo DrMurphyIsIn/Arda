@@ -39,6 +39,26 @@ dominance (A)** — the same structural principle, in the branch-induction guise
 "bypasses Obligation A" framing: the arithmetic half was bypassable (and is gated); the combinatorial half is
 shared.
 
+## Why (A) is hard: the exchange obstruction
+
+Broom dominance is not near-degenerate — at *fixed* size the broom wins by a clear margin (`0.24`–`0.72` in
+`total` for sizes 7–13), unlike the flat *arm-count* landscape (the arithmetic pole). So the difficulty is not
+delicacy. It is that the natural proof — a local **exchange** move driving any tree toward the broom — has **no
+clean sign**. Concretely, for two hubs joined by an edge (`a` and `b` cherry-arms), moving a cherry from the
+source hub to the target has
+
+```
+ΔZ > 0  ⟺  b > a + 1      (stable at b = a + 1, i.e. near-balanced),
+ΔZ < 0  ⟺  b ≤ a          (concentrating onto an equal/bigger hub LOWERS Z).
+```
+
+So *within* a two-hub family the optimum is **near-balanced**, yet the **global** maximiser is the **single
+hub** (the broom, `degseq = [c, 2×c, 1×c]`, verified the unrooted `per(L)/∏deg` max for `n ≤ 15`). The greedy
+concentration move therefore goes *downhill* on the way from a balanced multi-hub to the single-hub broom — a
+`Z`-barrier. A one-move exchange cannot prove (A); the proof needs a non-greedy / multi-move argument (GTS-style
+coefficientwise domination, or a global potential). This is the precise structural reason Obligation A is open —
+the combinatorial analog of the smooth no-go: the honest obstruction, isolated.
+
 ## Where this leaves the campaign
 
 | pole | nature | state |
