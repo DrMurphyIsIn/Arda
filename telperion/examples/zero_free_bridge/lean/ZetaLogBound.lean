@@ -96,7 +96,9 @@ theorem norm_tail_term_le {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 1 ≤ N) :
     integrableOn_Ioi_rpow_of_lt (by linarith : -(s.re + 1) < -1) hNpos
   have hint_lhs : IntegrableOn
       (fun x : ℝ => ‖((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖) (Set.Ioi (N : ℝ)) := by
-    refine hint_rhs.mono' (by fun_prop) ?_
+    have hm : AEStronglyMeasurable (fun x : ℝ => ((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1))
+        (volume.restrict (Set.Ioi (N : ℝ))) := by fun_prop
+    refine hint_rhs.mono' hm.norm ?_
     refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun x hx => ?_))
     rw [Real.norm_of_nonneg (norm_nonneg _)]; exact hpt x hx
   -- ‖fractTail‖ ≤ N^{-σ}/σ
@@ -113,7 +115,7 @@ theorem norm_tail_term_le {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 1 ≤ N) :
   calc ‖s‖ * ‖fractTail s (N : ℝ)‖
       ≤ ‖s‖ * ((N : ℝ) ^ (-s.re) / s.re) := mul_le_mul_of_nonneg_left htail (norm_nonneg s)
     _ = ‖s‖ / (s.re * (N : ℝ) ^ s.re) := by
-        rw [Real.rpow_neg hNpos.le]; field_simp; ring
+        rw [Real.rpow_neg hNpos.le]; field_simp
 
 /-- THE SHARP NEAR-LINE BOUND: `|ζ(σ+it)| ≤ C·(1 + log|t|)` for `1 ≤ σ ≤ 2`, `|t| ≥ 2`.
     (The explicit `C` is filled in during discharge.) -/
