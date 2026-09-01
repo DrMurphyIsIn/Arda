@@ -78,7 +78,42 @@ theorem abs_im_le_norm_sub_one (s : ℂ) : |s.im| ≤ ‖s - 1‖ := by
 /-- The tail term `‖s · ∫_{x>N} {x} x^{-s-1}‖` is bounded by `‖s‖ / (Re s · N^{Re s})`. -/
 theorem norm_tail_term_le {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 1 ≤ N) :
     ‖s * fractTail s (N : ℝ)‖ ≤ ‖s‖ / (s.re * (N : ℝ) ^ s.re) := by
-  sorry
+  have hNR : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hNpos : (0 : ℝ) < (N : ℝ) := by linarith
+  -- pointwise: ‖{x} x^{-(s+1)}‖ = {x}·x^{-(σ+1)} ≤ x^{-(σ+1)} on Ioi N
+  have hpt : ∀ x ∈ Set.Ioi (N : ℝ),
+      ‖((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖ ≤ (x : ℝ) ^ (-(s.re + 1)) := by
+    intro x hx
+    have hxpos : (0 : ℝ) < x := lt_trans hNpos hx
+    have hf0 : 0 ≤ Int.fract x := Int.fract_nonneg x
+    have hf1 : Int.fract x ≤ 1 := (Int.fract_lt_one x).le
+    rw [norm_div, Complex.norm_real, Real.norm_of_nonneg hf0,
+      Complex.norm_cpow_eq_rpow_re_of_pos hxpos,
+      show (s + 1).re = s.re + 1 by simp [Complex.add_re],
+      Real.rpow_neg hxpos.le, div_eq_mul_inv]
+    exact mul_le_of_le_one_left (inv_nonneg.mpr (Real.rpow_nonneg hxpos.le _)) hf1
+  have hint_rhs : IntegrableOn (fun x : ℝ => (x : ℝ) ^ (-(s.re + 1))) (Set.Ioi (N : ℝ)) :=
+    integrableOn_Ioi_rpow_of_lt (by linarith : -(s.re + 1) < -1) hNpos
+  have hint_lhs : IntegrableOn
+      (fun x : ℝ => ‖((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖) (Set.Ioi (N : ℝ)) := by
+    refine hint_rhs.mono' (by fun_prop) ?_
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun x hx => ?_))
+    rw [Real.norm_of_nonneg (norm_nonneg _)]; exact hpt x hx
+  -- ‖fractTail‖ ≤ N^{-σ}/σ
+  have htail : ‖fractTail s (N : ℝ)‖ ≤ (N : ℝ) ^ (-s.re) / s.re := by
+    calc ‖fractTail s (N : ℝ)‖
+        ≤ ∫ x in Set.Ioi (N : ℝ), ‖((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)‖ :=
+          norm_integral_le_integral_norm _
+      _ ≤ ∫ x in Set.Ioi (N : ℝ), (x : ℝ) ^ (-(s.re + 1)) :=
+          setIntegral_mono_on hint_lhs hint_rhs measurableSet_Ioi hpt
+      _ = (N : ℝ) ^ (-s.re) / s.re := by
+          rw [integral_Ioi_rpow_of_lt (by linarith : -(s.re + 1) < -1) hNpos,
+            show -(s.re + 1) + 1 = -s.re by ring, neg_div_neg_eq]
+  rw [norm_mul]
+  calc ‖s‖ * ‖fractTail s (N : ℝ)‖
+      ≤ ‖s‖ * ((N : ℝ) ^ (-s.re) / s.re) := mul_le_mul_of_nonneg_left htail (norm_nonneg s)
+    _ = ‖s‖ / (s.re * (N : ℝ) ^ s.re) := by
+        rw [Real.rpow_neg hNpos.le]; field_simp; ring
 
 /-- THE SHARP NEAR-LINE BOUND: `|ζ(σ+it)| ≤ C·(1 + log|t|)` for `1 ≤ σ ≤ 2`, `|t| ≥ 2`.
     (The explicit `C` is filled in during discharge.) -/
