@@ -60,3 +60,11 @@ name = "ZeroFreeElementary"
 # placeholders; own CI target. Out of defaultTargets.
 [[lean_lib]]
 name = "ZetaLogBound"
+
+# RayPowerEstimate lemma pack (reusable cpow/rpow-on-rays primitives) + EmittedShapes (dogfood: the
+# Lean output of the new emit_zero_free_region / emit_dominated_integrability emitters). Own CI targets.
+[[lean_lib]]
+name = "RayPowerEstimate"
+
+[[lean_lib]]
+name = "EmittedShapes"
