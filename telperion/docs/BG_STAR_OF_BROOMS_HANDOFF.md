@@ -167,6 +167,30 @@ composed reduction is `bg_upper_bound.UpperBoundReduction` (4 gated pass, 1 open
 route, mixed≤B(k) k≥20, …). Random-sample tests hid the mixed≤B(k) failure; the formal-proof attempt exposed it.
 Test exhaustively before believing any "worst-case is uniform/cherry" claim.
 
-**Next:** the general `mixed ≤ B(k)` (k≤15) extremal proof (last conceptual piece), or reconcile with the
-parallel Lean tree→hub for the finite-n/structural statement. Docs: `BG_BRANCH_INDUCTION_20260831.md`,
-`BG_TIE_REGIME_CAMPAIGN_20260831.md`, `BG_BROOM_DOMINANCE_20260831.md`, `BG_23ADIC_RECONCILIATION_20260831.md`.
+**Round 5 — FINAL CONSOLIDATION (the whole upper bound dissected).** The BG upper bound `ell(B) ≤ 0` factors
+into an **arithmetic** pole (DONE, gated) and a **combinatorial** pole (one open lemma). See
+`BG_ARITHMETIC_VS_COMBINATORIAL_20260831.md` + `BG_INTEGRALITY_GAP_20260831.md` + `BG_MIXED_KKT_20260831.md`.
+
+- **Diagnosis (gated):** BG is an *integrality gap*, not a quasicrystal — the optimum is the exact rational
+  `621/64`, pinned by the single prime `23` (`4·5+3 = 4·4+7 = 23`, `529 = 23²`), and the continuous relaxation
+  *overshoots* `F*` (`f(24/5) > F*`), so **no smooth certificate can prove BG** (`bg_smooth_nogo`).
+- **Arithmetic pole (gated):** broom optimum `c=5` (`bg_broom_optimum`), analytic mixed-hub reduction
+  (`bg_mixed_kkt`, `bg_hi_degree_tail`, `bg_tie_slack`, `bg_tie_cherry_worst`), and **spider beats every
+  caterpillar** `F* > F(a)` for all `a` via the transfer-Perron surd cleared to rational atoms
+  (`bg_spider_vs_caterpillar`).
+- **Combinatorial pole (SOLE open residual):** **broom dominance** (Obligation A) — the broom is the unique
+  total-maximiser per size, shared with the parallel Lean session. The exchange landscape reduces it to: *(i)*
+  every rich-exchange local max of `rho` is the broom or a length-2 caterpillar (verified `n ≤ 15`) + *(ii)*
+  spider > caterpillar (GATED). So only **part (i)** remains. It does NOT factor via a one-move sign lemma (the
+  naive arm-shortening move *decreases* `rho`); it needs non-local (GTS / global-potential) machinery — a
+  multi-session effort.
+
+**BG gates (all green):** `bg_broom_optimum`, `bg_arm_balancing`, `bg_tie_cherry_worst`, `bg_tie_slack`,
+`bg_mixed_kkt`, `bg_hi_degree_tail`, `bg_smooth_nogo`, `bg_spider_vs_caterpillar` (+ older `bg_floor*`,
+`bg_family`, `bg_m3_moment_cut`, `bg_caterpillar_concavity`, `bg_flag_discharge`). `conjecture1_proved = False`
+throughout — held honestly; the only unproven region left is part (i), sharply bounded, with all arithmetic
+around it gated.
+
+Docs: `BG_ARITHMETIC_VS_COMBINATORIAL_20260831.md`, `BG_INTEGRALITY_GAP_20260831.md`,
+`BG_UPPER_BOUND_REDUCTION_20260831.md`, `BG_MIXED_KKT_20260831.md`, `BG_BRANCH_INDUCTION_20260831.md`,
+`BG_BROOM_DOMINANCE_20260831.md`, `BG_23ADIC_RECONCILIATION_20260831.md`.
