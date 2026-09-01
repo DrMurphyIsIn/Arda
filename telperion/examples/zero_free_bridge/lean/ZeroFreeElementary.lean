@@ -246,11 +246,11 @@ theorem zeta_strip_2t_bound {β γ : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) (h
   have hmem : s ∈ stripDomain := ⟨hsre_pos, by simpa using hsne1⟩
   have hsnorm : ‖s‖ ≤ 2 * γ + 2 := by
     have h1 : ‖s‖ ≤ ‖((2 - β : ℝ) : ℂ)‖ + ‖2 * γ * Complex.I‖ := by
-      simpa [hs] using norm_add_le _ _
+      rw [hs]; exact norm_add_le ((2 - β : ℝ) : ℂ) (2 * γ * Complex.I)
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith : (0 : ℝ) ≤ 2 - β)] at h1
-    have h2 : ‖(2 : ℂ) * γ * Complex.I‖ = 2 * γ := by
-      rw [Complex.norm_mul, Complex.norm_mul, Complex.norm_I, mul_one, Complex.norm_ofNat,
-        Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith : (0 : ℝ) ≤ γ)]
+    have hγ0 : (0 : ℝ) ≤ γ := by linarith
+    have h2 : ‖2 * γ * Complex.I‖ = 2 * γ := by
+      simp [Complex.norm_mul, abs_of_nonneg hγ0]
     rw [h2] at h1; linarith
   have hs1_lb : 2 * γ ≤ ‖s - 1‖ := by
     calc 2 * γ = |s.im| := by rw [hsim, abs_of_nonneg (by linarith)]
