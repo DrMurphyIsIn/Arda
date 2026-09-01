@@ -57,11 +57,25 @@ unneeded.** They are *not* the same problem — the unification conflated them.
 - **KEEP Prong B** (certify the *local* single-child lemma = HYPOTHESIS (b)): correct and sufficient for the
   asymptotic upper bound. The residual is unchanged — the single-child lemma's tail — but its justification is
   now the honest *local* one, not global broom dominance.
-- **FLAG for the parallel Lean session:** their `tree_to_hub_sized : Aobj t ≤ Aobj(backboneU s)` is sound **iff**
-  `backboneU` is a *caterpillar/spine* backbone (which *can* dominate — `[4,4,4]` beats `B(13)`), **not** the
-  single-hub broom `B(c)`. Their straightening measure (`strDefect = 0 iff backbone`, a spine form) suggests it
-  is the spine form — consistent. But their *analytic* unification note (`1e391b5`, "optimum = `B(c)`") is the
-  piece that errs. The Lean reduction and the analytic unification must be reconciled on *which* backbone.
+- **RECONCILED with the parallel Lean session (no conflict in the Lean).** The definitions
+  (`R47HubState.lean`) settle it: `cherryU = node [node []]` (the cherry); `armU j = node (replicate j cherryU)`
+  = **B(j)** (a hub of `j` cherries); `Hub = List ℕ × ℕ`; and
+  `backboneU ((arms,c)::rest) = node (arms.map armU ++ replicate c cherryU ++ [backboneU rest])` — a **spine of
+  hubs**, each carrying `B(aᵢ)`-broom arms + cherries + the next spine node. So `backboneU` is the **general
+  hub/spine class**, which *contains* the true maximizer `S(K,5) = backboneU [(replicate K 5, 0)]`
+  (`Aobj = (26/23)(621/64)^K`, unbounded). The single-hub broom `B(c)` is merely the **degenerate instance**
+  `backboneU [([], c)] = armU c`.
+  - **The Lean `tree_to_hub_sized : Aobj t ≤ Aobj(backboneU s)` is SOUND** — it reduces every tree to the *rich*
+    backbone class (which can dominate), not to the flat `B(c)`. And it correctly *separates* "reduce to backbone
+    class" (tree→hub) from "which backbone is max" (the later `Hnorm` balancing to `IsBCHubForm {4,5}` — arms of
+    length 4–5, consistent with the `c=5` optimum; `R47R6BalanceLeCert` moves `(a,b)→(a+1,b-1)`, i.e. *toward
+    balanced/caterpillar*, which is the correct direction).
+  - **The error is confined to the analytic unification note** (`BG_BRANCH_UNIFICATION`, commit `1e391b5`): its
+    step "optimum packs cherries into one hub = `B(c)`" prematurely collapses the backbone class to the
+    *degenerate* single-hub instance. Gate 0 shows that instance is suboptimal; the Lean never makes that claim.
+  - **Net:** the Lean reduction, its Obligation A (the local Kelmans cavity/`pushInto` move), and Prong B's local
+    single-child lemma are all consistent and correct. Only the analytic "broom dominance ⟹ optimum is `B(c)`"
+    framing is wrong, and it is *not on the critical path* (the asymptotic bound uses the local lemma only).
 
 ## Gate 0's other sub-goals (for the surviving Prong B)
 
