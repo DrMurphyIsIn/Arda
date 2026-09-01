@@ -244,9 +244,11 @@ theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N)
     ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)
       = s / (s - 1) - (N : ℂ) ^ (1 - s) / (s - 1)
         - s * ∫ t in Set.Ioc (1 : ℝ) (N : ℝ), fractIntegrand s t := by
-  have hs0 : s ≠ 0 := by rintro rfl; simp at hs
+  have hs0 : s ≠ 0 := by intro h; rw [h, Complex.zero_re] at hs; linarith
   have hf_diff : ∀ t ∈ Set.Icc (1 : ℝ) (N : ℝ), DifferentiableAt ℝ (fPow s) t := by
-    sorry
+    intro t ht
+    have ht0 : t ≠ 0 := (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne'
+    exact (hasDerivAt_fPow hs0 ht0).differentiableAt
   have hf_int : IntegrableOn (deriv (fPow s)) (Set.Icc (1 : ℝ) (N : ℝ)) := by
     sorry
   have habel := sum_mul_eq_sub_integral_mul₀ (c := cOne) (f := fPow s) (rfl : cOne 0 = 0)
