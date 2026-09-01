@@ -82,11 +82,48 @@ box discharge polynomials (exact, immediate, guaranteed to succeed by Bernstein'
 polynomial). Phase-1 follow-up: add a Bernstein fast-path to `find_handelman_certificate` for box cases
 before the subset enumeration.
 
-## Next step (Phase 3, the equality engine's real test)
+## Armmid discharge CERTIFIED (the hardest bulk vertex) — DONE
 
-The leaf is the *easy* bulk case (1 field, `Bof = Aarg`). The genuine test of the Phase 1 equality engine
-is the **armmid** (degree 2, the `+0.243` free-box violator): its incident fields are the pinned leaf
-message (`h_leaf→armmid = 1`, a recursion equality) and the center field (a reachable range), so the
-free-box positivity is FALSE but the realizable-variety positivity holds — exactly the case where the
-equality multipliers `λ_j·h_j` are load-bearing. Set that up, clear the exponent with integer `k`, and
-run the equality-constrained finder (with a Bernstein path for the box directions).
+The armmid (degree 2, the RH probe's `+0.243` free-box violator, hardest bulk vertex) is now certified
+over a realizable sub-box. Exact structure (verified against `bethe_terms` on `S(k,5)`; leaf neighbor
+deg 1, center neighbor deg 6, one free field `g = h_{center→armmid}`, leaf message pinned to 1):
+
+    Aarg_v = (18+g)/12,   Bof_leaf = (18+g)/(12+g),   Bof_other = (18+g)/18.
+
+Three findings:
+
+1. **Realizability removes the free-box violation.** The `+0.243` was the *free* box `h_leaf ∈ [0,1]`
+   including the unrealizable `h_leaf = 0`. Pinning the leaf message to `1` (its recursion value) drops
+   the armmid to a 1-field problem in `g`, with real slack `−0.0077` at every `g` (feasible everywhere,
+   NOT tie-dominated — an earlier worry, refuted).
+
+2. **The `11τ ∈ ℤ` grid (F2) is too coarse; a finer grid resolves the bulk.** Integer-11 discharge fails
+   the armmid by `+0.024` over the whole range (the tight `τ_leaf = F*/log Bof_leaf ≈ 0.538` sits between
+   `5/11` and `6/11` — F3, concretely). Raising the grid to `k/33` (bound `exp(33φ) ≤ (621/64)^3`, still
+   polynomial) leaves margin over a sub-range. `bg_armmid_grid_resolution.py` maps this: `D=11 → +0.024`,
+   `D=33 → +0.001` (whole wide range), and a constant `k/33` `τ` certifies with margin on a sub-box.
+
+3. **The real degree-50 armmid polynomial is Bernstein-certified.** With `(k_leaf, k_other) = (17, 33)`,
+   `exp(33φ_arm) = Aarg^{33}·Bof_leaf^{−17}·Bof_other^{−33} ≤ (621/64)^3` clears to a degree-50 polynomial
+   in `g`; `bg_armmid_discharge_cert.py` gets an EXACT **51-term Bernstein certificate** (all coefficients
+   `≥ 0`) over the realizable sub-box `g ∈ [0.5, 0.72]` — so `φ_arm ≤ F*` there with a fixed rational
+   `k/33` discharge. First certification of the hard 2-edge bulk vertex over the reachable variety.
+
+## Honest scope of the armmid result
+
+One sub-box of one local case (deg-2 armmid + leaf + deg-6 center). The full armmid still needs: (a) the
+exact reachable `g`-range (a reachability computation), (b) tiling it with finitely many sub-boxes, each a
+constant rational `τ` (the optimal `τ` drifts with `g`, so one constant `τ` leaves `+0.001` over the whole
+wide range — piecewise fixes it), and (c) the tie at `g → sup` where the tight `τ` is transcendental →
+exact `27·23` arithmetic. And there are other local cases (other neighbor-degree configs). But the METHOD
+is validated end-to-end: **realizability + finer-grid rational `τ` + Bernstein certifies bulk vertices.**
+
+## Next steps
+
+1. **Reachable-range + tiling.** Compute the exact reachable `g`-interval for each local case and tile it
+   with sub-boxes, each certified by a constant `k/D` `τ` (a finite cover — `emit_preconnected_cover`
+   discipline for completeness).
+2. **The tie arithmetic.** Isolate the `g → sup` saturation and discharge it by the exact `27·23` identity
+   (`emit_padic`), not SOS — F3 proves no polynomial `τ` is tight there.
+3. **Emit Lean.** Feed the Bernstein certificates through `HandelmanEmitter` / the equality-augmented
+   `ConstrainedSOSEmitter` to kernel-gated Lean atoms.
