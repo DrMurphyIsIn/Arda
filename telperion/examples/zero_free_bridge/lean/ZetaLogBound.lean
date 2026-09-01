@@ -41,20 +41,39 @@ theorem zeta_trunc {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N) :
         - s * fractTail s (N : ℝ) := by
   sorry
 
-/-- Harmonic-sum bound `Σ_{n=1}^N 1/n ≤ 1 + log N`. -/
-theorem harmonic_le_one_add_log {N : ℕ} (hN : 1 ≤ N) :
-    ∑ n ∈ Finset.Icc 1 N, (1 : ℝ) / n ≤ 1 + Real.log N := by
-  sorry
-
-/-- Partial-sum bound: `‖Σ_{n=1}^N n^{-s}‖ ≤ 1 + log N` for `Re s ≥ 1`. -/
+/-- Partial-sum bound: `‖Σ_{n=1}^N n^{-s}‖ ≤ 1 + log N` for `Re s ≥ 1`, using Mathlib's
+    `harmonic_le_one_add_log` (`harmonic n ≤ 1 + log n`) after `‖n^{-s}‖ = n^{-σ} ≤ 1/n`. -/
 theorem norm_partial_sum_le {s : ℂ} (hs : 1 ≤ s.re) {N : ℕ} (hN : 1 ≤ N) :
     ‖∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)‖ ≤ 1 + Real.log N := by
-  sorry
+  calc ‖∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)‖
+      ≤ ∑ n ∈ Finset.Icc 1 N, ‖(n : ℂ) ^ (-s)‖ := norm_sum_le _ _
+    _ ≤ ∑ n ∈ Finset.Icc 1 N, ((n : ℝ))⁻¹ := by
+        refine Finset.sum_le_sum (fun n hn => ?_)
+        have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
+        have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
+        have hnpos : (0 : ℝ) < (n : ℝ) := by linarith
+        rw [← Complex.ofReal_natCast n, Complex.norm_cpow_eq_rpow_re_of_pos hnpos,
+          ← Real.rpow_neg_one (n : ℝ)]
+        refine Real.rpow_le_rpow_of_exponent_le hnR ?_
+        simp only [Complex.neg_re]; linarith
+    _ = (harmonic N : ℝ) := by
+        simp only [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast]
+    _ ≤ 1 + Real.log N := harmonic_le_one_add_log N
 
-/-- The `N^{1-s}/(s-1)` term is bounded by `1/|t|` for `Re s ≥ 1`, `N ≥ 1`, `Im s = t`. -/
-theorem norm_pole_term_le {s : ℂ} (hs : 1 ≤ s.re) {N : ℕ} (hN : 1 ≤ N) :
-    ‖(N : ℂ) ^ (1 - s) / (s - 1)‖ ≤ 1 / |s.im| := by
-  sorry
+/-- `‖N^{1-s}‖ ≤ 1` for `Re s ≥ 1`, `N ≥ 1` (the numerator of the pole term). -/
+theorem norm_cpow_one_sub_le_one {s : ℂ} (hs : 1 ≤ s.re) {N : ℕ} (hN : 1 ≤ N) :
+    ‖(N : ℂ) ^ (1 - s)‖ ≤ 1 := by
+  have hnR : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hnpos : (0 : ℝ) < (N : ℝ) := by linarith
+  rw [← Complex.ofReal_natCast N, Complex.norm_cpow_eq_rpow_re_of_pos hnpos]
+  apply Real.rpow_le_one_of_one_le_of_nonpos hnR
+  simp only [Complex.sub_re, Complex.one_re]; linarith
+
+/-- `|Im s| ≤ ‖s - 1‖` (the pole-term denominator bound). -/
+theorem abs_im_le_norm_sub_one (s : ℂ) : |s.im| ≤ ‖s - 1‖ := by
+  have : (s - 1).im = s.im := by simp
+  calc |s.im| = |(s - 1).im| := by rw [this]
+    _ ≤ ‖s - 1‖ := Complex.abs_im_le_norm _
 
 /-- The tail term `‖s · ∫_{x>N} {x} x^{-s-1}‖` is bounded by `‖s‖ / (Re s · N^{Re s})`. -/
 theorem norm_tail_term_le {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 1 ≤ N) :
