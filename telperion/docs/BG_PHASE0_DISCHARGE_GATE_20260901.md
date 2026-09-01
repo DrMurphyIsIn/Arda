@@ -49,9 +49,36 @@ target exists per-tree and `F*` is sharp) and rules out the cheap shortcut (simp
 - A universal closed form is not yet exhibited; Phase 2 must produce the rational rule and verify it
   reproduces `φ_v = F*` at the ties and `< F*` elsewhere out-of-sample.
 
+## Phase 2 opening — is the discharge a LOCAL function? (empirical)
+
+Two probes on whether a *universal local* `τ` (not per-tree) can reproduce feasibility:
+
+- **Principled closed forms** (`bg_phase2_principled_tau.py`) — the Bethe-marginal split
+  `τ_{v,u}=p_{v,u}/(p_{v,u}+p_{u,v})` with `p_{v,u}=(h_{u→v}/(d_ud_v))/exp(A_v)` (the fractional
+  field contribution `∂A_v/∂log h_{u→v}`), degree split, and squared variants. **All fail** on the tie
+  configs (`cat[5,9,3] +0.046`): at a tie tree the discharge must equal the exact dual optimum, which a
+  simple split can't reproduce.
+
+- **Flexible local learner** (`bg_phase2_tau_locality.py`) — canonical least-committal per-tree `τ`
+  (`min Σ(τ−½)²` s.t. `φ_v≤F*`, a convex QP) as target; gradient-boosted regression on radius-1.5 local
+  features (endpoint degrees, both cavity fields, `A_v,A_u`, and each endpoint's *other* incident-field
+  max/sum/count). Applied out-of-sample (split by tree): **worst gap `+0.0059`**, and the *tie* configs
+  now generalize (`cat[4,6,8] +0.0001`, `cat[5,9,3] +0.0019`); residual is on generic mid-degree
+  (`cat[7]×8`, `S(k,4)` `≈+0.005`).
+
+**Trend:** the out-of-sample gap shrinks monotonically with model capacity
+(`+0.046 → +0.02..0.04 → +0.006`), and ties are captured — evidence a bounded-radius local `τ` **exists**
+but its exact form is not reachable by fitting (you cannot hit exactly-`0` empirically). This is the
+signal that motivates the plan's actual Phase 2/3: *derive* the rational `τ` from the Bethe convex-dual /
+Perron eigenvector and *certify* `exp(11φ_v)≤621/64` per integer-degree case over the recursion-constrained
+field set — the fit residual `≈0.005` is exactly the "last mile" a principled derivation + facial/23-adic
+certificate must close, not more regression.
+
 ## Reproduce
 
 ```
 PYTHONPATH=telperion/src python3 telperion/docs/probes/bg_phase0_universal_tau_lp.py
 PYTHONPATH=telperion/src python3 telperion/docs/probes/bg_phase0_pertree_feasibility.py
+PYTHONPATH=telperion/src python3 telperion/docs/probes/bg_phase2_principled_tau.py
+PYTHONPATH=telperion/src python3 telperion/docs/probes/bg_phase2_tau_locality.py
 ```
