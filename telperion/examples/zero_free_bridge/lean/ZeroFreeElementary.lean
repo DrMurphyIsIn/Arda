@@ -147,9 +147,12 @@ theorem zeta_sphere_bound {u γ : ℝ} (hu : 3 / 4 ≤ u) (hu2 : u ≤ 2) (hγ :
   -- Upper bound on `‖z‖` and lower bounds on `‖z-1‖`, `Re z`, then feed `zeta_strip_bound`.
   have hznorm : ‖z‖ ≤ γ + 3 := by
     have hw_norm : ‖w‖ ≤ u + γ := by
-      calc ‖w‖ ≤ ‖(u : ℂ)‖ + ‖γ * Complex.I‖ := by simpa [hw] using norm_add_le _ _
-        _ = |u| + |γ| := by rw [Complex.norm_real]; simp [Complex.norm_mul]
-        _ = u + γ := by rw [abs_of_nonneg (by linarith), abs_of_nonneg (by linarith)]
+      have h := norm_add_le (u : ℂ) (γ * Complex.I)
+      simp only [Complex.norm_real, Complex.norm_mul, Complex.norm_I, mul_one,
+        Real.norm_eq_abs] at h
+      rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ u), abs_of_nonneg (by linarith : (0 : ℝ) ≤ γ)]
+        at h
+      rw [hw]; exact h
     calc ‖z‖ ≤ ‖w‖ + ‖z - w‖ := by simpa using norm_le_norm_add_norm_sub' z w
       _ ≤ (u + γ) + 1 / 2 := by linarith
       _ ≤ γ + 3 := by linarith
