@@ -55,9 +55,24 @@ source hub to the target has
 So *within* a two-hub family the optimum is **near-balanced**, yet the **global** maximiser is the **single
 hub** (the broom, `degseq = [c, 2×c, 1×c]`, verified the unrooted `per(L)/∏deg` max for `n ≤ 15`). The greedy
 concentration move therefore goes *downhill* on the way from a balanced multi-hub to the single-hub broom — a
-`Z`-barrier. A one-move exchange cannot prove (A); the proof needs a non-greedy / multi-move argument (GTS-style
-coefficientwise domination, or a global potential). This is the precise structural reason Obligation A is open —
-the combinatorial analog of the smooth no-go: the honest obstruction, isolated.
+`Z`-barrier.
+
+**The barrier's exact shape (and its resolution).** Under the *leaf-move* neighborhood the landscape is wildly
+multimodal — the number of spurious local maxima grows `2, 6, 14` at `n = 9, 11, 13`. But under the **rich**
+single-edge-relocation neighborhood (relocate any subtree, not just a leaf) it collapses to `0, 1, 1`, and the
+surviving spurious local maxima are *exactly* the multi-hub **length-2-arm caterpillars** — a spine of degree-3
+hubs each carrying cherries — which is **Pant's conjectured maximiser family**. The broom (spider) beats each of
+them (`+0.417`, `+0.521` at `n = 11, 13`). So:
+
+> **Obligation A reduces to:** *(i)* every rich-exchange local maximum is the broom or a length-2 caterpillar
+> (verified `n <= 13`), *and* *(ii)* the spider beats every length-2 caterpillar.
+
+Part (ii) is precisely the **spider-vs-caterpillar** comparison this campaign already established (the
+transfer-recurrence `transfer_caterpillar.py`; spiders strictly beat Pant's caterpillars). And this explains
+*why* Pant conjectured caterpillars: they are the exchange **local maxima** — locally unbeatable — while the
+spider wins only by jumping between exchange basins. A one-move exchange cannot prove (A); the proof needs the
+non-local spider-vs-caterpillar step. This is the combinatorial analog of the smooth no-go: the honest
+obstruction, isolated — and reduced to a comparison already understood to favor the broom.
 
 ## Where this leaves the campaign
 
