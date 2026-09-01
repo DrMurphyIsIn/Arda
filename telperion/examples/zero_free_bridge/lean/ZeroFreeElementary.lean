@@ -73,4 +73,45 @@ theorem zeta_norm_product_ge_one {x : ℝ} (hx : 0 < x) (y : ℝ) :
   simp only [DirichletCharacter.LFunction_modOne_eq, norm_mul, norm_pow] at h
   exact h
 
+/-- DISCHARGE of `hpole`: near `σ = 1`, `(σ-1)·|ζ(σ)| ≤ 2`, i.e. `|ζ(σ)| ≤ 2/(σ-1)`.  From the
+    simple pole of `riemannZeta` at `s = 1` with residue `1` (`riemannZeta_residue_one`:
+    `(s-1)·ζ(s) → 1`), composed along the real ray `σ ↓ 1`. -/
+theorem zeta_pole_bound :
+    ∃ δ₀ > (0 : ℝ), ∀ σ : ℝ, 1 < σ → σ < 1 + δ₀ → (σ - 1) * ‖riemannZeta (σ : ℂ)‖ ≤ 2 := by
+  -- Pull the ℂ residue limit back to the real ray `𝓝[>] 1`.
+  have hcast : Filter.Tendsto (fun σ : ℝ => (σ : ℂ)) (𝓝[>] 1) (𝓝[≠] 1) := by
+    rw [tendsto_nhdsWithin_iff]
+    refine ⟨?_, ?_⟩
+    · have : Filter.Tendsto (fun σ : ℝ => (σ : ℂ)) (𝓝[>] 1) (𝓝 ((1 : ℝ) : ℂ)) :=
+        (Complex.continuous_ofReal.tendsto 1).mono_left nhdsWithin_le_nhds
+      simpa using this
+    · filter_upwards [self_mem_nhdsWithin] with σ hσ
+      have hσ1 : (1 : ℝ) < σ := hσ
+      simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
+      intro h
+      rw [Complex.ofReal_eq_one] at h
+      linarith
+  have hcomp : Filter.Tendsto (fun σ : ℝ => ((σ : ℂ) - 1) * riemannZeta σ) (𝓝[>] 1) (𝓝 1) :=
+    riemannZeta_residue_one.comp hcast
+  -- Eventually on the ray, the residue-normalised modulus is `≤ 2`.
+  have hev : ∀ᶠ σ : ℝ in 𝓝[>] 1, (σ - 1) * ‖riemannZeta (σ : ℂ)‖ ≤ 2 := by
+    have h1 := Metric.tendsto_nhds.mp hcomp 1 one_pos
+    filter_upwards [h1, self_mem_nhdsWithin] with σ hσ1 hσpos
+    have hσ : (1 : ℝ) < σ := hσpos
+    have hre : ‖((σ : ℂ) - 1) * riemannZeta σ‖ = (σ - 1) * ‖riemannZeta (σ : ℂ)‖ := by
+      rw [norm_mul]; congr 1
+      rw [show ((σ : ℂ) - 1) = (((σ - 1 : ℝ)) : ℂ) by push_cast; ring, Complex.norm_real,
+        Real.norm_of_nonneg (by linarith)]
+    rw [dist_eq_norm] at hσ1
+    have hsub := norm_sub_norm_le (((σ : ℂ) - 1) * riemannZeta σ) 1
+    rw [norm_one] at hsub
+    rw [← hre]; linarith [hsub, hσ1]
+  rw [Filter.eventually_iff, Metric.mem_nhdsWithin_iff] at hev
+  obtain ⟨δ₀, hδ₀, hsub⟩ := hev
+  refine ⟨δ₀, hδ₀, fun σ h1 h2 => ?_⟩
+  apply hsub
+  refine ⟨?_, h1⟩
+  rw [Metric.mem_ball, Real.dist_eq, abs_of_pos (by linarith : (0 : ℝ) < σ - 1)]
+  linarith
+
 end ZeroFreeBridge
