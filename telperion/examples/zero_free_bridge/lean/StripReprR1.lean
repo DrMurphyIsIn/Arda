@@ -237,4 +237,22 @@ theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := b
   rw [hI0, hFI, stripRHS]
   ring
 
+/-- FINITE Euler–Maclaurin / Abel-summation identity (WIP SKELETON): the partial sum in the clean
+    closed form, the finite-`N` companion of `zeta_repr_R1`. Feeds `zeta_trunc` in `ZetaLogBound`.
+    Sub-steps are `sorry`; this validates the `sum_mul_eq_sub_integral_mul₀` application structure. -/
+theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N) :
+    ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)
+      = s / (s - 1) - (N : ℂ) ^ (1 - s) / (s - 1)
+        - s * ∫ t in Set.Ioc (1 : ℝ) (N : ℝ), fractIntegrand s t := by
+  have hs0 : s ≠ 0 := by rintro rfl; simp at hs
+  have hf_diff : ∀ t ∈ Set.Icc (1 : ℝ) (N : ℝ), DifferentiableAt ℝ (fPow s) t := by
+    sorry
+  have hf_int : IntegrableOn (deriv (fPow s)) (Set.Icc (1 : ℝ) (N : ℝ)) := by
+    sorry
+  have habel := sum_mul_eq_sub_integral_mul₀ (c := cOne) (f := fPow s) (rfl : cOne 0 = 0)
+    (N : ℝ) hf_diff hf_int
+  -- LHS = ∑_{Icc 1 N} n^{-s}; fPow N·N = N^{1-s}; integrand = −s t^{-s} + s·fractIntegrand (hIeq);
+  -- ∫_{Ioc 1 N} t^{-s} = 1/(s-1) − N^{1-s}/(s-1); collect.
+  sorry
+
 end ZeroFreeBridge
