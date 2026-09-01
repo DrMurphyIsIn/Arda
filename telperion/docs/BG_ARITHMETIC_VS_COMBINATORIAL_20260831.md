@@ -80,7 +80,15 @@ Part (ii) is now gated for **all** arm-counts (not just the sup): `a = 1..12` ex
 uniformly via `lam(a) < (4/3)(3/2)^a` (an identity, `9 < 8a+16`) + the GROWTH atom `(3/2)^11 < (621/64)²` + the
 BASE atom `(4/3)^11 (3/2)^143 < (621/64)^27`. So the residual for a complete (A) is now **just part (i)** — the
 exchange-reachability statement (every rich-exchange local max is the broom or a length-2 caterpillar, verified
-`n ≤ 13`). The spider-beats-caterpillar arithmetic is done, end to end.
+`n ≤ 15`). The spider-beats-caterpillar arithmetic is done, end to end.
+
+**Part (i) does not factor via obvious local moves (a caution).** One would like to split it as "at a local max,
+every arm is a cherry" + "the hub-spine is a path", each proved by a canonical escaping move. But the natural
+arm-shortening move — take a length-3 arm `h–x–y–z` and reattach the tip `z` onto `x` (making a cherry) —
+*decreases* `rho` (by `≈0.5` across hub sizes). So a length-3 arm is not escaped by shortening it; the
+`rho`-increasing move out of a non-caterpillar tree is genuinely non-obvious (consistent with the exchange
+barrier: escaping moves are non-greedy). Part (i) is a real combinatorial statement, verified `n ≤ 15`, not yet
+reduced to a one-move sign lemma — the honest open frontier.
 
 ## Where this leaves the campaign
 
