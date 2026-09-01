@@ -134,12 +134,39 @@ cover-completeness obligation (still open). But the per-case METHOD is now prove
 **realizability (pin recursion-fixed messages) + finer-grid rational `τ` (`k/99`) + a finite tiling +
 Bernstein** certifies a bulk vertex over its entire reachable range.
 
-## Next steps
+## HONEST CORRECTION: the per-vertex bulk certs do NOT compose (the flow coupling is the wall)
 
-1. **Enumerate + cover the local cases.** Catalogue the (vertex-degree, neighbor-degree-multiset) local
-   cases, bound the reachable field ranges, and produce a finite certified cover per case (as done for the
-   armmid). Prove the catalogue exhausts all vertices (`emit_preconnected_cover` sign-cell discipline).
-2. **The tie.** Locate the vertex/config that actually saturates `F*` (not the armmid — it has slack), and
-   discharge its `g → sup` tie by the exact `27·23` identity (`emit_padic`), not SOS (F3).
-3. **Emit Lean.** Feed the Bernstein covers through `HandelmanEmitter` to kernel-gated Lean atoms
-   (`0 ≤ num` on each `[gL,gR]` box), assembling the per-case `φ_v ≤ F*` guarantees.
+A subsequent check (`bg_tie_structure` + `bg_explicit_tau` probes) forces an important correction to the
+optimism above. Two facts:
+
+- **Min-max `φ` = `F*` exactly for every `S(k,5)`** (`k = 5..80`, to machine precision). The LP that
+  chooses `τ` to minimise `max_v φ_v` cannot get the max below `F*` at ANY broom size — so no
+  margin-leaving rational `τ` exists at the extremal. The tie is the **B(5)-broom substructure itself**
+  (matching the independently certified `broom_ratio` `c=5` crossing), LP-tight regardless of star size —
+  NOT an isolated config and NOT a `g→sup` limit.
+- **A globally CONSISTENT rational `τ` gives `max_v φ_v = 0.245 > F*`** (fails by `0.039`, at a degree-6
+  center). The armmid full-cover above secretly took `k_other = 99` — the *whole* center–armmid edge —
+  which **starves the center**: a degree-6 center and its **5 armmid neighbours compete for the 5 shared
+  edges**, and the available discharge cannot bring all six below `F*` at once. The per-vertex certificates
+  are each valid polynomial inequalities, but their share allocations are **mutually inconsistent**
+  (`τ_{v,u}+τ_{u,v}=1` couples them), so they do **not** compose into a global `Σφ_v ≤ F*·n` bound.
+
+**What is and isn't established.** Real and kept: the Phase 1 equality-constrained engine, the Bernstein
+box fast-path, and the fact that any *single* vertex can be held `≤ F*` in isolation (already implied by
+per-tree LP feasibility). NOT established: any global progress toward the bound — the armmid "certificate"
+does not advance closure, because its discharge robs a neighbour. The genuine wall is a **consistent**
+discharge that is simultaneously `≤ F*` at every vertex; at the broom substructure that discharge is
+LP-tight (`= F*`) and, by F3, transcendental — no rational/polynomial `τ` achieves it. This is exactly why
+BG is open. `conjecture1_proved = False`.
+
+## Honest next steps (no false leads)
+
+1. **Attack the coupled tightness directly**, not per-vertex: the object is the *joint* LP
+   `∃τ (τ_{v,u}+τ_{u,v}=1) : max_v φ_v ≤ F*` over the broom substructure, whose optimum is exactly `F*`.
+   Closure needs either the exact transcendental saturating `τ` (formalise the `27·23` broom identity that
+   pins it) or a genuinely different accounting (the branch-induction `ℓ(B) ≤ 0` ceiling, which sidesteps a
+   universal `τ`).
+2. **Do NOT** invest further in per-vertex bulk covers with free share allocation — the coupling shows they
+   are individually true but jointly vacuous.
+3. **Keep** the tooling (equality engine, Bernstein path): they are correct and reusable for whichever
+   consistent-discharge or branch-ceiling polynomial inequalities the real argument produces.
