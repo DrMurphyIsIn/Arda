@@ -67,6 +67,7 @@ theorem zeta_trunc {s : ℂ} (hs0re : 0 < s.re) (hsne1 : s ≠ 1) {N : ℕ} (hN 
     rw [fractIntegral, fractTail, ← Set.Ioc_union_Ioi_eq_Ioi hle,
       setIntegral_union (Set.Ioc_disjoint_Ioi (le_refl _)) measurableSet_Ioi
         (hint1.mono_set Set.Ioc_subset_Ioi_self) (hint1.mono_set (Set.Ioi_subset_Ioi hle))]
+    simp only [fractIntegrand]
   rw [hrepr, stripRHS, hsplit, hpsum]; ring
 
 /-- Partial-sum bound: `‖Σ_{n=1}^N n^{-s}‖ ≤ 1 + log N` for `Re s ≥ 1`, using Mathlib's
@@ -190,7 +191,7 @@ theorem zeta_log_bound {σ t : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (ht : 2 
   have hsnorm : ‖s‖ ≤ σ + |t| := by
     have h : ‖s‖ ≤ ‖(σ : ℂ)‖ + ‖(t : ℂ) * Complex.I‖ := by rw [hs_def]; exact norm_add_le _ _
     rwa [Complex.norm_real, norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
-      abs_of_nonneg (by linarith : (0 : ℝ) ≤ σ)] at h
+      Real.norm_of_nonneg (by linarith : (0 : ℝ) ≤ σ), Real.norm_eq_abs] at h
   have hbpos : (0 : ℝ) < s.re * (N : ℝ) ^ s.re :=
     mul_pos hspos (Real.rpow_pos_of_pos hNRpos _)
   have hden_ge : (N : ℝ) ≤ s.re * (N : ℝ) ^ s.re := by
