@@ -563,3 +563,207 @@ jobs:
       - name: Build the emitted Lean (the actual verification — star-of-brooms c=5 optimum)
         working-directory: telperion/examples/bg_broom_optimum/lean
         run: lake build
+
+  bg-tie-cherry-worst-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate BG tie-regime cherry-worst Lean from the exact rationals
+        working-directory: telperion
+        run: |
+          python examples/bg_tie_cherry_worst/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bg_tie_cherry_worst/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bg_tie_cherry_worst/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — tie-regime cherry-worst k<=20)
+        working-directory: telperion/examples/bg_tie_cherry_worst/lean
+        run: lake build
+
+  bg-tie-slack-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate BG tie-slack Lean from the frozen log-enclosures
+        working-directory: telperion
+        run: |
+          python examples/bg_tie_slack/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bg_tie_slack/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bg_tie_slack/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — slack bound slack_g(k)<=F* for k>=16)
+        working-directory: telperion/examples/bg_tie_slack/lean
+        run: lake build
+
+  bg-mixed-kkt-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate BG mixed-hub KKT Lean from the frozen log-enclosures
+        working-directory: telperion
+        run: |
+          python examples/bg_mixed_kkt/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bg_mixed_kkt/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bg_mixed_kkt/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — mixed<=B(k) k<=15 via per-child KKT V(c)<V(cherry))
+        working-directory: telperion/examples/bg_mixed_kkt/lean
+        run: lake build
+
+  bg-hi-degree-tail-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate BG high-degree tail Lean from the frozen log-enclosures
+        working-directory: telperion
+        run: |
+          python examples/bg_hi_degree_tail/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bg_hi_degree_tail/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bg_hi_degree_tail/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — d>=7 envelope tail V(c)<V(cherry) via ell<=0)
+        working-directory: telperion/examples/bg_hi_degree_tail/lean
+        run: lake build
+
+  bg-smooth-nogo-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate BG smooth no-go Lean from the frozen log-enclosures
+        working-directory: telperion
+        run: |
+          python examples/bg_smooth_nogo/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bg_smooth_nogo/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bg_smooth_nogo/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — f_cont(24/5) > F*, the integrality-gap no-go)
+        working-directory: telperion/examples/bg_smooth_nogo/lean
+        run: lake build
+
+  bg-spider-vs-caterpillar-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate BG spider-vs-caterpillar Lean from the transfer surd
+        working-directory: telperion
+        run: |
+          python examples/bg_spider_vs_caterpillar/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bg_spider_vs_caterpillar/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bg_spider_vs_caterpillar/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — spider F*>F(a) beats every caterpillar)
+        working-directory: telperion/examples/bg_spider_vs_caterpillar/lean
+        run: lake build

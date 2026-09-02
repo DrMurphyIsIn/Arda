@@ -137,6 +137,15 @@ per configuration, over the constrained field domain — is the remaining Bruald
 **open**; the framework here (exact Bethe form + tight bulk/surface discharge, or the transfer-operator
 variational bound) is the live, now-concrete route.
 
+**The tight `τ` must be field-dependent (new; `docs/probes/bg_tight_tau_probe.py`).** Two exact LP experiments
+over a spread of structures (centers exempt): (1) a *universal degree-only* discharge `τ(d_v,d_u)` **fails** —
+min-max `φ_v = 0.20984 > F* = 0.20659` (+0.0033), since the same edge-type carries different `B` in different
+trees; (2) a *per-tree field-adaptive* discharge **holds** — `max_v φ_v ≤ F*` on every tested tree (`S(40,5)`
+saturates `F*`). So the bound is achievable per-tree, and the open piece is precisely a **universal closed-form
+field-dependent `τ(d_v,d_u,h_{u→v},h_{v→u})`**. The free-field `τ=1` atom is already kernel-gated (`c=4,5`,
+Handelman box-positivity, `examples/bg_bulk_discharge`); the tight `τ` on the field box — with the `27·23` tie
+via `emit_padic` — is the remaining research. Naive degree/equal rules are provably spoofed (acyclicity/surface).
+
 ## 6. Novelty
 
 Confirmed against the literature (Brualdi–Goldwasser 1984; Wu–Dong–Lai 2025 DAM 372; Wu–Dong–Lai–Zeng 2024

@@ -1,0 +1,9 @@
+{
+  "family": "BGBulkDischarge",
+  "input_hash": "f26bf66ab910fd8d2e3a7e9adea6644f5c26d61cfe33373c9b5703fe5fe0ba8e",
+  "tool_version": "0.1.6",
+  "files": [
+    "BGBulkDischarge.lean"
+  ],
+  "n_theorems": 2
+}

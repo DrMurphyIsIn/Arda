@@ -383,3 +383,38 @@ group = "quick"    # route-(b): m=2 arm-balancing -- toward-balance move strictl
 name = "bg_broom_optimum"
 script = "examples/bg_broom_optimum/generate.py"
 group = "quick"    # route-(b) retarget: star-of-cherry-brooms c=5 optimum (cross-exponentiated rate rationals); ~0.1 s
+
+[[check]]
+name = "bg_bulk_discharge"
+script = "examples/bg_bulk_discharge/generate.py"
+group = "quick"    # route-(b) upper bound: full-edge discharge atoms (c=4,5) as Handelman box-positivity; warm-up; ~0.1 s
+
+[[check]]
+name = "bg_tie_cherry_worst"
+script = "examples/bg_tie_cherry_worst/generate.py"
+group = "quick"    # route-(b) upper bound: tie-regime cherry-worst 1<ratio(k,j*) for k<=20 (exact rationals); ~0.2 s
+
+[[check]]
+name = "bg_tie_slack"
+script = "examples/bg_tie_slack/generate.py"
+group = "quick"    # route-(b) upper bound: slack bound slack_g(k)<=F* for k>=16 (frozen log-enclosures); ~0.1 s
+
+[[check]]
+name = "bg_mixed_kkt"
+script = "examples/bg_mixed_kkt/generate.py"
+group = "quick"    # route-(b) upper bound: mixed<=B(k) k<=15 via concavity+per-child KKT V(c)<V(cherry); ~0.1 s
+
+[[check]]
+name = "bg_hi_degree_tail"
+script = "examples/bg_hi_degree_tail/generate.py"
+group = "quick"    # route-(b) upper bound: high-degree (d>=7) half of envelope tail V(c)<V(cherry) via ell<=0; ~0.1 s
+
+[[check]]
+name = "bg_smooth_nogo"
+script = "examples/bg_smooth_nogo/generate.py"
+group = "quick"    # integrality-gap no-go: continuous broom relaxation f(24/5)>F* => no smooth cert can prove BG; ~0.1 s
+
+[[check]]
+name = "bg_spider_vs_caterpillar"
+script = "examples/bg_spider_vs_caterpillar/generate.py"
+group = "quick"    # broom-dominance (ii): spider F*>F(a) beats every caterpillar, surd-cleared rational atoms a=1..12; ~0.2 s

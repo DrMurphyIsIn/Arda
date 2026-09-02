@@ -84,3 +84,113 @@ weighted by leaves) — the acyclicity/surface barrier.
 
 Verify locally (no Lean build — CI only, per the SoC-watchdog constraint): `PYTHONPATH=src python -m pytest
 tests/test_spider_broom.py tests/test_transfer_caterpillar.py -q`. `conjecture1_proved = False`.
+
+---
+
+## Round-2 update (2026-08-31) — unified ownership + upper-bound engine
+
+Now sole owner of the WHOLE BG program (analytic + Lean structural + Φ¹¹). Branch `bg/unified-program`.
+See `proof/docs/design/BG_UNIFIED_PROGRAM_20260831.md` and `docs/BG_23ADIC_RECONCILIATION_20260831.md`.
+
+**Reconciliation (done, exact):** the Φ¹¹ near-star `R(s)` **is** the classical-BG broom ratio
+`total(5)^(2s+1)/total(s)^11`; the two programs coincide on the extremal family. This gave the `c=5` optimum a
+**closed all-c proof** (single-crossing), and it is ALREADY kernel-gated — the frozen `examples/evolve_nearstar`
+champion `(486/529)(1+1/(4s²+11s+6))^11` equals `1/broom_ratio(s)` exactly (`test_evolve_nearstar_is_the_broom_c5_gate`).
+
+**Gates (kernel-gated, CI):** `bg_broom_optimum` (c=5 cross-exponent), `bg_arm_balancing` (m=2 general),
+`evolve_nearstar` (closed c=5), and **`bg_bulk_discharge`** (NEW — the free-field `τ=1` full-edge atoms for
+c=4,5 as Handelman box-positivity, wired into the Audit lake-build). The RH zero-free witness certifies via the
+same Handelman engine (`probe/bg-handelman-shared-engine`) — one box-positivity cone, `621/64 = 27·23`.
+
+**Upper-bound engine (new):** `src/telperion/bg_bulk_discharge.py` — exact Bethe decomposition
+(`prod Aarg/prod Barg == rho`, `Σφ_v == log π`) + the algebraic target `exp(11 φ_v) ≤ 621/64`.
+
+**The tight-τ crux (open, narrowed):** `docs/probes/bg_tight_tau_probe.py` — a universal *degree-only* discharge
+FAILS (`+0.0033`); a per-tree *field-adaptive* one HOLDS (`≤ F*`). So τ must be field-dependent; the equalizing
+τ is clean on low-degree (leaf/armmid) edges but the hub-hub backbone is **flow-underdetermined**, and its
+universal resolution is the arithmetic (`emit_padic`, `27·23`) / box-positivity piece — NOT more field-data.
+That is the open frontier: a universal closed-form field-`τ` on the cavity-field box, or the transfer-operator
+variational bound.
+
+**Merges:** GitHub tree→hub (PRs #166–#176, merged). GitLab MR !75 (rung2 972-cell identity) merged; MR !76
+(the `test_mcp_server.py` mcp<2.0 pin) auto-merge armed — clears the CI `test` gate for the whole branch.
+`conjecture1_proved = False`.
+
+---
+
+## Round-3 update (2026-08-31) — the branch-induction upper bound (asymptotic), mostly kernel-gated
+
+The **asymptotic** BG upper bound `F(T) ≤ F* = log(621/64)/11` now has a self-contained proof route on the
+analytic side — **independent of the parallel Lean tree→hub / Obligation A** (see `BG_BRANCH_INDUCTION_20260831.md`).
+
+**Route:** `ell(B) := log total(B) − |B|·F* ≤ 0` for all rooted branches ⟹ (boundary lemma `π/branch_total ≤ 4/3`,
+verified) ⟹ `(1/n) log π(T) ≤ F* + O(1/n) → F*`. And `ell(B) ≤ 0` is proven by induction on branch structure
+(leaf base + per-hub step).
+
+**Per-hub step ledger (the induction):**
+| k | bound | status |
+|---|---|---|
+| 1 | trivial | ✅ |
+| 2..15 | `ell(hub) ≤ ell(B(k)) ≤ 0` | broom optimum **gated** (`bg_broom_optimum`/`evolve_nearstar`); `mixed ≤ B(k)` exhaustively verified over broom pool |
+| ≥ 16 | `ell(hub) ≤ slack_g(k) − F* < 0` | **kernel-gated** (`bg_tie_slack`, frozen log-enclosures) |
+
+**Kernel gates added this campaign:** `bg_broom_optimum` (c=5, 23-adic tie), `bg_arm_balancing` (m=2), `bg_tie_cherry_worst`
+(uniform cherry-worst k≤20), `bg_bulk_discharge` (Handelman full-edge atoms, Audit lane), `bg_tie_slack` (slack
+bound k≥16). All `norm_num` / Handelman; the 23-adic arithmetic is fully discharged by `bg_broom_optimum`.
+
+**Skills:** `branch_potential.py` (`branch_ell`, `branch_total`, `broom_edges`), `tie_regime.py` (`uniform_hub_ell`,
+`cherry_vs_broom_ratio`, `slack_g`/`slack_hub_bound`, `TieCherryWorstCertificate`, `TieSlackCertificate`),
+`bg_bulk_discharge.py` (exact Bethe decomposition), `spider_broom.py`, `transfer_caterpillar.py`.
+
+**Round 4 — `mixed ≤ B(k)` (k≤15) PROVEN via log-concavity + per-child KKT (the exchange is bypassed).** The
+non-monotone child→cherry exchange is not needed. The tangent of the concave `log` at the all-cherry point gives,
+for any children, `ell(hub) − ell(B(k)) ≤ Σ_i (V(c_i) − V(cherry))` with `V(c) = ell(c) + lambda(k) x_c`,
+`lambda(k) = 3(k+1)/(4k+3)` — so the coupled k-child bound **decouples** into the per-child KKT `V(c) ≤ V(cherry)`
+(tie-free: a RELATIVE comparison hub-vs-`B(k)`). Gated: `bg_mixed_kkt` (broom children `B(2..8)`, k=2..15, 98
+atoms). The per-child envelope tail `V(c) ≤ V(cherry)` over ALL branches is **finitely closable** (NOT tied to
+the free-energy convergence rate): the near-`V(cherry)` branches are exactly the brooms. Its **high-degree half
+(`d_c ≥ 7`) is gated** (`bg_hi_degree_tail`: `V(c) ≤ lambda/(7(k+1)) < V(cherry)` from the ceiling `ell ≤ 0`
+alone). The envelope tail closes into a **three-case split** (`envelope_tail_case`): (1) `d_c ≥ 7` gated; (2)
+brooms `B(2..8)` gated; (3) `d_c ≤ 6` non-broom reduces by PURE ALGEBRA to the DEGREE-DEPENDENT refined ceiling
+`ell(c) < ell_cherry + (d_c−3)/(d_c(4k+3))` (from `x_c ≤ 1/((k+1)d_c)`; higher `d_c` → higher threshold, so the
+binding cases are `d=2,3`). **11th caught overclaim:** the earlier SINGLE threshold `ell_cherry − λ/(6(k+1))` (the
+`d=2` case for all degrees) was too strict at small `k` — a size-16 near-broom (`4 cherries + B(3)`, `d=6`) was
+mis-classified `open` at `k=2` though its actual `V < V(cherry)` by `+0.018`; the size-14 check missed it. Fixed
+degree-dependent; **every `d_c ≤ 6` non-broom now covered directly**, re-verified over all branches ≤ size 16 at
+every `k∈[2,15]` (zero open non-brooms) + generalized brooms (to size 66) + peripheral-rooted stars (to size
+101). The actual envelope `V<V(cherry)` re-stress-tested over all non-cherry branches ≤ size 15 (2.6M checks,
+worst `−0.00167` at gated `B(4)`). **Open residual:** the size-decay tail of (b) + the Lean assembly. The
+composed reduction is `bg_upper_bound.UpperBoundReduction` (4 gated pass, 1 open hypothesis). `conjecture1_proved
+= False`.
+
+**Discipline note:** 10 overclaims were caught by exhaustive/formal scrutiny this program (product bound, tangent
+route, mixed≤B(k) k≥20, …). Random-sample tests hid the mixed≤B(k) failure; the formal-proof attempt exposed it.
+Test exhaustively before believing any "worst-case is uniform/cherry" claim.
+
+**Round 5 — FINAL CONSOLIDATION (the whole upper bound dissected).** The BG upper bound `ell(B) ≤ 0` factors
+into an **arithmetic** pole (DONE, gated) and a **combinatorial** pole (one open lemma). See
+`BG_ARITHMETIC_VS_COMBINATORIAL_20260831.md` + `BG_INTEGRALITY_GAP_20260831.md` + `BG_MIXED_KKT_20260831.md`.
+
+- **Diagnosis (gated):** BG is an *integrality gap*, not a quasicrystal — the optimum is the exact rational
+  `621/64`, pinned by the single prime `23` (`4·5+3 = 4·4+7 = 23`, `529 = 23²`), and the continuous relaxation
+  *overshoots* `F*` (`f(24/5) > F*`), so **no smooth certificate can prove BG** (`bg_smooth_nogo`).
+- **Arithmetic pole (gated):** broom optimum `c=5` (`bg_broom_optimum`), analytic mixed-hub reduction
+  (`bg_mixed_kkt`, `bg_hi_degree_tail`, `bg_tie_slack`, `bg_tie_cherry_worst`), and **spider beats every
+  caterpillar** `F* > F(a)` for all `a` via the transfer-Perron surd cleared to rational atoms
+  (`bg_spider_vs_caterpillar`).
+- **Combinatorial pole (SOLE open residual):** **broom dominance** (Obligation A) — the broom is the unique
+  total-maximiser per size, shared with the parallel Lean session. The exchange landscape reduces it to: *(i)*
+  every rich-exchange local max of `rho` is the broom or a length-2 caterpillar (verified `n ≤ 15`) + *(ii)*
+  spider > caterpillar (GATED). So only **part (i)** remains. It does NOT factor via a one-move sign lemma (the
+  naive arm-shortening move *decreases* `rho`); it needs non-local (GTS / global-potential) machinery — a
+  multi-session effort.
+
+**BG gates (all green):** `bg_broom_optimum`, `bg_arm_balancing`, `bg_tie_cherry_worst`, `bg_tie_slack`,
+`bg_mixed_kkt`, `bg_hi_degree_tail`, `bg_smooth_nogo`, `bg_spider_vs_caterpillar` (+ older `bg_floor*`,
+`bg_family`, `bg_m3_moment_cut`, `bg_caterpillar_concavity`, `bg_flag_discharge`). `conjecture1_proved = False`
+throughout — held honestly; the only unproven region left is part (i), sharply bounded, with all arithmetic
+around it gated.
+
+Docs: `BG_ARITHMETIC_VS_COMBINATORIAL_20260831.md`, `BG_INTEGRALITY_GAP_20260831.md`,
+`BG_UPPER_BOUND_REDUCTION_20260831.md`, `BG_MIXED_KKT_20260831.md`, `BG_BRANCH_INDUCTION_20260831.md`,
+`BG_BROOM_DOMINANCE_20260831.md`, `BG_23ADIC_RECONCILIATION_20260831.md`.
