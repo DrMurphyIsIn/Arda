@@ -19,6 +19,33 @@ search or an SDP solver. Exact-arithmetic (sympy-only) beats cvxpy-gated.
   (`ring`+`positivity`, cvxpy-free). The deterministic PSD primitive both
   campaigns recur on (moment matrices, Gram bridges). Extensions below (B1).
 
+## STATUS UPDATE (2026-09-02) — this backlog is now essentially built
+All nine items below have shipped, been subsumed, or been built to a
+kernel-verified emitter (local `lake build` green, Mathlib v4.32.0):
+- **B1 SingularPSD** → **folded into `PSDFormEmitter`** (now handles definite *and*
+  singular positive-semidefinite matrices).
+- **P2 XorClosureStructure** → **covered** by the shipped `Xor3MomentPSDEmitter`
+  (block-rank-one PSD input) + `PseudoExpectationDualityEmitter` (which
+  first-classes `gen_xor3_duality.py`, its duality wrapper).
+- **P1 SymmetricQuadForm** → **shipped** as `SymmetricQuadFormEmitter` — the
+  symbolic-in-n level-1 moment form (`subsetForm_d1`); d≥2 (harmonic completeness)
+  remains future work.
+- **P3 PolytopeMaxMonotone** → **shipped** as `PolytopeMaxMonotoneEmitter`
+  (multi-affine, general-d corner dispatch; d=2,3 build-verified, d≥4 heartbeat-gated).
+- **P4 SecondOrderRecurrence** → **shipped** as `SecondOrderRecurrenceEmitter`
+  (two-step `Nat.le_induction`).
+- **B2 SeparableConvexExtremum** → **shipped (min/homogeneous face)** as
+  `SeparableConvexExtremumEmitter` (Jensen/tangent); the **max/vertex** face stays
+  named-open (needs the spreading-exchange list-induction, `VertexLemmaFull.lean`).
+- **B3 IntegralityGate** → **shipped** as `IntegralityGateEmitter` (composes
+  `PadicValuationEmitter` + `FiniteDecideEmitter`; the 23-gate).
+- **B4 RecursiveDominationRatio** → **shipped** as `RecursiveDominationRatioEmitter`
+  (multi-affine multivariate corner; caller supplies the extracted `P/Q` ratio).
+- **B5 AchievabilityClosure** → **shipped** as `AchievabilityClosureEmitter`.
+
+The original prioritized-backlog tables below are retained for provenance and for
+the two residual open fronts (P1 d≥2 symbolic-in-n, B2 max/vertex).
+
 ## Cross-cutting theme
 The single most-recurring shape across **both** campaigns is **"this explicit
 rational symmetric matrix is positive (semi)definite"** — moment matrices (SoS

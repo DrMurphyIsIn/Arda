@@ -561,6 +561,244 @@ jobs:
         working-directory: telperion/examples/parametric_holomorphy/lean
         run: lake build
 
+  symmetric-quad-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate SymmetricQuad Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/symmetric_quad/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/symmetric_quad/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/symmetric_quad/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — symbolic-n moment PSD)
+        working-directory: telperion/examples/symmetric_quad/lean
+        run: lake build
+
+  polytope-max-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate PolytopeMax Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/polytope_max/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/polytope_max/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/polytope_max/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — multi-affine corner box positivity)
+        working-directory: telperion/examples/polytope_max/lean
+        run: lake build
+
+  second-order-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate SecondOrder Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/second_order/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/second_order/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/second_order/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — 2nd-order recurrence closed form)
+        working-directory: telperion/examples/second_order/lean
+        run: lake build
+
+  integrality-gate-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate IntegralityGate Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/integrality_gate/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/integrality_gate/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/integrality_gate/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — p-adic integrality gate)
+        working-directory: telperion/examples/integrality_gate/lean
+        run: lake build
+
+  domination-ratio-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate DominationRatio Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/domination_ratio/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/domination_ratio/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/domination_ratio/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — rational domination ratio)
+        working-directory: telperion/examples/domination_ratio/lean
+        run: lake build
+
+  achievability-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate Achievability Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/achievability/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/achievability/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/achievability/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — achievability closure)
+        working-directory: telperion/examples/achievability/lean
+        run: lake build
+
+  separable-convex-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate SeparableConvex Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/separable_convex/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/separable_convex/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/separable_convex/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — separable-convex min/homogeneous)
+        working-directory: telperion/examples/separable_convex/lean
+        run: lake build
+
   psd-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
