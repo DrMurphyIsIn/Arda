@@ -11,6 +11,10 @@ on:
       - ".github/workflows/telperion-casestudy.yml"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   r47-regen-diff:
     runs-on: ubuntu-latest

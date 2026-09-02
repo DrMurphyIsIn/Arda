@@ -11,6 +11,10 @@ on:
       - ".github/workflows/forge-lean-e2e.yml"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   toy-compiles:
     runs-on: ubuntu-latest
@@ -147,6 +151,414 @@ jobs:
 
       - name: Build the emitted Lean (the actual verification — Cauchy-Schwarz)
         working-directory: telperion/examples/cauchy_schwarz/lean
+        run: lake build
+
+  bilinear-corner-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate BilinearCorner Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/bilinear_corner/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bilinear_corner/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bilinear_corner/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — bilinear worst-corner box)
+        working-directory: telperion/examples/bilinear_corner/lean
+        run: lake build
+
+  algebraic-bracket-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate AlgebraicBracket Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/algebraic_bracket/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/algebraic_bracket/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/algebraic_bracket/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — algebraic √ bracket)
+        working-directory: telperion/examples/algebraic_bracket/lean
+        run: lake build
+
+  halfplane-disk-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate HalfPlaneDisk Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/halfplane_disk/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/halfplane_disk/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/halfplane_disk/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — Borel–Carathéodory half-plane→disk)
+        working-directory: telperion/examples/halfplane_disk/lean
+        run: lake build
+
+  finite-argmax-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate FiniteArgmax Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/finite_argmax/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/finite_argmax/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/finite_argmax/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — finite-argmax margin)
+        working-directory: telperion/examples/finite_argmax/lean
+        run: lake build
+
+  magnitude-split-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate MagnitudeSplit Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/magnitude_split/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/magnitude_split/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/magnitude_split/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — triangle magnitude split)
+        working-directory: telperion/examples/magnitude_split/lean
+        run: lake build
+
+  disk-coord-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate DiskCoord Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/disk_coord/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/disk_coord/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/disk_coord/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — disk→coordinate bounds)
+        working-directory: telperion/examples/disk_coord/lean
+        run: lake build
+
+  cauchy-deriv-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate CauchyDeriv Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/cauchy_deriv/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/cauchy_deriv/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/cauchy_deriv/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — Cauchy derivative estimate)
+        working-directory: telperion/examples/cauchy_deriv/lean
+        run: lake build
+
+  logderiv-region-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate LogDerivRegion Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/logderiv_region/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/logderiv_region/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/logderiv_region/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — dVP log-derivative region core)
+        working-directory: telperion/examples/logderiv_region/lean
+        run: lake build
+
+  pe-duality-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate PeDuality Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/pe_duality/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/pe_duality/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/pe_duality/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — pseudo-expectation SoS-duality)
+        working-directory: telperion/examples/pe_duality/lean
+        run: lake build
+
+  order-balance-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate OrderBalance Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/order_balance/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/order_balance/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/order_balance/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — order-balance boundary hinge)
+        working-directory: telperion/examples/order_balance/lean
+        run: lake build
+
+  lfunction-product-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate LFunctionProduct Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/lfunction_product/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/lfunction_product/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/lfunction_product/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — nonneg-cosine L-product)
+        working-directory: telperion/examples/lfunction_product/lean
+        run: lake build
+
+  parametric-holomorphy-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate ParametricHolomorphy Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/parametric_holomorphy/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/parametric_holomorphy/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/parametric_holomorphy/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — parametric-integral holomorphy)
+        working-directory: telperion/examples/parametric_holomorphy/lean
         run: lake build
 
   psd-compiles:
@@ -392,6 +804,363 @@ jobs:
 
       - name: Build the hand-written Lean (the actual verification — Mertens -zeta'/zeta bridge, residue_logDeriv, boundary contradiction)
         working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build
+
+  # Compile the DRAFTED input-(R) strip representation as its OWN target. It is sorry-free but was
+  # never built; this job turns "sorry-free" into a real kernel verdict. Isolated from the green
+  # zero-free-bridge job (own `lake build StripRepr`), so an error here does NOT redden that job.
+  strip-repr-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the drafted input-(R) assembly (StripRepr — zeta_fract_repr_of, conditional on R1/R2/R3)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripRepr
+
+  # (R3) discharge: IsPreconnected stripDomain via a 4-convex-piece cover. Own target so it goes
+  # green independently of R1/R2. Removes the `IsPreconnected` hypothesis of zeta_fract_repr_of.
+  strip-repr-r3-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the (R3) preconnectedness discharge
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripReprR3
+
+  # (R2) discharge (WIP DIAGNOSTIC): DifferentiableAt fractIntegral via differentiation under the
+  # integral. May transiently carry `sorry` in h_lip/h_bint -- this job's value is verifying the
+  # OTHER 5 hypotheses (measurability, integrability, the derivative chain-rule, assembly) compile.
+  # NOT a real discharge until the file is sorry-free (checked separately below once complete).
+  strip-repr-r2-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the (R2) differentiation-under-integral discharge (WIP)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripReprR2
+
+  # (R1) discharge (WIP SKELETON): fractional-part representation of riemannZeta via Abel summation.
+  # Carries sorry placeholders for the analytic sub-obligations; this job checks the Abel-application
+  # structure typechecks. NOT a discharge until sorry-free.
+  strip-repr-r1-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the (R1) Abel-summation discharge
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripReprR1
+
+  # Assemble the UNCONDITIONAL strip representation `zeta_fract_repr` from R1+R2+R3 via
+  # `zeta_fract_repr_of`. Imports all three R-files; own job so its verdict is isolated.
+  strip-repr-assembled-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the unconditional strip representation (R1+R2+R3 assembly)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripReprAssembled
+
+  # PHASE 2: the UNCONDITIONAL crude strip growth bound `zeta_strip_bound`, assembled from input (R)
+  # `zeta_fract_repr` + input (B) `zeta_repr_integral_bound` via `zeta_strip_bound_of`. Own job.
+  strip-bound-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the unconditional crude strip bound (Phase 2)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build StripBound
+
+  # PHASE 4 core: the de la Vallee Poussin quantitative estimate `dlvp_core_estimate`, proven from
+  # the 3-4-1 positivity with the Borel-Caratheodory log-derivative bounds as explicit hypotheses.
+  zero-free-region-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the zero-free region core estimate (Phase 4 core)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build ZeroFreeRegion
+
+  # ELEMENTARY (Hadamard-free) unconditional zero-free region assembly `zeta_zero_free_poly_of`
+  # (polynomial rate Re s > 1 - c/|t|^5): product inequality + crude strip bound + pole + Cauchy.
+  zero-free-elementary-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the elementary unconditional zero-free region assembly
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build ZeroFreeElementary
+
+      # Kernel-axiom guard: the UNCONDITIONAL RH theorems must not secretly depend on `sorry`.
+      # `#print axioms` is authoritative (a grep for "sorry" can't tell a gap from docstring prose).
+      - name: Axiom guard -- RH unconditional theorems are kernel-clean (fail on sorryAx)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: |
+          lake build StripReprAssembled StripBound ZetaLogBound
+          out="$(lake env lean AxiomGuardRH.lean 2>&1 || true)"
+          echo "$out"
+          if echo "$out" | grep -q 'sorryAx'; then
+            echo "::error::a guarded RH theorem depends on sorry (sorryAx in axiom trace)"; exit 1
+          fi
+          if echo "$out" | grep -qE 'error:'; then
+            echo "::error::AxiomGuardRH.lean did not elaborate cleanly"; exit 1
+          fi
+          echo "OK: all guarded RH theorems are kernel-clean (no sorryAx)."
+
+  # (RATE UPGRADE, WIP) sharp near-line bound |ζ| ≤ C(1+log|t|) via truncated Euler-Maclaurin.
+  # Carries sorry placeholders; this job checks the skeleton (truncated rep + term bounds) typechecks.
+  zeta-log-bound-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the sharp near-line bound skeleton (WIP)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build ZetaLogBound
+
+  # POLYLOG-improved unconditional zero-free region: wires the sharp `zeta_log_bound` into the
+  # elementary cascade's 2t factor, upgrading Re s > 1 - c/γ⁵ to Re s > 1 - c/(γ⁴·(1+log(2γ))).
+  zero-free-polylog-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the polylog-improved zero-free region
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build ZeroFreePolylog
+
+      - name: Axiom guard -- riemannZeta_zero_free_polylog is kernel-clean (fail on sorryAx)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: |
+          out="$(lake env lean AxiomGuardPolylog.lean 2>&1 || true)"
+          echo "$out"
+          if echo "$out" | grep -q 'sorryAx'; then
+            echo "::error::riemannZeta_zero_free_polylog depends on sorry (sorryAx in axiom trace)"; exit 1
+          fi
+          if echo "$out" | grep -qE 'error:'; then
+            echo "::error::AxiomGuardPolylog.lean did not elaborate cleanly"; exit 1
+          fi
+          echo "OK: riemannZeta_zero_free_polylog is kernel-clean (no sorryAx)."
+
+  # RayPowerEstimate lemma pack + EmittedShapes (dogfood: output of emit_zero_free_region /
+  # emit_dominated_integrability must be kernel-valid). Both sorry-free.
+  ray-power-and-emitted-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build RayPowerEstimate + EmittedShapes (emitter dogfood)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build RayPowerEstimate EmittedShapes
+
+  # Compile the DRAFTED Borel-Caratheodory theorem (its own lakefile/toolchain). Sorry-free, 398 lines,
+  # never built; this job produces the real verdict. The crux missing piece for the region assembly.
+  borel-caratheodory-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/borel_caratheodory/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/borel_caratheodory/lean
+        run: lake exe cache get
+
+      - name: Build the drafted Borel-Caratheodory theorem (Moebius-Schwarz, 12 theorems)
+        working-directory: telperion/examples/borel_caratheodory/lean
         run: lake build
 
   bg-flag-discharge-compiles:

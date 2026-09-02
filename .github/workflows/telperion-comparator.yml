@@ -32,6 +32,10 @@ on:
       - ".github/comparator/**"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   bernoulli-comparator:
     runs-on: ubuntu-latest
