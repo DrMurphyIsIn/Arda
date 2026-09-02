@@ -115,7 +115,8 @@ class UpperBoundReduction:
                           "h/y/V_mu + positivity, ell recursion (bell_node), concave tangent (log_tangent/"
                           "bell_node_tangent), hub y-formula (bY_node) all proven. Remaining: discharge SCLStep = "
                           "the price-flow decouple (mu->mu''=3[(4d-1)-3mu]/(4d-1)^2 over I) + hbroom (gated leg #4 "
-                          "un-cleared by log-monotonicity) = the hard BG inequality itself",
+                          "un-cleared by log-monotonicity) = the hard BG inequality itself, i.e. the leaf-free "
+                          "near-broom argmax extremality (leaves excluded via leaf_le_cherry at mu''<=3/11)",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),
