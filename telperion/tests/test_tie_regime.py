@@ -533,3 +533,34 @@ def test_scl_induction_assembly_certificate():
     assert all(c.check() for _, c in comps)
     mod = cert.lean_module()
     assert "namespace BGSCLInduction" in mod
+
+
+def test_per_hub_decouple_residual_certificate():
+    """PerHubDecoupleResidualCertificate: the SCL per-hub decouple residual R(S) <= 0 (the highest-risk nlinarith),
+    reduced to 20 norm_num atoms via the flowed price mu''=muPP(d,mu) + the upward-parabola-endpoints reduction.
+    The single-price step is too loose; the flowed step closes with margin +0.007..+0.076."""
+    from telperion.tie_regime import (
+        PerHubDecoupleResidualCertificate, _decouple_muPP, _DECOUPLE_SMAX,
+    )
+    from fractions import Fraction as Fr
+    import math
+    cert = PerHubDecoupleResidualCertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 20                                    # d=2..6 x mu in {A,B} x S in {0,Smax}
+    # flowed child price stays in I and <= 3/11 for d>=3 (routes leaves safely)
+    A, B = Fr(456, 3703), Fr(3, 7)
+    for d in range(3, 7):
+        assert _decouple_muPP(d, Fr(0)) <= Fr(3, 11)
+    # soundness: the true residual R(S) (exact log) is <= 0 at the endpoints (the enclosure only loosens it)
+    FSTAR = math.log(621 / 64) / 11
+    bVc = lambda mu: (math.log(3 / 2) - 2 * FSTAR) + mu / 3
+    def R(d, S, mu):
+        s0 = (d - 1) / 3.0; mpp = float(_decouple_muPP(d, mu))
+        return ((d - 1) * bVc(mpp) - s0 / (d + s0) + math.log(1 + s0 / d) - FSTAR
+                + mu * S / (d + s0) ** 2 + mu / (d + S) - bVc(mu))
+    for d in range(2, 7):
+        for mu in (float(A), float(B)):
+            for S in (0.0, float(_DECOUPLE_SMAX[d])):
+                assert R(d, S, mu) <= 1e-9
+    mod = cert.lean_module()
+    assert "namespace BGPerHubDecouple" in mod and mod.count("by norm_num") == 20
