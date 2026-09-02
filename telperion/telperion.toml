@@ -368,3 +368,64 @@ group = "quick"    # route-(b) walk-count m_2 cut: mass-transport flag-LP dual =
 name = "bg_caterpillar_concavity"
 script = "examples/bg_caterpillar_concavity/generate.py"
 group = "quick"    # route-(b) piece 2: caterpillar density concave + strict max at a=7 (enclosure-conditional); ~0.1 s
+
+# RH / cross-cutting emitter examples (2026-09-02, sweeps 1-2) — all fast regeneration.
+[[check]]
+name = "bilinear_corner"
+script = "examples/bilinear_corner/generate.py"
+group = "quick"    # bilinear worst-corner box positivity; ~0.1 s
+
+[[check]]
+name = "algebraic_bracket"
+script = "examples/algebraic_bracket/generate.py"
+group = "quick"    # rational sqrt enclosure; ~0.1 s
+
+[[check]]
+name = "halfplane_disk"
+script = "examples/halfplane_disk/generate.py"
+group = "quick"    # Borel-Caratheodory Moebius positivity core; ~0.1 s
+
+[[check]]
+name = "magnitude_split"
+script = "examples/magnitude_split/generate.py"
+group = "quick"    # triangle-inequality magnitude split; ~0.1 s
+
+[[check]]
+name = "disk_coord"
+script = "examples/disk_coord/generate.py"
+group = "quick"    # disk membership -> linear coordinate bounds; ~0.1 s
+
+[[check]]
+name = "cauchy_deriv"
+script = "examples/cauchy_deriv/generate.py"
+group = "quick"    # Cauchy derivative estimate + rho' constant; ~0.1 s
+
+[[check]]
+name = "logderiv_region"
+script = "examples/logderiv_region/generate.py"
+group = "quick"    # dVP log-derivative region core; ~0.1 s
+
+[[check]]
+name = "finite_argmax"
+script = "examples/finite_argmax/generate.py"
+group = "quick"    # finite extremality cross-multiplied margin; ~0.1 s
+
+[[check]]
+name = "pe_duality"
+script = "examples/pe_duality/generate.py"
+group = "quick"    # pseudo-expectation SoS-refutation duality; ~0.1 s
+
+[[check]]
+name = "order_balance"
+script = "examples/order_balance/generate.py"
+group = "quick"    # integer zero/pole-order boundary hinge; ~0.1 s
+
+[[check]]
+name = "lfunction_product"
+script = "examples/lfunction_product/generate.py"
+group = "quick"    # nonneg-cosine -> L-product lower bound; ~0.1 s
+
+[[check]]
+name = "parametric_holomorphy"
+script = "examples/parametric_holomorphy/generate.py"
+group = "quick"    # parametric tail-integral holomorphy; ~0.1 s
