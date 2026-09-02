@@ -41,8 +41,8 @@ from typing import Callable, Optional
 
 from .spider_broom import BroomOptimumCertificate
 from .tie_regime import (
-    HighDegreeTailCertificate, MdGeometricTailCertificate, MixedHubKKTCertificate,
-    NearBroomUnimodalityCertificate, TieSlackCertificate,
+    ExtremalityPriceMapCertificate, HighDegreeTailCertificate, MdGeometricTailCertificate,
+    MixedHubKKTCertificate, NearBroomUnimodalityCertificate, TieSlackCertificate,
 )
 
 GATED, BASE, BOUNDARY, LEMMA, HYPOTHESIS = "GATED", "BASE", "BOUNDARY", "LEMMA", "HYPOTHESIS"
@@ -90,8 +90,11 @@ class UpperBoundReduction:
             ReductionStep("2b-lo-unimodal", "near-broom family (d-2)cherries+B(m) peaks at m*=max(1,d-3) & strictly "
                           "decreases after (BIG^11 < (621/64)^2 + Handelman monotone tail) -- UNCONDITIONAL, no rho",
                           GATED, NearBroomUnimodalityCertificate),
-            ReductionStep("2b-lo-extremality", "the one open lemma: the near-broom is the argmax over ALL non-broom "
-                          "degree-d branches (a combinatorial single-child statement; adversarial margin +0.017)",
+            ReductionStep("2b-lo-pricemap", "extremality price-flow: the single-child lemma's joint size-induction "
+                          "keeps prices in the invariant interval I=[456/3703,3/7] (concavity-tangent map)",
+                          GATED, ExtremalityPriceMapCertificate),
+            ReductionStep("2b-lo-extremality", "the one open lemma: assemble the single-child induction on I (SCL "
+                          "deg>=2 margin +0.031, broom-vs-cherry +0.012, leaf->cherry exchange) => near-broom argmax",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),

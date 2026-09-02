@@ -472,3 +472,23 @@ def test_near_broom_unimodality_certificate():
         assert ell_nb(d, ms) < float(min(small_degree_threshold(k, d) for k in range(2, 16)))
     mod = cert.lean_module()
     assert "namespace BGNearBroomUnimodal" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
+def test_extremality_price_map_certificate():
+    """ExtremalityPriceMapCertificate: the single-child lemma's joint size-induction has its prices confined to the
+    invariant interval I=[456/3703,3/7]. The concavity-tangent price map mu''=3[(4d-1)-3mu]/(4d-1)^2 keeps I
+    invariant for hub-degrees 2..6, and all actual hub prices mu_d=3/(4d-1) lie in I. Pure exact rational."""
+    from telperion.tie_regime import ExtremalityPriceMapCertificate, _price_map, _EXTREMALITY_I
+    from fractions import Fraction as Fr
+    cert = ExtremalityPriceMapCertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 20
+    A, B = _EXTREMALITY_I
+    # invariance: mu'' (decreasing in mu) maps [A,B] into [A,B] for d=2..6
+    for d in range(2, 7):
+        assert _price_map(d, B) >= A and _price_map(d, A) <= B
+        assert A <= Fr(3, 4 * d - 1) <= B
+    # A is the fixed point of the tightest (d=6) map
+    assert _price_map(6, B) == A
+    mod = cert.lean_module()
+    assert "namespace BGExtremalityPriceMap" in mod and mod.count("by norm_num") == len(cert.atoms())

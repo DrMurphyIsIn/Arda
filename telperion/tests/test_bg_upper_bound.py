@@ -18,7 +18,7 @@ def test_all_gated_steps_check():
     slack, mixed-KKT brooms, high-degree tail, broom optimum)."""
     R = UpperBoundReduction.build()
     gated = R.verify_gated()
-    assert len(gated) == 6   # slack, mixed-KKT brooms, high-degree tail, M_d finite, near-broom unimodality, broom optimum
+    assert len(gated) == 7   # slack, mixed-KKT, high-deg tail, M_d finite, near-broom unimodal, extremality price-map, broom opt
     assert all(gated.values()), gated
     assert R.gated_ok()
 
@@ -45,7 +45,7 @@ def test_conjecture_not_proved():
 def test_step_kinds_are_wellformed():
     """Every step has a recognized kind, and GATED steps carry a certificate factory while non-GATED do not."""
     R = UpperBoundReduction.build()
-    assert len(R.steps) == 10
+    assert len(R.steps) == 11
     for s in R.steps:
         assert s.kind in {"GATED", "BASE", "BOUNDARY", "LEMMA", "HYPOTHESIS"}
         if s.kind == GATED:
