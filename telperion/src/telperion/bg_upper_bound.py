@@ -109,13 +109,13 @@ class UpperBoundReduction:
             ReductionStep("2b-lo-assembly", "SCL induction arithmetic backbone: every leg (price-map, tangent gap 0, "
                           "broom-vs-cherry, leaf-exchange, hi-degree, near-broom) consistent + price map closed on I",
                           GATED, SCLInductionCertificate),
-            ReductionStep("2b-lo-scl-induction", "SCL well-founded induction on |c|: Lean-formalized in "
-                          "R3Cert.BGSCLInduction (no `sorry`, local lake build green) -- recursion (scl_of_child_step), "
-                          "concave-log tangent (log_tangent), concrete cavity total/ell/h/y/V_mu (cav/bell/bV) + "
-                          "positivity, the ell recursion (bell_node), and the tangent-linearized hub bound "
-                          "(bell_node_tangent). Remaining: the PRICE-FLOW assembly (mu->mu''=3[(4d-1)-3mu]/(4d-1)^2 "
-                          "over I) turning bell_node_tangent into the SCL, + hbroom (un-clearing gated leg #4 by "
-                          "log-monotonicity) => near-broom argmax => EXTREMALITY",
+            ReductionStep("2b-lo-scl-induction", "SCL Lean-formalized in R3Cert.BGSCLInduction (no `sorry`, local "
+                          "lake build green): the concrete SCL V_mu(b)<=V_mu(cherry) for EVERY branch is REDUCED "
+                          "(scl_of_step) to ONE per-hub inequality SCLStep -- recursion, concrete cavity total/ell/"
+                          "h/y/V_mu + positivity, ell recursion (bell_node), concave tangent (log_tangent/"
+                          "bell_node_tangent), hub y-formula (bY_node) all proven. Remaining: discharge SCLStep = "
+                          "the price-flow decouple (mu->mu''=3[(4d-1)-3mu]/(4d-1)^2 over I) + hbroom (gated leg #4 "
+                          "un-cleared by log-monotonicity) = the hard BG inequality itself",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),

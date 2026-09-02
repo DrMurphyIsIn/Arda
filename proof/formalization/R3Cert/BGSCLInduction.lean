@@ -23,16 +23,22 @@
     * `cav`/`cavAgg` — the `(U, total)` degree-weighted matching-sum recursion; `cav_pos`/`cavAgg_pos` positivity.
     * `FSTAR`, `btotal`, `bell`, `bh`, `bY`, `bV` — concrete `ell = log total - |b|*F*`, `h = U/total`,
       `y = h/deg`, `V_mu = ell + mu*y`.
-    THE ELL RECURSION + TANGENT-LINEARIZED HUB BOUND:
+    THE ELL RECURSION + TANGENT-LINEARIZED HUB BOUND + HUB y-FORMULA:
     * `bell_node` — `ell(node cs) = (Sum_c ell c) + (log(1 + (Sum_c y_c)/d) - F*)`, `d = |cs|+1`.
     * `bell_node_tangent` — combines `bell_node` + `log_tangent`: `ell(node cs) <= (Sum_c ell c) + [tangent
-      line of log at any s0 >= 0] - F*`.  The analytic heart of `htangent`.
+      line of log at any s0 >= 0] - F*`.  The analytic heart of the decouple.
+    * `bY_node` — `y(node cs) = 1/(d + Sum_c y_c)` (from `h = U/total = d/(d+S)`).  The clean rational form.
+    THE FULL REDUCTION TO ONE PER-HUB INEQUALITY:
+    * `cherry`, `SCLStep`, `scl_of_step` — the concrete SCL `V_mu(b) <= V_mu(cherry)` for EVERY branch, reduced
+      by the well-founded recursion to a SINGLE per-hub step `SCLStep mu` (children `<=` cherry => hub `<=` cherry).
 
-  REMAINING for full Lean closure of the extremality: the PRICE-FLOW assembly turning `bell_node_tangent`
-  (at the all-cherry reference `s0 = (d-1)*y_cherry`) into the SCL via the `mu -> mu'' = 3[(4d-1)-3mu]/(4d-1)^2`
-  induction over the invariant interval `I = [456/3703, 3/7]` (the fixed-`mu` `scl_holds` provably cannot absorb
-  the residual `(S-S*)[1/(d+S*)-mu]` term -- the price flow is essential), plus `hbroom` (un-clearing the gated
-  rational leg #4 by `log`-monotonicity).  `conjecture1_proved = False` (also: finite-`n` structural side + lower bound).
+  So the concrete SCL is fully assembled in Lean down to `SCLStep mu` -- the recursion, the concrete cavity
+  `total`/`ell`/`V_mu` (with positivity), the `ell` recursion, the concave tangent, and the hub `y`-formula are
+  all proven.  REMAINING = discharge `SCLStep mu` itself: the price-flow decouple (`bell_node_tangent` + `bY_node`
+  at the all-cherry reference, with the `mu -> mu''` price map over `I = [456/3703, 3/7]`) plus `hbroom` (the
+  gated rational leg #4 un-cleared to a real `log` inequality by monotonicity).  Worked through by hand, this is
+  the genuinely hard inequality `(d-2)V_ch - mu*S + log(1+S/d) - F* + mu/(d+S) <= 0` -- the BG core, not a
+  mechanical step.  `conjecture1_proved = False` (also: finite-`n` structural side + matching lower bound).
 -/
 import Mathlib
 
@@ -351,6 +357,48 @@ theorem bell_node_tangent (cs : List Branch) {s0 : ℝ} (hs0 : 0 ≤ s0) :
   have htan := log_tangent hd hSnn hs0
   rw [bell_node]
   linarith
+
+/-- **The hub `y` formula:** `y(node cs) = 1/(d + Σ_c y_c)`, `d = |cs|+1` (since `h(hub) = U/total =
+    1/(1+S/d) = d/(d+S)` and `y = h/d`).  This clean rational form makes the price bookkeeping tractable. -/
+theorem bY_node (cs : List Branch) :
+    bY (Branch.node cs) = 1 / (((cs.length : ℝ) + 1) + (cs.map bY).sum) := by
+  have hd : (0:ℝ) < (cs.length : ℝ) + 1 := by positivity
+  have hU : (cavAgg cs).1 ≠ 0 := ne_of_gt (cavAgg_pos cs).1
+  have hSnn : (0:ℝ) ≤ (cs.map bY).sum := by
+    apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c
+  have hden : (0:ℝ) < ((cs.length : ℝ) + 1) + (cs.map bY).sum := by linarith
+  have hfac : (0:ℝ) < 1 + (cs.map bY).sum / ((cs.length : ℝ) + 1) := by
+    have : (0:ℝ) ≤ (cs.map bY).sum / ((cs.length : ℝ) + 1) := div_nonneg hSnn (le_of_lt hd)
+    linarith
+  conv_lhs => rw [bY, bh]
+  simp only [cav, bcc]
+  rw [cavAgg_snd, eq_div_iff (ne_of_gt hden)]
+  have h1 := hfac.ne'
+  have h2 := hd.ne'
+  field_simp
+
+/-! ### (b.3) The concrete SCL reduced to one per-hub step. -/
+
+/-- The cherry child: armmid with one leaf, `node [node []]` (size 2, degree 2). -/
+def cherry : Branch := Branch.node [Branch.node []]
+
+/-- **The per-hub SCL step** at price `μ`: if every child of a hub satisfies the SCL (`V_μ ≤ V_μ(cherry)`),
+    so does the hub.  This is the precise remaining obligation — the price-flow decouple discharged by
+    `bell_node_tangent` + `bY_node` + the telperion-gated legs (#1 price-map, #4 broom-vs-cherry, #5 leaf,
+    hi-degree).  It is the concrete instance of `scl_of_child_step`'s per-hub `hstep`. -/
+def SCLStep (μ : ℝ) : Prop :=
+  ∀ cs : List Branch, (∀ c ∈ cs, bV μ c ≤ bV μ cherry) → bV μ (Branch.node cs) ≤ bV μ cherry
+
+/-- **The concrete SCL from the per-hub step.**  Given the per-hub step at price `μ`, the single-child lemma
+    `V_μ(b) ≤ V_μ(cherry)` holds for EVERY rooted branch `b`, by the well-founded recursion on `|b|`.  This is
+    the full reduction of the concrete SCL to one precise inequality (`SCLStep μ`); the recursion, the concrete
+    cavity `total`/`ell`/`V_μ`, the `ell` recursion, the concave tangent, and the hub `y`-formula are all proven. -/
+theorem scl_of_step (μ : ℝ) (hstep : SCLStep μ) : ∀ b, bV μ b ≤ bV μ cherry := by
+  refine scl_of_child_step bsize bchildren (fun b => bV μ b ≤ bV μ cherry) bchildren_bsize_lt
+    (fun a hIH => ?_)
+  cases a with
+  | node cs => exact hstep cs (fun c hc => hIH c (by simpa only [bchildren] using hc))
 
 end BGSCL
 end R3Cert
