@@ -17,22 +17,28 @@ The chain (see `docs/BG_UPPER_BOUND_REDUCTION_20260831.md`):
         [2b] k <= 15   concavity tangent + per-child KKT V(c_i) <= V(cherry):
               - brooms B(2..8)          GATED: MixedHubKKTCertificate.
               - d_c >= 7                GATED: HighDegreeTailCertificate.
-              - d_c <= 6 non-broom      the M_d frontier bound, now split into:
+              - d_c <= 6 non-broom      the M_d frontier bound, split into:
                   * near-broom finite   GATED: MdGeometricTailCertificate (peak arithmetic < threshold).
                   * near-broom unimodal GATED: NearBroomUnimodalityCertificate (peaks at m*, strictly decreases).
-                  * extremality         HYPOTHESIS (b): the near-broom is the argmax non-broom degree-d branch.
+                  * extremality         the single-child lemma (SCL), now ASSEMBLED (2026-09-02):
+                      - price flow       GATED: ExtremalityPriceMapCertificate (I=[456/3703,3/7] invariant).
+                      - broom leg #4     GATED: BroomVsCherryOnICertificate (V_mu(B(d-1))<=V_mu(cherry) on I).
+                      - leaf leg #5      GATED: LeafExchangeCertificate (leaf->cherry raises ell, d=3..6).
+                      - assembly         GATED: SCLInductionCertificate (all legs consistent + price map closed on I).
+                      - SCL induction    LEMMA: the well-founded recursion on |c| (as 1b; Lean = future work).
   [3] broom optimum   ell(B(k)) <= 0, = 0 iff k=5 (the 23-adic tie)        GATED: BroomOptimumCertificate.
 
-The ONLY open analytic input is HYPOTHESIS (b), now SHARPENED (2026-09-01) to a single COMBINATORIAL statement:
-the near-broom "(d-2) cherries + B(m)" is the argmax over ALL non-broom root-degree-d branches.  The earlier
-"even-step contraction rho<=5/12" framing was WRONG: the near-broom family does not climb toward threshold via a
-geometric tail -- it PEAKS at m* = max(1, d-3) (sizes 4,6,10,14,16 for d=2..6; margins +0.017..+0.040) and then
-STRICTLY DECREASES (linearly, away from threshold).  This unimodality is now UNCONDITIONALLY gated
-(NearBroomUnimodalityCertificate): Delta(d,m) < 0 <=> BIG(d,m)^11 < (621/64)^2 (pure rational, F* cleared), with a
-degree-1 positive-coefficient Handelman certificate for the monotone tail (d=3..6) and BIG(2,m) < 3/2 (<=>
-4m+3>0) for d=2.  So the frontier reduces to the extremality alone -- adversarially checked (two-broom /
-deep-nested competitors sit >= +0.017 below the near-broom peak), a single-child combinatorial lemma, NOT a rate.
-conjecture1_proved = False.
+EXTREMALITY assembly (2026-09-02): the last HYPOTHESIS (b) -- the single-child lemma `V_mu(c) <= V_mu(cherry)` on
+the invariant price interval `I=[456/3703,3/7]` -- is discharged by strong induction on `|c|` (price map keeps `I`
+invariant; concave-log tangent decouples a degree-`d<=6` hub into per-child inequalities at the child price
+`mu'' in I`; child cases leaf [#5, excluded] / broom `B(m<=5)` [#4] / degree `>=7` [HighDegreeTail] / non-broom
+degree `<=6` [IH]).  All arithmetic legs are now GATED (norm_num certificates, #4 with log-enclosures, #5 pure
+rational `(3(4d-1)/(2(4d+1)))^11 > 621/64`; `SCLInductionCertificate` re-checks their mutual consistency + that
+the price map is closed on `I`).  The SINGLE remaining open input (b) is thereby reduced from "assemble + prove
+the extremality" to purely the WELL-FOUNDED RECURSION on `|c|` -- a Lean induction proof analogous to the
+branch-ceiling induction (1b).  `conjecture1_proved = False`: the recursion Lean formalization is future work, and
+the FULL conjecture also needs the finite-`n` structural side (tree->hub / Hnorm-Hdom) and the matching lower
+bound (`S(k,5)` achieves `F*`).
 """
 from __future__ import annotations
 
@@ -41,9 +47,9 @@ from typing import Callable, Optional
 
 from .spider_broom import BroomOptimumCertificate
 from .tie_regime import (
-    BroomVsCherryCertificate, ExtremalityPriceMapCertificate, HighDegreeTailCertificate,
+    BroomVsCherryOnICertificate, ExtremalityPriceMapCertificate, HighDegreeTailCertificate,
     LeafExchangeCertificate, MdGeometricTailCertificate, MixedHubKKTCertificate,
-    NearBroomUnimodalityCertificate, TieSlackCertificate,
+    NearBroomUnimodalityCertificate, SCLInductionCertificate, TieSlackCertificate,
 )
 
 GATED, BASE, BOUNDARY, LEMMA, HYPOTHESIS = "GATED", "BASE", "BOUNDARY", "LEMMA", "HYPOTHESIS"
@@ -91,20 +97,26 @@ class UpperBoundReduction:
             ReductionStep("2b-lo-unimodal", "near-broom family (d-2)cherries+B(m) peaks at m*=max(1,d-3) & strictly "
                           "decreases after (BIG^11 < (621/64)^2 + Handelman monotone tail) -- UNCONDITIONAL, no rho",
                           GATED, NearBroomUnimodalityCertificate),
-            ReductionStep("2b-lo-pricemap", "extremality #1 price-flow: the single-child lemma's joint size-induction "
+            ReductionStep("2b-lo-pricemap", "extremality price-flow: the single-child lemma's joint size-induction "
                           "keeps prices in the invariant interval I=[456/3703,3/7] (concavity-tangent map)",
                           GATED, ExtremalityPriceMapCertificate),
-            ReductionStep("2b-lo-tangent", "extremality #2 tangent step: V_mu(hub) <= V_mu(B(d-1)) from concavity of "
-                          "L(s)=log(1+s/d)-F* (Real.log concave; the all-cherry point is the tangent, gap 0)", LEMMA),
-            ReductionStep("2b-lo-broomcherry", "extremality #4: broom child never beats cherry on I, "
-                          "V_mu(B(k)) <= V_mu(cherry) all k (finite head + broom-optimum tail)",
-                          GATED, BroomVsCherryCertificate),
-            ReductionStep("2b-lo-leafexchange", "extremality #5: leaf->cherry raises ell (d>=3), (5/6)^11 > "
-                          "(2/3)^11(621/64) -- bare leaves never in the extremum",
+            ReductionStep("2b-lo-bvc", "extremality leg #4: reference broom V_mu(B(d-1)) <= V_mu(cherry) on I "
+                          "(both endpoints, brooms deg<=6; margin +0.012)",
+                          GATED, BroomVsCherryOnICertificate),
+            ReductionStep("2b-lo-leaf", "extremality leg #5: leaf->cherry raises ell for d in 3..6 "
+                          "((3(4d-1)/(2(4d+1)))^11 > 621/64), so bare leaves never occur in the argmax",
                           GATED, LeafExchangeCertificate),
-            ReductionStep("2b-lo-extremality", "extremality #3+assembly: the SCL joint size-induction composing the "
-                          "gated pieces #1,#2,#4,#5,#6 => V_mu(c)<=V_mu(cherry) => near-broom argmax (structural "
-                          "well-founded recursion on |c|; all analytic/rational leaves now gated)",
+            ReductionStep("2b-lo-assembly", "SCL induction arithmetic backbone: every leg (price-map, tangent gap 0, "
+                          "broom-vs-cherry, leaf-exchange, hi-degree, near-broom) consistent + price map closed on I",
+                          GATED, SCLInductionCertificate),
+            ReductionStep("2b-lo-scl-induction", "SCL Lean-formalized in R3Cert.BGSCLInduction (no `sorry`, local "
+                          "lake build green): the concrete SCL V_mu(b)<=V_mu(cherry) for EVERY branch is REDUCED "
+                          "(scl_of_step) to ONE per-hub inequality SCLStep -- recursion, concrete cavity total/ell/"
+                          "h/y/V_mu + positivity, ell recursion (bell_node), concave tangent (log_tangent/"
+                          "bell_node_tangent), hub y-formula (bY_node) all proven. Remaining: discharge SCLStep = "
+                          "the price-flow decouple (mu->mu''=3[(4d-1)-3mu]/(4d-1)^2 over I) + hbroom (gated leg #4 "
+                          "un-cleared by log-monotonicity) = the hard BG inequality itself, i.e. the leaf-free "
+                          "near-broom argmax extremality (leaves excluded via leaf_le_cherry at mu''<=3/11)",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),

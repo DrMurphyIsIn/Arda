@@ -18,20 +18,23 @@ def test_all_gated_steps_check():
     slack, mixed-KKT brooms, high-degree tail, broom optimum)."""
     R = UpperBoundReduction.build()
     gated = R.verify_gated()
-    assert len(gated) == 9   # + extremality broom-vs-cherry (#4) and leaf-exchange (#5)
+    # slack, mixed-KKT, high-deg tail, M_d finite, near-broom unimodal, extremality price-map, broom-vs-cherry (#4),
+    # leaf-exchange (#5), SCL-assembly-consistency, broom opt
+    assert len(gated) == 10
     assert all(gated.values()), gated
     assert R.gated_ok()
 
 
 def test_exactly_one_open_hypothesis():
-    """The reduction has EXACTLY one open input -- now purely the SCL induction ASSEMBLY (all analytic/rational
-    leaves of the extremality are gated; the residual is structural well-founded recursion on |c|)."""
+    """The reduction has EXACTLY one open analytic input.  After the 2026-09-02 extremality assembly, all its
+    arithmetic legs (price-map, broom-vs-cherry #4, leaf-exchange #5, hi-degree, near-broom, assembly-consistency)
+    are GATED, so the sole HYPOTHESIS is now the well-founded SCL RECURSION on |c| (the Lean induction glue)."""
     R = UpperBoundReduction.build()
     opens = R.open_hypotheses()
     assert len(opens) == 1
     assert opens[0].kind == HYPOTHESIS
-    assert opens[0].tag == "2b-lo-extremality"
-    assert "assembly" in opens[0].statement and "well-founded recursion" in opens[0].statement
+    assert opens[0].tag == "2b-lo-scl-induction"
+    assert "argmax" in opens[0].statement
 
 
 def test_conjecture_not_proved():

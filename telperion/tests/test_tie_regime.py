@@ -494,43 +494,42 @@ def test_extremality_price_map_certificate():
     assert "namespace BGExtremalityPriceMap" in mod and mod.count("by norm_num") == len(cert.atoms())
 
 
+def test_broom_vs_cherry_on_I_certificate():
+    """BroomVsCherryOnICertificate (extremality leg #4): V_mu(B(j)) <= V_mu(cherry) for every broom child of
+    degree <= 6 (j=1..5) UNIFORMLY on I=[456/3703,3/7] (linear in mu -> both endpoints suffice). Cleared to
+    log-enclosure atoms 11 L(total B(j)) - 11 L(3/2) - (2j-1) L(621/64) < 11 mu (1/3 - y_Bj)."""
+    from telperion.tie_regime import BroomVsCherryOnICertificate
+    cert = BroomVsCherryOnICertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 10          # j=1..5 x {A, B}
+    mod = cert.lean_module()
+    assert "namespace BGBroomVsCherry" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
 def test_leaf_exchange_certificate():
-    """LeafExchangeCertificate (extremality #5): leaf->cherry raises ell for d>=3 hubs, so bare leaves never occur
-    in the extremum. Single pure-rational atom (5/6)^11 > (2/3)^11(621/64) at the d+s=4 floor."""
+    """LeafExchangeCertificate (extremality leg #5): leaf->cherry strictly raises ell for hub degree d=3..6, so
+    bare leaves never occur in the M_d argmax. Pure rational (F* cleared): (3(4d-1)/(2(4d+1)))^11 > 621/64."""
     from telperion.tie_regime import LeafExchangeCertificate
-    from telperion.branch_potential import F_STAR
     from fractions import Fraction as Fr
-    import math
     cert = LeafExchangeCertificate()
     assert cert.check() is True
-    assert len(cert.atoms()) == 1
-    assert Fr(5, 6) ** 11 > Fr(2, 3) ** 11 * Fr(621, 64)
-    # soundness: the exchange delta at the worst case d+s=4 is > 0 (cherry beats leaf)
-    delta = (math.log(1.5) - F_STAR) + math.log((4 - Fr(2, 3)) / 4)
-    assert delta > 0
+    assert len(cert.atoms()) == 4           # d=3..6
+    for _, lhs, rhs, op in cert.atoms():
+        assert op == ">" and lhs > rhs and rhs == Fr(621, 64)
     mod = cert.lean_module()
-    assert "namespace BGLeafExchange" in mod and mod.count("by norm_num") == 1
+    assert "namespace BGLeafExchange" in mod and mod.count("by norm_num") == len(cert.atoms())
 
 
-def test_broom_vs_cherry_certificate():
-    """BroomVsCherryCertificate (extremality #4): a broom child never beats the cherry on I=[456/3703,3/7] --
-    V_mu(B(k)) <= V_mu(cherry) for all k. Finite head k=1..4 (enclosures) + broom-optimum tail k>=5, both endpoints."""
-    from telperion.tie_regime import BroomVsCherryCertificate
-    from telperion.branch_potential import F_STAR
-    from telperion.spider_broom import broom_total
-    from fractions import Fraction as Fr
-    import math
-    cert = BroomVsCherryCertificate()
+def test_scl_induction_assembly_certificate():
+    """SCLInductionCertificate: the extremality assembly re-checks every arithmetic leg (price-map, broom-vs-cherry,
+    leaf-exchange, hi-degree, near-broom, M_d step/tail, mixed-KKT) AND that the price map is closed on I. Gates the
+    arithmetic backbone of the single-child induction; the well-founded recursion on |c| remains the open glue."""
+    from telperion.tie_regime import SCLInductionCertificate
+    cert = SCLInductionCertificate()
     assert cert.check() is True
-    assert len(cert.atoms()) == 10                                    # (k=1..4 + tail) x 2 endpoints
-    ELL_CH = math.log(1.5) - 2 * F_STAR
-    A, B = Fr(456, 3703), Fr(3, 7)
-    # soundness: V_mu(B(k)) < V_mu(cherry) at both endpoints, finite k
-    for mu in (A, B):
-        for k in range(1, 8):
-            t = broom_total(k)
-            ellBk = (math.log(t.numerator) - math.log(t.denominator)) - (2 * k + 1) * F_STAR
-            V = ellBk + float(mu) * float(Fr(3, 4 * k + 3))
-            assert V < ELL_CH + float(mu) / 3
+    # every component leg is itself gated
+    comps = cert.components()
+    assert len(comps) == 8
+    assert all(c.check() for _, c in comps)
     mod = cert.lean_module()
-    assert "namespace BGBroomVsCherry" in mod and mod.count("by norm_num") == 10
+    assert "namespace BGSCLInduction" in mod

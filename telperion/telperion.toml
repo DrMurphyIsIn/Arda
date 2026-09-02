@@ -418,3 +418,13 @@ group = "quick"    # integrality-gap no-go: continuous broom relaxation f(24/5)>
 name = "bg_spider_vs_caterpillar"
 script = "examples/bg_spider_vs_caterpillar/generate.py"
 group = "quick"    # broom-dominance (ii): spider F*>F(a) beats every caterpillar, surd-cleared rational atoms a=1..12; ~0.2 s
+
+[[check]]
+name = "bg_broom_vs_cherry"
+script = "examples/bg_broom_vs_cherry/generate.py"
+group = "quick"    # route-(b) extremality leg #4: V_mu(B(j))<=V_mu(cherry) on I=[456/3703,3/7], brooms deg<=6; ~0.1 s
+
+[[check]]
+name = "bg_leaf_exchange"
+script = "examples/bg_leaf_exchange/generate.py"
+group = "quick"    # route-(b) extremality leg #5: leaf->cherry raises ell, (3(4d-1)/(2(4d+1)))^11>621/64 d=3..6; ~0.1 s
