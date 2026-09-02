@@ -32,20 +32,21 @@ namespace ZeroFreeBridge
 private noncomputable def fractTail (s : ℂ) (N : ℝ) : ℂ :=
   ∫ x in Set.Ioi N, ((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)
 
-/-- (TRUNC) truncated Euler–Maclaurin representation of ζ on `Re s > 1` at integer cutoff `N ≥ 1`.
-    Derived from the finite Abel identity and `zeta_fract_repr`. -/
-theorem zeta_trunc {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N) :
+/-- (TRUNC) truncated Euler–Maclaurin representation of ζ on `0 < Re s`, `s ≠ 1`, at integer cutoff
+    `N ≥ 1`. Derived from the finite Abel identity (`zeta_partial_sum_repr`) and `zeta_fract_repr`.
+    Valid on the full elementary strip (not just `Re s > 1`): the partial-sum identity is algebraic
+    and the tail integral is over a compact interval. -/
+theorem zeta_trunc {s : ℂ} (hs0re : 0 < s.re) (hsne1 : s ≠ 1) {N : ℕ} (hN : 1 ≤ N) :
     riemannZeta s
       = (∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s))
         + (N : ℂ) ^ (1 - s) / (s - 1)
         - s * fractTail s (N : ℝ) := by
-  have hs1 : s ≠ 1 := by intro h; rw [h] at hs; simp at hs
   have hmem : s ∈ stripDomain := by
     refine ⟨?_, ?_⟩
-    · show (0 : ℝ) < s.re; linarith
-    · simp only [Set.mem_singleton_iff]; exact hs1
+    · show (0 : ℝ) < s.re; exact hs0re
+    · simp only [Set.mem_singleton_iff]; exact hsne1
   have hrepr := zeta_fract_repr hmem
-  have hpsum := zeta_partial_sum_repr hs hN
+  have hpsum := zeta_partial_sum_repr hs0re hsne1 hN
   have hle : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   -- `fractIntegrand` is integrable on `Ioi 1` (Re s > 0, dominated by `t^{-(σ+1)}`).
   have hint1 : IntegrableOn (fractIntegrand s) (Set.Ioi (1 : ℝ)) := by
@@ -150,6 +151,61 @@ theorem norm_tail_term_le {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 1 ≤ N) :
 theorem zeta_log_bound {σ t : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (ht : 2 ≤ |t|) :
     ∃ C : ℝ, 0 < C ∧
       ‖riemannZeta ((σ : ℂ) + t * Complex.I)‖ ≤ C * (1 + Real.log |t|) := by
-  sorry
+  refine ⟨6, by norm_num, ?_⟩
+  set s : ℂ := (σ : ℂ) + t * Complex.I with hs_def
+  have hsre : s.re = σ := by simp [hs_def]
+  have hsim : s.im = t := by simp [hs_def]
+  -- basic real facts about |t|
+  have htpos : (0 : ℝ) < |t| := lt_of_lt_of_le two_pos ht
+  have hlog0 : 0 ≤ Real.log |t| := Real.log_nonneg (by linarith)
+  have htne : t ≠ 0 := by intro h; rw [h, abs_zero] at ht; linarith
+  -- cutoff N = ⌊|t|⌋
+  set N : ℕ := ⌊|t|⌋₊ with hN_def
+  have hN1 : 1 ≤ N := Nat.le_floor (by push_cast; linarith)
+  have hNR1 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN1
+  have hNRpos : (0 : ℝ) < (N : ℝ) := by linarith
+  have hNle : (N : ℝ) ≤ |t| := Nat.floor_le htpos.le
+  have hNgt : |t| - 1 < (N : ℝ) := by have := Nat.lt_floor_add_one |t|; linarith
+  -- s ≠ 1 and 0 < s.re
+  have hsne1 : s ≠ 1 := by intro h; apply htne; rw [← hsim, h, Complex.one_im]
+  have hspos : 0 < s.re := by rw [hsre]; linarith
+  have hsre1 : (1 : ℝ) ≤ s.re := by rw [hsre]; exact hσ1
+  -- truncated Euler–Maclaurin at N
+  have htrunc := zeta_trunc hspos hsne1 hN1
+  -- Term A: ‖Σ n^{-s}‖ ≤ 1 + log N ≤ 1 + log|t|.
+  have hlogle : Real.log (N : ℝ) ≤ Real.log |t| := Real.log_le_log hNRpos hNle
+  have hA : ‖∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)‖ ≤ 1 + Real.log |t| := by
+    have := norm_partial_sum_le hsre1 hN1
+    linarith
+  -- Term B: ‖N^{1-s}/(s-1)‖ ≤ 1 (numerator ≤ 1, denominator ≥ |t| ≥ 2).
+  have hdenge : (2 : ℝ) ≤ ‖s - 1‖ := by
+    have h1 := abs_im_le_norm_sub_one s
+    rw [hsim] at h1; linarith
+  have hdenpos : (0 : ℝ) < ‖s - 1‖ := by linarith
+  have hB : ‖(N : ℂ) ^ (1 - s) / (s - 1)‖ ≤ 1 := by
+    rw [norm_div, div_le_iff₀ hdenpos, one_mul]
+    have hnum := norm_cpow_one_sub_le_one hsre1 hN1
+    linarith
+  -- Term C: ‖s · fractTail‖ ≤ ‖s‖/(σ·N^σ) ≤ 4.
+  have hsnorm : ‖s‖ ≤ σ + |t| := by
+    have h : ‖s‖ ≤ ‖(σ : ℂ)‖ + ‖(t : ℂ) * Complex.I‖ := by rw [hs_def]; exact norm_add_le _ _
+    rwa [Complex.norm_real, norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
+      abs_of_nonneg (by linarith : (0 : ℝ) ≤ σ)] at h
+  have hbpos : (0 : ℝ) < s.re * (N : ℝ) ^ s.re :=
+    mul_pos hspos (Real.rpow_pos_of_pos hNRpos _)
+  have hden_ge : (N : ℝ) ≤ s.re * (N : ℝ) ^ s.re := by
+    have h1 : (N : ℝ) ^ (1 : ℝ) ≤ (N : ℝ) ^ s.re :=
+      Real.rpow_le_rpow_of_exponent_le hNR1 hsre1
+    rw [Real.rpow_one] at h1
+    nlinarith [h1, mul_nonneg (by linarith : (0 : ℝ) ≤ s.re - 1) (Real.rpow_nonneg hNRpos.le s.re)]
+  have hC : ‖s * fractTail s (N : ℝ)‖ ≤ 4 := by
+    refine le_trans (norm_tail_term_le hspos hN1) ?_
+    rw [div_le_iff₀ hbpos]
+    linarith [hsnorm, hden_ge, hNgt, ht, hσ2]
+  -- assemble via the triangle inequality.
+  rw [htrunc]
+  refine le_trans (norm_sub_le _ _) ?_
+  refine le_trans (add_le_add_right (norm_add_le _ _) _) ?_
+  linarith [hA, hB, hC, hlog0]
 
 end ZeroFreeBridge

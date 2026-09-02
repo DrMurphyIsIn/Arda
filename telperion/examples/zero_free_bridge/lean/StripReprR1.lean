@@ -240,11 +240,11 @@ theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := b
 /-- FINITE Euler–Maclaurin / Abel-summation identity: the partial sum in the clean closed form,
     the finite-`N` companion of `zeta_repr_R1`. Feeds `zeta_trunc` in `ZetaLogBound`.
     Discharged (no `sorry`) via `sum_mul_eq_sub_integral_mul₀` + `integral_cpow`. -/
-theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N) :
+theorem zeta_partial_sum_repr {s : ℂ} (hs0re : 0 < s.re) (hsne1 : s ≠ 1) {N : ℕ} (hN : 1 ≤ N) :
     ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)
       = s / (s - 1) - (N : ℂ) ^ (1 - s) / (s - 1)
         - s * ∫ t in Set.Ioc (1 : ℝ) (N : ℝ), fractIntegrand s t := by
-  have hs0 : s ≠ 0 := by intro h; rw [h, Complex.zero_re] at hs; linarith
+  have hs0 : s ≠ 0 := by intro h; rw [h, Complex.zero_re] at hs0re; linarith
   have hf_diff : ∀ t ∈ Set.Icc (1 : ℝ) (N : ℝ), DifferentiableAt ℝ (fPow s) t := by
     intro t ht
     have ht0 : t ≠ 0 := (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne'
@@ -266,8 +266,7 @@ theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N)
   have hle : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   have hNpos : (0 : ℝ) < (N : ℝ) := by linarith
   have hNRne : ((N : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hNpos.ne'
-  have hs1 : s - 1 ≠ 0 := by rw [sub_ne_zero]; intro h; rw [h] at hs; simp at hs
-  have hsne1 : s ≠ 1 := fun h => hs1 (by rw [h]; ring)
+  have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr hsne1
   -- (1) LHS: `cOne` kills `k = 0`, leaving `∑_{Icc 1 N} n^{-s}`.
   have hLHS : ∑ k ∈ Finset.Icc 0 N, fPow s (k : ℝ) * cOne k
       = ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s) := by
