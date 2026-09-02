@@ -41,8 +41,9 @@ from typing import Callable, Optional
 
 from .spider_broom import BroomOptimumCertificate
 from .tie_regime import (
-    ExtremalityPriceMapCertificate, HighDegreeTailCertificate, MdGeometricTailCertificate,
-    MixedHubKKTCertificate, NearBroomUnimodalityCertificate, TieSlackCertificate,
+    BroomVsCherryCertificate, ExtremalityPriceMapCertificate, HighDegreeTailCertificate,
+    LeafExchangeCertificate, MdGeometricTailCertificate, MixedHubKKTCertificate,
+    NearBroomUnimodalityCertificate, TieSlackCertificate,
 )
 
 GATED, BASE, BOUNDARY, LEMMA, HYPOTHESIS = "GATED", "BASE", "BOUNDARY", "LEMMA", "HYPOTHESIS"
@@ -90,11 +91,20 @@ class UpperBoundReduction:
             ReductionStep("2b-lo-unimodal", "near-broom family (d-2)cherries+B(m) peaks at m*=max(1,d-3) & strictly "
                           "decreases after (BIG^11 < (621/64)^2 + Handelman monotone tail) -- UNCONDITIONAL, no rho",
                           GATED, NearBroomUnimodalityCertificate),
-            ReductionStep("2b-lo-pricemap", "extremality price-flow: the single-child lemma's joint size-induction "
+            ReductionStep("2b-lo-pricemap", "extremality #1 price-flow: the single-child lemma's joint size-induction "
                           "keeps prices in the invariant interval I=[456/3703,3/7] (concavity-tangent map)",
                           GATED, ExtremalityPriceMapCertificate),
-            ReductionStep("2b-lo-extremality", "the one open lemma: assemble the single-child induction on I (SCL "
-                          "deg>=2 margin +0.031, broom-vs-cherry +0.012, leaf->cherry exchange) => near-broom argmax",
+            ReductionStep("2b-lo-tangent", "extremality #2 tangent step: V_mu(hub) <= V_mu(B(d-1)) from concavity of "
+                          "L(s)=log(1+s/d)-F* (Real.log concave; the all-cherry point is the tangent, gap 0)", LEMMA),
+            ReductionStep("2b-lo-broomcherry", "extremality #4: broom child never beats cherry on I, "
+                          "V_mu(B(k)) <= V_mu(cherry) all k (finite head + broom-optimum tail)",
+                          GATED, BroomVsCherryCertificate),
+            ReductionStep("2b-lo-leafexchange", "extremality #5: leaf->cherry raises ell (d>=3), (5/6)^11 > "
+                          "(2/3)^11(621/64) -- bare leaves never in the extremum",
+                          GATED, LeafExchangeCertificate),
+            ReductionStep("2b-lo-extremality", "extremality #3+assembly: the SCL joint size-induction composing the "
+                          "gated pieces #1,#2,#4,#5,#6 => V_mu(c)<=V_mu(cherry) => near-broom argmax (structural "
+                          "well-founded recursion on |c|; all analytic/rational leaves now gated)",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),
