@@ -389,3 +389,22 @@ def test_monotone_tail_certificate():
         assert ell_hub(d, 6) < min(small_degree_threshold(k, d) for k in range(2, 16))
     mod = cert.lean_module()
     assert "namespace BGMdTail" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
+def test_free_closure_certificate():
+    """FreeClosureCertificate (M_d): degrees d in {3,4,6} close FREE -- the concavity ceiling ell(hub)<=ell(B(d-1))
+    already beats threshold(k,d), no extremality needed. ell(B(d-1)) < threshold(k,d) cleared via enclosures.
+    d=5 does NOT close free (residual). This localizes the whole M_d wall to a single degree."""
+    from telperion.tie_regime import FreeClosureCertificate, small_degree_threshold
+    from telperion.branch_potential import branch_ell, broom_edges
+    cert = FreeClosureCertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 3 * 14                          # d in {3,4,6} x k=2..15
+    # soundness: ell(B(d-1)) really < min_k threshold(k,d) for d in {3,4,6}, and NOT for d=5
+    for d in (3, 4, 6):
+        eB, _ = branch_ell(*broom_edges(d - 1))
+        assert eB < min(small_degree_threshold(k, d) for k in range(2, 16))
+    eB5, _ = branch_ell(*broom_edges(4))
+    assert eB5 >= min(small_degree_threshold(k, 5) for k in range(2, 16))   # d=5 does NOT close free
+    mod = cert.lean_module()
+    assert "namespace BGMdFree" in mod and mod.count("by norm_num") == len(cert.atoms())
