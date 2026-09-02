@@ -336,3 +336,29 @@ def test_slack_bound_proof_structure():
             assert 3 / 23 < F_STAR                                 # B(5): phi -> 3/23 < F*
         else:
             assert deriv16 < 0                                     # decreasing for all k >= 16
+
+
+def test_md_step_certificate():
+    """MdStepCertificate (M_d frontier bound, Phase 2): the worst non-broom hub of root-degree d in {3,4,5,6}
+    -- (d-2) cherries + 1 small broom -- has ell(hub) < threshold(k,d) for all k, via frozen log-enclosures.
+    Gates the per-degree binding step; extremality (near-broom = max non-broom hub) is the residual."""
+    from telperion.tie_regime import MdStepCertificate, y_floor, _MDHUB
+    from telperion.branch_potential import branch_total
+    from fractions import Fraction as Fr
+    cert = MdStepCertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 4 * 14                          # d=3..6 x k=2..15
+    # soundness: frozen hub totals match branch_total of the actual near-broom hubs
+    for d in range(3, 7):
+        E = []; nid = 1
+        for _ in range(d - 2):
+            E += [(0, nid), (nid, nid + 1)]; nid += 2
+        hub = nid; E += [(0, hub)]; nid += 1
+        for _ in range(_MDHUB[d]["j"]):
+            E += [(hub, nid), (nid, nid + 1)]; nid += 2
+        tot = branch_total(nid, tuple(E), 0)
+        assert tot == Fr(_MDHUB[d]["num"], _MDHUB[d]["den"]) and nid == _MDHUB[d]["size"]
+    # y-floor exact: y >= 1/(2d-1)
+    assert y_floor(3) == Fr(1, 5) and y_floor(6) == Fr(1, 11)
+    mod = cert.lean_module()
+    assert "namespace BGMdStep" in mod and mod.count("by norm_num") == len(cert.atoms())
