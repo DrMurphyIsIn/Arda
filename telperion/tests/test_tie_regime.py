@@ -362,3 +362,30 @@ def test_md_step_certificate():
     assert y_floor(3) == Fr(1, 5) and y_floor(6) == Fr(1, 11)
     mod = cert.lean_module()
     assert "namespace BGMdStep" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
+def test_monotone_tail_certificate():
+    """MonotoneTailCertificate (M_d Phase 3): any non-broom hub of degree d in {3,4,5,6} with a child of
+    degree >= 7 has ell(hub) < threshold(k,d), RIGOROUSLY via concavity + HighDegreeTail + broom optimum
+    (no enumeration). Cleared atom: 11 L(total B(d-1)) - 22 L(3/2) - (2d-5) L(621/64) < 11[4/7+(d-3)/d]/(4k+3).
+    So the M_d induction restricts to d_i<=6 children (finite)."""
+    from telperion.tie_regime import MonotoneTailCertificate, small_degree_threshold
+    import math
+    from telperion.branch_potential import branch_total, F_STAR
+    cert = MonotoneTailCertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 4 * 14
+    # empirical soundness: actual hubs (d-2 cherries + 1 B(6), child degree 7) are all < threshold
+    def ell_hub(d, j):
+        E = []; nid = 1
+        for _ in range(d - 2):
+            E += [(0, nid), (nid, nid + 1)]; nid += 2
+        hub = nid; E += [(0, hub)]; nid += 1
+        for _ in range(j):
+            E += [(hub, nid), (nid, nid + 1)]; nid += 2
+        t = branch_total(nid, tuple(E), 0)
+        return (math.log(t.numerator) - math.log(t.denominator)) - nid * F_STAR
+    for d in range(3, 7):
+        assert ell_hub(d, 6) < min(small_degree_threshold(k, d) for k in range(2, 16))
+    mod = cert.lean_module()
+    assert "namespace BGMdTail" in mod and mod.count("by norm_num") == len(cert.atoms())
