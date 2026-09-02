@@ -18,20 +18,20 @@ def test_all_gated_steps_check():
     slack, mixed-KKT brooms, high-degree tail, broom optimum)."""
     R = UpperBoundReduction.build()
     gated = R.verify_gated()
-    assert len(gated) == 5   # slack, mixed-KKT brooms, high-degree tail, M_d geometric-tail (finite), broom optimum
+    assert len(gated) == 6   # slack, mixed-KKT brooms, high-degree tail, M_d finite, near-broom unimodality, broom optimum
     assert all(gated.values()), gated
     assert R.gated_ok()
 
 
 def test_exactly_one_open_hypothesis():
-    """The reduction has EXACTLY one open analytic input -- the even-step ell-subsequence contraction rho<=5/12
-    (the sharpened small-degree M_d residual). Everything else is gated / base / boundary / lemma."""
+    """The reduction has EXACTLY one open analytic input -- the extremality (near-broom is the argmax non-broom
+    degree-d branch), the sharpened M_d residual. Everything else is gated / base / boundary / lemma."""
     R = UpperBoundReduction.build()
     opens = R.open_hypotheses()
     assert len(opens) == 1
     assert opens[0].kind == HYPOTHESIS
-    assert opens[0].tag == "2b-lo-contract"
-    assert "rho<=5/12" in opens[0].statement
+    assert opens[0].tag == "2b-lo-extremality"
+    assert "argmax" in opens[0].statement
 
 
 def test_conjecture_not_proved():
@@ -45,7 +45,7 @@ def test_conjecture_not_proved():
 def test_step_kinds_are_wellformed():
     """Every step has a recognized kind, and GATED steps carry a certificate factory while non-GATED do not."""
     R = UpperBoundReduction.build()
-    assert len(R.steps) == 9
+    assert len(R.steps) == 10
     for s in R.steps:
         assert s.kind in {"GATED", "BASE", "BOUNDARY", "LEMMA", "HYPOTHESIS"}
         if s.kind == GATED:

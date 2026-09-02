@@ -18,18 +18,21 @@ The chain (see `docs/BG_UPPER_BOUND_REDUCTION_20260831.md`):
               - brooms B(2..8)          GATED: MixedHubKKTCertificate.
               - d_c >= 7                GATED: HighDegreeTailCertificate.
               - d_c <= 6 non-broom      the M_d frontier bound, now split into:
-                  * finite arithmetic   GATED: MdGeometricTailCertificate (peaks d=2..5 + d=6 geometric tail).
-                  * contraction rho<=5/12  HYPOTHESIS (b): the even-step ell-subsequence contraction lemma.
+                  * near-broom finite   GATED: MdGeometricTailCertificate (peak arithmetic < threshold).
+                  * near-broom unimodal GATED: NearBroomUnimodalityCertificate (peaks at m*, strictly decreases).
+                  * extremality         HYPOTHESIS (b): the near-broom is the argmax non-broom degree-d branch.
   [3] broom optimum   ell(B(k)) <= 0, = 0 iff k=5 (the 23-adic tie)        GATED: BroomOptimumCertificate.
 
-The ONLY open analytic input is HYPOTHESIS (b), now SHARPENED (2026-09-01) to a single rate: the even-step
-ell-subsequence contraction `rho <= 5/12` (the rooted cavity-contraction = the parallel Lean Obligation A in its
-per-degree scalar form).  The M_d size-trend is a PARITY OSCILLATION whose even-size max-ell subsequence peaks at
-a finite interior size for d=2..5 (sizes 4,6,10,14; margins +0.019..+0.040) and is still climbing at the size-16
-enumeration boundary for d=6 -- but the geometric tail with rate rho caps M_6 below threshold (margin +0.013).
-The finite arithmetic (peaks + tail) is GATED by MdGeometricTailCertificate, CONDITIONAL on rho<=5/12.  Proving
-that contraction rate (field-map Jacobian h^2/(d_v d_w) <= 1/2 gives field convergence; the ell-max-subsequence
-contraction is the residual work) makes 2b-lo-fin unconditional.  conjecture1_proved = False.
+The ONLY open analytic input is HYPOTHESIS (b), now SHARPENED (2026-09-01) to a single COMBINATORIAL statement:
+the near-broom "(d-2) cherries + B(m)" is the argmax over ALL non-broom root-degree-d branches.  The earlier
+"even-step contraction rho<=5/12" framing was WRONG: the near-broom family does not climb toward threshold via a
+geometric tail -- it PEAKS at m* = max(1, d-3) (sizes 4,6,10,14,16 for d=2..6; margins +0.017..+0.040) and then
+STRICTLY DECREASES (linearly, away from threshold).  This unimodality is now UNCONDITIONALLY gated
+(NearBroomUnimodalityCertificate): Delta(d,m) < 0 <=> BIG(d,m)^11 < (621/64)^2 (pure rational, F* cleared), with a
+degree-1 positive-coefficient Handelman certificate for the monotone tail (d=3..6) and BIG(2,m) < 3/2 (<=>
+4m+3>0) for d=2.  So the frontier reduces to the extremality alone -- adversarially checked (two-broom /
+deep-nested competitors sit >= +0.017 below the near-broom peak), a single-child combinatorial lemma, NOT a rate.
+conjecture1_proved = False.
 """
 from __future__ import annotations
 
@@ -38,7 +41,8 @@ from typing import Callable, Optional
 
 from .spider_broom import BroomOptimumCertificate
 from .tie_regime import (
-    HighDegreeTailCertificate, MdGeometricTailCertificate, MixedHubKKTCertificate, TieSlackCertificate,
+    HighDegreeTailCertificate, MdGeometricTailCertificate, MixedHubKKTCertificate,
+    NearBroomUnimodalityCertificate, TieSlackCertificate,
 )
 
 GATED, BASE, BOUNDARY, LEMMA, HYPOTHESIS = "GATED", "BASE", "BOUNDARY", "LEMMA", "HYPOTHESIS"
@@ -81,11 +85,13 @@ class UpperBoundReduction:
                           GATED, MixedHubKKTCertificate),
             ReductionStep("2b-hi", "envelope tail, d_c >= 7: V(c) < V(cherry) via ceiling ell<=0",
                           GATED, HighDegreeTailCertificate),
-            ReductionStep("2b-lo-fin", "M_d finite arithmetic (peaks d=2..5 + d=6 geometric tail) < threshold, "
-                          "CONDITIONAL on the contraction rate rho<=5/12",
+            ReductionStep("2b-lo-fin", "M_d finite arithmetic: near-broom peaks d=2..5 + d=6 boundary < threshold",
                           GATED, MdGeometricTailCertificate),
-            ReductionStep("2b-lo-contract", "the one open lemma: even-step ell-subsequence contraction rho<=5/12 "
-                          "(rooted cavity-contraction / Obligation A); makes 2b-lo-fin unconditional",
+            ReductionStep("2b-lo-unimodal", "near-broom family (d-2)cherries+B(m) peaks at m*=max(1,d-3) & strictly "
+                          "decreases after (BIG^11 < (621/64)^2 + Handelman monotone tail) -- UNCONDITIONAL, no rho",
+                          GATED, NearBroomUnimodalityCertificate),
+            ReductionStep("2b-lo-extremality", "the one open lemma: the near-broom is the argmax over ALL non-broom "
+                          "degree-d branches (a combinatorial single-child statement; adversarial margin +0.017)",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),

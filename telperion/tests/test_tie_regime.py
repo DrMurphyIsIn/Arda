@@ -435,3 +435,40 @@ def test_md_geometric_tail_certificate():
     assert limit < float(min(small_degree_threshold(k, 6) for k in range(2, 16)))
     mod = cert.lean_module()
     assert "namespace BGMdGeoTail" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
+def test_near_broom_unimodality_certificate():
+    """NearBroomUnimodalityCertificate (M_d): the near-broom family (d-2)cherries+B(m) peaks at m*=max(1,d-3) and
+    STRICTLY DECREASES after -- so M_d(near-broom) is the FINITE peak, UNCONDITIONALLY (no rho<=5/12, no infinite
+    tail). Pure-rational atoms: BIG(d,m*)^11 < (621/64)^2 (peak), BIG(d,m*-1)^11 > (621/64)^2 (peak-loc),
+    monotone-tail Handelman coeffs > 0, (3/2)^11 < (621/64)^2 (d=2 tail)."""
+    from telperion.tie_regime import (
+        NearBroomUnimodalityCertificate, _nearbroom_BIG, _NEARBROOM_MSTAR, small_degree_threshold,
+    )
+    from telperion.branch_potential import F_STAR
+    from fractions import Fraction as Fr
+    import math
+    cert = NearBroomUnimodalityCertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 17
+    tgt = Fr(621, 64) ** 2
+    # peak is a genuine local max (Delta(d,m*)<0) and the peak is exactly m* (Delta(d,m*-1)>0 for m*>1)
+    for d in range(2, 7):
+        ms = _NEARBROOM_MSTAR[d]
+        assert _nearbroom_BIG(d, ms) ** 11 < tgt
+        if ms > 1:
+            assert _nearbroom_BIG(d, ms - 1) ** 11 > tgt
+    # BIG strictly decreasing on the ray past m* => ell strictly decreasing (spot-check far out)
+    for d in (3, 4, 5, 6):
+        ms = _NEARBROOM_MSTAR[d]
+        assert _nearbroom_BIG(d, ms + 50) > _nearbroom_BIG(d, ms + 51)
+    # the finite peak really is < threshold(d) (this is the M_d value for the near-broom family)
+    def ell_nb(d, m):
+        ELLC = math.log(1.5) - 2 * F_STAR
+        s = Fr(d - 2, 3) + Fr(3, 4 * m + 3)
+        return (d - 2 + m) * ELLC + math.log((4 * m + 3) / (3 * (m + 1))) + math.log(1 + float(s) / d) - 2 * F_STAR
+    for d in range(2, 7):
+        ms = _NEARBROOM_MSTAR[d]
+        assert ell_nb(d, ms) < float(min(small_degree_threshold(k, d) for k in range(2, 16)))
+    mod = cert.lean_module()
+    assert "namespace BGNearBroomUnimodal" in mod and mod.count("by norm_num") == len(cert.atoms())
