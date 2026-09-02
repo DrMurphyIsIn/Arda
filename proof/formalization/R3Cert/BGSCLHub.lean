@@ -394,5 +394,55 @@ theorem flowed_hub_step_of_ceiling (hceil : ∀ b, bell b ≤ 0) : FlowedHubStep
 theorem scl_of_ceiling (hceil : ∀ b, bell b ≤ 0) : ∀ b, PSCLne b :=
   scl_of_flowed_step (flowed_hub_step_of_ceiling hceil)
 
+/-- **The per-hub ceiling step** — the SINGLE remaining obligation.  A hub `node cs` whose children each
+    satisfy BOTH the branch ceiling `bell c ≤ 0` AND the leaf-excluding SCL `PSCLne c` has `bell (node cs) ≤ 0`.
+    This is exactly step `1b` / `2b-lo` of the BG upper-bound ledger (the `M_d` frontier: `ell(hub) ≤ ell(B(k)) ≤ 0`),
+    whose arithmetic is GATED in Telperion (`MdStepCertificate`, `NearBroomUnimodalityCertificate`,
+    `HighDegreeTailCertificate`, `BroomOptimumCertificate` — all `.check()` pass).  Its shape — child ceilings +
+    child SCL ⟹ hub ceiling — is precisely what those certificates consume.  `conjecture1_proved = False`. -/
+def CeilStep : Prop :=
+  ∀ cs : List Branch, (∀ c ∈ cs, bell c ≤ 0) → (∀ c ∈ cs, PSCLne c) → bell (Branch.node cs) ≤ 0
+
+/-- **The joint ceiling+SCL induction.**  ONE well-founded strong induction on `|b|` proves BOTH the branch
+    ceiling `bell b ≤ 0` AND the leaf-excluding SCL `PSCLne b` for every branch, reduced to the single per-hub
+    ceiling step `CeilStep`.  At a hub `node cs`: the child IH supplies BOTH properties on the (smaller) children;
+    `CeilStep` gives the hub ceiling `bell (node cs) ≤ 0`; then the SCL follows — `hub_le_d2..d6` (tangent
+    decouple, using child SCL) for degree `≤ 6`, and `hub_le_highdeg` (using the just-proved hub ceiling) for
+    degree `≥ 7`.  This ELIMINATES the free-floating `∀ b, bell b ≤ 0` hypothesis of `scl_of_ceiling`: the SCL's
+    d≥7 leg now draws the ceiling from the JOINT induction hypothesis, so the sole residual is `CeilStep` itself
+    — the `M_d` frontier, matching the BG ledger's single open piece exactly.  `conjecture1_proved = False`. -/
+theorem ceil_and_scl_of_ceilStep (hceil : CeilStep) : ∀ b, bell b ≤ 0 ∧ PSCLne b := by
+  refine scl_of_child_step bsize bchildren (fun b => bell b ≤ 0 ∧ PSCLne b) bchildren_bsize_lt
+    (fun a hIH => ?_)
+  cases a with
+  | node cs =>
+    have hcc : ∀ c ∈ cs, bell c ≤ 0 := fun c hc => (hIH c (by simpa only [bchildren] using hc)).1
+    have hcs : ∀ c ∈ cs, PSCLne c := fun c hc => (hIH c (by simpa only [bchildren] using hc)).2
+    have hb : bell (Branch.node cs) ≤ 0 := hceil cs hcc hcs
+    refine ⟨hb, ?_⟩
+    intro hne μ hμ
+    have hne' : cs ≠ [] := fun h => hne (by rw [h])
+    have hlen1 : 1 ≤ cs.length := by
+      rcases cs with _ | ⟨a, t⟩
+      · exact absurd rfl hne'
+      · simp
+    rcases Nat.lt_or_ge cs.length 6 with hlo | hhi
+    · rcases (by omega : cs.length = 1 ∨ cs.length = 2 ∨ cs.length = 3 ∨ cs.length = 4 ∨ cs.length = 5)
+        with h | h | h | h | h
+      · exact hub_le_d2 hμ h hcs
+      · exact hub_le_d3 hμ h hcs
+      · exact hub_le_d4 hμ h hcs
+      · exact hub_le_d5 hμ h hcs
+      · exact hub_le_d6 hμ h hcs
+    · exact hub_le_highdeg hμ hhi hb
+
+/-- The branch ceiling `∀ b, bell b ≤ 0` from the per-hub ceiling step. -/
+theorem bell_ceiling_of_ceilStep (hceil : CeilStep) : ∀ b, bell b ≤ 0 :=
+  fun b => (ceil_and_scl_of_ceilStep hceil b).1
+
+/-- The SCL `∀ b, PSCLne b` from the per-hub ceiling step (no free-floating ceiling hypothesis). -/
+theorem scl_of_ceilStep (hceil : CeilStep) : ∀ b, PSCLne b :=
+  fun b => (ceil_and_scl_of_ceilStep hceil b).2
+
 end BGSCL
 end R3Cert
