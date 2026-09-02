@@ -1,0 +1,10 @@
+name = "DiskCoord"
+defaultTargets = ["DiskCoord"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "DiskCoord"
