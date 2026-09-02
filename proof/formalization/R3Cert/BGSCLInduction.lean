@@ -172,5 +172,155 @@ theorem bchildren_bsize_lt (a : Branch) : ∀ c ∈ bchildren a, bsize c < bsize
       simp only [bsize]
       omega
 
+
+/-! ### (b.1) The concrete cavity `(U, total)` matching-sum recursion. -/
+
+/-- Child count of a branch (its root degree is `bcc b + 1`, counting the up-edge). -/
+def bcc : Branch → ℕ
+  | .node cs => cs.length
+
+mutual
+  /-- `(U, total)` of a branch: `U` = root-unmatched weight (= product of child totals), `total` = the full
+      degree-weighted matching sum.  For a hub of children `cs` (degree `d = |cs|+1`):
+      `total = (∏ T_c)·(1 + (Σ_c y_c)/d)`, `y_c = U_c/(T_c·d_c)`, `d_c = bcc c + 1`. -/
+  noncomputable def cav : Branch → ℝ × ℝ
+    | .node cs => ((cavAgg cs).1, (cavAgg cs).1 * (1 + (cavAgg cs).2 / ((cs.length : ℝ) + 1)))
+  /-- Aggregates a child list to `(∏ T_c, Σ y_c)`. -/
+  noncomputable def cavAgg : List Branch → ℝ × ℝ
+    | [] => (1, 0)
+    | c :: t => ((cav c).2 * (cavAgg t).1,
+                 (cav c).1 / ((cav c).2 * ((bcc c : ℝ) + 1)) + (cavAgg t).2)
+end
+
+
+-- Positivity of the cavity `(U, total)` (needed to take `log` / divide).
+mutual
+theorem cav_pos : ∀ b : Branch, 0 < (cav b).1 ∧ 0 < (cav b).2
+  | .node cs => by
+      have h := cavAgg_pos cs
+      have hd : (0:ℝ) < (cs.length : ℝ) + 1 := by positivity
+      have hnn : (0:ℝ) ≤ (cavAgg cs).2 / ((cs.length : ℝ) + 1) := div_nonneg h.2 (le_of_lt hd)
+      simp only [cav]
+      exact ⟨h.1, mul_pos h.1 (by linarith)⟩
+theorem cavAgg_pos : ∀ l : List Branch, 0 < (cavAgg l).1 ∧ 0 ≤ (cavAgg l).2
+  | [] => by simp only [cavAgg]; exact ⟨one_pos, le_refl 0⟩
+  | c :: t => by
+      have hc := cav_pos c
+      have ht := cavAgg_pos t
+      have hdc : (0:ℝ) < (bcc c : ℝ) + 1 := by positivity
+      have h1 : (0:ℝ) < (cav c).1 / ((cav c).2 * ((bcc c : ℝ) + 1)) := div_pos hc.1 (mul_pos hc.2 hdc)
+      simp only [cavAgg]
+      exact ⟨mul_pos hc.2 ht.1, by linarith [ht.2]⟩
+end
+
+theorem btotal_pos (b : Branch) : 0 < (cav b).2 := (cav_pos b).2
+theorem bU_pos (b : Branch) : 0 < (cav b).1 := (cav_pos b).1
+
+
+/-! ### (b.2) The concrete `ell`, cavity field `h`, `y = h/d`, and `V_μ`. -/
+
+/-- `F* = log(621/64)/11`, the BG asymptotic rate. -/
+noncomputable def FSTAR : ℝ := Real.log (621 / 64) / 11
+/-- `total(b)` — the degree-weighted matching sum. -/
+noncomputable def btotal (b : Branch) : ℝ := (cav b).2
+/-- `ell(b) = log total(b) − |b|·F*`. -/
+noncomputable def bell (b : Branch) : ℝ := Real.log (cav b).2 - (bsize b : ℝ) * FSTAR
+/-- Cavity field `h_b = U_b/total_b`. -/
+noncomputable def bh (b : Branch) : ℝ := (cav b).1 / (cav b).2
+/-- `y_b = h_b / d_b`, `d_b = bcc b + 1`. -/
+noncomputable def bY (b : Branch) : ℝ := bh b / ((bcc b : ℝ) + 1)
+/-- `V_μ(b) = ell(b) + μ·y_b` — the single-child-lemma potential. -/
+noncomputable def bV (mu : ℝ) (b : Branch) : ℝ := bell b + mu * bY b
+
+/-- `(cavAgg l).1 = ∏_c total(c)`. -/
+theorem cavAgg_fst : ∀ l : List Branch, (cavAgg l).1 = (l.map (fun c => (cav c).2)).prod
+  | [] => by simp [cavAgg]
+  | c :: t => by
+      simp only [cavAgg, List.map_cons, List.prod_cons]
+      rw [cavAgg_fst t]
+
+/-- `(cavAgg l).2 = Σ_c y_c`. -/
+theorem cavAgg_snd : ∀ l : List Branch, (cavAgg l).2 = (l.map bY).sum
+  | [] => by simp [cavAgg]
+  | c :: t => by
+      simp only [cavAgg, List.map_cons, List.sum_cons]
+      rw [cavAgg_snd t]
+      have : (cav c).1 / ((cav c).2 * ((bcc c : ℝ) + 1)) = bY c := by
+        unfold bY bh; rw [div_div]
+      rw [this]
+
+/-- `bsizeList cs = Σ_c |c|`. -/
+theorem bsizeList_eq_sum : ∀ cs : List Branch, bsizeList cs = (cs.map bsize).sum
+  | [] => by simp [bsizeList]
+  | c :: t => by simp only [bsizeList, List.map_cons, List.sum_cons]; rw [bsizeList_eq_sum t]
+
+
+/-- `log` of a list product of positives is the sum of the `log`s. -/
+theorem log_list_prod : ∀ l : List ℝ, (∀ x ∈ l, 0 < x) → Real.log l.prod = (l.map Real.log).sum
+  | [], _ => by simp
+  | a :: t, h => by
+      have ha : 0 < a := h a (List.mem_cons.mpr (Or.inl rfl))
+      have ht : ∀ x ∈ t, 0 < x := fun x hx => h x (List.mem_cons.mpr (Or.inr hx))
+      have htp : 0 < t.prod := List.prod_pos ht
+      simp only [List.prod_cons, List.map_cons, List.sum_cons]
+      rw [Real.log_mul ha.ne' htp.ne', log_list_prod t ht]
+
+theorem bY_nonneg (b : Branch) : 0 ≤ bY b := by
+  unfold bY bh
+  have := btotal_pos b; have := bU_pos b
+  positivity
+
+/-- Sum of `bell` over a child list splits into (sum of log totals) − (sum of sizes)·F*. -/
+theorem sum_map_bell : ∀ cs : List Branch,
+    (cs.map bell).sum
+      = (cs.map (fun c => Real.log (cav c).2)).sum - (cs.map (fun c => (bsize c : ℝ))).sum * FSTAR
+  | [] => by simp
+  | c :: t => by
+      simp only [List.map_cons, List.sum_cons, sum_map_bell t]
+      show bell c + _ = _
+      unfold bell
+      ring
+
+theorem cast_sum_map_bsize (cs : List Branch) :
+    ((cs.map bsize).sum : ℝ) = (cs.map (fun c => (bsize c : ℝ))).sum := by
+  induction cs with
+  | nil => simp
+  | cons a t ih => simp only [List.map_cons, List.sum_cons, Nat.cast_add]; rw [ih]
+
+/-- **The `ell` recursion.**  `ell(node cs) = Σ_c ell(c) + (log(1 + (Σ_c y_c)/d) − F*)`, `d = |cs|+1`. -/
+theorem bell_node (cs : List Branch) :
+    bell (Branch.node cs)
+      = (cs.map bell).sum + (Real.log (1 + (cs.map bY).sum / ((cs.length : ℝ) + 1)) - FSTAR) := by
+  have hd : (0:ℝ) < (cs.length : ℝ) + 1 := by positivity
+  have hP : (0:ℝ) < (cs.map (fun c => (cav c).2)).prod := by
+    apply List.prod_pos; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨c, _, rfl⟩ := hx; exact btotal_pos c
+  have hSnn : (0:ℝ) ≤ (cs.map bY).sum := by
+    apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c
+  have hfac : (0:ℝ) < 1 + (cs.map bY).sum / ((cs.length : ℝ) + 1) := by
+    have : (0:ℝ) ≤ (cs.map bY).sum / ((cs.length:ℝ)+1) := div_nonneg hSnn (le_of_lt hd)
+    linarith
+  -- factorization of total(node cs)
+  have htot : (cav (Branch.node cs)).2
+      = (cs.map (fun c => (cav c).2)).prod * (1 + (cs.map bY).sum / ((cs.length:ℝ)+1)) := by
+    simp only [cav]; rw [cavAgg_fst, cavAgg_snd]
+  -- log of the factorization
+  have hlog : Real.log (cav (Branch.node cs)).2
+      = (cs.map (fun c => Real.log (cav c).2)).sum
+        + Real.log (1 + (cs.map bY).sum / ((cs.length:ℝ)+1)) := by
+    rw [htot, Real.log_mul hP.ne' hfac.ne', log_list_prod _ ?_, List.map_map]
+    · rfl
+    · intro x hx; rw [List.mem_map] at hx; obtain ⟨c, _, rfl⟩ := hx; exact btotal_pos c
+  -- size of node cs
+  have hsz : ((bsize (Branch.node cs)) : ℝ) = 1 + (cs.map (fun c => (bsize c : ℝ))).sum := by
+    have h1 : bsize (Branch.node cs) = 1 + (cs.map bsize).sum := by
+      simp only [bsize, bsizeList_eq_sum]
+    rw [h1, Nat.cast_add, Nat.cast_one, cast_sum_map_bsize]
+  rw [sum_map_bell]
+  unfold bell
+  rw [hlog, hsz]
+  ring
+
 end BGSCL
 end R3Cert
