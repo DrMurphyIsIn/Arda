@@ -492,3 +492,44 @@ def test_extremality_price_map_certificate():
     assert _price_map(6, B) == A
     mod = cert.lean_module()
     assert "namespace BGExtremalityPriceMap" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
+def test_broom_vs_cherry_on_I_certificate():
+    """BroomVsCherryOnICertificate (extremality leg #4): V_mu(B(j)) <= V_mu(cherry) for every broom child of
+    degree <= 6 (j=1..5) UNIFORMLY on I=[456/3703,3/7] (linear in mu -> both endpoints suffice). Cleared to
+    log-enclosure atoms 11 L(total B(j)) - 11 L(3/2) - (2j-1) L(621/64) < 11 mu (1/3 - y_Bj)."""
+    from telperion.tie_regime import BroomVsCherryOnICertificate
+    cert = BroomVsCherryOnICertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 10          # j=1..5 x {A, B}
+    mod = cert.lean_module()
+    assert "namespace BGBroomVsCherry" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
+def test_leaf_exchange_certificate():
+    """LeafExchangeCertificate (extremality leg #5): leaf->cherry strictly raises ell for hub degree d=3..6, so
+    bare leaves never occur in the M_d argmax. Pure rational (F* cleared): (3(4d-1)/(2(4d+1)))^11 > 621/64."""
+    from telperion.tie_regime import LeafExchangeCertificate
+    from fractions import Fraction as Fr
+    cert = LeafExchangeCertificate()
+    assert cert.check() is True
+    assert len(cert.atoms()) == 4           # d=3..6
+    for _, lhs, rhs, op in cert.atoms():
+        assert op == ">" and lhs > rhs and rhs == Fr(621, 64)
+    mod = cert.lean_module()
+    assert "namespace BGLeafExchange" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
+def test_scl_induction_assembly_certificate():
+    """SCLInductionCertificate: the extremality assembly re-checks every arithmetic leg (price-map, broom-vs-cherry,
+    leaf-exchange, hi-degree, near-broom, M_d step/tail, mixed-KKT) AND that the price map is closed on I. Gates the
+    arithmetic backbone of the single-child induction; the well-founded recursion on |c| remains the open glue."""
+    from telperion.tie_regime import SCLInductionCertificate
+    cert = SCLInductionCertificate()
+    assert cert.check() is True
+    # every component leg is itself gated
+    comps = cert.components()
+    assert len(comps) == 8
+    assert all(c.check() for _, c in comps)
+    mod = cert.lean_module()
+    assert "namespace BGSCLInduction" in mod
