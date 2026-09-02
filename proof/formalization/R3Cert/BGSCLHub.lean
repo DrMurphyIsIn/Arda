@@ -124,5 +124,141 @@ theorem hub_le_d3 {mu : ℝ} (hmu : inI mu) {cs : List Branch} (hlen : cs.length
     rw [hVpp, hVc, hmpp]; ring
   linarith [hRHS, hbridge, hdec]
 
+/-- **Hub connection, d=4** (`cs.length = 3`). -/
+theorem hub_le_d4 {mu : ℝ} (hmu : inI mu) {cs : List Branch} (hlen : cs.length = 3)
+    (hchild : ∀ c ∈ cs, PSCLne c) :
+    bV mu (Branch.node cs) ≤ bV mu cherry := by
+  set S := (cs.map bY).sum with hSdef
+  have hSnn : 0 ≤ S := by
+    rw [hSdef]; apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c
+  have hlenR : (cs.length : ℝ) = 3 := by exact_mod_cast hlen
+  have hSle : S ≤ 3 := by
+    have := sum_bY_le_length cs; rw [hlenR] at this; rw [hSdef]; exact this
+  have hmpp : muPP 4 mu = 3*(15 - 3*mu)/225 := by rw [muPP]; norm_num
+  have hchild2 := child_scl_muPP (d:=4) (by norm_num) (by norm_num) hmu hchild
+  have hsum : (cs.map bell).sum ≤ (cs.length : ℝ) * bV (muPP 4 mu) cherry - muPP 4 mu * (cs.map bY).sum :=
+    child_bell_sum_le (muPP 4 mu) cs hchild2
+  rw [hlenR, ← hSdef] at hsum
+  have htan := bell_node_tangent cs (s0 := 1) (by norm_num)
+  rw [hlenR, ← hSdef] at htan
+  have hlogeq : Real.log (1 + 1/((3:ℝ)+1)) = Real.log (5/4) := by norm_num
+  have hden : ((3:ℝ)+1)+1 = 5 := by norm_num
+  rw [hlogeq, hden] at htan
+  have hbY : bY (Branch.node cs) = 1 / (4 + S) := by
+    have hden' : ((cs.length : ℝ) + 1) + (cs.map bY).sum = 4 + S := by rw [hlenR, ← hSdef]; ring
+    rw [bY_node, hden']
+  -- d=4's pre-existing decouple lemma uses a non-uniform normalization; prove the UNIFORM
+  -- residual (matching the clean tangent) inline via the same log gap.
+  have hdS : (0:ℝ) < 4 + S := by linarith
+  have hμpos : (0:ℝ) ≤ mu := le_trans (by norm_num) hmu.1
+  have hdec : (muPP 4 mu) - mu/3 + 9*mu*S/225 - (3/15)
+      + (2*Real.log (3/2) + Real.log (5/4) - 5*FSTAR) + mu/(4+S) ≤ 0 := by
+    obtain ⟨hμlo, hμhi⟩ := hmu
+    have hg := log_gap_d4
+    rw [hmpp, div_eq_mul_inv mu (4+S)]
+    have hinv : (4+S)⁻¹ * (4+S) = 1 := inv_mul_cancel₀ (ne_of_gt hdS)
+    have hinvpos : 0 < (4+S)⁻¹ := inv_pos.mpr hdS
+    nlinarith [hg, hμlo, hμhi, hSnn, hSle, hdS, hinv, hinvpos, mul_nonneg hμpos (le_of_lt hinvpos),
+      mul_nonneg hμpos hSnn, mul_nonneg (mul_nonneg hμpos hSnn) (le_of_lt hinvpos),
+      mul_nonneg (mul_nonneg hμpos (le_of_lt hinvpos)) hSnn]
+  have hVpp : bV (muPP 4 mu) cherry = Real.log (3/2) - 2*FSTAR + muPP 4 mu * (1/3) := by
+    rw [bV, bell_cherry, bY_cherry]
+  have hVc : bV mu cherry = Real.log (3/2) - 2*FSTAR + mu * (1/3) := by
+    rw [bV, bell_cherry, bY_cherry]
+  have hbV : bV mu (Branch.node cs) = bell (Branch.node cs) + mu * (1/(4+S)) := by rw [bV, hbY]
+  have hRHS : bV mu (Branch.node cs)
+      ≤ ((3:ℝ) * bV (muPP 4 mu) cherry - muPP 4 mu * S
+          + (Real.log (5/4) + (S - 1)/5 - FSTAR)) + mu * (1/(4+S)) := by
+    rw [hbV]; linarith [htan, hsum]
+  have hbridge : ((3:ℝ) * bV (muPP 4 mu) cherry - muPP 4 mu * S
+        + (Real.log (5/4) + (S - 1)/5 - FSTAR)) + mu * (1/(4+S)) - bV mu cherry
+      = ((muPP 4 mu) - mu/3 + 9*mu*S/225 - (3/15)
+          + (2*Real.log (3/2) + Real.log (5/4) - 5*FSTAR) + mu/(4+S)) := by
+    rw [hVpp, hVc, hmpp]; ring
+  linarith [hRHS, hbridge, hdec]
+
+/-- **Hub connection, d=5** (`cs.length = 4`). -/
+theorem hub_le_d5 {mu : ℝ} (hmu : inI mu) {cs : List Branch} (hlen : cs.length = 4)
+    (hchild : ∀ c ∈ cs, PSCLne c) :
+    bV mu (Branch.node cs) ≤ bV mu cherry := by
+  set S := (cs.map bY).sum with hSdef
+  have hSnn : 0 ≤ S := by
+    rw [hSdef]; apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c
+  have hlenR : (cs.length : ℝ) = 4 := by exact_mod_cast hlen
+  have hSle : S ≤ 4 := by
+    have := sum_bY_le_length cs; rw [hlenR] at this; rw [hSdef]; exact this
+  have hmpp : muPP 5 mu = 3*(19 - 3*mu)/361 := by rw [muPP]; norm_num
+  have hchild2 := child_scl_muPP (d:=5) (by norm_num) (by norm_num) hmu hchild
+  have hsum : (cs.map bell).sum ≤ (cs.length : ℝ) * bV (muPP 5 mu) cherry - muPP 5 mu * (cs.map bY).sum :=
+    child_bell_sum_le (muPP 5 mu) cs hchild2
+  rw [hlenR, ← hSdef] at hsum
+  have htan := bell_node_tangent cs (s0 := 4/3) (by norm_num)
+  rw [hlenR, ← hSdef] at htan
+  have hlogeq : Real.log (1 + 4/3/((4:ℝ)+1)) = Real.log (19/15) := by norm_num
+  have hden : ((4:ℝ)+1)+4/3 = 19/3 := by norm_num
+  rw [hlogeq, hden] at htan
+  have hbY : bY (Branch.node cs) = 1 / (5 + S) := by
+    have hden' : ((cs.length : ℝ) + 1) + (cs.map bY).sum = 5 + S := by rw [hlenR, ← hSdef]; ring
+    rw [bY_node, hden']
+  have hdec := decouple_d5 mu S hmu hSnn hSle
+  have hVpp : bV (muPP 5 mu) cherry = Real.log (3/2) - 2*FSTAR + muPP 5 mu * (1/3) := by
+    rw [bV, bell_cherry, bY_cherry]
+  have hVc : bV mu cherry = Real.log (3/2) - 2*FSTAR + mu * (1/3) := by
+    rw [bV, bell_cherry, bY_cherry]
+  have hbV : bV mu (Branch.node cs) = bell (Branch.node cs) + mu * (1/(5+S)) := by rw [bV, hbY]
+  have hRHS : bV mu (Branch.node cs)
+      ≤ ((4:ℝ) * bV (muPP 5 mu) cherry - muPP 5 mu * S
+          + (Real.log (19/15) + (S - 4/3)/(19/3) - FSTAR)) + mu * (1/(5+S)) := by
+    rw [hbV]; linarith [htan, hsum]
+  have hbridge : ((4:ℝ) * bV (muPP 5 mu) cherry - muPP 5 mu * S
+        + (Real.log (19/15) + (S - 4/3)/(19/3) - FSTAR)) + mu * (1/(5+S)) - bV mu cherry
+      = ((4*(muPP 5 mu)/3) - mu/3 + 9*mu*S/361 - (4/19)
+          + (3*Real.log (3/2) + Real.log (19/15) - 7*FSTAR) + mu/(5+S)) := by
+    rw [hVpp, hVc, hmpp]; ring
+  linarith [hRHS, hbridge, hdec]
+
+/-- **Hub connection, d=6** (`cs.length = 5`). -/
+theorem hub_le_d6 {mu : ℝ} (hmu : inI mu) {cs : List Branch} (hlen : cs.length = 5)
+    (hchild : ∀ c ∈ cs, PSCLne c) :
+    bV mu (Branch.node cs) ≤ bV mu cherry := by
+  set S := (cs.map bY).sum with hSdef
+  have hSnn : 0 ≤ S := by
+    rw [hSdef]; apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c
+  have hlenR : (cs.length : ℝ) = 5 := by exact_mod_cast hlen
+  have hSle : S ≤ 5 := by
+    have := sum_bY_le_length cs; rw [hlenR] at this; rw [hSdef]; exact this
+  have hmpp : muPP 6 mu = 3*(23 - 3*mu)/529 := by rw [muPP]; norm_num
+  have hchild2 := child_scl_muPP (d:=6) (by norm_num) (by norm_num) hmu hchild
+  have hsum : (cs.map bell).sum ≤ (cs.length : ℝ) * bV (muPP 6 mu) cherry - muPP 6 mu * (cs.map bY).sum :=
+    child_bell_sum_le (muPP 6 mu) cs hchild2
+  rw [hlenR, ← hSdef] at hsum
+  have htan := bell_node_tangent cs (s0 := 5/3) (by norm_num)
+  rw [hlenR, ← hSdef] at htan
+  have hlogeq : Real.log (1 + 5/3/((5:ℝ)+1)) = Real.log (23/18) := by norm_num
+  have hden : ((5:ℝ)+1)+5/3 = 23/3 := by norm_num
+  rw [hlogeq, hden] at htan
+  have hbY : bY (Branch.node cs) = 1 / (6 + S) := by
+    have hden' : ((cs.length : ℝ) + 1) + (cs.map bY).sum = 6 + S := by rw [hlenR, ← hSdef]; ring
+    rw [bY_node, hden']
+  have hdec := decouple_d6 mu S hmu hSnn hSle
+  have hVpp : bV (muPP 6 mu) cherry = Real.log (3/2) - 2*FSTAR + muPP 6 mu * (1/3) := by
+    rw [bV, bell_cherry, bY_cherry]
+  have hVc : bV mu cherry = Real.log (3/2) - 2*FSTAR + mu * (1/3) := by
+    rw [bV, bell_cherry, bY_cherry]
+  have hbV : bV mu (Branch.node cs) = bell (Branch.node cs) + mu * (1/(6+S)) := by rw [bV, hbY]
+  have hRHS : bV mu (Branch.node cs)
+      ≤ ((5:ℝ) * bV (muPP 6 mu) cherry - muPP 6 mu * S
+          + (Real.log (23/18) + (S - 5/3)/(23/3) - FSTAR)) + mu * (1/(6+S)) := by
+    rw [hbV]; linarith [htan, hsum]
+  have hbridge : ((5:ℝ) * bV (muPP 6 mu) cherry - muPP 6 mu * S
+        + (Real.log (23/18) + (S - 5/3)/(23/3) - FSTAR)) + mu * (1/(6+S)) - bV mu cherry
+      = ((5*(muPP 6 mu)/3) - mu/3 + 9*mu*S/529 - (5/23)
+          + (4*Real.log (3/2) + Real.log (23/18) - 9*FSTAR) + mu/(6+S)) := by
+    rw [hVpp, hVc, hmpp]; ring
+  linarith [hRHS, hbridge, hdec]
+
 end BGSCL
 end R3Cert
