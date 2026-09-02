@@ -1,4 +1,4 @@
-/- SHARP NEAR-LINE GROWTH BOUND (WORK IN PROGRESS): `|ζ(σ+it)| ≤ C·(1 + log|t|)`
+/- SHARP NEAR-LINE GROWTH BOUND (DISCHARGED, sorry-free): `|ζ(σ+it)| ≤ 6·(1 + log|t|)`
    for `1 ≤ σ ≤ 2`, `|t| ≥ 2` — the upgrade that improves the zero-free-region rate.
 
    The elementary region (`riemannZeta_zero_free_poly`, `Re s > 1 - c/|t|⁵`) is limited by the
@@ -9,7 +9,7 @@
 
    METHOD: truncated Euler–Maclaurin at `N ∼ |t|`, reusing the R1 Abel-summation machinery.
    From `zeta_fract_repr` (ζ(s) = s/(s-1) - s∫_{x>1}{x}x^{-s-1}) and the FINITE Abel identity
-   (`sum_mul_eq_sub_integral_mul₀`, f=x^{-s}, c 0=0, c(n≥1)=1) one gets, for Re s > 1, N ≥ 1:
+   (`sum_mul_eq_sub_integral_mul₀`, f=x^{-s}, c 0=0, c(n≥1)=1) one gets, for 0 < Re s, s ≠ 1, N ≥ 1:
 
        ζ(s) = Σ_{n=1}^N n^{-s} + N^{1-s}/(s-1) - s·∫_{x>N} {x} x^{-s-1} dx.        (TRUNC)
 
@@ -19,8 +19,11 @@
      • |s·∫_{x>N}{x}x^{-s-1}| ≤ |s|·N^{-σ}/σ ≤ |s|/N ≤ C                     (N ≥ |t|/2, |s| ≤ 2|t|)
    ⟹ |ζ(σ+it)| ≤ C·(1 + log|t|).
 
-   STATUS: WIP SKELETON. Sub-obligations isolated as `sorry`; NOT a discharge until sorry-free.
-   A gap-filler FEEDING the region rate, NOT a proof of RH. conjecture1_proved = False.
+   STATUS: DISCHARGED, sorry-free (CI: zeta-log-bound-compiles green). `zeta_trunc` and the
+   underlying `zeta_partial_sum_repr` hold on the full elementary strip `0 < Re s, s ≠ 1` (the
+   finite Abel identity is algebraic; the tail is over a compact interval), so `zeta_log_bound`
+   covers σ = 1 as well. A gap-filler FEEDING the region rate, NOT a proof of RH.
+   conjecture1_proved = False.
 -/
 import StripReprAssembled
 
@@ -32,14 +35,43 @@ namespace ZeroFreeBridge
 private noncomputable def fractTail (s : ℂ) (N : ℝ) : ℂ :=
   ∫ x in Set.Ioi N, ((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)
 
-/-- (TRUNC) truncated Euler–Maclaurin representation of ζ on `Re s > 1` at integer cutoff `N ≥ 1`.
-    Derived from the finite Abel identity and `zeta_fract_repr`. -/
-theorem zeta_trunc {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N) :
+/-- (TRUNC) truncated Euler–Maclaurin representation of ζ on `0 < Re s`, `s ≠ 1`, at integer cutoff
+    `N ≥ 1`. Derived from the finite Abel identity (`zeta_partial_sum_repr`) and `zeta_fract_repr`.
+    Valid on the full elementary strip (not just `Re s > 1`): the partial-sum identity is algebraic
+    and the tail integral is over a compact interval. -/
+theorem zeta_trunc {s : ℂ} (hs0re : 0 < s.re) (hsne1 : s ≠ 1) {N : ℕ} (hN : 1 ≤ N) :
     riemannZeta s
       = (∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s))
         + (N : ℂ) ^ (1 - s) / (s - 1)
         - s * fractTail s (N : ℝ) := by
-  sorry
+  have hmem : s ∈ stripDomain := by
+    refine ⟨?_, ?_⟩
+    · show (0 : ℝ) < s.re; exact hs0re
+    · simp only [Set.mem_singleton_iff]; exact hsne1
+  have hrepr := zeta_fract_repr hmem
+  have hpsum := zeta_partial_sum_repr hs0re hsne1 hN
+  have hle : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  -- `fractIntegrand` is integrable on `Ioi 1` (Re s > 0, dominated by `t^{-(σ+1)}`).
+  have hint1 : IntegrableOn (fractIntegrand s) (Set.Ioi (1 : ℝ)) := by
+    have hbound : IntegrableOn (fun t : ℝ => t ^ (-(s.re + 1))) (Set.Ioi (1 : ℝ)) :=
+      integrableOn_Ioi_rpow_of_lt (by linarith : -(s.re + 1) < -1) one_pos
+    have hm : AEStronglyMeasurable (fractIntegrand s) (volume.restrict (Set.Ioi (1 : ℝ))) := by
+      apply Measurable.aestronglyMeasurable; unfold fractIntegrand; fun_prop
+    refine Integrable.mono' hbound hm ?_
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun t ht => ?_))
+    have htpos : (0 : ℝ) < t := lt_trans one_pos ht
+    rw [fractIntegrand, norm_div, Complex.norm_real, Real.norm_of_nonneg (Int.fract_nonneg t),
+      Complex.norm_cpow_eq_rpow_re_of_pos htpos, show (s + 1).re = s.re + 1 by simp [Complex.add_re],
+      Real.rpow_neg htpos.le, div_eq_mul_inv]
+    exact mul_le_of_le_one_left (inv_nonneg.mpr (Real.rpow_nonneg htpos.le _)) (Int.fract_lt_one t).le
+  -- split `∫_{Ioi 1} = ∫_{Ioc 1 N} + ∫_{Ioi N}`.
+  have hsplit : fractIntegral s = (∫ t in Set.Ioc (1 : ℝ) (N : ℝ), fractIntegrand s t)
+      + fractTail s (N : ℝ) := by
+    rw [fractIntegral, fractTail, ← Set.Ioc_union_Ioi_eq_Ioi hle,
+      setIntegral_union (Set.Ioc_disjoint_Ioi (le_refl _)) measurableSet_Ioi
+        (hint1.mono_set Set.Ioc_subset_Ioi_self) (hint1.mono_set (Set.Ioi_subset_Ioi hle))]
+    simp only [fractIntegrand]
+  rw [hrepr, stripRHS, hsplit, hpsum]; ring
 
 /-- Partial-sum bound: `‖Σ_{n=1}^N n^{-s}‖ ≤ 1 + log N` for `Re s ≥ 1`, using Mathlib's
     `harmonic_le_one_add_log` (`harmonic n ≤ 1 + log n`) after `‖n^{-s}‖ = n^{-σ} ≤ 1/n`. -/
@@ -123,6 +155,62 @@ theorem norm_tail_term_le {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 1 ≤ N) :
 theorem zeta_log_bound {σ t : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (ht : 2 ≤ |t|) :
     ∃ C : ℝ, 0 < C ∧
       ‖riemannZeta ((σ : ℂ) + t * Complex.I)‖ ≤ C * (1 + Real.log |t|) := by
-  sorry
+  refine ⟨6, by norm_num, ?_⟩
+  set s : ℂ := (σ : ℂ) + t * Complex.I with hs_def
+  have hsre : s.re = σ := by simp [hs_def]
+  have hsim : s.im = t := by simp [hs_def]
+  -- basic real facts about |t|
+  have htpos : (0 : ℝ) < |t| := lt_of_lt_of_le two_pos ht
+  have hlog0 : 0 ≤ Real.log |t| := Real.log_nonneg (by linarith)
+  have htne : t ≠ 0 := by intro h; rw [h, abs_zero] at ht; linarith
+  -- cutoff N = ⌊|t|⌋
+  set N : ℕ := ⌊|t|⌋₊ with hN_def
+  have hN1 : 1 ≤ N := Nat.le_floor (by push_cast; linarith)
+  have hNR1 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN1
+  have hNRpos : (0 : ℝ) < (N : ℝ) := by linarith
+  have hNle : (N : ℝ) ≤ |t| := Nat.floor_le htpos.le
+  have hNgt : |t| - 1 < (N : ℝ) := by have := Nat.lt_floor_add_one |t|; linarith
+  -- s ≠ 1 and 0 < s.re
+  have hsne1 : s ≠ 1 := by intro h; apply htne; rw [← hsim, h, Complex.one_im]
+  have hspos : 0 < s.re := by rw [hsre]; linarith
+  have hsre1 : (1 : ℝ) ≤ s.re := by rw [hsre]; exact hσ1
+  -- truncated Euler–Maclaurin at N
+  have htrunc := zeta_trunc hspos hsne1 hN1
+  -- Term A: ‖Σ n^{-s}‖ ≤ 1 + log N ≤ 1 + log|t|.
+  have hlogle : Real.log (N : ℝ) ≤ Real.log |t| := Real.log_le_log hNRpos hNle
+  have hA : ‖∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)‖ ≤ 1 + Real.log |t| := by
+    have := norm_partial_sum_le hsre1 hN1
+    linarith
+  -- Term B: ‖N^{1-s}/(s-1)‖ ≤ 1 (numerator ≤ 1, denominator ≥ |t| ≥ 2).
+  have hdenge : (2 : ℝ) ≤ ‖s - 1‖ := by
+    have h1 := abs_im_le_norm_sub_one s
+    rw [hsim] at h1; linarith
+  have hdenpos : (0 : ℝ) < ‖s - 1‖ := by linarith
+  have hB : ‖(N : ℂ) ^ (1 - s) / (s - 1)‖ ≤ 1 := by
+    rw [norm_div, div_le_iff₀ hdenpos, one_mul]
+    have hnum := norm_cpow_one_sub_le_one hsre1 hN1
+    linarith
+  -- Term C: ‖s · fractTail‖ ≤ ‖s‖/(σ·N^σ) ≤ 4.
+  have hsnorm : ‖s‖ ≤ σ + |t| := by
+    have h : ‖s‖ ≤ ‖(σ : ℂ)‖ + ‖(t : ℂ) * Complex.I‖ := by rw [hs_def]; exact norm_add_le _ _
+    rwa [Complex.norm_real, norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
+      Real.norm_of_nonneg (by linarith : (0 : ℝ) ≤ σ), Real.norm_eq_abs] at h
+  have hbpos : (0 : ℝ) < s.re * (N : ℝ) ^ s.re :=
+    mul_pos hspos (Real.rpow_pos_of_pos hNRpos _)
+  have hden_ge : (N : ℝ) ≤ s.re * (N : ℝ) ^ s.re := by
+    have h1 : (N : ℝ) ^ (1 : ℝ) ≤ (N : ℝ) ^ s.re :=
+      Real.rpow_le_rpow_of_exponent_le hNR1 hsre1
+    rw [Real.rpow_one] at h1
+    nlinarith [h1, mul_nonneg (by linarith : (0 : ℝ) ≤ s.re - 1) (Real.rpow_nonneg hNRpos.le s.re)]
+  have hC : ‖s * fractTail s (N : ℝ)‖ ≤ 4 := by
+    refine le_trans (norm_tail_term_le hspos hN1) ?_
+    rw [div_le_iff₀ hbpos]
+    linarith [hsnorm, hden_ge, hNgt, ht, hσ2]
+  -- assemble via the triangle inequality (fed to linarith as facts).
+  rw [htrunc]
+  have h1 := norm_sub_le ((∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)) + (N : ℂ) ^ (1 - s) / (s - 1))
+    (s * fractTail s (N : ℝ))
+  have h2 := norm_add_le (∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)) ((N : ℂ) ^ (1 - s) / (s - 1))
+  linarith [h1, h2, hA, hB, hC, hlog0]
 
 end ZeroFreeBridge

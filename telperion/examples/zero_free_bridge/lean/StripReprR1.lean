@@ -237,14 +237,14 @@ theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := b
   rw [hI0, hFI, stripRHS]
   ring
 
-/-- FINITE Euler–Maclaurin / Abel-summation identity (WIP SKELETON): the partial sum in the clean
-    closed form, the finite-`N` companion of `zeta_repr_R1`. Feeds `zeta_trunc` in `ZetaLogBound`.
-    Sub-steps are `sorry`; this validates the `sum_mul_eq_sub_integral_mul₀` application structure. -/
-theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N) :
+/-- FINITE Euler–Maclaurin / Abel-summation identity: the partial sum in the clean closed form,
+    the finite-`N` companion of `zeta_repr_R1`. Feeds `zeta_trunc` in `ZetaLogBound`.
+    Discharged (no `sorry`) via `sum_mul_eq_sub_integral_mul₀` + `integral_cpow`. -/
+theorem zeta_partial_sum_repr {s : ℂ} (hs0re : 0 < s.re) (hsne1 : s ≠ 1) {N : ℕ} (hN : 1 ≤ N) :
     ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)
       = s / (s - 1) - (N : ℂ) ^ (1 - s) / (s - 1)
         - s * ∫ t in Set.Ioc (1 : ℝ) (N : ℝ), fractIntegrand s t := by
-  have hs0 : s ≠ 0 := by intro h; rw [h, Complex.zero_re] at hs; linarith
+  have hs0 : s ≠ 0 := by intro h; rw [h, Complex.zero_re] at hs0re; linarith
   have hf_diff : ∀ t ∈ Set.Icc (1 : ℝ) (N : ℝ), DifferentiableAt ℝ (fPow s) t := by
     intro t ht
     have ht0 : t ≠ 0 := (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne'
@@ -262,8 +262,87 @@ theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N)
     exact hcont.integrableOn_compact isCompact_Icc
   have habel := sum_mul_eq_sub_integral_mul₀ (c := cOne) (f := fPow s) (rfl : cOne 0 = 0)
     (N : ℝ) hf_diff hf_int
-  -- LHS = ∑_{Icc 1 N} n^{-s}; fPow N·N = N^{1-s}; integrand = −s t^{-s} + s·fractIntegrand (hIeq);
-  -- ∫_{Ioc 1 N} t^{-s} = 1/(s-1) − N^{1-s}/(s-1); collect.
-  sorry
+  rw [Nat.floor_natCast] at habel
+  have hle : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hNpos : (0 : ℝ) < (N : ℝ) := by linarith
+  have hNRne : ((N : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hNpos.ne'
+  have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr hsne1
+  -- (1) LHS: `cOne` kills `k = 0`, leaving `∑_{Icc 1 N} n^{-s}`.
+  have hLHS : ∑ k ∈ Finset.Icc 0 N, fPow s (k : ℝ) * cOne k
+      = ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s) := by
+    have herase : (Finset.Icc 0 N).erase 0 = Finset.Icc 1 N := by
+      ext k; simp only [Finset.mem_erase, Finset.mem_Icc]; omega
+    rw [← Finset.add_sum_erase _ _ (Finset.mem_Icc.mpr ⟨Nat.zero_le 0, Nat.zero_le N⟩), herase,
+      show fPow s ((0 : ℕ) : ℝ) * cOne 0 = 0 by simp [cOne], zero_add]
+    refine Finset.sum_congr rfl (fun n hn => ?_)
+    have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
+    rw [show cOne n = 1 by simp only [cOne, if_neg (show n ≠ 0 by omega)], mul_one, fPow,
+      Complex.ofReal_natCast]
+  -- (2) boundary term: `N^{-s}·N = N^{1-s}`.
+  have hterm2 : fPow s (N : ℝ) * (∑ k ∈ Finset.Icc 0 N, cOne k) = ((N : ℝ) : ℂ) ^ (1 - s) := by
+    rw [sum_cOne N, fPow, show ((N : ℕ) : ℂ) = ((N : ℝ) : ℂ) by push_cast; ring]
+    have h := Complex.cpow_add (-s) 1 hNRne
+    rw [Complex.cpow_one] at h
+    rw [← h]; congr 1; ring
+  -- (3) integrability on the bounded interval `Ioc 1 N`.
+  have hcont_cpow : IntegrableOn (fun t : ℝ => ((t : ℝ) : ℂ) ^ (-s)) (Set.Ioc (1 : ℝ) (N : ℝ)) := by
+    have hc : ContinuousOn (fun t : ℝ => ((t : ℝ) : ℂ) ^ (-s)) (Set.Icc (1 : ℝ) (N : ℝ)) := by
+      intro t ht
+      have ht0 : t ≠ 0 := (lt_of_lt_of_le one_pos (Set.mem_Icc.mp ht).1).ne'
+      exact (Complex.continuousAt_ofReal_cpow_const t (-s) (Or.inr ht0)).continuousWithinAt
+    exact (hc.integrableOn_compact isCompact_Icc).mono_set Set.Ioc_subset_Icc_self
+  have hint_frac : IntegrableOn (fractIntegrand s) (Set.Ioc (1 : ℝ) (N : ℝ)) := by
+    have hbound : IntegrableOn (fun t : ℝ => t ^ (-(s.re + 1))) (Set.Ioc (1 : ℝ) (N : ℝ)) :=
+      (integrableOn_Ioi_rpow_of_lt (by linarith : -(s.re + 1) < -1) one_pos).mono_set
+        Set.Ioc_subset_Ioi_self
+    have hm : AEStronglyMeasurable (fractIntegrand s) (volume.restrict (Set.Ioc (1 : ℝ) (N : ℝ))) := by
+      apply Measurable.aestronglyMeasurable; unfold fractIntegrand; fun_prop
+    refine Integrable.mono' hbound hm ?_
+    refine (ae_restrict_iff' measurableSet_Ioc).mpr (Filter.Eventually.of_forall (fun t ht => ?_))
+    have htpos : (0 : ℝ) < t := lt_trans one_pos (Set.mem_Ioc.mp ht).1
+    rw [fractIntegrand, norm_div, Complex.norm_real,
+      Real.norm_of_nonneg (Int.fract_nonneg t), Complex.norm_cpow_eq_rpow_re_of_pos htpos,
+      show (s + 1).re = s.re + 1 by simp [Complex.add_re], Real.rpow_neg htpos.le, div_eq_mul_inv]
+    exact mul_le_of_le_one_left (inv_nonneg.mpr (Real.rpow_nonneg htpos.le _)) (Int.fract_lt_one t).le
+  -- (4) integrand rewrite (⌊t⌋ = t - {t}) and split on `Ioc 1 N`.
+  have hInt : (∫ t in Set.Ioc (1 : ℝ) (N : ℝ), deriv (fPow s) t * ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, cOne k)
+      = -s * (∫ t in Set.Ioc (1 : ℝ) (N : ℝ), ((t : ℝ) : ℂ) ^ (-s))
+        + s * ∫ t in Set.Ioc (1 : ℝ) (N : ℝ), fractIntegrand s t := by
+    have hpt : Set.EqOn (fun t => deriv (fPow s) t * ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, cOne k)
+        (fun t => -s * ((t : ℝ) : ℂ) ^ (-s) + s * fractIntegrand s t) (Set.Ioc (1 : ℝ) (N : ℝ)) := by
+      intro t ht
+      have ht1 : (1 : ℝ) < t := (Set.mem_Ioc.mp ht).1
+      have htpos : (0 : ℝ) < t := by linarith
+      have ht0 : t ≠ 0 := htpos.ne'
+      have htc : ((t : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ht0
+      show deriv (fPow s) t * ∑ k ∈ Finset.Icc 0 ⌊t⌋₊, cOne k
+          = -s * ((t : ℝ) : ℂ) ^ (-s) + s * fractIntegrand s t
+      rw [sum_cOne ⌊t⌋₊, (hasDerivAt_fPow hs0 ht0).deriv]
+      have hfloorC : ((⌊t⌋₊ : ℕ) : ℂ) = ((t : ℝ) : ℂ) - ((Int.fract t : ℝ) : ℂ) := by
+        rw [← Complex.ofReal_natCast, natCast_floor_eq_intCast_floor htpos.le,
+          show ((⌊t⌋ : ℤ) : ℝ) = t - Int.fract t from (Int.self_sub_fract t).symm, Complex.ofReal_sub]
+      have hA1 : ((t : ℝ) : ℂ) ^ (-s - 1) * ((t : ℝ) : ℂ) = ((t : ℝ) : ℂ) ^ (-s) := by
+        have h := Complex.cpow_add (-s - 1) 1 htc
+        rw [Complex.cpow_one] at h
+        rw [← h]; congr 1; ring
+      have hfi : fractIntegrand s t = ((Int.fract t : ℝ) : ℂ) * ((t : ℝ) : ℂ) ^ (-s - 1) := by
+        simp only [fractIntegrand, div_eq_mul_inv]
+        rw [← Complex.cpow_neg, show (-(s + 1) : ℂ) = -s - 1 by ring]
+      rw [hfloorC, hfi, ← hA1]; ring
+    rw [setIntegral_congr_fun measurableSet_Ioc hpt,
+      integral_add (hcont_cpow.const_mul (-s)) (hint_frac.const_mul s),
+      integral_const_mul, integral_const_mul]
+  -- (5) closed form: `∫_{Ioc 1 N} t^{-s} = (1 - N^{1-s})/(s-1)`.
+  have hClosed : (∫ t in Set.Ioc (1 : ℝ) (N : ℝ), ((t : ℝ) : ℂ) ^ (-s))
+      = (1 - ((N : ℝ) : ℂ) ^ (1 - s)) / (s - 1) := by
+    rw [← intervalIntegral.integral_of_le hle,
+      integral_cpow (Or.inr ⟨fun h => hsne1 (neg_injective h), by
+        rw [Set.uIcc_of_le hle]; simp [Set.mem_Icc]⟩),
+      Complex.ofReal_one, Complex.one_cpow, show (-s + 1 : ℂ) = 1 - s by ring]
+    field_simp
+    ring
+  -- (6) collect.
+  rw [hLHS, hterm2, hInt, hClosed] at habel
+  rw [habel]; push_cast; field_simp; ring
 
 end ZeroFreeBridge
