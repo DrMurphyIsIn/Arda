@@ -344,6 +344,6 @@ theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N)
     ring
   -- (6) collect.
   rw [hLHS, hterm2, hInt, hClosed] at habel
-  rw [habel]; field_simp; ring
+  rw [habel]; push_cast; field_simp; ring
 
 end ZeroFreeBridge
