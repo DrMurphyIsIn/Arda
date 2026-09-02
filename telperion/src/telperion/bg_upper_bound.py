@@ -109,11 +109,13 @@ class UpperBoundReduction:
             ReductionStep("2b-lo-assembly", "SCL induction arithmetic backbone: every leg (price-map, tangent gap 0, "
                           "broom-vs-cherry, leaf-exchange, hi-degree, near-broom) consistent + price map closed on I",
                           GATED, SCLInductionCertificate),
-            ReductionStep("2b-lo-scl-induction", "SCL well-founded induction on |c|: RECURSION now Lean-formalized "
-                          "(R3Cert.BGSCL.scl_holds / scl_of_child_step, no `sorry`, CI-compiled) -- reduces the SCL "
-                          "to `htangent` (the concave-log tangent) + `hbroom` (gated leg #4) + children-smaller. "
-                          "The sole remaining analytic input is `htangent` (concavity of log(1+s/d)) wired to the "
-                          "concrete branch total/ell => near-broom argmax => EXTREMALITY",
+            ReductionStep("2b-lo-scl-induction", "SCL well-founded induction on |c|: Lean-formalized in "
+                          "R3Cert.BGSCLInduction (no `sorry`, local lake build green) -- recursion (scl_of_child_step), "
+                          "concave-log tangent (log_tangent), concrete cavity total/ell/h/y/V_mu (cav/bell/bV) + "
+                          "positivity, the ell recursion (bell_node), and the tangent-linearized hub bound "
+                          "(bell_node_tangent). Remaining: the PRICE-FLOW assembly (mu->mu''=3[(4d-1)-3mu]/(4d-1)^2 "
+                          "over I) turning bell_node_tangent into the SCL, + hbroom (un-clearing gated leg #4 by "
+                          "log-monotonicity) => near-broom argmax => EXTREMALITY",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),

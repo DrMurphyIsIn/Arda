@@ -12,20 +12,27 @@
   parameterized by the per-hub decouple step, which is discharged by the tangent (concavity of `log`) + the
   gated legs.
 
-  What is PROVED here (no `sorry`, elementary — `induction`/`linarith` only):
-    * `scl_of_child_step` — the recursion: children strictly smaller (well-founded by `size`) + the per-hub
-      step (all children `<= cherry` => the hub `<= cherry`) give the SCL for EVERY branch.
-    * `list_sum_nonpos` — a list of nonpositive rationals sums to `<= 0`.
-    * `hub_le_of_tangent` — the per-hub arithmetic over any `LinearOrderedField`: tangent `Vhub <= Vbroom +
-      slack` (concavity) + `Vbroom <= Vcherry` (leg #4) + `slack <= 0` (children `<= cherry`, summed) give
-      `Vhub <= Vcherry`.
-    * `scl_holds` — the COMPOSITION: from `hchild` (children smaller), `hbroom` (gated leg #4), and `htangent`
-      (the concave-log tangent), the SCL `V a <= Vcherry` holds for every branch, by the recursion.
+  What is PROVED here (verified by local `lake build`, no `sorry`):
+    RECURSION + ARITHMETIC:
+    * `scl_of_child_step` — the well-founded strong induction: children strictly smaller + the per-hub step
+      => the SCL for EVERY branch.  `list_sum_nonpos`, `hub_le_of_tangent`, `scl_holds` — the recursion glue.
+    CONCAVE-LOG TANGENT (analytic heart):
+    * `log_tangent` — `log(1 + s/d) <= log(1 + s0/d) + (s-s0)/(d+s0)` (concavity of `log`, via `log x <= x-1`).
+    CONCRETE BRANCH + CAVITY MATCHING SUM:
+    * `Branch`, `bsize`, `bchildren`, `bchildren_bsize_lt` — the rooted rose tree + well-foundedness.
+    * `cav`/`cavAgg` — the `(U, total)` degree-weighted matching-sum recursion; `cav_pos`/`cavAgg_pos` positivity.
+    * `FSTAR`, `btotal`, `bell`, `bh`, `bY`, `bV` — concrete `ell = log total - |b|*F*`, `h = U/total`,
+      `y = h/deg`, `V_mu = ell + mu*y`.
+    THE ELL RECURSION + TANGENT-LINEARIZED HUB BOUND:
+    * `bell_node` — `ell(node cs) = (Sum_c ell c) + (log(1 + (Sum_c y_c)/d) - F*)`, `d = |cs|+1`.
+    * `bell_node_tangent` — combines `bell_node` + `log_tangent`: `ell(node cs) <= (Sum_c ell c) + [tangent
+      line of log at any s0 >= 0] - F*`.  The analytic heart of `htangent`.
 
-  So the SCL is reduced, in Lean, to exactly two typed obligations: the concave-log `htangent` (an analytic
-  lemma about `log(1 + s/d)`) and `hbroom` (the gated broom-vs-cherry leg #4).  The recursion itself is closed.
-  `conjecture1_proved = False` (the full conjecture also needs the concrete branch total/ell definitions
-  feeding `htangent`, the finite-`n` structural side, and the matching lower bound).
+  REMAINING for full Lean closure of the extremality: the PRICE-FLOW assembly turning `bell_node_tangent`
+  (at the all-cherry reference `s0 = (d-1)*y_cherry`) into the SCL via the `mu -> mu'' = 3[(4d-1)-3mu]/(4d-1)^2`
+  induction over the invariant interval `I = [456/3703, 3/7]` (the fixed-`mu` `scl_holds` provably cannot absorb
+  the residual `(S-S*)[1/(d+S*)-mu]` term -- the price flow is essential), plus `hbroom` (un-clearing the gated
+  rational leg #4 by `log`-monotonicity).  `conjecture1_proved = False` (also: finite-`n` structural side + lower bound).
 -/
 import Mathlib
 
@@ -321,6 +328,29 @@ theorem bell_node (cs : List Branch) :
   unfold bell
   rw [hlog, hsz]
   ring
+
+
+/-- **The tangent-linearized hub bound** — the analytic heart of `htangent`, combining the `ell` recursion
+    (`bell_node`) with the concave-log tangent (`log_tangent`).  For any reference field-sum `s0 ≥ 0`, the hub
+    `ell` is bounded above by the child `ell`-sum plus the tangent line of `log(1 + ·/d)` at `s0`:
+
+      `ell(node cs) ≤ Σ_c ell(c) + [log(1 + s0/d) + (S − s0)/(d + s0) − F*]`,   `S = Σ_c y_c`, `d = |cs|+1`.
+
+    Taking `s0 = (d−1)·y_cherry` (the all-cherry reference) turns the bracket into the broom value plus the
+    per-child slack — the shape `scl_holds`'s `htangent` needs (with the price bookkeeping / gated leg #4 the
+    remaining assembly). -/
+theorem bell_node_tangent (cs : List Branch) {s0 : ℝ} (hs0 : 0 ≤ s0) :
+    bell (Branch.node cs)
+      ≤ (cs.map bell).sum
+        + (Real.log (1 + s0 / ((cs.length : ℝ) + 1))
+            + ((cs.map bY).sum - s0) / (((cs.length : ℝ) + 1) + s0) - FSTAR) := by
+  have hd : (0:ℝ) < (cs.length : ℝ) + 1 := by positivity
+  have hSnn : 0 ≤ (cs.map bY).sum := by
+    apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c
+  have htan := log_tangent hd hSnn hs0
+  rw [bell_node]
+  linarith
 
 end BGSCL
 end R3Cert
