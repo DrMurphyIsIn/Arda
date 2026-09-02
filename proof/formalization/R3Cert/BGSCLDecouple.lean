@@ -1,7 +1,7 @@
 /-
   SCL per-hub decouple residual — the `nlinarith` core of `FlowedHubStep` (the d≤6 tangent decouple).
   This discharges the Telperion `PerHubDecoupleResidualCertificate` in Lean.  The d=2 residual `R(S) ≤ 0`
-  is PROVEN here (sorry-free, axiom-clean); d=3..6 follow by the SAME template (`log((4d-1)/(3d))` combined via
+  is PROVEN here (no `sorry`, axiom-clean); d=3..6 follow by the SAME template (`log((4d-1)/(3d))` combined via
   `×11` into `log(rational)`, bounded by a clean `exp` power, then `μ/(d+S)` cleared and `nlinarith` on the
   upward parabola in `S`).  Verified against the Telperion cert (20 endpoint atoms, margin ≥ +0.007).
   conjecture1_proved = False.
