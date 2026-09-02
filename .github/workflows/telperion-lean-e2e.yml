@@ -425,6 +425,142 @@ jobs:
         working-directory: telperion/examples/logderiv_region/lean
         run: lake build
 
+  pe-duality-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate PeDuality Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/pe_duality/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/pe_duality/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/pe_duality/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — pseudo-expectation SoS-duality)
+        working-directory: telperion/examples/pe_duality/lean
+        run: lake build
+
+  order-balance-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate OrderBalance Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/order_balance/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/order_balance/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/order_balance/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — order-balance boundary hinge)
+        working-directory: telperion/examples/order_balance/lean
+        run: lake build
+
+  lfunction-product-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate LFunctionProduct Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/lfunction_product/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/lfunction_product/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/lfunction_product/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — nonneg-cosine L-product)
+        working-directory: telperion/examples/lfunction_product/lean
+        run: lake build
+
+  parametric-holomorphy-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate ParametricHolomorphy Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/parametric_holomorphy/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/parametric_holomorphy/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/parametric_holomorphy/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — parametric-integral holomorphy)
+        working-directory: telperion/examples/parametric_holomorphy/lean
+        run: lake build
+
   psd-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
