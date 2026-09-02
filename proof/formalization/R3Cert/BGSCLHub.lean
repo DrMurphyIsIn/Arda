@@ -9,6 +9,8 @@
 import Mathlib
 import R3Cert.BGSCLInduction
 import R3Cert.BGSCLStep
+import R3Cert.BGSCLDecouple
+import R3Cert.BGSCLFlowed
 
 namespace R3Cert
 namespace BGSCL
@@ -33,6 +35,94 @@ theorem child_bell_sum_le (ν : ℝ) (cs : List Branch) (h : ∀ c ∈ cs, bV ν
     simp only [List.map_cons, List.sum_cons, List.length_cons, Nat.cast_add, Nat.cast_one]
     rw [hVc] at iht ⊢
     nlinarith [ha, iht]
+
+/-- `bY b ≤ 1` for every branch (`h ≤ 1`, `bcc ≥ 0`). -/
+theorem bY_le_one (b : Branch) : bY b ≤ 1 := by
+  cases b with
+  | node cs =>
+    rw [bY_node]
+    have hS : 0 ≤ (cs.map bY).sum := by
+      apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+      obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c
+    have hlen : (0:ℝ) ≤ (cs.length:ℝ) := Nat.cast_nonneg _
+    rw [div_le_one (by linarith)]; linarith
+
+/-- A non-leaf branch `node (a :: rest)` has `bY ≤ 1/2` (denominator `≥ 2`). -/
+theorem bY_nonleaf_le_half (a : Branch) (rest : List Branch) :
+    bY (Branch.node (a :: rest)) ≤ 1/2 := by
+  rw [bY_node]
+  have hS : 0 ≤ ((a :: rest).map bY).sum := by
+    apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c
+  have h1 : (1:ℝ) ≤ ((a :: rest).length : ℝ) := by
+    have : (0:ℝ) ≤ (rest.length : ℝ) := Nat.cast_nonneg _
+    rw [List.length_cons]; push_cast; linarith
+  rw [div_le_iff₀ (by linarith)]
+  linarith
+
+/-- **Uniform child SCL at the flowed price** (`d ∈ {3..6}`): every child satisfies `bV_{μ''} c ≤ bV_{μ''} cherry`
+    — leaf children via `leaf_le_cherry` (`μ'' ≤ 3/11`), non-leaf via `PSCLne` at `μ'' ∈ I`. -/
+theorem child_scl_muPP {d : ℝ} (hd3 : 3 ≤ d) (hd6 : d ≤ 6) {μ : ℝ} (hμ : inI μ)
+    {cs : List Branch} (hchild : ∀ c ∈ cs, PSCLne c) :
+    ∀ c ∈ cs, bV (muPP d μ) c ≤ bV (muPP d μ) cherry := by
+  intro c hc
+  have hμ0 : (0:ℝ) ≤ μ := le_trans (by norm_num) hμ.1
+  by_cases hleaf : c = Branch.node []
+  · subst hleaf
+    exact leaf_le_cherry (muPP_le_three_eleven hd3 hμ0)
+  · exact hchild c hc hleaf (muPP d μ) (muPP_mem_I (by linarith) hd6 hμ)
+
+/-- `Σ_c bY(c) ≤ |cs|` (each `bY ≤ 1`). -/
+theorem sum_bY_le_length (cs : List Branch) : (cs.map bY).sum ≤ (cs.length : ℝ) := by
+  induction cs with
+  | nil => simp
+  | cons a t ih =>
+    simp only [List.map_cons, List.sum_cons, List.length_cons, Nat.cast_add, Nat.cast_one]
+    have := bY_le_one a
+    linarith [ih]
+
+/-- **Hub connection, d=3** (`cs.length = 2`). -/
+theorem hub_le_d3 {mu : ℝ} (hmu : inI mu) {cs : List Branch} (hlen : cs.length = 2)
+    (hchild : ∀ c ∈ cs, PSCLne c) :
+    bV mu (Branch.node cs) ≤ bV mu cherry := by
+  set S := (cs.map bY).sum with hSdef
+  have hSnn : 0 ≤ S := by
+    rw [hSdef]; apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c
+  have hlenR : (cs.length : ℝ) = 2 := by exact_mod_cast hlen
+  have hSle : S ≤ 2 := by
+    have := sum_bY_le_length cs; rw [hlenR] at this; rw [hSdef]; exact this
+  have hmpp : muPP 3 mu = (33 - 9*mu)/121 := by rw [muPP]; ring
+  have hchild2 := child_scl_muPP (d:=3) (by norm_num) (by norm_num) hmu hchild
+  have hsum : (cs.map bell).sum ≤ (cs.length : ℝ) * bV (muPP 3 mu) cherry - muPP 3 mu * (cs.map bY).sum :=
+    child_bell_sum_le (muPP 3 mu) cs hchild2
+  rw [hlenR, ← hSdef] at hsum
+  have htan := bell_node_tangent cs (s0 := 2/3) (by norm_num)
+  rw [hlenR, ← hSdef] at htan
+  have hlogeq : Real.log (1 + 2/3/((2:ℝ)+1)) = Real.log (11/9) := by norm_num
+  have hden : ((2:ℝ)+1)+2/3 = 11/3 := by norm_num
+  rw [hlogeq, hden] at htan
+  have hbY : bY (Branch.node cs) = 1 / (3 + S) := by
+    have hden' : ((cs.length : ℝ) + 1) + (cs.map bY).sum = 3 + S := by rw [hlenR, ← hSdef]; ring
+    rw [bY_node, hden']
+  have hdec := decouple_d3 mu S hmu hSnn hSle
+  have hVpp : bV (muPP 3 mu) cherry = Real.log (3/2) - 2*FSTAR + muPP 3 mu * (1/3) := by
+    rw [bV, bell_cherry, bY_cherry]
+  have hVc : bV mu cherry = Real.log (3/2) - 2*FSTAR + mu * (1/3) := by
+    rw [bV, bell_cherry, bY_cherry]
+  -- the RHS bound on bV mu (node cs)
+  have hbV : bV mu (Branch.node cs) = bell (Branch.node cs) + mu * (1/(3+S)) := by rw [bV, hbY]
+  have hRHS : bV mu (Branch.node cs)
+      ≤ (2 * bV (muPP 3 mu) cherry - muPP 3 mu * S
+          + (Real.log (11/9) + (S - 2/3)/(11/3) - FSTAR)) + mu * (1/(3+S)) := by
+    rw [hbV]; linarith [htan, hsum]
+  -- the algebraic identity: RHS - bV mu cherry = decouple_d3 LHS  (μ'' expanded, μ/(3+S) shared atom)
+  have hbridge : (2 * bV (muPP 3 mu) cherry - muPP 3 mu * S
+        + (Real.log (11/9) + (S - 2/3)/(11/3) - FSTAR)) + mu * (1/(3+S)) - bV mu cherry
+      = (2*(muPP 3 mu)/3 - mu/3 + 9*mu*S/121 - 2/11
+          + (Real.log (3/2) + Real.log (11/9) - 3*FSTAR) + mu/(3+S)) := by
+    rw [hVpp, hVc, hmpp]; ring
+  linarith [hRHS, hbridge, hdec]
 
 end BGSCL
 end R3Cert
