@@ -1,4 +1,4 @@
-/- SHARP NEAR-LINE GROWTH BOUND (WORK IN PROGRESS): `|ζ(σ+it)| ≤ C·(1 + log|t|)`
+/- SHARP NEAR-LINE GROWTH BOUND (DISCHARGED, sorry-free): `|ζ(σ+it)| ≤ 6·(1 + log|t|)`
    for `1 ≤ σ ≤ 2`, `|t| ≥ 2` — the upgrade that improves the zero-free-region rate.
 
    The elementary region (`riemannZeta_zero_free_poly`, `Re s > 1 - c/|t|⁵`) is limited by the
@@ -9,7 +9,7 @@
 
    METHOD: truncated Euler–Maclaurin at `N ∼ |t|`, reusing the R1 Abel-summation machinery.
    From `zeta_fract_repr` (ζ(s) = s/(s-1) - s∫_{x>1}{x}x^{-s-1}) and the FINITE Abel identity
-   (`sum_mul_eq_sub_integral_mul₀`, f=x^{-s}, c 0=0, c(n≥1)=1) one gets, for Re s > 1, N ≥ 1:
+   (`sum_mul_eq_sub_integral_mul₀`, f=x^{-s}, c 0=0, c(n≥1)=1) one gets, for 0 < Re s, s ≠ 1, N ≥ 1:
 
        ζ(s) = Σ_{n=1}^N n^{-s} + N^{1-s}/(s-1) - s·∫_{x>N} {x} x^{-s-1} dx.        (TRUNC)
 
@@ -19,8 +19,11 @@
      • |s·∫_{x>N}{x}x^{-s-1}| ≤ |s|·N^{-σ}/σ ≤ |s|/N ≤ C                     (N ≥ |t|/2, |s| ≤ 2|t|)
    ⟹ |ζ(σ+it)| ≤ C·(1 + log|t|).
 
-   STATUS: WIP SKELETON. Sub-obligations isolated as `sorry`; NOT a discharge until sorry-free.
-   A gap-filler FEEDING the region rate, NOT a proof of RH. conjecture1_proved = False.
+   STATUS: DISCHARGED, sorry-free (CI: zeta-log-bound-compiles green). `zeta_trunc` and the
+   underlying `zeta_partial_sum_repr` hold on the full elementary strip `0 < Re s, s ≠ 1` (the
+   finite Abel identity is algebraic; the tail is over a compact interval), so `zeta_log_bound`
+   covers σ = 1 as well. A gap-filler FEEDING the region rate, NOT a proof of RH.
+   conjecture1_proved = False.
 -/
 import StripReprAssembled
 
