@@ -623,7 +623,7 @@ jobs:
       - name: Axiom guard -- RH unconditional theorems are kernel-clean (fail on sorryAx)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: |
-          lake build StripReprAssembled StripBound
+          lake build StripReprAssembled StripBound ZetaLogBound
           out="$(lake env lean AxiomGuardRH.lean 2>&1 || true)"
           echo "$out"
           if echo "$out" | grep -q 'sorryAx'; then

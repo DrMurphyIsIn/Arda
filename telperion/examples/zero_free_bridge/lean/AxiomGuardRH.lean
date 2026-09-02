@@ -20,6 +20,10 @@
      * zeta_strip_bound               — the crude strip growth bound (Phase 2).
      * zeta_repr_R1 / differentiableAt_fractIntegral / isPreconnected_stripDomain
                                       — the three discharged inputs of `zeta_fract_repr_of`.
+     * zeta_log_bound / zeta_trunc / zeta_partial_sum_repr
+                                      — the sharp near-line growth bound and its Euler–Maclaurin
+                                        representation (previously guarded only transitively via the
+                                        polylog region; now guarded directly).
 
    (The dVP core in ZeroFreeRegion is deliberately CONDITIONAL — takes the
    Borel–Carathéodory log-derivative bounds as hypotheses — so it is not guarded here.)
@@ -27,6 +31,7 @@
 import ZeroFreeElementary
 import StripReprAssembled
 import StripBound
+import ZetaLogBound
 
 #print axioms ZeroFreeBridge.riemannZeta_zero_free_poly
 #print axioms ZeroFreeBridge.zeta_fract_repr
@@ -34,3 +39,6 @@ import StripBound
 #print axioms ZeroFreeBridge.zeta_repr_R1
 #print axioms ZeroFreeBridge.differentiableAt_fractIntegral
 #print axioms ZeroFreeBridge.isPreconnected_stripDomain
+#print axioms ZeroFreeBridge.zeta_log_bound
+#print axioms ZeroFreeBridge.zeta_trunc
+#print axioms ZeroFreeBridge.zeta_partial_sum_repr
