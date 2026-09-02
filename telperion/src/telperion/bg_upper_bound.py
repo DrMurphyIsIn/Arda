@@ -109,11 +109,11 @@ class UpperBoundReduction:
             ReductionStep("2b-lo-assembly", "SCL induction arithmetic backbone: every leg (price-map, tangent gap 0, "
                           "broom-vs-cherry, leaf-exchange, hi-degree, near-broom) consistent + price map closed on I",
                           GATED, SCLInductionCertificate),
-            ReductionStep("2b-lo-scl-induction", "SCL well-founded induction on |c|: ALL arithmetic legs above now "
-                          "GATED (price-map, broom-vs-cherry, leaf-exchange, hi-degree, near-broom, assembly-"
-                          "consistency); the sole remaining input is the well-founded RECURSION on |c| itself "
-                          "(child cases leaf/broom<=5/deg>=7/non-broom via IH at mu'' in I) => near-broom argmax "
-                          "=> EXTREMALITY -- a Lean induction proof (analogous to 1b), future formalization work",
+            ReductionStep("2b-lo-scl-induction", "SCL well-founded induction on |c|: RECURSION now Lean-formalized "
+                          "(R3Cert.BGSCL.scl_holds / scl_of_child_step, no `sorry`, CI-compiled) -- reduces the SCL "
+                          "to `htangent` (the concave-log tangent) + `hbroom` (gated leg #4) + children-smaller. "
+                          "The sole remaining analytic input is `htangent` (concavity of log(1+s/d)) wired to the "
+                          "concrete branch total/ell => near-broom argmax => EXTREMALITY",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),
