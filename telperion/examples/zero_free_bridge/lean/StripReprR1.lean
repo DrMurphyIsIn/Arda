@@ -237,9 +237,9 @@ theorem zeta_repr_R1 {s : ℂ} (hs : 1 < s.re) : riemannZeta s = stripRHS s := b
   rw [hI0, hFI, stripRHS]
   ring
 
-/-- FINITE Euler–Maclaurin / Abel-summation identity (WIP SKELETON): the partial sum in the clean
-    closed form, the finite-`N` companion of `zeta_repr_R1`. Feeds `zeta_trunc` in `ZetaLogBound`.
-    Sub-steps are `sorry`; this validates the `sum_mul_eq_sub_integral_mul₀` application structure. -/
+/-- FINITE Euler–Maclaurin / Abel-summation identity: the partial sum in the clean closed form,
+    the finite-`N` companion of `zeta_repr_R1`. Feeds `zeta_trunc` in `ZetaLogBound`.
+    Discharged (no `sorry`) via `sum_mul_eq_sub_integral_mul₀` + `integral_cpow`. -/
 theorem zeta_partial_sum_repr {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N) :
     ∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)
       = s / (s - 1) - (N : ℂ) ^ (1 - s) / (s - 1)

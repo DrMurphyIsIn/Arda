@@ -39,7 +39,34 @@ theorem zeta_trunc {s : ℂ} (hs : 1 < s.re) {N : ℕ} (hN : 1 ≤ N) :
       = (∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s))
         + (N : ℂ) ^ (1 - s) / (s - 1)
         - s * fractTail s (N : ℝ) := by
-  sorry
+  have hs1 : s ≠ 1 := by intro h; rw [h] at hs; simp at hs
+  have hmem : s ∈ stripDomain := by
+    refine ⟨?_, ?_⟩
+    · show (0 : ℝ) < s.re; linarith
+    · simp only [Set.mem_singleton_iff]; exact hs1
+  have hrepr := zeta_fract_repr hmem
+  have hpsum := zeta_partial_sum_repr hs hN
+  have hle : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  -- `fractIntegrand` is integrable on `Ioi 1` (Re s > 0, dominated by `t^{-(σ+1)}`).
+  have hint1 : IntegrableOn (fractIntegrand s) (Set.Ioi (1 : ℝ)) := by
+    have hbound : IntegrableOn (fun t : ℝ => t ^ (-(s.re + 1))) (Set.Ioi (1 : ℝ)) :=
+      integrableOn_Ioi_rpow_of_lt (by linarith : -(s.re + 1) < -1) one_pos
+    have hm : AEStronglyMeasurable (fractIntegrand s) (volume.restrict (Set.Ioi (1 : ℝ))) := by
+      apply Measurable.aestronglyMeasurable; unfold fractIntegrand; fun_prop
+    refine Integrable.mono' hbound hm ?_
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun t ht => ?_))
+    have htpos : (0 : ℝ) < t := lt_trans one_pos ht
+    rw [fractIntegrand, norm_div, Complex.norm_real, Real.norm_of_nonneg (Int.fract_nonneg t),
+      Complex.norm_cpow_eq_rpow_re_of_pos htpos, show (s + 1).re = s.re + 1 by simp [Complex.add_re],
+      Real.rpow_neg htpos.le, div_eq_mul_inv]
+    exact mul_le_of_le_one_left (inv_nonneg.mpr (Real.rpow_nonneg htpos.le _)) (Int.fract_lt_one t).le
+  -- split `∫_{Ioi 1} = ∫_{Ioc 1 N} + ∫_{Ioi N}`.
+  have hsplit : fractIntegral s = (∫ t in Set.Ioc (1 : ℝ) (N : ℝ), fractIntegrand s t)
+      + fractTail s (N : ℝ) := by
+    rw [fractIntegral, fractTail, ← Set.Ioc_union_Ioi_eq_Ioi hle,
+      setIntegral_union (Set.Ioc_disjoint_Ioi (le_refl _)) measurableSet_Ioi
+        (hint1.mono_set Set.Ioc_subset_Ioi_self) (hint1.mono_set (Set.Ioi_subset_Ioi hle))]
+  rw [hrepr, stripRHS, hsplit, hpsum]; ring
 
 /-- Partial-sum bound: `‖Σ_{n=1}^N n^{-s}‖ ≤ 1 + log N` for `Re s ≥ 1`, using Mathlib's
     `harmonic_le_one_add_log` (`harmonic n ≤ 1 + log n`) after `‖n^{-s}‖ = n^{-σ} ≤ 1/n`. -/
