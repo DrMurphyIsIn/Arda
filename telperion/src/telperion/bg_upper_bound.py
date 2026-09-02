@@ -17,13 +17,19 @@ The chain (see `docs/BG_UPPER_BOUND_REDUCTION_20260831.md`):
         [2b] k <= 15   concavity tangent + per-child KKT V(c_i) <= V(cherry):
               - brooms B(2..8)          GATED: MixedHubKKTCertificate.
               - d_c >= 7                GATED: HighDegreeTailCertificate.
-              - d_c <= 6 non-broom      HYPOTHESIS (b): ell(c) < ell(cherry) - lambda(k)/(6(k+1)).
+              - d_c <= 6 non-broom      the M_d frontier bound, now split into:
+                  * finite arithmetic   GATED: MdGeometricTailCertificate (peaks d=2..5 + d=6 geometric tail).
+                  * contraction rho<=5/12  HYPOTHESIS (b): the even-step ell-subsequence contraction lemma.
   [3] broom optimum   ell(B(k)) <= 0, = 0 iff k=5 (the 23-adic tie)        GATED: BroomOptimumCertificate.
 
-The ONLY open analytic input is HYPOTHESIS (b) (the small-degree non-broom refined ceiling; verified over all
-branches <= size 14, generalized brooms to size 66, star-of-brooms rooted at low-degree vertices to size 101 --
-its failure mode explicitly refuted, see `branch_ell_by_vertex` / the deficit view).  Everything else is a gated
-certificate, a finite base check, or the O(1) boundary constant.  conjecture1_proved = False.
+The ONLY open analytic input is HYPOTHESIS (b), now SHARPENED (2026-09-01) to a single rate: the even-step
+ell-subsequence contraction `rho <= 5/12` (the rooted cavity-contraction = the parallel Lean Obligation A in its
+per-degree scalar form).  The M_d size-trend is a PARITY OSCILLATION whose even-size max-ell subsequence peaks at
+a finite interior size for d=2..5 (sizes 4,6,10,14; margins +0.019..+0.040) and is still climbing at the size-16
+enumeration boundary for d=6 -- but the geometric tail with rate rho caps M_6 below threshold (margin +0.013).
+The finite arithmetic (peaks + tail) is GATED by MdGeometricTailCertificate, CONDITIONAL on rho<=5/12.  Proving
+that contraction rate (field-map Jacobian h^2/(d_v d_w) <= 1/2 gives field convergence; the ell-max-subsequence
+contraction is the residual work) makes 2b-lo-fin unconditional.  conjecture1_proved = False.
 """
 from __future__ import annotations
 
@@ -31,7 +37,9 @@ from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 from .spider_broom import BroomOptimumCertificate
-from .tie_regime import HighDegreeTailCertificate, MixedHubKKTCertificate, TieSlackCertificate
+from .tie_regime import (
+    HighDegreeTailCertificate, MdGeometricTailCertificate, MixedHubKKTCertificate, TieSlackCertificate,
+)
 
 GATED, BASE, BOUNDARY, LEMMA, HYPOTHESIS = "GATED", "BASE", "BOUNDARY", "LEMMA", "HYPOTHESIS"
 
@@ -73,7 +81,11 @@ class UpperBoundReduction:
                           GATED, MixedHubKKTCertificate),
             ReductionStep("2b-hi", "envelope tail, d_c >= 7: V(c) < V(cherry) via ceiling ell<=0",
                           GATED, HighDegreeTailCertificate),
-            ReductionStep("2b-lo", "envelope tail, d_c <= 6 non-broom: ell(c) < ell(cherry) + (d_c-3)/(d_c(4k+3))",
+            ReductionStep("2b-lo-fin", "M_d finite arithmetic (peaks d=2..5 + d=6 geometric tail) < threshold, "
+                          "CONDITIONAL on the contraction rate rho<=5/12",
+                          GATED, MdGeometricTailCertificate),
+            ReductionStep("2b-lo-contract", "the one open lemma: even-step ell-subsequence contraction rho<=5/12 "
+                          "(rooted cavity-contraction / Obligation A); makes 2b-lo-fin unconditional",
                           HYPOTHESIS),
             ReductionStep("3", "broom optimum: ell(B(k)) <= 0, = 0 iff k=5 (23-adic tie)",
                           GATED, BroomOptimumCertificate),

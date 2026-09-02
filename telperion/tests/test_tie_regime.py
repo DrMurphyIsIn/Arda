@@ -408,3 +408,30 @@ def test_free_closure_certificate():
     assert eB5 >= min(small_degree_threshold(k, 5) for k in range(2, 16))   # d=5 does NOT close free
     mod = cert.lean_module()
     assert "namespace BGMdFree" in mod and mod.count("by norm_num") == len(cert.atoms())
+
+
+def test_md_geometric_tail_certificate():
+    """MdGeometricTailCertificate (M_d): gates the FINITE arithmetic of the whole M_d frontier closure, conditional
+    on the one open lemma (even-step ell-subsequence contraction rho<=5/12). Peaked degrees d=2..5 (max at interior
+    sizes 4,6,10,14) close directly; d=6 (still climbing at the size-16 boundary) closes via the geometric tail."""
+    from telperion.tie_regime import MdGeometricTailCertificate, small_degree_threshold, _MDGEO, _MDGEO_DELTA
+    from telperion.branch_potential import F_STAR
+    from fractions import Fraction as Fr
+    import math
+    cert = MdGeometricTailCertificate()
+    assert cert.check() is True
+    assert cert.rho == Fr(5, 12)
+    assert len(cert.atoms()) == 5 * 14                                   # d in {2,3,4,5} peaks + d=6 tail, k=2..15
+    # soundness: each peaked-degree total's ell really < min_k threshold(k,d), with margin
+    for d in (2, 3, 4, 5):
+        p, q = _MDGEO[d]["total"]; sz = _MDGEO[d]["size"]
+        ell = (math.log(p) - math.log(q)) - sz * F_STAR
+        assert ell < float(min(small_degree_threshold(k, d) for k in range(2, 16)))
+    # d=6 geometric-tail limit: ell(6,16) + (5/7)*Delta < threshold(6), Delta = L(delta_ratio) - 2 F*
+    p6, q6 = _MDGEO[6]["total"]; dp, dq = _MDGEO_DELTA
+    ell16 = (math.log(p6) - math.log(q6)) - 16 * F_STAR
+    delta = (math.log(dp) - math.log(dq)) - 2 * F_STAR
+    limit = ell16 + (5.0 / 7.0) * delta
+    assert limit < float(min(small_degree_threshold(k, 6) for k in range(2, 16)))
+    mod = cert.lean_module()
+    assert "namespace BGMdGeoTail" in mod and mod.count("by norm_num") == len(cert.atoms())
