@@ -321,5 +321,78 @@ theorem hub_le_d2 {mu : ℝ} (hmu : inI mu) {cs : List Branch} (hlen : cs.length
       rw [hVpp, hVc, hmpp]; ring
     linarith [hRHS, hbridge, hdec]
 
+/-- **The cherry ceiling gap** `log(3/2) − 2 F* ≥ −1/50`.  (True value `≈ −0.00768`; margin `+0.012`.)
+    `two_le_log_gap` is too loose here (`≥ −0.0248`), so combine `11·(log(3/2) − 2F*) = log(354294/385641)`
+    and lower-bound via `log x ≥ 1 − 1/x` (`Real.log_le_sub_one_of_pos` on the inverse). -/
+theorem cherry_ceiling_gap : (-1/50 : ℝ) ≤ Real.log (3/2) - 2*FSTAR := by
+  have hF : FSTAR = Real.log (621/64)/11 := rfl
+  rw [hF]
+  have hcomb : (11:ℝ)*(Real.log (3/2) - 2*(Real.log (621/64)/11))
+      = Real.log ((3/2)^11 * (64/621)^2) := by
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_pow, Real.log_pow,
+        show (64:ℝ)/621 = (621/64)⁻¹ by norm_num, Real.log_inv]
+    ring
+  have hXval : ((3/2:ℝ))^11 * (64/621)^2 = 354294/385641 := by norm_num
+  have hXpos : (0:ℝ) < ((3/2:ℝ))^11 * (64/621)^2 := by positivity
+  have hle := Real.log_le_sub_one_of_pos (inv_pos.mpr hXpos)
+  rw [Real.log_inv] at hle
+  rw [hXval] at hcomb hle
+  have hinvval : ((354294:ℝ)/385641)⁻¹ = 385641/354294 := by norm_num
+  rw [hinvval] at hle
+  linarith [hcomb, hle]
+
+/-- **Hub connection, d≥7 ceiling** (`cs.length ≥ 6`).  For a high-degree hub the tangent decouple is loose;
+    instead `bV μ (node cs) = bell(node cs) + μ·bY ≤ 0 + μ/7 ≤ bV μ cherry`, using the branch ceiling
+    `bell (node cs) ≤ 0` (hypothesis; the separate not-yet-formalized result) and `bY ≤ 1/7`.  The cherry
+    lower bound `μ/7 ≤ bV μ cherry` follows from `cherry_ceiling_gap` + `μ ≥ 456/3703` (`4μ/21 ≥ 1/50`). -/
+theorem hub_le_highdeg {mu : ℝ} (hmu : inI mu) {cs : List Branch} (hd7 : 6 ≤ cs.length)
+    (hceil : bell (Branch.node cs) ≤ 0) :
+    bV mu (Branch.node cs) ≤ bV mu cherry := by
+  have hμpos : (0:ℝ) ≤ mu := le_trans (by norm_num) hmu.1
+  obtain ⟨hμlo, hμhi⟩ := hmu
+  set S := (cs.map bY).sum with hSdef
+  have hSnn : 0 ≤ S := by
+    rw [hSdef]; apply List.sum_nonneg; intro x hx; rw [List.mem_map] at hx
+    obtain ⟨z, _, rfl⟩ := hx; exact bY_nonneg z
+  have hlenR : (6:ℝ) ≤ (cs.length : ℝ) := by exact_mod_cast hd7
+  have hden : (7:ℝ) ≤ ((cs.length : ℝ) + 1) + S := by linarith
+  have hbY : bY (Branch.node cs) = 1 / (((cs.length : ℝ) + 1) + S) := by rw [bY_node, ← hSdef]
+  have hbYle : bY (Branch.node cs) ≤ 1/7 := by
+    rw [hbY]; exact one_div_le_one_div_of_le (by norm_num) (by linarith)
+  have hbVnode : bV mu (Branch.node cs) ≤ mu * (1/7) := by
+    have hb : bV mu (Branch.node cs) = bell (Branch.node cs) + mu * bY (Branch.node cs) := rfl
+    rw [hb]; nlinarith [hceil, mul_le_mul_of_nonneg_left hbYle hμpos]
+  have hVc : bV mu cherry = Real.log (3/2) - 2*FSTAR + mu * (1/3) := by
+    rw [bV, bell_cherry, bY_cherry]
+  have h4μ : mu * (1/7) ≤ bV mu cherry := by
+    rw [hVc]; nlinarith [cherry_ceiling_gap, hμlo]
+  linarith [hbVnode, h4μ]
+
+/-- **The flowed per-hub step, from the branch ceiling.**  Case split on `cs.length`: `{1..5}` route through
+    `hub_le_d2..d6` (tangent decouple), `≥6` through `hub_le_highdeg` (needs `bell (node cs) ≤ 0`).  Reduces
+    `FlowedHubStep` — and hence the SCL for every non-leaf branch — to the single global obligation
+    `∀ b, bell b ≤ 0` (the branch ceiling).  `conjecture1_proved = False`. -/
+theorem flowed_hub_step_of_ceiling (hceil : ∀ b, bell b ≤ 0) : FlowedHubStep := by
+  intro cs hcs hchild mu hmu
+  have hlen1 : 1 ≤ cs.length := by
+    rcases cs with _ | ⟨a, t⟩
+    · exact absurd rfl hcs
+    · simp
+  rcases Nat.lt_or_ge cs.length 6 with hlo | hhi
+  · rcases (by omega : cs.length = 1 ∨ cs.length = 2 ∨ cs.length = 3 ∨ cs.length = 4 ∨ cs.length = 5)
+      with h | h | h | h | h
+    · exact hub_le_d2 hmu h hchild
+    · exact hub_le_d3 hmu h hchild
+    · exact hub_le_d4 hmu h hchild
+    · exact hub_le_d5 hmu h hchild
+    · exact hub_le_d6 hmu h hchild
+  · exact hub_le_highdeg hmu hhi (hceil (Branch.node cs))
+
+/-- **The SCL for every non-leaf branch, from the branch ceiling.**  Chains `flowed_hub_step_of_ceiling`
+    into `scl_of_flowed_step`.  This is the full reduction of the leaf-excluding single-child lemma to the
+    single global obligation `∀ b, bell b ≤ 0`.  `conjecture1_proved = False`. -/
+theorem scl_of_ceiling (hceil : ∀ b, bell b ≤ 0) : ∀ b, PSCLne b :=
+  scl_of_flowed_step (flowed_hub_step_of_ceiling hceil)
+
 end BGSCL
 end R3Cert
