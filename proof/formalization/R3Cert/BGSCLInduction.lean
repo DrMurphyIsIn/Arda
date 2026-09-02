@@ -117,10 +117,10 @@ theorem log_tangent {d s s0 : ℝ} (hd : 0 < d) (hs : 0 ≤ s) (hs0 : 0 ≤ s0) 
   have hds0 : (0:ℝ) < d + s0 := by positivity
   have hkey : Real.log ((1 + s / d) / (1 + s0 / d)) ≤ (1 + s / d) / (1 + s0 / d) - 1 :=
     Real.log_le_sub_one_of_pos (div_pos ha hb)
-  rw [Real.log_div (ne_of_gt ha) (ne_of_gt hb)] at hkey
-  have hd' : d ≠ 0 := ne_of_gt hd
-  have hb' : (1 + s0 / d) ≠ 0 := ne_of_gt hb
-  have hds0' : (d + s0) ≠ 0 := ne_of_gt hds0
+  rw [Real.log_div ha.ne' hb.ne'] at hkey
+  have hd' : d ≠ 0 := hd.ne'
+  have hb' : (1 + s0 / d) ≠ 0 := hb.ne'
+  have hds0' : (d + s0) ≠ 0 := hds0.ne'
   have harith : (1 + s / d) / (1 + s0 / d) - 1 = (s - s0) / (d + s0) := by
     field_simp
     ring
