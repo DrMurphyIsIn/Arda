@@ -202,10 +202,11 @@ theorem zeta_log_bound {σ t : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (ht : 2 
     refine le_trans (norm_tail_term_le hspos hN1) ?_
     rw [div_le_iff₀ hbpos]
     linarith [hsnorm, hden_ge, hNgt, ht, hσ2]
-  -- assemble via the triangle inequality.
+  -- assemble via the triangle inequality (fed to linarith as facts).
   rw [htrunc]
-  refine le_trans (norm_sub_le _ _) ?_
-  refine le_trans (add_le_add_right (norm_add_le _ _) _) ?_
-  linarith [hA, hB, hC, hlog0]
+  have h1 := norm_sub_le ((∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)) + (N : ℂ) ^ (1 - s) / (s - 1))
+    (s * fractTail s (N : ℝ))
+  have h2 := norm_add_le (∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)) ((N : ℂ) ^ (1 - s) / (s - 1))
+  linarith [h1, h2, hA, hB, hC, hlog0]
 
 end ZeroFreeBridge
