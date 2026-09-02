@@ -661,6 +661,46 @@ jobs:
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build ZetaLogBound
 
+  # POLYLOG-improved unconditional zero-free region: wires the sharp `zeta_log_bound` into the
+  # elementary cascade's 2t factor, upgrading Re s > 1 - c/γ⁵ to Re s > 1 - c/(γ⁴·(1+log(2γ))).
+  zero-free-polylog-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the polylog-improved zero-free region
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build ZeroFreePolylog
+
+      - name: Axiom guard -- riemannZeta_zero_free_polylog is kernel-clean (fail on sorryAx)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: |
+          out="$(lake env lean AxiomGuardPolylog.lean 2>&1 || true)"
+          echo "$out"
+          if echo "$out" | grep -q 'sorryAx'; then
+            echo "::error::riemannZeta_zero_free_polylog depends on sorry (sorryAx in axiom trace)"; exit 1
+          fi
+          if echo "$out" | grep -qE 'error:'; then
+            echo "::error::AxiomGuardPolylog.lean did not elaborate cleanly"; exit 1
+          fi
+          echo "OK: riemannZeta_zero_free_polylog is kernel-clean (no sorryAx)."
+
   # RayPowerEstimate lemma pack + EmittedShapes (dogfood: output of emit_zero_free_region /
   # emit_dominated_integrability must be kernel-valid). Both sorry-free.
   ray-power-and-emitted-compiles:

@@ -68,3 +68,10 @@ name = "RayPowerEstimate"
 
 [[lean_lib]]
 name = "EmittedShapes"
+
+# POLYLOG-improved unconditional zero-free region `riemannZeta_zero_free_polylog`
+# (Re s > 1 - c/(γ⁴·(1+log(2γ))), strictly stronger than the elementary γ⁻⁵): wires the sharp
+# `zeta_log_bound` into the elementary cascade's 2t factor. Imports ZeroFreeElementary + ZetaLogBound;
+# own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZeroFreePolylog"

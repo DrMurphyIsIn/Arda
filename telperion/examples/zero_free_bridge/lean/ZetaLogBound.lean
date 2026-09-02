@@ -150,12 +150,10 @@ theorem norm_tail_term_le {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 1 ≤ N) :
     _ = ‖s‖ / (s.re * (N : ℝ) ^ s.re) := by
         rw [Real.rpow_neg hNpos.le]; field_simp
 
-/-- THE SHARP NEAR-LINE BOUND: `|ζ(σ+it)| ≤ C·(1 + log|t|)` for `1 ≤ σ ≤ 2`, `|t| ≥ 2`.
-    (The explicit `C` is filled in during discharge.) -/
+/-- THE SHARP NEAR-LINE BOUND: `|ζ(σ+it)| ≤ 6·(1 + log|t|)` for `1 ≤ σ ≤ 2`, `|t| ≥ 2`.
+    Explicit UNIFORM constant (`C = 6`), so downstream a single region constant can absorb it. -/
 theorem zeta_log_bound {σ t : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (ht : 2 ≤ |t|) :
-    ∃ C : ℝ, 0 < C ∧
-      ‖riemannZeta ((σ : ℂ) + t * Complex.I)‖ ≤ C * (1 + Real.log |t|) := by
-  refine ⟨6, by norm_num, ?_⟩
+    ‖riemannZeta ((σ : ℂ) + t * Complex.I)‖ ≤ 6 * (1 + Real.log |t|) := by
   set s : ℂ := (σ : ℂ) + t * Complex.I with hs_def
   have hsre : s.re = σ := by simp [hs_def]
   have hsim : s.im = t := by simp [hs_def]
