@@ -16,6 +16,18 @@ exact-arithmetic (sympy-only) beats cvxpy-gated. `conjecture1_proved = False`
 throughout — this is classical-analysis / extremal-combinatorics formalization, not
 progress on RH or BG.
 
+## SHIPPED (2026-09-02) — all 8 candidates below are now built + kernel-verified
+Every candidate emitter in this roadmap has been implemented, registered, and its
+emitted Lean **kernel-verified** (local `lake build` green against Mathlib v4.32.0;
+CI jobs added per emitter). The eight new emitters: **X1** `BilinearCornerBoxEmitter`,
+**X2** `AlgebraicBracketEmitter`, **A1** `HalfPlaneDiskEmitter`, **A2**
+`LogDerivRegionCoreEmitter`, **A3** `MagnitudeSplitBoundEmitter`, **A4**
+`CauchyDerivBoundEmitter`, **A5** `DiskCoordBoundsEmitter`, **C1**
+`FiniteArgmaxMarginEmitter`. Each is in the README shape table with a
+`examples/<name>/` regeneration harness + `<name>-compiles` CI job. The two
+"fold-in" items (DiscreteConcavity, HodgeRiemann) remain sub-mode candidates for
+`logconcave`/`psd_form`, not yet built. Details of each shape below.
+
 ## Documentation sync landed alongside this doc
 The README "Certificate shapes" table was **out of date**: nine shipped emitters
 were missing. Added in the same change — `PolyaZerosEmitter`, `FwdTelescopeEmitter`,

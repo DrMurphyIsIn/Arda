@@ -255,6 +255,176 @@ jobs:
         working-directory: telperion/examples/halfplane_disk/lean
         run: lake build
 
+  finite-argmax-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate FiniteArgmax Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/finite_argmax/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/finite_argmax/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/finite_argmax/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — finite-argmax margin)
+        working-directory: telperion/examples/finite_argmax/lean
+        run: lake build
+
+  magnitude-split-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate MagnitudeSplit Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/magnitude_split/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/magnitude_split/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/magnitude_split/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — triangle magnitude split)
+        working-directory: telperion/examples/magnitude_split/lean
+        run: lake build
+
+  disk-coord-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate DiskCoord Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/disk_coord/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/disk_coord/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/disk_coord/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — disk→coordinate bounds)
+        working-directory: telperion/examples/disk_coord/lean
+        run: lake build
+
+  cauchy-deriv-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate CauchyDeriv Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/cauchy_deriv/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/cauchy_deriv/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/cauchy_deriv/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — Cauchy derivative estimate)
+        working-directory: telperion/examples/cauchy_deriv/lean
+        run: lake build
+
+  logderiv-region-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate LogDerivRegion Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/logderiv_region/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/logderiv_region/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/logderiv_region/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — dVP log-derivative region core)
+        working-directory: telperion/examples/logderiv_region/lean
+        run: lake build
+
   psd-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60

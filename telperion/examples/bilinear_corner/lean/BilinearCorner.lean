@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family BilinearCorner | input-hash 0f10dc614f33bf00
+/- telperion 0.1.6 | family BilinearCorner | input-hash b1a4b22b1b7cbf2a
    4 theorems, 3 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
@@ -36,17 +36,17 @@ theorem bc_product_unit (s t : ℝ)
   have hc01 : (0:ℝ) ≤ 2 := by norm_num
   have hc10 : (0:ℝ) ≤ 2 := by norm_num
   have hc11 : (0:ℝ) ≤ 4 := by norm_num
-  have h00 : 0 ≤ 1 + 1 * 0 + 1 * 0 + 1 * (0 * 0) := by
-    have : 1 + 1 * 0 + 1 * 0 + 1 * (0 * 0) = 1 := by norm_num
+  have h00 : (0:ℝ) ≤ 1 + 1 * 0 + 1 * 0 + 1 * (0 * 0) := by
+    have : 1 + 1 * 0 + 1 * 0 + 1 * (0 * 0) = (1 : ℝ) := by norm_num
     rw [this]; exact hc00
-  have h01 : 0 ≤ 1 + 1 * 0 + 1 * 1 + 1 * (0 * 1) := by
-    have : 1 + 1 * 0 + 1 * 1 + 1 * (0 * 1) = 2 := by norm_num
+  have h01 : (0:ℝ) ≤ 1 + 1 * 0 + 1 * 1 + 1 * (0 * 1) := by
+    have : 1 + 1 * 0 + 1 * 1 + 1 * (0 * 1) = (2 : ℝ) := by norm_num
     rw [this]; exact hc01
-  have h10 : 0 ≤ 1 + 1 * 1 + 1 * 0 + 1 * (1 * 0) := by
-    have : 1 + 1 * 1 + 1 * 0 + 1 * (1 * 0) = 2 := by norm_num
+  have h10 : (0:ℝ) ≤ 1 + 1 * 1 + 1 * 0 + 1 * (1 * 0) := by
+    have : 1 + 1 * 1 + 1 * 0 + 1 * (1 * 0) = (2 : ℝ) := by norm_num
     rw [this]; exact hc10
-  have h11 : 0 ≤ 1 + 1 * 1 + 1 * 1 + 1 * (1 * 1) := by
-    have : 1 + 1 * 1 + 1 * 1 + 1 * (1 * 1) = 4 := by norm_num
+  have h11 : (0:ℝ) ≤ 1 + 1 * 1 + 1 * 1 + 1 * (1 * 1) := by
+    have : 1 + 1 * 1 + 1 * 1 + 1 * (1 * 1) = (4 : ℝ) := by norm_num
     rw [this]; exact hc11
   exact bilinear_corner_nonneg hs0 hs1 ht0 ht1 h00 h01 h10 h11
 
@@ -58,17 +58,17 @@ theorem bc_mixed_slopes (s t : ℝ)
   have hc01 : (0:ℝ) ≤ 1 := by norm_num
   have hc10 : (0:ℝ) ≤ 2 := by norm_num
   have hc11 : (0:ℝ) ≤ 1 := by norm_num
-  have h00 : 0 ≤ 3 + (-1) * 0 + (-2) * 0 + 1 * (0 * 0) := by
-    have : 3 + (-1) * 0 + (-2) * 0 + 1 * (0 * 0) = 3 := by norm_num
+  have h00 : (0:ℝ) ≤ 3 + (-1) * 0 + (-2) * 0 + 1 * (0 * 0) := by
+    have : 3 + (-1) * 0 + (-2) * 0 + 1 * (0 * 0) = (3 : ℝ) := by norm_num
     rw [this]; exact hc00
-  have h01 : 0 ≤ 3 + (-1) * 0 + (-2) * 1 + 1 * (0 * 1) := by
-    have : 3 + (-1) * 0 + (-2) * 1 + 1 * (0 * 1) = 1 := by norm_num
+  have h01 : (0:ℝ) ≤ 3 + (-1) * 0 + (-2) * 1 + 1 * (0 * 1) := by
+    have : 3 + (-1) * 0 + (-2) * 1 + 1 * (0 * 1) = (1 : ℝ) := by norm_num
     rw [this]; exact hc01
-  have h10 : 0 ≤ 3 + (-1) * 1 + (-2) * 0 + 1 * (1 * 0) := by
-    have : 3 + (-1) * 1 + (-2) * 0 + 1 * (1 * 0) = 2 := by norm_num
+  have h10 : (0:ℝ) ≤ 3 + (-1) * 1 + (-2) * 0 + 1 * (1 * 0) := by
+    have : 3 + (-1) * 1 + (-2) * 0 + 1 * (1 * 0) = (2 : ℝ) := by norm_num
     rw [this]; exact hc10
-  have h11 : 0 ≤ 3 + (-1) * 1 + (-2) * 1 + 1 * (1 * 1) := by
-    have : 3 + (-1) * 1 + (-2) * 1 + 1 * (1 * 1) = 1 := by norm_num
+  have h11 : (0:ℝ) ≤ 3 + (-1) * 1 + (-2) * 1 + 1 * (1 * 1) := by
+    have : 3 + (-1) * 1 + (-2) * 1 + 1 * (1 * 1) = (1 : ℝ) := by norm_num
     rw [this]; exact hc11
   exact bilinear_corner_nonneg hs0 hs1 ht0 ht1 h00 h01 h10 h11
 
@@ -80,17 +80,17 @@ theorem bc_shifted_box (s t : ℝ)
   have hc01 : (0:ℝ) ≤ 1 := by norm_num
   have hc10 : (0:ℝ) ≤ (3 / 2) := by norm_num
   have hc11 : (0:ℝ) ≤ (5 / 2) := by norm_num
-  have h00 : 0 ≤ (1 / 2) + 1 * (1 / 2) + (-1) * 0 + 2 * ((1 / 2) * 0) := by
-    have : (1 / 2) + 1 * (1 / 2) + (-1) * 0 + 2 * ((1 / 2) * 0) = 1 := by norm_num
+  have h00 : (0:ℝ) ≤ (1 / 2) + 1 * (1 / 2) + (-1) * 0 + 2 * ((1 / 2) * 0) := by
+    have : (1 / 2) + 1 * (1 / 2) + (-1) * 0 + 2 * ((1 / 2) * 0) = (1 : ℝ) := by norm_num
     rw [this]; exact hc00
-  have h01 : 0 ≤ (1 / 2) + 1 * (1 / 2) + (-1) * 1 + 2 * ((1 / 2) * 1) := by
-    have : (1 / 2) + 1 * (1 / 2) + (-1) * 1 + 2 * ((1 / 2) * 1) = 1 := by norm_num
+  have h01 : (0:ℝ) ≤ (1 / 2) + 1 * (1 / 2) + (-1) * 1 + 2 * ((1 / 2) * 1) := by
+    have : (1 / 2) + 1 * (1 / 2) + (-1) * 1 + 2 * ((1 / 2) * 1) = (1 : ℝ) := by norm_num
     rw [this]; exact hc01
-  have h10 : 0 ≤ (1 / 2) + 1 * 1 + (-1) * 0 + 2 * (1 * 0) := by
-    have : (1 / 2) + 1 * 1 + (-1) * 0 + 2 * (1 * 0) = (3 / 2) := by norm_num
+  have h10 : (0:ℝ) ≤ (1 / 2) + 1 * 1 + (-1) * 0 + 2 * (1 * 0) := by
+    have : (1 / 2) + 1 * 1 + (-1) * 0 + 2 * (1 * 0) = ((3 / 2) : ℝ) := by norm_num
     rw [this]; exact hc10
-  have h11 : 0 ≤ (1 / 2) + 1 * 1 + (-1) * 1 + 2 * (1 * 1) := by
-    have : (1 / 2) + 1 * 1 + (-1) * 1 + 2 * (1 * 1) = (5 / 2) := by norm_num
+  have h11 : (0:ℝ) ≤ (1 / 2) + 1 * 1 + (-1) * 1 + 2 * (1 * 1) := by
+    have : (1 / 2) + 1 * 1 + (-1) * 1 + 2 * (1 * 1) = ((5 / 2) : ℝ) := by norm_num
     rw [this]; exact hc11
   exact bilinear_corner_nonneg hs0 hs1 ht0 ht1 h00 h01 h10 h11
 
