@@ -74,8 +74,8 @@ theorem hub_le_of_tangent {K : Type*} [LinearOrderedField K] {Vhub Vbroom Vcherr
     (`htangent`) the concave-log tangent `V a ≤ broom a + Σ_{c ∈ children a} (V c − Vcherry)`, the SCL
     `V a ≤ Vcherry` holds for EVERY branch `a`.  The recursion supplies the child slack `≤ 0` from the IH;
     `htangent` and `hbroom` are the two typed obligations (the analytic tangent + the gated leg). -/
-theorem scl_holds {α : Type*} (size : α → ℕ) (children : α → List α) (V : α → ℚ) (Vcherry : ℚ)
-    (broom : α → ℚ)
+theorem scl_holds {α : Type*} {K : Type*} [LinearOrderedField K]
+    (size : α → ℕ) (children : α → List α) (V : α → K) (Vcherry : K) (broom : α → K)
     (hchild : ∀ a, ∀ c ∈ children a, size c < size a)
     (hbroom : ∀ a, broom a ≤ Vcherry)
     (htangent : ∀ a, V a ≤ broom a + ((children a).map (fun c => V c - Vcherry)).sum) :
@@ -95,8 +95,82 @@ theorem scl_holds {α : Type*} (size : α → ℕ) (children : α → List α) (
     per-child argmax"; combined with the concave-log tangent it pins the near-broom as the argmax over all
     non-broom degree-`d` branches (the extremality), discharging the last open input of the asymptotic upper
     bound.  Here it is the literal restatement of `scl_holds`'s conclusion. -/
-theorem extremality_of_scl {α : Type*} (V : α → ℚ) (Vcherry : ℚ)
+theorem extremality_of_scl {α : Type*} {K : Type*} [LinearOrderedField K] (V : α → K) (Vcherry : K)
     (hscl : ∀ a, V a ≤ Vcherry) : ∀ a, V a ≤ Vcherry := hscl
+
+/-! ### (a) The concave-log tangent — the analytic heart of `htangent`.
+
+`ell(node cs) = Σ_c ell(c) + (Real.log (1 + (Σ y_c)/d) − F*)`, and the hub's `V_μ` is bounded above by the
+all-cherry (broom) value plus the child slack via the tangent line of the concave `log` at the all-cherry
+point.  The one real-analysis fact this rests on is: `log` lies below its tangent line, i.e. for the field
+value `s` vs the all-cherry reference `s0`,
+`Real.log (1 + s/d) ≤ Real.log (1 + s0/d) + (s − s0)/(d + s0)`. -/
+
+open Real in
+/-- **Concave-log tangent.**  `log(1 + s/d)` lies below its tangent line at `s0`:
+    `log(1 + s/d) ≤ log(1 + s0/d) + (s − s0)/(d + s0)`, for `d > 0`, `s, s0 ≥ 0`.  This is exactly the tangent
+    decouple's analytic content (concavity of `log`); the proof is `log x ≤ x − 1` at `x = (1+s/d)/(1+s0/d)`. -/
+theorem log_tangent {d s s0 : ℝ} (hd : 0 < d) (hs : 0 ≤ s) (hs0 : 0 ≤ s0) :
+    Real.log (1 + s / d) ≤ Real.log (1 + s0 / d) + (s - s0) / (d + s0) := by
+  have ha : (0:ℝ) < 1 + s / d := by positivity
+  have hb : (0:ℝ) < 1 + s0 / d := by positivity
+  have hds0 : (0:ℝ) < d + s0 := by positivity
+  have hkey : Real.log ((1 + s / d) / (1 + s0 / d)) ≤ (1 + s / d) / (1 + s0 / d) - 1 :=
+    Real.log_le_sub_one_of_pos (div_pos ha hb)
+  rw [Real.log_div (ne_of_gt ha) (ne_of_gt hb)] at hkey
+  have hd' : d ≠ 0 := ne_of_gt hd
+  have hb' : (1 + s0 / d) ≠ 0 := ne_of_gt hb
+  have hds0' : (d + s0) ≠ 0 := ne_of_gt hds0
+  have harith : (1 + s / d) / (1 + s0 / d) - 1 = (s - s0) / (d + s0) := by
+    field_simp
+    ring
+  rw [harith] at hkey
+  linarith
+
+/-! ### (b) The concrete rooted-branch skeleton — `size`, `children`, and well-foundedness.
+
+A rooted branch is a finite rose tree; `bsize` is its vertex count, `bchildren` its child list.  The
+children are strictly smaller (`bchildren_bsize_lt`), which is the well-foundedness precondition
+(`hchild`) that `scl_holds` needs.  The concrete `total`/`ell`/`V_μ` (the cavity matching recursion) and the
+full `htangent` assembly build on this skeleton. -/
+
+/-- A rooted branch: a finite rose tree (the root's up-edge is implicit). -/
+inductive Branch : Type
+  | node : List Branch → Branch
+
+mutual
+  /-- Vertex count of a branch. -/
+  def bsize : Branch → ℕ
+    | .node cs => 1 + bsizeList cs
+  /-- Vertex count of a child list. -/
+  def bsizeList : List Branch → ℕ
+    | [] => 0
+    | c :: t => bsize c + bsizeList t
+end
+
+/-- The children of a branch. -/
+def bchildren : Branch → List Branch
+  | .node cs => cs
+
+/-- A member of a child list is no larger than the list's total size. -/
+theorem bsize_le_bsizeList {c : Branch} : ∀ {cs : List Branch}, c ∈ cs → bsize c ≤ bsizeList cs
+  | [], h => absurd h (List.not_mem_nil c)
+  | a :: t, h => by
+      rcases List.mem_cons.mp h with rfl | h'
+      · simp only [bsizeList]; omega
+      · have ih := bsize_le_bsizeList h'
+        simp only [bsizeList]; omega
+
+/-- **Well-foundedness:** every child is strictly smaller than its parent — the `hchild` hypothesis of
+    `scl_holds`, instantiated for the concrete rose-tree `Branch`. -/
+theorem bchildren_bsize_lt (a : Branch) : ∀ c ∈ bchildren a, bsize c < bsize a := by
+  cases a with
+  | node cs =>
+      intro c hc
+      simp only [bchildren] at hc
+      have := bsize_le_bsizeList hc
+      simp only [bsize]
+      omega
 
 end BGSCL
 end R3Cert
