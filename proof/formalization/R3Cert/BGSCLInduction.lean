@@ -33,13 +33,13 @@ namespace R3Cert
 namespace BGSCL
 
 /-- A list of nonpositive elements (in an ordered additive monoid) sums to `<= 0`. -/
-theorem list_sum_nonpos {K : Type*} [OrderedAddCommMonoid K] :
-    ∀ {l : List K}, (∀ x ∈ l, x ≤ 0) → l.sum ≤ 0
+theorem list_sum_nonpos :
+    ∀ {l : List ℝ}, (∀ x ∈ l, x ≤ 0) → l.sum ≤ 0
   | [], _ => by simp
   | a :: t, h => by
       rw [List.sum_cons]
-      have ha : a ≤ 0 := h a (List.mem_cons_self a t)
-      have ht : t.sum ≤ 0 := list_sum_nonpos (fun x hx => h x (List.mem_cons_of_mem a hx))
+      have ha : a ≤ 0 := h a (List.mem_cons.mpr (Or.inl rfl))
+      have ht : t.sum ≤ 0 := list_sum_nonpos (fun x hx => h x (List.mem_cons.mpr (Or.inr hx)))
       simpa using add_le_add ha ht
 
 /-- **The SCL recursion glue.**  If every branch's children are strictly smaller under `size` (well-founded)
@@ -65,7 +65,7 @@ theorem scl_of_child_step {α : Type*} (size : α → ℕ) (children : α → Li
 /-- **The per-hub arithmetic** (over any linear ordered field).  The tangent bound `Vhub ≤ Vbroom + slack`
     (from concavity of `log(1 + s/d)`), the broom-vs-cherry leg `Vbroom ≤ Vcherry` (gated #4), and
     `slack ≤ 0` (each child `≤` cherry by the IH, summed) give `Vhub ≤ Vcherry`. -/
-theorem hub_le_of_tangent {K : Type*} [LinearOrderedField K] {Vhub Vbroom Vcherry slack : K}
+theorem hub_le_of_tangent {Vhub Vbroom Vcherry slack : ℝ}
     (htangent : Vhub ≤ Vbroom + slack) (hbroom : Vbroom ≤ Vcherry) (hslack : slack ≤ 0) :
     Vhub ≤ Vcherry := by linarith
 
@@ -74,8 +74,8 @@ theorem hub_le_of_tangent {K : Type*} [LinearOrderedField K] {Vhub Vbroom Vcherr
     (`htangent`) the concave-log tangent `V a ≤ broom a + Σ_{c ∈ children a} (V c − Vcherry)`, the SCL
     `V a ≤ Vcherry` holds for EVERY branch `a`.  The recursion supplies the child slack `≤ 0` from the IH;
     `htangent` and `hbroom` are the two typed obligations (the analytic tangent + the gated leg). -/
-theorem scl_holds {α : Type*} {K : Type*} [LinearOrderedField K]
-    (size : α → ℕ) (children : α → List α) (V : α → K) (Vcherry : K) (broom : α → K)
+theorem scl_holds {α : Type*}
+    (size : α → ℕ) (children : α → List α) (V : α → ℝ) (Vcherry : ℝ) (broom : α → ℝ)
     (hchild : ∀ a, ∀ c ∈ children a, size c < size a)
     (hbroom : ∀ a, broom a ≤ Vcherry)
     (htangent : ∀ a, V a ≤ broom a + ((children a).map (fun c => V c - Vcherry)).sum) :
@@ -95,7 +95,7 @@ theorem scl_holds {α : Type*} {K : Type*} [LinearOrderedField K]
     per-child argmax"; combined with the concave-log tangent it pins the near-broom as the argmax over all
     non-broom degree-`d` branches (the extremality), discharging the last open input of the asymptotic upper
     bound.  Here it is the literal restatement of `scl_holds`'s conclusion. -/
-theorem extremality_of_scl {α : Type*} {K : Type*} [LinearOrderedField K] (V : α → K) (Vcherry : K)
+theorem extremality_of_scl {α : Type*} (V : α → ℝ) (Vcherry : ℝ)
     (hscl : ∀ a, V a ≤ Vcherry) : ∀ a, V a ≤ Vcherry := hscl
 
 /-! ### (a) The concave-log tangent — the analytic heart of `htangent`.
@@ -154,7 +154,7 @@ def bchildren : Branch → List Branch
 
 /-- A member of a child list is no larger than the list's total size. -/
 theorem bsize_le_bsizeList {c : Branch} : ∀ {cs : List Branch}, c ∈ cs → bsize c ≤ bsizeList cs
-  | [], h => absurd h (List.not_mem_nil c)
+  | [], h => by simp at h
   | a :: t, h => by
       rcases List.mem_cons.mp h with rfl | h'
       · simp only [bsizeList]; omega
