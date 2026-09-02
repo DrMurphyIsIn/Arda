@@ -8,3 +8,70 @@ rev = "v4.32.0"
 
 [[lean_lib]]
 name = "ZeroFreeBridge"
+
+# Input (R) strip-representation assembly. Standalone (imports Mathlib only, NOT ZeroFreeBridge),
+# kept OUT of `defaultTargets` so the green `zero-free-bridge-compiles` job (bare `lake build`)
+# still builds ONLY ZeroFreeBridge. Built explicitly via `lake build StripRepr` in its own CI job.
+[[lean_lib]]
+name = "StripRepr"
+
+# (R3) discharge: `IsPreconnected stripDomain`. Imports StripRepr; own CI target so it can go
+# green while R1/R2 iterate. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprR3"
+
+# (R2) discharge (WIP): DifferentiableAt fractIntegral. Own target. NOTE: may transiently carry
+# `sorry` in the two hardest hypotheses (h_lip, h_bint) as a diagnostic; NOT a real discharge until
+# sorry-free. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprR2"
+
+# (R1) discharge (WIP SKELETON): the fractional-part representation of riemannZeta on Re s>1 via
+# Abel summation. Now DISCHARGED (sorry-free): the analytic sub-obligations + the LHS->riemannZeta /
+# RHS->stripRHS assembly are all proven. Its own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprR1"
+
+# UNCONDITIONAL strip representation `zeta_fract_repr`, assembled from R1+R2+R3 via
+# `zeta_fract_repr_of`. Imports StripReprR1/R2/R3; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "StripReprAssembled"
+
+# PHASE 2: the UNCONDITIONAL crude strip growth bound `zeta_strip_bound`, from input (R)
+# `zeta_fract_repr` + input (B) `zeta_repr_integral_bound` via `zeta_strip_bound_of`. Imports both
+# ZeroFreeBridge and StripReprAssembled; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "StripBound"
+
+# PHASE 4 (core): the de la Vallee Poussin quantitative estimate `dlvp_core_estimate` for the
+# zero-free region, conditional on the Borel-Caratheodory log-derivative bounds. Imports
+# ZeroFreeBridge; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZeroFreeRegion"
+
+# ELEMENTARY (Hadamard-free) UNCONDITIONAL zero-free region assembly `zeta_zero_free_poly_of`
+# (polynomial rate Re s > 1 - c/|t|^5), from the product inequality + crude strip bound + pole +
+# Cauchy estimate. Imports ZeroFreeBridge; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZeroFreeElementary"
+
+# (RATE UPGRADE, WIP) sharp near-line bound |ζ(σ+it)| ≤ C(1+log|t|) via truncated Euler-Maclaurin
+# (N~|t|), to improve the region rate from |t|^-5 toward the dVP log-region. Carries `sorry`
+# placeholders; own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZetaLogBound"
+
+# RayPowerEstimate lemma pack (reusable cpow/rpow-on-rays primitives) + EmittedShapes (dogfood: the
+# Lean output of the new emit_zero_free_region / emit_dominated_integrability emitters). Own CI targets.
+[[lean_lib]]
+name = "RayPowerEstimate"
+
+[[lean_lib]]
+name = "EmittedShapes"
+
+# POLYLOG-improved unconditional zero-free region `riemannZeta_zero_free_polylog`
+# (Re s > 1 - c/(γ⁴·(1+log(2γ))), strictly stronger than the elementary γ⁻⁵): wires the sharp
+# `zeta_log_bound` into the elementary cascade's 2t factor. Imports ZeroFreeElementary + ZetaLogBound;
+# own CI target. Out of defaultTargets.
+[[lean_lib]]
+name = "ZeroFreePolylog"
