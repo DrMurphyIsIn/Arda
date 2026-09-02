@@ -50,5 +50,129 @@ theorem decouple_d2 (μ S : ℝ) (hμ : inI μ) (hS0 : 0 ≤ S) (hSmax : S ≤ 1
     mul_nonneg hμpos hS0, mul_nonneg (mul_nonneg hμpos hS0) (le_of_lt hinvpos),
     mul_nonneg (mul_nonneg hμpos (le_of_lt hinvpos)) hS0]
 
+/-- d=3 log gap: `log(3/2) + log(11/9) - 3 F* ≤ 0` (the combined `log(X_3)` with `X_3 = (3/2)^11·(11/9)^11·(64/621)^3 < 1`). -/
+theorem log_gap_d3 : Real.log (3/2) + Real.log (11/9) - 3*FSTAR ≤ 0 := by
+  have hF : FSTAR = Real.log (621/64)/11 := rfl
+  rw [hF]
+  have hcomb : (11:ℝ)*(Real.log (3/2) + Real.log (11/9) - 3*(Real.log (621/64)/11))
+      = Real.log ((3/2)^11 * (11/9)^11 * (64/621)^3) := by
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
+        Real.log_pow, Real.log_pow, Real.log_pow,
+        show (64:ℝ)/621 = (621/64)⁻¹ by norm_num, Real.log_inv]
+    ring
+  have hX : Real.log ((3/2)^11 * (11/9)^11 * (64/621)^3) ≤ 0 :=
+    Real.log_nonpos (by positivity) (by norm_num)
+  nlinarith [hcomb, hX]
+
+/-- d=3 decouple residual `R(S) ≤ 0` on `S ∈ [0,2]`, `μ ∈ I`.  `μ'' = muPP 3 μ = 3(11−3μ)/121`. -/
+theorem decouple_d3 (μ S : ℝ) (hμ : inI μ) (hS0 : 0 ≤ S) (hSmax : S ≤ 2) :
+    2*(muPP 3 μ)/3 - μ/3 + 9*μ*S/121 - 2/11 + (Real.log (3/2) + Real.log (11/9) - 3*FSTAR) + μ/(3+S) ≤ 0 := by
+  obtain ⟨hμlo, hμhi⟩ := hμ
+  have hmuPP : muPP 3 μ = 3*(11 - 3*μ)/121 := by rw [muPP]; norm_num
+  have hg := log_gap_d3
+  have h3S : (0:ℝ) < 3 + S := by linarith
+  have hμpos : 0 ≤ μ := by linarith
+  rw [hmuPP, div_eq_mul_inv μ (3+S)]
+  have hinv : (3+S)⁻¹ * (3+S) = 1 := inv_mul_cancel₀ (ne_of_gt h3S)
+  have hinvpos : 0 < (3+S)⁻¹ := inv_pos.mpr h3S
+  nlinarith [hg, hμlo, hμhi, hS0, hSmax, h3S, hinv, hinvpos, mul_nonneg hμpos (le_of_lt hinvpos),
+    mul_nonneg hμpos hS0, mul_nonneg (mul_nonneg hμpos hS0) (le_of_lt hinvpos),
+    mul_nonneg (mul_nonneg hμpos (le_of_lt hinvpos)) hS0]
+
+/-- d=4 log gap: `2·log(3/2) + log(5/4) - 5 F* ≤ 1334065663/1159983480832`. -/
+theorem log_gap_d4 : 2*Real.log (3/2) + Real.log (5/4) - 5*FSTAR ≤ 1334065663/1159983480832 := by
+  have hF : FSTAR = Real.log (621/64)/11 := rfl
+  rw [hF]
+  have hcomb : (11:ℝ)*(2*Real.log (3/2) + Real.log (5/4) - 5*(Real.log (621/64)/11))
+      = Real.log ((3/2)^22 * (5/4)^11 * (64/621)^5) := by
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
+        Real.log_pow, Real.log_pow, Real.log_pow,
+        show (64:ℝ)/621 = (621/64)⁻¹ by norm_num, Real.log_inv]
+    ring
+  have hX : Real.log ((3/2)^22 * (5/4)^11 * (64/621)^5)
+      ≤ (3/2)^22 * (5/4)^11 * (64/621)^5 - 1 :=
+    Real.log_le_sub_one_of_pos (by positivity)
+  have hXval : (3/2)^22 * (5/4)^11 * (64/621)^5 - 1 = 1334065663/105453043712 := by norm_num
+  nlinarith [hcomb, hX, hXval]
+
+/-- d=4 decouple residual `R(S) ≤ 0` on `S ∈ [0,3]`, `μ ∈ I`.  `μ'' = muPP 4 μ = 3(15−3μ)/225`. -/
+theorem decouple_d4 (μ S : ℝ) (hμ : inI μ) (hS0 : 0 ≤ S) (hSmax : S ≤ 3) :
+    (1*(muPP 4 μ)/1) - μ/3 + 1*μ*S/16 - (1/4) + (2*Real.log (3/2) + Real.log (5/4) - 5*FSTAR) + μ/(4+S) ≤ 0 := by
+  obtain ⟨hμlo, hμhi⟩ := hμ
+  have hmuPP : muPP 4 μ = 3*(15 - 3*μ)/225 := by rw [muPP]; norm_num
+  have hg := log_gap_d4
+  have hdS : (0:ℝ) < 4 + S := by linarith
+  have hμpos : 0 ≤ μ := by linarith
+  rw [hmuPP, div_eq_mul_inv μ (4+S)]
+  have hinv : (4+S)⁻¹ * (4+S) = 1 := inv_mul_cancel₀ (ne_of_gt hdS)
+  have hinvpos : 0 < (4+S)⁻¹ := inv_pos.mpr hdS
+  nlinarith [hg, hμlo, hμhi, hS0, hSmax, hdS, hinv, hinvpos, mul_nonneg hμpos (le_of_lt hinvpos),
+    mul_nonneg hμpos hS0, mul_nonneg (mul_nonneg hμpos hS0) (le_of_lt hinvpos),
+    mul_nonneg (mul_nonneg hμpos (le_of_lt hinvpos)) hS0]
+
+
+/-- d=5 log gap: `3·log(3/2) + log(19/15) - 7 F* ≤ 12677795138367509/1828763667822265625`. -/
+theorem log_gap_d5 : 3*Real.log (3/2) + Real.log (19/15) - 7*FSTAR ≤ 12677795138367509/1828763667822265625 := by
+  have hF : FSTAR = Real.log (621/64)/11 := rfl
+  rw [hF]
+  have hcomb : (11:ℝ)*(3*Real.log (3/2) + Real.log (19/15) - 7*(Real.log (621/64)/11))
+      = Real.log ((3/2)^33 * (19/15)^11 * (64/621)^7) := by
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
+        Real.log_pow, Real.log_pow, Real.log_pow,
+        show (64:ℝ)/621 = (621/64)⁻¹ by norm_num, Real.log_inv]
+    ring
+  have hX : Real.log ((3/2)^33 * (19/15)^11 * (64/621)^7)
+      ≤ (3/2)^33 * (19/15)^11 * (64/621)^7 - 1 :=
+    Real.log_le_sub_one_of_pos (by positivity)
+  have hXval : (3/2)^33 * (19/15)^11 * (64/621)^7 - 1 = 12677795138367509/166251242529296875 := by norm_num
+  nlinarith [hcomb, hX, hXval]
+
+/-- d=5 decouple residual `R(S) ≤ 0` on `S ∈ [0,4]`, `μ ∈ I`.  `μ'' = muPP 5 μ = 3(19−3μ)/361`. -/
+theorem decouple_d5 (μ S : ℝ) (hμ : inI μ) (hS0 : 0 ≤ S) (hSmax : S ≤ 4) :
+    (4*(muPP 5 μ)/3) - μ/3 + 9*μ*S/361 - (4/19) + (3*Real.log (3/2) + Real.log (19/15) - 7*FSTAR) + μ/(5+S) ≤ 0 := by
+  obtain ⟨hμlo, hμhi⟩ := hμ
+  have hmuPP : muPP 5 μ = 3*(19 - 3*μ)/361 := by rw [muPP]; norm_num
+  have hg := log_gap_d5
+  have hdS : (0:ℝ) < 5 + S := by linarith
+  have hμpos : 0 ≤ μ := by linarith
+  rw [hmuPP, div_eq_mul_inv μ (5+S)]
+  have hinv : (5+S)⁻¹ * (5+S) = 1 := inv_mul_cancel₀ (ne_of_gt hdS)
+  have hinvpos : 0 < (5+S)⁻¹ := inv_pos.mpr hdS
+  nlinarith [hg, hμlo, hμhi, hS0, hSmax, hdS, hinv, hinvpos, mul_nonneg hμpos (le_of_lt hinvpos),
+    mul_nonneg hμpos hS0, mul_nonneg (mul_nonneg hμpos hS0) (le_of_lt hinvpos),
+    mul_nonneg (mul_nonneg hμpos (le_of_lt hinvpos)) hS0]
+
+
+/-- d=6 log gap: `4·log(3/2) + log(23/18) - 9 F* ≤ 43/5346`. -/
+theorem log_gap_d6 : 4*Real.log (3/2) + Real.log (23/18) - 9*FSTAR ≤ 43/5346 := by
+  have hF : FSTAR = Real.log (621/64)/11 := rfl
+  rw [hF]
+  have hcomb : (11:ℝ)*(4*Real.log (3/2) + Real.log (23/18) - 9*(Real.log (621/64)/11))
+      = Real.log ((3/2)^44 * (23/18)^11 * (64/621)^9) := by
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
+        Real.log_pow, Real.log_pow, Real.log_pow,
+        show (64:ℝ)/621 = (621/64)⁻¹ by norm_num, Real.log_inv]
+    ring
+  have hX : Real.log ((3/2)^44 * (23/18)^11 * (64/621)^9)
+      ≤ (3/2)^44 * (23/18)^11 * (64/621)^9 - 1 :=
+    Real.log_le_sub_one_of_pos (by positivity)
+  have hXval : (3/2)^44 * (23/18)^11 * (64/621)^9 - 1 = 43/486 := by norm_num
+  nlinarith [hcomb, hX, hXval]
+
+/-- d=6 decouple residual `R(S) ≤ 0` on `S ∈ [0,5]`, `μ ∈ I`.  `μ'' = muPP 6 μ = 3(23−3μ)/529`. -/
+theorem decouple_d6 (μ S : ℝ) (hμ : inI μ) (hS0 : 0 ≤ S) (hSmax : S ≤ 5) :
+    (5*(muPP 6 μ)/3) - μ/3 + 9*μ*S/529 - (5/23) + (4*Real.log (3/2) + Real.log (23/18) - 9*FSTAR) + μ/(6+S) ≤ 0 := by
+  obtain ⟨hμlo, hμhi⟩ := hμ
+  have hmuPP : muPP 6 μ = 3*(23 - 3*μ)/529 := by rw [muPP]; norm_num
+  have hg := log_gap_d6
+  have hdS : (0:ℝ) < 6 + S := by linarith
+  have hμpos : 0 ≤ μ := by linarith
+  rw [hmuPP, div_eq_mul_inv μ (6+S)]
+  have hinv : (6+S)⁻¹ * (6+S) = 1 := inv_mul_cancel₀ (ne_of_gt hdS)
+  have hinvpos : 0 < (6+S)⁻¹ := inv_pos.mpr hdS
+  nlinarith [hg, hμlo, hμhi, hS0, hSmax, hdS, hinv, hinvpos, mul_nonneg hμpos (le_of_lt hinvpos),
+    mul_nonneg hμpos hS0, mul_nonneg (mul_nonneg hμpos hS0) (le_of_lt hinvpos),
+    mul_nonneg (mul_nonneg hμpos (le_of_lt hinvpos)) hS0]
+
 end BGSCL
 end R3Cert
