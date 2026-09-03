@@ -238,5 +238,41 @@ theorem ρwit_nonneg (b : Branch) : 0 ≤ ρwit b := by
 theorem ceiling_of_witness (hSUB : IsSubaction ρwit) : ∀ b, bell b ≤ 0 :=
   ceiling_of_subaction ρwit hSUB ρwit_nonneg
 
+/-! ### First cells of `IsSubaction ρwit` (the remaining obligation).
+
+  `IsSubaction ρwit` is `∀ cs, e_node + ρwit(node cs) ≤ Σ_c ρwit(c)`; discharging it is a finite per-node
+  family: node degree `d = |cs|+1 ∈ {1,2,3,4}` (each with arbitrary child-degree mixes) plus the
+  `d ≥ 5 ⇒ ρwit(node)=0` tail cells, every cell a tangent-endpoint reduction + an F*-folded log-enclosure
+  (`curvature_boundary` + `log_combination`).  These two anchor cells are the base and the tie leg. -/
+
+/-- `ρwit(leaf) = F*`. -/
+theorem ρwit_leaf : ρwit (Branch.node []) = FSTAR := by simp [ρwit, bcc]
+
+/-- **Cell: the leaf node** (`cs = []`, degree 1).  `(log 1 − F*) + F* = 0 ≤ 0` — the trivial base. -/
+theorem subaction_nil :
+    (Real.log (1 + (([] : List Branch).map bY).sum / (((([] : List Branch)).length : ℝ) + 1)) - FSTAR)
+      + ρwit (Branch.node []) ≤ (([] : List Branch).map ρwit).sum := by
+  simp only [List.map_nil, List.sum_nil, List.length_nil, Nat.cast_zero, zero_add, zero_div,
+    add_zero, Real.log_one, ρwit_leaf]
+  linarith
+
+/-- **Cell: the cherry** (`cs = [leaf]`, degree 2 with one leaf child).  Here `bY(leaf)=1`, `bY(node)=1/3`,
+    so `ρwit(node)=2F*−log(3/2)` and the inequality is `(log(3/2)−F*)+(2F*−log(3/2)) ≤ F*`, i.e. `F* ≤ F*`
+    — the EXACT tie leg (equality), the `27·23` identity's degree-2 face. -/
+theorem subaction_cherry :
+    (Real.log (1 + (([Branch.node []]).map bY).sum
+        / ((([Branch.node []] : List Branch).length : ℝ) + 1)) - FSTAR)
+      + ρwit (Branch.node [Branch.node []]) ≤ (([Branch.node []]).map ρwit).sum := by
+  have hbYnode : bY (Branch.node [Branch.node []]) = 1/3 := by
+    rw [bY_node]; simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
+      List.length_cons, List.length_nil, bY_leaf, Nat.cast_one, add_zero, zero_add]
+    norm_num
+  have hrnode : ρwit (Branch.node [Branch.node []]) = 2 * FSTAR - Real.log (3/2) := by
+    rw [ρwit]; simp only [bcc, List.length_cons, List.length_nil, hbYnode]; ring
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, List.length_cons,
+    List.length_nil, bY_leaf, ρwit_leaf, hrnode, add_zero, Nat.cast_one, zero_add]
+  rw [show (1:ℝ) + 1 / (1 + 1) = 3/2 by norm_num]
+  linarith
+
 end BGSCL
 end R3Cert
