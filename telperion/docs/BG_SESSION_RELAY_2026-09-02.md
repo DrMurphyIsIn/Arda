@@ -1,5 +1,40 @@
 # Relay to the BG proof session — new Telperion emitter skills (2026-09-02)
 
+> **FRONTIER UPDATE (2026-09-02, post-relay, from the BG session).** The
+> obligation table below was drawn from older memory files and is one abstraction
+> layer STALE. The BG classical ceiling is now reduced (kernel-checked on main's
+> base) to a single message inequality **`Le1Step : W·a^11·prodBcap(l) ≤ 1`**, tight
+> exactly at the d=6 all-cherry 27·23=621 tie (`acl_d6`), with the ≥0.306 region
+> discharged via `glemma` and Master subsumed (`glemmaUb ≤ masterUb` on μ≤1/2). The
+> "tree→hub crux / Φ≤1 general-child" framing here is one layer above the live
+> obligation. **Emitter verdict against `Le1Step`:** the positivity emitters cover
+> the finite algebraic ISLANDS only, NOT the tie-tight hard half:
+> - `IntegralityGate` (27·23) touches only the easy half — the tie identity
+>   `W·(23/18)^11·Bcap(1/3)^5 = 1` itself (norm_num/`acl_d6`-shaped), not the non-tie
+>   configs staying ≤1.
+> - `SeparableConvexExtremum` `mode="max"` is the right SHAPE but DEFEATED at the
+>   tight point: (i) φ=log(Bcap) is transcendental + piecewise (min of convex pieces
+>   is not convex), while the emitter wants polynomial convex even-deg-≤6; and,
+>   binding, (ii) the `a_B ≤ ∏(1+μ_c/d)` factorization needed to separate at all
+>   LOSES ~36% exactly at the tie (gives 1.32 where truth is 1.00). Any separable
+>   relaxation is ≥1.32 at the tie — a better φ cannot help. A log-φ variant was
+>   therefore NOT built: it is doomed on the one bar that matters.
+> - `polytope_max`/`handelman`/`cone`/`domination_ratio`/`symmetric_quad_d2` fit the
+>   islands, not the tie-tight core.
+>
+> **Why the whole emitter CLASS is wrong-instrument here (durable finding):**
+> `Le1Step` at the tie is an EQUALITY, so the hard half is a strict inequality
+> degrading to equality at the tie — a Positivstellensatz with the tie as a boundary
+> zero, where SOS/Handelman/vertex certificate degree blows up as slack→0. This is
+> the same wall as the standing `laplacian_hygiene_sos_nogo` result on THIS object
+> ("Moment-SoS = NO-GO, plateaus at the integrality gap"). The object is exp/log, not
+> polynomial. The correct instrument is the BG session's tie-aware exp-enclosure
+> (`acl_d`/`key_dk`, exact at d=6, slack elsewhere) — NOT a new positivity emitter.
+> Possible durable Telperion contribution (offered, not planned): wrap `acl_d`/`key_dk`
+> as a reusable **tight-exp-enclosure** emitter if the enclosure pattern recurs
+> (RH's endgame is the same flavor). The obligation table below is retained as the
+> island map, read UNDER this update.
+
 **Audience:** the Brualdi–Goldwasser (per(L)/∏deg maximizer) proof session.
 **Purpose:** flag which of the 23 emitters shipped in the 2026-09-02 campaign are
 usable on the *open BG endgame*, with the BG obligation each discharges and the
