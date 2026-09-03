@@ -140,5 +140,61 @@ theorem tail_deg4_sum (d : ℕ) (hd : 5 ≤ d) (S : ℝ)
       · nlinarith [mul_nonneg hSlo (by linarith : (0:ℝ) ≤ (d:ℝ) - 384), hd0, hSlo]
     linarith [hlog, hbound, hfs]
 
+/-! ### Reduce-to-uniform: the counts→single-degree exchange, via the tangent decouple.
+
+  The tail SUB for an ARBITRARY child multiset couples the children ONLY through `S = Σ bYᵢ`
+  inside the single `−log(1+S/d)` term.  Applying the concave-log tangent at a reference `Sstar`
+  makes that coupling CANCEL: what remains is a per-child SEPARATION.  This dissolves the
+  "discrete convexity over multisets" crux into (i) the reference/uniform-family bound `C` at
+  `Sstar`, (ii) a per-child bound `ρwit(c) ≥ bY(c)/(d+Sstar) + β`, and (iii) a scalar consistency
+  `C ≤ Sstar/(d+Sstar) + (#children)·β`.  The worst multiset is uniform BY CONSTRUCTION (each
+  child independently minimises its separated term). -/
+
+/-- **Counts-exchange decouple core.**  Given the reference-family bound `C` at `Sstar` and the
+    per-child separation packaged as `hsep`, the tail SUB holds.  The `S`-coupling through
+    `−log(1+S/d)` is removed by the tangent `log_tangent`. -/
+theorem tail_sub_decouple {d S Sstar R C : ℝ} (hd0 : 0 < d) (hSnn : 0 ≤ S) (hSstar : 0 ≤ Sstar)
+    (href : Real.log (1 + Sstar / d) - FSTAR ≤ C)
+    (hsep : C + (S - Sstar) / (d + Sstar) ≤ R) :
+    Real.log (1 + S / d) - FSTAR ≤ R := by
+  have htan := log_tangent hd0 hSnn hSstar
+  linarith
+
+/-- Per-child separation sums up: if every child `(bYᵢ, ρᵢ)` obeys `ρᵢ ≥ bYᵢ/c + β`, then
+    `(Σ bYᵢ)/c + (#children)·β ≤ Σ ρᵢ`.  (`c = d + Sstar` at the use site.) -/
+theorem tail_sep_sum {c β : ℝ} : ∀ (L : List (ℝ × ℝ)),
+    (∀ p ∈ L, p.1 / c + β ≤ p.2) →
+    (L.map Prod.fst).sum / c + (L.length : ℝ) * β ≤ (L.map Prod.snd).sum
+  | [], _ => by simp
+  | p :: L', h => by
+      have hp := h p (by simp)
+      have hIH := tail_sep_sum L' (fun q hq => h q (List.mem_cons_of_mem _ hq))
+      simp only [List.map_cons, List.sum_cons, List.length_cons, Nat.cast_add, Nat.cast_one,
+        add_mul, one_mul, add_div]
+      linarith [hp, hIH]
+
+/-- **Counts→single-degree exchange (reduction).**  The tail SUB for an arbitrary child list `L`
+    (children as `(bY, ρwit)` pairs) reduces to: a reference bound `C` at `Sstar`, a UNIFORM
+    per-child separation `ρᵢ ≥ bYᵢ/(d+Sstar) + β`, and the scalar consistency
+    `C ≤ Sstar/(d+Sstar) + (#L)·β`.  No discrete-convexity argument: the tangent cancels the
+    coupling and each child is bounded independently, so the worst config is uniform. -/
+theorem tail_sub_of_perchild {d Sstar β C : ℝ} (hd0 : 0 < d) (hSstar : 0 ≤ Sstar)
+    (L : List (ℝ × ℝ)) (hbY : ∀ p ∈ L, 0 ≤ p.1)
+    (href : Real.log (1 + Sstar / d) - FSTAR ≤ C)
+    (hchild : ∀ p ∈ L, p.1 / (d + Sstar) + β ≤ p.2)
+    (hconsist : C ≤ Sstar / (d + Sstar) + (L.length : ℝ) * β) :
+    Real.log (1 + (L.map Prod.fst).sum / d) - FSTAR ≤ (L.map Prod.snd).sum := by
+  have hc : (0 : ℝ) < d + Sstar := by linarith
+  have hSnn : 0 ≤ (L.map Prod.fst).sum := by
+    apply List.sum_nonneg
+    intro x hx
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hx
+    exact hbY p hp
+  have hsep0 := tail_sep_sum L hchild
+  have hsep : C + ((L.map Prod.fst).sum - Sstar) / (d + Sstar) ≤ (L.map Prod.snd).sum := by
+    rw [sub_div]
+    linarith [hsep0, hconsist]
+  exact tail_sub_decouple hd0 hSnn hSstar href hsep
+
 end BGSCL
 end R3Cert
