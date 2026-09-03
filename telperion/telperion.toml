@@ -541,3 +541,9 @@ group = "quick"    # Kelly concave-stationary-max: FOC + strict concavity; ~0.2 
 name = "symmetric_quad_d2"
 script = "examples/symmetric_quad_d2/generate.py"
 group = "quick"    # symbolic-in-n d=2 subset-form PSD (three-piece completing-the-square); ~0.3 s
+
+# BG g-step fixed-config tight-cap enclosure (2026-09-02): concrete + single-symbolic-child faces.
+[[check]]
+name = "tight_cap_enclosure"
+script = "examples/tight_cap_enclosure/generate.py"
+group = "quick"    # (baseOf l)^11*prodBcap l/(W(5/3)^11)<=1 for a named config; models single_child_le_one; ~0.3 s
