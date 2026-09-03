@@ -336,5 +336,68 @@ theorem subaction_deg2_deg5child (c : Branch) (hc : 4 ≤ bcc c) :
   have henc := d2_deg5_enc
   linarith [hlog, hrnode, henc, hld]
 
+/-- Tighter enclosure `log(5/4) − F* ≤ 1/55` (via `log x ≤ x−1` at `x=(5/4)¹¹·(64/621) ≈ 1.1998`,
+    so `x−1 ≈ 0.1998 ≤ 11/55`, F*-folded). -/
+theorem log54_sub_fstar_le' : Real.log (5/4 : ℝ) - FSTAR ≤ 1/55 := by
+  rw [FSTAR]
+  have hr := Real.log_le_sub_one_of_pos
+    (show (0:ℝ) < (5/4 : ℝ) ^ (11:ℕ) * (64/621) by positivity)
+  have hsplit : Real.log ((5/4 : ℝ) ^ (11:ℕ) * (64/621))
+      = 11 * Real.log (5/4) - Real.log (621/64) := by
+    rw [Real.log_mul (by positivity) (by norm_num), Real.log_pow,
+        show (64/621 : ℝ) = (621/64)⁻¹ by norm_num, Real.log_inv]
+    push_cast; ring
+  rw [hsplit] at hr
+  have hnum : (5/4 : ℝ) ^ (11:ℕ) * (64/621) - 1 ≤ 11/55 := by norm_num
+  linarith
+
+/-- A degree-2 branch (`bcc = 1`) has message `≥ 1/3`. -/
+theorem bY_ge_third_of_bcc1 (c : Branch) (hc : bcc c = 1) : (1:ℝ)/3 ≤ bY c := by
+  cases c with
+  | node cs =>
+    simp only [bcc] at hc
+    rcases cs with _ | ⟨c', _ | ⟨c2, t⟩⟩
+    · simp at hc
+    · exact bY_deg2_ge_third c'
+    · simp only [List.length_cons, List.length_nil] at hc; omega
+
+/-- **Cell: degree-2 node with a deg-2 child** (`bcc c = 1`, `bY c ∈ [1/3,1/2]`).  The delicate mid case:
+    after cancelling the shared `2F*−log(3/2)−(1/4)(1/3)`, reduces to
+    `log(1+y/2) − F* + (1/4)/(2+y) ≤ (1/4)y`, closed by the concave-log tangent at `y=1/2`, the convex
+    secant bound `1/(2+y) ≤ 3/7 − (6/35)(y−1/3)`, and the tight enclosure `log(5/4)−F* ≤ 1/55`. -/
+theorem subaction_deg2_deg2child (c : Branch) (hc : bcc c = 1) :
+    (Real.log (1 + (([c]).map bY).sum / ((([c] : List Branch).length : ℝ) + 1)) - FSTAR)
+      + ρwit (Branch.node [c]) ≤ (([c]).map ρwit).sum := by
+  have hy0 := bY_nonneg c
+  have hy_lo : (1:ℝ)/3 ≤ bY c := bY_ge_third_of_bcc1 c hc
+  have hy_hi : bY c ≤ 1/2 := by
+    have h := bY_le_inv_deg c; rw [hc] at h; norm_num at h; linarith
+  have hden : (0:ℝ) < 2 + bY c := by linarith
+  have hrc : ρwit c = 2 * FSTAR - Real.log (3/2) + (1/4) * (bY c - 1/3) := by
+    simp only [ρwit, hc]
+  have hbYn : bY (Branch.node [c]) = 1 / (2 + bY c) := by
+    rw [bY_node]
+    simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, List.length_cons,
+      Nat.cast_one, add_zero, zero_add]
+    norm_num
+  have hrn : ρwit (Branch.node [c])
+      = 2 * FSTAR - Real.log (3/2) + (1/4) * (1 / (2 + bY c) - 1/3) := by
+    rw [ρwit]; simp only [bcc, List.length_cons, List.length_nil]; rw [hbYn]
+  have htan : Real.log (1 + bY c / (1 + 1)) ≤ Real.log (5/4) + (2/5) * (bY c - 1/2) := by
+    have h := log_tangent (d := (2:ℝ)) (s := bY c) (s0 := (1:ℝ)/2)
+      (by norm_num) (by linarith) (by norm_num)
+    rw [show (1:ℝ) + (1/2)/2 = 5/4 by norm_num, show (2:ℝ) + 1/2 = 5/2 by norm_num] at h
+    rw [show (1:ℝ) + bY c / (1 + 1) = 1 + bY c / 2 by norm_num]
+    calc Real.log (1 + bY c / 2) ≤ Real.log (5/4) + (bY c - 1/2) / (5/2) := h
+      _ = Real.log (5/4) + (2/5) * (bY c - 1/2) := by ring
+  have hsec : 1 / (2 + bY c) ≤ 3/7 - (6/35) * (bY c - 1/3) := by
+    rw [div_le_iff₀ hden]
+    nlinarith [mul_nonneg (show (0:ℝ) ≤ bY c - 1/3 by linarith)
+      (show (0:ℝ) ≤ 1/2 - bY c by linarith)]
+  have henc := log54_sub_fstar_le'
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, List.length_cons,
+    List.length_nil, hrc, hrn, add_zero]
+  linarith [htan, hsec, henc, hy_lo, hy_hi]
+
 end BGSCL
 end R3Cert
