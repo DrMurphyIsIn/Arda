@@ -37,6 +37,7 @@ import R3Cert.PotentialFinal
 import R3Cert.CappedJointClosure
 import R3Cert.BGSCLSubaction
 import R3Cert.BGSCLSubactionDeg3
+import R3Cert.BGSCLSubactionDeg3Mid
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -54,3 +55,11 @@ import R3Cert.BGSCLSubactionDeg3
 #print axioms R3Cert.BGSCL.subaction_deg2_highchild
 #print axioms R3Cert.BGSCL.subaction_broom_d3
 #print axioms R3Cert.BGSCL.subaction_deg3_highchildren
+
+-- Degree-3 hub family completed (2026-09-03): the two-deg-2, leaf/deg-2, leaf/deg≥3 profiles,
+-- and the redesigned two-slope (deg-2/deg≥3) cell + its new tight_hi atom `log2_sub3fstar`.
+#print axioms R3Cert.BGSCL.subaction_deg3_deg2children
+#print axioms R3Cert.BGSCL.subaction_deg3_leaf_deg2
+#print axioms R3Cert.BGSCL.subaction_deg3_leaf_high
+#print axioms R3Cert.BGSCL.log2_sub3fstar
+#print axioms R3Cert.BGSCL.subaction_deg3_deg2_high

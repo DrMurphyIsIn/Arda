@@ -84,26 +84,29 @@ atoms immediately. Constants verified against `F* = log(621/64)/11 ≈ 0.2065862
 - Fold `X = (13/9)^11·(64/621)^2 ≈ 0.6069`; `11B = −33/416 ≈ −0.0793 < 0`; `X−1 ≈ −0.393 ≤ 11B` → **tangent**, huge slack.
 - Delivered as `log139_sub2fstar`, cell margin **+0.038** (comfortable).
 
-## 3. NEEDS BG-SIDE DESIGN FIRST (do NOT emit an atom yet)
+## 3. CELL (D) — SOLVED (redesign landed); (E)/(F) still need BG-side design
 
-### (D) `subaction_deg3_deg2_high` — deg-3 hub, one deg-2 + one deg≥3 child  [TWO-SLOPE OBSTRUCTION]
-A single tangent cannot slope-match both children: deg-2 ρwit has slope `1/4`, deg≥3 ρwit's per-child
-lower-bound line (`rhowit_ge_perchild`) has slope `3/11`. Matching the deg-2 child (`s0 = 1`, slope `1/4`)
-leaves the high child with an uncancelled term `(1/4 − 3/11)(bY_h − 1/3) = (3/44)(1/3 − bY_h) ≥ 0`, worst
-`= 1/44 ≈ 0.0227` at `bY_h = 0`. Folding that into the scalar overshoots the RHS by ≈ **+0.0195** (fails).
-Matching the high child (`s0 = 2/3`, slope `3/11`) makes a slope-`3/11` line lie *above* the deg-2 ρwit
-(actual slope `1/4 < 3/11`) — not a valid lower bound. **Resolution is BG-side**: a two-region tangent, a
-sharper deg≥3 per-child line whose slope varies with the child's own degree, or exploiting the deg≥3 child's
-own subaction surplus (its `ρwit` is not the loose perchild line when `bY_h` is small). Only after the
-decomposition is fixed will the residual scalar atom be well-defined — hand Telperion the atom then.
+### (D) `subaction_deg3_deg2_high` — deg-3 hub, one deg-2 + one deg≥3 child  [RESOLVED 2026-09-03]
+The two-slope obstruction (deg-2 ρwit slope `1/4` vs deg≥3 per-child slope `3/11`; a single tangent can't
+match both, overshoots ≈ **+0.0043** at the `(bY_d2,bY_h)=(1/3,0)` corner via the loose `rhowit_ge_perchild`
+line) is **dissolved WITHOUT a two-slope decouple**. Key move: the high child's message is small (`bY_h ≤ 1/3`),
+so bound it into a constant, **DROP its (nonnegative) `ρwit` entirely** (no per-child line ⇒ no slope to match),
+and reduce to a single-variable inequality in the deg-2 child's message. Tangent at `s0 = 1` (slope-match the
+deg-2 child), node-ρ `≤ 3/320`, and ONE new atom closes it. Proven + axiom-clean in
+`R3Cert/BGSCLSubactionDeg3Mid.lean` (`subaction_deg3_deg2_high`), worst corner `(1/3,1/3)`, atom margin `+0.0006`.
+- **New atom (delivered here, `log2_sub3fstar`) — route TIGHT_HI:** `Real.log (4/3) + Real.log (3/2) − 3·FSTAR ≤ 71/960`.
+  Fold `X = (4/3)¹¹·(3/2)¹¹·(621/64)⁻³ = 536870912/239483061 ≈ 2.2418 > 1`, `Q = 781/960 > 0`. **Needs degree-5
+  Taylor** (n=4 lower bound `≈ 2.2114 < X`; n=5 gives `exp Q ≥ 61122928451812033/27179089920000000 ≥ X`) — a data
+  point that the tight_hi auto-`n` search must go past n=4. Dogfood note for the emitter: confirm it escalates n.
 
-### (E) Remaining d=4 mixed profiles
+### (E) Remaining d=4 mixed profiles  [the (D) trick unblocks the two-slope cases]
 `subaction_cell_broom_d4` (all-leaf) and `subaction_cell_d4_d3` (deg-3 children) are done. The mixed profiles
 (leaf/deg-2/deg≥3 combinations across the 3 children) follow the same assembly with reference
-`s0 = 3·(child max message)` per profile — **but any profile containing BOTH a deg-2 and a deg≥3 child hits
-the same two-slope obstruction as (D)**. Pure-leaf-plus-one-type profiles are monotone endpoint atoms
-(emittable once BG states them, analogous to (B)/(C)). Recommend BG enumerate the 3-child profiles and mark
-which are single-slope (ready) vs two-slope (blocked on (D)).
+`s0 = 3·(child max message)` per profile. Any profile mixing a deg-2 and a deg≥3 child previously hit the (D)
+two-slope obstruction — **now dissolved by the same (D) recipe**: bound each deg≥3 child's message `≤ 1/3`,
+drop its `ρwit ≥ 0`, and slope-match only the deg-2 child(ren). Each profile still needs its own scalar atom
+(different constant/fold), but the *shape* is settled — no research left, just per-profile atom emits. Recommend
+BG enumerate the d=4 profiles and hand Telperion the atom list; each is monotone/tangent or tight_hi by fold.
 
 ### (F) deg≥5 tail
 `ρwit(node) = 0` for deg ≥ 5, so `(SUB)` is `e_node ≤ Σ_c ρwit(c)`. This is **not** a uniform `≤ 0` collapse:
