@@ -547,3 +547,24 @@ group = "quick"    # symbolic-in-n d=2 subset-form PSD (three-piece completing-t
 name = "tight_cap_enclosure"
 script = "examples/tight_cap_enclosure/generate.py"
 group = "quick"    # (baseOf l)^11*prodBcap l/(W(5/3)^11)<=1 for a named config; models single_child_le_one; ~0.3 s
+
+# BG remaining-core shapes (2026-09-02): affine-endpoint / recursion-closure / cavity-exchange / per-size sweep.
+[[check]]
+name = "affine_param_endpoint"
+script = "examples/affine_param_endpoint/generate.py"
+group = "quick"    # affine-in-parameter interval inequality -> two endpoints (collapses SCLStep price interval I)
+
+[[check]]
+name = "recursion_closure"
+script = "examples/recursion_closure/generate.py"
+group = "quick"    # tangent-majorant + per-child ceiling -> node ceiling assembly at fixed price
+
+[[check]]
+name = "cavity_exchange"
+script = "examples/cavity_exchange/generate.py"
+group = "quick"    # bilinear-form corner reduction + all-nonneg-coeff Polya corners (Kelmans de-branch)
+
+[[check]]
+name = "per_size_dominance_sweep"
+script = "examples/per_size_dominance_sweep/generate.py"
+group = "quick"    # finite per-size sweep aggregating tight_cap_enclosure per-config certs

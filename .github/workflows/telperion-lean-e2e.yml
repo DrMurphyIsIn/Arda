@@ -935,6 +935,142 @@ jobs:
         working-directory: telperion/examples/tight_cap_enclosure/lean
         run: lake build
 
+  affine-param-endpoint-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate AffineParamEndpoint Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/affine_param_endpoint/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/affine_param_endpoint/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/affine_param_endpoint/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — affine-in-parameter interval -> two endpoints (SCLStep price collapse))
+        working-directory: telperion/examples/affine_param_endpoint/lean
+        run: lake build
+
+  recursion-closure-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate RecursionClosure Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/recursion_closure/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/recursion_closure/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/recursion_closure/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — node tangent+ceiling assembly at fixed price)
+        working-directory: telperion/examples/recursion_closure/lean
+        run: lake build
+
+  cavity-exchange-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate CavityExchange Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/cavity_exchange/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/cavity_exchange/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/cavity_exchange/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — Kelmans de-branch bilinear-corner exchange)
+        working-directory: telperion/examples/cavity_exchange/lean
+        run: lake build
+
+  per-size-dominance-sweep-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate PerSizeDominanceSweep Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/per_size_dominance_sweep/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/per_size_dominance_sweep/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/per_size_dominance_sweep/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — finite per-size dominance sweep)
+        working-directory: telperion/examples/per_size_dominance_sweep/lean
+        run: lake build
+
   psd-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
