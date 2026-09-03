@@ -293,6 +293,126 @@ def log_combination_certificate(
     )
 
 
+@dataclass(frozen=True)
+class LogCombinationHiCertificate:
+    """A verified rational log-combination bound ``Σ cᵢ·log(rᵢ) − k·FSTAR ≤ q`` where
+    the folded ``X = ∏ rᵢ^{cᵢN}·B^{-k} > 1`` and ``Q = N·q > 0`` — the regime BOTH the
+    degree-1 tangent (needs ``X−1 ≤ Q``) and the ``tight`` route (needs ``Q < 0``) miss.
+
+    Discharged by ``log X ≤ Q ⟺ X ≤ exp Q`` with a degree-``taylor_deg`` Taylor LOWER
+    bound on ``exp Q`` (``Real.exp_bound``: ``|exp Q − Sₙ| ≤ Eₙ ⟹ exp Q ≥ Sₙ − Eₙ``),
+    then the rational ``X ≤ Sₙ − Eₙ``.  Supports MULTIPLE leading log terms.
+
+    Fields (exact sympy rationals / ints):
+
+    * ``lead_terms``   — ``[(cᵢ, rᵢ), …]`` leading log terms (``cᵢ`` positive int).
+    * ``fstar_coeff``  — the ``k`` in ``− k·FSTAR`` (positive int, SUBTRACTED).
+    * ``fstar_base``, ``fstar_den`` — ``FSTAR = log(fstar_base)/fstar_den``.
+    * ``q``            — rational RHS threshold (``q > 0``).
+    * ``q_folded``     — ``Q = N·q`` (``0 < Q ≤ 1``, the Taylor argument).
+    * ``taylor_deg``   — the ``n`` in ``Real.exp_bound`` (smallest that closes ``X``).
+    * ``fold_value``   — ``X = ∏ rᵢ^{cᵢN}·B^{-k}`` (``> 1``).
+    * ``taylor_lower`` — the rational ``Sₙ − Eₙ`` (``X ≤ taylor_lower ≤ exp Q``).
+    * ``route``        — always ``"tight_hi"``.
+    """
+
+    lead_terms: object       # tuple of (int coeff, positive rational) leading log terms
+    fstar_coeff: object      # int k > 0 in − k·FSTAR
+    fstar_base: object       # B in FSTAR = log(B)/N
+    fstar_den: object        # N in FSTAR = log(B)/N
+    q: object                # rational RHS threshold (> 0)
+    q_folded: object         # Q = N·q  (0 < Q ≤ 1)
+    taylor_deg: object       # Taylor degree n for the exp lower bound
+    fold_value: object       # X = ∏ rᵢ^{cᵢN}·B^{-k}  (> 1)
+    taylor_lower: object     # Sₙ − Eₙ  (rational lower bound on exp Q)
+    route: str = "tight_hi"
+
+
+def log_combination_hi_certificate(
+    *, lead_terms, fstar_coeff, q,
+    fstar_base=sp.Integer(621) / 64, fstar_den=11, max_deg=8,
+):
+    """Build and EXACTLY self-check ``Σ cᵢ·log(rᵢ) − k·FSTAR ≤ q`` in the TIGHT-HI
+    regime (folded ``X > 1``, ``Q = N·q > 0``).
+
+    Self-check / NEGATIVE CONTROLS (any failure raises ``ValueError``):
+
+    * ``k = fstar_coeff > 0`` (a SUBTRACTED FSTAR term) and every ``(cᵢ, rᵢ)`` positive.
+    * ``Q = N·q > 0`` and ``Q ≤ 1`` (the Taylor argument must sit in ``[0,1]`` for the
+      degree-``n`` ``Real.exp_bound``).
+    * fold ``X = ∏ rᵢ^{cᵢN}·B^{-k} > 1`` — otherwise steer to ``monotone``/``tangent``.
+    * the degree-1 tangent must genuinely FAIL (``X − 1 > Q``), else steer to ``tangent``.
+    * the bound itself holds: ``log X ≤ Q`` (high-precision, the real negative control).
+    * some degree ``n ≤ max_deg`` closes it: ``X ≤ Sₙ − Eₙ`` with
+      ``Sₙ = Σ_{m<n} Qᵐ/m!`` and ``Eₙ = Qⁿ·((n+1)/(n!·n))`` (the exact ``Real.exp_bound``
+      remainder).  Picks the SMALLEST such ``n``.
+    """
+    B = sp.Rational(fstar_base)
+    N = sp.Integer(fstar_den)
+    k = sp.Integer(fstar_coeff)
+    q = sp.Rational(q)
+    if not (k > 0):
+        raise ValueError(f"REFUSED: tight_hi needs a SUBTRACTED FSTAR term (k>0), got k={k}")
+    lead = [(sp.Integer(c), sp.Rational(r)) for c, r in lead_terms]
+    if not lead:
+        raise ValueError("REFUSED: tight_hi needs at least one leading log term")
+    for c, r in lead:
+        if not (c > 0):
+            raise ValueError(f"REFUSED: leading coeff must be positive, got {c}")
+        if not (r > 0):
+            raise ValueError(f"REFUSED: leading log argument must be > 0, got {r}")
+    Q = sp.nsimplify(N * q)
+    if not (Q > 0):
+        raise ValueError(
+            f"REFUSED: tight_hi requires the folded Q = N·q > 0, got Q = {Q} "
+            f"(use the tight route for Q < 0, monotone for Q = 0)"
+        )
+    if not (Q <= 1):
+        raise ValueError(
+            f"REFUSED: tight_hi needs Q = {Q} ≤ 1 for the degree-n exp Taylor bound "
+            f"(Real.exp_bound requires |Q| ≤ 1)"
+        )
+    prod_lead = sp.Integer(1)
+    for c, r in lead:
+        prod_lead *= r ** (c * N)
+    X = sp.nsimplify(prod_lead * B ** (-k))
+    if not (X > 1):
+        raise ValueError(
+            f"REFUSED: tight_hi fold X = {X} ≤ 1 — use the tangent/monotone route "
+            f"(this route is only for X > 1)"
+        )
+    if not (X - 1 > Q):
+        raise ValueError(
+            f"REFUSED: tight_hi unnecessary — tangent suffices (X − 1 = "
+            f"{sp.nsimplify(X - 1)} ≤ Q = {Q}); use route='tangent'"
+        )
+    # the bound itself (real negative control): log X ≤ Q must hold.
+    if not bool((sp.log(X) - Q).evalf(50) <= 0):
+        raise ValueError(
+            f"REFUSED: tight_hi bound FALSE — log X = {float(sp.log(X)):.6f} > Q = "
+            f"{float(Q):.6f}; the combination ≤ {q} does not hold (negative control)"
+        )
+    # smallest degree n ≤ max_deg whose exp_bound Taylor lower bound clears X.
+    import math
+    chosen = None
+    for n in range(2, int(max_deg) + 1):
+        S = sum(sp.Rational(Q ** m, math.factorial(m)) for m in range(n))
+        E = Q ** n * sp.Rational(n + 1, math.factorial(n) * n)
+        if X <= sp.nsimplify(S - E):
+            chosen = (n, sp.nsimplify(S - E))
+            break
+    if chosen is None:
+        raise ValueError(
+            f"REFUSED: no degree ≤ {max_deg} Taylor lower bound clears X = {float(X):.6f} "
+            f"below exp({float(Q):.6f}); raise max_deg or tighten q"
+        )
+    n, taylor_lower = chosen
+    return LogCombinationHiCertificate(
+        lead_terms=tuple(lead), fstar_coeff=k, fstar_base=B, fstar_den=N,
+        q=q, q_folded=Q, taylor_deg=n, fold_value=X, taylor_lower=taylor_lower,
+    )
+
+
 def certify_log_combination_point(family, pt, name):
     """Certify one log-combination instance from ``family.special[1](pt)``.
 
@@ -574,6 +694,75 @@ class LogCombinationEmitter(Emitter):
             f"  linarith\n"
         )
 
+    def _emit_tight_hi(self, cert: "LogCombinationHiCertificate", name: str) -> str:
+        # TIGHT-HI route: discharge  log X ≤ Q  with  Q = N·q > 0  and the folded
+        #   X = ∏ rᵢ^{cᵢN} · B^{-k}  > 1  (SUBTRACTED −k·FSTAR, k>0), where BOTH the
+        # degree-1 tangent (`log x ≤ x−1`, needs X−1 ≤ Q) AND the existing `tight`
+        # route (which requires Q < 0) fail.  Proof:
+        #   log X ≤ Q  ⟺  X ≤ exp Q         (Real.log_le_iff_le_exp, X>0)
+        #   exp Q ≥ Sₙ − Eₙ                  (Real.exp_bound, degree-n Taylor LOWER bd:
+        #                                     |exp Q − Sₙ| ≤ Eₙ ⟹ exp Q ≥ Sₙ − Eₙ)
+        #   X ≤ Sₙ − Eₙ                      (norm_num).
+        # Handles MULTIPLE leading log terms (folded into one product).
+        N = cert.fstar_den
+        k = cert.fstar_coeff              # > 0 (subtracted FSTAR)
+        B = _lean_rat(cert.fstar_base)
+        n = cert.taylor_deg
+        Q = _lean_rat(cert.q_folded)      # = N·q > 0
+        q = _lean_rat(cert.q)
+        SE = _lean_rat(cert.taylor_lower)  # Sₙ − Eₙ (rational lower bound on exp Q)
+        lead = list(cert.lead_terms)       # [(cᵢ, rᵢ)] leading log terms
+        # statement LHS  Σ cᵢ·log(rᵢ)  (drop the coefficient when cᵢ == 1)
+        lhs_terms = []
+        for c, r in lead:
+            rl = _lean_rat(r)
+            lhs_terms.append(
+                f"Real.log ({rl} : ℝ)" if c == 1
+                else f"{c} * Real.log ({rl} : ℝ)"
+            )
+        lhs = " + ".join(lhs_terms)
+        fstar_term = "FSTAR" if k == 1 else f"{k} * FSTAR"
+        # folded product  ∏ rᵢ^{cᵢN} · ((B)^k)⁻¹  and the log-split RHS.
+        fold_factors = [f"({_lean_rat(r)} : ℝ) ^ ({int(c) * int(N)} : ℕ)" for c, r in lead]
+        fold_expr = " * ".join(fold_factors) + f" * ((({B} : ℝ) ^ ({k} : ℕ))⁻¹)"
+        split_terms = [f"{int(c) * int(N)} * Real.log ({_lean_rat(r)} : ℝ)" for c, r in lead]
+        split_rhs = " + ".join(split_terms) + f" - {k} * Real.log ({B} : ℝ)"
+        # rewrite chain: m log_mul (m = #lead: split the m+1 factors), one log_inv,
+        # then (m+1) log_pow (one per rᵢ^{cᵢN} plus the B^k under the inverse).
+        m = len(lead)
+        log_muls = ",\n        ".join(["Real.log_mul (by positivity) (by positivity)"] * m)
+        log_pows = ", ".join(["Real.log_pow"] * (m + 1))
+        return (
+            f"-- ===== F*-folding, TIGHT-HI route (Q={Q}>0, fold X>1): "
+            f"{lhs} − {k}·FSTAR ≤ {q} (FSTAR = log({B})/{N}) =====\n"
+            f"-- Fold X = ∏ rᵢ^(cᵢ·{N}) · ({B})^(-{k}) = {_lean_rat(cert.fold_value)} "
+            f"(≈ {float(cert.fold_value):.4f}) > 1; goal ⟺ log X ≤ Q = {Q}.\n"
+            f"-- Degree-1 tangent is TOO LOOSE (X−1 > Q) and the `tight` route needs Q<0;\n"
+            f"-- TIGHT-HI: log X ≤ Q ⟺ X ≤ exp Q (Real.log_le_iff_le_exp), and a degree-{n}\n"
+            f"-- Taylor LOWER bound on exp Q (Real.exp_bound) gives exp Q ≥ {SE} ≥ X.\n"
+            f"theorem {name} : {lhs} - ({fstar_term} : ℝ) ≤ ({q} : ℝ) := by\n"
+            f"  rw [FSTAR]\n"
+            f"  have hXpos : (0 : ℝ) < {fold_expr} := by positivity\n"
+            f"  have hsplit : Real.log ({fold_expr})\n"
+            f"      = {split_rhs} := by\n"
+            f"    rw [{log_muls},\n"
+            f"        Real.log_inv, {log_pows}]\n"
+            f"    push_cast; ring\n"
+            f"  have hx : |({Q} : ℝ)| ≤ 1 := by rw [abs_of_nonneg (by norm_num)]; norm_num\n"
+            f"  have hb := Real.exp_bound hx (n := {n}) (by norm_num)\n"
+            f"  have hexpge : ({SE} : ℝ) ≤ Real.exp ({Q} : ℝ) := by\n"
+            f"    have hlo := (abs_le.mp hb).1\n"
+            f"    norm_num [Finset.sum_range_succ, Nat.factorial, abs_of_nonneg] at hlo\n"
+            f"    linarith\n"
+            f"  have hXexp : {fold_expr} ≤ Real.exp ({Q} : ℝ) := by\n"
+            f"    have hXle : {fold_expr} ≤ ({SE} : ℝ) := by norm_num\n"
+            f"    linarith\n"
+            f"  have hlogX : Real.log ({fold_expr}) ≤ ({Q} : ℝ) := by\n"
+            f"    rw [Real.log_le_iff_le_exp hXpos]; exact hXexp\n"
+            f"  rw [hsplit] at hlogX\n"
+            f"  linarith\n"
+        )
+
     def emit_body(self, fam, profile: LeanProfile) -> tuple[str, int]:
         lines: list[str] = []
         nthm = 0
@@ -586,6 +775,8 @@ class LogCombinationEmitter(Emitter):
                 lines.append(self._emit_tangent(cert, name))
             elif cert.route == "tight":
                 lines.append(self._emit_tight(cert, name))
+            elif cert.route == "tight_hi":
+                lines.append(self._emit_tight_hi(cert, name))
             else:  # pragma: no cover — guarded at certify time
                 raise ValueError(f"unknown route {cert.route!r}")
             nthm += 1
@@ -678,5 +869,36 @@ if __name__ == "__main__":
             route="tight",
         )
         raise SystemExit("FAIL: tangent-suffices tight instance was NOT steered")
+    except ValueError as e:
+        print(f"  correctly STEERED to tangent: {str(e)[:100]}...")
+
+    print("\n=== positive: TIGHT-HI  2·log(3/2)+log(4/3) − 5·FSTAR ≤ 79/1056 "
+          "(BG deg3_deg2children_enc) ===")
+    c6 = log_combination_hi_certificate(
+        lead_terms=[(2, Fraction(3, 2)), (1, Fraction(4, 3))], fstar_coeff=5,
+        q=Fraction(79, 1056),
+    )
+    print(f"  cert OK: route={c6.route}, fold X = {c6.fold_value} "
+          f"(≈ {float(c6.fold_value):.6f}) > 1; Q = {c6.q_folded}; degree n={c6.taylor_deg}; "
+          f"Taylor lower Sₙ−Eₙ = {c6.taylor_lower} (≈ {float(c6.taylor_lower):.6f}) ≥ X "
+          f"(degree-1 tangent too loose: X−1 ≈ {float(c6.fold_value) - 1:.4f} > Q ≈ "
+          f"{float(c6.q_folded):.4f})")
+
+    print("\n=== NEGATIVE CONTROL: TIGHT-HI  q = 1/1056 makes log X > Q (bound FALSE) ===")
+    try:
+        log_combination_hi_certificate(
+            lead_terms=[(2, Fraction(3, 2)), (1, Fraction(4, 3))], fstar_coeff=5,
+            q=Fraction(1, 1056),
+        )
+        raise SystemExit("FAIL: false tight_hi combination was NOT refused")
+    except ValueError as e:
+        print(f"  correctly REFUSED: {str(e)[:100]}...")
+
+    print("\n=== NEGATIVE CONTROL: TIGHT-HI  steers to tangent when X ≤ 1 (Q>0) ===")
+    try:
+        log_combination_hi_certificate(
+            lead_terms=[(1, Fraction(5, 4))], fstar_coeff=1, q=Fraction(1, 20),
+        )
+        raise SystemExit("FAIL: X≤1 tight_hi instance was NOT steered")
     except ValueError as e:
         print(f"  correctly STEERED to tangent: {str(e)[:100]}...")
