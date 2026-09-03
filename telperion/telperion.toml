@@ -488,3 +488,40 @@ group = "quick"    # nonneg-cosine -> L-product lower bound; ~0.1 s
 name = "parametric_holomorphy"
 script = "examples/parametric_holomorphy/generate.py"
 group = "quick"    # parametric tail-integral holomorphy; ~0.1 s
+
+# BG/P=NP backlog build-out (2026-09-02) -- all fast regeneration.
+[[check]]
+name = "symmetric_quad"
+script = "examples/symmetric_quad/generate.py"
+group = "quick"    # symbolic-in-n level-1 moment-matrix PSD (subsetForm_d1); ~0.1 s
+
+[[check]]
+name = "polytope_max"
+script = "examples/polytope_max/generate.py"
+group = "quick"    # multi-affine corner box positivity (general-d bilinear-corner); ~0.1 s
+
+[[check]]
+name = "second_order"
+script = "examples/second_order/generate.py"
+group = "quick"    # 2nd-order recurrence closed form (Hahn/Krawtchouk W2); ~0.1 s
+
+[[check]]
+name = "integrality_gate"
+script = "examples/integrality_gate/generate.py"
+group = "quick"    # finite exceptional table + p-adic tie pin (BG 23-gate); ~0.1 s
+
+[[check]]
+name = "domination_ratio"
+script = "examples/domination_ratio/generate.py"
+group = "quick"    # rational domination ratio P/Q>=1 on a param box; ~0.1 s
+
+[[check]]
+name = "achievability"
+script = "examples/achievability/generate.py"
+group = "quick"    # relaxed->achievable-subset inequality restriction; ~0.1 s
+
+[[check]]
+name = "separable_convex"
+script = "examples/separable_convex/generate.py"
+group = "quick"    # separable-convex MIN/homogeneous (Jensen) face; ~0.1 s
+
