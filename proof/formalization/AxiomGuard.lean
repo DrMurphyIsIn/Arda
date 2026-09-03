@@ -38,6 +38,8 @@ import R3Cert.CappedJointClosure
 import R3Cert.BGSCLSubaction
 import R3Cert.BGSCLSubactionDeg3
 import R3Cert.BGSCLSubactionDeg3Mid
+import R3Cert.BGSCLSubactionD4
+import R3Cert.BGSCLSubactionTail
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -62,4 +64,16 @@ import R3Cert.BGSCLSubactionDeg3Mid
 #print axioms R3Cert.BGSCL.subaction_deg3_leaf_deg2
 #print axioms R3Cert.BGSCL.subaction_deg3_leaf_high
 #print axioms R3Cert.BGSCL.log2_sub3fstar
+
+-- Degree-4 enclosure atoms (2026-09-03): the tangent-route generator + representatives spanning the
+-- structural cases (log(3/2)-fold present/absent, bound sign).  All 35 `d4_*` go through `tangent_atom`.
+#print axioms R3Cert.BGSCL.tangent_atom
+#print axioms R3Cert.BGSCL.d4_222
+#print axioms R3Cert.BGSCL.d4_333
+#print axioms R3Cert.BGSCL.d4_455
+
+-- The deg≥5 tail crux family + the 27·23 = 621 tie identity (2026-09-03).
+#print axioms R3Cert.BGSCL.tail_all_deg4
+#print axioms R3Cert.BGSCL.tie_identity_d6
+#print axioms R3Cert.BGSCL.subaction_tail_tie_d6
 #print axioms R3Cert.BGSCL.subaction_deg3_deg2_high
