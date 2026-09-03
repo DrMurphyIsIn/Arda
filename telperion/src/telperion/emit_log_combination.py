@@ -413,6 +413,78 @@ def log_combination_hi_certificate(
     )
 
 
+@dataclass(frozen=True)
+class LogCombinationMultiCertificate:
+    """A verified ``c0·log(r0) − Σ mᵢ·log(sᵢ) − k·FSTAR ≤ q`` with MULTIPLE leading
+    log terms (one positive leading + a list of SUBTRACTED leading logs), tangent route.
+
+    Folds (×N) to ``log X ≤ N·q`` with ``X = r0^{c0 N} · (∏ sᵢ^{mᵢ N} · B^{k})⁻¹`` and
+    discharges ``log X ≤ X − 1`` (the tangent), then the rational ``X − 1 ≤ N·q``.
+    Motivating case: the BG d=4 cells, where deg-2 children contribute a negative
+    ``−(#deg2)·log(3/2)`` alongside the leading ``log((4+S_bind)/4)``.
+
+    Fields (exact sympy): ``pos_term = (c0, r0)`` (c0>0); ``neg_terms = ((mᵢ, sᵢ),…)``
+    (mᵢ>0, subtracted); ``fstar_coeff`` (k>0); ``fstar_base``/``fstar_den``; ``q``;
+    ``fold_value`` (X>0); ``tangent_bound`` (X−1); ``route = "tangent_multi"``.
+    """
+
+    pos_term: object         # (c0, r0): positive leading log term
+    neg_terms: object        # tuple of (mᵢ, sᵢ): subtracted leading log terms
+    fstar_coeff: object      # k > 0 in − k·FSTAR
+    fstar_base: object
+    fstar_den: object
+    q: object
+    fold_value: object       # X = r0^{c0 N}·(∏ sᵢ^{mᵢ N}·B^k)⁻¹  (> 0)
+    tangent_bound: object    # X − 1
+    route: str = "tangent_multi"
+
+
+def log_combination_multi_certificate(
+    *, pos_term, neg_terms, fstar_coeff, q,
+    fstar_base=sp.Integer(621) / 64, fstar_den=11,
+):
+    """Build and EXACTLY self-check ``c0·log(r0) − Σ mᵢ·log(sᵢ) − k·FSTAR ≤ q`` (tangent,
+    multiple leading logs).  NEGATIVE CONTROLS (raise ``ValueError``): c0>0, r0>0, every
+    (mᵢ>0, sᵢ>0), k>0; and the tangent norm_num fact ``X − 1 ≤ N·q`` with
+    ``X = r0^{c0 N}·(∏ sᵢ^{mᵢ N}·B^k)⁻¹`` (``log X ≤ X−1`` always, so this is sufficient).
+    Requires at least one subtracted leading term (else use the plain ``tangent`` route).
+    """
+    B = sp.Rational(fstar_base)
+    N = sp.Integer(fstar_den)
+    k = sp.Integer(fstar_coeff)
+    q = sp.Rational(q)
+    c0, r0 = sp.Integer(pos_term[0]), sp.Rational(pos_term[1])
+    neg = tuple((sp.Integer(m), sp.Rational(s)) for m, s in neg_terms)
+    if not (k > 0):
+        raise ValueError(f"REFUSED: tangent_multi needs subtracted FSTAR (k>0), got {k}")
+    if not (c0 > 0 and r0 > 0):
+        raise ValueError(f"REFUSED: leading term must be positive, got ({c0}, {r0})")
+    if not neg:
+        raise ValueError(
+            "REFUSED: tangent_multi needs ≥1 subtracted leading term — use route='tangent'"
+        )
+    for m, s in neg:
+        if not (m > 0 and s > 0):
+            raise ValueError(f"REFUSED: subtracted term must be positive, got ({m}, {s})")
+    denom = B ** k
+    for m, s in neg:
+        denom *= s ** (m * N)
+    X = sp.nsimplify(r0 ** (c0 * N) / denom)
+    if not (X > 0):
+        raise ValueError(f"REFUSED: tangent_multi needs fold X > 0, got X = {X}")
+    tb = sp.nsimplify(X - 1)
+    if not (tb <= N * q):
+        raise ValueError(
+            f"REFUSED: tangent_multi norm_num fact fails — X − 1 = {tb} > N·q = "
+            f"{sp.nsimplify(N * q)}; the tangent route cannot close the bound ≤ {q} "
+            f"(negative control)"
+        )
+    return LogCombinationMultiCertificate(
+        pos_term=(c0, r0), neg_terms=neg, fstar_coeff=k, fstar_base=B, fstar_den=N,
+        q=q, fold_value=X, tangent_bound=tb,
+    )
+
+
 def certify_log_combination_point(family, pt, name):
     """Certify one log-combination instance from ``family.special[1](pt)``.
 
@@ -763,6 +835,65 @@ class LogCombinationEmitter(Emitter):
             f"  linarith\n"
         )
 
+    def _emit_tangent_multi(self, cert: "LogCombinationMultiCertificate", name: str) -> str:
+        # TANGENT-MULTI route: SUBTRACTED leading log terms + the F* term (multiple
+        # leading logs with mixed-sign integer coefficients), tangent discharge.
+        #   goal  c0·log(r0) − Σ mᵢ·log(sᵢ) − k·FSTAR ≤ q
+        # Fold (×N):  N·LHS = log(X),  X = r0^{c0 N} · (∏ sᵢ^{mᵢ N} · B^{k})⁻¹  > 0,
+        # then  log X ≤ X − 1  (Real.log_le_sub_one_of_pos) and  X − 1 ≤ N·q (norm_num).
+        # Motivating case: the BG d=4 cells, whose deg-2 children contribute a
+        # NEGATIVE  −(#deg2)·log(3/2)  alongside the leading  log((4+S_bind)/4).
+        N = cert.fstar_den
+        k = cert.fstar_coeff              # > 0 (subtracted FSTAR)
+        B = _lean_rat(cert.fstar_base)
+        q = _lean_rat(cert.q)
+        Nq = _lean_rat(sp.Rational(cert.fstar_den) * sp.Rational(cert.q))
+        c0, r0 = cert.pos_term            # single positive leading term (c0 > 0)
+        r0l = _lean_rat(r0)
+        neg = list(cert.neg_terms)        # [(mᵢ, sᵢ)] subtracted leading logs (mᵢ > 0)
+        e0 = int(c0) * int(N)
+        # statement LHS  c0·log(r0) − Σ mᵢ·log(sᵢ)
+        lhs = f"Real.log ({r0l} : ℝ)" if c0 == 1 else f"{c0} * Real.log ({r0l} : ℝ)"
+        for m, s in neg:
+            sl = _lean_rat(s)
+            lhs += (f" - Real.log ({sl} : ℝ)" if m == 1
+                    else f" - {m} * Real.log ({sl} : ℝ)")
+        fstar_term = "FSTAR" if k == 1 else f"{k} * FSTAR"
+        # denominator D = ∏ sᵢ^{mᵢ N} · B^k  (all positive powers, one inverse).
+        dfactors = [f"({_lean_rat(s)} : ℝ) ^ ({int(m) * int(N)} : ℕ)" for m, s in neg]
+        dfactors.append(f"({B} : ℝ) ^ ({k} : ℕ)")
+        D = " * ".join(dfactors)
+        Xexpr = f"({r0l} : ℝ) ^ ({e0} : ℕ) * ({D})⁻¹"
+        # log-split RHS  c0N·log r0 − (Σ mᵢN·log sᵢ + k·log B).
+        split = f"{e0} * Real.log ({r0l} : ℝ)"
+        for m, s in neg:
+            split += f" - {int(m) * int(N)} * Real.log ({_lean_rat(s)} : ℝ)"
+        split += f" - {k} * Real.log ({B} : ℝ)"
+        # rewrite: log(P·D⁻¹) → log P − log D ; D has (len(neg)+1) factors → len(neg) log_mul.
+        d_muls = ",\n        ".join(
+            ["Real.log_mul (by positivity) (by positivity)"] * len(neg))
+        d_muls = (d_muls + ",\n        ") if neg else ""
+        n_pows = ", ".join(["Real.log_pow"] * (len(neg) + 2))  # r0, each sᵢ, and B
+        return (
+            f"-- ===== F*-folding, TANGENT-MULTI route: {lhs} − {k}·FSTAR ≤ {q} "
+            f"(FSTAR = log({B})/{N}) =====\n"
+            f"-- Fold X = ({r0l})^{e0} · (∏ sᵢ^(mᵢ·{N}) · ({B})^{k})⁻¹ = {_lean_rat(cert.fold_value)}\n"
+            f"-- (≈ {float(cert.fold_value):.4f}); log X ≤ X−1 (Real.log_le_sub_one_of_pos),\n"
+            f"-- X−1 ≤ {Nq} a rational norm_num fact.  SUBTRACTED leading logs (mixed sign).\n"
+            f"theorem {name} : {lhs} - ({fstar_term} : ℝ) ≤ ({q} : ℝ) := by\n"
+            f"  rw [FSTAR]\n"
+            f"  have hpos : (0 : ℝ) < {Xexpr} := by positivity\n"
+            f"  have hr := Real.log_le_sub_one_of_pos hpos\n"
+            f"  have hsplit : Real.log ({Xexpr})\n"
+            f"      = {split} := by\n"
+            f"    rw [Real.log_mul (by positivity) (by positivity), Real.log_inv,\n"
+            f"        {d_muls}{n_pows}]\n"
+            f"    push_cast; ring\n"
+            f"  rw [hsplit] at hr\n"
+            f"  have hnum : {Xexpr} - 1 ≤ {Nq} := by norm_num\n"
+            f"  linarith\n"
+        )
+
     def emit_body(self, fam, profile: LeanProfile) -> tuple[str, int]:
         lines: list[str] = []
         nthm = 0
@@ -777,6 +908,8 @@ class LogCombinationEmitter(Emitter):
                 lines.append(self._emit_tight(cert, name))
             elif cert.route == "tight_hi":
                 lines.append(self._emit_tight_hi(cert, name))
+            elif cert.route == "tangent_multi":
+                lines.append(self._emit_tangent_multi(cert, name))
             else:  # pragma: no cover — guarded at certify time
                 raise ValueError(f"unknown route {cert.route!r}")
             nthm += 1
@@ -902,3 +1035,23 @@ if __name__ == "__main__":
         raise SystemExit("FAIL: X≤1 tight_hi instance was NOT steered")
     except ValueError as e:
         print(f"  correctly STEERED to tangent: {str(e)[:100]}...")
+
+    print("\n=== positive: TANGENT-MULTI  log(5/4) − 3·log(3/2) − 7·FSTAR ≤ −1/1920 "
+          "(BG d4 (2,2,2)) ===")
+    c7 = log_combination_multi_certificate(
+        pos_term=(1, Fraction(5, 4)), neg_terms=[(3, Fraction(3, 2))],
+        fstar_coeff=7, q=Fraction(-1, 1920),
+    )
+    print(f"  cert OK: route={c7.route}, fold X = {c7.fold_value} "
+          f"(≈ {float(c7.fold_value):.6f}); X−1 = {c7.tangent_bound} "
+          f"(≈ {float(c7.tangent_bound):.6f}) ≤ 11·(−1/1920) = {11 * Fraction(-1, 1920)}")
+
+    print("\n=== NEGATIVE CONTROL: TANGENT-MULTI  bound too small (X−1 > N·q) ===")
+    try:
+        log_combination_multi_certificate(
+            pos_term=(1, Fraction(5, 4)), neg_terms=[(3, Fraction(3, 2))],
+            fstar_coeff=7, q=Fraction(-1, 10),
+        )
+        raise SystemExit("FAIL: too-small tangent_multi bound was NOT refused")
+    except ValueError as e:
+        print(f"  correctly REFUSED: {str(e)[:100]}...")
