@@ -18,12 +18,24 @@ emitted by `emit_log_combination`. Multiply by 11 (`11·FSTAR = log(621/64)`) to
 `X = ∏_i r_i^(11 a_i) · (64/621)^k`, and the atom is exactly `log X ≤ 11·B`, i.e. `X ≤ exp(11·B)`.
 Route by where `X` sits:
 
-- **monotone** — `log x ≤ x − 1` suffices (`X − 1 ≤ 11B`). Cheapest.
-- **tangent** — degree-1 `log x ≤ x − 1` folded through FSTAR, any-sign `q`.
-- **tight** — degree-3 exp Taylor (`Real.exp_bound'`, `n = 3`), needed when `X − 1 > 11B` (fold near/above `e^{11B}`).
+- **monotone** — `log x ≤ x − 1` at `X ≤ 1` with `11B = 0` (strictly requires `q = 0`). Cheapest.
+- **tangent** — degree-1 `log x ≤ x − 1` folded through FSTAR, gated by `X − 1 ≤ 11B` (`11B = N·q`), any-sign `q`.
+- **tight** (Q<0) — degree-3 exp Taylor (`Real.exp_bound'`, `n = 3`) for the **added-FSTAR** blocker shape
+  (`log(7/9) + F* ≤ …`), where `11B < 0`. Shows `X · exp(−11B) ≤ 1`. HARD-REQUIRES `11B < 0`.
+- **tight_hi** (Q>0) — degree-`n` exp **lower** bound for `11B > 0` with fold `X > 1`. Discharges `log X ≤ 11B`
+  via `Real.log_le_iff_le_exp` + `Real.exp_bound` (`exp(11B) ≥ Sₙ − Eₙ`) then rational `X ≤ Sₙ − Eₙ`;
+  auto-picks the smallest `n ≤ 8` that closes. This route DID NOT EXIST when the spec was first written — it was
+  added by the Telperion session for atom (A) (branch `telperion/log-combination-tight-hi`).
 
 Established examples in-repo (match this naming + shape): `log119_sub_fstar` (tangent),
 `log79_add_fstar` (tight, `q = 11/24`), `log74_le_4fstar`, `log54_sub_fstar_le'`, `log53_enc`, `d2_deg5_enc`.
+
+> **Route-label correction (2026-09-03, post-delivery).** The route tags in §2 below were WRONG in the first
+> draft and are corrected here: (A) is **tight_hi** (not the existing tight route — that requires `Q<0`, atom A
+> has `Q=+79/96`); (B) and (C) are **tangent** (not monotone — monotone strictly needs `q=0`, and the
+> `X−1 ≤ N·q` gate quoted for them is the *tangent* gate). Atom A also folds cleanly `2·log(3/2)+log(4/3)=log 3`
+> (fold `X = 3^11/(621/64)^5 ≈ 2.06`). All three were emitter-generated and delivered on
+> `bg/scl-deg3-leaf-cells` (`R3Cert/BGSCLSubactionEnc2.lean`), axiom-clean.
 
 ## 1. State reconciliation (the §3/§5 cell table in the main handoff is slightly stale)
 
@@ -48,27 +60,29 @@ So deg-1, deg-2 (all child types), and part of deg-3/deg-4 are done. Remaining b
 These three cells close with a single tangent + independent per-child bounds; Telperion can generate the
 atoms immediately. Constants verified against `F* = log(621/64)/11 ≈ 0.2065862`.
 
-### (A) `subaction_deg3_deg2children` — deg-3 hub, two deg-2 children  [route: TIGHT]
+### (A) `subaction_deg3_deg2children` — deg-3 hub, two deg-2 children  [route: TIGHT_HI]
 - BG assembly: `s0 = 1` (slope `1/(3+1) = 1/4` = ρwit(deg-2) slope ⇒ per-child bound message-independent);
   `log_tangent (d:=3)(s:=S)(s0:=1)`: `log(1+S/3) ≤ log(4/3) + (S−1)/4`. Node-ρ `ρwit(node)=1/(32(3+S)) ≤ 3/352` (`S ≥ 2/3`).
-- **Atom:** `2·Real.log (3/2) + Real.log (4/3) − 5·FSTAR ≤ 79/1056`.
-- Fold `Y = (3/2)^22·(4/3)^11·(64/621)^5 ≈ 2.0596 > 1`; `11B = 79/96 ≈ 0.8229`, so `x−1 ≈ 1.06` is too loose →
-  **tight route**, `q = 79/96`, degree-3 Taylor (`exp(79/96) ≈ 2.277 ≥ Y`).
-- Cell margin **+0.00913**. Suggested lemma name `deg3_deg2children_enc` (multi-term ⇒ `_enc` suffix).
+- **Atom:** `2·Real.log (3/2) + Real.log (4/3) − 5·FSTAR ≤ 79/1056`  (LHS folds to `log 3 − 5·FSTAR`).
+- Fold `Y = 3^11/(621/64)^5 = (3/2)^22·(4/3)^11·(64/621)^5 ≈ 2.0596 > 1`; `11B = 79/96 ≈ 0.8229 > 0`. This needs the
+  **tight_hi route** (Q>0, X>1) — the existing tight route requires `Q<0` and does NOT apply, and `x−1 ≈ 1.06 > 0.82`
+  kills the tangent gate. `Real.exp_bound` degree-`n` lower bound, auto-picks `n = 4` (slack ≈ 0.17), `exp(79/96) ≈ 2.277 ≥ Y`.
+- Delivered as `deg3_deg2children_enc` (multi-term ⇒ `_enc` suffix), cell margin **+0.00913**.
 
-### (B) `subaction_deg3_leaf_deg2` — deg-3 hub, one leaf + one deg-2 child  [route: MONOTONE]
+### (B) `subaction_deg3_leaf_deg2` — deg-3 hub, one leaf + one deg-2 child  [route: TANGENT]
 - The leaf's `ρwit = F*` alone dominates the RHS (`F* ≤ ρwit(leaf)+ρwit(deg-2)`), so the cell reduces to
   `e_node + ρwit(node) ≤ F*` in the single variable `S = 1 + bY(deg-2) ∈ [4/3, 3/2]`. The LHS is increasing in `S`
   (derivative `1/(3+S) − 1/(32(3+S)²) > 0`), so evaluate at the endpoint `S = 3/2`.
 - **Atom:** `Real.log (3/2) − 2·FSTAR ≤ −1/144`.
-- Fold `X = (3/2)^11·(64/621)^2 ≈ 0.9188`; `11B = −11/144 ≈ −0.0764`; `X−1 ≈ −0.0812 ≤ 11B` → **monotone** OK.
-- Cell margin **+0.00076** (tight but valid). Suggested name `log32_sub2fstar`.
+- Fold `X = (3/2)^11·(64/621)^2 ≈ 0.9188`; `11B = −11/144 ≈ −0.0764 < 0`; `X−1 ≈ −0.0812 ≤ 11B` → **tangent** OK
+  (NOT monotone — monotone requires `11B = 0`; this passes the `X−1 ≤ 11B` tangent gate).
+- Delivered as `log32_sub2fstar`, cell margin **+0.00076** (tight but valid).
 
-### (C) `subaction_deg3_leaf_high` — deg-3 hub, one leaf + one deg≥3 child  [route: MONOTONE]
+### (C) `subaction_deg3_leaf_high` — deg-3 hub, one leaf + one deg≥3 child  [route: TANGENT]
 - Same "leaf ρ = F* dominates" reduction; `S = 1 + bY(deg≥3) ∈ [1, 4/3]`, endpoint `S = 4/3`.
 - **Atom:** `Real.log (13/9) − 2·FSTAR ≤ −3/416`.
-- Fold `X = (13/9)^11·(64/621)^2 ≈ 0.6069`; `11B = −33/416 ≈ −0.0793`; `X−1 ≈ −0.393 ≤ 11B` → **monotone**, huge slack.
-- Cell margin **+0.038** (comfortable). Suggested name `log139_sub2fstar`.
+- Fold `X = (13/9)^11·(64/621)^2 ≈ 0.6069`; `11B = −33/416 ≈ −0.0793 < 0`; `X−1 ≈ −0.393 ≤ 11B` → **tangent**, huge slack.
+- Delivered as `log139_sub2fstar`, cell margin **+0.038** (comfortable).
 
 ## 3. NEEDS BG-SIDE DESIGN FIRST (do NOT emit an atom yet)
 
