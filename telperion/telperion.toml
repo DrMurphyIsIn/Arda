@@ -525,3 +525,14 @@ name = "separable_convex"
 script = "examples/separable_convex/generate.py"
 group = "quick"    # separable-convex MIN/homogeneous (Jensen) face; ~0.1 s
 
+# Trading-derived certificate shapes (2026-09-02).
+[[check]]
+name = "scale_invariance"
+script = "examples/scale_invariance/generate.py"
+group = "quick"    # degree-0 homogeneity / parameter cancellation (Arda leverage<->position_size Sharpe degeneracy); ~0.2 s
+
+[[check]]
+name = "concave_stationary_max"
+script = "examples/concave_stationary_max/generate.py"
+group = "quick"    # Kelly concave-stationary-max: FOC + strict concavity; ~0.2 s
+
