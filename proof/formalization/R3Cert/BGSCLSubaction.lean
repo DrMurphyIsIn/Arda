@@ -20,6 +20,7 @@
 -/
 import Mathlib
 import R3Cert.BGSCLInduction
+import R3Cert.BGSCLSubactionEnc
 
 namespace R3Cert
 namespace BGSCL
@@ -398,6 +399,40 @@ theorem subaction_deg2_deg2child (c : Branch) (hc : bcc c = 1) :
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, List.length_cons,
     List.length_nil, hrc, hrn, add_zero]
   linarith [htan, hsec, henc, hy_lo, hy_hi]
+
+/-- **Cell: degree-2 node with ANY deg≥3 child** — closes the whole degree-2 node.  For any child with
+    `bcc c ≥ 2` (degree ≥ 3), the message `≤ 1/3`, so `log(1+bY c/2) ≤ log(7/6)` and
+    `ρwit(node) ≤ 2F*−log(3/2)+1/24`, giving LHS `≤ log(7/6)−F*+[2F*−log(3/2)+1/24] = log(7/9)+F*+1/24 ≤ 0`
+    (the tight-route enclosure `log79_add_fstar`, Telperion `emit_log_combination route='tight'`), which is
+    `≤ 0 ≤ ρwit c`.  Subsumes `subaction_deg2_deg5child` and handles the deg-3/deg-4 children the degree-1
+    tangent could not. -/
+theorem subaction_deg2_highchild (c : Branch) (hc : 2 ≤ bcc c) :
+    (Real.log (1 + (([c]).map bY).sum / ((([c] : List Branch).length : ℝ) + 1)) - FSTAR)
+      + ρwit (Branch.node [c]) ≤ (([c]).map ρwit).sum := by
+  have hy0 := bY_nonneg c
+  have hy3 : bY c ≤ 1/3 := by
+    have h1 := bY_le_inv_deg c
+    have hcast : (2:ℝ) ≤ (bcc c : ℝ) := by exact_mod_cast hc
+    have h2 : (1:ℝ) / ((bcc c : ℝ) + 1) ≤ 1/3 := one_div_le_one_div_of_le (by norm_num) (by linarith)
+    linarith
+  have hrnode : ρwit (Branch.node [c]) ≤ 2 * FSTAR - Real.log (3/2) + 1/24 := by
+    have hbn : bY (Branch.node [c]) ≤ 1/2 := by
+      have h := bY_le_inv_deg (Branch.node [c])
+      simp only [bcc, List.length_cons, List.length_nil] at h
+      norm_num at h ⊢; linarith
+    rw [ρwit]; simp only [bcc, List.length_cons, List.length_nil]
+    linarith
+  have hrc_nn : 0 ≤ ρwit c := ρwit_nonneg c
+  have henc : Real.log (7/9 : ℝ) + FSTAR + 1/24 ≤ 0 := by have h := log79_add_fstar; linarith
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, List.length_cons,
+    List.length_nil, add_zero, zero_add, Nat.cast_one]
+  have hlog : Real.log (1 + bY c / (1 + 1)) ≤ Real.log (7/6) := by
+    apply Real.log_le_log (by positivity)
+    have : bY c / (1 + 1) ≤ 1/6 := by linarith
+    linarith
+  have hld : Real.log (7/6 : ℝ) - Real.log (3/2) = Real.log (7/9) := by
+    rw [← Real.log_div (by norm_num) (by norm_num)]; norm_num
+  linarith [hlog, hrnode, hrc_nn, hld, henc]
 
 end BGSCL
 end R3Cert
