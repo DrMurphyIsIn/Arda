@@ -274,5 +274,67 @@ theorem subaction_cherry :
   rw [show (1:ℝ) + 1 / (1 + 1) = 3/2 by norm_num]
   linarith
 
+/-- Message bound by degree: `bY b ≤ 1/(bcc b + 1) = 1/deg`. -/
+theorem bY_le_inv_deg (b : Branch) : bY b ≤ 1 / ((bcc b : ℝ) + 1) := by
+  cases b with
+  | node cs =>
+    rw [bY_node]
+    simp only [bcc]
+    have hSnn : (0:ℝ) ≤ (cs.map bY).sum := List.sum_nonneg (fun x hx => by
+      rw [List.mem_map] at hx; obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c)
+    have hd : (0:ℝ) < (cs.length : ℝ) + 1 := by positivity
+    exact one_div_le_one_div_of_le hd (by linarith)
+
+/-- Log-enclosure for the deg-2 node with a deg≥5 child: `log(11/15) + F* + 1/24 ≤ 0`
+    (via `log x ≤ x−1` at `x = (11/15)¹¹·(621/64) ≈ 0.32`, F*-folded). -/
+theorem d2_deg5_enc : Real.log (11/15 : ℝ) + FSTAR + 1/24 ≤ 0 := by
+  rw [FSTAR]
+  have hr := Real.log_le_sub_one_of_pos
+    (show (0:ℝ) < (11/15 : ℝ) ^ (11:ℕ) * (621/64) by positivity)
+  have hsplit : Real.log ((11/15 : ℝ) ^ (11:ℕ) * (621/64))
+      = 11 * Real.log (11/15) + Real.log (621/64) := by
+    rw [Real.log_mul (by positivity) (by norm_num), Real.log_pow]; push_cast; ring
+  rw [hsplit] at hr
+  have hnum : (11/15 : ℝ) ^ (11:ℕ) * (621/64) - 1 ≤ -11/24 := by norm_num
+  linarith
+
+/-- **Cell: degree-2 node with any deg≥5 child.**  Here the child's `ρwit = 0` and its message `≤ 1/5`, so
+    the local excess is already `< 0`: `(log(1+bY c/2) − F*) + ρwit(node) ≤ log(11/10) − F* + [2F*−log(3/2)+1/24]
+    = log(11/15) + F* + 1/24 ≤ 0`.  Covers infinitely many child degrees uniformly. -/
+theorem subaction_deg2_deg5child (c : Branch) (hc : 4 ≤ bcc c) :
+    (Real.log (1 + (([c]).map bY).sum / ((([c] : List Branch).length : ℝ) + 1)) - FSTAR)
+      + ρwit (Branch.node [c]) ≤ (([c]).map ρwit).sum := by
+  have hy0 := bY_nonneg c
+  have hy5 : bY c ≤ 1/5 := by
+    have h1 := bY_le_inv_deg c
+    have hcast : (4:ℝ) ≤ (bcc c : ℝ) := by exact_mod_cast hc
+    have h2 : (1:ℝ) / ((bcc c : ℝ) + 1) ≤ 1/5 := one_div_le_one_div_of_le (by norm_num) (by linarith)
+    linarith
+  have hrc : ρwit c = 0 := by
+    rw [ρwit]
+    rcases hbc : bcc c with _ | _ | _ | _ | n
+    · exact absurd hbc (by omega)
+    · exact absurd hbc (by omega)
+    · exact absurd hbc (by omega)
+    · exact absurd hbc (by omega)
+    · rfl
+  have hrnode : ρwit (Branch.node [c]) ≤ 2 * FSTAR - Real.log (3/2) + 1/24 := by
+    have hbn : bY (Branch.node [c]) ≤ 1/2 := by
+      have h := bY_le_inv_deg (Branch.node [c])
+      simp only [bcc, List.length_cons, List.length_nil] at h
+      norm_num at h ⊢; linarith
+    rw [ρwit]; simp only [bcc, List.length_cons, List.length_nil]
+    linarith
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, List.length_cons,
+    List.length_nil, hrc, add_zero, zero_add, Nat.cast_one]
+  have hlog : Real.log (1 + bY c / (1 + 1)) ≤ Real.log (11/10) := by
+    apply Real.log_le_log (by positivity)
+    have : bY c / (1 + 1) ≤ 1/10 := by linarith
+    linarith
+  have hld : Real.log (11/10 : ℝ) - Real.log (3/2) = Real.log (11/15) := by
+    rw [← Real.log_div (by norm_num) (by norm_num)]; norm_num
+  have henc := d2_deg5_enc
+  linarith [hlog, hrnode, henc, hld]
+
 end BGSCL
 end R3Cert
