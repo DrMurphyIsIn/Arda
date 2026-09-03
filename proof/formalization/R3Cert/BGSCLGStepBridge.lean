@@ -52,6 +52,24 @@ theorem capB_one : capB (1:ℝ) = 64/621 := by
   unfold capB
   rw [min_eq_left h1, min_eq_left h2, h3]
 
+/-- **PIECE 1 (master ⟸ glemma).**  On the hub range `μ ≤ 1/2`, the glemma cap is BELOW the master cap:
+    `glemmaUb(μ) ≤ masterUb(μ)`.  Hence the master component of the per-hub step is a `le_trans` off the
+    (proven) glemma component — no separate master proof is needed.  (`(3+μ)/(2+μ) ≥ 7/5 ⟺ μ ≤ 1/2`, and
+    `(64/621)·(5/3)^11 ≤ (7/5)^11`, i.e. the integer `64·25^11 ≤ 621·21^11`.) -/
+theorem glemmaUb_le_masterUb {μ : ℝ} (hμ0 : 0 ≤ μ) (hμ : μ ≤ 1/2) : glemmaUb μ ≤ masterUb μ := by
+  have h2 : (0:ℝ) < 2 + μ := by linarith
+  unfold glemmaUb masterUb
+  rw [div_le_iff₀ (by positivity)]
+  have hcombine : (3/(2+μ))^11 * (1+μ/3)^11 = ((3+μ)/(2+μ))^11 := by
+    rw [← mul_pow]; congr 1; field_simp
+  have hr : (7/5:ℝ) ≤ (3+μ)/(2+μ) := by rw [le_div_iff₀ h2]; linarith
+  have hpow : (7/5:ℝ)^11 ≤ ((3+μ)/(2+μ))^11 := pow_le_pow_left₀ (by norm_num) hr 11
+  have hcert : (64/621:ℝ)^2 * (5/3)^11 ≤ (64/621) * (7/5)^11 := by norm_num
+  have hmul := mul_le_mul_of_nonneg_left hpow (by norm_num : (0:ℝ) ≤ 64/621)
+  calc (64/621:ℝ)^2 * (5/3)^11
+      ≤ (64/621) * ((3+μ)/(2+μ))^11 := by linarith [hcert, hmul]
+    _ = (64/621) * (3/(2+μ))^11 * (1+μ/3)^11 := by rw [mul_assoc, hcombine]
+
 /-- exp of a scaled branch-`bell` sum is the product of `Gf`s. -/
 theorem exp_eleven_sum (cs : List Branch) :
     Real.exp (11 * (cs.map bell).sum) = (cs.map Gf).prod := by
@@ -173,6 +191,43 @@ theorem ceiling_of_gstep (hstep : GStep) : ∀ b, bell b ≤ 0 := by
           _ ≤ capB (bY (Branch.node cs)) :=
               hstep cs hcs (fun c _ => bY_achievable c)
   exact fun b => bell_nonpos_of_Gf (le_trans (hinv b) (capB_le_one _))
+
+/-- The glemma-component per-hub step (`W·a^11·prodBcap ≤ glemmaUb(μ_hub)`) — the CappedJoint
+    `gstep_le_one_achievable` (PROVEN in ℚ; all arities), transported to the classical `bY`/`Gf` setting. -/
+def GlemmaStep : Prop :=
+  ∀ cs : List Branch, cs ≠ [] → (∀ c ∈ cs, Achiev (bY c)) →
+    (64/621 : ℝ) * (1 + (cs.map bY).sum / ((cs.length:ℝ)+1))^11
+        * (cs.map (fun c => capB (bY c))).prod
+      ≤ glemmaUb (bY (Branch.node cs))
+
+/-- **PIECE 2 (the `≤1` step)** — `W·a^11·prodBcap ≤ 1`.  The SOLE genuinely-open obligation: it is TIGHT
+    exactly at the `d=6` all-cherry tie (the `27·23 = 621` identity, `acl_d6`), strictly slack elsewhere, and is
+    NOT implied by `GlemmaStep` when the hub message `< 0.306` (there both caps exceed 1).  For hub message
+    `≥ 0.306` it DOES follow from `GlemmaStep` (`glemmaUb ≤ 1`); the residual is the small-message / large-hub
+    tie region — the `M_d` frontier. -/
+def Le1Step : Prop :=
+  ∀ cs : List Branch, cs ≠ [] → (∀ c ∈ cs, Achiev (bY c)) →
+    (64/621 : ℝ) * (1 + (cs.map bY).sum / ((cs.length:ℝ)+1))^11
+        * (cs.map (fun c => capB (bY c))).prod
+      ≤ 1
+
+/-- **The sharpened per-hub step**: `GStep` follows from `GlemmaStep ∧ Le1Step` — the master cap is derived from
+    glemma via `glemmaUb_le_masterUb` (piece 1).  So the whole thing rests on glemma (proven) + the `≤1` step. -/
+theorem gstep_of_glemma_le1 (hg : GlemmaStep) (h1 : Le1Step) : GStep := by
+  intro cs hcs hach
+  have hμle : bY (Branch.node cs) ≤ 1/2 := by
+    cases cs with
+    | nil => exact absurd rfl hcs
+    | cons a rest => exact bY_nonleaf_le_half a rest
+  have hgl := hg cs hcs hach
+  exact le_min (le_trans hgl (glemmaUb_le_masterUb (bY_nonneg _) hμle))
+    (le_min hgl (h1 cs hcs hach))
+
+/-- **The sharpened bridge.**  The entire classical branch ceiling `∀ b, bell b ≤ 0` reduces to `GlemmaStep`
+    (proven in ℚ as `gstep_le_one_achievable`) together with `Le1Step` (piece 2, the tie-tight residual).
+    Master is subsumed.  `conjecture1_proved = False`. -/
+theorem ceiling_of_glemma_le1 (hg : GlemmaStep) (h1 : Le1Step) : ∀ b, bell b ≤ 0 :=
+  ceiling_of_gstep (gstep_of_glemma_le1 hg h1)
 
 end BGSCL
 end R3Cert
