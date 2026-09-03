@@ -109,5 +109,51 @@ theorem subaction_cell_broom_d4 :
   have := log74_le_4fstar
   linarith
 
+/-! ### The first TIGHT compact-core cell (deg-4 hub, deg-3 children) — tangent-endpoint + log-enclosure. -/
+
+/-- The (rational, tie-free) degree-3 line of the verified witness, `ρ₃(μ) = (1/8)(μ − 1/5)`.  With
+    `ρ(leaf)=F*`, `ρ(2,μ)=2F*−log(3/2)+(1/4)(μ−1/3)`, `ρ(3,·)=ρ₃`, `ρ(deg≥4)=0`, the subaction holds globally
+    (checked on all branches `n≤14`); `ρ₃` is the piece the deg-4 tight cell exercises. -/
+noncomputable def ρ3 (μ : ℝ) : ℝ := (1 / 8) * (μ - 1 / 5)
+
+/-- **Log-enclosure** `log(5/4) − F* ≤ 1/20`, via `log x ≤ x − 1` at `x = (5/4)^11·(64/621) ≈ 1.20`
+    (so `log x ≤ x−1 ≈ 0.20 ≤ 11/20`, all rational after clearing the `11·F* = log(621/64)`).  This is the
+    analytic content the deg-4/deg-3 tight cell rests on (kin to the parallel session's
+    `TranscendentalEnclosureEmitter`). -/
+theorem log54_sub_fstar_le : Real.log (5 / 4 : ℝ) - FSTAR ≤ 1 / 20 := by
+  rw [FSTAR]
+  have hpos : (0 : ℝ) < (5 / 4 : ℝ) ^ (11 : ℕ) * (64 / 621) := by positivity
+  have hr := Real.log_le_sub_one_of_pos hpos
+  have hsplit : Real.log ((5 / 4 : ℝ) ^ (11 : ℕ) * (64 / 621))
+      = 11 * Real.log (5 / 4) - Real.log (621 / 64) := by
+    rw [Real.log_mul (by positivity) (by norm_num), Real.log_pow,
+        show (64 / 621 : ℝ) = (621 / 64)⁻¹ by norm_num, Real.log_inv]
+    push_cast; ring
+  rw [hsplit] at hr
+  have hnum : (5 / 4 : ℝ) ^ (11 : ℕ) * (64 / 621) - 1 ≤ 11 / 20 := by norm_num
+  linarith
+
+/-- **POC — the first TIGHT compact-core cell (degree-4 hub with three degree-3 children).**  The subaction
+    inequality `(SUB)` at a degree-4 vertex (`ρ = 0`) whose three children are degree-3 with messages
+    `y_i ∈ [1/5, 1/3]` (`ρ(3,·) = ρ₃`):  `(log(1 + (Σy)/4) − F*) + 0 ≤ Σ ρ₃(y_i)`.  This is the binding cell
+    class (margin ≈ 0.033), far tighter than the broom corner.  The proof is the two tools the whole
+    certificate family needs: the CONCAVE-LOG TANGENT at the aggregate endpoint `S = 1` (`log_tangent`, which
+    collapses the 3-variable child-message box to the message endpoint — the analytic form of ①'s
+    affine-endpoint / the `CurvatureBoundaryEmitter`), plus the LOG-ENCLOSURE `log(5/4) − F* ≤ 1/20`.
+    Kernel-checked, no `sorry`. -/
+theorem subaction_cell_d4_d3 (y1 y2 y3 : ℝ)
+    (h1 : 1 / 5 ≤ y1) (h1' : y1 ≤ 1 / 3) (h2 : 1 / 5 ≤ y2) (h2' : y2 ≤ 1 / 3)
+    (h3 : 1 / 5 ≤ y3) (h3' : y3 ≤ 1 / 3) :
+    (Real.log (1 + (y1 + y2 + y3) / 4) - FSTAR) + 0 ≤ ρ3 y1 + ρ3 y2 + ρ3 y3 := by
+  have hS0 : (0 : ℝ) ≤ y1 + y2 + y3 := by linarith
+  have hS1 : y1 + y2 + y3 ≤ 1 := by linarith
+  -- tangent of the concave `log(1 + S/4)` at the aggregate endpoint S = 1
+  have htan := log_tangent (d := (4 : ℝ)) (s := y1 + y2 + y3) (s0 := (1 : ℝ))
+    (by norm_num) hS0 (by norm_num)
+  rw [show (1 : ℝ) + 1 / 4 = 5 / 4 by norm_num, show (4 : ℝ) + 1 = 5 by norm_num] at htan
+  have henc := log54_sub_fstar_le
+  simp only [ρ3]
+  linarith
+
 end BGSCL
 end R3Cert
