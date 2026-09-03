@@ -74,6 +74,10 @@ import R3Cert.BGSCLSubactionTail
 
 -- The deg≥5 tail crux family + the 27·23 = 621 tie identity (2026-09-03).
 #print axioms R3Cert.BGSCL.tail_all_deg4
+#print axioms R3Cert.BGSCL.tail_all_deg3
+#print axioms R3Cert.BGSCL.tail_all_deg2
+#print axioms R3Cert.BGSCL.henc_deg2_qp7
+#print axioms R3Cert.BGSCL.henc_deg2_q7
 #print axioms R3Cert.BGSCL.tie_identity_d6
 #print axioms R3Cert.BGSCL.subaction_tail_tie_d6
 #print axioms R3Cert.BGSCL.subaction_deg3_deg2_high
