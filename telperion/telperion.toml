@@ -568,3 +568,14 @@ group = "quick"    # bilinear-form corner reduction + all-nonneg-coeff Polya cor
 name = "per_size_dominance_sweep"
 script = "examples/per_size_dominance_sweep/generate.py"
 group = "quick"    # finite per-size sweep aggregating tight_cap_enclosure per-config certs
+
+# Ported from AxiomMath/ZetaZeros (arXiv:2609.02882, 2026-09-02).
+[[check]]
+name = "curvature_boundary"
+script = "examples/curvature_boundary/generate.py"
+group = "quick"    # curvature-sign -> boundary extremum (generalizes affine_param_endpoint)
+
+[[check]]
+name = "transcendental_enclosure"
+script = "examples/transcendental_enclosure/generate.py"
+group = "quick"    # rational enclosure of log(1+x) (BG cells); Montgomery-Taylor C0 trig face deferred
