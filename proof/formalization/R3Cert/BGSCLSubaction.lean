@@ -155,5 +155,88 @@ theorem subaction_cell_d4_d3 (y1 y2 y3 : ℝ)
   simp only [ρ3]
   linarith
 
+/-! ### The validated explicit witness `ρwit`, and the single conditional theorem.
+
+  NOTE: the exploratory `ρ3(μ)=(1/8)(μ−1/5)` above was found (2026-09-03) to belong to a witness that
+  FAILS the high-degree-parent tail (a deg-D hub with deg-4 children at message → 1/4 has `e_node>0`,
+  `RHS=0`); `subaction_cell_broom_d4`/`subaction_cell_d4_d3`/`log54_sub_fstar_le`/`log74_le_4fstar` remain
+  TRUE isolated inequalities (and the log-enclosure tools), but are not cells of a globally-valid witness.
+  The corrected, thoroughly-validated witness (enumerated n≤15 + tail to deg-140 + spider family + 120k
+  mixed high-degree trees, margin 0 tight only at the `27·23` tie, `ρ≥0`) is `ρwit` below — clean rationals
+  except the two tie anchors `F*`, `log(3/2)`; `e_tail = log(1+1/d)−F* > 0` only for `d=2,3,4`, so `ρ`
+  vanishes for `d≥5`. -/
+
+/-- Every message is `≤ 1` (`bY(node cs) = 1/((|cs|+1)+Σ bY) ≤ 1`). -/
+theorem bY_le_one (b : Branch) : bY b ≤ 1 := by
+  cases b with
+  | node cs =>
+    rw [bY_node]
+    have hSnn : (0:ℝ) ≤ (cs.map bY).sum :=
+      List.sum_nonneg (fun x hx => by
+        rw [List.mem_map] at hx; obtain ⟨c, _, rfl⟩ := hx; exact bY_nonneg c)
+    have hcl : (0:ℝ) ≤ (cs.length : ℝ) := Nat.cast_nonneg _
+    have hpos : (0:ℝ) < ((cs.length : ℝ) + 1) + (cs.map bY).sum := by linarith
+    rw [div_le_one hpos]
+    linarith
+
+/-- A degree-2 branch (`node [c]`) has message `≥ 1/3` (since the single child's message is `≤ 1`). -/
+theorem bY_deg2_ge_third (c : Branch) : (1:ℝ)/3 ≤ bY (Branch.node [c]) := by
+  rw [bY_node]
+  have hc := bY_le_one c
+  have h0 := bY_nonneg c
+  simp only [List.length_cons, List.length_nil, List.map_cons, List.map_nil, List.sum_cons,
+    List.sum_nil, Nat.cast_one, add_zero, zero_add]
+  apply one_div_le_one_div_of_le (by linarith)
+  linarith
+
+/-- `0 ≤ F*`. -/
+theorem fstar_nonneg : 0 ≤ FSTAR :=
+  by rw [FSTAR]; exact div_nonneg (Real.log_nonneg (by norm_num)) (by norm_num)
+
+/-- The cherry/tie anchor is nonnegative: `2F* − log(3/2) ≥ 0` (via `(621/64)² ≥ (3/2)¹¹`, F*-folded). -/
+theorem cherry_anchor_nonneg : 0 ≤ 2 * FSTAR - Real.log (3/2 : ℝ) := by
+  rw [FSTAR]
+  have h : 11 * Real.log (3/2 : ℝ) ≤ 2 * Real.log (621/64 : ℝ) := by
+    have e1 : Real.log ((3/2 : ℝ) ^ (11:ℕ)) = 11 * Real.log (3/2) := by rw [Real.log_pow]; norm_num
+    have e2 : Real.log ((621/64 : ℝ) ^ (2:ℕ)) = 2 * Real.log (621/64) := by rw [Real.log_pow]; norm_num
+    have hle : Real.log ((3/2 : ℝ) ^ (11:ℕ)) ≤ Real.log ((621/64 : ℝ) ^ (2:ℕ)) :=
+      Real.log_le_log (by positivity) (by norm_num)
+    rw [e1, e2] at hle; exact hle
+  linarith
+
+/-- **The validated explicit witness** `ρwit : Branch → ℝ`, keyed by degree `= bcc + 1` and message `bY`:
+    `ρ(leaf)=F*`, `ρ(2,μ)=2F*−log(3/2)+(1/4)(μ−1/3)`, `ρ(3,μ)=μ/32`, `ρ(4,μ)=μ/384`, `ρ(deg≥5)=0`. -/
+noncomputable def ρwit (b : Branch) : ℝ :=
+  match bcc b with
+  | 0 => FSTAR
+  | 1 => (2 * FSTAR - Real.log (3/2)) + (1/4) * (bY b - 1/3)
+  | 2 => (1/32) * bY b
+  | 3 => (1/384) * bY b
+  | _ => 0
+
+/-- `ρwit ≥ 0` everywhere (the nonnegativity the bridge requires). -/
+theorem ρwit_nonneg (b : Branch) : 0 ≤ ρwit b := by
+  cases b with
+  | node cs =>
+    rcases cs with _ | ⟨c, _ | ⟨c2, _ | ⟨c3, _ | ⟨c4, t⟩⟩⟩⟩
+    · simp only [ρwit, bcc, List.length_nil]; exact fstar_nonneg
+    · simp only [ρwit, bcc, List.length_cons, List.length_nil]
+      have hb3 := bY_deg2_ge_third c
+      have hch := cherry_anchor_nonneg
+      nlinarith [hb3, hch]
+    · simp only [ρwit, bcc, List.length_cons, List.length_nil]
+      exact mul_nonneg (by norm_num) (bY_nonneg _)
+    · simp only [ρwit, bcc, List.length_cons, List.length_nil]
+      exact mul_nonneg (by norm_num) (bY_nonneg _)
+    · simp [ρwit, bcc, List.length_cons]
+
+/-- **The ceiling, reduced to a single explicit hypothesis.**  If the validated rational witness `ρwit`
+    satisfies the per-vertex subaction inequality (`IsSubaction ρwit` — the finite per-cell family over the
+    compact deg-≤4 core plus the `deg≥5 ⇒ ρ=0` tail), then the whole branch ceiling `∀ b, bell b ≤ 0` holds.
+    The nonnegativity leg is discharged (`ρwit_nonneg`); `IsSubaction ρwit` is the one remaining obligation,
+    now against a concrete, thoroughly-validated witness.  `conjecture1_proved = False`. -/
+theorem ceiling_of_witness (hSUB : IsSubaction ρwit) : ∀ b, bell b ≤ 0 :=
+  ceiling_of_subaction ρwit hSUB ρwit_nonneg
+
 end BGSCL
 end R3Cert
