@@ -579,3 +579,8 @@ group = "quick"    # curvature-sign -> boundary extremum (generalizes affine_par
 name = "transcendental_enclosure"
 script = "examples/transcendental_enclosure/generate.py"
 group = "quick"    # rational enclosure of log(1+x) (BG cells); Montgomery-Taylor C0 trig face deferred
+
+[[check]]
+name = "log_combination"
+script = "examples/log_combination/generate.py"
+group = "quick"    # F*-folding: Sum c_i log(r_i) <= q; dogfooded vs BG log74_le_4fstar/log54_sub_fstar_le
