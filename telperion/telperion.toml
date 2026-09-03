@@ -477,3 +477,8 @@ name = "concave_stationary_max"
 script = "examples/concave_stationary_max/generate.py"
 group = "quick"    # Kelly concave-stationary-max: FOC + strict concavity; ~0.2 s
 
+# Open-front build-out (2026-09-02): symbolic-in-n d=2 moment-matrix PSD.
+[[check]]
+name = "symmetric_quad_d2"
+script = "examples/symmetric_quad_d2/generate.py"
+group = "quick"    # symbolic-in-n d=2 subset-form PSD (three-piece completing-the-square); ~0.3 s
