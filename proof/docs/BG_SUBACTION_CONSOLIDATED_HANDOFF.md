@@ -1,12 +1,15 @@
 # BG additive-SUBACTION ceiling — consolidated handoff (2026-09-03)
 
 **Status: the ceiling reduces to the single obligation `IsSubaction ρwit`; the deg-1/2/3 cell families are COMPLETE,
-the full d=4 atom table is proven, and all three deg≥5 uniform tail families + the 27·23 tie are proven. The one
-remaining piece is the reduce-to-uniform exchange (mixed-degree tail configs). `conjecture1_proved = False`.**
+the full d=4 atom table is proven, all three deg≥5 uniform tail families + the 27·23 tie are proven, AND all three
+reduce-to-uniform MESSAGE halves (deg-2/3/4) are proven. Remaining: the d=4 cell wiring (mechanical), the top-level
+`IsSubaction` assembly + Branch list-lift (mechanical), and the counts→single-degree EXCHANGE for mixed-degree tail
+configs (the one genuine research nub). `conjecture1_proved = False`.**
 
-Branch `bg/scl-on-main` @ `4878475` (GitHub `DrMurphyIsIn/Arda`). Everything below is `no sorry`, kernel-verified,
-axiom-clean `[propext, Classical.choice, Quot.sound]` (CI-enforced by `AxiomGuard.lean`, **29 guarded theorems**),
-full `lake build` green (8863 jobs). Supersedes the running notes in `BG_CEILING_SUBACTION_HANDOFF.md`,
+Branch `bg/scl-on-main` (GitHub `DrMurphyIsIn/Arda`). Everything below is `no sorry`, kernel-verified, axiom-clean
+`[propext, Classical.choice, Quot.sound]` (CI-enforced by `AxiomGuard.lean`, **31 guarded theorems**), full
+`lake build` green (BG-subaction build re-verified INDEPENDENTLY 2026-09-03: 8663 jobs, 8 modules, no sorry,
+AxiomGuard clean). Supersedes the running notes in `BG_CEILING_SUBACTION_HANDOFF.md`,
 `BG_SUBACTION_TELPERION_NEXTCELLS.md`, `BG_SUBACTION_D4_TAIL_TIE_SPEC.md` (kept for detail/derivations).
 
 ---
@@ -68,25 +71,29 @@ uniform-type. Proven families (`BGSCLSubactionTail.lean`):
 - The 27·23 tie: `tie_identity_d6` (`(23/18)·(3/2)⁵ = 621/64`) + `subaction_tail_tie_d6` (deg-6, five cherry children,
   exact equality).
 
-## 3. The ONE remaining piece — reduce-to-uniform (mixed-degree tail configs)
+## 3. Remaining pieces (updated 2026-09-03 by review-owner)
 
 The tail families cover uniform-degree configs. To cover ARBITRARY child multisets, the reduce-to-uniform argument.
-Its structure is fully characterized:
+Its structure is fully characterized; the message halves are now ALL proven:
 
 1. **Within a degree, only count + message-sum matter** — `ρwit` is affine in the message, so the message
    *distribution* within a degree is irrelevant. (Established.)
-2. **Message → worst endpoint** — the per-degree SUB-slack. **DONE for deg-2** (`tail_deg2_sum`): the deg-2 ρ-slope
-   1/4 exceeds `1/(d+S)` for all d≥5, so the slack is strictly monotone in S → worst at `S=(d−1)/3` (the tie),
-   lifting `tail_all_deg2` to arbitrary deg-2 messages. **OPEN for deg-3/deg-4**: their slack is CONCAVE with an
-   interior maximum beyond d≈24 (deg-3) / d≈307 (deg-4), where the worst endpoint FLIPS to bY=0 (entangling with the
-   count) — so these need a small-d-endpoint / large-d-interior d-split, not a single monotonicity.
+2. **Message → worst endpoint** — the per-degree SUB-slack. **DONE for all three** (`BGSCLSubactionExch.lean`):
+   `tail_deg2_sum` (deg-2, slope-monotone), `tail_deg3_sum` (`log(1+S/d)−F* ≤ S/32`, ∀d≥5, `0≤S≤(d−1)/3`),
+   `tail_deg4_sum` (`log(1+S/d)−F* ≤ S/384`, ∀d≥5, `0≤S≤(d−1)/4`). So the message half of reduce-to-uniform is CLOSED
+   for every degree.
 3. **Counts → single-degree exchange** across degrees (worst counts all in one degree) — the discrete convexity crux.
-   **OPEN**; no clean Lean path yet. This is where the numerical/tangent toolkit that carried everything else runs out.
+   **OPEN — the one genuine research nub.** With the EXACT coupled `log(1+S/d)` the children do not separate, so the
+   per-child/independence shortcut does NOT apply (see the subadditivity no-go in §5). Likely a discrete
+   convexity/majorization argument.
 4. **Branch-level list lift** — expressing `Σρ`/`ΣbY` over arbitrary child lists (mechanical list induction). OPEN.
+5. **d=4 cell wiring** — the 35 `d4_*` enclosure atoms + `tangent_atom` recipe are done; the 35 node-level
+   `subaction_deg4_*` cells (wire atom + `log_tangent` + `linarith` over the message box, per the d=3 templates in
+   `BGSCLSubactionDeg3Mid.lean`) are unwritten. MECHANICAL. Completes node degree 4.
 
-**Recommended next steps (in order of tractability):** (a) `tail_deg3_sum`/`tail_deg4_sum` with the d-split case-work
-(mirror `tail_deg2_sum` for small d; crude/interior bound for large d); (b) the Branch-level list lift for the uniform
-cases; (c) the counts exchange — the genuine research nub, likely a discrete convexity/majorization argument.
+**Recommended next steps (in order of tractability):** (a) the d=4 cell wiring (mechanical, completes node deg 4);
+(b) the Branch list-lift + top-level `IsSubaction` degree-dispatch for the finite (deg ≤4) part; (c) the counts
+exchange — the genuine research nub. Steps (a),(b) are patterned repetition; (c) is the real remaining mathematics.
 
 ## 4. Tools & techniques (reusable)
 
@@ -103,6 +110,12 @@ cases; (c) the counts exchange — the genuine research nub, likely a discrete c
 
 ## 5. Footguns (this line)
 
+- **NO-GO for the counts exchange (checked 2026-09-03): log-subadditivity is too lossy.** The tempting shortcut
+  `log(1+S/d) ≤ Σ log(1+bY(cᵢ)/d)` decouples the children (then each child's `δ = log(1+bY/d) − ρwit` is independent,
+  so the worst config is trivially uniform-at-argmax). But the subadditive bound loses too much: at d=18, all deg-4,
+  it gives `Σρ`-requirement `≈ 0.0279` where the EXACT `tail_all_deg4` needs `≤ 0.0111` (slack +0.006) — i.e. it fails
+  by 2.5×. So the counts exchange MUST use the exact coupled `log(1+S/d)`; the per-child/independence route is a dead
+  end. This is why (3) is genuinely discrete-convexity, not a per-child bound.
 - `(4/3)^11 ≈ 23.7` (not ~4.4): `log(4/3) − F*` folds to `X≈2.44 > 1` ⇒ **tight_hi, not tangent**. Sanity-check fold
   magnitudes before choosing a route.
 - `field_simp` sometimes fully closes an identity ⇒ a trailing `ring` errors "no goals" (case-dependent; e.g. `hfact`
