@@ -434,5 +434,44 @@ theorem subaction_deg2_highchild (c : Branch) (hc : 2 ≤ bcc c) :
     rw [← Real.log_div (by norm_num) (by norm_num)]; norm_num
   linarith [hlog, hrnode, hrc_nn, hld, henc]
 
+/-! ### First MULTI-child cell (node degree 3): the two-leaf broom. -/
+
+/-- Log-enclosure for the degree-3 broom: `log(5/3) + 1/160 ≤ 3F*` (monotone/tangent route, comfortable
+    margin: fold `(5/3)¹¹·(64/621)³ ≈ 0.555`, `x−1 ≈ −0.445 ≤ −11/160`). -/
+theorem log53_enc : Real.log (5/3 : ℝ) + 1/160 ≤ 3 * FSTAR := by
+  rw [FSTAR]
+  have hr := Real.log_le_sub_one_of_pos
+    (show (0:ℝ) < (5/3 : ℝ) ^ (11:ℕ) * (64/621 : ℝ) ^ (3:ℕ) by positivity)
+  have hsplit : Real.log ((5/3 : ℝ) ^ (11:ℕ) * (64/621 : ℝ) ^ (3:ℕ))
+      = 11 * Real.log (5/3) - 3 * Real.log (621/64) := by
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_pow, Real.log_pow,
+        show (64/621 : ℝ) = (621/64)⁻¹ by norm_num, Real.log_inv]
+    push_cast; ring
+  rw [hsplit] at hr
+  have hnum : (5/3 : ℝ) ^ (11:ℕ) * (64/621 : ℝ) ^ (3:ℕ) - 1 ≤ -11/160 := by norm_num
+  linarith
+
+/-- **Cell: the degree-3 broom** (`cs = [leaf, leaf]`).  Both children are leaves (`bY=1`, `ρwit=F*`), the
+    node has `bY=1/5`, `ρwit(node)=1/160`; the inequality is `(log(5/3)−F*)+1/160 ≤ 2F*`, a fixed-point
+    2-child enclosure (no decouple — messages are pinned).  Pins the two-child list mechanics. -/
+theorem subaction_broom_d3 :
+    (Real.log (1 + (([Branch.node [], Branch.node []]).map bY).sum
+        / ((([Branch.node [], Branch.node []] : List Branch).length : ℝ) + 1)) - FSTAR)
+      + ρwit (Branch.node [Branch.node [], Branch.node []])
+      ≤ (([Branch.node [], Branch.node []]).map ρwit).sum := by
+  have hbY : bY (Branch.node [Branch.node [], Branch.node []]) = 1/5 := by
+    rw [bY_node]
+    simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, List.length_cons,
+      List.length_nil, bY_leaf]
+    norm_num
+  have hrnode : ρwit (Branch.node [Branch.node [], Branch.node []]) = 1/160 := by
+    rw [ρwit]; simp only [bcc, List.length_cons, List.length_nil, hbY]; norm_num
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, List.length_cons,
+    List.length_nil, bY_leaf, ρwit_leaf, hrnode]
+  rw [show ((0 + 1 + 1 : ℕ) : ℝ) = 2 by norm_num,
+      show (1:ℝ) + (1 + (1 + 0)) / (2 + 1) = 5/3 by norm_num]
+  have := log53_enc
+  linarith
+
 end BGSCL
 end R3Cert
