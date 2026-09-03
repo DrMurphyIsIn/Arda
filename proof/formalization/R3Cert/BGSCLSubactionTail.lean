@@ -264,5 +264,46 @@ theorem tail_all_deg2 (d : ℕ) (hd : 5 ≤ d) :
   · have hx : (7 : ℝ) ≤ (d : ℝ) := by exact_mod_cast h
     exact tail_all_deg2_large (d : ℝ) hx
 
+/-! ### Reduce-to-uniform: the message half for the deg-2 (tie) family.
+
+  A deg-`d` hub whose `d−1` children are ALL degree-2, with arbitrary messages `yᵢ ∈ [1/3,1/2]` summing to `S`,
+  satisfies `(SUB)`.  Because `ρwit(deg-2,·)` is AFFINE in the message, `Σ ρwit` depends only on the count and the
+  message-sum `S`; and because the deg-2 `ρ`-slope `1/4` dominates `1/(d+S)` for every `d ≥ 5`, the SUB-slack is
+  MONOTONE in `S` over the whole range (no interior extremum), so the worst case is `S = (d−1)/3` (all `yᵢ = 1/3`,
+  the tie), reducing to `tail_all_deg2`.  This is the message half of reduce-to-uniform for the binding family;
+  the counts→single-degree exchange (across degrees) and the deg-3/deg-4 message halves (whose slack is only
+  CONCAVE, with a `d`-dependent worst endpoint) remain. -/
+theorem tail_deg2_sum (d : ℕ) (hd : 5 ≤ d) (S : ℝ)
+    (hSlo : ((d : ℝ) - 1) / 3 ≤ S) (hShi : S ≤ ((d : ℝ) - 1) / 2) :
+    Real.log (1 + S / (d : ℝ)) - FSTAR
+      ≤ ((d : ℝ) - 1) * (2 * FSTAR - Real.log (3 / 2)) + (S - ((d : ℝ) - 1) / 3) / 4 := by
+  have hdR : (5 : ℝ) ≤ (d : ℝ) := by exact_mod_cast hd
+  have hd0 : (0 : ℝ) < (d : ℝ) := by linarith
+  set S0 := ((d : ℝ) - 1) / 3 with hS0def
+  have hS0nn : (0 : ℝ) ≤ S0 := by rw [hS0def]; apply div_nonneg (by linarith) (by norm_num)
+  have hSS0 : (0 : ℝ) ≤ S - S0 := by linarith
+  have hposS : (0 : ℝ) < 1 + S / (d : ℝ) := by
+    have : (0 : ℝ) ≤ S := by linarith
+    positivity
+  have hpos0 : (0 : ℝ) < 1 + S0 / (d : ℝ) := by
+    have := div_nonneg hS0nn (le_of_lt hd0); linarith
+  -- (1) g-monotonicity: log(1+S/d) − S/4 ≤ log(1+S0/d) − S0/4
+  have hmono : Real.log (1 + S / (d : ℝ)) - S / 4 ≤ Real.log (1 + S0 / (d : ℝ)) - S0 / 4 := by
+    have hratio : (1 + S / (d : ℝ)) / (1 + S0 / (d : ℝ)) - 1 = (S - S0) / ((d : ℝ) + S0) := by
+      field_simp; ring
+    have hlogr : Real.log ((1 + S / (d : ℝ)) / (1 + S0 / (d : ℝ))) ≤ (S - S0) / ((d : ℝ) + S0) := by
+      rw [← hratio]; exact Real.log_le_sub_one_of_pos (div_pos hposS hpos0)
+    rw [Real.log_div (ne_of_gt hposS) (ne_of_gt hpos0)] at hlogr
+    have hslope : (S - S0) / ((d : ℝ) + S0) ≤ (S - S0) / 4 :=
+      div_le_div_of_nonneg_left hSS0 (by norm_num) (by linarith)
+    linarith
+  -- (2) at S0 the log argument is (4d−1)/(3d)
+  have hS0val : (1 : ℝ) + S0 / (d : ℝ) = (4 * (d : ℝ) - 1) / (3 * (d : ℝ)) := by
+    rw [hS0def]; field_simp; ring
+  rw [hS0val] at hmono
+  -- (3) reduce to the uniform (tie) family
+  have htail := tail_all_deg2 d hd
+  linarith [hmono, htail]
+
 end BGSCL
 end R3Cert

@@ -76,6 +76,7 @@ import R3Cert.BGSCLSubactionTail
 #print axioms R3Cert.BGSCL.tail_all_deg4
 #print axioms R3Cert.BGSCL.tail_all_deg3
 #print axioms R3Cert.BGSCL.tail_all_deg2
+#print axioms R3Cert.BGSCL.tail_deg2_sum
 #print axioms R3Cert.BGSCL.henc_deg2_qp7
 #print axioms R3Cert.BGSCL.henc_deg2_q7
 #print axioms R3Cert.BGSCL.tie_identity_d6
