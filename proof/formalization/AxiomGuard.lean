@@ -41,6 +41,9 @@ import R3Cert.BGSCLSubactionDeg3Mid
 import R3Cert.BGSCLSubactionD4
 import R3Cert.BGSCLSubactionTail
 import R3Cert.BGSCLSubactionTailDecouple
+import R3Cert.BGSCLSubactionD4Cells
+import R3Cert.BGSCLSubactionTailWrap
+import R3Cert.BGSCLSubactionDispatch
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -100,3 +103,25 @@ import R3Cert.BGSCLSubactionTailDecouple
 #print axioms R3Cert.BGSCL.tie_identity_d6
 #print axioms R3Cert.BGSCL.subaction_tail_tie_d6
 #print axioms R3Cert.BGSCL.subaction_deg3_deg2_high
+
+-- ===========================================================================================
+-- CEILING CLOSED (2026-09-04): `IsSubaction ρwit` fully assembled ⇒ `bell b ≤ 0` for all b.
+-- Degree-4 node cells (all 35, wiring the `d4_*` atoms), the 7 tail stragglers + gap-free
+-- `tail_wrapper`, the permutation-invariance bridge, the top-level degree dispatch, and the
+-- `bg_ceiling` capstone.  These make the classical-branch ceiling machine-checked & axiom-clean.
+-- ===========================================================================================
+-- Permutation invariance of the SUB predicate (canonicalizes ordered cells to arbitrary orders).
+#print axioms R3Cert.BGSCL.subaction_perm
+-- Tail stragglers + the unified gap-free tail wrapper (∀ cs, 4 ≤ cs.length → SUB cs).
+#print axioms R3Cert.BGSCL.cherry_anchor_le_tight
+#print axioms R3Cert.BGSCL.subaction_tail_d9
+#print axioms R3Cert.BGSCL.tail_wrapper
+-- Degree-4 node cells: representatives across the class spectrum + the canonicalizing dispatchers.
+#print axioms R3Cert.BGSCL.subaction_deg4_LLL
+#print axioms R3Cert.BGSCL.subaction_deg4_HHH
+#print axioms R3Cert.BGSCL.subaction_deg4_L2H
+#print axioms R3Cert.BGSCL.subaction_deg4_canon
+#print axioms R3Cert.BGSCL.subaction_deg4
+-- The single obligation and the capstone: the ceiling now holds unconditionally.
+#print axioms R3Cert.BGSCL.isSubaction_ρwit
+#print axioms R3Cert.BGSCL.bg_ceiling
