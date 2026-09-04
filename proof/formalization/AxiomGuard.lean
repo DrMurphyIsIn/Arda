@@ -48,6 +48,11 @@ import R3Cert.BGSCLSCLUncond
 import R3Cert.BGSCLAsymptotic
 import R3Cert.BGSCLSubactionStrict
 import R3Cert.BGSCLHnormPort
+import R3Cert.BGSCLObligationA
+import R3Cert.BGSCLHdom
+import R3Cert.R47HdomBridge
+import R3Cert.BGSCLRealizationBridge
+import R3Cert.BGSCLObligationB
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -139,3 +144,21 @@ import R3Cert.BGSCLHnormPort
 #print axioms R3Cert.BGSCL.bell_eq_zero_imp_tie
 -- Hnorm scoped porting: the straightening context-lift layer (Obligation-A-gated).
 #print axioms R3Cert.Step3.straightStep_sized_lift
+-- ===========================================================================================
+-- WAVE 2 (2026-09-04): conjecture1 research walls. Negative result + reductions to crisp obligations.
+-- ===========================================================================================
+-- Obligation A is FALSE: kernel-checked counterexamples (pushInto is the wrong, degree-concentrating move).
+#print axioms R3Cert.Step3.deephub_obligationA_false
+#print axioms R3Cert.Step3.direct_obligationA_false
+-- Strict inequality strengthened: bell b < 0 UNCONDITIONALLY off degree-6 hubs; tie ⟹ bcc = 5.
+#print axioms R3Cert.BGSCL.master_ineq_strict_off_deg6
+#print axioms R3Cert.BGSCL.bcc_eq_five_of_bell_eq_zero
+#print axioms R3Cert.BGSCL.strictRootCell_tail
+-- Hdom reduced to ONE crisp size-normalized obligation (SharpRateNF); conjecture1 modulo Hnorm+SharpRateNF.
+#print axioms R3Cert.Step3.Hdom_of_sharpRate
+#print axioms R3Cert.Step3.conjecture1_of_Hnorm_sharpRate
+-- Gap-2 realization bridge (loose rate): the analytic ceiling realized on the real permanent ratio.
+#print axioms R3Cert.Step3.perm_ratio_le_rate
+#print axioms R3Cert.Step3.perm_ratio_backbone_le_rate
+-- Obligation B seam: Aobj invariant under a bare address-graph iso (degree side-condition discharged).
+#print axioms R3Cert.Step3.Aobj_root_invariant_of_iso
