@@ -40,6 +40,7 @@ import R3Cert.BGSCLSubactionDeg3
 import R3Cert.BGSCLSubactionDeg3Mid
 import R3Cert.BGSCLSubactionD4
 import R3Cert.BGSCLSubactionTail
+import R3Cert.BGSCLSubactionTailDecouple
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -49,6 +50,12 @@ import R3Cert.BGSCLSubactionTail
 #print axioms R3Cert.BGSCL.ceiling_of_subaction
 #print axioms R3Cert.BGSCL.ρwit_nonneg
 #print axioms R3Cert.BGSCL.ceiling_of_witness
+
+-- Tail (deg≥5) DECOUPLE backbone: reduces a mixed-degree tail cell to per-child bound + B(S0)≥0
+-- (the counts-exchange dissolution; no discrete convexity).
+#print axioms R3Cert.BGSCL.sum_rhowit_ge
+#print axioms R3Cert.BGSCL.ρwit_node_high
+#print axioms R3Cert.BGSCL.tail_decouple
 
 -- Discharged cells of the `IsSubaction ρwit` per-node family.
 #print axioms R3Cert.BGSCL.subaction_nil
