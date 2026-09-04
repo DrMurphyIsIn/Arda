@@ -63,6 +63,10 @@ import R3Cert.BGSCLSubactionTailDecouple
 #print axioms R3Cert.BGSCL.cherry_anchor_ge
 #print axioms R3Cert.BGSCL.phi_lb_general
 #print axioms R3Cert.BGSCL.subaction_tail_deg5
+-- The deg-4 range regime d in [10,61]: tight anchor + per-child min + tail_all_deg4.
+#print axioms R3Cert.BGSCL.cherry_anchor_ge_tight
+#print axioms R3Cert.BGSCL.phi_lb_deg4
+#print axioms R3Cert.BGSCL.subaction_tail_deg4
 
 -- Discharged cells of the `IsSubaction ρwit` per-node family.
 #print axioms R3Cert.BGSCL.subaction_nil

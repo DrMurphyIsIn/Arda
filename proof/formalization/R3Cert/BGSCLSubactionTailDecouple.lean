@@ -232,6 +232,28 @@ theorem phi_lb_general (σ : ℝ) (hσ0 : 0 < σ) (hσhi : σ ≤ 5/384) (c : Br
       | node cs => simp only [bcc] at hbc; exact ρwit_node_high (by omega)
     rw [hrc]; nlinarith [hσ0, hby]
 
+/-- Tight anchor bound `3/400 ≤ 2F* − log(3/2)` (needed at the deg-4 regime's d=10 boundary).  Uses the exact
+    `2F*−log(3/2) = (1/11)·log(529/486)` (`529/486 = (621/64)²·(2/3)¹¹`, the `27·23` structure) + a degree-3
+    Taylor bound `exp(33/400) ≤ 529/486`. -/
+theorem cherry_anchor_ge_tight : (3:ℝ)/400 ≤ 2 * FSTAR - Real.log (3/2) := by
+  have hkey : (2:ℝ) * FSTAR - Real.log (3/2) = (1/11) * Real.log (529/486) := by
+    rw [FSTAR, show (529/486:ℝ) = (621/64)^(2:ℕ) * (2/3)^(11:ℕ) by norm_num,
+        Real.log_mul (by positivity) (by positivity), Real.log_pow, Real.log_pow,
+        show (2/3:ℝ) = (3/2)⁻¹ by norm_num, Real.log_inv]
+    push_cast; ring
+  rw [hkey]
+  have hlog : (33:ℝ)/400 ≤ Real.log (529/486) := by
+    rw [Real.le_log_iff_exp_le (by norm_num)]
+    have hb := Real.exp_bound (x := (33/400 : ℝ)) (by norm_num) (n := 3) (by norm_num)
+    have hb2 := (abs_le.mp hb).2
+    have hs : ∑ i ∈ Finset.range 3, (33/400:ℝ)^i / (i.factorial:ℝ) = 1 + 33/400 + (33/400)^2/2 := by
+      simp [Finset.sum_range_succ, Nat.factorial]
+    rw [hs] at hb2
+    have herr : |(33/400:ℝ)|^3 * ((3+1)/((Nat.factorial 3:ℝ)*3)) ≤ 529/486 - (1 + 33/400 + (33/400)^2/2) := by
+      norm_num [Nat.factorial]
+    linarith [hb2, herr]
+  linarith [hlog]
+
 /-- **The large-`d` (deg-5) tail regime, `∀ d ≥ 65`.**  `IsSubaction ρwit` at any node of degree
     `d = |cs|+1 ≥ 65` with arbitrary children — via `tail_decouple` at the all-deg-5 reference
     `S0 = |cs|/5`, the per-child min `phi_lb_general`, and `B = F* − log((6d−1)/(5d)) ≥ 0` (`log(6/5) ≤ F*`
@@ -270,6 +292,85 @@ theorem subaction_tail_deg5 (cs : List Branch) (hlen : 64 ≤ cs.length) :
         rw [e] at hle; linarith
       linarith
     linarith [hcancel, hlogle]
+
+/-- **Per-child min for the deg-4-min regime.**  For `σ ∈ [5/384, 4/49]`, `(1/1536 − σ/4) + σ·bY c ≤ ρwit c`
+    for every branch (`m = 1/1536 − σ/4`, the deg-4 corner), per-degree-class (deg-2 via the TIGHT
+    `cherry_anchor_ge_tight`; deg-3 by a σ<1/32 vs σ>1/32 split; deg-4 tight; deg≥5 `σ≥5/384`). -/
+theorem phi_lb_deg4 (σ : ℝ) (hσlo : 5/384 ≤ σ) (hσhi : σ ≤ 4/49) (c : Branch) :
+    (1/1536 - σ/4) + σ * bY c ≤ ρwit c := by
+  have hy0 := bY_nonneg c
+  have hyd := bY_le_inv_deg c
+  have hanch := cherry_anchor_ge_tight
+  have hfst : (7:ℝ)/100 ≤ FSTAR := by
+    rw [FSTAR]
+    have h := Real.log_le_sub_one_of_pos (show (0:ℝ) < (64/621:ℝ) by norm_num)
+    rw [show (64/621:ℝ) = (621/64)⁻¹ by norm_num, Real.log_inv,
+        show ((621/64:ℝ)⁻¹) = 64/621 by norm_num] at h
+    linarith
+  rcases hbc : bcc c with _ | _ | _ | _ | n
+  · have hby1 : bY c = 1 := by
+      cases c with
+      | node cs => simp only [bcc] at hbc; rw [List.length_eq_zero_iff.mp hbc] at *; exact bY_leaf
+    have hrc : ρwit c = FSTAR := by
+      cases c with
+      | node cs => simp only [bcc] at hbc; rw [List.length_eq_zero_iff.mp hbc] at *; exact ρwit_leaf
+    rw [hby1, hrc]; nlinarith [hfst, hσhi]
+  · have hby3 := bY_ge_third_of_bcc1 c hbc
+    have hrc : ρwit c = 2 * FSTAR - Real.log (3/2) + (1/4) * (bY c - 1/3) := by simp only [ρwit, hbc]
+    rw [hrc]
+    nlinarith [hanch, hσhi, mul_nonneg (show (0:ℝ) ≤ bY c - 1/3 by linarith)
+      (show (0:ℝ) ≤ 1/4 - σ by linarith)]
+  · have hby : bY c ≤ 1/3 := by rw [hbc] at hyd; norm_num at hyd; linarith
+    have hrc : ρwit c = (1/32) * bY c := by simp only [ρwit, hbc]
+    rw [hrc]
+    by_cases hs : σ ≤ 1/32
+    · nlinarith [hσlo, mul_nonneg hy0 (show (0:ℝ) ≤ 1/32 - σ by linarith)]
+    · push_neg at hs
+      nlinarith [hσhi, mul_nonneg (show (0:ℝ) ≤ 1/3 - bY c by linarith)
+        (show (0:ℝ) ≤ σ - 1/32 by linarith)]
+  · have hby : bY c ≤ 1/4 := by rw [hbc] at hyd; norm_num at hyd; linarith
+    have hrc : ρwit c = (1/384) * bY c := by simp only [ρwit, hbc]
+    rw [hrc]
+    nlinarith [mul_nonneg (show (0:ℝ) ≤ 1/4 - bY c by linarith)
+      (show (0:ℝ) ≤ σ - 1/384 by linarith)]
+  · have hn : (0:ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    have hby : bY c ≤ 1/5 := by
+      rw [hbc] at hyd
+      have hd5 : (5:ℝ) ≤ ((n + 4 : ℕ) : ℝ) + 1 := by push_cast; linarith
+      have hle : (1:ℝ) / (((n + 4 : ℕ) : ℝ) + 1) ≤ 1/5 :=
+        one_div_le_one_div_of_le (by norm_num) hd5
+      linarith
+    have hrc : ρwit c = 0 := by
+      cases c with
+      | node cs => simp only [bcc] at hbc; exact ρwit_node_high (by omega)
+    rw [hrc]; nlinarith [hy0, hby, hσlo]
+
+/-- **The deg-4 tail regime, `d ∈ [10,61]`** (`|cs| ∈ [9,60]`).  `IsSubaction ρwit` at any such node with
+    arbitrary children — via `tail_decouple` at `S0 = |cs|/4`, per-child `phi_lb_deg4`, and `hB = tail_all_deg4`
+    (the two B-terms collapse to `|cs|/1536`, `log(1+S0/d) = log((5d−1)/(4d))`). -/
+theorem subaction_tail_deg4 (cs : List Branch) (h1 : 9 ≤ cs.length) (h2 : cs.length ≤ 60) :
+    (Real.log (1 + (cs.map bY).sum / ((cs.length : ℝ) + 1)) - FSTAR)
+      + ρwit (Branch.node cs) ≤ (cs.map ρwit).sum := by
+  have h4 : 4 ≤ cs.length := by omega
+  have hL9 : (9:ℝ) ≤ (cs.length : ℝ) := by exact_mod_cast h1
+  have hL60 : (cs.length : ℝ) ≤ 60 := by exact_mod_cast h2
+  have hDpos : (0:ℝ) < ((cs.length : ℝ) + 1) + (cs.length : ℝ) / 4 := by positivity
+  set σ : ℝ := 1 / (((cs.length : ℝ) + 1) + (cs.length : ℝ) / 4) with hσdef
+  have hσlo : 5/384 ≤ σ := by rw [hσdef, le_div_iff₀ hDpos]; nlinarith [hL60]
+  have hσhi : σ ≤ 4/49 := by rw [hσdef, div_le_iff₀ hDpos]; nlinarith [hL9]
+  refine tail_decouple cs ((cs.length : ℝ) / 4) (1/1536 - σ/4) h4 (by positivity) ?_ ?_
+  · intro c _
+    rw [show (1 : ℝ) / (((cs.length : ℝ) + 1) + (cs.length : ℝ) / 4) = σ from hσdef.symm]
+    exact phi_lb_deg4 σ hσlo hσhi c
+  · have htad := tail_all_deg4 ((cs.length : ℝ) + 1) (by linarith)
+    have hcancel : (cs.length : ℝ) * (1/1536 - σ/4)
+        + (cs.length : ℝ) / 4 / (((cs.length : ℝ) + 1) + (cs.length : ℝ) / 4) = (cs.length : ℝ) / 1536 := by
+      rw [hσdef]; field_simp; ring
+    have harg : (1 : ℝ) + (cs.length : ℝ) / 4 / ((cs.length : ℝ) + 1)
+        = (5 * ((cs.length : ℝ) + 1) - 1) / (4 * ((cs.length : ℝ) + 1)) := by
+      field_simp; ring
+    rw [harg]
+    linarith [htad, hcancel]
 
 end BGSCL
 end R3Cert
