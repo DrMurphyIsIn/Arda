@@ -14,14 +14,16 @@ caller* — that composition discipline is itself the frame here.
 | `verify_proof` / `check` | structured verify; compile vs trusted(sorry-reject) split | — | — | **done** (`verify.py`) |
 | `sorry2lemma` + `environment` | gap-driven fill against a persistent env | — | — | **done** (`gap_fill.py`) |
 | `repair_proofs` | mechanical Mathlib-drift repair, fallback + re-verify | — | — | **done** (`repair.py`) |
-| `disprove` (prove the negation) | **kernel-gated negative control** | HIGH (trust) | MED | proposed |
-| `extract_proof_states` + `have2lemma` | goal extraction from a real `sorry`/`have` INSIDE a proof | MED | MED-HIGH | proposed |
-| `extract_decls` (type_hash, heartbeats, tactic_counts, deps) | structured proof metadata + content-addressed cert index | MED | MED | proposed |
-| `merge` (+ `merge_duplicates`) | cert-bundle assembly with dedup of shared atoms | MED | LOW-MED | proposed |
-| `normalize` | canonical form for emitted Lean → robust drift-diffs | LOW-MED | LOW | proposed |
-| `simplify_theorems` | proof minimization (shorter/cheaper emitted proofs) | LOW | MED | note |
-| `theorem2sorry` | re-attack blanking (blank → regenerate → diff, regression) | LOW-MED | LOW | note |
+| `disprove` (prove the negation) | **kernel-gated negative control** | HIGH (trust) | MED | **done** (`negative_control.py`) |
+| `extract_proof_states` + `have2lemma` | goal extraction from a real `sorry`/`have` INSIDE a proof | MED | MED-HIGH | **done** (`gap_fill.extract_sorry_goals` + `extract_gaps(include_haves=)`) |
+| `extract_decls` (type_hash, heartbeats, tactic_counts, deps) | structured proof metadata + content-addressed cert index | MED | MED | **done** (`cert_meta.py`) |
+| `merge` (+ `merge_duplicates`) | cert-bundle assembly with dedup of shared atoms | MED | LOW-MED | **done** (`bundle.py`) |
+| `normalize` | canonical form for emitted Lean → robust drift-diffs | LOW-MED | LOW | **done** (`normalize.py`) |
+| `theorem2sorry` | re-attack blanking (blank → regenerate → diff, regression) | LOW-MED | LOW | **done** (`normalize.theorem2sorry`) |
+| `simplify_theorems` | proof minimization (shorter/cheaper emitted proofs) | LOW | MED | note (deferred — needs proof search) |
 | `rename` | mechanical rename utility | LOW | LOW | skip |
+
+**Built 2026-09-03** (all with tests, exported from `__init__`): the six proposed primitives above are now in the infra layer. `negative_control.py` was the TOP recommendation — it kernel-gates the trust boundary (a fabricated false certificate's emitted proof is confirmed to FAIL compilation). The rest round out the AXLE-style utility layer. Only `simplify_theorems` (genuine proof search) is deferred.
 
 ## The high-value ones, in detail
 
