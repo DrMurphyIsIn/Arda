@@ -2,9 +2,10 @@
 
 **Status: the ceiling reduces to the single obligation `IsSubaction ρwit`; the deg-1/2/3 cell families are COMPLETE,
 the full d=4 atom table is proven, all three deg≥5 uniform tail families + the 27·23 tie are proven, AND all three
-reduce-to-uniform MESSAGE halves (deg-2/3/4) are proven. Remaining: the d=4 cell wiring (mechanical), the top-level
-`IsSubaction` assembly + Branch list-lift (mechanical), and the counts→single-degree EXCHANGE for mixed-degree tail
-configs (the one genuine research nub). `conjecture1_proved = False`.**
+reduce-to-uniform MESSAGE halves (deg-2/3/4) are proven, AND the counts→single-degree EXCHANGE is DISSOLVED
+(the tangent-decouple reduces it to a per-child min + a 3-way d-split — numerically verified, no discrete
+convexity; §3.3). Remaining is now ALL mechanical/patterned: the d=4 cell wiring, the top-level `IsSubaction`
+assembly + Branch list-lift, and the Lean write-up of the (proven-on-paper) tail decouple. `conjecture1_proved = False`.**
 
 Branch `bg/scl-on-main` (GitHub `DrMurphyIsIn/Arda`). Everything below is `no sorry`, kernel-verified, axiom-clean
 `[propext, Classical.choice, Quot.sound]` (CI-enforced by `AxiomGuard.lean`, **31 guarded theorems**), full
@@ -82,18 +83,29 @@ Its structure is fully characterized; the message halves are now ALL proven:
    `tail_deg2_sum` (deg-2, slope-monotone), `tail_deg3_sum` (`log(1+S/d)−F* ≤ S/32`, ∀d≥5, `0≤S≤(d−1)/3`),
    `tail_deg4_sum` (`log(1+S/d)−F* ≤ S/384`, ∀d≥5, `0≤S≤(d−1)/4`). So the message half of reduce-to-uniform is CLOSED
    for every degree.
-3. **Counts → single-degree exchange** across degrees (worst counts all in one degree) — the discrete convexity crux.
-   **OPEN — the one genuine research nub.** With the EXACT coupled `log(1+S/d)` the children do not separate, so the
-   per-child/independence shortcut does NOT apply (see the subadditivity no-go in §5). Likely a discrete
-   convexity/majorization argument.
+3. **Counts → single-degree exchange** — **DISSOLVED (2026-09-03, numerically verified; Lean pending).** NOT
+   discrete convexity. The **TANGENT-decouple** does it (subadditivity was too lossy — §5 — but the tangent at a
+   chosen `S0` is tight): from `log_tangent`, for ANY `S0`,
+   `G(config) := Σρwit(cᵢ) − (log(1+S/d)−F*) ≥ const(S0) + Σᵢ φ_{S0}(cᵢ) ≥ const(S0) + (d−1)·min_c φ_{S0}(c) =: B(S0)`,
+   where `φ_{S0}(c) = ρwit(c) − bY(c)/(d+S0)` and `const(S0) = F* − log(1+S0/d) + S0/(d+S0)`. `min_c φ_{S0}` is a
+   FINITE per-degree-class check (each `ρwit(c) − σ·bY(c)` is affine in the message ⇒ min at an endpoint; deg≥5
+   contributes `−σ/5` at deg-5, bY=1/5). Choosing `S0 ∈ {(d−1)/3, (d−1)/4, (d−1)/5}` gives `B(S0) ≥ 0` for every
+   `d≥5` (verified d=5..1000; tight `B=0` at the d=6 tie via `S0=(d−1)/3`), and at the self-consistent `S0` the
+   algebra collapses `B` EXACTLY to the proven uniform-family bound (`tail_all_deg2`/`tail_all_deg4`) or the easy
+   `F* − log((6d−1)/(5d)) ≥ 0` (deg-5 regime). **400k random mixed configs: worst G = +0.025, no violations.**
+   Lean recipe: (i) per-child min lemma `∀ c, φ_{S0}(c) ≥ m_d` (per-degree-class, like the existing per-child
+   bounds); (ii) the `log_tangent` decouple + list-lift for `Σφ`; (iii) a 3-way `d`-split picking `S0`, each branch
+   closing via the matching `tail_all_*` family. Reduces the "nub" to patterned mechanical work.
 4. **Branch-level list lift** — expressing `Σρ`/`ΣbY` over arbitrary child lists (mechanical list induction). OPEN.
 5. **d=4 cell wiring** — the 35 `d4_*` enclosure atoms + `tangent_atom` recipe are done; the 35 node-level
    `subaction_deg4_*` cells (wire atom + `log_tangent` + `linarith` over the message box, per the d=3 templates in
    `BGSCLSubactionDeg3Mid.lean`) are unwritten. MECHANICAL. Completes node degree 4.
 
 **Recommended next steps (in order of tractability):** (a) the d=4 cell wiring (mechanical, completes node deg 4);
-(b) the Branch list-lift + top-level `IsSubaction` degree-dispatch for the finite (deg ≤4) part; (c) the counts
-exchange — the genuine research nub. Steps (a),(b) are patterned repetition; (c) is the real remaining mathematics.
+(b) the Branch list-lift (shared by (a) and the tail); (c) Lean write-up of the tail decouple per §3.3; (d) the
+top-level `IsSubaction` degree-dispatch assembling everything. **All four are now patterned/mechanical — with the
+counts exchange dissolved, no open MATHEMATICS remains, only the Lean assembly.** (Verify each green vs the kernel;
+`conjecture1_proved` stays False until the whole `IsSubaction ρwit` builds sorry-free.)
 
 ## 4. Tools & techniques (reusable)
 
