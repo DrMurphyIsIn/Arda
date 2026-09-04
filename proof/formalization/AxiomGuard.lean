@@ -59,6 +59,10 @@ import R3Cert.BGSCLSubactionTailDecouple
 -- First CLOSED mixed-config tail cell: the d=6 tie (arbitrary children), via tail_decouple.
 #print axioms R3Cert.BGSCL.phi_lb_d6
 #print axioms R3Cert.BGSCL.subaction_tail_d6
+-- The INFINITE tail closed: deg-5 regime, ALL nodes of degree >= 65, arbitrary children.
+#print axioms R3Cert.BGSCL.cherry_anchor_ge
+#print axioms R3Cert.BGSCL.phi_lb_general
+#print axioms R3Cert.BGSCL.subaction_tail_deg5
 
 -- Discharged cells of the `IsSubaction ρwit` per-node family.
 #print axioms R3Cert.BGSCL.subaction_nil
