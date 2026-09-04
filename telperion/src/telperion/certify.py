@@ -157,6 +157,34 @@ _SPECIAL_KINDS = (
     # separable-convex (min/homogeneous) extremum.
     "symmetric_quad", "polytope_max", "second_order", "integrality_gate",
     "domination_ratio", "achievability", "separable_convex",
+    # Trading-derived certificate shapes (2026-09-02): objective-degeneracy
+    # (leverage↔position_size Sharpe homogeneity) + Kelly concave-stationary max.
+    "scale_invariance", "concave_stationary_max",
+    # Open-front build-out (2026-09-02): symbolic-in-n d=2 moment-matrix PSD
+    # (three-piece completing-the-square). (separable-convex MAX/vertex ships as a
+    # mode of the existing "separable_convex" kind, no new entry.)
+    "symmetric_quad_d2",
+    # BG g-step fixed-config tight-cap enclosure (2026-09-02): certifies the
+    # in-repo closure (baseOf l)^11*prodBcap l/(W(5/3)^11) <= 1 for a named config,
+    # concrete or single symbolic child. Models the proven single_child_le_one /
+    # two_child_le_one; NOT the general-arity g-lemma open core.
+    "tight_cap_enclosure",
+    # BG remaining-core shapes (2026-09-02): affine-in-parameter interval->endpoints
+    # (collapses SCLStep's price interval I), node tangent+ceiling assembly, Kelmans
+    # de-branch bilinear-corner exchange, and per-size dominance sweep.
+    "affine_param_endpoint",
+    "recursion_closure",
+    "cavity_exchange",
+    "per_size_dominance_sweep",
+    # Ported from AxiomMath/ZetaZeros (arXiv:2609.02882, 2026-09-02): curvature-sign
+    # -> boundary extremum (generalizes affine_param_endpoint), and rational enclosure
+    # of a transcendental (log for BG cells; Montgomery-Taylor C0 trig face deferred).
+    "curvature_boundary",
+    "transcendental_enclosure",
+    # F*-folding companion to transcendental_enclosure (2026-09-03): Sum c_i log(r_i) <= q
+    # by folding to log(prod r_i^c_i); tight-at-tie (no separate F* lower bound). Dogfooded
+    # against BG BGSCLSubaction.lean (regenerates log74_le_4fstar / log54_sub_fstar_le).
+    "log_combination",
 )
 
 # kind -> "module:certify_point_fn" for the generic (family.special) emitters.
@@ -207,6 +235,17 @@ _SPECIAL_DISPATCH = {
     "domination_ratio": ("emit_domination_ratio", "certify_domination_ratio_point"),
     "achievability": ("emit_achievability", "certify_achievability_point"),
     "separable_convex": ("emit_separable_convex", "certify_separable_convex_point"),
+    "scale_invariance": ("emit_scale_invariance", "certify_scale_invariance_point"),
+    "concave_stationary_max": ("emit_concave_stationary_max", "certify_concave_stationary_max_point"),
+    "symmetric_quad_d2": ("emit_symmetric_quad_d2", "certify_symmetric_quad_d2_point"),
+    "tight_cap_enclosure": ("emit_tight_cap_enclosure", "certify_tight_cap_enclosure_point"),
+    "affine_param_endpoint": ("emit_affine_param_endpoint", "certify_affine_param_endpoint_point"),
+    "recursion_closure": ("emit_recursion_closure", "certify_recursion_closure_point"),
+    "cavity_exchange": ("emit_cavity_exchange", "certify_cavity_exchange_point"),
+    "per_size_dominance_sweep": ("emit_per_size_dominance_sweep", "certify_per_size_dominance_sweep_point"),
+    "curvature_boundary": ("emit_curvature_boundary", "certify_curvature_boundary_point"),
+    "transcendental_enclosure": ("emit_transcendental_enclosure", "certify_transcendental_enclosure_point"),
+    "log_combination": ("emit_log_combination", "certify_log_combination_point"),
 }
 
 

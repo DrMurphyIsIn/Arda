@@ -1,0 +1,9 @@
+{
+  "family": "ScaleInvariance",
+  "input_hash": "fe092633f4da7c2d911a9b466d7bf6c8c067d5daa410ba16307d834aca3df89b",
+  "tool_version": "0.1.6",
+  "files": [
+    "ScaleInvariance.lean"
+  ],
+  "n_theorems": 2
+}

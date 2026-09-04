@@ -121,6 +121,47 @@ from .emit_achievability import (  # noqa: F401
 from .emit_separable_convex import (  # noqa: F401
     SeparableConvexExtremumEmitter, separable_convex_certificate, separable_convex_family,
 )
+from .emit_scale_invariance import (  # noqa: F401
+    ScaleInvarianceEmitter, scale_invariance_certificate, scale_invariance_family,
+)
+from .emit_concave_stationary_max import (  # noqa: F401
+    ConcaveStationaryMaxEmitter, concave_stationary_max_certificate, concave_stationary_max_family,
+)
+from .emit_symmetric_quad_d2 import (  # noqa: F401
+    SymmetricQuadD2Emitter, symmetric_quad_d2_certificate, symmetric_quad_d2_family,
+)
+from .emit_tight_cap_enclosure import (  # noqa: F401
+    TightCapEnclosureEmitter, tight_cap_enclosure_certificate,
+    tight_cap_enclosure_family, certify_tight_cap_enclosure_point,
+)
+from .emit_affine_param_endpoint import (  # noqa: F401
+    AffineParamEndpointEmitter, affine_param_endpoint_certificate,
+    affine_param_endpoint_family, certify_affine_param_endpoint_point,
+)
+from .emit_recursion_closure import (  # noqa: F401
+    RecursionClosureEmitter, recursion_closure_certificate,
+    recursion_closure_family, certify_recursion_closure_point,
+)
+from .emit_cavity_exchange import (  # noqa: F401
+    CavityExchangeEmitter, cavity_exchange_certificate,
+    cavity_exchange_family, certify_cavity_exchange_point,
+)
+from .emit_per_size_dominance_sweep import (  # noqa: F401
+    PerSizeDominanceSweepEmitter, per_size_dominance_sweep_certificate,
+    per_size_dominance_sweep_family, certify_per_size_dominance_sweep_point,
+)
+from .emit_curvature_boundary import (  # noqa: F401
+    CurvatureBoundaryEmitter, curvature_boundary_certificate,
+    curvature_boundary_family, certify_curvature_boundary_point,
+)
+from .emit_transcendental_enclosure import (  # noqa: F401
+    TranscendentalEnclosureEmitter, transcendental_enclosure_certificate,
+    transcendental_enclosure_family, certify_transcendental_enclosure_point,
+)
+from .emit_log_combination import (  # noqa: F401
+    LogCombinationEmitter, log_combination_certificate,
+    log_combination_family, certify_log_combination_point,
+)
 from .emit_unimodal import (  # noqa: F401
     UNIMODAL_PRELUDE, UnimodalMaxEmitter, unimodal_max_family,
 )
@@ -275,6 +316,22 @@ from .tie_regime import (  # noqa: F401
     mixed_lambda, slack_g, slack_hub_bound, slack_linobj, small_degree_threshold, uniform_hub_ell,
     y_floor,
 )
+# AXLE-inspired infrastructure (2026-09-03): structured Lean verification against a
+# persistent pre-built environment, and a gap-driven emitter loop (sorry -> extract
+# goal -> route-match -> fill).  See docs/VERIFY_AND_GAPFILL.md.
+from .verify import VerifyResult, verify_lean  # noqa: F401
+from .repair import repair_lean, verify_with_repair  # noqa: F401
+from .gap_fill import (  # noqa: F401
+    Gap, EnclosureSpec, FillResult, extract_gaps, extract_sorry_goals,
+    match_log_enclosure, pick_route, fill_gap, register_matcher,
+)
+from .bundle import parse_theorems, merge_bundle, bundle_stats  # noqa: F401
+from .normalize import normalize_lean, canonical_statement, theorem2sorry  # noqa: F401
+from .cert_meta import CertIndex, CertMeta, extract_cert_meta, measure_heartbeats  # noqa: F401
+from .negative_control import (  # noqa: F401
+    NegativeControlResult, assert_kernel_rejects, log_combination_negative_control,
+)
+
 # The Brualdi-Goldwasser research lab lives under telperion.bg (opt-in).  The bg-named modules
 # `bg_bulk_discharge` and `bg_upper_bound` (composed reduction skeleton) are opt-in too -- import them
 # directly (`from telperion.bg_upper_bound import UpperBoundReduction`), not via `import telperion`, so the
