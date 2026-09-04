@@ -1,13 +1,34 @@
 # BG additive-SUBACTION ceiling — consolidated handoff (2026-09-04)
 
-**Status: the ceiling reduces to the single obligation `IsSubaction ρwit`; the deg-1/2/3 cell families are COMPLETE,
-the full d=4 atom table is proven, all three deg≥5 uniform tail families + the 27·23 tie are proven, all three
-reduce-to-uniform MESSAGE halves (deg-2/3/4) are proven, the counts→single-degree EXCHANGE is DISSOLVED (the
-tangent-decouple, §3.3), the decouple backbone `tail_decouple` is KERNEL LEAN, AND the mixed-config tail is now
-CLOSED for the overwhelming majority of node degrees: `d=6` (tie), `d∈[10,61]` (deg-4 regime), and `d≥65`
-(the INFINITE deg-5 tail) — all for ARBITRARY children. Remaining is finite/patterned: 7 straggler tail
-degrees (`d∈{5,7,8,9}` cherry + `d∈{62,63,64}` boundary), the `rcases`-on-length tail wrapper, the d=4 cell
-wiring, and the top-level `IsSubaction` degree-dispatch. No open MATHEMATICS remains. `conjecture1_proved = False`.**
+**STATUS: CLOSED (2026-09-04). The classical-branch ceiling `∀ b, bell b ≤ 0` is now fully proven,
+kernel-verified, and axiom-clean `[propext, Classical.choice, Quot.sound]`.** `IsSubaction ρwit` is assembled
+end-to-end (`isSubaction_ρwit`) and the capstone `bg_ceiling : ∀ b, bell b ≤ 0 := ceiling_of_witness
+isSubaction_ρwit` is guarded by `AxiomGuard.lean` (51 theorems). The formerly-remaining patterned/mechanical
+assembly is DONE: the 35 deg-4 node cells (`R3Cert/BGSCLSubactionD4Cells.lean`, wiring the `d4_*` atoms), the 7
+tail stragglers `subaction_tail_d{5,7,8,9,62,63,64}` + the gap-free `tail_wrapper`
+(`R3Cert/BGSCLSubactionTailWrap.lean`, incl. the tight upper anchor `cherry_anchor_le_tight ≤ 133/17061`), and the
+permutation bridge `subaction_perm` + top-level degree dispatch `subaction_deg4`/`subaction_deg4_canon`
+(`R3Cert/BGSCLSubactionDispatch.lean`). `lake build R3Cert` green (8867 jobs); CI `proof-lean` + `proof-comparator`
+(independent judge) both green on `bg/scl-on-main` (PR #210). Delivered via a 3-worktree parallel agent team + an
+adversarial verification pass.
+
+**SCOPE (honest — do NOT overstate): this closes ONE branch — the classical-branch ceiling line `bell b ≤ 0`,
+consumed as the `hceil` hypothesis of the SCL/G-step bridge. It is NOT conjecture1.** conjecture1
+(`R47TopCapstone.conjecture1_of_layers`, the Laplacian-permanent-ratio maximizer) still reduces to the two open
+layers Hnorm/Hdom and is not yet wired to this branch. **`conjecture1_proved = False` (unchanged).** The history
+below is retained for provenance.
+
+---
+
+## 0. Original reduction status (retained for provenance)
+
+The ceiling reduced to the single obligation `IsSubaction ρwit`; the deg-1/2/3 cell families were COMPLETE,
+the full d=4 atom table proven, all three deg≥5 uniform tail families + the 27·23 tie proven, all three
+reduce-to-uniform MESSAGE halves (deg-2/3/4) proven, the counts→single-degree EXCHANGE DISSOLVED (the
+tangent-decouple, §3.3), the decouple backbone `tail_decouple` KERNEL LEAN, and the mixed-config tail
+CLOSED for `d=6` (tie), `d∈[10,61]` (deg-4 regime), and `d≥65` (the INFINITE deg-5 tail) — all for ARBITRARY
+children. The finite/patterned remainder (7 straggler tail degrees, the tail wrapper, the d=4 cell wiring, the
+top-level dispatch) has since been completed as recorded in the status block above.
 
 Branch `bg/scl-on-main` (GitHub `DrMurphyIsIn/Arda`). Everything below is `no sorry`, kernel-verified, axiom-clean
 `[propext, Classical.choice, Quot.sound]` (CI-enforced by `AxiomGuard.lean`, **40 guarded theorems**), full
