@@ -191,3 +191,8 @@ if __name__ == "__main__":
     for k, v in results.items():
         print(f"  {k}: {v}")
     print("\nconjecture1_proved = False.")
+    # Exit non-zero if any capability did not hold — so the CI kernel tier fails
+    # loudly (forged proof NOT rejected, or a true control NOT clean).
+    import sys
+    ok = all(v is True for v in results.values())
+    sys.exit(0 if ok else 1)

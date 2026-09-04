@@ -2216,3 +2216,39 @@ jobs:
       - name: Build the emitted Lean (leaf-exchange pure-rational norm_num atoms)
         working-directory: telperion/examples/bg_leaf_exchange/lean
         run: lake build
+
+  # RH kernel tier (the AXLE-suite negative-control closing the loop): elaborate the
+  # forged FALSE tangent bound and the TRUE controls against the built Mathlib env and
+  # assert the KERNEL rejects the forgery while the true atoms compile clean. This is
+  # the tier gated OFF locally (SoC hazard); CI is where it runs.
+  rh-axle-kernel-tier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache (zero_free_bridge env)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Run the RH AXLE driver kernel tier (forge rejected + true controls clean)
+        working-directory: telperion
+        env:
+          RH_AXLE_RUN_LEAN: "1"
+          PYTHONPATH: src
+        run: python scratch/rh_axle_apply.py
