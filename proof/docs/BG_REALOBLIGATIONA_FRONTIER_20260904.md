@@ -120,6 +120,19 @@ The local moves at a deepest defect split into exactly two types:
   argmax-Aobj search covers 100%, per `a5`). This 8% Type-W residual is the remaining open unit: pin a
   deterministic local target (or prove the local existence directly) and derive its `Aobj` closed form.
 
+### Type-W target hunt — no fixed move-set closes it (`a8_typeW_target.py`, n ≤ 12, 1532 Type-W trees)
+
+Tested structural (search-free, closed-form-able) local targets for the whole-hub move:
+`W_deep_leaf` (onto the deepest leaf in `subtree(u)`) **79%** — best single rule; `W_sib_leaf` (onto a
+sibling hub's leaf-arm) 43%; `W_sib_direct` (onto a sibling hub directly — concentrating) 14%; **argmax-Aobj
+100%**. The **union of all three structural rules is only 86%** (1321/1532; 211 misses — asymmetric nested
+hubs). **Conclusion: Type-W admits no small finite disjunction of fixed structural moves; the witness
+selection is genuinely ADAPTIVE (argmax).** So the Type-W 8% must be discharged as a true **local existence
+lemma** — `∀` Type-W-defective `t`, `∃` a `subtree(u)`-confined strDefect-down + `Aobj`-non-decreasing move —
+bounded by locality but not reducible to a named move. This is the genuine remaining analytic core of
+`RealObligationA` (the other 92% is F2-certified and banked). It is a bounded (local) existence statement, not
+the original all-trees lemma — but it is not a closed-form certificate.
+
 **Net:** the sweep discharged the Case-A (92%) `Aobj` clause as a kernel-verified atom and isolated the open
 residual to the **Type-W 8% target-selection** — a bounded local problem, no longer the full lemma.
 `conjecture1_proved = False`.
