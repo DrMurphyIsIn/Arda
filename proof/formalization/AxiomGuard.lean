@@ -45,6 +45,9 @@ import R3Cert.BGSCLSubactionD4Cells
 import R3Cert.BGSCLSubactionTailWrap
 import R3Cert.BGSCLSubactionDispatch
 import R3Cert.BGSCLSCLUncond
+import R3Cert.BGSCLAsymptotic
+import R3Cert.BGSCLSubactionStrict
+import R3Cert.BGSCLHnormPort
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -128,3 +131,11 @@ import R3Cert.BGSCLSCLUncond
 #print axioms R3Cert.BGSCL.bg_ceiling
 -- SCL now UNCONDITIONAL: bg_ceiling fed into scl_of_ceiling discharges HYPOTHESIS(b).
 #print axioms R3Cert.BGSCL.scl_holds_uncond
+-- Asymptotic BG upper bound F(T) ≤ F* (direct corollary of bg_ceiling).
+#print axioms R3Cert.BGSCL.bg_asymptotic_bound
+#print axioms R3Cert.BGSCL.btotal_le_rpow
+-- Strict master inequality: bell b < 0 off the tie set (unconditional for deg≤4).
+#print axioms R3Cert.BGSCL.master_ineq_strict
+#print axioms R3Cert.BGSCL.bell_eq_zero_imp_tie
+-- Hnorm scoped porting: the straightening context-lift layer (Obligation-A-gated).
+#print axioms R3Cert.Step3.straightStep_sized_lift
