@@ -66,6 +66,23 @@ real move is degree-EQUALIZING.
 - **Case B (symmetric multi-hub, 7%):** a whole-hub degree-equalizing relocation; the `Aobj`-monotonicity
   here is the genuine remaining analytic content (no closed-form certificate yet — the next target).
 
+### Case B, stress-tested (`a5_caseB_candidates.py`, `a5b_kernel_gate_refutation.py`, exact n ≤ 11)
+
+Tested deterministic Case-B move-rules against the 177 miss trees (n≤11). Result:
+- **`R_greedy_aobj` (among strDefect-down moves, pick argmax `Aobj`) is UNIVERSAL — 177/177.** So a
+  deterministic Case-B witness EXISTS, but it is a **search** (argmax), not a clean structural move.
+- **Every simple structural rule is REFUTED**: `R_maxgap` 164/177, `R_hub_to_leaf` 171/177, `R_min_child`
+  151/177 — each has miss trees where it DROPS `Aobj`. Concrete refutation for `R_maxgap`: at
+  `((),(((((),),),),((((),),),)))` it moves `Aobj 901/96 → 1189/128` (down). **This refutation is
+  kernel-gated** via the AXLE `negative_control` primitive (`a5b`): `assert_kernel_rejects` confirms the
+  Lean kernel rejects the false monotonicity `901/96 ≤ 1189/128`, and the real drop `1189/128 < 901/96`
+  verifies clean.
+
+**Consequence for the Lean proof:** Case B must be discharged as an **EXISTENCE** statement — `∀ t` (Case-B
+defective) `∃ move`, strDefect-down ∧ `Aobj`-non-decreasing — backed by the well-posedness lemma (#1), NOT
+by proving a clean structural move (those are dead, now kernel-gated). The remaining analytic content is the
+existence/well-posedness lemma itself. Do not spend effort proving `R_maxgap`/`R_hub_to_leaf` monotone.
+
 Existence (#1) guarantees a witness always exists; a Lean proof can define `f` by a canonical search and
 prove the two cases cover all defective trees. **Recommended next unit:** formalize Case A — emit the F2
 rational-positivity atom via the (now-merged) Telperion `emit_transcendental_enclosure` / rational-cone
