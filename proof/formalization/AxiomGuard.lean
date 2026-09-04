@@ -44,6 +44,7 @@ import R3Cert.BGSCLSubactionTailDecouple
 import R3Cert.BGSCLSubactionD4Cells
 import R3Cert.BGSCLSubactionTailWrap
 import R3Cert.BGSCLSubactionDispatch
+import R3Cert.BGSCLSCLUncond
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -125,3 +126,5 @@ import R3Cert.BGSCLSubactionDispatch
 -- The single obligation and the capstone: the ceiling now holds unconditionally.
 #print axioms R3Cert.BGSCL.isSubaction_ρwit
 #print axioms R3Cert.BGSCL.bg_ceiling
+-- SCL now UNCONDITIONAL: bg_ceiling fed into scl_of_ceiling discharges HYPOTHESIS(b).
+#print axioms R3Cert.BGSCL.scl_holds_uncond
