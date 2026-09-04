@@ -1,17 +1,19 @@
-# BG additive-SUBACTION ceiling — consolidated handoff (2026-09-03)
+# BG additive-SUBACTION ceiling — consolidated handoff (2026-09-04)
 
 **Status: the ceiling reduces to the single obligation `IsSubaction ρwit`; the deg-1/2/3 cell families are COMPLETE,
-the full d=4 atom table is proven, all three deg≥5 uniform tail families + the 27·23 tie are proven, AND all three
-reduce-to-uniform MESSAGE halves (deg-2/3/4) are proven, AND the counts→single-degree EXCHANGE is DISSOLVED
-(the tangent-decouple reduces it to a per-child min + a 3-way d-split — numerically verified, no discrete
-convexity; §3.3). Remaining is now ALL mechanical/patterned: the d=4 cell wiring, the top-level `IsSubaction`
-assembly + Branch list-lift, and the Lean write-up of the (proven-on-paper) tail decouple. `conjecture1_proved = False`.**
+the full d=4 atom table is proven, all three deg≥5 uniform tail families + the 27·23 tie are proven, all three
+reduce-to-uniform MESSAGE halves (deg-2/3/4) are proven, the counts→single-degree EXCHANGE is DISSOLVED (the
+tangent-decouple, §3.3), the decouple backbone `tail_decouple` is KERNEL LEAN, AND the mixed-config tail is now
+CLOSED for the overwhelming majority of node degrees: `d=6` (tie), `d∈[10,61]` (deg-4 regime), and `d≥65`
+(the INFINITE deg-5 tail) — all for ARBITRARY children. Remaining is finite/patterned: 7 straggler tail
+degrees (`d∈{5,7,8,9}` cherry + `d∈{62,63,64}` boundary), the `rcases`-on-length tail wrapper, the d=4 cell
+wiring, and the top-level `IsSubaction` degree-dispatch. No open MATHEMATICS remains. `conjecture1_proved = False`.**
 
 Branch `bg/scl-on-main` (GitHub `DrMurphyIsIn/Arda`). Everything below is `no sorry`, kernel-verified, axiom-clean
-`[propext, Classical.choice, Quot.sound]` (CI-enforced by `AxiomGuard.lean`, **31 guarded theorems**), full
-`lake build` green (BG-subaction build re-verified INDEPENDENTLY 2026-09-03: 8663 jobs, 8 modules, no sorry,
-AxiomGuard clean). Supersedes the running notes in `BG_CEILING_SUBACTION_HANDOFF.md`,
-`BG_SUBACTION_TELPERION_NEXTCELLS.md`, `BG_SUBACTION_D4_TAIL_TIE_SPEC.md` (kept for detail/derivations).
+`[propext, Classical.choice, Quot.sound]` (CI-enforced by `AxiomGuard.lean`, **40 guarded theorems**), full
+`lake build` green (BG-subaction build re-verified 2026-09-04: 8659 jobs, 9 modules, no sorry, AxiomGuard clean).
+Supersedes the running notes in `BG_CEILING_SUBACTION_HANDOFF.md`, `BG_SUBACTION_TELPERION_NEXTCELLS.md`,
+`BG_SUBACTION_D4_TAIL_TIE_SPEC.md` (kept for detail/derivations).
 
 ---
 
@@ -72,6 +74,10 @@ uniform-type. Proven families (`BGSCLSubactionTail.lean`):
 - The 27·23 tie: `tie_identity_d6` (`(23/18)·(3/2)⁵ = 621/64`) + `subaction_tail_tie_d6` (deg-6, five cherry children,
   exact equality).
 
+**Mixed-config tail cells (arbitrary children) — CLOSED for d=6, d∈[10,61], d≥65** (`BGSCLSubactionTailDecouple.lean`):
+`tail_decouple` (backbone) + `subaction_tail_d6` + `subaction_tail_deg4` + `subaction_tail_deg5`, with per-child
+mins `phi_lb_d6`/`phi_lb_deg4`/`phi_lb_general` and the tight anchor `cherry_anchor_ge_tight`. See §3.3(iii).
+
 ## 3. Remaining pieces (updated 2026-09-03 by review-owner)
 
 The tail families cover uniform-degree configs. To cover ARBITRARY child multisets, the reduce-to-uniform argument.
@@ -96,20 +102,35 @@ Its structure is fully characterized; the message halves are now ALL proven:
    Lean recipe: (i) per-child min lemma `∀ c, φ_{S0}(c) ≥ m_d` (per-degree-class, like the existing per-child
    bounds); (ii) the `log_tangent` decouple + list-lift for `Σφ`; (iii) a 3-way `d`-split picking `S0`, each branch
    closing via the matching `tail_all_*` family. Reduces the "nub" to patterned mechanical work.
-   **DONE (ii): the decouple backbone is now KERNEL LEAN** (`BGSCLSubactionTailDecouple.lean`, AxiomGuard-guarded):
+   **DONE (ii): the decouple backbone is KERNEL LEAN** (`BGSCLSubactionTailDecouple.lean`, AxiomGuard-guarded):
    `sum_rhowit_ge` (list-lift), `ρwit_node_high` (`ρwit(node)=0` for deg≥5), and `tail_decouple` — which reduces
-   ANY tail cell to hypotheses `hpc` (the per-child bound (i)) + `hB` (`B(S0)≥0`). Remaining tail work = instantiate
-   `hpc`/`hB` per the `S0∈{(d−1)/3,(d−1)/4,(d−1)/5}` d-split (the per-degree-class min + the proven `tail_all_*`).
+   ANY tail cell to hypotheses `hpc` (the per-child bound (i)) + `hB` (`B(S0)≥0`).
+   **DONE (iii, three of the d-split branches — the mixed-config tail CLOSED for arbitrary children):**
+   - `subaction_tail_d6` (`|cs|=5`, the **tie**): `S0=(d−1)/3`, `phi_lb_d6`, `hB` via `tie_identity_d6`.
+   - `subaction_tail_deg4` (`d∈[10,61]`, **52 values**): `S0=(d−1)/4`, `phi_lb_deg4` (σ∈[5/384,4/49], deg-3 σ<>1/32
+     split), `hB=tail_all_deg4` (B-terms collapse to `|cs|/1536`, arg `(5d−1)/(4d)`). Its d=10 boundary needs the
+     TIGHT anchor `cherry_anchor_ge_tight : 3/400 ≤ 2F*−log(3/2)`, proved via `2F*−log(3/2)=(1/11)log(529/486)`
+     (`529/486=(621/64)²(2/3)¹¹`, the 27·23 structure) + a degree-3 `Real.exp_bound` (`exp(33/400)≤529/486`).
+   - `subaction_tail_deg5` (`d≥65`, the **INFINITE** tail): `S0=|cs|/5`, `phi_lb_general` (any σ∈(0,5/384]),
+     `hB = F*−log((6d−1)/(5d)) ≥ 0` (from `(6/5)¹¹≤621/64`; B-terms cancel via `field_simp;ring`).
+   **Remaining tail (7 straggler degrees + wrapper):** `d∈{5,7,8,9}` (cherry regime, `S0=(d−1)/3`,
+   `m=2F*−log(3/2)−σ/3`, `hB=tail_all_deg2`; the d=9 boundary needs a tight UPPER anchor `≤~0.00779`, the mirror of
+   `cherry_anchor_ge_tight`) + `d∈{62,63,64}` (boundary, `S0=(d−1)/4`, `m=−σ/5` via `phi_lb_general` since σ≤5/384
+   there, custom B). Then a `rcases`-on-`cs.length` wrapper unifying {d=6, cherry, deg-4, deg-5} into
+   `∀ cs, 4 ≤ cs.length → (tail SUB)`.
 4. **Branch-level list lift** — expressing `Σρ`/`ΣbY` over arbitrary child lists (mechanical list induction). OPEN.
 5. **d=4 cell wiring** — the 35 `d4_*` enclosure atoms + `tangent_atom` recipe are done; the 35 node-level
    `subaction_deg4_*` cells (wire atom + `log_tangent` + `linarith` over the message box, per the d=3 templates in
    `BGSCLSubactionDeg3Mid.lean`) are unwritten. MECHANICAL. Completes node degree 4.
 
-**Recommended next steps (in order of tractability):** (a) the d=4 cell wiring (mechanical, completes node deg 4);
-(b) the Branch list-lift (shared by (a) and the tail); (c) Lean write-up of the tail decouple per §3.3; (d) the
-top-level `IsSubaction` degree-dispatch assembling everything. **All four are now patterned/mechanical — with the
-counts exchange dissolved, no open MATHEMATICS remains, only the Lean assembly.** (Verify each green vs the kernel;
-`conjecture1_proved` stays False until the whole `IsSubaction ρwit` builds sorry-free.)
+**Recommended next steps (in order of tractability):** (a) the 7 tail stragglers — the cherry range `d∈[5,9]`
+(reuses the `subaction_tail_d6` pattern; needs one tight UPPER anchor atom, the mirror of `cherry_anchor_ge_tight`)
++ the 3 boundary values `d∈{62,63,64}` (reuse `phi_lb_general`, custom B); (b) the `rcases`-on-length tail wrapper
+→ `∀ cs, 4 ≤ cs.length → (tail SUB)`; (c) the d=4 cell wiring (35 `subaction_deg4_*`, mechanical, completes node
+deg 4); (d) the top-level `IsSubaction` degree-dispatch assembling everything. **All are patterned/mechanical —
+with the counts exchange dissolved and the two tail extremes closed, no open MATHEMATICS remains, only Lean
+assembly + a handful of tight boundary enclosures.** (Verify each green vs the kernel; `conjecture1_proved` stays
+False until the whole `IsSubaction ρwit` builds sorry-free.)
 
 ## 4. Tools & techniques (reusable)
 
@@ -145,7 +166,9 @@ counts exchange dissolved, no open MATHEMATICS remains, only the Lean assembly.*
 ## 6. Honest scope
 
 Proven: the reduction, the witness + nonnegativity, deg-1/2/3 cells complete, the full d=4 atom table, all three
-uniform tail families, the tie, and the deg-2 message half of reduce-to-uniform. Open: the d=4 cell wiring
-(mechanical), deg-3/deg-4 message halves (case-work), and the **counts→single-degree exchange** (the genuine research
-remainder) + Branch list lift. Do NOT claim the ceiling closed until `IsSubaction ρwit` builds sorry-free end-to-end.
-This ceiling line is distinct from the finite-n tree→hub Hnorm/Hdom work.
+uniform tail families, the tie, all three reduce-to-uniform message halves, the counts-exchange DISSOLUTION, the
+kernel-Lean `tail_decouple` backbone, and the mixed-config tail CLOSED for `d=6`, `d∈[10,61]`, `d≥65` (arbitrary
+children). Open: 7 tail straggler degrees (`d∈{5,7,8,9}` + `d∈{62,63,64}`, each a `tail_decouple` instantiation
+needing its boundary enclosure), the tail wrapper, the 35 d=4 cell wirings, and the top-level `IsSubaction`
+degree-dispatch. No open MATHEMATICS — but the ceiling is NOT closed. Do NOT claim it closed until `IsSubaction ρwit`
+builds sorry-free end-to-end. This ceiling line is distinct from the finite-n tree→hub Hnorm/Hdom work.
