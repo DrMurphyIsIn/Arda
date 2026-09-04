@@ -83,6 +83,29 @@ defective) `∃ move`, strDefect-down ∧ `Aobj`-non-decreasing — backed by th
 by proving a clean structural move (those are dead, now kernel-gated). The remaining analytic content is the
 existence/well-posedness lemma itself. Do not spend effort proving `R_maxgap`/`R_hub_to_leaf` monotone.
 
+### The well-posedness lemma is LOCAL — the key strategic advance (`a6_locality.py`, exact n ≤ 12)
+
+The existence lemma looked infinite (a claim over all trees). It is not — it is **LOCAL**:
+
+> **For every defective tree, a strDefect-down + `Aobj`-non-decreasing SPR move exists CONFINED to the
+> subtree of a DEEPEST defective node `u`** (`npCount(u) ≥ 2`, no deeper node branches). **100% (3943/3943
+> at n ≤ 11; confirmed n ≤ 12).**
+
+- Whole-child relocation (move a non-piece child of `u` out) covers **98%** (3866/3943); the residual 2% are
+  *nested* defects (vee-of-vees, triple-vee) where the local move is instead a **leaf-path-extension inside a
+  child of `u`** (turning that child into a piece, dropping `npCount(u)`). Both are moves *inside* `subtree(u)`.
+- Combined with the root-degree factorization `Aobj(node cs) = P(cs)·(1 + qSum(cs)/k)` (a3_derisk.py) — where
+  `P, qSum` depend only on the children's internal structure and the rest of the tree enters as FIXED scalars
+  — the **sign of ΔAobj for a `subtree(u)`-confined move is determined by a BOUNDED local configuration** (u's
+  child-degree profile) plus global scalars. Exactly the `P·(local rational)` shape of the F2 certificate.
+
+**Therefore the well-posedness lemma reduces to a FINITE local case analysis** on `u`'s child-degree profile —
+each case a bounded rational-`Aobj` inequality, i.e. **emittable / kernel-certifiable** via the Telperion
+enclosure + `negative_control` route. This converts the one open analytic residual of `RealObligationA` from an
+apparently-infinite existence statement into a finite, mechanizable case sweep. That sweep — enumerate the local
+profiles at a deepest defect, emit each `Aobj`-monotone local-move certificate, kernel-gate — is the concrete
+next unit. `conjecture1_proved = False`.
+
 Existence (#1) guarantees a witness always exists; a Lean proof can define `f` by a canonical search and
 prove the two cases cover all defective trees. **Recommended next unit:** formalize Case A — emit the F2
 rational-positivity atom via the (now-merged) Telperion `emit_transcendental_enclosure` / rational-cone
