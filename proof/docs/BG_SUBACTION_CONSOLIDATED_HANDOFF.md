@@ -96,6 +96,10 @@ Its structure is fully characterized; the message halves are now ALL proven:
    Lean recipe: (i) per-child min lemma `∀ c, φ_{S0}(c) ≥ m_d` (per-degree-class, like the existing per-child
    bounds); (ii) the `log_tangent` decouple + list-lift for `Σφ`; (iii) a 3-way `d`-split picking `S0`, each branch
    closing via the matching `tail_all_*` family. Reduces the "nub" to patterned mechanical work.
+   **DONE (ii): the decouple backbone is now KERNEL LEAN** (`BGSCLSubactionTailDecouple.lean`, AxiomGuard-guarded):
+   `sum_rhowit_ge` (list-lift), `ρwit_node_high` (`ρwit(node)=0` for deg≥5), and `tail_decouple` — which reduces
+   ANY tail cell to hypotheses `hpc` (the per-child bound (i)) + `hB` (`B(S0)≥0`). Remaining tail work = instantiate
+   `hpc`/`hB` per the `S0∈{(d−1)/3,(d−1)/4,(d−1)/5}` d-split (the per-degree-class min + the proven `tail_all_*`).
 4. **Branch-level list lift** — expressing `Σρ`/`ΣbY` over arbitrary child lists (mechanical list induction). OPEN.
 5. **d=4 cell wiring** — the 35 `d4_*` enclosure atoms + `tangent_atom` recipe are done; the 35 node-level
    `subaction_deg4_*` cells (wire atom + `log_tangent` + `linarith` over the message box, per the d=3 templates in
