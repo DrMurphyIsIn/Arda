@@ -137,6 +137,24 @@ the original all-trees lemma — but it is not a closed-form certificate.
 residual to the **Type-W 8% target-selection** — a bounded local problem, no longer the full lemma.
 `conjecture1_proved = False`.
 
+### Case-A structural identity — the F2 atom is now LOAD-BEARING (`R3Cert/BGSCLRealOblACaseAIdentity.lean`)
+
+The banked sign certificate is now backed by the actual cavity model. Using the root-degree factorization
+`Aobj(node cs) = (∏ Ztot(dtSub K))·(1 + qSum(cs)/|cs|)` (`Ztot_node_deg`, already in the Lean corpus) and the
+concrete cavity values `Ztot(dtSub leaf)=1, qContrib(leaf)=1`, `Ztot(dtSub stem)=3/2, qContrib(stem)=1/3`:
+
+- **`f2_increment_identity`** — kernel-proves the EXACT increment
+  `Aobj(node (stem::rest)) − Aobj(node (leaf::leaf::rest)) = P·(n²+nQ+4Q)/(2(n+1)(n+2))`,
+  `P = ∏ Ztot(dtSub rest)`, `Q = qSum rest`, `n = |rest|` (the numerically-verified `a3_F2_closed` form).
+- **`f2_aobj_monotone`** — composes it with the sign atom to give `Aobj(before) ≤ Aobj(after)` in the cavity
+  model: the leaf-path-extension does not decrease `Aobj`. **This is the Case-A `Aobj` clause, now genuinely
+  proven** (not just a certificate awaiting a consumer).
+
+Both axiom-clean `[propext, Classical.choice, Quot.sound]`, AxiomGuard-guarded, `lake build` green (8738 jobs).
+The Case-A `Aobj`-monotonicity of `RealObligationA` is discharged in the cavity model for the rooted-at-`u`
+leaf-path-extension; what remains for full Case A is the (mechanical) strDefect-drop + the size clause, and the
+context-lift to a non-root acted node (both structural, no new analytic content). `conjecture1_proved = False`.
+
 Existence (#1) guarantees a witness always exists; a Lean proof can define `f` by a canonical search and
 prove the two cases cover all defective trees. **Recommended next unit:** formalize Case A — emit the F2
 rational-positivity atom via the (now-merged) Telperion `emit_transcendental_enclosure` / rational-cone
