@@ -106,6 +106,24 @@ apparently-infinite existence statement into a finite, mechanizable case sweep. 
 profiles at a deepest defect, emit each `Aobj`-monotone local-move certificate, kernel-gate — is the concrete
 next unit. `conjecture1_proved = False`.
 
+### The sweep, executed (`a7_taxonomy.py` + `R3Cert/BGSCLRealOblACaseA.lean`, n ≤ 12)
+
+The local moves at a deepest defect split into exactly two types:
+- **Type L (a LEAF move straightens): 17567/19099 = 92%.** A leaf-onto-leaf path-extension inside `subtree(u)`.
+  Its `Aobj` clause is the F2 closed form `ΔAobj = P·(n²+nQ+4Q)/(2(n+1)(n+2)) ≥ 0`. **EMITTED + kernel-verified**
+  as `R3Cert.BGSCL.f2_numerator_nonneg` + `f2_aobj_increment_nonneg` (`BGSCLRealOblACaseA.lean`, axiom-clean,
+  AxiomGuard-guarded). This discharges the Case-A `Aobj` clause (modulo the structural cavity-model proof that
+  the move's actual increment equals this closed form).
+- **Type W (needs a whole-hub move, moved size ≥ 2): 1532/19099 = 8%.** min-moved-size histogram
+  `{2:522, 3:219, 4:704, 5:43, 6:12, 7:32}`. The canonical "relocate onto the lowest-degree local vertex" rule
+  is `Aobj`-nondown for only **914/1532 (60%)** — so Type-W target selection is NOT a simple degree rule (the
+  argmax-Aobj search covers 100%, per `a5`). This 8% Type-W residual is the remaining open unit: pin a
+  deterministic local target (or prove the local existence directly) and derive its `Aobj` closed form.
+
+**Net:** the sweep discharged the Case-A (92%) `Aobj` clause as a kernel-verified atom and isolated the open
+residual to the **Type-W 8% target-selection** — a bounded local problem, no longer the full lemma.
+`conjecture1_proved = False`.
+
 Existence (#1) guarantees a witness always exists; a Lean proof can define `f` by a canonical search and
 prove the two cases cover all defective trees. **Recommended next unit:** formalize Case A — emit the F2
 rational-positivity atom via the (now-merged) Telperion `emit_transcendental_enclosure` / rational-cone

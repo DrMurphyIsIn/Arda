@@ -53,10 +53,15 @@ import R3Cert.BGSCLHdom
 import R3Cert.R47HdomBridge
 import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
+import R3Cert.BGSCLRealOblACaseA
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
 #print axioms R3Cert.CappedJointConfig.gstep_le_one_achievable
+
+-- RealObligationA Case-A (leaf-path-extension, 92%) Aobj-monotonicity certificate (the F2 closed form).
+#print axioms R3Cert.BGSCL.f2_numerator_nonneg
+#print axioms R3Cert.BGSCL.f2_aobj_increment_nonneg
 
 -- Additive SUBACTION reduction chain (the ceiling now rests on `IsSubaction ρwit`).
 #print axioms R3Cert.BGSCL.ceiling_of_subaction
