@@ -14,6 +14,7 @@
 import Mathlib
 import R3Cert.BGSCLInduction
 import R3Cert.BGSCLSubaction
+import R3Cert.BGSCLSubactionTail
 
 namespace R3Cert
 namespace BGSCL
@@ -72,6 +73,95 @@ theorem tail_decouple (cs : List Branch) (S0 m : ℝ)
     field_simp
   rw [ρwit_node_high hlen]
   linarith [htan, hsum, hB, hsp]
+
+/-! ### Instantiation: the d=6 (tie) tail cell — arbitrary children, via `tail_decouple`. -/
+
+/-- Enclosure `2F* − log(3/2) ≤ 1/96` (via `log x ≤ x−1` at `x=(621/64)²·(2/3)¹¹ ≈ 1.088`). -/
+theorem cherry_anchor_le : 2 * FSTAR - Real.log (3/2) ≤ 1/96 := by
+  rw [FSTAR]
+  have hr := Real.log_le_sub_one_of_pos
+    (show (0:ℝ) < (621/64 : ℝ) ^ (2:ℕ) * (2/3 : ℝ) ^ (11:ℕ) by positivity)
+  have hsplit : Real.log ((621/64 : ℝ) ^ (2:ℕ) * (2/3 : ℝ) ^ (11:ℕ))
+      = 2 * Real.log (621/64) - 11 * Real.log (3/2) := by
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_pow, Real.log_pow,
+        show (2/3 : ℝ) = (3/2)⁻¹ by norm_num, Real.log_inv]
+    push_cast; ring
+  rw [hsplit] at hr
+  have hnum : (621/64 : ℝ) ^ (2:ℕ) * (2/3 : ℝ) ^ (11:ℕ) - 1 ≤ 11/96 := by norm_num
+  linarith
+
+/-- Enclosure `2/23 ≤ log(3/2) − F*` (via `exp(22/23) ≤ exp 1 < 2.7182818286 ≤ (3/2)¹¹·(64/621)`). -/
+theorem log32_sub_fstar_ge : (2:ℝ)/23 ≤ Real.log (3/2) - FSTAR := by
+  rw [FSTAR]
+  have hY : (0:ℝ) < (3/2 : ℝ) ^ (11:ℕ) * (64/621) := by positivity
+  have hlog : Real.log ((3/2 : ℝ) ^ (11:ℕ) * (64/621))
+      = 11 * Real.log (3/2) - Real.log (621/64) := by
+    rw [Real.log_mul (by positivity) (by norm_num), Real.log_pow,
+        show (64/621 : ℝ) = (621/64)⁻¹ by norm_num, Real.log_inv]
+    push_cast; ring
+  have hge : (22:ℝ)/23 ≤ Real.log ((3/2 : ℝ) ^ (11:ℕ) * (64/621)) := by
+    rw [Real.le_log_iff_exp_le hY]
+    calc Real.exp (22/23) ≤ Real.exp 1 := Real.exp_le_exp.mpr (by norm_num)
+      _ ≤ 2.7182818286 := le_of_lt Real.exp_one_lt_d9
+      _ ≤ (3/2 : ℝ) ^ (11:ℕ) * (64/621) := by norm_num
+  rw [hlog] at hge; linarith
+
+/-- **Per-child bound at `σ = 3/23`** (the d=6 reference).  `m + (3/23)·bY c ≤ ρwit c` for every branch,
+    `m = 2F* − log(3/2) − 1/23`, by a per-degree-class check (leaf via `log32_sub_fstar_ge`; deg 3/4/≥5 via
+    `cherry_anchor_le`; deg-2 via `bY ≥ 1/3`). -/
+theorem phi_lb_d6 (c : Branch) :
+    (2 * FSTAR - Real.log (3/2) - 1/23) + (3/23) * bY c ≤ ρwit c := by
+  have hy0 := bY_nonneg c
+  have hyd := bY_le_inv_deg c
+  have hE3 := cherry_anchor_le
+  have hEl := log32_sub_fstar_ge
+  rcases hbc : bcc c with _ | _ | _ | _ | n
+  · have hby1 : bY c = 1 := by
+      cases c with
+      | node cs => simp only [bcc] at hbc; rw [List.length_eq_zero_iff.mp hbc] at *; exact bY_leaf
+    have hrc : ρwit c = FSTAR := by
+      cases c with
+      | node cs => simp only [bcc] at hbc; rw [List.length_eq_zero_iff.mp hbc] at *; exact ρwit_leaf
+    rw [hby1, hrc]; linarith
+  · have hby3 : (1:ℝ)/3 ≤ bY c := bY_ge_third_of_bcc1 c hbc
+    have hrc : ρwit c = 2 * FSTAR - Real.log (3/2) + (1/4) * (bY c - 1/3) := by
+      simp only [ρwit, hbc]
+    rw [hrc]; linarith
+  · have hby : bY c ≤ 1/3 := by rw [hbc] at hyd; norm_num at hyd; linarith
+    have hrc : ρwit c = (1/32) * bY c := by simp only [ρwit, hbc]
+    rw [hrc]
+    nlinarith [hE3, mul_nonneg (show (0:ℝ) ≤ 1/3 - bY c by linarith)
+      (show (0:ℝ) ≤ 73/736 by norm_num)]
+  · have hby : bY c ≤ 1/4 := by rw [hbc] at hyd; norm_num at hyd; linarith
+    have hrc : ρwit c = (1/384) * bY c := by simp only [ρwit, hbc]
+    rw [hrc]; nlinarith [hE3, hby, hy0]
+  · have hn : (0:ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    have hby : bY c ≤ 1/5 := by
+      rw [hbc] at hyd
+      have hd5 : (5:ℝ) ≤ ((n + 4 : ℕ) : ℝ) + 1 := by push_cast; linarith
+      have hle : (1:ℝ) / (((n + 4 : ℕ) : ℝ) + 1) ≤ 1/5 :=
+        one_div_le_one_div_of_le (by norm_num) hd5
+      linarith
+    have hrc : ρwit c = 0 := by
+      cases c with
+      | node cs => simp only [bcc] at hbc; exact ρwit_node_high (by omega)
+    rw [hrc]; nlinarith [hE3, hby, hy0]
+
+/-- **The degree-6 (tie) tail cell.**  `IsSubaction ρwit` at any node of degree 6 (`|cs| = 5`, arbitrary
+    children): via `tail_decouple` with `S0 = 5/3` (all-cherry reference), the per-child bound `phi_lb_d6`, and
+    `B = 0` — the EXACT `27·23` identity (`tie_identity_d6`).  Closes the tie for ALL mixed child configs. -/
+theorem subaction_tail_d6 (cs : List Branch) (hlen : cs.length = 5) :
+    (Real.log (1 + (cs.map bY).sum / ((cs.length : ℝ) + 1)) - FSTAR)
+      + ρwit (Branch.node cs) ≤ (cs.map ρwit).sum := by
+  have h4 : 4 ≤ cs.length := by omega
+  refine tail_decouple cs (5/3) (2 * FSTAR - Real.log (3/2) - 1/23) h4 (by norm_num) ?_ ?_
+  · intro c _
+    have hσ : (1 : ℝ) / (((cs.length : ℝ) + 1) + 5/3) = 3/23 := by rw [hlen]; norm_num
+    rw [hσ]; exact phi_lb_d6 c
+  · rw [hlen]; push_cast
+    rw [show (1 : ℝ) + 5/3 / (5 + 1) = 23/18 by norm_num,
+        show (5:ℝ)/3 / ((5 + 1) + 5/3) = 5/23 by norm_num]
+    linarith [tie_identity_d6]
 
 end BGSCL
 end R3Cert

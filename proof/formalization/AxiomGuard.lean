@@ -56,6 +56,9 @@ import R3Cert.BGSCLSubactionTailDecouple
 #print axioms R3Cert.BGSCL.sum_rhowit_ge
 #print axioms R3Cert.BGSCL.ρwit_node_high
 #print axioms R3Cert.BGSCL.tail_decouple
+-- First CLOSED mixed-config tail cell: the d=6 tie (arbitrary children), via tail_decouple.
+#print axioms R3Cert.BGSCL.phi_lb_d6
+#print axioms R3Cert.BGSCL.subaction_tail_d6
 
 -- Discharged cells of the `IsSubaction ρwit` per-node family.
 #print axioms R3Cert.BGSCL.subaction_nil
