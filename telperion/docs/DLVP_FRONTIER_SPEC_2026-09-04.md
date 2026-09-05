@@ -62,12 +62,22 @@ genuinely-analytic ζ facts (not reductions):
 - `zeta_zero_count_unconditional` — **hypothesis-free** `O(log|γ|)` ζ-zero count: combines the
   three ingredients, discharging the ZERO-COUNT half of obligation (ii).
 
-REMAINING analytic core (genuine multi-session): the partial-fraction split ζ'/ζ = Z + E via
-the `divisor` (obligation (i) — the crux, connecting the now-bounded zero count to the
-Herglotz sum) and `borel_caratheodory_deriv` bounding `E`. Kernel-clean so far: the reduction
-skeleton (rungs 1,3,4,5) + the rung-2 combine + the UNCONDITIONAL Jensen zero-count on ζ.
-Optimizing `σ = 1 + c/L` on `dlvp_region_gap`'s output → `β ≤ 1 - c/log|t|` is the final
-real-algebra step, gated on the remaining core.
+**OBLIGATION (i) CORE — the partial-fraction split DONE (`DlvpHerglotz.lean`, kernel-clean):**
+from the canonical factorization `f = (∏_ρ (·-ρ)^{m(ρ)}) · g` (Mathlib
+`MeromorphicOn.extract_zeros_poles`), `logDeriv` additivity gives the split
+`f'/f = Σ_ρ m(ρ)/(z-ρ) + g'/g` = Z + E:
+- `logDeriv_sub_zpow` — one zero factor `(w-ρ)^n` contributes `n/(z-ρ)`;
+- `logDeriv_prod_sub_zpow` — the finite Herglotz sum `Σ_ρ m(ρ)/(z-ρ)` (the `Z`-identification);
+- `herglotz_split` — the full `f'/f = Z + logDeriv g`.
+Function-agnostic; keyed on `logDeriv_prod`/`logDeriv_mul`/`logDeriv_fun_zpow`.
+
+REMAINING analytic core (multi-session, now precise): (i-a) apply `extract_zeros_poles` to ζ
+on the disk (the codiscrete factorization step) so the split's `f = (∏..)·g` hypothesis holds
+for ζ; (i-b) `g` zero-free ⟹ `logDeriv g` analytic (= E), then `borel_caratheodory_deriv`
+bounds `E`. Kernel-clean so far: reduction skeleton (rungs 1,3,4,5) + rung-2 combine +
+UNCONDITIONAL Jensen zero-count on ζ + the Herglotz split (obligation (i) core). Optimizing
+`σ = 1 + c/L` on `dlvp_region_gap`'s output → `β ≤ 1 - c/log|t|` is the final real-algebra
+step, gated on (i-a)+(i-b).
 
 ## Rung 1 — DONE (this session)
 
