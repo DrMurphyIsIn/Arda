@@ -52,18 +52,20 @@ This reduces rung 2 to **two named analytic inputs, each now backed by a located
   (`telperion/examples/borel_caratheodory`, 0-sorry) with the zero count from
   `AnalyticOnNhd.sum_divisor_le` (Jensen, Mathlib v4.32) and boundary bound `zeta_strip_bound`.
 
-**ANALYTIC CORE STARTED (`DlvpZetaDisk.lean`, kernel-clean):** the first genuinely-analytic
-ζ facts of the frontier (not reductions):
+**ANALYTIC CORE — zero-count DONE UNCONDITIONALLY (`DlvpZetaDisk.lean`, kernel-clean):**
+genuinely-analytic ζ facts (not reductions):
 - `zeta_ne_zero_of_one_lt_re` — `ζ c ≠ 0` for `Re c > 1` (`sum_divisor_le` hyp 2);
 - `zeta_analyticOnNhd_disk` — ζ analytic on a closed disk avoiding `s = 1` (hyp 1);
-- `zeta_zero_count_le` — **the Jensen zero-count APPLIED to ζ**: `∑ᶠ divisor ζ (ball c |r|) ≤
-  log(M/‖ζ c‖)/log(R/r)`, given the boundary bound `M` on the sphere. With `M = C|γ|` from
-  `zeta_strip_bound` this is the `O(log|γ|)` count for obligation (ii).
+- `zeta_sphere_bound` — the explicit boundary bound `‖ζ‖ ≤ (‖c‖+R)/(c.re-R-1) + (‖c‖+R)/(c.re-R)`
+  on the sphere, from `zeta_strip_bound` (`O(|γ|)`) — discharges hyp 3;
+- `zeta_zero_count_le` — the Jensen zero-count applied to ζ (boundary bound as hypothesis);
+- `zeta_zero_count_unconditional` — **hypothesis-free** `O(log|γ|)` ζ-zero count: combines the
+  three ingredients, discharging the ZERO-COUNT half of obligation (ii).
 
-REMAINING analytic core (genuine multi-session): the quantitative `M` on the sphere (sphere
-geometry of `zeta_strip_bound`), the partial-fraction split ζ'/ζ = Z + E via the `divisor`
-(obligation (i)), and `borel_caratheodory_deriv` bounding `E`. The reduction skeleton
-(rungs 1,3,4,5) + the rung-2 combine + the Jensen zero-count on ζ are all kernel-clean.
+REMAINING analytic core (genuine multi-session): the partial-fraction split ζ'/ζ = Z + E via
+the `divisor` (obligation (i) — the crux, connecting the now-bounded zero count to the
+Herglotz sum) and `borel_caratheodory_deriv` bounding `E`. Kernel-clean so far: the reduction
+skeleton (rungs 1,3,4,5) + the rung-2 combine + the UNCONDITIONAL Jensen zero-count on ζ.
 Optimizing `σ = 1 + c/L` on `dlvp_region_gap`'s output → `β ≤ 1 - c/log|t|` is the final
 real-algebra step, gated on the remaining core.
 
