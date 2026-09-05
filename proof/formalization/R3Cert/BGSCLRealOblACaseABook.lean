@@ -68,12 +68,16 @@ theorem npCount_flp_flip (pre post : List UTree) :
     rw [npCount, isPiece_flp_before]; simp
   rw [h1, h2]; omega
 
-/-! ### (3) The remaining residual — the DEGREE-CHANGING Aobj context-lift (NOT proved) -/
+/-! ### (3) The DEGREE-CHANGING Aobj context-lift — SUPERSEDED (see below) -/
 
-/-- **The residual obligation for full Case A** (stated, not proved): the whole-tree `Aobj` does not
-    decrease when the leaf-path-extension acts at a NON-root child `u = node [leaf, leaf]`.  Because the move
-    changes `udeg u` (3 → 2), this is a DEGREE-CHANGING child-monotonicity fact, NOT an instance of the
-    degree-preserving `Aobj_child_replace_le`.  `f2_aobj_monotone` is the `pre = post = []` (root) case. -/
+/-- **MIS-STATED / FALSE — retained only as the subject of its own refutation.**  This Prop replaces the acted
+    child `node [flpLeaf, flpLeaf]` WHOLESALE by `flpStem = node [flpLeaf]` — which DROPS a vertex (not
+    size-preserving) and is NOT the leaf-path-extension move.  It is FALSE in the cavity model
+    (`flp_context_lift_book_false` in `BGSCLRealOblACaseALift.lean`: witness `node[node[leaf,leaf],leaf]`
+    `Aobj=8/3 > node[flpStem,leaf]=5/2`).  The genuine, size-preserving context-lift retains the acted node's
+    other children `crest` (`node(flpLeaf::flpLeaf::crest) → node(flpStem::crest)`) and IS PROVED as
+    `R3Cert.Step3.aobj_flp_context_lift_crest` (`BGSCLRealOblACaseALift.lean`) — that is what downstream Case-A
+    assembly must consume; nothing consumes THIS name except the refutation.  `f2_aobj_monotone` is the root case. -/
 def Aobj_flp_context_lift : Prop :=
   ∀ (pre post : List UTree),
     Aobj (UTree.node (pre ++ UTree.node [flpLeaf, flpLeaf] :: post))
