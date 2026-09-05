@@ -2330,3 +2330,43 @@ jobs:
         env:
           PYTHONPATH: src
         run: python scratch/rh_zeta_log_bound_signature.py
+
+  # RH corpus audit: the cert-dependency graph over the real ZeroFreeBridge theorems
+  # + a signature-gate cross-check that the two exported region theorems are DISTINCT
+  # strengths (polylog γ⁴·(1+log2γ) is NOT the weaker elementary γ⁵, and vice versa)
+  # and that zeta_log_bound keeps its explicit C=6.
+  rh-corpus-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the region modules (define the exported theorems)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build ZetaLogBound ZeroFreePolylog ZeroFreeElementary
+
+      - name: Run the RH corpus audit (dependency graph + region-strength gate)
+        working-directory: telperion
+        env:
+          RH_AXLE_RUN_LEAN: "1"
+          PYTHONPATH: src
+        run: python scratch/rh_corpus_audit.py
