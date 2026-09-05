@@ -95,3 +95,8 @@ name = "DlvpBCSum"
 # Jensen zero-count applied to ζ. Imports Mathlib only; own target, out of defaultTargets.
 [[lean_lib]]
 name = "DlvpZetaDisk"
+
+# PHASE 4 dVP frontier, obligation (i) core: the log-derivative partial-fraction split
+# (Herglotz sum + entire part). Imports Mathlib only; own target, out of defaultTargets.
+[[lean_lib]]
+name = "DlvpHerglotz"
