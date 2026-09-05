@@ -50,6 +50,40 @@ jobs:
         working-directory: telperion/examples/toy_box/lean
         run: lake build
 
+  jensen-hyperbolicity-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath python-flint
+
+      - name: Regenerate Jensen d=2 grid (certify -> emit) and check it matches on-disk
+        working-directory: telperion
+        run: |
+          python examples/jensen_hyperbolicity/generate.py --grid --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/jensen_hyperbolicity/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/jensen_hyperbolicity/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (JensenBridge + JensenHyperbolicity, the actual verification)
+        working-directory: telperion/examples/jensen_hyperbolicity/lean
+        run: lake build
+
   tangent-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
