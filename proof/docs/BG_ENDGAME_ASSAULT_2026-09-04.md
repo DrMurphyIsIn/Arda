@@ -79,6 +79,11 @@ must be stated at `StraightStep_sized` granularity, not single-SPR; the n=13 obs
 obligation.** (The general `StraightProgress_sized` ∀-obligation remains open — it is essentially maximizer
 domination.)
 
+**2-step de-risk (C3/Front1):** the correct existence formulation is `StraightProgress_sized` (any same-size
+`t'`, non-strict Aobj). Where one keeps the descent inside the kernel-proven move family, a 2-step path
+(Aobj-nondecrease detour → defect drop) covers **102/102** defective trees at n≤13, with the first step being
+**cherry-forming (=R1) in 96%** — a positive de-risk of the correct formulation (no 2-step failure observed).
+
 ## Phase-2 HONEST-SCOPE GUARD — rooted `Ztot_sub` ≠ classical `Aobj` (independently verified)
 
 Front2 surfaced, and I verified with the fast `Aobj_node` engine, a load-bearing distinction (confirming memory
