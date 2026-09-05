@@ -48,4 +48,17 @@ theorem integrableOn_bounded_div_cpow {b : ℝ → ℂ} {p : ℂ} {c B : ℝ}
     rw [norm_div, Complex.norm_cpow_eq_rpow_re_of_pos hxpos, Real.rpow_neg hxpos.le, div_eq_mul_inv]
     exact mul_le_mul (hb x) le_rfl (by positivity) (le_trans (norm_nonneg _) (hb x))
 
+/-- Degree-4 F-optimal nonnegative cosine polynomial `p(x)=Σ_k a_k T_k(x)`,
+    `a=(65/64,7/4,9/8,1/2,1/8)`, nonneg on `[-1,1]` via the exact Fejér–Riesz SOS
+    `A² + (1-x²)B²` (`A = -2x⁴-2x³+¾x²+x+⅛`, `B = -2x³-2x²-x/4`).  The functional
+    `F = 2(√7/2 - √65/8)²/7 ≈ 0.02837` beats the de la Vallée-Poussin degree-4 slice
+    `≈ 0.02641` — a 7.4% wider zero-free-region functional.  Emitted by `emit_mt_cosine`
+    (Fejér–Riesz `b = (-1/4,-1/2,-5/8,-1/2,-1/4)`); if this compiles the emitter output is
+    kernel-valid.  conjecture1_proved = False. -/
+theorem mt_cosine_deg4_nonneg (x : ℝ) (h1 : -1 ≤ x) (h2 : x ≤ 1) :
+    (0:ℝ) ≤ x^4 + 2*x^3 + 5*x^2/4 + x/4 + 1/64 := by
+  have hsq : (0:ℝ) ≤ 1 - x^2 := by nlinarith [h1, h2]
+  nlinarith [sq_nonneg (-2*x^4 - 2*x^3 + 3*x^2/4 + x + 1/8),
+    mul_nonneg hsq (sq_nonneg (-2*x^3 - 2*x^2 - x/4))]
+
 end EmittedShapes
