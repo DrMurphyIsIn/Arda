@@ -4,6 +4,8 @@ title: >-
   Arda: machine-checked progress on the Brualdi-Goldwasser (1984)
   Laplacian-ratio maximizer for trees, and Telperion, a sympy-to-Lean
   certificate pipeline
+version: "2026.09.05"
+date-released: "2026-09-05"
 authors:
   - family-names: Murphy
     given-names: Peter W.

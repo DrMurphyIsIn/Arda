@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family TranscendentalEnclosure | input-hash d9960674c173eb36
+/- telperion 0.1.6 | family TranscendentalEnclosure | input-hash dc9e59259b41d2af
    6 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
@@ -6,6 +6,11 @@
 import Mathlib
 
 namespace TranscendentalEnclosure
+
+-- Provenance: kin to the Montgomery-Taylor transcendental-constant
+-- enclosure of AxiomMath/ZetaZeros (arXiv:2609.02882); this ships the
+-- rational log face only (the trig/C0 face is deferred). Independently
+-- re-implemented; see NOTICE.md for full attribution.
 
 -- ===== log face: rational enclosure of Real.log (1 + x) on [1/4, 1/2] =====
 -- Serves BG compact-core cells (e_v = log(1 + S/d) − F*): enclosing
