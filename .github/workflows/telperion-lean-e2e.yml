@@ -2767,7 +2767,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install sympy pytest mpmath python-flint
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
 
       - name: Regenerate BoxRobust Lean from the emitter (certify -> emit -> check)
         working-directory: telperion
@@ -2803,7 +2803,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install sympy pytest mpmath python-flint
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
 
       - name: Regenerate Hyperbolicity Lean from the emitter (certify -> emit -> check)
         working-directory: telperion
@@ -2839,7 +2839,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install sympy pytest mpmath python-flint
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
 
       - name: Regenerate TuranBox Lean from the emitter (certify -> emit -> check)
         working-directory: telperion
