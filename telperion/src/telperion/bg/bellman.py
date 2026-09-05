@@ -45,6 +45,7 @@ def value_function(max_size: int = 16, max_trees: int = 4000) -> dict:
     Returns {float(cavity): (V, exact_phi11)}."""
     base = [(c, []) for c in range(0, 7)]
     pool, allT = list(base), list(base)
+    stop = False
     for _ in range(3):
         newp = []
         for cr in range(0, 6):
@@ -54,8 +55,21 @@ def value_function(max_size: int = 16, max_trees: int = 4000) -> dict:
                     if _size(T) <= max_size:
                         allT.append(T)
                         newp.append(T)
+                        # Enforce the ``max_trees`` budget DURING enumeration, not
+                        # only after each outer sweep.  ``pool`` grows every sweep
+                        # (~1881 after sweep 1), so ``combinations_with_replacement
+                        # (pool, 3)`` reaches ~1e9 tuples and the old post-sweep
+                        # check at the loop tail never fires -- the hang.  Breaking
+                        # as soon as the budget is reached bounds the work.
+                        if len(allT) > max_trees:
+                            stop = True
+                            break
+                if stop:
+                    break
+            if stop:
+                break
         pool = base + newp
-        if len(allT) > max_trees:
+        if stop:
             break
     allT = list({repr(T): T for T in allT}.values())
     U = {}
