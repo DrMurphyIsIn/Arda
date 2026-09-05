@@ -57,6 +57,7 @@ import R3Cert.BGSCLRealOblACaseA
 import R3Cert.BGSCLRealOblACaseAIdentity
 import R3Cert.BGSCLRealOblACaseABook
 import R3Cert.BGSCLRealOblACaseALift
+import R3Cert.BGSCLJointDescent2Step
 import R3Cert.BGSCLRealOblBSymBase
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
@@ -197,3 +198,13 @@ import R3Cert.BGSCLRealOblBSymBase
 #print axioms R3Cert.Step3.Zopen_weighted_flp_child_le
 #print axioms R3Cert.Step3.aobj_flp_context_lift_crest
 #print axioms R3Cert.Step3.flp_context_lift_book_false
+
+-- Straightening-move existence SHARP BOUNDARY (2026-09-04): the triple-3-star (unique n=13 obstruction
+-- to the single-SPR/strict-Aobj STRENGTHENING) exact invariants + a StraightStep_sized WITNESS proving
+-- the actual Lean obligation StraightProgress_sized HOLDS there.  Does NOT refute the obligation.
+#print axioms R3Cert.Step3.Aobj_tripleStar
+#print axioms R3Cert.Step3.strDefect_tripleStar
+#print axioms R3Cert.Step3.usize_tripleStar
+#print axioms R3Cert.Step3.Aobj_cherrySpider6
+#print axioms R3Cert.Step3.straightStep_tripleStar_witness
+#print axioms R3Cert.Step3.tripleStar_has_straightStep
