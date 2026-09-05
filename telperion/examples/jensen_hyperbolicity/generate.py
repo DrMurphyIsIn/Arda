@@ -15,8 +15,8 @@ Usage:
     generate.py --degree 2 --n 0        # explicit; same as default
     generate.py --prec 300              # set Arb precision bits (default 300)
     generate.py --check                 # verify on-disk file matches a fresh render
-    generate.py --grid                  # emit d=2 grid for n=0,1,2,3 (four certs)
-    generate.py --n-list 0 1 2 3        # explicit list of n offsets
+    generate.py --grid                  # emit d=2 grid for n=0,1,2 (three certs)
+    generate.py --n-list 0 1 2          # explicit list of n offsets
 """
 from __future__ import annotations
 
@@ -34,9 +34,11 @@ from telperion.rh_jensen.jensen import disc2_margin, jensen_coeff_box  # noqa: E
 HERE = Path(__file__).resolve().parent
 TARGET = HERE / "lean" / "JensenHyperbolicity.lean"
 
-# Default grid offsets for --grid mode (d=2, n=0..3, four certs).
-GRID_D2_OFFSETS: list[int] = [0, 1, 2, 3]
-# Default precision for grid mode: 400 bits ensures positive margins for all n=0..3.
+# Default grid offsets for --grid mode (d=2, n=0..2, three certs).
+# n=3 needs alpha(5), which requires a rigorous Cauchy truncation-tail bound
+# (deferred to Phase 2); it is NOT in the grid to preserve soundness.
+GRID_D2_OFFSETS: list[int] = [0, 1, 2]
+# Default precision for grid mode: 400 bits ensures positive margins for all n=0..2.
 GRID_PREC_BITS: int = 400
 
 HEADER = """/-
@@ -48,7 +50,8 @@ rational coefficient box is hyperbolic (real-root multiset cardinality = degree)
 The proof chains a box-positivity discriminant bound into the d=2 bridge lemma
 hyperbolic_deg2_of_discrim_nonneg (JensenBridge.lean). NOT a proof of RH.
 
-Degrees d >= 3 are deferred to Phase 2 (general Hermite-Bezoutian engine).
+Grid: J^{2,n} for n = 0, 1, 2 (three certs). Higher n (needing alpha(m>=5))
+and degrees d >= 3 are deferred to Phase 2 (general Hermite-Bezoutian engine).
 
 Each theorem is followed by an AXLE statement-match example that the Lean kernel
 verifies: the example ascribes the exact box-hyperbolicity type to the theorem,
@@ -110,9 +113,9 @@ def main() -> int:
         "--grid",
         action="store_true",
         help=(
-            "Grid mode: emit d=2 certs for n=0,1,2,3 (four theorems). "
+            "Grid mode: emit d=2 certs for n=0,1,2 (three theorems). "
             "Uses prec=400 by default unless --prec is explicit. "
-            "Degrees d>=3 deferred to Phase 2."
+            "n>=3 (needs alpha(m>=5)) and d>=3 deferred to Phase 2."
         ),
     )
     ap.add_argument(
@@ -162,7 +165,8 @@ def main() -> int:
     print(f"JensenHyperbolicity: wrote {len(offsets)} cert(s) to {TARGET}")
     if args.grid:
         print(f"Grid mode: d=2, offsets={offsets}, prec={prec_bits} bits.")
-        print("Degrees d>=3 deferred to Phase 2 (general Hermite-Bezoutian engine).")
+        print("n>=3 (alpha(m>=5)) and d>=3 deferred to Phase 2 "
+              "(general Hermite-Bezoutian engine + Cauchy tail bound).")
     print("AXLE statement-match gate: included in emitted .lean (kernel-enforced).")
     return 0
 

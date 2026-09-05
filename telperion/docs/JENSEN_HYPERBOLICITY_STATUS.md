@@ -8,16 +8,15 @@ done. Nothing here is a proof of the Riemann Hypothesis.
 
 ## What Is Proven
 
-### Kernel-verified box-hyperbolicity for J^{2,n}, n = 0, 1, 2, 3
+### Kernel-verified box-hyperbolicity for J^{2,n}, n = 0, 1, 2
 
-The Lean 4 kernel (via `lake build`) has accepted, sorry-free, four theorems:
+The Lean 4 kernel (via `lake build`) has accepted, sorry-free, three theorems:
 
 | Theorem | Jensen polynomial | Discriminant margin |
 |---|---|---|
 | `jensen_box_hyperbolic_deg2_0` | J^{2,0}(x) | approx 2.82e-04 |
 | `jensen_box_hyperbolic_deg2_1` | J^{2,1}(x) | approx 2.27e-08 |
 | `jensen_box_hyperbolic_deg2_2` | J^{2,2}(x) | approx 8.00e-13 |
-| `jensen_box_hyperbolic_deg2_3` | J^{2,3}(x) | approx 1.51e-17 |
 
 Each theorem states: for every triple (c0, c1, c2) of real numbers lying in the
 certified rational coefficient box, the degree-2 polynomial
@@ -26,7 +25,8 @@ certified rational coefficient box, the degree-2 polynomial
 
 The Jensen polynomial J^{d,n}(x) = sum_{k=0}^{d} C(d,k) * alpha(n+k) * x^k, where
 alpha(m) is the coefficient of t^{2m} in Xi(t) = xi(1/2 + it). For d=2:
-c0 = alpha(n), c1 = 2*alpha(n+1), c2 = alpha(n+2).
+c0 = alpha(n), c1 = 2*alpha(n+1), c2 = alpha(n+2). The three certs cover
+n=0,1,2, needing alpha(0..4) -- all reachable via the rigorous acb_series path.
 
 **Axioms.** Each theorem depends on exactly: `{propext, Classical.choice, Quot.sound}`.
 No `native_decide`, no `sorry`, no `ofReduceBool`. Confirmed by `#print axioms`
@@ -55,33 +55,49 @@ The one non-kernel link in the chain is the **coefficient-membership claim**:
 the assertion that the true value alpha(m) lies within the rational box [lo, hi].
 
 This claim is certified by **Arb ball arithmetic** (python-flint), not by the
-Lean kernel:
+Lean kernel. For n = 0, 1, 2 (needing alpha(0..4)), the `acb_series` path
+evaluates Xi(t) as a truncated power series in t using Arb's ball arithmetic
+(every operation carries a rigorous, directed-rounded error ball). The ball's
+outward rational endpoints give the certified [lo, hi].
 
-- For n = 0, 1, 2 (needing alpha(0..4)): the `acb_series` path evaluates Xi(t)
-  as a truncated power series in t using Arb's ball arithmetic (every operation
-  carries a rigorous, directed-rounded error ball). The ball's outward rational
-  endpoints give the certified [lo, hi].
-
-- For n = 3 (needing alpha(5)): the `acb_series` path is limited to 10 series
-  terms by python-flint's zeta implementation (alpha(5) is at index 10). A
-  three-point Vandermonde approach is used instead: Xi(t) is evaluated at
-  t = 0.10, 0.15, 0.20 via certified `acb` ball arithmetic (direct gamma/zeta),
-  the known contributions of alpha(0..4) are subtracted (using their acb_series
-  certified boxes), and a 3x3 linear system for (alpha(5), alpha(6), alpha(7))
-  is solved via Cramer's rule over acb balls. The residual (alpha(8)+) at these
-  t values is bounded below 1e-28, well under the ball radius.
-
-In both cases the enclosure is **Arb-certified, not kernel-certified**. This
-is the plan's one documented non-kernel input, analogous to the inputs R and B
-in other Telperion certificate families. Everything downstream of the rational
-box (the nlinarith discriminant argument and the bridge lemma invocation) IS
-kernel-verified.
+This is the plan's one documented non-kernel input, analogous to the inputs R
+and B in other Telperion certificate families. Everything downstream of the
+rational box (the nlinarith discriminant argument and the bridge lemma
+invocation) IS kernel-verified.
 
 ---
 
 ## What Is Not Done / Deferred
 
-### (a) Degrees d >= 3: deferred to Phase 2
+### (a) Coefficients alpha(m) for m >= 5 (needed for n >= 3): rigorous tail bound required
+
+python-flint's `acb_series` zeta implementation returns at most 10 series terms
+(indices 0..9), so alpha(m) for m >= 5 (series index 2m >= 10) is inaccessible
+via the rigorous power-series path. A finite-evaluation extraction (evaluate
+Xi(t) at a few points and solve a Vandermonde system) is NOT rigorous by itself:
+the residual is
+`rem_k = Xi(t_k) - sum_{j<m} alpha(j) t_k^{2j} = alpha(m) t_k^{2m} + alpha(m+1) t_k^{2(m+1)} + ... + [tail]`,
+and any finite linear solve DROPS the higher-order tail `alpha(m+3)+`. That
+truncation error (order 1e-28 at the evaluation points used) is many orders of
+magnitude LARGER than the acb-ball input-propagation radius (order 1e-169), so a
+solve that reports only the ball radius UNDERSTATES the true uncertainty and does
+NOT provably contain alpha(m).
+
+**A rigorous high-m coefficient requires a Cauchy truncation-tail bound**
+`|alpha(k)| <= max_{|t|=R} |Xi(t)| / R^{2k}`
+(from the Cauchy estimates for the Taylor coefficients of the entire function
+Xi), added explicitly to the ball so the returned interval provably contains
+alpha(m) including the dropped tail. This is **deferred to Phase 2**. Until then,
+`enclose_coeff_box` raises `NotImplementedError` for any requested coefficient
+with series index > 9, rather than silently producing an unsound enclosure.
+
+Consequently the grid is J^{2,n} for **n = 0, 1, 2 only** (three certs). n=3
+(which needs alpha(5)) is excluded to preserve the rigor guarantee. (The n=3
+hyperbolicity conclusion is very likely still true -- the tail 1e-28 is far
+below the n=3 Turan margin 1.5e-17 -- but it cannot be honestly certified with
+the current tooling.)
+
+### (b) Degrees d >= 3: deferred to Phase 2
 
 Cubic (d=3) and higher-degree hyperbolicity certificates require a theorem of
 the form "PSD Hermite-Bezoutian matrix implies all roots real." Mathlib (as of
@@ -89,18 +105,19 @@ the form "PSD Hermite-Bezoutian matrix implies all roots real." Mathlib (as of
 
 Phase 2 will implement a general **Hermite-Bezoutian PSD engine** that handles
 all degrees d <= 8 uniformly via a single kernel-verified theorem. At that point,
-the grid can be extended to (d, n) in {2,3,4,...} x {0,1,2,...}.
+the grid can be extended to (d, n) in {2,3,4,...} x {0,1,2,...} -- alongside the
+Cauchy tail bound of item (a) for the high-m coefficients.
 
-### (b) Uniform-in-d effective threshold N(d)
+### (c) Uniform-in-d effective threshold N(d)
 
 The actual RH-closing piece of the Jensen-Polya program requires showing that
 J^{d,n} is hyperbolic for ALL n >= N(d) and all d (or for all n, d
 simultaneously). This uniform threshold is a deep analytic result
 (Griffin-Ono-Rolen-Zagier 2019 for existence; sharp bounds are open) and is
 entirely out of scope for certificate-based formal verification with finite
-rational boxes. The four certs here cover concrete small-n instances only.
+rational boxes. The three certs here cover concrete small-n instances only.
 
-### (c) Emitter framework integration
+### (d) Emitter framework integration
 
 The current emitter (`JensenPolynomialHyperbolicityEmitter`) exposes only
 `render_box` and is not yet registered as a first-class Telperion emitter with
@@ -112,8 +129,9 @@ The current emitter (`JensenPolynomialHyperbolicityEmitter`) exposes only
 
 | Claim | Status |
 |---|---|
-| J^{2,n} hyperbolic for n=0,1,2,3 | KERNEL-VERIFIED (sorry-free, axioms clean) |
-| Coefficient boxes certified | ARB-CERTIFIED (non-kernel, documented boundary) |
-| d >= 3 hyperbolicity | DEFERRED to Phase 2 |
+| J^{2,n} hyperbolic for n=0,1,2 | KERNEL-VERIFIED (sorry-free, axioms clean) |
+| Coefficient boxes (alpha(0..4)) certified | ARB-CERTIFIED (non-kernel, documented boundary) |
+| alpha(m) for m >= 5 (n >= 3) | DEFERRED to Phase 2 (needs Cauchy tail bound) |
+| d >= 3 hyperbolicity | DEFERRED to Phase 2 (Hermite-Bezoutian engine) |
 | Uniform threshold N(d) | OUT OF SCOPE |
 | Proof of RH | FALSE (conjecture1_proved = False) |

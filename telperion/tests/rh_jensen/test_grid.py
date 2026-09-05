@@ -1,12 +1,19 @@
-"""Grid-mode test: d=2 Jensen hyperbolicity cert family, n=0..3 (Task 9).
+"""Grid-mode test: d=2 Jensen hyperbolicity cert family, n=0..2 (Task 9).
 
-conjecture1_proved = False. Verifies the full grid pipeline for the four
+conjecture1_proved = False. Verifies the full grid pipeline for the three
 d=2 Jensen polynomial box-hyperbolicity certificates:
-  - generate.py --grid emits four theorems, one per n in {0,1,2,3}.
+  - generate.py --grid emits three theorems, one per n in {0,1,2}.
   - Each emitted theorem name is jensen_box_hyperbolic_deg2_<n>.
   - Each theorem ends with .roots.card = 2.
   - The file contains no 'sorry'.
   - The AXLE statement-match gate is present for each theorem.
+
+n=3 is intentionally EXCLUDED: it needs alpha(5), which the rigorous
+acb_series path cannot reach (python-flint caps zeta series at 10 terms),
+and no sound finite-evaluation extraction exists without a Cauchy
+truncation-tail bound (deferred to Phase 2). A test asserts that
+enclose_coeff_box raises NotImplementedError for such a box, rather than
+silently using an unsound method.
 
 The lake build green check is documented separately (the existing
 test_end_to_end_d2.py::test_generated_lean_builds_green test covers the
@@ -21,13 +28,15 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LEAN_DIR = REPO_ROOT / "examples" / "jensen_hyperbolicity" / "lean"
 LEAN_FILE = LEAN_DIR / "JensenHyperbolicity.lean"
 GENERATE_SCRIPT = REPO_ROOT / "examples" / "jensen_hyperbolicity" / "generate.py"
 
 PYTHON = sys.executable
-GRID_OFFSETS = [0, 1, 2, 3]
+GRID_OFFSETS = [0, 1, 2]
 
 
 def _run_grid(extra_args: list[str] | None = None) -> subprocess.CompletedProcess:
@@ -47,8 +56,8 @@ def test_grid_mode_exits_zero() -> None:
     )
 
 
-def test_grid_mode_writes_four_theorems() -> None:
-    """generate.py --grid writes a file with all four theorem declarations."""
+def test_grid_mode_writes_three_theorems() -> None:
+    """generate.py --grid writes a file with all three theorem declarations."""
     result = _run_grid()
     assert result.returncode == 0, f"generate.py --grid failed: {result.stderr}"
     assert LEAN_FILE.exists(), f"JensenHyperbolicity.lean not written to {LEAN_FILE}"
@@ -58,6 +67,15 @@ def test_grid_mode_writes_four_theorems() -> None:
         assert name in content, (
             f"Theorem declaration '{name}' not found in JensenHyperbolicity.lean"
         )
+    # n=3 must NOT be present (needs alpha(5), deferred to Phase 2).
+    assert "theorem jensen_box_hyperbolic_deg2_3" not in content, (
+        "n=3 cert must NOT be in the grid: it needs alpha(5), which has no "
+        "sound rigorous enclosure yet (deferred to Phase 2)."
+    )
+    # Exactly three theorem declarations.
+    assert content.count("theorem jensen_box_hyperbolic_deg2_") == 3, (
+        "Expected exactly 3 theorem declarations in the grid file."
+    )
 
 
 def test_grid_mode_all_theorems_have_roots_card_2() -> None:
@@ -128,11 +146,41 @@ def test_n_list_mode_subset() -> None:
     )
     assert LEAN_FILE.exists()
     content = LEAN_FILE.read_text()
-    # n=0 and n=2 should be present; n=1 and n=3 should NOT.
+    # n=0 and n=2 should be present; n=1 should NOT.
     assert "theorem jensen_box_hyperbolic_deg2_0" in content
     assert "theorem jensen_box_hyperbolic_deg2_2" in content
     assert "theorem jensen_box_hyperbolic_deg2_1" not in content
-    assert "theorem jensen_box_hyperbolic_deg2_3" not in content
+
+    # Restore full grid for downstream tests.
+    _run_grid()
+
+
+def test_enclose_coeff_box_refuses_high_coeff() -> None:
+    """enclose_coeff_box raises NotImplementedError for a box needing alpha(m>=5).
+
+    This is the rigor guard: alpha(5) (series index 10) is outside the
+    acb_series range, and no sound finite-evaluation extraction exists without
+    a Cauchy truncation-tail bound. The certificate path MUST refuse rather
+    than silently substitute an unsound method.
+    """
+    from telperion.rh_jensen.coefficients import enclose_coeff_box
+
+    # n=3, d=2 needs alpha(3), alpha(4), alpha(5); alpha(5) has index 10 > 9.
+    with pytest.raises(NotImplementedError):
+        enclose_coeff_box(n=3, d=2, prec_bits=400)
+
+
+def test_grid_generate_refuses_n3() -> None:
+    """generate.py --n-list 3 fails (n=3 needs the unavailable alpha(5))."""
+    result = subprocess.run(
+        [PYTHON, str(GENERATE_SCRIPT), "--n-list", "3", "--prec", "400"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0, (
+        "generate.py --n-list 3 should FAIL (n=3 needs alpha(5), deferred to "
+        f"Phase 2), but exited 0.\nstdout: {result.stdout}"
+    )
 
     # Restore full grid for downstream tests.
     _run_grid()
