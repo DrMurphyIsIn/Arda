@@ -71,3 +71,22 @@ already stands alone); coordination is only needed if/when you *import* it into 
 **Still open** (unchanged): the m-hub (m ≥ 3) general case; the concrete Kelmans rewrite's (R-mono)
 `Aobj`-monotonicity for `treeToHub_of_rewrite` (= Obligation A). The two-hub cert is the proven base
 case those build on.
+
+## Update 2026-09-05 — the m-hub case is now (mostly) DONE: general-environment monotonicity
+
+`R47R7KelmansGenEnvCert.lean` (100 theorems, collision-safe `R3Cert.+` leaf) ports
+`certify_general_env_box` (`kelmans_mixed_load.py`) to the kernel: the adjacent hubward Kelmans
+merge step (`da ≥ db ≥ 2`) on **any** loaded backbone whose environment neighbours satisfy
+`z_x ≤ 3/23` is `per(L)/∏deg` **non-decreasing** for 25 of the 30 load cells — **all N, all m**. This
+is the ENVIRONMENT version of the local merge rule, i.e. the actual m-hub generalization (not a
+global 3-hub comparison): `Φ` is bilinear in the two marginal environment sums → min at a box corner;
+the shift `da=2+v+u, db=2+v` (`u,v≥0`) makes each of the 4 corners/cell an all-nonneg numerator over a
+positive denominator (`emit_nonneg_orthant`). **To the BG session:** this is the multi-hub-stuck
+elimination for `Hdom`, kernel-verified as a standalone leaf — available to wire into the tree→hub /
+Obligation-A chain whenever that lane reaches it.
+
+**Residual (research-hard, do not rabbit-hole):** the 5 `cb`-heavy cells
+`{(0,5),(1,4),(1,5),(2,5),(3,5)}` are NOT box-certifiable — even the refined `(db-2)·z1` sub-box + the
+explicit C-mover term fails at its corner (`three_hub_residual_probe`: 0 real decreases, so they are
+TRUE but need the *exact recursive* `z_C·ρ_C` hub-mover treatment). That is the sharp follow-up; a box
+relaxation cannot close it.

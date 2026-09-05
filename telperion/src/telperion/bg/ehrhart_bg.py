@@ -90,20 +90,40 @@ def matching_polytope_ehrhart(n, edges, T, root: int = 0):
 
 
 def matching_polytope_ehrhart_bruteforce(n, edges, T):
-    """Reference lattice-point count by direct enumeration (exponential; validates the tree-DP on
-    small near-stars).  Same polytope as matching_polytope_ehrhart."""
-    from itertools import product
-    inc = {v: [] for v in range(n)}
-    for ei, (a, b) in enumerate(edges):
-        inc[a].append(ei)
-        inc[b].append(ei)
+    """Reference lattice-point count by direct enumeration (validates the tree-DP on
+    small near-stars).  Same polytope as matching_polytope_ehrhart.
+
+    Counts, for each ``t`` in ``0..T``, the integer points ``x`` in ``[0, t]^|edges|``
+    obeying every vertex constraint ``sum_{e ni v} x_e <= t``.  Rather than the naive
+    ``product(range(t+1), repeat=|edges|)`` enumerate-all-then-filter (``(t+1)^|edges|``
+    points -- ~2e8 at s=4, which times out), this backtracks edge-by-edge and PRUNES a
+    partial assignment the moment either endpoint's running sum would exceed ``t``.
+    Because ``x >= 0``, a partial sum over ``t`` can never be redeemed, so pruning drops
+    only points that fail the filter anyway -- the counted set (hence every ``L_P(t)``)
+    is IDENTICAL to the naive enumeration, verified equal on the tractable s=2,3 cases.
+    This makes the s=4 reference tractable (~3s vs. a >120s timeout)."""
+    ends = [(a, b) for (a, b) in edges]
     E = len(edges)
     seq = []
     for t in range(T + 1):
+        vsum = [0] * n
         cnt = 0
-        for x in product(range(t + 1), repeat=E):
-            if all(sum(x[e] for e in inc[v]) <= t for v in range(n)):
+
+        def rec(ei):
+            nonlocal cnt
+            if ei == E:
                 cnt += 1
+                return
+            a, b = ends[ei]
+            hi = t - (vsum[a] if vsum[a] > vsum[b] else vsum[b])
+            for val in range(hi + 1):  # val <= hi keeps both endpoints' sums <= t
+                vsum[a] += val
+                vsum[b] += val
+                rec(ei + 1)
+                vsum[a] -= val
+                vsum[b] -= val
+
+        rec(0)
         seq.append(cnt)
     return seq
 
