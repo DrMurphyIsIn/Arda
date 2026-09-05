@@ -71,13 +71,21 @@ from the canonical factorization `f = (∏_ρ (·-ρ)^{m(ρ)}) · g` (Mathlib
 - `herglotz_split` — the full `f'/f = Z + logDeriv g`.
 Function-agnostic; keyed on `logDeriv_prod`/`logDeriv_mul`/`logDeriv_fun_zpow`.
 
-REMAINING analytic core (multi-session, now precise): (i-a) apply `extract_zeros_poles` to ζ
-on the disk (the codiscrete factorization step) so the split's `f = (∏..)·g` hypothesis holds
-for ζ; (i-b) `g` zero-free ⟹ `logDeriv g` analytic (= E), then `borel_caratheodory_deriv`
-bounds `E`. Kernel-clean so far: reduction skeleton (rungs 1,3,4,5) + rung-2 combine +
-UNCONDITIONAL Jensen zero-count on ζ + the Herglotz split (obligation (i) core). Optimizing
-`σ = 1 + c/L` on `dlvp_region_gap`'s output → `β ≤ 1 - c/log|t|` is the final real-algebra
-step, gated on (i-a)+(i-b).
+**OBLIGATION (i) FOUNDATIONS DONE (`DlvpEntire.lean`, kernel-clean):**
+- `zeta_extract_zeros_poles` (i-a) — **ζ IS the factorization** `ζ = (∏ᶠ_ρ (·-ρ)^{divisor})·g`
+  with `g` analytic + zero-free on the disk. All three `MeromorphicOn.extract_zeros_poles`
+  hypotheses discharged for ζ: MeromorphicOn (analytic), order ≠ ⊤ everywhere (ζ c ≠ 0 +
+  connected disk via `exists_meromorphicOrderAt_ne_top_iff_forall`), finite divisor (compact).
+- `differentiableAt_logDeriv` / `analyticOnNhd_logDeriv` (i-b, first half) — the entire part
+  `E = logDeriv g = g'/g` is analytic where `g` is analytic + nonzero.
+
+REMAINING (multi-session, now sharply bounded): (i-a') transfer the CODISCRETE equality
+`ζ =ᶠ[codiscreteWithin] (∏ᶠ..)·g` to a POINTWISE `logDeriv ζ z = Z + E` at a zero-free `z`
+(codiscrete → nhds → deriv agreement) + finprod↔Finset bridge to `herglotz_split`; (i-b') the
+Borel-Caratheodory BOUND `‖E‖ ≤ A·L` on the entire part (`borel_caratheodory_deriv` on `log g`).
+Kernel-clean chain: reduction skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional Jensen
+zero-count on ζ + Herglotz split + obligation (i) foundations. Optimizing `σ = 1 + c/L` →
+`β ≤ 1 - c/log|t|` is the final real-algebra step, gated on (i-a')+(i-b').
 
 ## Rung 1 — DONE (this session)
 

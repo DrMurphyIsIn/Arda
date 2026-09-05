@@ -100,3 +100,8 @@ name = "DlvpZetaDisk"
 # (Herglotz sum + entire part). Imports Mathlib only; own target, out of defaultTargets.
 [[lean_lib]]
 name = "DlvpHerglotz"
+
+# PHASE 4 dVP frontier, obligation (i) foundations: ζ canonical factorization + entire-part
+# analyticity. Imports DlvpZetaDisk; own target, out of defaultTargets.
+[[lean_lib]]
+name = "DlvpEntire"
