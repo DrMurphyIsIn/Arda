@@ -113,15 +113,21 @@ branch `h` of `log g` with `HasDerivAt h (logDeriv g z) z`, `h c = log (g c)`, `
 giving `exp∘h = g`; `‖g‖=‖exp h‖=exp(Re h)` gives `Re h=log‖g‖`.  This realises the entire part `E` as
 `deriv h` with `Re h = log‖g‖` — the object BC (real part) + Cauchy (derivative-from-values) consume.
 
-**SOLE REMAINING analytic step: the BOUND `‖E‖ = ‖logDeriv g‖ ≤ A·L`** — apply `Complex.borelCaratheodory`
-(now IN Mathlib, `Analysis/Complex/BorelCaratheodory.lean`) to `h - h(c)` with `M = sup Re h = sup log‖g‖
-≤ A·L` (boundary growth), then `Complex.norm_deriv_le_of_forall_mem_sphere_norm_le` (Cauchy estimate,
-`Analysis/Complex/Liouville.lean`) on a smaller disk to pass from the value bound to `‖deriv h‖ = ‖E‖`.
-Full kernel-clean chain: reduction skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional Jensen
-zero-count on ζ + Herglotz split + obligation (i) foundations + (i-a') transfer + (i-a'') codiscrete +
-(i-a''') bridge + (i-a) capstone + (i-b') log-branch foundation.  With the bound, the split feeds
-`hzero`/`htwo` (rungs 1/4) and the whole region follows; optimizing `σ = 1 + c/L` on `dlvp_region_gap`
-→ `β ≤ 1 - c/log|t|` is the final real-algebra step.
+**(i-b') CORE DONE — BC+Cauchy derivative bound (`DlvpBCDeriv.norm_deriv_le_of_re_le`, kernel-clean,
+CI rh-dlvp-bcderiv):** `h` holomorphic on `ball c R` with `(h z).re - (h c).re ≤ M'` (`M' > 0`) on the
+disk, `0 < r < R` ⟹ `‖deriv h c‖ ≤ 2 M'/(R - r)`.  Shift `f(w) = h(c+w) - h(c)` (centred, `f 0 = 0`),
+`Complex.borelCaratheodory_zero` bounds `‖f‖` on the sphere `‖z‖ = r` by `2 M' r/(R-r)`, then
+`Complex.norm_deriv_le_of_forall_mem_sphere_norm_le` (Cauchy) gives `‖deriv f 0‖ = ‖deriv h c‖ ≤ 2M'/(R-r)`.
+This is the analytic HEART of (i-b'): the entire part `‖E‖ = ‖deriv h‖` bounded by `sup Re h = sup log‖g‖`.
+
+**SOLE REMAINING analytic step: the ζ BOUNDARY GROWTH `log‖g‖ ≤ A·L`** — the last input to compose
+`DlvpLogBranch` (`Re h = log‖g‖`) + `DlvpBCDeriv` (`‖deriv h c‖ ≤ 2M'/(R-r)`) into `‖E‖ ≤ A·L`.  Since
+`g = ζ/∏_ρ(·-ρ)^m`, `log‖g‖ = log‖ζ‖ - Σ m log‖·-ρ‖`; bound `log‖ζ‖ ≤ A·L` via `zeta_strip_bound` /
+`zeta_sphere_bound` (already have) and control the zero factors.  Full kernel-clean chain: reduction
+skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional Jensen zero-count on ζ + Herglotz split +
+obligation (i) foundations + (i-a') transfer + (i-a'') codiscrete + (i-a''') bridge + (i-a) capstone +
+(i-b') log-branch + (i-b') BC+Cauchy core.  With the bound, the split feeds `hzero`/`htwo` (rungs 1/4)
+and the whole region follows; optimizing `σ = 1 + c/L` on `dlvp_region_gap` → `β ≤ 1 - c/log|t|`.
 
 ## Rung 1 — DONE (this session)
 
