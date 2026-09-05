@@ -52,10 +52,22 @@ These are the exact kernel-portable content for `Hdom`'s hardest node. **HONEST 
 *m*-hub general case is NAMED-OPEN (the module reframes it as the *environment* version of two local
 merge rules; 3-/4-hub probes pass with margins growing in m, ~9%/hub, but that is evidence, not proof).
 
-## Recommended next brick (coordination-gated)
+## Next brick — DONE (collision-safe leaf): `R47R7KelmansTwoHubCert.lean`
 
-Port `certify_two_hub_theorem` (6 cells) to a kernel-verified Lean atom via Telperion (all-nonneg →
-`nlinarith`), as the first verified brick on `Hdom`'s multi-hub node. **This touches the R47 tree that
-the `bg/lean-tree-to-hub` lane owns** — coordinate before pushing (per the collision-guard). The
-schema side (`treeToHub_of_rewrite`) is already proven; the value is discharging (R-mono)/(R-meas)
-for the concrete Kelmans rewrite using these certs.
+Ported `certify_two_hub_theorem` (6 cells) to kernel-verified Lean atoms
+`two_hub_gap_pos_c0..c5` (`R3Cert.Step3`): per receiver load `cA ∈ {0..5}`, the integer-cleared gap
+numerator `pi(T)/V^K − pi(S2)/V^K` (over a positive denominator), in shifted arm counts
+`x = pA−1, y = pB−1`, is a nonneg-coefficient polynomial with positive constant → `nlinarith` with
+monomial-nonneg hints. Positivstellensatz witness that the single-hub template strictly dominates
+every stuck two-hub config, all `pA,pB ≥ 1`.
+
+**Collision-safe:** self-building leaf via the `R3Cert.+` glob, imported by nothing — CI builds +
+kernel-verifies it, but it is NOT a dependency of the capstone and does NOT touch the
+`bg/lean-tree-to-hub` / Obligation-A files. **To the BG session:** this brick is available to wire
+into `Hdom`'s multi-hub-stuck elimination (base case of the vertex-budget domination / the
+assisted-merge dissolution) whenever that lane reaches it — no coordination needed to *land* it (it
+already stands alone); coordination is only needed if/when you *import* it into the capstone chain.
+
+**Still open** (unchanged): the m-hub (m ≥ 3) general case; the concrete Kelmans rewrite's (R-mono)
+`Aobj`-monotonicity for `treeToHub_of_rewrite` (= Obligation A). The two-hub cert is the proven base
+case those build on.
