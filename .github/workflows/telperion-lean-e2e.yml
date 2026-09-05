@@ -2216,3 +2216,180 @@ jobs:
       - name: Build the emitted Lean (leaf-exchange pure-rational norm_num atoms)
         working-directory: telperion/examples/bg_leaf_exchange/lean
         run: lake build
+
+  # RH kernel tier (the AXLE-suite negative-control closing the loop): elaborate the
+  # forged FALSE tangent bound and the TRUE controls against the built Mathlib env and
+  # assert the KERNEL rejects the forgery while the true atoms compile clean. This is
+  # the tier gated OFF locally (SoC hazard); CI is where it runs.
+  rh-axle-kernel-tier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache (zero_free_bridge env)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Run the RH AXLE driver kernel tier (forge rejected + true controls clean)
+        working-directory: telperion
+        env:
+          RH_AXLE_RUN_LEAN: "1"
+          PYTHONPATH: src
+        run: python scratch/rh_axle_apply.py
+
+  # RH signature/statement-match gate (AXLE verify_proof's use_def_eq check — the
+  # POSITIVE half of the trust boundary): assert the emitted RH atom states the
+  # INTENDED proposition. The intended claim is ACCEPTED; a weaker `≤ x+1` and an
+  # `∃ C` restatement (the class the RH thread hit by hand) are kernel-REJECTED.
+  rh-signature-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Signature-gate unit tests (offline pure builders)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_signature_gate.py -q
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache (zero_free_bridge env)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Run the RH AXLE driver kernel tier (incl. #5 signature gate)
+        working-directory: telperion
+        env:
+          RH_AXLE_RUN_LEAN: "1"
+          PYTHONPATH: src
+        run: python scratch/rh_axle_apply.py
+
+  # Signature gate on the REAL zeta_log_bound: kernel-assert the built theorem states
+  # the EXPLICIT constant C=6 (‖ζ‖ ≤ 6·(1+log|t|)) — not a weaker C nor an ∃C form
+  # that would give no region constant (the restatement the RH thread fixed by hand).
+  rh-zeta-log-bound-signature:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the ZetaLogBound module (defines zeta_log_bound)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build ZetaLogBound
+
+      - name: Assert zeta_log_bound states the intended explicit C=6 proposition
+        working-directory: telperion
+        env:
+          PYTHONPATH: src
+        run: python scratch/rh_zeta_log_bound_signature.py
+
+  # RH corpus audit: the cert-dependency graph over the real ZeroFreeBridge theorems
+  # + a signature-gate cross-check that the two exported region theorems are DISTINCT
+  # strengths (polylog γ⁴·(1+log2γ) is NOT the weaker elementary γ⁵, and vice versa)
+  # and that zeta_log_bound keeps its explicit C=6.
+  rh-corpus-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the region modules (define the exported theorems)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build ZetaLogBound ZeroFreePolylog ZeroFreeElementary
+
+      - name: Run the RH corpus audit (dependency graph + region-strength gate)
+        working-directory: telperion
+        env:
+          RH_AXLE_RUN_LEAN: "1"
+          PYTHONPATH: src
+        run: python scratch/rh_corpus_audit.py
+
+  # dVP frontier rung 1: the zero-extraction core of the de la Vallee Poussin `hzero`
+  # bound (equal-height evaluation + droppable other-zeros + the Herglotz reduction).
+  rh-dlvp-zerosum:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP zero-extraction rung (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZeroSum
