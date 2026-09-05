@@ -26,8 +26,8 @@
   HONEST SCOPE.  This settles the TWO-HUB core of the vertex-budget domination for every arm count
   and receiver load -- the base case that (with the assisted-merge rule) dissolves two-hub
   stuckness.  It does NOT prove `Hdom`: the m-hub (m ≥ 3) general case remains open (reframed as the
-  environment version of the local merge rules; 3-/4-hub probes pass with margins growing in m, but
-  that is evidence, not proof).  It does NOT prove Conjecture 1.  Self-contained: `import Mathlib`
+  environment version of the local merge rules; 3- and 4-hub probes pass with margins growing in m,
+  but that is evidence, not proof).  It does NOT prove Conjecture 1.  Self-contained: `import Mathlib`
   only; imported by nothing (a self-building leaf brick, per the lakefile glob).
   `conjecture1_proved = False`.
 -/
