@@ -87,14 +87,22 @@ is a germ invariant, so a factorization equality transfers to a pointwise `logDe
   NEIGHBORHOOD of some `z₀ ∈ U` have equal log-derivatives at every `z ∈ U` (identity principle,
   `eqOn_of_preconnected_of_eventuallyEq`).
 
-REMAINING (multi-session, sharply bounded): (i-a'') the single filter step — the codiscrete
-factorization's DISAGREEMENT set is discrete, so a non-exceptional `z₀` has a nhds of agreement,
-feeding `logDeriv_congr_of_analytic` (`codiscreteWithin_iff_locallyFiniteComplementWithin`) — plus
-the finprod↔Finset bridge to `herglotz_split`; (i-b') the Borel-Caratheodory BOUND `‖E‖ ≤ A·L`
-(`borel_caratheodory_deriv` on `log g`). Kernel-clean chain: reduction skeleton (rungs 1,3,4,5) +
-rung-2 combine + unconditional Jensen zero-count on ζ + Herglotz split + obligation (i) foundations
-+ the (i-a') transfer machinery. Optimizing `σ = 1 + c/L` → `β ≤ 1 - c/log|t|` is the final
-real-algebra step.
+**(i-a'') CODISCRETE TRANSFER DONE (`DlvpTransfer.logDeriv_congr_of_codiscrete`, kernel-clean):**
+two analytic functions on a preconnected open `U` agreeing CODISCRETELY (`=ᶠ[codiscreteWithin U]`,
+the `extract_zeros_poles` shape) have equal log-derivatives at every `z ∈ U`. Route: codiscrete
+membership (`mem_codiscreteWithin_iff_forall_mem_nhdsNE`) → punctured-nhds agreement (drop `Uᶜ`
+since `U ∈ 𝓝 z₀`) → `∃ᶠ` (`𝓝[≠]` NeBot on ℂ) → `EqOn` (`eqOn_of_preconnected_of_frequently_eq`)
+→ `logDeriv_congr_eqOn_open`.
+
+**(i-a''') finprod↔Finset BRIDGE DONE (`DlvpBridge`, kernel-clean):** `herglotz_split_finprod`
+gives `logDeriv ((∏ᶠ..)·g) z = Σ_ρ D(ρ)/(z-ρ) + logDeriv g z`.
+
+REMAINING (2 pieces): the ζ-factorization zero-part is analytic (divisor ≥ 0 since ζ has no poles;
++ `•`↔`*` reconciliation) so `logDeriv_congr_of_codiscrete` applies to ζ vs `(∏ᶠ..)·g`; and (i-b')
+the Borel-Caratheodory BOUND `‖E‖ ≤ A·L` (`borel_caratheodory_deriv` on `log g`). Kernel-clean chain:
+reduction skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional Jensen zero-count on ζ +
+Herglotz split + obligation (i) foundations + (i-a') transfer + (i-a'') codiscrete transfer +
+(i-a''') bridge. Optimizing `σ = 1 + c/L` → `β ≤ 1 - c/log|t|` is the final real-algebra step.
 
 ## Rung 1 — DONE (this session)
 

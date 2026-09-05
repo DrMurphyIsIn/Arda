@@ -48,4 +48,27 @@ theorem logDeriv_congr_of_analytic {f₁ f₂ : ℂ → ℂ} {U : Set ℂ} {z₀
   logDeriv_congr_eqOn_open hU hz
     (hf₁.eqOn_of_preconnected_of_eventuallyEq hf₂ hUc hz₀ h)
 
+open scoped Topology in
+/-- (i-a'') **codiscrete transfer.**  Two analytic functions on a preconnected open `U` agreeing
+    CODISCRETELY (off a discrete set, `=ᶠ[codiscreteWithin U]`) have equal log-derivatives at
+    EVERY `z ∈ U`.  This is the exact shape `MeromorphicOn.extract_zeros_poles` produces, so it
+    connects the ζ factorization to a pointwise `logDeriv` equality: codiscrete membership gives
+    punctured-neighborhood agreement (drop `Uᶜ`, since `U ∈ 𝓝 z₀`), hence a `∃ᶠ` (`𝓝[≠]` is
+    NeBot on ℂ), hence `EqOn` by the analytic identity principle. -/
+theorem logDeriv_congr_of_codiscrete {f₁ f₂ : ℂ → ℂ} {U : Set ℂ} {z₀ z : ℂ}
+    (hf₁ : AnalyticOnNhd ℂ f₁ U) (hf₂ : AnalyticOnNhd ℂ f₂ U)
+    (hU : IsOpen U) (hUc : IsPreconnected U) (hz₀ : z₀ ∈ U) (hz : z ∈ U)
+    (h : f₁ =ᶠ[Filter.codiscreteWithin U] f₂) :
+    logDeriv f₁ z = logDeriv f₂ z := by
+  have hmem : {x | f₁ x = f₂ x} ∪ Uᶜ ∈ 𝓝[≠] z₀ :=
+    (mem_codiscreteWithin_iff_forall_mem_nhdsNE.mp h) z₀ hz₀
+  have hU_nhds : U ∈ 𝓝[≠] z₀ := mem_nhdsWithin_of_mem_nhds (hU.mem_nhds hz₀)
+  have hev : ∀ᶠ x in 𝓝[≠] z₀, f₁ x = f₂ x := by
+    filter_upwards [hmem, hU_nhds] with x hx hxU
+    rcases hx with h1 | h2
+    · exact h1
+    · exact absurd hxU h2
+  exact logDeriv_congr_eqOn_open hU hz
+    (hf₁.eqOn_of_preconnected_of_frequently_eq hf₂ hUc hz₀ hev.frequently)
+
 end ZeroFreeBridge
