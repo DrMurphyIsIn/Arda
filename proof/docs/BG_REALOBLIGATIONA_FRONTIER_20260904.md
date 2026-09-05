@@ -1,8 +1,30 @@
-# BG conjecture1 — the RealObligationA (Hnorm) frontier, mapped (2026-09-04)
+# BG conjecture1 — the RealObligationA (Hnorm) frontier (2026-09-04, consolidated)
 
-**Status: research note picking up the interrupted `a3` Phase-0 investigation of `RealObligationA`.
-No new Lean; a precise empirical map of the frontier + the durable positive certificate `a3` found.
-`conjecture1_proved = False`.** Branch `bg/conjecture1-attack`.
+**Status: `RealObligationA` (Hnorm's per-step straightening obligation) mapped end-to-end, decomposed into
+Case A (92%) + Case B (8%), with kernel-verified Lean for the Case-A analytic core. `conjecture1_proved =
+False`.** Branch `bg/conjecture1-attack` (GitHub `DrMurphyIsIn/Arda`). All Lean below is `no sorry`,
+axiom-clean `[propext, Classical.choice, Quot.sound]`, AxiomGuard-guarded, `lake build` green.
+
+## Consolidated summary (what this session established)
+
+| Piece | Status |
+|---|---|
+| **Frontier map** — `RealObligationA` = a size-preserving move, strDefect↓, Aobj-nondecreasing | mapped |
+| **Well-posedness is LOCAL** (move confined to a deepest defect's subtree) | 19099/19099 exact, n≤12 |
+| **Case A (leaf-path-ext, 92%)** — Aobj-increment identity `ΔAobj = P(n²+nQ+4Q)/(2(n+1)(n+2))` | **KERNEL-PROVED** (`f2_increment_identity`, `f2_aobj_monotone`) |
+| Case-A size clause + piece-flip strDefect mechanism | **KERNEL-PROVED** (`usize_flp_move_eq`, `npCount_flp_flip`) |
+| Case-A **degree-changing Aobj context-lift** (non-root acted node) | **OPEN** (genuine lemma, not bookkeeping; `Aobj_flp_context_lift` Prop) |
+| **Case B (whole-hub, 8%)** — no fixed structural move (all refuted, one kernel-gated) | adaptive local existence lemma |
+| Case-B **symmetric base case** `node[H,H]` — whole-hub-onto-leaf, Aobj-nondecreasing, `dAobj=0` at star tie | characterized (a9) |
+| Case-B **asymmetric coupling** (the conjecture1 caterpillar-maximizer content) | **OPEN** |
+| **AXLE/Ono Telperion suite** wired to BG (emit→verify→negative_control→assemble) | validated (`bg_axle_apply.py`) |
+
+**The two genuine open residuals:** (1) the degree-changing Aobj context-lift for Case A; (2) the asymmetric
+Type-W existence coupling — which is essentially conjecture1's open core (Pant 2026) in local form.
+
+---
+
+### (Historical) research note — picking up the interrupted `a3` Phase-0 investigation
 
 ## Where this sits in the conjecture1 reduction
 
