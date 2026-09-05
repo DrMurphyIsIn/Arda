@@ -12,6 +12,7 @@ Riemann zeta function. NOT a proof of RH.
 """
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -22,7 +23,7 @@ LEAN_FILE = LEAN_DIR / "JensenHyperbolicity.lean"
 GENERATE_SCRIPT = REPO_ROOT / "examples" / "jensen_hyperbolicity" / "generate.py"
 
 PYTHON = sys.executable
-LAKE = "/Users/peterwmurphy/.elan/bin/lake"
+LAKE = shutil.which("lake") or "/Users/peterwmurphy/.elan/bin/lake"
 
 
 def test_generate_writes_lean_no_sorry() -> None:
