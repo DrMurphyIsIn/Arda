@@ -139,3 +139,17 @@ irreducibly requires the QUANTITATIVE strict-off-tie amplitude `rhoB^n − Ztot(
 `master_ineq_strict` (`bell < 0` off deg-6) currently gives only the qualitative sign, not the quantity.** That
 quantitative amplitude margin is the irreducible open crux, now isolated with a class of reframings excluded.
 `conjecture1_proved = False`.
+
+## Cross-route reconciliation with the parallel Kelmans lane (2026-09-05) — same wall, two routes
+
+The parallel session (tree->hub/Kelmans lane) landed `R47R7KelmansGenEnvCert.lean` (100 theorems, self-contained
+`R3Cert.+` leaf, INDEPENDENTLY re-verified kernel-green here): the adjacent hubward Kelmans MERGE step is
+`per(L)/prod-deg` non-decreasing for 25 of 30 load cells, ALL N, ALL m -- the multi-hub-stuck elimination for Hdom
+(Phi bilinear in the marginal environment sums -> box corner -> Positivstellensatz nonneg witnesses via
+`emit_nonneg_orthant`). Complementary to the SharpRateNF rate-bound route; it partially sidesteps the rate amplitude.
+
+BOTH routes hit the SAME irreducible residual (independent triangulation): my SharpRateNF route verified that
+box/Zopen-only reframing is INSUFFICIENT (quantitative strict off-tie amplitude Gap-1 irreducible); the Kelmans
+route finds the 5 cb-heavy cells {(0,5),(1,4),(1,5),(2,5),(3,5)} NOT box-certifiable, needing the exact recursive
+z_C*rho_C hub-mover. Same phenomenon: the tie-adjacent configurations resist box relaxation and require the exact
+sharp treatment. My Gap-1 == their z_C*rho_C residual. conjecture1_proved = False.
