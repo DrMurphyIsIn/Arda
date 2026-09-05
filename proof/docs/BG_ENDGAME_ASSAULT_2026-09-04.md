@@ -96,3 +96,19 @@ The Lean `Aobj` is genuinely classical (root-invariant, engine self-checked), bu
 (`Aobj ≤ (d+1)/d·Ztot_sub ≤ (d+1)/d·rhoB^n`). **Consequence: closing the Lean rate layer gives a TRUE bound at the
 rooted rate `rhoB`, NOT the tight classical BG maximizer (at `ρ*`, Pant OPEN). Do NOT overclaim closing classical
 BG.** `conjecture1_proved = False`.
+
+## Phase-2 characterization CONFIRMED against existing proven Lean (`R47ArmRate.lean`)
+
+The campaign's empirical extremal finding (rooted rate maximized at arm-**load 5**, the `621 = 27·23` tie) is
+**already formalized and kernel-proven, unconditionally** (`[propext, Classical.choice, Quot.sound]`):
+- `armObj arms := armProd arms^11 / (621/64)^size` (the rate-normalized arm-block objective).
+- `armObj_resize_up (j ≤ 4)` / `armObj_resize_dn (j ≥ 5)` — **unimodality, peak at load 5** (Front2's C2 target).
+- `armObj_le_one : ∀ arms, armObj arms ≤ 1` — **the joint arm-block envelope, tight exactly when every arm is at
+  load 5.** No arm-load configuration beats all-arms-at-5.
+
+So the arm-block extremality is DONE, and this **sharpens the open frontier precisely**: the arm envelope covers
+the ARM blocks; what remains for `SharpRateNF` is the **spine-rooting amplitude** — tightening the backbone
+rooting factor from `(d+1)/d` (≤ 6/5) down to `(26/23)/rhoB ≈ 0.919` (the "a bad-rooting tree pays with low
+`Ztot`" trade-off, Gap-1→Gap-2). That spine-rooting tightening + the general `StraightProgress_sized` (Hnorm) +
+the classical maximizer at `ρ*` (Pant) are the residual — the arm piece is no longer part of it.
+`conjecture1_proved = False`.
