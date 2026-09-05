@@ -1,0 +1,16 @@
+name = "DvpAtoms"
+defaultTargets = ["BCSplit", "JensenZeroCount", "SphereBound"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "BCSplit"
+
+[[lean_lib]]
+name = "JensenZeroCount"
+
+[[lean_lib]]
+name = "SphereBound"
