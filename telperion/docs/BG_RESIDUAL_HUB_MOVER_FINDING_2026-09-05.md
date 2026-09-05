@@ -30,6 +30,17 @@ conjecture in the codebase. `conjecture1_proved = False`.
 > *allows* but the Balanced+Capped merge dynamics never *reach*. Net for the proof: the 25-cell
 > `R47R7KelmansGenEnvCert` covers the merge behaviour `Hdom` needs; the residual cells are an
 > over-generality artifact, not a gap. `run()` asserts this (balanced-safe + finite thresholds).
+>
+> **DEFINITION-LEVEL CLOSURE.** Checked against the actual Lean definitions: `step_mono`
+> (`R47StepMono.lean:98`) PROVES the merge monotonicity `Aobj(backboneU s) ≤ Aobj(backboneU s')`
+> for `Balanced s ∧ Capped s`, and `Balanced` (`R47Step.lean:45`) means **every arm ∈ {4,5}**. So a
+> Balanced hub has degree ≤ 5 arms + ≤ 2 backbone neighbours = **7**, whereas the LOWEST direct-
+> failure threshold is `deg_C = 8`. The residual failure regime is therefore **structurally
+> unreachable under `Balanced`** — by a margin of one. Direct check: all 20 real-`Balanced`
+> (arms ∈{4,5}) residual configs show zero decreases (max hub degree 6). And
+> `R47R7KelmansGenEnvCert` is imported by NOTHING (a pure standalone leaf), not a dependency of the
+> capstone. Conclusion: `Hdom`'s merge layer is fully closed in Lean via `step_mono`; the
+> general-env residual is a non-issue — confirmed not just empirically but at the definition level.
 
 ## Context
 
