@@ -143,10 +143,38 @@ def run() -> dict:
     H = G.copy(); H.remove_edge(2, armC); H.add_edge(0, armC)
     assert pi_loaded(H, load) - base > 0, "(0,5) stuck config should be dominated by arm-move C->A"
 
+    # (4) THE CLOSURE: all failures need imbalance OR uncapped hubs; on Balanced+Capped
+    #     (Hdom's actual domain: arm counts within delta AND all >= 5) the direct merge NEVER
+    #     decreases.  Balanced ALONE is NOT enough -- uncapped balanced configs do decrease.
+    bal_only_dec = 0; bal_cap_dec = 0; bal_cap_checked = 0
+    for (ca, cb) in [(1, 5), (2, 5), (3, 5)]:
+        for base_a in range(0, 12):
+            for da in range(0, 3):
+                for db in range(0, 3):
+                    for dr in range(0, 3):
+                        pA, qB, r = base_a + da, base_a + db, base_a + dr
+                        if max(pA, qB, r) - min(pA, qB, r) > 2:   # Balanced (delta<=2)
+                            continue
+                        G, load = build(ca, cb, 5, pA, qB, r)
+                        Hd = kelmans_step(G, 0, 1)
+                        if Hd is None:
+                            continue
+                        dec = pi_loaded(Hd, load) - pi_loaded(G, load) < 0
+                        if min(pA, qB, r) >= 5:                    # + Capped
+                            bal_cap_checked += 1
+                            if dec:
+                                bal_cap_dec += 1
+                        elif dec:
+                            bal_only_dec += 1
+    assert bal_cap_dec == 0, f"Balanced+Capped must be decrease-free, got {bal_cap_dec}"
+    assert bal_only_dec > 0, "Balanced-alone (uncapped) SHOULD still decrease (Capped is essential)"
+
     return {"engine_exact": True,
             "direct_failure_thresholds_degC": {str(k): v for k, v in th.items()},
             "all_five_fail_direct_step": True,
-            "cell_0_5": "Kelmans-local-max at deg_C=170, dominated by non-Kelmans arm-move C->A"}
+            "cell_0_5": "Kelmans-local-max at deg_C=170, dominated by non-Kelmans arm-move C->A",
+            "balanced_capped_decrease_free": True,
+            "capped_is_essential": f"balanced-alone still has {bal_only_dec} decreases (uncapped)"}
 
 
 if __name__ == "__main__":

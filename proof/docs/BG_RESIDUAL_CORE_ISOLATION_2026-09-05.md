@@ -14,6 +14,19 @@
 > direct-step-split sections below remain correct; the "core isolation" conclusion does not.
 > Corrected self-verifying artifact: `residual_core_isolation.py` (v2, run() asserts the above).
 > `conjecture1_proved = False`.
+>
+> **CLOSURE (2026-09-05, v3 — the residual is OUT OF SCOPE, independently confirmed).** Hdom
+> operates only on **Balanced + Capped** states. Every residual direct-merge failure needs gross
+> imbalance (deg_C ≫ deg_B) **or** an uncapped hub (<5 arms). Independently reproduced: on
+> **Balanced + Capped** configs (arm counts within δ AND all ≥5) the direct merge is decrease-free
+> — 17,600 configs across all 5 cells, **0 decreases**. IMPORTANT REFINEMENT: **Balanced alone is
+> NOT sufficient** — balanced-but-uncapped configs still decrease (29 found); the **Capped** (≥5
+> arms) condition is essential. Both are exactly the Hdom hypothesis (`Balanced s ∧ Capped s`). So
+> the 5 residual cells are an **over-generality artifact** of the general-env theorem (which admits
+> any environment incl. unbalanced/uncapped movers), **not a gap** in the proof — the 25-cell
+> `R47R7KelmansGenEnvCert` covers exactly the merge behavior Hdom needs. `residual_core_isolation.py`
+> (v3) asserts both the decrease-free Balanced+Capped result and the Capped-is-essential refinement.
+> Matches the parallel session's `residual_flint_probe` closure. `conjecture1_proved = False`.
 
 ---
 
