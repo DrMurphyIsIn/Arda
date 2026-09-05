@@ -104,13 +104,24 @@ with `g` analytic + zero-free.  Assembled end-to-end: `zeta_extract_zeros_poles`
 `zeta_finprod_analyticOnNhd` (zero-part analytic, divisor ζ ≥ 0) + `logDeriv_congr_of_codiscrete`
 (codiscrete→pointwise, on the open ball via `codiscreteWithin_mono`) + `herglotz_split_finprod`.
 
-**SOLE REMAINING analytic step: (i-b') the Borel-Caratheodory BOUND `‖E‖ = ‖logDeriv g‖ ≤ A·L`** on
-the entire part (`borel_caratheodory_deriv` on `log g`, `g` zero-free ⟹ a branch of `log g` on the
-disk).  Full kernel-clean chain: reduction skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional
-Jensen zero-count on ζ + Herglotz split + obligation (i) foundations + (i-a') transfer + (i-a'')
-codiscrete + (i-a''') bridge + (i-a) capstone.  With (i-b'), the split feeds `hzero`/`htwo` (rungs
-1/4) and the whole region follows via the reduction skeleton; optimizing `σ = 1 + c/L` on
-`dlvp_region_gap` → `β ≤ 1 - c/log|t|` is the final real-algebra step.
+**(i-b') FOUNDATION DONE — the analytic log branch (`DlvpLogBranch.log_branch_of_analytic_nonvanishing`,
+kernel-clean, CI rh-dlvp-logbranch):** a holomorphic zero-free `g` on `ball c r` admits an analytic
+branch `h` of `log g` with `HasDerivAt h (logDeriv g z) z`, `h c = log (g c)`, `exp (h z) = g z`, and
+`(h z).re = Real.log ‖g z‖`.  Built WITHOUT the covering-map machinery: `logDeriv g = g'/g` holomorphic
+⟹ has a primitive `h` (`DifferentiableOn.isExactOn_ball` Morera + `IsExactOn.with_val_at` to pin `h c`);
+`φ = g·exp(-h)` has zero derivative (`is_const_of_fderivWithin_eq_zero` on the convex ball) so `φ≡φ c=1`,
+giving `exp∘h = g`; `‖g‖=‖exp h‖=exp(Re h)` gives `Re h=log‖g‖`.  This realises the entire part `E` as
+`deriv h` with `Re h = log‖g‖` — the object BC (real part) + Cauchy (derivative-from-values) consume.
+
+**SOLE REMAINING analytic step: the BOUND `‖E‖ = ‖logDeriv g‖ ≤ A·L`** — apply `Complex.borelCaratheodory`
+(now IN Mathlib, `Analysis/Complex/BorelCaratheodory.lean`) to `h - h(c)` with `M = sup Re h = sup log‖g‖
+≤ A·L` (boundary growth), then `Complex.norm_deriv_le_of_forall_mem_sphere_norm_le` (Cauchy estimate,
+`Analysis/Complex/Liouville.lean`) on a smaller disk to pass from the value bound to `‖deriv h‖ = ‖E‖`.
+Full kernel-clean chain: reduction skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional Jensen
+zero-count on ζ + Herglotz split + obligation (i) foundations + (i-a') transfer + (i-a'') codiscrete +
+(i-a''') bridge + (i-a) capstone + (i-b') log-branch foundation.  With the bound, the split feeds
+`hzero`/`htwo` (rungs 1/4) and the whole region follows; optimizing `σ = 1 + c/L` on `dlvp_region_gap`
+→ `β ≤ 1 - c/log|t|` is the final real-algebra step.
 
 ## Rung 1 — DONE (this session)
 

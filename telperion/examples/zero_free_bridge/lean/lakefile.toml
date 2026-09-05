@@ -120,3 +120,8 @@ name = "DlvpBridge"
 # end-to-end for ζ. Imports DlvpEntire+DlvpBridge+DlvpTransfer; out of defaultTargets.
 [[lean_lib]]
 name = "DlvpZetaSplit"
+
+# PHASE 4 dVP frontier, obligation (i-b') FOUNDATION: analytic log branch of a zero-free g on a
+# disk (primitive of logDeriv g; g = exp∘h; Re h = log‖g‖). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpLogBranch"
