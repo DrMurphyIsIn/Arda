@@ -1,5 +1,23 @@
 # BG residual: independent verification + the hard core isolated to 4 tiny configs (2026-09-05)
 
+> **CORRECTION (2026-09-05, v2 — supersedes the body below).** The "hard core = 4 tiny 3-hub
+> paths; `(0,5)` fully rescued 18/18" conclusion in the body is an **ARTIFACT of two wrong
+> premises**: (i) it modeled C's movers as **bare leaves** (`load=0`), whereas the genuine stuck
+> configs have **load-5 arm movers** — with bare leaves a Kelmans consolidation always rescues,
+> hiding the obstruction; (ii) it scanned a **bounded range** (deg_C ≤ 14), while the failures
+> appear only at **large deg_C**. Re-run with the correct arm-mover model (independently, exact),
+> the true picture matches the parallel session's flint self-correction: **all 5 residual cells
+> fail the direct step at a finite deg_C** — thresholds `(2,5)=8, (1,5)=9, (1,4)=29, (3,5)=111,
+> (0,5)=170`. `(0,5)` at its threshold is a **genuine Kelmans-local-max** (best Kelmans gain
+> exactly 0) — but **dominated by a non-Kelmans arm-move C→A** (strictly raises π), so it refutes
+> `(0,5)` *direct-step monotonicity*, **not** the Hdom *domination* goal. The engine-validation and
+> direct-step-split sections below remain correct; the "core isolation" conclusion does not.
+> Corrected self-verifying artifact: `residual_core_isolation.py` (v2, run() asserts the above).
+> `conjecture1_proved = False`.
+
+---
+
+
 Independent re-derivation (own driver, own permanent) of the parallel session's residual-cell
 findings. It **validates** their engine, **confirms** the direct-step split, and **sharpens** the
 "anti-hubward rescues 54/54, zero genuinely stuck" claim. `conjecture1_proved = False`.

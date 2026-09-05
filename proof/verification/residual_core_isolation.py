@@ -1,21 +1,19 @@
-"""RESIDUAL-CELL CORE ISOLATION -- independent verification + sharpening of the
-`residual_hub_mover_probe` / anti-hubward-rescue findings (2026-09-05).
+"""RESIDUAL-CELL direct-step characterization -- independent verification (2026-09-05).
 
-This is an INDEPENDENT re-derivation (own driver + own permanent) that (a) validates the
-`kelmans_mixed_load.pi_loaded` engine against a literal tree permanent, (b) confirms the
-direct-hubward-step split, and (c) SHARPENS the "anti-hubward rescues 54/54, zero genuinely
-stuck" claim: across all in-scope direct-step failures, the strict rescuer is a Kelmans move
-(K) OR the leg->cherry move (L, = R2, proven) -- EXCEPT exactly ONE tiny config per cb-heavy
-cell, a 3-hub loaded PATH, which no K or L move strictly progresses. Those 4 cores are exactly
-what the (H) hub-merge/de-load (R5/R6, crux (26/23)^11 < 621/64) is for.
+*** CORRECTED 2026-09-05 (v2). ***  The FIRST version of this file scanned C's movers as BARE
+LEAVES (`load=0`) over a BOUNDED range (deg_C <= 14) and concluded "(0,5) fully rescued; each
+cb-heavy cell reduces to one tiny 3-hub path core."  BOTH premises were wrong:
+  (i)  the genuine stuck configs have ARM movers (load-5 sub-hubs), not bare leaves -- with bare
+       leaves a Kelmans consolidation always rescues, hiding the real obstruction;
+  (ii) the failures appear only at LARGE deg_C (into the hundreds), outside the bounded range.
+This matches the parallel session's own flint self-correction (`residual_flint_probe.py`).  The
+corrected, independently-reproduced picture is below.  `conjecture1_proved = False`.
 
-Engine cross-validation method (independent of both networkx and the cavity Ztot):
-  per(L(tree)) = sum over matchings M of prod_{v uncovered by M} deg(v)
-(the only nonzero permutations of a tree Laplacian are 2-cycles along disjoint edges), via an
-O(n) rooted DP. Validated against an exact Ryser permanent (|value|) on random trees.
+Independent engine cross-validation (unchanged, and still valid): `pi_loaded` (their per-vertex
+factorization) equals the literal tree `per(L)/prod(deg)` via a matching-sum permanent DP
+(`per(L)=Sum_matchings prod_{uncovered} deg`), validated against an exact Ryser permanent.
 
-Run: `python3 proof/verification/residual_core_isolation.py` -- run() asserts the whole split.
-conjecture1_proved = False.
+Run: `python3 proof/verification/residual_core_isolation.py` -- run() asserts the corrected split.
 """
 from __future__ import annotations
 import sys, os, collections, itertools
@@ -92,7 +90,7 @@ def _literal_from_backbone(bb_edges, load):
 
 def run() -> dict:
     import networkx as nx
-    from verification.kelmans_mixed_load import pi_loaded, kelmans_step, z_of
+    from verification.kelmans_mixed_load import pi_loaded, kelmans_step
 
     # (0) matching-DP permanent validated vs exact Ryser magnitude
     import random
@@ -107,77 +105,56 @@ def run() -> dict:
         lit, n = _literal_from_backbone([(0, 1), (1, 2)], load)
         assert pi_loaded(G, load) == pi_literal(lit, n), f"pi_loaded != literal at {ld}"
 
-    def build(ca, cb, cc, r):
+    # ---- CORRECT model: movers are LOAD-5 ARMS (not bare leaves) --------------------------
+    def build(ca, cb, cc, pA, qB, r):
         G = nx.Graph([(0, 1), (1, 2)]); load = {0: ca, 1: cb, 2: cc}; nxt = 3
-        for _ in range(r):
-            G.add_edge(2, nxt); load[nxt] = 0; nxt += 1
+        for hub, cnt in ((0, pA), (1, qB), (2, r)):
+            for _ in range(cnt):
+                G.add_edge(hub, nxt); load[nxt] = 5; nxt += 1
         return G, load
 
-    def best_kelmans(G, load):
-        base = pi_loaded(G, load); best = Fr(-10 ** 9)
-        for a, b in list(G.edges()):
-            for u, v in [(a, b), (b, a)]:
-                H = kelmans_step(G, u, v)
-                if H is None:
-                    continue
-                g = pi_loaded(H, load) - base
-                if g > best:
-                    best = g
-        return best
+    def direct_gain(ca, cb, r):                     # A(ca,1 arm)-B(cb)-C(load5, r arm-movers)
+        G, load = build(ca, cb, 5, 1, 0, r)
+        return pi_loaded(kelmans_step(G, 0, 1), load) - pi_loaded(G, load), G, load
 
-    def best_L(G, load):
-        base = pi_loaded(G, load); best = None
-        for w in list(G.nodes()):
-            if G.degree(w) == 1 and load.get(w, 0) == 0:
-                hub = next(iter(G.neighbors(w)))
-                H = G.copy(); H.remove_node(w)
-                nl = dict(load); nl.pop(w, None); nl[hub] = nl[hub] + 1
-                g = pi_loaded(H, nl) - base
-                if best is None or g > best:
-                    best = g
-        return best
+    def threshold(ca, cb, cap=400):
+        for r in range(1, cap):
+            g, _, _ = direct_gain(ca, cb, r)
+            if g < 0:
+                return 1 + r
+        return None
 
-    # (2)+(3) split + K/L rescue counts + core isolation
-    cores = {}
-    per_cell = {}
-    for (ca, cb) in [(0, 5), (1, 4), (1, 5), (2, 5), (3, 5)]:
-        fails = 0; unrescued = []
-        for r in range(0, 14):
-            for cc in range(0, 6):
-                G, load = build(ca, cb, cc, r)
-                if z_of(G.degree(2), cc) > Fr(3, 23):
-                    continue
-                base = pi_loaded(G, load)
-                Hd = kelmans_step(G, 0, 1)
-                if Hd is None:
-                    continue
-                if pi_loaded(Hd, load) - base < 0:      # direct hubward genuinely decreases
-                    fails += 1
-                    bk = best_kelmans(G, load); bl = best_L(G, load)
-                    if not (bk > 0 or (bl is not None and bl > 0)):
-                        unrescued.append((r, cc, {k: v for k, v in load.items() if v}))
-        per_cell[(ca, cb)] = fails
-        cores[(ca, cb)] = unrescued
+    # (2) ALL 5 residual cells fail the direct step at a FINITE deg_C (arm-mover, large deg)
+    RESIDUAL = [(0, 5), (1, 4), (1, 5), (2, 5), (3, 5)]
+    th = {cell: threshold(*cell) for cell in RESIDUAL}
+    assert all(t is not None for t in th.values()), f"expected all 5 finite; got {th}"
+    # independently reproduced thresholds (deg_C): (2,5)=8 (1,5)=9 (1,4)=29 (3,5)=111 (0,5)=170
+    assert th == {(0, 5): 170, (1, 4): 29, (1, 5): 9, (2, 5): 8, (3, 5): 111}, th
 
-    # ASSERTIONS -- the verified split
-    assert per_cell[(0, 5)] > 0, "(0,5) should have in-scope direct failures"
-    assert cores[(0, 5)] == [], "(0,5) fully rescued by K/L"
-    for cell in [(1, 4), (1, 5), (2, 5), (3, 5)]:
-        u = cores[cell]
-        assert len(u) == 1, f"{cell} expected exactly 1 K/L-unrescued core, got {len(u)}"
-        r, cc, ld = u[0]
-        assert r == 0 and cc == 5, f"{cell} core should be the 3-hub path r=0 cc=5, got r={r} cc={cc}"
-    return {"per_cell_direct_failures": per_cell,
-            "KL_unrescued_cores": {str(k): v for k, v in cores.items()}}
+    # (3) at its threshold, (0,5) is a genuine Kelmans-local-max, but DOMINATED by a non-Kelmans
+    #     arm-move C->A (so it refutes (0,5) direct-step monotonicity, NOT the Hdom domination goal)
+    r0 = th[(0, 5)] - 1
+    G, load = build(0, 5, 5, 1, 0, r0); base = pi_loaded(G, load)
+    bestK = max((pi_loaded(kelmans_step(G, u, v), load) - base
+                 for a, b in G.edges() for (u, v) in ((a, b), (b, a))
+                 if kelmans_step(G, u, v) is not None), default=Fr(-1))
+    assert bestK == 0, f"(0,5)@thresh expected Kelmans-local-max (best 0), got {bestK}"
+    armC = next(w for w in G.neighbors(2) if w > 2 and load.get(w) == 5)
+    H = G.copy(); H.remove_edge(2, armC); H.add_edge(0, armC)
+    assert pi_loaded(H, load) - base > 0, "(0,5) stuck config should be dominated by arm-move C->A"
+
+    return {"engine_exact": True,
+            "direct_failure_thresholds_degC": {str(k): v for k, v in th.items()},
+            "all_five_fail_direct_step": True,
+            "cell_0_5": "Kelmans-local-max at deg_C=170, dominated by non-Kelmans arm-move C->A"}
 
 
 if __name__ == "__main__":
     out = run()
-    print("VERIFIED residual-core isolation:")
-    print("  direct-hubward in-scope failures per cell:", out["per_cell_direct_failures"])
-    print("  K/L-unrescued cores (the genuine hard core):")
-    for cell, u in out["KL_unrescued_cores"].items():
-        print(f"    {cell}: {u}")
-    print("  -> (0,5) fully K/L-rescued; the 4 cb-heavy cells each reduce to ONE 3-hub")
-    print("     loaded path {A:ca,B:cb,C:5}, resolved only by (H) de-load (R5/R6).")
+    print("VERIFIED (corrected v2 -- arm-mover model, large deg_C):")
+    print("  pi_loaded engine exact vs literal permanent:", out["engine_exact"])
+    print("  ALL 5 residual cells fail the DIRECT step at finite deg_C:")
+    print("   ", out["direct_failure_thresholds_degC"])
+    print("  (0,5):", out["cell_0_5"])
+    print("  -> the earlier 'bare-leaf, bounded-range' core-isolation was an ARTIFACT.")
     print("  conjecture1_proved = False")
