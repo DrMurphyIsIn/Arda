@@ -125,3 +125,8 @@ name = "DlvpZetaSplit"
 # disk (primitive of logDeriv g; g = exp∘h; Re h = log‖g‖). Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpLogBranch"
+
+# PHASE 4 dVP frontier, obligation (i-b') CORE: Borel-Caratheodory + Cauchy derivative bound
+# (‖deriv h c‖ ≤ 2M'/(R-r) from Re h ≤ M'). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBCDeriv"
