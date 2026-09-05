@@ -140,3 +140,8 @@ name = "DlvpEntireBound"
 # → disk) composed with the entire-part bound. Isolates ζ input as a sphere bound. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpMaxMod"
+
+# PHASE 4 dVP frontier, obligation (i-b') → two ζ inputs: boundary-growth decomposition
+# log‖g‖ = log‖ζ‖ - log‖P‖ splits the sphere oscillation into ζ-growth + zero-factor. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBoundaryDecomp"
