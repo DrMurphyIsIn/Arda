@@ -126,14 +126,25 @@ statement directly about the entire part: g holomorphic zero-free on `ball c R`,
 (`M' > 0`) throughout, `0 < r < R` ⟹ `‖logDeriv g c‖ ≤ 2 M'/(R - r)`.  This is the FULL analytic content
 of (i-b') for a general zero-free `g`; the only ζ-specific input left is the boundary growth `log‖g‖ ≤ A·L`.
 
-**SOLE REMAINING analytic step: the ζ BOUNDARY GROWTH `log‖g‖ ≤ A·L`** — feed `M' = A·L` into the
-composition above.  Since
-`g = ζ/∏_ρ(·-ρ)^m`, `log‖g‖ = log‖ζ‖ - Σ m log‖·-ρ‖`; bound `log‖ζ‖ ≤ A·L` via `zeta_strip_bound` /
-`zeta_sphere_bound` (already have) and control the zero factors.  Full kernel-clean chain: reduction
-skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional Jensen zero-count on ζ + Herglotz split +
-obligation (i) foundations + (i-a') transfer + (i-a'') codiscrete + (i-a''') bridge + (i-a) capstone +
-(i-b') log-branch + (i-b') BC+Cauchy core.  With the bound, the split feeds `hzero`/`htwo` (rungs 1/4)
-and the whole region follows; optimizing `σ = 1 + c/L` on `dlvp_region_gap` → `β ≤ 1 - c/log|t|`.
+**(i-b') → SPHERE DONE — max-modulus reduction (`DlvpMaxMod.norm_logDeriv_le_of_sphere_log_norm_le`,
+kernel-clean, CI rh-dlvp-maxmod):** `log‖g‖` harmonic ⟹ sup on the disk = sup on the boundary
+(`Complex.norm_le_of_forall_mem_frontier_norm_le` max modulus, function-agnostic
+`norm_le_on_ball_of_sphere`), so the entire-part bound needs only a SPHERE bound on `log‖g‖`.
+
+**(i-b') → TWO ζ INPUTS DONE — boundary decomposition (`DlvpBoundaryDecomp`, kernel-clean, CI
+rh-dlvp-boundarydecomp):** `ζ = P·g` (P = zero-factor `∏(·-ρ)^m`) ⟹ `log‖g‖ = log‖ζ‖ - log‖P‖`
+(`log_norm_g_le_of_split`), so the sphere oscillation splits into ζ-growth + zero-factor.  The composed
+`norm_logDeriv_le_of_boundary_split` gives `‖logDeriv g c‖ ≤ 2(Aζ+AP)/(R-r)` from the two SPHERE inputs.
+
+**SOLE REMAINING — the two quantitative ζ sphere bounds** (feed into `norm_logDeriv_le_of_boundary_split`):
+(1) ζ-growth `log‖ζ z‖ - log‖ζ c‖ ≤ Aζ = O(L)`: upper via `zeta_sphere_bound` (have), lower needs a
+constant lower bound `‖ζ c‖ ≥ c₀` — cleanest at `Re c = 2` where `|ζ| ≥ ζ(4)/ζ(2)`; (2) zero-factor
+`log‖P c‖ - log‖P z‖ ≤ AP = O(L)`: two-scale geometry (factored zeros in an inner disk ⟹ `‖z-ρ‖`
+bounded below on the outer sphere) × zero count O(L) (have `zeta_zero_count_unconditional`).  Full
+kernel-clean chain: reduction skeleton (rungs 1,3,4,5) + rung-2 combine + Jensen zero-count + Herglotz
+split + obligation (i) + (i-a') transfer + (i-a'') codiscrete + (i-a''') bridge + (i-a) capstone +
+(i-b') log-branch + BC+Cauchy core + composition + max-modulus + boundary decomposition.  With the two
+bounds, `‖E‖ = O(L)` feeds `hzero`/`htwo`; then `σ = 1 + c/L` optimization → `β ≤ 1 - c/log|t|`.
 
 ## Rung 1 — DONE (this session)
 
