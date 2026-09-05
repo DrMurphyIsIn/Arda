@@ -128,3 +128,14 @@ The `(6/5)` bound simply **drops the `−Zopen/d` term** (`Zopen ≥ 0`). The sh
 `(d+1)/d → 1` as `d→∞`, so the `0.919 < 1` amplitude comes irreducibly from `−Zopen/d` — there is no
 rooting-factor-only improvement. **This is the genuine open Hdom crux (the rooting/Ztot trade-off); it is now
 characterized to the exact term (`−Zopen/d` + the quantitative Gap-1 margin), not just named.** `conjecture1_proved = False`.
+
+**A shortcut class RULED OUT (verified at the tie family).** Tested whether the crux reduces to a pure `Zopen`
+lower bound — i.e. keep `−Zopen/d` but use the loose `Ztot ≤ rhoB^n`. It does NOT: at every near-star tie point
+the naive bound `(d+1)/d·rhoB^n − Zopen/d` **overshoots** the sharp `(26/23)/rhoB·rhoB^n` (K=2: 126.6 vs 106.4),
+because the off-tie near-star has a substantial STRICT `Ztot` margin (`rhoB^n − Ztot(dtSub) = 13.4` at K=2) that
+the loose step discards. Meanwhile `Aobj = (26/23)/rhoB·rhoB^n` EXACTLY at every tie K (SharpRateNF is tight
+there). **Conclusion: the sharp bound cannot be obtained from `Ztot ≤ rhoB^n` + any `Zopen` lower bound; it
+irreducibly requires the QUANTITATIVE strict-off-tie amplitude `rhoB^n − Ztot(dtSub)` (Gap-1) — of which
+`master_ineq_strict` (`bell < 0` off deg-6) currently gives only the qualitative sign, not the quantity.** That
+quantitative amplitude margin is the irreducible open crux, now isolated with a class of reframings excluded.
+`conjecture1_proved = False`.
