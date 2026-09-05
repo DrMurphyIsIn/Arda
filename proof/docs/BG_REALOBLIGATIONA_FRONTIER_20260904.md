@@ -133,6 +133,23 @@ bounded by locality but not reducible to a named move. This is the genuine remai
 `RealObligationA` (the other 92% is F2-certified and banked). It is a bounded (local) existence statement, not
 the original all-trees lemma — but it is not a closed-form certificate.
 
+### Honest run at Type-W — the symmetric base case IS structured (`a9_symmetric_hubs.py`)
+
+Attacking the cleanest Type-W subfamily, the symmetric two-equal-hub trees `node[H,H]` (`H` a clean hub, up to
+`|H|=8`, 64 genuine Type-W): the move is **uniform after all** — relocate one whole hub `H` onto a **leaf of the
+other hub** (whole-hub, target-leaf: 60/64, 62/64). Its increment distribution is `dAobj ∈ {0 : 60/64,
+strictly positive : 4/64}` — **the symmetric Type-W move is Aobj-NON-DECREASING, with EQUALITY (`dAobj=0`)
+exactly at the pure/near-pure STAR hubs** (`H = k-star`). So:
+- The symmetric Type-W base case has a STRUCTURED (non-adaptive) move with a provable sign; the equality
+  `Aobj(node[k-star,k-star]) = Aobj(after)` is the extremal/tight case — the same tie flavor as the `27·23` locus.
+- The ADAPTIVITY (a8) enters only for the ASYMMETRIC / nested Type-W trees, where the two hubs DIFFER and the
+  argmax picks the larger-`Aobj`-gain relocation.
+
+**Honest status:** the general Type-W existence lemma remains OPEN, but the symmetric base case is now
+characterized and provably `Aobj`-non-decreasing (equality at the star tie). The residual is the ASYMMETRIC
+Type-W coupling (pick the hub whose relocation gains more `Aobj`) — which is where the genuine combinatorial
+content of conjecture1 (the caterpillar-maximizer) actually lives. `conjecture1_proved = False`.
+
 **Net:** the sweep discharged the Case-A (92%) `Aobj` clause as a kernel-verified atom and isolated the open
 residual to the **Type-W 8% target-selection** — a bounded local problem, no longer the full lemma.
 `conjecture1_proved = False`.
