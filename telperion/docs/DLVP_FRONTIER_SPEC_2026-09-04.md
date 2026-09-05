@@ -33,14 +33,41 @@ valid for `Re s = σ` slightly `> 1`, the sum over nontrivial zeros ρ (all `Re 
 | Rung | Statement | Status |
 |---|---|---|
 | **1. Zero-extraction core** | at the zero's height `Re(k/(s-ρ₀)) = k/(σ-β)`; other zeros `Re(1/(s-ρ')) ≥ 0` ⇒ `hzero` reduces to (BC-SUM) | **DONE** — `DlvpZeroSum.lean`, kernel-clean |
-| 2. Herglotz/BC sum bound | prove (BC-SUM): apply `borel_caratheodory_deriv` to a branch of `log ζ` (or `-ζ'/ζ` via Hadamard) on a disk about `1+iγ`, boundary bound from the crude `zeta_strip_bound` `|ζ| ≤ C|t|` | OPEN — the analytic core |
-| 3. Pole bound `hpole` | `-Re(ζ'/ζ)(σ) ≤ 1/(σ-1) + A`: split off the simple pole at `s=1` (`residue_logDeriv` gives the `1/(s-1)`), bound the regular part by BC | OPEN |
-| 4. Double bound `htwo` | `-Re(ζ'/ζ)(σ+2iγ) ≤ A·L`: (BC-SUM) at height `2γ` with no forced pole (drop ALL zeros, nonneg) | OPEN — a corollary of rung 2 |
-| 5. Assemble | feed 1/3/4 into `dlvp_core_estimate` → `dlvp_region_gap` → optimize `σ = 1 + c/L` → `β ≤ 1 - c'/L` | OPEN — real-algebra, mostly `nlinarith` |
+| 2. Herglotz/BC sum bound | prove (BC-SUM). COMBINE step DONE (`DlvpBCSum.lean` `bc_sum_of_split`): reduced to two analytic inputs — see below | **COMBINE DONE; two analytic inputs OPEN** |
+| **3. Pole bound `hpole`** | `-Re(ζ'/ζ)(σ) ≤ 1/(σ-1) + A`: at real σ the pole term `Re(1/(σ-1)) = 1/(σ-1)` exactly; `hpole_of_partialfraction` reduces it to the partial-fraction bound | **DONE** — `DlvpPole.lean`, kernel-clean |
+| **4. Double bound `htwo`** | `-Re(ζ'/ζ)(σ+2iγ) ≤ A·L`: the zero sum is nonneg (`sum_re_inv_sub_nonneg`, via rung 1) so it drops (`htwo_of_bound`) | **DONE** — `DlvpPole.lean`, kernel-clean |
+| **5. Assemble** | `dlvp_region_of_bc_inputs`: rungs 1/3/4 → `dlvp_core_estimate` → `dlvp_region_gap` | **DONE** — `DlvpPole.lean`, kernel-clean |
 
-Rung 2 is the genuine hard core (BC applied to ζ with zeros present needs the Hadamard
-factorization so `log ζ` is replaced by the entire part). Rungs 4-5 are largely mechanical
-once 2 lands; rung 3 is a localized version of 2 at `s=1`.
+**MILESTONE (rungs 1,3,4,5 done):** the entire dVP region GAP reduces, kernel-clean, to the
+three Borel–Carathéodory inputs (`dlvp_region_of_bc_inputs`).
+
+**RUNG 2 COMBINE done (`DlvpBCSum.lean`, kernel-clean):** `bc_sum_of_split` derives BC-SUM
+`-Re(ζ'/ζ) ≤ A·L - Re(Z)` from the log-derivative split `ζ'/ζ = Z + E` (Z = Herglotz zero
+sum) plus the entire-part bound `‖E‖ ≤ A·L`. `htwo_of_bc_split` composes it with rung 4.
+This reduces rung 2 to **two named analytic inputs, each now backed by a located Mathlib API**:
+
+- **(i) the partial-fraction split** `ζ'/ζ = Z + E` on a disk about `2+iγ` — via the Jensen
+  divisor machinery `AnalyticOnNhd.circleAverage_log_norm` (`Mathlib.Analysis.Complex.JensenFormula`).
+- **(ii) the entire-part bound** `‖E‖ ≤ A·L` — `borel_caratheodory_deriv`
+  (`telperion/examples/borel_caratheodory`, 0-sorry) with the zero count from
+  `AnalyticOnNhd.sum_divisor_le` (Jensen, Mathlib v4.32) and boundary bound `zeta_strip_bound`.
+
+**ANALYTIC CORE — zero-count DONE UNCONDITIONALLY (`DlvpZetaDisk.lean`, kernel-clean):**
+genuinely-analytic ζ facts (not reductions):
+- `zeta_ne_zero_of_one_lt_re` — `ζ c ≠ 0` for `Re c > 1` (`sum_divisor_le` hyp 2);
+- `zeta_analyticOnNhd_disk` — ζ analytic on a closed disk avoiding `s = 1` (hyp 1);
+- `zeta_sphere_bound` — the explicit boundary bound `‖ζ‖ ≤ (‖c‖+R)/(c.re-R-1) + (‖c‖+R)/(c.re-R)`
+  on the sphere, from `zeta_strip_bound` (`O(|γ|)`) — discharges hyp 3;
+- `zeta_zero_count_le` — the Jensen zero-count applied to ζ (boundary bound as hypothesis);
+- `zeta_zero_count_unconditional` — **hypothesis-free** `O(log|γ|)` ζ-zero count: combines the
+  three ingredients, discharging the ZERO-COUNT half of obligation (ii).
+
+REMAINING analytic core (genuine multi-session): the partial-fraction split ζ'/ζ = Z + E via
+the `divisor` (obligation (i) — the crux, connecting the now-bounded zero count to the
+Herglotz sum) and `borel_caratheodory_deriv` bounding `E`. Kernel-clean so far: the reduction
+skeleton (rungs 1,3,4,5) + the rung-2 combine + the UNCONDITIONAL Jensen zero-count on ζ.
+Optimizing `σ = 1 + c/L` on `dlvp_region_gap`'s output → `β ≤ 1 - c/log|t|` is the final
+real-algebra step, gated on the remaining core.
 
 ## Rung 1 — DONE (this session)
 

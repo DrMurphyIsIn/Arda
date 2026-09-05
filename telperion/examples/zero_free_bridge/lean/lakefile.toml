@@ -80,3 +80,18 @@ name = "ZeroFreePolylog"
 # ZeroFreeBridge; own target, out of defaultTargets.
 [[lean_lib]]
 name = "DlvpZeroSum"
+
+# PHASE 4 dVP frontier, rungs 3-5: pole bound, double bound, region assembly. Imports
+# DlvpZeroSum + ZeroFreeRegion; own target, out of defaultTargets.
+[[lean_lib]]
+name = "DlvpPole"
+
+# PHASE 4 dVP frontier, rung 2 combine: BC-SUM from the log-derivative split + entire
+# bound. Imports DlvpZeroSum; own target, out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBCSum"
+
+# PHASE 4 dVP frontier, rung 2 analytic core: ζ-on-disk analyticity/non-vanishing + the
+# Jensen zero-count applied to ζ. Imports Mathlib only; own target, out of defaultTargets.
+[[lean_lib]]
+name = "DlvpZetaDisk"
