@@ -72,4 +72,22 @@ theorem vp_cosine_deg4_nonneg (x : ℝ) (h1 : -1 ≤ x) (h2 : x ≤ 1) :
   nlinarith [sq_nonneg (2*x^4 + 4*x^3 + x^2 - 2*x - 1),
     mul_nonneg hsq (sq_nonneg (2*x^3 + 4*x^2 + 2*x))]
 
+/-- Borel–Carathéodory dogfood (general): re-export of Mathlib's `Complex.borelCaratheodory`
+    (v4.32, author M. Radziwill) — the plan's "missing" theorem is UPSTREAM, so `emit_borel_
+    caratheodory` is a packaging wrapper.  If this compiles the wrapper output is kernel-valid. -/
+theorem bc_general_emitted {f : ℂ → ℂ} {M R : ℝ} {z : ℂ}
+    (hM : 0 < M) (hf : DifferentiableOn ℂ f (Metric.ball 0 R))
+    (hf₁ : Set.MapsTo f (Metric.ball 0 R) {z | z.re ≤ M})
+    (hR : 0 < R) (hz : z ∈ Metric.ball 0 R) :
+    ‖f z‖ ≤ 2 * M * ‖z‖ / (R - ‖z‖) + ‖f 0‖ * (R + ‖z‖) / (R - ‖z‖) :=
+  Complex.borelCaratheodory hM hf hf₁ hR hz
+
+/-- Borel–Carathéodory dogfood (`f 0 = 0`): re-export of `Complex.borelCaratheodory_zero`. -/
+theorem bc_zero_emitted {f : ℂ → ℂ} {M R : ℝ} {z : ℂ}
+    (hM : 0 < M) (hf : DifferentiableOn ℂ f (Metric.ball 0 R))
+    (hf₁ : Set.MapsTo f (Metric.ball 0 R) {z | z.re ≤ M})
+    (hR : 0 < R) (hz : z ∈ Metric.ball 0 R) (hf₂ : f 0 = 0) :
+    ‖f z‖ ≤ 2 * M * ‖z‖ / (R - ‖z‖) :=
+  Complex.borelCaratheodory_zero hM hf hf₁ hR hz hf₂
+
 end EmittedShapes
