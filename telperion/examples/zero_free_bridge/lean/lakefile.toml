@@ -135,3 +135,8 @@ name = "DlvpBCDeriv"
 # log‖g‖ oscillation ≤ M' (composes DlvpLogBranch + DlvpBCDeriv). Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpEntireBound"
+
+# PHASE 4 dVP frontier, obligation (i-b') → sphere: max-modulus reduction (sphere bound on log‖g‖
+# → disk) composed with the entire-part bound. Isolates ζ input as a sphere bound. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpMaxMod"
