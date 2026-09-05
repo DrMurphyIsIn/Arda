@@ -33,14 +33,17 @@ valid for `Re s = σ` slightly `> 1`, the sum over nontrivial zeros ρ (all `Re 
 | Rung | Statement | Status |
 |---|---|---|
 | **1. Zero-extraction core** | at the zero's height `Re(k/(s-ρ₀)) = k/(σ-β)`; other zeros `Re(1/(s-ρ')) ≥ 0` ⇒ `hzero` reduces to (BC-SUM) | **DONE** — `DlvpZeroSum.lean`, kernel-clean |
-| 2. Herglotz/BC sum bound | prove (BC-SUM): apply `borel_caratheodory_deriv` to a branch of `log ζ` (or `-ζ'/ζ` via Hadamard) on a disk about `1+iγ`, boundary bound from the crude `zeta_strip_bound` `|ζ| ≤ C|t|` | OPEN — the analytic core |
-| 3. Pole bound `hpole` | `-Re(ζ'/ζ)(σ) ≤ 1/(σ-1) + A`: split off the simple pole at `s=1` (`residue_logDeriv` gives the `1/(s-1)`), bound the regular part by BC | OPEN |
-| 4. Double bound `htwo` | `-Re(ζ'/ζ)(σ+2iγ) ≤ A·L`: (BC-SUM) at height `2γ` with no forced pole (drop ALL zeros, nonneg) | OPEN — a corollary of rung 2 |
-| 5. Assemble | feed 1/3/4 into `dlvp_core_estimate` → `dlvp_region_gap` → optimize `σ = 1 + c/L` → `β ≤ 1 - c'/L` | OPEN — real-algebra, mostly `nlinarith` |
+| 2. Herglotz/BC sum bound | prove (BC-SUM): apply `borel_caratheodory_deriv` to a branch of `log ζ` (or `-ζ'/ζ` via Hadamard) on a disk about `1+iγ`, boundary bound from the crude `zeta_strip_bound` `|ζ| ≤ C|t|` | **OPEN — the sole remaining analytic core** |
+| **3. Pole bound `hpole`** | `-Re(ζ'/ζ)(σ) ≤ 1/(σ-1) + A`: at real σ the pole term `Re(1/(σ-1)) = 1/(σ-1)` exactly; `hpole_of_partialfraction` reduces it to the partial-fraction bound | **DONE** — `DlvpPole.lean`, kernel-clean |
+| **4. Double bound `htwo`** | `-Re(ζ'/ζ)(σ+2iγ) ≤ A·L`: the zero sum is nonneg (`sum_re_inv_sub_nonneg`, via rung 1) so it drops (`htwo_of_bound`) | **DONE** — `DlvpPole.lean`, kernel-clean |
+| **5. Assemble** | `dlvp_region_of_bc_inputs`: rungs 1/3/4 → `dlvp_core_estimate` → `dlvp_region_gap` | **DONE** — `DlvpPole.lean`, kernel-clean |
 
-Rung 2 is the genuine hard core (BC applied to ζ with zeros present needs the Hadamard
-factorization so `log ζ` is replaced by the entire part). Rungs 4-5 are largely mechanical
-once 2 lands; rung 3 is a localized version of 2 at `s=1`.
+**MILESTONE (rungs 1,3,4,5 done):** the entire dVP region GAP now reduces, kernel-clean,
+to the three Borel–Carathéodory inputs (`dlvp_region_of_bc_inputs`). The SOLE remaining
+analytic frontier is **rung 2 (BC-SUM)** — the genuine hard core: BC applied to ζ with
+zeros present needs the Hadamard factorization so `log ζ` is replaced by the entire part.
+Optimizing `σ = 1 + c/L` on `dlvp_region_gap`'s output → `β ≤ 1 - c'/L` is the final
+real-algebra step (mostly `nlinarith`), gated only on rung 2.
 
 ## Rung 1 — DONE (this session)
 

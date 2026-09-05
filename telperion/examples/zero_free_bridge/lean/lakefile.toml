@@ -80,3 +80,8 @@ name = "ZeroFreePolylog"
 # ZeroFreeBridge; own target, out of defaultTargets.
 [[lean_lib]]
 name = "DlvpZeroSum"
+
+# PHASE 4 dVP frontier, rungs 3-5: pole bound, double bound, region assembly. Imports
+# DlvpZeroSum + ZeroFreeRegion; own target, out of defaultTargets.
+[[lean_lib]]
+name = "DlvpPole"
