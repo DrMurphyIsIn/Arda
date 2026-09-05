@@ -13,7 +13,6 @@ requirement.
 """
 from __future__ import annotations
 
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -25,16 +24,18 @@ _REPO = Path(__file__).resolve().parents[1]
 _LEAN_PROJECT = _REPO / "examples" / "g1_floors" / "lean"
 
 sys.path.insert(0, str(_REPO / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # for the shared lean_env guard
 
 from telperion import UNIMODAL_PRELUDE  # noqa: E402
+from lean_env import lean_env_ready  # noqa: E402
 
 _CLEAN_AXIOMS = "[propext, Classical.choice, Quot.sound]"
 
 
 @pytest.mark.skipif(
-    not shutil.which("lake") or not (_LEAN_PROJECT / ".lake").is_dir(),
-    reason="lake and a prebuilt examples/g1_floors/lean/.lake are required "
-    "(CI/main gate; skips in a fresh worktree)",
+    not lean_env_ready(_LEAN_PROJECT),
+    reason="a prebuilt examples/g1_floors/lean Mathlib env is required "
+    "(CI/main gate; skips -- never rebuilds -- in a fresh worktree)",
 )
 def test_unimodal_prelude_kernel_compiles():
     """The prelude must compile to zero errors with clean axioms -- catches a

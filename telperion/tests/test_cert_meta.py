@@ -1,8 +1,10 @@
 """Tests for telperion.cert_meta — structured proof metadata + content-addressed index."""
+import json
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # for the shared lean_env guard
 
 from telperion.cert_meta import (  # noqa: E402
     CertIndex,
@@ -10,6 +12,7 @@ from telperion.cert_meta import (  # noqa: E402
     extract_cert_meta,
     measure_heartbeats,
 )
+from lean_env import lean_env_ready  # noqa: E402
 
 # A real emitted block (from examples/log_combination/lean/LogCombination.lean).
 LOG74 = """theorem log74_le_4fstar : Real.log (7/4 : ℝ) ≤ (4 * FSTAR : ℝ) := by
@@ -36,6 +39,8 @@ def test_extract_basic_fields():
     assert m.n_lines > 1
     assert isinstance(m.type_hash, str) and len(m.type_hash) == 16
     assert m.heartbeats is None
+    # proof_hash is populated and is a 16-hex content hash.
+    assert isinstance(m.proof_hash, str) and len(m.proof_hash) == 16
 
 
 def test_tactic_counts():
@@ -66,6 +71,66 @@ def test_type_hash_stable_under_whitespace_and_ascription():
     assert mc.type_hash != ma.type_hash
 
 
+def test_proof_hash_stable_under_comment_and_whitespace_churn():
+    """Cosmetic churn (reindent, blank lines, added comments) must NOT move proof_hash."""
+    base = (
+        "theorem t : (1 : ℝ) + 1 = 2 := by\n"
+        "  have h : (1 : ℝ) = 1 := rfl\n"
+        "  norm_num"
+    )
+    # Same tactics, but: different indentation, extra blank lines, a line comment,
+    # a block comment, and a trailing newline.
+    churned = (
+        "theorem t : (1 : ℝ) + 1 = 2 := by\n"
+        "    -- reindented and commented, but structurally identical\n"
+        "    have h : (1 : ℝ) = 1 := rfl   /- inline block comment -/\n"
+        "\n"
+        "    norm_num\n"
+    )
+    mb = extract_cert_meta(base)
+    mc = extract_cert_meta(churned)
+    assert mb.proof_hash == mc.proof_hash, (mb.proof_hash, mc.proof_hash)
+
+    # A block comment spanning multiple lines is also cosmetic.
+    block = (
+        "theorem t : (1 : ℝ) + 1 = 2 := by\n"
+        "  /- a\n     multi-line\n     comment -/\n"
+        "  have h : (1 : ℝ) = 1 := rfl\n"
+        "  norm_num"
+    )
+    md = extract_cert_meta(block)
+    assert mb.proof_hash == md.proof_hash
+
+
+def test_proof_hash_changes_when_a_tactic_changes():
+    """A real proof change (different tactic) MUST move proof_hash."""
+    base = "theorem t : (1 : ℝ) + 1 = 2 := by norm_num"
+    changed = "theorem t : (1 : ℝ) + 1 = 2 := by linarith"
+    # An added step is also a real change.
+    heavier = "theorem t : (1 : ℝ) + 1 = 2 := by have h : True := trivial; norm_num"
+    mb = extract_cert_meta(base)
+    mc = extract_cert_meta(changed)
+    mh = extract_cert_meta(heavier)
+    assert mb.proof_hash != mc.proof_hash
+    assert mb.proof_hash != mh.proof_hash
+    # The statement is identical across all three, so type_hash collides — this is
+    # exactly the regression signal proof_hash exists to disambiguate.
+    assert mb.type_hash == mc.type_hash == mh.type_hash
+
+
+def test_proof_hash_not_fused_tokens():
+    """Normalization must keep tactic token boundaries (unlike statement normalization).
+
+    `rw [x]` followed by `exact h` must NOT collapse to `rw[x]exacth`; a naive
+    delete-all-whitespace would make `a; b` and `ab` collide.
+    """
+    a = "theorem t : True := by exact trivial"
+    b = "theorem t : True := by exacttrivial"
+    ma = extract_cert_meta(a)
+    mb = extract_cert_meta(b)
+    assert ma.proof_hash != mb.proof_hash
+
+
 def test_duplicates_reports_shared_atom():
     idx = CertIndex()
     m1 = extract_cert_meta(
@@ -88,6 +153,35 @@ def test_duplicates_reports_shared_atom():
     assert m3.type_hash not in dups
 
 
+def test_proof_regressions_flags_same_stmt_different_proof():
+    """Same statement, different proof body -> flagged; same proof -> not flagged."""
+    idx = CertIndex()
+    # alpha and beta share a statement (type_hash) but have DIFFERENT proofs.
+    alpha = extract_cert_meta(
+        "theorem alpha : Real.log (7/4 : ℝ) ≤ (4 * FSTAR : ℝ) := by norm_num"
+    )
+    beta = extract_cert_meta(
+        "theorem beta : Real.log (7/4) ≤ (4*FSTAR) := by linarith"
+    )
+    # gamma and delta share a statement AND the same proof body — no regression.
+    gamma = extract_cert_meta("theorem gamma : True := by trivial")
+    delta = extract_cert_meta("theorem delta : True := by trivial")
+    for m in (alpha, beta, gamma, delta):
+        idx.add(m)
+
+    regs = idx.proof_regressions()
+    assert alpha.type_hash in regs
+    reg_names = {n for (n, _) in regs[alpha.type_hash]}
+    assert reg_names == {"alpha", "beta"}
+    # The two distinct proof hashes are both present.
+    reg_hashes = {ph for (_, ph) in regs[alpha.type_hash]}
+    assert reg_hashes == {alpha.proof_hash, beta.proof_hash}
+    assert len(reg_hashes) == 2
+
+    # gamma/delta have identical proofs -> NOT a regression.
+    assert gamma.type_hash not in regs
+
+
 def test_index_json_roundtrip():
     idx = CertIndex()
     idx.add(extract_cert_meta(LOG74))
@@ -96,12 +190,42 @@ def test_index_json_roundtrip():
     r = restored.metas["log74_le_4fstar"]
     assert r.type_hash == idx.metas["log74_le_4fstar"].type_hash
     assert r.tactic_counts == idx.metas["log74_le_4fstar"].tactic_counts
+    # proof_hash survives the round-trip.
+    assert r.proof_hash == idx.metas["log74_le_4fstar"].proof_hash
 
 
 def test_certmeta_dict_roundtrip():
     m = extract_cert_meta(LOG74)
     m2 = CertMeta.from_dict(m.to_dict())
     assert m2 == m
+    assert m2.proof_hash == m.proof_hash
+
+
+def test_certmeta_from_dict_old_record_without_proof_hash():
+    """An OLD serialized record that predates proof_hash must still load (proof_hash=None)."""
+    m = extract_cert_meta(LOG74)
+    d = m.to_dict()
+    # Simulate a record written before the field existed.
+    del d["proof_hash"]
+    old = CertMeta.from_dict(d)
+    assert old.proof_hash is None
+    # Everything else still loads.
+    assert old.name == m.name
+    assert old.type_hash == m.type_hash
+    assert old.tactic_counts == m.tactic_counts
+
+
+def test_index_json_roundtrip_old_record_missing_proof_hash():
+    """A whole index JSON blob written by an old version (no proof_hash keys) still loads."""
+    m = extract_cert_meta(LOG74)
+    d = m.to_dict()
+    del d["proof_hash"]
+    blob = json.dumps({"metas": [d]})
+    idx = CertIndex.from_json(blob)
+    assert "log74_le_4fstar" in idx.metas
+    assert idx.metas["log74_le_4fstar"].proof_hash is None
+    # And such a record is NOT mistaken for a regression (None hashes are ignored).
+    assert idx.proof_regressions() == {}
 
 
 def test_measure_heartbeats_int_or_none():
@@ -110,8 +234,10 @@ def test_measure_heartbeats_int_or_none():
     hb = measure_heartbeats(trivial, env_dir=ENV_DIR, name="cert_meta_hb_probe")
     # Must never raise; either a positive int (env available + parsed) or None.
     assert hb is None or (isinstance(hb, int) and hb > 0)
-    # When the built env is present, `#count_heartbeats in` should parse a positive int.
-    if ENV_DIR.exists() and (ENV_DIR / ".lake").exists():
+    # When the env is actually BUILT (not merely a `.lake` dir present), `#count_heartbeats
+    # in` must parse a positive int. `lean_env_ready` gates on the built Mathlib.olean, so
+    # this never fires against an unbuilt env (which would return None without a rebuild).
+    if lean_env_ready(ENV_DIR):
         assert isinstance(hb, int) and hb > 0, hb
 
 
