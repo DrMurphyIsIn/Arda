@@ -56,5 +56,9 @@ vs ~18s per-decl; `lean --stdin` is single-shot so a persistent LSP is the only 
 amortise across *separate* calls, deferred) and packaged as a CI gate:
 `scripts/bg_spine_audit.py --env <built R3Cert>` (exit 0 iff the spine states its intended
 propositions). `ceiling_of_gstep` (the sibling multiplicative bridge) is now included and
-MATCHES. Remaining follow-up: the fixed-N capstone (`R47` track).
+MATCHES. And the **fixed-N capstone** `conjecture1_of_layers_fixedN` (R47 track, built
+separately) MATCHES its independent intended spec `∀ tie, Hnorm → Hdom → ∀ t, Aobj t ≤
+Aobj (tie (usize t))` — the reduction of Conjecture 1 to the two open layers is honest,
+no weakening. So the ENTIRE trust-critical chain top-to-bottom (capstone → bridges →
+witness → the open obligation's definition) states exactly its intended propositions.
 conjecture1_proved = False.

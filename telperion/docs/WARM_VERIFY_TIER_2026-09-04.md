@@ -37,13 +37,35 @@ The BG spine gate runs 3 checks in **5.5s** (one load) via `scripts/bg_spine_aud
 This captures the bulk of the latency win for the audit/gap-fill hot paths without the
 unvalidated persistent-server protocol.
 
+## Finding: the LSP (`lean --server`) does NOT warm-repeat either (validated 2026-09-04)
+
+The natural "persistent tier" candidate is the Lean 4 LSP server. Validated empirically
+(minimal JSON-RPC client, built env):
+
+- The LSP **surfaces everything** the cold path needs, as diagnostics mappable to
+  `_parse_output`: **errors** (severity 1), **`sorry`** (severity 2, `declaration uses
+  \`sorry\``), and **`#print axioms`** output (severity 3 info, `'foo' depends on axioms:
+  …` / `does not depend on any axioms`). So the *contract* works.
+- BUT the LSP uses a **per-file-worker** model: each `didOpen` of a DIFFERENT file spawns a
+  worker that **re-elaborates the imports independently**. Measured, waiting for *true*
+  completion (`$/lean/fileProgress` `processing == []`, not the premature first
+  `publishDiagnostics`): warm docs land at **~7.5s ≈ cold** — no cross-file env sharing.
+- A first, naive probe showed "0.2s warm" — that was an **artifact of breaking on an early,
+  still-empty `publishDiagnostics`** before elaboration finished. Corrected: no speedup.
+
+So neither `lean --stdin` (single-shot) nor `lean --server` (per-file re-elaboration) shares
+a loaded Mathlib across many DIFFERENT snippets. The ONLY mechanism that does is a REPL that
+runs many commands against one resident environment — `leanprover-community/repl` — which is
+**not in the toolchain** and would be a real build-dependency add.
+
 ## Recommendation
 
-- **Now:** batching (shipped) covers the many-checks-at-once case, which is the audit and
-  the per-cell-family gap-fill.
-- **Next (real persistent tier):** wire the LSP path in `lean_server` (`didOpen` a virtual
-  doc, map `publishDiagnostics` → the shared `_parse_output` contract) and benchmark
-  sub-second *separate*-call repeats. Worth it once the gap-fill loop is interactive
-  (one gap at a time) rather than batched. Until then, batching is the right tier.
+- **Now (shipped):** BATCHING — one Mathlib load for many checks. Covers the audit and the
+  at-once gap-fill hot paths (the actual usage). This is the right and only robust tier
+  without a new dependency.
+- **Deferred (real persistent tier):** add `leanprover-community/repl` as a Lake dependency
+  and drive it (`{"cmd": …}` → messages/env) for sub-second *separate*-call repeats. Worth it
+  only once the loop is genuinely interactive one-at-a-time; the LSP is NOT the shortcut it
+  appeared to be.
 
 conjecture1_proved = False.
