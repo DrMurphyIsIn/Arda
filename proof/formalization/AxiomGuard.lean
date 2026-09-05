@@ -56,6 +56,8 @@ import R3Cert.BGSCLObligationB
 import R3Cert.BGSCLRealOblACaseA
 import R3Cert.BGSCLRealOblACaseAIdentity
 import R3Cert.BGSCLRealOblACaseABook
+import R3Cert.BGSCLRealOblACaseALift
+import R3Cert.BGSCLRealOblBSymBase
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -177,3 +179,21 @@ import R3Cert.BGSCLRealOblACaseABook
 #print axioms R3Cert.Step3.perm_ratio_backbone_le_rate
 -- Obligation B seam: Aobj invariant under a bare address-graph iso (degree side-condition discharged).
 #print axioms R3Cert.Step3.Aobj_root_invariant_of_iso
+-- Case-B SYMMETRIC BASE CASE (2026-09-04): the two-k-star straightening is Aobj-NEUTRAL, parametric in k.
+-- Both sides = (4k+2)/(k+1) exactly; kernel-proves dAobj = 0 for every k ≥ 1.
+#print axioms R3Cert.Step3.Ztot_dtSub_kstar
+#print axioms R3Cert.Step3.Aobj_before
+#print axioms R3Cert.Step3.Aobj_afterB
+#print axioms R3Cert.Step3.symmetric_star_neutral
+#print axioms R3Cert.Step3.symmetric_star_monotone
+
+-- Case-A DEGREE-CHANGING Aobj CONTEXT-LIFT (2026-09-04): the sole open residual of Case A, closed.
+-- The leaf-path-extension acting at a NON-root child (retaining its other children `crest`) is
+-- Aobj-monotone in ANY sibling context.  The engine is the any-position degree-changing child
+-- replacement; the two child-cavity gains (Ztot up, weighted-Zopen up as udeg drops) are the local
+-- certificates.  The literal Book `Prop` (wholesale replacement, crest dropped) is FALSE — witnessed.
+#print axioms R3Cert.Step3.Aobj_child_replace_le_deg
+#print axioms R3Cert.Step3.Ztot_dtSub_flp_child_le
+#print axioms R3Cert.Step3.Zopen_weighted_flp_child_le
+#print axioms R3Cert.Step3.aobj_flp_context_lift_crest
+#print axioms R3Cert.Step3.flp_context_lift_book_false
