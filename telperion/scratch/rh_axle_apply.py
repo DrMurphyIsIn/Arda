@@ -176,11 +176,46 @@ def n4_meta_bundle():
     return conflict
 
 
+# ---------------------------------------------------------------- #5
+def n5_signature_gate():
+    hdr("#5  signature_gate — assert the emitted RH atom states the INTENDED claim")
+    # The positive half of the trust boundary (AXLE verify_proof signature match):
+    # negative_control kills a FALSE claim; this kills a WEAKER/DIFFERENT true claim
+    # that still compiles. The RH thread hit this by hand — an ∃C restatement of
+    # zeta_log_bound gives NO region constant vs the intended explicit C.
+    from telperion.signature_gate import check_signatures, forall_type
+    content = (
+        "import Mathlib\n\n"
+        "theorem rh_tangent (x : ℝ) (hx : 0 ≤ x) : Real.log (1 + x) ≤ x := by\n"
+        "  have hy : (0:ℝ) < 1 + x := by linarith\n"
+        "  have h := Real.log_le_sub_one_of_pos hy\n  linarith\n"
+    )
+    binders = "(x : ℝ) (hx : 0 ≤ x)"
+    correct = forall_type(binders, "Real.log (1 + x) ≤ x")
+    weaker = forall_type(binders, "Real.log (1 + x) ≤ x + 1")   # silent restatement
+    exists_c = "∃ C : ℝ, ∀ (x : ℝ), 0 ≤ x → Real.log (1 + x) ≤ C * x"  # ∃C vs explicit
+    if not RUN_LEAN:
+        print("  KERNEL tier GATED OFF — guard block staged for CI:")
+        from telperion.signature_gate import build_sig_guards
+        for ln in build_sig_guards({"rh_tangent": correct}).splitlines():
+            print("    | " + ln)
+        return True
+    ok_correct = check_signatures(content, env_dir=ENV_DIR, expected={"rh_tangent": correct})
+    ko_weaker = check_signatures(content, env_dir=ENV_DIR, expected={"rh_tangent": weaker})
+    ko_exists = check_signatures(content, env_dir=ENV_DIR, expected={"rh_tangent": exists_c})
+    print(f"  CORRECT  (≤ x)     : okay={ok_correct.okay} all_match={ok_correct.all_match}  (want MATCH)")
+    print(f"  WEAKER   (≤ x+1)   : okay={ko_weaker.okay} all_match={ko_weaker.all_match}  (want MISMATCH)")
+    print(f"  EXISTS-C (∃C form) : okay={ko_exists.okay} all_match={ko_exists.all_match}  (want MISMATCH)")
+    # gate is correct iff it ACCEPTS the intended and REJECTS both restatements.
+    return ok_correct.all_match and (not ko_weaker.all_match) and (not ko_exists.all_match)
+
+
 if __name__ == "__main__":
     print(f"ENV_DIR = {ENV_DIR}")
     print(f"RUN_LEAN = {RUN_LEAN}  (kernel tier {'ON' if RUN_LEAN else 'OFF — Python/sympy tier only'})")
     results = {}
-    for fn in (n1_negative_control, n2_emit_enclosure, n3_gapfill, n4_meta_bundle):
+    for fn in (n1_negative_control, n2_emit_enclosure, n3_gapfill, n4_meta_bundle,
+               n5_signature_gate):
         try:
             results[fn.__name__] = fn()
         except Exception as e:

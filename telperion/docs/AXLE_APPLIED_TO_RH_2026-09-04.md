@@ -77,17 +77,30 @@ tests still pass; added `test_extract_gaps_handles_implicit_and_instance_binders
 pinning the RH case (9 pass total). This is the "build reusable capability into
 Telperion" standing order: a cross-front (RH) exercise hardened a shared primitive.
 
-## 4. Highest-value next infra build (third-tour #1), now RH-motivated
+## 4. Signature/statement-match gate (third-tour #1) — BUILT + kernel-verified
 
-The **signature/statement-match gate** (`use_def_eq=False`): assert an emitted RH
-theorem states the *intended* proposition, not merely that it compiles. Concretely
-for RH — `zeta_log_bound` claims the uniform constant **C = 6**; a buggy emitter
-could emit a compiling, axiom-clean theorem with a *weaker* C (or an ∃C form that
-gives no region constant, exactly the restatement the RH memory already had to
-fix by hand). Today `verify.py` checks compile + axioms + sorry, NOT statement
-identity — this is the open positive half of the untrusted-generator/trusted-kernel
-boundary, and it is the same gate the negative control's TRUE twin wants. Build
-first (LOW-MED effort, HIGH trust).
+The **positive half of the trust boundary** is now shipped: `signature_gate.py`
+(`check_signatures`, `forall_type`, `build_sig_guards`). It asserts an emitted RH
+theorem states the *intended* proposition, not merely that it compiles. Mechanism
+(kernel-checked, no metaprogramming): for each `{decl -> intended full type}` it
+appends a guard `theorem <decl>__sig_guard : <intended> := <decl>` — which
+elaborates iff `<decl> : <intended>` is defeq. A weaker/different true claim is not
+defeq to the intended type, so the kernel rejects it.
+
+Kernel-verified locally against the `zero_free_bridge` env on the RH tangent atom:
+- CORRECT `log(1+x) ≤ x` → **MATCH**
+- WEAKER `log(1+x) ≤ x + 1` (silent restatement) → **MISMATCH** (kernel "Type mismatch")
+- EXISTS-C `∃ C, ∀ x, 0≤x → log(1+x) ≤ C·x` (∃C-vs-explicit — the exact class the
+  RH thread fixed `zeta_log_bound` by hand for) → **MISMATCH**
+
+This closes the untrusted-generator/trusted-kernel boundary: `negative_control`
+kills a FALSE claim; `signature_gate` kills a WEAKER/DIFFERENT true claim. Driver
+capability #5; CI job `rh-signature-gate`; unit tests `tests/test_signature_gate.py`
+(6 offline) + kernel demo in the driver.
+
+### Remaining follow-ons (third tour, lower priority)
+Fast warm-env verify tier (#2), bundle topo+type_hash (#4), per-cert deps (#5),
+Environment registry (#3), mechanical simplify (#6).
 
 ## Reproduce
 
