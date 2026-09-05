@@ -68,4 +68,17 @@ theorem zeta_extract_zeros_poles (c : ℂ) (R : ℝ) (hR : 0 < R)
     (MeromorphicOn.divisor riemannZeta _).finiteSupport (isCompact_closedBall c R)
   exact hmero.extract_zeros_poles hord hfin
 
+/-- (piece A) The ζ zero-part finprod is ANALYTIC on the disk: ζ has no poles there, so its
+    divisor is `≥ 0`, making `∏ᶠ u, (·-u)^{divisor u}` a polynomial (analytic).  With this, the
+    factored form `(∏ᶠ..) • g` is analytic — the missing hypothesis for `logDeriv_congr_of_codiscrete`
+    to apply to ζ vs its factorization. -/
+theorem zeta_finprod_analyticOnNhd (c : ℂ) (R : ℝ) (h1 : (1 : ℂ) ∉ Metric.closedBall c R) :
+    AnalyticOnNhd ℂ
+      (∏ᶠ u, (· - u) ^ (MeromorphicOn.divisor riemannZeta (Metric.closedBall c R) u))
+      (Metric.closedBall c R) := by
+  have hana := zeta_analyticOnNhd_disk c R h1
+  have hdiv := MeromorphicOn.AnalyticOnNhd.divisor_nonneg hana
+  intro z _hz
+  exact Function.FactorizedRational.analyticAt (hdiv z)
+
 end ZeroFreeBridge

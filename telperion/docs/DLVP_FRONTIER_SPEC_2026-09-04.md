@@ -97,12 +97,20 @@ since `U ∈ 𝓝 z₀`) → `∃ᶠ` (`𝓝[≠]` NeBot on ℂ) → `EqOn` (`eq
 **(i-a''') finprod↔Finset BRIDGE DONE (`DlvpBridge`, kernel-clean):** `herglotz_split_finprod`
 gives `logDeriv ((∏ᶠ..)·g) z = Σ_ρ D(ρ)/(z-ρ) + logDeriv g z`.
 
-REMAINING (2 pieces): the ζ-factorization zero-part is analytic (divisor ≥ 0 since ζ has no poles;
-+ `•`↔`*` reconciliation) so `logDeriv_congr_of_codiscrete` applies to ζ vs `(∏ᶠ..)·g`; and (i-b')
-the Borel-Caratheodory BOUND `‖E‖ ≤ A·L` (`borel_caratheodory_deriv` on `log g`). Kernel-clean chain:
-reduction skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional Jensen zero-count on ζ +
-Herglotz split + obligation (i) foundations + (i-a') transfer + (i-a'') codiscrete transfer +
-(i-a''') bridge. Optimizing `σ = 1 + c/L` → `β ≤ 1 - c/log|t|` is the final real-algebra step.
+**OBLIGATION (i-a) COMPLETE (`DlvpZetaSplit.zeta_logDeriv_split`, kernel-clean):** the full split
+for the actual ζ. On the open disk about `c` (Re c > 1) avoiding `s=1`, at a `z` avoiding the zeros,
+    ζ'/ζ(z) = Σ_ρ (divisor ζ ρ)/(z-ρ) + g'/g(z)   ( = Z + E ),
+with `g` analytic + zero-free.  Assembled end-to-end: `zeta_extract_zeros_poles` (factorization) +
+`zeta_finprod_analyticOnNhd` (zero-part analytic, divisor ζ ≥ 0) + `logDeriv_congr_of_codiscrete`
+(codiscrete→pointwise, on the open ball via `codiscreteWithin_mono`) + `herglotz_split_finprod`.
+
+**SOLE REMAINING analytic step: (i-b') the Borel-Caratheodory BOUND `‖E‖ = ‖logDeriv g‖ ≤ A·L`** on
+the entire part (`borel_caratheodory_deriv` on `log g`, `g` zero-free ⟹ a branch of `log g` on the
+disk).  Full kernel-clean chain: reduction skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional
+Jensen zero-count on ζ + Herglotz split + obligation (i) foundations + (i-a') transfer + (i-a'')
+codiscrete + (i-a''') bridge + (i-a) capstone.  With (i-b'), the split feeds `hzero`/`htwo` (rungs
+1/4) and the whole region follows via the reduction skeleton; optimizing `σ = 1 + c/L` on
+`dlvp_region_gap` → `β ≤ 1 - c/log|t|` is the final real-algebra step.
 
 ## Rung 1 — DONE (this session)
 

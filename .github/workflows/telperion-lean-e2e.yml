@@ -2584,3 +2584,26 @@ jobs:
       - name: Build the dVP finprod↔Finset bridge (kernel verification)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpBridge
+
+  # dVP obligation (i-a) CAPSTONE: ζ'/ζ = Herglotz zero-sum + entire part, assembled end-to-end
+  # for ζ (extract_zeros_poles + finprod-analytic + codiscrete transfer + herglotz_split).
+  rh-dlvp-zetasplit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP obligation (i-a) capstone (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaSplit
