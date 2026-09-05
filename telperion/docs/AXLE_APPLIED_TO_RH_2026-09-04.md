@@ -110,9 +110,29 @@ the gate against the actual `ZeroFreeBridge.zeta_log_bound`. Kernel-verified loc
 CI job `rh-zeta-log-bound-signature` (builds `ZetaLogBound`, runs the assertion)
 makes this a permanent, machine-enforced guarantee.
 
-### Remaining follow-ons (third tour, lower priority)
-Fast warm-env verify tier (#2), bundle topo+type_hash (#4), per-cert deps (#5),
-Environment registry (#3), mechanical simplify (#6).
+### Infra follow-ons (third tour) — status
+- **bundle topo+type_hash dedup (#4)** — DONE. `merge_bundle` now keys dedup/conflict
+  on `cert_meta.type_hash` (structural), adds `merge_duplicates` (collapse same-hash
+  atoms under different names + rewrite refs) and `topo_sort` (dependency-ordered
+  emit). +6 tests.
+- **per-cert dependency extraction (#5)** — DONE. `cert_meta` records `refs`; `CertIndex`
+  gains `dependencies`/`dependents`/`dead_atoms`/`impacted_by` (the extract_decls
+  dependency graph restricted to the cert set). +4 tests.
+- **fast warm-env verify tier (#2)** — DIAGNOSED + hardened. Empirically validated on
+  4.32.0 that `lake env lean --stdin` is SINGLE-SHOT (no residency, re-imports Mathlib
+  each call); the old sentinel-framed worker would hang. `lean_server.elaborate` now
+  uses the correct single-shot contract (safe, verdict-correct, not faster). The real
+  warm tier is the LSP path (`lean --server`), now with a concrete empirically-grounded
+  plan in `_start_lsp` — scoped next unit. +4 tests (offline fallback + live parity).
+- Not started: Environment registry (#3), mechanical simplify (#6).
+
+### The RH mathematical frontier (separate, heavy, multi-session)
+The dVP path: bridge Mathlib v4.32 value-distribution API (`LogCounting`,
+`JensenFormula`, `Hadamard` — all verified to exist) to the concrete ζ zero-sum
+`Σ_ρ Re(1/(s-ρ)) ≤ O(log|t|)` → factored-BC on ζ'/ζ → discharge the CONDITIONAL
+`dlvp_core_estimate` (ZeroFreeRegion.lean) → `Re s > 1 - c/log|t|`. BorelCaratheodory
+is already 0-sorry. Not a Telperion-tooling task; tracked in
+[[rh_zeta_log_bound_2026-09-02]].
 
 ## Reproduce
 
