@@ -153,3 +153,17 @@ box/Zopen-only reframing is INSUFFICIENT (quantitative strict off-tie amplitude 
 route finds the 5 cb-heavy cells {(0,5),(1,4),(1,5),(2,5),(3,5)} NOT box-certifiable, needing the exact recursive
 z_C*rho_C hub-mover. Same phenomenon: the tie-adjacent configurations resist box relaxation and require the exact
 sharp treatment. My Gap-1 == their z_C*rho_C residual. conjecture1_proved = False.
+
+## Holistic honesty audit — the whole chain is confirmed CONDITIONAL and un-weakened (2026-09-05)
+
+Ran the merged AXLE audit tooling (`bg_spine_audit.py` + statement/axiom checks) over the built `R3Cert`:
+- **Spine statement-identity: PASS 3/3** — `ceiling_of_subaction`, `ceiling_of_witness`, `ceiling_of_gstep` each
+  state their INDEPENDENTLY-written intended proposition (defeq); `IsSubaction` is a genuine additive inequality.
+  The `bg_ceiling` foundation is NOT weakened.
+- **`conjecture1_of_layers` is genuinely CONDITIONAL** — its type carries BOTH open hypotheses (Hnorm + Hdom) and
+  proves `forall t, Aobj t <= Aobj tieU` only modulo them; axiom-clean `[propext, Classical.choice, Quot.sound]`,
+  no hidden sorry.
+
+Conclusion: the entire chain honestly claims exactly `conjecture1_proved = False` — the foundation states what it
+should, the capstone is a genuine conditional reduction, and the sole open residual is the tie-adjacent sharp
+amplitude (my Gap-1 == the parallel lane`s z_C*rho_C), triangulated from both Hdom routes. Nothing overclaims.
