@@ -98,6 +98,18 @@ kills a FALSE claim; `signature_gate` kills a WEAKER/DIFFERENT true claim. Drive
 capability #5; CI job `rh-signature-gate`; unit tests `tests/test_signature_gate.py`
 (6 offline) + kernel demo in the driver.
 
+### Applied to the REAL `zeta_log_bound` (not just the tangent demo)
+`scratch/rh_zeta_log_bound_signature.py` builds the `ZetaLogBound` module and runs
+the gate against the actual `ZeroFreeBridge.zeta_log_bound`. Kernel-verified locally:
+- EXPLICIT **C=6** (intended) → **MATCH**, axioms clean — the kernel confirms the
+  region's growth bound is the explicit-constant statement.
+- EXPLICIT **C=7** (a true but weaker bound) → **MISMATCH** — the gate pins the
+  *exact* constant, not just "some bound".
+- **∃C** form → **MISMATCH** — the exact restatement the RH thread fixed by hand.
+
+CI job `rh-zeta-log-bound-signature` (builds `ZetaLogBound`, runs the assertion)
+makes this a permanent, machine-enforced guarantee.
+
 ### Remaining follow-ons (third tour, lower priority)
 Fast warm-env verify tier (#2), bundle topo+type_hash (#4), per-cert deps (#5),
 Environment registry (#3), mechanical simplify (#6).
