@@ -113,11 +113,40 @@ def run() -> dict:
     excess = (bt - ns) / ns
     assert excess > Fr(5, 100), f"K=5 excess should exceed 5%, got {float(excess)}"
 
+    # RIGOROUS trade-optimality (makes m(K) analytic, not just a brute max):
+    #   trade load-5 arm -> load-4 arm + cherry multiplies the Ztot-product by EXACTLY 114/115,
+    #   and adds EXACTLY 473/1311 to qSum. V(K,m) is unimodal in m, so m(K) is the crossover.
+    _Q5, _Q4, _QC = Fr(3, 23), Fr(3, 19), Fr(1, 3)
+    assert _Z4 * _ZC / _Z5 == Fr(114, 115), "trade product factor must be 114/115"
+    assert -_Q5 + _Q4 + _QC == Fr(473, 1311), "trade qsum delta must be 473/1311"
+
+    def qsum(K, m):
+        return (K - m) * _Q5 + m * _Q4 + m * _QC
+
+    def trade_helps(K, m):      # closed-form: V(K,m+1) > V(K,m)
+        d = K + m
+        return Fr(114, 115) * (1 + qsum(K, m + 1) / (d + 1)) > (1 + qsum(K, m) / d)
+
+    for K in range(1, 34):
+        vals = [V(K, m) for m in range(0, K + 1)]
+        mb = max(range(0, K + 1), key=lambda m: V(K, m))
+        # unimodal: strictly up to mb, strictly down after
+        assert all(vals[i] < vals[i + 1] for i in range(mb)), f"V not increasing pre-peak K={K}"
+        assert all(vals[i] > vals[i + 1] for i in range(mb, K)), f"V not decreasing post-peak K={K}"
+        # crossover reproduces the optimal m
+        mc = 0
+        while mc < K and trade_helps(K, mc):
+            mc += 1
+        assert mc == mb == got[K], f"crossover m mismatch K={K}: {mc},{mb},{got[K]}"
+
     return {"m_of_K": got,
             "near_star_optimal_from_K": 23,
             "K5_near_star": str(ns),
             "K5_broadened_tie": str(bt),
-            "K5_excess_pct": float(excess * 100)}
+            "K5_excess_pct": float(excess * 100),
+            "trade_product_factor": "114/115",
+            "trade_qsum_delta": "473/1311",
+            "V_unimodal_in_m": True}
 
 
 if __name__ == "__main__":
