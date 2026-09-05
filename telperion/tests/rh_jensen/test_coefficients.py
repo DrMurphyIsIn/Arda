@@ -1,4 +1,7 @@
 # tests/rh_jensen/test_coefficients.py
+import pytest
+pytest.importorskip("flint")
+
 from fractions import Fraction
 import mpmath
 from telperion.rh_jensen.coefficients import enclose_xi_coeff, enclose_coeff_box

@@ -24,11 +24,12 @@ NOT a proof of RH.
 """
 from __future__ import annotations
 
+import pytest
+pytest.importorskip("flint")
+
 import subprocess
 import sys
 from pathlib import Path
-
-import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LEAN_DIR = REPO_ROOT / "examples" / "jensen_hyperbolicity" / "lean"

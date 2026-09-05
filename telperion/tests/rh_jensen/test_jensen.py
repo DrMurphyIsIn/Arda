@@ -1,4 +1,7 @@
 # tests/rh_jensen/test_jensen.py
+import pytest
+pytest.importorskip("flint")
+
 from fractions import Fraction
 from telperion.rh_jensen.jensen import jensen_coeff_box, disc2_margin
 

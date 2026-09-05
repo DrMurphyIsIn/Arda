@@ -6,9 +6,10 @@ degree-2 Jensen polynomial is hyperbolic, and it REFUSES (ValueError) any box
 that is not certifiably hyperbolic (margin <= 0) or whose leading coefficient
 straddles zero.
 """
-from fractions import Fraction as F
-
 import pytest
+pytest.importorskip("flint")
+
+from fractions import Fraction as F
 
 from telperion.emit_jensen_polynomial_hyperbolicity import (
     JensenPolynomialHyperbolicityEmitter,

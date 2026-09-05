@@ -12,6 +12,9 @@ Riemann zeta function. NOT a proof of RH.
 """
 from __future__ import annotations
 
+import pytest
+pytest.importorskip("flint")
+
 import shutil
 import subprocess
 import sys
@@ -71,6 +74,7 @@ def test_generated_lean_contains_theorem() -> None:
     )
 
 
+@pytest.mark.skipif(shutil.which("lake") is None, reason="lake not available")
 def test_generated_lean_builds_green() -> None:
     """lake build succeeds (SoC-safe: cache-get then build).
 
