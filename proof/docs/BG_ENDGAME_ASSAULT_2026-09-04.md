@@ -167,3 +167,21 @@ Ran the merged AXLE audit tooling (`bg_spine_audit.py` + statement/axiom checks)
 Conclusion: the entire chain honestly claims exactly `conjecture1_proved = False` — the foundation states what it
 should, the capstone is a genuine conditional reduction, and the sole open residual is the tie-adjacent sharp
 amplitude (my Gap-1 == the parallel lane`s z_C*rho_C), triangulated from both Hdom routes. Nothing overclaims.
+
+## Full local Kelmans merge table kernel-verified (2026-09-05) — integrated two-route Hdom picture
+
+The parallel lane completed the LOCAL Kelmans merge table; INDEPENDENTLY re-verified kernel-green here
+(self-contained R3Cert.+ leaves): TwoHubCert (vertex-budget domination), AssistedMergeCert (borrow-then-merge
+strictly increases pi), GenEnvCert (general-environment monotonicity, 25 cells, all N/m), DichotomyCert (44 thms,
+the sign map: step increases pi IFF donor loaded — 30 increasing / 4 decreasing / 2 mixed, tiled exactly).
+
+Integrated Hdom picture (two independent routes, both maximally developed):
+- MERGE route (parallel lane): the full local merge table is kernel-verified. Residual = the 5 gen-env cb-heavy
+  cells + the tree->hub / Obligation-A ASSEMBLY (wiring the certs into the Aobj-monotonicity lemma).
+- RATE route (this lane, SharpRateNF): (6/5) bound + arm envelope (armObj_le_one) proven; residual = Gap-1.
+- BOTH residuals are the SAME tie-adjacent sharp amplitude (Gap-1 == z_C*rho_C), triangulated; box relaxations
+  provably cannot close it.
+
+SO the ENTIRE remaining Hdom is now: (i) the tree->hub assembly (mechanical wiring, parallel lane owns), and
+(ii) the single tie-adjacent sharp crux (research-hard, both lanes converged + correctly deferred). The local
+merge behavior — the hard node — is fully kernel-verified at the rule level. conjecture1_proved = False.
