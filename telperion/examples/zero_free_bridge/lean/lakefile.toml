@@ -115,3 +115,8 @@ name = "DlvpTransfer"
 # to herglotz_split. Imports DlvpHerglotz; out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBridge"
+
+# PHASE 4 dVP frontier, obligation (i-a) CAPSTONE: ζ'/ζ = Herglotz sum + entire part, assembled
+# end-to-end for ζ. Imports DlvpEntire+DlvpBridge+DlvpTransfer; out of defaultTargets.
+[[lean_lib]]
+name = "DlvpZetaSplit"
