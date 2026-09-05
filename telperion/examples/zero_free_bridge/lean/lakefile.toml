@@ -75,3 +75,8 @@ name = "EmittedShapes"
 # own CI target. Out of defaultTargets.
 [[lean_lib]]
 name = "ZeroFreePolylog"
+
+# PHASE 4 dVP frontier, rung 1: zero-extraction core of the `hzero` bound. Imports
+# ZeroFreeBridge; own target, out of defaultTargets.
+[[lean_lib]]
+name = "DlvpZeroSum"
