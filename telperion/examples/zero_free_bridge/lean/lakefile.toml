@@ -110,3 +110,8 @@ name = "DlvpEntire"
 # factorization to a pointwise logDeriv equality. Imports Mathlib only; out of defaultTargets.
 [[lean_lib]]
 name = "DlvpTransfer"
+
+# PHASE 4 dVP frontier, obligation (i-a''') bridge: finprod↔Finset connecting extract_zeros_poles
+# to herglotz_split. Imports DlvpHerglotz; out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBridge"
