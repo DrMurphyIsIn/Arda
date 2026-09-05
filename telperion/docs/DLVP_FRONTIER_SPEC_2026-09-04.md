@@ -79,13 +79,22 @@ Function-agnostic; keyed on `logDeriv_prod`/`logDeriv_mul`/`logDeriv_fun_zpow`.
 - `differentiableAt_logDeriv` / `analyticOnNhd_logDeriv` (i-b, first half) — the entire part
   `E = logDeriv g = g'/g` is analytic where `g` is analytic + nonzero.
 
-REMAINING (multi-session, now sharply bounded): (i-a') transfer the CODISCRETE equality
-`ζ =ᶠ[codiscreteWithin] (∏ᶠ..)·g` to a POINTWISE `logDeriv ζ z = Z + E` at a zero-free `z`
-(codiscrete → nhds → deriv agreement) + finprod↔Finset bridge to `herglotz_split`; (i-b') the
-Borel-Caratheodory BOUND `‖E‖ ≤ A·L` on the entire part (`borel_caratheodory_deriv` on `log g`).
-Kernel-clean chain: reduction skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional Jensen
-zero-count on ζ + Herglotz split + obligation (i) foundations. Optimizing `σ = 1 + c/L` →
-`β ≤ 1 - c/log|t|` is the final real-algebra step, gated on (i-a')+(i-b').
+**OBLIGATION (i-a') TRANSFER MACHINERY DONE (`DlvpTransfer.lean`, kernel-clean):** `logDeriv`
+is a germ invariant, so a factorization equality transfers to a pointwise `logDeriv` equality:
+- `logDeriv_congr_nhds` — germ (nhds) equality ⟹ equal log-derivatives (via `EventuallyEq.deriv_eq`);
+- `logDeriv_congr_eqOn_open` — agreement on an open set ⟹ equal log-derivatives there;
+- `logDeriv_congr_of_analytic` — two analytic functions on a preconnected open `U` agreeing on a
+  NEIGHBORHOOD of some `z₀ ∈ U` have equal log-derivatives at every `z ∈ U` (identity principle,
+  `eqOn_of_preconnected_of_eventuallyEq`).
+
+REMAINING (multi-session, sharply bounded): (i-a'') the single filter step — the codiscrete
+factorization's DISAGREEMENT set is discrete, so a non-exceptional `z₀` has a nhds of agreement,
+feeding `logDeriv_congr_of_analytic` (`codiscreteWithin_iff_locallyFiniteComplementWithin`) — plus
+the finprod↔Finset bridge to `herglotz_split`; (i-b') the Borel-Caratheodory BOUND `‖E‖ ≤ A·L`
+(`borel_caratheodory_deriv` on `log g`). Kernel-clean chain: reduction skeleton (rungs 1,3,4,5) +
+rung-2 combine + unconditional Jensen zero-count on ζ + Herglotz split + obligation (i) foundations
++ the (i-a') transfer machinery. Optimizing `σ = 1 + c/L` → `β ≤ 1 - c/log|t|` is the final
+real-algebra step.
 
 ## Rung 1 — DONE (this session)
 
