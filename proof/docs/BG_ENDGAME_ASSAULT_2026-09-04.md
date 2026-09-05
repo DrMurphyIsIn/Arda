@@ -56,6 +56,38 @@ Remaining for Case A is mechanical assembly (lift `npCount_flp_flip` to total `s
 CLOSED (kernel-verified, axiom-clean, AxiomGuard-guarded): R1, R2 — Case A's analytic core + context-lift, and
 Case B's symmetric base. OPEN: the **Case-B asymmetric coupling ⊕ SharpRateNF near-encoding = the interior-
 optimum cherry-spider maximizer** (Pant 2026). Phase 0 proved this is the irreducible crux and refuted every
-naive attack. The full Phase-2 combinatorial assault (build `weighted_matching`/`vdb_exchange`/
-`transfer_caterpillar`, attack the cherry-spider extremal) is a genuine research program, not a one-pass close.
-`conjecture1_proved = False` — and stays there until the whole chain builds sorry-free.
+naive attack. `conjecture1_proved = False` — and stays there until the whole chain builds sorry-free.
+
+## Phase 2 — the open core, attacked (multi-agent, independently verified)
+
+**The extremal, characterized (C1/Front2):** the rooted-`Ztot_sub` extremal is the **single 5-cherry hub**
+`node[cherry×5]` (n=11), `Ztot_sub = 621/64`, rate `rhoB=(621/64)^{1/11}` EXACTLY via **`(3/2)^5·(23/18) = 621/64`**
+— the SAME `27·23=621` identity as the subaction ceiling's `tie_identity_d6`. `g(a)=log Z(a)/(2a+1)` strictly
+unimodal, argmax **a=5** (the a≈7 was the caterpillar-*family* internal peak, a dominated family).
+
+**The sign-lever (C3/Front1):** the Aobj-increasing straightening move = **cherry-forming = R1 itself**
+(`f2_increment_identity` + `aobj_flp_context_lift_crest`, already kernel-proven `≥0`); arm-balancing/leg-splitting
+strictly worse.
+
+**The single-SPR obstruction — RESOLVED (C3/Front1, `BGSCLJointDescent2Step.lean`):** the maximally-symmetric
+triple-3-star (`tripleStar`, `Aobj=49/8`, `strDefect=1`, n=13) has NO single-SPR move that is both strDefect-down
+and Aobj-up (independently re-confirmed: 132 SPR moves, 0 joint witnesses). BUT it DOES admit a
+`StraightStep_sized` witness — the *actual* Hnorm move (`R47R7Sized`: `usize= ∧ Aobj≤ ∧ strDefect<`, more
+permissive than one SPR relocation): `straightStep_tripleStar_witness : StraightStep_sized tripleStar
+cherrySpider6`, `cherrySpider6 = node[cherry×6]` (`Aobj=243/16`, `strDefect=0`). **So RealObligationA/joint-descent
+must be stated at `StraightStep_sized` granularity, not single-SPR; the n=13 obstruction does not block the Lean
+obligation.** (The general `StraightProgress_sized` ∀-obligation remains open — it is essentially maximizer
+domination.)
+
+## Phase-2 HONEST-SCOPE GUARD — rooted `Ztot_sub` ≠ classical `Aobj` (independently verified)
+
+Front2 surfaced, and I verified with the fast `Aobj_node` engine, a load-bearing distinction (confirming memory
+`phi11_not_classical_bg_2026-08-29`): the **rooted `Ztot_sub`** (repo Φ¹¹, what the Lean rate bound
+`Ztot_dtSub_le_rhoB_pow` bounds by `rhoB^n`) is a DIFFERENT quantity from the **classical `Aobj=per(L)/∏deg`**.
+At the 5-cherry hub: `Ztot_sub=621/64` vs classical `Aobj=81/8`. The rates DIVERGE: rooted extremal → `rhoB=1.2295`;
+classical spider → `ρ*≈1.2277` (Pant's classical-BG constant); cherry-caterpillars *decrease* → `√(3/2)=1.2247`.
+The Lean `Aobj` is genuinely classical (root-invariant, engine self-checked), but the whole rate/tie machinery
+(`rhoB`, `nearStarTie`, `SharpRateNF`) is anchored to the ROOTED `Ztot_sub` via `rooting_identity`
+(`Aobj ≤ (d+1)/d·Ztot_sub ≤ (d+1)/d·rhoB^n`). **Consequence: closing the Lean rate layer gives a TRUE bound at the
+rooted rate `rhoB`, NOT the tight classical BG maximizer (at `ρ*`, Pant OPEN). Do NOT overclaim closing classical
+BG.** `conjecture1_proved = False`.
