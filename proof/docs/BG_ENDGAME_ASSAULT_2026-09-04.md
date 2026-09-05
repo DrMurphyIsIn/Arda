@@ -112,3 +112,19 @@ rooting factor from `(d+1)/d` (≤ 6/5) down to `(26/23)/rhoB ≈ 0.919` (the "a
 `Ztot`" trade-off, Gap-1→Gap-2). That spine-rooting tightening + the general `StraightProgress_sized` (Hnorm) +
 the classical maximizer at `ρ*` (Pant) are the residual — the arm piece is no longer part of it.
 `conjecture1_proved = False`.
+
+## The spine-rooting gap, characterized exactly (the open crux, located)
+
+The proven `Aobj_backbone_le_rate` gives `Aobj(backbone) ≤ (6/5)·rhoB^n` via TWO loose steps: `(d+1)/d ≤ 6/5`
+AND `Ztot(dtSub) ≤ rhoB^n`. The exact `rooting_identity` is `(d+1)·Ztot(dtSub) = d·Aobj + Zopen`, i.e.
+
+  **`Aobj = (d+1)/d · Ztot(dtSub) − Zopen/d`.**
+
+The `(6/5)` bound simply **drops the `−Zopen/d` term** (`Zopen ≥ 0`). The sharp target `(26/23)/rhoB ≈ 0.919·rhoB^n`
+(tight at the tie) therefore requires BOTH: (i) keeping the `−Zopen/d` subtraction (a genuine lower bound on
+`Zopen(dtSub backbone)`), and (ii) the STRICT off-tie amplitude `Ztot(dtSub) < rhoB^n` for non-tie backbones
+(Gap-1, of which `master_ineq_strict`/`bell < 0` off deg-6 gives the *qualitative* strictness but not the
+*quantitative* margin), transported to `Aobj` (Gap-2). Even for the near-star tie itself the rooting factor
+`(d+1)/d → 1` as `d→∞`, so the `0.919 < 1` amplitude comes irreducibly from `−Zopen/d` — there is no
+rooting-factor-only improvement. **This is the genuine open Hdom crux (the rooting/Ztot trade-off); it is now
+characterized to the exact term (`−Zopen/d` + the quantitative Gap-1 margin), not just named.** `conjecture1_proved = False`.
