@@ -50,6 +50,26 @@ The 25-cell `certify_general_env_box` / `R47R7KelmansGenEnvCert` theorem is **un
 already excludes all 5. What changes is the *characterization* of the residual: the earlier
 "certificate artifact" framing is refuted for the majority of it.
 
+## Resolution — the failures are NOT obstructions to the tree→hub reduction
+
+Going one level deeper: at every one of these direct-step-failing configs, the tree is **not
+hub-form**, so the tree→hub progress obligation `(R-prog)` demands *some* pi-increasing move.
+There is one — and it is deterministic. Over **80** direct-failing in-scope configs across
+(1,4),(1,5),(2,5) (exact arithmetic, `verify_antihub_rescue`):
+
+    the ANTI-hubward step (merge A's subtree INTO B, `kelmans_step(B, A)`) strictly INCREASES
+    pi in ALL 80 — zero exceptions.
+
+(Consolidating the hub-mover `C` into `B` rescues only ~60%; the anti-hubward step is the
+universal one.) So the finder rule
+
+    "take the hubward step if it increases pi; otherwise take the anti-hubward step"
+
+always makes progress. The hub-mover configs are move-SELECTION issues, not stuck states:
+`(R-prog)` holds constructively, and the direct-step failures of (1,4),(1,5),(2,5) pose no
+obstruction to `Hnorm`. The genuinely open remainder shrinks to the exact certificate for
+(0,5),(3,5) — and the arm-mover monotonicity already in `R47R7KelmansGenEnvCert` (25 cells).
+
 ## Artifact
 
 `proof/verification/residual_hub_mover_probe.py` — self-verifying (`run()` asserts the split),

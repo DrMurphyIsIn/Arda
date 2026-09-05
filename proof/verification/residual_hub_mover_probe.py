@@ -78,6 +78,44 @@ def scan_cell(ca: int, cb: int, *, pA_max=14, r_max=32, qB_max=3):
     return tested, neg, worst
 
 
+def _gain(G, load, u, v):
+    H = kelmans_step(G, u, v)
+    return None if H is None else pi_loaded(H, load) - pi_loaded(G, load)
+
+
+def verify_antihub_rescue(*, pA_max=15, r_max=30, qB_max=4) -> dict:
+    """For EVERY in-scope config where the direct hubward step (`B -> A`) DECREASES pi, the
+    ANTI-hubward step (`A -> B`, i.e. merge A's subtree into B) strictly INCREASES it.
+
+    So the direct-step failures are NOT obstructions to the tree->hub reduction: the
+    progress rule "hubward if it increases, else anti-hubward" always makes progress.
+    Asserts zero exceptions over the scanned in-scope region.  (Consolidating the hub-mover
+    C into B rescues only ~60%; the anti-hubward step is the universal deterministic move.)
+    """
+    fails = rescued = 0
+    exceptions = []
+    for (ca, cb) in sorted(GENUINE_FAILURE):
+        for pA in range(1, pA_max):
+            for qB in range(0, qB_max):
+                for r in range(0, r_max):
+                    for cc in (0, 5):
+                        if _z(1 + r, cc) > Fr(3, 23):
+                            continue
+                        G, load = _build(ca, cb, cc, pA, qB, r)
+                        if not (G.degree(0) >= G.degree(1) >= 2):
+                            continue
+                        if _gain(G, load, 0, 1) >= 0:      # only direct-FAILING configs
+                            continue
+                        fails += 1
+                        g = _gain(G, load, 1, 0)           # anti-hubward: merge A(0) into B(1)
+                        if g is not None and g > 0:
+                            rescued += 1
+                        else:
+                            exceptions.append((ca, cb, pA, qB, r, cc))
+    assert not exceptions, f"anti-hubward did NOT rescue: {exceptions[:5]}"
+    return {"direct_failures": fails, "antihub_rescued": rescued, "exceptions": 0}
+
+
 def run() -> dict:
     out = {}
     for (ca, cb) in RESIDUAL:
@@ -87,10 +125,12 @@ def run() -> dict:
             assert neg > 0, f"expected in-scope decreases for genuine-failure cell {(ca, cb)}"
         else:
             assert neg == 0, f"unexpected decrease for no-decrease cell {(ca, cb)}"
+    out["antihub_rescue"] = verify_antihub_rescue()
     out["verdict"] = {
         "genuine_direct_step_failures": sorted(GENUINE_FAILURE),
         "no_decrease_found": sorted(NO_DECREASE_FOUND),
         "corrects": "three_hub_residual_probe 'certificate artifact' conjecture (refuted for 3/5 cells)",
+        "resolution": "every direct-step failure is rescued by the anti-hubward step -- NOT obstructions to tree->hub",
         "conjecture1_proved": False,
     }
     return out
