@@ -120,8 +120,14 @@ disk, `0 < r < R` ⟹ `‖deriv h c‖ ≤ 2 M'/(R - r)`.  Shift `f(w) = h(c+w) 
 `Complex.norm_deriv_le_of_forall_mem_sphere_norm_le` (Cauchy) gives `‖deriv f 0‖ = ‖deriv h c‖ ≤ 2M'/(R-r)`.
 This is the analytic HEART of (i-b'): the entire part `‖E‖ = ‖deriv h‖` bounded by `sup Re h = sup log‖g‖`.
 
-**SOLE REMAINING analytic step: the ζ BOUNDARY GROWTH `log‖g‖ ≤ A·L`** — the last input to compose
-`DlvpLogBranch` (`Re h = log‖g‖`) + `DlvpBCDeriv` (`‖deriv h c‖ ≤ 2M'/(R-r)`) into `‖E‖ ≤ A·L`.  Since
+**(i-b') COMPOSITION DONE — entire-part bound (`DlvpEntireBound.norm_logDeriv_le_of_log_norm_le`,
+kernel-clean, CI rh-dlvp-entirebound):** composes `DlvpLogBranch` + `DlvpBCDeriv` into a single
+statement directly about the entire part: g holomorphic zero-free on `ball c R`, `log‖g z‖ - log‖g c‖ ≤ M'`
+(`M' > 0`) throughout, `0 < r < R` ⟹ `‖logDeriv g c‖ ≤ 2 M'/(R - r)`.  This is the FULL analytic content
+of (i-b') for a general zero-free `g`; the only ζ-specific input left is the boundary growth `log‖g‖ ≤ A·L`.
+
+**SOLE REMAINING analytic step: the ζ BOUNDARY GROWTH `log‖g‖ ≤ A·L`** — feed `M' = A·L` into the
+composition above.  Since
 `g = ζ/∏_ρ(·-ρ)^m`, `log‖g‖ = log‖ζ‖ - Σ m log‖·-ρ‖`; bound `log‖ζ‖ ≤ A·L` via `zeta_strip_bound` /
 `zeta_sphere_bound` (already have) and control the zero factors.  Full kernel-clean chain: reduction
 skeleton (rungs 1,3,4,5) + rung-2 combine + unconditional Jensen zero-count on ζ + Herglotz split +
