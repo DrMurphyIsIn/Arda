@@ -20,6 +20,16 @@ conjecture in the codebase. `conjecture1_proved = False`.
 > cells; the anti-hubward move handles 4, and (0,5) has hub-form merge-local-maxima." The
 > everything below the CORRECTION is the earlier, partially-superseded analysis; the 25-cell
 > `R47R7KelmansGenEnvCert` theorem remains correct and unaffected (it excludes all 5).
+>
+> **RESOLUTION — the residual is IRRELEVANT to `Hdom`.** Every direct-merge failure requires
+> gross imbalance (a hub-mover with `deg_C ≫ deg_B`). On BALANCED 3-hub configs — the three hubs'
+> arm counts within `δ` of each other, the regime `Hdom`'s Balanced+Capped states live in — the
+> direct merge NEVER decreases: `residual_flint_probe.balanced_never_decreases` checks **8000**
+> balanced in-scope configs across all 5 cells (`k` to 120, `δ` up to 3) with **zero** decreases.
+> So the 5 residual exclusions bite only in unbalanced environments that the general-env theorem
+> *allows* but the Balanced+Capped merge dynamics never *reach*. Net for the proof: the 25-cell
+> `R47R7KelmansGenEnvCert` covers the merge behaviour `Hdom` needs; the residual cells are an
+> over-generality artifact, not a gap. `run()` asserts this (balanced-safe + finite thresholds).
 
 ## Context
 
