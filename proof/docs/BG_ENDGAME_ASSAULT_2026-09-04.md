@@ -152,7 +152,7 @@ BOTH routes hit the SAME irreducible residual (independent triangulation): my Sh
 box/Zopen-only reframing is INSUFFICIENT (quantitative strict off-tie amplitude Gap-1 irreducible); the Kelmans
 route finds the 5 cb-heavy cells {(0,5),(1,4),(1,5),(2,5),(3,5)} NOT box-certifiable, needing the exact recursive
 z_C*rho_C hub-mover. Same phenomenon: the tie-adjacent configurations resist box relaxation and require the exact
-sharp treatment. My Gap-1 == their z_C*rho_C residual. conjecture1_proved = False.
+sharp treatment. CORRECTION to an earlier overclaim of mine: Gap-1 (a single-backbone rate amplitude) and z_C*rho_C (a 3-hub merge-step mover) are TWO DIFFERENT handles on the SAME tie-adjacent hard configurations, NOT proven-identical quantities -- same phenomenon (box relaxation fails, exact treatment needed), not a proven equality. conjecture1_proved = False.
 
 ## Holistic honesty audit — the whole chain is confirmed CONDITIONAL and un-weakened (2026-09-05)
 
@@ -166,7 +166,7 @@ Ran the merged AXLE audit tooling (`bg_spine_audit.py` + statement/axiom checks)
 
 Conclusion: the entire chain honestly claims exactly `conjecture1_proved = False` — the foundation states what it
 should, the capstone is a genuine conditional reduction, and the sole open residual is the tie-adjacent sharp
-amplitude (my Gap-1 == the parallel lane`s z_C*rho_C), triangulated from both Hdom routes. Nothing overclaims.
+hard configurations (my Gap-1 and the parallel lane's z_C*rho_C: two different handles - single-backbone amplitude vs 3-hub merge-mover - on the same tie-adjacent hard core, not proven-identical), triangulated from both Hdom routes. Nothing overclaims.
 
 ## Full local Kelmans merge table kernel-verified (2026-09-05) — integrated two-route Hdom picture
 
@@ -179,7 +179,7 @@ Integrated Hdom picture (two independent routes, both maximally developed):
 - MERGE route (parallel lane): the full local merge table is kernel-verified. Residual = the 5 gen-env cb-heavy
   cells + the tree->hub / Obligation-A ASSEMBLY (wiring the certs into the Aobj-monotonicity lemma).
 - RATE route (this lane, SharpRateNF): (6/5) bound + arm envelope (armObj_le_one) proven; residual = Gap-1.
-- BOTH residuals are the SAME tie-adjacent sharp amplitude (Gap-1 == z_C*rho_C), triangulated; box relaxations
+- BOTH residuals are the SAME tie-adjacent hard CONFIGURATIONS (Gap-1 and z_C*rho_C are two different handles - amplitude vs merge-mover - NOT proven-identical quantities), triangulated; box relaxations
   provably cannot close it.
 
 SO the ENTIRE remaining Hdom is now: (i) the tree->hub assembly (mechanical wiring, parallel lane owns), and
