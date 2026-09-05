@@ -3,10 +3,12 @@
 
 conjecture1_proved = False. This module does NOT prove RH. It assembles the
 Jensen polynomial coefficient boxes from the Riemann-xi Taylor coefficient
-enclosures, and certifies a rational lower bound on the d=2 Turan discriminant
-  D(c) = c_1^2 - c_0 * c_2
-over a rational box. A positive lower bound certifies real-rootedness (and thus
-log-concavity) for every polynomial in the box.
+enclosures, and certifies a rational lower bound on the d=2 discriminant
+  D(c) = c_1^2 - 4 * c_0 * c_2
+over a rational box. This is the discriminant b^2 - 4ac of the quadratic Jensen
+polynomial a*X^2 + b*X + c with a = c_2, b = c_1, c = c_0. A positive lower
+bound certifies real-rootedness (and thus log-concavity) for every polynomial
+in the box.
 
 Definitions
 -----------
@@ -21,10 +23,14 @@ Rigor
 All computations use exact fractions.Fraction; no float arithmetic enters.
 The coefficient boxes from enclose_coeff_box are rigorous (see coefficients.py).
 Scaling by the exact positive integer C(d,k) preserves the enclosure exactly.
-The disc2_margin function computes a rigorous rational LOWER bound of D(c) over
-the box using signed interval arithmetic:
+The disc2_margin function computes a rigorous rational LOWER bound of the true
+discriminant D(c) = c_1^2 - 4*c_0*c_2 over the box using signed interval
+arithmetic. This is the discriminant b^2 - 4ac of the quadratic Jensen
+polynomial a*X^2 + b*X + c with a = c_2, b = c_1, c = c_0
+(J_{n,2}(X) = alpha(n) + 2*alpha(n+1)*X + alpha(n+2)*X^2). D(c) >= 0 is exactly
+the real-rootedness criterion for that quadratic.
 
-    lower(c_1^2) - upper(c_0 * c_2)
+    lower(c_1^2) - 4 * upper(c_0 * c_2)
 
 where:
   - lower(c_1^2): if the interval [lo1, hi1] straddles zero (lo1 <= 0 <= hi1),
@@ -79,10 +85,13 @@ def jensen_coeff_box(
 
 
 def disc2_margin(box: list[tuple[Fraction, Fraction]]) -> Fraction:
-    """Rigorous rational lower bound on the d=2 Turan discriminant D(c) = c_1^2 - c_0*c_2.
+    """Rigorous rational lower bound on the d=2 discriminant D(c) = c_1^2 - 4*c_0*c_2.
+
+    This is the discriminant b^2 - 4ac of the quadratic Jensen polynomial
+    a*X^2 + b*X + c with a = c_2, b = c_1, c = c_0.
 
     Computes:
-        lower(c_1^2) - upper(c_0 * c_2)
+        lower(c_1^2) - 4 * upper(c_0 * c_2)
 
     where both extrema are taken over ALL c in the box. A positive return value
     certifies that every polynomial in the box has D(c) > 0, i.e., is real-rooted.
@@ -122,4 +131,4 @@ def disc2_margin(box: list[tuple[Fraction, Fraction]]) -> Fraction:
         hi0 * hi2,
     )
 
-    return c1_sq_lower - c0c2_upper
+    return c1_sq_lower - Fraction(4) * c0c2_upper
