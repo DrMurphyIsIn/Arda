@@ -59,6 +59,7 @@ import R3Cert.BGSCLRealOblACaseABook
 import R3Cert.BGSCLRealOblACaseALift
 import R3Cert.BGSCLJointDescent2Step
 import R3Cert.BGSCLRealOblBSymBase
+import R3Cert.R47BroadenedTieWitness
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -208,3 +209,8 @@ import R3Cert.BGSCLRealOblBSymBase
 #print axioms R3Cert.Step3.Aobj_cherrySpider6
 #print axioms R3Cert.Step3.straightStep_tripleStar_witness
 #print axioms R3Cert.Step3.tripleStar_has_straightStep
+
+-- Near-star NON-maximality (2026-09-05): the broadened config (5 load-4 arms + 5 cherries) strictly
+-- beats the near-star (5 load-5 arms) at the SAME size 56, so conjecture1/SharpRateNF with the
+-- near-star tie is FALSE at this n.  Kernel-verified via singleHub_Aobj_formula + Ztot_armU_four.
+#print axioms R3Cert.Step3.nearStar_not_maximal_at_five

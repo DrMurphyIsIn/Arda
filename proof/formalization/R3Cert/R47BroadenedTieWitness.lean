@@ -16,9 +16,10 @@
   Building blocks (all pre-existing, no new axioms): `nearstar_arms_Aobj`, `singleHub_Aobj_formula`,
   `Ztot_armU_four = 513/80`.  Collision-safe `R3Cert.+` leaf, imported by nothing.
 
-  STATUS: faithful transcription of a Python-verified (3 engines) exact inequality.  CI-verification
-  pending -- this repo builds Lean on CI only (local Lean builds barred by the hardware constraint), so
-  this is NOT yet kernel-confirmed.  conjecture1_proved = False.
+  STATUS: KERNEL-VERIFIED on CI (proof-lean run 33985898205, explicit `lake build
+  R3Cert.R47BroadenedTieWitness` target, green) and axiom-guarded in `AxiomGuard.lean`
+  (`#print axioms` clean).  Math independently verified by three exact engines
+  (`proof/verification/broadened_tie_family.py`).  conjecture1_proved = False.
 -/
 import Mathlib
 import R3Cert.R47SingleHubFormula
