@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - "telperion/**"
-      - ".github/workflows/forge-lean-e2e.yml"
+      - ".github/workflows/telperion-lean-e2e.yml"
   pull_request:
     paths:
       - "telperion/**"
-      - ".github/workflows/forge-lean-e2e.yml"
+      - ".github/workflows/telperion-lean-e2e.yml"
   workflow_dispatch:
 
 concurrency:
