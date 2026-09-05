@@ -105,3 +105,8 @@ name = "DlvpHerglotz"
 # analyticity. Imports DlvpZetaDisk; own target, out of defaultTargets.
 [[lean_lib]]
 name = "DlvpEntire"
+
+# PHASE 4 dVP frontier, obligation (i-a') core: germ / identity-principle transfer of a
+# factorization to a pointwise logDeriv equality. Imports Mathlib only; out of defaultTargets.
+[[lean_lib]]
+name = "DlvpTransfer"
