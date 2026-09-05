@@ -61,4 +61,15 @@ theorem mt_cosine_deg4_nonneg (x : ℝ) (h1 : -1 ≤ x) (h2 : x ≤ 1) :
   nlinarith [sq_nonneg (-2*x^4 - 2*x^3 + 3*x^2/4 + x + 1/8),
     mul_nonneg hsq (sq_nonneg (-2*x^3 - 2*x^2 - x/4))]
 
+/-- Spectral-factorization dogfood: the de la Vallée-Poussin degree-4 cosine polynomial
+    `p(x)=Σ a_k T_k(x)`, `a=(35/8,7,7/2,1,1/8)`, `= (1+x)^4 ≥ 0` on `[-1,1]`, certified via the
+    EXACT Fejér–Riesz SOS `A²+(1-x²)B²` recovered by `emit_spectral_factorization` (spectral
+    factor `b=(1/4,1,3/2,1,1/4)` — a perfect square, so `target='exact'` succeeds).  Validates
+    the `a → b → SOS` front-end, not just the `b → SOS` half.  conjecture1_proved = False. -/
+theorem vp_cosine_deg4_nonneg (x : ℝ) (h1 : -1 ≤ x) (h2 : x ≤ 1) :
+    (0:ℝ) ≤ x^4 + 4*x^3 + 6*x^2 + 4*x + 1 := by
+  have hsq : (0:ℝ) ≤ 1 - x^2 := by nlinarith [h1, h2]
+  nlinarith [sq_nonneg (2*x^4 + 4*x^3 + x^2 - 2*x - 1),
+    mul_nonneg hsq (sq_nonneg (2*x^3 + 4*x^2 + 2*x))]
+
 end EmittedShapes
