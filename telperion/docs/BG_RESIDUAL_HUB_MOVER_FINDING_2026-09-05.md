@@ -72,8 +72,24 @@ obstruction to `Hnorm`. The genuinely open remainder shrinks to the exact certif
 
 ## Artifact
 
-`proof/verification/residual_hub_mover_probe.py` — self-verifying (`run()` asserts the split),
-exact arithmetic, in-scope-restricted. A standalone file (does not edit the parallel session's
-`kelmans_mixed_load.py`). The correct next move for (1,4),(1,5),(2,5) is a general-environment
-*assisted*-merge treatment, not direct-step certification; (0,5),(3,5) await the exact
-hub-mover certificate.
+`proof/verification/residual_hub_mover_probe.py` — self-verifying (`run()` asserts the split
+AND the 80/80 anti-hubward rescue), exact `Fraction` arithmetic, in-scope-restricted. A
+standalone file (does not edit the parallel session's `kelmans_mixed_load.py`).
+
+`proof/verification/residual_flint_probe.py` — the same split re-verified at **4.3× scale**
+with `python-flint` `fmpq` (~20× faster; `pi_flint` validated against `pi_loaded`): **8814
+in-scope configs/cell**, `deg_C` up to 60, in ~34 s. Result: (0,5),(3,5) **zero decreases**
+across 8814 configs each; (1,4)/(1,5)/(2,5) fail (58/98/100 decreases); **anti-hubward rescues
+all 256** direct failures. This is decisive numerical evidence for the split.
+
+## Remaining open surface (now sharp)
+
+- (1,4),(1,5),(2,5): NOT obstructions — the anti-hubward step handles them (proven-by-scan,
+  256/256). The finder rule "hubward if it increases, else anti-hubward" suffices.
+- (0,5),(3,5): the ONLY genuinely-open piece — a formal certificate that the direct step is
+  non-decreasing for ALL in-scope configs. Mechanism identified: the failing corner
+  `(σ_Q hi, σ_S=0)` is only MILDLY negative (const −648 / −18225 vs −26811 / −80514 for the
+  failure cells), and the box over-counts `σ_Q` (it uses `(da−1)·z1`, but an arm contributes
+  `z1·ρ_arm` with `ρ_arm < 1`); the tight `σ_Q` keeps the mild corner `≥ 0`. Exact-arithmetic
+  check confirms the direct gain is `≥ 0` even in the `σ_S → 0` limit for every tested config.
+  The certificate reduces to bounding `σ_Q ≤ (da−1)·z1·ρ_arm` and showing `Φ ≥ 0` there.
