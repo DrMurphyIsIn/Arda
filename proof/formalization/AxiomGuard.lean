@@ -55,6 +55,7 @@ import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
 import R3Cert.BGSCLRealOblACaseA
 import R3Cert.BGSCLRealOblACaseAIdentity
+import R3Cert.BGSCLRealOblACaseABook
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -66,6 +67,11 @@ import R3Cert.BGSCLRealOblACaseAIdentity
 -- ...and the STRUCTURAL cavity-model identity making it load-bearing (ΔAobj EQUALS the closed form; monotone).
 #print axioms R3Cert.Step3.f2_increment_identity
 #print axioms R3Cert.Step3.f2_aobj_monotone
+-- Case-A bookkeeping: size preserved + the piece-flip strDefect mechanism (npCount drops by 1 in context).
+#print axioms R3Cert.Step3.usize_flp_move_eq
+#print axioms R3Cert.Step3.isPiece_flpStem
+#print axioms R3Cert.Step3.isPiece_flp_before
+#print axioms R3Cert.Step3.npCount_flp_flip
 
 -- Additive SUBACTION reduction chain (the ceiling now rests on `IsSubaction ρwit`).
 #print axioms R3Cert.BGSCL.ceiling_of_subaction
