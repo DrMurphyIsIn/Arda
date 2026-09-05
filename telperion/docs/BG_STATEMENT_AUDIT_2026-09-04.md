@@ -25,6 +25,7 @@ against the in-repo theorems (env = built `R3Cert`, module `BGSCLSubaction`):
 |---|---|---|
 | `ceiling_of_subaction` | `∀ ρ, IsSubaction ρ → (∀ b, 0 ≤ ρ b) → ∀ b, bell b ≤ 0` | **MATCH** |
 | `ceiling_of_witness` | `IsSubaction ρwit → ∀ b, bell b ≤ 0` | **MATCH** |
+| `ceiling_of_gstep` | `GStep → ∀ b, bell b ≤ 0` | **MATCH** (added 2026-09-04) |
 | `IsSubaction` (def-identity) | `∀ cs, (log(1+(Σ bY)/(|cs|+1)) − F*) + ρ(node cs) ≤ Σ ρ` | **MATCH** |
 
 **Gate liveness confirmed**: the same audit with a deliberately weakened intended
@@ -50,7 +51,10 @@ Both halves of the trust boundary now hold for the BG additive-subaction spine:
 
 Scope note: the gate is defeq-strict, ideal for canonical spine statements; it is *not*
 used for the enclosure atoms (arithmetically-varied forms — covered instead by the
-emitter-regression in the crosscheck). Follow-ups: extend to `ceiling_of_gstep` (sibling
-bridge, needs its module built) and the fixed-N capstone (`R47` track), and — once the
-warm `lean_server` lands — run the spine + cell statements as a fast CI gate.
+emitter-regression in the crosscheck). The gate is now BATCHED (all spine checks in one `import Mathlib` load — 3 checks in 5.5s
+vs ~18s per-decl; `lean --stdin` is single-shot so a persistent LSP is the only way to
+amortise across *separate* calls, deferred) and packaged as a CI gate:
+`scripts/bg_spine_audit.py --env <built R3Cert>` (exit 0 iff the spine states its intended
+propositions). `ceiling_of_gstep` (the sibling multiplicative bridge) is now included and
+MATCHES. Remaining follow-up: the fixed-N capstone (`R47` track).
 conjecture1_proved = False.
