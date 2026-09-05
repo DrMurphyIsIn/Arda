@@ -17,6 +17,12 @@ theorem's own hypothesis `z_x <= 3/23` for every environment neighbour, shows:
     * (0,5), (3,5):  NO decrease found over the scanned in-scope region -- plausibly
       non-decreasing, the genuine "sharp follow-up" candidates (still unproven).
 
+    *** CORRECTION (see residual_flint_probe.py): the "(0,5),(3,5) plausibly non-decreasing"
+    reading is a RANGE ARTIFACT.  Pushing deg_C into the hundreds with flint shows ALL 5 cells
+    fail the direct step at a finite deg_C (thresholds 8,9,29,111,170).  Anti-hubward rescues the
+    large-deg_C failures for (1,4),(1,5),(2,5),(3,5) but NOT (0,5) (which has hub-form
+    merge-local-maxima).  The Fraction scan here is correct WITHIN ITS RANGE only. ***
+
 So the 5 residual cells are NOT a uniform certification gap: 3 are real obstructions to the
 DIRECT step, 2 are plausibly certifiable.  The 25-cell `certify_general_env_box` theorem is
 unaffected (it already excludes all 5).  Self-verifying: `run()` asserts the split.

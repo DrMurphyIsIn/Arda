@@ -3,6 +3,24 @@
 Going deeper on the 5 residual cells of `certify_general_env_box` overturned a stated
 conjecture in the codebase. `conjecture1_proved = False`.
 
+> **CORRECTION 2026-09-05 (later, flint deep-push).** The "2 certifiable cells (0,5),(3,5)"
+> claim below is WRONG — an artifact of a bounded scan (`deg_C ≤ ~61`). With `python-flint`
+> pushing `deg_C` to the hundreds (exact `fmpq` sign), **ALL 5 cells fail the direct step** for
+> a large-enough hub-mover: thresholds `deg_C =` 8 (2,5), 9 (1,5), 29 (1,4), 111 (3,5), 170
+> (0,5), on the `A(1 arm)–B(0 arm)–C(load5,deg)` family. So none are "non-decreasing". Two
+> further corrections: (i) `two_hub_phi` is NOT the exact step gain (my bilinear reading was
+> off; the exact `pi` computation is ground truth); (ii) the anti-hubward step rescues the
+> large-`deg_C` failures for (1,4),(1,5),(2,5),(3,5) but **NOT for (0,5)** — at `deg_C ≥ 170` the
+> (0,5) config has NO pi-increasing Kelmans move. That stuck config is a **hub-backbone shape**
+> (a path of 3 hubs with pendant arms), i.e. a merge NORMAL FORM, and it is dominated by another
+> backbone (moving one arm `C→A` raises `pi`, though not via a Kelmans move). So it is a
+> Kelmans-merge local max, not necessarily an obstruction to the DOMINATION goal (Hdom) — but it
+> is decisively NOT evidence that (0,5) is direct-step-monotone. Net: the residual is best
+> summarized as "the direct hubward merge is not universally non-decreasing for ANY of the 5
+> cells; the anti-hubward move handles 4, and (0,5) has hub-form merge-local-maxima." The
+> everything below the CORRECTION is the earlier, partially-superseded analysis; the 25-cell
+> `R47R7KelmansGenEnvCert` theorem remains correct and unaffected (it excludes all 5).
+
 ## Context
 
 `certify_general_env_box` (`kelmans_mixed_load.py`) box-certifies the adjacent hubward Kelmans

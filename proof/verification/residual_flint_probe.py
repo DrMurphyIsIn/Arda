@@ -108,9 +108,24 @@ def _selftest(n: int = 20) -> None:
         assert pi_flint(G, load) == fmpq(pl.numerator, pl.denominator), (ca, cb, cc, pA, qB, r)
 
 
+def failure_threshold(ca, cb, *, r_cap=400):
+    """Smallest `deg_C` at which the DIRECT step first decreases on `A(1 arm)-B(0 arm)-C(load5)`,
+    or None if none up to `r_cap`.  With flint pushing `deg_C` into the hundreds, EVERY residual
+    cell has a finite threshold -- the earlier bounded scan's "0 decreases for (0,5),(3,5)" was a
+    RANGE ARTIFACT, not certifiability."""
+    for r in range(1, r_cap):
+        g = _gain(*_build(ca, cb, 5, 1, 0, r), 0, 1)
+        if g is not None and g < 0:
+            return 1 + r
+    return None
+
+
 def run(*, pA_max=22, r_max=60, qB_max=4) -> dict:
-    """Large-scale in-scope verification: (0,5),(3,5) never decrease; (1,4),(1,5),(2,5) do,
-    and every such decrease is rescued by the anti-hubward step.  Asserts the split."""
+    """CORRECTED verdict (flint deep-push).  The direct hubward merge is NOT universally
+    non-decreasing for ANY residual cell: `failure_threshold` finds a finite `deg_C` failure for
+    all 5.  Within the bounded box below, (0,5),(3,5) show no decrease (small-`deg_C` region) and
+    the 3 low-threshold cells fail + are anti-hubward-rescued.  Asserts the low-threshold split
+    IN-RANGE and the finite thresholds for all 5."""
     _selftest()
     out = {}
     fails = rescued = 0
@@ -133,16 +148,22 @@ def run(*, pA_max=22, r_max=60, qB_max=4) -> dict:
                                 fails += 1
                                 if _gain(G, load, 1, 0) > 0:      # anti-hubward
                                     rescued += 1
-        out[(ca, cb)] = {"tested": tested, "decreases": neg}
+        out[(ca, cb)] = {"tested": tested, "in_range_decreases": neg}
         if (ca, cb) in NO_DECREASE:
-            assert neg == 0, f"{(ca, cb)} decreased at large scale: NOT certifiable after all"
+            assert neg == 0, f"{(ca, cb)} unexpectedly decreased WITHIN the bounded box"
         else:
-            assert neg > 0, f"{(ca, cb)} expected to fail"
-    assert fails == rescued, f"anti-hubward failed to rescue {fails - rescued} configs"
-    out["antihub_rescue"] = {"direct_failures": fails, "rescued": rescued}
+            assert neg > 0, f"{(ca, cb)} expected to fail in-range"
+    assert fails == rescued, f"anti-hubward failed to rescue {fails - rescued} in-range configs"
+    # CORRECTION: push deg_C far -> every residual cell has a finite direct-failure threshold.
+    thresholds = {cell: failure_threshold(*cell) for cell in RESIDUAL}
+    assert all(t is not None for t in thresholds.values()), \
+        f"expected all 5 cells to fail at some deg_C; got {thresholds}"
+    out["antihub_rescue_in_range"] = {"direct_failures": fails, "rescued": rescued}
+    out["failure_thresholds_degC"] = {str(k): v for k, v in thresholds.items()}
     out["verdict"] = {
-        "certifiable_no_decrease": sorted(NO_DECREASE),
-        "genuine_failures_all_rescued": sorted(GENUINE_FAILURE),
+        "direct_step_monotone_cells": "NONE -- all 5 fail at a finite deg_C (earlier '2 certifiable' was a scan artifact)",
+        "antihubward_rescues_at_all_scales": "(1,4),(1,5),(2,5),(3,5); NOT (0,5) -- (0,5) has hub-form merge-local-maxima",
+        "genenv_25cell_theorem": "unaffected (excludes all 5)",
         "conjecture1_proved": False,
     }
     return out
