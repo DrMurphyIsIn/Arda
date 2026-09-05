@@ -8,7 +8,7 @@ evaluated (each rho evaluation is already linear-time via the cavity DP).
 DESIGN NOTE on Rust / MLX.  Telperion is deliberately PURE PYTHON: the certificate generator is
 untrusted by design, the Lean kernel is the sole trusted component, so the audit surface must stay
 readable (see the project plan -- "no Rust").  A Rust NEON / MLX GPU kernel would contradict that
-principle and belongs on the arda-trading side (built via scripts/build_arda_rust.sh), OUTSIDE the
+principle and belongs in the private research monorepo (a separate native build step), OUTSIDE the
 trusted certificate path.  For tree-rho mapping this costs nothing: the per-evaluation work is linear
 and the workload is embarrassingly parallel, so PROCESS-level parallelism delivers the scaling (one
 core per island / per parameter cell) without a native dependency.  The `evaluator` hook below lets a

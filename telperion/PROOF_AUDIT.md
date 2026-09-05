@@ -4,7 +4,7 @@ Generated 2026-08-16 by `examples/proof_audit/generate_audit.py`; executable row
 
 | stratum | method | state |
 |---|---|---|
-| Lean core: bridge + phi_le_one + merge layer + parse (90 R3Cert modules) | Lean kernel (origin CI) | KERNEL-CHECKED — origin pipeline 2762803858 @ b2996c79; reviewed PASS 2026-08-14/15 |
+| Lean core: bridge + phi_le_one + merge layer + parse (90 R3Cert modules) | Lean kernel (origin CI) | KERNEL-CHECKED — origin CI @ b2996c79; reviewed PASS 2026-08-14/15 |
 | G1Kernel + Real.log bridges + 103 hinge-dead classes | Lean kernel (origin CI) | KERNEL-CHECKED origin-side (parallel session; trio round in flight) |
 | 36-cell unified merge table (HypStar seam) | Telperion re-derivation + stdlib recheck | RE-DERIVED: 216 theorems frozen [0b85b667e1f2]; sampled recheck GREEN (4 cell(s)) |
 | G1 floors: dichotomy/tax/below-window + anchors (HypFloors) | Telperion re-derivation + stdlib recheck | RE-DERIVED: 3260 theorems frozen [e4d2db6bb76b, 5273cb86c642]; sampled recheck GREEN (2 cell(s)) — COMPILE-GATED green @6758e88; handoff ACCEPTED (origin bf2f0747); 1 fragile cell tripwired ((2,0,1) @0.59 width) |
