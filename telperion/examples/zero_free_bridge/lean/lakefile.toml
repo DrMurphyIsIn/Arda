@@ -130,3 +130,8 @@ name = "DlvpLogBranch"
 # (‖deriv h c‖ ≤ 2M'/(R-r) from Re h ≤ M'). Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBCDeriv"
+
+# PHASE 4 dVP frontier, obligation (i-b') COMPOSITION: ‖logDeriv g c‖ ≤ 2M'/(R-r) from
+# log‖g‖ oscillation ≤ M' (composes DlvpLogBranch + DlvpBCDeriv). Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpEntireBound"
