@@ -327,7 +327,7 @@ def enclose_lambda(
         Imaginary part of s.  Converted to string for exact Arb input.
     prec_bits : int
         Working precision in bits for Arb computation.  Higher gives tighter
-        real-part enclosures.
+        enclosures for both the real and imaginary parts.
 
     Returns
     -------
@@ -335,21 +335,15 @@ def enclose_lambda(
         Outward-rounded rational boxes for the real and imaginary parts of
         Lambda(s_re + i*s_im).  All four endpoints are exact fractions.Fraction.
         lo_re <= true_Lambda.real <= hi_re, lo_im <= true_Lambda.imag <= hi_im.
+        Both boxes use the full requested prec_bits precision; the imaginary box
+        is a tight Arb enclosure (a real signal off the critical line, and a
+        tight box around 0 on the critical line where Lambda is real-valued).
 
     Notes
     -----
     Box membership is a documented NON-KERNEL input: Arb ball arithmetic is
     internally certified (interval arithmetic with outward rounding), but Lean
     does not independently verify the value.  conjecture1_proved = False.
-
-    The imaginary box is the hull (union) of the primary prec_bits enclosure and
-    a backup 200-bit enclosure.  Both are certified by Arb; their hull is also
-    certified (a superset of either).  This ensures the imaginary box is at least
-    ~10^-60 wide, matching the accuracy of a 60-decimal-digit oracle, so that
-    verification against such an oracle is possible even when the primary
-    enclosure is tighter (e.g., at prec_bits > 200 on the critical line where
-    the true imaginary part is exactly 0 and Arb correctly certifies a very tight
-    box around 0 that may be narrower than external oracle noise).
     """
     if not _FLINT_AVAILABLE:
         raise RuntimeError(
@@ -365,18 +359,4 @@ def enclose_lambda(
         s = acb_cls(s_re_str) + acb_cls(0, s_im_str)
         return acb_cls.pi() ** (-s / 2) * (s / 2).gamma() * s.zeta()
 
-    # Primary enclosure at requested precision.
-    re_box, im_box = enclose_acb(_lambda_callable, prec_bits)
-
-    # For the imaginary part: take the hull with a 200-bit backup enclosure.
-    # Both boxes are Arb-certified; their hull (union) is also certified.
-    # This guarantees the imaginary box is at least ~10^-60 wide, matching
-    # a 60-decimal-digit oracle's precision floor.
-    _IMAG_BACKUP_PREC = 200
-    if prec_bits > _IMAG_BACKUP_PREC:
-        _, im_box_backup = enclose_acb(_lambda_callable, _IMAG_BACKUP_PREC)
-        im_lo = min(im_box[0], im_box_backup[0])
-        im_hi = max(im_box[1], im_box_backup[1])
-        im_box = (im_lo, im_hi)
-
-    return re_box, im_box
+    return enclose_acb(_lambda_callable, prec_bits)
