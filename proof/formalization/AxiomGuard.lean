@@ -61,6 +61,7 @@ import R3Cert.BGSCLJointDescent2Step
 import R3Cert.BGSCLRealOblBSymBase
 import R3Cert.R47BroadenedTieWitness
 import R3Cert.R47TieBroadened
+import R3Cert.R47R7TwoHubBridge
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -226,3 +227,9 @@ import R3Cert.R47TieBroadened
 #print axioms R3Cert.Step3.tie_trade_le_poly
 #print axioms R3Cert.Step3.tradeStop_persists
 #print axioms R3Cert.Step3.tie_maximal_over_trades
+
+-- Two-hub Aobj-bridge M4 (2026-09-06): the abstract two-hub Positivstellensatz certs
+-- `two_hub_gap_pos_c0..c5` wired to `Aobj` -- the stuck two-hub config S2(pA,pB,cA) is dominated by
+-- the same-size single-hub downgrade template at every pA,pB>=1, cA in {0..5} (length-2 slice of Hdom).
+#print axioms R3Cert.Step3.twoHub_Aobj_eq
+#print axioms R3Cert.Step3.twoHub_le_tie
