@@ -258,3 +258,7 @@ name = "DlvpBlaschkeToSkeleton"
 # Interior-point entire-part bound (centre→s transfer, item 3). Imports DlvpLogBranch. Own CI target.
 [[lean_lib]]
 name = "DlvpBCDerivInterior"
+
+# Entire-part plumbing: interior bound from sphere osc (a) + logDeriv recentring (b). Own CI target.
+[[lean_lib]]
+name = "DlvpEntirePlumbing"
