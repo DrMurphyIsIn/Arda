@@ -18,7 +18,24 @@
 \maketitle
 
 \begin{abstract}
-TODO abstract (written last, in Task 8).
+Machine-assisted proof increasingly relies on search procedures and language
+models that produce plausible but not-always-correct arguments. We describe
+\emph{Telperion}, a certificate compiler for Lean~4 built on the opposite
+principle: \emph{check the witness, don't trust the author}. You describe a family
+of concrete claims; Telperion certifies each instance in exact rational arithmetic
+and emits Lean that Mathlib's kernel re-proves from scratch, so a wrong certificate
+is a compile error rather than a false theorem. Because the kernel cannot detect a
+true-but-vacuous statement, Telperion adds a self-verification layer---per-emitter
+sensitivity declarations, forge-the-witness negative controls, and an independent
+second checker---and is explicit about the one thing no machinery can settle. We
+exercise the system on three deliberately different problems, reporting each at its
+true strength: a machine-checked analytic core for the (still open)
+Brualdi--Goldwasser tree-maximizer conjecture; four unconditional, kernel-checked
+zero-free regions for the Riemann zeta function that are honestly weaker than de la
+Vallée-Poussin (we do not claim the Riemann Hypothesis); and a kernel-checked,
+symbolic-in-$n$ sum-of-squares lower bound in proof complexity. Throughout,
+\texttt{conjecture1\_proved = False} is a tested invariant: we take as much care
+with what is not proved as with what is.
 \end{abstract}
 
 \input{sections/01-intro}
