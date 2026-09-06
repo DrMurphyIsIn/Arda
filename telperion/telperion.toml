@@ -39,6 +39,16 @@ script = "examples/shed_lemmas/generate.py"
 group = "quick"    # 55 shedding re-derivations; ~3 s
 
 [[check]]
+name = "dvp_atoms"
+script = "examples/dvp_atoms/generate.py"
+group = "quick"    # dVP RH atoms (BCSplit/JensenZeroCount/SphereBound); ~0.4 s regen
+
+[[check]]
+name = "dvp_bc_atoms"
+script = "examples/dvp_bc_atoms/generate.py"
+group = "quick"    # dVP BC atoms (BCDerivRe/EntirePartBound/MaxModulus); ~0.4 s regen
+
+[[check]]
 name = "legs_certs"
 script = "examples/legs_certs/generate.py"
 group = "quick"    # 48 kernel facts incl. the 726-digit bignum; ~0.2 s

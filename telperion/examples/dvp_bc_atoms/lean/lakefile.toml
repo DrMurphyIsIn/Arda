@@ -1,0 +1,16 @@
+name = "DvpBcAtoms"
+defaultTargets = ["MaxModulus", "BCDerivRe", "EntirePartBound"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "MaxModulus"
+
+[[lean_lib]]
+name = "BCDerivRe"
+
+[[lean_lib]]
+name = "EntirePartBound"
