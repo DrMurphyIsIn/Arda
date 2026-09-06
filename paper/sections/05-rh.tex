@@ -42,13 +42,32 @@ assistant, together with a handful of reusable gap-fillers (the strip
 representation and the explicit $\log$-bound among them). The contribution is the
 machine-checked path, stated at its true strength---no more.
 
+\subsection{A second criterion: Jensen--P\'olya hyperbolicity}
+
+The zero-free regions are not the only honestly-scoped RH statement the pipeline
+reaches. The Griffin--Ono--Rolen--Zagier theorem \cite{gorz2019} restates RH as the
+assertion that \emph{every} Jensen--P\'olya polynomial of the Riemann
+$\xi$-function is hyperbolic (real-rooted). We kernel-verify the finite, certificate-shaped
+instances: three sorry-free theorems (\texttt{jensen\_box\_hyperbolic\_deg2\_\{0,1,2\}})
+establishing that the degree-$2$ Jensen polynomials $J^{2,n}$ for $n = 0, 1, 2$
+are hyperbolic, through a discriminant bridge lemma
+(\texttt{hyperbolic\_deg2\_of\_discrim\_nonneg}), with the clean axiom set and a
+per-theorem statement-match check. This is emphatically \emph{not} a proof of
+RH---it checks finitely many concrete polynomials, and the uniform-in-degree
+threshold that would actually close the criterion is out of scope. But it is a
+second, independent, honestly-scoped kernel-verified statement about $\zeta$,
+produced by the same pipeline and exhibiting yet another certificate shape (a
+real-rootedness / hyperbolicity certificate rather than a positivity one).
+
 For completeness we note two boundary items, stated as they are. A
 Borel--Carath\'eodory theorem is present in the development but is a \emph{draft}:
 its constant is not sharp, it is not axiom-guarded, and it is not yet wired into
 the region argument, so we do not lean on it. And the classical
 de~la~Vall\'ee-Poussin region itself is present only \emph{conditionally}---its
-analytic inputs are isolated as explicit hypotheses rather than proved. We flag
-both rather than let them blur into the verified list.
+analytic inputs are isolated as explicit hypotheses rather than proved, though the
+supporting machinery is advancing (the log-derivative of the Blaschke canonical
+factor, the item-(d) foundation, is now formalized). We flag both rather than let
+them blur into the verified list.
 
 The methodological point for this paper is that the same
 untrusted-generator/trusted-kernel discipline that handled a combinatorial

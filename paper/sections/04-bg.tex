@@ -55,7 +55,15 @@ verified:
     (\texttt{PotentialFinal.lean:phi\_le\_one}), including the six-point rational
     tie where $\Phi = 1$ exactly;
   \item the arm-extremality ``$g$-step'' at every arity, over achievable
-    configurations (\texttt{CappedJointClosure.lean:gstep\_le\_one\_achievable}).
+    configurations (\texttt{CappedJointClosure.lean:gstep\_le\_one\_achievable});
+  \item a \emph{non-maximality} certificate that sharpens the extremal picture
+    (\texttt{R3Cert.Step3.nearStar\_not\_maximal\_at\_five}): at size $56$ a
+    broadened configuration---five load-$4$ arms plus five cherries---strictly
+    beats the plain near-star of five load-$5$ arms, so the near-star is provably
+    \emph{not} the maximizer at that size. The near-star is extremal only in the
+    large regime (a broadened tie family interpolates below it, near-star-optimal
+    only once $K \ge 23$), which is exactly the sort of integer-tight, size-dependent
+    behavior that makes the general problem hard.
 \end{itemize}
 
 \subsection{What is open---and the one subtlety to be careful about}
