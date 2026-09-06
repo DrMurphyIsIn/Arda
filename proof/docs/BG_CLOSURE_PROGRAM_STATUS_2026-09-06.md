@@ -55,14 +55,23 @@ positive denominator.
   `tradeStop_zero_large`, **`col_le_nearStar_large`** — every Balanced single hub at size 11K, K≥23, is
   dominated by the near-star `tieState K 0`.  So near-star IS the aligned-size single-hub maximizer for
   K≥23 (dual to `nearStar_not_maximal_at_five`, K<23).  Kernel-clean, in AxiomGuard + CI.
-- **OPEN tail:** (a) the general `hubState a b c → colState K c t` size-decomposition lemma (b≡c mod 11,
-  Nat); (b) `K = 22` (argmax mstar=1, not near-star) + the **5 ≤ K < 22 finite interior patch** (26
-  explicit (K,c,t=1) configs, enumerated by `broadened_tie_2d_envelope.py`) → a general `mOf K` tie
-  argmax; (c) assemble into `singleHub_le_tie` for all K.
+- **decomposition + argmax + K≥22 envelope DONE:** `hubState_eq_colState` (Balanced hub at 11K =
+  `colState K c (b/11)`; `b≡c mod 11` & `b≥c` by omega's div/mod), `tradeStop_exists`/`leastTradeStop`/
+  **`mOf K`** = `min K (leastTradeStop K)` (the tie argmax for EVERY K — KEY FINDING: for `K≤4` no
+  in-range `tradeStop`, argmax is the boundary `m=K`; `Nat.find` under `open Classical`),
+  `tie_maximal_general` (tie edge maximized at `mOf K`, all K), **`singleHub_le_tie_ge22`** (every
+  Balanced single hub at size 11K, `K≥22`, `≤ tieState K (mOf K)` — the length-1 sharpRate input,
+  correct broadened-tie target).
+- **OPEN tail:** (a) the **`1 ≤ K < 22` finite interior patch** — `col_le_edge_large` fails there
+  (bulk helps at the edge for low c); columns peak at `t=1` (26 configs `K∈9..21, c∈{0,1,2}`, from
+  `broadened_tie_2d_envelope.py`), each needs `colState K c 1 ≤ tieState K (mOf K)` (concrete rational
+  via `hub_Aobj_eq`+`norm_num`, with `mOf K` established per-K via `leastTradeStop_spec`/`_min`) plus the
+  per-`(K,c)` `t*(c)∈{0,1}` determination to drive `col_maximal_over_bulk`; (b) assemble the K≥22 core +
+  the patch into all-K `singleHub_le_tie`.
 
 ## Honest frontier / next steps (dependency-ordered)
-1. **M3 c-envelope tail:** the size-decomposition + `mOf K` + the 26-config finite patch → full
-   `singleHub_le_tie` (length-1 SharpRateNF, all aligned K).  The clean K≥23 core is DONE.
+1. **M3 finite patch (`1 ≤ K < 22`):** bounded but tedious — per-K `mOf` establishment + concrete column
+   comparisons → all-K `singleHub_le_tie`.  The clean **K≥22 core is DONE** (structural, elegant).
 2. **`sharpRate_of_tieDomination`** (bypassing the open `hrate`): case-split `s.length` → `singleHub_le_tie`
    (length 1) + `twoHub_le_tie` (length 2, DONE) + an explicit `hMulti` hyp (length ≥3).  Feed
    `Hdom_of_sharpRate` → `conjecture1_of_Hnorm_sharpRate`.
