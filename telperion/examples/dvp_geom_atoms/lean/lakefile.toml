@@ -1,5 +1,5 @@
 name = "DvpGeomAtoms"
-defaultTargets = ["TwoScaleSeparation", "FarPoleSum", "HerglotzLower", "ArgumentPrinciple", "FullArgumentPrinciple", "RectArgumentPrinciple", "AnnulusCount", "SlitLoopWindingZero", "BoxResidueSum", "RectWinding"]
+defaultTargets = ["LogProductBound", "TwoScaleSeparation", "FarPoleSum", "HerglotzLower", "ArgumentPrinciple", "FullArgumentPrinciple", "RectArgumentPrinciple", "AnnulusCount", "SlitLoopWindingZero", "BoxResidueSum", "RectWinding"]
 
 [[require]]
 name = "mathlib"
@@ -35,3 +35,6 @@ name = "BoxResidueSum"
 
 [[lean_lib]]
 name = "RectWinding"
+
+[[lean_lib]]
+name = "LogProductBound"

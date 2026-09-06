@@ -3306,7 +3306,7 @@ jobs:
         run: lake exe cache get
       - name: Build the emitted Lean (the actual verification — dVP geometry certificates)
         working-directory: telperion/examples/dvp_geom_atoms/lean
-        run: lake build TwoScaleSeparation FarPoleSum HerglotzLower ArgumentPrinciple FullArgumentPrinciple RectArgumentPrinciple AnnulusCount SlitLoopWindingZero BoxResidueSum RectWinding
+        run: lake build TwoScaleSeparation FarPoleSum HerglotzLower ArgumentPrinciple FullArgumentPrinciple RectArgumentPrinciple AnnulusCount SlitLoopWindingZero BoxResidueSum RectWinding LogProductBound
 
   # MILESTONE: first kernel-verified on-line nontrivial-zero count for the Riemann zeta function.
   # Certifies N >= 5 zeros of Lambda (= nontrivial zeros of zeta) on Re s = 1/2 in [10, 35],
