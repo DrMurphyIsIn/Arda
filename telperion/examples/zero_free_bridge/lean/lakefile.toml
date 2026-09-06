@@ -190,3 +190,8 @@ name = "DlvpSphereDense"
 # Blaschke modulus-1 + density + sphere-identity). Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpCanonicalNorm"
+
+# PHASE 4 dVP frontier, BLASCHKE step 3b: entire-part bound ‖logDeriv g 0‖ ≤ 2M'/(R-r) for a
+# CanonicalDecomp (no AP term). Imports DlvpMaxMod+DlvpCanonicalNorm+DlvpBlaschkeAnalytic. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpCanonicalBound"

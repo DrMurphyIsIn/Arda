@@ -2962,3 +2962,26 @@ jobs:
       - name: Build the dVP canonical-decomposition boundary identity (kernel verification)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpCanonicalNorm
+
+  # dVP BLASCHKE step 3b: entire-part bound ‖logDeriv g 0‖ ≤ 2M'/(R-r) for a CanonicalDecomp,
+  # feeding DlvpMaxMod with the no-AP sphere bound (log‖f‖ growth only). Completes item (c).
+  rh-dlvp-canonicalbound:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP canonical-decomposition entire-part bound (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpCanonicalBound
