@@ -115,5 +115,20 @@ theorem tie_trade_le_poly (K m : ℕ) (hm1K : m + 1 ≤ K) (hpos : 0 < K + m) :
     field_simp
     nlinarith [h, hd, hd1, mul_pos hd hd1]
 
+/-- The polynomial "trade doesn't help" predicate `203376(K+m) ≤ (1482K+1784m)(K+m+115)`. -/
+def tradeStop (K m : ℕ) : Prop :=
+  (203376 : ℝ) * ((K : ℝ) + m) ≤ (1482 * (K : ℝ) + 1784 * m) * ((K : ℝ) + m + 115)
+
+/-- **Upward closure of `tradeStop`**: once trading a load-5 arm for a load-4 arm + cherry stops
+    helping, it stays stopped (`RHS` grows by `3266K+3568m+206944 > 203376 = LHS` growth).  Hence
+    `V(K,·)` is UNIMODAL in `m` (increasing while `¬tradeStop`, non-increasing while `tradeStop`),
+    so its argmax is the least `m` with `tradeStop K m`. -/
+theorem tradeStop_persists (K m : ℕ) (h : tradeStop K m) : tradeStop K (m + 1) := by
+  have hK : (0 : ℝ) ≤ (K : ℝ) := Nat.cast_nonneg K
+  have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+  simp only [tradeStop] at h ⊢
+  push_cast
+  nlinarith [h, hK, hm, mul_nonneg hK hm]
+
 end Step3
 end R3Cert

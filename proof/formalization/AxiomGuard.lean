@@ -224,3 +224,4 @@ import R3Cert.R47TieBroadened
 #print axioms R3Cert.Step3.tie_Aobj_factored
 #print axioms R3Cert.Step3.tie_trade_le
 #print axioms R3Cert.Step3.tie_trade_le_poly
+#print axioms R3Cert.Step3.tradeStop_persists
