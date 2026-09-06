@@ -62,6 +62,7 @@ import R3Cert.BGSCLRealOblBSymBase
 import R3Cert.R47BroadenedTieWitness
 import R3Cert.R47TieBroadened
 import R3Cert.R47R7TwoHubBridge
+import R3Cert.R47SingleHub2D
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -233,3 +234,10 @@ import R3Cert.R47R7TwoHubBridge
 -- the same-size single-hub downgrade template at every pA,pB>=1, cA in {0..5} (length-2 slice of Hdom).
 #print axioms R3Cert.Step3.twoHub_Aobj_eq
 #print axioms R3Cert.Step3.twoHub_le_tie
+
+-- Single-hub 2-D envelope, T-AXIS (M3, 2026-09-06): the bulk-swap column `colState K c t` is unimodal
+-- in `t` (the `hub_bulk_le` analog of the tie trade machinery); `col_maximal_over_bulk` = each column's
+-- t-argmax dominates. 22-digit `bulkStop` poly cross-checked in broadened_tie_2d_envelope.py.
+#print axioms R3Cert.Step3.hub_bulk_stop_iff
+#print axioms R3Cert.Step3.bulkStopABC_persists
+#print axioms R3Cert.Step3.col_maximal_over_bulk

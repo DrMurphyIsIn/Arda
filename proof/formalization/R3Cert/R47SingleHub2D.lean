@@ -1,0 +1,155 @@
+/-
+  R3Cert.R47SingleHub2D -- M3 of the BG closure plan: the single-hub 2-D envelope.
+
+  A general Balanced single hub `hubState a b c` (a load-5 arms, b load-4 arms, c cherries) at aligned
+  size `11a+9b+2c = 11K` is, along the size-preserving BULK swap (9 load-5 -> 11 load-4, `hub_bulk_le`),
+  the column `colState K c t = hubState (K-c-9t) (c+11t) c`, t >= 0, whose t=0 edge is the tie/trade
+  family `tieState K c`.  This file proves the T-AXIS half: each column is unimodal in `t` (the
+  `hub_bulk_le` analog of the proven `tie_*` trade machinery), so its maximum is at the least `t` where
+  the bulk swap stops helping (`bulkStop`).  Combined (elsewhere) with the c-envelope + finite interior
+  patch (5 <= K < 22) this gives `singleHub_le_tie`.
+
+  The `bulkStop` polynomial (22-digit coefficients, factor F = (513/80)^11/(621/64)^9) and its upward
+  persistence are cross-checked exactly in proof/verification/broadened_tie_2d_envelope.py.
+
+  `conjecture1_proved = False`.  Self-contained leaf: imported by nothing; built as an explicit CI target.
+-/
+import Mathlib
+import R3Cert.R47TieBroadened
+
+namespace R3Cert
+namespace Step3
+
+open RTree
+
+/-- The bulk column at aligned size `11K`, fixed cherry count `c`: `t` bulk swaps applied to the tie
+    edge.  `colState K c 0 = tieState K c` (the trade edge). -/
+def colState (K c t : ℕ) : List Hub := hubState (K - c - 9 * t) (c + 11 * t) c
+
+/-- The polynomial "bulk swap no longer helps" predicate in `(a,b,c)` form: `0 ≤ P(a,b,c)`, the
+    integer-cleared numerator of `hubQ(a,b,c) − F·hubQ(a−9,b+11,c)` (`F = (513/80)^11/(621/64)^9`). -/
+def bulkStopABC (a b c : ℕ) : Prop :=
+  (0 : ℝ) ≤ 1463319377422497563982 * (a : ℝ) ^ 2 + 2962184974539468753000 * (a : ℝ) * b
+    + 3189285822587494690730 * (a : ℝ) * c - 31509328118523021559140 * (a : ℝ)
+    + 1498865597116971189018 * (b : ℝ) ^ 2 + 3224832042281968315766 * (b : ℝ) * c
+    - 25177150793067162184140 * (b : ℝ) + 1725966445164997126748 * (c : ℝ) ^ 2
+    + 15278426564011939378360 * (c : ℝ)
+
+/-- **The bulk-swap comparison in polynomial form** (analog of `tie_trade_le_poly`): one bulk swap is
+    `Aobj`-non-increasing iff the `bulkStopABC` polynomial inequality holds.  Reduces `hub_bulk_le`'s
+    `hubQ` condition by clearing the two degrees `d = a+b+c`, `d' = a+b+c+2` and the factor `F`. -/
+theorem hub_bulk_stop_iff (a b c : ℕ) (ha : 9 ≤ a) (hpos : 0 < a + b + c) :
+    ((513 / 80 : ℝ) ^ 11 / (621 / 64) ^ 9) * hubQ (a - 9) (b + 11) c ≤ hubQ a b c
+      ↔ bulkStopABC a b c := by
+  have hd : (0 : ℝ) < (a : ℝ) + b + c := by exact_mod_cast hpos
+  have hd2 : (0 : ℝ) < (a : ℝ) + b + c + 2 := by linarith
+  simp only [hubQ, bulkStopABC]
+  push_cast [Nat.cast_sub ha]
+  rw [show ((a : ℝ) - 9 + (b + 11) + c) = (a : ℝ) + b + c + 2 by ring]
+  constructor
+  · intro h; field_simp at h; nlinarith [h, hd, hd2, mul_pos hd hd2]
+  · intro h; field_simp; nlinarith [h, hd, hd2, mul_pos hd hd2]
+
+/-- **Upward persistence of `bulkStopABC`** (analog of `tradeStop_persists`): once the bulk swap stops
+    helping, applying one more swap (`a → a−9`, `b → b+11`) keeps it stopped, so each column is unimodal
+    in `t`. -/
+theorem bulkStopABC_persists (a b c : ℕ) (ha : 9 ≤ a) (h : bulkStopABC a b c) :
+    bulkStopABC (a - 9) (b + 11) c := by
+  have hA : (0 : ℝ) ≤ (a : ℝ) := Nat.cast_nonneg a
+  have hB : (0 : ℝ) ≤ (b : ℝ) := Nat.cast_nonneg b
+  have hC : (0 : ℝ) ≤ (c : ℝ) := Nat.cast_nonneg c
+  have h9 : (9 : ℝ) ≤ (a : ℝ) := by exact_mod_cast ha
+  simp only [bulkStopABC] at h ⊢
+  push_cast [Nat.cast_sub ha]
+  nlinarith [h, hA, hB, hC, h9, mul_nonneg hA hB, mul_nonneg hA hC, mul_nonneg hB hC]
+
+/-- The `t`-level "bulk stops helping" predicate on the column `colState K c ·`. -/
+def colStop (K c t : ℕ) : Prop := bulkStopABC (K - c - 9 * t) (c + 11 * t) c
+
+/-- **Column bulk-step comparison**: one more bulk swap at position `t` (requiring `9 ≤ K−c−9t`) is
+    `Aobj`-non-increasing iff `colStop K c t`. -/
+theorem col_step_le (K c t : ℕ) (ha : 9 ≤ K - c - 9 * t)
+    (hpos : 0 < (K - c - 9 * t) + (c + 11 * t) + c) :
+    Aobj (backboneU (colState K c (t + 1))) ≤ Aobj (backboneU (colState K c t))
+      ↔ colStop K c t := by
+  have hst1 : colState K c (t + 1) = hubState ((K - c - 9 * t) - 9) ((c + 11 * t) + 11) c := by
+    unfold colState
+    rw [show K - c - 9 * (t + 1) = (K - c - 9 * t) - 9 by omega,
+      show c + 11 * (t + 1) = (c + 11 * t) + 11 by omega]
+  rw [hst1, colState, hub_bulk_le _ _ _ ha hpos, hub_bulk_stop_iff _ _ _ ha hpos, colStop]
+
+/-- **Upward persistence of `colStop`** (from `bulkStopABC_persists`): once the bulk swap stops helping
+    at `t`, it stays stopped at `t+1`, so `Aobj(colState K c ·)` is unimodal in `t`. -/
+theorem colStop_persists (K c t : ℕ) (ha : 9 ≤ K - c - 9 * t) (h : colStop K c t) :
+    colStop K c (t + 1) := by
+  have := bulkStopABC_persists (K - c - 9 * t) (c + 11 * t) c ha h
+  rw [colStop, show K - c - 9 * (t + 1) = (K - c - 9 * t) - 9 by omega,
+    show c + 11 * (t + 1) = (c + 11 * t) + 11 by omega]
+  exact this
+
+/-- If the bulk swap still helps at `t` (`¬colStop`), the objective strictly increases. -/
+theorem col_step_up (K c t : ℕ) (ha : 9 ≤ K - c - 9 * t)
+    (hpos : 0 < (K - c - 9 * t) + (c + 11 * t) + c) (h : ¬ colStop K c t) :
+    Aobj (backboneU (colState K c t)) ≤ Aobj (backboneU (colState K c (t + 1))) := by
+  have hiff := col_step_le K c t ha hpos
+  have hnot : ¬ (Aobj (backboneU (colState K c (t + 1))) ≤ Aobj (backboneU (colState K c t))) :=
+    fun hle => h (hiff.mp hle)
+  linarith [not_le.mp hnot]
+
+/-- Once the bulk swap stops helping (`colStop`), the objective is non-increasing. -/
+theorem col_step_down (K c t : ℕ) (ha : 9 ≤ K - c - 9 * t)
+    (hpos : 0 < (K - c - 9 * t) + (c + 11 * t) + c) (h : colStop K c t) :
+    Aobj (backboneU (colState K c (t + 1))) ≤ Aobj (backboneU (colState K c t)) :=
+  (col_step_le K c t ha hpos).mpr h
+
+/-- **Increasing chain** on the bulk-helps region: if the swap helps at every `i ∈ [t0, t)` (and stays
+    in range), `V(t0) ≤ V(t)`. -/
+theorem col_up_chain (K c t0 : ℕ) :
+    ∀ t, t0 ≤ t → 9 * t ≤ K - c → (∀ i, t0 ≤ i → i < t → ¬ colStop K c i) →
+      Aobj (backboneU (colState K c t0)) ≤ Aobj (backboneU (colState K c t)) := by
+  intro t ht0
+  induction t, ht0 using Nat.le_induction with
+  | base => intro _ _; exact le_refl _
+  | succ t ht0 ih =>
+      intro htK hlt
+      have h1 := ih (by omega) (fun i hi hit => hlt i hi (by omega))
+      have h2 := col_step_up K c t (by omega) (by omega) (hlt t ht0 (by omega))
+      linarith
+
+/-- Persistence up the column: `colStop` at `tstar` implies `colStop` at every in-range `t ≥ tstar`. -/
+theorem colStop_up (K c tstar : ℕ) (hstop : colStop K c tstar) :
+    ∀ t, tstar ≤ t → 9 * t ≤ K - c → colStop K c t := by
+  intro t hts
+  induction t, hts using Nat.le_induction with
+  | base => intro _; exact hstop
+  | succ t hts ih => intro htK; exact colStop_persists K c t (by omega) (ih (by omega))
+
+/-- **Non-increasing chain** past the bulk-stop threshold: if the swap has stopped at `tstar`, then for
+    every in-range `t ≥ tstar`, `V(t) ≤ V(tstar)`. -/
+theorem col_down_chain (K c tstar : ℕ) (hstar : 9 * tstar ≤ K - c) (hstop : colStop K c tstar) :
+    ∀ t, tstar ≤ t → 9 * t ≤ K - c →
+      Aobj (backboneU (colState K c t)) ≤ Aobj (backboneU (colState K c tstar)) := by
+  intro t hts
+  induction t, hts using Nat.le_induction with
+  | base => intro _; exact le_refl _
+  | succ t hts ih =>
+      intro htK
+      have hstopt : colStop K c t := colStop_up K c tstar hstop t hts (by omega)
+      have h2 := col_step_down K c t (by omega) (by omega) hstopt
+      have h1 := ih (by omega)
+      linarith
+
+/-- **The t-argmax / column maximum**: given `tstar` is the least bulk count where the swap stops
+    helping, the column value at `tstar` dominates every in-range `t`.  (The t-axis half of the M3
+    single-hub 2-D envelope; combined with the c-envelope it gives `singleHub_le_tie`.) -/
+theorem col_maximal_over_bulk (K c tstar : ℕ) (hstarR : 9 * tstar ≤ K - c)
+    (hstop : colStop K c tstar) (hlt : ∀ i, i < tstar → ¬ colStop K c i) :
+    ∀ t, 9 * t ≤ K - c →
+      Aobj (backboneU (colState K c t)) ≤ Aobj (backboneU (colState K c tstar)) := by
+  intro t htK
+  by_cases hle : t ≤ tstar
+  · exact col_up_chain K c t tstar hle hstarR (fun i hi hib => hlt i hib)
+  · exact col_down_chain K c tstar hstarR hstop t (by omega) htK
+
+end Step3
+end R3Cert
