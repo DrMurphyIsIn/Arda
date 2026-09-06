@@ -103,7 +103,9 @@ gLine(t_k) have opposite signs):
    where gLine is nonzero (contradiction); same for r = t_k.
 5. Consecutive roots are strictly increasing: r_{m+1} < t_{k_m} <= t_{i_next} <
    r_{m+2} (the gap t_{k_m} <= t_{i_next} is a rational literal comparison
-   discharged by norm_num).
+   discharged by norm_num).  The subintervals may be adjacent (t_{k_m} =
+   t_{i_next}) or separated by straddling samples (t_{k_m} < t_{i_next}); the
+   <= covers both, so distinctness holds either way.
 6. lambda_eq_gLine (proved from completedZeta_im_eq_zero) rewrites
    completedRiemannZeta(1/2 + r*I) = gLine(r) promoted to C; gLine(r) = 0 gives
    the zero.

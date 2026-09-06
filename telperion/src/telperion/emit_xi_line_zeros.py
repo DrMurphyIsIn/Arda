@@ -21,7 +21,8 @@ with `g t_i < 0 < g t_k` (or the reverse), the intermediate value theorem
 with `g t* = 0`, hence `completedRiemannZeta (1/2 + t*·I) = 0`.  Because the box at
 each sign-DEFINITE endpoint is strictly nonzero (lo > 0 or hi < 0), the root is
 strictly interior (`t_i < t* < t_k`); consecutive sign-change subintervals are
-back-to-back, so the roots are strictly increasing, hence distinct.
+ordered and non-overlapping (adjacent or separated by straddling samples), so
+the roots are strictly increasing, hence distinct.
 
 CERTIFICATE (`certify_xi_line_zeros_point`).  Builds the samples via the family
 spec, computes `sign_change_count`, and REFUSES (ValueError -> CertificationError)
@@ -92,8 +93,9 @@ def _sign_change_intervals(
     """Return the list of ``(i, k)`` index pairs (into ``samples``) of each
     sign-change subinterval: ``i`` is a sign-definite sample and ``k`` the NEXT
     sign-definite sample whose sign is opposite.  Consecutive returned intervals
-    are back-to-back (share the boundary index), so the resulting roots are
-    strictly increasing."""
+    are ordered and non-overlapping (``k_m <= i_next``); an adjacent pair may
+    share the boundary index (back-to-back) or be separated by straddling
+    samples, so the resulting roots are strictly increasing either way."""
     intervals: list[tuple[int, int]] = []
     prev_idx = None
     prev_sign = 0
