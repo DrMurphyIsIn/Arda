@@ -1,6 +1,6 @@
 """Tree-landscape search for competitor extremality — MAP-Elites illumination + rearrangement moves.
 
-Ideas gleaned from the ARDA evolution engine (arda-trading, read-only review), adapted to the
+Ideas gleaned from a private research evolution engine (read-only review), adapted to the
 Brualdi-Goldwasser tree landscape (fitness = bg_phi11(T), the ROOTED branch Phi, max over roots -- the
 CORRECT BG quantity, re-pointed 2026-08-16 from the raw monomer-dimer rho which is a different problem):
 

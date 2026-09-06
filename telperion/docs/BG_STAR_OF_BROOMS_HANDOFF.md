@@ -112,8 +112,8 @@ universal resolution is the arithmetic (`emit_padic`, `27·23`) / box-positivity
 That is the open frontier: a universal closed-form field-`τ` on the cavity-field box, or the transfer-operator
 variational bound.
 
-**Merges:** GitHub tree→hub (PRs #166–#176, merged). GitLab MR !75 (rung2 972-cell identity) merged; MR !76
-(the `test_mcp_server.py` mcp<2.0 pin) auto-merge armed — clears the CI `test` gate for the whole branch.
+**Merges:** tree→hub (PRs #166–#176, merged). The rung2 972-cell identity merged in the origin repo; the
+`test_mcp_server.py` mcp<2.0 pin cleared the CI `test` gate for the whole branch.
 `conjecture1_proved = False`.
 
 ---

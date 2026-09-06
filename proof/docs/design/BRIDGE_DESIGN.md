@@ -84,7 +84,7 @@ amplitude bridge factors through the hub limit and is materially harder than the
    back to `per(L(T))`. Needs the `branch_multiplicativity` p->infinity limit formalized.
 
 Steps 2-4 each need the CI loop (local Lean build unsafe on this machine -- documented M3 SoC
-watchdog crash; would risk the live trading daemons). Verify via the GitLab `lean-verify` job.
+watchdog crash). Verify via the `lean-verify` CI job.
 
 ---
 

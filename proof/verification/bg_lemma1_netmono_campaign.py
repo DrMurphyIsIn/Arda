@@ -35,7 +35,7 @@ It reports (a) monotonicity reproduced to large pL, (b) the exact per-node
 decomposition and its sign structure, and (c) an HONEST verdict on whether a clean
 exact dominating inequality exists.
 
-Run:  cd proof && /Users/peterwmurphy/arda-trading/.venv/bin/python3 -m verification.bg_lemma1_netmono_campaign
+Run:  cd proof && python3 -m verification.bg_lemma1_netmono_campaign
 """
 from __future__ import annotations
 

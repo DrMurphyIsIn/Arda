@@ -94,7 +94,7 @@ to the same object (not independently re-verified here). **Next session: attack
 
 ## Verification
 
-Python probes are ad-hoc (this arc, not committed as modules) — use `.venv` py3.14
-(`~/arda-trading/.venv/bin/python3`); system py3.9 can't import arda. All numeric claims
+Python probes are ad-hoc (this arc, not committed as modules) — use the project's
+`.venv/bin/python3` (py3.14); the system py3.9 can't import the package. All numeric claims
 in `MASTER_INEQUALITY.md` are exact `Fraction`, no floats at decision points. Lean verified
 via GitHub Actions only (no local `lake build` — SoC-watchdog hardware fault).
