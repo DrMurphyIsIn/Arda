@@ -1,0 +1,54 @@
+\section{Introduction}
+\label{sec:intro}
+
+Machine-assisted mathematics has a trust problem, and it is getting sharper.
+Search procedures, heuristics, and---increasingly---large language models are very
+good at producing arguments that \emph{look} right. Looking right is not the same
+as being right, and the more fluent the generator, the more convincing its
+mistakes. If we are going to let such tools into a proof, we need a way to accept
+their output without trusting the tool that produced it.
+
+There is a clean answer, and it is old: \emph{check the witness, don't trust the
+author}. Instead of asking a generator to be trustworthy, ask it to hand over a
+certificate---an object whose validity a small, trusted checker can verify
+independently. A wrong certificate is then a rejected certificate, never a false
+theorem, no matter how the generator arrived at it. This paper is about building
+that idea into a practical tool and putting it to work on real problems.
+
+\paragraph{Telperion.} We present \emph{Telperion}, a certificate compiler for
+Lean~4. You describe a family of concrete mathematical claims; Telperion certifies
+each instance in exact rational arithmetic and emits Lean, and Mathlib's kernel
+re-proves every line from scratch (\cref{sec:system}). The generator is untrusted
+by design. Because the kernel cannot catch a theorem that is true but
+\emph{vacuous}, Telperion adds a self-verification layer---per-emitter sensitivity
+declarations, forge-the-witness negative controls, and an independent second
+checker---and is honest about the one thing no machinery can settle: whether a
+formal statement means the informal claim a human intended (\cref{sec:vacuity}).
+
+\paragraph{Three case studies.} We then exercise the same discipline on three
+deliberately different problems, and we report each at its true strength:
+\begin{itemize}
+  \item \textbf{Brualdi--Goldwasser} (\cref{sec:bg}): a 42-year-old extremal
+    question about trees. The analytic core---a branch-model inequality
+    $\Phi \le 1$, tie-tight---is machine-checked and unconditional, but the
+    \emph{classical conjecture is open}, and we say exactly which bridge is
+    missing.
+  \item \textbf{Riemann-zeta zero-free regions} (\cref{sec:rh}): four
+    unconditional, kernel-checked, axiom-guarded results, including what appear to
+    be the first unconditional Hadamard-free zero-free regions verified in Lean.
+    They are \emph{strictly weaker than de la Vallée-Poussin}; the contribution is
+    the formal derivation, and \emph{we do not claim the Riemann Hypothesis}.
+  \item \textbf{Proof complexity} (\cref{sec:pc}): a kernel-checked,
+    symbolic-in-$n$ sum-of-squares lower bound for the Grigoriev knapsack system.
+    The mathematics is Grigoriev's, Laurent's, and Kurpisz--Lepp\"anen--Mastrolilli's;
+    our contribution is the certified pipeline and the machine-checked statement.
+\end{itemize}
+
+\paragraph{A note on posture.} A reader will notice that we spend as much care on
+what is \emph{not} proved as on what is. That is deliberate. The honesty flags in
+this project are load-bearing (\texttt{conjecture1\_proved = False} is a real,
+tested invariant, not a slogan), and a certificate engine whose whole value is
+that you need not trust it would be a strange place to start overclaiming.
+\Cref{sec:evaluation} takes up the limitations directly, and the reproducibility
+appendix gives a reviewer the commands to re-check any claim in this paper
+themselves.
