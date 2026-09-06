@@ -219,5 +219,62 @@ theorem singleHub_le_tie_large (a b c K : ℕ) (hc : c ≤ 5) (hK : 23 ≤ K)
   rw [heq]
   exact col_le_nearStar_large K c (b / 11) hK hc htK
 
+/-! ### The tie-edge argmax `mOf K` for ALL K (interior least-`tradeStop`, else the boundary `m = K`). -/
+
+open Classical
+
+/-- The trade always stops helping at some (large) `m`: `tradeStop K 115` holds for every `K`. -/
+theorem tradeStop_exists (K : ℕ) : ∃ m, tradeStop K m := by
+  refine ⟨115, ?_⟩
+  simp only [tradeStop]
+  push_cast
+  nlinarith [(Nat.cast_nonneg K : (0 : ℝ) ≤ (K : ℝ)), sq_nonneg ((K : ℝ))]
+
+/-- The least trade count at which the trade stops helping. -/
+noncomputable def leastTradeStop (K : ℕ) : ℕ := Nat.find (tradeStop_exists K)
+
+theorem leastTradeStop_spec (K : ℕ) : tradeStop K (leastTradeStop K) :=
+  Nat.find_spec (tradeStop_exists K)
+
+theorem leastTradeStop_min (K : ℕ) {i : ℕ} (hi : i < leastTradeStop K) : ¬ tradeStop K i :=
+  Nat.find_min (tradeStop_exists K) hi
+
+/-- **The tie-edge argmax.**  For `K ≥ 5` this is the least `tradeStop` count (`≤ K`); for `K ≤ 4`,
+    where no `m ≤ K` has `tradeStop`, it is the boundary `m = K`.  So `mOf K = min K (leastTradeStop K)`
+    (matches `m(K)`: 1..5→K, 6..11→5, …, ≥23→0). -/
+noncomputable def mOf (K : ℕ) : ℕ := min K (leastTradeStop K)
+
+theorem mOf_le (K : ℕ) : mOf K ≤ K := min_le_left _ _
+
+/-- **The tie edge is maximized at `mOf K`, for every `K`.**  Interior: `tie_maximal_over_trades` at the
+    least `tradeStop`.  Boundary (`K ≤ 4`, no in-range `tradeStop`): `tie_up_chain` to `m = K`. -/
+theorem tie_maximal_general (K : ℕ) (hK : 0 < K) :
+    ∀ m, m ≤ K → Aobj (backboneU (tieState K m)) ≤ Aobj (backboneU (tieState K (mOf K))) := by
+  intro m hm
+  by_cases hle : leastTradeStop K ≤ K
+  · have hmOf : mOf K = leastTradeStop K := min_eq_right hle
+    rw [hmOf]
+    exact tie_maximal_over_trades K (leastTradeStop K) hK hle (leastTradeStop_spec K)
+      (fun i hi => leastTradeStop_min K hi) m hm
+  · have hgt : K < leastTradeStop K := by omega
+    have hmOf : mOf K = K := min_eq_left (le_of_lt hgt)
+    rw [hmOf]
+    exact tie_up_chain K m hK K hm (le_refl K)
+      (fun i _ hiK => leastTradeStop_min K (by omega))
+
+/-- **The single-hub envelope for `K ≥ 22`** (targeting the true tie argmax `mOf K`): every Balanced
+    single hub at aligned size `11K`, `K ≥ 22`, is dominated by the broadened tie `tieState K (mOf K)`.
+    t-axis collapse (`col_le_edge_large`) then c-axis (`tie_maximal_general`).  This is the length-1
+    input to `sharpRate_of_tieDomination` for all `K ≥ 22` (the remaining `5 ≤ K < 22` low-c columns
+    that peak at `t = 1` are the finite interior patch). -/
+theorem singleHub_le_tie_ge22 (a b c K : ℕ) (hc : c ≤ 5) (hK : 22 ≤ K)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * K) :
+    Aobj (backboneU (hubState a b c)) ≤ Aobj (backboneU (tieState K (mOf K))) := by
+  obtain ⟨heq, htK⟩ := hubState_eq_colState a b c K hc hsize
+  rw [heq]
+  have h1 := col_le_edge_large K c (b / 11) hK hc htK
+  have h2 := tie_maximal_general K (by omega) c (by omega)
+  linarith
+
 end Step3
 end R3Cert

@@ -250,3 +250,5 @@ import R3Cert.R47SingleHub2D
 #print axioms R3Cert.Step3.col_le_nearStar_large
 #print axioms R3Cert.Step3.hubState_eq_colState
 #print axioms R3Cert.Step3.singleHub_le_tie_large
+#print axioms R3Cert.Step3.tie_maximal_general
+#print axioms R3Cert.Step3.singleHub_le_tie_ge22
