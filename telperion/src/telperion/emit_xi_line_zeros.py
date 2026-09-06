@@ -429,18 +429,39 @@ class XiLineZerosEmitter(Emitter):
             )
 
         # Assemble the existential witness: roots, ordering chain, zeros.
+        # For each inter-root gap we need r_{m+1} < r_{m+2}.  Whether the
+        # bounding intervals are back-to-back (k_m == i_next) or separated
+        # (k_m < i_next), the chain is:
+        #   r_{m+1} < t_{k_m} <= t_{i_next} < r_{m+2}
+        # The middle inequality t_{k_m} <= t_{i_next} is a rational literal
+        # comparison discharged by norm_num (trivially when k_m == i_next it
+        # is t_k <= t_k, i.e. le_refl, which norm_num also handles).  We emit
+        # an intermediate have only when k_m != i_next to keep output concise
+        # for the common back-to-back case.
+        gap_haves: list[str] = []
         order_terms: list[str] = []
-        first_i = intervals[0][0]
         # a ≤ r1: a ≤ t_{first_i} < r1
         order_terms.append(f"by linarith [hri_lo0]")
         for m in range(N - 1):
             k_m = intervals[m][1]
             i_next = intervals[m + 1][0]
-            assert k_m == i_next  # back-to-back sign-change subintervals
-            # r_{m+1} < r_{m+2}: r_{m+1} < t_{k_m} = t_{i_next} < r_{m+2}
-            order_terms.append(f"by linarith [hri_hi{m}, hri_lo{m + 1}]")
+            if k_m == i_next:
+                # Back-to-back: r_{m+1} < t_{k_m} = t_{i_next} < r_{m+2}
+                order_terms.append(f"by linarith [hri_hi{m}, hri_lo{m + 1}]")
+            else:
+                # Separated: r_{m+1} < t_{k_m} <= t_{i_next} < r_{m+2}.
+                # Emit a numeric gap lemma and use it in linarith.
+                gap_haves.append(
+                    f"  have hgap{m} : ({tlit(k_m)} : ℝ) ≤ {tlit(i_next)} := by norm_num\n"
+                )
+                order_terms.append(
+                    f"by linarith [hri_hi{m}, hgap{m}, hri_lo{m + 1}]"
+                )
         # r_N ≤ b: r_N < t_{last_k} ≤ b
         order_terms.append(f"by linarith [hri_hi{N - 1}]")
+        # Insert the gap haves before the final exact (after all IVT haves).
+        if gap_haves:
+            proof.extend(gap_haves)
         order_anon = "⟨" + ", ".join(order_terms) + "⟩"
         # The zeros component is `hLam0 ∧ ... ∧ hLam{N-1}`; for N == 1 it is a single
         # Prop (no `∧`), so it must NOT be wrapped in an anonymous constructor.
