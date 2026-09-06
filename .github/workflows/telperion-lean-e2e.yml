@@ -2824,3 +2824,26 @@ jobs:
       - name: Build the dVP log-of-finprod wiring (kernel verification)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpLogProd
+
+  # dVP ζ zero-factor (2) INSTANTIATION: abstract log_norm_prod_diff_le applied to the ζ zero-part
+  # finprod (divisor on inner disk) → log‖P c‖ - log‖P z‖ ≤ count·(log R₀ - log(R-R₀)) = AP.
+  rh-dlvp-zetazerofactor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP ζ zero-factor instantiation (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaZeroFactor

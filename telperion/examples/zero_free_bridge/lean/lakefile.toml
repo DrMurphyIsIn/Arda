@@ -160,3 +160,8 @@ name = "DlvpZeroFactor"
 # composed with the two-scale bound → AP. Imports DlvpZeroFactor. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpLogProd"
+
+# PHASE 4 dVP frontier, ζ zero-factor (2) INSTANTIATION: abstract log_norm_prod_diff_le applied to
+# the ζ zero-part finprod (divisor on inner disk). Imports DlvpZetaDisk+DlvpLogProd. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpZetaZeroFactor"
