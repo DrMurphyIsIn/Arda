@@ -225,3 +225,8 @@ name = "DlvpCorrectionBound"
 # (correction + logDeriv g), Blaschke form. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBlaschkeSplitExpand"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d4) capstone: BC-SUM for the Blaschke split -Re(ζ'/ζ) ≤ AL -
+# Re(Herglotz) via bc_sum_of_split. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBCSumBlaschke"
