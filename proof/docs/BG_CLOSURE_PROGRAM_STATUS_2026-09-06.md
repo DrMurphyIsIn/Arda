@@ -70,15 +70,18 @@ positive denominator.
 - **`singleHub_le_tie` (ALL K≥1):** splits `K≤21` (patch) / `K≥22` (structural).  **The M3 2-D envelope
   is CLOSED** — the complete length-1 input to the assembly.
 
+## Assembly — length-1 Hdom slice DONE (`R47SharpRate.lean`, kernel-verified)
+`singleHub_dominated` / `sharpRate_singleHub_aligned`: an arbitrary Balanced+Capped single hub
+`[(arms,c)]` at an aligned size (`11 ∣ 9·count 4 + 2c`) reduces via arm-permutation
+(`Aobj_backbone_arm_perm` → `balancedArms_perm` → `(a,b)` counts) to `singleHub_le_tie`, hence is
+dominated by `alignedTie` at its own `stateSize` (`= 1 + 11·count5 + 9·count4 + 2c`, `stateSize_singleHub`).
+This is the length-1 case of `SharpRateNF`/`Hdom`, discharged by the M3 envelope.
+
 ## Honest frontier / next steps (dependency-ordered)
-1. **`sharpRate_of_tieDomination` assembly** — the remaining structural glue.  Length-1 case: a
-   Balanced+Capped single hub `[(arms,c)]` at aligned size `1+11K` reduces (arm-permutation → `(a,b)`
-   counts) to `singleHub_le_tie` (DONE).  Length-2: `twoHub_le_tie` (DONE) dominates by a same-size
-   single-hub template — but that template has `c=0` (NOT a `tieState`), and the two-hub size
-   `2+2cA+11(pA+pB)` is `≡ 1 mod 11` only for `cA=5`.  So **defining the tie family `ℕ→UTree` at length-2
-   (and general) sizes lands on the KNOWN-OPEN non-aligned-n layer** — the assembly is not fully
-   dischargeable without characterizing the tie off the `n ≡ 1 mod 11` lattice.  Achievable now: the
-   length-1 SharpRateNF slice at aligned sizes.
+1. **Length-≥2 `SharpRateNF`** — `twoHub_le_tie` (DONE) dominates by a same-size single-hub template with
+   `c=0` (NOT a `tieState`), and the two-hub size `2+2cA+11(pA+pB)` is `≡ 1 mod 11` only for `cA=5`.  So
+   the tie family `ℕ→UTree` at length-≥2 sizes lands on the **KNOWN-OPEN non-aligned-n layer** — full
+   `SharpRateNF` needs the tie characterized off the `n ≡ 1 mod 11` lattice.
 2. `m ≥ 3` multi-hub (assisted-merge environment rules) and Hnorm / `StraightProgress_sized` remain the
    other open layers, alongside non-aligned-n.
 
