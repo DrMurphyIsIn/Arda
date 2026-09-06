@@ -215,3 +215,8 @@ name = "DlvpBlaschkeProdAnalytic"
 # off zeros (small ball + transfer + logDeriv_mul + d1). Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBlaschkeSplit"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d3): Blaschke correction sum ‖Σ (n u) conj u/(R²-conj u z)‖ ≤
+# (Σ|n u|)/(R-‖z‖) — O(1)·count (pole outside disk). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpCorrectionBound"
