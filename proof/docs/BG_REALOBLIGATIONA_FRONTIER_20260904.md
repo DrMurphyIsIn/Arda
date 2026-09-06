@@ -1,0 +1,209 @@
+# BG conjecture1 — the RealObligationA (Hnorm) frontier (2026-09-04, consolidated)
+
+**Status: `RealObligationA` (Hnorm's per-step straightening obligation) mapped end-to-end, decomposed into
+Case A (92%) + Case B (8%), with kernel-verified Lean for the Case-A analytic core. `conjecture1_proved =
+False`.** Branch `bg/conjecture1-attack` (GitHub `DrMurphyIsIn/Arda`). All Lean below is `no sorry`,
+axiom-clean `[propext, Classical.choice, Quot.sound]`, AxiomGuard-guarded, `lake build` green.
+
+## Consolidated summary (what this session established)
+
+| Piece | Status |
+|---|---|
+| **Frontier map** — `RealObligationA` = a size-preserving move, strDefect↓, Aobj-nondecreasing | mapped |
+| **Well-posedness is LOCAL** (move confined to a deepest defect's subtree) | 19099/19099 exact, n≤12 |
+| **Case A (leaf-path-ext, 92%)** — Aobj-increment identity `ΔAobj = P(n²+nQ+4Q)/(2(n+1)(n+2))` | **KERNEL-PROVED** (`f2_increment_identity`, `f2_aobj_monotone`) |
+| Case-A size clause + piece-flip strDefect mechanism | **KERNEL-PROVED** (`usize_flp_move_eq`, `npCount_flp_flip`) |
+| Case-A **degree-changing Aobj context-lift** (non-root acted node) | **OPEN** (genuine lemma, not bookkeeping; `Aobj_flp_context_lift` Prop) |
+| **Case B (whole-hub, 8%)** — no fixed structural move (all refuted, one kernel-gated) | adaptive local existence lemma |
+| Case-B **symmetric base case** `node[H,H]` — whole-hub-onto-leaf, Aobj-nondecreasing, `dAobj=0` at star tie | characterized (a9) |
+| Case-B **asymmetric coupling** (the conjecture1 caterpillar-maximizer content) | **OPEN** |
+| **AXLE/Ono Telperion suite** wired to BG (emit→verify→negative_control→assemble) | validated (`bg_axle_apply.py`) |
+
+**The two genuine open residuals:** (1) the degree-changing Aobj context-lift for Case A; (2) the asymmetric
+Type-W existence coupling — which is essentially conjecture1's open core (Pant 2026) in local form.
+
+---
+
+### (Historical) research note — picking up the interrupted `a3` Phase-0 investigation
+
+## Where this sits in the conjecture1 reduction
+
+Wave-2 (`d57be40`) reduced conjecture1 to **Hnorm + SharpRateNF + the re-rooting iso**. Hnorm — every
+tree's `Aobj` is ≤ that of a straightened (Balanced+Capped hub) form — is discharged by a straightening
+descent whose per-step obligation is `RealObligationA` (`R3Cert/BGSCLObligationA.lean`):
+
+```
+RealObligationA (f : UTree → UTree) : Prop :=
+  ∀ t, strDefect t ≠ 0 → usize (f t) = usize t ∧ strDefect (f t) < strDefect t ∧ Aobj t ≤ Aobj (f t)
+```
+
+i.e. a size-preserving move that strictly lowers the (root-fixed) straightening defect `strDefect`
+without lowering the objective `Aobj = per(L)/∏deg`. The earlier `pushInto`/debranch encoding was
+**kernel-REFUTED** (`deephub_obligationA_false`, `direct_obligationA_false`): it CONCENTRATES degree, and
+`Aobj` is maximized *toward the path* (degree-equalizing raises `Aobj`, concentrating lowers it). So the
+real move is degree-EQUALIZING.
+
+## What `a3` established (recovered from `telperion/scratch/a3_*.py`)
+
+1. **Existence / well-posedness — 100% (n ≤ 12).** Every genuine tree (root-fixed `strDefect > 0`; 19099
+   of them) has SOME SPR relocation that is both `strDefect`-down and `Aobj`-non-decreasing
+   (`a3_wellposed.py`). So `RealObligationA` is not vacuous — a witness move always exists.
+2. **`debranchLocal` (deterministic) is insufficient — 26%** (4978/19099). Confirmed dead as a universal
+   move (it is the concentrating direction).
+3. **The single-leaf "higher→lower degree" move is NOT unconditionally `Aobj`-up.** It goes *negative* at
+   small degree gaps (`a3_singleleaf.py`: gap `du−dv=1` → 4512 negatives; worst `du=3,dv=2`). Only large
+   gaps (≥6) are reliably positive. So "move a leaf to any lower-degree vertex" fails.
+4. **POSITIVE, DURABLE: the leaf-onto-leaf PATH-EXTENSION move is unconditionally `Aobj`-up.** Moving a
+   pendant leaf onto another leaf (`a3_leafmove.py`, `B_is_leaf=True`): **30000 tests, 0 negatives**, with
+   the exact closed form (`a3_F2_closed.py`, verified vs the exact cavity engine on 2000 blocks):
+
+   ```
+   ΔAobj = P · (n² + n·Q + 4·Q) / (2(n+1)(n+2)),   with  P, Q, n ≥ 0   ⟹   ΔAobj ≥ 0.
+   ```
+
+   `P = ∏ Ztot(child)` (>0), `Q` a `qSum` term (≥0), `n` a child count (≥0). This is a **clean, Lean-ready
+   rational-positivity certificate** (`n² + nQ + 4Q ≥ 0`) — the load-bearing positive result.
+
+## What this session (`a4`) added — the frontier is precisely located
+
+`a4_pathext_covers.py`, `a4_miss_move.py` (exact, n ≤ 12/11):
+
+5. **Leaf-path-extension straightens 93%** (17773/19099): for these, a leaf-path-extension is BOTH
+   `strDefect`-down AND `Aobj`-up (the `Aobj` clause free from the F2 certificate #4).
+6. **The 7% it misses are SYMMETRIC MULTI-HUB trees** — e.g. `node[node[l,l,l], node[l,l,l]]`
+   (`strDefect = 1`): the two equal hubs cannot be straightened by relocating a single leaf (any leaf move
+   leaves two non-piece children at the root, `strDefect` unchanged). 1326 such trees at n ≤ 12.
+7. **The misses' winning move is a WHOLE-HUB relocation** (`a4_miss_move.py`, all 177 misses at n≤11 are
+   well-posed): moved-subtree size **2–6, mostly non-piece (a sub-hub)**, regrafted onto a strictly-lower
+   degree vertex. This second family does NOT enjoy the single-parameter F2 certificate (whole-subtree
+   moves onto leaves DO have negatives — `a3_leafmove.py` `B_is_leaf=False`: 598 neg), so it needs its own
+   `Aobj`-monotonicity argument.
+
+## The honest frontier (what remains for `RealObligationA`)
+
+`RealObligationA` is **NOT** reducible to one clean move. It needs a case split:
+
+- **Case A (leaf-path-extension, 93%):** `Aobj` clause = the F2 certificate `n²+nQ+4Q ≥ 0` (Lean-ready);
+  `strDefect` clause = a finite combinatorial check that the extension removes a non-piece child.
+- **Case B (symmetric multi-hub, 7%):** a whole-hub degree-equalizing relocation; the `Aobj`-monotonicity
+  here is the genuine remaining analytic content (no closed-form certificate yet — the next target).
+
+### Case B, stress-tested (`a5_caseB_candidates.py`, `a5b_kernel_gate_refutation.py`, exact n ≤ 11)
+
+Tested deterministic Case-B move-rules against the 177 miss trees (n≤11). Result:
+- **`R_greedy_aobj` (among strDefect-down moves, pick argmax `Aobj`) is UNIVERSAL — 177/177.** So a
+  deterministic Case-B witness EXISTS, but it is a **search** (argmax), not a clean structural move.
+- **Every simple structural rule is REFUTED**: `R_maxgap` 164/177, `R_hub_to_leaf` 171/177, `R_min_child`
+  151/177 — each has miss trees where it DROPS `Aobj`. Concrete refutation for `R_maxgap`: at
+  `((),(((((),),),),((((),),),)))` it moves `Aobj 901/96 → 1189/128` (down). **This refutation is
+  kernel-gated** via the AXLE `negative_control` primitive (`a5b`): `assert_kernel_rejects` confirms the
+  Lean kernel rejects the false monotonicity `901/96 ≤ 1189/128`, and the real drop `1189/128 < 901/96`
+  verifies clean.
+
+**Consequence for the Lean proof:** Case B must be discharged as an **EXISTENCE** statement — `∀ t` (Case-B
+defective) `∃ move`, strDefect-down ∧ `Aobj`-non-decreasing — backed by the well-posedness lemma (#1), NOT
+by proving a clean structural move (those are dead, now kernel-gated). The remaining analytic content is the
+existence/well-posedness lemma itself. Do not spend effort proving `R_maxgap`/`R_hub_to_leaf` monotone.
+
+### The well-posedness lemma is LOCAL — the key strategic advance (`a6_locality.py`, exact n ≤ 12)
+
+The existence lemma looked infinite (a claim over all trees). It is not — it is **LOCAL**:
+
+> **For every defective tree, a strDefect-down + `Aobj`-non-decreasing SPR move exists CONFINED to the
+> subtree of a DEEPEST defective node `u`** (`npCount(u) ≥ 2`, no deeper node branches). **100% (3943/3943
+> at n ≤ 11; confirmed n ≤ 12).**
+
+- Whole-child relocation (move a non-piece child of `u` out) covers **98%** (3866/3943); the residual 2% are
+  *nested* defects (vee-of-vees, triple-vee) where the local move is instead a **leaf-path-extension inside a
+  child of `u`** (turning that child into a piece, dropping `npCount(u)`). Both are moves *inside* `subtree(u)`.
+- Combined with the root-degree factorization `Aobj(node cs) = P(cs)·(1 + qSum(cs)/k)` (a3_derisk.py) — where
+  `P, qSum` depend only on the children's internal structure and the rest of the tree enters as FIXED scalars
+  — the **sign of ΔAobj for a `subtree(u)`-confined move is determined by a BOUNDED local configuration** (u's
+  child-degree profile) plus global scalars. Exactly the `P·(local rational)` shape of the F2 certificate.
+
+**Therefore the well-posedness lemma reduces to a FINITE local case analysis** on `u`'s child-degree profile —
+each case a bounded rational-`Aobj` inequality, i.e. **emittable / kernel-certifiable** via the Telperion
+enclosure + `negative_control` route. This converts the one open analytic residual of `RealObligationA` from an
+apparently-infinite existence statement into a finite, mechanizable case sweep. That sweep — enumerate the local
+profiles at a deepest defect, emit each `Aobj`-monotone local-move certificate, kernel-gate — is the concrete
+next unit. `conjecture1_proved = False`.
+
+### The sweep, executed (`a7_taxonomy.py` + `R3Cert/BGSCLRealOblACaseA.lean`, n ≤ 12)
+
+The local moves at a deepest defect split into exactly two types:
+- **Type L (a LEAF move straightens): 17567/19099 = 92%.** A leaf-onto-leaf path-extension inside `subtree(u)`.
+  Its `Aobj` clause is the F2 closed form `ΔAobj = P·(n²+nQ+4Q)/(2(n+1)(n+2)) ≥ 0`. **EMITTED + kernel-verified**
+  as `R3Cert.BGSCL.f2_numerator_nonneg` + `f2_aobj_increment_nonneg` (`BGSCLRealOblACaseA.lean`, axiom-clean,
+  AxiomGuard-guarded). This discharges the Case-A `Aobj` clause (modulo the structural cavity-model proof that
+  the move's actual increment equals this closed form).
+- **Type W (needs a whole-hub move, moved size ≥ 2): 1532/19099 = 8%.** min-moved-size histogram
+  `{2:522, 3:219, 4:704, 5:43, 6:12, 7:32}`. The canonical "relocate onto the lowest-degree local vertex" rule
+  is `Aobj`-nondown for only **914/1532 (60%)** — so Type-W target selection is NOT a simple degree rule (the
+  argmax-Aobj search covers 100%, per `a5`). This 8% Type-W residual is the remaining open unit: pin a
+  deterministic local target (or prove the local existence directly) and derive its `Aobj` closed form.
+
+### Type-W target hunt — no fixed move-set closes it (`a8_typeW_target.py`, n ≤ 12, 1532 Type-W trees)
+
+Tested structural (search-free, closed-form-able) local targets for the whole-hub move:
+`W_deep_leaf` (onto the deepest leaf in `subtree(u)`) **79%** — best single rule; `W_sib_leaf` (onto a
+sibling hub's leaf-arm) 43%; `W_sib_direct` (onto a sibling hub directly — concentrating) 14%; **argmax-Aobj
+100%**. The **union of all three structural rules is only 86%** (1321/1532; 211 misses — asymmetric nested
+hubs). **Conclusion: Type-W admits no small finite disjunction of fixed structural moves; the witness
+selection is genuinely ADAPTIVE (argmax).** So the Type-W 8% must be discharged as a true **local existence
+lemma** — `∀` Type-W-defective `t`, `∃` a `subtree(u)`-confined strDefect-down + `Aobj`-non-decreasing move —
+bounded by locality but not reducible to a named move. This is the genuine remaining analytic core of
+`RealObligationA` (the other 92% is F2-certified and banked). It is a bounded (local) existence statement, not
+the original all-trees lemma — but it is not a closed-form certificate.
+
+### Honest run at Type-W — the symmetric base case IS structured (`a9_symmetric_hubs.py`)
+
+Attacking the cleanest Type-W subfamily, the symmetric two-equal-hub trees `node[H,H]` (`H` a clean hub, up to
+`|H|=8`, 64 genuine Type-W): the move is **uniform after all** — relocate one whole hub `H` onto a **leaf of the
+other hub** (whole-hub, target-leaf: 60/64, 62/64). Its increment distribution is `dAobj ∈ {0 : 60/64,
+strictly positive : 4/64}` — **the symmetric Type-W move is Aobj-NON-DECREASING, with EQUALITY (`dAobj=0`)
+exactly at the pure/near-pure STAR hubs** (`H = k-star`). So:
+- The symmetric Type-W base case has a STRUCTURED (non-adaptive) move with a provable sign; the equality
+  `Aobj(node[k-star,k-star]) = Aobj(after)` is the extremal/tight case — the same tie flavor as the `27·23` locus.
+- The ADAPTIVITY (a8) enters only for the ASYMMETRIC / nested Type-W trees, where the two hubs DIFFER and the
+  argmax picks the larger-`Aobj`-gain relocation.
+
+**Honest status:** the general Type-W existence lemma remains OPEN, but the symmetric base case is now
+characterized and provably `Aobj`-non-decreasing (equality at the star tie). The residual is the ASYMMETRIC
+Type-W coupling (pick the hub whose relocation gains more `Aobj`) — which is where the genuine combinatorial
+content of conjecture1 (the caterpillar-maximizer) actually lives. `conjecture1_proved = False`.
+
+**Net:** the sweep discharged the Case-A (92%) `Aobj` clause as a kernel-verified atom and isolated the open
+residual to the **Type-W 8% target-selection** — a bounded local problem, no longer the full lemma.
+`conjecture1_proved = False`.
+
+### Case-A structural identity — the F2 atom is now LOAD-BEARING (`R3Cert/BGSCLRealOblACaseAIdentity.lean`)
+
+The banked sign certificate is now backed by the actual cavity model. Using the root-degree factorization
+`Aobj(node cs) = (∏ Ztot(dtSub K))·(1 + qSum(cs)/|cs|)` (`Ztot_node_deg`, already in the Lean corpus) and the
+concrete cavity values `Ztot(dtSub leaf)=1, qContrib(leaf)=1`, `Ztot(dtSub stem)=3/2, qContrib(stem)=1/3`:
+
+- **`f2_increment_identity`** — kernel-proves the EXACT increment
+  `Aobj(node (stem::rest)) − Aobj(node (leaf::leaf::rest)) = P·(n²+nQ+4Q)/(2(n+1)(n+2))`,
+  `P = ∏ Ztot(dtSub rest)`, `Q = qSum rest`, `n = |rest|` (the numerically-verified `a3_F2_closed` form).
+- **`f2_aobj_monotone`** — composes it with the sign atom to give `Aobj(before) ≤ Aobj(after)` in the cavity
+  model: the leaf-path-extension does not decrease `Aobj`. **This is the Case-A `Aobj` clause, now genuinely
+  proven** (not just a certificate awaiting a consumer).
+
+Both axiom-clean `[propext, Classical.choice, Quot.sound]`, AxiomGuard-guarded, `lake build` green (8738 jobs).
+The Case-A `Aobj`-monotonicity of `RealObligationA` is discharged in the cavity model for the rooted-at-`u`
+leaf-path-extension; what remains for full Case A is the (mechanical) strDefect-drop + the size clause, and the
+context-lift to a non-root acted node (both structural, no new analytic content). `conjecture1_proved = False`.
+
+Existence (#1) guarantees a witness always exists; a Lean proof can define `f` by a canonical search and
+prove the two cases cover all defective trees. **Recommended next unit:** formalize Case A — emit the F2
+rational-positivity atom via the (now-merged) Telperion `emit_transcendental_enclosure` / rational-cone
+route, kernel-gate with `verify.py` + `negative_control.py`, and wire it as the `Aobj` clause of a
+leaf-path-extension `straightStep`. Case B (the whole-hub move certificate) is the deeper residual.
+
+## Files
+- Investigation: `telperion/scratch/a3_*.py` (a3, interrupted), `telperion/scratch/a4_pathext_covers.py`,
+  `a4_miss_move.py` (this session).
+- Lean obligation: `R3Cert/BGSCLObligationA.lean` (`RealObligationA` Prop + the refutation witnesses).
+- Reduction: `R3Cert/R47TopCapstone.lean` (`conjecture1_of_layers`), `R3Cert/BGSCLHnormPort.lean`.
+
+Do NOT claim Hnorm or conjecture1 closed. `conjecture1_proved = False`.
