@@ -43,7 +43,7 @@ positive denominator.
   the common `(621/64)^K` then `convert` to the reduced lemma.  Kernel-clean, in AxiomGuard + CI.
   Closes the **length-2** slice of `SharpRateNF`/`Hdom`.
 
-## M3 — single-hub 2-D envelope: t-axis DONE + K≥23 envelope DONE, c-envelope tail OPEN
+## M3 — single-hub 2-D envelope: **COMPLETE for all aligned K** (kernel-verified)
 `R47SingleHub2D.lean`.  A Balanced single hub at aligned size `11K` (c≤5) is exactly the bulk column
 `colState K c t = hubState (K−c−9t) (c+11t) c` (b≡c mod 11 forces `b=c+11t, t≥0`), t=0 edge = `tieState K c`.
 - **t-axis (kernel-verified):** `hub_bulk_stop_iff` (reduces `hub_bulk_le`'s hubQ condition to the
@@ -62,21 +62,25 @@ positive denominator.
   `tie_maximal_general` (tie edge maximized at `mOf K`, all K), **`singleHub_le_tie_ge22`** (every
   Balanced single hub at size 11K, `K≥22`, `≤ tieState K (mOf K)` — the length-1 sharpRate input,
   correct broadened-tie target).
-- **OPEN tail:** (a) the **`1 ≤ K < 22` finite interior patch** — `col_le_edge_large` fails there
-  (bulk helps at the edge for low c); columns peak at `t=1` (26 configs `K∈9..21, c∈{0,1,2}`, from
-  `broadened_tie_2d_envelope.py`), each needs `colState K c 1 ≤ tieState K (mOf K)` (concrete rational
-  via `hub_Aobj_eq`+`norm_num`, with `mOf K` established per-K via `leastTradeStop_spec`/`_min`) plus the
-  per-`(K,c)` `t*(c)∈{0,1}` determination to drive `col_maximal_over_bulk`; (b) assemble the K≥22 core +
-  the patch into all-K `singleHub_le_tie`.
+- **`1 ≤ K < 22` finite patch DONE (`singleHub_le_tie_lt22`):** after decomposition the bulk position
+  `t = b/11 ≤ 2`; `t=0` is the tie edge (`tie_maximal_general`), each interior `t∈{1,2}` a concrete
+  rational comparison `colState K c t ≤ tieState K (mOf K)` via `hub_Aobj_eq`+`norm_num`, routed through
+  `tie_maximal_general` to `m = mOf K` (no `mOf`-value proof needed).  Per-K blocks (correct `m`, no
+  `first`-backtracking), `maxHeartbeats 2000000`.
+- **`singleHub_le_tie` (ALL K≥1):** splits `K≤21` (patch) / `K≥22` (structural).  **The M3 2-D envelope
+  is CLOSED** — the complete length-1 input to the assembly.
 
 ## Honest frontier / next steps (dependency-ordered)
-1. **M3 finite patch (`1 ≤ K < 22`):** bounded but tedious — per-K `mOf` establishment + concrete column
-   comparisons → all-K `singleHub_le_tie`.  The clean **K≥22 core is DONE** (structural, elegant).
-2. **`sharpRate_of_tieDomination`** (bypassing the open `hrate`): case-split `s.length` → `singleHub_le_tie`
-   (length 1) + `twoHub_le_tie` (length 2, DONE) + an explicit `hMulti` hyp (length ≥3).  Feed
-   `Hdom_of_sharpRate` → `conjecture1_of_Hnorm_sharpRate`.
-3. `m ≥ 3` multi-hub (the assisted-merge environment rules) and Hnorm / `StraightProgress_sized` (the
-   tree→hub coverage dichotomy) remain the other open layers.
+1. **`sharpRate_of_tieDomination` assembly** — the remaining structural glue.  Length-1 case: a
+   Balanced+Capped single hub `[(arms,c)]` at aligned size `1+11K` reduces (arm-permutation → `(a,b)`
+   counts) to `singleHub_le_tie` (DONE).  Length-2: `twoHub_le_tie` (DONE) dominates by a same-size
+   single-hub template — but that template has `c=0` (NOT a `tieState`), and the two-hub size
+   `2+2cA+11(pA+pB)` is `≡ 1 mod 11` only for `cA=5`.  So **defining the tie family `ℕ→UTree` at length-2
+   (and general) sizes lands on the KNOWN-OPEN non-aligned-n layer** — the assembly is not fully
+   dischargeable without characterizing the tie off the `n ≡ 1 mod 11` lattice.  Achievable now: the
+   length-1 SharpRateNF slice at aligned sizes.
+2. `m ≥ 3` multi-hub (assisted-merge environment rules) and Hnorm / `StraightProgress_sized` remain the
+   other open layers, alongside non-aligned-n.
 
 Full closure stays gated on the genuinely-open mathematics (Pant 2026: the global maximizer is open);
 the realistic target is a scoped aligned-n result + a sharpened, kernel-anchored frontier. `conjecture1_proved = False`.
