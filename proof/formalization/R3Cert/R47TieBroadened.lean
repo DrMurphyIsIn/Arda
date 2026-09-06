@@ -49,6 +49,48 @@ theorem hub_Aobj_eq (a b c : ℕ) (hpos : 0 < a + b + c) :
   field_simp [hne]
   ring
 
+/-- The `(1 + qSum/d)` weight factor of a general single hub `(a,b,c)`. -/
+noncomputable def hubQ (a b c : ℕ) : ℝ :=
+  1 + (((a : ℝ) * (3 / (((a + b + c : ℕ) : ℝ) * 23)) + (b : ℝ) * (3 / (((a + b + c : ℕ) : ℝ) * 19)))
+       + (c : ℝ) * (1 / (3 * ((a + b + c : ℕ) : ℝ))))
+
+theorem hub_Aobj_factored (a b c : ℕ) (hpos : 0 < a + b + c) :
+    Aobj (backboneU (hubState a b c))
+      = (621 / 64 : ℝ) ^ a * (513 / 80) ^ b * (3 / 2) ^ c * hubQ a b c := by
+  rw [hub_Aobj_eq a b c hpos, hubQ]
+
+/-- **Bulk-swap comparison (the t-axis atom)**: one bulk swap replaces 9 load-5 arms by 11 load-4
+    arms (size-preserving), multiplying the power product by exactly `F = (513/80)^11/(621/64)^9`.
+    So the objective comparison collapses to the `hubQ` comparison — the exact analog of
+    `tie_trade_le` for the second (arm-count) axis of the joint single-hub optimum. -/
+theorem hub_bulk_le (a b c : ℕ) (ha : 9 ≤ a) (hpos : 0 < a + b + c) :
+    Aobj (backboneU (hubState (a - 9) (b + 11) c)) ≤ Aobj (backboneU (hubState a b c))
+      ↔ ((513 / 80 : ℝ) ^ 11 / (621 / 64) ^ 9) * hubQ (a - 9) (b + 11) c ≤ hubQ a b c := by
+  have hpos' : 0 < (a - 9) + (b + 11) + c := by omega
+  have hprod : (621 / 64 : ℝ) ^ (a - 9) * (513 / 80) ^ (b + 11) * (3 / 2) ^ c
+      = ((513 / 80 : ℝ) ^ 11 / (621 / 64) ^ 9)
+        * ((621 / 64 : ℝ) ^ a * (513 / 80) ^ b * (3 / 2) ^ c) := by
+    have hae : (621 / 64 : ℝ) ^ a = (621 / 64) ^ (a - 9) * (621 / 64) ^ 9 := by
+      rw [← pow_add, Nat.sub_add_cancel ha]
+    have hbe : (513 / 80 : ℝ) ^ (b + 11) = (513 / 80) ^ b * (513 / 80) ^ 11 := pow_add _ _ _
+    have h9 : (621 / 64 : ℝ) ^ 9 ≠ 0 := by positivity
+    rw [hae, hbe]
+    field_simp
+  rw [hub_Aobj_factored a b c hpos, hub_Aobj_factored (a - 9) (b + 11) c hpos', hprod]
+  set P := (621 / 64 : ℝ) ^ a * (513 / 80) ^ b * (3 / 2) ^ c with hP
+  have hPpos : 0 < P := by rw [hP]; positivity
+  set F := (513 / 80 : ℝ) ^ 11 / (621 / 64) ^ 9 with hF
+  constructor
+  · intro h
+    have h2 : P * (F * hubQ (a - 9) (b + 11) c) ≤ P * hubQ a b c := by
+      have e : P * (F * hubQ (a - 9) (b + 11) c) = F * P * hubQ (a - 9) (b + 11) c := by ring
+      rw [e]; exact h
+    exact le_of_mul_le_mul_left h2 hPpos
+  · intro h
+    have h2 := mul_le_mul_of_nonneg_left h hPpos.le
+    have e : F * P * hubQ (a - 9) (b + 11) c = P * (F * hubQ (a - 9) (b + 11) c) := by ring
+    rw [e]; exact h2
+
 /-- The exact trade constants: one `load-5 -> load-4 + cherry` trade multiplies the Ztot product by
     `114/115` and shifts the per-vertex qSum weight by `473/1311`. -/
 theorem tie_trade_factor :
