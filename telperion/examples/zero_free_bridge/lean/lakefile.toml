@@ -220,3 +220,8 @@ name = "DlvpBlaschkeSplit"
 # (Σ|n u|)/(R-‖z‖) — O(1)·count (pole outside disk). Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpCorrectionBound"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d4) core: logDeriv ζ = Herglotz Σ divisor/(z-ρ) + entire part
+# (correction + logDeriv g), Blaschke form. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschkeSplitExpand"
