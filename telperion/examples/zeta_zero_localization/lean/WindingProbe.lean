@@ -3,16 +3,26 @@ import Mathlib
 /-!
 # Stage-2 feasibility probe: WindingProbe
 
-PROBE ARTIFACT — not wired into any CI build target.  Purpose: confirm that
-`full_argument_principle` (kernel-verified on origin/main, PR #262) assembles
-the composition `(2πi)⁻¹ ∮ f = Σ m` directly, by instantiating it on a toy
+PROBE ARTIFACT — not wired into any CI build target.  It is NOT declared in
+`lakefile.toml` (`defaultTargets = ["LambdaLineReal", "XiLineZeros"]`) and is
+imported by neither default target, so the example's `lake build` never
+compiles it; it is an inert file kept alongside the findings doc.
+
+Purpose: confirm that the composition `(2πi)⁻¹ ∮ f = Σ m` closes over the SAME
+Mathlib lemma chain that `full_argument_principle` (kernel-verified on
+origin/main, PR #262) is built from, by exercising it on a toy
 `f z = 2 * (z - c0)⁻¹ + 0` (single pole of multiplicity 2 at `c0`, analytic
 remainder `E = 0`), obtaining `∮_{C(c0, 3/2)} f = 4πi`.
 
-The theorem below is sorry-free: it is a direct application of the kernel-verified
-`FullArgumentPrinciple.full_arg_principle_3half` (emitted by PR #262, Lean
-FullArgumentPrinciple.lean in dvp_geom_atoms).  We inline its proof here using
-the same Mathlib lemmas so this file is self-contained.
+SCOPE HONESTY: this file does NOT import `FullArgumentPrinciple` and invoke
+`full_arg_principle_3half` as a black box — that would couple this example
+target to the `dvp_geom_atoms` example.  Instead it re-derives the result from
+the identical base lemmas (`circleIntegral.integral_sub_inv_of_mem_ball` +
+`integral_const_mul`) that PR #262's artifact uses.  So it demonstrates that
+the underlying Mathlib chain composes as claimed, NOT that the atom's exact
+interface has been matched here — the interface match is the ~1-day hypothesis-
+matching step estimated in ZEROLOC_STAGE2_PROBE.md, not this probe.  The
+theorem below is sorry-free.
 
 Assembly path being probed:
   full_argument_principle (∮ Σ m/(z-ρ) + E = 2πi·Σ m, E holomorphic, generic center c)

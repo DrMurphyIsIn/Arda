@@ -184,6 +184,12 @@ assembly sequence:
    Blaschke split at a generic center `c`.
 2. **Match hypotheses** (~1 day): identify `f = ζ'/ζ`, `m = divisor ζ (ball c R)`,
    `E = correction_sum + logDeriv g` (holomorphic on `ball c R` by existing bounds).
+   Sub-dependency to name explicitly: the existing dVP holomorphicity/`DiffContOnCl`
+   bounds for `E` are stated at `ball 0 R`; after the center shift they are needed at
+   `ball c R`. A correctly-formulated `logDeriv_shift_center` (step 1) carries the
+   holomorphicity of `E` along with the algebraic re-expression, so this is subsumed
+   there rather than a separate lemma — but it surfaces in this step and must be
+   discharged, not assumed.
 3. **Apply `full_argument_principle`** (zero new work): `∮_{C(c,R)} ζ'/ζ = 2πi · Σ divisor`.
 4. **Divide by 2πi** (~1 day): `(2πi)⁻¹ ∮ ζ'/ζ = Σ divisor` = zero count.
 5. **xi-to-zeta divisor bridge** (~1-2 days): equate Stage-1 xi count and Stage-2
