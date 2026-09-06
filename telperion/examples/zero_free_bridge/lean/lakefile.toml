@@ -274,3 +274,11 @@ name = "DlvpZetaRecenter"
 # Divisor translation: divisor(f(c₀+·)) U' u = divisor f U (c₀+u). Standalone (Mathlib). Own CI target.
 [[lean_lib]]
 name = "DlvpDivisorTranslate"
+
+# Downstream BC-SUM → hzero bridge (reindex + recenter + glue). Own CI target.
+[[lean_lib]]
+name = "DlvpZetaBcBridge"
+
+# Canonical-decomp layer: bc_sum_blaschke ×2 → region. Imports DlvpZetaBcBridge + DlvpBCSumBlaschke.
+[[lean_lib]]
+name = "DlvpZetaCanonical"
