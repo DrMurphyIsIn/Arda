@@ -3306,4 +3306,4 @@ jobs:
         run: lake exe cache get
       - name: Build the emitted Lean (the actual verification — dVP geometry certificates)
         working-directory: telperion/examples/dvp_geom_atoms/lean
-        run: lake build TwoScaleSeparation FarPoleSum HerglotzLower
+        run: lake build TwoScaleSeparation FarPoleSum HerglotzLower ArgumentPrinciple
