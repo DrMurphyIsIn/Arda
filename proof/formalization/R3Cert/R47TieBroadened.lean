@@ -91,5 +91,29 @@ theorem tie_trade_le (K m : ℕ) (hm1K : m + 1 ≤ K) (hpos : 0 < K + m) :
     have e : 114 / 115 * Q * tieQ K (m + 1) = Q * ((114 / 115 : ℝ) * tieQ K (m + 1)) := by ring
     rw [e]; exact h2
 
+/-- **The trade condition in POLYNOMIAL form** (`d = K+m`): trading a load-5 arm for a load-4 arm +
+    a cherry does NOT increase `Aobj` at `m` iff the exact integer-coefficient polynomial inequality
+    `203376·(K+m) ≤ (1482K + 1784m)·(K+m+115)` holds.  The `m`-argmax / unimodality reduces to
+    analyzing this quadratic; the `m=0` threshold is exactly `K = 23` (matching
+    `broadened_tie_family.py`'s `m(K)`, near-star optimal iff `K ≥ 23`). -/
+theorem tie_trade_le_poly (K m : ℕ) (hm1K : m + 1 ≤ K) (hpos : 0 < K + m) :
+    Aobj (backboneU (tieState K (m + 1))) ≤ Aobj (backboneU (tieState K m))
+      ↔ (203376 : ℝ) * ((K : ℝ) + m) ≤ (1482 * (K : ℝ) + 1784 * m) * ((K : ℝ) + m + 115) := by
+  rw [tie_trade_le K m hm1K hpos]
+  have hmK : m ≤ K := by omega
+  have hd : (0 : ℝ) < (K : ℝ) + m := by exact_mod_cast hpos
+  have hd1 : (0 : ℝ) < (K : ℝ) + m + 1 := by linarith
+  have hdne : (K : ℝ) + m ≠ 0 := ne_of_gt hd
+  have hd1ne : (K : ℝ) + m + 1 ≠ 0 := ne_of_gt hd1
+  simp only [tieQ]
+  push_cast [Nat.cast_sub hmK, Nat.cast_sub hm1K]
+  constructor
+  · intro h
+    field_simp at h
+    nlinarith [h, hd, hd1, mul_pos hd hd1]
+  · intro h
+    field_simp
+    nlinarith [h, hd, hd1, mul_pos hd hd1]
+
 end Step3
 end R3Cert
