@@ -145,3 +145,8 @@ name = "DlvpMaxMod"
 # log‖g‖ = log‖ζ‖ - log‖P‖ splits the sphere oscillation into ζ-growth + zero-factor. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBoundaryDecomp"
+
+# PHASE 4 dVP frontier, ζ boundary growth LOWER half: ‖ζ(s)‖ ≥ 2 - π²/6 > 0 for Re s ≥ 2
+# (Dirichlet reverse triangle + Basel tail). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpZetaLower"
