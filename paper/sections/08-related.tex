@@ -1,3 +1,31 @@
 \section{Related work}
+\label{sec:related}
 
-Placeholder (Task 9).
+Telperion stands on Lean~4 and its mathematical library, Mathlib
+\cite{lean4,mathlib}: the emitted proofs are Lean, and the kernel that checks them
+is Lean's. The idea of producing a checkable certificate rather than trusting a
+procedure is the reflection/certificate tradition in proof assistants, and in the
+positivity setting specifically it goes back to Positivstellensatz and
+sum-of-squares certification \cite{positivstellensatz,lasserre_sos}, which several
+of Telperion's shapes emit.
+
+Two recent efforts from Axiom Math are close in spirit, and we want to keep them
+distinct because they are distinct projects. \emph{AXLE} \cite{axle} is a cloud
+Lean-verification utility; we drew engineering patterns (verification, gap-filling,
+repair, negative controls) from it, but no code. \emph{AxiomMath/ZetaZeros}
+\cite{axiommath_zetazeros} is a Lean formalization associated with a
+Montgomery--Taylor extremal-kernel argument; two of Telperion's emitters port a
+\emph{proof idea} from it---an extremum-at-the-boundary move and a transcendental
+enclosure atom---independently re-implemented in our idiom. Conflating the
+verification utility with the formalization would misattribute both; the
+repository's \texttt{NOTICE} file records the split in full.
+
+For independent checking, we use the Comparator \cite{comparator} from OpenAI's
+ten-proofs project \cite{tenproofs}, together with \texttt{nanoda} \cite{nanoda},
+a from-scratch Lean type checker in Rust; agreement between independently written
+checkers is the basis of our strongest confidence claim. In the case studies, the
+mathematics is due to others and cited there: Brualdi and Goldwasser for the tree
+problem \cite{brualdi1984}; de la Vallée-Poussin for the classical zero-free region
+\cite{dlvp1896}; Grigoriev and Laurent, with the symmetric-SOS technique of
+Kurpisz, Lepp\"anen and Mastrolilli, for the proof-complexity lower bound
+\cite{grigoriev2001,klm2016}.
