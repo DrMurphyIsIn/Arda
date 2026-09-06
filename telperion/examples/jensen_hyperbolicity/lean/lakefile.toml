@@ -1,0 +1,13 @@
+name = "JensenBridge"
+defaultTargets = ["JensenBridge", "JensenHyperbolicity"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "JensenBridge"
+
+[[lean_lib]]
+name = "JensenHyperbolicity"
