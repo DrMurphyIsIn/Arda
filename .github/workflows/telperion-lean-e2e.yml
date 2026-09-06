@@ -2939,3 +2939,26 @@ jobs:
       - name: Build the dVP sphere-density discharge (kernel verification)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpSphereDense
+
+  # dVP BLASCHKE step 3a: ‖f‖=‖g‖ on the sphere for a CanonicalDecomp (composes Blaschke modulus-1
+  # + density discharge + continuity/density sphere-identity). The no-AP boundary identity for ζ.
+  rh-dlvp-canonicalnorm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP canonical-decomposition boundary identity (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpCanonicalNorm
