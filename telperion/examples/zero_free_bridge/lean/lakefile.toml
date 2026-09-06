@@ -170,3 +170,8 @@ name = "DlvpZetaZeroFactor"
 # the sphere (Mathlib CanonicalDecomposition). Removes the lossy AP term. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBlaschke"
+
+# PHASE 4 dVP frontier, BLASCHKE step 1: pointwise sphere identity ‖f‖=‖g‖ from codiscrete factor
+# via continuity + density (Set.EqOn.closure). Imports DlvpBlaschke. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschkeSphere"
