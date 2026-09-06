@@ -52,3 +52,44 @@ theorem tie_Aobj_eq_V (K m : ℕ) (hmK : m ≤ K) (hpos : 0 < K + m) :
   push_cast [Nat.cast_sub hmK]
   field_simp [hne]
   ring
+
+/-- The `(1 + qSum/d)` weight factor of the tie value (so `Aobj = <power product> * tieQ`). -/
+noncomputable def tieQ (K m : ℕ) : ℝ :=
+  1 + ((((K - m : ℕ) : ℝ) * (3 / (((K + m : ℕ) : ℝ) * 23))
+        + (m : ℝ) * (3 / (((K + m : ℕ) : ℝ) * 19))) + (m : ℝ) * (1 / (3 * ((K + m : ℕ) : ℝ))))
+
+theorem tie_Aobj_factored (K m : ℕ) (hmK : m ≤ K) (hpos : 0 < K + m) :
+    Aobj (backboneU (tieState K m))
+      = (621 / 64 : ℝ) ^ (K - m) * (513 / 80) ^ m * (3 / 2) ^ m * tieQ K m := by
+  rw [tie_Aobj_eq_V K m hmK hpos, tieQ]
+
+/-- **Trade-step comparison** (the atom for the trade unimodality / m-argmax): trading a load-5 arm
+    for a load-4 arm + a cherry is `Aobj`-non-increasing at `m` iff the exact `114/115`-weighted
+    rational condition on the `tieQ` factors holds.  The power product at `m+1` is exactly `114/115`
+    times the product at `m` (by `tie_trade_factor`), so the objective comparison collapses to the
+    `tieQ` comparison. -/
+theorem tie_trade_le (K m : ℕ) (hm1K : m + 1 ≤ K) (hpos : 0 < K + m) :
+    Aobj (backboneU (tieState K (m + 1))) ≤ Aobj (backboneU (tieState K m))
+      ↔ (114 / 115 : ℝ) * tieQ K (m + 1) ≤ tieQ K m := by
+  have hmK : m ≤ K := by omega
+  have hpos1 : 0 < K + (m + 1) := by omega
+  have hprod : (621 / 64 : ℝ) ^ (K - (m + 1)) * (513 / 80) ^ (m + 1) * (3 / 2) ^ (m + 1)
+      = (114 / 115) * ((621 / 64 : ℝ) ^ (K - m) * (513 / 80) ^ m * (3 / 2) ^ m) := by
+    rw [show K - m = (K - (m + 1)) + 1 from by omega, pow_succ, pow_succ, pow_succ]
+    ring
+  rw [tie_Aobj_factored K m hmK hpos, tie_Aobj_factored K (m + 1) (by omega) hpos1, hprod]
+  set Q := (621 / 64 : ℝ) ^ (K - m) * (513 / 80) ^ m * (3 / 2) ^ m with hQ
+  have hQpos : (0 : ℝ) < Q := by rw [hQ]; positivity
+  constructor
+  · intro h
+    have h2 : Q * ((114 / 115 : ℝ) * tieQ K (m + 1)) ≤ Q * tieQ K m := by
+      have e : Q * ((114 / 115 : ℝ) * tieQ K (m + 1)) = 114 / 115 * Q * tieQ K (m + 1) := by ring
+      rw [e]; exact h
+    exact le_of_mul_le_mul_left h2 hQpos
+  · intro h
+    have h2 := mul_le_mul_of_nonneg_left h hQpos.le
+    have e : 114 / 115 * Q * tieQ K (m + 1) = Q * ((114 / 115 : ℝ) * tieQ K (m + 1)) := by ring
+    rw [e]; exact h2
+
+end Step3
+end R3Cert

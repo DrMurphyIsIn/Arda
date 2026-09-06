@@ -221,3 +221,5 @@ import R3Cert.R47TieBroadened
 -- `tie_Aobj_eq_V` = V(K,m), matching the 3-engine-verified broadened_tie_family.py.
 #print axioms R3Cert.Step3.tie_trade_factor
 #print axioms R3Cert.Step3.tie_Aobj_eq_V
+#print axioms R3Cert.Step3.tie_Aobj_factored
+#print axioms R3Cert.Step3.tie_trade_le
