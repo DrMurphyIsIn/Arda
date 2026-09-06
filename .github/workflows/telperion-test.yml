@@ -48,25 +48,12 @@ jobs:
         # test id on any future native crash (the scs/MKL abort above surfaced only
         # after this was added). test_bellman_rigidity's two value_function(max_size
         # =14) tests are intractable in CI (super-exponential enumeration) -- deselected.
-        #
-        # test_mt_optimize's three optimize_cosine(d=4) tests are platform-numerics
-        # fragile: optimize_cosine drives scipy SLSQP + a rational-rounding search, and
-        # the Linux runner's BLAS/LAPACK converges to a different (equally valid) optimum
-        # than macOS Accelerate, so the rational rounding is not always admissible on CI
-        # (it passes locally every time). This is the same Accelerate-vs-Linux divergence
-        # documented for scs above. Deselected until the owning session makes the
-        # optimizer deterministic across platforms (e.g. auto-escalate `denom`, per the
-        # "try a larger denom" hint the failure itself prints). The shipped RH zero-free
-        # certificates are verified separately by the lean-e2e jobs, not by this optimizer.
         env:
           PYTHONFAULTHANDLER: "1"
         run: >-
           python -X faulthandler -m pytest tests -q
           --deselect tests/test_bellman_rigidity.py::test_value_function_and_sub_hull_gap
           --deselect tests/test_bellman_rigidity.py::test_cramer_rate_positive_below_hull
-          --deselect tests/test_mt_optimize.py::test_optimize_deg4_beats_vp_and_is_admissible
-          --deselect tests/test_mt_optimize.py::test_optimizer_output_feeds_exact_sos_cert
-          --deselect tests/test_mt_optimize.py::test_finer_denom_recovers_flagship_quality
       - name: Manifest verify, quick group (drift net + byte-stability across sympy versions)
         working-directory: telperion
         run: PYTHONPATH=src python -m telperion.cli verify --group quick
