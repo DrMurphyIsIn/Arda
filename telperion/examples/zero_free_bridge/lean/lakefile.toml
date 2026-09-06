@@ -155,3 +155,8 @@ name = "DlvpZetaLower"
 # per-zero log ratio bound. Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpZeroFactor"
+
+# PHASE 4 dVP frontier, ζ zero-factor (2) log-of-finprod wiring: log‖∏(w-ρ)^m‖ = Σ m·log‖w-ρ‖,
+# composed with the two-scale bound → AP. Imports DlvpZeroFactor. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpLogProd"
