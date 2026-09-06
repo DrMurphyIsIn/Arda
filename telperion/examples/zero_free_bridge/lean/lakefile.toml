@@ -262,3 +262,7 @@ name = "DlvpBCDerivInterior"
 # Entire-part plumbing: interior bound from sphere osc (a) + logDeriv recentring (b). Own CI target.
 [[lean_lib]]
 name = "DlvpEntirePlumbing"
+
+# dVP region capstone: three BC inputs at optimal σ → β ≤ 1 - c/(A·L). Imports DlvpPole+DlvpRegionBound.
+[[lean_lib]]
+name = "DlvpZetaRegion"
