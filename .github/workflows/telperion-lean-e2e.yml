@@ -3205,3 +3205,26 @@ jobs:
       - name: Build the dVP Blaschke correction bound (kernel verification)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpCorrectionBound
+
+  # dVP BLASCHKE item (d4) core: logDeriv ζ = Herglotz Σ divisor/(z-ρ) + entire part (correction +
+  # logDeriv g) in Blaschke form — the ζ'/ζ = Z + E explicit-formula input to the reduction skeleton.
+  rh-dlvp-blaschke-splitexpand:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP Blaschke explicit-formula expansion (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBlaschkeSplitExpand
