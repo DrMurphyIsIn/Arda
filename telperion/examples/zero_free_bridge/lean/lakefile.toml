@@ -165,3 +165,8 @@ name = "DlvpLogProd"
 # the ζ zero-part finprod (divisor on inner disk). Imports DlvpZetaDisk+DlvpLogProd. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpZetaZeroFactor"
+
+# PHASE 4 dVP frontier, BLASCHKE correction: finite Blaschke product ‖∏ᶠ canonicalFactor^n‖ = 1 on
+# the sphere (Mathlib CanonicalDecomposition). Removes the lossy AP term. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschke"
