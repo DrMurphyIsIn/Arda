@@ -282,3 +282,7 @@ name = "DlvpZetaBcBridge"
 # Canonical-decomp layer: bc_sum_blaschke ×2 → region. Imports DlvpZetaBcBridge + DlvpBCSumBlaschke.
 [[lean_lib]]
 name = "DlvpZetaCanonical"
+
+# g sphere oscillation for recentred-ζ Blaschke quotient. Imports DlvpCanonicalNorm+DlvpZetaSphereLog.
+[[lean_lib]]
+name = "DlvpZetaEntire"
