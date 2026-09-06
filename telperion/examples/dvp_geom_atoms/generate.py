@@ -18,9 +18,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from telperion import (  # noqa: E402
-    FarPoleSumEmitter, GridSpec, HerglotzLowerEmitter, LeanProfile, TwoScaleSeparationEmitter,
-    ValidationReport, certify, emit, far_pole_sum_family, herglotz_lower_family,
-    two_scale_separation_family,
+    ArgumentPrincipleEmitter, FarPoleSumEmitter, GridSpec, HerglotzLowerEmitter, LeanProfile,
+    TwoScaleSeparationEmitter, ValidationReport, argument_principle_family, certify, emit,
+    far_pole_sum_family, herglotz_lower_family, two_scale_separation_family,
 )
 
 _HERE = Path(__file__).resolve().parent
@@ -35,6 +35,9 @@ _JOBS = [
     ("HerglotzLower", "herglotz_lower", herglotz_lower_family, HerglotzLowerEmitter,
      {0: {"sigma": "3/2", "beta": "1/2", "k": 1}},
      {0: "herglotz_lower_a"}),
+    ("ArgumentPrinciple", "argument_principle", argument_principle_family, ArgumentPrincipleEmitter,
+     {0: {"R": "3/2"}, 1: {"R": 1}},
+     {0: "arg_principle_3half", 1: "arg_principle_one"}),
 ]
 
 
