@@ -1,3 +1,56 @@
 \section{Case study II: Riemann-zeta zero-free regions}
+\label{sec:rh}
 
-Placeholder (Task 6).
+The second case study is in analytic number theory, and it comes with a warning
+label we want to put first, in bold, so there is no chance of misreading: \textbf{we
+do not claim the Riemann Hypothesis.} What we have is a small number of genuine,
+unconditional, machine-checked results \emph{about} the zeta function---and an
+honest account of how they sit relative to the classical literature, which is that
+they are weaker.
+
+\subsection{Four verified results}
+
+Each of the following is proved in Lean~4 against pinned Mathlib, is
+\emph{unconditional}, and is guarded in continuous integration by an axiom check
+(\texttt{\#print axioms} must report no \texttt{sorryAx}), so ``verified'' here is
+enforced, not asserted:
+
+\begin{enumerate}
+  \item a fractional-part \emph{strip representation} of $\zeta$ on
+    $\{\operatorname{Re} s > 0\} \setminus \{1\}$ (\texttt{zeta\_fract\_repr});
+  \item the sharp bound $\lVert \zeta(\sigma+it) \rVert \le 6\,(1 + \log|t|)$ on
+    $1 \le \sigma \le 2,\ |t| \ge 2$, with an explicit constant
+    (\texttt{zeta\_log\_bound});
+  \item an elementary, Hadamard-free zero-free region
+    $\operatorname{Re} s > 1 - c/|t|^5$ (\texttt{riemannZeta\_zero\_free\_poly});
+  \item a sharper region $\operatorname{Re} s > 1 - c/\!\left(|t|^4 (1 + \log 2|t|)\right)$
+    (\texttt{riemannZeta\_zero\_free\_polylog}).
+\end{enumerate}
+
+To our knowledge, the last two are the first unconditional, Hadamard-free
+zero-free regions to be machine-checked in Lean.
+
+\subsection{The honest comparison}
+
+Now the part that keeps this truthful. These regions are \textbf{strictly weaker
+than de la Vallée-Poussin}: the classical region is $\operatorname{Re} s > 1 -
+c/\log|t|$ \cite{dlvp1896}, and $1/\log|t|$ beats a polynomial or polylog decay in
+$|t|$ handily; Vinogradov--Korobov is stronger still. So we have improved nothing
+about the analytic \emph{result}. What is new is the \emph{formal derivation}: an
+elementary, Hadamard-free route to an unconditional region, carried out in a proof
+assistant, together with a handful of reusable gap-fillers (the strip
+representation and the explicit $\log$-bound among them). The contribution is the
+machine-checked path, stated at its true strength---no more.
+
+For completeness we note two boundary items, stated as they are. A
+Borel--Carath\'eodory theorem is present in the development but is a \emph{draft}:
+its constant is not sharp, it is not axiom-guarded, and it is not yet wired into
+the region argument, so we do not lean on it. And the classical
+de~la~Vall\'ee-Poussin region itself is present only \emph{conditionally}---its
+analytic inputs are isolated as explicit hypotheses rather than proved. We flag
+both rather than let them blur into the verified list.
+
+The methodological point for this paper is that the same
+untrusted-generator/trusted-kernel discipline that handled a combinatorial
+extremal problem also produces honest analytic results---and, just as important,
+makes it easy to state exactly how strong they are and are not.
