@@ -246,3 +246,11 @@ name = "DlvpZetaSphereLog"
 # factorization). Imports DlvpEntire. Out of defaultTargets; own CI target.
 [[lean_lib]]
 name = "DlvpZetaFactor"
+
+# σ-optimization: region gap → β ≤ 1 - c/(A·L). Standalone (imports Mathlib). Own CI target.
+[[lean_lib]]
+name = "DlvpRegionBound"
+
+# Blaschke → skeleton glue: bc_sum_blaschke + herglotz_re_ge → hzero/htwo. Imports DlvpHerglotzLower.
+[[lean_lib]]
+name = "DlvpBlaschkeToSkeleton"
