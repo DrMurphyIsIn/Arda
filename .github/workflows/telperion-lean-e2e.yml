@@ -2760,6 +2760,9 @@ jobs:
   # Regenerate from the emitter (arb ball enclosure + box-robust certify + emit),
   # drift-check, and kernel-verify via nlinarith.
   box-robust-compiles:
+  # dVP ζ boundary growth LOWER half: ‖ζ(s)‖ ≥ 2 - π²/6 > 0 for Re s ≥ 2 (Dirichlet reverse
+  # triangle + Basel tail hasSum_zeta_two). The lower half of the ζ-growth sphere input.
+  rh-dlvp-zetalower:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2779,6 +2782,7 @@ jobs:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/box_robust/lean/lean-toolchain') }}
 
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
       - name: Install elan
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
@@ -2796,6 +2800,16 @@ jobs:
   # Chains box-robust discriminant-nonnegativity + a freshly-proven Lean bridge lemma
   # (HyperbolicityBridge) into a Lean certificate that roots.card = 2.
   hyperbolicity-compiles:
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP ζ lower bound (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaLower
+
+  # dVP ζ zero-factor bound (2) crux: two-scale separation R-R₀ ≤ ‖z-ρ‖ (inner-disk zeros vs outer
+  # sphere) + per-zero log-ratio bound + summed (count × constant = O(L)) form.
+  rh-dlvp-zerofactor:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2815,6 +2829,7 @@ jobs:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/hyperbolicity/lean/lean-toolchain') }}
 
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
       - name: Install elan
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
@@ -2832,6 +2847,16 @@ jobs:
   # Delegates to box_robust internally: a1^2 - a0*a2 > 0 over a rational box
   # certifies the Turan triple (a0, a1, a2) is strictly log-concave.
   turan-box-compiles:
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP zero-factor geometry (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZeroFactor
+
+  # dVP ζ zero-factor (2) log-of-finprod wiring: log‖∏(w-ρ)^m‖ = Σ m·log‖w-ρ‖, composed with the
+  # two-scale bound → log‖P c‖ - log‖P z‖ ≤ (Σ m)·(log R₀ - log(R-R₀)) = AP.
+  rh-dlvp-logprod:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2851,6 +2876,7 @@ jobs:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/turan_box/lean/lean-toolchain') }}
 
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
       - name: Install elan
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
@@ -2863,3 +2889,193 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Turan log-concavity via box_robust)
         working-directory: telperion/examples/turan_box/lean
         run: lake build
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP log-of-finprod wiring (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpLogProd
+
+  # dVP ζ zero-factor (2) INSTANTIATION: abstract log_norm_prod_diff_le applied to the ζ zero-part
+  # finprod (divisor on inner disk) → log‖P c‖ - log‖P z‖ ≤ count·(log R₀ - log(R-R₀)) = AP.
+  rh-dlvp-zetazerofactor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP ζ zero-factor instantiation (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaZeroFactor
+
+  # dVP BLASCHKE correction: finite Blaschke product ‖∏ᶠ canonicalFactor^n‖ = 1 on the sphere
+  # (lifts Mathlib's single-factor norm_canonicalFactor_eval_circle_eq_one). Removes the lossy AP term.
+  rh-dlvp-blaschke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP Blaschke modulus-one product (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBlaschke
+
+  # dVP BLASCHKE step 1: pointwise sphere identity ‖f‖=‖g‖ from a codiscrete unit-modulus factor
+  # (continuity + density via Set.EqOn.of_subset_closure). The no-AP boundary reduction.
+  rh-dlvp-blaschke-sphere:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP Blaschke pointwise sphere identity (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBlaschkeSphere
+
+  # dVP BLASCHKE step 2: canonical-decomposition part g is analytic + zero-free on ball 0 R
+  # (MeromorphicNFAt + nonvanishing ⟹ order 0 ⟹ AnalyticAt).
+  rh-dlvp-blaschke-analytic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP Blaschke g-analyticity (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBlaschkeAnalytic
+
+  # dVP BLASCHKE density discharge: a codiscrete subset of closedBall is dense within the sphere
+  # (preperfect sphere via isConnected_sphere + preperfect_of_nontrivial). Discharges step-1 density.
+  rh-dlvp-spheredense:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP sphere-density discharge (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpSphereDense
+
+  # dVP BLASCHKE step 3a: ‖f‖=‖g‖ on the sphere for a CanonicalDecomp (composes Blaschke modulus-1
+  # + density discharge + continuity/density sphere-identity). The no-AP boundary identity for ζ.
+  rh-dlvp-canonicalnorm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP canonical-decomposition boundary identity (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpCanonicalNorm
+
+  # dVP BLASCHKE step 3b: entire-part bound ‖logDeriv g 0‖ ≤ 2M'/(R-r) for a CanonicalDecomp,
+  # feeding DlvpMaxMod with the no-AP sphere bound (log‖f‖ growth only). Completes item (c).
+  rh-dlvp-canonicalbound:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP canonical-decomposition entire-part bound (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpCanonicalBound
+
+  # dVP BLASCHKE item (d) foundation: logDeriv of canonicalFactor = -conj w/(R²-conj w z) - 1/(z-w)
+  # (ratio of affine functions via logDeriv_div). The Blaschke Herglotz-term log-derivative.
+  rh-dlvp-canonicallogderiv:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP canonical-factor log-derivative (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpCanonicalLogDeriv
