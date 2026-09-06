@@ -195,3 +195,8 @@ name = "DlvpCanonicalNorm"
 # CanonicalDecomp (no AP term). Imports DlvpMaxMod+DlvpCanonicalNorm+DlvpBlaschkeAnalytic. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpCanonicalBound"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d) foundation: logDeriv of canonicalFactor
+# = -conj w/(R²-conj w z) - 1/(z-w). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpCanonicalLogDeriv"
