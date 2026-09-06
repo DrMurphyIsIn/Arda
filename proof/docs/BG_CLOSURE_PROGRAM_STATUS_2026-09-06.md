@@ -29,36 +29,45 @@ and the oscillating `hrate` rate bound is **bypassable** by comparing to the exa
 - `tie_step_up/down`, `tie_up_chain/down_chain`, **`tie_maximal_over_trades`** — the m-argmax: given
   `mstar` = least trade-stop, `tieState K mstar` dominates every trade count `m ≤ K`.
 
-## M3 — single-hub joint optimum (2-D): atoms landed, envelope OPEN
-CORRECTED scope (a false shortcut was caught by the build + refuted numerically): the maximizer is
-the trade family, but proving it is the 2-D optimum over all Balanced `(a,b,c)` with `11a+9b+2c=11K`,
-`c≤5` — parametrized as `(K−c−9t, c+11t, c)` for `c∈{0..5}, t≥0` (trade family = `t=0` edge).
-- **t-axis atoms (kernel-verified):** `hubState`, `hub_Aobj_eq` (general single-hub value),
-  `hubQ`/`hub_Aobj_factored`, **`hub_bulk_le`** — the bulk-swap comparison (9 load-5 → 11 load-4 arms,
-  factor `F=(513/80)^11/(621/64)^9`), the exact analog of `tie_trade_le`.
-- **OPEN (the hard core):** the **2-D envelope** `max_t Aobj(c,t) ≤ Aobj(mstar,0)`. The per-axis
-  optima don't align (c=0 favors t=1), and there is **no uniformly-finite monotone move-chain**
-  (verified: bounded-move local-max traps whose escape-support grows with K). Needs a genuine 2-D
-  argument (t-unimodality via the bulk atom + a c-envelope), not a separable proof.
-- Useful existing piece: `R47ArmPerm.lean` proves `Aobj` **arm-permutation invariance**.
+## M4 — two-hub domination: COMPLETE (kernel-verified), `R47R7TwoHubBridge.lean`
+The abstract certs `two_hub_gap_pos_c0..c5` are now WIRED to `Aobj`. De-risked first in
+`two_hub_bridge_certcheck.py`: the `pi↔Aobj` normalization is **C = 1** (Aobj = per(L)/∏deg on the
+realized tree, `pi_utree`), and each Lean cert IS the sympy numerator (per-cell factor **1**) over a
+positive denominator.
+- `twoHub_Aobj_eq` — exact `Aobj` of the stuck two-hub `S2(pA,pB,cA)`, by specializing the proven head
+  identity `Aobj_head_before_raw` (R47HeadId) — NOT a fresh cavity derivation.
+- `twoHub_reduced_c0..c5` — the `V^K`-divided reduced inequalities, each the exact identity
+  `RHS−LHS = ratio·cert/den` (ratios `3^12,3^9,3^6,3^3,1,1`) via `field_simp;ring` + `div_nonneg` +
+  `nlinarith` on the matching cert.
+- **`twoHub_le_tie`** — `Aobj(S2) ≤ Aobj(hubState (K+1−m) m 0)`, `m=5−cA`, per-`cA` power-factoring of
+  the common `(621/64)^K` then `convert` to the reduced lemma.  Kernel-clean, in AxiomGuard + CI.
+  Closes the **length-2** slice of `SharpRateNF`/`Hdom`.
 
-## M4 — two-hub domination: diagnosed, Aobj bridge OPEN
-`two_hub_gap_pos_c0..c5` (R47R7KelmansTwoHubCert) are **proven but ABSTRACT** Positivstellensatz facts
-`0 < poly(x,y)` — NOT wired to `Aobj`. The closed forms `pi_two_hub_closed`/`pi_template_closed` are
-the *Python* source, not Lean. `twoHub_le_tie` needs that bridge **ported**: compute `Ztot(dtSub hubB)`,
-plug into `Ztot_hubNode` (R47Backbone) / `Aobj_backbone` (R47BackboneAmp) for hub A, clear to the
-`(x,y=pA−1,pB−1)` form, and prove equality to each cert's numerator. Machinery exists; the exact
-denominator-cleared **polynomial match is the multi-hour crux**. (m≥3 multi-hub + the 5 cb-heavy
-general-env cells remain open beyond two-hub — see `BG_RESIDUAL_CORE_ISOLATION` closure: they are
-outside the Balanced+Capped merge domain Hdom uses.)
+## M3 — single-hub 2-D envelope: t-axis DONE + K≥23 envelope DONE, c-envelope tail OPEN
+`R47SingleHub2D.lean`.  A Balanced single hub at aligned size `11K` (c≤5) is exactly the bulk column
+`colState K c t = hubState (K−c−9t) (c+11t) c` (b≡c mod 11 forces `b=c+11t, t≥0`), t=0 edge = `tieState K c`.
+- **t-axis (kernel-verified):** `hub_bulk_stop_iff` (reduces `hub_bulk_le`'s hubQ condition to the
+  22-digit `bulkStopABC` polynomial — the `tie_trade_le_poly` analog), `bulkStopABC_persists`,
+  `col_step_up/down`, `col_up/down_chain`, **`col_maximal_over_bulk`** (each column's t-argmax dominates —
+  the `tie_maximal_over_trades` analog).  De-risked in `broadened_tie_2d_envelope.py`.
+- **c-envelope, clean regime `K ≥ 23` (kernel-verified):** `colStop_zero_large` (bulk doesn't help at the
+  edge for K≥22, quadratic-in-K `nlinarith`), `col_le_edge_large` (column collapses to its tie edge),
+  `tradeStop_zero_large`, **`col_le_nearStar_large`** — every Balanced single hub at size 11K, K≥23, is
+  dominated by the near-star `tieState K 0`.  So near-star IS the aligned-size single-hub maximizer for
+  K≥23 (dual to `nearStar_not_maximal_at_five`, K<23).  Kernel-clean, in AxiomGuard + CI.
+- **OPEN tail:** (a) the general `hubState a b c → colState K c t` size-decomposition lemma (b≡c mod 11,
+  Nat); (b) `K = 22` (argmax mstar=1, not near-star) + the **5 ≤ K < 22 finite interior patch** (26
+  explicit (K,c,t=1) configs, enumerated by `broadened_tie_2d_envelope.py`) → a general `mOf K` tie
+  argmax; (c) assemble into `singleHub_le_tie` for all K.
 
 ## Honest frontier / next steps (dependency-ordered)
-1. **M4 Aobj bridge** (concrete, ~hours): port `pi_two_hub_closed`/`pi_template_closed` via `Ztot_hubNode`
-   + match `two_hub_gap_pos_c*` → `twoHub_le_tie` (Hdom, length-2, aligned n).
-2. **M3 2-D envelope** (needs a real insight): t-unimodality (bulk atom, near-copy of `tradeStop_persists`
-   but messier `F`) + the c-envelope bound.
-3. Then `sharpRate_of_tieDomination` (bypassing `hrate`) → `Hdom` for single+two-hub, aligned n.
-4. Hnorm / `StraightProgress_sized` (the tree→hub coverage dichotomy) remains the other open layer.
+1. **M3 c-envelope tail:** the size-decomposition + `mOf K` + the 26-config finite patch → full
+   `singleHub_le_tie` (length-1 SharpRateNF, all aligned K).  The clean K≥23 core is DONE.
+2. **`sharpRate_of_tieDomination`** (bypassing the open `hrate`): case-split `s.length` → `singleHub_le_tie`
+   (length 1) + `twoHub_le_tie` (length 2, DONE) + an explicit `hMulti` hyp (length ≥3).  Feed
+   `Hdom_of_sharpRate` → `conjecture1_of_Hnorm_sharpRate`.
+3. `m ≥ 3` multi-hub (the assisted-merge environment rules) and Hnorm / `StraightProgress_sized` (the
+   tree→hub coverage dichotomy) remain the other open layers.
 
 Full closure stays gated on the genuinely-open mathematics (Pant 2026: the global maximizer is open);
 the realistic target is a scoped aligned-n result + a sharpened, kernel-anchored frontier. `conjecture1_proved = False`.
