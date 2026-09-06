@@ -185,3 +185,8 @@ name = "DlvpBlaschkeAnalytic"
 # (preperfect sphere via isConnected_sphere). Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpSphereDense"
+
+# PHASE 4 dVP frontier, BLASCHKE step 3a: ‖f‖=‖g‖ on sphere for a CanonicalDecomp (composes
+# Blaschke modulus-1 + density + sphere-identity). Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpCanonicalNorm"
