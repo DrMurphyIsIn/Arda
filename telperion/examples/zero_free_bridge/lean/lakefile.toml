@@ -180,3 +180,8 @@ name = "DlvpBlaschkeSphere"
 # (MeromorphicNFAt + nonvanishing ⟹ order 0 ⟹ analytic). Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBlaschkeAnalytic"
+
+# PHASE 4 dVP frontier, BLASCHKE density discharge: codiscrete set dense within the sphere
+# (preperfect sphere via isConnected_sphere). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpSphereDense"
