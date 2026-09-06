@@ -261,6 +261,94 @@ def winding_count_certificate(
     )
 
 
+@dataclass(frozen=True)
+class SegmentWindingCertificate:
+    """A verified segment-winding certificate.
+
+    Produced by segment_winding_certificate.  Each entry in step_witnesses
+    corresponds to a consecutive pair of segment-boxes from the input segments
+    list (length == len(segments) - 1).
+
+    Attributes:
+        box: The query box as (lo_re, hi_re, lo_im, hi_im) -- 4 Fractions.
+        n: The integer winding number of the boundary cycle about 0.
+        step_witnesses: Half-plane witness (d_re, d_im) for each consecutive
+            pair of segment-boxes.  Certifies the argument increment between
+            each pair is unambiguous (stays within a half-plane).
+
+    conjecture1_proved = False.  This is a non-kernel certificate.
+    """
+
+    box: tuple[Fraction, Fraction, Fraction, Fraction]
+    n: int
+    step_witnesses: tuple[tuple[Fraction, Fraction], ...]
+
+
+def segment_winding_certificate(
+    box: tuple,
+    segments: "Sequence[_Sample]",
+) -> SegmentWindingCertificate:
+    """Build and self-check a SegmentWindingCertificate from segment enclosures.
+
+    Reuses the Task-3 winding_number (on segment-box centers) for the candidate
+    n, and the Task-3 refusal logic (box-contains-0, per-step half-plane witness)
+    applied to the segment boxes.
+
+    Raises ValueError if:
+    - Any segment-box contains 0 (both real and imaginary parts straddle 0),
+      indicating Lambda may vanish on the boundary segment.
+    - Any consecutive pair of segment-boxes lacks a _half_plane_witness,
+      meaning the winding step is ambiguous (the argument increment could
+      exceed pi).
+
+    Args:
+        box: The query rectangle as (lo_re, hi_re, lo_im, hi_im) -- metadata.
+        segments: Closed segment cycle from enclose_lambda_segments.  Each
+            entry is (param, ((lo_re, hi_re), (lo_im, hi_im))) with Fraction
+            values.  The last entry must repeat the first segment-box content.
+
+    Returns:
+        SegmentWindingCertificate with self-checked witnesses and integer n.
+
+    Notes:
+        conjecture1_proved = False.  The segment boxes are a non-kernel input.
+    """
+    lo_re, hi_re, lo_im, hi_im = (Fraction(v) for v in box)
+    cert_box = (lo_re, hi_re, lo_im, hi_im)
+
+    # Check each segment box for 0-containment.
+    for i, (param, seg_box) in enumerate(segments):
+        if _box_contains_zero(seg_box):
+            (slo_re, shi_re), (slo_im, shi_im) = seg_box
+            raise ValueError(
+                f"Segment {i} (param={param}) contains 0: box "
+                f"re=[{slo_re}, {shi_re}] im=[{slo_im}, {shi_im}] "
+                f"straddles the origin -- segment_winding_certificate refuses. "
+                f"Use a finer n_per_side."
+            )
+
+    # Build step witnesses for each consecutive pair.
+    witnesses: list[tuple[Fraction, Fraction]] = []
+    for i in range(len(segments) - 1):
+        _, box_a = segments[i]
+        _, box_b = segments[i + 1]
+        w = _half_plane_witness(box_a, box_b)
+        if w is None:
+            raise ValueError(
+                f"No half-plane witness for segment step {i}->{i+1}: "
+                f"boxes straddle a half-plane through 0; winding is ambiguous. "
+                f"Use a finer n_per_side."
+            )
+        witnesses.append(w)
+
+    n = winding_number(segments)
+    return SegmentWindingCertificate(
+        box=cert_box,
+        n=n,
+        step_witnesses=tuple(witnesses),
+    )
+
+
 # ---------------------------------------------------------------------------
 # z^2 boundary samples (toy positive control) -- exact Fraction boxes.
 # ---------------------------------------------------------------------------

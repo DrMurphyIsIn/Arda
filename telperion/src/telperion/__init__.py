@@ -254,6 +254,11 @@ from .emit_xi_line_zeros import (  # noqa: F401
 from .emit_winding_count import (  # noqa: F401
     WindingCountEmitter, winding_count_certificate, winding_count_family,
     certify_winding_count_point,
+    SegmentWindingCertificate, segment_winding_certificate,
+)
+# Zeta-box-localization Stage 2/3 (2026-09-06): segment (ball) enclosures.
+from .arb_enclosure import (  # noqa: F401
+    enclose_lambda_segment, enclose_lambda_segments,
 )
 # Analytic-cert-structures build (2026-09-05): turan-box log-concavity emitter (#5).
 from .emit_turan_box import turan_box_family  # noqa: F401

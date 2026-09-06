@@ -295,6 +295,115 @@ def test_winding_count_emitter_classified():
     assert REGISTRY["WindingCountEmitter"].stance == STRUCTURALLY_NONVACUOUS
 
 
+# ---------------------------------------------------------------------------
+# Task 8: segment winding certificate
+# ---------------------------------------------------------------------------
+
+def test_segment_winding_certificate_capstone_n5():
+    """segment_winding_certificate on capstone box [2/5,3/5]x[10,35] gives n=5.
+
+    Uses enclose_lambda_segments with n_per_side=80 (fine enough that no
+    segment-box contains 0 and every consecutive pair has a half-plane witness).
+    conjecture1_proved = False.
+    """
+    pytest.importorskip("flint")
+    from fractions import Fraction
+    from telperion.arb_enclosure import enclose_lambda_segments
+    from telperion.emit_winding_count import segment_winding_certificate
+
+    box = (Fraction(2, 5), Fraction(3, 5), 10, 35)
+    segs = enclose_lambda_segments(box, n_per_side=80, prec_bits=300)
+    cert = segment_winding_certificate(box, segs)
+    assert cert.n == 5
+
+
+def test_segment_winding_certificate_refuses_zero_box():
+    """segment_winding_certificate raises ValueError on a segment-box that contains 0."""
+    from fractions import Fraction
+    from telperion.emit_winding_count import segment_winding_certificate
+
+    box = (Fraction(0), Fraction(1), Fraction(0), Fraction(1))
+    # A segment-box that straddles 0 in both parts.
+    bad_seg = (Fraction(0), ((-Fraction(1), Fraction(1)), (-Fraction(1), Fraction(1))))
+    segs = [bad_seg, bad_seg]  # closed (same first and last for the check)
+    with pytest.raises(ValueError, match="contains 0|straddle"):
+        segment_winding_certificate(box, segs)
+
+
+def test_segment_winding_certificate_refuses_no_witness():
+    """segment_winding_certificate raises ValueError when a step has no half-plane witness."""
+    from fractions import Fraction
+    from telperion.emit_winding_count import segment_winding_certificate
+
+    box = (Fraction(1), Fraction(2), Fraction(1), Fraction(2))
+    # Two segment-boxes on opposite sides of 0: Q1 then Q3 -> no shared witness.
+    seg_a = (Fraction(0), ((Fraction(1), Fraction(2)), (Fraction(1), Fraction(2))))
+    seg_b = (Fraction(1, 2), ((-Fraction(3), -Fraction(1)), (-Fraction(3), -Fraction(1))))
+    seg_c = (Fraction(1), ((Fraction(1), Fraction(2)), (Fraction(1), Fraction(2))))
+    with pytest.raises(ValueError):
+        segment_winding_certificate(box, [seg_a, seg_b, seg_c])
+
+
+def test_segment_winding_certificate_returns_correct_fields():
+    """SegmentWindingCertificate has the right fields and types."""
+    from fractions import Fraction
+    from telperion.emit_winding_count import SegmentWindingCertificate, segment_winding_certificate
+
+    # Use the toy z^2 cycle (winding = 2) with exact Fraction boxes.
+    # Build a minimal valid cycle: use boxes all in Q1 with winding 0 as a
+    # degenerate positive control.
+    box = (Fraction(1), Fraction(2), Fraction(1), Fraction(2))
+    # All boxes in Q1: witness (1,0) works for every step.
+    seg_a = (Fraction(0), ((Fraction(1), Fraction(2)), (Fraction(1), Fraction(2))))
+    seg_b = (Fraction(1, 4), ((Fraction(2), Fraction(3)), (Fraction(1), Fraction(2))))
+    seg_c = (Fraction(1, 2), ((Fraction(1), Fraction(2)), (Fraction(1), Fraction(2))))
+    # Close the cycle.
+    segs = [seg_a, seg_b, seg_c, seg_a]
+    cert = segment_winding_certificate(box, segs)
+    assert isinstance(cert, SegmentWindingCertificate)
+    assert isinstance(cert.n, int)
+    assert all(isinstance(f, Fraction) for f in cert.box)
+    assert len(cert.step_witnesses) == len(segs) - 1
+    for w in cert.step_witnesses:
+        assert len(w) == 2
+        assert all(isinstance(f, Fraction) for f in w)
+
+
+def test_segment_winding_exported_from_package():
+    """SegmentWindingCertificate and segment_winding_certificate are in the public API."""
+    import telperion
+    assert hasattr(telperion, "SegmentWindingCertificate")
+    assert hasattr(telperion, "segment_winding_certificate")
+    assert hasattr(telperion, "enclose_lambda_segments")
+    assert hasattr(telperion, "enclose_lambda_segment")
+
+
+def test_enclose_lambda_segments_wider_than_points_winding_test():
+    """In the winding test context: segment boxes are wider than point boxes at same nodes."""
+    pytest.importorskip("flint")
+    from fractions import Fraction
+    from telperion.arb_enclosure import enclose_lambda_boundary, enclose_lambda_segments
+
+    box = (Fraction(2, 5), Fraction(3, 5), 10, 35)
+    n = 10
+    prec = 200
+    pts = enclose_lambda_boundary(box, n_per_side=n, prec_bits=prec)
+    segs = enclose_lambda_segments(box, n_per_side=n, prec_bits=prec)
+
+    # Check a sample of segments (every 5th) to keep the test fast.
+    for i in range(0, 4 * n, 5):
+        _, pt_a = pts[i]
+        _, pt_b = pts[i + 1]
+        _, seg = segs[i]
+
+        # Segment re-width must be >= each endpoint's re-width.
+        seg_w = seg[0][1] - seg[0][0]
+        a_w = pt_a[0][1] - pt_a[0][0]
+        b_w = pt_b[0][1] - pt_b[0][0]
+        assert seg_w >= a_w
+        assert seg_w >= b_w
+
+
 def test_winding_count_lean_no_drift():
     """The frozen WindingCount.lean matches regeneration byte-for-byte (drift net).
 

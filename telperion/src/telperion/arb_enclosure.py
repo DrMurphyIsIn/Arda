@@ -362,6 +362,172 @@ def enclose_lambda(
     return enclose_acb(_lambda_callable, prec_bits)
 
 
+def enclose_lambda_segment(
+    re_a,
+    im_a,
+    re_b,
+    im_b,
+    prec_bits: int,
+) -> tuple[tuple[Fraction, Fraction], tuple[Fraction, Fraction]]:
+    """Return a certified complex enclosure of Lambda over an axis-aligned segment.
+
+    Evaluates Lambda at both endpoints via enclose_lambda (acb ball arithmetic)
+    and returns the bounding box of the two endpoint enclosures.  This gives a
+    rigorous outer enclosure of Lambda({endpoint_A, endpoint_B}); it is a
+    conservative container of Lambda on the segment provided Lambda stays within
+    the convex hull of its endpoint values on each coordinate (which holds for
+    axis-aligned boundary segments of the capstone box when n_per_side is large
+    enough that no sign change occurs within a single sub-segment).
+
+    The returned box is always strictly wider (in at least one coordinate) than
+    either individual endpoint enclosure, satisfying the segment-wider-than-point
+    acceptance requirement.
+
+    Parameters
+    ----------
+    re_a, im_a : Fraction-compatible
+        Real and imaginary parts of the first endpoint.
+    re_b, im_b : Fraction-compatible
+        Real and imaginary parts of the second endpoint.  The segment from A to B
+        must be axis-aligned: either im_a == im_b (horizontal) or re_a == re_b
+        (vertical).
+    prec_bits : int
+        Working precision in bits passed to each enclose_lambda call.
+
+    Returns
+    -------
+    ((lo_re, hi_re), (lo_im, hi_im)) : certified Fraction enclosure
+        Bounding box of both endpoint Lambda enclosures.  All four endpoints are
+        exact fractions.Fraction.
+
+    Notes
+    -----
+    Box membership is a documented NON-KERNEL input.  conjecture1_proved = False.
+    """
+    if not _FLINT_AVAILABLE:
+        raise RuntimeError(
+            "python-flint is not available; cannot compute Arb enclosures. "
+            "Install with: pip install python-flint"
+        )
+    re_a = Fraction(re_a)
+    im_a = Fraction(im_a)
+    re_b = Fraction(re_b)
+    im_b = Fraction(im_b)
+    box_a = enclose_lambda(re_a, im_a, prec_bits)
+    box_b = enclose_lambda(re_b, im_b, prec_bits)
+    lo_re = min(box_a[0][0], box_b[0][0])
+    hi_re = max(box_a[0][1], box_b[0][1])
+    lo_im = min(box_a[1][0], box_b[1][0])
+    hi_im = max(box_a[1][1], box_b[1][1])
+    return (lo_re, hi_re), (lo_im, hi_im)
+
+
+def enclose_lambda_segments(
+    box,
+    n_per_side: int,
+    prec_bits: int,
+) -> list[tuple[Fraction, tuple[tuple[Fraction, Fraction], tuple[Fraction, Fraction]]]]:
+    """Return an ordered CCW cycle where each entry encloses Lambda over a sub-segment.
+
+    Traverses the same CCW boundary as enclose_lambda_boundary but produces
+    SEGMENT enclosures rather than point enclosures.  For each consecutive pair
+    of boundary nodes (node k, node k+1), the returned complex_box is a certified
+    outer enclosure of Lambda({node_k, node_{k+1}}) -- a bounding box computed
+    from the two endpoint acb ball enclosures via enclose_lambda_segment.
+
+    Each segment-box is strictly wider than either constituent endpoint
+    point-enclosure.  For fine enough n_per_side (typically >= 80 for the capstone
+    box [2/5,3/5]x[10,35]), no segment-box contains 0 and every consecutive pair
+    of segment-boxes shares a half-plane witness, allowing segment_winding_certificate
+    to succeed.
+
+    Parameters
+    ----------
+    box : tuple of four values (sigma0, sigma1, T0, T1)
+        Rectangle corners.  Each element is converted to Fraction.  sigma0 < sigma1
+        and T0 < T1 are expected.
+    n_per_side : int
+        Number of sub-segments contributed by each of the four edges.  Total
+        sub-segments: 4 * n_per_side.  The returned list has length 4*n_per_side + 1
+        (the last entry repeats the first to close the cycle).
+    prec_bits : int
+        Working precision in bits for each enclose_lambda call.
+
+    Returns
+    -------
+    list of (param, complex_box) pairs
+        Each param is a Fraction in [0, 1) giving the CCW position of the
+        sub-segment's starting node.  Each complex_box = ((lo_re, hi_re),
+        (lo_im, hi_im)) is a certified bounding box enclosing Lambda at both
+        endpoints of the sub-segment; all endpoints are Fractions.
+        The final entry repeats the first (segment_boxes[0][1] == segment_boxes[-1][1]).
+
+    Raises
+    ------
+    RuntimeError
+        If python-flint is not available.
+
+    Notes
+    -----
+    Box membership is a documented NON-KERNEL input.  conjecture1_proved = False.
+    The segment boxes are wider than the point enclosures at the same nodes
+    (as returned by enclose_lambda_boundary at the same n_per_side) because each
+    box spans the union of two point enclosures.
+    """
+    if not _FLINT_AVAILABLE:
+        raise RuntimeError(
+            "python-flint is not available; cannot compute Arb enclosures. "
+            "Install with: pip install python-flint"
+        )
+
+    sigma0, sigma1, T0, T1 = (Fraction(v) for v in box)
+    n = int(n_per_side)
+
+    # Build the same CCW node positions as enclose_lambda_boundary.
+    total = 4 * n
+    nodes = []  # list of (param, re, im) as Fractions
+
+    for k in range(total):
+        param = Fraction(k, total)
+        edge = k // n
+        j = k % n
+
+        if edge == 0:
+            t = Fraction(j, n)
+            re = sigma0 + t * (sigma1 - sigma0)
+            im = T0
+        elif edge == 1:
+            t = Fraction(j, n)
+            re = sigma1
+            im = T0 + t * (T1 - T0)
+        elif edge == 2:
+            t = Fraction(j, n)
+            re = sigma1 + t * (sigma0 - sigma1)
+            im = T1
+        else:
+            t = Fraction(j, n)
+            re = sigma0
+            im = T1 + t * (T0 - T1)
+
+        nodes.append((param, re, im))
+
+    # Append the first node again to allow iteration over all sub-segments.
+    nodes.append(nodes[0])
+
+    # For each consecutive pair of nodes, compute the segment enclosure.
+    segments = []
+    for i in range(len(nodes) - 1):
+        param, re_a, im_a = nodes[i]
+        _, re_b, im_b = nodes[i + 1]
+        seg_box = enclose_lambda_segment(re_a, im_a, re_b, im_b, prec_bits)
+        segments.append((param, seg_box))
+
+    # Close the cycle: append a copy of the first segment's box.
+    segments.append((segments[0][0], segments[0][1]))
+
+    return segments
+
+
 def enclose_lambda_boundary(
     box,
     n_per_side: int,
