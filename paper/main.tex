@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{booktabs}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{cleveref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+
+\title{Telperion: certificate compilation for Lean~4,\\ and three case studies}
+\author{Peter W. Murphy, MD}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+TODO abstract (written last, in Task 8).
+\end{abstract}
+
+\input{sections/01-intro}
+\input{sections/02-system}
+\input{sections/03-vacuity}
+\input{sections/04-bg}
+\input{sections/05-rh}
+\input{sections/06-proofcomplexity}
+\input{sections/07-evaluation}
+\input{sections/08-related}
+\input{sections/09-conclusion}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
