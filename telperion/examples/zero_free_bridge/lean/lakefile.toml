@@ -236,3 +236,13 @@ name = "DlvpBCSumBlaschke"
 [[lean_lib]]
 name = "DlvpHerglotzLower"
 
+
+# ζ-growth sphere bound (hζbound for boundary decomposition). Imports DlvpZetaLower + DlvpZetaDisk.
+# Out of defaultTargets; own CI target.
+[[lean_lib]]
+name = "DlvpZetaSphereLog"
+
+# Pointwise ζ=P·g on the open disk (identity-theorem upgrade of extract_zeros_poles codiscrete
+# factorization). Imports DlvpEntire. Out of defaultTargets; own CI target.
+[[lean_lib]]
+name = "DlvpZetaFactor"
