@@ -82,7 +82,8 @@ jobs:
             R3Cert.R47RootInvariance \
             R3Cert.BridgeStep4l \
             R3Cert.R47CampaignBrick \
-            R3Cert.R47BroadenedTieWitness
+            R3Cert.R47BroadenedTieWitness \
+            R3Cert.R47TieBroadened
 
       # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
       # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build

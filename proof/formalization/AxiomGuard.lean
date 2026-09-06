@@ -60,6 +60,7 @@ import R3Cert.BGSCLRealOblACaseALift
 import R3Cert.BGSCLJointDescent2Step
 import R3Cert.BGSCLRealOblBSymBase
 import R3Cert.R47BroadenedTieWitness
+import R3Cert.R47TieBroadened
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -214,3 +215,9 @@ import R3Cert.R47BroadenedTieWitness
 -- beats the near-star (5 load-5 arms) at the SAME size 56, so conjecture1/SharpRateNF with the
 -- near-star tie is FALSE at this n.  Kernel-verified via singleHub_Aobj_formula + Ztot_armU_four.
 #print axioms R3Cert.Step3.nearStar_not_maximal_at_five
+
+-- Broadened tie family M1 (2026-09-06): the corrected per-size tie `tieState K m` (single hub with
+-- (K-m) load-5 arms + m load-4 arms + m cherries) and its EXACT closed-form objective value
+-- `tie_Aobj_eq_V` = V(K,m), matching the 3-engine-verified broadened_tie_family.py.
+#print axioms R3Cert.Step3.tie_trade_factor
+#print axioms R3Cert.Step3.tie_Aobj_eq_V
