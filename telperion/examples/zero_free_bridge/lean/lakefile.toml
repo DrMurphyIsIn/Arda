@@ -210,3 +210,8 @@ name = "DlvpBlaschkeHerglotz"
 # (Finset.analyticAt_prod + AnalyticAt.zpow, off the poles). Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBlaschkeProdAnalytic"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d2): logDeriv split ζ = Σ canonicalFactor-logDerivs + logDeriv g
+# off zeros (small ball + transfer + logDeriv_mul + d1). Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschkeSplit"
