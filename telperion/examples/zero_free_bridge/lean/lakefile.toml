@@ -270,3 +270,7 @@ name = "DlvpZetaRegion"
 # LHS recentring bridge: -(logDeriv ζ(c₀+·)) z = -deriv ζ (c₀+z)/ζ(c₀+z). Imports DlvpEntirePlumbing.
 [[lean_lib]]
 name = "DlvpZetaRecenter"
+
+# Divisor translation: divisor(f(c₀+·)) U' u = divisor f U (c₀+u). Standalone (Mathlib). Own CI target.
+[[lean_lib]]
+name = "DlvpDivisorTranslate"
