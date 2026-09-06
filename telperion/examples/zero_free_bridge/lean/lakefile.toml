@@ -254,3 +254,7 @@ name = "DlvpRegionBound"
 # Blaschke → skeleton glue: bc_sum_blaschke + herglotz_re_ge → hzero/htwo. Imports DlvpHerglotzLower.
 [[lean_lib]]
 name = "DlvpBlaschkeToSkeleton"
+
+# Interior-point entire-part bound (centre→s transfer, item 3). Imports DlvpLogBranch. Own CI target.
+[[lean_lib]]
+name = "DlvpBCDerivInterior"
