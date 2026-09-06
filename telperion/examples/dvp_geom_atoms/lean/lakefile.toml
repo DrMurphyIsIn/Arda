@@ -1,0 +1,16 @@
+name = "DvpGeomAtoms"
+defaultTargets = ["TwoScaleSeparation", "FarPoleSum", "HerglotzLower"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "TwoScaleSeparation"
+
+[[lean_lib]]
+name = "FarPoleSum"
+
+[[lean_lib]]
+name = "HerglotzLower"
