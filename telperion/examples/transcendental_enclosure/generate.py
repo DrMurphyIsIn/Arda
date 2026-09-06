@@ -65,7 +65,15 @@ def build() -> str:
     )
     report = emit(
         certify(fam),
-        LeanProfile(namespace=("TranscendentalEnclosure",)),
+        LeanProfile(
+            namespace=("TranscendentalEnclosure",),
+            prelude=(
+                "-- Provenance: kin to the Montgomery-Taylor transcendental-constant\n"
+                "-- enclosure of AxiomMath/ZetaZeros (arXiv:2609.02882); this ships the\n"
+                "-- rational log face only (the trig/C0 face is deferred). Independently\n"
+                "-- re-implemented; see NOTICE.md for full attribution."
+            ),
+        ),
         [TranscendentalEnclosureEmitter()],
         ValidationReport(checks=(("transcendental_enclosure", True),)),
     )
