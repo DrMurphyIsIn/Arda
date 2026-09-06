@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family HerglotzLower | input-hash 7e49218eabc49e14
+/- telperion 0.1.6 | family HerglotzLower | input-hash d26e1e32e78d7b50
    3 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
