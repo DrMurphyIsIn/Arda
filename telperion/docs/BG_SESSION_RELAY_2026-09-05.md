@@ -74,6 +74,9 @@ normalform_score_probe.py` (`run()` asserts the growing gap). CAVEAT: empirical 
 shape enum (arms 5–7, ≤3 hubs) on the `pi`-rate objective; the growing margin is a strong
 structural signal, not a proof.
 
+
+**Follow-up (per-hub margin, `normalform_score_probe.per_hub_margins`).** The multi-hub penalty is ~LINEAR and STABLE: `best_score(m) ≈ s₁ − ε·(m−1)`, ε ≈ 0.061 (measured 0.062/0.0615 at m=2,3 where fully enumerated; ≥ 0.05 robustly, does NOT shrink toward 0). Exemplars: best single hub `[(44444,5)]` (score −0.03063), best 2-hub NF `[(44444,5),(44444,4)]` (−0.09265). So an m-hub Balanced+Capped normal form is ≥ 0.05·(m−1) below the single-hub max in the `pi`-rate score `ln pi − (usize/11)·ln(621/64)` — the multi-hub extremality is provably LOOSE. **Suggested `Hdom` split:** prove single-hub tight (near-tie), and multi-hub via the cheap margin `≥ ε·(#hubs−1)` (a per-hub `each extra hub costs ≥ ε` lemma), not a per-cell certificate. CAVEAT: empirical on the `pi`-rate objective over a bounded shape enum (arms 5–7, m ≤ 5); a strong structural signal, not a proof — the per-hub lemma is yours to prove.
+
 ## 4. Suggested division of labour
 
 - **Yours (open):** `Hnorm` (Obligation A) and `Hdom`'s multi-hub extremality (Track-A/B, the
