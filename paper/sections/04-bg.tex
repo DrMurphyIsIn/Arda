@@ -1,3 +1,108 @@
 \section{Case study I: Brualdi--Goldwasser}
+\label{sec:bg}
 
-Placeholder (Task 5).
+Our first case study is the problem that started the campaign, and it is also the
+one where being scrupulous about \emph{what is and isn't proved} matters most.
+Let us be clear at the outset: the classical conjecture is \textbf{open}. What we
+report is a body of machine-checked analytic content and an honest account of the
+gap that remains.
+
+\subsection{The question}
+
+In 1984, Brualdi and Goldwasser asked which tree maximizes a particular ratio
+\cite{brualdi1984}. For a tree $T$ on $n$ vertices, write $L(T)$ for its
+Laplacian and consider
+\[
+  \pi(T) \;=\; \frac{\operatorname{per} L(T)}{\prod_{v} \deg(v)},
+\]
+the \emph{permanent} of the Laplacian normalized by the degree product. Which
+tree makes it largest?
+
+Why is this hard? Because the determinant of the same matrix is useless here: for
+a random-walk normalization $\det(I - P) = 0$ for every graph, so every tool that
+reasons through determinants---eigenvalues, the matrix-tree theorem, the whole
+spectral toolbox---sees nothing at all. The entire content lives in the sign
+cancellations the determinant throws away and the permanent keeps. Permanents do
+not factor and do not telescope, and this problem sits exactly where that
+stubbornness bites.
+
+\subsection{What the answer looks like}
+
+The conjectured maximizer is a \emph{near-star}: a hub carrying short arms. The
+striking part is the equality case. Among $11$-vertex trees the extremum is
+attained at six of them, exactly where a normalized invariant $\Phi^{11}$ equals
+$1$ on the nose, via the integer coincidence
+\[
+  64 \cdot 243 \cdot 23 \;=\; 621 \cdot 576,
+\]
+with growth rate $\rho_B = 621/64$. That an optimization over all trees should tie
+at an exact integer identity is the first sign of what the campaign eventually
+made precise: the obstruction is \emph{arithmetic}, not analytic---there is
+provably no smooth certificate, because the continuous relaxation overshoots $1$
+between the integers.
+
+\subsection{What is machine-checked}
+
+The analytic core is formalized in Lean~4 against pinned Mathlib, with no
+\texttt{sorry} and no added axioms. Reading the library bottom-up, the kernel has
+verified:
+\begin{itemize}
+  \item the permanent-to-matching bridge---$\operatorname{per} L(T)$ equals the
+    matching sum for acyclic graphs---and the exact cavity recursion connecting it
+    to a \emph{branch model} (\texttt{amplitude\_bridge\_real'}, resting on the
+    matching identity and the tree cavity recursion);
+  \item the central branch inequality $\Phi \le 1$, \emph{unconditional}
+    (\texttt{PotentialFinal.lean:phi\_le\_one}), including the six-point rational
+    tie where $\Phi = 1$ exactly;
+  \item the arm-extremality ``$g$-step'' at every arity, over achievable
+    configurations (\texttt{CappedJointClosure.lean:gstep\_le\_one\_achievable}).
+\end{itemize}
+
+\subsection{What is open---and the one subtlety to be careful about}
+
+Two things stand between this and the classical theorem, and we state them
+plainly.
+
+First, $\Phi^{11}$ is a \emph{rooted-branch amplitude} invariant. The inequality
+$\Phi \le 1$ is proved on that abstract branch model; identifying the branch model
+with the classical tree quantity $\operatorname{per} L(T)/\prod \deg(v)$---the
+step we call the H2 bridge---is \emph{not} closed at the tree level.
+% TODO(maintainer): confirm the sharp rooted-branch-vs-classical tie numeral
+% (the "81/8 vs 621/64 at the tie" point) before stating it here. Until confirmed
+% we state only the qualitative distinction: the branch-model $\Phi$ is not the
+% classical ratio, and the two agree only in the limit / up to the H2 bridge.
+Concretely: a reader should not mistake the machine-checked $\Phi \le 1$ for the
+classical bound; it is the branch-model statement, and the bridge to the classical
+object is among the open pieces.
+
+Second, the global structural assembly (that every tree is dominated by a
+near-star of the extremal shape) is not formalized; it remains at the level of
+exact finite enumeration and paper argument.
+
+Therefore the classical Brualdi--Goldwasser conjecture is \textbf{open}:
+\texttt{conjecture1\_proved = False} throughout the repository, and we make no
+claim otherwise. \Cref{tab:bg-status} summarizes.
+
+\begin{table}[t]
+  \centering
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Component & Status \\
+    \midrule
+    Permanent-to-matching bridge (acyclic) & verified in Lean (unconditional) \\
+    Branch-model $\Phi \le 1$, incl.\ the six-point tie & verified in Lean
+      (unconditional) \\
+    Arm-extremality $g$-step, all arities (achievable) & verified in Lean
+      (unconditional) \\
+    Branch model $\leftrightarrow$ classical ratio (H2 bridge) & \textbf{open} \\
+    Global structural assembly (R7) & \textbf{open} (finite-enumeration / paper) \\
+    Classical Brualdi--Goldwasser conjecture & \textbf{open} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Verified-versus-open state of the Brualdi--Goldwasser case study.}
+  \label{tab:bg-status}
+\end{table}
+
+What this case study demonstrates for Telperion is exactly the honest kind of
+progress a certificate engine enables: a hard analytic core, machine-checked and
+tie-tight, with the remaining gap named precisely rather than smoothed over.
