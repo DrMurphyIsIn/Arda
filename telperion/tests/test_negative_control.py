@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # shared lean_env guard
 
 import pytest  # noqa: E402
 import sympy as sp  # noqa: E402
@@ -35,6 +36,7 @@ from telperion.emit_log_combination import (  # noqa: E402
     LogCombinationCertificate,
     LogCombinationEmitter,
 )
+from lean_env import lean_env_ready  # noqa: E402
 
 _ENV = Path(__file__).resolve().parents[1] / "examples" / "log_combination" / "lean"
 
@@ -65,6 +67,10 @@ def test_false_monotone_negative_control_both_layers():
     assert res.okay is True, res.detail
 
 
+@pytest.mark.skipif(
+    not lean_env_ready(_ENV),
+    reason="needs a built Lean env (lake on PATH + mathlib oleans) — kernel must ACCEPT the true proof",
+)
 def test_assert_kernel_rejects_no_false_positive_on_true_theorem():
     """``assert_kernel_rejects`` must NOT flag a VALID proof of a TRUE statement.
 

@@ -8,20 +8,25 @@ match, and that `def_identity_check` catches a def whose body diverges from inte
 Kernel-backed (needs a built env); guarded to skip cleanly when no env is present.
 conjecture1_proved = False.
 """
+import shutil
 import sys
 from pathlib import Path
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # shared lean_env guard
 
 from telperion.statement_match import (  # noqa: E402
     statement_match_check, def_identity_check,
 )
+from lean_env import lean_env_ready  # noqa: E402
 
 _ENV = Path(__file__).resolve().parents[1] / "examples" / "log_combination" / "lean"
-_HAS_ENV = (_ENV / "lake-manifest.json").exists()
-pytestmark = pytest.mark.skipif(not _HAS_ENV, reason="needs a built Lean env")
+# Require BOTH lake on PATH and the mathlib env actually built (.lake/build present).
+# The lake-manifest.json is committed, so its existence is NOT a reliable guard.
+_HAS_ENV = lean_env_ready(_ENV)
+pytestmark = pytest.mark.skipif(not _HAS_ENV, reason="needs a built Lean env (lake on PATH + mathlib oleans)")
 
 
 def test_signature_gate_catches_weakening():

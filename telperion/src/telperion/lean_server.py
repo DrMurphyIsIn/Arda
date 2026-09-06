@@ -256,10 +256,29 @@ class LeanServer:
 
     def start(self) -> bool:
         """Capability check: is ``lake env lean`` invokable in ``env_dir``?  Never
-        raises.  (There is no persistent worker under the ``--stdin`` contract — see
-        the EMPIRICAL FINDING in :meth:`elaborate`; each call spawns a fresh
-        single-shot process.)  Returns ``False`` on a missing env dir."""
-        return Path(self.env_dir).exists()
+        raises.  Attempts a zero-second probe spawn (``lake env lean --version``) to
+        confirm the toolchain is present and the env dir is accessible.  Records any
+        ``OSError`` / launch failure in ``_start_error`` and returns ``False``.
+
+        Returns ``False`` immediately (without spawning) if ``env_dir`` does not exist.
+        """
+        if not Path(self.env_dir).exists():
+            self._start_error = f"env_dir does not exist: {self.env_dir!r}"
+            return False
+        try:
+            proc = subprocess.Popen(
+                ["lake", "env", "lean", "--version"],
+                cwd=str(self.env_dir),
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                env=self._env(),
+            )
+            proc.wait(timeout=10)
+            return True
+        except Exception as exc:
+            self._start_error = repr(exc)
+            return False
 
     def warm(self) -> bool:
         """True iff the resident LSP worker is up (elaboration reuses the env)."""
