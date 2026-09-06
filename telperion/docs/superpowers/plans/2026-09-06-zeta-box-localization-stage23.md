@@ -390,6 +390,75 @@ git commit -m "feat(zeroloc): kernel-derive Lambda local Blaschke split over box
 
 ---
 
+## PLAN REVISION (2026-09-06, post-Task-4): rigorous route-beta winding
+
+Task 4's `winding_lambda_five` proved to be the ANALYTIC residue-sum side (assumes 5 poles as a hypothesis) — a valid kernel-clean atom but NOT a from-data count. Jensen upper-bound was empirically REFUSED (Lambda's Gamma-factor exponential decay makes Jensen's log-modulus-variation bound useless for zeta zero-counting: box-disk bound 34.3, even empty small disks give 2.6-4.3). The user chose the UNCONDITIONAL RH-in-a-box via a rigorous argument-principle winding from SEGMENT enclosures. New tasks 8 and 9 supply the from-data count `Bd(Lambda'/Lambda) = 2*pi*i*5`; Task 5's H4 is sourced from Task 9 (not Task 4). Execution order for remaining work: **5, 8, 9, 7, 6.** Task 4's route-alpha atom stays in the tree as a valid atom, off the capstone critical path.
+
+### Task 8: Segment (ball) enclosures + segment winding certificate for Lambda
+
+**Files:**
+- Modify: `telperion/src/telperion/arb_enclosure.py` (add `enclose_lambda_segments`)
+- Modify: `telperion/src/telperion/emit_winding_count.py` (add a segment-winding certificate: `segment_winding_certificate` / reuse `_half_plane_witness` on segment boxes)
+- Test: `telperion/tests/test_arb_complex.py`, `telperion/tests/test_winding_count.py`
+
+**Interfaces:**
+- Consumes: existing `enclose_acb`/`_eval_spec` (acb ball arithmetic) and `_half_plane_witness` (Task 3).
+- Produces: `enclose_lambda_segments(box, n_per_side, prec_bits) -> list[tuple[Fraction, tuple[tuple[Fraction,Fraction],tuple[Fraction,Fraction]]]]` — an ordered CCW cycle of `(param, complex_box)` where each `complex_box` encloses `Lambda` over the WHOLE sub-segment between consecutive nodes (NOT a point): evaluate `Lambda` at an `acb` BALL centered at the sub-segment midpoint with radius >= half the sub-segment length, so acb ball arithmetic returns an enclosure of `Lambda(sub-segment)` as a set. Same closed-cycle format as `enclose_lambda_boundary`. Plus `segment_winding_certificate(box, segments)` that reuses the Task-3 refusals (RAISE on any segment-box containing 0, or any consecutive pair lacking a `_half_plane_witness`).
+
+- [ ] **Step 1: Write failing tests.** (a) `enclose_lambda_segments` on the capstone box `[2/5,3/5]x[10,35]` returns a closed cycle whose segment-boxes are WIDER than the point-enclosures at the same nodes (a segment encloses a continuum, so its box strictly contains the endpoint value boxes); (b) for a fine-enough `n_per_side`, no segment-box contains 0 and every consecutive pair has a half-plane witness (so `segment_winding_certificate` succeeds and reports `n == 5`); (c) a deliberately-coarse `n_per_side` (e.g. 2) is REFUSED (a segment-box straddles 0 or a step lacks a witness). Use exact Fractions.
+
+- [ ] **Step 2: Run to verify failure.** `PYTHONPATH=src ... -m pytest tests/test_arb_complex.py -k segments tests/test_winding_count.py -k segment -v` — FAIL (functions missing).
+
+- [ ] **Step 3: Implement.** `enclose_lambda_segments`: same CCW traversal as `enclose_lambda_boundary`, but for each sub-segment between consecutive nodes, build an `acb` ball covering that sub-segment (midpoint +- half-length as the ball radius, plus a tiny margin) and call the Lambda spec on that ball via `enclose_acb`, extracting the outward-rounded rational complex box. `segment_winding_certificate`: reuse Task-3 `winding_number` (on segment-box centers) for the candidate `n`, and the Task-3 refusal logic (box-contains-0, per-step half-plane witness) on the segment boxes.
+
+- [ ] **Step 4: Run tests to verify pass.** Same command — PASS. Confirm the capstone box yields `n == 5` with all segment-boxes off 0 and witnessed.
+
+- [ ] **Step 5: Commit.**
+```bash
+git add telperion/src/telperion/arb_enclosure.py telperion/src/telperion/emit_winding_count.py telperion/tests/
+git commit -m "feat(zeroloc): Lambda segment (ball) enclosures + segment winding certificate (rigorous route beta)"
+```
+
+**Acceptance:** `enclose_lambda_segments` encloses Lambda over sub-segments (boxes wider than point enclosures); the capstone box certifies `n=5` with no segment-box straddling 0 and every step witnessed; a coarse sampling is refused; Fraction-only; reuses `enclose_acb` and `_half_plane_witness`.
+
+### Task 9: Rigorous winding Lean theorem — Bd(Lambda'/Lambda) = 2*pi*i*5 (the crux)
+
+**Files:**
+- Modify: `telperion/src/telperion/emit_winding_count.py` (emit a rigorous-winding theorem variant, or a new emitter kind `segment_winding`)
+- Create: `telperion/examples/zeta_zero_localization/lean/RigorousWinding.lean` (emitted)
+- Modify: `telperion/examples/zeta_zero_localization/generate.py`
+- Test: `telperion/tests/test_winding_count.py`, build assertion in `test_zeroloc_end_to_end.py`
+
+**Interfaces:**
+- Consumes: Task 8's segment enclosures/certificate; `differentiableAt_completedZeta` (Mathlib, `RiemannZeta.lean:94`); `RectWinding.lean` monodromy lemmas as the template.
+- Produces: `rigorous_winding_lambda_five` : GIVEN, per boundary sub-segment, the Arb-certified hypothesis `forall z on the sub-segment, Lambda z lies in the rational half-plane box W_i` (the documented non-kernel input, `0 notin W_i`), and `Lambda` analytic on a neighborhood of `partial B`, THEN `Bd(Lambda'/Lambda) = 2*pi*i*5`. This is the UNCONDITIONAL (modulo Arb) from-data winding.
+
+- [ ] **Step 1: Write the emit-shape test.** The emitted theorem's conclusion is `Bd(Lambda'/Lambda) = 2*pi*i*5`; hypotheses are per-segment slit-plane-membership facts (NOT a residue-decomposition hypothesis — this is the from-data winding, distinct from Task 4's route-alpha). Assert the body references `differentiableAt_completedZeta` (or a Lambda-analyticity lemma), `clog`, and `integral_eq_sub_of_hasDerivAt`.
+
+- [ ] **Step 2: Run to verify failure.**
+
+- [ ] **Step 3: Implement the emitter + emit `RigorousWinding.lean`.** **Proof strategy (RectWinding.lean is the template):** on each sub-segment, `Lambda(sub-segment)` lies in a half-plane box (hypothesis) => in a ROTATED slit plane (rotate by the witness direction's angle: for a fixed rational direction `d`, `Lambda z` has strictly positive inner product with `d`, so `e^{-i*arg d} * Lambda z` is in the right half-plane => principal `Complex.log` of the rotated value is analytic); `Lambda'/Lambda = (Complex.log o Lambda)'` on the segment via `HasDerivAt.clog` composed with `differentiableAt_completedZeta` (Lambda analytic, nonzero from the off-0 box); `intervalIntegral.integral_eq_sub_of_hasDerivAt` collapses each sub-segment to `log Lambda(end) - log Lambda(start)`; telescoping the sub-segments around the four edges with the monodromy jumps (`RectWinding.log_neg_sub_im_*`) bounded by the per-step half-plane witnesses gives exactly `2*pi*i*5`. Handle the rotated branch: for direction `d`, use `Complex.log (Lambda z) = Complex.log (e^{-i*theta} Lambda z) + i*theta` where `theta = arg d`, OR keep each segment's contribution in terms of a locally-analytic branch and only track the total winding integer. **Build the TOY analogue first** (a known analytic function with winding 1 or 2 whose segment-enclosures are computed from its closed form) to validate the rigorous-segment proof machinery before the Lambda instance.
+
+- [ ] **Step 4: Register (if a new kind) at all five points; else reuse `winding_count` dispatch.** Keep `test_every_emitter_is_classified` green (add a `STRUCTURALLY_NONVACUOUS` stance if a new emitter class).
+
+- [ ] **Step 5: Build locally + axiom check.**
+```bash
+cd telperion/examples/zeta_zero_localization/lean && /Users/peterwmurphy/.elan/bin/lake exe cache get && /Users/peterwmurphy/.elan/bin/lake build RigorousWinding
+```
+sorry-free; `#print axioms rigorous_winding_lambda_five` = {propext, Classical.choice, Quot.sound}.
+
+- [ ] **Step 6: Drift + tests + commit.** `generate.py --check`; `test_winding_count.py` + `test_certificate_sensitivity.py` green.
+```bash
+git add telperion/src/telperion/emit_winding_count.py telperion/examples/zeta_zero_localization/lean/RigorousWinding.lean telperion/examples/zeta_zero_localization/generate.py telperion/tests/ telperion/src/telperion/certify.py telperion/src/telperion/__init__.py telperion/src/telperion/emitter_sensitivity.py
+git commit -m "feat(zeroloc): rigorous winding Bd(Lambda'/Lambda)=2*pi*i*5 from segment enclosures (route beta, unconditional)"
+```
+
+**Acceptance:** `RigorousWinding.lean` builds sorry-free with clean axioms; the Lambda theorem's hypotheses are ONLY (i) per-segment Arb slit-plane-membership facts (non-kernel input) and (ii) kernel-proved Lambda analyticity — NO residue-decomposition hypothesis (distinct from Task 4's route-alpha); conclusion `Bd(Lambda'/Lambda) = 2*pi*i*5`. If the rotated-branch proof proves intractable after real effort on the toy, report BLOCKED with the exact obstruction (controller falls back to the conditional capstone).
+
+**Note (Task 5 revision):** Task 5's hypothesis H4 (`Bd(Lambda'/Lambda) = 2*pi*i*N`) is now discharged by Task 9's `rigorous_winding_lambda_five` (N=5), making the total-count `Sum divisor = 5` and hence the capstone UNCONDITIONAL (modulo Arb enclosures). Task 6's `n_total = 5` comes from Task 5 composed with Task 9.
+
+---
+
 ## Self-Review
 
 **Spec coverage:** Stage 2A → Tasks 2,3,4. Stage 2B → Tasks 1 (probe), 7 (derive/discharge). Stage 2C → Task 5. Stage 3 → Task 6. Trust boundary (enclosures as hypotheses) → Tasks 2,4,5. Honest ceiling (`conjecture1_proved=False`) → every task. Toy validations → Tasks 3,4 (winding), 1 (split). Negative controls → Tasks 3 (box∋0, angle), 6 (n_line>n_total). CI/SoC-safe → Tasks 4,6. All spec sections mapped.
