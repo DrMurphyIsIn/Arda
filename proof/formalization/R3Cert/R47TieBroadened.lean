@@ -21,6 +21,34 @@ open RTree
 /-- The broadened trade-state: a single hub with `(K-m)` load-5 arms, `m` load-4 arms, `m` cherries. -/
 def tieState (K m : ℕ) : List Hub := [(List.replicate (K - m) 5 ++ List.replicate m 4, m)]
 
+/-- A GENERAL Balanced single hub: `a` load-5 arms, `b` load-4 arms, `c` cherries. -/
+def hubState (a b c : ℕ) : List Hub := [(List.replicate a 5 ++ List.replicate b 4, c)]
+
+/-- **Exact closed form of the general Balanced single hub** (degree `d = a+b+c`):
+    `Aobj = (621/64)^a·(513/80)^b·(3/2)^c·(1 + qSum/d)`.  The foundation for the M3 joint single-hub
+    optimum: `tieState K m = hubState (K-m) m m` (the `a+b=K, c=b` slice). -/
+theorem hub_Aobj_eq (a b c : ℕ) (hpos : 0 < a + b + c) :
+    Aobj (backboneU (hubState a b c))
+      = (621 / 64 : ℝ) ^ a * (513 / 80) ^ b * (3 / 2) ^ c
+        * (1 + (((a : ℝ) * (3 / (((a + b + c : ℕ) : ℝ) * 23))
+                 + (b : ℝ) * (3 / (((a + b + c : ℕ) : ℝ) * 19)))
+                + (c : ℝ) * (1 / (3 * ((a + b + c : ℕ) : ℝ))))) := by
+  have hlen : (List.replicate a 5 ++ List.replicate b 4).length = a + b := by
+    simp only [List.length_append, List.length_replicate]
+  have hd : 0 < (List.replicate a 5 ++ List.replicate b 4).length + c := by
+    rw [hlen]; omega
+  have hne : (a : ℝ) + b + c ≠ 0 := by
+    have h : (0 : ℝ) < (a : ℝ) + b + c := by exact_mod_cast hpos
+    linarith
+  unfold hubState
+  rw [singleHub_Aobj_formula _ c hd]
+  simp only [List.map_append, List.map_replicate, List.prod_append, List.prod_replicate,
+    List.sum_append, List.sum_replicate, List.length_append, List.length_replicate,
+    Ztot_armU_five, Ztot_armU_four, nsmul_eq_mul]
+  push_cast
+  field_simp [hne]
+  ring
+
 /-- The exact trade constants: one `load-5 -> load-4 + cherry` trade multiplies the Ztot product by
     `114/115` and shifts the per-vertex qSum weight by `473/1311`. -/
 theorem tie_trade_factor :
