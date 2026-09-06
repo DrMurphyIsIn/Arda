@@ -205,3 +205,8 @@ name = "DlvpCanonicalLogDeriv"
 # canonicalFactor. Imports DlvpCanonicalLogDeriv. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBlaschkeHerglotz"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d2) sub-lemma: Blaschke product analytic away from its zeros
+# (Finset.analyticAt_prod + AnalyticAt.zpow, off the poles). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschkeProdAnalytic"
