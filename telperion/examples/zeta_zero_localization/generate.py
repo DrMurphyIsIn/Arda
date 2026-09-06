@@ -57,6 +57,14 @@ from telperion.emit_xi_line_zeros import (  # noqa: E402
     sign_change_count,
     xi_line_zeros_family,
 )
+from telperion.emit_winding_count import (  # noqa: E402  (Task 4, Stage 2A)
+    WINDING_COUNT_PRELUDE,
+    WindingCountEmitter,
+    _z2_samples,
+    winding_count_certificate,
+    winding_count_family,
+)
+from telperion.arb_enclosure import enclose_lambda_boundary  # noqa: E402  (Task 2)
 from telperion.family import GridSpec  # noqa: E402
 from telperion.lean import LeanProfile  # noqa: E402
 
@@ -64,6 +72,13 @@ from telperion.lean import LeanProfile  # noqa: E402
 # (_SPECIAL_KINDS + _SPECIAL_DISPATCH).
 
 _OUT = Path(__file__).resolve().parent / "lean" / "XiLineZeros.lean"
+_OUT_WINDING = Path(__file__).resolve().parent / "lean" / "WindingCount.lean"
+
+# Lambda winding-count box and boundary-sampling resolution (Stage 2A milestone).
+_WINDING_BOX = (Fraction(2, 5), Fraction(3, 5), Fraction(10), Fraction(35))
+_WINDING_N_PER_SIDE = 30    # 4*30 = 120 boundary samples (all half-plane-witnessed)
+_WINDING_PREC = 300         # Arb bits for the boundary Lambda enclosures
+_WINDING_EXPECTED_N = 5     # the 5 on-line zeros of Lambda in [10, 35]
 
 _PREC_DEMO = 200    # Arb bits for demo cases 0-1 (enclosures wide enough at t ~ 14-22)
 _PREC_SWEEP = 300   # Arb bits for case 2 sweep over [10, 35]
@@ -163,6 +178,60 @@ def build() -> str:
     return next(iter(report.files.values()))
 
 
+_WINDING_NAMES = {
+    0: "winding_z2",             # toy z^2, N=2 (from-scratch winding primitive)
+    1: "winding_lambda_five",    # Lambda [2/5,3/5]x[10,35], N=5 (argument principle)
+}
+
+
+def _winding_spec(pt):
+    """Spec for the winding-count family: pt['case'] -> {box, samples, mode}."""
+    case = pt["case"]
+    if case == 0:
+        # Toy: f(z) = z^2 on [-1,1]^2, exact enclosure boxes -> winding = 2.
+        return {"box": (-1, 1, -1, 1), "samples": _z2_samples(), "mode": "toy_z2"}
+    # case 1: MILESTONE -- Lambda boundary winding on [2/5,3/5]x[10,35].
+    # 120 boundary samples (4*30) at 300-bit Arb precision; the 5 on-line zeros in
+    # [10, 35] give winding = 5.  All consecutive boxes carry a half-plane witness.
+    samples = enclose_lambda_boundary(_WINDING_BOX, _WINDING_N_PER_SIDE, _WINDING_PREC)
+    return {"box": _WINDING_BOX, "samples": samples, "mode": "lambda"}
+
+
+def build_winding() -> str:
+    """Build and emit WindingCount.lean (toy z^2 N=2 + Lambda N=5).
+
+    Asserts (via the certificate) that the Lambda instance's certified winding
+    number is 5 before emitting -- a drift guard on the milestone count."""
+    # Certify-time assertion: the Lambda boundary winding is exactly 5.
+    lam_samples = enclose_lambda_boundary(_WINDING_BOX, _WINDING_N_PER_SIDE, _WINDING_PREC)
+    lam_cert = winding_count_certificate(_WINDING_BOX, lam_samples)
+    if lam_cert.n != _WINDING_EXPECTED_N:
+        raise AssertionError(
+            f"Lambda winding count = {lam_cert.n}, expected {_WINDING_EXPECTED_N} "
+            f"(5 on-line zeros in [10, 35])"
+        )
+    fam = winding_count_family(
+        "WindingCount",
+        GridSpec([("case", [0, 1])]),
+        lambda pt: _WINDING_NAMES[pt["case"]],
+        spec=_winding_spec,
+    )
+    profile = LeanProfile(
+        namespace=("WindingCount",),
+        imports=("Mathlib",),
+        prelude=WINDING_COUNT_PRELUDE,
+        # The winding primitives use `π`, `Complex.log`, `intervalIntegral`, `volume`.
+        options=("open Complex intervalIntegral MeasureTheory Real",),
+    )
+    report = emit(
+        certify(fam),
+        profile,
+        [WindingCountEmitter()],
+        ValidationReport(checks=(("winding_count", True),)),
+    )
+    return next(iter(report.files.values()))
+
+
 def run_interval(a, b, n_samples, prec):
     """Ad-hoc interval driver: compute certified N for [a, b] and print it.
 
@@ -182,15 +251,24 @@ def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int 
         return 0
 
     text = build()
+    text_winding = build_winding()
     if check:
+        drift = False
         if not _OUT.exists() or _OUT.read_text(encoding="utf-8") != text:
             print("DRIFT: XiLineZeros.lean does not match regeneration")
+            drift = True
+        if not _OUT_WINDING.exists() or _OUT_WINDING.read_text(encoding="utf-8") != text_winding:
+            print("DRIFT: WindingCount.lean does not match regeneration")
+            drift = True
+        if drift:
             return 1
         print("check: OK (regeneration matches frozen output byte-for-byte)")
         return 0
     _OUT.parent.mkdir(exist_ok=True)
     _OUT.write_text(text, encoding="utf-8")
     print(f"wrote {_OUT} ({len(text)} bytes)")
+    _OUT_WINDING.write_text(text_winding, encoding="utf-8")
+    print(f"wrote {_OUT_WINDING} ({len(text_winding)} bytes)")
     return 0
 
 

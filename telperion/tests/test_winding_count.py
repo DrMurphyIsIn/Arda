@@ -1,12 +1,18 @@
-"""Tests for winding_count numeric core (Task 3).
+"""Tests for winding_count numeric core (Task 3) + kernel emitter (Task 4, Stage 2A).
 
-Toy polynomials with known winding numbers, plus negative-control refusals.
+Toy polynomials with known winding numbers, plus negative-control refusals (numeric
+core), and the emit-shape + drift + registration checks for ``WindingCountEmitter``
+(the kernel-verified ``Bd(Lambda'/Lambda) = 2*pi*i*N`` theorem).
 """
 from __future__ import annotations
 
+import sys
 from fractions import Fraction
+from pathlib import Path
 
 import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 
 def _poly_boundary(box, n_per_side, poly):
@@ -174,3 +180,137 @@ def test_winding_count_certificate_missing_witness_raises():
     sample_c = (Fraction(1), ((Fraction(1), Fraction(2)), (Fraction(1), Fraction(2))))  # close cycle
     with pytest.raises(ValueError):
         winding_count_certificate(box, [sample_a, sample_b, sample_c])
+
+
+# ---------------------------------------------------------------------------
+# Task 4: WindingCountEmitter emit-shape + drift + registration
+# ---------------------------------------------------------------------------
+
+def test_winding_count_emits_boundary_integral_equals_2pi_i_N():
+    """The toy z^2 -> N=2 instance emits a boundary log-derivative integral = 2*pi*i*2,
+    with the monodromy proof present (clog_real / Complex.log)."""
+    from telperion.emit_winding_count import (
+        winding_count_family,
+        WindingCountEmitter,
+        certify_winding_count_point,
+        _z2_samples,
+    )
+    from telperion.family import GridSpec
+    from telperion.lean import LeanProfile
+
+    fam = winding_count_family(
+        "T", GridSpec([("case", [0])]),
+        lean_name=lambda pt: "winding_z2",
+        spec=lambda pt: {"box": (-1, 1, -1, 1), "samples": _z2_samples(), "mode": "toy_z2"},
+    )
+    inst, _ = certify_winding_count_point(fam, {"case": 0}, "winding_z2")
+
+    class V:
+        instances = [inst]
+
+    body, nthm = WindingCountEmitter().emit_body(V(), LeanProfile(namespace=("X",)))
+    # 3 theorems for the toy: winding-ONE primitive, log-deriv reduction, main.
+    assert nthm == 3
+    assert "2 * " in body and "π" in body and "* I" in body
+    assert "clog_real" in body or "Complex.log" in body   # monodromy proof present
+    assert "theorem winding_z2" in body
+    # statement-match gate single-sourced.
+    assert "example :" in body
+
+
+def test_winding_count_lambda_emits_N_from_certificate():
+    """The Lambda instance emits `= 2*pi*i*N` where N is the certified winding count,
+    the per-pole interior primitive, and the argument-principle Finset linearity."""
+    from telperion.emit_winding_count import (
+        winding_count_family,
+        WindingCountEmitter,
+        certify_winding_count_point,
+    )
+    from telperion.family import GridSpec
+    from telperion.lean import LeanProfile
+
+    # A synthetic 5-pole boundary cycle: a curve that winds 5 times about 0
+    # (arg increment 5*2*pi over the loop) with per-step half-plane witnesses.
+    import cmath
+
+    box = (Fraction(2, 5), Fraction(3, 5), Fraction(10), Fraction(35))
+    n = 240
+    samples = []
+    for k in range(n):
+        theta = 5 * 2 * cmath.pi * k / n
+        w = cmath.exp(1j * theta)
+        re = Fraction(w.real).limit_denominator(10 ** 12)
+        im = Fraction(w.imag).limit_denominator(10 ** 12)
+        samples.append((Fraction(k, n), ((re, re), (im, im))))
+    samples.append((Fraction(0), samples[0][1]))
+
+    fam = winding_count_family(
+        "T", GridSpec([("case", [0])]),
+        lean_name=lambda pt: "winding_lambda_five",
+        spec=lambda pt: {"box": box, "samples": samples, "mode": "lambda"},
+    )
+    inst, _ = certify_winding_count_point(fam, {"case": 0}, "winding_lambda_five")
+    cert, mode = inst.payload
+    assert mode == "lambda"
+    assert cert.n == 5
+
+    class V:
+        instances = [inst]
+
+    body, nthm = WindingCountEmitter().emit_body(V(), LeanProfile(namespace=("X",)))
+    # 2 theorems: interior-pole primitive + main.
+    assert nthm == 2
+    assert "= 2 * ↑π * I * 5" in body
+    assert "rect_winding" in body                 # from-scratch per-pole winding primitive
+    assert "integral_finsetSum" in body           # argument-principle Finset linearity
+    assert "hin" in body                          # enclosure brackets as hypotheses
+
+
+def test_winding_count_registered_in_certify():
+    """The winding_count kind is registered at both dispatch points."""
+    from telperion.certify import _SPECIAL_KINDS, _SPECIAL_DISPATCH, emitter_for
+
+    assert "winding_count" in _SPECIAL_KINDS
+    assert _SPECIAL_DISPATCH["winding_count"] == (
+        "emit_winding_count", "certify_winding_count_point", "WindingCountEmitter",
+    )
+    assert type(emitter_for("winding_count")).__name__ == "WindingCountEmitter"
+
+
+def test_winding_count_exported_from_package():
+    """The public API is exported from the telperion package."""
+    import telperion
+
+    assert hasattr(telperion, "WindingCountEmitter")
+    assert hasattr(telperion, "winding_count_certificate")
+    assert hasattr(telperion, "winding_count_family")
+    assert hasattr(telperion, "certify_winding_count_point")
+
+
+def test_winding_count_emitter_classified():
+    """WindingCountEmitter has a declared certificate-sensitivity stance."""
+    from telperion.emitter_sensitivity import REGISTRY, STRUCTURALLY_NONVACUOUS
+
+    assert "WindingCountEmitter" in REGISTRY
+    assert REGISTRY["WindingCountEmitter"].stance == STRUCTURALLY_NONVACUOUS
+
+
+def test_winding_count_lean_no_drift():
+    """The frozen WindingCount.lean matches regeneration byte-for-byte (drift net).
+
+    Skipped if python-flint (the Arb enclosure backend for the Lambda instance) is
+    unavailable in the test environment."""
+    pytest.importorskip("flint")
+    import importlib.util
+
+    gen_path = (
+        Path(__file__).resolve().parents[1]
+        / "examples" / "zeta_zero_localization" / "generate.py"
+    )
+    spec = importlib.util.spec_from_file_location("_zzl_generate", gen_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    text = mod.build_winding()
+    frozen = mod._OUT_WINDING
+    assert frozen.exists(), "WindingCount.lean not generated yet"
+    assert frozen.read_text(encoding="utf-8") == text, "WindingCount.lean drifted from generate.py"

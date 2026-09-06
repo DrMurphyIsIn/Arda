@@ -345,6 +345,18 @@ REGISTRY: dict[str, SensitivityStance] = {
         "carried as theorem HYPOTHESES (the documented Arb non-kernel input), not a baked-in corruptible "
         "fact -- a forged enclosure falsifies the hypothesis, leaving the IVT implication kernel-valid; "
         "no separately-supplied witness. conjecture1_proved = False"),
+    # --- 2026-09-06: zeta-box-localization (Stage 2A) boundary winding-count emitter. ---
+    "WindingCountEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Boundary log-derivative winding count Bd(Lambda'/Lambda)=2*pi*i*N. The enclosure boxes are "
+        "documented Arb non-kernel input carried as theorem HYPOTHESES: in the toy z^2 (N=2) the winding "
+        "is proven FROM SCRATCH via the segment/Complex.log branch-split primitive (clog_real + FTC-2 "
+        "intervalIntegral.integral_eq_sub_of_hasDerivAt) with the two monodromy jumps log(-x)-log(x)=+-pi*i "
+        "closed over norm_num-decided half-plane facts; in the Lambda [2/5,3/5]x[10,35] instance (N=5) the "
+        "per-pole enclosure brackets (hin, strict rational interior bounds locating each zero) and the "
+        "argument-principle residue decomposition enter as hypotheses, the per-pole winding is DISCHARGED "
+        "from the same from-scratch interior-pole primitive, and Finset linearity telescopes the four "
+        "sides -- a forged enclosure falsifies the hypothesis, leaving the argument-principle implication "
+        "kernel-valid; no separately-supplied witness. conjecture1_proved = False"),
     # --- 2026-09-06: dVP Blaschke/two-scale atoms. All wrapper/glue/geometry shapes: the numeric data
     #     (radii R,R₀; σ,β,k) is substituted into BOTH hypotheses and goal, never a separately-supplied
     #     corruptible identity certificate — same stance as CauchyDerivBoundEmitter / TwoScale geometry. ---

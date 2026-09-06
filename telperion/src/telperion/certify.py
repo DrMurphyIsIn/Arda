@@ -240,6 +240,10 @@ _SPECIAL_KINDS = (
     # alternating-sign real enclosures of Lambda(1/2+it) + IVT.  Emits ">= N zeros
     # of completedRiemannZeta on the critical line in [a,b]" (N sign changes).
     "xi_line_zeros",
+    # Zeta-box-localization Stage 2A (2026-09-06): boundary winding count via enclosures.
+    # Emits "Bd(Lambda'/Lambda) = 2*pi*i*N" -- toy z^2 (N=2, from-scratch winding) and
+    # the Lambda [2/5,3/5]x[10,35] instance (N=5, argument-principle + per-pole primitive).
+    "winding_count",
 )
 
 # kind -> "module:certify_point_fn" for the generic (family.special) emitters.
@@ -337,6 +341,8 @@ _SPECIAL_DISPATCH = {
     "hyperbolicity": ("emit_hyperbolicity", "certify_hyperbolicity_point"),
     "xi_line_zeros":
         ("emit_xi_line_zeros", "certify_xi_line_zeros_point", "XiLineZerosEmitter"),
+    "winding_count":
+        ("emit_winding_count", "certify_winding_count_point", "WindingCountEmitter"),
 }
 
 
