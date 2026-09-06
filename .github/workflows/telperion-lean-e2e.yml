@@ -3307,3 +3307,37 @@ jobs:
       - name: Build the emitted Lean (the actual verification — dVP geometry certificates)
         working-directory: telperion/examples/dvp_geom_atoms/lean
         run: lake build TwoScaleSeparation FarPoleSum HerglotzLower ArgumentPrinciple FullArgumentPrinciple RectArgumentPrinciple AnnulusCount SlitLoopWindingZero BoxResidueSum RectWinding
+
+  # MILESTONE: first kernel-verified on-line nontrivial-zero count for the Riemann zeta function.
+  # Certifies N >= 5 zeros of Lambda (= nontrivial zeros of zeta) on Re s = 1/2 in [10, 35],
+  # matching the 5 known zeros t ~ 14.1347, 21.0220, 25.0109, 30.4249, 32.9351.
+  # Axioms: {propext, Classical.choice, Quot.sound} -- no sorryAx.
+  # conjecture1_proved = False: this is a lower bound via sign changes, not a proof of RH.
+  zeta-zero-localization-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
+      - name: Regenerate XiLineZeros.lean and check it matches frozen output
+        working-directory: telperion
+        run: |
+          python examples/zeta_zero_localization/generate.py --check
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake exe cache get
+      - name: Build the emitted Lean (kernel-verified on-line zero count)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake build
