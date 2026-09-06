@@ -1,0 +1,16 @@
+name = "Hyperbolicity"
+defaultTargets = ["HyperbolicityBridge", "Hyperbolicity"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+# The d=2 bridge lemma (this project owns it): roots.card = 2 from a nonnegative
+# discriminant + nonzero leading coefficient.  Imports Mathlib only.
+[[lean_lib]]
+name = "HyperbolicityBridge"
+
+# The emitted real-rootedness certs; imports HyperbolicityBridge.
+[[lean_lib]]
+name = "Hyperbolicity"

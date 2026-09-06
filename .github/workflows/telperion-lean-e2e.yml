@@ -2756,6 +2756,10 @@ jobs:
         working-directory: telperion/examples/dvp_bc_atoms/lean
         run: lake build MaxModulus BCDerivRe EntirePartBound
 
+  # Analytic cert structure #2: box-robust emitter.
+  # Regenerate from the emitter (arb ball enclosure + box-robust certify + emit),
+  # drift-check, and kernel-verify via nlinarith.
+  box-robust-compiles:
   # dVP ζ boundary growth LOWER half: ‖ζ(s)‖ ≥ 2 - π²/6 > 0 for Re s ≥ 2 (Dirichlet reverse
   # triangle + Basel tail hasSum_zeta_two). The lower half of the ζ-growth sphere input.
   rh-dlvp-zetalower:
@@ -2763,15 +2767,39 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
+
+      - name: Regenerate BoxRobust Lean from the emitter (certify -> emit -> check)
+        working-directory: telperion
+        run: python examples/box_robust/generate.py --check
+
       - name: Cache elan toolchain
         uses: actions/cache@v4
         with:
           path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/box_robust/lean/lean-toolchain') }}
+
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
       - name: Install elan
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/box_robust/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — box-robust nlinarith kernel)
+        working-directory: telperion/examples/box_robust/lean
+        run: lake build
+
+  # Analytic cert structure #3: hyperbolicity / real-rootedness emitter (d=2).
+  # Chains box-robust discriminant-nonnegativity + a freshly-proven Lean bridge lemma
+  # (HyperbolicityBridge) into a Lean certificate that roots.card = 2.
+  hyperbolicity-compiles:
       - name: Fetch Mathlib olean cache
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake exe cache get
@@ -2786,15 +2814,39 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
+
+      - name: Regenerate Hyperbolicity Lean from the emitter (certify -> emit -> check)
+        working-directory: telperion
+        run: python examples/hyperbolicity/generate.py --check
+
       - name: Cache elan toolchain
         uses: actions/cache@v4
         with:
           path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/hyperbolicity/lean/lean-toolchain') }}
+
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
       - name: Install elan
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/hyperbolicity/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — HyperbolicityBridge + real-rootedness certs)
+        working-directory: telperion/examples/hyperbolicity/lean
+        run: lake build
+
+  # Analytic cert structure #5: Turan-box log-concavity emitter.
+  # Delegates to box_robust internally: a1^2 - a0*a2 > 0 over a rational box
+  # certifies the Turan triple (a0, a1, a2) is strictly log-concave.
+  turan-box-compiles:
       - name: Fetch Mathlib olean cache
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake exe cache get
@@ -2809,15 +2861,34 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
+
+      - name: Regenerate TuranBox Lean from the emitter (certify -> emit -> check)
+        working-directory: telperion
+        run: python examples/turan_box/generate.py --check
+
       - name: Cache elan toolchain
         uses: actions/cache@v4
         with:
           path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/turan_box/lean/lean-toolchain') }}
+
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
       - name: Install elan
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/turan_box/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification — Turan log-concavity via box_robust)
+        working-directory: telperion/examples/turan_box/lean
+        run: lake build
       - name: Fetch Mathlib olean cache
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake exe cache get
