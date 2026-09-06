@@ -155,3 +155,48 @@ name = "DlvpZetaLower"
 # per-zero log ratio bound. Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpZeroFactor"
+
+# PHASE 4 dVP frontier, ζ zero-factor (2) log-of-finprod wiring: log‖∏(w-ρ)^m‖ = Σ m·log‖w-ρ‖,
+# composed with the two-scale bound → AP. Imports DlvpZeroFactor. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpLogProd"
+
+# PHASE 4 dVP frontier, ζ zero-factor (2) INSTANTIATION: abstract log_norm_prod_diff_le applied to
+# the ζ zero-part finprod (divisor on inner disk). Imports DlvpZetaDisk+DlvpLogProd. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpZetaZeroFactor"
+
+# PHASE 4 dVP frontier, BLASCHKE correction: finite Blaschke product ‖∏ᶠ canonicalFactor^n‖ = 1 on
+# the sphere (Mathlib CanonicalDecomposition). Removes the lossy AP term. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschke"
+
+# PHASE 4 dVP frontier, BLASCHKE step 1: pointwise sphere identity ‖f‖=‖g‖ from codiscrete factor
+# via continuity + density (Set.EqOn.closure). Imports DlvpBlaschke. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschkeSphere"
+
+# PHASE 4 dVP frontier, BLASCHKE step 2: canonical-decomp part g analytic + zero-free on ball 0 R
+# (MeromorphicNFAt + nonvanishing ⟹ order 0 ⟹ analytic). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschkeAnalytic"
+
+# PHASE 4 dVP frontier, BLASCHKE density discharge: codiscrete set dense within the sphere
+# (preperfect sphere via isConnected_sphere). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpSphereDense"
+
+# PHASE 4 dVP frontier, BLASCHKE step 3a: ‖f‖=‖g‖ on sphere for a CanonicalDecomp (composes
+# Blaschke modulus-1 + density + sphere-identity). Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpCanonicalNorm"
+
+# PHASE 4 dVP frontier, BLASCHKE step 3b: entire-part bound ‖logDeriv g 0‖ ≤ 2M'/(R-r) for a
+# CanonicalDecomp (no AP term). Imports DlvpMaxMod+DlvpCanonicalNorm+DlvpBlaschkeAnalytic. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpCanonicalBound"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d) foundation: logDeriv of canonicalFactor
+# = -conj w/(R²-conj w z) - 1/(z-w). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpCanonicalLogDeriv"
