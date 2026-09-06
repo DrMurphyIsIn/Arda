@@ -241,3 +241,8 @@ name = "DlvpHerglotzLower"
 # Out of defaultTargets; own CI target.
 [[lean_lib]]
 name = "DlvpZetaSphereLog"
+
+# Pointwise ζ=P·g on the open disk (identity-theorem upgrade of extract_zeros_poles codiscrete
+# factorization). Imports DlvpEntire. Out of defaultTargets; own CI target.
+[[lean_lib]]
+name = "DlvpZetaFactor"
