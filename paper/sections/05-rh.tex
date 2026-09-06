@@ -59,6 +59,30 @@ second, independent, honestly-scoped kernel-verified statement about $\zeta$,
 produced by the same pipeline and exhibiting yet another certificate shape (a
 real-rootedness / hyperbolicity certificate rather than a positivity one).
 
+\subsection{A third route: locating zeros on the critical line}
+
+A different question again is not whether the zeros are simple or where they are
+\emph{not}, but where some of them concretely \emph{are}. Using the argument
+principle---the winding/residue machinery assembled as its own family of
+certificate atoms---we kernel-verify (\texttt{XiLineZeros.lambda\_five\_zeros\_10\_35},
+sorry-free, clean axiom set) that there exist \emph{five} distinct nontrivial
+zeros of $\zeta$ on the critical line $\operatorname{Re} s = \tfrac{1}{2}$ in the
+window $[10, 35]$---and they match the five classically known zeros there (heights
+$\approx 14.13, 21.02, 25.01, 30.42, 32.94$).
+
+Two honest caveats make this the right size of claim. It is \emph{finite and
+bounded}---five zeros in one interval, not a statement about all of them. And it
+is \emph{conditional on certified numeric input}: the theorem takes as hypotheses
+rational enclosures of the on-line real $\xi$-function at a handful of anchor
+heights, which are supplied by an external interval-arithmetic oracle (a
+documented trust boundary, exactly as with the constant enclosures elsewhere in
+the system); the kernel verifies the sign-change / argument-principle reasoning
+that turns those enclosures into located zeros, not the enclosures themselves.
+It is, once more, emphatically \emph{not} a proof of RH---but it is, to our
+knowledge, a first kernel-verified on-line count of concrete nontrivial zeros,
+and it exhibits a third distinct certificate shape (winding / argument-principle
+zero-counting).
+
 For completeness we note two boundary items, stated as they are. A
 Borel--Carath\'eodory theorem is present in the development but is a \emph{draft}:
 its constant is not sharp, it is not axiom-guarded, and it is not yet wired into
