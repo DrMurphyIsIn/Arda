@@ -1,5 +1,20 @@
 # Arda
 
+[![proof-lean](https://github.com/DrMurphyIsIn/Arda/actions/workflows/proof-lean.yml/badge.svg)](https://github.com/DrMurphyIsIn/Arda/actions/workflows/proof-lean.yml)
+[![proof-verify](https://github.com/DrMurphyIsIn/Arda/actions/workflows/proof-verify.yml/badge.svg)](https://github.com/DrMurphyIsIn/Arda/actions/workflows/proof-verify.yml)
+[![telperion-lean-e2e](https://github.com/DrMurphyIsIn/Arda/actions/workflows/telperion-lean-e2e.yml/badge.svg)](https://github.com/DrMurphyIsIn/Arda/actions/workflows/telperion-lean-e2e.yml)
+
+> **TL;DR** — A Lean 4 / Mathlib formalization of the machine-checkable core of a
+> 42-year-old extremal-graph-theory problem (the Brualdi–Goldwasser tree maximizer,
+> `per(L(T))/∏deg`), the reusable certificate engine — [**Telperion**](telperion/) —
+> that generated it, and a second front in proof complexity. Everything is checked
+> by the Lean kernel with **no `sorry`, no added axioms**, and an *executable* honesty
+> ledger. **The conjecture is not claimed proved.** New here? Start at
+> **[STATUS.md](STATUS.md)** for the proven-vs-open map, then see
+> [Verifying the claims](#verifying-the-claims) to re-run the kernel checks yourself.
+> Want to use the engine on your own problem? See
+> [`telperion/docs/GETTING_STARTED.md`](telperion/docs/GETTING_STARTED.md).
+
 This repository is a working research program, kept honest in public form:
 machine-checked progress on a 42-year-old open problem in extremal graph
 theory, the general-purpose proof engine that campaign forged, and — most
@@ -46,8 +61,10 @@ in hand.
 The campaign runs on two complementary tracks that meet in the middle.
 
 **The Lean track** ([`proof/`](proof/)) is the peer-review package: a single
-Lean 4 library (`R3Cert`, 109 modules) that builds clean against pinned
-Mathlib with no `sorry`, no added axioms, and no `native_decide`. Reading it
+Lean 4 library (`R3Cert`, whose modules live under
+[`proof/formalization/R3Cert/`](proof/formalization/R3Cert/)) that builds
+clean against pinned Mathlib with no `sorry`, no added axioms, and no
+`native_decide`. Reading it
 bottom to top, the kernel has verified:
 
 - `per(L(T)) = ` matching sum for acyclic graphs (the H1 bridge), and the

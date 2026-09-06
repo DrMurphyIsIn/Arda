@@ -1,0 +1,47 @@
+\section{Case study III: proof complexity}
+\label{sec:pc}
+
+The third case study lives in a different world again---not an inequality over the
+reals, but a \emph{lower bound}: a proof that a certain proof system \emph{cannot}
+do something. It is worth including precisely because it exercises a different
+certificate shape, and it shows the same discipline carrying over.
+
+\subsection{The statement}
+
+Fix an odd $n$ and the infeasible knapsack system over $\mathbb{Q}$,
+\[
+  x_i^2 = x_i \ (i = 1, \dots, n), \qquad \textstyle\sum_i x_i = n/2,
+\]
+which has no Boolean solution (the left side of the linear constraint is an
+integer, the right side is not). A sum-of-squares (SOS) refutation of degree $2d$
+would write $-1$ as an SOS plus multiples of the constraints, all of degree
+$\le 2d$. The theorem---due to Grigoriev, and independently Laurent
+\cite{grigoriev2001}---is that no such refutation exists below degree about $n$:
+the dual obstruction is a \emph{pseudoexpectation} whose moment matrix stays
+positive semidefinite up to degree $(n-1)/2$.
+
+\subsection{What is machine-checked, and what is not ours}
+
+We formalize the scalar core of this lower bound in Lean~4: $51$ theorems, with
+axioms exactly $\{\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}\}$
+and no \texttt{sorryAx}, capturing the statement \emph{symbolically in $n$}---for
+every odd $n$ and every degree at once, not one hard-coded instance---and two
+unconditional end-to-end refutation-form theorems. The route is an elementary
+rank-one spectral decomposition of the pseudoexpectation moment matrix, re-derived
+in a shape a kernel can check; Telperion's exact-arithmetic layer wraps it with
+anti-phantom gates and negative controls, and a certified generator emits the
+Gram-bridge identities (degree $8$) as Lean theorems.
+
+We are careful about credit, and it cuts against inflating our own role: the
+lower bound is Grigoriev's and Laurent's, and the symmetry-reduction /
+rank-one-decomposition technique for symmetric SOS matrices is due to Kurpisz,
+Lepp\"anen and Mastrolilli \cite{klm2016}. \textbf{The mathematics is theirs.} What
+we contribute is the certified pipeline and the machine-checked, symbolic-in-$n$
+statement---to our knowledge the first kernel-checked symbolic-in-$n$ lower bound
+in proof complexity, stated with that scope and no more.
+
+For this paper the lesson is generality: a pseudoexpectation-duality / SOS-lower-bound
+certificate is about as far from an analytic zeta bound as one stays inside
+``concrete mathematics,'' and yet it fits the same define--certify--emit--check
+pipeline, with the same honesty about which part is a contribution and which part
+is a formalization of known work.

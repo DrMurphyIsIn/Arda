@@ -1,0 +1,29 @@
+\section{Evaluation and limitations}
+\label{sec:evaluation}
+
+We would rather this section be read as a list of caveats than as a victory lap,
+because that is the honest shape of the work.
+
+\paragraph{Novelty is claimed conservatively.} Where we say a result may be the
+first of its kind---the machine-checked Hadamard-free zero-free regions, the
+symbolic-in-$n$ proof-complexity lower bound---we mean it as a careful,
+literature-searched belief, not a settled priority claim. The repository's
+publication ledger states novelty provisionally and un-lit-checked by design, and
+we carry that same conservatism here. The contributions we are confident about are
+the \emph{system} and the \emph{formalizations}; the underlying mathematics in the
+case studies is, in each case, attributed to its originators.
+
+\paragraph{What the tool does not do.} Telperion does not choose your problem or
+your family; it certifies instances of a shape you supply. It does not search for
+the right theorem to prove, and it offers no guarantee that a certificate exists
+for a claim that is true---only that if it emits one, the kernel will confirm it.
+And, as \cref{sec:vacuity} argues, it cannot close the gap between a formal
+statement and the informal claim a human intended; that reading is the irreducible
+trusted floor.
+
+\paragraph{What would falsify our claims.} The claims in this paper are
+deliberately falsifiable. Every ``verified'' assertion names a Lean theorem
+checked against pinned Mathlib with a clean axiom set; a reader who rebuilds the
+project and finds a \texttt{sorryAx}, an added axiom, or a statement that does not
+say what we claim it says has refuted the corresponding claim. The reproducibility
+appendix gives the commands. We regard that exposure as the point, not a risk.

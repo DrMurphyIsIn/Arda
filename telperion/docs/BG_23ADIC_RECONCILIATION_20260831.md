@@ -8,7 +8,7 @@ False`.
 
 - **Analytic half (this owner):** classical BG `π = per(L)/∏deg`; the extremal single-hub star-of-B(5)-brooms has
   `total(5) = 621/64`, growth rate `F* = log(621/64)/11`, `c = 5` optimum (`bg_broom_optimum`).
-- **Domination-bridge half (GitLab):** the rooted-branch invariant `Φ¹¹` with a near-star arithmetic proof —
+- **Domination-bridge half (origin repo):** the rooted-branch invariant `Φ¹¹` with a near-star arithmetic proof —
   `Φ ≤ 1` on `N(c,k)`, equality iff `c+k = 5`, via `R(s+1)/R(s) = (529/486)(1 − 1/((4s+7)(s+1)))^11` crossing `1`
   once and `R(5) = 1` exactly (`64·243·23 = 621·576`). Prior audit flagged `Φ¹¹ ≠ classical BG` (`81/8 ≠ 621/64`
   at the tie).

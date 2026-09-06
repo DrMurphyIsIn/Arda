@@ -73,6 +73,8 @@ theorem it invokes.
 
 ## 3. `emit_borel_caratheodory` — assembly over the existing Möbius core
 
+> **UPDATE 2026-09-05 — BC IS UPSTREAM.** Mathlib v4.32 now ships the full theorem (`Mathlib.Analysis.Complex.BorelCaratheodory`, `Complex.borelCaratheodory` + `_zero`, author M. Radziwill). Design #3 is therefore NOT a ~500-line build — `emit_borel_caratheodory` is a PACKAGING wrapper (built, tested; dogfood `bc_general_emitted`/`bc_zero_emitted` kernel-verified in EmittedShapes.lean). The gate the plan worried about is gone: the zero-free region assembly can cite Mathlib's BC directly.
+
 **Certificate shape.** Value form: `f` analytic on `ball 0 R`, `|z| ≤ r < R` ⟹
 `‖f(z) − f(0)‖ ≤ (2r/(R−r))·(A − Re f(0))`, `A = sup_{|w|=R} Re f(w)`. Plus the derivative form
 `‖f'(z)‖ ≤ (2R/(R−|z|)²)(A − Re f(0))`.

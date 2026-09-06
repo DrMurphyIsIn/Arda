@@ -84,7 +84,7 @@ def generate() -> str:
     # --- kernel strata (origin CI; references, not re-derivable by design) ---
     rows.append(("Lean core: bridge + phi_le_one + merge layer + parse "
                  "(90 R3Cert modules)", "Lean kernel (origin CI)",
-                 "KERNEL-CHECKED — origin pipeline 2762803858 @ b2996c79; "
+                 "KERNEL-CHECKED — origin CI @ b2996c79; "
                  "reviewed PASS 2026-08-14/15"))
     rows.append(("G1Kernel + Real.log bridges + 103 hinge-dead classes",
                  "Lean kernel (origin CI)",

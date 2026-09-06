@@ -1,0 +1,98 @@
+\section{The Telperion system}
+\label{sec:system}
+
+Here is the whole idea in one sentence: \emph{you describe a family of concrete
+claims, Telperion finds a certificate for each one and writes it out as Lean, and
+Mathlib's kernel re-proves every line from scratch.} You never have to trust
+Telperion. If it produces a bad certificate, the Lean build fails; it cannot
+produce a convincing-but-wrong proof, because the only thing that counts a proof
+as finished is the kernel. That inversion---\emph{check the witness, don't trust
+the author}---is what lets an untrusted search procedure contribute to a
+trustworthy proof.
+
+\subsection{The pipeline}
+
+A Telperion run has four stages.
+
+\begin{description}
+  \item[Define.] You write a \emph{family}: a grid of instances sharing a shape,
+    each given by its symbols, its parameters, and the inequality (or identity)
+    it asserts. This is the only part you author. A family might be ``Bernoulli's
+    inequality for $k = 2, \dots, 12$'' or ``this per-cell bound over every
+    configuration in a $6 \times 6$ grid.''
+  \item[Certify.] Telperion produces an exact witness for each instance---an SOS
+    decomposition, a Positivstellensatz multiplier, a rational identity, a
+    $p$-adic valuation, whatever the shape calls for. All of this happens in
+    \emph{exact} arithmetic (Python's \texttt{Fraction} and \texttt{sympy}); no
+    floating point ever touches the certificate path, so ``it certified'' means
+    exactly that, not ``it certified up to rounding.''
+  \item[Emit.] The certified family is rendered to Lean~4. Each instance becomes
+    one theorem with a full proof term, written against a target project you
+    describe once (its imports, namespace, and options).
+  \item[Freeze.] The emitted file is written with a content hash, and can be
+    re-generated and compared byte-for-byte against the committed copy. A drift
+    is a hard error---which means the artifact you read is the artifact that was
+    checked.
+\end{description}
+
+The load-bearing step is the one that isn't ours: after \textbf{emit}, you run
+\texttt{lake build}, and \emph{Mathlib's kernel} re-proves everything against a
+pinned toolchain (Lean~4 \texttt{v4.32.0} and the matching Mathlib)
+\cite{lean4,mathlib}. The generator is untrusted \emph{by design}; the kernel is
+the sole trusted component.
+
+\subsection{A worked example, start to finish}
+
+Take Bernoulli's inequality, $(1+x)^k - 1 - kx \ge 0$. As a family it is one
+parameter, $k$, over a small grid. Telperion certifies each $k$ by writing the
+left-hand side as a manifestly nonnegative combination, emits a Lean theorem per
+$k$, and---once you run \texttt{lake build}---the kernel checks each proof term.
+The entire example is a single self-contained script,
+\texttt{examples/bernoulli/generate.py}; running it writes
+\texttt{lean/BernoulliSolution.lean}, and \texttt{lake build} in that directory
+is the proof. You are welcome to read the emitted Lean, but you do not have to:
+edit any constant in it and the kernel rejects the file. That is the guarantee in
+miniature.
+
+\subsection{What it can prove}
+
+Telperion is not tied to one kind of certificate. It carries roughly eighty
+emitters---one per certificate \emph{shape}---spanning a broad slice of concrete
+mathematics. \Cref{tab:shapes} groups a representative sample; the point is not
+the exact count but the range: the same untrusted-generator/trusted-kernel
+discipline covers textbook inequalities, semialgebraic positivity, integer
+rounding, and combinatorial and analytic certificates alike.
+
+\begin{table}[t]
+  \centering
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Family & Representative shapes \\
+    \midrule
+    General / textbook & rational-function inequalities, exact identities,
+      P\'olya positivity \\
+    Semialgebraic positivity & SOS (with Artin denominators), Handelman, Putinar,
+      Nullstellensatz \cite{positivstellensatz,lasserre_sos} \\
+    Discrete / arithmetic & Chv\'atal--Gomory integer rounding, $p$-adic
+      valuations, finite case analysis \\
+    Analytic & zero-free-region atoms, half-plane/disk bounds, transcendental
+      enclosures, box-robust positivity, degree-2 hyperbolicity (real-rootedness) \\
+    Combinatorial (this campaign) & tight-cap enclosure, cavity/recursion
+      closure, curvature-boundary extrema \\
+    \bottomrule
+  \end{tabular}
+  \caption{A representative sample of Telperion's certificate shapes. For the
+    positivity shapes, an automatic search (a P\'olya engine, plus optional SDP
+    finders) will often construct the certificate for you.}
+  \label{tab:shapes}
+\end{table}
+
+\subsection{Reproducibility}
+
+Because the generator is untrusted, reproducibility has teeth. Every emitted file
+regenerates byte-for-byte (\texttt{generate.py -{}-check} is the drift gate), and
+continuous integration compiles the emitted Lean against the pinned Mathlib on
+every change. A reviewer does not have to take our word for any of it: the recipe
+to regenerate a certificate and re-run the kernel check is a handful of commands,
+given in the reproducibility appendix, and the CI status badges are standing
+evidence that the checks are green.

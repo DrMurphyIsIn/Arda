@@ -48,14 +48,34 @@ gap** — `Hdom`'s merge layer needs nothing more. (Also corrected in-repo: `thr
 had conjectured the exclusion was "a certificate artifact"; it is a *real* failure, just outside
 `Balanced`.)
 
-**(b) `Hdom` does NOT collapse to the single-hub case — multi-hub normal forms exist.** Enumerating
-Balanced+Capped 2-hub states under `OrderedStep`: **6030 / 15876 are irreducible** (normal). The
-simplest is `[(44444, 0), (44444, 0)]` — an all-4-arm load-0 hub has 0 fives but the `merge`
-`hsplit` needs `5−load = 5` fives, so neither direction fires. So the multi-hub extremality in
-`Hdom` is genuinely required; `single_hub_normal` (proven) is not the whole story. (If it helps:
-the *hard* normal forms for `Hdom` are the ones near the tie — arms→5, load→5 — not these low-value
-all-4 configs, which are trivially far below the tie. A characterization of the *near-tie* normal
-forms may shrink what the multi-hub extremality must actually dominate.)
+**(b) Multi-hub normal forms exist, but the NEAR-TIE ones are single-hub — so `Hdom`'s multi-hub
+case is the EASY part.** Enumerating Balanced+Capped 2-hub states under `OrderedStep`:
+**6030 / 15876 are irreducible** (normal), the simplest `[(44444,0),(44444,0)]` (an all-4-arm hub
+has 0 fives but `merge`'s `hsplit` needs `5−load` fives). So `single_hub_normal` (proven) is not
+the whole story — multi-hub extremality is syntactically required. BUT, ranking normal forms by
+the classical rate `score(s) = ln pi(s) − (usize s/11)·ln(621/64)` (`pi = per(L)/∏deg`, tie =
+`argmax score`; model validated: a value-5 arm multiplies `pi` by exactly `621/64` and adds 11 to
+`usize`, so it is rate-neutral):
+
+| | best score |
+|---|---|
+| best single hub | −0.03063 |
+| best 2-hub normal form | −0.09265 (**0.062 below**) |
+| best 3-hub normal form | −0.15999 (**0.129 below**) |
+
+The top-scoring (near-tie) normal forms are **all single-hub**, and every multi-hub normal form is
+strictly sub-tie by a margin that **grows ~0.06–0.07 per extra hub** (each hub is vertex overhead).
+So the multi-hub normal forms are dominated by the tie *with a widening margin* — the genuinely
+HARD part of `Hdom` (configs approaching the tie) is the **single-hub domination**, for which
+single-hub results already exist. Suggestion: split `Hdom` as `single-hub (tight, near-tie)` +
+`multi-hub (loose, margin ≥ ε·(#hubs−1))`, and target the multi-hub bound with the cheap margin
+rather than a tight per-cell certificate. Self-verifying probe: `proof/verification/
+normalform_score_probe.py` (`run()` asserts the growing gap). CAVEAT: empirical over a bounded
+shape enum (arms 5–7, ≤3 hubs) on the `pi`-rate objective; the growing margin is a strong
+structural signal, not a proof.
+
+
+**Follow-up (per-hub margin, `normalform_score_probe.per_hub_margins`).** The multi-hub penalty is ~LINEAR and STABLE: `best_score(m) ≈ s₁ − ε·(m−1)`, ε ≈ 0.061 (measured 0.062/0.0615 at m=2,3 where fully enumerated; ≥ 0.05 robustly, does NOT shrink toward 0). Exemplars: best single hub `[(44444,5)]` (score −0.03063), best 2-hub NF `[(44444,5),(44444,4)]` (−0.09265). So an m-hub Balanced+Capped normal form is ≥ 0.05·(m−1) below the single-hub max in the `pi`-rate score `ln pi − (usize/11)·ln(621/64)` — the multi-hub extremality is provably LOOSE. **Suggested `Hdom` split:** prove single-hub tight (near-tie), and multi-hub via the cheap margin `≥ ε·(#hubs−1)` (a per-hub `each extra hub costs ≥ ε` lemma), not a per-cell certificate. CAVEAT: empirical on the `pi`-rate objective over a bounded shape enum (arms 5–7, m ≤ 5); a strong structural signal, not a proof — the per-hub lemma is yours to prove.
 
 ## 4. Suggested division of labour
 

@@ -291,7 +291,7 @@ Operator's specification:
 * METHODS must explicitly lay out the tech stack and the human-AI development
   process with Claude: the Python exact-rational validation layer (sympy/Fraction
   self-verifying modules, the 60/60-before-Lean discipline), the Lean 4 / Mathlib
-  formalization (R3Cert, CI-only verification on GitLab runners, the no-sorry +
+  formalization (R3Cert, CI-only verification on the CI runners, the no-sorry +
   no-Prop:=True + #print-axioms integrity gates), the generator pipeline for
   certificate tables, the adversarial review cadence (independent audits, the
   overclaim traps sprung and caught), and the honest-ledger protocol

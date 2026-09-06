@@ -26,12 +26,12 @@ All of it is recorded in this repository's history with green CI.
 
 ## Origin
 
-- Origin repository: `gitlab.com/DrMurphyIsIn/arda-trading` (private research
-  monorepo; the proof lived under `experiments/graph_hunter/laplacian_ratio/`)
+- Origin: a private research monorepo (the proof lived under an
+  `experiments/…/laplacian_ratio/` subtree)
 - Origin branch: `experiment/laplacian-fischer-cavity`
 - **Snapshot commit: `b2996c79`** (2026-08-15)
-- CI evidence at the snapshot commit: GitLab pipeline **2762803858** — job
-  `lean-verify` **success** (full `lake build` of all 90 R3Cert modules,
+- CI evidence at the snapshot commit: the origin's `lean-verify` CI job —
+  **success** (full `lake build` of all 90 R3Cert modules,
   Lean v4.32.0 + pinned Mathlib; no `sorry`, no added axioms). The same job
   has run green on every milestone commit of the campaign (17+ verdicts for
   the R47 arc alone).
@@ -64,9 +64,12 @@ The Lean project (`formalization/lakefile.toml`, `lean-toolchain`,
 `lake-manifest.json`, `R3Cert.lean`, `R3Cert/*.lean`) is **byte-identical** to
 the origin at the snapshot commit.
 
-## Re-import procedure (until cutover)
+## Re-import procedure (historical)
 
-From the origin repository, at a lean-verify-green commit `<C>`:
+This repository is now the primary development surface; new work lands here
+directly via reviewed, CI-gated PRs. The procedure below is retained as a record
+of how the imported modules were brought over from the origin, at a
+lean-verify-green commit `<C>`:
 
 ```bash
 git archive <C> experiments/graph_hunter/laplacian_ratio | tar -x -C /tmp/stage

@@ -1,0 +1,56 @@
+\section{The vacuity gap and self-verification}
+\label{sec:vacuity}
+
+The kernel is a strong guarantee, but it is important to be precise about what it
+guarantees. The kernel certifies that a proof term proves \emph{its stated
+theorem}. It does not certify that the stated theorem is the one you meant, nor
+that the theorem says anything at all. A theorem can be true and yet
+\emph{vacuous}---$X = X$ proves nothing, and a more subtle relative can hide the
+same emptiness behind real-looking algebra. The kernel will happily accept it.
+This is the one gap Telperion is built around, and we would rather name it
+loudly than paper over it.
+
+\subsection{Making emitters declare themselves}
+
+Every emitter must declare a \emph{sensitivity stance}, and a test refuses to let
+one ship without it:
+
+\begin{itemize}
+  \item \textbf{Certificate-sensitive.} The emitted theorem carries a corruptible
+    witness---a specific numeric or algebraic identity that is doing the work. For
+    these, a wrong witness must break the proof. We check exactly that with a
+    \emph{negative control}: forge the witness and confirm the kernel
+    \emph{rejects} the forgery. If corrupting the certificate still compiles, the
+    certificate was not load-bearing, and the emitter is refused.
+  \item \textbf{Structurally non-vacuous.} The theorem is a positivity,
+    decidability, finite-cover, or hypothesis-gated statement with no separable
+    corruptible witness. Here a structural non-vacuity check---run at emit time,
+    refusing reflexive and trivial statements---is the right guard, and the
+    contributor writes one line saying why.
+\end{itemize}
+
+The distinction is not bureaucracy; it is the difference between ``the kernel
+accepted a proof'' and ``the kernel accepted a proof that could have failed.''
+Only the second is evidence.
+
+\subsection{A second, independent kernel}
+
+For an even stronger check, Telperion integrates an independent judge: the
+Comparator \cite{comparator}, drawn from OpenAI's ten-proofs project
+\cite{tenproofs}, together with \texttt{nanoda}, a from-scratch reimplementation
+of the Lean type checker in Rust \cite{nanoda}. The Comparator confirms that an
+emitted proof proves \emph{exactly} the challenge statement using only a
+whitelisted set of axioms. Two independently written checkers agreeing is a
+meaningfully higher bar than one.
+
+\subsection{The floor we cannot get under}
+
+Honesty requires stating the limit, too. No amount of machinery decides whether a
+\emph{formal} statement faithfully captures the \emph{informal} claim a human had
+in mind; that correspondence lives outside any formal system, and by the usual
+self-reference obstructions (L\"ob, G\"odel) it cannot be internalized. So the
+irreducible trusted component is not Telperion and not even the kernel---it is the
+human reading of the theorem statements. Everything in this section shrinks the
+untrusted surface down to that floor; nothing can remove the floor itself. We
+take that as a reason to keep the statements short, legible, and few, not as a
+reason to pretend the floor is not there.
