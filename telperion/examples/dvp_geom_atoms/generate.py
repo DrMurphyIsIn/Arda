@@ -20,10 +20,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 from telperion import (  # noqa: E402
     AnnulusCountEmitter, ArgumentPrincipleEmitter, BoxResidueSumEmitter, FarPoleSumEmitter,
     FullArgumentPrincipleEmitter, GridSpec, HerglotzLowerEmitter, LeanProfile,
-    RectArgumentPrincipleEmitter, SlitLoopWindingZeroEmitter, TwoScaleSeparationEmitter,
-    ValidationReport, annulus_count_family, argument_principle_family, box_residue_sum_family,
-    certify, emit, far_pole_sum_family, full_argument_principle_family, herglotz_lower_family,
-    rect_argument_principle_family, slit_loop_winding_zero_family, two_scale_separation_family,
+    RectArgumentPrincipleEmitter, RectWindingEmitter, SlitLoopWindingZeroEmitter,
+    TwoScaleSeparationEmitter, ValidationReport, annulus_count_family, argument_principle_family,
+    box_residue_sum_family, certify, emit, far_pole_sum_family, full_argument_principle_family,
+    herglotz_lower_family, rect_argument_principle_family, rect_winding_family,
+    slit_loop_winding_zero_family, two_scale_separation_family,
 )
 
 _HERE = Path(__file__).resolve().parent
@@ -59,6 +60,9 @@ _JOBS = [
     ("BoxResidueSum", "box_residue_sum", box_residue_sum_family, BoxResidueSumEmitter,
      {0: {"x0": "0", "x1": "1", "y0": "0", "y1": "1"}, 1: {"x0": "0", "x1": "2", "y0": "0", "y1": "1"}},
      {0: "box_residue_sum_unit", 1: "box_residue_sum_wide"}),
+    ("RectWinding", "rect_winding", rect_winding_family, RectWindingEmitter,
+     {0: {"x0": "0", "x1": "2", "y0": "0", "y1": "1"}, 1: {"x0": "1", "x1": "3", "y0": "0", "y1": "2"}},
+     {0: "rect_winding_unit", 1: "rect_winding_shifted"}),
 ]
 
 
