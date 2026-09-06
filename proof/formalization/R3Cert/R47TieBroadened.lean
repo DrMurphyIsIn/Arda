@@ -130,5 +130,62 @@ theorem tradeStop_persists (K m : ℕ) (h : tradeStop K m) : tradeStop K (m + 1)
   push_cast
   nlinarith [h, hK, hm, mul_nonneg hK hm]
 
+/-- If the trade still helps at `j` (`¬tradeStop`), the objective strictly increases: `V(j) ≤ V(j+1)`. -/
+theorem tie_step_up (K j : ℕ) (hjK : j + 1 ≤ K) (hpos : 0 < K + j) (h : ¬ tradeStop K j) :
+    Aobj (backboneU (tieState K j)) ≤ Aobj (backboneU (tieState K (j + 1))) := by
+  have hiff := tie_trade_le_poly K j hjK hpos
+  have hnot : ¬ (Aobj (backboneU (tieState K (j + 1))) ≤ Aobj (backboneU (tieState K j))) :=
+    fun hle => h (hiff.mp hle)
+  linarith [not_le.mp hnot]
+
+/-- Once the trade stops helping (`tradeStop`), the objective is non-increasing: `V(j+1) ≤ V(j)`. -/
+theorem tie_step_down (K j : ℕ) (hjK : j + 1 ≤ K) (hpos : 0 < K + j) (h : tradeStop K j) :
+    Aobj (backboneU (tieState K (j + 1))) ≤ Aobj (backboneU (tieState K j)) :=
+  (tie_trade_le_poly K j hjK hpos).mpr h
+
+/-- **Increasing chain** on the trade-helps region: if the trade helps at every `i ∈ [a, b)`, then
+    `V(a) ≤ V(b)`. -/
+theorem tie_up_chain (K a : ℕ) (hK : 0 < K) :
+    ∀ b, a ≤ b → b ≤ K → (∀ i, a ≤ i → i < b → ¬ tradeStop K i) →
+      Aobj (backboneU (tieState K a)) ≤ Aobj (backboneU (tieState K b)) := by
+  intro b hab
+  induction b, hab using Nat.le_induction with
+  | base => intro _ _; exact le_refl _
+  | succ b hab ih =>
+      intro hbK hlt
+      have h1 := ih (by omega) (fun i hi hib => hlt i hi (by omega))
+      have h2 := tie_step_up K b (by omega) (by omega) (hlt b hab (by omega))
+      linarith
+
+/-- **Non-increasing chain** past the trade-stop threshold: if the trade has stopped at `mstar`, then
+    for every `b ≥ mstar` (with `b ≤ K`), `V(b) ≤ V(mstar)`. -/
+theorem tie_down_chain (K mstar : ℕ) (hstop : tradeStop K mstar) :
+    ∀ b, mstar ≤ b → b ≤ K → Aobj (backboneU (tieState K b)) ≤ Aobj (backboneU (tieState K mstar)) := by
+  intro b hmb
+  induction b, hmb using Nat.le_induction with
+  | base => intro _; exact le_refl _
+  | succ b hmb ih =>
+      intro hbK
+      have hstopb : tradeStop K b := by
+        clear ih hbK
+        induction b, hmb using Nat.le_induction with
+        | base => exact hstop
+        | succ b hmb ih2 => exact tradeStop_persists K b ih2
+      have h2 := tie_step_down K b (by omega) (by omega) hstopb
+      have h1 := ih (by omega)
+      linarith
+
+/-- **The m-argmax / unimodal maximum** (the M3 precursor): given `mstar` is the least trade-count
+    where the trade stops helping (`tradeStop K mstar`, and `¬tradeStop` below it), the tie value at
+    `mstar` dominates every trade count `m ≤ K`.  So `tieState K mstar` is the maximizer over the
+    trade family. -/
+theorem tie_maximal_over_trades (K mstar : ℕ) (hK : 0 < K) (hmstarK : mstar ≤ K)
+    (hstop : tradeStop K mstar) (hlt : ∀ i, i < mstar → ¬ tradeStop K i) :
+    ∀ m, m ≤ K → Aobj (backboneU (tieState K m)) ≤ Aobj (backboneU (tieState K mstar)) := by
+  intro m hmK
+  by_cases hle : m ≤ mstar
+  · exact tie_up_chain K m hK mstar hle hmstarK (fun i hi hib => hlt i hib)
+  · exact tie_down_chain K mstar hstop m (by omega) hmK
+
 end Step3
 end R3Cert
