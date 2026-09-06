@@ -21,6 +21,7 @@ conjecture1_proved = False.
 """
 from __future__ import annotations
 
+import itertools
 import math
 import random
 
@@ -84,6 +85,43 @@ def _shapes(nmin=5, nmax=7):
                 yield (tuple([5] * k5 + [4] * (n - k5)), c)
 
 
+def best_normalform_score(m: int, *, sample=None, seed=2) -> float:
+    """Highest `score` over m-hub Balanced+Capped OrderedStep-normal states (sampled for m ≥ 3)."""
+    H = list(_shapes())
+    if sample is not None:
+        random.seed(seed)
+        H = random.sample(H, min(len(H), sample))
+    best = None
+    for s in itertools.product(H, repeat=m):
+        sl = list(s)
+        if is_normal(sl):
+            v = score(sl)
+            if best is None or v > best:
+                best = v
+    return best
+
+
+def per_hub_margins(*, m_max=5, eps=0.05) -> dict:
+    """The best m-hub normal-form score drops below the single-hub max by a margin that is
+    ~LINEAR in the hub count: `best_score(m) ≈ s₁ − ε_hub·(m−1)` with a STABLE per-hub margin
+    `ε_hub ≈ 0.061` (measured 0.062/0.061/0.061/0.064 for m=2..5).  It does NOT shrink toward 0,
+    so multi-hub normal forms are dominated by the single hub (hence by the tie) with a widening
+    margin — i.e. `Hdom`'s multi-hub case is LOOSE; the tight work is single-hub near-tie.
+
+    Asserts every per-hub margin ≥ `eps` (a safe lower bound below the observed ~0.061), over the
+    bounded shape enum.  EMPIRICAL on the `pi`-rate objective, not a proof: a rigorous version needs
+    a per-hub extremality lemma (`each extra hub costs ≥ ε`) — that is the extremality lane's job."""
+    s1 = best_normalform_score(1)
+    samples = {2: None, 3: 30, 4: 16, 5: 11}
+    out = {"single_hub_score": round(s1, 5), "eps_lower_bound": eps, "per_hub": {}}
+    for m in range(2, m_max + 1):
+        bm = best_normalform_score(m, sample=samples.get(m))
+        margin = (s1 - bm) / (m - 1)
+        out["per_hub"][m] = {"best_score": round(bm, 5), "per_hub_margin": round(margin, 5)}
+        assert margin >= eps, f"m={m}: per-hub margin {margin:.5f} < eps {eps}"
+    return out
+
+
 def run(*, sample3=40) -> dict:
     H = list(_shapes())
     best1 = max(score([h]) for h in H)
@@ -113,7 +151,8 @@ def run(*, sample3=40) -> dict:
         "best_3hub_normalform_score": round(best3, 5),
         "gap_2hub": round(best1 - best2, 5),
         "gap_3hub": round(best1 - best3, 5),
-        "verdict": "near-tie normal forms are single-hub; multi-hub NFs strictly sub-tie, margin grows per hub",
+        "per_hub_margins": per_hub_margins(),
+        "verdict": "near-tie normal forms are single-hub; multi-hub NFs strictly sub-tie, per-hub margin >= 0.05 (~0.061), does not shrink",
         "conjecture1_proved": False,
     }
 
