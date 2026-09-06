@@ -3051,6 +3051,27 @@ jobs:
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpBlaschkeCenter
 
+  rh-dlvp-blaschkecont:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build B·g continuous at 0 — item 2's last leaf (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBlaschkeCont
+
   rh-dlvp-zetacentrerel:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -3071,6 +3092,27 @@ jobs:
       - name: Build the Blaschke-centre relation ‖ζ c₀‖ ≤ ‖g 0‖ (kernel verification)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpZetaCentreRel
+
+  rh-dlvp-zetacentrefac:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the centre factorization hfac0 = ζ c₀ = B 0 · g 0 (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaCentreFac
 
   # dVP entire-part (i-b') certificate shapes (max_modulus, bc_deriv_re, entire_part_bound):
   # regenerate from the emitters, drift-check, and kernel-verify the emitted Lean.
