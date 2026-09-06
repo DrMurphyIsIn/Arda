@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family TwoScaleSeparation | input-hash 97b67cde0e7caaf5
+/- telperion 0.1.6 | family TwoScaleSeparation | input-hash 1261845b270a83a1
    2 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
