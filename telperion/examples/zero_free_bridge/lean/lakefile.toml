@@ -230,3 +230,8 @@ name = "DlvpBlaschkeSplitExpand"
 # Re(Herglotz) via bc_sum_of_split. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBCSumBlaschke"
+
+# PHASE 4 dVP frontier, BLASCHKE→skeleton bridge: Herglotz lower bound k/(σ-β) ≤ Re(Σ m/(z-ρ))
+# (keep equal-height zero, drop nonneg rest). Imports DlvpZeroSum. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpHerglotzLower"
