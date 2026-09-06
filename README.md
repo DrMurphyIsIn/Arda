@@ -46,7 +46,7 @@ in hand.
 The campaign runs on two complementary tracks that meet in the middle.
 
 **The Lean track** ([`proof/`](proof/)) is the peer-review package: a single
-Lean 4 library (`R3Cert` — 191 modules under
+Lean 4 library (`R3Cert`, whose modules live under
 [`proof/formalization/R3Cert/`](proof/formalization/R3Cert/)) that builds
 clean against pinned Mathlib with no `sorry`, no added axioms, and no
 `native_decide`. Reading it
