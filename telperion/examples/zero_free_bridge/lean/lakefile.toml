@@ -302,3 +302,7 @@ name = "DlvpZetaCentreRel"
 # hfac0: centre factorization ζ c₀ = B 0 · g 0 (identity theorem at 0). Standalone. Own CI target.
 [[lean_lib]]
 name = "DlvpZetaCentreFac"
+
+# Last leaf: B·g continuous at 0 (finprod continuity). Standalone. Own CI target.
+[[lean_lib]]
+name = "DlvpBlaschkeCont"
