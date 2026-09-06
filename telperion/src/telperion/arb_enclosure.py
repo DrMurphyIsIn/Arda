@@ -360,3 +360,106 @@ def enclose_lambda(
         return acb_cls.pi() ** (-s / 2) * (s / 2).gamma() * s.zeta()
 
     return enclose_acb(_lambda_callable, prec_bits)
+
+
+def enclose_lambda_boundary(
+    box,
+    n_per_side: int,
+    prec_bits: int,
+) -> list[tuple[Fraction, tuple[tuple[Fraction, Fraction], tuple[Fraction, Fraction]]]]:
+    """Return an ordered CCW cycle of Lambda enclosures around the boundary of a box.
+
+    Traverses the boundary of the rectangle {sigma in [sigma0, sigma1]} x {T in [T0, T1]}
+    counter-clockwise: bottom edge (sigma0->sigma1 at T0), right edge (T0->T1 at sigma1),
+    top edge (sigma1->sigma0 at T1), left edge (T1->T0 at sigma0).
+
+    Each edge contributes n_per_side sample points (the shared corner from the previous
+    edge is excluded to avoid duplicates).  The starting point is appended once at the
+    end to close the cycle.  Total length: 4*n_per_side + 1.
+
+    Parameters
+    ----------
+    box : tuple of four values (sigma0, sigma1, T0, T1)
+        Rectangle corners.  Each element is converted to Fraction.  sigma0 < sigma1 and
+        T0 < T1 are expected; sigma corresponds to the real part of s, T to the imaginary
+        part.
+    n_per_side : int
+        Number of sample points contributed by each edge (excluding the shared corner at
+        the start of each edge).  Total unique points: 4*n_per_side.
+    prec_bits : int
+        Working precision in bits for each enclose_lambda call.
+
+    Returns
+    -------
+    list of (param, complex_box) pairs
+        Each param is a Fraction in [0, 1) giving the monotone CCW position around the
+        perimeter.  Each complex_box = ((lo_re, hi_re), (lo_im, hi_im)) is a certified
+        Arb enclosure of Lambda at that boundary point; all endpoints are Fractions.
+        The final element repeats the first (samples[0][1] == samples[-1][1]).
+
+    Raises
+    ------
+    RuntimeError
+        If python-flint is not available (mirrors enclose_lambda guard).
+    """
+    if not _FLINT_AVAILABLE:
+        raise RuntimeError(
+            "python-flint is not available; cannot compute Arb enclosures. "
+            "Install with: pip install python-flint"
+        )
+
+    sigma0, sigma1, T0, T1 = (Fraction(v) for v in box)
+    n = int(n_per_side)
+
+    # Build CCW sample points as (param, re, im) triples.
+    # param runs from 0 to 1 (exclusive) across 4*n_per_side equally-spaced points.
+    # Each edge: n points, parameterised from k/(4*n) for k = 0..n-1 on that edge's
+    # slice of [0,1).  Corner at start of each edge is excluded (it was appended as
+    # the last point of the previous edge -- but for the very first edge we start at
+    # the bottom-left corner, which is included as k=0 on edge 0).
+    #
+    # Bottom edge: sigma0 -> sigma1 at T0   (param 0..n-1 out of 4n)
+    # Right edge:  T0    -> T1    at sigma1  (param n..2n-1 out of 4n)
+    # Top edge:    sigma1 -> sigma0 at T1   (param 2n..3n-1 out of 4n)
+    # Left edge:   T1    -> T0    at sigma0  (param 3n..4n-1 out of 4n)
+
+    total = 4 * n
+    points = []  # list of (param, re, im) as Fractions
+
+    for k in range(total):
+        param = Fraction(k, total)
+        edge = k // n
+        j = k % n  # position within edge: 0 means the corner (included on edge 0, excluded on 1-3)
+
+        if edge == 0:
+            # Bottom: sigma0->sigma1 at T0; j=0 is sigma0, j=n-1 approaches sigma1
+            t = Fraction(j, n)
+            re = sigma0 + t * (sigma1 - sigma0)
+            im = T0
+        elif edge == 1:
+            # Right: T0->T1 at sigma1; j=0 is T0 corner (excluded), j>0 interior
+            t = Fraction(j, n)
+            re = sigma1
+            im = T0 + t * (T1 - T0)
+        elif edge == 2:
+            # Top: sigma1->sigma0 at T1; j=0 is sigma1 corner (excluded)
+            t = Fraction(j, n)
+            re = sigma1 + t * (sigma0 - sigma1)
+            im = T1
+        else:
+            # Left: T1->T0 at sigma0; j=0 is T1 corner (excluded)
+            t = Fraction(j, n)
+            re = sigma0
+            im = T1 + t * (T0 - T1)
+
+        points.append((param, re, im))
+
+    samples = []
+    for param, re, im in points:
+        box_val = enclose_lambda(re, im, prec_bits)
+        samples.append((param, box_val))
+
+    # Close the cycle: append the first point again.
+    samples.append((samples[0][0], samples[0][1]))
+
+    return samples

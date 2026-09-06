@@ -52,3 +52,27 @@ def test_width_shrinks_with_precision():
 def test_returns_fractions():
     (lo_re, hi_re), (lo_im, hi_im) = enclose_lambda(Fraction(1, 2), 21, prec_bits=200)
     assert all(isinstance(x, Fraction) for x in (lo_re, hi_re, lo_im, hi_im))
+
+
+def test_enclose_lambda_boundary_is_closed_cycle_off_zero():
+    from fractions import Fraction
+    from telperion.arb_enclosure import enclose_lambda_boundary
+    box = (Fraction(2, 5), Fraction(3, 5), 10, 35)
+    samples = enclose_lambda_boundary(box, n_per_side=4, prec_bits=300)
+    # CCW cycle: 4 corners x 4 per side = 16 points + closing repeat
+    assert len(samples) == 16 + 1
+    # closed: first param==last coordinate-wise (same boundary point)
+    assert samples[0][1] == samples[-1][1]
+    # no enclosure box contains 0 (Lambda nonzero on this boundary): a box
+    # contains 0 iff lo<=0<=hi for BOTH parts
+    for _param, ((lo_re, hi_re), (lo_im, hi_im)) in samples[:-1]:
+        contains_zero = (lo_re <= 0 <= hi_re) and (lo_im <= 0 <= hi_im)
+        assert not contains_zero
+
+
+def test_enclose_lambda_boundary_requires_flint():
+    import telperion.arb_enclosure as ae
+    if not ae._FLINT_AVAILABLE:
+        import pytest
+        with pytest.raises(RuntimeError, match="python-flint"):
+            ae.enclose_lambda_boundary((0, 1, 10, 11), 2, 100)
