@@ -63,6 +63,7 @@ import R3Cert.R47BroadenedTieWitness
 import R3Cert.R47TieBroadened
 import R3Cert.R47R7TwoHubBridge
 import R3Cert.R47SingleHub2D
+import R3Cert.R47SharpRate
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -254,3 +255,9 @@ import R3Cert.R47SingleHub2D
 #print axioms R3Cert.Step3.singleHub_le_tie_ge22
 #print axioms R3Cert.Step3.singleHub_le_tie_lt22
 #print axioms R3Cert.Step3.singleHub_le_tie
+
+-- Hdom length-1 slice at aligned sizes (2026-09-06): a Balanced+Capped single hub reduces (arm-perm to
+-- (a,b) counts) to singleHub_le_tie, so it is dominated by alignedTie at its own size -- the length-1
+-- case of SharpRateNF/Hdom, discharged by the M3 envelope.
+#print axioms R3Cert.Step3.singleHub_dominated
+#print axioms R3Cert.Step3.sharpRate_singleHub_aligned
