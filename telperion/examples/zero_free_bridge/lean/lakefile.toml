@@ -200,3 +200,8 @@ name = "DlvpCanonicalBound"
 # = -conj w/(R²-conj w z) - 1/(z-w). Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpCanonicalLogDeriv"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d1): logDeriv of finite Blaschke product = Σ (n u)·logDeriv
+# canonicalFactor. Imports DlvpCanonicalLogDeriv. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschkeHerglotz"
