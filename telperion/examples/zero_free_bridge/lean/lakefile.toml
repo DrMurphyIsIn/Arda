@@ -266,3 +266,7 @@ name = "DlvpEntirePlumbing"
 # dVP region capstone: three BC inputs at optimal σ → β ≤ 1 - c/(A·L). Imports DlvpPole+DlvpRegionBound.
 [[lean_lib]]
 name = "DlvpZetaRegion"
+
+# LHS recentring bridge: -(logDeriv ζ(c₀+·)) z = -deriv ζ (c₀+z)/ζ(c₀+z). Imports DlvpEntirePlumbing.
+[[lean_lib]]
+name = "DlvpZetaRecenter"
