@@ -306,3 +306,7 @@ name = "DlvpZetaCentreFac"
 # Last leaf: B·g continuous at 0 (finprod continuity). Standalone. Own CI target.
 [[lean_lib]]
 name = "DlvpBlaschkeCont"
+
+# item 4: ζ-zeros in the disk have Re < σ (discharges hother/hlt). Imports DlvpZetaDisk. Own CI target.
+[[lean_lib]]
+name = "DlvpZetaZeroLoc"
