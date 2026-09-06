@@ -1,0 +1,34 @@
+\section{Reproducibility}
+\label{sec:reproducibility}
+
+Every ``verified'' claim in this paper can be re-checked from a clean machine. The
+recipe below regenerates a certificate and re-runs the Lean kernel on it; the same
+pattern applies to every example in the repository.
+
+\paragraph{Generate (Python only).}
+\begin{verbatim}
+  pip install -e telperion
+  cd telperion
+  python examples/bernoulli/generate.py         # writes lean/BernoulliSolution.lean
+  python examples/bernoulli/generate.py --check  # confirms byte-stable regeneration
+\end{verbatim}
+
+\paragraph{Verify (the Lean kernel).} This is the step that makes it a proof. It
+needs the pinned toolchain (Lean~4 \texttt{v4.32.0}, installed automatically by
+\texttt{elan}) and a prebuilt Mathlib cache---not a from-source Mathlib build:
+\begin{verbatim}
+  cd telperion/examples/bernoulli/lean
+  lake exe cache get    # prebuilt Mathlib oleans (minutes, not hours)
+  lake build            # the kernel re-checks every emitted theorem
+\end{verbatim}
+A clean exit means the kernel accepted every proof term. Edit any constant in the
+emitted \texttt{.lean} and \texttt{lake build} rejects it---the guarantee in
+miniature.
+
+\paragraph{Standing evidence.} Continuous integration runs exactly these checks on
+every change: it compiles the emitted Lean against pinned Mathlib and, for the
+axiom-guarded results, runs \texttt{\#print axioms} and fails on any
+\texttt{sorryAx} or added axiom. The status badges on the repository are the
+at-a-glance record that the kernel checks are green. Full setup instructions,
+including the case-study libraries, are in the repository's Telperion
+getting-started guide.
