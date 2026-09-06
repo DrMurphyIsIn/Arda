@@ -150,3 +150,8 @@ name = "DlvpBoundaryDecomp"
 # (Dirichlet reverse triangle + Basel tail). Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpZetaLower"
+
+# PHASE 4 dVP frontier, ζ zero-factor bound (2) crux: two-scale separation R-R₀ ≤ ‖z-ρ‖ +
+# per-zero log ratio bound. Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpZeroFactor"
