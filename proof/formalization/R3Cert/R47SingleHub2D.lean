@@ -197,5 +197,27 @@ theorem col_le_nearStar_large (K c t : ℕ) (hK : 23 ≤ K) (hc : c ≤ 5) (htK 
     (fun i hi => absurd hi (Nat.not_lt_zero i)) c (by omega)
   linarith
 
+/-! ### The general single-hub decomposition and the `K ≥ 23` envelope in `(a,b,c)` form. -/
+
+/-- **Size-decomposition**: a Balanced single hub `hubState a b c` at aligned size `11a+9b+2c = 11K`
+    with `c ≤ 5` is exactly the bulk column `colState K c (b/11)`.  (The size relation forces
+    `b ≡ c mod 11` and `b ≥ c`, so `b = c + 11·(b/11)` and `a = K − c − 9·(b/11)`.) -/
+theorem hubState_eq_colState (a b c K : ℕ) (hc : c ≤ 5) (hsize : 11 * a + 9 * b + 2 * c = 11 * K) :
+    hubState a b c = colState K c (b / 11) ∧ 9 * (b / 11) ≤ K - c := by
+  have hb : b = c + 11 * (b / 11) := by omega
+  have ha : a = K - c - 9 * (b / 11) := by omega
+  refine ⟨?_, by omega⟩
+  rw [colState]; congr 1 <;> omega
+
+/-- **The single-hub envelope in `(a,b,c)` form, clean regime `K ≥ 23`**: every Balanced single hub at
+    aligned size `11K` (`c ≤ 5`) is dominated by the near-star `tieState K 0`.  This is the length-1
+    input to `sharpRate_of_tieDomination` for `K ≥ 23`. -/
+theorem singleHub_le_tie_large (a b c K : ℕ) (hc : c ≤ 5) (hK : 23 ≤ K)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * K) :
+    Aobj (backboneU (hubState a b c)) ≤ Aobj (backboneU (tieState K 0)) := by
+  obtain ⟨heq, htK⟩ := hubState_eq_colState a b c K hc hsize
+  rw [heq]
+  exact col_le_nearStar_large K c (b / 11) hK hc htK
+
 end Step3
 end R3Cert
