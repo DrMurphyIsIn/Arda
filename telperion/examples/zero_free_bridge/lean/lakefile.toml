@@ -294,3 +294,7 @@ name = "DlvpZetaRecenterDecomp"
 # Blaschke-centre per-factor bound (toward ‖B 0‖ ≤ 1). Standalone. Own CI target.
 [[lean_lib]]
 name = "DlvpBlaschkeCenter"
+
+# Blaschke-centre relation ‖ζ c₀‖ ≤ ‖g 0‖ (assembled). Imports DlvpBlaschkeCenter. Own CI target.
+[[lean_lib]]
+name = "DlvpZetaCentreRel"
