@@ -241,3 +241,10 @@ import R3Cert.R47SingleHub2D
 #print axioms R3Cert.Step3.hub_bulk_stop_iff
 #print axioms R3Cert.Step3.bulkStopABC_persists
 #print axioms R3Cert.Step3.col_maximal_over_bulk
+
+-- Single-hub 2-D envelope, CLEAN REGIME K>=23 (M3 c-envelope, 2026-09-06): the bulk column collapses to
+-- its tie edge (col_le_edge_large) and then across cherry counts to the near-star (col_le_nearStar_large)
+-- -- every Balanced single hub at aligned size 11K, K>=23, is dominated by tieState K 0.
+#print axioms R3Cert.Step3.colStop_zero_large
+#print axioms R3Cert.Step3.col_le_edge_large
+#print axioms R3Cert.Step3.col_le_nearStar_large

@@ -151,5 +151,51 @@ theorem col_maximal_over_bulk (K c tstar : ℕ) (hstarR : 9 * tstar ≤ K - c)
   · exact col_up_chain K c t tstar hle hstarR (fun i hi hib => hlt i hib)
   · exact col_down_chain K c tstar hstarR hstop t (by omega) htK
 
+/-! ### The c-envelope, clean regime `K ≥ 22`: each column collapses to its `t = 0` tie edge. -/
+
+/-- `colState K c 0 = tieState K c` (the trade edge). -/
+theorem colState_zero (K c : ℕ) : colState K c 0 = tieState K c := by
+  simp only [colState, tieState, hubState, Nat.mul_zero, Nat.sub_zero, Nat.add_zero]
+
+/-- **At `K ≥ 22` the bulk swap does not help at the tie edge** (`colStop K c 0` for every `c ≤ 5`):
+    the `bulkStopABC(K−c, c, c)` quadratic in `K` is nonnegative there (threshold `K = 22`, binding at
+    `c = 0`).  Matches `broadened_tie_2d_envelope.py`'s `t*(c) = 0 ⟺ K ≥ 22`. -/
+theorem colStop_zero_large (K c : ℕ) (hK : 22 ≤ K) (hc : c ≤ 5) : colStop K c 0 := by
+  have hKc : c ≤ K := by omega
+  have hKR : (22 : ℝ) ≤ (K : ℝ) := by exact_mod_cast hK
+  simp only [colStop, Nat.mul_zero, Nat.sub_zero, Nat.add_zero, bulkStopABC]
+  push_cast [Nat.cast_sub hKc]
+  interval_cases c <;>
+    nlinarith [hKR, sq_nonneg ((K : ℝ) - 22), (Nat.cast_nonneg K : (0 : ℝ) ≤ (K : ℝ))]
+
+/-- **Column collapse at `K ≥ 22`**: every in-range bulk position `colState K c t` is dominated by its
+    `t = 0` tie edge `tieState K c`.  (The per-column half of the c-envelope; combined with
+    `tie_maximal_over_trades` across `c` it yields the full single-hub envelope for `K ≥ 22`.) -/
+theorem col_le_edge_large (K c t : ℕ) (hK : 22 ≤ K) (hc : c ≤ 5) (htK : 9 * t ≤ K - c) :
+    Aobj (backboneU (colState K c t)) ≤ Aobj (backboneU (tieState K c)) := by
+  have h := col_maximal_over_bulk K c 0 (by omega) (colStop_zero_large K c hK hc)
+    (fun i hi => absurd hi (Nat.not_lt_zero i)) t htK
+  rwa [colState_zero] at h
+
+/-- The trade stops helping at `m = 0` for `K ≥ 23` (near-star optimal; threshold `K = 23`, matching
+    `tie_trade_le_poly` and `broadened_tie_family.py`). -/
+theorem tradeStop_zero_large (K : ℕ) (hK : 23 ≤ K) : tradeStop K 0 := by
+  have hKR : (23 : ℝ) ≤ (K : ℝ) := by exact_mod_cast hK
+  simp only [tradeStop, Nat.cast_zero, add_zero, mul_zero]
+  nlinarith [hKR]
+
+/-- **Single-hub envelope, clean regime `K ≥ 23`**: every in-range bulk column `colState K c t`
+    (any Balanced single hub at aligned size `11K` with cherry count `c ≤ 5`) is dominated by the
+    NEAR-STAR tie `tieState K 0` (K load-5 arms).  The 2-D envelope collapses:  t-axis via
+    `col_le_edge_large`, then the c-axis via `tie_maximal_over_trades` at `mstar = 0`.  (For `K = 22`
+    the argmax is `mstar = 1`; for `5 ≤ K < 22` low-c columns peak at `t = 1` -- the finite patch --
+    both left to the c-envelope completion.) -/
+theorem col_le_nearStar_large (K c t : ℕ) (hK : 23 ≤ K) (hc : c ≤ 5) (htK : 9 * t ≤ K - c) :
+    Aobj (backboneU (colState K c t)) ≤ Aobj (backboneU (tieState K 0)) := by
+  have h1 := col_le_edge_large K c t (by omega) hc htK
+  have h2 := tie_maximal_over_trades K 0 (by omega) (Nat.zero_le K) (tradeStop_zero_large K hK)
+    (fun i hi => absurd hi (Nat.not_lt_zero i)) c (by omega)
+  linarith
+
 end Step3
 end R3Cert
