@@ -1,5 +1,5 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple"]
 
 [[require]]
 name = "mathlib"
@@ -14,3 +14,6 @@ name = "XiLineZeros"
 
 [[lean_lib]]
 name = "WindingCount"
+
+[[lean_lib]]
+name = "BoxArgPrinciple"
