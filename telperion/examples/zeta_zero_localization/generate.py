@@ -56,13 +56,33 @@ def _real_box(t):
     return (lo_re, hi_re)
 
 
+_NAMES = {
+    0: "lambda_zero_first_14_15",
+    1: "lambda_two_zeros_14_22",
+}
+
+
 def _spec(pt):
-    # Bracket the first nontrivial zero (t ~ 14.1347) between t = 14 (Re < 0) and
-    # t = 15 (Re > 0): one sign change -> one certified on-line zero.
-    a, b = sp.Integer(14), sp.Integer(15)
+    if pt["case"] == 0:
+        # Bracket the FIRST nontrivial zero (t ~ 14.1347) between t = 14 (Re < 0)
+        # and t = 15 (Re > 0): one sign change -> one certified on-line zero.
+        # Exercises the neg->pos IVT path (intermediate_value_Icc).
+        a, b = sp.Integer(14), sp.Integer(15)
+        samples = [
+            (sp.Integer(14), _real_box(14)),
+            (sp.Integer(15), _real_box(15)),
+        ]
+        return a, b, samples
+    # TWO zeros with ALTERNATING signs, exercising BOTH IVT directions:
+    #   t = 14 (Re < 0), t = 15 (Re > 0), t = 22 (Re < 0)
+    # gives sign changes 14->15 (neg->pos, intermediate_value_Icc) and
+    # 15->22 (pos->neg, intermediate_value_Icc') -- bracketing the first zero
+    # (t ~ 14.1347) in [14, 15] and the third zero (t ~ 21.022) in [15, 22].
+    a, b = sp.Integer(14), sp.Integer(22)
     samples = [
         (sp.Integer(14), _real_box(14)),
         (sp.Integer(15), _real_box(15)),
+        (sp.Integer(22), _real_box(22)),
     ]
     return a, b, samples
 
@@ -71,8 +91,8 @@ def build() -> str:
     fam = xi_line_zeros_family(
         "XiLineZeros",
         (),
-        GridSpec([("case", [0])]),
-        lambda pt: "lambda_zero_first_14_15",
+        GridSpec([("case", [0, 1])]),
+        lambda pt: _NAMES[pt["case"]],
         spec=_spec,
     )
     profile = LeanProfile(
@@ -80,14 +100,9 @@ def build() -> str:
         imports=("Mathlib", "LambdaLineReal"),
         prelude=XI_LINE_ZEROS_PRELUDE,
         # gLine/continuity refer to `completedRiemannZeta`, `Complex.I`, etc.;
-        # `open Complex` keeps the prelude and theorems concise.
-        options=(
-            "open Complex",
-            # The enclosure-hypothesis binders are consumed only inside term-mode
-            # `linarith [...]` citations, which the unusedVariables linter does not
-            # count as a lexical reference; silence that cosmetic warning.
-            "set_option linter.unusedVariables false",
-        ),
+        # `open Complex` keeps the prelude and theorems concise.  Every emitted
+        # hypothesis is load-bearing, so NO unusedVariables suppression is needed.
+        options=("open Complex",),
     )
     report = emit(
         certify(fam),

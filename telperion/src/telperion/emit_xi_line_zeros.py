@@ -308,17 +308,25 @@ class XiLineZerosEmitter(Emitter):
         a_s = rat_lean(sp.Rational(payload.a))
         b_s = rat_lean(sp.Rational(payload.b))
 
-        # Enclosure hypotheses (the documented non-kernel Arb input), one lo/hi pair
-        # per anchor sample.  Named henc_lo{i} / henc_hi{i}.
-        hyp_decls: list[str] = []
+        # Enclosure hypotheses (the documented non-kernel Arb input): exactly ONE
+        # load-bearing one-sided bound per anchor sample -- the side that pins the
+        # sign.  A NEGATIVE anchor (hi < 0) contributes `henc{i} : gLine t_i <= hi_i`
+        # (used to derive gLine t_i < 0); a POSITIVE anchor (lo > 0) contributes
+        # `henc{i} : lo_i <= gLine t_i` (used to derive 0 < gLine t_i).  The opposite
+        # side is never needed, so it is NOT emitted: every hypothesis is genuinely
+        # load-bearing (removing any one breaks the proof), and the caller's
+        # obligation is exactly the sign-pinning Arb bound, no more.  `hyp_type[i]`
+        # is the H_i proposition; anchors are emitted as SIGNATURE binders (not a
+        # `forall` + `intro`) and referenced in TERM position in the proof, so the
+        # `unusedVariables` linter sees each as used (no suppression needed).
+        anchor_sign = {i: payload.signs[i] for i in anchor_idx}
+        hyp_type: dict[int, str] = {}
         for i in anchor_idx:
-            hyp_decls.append(
-                f"(henc_lo{i} : {lolit(i)} ≤ gLine {tlit(i)})"
-            )
-            hyp_decls.append(
-                f"(henc_hi{i} : gLine {tlit(i)} ≤ {hilit(i)})"
-            )
-        hyps = " ".join(hyp_decls)
+            if anchor_sign[i] < 0:
+                hyp_type[i] = f"gLine {tlit(i)} ≤ {hilit(i)}"
+            else:
+                hyp_type[i] = f"{lolit(i)} ≤ gLine {tlit(i)}"
+        sig_binders = " ".join(f"(henc{i} : {hyp_type[i]})" for i in anchor_idx)
 
         # Conclusion: exists x_1 ... x_N, ordering chain in [a, b] AND each a zero.
         xs = [f"x{m + 1}" for m in range(N)]
@@ -335,21 +343,15 @@ class XiLineZerosEmitter(Emitter):
         exists_binder = " ".join(xs)
         concl = f"∃ {exists_binder} : ℝ, ({order}) ∧ ({zeros})"
 
-        thm_type = (
-            f"∀ {hyps} , {concl}" if hyps else concl
-        )
+        # The statement-match gate ascribes the theorem's type in ARROW form
+        # `H0 → H1 → … → concl` (anonymous, so no binder-name warning).  Since
+        # `concl` does not mention the henc binders, this is definitionally the
+        # theorem's `(henc0 : H0) … : concl` type -- single-sourced with the same
+        # `hyp_type` / `concl` used in the signature, so it is a genuine drift net.
+        arrow_prefix = "".join(f"{hyp_type[i]} → " for i in anchor_idx)
+        gate_type = f"{arrow_prefix}{concl}"
 
         # ---- proof body ----
-        # All enclosure hyps, cited in each linarith so every intro-binder is
-        # lexically referenced (the unusedVariables linter counts term-mode `[...]`
-        # citations, but a per-goal subset would still leave some binders flagged --
-        # citing the full set keeps the emitted file warning-clean).
-        all_encs = []
-        for i in anchor_idx:
-            all_encs.append(f"henc_lo{i}")
-            all_encs.append(f"henc_hi{i}")
-        enc_cite = ", ".join(all_encs)
-
         proof: list[str] = []
         root_names = [f"r{m + 1}" for m in range(N)]
         for m, (i, k) in enumerate(intervals):
@@ -375,12 +377,20 @@ class XiLineZerosEmitter(Emitter):
             else:
                 lo_end, hi_end = k, i  # gLine at lo_end (=t_k) < 0 < gLine at hi_end (=t_i)
                 ivt = "intermediate_value_Icc'"
-            # strict sign facts (named hneg{m}: gLine t_neg < 0, hpos{m}: 0 < gLine t_pos).
+            # strict sign facts (named hneg{m}: gLine t_neg < 0, hpos{m}: 0 < gLine
+            # t_pos).  Each derives from the SINGLE load-bearing enclosure hyp of its
+            # anchor, re-bound in TERM position (`:= henc{i}`) so the unusedVariables
+            # linter counts the signature binder as referenced: the negative anchor's
+            # `henc{lo_end}` (gLine <= hi < 0), the positive anchor's `henc{hi_end}`
+            # (0 < lo <= gLine).  A given anchor's sign is fixed, so the same hyp is
+            # reused if the sample also anchors the adjacent interval.
             proof.append(
-                f"  have hneg{m} : gLine {tlit(lo_end)} < 0 := by linarith [{enc_cite}]\n"
+                f"  have he_neg{m} : {hyp_type[lo_end]} := henc{lo_end}\n"
+                f"  have hneg{m} : gLine {tlit(lo_end)} < 0 := by linarith [he_neg{m}]\n"
             )
             proof.append(
-                f"  have hpos{m} : (0 : ℝ) < gLine {tlit(hi_end)} := by linarith [{enc_cite}]\n"
+                f"  have he_pos{m} : {hyp_type[hi_end]} := henc{hi_end}\n"
+                f"  have hpos{m} : (0 : ℝ) < gLine {tlit(hi_end)} := by linarith [he_pos{m}]\n"
             )
             proof.append(
                 f"  have hmem{m} : (0 : ℝ) ∈ gLine '' Set.Icc ({tlit(i)} : ℝ) {tlit(k)} :=\n"
@@ -438,24 +448,21 @@ class XiLineZerosEmitter(Emitter):
             zeros_anon = "hLam0"
         else:
             zeros_anon = "⟨" + ", ".join(f"hLam{m}" for m in range(N)) + "⟩"
-        # a ≤ t_first and t_last ≤ b are needed by linarith; establish them first.
-        proof.append(
-            f"  have ha_le : ({a_s} : ℝ) ≤ {tlit(first_i)} := by norm_num\n"
-        )
-        last_k = intervals[-1][1]
-        proof.append(
-            f"  have hb_ge : ({tlit(last_k)} : ℝ) ≤ {b_s} := by norm_num\n"
-        )
+        # a ≤ x1 (from a ≤ t_first < r1) and rN ≤ b (from rN < t_last ≤ b): the
+        # numeric endpoint facts `a ≤ t_first` / `t_last ≤ b` are rational-literal
+        # comparisons that `linarith` discharges itself, so no reflexivity `have`s
+        # are needed.
         proof.append(
             f"  exact ⟨{', '.join(root_names)}, {order_anon}, {zeros_anon}⟩\n"
         )
 
-        thm = f"theorem {name} : {thm_type} := by\n"
-        if hyps:
-            thm += f"  intro {enc_cite.replace(', ', ' ')}\n"
+        # Signature-binder form (no `forall` + `intro`): with the term-position
+        # references above, every `henc{i}` is a used binder -> warning-free.
+        sig = f" {sig_binders}" if sig_binders else ""
+        thm = f"theorem {name}{sig} : {concl} := by\n"
         thm += "".join(proof)
 
-        gate = self.emit_gate(name, thm_type)
+        gate = self.emit_gate(name, gate_type)
         out = thm
         if gate:
             out += gate
