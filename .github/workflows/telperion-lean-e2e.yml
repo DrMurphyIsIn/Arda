@@ -3206,6 +3206,108 @@ jobs:
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpCorrectionBound
 
+  # dVP BLASCHKE item (d4) core: logDeriv ζ = Herglotz Σ divisor/(z-ρ) + entire part (correction +
+  # logDeriv g) in Blaschke form — the ζ'/ζ = Z + E explicit-formula input to the reduction skeleton.
+  rh-dlvp-blaschke-splitexpand:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP Blaschke explicit-formula expansion (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBlaschkeSplitExpand
+
+  # dVP BLASCHKE item (d4) capstone: BC-SUM for the Blaschke split -Re(ζ'/ζ) ≤ AL - Re(Herglotz)
+  # (explicit formula d4-core + correction bound d3 + ‖logDeriv g‖ via bc_sum_of_split). Completes (d).
+  rh-dlvp-bcsum-blaschke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP Blaschke BC-SUM capstone (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBCSumBlaschke
+
+  # dVP BLASCHKE→skeleton bridge: Herglotz lower bound k/(σ-β) ≤ Re(Σ m/(z-ρ)) (keep equal-height
+  # zero via re_smul_inv_sub_at_equal_height, drop nonneg rest). Turns bc_sum_blaschke into hzero.
+  rh-dlvp-herglotzlower:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP Herglotz lower bound (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpHerglotzLower
+
+  # dVP geometry/two-scale certificate shapes (two_scale_separation, far_pole_sum, herglotz_lower):
+  # regenerate from the emitters, drift-check, and kernel-verify the emitted Lean.
+  dvp-geom-atoms-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+      - name: Emitter self-check / negative-control tests
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_dvp_geom_atoms.py -q
+      - name: Regenerate the dVP geometry Lean from the emitters (certify -> emit -> check)
+        working-directory: telperion
+        run: PYTHONPATH=src python examples/dvp_geom_atoms/generate.py --check
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/dvp_geom_atoms/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/dvp_geom_atoms/lean
+        run: lake exe cache get
+      - name: Build the emitted Lean (the actual verification — dVP geometry certificates)
+        working-directory: telperion/examples/dvp_geom_atoms/lean
+        run: lake build TwoScaleSeparation FarPoleSum HerglotzLower ArgumentPrinciple FullArgumentPrinciple RectArgumentPrinciple AnnulusCount SlitLoopWindingZero BoxResidueSum RectWinding
+
   # MILESTONE: first kernel-verified on-line nontrivial-zero count for the Riemann zeta function.
   # Certifies N >= 5 zeros of Lambda (= nontrivial zeros of zeta) on Re s = 1/2 in [10, 35],
   # matching the 5 known zeros t ~ 14.1347, 21.0220, 25.0109, 30.4249, 32.9351.
@@ -3220,27 +3322,22 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install sympy pytest mpmath "python-flint==0.9.0"
-
       - name: Regenerate XiLineZeros.lean and check it matches frozen output
         working-directory: telperion
         run: |
           python examples/zeta_zero_localization/generate.py --check
-
       - name: Cache elan toolchain
         uses: actions/cache@v4
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
-
       - name: Install elan
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
       - name: Fetch Mathlib olean cache
         working-directory: telperion/examples/zeta_zero_localization/lean
         run: lake exe cache get
-
       - name: Build the emitted Lean (kernel-verified on-line zero count)
         working-directory: telperion/examples/zeta_zero_localization/lean
         run: lake build

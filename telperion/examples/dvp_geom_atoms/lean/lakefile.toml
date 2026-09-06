@@ -1,0 +1,37 @@
+name = "DvpGeomAtoms"
+defaultTargets = ["TwoScaleSeparation", "FarPoleSum", "HerglotzLower", "ArgumentPrinciple", "FullArgumentPrinciple", "RectArgumentPrinciple", "AnnulusCount", "SlitLoopWindingZero", "BoxResidueSum", "RectWinding"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "TwoScaleSeparation"
+
+[[lean_lib]]
+name = "FarPoleSum"
+
+[[lean_lib]]
+name = "HerglotzLower"
+
+[[lean_lib]]
+name = "ArgumentPrinciple"
+
+[[lean_lib]]
+name = "FullArgumentPrinciple"
+
+[[lean_lib]]
+name = "RectArgumentPrinciple"
+
+[[lean_lib]]
+name = "AnnulusCount"
+
+[[lean_lib]]
+name = "SlitLoopWindingZero"
+
+[[lean_lib]]
+name = "BoxResidueSum"
+
+[[lean_lib]]
+name = "RectWinding"

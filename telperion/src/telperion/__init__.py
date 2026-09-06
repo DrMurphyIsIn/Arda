@@ -187,6 +187,49 @@ from .emit_entire_part_bound import (  # noqa: F401
     EntirePartBoundEmitter, entire_part_bound_certificate,
     entire_part_bound_family, certify_entire_part_bound_point,
 )
+from .emit_two_scale_separation import (  # noqa: F401
+    TwoScaleSeparationEmitter, two_scale_certificate,
+    two_scale_separation_family, certify_two_scale_separation_point,
+)
+from .emit_far_pole_sum import (  # noqa: F401
+    FarPoleSumEmitter, far_pole_sum_certificate,
+    far_pole_sum_family, certify_far_pole_sum_point,
+)
+from .emit_herglotz_lower import (  # noqa: F401
+    HerglotzLowerEmitter, herglotz_lower_certificate,
+    herglotz_lower_family, certify_herglotz_lower_point,
+)
+from .emit_argument_principle import (  # noqa: F401
+    ArgumentPrincipleEmitter, argument_principle_certificate,
+    argument_principle_family, certify_argument_principle_point,
+)
+# Argument-principle companion atoms (2026-09-06): full (residue+Cauchy), rect (box), annulus (shell).
+from .emit_full_argument_principle import (  # noqa: F401
+    FullArgumentPrincipleEmitter, full_argument_principle_certificate,
+    full_argument_principle_family, certify_full_argument_principle_point,
+)
+from .emit_rect_argument_principle import (  # noqa: F401
+    RectArgumentPrincipleEmitter, rect_argument_principle_certificate,
+    rect_argument_principle_family, certify_rect_argument_principle_point,
+)
+from .emit_annulus_count import (  # noqa: F401
+    AnnulusCountEmitter, annulus_count_certificate,
+    annulus_count_family, certify_annulus_count_point,
+)
+# Winding-number frontier (2026-09-06): Rouché heart (winding 0) + conditional box residue-sum.
+from .emit_slit_loop_winding_zero import (  # noqa: F401
+    SlitLoopWindingZeroEmitter, certify_slit_loop_winding_zero_point,
+    slit_loop_winding_zero_certificate, slit_loop_winding_zero_family,
+)
+from .emit_box_residue_sum import (  # noqa: F401
+    BoxResidueSumEmitter, box_residue_sum_certificate,
+    box_residue_sum_family, certify_box_residue_sum_point,
+)
+# The winding-NONZERO primitive (2026-09-06): ∮_∂rect (z-ρ)⁻¹ = 2πi, from scratch.
+from .emit_rect_winding import (  # noqa: F401
+    RectWindingEmitter, certify_rect_winding_point,
+    rect_winding_certificate, rect_winding_family,
+)
 # Analytic-cert-structures build (2026-09-05): box-robust emitter (#2).
 from .emit_box_robust import (  # noqa: F401
     BoxRobustEmitter, BoxRobustPayload, box_min_lower_bound,

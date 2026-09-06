@@ -220,3 +220,18 @@ name = "DlvpBlaschkeSplit"
 # (Σ|n u|)/(R-‖z‖) — O(1)·count (pole outside disk). Mathlib-only. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpCorrectionBound"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d4) core: logDeriv ζ = Herglotz Σ divisor/(z-ρ) + entire part
+# (correction + logDeriv g), Blaschke form. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschkeSplitExpand"
+
+# PHASE 4 dVP frontier, BLASCHKE item (d4) capstone: BC-SUM for the Blaschke split -Re(ζ'/ζ) ≤ AL -
+# Re(Herglotz) via bc_sum_of_split. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBCSumBlaschke"
+
+# PHASE 4 dVP frontier, BLASCHKE→skeleton bridge: Herglotz lower bound k/(σ-β) ≤ Re(Σ m/(z-ρ))
+# (keep equal-height zero, drop nonneg rest). Imports DlvpZeroSum. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpHerglotzLower"

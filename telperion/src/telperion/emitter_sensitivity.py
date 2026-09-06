@@ -345,6 +345,32 @@ REGISTRY: dict[str, SensitivityStance] = {
         "carried as theorem HYPOTHESES (the documented Arb non-kernel input), not a baked-in corruptible "
         "fact -- a forged enclosure falsifies the hypothesis, leaving the IVT implication kernel-valid; "
         "no separately-supplied witness. conjecture1_proved = False"),
+    # --- 2026-09-06: dVP Blaschke/two-scale atoms. All wrapper/glue/geometry shapes: the numeric data
+    #     (radii R,R₀; σ,β,k) is substituted into BOTH hypotheses and goal, never a separately-supplied
+    #     corruptible identity certificate — same stance as CauchyDerivBoundEmitter / TwoScale geometry. ---
+    "TwoScaleSeparationEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Two-scale separation R-R₀ ≤ ‖z-ρ‖: reverse-triangle calc (norm_sub_norm_le + "
+        "sub_sub_sub_cancel_right) from the sphere/closedBall membership hyps; radii parameterize the statement"),
+    "FarPoleSumEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Far-pole sum ‖Σ (n u)conj u/(R²-conj u z)‖ ≤ (Σ|n u|)/(R-‖z‖): per-term reverse-triangle "
+        "denom bound R²-‖u‖‖z‖ ≥ R(R-‖z‖) + norm_sum_le/Finset.sum_div; concrete R via norm_num, no supplied witness"),
+    "HerglotzLowerEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Herglotz lower bound k/(σ-β) ≤ Re(Σ m/(z-ρ)): keep equal-height term (re_smul_inv_sub, real) + "
+        "drop nonneg rest (re_inv_sub_nonneg via normSq_nonneg) over Finset.add_sum_erase; no corruptible cofactor"),
+    "ArgumentPrincipleEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Argument principle ∮ Σ m/(z-ρ) = 2πi·Σ m: circleIntegral linearity (integral_fun_sum + integral_const_mul) over Mathlib per-pole residue integral_sub_inv_of_mem_ball; no separately-supplied witness"),
+    "FullArgumentPrincipleEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Full argument principle ∮ (Σ m/(z-ρ) + E) = 2πi·Σ m: residue side (integral_sub_inv_of_mem_ball) + analytic side E vanishes by Cauchy (DiffContOnCl.circleIntegral_eq_zero); linearity via integral_add; no separately-supplied witness"),
+    "RectArgumentPrincipleEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Rectangle Cauchy vanishing ∮_∂rect E = 0: direct over Mathlib integral_boundary_rect_eq_zero_of_differentiableOn with .re/.im reduction; no separately-supplied witness"),
+    "AnnulusCountEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Annulus count ∮_R − ∮_r = 2πi·Σ_shell m: outer residue sum (integral_sub_inv_of_mem_ball) minus inner Cauchy-zero (poles outside ⟹ DiffContOnCl.circleIntegral_eq_zero); no separately-supplied witness"),
+    "SlitLoopWindingZeroEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Winding-zero (Rouché heart) ∮ w'/w = 0 for a closed loop in ‖·-1‖<r≤1: w'/w = (log∘w)' via HasDerivAt.clog_real (slitPlane from Re>0) + FTC-2 integral_eq_sub_of_hasDerivAt collapsing to log(w b)-log(w a)=0; no separately-supplied witness"),
+    "BoxResidueSumEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Box residue-sum Bd(Σ m/(z-ρ)) = 2πi·Σ m: Finset linearity (intervalIntegral.integral_finsetSum + integral_const_mul) over the four sides, conditional on the per-pole winding primitive Bd((z-ρ)⁻¹)=2πi (explicit hypothesis, the Mathlib gap); no separately-supplied witness"),
+    "RectWindingEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Winding-nonzero primitive Bd((z-ρ)⁻¹)=2πi for ρ strictly inside: from-scratch segment/Complex.log branch-split — 3 sides in slitPlane via clog_real+FTC-2, left side via ρ-(·) branch, two log(-w)-log(w)=±iπ monodromy jumps (arg_neg_eq_arg_±pi) sum to 2πi; no separately-supplied witness"),
 }
 
 
