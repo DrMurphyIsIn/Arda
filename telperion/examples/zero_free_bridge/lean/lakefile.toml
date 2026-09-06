@@ -175,3 +175,8 @@ name = "DlvpBlaschke"
 # via continuity + density (Set.EqOn.closure). Imports DlvpBlaschke. Out of defaultTargets.
 [[lean_lib]]
 name = "DlvpBlaschkeSphere"
+
+# PHASE 4 dVP frontier, BLASCHKE step 2: canonical-decomp part g analytic + zero-free on ball 0 R
+# (MeromorphicNFAt + nonvanishing ⟹ order 0 ⟹ analytic). Mathlib-only. Out of defaultTargets.
+[[lean_lib]]
+name = "DlvpBlaschkeAnalytic"
