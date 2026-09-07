@@ -319,3 +319,6 @@ name = "DlvpZetaSphereLogStrip"
 
 [[lean_lib]]
 name = "DlvpHALArith"
+
+[[lean_lib]]
+name = "DlvpZetaCountStrip"
