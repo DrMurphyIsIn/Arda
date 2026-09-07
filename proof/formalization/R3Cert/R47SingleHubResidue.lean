@@ -678,5 +678,148 @@ theorem singleHubR_le_tie_10 (a b c Mn : ℕ) (hc : c ≤ 5) (hMn : 31 ≤ Mn)
       have h3 := neg_maximal_general Mn (by omega) c hc1 (by omega)
       linarith
 
+/-! ### The generalized offset edge `offEdge` (δ = −off) and its trade argmax, for residues 8, 9. -/
+
+/-- The `δ = b - c = -off` edge (`b = c - off`, `c ≥ off`).  `off = 1` is `negEdge`; the low edge for
+    residue `r` is `off = 11 - r` (off = 3 for r = 8, off = 2 for r = 9). -/
+def offEdge (M off c : ℕ) : List Hub := hubState (M - c) (c - off) c
+
+theorem off_trade_le (M off c : ℕ) (hco : off ≤ c) (hcM : c + 1 ≤ M)
+    (hpos : 0 < (M - c) + (c - off) + c) :
+    Aobj (backboneU (offEdge M off (c + 1))) ≤ Aobj (backboneU (offEdge M off c))
+      ↔ hubTradeStop (M - c) (c - off) c := by
+  have hst : offEdge M off (c + 1) = hubState ((M - c) - 1) ((c - off) + 1) (c + 1) := by
+    unfold offEdge
+    rw [show M - (c + 1) = (M - c) - 1 by omega, show (c + 1) - off = (c - off) + 1 by omega]
+  rw [hst, offEdge, hub_trade_le _ _ _ (by omega) hpos, hub_trade_stop_iff _ _ _ (by omega) hpos]
+
+theorem off_step_up (M off c : ℕ) (hco : off ≤ c) (hcM : c + 1 ≤ M) (hpos : 0 < (M - c) + (c - off) + c)
+    (h : ¬ hubTradeStop (M - c) (c - off) c) :
+    Aobj (backboneU (offEdge M off c)) ≤ Aobj (backboneU (offEdge M off (c + 1))) := by
+  have hiff := off_trade_le M off c hco hcM hpos
+  have hnot : ¬ (Aobj (backboneU (offEdge M off (c + 1))) ≤ Aobj (backboneU (offEdge M off c))) :=
+    fun hle => h (hiff.mp hle)
+  linarith [not_le.mp hnot]
+
+theorem off_step_down (M off c : ℕ) (hco : off ≤ c) (hcM : c + 1 ≤ M) (hpos : 0 < (M - c) + (c - off) + c)
+    (h : hubTradeStop (M - c) (c - off) c) :
+    Aobj (backboneU (offEdge M off (c + 1))) ≤ Aobj (backboneU (offEdge M off c)) :=
+  (off_trade_le M off c hco hcM hpos).mpr h
+
+theorem off_hubTradeStop_up (M off cstar : ℕ) (hcso : off ≤ cstar)
+    (hstop : hubTradeStop (M - cstar) (cstar - off) cstar) :
+    ∀ c, cstar ≤ c → c ≤ M → hubTradeStop (M - c) (c - off) c := by
+  intro c hcs
+  induction c, hcs using Nat.le_induction with
+  | base => intro _; exact hstop
+  | succ c hcs ih =>
+      intro hcM
+      have := hubTradeStop_persists (M - c) (c - off) c (by omega) (ih (by omega))
+      rwa [show M - c - 1 = M - (c + 1) by omega, show c - off + 1 = (c + 1) - off by omega] at this
+
+theorem off_up_chain (M off c0 : ℕ) (hc0o : off ≤ c0) :
+    ∀ c, c0 ≤ c → c ≤ M → (∀ i, c0 ≤ i → i < c → ¬ hubTradeStop (M - i) (i - off) i) →
+      Aobj (backboneU (offEdge M off c0)) ≤ Aobj (backboneU (offEdge M off c)) := by
+  intro c hc0
+  induction c, hc0 using Nat.le_induction with
+  | base => intro _ _; exact le_refl _
+  | succ c hc0 ih =>
+      intro hcM hlt
+      have h1 := ih (by omega) (fun i hi hic => hlt i hi (by omega))
+      have h2 := off_step_up M off c (by omega) (by omega) (by omega) (hlt c hc0 (by omega))
+      linarith
+
+theorem off_down_chain (M off cstar : ℕ) (hcso : off ≤ cstar) (hcsM : cstar ≤ M)
+    (hstop : hubTradeStop (M - cstar) (cstar - off) cstar) :
+    ∀ c, cstar ≤ c → c ≤ M →
+      Aobj (backboneU (offEdge M off c)) ≤ Aobj (backboneU (offEdge M off cstar)) := by
+  intro c hcs
+  induction c, hcs using Nat.le_induction with
+  | base => intro _; exact le_refl _
+  | succ c hcs ih =>
+      intro hcM
+      have hstopc : hubTradeStop (M - c) (c - off) c := off_hubTradeStop_up M off cstar hcso hstop c hcs (by omega)
+      have h2 := off_step_down M off c (by omega) (by omega) (by omega) hstopc
+      have h1 := ih (by omega)
+      linarith
+
+theorem off_maximal (M off cstar : ℕ) (hcso : off ≤ cstar) (hcsM : cstar ≤ M)
+    (hstop : hubTradeStop (M - cstar) (cstar - off) cstar)
+    (hlt : ∀ i, off ≤ i → i < cstar → ¬ hubTradeStop (M - i) (i - off) i) :
+    ∀ c, off ≤ c → c ≤ M → Aobj (backboneU (offEdge M off c)) ≤ Aobj (backboneU (offEdge M off cstar)) := by
+  intro c hco hcM
+  by_cases hle : c ≤ cstar
+  · exact off_up_chain M off c hco cstar hle hcsM (fun i hi hic => hlt i (by omega) hic)
+  · exact off_down_chain M off cstar hcso hcsM hstop c (by omega) hcM
+
+theorem off_hubTradeStop_exists (M off : ℕ) : ∃ c, off ≤ c ∧ hubTradeStop (M - c) (c - off) c := by
+  refine ⟨M + off + 20, by omega, ?_⟩
+  have h1 : M - (M + off + 20) = 0 := by omega
+  have h2 : (M + off + 20) - off = M + 20 := by omega
+  simp only [hubTradeStop, h1, h2, Nat.cast_zero]
+  push_cast
+  nlinarith [(Nat.cast_nonneg M : (0:ℝ) ≤ (M:ℝ)), (Nat.cast_nonneg off : (0:ℝ) ≤ (off:ℝ)),
+    mul_nonneg (Nat.cast_nonneg M : (0:ℝ) ≤ (M:ℝ)) (Nat.cast_nonneg off : (0:ℝ) ≤ (off:ℝ))]
+
+noncomputable def offLeastStop (M off : ℕ) : ℕ := Nat.find (off_hubTradeStop_exists M off)
+
+theorem offLeastStop_ge (M off : ℕ) : off ≤ offLeastStop M off :=
+  (Nat.find_spec (off_hubTradeStop_exists M off)).1
+
+theorem offLeastStop_spec (M off : ℕ) :
+    hubTradeStop (M - offLeastStop M off) (offLeastStop M off - off) (offLeastStop M off) :=
+  (Nat.find_spec (off_hubTradeStop_exists M off)).2
+
+theorem offLeastStop_min (M off : ℕ) {i : ℕ} (hio : off ≤ i) (hi : i < offLeastStop M off) :
+    ¬ hubTradeStop (M - i) (i - off) i :=
+  fun h => Nat.find_min (off_hubTradeStop_exists M off) hi ⟨hio, h⟩
+
+/-- The `offEdge` trade argmax (least stop, capped at `M`). -/
+noncomputable def offMOf (M off : ℕ) : ℕ := min M (offLeastStop M off)
+
+theorem offMOf_le (M off : ℕ) : offMOf M off ≤ M := min_le_left _ _
+
+theorem offMOf_ge (M off : ℕ) (hoM : off ≤ M) : off ≤ offMOf M off :=
+  le_min hoM (offLeastStop_ge M off)
+
+/-- **The `offEdge` edge is maximized at `offMOf M off`** (all `off ≤ M`). -/
+theorem off_maximal_general (M off : ℕ) (hoM : off ≤ M) :
+    ∀ c, off ≤ c → c ≤ M →
+      Aobj (backboneU (offEdge M off c)) ≤ Aobj (backboneU (offEdge M off (offMOf M off))) := by
+  intro c hco hcM
+  by_cases hle : offLeastStop M off ≤ M
+  · have hmOf : offMOf M off = offLeastStop M off := min_eq_right hle
+    rw [hmOf]
+    exact off_maximal M off (offLeastStop M off) (offLeastStop_ge M off) hle (offLeastStop_spec M off)
+      (fun i hio hiL => offLeastStop_min M off hio hiL) c hco hcM
+  · have hmOf : offMOf M off = M := min_eq_left (by omega)
+    rw [hmOf]
+    exact off_up_chain M off c hco M hcM (le_refl M)
+      (fun i hi hiM => offLeastStop_min M off (by omega) (by omega))
+
+/-- **The residue-8/9 single-hub envelope (`Mn ≥ 40`).**  For `r ∈ {8, 9}` the per-size maximizer is the
+    MAX of two edges: the low edge `offEdge Mn (11-r) (offMOf ..)` (`δ = r-11`) and the high edge
+    `rtieState (Mn-9) r (rMOf ..)` (`δ = r`).  Every Balanced single hub at size `11·Mn - 9·(11-r)` is
+    dominated by that max: the `δ = r-11` configs by the low-edge argmax, the `δ ≥ r` configs by the
+    high-edge argmax (`col_le_edgeR` + `rtie_maximal_general`).  Mechanically closable -- the "oscillation"
+    is just this two-edge max, NOT Pant-open. -/
+theorem singleHubR_le_tie_89 (a b c Mn r : ℕ) (hr8 : 8 ≤ r) (hr9 : r ≤ 9) (hc : c ≤ 5) (hMn : 40 ≤ Mn)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * Mn - 9 * (11 - r)) :
+    Aobj (backboneU (hubState a b c))
+      ≤ max (Aobj (backboneU (offEdge Mn (11 - r) (offMOf Mn (11 - r)))))
+            (Aobj (backboneU (rtieState (Mn - 9) r (rMOf (Mn - 9) r)))) := by
+  by_cases hlow : b + (11 - r) = c
+  · have hco : 11 - r ≤ c := by omega
+    have heq : hubState a b c = offEdge Mn (11 - r) c := by
+      unfold offEdge; congr 1 <;> omega
+    rw [heq]
+    exact le_max_of_le_left (off_maximal_general Mn (11 - r) (by omega) c hco (by omega))
+  · have hbge : c + r ≤ b := by omega
+    obtain ⟨heq, htK⟩ := hubState_eq_colStateR a b c (Mn - 9) r hbge (by omega)
+    rw [heq]
+    have h1 := col_le_edgeR (Mn - 9) r c ((b - c - r) / 11) (by omega) (by omega) hc htK
+    have h2 := rtie_maximal_general (Mn - 9) r (by omega) c (by omega)
+    exact le_max_of_le_right (le_trans h1 h2)
+
 end Step3
 end R3Cert
