@@ -343,3 +343,6 @@ name = "DlvpZetaHAL"
 
 [[lean_lib]]
 name = "DlvpZetaCountReconcile"
+
+[[lean_lib]]
+name = "DlvpZetaAzeta"
