@@ -64,29 +64,38 @@ real-rootedness / hyperbolicity certificate rather than a positivity one).
 A different question again is not whether the zeros are simple or where they are
 \emph{not}, but where they concretely \emph{are}---and, more strongly, whether a
 given region contains any \emph{off}-line zeros at all. This is Turing's method,
-and we carry it out in the kernel. Building on an on-line count of five zeros
-(\texttt{XiLineZeros.lambda\_five\_zeros\_10\_35}) and the argument-principle atoms,
-the capstone theorem
-\texttt{BoxLocalization.all\_nontrivial\_zeros\_in\_box\_on\_critical\_line}
-(sorry-free, axioms $\{$\texttt{propext}, \texttt{Classical.choice},
-\texttt{Quot.sound}$\}$) establishes that \emph{every} nontrivial zero of $\zeta$
-in the box $B = [\tfrac{2}{5}, \tfrac{3}{5}] \times [10, 35]$ lies exactly on the
-critical line $\operatorname{Re} s = \tfrac12$. The argument is honest
-counting-exhaustion: the boundary winding integral counts exactly five zeros in
-$B$, and five distinct on-line zeros are exhibited, so there is no room for an
-off-line one---RH holds \emph{inside this box}.
+and we carry it out in the kernel. The capstone is now \emph{parameterized}: the
+generic-corner theorem \texttt{RHInBox.rh\_in\_box\_of\_certificate} certifies
+\emph{any} finite rational box $[\sigma_0,\sigma_1] \times [T_0,T_1]$ on demand,
+establishing that every nontrivial zero of $\zeta$ inside it lies exactly on the
+critical line $\operatorname{Re} s = \tfrac12$. It is assembled from two
+kernel-derived halves---a corner- and count-generic counting-exhaustion
+(\texttt{RHInBoxCore}) and a zeta Blaschke split whose box argument principle, over
+a \emph{variable} ball, \emph{derives} the interior zero-count from the boundary
+winding rather than assuming it (\texttt{RHInBoxAnalytic}). Every artifact is
+sorry-free with the clean axiom set $\{$\texttt{propext}, \texttt{Classical.choice},
+\texttt{Quot.sound}$\}$, compiled and drift-checked in continuous integration.
 
-The caveats are stated as sharply as the claim. It is \emph{finite}---one box, not
+The verified \emph{range} has grown with the generalization. The original box
+$[\tfrac{2}{5}, \tfrac{3}{5}] \times [10, 35]$ (five on-line zeros) is reproduced
+as a byte-identical regression, and the committed milestone now reaches height
+$T = 100$: the instantiation \texttt{RHInBox\_2d5\_3d5\_0\_100} certifies that all
+$29$ nontrivial zeros in the box $[\tfrac{2}{5}, \tfrac{3}{5}] \times [0, 100]$ lie
+exactly on the critical line---and $29$ is the full classical count of zeros up to
+height $100$.
+
+The caveats are stated as sharply as the claim. It is \emph{finite}---a box, not
 all of $\mathbb{C}$; Turing's method verifies RH in a region, it does not prove
-RH. And it is \emph{conditional on certified numeric input}: the winding integer
-($=5$), the edge non-vanishing, and the value enclosures are supplied by 300-bit
-interval (Arb) arithmetic and carried as explicit Lean hypotheses---a documented
-trust boundary, exactly as with the constant enclosures elsewhere in the system.
-The kernel proves \emph{every implication} from those inputs; it does not verify
-the enclosures themselves. The chain is non-circular by construction: the winding
-count enters as a boundary-contour value, never as ``five zeros and no others,''
-and ``all zeros on the line'' is the \emph{derived} conclusion. It is, once more,
-emphatically \emph{not} a proof of RH---but it is a kernel-verified RH-in-a-box,
+RH. And it is \emph{conditional on certified numeric input}: the boundary winding
+integer, the edge non-vanishing, and the value enclosures are supplied by
+high-precision interval (Arb) arithmetic and carried as explicit, non-kernel Lean
+hypotheses---a documented trust boundary, exactly as with the constant enclosures
+elsewhere in the system. The kernel proves \emph{every implication} from those
+inputs; it does not verify the enclosures themselves. The chain is non-circular by
+construction: the winding count enters as a boundary-contour value, never as
+``$N$ zeros and no others,'' and ``all zeros on the line'' is the \emph{derived}
+conclusion. It is, once more, emphatically \emph{not} a proof of RH---but it is a
+kernel-verified RH-in-a-box for any finite box, now certified up to height $100$,
 and it exhibits a third distinct certificate shape (winding / argument-principle
 zero-counting).
 
