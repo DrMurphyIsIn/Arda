@@ -188,4 +188,67 @@ theorem box_arg_principle_zeta
   have h2pi : (2 * π * I : ℂ) ≠ 0 := by simp [Real.pi_ne_zero, Complex.I_ne_zero]
   exact mul_left_cancel₀ h2pi key
 
+/-- **Hypothesis-free-on-(H1,H2) box argument principle for `zeta'/zeta`.**
+
+    Unlike `box_arg_principle_zeta`, this corollary does NOT take the split (H1) or the error
+    holomorphy (H2) as free hypotheses: it OBTAINS the error `E`, the zero set `s`, the divisor `d`,
+    `DifferentiableOn ℂ E boxB`, and the pointwise split directly from the kernel lemma
+    `BlaschkeBox.zeta_blaschke_split_box`.  The conclusion existentially exposes the kernel's `s` and
+    `d` so that the residual, purely-Arb inputs can be stated about them; those inputs are supplied
+    by `hArb`, which -- crucially -- is applied to the kernel witnesses and therefore contains ONLY
+    the honest non-kernel facts: edge non-vanishing (`hnz_*`, Arb enclosures), strict interiority of
+    the zeros (H3), routine boundary integrability, and the winding value `N` (H4, from Task 9).  No
+    split and no E-holomorphy appear among the residual inputs.
+
+    conjecture1_proved = False. -/
+theorem box_arg_principle_zeta' (N : ℂ)
+    (hArb : ∀ (E : ℂ → ℂ) (s : Finset ℂ) (d : ℂ → ℤ),
+      DifferentiableOn ℂ E BlaschkeBox.boxB →
+      (∀ z ∈ Metric.ball BlaschkeBox.cB 13, riemannZeta z ≠ 0 →
+        logDeriv riemannZeta z = (∑ ρ ∈ s, (d ρ : ℂ) / (z - ρ)) + E z) →
+      -- edge non-vanishing (Arb enclosures)
+      (∀ x ∈ Set.uIcc ((2 / 5) : ℝ) (3 / 5), riemannZeta (↑x + ((10 : ℝ) : ℂ) * I) ≠ 0) ∧
+      (∀ x ∈ Set.uIcc ((2 / 5) : ℝ) (3 / 5), riemannZeta (↑x + ((35 : ℝ) : ℂ) * I) ≠ 0) ∧
+      (∀ y ∈ Set.uIcc ((10) : ℝ) 35, riemannZeta ((((3 / 5) : ℝ) : ℂ) + ↑y * I) ≠ 0) ∧
+      (∀ y ∈ Set.uIcc ((10) : ℝ) 35, riemannZeta ((((2 / 5) : ℝ) : ℂ) + ↑y * I) ≠ 0) ∧
+      -- H3: strict interiority
+      (∀ ρ ∈ s, ((2 / 5) : ℝ) < ρ.re ∧ ρ.re < (3 / 5) ∧ (10 : ℝ) < ρ.im ∧ ρ.im < 35) ∧
+      -- residue-inverse integrability
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun x : ℝ => ((↑x + ((10 : ℝ) : ℂ) * I) - ρ)⁻¹) volume ((2 / 5)) ((3 / 5))) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun x : ℝ => ((↑x + ((35 : ℝ) : ℂ) * I) - ρ)⁻¹) volume ((2 / 5)) ((3 / 5))) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun y : ℝ => (((((3 / 5) : ℝ) : ℂ) + ↑y * I) - ρ)⁻¹) volume (10) (35)) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun y : ℝ => (((((2 / 5) : ℝ) : ℂ) + ↑y * I) - ρ)⁻¹) volume (10) (35)) ∧
+      -- residue-sum / E integrability
+      (IntervalIntegrable
+        (fun x : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + ((10 : ℝ) : ℂ) * I) - ρ)⁻¹) volume ((2 / 5)) ((3 / 5))) ∧
+      (IntervalIntegrable
+        (fun x : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + ((35 : ℝ) : ℂ) * I) - ρ)⁻¹) volume ((2 / 5)) ((3 / 5))) ∧
+      (IntervalIntegrable
+        (fun y : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * (((((3 / 5) : ℝ) : ℂ) + ↑y * I) - ρ)⁻¹) volume (10) (35)) ∧
+      (IntervalIntegrable
+        (fun y : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * (((((2 / 5) : ℝ) : ℂ) + ↑y * I) - ρ)⁻¹) volume (10) (35)) ∧
+      (IntervalIntegrable (fun x : ℝ => E (↑x + ((10 : ℝ) : ℂ) * I)) volume ((2 / 5)) ((3 / 5))) ∧
+      (IntervalIntegrable (fun x : ℝ => E (↑x + ((35 : ℝ) : ℂ) * I)) volume ((2 / 5)) ((3 / 5))) ∧
+      (IntervalIntegrable (fun y : ℝ => E ((((3 / 5) : ℝ) : ℂ) + ↑y * I)) volume (10) (35)) ∧
+      (IntervalIntegrable (fun y : ℝ => E ((((2 / 5) : ℝ) : ℂ) + ↑y * I)) volume (10) (35)) ∧
+      -- H4: winding value
+      ((∫ x in ((2 / 5) : ℝ)..(3 / 5), logDeriv riemannZeta (↑x + ((10 : ℝ) : ℂ) * I))
+          - (∫ x in ((2 / 5) : ℝ)..(3 / 5), logDeriv riemannZeta (↑x + ((35 : ℝ) : ℂ) * I))
+          + I • (∫ y in (10 : ℝ)..35, logDeriv riemannZeta ((((3 / 5) : ℝ) : ℂ) + ↑y * I))
+          - I • (∫ y in (10 : ℝ)..35, logDeriv riemannZeta ((((2 / 5) : ℝ) : ℂ) + ↑y * I))
+        = 2 * π * I * N)) :
+    ∃ (s : Finset ℂ) (d : ℂ → ℤ), (∑ ρ ∈ s, (d ρ : ℂ)) = N := by
+  -- Obtain the split (H1) and E-holomorphy (H2) FROM THE KERNEL LEMMA -- not as hypotheses.
+  obtain ⟨E, s, d, hEholo, _, hker⟩ := BlaschkeBox.zeta_blaschke_split_box
+  refine ⟨s, d, ?_⟩
+  -- Feed the kernel witnesses to hArb to extract the purely-Arb residual facts.
+  obtain ⟨hnz_b, hnz_t, hnz_r, hnz_l, hin, hb, ht, hr, hl,
+          hsb, hst, hsr, hsl, heb, het, her, hel, hwind⟩ := hArb E s d hEholo hker
+  exact box_arg_principle_zeta N s d E hEholo hker hnz_b hnz_t hnz_r hnz_l
+    hin hb ht hr hl hsb hst hsr hsl heb het her hel hwind
+
 end BoxArgPrincipleZeta

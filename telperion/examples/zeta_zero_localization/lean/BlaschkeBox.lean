@@ -158,10 +158,12 @@ the holomorphy of `E` on the closed box `B`.  The split is stated at every `z �
 
 /-- **Local Blaschke split of `zeta'/zeta` over the box (Stage 2B, kernel-derived).**
 
-    There is a finite set `s` of zeros of `zeta` in `U = ball cB 13`, an integer multiplicity
-    function `d` (the divisor), and an error `E`, such that:
+    There is a finite set `s` (the support of `zeta`'s divisor on `U = ball cB 13`), an integer
+    multiplicity function `d` (that divisor), and an error `E`, such that:
     * `E` is holomorphic on the closed box `B` (H2);
-    * `d ρ ≥ 1` for `ρ ∈ s` (each is a genuine zero);
+    * every `ρ ∈ s` is a zero of `zeta`, i.e. `riemannZeta ρ = 0` (the statement proves this
+      unconditionally; the strict-interior antecedents in the `∀ ρ ∈ s, ...` conjunct are supplied
+      but discarded by the proof, so the conjunct holds as stated for every `ρ ∈ s`);
     * at every `z ∈ U` with `zeta z ≠ 0`,
         `logDeriv zeta z = (∑ ρ ∈ s, (d ρ)/(z - ρ)) + E z`   (H1, off the zeros).
 

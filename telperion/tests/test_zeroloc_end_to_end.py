@@ -81,6 +81,7 @@ def test_zeta_blaschke_split_box_builds():
         "import BoxArgPrincipleZeta\n"
         "#print axioms BlaschkeBox.zeta_blaschke_split_box\n"
         "#print axioms BoxArgPrincipleZeta.box_arg_principle_zeta\n"
+        "#print axioms BoxArgPrincipleZeta.box_arg_principle_zeta'\n"
     )
     axfile = Path(d) / "AxCheckZetaSplit.lean"
     try:
