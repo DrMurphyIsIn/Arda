@@ -25,7 +25,7 @@ from telperion import (  # noqa: E402
     argument_principle_family, box_residue_sum_family, certify, emit, far_pole_sum_family,
     full_argument_principle_family, herglotz_lower_family, log_product_bound_family,
     rect_argument_principle_family, rect_winding_family, slit_loop_winding_zero_family,
-    two_scale_separation_family,
+    two_scale_separation_family, EndpointGeomCapEmitter, endpoint_geom_cap_family,
 )
 
 _HERE = Path(__file__).resolve().parent
@@ -67,6 +67,9 @@ _JOBS = [
     ("LogProductBound", "log_product_bound", log_product_bound_family, LogProductBoundEmitter,
      {0: {"R0": "2", "R": "5"}, 1: {"R0": "1", "R": "3"}},
      {0: "log_product_bound_two_five", 1: "log_product_bound_one_three"}),
+    ("EndpointGeomCap", "endpoint_geom_cap", endpoint_geom_cap_family, EndpointGeomCapEmitter,
+     {0: {"R": "3/2"}, 1: {"R": 2}},
+     {0: "endpoint_geom_cap_3half", 1: "endpoint_geom_cap_two"}),
 ]
 
 
