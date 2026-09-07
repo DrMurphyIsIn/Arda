@@ -367,3 +367,6 @@ name = "DlvpZetaConcreteWired"
 
 [[lean_lib]]
 name = "DlvpZetaConcreteClose"
+
+[[lean_lib]]
+name = "DlvpZetaConcreteRate"

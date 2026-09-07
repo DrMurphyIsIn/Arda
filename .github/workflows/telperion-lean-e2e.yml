@@ -1687,14 +1687,14 @@ jobs:
             echo "::error::AxiomGuardRH.lean did not elaborate cleanly"; exit 1
           fi
           echo "OK: all guarded RH theorems are kernel-clean (no sorryAx)."
-      - name: Axiom guard -- dVP concrete-zero region is kernel-clean (fail on sorryAx)
+      - name: Axiom guard -- dVP concrete-zero region + rate are kernel-clean (fail on sorryAx)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: |
-          lake build DlvpZetaConcreteClose
+          lake build DlvpZetaConcreteClose DlvpZetaConcreteRate
           out="$(lake env lean AxiomGuardDlvp.lean 2>&1 || true)"
           echo "$out"
           if echo "$out" | grep -q 'sorryAx'; then
-            echo "::error::dlvp_zeta_region_concrete depends on sorry (sorryAx in axiom trace)"; exit 1
+            echo "::error::a guarded dVP theorem depends on sorry (sorryAx in axiom trace)"; exit 1
           fi
           if echo "$out" | grep -qE 'error:'; then
             echo "::error::AxiomGuardDlvp.lean did not elaborate cleanly"; exit 1
