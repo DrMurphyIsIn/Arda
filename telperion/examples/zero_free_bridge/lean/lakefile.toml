@@ -346,3 +346,6 @@ name = "DlvpZetaCountReconcile"
 
 [[lean_lib]]
 name = "DlvpZetaAzeta"
+
+[[lean_lib]]
+name = "DlvpZetaHgBoundGamma"
