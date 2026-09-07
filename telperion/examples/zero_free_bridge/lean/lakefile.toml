@@ -364,3 +364,6 @@ name = "DlvpZetaAnaFoundation"
 
 [[lean_lib]]
 name = "DlvpZetaConcreteWired"
+
+[[lean_lib]]
+name = "DlvpZetaConcreteClose"
