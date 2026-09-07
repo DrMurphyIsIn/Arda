@@ -475,5 +475,126 @@ theorem singleHubR_le_tie_07 (a b c M r : ℕ) (hr : r ≤ 7) (hc : c ≤ 5) (hM
     · subst hr'; subst hc'; subst hb'; subst ha'
       exact le_trans (rNeg_r7b M hM) (rtie_maximal_general M 7 (by omega) 0 (by omega))
 
+/-! ### Residue 10: the δ = −1 edge `negEdge` (the single fixed maximizer edge) and its trade argmax. -/
+
+/-- The `δ = b - c = -1` edge (`b = c - 1`, `c ≥ 1`): the fixed maximizer edge for residue 10. -/
+def negEdge (M c : ℕ) : List Hub := hubState (M - c) (c - 1) c
+
+/-- `negEdge` trade step (`c ≥ 1`, `c + 1 ≤ M`): one trade is `Aobj`-non-increasing iff
+    `hubTradeStop (M-c) (c-1) c`.  Uses the general `hub_trade_le`/`hub_trade_stop_iff`. -/
+theorem neg_trade_le (M c : ℕ) (hc1 : 1 ≤ c) (hcM : c + 1 ≤ M)
+    (hpos : 0 < (M - c) + (c - 1) + c) :
+    Aobj (backboneU (negEdge M (c + 1))) ≤ Aobj (backboneU (negEdge M c))
+      ↔ hubTradeStop (M - c) (c - 1) c := by
+  have hst : negEdge M (c + 1) = hubState ((M - c) - 1) ((c - 1) + 1) (c + 1) := by
+    unfold negEdge
+    rw [show M - (c + 1) = (M - c) - 1 by omega, show (c + 1) - 1 = (c - 1) + 1 by omega]
+  rw [hst, negEdge, hub_trade_le _ _ _ (by omega) hpos, hub_trade_stop_iff _ _ _ (by omega) hpos]
+
+theorem neg_step_up (M c : ℕ) (hc1 : 1 ≤ c) (hcM : c + 1 ≤ M) (hpos : 0 < (M - c) + (c - 1) + c)
+    (h : ¬ hubTradeStop (M - c) (c - 1) c) :
+    Aobj (backboneU (negEdge M c)) ≤ Aobj (backboneU (negEdge M (c + 1))) := by
+  have hiff := neg_trade_le M c hc1 hcM hpos
+  have hnot : ¬ (Aobj (backboneU (negEdge M (c + 1))) ≤ Aobj (backboneU (negEdge M c))) :=
+    fun hle => h (hiff.mp hle)
+  linarith [not_le.mp hnot]
+
+theorem neg_step_down (M c : ℕ) (hc1 : 1 ≤ c) (hcM : c + 1 ≤ M) (hpos : 0 < (M - c) + (c - 1) + c)
+    (h : hubTradeStop (M - c) (c - 1) c) :
+    Aobj (backboneU (negEdge M (c + 1))) ≤ Aobj (backboneU (negEdge M c)) :=
+  (neg_trade_le M c hc1 hcM hpos).mpr h
+
+/-- Persistence up the `negEdge` edge: `hubTradeStop` at `c` implies it at every reachable `c' ≥ c`. -/
+theorem neg_hubTradeStop_up (M cstar : ℕ) (hcs1 : 1 ≤ cstar)
+    (hstop : hubTradeStop (M - cstar) (cstar - 1) cstar) :
+    ∀ c, cstar ≤ c → c ≤ M → hubTradeStop (M - c) (c - 1) c := by
+  intro c hcs
+  induction c, hcs using Nat.le_induction with
+  | base => intro _; exact hstop
+  | succ c hcs ih =>
+      intro hcM
+      have := hubTradeStop_persists (M - c) (c - 1) c (by omega) (ih (by omega))
+      rwa [show M - c - 1 = M - (c + 1) by omega, show c - 1 + 1 = (c + 1) - 1 by omega] at this
+
+theorem neg_up_chain (M c0 : ℕ) (hc01 : 1 ≤ c0) :
+    ∀ c, c0 ≤ c → c ≤ M → (∀ i, c0 ≤ i → i < c → ¬ hubTradeStop (M - i) (i - 1) i) →
+      Aobj (backboneU (negEdge M c0)) ≤ Aobj (backboneU (negEdge M c)) := by
+  intro c hc0
+  induction c, hc0 using Nat.le_induction with
+  | base => intro _ _; exact le_refl _
+  | succ c hc0 ih =>
+      intro hcM hlt
+      have h1 := ih (by omega) (fun i hi hic => hlt i hi (by omega))
+      have h2 := neg_step_up M c (by omega) (by omega) (by omega) (hlt c hc0 (by omega))
+      linarith
+
+theorem neg_down_chain (M cstar : ℕ) (hcs1 : 1 ≤ cstar) (hcsM : cstar ≤ M)
+    (hstop : hubTradeStop (M - cstar) (cstar - 1) cstar) :
+    ∀ c, cstar ≤ c → c ≤ M →
+      Aobj (backboneU (negEdge M c)) ≤ Aobj (backboneU (negEdge M cstar)) := by
+  intro c hcs
+  induction c, hcs using Nat.le_induction with
+  | base => intro _; exact le_refl _
+  | succ c hcs ih =>
+      intro hcM
+      have hstopc : hubTradeStop (M - c) (c - 1) c := neg_hubTradeStop_up M cstar hcs1 hstop c hcs (by omega)
+      have h2 := neg_step_down M c (by omega) (by omega) (by omega) hstopc
+      have h1 := ih (by omega)
+      linarith
+
+/-- **The `negEdge` trade argmax**: given `cstar` (`≥ 1`) is the least trade count where the trade stops,
+    `negEdge M cstar` dominates every `negEdge M c` with `1 ≤ c ≤ M`. -/
+theorem neg_maximal (M cstar : ℕ) (hcs1 : 1 ≤ cstar) (hcsM : cstar ≤ M)
+    (hstop : hubTradeStop (M - cstar) (cstar - 1) cstar)
+    (hlt : ∀ i, 1 ≤ i → i < cstar → ¬ hubTradeStop (M - i) (i - 1) i) :
+    ∀ c, 1 ≤ c → c ≤ M → Aobj (backboneU (negEdge M c)) ≤ Aobj (backboneU (negEdge M cstar)) := by
+  intro c hc1 hcM
+  by_cases hle : c ≤ cstar
+  · exact neg_up_chain M c hc1 cstar hle hcsM (fun i hi hic => hlt i (by omega) hic)
+  · exact neg_down_chain M cstar hcs1 hcsM hstop c (by omega) hcM
+
+/-- The trade always stops on the `negEdge` edge at some `c ≥ 1` (`c = M + 20`, where `a = 0`). -/
+theorem neg_hubTradeStop_exists (M : ℕ) : ∃ c, 1 ≤ c ∧ hubTradeStop (M - c) (c - 1) c := by
+  refine ⟨M + 20, by omega, ?_⟩
+  simp only [hubTradeStop, show M - (M + 20) = 0 by omega, Nat.cast_zero]
+  push_cast
+  nlinarith [(Nat.cast_nonneg M : (0:ℝ) ≤ (M:ℝ))]
+
+/-- The least `c` at which the trade stops on the `negEdge` edge (`≥ 1` by `neg_hubTradeStop_exists`). -/
+noncomputable def negLeastStop (M : ℕ) : ℕ := Nat.find (neg_hubTradeStop_exists M)
+
+theorem negLeastStop_one (M : ℕ) : 1 ≤ negLeastStop M := (Nat.find_spec (neg_hubTradeStop_exists M)).1
+
+theorem negLeastStop_spec (M : ℕ) :
+    hubTradeStop (M - negLeastStop M) (negLeastStop M - 1) (negLeastStop M) :=
+  (Nat.find_spec (neg_hubTradeStop_exists M)).2
+
+theorem negLeastStop_min (M : ℕ) {i : ℕ} (hi1 : 1 ≤ i) (hi : i < negLeastStop M) :
+    ¬ hubTradeStop (M - i) (i - 1) i :=
+  fun h => Nat.find_min (neg_hubTradeStop_exists M) hi ⟨hi1, h⟩
+
+/-- The `negEdge` trade argmax (least stop, capped at `M`). -/
+noncomputable def negMOf (M : ℕ) : ℕ := min M (negLeastStop M)
+
+theorem negMOf_le (M : ℕ) : negMOf M ≤ M := min_le_left _ _
+
+theorem negMOf_one (M : ℕ) (hM : 1 ≤ M) : 1 ≤ negMOf M :=
+  le_min hM (negLeastStop_one M)
+
+/-- **The `negEdge` edge is maximized at `negMOf M`** (all `M ≥ 1`).  Interior: `neg_maximal` at the least
+    stop; boundary: `neg_up_chain` to `c = M`. -/
+theorem neg_maximal_general (M : ℕ) (hM : 1 ≤ M) :
+    ∀ c, 1 ≤ c → c ≤ M → Aobj (backboneU (negEdge M c)) ≤ Aobj (backboneU (negEdge M (negMOf M))) := by
+  intro c hc1 hcM
+  by_cases hle : negLeastStop M ≤ M
+  · have hmOf : negMOf M = negLeastStop M := min_eq_right hle
+    rw [hmOf]
+    exact neg_maximal M (negLeastStop M) (negLeastStop_one M) hle (negLeastStop_spec M)
+      (fun i hi1 hiL => negLeastStop_min M hi1 hiL) c hc1 hcM
+  · have hmOf : negMOf M = M := min_eq_left (by omega)
+    rw [hmOf]
+    exact neg_up_chain M c hc1 M hcM (le_refl M)
+      (fun i hi hiM => negLeastStop_min M (by omega) (by omega))
+
 end Step3
 end R3Cert
