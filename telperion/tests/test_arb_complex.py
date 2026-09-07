@@ -7,7 +7,17 @@ conjecture1_proved = False.
 """
 from fractions import Fraction
 import mpmath
+import pytest
+import telperion.arb_enclosure as _ae
 from telperion.arb_enclosure import enclose_acb, enclose_lambda
+
+# python-flint (Arb) is an optional dependency absent from the lightweight `unit`
+# CI environment; enclosure tests SKIP there rather than erroring. The dedicated
+# `*_requires_flint` tests below intentionally have NO marker: they assert the
+# graceful RuntimeError when flint is absent and are trivial when it is present.
+requires_flint = pytest.mark.skipif(
+    not _ae._FLINT_AVAILABLE, reason="requires python-flint (Arb enclosures)"
+)
 
 
 def _c(box, val):  # val real float, box=(lo,hi)
@@ -20,6 +30,7 @@ def _lambda_oracle(sre, sim, dps=120):
     return mpmath.power(mpmath.pi, -s/2) * mpmath.gamma(s/2) * mpmath.zeta(s)
 
 
+@requires_flint
 def test_lambda_on_line_is_real_and_encloses_oracle():
     # Lambda(1/2 + i*14) : known to be near a zero region; imag part must be ~0.
     # The TRUE imaginary part is exactly 0 on the critical line (functional
@@ -34,12 +45,14 @@ def test_lambda_on_line_is_real_and_encloses_oracle():
     assert _c((lo_im, hi_im), float(o.imag))
 
 
+@requires_flint
 def test_complex_point_encloses_oracle():
     (lo_re, hi_re), (lo_im, hi_im) = enclose_lambda(Fraction(3, 5), 20, prec_bits=300)
     o = _lambda_oracle(0.6, 20)
     assert _c((lo_re, hi_re), float(o.real)) and _c((lo_im, hi_im), float(o.imag))
 
 
+@requires_flint
 def test_width_shrinks_with_precision():
     b1 = enclose_lambda(Fraction(1, 2), 14, prec_bits=120)
     b2 = enclose_lambda(Fraction(1, 2), 14, prec_bits=300)
@@ -49,11 +62,13 @@ def test_width_shrinks_with_precision():
     assert (b2[1][1] - b2[1][0]) < (b1[1][1] - b1[1][0])
 
 
+@requires_flint
 def test_returns_fractions():
     (lo_re, hi_re), (lo_im, hi_im) = enclose_lambda(Fraction(1, 2), 21, prec_bits=200)
     assert all(isinstance(x, Fraction) for x in (lo_re, hi_re, lo_im, hi_im))
 
 
+@requires_flint
 def test_enclose_lambda_boundary_is_closed_cycle_off_zero():
     from fractions import Fraction
     from telperion.arb_enclosure import enclose_lambda_boundary
@@ -82,6 +97,7 @@ def test_enclose_lambda_boundary_requires_flint():
 # Task 8: segment (ball) enclosures
 # ---------------------------------------------------------------------------
 
+@requires_flint
 def test_enclose_lambda_segments_closed_cycle_length():
     """enclose_lambda_segments returns 4*n_per_side + 1 entries (closed cycle)."""
     from telperion.arb_enclosure import enclose_lambda_segments
@@ -91,6 +107,7 @@ def test_enclose_lambda_segments_closed_cycle_length():
     assert len(segs) == 4 * n + 1
 
 
+@requires_flint
 def test_enclose_lambda_segments_returns_fractions():
     """All endpoints in segment boxes are exact Fractions."""
     from telperion.arb_enclosure import enclose_lambda_segments
@@ -104,6 +121,7 @@ def test_enclose_lambda_segments_returns_fractions():
         assert isinstance(hi_im, Fraction)
 
 
+@requires_flint
 def test_enclose_lambda_segments_closed_first_equals_last():
     """Segment cycle is closed: first and last boxes are identical."""
     from telperion.arb_enclosure import enclose_lambda_segments
@@ -112,6 +130,7 @@ def test_enclose_lambda_segments_closed_first_equals_last():
     assert segs[0][1] == segs[-1][1]
 
 
+@requires_flint
 def test_enclose_lambda_segments_wider_than_point_enclosures():
     """Each segment box is strictly wider than both endpoint point-enclosures.
 
@@ -177,6 +196,7 @@ def test_enclose_lambda_segments_requires_flint():
 # Task 8 fix round 1: RIGOROUS zeta segment enclosures (route beta)
 # ---------------------------------------------------------------------------
 
+@requires_flint
 def test_enclose_zeta_segment_rigorous_contains_true_values():
     """The 2nd-order Taylor zeta segment box rigorously contains the true zeta values.
 
@@ -203,6 +223,7 @@ def test_enclose_zeta_segment_rigorous_contains_true_values():
         )
 
 
+@requires_flint
 def test_enclose_zeta_segment_returns_fractions():
     """zeta segment box endpoints are exact Fractions."""
     from telperion.arb_enclosure import enclose_zeta_segment
@@ -210,6 +231,7 @@ def test_enclose_zeta_segment_returns_fractions():
     assert all(isinstance(x, Fraction) for x in (lo_re, hi_re, lo_im, hi_im))
 
 
+@requires_flint
 def test_enclose_zeta_segment_tighter_than_naive_ball():
     """The 2nd-order Taylor enclosure is tighter than a naive acb ball over the segment.
 
@@ -240,6 +262,7 @@ def test_enclose_zeta_segment_tighter_than_naive_ball():
     )
 
 
+@requires_flint
 def test_enclose_zeta_segments_capstone_rigorous_n5():
     """RIGOROUS route beta: zeta segments on [2/5,3/5]x[10,35] certify n=5.
 
@@ -271,6 +294,7 @@ def test_enclose_zeta_segments_capstone_rigorous_n5():
     assert len(segs) - 1 < 300
 
 
+@requires_flint
 def test_enclose_zeta_segments_coarse_refused():
     """A deliberately-coarse manual zeta partition (n=2 per edge) is refused.
 

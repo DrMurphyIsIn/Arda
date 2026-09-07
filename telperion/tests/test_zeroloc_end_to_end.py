@@ -14,10 +14,28 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+import os  # noqa: E402
+import shutil  # noqa: E402
+
+import pytest  # noqa: E402
+
+import telperion.arb_enclosure as _ae  # noqa: E402
 from telperion.arb_enclosure import enclose_lambda  # noqa: E402
 from telperion.emit_xi_line_zeros import sign_change_count  # noqa: E402
 
+# Optional-dependency guards: python-flint (Arb enclosures) and lake/Lean are not
+# installed in the lightweight `unit` CI environment; these tests SKIP there rather
+# than erroring, and run wherever the tools are present.
+requires_flint = pytest.mark.skipif(
+    not _ae._FLINT_AVAILABLE, reason="requires python-flint (Arb enclosures)"
+)
+_LAKE_PATH = os.path.expanduser("~/.elan/bin") + os.pathsep + os.environ.get("PATH", "")
+requires_lake = pytest.mark.skipif(
+    shutil.which("lake", path=_LAKE_PATH) is None, reason="requires lake/Lean toolchain"
+)
 
+
+@requires_flint
 def test_sign_changes_match_known_zero_count_10_to_35():
     # First nontrivial zeros (imag parts): 14.1347, 21.0220, 25.0109, 30.4249, 32.9351.
     # Sample densely on [10,35]; sign-change count must be >= 5 (the 5 known zeros in range).
@@ -29,6 +47,7 @@ def test_sign_changes_match_known_zero_count_10_to_35():
     assert sign_change_count(samples) >= 5
 
 
+@requires_lake
 def test_box_arg_principle_lambda_builds():
     """Task 5 (Stage 2C): the box argument principle for Lambda builds sorry-free.
 
@@ -48,6 +67,7 @@ def test_box_arg_principle_lambda_builds():
     assert r.returncode == 0, r.stderr
 
 
+@requires_lake
 def test_zeta_blaschke_split_box_builds():
     """Task 7 (Stage 2B): the local Blaschke split of zeta'/zeta over the box is kernel-derived.
 
