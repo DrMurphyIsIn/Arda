@@ -270,3 +270,7 @@ import R3Cert.R47SingleHubResidue
 #print axioms R3Cert.Step3.hub_trade_le
 #print axioms R3Cert.Step3.hub_trade_stop_iff
 #print axioms R3Cert.Step3.rtie_maximal_over_trades
+#print axioms R3Cert.Step3.rtie_maximal_general
+#print axioms R3Cert.Step3.col_maximal_over_bulkR
+#print axioms R3Cert.Step3.colStopR_zero_large
+#print axioms R3Cert.Step3.col_le_edgeR

@@ -13,6 +13,7 @@
 -/
 import Mathlib
 import R3Cert.R47TieBroadened
+import R3Cert.R47SingleHub2D
 
 namespace R3Cert
 namespace Step3
@@ -162,6 +163,160 @@ theorem rtie_maximal_over_trades (M r cstar : ℕ) (hcsM : cstar ≤ M)
   by_cases hle : c ≤ cstar
   · exact rtie_up_chain M r c cstar hle hcsM (fun i hi hic => hlt i hic)
   · exact rtie_down_chain M r cstar hcsM hstop c (by omega) hcM
+
+/-! ### The shifted bulk column (t-axis) for residue `r`, reusing the general `bulkStopABC` atoms. -/
+
+/-- The shifted bulk column at residue `r`, cherry count `c`: `t` bulk swaps on the shifted edge.
+    `colStateR M r c 0 = rtieState M r c`. -/
+def colStateR (M r c t : ℕ) : List Hub := hubState (M - c - 9 * t) (c + r + 11 * t) c
+
+/-- The `t`-level bulk-stop predicate on the shifted column. -/
+def colStopR (M r c t : ℕ) : Prop := bulkStopABC (M - c - 9 * t) (c + r + 11 * t) c
+
+theorem colStateR_zero (M r c : ℕ) : colStateR M r c 0 = rtieState M r c := by
+  simp only [colStateR, rtieState, Nat.mul_zero, Nat.sub_zero, Nat.add_zero]
+
+/-- **Shifted-column bulk-step comparison** (via the general `hub_bulk_le`/`hub_bulk_stop_iff`). -/
+theorem col_step_leR (M r c t : ℕ) (ha : 9 ≤ M - c - 9 * t)
+    (hpos : 0 < (M - c - 9 * t) + (c + r + 11 * t) + c) :
+    Aobj (backboneU (colStateR M r c (t + 1))) ≤ Aobj (backboneU (colStateR M r c t))
+      ↔ colStopR M r c t := by
+  have hst1 : colStateR M r c (t + 1)
+      = hubState ((M - c - 9 * t) - 9) ((c + r + 11 * t) + 11) c := by
+    unfold colStateR
+    rw [show M - c - 9 * (t + 1) = (M - c - 9 * t) - 9 by omega,
+      show c + r + 11 * (t + 1) = (c + r + 11 * t) + 11 by omega]
+  rw [hst1, colStateR, hub_bulk_le _ _ _ ha hpos, hub_bulk_stop_iff _ _ _ ha hpos, colStopR]
+
+theorem colStopR_persists (M r c t : ℕ) (ha : 9 ≤ M - c - 9 * t) (h : colStopR M r c t) :
+    colStopR M r c (t + 1) := by
+  have := bulkStopABC_persists (M - c - 9 * t) (c + r + 11 * t) c ha h
+  rw [colStopR, show M - c - 9 * (t + 1) = (M - c - 9 * t) - 9 by omega,
+    show c + r + 11 * (t + 1) = (c + r + 11 * t) + 11 by omega]
+  exact this
+
+theorem col_step_upR (M r c t : ℕ) (ha : 9 ≤ M - c - 9 * t)
+    (hpos : 0 < (M - c - 9 * t) + (c + r + 11 * t) + c) (h : ¬ colStopR M r c t) :
+    Aobj (backboneU (colStateR M r c t)) ≤ Aobj (backboneU (colStateR M r c (t + 1))) := by
+  have hiff := col_step_leR M r c t ha hpos
+  have hnot : ¬ (Aobj (backboneU (colStateR M r c (t + 1))) ≤ Aobj (backboneU (colStateR M r c t))) :=
+    fun hle => h (hiff.mp hle)
+  linarith [not_le.mp hnot]
+
+theorem col_step_downR (M r c t : ℕ) (ha : 9 ≤ M - c - 9 * t)
+    (hpos : 0 < (M - c - 9 * t) + (c + r + 11 * t) + c) (h : colStopR M r c t) :
+    Aobj (backboneU (colStateR M r c (t + 1))) ≤ Aobj (backboneU (colStateR M r c t)) :=
+  (col_step_leR M r c t ha hpos).mpr h
+
+theorem col_up_chainR (M r c t0 : ℕ) :
+    ∀ t, t0 ≤ t → 9 * t ≤ M - c → (∀ i, t0 ≤ i → i < t → ¬ colStopR M r c i) →
+      Aobj (backboneU (colStateR M r c t0)) ≤ Aobj (backboneU (colStateR M r c t)) := by
+  intro t ht0
+  induction t, ht0 using Nat.le_induction with
+  | base => intro _ _; exact le_refl _
+  | succ t ht0 ih =>
+      intro htK hlt
+      have h1 := ih (by omega) (fun i hi hit => hlt i hi (by omega))
+      have h2 := col_step_upR M r c t (by omega) (by omega) (hlt t ht0 (by omega))
+      linarith
+
+theorem colStopR_up (M r c tstar : ℕ) (hstop : colStopR M r c tstar) :
+    ∀ t, tstar ≤ t → 9 * t ≤ M - c → colStopR M r c t := by
+  intro t hts
+  induction t, hts using Nat.le_induction with
+  | base => intro _; exact hstop
+  | succ t hts ih => intro htK; exact colStopR_persists M r c t (by omega) (ih (by omega))
+
+theorem col_down_chainR (M r c tstar : ℕ) (hstar : 9 * tstar ≤ M - c) (hstop : colStopR M r c tstar) :
+    ∀ t, tstar ≤ t → 9 * t ≤ M - c →
+      Aobj (backboneU (colStateR M r c t)) ≤ Aobj (backboneU (colStateR M r c tstar)) := by
+  intro t hts
+  induction t, hts using Nat.le_induction with
+  | base => intro _; exact le_refl _
+  | succ t hts ih =>
+      intro htK
+      have hstopt : colStopR M r c t := colStopR_up M r c tstar hstop t hts (by omega)
+      have h2 := col_step_downR M r c t (by omega) (by omega) hstopt
+      have h1 := ih (by omega)
+      linarith
+
+/-- **Shifted-column t-argmax**: the residue-general analog of `col_maximal_over_bulk`. -/
+theorem col_maximal_over_bulkR (M r c tstar : ℕ) (hstarR : 9 * tstar ≤ M - c)
+    (hstop : colStopR M r c tstar) (hlt : ∀ i, i < tstar → ¬ colStopR M r c i) :
+    ∀ t, 9 * t ≤ M - c →
+      Aobj (backboneU (colStateR M r c t)) ≤ Aobj (backboneU (colStateR M r c tstar)) := by
+  intro t htK
+  by_cases hle : t ≤ tstar
+  · exact col_up_chainR M r c t tstar hle hstarR (fun i hi hib => hlt i hib)
+  · exact col_down_chainR M r c tstar hstarR hstop t (by omega) htK
+
+/-! ### The clean regime `M ≥ 22` (all residues): the shifted column collapses to its `t = 0` edge. -/
+
+/-- **At `M ≥ 22` the bulk swap does not help at the shifted edge** (`colStopR M r c 0`), for every
+    residue `r ≤ 10` and `c ≤ 5`.  Uniform threshold `M = 22` (the binding `r = 0` case). -/
+theorem colStopR_zero_large (M r c : ℕ) (hM : 22 ≤ M) (hr : r ≤ 10) (hc : c ≤ 5) :
+    colStopR M r c 0 := by
+  have hcM : c ≤ M := by omega
+  have hMR : (22 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hrR : (r : ℝ) ≤ 10 := by exact_mod_cast hr
+  have hr0 : (0 : ℝ) ≤ (r : ℝ) := Nat.cast_nonneg r
+  simp only [colStopR, Nat.mul_zero, Nat.sub_zero, Nat.add_zero, bulkStopABC]
+  push_cast [Nat.cast_sub hcM]
+  interval_cases c <;>
+    nlinarith [hMR, hrR, hr0, sq_nonneg ((M : ℝ) - 22), sq_nonneg ((r : ℝ)),
+      mul_nonneg hr0 (by linarith : (0:ℝ) ≤ (M:ℝ) - 22), (Nat.cast_nonneg M : (0:ℝ) ≤ (M:ℝ))]
+
+/-- **Shifted-column collapse at `M ≥ 22`**: every in-range bulk position `colStateR M r c t` is
+    dominated by its `t = 0` shifted edge `rtieState M r c`. -/
+theorem col_le_edgeR (M r c t : ℕ) (hM : 22 ≤ M) (hr : r ≤ 10) (hc : c ≤ 5) (htK : 9 * t ≤ M - c) :
+    Aobj (backboneU (colStateR M r c t)) ≤ Aobj (backboneU (rtieState M r c)) := by
+  have h := col_maximal_over_bulkR M r c 0 (by omega) (colStopR_zero_large M r c hM hr hc)
+    (fun i hi => absurd hi (Nat.not_lt_zero i)) t htK
+  rwa [colStateR_zero] at h
+
+/-! ### The shifted-edge argmax `rMOf M r` (all M) and the clean-regime residue envelope. -/
+
+open Classical
+
+/-- The trade always stops helping at some cherry count (`c = M + 20`, where `a = 0`). -/
+theorem hubTradeStop_exists (M r : ℕ) : ∃ c, hubTradeStop (M - c) (c + r) c := by
+  refine ⟨M + 20, ?_⟩
+  simp only [hubTradeStop, show M - (M + 20) = 0 by omega, Nat.cast_zero]
+  push_cast
+  nlinarith [(Nat.cast_nonneg M : (0:ℝ) ≤ (M:ℝ)), (Nat.cast_nonneg r : (0:ℝ) ≤ (r:ℝ)),
+    mul_nonneg (Nat.cast_nonneg M : (0:ℝ) ≤ (M:ℝ)) (Nat.cast_nonneg r : (0:ℝ) ≤ (r:ℝ))]
+
+/-- The least cherry count at which the trade stops helping on the shifted edge. -/
+noncomputable def leastHubTradeStop (M r : ℕ) : ℕ := Nat.find (hubTradeStop_exists M r)
+
+theorem leastHubTradeStop_spec (M r : ℕ) :
+    hubTradeStop (M - leastHubTradeStop M r) (leastHubTradeStop M r + r) (leastHubTradeStop M r) :=
+  Nat.find_spec (hubTradeStop_exists M r)
+
+theorem leastHubTradeStop_min (M r : ℕ) {i : ℕ} (hi : i < leastHubTradeStop M r) :
+    ¬ hubTradeStop (M - i) (i + r) i :=
+  Nat.find_min (hubTradeStop_exists M r) hi
+
+/-- **The shifted-edge trade argmax** for residue `r` at "budget" `M`: the least trade count where the
+    trade stops, capped at the boundary `M` (analog of `mOf`). -/
+noncomputable def rMOf (M r : ℕ) : ℕ := min M (leastHubTradeStop M r)
+
+theorem rMOf_le (M r : ℕ) : rMOf M r ≤ M := min_le_left _ _
+
+/-- **The shifted edge is maximized at `rMOf M r`, for every `M`** (analog of `tie_maximal_general`). -/
+theorem rtie_maximal_general (M r : ℕ) (hM : 0 < M) :
+    ∀ c, c ≤ M → Aobj (backboneU (rtieState M r c)) ≤ Aobj (backboneU (rtieState M r (rMOf M r))) := by
+  intro c hc
+  by_cases hle : leastHubTradeStop M r ≤ M
+  · have hmOf : rMOf M r = leastHubTradeStop M r := min_eq_right hle
+    rw [hmOf]
+    exact rtie_maximal_over_trades M r (leastHubTradeStop M r) hle (leastHubTradeStop_spec M r)
+      (fun i hi => leastHubTradeStop_min M r hi) c hc
+  · have hgt : M < leastHubTradeStop M r := by omega
+    have hmOf : rMOf M r = M := min_eq_left (le_of_lt hgt)
+    rw [hmOf]
+    exact rtie_up_chain M r c M hc (le_refl M)
+      (fun i _ hiM => leastHubTradeStop_min M r (by omega))
 
 end Step3
 end R3Cert
