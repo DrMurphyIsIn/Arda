@@ -334,3 +334,6 @@ name = "DlvpZetaContSphere"
 
 [[lean_lib]]
 name = "DlvpCanonicalClosedBall"
+
+[[lean_lib]]
+name = "DlvpZetaGBound"
