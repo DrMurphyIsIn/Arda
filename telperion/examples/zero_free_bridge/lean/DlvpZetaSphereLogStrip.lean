@@ -17,6 +17,7 @@ import DlvpZetaLower
 import DlvpZetaDisk
 import StripBound
 import DlvpCanonicalNorm
+import DlvpEntirePlumbing
 
 open Complex Metric
 
@@ -116,5 +117,38 @@ theorem g_sphere_log_osc_strip {c₀ : ℂ} {R : ℝ} {g : ℂ → ℂ}
   have hlogc₀ : Real.log ‖riemannZeta c₀‖ ≤ Real.log ‖g 0‖ := Real.log_le_log hζc₀pos hfg0
   rw [hgf]
   linarith
+
+/-- **Strip-capable `hg_bound`.**  The interior entire-part bound driven by the strip `g` sphere
+    oscillation: `‖logDeriv g z₀‖ ≤ 4 Aζ'' (R+‖z₀‖)/(R-‖z₀‖)²`, `Aζ'' = log U'' - log(2-π²/6) =
+    O(L)`, now valid when the sphere dips below `Re = 1`.  Mirror of `DlvpZetaEntire.norm_logDeriv_g_le`
+    with the relaxed strip hypotheses (`R < c₀.re - 1/2`, `R + 2 ≤ |c₀.im|`). -/
+theorem norm_logDeriv_g_le_strip {c₀ : ℂ} {R : ℝ} {g : ℂ → ℂ}
+    (hR : 0 < R) (hc2 : 2 ≤ c₀.re) (hRlt : R < c₀.re - 1/2) (himc : R + 2 ≤ |c₀.im|)
+    (D : CanonicalDecomp (fun w => riemannZeta (c₀ + w)) g R)
+    (hf_cont : ContinuousOn (fun w => riemannZeta (c₀ + w)) (sphere 0 R))
+    (hg_cont : ContinuousOn g (sphere 0 R))
+    (hg_dcc : DiffContOnCl ℂ g (ball 0 R)) (hg_ne : ∀ z ∈ ball (0 : ℂ) R, g z ≠ 0)
+    (hfg0 : ‖riemannZeta c₀‖ ≤ ‖g 0‖) {z₀ : ℂ} (hz₀ : ‖z₀‖ < R) :
+    ‖logDeriv g z₀‖
+      ≤ 4 * (Real.log ((‖c₀‖ + R) / (|c₀.im| - R) + (‖c₀‖ + R) / (c₀.re - R))
+              - Real.log (2 - Real.pi ^ 2 / 6))
+          * (R + ‖z₀ - 0‖) / (R - ‖z₀ - 0‖) ^ 2 := by
+  have hd_re : 0 < c₀.re - R := by linarith
+  have hd_im : 0 < |c₀.im| - R := by linarith
+  have hcre : c₀.re ≤ ‖c₀‖ := le_trans (le_abs_self _) (Complex.abs_re_le_norm c₀)
+  have hU1 : (1 : ℝ) ≤ (‖c₀‖ + R) / (|c₀.im| - R) + (‖c₀‖ + R) / (c₀.re - R) := by
+    have ht1 : (0 : ℝ) ≤ (‖c₀‖ + R) / (|c₀.im| - R) := by positivity
+    have ht2 : (1 : ℝ) ≤ (‖c₀‖ + R) / (c₀.re - R) := by rw [le_div_iff₀ hd_re]; linarith
+    linarith
+  have hAζpos : 0 < Real.log ((‖c₀‖ + R) / (|c₀.im| - R) + (‖c₀‖ + R) / (c₀.re - R))
+      - Real.log (2 - Real.pi ^ 2 / 6) := by
+    have h1 : 0 ≤ Real.log ((‖c₀‖ + R) / (|c₀.im| - R) + (‖c₀‖ + R) / (c₀.re - R)) :=
+      Real.log_nonneg hU1
+    have h2 : Real.log (2 - Real.pi ^ 2 / 6) < 0 :=
+      Real.log_neg two_sub_pi_sq_div_six_pos (by nlinarith [Real.pi_gt_three])
+    linarith
+  have hρ : ‖z₀ - 0‖ < R := by rwa [sub_zero]
+  exact norm_logDeriv_le_of_sphere_log_norm_le_interior hAζpos hρ hg_dcc hg_ne
+    (g_sphere_log_osc_strip hR hc2 hRlt himc D hf_cont hg_cont hfg0)
 
 end ZeroFreeBridge
