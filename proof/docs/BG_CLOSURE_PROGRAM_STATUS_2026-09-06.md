@@ -94,8 +94,23 @@ machinery, parametrized by `r`, and CLOSED all 11 residue classes at large sizes
   count `≤ 5`, so all tie states are valid `Balanced` states (`tradeStop K 5` etc. positive-definite).
 
 **Net:** the single-hub (length-1 `Hdom`) maximizer is fully characterized across all 11 residues at large
-sizes, a clean standalone result.  Remaining single-hub gap = only the small-M finite patches per residue
-(tedious, mechanical, no new insight).
+sizes, a clean standalone result.
+
+**SMALL-M PATCHES DONE — single-hub envelope now COMPLETE at EVERY size (all 11 residues).**
+- **r = 1..5 (`singleHubR_le_tie_small_r1..r5`, 1≤M≤21):** single-edge, decompose → `colStateR`,
+  per-M `interval_cases` with correct `m=rMOf(M,r)`, `t=0` via `colStateR_zero`+`rtie_maximal`, interior
+  `t∈{1,2}` via `hub_Aobj_eq`+`norm_num`.
+- **r = 6..10 (`singleHubR_le_tie_small_r6..r10`, 1≤M≤30 ⟹ Mn=10..39):** these are TWO-edge (maximizer
+  flips to the `δ=r-11` sub-edge at small size). Unified `max`-of-two template — sub-edge configs
+  = `offEdge (M+9) (11-r) c` → `off_maximal_general`; high-edge configs reuse the per-M patch under
+  `le_max_of_le_right`. `t≤3`; r=10 uses `off=1` (=negEdge). KEY: the `M`-param (size `11M+9r`, offEdge
+  budget `M+9`, rtie budget `M`) avoids the `Mn`-param's tiny-size truncation (`11Mn-9off → 0`) degeneracy.
+- **Tail (`singleHubR_le_tie_tail_r8/r9/r10`, 3≤Mn≤9):** below the offEdge budget the low edge alone
+  dominates every config — fully enumerated (`interval_cases Mn/c/b/a`), each routed to `off_maximal_general`
+  at the concrete argmax via `hub_Aobj_eq`; `rw [offEdge] <;> …` handles the config=argmax reflexive case.
+
+Combined with the large-size lemmas (`singleHubR_le_tie_07` M≥22, `_10` Mn≥31, `_89` Mn≥40), residues
+8,9,10 are dominated at all Mn≥3, and every residue is closed at every size.  All kernel-clean (no `sorryAx`).
 
 ## Assembly — length-1 Hdom slice DONE (`R47SharpRate.lean`, kernel-verified)
 `singleHub_dominated` / `sharpRate_singleHub_aligned`: an arbitrary Balanced+Capped single hub
@@ -105,12 +120,11 @@ dominated by `alignedTie` at its own `stateSize` (`= 1 + 11·count5 + 9·count4 
 This is the length-1 case of `SharpRateNF`/`Hdom`, discharged by the M3 envelope.
 
 ## Honest frontier / next steps (dependency-ordered)
-The single-hub (length-1 `Hdom`) side is now essentially settled: **all 11 residues characterized at
-large sizes, with valid Balanced ties.**  The non-aligned-n layer for length-1 is CLOSED (it was NOT
-Pant-entangled — that was an overstatement, corrected).  What genuinely remains:
-1. **Small-M finite patches per residue** (`1 ≤ K < 22`-analog, off the large-size thresholds 22/31/40):
-   tedious, mechanical, no new insight — completes the standalone single-hub result at ALL sizes.  Same
-   pattern as the aligned `singleHub_le_tie_lt22`, applied per residue.
+The single-hub (length-1 `Hdom`) side is now FULLY settled: **all 11 residues dominated at EVERY size,
+with valid Balanced ties.**  The non-aligned-n layer for length-1 is CLOSED (it was NOT
+Pant-entangled — that was an overstatement, corrected).  The small-M finite patches (item 1 below) are
+now DONE (see the "SMALL-M PATCHES DONE" block above).  What genuinely remains:
+1. ~~Small-M finite patches per residue~~ — DONE (`singleHubR_le_tie_small_r1..r10` + `_tail_r8/9/10`).
 2. **GENUINELY OPEN (the real BG frontier):** `m ≥ 3` multi-hub domination — has only PROBES
    (`multi_hub_probe`, `three_hub_residual_probe`), NO all-nonneg Positivstellensatz cert like the
    two-hub `twoHub_le_tie`; the "5 non-box-certifiable cb≥1 cells" + the environment-merge machinery are
@@ -120,5 +134,5 @@ Pant-entangled — that was an overstatement, corrected).  What genuinely remain
 Full closure stays gated on the genuinely-open mathematics (Pant 2026: the global maximizer is open, and
 the m≥3 multi-hub reduction is the concrete Lean-side obstruction).  The realistic, honest deliverable is
 now large: both hard cores (M4 two-hub, aligned M3), the length-1 Hdom slice, and the FULL single-hub
-envelope across all 11 residue classes — all kernel-anchored — with the open frontier precisely delimited
-to `m≥3` multi-hub + Hnorm.  `conjecture1_proved = False`.
+envelope across all 11 residue classes at EVERY size — all kernel-anchored — with the open frontier
+precisely delimited to `m≥3` multi-hub + Hnorm.  `conjecture1_proved = False`.
