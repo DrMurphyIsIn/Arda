@@ -54,7 +54,11 @@ git commit -m "docs(dvp-box): feasibility probe for the concrete all-zeros-up-to
 
 ---
 
-### Task 2: The multiplicity bridge (kernel)
+### Task 2: The multiplicity bridge (kernel) -- DROPPED (subsumed by PR #318)
+
+**PLAN REVISION 2026-09-07:** PR #318 (`ZeroFreeBridge.zeta_zero_divisor_pos` + the self-contained `riemannZeta_ne_zero_region`, on `main`) makes this task redundant -- the multiplicity bridge is built AND the region theorem needs no multiplicity input at all. SKIP Task 2. Task 3 (revised) consumes `riemannZeta_ne_zero_region` directly. The original Task 2 text below is retained for the record but NOT executed.
+
+
 
 **Files:**
 - Create: `telperion/examples/zeta_zero_localization/lean/ZetaZeroMult.lean`
@@ -104,8 +108,8 @@ git commit -m "feat(dvp-box): multiplicity bridge -- zeta zero in ball has divis
 - Modify: `lakefile.toml`
 - Test: `telperion/tests/test_dvp_box.py`
 
-**Interfaces:**
-- Consumes: `ZeroFreeBridge.dlvp_zeta_region_rate_effective`, `ZeroFreeBridge.dlvpRateC`/`dlvpRateC_pos`, `ZetaZeroMult.zeta_zero_divisor_pos`, Mathlib functional equation (`completedRiemannZeta_one_sub`), `BoxLocalization.zeta_zero_iff_completed_zero` (strip bridge), `riemannZeta_ne_zero_of_one_le_re`.
+**Interfaces (REVISED -- consume PR #318's self-contained region; Task 2 dropped):**
+- Consumes: `ZeroFreeBridge.riemannZeta_ne_zero_region (β γ : ℝ) (hγ : 55/16 ≤ |γ|) (hβlow : 1 - dlvpRateC / Real.log |γ| < β) : riemannZeta ((β:ℂ)+(γ:ℂ)*I) ≠ 0` (DlvpZetaZeroFree.lean, on main -- SELF-CONTAINED, NO multiplicity input, β≥3/4 handled internally); `ZeroFreeBridge.dlvpRateC`/`dlvpRateC_pos`; Mathlib functional equation (`completedRiemannZeta_one_sub`); `BoxLocalization.zeta_zero_iff_completed_zero` (strip bridge); `riemannZeta_ne_zero_of_one_le_re`.
 - Produces: `ZetaZeroConfinement.zero_in_band` (signature below).
 
 - [ ] **Step 1: Write the failing build test** (`test_zeta_confinement_builds`, `@requires_lake`, target `ZetaZeroConfinement`).
@@ -120,13 +124,13 @@ theorem zero_in_band (a T : ℝ) (haC : a ≤ ZeroFreeBridge.dlvpRateC / Real.lo
     a ≤ ρ.re ∧ ρ.re ≤ 1 - a := by
   ...
 ```
-**Strategy:** let `β = ρ.re`, `γ = ρ.im`, `0 < γ ≤ T`.
-- **Strip:** `0 < β < 1` -- `riemannZeta_ne_zero_of_one_le_re` (no zeros with `Re >= 1`) gives `β < 1`; the functional equation / reflected zero gives `β > 0` (or use the known nontrivial-strip fact). 
-- **Height floor:** `55/16 ≤ |γ|` -- there are no nontrivial zeros with `0 < |γ| < 14` (the first zero is at `~14.13`), and `55/16 ~ 3.44 < 14`; so a zero with `0 < γ ≤ T` has `γ ≥ 14 > 55/16`. If Mathlib lacks a "no low zeros" lemma, carry `55/16 ≤ γ` as a hypothesis (a documented Arb/classical fact -- honest, small) OR derive it from the on-line sweep in the concrete instantiation.
-- **Right edge (`β ≤ 1-a`):** if `β ≥ 3/4`: `k := divisor ... ρ ≥ 1` (Task 2), apply `dlvp_zeta_region_rate_effective β γ k (by linarith) hβ1 hΓ hk hmρ₀` -> `β ≤ 1 - dlvpRateC/log|γ|`; since `log|γ| ≤ log T` (monotone, `|γ| ≤ T`) and `dlvpRateC > 0`, `dlvpRateC/log|γ| ≥ dlvpRateC/log T ≥ a`, so `β ≤ 1 - a`. If `β < 3/4`: `β < 3/4 ≤ 1 - a` (since `a ≤ 1/4`), done.
-- **Left edge (`a ≤ β`):** apply the SAME argument to the FE-reflected zero. From `riemannZeta ρ = 0` (strip) get `completedRiemannZeta ρ = 0` (`zeta_zero_iff_completed_zero`, `0 < β`), then `completedRiemannZeta (1-ρ) = 0` (`completedRiemannZeta_one_sub`), then `riemannZeta (1-ρ) = 0` (strip bridge, `0 < (1-ρ).re = 1-β`). The reflected zero `1-ρ = (1-β) + i*(-γ)` has real part `1-β`, `|(-γ)| = |γ|`. If `β ≤ 1/4`: `1-β ≥ 3/4`, apply dVP-effective to `1-ρ` (mult `≥ 1` by Task 2 at center `2 + (-γ)I`) -> `1-β ≤ 1 - dlvpRateC/log|γ| ≤ 1 - a`, i.e. `β ≥ a`. If `β > 1/4`: `β > 1/4 ≥ a` (since `a ≤ 1e-6 < 1/4`), done.
-- Combine both edges.
-(The exact FE + conjugate-symmetry lemma names are the implementer's to find; `completedRiemannZeta_one_sub` is the FE.)
+**Strategy (REVISED -- `riemannZeta_ne_zero_region` is self-contained; NO multiplicity, NO β≥3/4 casework):** let `β = ρ.re`, `γ = ρ.im`, `0 < γ ≤ T`.
+- **Height floor:** `55/16 ≤ |γ|` -- there are no nontrivial zeros with `0 < |γ| < 14` (first zero `~14.13`), `55/16 ~ 3.44 < 14`. If Mathlib lacks a "no low zeros" lemma, carry `55/16 ≤ |γ|` as a documented hypothesis on `zero_in_band` (honest, small classical fact) -- the concrete T=100 instantiation discharges it from the on-line sweep (all 29 zeros have `γ ≥ 14`).
+- **Right edge (`β ≤ 1-a`):** the CONTRAPOSITIVE of `riemannZeta_ne_zero_region`. Since `riemannZeta ((β:ℂ)+(γ:ℂ)*I) = 0` (i.e. `ρ`, with `ρ = (β:ℂ)+(γ:ℂ)*I` after `Complex.re/im` normalization) and `55/16 ≤ |γ|`, we CANNOT have `1 - dlvpRateC/log|γ| < β`, so `β ≤ 1 - dlvpRateC/log|γ|`. Then `dlvpRateC/log|γ| ≥ dlvpRateC/log T ≥ a` (`log|γ| ≤ log T` monotone since `|γ| = γ ≤ T`; `dlvpRateC > 0` via `dlvpRateC_pos`; `haC`), so `β ≤ 1 - a`. (No `β ≥ 3/4` split -- the region theorem discharges it internally.)
+- **Left edge (`a ≤ β`):** apply the region to the FE-reflected zero. From `riemannZeta ρ = 0` (strip, `0 < β`) get `completedRiemannZeta ρ = 0` (`zeta_zero_iff_completed_zero`), then `completedRiemannZeta (1-ρ) = 0` (`completedRiemannZeta_one_sub`), then `riemannZeta (1-ρ) = 0` (strip bridge, `0 < (1-ρ).re = 1-β`). The reflected zero `1-ρ = (1-β) + (-γ)*I` has real part `1-β`, `|(-γ)| = |γ| ≥ 55/16`. Contrapositive of the region on `1-ρ`: `1-β ≤ 1 - dlvpRateC/log|γ| ≤ 1 - a`, i.e. `β ≥ a`.
+- **Strip `0 < β < 1`:** `β < 1` from `riemannZeta_ne_zero_of_one_le_re`; `β > 0` from the reflected-zero argument (or the nontrivial-strip fact) -- needed so `zeta_zero_iff_completed_zero` (which needs `0 < re`) applies to `ρ`. If `0 < β` needs its own small argument, obtain it from `riemannZeta_ne_zero_of_one_le_re` applied to `1-ρ` (`(1-ρ).re = 1-β ≥ 1` would force `β ≤ 0`; contrapositive gives `β > 0` once `ζ(1-ρ)=0`, which needs `0 < β` first -- so instead get `0 < β` directly from Mathlib's nontrivial-zero-in-strip fact if available, else carry `0 < β < 1` as a documented hypothesis, honest).
+- Combine both edges: `a ≤ β ≤ 1-a`.
+(The exact FE + conjugate-symmetry lemma names are the implementer's to find; `completedRiemannZeta_one_sub` is the FE. Note the reflected zero is at height `-γ`; the region's `|γ|` hypothesis uses absolute value so `-γ` is fine, but a conjugate-symmetry step `ζ(s̄)=conj ζ(s)` may be needed to land the reflected zero at height `+γ` if a Mathlib lemma requires it -- the implementer resolves this.)
 
 - [ ] **Step 4: lakefile + build + axiom check** (clean).
 
@@ -136,7 +140,7 @@ git add telperion/examples/zeta_zero_localization/lean/ZetaZeroConfinement.lean 
 git commit -m "feat(dvp-box): confinement -- every nontrivial zero up to T lies in [a,1-a] (dVP+FE, kernel)"
 ```
 
-**Acceptance:** `zero_in_band` builds sorry-free, clean axioms; genuinely derives `a ≤ β ≤ 1-a` from dVP-effective + FE + multiplicity (not assumed); `a` and `T` are free variables with `a ≤ dlvpRateC/log T` as the load-bearing hypothesis. Any residual (e.g. `55/16 ≤ γ`) carried as a documented honest hypothesis if a Mathlib gap forces it.
+**Acceptance:** `zero_in_band` builds sorry-free, clean axioms; genuinely derives `a ≤ β ≤ 1-a` from `riemannZeta_ne_zero_region` (#318, self-contained) + FE (not assumed); `a` and `T` are free variables with `a ≤ dlvpRateC/log T` as the load-bearing hypothesis. Any residual (`55/16 ≤ |γ|` no-low-zeros, or `0 < β < 1` strip) carried as a documented honest hypothesis if a Mathlib gap forces it. NO multiplicity input, NO `β ≥ 3/4` casework (the region theorem discharges both).
 
 ---
 
