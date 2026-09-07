@@ -187,6 +187,59 @@ from .emit_entire_part_bound import (  # noqa: F401
     EntirePartBoundEmitter, entire_part_bound_certificate,
     entire_part_bound_family, certify_entire_part_bound_point,
 )
+from .emit_two_scale_separation import (  # noqa: F401
+    TwoScaleSeparationEmitter, two_scale_certificate,
+    two_scale_separation_family, certify_two_scale_separation_point,
+)
+from .emit_far_pole_sum import (  # noqa: F401
+    FarPoleSumEmitter, far_pole_sum_certificate,
+    far_pole_sum_family, certify_far_pole_sum_point,
+)
+from .emit_herglotz_lower import (  # noqa: F401
+    HerglotzLowerEmitter, herglotz_lower_certificate,
+    herglotz_lower_family, certify_herglotz_lower_point,
+)
+from .emit_argument_principle import (  # noqa: F401
+    ArgumentPrincipleEmitter, argument_principle_certificate,
+    argument_principle_family, certify_argument_principle_point,
+)
+# Argument-principle companion atoms (2026-09-06): full (residue+Cauchy), rect (box), annulus (shell).
+from .emit_full_argument_principle import (  # noqa: F401
+    FullArgumentPrincipleEmitter, full_argument_principle_certificate,
+    full_argument_principle_family, certify_full_argument_principle_point,
+)
+from .emit_rect_argument_principle import (  # noqa: F401
+    RectArgumentPrincipleEmitter, rect_argument_principle_certificate,
+    rect_argument_principle_family, certify_rect_argument_principle_point,
+)
+from .emit_annulus_count import (  # noqa: F401
+    AnnulusCountEmitter, annulus_count_certificate,
+    annulus_count_family, certify_annulus_count_point,
+)
+# RH-in-a-box localization capstone (Stage 3, 2026-09-06): every zeta-zero in the box is on Re=1/2.
+from .emit_box_localization import (  # noqa: F401
+    BoxLocalizationEmitter, box_localization_certificate,
+    box_localization_family, certify_box_localization_point,
+)
+# Winding-number frontier (2026-09-06): Rouché heart (winding 0) + conditional box residue-sum.
+from .emit_slit_loop_winding_zero import (  # noqa: F401
+    SlitLoopWindingZeroEmitter, certify_slit_loop_winding_zero_point,
+    slit_loop_winding_zero_certificate, slit_loop_winding_zero_family,
+)
+from .emit_box_residue_sum import (  # noqa: F401
+    BoxResidueSumEmitter, box_residue_sum_certificate,
+    box_residue_sum_family, certify_box_residue_sum_point,
+)
+# The winding-NONZERO primitive (2026-09-06): ∮_∂rect (z-ρ)⁻¹ = 2πi, from scratch.
+from .emit_rect_winding import (  # noqa: F401
+    RectWindingEmitter, certify_rect_winding_point,
+    rect_winding_certificate, rect_winding_family,
+)
+# dVP zero-factor magnitude bound (2026-09-06): two-scale log-product boundary bound.
+from .emit_log_product_bound import (  # noqa: F401
+    LogProductBoundEmitter, certify_log_product_bound_point,
+    log_product_bound_certificate, log_product_bound_family,
+)
 # Analytic-cert-structures build (2026-09-05): box-robust emitter (#2).
 from .emit_box_robust import (  # noqa: F401
     BoxRobustEmitter, BoxRobustPayload, box_min_lower_bound,
@@ -196,6 +249,22 @@ from .emit_box_robust import (  # noqa: F401
 from .emit_hyperbolicity import (  # noqa: F401
     HyperbolicityEmitter, HyperbolicityPayload,
     hyperbolicity_family, certify_hyperbolicity_point,
+)
+# Zeta-zero-localization Stage 1 core (2026-09-06): xi_line_zeros emitter.
+from .emit_xi_line_zeros import (  # noqa: F401
+    XiLineZerosEmitter, XiLineZerosPayload, sign_change_count,
+    xi_line_zeros_family, certify_xi_line_zeros_point,
+)
+# Zeta-box-localization Stage 2A (2026-09-06): winding_count emitter (kernel).
+from .emit_winding_count import (  # noqa: F401
+    WindingCountEmitter, winding_count_certificate, winding_count_family,
+    certify_winding_count_point,
+    SegmentWindingCertificate, segment_winding_certificate,
+)
+# Zeta-box-localization Stage 2/3 (2026-09-06): segment (ball) enclosures.
+from .arb_enclosure import (  # noqa: F401
+    enclose_lambda_segment, enclose_lambda_segments,
+    enclose_zeta_segment, enclose_zeta_segments,
 )
 # Analytic-cert-structures build (2026-09-05): turan-box log-concavity emitter (#5).
 from .emit_turan_box import turan_box_family  # noqa: F401

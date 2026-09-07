@@ -1,5 +1,50 @@
 # Changelog
 
+## Unreleased -- STAGE 3 CAPSTONE: RH VERIFIED IN A BOX (Turing-style, NOT a proof of RH)
+
+- **`BoxLocalization.all_nontrivial_zeros_in_box_on_critical_line`**
+  (`examples/zeta_zero_localization/lean/BoxLocalization.lean`) -- kernel-verified
+  capstone: EVERY nontrivial zero of `riemannZeta` in `B = [2/5,3/5] x [10,35]`
+  lies on `Re s = 1/2` and is simple.  Proof: total divisor = 5 (box argument
+  principle) and 5 distinct on-line zeros (Stage 1, via the kernel
+  `completedRiemannZeta <-> riemannZeta` bridge) force a Finset counting
+  exhaustion (`exhaustion_by_count`) -- the on-line zeros ARE the whole divisor.
+  The winding integer (= 5), edge non-vanishing, and value enclosures are
+  Arb-certified NON-KERNEL input; the kernel proves every implication.  Axioms:
+  `{propext, Classical.choice, Quot.sound}` -- no `sorryAx`.
+  `conjecture1_proved = False`: this VERIFIES RH inside the box; it is NOT a proof
+  of RH.  `BlaschkeBox.zeta_blaschke_split_box` gained kernel conjuncts `d rho >=
+  1` and "every zeta zero in the ball is in the support".
+- **`emit_box_localization.py` (kind `box_localization`, STRUCTURALLY_NONVACUOUS)**
+  -- certificate + `BoxLocalizationEmitter` for the counting step; NEGATIVE
+  CONTROL refuses `n_line > n_total` and `n_line != n_total` (no exhaustion
+  without equality).  Registered in `certify.py`, `__init__.py`,
+  `emitter_sensitivity.py`; `tests/test_box_localization.py`; negative control
+  also runs in `generate.py --check`.
+- **CI: `zeta-box-localization-compiles`** -- warm `lake exe cache get` then
+  `lake build BoxLocalization BoxArgPrincipleZeta BlaschkeBox RigorousWinding`.
+
+## Unreleased -- MILESTONE: first kernel-verified on-line nontrivial-zero count for zeta
+
+- **`XiLineZeros.lambda_five_zeros_10_35`** (`examples/zeta_zero_localization/`) --
+  Lean theorem asserting 5 strictly increasing zeros of `completedRiemannZeta` on
+  `Re s = 1/2` in `[10, 35]`, matching the 5 known nontrivial zeros
+  (t ~ 14.1347, 21.0220, 25.0109, 30.4249, 32.9351).  Certified N = 5 via
+  alternating-sign Arb enclosures + IVT.  Axioms: `{propext, Classical.choice,
+  Quot.sound}` -- no `sorryAx`.  `conjecture1_proved = False`: this is a lower
+  bound on-line zero count, not a proof of RH; Stages 2-3 (exact count via
+  argument principle; RH-in-a-box) are deferred.
+- **`generate.py` interval driver** -- extended with `--a --b --n-samples --prec`
+  flags; prints certified N without writing Lean; `--check` byte-compares the
+  frozen output.  Non-adjacent sign-change intervals now handled by `hgap{m}`
+  norm_num lemmas in `emit_xi_line_zeros.py` (removed the back-to-back `assert`).
+- **`tests/test_zeroloc_end_to_end.py`** -- TDD gate: `sign_change_count >= 5` on
+  `[10, 35]` at 0.5 spacing, 300-bit Arb precision.
+- **`docs/ZETA_ZERO_LOCALIZATION_STATUS.md`** -- honest status: kernel-proven scope,
+  Arb non-kernel boundary, what is NOT proved (RH, exact count, off-line zeros).
+- **CI: `zeta-zero-localization-compiles`** -- `generate.py --check` + `lake build`
+  in `.github/workflows/telperion-lean-e2e.yml`.
+
 ## Unreleased — Attribution: emitters ported from AxiomMath/ZetaZeros
 
 - **`CurvatureBoundaryEmitter`** (`examples/curvature_boundary/`) and

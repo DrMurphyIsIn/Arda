@@ -32,7 +32,7 @@ open MeasureTheory Filter Topology Set
 namespace ZeroFreeBridge
 
 /-- The tail integral `∫_{x>N} {x} x^{-(s+1)} dx`, as a function of the cutoff `N`. -/
-private noncomputable def fractTail (s : ℂ) (N : ℝ) : ℂ :=
+noncomputable def fractTail (s : ℂ) (N : ℝ) : ℂ :=
   ∫ x in Set.Ioi N, ((Int.fract x : ℝ) : ℂ) / (x : ℂ) ^ (s + 1)
 
 /-- (TRUNC) truncated Euler–Maclaurin representation of ζ on `0 < Re s`, `s ≠ 1`, at integer cutoff
@@ -210,5 +210,80 @@ theorem zeta_log_bound {σ t : ℝ} (hσ1 : 1 ≤ σ) (hσ2 : σ ≤ 2) (ht : 2 
     (s * fractTail s (N : ℝ))
   have h2 := norm_add_le (∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)) ((N : ℂ) ^ (1 - s) / (s - 1))
   linarith [h1, h2, hA, hB, hC, hlog0]
+
+/-- **CRITICAL-STRIP POLYNOMIAL GROWTH BOUND:** `‖ζ(σ+it)‖ ≤ 5·|t|` for `1/2 ≤ σ < 1`, `|t| ≥ 2`.
+    This is the `σ < 1` companion to `zeta_log_bound` (which needs `σ ≥ 1`): the dVP entire-part
+    re-derivation must bound `ζ` on the sphere of a disk that dips BELOW `Re = 1` (to enclose a
+    nontrivial zero `ρ₀`), where no `Re ≥ 1` bound applies. A polynomial `O(|t|)` bound suffices
+    downstream — it only affects the region CONSTANT (via `log‖ζ‖ = O(log|t|)`), not the rate.
+
+    Same truncated Euler–Maclaurin at `N = ⌊|t|⌋` as `zeta_log_bound`, but with `σ < 1` the three
+    terms are bounded CRUDELY (no `log` needed): Term A `‖Σ n^{-s}‖ ≤ Σ 1 = N ≤ |t|` (each
+    `n^{-σ} ≤ 1`), Term B `‖N^{1-s}/(s-1)‖ = N^{1-σ}/‖s-1‖ ≤ |t|/|t| = 1` (`N^{1-σ} ≤ N` since
+    `1-σ ≤ 1`), Term C `‖s·fractTail‖ ≤ ‖s‖/(σ·N^σ) ≤ 3|t|` (`σ ≥ 1/2`, `N^σ ≥ 1`).
+    (The sharp partial-sum estimate lives in `DlvpZetaStripSum`; here the trivial `≤ N` is cleaner
+    and gives the same `O(|t|)`.)  conjecture1_proved = False (NOT a proof of RH). -/
+theorem zeta_strip_growth {σ t : ℝ} (hσ0 : 1/2 ≤ σ) (hσ1 : σ < 1) (ht : 2 ≤ |t|) :
+    ‖riemannZeta ((σ : ℂ) + t * Complex.I)‖ ≤ 5 * |t| := by
+  set s : ℂ := (σ : ℂ) + t * Complex.I with hs_def
+  have hsre : s.re = σ := by simp [hs_def]
+  have hsim : s.im = t := by simp [hs_def]
+  have htpos : (0 : ℝ) < |t| := lt_of_lt_of_le two_pos ht
+  have htne : t ≠ 0 := by intro h; rw [h, abs_zero] at ht; linarith
+  set N : ℕ := ⌊|t|⌋₊ with hN_def
+  have hN1 : 1 ≤ N := Nat.le_floor (by push_cast; linarith)
+  have hNR1 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN1
+  have hNRpos : (0 : ℝ) < (N : ℝ) := by linarith
+  have hNle : (N : ℝ) ≤ |t| := Nat.floor_le htpos.le
+  have hsne1 : s ≠ 1 := by intro h; apply htne; rw [← hsim, h, Complex.one_im]
+  have hspos : 0 < s.re := by rw [hsre]; linarith
+  have htrunc := zeta_trunc hspos hsne1 hN1
+  -- Term A: ‖Σ n^{-s}‖ ≤ N (each term ≤ 1, N terms) ≤ |t|
+  have hA : ‖∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)‖ ≤ |t| := by
+    have h1 : ‖∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)‖ ≤ ∑ n ∈ Finset.Icc 1 N, (1:ℝ) := by
+      refine (norm_sum_le _ _).trans (Finset.sum_le_sum (fun n hn => ?_))
+      have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
+      have hnpos : (0:ℝ) < (n:ℝ) := by exact_mod_cast hn1
+      rw [← Complex.ofReal_natCast n, Complex.norm_cpow_eq_rpow_re_of_pos hnpos, Complex.neg_re]
+      apply Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hn1)
+      rw [hsre]; linarith
+    simp only [Finset.sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul, mul_one] at h1
+    exact h1.trans hNle
+  -- Term B: ‖N^{1-s}/(s-1)‖ = N^{1-σ}/‖s-1‖ ≤ |t|/|t| = 1
+  have hdent : |t| ≤ ‖s - 1‖ := by
+    have h1 := abs_im_le_norm_sub_one s; rw [hsim] at h1; linarith
+  have hdenpos : (0 : ℝ) < ‖s - 1‖ := by linarith
+  have hnumB : ‖(N : ℂ) ^ (1 - s)‖ ≤ |t| := by
+    rw [← Complex.ofReal_natCast N, Complex.norm_cpow_eq_rpow_re_of_pos hNRpos]
+    have : (1 - s).re = 1 - σ := by simp [Complex.sub_re, hsre]
+    rw [this]
+    calc (N:ℝ) ^ (1 - σ) ≤ (N:ℝ) ^ (1:ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le hNR1 (by linarith)
+      _ = (N:ℝ) := Real.rpow_one _
+      _ ≤ |t| := hNle
+  have hB : ‖(N : ℂ) ^ (1 - s) / (s - 1)‖ ≤ 1 := by
+    rw [norm_div, div_le_iff₀ hdenpos, one_mul]
+    calc ‖(N:ℂ)^(1-s)‖ ≤ |t| := hnumB
+      _ ≤ ‖s-1‖ := hdent
+  -- Term C: ‖s·fractTail‖ ≤ ‖s‖/(σ·N^σ) ≤ 3|t|
+  have hsnorm : ‖s‖ ≤ σ + |t| := by
+    have h : ‖s‖ ≤ ‖(σ : ℂ)‖ + ‖(t : ℂ) * Complex.I‖ := by rw [hs_def]; exact norm_add_le _ _
+    rwa [Complex.norm_real, norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
+      Real.norm_of_nonneg (by linarith : (0 : ℝ) ≤ σ), Real.norm_eq_abs] at h
+  have hNσ1 : (1:ℝ) ≤ (N:ℝ) ^ s.re := Real.one_le_rpow hNR1 hspos.le
+  have hbpos : (0 : ℝ) < s.re * (N : ℝ) ^ s.re := mul_pos hspos (by linarith)
+  have hbge : (1/2 : ℝ) ≤ s.re * (N : ℝ) ^ s.re := by
+    have h : s.re * 1 ≤ s.re * (N:ℝ)^s.re := mul_le_mul_of_nonneg_left hNσ1 hspos.le
+    rw [mul_one] at h; rw [hsre] at h ⊢; linarith
+  have hC : ‖s * fractTail s (N : ℝ)‖ ≤ 3 * |t| := by
+    refine le_trans (norm_tail_term_le hspos hN1) ?_
+    rw [div_le_iff₀ hbpos]
+    nlinarith [hsnorm, mul_le_mul_of_nonneg_left hbge htpos.le, htpos, hσ1, ht]
+  -- assemble via the triangle inequality
+  rw [htrunc]
+  have h1 := norm_sub_le ((∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)) + (N : ℂ) ^ (1 - s) / (s - 1))
+    (s * fractTail s (N : ℝ))
+  have h2 := norm_add_le (∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-s)) ((N : ℂ) ^ (1 - s) / (s - 1))
+  linarith [h1, h2, hA, hB, hC, htpos]
 
 end ZeroFreeBridge

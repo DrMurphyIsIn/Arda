@@ -2757,6 +2757,741 @@ jobs:
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpBoundaryDecomp
 
+  rh-dlvp-zetaspherelog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the ζ-growth sphere bound hζbound (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaSphereLog
+
+  rh-dlvp-zetafactor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the pointwise ζ=P·g factorization on the open disk (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaFactor
+
+  rh-dlvp-regionbound:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the σ-optimization region bound β ≤ 1 - c/(A·L) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpRegionBound
+
+  rh-dlvp-blaschketoskeleton:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the Blaschke → skeleton hzero/htwo glue (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBlaschkeToSkeleton
+
+  rh-dlvp-bcderivinterior:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the interior-point entire-part bound (centre→s transfer) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBCDerivInterior
+
+  rh-dlvp-entireplumbing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the entire-part plumbing (interior-from-sphere + recentring) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpEntirePlumbing
+
+  rh-dlvp-zetaregion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP region capstone β ≤ 1 - c/(A·L) from the three BC inputs (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaRegion
+
+  rh-dlvp-zetarecenter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the LHS recentring bridge (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaRecenter
+
+  rh-dlvp-divisortranslate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the divisor-translation + Herglotz-sum reindexing (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpDivisorTranslate
+
+  rh-dlvp-zetabcbridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the BC-SUM → region downstream assembly (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaBcBridge
+
+  rh-dlvp-zetacanonical:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the CanonicalDecomp → region layer (bc_sum_blaschke ×2) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaCanonical
+
+  rh-dlvp-zetaentire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the ζ Blaschke-quotient entire-part bound hg_bound (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaEntire
+
+  rh-dlvp-zetarecenterdecomp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the recentred-ζ CanonicalDecomp (item 1) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaRecenterDecomp
+
+  rh-dlvp-zetazeroloc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build ζ-zero location (Re < σ) + divisor ≥ 0 (item 4) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaZeroLoc
+
+  rh-dlvp-blaschkecentre:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the Blaschke-centre modulus bound ‖B 0‖ ≤ 1 (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBlaschkeCenter
+
+  rh-dlvp-blaschkecont:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build B·g continuous at 0 — item 2's last leaf (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBlaschkeCont
+
+  rh-dlvp-zetacentrerel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the Blaschke-centre relation ‖ζ c₀‖ ≤ ‖g 0‖ (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaCentreRel
+
+  rh-dlvp-zetacentrefac:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the centre factorization hfac0 = ζ c₀ = B 0 · g 0 (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaCentreFac
+
+  rh-dlvp-zetastripsum:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the critical-strip partial Dirichlet sum bound (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaStripSum
+
+  rh-dlvp-zetaspherelogstrip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the strip-capable ζ boundary oscillation (dips below Re=1) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaSphereLogStrip
+
+  rh-dlvp-halarith:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the hAL arithmetic packaging (item 2) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpHALArith
+
+  rh-dlvp-zetacountstrip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the strip-capable Jensen zero count (disk dips below Re=1) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaCountStrip
+
+  rh-dlvp-zetaconcrete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the concrete-instantiation ring/geometry facts (c₀=2+iγ) (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaConcrete
+
+  rh-dlvp-bcsumconcrete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the concrete height-γ BC-SUM building block (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpBcSumConcrete
+
+  rh-dlvp-zetacontsphere:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the recentred-ζ sphere continuity hf_cont (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaContSphere
+
+  rh-dlvp-canonicalclosedball:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build g analytic up to the sphere (hg_cont/hg_dcc, boundary regularity resolved)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpCanonicalClosedBall
+
+  rh-dlvp-zetagbound:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the fully-wired entire-part bound hg_bound (item 1 complete)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaGBound
+
+  rh-dlvp-zetahal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the concrete hAL shape (item 2 packaging)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaHAL
+
+  rh-dlvp-zetacountreconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the zero-count reconciliation core (item 2i)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaCountReconcile
+
+  rh-dlvp-zetaazeta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build Aζ'' = O(log|γ|) for c₀=2+iγ (item 2ii, Bg=O(L))
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaAzeta
+
+  rh-dlvp-zetahgboundgamma:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the explicit height-γ entire-part bound hg_bound₁ (item A)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaHgBoundGamma
+
+  rh-dlvp-zetahbc1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the height-γ hbc₁ wiring from O(L) bounds (item A)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaHbc1
+
+  rh-dlvp-zetahpole:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build hpole (pole bound near s=1, item C — last analytic input)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaHpole
+
+  rh-dlvp-zetarecentereq:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the recentring equivalence for hbc₂ (item B)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaRecenterEq
+
+  rh-dlvp-zetaanafoundation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the final-assembly analyticity foundation atoms
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaAnaFoundation
+
   # dVP entire-part (i-b') certificate shapes (max_modulus, bc_deriv_re, entire_part_bound):
   # regenerate from the emitters, drift-check, and kernel-verify the emitted Lean.
   dvp-bc-atoms-compiles:
@@ -3251,3 +3986,130 @@ jobs:
       - name: Build the dVP Blaschke BC-SUM capstone (kernel verification)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpBCSumBlaschke
+
+  # dVP BLASCHKE→skeleton bridge: Herglotz lower bound k/(σ-β) ≤ Re(Σ m/(z-ρ)) (keep equal-height
+  # zero via re_smul_inv_sub_at_equal_height, drop nonneg rest). Turns bc_sum_blaschke into hzero.
+  rh-dlvp-herglotzlower:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the dVP Herglotz lower bound (kernel verification)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpHerglotzLower
+
+  # dVP geometry/two-scale certificate shapes (two_scale_separation, far_pole_sum, herglotz_lower):
+  # regenerate from the emitters, drift-check, and kernel-verify the emitted Lean.
+  dvp-geom-atoms-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+      - name: Emitter self-check / negative-control tests
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_dvp_geom_atoms.py -q
+      - name: Regenerate the dVP geometry Lean from the emitters (certify -> emit -> check)
+        working-directory: telperion
+        run: PYTHONPATH=src python examples/dvp_geom_atoms/generate.py --check
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/dvp_geom_atoms/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/dvp_geom_atoms/lean
+        run: lake exe cache get
+      - name: Build the emitted Lean (the actual verification — dVP geometry certificates)
+        working-directory: telperion/examples/dvp_geom_atoms/lean
+        run: lake build TwoScaleSeparation FarPoleSum HerglotzLower ArgumentPrinciple FullArgumentPrinciple RectArgumentPrinciple AnnulusCount SlitLoopWindingZero BoxResidueSum RectWinding LogProductBound
+
+  # MILESTONE: first kernel-verified on-line nontrivial-zero count for the Riemann zeta function.
+  # Certifies N >= 5 zeros of Lambda (= nontrivial zeros of zeta) on Re s = 1/2 in [10, 35],
+  # matching the 5 known zeros t ~ 14.1347, 21.0220, 25.0109, 30.4249, 32.9351.
+  # Axioms: {propext, Classical.choice, Quot.sound} -- no sorryAx.
+  # conjecture1_proved = False: this is a lower bound via sign changes, not a proof of RH.
+  zeta-zero-localization-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
+      - name: Regenerate XiLineZeros.lean and check it matches frozen output
+        working-directory: telperion
+        run: |
+          python examples/zeta_zero_localization/generate.py --check
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake exe cache get
+      - name: Build the emitted Lean (kernel-verified on-line zero count)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake build
+
+  # STAGE 3 CAPSTONE: RH-in-a-box localization. Verifies the crowning theorem
+  # all_nontrivial_zeros_in_box_on_critical_line -- every nontrivial zeta zero in
+  # B = [2/5,3/5] x [10,35] lies on Re s = 1/2 (Turing-style verification IN THIS BOX).
+  # Axioms: {propext, Classical.choice, Quot.sound} -- no sorryAx.
+  # conjecture1_proved = False: this VERIFIES RH inside the box; it is NOT a proof of RH.
+  # The winding integer (=5), edge non-vanishing, and value enclosures are Arb-certified
+  # NON-KERNEL input; the kernel proves every implication (per-segment FTC, box argument
+  # principle, Blaschke split with in-kernel E-holomorphicity, and this localization).
+  zeta-box-localization-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
+      - name: Certify the box-localization negative control (n_line != n_total refused)
+        working-directory: telperion
+        run: |
+          python examples/zeta_zero_localization/generate.py --check
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache (warm; never cold Mathlib)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake exe cache get
+      - name: Build the capstone Lean (RH-in-a-box localization + supporting kernels)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake build BoxLocalization BoxArgPrincipleZeta BlaschkeBox RigorousWinding

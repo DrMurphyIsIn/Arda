@@ -198,6 +198,39 @@ _SPECIAL_KINDS = (
     "max_modulus",
     "bc_deriv_re",
     "entire_part_bound",
+    # dVP Blaschke/two-scale atoms (2026-09-06, distilled from DlvpZeroFactor/DlvpCorrectionBound/
+    # DlvpHerglotzLower): two_scale_separation (inner-disk vs outer-sphere geometry), far_pole_sum
+    # (rational sum with poles outside the disk), herglotz_lower (keep equal-height zero, drop rest).
+    "two_scale_separation",
+    "far_pole_sum",
+    "herglotz_lower",
+    # Argument-principle residue/winding bridge (2026-09-06, shared with the RH
+    # zeta-zero-localization session): ∮ Σ m/(z-ρ) = 2πi·Σ m.
+    "argument_principle",
+    # Argument-principle companion atoms (2026-09-06, same RH session): full_argument_principle
+    # (residue-sum + analytic-vanishing ⟹ ∮ f = 2πi·Σ m, the completing half via Cauchy),
+    # rect_argument_principle (box-boundary Cauchy vanishing ∮_∂rect E = 0, strip counterpart),
+    # annulus_count (∮_R − ∮_r = 2πi·Σ_shell m, zero-density shell count).
+    "full_argument_principle",
+    "rect_argument_principle",
+    "annulus_count",
+    # RH-in-a-box localization capstone (Stage 3, 2026-09-06): the counting exhaustion step —
+    # total divisor = on-line count ⟹ every zero in the box is on Re=1/2 (Turing-style verification,
+    # NOT a proof of RH).  Refuses n_line > n_total and n_line != n_total.
+    "box_localization",
+    # Winding-number frontier (2026-09-06, same RH session): slit_loop_winding_zero (Rouché heart —
+    # closed loop in ‖·-1‖<r≤1 ⟹ ∮ w'/w = 0, winding 0, via clog_real + FTC-2) and box_residue_sum
+    # (box analogue of full_argument_principle, Finset-linearity plumbing conditional on the per-pole
+    # non-circular winding primitive — a genuine Mathlib gap).
+    "slit_loop_winding_zero",
+    "box_residue_sum",
+    # The winding-NONZERO primitive (2026-09-06, same RH session): ∮_∂rect (z-ρ)⁻¹ = 2πi for ρ
+    # strictly inside — from-scratch segment/log branch-split proof, closes the Mathlib gap that
+    # blocked box_residue_sum's hwind hypothesis and Rouché.
+    "rect_winding",
+    # dVP zero-factor magnitude bound (2026-09-06): two-scale log-product boundary bound
+    # log‖P c‖ - log‖P z‖ ≤ (Σ m)·(log R₀ - log(R-R₀)) — the recurring AP shape.
+    "log_product_bound",
     # Analytic-cert-structures build (2026-09-05): box-robust separable-quadratic
     # forall-box nonnegativity (#2, foundational) -- rigorous monomial-wise
     # rational lower bound over a rational box, emitted via nlinarith.
@@ -207,6 +240,14 @@ _SPECIAL_KINDS = (
     # fact + a2 != 0 chained into the d=2 bridge lemma
     # `hyperbolic_deg2_of_discrim_nonneg`.
     "hyperbolicity",
+    # Zeta-zero-localization Stage 1 core (2026-09-06): on-line zero count via
+    # alternating-sign real enclosures of Lambda(1/2+it) + IVT.  Emits ">= N zeros
+    # of completedRiemannZeta on the critical line in [a,b]" (N sign changes).
+    "xi_line_zeros",
+    # Zeta-box-localization Stage 2A (2026-09-06): boundary winding count via enclosures.
+    # Emits "Bd(Lambda'/Lambda) = 2*pi*i*N" -- toy z^2 (N=2, from-scratch winding) and
+    # the Lambda [2/5,3/5]x[10,35] instance (N=5, argument-principle + per-pole primitive).
+    "winding_count",
 )
 
 # kind -> "module:certify_point_fn" for the generic (family.special) emitters.
@@ -277,8 +318,37 @@ _SPECIAL_DISPATCH = {
     "bc_deriv_re": ("emit_bc_deriv_re", "certify_bc_deriv_re_point", "BCDerivReEmitter"),
     "entire_part_bound":
         ("emit_entire_part_bound", "certify_entire_part_bound_point", "EntirePartBoundEmitter"),
+    "two_scale_separation":
+        ("emit_two_scale_separation", "certify_two_scale_separation_point", "TwoScaleSeparationEmitter"),
+    "far_pole_sum": ("emit_far_pole_sum", "certify_far_pole_sum_point", "FarPoleSumEmitter"),
+    "herglotz_lower": ("emit_herglotz_lower", "certify_herglotz_lower_point", "HerglotzLowerEmitter"),
+    "argument_principle":
+        ("emit_argument_principle", "certify_argument_principle_point", "ArgumentPrincipleEmitter"),
+    "full_argument_principle":
+        ("emit_full_argument_principle", "certify_full_argument_principle_point",
+         "FullArgumentPrincipleEmitter"),
+    "rect_argument_principle":
+        ("emit_rect_argument_principle", "certify_rect_argument_principle_point",
+         "RectArgumentPrincipleEmitter"),
+    "annulus_count":
+        ("emit_annulus_count", "certify_annulus_count_point", "AnnulusCountEmitter"),
+    "box_localization":
+        ("emit_box_localization", "certify_box_localization_point", "BoxLocalizationEmitter"),
+    "slit_loop_winding_zero":
+        ("emit_slit_loop_winding_zero", "certify_slit_loop_winding_zero_point",
+         "SlitLoopWindingZeroEmitter"),
+    "box_residue_sum":
+        ("emit_box_residue_sum", "certify_box_residue_sum_point", "BoxResidueSumEmitter"),
+    "rect_winding":
+        ("emit_rect_winding", "certify_rect_winding_point", "RectWindingEmitter"),
+    "log_product_bound":
+        ("emit_log_product_bound", "certify_log_product_bound_point", "LogProductBoundEmitter"),
     "box_robust": ("emit_box_robust", "certify_box_robust_point"),
     "hyperbolicity": ("emit_hyperbolicity", "certify_hyperbolicity_point"),
+    "xi_line_zeros":
+        ("emit_xi_line_zeros", "certify_xi_line_zeros_point", "XiLineZerosEmitter"),
+    "winding_count":
+        ("emit_winding_count", "certify_winding_count_point", "WindingCountEmitter"),
 }
 
 

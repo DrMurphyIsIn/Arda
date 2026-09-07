@@ -1,0 +1,31 @@
+name = "LambdaLineReal"
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "LambdaLineReal"
+
+[[lean_lib]]
+name = "XiLineZeros"
+
+[[lean_lib]]
+name = "WindingCount"
+
+[[lean_lib]]
+name = "BoxArgPrinciple"
+
+[[lean_lib]]
+name = "RigorousWinding"
+
+[[lean_lib]]
+name = "BlaschkeBox"
+
+[[lean_lib]]
+name = "BoxArgPrincipleZeta"
+
+[[lean_lib]]
+name = "BoxLocalization"

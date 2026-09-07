@@ -59,6 +59,37 @@ second, independent, honestly-scoped kernel-verified statement about $\zeta$,
 produced by the same pipeline and exhibiting yet another certificate shape (a
 real-rootedness / hyperbolicity certificate rather than a positivity one).
 
+\subsection{A third route: verifying RH inside a box}
+
+A different question again is not whether the zeros are simple or where they are
+\emph{not}, but where they concretely \emph{are}---and, more strongly, whether a
+given region contains any \emph{off}-line zeros at all. This is Turing's method,
+and we carry it out in the kernel. Building on an on-line count of five zeros
+(\texttt{XiLineZeros.lambda\_five\_zeros\_10\_35}) and the argument-principle atoms,
+the capstone theorem
+\texttt{BoxLocalization.all\_nontrivial\_zeros\_in\_box\_on\_critical\_line}
+(sorry-free, axioms $\{$\texttt{propext}, \texttt{Classical.choice},
+\texttt{Quot.sound}$\}$) establishes that \emph{every} nontrivial zero of $\zeta$
+in the box $B = [\tfrac{2}{5}, \tfrac{3}{5}] \times [10, 35]$ lies exactly on the
+critical line $\operatorname{Re} s = \tfrac12$. The argument is honest
+counting-exhaustion: the boundary winding integral counts exactly five zeros in
+$B$, and five distinct on-line zeros are exhibited, so there is no room for an
+off-line one---RH holds \emph{inside this box}.
+
+The caveats are stated as sharply as the claim. It is \emph{finite}---one box, not
+all of $\mathbb{C}$; Turing's method verifies RH in a region, it does not prove
+RH. And it is \emph{conditional on certified numeric input}: the winding integer
+($=5$), the edge non-vanishing, and the value enclosures are supplied by 300-bit
+interval (Arb) arithmetic and carried as explicit Lean hypotheses---a documented
+trust boundary, exactly as with the constant enclosures elsewhere in the system.
+The kernel proves \emph{every implication} from those inputs; it does not verify
+the enclosures themselves. The chain is non-circular by construction: the winding
+count enters as a boundary-contour value, never as ``five zeros and no others,''
+and ``all zeros on the line'' is the \emph{derived} conclusion. It is, once more,
+emphatically \emph{not} a proof of RH---but it is a kernel-verified RH-in-a-box,
+and it exhibits a third distinct certificate shape (winding / argument-principle
+zero-counting).
+
 For completeness we note two boundary items, stated as they are. A
 Borel--Carath\'eodory theorem is present in the development but is a \emph{draft}:
 its constant is not sharp, it is not axiom-guarded, and it is not yet wired into
