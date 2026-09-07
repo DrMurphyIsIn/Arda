@@ -90,29 +90,32 @@ emphatically \emph{not} a proof of RH---but it is a kernel-verified RH-in-a-box,
 and it exhibits a third distinct certificate shape (winding / argument-principle
 zero-counting).
 
-For completeness we note two boundary items, stated as they are. A
-Borel--Carath\'eodory theorem is present in the development but is a \emph{draft}:
-its constant is not sharp, it is not axiom-guarded, and it is not yet wired into
-the region argument, so we do not lean on it. And the classical
+For completeness we note two further items we handle with extra care. The first
+is a genuine boundary item: a Borel--Carath\'eodory theorem is present in the
+development but is a \emph{draft}---its constant is not sharp, it is not
+axiom-guarded, and it is not yet wired into the region argument, so we do not lean
+on it. The second has, over the course of this campaign, graduated. The classical
 de~la~Vall\'ee-Poussin region has now been carried \emph{end-to-end} for a
-concrete zeta zero---a real milestone we still state carefully. For a zero
-$\rho_0 = \beta + i\gamma$ with $\tfrac12 < \beta < 1$ and $|\gamma| \ge \tfrac72$,
-the theorem \texttt{dlvp\_zeta\_region\_concrete} establishes that there exist
-$A > 0,\ L \ge 1$ with $\beta \le 1 - 1/(112\,AL)$. What changed since the earlier
-draft is that the analytic inputs are no longer hypotheses: the pole bound and the
+concrete zeta zero, and it sits in the same CI-verified tier as the four results
+above: a dedicated axiom guard (\texttt{AxiomGuardDlvp}) runs
+\texttt{\#print axioms} on it on every commit and fails the build on any
+\texttt{sorryAx}. For a zero $\rho_0 = \beta + i\gamma$ with
+$\tfrac12 < \beta < 1$ and $|\gamma| \ge \tfrac72$, the theorem
+\texttt{dlvp\_zeta\_region\_concrete} establishes that there exist $A > 0,\ L \ge
+1$ with $\beta \le 1 - 1/(112\,AL)$, with the clean axiom set
+$\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$. The
+analytic inputs are no longer hypotheses: the pole bound and the
 height-$\gamma$/height-$2\gamma$ $g$-bounds are now \emph{proved} lemmas, and the
-numeric coupling that stalled the previous version is discharged by constructing
-$A$ and $L$ explicitly. Two honest qualifications keep it the right size, and they
-are different in kind from ``conditional.'' First, the region constant is
-\emph{non-effective}---$A$ and $L$ are existentially quantified---so the theorem
-certifies the derivation and the \emph{existence} of the region constants without
-yet exposing the classical rate $1 - c/\log|t|$ with an explicit $c$; it is a
-kernel-verified \emph{reduction}, not an effective bound. Second, unlike the four
-headline results it is not yet in the CI axiom whitelist
-(\texttt{AxiomGuardRH}); its clean-axiom status
-($\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$) is the
-authors' \texttt{\#print axioms} report, not a gate we enforce on every commit.
-We flag both boundary items rather than let them blur into the verified list.
+numeric coupling that stalled the earlier draft is discharged by constructing $A$
+and $L$ explicitly. One honest qualification remains, and it is different in kind
+from ``conditional'': the region constant is \emph{non-effective}---$A$ and $L$
+are existentially quantified---so the theorem certifies the derivation and the
+\emph{existence} of the region constants without yet exposing the classical rate
+$1 - c/\log|t|$ with an explicit $c$. It is a kernel-verified, CI-guarded
+\emph{reduction} to a de~la~Vall\'ee-Poussin region for concrete zeros, not yet an
+effective bound---and emphatically not a proof of RH. We state both items
+precisely rather than let the first blur into the verified list or the second be
+kept artificially out of it.
 
 The methodological point for this paper is that the same
 untrusted-generator/trusted-kernel discipline that handled a combinatorial
