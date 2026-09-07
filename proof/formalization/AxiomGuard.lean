@@ -287,3 +287,5 @@ import R3Cert.R47SingleHubResidue
 #print axioms R3Cert.Step3.rMOf_le_five
 #print axioms R3Cert.Step3.negMOf_le_five
 #print axioms R3Cert.Step3.offMOf_le_five
+#print axioms R3Cert.Step3.singleHubR_le_tie_small_r1
+#print axioms R3Cert.Step3.singleHubR_le_tie_small_r5
