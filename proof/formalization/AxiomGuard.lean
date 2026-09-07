@@ -60,6 +60,11 @@ import R3Cert.BGSCLRealOblACaseALift
 import R3Cert.BGSCLJointDescent2Step
 import R3Cert.BGSCLRealOblBSymBase
 import R3Cert.R47BroadenedTieWitness
+import R3Cert.R47TieBroadened
+import R3Cert.R47R7TwoHubBridge
+import R3Cert.R47SingleHub2D
+import R3Cert.R47SharpRate
+import R3Cert.R47SingleHubResidue
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -214,3 +219,73 @@ import R3Cert.R47BroadenedTieWitness
 -- beats the near-star (5 load-5 arms) at the SAME size 56, so conjecture1/SharpRateNF with the
 -- near-star tie is FALSE at this n.  Kernel-verified via singleHub_Aobj_formula + Ztot_armU_four.
 #print axioms R3Cert.Step3.nearStar_not_maximal_at_five
+
+-- Broadened tie family M1 (2026-09-06): the corrected per-size tie `tieState K m` (single hub with
+-- (K-m) load-5 arms + m load-4 arms + m cherries) and its EXACT closed-form objective value
+-- `tie_Aobj_eq_V` = V(K,m), matching the 3-engine-verified broadened_tie_family.py.
+#print axioms R3Cert.Step3.tie_trade_factor
+#print axioms R3Cert.Step3.tie_Aobj_eq_V
+#print axioms R3Cert.Step3.tie_Aobj_factored
+#print axioms R3Cert.Step3.tie_trade_le
+#print axioms R3Cert.Step3.tie_trade_le_poly
+#print axioms R3Cert.Step3.tradeStop_persists
+#print axioms R3Cert.Step3.tie_maximal_over_trades
+
+-- Two-hub Aobj-bridge M4 (2026-09-06): the abstract two-hub Positivstellensatz certs
+-- `two_hub_gap_pos_c0..c5` wired to `Aobj` -- the stuck two-hub config S2(pA,pB,cA) is dominated by
+-- the same-size single-hub downgrade template at every pA,pB>=1, cA in {0..5} (length-2 slice of Hdom).
+#print axioms R3Cert.Step3.twoHub_Aobj_eq
+#print axioms R3Cert.Step3.twoHub_le_tie
+
+-- Single-hub 2-D envelope, T-AXIS (M3, 2026-09-06): the bulk-swap column `colState K c t` is unimodal
+-- in `t` (the `hub_bulk_le` analog of the tie trade machinery); `col_maximal_over_bulk` = each column's
+-- t-argmax dominates. 22-digit `bulkStop` poly cross-checked in broadened_tie_2d_envelope.py.
+#print axioms R3Cert.Step3.hub_bulk_stop_iff
+#print axioms R3Cert.Step3.bulkStopABC_persists
+#print axioms R3Cert.Step3.col_maximal_over_bulk
+
+-- Single-hub 2-D envelope, CLEAN REGIME K>=23 (M3 c-envelope, 2026-09-06): the bulk column collapses to
+-- its tie edge (col_le_edge_large) and then across cherry counts to the near-star (col_le_nearStar_large)
+-- -- every Balanced single hub at aligned size 11K, K>=23, is dominated by tieState K 0.
+#print axioms R3Cert.Step3.colStop_zero_large
+#print axioms R3Cert.Step3.col_le_edge_large
+#print axioms R3Cert.Step3.col_le_nearStar_large
+#print axioms R3Cert.Step3.hubState_eq_colState
+#print axioms R3Cert.Step3.singleHub_le_tie_large
+#print axioms R3Cert.Step3.tie_maximal_general
+#print axioms R3Cert.Step3.singleHub_le_tie_ge22
+#print axioms R3Cert.Step3.mOf_le_five
+#print axioms R3Cert.Step3.singleHub_le_tie_lt22
+#print axioms R3Cert.Step3.singleHub_le_tie
+
+-- Hdom length-1 slice at aligned sizes (2026-09-06): a Balanced+Capped single hub reduces (arm-perm to
+-- (a,b) counts) to singleHub_le_tie, so it is dominated by alignedTie at its own size -- the length-1
+-- case of SharpRateNF/Hdom, discharged by the M3 envelope.
+#print axioms R3Cert.Step3.singleHub_dominated
+#print axioms R3Cert.Step3.sharpRate_singleHub_aligned
+
+-- Residue-general single-hub atoms (non-aligned-n layer, 2026-09-06): the general cherry-trade step
+-- hub_trade_le (114/115, no b=c) + its polynomial hubTradeStop; the shifted tie edge rtieState M r c
+-- (per-size maximizer for residue r) and its trade argmax rtie_maximal_over_trades (analog of
+-- tie_maximal_over_trades across all 11 residue classes).
+#print axioms R3Cert.Step3.hub_trade_le
+#print axioms R3Cert.Step3.hub_trade_stop_iff
+#print axioms R3Cert.Step3.rtie_maximal_over_trades
+#print axioms R3Cert.Step3.rtie_maximal_general
+#print axioms R3Cert.Step3.col_maximal_over_bulkR
+#print axioms R3Cert.Step3.colStopR_zero_large
+#print axioms R3Cert.Step3.col_le_edgeR
+#print axioms R3Cert.Step3.singleHubR_le_tie_large
+#print axioms R3Cert.Step3.singleHubR_le_tie_edge
+#print axioms R3Cert.Step3.rNeg_r6
+#print axioms R3Cert.Step3.singleHubR_le_tie_07
+#print axioms R3Cert.Step3.neg_maximal_general
+#print axioms R3Cert.Step3.neg_bulk_link
+#print axioms R3Cert.Step3.singleHubR_le_tie_10
+#print axioms R3Cert.Step3.off_maximal_general
+#print axioms R3Cert.Step3.singleHubR_le_tie_89
+#print axioms R3Cert.Step3.rMOf_le_five
+#print axioms R3Cert.Step3.negMOf_le_five
+#print axioms R3Cert.Step3.offMOf_le_five
+#print axioms R3Cert.Step3.singleHubR_le_tie_small_r1
+#print axioms R3Cert.Step3.singleHubR_le_tie_small_r5
