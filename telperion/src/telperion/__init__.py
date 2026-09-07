@@ -259,6 +259,7 @@ from .emit_winding_count import (  # noqa: F401
 # Zeta-box-localization Stage 2/3 (2026-09-06): segment (ball) enclosures.
 from .arb_enclosure import (  # noqa: F401
     enclose_lambda_segment, enclose_lambda_segments,
+    enclose_zeta_segment, enclose_zeta_segments,
 )
 # Analytic-cert-structures build (2026-09-05): turan-box log-concavity emitter (#5).
 from .emit_turan_box import turan_box_family  # noqa: F401

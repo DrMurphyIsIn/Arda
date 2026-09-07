@@ -302,17 +302,18 @@ def test_winding_count_emitter_classified():
 def test_segment_winding_certificate_capstone_n5():
     """segment_winding_certificate on capstone box [2/5,3/5]x[10,35] gives n=5.
 
-    Uses enclose_lambda_segments with n_per_side=80 (fine enough that no
-    segment-box contains 0 and every consecutive pair has a half-plane witness).
-    conjecture1_proved = False.
+    RIGOROUS route beta: uses enclose_zeta_segments (adaptive 2nd-order Taylor
+    zeta enclosures of the continuum, no endpoint-union).  winding(zeta) ==
+    winding(Lambda) == 5 because they differ by the nonzero analytic factor
+    pi^(-s/2)*Gamma(s/2).  conjecture1_proved = False.
     """
     pytest.importorskip("flint")
     from fractions import Fraction
-    from telperion.arb_enclosure import enclose_lambda_segments
+    from telperion.arb_enclosure import enclose_zeta_segments
     from telperion.emit_winding_count import segment_winding_certificate
 
     box = (Fraction(2, 5), Fraction(3, 5), 10, 35)
-    segs = enclose_lambda_segments(box, n_per_side=80, prec_bits=300)
+    segs = enclose_zeta_segments(box, prec_bits=200, n_seed=4)
     cert = segment_winding_certificate(box, segs)
     assert cert.n == 5
 
@@ -376,6 +377,8 @@ def test_segment_winding_exported_from_package():
     assert hasattr(telperion, "segment_winding_certificate")
     assert hasattr(telperion, "enclose_lambda_segments")
     assert hasattr(telperion, "enclose_lambda_segment")
+    assert hasattr(telperion, "enclose_zeta_segments")
+    assert hasattr(telperion, "enclose_zeta_segment")
 
 
 def test_enclose_lambda_segments_wider_than_points_winding_test():
