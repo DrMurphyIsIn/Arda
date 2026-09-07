@@ -88,6 +88,18 @@ _H100_BOX = (Fraction(2, 5), Fraction(3, 5), Fraction(0), Fraction(100))
 _H100_EXPECTED_N = 29
 _OUT_H100 = Path(__file__).resolve().parent / "lean" / "RHInBox_2d5_3d5_0_100.lean"
 
+# CONCRETE T=100 certificate (Task 5): the CONFINEMENT-BAND wide box [1/10^6, 1-1/10^6]x[0,100],
+# 29 on-line zeros = winding N(100).  This is the box atom AllZeros_h100 composes with the dVP+FE
+# confinement.  The emitted Lean file is COMMITTED (a permanent milestone).  `run_box --check`
+# byte-compares it and asserts N_line == N == 29.
+_WIDEBOX = (Fraction(1, 1000000), Fraction(999999, 1000000), Fraction(0), Fraction(100))
+_WIDEBOX_EXPECTED_N = 29
+_OUT_WIDEBOX = (
+    Path(__file__).resolve().parent
+    / "lean"
+    / "RHInBox_1d1000000_999999d1000000_0_100.lean"
+)
+
 # Lambda winding-count box and boundary-sampling resolution (Stage 2A milestone).
 _WINDING_BOX = (Fraction(2, 5), Fraction(3, 5), Fraction(10), Fraction(35))
 _WINDING_N_PER_SIDE = 30    # 4*30 = 120 boundary samples (all half-plane-witnessed)
@@ -344,6 +356,9 @@ def run_box(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, winding_prec: int = 
         if check:
             if not out_path.exists() or out_path.read_text(encoding="utf-8") != text:
                 print(f"DRIFT: RHInBox_{tag}.lean does not match regeneration")
+            else:
+                print(f"check: OK (RHInBox_{tag}.lean regenerates byte-for-byte; "
+                      f"N_line == winding N == {n_total})")
         else:
             out_path.write_text(text, encoding="utf-8")
             print(f"wrote {out_path} ({len(text)} bytes)")

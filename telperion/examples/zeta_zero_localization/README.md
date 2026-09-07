@@ -1,9 +1,34 @@
-# Zeta Zero Localization (Stage 1)
+# Zeta Zero Localization -- ALL zeros up to height 100 on the line
 
 On-line zero localization of the completed Riemann zeta function Lambda via
-alternating-sign real enclosures and the intermediate value theorem.
+alternating-sign real enclosures and the intermediate value theorem, culminating
+in a kernel-verified **complete Turing verification of RH up to height 100**.
 
-conjecture1_proved = False.
+conjecture1_proved = False.  NOT a proof of RH.
+
+## HEADLINE: all nontrivial zeros up to height 100 on Re = 1/2
+
+`AllZeros_h100.all_nontrivial_zeros_up_to_height_100`
+(`lean/AllZeros_h100.lean`) is kernel-verified: **every nontrivial zero of the
+Riemann zeta function up to height 100 lies on `Re s = 1/2`** (axioms
+{propext, Classical.choice, Quot.sound}, no sorryAx).  It instantiates the
+combination at `a = 1/10^6`, `T = 100`, composing:
+
+- **Confinement** (`ZetaZeroConfinement.zero_in_band`): every nontrivial zero up
+  to 100 lies in the band `[1/10^6, 1-1/10^6]`, from the effective de la Vallee
+  Poussin zero-free region (PR #316/#318; `dlvpRateC` is a concrete closed-form
+  constant, so the non-effective-c caveat is GONE) + the functional equation.  The
+  effective-rate edge `1/10^6 <= dlvpRateC / log 100` is discharged in-kernel
+  (`haC_100`) via explicit rational `Real.exp`/`Real.log` enclosures.
+- **Box-localization** (`RHInBox_1d1000000_999999d1000000_0_100`): every zeta zero
+  in the box `[1/10^6, 1-1/10^6] x [0,100]` is on `Re s = 1/2` (winding
+  `N == N_line == 29`).
+
+Trust boundary: KERNEL = dVP region + FE + argument principle + winding algebra +
+rate inequality; ARB NON-KERNEL INPUT = the winding count `N = 29`, the 29 on-line
+zeros (`hLine`), the edge/integrability bundle (`hArb`), and the height floor
+`55/16 <= |Im|` (`hγ`, carried as a documented hypothesis -- no nontrivial zeros
+below height 55/16 ~ 3.44; the sweep places all 29 zeros at height >= 14).
 
 ## What is kernel-proven
 
@@ -105,5 +130,9 @@ line in a real interval.
     generate.py               -- interval driver + Lean emitter (certify -> emit -> write)
     lean/LambdaLineReal.lean  -- Task 2 prelude: Lambda is real on the critical line
     lean/XiLineZeros.lean     -- emitted theorems (DO NOT EDIT BY HAND)
+    lean/ZetaZeroConfinement.lean -- CONFINEMENT (dVP+FE): zeros up to T in band [a,1-a]
+    lean/AllZerosUpToHeight.lean  -- COMBINATION (generic a,T): all zeros up to T on Re=1/2
+    lean/RHInBox_1d1000000_999999d1000000_0_100.lean -- WIDE-box atom ([1/10^6,1-1/10^6]x[0,100], N=29)
+    lean/AllZeros_h100.lean   -- CONCRETE T=100 certificate: ALL zeros up to height 100 on Re=1/2
     lean/lakefile.toml        -- lake project (Mathlib dependency)
     lean/lean-toolchain       -- pinned Lean version
