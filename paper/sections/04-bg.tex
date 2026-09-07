@@ -83,8 +83,15 @@ classical bound; it is the branch-model statement, and the bridge to the classic
 object is among the open pieces.
 
 Second, the global structural assembly (that every tree is dominated by a
-near-star of the extremal shape) is not formalized; it remains at the level of
-exact finite enumeration and paper argument.
+near-star of the extremal shape) is only partly formalized. The reduction splits
+into a tree$\to$hub step (\emph{Hnorm}) and a hub$\to$tie step (\emph{Hdom}), and
+real progress has been made on the latter: the \emph{single-hub} (length-1 Hdom)
+envelope is now kernel-verified at \emph{every} size across all eleven residue
+classes (\texttt{R47SharpRate}, \texttt{R47SingleHubResidue}), as is two-hub
+domination (\texttt{R47R7TwoHubBridge.twoHub\_le\_tie}). What remains genuinely
+open is multi-hub domination for three or more hubs and the Hnorm tree$\to$hub
+coverage dichotomy---so the global maximizer is still open (as it is in the
+literature).
 
 Therefore the classical Brualdi--Goldwasser conjecture is \textbf{open}:
 \texttt{conjecture1\_proved = False} throughout the repository, and we make no

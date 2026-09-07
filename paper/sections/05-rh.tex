@@ -94,11 +94,18 @@ For completeness we note two boundary items, stated as they are. A
 Borel--Carath\'eodory theorem is present in the development but is a \emph{draft}:
 its constant is not sharp, it is not axiom-guarded, and it is not yet wired into
 the region argument, so we do not lean on it. And the classical
-de~la~Vall\'ee-Poussin region itself is present only \emph{conditionally}---its
-analytic inputs are isolated as explicit hypotheses rather than proved, though the
-supporting machinery is advancing (the log-derivative of the Blaschke canonical
-factor, the item-(d) foundation, is now formalized). We flag both rather than let
-them blur into the verified list.
+de~la~Vall\'ee-Poussin region itself is present only \emph{conditionally}, and we
+are careful to say so even though the assembly has come a long way. The region is
+now instantiated \emph{concretely} for an actual zeta zero
+$\rho_0 = \beta + i\gamma$ ($\beta < 1$), kernel-clean, with the analytic and
+geometric inputs discharged internally---both auxiliary disks and their canonical
+decompositions, the height-$\gamma$ and height-$2\gamma$ bound-sums, and the
+divisor/geometry data all proved rather than assumed. What is \emph{not} yet
+proved is the numeric-coupling crux: a pole bound and two $O(L)$ constraints
+remain isolated as explicit hypotheses, awaiting a dedicated closing lemma. So the
+implication ``these bounds $\Rightarrow \beta \le 1 - 1/(112\,AL)$'' is
+machine-checked, but the region is not yet unconditional---we make no such claim.
+We flag both boundary items rather than let them blur into the verified list.
 
 The methodological point for this paper is that the same
 untrusted-generator/trusted-kernel discipline that handled a combinatorial
