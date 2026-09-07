@@ -3866,3 +3866,40 @@ jobs:
       - name: Build the emitted Lean (kernel-verified on-line zero count)
         working-directory: telperion/examples/zeta_zero_localization/lean
         run: lake build
+
+  # STAGE 3 CAPSTONE: RH-in-a-box localization. Verifies the crowning theorem
+  # all_nontrivial_zeros_in_box_on_critical_line -- every nontrivial zeta zero in
+  # B = [2/5,3/5] x [10,35] lies on Re s = 1/2 (Turing-style verification IN THIS BOX).
+  # Axioms: {propext, Classical.choice, Quot.sound} -- no sorryAx.
+  # conjecture1_proved = False: this VERIFIES RH inside the box; it is NOT a proof of RH.
+  # The winding integer (=5), edge non-vanishing, and value enclosures are Arb-certified
+  # NON-KERNEL input; the kernel proves every implication (per-segment FTC, box argument
+  # principle, Blaschke split with in-kernel E-holomorphicity, and this localization).
+  zeta-box-localization-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
+      - name: Certify the box-localization negative control (n_line != n_total refused)
+        working-directory: telperion
+        run: |
+          python examples/zeta_zero_localization/generate.py --check
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache (warm; never cold Mathlib)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake exe cache get
+      - name: Build the capstone Lean (RH-in-a-box localization + supporting kernels)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake build BoxLocalization BoxArgPrincipleZeta BlaschkeBox RigorousWinding
