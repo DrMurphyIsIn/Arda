@@ -18,11 +18,20 @@
        coordinates + multiplicity are inputs).  Kernel-verified REDUCTION; `∃`-form.
      * dlvp_zeta_region_rate — the RATE-EXPOSED region: `∃ c > 0, ∀ ζ-zero ρ₀=β+iγ with 3/4 ≤ β < 1,
        |γ| ≥ 55/16, mult k in the fixed disk radius 11/8, β ≤ 1 - c/log|γ|`.  The classical dVP rate
-       `/log|γ|` is now in the TYPE; `c` is non-effective (it derives from Mathlib's pole constant).
-   Both are kernel-verified reductions.  conjecture1_proved = False (NOT a proof of RH).
+       `/log|γ|` is in the TYPE; `c` is non-effective (it derives from Mathlib's pole constant).
+     * hpole_effective — the EXPLICIT pole bound `Re(-ζ'/ζ(σ)) ≤ Re(1/(σ-1)) + 16` for `1 < σ`,
+       `σ-1 < 1/48` (Cauchy estimate on `ζ₁ = (·-1)·ζ`), replacing Mathlib's bare-`∃` pole constant.
+     * dlvp_zeta_region_rate_effective / dlvpRateC_pos — the RATE with an EXPLICIT constant:
+       `β ≤ 1 - dlvpRateC/log|γ|`, `dlvpRateC > 0` a concrete closed-form real.  `c` is now EFFECTIVE.
+   All are kernel-verified reductions.  conjecture1_proved = False (NOT a proof of RH).
 -/
 import DlvpZetaConcreteClose
 import DlvpZetaConcreteRate
+import DlvpZetaPoleEffective
+import DlvpZetaRateEffective
 
 #print axioms ZeroFreeBridge.dlvp_zeta_region_concrete
 #print axioms ZeroFreeBridge.dlvp_zeta_region_rate
+#print axioms ZeroFreeBridge.hpole_effective
+#print axioms ZeroFreeBridge.dlvp_zeta_region_rate_effective
+#print axioms ZeroFreeBridge.dlvpRateC_pos
