@@ -274,3 +274,4 @@ import R3Cert.R47SingleHubResidue
 #print axioms R3Cert.Step3.col_maximal_over_bulkR
 #print axioms R3Cert.Step3.colStopR_zero_large
 #print axioms R3Cert.Step3.col_le_edgeR
+#print axioms R3Cert.Step3.singleHubR_le_tie_large

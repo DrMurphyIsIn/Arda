@@ -318,5 +318,33 @@ theorem rtie_maximal_general (M r : ℕ) (hM : 0 < M) :
     exact rtie_up_chain M r c M hc (le_refl M)
       (fun i _ hiM => leastHubTradeStop_min M r (by omega))
 
+/-! ### Decomposition + the clean-regime residue envelope (`M ≥ 22`). -/
+
+/-- **Size-decomposition (residue form)**: a Balanced single hub `hubState a b c` at size
+    `11a+9b+2c = 11M+9r` with `b ≥ c + r` (no `t<0` -- automatic for `r ≤ 5`) is exactly the shifted
+    bulk column `colStateR M r c ((b-c-r)/11)`.  (The size relation forces `b - c - r ≡ 0 mod 11`.) -/
+theorem hubState_eq_colStateR (a b c M r : ℕ) (hbge : c + r ≤ b)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * M + 9 * r) :
+    hubState a b c = colStateR M r c ((b - c - r) / 11) ∧ 9 * ((b - c - r) / 11) ≤ M - c := by
+  have ht : b = c + r + 11 * ((b - c - r) / 11) := by omega
+  have ha : a = M - c - 9 * ((b - c - r) / 11) := by omega
+  refine ⟨?_, by omega⟩
+  rw [colStateR]; congr 1 <;> omega
+
+/-- **The residue single-hub envelope, clean regime (`r ≤ 5`, `M ≥ 22`)**: every Balanced single hub at
+    size `11M + 9r` is dominated by the shifted tie `rtieState M r (rMOf M r)`.  For `r ≤ 5` there are no
+    sub-edge (`b < c+r`) configs, so every hub is a shifted column `colStateR`; the t-axis collapses
+    (`col_le_edgeR`) then the c-axis (`rtie_maximal_general`).  This closes the non-aligned-n single-hub
+    envelope for residues 0..5 at all large sizes. -/
+theorem singleHubR_le_tie_large (a b c M r : ℕ) (hr : r ≤ 5) (hc : c ≤ 5) (hM : 22 ≤ M)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * M + 9 * r) :
+    Aobj (backboneU (hubState a b c)) ≤ Aobj (backboneU (rtieState M r (rMOf M r))) := by
+  have hbge : c + r ≤ b := by omega
+  obtain ⟨heq, htK⟩ := hubState_eq_colStateR a b c M r hbge hsize
+  rw [heq]
+  have h1 := col_le_edgeR M r c ((b - c - r) / 11) hM (by omega) hc htK
+  have h2 := rtie_maximal_general M r (by omega) c (by omega)
+  linarith
+
 end Step3
 end R3Cert
