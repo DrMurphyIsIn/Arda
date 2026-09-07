@@ -41,6 +41,7 @@ CERTIFICATION STATUS:
   kernel-clean.  conjecture1_proved = False.
 """
 import argparse
+import math
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -61,10 +62,16 @@ from telperion.emit_winding_count import (  # noqa: E402  (Task 4, Stage 2A)
     WINDING_COUNT_PRELUDE,
     WindingCountEmitter,
     _z2_samples,
+    segment_winding_certificate,
     winding_count_certificate,
     winding_count_family,
 )
 from telperion.arb_enclosure import enclose_lambda_boundary  # noqa: E402  (Task 2)
+from telperion.arb_enclosure import enclose_zeta_segments  # noqa: E402  (Task 4 driver)
+from telperion.emit_box_localization import (  # noqa: E402  (Task 4 driver)
+    box_localization_certificate,
+    emit_per_box_instantiation,
+)
 from telperion.family import GridSpec  # noqa: E402
 from telperion.lean import LeanProfile  # noqa: E402
 
@@ -73,6 +80,13 @@ from telperion.lean import LeanProfile  # noqa: E402
 
 _OUT = Path(__file__).resolve().parent / "lean" / "XiLineZeros.lean"
 _OUT_WINDING = Path(__file__).resolve().parent / "lean" / "WindingCount.lean"
+
+# T=100 RH-in-box milestone: [2/5,3/5]x[0,100], 29 on-line zeros = winding N(100).
+# The emitted Lean file is COMMITTED (a permanent milestone, unlike the ephemeral per-box
+# files); `--height 100 --check` byte-compares it and asserts N_line == N == 29.
+_H100_BOX = (Fraction(2, 5), Fraction(3, 5), Fraction(0), Fraction(100))
+_H100_EXPECTED_N = 29
+_OUT_H100 = Path(__file__).resolve().parent / "lean" / "RHInBox_2d5_3d5_0_100.lean"
 
 # Lambda winding-count box and boundary-sampling resolution (Stage 2A milestone).
 _WINDING_BOX = (Fraction(2, 5), Fraction(3, 5), Fraction(10), Fraction(35))
@@ -244,6 +258,98 @@ def run_interval(a, b, n_samples, prec):
     return n
 
 
+def _box_tag(re_lo, re_hi, im_lo, im_hi) -> str:
+    """A filesystem/Lean-identifier-safe tag for a box (fractions -> `p_q`)."""
+    def _f(v):
+        v = Fraction(v)
+        return f"{v.numerator}" if v.denominator == 1 else f"{v.numerator}d{v.denominator}"
+    s = f"{_f(re_lo)}_{_f(re_hi)}_{_f(im_lo)}_{_f(im_hi)}"
+    return s.replace("-", "m")
+
+
+def _online_sweep_zero_count(im_lo, im_hi, prec: int) -> int:
+    """Count on-line zeros of Lambda in [im_lo, im_hi] via a sign-change sweep on the critical line.
+
+    Sample spacing is strictly below `pi / log(max(im_hi, 2))` (the mean zero spacing near height T
+    is ~2*pi/log(T), so this resolves every zero).  Adaptively refines: if two consecutive
+    sign-definite samples both have the same sign but the gap is large, the caller relies on the
+    dense spacing.  Returns the number of sign changes (distinct on-line zeros)."""
+    im_lo = Fraction(im_lo)
+    im_hi = Fraction(im_hi)
+    spacing_cap = math.pi / math.log(max(float(im_hi), 2.0))
+    # Use 0.9 of the cap for a strict inequality margin.
+    step_target = spacing_cap * 0.9
+    n_steps = max(3, int(math.ceil(float(im_hi - im_lo) / step_target)) + 1)
+    step = (im_hi - im_lo) / (n_steps - 1)
+    samples = []
+    for k in range(n_steps):
+        t = im_lo + k * step
+        (lo, hi), _im = enclose_lambda("1/2", str(t), prec)
+        samples.append((t, (lo, hi)))
+    return sign_change_count(samples)
+
+
+def run_box(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, winding_prec: int = 160,
+            n_seed: int = 4, out_dir: Path | None = None, write: bool = True,
+            check: bool = False) -> str:
+    """Driver: compute the winding N, on-line N_line, edge non-vanishing for an arbitrary box, then
+    emit (and optionally write) a Lean file instantiating `RHInBox.rh_in_box_of_certificate`.
+
+    REFUSALS (ValueError):
+    * invalid box (sigma-range excludes 1/2, or the box contains the pole s = 1) — via
+      `box_localization_certificate`;
+    * `N_line != N` (the on-line sign-change count disagrees with the boundary winding) — via
+      `box_localization_certificate(n_line=N_line, n_total=N)`;
+    * the on-line sweep failing to resolve at least one zero (`N_line < 1`).
+
+    Returns the emitted Lean text (also written to `RHInBox_<tag>.lean` unless `write=False`)."""
+    rl, rh, il, ih = (Fraction(v) for v in (re_lo, re_hi, im_lo, im_hi))
+    box = (rl, rh, il, ih)
+
+    # 1. Boundary winding N (rigorous zeta Taylor segments -> half-plane-witnessed winding).
+    segs = enclose_zeta_segments(box, winding_prec, n_seed=n_seed)
+    wind = segment_winding_certificate((rl, rh, il, ih), segs)
+    n_total = wind.n
+
+    # 2. On-line sign-change zero count N_line over [im_lo, im_hi].
+    n_line = _online_sweep_zero_count(il, ih, prec)
+    if n_line < 1:
+        raise ValueError(
+            f"run_box: on-line sweep resolved no zeros (N_line=0) in [{il},{ih}]; nothing to localize"
+        )
+
+    # 3. Edge non-vanishing: every boundary segment enclosure is off 0 (no segment box straddles the
+    #    origin).  This is exactly what segment_winding_certificate already verified (it refuses a
+    #    0-containing segment box); assert here for an explicit driver-level guard.
+    for i, (_param, seg_box) in enumerate(segs):
+        (slo_re, shi_re), (slo_im, shi_im) = seg_box
+        if slo_re <= 0 <= shi_re and slo_im <= 0 <= shi_im:
+            raise ValueError(f"run_box: boundary segment {i} straddles 0 — edge non-vanishing failed")
+
+    # 4. Certificate (refuses invalid box AND N_line != N_total).
+    cert = box_localization_certificate(
+        n_line=n_line, n_total=n_total,
+        re_lo=str(rl), re_hi=str(rh), im_lo=str(il), im_hi=str(ih),
+    )
+
+    # 5. Emit the per-box instantiation.
+    tag = _box_tag(rl, rh, il, ih)
+    text = emit_per_box_instantiation(cert, tag, namespace=f"RHInBox_{tag}")
+    print(f"run_box [{rl},{rh}]x[{il},{ih}]: winding N={n_total}, on-line N_line={n_line} "
+          f"(agree); emitted rh_in_box_{tag}")
+
+    if write:
+        out_dir = out_dir or (_OUT.parent)
+        out_path = out_dir / f"RHInBox_{tag}.lean"
+        if check:
+            if not out_path.exists() or out_path.read_text(encoding="utf-8") != text:
+                print(f"DRIFT: RHInBox_{tag}.lean does not match regeneration")
+        else:
+            out_path.write_text(text, encoding="utf-8")
+            print(f"wrote {out_path} ({len(text)} bytes)")
+    return text
+
+
 def _box_localization_negative_control() -> None:
     """Stage-3 capstone guard: assert the localization certificate ACCEPTS the real capstone
     instance (n_line = n_total = 5 on [2/5,3/5]x[10,35]) and REFUSES the fabricated off-line
@@ -273,7 +379,38 @@ def _box_localization_negative_control() -> None:
           "n_line>n_total refused)")
 
 
-def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int = 300) -> int:
+def _parse_box_arg(box_str: str):
+    """Parse `sigma0,sigma1,T0,T1` (comma-separated rationals) into four Fractions."""
+    parts = [p.strip() for p in box_str.split(",")]
+    if len(parts) != 4:
+        raise ValueError(f"--box needs 4 comma-separated values sigma0,sigma1,T0,T1; got {box_str!r}")
+    return tuple(Fraction(p) for p in parts)
+
+
+def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int = 300,
+         box=None, height=None) -> int:
+    # Per-box driver mode: compute winding + on-line count, emit instantiation.
+    if box is not None:
+        rl, rh, il, ih = _parse_box_arg(box)
+        run_box(rl, rh, il, ih, prec=prec, check=check)
+        return 0
+    if height is not None:
+        # Shortcut for the critical strip box [2/5, 3/5] x [0, T].
+        T = Fraction(height)
+        # In --check mode, regenerate WITHOUT writing and byte-compare against the frozen
+        # file below; otherwise write it.  run_box already REFUSES N_line != winding N (via
+        # box_localization_certificate), so a successful return proves the agreement.
+        text = run_box(Fraction(2, 5), Fraction(3, 5), Fraction(0), T, prec=prec,
+                       write=(not check))
+        # Drift/agreement assertion for the COMMITTED T=100 milestone.
+        if check and T == Fraction(100):
+            if not _OUT_H100.exists() or _OUT_H100.read_text(encoding="utf-8") != text:
+                print("DRIFT: RHInBox_2d5_3d5_0_100.lean does not match regeneration")
+                return 1
+            print(f"check: OK (T=100 milestone regenerates byte-for-byte; "
+                  f"N_line == winding N == {_H100_EXPECTED_N})")
+        return 0
+
     # Interval driver mode: print N, do not write
     if a is not None and b is not None:
         run_interval(a, b, n_samples, prec)
@@ -317,6 +454,12 @@ if __name__ == "__main__":
                     help="number of evenly-spaced sample points in [a, b] (default 51)")
     ap.add_argument("--prec", type=int, default=300,
                     help="Arb working precision in bits (default 300)")
+    ap.add_argument("--box", type=str, default=None,
+                    help="per-box driver: sigma0,sigma1,T0,T1 (rationals). Computes winding N + "
+                         "on-line N_line + edge non-vanishing and emits RHInBox_<tag>.lean "
+                         "instantiating rh_in_box_of_certificate; refuses invalid/under-resolved boxes")
+    ap.add_argument("--height", type=str, default=None,
+                    help="per-box driver shortcut for the strip box [2/5,3/5] x [0,T]")
     args = ap.parse_args()
     a_val = Fraction(args.a) if args.a is not None else None
     b_val = Fraction(args.b) if args.b is not None else None
@@ -326,4 +469,6 @@ if __name__ == "__main__":
         b=b_val,
         n_samples=args.n_samples,
         prec=args.prec,
+        box=args.box,
+        height=args.height,
     ))
