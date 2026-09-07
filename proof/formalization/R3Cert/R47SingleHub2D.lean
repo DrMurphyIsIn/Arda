@@ -246,6 +246,17 @@ noncomputable def mOf (K : ℕ) : ℕ := min K (leastTradeStop K)
 
 theorem mOf_le (K : ℕ) : mOf K ≤ K := min_le_left _ _
 
+/-- The trade stops helping by `m = 5` for EVERY `K` (the quadratic `1482K²−16616K+53520` is positive-
+    definite).  Hence the tie's cherry count `mOf K ≤ 5` — the tie is a valid Balanced state. -/
+theorem tradeStop_five (K : ℕ) : tradeStop K 5 := by
+  have hK : (0 : ℝ) ≤ (K : ℝ) := Nat.cast_nonneg K
+  simp only [tradeStop, Nat.cast_ofNat]
+  nlinarith [hK, sq_nonneg ((K : ℝ) - 6)]
+
+/-- **The tie cherry count is a valid Balanced load** (`mOf K ≤ 5`), so `tieState K (mOf K)` is Balanced. -/
+theorem mOf_le_five (K : ℕ) : mOf K ≤ 5 :=
+  le_trans (min_le_right _ _) (Nat.find_le (tradeStop_five K))
+
 /-- **The tie edge is maximized at `mOf K`, for every `K`.**  Interior: `tie_maximal_over_trades` at the
     least `tradeStop`.  Boundary (`K ≤ 4`, no in-range `tradeStop`): `tie_up_chain` to `m = K`. -/
 theorem tie_maximal_general (K : ℕ) (hK : 0 < K) :

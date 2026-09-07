@@ -821,5 +821,37 @@ theorem singleHubR_le_tie_89 (a b c Mn r : ℕ) (hr8 : 8 ≤ r) (hr9 : r ≤ 9) 
     have h2 := rtie_maximal_general (Mn - 9) r (by omega) c (by omega)
     exact le_max_of_le_right (le_trans h1 h2)
 
+/-! ### The tie cherry counts are valid Balanced loads (`≤ 5`), so every tie state is Balanced. -/
+
+/-- The shifted-edge argmax `rMOf M r ≤ 5` (`M ≥ 5`): the trade stops by `c = 5` on `rtieState`. -/
+theorem rMOf_le_five (M r : ℕ) (hM : 5 ≤ M) : rMOf M r ≤ 5 := by
+  have h : hubTradeStop (M - 5) (5 + r) 5 := by
+    have hMR : (5 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+    have hrR : (0 : ℝ) ≤ (r : ℝ) := Nat.cast_nonneg r
+    simp only [hubTradeStop]
+    push_cast [Nat.cast_sub hM]
+    nlinarith [hMR, hrR, sq_nonneg ((M : ℝ) - 5),
+      mul_nonneg (by linarith : (0:ℝ) ≤ (M : ℝ) - 5) hrR]
+  exact le_trans (min_le_right _ _) (Nat.find_le h)
+
+/-- The `negEdge` argmax `negMOf M ≤ 5` (`M ≥ 5`). -/
+theorem negMOf_le_five (M : ℕ) (hM : 5 ≤ M) : negMOf M ≤ 5 := by
+  have h : hubTradeStop (M - 5) (5 - 1) 5 := by
+    have hMR : (5 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+    simp only [hubTradeStop, show (5:ℕ) - 1 = 4 by omega]
+    push_cast [Nat.cast_sub hM]
+    nlinarith [hMR, sq_nonneg (2964 * ((M : ℝ) - 5) - 4796), sq_nonneg ((M : ℝ) - 5)]
+  exact le_trans (min_le_right _ _) (Nat.find_le ⟨by omega, h⟩)
+
+/-- The `offEdge` argmax `offMOf M off ≤ 5` (`M ≥ 11`, `off ≤ 3` -- the residue-8/9 usage, `off = 11-r`). -/
+theorem offMOf_le_five (M off : ℕ) (hM : 11 ≤ M) (hoff : off ≤ 3) : offMOf M off ≤ 5 := by
+  have hMR : (11 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have h : hubTradeStop (M - 5) (5 - off) 5 := by
+    interval_cases off <;>
+      · simp only [hubTradeStop]
+        push_cast [Nat.cast_sub (show 5 ≤ M by omega)]
+        nlinarith [hMR, sq_nonneg ((M : ℝ) - 11)]
+  exact le_trans (min_le_right _ _) (Nat.find_le ⟨by omega, h⟩)
+
 end Step3
 end R3Cert

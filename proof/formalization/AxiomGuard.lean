@@ -254,6 +254,7 @@ import R3Cert.R47SingleHubResidue
 #print axioms R3Cert.Step3.singleHub_le_tie_large
 #print axioms R3Cert.Step3.tie_maximal_general
 #print axioms R3Cert.Step3.singleHub_le_tie_ge22
+#print axioms R3Cert.Step3.mOf_le_five
 #print axioms R3Cert.Step3.singleHub_le_tie_lt22
 #print axioms R3Cert.Step3.singleHub_le_tie
 
@@ -283,3 +284,6 @@ import R3Cert.R47SingleHubResidue
 #print axioms R3Cert.Step3.singleHubR_le_tie_10
 #print axioms R3Cert.Step3.off_maximal_general
 #print axioms R3Cert.Step3.singleHubR_le_tie_89
+#print axioms R3Cert.Step3.rMOf_le_five
+#print axioms R3Cert.Step3.negMOf_le_five
+#print axioms R3Cert.Step3.offMOf_le_five
