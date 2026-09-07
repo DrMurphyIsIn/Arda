@@ -278,3 +278,6 @@ import R3Cert.R47SingleHubResidue
 #print axioms R3Cert.Step3.singleHubR_le_tie_edge
 #print axioms R3Cert.Step3.rNeg_r6
 #print axioms R3Cert.Step3.singleHubR_le_tie_07
+#print axioms R3Cert.Step3.neg_maximal_general
+#print axioms R3Cert.Step3.neg_bulk_link
+#print axioms R3Cert.Step3.singleHubR_le_tie_10

@@ -596,5 +596,87 @@ theorem neg_maximal_general (M : ℕ) (hM : 1 ≤ M) :
     exact neg_up_chain M c hc1 M hcM (le_refl M)
       (fun i hi hiM => negLeastStop_min M (by omega) (by omega))
 
+/-! ### The bulk-link, the `c = 0` edge case, and the residue-10 envelope. -/
+
+/-- **Bulk-link**: the `δ = 10` edge `rtieState M 10 c` is dominated by the `δ = -1` edge
+    `negEdge (M+9) c` (one reverse bulk swap; the swap does not help at `M ≥ 22`, `1 ≤ c ≤ 5`). -/
+theorem neg_bulk_link (M c : ℕ) (hM : 22 ≤ M) (hc1 : 1 ≤ c) (hc5 : c ≤ 5) :
+    Aobj (backboneU (rtieState M 10 c)) ≤ Aobj (backboneU (negEdge (M + 9) c)) := by
+  have hbulk : bulkStopABC (M + 9 - c) (c - 1) c := by
+    have hMR : (22 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+    have hcm : c ≤ M + 9 := by omega
+    simp only [bulkStopABC]
+    push_cast [Nat.cast_sub hcm, Nat.cast_sub hc1]
+    interval_cases c <;> nlinarith [hMR, sq_nonneg ((M : ℝ) - 22)]
+  have hrt : rtieState M 10 c = hubState ((M + 9 - c) - 9) ((c - 1) + 11) c := by
+    unfold rtieState
+    rw [show M - c = (M + 9 - c) - 9 by omega, show c + 10 = (c - 1) + 11 by omega]
+  rw [hrt, negEdge]
+  exact (hub_bulk_le (M + 9 - c) (c - 1) c (by omega) (by omega)).mpr
+    ((hub_bulk_stop_iff (M + 9 - c) (c - 1) c (by omega) (by omega)).mpr hbulk)
+
+/-- The `c = 0` edge case for residue 10: `hubState M 10 0 = rtieState M 10 0 ≤ negEdge (M+9) 1`
+    (`= hubState (M+8) 0 1`), a symbolic-`M` comparison (`M ≥ 22`). -/
+theorem rNeg_c0 (M : ℕ) (hM : 22 ≤ M) :
+    Aobj (backboneU (rtieState M 10 0)) ≤ Aobj (backboneU (negEdge (M + 9) 1)) := by
+  have hMR : (22 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hP : (0 : ℝ) < (621 / 64 : ℝ) ^ M := by positivity
+  have key : (513 / 80 : ℝ) ^ (10:ℕ) * (3 / 2) ^ (0:ℕ)
+        * (1 + ((M : ℝ) * (3 / (((M : ℝ) + 10) * 23)) + (10:ℝ) * (3 / (((M : ℝ) + 10) * 19))))
+      ≤ (621 / 64) ^ 8 * ((513 / 80) ^ (0:ℕ) * (3 / 2) ^ (1:ℕ)
+        * (1 + (((M : ℝ) + 8) * (3 / (((M : ℝ) + 9) * 23))
+            + (1:ℝ) * (1 / (3 * ((M : ℝ) + 9)))))) := by
+    have h9 : (0 : ℝ) < (M : ℝ) + 9 := by linarith
+    have h10 : (0 : ℝ) < (M : ℝ) + 10 := by linarith
+    rw [← sub_nonneg]; field_simp; nlinarith [hMR, sq_nonneg ((M : ℝ) - 22)]
+  rw [rtieState, negEdge, show M - 0 = M by omega, show M + 9 - 1 = M + 8 by omega,
+    show (1:ℕ) - 1 = 0 by omega,
+    hub_Aobj_eq M 10 0 (by omega), hub_Aobj_eq (M + 8) 0 1 (by omega),
+    show (621 / 64 : ℝ) ^ (M + 8) = (621 / 64) ^ M * (621 / 64) ^ 8 from pow_add _ _ _]
+  calc (621 / 64 : ℝ) ^ M * (513 / 80) ^ 10 * (3 / 2) ^ 0
+          * (1 + (((M : ℕ) : ℝ) * (3 / (((M + 10 + 0 : ℕ) : ℝ) * 23))
+              + ((10:ℕ) : ℝ) * (3 / (((M + 10 + 0 : ℕ) : ℝ) * 19))
+              + ((0:ℕ) : ℝ) * (1 / (3 * ((M + 10 + 0 : ℕ) : ℝ)))))
+        = (621 / 64 : ℝ) ^ M * ((513 / 80) ^ (10:ℕ) * (3 / 2) ^ (0:ℕ)
+            * (1 + ((M : ℝ) * (3 / (((M : ℝ) + 10) * 23))
+                + (10:ℝ) * (3 / (((M : ℝ) + 10) * 19))))) := by push_cast; ring
+      _ ≤ (621 / 64 : ℝ) ^ M * ((621 / 64) ^ 8 * ((513 / 80) ^ (0:ℕ) * (3 / 2) ^ (1:ℕ)
+            * (1 + (((M : ℝ) + 8) * (3 / (((M : ℝ) + 9) * 23))
+                + (1:ℝ) * (1 / (3 * ((M : ℝ) + 9))))))) :=
+          mul_le_mul_of_nonneg_left key hP.le
+      _ = (621 / 64 : ℝ) ^ M * (621 / 64) ^ 8 * (513 / 80) ^ 0 * (3 / 2) ^ 1
+            * (1 + (((M + 8 : ℕ) : ℝ) * (3 / (((M + 8 + 0 + 1 : ℕ) : ℝ) * 23))
+                + ((0:ℕ) : ℝ) * (3 / (((M + 8 + 0 + 1 : ℕ) : ℝ) * 19))
+                + ((1:ℕ) : ℝ) * (1 / (3 * ((M + 8 + 0 + 1 : ℕ) : ℝ))))) := by push_cast; ring
+
+/-- **The residue-10 single-hub envelope (`Mn ≥ 31`).**  Every Balanced single hub at size `11·Mn - 8`
+    (residue 10) is dominated by the `δ = -1` tie `negEdge Mn (negMOf Mn)`.  Case `δ = -1` (`b = c-1`) →
+    `neg_maximal_general`; case `δ ≥ 10` (`b ≥ c+10`) → `col_le_edgeR` to the `δ=10` edge, then the
+    bulk-link (`c ≥ 1`) or `rNeg_c0` (`c = 0`), then `neg_maximal_general`. -/
+theorem singleHubR_le_tie_10 (a b c Mn : ℕ) (hc : c ≤ 5) (hMn : 31 ≤ Mn)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * Mn - 9) :
+    Aobj (backboneU (hubState a b c)) ≤ Aobj (backboneU (negEdge Mn (negMOf Mn))) := by
+  by_cases hd : b + 1 = c
+  · have hc1 : 1 ≤ c := by omega
+    have heq : hubState a b c = negEdge Mn c := by
+      unfold negEdge; congr 1 <;> omega
+    rw [heq]
+    exact neg_maximal_general Mn (by omega) c hc1 (by omega)
+  · have hbge : c + 10 ≤ b := by omega
+    obtain ⟨heq, htK⟩ := hubState_eq_colStateR a b c (Mn - 9) 10 hbge (by omega)
+    rw [heq]
+    have h1 := col_le_edgeR (Mn - 9) 10 c ((b - c - 10) / 11) (by omega) (by omega) hc htK
+    by_cases hc0 : c = 0
+    · subst hc0
+      have hbl := rNeg_c0 (Mn - 9) (by omega)
+      rw [show Mn - 9 + 9 = Mn by omega] at hbl
+      have h3 := neg_maximal_general Mn (by omega) 1 (by omega) (by omega)
+      linarith
+    · have hc1 : 1 ≤ c := by omega
+      have hbl := neg_bulk_link (Mn - 9) c (by omega) hc1 hc
+      rw [show Mn - 9 + 9 = Mn by omega] at hbl
+      have h3 := neg_maximal_general Mn (by omega) c hc1 (by omega)
+      linarith
+
 end Step3
 end R3Cert
