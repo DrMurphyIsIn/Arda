@@ -27,6 +27,10 @@
        `55/16 ≤ |γ| ∧ 1 - dlvpRateC/log|γ| < β ⟹ ζ(β+iγ) ≠ 0`, i.e. `ζ(s) ≠ 0` on
        `Re s > 1 - dlvpRateC/log|Im s|`.  Multiplicity `1 ≤ divisor` is derived from `ζ ρ₀ = 0`
        (zeta_zero_divisor_pos).
+     * zeta_zero_on_line_of_right_half_clear / zeta_zero_on_line_of_quarter_clear — the
+       functional-equation symmetry reductions (RH-in-a-box piece 3): clearing the right half
+       (resp. the quarter `1/2<Re<1, 0<Im≤T`) of the critical strip suffices, via reflection across
+       `Re = 1/2` (riemannZeta_one_sub) and the real axis (riemannZeta_conj).
    All are kernel-verified reductions.  conjecture1_proved = False (NOT a proof of RH).
 -/
 import DlvpZetaConcreteClose
@@ -34,6 +38,7 @@ import DlvpZetaConcreteRate
 import DlvpZetaPoleEffective
 import DlvpZetaRateEffective
 import DlvpZetaZeroFree
+import DlvpZetaSymmetry
 
 #print axioms ZeroFreeBridge.dlvp_zeta_region_concrete
 #print axioms ZeroFreeBridge.dlvp_zeta_region_rate
@@ -42,3 +47,5 @@ import DlvpZetaZeroFree
 #print axioms ZeroFreeBridge.dlvpRateC_pos
 #print axioms ZeroFreeBridge.riemannZeta_ne_zero_region
 #print axioms ZeroFreeBridge.zeta_zero_divisor_pos
+#print axioms ZeroFreeBridge.zeta_zero_on_line_of_right_half_clear
+#print axioms ZeroFreeBridge.zeta_zero_on_line_of_quarter_clear

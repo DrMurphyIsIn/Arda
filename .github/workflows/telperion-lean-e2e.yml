@@ -1690,7 +1690,7 @@ jobs:
       - name: Axiom guard -- dVP concrete-zero region + rate are kernel-clean (fail on sorryAx)
         working-directory: telperion/examples/zero_free_bridge/lean
         run: |
-          lake build DlvpZetaConcreteClose DlvpZetaConcreteRate DlvpZetaPoleEffective DlvpZetaRateEffective DlvpZetaZeroFree
+          lake build DlvpZetaConcreteClose DlvpZetaConcreteRate DlvpZetaPoleEffective DlvpZetaRateEffective DlvpZetaZeroFree DlvpZetaSymmetry
           out="$(lake env lean AxiomGuardDlvp.lean 2>&1 || true)"
           echo "$out"
           if echo "$out" | grep -q 'sorryAx'; then
