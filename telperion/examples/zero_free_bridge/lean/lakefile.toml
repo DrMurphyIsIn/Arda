@@ -340,3 +340,6 @@ name = "DlvpZetaGBound"
 
 [[lean_lib]]
 name = "DlvpZetaHAL"
+
+[[lean_lib]]
+name = "DlvpZetaCountReconcile"
