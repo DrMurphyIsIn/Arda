@@ -313,3 +313,6 @@ name = "DlvpZetaZeroLoc"
 
 [[lean_lib]]
 name = "DlvpZetaStripSum"
+
+[[lean_lib]]
+name = "DlvpZetaSphereLogStrip"
