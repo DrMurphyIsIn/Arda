@@ -1844,5 +1844,845 @@ theorem singleHubR_le_tie_small_r7 (a b c M : ℕ) (hc : c ≤ 5) (hM1 : 1 ≤ M
         | (refine le_trans ?_ (rtie_maximal_general _ 7 (by norm_num) 0 (by norm_num));
            rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
 
+set_option maxHeartbeats 4000000 in
+/-- Small-M finite patch, residue 8 (two-edge), `1 ≤ M ≤ 30` (Mn = M+9 = 10..39). -/
+theorem singleHubR_le_tie_small_r8 (a b c M : ℕ) (hc : c ≤ 5) (hM1 : 1 ≤ M) (hM : M ≤ 30)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * M + 9 * 8) :
+    Aobj (backboneU (hubState a b c))
+      ≤ max (Aobj (backboneU (offEdge (M + 9) 3 (offMOf (M + 9) 3))))
+            (Aobj (backboneU (rtieState M 8 (rMOf M 8)))) := by
+  by_cases hlow : c + 8 ≤ b
+  · obtain ⟨heq, htK⟩ := hubState_eq_colStateR a b c M 8 hlow (by omega)
+    rw [heq]; apply le_max_of_le_right
+    set t := (b - c - 8) / 11 with htdef
+    have ht2 : t ≤ 3 := by omega
+    clear_value t
+    interval_cases M
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 1 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 4 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 1 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 1 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 8 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 8 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+  · obtain hcase : (c = 3 ∧ b = 0 ∧ a = M + 9 - 3) ∨ (c = 4 ∧ b = 1 ∧ a = M + 9 - 4) ∨ (c = 5 ∧ b = 2 ∧ a = M + 9 - 5) := by omega
+    rcases hcase with ⟨hc', hb', ha'⟩ | ⟨hc', hb', ha'⟩ | ⟨hc', hb', ha'⟩
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 3) 0 3 = offEdge (M + 9) 3 3 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 3 (by omega) 3 (by omega) (by omega))
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 4) 1 4 = offEdge (M + 9) 3 4 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 3 (by omega) 4 (by omega) (by omega))
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 5) 2 5 = offEdge (M + 9) 3 5 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 3 (by omega) 5 (by omega) (by omega))
+
+set_option maxHeartbeats 4000000 in
+/-- Small-M finite patch, residue 9 (two-edge), `1 ≤ M ≤ 30` (Mn = M+9 = 10..39). -/
+theorem singleHubR_le_tie_small_r9 (a b c M : ℕ) (hc : c ≤ 5) (hM1 : 1 ≤ M) (hM : M ≤ 30)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * M + 9 * 9) :
+    Aobj (backboneU (hubState a b c))
+      ≤ max (Aobj (backboneU (offEdge (M + 9) 2 (offMOf (M + 9) 2))))
+            (Aobj (backboneU (rtieState M 9 (rMOf M 9)))) := by
+  by_cases hlow : c + 9 ≤ b
+  · obtain ⟨heq, htK⟩ := hubState_eq_colStateR a b c M 9 hlow (by omega)
+    rw [heq]; apply le_max_of_le_right
+    set t := (b - c - 9) / 11 with htdef
+    have ht2 : t ≤ 3 := by omega
+    clear_value t
+    interval_cases M
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 1 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 1 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 1 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 9 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 9 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+  · obtain hcase : (c = 2 ∧ b = 0 ∧ a = M + 9 - 2) ∨ (c = 3 ∧ b = 1 ∧ a = M + 9 - 3) ∨ (c = 4 ∧ b = 2 ∧ a = M + 9 - 4) ∨ (c = 5 ∧ b = 3 ∧ a = M + 9 - 5) := by omega
+    rcases hcase with ⟨hc', hb', ha'⟩ | ⟨hc', hb', ha'⟩ | ⟨hc', hb', ha'⟩ | ⟨hc', hb', ha'⟩
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 2) 0 2 = offEdge (M + 9) 2 2 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 2 (by omega) 2 (by omega) (by omega))
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 3) 1 3 = offEdge (M + 9) 2 3 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 2 (by omega) 3 (by omega) (by omega))
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 4) 2 4 = offEdge (M + 9) 2 4 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 2 (by omega) 4 (by omega) (by omega))
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 5) 3 5 = offEdge (M + 9) 2 5 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 2 (by omega) 5 (by omega) (by omega))
+
+set_option maxHeartbeats 4000000 in
+/-- Small-M finite patch, residue 10 (two-edge, off=1 = negEdge), `1 ≤ M ≤ 30` (Mn = M+9). -/
+theorem singleHubR_le_tie_small_r10 (a b c M : ℕ) (hc : c ≤ 5) (hM1 : 1 ≤ M) (hM : M ≤ 30)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * M + 9 * 10) :
+    Aobj (backboneU (hubState a b c))
+      ≤ max (Aobj (backboneU (offEdge (M + 9) 1 (offMOf (M + 9) 1))))
+            (Aobj (backboneU (rtieState M 10 (rMOf M 10)))) := by
+  by_cases hlow : c + 10 ≤ b
+  · obtain ⟨heq, htK⟩ := hubState_eq_colStateR a b c M 10 hlow (by omega)
+    rw [heq]; apply le_max_of_le_right
+    set t := (b - c - 10) / 11 with htdef
+    have ht2 : t ≤ 3 := by omega
+    clear_value t
+    interval_cases M
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 1 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 3 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 2 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 1 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 1 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+    · interval_cases c <;> interval_cases t <;>
+        first
+        | omega
+        | (rw [colStateR_zero]; exact rtie_maximal_general _ 10 (by norm_num) _ (by norm_num))
+        | (refine le_trans ?_ (rtie_maximal_general _ 10 (by norm_num) 0 (by norm_num));
+           rw [colStateR, rtieState, hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num)
+  · obtain hcase : (c = 1 ∧ b = 0 ∧ a = M + 9 - 1) ∨ (c = 2 ∧ b = 1 ∧ a = M + 9 - 2) ∨ (c = 3 ∧ b = 2 ∧ a = M + 9 - 3) ∨ (c = 4 ∧ b = 3 ∧ a = M + 9 - 4) ∨ (c = 5 ∧ b = 4 ∧ a = M + 9 - 5) := by omega
+    rcases hcase with ⟨hc', hb', ha'⟩ | ⟨hc', hb', ha'⟩ | ⟨hc', hb', ha'⟩ | ⟨hc', hb', ha'⟩ | ⟨hc', hb', ha'⟩
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 1) 0 1 = offEdge (M + 9) 1 1 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 1 (by omega) 1 (by omega) (by omega))
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 2) 1 2 = offEdge (M + 9) 1 2 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 1 (by omega) 2 (by omega) (by omega))
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 3) 2 3 = offEdge (M + 9) 1 3 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 1 (by omega) 3 (by omega) (by omega))
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 4) 3 4 = offEdge (M + 9) 1 4 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 1 (by omega) 4 (by omega) (by omega))
+    · subst hc'; subst hb'; subst ha'
+      rw [show hubState (M + 9 - 5) 4 5 = offEdge (M + 9) 1 5 from by unfold offEdge; congr 1 <;> omega]
+      exact le_max_of_le_left (off_maximal_general (M + 9) 1 (by omega) 5 (by omega) (by omega))
+
+set_option maxHeartbeats 8000000 in
+/-- Tiny-size tail, residue 8, `3 ≤ Mn ≤ 9`: below the offEdge budget, the low edge alone dominates. -/
+theorem singleHubR_le_tie_tail_r8 (a b c Mn : ℕ) (hc : c ≤ 5) (hMn1 : 3 ≤ Mn) (hMn : Mn ≤ 9)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * Mn - 9 * (11 - 8)) :
+    Aobj (backboneU (hubState a b c))
+      ≤ Aobj (backboneU (offEdge Mn 3 (offMOf Mn 3))) := by
+  interval_cases Mn
+  · -- Mn = 3
+    have hbb : b ≤ 0 := by omega
+    have haa : a ≤ 0 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 3 3 (by norm_num) 3 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 4
+    have hbb : b ≤ 1 := by omega
+    have haa : a ≤ 1 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 4 3 (by norm_num) 4 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 5
+    have hbb : b ≤ 3 := by omega
+    have haa : a ≤ 2 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 5 3 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 6
+    have hbb : b ≤ 4 := by omega
+    have haa : a ≤ 3 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 6 3 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 7
+    have hbb : b ≤ 5 := by omega
+    have haa : a ≤ 4 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 7 3 (by norm_num) 6 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 8
+    have hbb : b ≤ 6 := by omega
+    have haa : a ≤ 5 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 8 3 (by norm_num) 6 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 9
+    have hbb : b ≤ 8 := by omega
+    have haa : a ≤ 6 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 9 3 (by norm_num) 6 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+
+set_option maxHeartbeats 8000000 in
+/-- Tiny-size tail, residue 9, `3 ≤ Mn ≤ 9`: below the offEdge budget, the low edge alone dominates. -/
+theorem singleHubR_le_tie_tail_r9 (a b c Mn : ℕ) (hc : c ≤ 5) (hMn1 : 3 ≤ Mn) (hMn : Mn ≤ 9)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * Mn - 9 * (11 - 9)) :
+    Aobj (backboneU (hubState a b c))
+      ≤ Aobj (backboneU (offEdge Mn 2 (offMOf Mn 2))) := by
+  interval_cases Mn
+  · -- Mn = 3
+    have hbb : b ≤ 1 := by omega
+    have haa : a ≤ 1 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 3 2 (by norm_num) 3 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 4
+    have hbb : b ≤ 2 := by omega
+    have haa : a ≤ 2 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 4 2 (by norm_num) 4 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 5
+    have hbb : b ≤ 4 := by omega
+    have haa : a ≤ 3 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 5 2 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 6
+    have hbb : b ≤ 5 := by omega
+    have haa : a ≤ 4 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 6 2 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 7
+    have hbb : b ≤ 6 := by omega
+    have haa : a ≤ 5 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 7 2 (by norm_num) 6 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 8
+    have hbb : b ≤ 7 := by omega
+    have haa : a ≤ 6 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 8 2 (by norm_num) 6 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 9
+    have hbb : b ≤ 9 := by omega
+    have haa : a ≤ 7 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 9 2 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+
+set_option maxHeartbeats 8000000 in
+/-- Tiny-size tail, residue 10, `3 ≤ Mn ≤ 9`: below the offEdge budget, the low edge alone dominates. -/
+theorem singleHubR_le_tie_tail_r10 (a b c Mn : ℕ) (hc : c ≤ 5) (hMn1 : 3 ≤ Mn) (hMn : Mn ≤ 9)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * Mn - 9 * (11 - 10)) :
+    Aobj (backboneU (hubState a b c))
+      ≤ Aobj (backboneU (offEdge Mn 1 (offMOf Mn 1))) := by
+  interval_cases Mn
+  · -- Mn = 3
+    have hbb : b ≤ 2 := by omega
+    have haa : a ≤ 2 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 3 1 (by norm_num) 3 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 4
+    have hbb : b ≤ 3 := by omega
+    have haa : a ≤ 3 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 4 1 (by norm_num) 4 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 5
+    have hbb : b ≤ 5 := by omega
+    have haa : a ≤ 4 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 5 1 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 6
+    have hbb : b ≤ 6 := by omega
+    have haa : a ≤ 5 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 6 1 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 7
+    have hbb : b ≤ 7 := by omega
+    have haa : a ≤ 6 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 7 1 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 8
+    have hbb : b ≤ 8 := by omega
+    have haa : a ≤ 7 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 8 1 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+  · -- Mn = 9
+    have hbb : b ≤ 10 := by omega
+    have haa : a ≤ 8 := by omega
+    interval_cases c <;> interval_cases b <;> interval_cases a <;>
+      first
+      | omega
+      | (refine le_trans ?_ (off_maximal_general 9 1 (by norm_num) 5 (by norm_num) (by norm_num));
+         rw [offEdge] <;>
+           (rw [hub_Aobj_eq _ _ _ (by norm_num), hub_Aobj_eq _ _ _ (by norm_num)]; norm_num))
+
 end Step3
 end R3Cert
