@@ -42,3 +42,25 @@ def test_zeta_confinement_builds():
         text=True,
     )
     assert r.returncode == 0, r.stderr
+
+
+@requires_lake
+def test_all_zeros_up_to_height_builds():
+    """The combination theorem (`AllZerosUpToHeight.all_nontrivial_zeros_up_to_height_on_line`)
+    builds sorry-free.
+
+    Composes ZetaZeroConfinement (Task 3) + RHInBox (PR #312) to prove that all
+    nontrivial zeta zeros up to height T lie on Re = 1/2, parameterized by a, T, and
+    the Arb bundle (not fixed to concrete values).
+    """
+    env = {**os.environ, "PATH": _LAKE_PATH}
+    d = str(_LEAN_DIR)
+    subprocess.run(["lake", "exe", "cache", "get"], cwd=d, env=env, check=True)
+    r = subprocess.run(
+        ["lake", "build", "AllZerosUpToHeight"],
+        cwd=d,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+    assert r.returncode == 0, r.stderr

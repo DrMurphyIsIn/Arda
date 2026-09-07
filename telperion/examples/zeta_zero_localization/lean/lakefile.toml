@@ -1,5 +1,5 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "ZetaZeroConfinement"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight"]
 
 [[require]]
 name = "mathlib"
@@ -55,3 +55,8 @@ name = "RHInBox_2d5_3d5_0_100"
 # Consumes the self-contained effective dVP zero-free region (PR #318, ZeroFreeBridge require above).
 [[lean_lib]]
 name = "ZetaZeroConfinement"
+
+# COMBINATION (kernel): composes ZetaZeroConfinement + RHInBox into the final theorem:
+# all nontrivial zeta zeros up to height T lie on Re = 1/2.
+[[lean_lib]]
+name = "AllZerosUpToHeight"
