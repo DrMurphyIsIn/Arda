@@ -316,3 +316,6 @@ name = "DlvpZetaStripSum"
 
 [[lean_lib]]
 name = "DlvpZetaSphereLogStrip"
+
+[[lean_lib]]
+name = "DlvpHALArith"
