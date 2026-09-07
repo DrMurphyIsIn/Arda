@@ -1,5 +1,15 @@
 # dVP Capstone — WIRING DONE, numeric closing remains (2026-09-07)
 
+> **UPDATE (2026-09-07, later): THE NUMERIC CLOSING IS ALSO DONE.** `dlvp_zeta_region_concrete`
+> (`DlvpZetaConcreteClose.lean`, PR #306, kernel-clean, CI `rh-dlvp-concreteclose`) discharges `hnum`
+> and `hpole` exactly per §7 below, and the dVP concrete zero-free-region reduction is now complete
+> end-to-end. Two refinements vs the recipe below: (1) `hgb`/`hC` were NOT collapsed into a jensen
+> bound — for the `∃ A L` form, `C₁,C₂` are just the actual divisor finsums (`hC = le_refl/.ge`), so
+> `zeta_zero_count_strip` is not needed (the log RATE is not asserted). (2) Every big `set`-var must be
+> `clear_value`d or tactics unfold huge terms → heartbeat timeouts; the theorem also needs
+> `set_option maxHeartbeats 1200000`. The rest is exactly as written. `conjecture1_proved = False`.
+
+
 **Supersedes the "PURE ASSEMBLY" framing of `DLVP_CAPSTONE_HANDOFF_2026-09-07.md`.** The assembly is
 now a merged kernel-clean theorem. What remains is ONLY the numeric closing.
 
