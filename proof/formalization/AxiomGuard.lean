@@ -275,3 +275,6 @@ import R3Cert.R47SingleHubResidue
 #print axioms R3Cert.Step3.colStopR_zero_large
 #print axioms R3Cert.Step3.col_le_edgeR
 #print axioms R3Cert.Step3.singleHubR_le_tie_large
+#print axioms R3Cert.Step3.singleHubR_le_tie_edge
+#print axioms R3Cert.Step3.rNeg_r6
+#print axioms R3Cert.Step3.singleHubR_le_tie_07

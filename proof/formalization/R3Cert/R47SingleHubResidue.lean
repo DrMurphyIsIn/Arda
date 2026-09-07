@@ -346,5 +346,134 @@ theorem singleHubR_le_tie_large (a b c M r : ℕ) (hr : r ≤ 5) (hc : c ≤ 5) 
   have h2 := rtie_maximal_general M r (by omega) c (by omega)
   linarith
 
+/-- The edge (`b ≥ c+r`) single-hub envelope for any residue `r ≤ 10` (`M ≥ 22`).  Generalizes
+    `singleHubR_le_tie_large` (which additionally derives `b ≥ c+r` automatically for `r ≤ 5`). -/
+theorem singleHubR_le_tie_edge (a b c M r : ℕ) (hr : r ≤ 10) (hc : c ≤ 5) (hM : 22 ≤ M)
+    (hbge : c + r ≤ b) (hsize : 11 * a + 9 * b + 2 * c = 11 * M + 9 * r) :
+    Aobj (backboneU (hubState a b c)) ≤ Aobj (backboneU (rtieState M r (rMOf M r))) := by
+  obtain ⟨heq, htK⟩ := hubState_eq_colStateR a b c M r hbge hsize
+  rw [heq]
+  have h1 := col_le_edgeR M r c ((b - c - r) / 11) hM hr hc htK
+  have h2 := rtie_maximal_general M r (by omega) c (by omega)
+  linarith
+
+/-- Sub-edge (`t = -1`) config for `r = 6`: `hubState (M+4) 0 5 ≤ rtieState M 6 0 = hubState M 6 0`
+    (symbolic-`M`, `M ≥ 22`).  Reduces (via `hub_Aobj_eq` + factoring `V^M`) to a rational inequality
+    in `M` closed by `nlinarith`. -/
+theorem rNeg_r6 (M : ℕ) (hM : 22 ≤ M) :
+    Aobj (backboneU (hubState (M + 4) 0 5)) ≤ Aobj (backboneU (rtieState M 6 0)) := by
+  have hMR : (22 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hP : (0 : ℝ) < (621 / 64 : ℝ) ^ M := by positivity
+  have key : (621 / 64 : ℝ) ^ 4 * ((513 / 80) ^ (0:ℕ) * (3 / 2) ^ (5:ℕ)
+        * (1 + (((M : ℝ) + 4) * (3 / (((M : ℝ) + 9) * 23))
+            + (5:ℝ) * (1 / (3 * ((M : ℝ) + 9))))))
+      ≤ (513 / 80) ^ (6:ℕ) * (3 / 2) ^ (0:ℕ)
+        * (1 + ((M : ℝ) * (3 / (((M : ℝ) + 6) * 23)) + (6:ℝ) * (3 / (((M : ℝ) + 6) * 19)))) := by
+    have h9 : (0 : ℝ) < (M : ℝ) + 9 := by linarith
+    have h6 : (0 : ℝ) < (M : ℝ) + 6 := by linarith
+    rw [← sub_nonneg]; field_simp; nlinarith [hMR, sq_nonneg ((M : ℝ) - 22)]
+  rw [rtieState, show M - 0 = M by omega,
+    hub_Aobj_eq (M + 4) 0 5 (by omega), hub_Aobj_eq M 6 0 (by omega),
+    show (621 / 64 : ℝ) ^ (M + 4) = (621 / 64) ^ M * (621 / 64) ^ 4 from pow_add _ _ _]
+  calc (621 / 64 : ℝ) ^ M * (621 / 64) ^ 4 * (513 / 80) ^ 0 * (3 / 2) ^ 5
+          * (1 + (((M + 4 : ℕ) : ℝ) * (3 / (((M + 4 + 0 + 5 : ℕ) : ℝ) * 23))
+              + ((0:ℕ) : ℝ) * (3 / (((M + 4 + 0 + 5 : ℕ) : ℝ) * 19))
+              + ((5:ℕ) : ℝ) * (1 / (3 * ((M + 4 + 0 + 5 : ℕ) : ℝ)))))
+        = (621 / 64 : ℝ) ^ M * ((621 / 64) ^ 4 * ((513 / 80) ^ (0:ℕ) * (3 / 2) ^ (5:ℕ)
+            * (1 + (((M : ℝ) + 4) * (3 / (((M : ℝ) + 9) * 23))
+                + (5:ℝ) * (1 / (3 * ((M : ℝ) + 9))))))) := by push_cast; ring
+      _ ≤ (621 / 64 : ℝ) ^ M * ((513 / 80) ^ (6:ℕ) * (3 / 2) ^ (0:ℕ)
+            * (1 + ((M : ℝ) * (3 / (((M : ℝ) + 6) * 23)) + (6:ℝ) * (3 / (((M : ℝ) + 6) * 19))))) :=
+          mul_le_mul_of_nonneg_left key hP.le
+      _ = (621 / 64 : ℝ) ^ M * (513 / 80) ^ 6 * (3 / 2) ^ 0
+            * (1 + (((M : ℕ) : ℝ) * (3 / (((M + 6 + 0 : ℕ) : ℝ) * 23))
+                + ((6:ℕ) : ℝ) * (3 / (((M + 6 + 0 : ℕ) : ℝ) * 19))
+                + ((0:ℕ) : ℝ) * (1 / (3 * ((M + 6 + 0 : ℕ) : ℝ))))) := by push_cast; ring
+
+/-- Sub-edge (`t = -1`) config for `r = 7` (first): `hubState (M+5) 0 4 ≤ rtieState M 7 0`. -/
+theorem rNeg_r7a (M : ℕ) (hM : 22 ≤ M) :
+    Aobj (backboneU (hubState (M + 5) 0 4)) ≤ Aobj (backboneU (rtieState M 7 0)) := by
+  have hMR : (22 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hP : (0 : ℝ) < (621 / 64 : ℝ) ^ M := by positivity
+  have key : (621 / 64 : ℝ) ^ 5 * ((513 / 80) ^ (0:ℕ) * (3 / 2) ^ (4:ℕ)
+        * (1 + (((M : ℝ) + 5) * (3 / (((M : ℝ) + 9) * 23))
+            + (4:ℝ) * (1 / (3 * ((M : ℝ) + 9))))))
+      ≤ (513 / 80) ^ (7:ℕ) * (3 / 2) ^ (0:ℕ)
+        * (1 + ((M : ℝ) * (3 / (((M : ℝ) + 7) * 23)) + (7:ℝ) * (3 / (((M : ℝ) + 7) * 19)))) := by
+    have h9 : (0 : ℝ) < (M : ℝ) + 9 := by linarith
+    have h7 : (0 : ℝ) < (M : ℝ) + 7 := by linarith
+    rw [← sub_nonneg]; field_simp; nlinarith [hMR, sq_nonneg ((M : ℝ) - 22)]
+  rw [rtieState, show M - 0 = M by omega,
+    hub_Aobj_eq (M + 5) 0 4 (by omega), hub_Aobj_eq M 7 0 (by omega),
+    show (621 / 64 : ℝ) ^ (M + 5) = (621 / 64) ^ M * (621 / 64) ^ 5 from pow_add _ _ _]
+  calc (621 / 64 : ℝ) ^ M * (621 / 64) ^ 5 * (513 / 80) ^ 0 * (3 / 2) ^ 4
+          * (1 + (((M + 5 : ℕ) : ℝ) * (3 / (((M + 5 + 0 + 4 : ℕ) : ℝ) * 23))
+              + ((0:ℕ) : ℝ) * (3 / (((M + 5 + 0 + 4 : ℕ) : ℝ) * 19))
+              + ((4:ℕ) : ℝ) * (1 / (3 * ((M + 5 + 0 + 4 : ℕ) : ℝ)))))
+        = (621 / 64 : ℝ) ^ M * ((621 / 64) ^ 5 * ((513 / 80) ^ (0:ℕ) * (3 / 2) ^ (4:ℕ)
+            * (1 + (((M : ℝ) + 5) * (3 / (((M : ℝ) + 9) * 23))
+                + (4:ℝ) * (1 / (3 * ((M : ℝ) + 9))))))) := by push_cast; ring
+      _ ≤ (621 / 64 : ℝ) ^ M * ((513 / 80) ^ (7:ℕ) * (3 / 2) ^ (0:ℕ)
+            * (1 + ((M : ℝ) * (3 / (((M : ℝ) + 7) * 23)) + (7:ℝ) * (3 / (((M : ℝ) + 7) * 19))))) :=
+          mul_le_mul_of_nonneg_left key hP.le
+      _ = (621 / 64 : ℝ) ^ M * (513 / 80) ^ 7 * (3 / 2) ^ 0
+            * (1 + (((M : ℕ) : ℝ) * (3 / (((M + 7 + 0 : ℕ) : ℝ) * 23))
+                + ((7:ℕ) : ℝ) * (3 / (((M + 7 + 0 : ℕ) : ℝ) * 19))
+                + ((0:ℕ) : ℝ) * (1 / (3 * ((M + 7 + 0 : ℕ) : ℝ))))) := by push_cast; ring
+
+/-- Sub-edge (`t = -1`) config for `r = 7` (second): `hubState (M+4) 1 5 ≤ rtieState M 7 0`. -/
+theorem rNeg_r7b (M : ℕ) (hM : 22 ≤ M) :
+    Aobj (backboneU (hubState (M + 4) 1 5)) ≤ Aobj (backboneU (rtieState M 7 0)) := by
+  have hMR : (22 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hP : (0 : ℝ) < (621 / 64 : ℝ) ^ M := by positivity
+  have key : (621 / 64 : ℝ) ^ 4 * ((513 / 80) ^ (1:ℕ) * (3 / 2) ^ (5:ℕ)
+        * (1 + (((M : ℝ) + 4) * (3 / (((M : ℝ) + 10) * 23))
+            + (1:ℝ) * (3 / (((M : ℝ) + 10) * 19)) + (5:ℝ) * (1 / (3 * ((M : ℝ) + 10))))))
+      ≤ (513 / 80) ^ (7:ℕ) * (3 / 2) ^ (0:ℕ)
+        * (1 + ((M : ℝ) * (3 / (((M : ℝ) + 7) * 23)) + (7:ℝ) * (3 / (((M : ℝ) + 7) * 19)))) := by
+    have h10 : (0 : ℝ) < (M : ℝ) + 10 := by linarith
+    have h7 : (0 : ℝ) < (M : ℝ) + 7 := by linarith
+    rw [← sub_nonneg]; field_simp; nlinarith [hMR, sq_nonneg ((M : ℝ) - 22)]
+  rw [rtieState, show M - 0 = M by omega,
+    hub_Aobj_eq (M + 4) 1 5 (by omega), hub_Aobj_eq M 7 0 (by omega),
+    show (621 / 64 : ℝ) ^ (M + 4) = (621 / 64) ^ M * (621 / 64) ^ 4 from pow_add _ _ _]
+  calc (621 / 64 : ℝ) ^ M * (621 / 64) ^ 4 * (513 / 80) ^ 1 * (3 / 2) ^ 5
+          * (1 + (((M + 4 : ℕ) : ℝ) * (3 / (((M + 4 + 1 + 5 : ℕ) : ℝ) * 23))
+              + ((1:ℕ) : ℝ) * (3 / (((M + 4 + 1 + 5 : ℕ) : ℝ) * 19))
+              + ((5:ℕ) : ℝ) * (1 / (3 * ((M + 4 + 1 + 5 : ℕ) : ℝ)))))
+        = (621 / 64 : ℝ) ^ M * ((621 / 64) ^ 4 * ((513 / 80) ^ (1:ℕ) * (3 / 2) ^ (5:ℕ)
+            * (1 + (((M : ℝ) + 4) * (3 / (((M : ℝ) + 10) * 23))
+                + (1:ℝ) * (3 / (((M : ℝ) + 10) * 19)) + (5:ℝ) * (1 / (3 * ((M : ℝ) + 10))))))) := by
+          push_cast; ring
+      _ ≤ (621 / 64 : ℝ) ^ M * ((513 / 80) ^ (7:ℕ) * (3 / 2) ^ (0:ℕ)
+            * (1 + ((M : ℝ) * (3 / (((M : ℝ) + 7) * 23)) + (7:ℝ) * (3 / (((M : ℝ) + 7) * 19))))) :=
+          mul_le_mul_of_nonneg_left key hP.le
+      _ = (621 / 64 : ℝ) ^ M * (513 / 80) ^ 7 * (3 / 2) ^ 0
+            * (1 + (((M : ℕ) : ℝ) * (3 / (((M + 7 + 0 : ℕ) : ℝ) * 23))
+                + ((7:ℕ) : ℝ) * (3 / (((M + 7 + 0 : ℕ) : ℝ) * 19))
+                + ((0:ℕ) : ℝ) * (1 / (3 * ((M + 7 + 0 : ℕ) : ℝ))))) := by push_cast; ring
+
+/-- **The non-aligned-n single-hub envelope for residues 0..7 (`M ≥ 22`).**  Every Balanced single hub
+    `hubState a b c` (`c ≤ 5`) at size `11M + 9r`, `r ≤ 7`, `M ≥ 22`, is dominated by the shifted tie
+    `rtieState M r (rMOf M r)`.  The `b ≥ c+r` (edge, `t ≥ 0`) configs go through `singleHubR_le_tie_edge`;
+    the finitely many sub-edge (`t = -1`) configs -- `(M+4,0,5)` at `r=6`, `(M+5,0,4)`/`(M+4,1,5)` at
+    `r=7` -- through `rNeg_r6`/`rNeg_r7a`/`rNeg_r7b` then `rtie_maximal_general`.  Closes 8 of the 11
+    residue classes at large sizes; `r ∈ {8,9,10}` (oscillating optimal δ) is the open core. -/
+theorem singleHubR_le_tie_07 (a b c M r : ℕ) (hr : r ≤ 7) (hc : c ≤ 5) (hM : 22 ≤ M)
+    (hsize : 11 * a + 9 * b + 2 * c = 11 * M + 9 * r) :
+    Aobj (backboneU (hubState a b c)) ≤ Aobj (backboneU (rtieState M r (rMOf M r))) := by
+  by_cases hbge : c + r ≤ b
+  · exact singleHubR_le_tie_edge a b c M r (by omega) hc hM hbge hsize
+  · have hcase : (r = 6 ∧ c = 5 ∧ b = 0 ∧ a = M + 4)
+        ∨ (r = 7 ∧ c = 4 ∧ b = 0 ∧ a = M + 5)
+        ∨ (r = 7 ∧ c = 5 ∧ b = 1 ∧ a = M + 4) := by omega
+    rcases hcase with ⟨hr', hc', hb', ha'⟩ | ⟨hr', hc', hb', ha'⟩ | ⟨hr', hc', hb', ha'⟩
+    · subst hr'; subst hc'; subst hb'; subst ha'
+      exact le_trans (rNeg_r6 M hM) (rtie_maximal_general M 6 (by omega) 0 (by omega))
+    · subst hr'; subst hc'; subst hb'; subst ha'
+      exact le_trans (rNeg_r7a M hM) (rtie_maximal_general M 7 (by omega) 0 (by omega))
+    · subst hr'; subst hc'; subst hb'; subst ha'
+      exact le_trans (rNeg_r7b M hM) (rtie_maximal_general M 7 (by omega) 0 (by omega))
+
 end Step3
 end R3Cert
