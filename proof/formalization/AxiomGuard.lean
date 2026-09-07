@@ -64,6 +64,7 @@ import R3Cert.R47TieBroadened
 import R3Cert.R47R7TwoHubBridge
 import R3Cert.R47SingleHub2D
 import R3Cert.R47SharpRate
+import R3Cert.R47SingleHubResidue
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -261,3 +262,11 @@ import R3Cert.R47SharpRate
 -- case of SharpRateNF/Hdom, discharged by the M3 envelope.
 #print axioms R3Cert.Step3.singleHub_dominated
 #print axioms R3Cert.Step3.sharpRate_singleHub_aligned
+
+-- Residue-general single-hub atoms (non-aligned-n layer, 2026-09-06): the general cherry-trade step
+-- hub_trade_le (114/115, no b=c) + its polynomial hubTradeStop; the shifted tie edge rtieState M r c
+-- (per-size maximizer for residue r) and its trade argmax rtie_maximal_over_trades (analog of
+-- tie_maximal_over_trades across all 11 residue classes).
+#print axioms R3Cert.Step3.hub_trade_le
+#print axioms R3Cert.Step3.hub_trade_stop_iff
+#print axioms R3Cert.Step3.rtie_maximal_over_trades
