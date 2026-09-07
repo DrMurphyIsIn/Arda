@@ -1,10 +1,17 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "ZetaZeroConfinement"]
 
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.32.0"
+
+# The confinement lemma consumes the self-contained effective dVP zero-free region
+# `ZeroFreeBridge.riemannZeta_ne_zero_region` (PR #318), which lives in the sibling
+# `zero_free_bridge` Lean project. Same mathlib rev, so the path require shares the cache.
+[[require]]
+name = "ZeroFreeBridge"
+path = "../../zero_free_bridge/lean"
 
 [[lean_lib]]
 name = "LambdaLineReal"
@@ -43,3 +50,8 @@ name = "RHInBox"
 # Emitted by generate.py --height 100 (Task 4 driver). Committed as a permanent milestone.
 [[lean_lib]]
 name = "RHInBox_2d5_3d5_0_100"
+
+# CONFINEMENT (dVP + FE): every nontrivial zeta zero up to height T lies in the band [a, 1-a].
+# Consumes the self-contained effective dVP zero-free region (PR #318, ZeroFreeBridge require above).
+[[lean_lib]]
+name = "ZetaZeroConfinement"
