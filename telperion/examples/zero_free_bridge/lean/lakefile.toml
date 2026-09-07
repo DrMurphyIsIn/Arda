@@ -325,3 +325,6 @@ name = "DlvpZetaCountStrip"
 
 [[lean_lib]]
 name = "DlvpZetaConcrete"
+
+[[lean_lib]]
+name = "DlvpBcSumConcrete"
