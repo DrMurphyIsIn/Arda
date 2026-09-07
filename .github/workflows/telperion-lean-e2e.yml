@@ -1687,6 +1687,19 @@ jobs:
             echo "::error::AxiomGuardRH.lean did not elaborate cleanly"; exit 1
           fi
           echo "OK: all guarded RH theorems are kernel-clean (no sorryAx)."
+      - name: Axiom guard -- dVP concrete-zero region is kernel-clean (fail on sorryAx)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: |
+          lake build DlvpZetaConcreteClose
+          out="$(lake env lean AxiomGuardDlvp.lean 2>&1 || true)"
+          echo "$out"
+          if echo "$out" | grep -q 'sorryAx'; then
+            echo "::error::dlvp_zeta_region_concrete depends on sorry (sorryAx in axiom trace)"; exit 1
+          fi
+          if echo "$out" | grep -qE 'error:'; then
+            echo "::error::AxiomGuardDlvp.lean did not elaborate cleanly"; exit 1
+          fi
+          echo "OK: dlvp_zeta_region_concrete is kernel-clean (no sorryAx)."
 
   # (RATE UPGRADE, WIP) sharp near-line bound |ζ| ≤ C(1+log|t|) via truncated Euler-Maclaurin.
   # Carries sorry placeholders; this job checks the skeleton (truncated rep + term bounds) typechecks.

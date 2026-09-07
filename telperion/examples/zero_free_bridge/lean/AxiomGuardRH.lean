@@ -26,7 +26,10 @@
                                         polylog region; now guarded directly).
 
    (The dVP core in ZeroFreeRegion is deliberately CONDITIONAL — takes the
-   Borel–Carathéodory log-derivative bounds as hypotheses — so it is not guarded here.)
+   Borel–Carathéodory log-derivative bounds as hypotheses — so it is not guarded here.  The
+   UNCONDITIONAL concrete-zero dVP region `dlvp_zeta_region_concrete` is guarded separately in
+   `AxiomGuardDlvp.lean` — it cannot be imported here because `DlvpZetaDisk` and `ZeroFreeElementary`
+   both declare `ZeroFreeBridge.zeta_sphere_bound`, an import clash.)
 -/
 import ZeroFreeElementary
 import StripReprAssembled
