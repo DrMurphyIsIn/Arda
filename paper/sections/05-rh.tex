@@ -43,35 +43,37 @@ with a handful of reusable gap-fillers (the strip representation and the explici
 $\log$-bound among them).
 
 A second, non-elementary route has since reached the full de la Vallée-Poussin
-\emph{rate}. Through a Blaschke / canonical-factor decomposition of $\zeta$ and a
-box argument principle, the theorem \texttt{dlvp\_zeta\_region\_rate} carries the
-classical rate in its type (sorry-free, axioms $\{$\texttt{propext},
-\texttt{Classical.choice}, \texttt{Quot.sound}$\}$, guarded in
-\texttt{AxiomGuardDlvp} and run in CI on every commit):
+\emph{rate}, and with an \emph{effective} constant. Through a Blaschke /
+canonical-factor decomposition of $\zeta$ and a box argument principle, the theorem
+\texttt{dlvp\_zeta\_region\_rate\_effective} states, for every $\zeta$-zero
+$\rho_0 = \beta + i\gamma$ with $\tfrac34 \le \beta < 1$ and $|\gamma| \ge
+\tfrac{55}{16}$,
 \[
-  \exists\, c > 0 \ \ \forall\ \text{zeros}\ \rho_0 = \beta + i\gamma
-  \ \text{with}\ \tfrac34 \le \beta < 1,\ |\gamma| \ge \tfrac{55}{16}:
-  \qquad \beta \le 1 - \frac{c}{\log|\gamma|}.
+  \beta \le 1 - \frac{\mathtt{dlvpRateC}}{\log|\gamma|},
 \]
-The quantifier order is $\exists\,c\ \forall\,\text{zero}$---a single
-\emph{uniform} constant, not the vacuous reverse---so this is a genuine zero-free
-region of classical de la Vallée-Poussin strength, machine-checked end to end,
-with no numeric or Arb hypotheses. (It is the rate-exposed lift of an earlier
-existential form, \texttt{dlvp\_zeta\_region\_concrete}, whose constant was real
-but hidden inside an $\exists\,A\,L$; both are CI-guarded.)
+where \texttt{dlvpRateC} is not an existential but a \emph{concrete closed-form
+real}---built from $\pi$ and two logarithms---made possible by an explicit pole
+bound $\operatorname{Re}\!\big({-}\zeta'/\zeta(\sigma)\big) \le
+\operatorname{Re}\!\big(1/(\sigma-1)\big) + 16$ that replaces Mathlib's
+bare-existential pole constant. It is sorry-free (axioms $\{$\texttt{propext},
+\texttt{Classical.choice}, \texttt{Quot.sound}$\}$), CI-axiom-guarded in
+\texttt{AxiomGuardDlvp}, and carries no numeric or Arb hypotheses. (Two weaker
+siblings are also guarded and were the stepping stones: an $\exists\,c$ rate form
+\texttt{dlvp\_zeta\_region\_rate}, and the pre-rate existential
+\texttt{dlvp\_zeta\_region\_concrete} whose constant hid inside an $\exists\,A\,L$;
+the effective version is the culmination.)
 
-Three caveats hold it to its true strength, and none of them is ``conditional.''
-The constant $c$ is \emph{non-effective}---existentially quantified, inherited from
-Mathlib's pole constant---but so is the constant in the classical dVP theorem, so
-this matches the literature rather than underselling. The restriction to
-$\beta \ge \tfrac34$, $|\gamma| \ge \tfrac{55}{16}$ costs nothing as a zero-free
-region: any zero that could violate $1 - c/\log|\gamma|$ at large height already has
-$\beta$ near $1$. And the zero's multiplicity enters as a given---the result is a
-kernel-verified \emph{reduction} that takes the zero as input. So we have
-\emph{matched} the dVP rate inside a proof assistant; we have not beaten it
-(Vinogradov--Korobov is stronger still), and a zero-free region is \textbf{not} a
-proof of RH. The contribution, here as throughout, is the machine-checked
-path---dVP is a theorem of 1896---stated at exactly its strength.
+Two honest qualifications hold it to its true strength, and neither is
+``conditional.'' The restriction to $\beta \ge \tfrac34$, $|\gamma| \ge
+\tfrac{55}{16}$ costs nothing as a zero-free region: any zero that could violate
+$1 - \mathtt{dlvpRateC}/\log|\gamma|$ at large height already has $\beta$ near $1$.
+And the zero's multiplicity enters as a given---the result is a kernel-verified
+\emph{reduction} that takes the zero as input. What it is \emph{not} is a proof of
+RH: we have matched the dVP rate---now with an explicit, effective constant, a
+refinement over the classically non-effective statement---inside a proof assistant,
+but we have not improved the rate (Vinogradov--Korobov is stronger still), and a
+zero-free region is not RH. The contribution, here as throughout, is the
+machine-checked path---dVP is a theorem of 1896---stated at exactly its strength.
 
 \subsection{A second criterion: Jensen--P\'olya hyperbolicity}
 
