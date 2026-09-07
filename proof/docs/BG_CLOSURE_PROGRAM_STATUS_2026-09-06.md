@@ -70,6 +70,33 @@ positive denominator.
 - **`singleHub_le_tie` (ALL K≥1):** splits `K≤21` (patch) / `K≥22` (structural).  **The M3 2-D envelope
   is CLOSED** — the complete length-1 input to the assembly.
 
+## Non-aligned-n single-hub envelope — ALL 11 residues, large sizes (`R47SingleHubResidue.lean`)
+A general single hub at size `n` has `δ = b-c ≡ r mod 11` (`r = 5(n-1) mod 11`).  Extended the whole M3
+machinery, parametrized by `r`, and CLOSED all 11 residue classes at large sizes (kernel-verified):
+- **Residue-general atoms:** `hub_trade_le` (the general cherry trade, factor `114/115`, no `b=c`) +
+  `hubTradeStop`/`hub_trade_stop_iff` (den `150765·d·(d+1)`); the bulk atoms (`hub_bulk_le`,`bulkStopABC*`)
+  were already `(a,b,c)`-general.  `size(colStateR M r c t) = 1 + 11M + 9r` (indep of `c,t`).
+- **Two argmax axes:** the shifted edge `rtieState M r c = hubState (M-c)(c+r)c` with trade argmax
+  `rtie_maximal_general`/`rMOf`; the shifted bulk column `colStateR` with `col_maximal_over_bulkR` and
+  clean-regime collapse `colStopR_zero_large`/`col_le_edgeR` (M≥22, all `r≤10`).
+- **r = 0..7 (`singleHubR_le_tie_07`, M≥22):** the maximizer is the `δ=r` edge; `δ≥r` configs via
+  `col_le_edgeR`+`rtie_maximal_general`, the finite sub-edge (`t=-1`) configs at `r=6,7` via `rNeg_r6`/
+  `rNeg_r7a`/`rNeg_r7b` (symbolic-`M` `hub_Aobj_eq`+`nlinarith`).
+- **r = 10 (`singleHubR_le_tie_10`, Mn≥31):** the maximizer is the SINGLE fixed `δ=-1` edge `negEdge`;
+  built its trade argmax (`neg_maximal_general`/`negMOf`), the bulk-link `neg_bulk_link` (`δ=10` edge ≤
+  `δ=-1` edge), and the `c=0` boundary `rNeg_c0`.
+- **r = 8, 9 (`singleHubR_le_tie_89`, Mn≥40):** the maximizer is the MAX of TWO edges (`δ∈{-3,8}` /
+  `{-2,9}`).  Generalized `negEdge` → `offEdge M off c = hubState (M-c)(c-off)c` (`off=11-r`) with argmax
+  `off_maximal_general`/`offMOf`; every config ≤ `max(low-edge argmax, high-edge argmax)`.  **KEY
+  CORRECTION:** r=8,9 are MECHANICALLY closable (the "oscillation" is just a two-edge max), NOT entangled
+  with Pant-open — Pant-openness is the MULTI-hub case, not single-hub.
+- **Tie validity:** `mOf_le_five`/`rMOf_le_five`/`negMOf_le_five`/`offMOf_le_five` — every tie's cherry
+  count `≤ 5`, so all tie states are valid `Balanced` states (`tradeStop K 5` etc. positive-definite).
+
+**Net:** the single-hub (length-1 `Hdom`) maximizer is fully characterized across all 11 residues at large
+sizes, a clean standalone result.  Remaining single-hub gap = only the small-M finite patches per residue
+(tedious, mechanical, no new insight).
+
 ## Assembly — length-1 Hdom slice DONE (`R47SharpRate.lean`, kernel-verified)
 `singleHub_dominated` / `sharpRate_singleHub_aligned`: an arbitrary Balanced+Capped single hub
 `[(arms,c)]` at an aligned size (`11 ∣ 9·count 4 + 2c`) reduces via arm-permutation
@@ -78,12 +105,20 @@ dominated by `alignedTie` at its own `stateSize` (`= 1 + 11·count5 + 9·count4 
 This is the length-1 case of `SharpRateNF`/`Hdom`, discharged by the M3 envelope.
 
 ## Honest frontier / next steps (dependency-ordered)
-1. **Length-≥2 `SharpRateNF`** — `twoHub_le_tie` (DONE) dominates by a same-size single-hub template with
-   `c=0` (NOT a `tieState`), and the two-hub size `2+2cA+11(pA+pB)` is `≡ 1 mod 11` only for `cA=5`.  So
-   the tie family `ℕ→UTree` at length-≥2 sizes lands on the **KNOWN-OPEN non-aligned-n layer** — full
-   `SharpRateNF` needs the tie characterized off the `n ≡ 1 mod 11` lattice.
-2. `m ≥ 3` multi-hub (assisted-merge environment rules) and Hnorm / `StraightProgress_sized` remain the
-   other open layers, alongside non-aligned-n.
+The single-hub (length-1 `Hdom`) side is now essentially settled: **all 11 residues characterized at
+large sizes, with valid Balanced ties.**  The non-aligned-n layer for length-1 is CLOSED (it was NOT
+Pant-entangled — that was an overstatement, corrected).  What genuinely remains:
+1. **Small-M finite patches per residue** (`1 ≤ K < 22`-analog, off the large-size thresholds 22/31/40):
+   tedious, mechanical, no new insight — completes the standalone single-hub result at ALL sizes.  Same
+   pattern as the aligned `singleHub_le_tie_lt22`, applied per residue.
+2. **GENUINELY OPEN (the real BG frontier):** `m ≥ 3` multi-hub domination — has only PROBES
+   (`multi_hub_probe`, `three_hub_residual_probe`), NO all-nonneg Positivstellensatz cert like the
+   two-hub `twoHub_le_tie`; the "5 non-box-certifiable cb≥1 cells" + the environment-merge machinery are
+   the true obstruction.  And Hnorm / `StraightProgress_sized` (the tree→hub coverage dichotomy).
+3. Assembly (`sharpRate_of_tieDomination`) at length ≥ 2 depends on (2) plus the multi-hub tie targets.
 
-Full closure stays gated on the genuinely-open mathematics (Pant 2026: the global maximizer is open);
-the realistic target is a scoped aligned-n result + a sharpened, kernel-anchored frontier. `conjecture1_proved = False`.
+Full closure stays gated on the genuinely-open mathematics (Pant 2026: the global maximizer is open, and
+the m≥3 multi-hub reduction is the concrete Lean-side obstruction).  The realistic, honest deliverable is
+now large: both hard cores (M4 two-hub, aligned M3), the length-1 Hdom slice, and the FULL single-hub
+envelope across all 11 residue classes — all kernel-anchored — with the open frontier precisely delimited
+to `m≥3` multi-hub + Hnorm.  `conjecture1_proved = False`.
