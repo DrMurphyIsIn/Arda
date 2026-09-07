@@ -46,3 +46,19 @@ def test_rh_in_box_analytic_builds():
         ["lake", "build", "RHInBoxAnalytic"], cwd=d, env=env, capture_output=True, text=True
     )
     assert r.returncode == 0, r.stderr
+
+
+@requires_lake
+def test_rh_in_box_generic_and_regression_build():
+    env = {**os.environ, "PATH": _LAKE_PATH}
+    d = str(
+        Path(__file__).resolve().parents[1]
+        / "examples"
+        / "zeta_zero_localization"
+        / "lean"
+    )
+    subprocess.run(["lake", "exe", "cache", "get"], cwd=d, env=env, check=True)
+    r = subprocess.run(
+        ["lake", "build", "RHInBox"], cwd=d, env=env, capture_output=True, text=True
+    )
+    assert r.returncode == 0, r.stderr
