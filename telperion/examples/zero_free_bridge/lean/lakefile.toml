@@ -328,3 +328,6 @@ name = "DlvpZetaConcrete"
 
 [[lean_lib]]
 name = "DlvpBcSumConcrete"
+
+[[lean_lib]]
+name = "DlvpZetaContSphere"
