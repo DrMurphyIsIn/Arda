@@ -377,6 +377,8 @@ REGISTRY: dict[str, SensitivityStance] = {
         "Rectangle Cauchy vanishing ∮_∂rect E = 0: direct over Mathlib integral_boundary_rect_eq_zero_of_differentiableOn with .re/.im reduction; no separately-supplied witness"),
     "AnnulusCountEmitter": _S(STRUCTURALLY_NONVACUOUS,
         "Annulus count ∮_R − ∮_r = 2πi·Σ_shell m: outer residue sum (integral_sub_inv_of_mem_ball) minus inner Cauchy-zero (poles outside ⟹ DiffContOnCl.circleIntegral_eq_zero); no separately-supplied witness"),
+    "BoxLocalizationEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "RH-in-a-box localization counting step: a Finset exhaustion argument (Finset.sum_sdiff + sum_le_sum over T⊆s, each d≥1, ∑_s d = card T = n) forcing s = T and every Re = 1/2; the counting is structural (no corruptible identity certificate). The certificate REFUSES n_line > n_total and n_line != n_total (negative controls) — equality is the localization hypothesis"),
     "SlitLoopWindingZeroEmitter": _S(STRUCTURALLY_NONVACUOUS,
         "Winding-zero (Rouché heart) ∮ w'/w = 0 for a closed loop in ‖·-1‖<r≤1: w'/w = (log∘w)' via HasDerivAt.clog_real (slitPlane from Re>0) + FTC-2 integral_eq_sub_of_hasDerivAt collapsing to log(w b)-log(w a)=0; no separately-supplied witness"),
     "BoxResidueSumEmitter": _S(STRUCTURALLY_NONVACUOUS,

@@ -175,6 +175,8 @@ theorem zeta_blaschke_split_box :
       DifferentiableOn ℂ E boxB ∧
       (∀ ρ ∈ s, ((2 / 5) : ℝ) < ρ.re → ρ.re < (3 / 5) → (10 : ℝ) < ρ.im → ρ.im < 35 →
         riemannZeta ρ = 0) ∧
+      (∀ ρ ∈ s, (1 : ℤ) ≤ d ρ) ∧
+      (∀ ρ ∈ Metric.ball cB 13, riemannZeta ρ = 0 → ρ ∈ s) ∧
       (∀ z ∈ Metric.ball cB 13, riemannZeta z ≠ 0 →
         logDeriv riemannZeta z = (∑ ρ ∈ s, (d ρ : ℂ) / (z - ρ)) + E z) := by
   set U := Metric.ball cB 13 with hUdef
@@ -229,7 +231,7 @@ theorem zeta_blaschke_split_box :
     rw [MeromorphicOn.AnalyticOnNhd.divisor_apply hζU huU,
       (hζU u huU).analyticOrderAt_eq_zero.mpr hne]; simp
   -- The error `E := logDeriv g`; holomorphic on `U` (hence on `B ⊆ U`).
-  refine ⟨logDeriv g, T, D, ?_, ?_, ?_⟩
+  refine ⟨logDeriv g, T, D, ?_, ?_, ?_, ?_, ?_⟩
   · -- E holomorphic on the box (subset of U).
     have hE_an : AnalyticOnNhd ℂ (logDeriv g) U := by
       intro x hx
@@ -240,6 +242,56 @@ theorem zeta_blaschke_split_box :
     exact (hE_an.mono (boxB_subset_ball.trans (le_of_eq hUdef.symm))).differentiableOn
   · -- membership in T implies zeta zero (the interior-strictness antecedents are unused here).
     intro ρ hρ _ _ _ _; exact hT_zero ρ hρ
+  · -- multiplicity `D ρ ≥ 1` at every support point: zeta is analytic on `U` and vanishes there,
+    -- so its analytic order (= the divisor) is `≥ 1`.
+    intro ρ hρ
+    have hρU : ρ ∈ U := by
+      rw [hTdef, Set.Finite.mem_toFinset, Function.mem_support] at hρ
+      exact (MeromorphicOn.divisor riemannZeta U).supportWithinDomain
+        (by rw [Function.mem_support]; exact hρ)
+    have hρzero : riemannZeta ρ = 0 := hT_zero ρ hρ
+    have hAtρ : AnalyticAt ℂ riemannZeta ρ := hζU ρ hρU
+    have hord_ne : analyticOrderAt riemannZeta ρ ≠ 0 :=
+      hAtρ.analyticOrderAt_ne_zero.mpr hρzero
+    -- `D ρ ≥ 0` (analytic ⇒ nonneg divisor) and `D ρ ≠ 0` (order ≥ 1 at a zero) give `D ρ ≥ 1`.
+    -- order is finite (≠ ⊤): otherwise the meromorphic order would be ⊤ on `U ⊆ {1}ᶜ`.
+    have hfin : analyticOrderAt riemannZeta ρ ≠ ⊤ := by
+      intro hcontra
+      exact meromorphicOrderAt_zeta_ne_top ρ (hUsub hρU)
+        (by rw [hAtρ.meromorphicOrderAt_eq, hcontra]; rfl)
+    -- `D ρ = analyticOrderNatAt zeta ρ` (as ℤ); the nat order is ≥ 1 at a zero.
+    have hDeq : D ρ = (analyticOrderNatAt riemannZeta ρ : ℤ) := by
+      have hda : D ρ = ((analyticOrderAt riemannZeta ρ).map (Nat.cast)).untop₀ :=
+        MeromorphicOn.AnalyticOnNhd.divisor_apply hζU hρU
+      rw [hda]
+      rw [← Nat.cast_analyticOrderNatAt hfin]
+      rfl
+    have hnat_ne : analyticOrderNatAt riemannZeta ρ ≠ 0 := by
+      rw [Ne, ← Nat.cast_analyticOrderNatAt hfin] at hord_ne
+      simpa using hord_ne
+    rw [hDeq]
+    have : 1 ≤ analyticOrderNatAt riemannZeta ρ := Nat.one_le_iff_ne_zero.mpr hnat_ne
+    exact_mod_cast this
+  · -- every zeta-zero in `U` lies in the support `s = T`: its divisor (= analytic order) is ≥ 1 ≠ 0.
+    intro ρ hρU hρzero
+    rw [hTdef, Set.Finite.mem_toFinset, Function.mem_support]
+    have hAtρ : AnalyticAt ℂ riemannZeta ρ := hζU ρ hρU
+    have hord_ne : analyticOrderAt riemannZeta ρ ≠ 0 :=
+      hAtρ.analyticOrderAt_ne_zero.mpr hρzero
+    have hfin : analyticOrderAt riemannZeta ρ ≠ ⊤ := by
+      intro hcontra
+      exact meromorphicOrderAt_zeta_ne_top ρ (hUsub hρU)
+        (by rw [hAtρ.meromorphicOrderAt_eq, hcontra]; rfl)
+    -- `D ρ = analyticOrderNatAt ≠ 0`.
+    have hDeq : D ρ = (analyticOrderNatAt riemannZeta ρ : ℤ) := by
+      have hda : D ρ = ((analyticOrderAt riemannZeta ρ).map (Nat.cast)).untop₀ :=
+        MeromorphicOn.AnalyticOnNhd.divisor_apply hζU hρU
+      rw [hda, ← Nat.cast_analyticOrderNatAt hfin]; rfl
+    have hnat_ne : analyticOrderNatAt riemannZeta ρ ≠ 0 := by
+      rw [Ne, ← Nat.cast_analyticOrderNatAt hfin] at hord_ne
+      simpa using hord_ne
+    rw [hDeq]
+    exact_mod_cast hnat_ne
   · -- the split at each z ∈ U off the zeros.
     intro z hz hznz
     have hzroots : ∀ u ∈ T, z - u ≠ 0 := by

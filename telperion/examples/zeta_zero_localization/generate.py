@@ -244,6 +244,35 @@ def run_interval(a, b, n_samples, prec):
     return n
 
 
+def _box_localization_negative_control() -> None:
+    """Stage-3 capstone guard: assert the localization certificate ACCEPTS the real capstone
+    instance (n_line = n_total = 5 on [2/5,3/5]x[10,35]) and REFUSES the fabricated off-line
+    instance (an extra off-line zero making n_total = 6 > n_line = 5).  Without the equality the
+    on-line zeros cannot exhaust the divisor, so no localization claim may be emitted.
+
+    The load-bearing capstone theorem lives in the HAND-WRITTEN lean/BoxLocalization.lean
+    (`all_nontrivial_zeros_in_box_on_critical_line`); this is the certification-side negative
+    control mandated by the Stage-3 brief.  conjecture1_proved = False.
+    """
+    from telperion.emit_box_localization import box_localization_certificate
+
+    cert = box_localization_certificate(n_line=5, n_total=5)
+    assert cert.n == 5, "box_localization positive control failed"
+    for bad_line, bad_total, why in ((5, 6, "off-line zero (n_total > n_line)"),
+                                     (6, 5, "impossible n_line > n_total")):
+        try:
+            box_localization_certificate(n_line=bad_line, n_total=bad_total)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(
+                f"box_localization negative control FAILED: accepted {why} "
+                f"(n_line={bad_line}, n_total={bad_total})"
+            )
+    print("box_localization: OK (n_line=n_total=5 accepted; off-line n_total=6 and "
+          "n_line>n_total refused)")
+
+
 def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int = 300) -> int:
     # Interval driver mode: print N, do not write
     if a is not None and b is not None:
@@ -252,6 +281,8 @@ def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int 
 
     text = build()
     text_winding = build_winding()
+    # Stage-3 capstone certification-side negative control (always runs).
+    _box_localization_negative_control()
     if check:
         drift = False
         if not _OUT.exists() or _OUT.read_text(encoding="utf-8") != text:

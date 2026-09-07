@@ -243,7 +243,7 @@ theorem box_arg_principle_zeta' (N : ℂ)
         = 2 * π * I * N)) :
     ∃ (s : Finset ℂ) (d : ℂ → ℤ), (∑ ρ ∈ s, (d ρ : ℂ)) = N := by
   -- Obtain the split (H1) and E-holomorphy (H2) FROM THE KERNEL LEMMA -- not as hypotheses.
-  obtain ⟨E, s, d, hEholo, _, hker⟩ := BlaschkeBox.zeta_blaschke_split_box
+  obtain ⟨E, s, d, hEholo, _, _, _, hker⟩ := BlaschkeBox.zeta_blaschke_split_box
   refine ⟨s, d, ?_⟩
   -- Feed the kernel witnesses to hArb to extract the purely-Arb residual facts.
   obtain ⟨hnz_b, hnz_t, hnz_r, hnz_l, hin, hb, ht, hr, hl,

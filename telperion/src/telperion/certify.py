@@ -214,6 +214,10 @@ _SPECIAL_KINDS = (
     "full_argument_principle",
     "rect_argument_principle",
     "annulus_count",
+    # RH-in-a-box localization capstone (Stage 3, 2026-09-06): the counting exhaustion step —
+    # total divisor = on-line count ⟹ every zero in the box is on Re=1/2 (Turing-style verification,
+    # NOT a proof of RH).  Refuses n_line > n_total and n_line != n_total.
+    "box_localization",
     # Winding-number frontier (2026-09-06, same RH session): slit_loop_winding_zero (Rouché heart —
     # closed loop in ‖·-1‖<r≤1 ⟹ ∮ w'/w = 0, winding 0, via clog_real + FTC-2) and box_residue_sum
     # (box analogue of full_argument_principle, Finset-linearity plumbing conditional on the per-pole
@@ -328,6 +332,8 @@ _SPECIAL_DISPATCH = {
          "RectArgumentPrincipleEmitter"),
     "annulus_count":
         ("emit_annulus_count", "certify_annulus_count_point", "AnnulusCountEmitter"),
+    "box_localization":
+        ("emit_box_localization", "certify_box_localization_point", "BoxLocalizationEmitter"),
     "slit_loop_winding_zero":
         ("emit_slit_loop_winding_zero", "certify_slit_loop_winding_zero_point",
          "SlitLoopWindingZeroEmitter"),

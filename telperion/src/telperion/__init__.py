@@ -216,6 +216,11 @@ from .emit_annulus_count import (  # noqa: F401
     AnnulusCountEmitter, annulus_count_certificate,
     annulus_count_family, certify_annulus_count_point,
 )
+# RH-in-a-box localization capstone (Stage 3, 2026-09-06): every zeta-zero in the box is on Re=1/2.
+from .emit_box_localization import (  # noqa: F401
+    BoxLocalizationEmitter, box_localization_certificate,
+    box_localization_family, certify_box_localization_point,
+)
 # Winding-number frontier (2026-09-06): Rouché heart (winding 0) + conditional box residue-sum.
 from .emit_slit_loop_winding_zero import (  # noqa: F401
     SlitLoopWindingZeroEmitter, certify_slit_loop_winding_zero_point,
