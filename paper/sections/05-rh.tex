@@ -43,13 +43,14 @@ with a handful of reusable gap-fillers (the strip representation and the explici
 $\log$-bound among them).
 
 A second, non-elementary route has since reached the full de la Vallée-Poussin
-\emph{rate}, and with an \emph{effective} constant. Through a Blaschke /
-canonical-factor decomposition of $\zeta$ and a box argument principle, the theorem
-\texttt{dlvp\_zeta\_region\_rate\_effective} states, for every $\zeta$-zero
-$\rho_0 = \beta + i\gamma$ with $\tfrac34 \le \beta < 1$ and $|\gamma| \ge
-\tfrac{55}{16}$,
+region itself---as a self-contained $\zeta(s) \ne 0$ statement, with an
+\emph{effective} constant. Through a Blaschke / canonical-factor decomposition of
+$\zeta$ and a box argument principle, the theorem
+\texttt{riemannZeta\_ne\_zero\_region} states
 \[
-  \beta \le 1 - \frac{\mathtt{dlvpRateC}}{\log|\gamma|},
+  |\operatorname{Im} s| \ge \tfrac{55}{16}, \quad
+  \operatorname{Re} s > 1 - \frac{\mathtt{dlvpRateC}}{\log|\operatorname{Im} s|}
+  \qquad\Longrightarrow\qquad \zeta(s) \ne 0,
 \]
 where \texttt{dlvpRateC} is not an existential but a \emph{concrete closed-form
 real}---built from $\pi$ and two logarithms---made possible by an explicit pole
@@ -57,19 +58,23 @@ bound $\operatorname{Re}\!\big({-}\zeta'/\zeta(\sigma)\big) \le
 \operatorname{Re}\!\big(1/(\sigma-1)\big) + 16$ that replaces Mathlib's
 bare-existential pole constant. It is sorry-free (axioms $\{$\texttt{propext},
 \texttt{Classical.choice}, \texttt{Quot.sound}$\}$), CI-axiom-guarded in
-\texttt{AxiomGuardDlvp}, and carries no numeric or Arb hypotheses. (Two weaker
-siblings are also guarded and were the stepping stones: an $\exists\,c$ rate form
-\texttt{dlvp\_zeta\_region\_rate}, and the pre-rate existential
-\texttt{dlvp\_zeta\_region\_concrete} whose constant hid inside an $\exists\,A\,L$;
-the effective version is the culmination.)
+\texttt{AxiomGuardDlvp}, and carries no numeric or Arb hypotheses. It is the clean
+top of a short ladder that is guarded in full: the zero-location bound
+\texttt{dlvp\_zeta\_region\_rate\_effective}
+($\beta \le 1 - \mathtt{dlvpRateC}/\log|\gamma|$ for a zero $\beta + i\gamma$), its
+$\exists\,c$ predecessor \texttt{dlvp\_zeta\_region\_rate}, and the pre-rate
+existential \texttt{dlvp\_zeta\_region\_concrete} whose constant hid inside an
+$\exists\,A\,L$.
 
-Two honest qualifications hold it to its true strength, and neither is
-``conditional.'' The restriction to $\beta \ge \tfrac34$, $|\gamma| \ge
-\tfrac{55}{16}$ costs nothing as a zero-free region: any zero that could violate
-$1 - \mathtt{dlvpRateC}/\log|\gamma|$ at large height already has $\beta$ near $1$.
-And the zero's multiplicity enters as a given---the result is a kernel-verified
-\emph{reduction} that takes the zero as input. What it is \emph{not} is a proof of
-RH: we have matched the dVP rate---now with an explicit, effective constant, a
+One honest qualification holds it to its true strength, and it is not
+``conditional'': the region is stated for $|\operatorname{Im} s| \ge \tfrac{55}{16}$,
+the standard large-height form. The two softnesses that appeared in intermediate
+lemmas---a zero's multiplicity as an input, and a $\beta \ge \tfrac34$ window---are
+now discharged \emph{internally} (the multiplicity is derived from $\zeta(\rho_0) =
+0$; the window follows from $\mathtt{dlvpRateC} \le 1/1792$ and $\zeta$ having no
+zeros with $\operatorname{Re} \ge 1$), so the statement itself is a clean
+$\zeta \ne 0$. What it is \emph{not} is a proof of RH: we have matched the classical
+dVP zero-free region---now self-contained, with an explicit, effective constant, a
 refinement over the classically non-effective statement---inside a proof assistant,
 but we have not improved the rate (Vinogradov--Korobov is stronger still), and a
 zero-free region is not RH. The contribution, here as throughout, is the
