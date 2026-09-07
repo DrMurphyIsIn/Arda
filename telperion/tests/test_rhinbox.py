@@ -115,6 +115,75 @@ def test_driver_refuses_box_containing_pole():
         gen.run_box("1/2", "3/2", "-1", "1", write=False)
 
 
+# ---------------------------------------------------------------------------
+# Task-5 T=100 milestone: [2/5,3/5]x[0,100], 29 on-line zeros = winding N(100).
+# The emitted Lean file is COMMITTED and registered as a permanent lean_lib.
+# ---------------------------------------------------------------------------
+
+@requires_flint
+def test_height_100_winding_equals_online():
+    """The driver certifies N_line == winding N == 29 for the height-100 box.
+
+    `run_box` refuses (raises) if N_line != N, so a successful return with the
+    documented count IS the drift/agreement assertion for the milestone."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "_zgenh100", str(_LEAN_DIR.parent / "generate.py")
+    )
+    gen = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(gen)
+    txt = gen.run_box("2/5", "3/5", "0", "100", write=False)
+    assert "RHInBox.rh_in_box_of_certificate" in txt
+    # 29 on-line zeros in [0,100] -> N = 29 existential and winding = 2*pi*I*29.
+    assert "= 2 * π * I * (29 : ℂ)" in txt
+    assert " x28 x29 " in txt or "x28 x29 :" in txt
+    # The committed file must match the regeneration byte-for-byte (drift-clean).
+    frozen = (_LEAN_DIR / "RHInBox_2d5_3d5_0_100.lean").read_text(encoding="utf-8")
+    assert frozen == txt, "RHInBox_2d5_3d5_0_100.lean drifted from regeneration"
+
+
+@requires_lake
+def test_height_100_milestone_builds_sorry_free():
+    """The COMMITTED T=100 milestone target builds sorry-free with clean axioms
+    {propext, Classical.choice, Quot.sound}.  Registered permanently in lakefile.toml,
+    so no temp-lib registration/cleanup is needed (unlike the ephemeral per-box test)."""
+    env = {**os.environ, "PATH": _LAKE_PATH}
+    d = str(_LEAN_DIR)
+    subprocess.run(["lake", "exe", "cache", "get"], cwd=d, env=env, check=True)
+    r = subprocess.run(
+        ["lake", "build", "RHInBox_2d5_3d5_0_100"], cwd=d, env=env,
+        capture_output=True, text=True,
+    )
+    assert r.returncode == 0, r.stderr
+
+    # #print axioms via a temp checker module; assert clean axioms, no sorry.
+    checker = _LEAN_DIR / "_AxCheckH100.lean"
+    lakefile = _LEAN_DIR / "lakefile.toml"
+    orig = lakefile.read_text(encoding="utf-8")
+    try:
+        checker.write_text(
+            "import RHInBox_2d5_3d5_0_100\n"
+            "#print axioms RHInBox_2d5_3d5_0_100.rh_in_box_2d5_3d5_0_100\n",
+            encoding="utf-8",
+        )
+        lakefile.write_text(
+            orig + '\n[[lean_lib]]\nname = "_AxCheckH100"\n', encoding="utf-8"
+        )
+        r2 = subprocess.run(
+            ["lake", "build", "_AxCheckH100"], cwd=d, env=env,
+            capture_output=True, text=True,
+        )
+        out = r2.stdout + r2.stderr
+        assert r2.returncode == 0, out
+        assert "sorryAx" not in out, out
+        for ax in ("propext", "Classical.choice", "Quot.sound"):
+            assert ax in out, f"missing expected axiom {ax}: {out}"
+    finally:
+        lakefile.write_text(orig, encoding="utf-8")
+        checker.unlink(missing_ok=True)
+
+
 @requires_flint
 @requires_lake
 def test_driver_emitted_box_builds_sorry_free():

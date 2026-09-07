@@ -81,6 +81,13 @@ from telperion.lean import LeanProfile  # noqa: E402
 _OUT = Path(__file__).resolve().parent / "lean" / "XiLineZeros.lean"
 _OUT_WINDING = Path(__file__).resolve().parent / "lean" / "WindingCount.lean"
 
+# T=100 RH-in-box milestone: [2/5,3/5]x[0,100], 29 on-line zeros = winding N(100).
+# The emitted Lean file is COMMITTED (a permanent milestone, unlike the ephemeral per-box
+# files); `--height 100 --check` byte-compares it and asserts N_line == N == 29.
+_H100_BOX = (Fraction(2, 5), Fraction(3, 5), Fraction(0), Fraction(100))
+_H100_EXPECTED_N = 29
+_OUT_H100 = Path(__file__).resolve().parent / "lean" / "RHInBox_2d5_3d5_0_100.lean"
+
 # Lambda winding-count box and boundary-sampling resolution (Stage 2A milestone).
 _WINDING_BOX = (Fraction(2, 5), Fraction(3, 5), Fraction(10), Fraction(35))
 _WINDING_N_PER_SIDE = 30    # 4*30 = 120 boundary samples (all half-plane-witnessed)
@@ -390,7 +397,18 @@ def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int 
     if height is not None:
         # Shortcut for the critical strip box [2/5, 3/5] x [0, T].
         T = Fraction(height)
-        run_box(Fraction(2, 5), Fraction(3, 5), Fraction(0), T, prec=prec, check=check)
+        # In --check mode, regenerate WITHOUT writing and byte-compare against the frozen
+        # file below; otherwise write it.  run_box already REFUSES N_line != winding N (via
+        # box_localization_certificate), so a successful return proves the agreement.
+        text = run_box(Fraction(2, 5), Fraction(3, 5), Fraction(0), T, prec=prec,
+                       write=(not check))
+        # Drift/agreement assertion for the COMMITTED T=100 milestone.
+        if check and T == Fraction(100):
+            if not _OUT_H100.exists() or _OUT_H100.read_text(encoding="utf-8") != text:
+                print("DRIFT: RHInBox_2d5_3d5_0_100.lean does not match regeneration")
+                return 1
+            print(f"check: OK (T=100 milestone regenerates byte-for-byte; "
+                  f"N_line == winding N == {_H100_EXPECTED_N})")
         return 0
 
     # Interval driver mode: print N, do not write

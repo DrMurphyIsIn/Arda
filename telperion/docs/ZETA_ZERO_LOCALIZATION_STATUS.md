@@ -195,6 +195,45 @@ localization claim.  This negative control also runs in
 conjecture1_proved = False.  This VERIFIES RH inside the box; it is NOT a proof
 of RH.
 
+## Parameterized generic theorem + T=100 milestone (Tasks 3-5)
+
+The capstone above is specialized to `[2/5, 3/5] x [10, 35]`.  Tasks 3-5
+generalize it to an ARBITRARY box and extend the verified RANGE up to height 100
+(Turing's method) -- still NOT a proof of RH.
+
+GENERIC THEOREM (Task 3, kernel).  `RHInBox.rh_in_box_of_certificate`
+(`lean/RHInBox.lean`, layered over `RHInBoxCore.lean` and `RHInBoxAnalytic.lean`)
+takes, for a box `[s0, s1] x [t0, t1]`, a chosen Blaschke ball `(c, R)` with the
+box strictly inside and the pole `s = 1` strictly outside, a count `N`, and the
+two documented Arb inputs (`hLine`: `N` strictly-Im-increasing on-line zeros;
+`hArb`: boundary non-vanishing/integrability bundle + winding `= 2*pi*I*N`), and
+concludes: every nontrivial zeta zero in the box lies on `Re s = 1/2`.  The
+implication is entirely kernel; winding `N`, edge non-vanishing, and value
+enclosures remain the Arb-certified NON-KERNEL input.
+
+DRIVER (Task 4).  `examples/zeta_zero_localization/generate.py --box s0,s1,t0,t1`
+(and the shortcut `--height T` for `[2/5, 3/5] x [0, T]`) computes, for the box,
+the rigorous boundary winding `N`, the on-line sign-change count `N_line`, and
+edge non-vanishing, REFUSES any box that excludes `1/2`, contains the pole, or has
+`N_line != N`, and emits a standalone Lean file instantiating the generic theorem.
+
+MILESTONE (Task 5).  `--height 100` certifies the box `[2/5, 3/5] x [0, 100]`
+with winding `N == N_line == N(100) = 29` (the 29 on-line nontrivial zeros of
+zeta up to height 100) and emits the COMMITTED file
+`lean/RHInBox_2d5_3d5_0_100.lean` (theorem `rh_in_box_2d5_3d5_0_100`), registered
+as a permanent `lean_lib`.  It builds sorry-free with axioms
+{propext, Classical.choice, Quot.sound}.  This is a kernel-certified
+**VERIFICATION of RH INSIDE `[2/5, 3/5] x [0, 100]`** -- it extends the verified
+RANGE beyond the earlier `[10, 35]` box, and is NOT a proof of the Riemann
+Hypothesis.  conjecture1_proved = False.
+
+Scale note: the emitted instantiation proof is `O(N^2)` in a pairwise-distinctness
+block (N=29 -> 406 pairs), and each `linarith` slows as the context grows, so the
+whole proof is super-quadratic.  The emitter therefore scales
+`set_option maxHeartbeats` with `N` (default for `N <= 10`; `~8.6M` at `N = 29`).
+Observed at height 100: emit ~1.8 s; `lake build` ~5m45s (single Lean file) on
+top of a warm Mathlib cache.
+
 ## Proof mechanism
 
 For each sign-change subinterval [t_i, t_k] (t_i < t_k, gLine(t_i) and
@@ -225,6 +264,10 @@ gLine(t_k) have opposite signs):
     examples/zeta_zero_localization/lean/BlaschkeBox.lean     -- Task 7: kernel-derived local Blaschke split (+ d>=1, zeros-in-s)
     examples/zeta_zero_localization/lean/BoxArgPrincipleZeta.lean -- Task 7: box argument principle for zeta (H1+H2 discharged)
     examples/zeta_zero_localization/lean/BoxLocalization.lean -- Task 6: STAGE 3 CAPSTONE (RH-in-a-box localization)
+    examples/zeta_zero_localization/lean/RHInBoxCore.lean     -- Task 3: generic RH-in-box core
+    examples/zeta_zero_localization/lean/RHInBoxAnalytic.lean -- Task 3: generic analytic layer
+    examples/zeta_zero_localization/lean/RHInBox.lean         -- Task 3: generic rh_in_box_of_certificate
+    examples/zeta_zero_localization/lean/RHInBox_2d5_3d5_0_100.lean -- Task 5: T=100 milestone ([2/5,3/5]x[0,100], N=29), COMMITTED
     examples/zeta_zero_localization/README.md          -- usage + cert boundary doc
     src/telperion/arb_enclosure.py                     -- Task 1: enclose_lambda
     src/telperion/emit_xi_line_zeros.py                -- sign_change_count + emitter

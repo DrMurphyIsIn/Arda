@@ -17,6 +17,7 @@ may be emitted.  conjecture1_proved = False (this VERIFIES RH inside the box; it
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Callable
 
@@ -409,6 +410,25 @@ def _build_full_instantiation(
     return "".join(lines)
 
 
+def _heartbeats_for(n: int) -> int:
+    """Heartbeat budget for the per-box instantiation proof.
+
+    The proof cost is dominated by the O(N^2) pairwise-distinctness block (N*(N-1)/2
+    `distinct` haves, each closed by `linarith`).  The default 200000-heartbeat budget
+    suffices for small N (n <= 10, e.g. T=35 -> N=5) but overflows for large N
+    (T=100 -> N=29).  The dominant cost is the O(N^2) pairwise `linarith` block, and each
+    `linarith` also gets SLOWER as the local context grows (more `set`/`have` in scope),
+    so the total is super-quadratic.  Keep the default for n <= 10; for larger n scale the
+    budget as default * ceil(n^2 / 20).  Empirically at n=29 the block-plus-assembly
+    completes just under this budget (4.4M reached the final `simp`; ~8.6M finishes with
+    headroom): n = 29 -> ceil(42.05) = 43 -> 43 * 200000 = 8600000."""
+    base = 200000
+    if n <= 10:
+        return base
+    factor = math.ceil((n * n) / 20.0)
+    return base * factor
+
+
 def emit_per_box_instantiation(
     cert: BoxLocalizationCertificate,
     tag: str,
@@ -459,6 +479,12 @@ def emit_per_box_instantiation(
         f"import BoxLocalization\n\n"
         f"open Complex MeasureTheory Real\n"
         f"open scoped Topology\n\n"
+        # The instantiation proof is O(N^2) in the pairwise-distinctness block (N*(N-1)/2
+        # `distinct` haves, each a `linarith`).  For large N (e.g. the T=100 milestone,
+        # N=29 -> 406 pairs) this exceeds Lean's default 200000-heartbeat budget in `whnf`.
+        # Scale the limit with N (default * (1 + n^2 / 100), rounded up to a multiple of
+        # 200000) so small boxes keep the default and large boxes build sorry-free.
+        f"set_option maxHeartbeats {_heartbeats_for(n)}\n\n"
         f"namespace {namespace}\n\n"
     )
 

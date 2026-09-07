@@ -3903,3 +3903,39 @@ jobs:
       - name: Build the capstone Lean (RH-in-a-box localization + supporting kernels)
         working-directory: telperion/examples/zeta_zero_localization/lean
         run: lake build BoxLocalization BoxArgPrincipleZeta BlaschkeBox RigorousWinding
+
+  # PARAMETERIZED GENERIC THEOREM + T=100 MILESTONE (Tasks 3-5).
+  # Builds the box-generic rh_in_box_of_certificate (RHInBoxCore/RHInBoxAnalytic/RHInBox)
+  # and the committed T=100 instantiation RHInBox_2d5_3d5_0_100 for [2/5,3/5]x[0,100] with
+  # winding N == N_line == N(100) = 29 on-line zeros -- RH VERIFIED IN [2/5,3/5]x[0,100]
+  # (Turing's method, extends the verified RANGE), NOT a proof of RH.
+  # Axioms: {propext, Classical.choice, Quot.sound} -- no sorryAx. conjecture1_proved = False.
+  # The T=100 single-file build is heavy (~6 min); the timeout is raised accordingly.
+  zeta-rh-in-box-height-100-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath "python-flint==0.9.0"
+      - name: Drift-check the committed T=100 milestone (regenerate + byte-compare; N_line == N == 29)
+        working-directory: telperion
+        run: |
+          python examples/zeta_zero_localization/generate.py --height 100 --check
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache (warm; never cold Mathlib)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake exe cache get
+      - name: Build the generic theorem + T=100 milestone (the actual verification)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake build RHInBoxCore RHInBoxAnalytic RHInBox RHInBox_2d5_3d5_0_100

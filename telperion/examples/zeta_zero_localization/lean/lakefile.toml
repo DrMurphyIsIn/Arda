@@ -1,5 +1,5 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100"]
 
 [[require]]
 name = "mathlib"
@@ -38,3 +38,8 @@ name = "RHInBoxAnalytic"
 
 [[lean_lib]]
 name = "RHInBox"
+
+# T=100 milestone: kernel-certified RH-in-box for [2/5,3/5]x[0,100] (29 on-line zeros).
+# Emitted by generate.py --height 100 (Task 4 driver). Committed as a permanent milestone.
+[[lean_lib]]
+name = "RHInBox_2d5_3d5_0_100"
