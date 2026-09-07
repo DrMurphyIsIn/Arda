@@ -1,5 +1,5 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic"]
 
 [[require]]
 name = "mathlib"
@@ -32,3 +32,6 @@ name = "BoxLocalization"
 
 [[lean_lib]]
 name = "RHInBoxCore"
+
+[[lean_lib]]
+name = "RHInBoxAnalytic"
