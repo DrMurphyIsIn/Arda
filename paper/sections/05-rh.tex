@@ -5,8 +5,9 @@ The second case study is in analytic number theory, and it comes with a warning
 label we want to put first, in bold, so there is no chance of misreading: \textbf{we
 do not claim the Riemann Hypothesis.} What we have is a small number of genuine,
 unconditional, machine-checked results \emph{about} the zeta function---and an
-honest account of how they sit relative to the classical literature, which is that
-they are weaker.
+honest account of how they sit relative to the classical literature: mostly
+weaker, and in one case matching the full de la Vallée-Poussin rate, while in
+every case falling well short of the Riemann Hypothesis.
 
 \subsection{Four verified results}
 
@@ -30,17 +31,47 @@ enforced, not asserted:
 To our knowledge, the last two are the first unconditional, Hadamard-free
 zero-free regions to be machine-checked in Lean.
 
-\subsection{The honest comparison}
+\subsection{The honest comparison---and a second route to the full rate}
 
-Now the part that keeps this truthful. These regions are \textbf{strictly weaker
-than de la Vallée-Poussin}: the classical region is $\operatorname{Re} s > 1 -
-c/\log|t|$ \cite{dlvp1896}, and $1/\log|t|$ beats a polynomial or polylog decay in
-$|t|$ handily; Vinogradov--Korobov is stronger still. So we have improved nothing
-about the analytic \emph{result}. What is new is the \emph{formal derivation}: an
-elementary, Hadamard-free route to an unconditional region, carried out in a proof
-assistant, together with a handful of reusable gap-fillers (the strip
-representation and the explicit $\log$-bound among them). The contribution is the
-machine-checked path, stated at its true strength---no more.
+Now the part that keeps this truthful, and it has two registers. Taken by
+themselves, the four regions above are \textbf{strictly weaker than de la
+Vallée-Poussin}: the classical region is $\operatorname{Re} s > 1 - c/\log|t|$
+\cite{dlvp1896}, and $1/\log|t|$ beats a polynomial or polylog decay in $|t|$
+handily. What is new about \emph{them} is only the \emph{formal derivation}---an
+elementary, Hadamard-free route to an unconditional region in a proof assistant,
+with a handful of reusable gap-fillers (the strip representation and the explicit
+$\log$-bound among them).
+
+A second, non-elementary route has since reached the full de la Vallée-Poussin
+\emph{rate}. Through a Blaschke / canonical-factor decomposition of $\zeta$ and a
+box argument principle, the theorem \texttt{dlvp\_zeta\_region\_rate} carries the
+classical rate in its type (sorry-free, axioms $\{$\texttt{propext},
+\texttt{Classical.choice}, \texttt{Quot.sound}$\}$, guarded in
+\texttt{AxiomGuardDlvp} and run in CI on every commit):
+\[
+  \exists\, c > 0 \ \ \forall\ \text{zeros}\ \rho_0 = \beta + i\gamma
+  \ \text{with}\ \tfrac34 \le \beta < 1,\ |\gamma| \ge \tfrac{55}{16}:
+  \qquad \beta \le 1 - \frac{c}{\log|\gamma|}.
+\]
+The quantifier order is $\exists\,c\ \forall\,\text{zero}$---a single
+\emph{uniform} constant, not the vacuous reverse---so this is a genuine zero-free
+region of classical de la Vallée-Poussin strength, machine-checked end to end,
+with no numeric or Arb hypotheses. (It is the rate-exposed lift of an earlier
+existential form, \texttt{dlvp\_zeta\_region\_concrete}, whose constant was real
+but hidden inside an $\exists\,A\,L$; both are CI-guarded.)
+
+Three caveats hold it to its true strength, and none of them is ``conditional.''
+The constant $c$ is \emph{non-effective}---existentially quantified, inherited from
+Mathlib's pole constant---but so is the constant in the classical dVP theorem, so
+this matches the literature rather than underselling. The restriction to
+$\beta \ge \tfrac34$, $|\gamma| \ge \tfrac{55}{16}$ costs nothing as a zero-free
+region: any zero that could violate $1 - c/\log|\gamma|$ at large height already has
+$\beta$ near $1$. And the zero's multiplicity enters as a given---the result is a
+kernel-verified \emph{reduction} that takes the zero as input. So we have
+\emph{matched} the dVP rate inside a proof assistant; we have not beaten it
+(Vinogradov--Korobov is stronger still), and a zero-free region is \textbf{not} a
+proof of RH. The contribution, here as throughout, is the machine-checked
+path---dVP is a theorem of 1896---stated at exactly its strength.
 
 \subsection{A second criterion: Jensen--P\'olya hyperbolicity}
 
@@ -99,32 +130,11 @@ kernel-verified RH-in-a-box for any finite box, now certified up to height $100$
 and it exhibits a third distinct certificate shape (winding / argument-principle
 zero-counting).
 
-For completeness we note two further items we handle with extra care. The first
-is a genuine boundary item: a Borel--Carath\'eodory theorem is present in the
+For completeness we note one boundary item we deliberately keep out of the
+verified list, stated as it is: a Borel--Carath\'eodory theorem is present in the
 development but is a \emph{draft}---its constant is not sharp, it is not
 axiom-guarded, and it is not yet wired into the region argument, so we do not lean
-on it. The second has, over the course of this campaign, graduated. The classical
-de~la~Vall\'ee-Poussin region has now been carried \emph{end-to-end} for a
-concrete zeta zero, and it sits in the same CI-verified tier as the four results
-above: a dedicated axiom guard (\texttt{AxiomGuardDlvp}) runs
-\texttt{\#print axioms} on it on every commit and fails the build on any
-\texttt{sorryAx}. For a zero $\rho_0 = \beta + i\gamma$ with
-$\tfrac12 < \beta < 1$ and $|\gamma| \ge \tfrac72$, the theorem
-\texttt{dlvp\_zeta\_region\_concrete} establishes that there exist $A > 0,\ L \ge
-1$ with $\beta \le 1 - 1/(112\,AL)$, with the clean axiom set
-$\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$. The
-analytic inputs are no longer hypotheses: the pole bound and the
-height-$\gamma$/height-$2\gamma$ $g$-bounds are now \emph{proved} lemmas, and the
-numeric coupling that stalled the earlier draft is discharged by constructing $A$
-and $L$ explicitly. One honest qualification remains, and it is different in kind
-from ``conditional'': the region constant is \emph{non-effective}---$A$ and $L$
-are existentially quantified---so the theorem certifies the derivation and the
-\emph{existence} of the region constants without yet exposing the classical rate
-$1 - c/\log|t|$ with an explicit $c$. It is a kernel-verified, CI-guarded
-\emph{reduction} to a de~la~Vall\'ee-Poussin region for concrete zeros, not yet an
-effective bound---and emphatically not a proof of RH. We state both items
-precisely rather than let the first blur into the verified list or the second be
-kept artificially out of it.
+on it. We flag it rather than let it blur into the verified results above.
 
 The methodological point for this paper is that the same
 untrusted-generator/trusted-kernel discipline that handled a combinatorial
