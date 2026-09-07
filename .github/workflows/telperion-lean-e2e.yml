@@ -3408,6 +3408,27 @@ jobs:
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build DlvpZetaHgBoundGamma
 
+  rh-dlvp-zetahbc1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zero_free_bridge/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake exe cache get
+      - name: Build the height-γ hbc₁ wiring from O(L) bounds (item A)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: lake build DlvpZetaHbc1
+
   # dVP entire-part (i-b') certificate shapes (max_modulus, bc_deriv_re, entire_part_bound):
   # regenerate from the emitters, drift-check, and kernel-verify the emitted Lean.
   dvp-bc-atoms-compiles:

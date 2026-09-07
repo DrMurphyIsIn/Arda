@@ -349,3 +349,6 @@ name = "DlvpZetaAzeta"
 
 [[lean_lib]]
 name = "DlvpZetaHgBoundGamma"
+
+[[lean_lib]]
+name = "DlvpZetaHbc1"
