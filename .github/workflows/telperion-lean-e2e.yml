@@ -4212,3 +4212,43 @@ jobs:
       - name: Build generic + box milestones + confinement + combination + CONCRETE T=100 certificate
         working-directory: telperion/examples/zeta_zero_localization/lean
         run: lake build RHInBoxCore RHInBoxAnalytic RHInBox RHInBox_2d5_3d5_0_100 RHInBox_1d1000000_999999d1000000_0_100 ZetaZeroConfinement AllZerosUpToHeight AllZeros_h100
+
+  # CI kernel-axiom guard for the RH-in-box family (Task 6, dvp-box-combination).
+  # Mirrors the dVP guard job (axiom-guard-dlvp in zero_free_bridge).
+  # Runs `#print axioms` on every guarded anchor and FAILS if `sorryAx` appears in the output.
+  # The zeta lakefile `require`s ../../zero_free_bridge/lean (effective dVP region, PR #318);
+  # the full-repo checkout provides it and `lake exe cache get` warms the shared Mathlib cache.
+  # Axioms expected: {propext, Classical.choice, Quot.sound} -- no sorryAx.
+  # conjecture1_proved = False.
+  axiom-guard-rh-in-box:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache (warm; shared with sibling zero_free_bridge)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake exe cache get
+      - name: Build all guarded RH-in-box targets
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake build RHInBoxCore RHInBoxAnalytic RHInBox RHInBox_2d5_3d5_0_100 RHInBox_1d1000000_999999d1000000_0_100 ZetaZeroConfinement AllZerosUpToHeight AllZeros_h100
+      - name: Axiom guard -- RH-in-box family is kernel-clean (fail on sorryAx)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: |
+          out="$(lake env lean AxiomGuardRHInBox.lean 2>&1 || true)"
+          echo "$out"
+          if echo "$out" | grep -q 'sorryAx'; then
+            echo "::error::a guarded RH-in-box theorem depends on sorry (sorryAx in axiom trace)"; exit 1
+          fi
+          if echo "$out" | grep -qE 'error:'; then
+            echo "::error::AxiomGuardRHInBox.lean did not elaborate cleanly"; exit 1
+          fi
+          echo "OK: all guarded RH-in-box theorems are kernel-clean (no sorryAx)."

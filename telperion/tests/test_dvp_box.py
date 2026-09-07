@@ -132,3 +132,45 @@ def test_wide_box_winding_agrees_29():
     n_line = generate._online_sweep_zero_count(box[2], box[3], 300)
     assert n_line == 29, f"wide-box on-line N_line = {n_line}, expected 29"
     assert n_total == n_line == 29
+
+
+@requires_lake
+def test_axiom_guard_rh_in_box_bites():
+    """Negative control: confirm `AxiomGuardRHInBox.lean` would FAIL if a guarded theorem
+    depended on `sorry`.
+
+    Strategy: write a scratch Lean file that `#print axioms` on a trivial theorem proved
+    with `sorry`, run `lake env lean` on it, and assert the output contains `sorryAx`.
+    This proves the CI grep (`grep -q 'sorryAx'`) is not vacuous -- the same mechanism
+    that the guard uses DOES fire when sorry is present.  No committed sorry; the scratch
+    file is written to a temp directory and cleaned up unconditionally.
+    """
+    import tempfile
+
+    env = {**os.environ, "PATH": _LAKE_PATH}
+    lean_dir = str(_LEAN_DIR)
+
+    scratch = "theorem sorry_theorem : 1 = 2 := by sorry\n#print axioms sorry_theorem\n"
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        scratch_path = os.path.join(tmpdir, "SorryControl.lean")
+        with open(scratch_path, "w") as f:
+            f.write(scratch)
+
+        # Run under `lake env` so Lean is on PATH; point working-directory at the
+        # zeta_zero_localization lean project so the toolchain is resolved correctly.
+        r = subprocess.run(
+            ["lake", "env", "lean", scratch_path],
+            cwd=lean_dir,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+
+    # `lake env lean` may return non-zero (warning/error level), but it MUST produce
+    # output that includes 'sorryAx' for a theorem proved by `sorry`.
+    combined = r.stdout + r.stderr
+    assert "sorryAx" in combined, (
+        "Expected 'sorryAx' in #print axioms output for a sorry-based theorem, "
+        f"but got:\n{combined}"
+    )
