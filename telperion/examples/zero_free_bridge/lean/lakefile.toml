@@ -358,3 +358,6 @@ name = "DlvpZetaHpole"
 
 [[lean_lib]]
 name = "DlvpZetaRecenterEq"
+
+[[lean_lib]]
+name = "DlvpZetaAnaFoundation"
