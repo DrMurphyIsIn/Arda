@@ -310,3 +310,6 @@ name = "DlvpBlaschkeCont"
 # item 4: ζ-zeros in the disk have Re < σ (discharges hother/hlt). Imports DlvpZetaDisk. Own CI target.
 [[lean_lib]]
 name = "DlvpZetaZeroLoc"
+
+[[lean_lib]]
+name = "DlvpZetaStripSum"
