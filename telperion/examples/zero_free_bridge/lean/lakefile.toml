@@ -352,3 +352,6 @@ name = "DlvpZetaHgBoundGamma"
 
 [[lean_lib]]
 name = "DlvpZetaHbc1"
+
+[[lean_lib]]
+name = "DlvpZetaHpole"
