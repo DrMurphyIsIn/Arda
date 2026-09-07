@@ -4169,26 +4169,34 @@ jobs:
         working-directory: telperion/examples/zeta_zero_localization/lean
         run: lake build BoxLocalization BoxArgPrincipleZeta BlaschkeBox RigorousWinding
 
-  # PARAMETERIZED GENERIC THEOREM + T=100 MILESTONE (Tasks 3-5).
-  # Builds the box-generic rh_in_box_of_certificate (RHInBoxCore/RHInBoxAnalytic/RHInBox)
-  # and the committed T=100 instantiation RHInBox_2d5_3d5_0_100 for [2/5,3/5]x[0,100] with
-  # winding N == N_line == N(100) = 29 on-line zeros -- RH VERIFIED IN [2/5,3/5]x[0,100]
-  # (Turing's method, extends the verified RANGE), NOT a proof of RH.
+  # PARAMETERIZED GENERIC THEOREM + T=100 BOX MILESTONE + CONCRETE ALL-ZEROS-UP-TO-100 CERTIFICATE.
+  # Builds the box-generic rh_in_box_of_certificate (RHInBoxCore/RHInBoxAnalytic/RHInBox), the
+  # committed T=100 box instantiation RHInBox_2d5_3d5_0_100 ([2/5,3/5]x[0,100], N=29), the
+  # CONFINEMENT lemma ZetaZeroConfinement (dVP+FE), the GENERIC combination AllZerosUpToHeight,
+  # and the CONCRETE T=100 certificate AllZeros_h100 -- ALL nontrivial zeros up to height 100 on
+  # Re=1/2 (complete finite Turing verification, kernel-checked), NOT a proof of RH.
   # Axioms: {propext, Classical.choice, Quot.sound} -- no sorryAx. conjecture1_proved = False.
-  # The T=100 single-file build is heavy (~6 min); the timeout is raised accordingly.
+  # NOTE: the zeta lakefile `require`s the sibling ../../zero_free_bridge/lean (the effective dVP
+  # region PR #318); the full-repo checkout provides it and `lake exe cache get` warms the SHARED
+  # Mathlib olean cache (both siblings pin mathlib v4.32.0), so no cold Mathlib build occurs.
+  # The wide-box + T=100 single-file builds are heavy (~6 min each); the timeout is raised.
   zeta-rh-in-box-height-100-compiles:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install sympy pytest mpmath "python-flint==0.9.0"
-      - name: Drift-check the committed T=100 milestone (regenerate + byte-compare; N_line == N == 29)
+      - name: Drift-check the committed T=100 box milestone (regenerate + byte-compare; N_line == N == 29)
         working-directory: telperion
         run: |
           python examples/zeta_zero_localization/generate.py --height 100 --check
+      - name: Drift-check the committed WIDE-box atom (regenerate + byte-compare; N_line == N == 29)
+        working-directory: telperion
+        run: |
+          python examples/zeta_zero_localization/generate.py --box 1/1000000,999999/1000000,0,100 --check
       - name: Cache elan toolchain
         uses: actions/cache@v4
         with:
@@ -4198,9 +4206,9 @@ jobs:
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Fetch Mathlib olean cache (warm; never cold Mathlib)
+      - name: Fetch Mathlib olean cache (warm; never cold Mathlib; shared with sibling zero_free_bridge)
         working-directory: telperion/examples/zeta_zero_localization/lean
         run: lake exe cache get
-      - name: Build the generic theorem + T=100 milestone (the actual verification)
+      - name: Build generic + box milestones + confinement + combination + CONCRETE T=100 certificate
         working-directory: telperion/examples/zeta_zero_localization/lean
-        run: lake build RHInBoxCore RHInBoxAnalytic RHInBox RHInBox_2d5_3d5_0_100
+        run: lake build RHInBoxCore RHInBoxAnalytic RHInBox RHInBox_2d5_3d5_0_100 RHInBox_1d1000000_999999d1000000_0_100 ZetaZeroConfinement AllZerosUpToHeight AllZeros_h100

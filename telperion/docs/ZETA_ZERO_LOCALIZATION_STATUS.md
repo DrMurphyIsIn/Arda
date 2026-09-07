@@ -1,6 +1,46 @@
-# Zeta Zero Localization -- Honest Status (Stage 3 CAPSTONE: RH VERIFIED IN THIS BOX)
+# Zeta Zero Localization -- Honest Status (ALL ZEROS UP TO HEIGHT 100 ON THE LINE)
 
 conjecture1_proved = False.
+
+**HEADLINE (dVP + box combination, concrete T=100 certificate):** the Lean theorem
+`AllZeros_h100.all_nontrivial_zeros_up_to_height_100`
+(`examples/zeta_zero_localization/lean/AllZeros_h100.lean`) is kernel-verified:
+**ALL nontrivial zeros of the Riemann zeta function up to height 100 lie on
+`Re s = 1/2`** -- a complete finite Turing verification, kernel-checked. Axioms:
+{propext, Classical.choice, Quot.sound}.  No sorryAx.  It is **NOT** a proof of the
+Riemann Hypothesis.
+
+This CLOSES the earlier "verified inside a box" framing into "verified up to a
+HEIGHT": it composes two kernel atoms at the concrete instance `a = 1/10^6`, `T = 100`:
+
+* **Confinement (dVP + FE):** `ZetaZeroConfinement.zero_in_band` puts every nontrivial
+  zero up to height 100 inside the band `[1/10^6, 1 - 1/10^6]`.  Derived from the
+  SELF-CONTAINED **effective** de la Vallee Poussin zero-free region (PR #316/#318 --
+  `dlvpRateC` is a concrete closed-form constant, so **the earlier non-effective-c
+  caveat is REMOVED**) plus the functional equation.  The effective-rate edge
+  `1/10^6 <= dlvpRateC / log 100` is discharged in-kernel here (`AllZeros_h100.haC_100`)
+  via explicit rational `Real.exp`/`Real.log` enclosures.
+* **Box-localization (argument principle + winding):** the emitted wide-box atom
+  `RHInBox_1d1000000_999999d1000000_0_100.rh_in_box_1d1000000_999999d1000000_0_100`
+  (box `[1/10^6, 1 - 1/10^6] x [0, 100]`, winding `N == N_line == 29`) puts every
+  zeta zero in that box on `Re s = 1/2`.
+
+**Trust boundary (honest).**  KERNEL: the dVP zero-free region + functional equation
+(confinement), the argument principle + winding-integral algebra (box), and the
+`haC` rate inequality.  ARB NON-KERNEL INPUT: the winding count `N = 29`, the 29
+on-line zeros (`hLine`), the edge non-vanishing + integrability bundle (`hArb`), and
+the height floor `55/16 <= |Im|` for nontrivial zeros up to 100 (`hγ`).  These are
+outward-rounded python-flint/Arb ball certificates carried as documented hypotheses.
+
+**`hγ` residual (route c).**  Mathlib has no "no nontrivial zeros below height 55/16
+(~3.44)" fact, so the region's height floor is carried as the documented non-kernel
+hypothesis `hγ` on `all_nontrivial_zeros_up_to_height_100` -- a classical
+Arb-certifiable fact (the on-line sweep places all 29 zeros at height >= 14).  The
+headline is thus honestly "all zeros up to 100 on Re = 1/2, given no nontrivial zeros
+below height 55/16".  conjecture1_proved = False.
+
+---
+
 
 **Headline (Stage 3, Task 6):** the Lean theorem
 `BoxLocalization.all_nontrivial_zeros_in_box_on_critical_line`
@@ -267,7 +307,12 @@ gLine(t_k) have opposite signs):
     examples/zeta_zero_localization/lean/RHInBoxCore.lean     -- Task 3: generic RH-in-box core
     examples/zeta_zero_localization/lean/RHInBoxAnalytic.lean -- Task 3: generic analytic layer
     examples/zeta_zero_localization/lean/RHInBox.lean         -- Task 3: generic rh_in_box_of_certificate
-    examples/zeta_zero_localization/lean/RHInBox_2d5_3d5_0_100.lean -- Task 5: T=100 milestone ([2/5,3/5]x[0,100], N=29), COMMITTED
+    examples/zeta_zero_localization/lean/RHInBox_2d5_3d5_0_100.lean -- T=100 box milestone ([2/5,3/5]x[0,100], N=29), COMMITTED
+    examples/zeta_zero_localization/lean/ZetaZeroConfinement.lean -- CONFINEMENT (dVP+FE): zeros up to T in band [a,1-a]
+    examples/zeta_zero_localization/lean/AllZerosUpToHeight.lean -- COMBINATION (generic a,T): all zeros up to T on Re=1/2
+    examples/zeta_zero_localization/lean/RHInBox_1d1000000_999999d1000000_0_100.lean -- WIDE-box atom ([1/10^6,1-1/10^6]x[0,100], N=29), COMMITTED
+    examples/zeta_zero_localization/lean/AllZeros_h100.lean -- CONCRETE T=100 certificate: ALL zeros up to height 100 on Re=1/2, COMMITTED
+    tests/test_dvp_box.py                              -- build assertions (confinement, generic, concrete T=100) + wide-box N==N_line==29 agreement
     examples/zeta_zero_localization/README.md          -- usage + cert boundary doc
     src/telperion/arb_enclosure.py                     -- Task 1: enclose_lambda
     src/telperion/emit_xi_line_zeros.py                -- sign_change_count + emitter
