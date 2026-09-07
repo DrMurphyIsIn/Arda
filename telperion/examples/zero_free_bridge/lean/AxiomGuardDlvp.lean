@@ -23,15 +23,22 @@
        `σ-1 < 1/48` (Cauchy estimate on `ζ₁ = (·-1)·ζ`), replacing Mathlib's bare-`∃` pole constant.
      * dlvp_zeta_region_rate_effective / dlvpRateC_pos — the RATE with an EXPLICIT constant:
        `β ≤ 1 - dlvpRateC/log|γ|`, `dlvpRateC > 0` a concrete closed-form real.  `c` is now EFFECTIVE.
+     * riemannZeta_ne_zero_region — the SELF-CONTAINED zero-free region (no multiplicity hypothesis):
+       `55/16 ≤ |γ| ∧ 1 - dlvpRateC/log|γ| < β ⟹ ζ(β+iγ) ≠ 0`, i.e. `ζ(s) ≠ 0` on
+       `Re s > 1 - dlvpRateC/log|Im s|`.  Multiplicity `1 ≤ divisor` is derived from `ζ ρ₀ = 0`
+       (zeta_zero_divisor_pos).
    All are kernel-verified reductions.  conjecture1_proved = False (NOT a proof of RH).
 -/
 import DlvpZetaConcreteClose
 import DlvpZetaConcreteRate
 import DlvpZetaPoleEffective
 import DlvpZetaRateEffective
+import DlvpZetaZeroFree
 
 #print axioms ZeroFreeBridge.dlvp_zeta_region_concrete
 #print axioms ZeroFreeBridge.dlvp_zeta_region_rate
 #print axioms ZeroFreeBridge.hpole_effective
 #print axioms ZeroFreeBridge.dlvp_zeta_region_rate_effective
 #print axioms ZeroFreeBridge.dlvpRateC_pos
+#print axioms ZeroFreeBridge.riemannZeta_ne_zero_region
+#print axioms ZeroFreeBridge.zeta_zero_divisor_pos

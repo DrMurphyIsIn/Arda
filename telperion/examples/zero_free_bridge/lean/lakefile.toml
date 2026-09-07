@@ -376,3 +376,6 @@ name = "DlvpZetaPoleEffective"
 
 [[lean_lib]]
 name = "DlvpZetaRateEffective"
+
+[[lean_lib]]
+name = "DlvpZetaZeroFree"
