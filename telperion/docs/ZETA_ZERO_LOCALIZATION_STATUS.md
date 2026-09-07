@@ -82,11 +82,52 @@ conclusion unconditionally from the Lean proof.
 ## Stage roadmap
 
 - Stage 1 (COMPLETE): lower bound N >= 5 via sign changes + IVT.  This file.
+- Stage 2B (COMPLETE, Task 7): the LOCAL Blaschke split of `zeta'/zeta` over the
+  box B = [2/5, 3/5] x [10, 35] is now KERNEL-DERIVED (see below).
 - Stage 2 (deferred): exact zero count via argument-principle emitter (pending
   the merged argument_principle emitter probe).
 - Stage 3 (deferred): RH-in-a-box -- all zeros in a strip lie on Re s = 1/2
   (requires a complete zero-free region argument off the line; the polylog
   zero-free region in ZeroFreeBridge is the current frontier).
+
+## Stage 2B: kernel-derived local Blaschke split (Task 7)
+
+`BlaschkeBox.zeta_blaschke_split_box`
+(`examples/zeta_zero_localization/lean/BlaschkeBox.lean`) DERIVES, in kernel, the
+local principal-part split of `logDeriv riemannZeta` over the capstone box.  On
+the open ball `U = ball(cB, 13)` (center `cB = 1/2 + (45/2) i`, radius 13) that
+contains the closed box `B = [2/5, 3/5] x [10, 35]` and excludes zeta's only pole
+`s = 1`, there is a finite set `s` of zeta zeros in `U`, the divisor `d`, and an
+error `E` such that:
+
+    at every z in U with zeta z != 0,
+      logDeriv zeta z = (sum_{rho in s} (d rho)/(z - rho)) + E z,
+    and E is HOLOMORPHIC on B  (DifferentiableOn C E B).
+
+Mechanism: zeta is analytic on `{1}^c` (`analyticOn_riemannZeta`), hence
+meromorphic on `U`; `divisor_ball_support_finite` (compact `closedBall`) gives a
+finite divisor support; `MeromorphicOn.extract_zeros_poles` yields an analytic,
+zero-free remainder `g` on `U` with `zeta =(codiscrete) (prod (.-u)^(d u)) * g`;
+an in-file identity-principle transfer (`logDeriv_congr_of_codiscrete`, a
+reproduction of the `zero_free_bridge/DlvpTransfer` germ lemmas) moves the
+codiscrete factorization to a POINTWISE `logDeriv` identity on `U`; the finite
+product's `logDeriv` is the residue sum, and `E := logDeriv g` is holomorphic on
+`U` (hence on `B`) because `g` is analytic and non-vanishing.
+
+Axioms: {propext, Classical.choice, Quot.sound}.  No sorryAx.
+
+This DISCHARGES Task 5's H2 (E-holomorphy), previously a hypothesis.
+`BoxArgPrincipleZeta.box_arg_principle_zeta`
+(`examples/zeta_zero_localization/lean/BoxArgPrincipleZeta.lean`) instantiates the
+capstone with the derived `E, s, d` and the kernel E-holomorphy; the four
+per-segment boundary split identities (H1) are DERIVED from the kernel split, so
+the only residual boundary input is that the four edges carry no zeta zero
+(`hnz_*`) -- the SAME Arb-enclosure trust boundary as the numeric zero
+enclosures, carried as named documented hypotheses (NOT faked).  Strict
+interiority (H3), routine boundary integrability, and the winding value (H4, from
+WindingCount / Task 9) remain the other inputs.
+
+conjecture1_proved = False.
 
 ## Proof mechanism
 
@@ -115,6 +156,8 @@ gLine(t_k) have opposite signs):
     examples/zeta_zero_localization/generate.py        -- interval driver + emitter
     examples/zeta_zero_localization/lean/LambdaLineReal.lean  -- Task 2 prelude
     examples/zeta_zero_localization/lean/XiLineZeros.lean     -- emitted theorems
+    examples/zeta_zero_localization/lean/BlaschkeBox.lean     -- Task 7: kernel-derived local Blaschke split
+    examples/zeta_zero_localization/lean/BoxArgPrincipleZeta.lean -- Task 7: capstone wiring (H1+H2 discharged)
     examples/zeta_zero_localization/README.md          -- usage + cert boundary doc
     src/telperion/arb_enclosure.py                     -- Task 1: enclose_lambda
     src/telperion/emit_xi_line_zeros.py                -- sign_change_count + emitter

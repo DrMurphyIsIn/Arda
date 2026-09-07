@@ -46,3 +46,50 @@ def test_box_arg_principle_lambda_builds():
         ["lake", "build", "BoxArgPrinciple"], cwd=d, env=env, capture_output=True, text=True
     )
     assert r.returncode == 0, r.stderr
+
+
+def test_zeta_blaschke_split_box_builds():
+    """Task 7 (Stage 2B): the local Blaschke split of zeta'/zeta over the box is kernel-derived.
+
+    `BlaschkeBox.zeta_blaschke_split_box` derives, on U = ball(cB, 13) containing the box
+    B = [2/5, 3/5] x [10, 35], the split
+      logDeriv zeta z = (sum_rho (divisor rho)/(z - rho)) + E z   (off the zeros)
+    with E := logDeriv g HOLOMORPHIC on B, discharging Task 5's H2 (E-holomorphy) in kernel.
+    `BoxArgPrincipleZeta.box_arg_principle_zeta` then instantiates the capstone with the derived
+    split + error holomorphy (H1 derived from the split + boundary non-vanishing; H2 kernel).
+    Both build sorry-free with clean axioms {propext, Classical.choice, Quot.sound}.
+    conjecture1_proved = False.
+    """
+    import os
+    import subprocess
+
+    env = {**os.environ, "PATH": os.path.expanduser("~/.elan/bin") + ":" + os.environ["PATH"]}
+    d = str(Path(__file__).resolve().parents[1] / "examples" / "zeta_zero_localization" / "lean")
+    subprocess.run(["lake", "exe", "cache", "get"], cwd=d, env=env, check=True)
+    r = subprocess.run(
+        ["lake", "build", "BlaschkeBox", "BoxArgPrincipleZeta"],
+        cwd=d,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+    assert r.returncode == 0, r.stderr
+
+    # Axiom hygiene: both key theorems depend only on the standard axioms (no sorryAx).
+    axcheck = (
+        "import BlaschkeBox\n"
+        "import BoxArgPrincipleZeta\n"
+        "#print axioms BlaschkeBox.zeta_blaschke_split_box\n"
+        "#print axioms BoxArgPrincipleZeta.box_arg_principle_zeta\n"
+    )
+    axfile = Path(d) / "AxCheckZetaSplit.lean"
+    try:
+        axfile.write_text(axcheck)
+        ra = subprocess.run(
+            ["lake", "env", "lean", str(axfile)], cwd=d, env=env, capture_output=True, text=True
+        )
+        assert ra.returncode == 0, ra.stderr
+        assert "sorryAx" not in ra.stdout, ra.stdout
+        assert "propext" in ra.stdout, ra.stdout
+    finally:
+        axfile.unlink(missing_ok=True)
