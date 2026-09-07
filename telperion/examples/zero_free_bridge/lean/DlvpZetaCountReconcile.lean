@@ -94,4 +94,31 @@ theorem sum_divisor_recenter_le_finsum {c₀ : ℂ} {R : ℝ}
     rwa [← divisor_comp_const_add_apply c₀ hf_mero hf'_mero huball hcuball]
   · intro ρ _ _; exact hDnn ρ
 
+/-- **The count as an explicit O(log|c₀.im|) bound.**  Chains `sum_divisor_recenter_le_finsum` with
+    `zeta_zero_count_strip` (inner `R`, outer `R' > R`) + the ℤ→ℝ cast: the recentred divisor sum
+    `≤ log(U''(R')/‖ζ c₀‖)/log(R'/R)`.  This is the concrete `hcount` for `hAL_concrete` (identify
+    the RHS with `Ccount·L`, `L = log|c₀.im|`). -/
+theorem sum_divisor_recenter_le_jensen {c₀ : ℂ} {R R' : ℝ} (hR : 0 < R) (hRR' : R < R')
+    (hc1 : 1 < c₀.re) (hR'lt : R' < c₀.re - 1/2) (himc : R' + 2 ≤ |c₀.im|)
+    (hf_mero : MeromorphicOn riemannZeta (ball c₀ R))
+    (hf'_mero : MeromorphicOn (fun w => riemannZeta (c₀ + w)) (ball 0 R))
+    (hf_ana_cl : AnalyticOnNhd ℂ riemannZeta (closedBall c₀ R))
+    (hfin : (Function.support
+      (fun u => -(divisor (fun w => riemannZeta (c₀ + w)) (ball 0 R) u))).Finite) :
+    (∑ u ∈ hfin.toFinset, (divisor (fun w => riemannZeta (c₀ + w)) (ball 0 R) u : ℝ))
+      ≤ Real.log (((‖c₀‖ + R') / (|c₀.im| - R') + (‖c₀‖ + R') / (c₀.re - R'))
+          / ‖riemannZeta c₀‖) / Real.log (R' / R) := by
+  have hR'0 : 0 < R' := lt_trans hR hRR'
+  have hZ := sum_divisor_recenter_le_finsum hf_mero hf'_mero hf_ana_cl hfin
+  have hcount := zeta_zero_count_strip c₀ R R'
+    (by rw [abs_of_pos hR]; exact hR)
+    (by rw [abs_of_pos hR, abs_of_pos hR'0]; exact hRR')
+    hc1 (by rw [abs_of_pos hR'0]; exact hR'lt) (by rw [abs_of_pos hR'0]; exact himc)
+  rw [abs_of_pos hR, abs_of_pos hR'0] at hcount
+  calc (∑ u ∈ hfin.toFinset, (divisor (fun w => riemannZeta (c₀ + w)) (ball 0 R) u : ℝ))
+      = ((∑ u ∈ hfin.toFinset, divisor (fun w => riemannZeta (c₀ + w)) (ball 0 R) u : ℤ) : ℝ) := by
+        push_cast; ring
+    _ ≤ ((∑ᶠ ρ, divisor riemannZeta (closedBall c₀ R) ρ : ℤ) : ℝ) := by exact_mod_cast hZ
+    _ ≤ _ := hcount
+
 end ZeroFreeBridge
