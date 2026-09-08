@@ -33,6 +33,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 DATA_URL = "https://data.palomar-registry.org/recent.json"
+FEED_URL = "https://data.palomar-registry.org/feed.xml"
 
 # --------------------------------------------------------------------------- #
 # Topic lexicons — the two research fronts this project mines Palomar for.     #
@@ -236,6 +237,42 @@ def fetch_registry(url: str = DATA_URL, timeout: float = 30.0) -> list[dict]:
     with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310 (fixed https host)
         data = json.loads(resp.read().decode("utf-8"))
     return data.get("entries", data) if isinstance(data, dict) else data
+
+
+def parse_feed(xml_text: str) -> list[dict]:
+    """Parse the Palomar RSS feed (`feed.xml`) into classify_entry-compatible
+    entry dicts.  Pure (offline-testable).  RSS items carry title, description
+    (→ abstract) and a link `…?id=PALOMAR-…&version=N`; the id is parsed from the
+    link so the seen-state is shared with the `recent.json` source.  RSS items
+    lack the structured MSC of `recent.json`, so title+abstract drive matching."""
+    import html
+    import re as _re
+    import xml.etree.ElementTree as ET
+
+    root = ET.fromstring(xml_text)
+    out: list[dict] = []
+    for item in root.iter("item"):
+        def _text(tag: str) -> str:
+            el = item.find(tag)
+            return html.unescape(el.text or "") if el is not None and el.text else ""
+        link = _text("link")
+        m = _re.search(r"[?&]id=([^&]+)", link)
+        out.append({
+            "id": m.group(1) if m else link,
+            "title": _text("title"),
+            "abstract": _text("description"),
+            "source": {"url": link},
+        })
+    return out
+
+
+def fetch_feed(url: str = FEED_URL, timeout: float = 30.0) -> list[dict]:
+    """Fetch + parse the Palomar RSS feed — a lighter-weight alternate source to
+    `fetch_registry` (same entry shape, shared id space)."""
+    import urllib.request
+    req = urllib.request.Request(url, headers={"User-Agent": "telperion-palomar-mine/0.1"})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310 (fixed https host)
+        return parse_feed(resp.read().decode("utf-8"))
 
 
 def load_seen(state_path: str | Path) -> set[str]:

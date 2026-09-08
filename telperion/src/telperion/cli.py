@@ -672,17 +672,22 @@ def cmd_palomar_mine(args) -> int:
     `--file` reads a local registry JSON instead of the network (offline)."""
     import json as _json
 
-    from .palomar_mine import fetch_registry, mine, mining_report, poll
+    from .palomar_mine import fetch_feed, fetch_registry, mine, mining_report, parse_feed, poll
 
     topics = args.topic.split(",") if args.topic else None
+    fetch = fetch_feed if args.source == "feed" else fetch_registry
     if args.poll:
-        cands = poll(args.state, topics=topics, min_score=args.min_score)
+        cands = poll(args.state, topics=topics, fetch=fetch, min_score=args.min_score)
     else:
         if args.file:
-            data = _json.loads(Path(args.file).read_text())
-            entries = data.get("entries", data) if isinstance(data, dict) else data
+            raw = Path(args.file).read_text()
+            if args.source == "feed":
+                entries = parse_feed(raw)
+            else:
+                data = _json.loads(raw)
+                entries = data.get("entries", data) if isinstance(data, dict) else data
         else:
-            entries = fetch_registry()
+            entries = fetch()
         cands = mine(entries, topics=topics, min_score=args.min_score)
     if args.json:
         from dataclasses import asdict
@@ -719,7 +724,9 @@ def main(argv=None) -> int:
     p.add_argument("--state", default="palomar-seen.json",
                    help="seen-state file for --poll")
     p.add_argument("--file", default=None,
-                   help="read a local registry JSON instead of the network")
+                   help="read a local registry file instead of the network (JSON, or RSS with --source feed)")
+    p.add_argument("--source", choices=("recent", "feed"), default="recent",
+                   help="registry source: recent.json (structured, default) or the RSS feed.xml")
     p.add_argument("--min-score", type=int, default=1)
     p.add_argument("--json", action="store_true", help="emit candidates as JSON")
     p.set_defaults(fn=cmd_palomar_mine)

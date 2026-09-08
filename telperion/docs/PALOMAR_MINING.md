@@ -44,15 +44,26 @@ CI-verify, never an emitter itself.
 ## CLI
 
 ```
-telperion palomar-mine --topic rh                 # live: fetch + report (RH)
-telperion palomar-mine --topic bg --min-score 3   # BG, thin candidates pruned
-telperion palomar-mine --file recent.json --json  # offline JSON (a saved registry)
+telperion palomar-mine --topic rh                    # live: fetch recent.json + report (RH)
+telperion palomar-mine --topic bg --min-score 3      # BG, thin candidates pruned
+telperion palomar-mine --source feed --topic rh,bg   # lighter-weight: the RSS feed.xml source
+telperion palomar-mine --file recent.json --json     # offline JSON (a saved registry)
 telperion palomar-mine --poll --topic rh,bg --state palomar-seen.json
 ```
 
-`--poll` is the recurring form: on each run it surfaces only entries new since the
-last run. Schedule it (cron / the `/loop` skill) to turn "new Palomar entry" into
-"surfaced candidate emitter" automatically. Suggested cadence: daily.
+## Sources & update cadence
+
+Palomar exposes two PULL sources — there is no push/webhook to subscribe a callback:
+- `recent.json` (default, `--source recent`): structured, carries MSC — best signal.
+- `feed.xml` (`--source feed`): RSS; title + description only (no MSC), lighter. Both
+  share the same entry-id space, so a shared `--poll --state` file dedups across sources.
+- A Palomar Lean **Zulip** channel (`leanprover.zulipchat.com`, stream `Palomar`) is the
+  human announce/discussion channel; a Zulip API/bot poll could be added as a third source.
+
+`--poll` is the recurring form: on each run it surfaces only entries new since the last run.
+Registry volume is only ~4–6 total submissions/day and RH/BG-relevant ones are sparse, so a
+**weekly** scheduled poll is sufficient (the seen-state dedups a week's backlog). Schedule it
+as a cloud routine (`/schedule`) or a local cron.
 
 ## Current leads
 

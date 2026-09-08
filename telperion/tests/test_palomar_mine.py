@@ -14,9 +14,25 @@ from telperion.palomar_mine import (  # noqa: E402
     classify_entry,
     mine,
     mining_report,
+    parse_feed,
     poll,
     load_seen,
 )
+
+FEED_XML = """<?xml version='1.0' encoding='utf-8'?>
+<rss version="2.0"><channel><title>Palomar</title>
+  <item>
+    <title>Li's criterion for the Riemann Hypothesis</title>
+    <link>https://palomar-registry.org/entry.html?id=PALOMAR-2026-09-05-000005&amp;version=1</link>
+    <description>RiemannHypothesis iff every Li-Keiper coefficient of the completed xi function
+      has nonnegative real part &amp;quot;λ_n&amp;quot;.</description>
+  </item>
+  <item>
+    <title>Adjunctions in category theory</title>
+    <link>https://palomar-registry.org/entry.html?id=PALOMAR-2026-09-01-000099&amp;version=2</link>
+    <description>Adjoint functors and natural transformations.</description>
+  </item>
+</channel></rss>"""
 
 
 # --- synthetic fixtures modelling real registry entries -------------------- #
@@ -132,6 +148,32 @@ def test_poll_is_incremental(tmp_path):
     third = poll(state, fetch=lambda url: batch1 + [PERM_TREE])
     assert {c.entry_id for c in third} == {"P-PERM"}
     assert load_seen(state) == {"P-LI", "P-BN", "P-PERM"}
+
+
+def test_parse_feed_extracts_id_title_abstract():
+    entries = parse_feed(FEED_XML)
+    assert len(entries) == 2
+    e0 = entries[0]
+    assert e0["id"] == "PALOMAR-2026-09-05-000005"          # parsed from the link ?id=
+    assert e0["title"].startswith("Li's criterion")
+    assert '"λ_n"' in e0["abstract"]                        # &quot; unescaped to "
+
+
+def test_feed_entries_classify_without_msc():
+    # RSS entries carry no structured MSC; title+abstract must still classify.
+    e = parse_feed(FEED_XML)[0]
+    c = classify_entry(e)
+    assert c is not None and "rh" in c.topics
+    assert any(s["family"] == "Li positivity ladder" for s in c.shapes)
+
+
+def test_poll_over_feed_is_incremental(tmp_path):
+    state = tmp_path / "seen_feed.json"
+    # only the Li entry is a candidate; both ids are recorded as seen.
+    got = poll(state, fetch=lambda url: parse_feed(FEED_XML))
+    assert {c.entry_id for c in got} == {"PALOMAR-2026-09-05-000005"}
+    assert load_seen(state) == {"PALOMAR-2026-09-05-000005", "PALOMAR-2026-09-01-000099"}
+    assert poll(state, fetch=lambda url: parse_feed(FEED_XML)) == []
 
 
 def test_poll_topic_scoping(tmp_path):
