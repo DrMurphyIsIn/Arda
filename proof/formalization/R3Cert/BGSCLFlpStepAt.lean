@@ -9,11 +9,14 @@
   `strDefect` drop, the self-propagating cavity-gain pair (G1, G2), and `Aobj` monotonicity -- so
   `FlpStepAt.straightStep : FlpStepAt t t' -> StraightStep_sized t t'` with NO side conditions.
 
-  HONESTY (measured, exact enumeration n <= 12): the pure-FLP site class covers 1004 of 2072
-  positive-defect rooted trees (48.5%).  It is NOT full coverage: piece sizes are {1,2} u {odd >= 3},
-  so an even-size (>= 4) defective subtree (e.g. `node [leaf,leaf,leaf]`, 4 vertices) can NEVER be
-  completed to a piece by internal moves -- a PARITY obstruction; those trees need cross-boundary
-  moves (the Type-W-side residual).  Accordingly the coverage hypothesis is stated GENERICALLY
+  HONESTY (measured, exact enumeration n <= 12): the single-flip class covers 1004 of 2072
+  positive-defect rooted trees (48.5%); the multi-flip generalization (`2m` leaves, this file)
+  covers 1085 (52.4%) and is COMPLETE for internal piece-completion.  It is NOT full coverage:
+  piece sizes are {1,2} u {odd >= 3}, so an even-size (>= 4) defective subtree (e.g.
+  `node [leaf,leaf,leaf]`, 4 vertices) can NEVER be completed to a piece by internal moves -- a
+  PARITY obstruction; likewise sites with arm children cannot complete without dismantling them.
+  Those trees need cross-boundary moves (the Type-W-side residual).  Accordingly the coverage
+  hypothesis is stated GENERICALLY
   (`straightProgress_sized_of_coverage`): any step relation refining `StraightStep_sized` with full
   coverage yields `StraightProgress_sized` (hence Hnorm via `tree_to_hub_sized`).  Widening the
   move class = enlarging the relation; the G-machinery (BGSCLFlpDeepLift) is move-agnostic.
@@ -93,6 +96,72 @@ theorem flp_child_G2 (crest : List UTree) :
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   nlinarith [mul_nonneg hP hn]
 
+/-! ### The composite multi-flip child stats -/
+
+/-- A replicate of stems is all-cherry. -/
+theorem all_isCherry_replicate_flpStem (m : ℕ) :
+    (List.replicate m flpStem).all isCherry = true := by
+  rw [List.all_eq_true]
+  intro x hx
+  rw [(List.mem_replicate.mp hx).2]
+  exact isCherry_flpStem
+
+/-- **Composite multi-flip child stats.**  `2m` leaves complete to `m` stems in one step,
+    preserving `usize` and carrying the cavity-gain pair, for ANY tail `crest`.  Induction on
+    `m`, conjugating each single flip (general-crest lemmas) by permutations -- the stats are
+    child-multiset functions (`dtSub_stats_perm`). -/
+theorem multiFlp_child_stats :
+    ∀ (m : ℕ) (crest : List UTree),
+      usize (UTree.node (List.replicate (2 * m) flpLeaf ++ crest))
+          = usize (UTree.node (List.replicate m flpStem ++ crest))
+        ∧ Ztot (dtSub (UTree.node (List.replicate (2 * m) flpLeaf ++ crest)))
+            ≤ Ztot (dtSub (UTree.node (List.replicate m flpStem ++ crest)))
+        ∧ Zopen (dtSub (UTree.node (List.replicate (2 * m) flpLeaf ++ crest)))
+              / (udeg (UTree.node (List.replicate (2 * m) flpLeaf ++ crest)) : ℝ)
+            ≤ Zopen (dtSub (UTree.node (List.replicate m flpStem ++ crest)))
+              / (udeg (UTree.node (List.replicate m flpStem ++ crest)) : ℝ)
+  | 0, crest => by simp
+  | m + 1, crest => by
+    have h2 : 2 * (m + 1) = 2 * m + 1 + 1 := by omega
+    rw [h2, List.replicate_succ, List.replicate_succ, List.replicate_succ]
+    -- one flip at crest1 = replicate (2m) leaf ++ crest, then perm-conjugate, then IH
+    set crest1 := List.replicate (2 * m) flpLeaf ++ crest with hc1
+    have hpm : (flpStem :: crest1).Perm
+        (List.replicate (2 * m) flpLeaf ++ flpStem :: crest) := by
+      rw [hc1]
+      exact List.perm_middle.symm
+    have hpf : (List.replicate m flpStem ++ flpStem :: crest).Perm
+        (flpStem :: (List.replicate m flpStem ++ crest)) := List.perm_middle
+    obtain ⟨ihu, ihZ, ihG⟩ := multiFlp_child_stats m (flpStem :: crest)
+    obtain ⟨hpmZ, hpmO, hpmU⟩ := dtSub_stats_perm hpm
+    obtain ⟨hpfZ, hpfO, hpfU⟩ := dtSub_stats_perm hpf
+    refine ⟨?_, ?_, ?_⟩
+    · calc usize (UTree.node (flpLeaf :: flpLeaf :: crest1))
+          = usize (UTree.node (flpStem :: crest1)) := (usize_flp_move_eq crest1).symm
+        _ = usize (UTree.node (List.replicate (2 * m) flpLeaf ++ flpStem :: crest)) := by
+            rw [usize_node, usize_node, usizeList_perm hpm]
+        _ = usize (UTree.node (List.replicate m flpStem ++ flpStem :: crest)) := ihu
+        _ = usize (UTree.node (flpStem :: (List.replicate m flpStem ++ crest))) := by
+            rw [usize_node, usize_node, usizeList_perm hpf]
+    · calc Ztot (dtSub (UTree.node (flpLeaf :: flpLeaf :: crest1)))
+          ≤ Ztot (dtSub (UTree.node (flpStem :: crest1))) := Ztot_dtSub_flp_child_le crest1
+        _ = Ztot (dtSub (UTree.node (List.replicate (2 * m) flpLeaf ++ flpStem :: crest))) :=
+            hpmZ
+        _ ≤ Ztot (dtSub (UTree.node (List.replicate m flpStem ++ flpStem :: crest))) := ihZ
+        _ = Ztot (dtSub (UTree.node (flpStem :: (List.replicate m flpStem ++ crest)))) := hpfZ
+    · calc Zopen (dtSub (UTree.node (flpLeaf :: flpLeaf :: crest1)))
+              / (udeg (UTree.node (flpLeaf :: flpLeaf :: crest1)) : ℝ)
+          ≤ Zopen (dtSub (UTree.node (flpStem :: crest1)))
+              / (udeg (UTree.node (flpStem :: crest1)) : ℝ) := flp_child_G2 crest1
+        _ = Zopen (dtSub (UTree.node (List.replicate (2 * m) flpLeaf ++ flpStem :: crest)))
+              / (udeg (UTree.node (List.replicate (2 * m) flpLeaf ++ flpStem :: crest)) : ℝ) := by
+            rw [hpmO, hpmU]
+        _ ≤ Zopen (dtSub (UTree.node (List.replicate m flpStem ++ flpStem :: crest)))
+              / (udeg (UTree.node (List.replicate m flpStem ++ flpStem :: crest)) : ℝ) := ihG
+        _ = Zopen (dtSub (UTree.node (flpStem :: (List.replicate m flpStem ++ crest))))
+              / (udeg (UTree.node (flpStem :: (List.replicate m flpStem ++ crest))) : ℝ) := by
+            rw [hpfO, hpfU]
+
 /-! ### The strDefect drop at a completed site -/
 
 /-- Replacing a non-piece defect-free site child by a completed PIECE strictly lowers the site
@@ -120,18 +189,20 @@ theorem strDefect_flp_site_lt (spre spost : List UTree) {u v : UTree}
 
 /-! ### The move class -/
 
-/-- **The depth-closed FLP move class.**  `here`: complete a site child -- children a permutation
-    of two leaves plus an all-cherry crest -- to the arm `flpChildAfter crest`, at a site parent
-    with another non-piece child.  `lift`: perform the move inside any child, at any position.
-    Sibling splits (`spre/spost`, `pre/post`) are arbitrary, and the site child's own order is
-    freed by the `Perm`, so the class is order-insensitive everywhere. -/
+/-- **The depth-closed multi-flip FLP move class.**  `here`: complete a site child -- children a
+    permutation of `2m` leaves (`m >= 1`) plus an all-cherry crest -- to the arm
+    `node (replicate m flpStem ++ crest)` in ONE composite step, at a site parent with another
+    non-piece child.  `lift`: perform the move inside any child, at any position.  Sibling splits
+    (`spre/spost`, `pre/post`) are arbitrary, and the site child's own order is freed by the
+    `Perm`, so the class is order-insensitive everywhere.  (`m = 1` recovers the single flip
+    `flpChildAfter crest`.) -/
 inductive FlpStepAt : UTree → UTree → Prop
-  | here (spre spost cs crest : List UTree)
-      (hperm : cs.Perm (flpLeaf :: flpLeaf :: crest))
+  | here (spre spost cs crest : List UTree) (m : ℕ) (hm : 1 ≤ m)
+      (hperm : cs.Perm (List.replicate (2 * m) flpLeaf ++ crest))
       (hcrest : crest.all isCherry = true)
       (hsib : 1 ≤ npCount (spre ++ spost)) :
       FlpStepAt (UTree.node (spre ++ UTree.node cs :: spost))
-                (UTree.node (spre ++ flpChildAfter crest :: spost))
+                (UTree.node (spre ++ UTree.node (List.replicate m flpStem ++ crest) :: spost))
   | lift (pre post : List UTree) {c c' : UTree} (h : FlpStepAt c c') :
       FlpStepAt (UTree.node (pre ++ c :: post)) (UTree.node (pre ++ c' :: post))
 
@@ -149,10 +220,12 @@ theorem FlpStepAt.props {t t' : UTree} (h : FlpStepAt t t') :
       ∧ Zopen (dtSub t) / (udeg t : ℝ) ≤ Zopen (dtSub t') / (udeg t' : ℝ)
       ∧ Aobj t ≤ Aobj t' := by
   induction h with
-  | here spre spost cs crest hperm hcrest hsib =>
-    -- child-level: `node cs` matches `flpChildBefore crest` up to permutation
-    have hmem_leaf : flpLeaf ∈ cs := hperm.mem_iff.mpr (by simp)
-    have hlen_cs : cs.length = crest.length + 2 := by
+  | here spre spost cs crest m hm hperm hcrest hsib =>
+    -- child-level: `node cs` matches the `2m`-leaf site up to permutation
+    have hmem_leaf : flpLeaf ∈ cs :=
+      hperm.mem_iff.mpr
+        (List.mem_append_left _ (List.mem_replicate.mpr ⟨by omega, rfl⟩))
+    have hlen_cs : cs.length = 2 * m + crest.length := by
       have := hperm.length_eq
       simpa using this
     have hnp_cs : isPiece (UTree.node cs) = false :=
@@ -160,28 +233,35 @@ theorem FlpStepAt.props {t t' : UTree} (h : FlpStepAt t t') :
     have hpieces : ∀ x ∈ cs, isPiece x = true := by
       intro x hx
       have hx' := hperm.mem_iff.mp hx
-      rcases List.mem_cons.mp hx' with rfl | hx'
-      · exact isPiece_flpLeaf
-      rcases List.mem_cons.mp hx' with rfl | hx'
-      · exact isPiece_flpLeaf
+      rcases List.mem_append.mp hx' with hx' | hx'
+      · rw [(List.mem_replicate.mp hx').2]
+        exact isPiece_flpLeaf
       · have := List.all_eq_true.mp hcrest x hx'
         simp [isPiece, this]
     have hdef_cs : strDefect (UTree.node cs) = 0 := by
       simp [strDefect, npCount_pieces hpieces, npDefectSum_pieces hpieces]
     obtain ⟨hZeq, hOeq, hueq⟩ := dtSub_stats_perm hperm
-    have husz_c : usize (UTree.node cs) = usize (flpChildAfter crest) := by
-      have h1 : usize (UTree.node cs) = usize (flpChildBefore crest) := by
-        rw [usize_node, usize_node, usizeList_perm hperm]
-      rw [h1]
-      exact (usize_flp_move_eq crest).symm
-    have hG1_c : Ztot (dtSub (UTree.node cs)) ≤ Ztot (dtSub (flpChildAfter crest)) := by
+    obtain ⟨hmfu, hmfZ, hmfG⟩ := multiFlp_child_stats m crest
+    have husz_c : usize (UTree.node cs)
+        = usize (UTree.node (List.replicate m flpStem ++ crest)) := by
+      calc usize (UTree.node cs)
+          = usize (UTree.node (List.replicate (2 * m) flpLeaf ++ crest)) := by
+            rw [usize_node, usize_node, usizeList_perm hperm]
+        _ = usize (UTree.node (List.replicate m flpStem ++ crest)) := hmfu
+    have hG1_c : Ztot (dtSub (UTree.node cs))
+        ≤ Ztot (dtSub (UTree.node (List.replicate m flpStem ++ crest))) := by
       rw [hZeq]
-      exact Ztot_dtSub_flp_child_le crest
+      exact hmfZ
     have hG2_c : Zopen (dtSub (UTree.node cs)) / (udeg (UTree.node cs) : ℝ)
-        ≤ Zopen (dtSub (flpChildAfter crest)) / (udeg (flpChildAfter crest) : ℝ) := by
+        ≤ Zopen (dtSub (UTree.node (List.replicate m flpStem ++ crest)))
+            / (udeg (UTree.node (List.replicate m flpStem ++ crest)) : ℝ) := by
       rw [hOeq, hueq]
-      exact flp_child_G2 crest
-    have hpiece_after := isPiece_flpChildAfter_of_cherries hcrest
+      exact hmfG
+    have hpiece_after : isPiece (UTree.node (List.replicate m flpStem ++ crest)) = true := by
+      have harm : isArm (UTree.node (List.replicate m flpStem ++ crest)) = true := by
+        simp only [isArm, List.all_append, all_isCherry_replicate_flpStem, hcrest,
+          Bool.and_self]
+      simp [isPiece, harm]
     -- RHS parent non-pieceness via the non-piece sibling
     obtain ⟨x, hxmem, hxnp⟩ := exists_nonpiece_of_npCount_pos hsib
     have hxc : isCherry x = false := by
@@ -190,16 +270,19 @@ theorem FlpStepAt.props {t t' : UTree} (h : FlpStepAt t t') :
       · exfalso
         rw [isPiece, hc, Bool.or_true] at hxnp
         exact absurd hxnp (by simp)
-    have hlen2 : 2 ≤ (spre ++ flpChildAfter crest :: spost).length := by
+    have hlen2 :
+        2 ≤ (spre ++ UTree.node (List.replicate m flpStem ++ crest) :: spost).length := by
       have hpos : 0 < (spre ++ spost).length := List.length_pos_of_mem hxmem
       simp only [List.length_append, List.length_cons]
       simp only [List.length_append] at hpos
       omega
-    have hxmem' : x ∈ spre ++ flpChildAfter crest :: spost := by
+    have hxmem' : x ∈ spre ++ UTree.node (List.replicate m flpStem ++ crest) :: spost := by
       rcases List.mem_append.mp hxmem with h | h
       · exact List.mem_append_left _ h
       · exact List.mem_append_right _ (List.mem_cons_of_mem _ h)
-    have hnp_after : isPiece (UTree.node (spre ++ flpChildAfter crest :: spost)) = false :=
+    have hnp_after :
+        isPiece (UTree.node (spre ++ UTree.node (List.replicate m flpStem ++ crest) :: spost))
+          = false :=
       isPiece_node_of_noncherry_mem hxmem' hxc hlen2
     exact ⟨isPiece_plug1 spre spost hnp_cs,
            hnp_after,
@@ -229,9 +312,9 @@ theorem FlpStepAt.straightStep {t t' : UTree} (h : FlpStepAt t t') :
 /-- **`StraightProgress_sized` from any covering refinement of `StraightStep_sized`.**  The open
     half of Hnorm is now EXACTLY a coverage statement: exhibit a step relation (e.g. a union of
     move classes like `FlpStepAt`) that (a) refines `StraightStep_sized` and (b) covers every
-    positive-defect tree.  `FlpStepAt` supplies (a) for its 48.5%-of-trees class (n <= 12
-    measurement); the residual -- notably parity-blocked even-size subtrees -- needs further move
-    classes riding the same G-machinery. -/
+    positive-defect tree.  `FlpStepAt` supplies (a) for its 52.4%-of-trees class (n <= 12
+    measurement); the residual -- parity-blocked even-size subtrees and arm-child sites -- needs
+    cross-boundary move classes riding the same G-machinery. -/
 theorem straightProgress_sized_of_coverage (R : UTree → UTree → Prop)
     (hstep : ∀ {t t' : UTree}, R t t' → StraightStep_sized t t')
     (hcov : ∀ t : UTree, strDefect t ≠ 0 → ∃ t', R t t') :
