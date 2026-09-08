@@ -136,3 +136,53 @@ the m≥3 multi-hub reduction is the concrete Lean-side obstruction).  The reali
 now large: both hard cores (M4 two-hub, aligned M3), the length-1 Hdom slice, and the FULL single-hub
 envelope across all 11 residue classes at EVERY size — all kernel-anchored — with the open frontier
 precisely delimited to `m≥3` multi-hub + Hnorm.  `conjecture1_proved = False`.
+
+---
+
+# ADDENDUM 2026-09-08 — the open-cores campaign (branch `bg/multihub-hnorm`)
+
+The two "genuinely open" items above were attacked directly.  Both are now reduced to a SINGLE named
+open piece each, with all surrounding machinery kernel-proven (no `sorryAx`; every module in the
+proof-lean leaf list + AxiomGuard).  The stale framings above (the "5 non-box-certifiable cells", the
+"coverage dichotomy" as an amorphous obstruction) are SUPERSEDED by the sharper reductions below.
+
+## Hnorm (B-track): the FLP move class + the coverage reduction
+
+- `BGSCLFlpMove.flp_local_straightStep` — the degree-equalizing FLP flip at its strDefect-reducing
+  site is a `StraightStep_sized` (B1).
+- `BGSCLFlpDeepLift` — **the per-level Obligation-A debt is DISCHARGED**: the cavity-gain pair
+  (G1: `Ztot(dtSub)≤`, G2: `Zopen(dtSub)/udeg≤`) self-propagates through any ancestor frame
+  (`dtSub_gains_lift`), closing at the root (`Aobj_child_replace_of_gains`); a deep FLP flip is an
+  UNCONDITIONAL `StraightStep_sized` (`flp_deep_straightStep`) (B2).
+- `BGSCLFlpStepAt` — the depth-closed, order-insensitive multi-flip class (`FlpStepAt`, `2m` leaves
+  + all-cherry crest completed to an arm in one composite step); `FlpStepAt.straightStep`
+  unconditional; `hnorm_of_coverage` reduces Hnorm's open half to EXACTLY a coverage statement (B3).
+- HONEST coverage numbers (exact, n≤12): single-flip 48.5%, multi-flip 52.4% — and the class is
+  COMPLETE for internal piece-completion.  Every escape is genuinely blocked: PARITY (piece sizes are
+  {1,2}∪{odd≥3}, so even-size≥4 defective subtrees can never complete internally) or arm-children
+  needing dismantling.  **Residual: cross-boundary move classes** (need a two-child joint-gain
+  version of the lift machinery).
+
+## m≥3 Hdom (A-track): the weak-pair telescope
+
+- `R47R7StuckChar` — stuckness characterized structurally (`stuck_pair_deloaded`/`_dichotomy`:
+  every adjacent pair's designated donor is de-loaded); the split precondition = a five-count
+  inequality (A1).
+- `R47WPairLift` — the strong pair fails for degree-jumping replacements; the WEAK pair
+  (W1: `Ztot≤`; W2: `Ztot+Zopen/udeg≤`) survives by endpoint linearity in the ancestor weight
+  `w∈(0,1]` and self-propagates (`dtSub_wpair_lift`, `Aobj_child_replace_of_wpair`) (A3(1)).
+- `R47MHubTelescope` — **Hdom at ANY length (no stuckness!) reduces to ONE named certificate**:
+  `PairCollapse` (every Balanced+Capped pair collapses to a same-size Balanced+Capped single hub
+  with W1 ∧ W2 ∧ root-`Aobj`) + the single-hub tie bound (envelope DONE at every size).  Measured
+  true with a common canonical target (c′=0, maximal-five) on all 15,876 grid pairs
+  (`proof/verification/A3_WEAK_PAIR_COLLAPSE_FINDINGS.md`) (A3(3)).
+
+## The honest frontier now
+
+1. **`PairCollapse`** (A3(2)) — the symbolic 3-clause collapse certificate. De-risked; expect
+   residue-class splits + monotone tails in the style of the single-hub envelope campaign.
+2. **Cross-boundary move classes** for Hnorm's parity-blocked residual (two-child joint-gain lift).
+3. **The tie-definition layer** — the non-aligned-n `tie : ℕ → UTree` representative selection
+   consuming the envelope argmaxes (mechanical-ish assembly, known-open bookkeeping).
+
+Full closure stays gated on the genuinely-open mathematics (Pant 2026).  `conjecture1_proved = False`.

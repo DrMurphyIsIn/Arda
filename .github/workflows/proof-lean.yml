@@ -87,7 +87,13 @@ jobs:
             R3Cert.R47R7TwoHubBridge \
             R3Cert.R47SingleHub2D \
             R3Cert.R47SharpRate \
-            R3Cert.R47SingleHubResidue
+            R3Cert.R47SingleHubResidue \
+            R3Cert.BGSCLFlpMove \
+            R3Cert.BGSCLFlpDeepLift \
+            R3Cert.BGSCLFlpStepAt \
+            R3Cert.R47R7StuckChar \
+            R3Cert.R47WPairLift \
+            R3Cert.R47MHubTelescope
 
       # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
       # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build
