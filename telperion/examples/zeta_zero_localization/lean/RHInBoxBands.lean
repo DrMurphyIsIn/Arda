@@ -57,9 +57,9 @@ theorem rh_box_two_bands (σ0 σ1 T0 Tm T1 : ℝ)
       riemannZeta ρ = 0 → ρ.re = 1 / 2 := by
   intro ρ hre him hz
   obtain ⟨hlo, hhi⟩ := him
-  rcases le_or_lt ρ.im Tm with h | h
+  rcases le_total ρ.im Tm with h | h
   · exact hlow ρ hre ⟨hlo, h⟩ hz
-  · exact hhigh ρ hre ⟨le_of_lt h, hhi⟩ hz
+  · exact hhigh ρ hre ⟨h, hhi⟩ hz
 
 /-- **General height-tiling.**  Given monotone band boundaries `b : ℕ → ℝ` and, for each of the `n`
     consecutive bands `[b i, b (i+1)]` (`i < n`), a certificate that every zeta zero in
@@ -85,9 +85,9 @@ theorem rh_box_of_bands (σ0 σ1 : ℝ) (b : ℕ → ℝ) (hmono : Monotone b) (
     · -- n = m+1, m ≥ 1 : peel the top band `[b m, b (m+1)]`, recurse on `[b 0, b m]`.
       intro ρ hre him hz
       obtain ⟨hlo, hhi⟩ := him
-      rcases le_or_lt ρ.im (b m) with h | h
+      rcases le_total ρ.im (b m) with h | h
       · exact ih hmpos (fun i hi => hbands i (Nat.lt_succ_of_lt hi)) ρ hre ⟨hlo, h⟩ hz
-      · exact hbands m (Nat.lt_succ_self m) ρ hre ⟨le_of_lt h, hhi⟩ hz
+      · exact hbands m (Nat.lt_succ_self m) ρ hre ⟨h, hhi⟩ hz
 
 /-! ## Width-fold (region halving via the critical-line reflection). -/
 
@@ -109,7 +109,7 @@ theorem rh_full_box_of_left_half (a T0 T1 : ℝ) (ha0 : 0 < a) (ha_half : a ≤ 
   intro ρ hre him hz
   obtain ⟨hre_lo, hre_hi⟩ := hre
   obtain ⟨him_lo, him_hi⟩ := him
-  rcases le_or_lt ρ.re (1 / 2) with hle | hgt
+  rcases le_total ρ.re (1 / 2) with hle | hgt
   · -- Left half already: apply the premise directly.
     exact hleft ρ ⟨hre_lo, hle⟩ ⟨him_lo, him_hi⟩ hz
   · -- Right half: reflect `ρ ↦ 1 - conj ρ` into the left half.
