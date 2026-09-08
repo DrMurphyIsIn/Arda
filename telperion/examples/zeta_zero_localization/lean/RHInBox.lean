@@ -26,6 +26,45 @@ open scoped Topology
 
 namespace RHInBox
 
+/-! ## Part A0: O(N) on-line Finset construction from a sorted list.
+
+    The per-box instantiations build their on-line Finset `T` from `N` critical-line points.
+    Doing this with a Finset literal needs `N*(N-1)/2` pairwise-distinctness proofs (the O(N^2)
+    block that dominates emitted-proof cost at large `N`).  These lemmas replace it: the emitted
+    proof supplies only the O(N) consecutive chain `x1 < x2 < ... < xN`, and `line_toFinset_card`
+    converts chain -> Nodup -> card = length ONCE, generically.  conjecture1_proved = False. -/
+
+/-- The critical-line embedding `t ↦ 1/2 + t*I` is injective. -/
+theorem lineEmbed_injective : Function.Injective (fun t : ℝ => (1 / 2 : ℂ) + (t : ℂ) * Complex.I) := by
+  intro a b h
+  have h1 : (a : ℂ) * Complex.I = (b : ℂ) * Complex.I := by
+    have := h
+    simpa using congrArg (fun z => z - (1 / 2 : ℂ)) this
+  have h2 : (a : ℂ) = (b : ℂ) := mul_right_cancel₀ Complex.I_ne_zero h1
+  exact_mod_cast h2
+
+/-- A strictly-increasing list of reals maps to a `Nodup` list on the critical line. -/
+theorem line_map_nodup (xs : List ℝ) (h : xs.IsChain (· < ·)) :
+    (xs.map fun t : ℝ => (1 / 2 : ℂ) + (t : ℂ) * Complex.I).Nodup := by
+  have hp : xs.Pairwise (· < ·) := List.isChain_iff_pairwise.mp h
+  have hnd : xs.Nodup := hp.imp (fun {a b} hab => ne_of_lt hab)
+  exact hnd.map lineEmbed_injective
+
+/-- The on-line Finset built from a strictly-increasing list has `card = length`.  This is the
+    O(N) replacement for the emitted pairwise-distinctness + insert-peeling card proof. -/
+theorem line_toFinset_card (xs : List ℝ) (h : xs.IsChain (· < ·)) :
+    (xs.map fun t : ℝ => (1 / 2 : ℂ) + (t : ℂ) * Complex.I).toFinset.card = xs.length := by
+  rw [List.toFinset_card_of_nodup (line_map_nodup xs h), List.length_map]
+
+/-- Transport a pointwise property of the list's line points to the built Finset. -/
+theorem line_toFinset_forall {P : ℂ → Prop} (xs : List ℝ)
+    (hP : ∀ t ∈ xs, P ((1 / 2 : ℂ) + (t : ℂ) * Complex.I)) :
+    ∀ z ∈ (xs.map fun t : ℝ => (1 / 2 : ℂ) + (t : ℂ) * Complex.I).toFinset, P z := by
+  intro z hz
+  rw [List.mem_toFinset, List.mem_map] at hz
+  obtain ⟨t, ht, rfl⟩ := hz
+  exact hP t ht
+
 /-! ## Part A: the generic capstone. -/
 
 /-- **RH-in-a-box, fully generic capstone.**
