@@ -43,3 +43,5 @@ import RHInBoxBands
 #print axioms RHInBoxBands.rh_box_two_bands
 #print axioms RHInBoxBands.rh_box_of_bands
 #print axioms RHInBoxBands.rh_full_box_of_left_half
+#print axioms ZetaZeroConfinement.zeta_zero_re_mem_strip
+#print axioms ZetaZeroConfinement.no_low_zeros_of_strip_clear
