@@ -1,6 +1,6 @@
 {
   "family": "Cone",
-  "input_hash": "2057a53176f9c42e858e8a8b0a542a7d8b746dfb9b187e084835aa069c055ce2",
+  "input_hash": "bf84342189b5fa1940e2433a36dc7a83620ecbf795828ae974ca4a227b32cbe0",
   "tool_version": "0.1.6",
   "files": [
     "Cone.lean"

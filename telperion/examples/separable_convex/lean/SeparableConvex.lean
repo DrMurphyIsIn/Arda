@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family SeparableConvex | input-hash 48f7726c144173a0
+/- telperion 0.1.6 | family SeparableConvex | input-hash 47534241cf30d53b
    5 theorems, 13 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

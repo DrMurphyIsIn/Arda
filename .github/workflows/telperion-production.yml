@@ -45,11 +45,13 @@ on:
       - "telperion/examples/uniform_tail/**"
       - "telperion/examples/uniform_arm/**"
       - "telperion/examples/proof_audit/**"
+      - "telperion/examples/hermitian_moment/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
   pull_request:
     paths:
       - "telperion/examples/g1_floors/**"
+      - "telperion/examples/hermitian_moment/**"
       - "telperion/src/**"
       - ".github/workflows/telperion-production.yml"
   workflow_dispatch:
@@ -92,6 +94,37 @@ jobs:
       - name: Compile the heterogeneous canonical-family cell (vertex route #37)
         working-directory: telperion/examples/g1_floors/lean
         run: lake build HomogMaster HomogMasterAssembled HeteroFamily
+
+  hermitian-moment-compiles:
+    # The RHLinalg prelude ported from anthropics/zeta-23-lean (arXiv:2608.13637 §3):
+    # compile under the pinned Mathlib v4.32.0 (the port was transcribed, not built
+    # locally — this job is the trusted gate) and axiom-guard the 9 anchors.
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/hermitian_moment/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Compile the RHLinalg prelude
+        working-directory: telperion/examples/hermitian_moment/lean
+        run: |
+          lake exe cache get
+          lake build
+      - name: Axiom guard — the 9 anchors depend only on Lean's 3 standard axioms
+        working-directory: telperion/examples/hermitian_moment/lean
+        run: |
+          lake env lean AxiomGuardRHLinalg.lean 2>&1 | tee axioms.txt
+          if grep -q "sorryAx" axioms.txt; then echo "::error::sorryAx present"; exit 1; fi
+          # every printed axioms line must be exactly the 3 standard axioms
+          if grep -E "depends on axioms" axioms.txt | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"; exit 1; fi
 
   audit-compiles:
     runs-on: ubuntu-latest

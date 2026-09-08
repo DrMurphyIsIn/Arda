@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family SymmetricQuadD2 | input-hash 2e7033f43be03b57
+/- telperion 0.1.6 | family SymmetricQuadD2 | input-hash 7fb378c8ce81dc56
    1 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

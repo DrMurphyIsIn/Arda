@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family AffineParamEndpoint | input-hash 90adcf95bf2b01f6
+/- telperion 0.1.6 | family AffineParamEndpoint | input-hash 67c95359ea280e18
    4 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

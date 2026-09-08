@@ -123,4 +123,47 @@ theorem zero_in_band (a T : ℝ) (haC : a ≤ ZeroFreeBridge.dlvpRateC / Real.lo
     rw [← hρ] at hne
     exact hne hzero
 
+/-- **Critical-strip location of a nontrivial (off-real) zeta zero.**  `ζ ρ = 0` with `ρ.im ≠ 0`
+    forces `0 < ρ.re ∧ ρ.re < 1`.  `Re < 1` is `riemannZeta_ne_zero_of_one_le_re` directly; `0 < Re`
+    is the same lemma applied to the functional-equation reflection `1 - ρ` (`zeta_zero_reflect`),
+    whose real part `1 - ρ.re ≥ 1` when `ρ.re ≤ 0`.  Off-real is essential — the trivial zeros lie
+    on the real axis at the negative even integers (`Re ≤ 0`). -/
+theorem zeta_zero_re_mem_strip {ρ : ℂ} (him : ρ.im ≠ 0) (hz : riemannZeta ρ = 0) :
+    0 < ρ.re ∧ ρ.re < 1 := by
+  refine ⟨?_, ?_⟩
+  · by_contra h
+    push_neg at h
+    have hrefl : riemannZeta (1 - ρ) = 0 := zeta_zero_reflect him hz
+    have hge : (1 : ℝ) ≤ (1 - ρ).re := by rw [Complex.sub_re, Complex.one_re]; linarith
+    exact riemannZeta_ne_zero_of_one_le_re hge hrefl
+  · by_contra h
+    push_neg at h
+    exact riemannZeta_ne_zero_of_one_le_re h hz
+
+/-- **No low zeros ⟹ the `55/16` height floor.**  If `riemannZeta` has NO zero in the open critical
+    strip below height `55/16` (`hclear_low`: no `ρ` with `0 < Re < 1` and `0 < Im ≤ 55/16`), then
+    every nontrivial zero up to height `T` satisfies `55/16 ≤ |ρ.im|` — i.e. this DISCHARGES the
+    `hγ_all` residual of `AllZerosUpToHeight.all_nontrivial_zeros_up_to_height_on_line` (and the
+    concrete `hγ` of `AllZeros_h100`) from a single, precise box obligation instead of an appeal to
+    an unformalized "no zeros below height 14" fact.
+
+    `hclear_low` is exactly what a winding-`0` box certificate over the low critical strip supplies:
+    `zeta_count_eq_winding_generic` with `N = 0` gives `∑ divisor = 0` with `divisor ≥ 1` on the
+    support, forcing the support (hence the set of captured box zeros) empty.  NOTE the box must span
+    (essentially) the FULL strip width at low height, NOT the thin confinement band `[a, 1-a]`: below
+    `55/16` the dVP region is silent (it requires `55/16 ≤ |γ|`), so a low zero is not confined to the
+    band.  To avoid the pole at `s = 1` (corner of a full-width low box) the driver should count the
+    entire `completedRiemannZeta` (`Λ`, no pole, same strip zeros) over `[0,1] × [0, 55/16]`, or count
+    `ζ` over `[a, 1-a] × [0, 55/16]` and clear the two `Re`-slivers by other means. -/
+theorem no_low_zeros_of_strip_clear (T : ℝ)
+    (hclear_low : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.re → ρ.re < 1 →
+      0 < ρ.im → ρ.im ≤ 55 / 16 → False) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ T → 55 / 16 ≤ |ρ.im| := by
+  intro ρ hz him0 _
+  rw [abs_of_pos him0]
+  by_contra h
+  push_neg at h
+  obtain ⟨hre0, hre1⟩ := zeta_zero_re_mem_strip (ne_of_gt him0) hz
+  exact hclear_low ρ hz hre0 hre1 him0 (le_of_lt h)
+
 end ZetaZeroConfinement

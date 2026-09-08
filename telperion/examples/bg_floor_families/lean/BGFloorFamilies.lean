@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family BGFloorFamilies | input-hash b0f5881cf7fbf71b
+/- telperion 0.1.6 | family BGFloorFamilies | input-hash a9e2c7a83145dbd7
    102 theorems, 614 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
