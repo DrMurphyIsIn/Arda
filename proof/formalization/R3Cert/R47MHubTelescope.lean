@@ -80,10 +80,13 @@ theorem backbone_tail_aobj (init : List Hub) {r r' : List Hub} (hr : r ≠ []) (
 
 /-! ### The pair-collapse hypothesis (the A3(2) certificate target) -/
 
-/-- **The pair-collapse certificate** (OPEN -- the A3(2) campaign): every Balanced+Capped hub
-    pair admits a Balanced+Capped single hub of the summed `hubSize` carrying the three clauses
-    (W1, W2, root-`Aobj`).  Measured to hold with a common canonical target (`c' = 0`,
-    maximal-five arms) on all 15,876 grid pairs; not yet certified symbolically. -/
+/-- **FALSIFIED -- superseded by `PairCollapse6` (R47WPair6).**  This v1 form (the w = 1 endpoint
+    `W2 : Ztot + Zopen/udeg <=`) is FALSE: the Balanced+Capped pair `(0,5,1 | 47,1,1)` admits NO
+    single-hub target under the w = 1 clause (best deficit 0.2%, while W1 and root-`Aobj` hold) --
+    see `proof/verification/paircollapse_emitter.py`.  Nothing downstream is wrong (this is an
+    explicit hypothesis, so the v1 telescope is merely conditional-on-false / vacuously usable);
+    the CORRECTED invariant weights W2 by `1/6` (justified by `Capped` frames having `>= 6`
+    children) and IS measured universal -- consume `PairCollapse6` and the v2 telescope instead. -/
 def PairCollapse : Prop :=
   ∀ (armsA : List ℕ) (cA : ℕ) (armsB : List ℕ) (cb : ℕ),
     BalancedArms armsA → cA ≤ 5 → BalancedArms armsB → cb ≤ 5 →
