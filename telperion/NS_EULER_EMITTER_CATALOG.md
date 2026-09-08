@@ -34,6 +34,7 @@ The atoms below recur across that surface.
 |------|--------|-------------|-------|
 | `affine_ledger` | `emit_ns_ledger.py` | `NavierStokes/ExponentLedger.lean` | affine gain/increment bookkeeping over a parameter box |
 | `quadratic_irrational` | `emit_quadratic_irrational.py` | `NavierStokes/DiophantineGraph.lean` | ℤ[√d] conjugate-norm lower bound `1 ≤ \|p+√d q\|\|p−√d q\|` |
+| `gevrey_majorant` | `emit_gevrey_majorant.py` | `Euler/EulerProof.lean` (Apache-2.0 port) | the Gevrey-2 factorial-majorant calculus `R^(n+d)((n+d)!)²`: shift / convolution-3 / geometric gain / triangular-recurrence closure; modes `calculus` / `budget` / `polynomial_radius`, exact rational budget certification |
 
 ### `affine_ledger` — the exponent ledger (flagship)
 
