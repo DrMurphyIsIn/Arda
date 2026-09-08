@@ -63,6 +63,10 @@ from .emit_padic import PadicValuationEmitter, valuation_family  # noqa: F401
 from .emit_cone import ConeFarkasEmitter, cone_family  # noqa: F401
 from .emit_tangent import TangentSumEmitter, tangent_certificate, tangent_sum_family  # noqa: F401
 from .emit_cs import CauchySchwarzEmitter, cauchy_schwarz_family, cs_certificate  # noqa: F401
+from .palomar_mine import (  # noqa: F401
+    classify_entry, mine, mining_report, poll, fetch_registry,
+    MiningCandidate, TOPIC_KEYWORDS, SHAPE_RULES,
+)
 from .emit_psd_form import PSDFormEmitter, psd_certificate, psd_form_family  # noqa: F401
 from .emit_xor3 import Xor3MomentPSDEmitter, xor3_certificate, xor3_family  # noqa: F401
 from .emit_bilinear_corner import (  # noqa: F401
