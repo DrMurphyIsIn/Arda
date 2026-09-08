@@ -36,6 +36,11 @@ The atoms below recur across that surface.
 | `quadratic_irrational` | `emit_quadratic_irrational.py` | `NavierStokes/DiophantineGraph.lean` | ℤ[√d] conjugate-norm lower bound `1 ≤ \|p+√d q\|\|p−√d q\|` |
 | `gevrey_majorant` | `emit_gevrey_majorant.py` | `Euler/EulerProof.lean` (Apache-2.0 port) | the Gevrey-2 factorial-majorant calculus `R^(n+d)((n+d)!)²`: shift / convolution-3 / geometric gain / triangular-recurrence closure; modes `calculus` / `budget` / `polynomial_radius`, exact rational budget certification |
 | `sqrt_root_elimination` | `emit_sqrt_root_elimination.py` | `NavierStokes/ConeAlgebra.lean` (`true_cone_iff`) | radical elimination `v < E − u·√rad ⟺ (v < E ∧ 0 < Q)` with the exact ring identity `(E−v)² − u²·rad ≡ Q` as the load-bearing certificate (certificate-sensitive); + one-way `sqrt_amplitude_transfer`; reusable on BG price-interval / RH boundary-curve fronts |
+| `continuous_barrier` | `emit_continuous_barrier.py` | `Euler/GevreyFlowBootstrap.lean` (Apache-2.0 port) | open-closed barrier bootstrap: conditional step bound + budget `B·T < a` ⟹ unconditional `f t ≤ B·t` on `[0,T]` (compact least-hit + IVT); Telperion's first topological shape; `generic`/`budget` modes |
+| `log_eps_optimize` | `emit_log_eps_optimize.py` | `Euler/LogarithmicCutoffOptimization.lean` (generalized from θ=1/4) | ∀-ε cutoff family instantiated at `ε = exp(−m·log(e+H))`, `m = 1/θ` for any rational θ∈(0,1] (certified `m·θ = 1` exactly) → ε-free bound `X ≤ m·c·(1+L+W·log(e+H))` |
+| `logconvex_interp` | `emit_logconvex_interp.py` | `Euler/NonnegativeLogConvex.lean` (Apache-2.0 port) | zero-tolerant log-convexity interpolation cross/pair/between (`x(a)·x(b) ≤ x(s)·x(a+b−s)`), division- and log-free; `calculus`/`between` modes |
+| `finite_prefix_absorption` | `emit_finite_prefix_absorption.py` | `NavierStokes/GaugeAliasDecay.lean` | eventually-bounded ⟹ globally-bounded with the explicit witness `C = A + Σ_{n<N}\|f n\|/w n` (kernel-cheap, no analysis) |
+| `coefficient_mass` | `emit_coefficient_mass.py` | `NavierStokes/EdgeWeightJets.lean` | ℓ¹-coefficient sup-envelope `\|p(x)\| ≤ ‖p‖₁·T^deg` — generic `Polynomial ℝ` atom + concrete scalar instances (exact mass certification, sign-aware `abs` discharge closed by `linarith`) |
 
 ### `affine_ledger` — the exponent ledger (flagship)
 
