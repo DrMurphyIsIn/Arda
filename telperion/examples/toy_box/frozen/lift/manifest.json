@@ -1,6 +1,6 @@
 {
   "family": "ToyLift",
-  "input_hash": "3595a5d55ea1d7ecbe381db9155db52575a3249234f390f0bf309644327544e1",
+  "input_hash": "4a6a94ddde7fef53f6faf92a3ebeef735d8064aea695cf41f34034435fd3c8b6",
   "tool_version": "0.1.6",
   "files": [
     "Lift.lean"

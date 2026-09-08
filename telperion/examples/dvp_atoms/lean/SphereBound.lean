@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family SphereBound | input-hash 2261efff18abe2d9
+/- telperion 0.1.6 | family SphereBound | input-hash 5cc66e5374fd29c0
    2 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

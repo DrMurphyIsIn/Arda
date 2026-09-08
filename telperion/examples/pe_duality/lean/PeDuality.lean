@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family PeDuality | input-hash 5ee7a6b2632827d8
+/- telperion 0.1.6 | family PeDuality | input-hash 2668511144c3c5a2
    11 theorems, 6 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

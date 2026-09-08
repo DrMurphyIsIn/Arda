@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family CGRound | input-hash 94ce6081f5c9ce1c
+/- telperion 0.1.6 | family CGRound | input-hash 9f50e49e39c13e65
    2 theorems, 6 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

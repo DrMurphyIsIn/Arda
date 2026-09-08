@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family PSDForm | input-hash 12d05e3e18e1a6bc
+/- telperion 0.1.6 | family PSDForm | input-hash 24d938c73e8d539f
    2 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

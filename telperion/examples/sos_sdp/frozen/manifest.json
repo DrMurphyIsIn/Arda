@@ -1,6 +1,6 @@
 {
   "family": "SOSSDP",
-  "input_hash": "29b33ad0263ba6c7a80e7dfe9108092f48264406c4b9bfd8b414f33b311dea5a",
+  "input_hash": "a4f4d696c2e006c1cb99eb8cca7007d9e4b15fb78bde4cee1722e9e9fdab75b9",
   "tool_version": "0.1.6",
   "files": [
     "SOSSDP.lean"

@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family PerSizeDominanceSweep | input-hash 4703ce0d1bf6060c
+/- telperion 0.1.6 | family PerSizeDominanceSweep | input-hash 9d0437119b44a98b
    4 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

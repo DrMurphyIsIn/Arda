@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family ScaleInvariance | input-hash fe092633f4da7c2d
+/- telperion 0.1.6 | family ScaleInvariance | input-hash c1ea4fd699ad9d89
    2 theorems, 9 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

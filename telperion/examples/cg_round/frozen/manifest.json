@@ -1,6 +1,6 @@
 {
   "family": "CGRound",
-  "input_hash": "94ce6081f5c9ce1c1492a4670a37a8dbb8d006c51e5b91f8fa4c54d511072efe",
+  "input_hash": "9f50e49e39c13e65b477c865cd429ebf3845ba742f1bbcbc56e5c1a785412417",
   "tool_version": "0.1.6",
   "files": [
     "CGRound.lean"

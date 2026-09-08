@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family ParametricHolomorphy | input-hash 71d813b2214a365e
+/- telperion 0.1.6 | family ParametricHolomorphy | input-hash 058f81950cfd728e
    1 theorems, 3 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

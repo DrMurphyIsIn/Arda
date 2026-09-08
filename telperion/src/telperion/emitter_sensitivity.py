@@ -267,6 +267,13 @@ REGISTRY: dict[str, SensitivityStance] = {
         "Forall-box separable-quadratic 0<=target: nlinarith over generic nonneg atoms (sq_nonneg (v-lo)/(hi-v) per axis, 4 corner mul_nonneg per bilinear pair) + named box bounds; no separately-supplied corruptible cofactor -- the rigorous monomial-wise margin is recomputed by nlinarith as the nonneg combination"),
     "HyperbolicityEmitter": _S(STRUCTURALLY_NONVACUOUS,
         "Discriminant nonnegativity (b^2-4ac>=0) is recomputed by nlinarith from structural sq_nonneg/corner facts + the kernel bridge lemma; there is no separately-supplied corruptible cofactor"),
+    "JensenPolynomialHyperbolicityEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Same shape as HyperbolicityEmitter for the d=2 Jensen polynomial: disc(c0,c1,c2)>=0 "
+        "over Arb coefficient boxes via hyperbolic_deg2_of_discrim_nonneg + nlinarith off the "
+        "named box hypotheses; the boxes enter as hypotheses (Arb trust seam), no "
+        "separately-supplied corruptible identity.  Only discoverable when python-flint is "
+        "importable (rh_jensen imports are flint-gated), which is why the flint-less CI unit "
+        "job never surfaced the gap"),
     "CauchyDerivBoundEmitter": _S(STRUCTURALLY_NONVACUOUS,
         "Both emitted shapes are structural: main wrapper is Mathlib's norm_deriv lemma specialized (R>0 via norm_num on a literal)"),
     "CavityExchangeEmitter": _S(STRUCTURALLY_NONVACUOUS,

@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family TaxGrowth | input-hash de52f60f9f412e13
+/- telperion 0.1.6 | family TaxGrowth | input-hash 244ea01a9040d3c8
    22 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

@@ -1,6 +1,6 @@
 {
   "family": "TwoHubTails",
-  "input_hash": "560f38b0cdf4da81ba34988427b3d4a6198f29f3b17b9db0710e5e1f421e4abd",
+  "input_hash": "097edec89b04db38c898bdd880f0287c5b857c52102e5183fe1d1442ec0534d7",
   "tool_version": "0.1.6",
   "files": [
     "TwoHubTails.lean"
