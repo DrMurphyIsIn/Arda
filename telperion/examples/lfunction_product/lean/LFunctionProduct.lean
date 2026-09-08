@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family LFunctionProduct | input-hash 43297720abd43d69
+/- telperion 0.1.6 | family LFunctionProduct | input-hash 13e7ba3ec1c84169
    1 theorems, 6 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

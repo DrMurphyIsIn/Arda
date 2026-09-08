@@ -1,6 +1,6 @@
 {
   "family": "RealNSSFind",
-  "input_hash": "6bf2c7fbb6c8afd37f9f8df3e0a815f05ba5209a847e50c429a99bfb25dbf2ea",
+  "input_hash": "a5168919eff1c42a03e8a21001c61cd81d79aa3f37ffed77ecaa74f2b3ebe629",
   "tool_version": "0.1.6",
   "files": [
     "RealNullstellensatzFind.lean"

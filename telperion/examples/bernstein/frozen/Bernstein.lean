@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family Bernstein | input-hash f1de7213ade35f64
+/- telperion 0.1.6 | family Bernstein | input-hash 41b88eb42e14176e
    3 theorems, 8 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

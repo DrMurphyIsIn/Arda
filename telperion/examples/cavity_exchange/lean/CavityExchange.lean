@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family CavityExchange | input-hash d6eaa46d022ba67f
+/- telperion 0.1.6 | family CavityExchange | input-hash 99e2ec30ea289756
    3 theorems, 3 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

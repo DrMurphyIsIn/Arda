@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family PolytopeMax | input-hash 60f35f6a44cae35f
+/- telperion 0.1.6 | family PolytopeMax | input-hash f50f91eba342e554
    5 theorems, 3 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

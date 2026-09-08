@@ -1,6 +1,6 @@
 {
   "family": "FiniteDecide",
-  "input_hash": "2d891c18fc13e04ebbb596ccbf688359dc910acf6410ff9a8875eaf07de7a0d6",
+  "input_hash": "ecb3fc4e6c4d2f096ace13774e8d9e918161cacd53386090e798fc526fd73ab2",
   "tool_version": "0.1.6",
   "files": [
     "FiniteDecide.lean"

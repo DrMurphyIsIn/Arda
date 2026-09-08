@@ -594,3 +594,41 @@ group = "quick"    # rational enclosure of log(1+x) (BG cells); Montgomery-Taylo
 name = "log_combination"
 script = "examples/log_combination/generate.py"
 group = "quick"    # F*-folding: Sum c_i log(r_i) <= q; dogfooded vs BG log74_le_4fstar/log54_sub_fstar_le
+
+# --- RH-box examples added by parallel RH sessions; manifest was not updated,
+# tripping the completeness gate.  Split by dependency: the three below need
+# only sympy and pass --check in the flint-less telperion-test job (group quick);
+# the three python-flint (Arb enclosure) ones go in a dependency-gated `flint`
+# group NOT run by any CI verify job (same pattern as the `sdp` group), so the
+# completeness gate is satisfied without running Arb-dependent regen where flint
+# is unavailable.  jensen_hyperbolicity is drift-checked in telperion-lean-e2e
+# (which installs python-flint) via its own regen step, not the manifest group.
+[[check]]
+name = "dvp_geom_atoms"
+script = "examples/dvp_geom_atoms/generate.py"
+group = "quick"    # dVP geometric atoms; sympy-only, byte-stable in the flint-less test job
+
+[[check]]
+name = "hyperbolicity"
+script = "examples/hyperbolicity/generate.py"
+group = "quick"    # hyperbolicity discriminant atoms; sympy-only
+
+[[check]]
+name = "turan_box"
+script = "examples/turan_box/generate.py"
+group = "quick"    # Turan-type box; sympy-only
+
+[[check]]
+name = "box_robust"
+script = "examples/box_robust/generate.py"
+group = "flint"    # Arb enclosure of zeta(1/2); needs python-flint (not in CI verify jobs)
+
+[[check]]
+name = "zeta_zero_localization"
+script = "examples/zeta_zero_localization/generate.py"
+group = "flint"    # Arb lambda-enclosures for xi-line zeros; needs python-flint
+
+[[check]]
+name = "jensen_hyperbolicity"
+script = "examples/jensen_hyperbolicity/generate.py"
+group = "flint"    # Jensen d=2 hyperbolicity; needs python-flint (drift-checked in telperion-lean-e2e)
