@@ -5,7 +5,23 @@ a same-size Balanced+Capped single hub with the W-triple (W1: Ztot(dtSub)<=, W2:
 ROOT: Aobj<=).  The triple is TRANSITIVE (three <=-chains of the same functionals), so the Lean
 proof may CHAIN intermediate pair-to-pair comparisons before the final collapse.
 
-ARCHITECTURE (measured here, exact Fractions throughout):
+CRITICAL CORRECTION (2026-09-08, second pass): PairCollapse AS STATED IN R47MHubTelescope.lean IS
+FALSE -- the pair (a5,a4,cA|b5,b4,cb) = (0,5,1|47,1,1) admits NO Balanced+Capped single-hub target
+satisfying the w=1 W2 clause (best deficit 0.2%; W1 and ROOT hold).  The FIX: Capped hubs force every
+transport frame to have >= 6 children (5 arms + tail), so the ancestor weights satisfy w <= 1/7
+(interior) and w <= 1/6 (root); by the same endpoint-linearity the invariant only needs the
+w = 1/6 endpoint:
+
+    W2' : Ztot + (1/6) * Zopen/udeg  <=  Ztot' + (1/6) * Zopen'/udeg'
+
+Positive combinations re-derived: parent Ztot = (X-6w)*W1 + 6w*W2' with X-6w >= 0 iff w <= 1/6 (root
+boundary tight); parent W2'-sum coefficient needs w <= 6/35 (interior 1/7 < 6/35 OK).  Under
+(W1, W2', ROOT) the near-collapse is UNIVERSAL: previously-dead shapes all pass; d<=2 dense sweep
+11853/11853; general sweep 3953/3953 -- NO swap phase, NO chains.  The Lean v2 must: (i) add the
+1/6-weighted W-pair lift lemmas (R47WPairLift), (ii) correct PairCollapse + transport to carry the
+len >= 6 side conditions (R47MHubTelescope).
+
+ORIGINAL ARCHITECTURE NOTES (superseded where they conflict with the above):
   Phase 1 (normalize):  in-pair bulk swaps (11 four-arms -> 9 five-arms INSIDE one hub;
       constant V-factor V5^9/V4^11 = 1/F ~ 1.01136) until each hub carries <= 10 four-arms.
       Measured: the W-triple holds for the swap in >= one of the two hubs in ~96% of steps;

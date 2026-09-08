@@ -75,3 +75,24 @@ Pinned telescoping design (stage 3, conditional on the stage-2 cert):
     hubSize clause; result: any Balanced+Capped state is Aobj-dominated by a SINGLE Balanced+Capped
     hub of the same size.  Downstream: single hub <= tie = the DONE envelope + the tie-definition
     layer (non-aligned-n tie : N -> UTree selection -- separate, known-open assembly).
+
+## Addendum 2 (2026-09-08) — PairCollapse v1 FALSIFIED and CORRECTED
+
+The de-risk loop caught a genuine falsifier before the cert campaign: the Balanced+Capped pair
+`(0,5,1 | 47,1,1)` admits NO single-hub target satisfying the w=1 W2 clause (best deficit 0.2%,
+W1 and ROOT hold). PairCollapse as stated in R47MHubTelescope.lean is FALSE (harmless — it is an
+explicit hypothesis, so the telescope is merely conditional-on-false there — but must be corrected).
+
+THE FIX — sharpen the weight: Capped hubs give every backbone frame >= 6 children, so ancestor
+weights obey w <= 1/7 (interior) / w <= 1/6 (root). Endpoint linearity then needs only
+`W2' : Ztot + (1/6)·Zopen/udeg <=`. Positive combinations re-derived (coefficients X−6w >= 0 at
+w <= 1/6; parent-W2' needs w <= 6/35 > 1/7 OK). Under (W1, W2', ROOT):
+- all previously-dead shapes pass;
+- d<=2 dense sweep 11853/11853; general sweep 3953/3953;
+- NEAR-COLLAPSE ALONE IS UNIVERSAL — no swap phase, no chains.
+
+Final architecture: ONE bounded case-table cert (per-d = cA+cb candidates: (−1,2,d−3) universal for
+d=3..8, (0,1,5) at d=9, (1,0,5) at d=10, small candidate sets at d<=2 e.g. (−4,5,0)/(−3,4,0)/
+(−2,3,0) + rare-shape alternates) with constant V-prefactor per cell => POLYNOMIAL clauses.
+Lean v2 TODO: 1/6-weighted W-pair lift lemmas + corrected PairCollapse/transport with len>=6.
+conjecture1_proved = False.
