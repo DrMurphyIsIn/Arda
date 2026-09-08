@@ -33,6 +33,28 @@ What is genuinely GREEN and ours:
   Mathlib **v4.32.0** (retires the v4.33→v4.32 drift risk in `PORT_NOTES.md`).
 - All new Python tests pass locally (10 hermitian_moment, 13 palomar_mine, 20 source_mining).
 
+### Full-suite local triage (2026-09-08, `feat/source-mining`): 13 failed / 1595 passed / 106 skipped
+**None of the 13 are in this session's new test files** — this work adds zero failures in
+its own surface. Categorized:
+- **6 x Python-3.9-ONLY artifact (pass on CI 3.11+):** `test_rhinbox` x4, `test_winding_count`,
+  `test_dvp_box` all die at `examples/zeta_zero_localization/generate.py:305: TypeError:
+  unsupported operand type(s) for |: 'type' and 'NoneType'` — a PEP-604 `X | None` used at
+  RUNTIME (not a string annotation), which only works on Python >=3.10. The local system
+  interpreter is Python **3.9**; CI uses 3.11-3.13, so these are NOT CI failures. (Still a
+  latent portability bug in that RH-box generate.py worth a `from __future__ import
+  annotations` fix — NOT this session's file.)
+- **1 x inherited, FIXED in #326:** `test_certificate_sensitivity::test_every_emitter_is_classified`
+  (EndpointGeomCap). Fails on #327/#328 (they lack the fix), green once #326 lands.
+- **6 x pre-existing regen/idempotency/byte-stability** in untouched modules: `test_bg_family`,
+  `test_bg_floor` (+families, +r7_facets), `test_bernoulli_external` (byte-stable-vs-frozen),
+  `rh_jensen/test_end_to_end_d2` (needs a Lean toolchain). Several are likely also local-env
+  (frozen artifacts generated under a different Python/sympy than local 3.9); the remainder
+  are part of `main`'s pre-existing red. **TODO for whoever fixes main: re-run on CI 3.11+ /
+  clean-main to split env-artifact from genuine breakage.**
+
+Net: merge-blocked ONLY by `main`'s pre-existing red + the `EndpointGeomCap` fix living in #326.
+This session introduces no new test failure.
+
 **Recommended merge order once `main` is green:** #326 → #327 → #328.
 
 ## FOOTGUNS for parallel sessions
