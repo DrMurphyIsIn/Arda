@@ -7,8 +7,10 @@ about *attribution* of prior and external work.
 
 For each item below we state precisely **what was taken**. Where an idea was
 ported, it was **re-implemented independently** in this project's idiom (exact
-sympy → kernel-checked Lean); no source code was copied verbatim from these
-projects (see "Verbatim-copy statement" below).
+sympy → kernel-checked Lean). With one explicitly-flagged exception (the
+`RHLinalg` prelude ported verbatim from `anthropics/zeta-23-lean`, Apache-2.0,
+below), no source code was copied verbatim from these projects (see
+"Verbatim-copy statement" below).
 
 ## Foundations
 
@@ -38,6 +40,32 @@ material, `extremalG_const`):
 These emitters serve this project's own Brualdi–Goldwasser cells; they are
 credited in their generators' docstrings and in the emitted `.lean` headers.
 
+## Ported code + proof shapes — anthropics/zeta-23-lean (arXiv:2608.13637)
+
+The `hermitian_moment` Telperion certificate family builds on the Anthropic
+**zeta-23-lean** development (**arXiv:2608.13637**, *"More than two thirds of
+the zeros of ζ lie on the critical line"*; public repo
+`anthropics/zeta-23-lean`, **Apache-2.0**). Two distinct things were taken,
+stated precisely:
+
+- **Verbatim code port** — the self-contained linear-algebra core of the
+  paper's §3 (the Hermitian-inertia spine): eight Lean files from
+  `zeta23/Zeta23/LinAlg/`, ported as
+  `telperion/examples/hermitian_moment/lean/RHLinalg/` (namespace `RHLinalg`).
+  This is the **one verbatim copy in this repository**; it is permitted and
+  attributed under the source's Apache-2.0 license. Port details, the toolchain
+  re-pin, and flagged risks are in
+  `telperion/examples/hermitian_moment/lean/PORT_NOTES.md`.
+- **Proof shapes** — the generator-shaped emitters of the family (the
+  two-moment count certificate, the rank-trace integrality atom, and kin) port
+  the paper's *certificate shapes* into Telperion's independent Python idiom,
+  as with the other emitter attributions in this file.
+
+The λ=1 headline constants reproduced by these emitters (H = 2/3, H_d = 5/6)
+are **the paper's results**, credited to its authors; the emitters emit
+faithful specializations as certificate atoms for this project's Weil-positivity
+tooling track.
+
 ## Engineering patterns — AXLE (arXiv:2606.26442)
 
 Telperion's verify / gap-fill / repair / negative-control / bundle / normalize
@@ -62,7 +90,10 @@ idiom (parameterized inequality families → exact sympy certification → emitt
 Lean re-proved from scratch by Mathlib's kernel). No Lean, Python, or other
 source files were copied verbatim from AxiomMath/ZetaZeros, AXLE, ten-proofs,
 comparator, or nanoda. What is shared is the *mathematical idea*, credited
-above.
+above. The **single exception** in this repository is the `RHLinalg` prelude
+(`telperion/examples/hermitian_moment/lean/RHLinalg/`), a flagged verbatim port
+of eight Apache-2.0 Lean files from `anthropics/zeta-23-lean`, attributed in
+its own section above and in `PORT_NOTES.md` alongside the files.
 
 ## A note on scope
 
