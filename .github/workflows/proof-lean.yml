@@ -91,7 +91,8 @@ jobs:
             R3Cert.BGSCLFlpMove \
             R3Cert.BGSCLFlpDeepLift \
             R3Cert.BGSCLFlpStepAt \
-            R3Cert.R47R7StuckChar
+            R3Cert.R47R7StuckChar \
+            R3Cert.R47WPairLift
 
       # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
       # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build
