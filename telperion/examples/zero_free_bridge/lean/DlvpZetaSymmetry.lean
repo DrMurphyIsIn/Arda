@@ -86,6 +86,20 @@ theorem zeta_zero_on_line_of_quarter_clear (T : ℝ)
   · -- Re > 1/2, Im > 0 : the zero is itself in the quarter
     exact hclear ρ hgtRe h1 hgtIm hThi hz
 
+/-- **Width-fold reflection across the critical line, PRESERVING the imaginary part.**  Composing
+    the functional equation (`riemannZeta_one_sub_eq_zero`, `ρ ↦ 1 - ρ`) with conjugation
+    (`riemannZeta_conj_eq_zero`, `ρ ↦ conj ρ`) yields the reflection `ρ ↦ 1 - conj ρ` across the
+    vertical line `Re = 1/2` that keeps `Im` fixed: a zero at `β + iγ` (`0 < β < 1`) maps to a zero
+    at `(1 - β) + iγ`.  This is the symmetry that folds a fixed-`Im`-band box `[a, 1-a] × [T0,T1]`
+    onto its left half `[a, 1/2] × [T0,T1]` (unlike `riemannZeta_one_sub_eq_zero`, which flips the
+    sign of `Im` and so leaves a single `Im`-band). -/
+theorem riemannZeta_reflect_line_eq_zero {ρ : ℂ} (h0 : 0 < ρ.re) (h1 : ρ.re < 1)
+    (hz : riemannZeta ρ = 0) : riemannZeta (1 - (starRingEnd ℂ) ρ) = 0 := by
+  have hc : riemannZeta ((starRingEnd ℂ) ρ) = 0 := riemannZeta_conj_eq_zero hz
+  have h0' : 0 < ((starRingEnd ℂ) ρ).re := by rw [Complex.conj_re]; exact h0
+  have h1' : ((starRingEnd ℂ) ρ).re < 1 := by rw [Complex.conj_re]; exact h1
+  exact riemannZeta_one_sub_eq_zero h0' h1' hc
+
 end ZeroFreeBridge
 
 

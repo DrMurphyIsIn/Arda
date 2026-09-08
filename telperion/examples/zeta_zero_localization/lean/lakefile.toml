@@ -1,5 +1,5 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100", "RHInBoxBands"]
 
 [[require]]
 name = "mathlib"
@@ -74,3 +74,10 @@ name = "AllZerosUpToHeight"
 # ALL nontrivial zeta zeros up to height 100 lie on Re = 1/2.  conjecture1_proved = False.
 [[lean_lib]]
 name = "AllZeros_h100"
+
+# BAND-ADDITIVITY (height-tiling) + WIDTH-FOLD reduction: conclusion-level glue on top of
+# RHInBox.rh_in_box_of_certificate.  rh_box_of_bands composes n cheap per-band certificates into
+# one tall box (the compute lever for high boxes); rh_full_box_of_left_half halves the region via
+# the critical-line reflection (ZeroFreeBridge.riemannZeta_reflect_line_eq_zero, PR #320 family).
+[[lean_lib]]
+name = "RHInBoxBands"

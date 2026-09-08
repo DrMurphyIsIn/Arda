@@ -85,39 +85,60 @@ no such thing), so **quarter is the hard floor** -- 1/8, 1/16 are unreachable by
 tighter than 1/4 comes from the zero-free REGION (width) or from raising the height floor, not from a
 fraction.
 
-**What the fold buys (a genuine constant-factor edge win).** Work the right-half box
-`[1/2, 1 − a] × [0, T]` instead of the full width `[a, 1 − a] × [0, T]`. This DELETES the expensive
-near-`Re = 0` vertical edge (where zeta is FE-divergent and ball-arithmetic widths blow up) and
-replaces it with the tame central line `Re = 1/2`; the horizontal edges halve. Since the vertical
-edges dominate the winding cost (`arg` variation ~ `(T/2π)log T`) and their placement near `Re ∈ {0,1}`
-is where enclosures are worst, pulling one edge into the central strip is a real per-enclosure win.
+**What the fold buys (a constant-factor edge win) -- and its hard limit.** Moving a vertical edge
+inward from the expensive near-`Re = 0` / near-`Re = 1` zones (where zeta is FE-divergent /
+pole-adjacent and ball-arithmetic widths blow up) into the central strip is a real per-enclosure win,
+since the vertical edges dominate the winding cost (`arg` variation ~ `(T/2π)log T`) and their
+placement near `Re ∈ {0,1}` is where enclosures are worst. BUT the edge canNOT be pushed all the way
+to `Re = 1/2`: that line is the on-line-zero LOCUS, so `ζ'/ζ` has poles there and the `hArb`
+edge-non-vanishing hypothesis `∀ y, riemannZeta (1/2 + iy) ≠ 0` is FALSE -- the contour would run
+through zeros. The furthest a count-match edge can go is `Re = 1/2 + ε` (off the zeros).
 
-**What the fold does NOT buy -- you still need `hLine`.** It is tempting to instead take an OPEN-right
-box `[1/2 + ε, 1 − a] × [0, T]`, show its winding is `0`, and conclude "all zeros on the line" with NO
-on-line list. This does NOT work: pushing the contour to `Re = 1/2 + ε` clears only `Re > 1/2 + ε`,
-leaving an `ε`-sliver `(1/2, 1/2 + ε)` at the line uncleared -- and closing that sliver is exactly the
-hard thing being proved. The fold edge cannot sit ON `Re = 1/2` because that is where the on-line
-zeros live and the contour must avoid zeros. So the robust route keeps BOTH edges off any zero
-(the `[1/2, 1 − a]` box's edges at `1/2` and `1 − a` are zero-free by the region + the count-match)
-and still matches `N` to an exhibited on-line list. The count-matching architecture (`hLine`,
-`hcount`) is load-bearing; the fold is a constant-factor cost reduction on top of it, not a way to
-drop `hLine`.
+**Why you cannot fold to a half-width count-match box -- you still need `hLine`.** It is tempting to
+run the count-match on `[1/2, 1 − a] × [0, T]` (or `[1/2 + ε, 1 − a]`) and halve the width. This does
+NOT work:
+- An edge exactly at `Re = 1/2` is contaminated by the on-line zeros (above), so the `[1/2, 1 − a]`
+  box is NOT admissible -- its `hArb` left-edge non-vanishing is false.
+- Pushing to `[1/2 + ε, 1 − a]` and showing winding `0` clears only `Re > 1/2 + ε`, leaving the
+  `ε`-sliver `(1/2, 1/2 + ε)` at the line uncertified -- and closing that sliver is exactly the hard
+  thing being proved.
 
-**The lever that scales with T: height-tiling.** Width-narrowing is bounded (<=4x via symmetry). To
-tame the `N ~ T log T` growth, stack `[0, T]` into height bands `[T_k, T_{k+1}]`, certify each with its
-own small-`N` winding + local on-line zeros, and sum via a band-ADDITIVITY lemma (the winding is
-additive over stacked boxes; the shared horizontal edge cancels). Each band's vertical edges are
-short, enclosures stay local and tight, and bands parallelize. `fold (constant factor) x tile
-(T-scaling)` is the recipe for pushing `T` up.
+So the ROBUST count-match route keeps the FULL width `[a, 1 − a] × [0, T]`, with BOTH vertical edges
+(`Re = a` and `Re = 1 − a`) off every zero, and matches `N` to an exhibited on-line list. The
+count-matching architecture (`hLine`, `hcount`) is load-bearing; you cannot drop `hLine`.
 
-**Suggested build order:** (1) a half-width variant of `rh_in_box_of_certificate` consuming
-`zeta_count_eq_winding_generic` over `[1/2, 1 − a] × [0, T]` + `zeta_zero_on_line_of_quarter_clear`;
-(2) a band-additivity lemma over stacked height boxes.
+**The symmetry fold is a THEOREM-LEVEL reduction, not a contour trick.** `#320` + the Im-preserving
+reflection `ρ ↦ 1 − conj ρ` (`ZeroFreeBridge.riemannZeta_reflect_line_eq_zero`, PR #324) DO halve the
+region conceptually: `RHInBoxBands.rh_full_box_of_left_half` (PR #324) proves that if every zero in
+the closed left half `[a, 1/2] × [T0,T1]` is on the line, so is every zero in `[a, 1 − a] × [T0,T1]`.
+This is a SOUND reduction, but its premise is subject to the SAME obstruction: certifying the closed
+left half via the argument principle needs an edge on `Re = 1/2`. So the symmetry does NOT yield a
+dischargeable half-width certificate; discharging the left half would require an indented-contour
+("keyhole") argument that dodges the on-line zeros -- a separate piece of complex analysis.
+
+**The lever that scales with T: height-tiling.** Width-narrowing is bounded (<=4x via symmetry) AND
+capped by the above obstruction. To tame the `N ~ T log T` growth, stack `[0, T]` into height bands
+`[T_k, T_{k+1}]`, certify each with its own small-`N` winding + local on-line zeros, and glue via a
+band-ADDITIVITY lemma (`RHInBoxBands.rh_box_of_bands` / `rh_box_two_bands`, PR #324; a zero's `Im`
+lies in one band, so per-band conclusions glue with no shared-edge integral needed). Each band's
+vertical edges are short, enclosures stay local and tight, and bands parallelize. This is the
+recipe for pushing `T` up.
+
+**Build status (updated by PR #324):**
+- ~~(1) a half-width variant of `rh_in_box_of_certificate` over `[1/2, 1 − a] × [0, T]`~~ -- NOT
+  dischargeable (edge on the zero locus; see above). Superseded by (1').
+- (1') the theorem-level width fold `RHInBoxBands.rh_full_box_of_left_half` is BUILT (PR #324); it
+  awaits an indented-contour half-box certificate to discharge its left-half premise.
+- (2) the band-additivity lemma `RHInBoxBands.rh_box_of_bands` is BUILT (PR #324); wire per-band
+  `rh_in_box_of_certificate` results into it to certify tall boxes.
 
 The `55/16` no-low-zeros residual (currently a documented hypothesis in `AllZeros_h100`) is separable:
-a small bottom box `[0, 1] × [0, 55/16]` with `∑ divisor = 0` (winding `0`, `d ≥ 1` ⟹ `s = ∅`) would
-prove no zeros below height `55/16` and make the height certificate fully self-contained. (That box's
-edges are off any zero, so it is NOT subject to the `ε`-sliver problem above.)
+a small bottom box over the confinement BAND `[a, 1 − a] × [0, 55/16]` with `∑ divisor = 0`
+(winding `0`, `d ≥ 1` ⟹ `s = ∅`) would prove no zeros in the band below height `55/16`; combined with
+the dVP region (no zeros OUTSIDE the band) this closes the residual and makes the height certificate
+self-contained. Use the band width, NOT `[0, 1]` -- the latter puts the pole `s = 1` on a corner,
+which the §4 ball construction cannot exclude. The band edges are off both the zeros and the pole, so
+this box is NOT subject to the `ε`-sliver problem above.
 
 ## 7. Gotchas
 
