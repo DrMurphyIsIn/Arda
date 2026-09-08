@@ -78,7 +78,67 @@ Archimedean/`ℤ[√d]` badly-approximable analogue).
 
 ---
 
-## Catalogued (high-value, not yet built)
+## Round-1 recursive sweep harvest (2026-09-08, workflow `wf_0fd1cfd4-8f2`)
+
+A 20-miner multi-agent sweep (12 deep clusters over the 84 densest files, 7
+mid-band scan clusters, 50-file tail sample; 257 files classified, 111
+emitter-bearing) synthesized **46 raw shape reports into 20 canonical new
+emitter candidates** — 12 high-generality, 8 medium. Ranked highlights (full
+signatures + tactics in the workflow synthesis, task `wbj0o68zh`):
+
+**High generality (12):**
+1. **`gevrey_factorial_majorant`** — the single largest gap: the Gevrey-2
+   majorant calculus `R^(n+d)·((n+d)!)²` (shift / radius-inflation / binomial
+   split / convolution-with-`Σ1/C(n,k)≤3` / recurrence-closure), found
+   independently by **6 miners**; the arithmetic engine of the entire Euler
+   corpus. No existing kind touches `Nat.choose`/`Nat.factorial`.
+2. **`coefficient_mass_eval`** — `|p.eval x| ≤ ‖p‖₁·T^deg` + nested-envelope
+   reification (3 miners).
+3. **`multilinear_product_perturbation`** — Leibniz telescoping
+   `|f(pert)−f(nom)| ≤ ε·p(M)` with auto-generated ring identity (5 miners);
+   generalizes the catalogued affine PerturbationTriangleBound.
+4. **`perturbed_quadratic_cone`** — abs-perturbation ledger + SOS vertex margin
+   ⟹ strict quadratic cone cap (the NS blowup cone-exclusion arithmetic).
+5. **`rpow_exponent_budget`** — prefactor·decay^N ≤ k^target with all
+   bookkeeping at the exponent level via linarith.
+6. **`rpow_comparability_enclosure`** — `q/2≤Q≤2q ⟹ Q^e ≤ 2^|e|·q^e` (both
+   exponent signs unified).
+7. **`monomial_budget_ladder`** — one master smallness budget ⟹ a family of
+   monomial rung bounds (6+ instances per Euler packet file).
+8. **`ratio_recurrence_telescope`** — multiplicative telescoping of ratio
+   recursions into factorial/geometric/index normal forms (the product
+   counterpart of the additive `telescope`).
+9. **`finite_prefix_absorption`** — eventually-bounded ⟹ globally bounded with
+   an explicit prefix-sum constant witness.
+10. **`two_row_solve_bound`** — 2×2/3×3 solution-entry bounds from row scale +
+    ratio gap (pure scalar, no Matrix).
+11. **`sqrt_root_elimination`** — "below the lower root ⟺ discriminant
+    inequality" symbolic radical elimination; directly reusable on the BG
+    price-interval and RH boundary-curve fronts.
+12. **`twopoint_moment_feasibility`** — constructs a rational 2-point measure
+    with prescribed mean/variance under affine support constraints — a rank-2
+    pseudo-expectation witness, relevant to the SoS 3-XOR front.
+
+**Medium (8):** `scale_invariant_quotient_cancel`, `sqrt_comparability_envelope`,
+`positive_quadratic_denominator_bound`, `low_order_plus_geometric_tail`,
+`simplex_second_moment`, `reciprocal_square_convolution` (the antidiagonal
+convolution ≤ 8× companion of TelescopingReciprocalSquare), `poly_exp_absorption`,
+`eventual_scaling_threshold`.
+
+Dropped as covered/thin: ConvexCombinationAbsBound, ScaleCancelDiscriminant,
+reciprocal_comparison_propagate, cone_margin_of_dichotomy, and 4 shapes folded
+into the canonicals above. `reciprocal_box_tolerance_extraction` → noted as a
+`le_div_iff₀` option flag on `affine_ledger`, not a new kind.
+
+Round-1 completeness: ~10% of files read but heavy shape convergence
+(saturation evidence: the Gevrey engine consumed by the largest unsampled
+families). Blind spots (SmoothTimeField*/CylinderDirichlet*/WholeSpaceGaussian*/
+SmoothFlow* + unread family members) were swept in **round 2**
+(`wf_2b47e971-164`, full coverage of all remaining files). ComparatorChallenges/
+gap closed by hand: both files are the Clay problem-statement mirrors with
+intentional `sorry` placeholders — statements only, no emitters.
+
+## Catalogued round-0 (high-value, not yet built)
 
 | Shape | Source file | Atom | Discharge | Notes |
 |-------|-------------|------|-----------|-------|
