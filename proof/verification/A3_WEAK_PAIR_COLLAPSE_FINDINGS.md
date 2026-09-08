@@ -54,3 +54,24 @@ and de-loaded shapes. Witness pattern: the canonical target is c = 0, b = residu
 If (2) lands, Hdom closes for ALL lengths. Honest risk: the 6-parameter symbolic cert may need
 residue-class case splits and could be heavy; numeric grid is bounded-range (len <= 7) -- the
 symbolic cert must cover all lengths (expect a monotone tail argument as in the two-hub certs).
+
+## Addendum (same day) — the THREE-clause collapse (telescope-ready)
+
+The telescope's LAST collapse (length 2 -> 1) happens at the ROOT, where the dtSub weak pair does
+not directly apply (root weight 1/L vs subtree 1/(L+1)).  So the collapse certificate needs a THIRD
+clause: root-level `Aobj(pair) <= Aobj(target)`.  Re-measured on the full 15,876-pair grid: W1, W2
+AND the root clause hold SIMULTANEOUSLY with a COMMON canonical target for every pair (0 fails).
+
+Stage-1 Lean rail LANDED (R47WPairLift.lean, kernel-clean): dtSub_wpair_lift,
+Aobj_child_replace_of_wpair, plugFrames_wpair, wpair_of_gains.
+
+Pinned telescoping design (stage 3, conditional on the stage-2 cert):
+  PairCollapse : Prop := for every Balanced+Capped pair, EXISTS a Balanced+Capped single hub of
+    summed hubSize with (W1, W2, root-Aobj) -- exactly the three de-risked clauses.
+  Transport: backboneU tail replacement through `init` hubs = inner dtSub_wpair_lift induction +
+    root Aobj_child_replace_of_wpair (machinery all proven).
+  Induction: strong induction on s.length, decomposing s = init ++ [h1, h2] via s.reverse;
+    collapse the DEEPEST pair (a clean subtree; the first pair is not); stateSize conserved by the
+    hubSize clause; result: any Balanced+Capped state is Aobj-dominated by a SINGLE Balanced+Capped
+    hub of the same size.  Downstream: single hub <= tie = the DONE envelope + the tie-definition
+    layer (non-aligned-n tie : N -> UTree selection -- separate, known-open assembly).
