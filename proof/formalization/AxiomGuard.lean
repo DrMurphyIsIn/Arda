@@ -65,6 +65,12 @@ import R3Cert.R47R7TwoHubBridge
 import R3Cert.R47SingleHub2D
 import R3Cert.R47SharpRate
 import R3Cert.R47SingleHubResidue
+import R3Cert.BGSCLFlpMove
+import R3Cert.BGSCLFlpDeepLift
+import R3Cert.BGSCLFlpStepAt
+import R3Cert.R47R7StuckChar
+import R3Cert.R47WPairLift
+import R3Cert.R47MHubTelescope
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -289,3 +295,30 @@ import R3Cert.R47SingleHubResidue
 #print axioms R3Cert.Step3.offMOf_le_five
 #print axioms R3Cert.Step3.singleHubR_le_tie_small_r1
 #print axioms R3Cert.Step3.singleHubR_le_tie_small_r5
+
+-- Open-cores campaign (2026-09-08, branch bg/multihub-hnorm).
+-- B-track (Hnorm): the FLP move class -- local step, UNCONDITIONAL deep lift (the per-level
+-- Obligation-A debt discharged by the self-propagating cavity-gain pair), and the depth-closed
+-- multi-flip class with the generic coverage reduction (Hnorm's open half = a coverage statement).
+#print axioms R3Cert.Step3.flp_local_straightStep
+#print axioms R3Cert.Step3.dtSub_gains_lift
+#print axioms R3Cert.Step3.Aobj_child_replace_of_gains
+#print axioms R3Cert.Step3.flp_deep_straightStep
+#print axioms R3Cert.Step3.multiFlp_child_stats
+#print axioms R3Cert.Step3.FlpStepAt.props
+#print axioms R3Cert.Step3.FlpStepAt.straightStep
+#print axioms R3Cert.Step3.straightProgress_sized_of_coverage
+#print axioms R3Cert.Step3.hnorm_of_coverage
+-- A-track (m>=3 Hdom): the stuck-pair characterization; the weak-pair context lift (the
+-- endpoint-linearity invariant surviving degree-jumping replacements); the multi-hub telescope
+-- reducing Hdom at ANY length to the single named open certificate PairCollapse plus the
+-- single-hub tie bound.
+#print axioms R3Cert.Step3.stuck_pair_deloaded
+#print axioms R3Cert.Step3.stuck_pair_dichotomy
+#print axioms R3Cert.Step3.dtSub_wpair_lift
+#print axioms R3Cert.Step3.Aobj_child_replace_of_wpair
+#print axioms R3Cert.Step3.plugFrames_wpair
+#print axioms R3Cert.Step3.backbone_tail_wpair
+#print axioms R3Cert.Step3.backbone_tail_aobj
+#print axioms R3Cert.Step3.mhub_le_single_of_pairCollapse
+#print axioms R3Cert.Step3.hdom_of_pairCollapse_and_singleHubDom
