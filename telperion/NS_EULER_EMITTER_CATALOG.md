@@ -41,6 +41,9 @@ The atoms below recur across that surface.
 | `logconvex_interp` | `emit_logconvex_interp.py` | `Euler/NonnegativeLogConvex.lean` (Apache-2.0 port) | zero-tolerant log-convexity interpolation cross/pair/between (`x(a)·x(b) ≤ x(s)·x(a+b−s)`), division- and log-free; `calculus`/`between` modes |
 | `finite_prefix_absorption` | `emit_finite_prefix_absorption.py` | `NavierStokes/GaugeAliasDecay.lean` | eventually-bounded ⟹ globally-bounded with the explicit witness `C = A + Σ_{n<N}\|f n\|/w n` (kernel-cheap, no analysis) |
 | `coefficient_mass` | `emit_coefficient_mass.py` | `NavierStokes/EdgeWeightJets.lean` | ℓ¹-coefficient sup-envelope `\|p(x)\| ≤ ‖p‖₁·T^deg` — generic `Polynomial ℝ` atom + concrete scalar instances (exact mass certification, sign-aware `abs` discharge closed by `linarith`) |
+| `multilinear_perturbation` | `emit_multilinear_perturbation.py` | `NavierStokes/MovingFrameODE.lean` (generalized from arity 2) | Leibniz telescoping `\|∏F − ∏G\| ≤ C·η`, `C = Σᵢ∏_{j≠i}Mⱼ` exact; auto-generated `ring` identity + deterministic `mul_le_mul` chains, arity 2–6 |
+| `poly_geom_closure` | `emit_poly_geom_closure.py` | `Euler/PacketFieldSobolevBudget.lean` (mechanized) | `Σ p(n)·rⁿ ≤ B` uniformly in N via SYNTHESIZED exact remainder invariant `q(N) = p(N) + ρ·q(N+1)` (triangular rational solve; certificate-sensitive) |
+| `twopoint_moment` | `emit_twopoint_moment.py` | `NavierStokes/LoopMoments.lean` (Apache-2.0 port) | rank-2 pseudo-expectation feasibility WITNESS: explicit two-point measure with prescribed mean/variance under a strict affine constraint — the dual of the SOS shapes; SoS 3-XOR-relevant |
 
 ### `affine_ledger` — the exponent ledger (flagship)
 
@@ -104,7 +107,7 @@ signatures + tactics in the workflow synthesis, task `wbj0o68zh`):
 3. **`multilinear_product_perturbation`** — Leibniz telescoping
    `|f(pert)−f(nom)| ≤ ε·p(M)` with auto-generated ring identity (5 miners);
    generalizes the catalogued affine PerturbationTriangleBound.
-4. **`perturbed_quadratic_cone`** — abs-perturbation ledger + SOS vertex margin
+4. **`perturbed_quadratic_cone`** *(DEFERRED after exemplar review: bespoke-constants template — `coneErrorBudget`, `ideal_cross_bound` — whose generalizable content is covered by `affine_ledger` + `box_robust` + `multilinear_perturbation` + `sqrt_root_elimination`; building a faithful generic emitter would re-derive those. Revisit only if a second corpus shows the exact template recurring.)* — abs-perturbation ledger + SOS vertex margin
    ⟹ strict quadratic cone cap (the NS blowup cone-exclusion arithmetic).
 5. **`rpow_exponent_budget`** — prefactor·decay^N ≤ k^target with all
    bookkeeping at the exponent level via linarith.
