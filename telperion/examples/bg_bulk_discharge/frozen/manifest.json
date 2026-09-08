@@ -1,6 +1,6 @@
 {
   "family": "BGBulkDischarge",
-  "input_hash": "f26bf66ab910fd8d2e3a7e9adea6644f5c26d61cfe33373c9b5703fe5fe0ba8e",
+  "input_hash": "4d2273b71d99edaebec801a6ac896277bbe9e0f1547525f2c5f8ff69c2e0bcd8",
   "tool_version": "0.1.6",
   "files": [
     "BGBulkDischarge.lean"

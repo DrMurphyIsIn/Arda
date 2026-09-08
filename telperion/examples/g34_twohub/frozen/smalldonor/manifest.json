@@ -1,6 +1,6 @@
 {
   "family": "TwoHubSmallDonor",
-  "input_hash": "33c2f5fd4fb9f5bfbeeb5b143263854c0d1f9ca71f92561d257f034b3ec6f639",
+  "input_hash": "c1e5fa3f45192c55ec68aeaf9ab69ae91e88f50c0f3eda82d5c0222e19f72f57",
   "tool_version": "0.1.6",
   "files": [
     "SmallDonor.lean",

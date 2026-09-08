@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family Rigidity | input-hash 03b17111df510b52
+/- telperion 0.1.6 | family Rigidity | input-hash 482383347eb99f4e
    4 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

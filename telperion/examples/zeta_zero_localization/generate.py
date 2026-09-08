@@ -403,7 +403,13 @@ def _parse_box_arg(box_str: str):
 
 
 def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int = 300,
-         box=None, height=None) -> int:
+         box=None, height=None, empty_band=None) -> int:
+    # Empty-band (zero-free) driver mode: winding N == 0 => box holds no zeta zero.
+    if empty_band is not None:
+        from telperion.driver_empty_band import run_empty_band
+        rl, rh, il, ih = _parse_box_arg(empty_band)
+        run_empty_band(str(rl), str(rh), str(il), str(ih), check=check)
+        return 0
     # Per-box driver mode: compute winding + on-line count, emit instantiation.
     if box is not None:
         rl, rh, il, ih = _parse_box_arg(box)
@@ -475,6 +481,10 @@ if __name__ == "__main__":
                          "instantiating rh_in_box_of_certificate; refuses invalid/under-resolved boxes")
     ap.add_argument("--height", type=str, default=None,
                     help="per-box driver shortcut for the strip box [2/5,3/5] x [0,T]")
+    ap.add_argument("--empty-band", type=str, default=None,
+                    help="empty-band (zero-free) driver: sigma0,sigma1,T0,T1 (rationals). Computes "
+                         "winding N, asserts N == 0, and emits NoZerosInBox_<tag>.lean certifying the "
+                         "box holds no zeta zero; refuses a box with nonzero winding")
     args = ap.parse_args()
     a_val = Fraction(args.a) if args.a is not None else None
     b_val = Fraction(args.b) if args.b is not None else None
@@ -486,4 +496,5 @@ if __name__ == "__main__":
         prec=args.prec,
         box=args.box,
         height=args.height,
+        empty_band=args.empty_band,
     ))

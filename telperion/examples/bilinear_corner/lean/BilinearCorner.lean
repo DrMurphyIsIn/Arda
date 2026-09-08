@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family BilinearCorner | input-hash b1a4b22b1b7cbf2a
+/- telperion 0.1.6 | family BilinearCorner | input-hash f28add5afbed54e9
    4 theorems, 3 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

@@ -1,6 +1,6 @@
 {
   "family": "Scope",
-  "input_hash": "a88a93fedc8376bd5055ddd5c63c575b1c19b198e228640335ff7c49a13a9e97",
+  "input_hash": "7991e8af298c0f7e7070aec66228f38045033ccb11f4380c85fbb4a575e6bcc7",
   "tool_version": "0.1.6",
   "files": [
     "Scope.lean"

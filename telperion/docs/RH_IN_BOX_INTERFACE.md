@@ -140,6 +140,68 @@ self-contained. Use the band width, NOT `[0, 1]` -- the latter puts the pole `s 
 which the §4 ball construction cannot exclude. The band edges are off both the zeros and the pole, so
 this box is NOT subject to the `ε`-sliver problem above.
 
+### 6.1 CORRECTION (2026-09-08, post-#329 review): the low-height slivers are NOT covered
+
+The paragraph above is incomplete. The consumer `ZetaZeroConfinement.no_low_zeros_of_strip_clear`
+requires `hclear_low` over the FULL open strip `0 < Re < 1`, `0 < Im ≤ 55/16`. The bottom box
+(#329, `no_zeros_in_box_1d1000_999d1000_0_55d16`) covers only `Re ∈ [1/1000, 999/1000]`, and
+"combined with the dVP region (no zeros OUTSIDE the band)" does NOT work below height `55/16`:
+
+- `riemannZeta_ne_zero_region` carries the hypothesis `55/16 ≤ |Im|` -- it excludes nothing in the
+  low band; `zero_in_band` takes `hγ` as input -- using either here is circular.
+- The only kernel non-vanishing fact available off the box is
+  `riemannZeta_ne_zero_of_one_le_re` (`Re ≥ 1`).
+
+So the two slivers `Re ∈ (0, 1/1000)` and `Re ∈ (999/1000, 1)` at `0 < Im ≤ 55/16` are currently
+excluded by NOTHING on main, and no single box fixes this: an edge at `Re = 1` runs through the
+pole `s = 1`, and an edge at `Re = 1 − δ` leaves a `δ`-sliver for every `δ > 0`.
+
+### 6.2 Constructive route to close the slivers (machinery already on main)
+
+1. **Pole-straddling box.** A second winding-0 box `[999/1000, 1 + δ] × [ε₀, 55/16]`. This is
+   LEGAL, unlike a `[0,1]`-width box: the pole `s = 1` has `Im = 0 < ε₀`, so `choose_ball` can
+   exclude it. Bonus: the right edge sits in `Re ≥ 1` where `ζ ≠ 0` is kernel-known, so its Arb
+   edge-check cannot fail. Covers the right sliver down to height `ε₀`.
+2. **Pole-neighborhood notch lemma.** `0 < |s − 1| < r ⟹ ζ(s) ≠ 0` for a small explicit `r`.
+   Kernel-provable from the PR #316 `ζ₁ := (s−1)·ζ` machinery: `ζ₁(1) = 1`, the existing
+   `‖ζ₁‖ ≥ 3/4`-near-1 bound (MVT off `ζ₁(1) = 1`, as in `DlvpZetaPoleEffective`), and
+   `ζ = ζ₁/(s−1)` on the punctured ball. Covers the remaining corner
+   `Re ∈ (999/1000, 1)`, `Im ∈ (0, ε₀)` (choose `ε₀, δ` inside `r`).
+3. **FE reflection for the left sliver.** `riemannZeta_reflect_line_eq_zero` (#320,
+   `ρ ↦ 1 − conj ρ`, preserves `Im`) maps a zero with `Re ∈ (0, 1/1000)` to one with
+   `Re ∈ (999/1000, 1)` at the same height, killed by (1)+(2).
+
+Then `hclear_low` = (#329 box) ∪ (1) ∪ (2) ∪ (3) ∪ (`Re ≥ 1`), and
+`no_low_zeros_of_strip_clear` discharges `hγ` in `all_nontrivial_zeros_up_to_height_100`. Net
+effect on the trust boundary: the bare classical `55/16` hypothesis becomes two more winding-0 Arb
+certificates -- UNIFORM with the existing boundary (winding + edges), not an enlargement of kind.
+
+### 6.3 SIMPLIFICATION (2026-09-08, post-#332): steps (1) and (2) are unnecessary -- reflect the
+### OTHER way
+
+Section 6.2 was written before #332 landed. #332 ships the LEFT-sliver cert
+`NoZerosInBox_0_1d1000_0_55d16.no_zeros_in_box_0_1d1000_0_55d16` on the box
+`[0, 1/1000] × [0, 55/16]` (Arb winding `N = 0`; a zero-free box makes no critical-line claim, so
+the driver no longer requires the box to straddle `1/2`). This inverts route 6.2: instead of
+clearing the RIGHT sliver directly (pole-straddling box + notch lemma) and reflecting the left
+sliver into it, clear the LEFT sliver directly and reflect the right sliver into IT:
+
+- `Re ∈ (0, 1/1000]`, `0 < Im ≤ 55/16`: directly inside the left-sliver box.
+- `Re ∈ [1/1000, 999/1000]`: the #329 band box.
+- `Re ∈ (999/1000, 1)`: `riemannZeta_reflect_line_eq_zero` (hypotheses: just `0 < Re ρ < 1` --
+  verified on main, NO `Im ≠ 0` side-condition) maps the zero to `1 − conj ρ` with
+  `Re = 1 − Re ρ ∈ (0, 1/1000)` and the SAME `Im ∈ (0, 55/16]` -- inside the left-sliver box.
+  Contradiction.
+- `Re ≥ 1` never arises (`hclear_low` quantifies over `0 < Re < 1`).
+
+The left sliver has no pole anywhere near it (`s = 1` is at distance `≈ 1`), so `choose_ball` is
+comfortable and the Arb edge enclosures are tame (`ζ(0) = −1/2`; the nearest trivial zero is at
+`−2`). **The pole-straddling box (6.2 step 1) and the pole-neighborhood notch lemma (6.2 step 2)
+do not need to be built.** `hclear_low` = (#329 band box) ∪ (#332 left-sliver box) ∪ (reflection),
+all three ingredients on main; the only remaining piece is the kernel-side glue lemma assembling
+them (dVP-symmetry session's lane). Net trust boundary: ONE extra winding-0 Arb certificate, not
+two, and no new kernel analytic lemma.
+
 ## 7. Gotchas
 
 - `hArb` is `∀ E, (split for E) → (big conjunction)` -- a universally-quantified bundle over the entire

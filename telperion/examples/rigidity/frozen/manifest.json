@@ -1,6 +1,6 @@
 {
   "family": "Rigidity",
-  "input_hash": "03b17111df510b52b8cdee148a52d08fd6a4b3aec4f2bcd7992fb9e6afbea2ec",
+  "input_hash": "482383347eb99f4e753978fc6a9ca157932802fd694158f2b2e070bbfa91f198",
   "tool_version": "0.1.6",
   "files": [
     "Rigidity.lean"

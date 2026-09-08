@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family RecursionClosure | input-hash 7bb6c17706251181
+/- telperion 0.1.6 | family RecursionClosure | input-hash a5626e2cb680244c
    2 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

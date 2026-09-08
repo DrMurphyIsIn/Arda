@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family Consequence | input-hash 824717a06cac2424
+/- telperion 0.1.6 | family Consequence | input-hash 62dbb87ddf540e38
    2 theorems, 4 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

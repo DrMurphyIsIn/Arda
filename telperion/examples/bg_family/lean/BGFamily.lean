@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family BGFamily | input-hash d1f7d4d5f1ed1774
+/- telperion 0.1.6 | family BGFamily | input-hash 9260b357cb79fa06
    1 theorems, 12 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

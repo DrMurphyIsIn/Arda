@@ -1,5 +1,5 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100", "RHInBoxBands"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100", "RHInBoxBands", "NoZerosInBox_1d1000_999d1000_0_55d16", "NoZerosInBox_0_1d1000_0_55d16"]
 
 [[require]]
 name = "mathlib"
@@ -81,3 +81,20 @@ name = "AllZeros_h100"
 # the critical-line reflection (ZeroFreeBridge.riemannZeta_reflect_line_eq_zero, PR #320 family).
 [[lean_lib]]
 name = "RHInBoxBands"
+
+# EMPTY-BAND (zero-free) certificate: the box [1/1000, 999/1000] x [0, 55/16] has boundary
+# winding N = 0, so it contains no zeta zero.  Emitted by driver_empty_band.run_empty_band;
+# instantiates RHInBoxAnalytic.zeta_count_eq_winding_generic at N = 0 (empty divisor support).
+# This is the box-driver half of the 55/16 no-low-zeros residual closure (the dVP-symmetry
+# session's no_low_zeros_of_empty_band composes it with the Mathlib edge facts).
+[[lean_lib]]
+name = "NoZerosInBox_1d1000_999d1000_0_55d16"
+
+# LEFT-SLIVER (zero-free) certificate: the sliver [0, 1/1000] x [0, 55/16] has boundary
+# winding N = 0.  Together with the band cert above this clears [0, 999/1000] x [0, 55/16];
+# the reflection rho -> 1 - conj(rho) (Klein four-group, PR #320) carries the remaining right
+# sliver (999/1000, 1) to this left sliver, completing the full-strip clearing that
+# no_low_zeros_of_strip_clear needs (a zero-free box makes no critical-line claim, so the
+# sliver need not straddle Re = 1/2).
+[[lean_lib]]
+name = "NoZerosInBox_0_1d1000_0_55d16"

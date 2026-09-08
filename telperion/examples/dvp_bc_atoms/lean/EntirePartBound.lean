@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family EntirePartBound | input-hash aef4a7abfa6840cb
+/- telperion 0.1.6 | family EntirePartBound | input-hash 12ef93ce6ce22534
    4 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

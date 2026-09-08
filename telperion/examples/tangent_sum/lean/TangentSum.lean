@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family TangentSum | input-hash 58642c3d408f28c8
+/- telperion 0.1.6 | family TangentSum | input-hash 3eb648f6785fbb5f
    4 theorems, 9 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
