@@ -66,6 +66,22 @@ are **the paper's results**, credited to its authors; the emitters emit
 faithful specializations as certificate atoms for this project's Weil-positivity
 tooling track.
 
+## Mined proof shapes — openai/NavierStokesAndEuler
+
+Nine Telperion emitter kinds (the `affine_ledger` / `quadratic_irrational` /
+`gevrey_majorant` / `logconvex_interp` / `coefficient_mass` /
+`continuous_barrier` / `finite_prefix_absorption` / `log_eps_optimize` /
+`sqrt_root_elimination` family; see `telperion/NS_EULER_EMITTER_CATALOG.md`)
+were distilled from a certificate-mining pass over OpenAI's
+**`openai/NavierStokesAndEuler`** finite-time-blowup formalization
+(Apache-2.0). What was taken is **certificate shapes only** — the
+generator-shaped, kernel-cheap arithmetic atoms recurring in that development —
+re-implemented independently in Telperion's Python idiom, exactly as with the
+AxiomMath/ZetaZeros emitters above. No Lean or other source files were copied;
+the PDE/matrix/ODE machinery of the source was treated as out-of-scope prelude,
+and its analytic facts enter Telperion certificates only as explicit
+hypotheses.
+
 ## Engineering patterns — AXLE (arXiv:2606.26442)
 
 Telperion's verify / gap-fill / repair / negative-control / bundle / normalize
@@ -89,8 +105,8 @@ The ported emitters above are **independently written** in Telperion's Python
 idiom (parameterized inequality families → exact sympy certification → emitted
 Lean re-proved from scratch by Mathlib's kernel). No Lean, Python, or other
 source files were copied verbatim from AxiomMath/ZetaZeros, AXLE, ten-proofs,
-comparator, or nanoda. What is shared is the *mathematical idea*, credited
-above. The **single exception** in this repository is the `RHLinalg` prelude
+comparator, nanoda, or openai/NavierStokesAndEuler. What is shared is the
+*mathematical idea*, credited above. The **single exception** in this repository is the `RHLinalg` prelude
 (`telperion/examples/hermitian_moment/lean/RHLinalg/`), a flagged verbatim port
 of eight Apache-2.0 Lean files from `anthropics/zeta-23-lean`, attributed in
 its own section above and in `PORT_NOTES.md` alongside the files.
