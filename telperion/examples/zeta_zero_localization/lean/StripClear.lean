@@ -36,11 +36,13 @@ theorem hclear_low_of_box_certs
     ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.re → ρ.re < 1 →
       0 < ρ.im → ρ.im ≤ 55 / 16 → False := by
   intro ρ hz h0 h1 him0 himT
-  rcases le_or_lt ρ.re (1 / 1000) with hsm | hsm
+  by_cases hsm : ρ.re ≤ 1 / 1000
   · exact hleft ρ ⟨h0.le, hsm⟩ ⟨him0.le, himT⟩ hz
-  · rcases le_or_lt ρ.re (999 / 1000) with hmid | hmid
+  · replace hsm : 1 / 1000 < ρ.re := not_le.mp hsm
+    by_cases hmid : ρ.re ≤ 999 / 1000
     · exact hband ρ ⟨hsm.le, hmid⟩ ⟨him0.le, himT⟩ hz
-    · -- right sliver `Re ∈ (999/1000, 1)`: reflect across the critical line into the left sliver.
+    · replace hmid : 999 / 1000 < ρ.re := not_le.mp hmid
+      -- right sliver `Re ∈ (999/1000, 1)`: reflect across the critical line into the left sliver.
       have hz' : riemannZeta (1 - (starRingEnd ℂ) ρ) = 0 :=
         ZeroFreeBridge.riemannZeta_reflect_line_eq_zero h0 h1 hz
       have hre' : (1 - (starRingEnd ℂ) ρ).re = 1 - ρ.re := by simp
