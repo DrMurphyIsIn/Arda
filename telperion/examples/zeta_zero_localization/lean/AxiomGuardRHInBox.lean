@@ -30,6 +30,11 @@
         has boundary winding N=0, so it holds no zeta zero.  Instantiates
         zeta_count_eq_winding_generic at N=0 (empty divisor support); the box-driver half
         of the 55/16 no-low-zeros closure.
+      * NoZerosInBox_0_1d1000_0_55d16.no_zeros_in_box_0_1d1000_0_55d16 -- the LEFT-SLIVER
+        (zero-free) certificate: [0, 1/1000] x [0, 55/16], winding N=0.  With the band cert
+        this clears [0, 999/1000] x [0, 55/16]; the reflection rho -> 1 - conj(rho) carries
+        the right sliver here, completing the full-strip clearing for
+        no_low_zeros_of_strip_clear.
 
     All are kernel-verified reductions.  conjecture1_proved = False (NOT a proof of RH).
     Axioms expected: {propext, Classical.choice, Quot.sound} -- no sorryAx.
@@ -40,6 +45,7 @@ import AllZerosUpToHeight
 import AllZeros_h100
 import RHInBoxBands
 import NoZerosInBox_1d1000_999d1000_0_55d16
+import NoZerosInBox_0_1d1000_0_55d16
 
 #print axioms RHInBox.rh_in_box_of_certificate
 #print axioms RHInBox.rh_in_box_10_35
@@ -52,3 +58,4 @@ import NoZerosInBox_1d1000_999d1000_0_55d16
 #print axioms ZetaZeroConfinement.zeta_zero_re_mem_strip
 #print axioms ZetaZeroConfinement.no_low_zeros_of_strip_clear
 #print axioms NoZerosInBox_1d1000_999d1000_0_55d16.no_zeros_in_box_1d1000_999d1000_0_55d16
+#print axioms NoZerosInBox_0_1d1000_0_55d16.no_zeros_in_box_0_1d1000_0_55d16

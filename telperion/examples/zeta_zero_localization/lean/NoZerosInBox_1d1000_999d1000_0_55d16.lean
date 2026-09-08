@@ -14,7 +14,7 @@ import BoxLocalization
 open Complex MeasureTheory Real
 open scoped Topology
 
-namespace NoZerosInBox
+namespace NoZerosInBox_1d1000_999d1000_0_55d16
 
 /-- Chosen Blaschke ball center for `[(1 / 1000),(999 / 1000)] x [0,(55 / 16)]`. -/
 noncomputable def cPB : ℂ := ⟨((1 / 2)), ((55 / 32))⟩
@@ -105,4 +105,4 @@ theorem no_zeros_in_box_1d1000_999d1000_0_55d16
   have h1 := hd1 ρ hin
   omega
 
-end NoZerosInBox
+end NoZerosInBox_1d1000_999d1000_0_55d16
