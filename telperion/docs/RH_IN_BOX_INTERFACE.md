@@ -114,10 +114,28 @@ short, enclosures stay local and tight, and bands parallelize. `fold (constant f
 `zeta_count_eq_winding_generic` over `[1/2, 1 − a] × [0, T]` + `zeta_zero_on_line_of_quarter_clear`;
 (2) a band-additivity lemma over stacked height boxes.
 
-The `55/16` no-low-zeros residual (currently a documented hypothesis in `AllZeros_h100`) is separable:
-a small bottom box `[0, 1] × [0, 55/16]` with `∑ divisor = 0` (winding `0`, `d ≥ 1` ⟹ `s = ∅`) would
-prove no zeros below height `55/16` and make the height certificate fully self-contained. (That box's
-edges are off any zero, so it is NOT subject to the `ε`-sliver problem above.)
+The `55/16` no-low-zeros residual (currently a documented hypothesis in `AllZeros_h100`) is separable
+and closable, but the box shape needs care (two corrections over the naive version):
+
+- **Use the band `[a, 1 − a] × [0, 55/16]`, NOT `[0, 1] × [0, 55/16]`.** The full-width box puts the
+  pole `s = 1` at the corner `(1, 0)`, exactly as far from the ball center as the farthest box corner,
+  so `choose_ball`'s window `(dc2, d12)` collapses to a point and the driver REFUSES it (no valid `R`
+  excludes `s = 1`). The band's right edge `1 − a < 1` makes `|1 − c| >` the farthest-corner distance,
+  so a valid ball exists.
+- **The band alone does not clear the low strip -- the dVP region is SILENT below `55/16`.** The region
+  requires `55/16 ≤ |γ|`, so for heights `Im < 55/16` a hypothetical zero is NOT confined to
+  `[a, 1 − a]` -- it could a priori sit in the near-`Re = 1` sliver `(1 − a, 1)`. So the winding-0 band
+  cert clears `[a, 1 − a]`, and the two outer slivers are closed KERNEL-SIDE with Mathlib facts:
+  `riemannZeta_ne_zero_of_one_le_re` clears `Re ≥ 1` (hence `1 − a < Re < 1` reduces to the band edge
+  via the region's own boundary), and the functional-equation reflection (`zeta_zero_reflect` /
+  `riemannZeta_one_sub`) carries the `Re ≤ 0` side to the `Re ≥ 1` side. The kernel reduction lemma
+  `no_low_zeros_of_empty_band` (dVP-symmetry session's lane) assembles these; the box-driver session
+  emits the single winding-0 band Arb cert. Clean split.
+
+Result: discharging `hγ_all` makes the `T = 100` certificate fully self-contained (only the irreducible
+winding / edge-non-vanishing / enclosure Arb inputs remain). The band box's edges are still off any
+zero, so it is NOT subject to the `ε`-sliver problem above -- that concern was specific to a fold edge
+ON `Re = 1/2`.
 
 ## 7. Gotchas
 
