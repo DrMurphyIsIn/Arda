@@ -176,6 +176,32 @@ Then `hclear_low` = (#329 box) ∪ (1) ∪ (2) ∪ (3) ∪ (`Re ≥ 1`), and
 effect on the trust boundary: the bare classical `55/16` hypothesis becomes two more winding-0 Arb
 certificates -- UNIFORM with the existing boundary (winding + edges), not an enlargement of kind.
 
+### 6.3 SIMPLIFICATION (2026-09-08, post-#332): steps (1) and (2) are unnecessary -- reflect the
+### OTHER way
+
+Section 6.2 was written before #332 landed. #332 ships the LEFT-sliver cert
+`NoZerosInBox_0_1d1000_0_55d16.no_zeros_in_box_0_1d1000_0_55d16` on the box
+`[0, 1/1000] × [0, 55/16]` (Arb winding `N = 0`; a zero-free box makes no critical-line claim, so
+the driver no longer requires the box to straddle `1/2`). This inverts route 6.2: instead of
+clearing the RIGHT sliver directly (pole-straddling box + notch lemma) and reflecting the left
+sliver into it, clear the LEFT sliver directly and reflect the right sliver into IT:
+
+- `Re ∈ (0, 1/1000]`, `0 < Im ≤ 55/16`: directly inside the left-sliver box.
+- `Re ∈ [1/1000, 999/1000]`: the #329 band box.
+- `Re ∈ (999/1000, 1)`: `riemannZeta_reflect_line_eq_zero` (hypotheses: just `0 < Re ρ < 1` --
+  verified on main, NO `Im ≠ 0` side-condition) maps the zero to `1 − conj ρ` with
+  `Re = 1 − Re ρ ∈ (0, 1/1000)` and the SAME `Im ∈ (0, 55/16]` -- inside the left-sliver box.
+  Contradiction.
+- `Re ≥ 1` never arises (`hclear_low` quantifies over `0 < Re < 1`).
+
+The left sliver has no pole anywhere near it (`s = 1` is at distance `≈ 1`), so `choose_ball` is
+comfortable and the Arb edge enclosures are tame (`ζ(0) = −1/2`; the nearest trivial zero is at
+`−2`). **The pole-straddling box (6.2 step 1) and the pole-neighborhood notch lemma (6.2 step 2)
+do not need to be built.** `hclear_low` = (#329 band box) ∪ (#332 left-sliver box) ∪ (reflection),
+all three ingredients on main; the only remaining piece is the kernel-side glue lemma assembling
+them (dVP-symmetry session's lane). Net trust boundary: ONE extra winding-0 Arb certificate, not
+two, and no new kernel analytic lemma.
+
 ## 7. Gotchas
 
 - `hArb` is `∀ E, (split for E) → (big conjunction)` -- a universally-quantified bundle over the entire
