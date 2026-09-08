@@ -140,6 +140,62 @@ SmoothFlow* + unread family members) were swept in **round 2**
 gap closed by hand: both files are the Clay problem-statement mirrors with
 intentional `sorry` placeholders — statements only, no emitters.
 
+## Round-2 full-coverage sweep (2026-09-08, workflow `wf_2b47e971-164`)
+
+54 miners (6 blind-spot deep + 47 fast-scan + synthesis) classified the
+**2,162 remaining files** (1,567 prelude / 207 emitter-bearing / 388 mixed).
+The 207 bearing files reduced to just 9 raw novel reports → **8 canonical
+round-2 shapes** (4 high, 4 medium) — strong evidence the arithmetic surface is
+stereotyped and now saturated:
+
+**High:**
+1. **`continuous_barrier_bootstrap`** (`Euler/GevreyFlowBootstrap.lean`) — the
+   open-closed continuity bootstrap: conditional below-barrier bound ⟹
+   unconditional global bound via compact-least-hit + IVT. First *topological*
+   candidate shape (all prior kinds are discrete/algebraic).
+2. **`log_epsilon_witness_optimization`** (`LogarithmicCutoffOptimization.lean`)
+   — ∀-ε cutoff family instantiated at the witness `ε = exp(−4 log A)`, trading
+   `−log ε` + rpow penalty for a fixed log constant; the classical
+   interpolation-estimate closer.
+3. **`logconvex_endpoint_product`** (`NonnegativeLogConvex.lean`) — division-
+   and log-free, zero-tolerant log-convexity interpolation
+   `x(a)·x(b) ≤ x(s)·x(a+b−s)`; the engine for moment sequences / norm ladders.
+4. **`polynomial_weighted_geometric_closure`** (`PacketFieldSobolevBudget.lean`)
+   — `Σ p(n)·rⁿ` bounded uniformly in N by synthesizing the EXACT polynomial
+   remainder invariant (`partialSum + q(N)·rateᴺ = const` closed by `ring`);
+   mechanizable for arbitrary polynomial weight + rational rate.
+
+**Medium:** `graded_convolution_endpoint_calculus` (truncated-antidiagonal
+congruence + endpoint/delta extraction — the frozen-lower-triangle reformulation
+of order-n jet equations), `power_tower_recurrence_closure` (polynomial
+self-composition → `K^(3^q)` tower normal form), `gevrey_partition_composition`
+(Faà di Bruno / OrderedFinpartition closure of the Gevrey-2 class — companion to
+`gevrey_majorant`), `regular_word_linear_invariant` (linear counting invariant
+over a forbidden-factor word grammar, discharged by `omega` — opens a genuinely
+new DISCRETE axis).
+
+## Final coverage statement
+
+- Files classified: 257 (round 1) + 2,162 (round 2) + 1 by-hand
+  (`Euler/ContinuousGramPath.lean` — PRELUDE: Banach-algebra unit inversion,
+  `ContDiff` statements) = **2,420 / 2,420 = 100.00%** of the on-disk `.lean`
+  universe (verified by a local diff of classified names vs `find`; the
+  synthesis agent's feared ~63-file delta was a count artifact — the true gap
+  was exactly 1 file).
+- Canonical emitter-shape catalog for the repo: **28 shapes**
+  (20 round-1 + 8 round-2), of which **4 built + kernel-verified** on this
+  branch (`affine_ledger`, `quadratic_irrational`, `gevrey_majorant`,
+  `sqrt_root_elimination`).
+- Confidence the emitter-shape surface of the entire repo is mapped: **~90%**.
+  Honest residuals: (a) minority atoms inside the 388 MIXED files were
+  attributed by dominant shape — micro-shapes could hide there, a whole missed
+  shape is unlikely; (b) the new discrete axis (`regular_word_linear_invariant`)
+  postdates round-1 classification, so a few discrete siblings may sit misfiled
+  as prelude among round 1's 257; (c) `GevreyCompositionPartitions.lean`-style
+  OrderedFinpartition recursion should be grepped for siblings when authoring
+  that emitter. The bearing arithmetic is strongly stereotyped around Gevrey
+  majorants, truncated convolutions, and barrier/cutoff closers — all catalogued.
+
 ## Catalogued round-0 (high-value, not yet built)
 
 | Shape | Source file | Atom | Discharge | Notes |
