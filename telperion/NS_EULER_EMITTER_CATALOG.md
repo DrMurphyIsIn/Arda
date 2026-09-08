@@ -165,6 +165,11 @@ they feed.
   `AffineParamEndpointEmitter` / `AlgebraicBracketEmitter`), and `__init__`.
 - Tests green: `test_emit_ns_ledger.py` (11), `test_emit_quadratic_irrational.py`
   (10); registry-completeness gate green (`emitter_for` round-trips both kinds).
+- **Kernel-verified locally** (2026-09-08): the emitted Lean for all three shapes
+  (ledger margin, ledger min-lower, ℤ[√2] id + norm-lower — 5 theorems) compiled
+  clean against Mathlib v4.32.0 via the `proof/formalization` R3Cert project
+  (`lake build`, zero warnings after the `linter.unusedVariables` suppression for
+  statement-fidelity box hypotheses).
 - One pre-existing gate miss on `origin/main` (`EndpointGeomCapEmitter` unclassified)
   is untouched here — it is classified on the not-yet-merged Hermitian PR #326.
 - Lean kernel is the arbiter (CI `lake build`). `conjecture1_proved = False`.
