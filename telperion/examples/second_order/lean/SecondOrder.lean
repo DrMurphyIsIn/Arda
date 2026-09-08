@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family SecondOrder | input-hash ad6d7e97660786ba
+/- telperion 0.1.6 | family SecondOrder | input-hash a3087781508c204a
    6 theorems, 6 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

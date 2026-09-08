@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family BCSplit | input-hash a7436ac492accd7e
+/- telperion 0.1.6 | family BCSplit | input-hash 778ae651789c2fdd
    2 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

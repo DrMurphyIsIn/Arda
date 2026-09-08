@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family FiniteDecide | input-hash 2d891c18fc13e04e
+/- telperion 0.1.6 | family FiniteDecide | input-hash ecb3fc4e6c4d2f09
    1 theorems, 184 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family FwdTelescope | input-hash ad25cd7e1ae73d6f
+/- telperion 0.1.6 | family FwdTelescope | input-hash 35549f8fbd066214
    4 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

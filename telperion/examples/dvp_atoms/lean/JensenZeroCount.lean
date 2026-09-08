@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family JensenZeroCount | input-hash 2d33f2b9b76dc3f9
+/- telperion 0.1.6 | family JensenZeroCount | input-hash 9ac928ff0961c79b
    2 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

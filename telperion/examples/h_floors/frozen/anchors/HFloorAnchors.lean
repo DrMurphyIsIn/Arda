@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family HFloorAnchors | input-hash 427c1972c157f85a
+/- telperion 0.1.6 | family HFloorAnchors | input-hash dcad969563331d32
    46 theorems, 46 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

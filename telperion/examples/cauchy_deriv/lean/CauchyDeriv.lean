@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family CauchyDeriv | input-hash 3302c1c51c8d0195
+/- telperion 0.1.6 | family CauchyDeriv | input-hash 6fa04ace63f6e72a
    4 theorems, 3 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

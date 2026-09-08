@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family Scope | input-hash a88a93fedc8376bd
+/- telperion 0.1.6 | family Scope | input-hash 7991e8af298c0f7e
    5 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

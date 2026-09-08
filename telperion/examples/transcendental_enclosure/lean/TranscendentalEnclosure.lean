@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family TranscendentalEnclosure | input-hash dc9e59259b41d2af
+/- telperion 0.1.6 | family TranscendentalEnclosure | input-hash 7f518773e7a68ae4
    6 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

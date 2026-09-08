@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family IntegralityGate | input-hash acdc553fa1e8bb15
+/- telperion 0.1.6 | family IntegralityGate | input-hash 4c5662064ba7750c
    11 theorems, 11 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

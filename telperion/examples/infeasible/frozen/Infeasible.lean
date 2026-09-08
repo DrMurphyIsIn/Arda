@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family Infeasible | input-hash 66092f47c18f707e
+/- telperion 0.1.6 | family Infeasible | input-hash bc6766ab3e55271f
    2 theorems, 4 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

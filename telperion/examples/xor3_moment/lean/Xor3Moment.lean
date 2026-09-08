@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family Xor3Moment | input-hash bbc35922217a257d
+/- telperion 0.1.6 | family Xor3Moment | input-hash 9e48842a058a8ef4
    1 theorems, 1 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
