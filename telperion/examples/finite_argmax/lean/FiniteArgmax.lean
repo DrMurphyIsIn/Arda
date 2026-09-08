@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family FiniteArgmax | input-hash b300a3cbd7d2e2ad
+/- telperion 0.1.6 | family FiniteArgmax | input-hash ee8875f2e904c6ff
    7 theorems, 7 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

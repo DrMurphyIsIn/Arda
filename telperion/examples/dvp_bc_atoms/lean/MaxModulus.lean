@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family MaxModulus | input-hash bd8b6bed8e3cd9f1
+/- telperion 0.1.6 | family MaxModulus | input-hash 067d8a3c90fb9bfb
    2 theorems, 2 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

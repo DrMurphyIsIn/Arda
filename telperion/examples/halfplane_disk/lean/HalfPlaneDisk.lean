@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family HalfPlaneDisk | input-hash cacc492b1eb7dc3e
+/- telperion 0.1.6 | family HalfPlaneDisk | input-hash a865c9ae9351fadb
    5 theorems, 3 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

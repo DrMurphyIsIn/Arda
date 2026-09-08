@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family MagnitudeSplit | input-hash 9a90665ecdfada92
+/- telperion 0.1.6 | family MagnitudeSplit | input-hash eb8be6c9364fa496
    3 theorems, 3 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

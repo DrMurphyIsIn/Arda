@@ -1,6 +1,6 @@
 {
   "family": "G1Floors",
-  "input_hash": "b3fb1978b77ace2f5df0740c3545ee3f9c3c29225e016cf004f52c8c9e73fc8c",
+  "input_hash": "3c690c6e88fa7dbb05e074ac3b5cda03e07c581a8e7d433d7e26f647a4b81773",
   "tool_version": "0.1.6",
   "files": [
     "G1Floors.lean"

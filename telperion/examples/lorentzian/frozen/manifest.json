@@ -1,6 +1,6 @@
 {
   "family": "Lorentzian",
-  "input_hash": "0d6ea5ebce73279ac1b326095ff13826241fcbda4533795f680c4e103e0a6b58",
+  "input_hash": "74e4fb7feac136d4b424d0a96ebda0baad9a49961910a0592b5fc6d04cd86b8b",
   "tool_version": "0.1.6",
   "files": [
     "Lorentzian.lean"

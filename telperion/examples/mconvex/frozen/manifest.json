@@ -1,6 +1,6 @@
 {
   "family": "MConvex",
-  "input_hash": "cd9c5340aaa64c209689aa69c39be20b3713bb40ac7e0bfc60df55065aa109f1",
+  "input_hash": "6f20d4f6d76e92366d83219aa9b64333e03d933c3616c62642dfb5effbb52323",
   "tool_version": "0.1.6",
   "files": [
     "MConvex.lean"

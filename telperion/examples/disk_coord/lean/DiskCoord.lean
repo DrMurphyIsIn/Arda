@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family DiskCoord | input-hash b77d10c57a57619c
+/- telperion 0.1.6 | family DiskCoord | input-hash 8ca714f64e8520b5
    3 theorems, 3 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

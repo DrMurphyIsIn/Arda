@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family SOSSDP | input-hash 29b33ad0263ba6c7
+/- telperion 0.1.6 | family SOSSDP | input-hash a4f4d696c2e006c1
    3 theorems, 12 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/

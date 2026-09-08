@@ -1,6 +1,6 @@
 {
   "family": "SOSRefFind",
-  "input_hash": "e6e01cf4ba3f90c6cbdb1e6fe3c0b67906b000c0c963eb6f1bc99b934e3e5123",
+  "input_hash": "dad1e1acbd2b5f4c2826139269acaa2671da7af2457c10892b753a456d0ac609",
   "tool_version": "0.1.6",
   "files": [
     "SOSRefutationFind.lean"
