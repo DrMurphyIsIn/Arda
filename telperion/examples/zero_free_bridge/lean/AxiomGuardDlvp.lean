@@ -50,3 +50,4 @@ import DlvpZetaSymmetry
 #print axioms ZeroFreeBridge.zeta_zero_on_line_of_right_half_clear
 #print axioms ZeroFreeBridge.zeta_zero_on_line_of_quarter_clear
 #print axioms ZeroFreeBridge.riemannZeta_reflect_line_eq_zero
+#print axioms ZeroFreeBridge.riemannZeta_ne_zero_near_one
