@@ -258,3 +258,4 @@ import StripClear
 #print axioms DiffractionCore.intervalIntegrable_finsetSum
 #print axioms DiffractionCore.zetaPoleCompanion_count_eq_winding_with_pole
 #print axioms DiffractionCore.zeta_strip_zero_count_with_pole
+#print axioms DiffractionCore.argChangeVert_conj_double
