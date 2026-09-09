@@ -246,3 +246,5 @@ import StripClear
 #print axioms DiffractionCore.analyticOnNhd_zetaPoleCompanion
 #print axioms DiffractionCore.meromorphicOrderAt_zetaPoleCompanion_ne_top
 #print axioms DiffractionCore.divisor_zetaPoleCompanion_ball_support_finite
+#print axioms DiffractionCore.analytic_blaschke_split_ball
+#print axioms DiffractionCore.zetaPoleCompanion_blaschke_split_ball
