@@ -33,6 +33,7 @@ import Mathlib
 import DlvpZetaZeroFree
 import ZetaZeroConfinement
 import RHInBox
+import RHInBoxBands
 
 open Complex MeasureTheory Real
 open scoped Topology
@@ -130,5 +131,41 @@ theorem all_nontrivial_zeros_up_to_height_on_line
   exact RHInBox.rh_in_box_of_certificate a (1 - a) 0 T c R N hRpos hsig hTle
     hbox_ball hs1 Ton hTline hTzero hTbox hwind harb hcount
     ρ ⟨hlo, hhi⟩ ⟨le_of_lt him0, himT⟩ hzero
+
+/-- **TILED capstone: all nontrivial zeros up to height `T` on the line, from PER-BAND box
+    certificates.**  The T-scaling form of `all_nontrivial_zeros_up_to_height_on_line`: instead of
+    ONE box certificate over `[a, 1-a] × [0, T]` (whose winding count `N ~ (T/2π)·log T` and
+    length-`T` vertical edges make a single tall certificate expensive), take `n` consecutive
+    height-bands `b 0 = 0 < b 1 < ... < b n = T` and, for each `i < n`, the CONCLUSION of an
+    `RHInBox.rh_in_box_of_certificate` instance on the band box `[a, 1-a] × [b i, b (i+1)]`
+    (`hbands` — each band carries its own small winding count, short vertical edges, and local
+    on-line list; bands are independent and parallelizable).
+
+    Composition: dVP+FE confinement (`ZetaZeroConfinement.zero_in_band`) puts every nontrivial
+    zero up to `T` in the band `[a, 1-a]`; height-tiling (`RHInBoxBands.rh_box_of_bands`) glues the
+    per-band on-line conclusions over `[0, T]`.  The height floor `hγ_all` is the usual residual
+    (dischargeable via `StripClear`/`no_low_zeros_of_strip_clear` from the two winding-0 low boxes).
+
+    This makes a `T = 200` (or `T = 1000`) certificate a PURE DRIVER exercise: emit `n` band
+    certificates + reuse the low-strip certs; no further kernel work.
+
+    conjecture1_proved = False. -/
+theorem all_nontrivial_zeros_up_to_height_on_line_tiled
+    (a T : ℝ) (b : ℕ → ℝ) (n : ℕ) (hn : 1 ≤ n) (hmono : Monotone b)
+    (hb0 : b 0 = 0) (hbn : b n = T)
+    (haC : a ≤ ZeroFreeBridge.dlvpRateC / Real.log T)
+    (ha0 : 0 < a)
+    (hT : 100 ≤ T)
+    (hbands : ∀ i, i < n → ∀ ρ : ℂ, (a ≤ ρ.re ∧ ρ.re ≤ 1 - a) →
+      (b i ≤ ρ.im ∧ ρ.im ≤ b (i + 1)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hγ_all : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ T → 55 / 16 ≤ |ρ.im|) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ T → ρ.re = 1 / 2 := by
+  intro ρ hzero him0 himT
+  -- Step 1: confinement — ρ is in the band [a, 1-a].
+  obtain ⟨hlo, hhi⟩ := ZetaZeroConfinement.zero_in_band a T haC ha0 hT hzero him0 himT
+    (hγ_all ρ hzero him0 himT)
+  -- Step 2: height-tiling — glue the per-band on-line conclusions over [b 0, b n] = [0, T].
+  exact RHInBoxBands.rh_box_of_bands a (1 - a) b hmono n hn hbands ρ ⟨hlo, hhi⟩
+    ⟨by rw [hb0]; exact le_of_lt him0, by rw [hbn]; exact himT⟩ hzero
 
 end AllZerosUpToHeight

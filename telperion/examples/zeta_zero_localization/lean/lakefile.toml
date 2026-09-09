@@ -1,5 +1,5 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100", "RHInBoxBands", "NoZerosInBox_1d1000_999d1000_0_55d16", "NoZerosInBox_0_1d1000_0_55d16", "RHInBox_1d1000000_999999d1000000_100_200", "AllZeros_h200", "StripClear"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100", "RHInBoxBands", "NoZerosInBox_1d1000_999d1000_0_55d16", "NoZerosInBox_0_1d1000_0_55d16", "RHInBox_1d1000000_999999d1000000_100_200", "AllZeros_h200", "RHInBox_1d2000000_1999999d2000000_0_100", "RHInBox_1d2000000_1999999d2000000_100_150", "RHInBox_1d2000000_1999999d2000000_150_200", "RHInBox_1d2000000_1999999d2000000_200_250", "RHInBox_1d2000000_1999999d2000000_250_300", "RHInBox_1d2000000_1999999d2000000_300_350", "RHInBox_1d2000000_1999999d2000000_350_400", "RHInBox_1d2000000_1999999d2000000_400_450", "RHInBox_1d2000000_1999999d2000000_450_500", "RHInBox_1d2000000_1999999d2000000_500_550", "RHInBox_1d2000000_1999999d2000000_550_600", "RHInBox_1d2000000_1999999d2000000_600_650", "RHInBox_1d2000000_1999999d2000000_650_700", "RHInBox_1d2000000_1999999d2000000_700_750", "RHInBox_1d2000000_1999999d2000000_750_800", "RHInBox_1d2000000_1999999d2000000_800_850", "RHInBox_1d2000000_1999999d2000000_850_900", "RHInBox_1d2000000_1999999d2000000_900_950", "RHInBox_1d2000000_1999999d2000000_950_1000", "AllZeros_h1000", "StripClear"]
 
 [[require]]
 name = "mathlib"
@@ -110,6 +110,55 @@ name = "RHInBox_1d1000000_999999d1000000_100_200"
 # a=1/10^6, T=200 (effective-rate edge haC_200 in-kernel).  conjecture1_proved = False.
 [[lean_lib]]
 name = "AllZeros_h200"
+
+# TEN BANDS for the tiled T=1000 milestone (width a = 1/2e6; windings 29,50,59,64,67,72,73,77,78,80;
+# sum = 649 = N(1000)).  Emitted by generate.py --box 1/2000000,1999999/2000000,<lo>,<hi>.
+
+# TILED T=1000 MILESTONE: all nontrivial zeta zeros up to height 1000 on Re = 1/2, from the
+# ten band certificates via the tiled capstone (haC_1000: 1/2e6 <= dlvpRateC/log 1000 in-kernel).
+[[lean_lib]]
+name = "AllZeros_h1000"
+
+
+# NINETEEN density-adaptive bands for T=1000 (n = 23..41; 50-bands past height 100).
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_0_100"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_100_150"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_150_200"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_200_250"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_250_300"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_300_350"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_350_400"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_400_450"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_450_500"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_500_550"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_550_600"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_600_650"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_650_700"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_700_750"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_750_800"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_800_850"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_850_900"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_900_950"
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_950_1000"
 # STRIP-CLEAR GLUE: composes the two winding-0 certs above with the critical-line reflection
 # (ZeroFreeBridge.riemannZeta_reflect_line_eq_zero) into the full-strip clearing hclear_low,
 # discharges the 55/16 height floor via no_low_zeros_of_strip_clear, and re-exports the
