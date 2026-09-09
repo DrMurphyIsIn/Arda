@@ -539,4 +539,111 @@ theorem monotoneOn_deriv_log_Gamma :
   exact ((Real.hasDerivAt_log
     (Real.Gamma_pos_of_pos (Set.mem_Ioi.mp hx)).ne').comp x hR).differentiableAt
 
+/-! ## Brick 3b′-ii-b: the REAL-AXIS SQUEEZE — the anchor discharged on `[1, 3]`.
+
+Sandwich `d(x+N) = ψ(x+N) − log(x+N)` for real `x ∈ [1,3]` between the integer-anchor
+sequences: `ψ` monotone (pillar ii-a) gives `ψ(1+N) ≤ ψ(x+N) ≤ ψ(3+N)`; `log` monotone gives
+the reverse for the log part; both outer sequences → 0 by the integer anchor (3b′-i, plus its
+`N ↦ N+2` shift) and the vanishing log gap (`Real.tendsto_log_comp_add_sub_log`).  Squeeze ⟹
+`d(x+N) → 0` for every real `x ∈ [1,3]` — the anchor hypothesis of
+`norm_digamma_sub_log_le_of_anchor` is DISCHARGED on the real segment, yielding the first
+UNCONDITIONAL effective Binet points (`norm_digamma_sub_log_le_ofReal`).  Brick (iii) extends
+to complex `s` by the identity theorem.  conjecture1_proved = False. -/
+
+/-- The real Binet difference `deriv (log ∘ Γ) t − log t`. -/
+noncomputable def binetR (t : ℝ) : ℝ := deriv (Real.log ∘ Real.Gamma) t - Real.log t
+
+/-- Pointwise complex-to-real identification: for `t > 0`,
+    `ψ(↑t) − log ↑t = ↑(binetR t)`. -/
+theorem digamma_sub_log_ofReal_eq {t : ℝ} (ht : 0 < t) :
+    Complex.digamma ((t : ℝ) : ℂ) - Complex.log ((t : ℝ) : ℂ) = ((binetR t : ℝ) : ℂ) := by
+  rw [digamma_ofReal_eq ht, ← Complex.ofReal_log ht.le, ← Complex.ofReal_sub]
+  rfl
+
+/-- **The real integer anchor:** `binetR (1+N) → 0` (real part of brick 3b′-i). -/
+theorem tendsto_binetR_one_add : Filter.Tendsto (fun N : ℕ => binetR (1 + N))
+    Filter.atTop (nhds 0) := by
+  have h := (Complex.continuous_re.tendsto (0 : ℂ)).comp tendsto_digamma_sub_log_one_add_nat
+  rw [Complex.zero_re] at h
+  refine h.congr fun N => ?_
+  show (Complex.digamma (1 + N) - Complex.log (1 + N)).re = binetR (1 + N)
+  have hcast : (1 : ℂ) + (N : ℂ) = (((1 + N : ℝ)) : ℂ) := by push_cast; ring
+  rw [hcast, digamma_sub_log_ofReal_eq (by positivity), Complex.ofReal_re]
+
+/-- Shifted real anchor: `binetR (3+N) → 0` (the `N ↦ N+2` shift of the integer anchor). -/
+theorem tendsto_binetR_three_add : Filter.Tendsto (fun N : ℕ => binetR (3 + N))
+    Filter.atTop (nhds 0) := by
+  have h := (Filter.tendsto_add_atTop_iff_nat (f := fun N : ℕ => binetR (1 + N))
+    (l := nhds 0) 2).mpr tendsto_binetR_one_add
+  refine h.congr fun N => ?_
+  show binetR (1 + ↑(N + 2)) = binetR (3 + N)
+  congr 1
+  push_cast
+  ring
+
+/-- The log gap vanishes: `log(3+N) − log(1+N) → 0`. -/
+theorem tendsto_log_gap : Filter.Tendsto
+    (fun N : ℕ => Real.log (3 + N) - Real.log (1 + N)) Filter.atTop (nhds 0) := by
+  have hn : Filter.Tendsto (fun N : ℕ => (1 + N : ℝ)) Filter.atTop Filter.atTop := by
+    refine Filter.tendsto_atTop_mono (fun N => ?_) tendsto_natCast_atTop_atTop
+    push_cast
+    linarith
+  have h := (Real.tendsto_log_comp_add_sub_log 2).comp hn
+  refine h.congr fun N => ?_
+  show Real.log ((1 + N) + 2) - Real.log (1 + N) = Real.log (3 + N) - Real.log (1 + N)
+  congr 2
+  ring
+
+/-- **THE SQUEEZE (brick ii-b):** for real `x ∈ [1, 3]`, `binetR (x+N) → 0`. -/
+theorem tendsto_binetR_add {x : ℝ} (hx1 : 1 ≤ x) (hx3 : x ≤ 3) :
+    Filter.Tendsto (fun N : ℕ => binetR (x + N)) Filter.atTop (nhds 0) := by
+  have hψ := monotoneOn_deriv_log_Gamma
+  have hlow : Filter.Tendsto
+      (fun N : ℕ => binetR (1 + N) - (Real.log (3 + N) - Real.log (1 + N)))
+      Filter.atTop (nhds (0 - 0)) := tendsto_binetR_one_add.sub tendsto_log_gap
+  have hup : Filter.Tendsto
+      (fun N : ℕ => binetR (3 + N) + (Real.log (3 + N) - Real.log (1 + N)))
+      Filter.atTop (nhds (0 + 0)) := tendsto_binetR_three_add.add tendsto_log_gap
+  rw [sub_zero] at hlow
+  rw [add_zero] at hup
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le hlow hup (fun N => ?_) (fun N => ?_)
+  · -- lower: ψ(1+N) − log(3+N) ≤ ψ(x+N) − log(x+N)
+    have hm : deriv (Real.log ∘ Real.Gamma) (1 + N) ≤ deriv (Real.log ∘ Real.Gamma) (x + N) :=
+      hψ (Set.mem_Ioi.mpr (by positivity)) (Set.mem_Ioi.mpr (by positivity)) (by linarith)
+    have hl : Real.log (x + N) ≤ Real.log (3 + N) :=
+      Real.log_le_log (by positivity) (by linarith)
+    simp only [binetR]
+    linarith
+  · -- upper: ψ(x+N) − log(x+N) ≤ ψ(3+N) − log(1+N)
+    have hm : deriv (Real.log ∘ Real.Gamma) (x + N) ≤ deriv (Real.log ∘ Real.Gamma) (3 + N) :=
+      hψ (Set.mem_Ioi.mpr (by positivity)) (Set.mem_Ioi.mpr (by positivity)) (by linarith)
+    have hl : Real.log (1 + N) ≤ Real.log (x + N) :=
+      Real.log_le_log (by positivity) (by linarith)
+    simp only [binetR]
+    linarith
+
+/-- **The COMPLEX anchor on the real segment `[1,3]`** — brick ii-b's conclusion in the exact
+    shape `norm_digamma_sub_log_le_of_anchor` consumes. -/
+theorem tendsto_digamma_sub_log_ofReal {x : ℝ} (hx1 : 1 ≤ x) (hx3 : x ≤ 3) :
+    Filter.Tendsto
+      (fun N : ℕ => Complex.digamma (((x : ℝ) : ℂ) + N) - Complex.log (((x : ℝ) : ℂ) + N))
+      Filter.atTop (nhds 0) := by
+  have h := (Complex.continuous_ofReal.tendsto (0 : ℝ)).comp (tendsto_binetR_add hx1 hx3)
+  rw [Complex.ofReal_zero] at h
+  refine h.congr fun N => ?_
+  show ((binetR (x + N) : ℝ) : ℂ)
+      = Complex.digamma (((x : ℝ) : ℂ) + N) - Complex.log (((x : ℝ) : ℂ) + N)
+  have hcast : ((x : ℝ) : ℂ) + (N : ℂ) = (((x + N : ℝ)) : ℂ) := by push_cast; ring
+  rw [hcast, digamma_sub_log_ofReal_eq (by positivity)]
+
+/-- **UNCONDITIONAL effective Binet points** (anchor fully discharged): for real `x ∈ [2, 3]`,
+    `‖ψ(x) − log x‖ ≤ 1/(x−1)`.  The first Binet bounds in this corpus with NO analytic
+    hypothesis remaining.  conjecture1_proved = False. -/
+theorem norm_digamma_sub_log_le_ofReal {x : ℝ} (hx2 : 2 ≤ x) (hx3 : x ≤ 3) :
+    ‖Complex.digamma ((x : ℝ) : ℂ) - Complex.log ((x : ℝ) : ℂ)‖ ≤ 1 / (x - 1) := by
+  have hre : (2 : ℝ) ≤ (((x : ℝ) : ℂ)).re := by simpa using hx2
+  have h := norm_digamma_sub_log_le_of_anchor hre
+    (tendsto_digamma_sub_log_ofReal (by linarith) hx3)
+  simpa using h
+
 end ZeroFreeBridge
