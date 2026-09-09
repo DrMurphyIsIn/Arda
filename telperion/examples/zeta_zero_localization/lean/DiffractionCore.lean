@@ -2615,4 +2615,59 @@ theorem zeta_strip_zero_count_with_pole
   have hρ1 : ρ ≠ 1 := by rintro rfl; exact riemannZeta_one_ne_zero hζ0
   exact hcapH ρ hre him (zetaPoleCompanion_eq_zero_iff.mpr ⟨hρ1, hζ0⟩)
 
+/-! ## Toward the literal RvM: the CONJUGATION fold (one of the two symmetry folds).
+
+RvM's `Δ_box arg = 2·(…)` uses two symmetries of the completed zeta: the reflection `s ↦ 1−s`
+(`argChangeVert_fold`, already merged) and the Schwarz conjugation `s ↦ s̄` folding the lower half
+onto the upper.  Here is the conjugation fold, generically: for any `f` with `f(s̄) = conj(f s)`,
+differentiable along the line, and with `logDeriv f` integrable on `[−T,T]`,
+
+  `AV(f, σ, −T, T) = 2 · AV(f, σ, 0, T)`
+
+— because `Re(logDeriv f (σ + iy))` is EVEN in `y` (`logDeriv f (σ − iy) = conj(logDeriv f(σ+iy))`,
+and `Re ∘ conj = Re`).  Applies to `ζ`, `Γℝ`, and `Λ₀` (all Schwarz-symmetric) on zero-free
+segments.  The remaining literal-RvM work is the reflection-side `θ + πS` identification and the
+`T0 → 0⁺` base — still genuine construction, not claimed.  conjecture1_proved = False. -/
+
+/-- **The conjugation (Schwarz) fold of the vertical argument change**: for `f(s̄) = conj(f s)`,
+    `AV(f, σ, −T, T) = 2·AV(f, σ, 0, T)`.  The lower half mirrors the upper. -/
+theorem argChangeVert_conj_double (f : ℂ → ℂ) (σ T : ℝ) (hT : 0 ≤ T)
+    (hconj : ∀ z : ℂ, f ((starRingEnd ℂ) z) = (starRingEnd ℂ) (f z))
+    (hdiff : ∀ y : ℝ, DifferentiableAt ℂ f ((σ : ℂ) + y * I))
+    (hint : IntervalIntegrable (fun y : ℝ => logDeriv f ((σ : ℂ) + y * I))
+      MeasureTheory.volume (-T) T) :
+    argChangeVert f σ (-T) T = 2 * argChangeVert f σ 0 T := by
+  -- evenness of the real-part integrand
+  have heven : ∀ y : ℝ, (logDeriv f ((σ : ℂ) + ((-y : ℝ) : ℂ) * I)).re
+      = (logDeriv f ((σ : ℂ) + ((y : ℝ) : ℂ) * I)).re := by
+    intro y
+    have hs : ((σ : ℂ) + ((-y : ℝ) : ℂ) * I) = (starRingEnd ℂ) ((σ : ℂ) + ((y : ℝ) : ℂ) * I) := by
+      apply Complex.ext <;> simp
+    rw [hs, logDeriv_conj_of_conj_symm hconj (hdiff y), Complex.conj_re]
+  -- integrability on the two half-segments
+  have hint1 : IntervalIntegrable (fun y : ℝ => logDeriv f ((σ : ℂ) + y * I))
+      MeasureTheory.volume (-T) 0 :=
+    hint.mono_set (by
+      rw [Set.uIcc_of_le (by linarith : (-T : ℝ) ≤ 0), Set.uIcc_of_le (by linarith : (-T : ℝ) ≤ T)]
+      exact Set.Icc_subset_Icc_right hT)
+  have hint2 : IntervalIntegrable (fun y : ℝ => logDeriv f ((σ : ℂ) + y * I))
+      MeasureTheory.volume 0 T :=
+    hint.mono_set (by
+      rw [Set.uIcc_of_le hT, Set.uIcc_of_le (by linarith : (-T : ℝ) ≤ T)]
+      exact Set.Icc_subset_Icc_left (by linarith : (-T : ℝ) ≤ 0))
+  unfold argChangeVert
+  rw [← intervalIntegral.integral_add_adjacent_intervals hint1 hint2, Complex.add_re]
+  have hre1 := intervalIntegral.intervalIntegral_re (𝕜 := ℂ) hint1
+  have hre2 := intervalIntegral.intervalIntegral_re (𝕜 := ℂ) hint2
+  simp only [RCLike.re_to_complex] at hre1 hre2
+  rw [← hre1, ← hre2]
+  have hcn := intervalIntegral.integral_comp_neg
+    (fun y : ℝ => (logDeriv f ((σ : ℂ) + (y : ℂ) * I)).re) (a := 0) (b := T)
+  simp only [neg_zero] at hcn
+  have hswap : (∫ y in (-T)..0, (logDeriv f ((σ : ℂ) + (y : ℂ) * I)).re)
+      = ∫ y in (0 : ℝ)..T, (logDeriv f ((σ : ℂ) + (y : ℂ) * I)).re := by
+    rw [← hcn]
+    exact intervalIntegral.integral_congr (fun y _ => heven y)
+  rw [hswap]; ring
+
 end DiffractionCore
