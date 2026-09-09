@@ -3102,4 +3102,42 @@ theorem xiTele_count_eq_winding
   · exact intervalIntegrable_diffBox_vert ⟨hsig, le_refl _⟩ hT hEholo
   · exact intervalIntegrable_diffBox_vert ⟨le_refl _, hsig⟩ hT hEholo
 
+/-! ## BRICK 3 (pointwise): the `logDeriv ξ` split — the pole/`+1` factor separated from `Λ`.
+
+`ξ = ½s(s−1)·Λ` off `{0,1}`, so `logDeriv ξ = logDeriv[½s(s−1)] + logDeriv Λ`.  The polynomial's
+log-derivative is `1/s + 1/(s−1)` (the `½` drops), whose argument change along the right-half path
+is the `+1`; the `Λ` part's is `θ + πS` (`completedZeta_pathL_eq_theta_add_piS`).
+conjecture1_proved = False. -/
+
+/-- `logDeriv[½s(s−1)] = 1/s + 1/(s−1)` (the constant `½` drops out of the log-derivative). -/
+theorem logDeriv_halfPoly {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
+    logDeriv (fun z : ℂ => (1 / 2) * (z * (z - 1))) s = s⁻¹ + (s - 1)⁻¹ := by
+  have hsub : s - 1 ≠ 0 := sub_ne_zero.mpr hs1
+  have hid : HasDerivAt (fun z : ℂ => z) 1 s := hasDerivAt_id' (x := s)
+  have hprod : HasDerivAt (fun z : ℂ => z * (z - 1)) (1 * (s - 1) + s * 1) s :=
+    hid.mul (hid.sub_const 1)
+  have hd : HasDerivAt (fun z : ℂ => (1 / 2) * (z * (z - 1)))
+      ((1 / 2) * (1 * (s - 1) + s * 1)) s := hprod.const_mul (1 / 2)
+  rw [logDeriv_apply, hd.deriv]
+  field_simp
+
+/-- **The `logDeriv ξ` split**: `logDeriv ξ (s) = (1/s + 1/(s−1)) + logDeriv Λ (s)` for `s ∉ {0,1}`,
+    `ζ s ≠ 0`, `Γℝ s ≠ 0`. -/
+theorem logDeriv_xiTele_split {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
+    (hζ : riemannZeta s ≠ 0) (hG : Gammaℝ s ≠ 0) :
+    logDeriv xiTele s = (s⁻¹ + (s - 1)⁻¹) + logDeriv completedRiemannZeta s := by
+  have hΛ : completedRiemannZeta s ≠ 0 := by
+    have hval : completedRiemannZeta s = riemannZeta s * Gammaℝ s := by
+      rw [riemannZeta_def_of_ne_zero hs0]; field_simp
+    rw [hval]; exact mul_ne_zero hζ hG
+  have hfac : (1 / 2 : ℂ) * (s * (s - 1)) ≠ 0 :=
+    mul_ne_zero (by norm_num) (mul_ne_zero hs0 (sub_ne_zero.mpr hs1))
+  have heq : xiTele =ᶠ[nhds s]
+      fun z : ℂ => ((1 / 2) * (z * (z - 1))) * completedRiemannZeta z := by
+    filter_upwards [isOpen_ne.mem_nhds hs0, isOpen_ne.mem_nhds hs1] with z hz0 hz1
+    exact xiTele_eq_completedZeta_mul hz0 hz1
+  rw [RHInBoxAnalytic.logDeriv_congr_nhds heq,
+    logDeriv_mul s hfac hΛ (by fun_prop) (differentiableAt_completedZeta hs0 hs1),
+    logDeriv_halfPoly hs0 hs1]
+
 end DiffractionCore

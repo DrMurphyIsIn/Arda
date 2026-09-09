@@ -277,3 +277,5 @@ import StripClear
 #print axioms DiffractionCore.meromorphicOrderAt_xiTele_ne_top
 #print axioms DiffractionCore.divisor_xiTele_ball_support_finite
 #print axioms DiffractionCore.xiTele_count_eq_winding
+#print axioms DiffractionCore.logDeriv_halfPoly
+#print axioms DiffractionCore.logDeriv_xiTele_split
