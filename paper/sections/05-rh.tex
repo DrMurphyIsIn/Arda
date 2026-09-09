@@ -7,7 +7,7 @@ the Riemann Hypothesis.} What we have is a connected body of genuine,
 machine-checked results \emph{about} the zeta function---built in the order a
 reader should understand them: first where the zeros \emph{cannot} be (zero-free
 regions, culminating in an effective de la Vallée-Poussin region), then where
-they \emph{are} (a complete finite Turing verification to height $1000$), and
+they \emph{are} (a complete finite Turing verification to height $4000$), and
 finally what they \emph{mean} (the finite-height explicit formula---the
 diffraction identity of Dyson's quasicrystal picture \cite{dyson2009}). Each
 result is stated with an honest account of how it sits relative to the classical
@@ -101,6 +101,20 @@ second, independent, honestly-scoped kernel-verified statement about $\zeta$,
 produced by the same pipeline and exhibiting yet another certificate shape (a
 real-rootedness / hyperbolicity certificate rather than a positivity one).
 
+A second criterion has since joined it in the same prefix-certificate shape:
+\emph{Li's criterion}. Building on an external Lean formalization of the upstream
+reduction ($\mathrm{RH} \leftrightarrow \forall n,\ 0 \le
+\operatorname{Re}(\text{taylorCoeff}\ \xi\ n)$; credited in the repository's
+\texttt{NOTICE}), a Telperion emitter certifies finite rungs of the positivity
+ladder, each from a certified positive rational lower bound on the actual $\xi$
+Taylor coefficient --- the bound an explicit Arb hypothesis, the same trust seam
+as every enclosure in this section. Two flags travel with it, stated as
+sharply as the Borel--Carath\'eodory draft's: at this writing the emitted Lean is
+verified locally but not yet in the CI compile (it awaits the upstream library as
+a build dependency), so it does not yet sit on the CI-guarded list; and the
+uniform $\forall n$ \emph{is} RH itself --- finitely many rungs are emphatically
+not, and never will be.
+
 \subsection{A third route: verifying RH inside a box}
 
 A different question again is not whether the zeros are simple or where they are
@@ -144,8 +158,8 @@ per-band certificates---each band carrying its own small winding count, short
 contour edges, and local on-line list, so the per-band numeric certificates stay
 cheap, independent, and parallelizable. The first stack, \texttt{AllZeros\_h200},
 doubled the height to $200$; \texttt{AllZeros\_h1000} tiled \emph{nineteen}
-bands to $T = 1000$ ($649$ zeros); and the current milestone,
-\texttt{AllZeros\_h2000} extended the ladder with twenty further bands of height
+bands to $T = 1000$ ($649$ zeros); a further stack,
+\texttt{AllZeros\_h2000}, extended the ladder with twenty further bands of height
 $50$ to $T = 2000$ ($1517$ zeros). The ladder is now \emph{unbounded in
 principle}: segment certificates over any $[A, B]$
 (\texttt{all\_nontrivial\_zeros\_in\_segment\_on\_line}) compose with an
@@ -195,6 +209,58 @@ emphatically \emph{not} a proof of RH---but it is a kernel-verified, complete fi
 Turing verification up to height $4000$, and it exhibits a third distinct
 certificate shape (winding / argument-principle zero-counting).
 
+\subsection{Toward the counting formula: shrinking the last numeric input}
+
+The tiled certificates above consume their per-band winding integers as
+documented numeric hypotheses. The classical machine that \emph{derives} such
+counts is the Riemann--von Mangoldt formula, $N(T) = \theta(T)/\pi + 1 + S(T)$
+--- and a program to bring that machine into the kernel is now largely built.
+We report it at exact strength: every claim in this subsection is a merged,
+CI-axiom-guarded theorem, and the one thing that is \emph{not} yet a theorem is
+named at the end.
+
+The classical obstruction was that Mathlib has no continuous-argument-along-a-path;
+the formalization dissolves it branch-free: the continuous argument change of $f$
+along a zero-avoiding path \emph{is} $\operatorname{Im} \int f'/f$, so $S(T)$ is
+\emph{defined} (as the argument change of $\zeta$ along the classical route
+$2 \to 2+iT \to \tfrac12+iT$), and the Riemann--Siegel $\theta$ is \emph{identified}:
+the Archimedean part of that same route equals $\theta(T)$, because $\Gamma_{\mathbb R}$
+has neither zeros nor poles on the rectangle (so its winding vanishes) and is real
+on the real axis. On the same contour the completed-zeta argument change then
+splits exactly,
+\[
+  \Delta_L \arg \Lambda \;=\; \theta(T) + \pi S(T),
+\]
+with a single hypothesis --- $\zeta \ne 0$ on the height-$T$ horizontal, the
+classical ``$T$ not a zero ordinate'' caveat, carried as a hypothesis rather than
+prose. Two symmetry folds (the functional-equation reflection and Schwarz
+conjugation) give $\Delta_{\mathrm{box}} = 2\,\Delta_L$.
+
+The formula's $+1$ is the pole of $\zeta$ at $s = 1$, and it too is now a theorem
+rather than a citation: the companion $H(s) = (s-1)\zeta(s)$, with the removable
+singularity filled by the residue, is \emph{entire}, and --- the lesson of this
+campaign applied --- its zero set is not asserted but \emph{proved}:
+$H(z) = 0 \leftrightarrow z \ne 1 \wedge \zeta(z) = 0$, in the axiom guard. The
+box argument principle, made generic and instantiated at $H$, then yields the
+meromorphic count for $\zeta$ itself: for a box containing $s = 1$, the zero count
+is the boundary winding over $2\pi$ \emph{plus one}. On the classical rectangle
+$[-1,2] \times [T_0,T_1]$ the same machinery gives a band-difference decomposition
+of $2\pi N$ into edge data --- precisely the object each tiled band consumes ---
+so this program, completed, would \emph{derive} what the ladder currently assumes,
+shrinking the numeric trust surface exactly as the left-edge reflection did for
+the explicit-formula box.
+
+The honest ceiling, stated as the merged PRs state it: the literal
+$N(T) = \theta(T)/\pi + 1 + S(T)$ still requires the box argument principle for
+$\Lambda$ with its poles at $0$ and $1$, together with the $T_0 \to 0^+$
+real-axis base --- genuine construction, not assembly, and \emph{not claimed}.
+One mid-course correction is part of the record and worth citing as lived
+practice for \cref{sec:vacuity}: an early route through the entire function
+$\Lambda_0$ was retired when its zero set was checked against Mathlib's own
+$\Lambda = \Lambda_0 - 1/s - 1/(1-s)$ (the nontrivial zeros are \emph{not}
+$\Lambda_0$'s), the correction written into the corpus --- the kernel guards
+statements, and the discipline guards what the statements are about.
+
 \subsection{A fourth shape: the explicit formula at finite height}
 
 The deepest connection in the subject---Riemann's 1859 identity binding the
@@ -218,10 +284,11 @@ been expanded, term by prime-power term, into von Mangoldt's ledger: a
 rectangular Guinand--Weil identity \cite{guinand1948,weil1952} at finite height.
 Weighted zero-sums equal prime sums plus three explicit boundary integrals---zeros
 diffracting off primes, in the kernel. This is the identity that underwrites
-Dyson's quasicrystal reading of the zeros \cite{dyson2009}: pure-point
-diffraction supported on the prime powers is exactly what the right-hand side
-asserts, and the finite-height form is the certificate-shaped part of that
-picture. The spectral lines now have closed-form wavelengths: the prime-side
+Dyson's quasicrystal reading of the zeros \cite{dyson2009}---a reading that is
+itself conditional on RH: \emph{if} the zeros lie on the line, their diffraction
+is pure point on the prime powers. The right-hand side exhibits exactly those
+prime-power frequencies, and the finite-height form is the certificate-shaped,
+unconditional part of the picture. The spectral lines now have closed-form wavelengths: the prime-side
 edge integrals evaluate exactly (\texttt{integral\_vonMangoldt\_term})---each von
 Mangoldt term contributes a pure oscillation of frequency $\log n$ with
 amplitude $\Lambda(n)\, n^{-\sigma}/\log n$, nonzero precisely at the prime
