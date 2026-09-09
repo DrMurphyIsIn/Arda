@@ -24,6 +24,7 @@ import Mathlib
 import RHInBoxAnalytic
 import ZetaZeroConfinement
 import DlvpTheta
+import LambdaLineReal
 
 open Complex MeasureTheory Real
 open scoped Topology
@@ -1664,5 +1665,68 @@ theorem zero_count_band_edge_decomp (T0 T1 : ℝ) (hT0 : 0 < T0) (hT : T0 ≤ T1
   --   = (AV(ζ,2,0,T1) + AH(ζ,T1,2,-1)) - (AV(ζ,2,0,T0) + AH(ζ,T0,2,-1))
   -- AV(ζ,2,0,T1) - AV(ζ,2,0,T0) = AV(ζ,2,T0,T1)   [hadd]
   linarith [hcount, hfold, hadd]
+
+/-! ## ξ-DOUBLING SESSION, step 1: the entire completed-zeta log-derivative reflection.
+
+`Λ₀ = completedRiemannZeta₀` is ENTIRE (`differentiable_completedZeta₀`) with the clean functional
+equation `Λ₀(1−s) = Λ₀(s)` (`completedRiemannZeta₀_one_sub`) — no `Γℝ` factor, no poles at `0, 1`.
+Its zeros in the strip are exactly the nontrivial `ζ`-zeros.  Differentiating the FE gives the
+DOUBLING ENGINE: `logDeriv Λ₀ (1−s) = −logDeriv Λ₀ s`, valid everywhere (junk-equal at zeros).
+This is the entire-function reflection that will halve the RvM contour — cleaner than the `ζ`
+version (`logDeriv_zeta_reflect`), which carried the `Γℝ` terms.  conjecture1_proved = False. -/
+
+/-- **The entire completed-zeta reflection**: `logDeriv Λ₀ (1−s) = −logDeriv Λ₀ s`. -/
+theorem logDeriv_completedZeta₀_reflect (s : ℂ) :
+    logDeriv completedRiemannZeta₀ (1 - s) = - logDeriv completedRiemannZeta₀ s := by
+  have hsymm : (fun z : ℂ => completedRiemannZeta₀ (1 - z)) = completedRiemannZeta₀ :=
+    funext completedRiemannZeta₀_one_sub
+  have hd : DifferentiableAt ℂ completedRiemannZeta₀ (1 - s) :=
+    differentiable_completedZeta₀ _
+  have hinner : HasDerivAt (fun z : ℂ => (1 : ℂ) - z) (-1) s := by
+    simpa using (hasDerivAt_id s).const_sub 1
+  have hcomp : HasDerivAt (fun z : ℂ => completedRiemannZeta₀ (1 - z))
+      (deriv completedRiemannZeta₀ (1 - s) * (-1)) s :=
+    hd.hasDerivAt.comp s hinner
+  have h1 := hcomp.deriv
+  rw [hsymm] at h1
+  have hkey : deriv completedRiemannZeta₀ (1 - s) = - deriv completedRiemannZeta₀ s := by
+    linear_combination h1
+  rw [logDeriv_apply, logDeriv_apply, completedRiemannZeta₀_one_sub, hkey]
+  ring
+
+/-! ## ξ-DOUBLING SESSION, step 2: the entire fold — Λ₀ argument-change is anti-symmetric across
+`Re = 1/2`, with NO Archimedean remainder.
+
+`Λ₀` is conj-symmetric (`ZetaZeroLocalization.completedRiemannZeta₀_conj`) and entire, so the
+reflection (step 1) + conjugation fold to the SAME positive height give, for ALL `s`:
+
+  `Re(logDeriv Λ₀ (σ+iy)) + Re(logDeriv Λ₀ ((1−σ)+iy)) = 0`
+
+— the cleanest possible fold: RHS `0`, no `σ`/`y` constraints, no `Γℝ` terms (they live inside
+`Λ₀`).  This is the exact doubling that will collapse the RvM contour's left half onto its right.
+conjecture1_proved = False. -/
+
+/-- `Λ₀` log-derivative under conjugation. -/
+theorem logDeriv_completedZeta₀_conj (s : ℂ) :
+    logDeriv completedRiemannZeta₀ ((starRingEnd ℂ) s)
+      = (starRingEnd ℂ) (logDeriv completedRiemannZeta₀ s) :=
+  logDeriv_conj_of_conj_symm (fun z => ZetaZeroLocalization.completedRiemannZeta₀_conj z)
+    (differentiable_completedZeta₀ s)
+
+/-- **THE ENTIRE FOLD, pointwise**: `Λ₀`'s argument-change integrand is anti-symmetric across the
+    critical line — sum over the reflected pair of lines is `0`, for every `σ, y`. -/
+theorem fold_pointwise_zeta₀ (sigma y : ℝ) :
+    (logDeriv completedRiemannZeta₀ ((sigma : ℂ) + y * I)).re
+      + (logDeriv completedRiemannZeta₀ (((1 - sigma : ℝ) : ℂ) + y * I)).re = 0 := by
+  set s : ℂ := (sigma : ℂ) + y * I with hs
+  set s' : ℂ := ((1 - sigma : ℝ) : ℂ) + y * I with hs'
+  have hconj : (1 : ℂ) - s = (starRingEnd ℂ) s' := by
+    rw [hs, hs']
+    apply Complex.ext <;> simp <;> ring
+  have hrefl := logDeriv_completedZeta₀_reflect s
+  rw [hconj, logDeriv_completedZeta₀_conj s'] at hrefl
+  have hre := congrArg Complex.re hrefl
+  simp only [Complex.conj_re, Complex.neg_re] at hre
+  linarith [hre]
 
 end DiffractionCore
