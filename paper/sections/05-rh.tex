@@ -132,34 +132,50 @@ a complete finite Turing verification of RH up to height $100$. Its completeness
 longer leans on matching an external zero count: that every nontrivial zero up to
 $100$ lands in the box is now itself kernel-derived from the zero-free region.
 
-And the construction \emph{scales}: the certified height doubles by
-\emph{band-stacking}. A kernel gluing lemma (\texttt{rh\_box\_two\_bands}) composes
-per-band certificates---each band carrying its own small winding count and short
-contour edges, so the per-band numeric certificates stay cheap and
-independent---and the certificate \texttt{AllZeros\_h200} stacks a second band
-$[10^{-6}, 1-10^{-6}] \times [100, 200]$ (boundary winding $N = 50$) on the first
-to derive the same unweighted statement up to height $200$: all $79$ nontrivial
-zeros with $0 < \operatorname{Im}\rho \le 200$ lie on the critical line---$79$
-being the full classical count to that height, though as before the count is
-derived from the windings, not assumed.
+And the construction \emph{scales}: the certified height grows by
+\emph{band-stacking}. Kernel gluing lemmas (\texttt{rh\_box\_two\_bands} and its
+$n$-band generalization
+\texttt{all\_nontrivial\_zeros\_up\_to\_height\_on\_line\_tiled}) compose
+per-band certificates---each band carrying its own small winding count, short
+contour edges, and local on-line list, so the per-band numeric certificates stay
+cheap, independent, and parallelizable. The first stack, \texttt{AllZeros\_h200},
+doubled the height to $200$; the current milestone, \texttt{AllZeros\_h1000},
+tiles \emph{ten} bands of height $100$ to reach $T = 1000$: all $649$ nontrivial
+zeros with $0 < \operatorname{Im}\rho \le 1000$ lie on the critical line. The
+per-band windings $(29, 50, 59, 64, 67, 72, 73, 77, 78, 80)$ sum to $649$---the
+full classical count to that height---though as before the count is derived from
+the boundary contours, not assumed; the independently-computed windings agreeing
+band-by-band with the classical census is itself a strong cross-check. (An
+architectural note in the same honest spirit: what scales is per-band \emph{raw}
+inputs glued at the \emph{conclusion} level---an early attempt to splice all
+$\sim 650$ enclosures into one statement exceeded the elaborator's binder budget,
+and the tiled shape is the one that grows linearly.)
+
+One hypothesis has meanwhile been \emph{discharged} rather than carried. The
+classical height floor (no nontrivial zeros below height $\tfrac{55}{16}$) was
+originally assumed bare; it is now derived in the kernel at \emph{any} height
+(\texttt{StripClear.height\_floor\_of\_box\_certs}) from two further winding-$0$
+empty-band certificates that clear the low strip, with the sliver nearest
+$\operatorname{Re} s = 1$ folded onto the far one by the functional-equation
+reflection $\rho \mapsto 1 - \bar\rho$. The trust boundary is thereby
+\emph{uniform}: every numeric input is of the same winding/edge kind, and no
+classical fact enters bare.
 
 The caveats are stated as sharply as the claim. It is \emph{finite}---up to height
-$200$, not all of $\mathbb{C}$; Turing's method verifies RH in a region, it does not
-prove RH. And it is \emph{conditional on certified numeric input}: the per-band
-boundary winding integers ($N = 29$ and $N = 50$), the seventy-nine exhibited
-on-line zeros, the edge
-non-vanishing, and the classical height floor (no nontrivial zeros below height
-$\tfrac{55}{16}$) are supplied by high-precision interval (Arb) arithmetic and
+$1000$, not all of $\mathbb{C}$; Turing's method verifies RH in a region, it does
+not prove RH. And it is \emph{conditional on certified numeric input}: the
+per-band boundary winding integers, the $649$ exhibited on-line zeros, and the
+edge non-vanishing are supplied by high-precision interval (Arb) arithmetic and
 carried as explicit, non-kernel Lean hypotheses---a documented trust boundary,
 exactly as with the constant enclosures elsewhere in the system. The kernel proves
 \emph{every implication} from those inputs---the confinement, the argument
-principle, and the effective-rate inequality all in-kernel---but it does not verify
-the enclosures themselves. The chain is non-circular by construction: the winding
+principle, the strip clearing, and the effective-rate inequality all
+in-kernel---but it does not verify the enclosures themselves. The chain is non-circular by construction: the winding
 count enters as a boundary-contour value, never as ``$N$ zeros and no others,'' and
 ``all zeros on the line'' is the \emph{derived} conclusion. It is, once more,
 emphatically \emph{not} a proof of RH---but it is a kernel-verified, complete finite
-Turing verification up to height $200$, and it exhibits a third distinct certificate
-shape (winding / argument-principle zero-counting).
+Turing verification up to height $1000$, and it exhibits a third distinct
+certificate shape (winding / argument-principle zero-counting).
 
 For completeness we note one boundary item we deliberately keep out of the
 verified list, stated as it is: a Borel--Carath\'eodory theorem is present in the
