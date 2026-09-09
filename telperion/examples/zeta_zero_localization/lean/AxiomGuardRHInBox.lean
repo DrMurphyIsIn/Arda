@@ -36,6 +36,10 @@
         the right sliver here, completing the full-strip clearing for
         no_low_zeros_of_strip_clear.
 
+      * AllZeros_h200.all_nontrivial_zeros_up_to_height_200 -- the BAND-STACKED T=200
+        certificate: two per-band box atoms ([0,100] N=29, [100,200] N=50) glued by
+        rh_box_two_bands, composed with zero_in_band at a=1/10^6, T=200 (haC_200 in-kernel).
+
     All are kernel-verified reductions.  conjecture1_proved = False (NOT a proof of RH).
     Axioms expected: {propext, Classical.choice, Quot.sound} -- no sorryAx.
 -/
@@ -46,6 +50,8 @@ import AllZeros_h100
 import RHInBoxBands
 import NoZerosInBox_1d1000_999d1000_0_55d16
 import NoZerosInBox_0_1d1000_0_55d16
+import RHInBox_1d1000000_999999d1000000_100_200
+import AllZeros_h200
 
 #print axioms RHInBox.rh_in_box_of_certificate
 #print axioms RHInBox.rh_in_box_10_35
@@ -59,3 +65,5 @@ import NoZerosInBox_0_1d1000_0_55d16
 #print axioms ZetaZeroConfinement.no_low_zeros_of_strip_clear
 #print axioms NoZerosInBox_1d1000_999d1000_0_55d16.no_zeros_in_box_1d1000_999d1000_0_55d16
 #print axioms NoZerosInBox_0_1d1000_0_55d16.no_zeros_in_box_0_1d1000_0_55d16
+#print axioms RHInBox_1d1000000_999999d1000000_100_200.rh_in_box_1d1000000_999999d1000000_100_200
+#print axioms AllZeros_h200.all_nontrivial_zeros_up_to_height_200

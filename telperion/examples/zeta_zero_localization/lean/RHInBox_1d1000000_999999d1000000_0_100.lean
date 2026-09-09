@@ -141,58 +141,81 @@ theorem rh_in_box_1d1000000_999999d1000000_0_100
   have hTcard : T.card = 29 := by
     rw [hTdef, RHInBox.line_toFinset_card xsL hchain, hxsdef]
     rfl
-  have hmem_list : ∀ t ∈ xsL, t = x1 ∨ t = x2 ∨ t = x3 ∨ t = x4 ∨ t = x5 ∨ t = x6 ∨ t = x7 ∨ t = x8 ∨ t = x9 ∨ t = x10 ∨ t = x11 ∨ t = x12 ∨ t = x13 ∨ t = x14 ∨ t = x15 ∨ t = x16 ∨ t = x17 ∨ t = x18 ∨ t = x19 ∨ t = x20 ∨ t = x21 ∨ t = x22 ∨ t = x23 ∨ t = x24 ∨ t = x25 ∨ t = x26 ∨ t = x27 ∨ t = x28 ∨ t = x29 := by
-    intro t ht
-    rw [hxsdef] at ht
-    simpa using ht
+  have hb1 : ((0) : ℝ) ≤ x1 := hlo
+  have hb2 : ((0) : ℝ) ≤ x2 := le_trans hb1 (le_of_lt hc12)
+  have hb3 : ((0) : ℝ) ≤ x3 := le_trans hb2 (le_of_lt hc23)
+  have hb4 : ((0) : ℝ) ≤ x4 := le_trans hb3 (le_of_lt hc34)
+  have hb5 : ((0) : ℝ) ≤ x5 := le_trans hb4 (le_of_lt hc45)
+  have hb6 : ((0) : ℝ) ≤ x6 := le_trans hb5 (le_of_lt hc56)
+  have hb7 : ((0) : ℝ) ≤ x7 := le_trans hb6 (le_of_lt hc67)
+  have hb8 : ((0) : ℝ) ≤ x8 := le_trans hb7 (le_of_lt hc78)
+  have hb9 : ((0) : ℝ) ≤ x9 := le_trans hb8 (le_of_lt hc89)
+  have hb10 : ((0) : ℝ) ≤ x10 := le_trans hb9 (le_of_lt hc910)
+  have hb11 : ((0) : ℝ) ≤ x11 := le_trans hb10 (le_of_lt hc1011)
+  have hb12 : ((0) : ℝ) ≤ x12 := le_trans hb11 (le_of_lt hc1112)
+  have hb13 : ((0) : ℝ) ≤ x13 := le_trans hb12 (le_of_lt hc1213)
+  have hb14 : ((0) : ℝ) ≤ x14 := le_trans hb13 (le_of_lt hc1314)
+  have hb15 : ((0) : ℝ) ≤ x15 := le_trans hb14 (le_of_lt hc1415)
+  have hb16 : ((0) : ℝ) ≤ x16 := le_trans hb15 (le_of_lt hc1516)
+  have hb17 : ((0) : ℝ) ≤ x17 := le_trans hb16 (le_of_lt hc1617)
+  have hb18 : ((0) : ℝ) ≤ x18 := le_trans hb17 (le_of_lt hc1718)
+  have hb19 : ((0) : ℝ) ≤ x19 := le_trans hb18 (le_of_lt hc1819)
+  have hb20 : ((0) : ℝ) ≤ x20 := le_trans hb19 (le_of_lt hc1920)
+  have hb21 : ((0) : ℝ) ≤ x21 := le_trans hb20 (le_of_lt hc2021)
+  have hb22 : ((0) : ℝ) ≤ x22 := le_trans hb21 (le_of_lt hc2122)
+  have hb23 : ((0) : ℝ) ≤ x23 := le_trans hb22 (le_of_lt hc2223)
+  have hb24 : ((0) : ℝ) ≤ x24 := le_trans hb23 (le_of_lt hc2324)
+  have hb25 : ((0) : ℝ) ≤ x25 := le_trans hb24 (le_of_lt hc2425)
+  have hb26 : ((0) : ℝ) ≤ x26 := le_trans hb25 (le_of_lt hc2526)
+  have hb27 : ((0) : ℝ) ≤ x27 := le_trans hb26 (le_of_lt hc2627)
+  have hb28 : ((0) : ℝ) ≤ x28 := le_trans hb27 (le_of_lt hc2728)
+  have hb29 : ((0) : ℝ) ≤ x29 := le_trans hb28 (le_of_lt hc2829)
+  have hu29 : x29 ≤ ((100) : ℝ) := hhi
+  have hu28 : x28 ≤ ((100) : ℝ) := le_trans (le_of_lt hc2829) hu29
+  have hu27 : x27 ≤ ((100) : ℝ) := le_trans (le_of_lt hc2728) hu28
+  have hu26 : x26 ≤ ((100) : ℝ) := le_trans (le_of_lt hc2627) hu27
+  have hu25 : x25 ≤ ((100) : ℝ) := le_trans (le_of_lt hc2526) hu26
+  have hu24 : x24 ≤ ((100) : ℝ) := le_trans (le_of_lt hc2425) hu25
+  have hu23 : x23 ≤ ((100) : ℝ) := le_trans (le_of_lt hc2324) hu24
+  have hu22 : x22 ≤ ((100) : ℝ) := le_trans (le_of_lt hc2223) hu23
+  have hu21 : x21 ≤ ((100) : ℝ) := le_trans (le_of_lt hc2122) hu22
+  have hu20 : x20 ≤ ((100) : ℝ) := le_trans (le_of_lt hc2021) hu21
+  have hu19 : x19 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1920) hu20
+  have hu18 : x18 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1819) hu19
+  have hu17 : x17 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1718) hu18
+  have hu16 : x16 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1617) hu17
+  have hu15 : x15 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1516) hu16
+  have hu14 : x14 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1415) hu15
+  have hu13 : x13 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1314) hu14
+  have hu12 : x12 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1213) hu13
+  have hu11 : x11 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1112) hu12
+  have hu10 : x10 ≤ ((100) : ℝ) := le_trans (le_of_lt hc1011) hu11
+  have hu9 : x9 ≤ ((100) : ℝ) := le_trans (le_of_lt hc910) hu10
+  have hu8 : x8 ≤ ((100) : ℝ) := le_trans (le_of_lt hc89) hu9
+  have hu7 : x7 ≤ ((100) : ℝ) := le_trans (le_of_lt hc78) hu8
+  have hu6 : x6 ≤ ((100) : ℝ) := le_trans (le_of_lt hc67) hu7
+  have hu5 : x5 ≤ ((100) : ℝ) := le_trans (le_of_lt hc56) hu6
+  have hu4 : x4 ≤ ((100) : ℝ) := le_trans (le_of_lt hc45) hu5
+  have hu3 : x3 ≤ ((100) : ℝ) := le_trans (le_of_lt hc34) hu4
+  have hu2 : x2 ≤ ((100) : ℝ) := le_trans (le_of_lt hc23) hu3
+  have hu1 : x1 ≤ ((100) : ℝ) := le_trans (le_of_lt hc12) hu2
+  have hre_lo : (((1 / 1000000)) : ℝ) ≤ 1 / 2 := by norm_num
+  have hre_hi : (1 / 2 : ℝ) ≤ ((999999 / 1000000)) := by norm_num
   have hTline : ∀ z ∈ T, z.re = 1 / 2 := by
     rw [hTdef]
     exact RHInBox.line_toFinset_forall xsL (fun t _ => hre_line t)
   have hTzero : ∀ z ∈ T, riemannZeta z = 0 := by
     rw [hTdef]
     refine RHInBox.line_toFinset_forall xsL ?_
-    intro t ht
-    rcases hmem_list t ht with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
-    · exact hzeta _ hΛ1
-    · exact hzeta _ hΛ2
-    · exact hzeta _ hΛ3
-    · exact hzeta _ hΛ4
-    · exact hzeta _ hΛ5
-    · exact hzeta _ hΛ6
-    · exact hzeta _ hΛ7
-    · exact hzeta _ hΛ8
-    · exact hzeta _ hΛ9
-    · exact hzeta _ hΛ10
-    · exact hzeta _ hΛ11
-    · exact hzeta _ hΛ12
-    · exact hzeta _ hΛ13
-    · exact hzeta _ hΛ14
-    · exact hzeta _ hΛ15
-    · exact hzeta _ hΛ16
-    · exact hzeta _ hΛ17
-    · exact hzeta _ hΛ18
-    · exact hzeta _ hΛ19
-    · exact hzeta _ hΛ20
-    · exact hzeta _ hΛ21
-    · exact hzeta _ hΛ22
-    · exact hzeta _ hΛ23
-    · exact hzeta _ hΛ24
-    · exact hzeta _ hΛ25
-    · exact hzeta _ hΛ26
-    · exact hzeta _ hΛ27
-    · exact hzeta _ hΛ28
-    · exact hzeta _ hΛ29
+    rw [hxsdef]
+    simp only [List.forall_mem_cons]
+    exact ⟨hzeta x1 hΛ1, hzeta x2 hΛ2, hzeta x3 hΛ3, hzeta x4 hΛ4, hzeta x5 hΛ5, hzeta x6 hΛ6, hzeta x7 hΛ7, hzeta x8 hΛ8, hzeta x9 hΛ9, hzeta x10 hΛ10, hzeta x11 hΛ11, hzeta x12 hΛ12, hzeta x13 hΛ13, hzeta x14 hΛ14, hzeta x15 hΛ15, hzeta x16 hΛ16, hzeta x17 hΛ17, hzeta x18 hΛ18, hzeta x19 hΛ19, hzeta x20 hΛ20, hzeta x21 hΛ21, hzeta x22 hΛ22, hzeta x23 hΛ23, hzeta x24 hΛ24, hzeta x25 hΛ25, hzeta x26 hΛ26, hzeta x27 hΛ27, hzeta x28 hΛ28, hzeta x29 hΛ29, List.forall_mem_nil _⟩
   have hTbox : ∀ z ∈ T, ((((1 / 1000000)) : ℝ) ≤ z.re ∧ z.re ≤ ((999999 / 1000000))) ∧ (((0) : ℝ) ≤ z.im ∧ z.im ≤ (100)) := by
     rw [hTdef]
     refine RHInBox.line_toFinset_forall xsL ?_
-    intro t ht
-    refine ⟨⟨?_, ?_⟩, ?_, ?_⟩
-    · rw [hre_line]; norm_num
-    · rw [hre_line]; norm_num
-    · rw [him_line]
-      rcases hmem_list t ht with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl <;> linarith
-    · rw [him_line]
-      rcases hmem_list t ht with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl <;> linarith
+    rw [hxsdef]
+    simp only [List.forall_mem_cons]
+    exact ⟨⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb1, by rw [him_line]; exact hu1⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb2, by rw [him_line]; exact hu2⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb3, by rw [him_line]; exact hu3⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb4, by rw [him_line]; exact hu4⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb5, by rw [him_line]; exact hu5⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb6, by rw [him_line]; exact hu6⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb7, by rw [him_line]; exact hu7⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb8, by rw [him_line]; exact hu8⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb9, by rw [him_line]; exact hu9⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb10, by rw [him_line]; exact hu10⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb11, by rw [him_line]; exact hu11⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb12, by rw [him_line]; exact hu12⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb13, by rw [him_line]; exact hu13⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb14, by rw [him_line]; exact hu14⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb15, by rw [him_line]; exact hu15⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb16, by rw [him_line]; exact hu16⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb17, by rw [him_line]; exact hu17⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb18, by rw [him_line]; exact hu18⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb19, by rw [him_line]; exact hu19⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb20, by rw [him_line]; exact hu20⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb21, by rw [him_line]; exact hu21⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb22, by rw [him_line]; exact hu22⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb23, by rw [him_line]; exact hu23⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb24, by rw [him_line]; exact hu24⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb25, by rw [him_line]; exact hu25⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb26, by rw [him_line]; exact hu26⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb27, by rw [him_line]; exact hu27⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb28, by rw [him_line]; exact hu28⟩, ⟨⟨by rw [hre_line]; exact hre_lo, by rw [hre_line]; exact hre_hi⟩, by rw [him_line]; exact hb29, by rw [him_line]; exact hu29⟩, List.forall_mem_nil _⟩
   set s0f : Finset ℂ := RHInBoxAnalytic.zeroFinset cPB RPB hs1 with hs0def
   set d0 : ℂ → ℤ := (MeromorphicOn.divisor riemannZeta (Metric.ball cPB RPB) : ℂ → ℤ) with hd0def
   obtain ⟨E0, hE0holo, hd1', hzero_in', hker0⟩ :=

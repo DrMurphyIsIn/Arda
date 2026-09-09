@@ -1,5 +1,5 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100", "RHInBoxBands", "NoZerosInBox_1d1000_999d1000_0_55d16", "NoZerosInBox_0_1d1000_0_55d16"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100", "RHInBoxBands", "NoZerosInBox_1d1000_999d1000_0_55d16", "NoZerosInBox_0_1d1000_0_55d16", "RHInBox_1d1000000_999999d1000000_100_200", "AllZeros_h200"]
 
 [[require]]
 name = "mathlib"
@@ -98,3 +98,15 @@ name = "NoZerosInBox_1d1000_999d1000_0_55d16"
 # sliver need not straddle Re = 1/2).
 [[lean_lib]]
 name = "NoZerosInBox_0_1d1000_0_55d16"
+
+# BAND 2 for the T=200 certificate: [1/10^6, 1-1/10^6] x [100, 200], winding N = 50
+# (N(200) - N(100) = 79 - 29).  Emitted by generate.py --box 1/1000000,999999/1000000,100,200
+# with the O(N) list-based construction (#338).
+[[lean_lib]]
+name = "RHInBox_1d1000000_999999d1000000_100_200"
+
+# CONCRETE T=200 CERTIFICATE: first band-stacked height milestone.  Glues the [0,100] and
+# [100,200] band atoms via RHInBoxBands.rh_box_two_bands, composes with zero_in_band at
+# a=1/10^6, T=200 (effective-rate edge haC_200 in-kernel).  conjecture1_proved = False.
+[[lean_lib]]
+name = "AllZeros_h200"
