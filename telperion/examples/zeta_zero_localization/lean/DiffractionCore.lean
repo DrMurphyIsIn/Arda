@@ -1931,4 +1931,49 @@ theorem zetaPoleCompanion_eq_zero_iff {z : ℂ} :
     have hsub : (z - 1) ≠ 0 := sub_ne_zero.mpr hz1
     simp [hsub, hz1]
 
+/-! ## The `H`-argument-principle prerequisites: the three ζ-specific inputs, ported to `H`.
+
+The Blaschke winding-count core (`zeta_blaschke_split_ball`, `zeta_count_eq_winding_generic`) is
+generic Mathlib machinery (`extract_zeros_poles`, `FactorizedRational`, `logDeriv_congr_of_codiscrete`)
+wrapped around exactly THREE `ζ`-specific facts.  Here they are supplied for the ENTIRE companion
+`H = zetaPoleCompanion`, which — being entire — satisfies each MORE cleanly than `ζ` (no pole to
+dodge, so `H` is meromorphic on the whole CLOSED ball, and its order is finite on all of `ℂ`):
+
+  1. `analyticOnNhd_zetaPoleCompanion`  — `H` analytic on any set (`ζ` needed `{1}ᶜ`).
+  2. `meromorphicOrderAt_zetaPoleCompanion_ne_top` — order `≠ ⊤` EVERYWHERE (`ζ` needed `{1}ᶜ`;
+     seeded here from `H(1) = 1 ≠ 0` on the connected `univ`).
+  3. `divisor_zetaPoleCompanion_ball_support_finite` — divisor finite on any ball, via the GENERIC
+     `MeromorphicOn.divisor_ball_support_finite` (`H` meromorphic on the closed ball since entire;
+     `ζ` had to use the bespoke `IsCompact.inter_riemannZetaZeros_finite` to avoid `s = 1`).
+
+With these three, the generic Blaschke count instantiates at `H` — the honestly-remaining lift being
+the (mechanical, large) generic re-parameterisation of the winding-count proof itself.
+conjecture1_proved = False. -/
+
+/-- `H` is analytic on any set (entire). -/
+theorem analyticOnNhd_zetaPoleCompanion (U : Set ℂ) :
+    AnalyticOnNhd ℂ zetaPoleCompanion U :=
+  fun z _ => analyticAt_zetaPoleCompanion z
+
+/-- **Prerequisite 2**: `H`'s meromorphic order is finite everywhere (entire, not identically `0`
+    since `H(1) = 1`).  Seeded from `1` on the connected `univ`. -/
+theorem meromorphicOrderAt_zetaPoleCompanion_ne_top (u : ℂ) :
+    meromorphicOrderAt zetaPoleCompanion u ≠ ⊤ := by
+  have hMero : MeromorphicOn zetaPoleCompanion (Set.univ : Set ℂ) :=
+    fun z _ => (analyticAt_zetaPoleCompanion z).meromorphicAt
+  have hAt1 : AnalyticAt ℂ zetaPoleCompanion 1 := analyticAt_zetaPoleCompanion_one
+  have hne1 : zetaPoleCompanion 1 ≠ 0 := by rw [zetaPoleCompanion_one]; exact one_ne_zero
+  have hord1 : meromorphicOrderAt zetaPoleCompanion 1 ≠ ⊤ := by
+    rw [hAt1.meromorphicOrderAt_eq, hAt1.analyticOrderAt_eq_zero.mpr hne1]; simp
+  exact hMero.meromorphicOrderAt_ne_top_of_isPreconnected isPreconnected_univ
+    (Set.mem_univ 1) (Set.mem_univ u) hord1
+
+/-- **Prerequisite 3**: `H`'s divisor has finite support on any ball — the GENERIC finiteness
+    lemma applies because `H` is entire (hence meromorphic on the whole closed ball). -/
+theorem divisor_zetaPoleCompanion_ball_support_finite (c : ℂ) (R : ℝ) :
+    (MeromorphicOn.divisor zetaPoleCompanion (Metric.ball c R)).support.Finite := by
+  have hMero : MeromorphicOn zetaPoleCompanion (Metric.closedBall c R) :=
+    fun z _ => (analyticAt_zetaPoleCompanion z).meromorphicAt
+  exact hMero.divisor_ball_support_finite
+
 end DiffractionCore
