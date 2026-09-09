@@ -231,7 +231,14 @@ for a box whose left edge lies in $\operatorname{Re} s < 0$, the reflection
 identity \texttt{left\_edge\_prime\_reflection} (hypotheses: $\operatorname{Re}
 s < 0$ and $\operatorname{Im} s \ne 0$---nothing else) rewrites the left-edge
 integrand as mirrored prime sums minus two Archimedean $\psi$-terms, so that
-edge needs \emph{no} numeric certificate at all. What still stands between the
+edge needs \emph{no} numeric certificate at all. Those $\psi$-terms come with
+their own kernel-verified quantitative engine: an unconditional effective Binet
+bound, $\lVert \psi(s) - \log s \rVert \le 1/(\operatorname{Re} s - 1)$ for all
+$\operatorname{Re} s \ge 2$ (\texttt{norm\_digamma\_sub\_log\_le}, sole
+hypothesis the half-plane), proved by showing the telescoped Binet series is
+holomorphic, vanishes on a real segment, and hence vanishes identically---a
+digamma statement, not a zeta statement, but exactly the effective asymptotic
+the Archimedean edges consume. What still stands between the
 finite identity and its classical limit is honest analysis, flagged as such:
 the horizontal edges as $T \to \infty$ require a zero-avoiding-corridor bound
 of strength $|\zeta'/\zeta| = O(\log^2 T)$, which is future work.
