@@ -188,4 +188,90 @@ theorem thetaIntegrand_eq_re_logDeriv_gammaR (u : ℝ) :
   unfold thetaIntegrand
   ring
 
+/-! ## Brick 3a: the θ-asymptotics skeleton (T2 rung, first sub-brick).
+
+Target (brick 3 complete): `θ(t) = (t/2)·log(t/(2π)) − t/2 − π/8 + O*(explicit/t)`.
+This sub-brick ships the three UNCONDITIONAL pieces every derivation route needs:
+
+  * `digamma_shift` — the iterated recursion `ψ(s+N) = ψ(s) + Σ_{k<N} (s+k)⁻¹` (from Mathlib's
+    single-step `digamma_apply_add_one`), which moves the evaluation point right, where the
+    Stirling comparison is easy;
+  * `norm_inv_sub_log_one_add_inv_le` — the telescoping step bound
+    `‖s⁻¹ − log(1+s⁻¹)‖ ≤ ‖s⁻¹‖²·(1−‖s⁻¹‖)⁻¹/2` (Mathlib `norm_log_one_add_sub_self_le`):
+    the summand of the Binet-series `ψ(s) − log s = −Σ_{k≥0} [(s+k)⁻¹ − log(1+(s+k)⁻¹)] + …`
+    is quadratically small, so the telescoped series converges with an explicit `O(1/‖s‖)` tail;
+  * `thetaMain` + `thetaMain_hasDerivAt` — the main term and its derivative
+    `(log(t/(2π)))/2`, matching `θ'`'s leading behaviour, so brick 3c can compare the two via
+    FTC on `[t₀, t]`.
+
+Remaining sub-bricks: 3b = sum the telescoped series (Summable + tail bound ⟹ effective
+`|ψ(s) − log s| ≤ C/‖s‖` on `Re s ≥ 1`, plus the anchor `ψ(s+N) − log(s+N) → 0`); 3c = integrate
+`θ' − thetaMain'` and fix the `−π/8` constant.  conjecture1_proved = False. -/
+
+/-- **Iterated digamma recursion:** `ψ(s+N) = ψ(s) + Σ_{k<N} (s+k)⁻¹` for `Re s > 0`. -/
+theorem digamma_shift {s : ℂ} (hs : 0 < s.re) (N : ℕ) :
+    Complex.digamma (s + N) = Complex.digamma s + ∑ k ∈ Finset.range N, (s + k)⁻¹ := by
+  induction N with
+  | zero => simp
+  | succ n ih =>
+    have hpole : ∀ m : ℕ, s + (n : ℂ) ≠ -(m : ℂ) := by
+      intro m hm
+      have hre := congrArg Complex.re hm
+      simp only [Complex.add_re, Complex.natCast_re, Complex.neg_re] at hre
+      linarith [Nat.cast_nonneg (α := ℝ) n, Nat.cast_nonneg (α := ℝ) m]
+    have hcast : s + ((n + 1 : ℕ) : ℂ) = (s + (n : ℂ)) + 1 := by push_cast; ring
+    rw [hcast, Complex.digamma_apply_add_one _ hpole, ih, Finset.sum_range_succ, add_assoc]
+
+/-- Subtraction form of the shift, for moving `ψ` evaluations rightward. -/
+theorem digamma_eq_shift_sub {s : ℂ} (hs : 0 < s.re) (N : ℕ) :
+    Complex.digamma s = Complex.digamma (s + N) - ∑ k ∈ Finset.range N, (s + k)⁻¹ := by
+  rw [digamma_shift hs N]; ring
+
+/-- **The Stirling telescoping step bound:** for `1 < ‖s‖`,
+    `‖s⁻¹ − log(1 + s⁻¹)‖ ≤ ‖s⁻¹‖²·(1 − ‖s⁻¹‖)⁻¹/2` — the summand of the Binet series is
+    quadratically small in `1/‖s‖`. -/
+theorem norm_inv_sub_log_one_add_inv_le {s : ℂ} (hs : 1 < ‖s‖) :
+    ‖s⁻¹ - Complex.log (1 + s⁻¹)‖ ≤ ‖s⁻¹‖ ^ 2 * (1 - ‖s⁻¹‖)⁻¹ / 2 := by
+  have h0 : (0 : ℝ) < ‖s‖ := lt_trans one_pos hs
+  have hz : ‖s⁻¹‖ < 1 := by
+    rw [norm_inv, inv_eq_one_div, div_lt_one h0]
+    exact hs
+  rw [← norm_neg, neg_sub]
+  exact Complex.norm_log_one_add_sub_self_le hz
+
+/-- The Riemann–Siegel main term `(t/2)·log(t/(2π)) − t/2 − π/8`, in globally-defined expanded
+    form (see `thetaMain_eq` for the classical shape on `t > 0`). -/
+noncomputable def thetaMain (t : ℝ) : ℝ :=
+  t / 2 * Real.log t - t / 2 * Real.log (2 * Real.pi) - t / 2 - Real.pi / 8
+
+theorem thetaMain_eq {t : ℝ} (ht : 0 < t) :
+    thetaMain t = t / 2 * Real.log (t / (2 * Real.pi)) - t / 2 - Real.pi / 8 := by
+  rw [Real.log_div ht.ne' (by positivity : (2 * Real.pi) ≠ 0)]
+  unfold thetaMain
+  ring
+
+/-- The main term's derivative is `(log(t/(2π)))/2` — the leading behaviour of `θ'`. -/
+theorem thetaMain_hasDerivAt {t : ℝ} (ht : 0 < t) :
+    HasDerivAt thetaMain (Real.log (t / (2 * Real.pi)) / 2) t := by
+  have hlog : HasDerivAt Real.log t⁻¹ t := Real.hasDerivAt_log ht.ne'
+  have h1 : HasDerivAt (fun x : ℝ => x / 2 * Real.log x)
+      (1 / 2 * Real.log t + t / 2 * t⁻¹) t :=
+    ((hasDerivAt_id t).div_const 2).mul hlog
+  have h2 : HasDerivAt (fun x : ℝ => x / 2 * Real.log (2 * Real.pi))
+      (1 / 2 * Real.log (2 * Real.pi)) t :=
+    ((hasDerivAt_id t).div_const 2).mul_const (Real.log (2 * Real.pi))
+  have h3 : HasDerivAt (fun x : ℝ => x / 2) (1 / 2 : ℝ) t := (hasDerivAt_id t).div_const 2
+  have h4 := ((h1.sub h2).sub h3).sub_const (Real.pi / 8)
+  have heq : 1 / 2 * Real.log t + t / 2 * t⁻¹ - 1 / 2 * Real.log (2 * Real.pi) - 1 / 2
+      = Real.log (t / (2 * Real.pi)) / 2 := by
+    rw [Real.log_div ht.ne' (by positivity : (2 * Real.pi) ≠ 0)]
+    have hcancel : t / 2 * t⁻¹ = 1 / 2 := by
+      have hmul : t * t⁻¹ = 1 := mul_inv_cancel₀ ht.ne'
+      calc t / 2 * t⁻¹ = t * t⁻¹ / 2 := by ring
+        _ = 1 / 2 := by rw [hmul]
+    rw [hcancel]
+    ring
+  rw [heq] at h4
+  exact h4
+
 end ZeroFreeBridge

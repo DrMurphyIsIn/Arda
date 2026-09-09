@@ -58,3 +58,6 @@ import DlvpTheta
 #print axioms ZeroFreeBridge.thetaIntegrand_continuous
 #print axioms ZeroFreeBridge.logDeriv_gammaR
 #print axioms ZeroFreeBridge.thetaIntegrand_eq_re_logDeriv_gammaR
+#print axioms ZeroFreeBridge.digamma_shift
+#print axioms ZeroFreeBridge.norm_inv_sub_log_one_add_inv_le
+#print axioms ZeroFreeBridge.thetaMain_hasDerivAt
