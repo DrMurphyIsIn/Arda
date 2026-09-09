@@ -1259,4 +1259,99 @@ theorem logDeriv_gammaR_conj {s : ℂ} (hG : Gammaℝ s ≠ 0) :
     exact ((ZeroFreeBridge.gammaRArch_hasDerivAt s).differentiableAt).mul hB.differentiableAt
   exact logDeriv_conj_of_conj_symm gammaR_conj hGdiff
 
+/-! ## Brick 13b-infra (the FE-fold edge-integrability): `logDeriv ζ` and `logDeriv Γℝ`
+continuous along GENERAL vertical lines.
+
+The symmetric fold's `integral_congr` needs the four edge integrands continuous on arbitrary
+vertical segments — not just the `Re = 1/2`, `Re = 2` lines hardcoded in bricks 11–12.  These
+generalize those to any `Re = σ` (`σ > 1` for `ζ`, `σ > 0` for `Γℝ`), via a reusable general
+digamma continuity (`digamma_continuousAt_of_re_pos`, absent from Mathlib).  With them, every
+`argChangeVert` in the fold is a well-defined integral of a continuous function.
+conjecture1_proved = False. -/
+
+/-- **General digamma continuity**: `ψ` is continuous at every `z` with `Re z > 0`
+    (`ψ = Γ′/Γ`, `Γ` analytic and nonzero on the right half-plane). -/
+theorem digamma_continuousAt_of_re_pos {z : ℂ} (hz : 0 < z.re) :
+    ContinuousAt Complex.digamma z := by
+  have hopen : IsOpen {w : ℂ | 0 < w.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hdiff : DifferentiableOn ℂ Complex.Gamma {w : ℂ | 0 < w.re} := by
+    intro w hw
+    refine (Complex.differentiableAt_Gamma w ?_).differentiableWithinAt
+    intro m hm
+    rw [hm] at hw
+    simp only [Set.mem_setOf_eq, Complex.neg_re, Complex.natCast_re] at hw
+    linarith [Nat.cast_nonneg (α := ℝ) m]
+  have hana : AnalyticAt ℂ Complex.Gamma z := (hdiff.analyticOnNhd hopen) z hz
+  have hne : Complex.Gamma z ≠ 0 := Complex.Gamma_ne_zero_of_re_pos hz
+  have heq : Complex.digamma = fun w => deriv Complex.Gamma w / Complex.Gamma w := by
+    funext w; rw [Complex.digamma_def, logDeriv_apply]
+  rw [heq]
+  exact (hana.deriv.continuousAt).div hana.continuousAt hne
+
+/-- **`logDeriv Γℝ` continuous along the vertical line `Re = σ`, for `σ > 0`** (fold Γ-edges). -/
+theorem continuous_logDeriv_gammaR_vLine {σ : ℝ} (hσ : 0 < σ) :
+    Continuous (fun y : ℝ => logDeriv Gammaℝ ((σ : ℂ) + y * I)) := by
+  have hfun : (fun y : ℝ => logDeriv Gammaℝ ((σ : ℂ) + y * I))
+      = fun y : ℝ => -(Real.log Real.pi : ℂ) / 2
+          + (1 / 2) * Complex.digamma (((σ : ℂ) + y * I) / 2) := by
+    funext y
+    have hs : 0 < (((σ : ℂ) + y * I) / 2).re := by
+      simp only [Complex.div_re, Complex.add_re, Complex.mul_re, Complex.ofReal_re,
+        Complex.ofReal_im, Complex.I_re, Complex.I_im]
+      norm_num
+      positivity
+    rw [ZeroFreeBridge.logDeriv_gammaR _ hs]
+  rw [hfun]
+  refine continuous_const.add (continuous_const.mul ?_)
+  have hpath : Continuous (fun y : ℝ => ((σ : ℂ) + y * I) / 2) := by fun_prop
+  have hc : (fun y : ℝ => Complex.digamma (((σ : ℂ) + y * I) / 2))
+      = Complex.digamma ∘ (fun y : ℝ => ((σ : ℂ) + y * I) / 2) := rfl
+  rw [hc]
+  refine continuous_iff_continuousAt.mpr fun y => ?_
+  have hzre : 0 < (((σ : ℂ) + y * I) / 2).re := by
+    simp only [Complex.div_re, Complex.add_re, Complex.mul_re, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im]
+    norm_num
+    positivity
+  exact ContinuousAt.comp (g := Complex.digamma) (f := fun t : ℝ => ((σ : ℂ) + t * I) / 2)
+    (digamma_continuousAt_of_re_pos hzre) hpath.continuousAt
+
+/-- **`logDeriv ζ` continuous along the vertical line `Re = σ`, for `σ > 1`** (fold ζ-edges). -/
+theorem continuous_logDeriv_zeta_vLine {σ : ℝ} (hσ : 1 < σ) :
+    Continuous (fun y : ℝ => logDeriv riemannZeta ((σ : ℂ) + y * I)) := by
+  have hne1 : ∀ y : ℝ, ((σ : ℂ) + y * I) ≠ 1 := by
+    intro y h
+    have := congrArg Complex.re h
+    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im, Complex.one_re] at this
+    norm_num at this
+    linarith
+  have hana : ∀ y : ℝ, AnalyticAt ℂ riemannZeta ((σ : ℂ) + y * I) := fun y =>
+    analyticOn_riemannZeta _ (hne1 y)
+  have hnz : ∀ y : ℝ, riemannZeta ((σ : ℂ) + y * I) ≠ 0 := by
+    intro y
+    apply riemannZeta_ne_zero_of_one_le_re
+    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im]
+    norm_num
+    linarith
+  have heq : (fun y : ℝ => logDeriv riemannZeta ((σ : ℂ) + y * I))
+      = fun y : ℝ => deriv riemannZeta ((σ : ℂ) + y * I) / riemannZeta ((σ : ℂ) + y * I) := by
+    funext y; rw [logDeriv_apply]
+  rw [heq]
+  have hpath : Continuous (fun y : ℝ => (σ : ℂ) + y * I) := by fun_prop
+  refine Continuous.div ?_ ?_ hnz
+  · have hc : (fun y : ℝ => deriv riemannZeta ((σ : ℂ) + y * I))
+        = (deriv riemannZeta) ∘ (fun y : ℝ => (σ : ℂ) + y * I) := rfl
+    rw [hc]
+    exact continuous_iff_continuousAt.mpr fun y =>
+      ContinuousAt.comp (g := deriv riemannZeta) (f := fun t : ℝ => (σ : ℂ) + t * I)
+        ((hana y).deriv.continuousAt) hpath.continuousAt
+  · have hc : (fun y : ℝ => riemannZeta ((σ : ℂ) + y * I))
+        = riemannZeta ∘ (fun y : ℝ => (σ : ℂ) + y * I) := rfl
+    rw [hc]
+    exact continuous_iff_continuousAt.mpr fun y =>
+      ContinuousAt.comp (g := riemannZeta) (f := fun t : ℝ => (σ : ℂ) + t * I)
+        ((hana y).continuousAt) hpath.continuousAt
+
 end DiffractionCore
