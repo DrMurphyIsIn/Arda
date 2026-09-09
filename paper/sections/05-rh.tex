@@ -140,12 +140,16 @@ per-band certificates---each band carrying its own small winding count, short
 contour edges, and local on-line list, so the per-band numeric certificates stay
 cheap, independent, and parallelizable. The first stack, \texttt{AllZeros\_h200},
 doubled the height to $200$; the current milestone, \texttt{AllZeros\_h1000},
-tiles \emph{ten} bands of height $100$ to reach $T = 1000$: all $649$ nontrivial
-zeros with $0 < \operatorname{Im}\rho \le 1000$ lie on the critical line. The
-per-band windings $(29, 50, 59, 64, 67, 72, 73, 77, 78, 80)$ sum to $649$---the
-full classical count to that height---though as before the count is derived from
-the boundary contours, not assumed; the independently-computed windings agreeing
-band-by-band with the classical census is itself a strong cross-check. (An
+tiles \emph{nineteen} bands to reach $T = 1000$: all $649$ nontrivial zeros with
+$0 < \operatorname{Im}\rho \le 1000$ lie on the critical line. The tiling is
+\emph{density-adaptive}---one band of height $100$ at the bottom (winding
+$N = 29$), then eighteen bands of height $50$, the band height halving where the
+zero density (and hence the proof cost per band) grows. The nineteen boundary
+windings sum to $649$---the full classical count to that height---though as
+before the count is derived from the contours, not assumed. The tiling refinement
+also buys a cross-check for free: the eighteen half-bands were computed
+independently of the original height-$100$ contours, and each adjacent pair of
+half-band windings reproduces its parent band's winding to the integer. (An
 architectural note in the same honest spirit: what scales is per-band \emph{raw}
 inputs glued at the \emph{conclusion} level---an early attempt to splice all
 $\sim 650$ enclosures into one statement exceeded the elaborator's binder budget,
