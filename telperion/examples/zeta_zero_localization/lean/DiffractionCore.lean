@@ -1976,4 +1976,173 @@ theorem divisor_zetaPoleCompanion_ball_support_finite (c : ℂ) (R : ℝ) :
     fun z _ => (analyticAt_zetaPoleCompanion z).meromorphicAt
   exact hMero.divisor_ball_support_finite
 
+/-! ## THE PORT: the generic Blaschke split, then instantiated at `H`.
+
+`zeta_blaschke_split_ball` (RHInBoxAnalytic) is written against `riemannZeta` by name but its proof
+is generic Mathlib machinery over exactly the three prerequisites just supplied for `H`.  Here is
+that proof re-parameterised to an ARBITRARY analytic `f` (`analytic_blaschke_split_ball`), then
+instantiated at `H = zetaPoleCompanion` (`zetaPoleCompanion_blaschke_split_ball`).  The instantiation
+is a one-liner precisely because the three prereqs are in hand.  This is the structural core of the
+`h`-argument-principle; the remaining winding-count capstone is the same substitution over
+`zeta_count_eq_winding_generic`.  conjecture1_proved = False. -/
+
+/-- **Generic Blaschke split on a ball** (the `riemannZeta`-free `zeta_blaschke_split_ball`): for any
+    `f` analytic on `ball c R` with finite divisor and finite meromorphic order, `logDeriv f`
+    splits as a residue sum over its zeros plus a holomorphic `E`-part on the box. -/
+theorem analytic_blaschke_split_ball
+    (f : ℂ → ℂ) (sigma0 sigma1 T0 T1 : ℝ) (c : ℂ) (R : ℝ)
+    (hfU : AnalyticOnNhd ℂ f (Metric.ball c R))
+    (h₂f : ∀ u ∈ Metric.ball c R, meromorphicOrderAt f u ≠ ⊤)
+    (h₃f : (MeromorphicOn.divisor f (Metric.ball c R)).support.Finite)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R) :
+    ∃ (E : ℂ → ℂ),
+      DifferentiableOn ℂ E (Set.Icc sigma0 sigma1 ×ℂ Set.Icc T0 T1) ∧
+      (∀ ρ ∈ h₃f.toFinset,
+        (1 : ℤ) ≤ (MeromorphicOn.divisor f (Metric.ball c R) : ℂ → ℤ) ρ) ∧
+      (∀ ρ ∈ Metric.ball c R, f ρ = 0 → ρ ∈ h₃f.toFinset) ∧
+      (∀ z ∈ Metric.ball c R, f z ≠ 0 →
+        logDeriv f z = (∑ ρ ∈ h₃f.toFinset,
+          ((MeromorphicOn.divisor f (Metric.ball c R) : ℂ → ℤ) ρ : ℂ) / (z - ρ)) + E z) := by
+  set U := Metric.ball c R with hUdef
+  have hUopen : IsOpen U := Metric.isOpen_ball
+  have hUconn : IsPreconnected U := (convex_ball c R).isPreconnected
+  have hbox_sub : (Set.Icc sigma0 sigma1 ×ℂ Set.Icc T0 T1) ⊆ U := by
+    intro z hz
+    rw [Complex.mem_reProdIm] at hz
+    exact hbox_ball z hz.1 hz.2
+  have hζU : AnalyticOnNhd ℂ f U := hfU
+  have hMeroU : MeromorphicOn f U := hζU.meromorphicOn
+  set D : ℂ → ℤ := fun u => (MeromorphicOn.divisor f U : ℂ → ℤ) u with hDdef
+  have hDnn : ∀ x, 0 ≤ D x := fun x => MeromorphicOn.AnalyticOnNhd.divisor_nonneg hζU x
+  have hsupp_zero : ∀ u, u ∈ Function.support D → f u = 0 := by
+    intro u hu
+    rw [Function.mem_support] at hu
+    have huU : u ∈ U := (MeromorphicOn.divisor f U).supportWithinDomain
+      (by rw [Function.mem_support]; exact hu)
+    by_contra hne
+    apply hu
+    simp only [hDdef]
+    rw [MeromorphicOn.AnalyticOnNhd.divisor_apply hζU huU,
+      (hζU u huU).analyticOrderAt_eq_zero.mpr hne]; simp
+  have hDfin : (Function.support D).Finite := h₃f
+  have h₂f' : ∀ u : U, meromorphicOrderAt f u ≠ ⊤ := fun u => h₂f u.1 u.2
+  obtain ⟨g, hg_an, hg_ne, hg_eq⟩ := hMeroU.extract_zeros_poles h₂f' h₃f
+  set T : Finset ℂ := h₃f.toFinset with hTdef
+  have hTmem : ∀ u, u ∈ T ↔ u ∈ (MeromorphicOn.divisor f U).support := by
+    intro u; rw [hTdef, Set.Finite.mem_toFinset]
+  have hPf_finset : (∏ᶠ u, (· - u) ^ (MeromorphicOn.divisor f U u))
+      = fun w : ℂ => ∏ u ∈ T, (w - u) ^ (D u) := by
+    rw [Function.FactorizedRational.finprod_eq_fun (d := D) hDfin]
+    ext w
+    rw [finprod_eq_prod_of_mulSupport_subset _ (s := T) ?_]
+    · intro u hu
+      rw [Finset.mem_coe, hTmem u]
+      by_contra hc
+      rw [Function.mem_support, not_not] at hc
+      rw [Function.mem_mulSupport] at hu
+      exact hu (by rw [show D u = (MeromorphicOn.divisor f U) u from rfl, hc, zpow_zero])
+  set Pf : ℂ → ℂ := fun w : ℂ => ∏ u ∈ T, (w - u) ^ (D u) with hPfdef
+  have hPf_an : AnalyticOnNhd ℂ Pf U := by
+    rw [← hPf_finset]; intro x _; exact Function.FactorizedRational.analyticAt (hDnn x)
+  set P : ℂ → ℂ := fun z => Pf z * g z with hPdef
+  have hP_an : AnalyticOnNhd ℂ P U := fun x hx => (hPf_an x hx).mul (hg_an x hx)
+  have hg_eqP : f =ᶠ[Filter.codiscreteWithin U] P := by
+    have hPeq : ((∏ᶠ u, (· - u) ^ (MeromorphicOn.divisor f U u)) • g) = P := by
+      rw [hPf_finset]; ext w; simp [hPdef, hPfdef]
+    rw [← hPeq]; exact hg_eq
+  have hT_zero : ∀ u ∈ T, f u = 0 := by
+    intro u hu
+    rw [hTmem u, Function.mem_support] at hu
+    exact hsupp_zero u (by rw [Function.mem_support]; exact hu)
+  refine ⟨logDeriv g, ?_, ?_, ?_, ?_⟩
+  · have hE_an : AnalyticOnNhd ℂ (logDeriv g) U := by
+      intro x hx
+      have : logDeriv g = fun z => deriv g z / g z := by
+        ext z; rw [logDeriv_apply]
+      rw [this]
+      exact (hg_an x hx).deriv.div (hg_an x hx) (hg_ne ⟨x, hx⟩)
+    exact (hE_an.mono hbox_sub).differentiableOn
+  · intro ρ hρ
+    rw [hTmem ρ, Function.mem_support] at hρ
+    have hρU : ρ ∈ U := (MeromorphicOn.divisor f U).supportWithinDomain
+      (by rw [Function.mem_support]; exact hρ)
+    have hρzero : f ρ = 0 := hsupp_zero ρ (by rw [Function.mem_support]; exact hρ)
+    have hAtρ : AnalyticAt ℂ f ρ := hζU ρ hρU
+    have hord_ne : analyticOrderAt f ρ ≠ 0 :=
+      hAtρ.analyticOrderAt_ne_zero.mpr hρzero
+    have hfin : analyticOrderAt f ρ ≠ ⊤ := by
+      intro hcontra
+      exact h₂f ρ hρU (by rw [hAtρ.meromorphicOrderAt_eq, hcontra]; rfl)
+    have hDeq : (MeromorphicOn.divisor f U : ℂ → ℤ) ρ
+        = (analyticOrderNatAt f ρ : ℤ) := by
+      have hda : (MeromorphicOn.divisor f U : ℂ → ℤ) ρ
+          = ((analyticOrderAt f ρ).map (Nat.cast)).untop₀ :=
+        MeromorphicOn.AnalyticOnNhd.divisor_apply hζU hρU
+      rw [hda, ← Nat.cast_analyticOrderNatAt hfin]; rfl
+    have hnat_ne : analyticOrderNatAt f ρ ≠ 0 := by
+      rw [Ne, ← Nat.cast_analyticOrderNatAt hfin] at hord_ne
+      simpa using hord_ne
+    show (1 : ℤ) ≤ (MeromorphicOn.divisor f U : ℂ → ℤ) ρ
+    rw [hDeq]
+    have : 1 ≤ analyticOrderNatAt f ρ := Nat.one_le_iff_ne_zero.mpr hnat_ne
+    exact_mod_cast this
+  · intro ρ hρU hρzero
+    rw [hTmem ρ, Function.mem_support]
+    have hAtρ : AnalyticAt ℂ f ρ := hζU ρ hρU
+    have hord_ne : analyticOrderAt f ρ ≠ 0 :=
+      hAtρ.analyticOrderAt_ne_zero.mpr hρzero
+    have hfin : analyticOrderAt f ρ ≠ ⊤ := by
+      intro hcontra
+      exact h₂f ρ hρU (by rw [hAtρ.meromorphicOrderAt_eq, hcontra]; rfl)
+    have hDeq : (MeromorphicOn.divisor f U : ℂ → ℤ) ρ
+        = (analyticOrderNatAt f ρ : ℤ) := by
+      have hda : (MeromorphicOn.divisor f U : ℂ → ℤ) ρ
+          = ((analyticOrderAt f ρ).map (Nat.cast)).untop₀ :=
+        MeromorphicOn.AnalyticOnNhd.divisor_apply hζU hρU
+      rw [hda, ← Nat.cast_analyticOrderNatAt hfin]; rfl
+    have hnat_ne : analyticOrderNatAt f ρ ≠ 0 := by
+      rw [Ne, ← Nat.cast_analyticOrderNatAt hfin] at hord_ne
+      simpa using hord_ne
+    rw [hDeq]
+    exact_mod_cast hnat_ne
+  · intro z hz hznz
+    have hzroots : ∀ u ∈ T, z - u ≠ 0 := by
+      intro u hu hcontra
+      rw [sub_eq_zero] at hcontra
+      exact hznz (by rw [hcontra]; exact hT_zero u hu)
+    have hPfz : Pf z ≠ 0 := by
+      rw [hPfdef]
+      exact Finset.prod_ne_zero_iff.mpr (fun u hu => zpow_ne_zero _ (hzroots u hu))
+    have hgz : g z ≠ 0 := hg_ne ⟨z, hz⟩
+    have hPf_diff : DifferentiableAt ℂ Pf z := (hPf_an z hz).differentiableAt
+    have hg_diff : DifferentiableAt ℂ g z := (hg_an z hz).differentiableAt
+    have htrans : logDeriv f z = logDeriv P z :=
+      RHInBoxAnalytic.logDeriv_congr_of_codiscrete hζU hP_an hUopen hUconn hz hz hg_eqP
+    rw [htrans, hPdef, logDeriv_mul z hPfz hgz hPf_diff hg_diff, hPfdef]
+    rw [RHInBoxAnalytic.logDeriv_finset_prod D z hzroots]
+
+/-- **The Blaschke split for `H`** — the `zeta_blaschke_split_ball` analog, instantiated from the
+    three ported prerequisites.  `H = zetaPoleCompanion`. -/
+theorem zetaPoleCompanion_blaschke_split_ball
+    (sigma0 sigma1 T0 T1 : ℝ) (c : ℂ) (R : ℝ)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R) :
+    ∃ (E : ℂ → ℂ),
+      DifferentiableOn ℂ E (Set.Icc sigma0 sigma1 ×ℂ Set.Icc T0 T1) ∧
+      (∀ ρ ∈ (divisor_zetaPoleCompanion_ball_support_finite c R).toFinset,
+        (1 : ℤ) ≤ (MeromorphicOn.divisor zetaPoleCompanion (Metric.ball c R) : ℂ → ℤ) ρ) ∧
+      (∀ ρ ∈ Metric.ball c R, zetaPoleCompanion ρ = 0 →
+        ρ ∈ (divisor_zetaPoleCompanion_ball_support_finite c R).toFinset) ∧
+      (∀ z ∈ Metric.ball c R, zetaPoleCompanion z ≠ 0 →
+        logDeriv zetaPoleCompanion z
+          = (∑ ρ ∈ (divisor_zetaPoleCompanion_ball_support_finite c R).toFinset,
+            ((MeromorphicOn.divisor zetaPoleCompanion (Metric.ball c R) : ℂ → ℤ) ρ : ℂ)
+              / (z - ρ)) + E z) :=
+  analytic_blaschke_split_ball zetaPoleCompanion sigma0 sigma1 T0 T1 c R
+    (analyticOnNhd_zetaPoleCompanion _)
+    (fun u _ => meromorphicOrderAt_zetaPoleCompanion_ne_top u)
+    (divisor_zetaPoleCompanion_ball_support_finite c R)
+    hbox_ball
+
 end DiffractionCore
