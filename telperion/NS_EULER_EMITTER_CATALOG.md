@@ -252,10 +252,22 @@ as generator-shaped emitters.
 
 ---
 
-## Skills (mining infrastructure)
+## Skills (mining infrastructure) — BUILT (2026-09-09, with wave 6)
 
-Both extend the existing source-mining subsystem
-(`source_mining.py` + adapters, PR #328) — build once that lands on main.
+Both extend the source-mining subsystem (#328), now on main:
+
+1. **OpenAI-formalization source adapter** — `GITHUB_REPOS` extended with
+   `openai/NavierStokesAndEuler`, `anthropics/zeta-23-lean`, `AxiomMath/ZetaZeros`
+   (LEAD_FORMALIZED port leads; picked up by the weekly poll automatically).
+2. **Comparator-challenge ingest** — `source_mining_challenges.py`:
+   `find/ingest_challenges` parse `ComparatorChallenges/*.json` (same schema as
+   Telperion's own `comparator.py` output) into leads; `challenge_source` wires
+   into `mine_source`/`build_source` (`TELPERION_CHALLENGE_REPO_PATH` env);
+   `run_comparator_check` optionally executes `lake exe comparator` with honest
+   skip/fail gating. Live-verified on the NS clone (both Clay-alternative
+   challenges ingested).
+
+Original design sketch (superseded by the above):
 
 1. **OpenAI-formalization source adapter** (`lead_type = LEAD_FORMALIZED`). Watch
    `openai/NavierStokesAndEuler` (and DeepMind `formal-conjectures`, from which the
