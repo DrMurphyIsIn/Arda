@@ -181,6 +181,44 @@ emphatically \emph{not} a proof of RH---but it is a kernel-verified, complete fi
 Turing verification up to height $1000$, and it exhibits a third distinct
 certificate shape (winding / argument-principle zero-counting).
 
+\subsection{A fourth shape: the explicit formula at finite height}
+
+The deepest connection in the subject---Riemann's 1859 identity binding the
+zeros of $\zeta$ to the primes---also admits a finite, certificate-shaped form,
+and the pipeline now reaches it. The theorem
+\texttt{rect\_explicit\_formula} (CI-axiom-guarded, axioms
+$\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$) states:
+for any box $[\sigma_0,\sigma_1] \times [T_0,T_1]$ whose right edge lies in
+$\operatorname{Re} s > 1$, and any test weight $g$ holomorphic on a neighborhood
+of the box,
+\[
+  2\pi i \sum_{\rho} d(\rho)\, g(\rho)
+  \;=\; \int_{\mathrm{bottom}} g\,\frac{\zeta'}{\zeta}
+  \;-\; \int_{\mathrm{top}} g\,\frac{\zeta'}{\zeta}
+  \;-\; i \sum_{n}\int_{\mathrm{right}} g \cdot \Lambda\text{-term}(n)
+  \;-\; i \int_{\mathrm{left}} g\,\frac{\zeta'}{\zeta},
+\]
+where the left-hand sum runs over $\zeta$'s \emph{actual} meromorphic divisor in
+an enclosing ball (nothing about the zeros is assumed), and the right edge has
+been expanded, term by prime-power term, into von Mangoldt's ledger: a
+rectangular Guinand--Weil identity at finite height. Weighted zero-sums equal
+prime sums plus three explicit boundary integrals---zeros diffracting off primes,
+in the kernel.
+
+The trust surface is worth savoring, because it is the program in miniature. The
+\emph{prime-side} edge needs no numeric certificate at all: its non-vanishing is
+the theorem $\zeta(s) \ne 0$ for $\operatorname{Re} s \ge 1$, and the test-weight
+bound comes from the extreme value theorem---both derived, not supplied. What
+remains for interval arithmetic is three off-prime-side edge non-vanishings and
+strict interiority, the same uniform winding/edge kind as everywhere else in this
+section. And the honesty line is drawn where it belongs: the three boundary
+integrals stand as \emph{explicit remainder terms}. Classically one estimates
+them and sends the box to its limits; that analysis is future (and classical)
+work, not claimed here. The identity is an \emph{instrument} for studying RH, not
+a conclusion about it---and it exhibits a fourth distinct certificate shape (a
+weighted explicit-formula / diffraction identity), alongside positivity,
+real-rootedness, and winding counts.
+
 For completeness we note one boundary item we deliberately keep out of the
 verified list, stated as it is: a Borel--Carath\'eodory theorem is present in the
 development but is a \emph{draft}---its constant is not sharp, it is not
