@@ -2425,4 +2425,160 @@ theorem bd_logDeriv_zeta_eq_bd_companion_sub_pole
   simp only [smul_eq_mul] at hwind_pole ⊢
   linear_combination -hwind_pole
 
+/-! ## THE +1, item 2: discharge the routine `hArb` integrabilities, then wire `N_ζ = N_H − 1`.
+
+The generic count's `hArb` bundle mixes genuinely-external facts (edge non-vanishing = Arb
+enclosures; strict interiority of the zeros = geometry) with ROUTINE integrabilities that follow
+from continuity.  Here the routine ones are discharged (four helpers below), leaving a wiring lemma
+`zetaPoleCompanion_count_eq_winding_with_pole` that takes only the external facts + the `ζ` boundary
+winding value `M`, and concludes the box zero-count of `H` (= `ζ`'s zeros, since `H`'s zeros are
+`ζ`'s non-`1` zeros) is `M + 1` — the RvM `+1`, assembled from item 1 + the count at `H`.
+conjecture1_proved = False. -/
+
+/-- `(·−ρ)⁻¹` is interval-integrable along a horizontal segment at height `b ≠ ρ.im`. -/
+theorem intervalIntegrable_inv_sub_horiz {ρ : ℂ} {b : ℝ} (hb : b ≠ ρ.im) (a0 a1 : ℝ) :
+    IntervalIntegrable (fun x : ℝ => ((↑x + (b : ℂ) * I) - ρ)⁻¹) MeasureTheory.volume a0 a1 := by
+  apply Continuous.intervalIntegrable
+  refine Continuous.inv₀ (by fun_prop) ?_
+  intro x hc
+  have hi := congrArg Complex.im hc
+  simp only [Complex.sub_im, Complex.add_im, Complex.ofReal_im, Complex.mul_im,
+    Complex.ofReal_re, Complex.I_im, Complex.I_re, mul_one, mul_zero, zero_add,
+    add_zero, Complex.zero_im] at hi
+  exact hb (by linarith)
+
+/-- `(·−ρ)⁻¹` is interval-integrable along a vertical segment at abscissa `a ≠ ρ.re`. -/
+theorem intervalIntegrable_inv_sub_vert {ρ : ℂ} {a : ℝ} (ha : a ≠ ρ.re) (b0 b1 : ℝ) :
+    IntervalIntegrable (fun y : ℝ => (((a : ℂ) + ↑y * I) - ρ)⁻¹) MeasureTheory.volume b0 b1 := by
+  apply Continuous.intervalIntegrable
+  refine Continuous.inv₀ (by fun_prop) ?_
+  intro y hc
+  have hr := congrArg Complex.re hc
+  simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+    Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, mul_one, sub_zero,
+    zero_mul, add_zero, Complex.zero_re] at hr
+  exact ha (by linarith)
+
+/-- A function differentiable on the closed box is interval-integrable along a horizontal edge. -/
+theorem intervalIntegrable_diffBox_horiz {E : ℂ → ℂ} {b σ0 σ1 T0 T1 : ℝ}
+    (hb : b ∈ Set.Icc T0 T1) (hσ : σ0 ≤ σ1)
+    (hE : DifferentiableOn ℂ E (Set.Icc σ0 σ1 ×ℂ Set.Icc T0 T1)) :
+    IntervalIntegrable (fun x : ℝ => E (↑x + (b : ℂ) * I)) MeasureTheory.volume σ0 σ1 := by
+  apply ContinuousOn.intervalIntegrable
+  rw [Set.uIcc_of_le hσ]
+  refine (hE.continuousOn).comp (Continuous.continuousOn (by fun_prop)) ?_
+  intro x hx
+  rw [Complex.mem_reProdIm]
+  refine ⟨?_, ?_⟩
+  · simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+      Complex.ofReal_im, Complex.I_im, mul_zero, mul_one, sub_zero, zero_mul, add_zero]
+    exact hx
+  · simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_im,
+      Complex.ofReal_re, Complex.I_re, mul_one, mul_zero, zero_add, add_zero]
+    exact hb
+
+/-- A function differentiable on the closed box is interval-integrable along a vertical edge. -/
+theorem intervalIntegrable_diffBox_vert {E : ℂ → ℂ} {a σ0 σ1 T0 T1 : ℝ}
+    (ha : a ∈ Set.Icc σ0 σ1) (hT : T0 ≤ T1)
+    (hE : DifferentiableOn ℂ E (Set.Icc σ0 σ1 ×ℂ Set.Icc T0 T1)) :
+    IntervalIntegrable (fun y : ℝ => E ((a : ℂ) + ↑y * I)) MeasureTheory.volume T0 T1 := by
+  apply ContinuousOn.intervalIntegrable
+  rw [Set.uIcc_of_le hT]
+  refine (hE.continuousOn).comp (Continuous.continuousOn (by fun_prop)) ?_
+  intro y hy
+  rw [Complex.mem_reProdIm]
+  refine ⟨?_, ?_⟩
+  · simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+      Complex.ofReal_im, Complex.I_im, mul_zero, mul_one, sub_zero, zero_mul, add_zero]
+    exact ha
+  · simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_im,
+      Complex.ofReal_re, Complex.I_re, mul_one, mul_zero, zero_add, add_zero]
+    exact hy
+
+/-- A finite sum of interval-integrable functions is interval-integrable (stated in the
+    `fun x => ∑ …` form matching the generic count's `hArb` bundle). -/
+theorem intervalIntegrable_finsetSum {ι : Type*} (t : Finset ι) {f : ι → ℝ → ℂ} {a b : ℝ}
+    (h : ∀ i ∈ t, IntervalIntegrable (f i) MeasureTheory.volume a b) :
+    IntervalIntegrable (fun x => ∑ i ∈ t, f i x) MeasureTheory.volume a b := by
+  classical
+  induction t using Finset.induction with
+  | empty => simp only [Finset.sum_empty]; exact intervalIntegrable_const
+  | @insert j t hj ih =>
+      simp only [Finset.sum_insert hj]
+      exact (h j (Finset.mem_insert_self _ _)).add
+        (ih (fun i hi => h i (Finset.mem_insert_of_mem hi)))
+
+/-- **THE +1, WIRED**: for a box with `s = 1` strictly interior, `ζ` non-vanishing on the edges,
+    every `H`-zero strictly interior, and the `ζ` boundary winding equal to `2πiM`, the box
+    zero-count of `H` (= `ζ`'s non-`1` zeros) is `M + 1`.  The routine `hArb` integrabilities are
+    discharged internally; only the external Arb/geometry facts remain hypotheses.  This is the
+    meromorphic argument principle for `ζ` with the pole at `1` contributing the RvM `+1`. -/
+theorem zetaPoleCompanion_count_eq_winding_with_pole
+    (sigma0 sigma1 T0 T1 : ℝ) (c : ℂ) (R : ℝ) (M : ℤ)
+    (hσ0 : sigma0 < 1) (hσ1 : 1 < sigma1) (hT0 : T0 < 0) (hT1 : 0 < T1)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hnzb : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzr : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma1 : ℂ) + ↑y * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma0 : ℂ) + ↑y * I) ≠ 0)
+    (hin : ∀ ρ ∈ (divisor_zetaPoleCompanion_ball_support_finite c R).toFinset,
+      sigma0 < ρ.re ∧ ρ.re < sigma1 ∧ T0 < ρ.im ∧ ρ.im < T1)
+    (hwindζ : (∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T1 : ℂ) * I))
+        + I • (∫ y in T0..T1, logDeriv riemannZeta ((sigma1 : ℂ) + ↑y * I))
+        - I • (∫ y in T0..T1, logDeriv riemannZeta ((sigma0 : ℂ) + ↑y * I))
+      = 2 * π * I * (M : ℂ)) :
+    ∃ (s : Finset ℂ) (d : ℂ → ℤ),
+      (∀ ρ ∈ s, (1 : ℤ) ≤ d ρ) ∧
+      (∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+        zetaPoleCompanion ρ = 0 → ρ ∈ s) ∧
+      (∑ ρ ∈ s, d ρ) = M + 1 := by
+  have hsig : sigma0 ≤ sigma1 := by linarith
+  have hT : T0 ≤ T1 := by linarith
+  -- item 1 + the ζ winding give the H winding = 2πi(M+1)
+  have hitem1 := bd_logDeriv_zeta_eq_bd_companion_sub_pole sigma0 sigma1 T0 T1
+    hσ0 hσ1 hT0 hT1 hnzb hnzt hnzr hnzl
+  have hwindH : (∫ x in sigma0..sigma1, logDeriv zetaPoleCompanion (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, logDeriv zetaPoleCompanion (↑x + (T1 : ℂ) * I))
+        + I • (∫ y in T0..T1, logDeriv zetaPoleCompanion ((sigma1 : ℂ) + ↑y * I))
+        - I • (∫ y in T0..T1, logDeriv zetaPoleCompanion ((sigma0 : ℂ) + ↑y * I))
+      = 2 * π * I * (((M + 1 : ℤ)) : ℂ) := by
+    rw [hwindζ] at hitem1
+    push_cast
+    push_cast at hitem1
+    linear_combination -hitem1
+  -- discharge hArb and apply the generic count with N := M + 1
+  refine analytic_count_eq_winding_generic zetaPoleCompanion sigma0 sigma1 T0 T1 c R (M + 1)
+    (analyticOnNhd_zetaPoleCompanion _)
+    (fun u _ => meromorphicOrderAt_zetaPoleCompanion_ne_top u)
+    (divisor_zetaPoleCompanion_ball_support_finite c R) hsig hT hbox_ball hwindH ?_
+  intro E _s _d hEholo _hker
+  -- H ≠ 0 on the edges (from ζ ≠ 0 and pt ≠ 1 inside eq_zero_iff)
+  have hHb : ∀ x ∈ Set.uIcc sigma0 sigma1, zetaPoleCompanion (↑x + (T0 : ℂ) * I) ≠ 0 :=
+    fun x hx h0 => hnzb x hx (zetaPoleCompanion_eq_zero_iff.mp h0).2
+  have hHt : ∀ x ∈ Set.uIcc sigma0 sigma1, zetaPoleCompanion (↑x + (T1 : ℂ) * I) ≠ 0 :=
+    fun x hx h0 => hnzt x hx (zetaPoleCompanion_eq_zero_iff.mp h0).2
+  have hHr : ∀ y ∈ Set.uIcc T0 T1, zetaPoleCompanion ((sigma1 : ℂ) + ↑y * I) ≠ 0 :=
+    fun y hy h0 => hnzr y hy (zetaPoleCompanion_eq_zero_iff.mp h0).2
+  have hHl : ∀ y ∈ Set.uIcc T0 T1, zetaPoleCompanion ((sigma0 : ℂ) + ↑y * I) ≠ 0 :=
+    fun y hy h0 => hnzl y hy (zetaPoleCompanion_eq_zero_iff.mp h0).2
+  refine ⟨hHb, hHt, hHr, hHl, hin, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_horiz (ne_of_lt (hin ρ hρ).2.2.1) _ _
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_horiz ((ne_of_lt (hin ρ hρ).2.2.2).symm) _ _
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_vert ((ne_of_lt (hin ρ hρ).2.1).symm) _ _
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_vert (ne_of_lt (hin ρ hρ).1) _ _
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_horiz (ne_of_lt (hin ρ hρ).2.2.1) _ _).const_mul _)
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_horiz ((ne_of_lt (hin ρ hρ).2.2.2).symm) _ _).const_mul _)
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_vert ((ne_of_lt (hin ρ hρ).2.1).symm) _ _).const_mul _)
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_vert (ne_of_lt (hin ρ hρ).1) _ _).const_mul _)
+  · exact intervalIntegrable_diffBox_horiz ⟨le_refl _, hT⟩ hsig hEholo
+  · exact intervalIntegrable_diffBox_horiz ⟨hT, le_refl _⟩ hsig hEholo
+  · exact intervalIntegrable_diffBox_vert ⟨hsig, le_refl _⟩ hT hEholo
+  · exact intervalIntegrable_diffBox_vert ⟨le_refl _, hsig⟩ hT hEholo
+
 end DiffractionCore
