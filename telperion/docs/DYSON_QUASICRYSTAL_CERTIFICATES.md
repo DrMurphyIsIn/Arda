@@ -83,3 +83,18 @@ Sources (primary, verified against PDFs): Kurasov–Sarnak arXiv:2006.12037/JMP 
 Alon–Cohen–Vinzant arXiv:2307.13498 + Inventiones 2024 (s00222-024-01307-8);
 Olevskii–Ulanovskii; Favorov arXiv:2311.02728; Dyson, Notices AMS 56(2) 2009;
 Shaughnessy arXiv:2410.03673 (v4 vs v6+ divergence noted); GORZ arXiv:1902.07321.
+
+## Addendum (2026-09-09): arXiv:2410.03673 v8 reviewed specifically
+v8 (Jan 2026, Shaughnessy, quant-ph) CLAIMS a full RH proof ("Fourier self-duality of the
+prime quasicrystal forces all non-trivial zeros to lie on Re(s)=1/2", Appendix "Proof of the
+Riemann Hypothesis", Thm A.2) — reversing the author's own v4 Thm A.3 (verified 3-0 above).
+Assessment: NOT established. (1) The self-duality premise presupposes the zeta measure is
+pure-point-with-pure-point-transform — the {log p^k}-support claim our panel REFUTED 0-3 as
+unconditional, and Kurasov–Sarnak prove the technical FQ version false even under RH.
+(2) The "dimensional constraint" (uniform amplitudes forced by "one-dimensional duality") is
+not a theorem — weighted Dirac combs are valid tempered distributions; the paper's A.3 is
+"intuitive reasoning about scale-dependence," i.e. the category-(c) uniform-amplitude step
+ASSERTED, not proved. (3) Remainder R_L(k) dismissed without uniform control; no tempered-
+distribution treatment of the infinite sum. Provenance: single-author, 12 versions with a
+flipped conclusion, LLM acknowledgements, no peer review/formalization. Treat as category-(c)
+claimed; the v4 finite scattering construction remains the only absorbed (category-b) content.
