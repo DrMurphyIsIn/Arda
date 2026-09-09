@@ -115,3 +115,35 @@ plus per-cell bridge lemmas in the twoHub_reduced_cN style, plus the d<=2 candid
 splits. The target (a5+b5+x, a4+b4+y, c') is ALWAYS Balanced+Capped (arms >= 11, c' <= 5) -- no
 small-corner cases. Mechanical from here; same execution pattern as the residue-envelope campaign.
 conjecture1_proved = False.
+
+## Addendum 4 (2026-09-09) — bridge stage 2 status + the pilot reduction identity
+
+Stage 2(i) LANDED (R47PC6Transport.lean, kernel-clean): dtSub_stats_child_congr, hub_stats_perm/
+hub_stats_count, pair_stats_count -- arbitrary BalancedArms = count form for all four statistics.
+
+Stage 2(ii) PILOT (d=5 primary cell (0,1,1), cA=1, W1) -- the reduction identity is CONFIRMED in
+exact sympy (opaque power atoms pA5=V5^a5 etc., mirroring Lean's `ring` treatment):
+
+    (RHS_closed - LHS_closed) / (pA5·pA4·pB5·pB4)
+        = 27 · cellpoly / (30555040·(a4+a5+3)·(b4+b5+5)·(a4+a5+b4+b5+3))
+
+(cellpoly = the emitted pc6_d5p_c1_W1 polynomial, exactly; the 27 and den come from cancel() in
+lowest terms.)  LEAN TACTIC LESSONS from the pilot run:
+  * scratch files MUST live inside proof/formalization AND wrap in namespace R3Cert/Step3 +
+    open RTree PC6 (RTree is not a root-resolvable namespace from outside);
+  * the reduction file must import BOTH R47PC6Transport and R47PC6Cells;
+  * the one-shot route (rw closed forms; push_cast; pow_add; field_simp; nlinarith [atom-product
+    x cell hint]) FAILS at the final linarith -- the cleared goal's shape does not align with the
+    single product hint;
+  * the ROBUST route (next session): factor the four power atoms FIRST --
+      have hL : LHS = A * X := by field_simp; ring     (A = pA5·pA4·pB5·pB4; X,Y atom-free)
+      have hR : RHS = A * Y := by field_simp; ring
+      exact mul_le_mul_of_nonneg_left (X<=Y proof) A.nonneg
+    with X<=Y a pure rational-function inequality in the four cast counts, closed by
+    cross-multiplication + nlinarith [cellpoly lemma, den positives] -- the cleared difference is
+    LITERALLY 27·k·cellpoly, a linear certificate.  X/Y transcriptions to be EMITTED by the
+    generator (sympy knows them exactly), not hand-written.
+
+Remaining: emit the 138 reduction lemmas via the atom-factored route, then the exists-assembly
+(by_cases on the selection hypotheses, Balanced/Capped/hubSize of the target = arithmetic).
+conjecture1_proved = False.
