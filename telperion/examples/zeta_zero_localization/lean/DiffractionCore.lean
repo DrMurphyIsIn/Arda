@@ -1076,4 +1076,110 @@ theorem theta_eq_argChangeVert_gammaR (T : ℝ) :
   intro u _
   exact ZeroFreeBridge.thetaIntegrand_eq_re_logDeriv_gammaR u
 
+/-! ## Brick 12 (RvM bookkeeping, phase 2): THE S-DIFFERENCE COUNTING IDENTITY.
+
+Fold brick 10's box argument-principle into the continuous-argument function: define
+`argZeta σ T` — the continuous argument of `ζ` at `σ + iT` along the standard route
+`2 → 2+iT → σ+iT` (so `π·riemannS T = argZeta (1/2) T`).  Then for a box `[σ0, 2] × [T0, T1]`
+with admissible boundary, the count identity becomes
+
+  `2π · N_box  =  (argZeta σ0 T1 − argZeta σ0 T0)  −  argChangeVert ζ σ0 T0 T1`
+
+— **the zero-count is the jump of the continuous argument at the left abscissa, minus the
+left-edge remainder.**  The right edge (`Re = 2`) is absorbed by vertical additivity (its zeta
+non-vanishing and integrability are THEOREMS), the horizontals by the route's definition.  At
+`σ0` in zero-free territory the left edge is computable (reflection/primes); as `σ0 → 1/2` this
+is the classical "`S` counts the zeros".  conjecture1_proved = False. -/
+
+/-- The continuous argument of `ζ` at `σ + iT` along `2 → 2+iT → σ+iT` (branch-free). -/
+noncomputable def argZeta (σ T : ℝ) : ℝ :=
+  argChangeVert riemannZeta 2 0 T + argChangeHoriz riemannZeta T 2 σ
+
+theorem riemannS_eq_argZeta (T : ℝ) : riemannS T = argZeta (1/2) T / π := rfl
+
+/-- `logDeriv ζ` is continuous along the line `Re = 2` (analyticity + kernel non-vanishing). -/
+theorem continuous_logDeriv_zeta_line2 :
+    Continuous (fun y : ℝ => logDeriv riemannZeta ((2 : ℂ) + y * I)) := by
+  have hne1 : ∀ y : ℝ, ((2 : ℂ) + y * I) ≠ 1 := by
+    intro y h
+    have := congrArg Complex.re h
+    simp at this
+  have hana : ∀ y : ℝ, AnalyticAt ℂ riemannZeta ((2 : ℂ) + y * I) := fun y =>
+    analyticOn_riemannZeta _ (hne1 y)
+  have hnz : ∀ y : ℝ, riemannZeta ((2 : ℂ) + y * I) ≠ 0 := by
+    intro y
+    apply riemannZeta_ne_zero_of_one_le_re
+    simp
+  have heq : (fun y : ℝ => logDeriv riemannZeta ((2 : ℂ) + y * I))
+      = fun y : ℝ => deriv riemannZeta ((2 : ℂ) + y * I) / riemannZeta ((2 : ℂ) + y * I) := by
+    funext y
+    rw [logDeriv_apply]
+  rw [heq]
+  have hpath : Continuous (fun y : ℝ => (2 : ℂ) + y * I) := by fun_prop
+  refine Continuous.div ?_ ?_ hnz
+  · have hc : (fun y : ℝ => deriv riemannZeta ((2 : ℂ) + y * I))
+        = (deriv riemannZeta) ∘ (fun y : ℝ => (2 : ℂ) + y * I) := rfl
+    rw [hc]
+    exact continuous_iff_continuousAt.mpr fun y =>
+      ContinuousAt.comp (g := deriv riemannZeta) (f := fun t : ℝ => (2 : ℂ) + t * I)
+        ((hana y).deriv.continuousAt) hpath.continuousAt
+  · have hc : (fun y : ℝ => riemannZeta ((2 : ℂ) + y * I))
+        = riemannZeta ∘ (fun y : ℝ => (2 : ℂ) + y * I) := rfl
+    rw [hc]
+    exact continuous_iff_continuousAt.mpr fun y =>
+      ContinuousAt.comp (g := riemannZeta) (f := fun t : ℝ => (2 : ℂ) + t * I)
+        ((hana y).continuousAt) hpath.continuousAt
+
+/-- Vertical additivity of the argument change along `Re = 2`. -/
+theorem argChangeVert_zeta_line2_add (T0 T1 : ℝ) :
+    argChangeVert riemannZeta 2 0 T1
+      = argChangeVert riemannZeta 2 0 T0 + argChangeVert riemannZeta 2 T0 T1 := by
+  unfold argChangeVert
+  rw [show (((2:ℝ)) : ℂ) = (2 : ℂ) by norm_num]
+  rw [← intervalIntegral.integral_add_adjacent_intervals
+    (continuous_logDeriv_zeta_line2.intervalIntegrable 0 T0)
+    (continuous_logDeriv_zeta_line2.intervalIntegrable T0 T1),
+    Complex.add_re]
+
+/-- **THE S-DIFFERENCE COUNTING IDENTITY** (RvM engine): for a box `[σ0, 2] × [T0, T1]` with
+    admissible boundary, `2π·N_box = (argZeta σ0 T1 − argZeta σ0 T0) − argChangeVert ζ σ0 T0 T1`.
+    The zero-count IS the jump of the continuous argument, minus the left-edge remainder. -/
+theorem count_eq_argZeta_diff_sub_left
+    (sigma0 T0 T1 : ℝ) (hsig : sigma0 ≤ 2) (hT : T0 ≤ T1)
+    (c : ℂ) (R : ℝ)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ 2) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hs1 : (1 : ℂ) ∉ Metric.ball c R)
+    (hnzb : ∀ x ∈ Set.uIcc sigma0 2, riemannZeta (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc sigma0 2, riemannZeta (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma0 : ℂ) + ↑y * I) ≠ 0)
+    (hins : ∀ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+      sigma0 < ρ.re ∧ ρ.re < 2 ∧ T0 < ρ.im ∧ ρ.im < T1) :
+    2 * π * (∑ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+        (((MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ) ρ : ℤ) : ℝ))
+      = (argZeta sigma0 T1 - argZeta sigma0 T0) - argChangeVert riemannZeta sigma0 T0 T1 := by
+  have hnzr : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((2 : ℂ) + ↑y * I) ≠ 0 := by
+    intro y _
+    apply riemannZeta_ne_zero_of_one_le_re
+    simp
+  have hcnt := zeta_total_argChange_eq_count sigma0 2 T0 T1 hsig hT c R
+    (by simpa using hbox_ball) hs1 hnzb hnzt (by simpa using hnzr) hnzl hins
+  -- unfold the argZeta difference: the 0→T verticals telescope, the horizontals flip sign.
+  have hAV := argChangeVert_zeta_line2_add T0 T1
+  have hflip1 : argChangeHoriz riemannZeta T0 2 sigma0
+      = - argChangeHoriz riemannZeta T0 sigma0 2 := by
+    unfold argChangeHoriz
+    rw [intervalIntegral.integral_symm]
+    simp
+  have hflip2 : argChangeHoriz riemannZeta T1 2 sigma0
+      = - argChangeHoriz riemannZeta T1 sigma0 2 := by
+    unfold argChangeHoriz
+    rw [intervalIntegral.integral_symm]
+    simp
+  unfold argZeta
+  rw [hAV, hflip1, hflip2]
+  -- 2πN = AH(T0,σ0,2) − AH(T1,σ0,2) + AV(2,T0,T1) − AV(σ0,T0,T1)  [hcnt]
+  -- goal: 2πN = [AV(2,0,T0)+AV(2,T0,T1) − AH(T1,σ0,2)] − [AV(2,0,T0) − AH(T0,σ0,2)] − AV(σ0,T0,T1)
+  linarith [hcnt]
+
 end DiffractionCore
