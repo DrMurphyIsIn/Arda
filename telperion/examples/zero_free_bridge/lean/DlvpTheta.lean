@@ -437,4 +437,41 @@ theorem norm_digamma_sub_log_le_of_anchor {s : ℂ} (hs : 2 ≤ s.re)
   have hfin := ge_of_tendsto hlim (Filter.Eventually.of_forall hbound)
   linarith [hfin]
 
+/-! ## Brick 3b′-i: the INTEGER anchor — `ψ(1+N) − log(1+N) → 0`.
+
+The first of the anchor's three sub-bricks (3b′ plan: (i) integer anchor via the Euler–Mascheroni
+limit, (ii) real-axis sandwich via `ψ` monotonicity (log-convexity of `Γ`) killing the 1-periodic
+ambiguity `L(s+1) = L(s)` on a full real interval, (iii) identity theorem
+(`eqOn_of_preconnected_of_frequently_eq`, the corpus `DlvpTransfer` pattern) extending `L ≡ 0`
+to all `Re s > 1`).  Here: `ψ(1+N) = −γ + H_N` (our `digamma_shift` at `s = 1` + Mathlib
+`digamma_one`), so `ψ(1+N) − log(1+N) = −γ + (H_N − log(N+1)) → −γ + γ = 0` by Mathlib's
+`Real.tendsto_harmonic_sub_log_add_one`.  conjecture1_proved = False. -/
+
+/-- **The integer anchor:** `ψ(1+N) − log(1+N) → 0` along `ℕ`. -/
+theorem tendsto_digamma_sub_log_one_add_nat :
+    Filter.Tendsto (fun N : ℕ => Complex.digamma (1 + N) - Complex.log (1 + N))
+      Filter.atTop (nhds 0) := by
+  have hγ := Real.tendsto_harmonic_sub_log_add_one
+  have hshifted : Filter.Tendsto
+      (fun N : ℕ => -Real.eulerMascheroniConstant + ((harmonic N : ℝ) - Real.log ((N : ℝ) + 1)))
+      Filter.atTop
+      (nhds (-Real.eulerMascheroniConstant + Real.eulerMascheroniConstant)) :=
+    tendsto_const_nhds.add hγ
+  rw [neg_add_cancel] at hshifted
+  have hC := (Complex.continuous_ofReal.tendsto _).comp hshifted
+  rw [Complex.ofReal_zero] at hC
+  refine hC.congr fun N => ?_
+  have hlogN : Complex.log ((1 : ℂ) + N) = ((Real.log ((N : ℝ) + 1) : ℝ) : ℂ) := by
+    rw [show ((1 : ℂ) + N) = (((N : ℝ) + 1 : ℝ) : ℂ) by push_cast; ring,
+      ← Complex.ofReal_log (by positivity)]
+  have hsumN : ∑ k ∈ Finset.range N, ((1 : ℂ) + k)⁻¹ = ((harmonic N : ℝ) : ℂ) := by
+    simp only [harmonic]
+    push_cast
+    exact Finset.sum_congr rfl fun k _ => by rw [add_comm]
+  show (((-Real.eulerMascheroniConstant + ((harmonic N : ℝ) - Real.log ((N : ℝ) + 1))) : ℝ) : ℂ)
+      = Complex.digamma (1 + N) - Complex.log (1 + N)
+  rw [digamma_shift (s := 1) (by norm_num) N, Complex.digamma_one, hsumN, hlogN]
+  push_cast
+  ring
+
 end ZeroFreeBridge
