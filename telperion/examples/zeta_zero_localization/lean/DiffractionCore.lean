@@ -1414,4 +1414,166 @@ theorem fold_pointwise {sigma0 y : ℝ} (hσ : sigma0 < 0) (hy : 0 < y) :
   simp only [Complex.sub_re, Complex.neg_re, Complex.conj_re] at hre
   linarith [hre]
 
+/-! ## Brick 13b-wrap (THE FOLD, integral form): `AV(ζ,σ₀)+AV(ζ,1−σ₀) = −AV(Γℝ,σ₀)−AV(Γℝ,1−σ₀)`.
+
+Integrate `fold_pointwise` over a positive-height segment `0 < T0 ≤ T1` (the classical
+zero-avoiding requirement).  Edge continuity off the real axis: `Γℝ` analytic where `Im ≠ 0`
+(the `Γ`-poles are real), `ζ` continuous off its zeros; `intervalIntegral.integral_congr` +
+`intervalIntegral_re` do the rest.  conjecture1_proved = False. -/
+
+/-- `Γℝ` analytic off the real axis (`s/2` avoids the real `Γ`-poles). -/
+theorem gammaR_analyticAt_of_im_ne {s : ℂ} (him : s.im ≠ 0) : AnalyticAt ℂ Gammaℝ s := by
+  have hopen : IsOpen {w : ℂ | w.im ≠ 0} :=
+    isOpen_compl_singleton.preimage Complex.continuous_im
+  have hdiff : DifferentiableOn ℂ Gammaℝ {w : ℂ | w.im ≠ 0} := by
+    intro w hw
+    have hwim : w.im ≠ 0 := hw
+    have hpole : ∀ m : ℕ, w / 2 ≠ -(m : ℂ) := by
+      intro m hm
+      apply hwim
+      have := congrArg Complex.im hm
+      simp only [Complex.div_im, Complex.neg_im, Complex.natCast_im] at this
+      simpa using this
+    have hhalf : HasDerivAt (fun z : ℂ => z / 2) ((1 : ℂ) / 2) w := by
+      simpa using (hasDerivAt_id w).div_const 2
+    have hB : HasDerivAt (fun z : ℂ => Complex.Gamma (z / 2))
+        (deriv Complex.Gamma (w / 2) * (1 / 2)) w :=
+      ((Complex.differentiableAt_Gamma _ hpole).hasDerivAt).comp w hhalf
+    have hGdef : Gammaℝ = fun z : ℂ => ZeroFreeBridge.gammaRArch z * Complex.Gamma (z / 2) := rfl
+    rw [hGdef]
+    exact (((ZeroFreeBridge.gammaRArch_hasDerivAt w).differentiableAt).mul
+      hB.differentiableAt).differentiableWithinAt
+  exact (hdiff.analyticOnNhd hopen) s him
+
+/-- `logDeriv Γℝ` continuous at any off-real point. -/
+theorem logDeriv_gammaR_continuousAt_of_im_ne {s : ℂ} (him : s.im ≠ 0) :
+    ContinuousAt (logDeriv Gammaℝ) s := by
+  have hana := gammaR_analyticAt_of_im_ne him
+  have hne := gammaR_ne_zero_of_im_ne him
+  have heq : logDeriv Gammaℝ = fun w => deriv Gammaℝ w / Gammaℝ w := by
+    funext w; rw [logDeriv_apply]
+  rw [heq]
+  exact (hana.deriv.continuousAt).div hana.continuousAt hne
+
+/-- `logDeriv Γℝ` continuous on any positive-height vertical segment (ANY `σ`). -/
+theorem continuousOn_logDeriv_gammaR_seg (σ T0 T1 : ℝ) (hT0 : 0 < T0) (hT : T0 ≤ T1) :
+    ContinuousOn (fun y : ℝ => logDeriv Gammaℝ ((σ : ℂ) + y * I)) (Set.uIcc T0 T1) := by
+  rw [Set.uIcc_of_le hT]
+  intro y hy
+  have hy0 : 0 < y := lt_of_lt_of_le hT0 hy.1
+  have him : ((σ : ℂ) + y * I).im ≠ 0 := by
+    simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im]
+    simpa using ne_of_gt hy0
+  exact (ContinuousAt.comp (g := logDeriv Gammaℝ) (f := fun t : ℝ => (σ : ℂ) + t * I)
+    (logDeriv_gammaR_continuousAt_of_im_ne him) (by fun_prop)).continuousWithinAt
+
+/-- `logDeriv ζ` continuous on a positive-height segment where `ζ` is nonvanishing. -/
+theorem continuousOn_logDeriv_zeta_seg (σ T0 T1 : ℝ) (hT0 : 0 < T0) (hT : T0 ≤ T1)
+    (hz : ∀ y ∈ Set.Icc T0 T1, riemannZeta ((σ : ℂ) + y * I) ≠ 0) :
+    ContinuousOn (fun y : ℝ => logDeriv riemannZeta ((σ : ℂ) + y * I)) (Set.uIcc T0 T1) := by
+  rw [Set.uIcc_of_le hT]
+  intro y hy
+  have hy0 : 0 < y := lt_of_lt_of_le hT0 hy.1
+  have hne1 : ((σ : ℂ) + y * I) ≠ 1 := by
+    intro h
+    have := congrArg Complex.im h
+    simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im, Complex.one_im] at this
+    exact absurd (by simpa using this) (ne_of_gt hy0)
+  have hana : AnalyticAt ℂ riemannZeta ((σ : ℂ) + y * I) := analyticOn_riemannZeta _ hne1
+  have hcAt : ContinuousAt (logDeriv riemannZeta) ((σ : ℂ) + y * I) := by
+    have heq : logDeriv riemannZeta = fun w => deriv riemannZeta w / riemannZeta w := by
+      funext w; rw [logDeriv_apply]
+    rw [heq]
+    exact (hana.deriv.continuousAt).div hana.continuousAt (hz y hy)
+  exact (ContinuousAt.comp (g := logDeriv riemannZeta) (f := fun t : ℝ => (σ : ℂ) + t * I)
+    hcAt (by fun_prop)).continuousWithinAt
+
+/-- **THE FOLD, integral form** (RvM stone 13b): for `σ₀ < 0` and a positive-height segment,
+    `AV(ζ,σ₀) + AV(ζ,1−σ₀) = −AV(Γℝ,σ₀) − AV(Γℝ,1−σ₀)`. -/
+theorem argChangeVert_fold {sigma0 T0 T1 : ℝ} (hσ : sigma0 < 0) (hT0 : 0 < T0) (hT : T0 ≤ T1) :
+    argChangeVert riemannZeta sigma0 T0 T1 + argChangeVert riemannZeta (1 - sigma0) T0 T1
+      = - argChangeVert Gammaℝ sigma0 T0 T1 - argChangeVert Gammaℝ (1 - sigma0) T0 T1 := by
+  -- nonvanishing on the two ζ lines
+  have hzσ0 : ∀ y ∈ Set.Icc T0 T1, riemannZeta ((sigma0 : ℂ) + y * I) ≠ 0 := by
+    intro y hy hz
+    have hy0 : 0 < y := lt_of_lt_of_le hT0 hy.1
+    have him : ((sigma0 : ℂ) + y * I).im ≠ 0 := by
+      simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+        Complex.I_re, Complex.I_im]
+      simpa using ne_of_gt hy0
+    have hre := (ZetaZeroConfinement.zeta_zero_re_mem_strip him hz).1
+    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im] at hre
+    norm_num at hre
+    linarith
+  have hz1 : ∀ y ∈ Set.Icc T0 T1, riemannZeta (((1 - sigma0 : ℝ) : ℂ) + y * I) ≠ 0 := by
+    intro y _
+    apply riemannZeta_ne_zero_of_one_le_re
+    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im]
+    norm_num
+    linarith
+  -- complex integrands continuousOn the segment
+  have cζ0 := continuousOn_logDeriv_zeta_seg sigma0 T0 T1 hT0 hT hzσ0
+  have cζ1 := continuousOn_logDeriv_zeta_seg (1 - sigma0) T0 T1 hT0 hT hz1
+  have cΓ0 := continuousOn_logDeriv_gammaR_seg sigma0 T0 T1 hT0 hT
+  have cΓ1 := continuousOn_logDeriv_gammaR_seg (1 - sigma0) T0 T1 hT0 hT
+  -- complex integrabilities
+  have iζ0 := cζ0.intervalIntegrable (μ := MeasureTheory.volume)
+  have iζ1 := cζ1.intervalIntegrable (μ := MeasureTheory.volume)
+  have iΓ0 := cΓ0.intervalIntegrable (μ := MeasureTheory.volume)
+  have iΓ1 := cΓ1.intervalIntegrable (μ := MeasureTheory.volume)
+  -- real (.re) integrabilities
+  have rζ0 : IntervalIntegrable (fun y : ℝ => (logDeriv riemannZeta ((sigma0 : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 :=
+    (Complex.continuous_re.comp_continuousOn cζ0).intervalIntegrable
+  have rζ1 : IntervalIntegrable (fun y : ℝ => (logDeriv riemannZeta (((1 - sigma0 : ℝ) : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 :=
+    (Complex.continuous_re.comp_continuousOn cζ1).intervalIntegrable
+  have rΓ0 : IntervalIntegrable (fun y : ℝ => (logDeriv Gammaℝ ((sigma0 : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 :=
+    (Complex.continuous_re.comp_continuousOn cΓ0).intervalIntegrable
+  have rΓ1 : IntervalIntegrable (fun y : ℝ => (logDeriv Gammaℝ (((1 - sigma0 : ℝ) : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 :=
+    (Complex.continuous_re.comp_continuousOn cΓ1).intervalIntegrable
+  have rnegΓ0 : IntervalIntegrable (fun y : ℝ => -(logDeriv Gammaℝ ((sigma0 : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 := rΓ0.neg
+  have rnegΓ1 : IntervalIntegrable (fun y : ℝ => -(logDeriv Gammaℝ (((1 - sigma0 : ℝ) : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 := rΓ1.neg
+  -- (∫ f).re = ∫ f.re, four edges
+  have eRe : ∀ (F : ℝ → ℂ),
+      IntervalIntegrable F MeasureTheory.volume T0 T1 →
+      (∫ y in T0..T1, F y).re = ∫ y in T0..T1, (F y).re := by
+    intro F hI
+    have := intervalIntegral.intervalIntegral_re (𝕜 := ℂ) hI
+    simp only [RCLike.re_to_complex] at this
+    exact this.symm
+  -- the pointwise fold, integrated
+  have main : (∫ y in T0..T1, ((logDeriv riemannZeta ((sigma0 : ℂ) + y * I)).re
+        + (logDeriv riemannZeta (((1 - sigma0 : ℝ) : ℂ) + y * I)).re))
+      = ∫ y in T0..T1, (-(logDeriv Gammaℝ ((sigma0 : ℂ) + y * I)).re
+        + -(logDeriv Gammaℝ (((1 - sigma0 : ℝ) : ℂ) + y * I)).re) := by
+    apply intervalIntegral.integral_congr
+    intro y hy
+    rw [Set.uIcc_of_le hT] at hy
+    have hy0 : 0 < y := lt_of_lt_of_le hT0 hy.1
+    have hfp := fold_pointwise hσ hy0
+    linarith [hfp]
+  -- split LHS of `main` (a genuine sum of integrals)
+  rw [intervalIntegral.integral_add rζ0 rζ1] at main
+  -- split RHS of `main`: ∫(-a + -b) = ∫(-a) + ∫(-b) = -∫a - ∫b
+  have hRHS : (∫ y in T0..T1, (-(logDeriv Gammaℝ ((sigma0 : ℂ) + y * I)).re
+        + -(logDeriv Gammaℝ (((1 - sigma0 : ℝ) : ℂ) + y * I)).re))
+      = -(∫ y in T0..T1, (logDeriv Gammaℝ ((sigma0 : ℂ) + y * I)).re)
+        - (∫ y in T0..T1, (logDeriv Gammaℝ (((1 - sigma0 : ℝ) : ℂ) + y * I)).re) := by
+    rw [intervalIntegral.integral_add rnegΓ0 rnegΓ1,
+        intervalIntegral.integral_neg, intervalIntegral.integral_neg]
+    ring
+  rw [hRHS] at main
+  unfold argChangeVert
+  rw [eRe _ iζ0, eRe _ iζ1, eRe _ iΓ0, eRe _ iΓ1]
+  linarith [main]
+
 end DiffractionCore
