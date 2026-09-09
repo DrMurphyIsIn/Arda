@@ -3544,4 +3544,49 @@ theorem argChangeVert_xiTele_fold (sigma0 T0 T1 : ℝ) (hT : T0 ≤ T1)
   rw [eRe _ iL, eRe _ iR]
   linarith [main]
 
+/-! ## BRICK 2 (A): the bottom edge vanishes — `ξ` real on the real axis.
+
+`ξ(x̄) = conj ξ(x)` (`xiTele_conj`); at real `x`, `x̄ = x`, so `ξ(x)` is real, hence `logDeriv ξ(x)`
+is real (`Im = 0`).  The bottom edge of the RvM box lies on the real axis, so its horizontal
+argument change is `0`.  `ξ ≠ 0` on the edge is the zero-free-contour caveat.
+conjecture1_proved = False. -/
+
+/-- `logDeriv ξ` is REAL on the real axis. -/
+theorem logDeriv_xiTele_im_zero (x : ℝ) : (logDeriv xiTele ((x : ℂ))).im = 0 := by
+  have h := logDeriv_xiTele_conj ((x : ℝ) : ℂ)
+  rw [Complex.conj_ofReal] at h
+  have h2 := congrArg Complex.im h
+  rw [Complex.conj_im] at h2
+  linarith
+
+/-- **The bottom edge vanishes**: `argChangeHoriz ξ 0 σ0 σ1 = 0` (`ξ` real on the real axis). -/
+theorem argChangeHoriz_xiTele_realAxis (σ0 σ1 : ℝ) (hσ : σ0 ≤ σ1)
+    (hz : ∀ x ∈ Set.Icc σ0 σ1, xiTele ((x : ℂ)) ≠ 0) :
+    argChangeHoriz xiTele 0 σ0 σ1 = 0 := by
+  have hpt : ∀ x : ℝ, ((x : ℂ) + ((0:ℝ) : ℂ) * I) = ((x : ℝ) : ℂ) := by intro x; simp
+  have hcont : ContinuousOn (fun x : ℝ => logDeriv xiTele ((x : ℝ) : ℂ)) (Set.uIcc σ0 σ1) := by
+    rw [Set.uIcc_of_le hσ]
+    intro x hx
+    have hana : AnalyticAt ℂ xiTele ((x : ℝ) : ℂ) := analyticAt_xiTele _
+    have hcAt : ContinuousAt (logDeriv xiTele) ((x : ℝ) : ℂ) := by
+      have heq : logDeriv xiTele = fun w => deriv xiTele w / xiTele w := by
+        funext w; rw [logDeriv_apply]
+      rw [heq]; exact (hana.deriv.continuousAt).div hana.continuousAt (hz x hx)
+    exact (hcAt.comp (Complex.continuous_ofReal.continuousAt)).continuousWithinAt
+  have hint := hcont.intervalIntegrable (μ := MeasureTheory.volume)
+  unfold argChangeHoriz
+  have hcongr : (∫ x in σ0..σ1, logDeriv xiTele ((x : ℂ) + ((0:ℝ) : ℂ) * I))
+      = ∫ x in σ0..σ1, logDeriv xiTele ((x : ℝ) : ℂ) :=
+    intervalIntegral.integral_congr (fun x _ => by rw [hpt x])
+  rw [hcongr]
+  have eIm : (∫ x in σ0..σ1, logDeriv xiTele ((x : ℝ) : ℂ)).im
+      = ∫ x in σ0..σ1, (logDeriv xiTele ((x : ℝ) : ℂ)).im := by
+    have := intervalIntegral.intervalIntegral_im (𝕜 := ℂ) hint
+    simp only [RCLike.im_to_complex] at this
+    exact this.symm
+  rw [eIm]
+  have hz2 : (∫ x in σ0..σ1, (logDeriv xiTele ((x : ℝ) : ℂ)).im) = ∫ _x in σ0..σ1, (0:ℝ) :=
+    intervalIntegral.integral_congr (fun x _ => logDeriv_xiTele_im_zero x)
+  rw [hz2, intervalIntegral.integral_zero]
+
 end DiffractionCore
