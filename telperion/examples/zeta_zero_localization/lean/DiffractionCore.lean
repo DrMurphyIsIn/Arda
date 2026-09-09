@@ -596,4 +596,92 @@ theorem right_edge_prime_expansion
     MeasureTheory.integral_tsum hmeas hfin]
   exact tsum_congr fun n => (intervalIntegral.integral_of_le hT).symm
 
+/-! ## Brick 6 (ASSEMBLY): the finite-height explicit formula — zeros = primes + boundary.
+
+Composing bricks 3, 4, 5: place the box's right edge at `Re = σ₁ > 1`.  Brick 3 evaluates the
+weighted boundary integral as the ZERO side (`2πi·Σ d(ρ)g(ρ)` over the actual divisor); brick 4
+turns the right-edge integrand into `−g·L(Λ)` pointwise; brick 5 expands it termwise into
+PRIME-POWER integrals.  The result — every hypothesis explicit, every step kernel-checked:
+
+  `2πi · Σ_ρ d(ρ)·g(ρ)  =  (bottom edge) − (top edge) − i·Σ′_n Λ(n)-term integrals − i·(left edge)`
+
+the rectangular Guinand–Weil / explicit-formula identity at finite height: **weighted sums over
+zeta zeros equal von Mangoldt (prime-power) sums plus three boundary integrals.**  The right-edge
+zeta non-vanishing is DERIVED (`Re > 1`, `riemannZeta_ne_zero_of_one_le_re`), and the test-weight
+edge bound is DERIVED (extreme value theorem on the compact edge) — the Arb trust surface is only:
+three off-prime-side edge non-vanishings + strict interiority of the ball's zero support.
+
+Classically the three remaining edges are estimated and sent to limits (`T0 → −∞` symmetrically,
+`σ₀ → −∞` via the functional equation); here they stand as honest, explicit remainder terms.
+conjecture1_proved = False. -/
+
+/-- **The finite-height explicit formula on a rectangle** (assembly of bricks 3+4+5):
+    for a box with right edge in `Re > 1`, weighted zero-sums equal prime-power sums plus
+    the three remaining boundary integrals. -/
+theorem rect_explicit_formula
+    (sigma0 sigma1 T0 T1 : ℝ) (hsig : sigma0 ≤ sigma1) (hT : T0 ≤ T1) (hσ1 : 1 < sigma1)
+    (c : ℂ) (R : ℝ)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hs1 : (1 : ℂ) ∉ Metric.ball c R)
+    {W : Set ℂ} (g : ℂ → ℂ) (hW : IsOpen W) (hg : DifferentiableOn ℂ g W)
+    (hsubW : (Set.Icc sigma0 sigma1 ×ℂ Set.Icc T0 T1) ⊆ W)
+    (hnzb : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma0 : ℂ) + ↑y * I) ≠ 0)
+    (hins : ∀ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+      sigma0 < ρ.re ∧ ρ.re < sigma1 ∧ T0 < ρ.im ∧ ρ.im < T1) :
+    2 * ↑π * I * ∑ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+        (((MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ) ρ : ℂ) * g ρ)
+      = (∫ x in sigma0..sigma1, g (↑x + (T0 : ℂ) * I) * logDeriv riemannZeta (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, g (↑x + (T1 : ℂ) * I) * logDeriv riemannZeta (↑x + (T1 : ℂ) * I))
+        - I • (∑' n : ℕ, (∫ y in T0..T1, g ((sigma1 : ℂ) + ↑y * I)
+            * LSeries.term (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+                ((sigma1 : ℂ) + ↑y * I) n))
+        - I • (∫ y in T0..T1, g ((sigma0 : ℂ) + ↑y * I)
+            * logDeriv riemannZeta ((sigma0 : ℂ) + ↑y * I)) := by
+  -- The right edge lies in `Re > 1`: zeta non-vanishing there is a THEOREM, not an input.
+  have hnzr : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma1 : ℂ) + ↑y * I) ≠ 0 := by
+    intro y _
+    apply riemannZeta_ne_zero_of_one_le_re
+    simp only [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im,
+      Complex.ofReal_re, Complex.ofReal_im, mul_one, mul_zero, zero_mul, add_zero,
+      zero_add, sub_zero]
+    linarith
+  -- Brick 3: the weighted boundary integral IS the zero side.
+  have hBd := bd_weighted_logDeriv_zeta sigma0 sigma1 T0 T1 hsig hT c R hbox_ball hs1
+    g hW hg hsubW hnzb hnzt hnzr hnzl hins
+  -- `g` restricted to the right edge: continuous, hence bounded (extreme value theorem).
+  have hσ1mem : sigma1 ∈ Set.Icc sigma0 sigma1 := ⟨hsig, le_refl _⟩
+  have hmem_r : Set.MapsTo (fun t : ℝ => ((sigma1 : ℂ) + (t : ℂ) * I))
+      (Set.uIcc T0 T1) (Set.Icc sigma0 sigma1 ×ℂ Set.Icc T0 T1) := by
+    intro t ht
+    rw [Set.uIcc_of_le hT] at ht
+    rw [Complex.mem_reProdIm]
+    exact ⟨by simpa using hσ1mem, by simpa using ht⟩
+  have hgcont : ContinuousOn g (Set.Icc sigma0 sigma1 ×ℂ Set.Icc T0 T1) :=
+    (hg.mono hsubW).continuousOn
+  have hgc : ContinuousOn (fun y : ℝ => g ((sigma1 : ℂ) + y * I)) (Set.uIcc T0 T1) :=
+    hgcont.comp (Continuous.continuousOn (by fun_prop)) hmem_r
+  obtain ⟨y₀, hy₀, hmax⟩ := (isCompact_uIcc (a := T0) (b := T1)).exists_isMaxOn
+    ⟨T0, Set.left_mem_uIcc⟩ hgc.norm
+  -- Bricks 4+5: the right edge speaks primes.
+  have hcongr : (∫ y in T0..T1, g ((sigma1 : ℂ) + ↑y * I)
+        * logDeriv riemannZeta ((sigma1 : ℂ) + ↑y * I))
+      = - (∫ y in T0..T1, g ((sigma1 : ℂ) + ↑y * I)
+          * LSeries (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+              ((sigma1 : ℂ) + ↑y * I)) := by
+    rw [← intervalIntegral.integral_neg]
+    apply intervalIntegral.integral_congr
+    intro y _
+    exact right_edge_weighted_prime_integrand sigma1 hσ1 g y
+  have hCbound : ∀ y ∈ Set.uIcc T0 T1,
+      ‖g ((sigma1 : ℂ) + ↑y * I)‖ ≤ ‖g ((sigma1 : ℂ) + ↑y₀ * I)‖ :=
+    fun y hy => hmax hy
+  have hexp := right_edge_prime_expansion sigma1 T0 T1 hσ1 hT g hgc
+    (‖g ((sigma1 : ℂ) + ↑y₀ * I)‖) hCbound
+  rw [hcongr, hexp] at hBd
+  simp only [smul_eq_mul] at hBd ⊢
+  linear_combination -hBd
+
 end DiffractionCore
