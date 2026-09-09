@@ -382,3 +382,8 @@ name = "DlvpZetaZeroFree"
 
 [[lean_lib]]
 name = "DlvpZetaSymmetry"
+
+# TURING RUNG T2 brick 1: Riemann-Siegel theta, branch-cut-free (digamma-integral definition;
+# ray analyticity + integrand continuity + FTC derivative).  TURING_METHOD_SCOPING §3.
+[[lean_lib]]
+name = "DlvpTheta"

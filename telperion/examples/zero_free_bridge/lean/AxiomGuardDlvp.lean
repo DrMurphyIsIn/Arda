@@ -39,6 +39,7 @@ import DlvpZetaPoleEffective
 import DlvpZetaRateEffective
 import DlvpZetaZeroFree
 import DlvpZetaSymmetry
+import DlvpTheta
 
 #print axioms ZeroFreeBridge.dlvp_zeta_region_concrete
 #print axioms ZeroFreeBridge.dlvp_zeta_region_rate
@@ -52,3 +53,6 @@ import DlvpZetaSymmetry
 #print axioms ZeroFreeBridge.riemannZeta_reflect_line_eq_zero
 #print axioms ZeroFreeBridge.riemannZeta_ne_zero_near_one
 #print axioms ZeroFreeBridge.dlvpRateC_lower
+#print axioms ZeroFreeBridge.riemannSiegelTheta_zero
+#print axioms ZeroFreeBridge.riemannSiegelTheta_deriv
+#print axioms ZeroFreeBridge.thetaIntegrand_continuous
