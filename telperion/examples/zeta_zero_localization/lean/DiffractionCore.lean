@@ -3140,4 +3140,190 @@ theorem logDeriv_xiTele_split {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
     logDeriv_mul s hfac hΛ (by fun_prop) (differentiableAt_completedZeta hs0 hs1),
     logDeriv_halfPoly hs0 hs1]
 
+/-! ## BRICK 3 (integral): the pole factor's path argument change IS the `+1`.
+
+`Δ_L arg(·−r)` along `L : 2 → 2+iT → ½+iT` telescopes (shared corner `2+iT` cancels; start `2−r`
+is positive-real, arg `0`) to `arg((½−r)+iT)`, for real `r < 2`.  Summing the two pole factors
+`r = 0, 1` (`logDeriv[½s(s−1)] = (·)⁻¹ + (·−1)⁻¹`) gives `arg(½+iT) + arg(−½+iT) = π` — the RvM `+1`
+(after `÷π`), a boundary-log computation, not a winding number.  conjecture1_proved = False. -/
+
+
+/-- **`Δ_L arg(·−ρ)` along the L-path** (`ρ` with `Im ρ = 0`, `Re ρ < 2`): telescopes to
+    `arg((½−ρ)+iT)`. -/
+theorem argChangeL_sub_const (ρ : ℂ) (T : ℝ) (hT : 0 < T) (hρim : ρ.im = 0) (hρre : ρ.re < 2) :
+    argChangeVert (fun z : ℂ => z - ρ) 2 0 T
+      + argChangeHoriz (fun z : ℂ => z - ρ) T 2 (1/2)
+      = (((1/2 : ℝ) : ℂ) + (T : ℂ) * I - ρ).arg := by
+  have hreV : ∀ y : ℝ, ((2:ℂ)+(y:ℂ)*I-ρ).re = 2 - ρ.re := by intro y; simp
+  have himH : ∀ x : ℝ, ((x:ℂ)+(T:ℂ)*I-ρ).im = T - ρ.im := by intro x; simp
+  -- VERTICAL leg antiderivative (Re = 2 − Re ρ > 0 ⇒ slitPlane)
+  have hFderiv : ∀ y : ℝ, HasDerivAt (fun y : ℝ => Complex.log ((2:ℂ)+(y:ℂ)*I-ρ))
+      (I • ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹) y := by
+    intro y
+    have hpath : HasDerivAt (fun y : ℝ => (2:ℂ)+(y:ℂ)*I-ρ) I y := by
+      have h1 : HasDerivAt (fun y:ℝ => (y:ℂ)) 1 y := by simpa using (hasDerivAt_id y).ofReal_comp
+      have h2 : HasDerivAt (fun y:ℝ => (y:ℂ)*I) I y := by simpa using h1.mul_const I
+      exact (h2.const_add (2:ℂ)).sub_const ρ
+    have hslit : ((2:ℂ)+(y:ℂ)*I-ρ) ∈ Complex.slitPlane := by
+      rw [Complex.mem_slitPlane_iff]; left; rw [hreV y]; linarith
+    have hd := hpath.clog_real hslit
+    rw [div_eq_mul_inv, ← smul_eq_mul] at hd
+    exact hd
+  have hcontVpath : Continuous (fun y : ℝ => (2:ℂ)+(y:ℂ)*I-ρ) :=
+    (continuous_const.add ((Complex.continuous_ofReal).mul continuous_const)).sub continuous_const
+  have hcontV : Continuous (fun y : ℝ => I • ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹) :=
+    (hcontVpath.inv₀ (fun y => by
+      intro hc; have := congrArg Complex.re hc; rw [hreV y] at this; simp at this; linarith)).const_smul I
+  have hV : I • (∫ y in (0:ℝ)..T, ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹)
+      = Complex.log ((2:ℂ)+(T:ℂ)*I-ρ) - Complex.log ((2:ℂ)+((0:ℝ):ℂ)*I-ρ) := by
+    rw [← intervalIntegral.integral_smul]
+    exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun y _ => hFderiv y)
+      (hcontV.intervalIntegrable _ _)
+  -- HORIZONTAL leg antiderivative (Im = T > 0 ⇒ slitPlane)
+  have hGderiv : ∀ x : ℝ, HasDerivAt (fun x : ℝ => Complex.log ((x:ℂ)+(T:ℂ)*I-ρ))
+      (((x:ℂ)+(T:ℂ)*I-ρ)⁻¹) x := by
+    intro x
+    have hpath : HasDerivAt (fun x:ℝ => (x:ℂ)+(T:ℂ)*I-ρ) 1 x := by
+      have h1 : HasDerivAt (fun x:ℝ => (x:ℂ)) 1 x := by simpa using (hasDerivAt_id x).ofReal_comp
+      exact (h1.add_const ((T:ℂ)*I)).sub_const ρ
+    have hslit : ((x:ℂ)+(T:ℂ)*I-ρ) ∈ Complex.slitPlane := by
+      rw [Complex.mem_slitPlane_iff]; right; rw [himH x, hρim, sub_zero]; exact ne_of_gt hT
+    have hd := hpath.clog_real hslit
+    rwa [one_div] at hd
+  have hcontHpath : Continuous (fun x : ℝ => (x:ℂ)+(T:ℂ)*I-ρ) :=
+    ((Complex.continuous_ofReal).add continuous_const).sub continuous_const
+  have hcontH : Continuous (fun x : ℝ => ((x:ℂ)+(T:ℂ)*I-ρ)⁻¹) :=
+    hcontHpath.inv₀ (fun x => by
+      intro hc; have := congrArg Complex.im hc; rw [himH x, hρim, sub_zero] at this
+      exact (ne_of_gt hT) this)
+  have hH : (∫ x in (2:ℝ)..(1/2), ((x:ℂ)+(T:ℂ)*I-ρ)⁻¹)
+      = Complex.log (((1/2:ℝ):ℂ)+(T:ℂ)*I-ρ) - Complex.log (((2:ℝ):ℂ)+(T:ℂ)*I-ρ) :=
+    intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hGderiv x)
+      (hcontH.intervalIntegrable _ _)
+  unfold argChangeVert argChangeHoriz
+  rw [show (((2:ℝ)):ℂ) = (2:ℂ) by norm_num]
+  rw [intervalIntegral.integral_congr (g := fun y => ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹)
+        (fun y _ => logDeriv_sub_const ρ _),
+      intervalIntegral.integral_congr (g := fun x => ((x:ℂ)+(T:ℂ)*I-ρ)⁻¹)
+        (fun x _ => logDeriv_sub_const ρ _)]
+  have hAV : (∫ y in (0:ℝ)..T, ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹).re
+      = (Complex.log ((2:ℂ)+(T:ℂ)*I-ρ) - Complex.log ((2:ℂ)+((0:ℝ):ℂ)*I-ρ)).im := by
+    have h := congrArg Complex.im hV
+    simpa [Complex.mul_im] using h
+  rw [hAV, hH]
+  have hcorner : Complex.log ((2:ℂ)+(T:ℂ)*I-ρ) = Complex.log (((2:ℝ):ℂ)+(T:ℂ)*I-ρ) := by
+    norm_num
+  have hstart : (Complex.log ((2:ℂ)+((0:ℝ):ℂ)*I-ρ)).im = 0 := by
+    rw [Complex.log_im, Complex.arg_eq_zero_iff]
+    refine ⟨?_, ?_⟩
+    · have : ((2:ℂ)+((0:ℝ):ℂ)*I-ρ).re = 2 - ρ.re := by simp
+      rw [this]; linarith
+    · have : ((2:ℂ)+((0:ℝ):ℂ)*I-ρ).im = -ρ.im := by simp
+      rw [this, hρim, neg_zero]
+  rw [hcorner, Complex.sub_im, Complex.sub_im, hstart]
+  simp only [Complex.log_im]
+  ring
+
+/-- **THE `+1`, path form**: `Δ_L arg[½s(s−1)] = π`. -/
+theorem pole_pathL_eq_pi (T : ℝ) (hT : 0 < T) :
+    argChangeVert (fun z : ℂ => (1 / 2) * (z * (z - 1))) 2 0 T
+      + argChangeHoriz (fun z : ℂ => (1 / 2) * (z * (z - 1))) T 2 (1/2) = π := by
+  have h0 := argChangeL_sub_const 0 T hT (by simp) (by simp)
+  have h1 := argChangeL_sub_const 1 T hT (by simp) (by norm_num)
+  have hsplitV : ∀ y : ℝ, logDeriv (fun z : ℂ => (1/2)*(z*(z-1))) ((2:ℂ)+(y:ℂ)*I)
+      = logDeriv (fun z:ℂ=>z-(0:ℂ)) ((2:ℂ)+(y:ℂ)*I)
+        + logDeriv (fun z:ℂ=>z-(1:ℂ)) ((2:ℂ)+(y:ℂ)*I) := by
+    intro y
+    have hne0 : ((2:ℂ)+(y:ℂ)*I) ≠ 0 := by intro h; have := congrArg Complex.re h; simp at this
+    have hne1 : ((2:ℂ)+(y:ℂ)*I) ≠ 1 := by intro h; have := congrArg Complex.re h; simp at this
+    rw [logDeriv_halfPoly hne0 hne1, logDeriv_sub_const, logDeriv_sub_const, sub_zero]
+  have hsplitH : ∀ x : ℝ, logDeriv (fun z : ℂ => (1/2)*(z*(z-1))) ((x:ℂ)+(T:ℂ)*I)
+      = logDeriv (fun z:ℂ=>z-(0:ℂ)) ((x:ℂ)+(T:ℂ)*I)
+        + logDeriv (fun z:ℂ=>z-(1:ℂ)) ((x:ℂ)+(T:ℂ)*I) := by
+    intro x
+    have him : ((x:ℂ)+(T:ℂ)*I).im ≠ 0 := by
+      have h : ((x:ℂ)+(T:ℂ)*I).im = T := by simp
+      rw [h]; exact ne_of_gt hT
+    have hne0 : ((x:ℂ)+(T:ℂ)*I) ≠ 0 := by intro h; apply him; rw [h]; simp
+    have hne1 : ((x:ℂ)+(T:ℂ)*I) ≠ 1 := by intro h; apply him; rw [h]; simp
+    rw [logDeriv_halfPoly hne0 hne1, logDeriv_sub_const, logDeriv_sub_const, sub_zero]
+  have cpV : Continuous (fun y : ℝ => (2:ℂ)+(y:ℂ)*I) :=
+    continuous_const.add ((Complex.continuous_ofReal).mul continuous_const)
+  have cpH : Continuous (fun x : ℝ => (x:ℂ)+(T:ℂ)*I) :=
+    (Complex.continuous_ofReal).add continuous_const
+  have iv0 : IntervalIntegrable (fun y:ℝ => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((2:ℂ)+(y:ℂ)*I))
+      MeasureTheory.volume 0 T := by
+    have he : (fun y:ℝ => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((2:ℂ)+(y:ℂ)*I))
+        = fun y:ℝ => ((2:ℂ)+(y:ℂ)*I)⁻¹ := by funext y; rw [logDeriv_sub_const, sub_zero]
+    rw [he]; apply Continuous.intervalIntegrable
+    exact cpV.inv₀ (fun y => by intro h; have := congrArg Complex.re h; simp at this)
+  have iv1 : IntervalIntegrable (fun y:ℝ => logDeriv (fun z:ℂ=>z-(1:ℂ)) ((2:ℂ)+(y:ℂ)*I))
+      MeasureTheory.volume 0 T := by
+    have he : (fun y:ℝ => logDeriv (fun z:ℂ=>z-(1:ℂ)) ((2:ℂ)+(y:ℂ)*I))
+        = fun y:ℝ => ((2:ℂ)+(y:ℂ)*I-1)⁻¹ := by funext y; rw [logDeriv_sub_const]
+    rw [he]; apply Continuous.intervalIntegrable
+    refine Continuous.inv₀ (f := fun y:ℝ => (2:ℂ)+(y:ℂ)*I-1)
+      (cpV.sub continuous_const) (fun y => ?_)
+    intro hz
+    have hre1 : ((2:ℂ)+(y:ℂ)*I-1).re = 1 := by simp; norm_num
+    rw [hz] at hre1; simp at hre1
+  have ih0 : IntervalIntegrable (fun x:ℝ => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((x:ℂ)+(T:ℂ)*I))
+      MeasureTheory.volume 2 (1/2) := by
+    have he : (fun x:ℝ => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((x:ℂ)+(T:ℂ)*I))
+        = fun x:ℝ => ((x:ℂ)+(T:ℂ)*I)⁻¹ := by funext x; rw [logDeriv_sub_const, sub_zero]
+    rw [he]; apply Continuous.intervalIntegrable
+    refine cpH.inv₀ (fun x => ?_)
+    intro h; have h2 := congrArg Complex.im h; simp at h2; linarith
+  have ih1 : IntervalIntegrable (fun x:ℝ => logDeriv (fun z:ℂ=>z-(1:ℂ)) ((x:ℂ)+(T:ℂ)*I))
+      MeasureTheory.volume 2 (1/2) := by
+    have he : (fun x:ℝ => logDeriv (fun z:ℂ=>z-(1:ℂ)) ((x:ℂ)+(T:ℂ)*I))
+        = fun x:ℝ => ((x:ℂ)+(T:ℂ)*I-1)⁻¹ := by funext x; rw [logDeriv_sub_const]
+    rw [he]; apply Continuous.intervalIntegrable
+    refine Continuous.inv₀ (f := fun x:ℝ => (x:ℂ)+(T:ℂ)*I-1)
+      (cpH.sub continuous_const) (fun x => ?_)
+    intro hz
+    apply ne_of_gt hT
+    have h2 := congrArg Complex.im hz
+    simpa using h2
+  have hAVsplit : argChangeVert (fun z:ℂ=>(1/2)*(z*(z-1))) 2 0 T
+      = argChangeVert (fun z:ℂ=>z-(0:ℂ)) 2 0 T + argChangeVert (fun z:ℂ=>z-(1:ℂ)) 2 0 T := by
+    unfold argChangeVert
+    rw [show (((2:ℝ)):ℂ) = (2:ℂ) by norm_num,
+      intervalIntegral.integral_congr (g := fun y => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((2:ℂ)+(y:ℂ)*I)
+        + logDeriv (fun z:ℂ=>z-(1:ℂ)) ((2:ℂ)+(y:ℂ)*I)) (fun y _ => hsplitV y),
+      intervalIntegral.integral_add iv0 iv1, Complex.add_re]
+  have hAHsplit : argChangeHoriz (fun z:ℂ=>(1/2)*(z*(z-1))) T 2 (1/2)
+      = argChangeHoriz (fun z:ℂ=>z-(0:ℂ)) T 2 (1/2) + argChangeHoriz (fun z:ℂ=>z-(1:ℂ)) T 2 (1/2) := by
+    unfold argChangeHoriz
+    rw [intervalIntegral.integral_congr (g := fun x => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((x:ℂ)+(T:ℂ)*I)
+        + logDeriv (fun z:ℂ=>z-(1:ℂ)) ((x:ℂ)+(T:ℂ)*I)) (fun x _ => hsplitH x),
+      intervalIntegral.integral_add ih0 ih1, Complex.add_im]
+  -- arg(½+iT) + arg(−½+iT) = π (reflection pair, via log_neg_sub_im_neg + arg_conj)
+  have harg : (((1/2:ℝ):ℂ)+(T:ℂ)*I-(0:ℂ)).arg + (((1/2:ℝ):ℂ)+(T:ℂ)*I-(1:ℂ)).arg = π := by
+    set w : ℂ := ((1/2:ℝ):ℂ)+(T:ℂ)*I with hw
+    set x : ℂ := ((1/2:ℝ):ℂ)-(T:ℂ)*I with hx
+    have e0 : (((1/2:ℝ):ℂ)+(T:ℂ)*I-(0:ℂ)) = w := by rw [hw]; ring
+    have e1 : (((1/2:ℝ):ℂ)+(T:ℂ)*I-(1:ℂ)) = -x := by rw [hx]; push_cast; ring
+    have hxim : x.im < 0 := by
+      have hxi : x.im = -T := by rw [hx]; simp
+      rw [hxi]; linarith
+    have hlog := RHInBoxAnalytic.log_neg_sub_im_neg x hxim
+    have him : (-x).arg - x.arg = π := by
+      have h := congrArg Complex.im hlog
+      rw [Complex.sub_im, Complex.log_im, Complex.log_im] at h
+      simpa [Complex.mul_im] using h
+    have hconj : x = (starRingEnd ℂ) w := by
+      rw [hx, hw]; apply Complex.ext <;> simp [Complex.conj_re, Complex.conj_im]
+    have hwne : w.arg ≠ π := by
+      intro h; have hlt := (Complex.arg_eq_pi_iff.mp h).1
+      rw [hw] at hlt
+      have hre : (((1/2:ℝ):ℂ)+(T:ℂ)*I).re = 1/2 := by simp
+      rw [hre] at hlt; norm_num at hlt
+    have hxarg : x.arg = -w.arg := by
+      rw [hconj, Complex.arg_conj, if_neg hwne]
+    rw [e0, e1]
+    linarith [him, hxarg]
+  rw [hAVsplit, hAHsplit]
+  linarith [h0, h1, harg]
+
 end DiffractionCore
