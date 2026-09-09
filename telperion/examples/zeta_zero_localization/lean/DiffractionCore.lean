@@ -3326,4 +3326,122 @@ theorem pole_pathL_eq_pi (T : ℝ) (hT : 0 < T) :
   rw [hAVsplit, hAHsplit]
   linarith [h0, h1, harg]
 
+
+/-! ## BRICK 3 (assemble): `Δ_L ξ = π + θ + πS`.
+
+Integrating the pointwise `logDeriv_xiTele_split` (`logDeriv ξ = logDeriv[½s(s−1)] + logDeriv Λ`)
+along the right-half path `L : 2 → 2+iT → ½+iT`: the `½s(s−1)` part contributes `π`
+(`pole_pathL_eq_pi`), the `Λ` part contributes `θ + πS` (`completedZeta_pathL_eq_theta_add_piS`).
+`ζ ≠ 0` on the height-`T` horizontal is the classical zero-ordinate caveat.
+conjecture1_proved = False. -/
+
+theorem xiTele_pathL_eq (T : ℝ) (hT : 0 < T)
+    (hζT : ∀ x ∈ Set.uIcc (2 : ℝ) (1/2), riemannZeta (↑x + (T : ℂ) * I) ≠ 0) :
+    argChangeVert xiTele 2 0 T + argChangeHoriz xiTele T 2 (1/2)
+      = π + (ZeroFreeBridge.riemannSiegelTheta T + π * riemannS T) := by
+  -- path continuities
+  have cpV : Continuous (fun y : ℝ => (2:ℂ)+(y:ℂ)*I) :=
+    continuous_const.add ((Complex.continuous_ofReal).mul continuous_const)
+  -- Re=2 nonvanishing facts
+  have hne0V : ∀ y : ℝ, ((2:ℂ)+(y:ℂ)*I) ≠ 0 := fun y => by
+    intro h; have := congrArg Complex.re h; simp at this
+  have hne1V : ∀ y : ℝ, ((2:ℂ)+(y:ℂ)*I) ≠ 1 := fun y => by
+    intro h; have := congrArg Complex.re h; simp at this
+  have hζV : ∀ y : ℝ, riemannZeta ((2:ℂ)+(y:ℂ)*I) ≠ 0 := fun y =>
+    riemannZeta_ne_zero_of_one_le_re (by simp)
+  have hGV : ∀ y : ℝ, Gammaℝ ((2:ℂ)+(y:ℂ)*I) ≠ 0 := fun y =>
+    Complex.Gammaℝ_ne_zero_of_re_pos (by simp)
+  -- VERTICAL leg continuities
+  have chpV : Continuous (fun y:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((2:ℂ)+(y:ℂ)*I)) := by
+    have he : (fun y:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((2:ℂ)+(y:ℂ)*I))
+        = fun y:ℝ => ((2:ℂ)+(y:ℂ)*I)⁻¹ + ((2:ℂ)+(y:ℂ)*I-1)⁻¹ := by
+      funext y; rw [logDeriv_halfPoly (hne0V y) (hne1V y)]
+    rw [he]
+    refine Continuous.add (cpV.inv₀ hne0V) ?_
+    refine Continuous.inv₀ (f := fun y:ℝ => (2:ℂ)+(y:ℂ)*I-1) (cpV.sub continuous_const) (fun y => ?_)
+    intro hz
+    have hre1 : ((2:ℂ)+(y:ℂ)*I-1).re = 1 := by simp; norm_num
+    rw [hz] at hre1; simp at hre1
+  have cΛV : Continuous (fun y:ℝ => logDeriv completedRiemannZeta ((2:ℂ)+(y:ℂ)*I)) := by
+    have he : (fun y:ℝ => logDeriv completedRiemannZeta ((2:ℂ)+(y:ℂ)*I))
+        = fun y:ℝ => logDeriv riemannZeta ((2:ℂ)+(y:ℂ)*I) + logDeriv Gammaℝ ((2:ℂ)+(y:ℂ)*I) := by
+      funext y; exact logDeriv_zeta_add_gammaR (hne0V y) (hne1V y) (hζV y) (hGV y)
+    rw [he]; exact continuous_logDeriv_zeta_line2.add continuous_logDeriv_gammaR_line2
+  -- VERTICAL split: AV(ξ) = AV(hp) + AV(Λ)
+  have hptV : ∀ y : ℝ, logDeriv xiTele ((2:ℂ)+(y:ℂ)*I)
+      = logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((2:ℂ)+(y:ℂ)*I)
+        + logDeriv completedRiemannZeta ((2:ℂ)+(y:ℂ)*I) := by
+    intro y
+    rw [logDeriv_xiTele_split (hne0V y) (hne1V y) (hζV y) (hGV y),
+      logDeriv_halfPoly (hne0V y) (hne1V y)]
+  have hAV : argChangeVert xiTele 2 0 T
+      = argChangeVert (fun z:ℂ=>(1/2)*(z*(z-1))) 2 0 T + argChangeVert completedRiemannZeta 2 0 T := by
+    unfold argChangeVert
+    rw [show (((2:ℝ)):ℂ)=(2:ℂ) by norm_num,
+      intervalIntegral.integral_congr (fun y _ => hptV y),
+      intervalIntegral.integral_add (chpV.intervalIntegrable _ _) (cΛV.intervalIntegrable _ _),
+      Complex.add_re]
+  -- HORIZONTAL leg: nonvanishing + continuities on the segment (Im = T)
+  have himH : ∀ x : ℝ, ((x:ℂ)+(T:ℂ)*I).im ≠ 0 := fun x => by
+    have h : ((x:ℂ)+(T:ℂ)*I).im = T := by simp
+    rw [h]; exact ne_of_gt hT
+  have hne0H : ∀ x : ℝ, ((x:ℂ)+(T:ℂ)*I) ≠ 0 := fun x => by
+    intro h; apply himH x; rw [h]; simp
+  have hne1H : ∀ x : ℝ, ((x:ℂ)+(T:ℂ)*I) ≠ 1 := fun x => by
+    intro h; apply himH x; rw [h]; simp
+  have hGH : ∀ x : ℝ, Gammaℝ ((x:ℂ)+(T:ℂ)*I) ≠ 0 := fun x =>
+    gammaR_ne_zero_of_im_ne (himH x)
+  have chpH : ContinuousOn (fun x:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((x:ℂ)+(T:ℂ)*I))
+      (Set.uIcc (2:ℝ) (1/2)) := by
+    have he : Set.EqOn (fun x:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((x:ℂ)+(T:ℂ)*I))
+        (fun x:ℝ => ((x:ℂ)+(T:ℂ)*I)⁻¹ + ((x:ℂ)+(T:ℂ)*I-1)⁻¹) (Set.uIcc (2:ℝ) (1/2)) := by
+      intro x _; dsimp only; rw [logDeriv_halfPoly (hne0H x) (hne1H x)]
+    apply ContinuousOn.congr _ he
+    have cpH : Continuous (fun x:ℝ => (x:ℂ)+(T:ℂ)*I) :=
+      (Complex.continuous_ofReal).add continuous_const
+    refine (cpH.inv₀ hne0H).continuousOn.add ?_
+    refine (Continuous.inv₀ (f := fun x:ℝ => (x:ℂ)+(T:ℂ)*I-1) (cpH.sub continuous_const)
+      (fun x => ?_)).continuousOn
+    intro hz; apply ne_of_gt hT
+    have h2 := congrArg Complex.im hz; simpa using h2
+  have cΛH : ContinuousOn (fun x:ℝ => logDeriv completedRiemannZeta ((x:ℂ)+(T:ℂ)*I))
+      (Set.uIcc (2:ℝ) (1/2)) := by
+    have he : Set.EqOn (fun x:ℝ => logDeriv completedRiemannZeta ((x:ℂ)+(T:ℂ)*I))
+        (fun x:ℝ => logDeriv riemannZeta ((x:ℂ)+(T:ℂ)*I) + logDeriv Gammaℝ ((x:ℂ)+(T:ℂ)*I))
+        (Set.uIcc (2:ℝ) (1/2)) := by
+      intro x hx; exact logDeriv_zeta_add_gammaR (hne0H x) (hne1H x) (hζT x hx) (hGH x)
+    apply ContinuousOn.congr _ he
+    have cζ : ContinuousOn (fun x:ℝ => logDeriv riemannZeta ((x:ℂ)+(T:ℂ)*I)) (Set.uIcc (2:ℝ) (1/2)) := by
+      intro x hx
+      have hana : AnalyticAt ℂ riemannZeta ((x:ℂ)+(T:ℂ)*I) := analyticOn_riemannZeta _ (hne1H x)
+      have hcAt : ContinuousAt (logDeriv riemannZeta) ((x:ℂ)+(T:ℂ)*I) := by
+        have heq : logDeriv riemannZeta = fun w => deriv riemannZeta w / riemannZeta w := by
+          funext w; rw [logDeriv_apply]
+        rw [heq]; exact (hana.deriv.continuousAt).div hana.continuousAt (hζT x hx)
+      exact (ContinuousAt.comp (g := logDeriv riemannZeta) (f := fun t:ℝ => ((t:ℂ)+(T:ℂ)*I))
+        hcAt (by fun_prop)).continuousWithinAt
+    have cΓ : ContinuousOn (fun x:ℝ => logDeriv Gammaℝ ((x:ℂ)+(T:ℂ)*I)) (Set.uIcc (2:ℝ) (1/2)) := by
+      intro x hx
+      exact (ContinuousAt.comp (g := logDeriv Gammaℝ) (f := fun t:ℝ => ((t:ℂ)+(T:ℂ)*I))
+        (logDeriv_gammaR_continuousAt_of_im_ne (himH x)) (by fun_prop)).continuousWithinAt
+    exact cζ.add cΓ
+  -- HORIZONTAL split: AH(ξ) = AH(hp) + AH(Λ)
+  have hptH : Set.EqOn (fun x:ℝ => logDeriv xiTele ((x:ℂ)+(T:ℂ)*I))
+      (fun x:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((x:ℂ)+(T:ℂ)*I)
+        + logDeriv completedRiemannZeta ((x:ℂ)+(T:ℂ)*I)) (Set.uIcc (2:ℝ) (1/2)) := by
+    intro x hx
+    dsimp only
+    rw [logDeriv_xiTele_split (hne0H x) (hne1H x) (hζT x hx) (hGH x),
+      logDeriv_halfPoly (hne0H x) (hne1H x)]
+  have hAH : argChangeHoriz xiTele T 2 (1/2)
+      = argChangeHoriz (fun z:ℂ=>(1/2)*(z*(z-1))) T 2 (1/2) + argChangeHoriz completedRiemannZeta T 2 (1/2) := by
+    unfold argChangeHoriz
+    rw [intervalIntegral.integral_congr hptH,
+      intervalIntegral.integral_add (chpH.intervalIntegrable) (cΛH.intervalIntegrable),
+      Complex.add_im]
+  have hpole := pole_pathL_eq_pi T hT
+  have hΛ := completedZeta_pathL_eq_theta_add_piS T hT hζT
+  rw [hAV, hAH]
+  linarith [hpole, hΛ]
+
 end DiffractionCore
