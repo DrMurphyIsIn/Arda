@@ -291,3 +291,5 @@ import StripClear
 #print axioms DiffractionCore.argChangeHoriz_xiTele_realAxis
 #print axioms DiffractionCore.continuousOn_logDeriv_xiTele_hseg
 #print axioms DiffractionCore.argChangeHoriz_xiTele_topReflect
+#print axioms DiffractionCore.argChangeHoriz_xiTele_topfull
+#print axioms DiffractionCore.xiTele_winding_eq_RvM
