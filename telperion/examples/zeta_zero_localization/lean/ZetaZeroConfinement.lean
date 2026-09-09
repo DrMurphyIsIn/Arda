@@ -147,14 +147,18 @@ theorem zeta_zero_re_mem_strip {ρ : ℂ} (him : ρ.im ≠ 0) (hz : riemannZeta 
     concrete `hγ` of `AllZeros_h100`) from a single, precise box obligation instead of an appeal to
     an unformalized "no zeros below height 14" fact.
 
-    `hclear_low` is exactly what a winding-`0` box certificate over the low critical strip supplies:
+    `hclear_low` is (mostly) what a winding-`0` box certificate over the low critical strip supplies:
     `zeta_count_eq_winding_generic` with `N = 0` gives `∑ divisor = 0` with `divisor ≥ 1` on the
     support, forcing the support (hence the set of captured box zeros) empty.  NOTE the box must span
     (essentially) the FULL strip width at low height, NOT the thin confinement band `[a, 1-a]`: below
     `55/16` the dVP region is silent (it requires `55/16 ≤ |γ|`), so a low zero is not confined to the
-    band.  To avoid the pole at `s = 1` (corner of a full-width low box) the driver should count the
-    entire `completedRiemannZeta` (`Λ`, no pole, same strip zeros) over `[0,1] × [0, 55/16]`, or count
-    `ζ` over `[a, 1-a] × [0, 55/16]` and clear the two `Re`-slivers by other means. -/
+    band.  CORRECTION (2026-09-08): an earlier revision suggested counting `completedRiemannZeta`
+    over `[0,1] × [0, 55/16]` "since `Λ` has no pole" — that was WRONG: `Λ` has simple poles at BOTH
+    `s = 0` and `s = 1` (`Λ = Λ₀ - 1/s - 1/(1-s)`), so a `[0,1]`-width `Λ`-box hits two poles, not
+    none.  The correct closure (RH_IN_BOX_INTERFACE §6.3) counts `ζ` over the pole-free boxes
+    `[0, 1/1000]` (left sliver, #332) and `[1/1000, 999/1000]` (band, #329) and folds the right
+    sliver into the left one via the Im-preserving FE reflection `riemannZeta_reflect_line_eq_zero`
+    — assembled in `StripClear.hclear_low_of_box_certs`. -/
 theorem no_low_zeros_of_strip_clear (T : ℝ)
     (hclear_low : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.re → ρ.re < 1 →
       0 < ρ.im → ρ.im ≤ 55 / 16 → False) :
