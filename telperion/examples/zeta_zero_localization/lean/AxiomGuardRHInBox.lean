@@ -72,6 +72,7 @@ import RHInBox_1d2000000_1999999d2000000_850_900
 import RHInBox_1d2000000_1999999d2000000_900_950
 import RHInBox_1d2000000_1999999d2000000_950_1000
 import AllZeros_h1000
+import StripClear
 
 #print axioms RHInBox.rh_in_box_of_certificate
 #print axioms RHInBox.rh_in_box_10_35
@@ -109,3 +110,6 @@ import AllZeros_h1000
 #print axioms RHInBox_1d2000000_1999999d2000000_850_900.rh_in_box_1d2000000_1999999d2000000_850_900
 #print axioms RHInBox_1d2000000_1999999d2000000_900_950.rh_in_box_1d2000000_1999999d2000000_900_950
 #print axioms RHInBox_1d2000000_1999999d2000000_950_1000.rh_in_box_1d2000000_1999999d2000000_950_1000
+#print axioms StripClear.hclear_low_of_box_certs
+#print axioms StripClear.height_floor_of_box_certs
+#print axioms StripClear.all_nontrivial_zeros_up_to_height_100_strip_cleared
