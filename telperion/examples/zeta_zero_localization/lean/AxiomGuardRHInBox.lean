@@ -249,3 +249,5 @@ import StripClear
 #print axioms DiffractionCore.analytic_blaschke_split_ball
 #print axioms DiffractionCore.zetaPoleCompanion_blaschke_split_ball
 #print axioms DiffractionCore.analytic_count_eq_winding_generic
+#print axioms DiffractionCore.logDeriv_zeta_eq_companion_sub_pole
+#print axioms DiffractionCore.bd_logDeriv_zeta_eq_bd_companion_sub_pole
