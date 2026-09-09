@@ -3491,4 +3491,57 @@ theorem fold_pointwise_xiTele (sigma y : ℝ) :
   simp only [Complex.conj_re, Complex.neg_re] at hre
   linarith [hre]
 
+/-! ## BRICK 2 (B): the vertical fold integrated — `AV(ξ,σ₀) + AV(ξ,1−σ₀) = 0`.
+
+Integrating `fold_pointwise_xiTele` over a zero-free vertical band: the two mirror vertical edges of
+the RvM box cancel.  For the symmetric box `[−1,2]` (`1−(−1)=2`) this is `AV(ξ,−1) + AV(ξ,2) = 0`.
+`ξ ≠ 0` on the edges is the classical zero-free-contour caveat.  conjecture1_proved = False. -/
+
+/-- `logDeriv ξ` continuous on a vertical segment where `ξ ≠ 0` (`ξ` entire). -/
+theorem continuousOn_logDeriv_xiTele_seg (σ T0 T1 : ℝ) (hT : T0 ≤ T1)
+    (hz : ∀ y ∈ Set.Icc T0 T1, xiTele ((σ : ℂ) + y * I) ≠ 0) :
+    ContinuousOn (fun y : ℝ => logDeriv xiTele ((σ : ℂ) + y * I)) (Set.uIcc T0 T1) := by
+  rw [Set.uIcc_of_le hT]
+  intro y hy
+  have hana : AnalyticAt ℂ xiTele ((σ : ℂ) + y * I) := analyticAt_xiTele _
+  have hcAt : ContinuousAt (logDeriv xiTele) ((σ : ℂ) + y * I) := by
+    have heq : logDeriv xiTele = fun w => deriv xiTele w / xiTele w := by
+      funext w; rw [logDeriv_apply]
+    rw [heq]; exact (hana.deriv.continuousAt).div hana.continuousAt (hz y hy)
+  exact (ContinuousAt.comp (g := logDeriv xiTele) (f := fun t : ℝ => (σ : ℂ) + t * I)
+    hcAt (by fun_prop)).continuousWithinAt
+
+/-- **The ξ vertical fold, integrated**: `AV(ξ,σ₀,T0,T1) + AV(ξ,1−σ₀,T0,T1) = 0`
+    (`ξ ≠ 0` on both mirror edges). -/
+theorem argChangeVert_xiTele_fold (sigma0 T0 T1 : ℝ) (hT : T0 ≤ T1)
+    (hzL : ∀ y ∈ Set.Icc T0 T1, xiTele ((sigma0 : ℂ) + y * I) ≠ 0)
+    (hzR : ∀ y ∈ Set.Icc T0 T1, xiTele (((1 - sigma0 : ℝ) : ℂ) + y * I) ≠ 0) :
+    argChangeVert xiTele sigma0 T0 T1 + argChangeVert xiTele (1 - sigma0) T0 T1 = 0 := by
+  have cL := continuousOn_logDeriv_xiTele_seg sigma0 T0 T1 hT hzL
+  have cR := continuousOn_logDeriv_xiTele_seg (1 - sigma0) T0 T1 hT hzR
+  have iL := cL.intervalIntegrable (μ := MeasureTheory.volume)
+  have iR := cR.intervalIntegrable (μ := MeasureTheory.volume)
+  have rL : IntervalIntegrable (fun y : ℝ => (logDeriv xiTele ((sigma0 : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 :=
+    (Complex.continuous_re.comp_continuousOn cL).intervalIntegrable
+  have rR : IntervalIntegrable
+      (fun y : ℝ => (logDeriv xiTele (((1 - sigma0 : ℝ) : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 :=
+    (Complex.continuous_re.comp_continuousOn cR).intervalIntegrable
+  have eRe : ∀ (F : ℝ → ℂ), IntervalIntegrable F MeasureTheory.volume T0 T1 →
+      (∫ y in T0..T1, F y).re = ∫ y in T0..T1, (F y).re := by
+    intro F hI
+    have := intervalIntegral.intervalIntegral_re (𝕜 := ℂ) hI
+    simp only [RCLike.re_to_complex] at this
+    exact this.symm
+  have main : (∫ y in T0..T1, ((logDeriv xiTele ((sigma0 : ℂ) + y * I)).re
+        + (logDeriv xiTele (((1 - sigma0 : ℝ) : ℂ) + y * I)).re)) = ∫ _y in T0..T1, (0 : ℝ) := by
+    apply intervalIntegral.integral_congr
+    intro y _
+    exact fold_pointwise_xiTele sigma0 y
+  rw [intervalIntegral.integral_add rL rR, intervalIntegral.integral_zero] at main
+  unfold argChangeVert
+  rw [eRe _ iL, eRe _ iR]
+  linarith [main]
+
 end DiffractionCore
