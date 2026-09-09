@@ -235,3 +235,6 @@ import StripClear
 #print axioms DiffractionCore.zero_count_band_edge_decomp
 #print axioms DiffractionCore.logDeriv_completedZeta₀_reflect
 #print axioms DiffractionCore.fold_pointwise_zeta₀
+#print axioms DiffractionCore.argChangeVert_completedZeta_split
+#print axioms DiffractionCore.argChangeVert_gammaR_line_add
+#print axioms DiffractionCore.completedZeta_argChange_critical_eq_zeta_add_theta
