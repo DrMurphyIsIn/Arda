@@ -28,3 +28,9 @@ name = "RvMLambdaLineReal"
 
 [[lean_lib]]
 name = "RvMDlvpTheta"
+
+[[lean_lib]]
+name = "RvMDiffractionCore"
+
+[[lean_lib]]
+name = "RvMLiUnified"
