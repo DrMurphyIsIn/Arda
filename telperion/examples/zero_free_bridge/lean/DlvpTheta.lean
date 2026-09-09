@@ -474,4 +474,70 @@ theorem tendsto_digamma_sub_log_one_add_nat :
   push_cast
   ring
 
+/-! ## Brick 3b′-ii-a: `ψ` is REAL on the positive reals, equals `deriv (log ∘ Γ)`, and that
+derivative is MONOTONE (log-convexity of `Γ`, Bohr–Mollerup).  These are the sandwich's two
+pillars; 3b′-ii-b squeezes `ψ(x+N) − log(x+N) → 0` for real `x` between integer anchors. -/
+
+/-- At a positive real point, the complex `Γ` has a REAL derivative that is simultaneously the
+    derivative of the real `Γ` (Schwarz-reflection style, via `HasDerivAt.real_of_complex` applied
+    to both the real part and the `(-I)·`-twisted real part). -/
+theorem gamma_hasDerivAt_ofReal {x : ℝ} (hx : 0 < x) :
+    ∃ d : ℝ, HasDerivAt Complex.Gamma ((d : ℝ) : ℂ) ((x : ℝ) : ℂ) ∧ HasDerivAt Real.Gamma d x := by
+  have hpole : ∀ m : ℕ, ((x : ℝ) : ℂ) ≠ -(m : ℂ) := by
+    intro m hm
+    have hre := congrArg Complex.re hm
+    simp only [Complex.ofReal_re, Complex.neg_re, Complex.natCast_re] at hre
+    linarith [Nat.cast_nonneg (α := ℝ) m]
+  have hC : HasDerivAt Complex.Gamma (deriv Complex.Gamma ((x : ℝ) : ℂ)) ((x : ℝ) : ℂ) :=
+    (Complex.differentiableAt_Gamma _ hpole).hasDerivAt
+  set d := deriv Complex.Gamma ((x : ℝ) : ℂ) with hd
+  have hre : HasDerivAt (fun t : ℝ => (Complex.Gamma ((t : ℝ) : ℂ)).re) d.re x :=
+    hC.real_of_complex
+  have him0 : HasDerivAt (fun t : ℝ => ((-Complex.I) * Complex.Gamma ((t : ℝ) : ℂ)).re)
+      ((-Complex.I) * d).re x := (hC.const_mul _).real_of_complex
+  have hzero : (fun t : ℝ => ((-Complex.I) * Complex.Gamma ((t : ℝ) : ℂ)).re)
+      = fun _ : ℝ => (0 : ℝ) := by
+    funext t
+    rw [Complex.Gamma_ofReal]
+    simp [Complex.mul_re]
+  have himval : ((-Complex.I) * d).re = 0 :=
+    (hzero ▸ him0).unique (hasDerivAt_const x 0)
+  have him' : d.im = 0 := by
+    have hcalc : ((-Complex.I) * d).re = d.im := by
+      simp [Complex.mul_re]
+    rw [hcalc] at himval
+    exact himval
+  have hdeq : d = ((d.re : ℝ) : ℂ) := by
+    apply Complex.ext
+    · simp
+    · simpa using him'
+  refine ⟨d.re, hdeq ▸ hC, ?_⟩
+  have hgr : (fun t : ℝ => (Complex.Gamma ((t : ℝ) : ℂ)).re) = Real.Gamma := by
+    funext t
+    rw [Complex.Gamma_ofReal, Complex.ofReal_re]
+  exact hgr ▸ hre
+
+/-- **`ψ` is real on the positive reals**, and equals `deriv (log ∘ Γ)` there:
+    `ψ(x) = ↑(deriv (Real.log ∘ Real.Gamma) x)` for `0 < x`. -/
+theorem digamma_ofReal_eq {x : ℝ} (hx : 0 < x) :
+    Complex.digamma ((x : ℝ) : ℂ) = ((deriv (Real.log ∘ Real.Gamma) x : ℝ) : ℂ) := by
+  obtain ⟨d, hC, hR⟩ := gamma_hasDerivAt_ofReal hx
+  have hΓpos : 0 < Real.Gamma x := Real.Gamma_pos_of_pos hx
+  have hlog : HasDerivAt (Real.log ∘ Real.Gamma) ((Real.Gamma x)⁻¹ * d) x :=
+    (Real.hasDerivAt_log hΓpos.ne').comp x hR
+  rw [Complex.digamma_def, logDeriv_apply, hC.deriv, hlog.deriv, Complex.Gamma_ofReal]
+  push_cast
+  rw [div_eq_mul_inv, mul_comm]
+
+/-- **The real digamma is monotone on `(0, ∞)`** — the derivative of the log-convex
+    `log ∘ Γ` (Bohr–Mollerup `Real.convexOn_log_Gamma` + `ConvexOn.monotoneOn_deriv`).
+    The sandwich pillar of the anchor's real-axis step. -/
+theorem monotoneOn_deriv_log_Gamma :
+    MonotoneOn (deriv (Real.log ∘ Real.Gamma)) (Set.Ioi (0 : ℝ)) := by
+  refine Real.convexOn_log_Gamma.monotoneOn_deriv ?_
+  intro x hx
+  obtain ⟨d, _, hR⟩ := gamma_hasDerivAt_ofReal (Set.mem_Ioi.mp hx)
+  exact ((Real.hasDerivAt_log
+    (Real.Gamma_pos_of_pos (Set.mem_Ioi.mp hx)).ne').comp x hR).differentiableAt
+
 end ZeroFreeBridge

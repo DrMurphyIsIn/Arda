@@ -66,3 +66,5 @@ import DlvpTheta
 #print axioms ZeroFreeBridge.sum_norm_inv_sub_log_le
 #print axioms ZeroFreeBridge.norm_digamma_sub_log_le_of_anchor
 #print axioms ZeroFreeBridge.tendsto_digamma_sub_log_one_add_nat
+#print axioms ZeroFreeBridge.digamma_ofReal_eq
+#print axioms ZeroFreeBridge.monotoneOn_deriv_log_Gamma
