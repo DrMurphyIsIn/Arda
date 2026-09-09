@@ -50,6 +50,7 @@ import AllZeros_h100
 import RHInBoxBands
 import NoZerosInBox_1d1000_999d1000_0_55d16
 import NoZerosInBox_0_1d1000_0_55d16
+import DiffractionCore
 import RHInBox_1d1000000_999999d1000000_100_200
 import AllZeros_h200
 import RHInBox_1d2000000_1999999d2000000_0_100
@@ -89,6 +90,11 @@ import StripClear
 #print axioms NoZerosInBox_0_1d1000_0_55d16.no_zeros_in_box_0_1d1000_0_55d16
 #print axioms RHInBox_1d1000000_999999d1000000_100_200.rh_in_box_1d1000000_999999d1000000_100_200
 #print axioms AllZeros_h200.all_nontrivial_zeros_up_to_height_200
+#print axioms DiffractionCore.rect_weighted_pole_generic
+#print axioms DiffractionCore.rect_weighted_residue_sum_generic
+#print axioms DiffractionCore.bd_weighted_logDeriv_zeta
+#print axioms DiffractionCore.logDeriv_zeta_eq_neg_LSeries_vonMangoldt
+#print axioms DiffractionCore.right_edge_prime_expansion
 #print axioms AllZeros_h1000.haC_1000
 #print axioms AllZeros_h1000.all_nontrivial_zeros_up_to_height_1000_of_bands
 #print axioms RHInBox_1d2000000_1999999d2000000_0_100.rh_in_box_1d2000000_1999999d2000000_0_100
