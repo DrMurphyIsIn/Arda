@@ -50,6 +50,28 @@ Lean move. On the genuine core the honest split is **78 / 20 / 2** (sibling-FLP 
   `F2_num = n^2+nQ+4Q`, `P`, `Q` reproduce the exact `Aobj(after)-Aobj(before)` on every witness).
 - `strDefect` drop histogram on Type-L witnesses: `{1: 394}` — always exactly 1 (Nat-recursion friendly).
 
+## UPDATE (deeper de-risk): the distant move is CONDITIONAL; the safe rule reconciles to 92/8
+
+The first-pass "98% via broad leaf-onto-leaf" was over-optimistic: a RANDOM distant leaf-onto-leaf move is
+NOT unconditionally Aobj-nondecreasing (60k-config sweep: 2117 DECREASE Aobj, worst ~ -17; 34 decrease Aobj
+even while reducing defect). A naive `DistantLeafStepAt` mirroring `FlpStepAt` would therefore be FALSE.
+
+The SAFE sub-family is the DEGREE-EQUALIZING leaf relocation (the a3_derisk premise): relocate the pendant
+`w` from `par_w` onto a bare leaf `v` with **deg(par_w) > deg(par_v)**. Among defect-reducing moves obeying
+this rule: **0 Aobj violations** (322/322); violating it: 35 negatives. Exhaustive genuine-core coverage
+(n<=14, 504 trees) with the SAFE class:
+
+| move class (safe, cone-certifiable) | coverage |
+|---|---|
+| sibling-FLP (`FlpStepAt`, DONE) | 78.2% |
+| + degree-equalizing distant leaf | **91.5%** |
+| true whole-hub Type-W (moved size >= 2) | **8.5%** (43 trees) |
+
+**This RECONCILES with the plan's "92% Type-L / 8% Type-W"**: 92% = sibling + degree-equalizing distant
+leaf moves (all cone-certifiable via the same leaf-path-extension G-machinery, gated by the degree rule);
+8% = the genuine whole-hub (Case-B k-star) residual. The unqualified "98%" below counts UNSAFE distant
+moves too and is NOT the certifiable figure.
+
 ## State of the Lean packaging (already done) and the true open residual
 
 The local step is ALREADY packaged and kernel-clean in `R3Cert/BGSCLFlpStepAt.lean`:
@@ -64,14 +86,15 @@ The local step is ALREADY packaged and kernel-clean in `R3Cert/BGSCLFlpStepAt.le
 So **B1 (local step) is complete; the sole open piece of Hnorm is COVERAGE.** This B0 de-risk measures
 exactly that coverage on the load-bearing genuine core and shows the path to close it:
 
-1. `FlpStepAt` (sibling multi-flip) covers **78.2%** of the genuine core (n<=14) — consistent with the
-   Lean's 52.4%-of-all-trees figure (different population).
-2. **The highest-value next move class is the DISTANT leaf-onto-leaf extension** — target is ALWAYS a bare
-   leaf (101/101), so it is the same path-extension G-machinery with a two-site (remove-leaf + extend-leaf)
-   cavity increment. Adding it to `R` lifts coverage **78% -> 98%** of the genuine core.
-3. The genuine whole-hub **Type-W** residual is then only **1.8%** (9 trees, n<=14) — the Case-B k-star
-   relocation, the parity-blocked open core.
+1. `FlpStepAt` (sibling multi-flip) covers **78.2%** of the genuine core (n<=14).
+2. **The next move class is the DEGREE-EQUALIZING distant leaf relocation** (safe under `deg(par_w) >
+   deg(par_v)`) — same path-extension G-machinery, two-site increment. Union with `FlpStepAt` -> **91.5%**.
+3. The genuine whole-hub **Type-W** residual is **8.5%** (43 trees, n<=14) — the Case-B k-star relocation,
+   the parity-blocked open core.
 
-Recommended sequencing: build a `DistantLeafStepAt` move class (mirroring `FlpStepAt`, riding the same G1/G2
-gains) + its coverage lemma -> union with `FlpStepAt` for `R` -> `hnorm_of_coverage` closes Hnorm modulo the
-1.8% Type-W. That 1.8% is the residual to attack last (whole-hub, moved size >= 2).
+Recommended sequencing: build a `DegEqLeafStepAt` move class (the degree-equalizing distant leaf move; its
+Aobj cert must be gated by the degree hypothesis `deg(par_w) > deg(par_v)`, NOT unconditional) + its
+coverage lemma -> union with `FlpStepAt` for `R` -> `hnorm_of_coverage` closes Hnorm to the **91.5%** Type-L
+class. The 8.5% whole-hub Type-W (Case-B, moved size >= 2) is the residual to attack last. NOTE: unlike the
+sibling `FlpStepAt`, the distant cert is CONDITIONAL — the two-site increment is sign-indefinite without the
+degree gate (verified: 34 defect-reducing distant moves DECREASE Aobj when the gate is violated).
