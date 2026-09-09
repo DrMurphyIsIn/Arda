@@ -168,4 +168,38 @@ theorem all_nontrivial_zeros_up_to_height_on_line_tiled
   exact RHInBoxBands.rh_box_of_bands a (1 - a) b hmono n hn hbands ρ ⟨hlo, hhi⟩
     ⟨by rw [hb0]; exact le_of_lt him0, by rw [hbn]; exact himT⟩ hzero
 
+/-- **SEGMENT certificate: all nontrivial zeros with `A ≤ Im ≤ B` lie on the line** — the
+    tiled capstone freed from its `[0, T]` anchor.  Confinement at height `B` puts every such
+    zero in the band `[a, 1-a]`; height-tiling over a partition of `[A, B]` does the rest.
+    This is the UNBOUNDED-LADDER unit: segments compose by `height_chain` to any height,
+    with no single glue theorem ever exceeding the measured `interval_cases`/binder budgets. -/
+theorem all_nontrivial_zeros_in_segment_on_line
+    (a A B : ℝ) (b : ℕ → ℝ) (n : ℕ) (hn : 1 ≤ n) (hmono : Monotone b)
+    (hb0 : b 0 = A) (hbn : b n = B)
+    (haC : a ≤ ZeroFreeBridge.dlvpRateC / Real.log B)
+    (ha0 : 0 < a)
+    (hB : 100 ≤ B)
+    (hbands : ∀ i, i < n → ∀ ρ : ℂ, (a ≤ ρ.re ∧ ρ.re ≤ 1 - a) →
+      (b i ≤ ρ.im ∧ ρ.im ≤ b (i + 1)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hγ_all : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ B → 55 / 16 ≤ |ρ.im|) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → A ≤ ρ.im → ρ.im ≤ B → ρ.re = 1 / 2 := by
+  intro ρ hzero him0 himA himB
+  obtain ⟨hlo, hhi⟩ := ZetaZeroConfinement.zero_in_band a B haC ha0 hB hzero him0 himB
+    (hγ_all ρ hzero him0 himB)
+  exact RHInBoxBands.rh_box_of_bands a (1 - a) b hmono n hn hbands ρ ⟨hlo, hhi⟩
+    ⟨by rw [hb0]; exact himA, by rw [hbn]; exact himB⟩ hzero
+
+/-- **THE HEIGHT CHAIN:** an up-to-`A` certificate and an `[A, B]` segment certificate compose
+    to an up-to-`B` certificate.  Conclusion-level, constant cost, arbitrary iteration depth —
+    the ladder to any height is a fold of this lemma over segments, immune to the
+    `interval_cases` and binder-budget ceilings measured on the monolithic forms. -/
+theorem height_chain (A B : ℝ)
+    (hupA : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ A → ρ.re = 1 / 2)
+    (hseg : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → A ≤ ρ.im → ρ.im ≤ B → ρ.re = 1 / 2) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ B → ρ.re = 1 / 2 := by
+  intro ρ hz him0 himB
+  rcases le_total ρ.im A with h | h
+  · exact hupA ρ hz him0 h
+  · exact hseg ρ hz him0 h himB
+
 end AllZerosUpToHeight
