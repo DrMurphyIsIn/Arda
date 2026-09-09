@@ -72,6 +72,7 @@ import R3Cert.R47R7StuckChar
 import R3Cert.R47WPairLift
 import R3Cert.R47MHubTelescope
 import R3Cert.R47WPair6
+import R3Cert.R47PC6Final
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -333,3 +334,9 @@ import R3Cert.R47WPair6
 #print axioms R3Cert.Step3.backbone_tail_aobj6
 #print axioms R3Cert.Step3.mhub_le_single_of_pairCollapse6
 #print axioms R3Cert.Step3.hdom_of_pairCollapse6_and_singleHubDom
+
+-- A3(2) COMPLETE (2026-09-09): PairCollapse6 is a THEOREM (the m>=3 collapse certificate --
+-- 138 polynomial cells + closed-form transport + reductions + the exists-assembly), so the
+-- multi-hub Hdom reduces to the single-hub tie bound (hdom_of_singleHubDom).
+#print axioms R3Cert.Step3.PC6.pairCollapse6
+#print axioms R3Cert.Step3.PC6.hdom_of_singleHubDom

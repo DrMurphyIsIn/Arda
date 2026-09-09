@@ -1698,47 +1698,23 @@ theorem pc6_d9p_c5_RT (a5 a4 b5 b4 : ℝ)
       mul_nonneg (by linarith : (0:ℝ) ≤ a5 + a4 - 5) (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
       sq_nonneg (b5 + b4), sq_nonneg (a5 + a4)]
 
-set_option maxHeartbeats 4000000 in
 theorem pc6_d10p_c5_W1 (a5 a4 b5 b4 : ℝ)
     (h5 : 0 ≤ a5) (h4 : 0 ≤ a4) (g5 : 0 ≤ b5) (g4 : 0 ≤ b4)
     (hA : 5 ≤ a5 + a4) (hB : 5 ≤ b5 + b4) :
-    (0:ℝ) ≤ 1323426*a5^2*b5 + 1056666*a5^2*b4 + (-647634)*a5^2 + 2679000*a5*a4*b5 + 2139000*a5*a4*b4 + (-1311000)*a5*a4 + 1323426*a5*b5^2 + 2679000*a5*b5*b4 + 24013359*a5*b5 + 1355574*a5*b4^2 + 21627567*a5*b4 + 4824043*a5 + 1355574*a4^2*b5 + 1082334*a4^2*b4 + (-663366)*a4^2 + 1056666*a4*b5^2 + 2139000*a4*b5*b4 + 22162455*a4*b5 + 1082334*a4*b4^2 + 19724823*a4*b4 + 2904739*a4 + 1942902*b5^2 + 3933000*b5*b4 + 37679014*b5 + 1990098*b4^2 + 33871870*b4 + 7256822 := by
-  nlinarith [mul_nonneg h4 (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg h5 (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg g4 (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
-      mul_nonneg g5 (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
-      mul_nonneg (by linarith : (0:ℝ) ≤ a5 + a4 - 5) (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg (by linarith : (0:ℝ) ≤ b5 + b4 - 5) (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg (by linarith : (0:ℝ) ≤ a5 + a4 - 5) (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
-      sq_nonneg (b5 + b4), sq_nonneg (a5 + a4)]
+    (0:ℝ) ≤ 1717638*a5^2*b5 + 1397526*a5^2*b4 + 3477000*a5*a4*b5 + 2829000*a5*a4*b4 + 1717638*a5*b5^2 + 3477000*a5*b5*b4 + 26910745*a5*b5 + 1759362*a5*b4^2 + 24386785*a5*b4 + 1759362*a4^2*b5 + 1431474*a4^2*b4 + 1397526*a4*b5^2 + 2829000*a4*b5*b4 + 25031797*a4*b5 + 1431474*a4*b4^2 + 22453405*a4*b4 + 3238170*b5^2 + 6555000*b5*b4 + 34316299*b5 + 3316830*b4^2 + 32334067*b4 := by
+  positivity
 
-set_option maxHeartbeats 4000000 in
 theorem pc6_d10p_c5_W2 (a5 a4 b5 b4 : ℝ)
     (h5 : 0 ≤ a5) (h4 : 0 ≤ a4) (g5 : 0 ≤ b5) (g4 : 0 ≤ b4)
     (hA : 5 ≤ a5 + a4) (hB : 5 ≤ b5 + b4) :
-    (0:ℝ) ≤ 2646852*a5^2*b5 + 2113332*a5^2*b4 + (-1295268)*a5^2 + 5358000*a5*a4*b5 + 4278000*a5*a4*b4 + (-2622000)*a5*a4 + 2646852*a5*b5^2 + 5358000*a5*b5*b4 + 48416959*a5*b5 + 2711148*a5*b4^2 + 43566715*a5*b4 + 9457117*a5 + 2711148*a4^2*b5 + 2164668*a4^2*b4 + (-1326732)*a4^2 + 2113332*a4*b5^2 + 4278000*a4*b5*b4 + 44715151*a4*b5 + 2164668*a4*b4^2 + 39761227*a4*b4 + 5618509*a4 + 647634*b5^2 + 1311000*b5*b4 + 52890110*b5 + 663366*b4^2 + 44646542*b4 + (-8784574) := by
-  nlinarith [mul_nonneg h4 (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg h5 (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg g4 (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
-      mul_nonneg g5 (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
-      mul_nonneg (by linarith : (0:ℝ) ≤ a5 + a4 - 5) (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg (by linarith : (0:ℝ) ≤ b5 + b4 - 5) (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg (by linarith : (0:ℝ) ≤ a5 + a4 - 5) (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
-      sq_nonneg (b5 + b4), sq_nonneg (a5 + a4)]
+    (0:ℝ) ≤ 3435276*a5^2*b5 + 2795052*a5^2*b4 + 6954000*a5*a4*b5 + 5658000*a5*a4*b4 + 3435276*a5*b5^2 + 6954000*a5*b5*b4 + 54327973*a5*b5 + 3518724*a5*b4^2 + 49185661*a5*b4 + 3518724*a4^2*b5 + 2862948*a4^2*b4 + 2795052*a4*b5^2 + 5658000*a4*b5*b4 + 50570077*a4*b5 + 2862948*a4*b4^2 + 45318901*a4*b4 + 2590536*b5^2 + 5244000*b5*b4 + 45824257*b5 + 2653464*b4^2 + 41199049*b4 := by
+  positivity
 
-set_option maxHeartbeats 4000000 in
 theorem pc6_d10p_c5_RT (a5 a4 b5 b4 : ℝ)
     (h5 : 0 ≤ a5) (h4 : 0 ≤ a4) (g5 : 0 ≤ b5) (g4 : 0 ≤ b4)
     (hA : 5 ≤ a5 + a4) (hB : 5 ≤ b5 + b4) :
-    (0:ℝ) ≤ 661713*a5^2*b5 + 528333*a5^2*b4 + (-323817)*a5^2 + 1339500*a5*a4*b5 + 1069500*a5*a4*b4 + (-655500)*a5*a4 + 661713*a5*b5^2 + 1339500*a5*b5*b4 + 10759605*a5*b5 + 677787*a5*b4^2 + 9818079*a5*b4 + 3022292*a5 + 677787*a4^2*b5 + 541167*a4^2*b4 + (-331683)*a4^2 + 528333*a4*b5^2 + 1069500*a4*b5*b4 + 9818079*a4*b5 + 541167*a4*b4^2 + 8853873*a4*b4 + 2070506*a4 + (-323817)*b5^2 + (-655500)*b5*b4 + 3022292*b5 + (-331683)*b4^2 + 2070506*b4 + (-3628411) := by
-  nlinarith [mul_nonneg h4 (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg h5 (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg g4 (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
-      mul_nonneg g5 (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
-      mul_nonneg (by linarith : (0:ℝ) ≤ a5 + a4 - 5) (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg (by linarith : (0:ℝ) ≤ b5 + b4 - 5) (by linarith : (0:ℝ) ≤ b5 + b4 - 5),
-      mul_nonneg (by linarith : (0:ℝ) ≤ a5 + a4 - 5) (by linarith : (0:ℝ) ≤ a5 + a4 - 5),
-      sq_nonneg (b5 + b4), sq_nonneg (a5 + a4)]
+    (0:ℝ) ≤ 858819*a5^2*b5 + 698763*a5^2*b4 + 1738500*a5*a4*b5 + 1414500*a5*a4*b4 + 858819*a5*b5^2 + 1738500*a5*b5*b4 + 11836829*a5*b5 + 879681*a5*b4^2 + 10876493*a5*b4 + 879681*a4^2*b5 + 715737*a4^2*b4 + 698763*a4*b5^2 + 1414500*a4*b5*b4 + 10876493*a4*b5 + 715737*a4*b4^2 + 9892829*a4*b4 := by
+  positivity
 
 -- 138 cell theorems emitted
 end PC6

@@ -47,8 +47,9 @@ SELECTION.append((2, "p", (-2, 3, 0), ("hsel : 2 ≤ a5 + b5", a5 + b5 - 2)))
 SELECTION.append((2, "f", (2, -3, 5), ("hsel : a5 + b5 ≤ 1", 1 - (a5 + b5))))
 SELECTION.append((3, "p", (-1, 2, 0), ("hsel : 1 ≤ a5 + b5", a5 + b5 - 1)))
 SELECTION.append((3, "f", (3, -4, 5), ("hsel : a5 + b5 ≤ 0", -(a5 + b5))))
-for d in range(4, 11):
+for d in range(4, 10):
     SELECTION.append((d, "p", (0, 1, d - 4), None))
+SELECTION.append((10, "p", (1, 0, 5), None))  # d=10: (0,1,6) has c'=6>5; the winner is (1,0,5)
 
 
 def clause_polys(d: int, cand, cA: int):
