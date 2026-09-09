@@ -23,6 +23,7 @@
 -/
 import LiPositivity
 import LiLadder
+import RvMXiBridge
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -35,3 +36,12 @@ import LiLadder
 #print axioms LiPositivity.li_rh_iff_tail
 #print axioms LiPositivity.li_tail_peel
 #print axioms LiPositivity.li_rh_iff_tail_zero
+
+-- RvMXiBridge (shared-object anchor): the RvM reflection foundation ported to
+-- the UPSTREAM riemannXi -- the SAME function whose Taylor coefficients Li's
+-- criterion uses. Demonstrates the RvM apparatus attaches to the Li object on
+-- the unified v4.34 island. Does NOT link count N(T) to coefficients lambda_n
+-- (that needs the explicit formula). conjecture1_proved = False.
+#print axioms LiPositivity.logDeriv_riemannXi_reflect
+#print axioms LiPositivity.logDeriv_riemannXi_conj
+#print axioms LiPositivity.fold_pointwise_riemannXi

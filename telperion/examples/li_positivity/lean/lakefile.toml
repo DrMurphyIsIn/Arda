@@ -16,3 +16,6 @@ name = "LiPositivity"
 
 [[lean_lib]]
 name = "LiLadder"
+
+[[lean_lib]]
+name = "RvMXiBridge"
