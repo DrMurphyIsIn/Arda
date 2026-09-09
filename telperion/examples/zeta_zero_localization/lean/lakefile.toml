@@ -1,5 +1,5 @@
 name = "LambdaLineReal"
-defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100", "RHInBoxBands", "NoZerosInBox_1d1000_999d1000_0_55d16", "NoZerosInBox_0_1d1000_0_55d16", "RHInBox_1d1000000_999999d1000000_100_200", "AllZeros_h200"]
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "RigorousWinding", "BlaschkeBox", "BoxArgPrincipleZeta", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBox_2d5_3d5_0_100", "RHInBox_1d1000000_999999d1000000_0_100", "ZetaZeroConfinement", "AllZerosUpToHeight", "AllZeros_h100", "RHInBoxBands", "NoZerosInBox_1d1000_999d1000_0_55d16", "NoZerosInBox_0_1d1000_0_55d16", "RHInBox_1d1000000_999999d1000000_100_200", "AllZeros_h200", "StripClear"]
 
 [[require]]
 name = "mathlib"
@@ -110,3 +110,10 @@ name = "RHInBox_1d1000000_999999d1000000_100_200"
 # a=1/10^6, T=200 (effective-rate edge haC_200 in-kernel).  conjecture1_proved = False.
 [[lean_lib]]
 name = "AllZeros_h200"
+# STRIP-CLEAR GLUE: composes the two winding-0 certs above with the critical-line reflection
+# (ZeroFreeBridge.riemannZeta_reflect_line_eq_zero) into the full-strip clearing hclear_low,
+# discharges the 55/16 height floor via no_low_zeros_of_strip_clear, and re-exports the
+# height-100 theorem with hγ REPLACED by the two boxes' zero-freeness -- every hypothesis a
+# uniform Arb winding/edge input.  conjecture1_proved = False.
+[[lean_lib]]
+name = "StripClear"
