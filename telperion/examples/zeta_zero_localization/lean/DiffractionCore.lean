@@ -3589,4 +3589,68 @@ theorem argChangeHoriz_xiTele_realAxis (σ0 σ1 : ℝ) (hσ : σ0 ≤ σ1)
     intervalIntegral.integral_congr (fun x _ => logDeriv_xiTele_im_zero x)
   rw [hz2, intervalIntegral.integral_zero]
 
-end DiffractionCore
+/-! ## BRICK 2 (C): the top-edge horizontal reflection — `AH(ξ,T,½,−1) = AH(ξ,T,2,½)`.
+
+The top edge (`Im = T`) of the RvM box splits at `Re = ½`; the left half `[½,−1]` folds onto the
+right half `[2,½]` under `x ↦ 1−x` (i.e. `s ↦ 1−s̄` at fixed height).  Pointwise,
+`Im(logDeriv ξ ((1−x)+iT)) = Im(logDeriv ξ (x+iT))` (reflect: `logDeriv ξ(1−s̄)=−conj logDeriv ξ s`,
+so imaginary parts agree), and a change of variables closes it.  `ξ ≠ 0` on the top edge is the
+zero-free-contour caveat.  conjecture1_proved = False. -/
+
+/-- `logDeriv ξ` continuous on a horizontal segment (`Im = T`) where `ξ ≠ 0`. -/
+theorem continuousOn_logDeriv_xiTele_hseg (T a b : ℝ)
+    (hz : ∀ x ∈ Set.uIcc a b, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0) :
+    ContinuousOn (fun x : ℝ => logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)) (Set.uIcc a b) := by
+  intro x hx
+  have hana : AnalyticAt ℂ xiTele ((x : ℂ) + (T : ℂ) * I) := analyticAt_xiTele _
+  have hcAt : ContinuousAt (logDeriv xiTele) ((x : ℂ) + (T : ℂ) * I) := by
+    have heq : logDeriv xiTele = fun w => deriv xiTele w / xiTele w := by
+      funext w; rw [logDeriv_apply]
+    rw [heq]; exact (hana.deriv.continuousAt).div hana.continuousAt (hz x hx)
+  exact (ContinuousAt.comp (g := logDeriv xiTele) (f := fun t : ℝ => (t : ℂ) + (T : ℂ) * I)
+    hcAt (by fun_prop)).continuousWithinAt
+
+/-- **The top-edge reflection**: `AH(ξ,T,½,−1) = AH(ξ,T,2,½)` (`ξ ≠ 0` on the top edge `[−1,2]`). -/
+theorem argChangeHoriz_xiTele_topReflect (T : ℝ)
+    (hz : ∀ x ∈ Set.Icc (-1:ℝ) 2, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0) :
+    argChangeHoriz xiTele T (1/2) (-1) = argChangeHoriz xiTele T 2 (1/2) := by
+  -- pointwise imaginary-part symmetry across Re=½
+  have hkey : ∀ x : ℝ, (logDeriv xiTele (((1 - x : ℝ) : ℂ) + (T : ℂ) * I)).im
+      = (logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    intro x
+    have hs : (((1 - x : ℝ) : ℂ) + (T : ℂ) * I)
+        = 1 - (starRingEnd ℂ) ((x : ℂ) + (T : ℂ) * I) := by
+      apply Complex.ext <;> simp <;> ring
+    rw [hs, logDeriv_xiTele_reflect, logDeriv_xiTele_conj]
+    simp [Complex.neg_im, Complex.conj_im]
+  -- integrabilities on the two sub-edges
+  have hzL : ∀ x ∈ Set.uIcc (1/2:ℝ) (-1), xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+    intro x hx; rw [Set.uIcc_of_ge (by norm_num)] at hx
+    exact hz x ⟨hx.1, by linarith [hx.2]⟩
+  have hzR : ∀ x ∈ Set.uIcc (2:ℝ) (1/2), xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+    intro x hx; rw [Set.uIcc_of_ge (by norm_num)] at hx
+    exact hz x ⟨by linarith [hx.1], hx.2⟩
+  have iL := (continuousOn_logDeriv_xiTele_hseg T (1/2) (-1) hzL).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iR := (continuousOn_logDeriv_xiTele_hseg T 2 (1/2) hzR).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  unfold argChangeHoriz
+  -- LHS .im → ∫ Im
+  have eL : (∫ x in (1/2:ℝ)..(-1), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im
+      = ∫ x in (1/2:ℝ)..(-1), (logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    have := intervalIntegral.intervalIntegral_im (𝕜 := ℂ) iL
+    simp only [RCLike.im_to_complex] at this; exact this.symm
+  have eR : (∫ x in (2:ℝ)..(1/2), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im
+      = ∫ x in (2:ℝ)..(1/2), (logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    have := intervalIntegral.intervalIntegral_im (𝕜 := ℂ) iR
+    simp only [RCLike.im_to_complex] at this; exact this.symm
+  rw [eL, eR]
+  -- rewrite G(x) = G(1-x) via hkey, then change of variables x ↦ 1-x
+  have hcongr : (∫ x in (1/2:ℝ)..(-1), (logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im)
+      = ∫ x in (1/2:ℝ)..(-1), (logDeriv xiTele (((1 - x : ℝ) : ℂ) + (T : ℂ) * I)).im :=
+    intervalIntegral.integral_congr (fun x _ => (hkey x).symm)
+  rw [hcongr]
+  have hcov := intervalIntegral.integral_comp_sub_left
+    (fun u : ℝ => (logDeriv xiTele ((u : ℂ) + (T : ℂ) * I)).im) (a := (1/2:ℝ)) (b := (-1:ℝ)) 1
+  rw [show (1:ℝ) - (-1) = 2 by norm_num, show (1:ℝ) - 1/2 = 1/2 by norm_num] at hcov
+  exact hcov
