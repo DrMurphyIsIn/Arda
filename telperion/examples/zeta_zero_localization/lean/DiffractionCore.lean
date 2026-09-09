@@ -1182,4 +1182,81 @@ theorem count_eq_argZeta_diff_sub_left
   -- goal: 2πN = [AV(2,0,T0)+AV(2,T0,T1) − AH(T1,σ0,2)] − [AV(2,0,T0) − AH(T0,σ0,2)] − AV(σ0,T0,T1)
   linarith [hcnt]
 
+/-! ## Brick 13a (the FE-fold toolkit): log-derivatives under conjugation.
+
+The FE-fold turns the left-edge argument change into mirror-edge data at NEGATIVE heights;
+Schwarz reflection (`f(s̄) = conj (f s)`) folds those back to positive heights.  Kernel form:
+Mathlib's `HasDerivAt.star_conj` gives the anti-holomorphic chain rule, whence for any
+conj-symmetric `f`, `logDeriv f (s̄) = conj (logDeriv f s)` — instantiated for `ζ`
+(`riemannZeta_conj`) and `Γℝ` (proved here from `Gamma_conj` + `exp_conj`).  Since
+`Re ∘ conj = Re`, every `argChangeVert` at a negative height mirrors to its positive-height
+twin — the fold's computability toolkit.  conjecture1_proved = False. -/
+
+/-- Schwarz-reflection derivative: if `f (conj z) = conj (f z)` everywhere and `f` is
+    differentiable at `s`, then `deriv f (conj s) = conj (deriv f s)`. -/
+theorem deriv_conj_of_conj_symm {f : ℂ → ℂ}
+    (hsymm : ∀ z : ℂ, f ((starRingEnd ℂ) z) = (starRingEnd ℂ) (f z))
+    {s : ℂ} (hdf : DifferentiableAt ℂ f s) :
+    deriv f ((starRingEnd ℂ) s) = (starRingEnd ℂ) (deriv f s) := by
+  have h1 := hdf.hasDerivAt.star_conj
+  have hfun : (star ∘ f ∘ (starRingEnd ℂ)) = f := by
+    funext z
+    simp only [Function.comp_apply]
+    rw [hsymm z]
+    simp
+  rw [hfun] at h1
+  have h2 : (starRingEnd ℂ) (deriv f s) = star (deriv f s) := rfl
+  rw [h2]
+  exact h1.deriv
+
+/-- `logDeriv` under conjugation, for conj-symmetric differentiable `f`. -/
+theorem logDeriv_conj_of_conj_symm {f : ℂ → ℂ}
+    (hsymm : ∀ z : ℂ, f ((starRingEnd ℂ) z) = (starRingEnd ℂ) (f z))
+    {s : ℂ} (hdf : DifferentiableAt ℂ f s) :
+    logDeriv f ((starRingEnd ℂ) s) = (starRingEnd ℂ) (logDeriv f s) := by
+  rw [logDeriv_apply, logDeriv_apply, deriv_conj_of_conj_symm hsymm hdf, hsymm s, ← map_div₀]
+
+/-- **`ζ` log-derivative under conjugation** (`s ≠ 1`). -/
+theorem logDeriv_zeta_conj {s : ℂ} (hs : s ≠ 1) :
+    logDeriv riemannZeta ((starRingEnd ℂ) s) = (starRingEnd ℂ) (logDeriv riemannZeta s) :=
+  logDeriv_conj_of_conj_symm (fun z => riemannZeta_conj z) (differentiableAt_riemannZeta hs)
+
+/-- `Γℝ` is conj-symmetric: `Γℝ(s̄) = conj (Γℝ s)` (real π-power via `exp_conj`, `Gamma_conj`). -/
+theorem gammaR_conj (s : ℂ) : Gammaℝ ((starRingEnd ℂ) s) = (starRingEnd ℂ) (Gammaℝ s) := by
+  have h1 : Gammaℝ ((starRingEnd ℂ) s)
+      = ZeroFreeBridge.gammaRArch ((starRingEnd ℂ) s)
+        * Complex.Gamma ((starRingEnd ℂ) s / 2) := rfl
+  have h2 : Gammaℝ s = ZeroFreeBridge.gammaRArch s * Complex.Gamma (s / 2) := rfl
+  have h3 := congrFun ZeroFreeBridge.gammaRArch_exp ((starRingEnd ℂ) s)
+  have h4 := congrFun ZeroFreeBridge.gammaRArch_exp s
+  rw [h1, h2, h3, h4]
+  have hlog : Complex.log (Real.pi : ℂ) = ((Real.log Real.pi : ℝ) : ℂ) := by
+    rw [← Complex.ofReal_log Real.pi_pos.le]
+  have h2c : ((starRingEnd ℂ) (2 : ℂ)) = 2 := map_ofNat _ 2
+  rw [map_mul, ← Complex.exp_conj, ← Complex.Gamma_conj]
+  congr 1
+  · congr 1
+    rw [map_mul, hlog, Complex.conj_ofReal, map_div₀, map_neg, h2c]
+  · congr 1
+    rw [map_div₀, h2c]
+
+/-- **`Γℝ` log-derivative under conjugation** (off the poles, via `Im ≠ 0` or `Γℝ ≠ 0`). -/
+theorem logDeriv_gammaR_conj {s : ℂ} (hG : Gammaℝ s ≠ 0) :
+    logDeriv Gammaℝ ((starRingEnd ℂ) s) = (starRingEnd ℂ) (logDeriv Gammaℝ s) := by
+  have hGdiff : DifferentiableAt ℂ Gammaℝ s := by
+    have hpole : ∀ m : ℕ, s / 2 ≠ -(m : ℂ) := by
+      intro m hm
+      apply hG
+      rw [Complex.Gammaℝ_eq_zero_iff]
+      exact ⟨m, by linear_combination 2 * hm⟩
+    have hhalf : HasDerivAt (fun z : ℂ => z / 2) ((1 : ℂ) / 2) s := by
+      simpa using (hasDerivAt_id s).div_const 2
+    have hB : HasDerivAt (fun z : ℂ => Complex.Gamma (z / 2))
+        (deriv Complex.Gamma (s / 2) * (1 / 2)) s :=
+      ((Complex.differentiableAt_Gamma _ hpole).hasDerivAt).comp s hhalf
+    have hGdef : Gammaℝ = fun z : ℂ => ZeroFreeBridge.gammaRArch z * Complex.Gamma (z / 2) := rfl
+    rw [hGdef]
+    exact ((ZeroFreeBridge.gammaRArch_hasDerivAt s).differentiableAt).mul hB.differentiableAt
+  exact logDeriv_conj_of_conj_symm gammaR_conj hGdiff
+
 end DiffractionCore
