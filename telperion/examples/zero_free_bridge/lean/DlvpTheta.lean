@@ -164,7 +164,6 @@ theorem logDeriv_gammaR (s : ℂ) (hs : 0 < (s / 2).re) :
   have hlogB : logDeriv (fun z : ℂ => Gamma (z / 2)) s = (1 / 2) * Complex.digamma (s / 2) := by
     rw [logDeriv_apply, hB.deriv, Complex.digamma_def, logDeriv_apply]
     field_simp [hBne]
-    ring
   rw [hlogB]
 
 /-- **The Archimedean bridge:** the θ integrand equals `Re (logDeriv Gammaℝ)` on the critical
@@ -426,7 +425,7 @@ theorem norm_digamma_sub_log_le_of_anchor {s : ℂ} (hs : 2 ≤ s.re)
       ≤ ‖Complex.digamma (s + N) - Complex.log (s + N)‖ + 1 / (s.re - 1) := by
     intro N
     rw [digamma_sub_log_telescoped hs0 N]
-    refine le_trans (norm_sub_le _ _) (add_le_add_left ?_ _)
+    refine le_trans (norm_sub_le _ _) (add_le_add le_rfl ?_)
     exact le_trans (norm_sum_le _ _) (sum_norm_inv_sub_log_le hs N)
   have hlim : Filter.Tendsto
       (fun N : ℕ => ‖Complex.digamma (s + N) - Complex.log (s + N)‖ + 1 / (s.re - 1))
