@@ -147,3 +147,27 @@ lowest terms.)  LEAN TACTIC LESSONS from the pilot run:
 Remaining: emit the 138 reduction lemmas via the atom-factored route, then the exists-assembly
 (by_cases on the selection hypotheses, Balanced/Capped/hubSize of the target = arithmetic).
 conjecture1_proved = False.
+
+## Addendum 5 (2026-09-09) — the reduction TEMPLATE fully validated (all three layers green)
+
+Pilot cell d=5p cA=1 W1, all layers compile with 0 errors:
+
+  Layer 1 (hXY, atom-free X <= Y):
+      rw [<- sub_nonneg]; have key : Y - X = (m*POLY)/(mden*DEN) := by field_simp; ring
+      rw [key]; apply div_nonneg; . nlinarith [hcell]; . positivity
+    -- X, Y = sympy cancel(stat/(pA5*pA4*pB5*pB4)) printed as (num)/(den) polys in the casts;
+    -- m, DEN from cancel(Y-X) with numerator verified = m * cellpoly.
+  Layer 2 (hL : pairstat = A * X, hR : targetstat = A * Y):
+      rw [pairU_Ztot, hubU_Ztot, hubU_Zopen, hubU_udeg]; push_cast; field_simp; ring     (hL)
+      rw [hubU_Ztot]; push_cast; rw [pow_add, pow_add, pow_succ]; field_simp; ring        (hR)
+    -- A = (621/64)^a5*(513/80)^a4*(621/64)^b5*(513/80)^b4; bare field_simp suffices
+    -- (no ne-battery needed on the pilot). MUST `open RTree` inside namespace Step3/PC6.
+  Layer 3 (compose): calc pairstat = A*X := hL  _ <= A*Y := mul_le_mul_of_nonneg_left hXY
+    (by positivity)  _ = targetstat := hR.symm
+
+Remaining engineering for the batch (fresh session): generalize the emitter over all 46 cells x 3
+clauses -- clause-variant rewrite lists (W2 adds pairU_Zopen/pairU_udeg + hubU_Zopen/hubU_udeg;
+RT uses pairU_Aobj / hubU_Aobj with its `hpos` via (by omega)), Nat-subtraction cast handling for
+negative (x,y) candidates (push_cast [Nat.cast_sub (by omega)]), selection-hypothesis casts, and
+pow_add/pow_succ splits keyed to (x,y,cp). Then the exists-assembly. No open mathematics remains.
+conjecture1_proved = False.
