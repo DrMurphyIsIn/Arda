@@ -19,3 +19,12 @@ name = "LiLadder"
 
 [[lean_lib]]
 name = "RvMXiBridge"
+
+[[lean_lib]]
+name = "RvMRHInBox"
+
+[[lean_lib]]
+name = "RvMLambdaLineReal"
+
+[[lean_lib]]
+name = "RvMDlvpTheta"
