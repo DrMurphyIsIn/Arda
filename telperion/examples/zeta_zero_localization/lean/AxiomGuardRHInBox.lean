@@ -259,3 +259,6 @@ import StripClear
 #print axioms DiffractionCore.zetaPoleCompanion_count_eq_winding_with_pole
 #print axioms DiffractionCore.zeta_strip_zero_count_with_pole
 #print axioms DiffractionCore.argChangeVert_conj_double
+#print axioms DiffractionCore.gammaR_analyticAt_of_re_pos
+#print axioms DiffractionCore.logDeriv_gammaR_im_zero
+#print axioms DiffractionCore.archimedean_pathL_eq_theta

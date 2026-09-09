@@ -2670,4 +2670,134 @@ theorem argChangeVert_conj_double (f : ℂ → ℂ) (σ T : ℝ) (hT : 0 ≤ T)
     exact intervalIntegral.integral_congr (fun y _ => heven y)
   rw [hswap]; ring
 
-end DiffractionCore
+/-! ## THE θ IDENTIFICATION: the Archimedean part of the right-half path IS Riemann–Siegel `θ`.
+
+The reflection-side of RvM needs `θ`.  The key fact — provable, not just scaffolded — is that `Γℝ` is
+analytic AND non-vanishing on the whole rectangle `[1/2,2] × [0,T]` (its poles are at `Re ≤ 0`, it
+never vanishes), so `logDeriv Γℝ` is holomorphic there and its rectangle winding is `0`
+(`rect_arg_principle_generic`).  Since `Γℝ` is real on the real axis (bottom edge contributes `0`
+to the argument change), this forces the Archimedean argument change along the right-half path
+`2 → 2+iT → 1/2+iT` to equal `θ(T) = AV(Γℝ,1/2,0,T)`:
+
+  `AV(Γℝ,2,0,T) + AH(Γℝ,T,2,1/2) = θ(T)`.
+
+This is the θ half of the `θ + πS` identification.  (The `πS` half is `logDeriv_zeta_add_gammaR`
+integrated along the same path, `Δ_L ζ = πS`; the `+1` is the pole, handled separately.)
+conjecture1_proved = False. -/
+
+/-- `Γℝ` is analytic on the right half-plane `Re > 0` (its `Γ(s/2)` poles are at `Re ≤ 0`). -/
+theorem gammaR_analyticAt_of_re_pos {s : ℂ} (hs : 0 < s.re) : AnalyticAt ℂ Gammaℝ s := by
+  have hopen : IsOpen {w : ℂ | 0 < w.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hdiff : DifferentiableOn ℂ Gammaℝ {w : ℂ | 0 < w.re} := by
+    intro w hw
+    have hwre : 0 < w.re := hw
+    have hpole : ∀ m : ℕ, w / 2 ≠ -(m : ℂ) := by
+      intro m hm
+      have hre := congrArg Complex.re hm
+      rw [Complex.neg_re, Complex.natCast_re] at hre
+      have h2 : (w / 2).re = w.re / 2 := by
+        rw [div_eq_mul_inv, Complex.mul_re]
+        simp [Complex.inv_re, Complex.normSq]
+        ring
+      rw [h2] at hre
+      nlinarith [hwre, Nat.cast_nonneg (α := ℝ) m]
+    have hhalf : HasDerivAt (fun z : ℂ => z / 2) ((1 : ℂ) / 2) w := by
+      simpa using (hasDerivAt_id w).div_const 2
+    have hB : HasDerivAt (fun z : ℂ => Complex.Gamma (z / 2))
+        (deriv Complex.Gamma (w / 2) * (1 / 2)) w :=
+      ((Complex.differentiableAt_Gamma _ hpole).hasDerivAt).comp w hhalf
+    have hGdef : Gammaℝ = fun z : ℂ => ZeroFreeBridge.gammaRArch z * Complex.Gamma (z / 2) := rfl
+    rw [hGdef]
+    exact (((ZeroFreeBridge.gammaRArch_hasDerivAt w).differentiableAt).mul
+      hB.differentiableAt).differentiableWithinAt
+  exact (hdiff.analyticOnNhd hopen) s hs
+
+/-- `logDeriv Γℝ` continuous at any point with `Re > 0`. -/
+theorem continuousAt_logDeriv_gammaR_of_re_pos {s : ℂ} (hs : 0 < s.re) :
+    ContinuousAt (logDeriv Gammaℝ) s := by
+  have hana := gammaR_analyticAt_of_re_pos hs
+  have hne := Complex.Gammaℝ_ne_zero_of_re_pos hs
+  have heq : logDeriv Gammaℝ = fun w => deriv Gammaℝ w / Gammaℝ w := by
+    funext w; rw [logDeriv_apply]
+  rw [heq]
+  exact (hana.deriv.continuousAt).div hana.continuousAt hne
+
+/-- `logDeriv Γℝ` is REAL on the positive real axis (`Γℝ` real there, via conjugation symmetry). -/
+theorem logDeriv_gammaR_im_zero {x : ℝ} (hx : 0 < x) : (logDeriv Gammaℝ (x : ℂ)).im = 0 := by
+  have hG : Gammaℝ (x : ℂ) ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos (by simpa using hx)
+  have hc := logDeriv_gammaR_conj hG
+  rw [Complex.conj_ofReal] at hc
+  have hi := congrArg Complex.im hc
+  rw [Complex.conj_im] at hi
+  linarith
+
+set_option maxHeartbeats 1000000 in
+/-- **THE θ IDENTIFICATION**: the Archimedean argument change along `2 → 2+iT → 1/2+iT` equals
+    Riemann–Siegel `θ(T)`.  Proof: `Γℝ` holomorphic + non-vanishing on `[1/2,2]×[0,T]` ⟹ its
+    rectangle winding is `0`; the real-axis bottom edge contributes `0`; rearrange. -/
+theorem archimedean_pathL_eq_theta (T : ℝ) (hT : 0 < T) :
+    argChangeVert Gammaℝ 2 0 T + argChangeHoriz Gammaℝ T 2 (1/2)
+      = ZeroFreeBridge.riemannSiegelTheta T := by
+  -- `logDeriv Γℝ` holomorphic on the closed rectangle `[1/2,2] × [0,T]`
+  have hdiffOn : DifferentiableOn ℂ (logDeriv Gammaℝ)
+      (Set.Icc (1/2 : ℝ) 2 ×ℂ Set.Icc (0 : ℝ) T) := by
+    intro z hz
+    rw [Complex.mem_reProdIm] at hz
+    have hzre : 0 < z.re := by have h := hz.1.1; norm_num at h; linarith
+    have hana := gammaR_analyticAt_of_re_pos hzre
+    have hne := Complex.Gammaℝ_ne_zero_of_re_pos hzre
+    have heq : logDeriv Gammaℝ = fun w => deriv Gammaℝ w / Gammaℝ w := by
+      funext w; rw [logDeriv_apply]
+    rw [heq]
+    exact ((hana.deriv.differentiableAt).div hana.differentiableAt hne).differentiableWithinAt
+  have hrect := RHInBoxAnalytic.rect_arg_principle_generic (1/2) 2 0 T (by norm_num) (le_of_lt hT)
+    (logDeriv Gammaℝ) hdiffOn
+  -- take imaginary parts: the four-edge argument-change relation
+  have him := congrArg Complex.im hrect
+  set Ib := ∫ x in (1/2 : ℝ)..2, logDeriv Gammaℝ (↑x + ((0 : ℝ) : ℂ) * I) with hIb
+  set It := ∫ x in (1/2 : ℝ)..2, logDeriv Gammaℝ (↑x + (T : ℂ) * I) with hIt
+  set Ir := ∫ y in (0 : ℝ)..T, logDeriv Gammaℝ (((2 : ℝ) : ℂ) + ↑y * I) with hIr
+  set Il := ∫ y in (0 : ℝ)..T, logDeriv Gammaℝ (((1/2 : ℝ) : ℂ) + ↑y * I) with hIl
+  rw [show (Ib - It + I • Ir - I • Il).im = Ib.im - It.im + Ir.re - Il.re by
+        simp only [Complex.sub_im, Complex.add_im, smul_eq_mul, Complex.mul_im,
+          Complex.I_im, Complex.I_re, one_mul, zero_mul, zero_add, mul_zero, sub_zero],
+      Complex.zero_im] at him
+  -- bottom edge (real axis) contributes `0`
+  have hbot0 : Ib.im = 0 := by
+    have hintb : IntervalIntegrable (fun x : ℝ => logDeriv Gammaℝ (↑x + ((0 : ℝ) : ℂ) * I))
+        MeasureTheory.volume (1/2) 2 := by
+      apply ContinuousOn.intervalIntegrable
+      intro x hx
+      rw [Set.uIcc_of_le (by norm_num : (1/2 : ℝ) ≤ 2)] at hx
+      have hxre : 0 < ((x : ℂ) + ((0 : ℝ) : ℂ) * I).re := by
+        simpa using (by linarith [hx.1] : (0:ℝ) < x)
+      exact (ContinuousAt.comp (g := logDeriv Gammaℝ)
+        (f := fun t : ℝ => (↑t + ((0 : ℝ) : ℂ) * I))
+        (continuousAt_logDeriv_gammaR_of_re_pos hxre) (by fun_prop)).continuousWithinAt
+    have hre0 : Ib.im = ∫ x in (1/2 : ℝ)..2, (logDeriv Gammaℝ (↑x + ((0 : ℝ) : ℂ) * I)).im := by
+      have h := intervalIntegral.intervalIntegral_im (𝕜 := ℂ) hintb
+      simp only [RCLike.im_to_complex] at h
+      rw [hIb]; exact h.symm
+    rw [hre0]
+    have hz0 : (∫ x in (1/2 : ℝ)..2, (logDeriv Gammaℝ (↑x + ((0 : ℝ) : ℂ) * I)).im)
+        = ∫ _x in (1/2 : ℝ)..2, (0 : ℝ) := by
+      apply intervalIntegral.integral_congr
+      intro x hx
+      rw [Set.uIcc_of_le (by norm_num : (1/2 : ℝ) ≤ 2)] at hx
+      have hx0 : 0 < x := by linarith [hx.1]
+      show (logDeriv Gammaℝ ((x : ℂ) + ((0 : ℝ) : ℂ) * I)).im = 0
+      rw [show ((x : ℂ) + ((0 : ℝ) : ℂ) * I) = ((x : ℝ) : ℂ) by
+        simp only [Complex.ofReal_zero, zero_mul, add_zero]]
+      exact logDeriv_gammaR_im_zero hx0
+    rw [hz0]; simp
+  -- identify the edges with AV/AH and θ
+  have hθ : ZeroFreeBridge.riemannSiegelTheta T = Il.re := by
+    rw [theta_eq_argChangeVert_gammaR]; unfold argChangeVert; rw [← hIl]
+  have hAVr : argChangeVert Gammaℝ 2 0 T = Ir.re := by
+    unfold argChangeVert; rw [← hIr]
+  have hAHt : argChangeHoriz Gammaℝ T 2 (1/2) = -It.im := by
+    unfold argChangeHoriz
+    rw [intervalIntegral.integral_symm, Complex.neg_im, ← hIt]
+  rw [hAVr, hAHt, hθ]
+  rw [hbot0] at him
+  linarith
