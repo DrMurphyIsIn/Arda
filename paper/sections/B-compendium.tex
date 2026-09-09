@@ -1,0 +1,197 @@
+\section{The Telperion compendium: emitter catalog and subsystems}
+\label{sec:compendium}
+
+This appendix is a \emph{dated snapshot}---2026-09-09, at 126 emitter
+modules---of a catalog that grows by design; the authoritative, current
+registry is the repository itself (every emitter must register a sensitivity
+stance, \cref{sec:vacuity}, and a test refuses shipment without one, so the
+in-repo list is complete by construction). Several modules house small families
+of related kinds; the campaign-specific drivers of \cref{sec:rh} (box,
+empty-band, on-line sweep) emit through the shapes below. Descriptions are
+condensed from each emitter's own docstring.
+
+\subsection{Emitter catalog}
+
+\begin{longtable}{@{}p{0.34\textwidth}p{0.60\textwidth}@{}}
+\toprule
+\textbf{Kind} & \textbf{What it certifies} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{2}{@{}l}{\emph{Algebraic and textbook inequalities}} \\
+\texttt{identity} & exact identities / equalities (the equality half of a campaign) \\
+\texttt{rational\_identity} & rational-function identities over $\mathbb{Q}$ on a ray \\
+\texttt{consequence} & equations following from polynomial hypotheses \\
+\texttt{tangent} & tangent-line trick for symmetric-sum inequalities \\
+\texttt{cauchy\_schwarz} & Cauchy--Schwarz / QM--AM via pairwise-difference SOS \\
+\texttt{bernstein} & Bernstein-basis positivity on a closed interval \\
+\texttt{sturm\_positive} & strict interval positivity via Sturm chains \\
+\texttt{logconcave} & log-concave single-point reductions \\
+\texttt{turan\_box} & Tur\'an-style log-concavity $a_1^2 \ge a_0 a_2$ over a box \\
+\texttt{unimodal} & integer maxima of unimodal sequences \\
+\texttt{telescope} & telescoping-potential induction steps \\
+\texttt{fwd\_telescope} & forward-difference telescoping (the W2 prover) \\
+\texttt{second\_order} & closed forms for three-term linear recurrences \\
+\texttt{ratio\_telescope} & multiplicative telescoping of per-step ratio bounds \\
+\texttt{monomial\_ladder} & one smallness budget absorbing a monomial ladder \\
+\texttt{rpow\_budget} & $k$-power product collapse with exponent-level budgets \\
+\texttt{two\_row\_solve} & solution-entry bounds for $2\times2$ scalar systems \\
+\texttt{separable\_convex} & extrema of separable convex sums \\
+\texttt{concave\_stationary\_max} & stationary points of strictly concave objectives as maxima \\
+\texttt{scale\_invariance} & homogeneity / objective-degeneracy certificates \\
+\texttt{monotone\_tail} & monotone-ratio family tails ($b(s) \le B$ for $s \ge s_0$) \\
+\texttt{wz} & WZ / Zeilberger creative-telescoping certificates \\
+\texttt{logconvex\_interp} & zero-tolerant log-convexity endpoint interpolation \\
+\texttt{multilinear\_perturbation} & Leibniz telescoping $|\prod F - \prod G| \le C\eta$ with exact envelope \\
+\texttt{poly\_geom\_closure} & uniform $\sum p(n) r^n \le B$ via synthesized remainder invariants \\
+\texttt{gevrey\_majorant} & Gevrey-2 factorial-majorant calculus \\
+\texttt{coefficient\_mass} & $\ell^1$-coefficient sup-envelope evaluation \\
+\texttt{affine\_ledger} & multi-parameter affine gain/increment ledgers over a box \\
+\texttt{finite\_prefix\_absorption} & eventually-bounded $\Rightarrow$ globally-bounded absorption \\
+\texttt{continuous\_barrier} & open--closed continuity bootstrap barriers \\
+\addlinespace
+\multicolumn{2}{@{}l}{\emph{Semialgebraic positivity}} \\
+\texttt{rational\_sos} & SOS with Artin/Reznick denominators \\
+\texttt{sos\_sdp} & first-class SOS via SDP, exact-rationalized \\
+\texttt{putinar} & constrained positivity (Putinar Positivstellensatz) \\
+\texttt{handelman} & positivity on polytopes (Handelman) \\
+\texttt{cone} & Farkas / nonnegative-combination certificates \\
+\texttt{nonneg\_orthant} & positivity on the nonnegative orthant \\
+\texttt{domain\_to\_orthant} & constrained domains via affine maps to the orthant \\
+\texttt{polya\_zeros} & homogeneous P\'olya certificates tolerating boundary zeros \\
+\texttt{lattice\_box} & $d$-dimensional integer Positivstellensatz \\
+\texttt{psd\_form} & deterministic PSD certificates for quadratic forms \\
+\texttt{spectral\_factorization} & Fej\'er--Riesz: nonnegative trig polynomial $\to$ exact SOS \\
+\texttt{bilinear\_corner} & worst-corner positivity of bilinear boxes \\
+\texttt{polytope\_max} & multi-affine corner maxima in general dimension \\
+\texttt{box\_robust} & $\forall$-box separable-quadratic nonnegativity \\
+\texttt{finite\_argmax} & a designated winner strictly beats a finite list \\
+\texttt{nullstellensatz} & ideal membership: a polynomial vanishes on a variety \\
+\texttt{real\_nullstellensatz} & vanishing on the real variety \\
+\texttt{infeasible} & Nullstellensatz refutations of polynomial systems \\
+\texttt{sos\_refutation} & SOS-Positivstellensatz refutations of semialgebraic systems \\
+\addlinespace
+\multicolumn{2}{@{}l}{\emph{Discrete and arithmetic}} \\
+\texttt{cg\_round} & Chv\'atal--Gomory integer rounding (VIPR-style) \\
+\texttt{valuation} & $p$-adic valuation certificates \\
+\texttt{finite\_decide} & guarded $\forall$-facts over explicit tables by \texttt{decide} \\
+\texttt{integrality\_gate} & finite exceptional tables plus uniform $p$-adic gates \\
+\texttt{primality} & Pratt/Lucas primality certificates \\
+\texttt{admissible\_tuple} & prime-gaps admissible tuples, decide-checked \\
+\texttt{quadratic\_irrational} & $\mathbb{Z}[\sqrt d]$ conjugate-norm separation \\
+\texttt{sqrt\_root\_elimination} & symbolic radical elimination \\
+\addlinespace
+\multicolumn{2}{@{}l}{\emph{Complex analysis: bounds, regions, enclosures}} \\
+\texttt{bracket} & rational enclosures of transcendental constants \\
+\texttt{transcendental\_enclosure} & rational lower/upper bounds for transcendental values \\
+\texttt{algebraic\_bracket} & two-sided enclosures of square roots \\
+\texttt{zero\_free\_cosine} & nonnegative-cosine-polynomial zero-free regions \\
+\texttt{mt\_cosine} & optimal Mossinghoff--Trudgian cosine polynomials \\
+\texttt{lfunction\_product} & the $3$-$4$-$1$ product lower bound \\
+\texttt{zero\_free\_region} & zero-free-region assembly \\
+\texttt{logderiv\_region} & de la Vall\'ee-Poussin log-derivative region cores \\
+\texttt{dirichlet\_repr} & Euler--Maclaurin / Abel-summation representations \\
+\texttt{sphere\_bound} & strip growth bounds made uniform on spheres \\
+\texttt{halfplane\_disk} & half-plane to disk positivity (M\"obius--Schwarz) \\
+\texttt{bc\_deriv\_re} & Borel--Carath\'eodory + Cauchy derivative bounds \\
+\texttt{bc\_split} & log-derivative split-plus-entire-bound combines \\
+\texttt{borel\_caratheodory} & the Borel--Carath\'eodory bound (upstream packaging) \\
+\texttt{cauchy\_deriv} & Cauchy derivative estimates on disks \\
+\texttt{max\_modulus} & maximum-modulus propagation to disks \\
+\texttt{entire\_part\_bound} & entire-part log-derivative oscillation bounds \\
+\texttt{log\_product\_bound} & zero-factor magnitude bounds (two-scale) \\
+\texttt{two\_scale\_separation} & inner-disk / outer-sphere separation \\
+\texttt{far\_pole\_sum} & rational sums with poles outside the disk \\
+\texttt{herglotz\_lower} & Herglotz lower bounds (keep the equal-height zero) \\
+\texttt{endpoint\_geom\_cap} & entire-part geometric factors capped at endpoints \\
+\texttt{log\_combination} & $F^*$-folding log combinations \\
+\texttt{log\_eps\_optimize} & cutoff-parameter optimization for log-eps witnesses \\
+\texttt{curvature\_boundary} & sign-definite $f''$ forces extrema to the boundary \\
+\texttt{dominated\_integrability} & integrability by rpow domination \\
+\texttt{parametric\_holomorphy} & analyticity of parametric tail integrals \\
+\texttt{preconnected\_cover} & preconnectedness by convex covers \\
+\addlinespace
+\multicolumn{2}{@{}l}{\emph{Argument principle and zero localization}} \\
+\texttt{winding\_count} & numeric winding cores with kernel emission \\
+\texttt{xi\_line\_zeros} & on-line zero counts via sign changes and the IVT \\
+\texttt{box\_localization} & the RH-in-a-box counting capstone \\
+\texttt{rect\_argument\_principle} & Cauchy vanishing on box boundaries \\
+\texttt{rect\_winding} & the winding-nonzero primitive, from scratch \\
+\texttt{argument\_principle} & the winding/residue bridge on circles \\
+\texttt{full\_argument\_principle} & residue sums plus analytic vanishing in one theorem \\
+\texttt{annulus\_count} & zero counts in shells (two-circle difference) \\
+\texttt{box\_residue\_sum} & box residue sums conditional on winding \\
+\texttt{order\_residue} & order as the residue of the log-derivative \\
+\texttt{order\_balance} & integer order boundary contradictions \\
+\texttt{jensen\_zero\_count} & Jensen-style zero-count bounds in disks \\
+\texttt{slit\_loop\_winding\_zero} & the homotopy-free heart of Rouch\'e \\
+\texttt{reexport} & upstream Lean theorems wrapped as named, guarded lemmas \\
+\addlinespace
+\multicolumn{2}{@{}l}{\emph{RH criterion prefixes}} \\
+\texttt{hyperbolicity} & real-rootedness of quadratics over boxes \\
+\texttt{jensen\_polynomial\_hyperbolicity} & degree-2 Jensen polynomial hyperbolicity, compile-gated \\
+\texttt{interlacing} & Newton log-concavity / real-rootedness \\
+\texttt{li\_positivity} & finite rungs of Li's criterion onto the formalized iff \\
+\texttt{lee\_yang\_stable\_pair} & Schur stability; zeros-on-a-line by construction \\
+\addlinespace
+\multicolumn{2}{@{}l}{\emph{Brualdi--Goldwasser campaign}} \\
+\texttt{affine\_param\_endpoint} & price-interval collapse to two endpoints \\
+\texttt{cavity\_exchange} & Kelmans de-branch monotonicity corner reductions \\
+\texttt{recursion\_closure} & per-hub node-decouple recursion closures \\
+\texttt{per\_size\_dominance\_sweep} & finite per-$n$ configuration sweeps \\
+\texttt{tight\_cap\_enclosure} & fixed-config $g$-step closure faces \\
+\texttt{achievability} & achievability-corrected relaxations \\
+\texttt{reparam\_adapter} & reparameterization and case-dispatch adapters \\
+\texttt{domination\_ratio} & template-dominates-competitor ratio certificates \\
+\addlinespace
+\multicolumn{2}{@{}l}{\emph{Proof complexity}} \\
+\texttt{pe\_duality} & pseudo-expectation / SOS-duality: no degree-$d$ refutation exists \\
+\texttt{xor3\_moment} & 3-XOR moment-matrix PSD via block-rank-one SOS \\
+\texttt{symmetric\_quad} & symbolic-in-$n$ completing-the-square PSD \\
+\texttt{symmetric\_quad\_d2} & the degree-2 symbolic-in-$n$ three-piece variant \\
+\texttt{twopoint\_moment} & two-point discrete-measure moment feasibility witnesses \\
+\addlinespace
+\multicolumn{2}{@{}l}{\emph{Mined from external formalizations (attributed in NOTICE)}} \\
+\texttt{two\_moment\_count} & Hermitian moment/inertia count certificates (zeta-23-lean) \\
+\texttt{rayleigh\_gram} & generalized-eigenvalue Gram shadows (Axiom bgp212) \\
+\texttt{polytope\_moment} & exact-rational simplex moments (Axiom bgp212) \\
+\texttt{spacing\_tail\_bound} & concrete spacing-tail instances (zeta-23-lean) \\
+\texttt{autocorr\_support} & support-geometry autocorrelation facts (zeta-23-lean) \\
+\texttt{enclosure\_interval\_fold} & interval-fold enclosures (zeta-23-lean) \\
+\texttt{reflection\_halving} & finite reflection halvings (zeta-23-lean) \\
+\addlinespace
+\end{longtable}
+
+\subsection{Subsystems (the skills behind the catalog)}
+
+\paragraph{Pipeline core.} Certification in exact arithmetic
+(\texttt{certify}), Lean emission against a described target project
+(\texttt{emit}), byte-stable freezing with drift detection, statement-match
+checking, and provenance headers on every generated file.
+
+\paragraph{Self-verification.} The per-emitter sensitivity registry with
+forge-the-witness negative controls (\cref{sec:vacuity}); the independent
+Comparator + \texttt{nanoda} second-kernel check; coverage and circularity
+audits; a self-hosting layer that applies the discipline to Telperion's own
+metatheory.
+
+\paragraph{Certificate search.} A P\'olya engine and optional SDP finders
+(exact-rationalized), SONC/AM-GM backends, repair and relaxation passes that
+strengthen a failing certificate rather than silently weakening the claim.
+
+\paragraph{Numeric drivers.} Outward-rounded interval arithmetic (Arb) behind
+every numeric hypothesis: the box-localization driver (winding counts, edge
+non-vanishing, on-line sweeps), the winding-$0$ empty-band driver, and
+enclosure generators---all emitting their inputs as \emph{explicit, documented
+Lean hypotheses}, never silent constants.
+
+\paragraph{Mining and monitoring.} Certificate-shape mining over external
+formalizations (the zeta-23-lean, Navier--Stokes/Euler, and Axiom-bgp212
+passes; attributions in \texttt{NOTICE}); a Palomar-registry poller and
+arXiv/GitHub/Zulip source monitors that surface new formalizations as emitter
+candidates.
+
+\paragraph{Interfaces.} A CLI, an MCP server, and an editor plugin expose the
+same pipeline; continuous integration compiles every emitted artifact against
+pinned Mathlib and runs the axiom guards on every change.
