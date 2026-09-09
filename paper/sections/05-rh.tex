@@ -11,7 +11,7 @@ they \emph{are} (a complete finite Turing verification to height $4000$), and
 finally what they \emph{mean} (the finite-height explicit formula---the
 diffraction identity of Dyson's quasicrystal picture \cite{dyson2009})---with,
 along the way, finite prefixes of two classical RH criteria and the
-largely-built kernel program toward the Riemann--von Mangoldt counting formula.
+Riemann--von Mangoldt counting formula, proved in the kernel.
 Each
 result is stated with an honest account of how it sits relative to the classical
 literature, and in every case it falls well short of the Riemann Hypothesis.
@@ -220,57 +220,62 @@ emphatically \emph{not} a proof of RH---but it is a kernel-verified, complete fi
 Turing verification up to height $4000$, and it exhibits a third distinct
 certificate shape (winding / argument-principle zero-counting).
 
-\subsection{Toward the counting formula: shrinking the last numeric input}
+\subsection{The counting formula: Riemann--von Mangoldt in the kernel}
 
 The tiled certificates above consume their per-band winding integers as
 documented numeric hypotheses. The classical machine that \emph{derives} such
-counts is the Riemann--von Mangoldt formula, $N(T) = \theta(T)/\pi + 1 + S(T)$
----and a program to bring that machine into the kernel is now largely built.
-We report it at exact strength: every claim in this subsection is a merged,
-CI-axiom-guarded theorem, and the one thing that is \emph{not} yet a theorem is
-named at the end.
-
-The classical obstruction was that Mathlib has no continuous-argument-along-a-path;
-the formalization dissolves it branch-free: the continuous argument change of $f$
-along a zero-avoiding path \emph{is} $\operatorname{Im} \int f'/f$, so $S(T)$ is
-\emph{defined} (as the argument change of $\zeta$ along the classical route
-$2 \to 2+iT \to \tfrac12+iT$), and the Riemann--Siegel $\theta$ is \emph{identified}:
-the Archimedean part of that same route equals $\theta(T)$, because $\Gamma_{\mathbb R}$
-has neither zeros nor poles on the rectangle (so its winding vanishes) and is real
-on the real axis. On the same contour the completed-zeta argument change then
-splits exactly,
+counts is the Riemann--von Mangoldt formula---asserted by Riemann in 1859,
+proved by von Mangoldt \cite{vonmangoldt1895}---and that machine is now a
+theorem of the kernel. For the classical rectangle $[-1,2] \times [0,T]$, with
+$\xi$ nonvanishing on the contour, $\zeta \ne 0$ on the height-$T$ crossing
+(the classical ``$T$ is not a zero ordinate'' caveat), and boundary winding
+$2\pi i N$:
 \[
-  \Delta_L \arg \Lambda \;=\; \theta(T) + \pi S(T),
+  N \;=\; 1 + \frac{\theta(T)}{\pi} + S(T)
 \]
-with a single hypothesis---$\zeta \ne 0$ on the height-$T$ horizontal, the
-classical ``$T$ not a zero ordinate'' caveat, carried as a hypothesis rather than
-prose. Two symmetry folds (the functional-equation reflection and Schwarz
-conjugation) give $\Delta_{\mathrm{box}} = 2\,\Delta_L$.
+(\texttt{xiTele\_winding\_eq\_RvM}; CI-axiom-guarded, axioms
+$\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$). A
+companion argument principle (\texttt{xiTele\_count\_eq\_winding}) identifies
+$N$ as the box zero-count of $\xi$, whose zeros are \emph{proved}---as a
+guarded iff, per the discipline of \cref{sec:vacuity}---to be exactly the
+nontrivial zeros of $\zeta$. So this is the exact, finite-$T$ counting formula
+over the actual zeros, not an asymptotic; every hypothesis is of the uniform
+kind this section uses everywhere, and no classical fact enters bare.
 
-The formula's $+1$ is the pole of $\zeta$ at $s = 1$, and it too is now a theorem
-rather than a citation: the companion $H(s) = (s-1)\zeta(s)$, with the removable
-singularity filled by the residue, is \emph{entire}, and---the lesson of this
-campaign applied---its zero set is not asserted but \emph{proved}:
-$H(z) = 0 \leftrightarrow z \ne 1 \wedge \zeta(z) = 0$, in the axiom guard. The
-box argument principle, made generic and instantiated at $H$, then yields the
-meromorphic count for $\zeta$ itself: for a box containing $s = 1$, the zero count
-is the boundary winding over $2\pi$ \emph{plus one}. On the classical rectangle
-$[-1,2] \times [T_0,T_1]$ the same machinery gives a band-difference decomposition
-of $2\pi N$ into edge data---precisely the object each tiled band consumes ---
-so this program, completed, would \emph{derive} what the ladder currently assumes,
-shrinking the numeric trust surface exactly as the left-edge reflection did for
-the explicit-formula box.
+The anatomy is the classical proof's, term by term. $S(T)$ and $\theta(T)$ are
+\emph{defined branch-free}---the continuous argument change along a path is
+$\operatorname{Im}\int f'/f$, dissolving the missing continuous-argument
+machinery that at first looked like a blocking gap---and $\theta$ is then
+\emph{identified} as the Archimedean argument change (the
+$\Gamma_{\mathbb R}$ winding on the rectangle vanishes;
+$\Gamma_{\mathbb R}$ is real on the axis). The completed function
+$\xi = \tfrac12 s(s-1)\Lambda_0 + \tfrac12$ is entire \emph{by
+construction}---the pole corrections cancel against the polynomial factor, so
+no removable-singularity analysis is ever performed---and each factor
+contributes its classical share along the right-half path
+$2 \to 2{+}iT \to \tfrac12{+}iT$: the polynomial factor's argument change is
+exactly $\pi$ (a boundary-log evaluation,
+$\arg(\tfrac12+iT) + \arg(-\tfrac12+iT) = \pi$), the $\Gamma_{\mathbb R}$ part
+is $\theta$, and the $\zeta$ part is $\pi S$. The functional-equation and
+conjugation symmetries then fold the full box onto that path---the bottom edge
+vanishes because $\xi$ is real on the real axis, the mirror verticals cancel,
+the top edge folds across $\operatorname{Re} s = \tfrac12$---giving
+$\Delta_{\mathrm{box}} = 2\,\Delta_L$ and, with the count, the formula. To our
+knowledge this is the first machine-checked Riemann--von Mangoldt counting
+formula, claimed with \cref{sec:evaluation}'s conservatism.
 
-The honest ceiling, stated as the merged PRs state it: the literal
-$N(T) = \theta(T)/\pi + 1 + S(T)$ still requires the box argument principle for
-$\Lambda$ with its poles at $0$ and $1$, together with the $T_0 \to 0^+$
-real-axis base---genuine construction, not assembly, and \emph{not claimed}.
-One mid-course correction is part of the record and worth citing as lived
-practice for \cref{sec:vacuity}: an early route through the entire function
-$\Lambda_0$ was retired when its zero set was checked against Mathlib's own
-$\Lambda = \Lambda_0 - 1/s - 1/(1-s)$ (the nontrivial zeros are \emph{not}
-$\Lambda_0$'s), the correction written into the corpus---the kernel guards
-statements, and the discipline guards what the statements are about.
+Two honest notes close the account. First, the formula \emph{counts} zeros; it
+does not place them on the critical line, and nothing here bears on RH:
+Riemann--von Mangoldt is classical, unconditional mathematics, formalized. Its
+role in this program is the trust-shrink trajectory---it derives what the
+tiled ladder currently assumes---and running this section's effective
+machinery on the $S$-identity (toward Backlund's
+$|S(T)| \le a \log T + b$) is the named next step. Second, one mid-course
+correction is part of the record and is the lived practice
+\cref{sec:vacuity} recounts: an early route through $\Lambda_0$ alone was
+retired when its zero set was checked against Mathlib's own defining identity,
+and the durable fix---proving every zero-correspondence as a guarded
+iff---is visible in this capstone's own chain.
 
 \subsection{A fourth shape: the explicit formula at finite height}
 
