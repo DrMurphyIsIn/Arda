@@ -894,4 +894,41 @@ theorem left_edge_prime_reflection {s : ℂ} (hre : s.re < 0) (him : s.im ≠ 0)
   have hkey := logDeriv_zeta_eq_neg_LSeries_vonMangoldt hre1s
   linear_combination hrefl - hkey
 
+/-! ## Brick 9 (T3 ground — the ζ-side of Riemann–von Mangoldt): the box zero-count IS the
+boundary winding of `ζ′/ζ`.
+
+The `g ≡ 1` specialization of `bd_weighted_logDeriv_zeta`: the four-segment boundary integral of
+`ζ′/ζ` around the box equals `2πi · (number of ζ-zeros in the box, with multiplicity)`.  This is
+the argument principle for `ζ` in closed kernel form — the LEFT side of RvM
+(`N(T) = θ(T)/π + 1 + S(T)`), which classically is obtained by taking this box to the half-line
+`[1/2, ∞) × [0, T]` and splitting the boundary contour into the Γ-argument (→ `θ`, our
+`riemannSiegelTheta` via the Archimedean bridge) and the ζ-argument remainder (→ `πS`).  The
+half-line limit + the `S`-identification are the remaining research content
+(see `docs/RVM_T3_T4_SCOPING`).  conjecture1_proved = False. -/
+
+/-- **The argument principle for `ζ` on a box** (RvM zero-count side): the boundary winding of
+    `ζ′/ζ` equals `2πi` times the box zero-count (actual divisor, with multiplicity). -/
+theorem bd_logDeriv_zeta_eq_count
+    (sigma0 sigma1 T0 T1 : ℝ) (hsig : sigma0 ≤ sigma1) (hT : T0 ≤ T1)
+    (c : ℂ) (R : ℝ)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hs1 : (1 : ℂ) ∉ Metric.ball c R)
+    (hnzb : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzr : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma1 : ℂ) + ↑y * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma0 : ℂ) + ↑y * I) ≠ 0)
+    (hins : ∀ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+      sigma0 < ρ.re ∧ ρ.re < sigma1 ∧ T0 < ρ.im ∧ ρ.im < T1) :
+    (∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T0 : ℂ) * I))
+      - (∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T1 : ℂ) * I))
+      + I • (∫ y in T0..T1, logDeriv riemannZeta ((sigma1 : ℂ) + ↑y * I))
+      - I • (∫ y in T0..T1, logDeriv riemannZeta ((sigma0 : ℂ) + ↑y * I))
+    = 2 * ↑π * I * ∑ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+        ((MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ) ρ : ℂ) := by
+  have h := bd_weighted_logDeriv_zeta sigma0 sigma1 T0 T1 hsig hT c R hbox_ball hs1
+    (fun _ => (1 : ℂ)) isOpen_univ (differentiableOn_const 1) (Set.subset_univ _)
+    hnzb hnzt hnzr hnzl hins
+  simpa using h
+
 end DiffractionCore
