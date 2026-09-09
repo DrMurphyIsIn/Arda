@@ -145,13 +145,21 @@ contour edges, and local on-line list, so the per-band numeric certificates stay
 cheap, independent, and parallelizable. The first stack, \texttt{AllZeros\_h200},
 doubled the height to $200$; \texttt{AllZeros\_h1000} tiled \emph{nineteen}
 bands to $T = 1000$ ($649$ zeros); and the current milestone,
-\texttt{AllZeros\_h2000}, extends the ladder with twenty further bands of height
-$50$ to $T = 2000$: all $1517$ nontrivial zeros with
-$0 < \operatorname{Im}\rho \le 2000$ lie on the critical line. The tiling is
+\texttt{AllZeros\_h2000} extended the ladder with twenty further bands of height
+$50$ to $T = 2000$ ($1517$ zeros). The ladder is now \emph{unbounded in
+principle}: segment certificates over any $[A, B]$
+(\texttt{all\_nontrivial\_zeros\_in\_segment\_on\_line}) compose with an
+up-to-$A$ certificate through a constant-cost chain lemma
+(\texttt{height\_chain}), so no single glue theorem ever grows with the total
+height. Its first exercise is the current milestone, \texttt{AllZeros\_h4000}:
+the $[2000, 4000]$ segment (fifty bands of height $40$, segment census
+$1957 = N(4000) - N(2000)$ exactly) chained onto \texttt{AllZeros\_h2000} gives
+all $3474$ nontrivial zeros with $0 < \operatorname{Im}\rho \le 4000$ on the
+critical line. The tiling is
 \emph{density-adaptive}---one band of height $100$ at the bottom (winding
 $N = 29$), then thirty-eight bands of height $50$, the band height halving where
-the zero density (and hence the proof cost per band) grows. The thirty-nine
-boundary windings sum to $1517$---the full classical count to that
+the zero density (and hence the proof cost per band) grows. The eighty-nine
+boundary windings sum to $3474$---the full classical count to that
 height---though as before the count is derived from the contours, not assumed.
 The tiling refinement also buys a cross-check for free: the half-bands were
 computed independently of the original coarse contours, and each adjacent pair
@@ -172,9 +180,9 @@ reflection $\rho \mapsto 1 - \bar\rho$. The trust boundary is thereby
 classical fact enters bare.
 
 The caveats are stated as sharply as the claim. It is \emph{finite}---up to height
-$2000$, not all of $\mathbb{C}$; Turing's method verifies RH in a region, it does
+$4000$, not all of $\mathbb{C}$; Turing's method verifies RH in a region, it does
 not prove RH. And it is \emph{conditional on certified numeric input}: the
-per-band boundary winding integers, the $1517$ exhibited on-line zeros, and the
+per-band boundary winding integers, the $3474$ exhibited on-line zeros, and the
 edge non-vanishing are supplied by high-precision interval (Arb) arithmetic and
 carried as explicit, non-kernel Lean hypotheses---a documented trust boundary,
 exactly as with the constant enclosures elsewhere in the system. The kernel proves
@@ -184,7 +192,7 @@ in-kernel---but it does not verify the enclosures themselves. The chain is non-c
 count enters as a boundary-contour value, never as ``$N$ zeros and no others,'' and
 ``all zeros on the line'' is the \emph{derived} conclusion. It is, once more,
 emphatically \emph{not} a proof of RH---but it is a kernel-verified, complete finite
-Turing verification up to height $2000$, and it exhibits a third distinct
+Turing verification up to height $4000$, and it exhibits a third distinct
 certificate shape (winding / argument-principle zero-counting).
 
 \subsection{A fourth shape: the explicit formula at finite height}
@@ -218,7 +226,15 @@ edge integrals evaluate exactly (\texttt{integral\_vonMangoldt\_term})---each vo
 Mangoldt term contributes a pure oscillation of frequency $\log n$ with
 amplitude $\Lambda(n)\, n^{-\sigma}/\log n$, nonzero precisely at the prime
 powers. The Bragg amplitudes of the zeros' diffraction pattern, as concrete,
-computable arithmetic.
+computable arithmetic. And the trust surface has begun to shrink structurally:
+for a box whose left edge lies in $\operatorname{Re} s < 0$, the reflection
+identity \texttt{left\_edge\_prime\_reflection} (hypotheses: $\operatorname{Re}
+s < 0$ and $\operatorname{Im} s \ne 0$---nothing else) rewrites the left-edge
+integrand as mirrored prime sums minus two Archimedean $\psi$-terms, so that
+edge needs \emph{no} numeric certificate at all. What still stands between the
+finite identity and its classical limit is honest analysis, flagged as such:
+the horizontal edges as $T \to \infty$ require a zero-avoiding-corridor bound
+of strength $|\zeta'/\zeta| = O(\log^2 T)$, which is future work.
 
 The trust surface is worth savoring, because it is the program in miniature. The
 \emph{prime-side} edge needs no numeric certificate at all: its non-vanishing is
