@@ -2581,4 +2581,38 @@ theorem zetaPoleCompanion_count_eq_winding_with_pole
   · exact intervalIntegrable_diffBox_vert ⟨hsig, le_refl _⟩ hT hEholo
   · exact intervalIntegrable_diffBox_vert ⟨le_refl _, hsig⟩ hT hEholo
 
+/-- **THE MEROMORPHIC ARGUMENT PRINCIPLE FOR `ζ`, stated over `ζ`'s own zeros.**  For a box with
+    `s = 1` strictly interior, `ζ ≠ 0` on the edges, all interior zeros strict, and `ζ` boundary
+    winding `2πiM`: there is a finite set `s` of box zeros of `ζ` (each with multiplicity `≥ 1`,
+    capturing every box `ζ`-zero) whose total multiplicity is `M + 1`.  The `+1` is the pole of `ζ`
+    at `1` (via `riemannZeta_one_ne_zero`, box `ζ`-zeros avoid `1`, so they coincide with `H`'s).
+    This is the RvM `+1` as a statement purely about `ζ`. -/
+theorem zeta_strip_zero_count_with_pole
+    (sigma0 sigma1 T0 T1 : ℝ) (c : ℂ) (R : ℝ) (M : ℤ)
+    (hσ0 : sigma0 < 1) (hσ1 : 1 < sigma1) (hT0 : T0 < 0) (hT1 : 0 < T1)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hnzb : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzr : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma1 : ℂ) + ↑y * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma0 : ℂ) + ↑y * I) ≠ 0)
+    (hin : ∀ ρ ∈ (divisor_zetaPoleCompanion_ball_support_finite c R).toFinset,
+      sigma0 < ρ.re ∧ ρ.re < sigma1 ∧ T0 < ρ.im ∧ ρ.im < T1)
+    (hwindζ : (∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T1 : ℂ) * I))
+        + I • (∫ y in T0..T1, logDeriv riemannZeta ((sigma1 : ℂ) + ↑y * I))
+        - I • (∫ y in T0..T1, logDeriv riemannZeta ((sigma0 : ℂ) + ↑y * I))
+      = 2 * π * I * (M : ℂ)) :
+    ∃ (s : Finset ℂ) (d : ℂ → ℤ),
+      (∀ ρ ∈ s, (1 : ℤ) ≤ d ρ) ∧
+      (∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+        riemannZeta ρ = 0 → ρ ∈ s) ∧
+      (∑ ρ ∈ s, d ρ) = M + 1 := by
+  obtain ⟨s, d, hd1, hcapH, hsum⟩ := zetaPoleCompanion_count_eq_winding_with_pole
+    sigma0 sigma1 T0 T1 c R M hσ0 hσ1 hT0 hT1 hbox_ball hnzb hnzt hnzr hnzl hin hwindζ
+  refine ⟨s, d, hd1, ?_, hsum⟩
+  intro ρ hre him hζ0
+  have hρ1 : ρ ≠ 1 := by rintro rfl; exact riemannZeta_one_ne_zero hζ0
+  exact hcapH ρ hre him (zetaPoleCompanion_eq_zero_iff.mpr ⟨hρ1, hζ0⟩)
+
 end DiffractionCore
