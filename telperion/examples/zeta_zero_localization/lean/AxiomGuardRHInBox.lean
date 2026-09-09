@@ -69,3 +69,4 @@ import AllZeros_h200
 #print axioms RHInBox_1d1000000_999999d1000000_100_200.rh_in_box_1d1000000_999999d1000000_100_200
 #print axioms AllZeros_h200.all_nontrivial_zeros_up_to_height_200
 #print axioms DiffractionCore.rect_weighted_pole_generic
+#print axioms DiffractionCore.rect_weighted_residue_sum_generic
