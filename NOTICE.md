@@ -78,7 +78,12 @@ file) was distilled in waves from a certificate-mining pass over OpenAI's
 (Apache-2.0). What was taken is **certificate shapes only** — the
 generator-shaped, kernel-cheap arithmetic atoms recurring in that development —
 re-implemented independently in Telperion's Python idiom, exactly as with the
-AxiomMath/ZetaZeros emitters above. No Lean or other source files were copied;
+AxiomMath/ZetaZeros emitters above --- with one explicitly-flagged exception:
+the \`partition_composition\` emitter carries, as its emitted-Lean core, a
+verbatim port of the 144-line Fa\`a di Bruno factorial-square partition bound
+from \`Euler/GevreyCompositionPartitions.lean\` (Apache-2.0; self-contained
+over Mathlib's \`OrderedFinpartition\`), credited in the emitter's own
+docstring. Beyond that single port, no Lean or other source files were copied;
 the PDE/matrix/ODE machinery of the source was treated as out-of-scope prelude,
 and its analytic facts enter Telperion certificates only as explicit
 hypotheses.
@@ -119,10 +124,14 @@ idiom (parameterized inequality families → exact sympy certification → emitt
 Lean re-proved from scratch by Mathlib's kernel). No Lean, Python, or other
 source files were copied verbatim from AxiomMath/ZetaZeros, AXLE, ten-proofs,
 comparator, nanoda, or openai/NavierStokesAndEuler. What is shared is the
-*mathematical idea*, credited above. The **single exception** in this repository is the `RHLinalg` prelude
-(`telperion/examples/hermitian_moment/lean/RHLinalg/`), a flagged verbatim port
-of eight Apache-2.0 Lean files from `anthropics/zeta-23-lean`, attributed in
-its own section above and in `PORT_NOTES.md` alongside the files.
+*mathematical idea*, credited above. The **two exceptions** in this repository are (1) the `RHLinalg`
+prelude (`telperion/examples/hermitian_moment/lean/RHLinalg/`), a flagged
+verbatim port of eight Apache-2.0 Lean files from `anthropics/zeta-23-lean`,
+attributed in its own section above and in `PORT_NOTES.md` alongside the
+files; and (2) the Fa\`a di Bruno partition core carried by the
+`partition_composition` emitter, a flagged verbatim port of one Apache-2.0
+Lean file from `openai/NavierStokesAndEuler`, attributed in that section
+above and in the emitter's docstring.
 
 ## A note on scope
 

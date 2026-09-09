@@ -1,7 +1,7 @@
 \section{The Telperion compendium: emitter catalog and subsystems}
 \label{sec:compendium}
 
-This appendix is a \emph{dated snapshot}---2026-09-09, at 129 emitter
+This appendix is a \emph{dated snapshot}---2026-09-09, at 135 emitter
 modules---of a catalog that grows by design; the authoritative, current
 registry is the repository itself (every emitter must register a sensitivity
 stance, \cref{sec:vacuity}, and a test refuses shipment without one, so the
@@ -53,6 +53,10 @@ condensed from each emitter's own docstring.
 \texttt{comparability\_envelope} & comparability / Lipschitz envelope atoms \\
 \texttt{discrete\_moment} & discrete-sum moment atoms \\
 \texttt{poly\_exp\_absorption} & inverse-power prefactors absorbed into halved exponentials \\
+\texttt{graded\_convolution} & exact identity calculus for graded convolutions \\
+\texttt{power\_tower} & cubic self-composition closures $C_q \le (9L)^{3^q}$ \\
+\texttt{low\_order\_tail} & explicit low grades plus doubled geometric tails \\
+\texttt{eventual\_threshold} & eventual thresholds with generated max-of-ratio witnesses \\
 \addlinespace
 \multicolumn{2}{@{}l}{\emph{Semialgebraic positivity}} \\
 \texttt{rational\_sos} & SOS with Artin/Reznick denominators \\
@@ -84,6 +88,8 @@ condensed from each emitter's own docstring.
 \texttt{admissible\_tuple} & prime-gaps admissible tuples, decide-checked \\
 \texttt{quadratic\_irrational} & $\mathbb{Z}[\sqrt d]$ conjugate-norm separation \\
 \texttt{sqrt\_root\_elimination} & symbolic radical elimination \\
+\texttt{regular\_word} & forbidden-factor word invariants (first discrete/word axis) \\
+\texttt{partition\_composition} & Fa\`a di Bruno factorial-square partition bounds (verbatim-ported core; see \texttt{NOTICE}) \\
 \addlinespace
 \multicolumn{2}{@{}l}{\emph{Complex analysis: bounds, regions, enclosures}} \\
 \texttt{bracket} & rational enclosures of transcendental constants \\
@@ -191,9 +197,10 @@ Lean hypotheses}, never silent constants.
 
 \paragraph{Mining and monitoring.} Certificate-shape mining over external
 formalizations (the zeta-23-lean, Navier--Stokes/Euler, and Axiom-bgp212
-passes; attributions in \texttt{NOTICE}); a Palomar-registry poller and
-arXiv/GitHub/Zulip source monitors that surface new formalizations as emitter
-candidates.
+passes; attributions in \texttt{NOTICE}); a Palomar-registry poller,
+arXiv/GitHub/Zulip source monitors, frontier-formalization repository adapters,
+and a Comparator-challenge ingest that surface new formalizations as emitter
+candidates and port leads.
 
 \paragraph{Interfaces.} A CLI, an MCP server, and an editor plugin expose the
 same pipeline; continuous integration compiles every emitted artifact against

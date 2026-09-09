@@ -279,3 +279,15 @@ import StripClear
 #print axioms DiffractionCore.xiTele_count_eq_winding
 #print axioms DiffractionCore.logDeriv_halfPoly
 #print axioms DiffractionCore.logDeriv_xiTele_split
+#print axioms DiffractionCore.argChangeL_sub_const
+#print axioms DiffractionCore.pole_pathL_eq_pi
+#print axioms DiffractionCore.xiTele_pathL_eq
+#print axioms DiffractionCore.logDeriv_xiTele_reflect
+#print axioms DiffractionCore.logDeriv_xiTele_conj
+#print axioms DiffractionCore.fold_pointwise_xiTele
+#print axioms DiffractionCore.continuousOn_logDeriv_xiTele_seg
+#print axioms DiffractionCore.argChangeVert_xiTele_fold
+#print axioms DiffractionCore.logDeriv_xiTele_im_zero
+#print axioms DiffractionCore.argChangeHoriz_xiTele_realAxis
+#print axioms DiffractionCore.continuousOn_logDeriv_xiTele_hseg
+#print axioms DiffractionCore.argChangeHoriz_xiTele_topReflect
