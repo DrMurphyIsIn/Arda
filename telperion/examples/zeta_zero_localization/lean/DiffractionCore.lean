@@ -931,4 +931,82 @@ theorem bd_logDeriv_zeta_eq_count
     hnzb hnzt hnzr hnzl hins
   simpa using h
 
+/-! ## Brick 10 (the argument-change infrastructure — closing the T3 "true gap" branch-free).
+
+RvM's `S(T)` was flagged as needing a continuous `arg`-along-a-path, absent from Mathlib.  But
+the CONTINUOUS ARGUMENT CHANGE along a zero-avoiding path IS the imaginary part of the
+log-derivative line integral — `Im ∫ f′/f = Δ arg f`, `Re ∫ f′/f = Δ log‖f‖` — with NO branch
+function, exactly as `riemannSiegelTheta` was defined by an integral rather than a branch of
+`logΓ`.  These definitions + the box identity (from `bd_logDeriv_zeta_eq_count` by taking `.im`)
+give the argument principle in ARGUMENT-CHANGE form: total argument change around the box =
+`2π · (zero-count)`.  This is the scaffold `S` sits on: as the box opens to the half-plane, the
+vertical-edge argument change on the near-critical side becomes `π·S(T)` and the horizontal/Γ
+contributions become `θ(T)`.  conjecture1_proved = False. -/
+
+/-- Argument change of `f` UP the vertical segment `Re = σ`, `Im ∈ [T0,T1]`
+    (`= Im ∫ f′/f · i dy = Re ∫ f′/f dy`, the `i`-rotation of the path derivative). -/
+noncomputable def argChangeVert (f : ℂ → ℂ) (σ T0 T1 : ℝ) : ℝ :=
+  (∫ y in T0..T1, logDeriv f ((σ : ℂ) + y * I)).re
+
+/-- Argument change of `f` ALONG the horizontal segment `Im = T`, `Re ∈ [x0,x1]`
+    (`= Im ∫ f′/f dx`, the path derivative being `1`). -/
+noncomputable def argChangeHoriz (f : ℂ → ℂ) (T x0 x1 : ℝ) : ℝ :=
+  (∫ x in x0..x1, logDeriv f ((x : ℂ) + T * I)).im
+
+/-- **The argument principle in ARGUMENT-CHANGE form**: the total continuous argument change of
+    `ζ` counterclockwise around the box `[σ0,σ1] × [T0,T1]` equals `2π · (box zero-count)` —
+    branch-free, from `bd_logDeriv_zeta_eq_count` by taking imaginary parts.  The `S`/`θ`
+    scaffold: no continuous `arg` function required. -/
+theorem zeta_total_argChange_eq_count
+    (sigma0 sigma1 T0 T1 : ℝ) (hsig : sigma0 ≤ sigma1) (hT : T0 ≤ T1)
+    (c : ℂ) (R : ℝ)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hs1 : (1 : ℂ) ∉ Metric.ball c R)
+    (hnzb : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzr : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma1 : ℂ) + ↑y * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma0 : ℂ) + ↑y * I) ≠ 0)
+    (hins : ∀ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+      sigma0 < ρ.re ∧ ρ.re < sigma1 ∧ T0 < ρ.im ∧ ρ.im < T1) :
+    argChangeHoriz riemannZeta T0 sigma0 sigma1
+        - argChangeHoriz riemannZeta T1 sigma0 sigma1
+        + argChangeVert riemannZeta sigma1 T0 T1
+        - argChangeVert riemannZeta sigma0 T0 T1
+      = 2 * π * ∑ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+          (((MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ) ρ : ℤ) : ℝ) := by
+  have hBd := bd_logDeriv_zeta_eq_count sigma0 sigma1 T0 T1 hsig hT c R hbox_ball hs1
+    hnzb hnzt hnzr hnzl hins
+  have him := congrArg Complex.im hBd
+  set Bb := ∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T0 : ℂ) * I) with hBb
+  set Bt := ∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T1 : ℂ) * I) with hBt
+  set Br := ∫ y in T0..T1, logDeriv riemannZeta ((sigma1 : ℂ) + ↑y * I) with hBr
+  set Bl := ∫ y in T0..T1, logDeriv riemannZeta ((sigma0 : ℂ) + ↑y * I) with hBl
+  -- LHS `.im`: Im(Bb - Bt + I•Br - I•Bl) = Im Bb - Im Bt + Re Br - Re Bl.
+  have hlhs : (Bb - Bt + I • Br - I • Bl).im
+      = Bb.im - Bt.im + Br.re - Bl.re := by
+    simp only [smul_eq_mul, Complex.sub_im, Complex.add_im, Complex.mul_im,
+      Complex.I_im, Complex.I_re, one_mul, zero_mul, zero_add, mul_zero, sub_zero]
+  -- RHS `.im`: Im(2πi · (N:ℝ→ℂ)) = 2π·N,  N a real cast of an integer sum.
+  set Nsum : ℤ := ∑ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+    ((MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ) ρ) with hNsum
+  have hcast : (∑ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+      (((MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ) ρ : ℤ) : ℂ))
+      = ((Nsum : ℤ) : ℂ) := by rw [hNsum]; push_cast; ring
+  have hrhs : (2 * ↑π * I * ∑ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+      ((MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ) ρ : ℂ)).im
+      = 2 * π * (Nsum : ℝ) := by
+    rw [hcast,
+      show (2 * (↑π : ℂ) * I * ((Nsum : ℤ) : ℂ))
+        = (((2 * π * (Nsum : ℝ)) : ℝ) : ℂ) * I by push_cast; ring,
+      Complex.mul_I_im, Complex.ofReal_re]
+  rw [hlhs] at him
+  rw [hrhs] at him
+  unfold argChangeHoriz argChangeVert
+  rw [← hBb, ← hBt, ← hBr, ← hBl, him]
+  have hsumcast : ∑ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+      (((MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ) ρ : ℤ) : ℝ)
+      = (Nsum : ℝ) := by rw [hNsum]; push_cast; ring
+  rw [hsumcast]
+
 end DiffractionCore
