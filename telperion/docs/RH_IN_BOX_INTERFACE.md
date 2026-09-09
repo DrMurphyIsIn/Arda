@@ -202,6 +202,21 @@ all three ingredients on main; the only remaining piece is the kernel-side glue 
 them (dVP-symmetry session's lane). Net trust boundary: ONE extra winding-0 Arb certificate, not
 two, and no new kernel analytic lemma.
 
+### 6.4 Status (2026-09-08, dVP-symmetry session, post-#335)
+
+The kernel-side glue for the 6.3 route is BUILT by the box session's #335
+(`StripClear.hclear_low_of_box_certs` / `height_floor_of_box_certs` /
+`all_nontrivial_zeros_up_to_height_100_strip_cleared`) — consuming
+`riemannZeta_reflect_line_eq_zero` (#324) exactly as 6.3 prescribes.  A duplicate composition
+built concurrently by the dVP-symmetry session (band + pole-straddle + notch, the pre-6.3 route)
+has been WITHDRAWN in favor of #335's simpler two-box form.
+
+One piece of the pre-6.3 route is kept, off the critical path: the pole-neighborhood notch
+`ZeroFreeBridge.riemannZeta_ne_zero_near_one` (`s ≠ 1 → ‖s − 1‖ ≤ 1/16 → ζ s ≠ 0`,
+`DlvpZetaPoleEffective.lean`, axiom-guarded).  It is the only KERNEL non-vanishing fact in the
+pole corner `Re ∈ (999/1000, 1)`, `|Im| ≤ 1/16` — no argument-principle box can cover a
+neighborhood of `s = 1` — and stands as a reusable atom for any future pole-adjacent tiling.
+
 ## 7. Gotchas
 
 - `hArb` is `∀ E, (split for E) → (big conjunction)` -- a universally-quantified bundle over the entire

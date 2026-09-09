@@ -278,5 +278,69 @@ theorem dlvpRateC_pos : 0 < dlvpRateC := by
     Real.log_nonneg (by rw [le_div_iff₀ hpi]; nlinarith [hpi])
   positivity
 
+/-- **Explicit rational lower bound for the effective dVP rate constant:**
+    `9/1369088 ≤ dlvpRateC` (≈ `6.574·10⁻⁶`; true value ≈ `7.3·10⁻⁶`).
+
+    The shared numeric core of every height-instantiation `haC_T`: the band-width inequality
+    `a ≤ dlvpRateC / log T` reduces to `a · (log T bound) ≤ 9/1369088` by this lemma plus one
+    `log T ≤ q` estimate — factored out so concrete milestones (`AllZeros_h100/h200/h1000`, and
+    every future height) need not re-derive the `K ≤ 764/9` block.
+
+    Derivation: `dlvpRateC = 1/(112·16·K)`,
+    `K = 1 + 2·((8/(3·log(23/22)) + 608/9)/16)·(log(15/(2-π²/6)) + 1)`; bound
+    `log(23/22) ≥ 1/25` (degree-3 `exp_bound'`) and `log(15/(2-π²/6)) ≤ 4` (`43 ≤ exp 4` via
+    `2.7⁴`), giving `K ≤ 764/9`, hence `dlvpRateC ≥ 1/(112·16·764/9) = 9/1369088`.
+    conjecture1_proved = False. -/
+theorem dlvpRateC_lower : (9 / 1369088 : ℝ) ≤ dlvpRateC := by
+  have hpilt : Real.pi < 3.1416 := Real.pi_lt_d4
+  have hpigt : (3.14 : ℝ) < Real.pi := Real.pi_gt_d2
+  have hpi_pos : (0 : ℝ) < Real.pi := Real.pi_pos
+  have hpisq_lt : Real.pi ^ 2 < 9.87 := by nlinarith [hpilt, hpigt, hpi_pos]
+  have hden_pos : (0 : ℝ) < 2 - Real.pi ^ 2 / 6 := by nlinarith [hpisq_lt]
+  have hlog2322 : (1 / 25 : ℝ) ≤ Real.log ((23 / 16) / (11 / 8)) := by
+    have h2322 : ((23 / 16) / (11 / 8) : ℝ) = 23 / 22 := by norm_num
+    rw [h2322, Real.le_log_iff_exp_le (by norm_num)]
+    have hb := Real.exp_bound' (x := (1/25 : ℝ)) (by norm_num) (by norm_num) (n := 3) (by norm_num)
+    have hsum : (∑ m ∈ Finset.range 3, (1/25 : ℝ) ^ m / m.factorial)
+        + (1/25 : ℝ) ^ 3 * (3 + 1) / ((Nat.factorial 3) * 3) ≤ 23 / 22 := by
+      simp [Finset.sum_range_succ, Nat.factorial]; norm_num
+    linarith [hb, hsum]
+  have hlog15 : Real.log (15 / (2 - Real.pi ^ 2 / 6)) ≤ 4 := by
+    rw [Real.log_le_iff_le_exp (by positivity)]
+    have h43 : (15 : ℝ) / (2 - Real.pi ^ 2 / 6) ≤ 43 := by
+      rw [div_le_iff₀ hden_pos]; nlinarith [hpisq_lt]
+    have hexp4 : (43 : ℝ) ≤ Real.exp 4 := by
+      have he1 : (2.7 : ℝ) ≤ Real.exp 1 := by linarith [Real.exp_one_gt_d9]
+      have h4 : Real.exp 4 = (Real.exp 1) ^ 4 := by rw [← Real.exp_nat_mul]; norm_num
+      have hpow : (2.7 : ℝ) ^ 4 ≤ (Real.exp 1) ^ 4 := pow_le_pow_left₀ (by norm_num) he1 4
+      rw [h4]; nlinarith [hpow]
+    linarith [h43, hexp4]
+  have hLrpos : 0 < Real.log ((23 / 16) / (11 / 8)) := by linarith [hlog2322]
+  have hlog15nn : 0 ≤ Real.log (15 / (2 - Real.pi ^ 2 / 6)) :=
+    Real.log_nonneg (by rw [le_div_iff₀ hden_pos]; nlinarith [hden_pos])
+  set L1 : ℝ := Real.log ((23 / 16) / (11 / 8)) with hL1
+  set L15 : ℝ := Real.log (15 / (2 - Real.pi ^ 2 / 6)) with hL15
+  set M : ℝ := (8 / (3 * L1) + 608 / 9) / 16 with hMdef
+  have hMpos : 0 < M := by rw [hMdef]; positivity
+  have hterm : 8 / (3 * L1) ≤ 200 / 3 := by
+    rw [div_le_div_iff₀ (by positivity) (by norm_num)]; nlinarith [hlog2322, hLrpos]
+  have hMup : M ≤ 151 / 18 := by
+    have h1 : M ≤ (200 / 3 + 608 / 9) / 16 := by rw [hMdef]; gcongr
+    nlinarith [h1]
+  set K : ℝ := 1 + 2 * M * (L15 + 1) with hKdef
+  have hKpos : 0 < K := by rw [hKdef]; positivity
+  have hKub : K ≤ 764 / 9 := by
+    rw [hKdef]
+    have hfac : L15 + 1 ≤ 4 + 1 := by linarith [hlog15]
+    have hfac_pos : 0 < L15 + 1 := by linarith [hlog15nn]
+    nlinarith [hMpos, hMup, hfac, hfac_pos, hlog15nn]
+  have hCdef : dlvpRateC = 1 / (112 * 16 * K) := by
+    rw [dlvpRateC, dlvpRateK, ← hL1, ← hL15, ← hMdef, ← hKdef]
+  rw [hCdef]
+  have hval : (9 / 1369088 : ℝ) = 1 / (112 * 16 * (764 / 9)) := by norm_num
+  rw [hval]
+  apply one_div_le_one_div_of_le (by positivity)
+  nlinarith [hKub, hKpos]
+
 end ZeroFreeBridge
 

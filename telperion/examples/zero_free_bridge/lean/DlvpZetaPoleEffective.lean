@@ -138,5 +138,32 @@ theorem hpole_effective {σ : ℝ} (h1 : 1 < σ) (h2 : σ - 1 < 1/48) :
   rw [hval, one_div, Complex.sub_re]
   linarith [hre_ge]
 
+/-- **Pole-neighborhood notch: `ζ(s) ≠ 0` in the punctured disk `0 < ‖s - 1‖ ≤ 1/16`.**  The pole
+    dominates: `‖ζ₁ s - 1‖ ≤ 12·‖s - 1‖ ≤ 3/4` (mean-value bound off `ζ₁ 1 = 1`, same MVT pattern
+    as `zeta1_lower` but at a complex point), so `‖ζ₁ s‖ ≥ 1/4 > 0` and `ζ = (s-1)⁻¹·ζ₁ ≠ 0`.
+
+    This is item (2) of the 55/16 low-strip closure (RH_IN_BOX_INTERFACE §6.2): it clears the
+    corner `Re ∈ (999/1000, 1)`, `Im ∈ (0, ε₀)` that no argument-principle box can reach (an edge
+    at `Re = 1` runs through the pole; an edge at `Re = 1 - δ` leaves a sliver). -/
+theorem riemannZeta_ne_zero_near_one {s : ℂ} (hne : s ≠ 1) (hr : ‖s - 1‖ ≤ 1/16) :
+    riemannZeta s ≠ 0 := by
+  have hmem : s ∈ closedBall (1 : ℂ) (1/4) := by
+    rw [mem_closedBall, Complex.dist_eq]; linarith
+  have hmvt : ‖riemannZeta₁ s - riemannZeta₁ 1‖ ≤ 12 * ‖s - 1‖ :=
+    Convex.norm_image_sub_le_of_norm_deriv_le (fun x _ => differentiable_riemannZeta₁ x)
+      (fun x hx => zeta1_deriv_le hx) (convex_closedBall 1 (1/4)) (by simp) hmem
+  rw [riemannZeta₁_one] at hmvt
+  have h12 : 12 * ‖s - 1‖ ≤ 3/4 := by
+    have := mul_le_mul_of_nonneg_left hr (by norm_num : (0:ℝ) ≤ 12)
+    linarith
+  have hlow : (1:ℝ)/4 ≤ ‖riemannZeta₁ s‖ := by
+    have hrev := norm_sub_norm_le (1 : ℂ) (riemannZeta₁ s)
+    rw [norm_one, norm_sub_rev] at hrev
+    linarith
+  have hz1ne : riemannZeta₁ s ≠ 0 := by
+    intro h; rw [h, norm_zero] at hlow; linarith
+  rw [riemannZeta_eq_inv_sub_mul hne]
+  exact mul_ne_zero (inv_ne_zero (sub_ne_zero.mpr hne)) hz1ne
+
 end ZeroFreeBridge
 

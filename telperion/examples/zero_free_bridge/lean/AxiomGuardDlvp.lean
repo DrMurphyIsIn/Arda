@@ -39,6 +39,7 @@ import DlvpZetaPoleEffective
 import DlvpZetaRateEffective
 import DlvpZetaZeroFree
 import DlvpZetaSymmetry
+import DlvpTheta
 
 #print axioms ZeroFreeBridge.dlvp_zeta_region_concrete
 #print axioms ZeroFreeBridge.dlvp_zeta_region_rate
@@ -50,3 +51,20 @@ import DlvpZetaSymmetry
 #print axioms ZeroFreeBridge.zeta_zero_on_line_of_right_half_clear
 #print axioms ZeroFreeBridge.zeta_zero_on_line_of_quarter_clear
 #print axioms ZeroFreeBridge.riemannZeta_reflect_line_eq_zero
+#print axioms ZeroFreeBridge.riemannZeta_ne_zero_near_one
+#print axioms ZeroFreeBridge.dlvpRateC_lower
+#print axioms ZeroFreeBridge.riemannSiegelTheta_zero
+#print axioms ZeroFreeBridge.riemannSiegelTheta_deriv
+#print axioms ZeroFreeBridge.thetaIntegrand_continuous
+#print axioms ZeroFreeBridge.logDeriv_gammaR
+#print axioms ZeroFreeBridge.thetaIntegrand_eq_re_logDeriv_gammaR
+#print axioms ZeroFreeBridge.digamma_shift
+#print axioms ZeroFreeBridge.norm_inv_sub_log_one_add_inv_le
+#print axioms ZeroFreeBridge.thetaMain_hasDerivAt
+#print axioms ZeroFreeBridge.log_succ_sub_log
+#print axioms ZeroFreeBridge.digamma_sub_log_telescoped
+#print axioms ZeroFreeBridge.sum_norm_inv_sub_log_le
+#print axioms ZeroFreeBridge.norm_digamma_sub_log_le_of_anchor
+#print axioms ZeroFreeBridge.tendsto_digamma_sub_log_one_add_nat
+#print axioms ZeroFreeBridge.digamma_ofReal_eq
+#print axioms ZeroFreeBridge.monotoneOn_deriv_log_Gamma
