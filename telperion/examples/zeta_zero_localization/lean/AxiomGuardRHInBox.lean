@@ -265,3 +265,6 @@ import StripClear
 #print axioms DiffractionCore.argChangeVert_completedZeta_line2_split
 #print axioms DiffractionCore.argChangeHoriz_completedZeta_height_split
 #print axioms DiffractionCore.completedZeta_pathL_eq_theta_add_piS
+#print axioms DiffractionCore.completedRiemannZeta_conj
+#print axioms DiffractionCore.logDeriv_completedZeta_conj
+#print axioms DiffractionCore.fold_pointwise_completedZeta

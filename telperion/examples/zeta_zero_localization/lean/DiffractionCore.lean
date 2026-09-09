@@ -2907,4 +2907,54 @@ theorem completedZeta_pathL_eq_theta_add_piS (T : ℝ) (hT : 0 < T)
   rw [hAV, hAH]
   linarith
 
+/-! ## THE COMPLETED-ZETA REFLECTION-CONJUGATION FOLD (left-right edge gear of `Δ_box = 2·Δ_L`).
+
+`Λ = completedRiemannZeta` satisfies `Λ(1−s) = Λ(s)` and `Λ(s̄) = conj Λ(s)` (the latter built here
+from `completedRiemannZeta_eq` + `Λ₀`'s conjugation symmetry + conj-of-reciprocal — Mathlib has no
+direct lemma).  Unlike `Λ₀`, `Λ`'s strip zeros ARE `ζ`'s zeros (`Λ = Γℝ·ζ`, `Γℝ ≠ 0` in the strip).
+Combining reflection + conjugation gives the clean left-right fold, for `Im = y > 0`:
+
+  `Re(logDeriv Λ (σ+iy)) + Re(logDeriv Λ ((1−σ)+iy)) = 0`
+
+— the completed-zeta analog of `fold_pointwise_zeta₀`, on the object with the RIGHT zeros.  This is
+the reflection gear that collapses the box's left half onto its right (`Δ_box = 2·Δ_L`); the
+remaining literal-`N(T)` work is the box argument principle for `Λ` with its poles at `0,1`
+(the source of the `+1`) and the `T0→0⁺` base.  conjecture1_proved = False. -/
+
+/-- **`Λ` is conjugation-symmetric**: `Λ(s̄) = conj Λ(s)` (from `Λ = Λ₀ − 1/s − 1/(1−s)`, `Λ₀`
+    conj-symmetric, and conj-of-reciprocal). -/
+theorem completedRiemannZeta_conj (s : ℂ) :
+    completedRiemannZeta ((starRingEnd ℂ) s) = (starRingEnd ℂ) (completedRiemannZeta s) := by
+  rw [completedRiemannZeta_eq, completedRiemannZeta_eq,
+    ZetaZeroLocalization.completedRiemannZeta₀_conj]
+  simp only [map_sub, map_div₀, map_one]
+
+/-- `Λ` log-derivative under conjugation (`s ∉ {0,1}`). -/
+theorem logDeriv_completedZeta_conj {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
+    logDeriv completedRiemannZeta ((starRingEnd ℂ) s)
+      = (starRingEnd ℂ) (logDeriv completedRiemannZeta s) :=
+  logDeriv_conj_of_conj_symm (fun z => completedRiemannZeta_conj z)
+    (differentiableAt_completedZeta hs0 hs1)
+
+/-- **THE COMPLETED-ZETA FOLD, pointwise** (`Im = y > 0`): `Re(logDeriv Λ(σ+iy)) +
+    Re(logDeriv Λ((1−σ)+iy)) = 0`. -/
+theorem fold_pointwise_completedZeta (sigma y : ℝ) (hy : 0 < y) :
+    (logDeriv completedRiemannZeta ((sigma : ℂ) + y * I)).re
+      + (logDeriv completedRiemannZeta (((1 - sigma : ℝ) : ℂ) + y * I)).re = 0 := by
+  set s : ℂ := (sigma : ℂ) + y * I with hsdef
+  set s' : ℂ := ((1 - sigma : ℝ) : ℂ) + y * I with hs'def
+  have hsim : s.im = y := by rw [hsdef]; simp
+  have hs'im : s'.im = y := by rw [hs'def]; simp
+  have hs0 : s ≠ 0 := by intro h; rw [h] at hsim; simp at hsim; linarith
+  have hs1 : s ≠ 1 := by intro h; rw [h] at hsim; simp at hsim; linarith
+  have hs'0 : s' ≠ 0 := by intro h; rw [h] at hs'im; simp at hs'im; linarith
+  have hs'1 : s' ≠ 1 := by intro h; rw [h] at hs'im; simp at hs'im; linarith
+  have hconj : (1 : ℂ) - s = (starRingEnd ℂ) s' := by
+    rw [hsdef, hs'def]; apply Complex.ext <;> simp <;> ring
+  have hrefl := logDeriv_completedZeta_reflect hs0 hs1
+  rw [hconj, logDeriv_completedZeta_conj hs'0 hs'1] at hrefl
+  have hre := congrArg Complex.re hrefl
+  simp only [Complex.conj_re, Complex.neg_re] at hre
+  linarith [hre]
+
 end DiffractionCore
