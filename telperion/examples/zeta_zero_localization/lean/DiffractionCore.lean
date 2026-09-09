@@ -3018,4 +3018,88 @@ theorem xiTele_eq_zero_iff {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) (hG : Gamma
       · exact absurd hΓ0 hG
   · intro h; rw [h]; ring
 
+/-! ## BRICK 1: the ξ box argument principle — ξ zero-count = boundary winding.
+
+`ξ` is entire, so it meets the three prerequisites of the generic Blaschke count more cleanly than
+`ζ` did (no pole to dodge, order finite everywhere seeded from `ξ(1) = ½ ≠ 0`).  Instantiating
+`analytic_count_eq_winding_generic` at `ξ` gives: for a box with `ξ ≠ 0` on the edges and its zeros
+strictly interior, if the boundary winding of `logDeriv ξ` is `2πiN` then the box zero-count of `ξ`
+is `N` — no `+1` (unlike the `ζ` route, `ξ` is entire, no pole enclosed).  Via `xiTele_eq_zero_iff`,
+those box zeros are the nontrivial `ζ`-zeros.  conjecture1_proved = False. -/
+
+/-- `ξ` analytic on any set (entire). -/
+theorem analyticOnNhd_xiTele (U : Set ℂ) : AnalyticOnNhd ℂ xiTele U :=
+  fun z _ => (differentiable_xiTele.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
+
+/-- `ξ` analytic at every point. -/
+theorem analyticAt_xiTele (z : ℂ) : AnalyticAt ℂ xiTele z :=
+  analyticOnNhd_xiTele Set.univ z (Set.mem_univ z)
+
+/-- **Prereq 2**: `ξ`'s meromorphic order is finite everywhere (entire, not `≡ 0` since
+    `ξ(1) = ½`). -/
+theorem meromorphicOrderAt_xiTele_ne_top (u : ℂ) : meromorphicOrderAt xiTele u ≠ ⊤ := by
+  have hMero : MeromorphicOn xiTele (Set.univ : Set ℂ) :=
+    fun z _ => (analyticAt_xiTele z).meromorphicAt
+  have hAt1 : AnalyticAt ℂ xiTele 1 := analyticAt_xiTele 1
+  have hne1 : xiTele 1 ≠ 0 := by
+    have h : xiTele 1 = 1 / 2 := by unfold xiTele; ring
+    rw [h]; norm_num
+  have hord1 : meromorphicOrderAt xiTele 1 ≠ ⊤ := by
+    rw [hAt1.meromorphicOrderAt_eq, hAt1.analyticOrderAt_eq_zero.mpr hne1]; simp
+  exact hMero.meromorphicOrderAt_ne_top_of_isPreconnected isPreconnected_univ
+    (Set.mem_univ 1) (Set.mem_univ u) hord1
+
+/-- **Prereq 3**: `ξ`'s divisor is finite on any ball (entire ⟹ meromorphic on the closed ball). -/
+theorem divisor_xiTele_ball_support_finite (c : ℂ) (R : ℝ) :
+    (MeromorphicOn.divisor xiTele (Metric.ball c R)).support.Finite := by
+  have hMero : MeromorphicOn xiTele (Metric.closedBall c R) :=
+    fun z _ => (analyticAt_xiTele z).meromorphicAt
+  exact hMero.divisor_ball_support_finite
+
+/-- **THE ξ BOX ARGUMENT PRINCIPLE**: for a box with `ξ ≠ 0` on the edges, its zeros strictly
+    interior, and `ξ` boundary winding `2πiN`, the box zero-count of `ξ` is `N` (no `+1`: `ξ` is
+    entire).  All `hArb` integrabilities discharged internally. -/
+theorem xiTele_count_eq_winding
+    (sigma0 sigma1 T0 T1 : ℝ) (c : ℂ) (R : ℝ) (N : ℤ)
+    (hsig : sigma0 ≤ sigma1) (hT : T0 ≤ T1)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hnzb : ∀ x ∈ Set.uIcc sigma0 sigma1, xiTele (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc sigma0 sigma1, xiTele (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzr : ∀ y ∈ Set.uIcc T0 T1, xiTele ((sigma1 : ℂ) + ↑y * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, xiTele ((sigma0 : ℂ) + ↑y * I) ≠ 0)
+    (hin : ∀ ρ ∈ (divisor_xiTele_ball_support_finite c R).toFinset,
+      sigma0 < ρ.re ∧ ρ.re < sigma1 ∧ T0 < ρ.im ∧ ρ.im < T1)
+    (hwind : (∫ x in sigma0..sigma1, logDeriv xiTele (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, logDeriv xiTele (↑x + (T1 : ℂ) * I))
+        + I • (∫ y in T0..T1, logDeriv xiTele ((sigma1 : ℂ) + ↑y * I))
+        - I • (∫ y in T0..T1, logDeriv xiTele ((sigma0 : ℂ) + ↑y * I))
+      = 2 * π * I * (N : ℂ)) :
+    ∃ (s : Finset ℂ) (d : ℂ → ℤ),
+      (∀ ρ ∈ s, (1 : ℤ) ≤ d ρ) ∧
+      (∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+        xiTele ρ = 0 → ρ ∈ s) ∧
+      (∑ ρ ∈ s, d ρ) = N := by
+  refine analytic_count_eq_winding_generic xiTele sigma0 sigma1 T0 T1 c R N
+    (analyticOnNhd_xiTele _) (fun u _ => meromorphicOrderAt_xiTele_ne_top u)
+    (divisor_xiTele_ball_support_finite c R) hsig hT hbox_ball hwind ?_
+  intro E _s _d hEholo _hker
+  refine ⟨hnzb, hnzt, hnzr, hnzl, hin, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_horiz (ne_of_lt (hin ρ hρ).2.2.1) _ _
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_horiz ((ne_of_lt (hin ρ hρ).2.2.2).symm) _ _
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_vert ((ne_of_lt (hin ρ hρ).2.1).symm) _ _
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_vert (ne_of_lt (hin ρ hρ).1) _ _
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_horiz (ne_of_lt (hin ρ hρ).2.2.1) _ _).const_mul _)
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_horiz ((ne_of_lt (hin ρ hρ).2.2.2).symm) _ _).const_mul _)
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_vert ((ne_of_lt (hin ρ hρ).2.1).symm) _ _).const_mul _)
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_vert (ne_of_lt (hin ρ hρ).1) _ _).const_mul _)
+  · exact intervalIntegrable_diffBox_horiz ⟨le_refl _, hT⟩ hsig hEholo
+  · exact intervalIntegrable_diffBox_horiz ⟨hT, le_refl _⟩ hsig hEholo
+  · exact intervalIntegrable_diffBox_vert ⟨hsig, le_refl _⟩ hT hEholo
+  · exact intervalIntegrable_diffBox_vert ⟨le_refl _, hsig⟩ hT hEholo
+
 end DiffractionCore
