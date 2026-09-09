@@ -2145,4 +2145,134 @@ theorem zetaPoleCompanion_blaschke_split_ball
     (divisor_zetaPoleCompanion_ball_support_finite c R)
     hbox_ball
 
+/-- **Generic box argument principle** (the `riemannZeta`-free `zeta_count_eq_winding_generic`): for
+    any analytic `f` with finite divisor/order, if the boundary winding of `logDeriv f` is `2πiN`
+    then the total divisor of `f` over the box equals `N` (and every box zero is captured).  The
+    routine Arb boundary facts are bundled in `hArb`; the split is kernel-derived. -/
+theorem analytic_count_eq_winding_generic
+    (f : ℂ → ℂ) (sigma0 sigma1 T0 T1 : ℝ) (c : ℂ) (R : ℝ) (N : ℤ)
+    (hfU : AnalyticOnNhd ℂ f (Metric.ball c R))
+    (h₂f : ∀ u ∈ Metric.ball c R, meromorphicOrderAt f u ≠ ⊤)
+    (h₃f : (MeromorphicOn.divisor f (Metric.ball c R)).support.Finite)
+    (hsig : sigma0 ≤ sigma1) (hT : T0 ≤ T1)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hwind : (∫ x in sigma0..sigma1, logDeriv f (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, logDeriv f (↑x + (T1 : ℂ) * I))
+        + I • (∫ y in T0..T1, logDeriv f ((sigma1 : ℂ) + ↑y * I))
+        - I • (∫ y in T0..T1, logDeriv f ((sigma0 : ℂ) + ↑y * I))
+      = 2 * π * I * (N : ℂ))
+    (hArb : ∀ (E : ℂ → ℂ),
+      let s := h₃f.toFinset
+      let d := (MeromorphicOn.divisor f (Metric.ball c R) : ℂ → ℤ)
+      DifferentiableOn ℂ E (Set.Icc sigma0 sigma1 ×ℂ Set.Icc T0 T1) →
+      (∀ z ∈ Metric.ball c R, f z ≠ 0 →
+        logDeriv f z = (∑ ρ ∈ s, (d ρ : ℂ) / (z - ρ)) + E z) →
+      (∀ x ∈ Set.uIcc sigma0 sigma1, f (↑x + (T0 : ℂ) * I) ≠ 0) ∧
+      (∀ x ∈ Set.uIcc sigma0 sigma1, f (↑x + (T1 : ℂ) * I) ≠ 0) ∧
+      (∀ y ∈ Set.uIcc T0 T1, f ((sigma1 : ℂ) + ↑y * I) ≠ 0) ∧
+      (∀ y ∈ Set.uIcc T0 T1, f ((sigma0 : ℂ) + ↑y * I) ≠ 0) ∧
+      (∀ ρ ∈ s, sigma0 < ρ.re ∧ ρ.re < sigma1 ∧ T0 < ρ.im ∧ ρ.im < T1) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun x : ℝ => ((↑x + (T0 : ℂ) * I) - ρ)⁻¹) volume sigma0 sigma1) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun x : ℝ => ((↑x + (T1 : ℂ) * I) - ρ)⁻¹) volume sigma0 sigma1) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun y : ℝ => (((sigma1 : ℂ) + ↑y * I) - ρ)⁻¹) volume T0 T1) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun y : ℝ => (((sigma0 : ℂ) + ↑y * I) - ρ)⁻¹) volume T0 T1) ∧
+      (IntervalIntegrable
+        (fun x : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + (T0 : ℂ) * I) - ρ)⁻¹) volume sigma0 sigma1) ∧
+      (IntervalIntegrable
+        (fun x : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + (T1 : ℂ) * I) - ρ)⁻¹) volume sigma0 sigma1) ∧
+      (IntervalIntegrable
+        (fun y : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * (((sigma1 : ℂ) + ↑y * I) - ρ)⁻¹) volume T0 T1) ∧
+      (IntervalIntegrable
+        (fun y : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * (((sigma0 : ℂ) + ↑y * I) - ρ)⁻¹) volume T0 T1) ∧
+      (IntervalIntegrable (fun x : ℝ => E (↑x + (T0 : ℂ) * I)) volume sigma0 sigma1) ∧
+      (IntervalIntegrable (fun x : ℝ => E (↑x + (T1 : ℂ) * I)) volume sigma0 sigma1) ∧
+      (IntervalIntegrable (fun y : ℝ => E ((sigma1 : ℂ) + ↑y * I)) volume T0 T1) ∧
+      (IntervalIntegrable (fun y : ℝ => E ((sigma0 : ℂ) + ↑y * I)) volume T0 T1)) :
+    ∃ (s : Finset ℂ) (d : ℂ → ℤ),
+      (∀ ρ ∈ s, (1 : ℤ) ≤ d ρ) ∧
+      (∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+        f ρ = 0 → ρ ∈ s) ∧
+      (∑ ρ ∈ s, d ρ) = N := by
+  obtain ⟨E, hEholo, hd1, hzero_in, hker⟩ :=
+    analytic_blaschke_split_ball f sigma0 sigma1 T0 T1 c R hfU h₂f h₃f hbox_ball
+  set s := h₃f.toFinset with hs
+  set d := (MeromorphicOn.divisor f (Metric.ball c R) : ℂ → ℤ) with hd
+  refine ⟨s, d, hd1, ?_, ?_⟩
+  · intro ρ hre him hρzero
+    exact hzero_in ρ (hbox_ball ρ hre him) hρzero
+  · obtain ⟨hnz_b, hnz_t, hnz_r, hnz_l, hin, hb, ht, hr, hl,
+            hsb, hst, hsr, hsl, heb, het, her, hel⟩ := hArb E hEholo hker
+    have huIccσ : Set.uIcc sigma0 sigma1 = Set.Icc sigma0 sigma1 := Set.uIcc_of_le hsig
+    have huIccT : Set.uIcc T0 T1 = Set.Icc T0 T1 := Set.uIcc_of_le hT
+    have hre_pt : ∀ (a b : ℝ), ((a : ℂ) + (b : ℂ) * I).re = a := by intro a b; simp
+    have him_pt : ∀ (a b : ℝ), ((a : ℂ) + (b : ℂ) * I).im = b := by intro a b; simp
+    have bmem : ∀ x ∈ Set.uIcc sigma0 sigma1, (↑x + (T0 : ℂ) * I) ∈ Metric.ball c R := by
+      intro x hx; rw [huIccσ, Set.mem_Icc] at hx
+      exact hbox_ball _ (by rw [hre_pt]; exact hx) (by rw [him_pt]; exact ⟨le_refl _, hT⟩)
+    have tmem : ∀ x ∈ Set.uIcc sigma0 sigma1, (↑x + (T1 : ℂ) * I) ∈ Metric.ball c R := by
+      intro x hx; rw [huIccσ, Set.mem_Icc] at hx
+      exact hbox_ball _ (by rw [hre_pt]; exact hx) (by rw [him_pt]; exact ⟨hT, le_refl _⟩)
+    have rmem : ∀ y ∈ Set.uIcc T0 T1, ((sigma1 : ℂ) + ↑y * I) ∈ Metric.ball c R := by
+      intro y hy; rw [huIccT, Set.mem_Icc] at hy
+      exact hbox_ball _ (by rw [hre_pt]; exact ⟨hsig, le_refl _⟩) (by rw [him_pt]; exact hy)
+    have lmem : ∀ y ∈ Set.uIcc T0 T1, ((sigma0 : ℂ) + ↑y * I) ∈ Metric.ball c R := by
+      intro y hy; rw [huIccT, Set.mem_Icc] at hy
+      exact hbox_ball _ (by rw [hre_pt]; exact ⟨le_refl _, hsig⟩) (by rw [him_pt]; exact hy)
+    have hsp_b : ∀ x ∈ Set.uIcc sigma0 sigma1,
+        logDeriv f (↑x + (T0 : ℂ) * I)
+          = (∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + (T0 : ℂ) * I) - ρ)⁻¹) + E (↑x + (T0 : ℂ) * I) := by
+      intro x hx
+      rw [hker _ (bmem x hx) (hnz_b x hx)]; simp only [div_eq_mul_inv]
+    have hsp_t : ∀ x ∈ Set.uIcc sigma0 sigma1,
+        logDeriv f (↑x + (T1 : ℂ) * I)
+          = (∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + (T1 : ℂ) * I) - ρ)⁻¹) + E (↑x + (T1 : ℂ) * I) := by
+      intro x hx
+      rw [hker _ (tmem x hx) (hnz_t x hx)]; simp only [div_eq_mul_inv]
+    have hsp_r : ∀ y ∈ Set.uIcc T0 T1,
+        logDeriv f ((sigma1 : ℂ) + ↑y * I)
+          = (∑ ρ ∈ s, (d ρ : ℂ) * (((sigma1 : ℂ) + ↑y * I) - ρ)⁻¹) + E ((sigma1 : ℂ) + ↑y * I) := by
+      intro y hy
+      rw [hker _ (rmem y hy) (hnz_r y hy)]; simp only [div_eq_mul_inv]
+    have hsp_l : ∀ y ∈ Set.uIcc T0 T1,
+        logDeriv f ((sigma0 : ℂ) + ↑y * I)
+          = (∑ ρ ∈ s, (d ρ : ℂ) * (((sigma0 : ℂ) + ↑y * I) - ρ)⁻¹) + E ((sigma0 : ℂ) + ↑y * I) := by
+      intro y hy
+      rw [hker _ (lmem y hy) (hnz_l y hy)]; simp only [div_eq_mul_inv]
+    have eb : (∫ x in sigma0..sigma1, logDeriv f (↑x + (T0 : ℂ) * I))
+        = (∫ x in sigma0..sigma1, ∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + (T0 : ℂ) * I) - ρ)⁻¹)
+          + (∫ x in sigma0..sigma1, E (↑x + (T0 : ℂ) * I)) := by
+      rw [← intervalIntegral.integral_add hsb heb]
+      exact intervalIntegral.integral_congr (fun x hx => hsp_b x hx)
+    have et : (∫ x in sigma0..sigma1, logDeriv f (↑x + (T1 : ℂ) * I))
+        = (∫ x in sigma0..sigma1, ∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + (T1 : ℂ) * I) - ρ)⁻¹)
+          + (∫ x in sigma0..sigma1, E (↑x + (T1 : ℂ) * I)) := by
+      rw [← intervalIntegral.integral_add hst het]
+      exact intervalIntegral.integral_congr (fun x hx => hsp_t x hx)
+    have er : (∫ y in T0..T1, logDeriv f ((sigma1 : ℂ) + ↑y * I))
+        = (∫ y in T0..T1, ∑ ρ ∈ s, (d ρ : ℂ) * (((sigma1 : ℂ) + ↑y * I) - ρ)⁻¹)
+          + (∫ y in T0..T1, E ((sigma1 : ℂ) + ↑y * I)) := by
+      rw [← intervalIntegral.integral_add hsr her]
+      exact intervalIntegral.integral_congr (fun y hy => hsp_r y hy)
+    have el : (∫ y in T0..T1, logDeriv f ((sigma0 : ℂ) + ↑y * I))
+        = (∫ y in T0..T1, ∑ ρ ∈ s, (d ρ : ℂ) * (((sigma0 : ℂ) + ↑y * I) - ρ)⁻¹)
+          + (∫ y in T0..T1, E ((sigma0 : ℂ) + ↑y * I)) := by
+      rw [← intervalIntegral.integral_add hsl hel]
+      exact intervalIntegral.integral_congr (fun y hy => hsp_l y hy)
+    have hE0 := RHInBoxAnalytic.rect_arg_principle_generic sigma0 sigma1 T0 T1 hsig hT E hEholo
+    have hRes := RHInBoxAnalytic.box_residue_sum_generic sigma0 sigma1 T0 T1 d hin hb ht hr hl
+    rw [eb, et, er, el, smul_add, smul_add] at hwind
+    have key : 2 * π * I * (∑ ρ ∈ s, (d ρ : ℂ)) = 2 * π * I * (N : ℂ) := by
+      rw [← hRes]
+      linear_combination hwind - hE0
+    have h2pi : (2 * π * I : ℂ) ≠ 0 := by simp [Real.pi_ne_zero, Complex.I_ne_zero]
+    have hsumC : (∑ ρ ∈ s, (d ρ : ℂ)) = (N : ℂ) := mul_left_cancel₀ h2pi key
+    have : ((∑ ρ ∈ s, d ρ : ℤ) : ℂ) = ((N : ℤ) : ℂ) := by
+      push_cast; push_cast at hsumC; exact hsumC
+    exact_mod_cast this
+
 end DiffractionCore
