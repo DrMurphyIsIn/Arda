@@ -110,3 +110,9 @@ name = "RHInBox_1d1000000_999999d1000000_100_200"
 # a=1/10^6, T=200 (effective-rate edge haC_200 in-kernel).  conjecture1_proved = False.
 [[lean_lib]]
 name = "AllZeros_h200"
+
+# DIFFRACTION CORE (Dyson/quasicrystal axis, QC2 brick 1): weighted rectangle pole formula
+# Bd(g·(·-ρ)⁻¹) = 2πi·g(ρ) — the single-Bragg-peak mechanism (dslope removable-singularity
+# split + rect Goursat + counting winding).  See UNIFORM_TRANSITION_CERTIFICATE §4/§6.
+[[lean_lib]]
+name = "DiffractionCore"
