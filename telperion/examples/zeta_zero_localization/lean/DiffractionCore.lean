@@ -1670,10 +1670,19 @@ theorem zero_count_band_edge_decomp (T0 T1 : ℝ) (hT0 : 0 < T0) (hT : T0 ≤ T1
 
 `Λ₀ = completedRiemannZeta₀` is ENTIRE (`differentiable_completedZeta₀`) with the clean functional
 equation `Λ₀(1−s) = Λ₀(s)` (`completedRiemannZeta₀_one_sub`) — no `Γℝ` factor, no poles at `0, 1`.
-Its zeros in the strip are exactly the nontrivial `ζ`-zeros.  Differentiating the FE gives the
-DOUBLING ENGINE: `logDeriv Λ₀ (1−s) = −logDeriv Λ₀ s`, valid everywhere (junk-equal at zeros).
-This is the entire-function reflection that will halve the RvM contour — cleaner than the `ζ`
-version (`logDeriv_zeta_reflect`), which carried the `Γℝ` terms.  conjecture1_proved = False. -/
+Differentiating the FE gives the reflection identity `logDeriv Λ₀ (1−s) = −logDeriv Λ₀ s`, valid
+everywhere (junk-equal at zeros).
+
+CORRECTION (2026-09-09): an earlier version of this note claimed "Λ₀'s zeros in the strip are
+exactly the nontrivial ζ-zeros".  That is FALSE.  `completedRiemannZeta_eq` gives
+`Λ = Λ₀ − 1/s − 1/(1−s)` with `Λ = Γℝ·ζ`, so at a nontrivial zero `ρ` (where `Λ(ρ) = 0`) one has
+`Λ₀(ρ) = 1/ρ + 1/(1−ρ) = 1/(ρ(1−ρ)) ≠ 0`.  The ENTIRE function carrying the nontrivial zeros is
+`ξ(s) = ½ s(s−1) Λ(s) = ½ s(s−1) Λ₀(s) + ½`, NOT `Λ₀` itself.  Consequently a `Λ₀`
+argument-principle count would count the WRONG set — the correct count side is the `ζ` argument
+principle already assembled (`bd_logDeriv_zeta_eq_count` → `zero_count_band_edge_decomp`).  The
+reflection/fold lemmas below remain TRUE (pure FE + conjugation identities, no zero claim) but are
+NOT on the RvM critical path; they are kept as honest, verified auxiliary identities.
+conjecture1_proved = False. -/
 
 /-- **The entire completed-zeta reflection**: `logDeriv Λ₀ (1−s) = −logDeriv Λ₀ s`. -/
 theorem logDeriv_completedZeta₀_reflect (s : ℂ) :
@@ -1702,8 +1711,11 @@ reflection (step 1) + conjugation fold to the SAME positive height give, for ALL
 
   `Re(logDeriv Λ₀ (σ+iy)) + Re(logDeriv Λ₀ ((1−σ)+iy)) = 0`
 
-— the cleanest possible fold: RHS `0`, no `σ`/`y` constraints, no `Γℝ` terms (they live inside
-`Λ₀`).  This is the exact doubling that will collapse the RvM contour's left half onto its right.
+— RHS `0`, no `σ`/`y` constraints, no `Γℝ` terms (they live inside `Λ₀`).  A clean anti-symmetry of
+`Λ₀`'s log-derivative across the critical line.  NB (see the step-1 CORRECTION): this folds `Λ₀`'s
+OWN argument change, and `Λ₀`'s zeros are NOT the nontrivial ζ-zeros, so this is a true auxiliary
+identity rather than an RvM-count ingredient.  The RvM fold that IS on the critical path is
+`argChangeVert_fold` (the `ζ + Γℝ` split), already wired into `zero_count_band_edge_decomp`.
 conjecture1_proved = False. -/
 
 /-- `Λ₀` log-derivative under conjugation. -/
