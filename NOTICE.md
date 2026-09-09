@@ -68,11 +68,10 @@ tooling track.
 
 ## Mined proof shapes — openai/NavierStokesAndEuler
 
-Nine Telperion emitter kinds (the `affine_ledger` / `quadratic_irrational` /
-`gevrey_majorant` / `logconvex_interp` / `coefficient_mass` /
-`continuous_barrier` / `finite_prefix_absorption` / `log_eps_optimize` /
-`sqrt_root_elimination` family; see `telperion/NS_EULER_EMITTER_CATALOG.md`)
-were distilled from a certificate-mining pass over OpenAI's
+A growing family of Telperion emitter kinds (beginning with `affine_ledger`,
+`quadratic_irrational`, and `gevrey_majorant`; the authoritative, current list
+is `telperion/NS_EULER_EMITTER_CATALOG.md`, which names each kind's source
+file) was distilled in waves from a certificate-mining pass over OpenAI's
 **`openai/NavierStokesAndEuler`** finite-time-blowup formalization
 (Apache-2.0). What was taken is **certificate shapes only** — the
 generator-shaped, kernel-cheap arithmetic atoms recurring in that development —
