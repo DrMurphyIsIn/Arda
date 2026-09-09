@@ -132,10 +132,22 @@ a complete finite Turing verification of RH up to height $100$. Its completeness
 longer leans on matching an external zero count: that every nontrivial zero up to
 $100$ lands in the box is now itself kernel-derived from the zero-free region.
 
+And the construction \emph{scales}: the certified height doubles by
+\emph{band-stacking}. A kernel gluing lemma (\texttt{rh\_box\_two\_bands}) composes
+per-band certificates---each band carrying its own small winding count and short
+contour edges, so the per-band numeric certificates stay cheap and
+independent---and the certificate \texttt{AllZeros\_h200} stacks a second band
+$[10^{-6}, 1-10^{-6}] \times [100, 200]$ (boundary winding $N = 50$) on the first
+to derive the same unweighted statement up to height $200$: all $79$ nontrivial
+zeros with $0 < \operatorname{Im}\rho \le 200$ lie on the critical line---$79$
+being the full classical count to that height, though as before the count is
+derived from the windings, not assumed.
+
 The caveats are stated as sharply as the claim. It is \emph{finite}---up to height
-$100$, not all of $\mathbb{C}$; Turing's method verifies RH in a region, it does not
-prove RH. And it is \emph{conditional on certified numeric input}: the boundary
-winding integer ($N = 29$), the twenty-nine exhibited on-line zeros, the edge
+$200$, not all of $\mathbb{C}$; Turing's method verifies RH in a region, it does not
+prove RH. And it is \emph{conditional on certified numeric input}: the per-band
+boundary winding integers ($N = 29$ and $N = 50$), the seventy-nine exhibited
+on-line zeros, the edge
 non-vanishing, and the classical height floor (no nontrivial zeros below height
 $\tfrac{55}{16}$) are supplied by high-precision interval (Arb) arithmetic and
 carried as explicit, non-kernel Lean hypotheses---a documented trust boundary,
@@ -146,7 +158,7 @@ the enclosures themselves. The chain is non-circular by construction: the windin
 count enters as a boundary-contour value, never as ``$N$ zeros and no others,'' and
 ``all zeros on the line'' is the \emph{derived} conclusion. It is, once more,
 emphatically \emph{not} a proof of RH---but it is a kernel-verified, complete finite
-Turing verification up to height $100$, and it exhibits a third distinct certificate
+Turing verification up to height $200$, and it exhibits a third distinct certificate
 shape (winding / argument-principle zero-counting).
 
 For completeness we note one boundary item we deliberately keep out of the
