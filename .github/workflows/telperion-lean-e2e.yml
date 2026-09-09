@@ -4233,7 +4233,7 @@ jobs:
         run: lake exe cache get
       - name: Build generic + box milestones + confinement + combination + CONCRETE T=100 certificate
         working-directory: telperion/examples/zeta_zero_localization/lean
-        run: lake build RHInBoxCore RHInBoxAnalytic RHInBox RHInBox_2d5_3d5_0_100 RHInBox_1d1000000_999999d1000000_0_100 ZetaZeroConfinement AllZerosUpToHeight AllZeros_h100 RHInBoxBands NoZerosInBox_1d1000_999d1000_0_55d16 NoZerosInBox_0_1d1000_0_55d16 RHInBox_1d1000000_999999d1000000_100_200 AllZeros_h200
+        run: lake build RHInBoxCore RHInBoxAnalytic RHInBox RHInBox_2d5_3d5_0_100 RHInBox_1d1000000_999999d1000000_0_100 ZetaZeroConfinement AllZerosUpToHeight AllZeros_h100 RHInBoxBands NoZerosInBox_1d1000_999d1000_0_55d16 NoZerosInBox_0_1d1000_0_55d16 RHInBox_1d1000000_999999d1000000_100_200 AllZeros_h200 RHInBox_1d2000000_1999999d2000000_0_100 RHInBox_1d2000000_1999999d2000000_100_200 RHInBox_1d2000000_1999999d2000000_200_300 RHInBox_1d2000000_1999999d2000000_300_400 RHInBox_1d2000000_1999999d2000000_400_500 RHInBox_1d2000000_1999999d2000000_500_600 RHInBox_1d2000000_1999999d2000000_600_700 RHInBox_1d2000000_1999999d2000000_700_800 RHInBox_1d2000000_1999999d2000000_800_900 RHInBox_1d2000000_1999999d2000000_900_1000 AllZeros_h1000
 
   # CI kernel-axiom guard for the RH-in-box family (Task 6, dvp-box-combination).
   # Mirrors the dVP guard job (axiom-guard-dlvp in zero_free_bridge).
@@ -4261,7 +4261,7 @@ jobs:
         run: lake exe cache get
       - name: Build all guarded RH-in-box targets
         working-directory: telperion/examples/zeta_zero_localization/lean
-        run: lake build RHInBoxCore RHInBoxAnalytic RHInBox RHInBox_2d5_3d5_0_100 RHInBox_1d1000000_999999d1000000_0_100 ZetaZeroConfinement AllZerosUpToHeight AllZeros_h100 RHInBoxBands NoZerosInBox_1d1000_999d1000_0_55d16 NoZerosInBox_0_1d1000_0_55d16 RHInBox_1d1000000_999999d1000000_100_200 AllZeros_h200
+        run: lake build RHInBoxCore RHInBoxAnalytic RHInBox RHInBox_2d5_3d5_0_100 RHInBox_1d1000000_999999d1000000_0_100 ZetaZeroConfinement AllZerosUpToHeight AllZeros_h100 RHInBoxBands NoZerosInBox_1d1000_999d1000_0_55d16 NoZerosInBox_0_1d1000_0_55d16 RHInBox_1d1000000_999999d1000000_100_200 AllZeros_h200 RHInBox_1d2000000_1999999d2000000_0_100 RHInBox_1d2000000_1999999d2000000_100_200 RHInBox_1d2000000_1999999d2000000_200_300 RHInBox_1d2000000_1999999d2000000_300_400 RHInBox_1d2000000_1999999d2000000_400_500 RHInBox_1d2000000_1999999d2000000_500_600 RHInBox_1d2000000_1999999d2000000_600_700 RHInBox_1d2000000_1999999d2000000_700_800 RHInBox_1d2000000_1999999d2000000_800_900 RHInBox_1d2000000_1999999d2000000_900_1000 AllZeros_h1000
       - name: Axiom guard -- RH-in-box family is kernel-clean (fail on sorryAx)
         working-directory: telperion/examples/zeta_zero_localization/lean
         run: |
