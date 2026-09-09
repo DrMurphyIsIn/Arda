@@ -48,6 +48,9 @@ The atoms below recur across that surface.
 | `ratio_telescope` | `emit_ratio_telescope.py` | 3 Euler files (genericized) | PRODUCT closure of ratio recursions: factorial normalizer `f n ≤ x·(n!)²`, geometric reciprocal `1/aₙ ≤ (1/a₀)(1/2)ⁿ`, index domination `(n:ℝ)+1 ≤ xₙ` |
 | `monomial_ladder` | `emit_monomial_ladder.py` | `Euler/PacketGeometryGuards.lean` | one master budget `Cm·e·Θ^Kmax ≤ 1` absorbs a family of rungs `c·e·Θ^k ≤ b` (symbolic base, exact `c ≤ Cm·b` certification per rung) |
 | `rpow_budget` | `emit_rpow_budget.py` | `Euler/PacketExponentialTail.lean` | k-power product collapse `∏Fᵢ·ρ^{N+1} ≤ k^t` with linarith at the exponent level; margin `Σa + r(N₀+1) ≤ t` certified exactly |
+| `comparability_envelope` | `emit_comparability_envelope.py` | PhysicalGraphBounds / PulseCovariance / MovingFrameODE | fixed atoms: `comparable_rpow` (`Q^e ≤ 2^\|e\|·q^e`, both exponent signs), `sqrt_shift_lipschitz` (`\|√(c+s²)−√(c+t²)\| ≤ \|s−t\|`), `reciprocal_quadratic_difference` (1+x² denominator kill) — closes 3 catalog shapes |
+| `discrete_moment` | `emit_discrete_moment.py` | GevreyInversePartitions / AxisWeightEstimates | `simplex_second_moment` (genericized off OrderedFinpartition) + the full `squareDecay` telescope/convolution calculus (`Σ ≤ 2`, antidiagonal `≤ 8×`) — closes 2 catalog shapes + round-0 TelescopingReciprocalSquare |
+| `poly_exp_absorption` | `emit_poly_exp_absorption.py` | `OutgoingPulseBounds.lean` (generalized from m=2) | `exp(−1/(2λ))/λ^m ≤ (4m)^m·exp(−1/(4λ))` for any m ≥ 1, exact constant certified (m=2 reproduces the source's 64) |
 
 ### `affine_ledger` — the exponent ledger (flagship)
 
