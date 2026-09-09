@@ -3654,3 +3654,92 @@ theorem argChangeHoriz_xiTele_topReflect (T : ℝ)
     (fun u : ℝ => (logDeriv xiTele ((u : ℂ) + (T : ℂ) * I)).im) (a := (1/2:ℝ)) (b := (-1:ℝ)) 1
   rw [show (1:ℝ) - (-1) = 2 by norm_num, show (1:ℝ) - 1/2 = 1/2 by norm_num] at hcov
   exact hcov
+
+/-! ## BRICK 4: `Δ_box ξ = 2·Δ_L ξ` and the RvM formula `N(T) = 1 + θ/π + S`.
+
+Assembling (A) bottom-edge reality, (B) vertical fold, (C) top-edge reflection over the symmetric
+box `[−1,2]×[0,T]`: the boundary winding of `logDeriv ξ` is `2·(AV(ξ,2,0,T) + AH(ξ,T,2,½)) = 2·Δ_L`.
+With the box argument principle (`2πi·N = winding`, `xiTele_count_eq_winding`) and
+`Δ_L ξ = π + θ + πS` (`xiTele_pathL_eq`), this is `2πN = 2(π + θ + πS)`, i.e.
+
+  `N(T) = 1 + θ(T)/π + S(T)` — the Riemann–von Mangoldt formula.
+
+conjecture1_proved = False. -/
+
+/-- Top edge full-width: `AH(ξ,T,−1,2) = −2·AH(ξ,T,2,½)` (additivity at `½` + symmetry + reflection). -/
+theorem argChangeHoriz_xiTele_topfull (T : ℝ)
+    (hz : ∀ x ∈ Set.Icc (-1:ℝ) 2, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0) :
+    argChangeHoriz xiTele T (-1) 2 = -2 * argChangeHoriz xiTele T 2 (1/2) := by
+  have hzL : ∀ x ∈ Set.uIcc (-1:ℝ) (1/2), xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+    intro x hx; rw [Set.uIcc_of_le (by norm_num)] at hx; exact hz x ⟨hx.1, by linarith [hx.2]⟩
+  have hzR : ∀ x ∈ Set.uIcc (1/2:ℝ) 2, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+    intro x hx; rw [Set.uIcc_of_le (by norm_num)] at hx; exact hz x ⟨by linarith [hx.1], hx.2⟩
+  have iL := (continuousOn_logDeriv_xiTele_hseg T (-1) (1/2) hzL).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iR := (continuousOn_logDeriv_xiTele_hseg T (1/2) 2 hzR).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have hC := argChangeHoriz_xiTele_topReflect T hz
+  unfold argChangeHoriz at hC ⊢
+  rw [← intervalIntegral.integral_add_adjacent_intervals iL iR, Complex.add_im]
+  have hsym1 : (∫ x in (-1:ℝ)..(1/2), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im
+      = -(∫ x in (1/2:ℝ)..(-1), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    rw [intervalIntegral.integral_symm, Complex.neg_im]
+  have hsym2 : (∫ x in (1/2:ℝ)..2, logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im
+      = -(∫ x in (2:ℝ)..(1/2), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    rw [intervalIntegral.integral_symm, Complex.neg_im]
+  rw [hsym1, hsym2, hC]; ring
+
+/-- **THE RIEMANN–VON MANGOLDT FORMULA** (for the winding integer `N` of the symmetric box
+    `[−1,2]×[0,T]`): if `ξ ≠ 0` on the box boundary, `ζ ≠ 0` on the height-`T` critical segment, and
+    the boundary winding of `logDeriv ξ` is `2πiN`, then `N = 1 + θ(T)/π + S(T)`.  Combined with
+    `xiTele_count_eq_winding` (`N` = the box ξ-zero count = # nontrivial ζ-zeros to height `T`), this
+    is `N(T) = θ(T)/π + 1 + S(T)`.  conjecture1_proved = False. -/
+theorem xiTele_winding_eq_RvM (T : ℝ) (hT : 0 < T) (N : ℤ)
+    (hnzBot : ∀ x ∈ Set.Icc (-1:ℝ) 2, xiTele ((x : ℂ)) ≠ 0)
+    (hnzTop : ∀ x ∈ Set.Icc (-1:ℝ) 2, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0)
+    (hnzL : ∀ y ∈ Set.Icc (0:ℝ) T, xiTele (((-1:ℝ) : ℂ) + (y : ℂ) * I) ≠ 0)
+    (hnzR : ∀ y ∈ Set.Icc (0:ℝ) T, xiTele (((2:ℝ) : ℂ) + (y : ℂ) * I) ≠ 0)
+    (hζT : ∀ x ∈ Set.uIcc (2:ℝ) (1/2), riemannZeta ((x : ℂ) + (T : ℂ) * I) ≠ 0)
+    (hwind : (∫ x in (-1:ℝ)..2, logDeriv xiTele (↑x + ((0:ℝ) : ℂ) * I))
+        - (∫ x in (-1:ℝ)..2, logDeriv xiTele (↑x + ((T:ℝ) : ℂ) * I))
+        + I • (∫ y in (0:ℝ)..T, logDeriv xiTele (((2:ℝ) : ℂ) + ↑y * I))
+        - I • (∫ y in (0:ℝ)..T, logDeriv xiTele (((-1:ℝ) : ℂ) + ↑y * I))
+      = 2 * ↑π * I * (N : ℂ)) :
+    (N : ℝ) = 1 + ZeroFreeBridge.riemannSiegelTheta T / π + riemannS T := by
+  -- take .im of the winding identity
+  have him := congrArg Complex.im hwind
+  set Bb := ∫ x in (-1:ℝ)..2, logDeriv xiTele (↑x + ((0:ℝ) : ℂ) * I) with hBb
+  set Bt := ∫ x in (-1:ℝ)..2, logDeriv xiTele (↑x + ((T:ℝ) : ℂ) * I) with hBt
+  set Br := ∫ y in (0:ℝ)..T, logDeriv xiTele (((2:ℝ) : ℂ) + ↑y * I) with hBr
+  set Bl := ∫ y in (0:ℝ)..T, logDeriv xiTele (((-1:ℝ) : ℂ) + ↑y * I) with hBl
+  have hlhs : (Bb - Bt + I • Br - I • Bl).im = Bb.im - Bt.im + Br.re - Bl.re := by
+    simp only [Complex.sub_im, Complex.add_im, smul_eq_mul, Complex.mul_im, Complex.I_im,
+      Complex.I_re, one_mul, zero_mul, zero_add, mul_zero, sub_zero]
+  have hrhs : (2 * ↑π * I * (N : ℂ)).im = 2 * π * (N : ℝ) := by
+    rw [show (2 * (↑π : ℂ) * I * (N : ℂ)) = (((2 * π * (N : ℝ)) : ℝ) : ℂ) * I by push_cast; ring,
+      Complex.mul_I_im, Complex.ofReal_re]
+  rw [hlhs, hrhs] at him
+  -- identify the four edges
+  have hBbim : Bb.im = 0 := argChangeHoriz_xiTele_realAxis (-1) 2 (by norm_num) hnzBot
+  have hBtim : Bt.im = -2 * argChangeHoriz xiTele T 2 (1/2) :=
+    argChangeHoriz_xiTele_topfull T hnzTop
+  have hBrre : Br.re = argChangeVert xiTele 2 0 T := rfl
+  have hBlre : Bl.re = argChangeVert xiTele (-1) 0 T := rfl
+  -- vertical fold: AV(ξ,-1) = -AV(ξ,2)
+  have hfold := argChangeVert_xiTele_fold (-1) 0 T (le_of_lt hT)
+    (by simpa using hnzL) (by rw [show (1:ℝ) - (-1) = 2 by norm_num]; simpa using hnzR)
+  rw [show (1:ℝ) - (-1) = 2 by norm_num] at hfold
+  -- path decomposition Δ_L = π + θ + πS
+  have hpath := xiTele_pathL_eq T hT hζT
+  -- assemble: 2πN = 2(AV(ξ,2)+AH(ξ,T,2,½)) = 2(π+θ+πS)
+  rw [hBbim, hBtim, hBrre, hBlre] at him
+  -- him : 0 - (-2 AH) + AV(2) - AV(-1) = 2πN ;  hfold : AV(-1) + AV(2) = 0
+  have hkey : 2 * π * (N : ℝ)
+      = 2 * (argChangeVert xiTele 2 0 T + argChangeHoriz xiTele T 2 (1/2)) := by
+    linarith [him, hfold]
+  rw [hpath] at hkey
+  have hπ : (0:ℝ) < π := Real.pi_pos
+  field_simp
+  linarith [hkey]
+
+end DiffractionCore
