@@ -2957,4 +2957,65 @@ theorem fold_pointwise_completedZeta (sigma y : ℝ) (hy : 0 < y) :
   simp only [Complex.conj_re, Complex.neg_re] at hre
   linarith [hre]
 
+/-! ## THE ξ FUNCTION — ENTIRE, WITH NO REMOVABLE-SINGULARITY WORK.
+
+The classical `ξ(s) = ½ s(s−1) Λ(s)` (`Λ = completedRiemannZeta`, poles at `0,1`) is entire because
+the `s(s−1)` factor kills both poles.  Rather than build that via two removable-singularity limits,
+use the exact identity `ξ(s) = ½ s(s−1) Λ₀(s) + ½` (the pole corrections `−1/s − 1/(1−s)` of
+`completedRiemannZeta_eq` cancel algebraically against `s(s−1)`).  Since `Λ₀` is ALREADY entire
+(`differentiable_completedZeta₀`), this definition is MANIFESTLY entire — no limits.  It is symmetric
+(`ξ(1−s)=ξ(s)`, since `½s(s−1)` and `Λ₀` both are) and conj-symmetric, and equals the classical
+`½s(s−1)Λ` off `{0,1}`.  Its strip zeros are exactly the nontrivial `ζ`-zeros — the entire,
+symmetric object RvM's box argument principle wants.  conjecture1_proved = False. -/
+
+/-- **The Riemann `ξ`**, defined via the entire `Λ₀` (so manifestly entire):
+    `ξ(s) = ½ s(s−1) Λ₀(s) + ½ = ½ s(s−1) Λ(s)`. -/
+noncomputable def xiTele (s : ℂ) : ℂ :=
+  (1 / 2) * (s * (s - 1)) * completedRiemannZeta₀ s + 1 / 2
+
+/-- `ξ` is ENTIRE (no removable singularities — `Λ₀` is already entire). -/
+theorem differentiable_xiTele : Differentiable ℂ xiTele := by
+  have hpoly : Differentiable ℂ (fun s : ℂ => (1 / 2) * (s * (s - 1))) := by fun_prop
+  exact (hpoly.mul differentiable_completedZeta₀).add_const _
+
+/-- **`ξ(s) = ½ s(s−1) Λ(s)`** off the poles (`s ∉ {0,1}`): the classical form. -/
+theorem xiTele_eq_completedZeta_mul {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
+    xiTele s = (1 / 2) * (s * (s - 1)) * completedRiemannZeta s := by
+  have h1s : (1 : ℂ) - s ≠ 0 := sub_ne_zero.mpr fun h => hs1 h.symm
+  unfold xiTele
+  rw [completedRiemannZeta_eq]
+  field_simp
+  ring
+
+/-- **`ξ` is symmetric**: `ξ(1−s) = ξ(s)` (both `½s(s−1)` and `Λ₀` are `s↦1−s`-symmetric). -/
+theorem xiTele_one_sub (s : ℂ) : xiTele (1 - s) = xiTele s := by
+  unfold xiTele
+  rw [completedRiemannZeta₀_one_sub]
+  ring
+
+/-- **`ξ` is conjugation-symmetric**: `ξ(s̄) = conj ξ(s)`. -/
+theorem xiTele_conj (s : ℂ) : xiTele ((starRingEnd ℂ) s) = (starRingEnd ℂ) (xiTele s) := by
+  unfold xiTele
+  rw [ZetaZeroLocalization.completedRiemannZeta₀_conj]
+  simp only [map_add, map_mul, map_sub, map_one, map_div₀, map_ofNat]
+
+/-- **`ξ`'s zeros off `{0,1}` are exactly `ζ`'s zeros** in the analytic-`Λ` region: for `s ∉ {0,1}`
+    with `Γℝ s ≠ 0` (e.g. `Re s > 0`), `ξ s = 0 ↔ ζ s = 0`.  (`½s(s−1) ≠ 0` off `{0,1}`,
+    `Λ = Γℝ·ζ`.) -/
+theorem xiTele_eq_zero_iff {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) (hG : Gammaℝ s ≠ 0) :
+    xiTele s = 0 ↔ riemannZeta s = 0 := by
+  have hfac : (1 / 2 : ℂ) * (s * (s - 1)) ≠ 0 :=
+    mul_ne_zero (by norm_num) (mul_ne_zero hs0 (sub_ne_zero.mpr hs1))
+  have hΛ : completedRiemannZeta s = riemannZeta s * Gammaℝ s := by
+    rw [riemannZeta_def_of_ne_zero hs0]; field_simp
+  rw [xiTele_eq_completedZeta_mul hs0 hs1, hΛ]
+  constructor
+  · intro h
+    rcases mul_eq_zero.mp h with hA | hζΓ
+    · exact absurd hA hfac
+    · rcases mul_eq_zero.mp hζΓ with hζ | hΓ0
+      · exact hζ
+      · exact absurd hΓ0 hG
+  · intro h; rw [h]; ring
+
 end DiffractionCore

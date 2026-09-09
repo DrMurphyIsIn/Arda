@@ -268,3 +268,8 @@ import StripClear
 #print axioms DiffractionCore.completedRiemannZeta_conj
 #print axioms DiffractionCore.logDeriv_completedZeta_conj
 #print axioms DiffractionCore.fold_pointwise_completedZeta
+#print axioms DiffractionCore.differentiable_xiTele
+#print axioms DiffractionCore.xiTele_eq_completedZeta_mul
+#print axioms DiffractionCore.xiTele_one_sub
+#print axioms DiffractionCore.xiTele_conj
+#print axioms DiffractionCore.xiTele_eq_zero_iff
