@@ -34,3 +34,6 @@ name = "RvMDiffractionCore"
 
 [[lean_lib]]
 name = "RvMLiUnified"
+
+[[lean_lib]]
+name = "RvMLiCountBridge"
