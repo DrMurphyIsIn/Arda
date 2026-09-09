@@ -1729,4 +1729,90 @@ theorem fold_pointwise_zeta₀ (sigma y : ℝ) :
   simp only [Complex.conj_re, Complex.neg_re] at hre
   linarith [hre]
 
+/-! ## ξ-DOUBLING SESSION, step 4: the θ/S split of the completed-zeta argument change.
+
+The RvM decomposition `N(T) = θ(T)/π + 1 + S(T)` is, structurally, the statement that the
+argument change of the completed zeta up a vertical line splits as `Γℝ-part (→ θ) + ζ-part (→ πS)`.
+That split is exactly `logDeriv_zeta_add_gammaR` integrated: on any positive-height vertical segment
+where `ζ` is nonvanishing (`Γℝ ≠ 0` and `s ∉ {0,1}` are AUTOMATIC there, from `Im ≠ 0`),
+
+  `AV(Λ, σ) = AV(ζ, σ) + AV(Γℝ, σ)`      (`argChangeVert_completedZeta_split`)
+
+with `Λ = completedRiemannZeta`.  Specialised to the critical line and combined with
+`theta_eq_argChangeVert_gammaR` (θ IS `AV(Γℝ, 1/2)`) and the Γℝ-line additivity, this gives the
+**band form of RvM's θ/S structure, kernel-exact**:
+
+  `AV(Λ, 1/2, T0, T1) = AV(ζ, 1/2, T0, T1) + (θ T1 − θ T0)`
+      (`completedZeta_argChange_critical_eq_zeta_add_theta`)
+
+— the completed-zeta argument change up a critical-line band is the ζ argument change (which is
+`π·ΔS`) plus the θ increment.  This is the honest θ/S identification: the Archimedean part of the
+completed-zeta winding IS `θ`, the ζ part IS `πS`.  The literal `N(T) = θ/π + 1 + S` (the `T0 → 0⁺`
+base case, where `pole_total_argChange` supplies the `+1`, and the reorganisation onto the
+zero-avoiding `S`-path) remains the honestly-scoped remainder.  conjecture1_proved = False. -/
+
+/-- **The completed-zeta vertical argument-change split** (step 4 engine): on a positive-height
+    segment where `ζ` is nonvanishing, `AV(Λ, σ) = AV(ζ, σ) + AV(Γℝ, σ)`.  The `Γℝ ≠ 0` and
+    `s ∉ {0,1}` side-conditions of `logDeriv_zeta_add_gammaR` are discharged automatically from
+    `Im ≠ 0` (positive height). -/
+theorem argChangeVert_completedZeta_split (σ T0 T1 : ℝ) (hT0 : 0 < T0) (hT : T0 ≤ T1)
+    (hζ : ∀ y ∈ Set.Icc T0 T1, riemannZeta ((σ : ℂ) + y * I) ≠ 0) :
+    argChangeVert completedRiemannZeta σ T0 T1
+      = argChangeVert riemannZeta σ T0 T1 + argChangeVert Gammaℝ σ T0 T1 := by
+  have cζ := continuousOn_logDeriv_zeta_seg σ T0 T1 hT0 hT hζ
+  have cΓ := continuousOn_logDeriv_gammaR_seg σ T0 T1 hT0 hT
+  have iζ := cζ.intervalIntegrable (μ := MeasureTheory.volume)
+  have iΓ := cΓ.intervalIntegrable (μ := MeasureTheory.volume)
+  have hpt : Set.EqOn (fun y : ℝ => logDeriv completedRiemannZeta ((σ : ℂ) + y * I))
+      (fun y : ℝ => logDeriv riemannZeta ((σ : ℂ) + y * I)
+        + logDeriv Gammaℝ ((σ : ℂ) + y * I)) (Set.uIcc T0 T1) := by
+    intro y hy
+    rw [Set.uIcc_of_le hT] at hy
+    have hy0 : 0 < y := lt_of_lt_of_le hT0 hy.1
+    have him : ((σ : ℂ) + y * I).im ≠ 0 := by
+      simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+        Complex.I_re, Complex.I_im]
+      simpa using ne_of_gt hy0
+    have hs0 : ((σ : ℂ) + y * I) ≠ 0 := by
+      intro h; apply him; rw [h]; simp
+    have hs1 : ((σ : ℂ) + y * I) ≠ 1 := by
+      intro h
+      have hi := congrArg Complex.im h
+      simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+        Complex.I_re, Complex.I_im, Complex.one_im] at hi
+      exact absurd (by simpa using hi) (ne_of_gt hy0)
+    have hGne : Gammaℝ ((σ : ℂ) + y * I) ≠ 0 := gammaR_ne_zero_of_im_ne him
+    exact logDeriv_zeta_add_gammaR hs0 hs1 (hζ y hy) hGne
+  unfold argChangeVert
+  have hcongr : (∫ y in T0..T1, logDeriv completedRiemannZeta ((σ : ℂ) + y * I))
+      = ∫ y in T0..T1, (logDeriv riemannZeta ((σ : ℂ) + y * I)
+          + logDeriv Gammaℝ ((σ : ℂ) + y * I)) :=
+    intervalIntegral.integral_congr hpt
+  rw [hcongr, intervalIntegral.integral_add iζ iΓ, Complex.add_re]
+
+/-- Γℝ-line argument-change additivity (θ increment), from the whole-line continuity of
+    `logDeriv Γℝ` on the critical line — valid down to height `0` (no `Γℝ` pole/zero there). -/
+theorem argChangeVert_gammaR_line_add (T0 T1 : ℝ) :
+    argChangeVert Gammaℝ (1/2) 0 T1
+      = argChangeVert Gammaℝ (1/2) 0 T0 + argChangeVert Gammaℝ (1/2) T0 T1 := by
+  unfold argChangeVert
+  rw [show (((1/2 : ℝ)) : ℂ) = (1/2 : ℂ) by norm_num]
+  rw [← intervalIntegral.integral_add_adjacent_intervals
+    (continuous_logDeriv_gammaR_line.intervalIntegrable 0 T0)
+    (continuous_logDeriv_gammaR_line.intervalIntegrable T0 T1),
+    Complex.add_re]
+
+/-- **THE θ/S SPLIT ON A CRITICAL-LINE BAND** (RvM θ-identification): the completed-zeta argument
+    change up `[T0,T1]` on the critical line is the `ζ` argument change (`= π·ΔS`) plus the `θ`
+    increment.  This is the kernel-exact band form of the `θ + πS` structure of `N(T)`. -/
+theorem completedZeta_argChange_critical_eq_zeta_add_theta (T0 T1 : ℝ) (hT0 : 0 < T0) (hT : T0 ≤ T1)
+    (hζ : ∀ y ∈ Set.Icc T0 T1, riemannZeta (((1/2 : ℝ) : ℂ) + y * I) ≠ 0) :
+    argChangeVert completedRiemannZeta (1/2) T0 T1
+      = argChangeVert riemannZeta (1/2) T0 T1
+        + (ZeroFreeBridge.riemannSiegelTheta T1 - ZeroFreeBridge.riemannSiegelTheta T0) := by
+  have hsplit := argChangeVert_completedZeta_split (1/2) T0 T1 hT0 hT hζ
+  have hθadd := argChangeVert_gammaR_line_add T0 T1
+  rw [theta_eq_argChangeVert_gammaR, theta_eq_argChangeVert_gammaR, hsplit]
+  linarith [hθadd]
+
 end DiffractionCore
