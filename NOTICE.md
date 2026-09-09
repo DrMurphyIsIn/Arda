@@ -42,7 +42,9 @@ credited in their generators' docstrings and in the emitted `.lean` headers.
 
 ## Ported code + proof shapes — anthropics/zeta-23-lean (arXiv:2608.13637)
 
-The `hermitian_moment` Telperion certificate family builds on the Anthropic
+A growing family of Telperion certificate emitters (beginning with
+`hermitian_moment`; the authoritative, current list is
+`telperion/docs/SECOND_PASS_EMITTER_CATALOG.md`) builds on the Anthropic
 **zeta-23-lean** development (**arXiv:2608.13637**, *"More than two thirds of
 the zeros of ζ lie on the critical line"*; public repo
 `anthropics/zeta-23-lean`, **Apache-2.0**). Two distinct things were taken,
@@ -80,6 +82,18 @@ AxiomMath/ZetaZeros emitters above. No Lean or other source files were copied;
 the PDE/matrix/ODE machinery of the source was treated as out-of-scope prelude,
 and its analytic facts enter Telperion certificates only as explicit
 hypotheses.
+
+## Certified onto an upstream formalization — li-criterion-rh-equivalence-lean
+
+The `li_positivity` emitter certifies finite rungs of Li's criterion \emph{onto}
+an external Lean formalization surfaced by the Palomar miner:
+**`nicholasbulka/li-criterion-rh-equivalence-lean`** (Apache-2.0), which proves
+the upstream reduction `RiemannHypothesis ↔ ∀ n, 0 ≤ (taylorCoeff riemannXi n).re`.
+What is taken is the **statement interface** (the emitter's theorems target that
+formalization's positivity ladder); no code was copied, and the numeric lower
+bounds the emitter certifies are documented external Arb/mpmath hypotheses
+(see `telperion/docs/LI_POSITIVITY_LADDER.md`, including its honest ceiling:
+finitely many rungs never decide RH).
 
 ## Engineering patterns — AXLE (arXiv:2606.26442)
 

@@ -44,3 +44,6 @@ latexmk -pdf main.tex        # or: pdflatex main; bibtex main; pdflatex main; pd
 6. **License & availability** — repository URL, release tag/DOI, confirm BSL-1.1 /
    Apache-2.0 terms and any CLA.
 7. **Emitter catalog** — reconcile the table against the released version's exact list.
+
+> **SUPERSEDED.** This directory is an earlier 8-section draft, kept for history.
+> The current paper is `../main.tex` ("Toward Dyson's Quasicrystal").
