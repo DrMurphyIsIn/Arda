@@ -2801,3 +2801,110 @@ theorem archimedean_pathL_eq_theta (T : ℝ) (hT : 0 < T) :
   rw [hAVr, hAHt, hθ]
   rw [hbot0] at him
   linarith
+
+/-! ## THE πS HALF + THE Δ_L Λ = θ + πS COMBINE.
+
+The `ζ` part of the completed-zeta argument change along `L : 2 → 2+iT → 1/2+iT` is `πS(T)` (this is
+essentially how `riemannS` is defined), and the `Γℝ` part is `θ(T)` (`archimedean_pathL_eq_theta`).
+Splitting `logDeriv Λ = logDeriv ζ + logDeriv Γℝ` (`logDeriv_zeta_add_gammaR`) along both legs of `L`
+and adding:
+
+  `AV(Λ,2,0,T) + AH(Λ,T,2,1/2) = θ(T) + π·S(T)`.
+
+Requires `ζ ≠ 0` on the height-`T` horizontal `[1/2,2]×{T}` — the classical "T not a zero ordinate"
+caveat, honestly inherited.  conjecture1_proved = False. -/
+
+/-- `logDeriv Γℝ` continuous along the line `Re = 2`. -/
+theorem continuous_logDeriv_gammaR_line2 :
+    Continuous (fun y : ℝ => logDeriv Gammaℝ ((2 : ℂ) + y * I)) := by
+  refine continuous_iff_continuousAt.mpr fun y => ?_
+  have hre : 0 < ((2 : ℂ) + ↑y * I).re := by simp
+  exact ContinuousAt.comp (g := logDeriv Gammaℝ) (f := fun t : ℝ => ((2 : ℂ) + t * I))
+    (continuousAt_logDeriv_gammaR_of_re_pos hre) (by fun_prop)
+
+/-- **Vertical split on `Re = 2`**: `AV(Λ,2,0,T) = AV(ζ,2,0,T) + AV(Γℝ,2,0,T)`. -/
+theorem argChangeVert_completedZeta_line2_split (T : ℝ) :
+    argChangeVert completedRiemannZeta 2 0 T
+      = argChangeVert riemannZeta 2 0 T + argChangeVert Gammaℝ 2 0 T := by
+  unfold argChangeVert
+  rw [show (((2 : ℝ)) : ℂ) = (2 : ℂ) by norm_num]
+  have iζ := continuous_logDeriv_zeta_line2.intervalIntegrable (μ := MeasureTheory.volume) 0 T
+  have iΓ := continuous_logDeriv_gammaR_line2.intervalIntegrable (μ := MeasureTheory.volume) 0 T
+  have hpt : ∀ y : ℝ, logDeriv completedRiemannZeta ((2 : ℂ) + y * I)
+      = logDeriv riemannZeta ((2 : ℂ) + y * I) + logDeriv Gammaℝ ((2 : ℂ) + y * I) := by
+    intro y
+    have hs0 : ((2 : ℂ) + y * I) ≠ 0 := by
+      intro h; have := congrArg Complex.re h; simp at this
+    have hs1 : ((2 : ℂ) + y * I) ≠ 1 := by
+      intro h; have := congrArg Complex.re h; simp at this
+    have hζ : riemannZeta ((2 : ℂ) + y * I) ≠ 0 := riemannZeta_ne_zero_of_one_le_re (by simp)
+    have hG : Gammaℝ ((2 : ℂ) + y * I) ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos (by simp)
+    exact logDeriv_zeta_add_gammaR hs0 hs1 hζ hG
+  rw [intervalIntegral.integral_congr (g := fun y => logDeriv riemannZeta ((2 : ℂ) + y * I)
+        + logDeriv Gammaℝ ((2 : ℂ) + y * I)) (fun y _ => hpt y),
+      intervalIntegral.integral_add iζ iΓ, Complex.add_re]
+
+/-- **Horizontal split on `Im = T`** (`ζ ≠ 0` on the segment): `AH(Λ,T,2,1/2) = AH(ζ,T,2,1/2) +
+    AH(Γℝ,T,2,1/2)`. -/
+theorem argChangeHoriz_completedZeta_height_split (T : ℝ) (hT : 0 < T)
+    (hζT : ∀ x ∈ Set.uIcc (2 : ℝ) (1/2), riemannZeta (↑x + (T : ℂ) * I) ≠ 0) :
+    argChangeHoriz completedRiemannZeta T 2 (1/2)
+      = argChangeHoriz riemannZeta T 2 (1/2) + argChangeHoriz Gammaℝ T 2 (1/2) := by
+  unfold argChangeHoriz
+  have cζ : ContinuousOn (fun x : ℝ => logDeriv riemannZeta (↑x + (T : ℂ) * I))
+      (Set.uIcc (2 : ℝ) (1/2)) := by
+    intro x hx
+    have hne1 : ((x : ℂ) + (T : ℂ) * I) ≠ 1 := by
+      intro h; have hi := congrArg Complex.im h
+      simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+        Complex.I_im, Complex.I_re, mul_one, mul_zero, zero_add, add_zero, Complex.one_im] at hi
+      linarith
+    have hana : AnalyticAt ℂ riemannZeta ((x : ℂ) + (T : ℂ) * I) := analyticOn_riemannZeta _ hne1
+    have hcAt : ContinuousAt (logDeriv riemannZeta) ((x : ℂ) + (T : ℂ) * I) := by
+      have heq : logDeriv riemannZeta = fun w => deriv riemannZeta w / riemannZeta w := by
+        funext w; rw [logDeriv_apply]
+      rw [heq]; exact (hana.deriv.continuousAt).div hana.continuousAt (hζT x hx)
+    exact (ContinuousAt.comp (g := logDeriv riemannZeta) (f := fun t : ℝ => ((t : ℂ) + (T : ℂ) * I))
+      hcAt (by fun_prop)).continuousWithinAt
+  have cΓ : ContinuousOn (fun x : ℝ => logDeriv Gammaℝ (↑x + (T : ℂ) * I))
+      (Set.uIcc (2 : ℝ) (1/2)) := by
+    intro x hx
+    have him : ((x : ℂ) + (T : ℂ) * I).im ≠ 0 := by
+      simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+        Complex.I_im, Complex.I_re, mul_one, mul_zero, zero_add, add_zero]
+      linarith
+    exact (ContinuousAt.comp (g := logDeriv Gammaℝ) (f := fun t : ℝ => ((t : ℂ) + (T : ℂ) * I))
+      (logDeriv_gammaR_continuousAt_of_im_ne him) (by fun_prop)).continuousWithinAt
+  have iζ := cζ.intervalIntegrable (μ := MeasureTheory.volume)
+  have iΓ := cΓ.intervalIntegrable (μ := MeasureTheory.volume)
+  have hpt : Set.EqOn (fun x : ℝ => logDeriv completedRiemannZeta (↑x + (T : ℂ) * I))
+      (fun x : ℝ => logDeriv riemannZeta (↑x + (T : ℂ) * I)
+        + logDeriv Gammaℝ (↑x + (T : ℂ) * I)) (Set.uIcc (2 : ℝ) (1/2)) := by
+    intro x hx
+    have him : ((x : ℂ) + (T : ℂ) * I).im ≠ 0 := by
+      simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+        Complex.I_im, Complex.I_re, mul_one, mul_zero, zero_add, add_zero]
+      linarith
+    have hs0 : ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+      intro h; apply him; rw [h]; simp
+    have hs1 : ((x : ℂ) + (T : ℂ) * I) ≠ 1 := by
+      intro h; apply him; rw [h]; simp
+    exact logDeriv_zeta_add_gammaR hs0 hs1 (hζT x hx) (gammaR_ne_zero_of_im_ne him)
+  rw [intervalIntegral.integral_congr hpt, intervalIntegral.integral_add iζ iΓ, Complex.add_im]
+
+/-- **Δ_L Λ = θ + πS**: the completed-zeta argument change along `2 → 2+iT → 1/2+iT` is `θ(T)` plus
+    `π·S(T)`.  (`ζ ≠ 0` on the height-`T` horizontal — the classical zero-ordinate caveat.) -/
+theorem completedZeta_pathL_eq_theta_add_piS (T : ℝ) (hT : 0 < T)
+    (hζT : ∀ x ∈ Set.uIcc (2 : ℝ) (1/2), riemannZeta (↑x + (T : ℂ) * I) ≠ 0) :
+    argChangeVert completedRiemannZeta 2 0 T + argChangeHoriz completedRiemannZeta T 2 (1/2)
+      = ZeroFreeBridge.riemannSiegelTheta T + π * riemannS T := by
+  have hAV := argChangeVert_completedZeta_line2_split T
+  have hAH := argChangeHoriz_completedZeta_height_split T hT hζT
+  have hArch := archimedean_pathL_eq_theta T hT
+  have hS : π * riemannS T
+      = argChangeVert riemannZeta 2 0 T + argChangeHoriz riemannZeta T 2 (1/2) := by
+    rw [riemannS]; field_simp
+  rw [hAV, hAH]
+  linarith
+
+end DiffractionCore

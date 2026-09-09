@@ -262,3 +262,6 @@ import StripClear
 #print axioms DiffractionCore.gammaR_analyticAt_of_re_pos
 #print axioms DiffractionCore.logDeriv_gammaR_im_zero
 #print axioms DiffractionCore.archimedean_pathL_eq_theta
+#print axioms DiffractionCore.argChangeVert_completedZeta_line2_split
+#print axioms DiffractionCore.argChangeHoriz_completedZeta_height_split
+#print axioms DiffractionCore.completedZeta_pathL_eq_theta_add_piS
