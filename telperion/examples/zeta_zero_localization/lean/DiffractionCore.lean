@@ -3444,4 +3444,51 @@ theorem xiTele_pathL_eq (T : ℝ) (hT : 0 < T)
   rw [hAV, hAH]
   linarith [hpole, hΛ]
 
+/-! ## BRICK 2 (the ξ folds): reflection + conjugation of `logDeriv ξ`.
+
+`ξ` is entire, `ξ(1−s) = ξ(s)` (`xiTele_one_sub`), `ξ(s̄) = conj ξ(s)` (`xiTele_conj`).  Differentiating
+the reflection gives `logDeriv ξ (1−s) = −logDeriv ξ s`; combined with conjugation, the vertical
+argument-change integrand is anti-symmetric across `Re = ½`:
+
+  `Re(logDeriv ξ (σ+iy)) + Re(logDeriv ξ ((1−σ)+iy)) = 0`
+
+— the entire, pole-free fold (RHS exactly `0`, no `Γℝ` remainder) on the object whose zeros are the
+nontrivial `ζ`-zeros.  This is the reflection symmetry that collapses the RvM box's left half onto
+its right.  The full `Δ_box ξ = 2·Δ_L ξ` additionally needs the bottom-edge reality (`ξ` real on the
+real axis) and the top-edge horizontal reflection — the honestly-remaining geometric reduction.
+conjecture1_proved = False. -/
+
+/-- **The ξ reflection**: `logDeriv ξ (1−s) = −logDeriv ξ s` (differentiate `ξ(1−s)=ξ(s)`). -/
+theorem logDeriv_xiTele_reflect (s : ℂ) :
+    logDeriv xiTele (1 - s) = - logDeriv xiTele s := by
+  have hsymm : (fun z : ℂ => xiTele (1 - z)) = xiTele := funext xiTele_one_sub
+  have hd : DifferentiableAt ℂ xiTele (1 - s) := differentiable_xiTele _
+  have hinner : HasDerivAt (fun z : ℂ => (1 : ℂ) - z) (-1) s := by
+    simpa using (hasDerivAt_id s).const_sub 1
+  have hcomp : HasDerivAt (fun z : ℂ => xiTele (1 - z)) (deriv xiTele (1 - s) * (-1)) s :=
+    hd.hasDerivAt.comp s hinner
+  have h1 := hcomp.deriv
+  rw [hsymm] at h1
+  have hkey : deriv xiTele (1 - s) = - deriv xiTele s := by linear_combination h1
+  rw [logDeriv_apply, logDeriv_apply, xiTele_one_sub, hkey]; ring
+
+/-- `ξ` log-derivative under conjugation. -/
+theorem logDeriv_xiTele_conj (s : ℂ) :
+    logDeriv xiTele ((starRingEnd ℂ) s) = (starRingEnd ℂ) (logDeriv xiTele s) :=
+  logDeriv_conj_of_conj_symm (fun z => xiTele_conj z) (differentiable_xiTele s)
+
+/-- **THE ξ FOLD, pointwise**: `Re(logDeriv ξ (σ+iy)) + Re(logDeriv ξ ((1−σ)+iy)) = 0`. -/
+theorem fold_pointwise_xiTele (sigma y : ℝ) :
+    (logDeriv xiTele ((sigma : ℂ) + y * I)).re
+      + (logDeriv xiTele (((1 - sigma : ℝ) : ℂ) + y * I)).re = 0 := by
+  set s : ℂ := (sigma : ℂ) + y * I with hs
+  set s' : ℂ := ((1 - sigma : ℝ) : ℂ) + y * I with hs'
+  have hconj : (1 : ℂ) - s = (starRingEnd ℂ) s' := by
+    rw [hs, hs']; apply Complex.ext <;> simp <;> ring
+  have hrefl := logDeriv_xiTele_reflect s
+  rw [hconj, logDeriv_xiTele_conj s'] at hrefl
+  have hre := congrArg Complex.re hrefl
+  simp only [Complex.conj_re, Complex.neg_re] at hre
+  linarith [hre]
+
 end DiffractionCore
