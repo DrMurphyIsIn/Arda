@@ -43,6 +43,21 @@ emitted proof proves \emph{exactly} the challenge statement using only a
 whitelisted set of axioms. Two independently written checkers agreeing is a
 meaningfully higher bar than one.
 
+\subsection{The gap, encountered in the wild}
+
+This is not a hypothetical hazard for us; it visited this very campaign. Midway
+through the counting-formula program (\cref{sec:rh}), a planning claim---``this
+entire function carries the nontrivial zeros''---was simply false, while every
+kernel theorem built around it remained true: the reflection identities were
+correct statements about the wrong object. The kernel could not have caught it,
+because the false claim lived in docstrings and plans, not in any theorem. It
+was caught one step later by checking the premise against Mathlib's own
+defining identity, the detour was relabeled rather than hidden, and the durable
+fix is the one this section recommends in general: the successor object's zero
+set was not asserted but \emph{proved}, as an iff, in the axiom guard. The
+kernel guards statements; the discipline must guard what the statements are
+about.
+
 \subsection{The floor we cannot get under}
 
 Honesty requires stating the limit, too. No amount of machinery decides whether a
