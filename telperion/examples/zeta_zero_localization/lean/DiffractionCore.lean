@@ -2275,4 +2275,154 @@ theorem analytic_count_eq_winding_generic
       push_cast; push_cast at hsumC; exact hsumC
     exact_mod_cast this
 
+/-! ## THE +1, item 1: the integrated pole extraction on the box boundary.
+
+Lifting `logDeriv_zeta_pole_extract` (`ζ′/ζ = H′/H − (·−1)⁻¹`) from pointwise to the contour: for a
+box with `s = 1` strictly interior and `ζ` non-vanishing on the four edges,
+
+  `Bd(logDeriv ζ) = Bd(logDeriv H) − 2πi`
+
+— the pole's boundary winding is exactly `2πi` (`rect_winding_generic` at `ρ = 1`), so `ζ`'s
+meromorphic boundary winding is `H`'s holomorphic one minus the pole.  Together with the count
+(`analytic_count_eq_winding_generic` at `H`) this is `N_ζ = N_H − 1` — the RvM `+1`.
+conjecture1_proved = False. -/
+
+/-- `logDeriv H` is continuous wherever `H ≠ 0` (`H` entire). -/
+theorem continuousAt_logDeriv_zetaPoleCompanion {z : ℂ} (hz : zetaPoleCompanion z ≠ 0) :
+    ContinuousAt (logDeriv zetaPoleCompanion) z := by
+  have hAt := analyticAt_zetaPoleCompanion z
+  have heq : logDeriv zetaPoleCompanion
+      = fun w => deriv zetaPoleCompanion w / zetaPoleCompanion w := by
+    funext w; rw [logDeriv_apply]
+  rw [heq]
+  exact (hAt.deriv.continuousAt).div hAt.continuousAt hz
+
+/-- **The edge identity**: `logDeriv ζ = logDeriv H − (·−1)⁻¹` at any `z ≠ 1` with `ζ z ≠ 0`.
+    (`logDeriv_zeta_pole_extract` with `H = (·−1)·ζ` off `1` via `logDeriv_congr_nhds`.) -/
+theorem logDeriv_zeta_eq_companion_sub_pole {z : ℂ} (hz : z ≠ 1) (hζ : riemannZeta z ≠ 0) :
+    logDeriv riemannZeta z = logDeriv zetaPoleCompanion z - (z - 1)⁻¹ := by
+  have hprod := logDeriv_zeta_pole_extract hz hζ
+  have hHeq : logDeriv zetaPoleCompanion z
+      = logDeriv (fun w : ℂ => riemannZeta w * (w - 1)) z := by
+    apply RHInBoxAnalytic.logDeriv_congr_nhds
+    filter_upwards [isOpen_ne.mem_nhds hz] with w hw
+    rw [zetaPoleCompanion_apply_of_ne hw, mul_comm]
+  rw [hHeq]; exact hprod
+
+/-- Continuity of `logDeriv H` along a `ℂ`-valued real path where `H ≠ 0`. -/
+theorem contOn_logDerivH_path (γ : ℝ → ℂ) (hγ : Continuous γ) (a b : ℝ)
+    (hne : ∀ t ∈ Set.uIcc a b, zetaPoleCompanion (γ t) ≠ 0) :
+    ContinuousOn (fun t => logDeriv zetaPoleCompanion (γ t)) (Set.uIcc a b) := by
+  intro t ht
+  exact ((continuousAt_logDeriv_zetaPoleCompanion (hne t ht)).comp hγ.continuousAt).continuousWithinAt
+
+/-- Continuity of `(·−1)⁻¹` along a path avoiding `1`. -/
+theorem contOn_invSub_path (γ : ℝ → ℂ) (hγ : Continuous γ) (a b : ℝ)
+    (hne : ∀ t ∈ Set.uIcc a b, γ t ≠ 1) :
+    ContinuousOn (fun t => (γ t - 1)⁻¹) (Set.uIcc a b) := by
+  intro t ht
+  exact ((hγ.continuousAt.sub continuousAt_const).inv₀
+    (sub_ne_zero.mpr (hne t ht))).continuousWithinAt
+
+/-- **THE +1, item 1**: the integrated pole extraction — `ζ`'s boundary winding is `H`'s minus the
+    pole's `2πi`.  `s = 1` strictly interior (`σ0 < 1 < σ1`, `T0 < 0 < T1`), `ζ ≠ 0` on the edges. -/
+theorem bd_logDeriv_zeta_eq_bd_companion_sub_pole
+    (sigma0 sigma1 T0 T1 : ℝ)
+    (hσ0 : sigma0 < 1) (hσ1 : 1 < sigma1) (hT0 : T0 < 0) (hT1 : 0 < T1)
+    (hnzb : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc sigma0 sigma1, riemannZeta (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzr : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma1 : ℂ) + ↑y * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, riemannZeta ((sigma0 : ℂ) + ↑y * I) ≠ 0) :
+    ((∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T1 : ℂ) * I))
+        + I • (∫ y in T0..T1, logDeriv riemannZeta ((sigma1 : ℂ) + ↑y * I))
+        - I • (∫ y in T0..T1, logDeriv riemannZeta ((sigma0 : ℂ) + ↑y * I)))
+      = ((∫ x in sigma0..sigma1, logDeriv zetaPoleCompanion (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, logDeriv zetaPoleCompanion (↑x + (T1 : ℂ) * I))
+        + I • (∫ y in T0..T1, logDeriv zetaPoleCompanion ((sigma1 : ℂ) + ↑y * I))
+        - I • (∫ y in T0..T1, logDeriv zetaPoleCompanion ((sigma0 : ℂ) + ↑y * I)))
+        - 2 * ↑π * I := by
+  -- edge points avoid `1` (strict interiority)
+  have hne1_b : ∀ x : ℝ, ((x : ℂ) + (T0 : ℂ) * I) ≠ 1 := by
+    intro x h; have hi := congrArg Complex.im h
+    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.I_im, Complex.I_re, mul_one, mul_zero, zero_add, add_zero, Complex.one_im] at hi
+    linarith
+  have hne1_t : ∀ x : ℝ, ((x : ℂ) + (T1 : ℂ) * I) ≠ 1 := by
+    intro x h; have hi := congrArg Complex.im h
+    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.I_im, Complex.I_re, mul_one, mul_zero, zero_add, add_zero, Complex.one_im] at hi
+    linarith
+  have hne1_r : ∀ y : ℝ, ((sigma1 : ℂ) + (y : ℂ) * I) ≠ 1 := by
+    intro y h; have hr := congrArg Complex.re h
+    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im, mul_zero, mul_one, sub_zero, zero_mul, add_zero, Complex.one_re] at hr
+    linarith
+  have hne1_l : ∀ y : ℝ, ((sigma0 : ℂ) + (y : ℂ) * I) ≠ 1 := by
+    intro y h; have hr := congrArg Complex.re h
+    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im, mul_zero, mul_one, sub_zero, zero_mul, add_zero, Complex.one_re] at hr
+    linarith
+  -- `H ≠ 0` on the edges (from `ζ ≠ 0` and `pt ≠ 1`)
+  have hHb : ∀ x ∈ Set.uIcc sigma0 sigma1, zetaPoleCompanion (↑x + (T0 : ℂ) * I) ≠ 0 :=
+    fun x hx h0 => hnzb x hx (zetaPoleCompanion_eq_zero_iff.mp h0).2
+  have hHt : ∀ x ∈ Set.uIcc sigma0 sigma1, zetaPoleCompanion (↑x + (T1 : ℂ) * I) ≠ 0 :=
+    fun x hx h0 => hnzt x hx (zetaPoleCompanion_eq_zero_iff.mp h0).2
+  have hHr : ∀ y ∈ Set.uIcc T0 T1, zetaPoleCompanion ((sigma1 : ℂ) + ↑y * I) ≠ 0 :=
+    fun y hy h0 => hnzr y hy (zetaPoleCompanion_eq_zero_iff.mp h0).2
+  have hHl : ∀ y ∈ Set.uIcc T0 T1, zetaPoleCompanion ((sigma0 : ℂ) + ↑y * I) ≠ 0 :=
+    fun y hy h0 => hnzl y hy (zetaPoleCompanion_eq_zero_iff.mp h0).2
+  -- integrabilities (H, inv) on the four edges
+  have cpb : Continuous (fun t : ℝ => (↑t + (T0 : ℂ) * I)) := by fun_prop
+  have cpt : Continuous (fun t : ℝ => (↑t + (T1 : ℂ) * I)) := by fun_prop
+  have cpr : Continuous (fun t : ℝ => ((sigma1 : ℂ) + ↑t * I)) := by fun_prop
+  have cpl : Continuous (fun t : ℝ => ((sigma0 : ℂ) + ↑t * I)) := by fun_prop
+  have iHb := (contOn_logDerivH_path _ cpb sigma0 sigma1 hHb).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iHt := (contOn_logDerivH_path _ cpt sigma0 sigma1 hHt).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iHr := (contOn_logDerivH_path _ cpr T0 T1 hHr).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iHl := (contOn_logDerivH_path _ cpl T0 T1 hHl).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iVb := (contOn_invSub_path _ cpb sigma0 sigma1 (fun x _ => hne1_b x)).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iVt := (contOn_invSub_path _ cpt sigma0 sigma1 (fun x _ => hne1_t x)).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iVr := (contOn_invSub_path _ cpr T0 T1 (fun y _ => hne1_r y)).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iVl := (contOn_invSub_path _ cpl T0 T1 (fun y _ => hne1_l y)).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  -- per-edge: ∫ logDeriv ζ = ∫ logDeriv H − ∫ (·−1)⁻¹
+  have ebot : (∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T0 : ℂ) * I))
+      = (∫ x in sigma0..sigma1, logDeriv zetaPoleCompanion (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, ((↑x + (T0 : ℂ) * I) - 1)⁻¹) := by
+    rw [← intervalIntegral.integral_sub iHb iVb]
+    exact intervalIntegral.integral_congr
+      (fun x hx => logDeriv_zeta_eq_companion_sub_pole (hne1_b x) (hnzb x hx))
+  have etop : (∫ x in sigma0..sigma1, logDeriv riemannZeta (↑x + (T1 : ℂ) * I))
+      = (∫ x in sigma0..sigma1, logDeriv zetaPoleCompanion (↑x + (T1 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, ((↑x + (T1 : ℂ) * I) - 1)⁻¹) := by
+    rw [← intervalIntegral.integral_sub iHt iVt]
+    exact intervalIntegral.integral_congr
+      (fun x hx => logDeriv_zeta_eq_companion_sub_pole (hne1_t x) (hnzt x hx))
+  have erig : (∫ y in T0..T1, logDeriv riemannZeta ((sigma1 : ℂ) + ↑y * I))
+      = (∫ y in T0..T1, logDeriv zetaPoleCompanion ((sigma1 : ℂ) + ↑y * I))
+        - (∫ y in T0..T1, (((sigma1 : ℂ) + ↑y * I) - 1)⁻¹) := by
+    rw [← intervalIntegral.integral_sub iHr iVr]
+    exact intervalIntegral.integral_congr
+      (fun y hy => logDeriv_zeta_eq_companion_sub_pole (hne1_r y) (hnzr y hy))
+  have elef : (∫ y in T0..T1, logDeriv riemannZeta ((sigma0 : ℂ) + ↑y * I))
+      = (∫ y in T0..T1, logDeriv zetaPoleCompanion ((sigma0 : ℂ) + ↑y * I))
+        - (∫ y in T0..T1, (((sigma0 : ℂ) + ↑y * I) - 1)⁻¹) := by
+    rw [← intervalIntegral.integral_sub iHl iVl]
+    exact intervalIntegral.integral_congr
+      (fun y hy => logDeriv_zeta_eq_companion_sub_pole (hne1_l y) (hnzl y hy))
+  -- the pole's boundary winding = 2πi
+  have hwind_pole := RHInBoxAnalytic.rect_winding_generic sigma0 sigma1 T0 T1 1
+    (by simpa using hσ0) (by simpa using hσ1) (by simpa using hT0) (by simpa using hT1)
+  rw [ebot, etop, erig, elef]
+  simp only [smul_eq_mul] at hwind_pole ⊢
+  linear_combination -hwind_pole
+
 end DiffractionCore
