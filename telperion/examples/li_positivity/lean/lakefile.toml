@@ -1,0 +1,15 @@
+name = "LiPositivity"
+defaultTargets = ["LiPositivity"]
+
+# The Li ladder rungs cite `taylorCoeff riemannXi` and feed
+# `LiCriterion.li_criterion_rh_iff`, both from the upstream, already-formalized
+# reduction. Pin it (it transitively brings Mathlib de5ce8a9 / Lean v4.34.0-rc1 —
+# NOTE this differs from the v4.32.0 pin of the other RH examples, so li_positivity
+# is a SEPARATE toolchain island by necessity).
+[[require]]
+name = "LiCriterion"
+git = "https://github.com/nicholasbulka/li-criterion-rh-equivalence-lean"
+rev = "35df682f3b709ffe5fbcfdd452dfa964bd622b87"
+
+[[lean_lib]]
+name = "LiPositivity"
