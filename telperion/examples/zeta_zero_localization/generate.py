@@ -40,6 +40,8 @@ CERTIFICATION STATUS:
   value.  The sign-change counting and IVT zero-existence argument are
   kernel-clean.  conjecture1_proved = False.
 """
+from __future__ import annotations  # PEP 604 `X | None` annotations under Python 3.9
+
 import argparse
 import math
 import sys
