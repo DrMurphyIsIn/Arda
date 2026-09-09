@@ -37,7 +37,7 @@ theorem differentiableOn_dslope_of_isOpen {U : Set ℂ} (hU : IsOpen U) {g : ℂ
   by_cases hzρ : z = ρ
   · subst hzρ
     obtain ⟨p, hp⟩ := (hg.analyticOnNhd hU) z hz
-    exact (has_fpower_series_dslope_fslope hp).analyticAt.differentiableAt.differentiableWithinAt
+    exact hp.has_fpower_series_dslope_fslope.analyticAt.differentiableAt.differentiableWithinAt
   · exact ((differentiableAt_dslope_of_ne hzρ).mpr
       (hg.differentiableAt (hU.mem_nhds hz))).differentiableWithinAt
 
@@ -536,7 +536,7 @@ theorem right_edge_prime_expansion
       (fun y : ℝ => g ((sigma1 : ℂ) + y * I) * LSeries.term vM ((sigma1 : ℂ) + y * I) n)
       (MeasureTheory.volume.restrict (Set.Ioc T0 T1)) := by
     intro n
-    refine MeasureTheory.ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioc
+    refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioc
     refine ContinuousOn.mul (hgc.mono hsub') ?_
     by_cases hn : n = 0
     · subst hn
