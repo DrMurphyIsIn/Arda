@@ -104,19 +104,27 @@ second, independent, honestly-scoped kernel-verified statement about $\zeta$,
 produced by the same pipeline and exhibiting yet another certificate shape (a
 real-rootedness / hyperbolicity certificate rather than a positivity one).
 
-Li's criterion has since joined it in the same prefix-certificate shape.
-Building on an external Lean formalization of the upstream
-reduction ($\mathrm{RH} \leftrightarrow \forall n,\ 0 \le
+Li's criterion has since joined it in the same prefix-certificate shape, and
+the ladder is now built in full. Building on an external Lean formalization of
+the upstream reduction ($\mathrm{RH} \leftrightarrow \forall n,\ 0 \le
 \operatorname{Re}(\text{taylorCoeff}\ \xi\ n)$; credited in the repository's
-\texttt{NOTICE}), a Telperion emitter certifies finite rungs of the positivity
-ladder, each from a certified positive rational lower bound on the actual $\xi$
-Taylor coefficient---the bound an explicit Arb hypothesis, the same trust seam
-as every enclosure in this section. Two flags travel with it, stated as
-sharply as the Borel--Carath\'eodory draft's: at this writing the emitted Lean is
-verified locally but not yet in the CI compile (it awaits the upstream library as
-a build dependency), so it does not yet sit on the CI-guarded list; and the
-uniform $\forall n$ \emph{is} RH itself---finitely many rungs are emphatically
-not, and never will be.
+\texttt{NOTICE}), a Telperion emitter certifies \emph{twenty} rungs of the
+positivity ladder---$\lambda_1$ through $\lambda_{20}$ all certified
+positive---each from a certified positive rational lower bound on the actual
+$\xi$ Taylor coefficient, the bound an explicit Arb hypothesis, the same trust
+seam as every enclosure in this section. The enclosure backend refuses to emit
+unless its first values contain the \emph{published} Li--Keiper coefficients:
+an external anchor against normalization and indexing errors that
+self-confirmation could never catch. The emitted ladder compiles against the
+pinned upstream library, and its axiom guard covers not only the rungs but the
+upstream equivalence \emph{itself}, re-verifying the dependency's axiom hygiene
+at our pin. The ladder also carries its own falsifiability face: a companion
+theorem by which a certified \emph{negative} upper bound on any rung would
+refute RH outright through the same equivalence---never expected to fire,
+emitted so the ladder is an experiment that could have falsified and did not,
+rather than a confirmation exercise. The ceiling is unchanged and stated as
+sharply as ever: the uniform $\forall n$ \emph{is} RH itself---finitely many
+rungs are emphatically not, and never will be.
 
 \subsection{A third route: verifying RH inside a box}
 
