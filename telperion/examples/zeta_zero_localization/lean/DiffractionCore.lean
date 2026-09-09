@@ -1354,4 +1354,64 @@ theorem continuous_logDeriv_zeta_vLine {σ : ℝ} (hσ : 1 < σ) :
       ContinuousAt.comp (g := riemannZeta) (f := fun t : ℝ => (σ : ℂ) + t * I)
         ((hana y).continuousAt) hpath.continuousAt
 
+/-! ## Brick 13b (THE SYMMETRIC FOLD IDENTITY): the left-edge argument change equals minus the
+Archimedean argument changes, both edges at the same height.
+
+Reflection (`logDeriv_zeta_reflect`) sends `σ₀ + iy ↦ (1−σ₀) − iy`; the conjugation toolkit
+(`logDeriv_zeta_conj`, `logDeriv_gammaR_conj`) folds that `−iy` back to `+iy`, so the mirror
+data lands on the `Re = 1−σ₀` line at the SAME positive height.  Taking real parts (RvM's
+argument changes) gives, for `σ₀ < 0` and `y > 0`, the pointwise integrand of the fold
+`AV(ζ,σ₀) + AV(ζ,1−σ₀) = −AV(Γℝ,σ₀) − AV(Γℝ,1−σ₀)`.  Every hypothesis is DERIVED: `ζ(σ₀+iy) ≠ 0`
+from the strip-location theorem; `ζ((1−σ₀)+iy) ≠ 0` from `Re > 1`; the `Γℝ` non-vanishings from
+`Im ≠ 0`.  conjecture1_proved = False. -/
+
+/-- `Γℝ(s) ≠ 0` off the real axis (`s/2` avoids the Γ-poles). -/
+theorem gammaR_ne_zero_of_im_ne {s : ℂ} (him : s.im ≠ 0) : Gammaℝ s ≠ 0 := by
+  rw [Ne, Complex.Gammaℝ_eq_zero_iff]
+  rintro ⟨n, hn⟩
+  apply him
+  rw [hn]
+  simp
+
+/-- **THE SYMMETRIC FOLD, pointwise**: for `σ₀ < 0`, `0 < y`, the sum of the `ζ` argument-change
+    integrands on the reflected pair of lines equals minus the sum of the `Γℝ` ones. -/
+theorem fold_pointwise {sigma0 y : ℝ} (hσ : sigma0 < 0) (hy : 0 < y) :
+    (logDeriv riemannZeta ((sigma0 : ℂ) + y * I)).re
+        + (logDeriv riemannZeta (((1 - sigma0 : ℝ) : ℂ) + y * I)).re
+      = -(logDeriv Gammaℝ ((sigma0 : ℂ) + y * I)).re
+        - (logDeriv Gammaℝ (((1 - sigma0 : ℝ) : ℂ) + y * I)).re := by
+  set s : ℂ := (sigma0 : ℂ) + y * I with hs
+  set s' : ℂ := ((1 - sigma0 : ℝ) : ℂ) + y * I with hs'
+  have hsim : s.im = y := by rw [hs]; simp
+  have hs'im : s'.im = y := by rw [hs']; simp
+  have hsre : s.re = sigma0 := by rw [hs]; simp
+  have hs're : s'.re = 1 - sigma0 := by rw [hs']; simp
+  have hconj : (1 : ℂ) - s = (starRingEnd ℂ) s' := by
+    rw [hs, hs']
+    apply Complex.ext <;> simp <;> ring
+  have hsim0 : s.im ≠ 0 := by rw [hsim]; exact ne_of_gt hy
+  have hs'im0 : s'.im ≠ 0 := by rw [hs'im]; exact ne_of_gt hy
+  have hs0 : s ≠ 0 := fun h => hsim0 (by rw [h]; simp)
+  have hs1 : s ≠ 1 := fun h => hsim0 (by rw [h]; simp)
+  have hs'1 : s' ≠ 1 := fun h => hs'im0 (by rw [h]; simp)
+  have hζs : riemannZeta s ≠ 0 := fun hz =>
+    absurd (ZetaZeroConfinement.zeta_zero_re_mem_strip hsim0 hz).1 (by rw [hsre]; linarith)
+  have hre'gt : 1 < s'.re := by rw [hs're]; linarith
+  have hζ1s : riemannZeta (1 - s) ≠ 0 := by
+    rw [hconj, riemannZeta_conj]
+    exact fun h => (riemannZeta_ne_zero_of_one_le_re (le_of_lt hre'gt)) (by
+      have := congrArg (starRingEnd ℂ) h; simpa using this)
+  have hGs : Gammaℝ s ≠ 0 := gammaR_ne_zero_of_im_ne hsim0
+  have hG1s : Gammaℝ (1 - s) ≠ 0 := by
+    rw [hconj]; exact gammaR_ne_zero_of_im_ne (by rw [Complex.conj_im]; exact neg_ne_zero.mpr hs'im0)
+  have hrefl := logDeriv_zeta_reflect hs0 hs1 hζs hζ1s hGs hG1s
+  have hζfold : logDeriv riemannZeta (1 - s) = (starRingEnd ℂ) (logDeriv riemannZeta s') := by
+    rw [hconj]; exact logDeriv_zeta_conj hs'1
+  have hGfold : logDeriv Gammaℝ (1 - s) = (starRingEnd ℂ) (logDeriv Gammaℝ s') := by
+    rw [hconj]; exact logDeriv_gammaR_conj (gammaR_ne_zero_of_im_ne hs'im0)
+  rw [hζfold, hGfold] at hrefl
+  have hre := congrArg Complex.re hrefl
+  simp only [Complex.sub_re, Complex.neg_re, Complex.conj_re] at hre
+  linarith [hre]
+
 end DiffractionCore

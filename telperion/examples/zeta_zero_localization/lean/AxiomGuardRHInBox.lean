@@ -229,3 +229,4 @@ import StripClear
 #print axioms DiffractionCore.logDeriv_gammaR_conj
 #print axioms DiffractionCore.continuous_logDeriv_gammaR_vLine
 #print axioms DiffractionCore.continuous_logDeriv_zeta_vLine
+#print axioms DiffractionCore.fold_pointwise
