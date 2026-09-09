@@ -22,8 +22,16 @@
     the uniform ∀ n IS RH and nothing here approaches it.
 -/
 import LiPositivity
+import LiLadder
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
 #print axioms LiPositivity.li_neg_refutes_rh
 #print axioms LiCriterion.li_criterion_rh_iff
+
+-- LiLadder (hand-written reduction layer): the ladder as a reduction of RH to
+-- its tail. Restates li_criterion_rh_iff relative to a certified prefix; proves
+-- neither side of RH. conjecture1_proved = False.
+#print axioms LiPositivity.li_rh_iff_tail
+#print axioms LiPositivity.li_tail_peel
+#print axioms LiPositivity.li_rh_iff_tail_zero

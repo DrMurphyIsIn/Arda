@@ -13,3 +13,6 @@ rev = "35df682f3b709ffe5fbcfdd452dfa964bd622b87"
 
 [[lean_lib]]
 name = "LiPositivity"
+
+[[lean_lib]]
+name = "LiLadder"
