@@ -10,7 +10,7 @@
 \newtheorem{proposition}{Proposition}
 \newtheorem{definition}{Definition}
 
-\title{Telperion: certificate compilation for Lean~4,\\ and three case studies}
+\title{Toward Dyson's Quasicrystal:\\ Kernel-Verified Diffraction and Localization\\ of the Riemann Zeta Zeros\\[0.6em] \large with the Telperion certificate engine}
 \author{Peter W. Murphy, MD}
 \date{\today}
 
@@ -18,34 +18,39 @@
 \maketitle
 
 \begin{abstract}
-Machine-assisted proof increasingly relies on search procedures and language
-models that produce plausible but not-always-correct arguments. We describe
-\emph{Telperion}, a certificate compiler for Lean~4 built on the opposite
-principle: \emph{check the witness, don't trust the author}. You describe a family
-of concrete claims; Telperion certifies each instance in exact rational arithmetic
-and emits Lean that Mathlib's kernel re-proves from scratch, so a wrong certificate
-is a compile error rather than a false theorem. Because the kernel cannot detect a
-true-but-vacuous statement, Telperion adds a self-verification layer---per-emitter
-sensitivity declarations, forge-the-witness negative controls, and an independent
-second checker---and is explicit about the one thing no machinery can settle. We
-exercise the system on three deliberately different problems, reporting each at its
-true strength: a machine-checked analytic core for the (still open)
-Brualdi--Goldwasser tree-maximizer conjecture; unconditional, kernel-checked
-zero-free regions for the Riemann zeta function, ranging from elementary ones
-honestly weaker than de la Vallée-Poussin to a self-contained, effective
-machine-checked de la Vallée-Poussin region ($\zeta(s) \ne 0$ on
-$\operatorname{Re} s > 1 - c/\log|\operatorname{Im} s|$; we do not claim the Riemann
-Hypothesis); and a kernel-checked,
-symbolic-in-$n$ sum-of-squares lower bound in proof complexity. Throughout,
-\texttt{conjecture1\_proved = False} is a tested invariant: we take as much care
-with what is not proved as with what is.
+Dyson proposed that the nontrivial zeros of the Riemann zeta function should be
+understood as a one-dimensional quasicrystal: a point set whose diffraction
+spectrum is pure point, supported on the logarithms of prime powers. The
+mathematical substance of that reading is the Guinand--Weil explicit formula---the
+identity under which the zeros diffract off the primes. We report a body of
+kernel-verified mathematics, in Lean~4 against Mathlib, that carries the finite
+part of that program: a machine-checked \emph{finite-height explicit formula}
+(weighted sums over zeta's actual divisor equal von Mangoldt prime-power sums plus
+three explicit boundary integrals, with the prime-side edge derived, not
+certified); a complete finite Turing verification that \emph{all 649 nontrivial
+zeros up to height 1000 lie on the critical line}, band-tiled with a uniform,
+documented numeric trust boundary; and a self-contained, \emph{effective} de la
+Vallée-Poussin zero-free region ($\zeta(s) \ne 0$ on $\operatorname{Re} s > 1 -
+c/\log|\operatorname{Im} s|$ with an explicit constant). \emph{We do not claim the
+Riemann Hypothesis}: every statement is finite or a region, every numeric input is
+an explicit hypothesis, and \texttt{conjecture1\_proved = False} is a tested
+invariant of the repository. The instrument is \emph{Telperion}, a certificate
+compiler built on the principle \emph{check the witness, don't trust the author}:
+an untrusted generator certifies each claim in exact arithmetic and emits Lean
+that Mathlib's kernel re-proves from scratch, with a self-verification layer
+(sensitivity declarations, forge-the-witness negative controls, an independent
+second checker) against true-but-vacuous theorems. Two further frontiers---a
+machine-checked analytic core for the (still open) Brualdi--Goldwasser
+tree-maximizer conjecture, and a kernel-checked, symbolic-in-$n$ sum-of-squares
+lower bound in proof complexity---demonstrate that the same discipline carries
+across combinatorial, analytic, and proof-theoretic mathematics.
 \end{abstract}
 
 \input{sections/01-intro}
+\input{sections/05-rh}
 \input{sections/02-system}
 \input{sections/03-vacuity}
 \input{sections/04-bg}
-\input{sections/05-rh}
 \input{sections/06-proofcomplexity}
 \input{sections/07-evaluation}
 \input{sections/08-related}
