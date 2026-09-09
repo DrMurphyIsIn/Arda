@@ -221,3 +221,4 @@ import StripClear
 #print axioms AllZeros_h4000.all_nontrivial_zeros_up_to_height_4000_of_bands
 #print axioms DiffractionCore.logDeriv_zeta_reflect
 #print axioms DiffractionCore.left_edge_prime_reflection
+#print axioms DiffractionCore.bd_logDeriv_zeta_eq_count
