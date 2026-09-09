@@ -684,4 +684,96 @@ theorem rect_explicit_formula
   simp only [smul_eq_mul] at hBd ⊢
   linear_combination -hBd
 
+/-! ## Brick 7 (W1): the Bragg amplitude in closed form.
+
+The prime-side integrals of `rect_explicit_formula` (constant weight `g ≡ 1`) evaluate in
+CLOSED FORM: the `n`-th term is a pure oscillation of frequency `log n` —
+
+  `∫_{T0}^{T1} Λ(n)·n^{−(σ+iy)} dy  =  [term at T1 − term at T0] / (−i·log n)`,
+
+amplitude `Λ(n)·n^{−σ}/log n`, Bragg frequency `log n` (nonzero exactly at prime powers).
+This is the diffraction pattern of the zeros, prime-side, as concrete arithmetic — the first
+W1 (second-axis) brick: the formula meeting computable prime data.  conjecture1_proved = False. -/
+
+/-- **The Bragg oscillation, integrated:** for `n ≥ 2`,
+    `∫ y in T0..T1, term(Λ, σ+iy, n) = (term(σ+iT1) − term(σ+iT0)) / (−i·log n)`. -/
+theorem integral_vonMangoldt_term (σ T0 T1 : ℝ) {n : ℕ} (hn : 2 ≤ n) :
+    (∫ y in T0..T1, LSeries.term (fun m : ℕ => (ArithmeticFunction.vonMangoldt m : ℂ))
+        ((σ : ℂ) + y * I) n)
+      = (LSeries.term (fun m : ℕ => (ArithmeticFunction.vonMangoldt m : ℂ)) ((σ : ℂ) + T1 * I) n
+          - LSeries.term (fun m : ℕ => (ArithmeticFunction.vonMangoldt m : ℂ)) ((σ : ℂ) + T0 * I) n)
+        / (-(I * (Real.log n : ℂ))) := by
+  set vM : ℕ → ℂ := fun m => (ArithmeticFunction.vonMangoldt m : ℂ) with hvM
+  have hn0 : n ≠ 0 := by omega
+  have hnC : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn0
+  have hlogpos : 0 < Real.log n := Real.log_pos (by exact_mod_cast hn)
+  have hlogC : Complex.log (n : ℂ) = ((Real.log n : ℝ) : ℂ) := by
+    rw [show ((n : ℂ)) = (((n : ℝ) : ℂ)) by push_cast; rfl,
+      ← Complex.ofReal_log (by positivity : (0:ℝ) ≤ (n:ℝ))]
+  set L : ℂ := ((Real.log n : ℝ) : ℂ) with hL
+  have hLne : L ≠ 0 := by
+    rw [hL]
+    exact_mod_cast ne_of_gt hlogpos
+  have hDne : (-(I * L)) ≠ 0 := by
+    simp [Complex.I_ne_zero, hLne]
+  -- The term as a function of the height, in exponential form.
+  have hterm : ∀ y : ℝ, LSeries.term vM ((σ : ℂ) + y * I) n
+      = (ArithmeticFunction.vonMangoldt n : ℂ)
+          / Complex.exp (L * ((σ : ℂ) + y * I)) := by
+    intro y
+    rw [LSeries.term_of_ne_zero hn0, Complex.cpow_def_of_ne_zero hnC, hlogC]
+  -- The antiderivative: `F y = term(σ+iy) / (−iL)`; its derivative is the term itself.
+  have hF : ∀ y : ℝ, HasDerivAt
+      (fun t : ℝ => LSeries.term vM ((σ : ℂ) + t * I) n / (-(I * L)))
+      (LSeries.term vM ((σ : ℂ) + y * I) n) y := by
+    intro y
+    have h1 : HasDerivAt (fun t : ℝ => ((t : ℝ) : ℂ)) 1 y := by
+      simpa using (hasDerivAt_id y).ofReal_comp
+    have h2 : HasDerivAt (fun t : ℝ => ((t : ℝ) : ℂ) * I) I y := by
+      simpa using h1.mul_const I
+    have hpath : HasDerivAt (fun t : ℝ => (σ : ℂ) + (t : ℂ) * I) I y := h2.const_add _
+    have harg : HasDerivAt (fun t : ℝ => L * ((σ : ℂ) + (t : ℂ) * I)) (L * I) y :=
+      hpath.const_mul L
+    have hexp : HasDerivAt (fun t : ℝ => Complex.exp (L * ((σ : ℂ) + (t : ℂ) * I)))
+        (Complex.exp (L * ((σ : ℂ) + (y : ℂ) * I)) * (L * I)) y := harg.cexp
+    have hdiv : HasDerivAt
+        (fun t : ℝ => (ArithmeticFunction.vonMangoldt n : ℂ)
+          / Complex.exp (L * ((σ : ℂ) + (t : ℂ) * I)))
+        ((0 * Complex.exp (L * ((σ : ℂ) + (y : ℂ) * I))
+            - (ArithmeticFunction.vonMangoldt n : ℂ)
+              * (Complex.exp (L * ((σ : ℂ) + (y : ℂ) * I)) * (L * I)))
+          / (Complex.exp (L * ((σ : ℂ) + (y : ℂ) * I))) ^ 2) y :=
+      (hasDerivAt_const y _).div hexp (Complex.exp_ne_zero _)
+    have hcongr : (fun t : ℝ => (ArithmeticFunction.vonMangoldt n : ℂ)
+          / Complex.exp (L * ((σ : ℂ) + (t : ℂ) * I)))
+        = fun t : ℝ => LSeries.term vM ((σ : ℂ) + t * I) n := by
+      funext t
+      rw [hterm t]
+    rw [hcongr] at hdiv
+    have hstep := hdiv.div_const (-(I * L))
+    have heq : ((0 * Complex.exp (L * ((σ : ℂ) + (y : ℂ) * I))
+            - (ArithmeticFunction.vonMangoldt n : ℂ)
+              * (Complex.exp (L * ((σ : ℂ) + (y : ℂ) * I)) * (L * I)))
+          / (Complex.exp (L * ((σ : ℂ) + (y : ℂ) * I))) ^ 2) / (-(I * L))
+        = LSeries.term vM ((σ : ℂ) + y * I) n := by
+      rw [hterm y]
+      have hE := Complex.exp_ne_zero (L * ((σ : ℂ) + (y : ℂ) * I))
+      field_simp
+      ring
+    exact heq ▸ hstep
+  -- FTC.
+  have hcont : IntervalIntegrable (fun y : ℝ => LSeries.term vM ((σ : ℂ) + y * I) n)
+      MeasureTheory.volume T0 T1 := by
+    apply Continuous.intervalIntegrable
+    have : (fun y : ℝ => LSeries.term vM ((σ : ℂ) + y * I) n)
+        = fun y : ℝ => (ArithmeticFunction.vonMangoldt n : ℂ)
+            / Complex.exp (L * ((σ : ℂ) + y * I)) := by
+      funext y
+      rw [hterm y]
+    rw [this]
+    exact continuous_const.div (by fun_prop) (fun y => Complex.exp_ne_zero _)
+  have := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun y _ => hF y) hcont
+  rw [this]
+  ring
+
 end DiffractionCore
