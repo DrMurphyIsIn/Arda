@@ -96,3 +96,22 @@ d=3..8, (0,1,5) at d=9, (1,0,5) at d=10, small candidate sets at d<=2 e.g. (−4
 (−2,3,0) + rare-shape alternates) with constant V-prefactor per cell => POLYNOMIAL clauses.
 Lean v2 TODO: 1/6-weighted W-pair lift lemmas + corrected PairCollapse/transport with len>=6.
 conjecture1_proved = False.
+
+## Addendum 3 (2026-09-09) — the PairCollapse6 cert pipeline VALIDATED end-to-end
+
+First cell executed completely:
+- d=5 candidate (1,0,0) re-verified UNIVERSAL on a dense grid: 146,267/146,267 (exhaustive to
+  len 12 + random to len 60), under the corrected 1/6-weighted triple.
+- Symbolic emission (sympy, exact rationals): per-(d, cA) sub-cell, each clause clears to a
+  DEGREE-3 polynomial in (a5,a4,b5,b4) with 21-27 terms over a denominator that factors into
+  three positive linear forms. Constant prefactor for the (1,0,0) cell: V5/Vc^5 = 23/18.
+- Sign structure (d=5): cA=0 -> ALL THREE clauses all-nonnegative (free certs); cA=5 -> W2'/ROOT
+  free, W1 3 negs; cA=1..4 -> 3-5 negative monomials each (only linear terms + the constant).
+- Lean closure test: the cA=1 W1 numerator (27 terms, negs -3346983 a4, -3960531 a5, -11649109)
+  closes with plain `nlinarith` + Capped slack hints (products with b5+b4-5, a-slacks) in 2.8 s.
+
+Campaign shape: ~11 d-values x 6 cA sub-cells x 3 clauses ~ 200 polynomial lemmas (many free),
+plus per-cell bridge lemmas in the twoHub_reduced_cN style, plus the d<=2 candidate-selection
+splits. The target (a5+b5+x, a4+b4+y, c') is ALWAYS Balanced+Capped (arms >= 11, c' <= 5) -- no
+small-corner cases. Mechanical from here; same execution pattern as the residue-envelope campaign.
+conjecture1_proved = False.
