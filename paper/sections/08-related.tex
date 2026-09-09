@@ -20,10 +20,22 @@ transcendental enclosure atom---independently re-implemented in our idiom. Confl
 verification utility with the formalization would misattribute both; the
 repository's \texttt{NOTICE} file records the split in full.
 
+The framing of this paper stands on a classical lineage we want to cite
+plainly. The explicit formula connecting zeros to primes descends from
+Riemann's memoir through Guinand \cite{guinand1948} and Weil \cite{weil1952};
+the quasicrystal reading of that identity---the zeros as a one-dimensional
+point set with pure-point diffraction on the prime powers, and the suggestion
+that classifying such sets is a road toward RH---is Dyson's \cite{dyson2009}.
+Our contribution to that lineage is deliberately modest and precisely scoped:
+the \emph{finite-height} form of the identity, and the supporting localization
+and region results, as kernel-checked certificates. The classical analytic work
+of estimating boundary terms and passing to limits is not re-done here, and the
+classification program itself we leave exactly where Dyson left it.
+
 For independent checking, we use the Comparator \cite{comparator} from OpenAI's
 ten-proofs project \cite{tenproofs}, together with \texttt{nanoda} \cite{nanoda},
 a from-scratch Lean type checker in Rust; agreement between independently written
-checkers is the basis of our strongest confidence claim. In the case studies, the
+checkers is the basis of our strongest confidence claim. In the results and excursion sections, the
 mathematics is due to others and cited there: Brualdi and Goldwasser for the tree
 problem \cite{brualdi1984}; de la Vallée-Poussin for the classical zero-free region
 \cite{dlvp1896}; Grigoriev and Laurent, with the symmetric-SOS technique of

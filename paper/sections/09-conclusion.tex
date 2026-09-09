@@ -1,23 +1,38 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Telperion is a small idea taken seriously: if a generator hands you a certificate
-instead of an argument, you can accept its work without trusting it, because a
-trusted kernel re-checks the certificate from scratch. Built into a tool, that
-idea scales to hundreds of kernel-checked inequalities across quite different kinds
-of mathematics---combinatorial, analytic, and proof-complexity---with a
-self-verification layer for the one thing a kernel cannot see, and an explicit
-account of the one thing no machinery can settle.
+Dyson's quasicrystal picture asks us to see the zeros of the zeta function as a
+diffraction pattern---an aperiodic point set whose spectrum is the primes. This
+paper's contribution to that picture is the part a kernel can hold today, and
+it has a shape worth stating plainly: first where the zeros \emph{cannot} be
+(zero-free regions, up to an effective de la Vallée-Poussin constant), then
+where they \emph{are} (all $649$ of them to height $1000$, exactly on the
+line), and finally what they \emph{mean} (the finite-height explicit formula,
+under which the zeros diffract off the primes). Exclusion and identity---the
+two halves of understanding a point set---now live in the same kernel, under
+the same three axioms, with the same honest flag flying over both:
+\texttt{conjecture1\_proved = False}, until the mathematics itself says
+otherwise.
 
-The three case studies are, we hope, honest advertisements for both the tool and
-the posture. The Brualdi--Goldwasser analytic core is machine-checked and
-tie-tight, and the classical conjecture is open, with the missing bridge named.
-The zeta zero-free regions are unconditional and kernel-checked---the elementary
-ones weaker than the classical result, one of them a self-contained, effective
-match to the full de la Vallée-Poussin region---and none is a proof of the Riemann
-Hypothesis. The
-proof-complexity lower bound is verified symbolically in $n$, and the mathematics
-is someone else's. In each case the interesting content and the honest boundary
-are stated in the same breath---which is exactly what a certificate engine, whose
-value is that you need not trust it, ought to make easy. The open fronts stay open;
-we would rather leave them clearly marked than quietly filled.
+The instrument matters as much as the results, because it is why the results
+can be believed at this scale. Telperion is a small idea taken seriously: if a
+generator hands you a certificate instead of an argument, you can accept its
+work without trusting it, because a trusted kernel re-checks the certificate
+from scratch. Built into a tool---with a self-verification layer for the one
+thing a kernel cannot see, and an explicit account of the one thing no
+machinery can settle---that idea scales to hundreds of kernel-checked theorems,
+and it carries across subjects: the same discipline that assembled the
+diffraction identity also machine-checked the analytic core of a 42-year-old
+extremal tree conjecture (still open, with the missing bridge named) and a
+symbolic-in-$n$ lower bound in proof complexity (where the mathematics is
+someone else's).
+
+The road ahead is marked rather than promised: estimating the explicit
+formula's boundary terms and sending the box to its limits; extending the
+Turing verification beyond height $1000$, which the band-tiled architecture
+makes a driver exercise rather than a proof; and letting the finite identity
+meet concrete test functions and real prime data. In each case the interesting
+content and the honest boundary will be stated in the same breath---which is
+exactly what a certificate engine, whose value is that you need not trust it,
+ought to make easy. The open fronts stay open; we would rather leave them
+clearly marked than quietly filled.

@@ -1,13 +1,17 @@
-\section{Case study II: Riemann-zeta zero-free regions}
+\section{Main results: the zeta program}
 \label{sec:rh}
 
-The second case study is in analytic number theory, and it comes with a warning
-label we want to put first, in bold, so there is no chance of misreading: \textbf{we
-do not claim the Riemann Hypothesis.} What we have is a small number of genuine,
-unconditional, machine-checked results \emph{about} the zeta function---and an
-honest account of how they sit relative to the classical literature: mostly
-weaker, and in one case matching the full de la Vallée-Poussin rate, while in
-every case falling well short of the Riemann Hypothesis.
+This section is the paper's spine, and it comes with a warning label we want to
+put first, in bold, so there is no chance of misreading: \textbf{we do not claim
+the Riemann Hypothesis.} What we have is a connected body of genuine,
+machine-checked results \emph{about} the zeta function---built in the order a
+reader should understand them: first where the zeros \emph{cannot} be (zero-free
+regions, culminating in an effective de la Vallée-Poussin region), then where
+they \emph{are} (a complete finite Turing verification to height $1000$), and
+finally what they \emph{mean} (the finite-height explicit formula---the
+diffraction identity of Dyson's quasicrystal picture \cite{dyson2009}). Each
+result is stated with an honest account of how it sits relative to the classical
+literature, and in every case it falls well short of the Riemann Hypothesis.
 
 \subsection{Four verified results}
 
@@ -201,9 +205,13 @@ of the box,
 where the left-hand sum runs over $\zeta$'s \emph{actual} meromorphic divisor in
 an enclosing ball (nothing about the zeros is assumed), and the right edge has
 been expanded, term by prime-power term, into von Mangoldt's ledger: a
-rectangular Guinand--Weil identity at finite height. Weighted zero-sums equal
-prime sums plus three explicit boundary integrals---zeros diffracting off primes,
-in the kernel.
+rectangular Guinand--Weil identity \cite{guinand1948,weil1952} at finite height.
+Weighted zero-sums equal prime sums plus three explicit boundary integrals---zeros
+diffracting off primes, in the kernel. This is the identity that underwrites
+Dyson's quasicrystal reading of the zeros \cite{dyson2009}: pure-point
+diffraction supported on the prime powers is exactly what the right-hand side
+asserts, and the finite-height form is the certificate-shaped part of that
+picture.
 
 The trust surface is worth savoring, because it is the program in miniature. The
 \emph{prime-side} edge needs no numeric certificate at all: its non-vanishing is
