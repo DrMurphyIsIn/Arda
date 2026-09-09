@@ -61,3 +61,7 @@ import DlvpTheta
 #print axioms ZeroFreeBridge.digamma_shift
 #print axioms ZeroFreeBridge.norm_inv_sub_log_one_add_inv_le
 #print axioms ZeroFreeBridge.thetaMain_hasDerivAt
+#print axioms ZeroFreeBridge.log_succ_sub_log
+#print axioms ZeroFreeBridge.digamma_sub_log_telescoped
+#print axioms ZeroFreeBridge.sum_norm_inv_sub_log_le
+#print axioms ZeroFreeBridge.norm_digamma_sub_log_le_of_anchor

@@ -274,4 +274,167 @@ theorem thetaMain_hasDerivAt {t : ℝ} (ht : 0 < t) :
   rw [heq] at h4
   exact h4
 
+/-! ## Brick 3b: the telescoped Binet series — `|ψ(s) − log s| ≤ 1/(Re s − 1)` modulo the anchor.
+
+Telescoping `d(s) = ψ(s) − log s` with `d(s+1) − d(s) = s⁻¹ − log(1+s⁻¹)` (branch-safe on
+`Re s > 0` since `|arg| < π/2` on the right half-plane) gives the FINITE identity
+`d(s) = d(s+N) − Σ_{k<N} [(s+k)⁻¹ − log(1+(s+k)⁻¹)]`; the 3a step bound + an elementary
+inline telescoping estimate `Σ_{k<N} 1/(x+k)² ≤ 1/(x−1)` bound the sum UNIFORMLY in `N`;
+letting `N → ∞` against the anchor `d(s+N) → 0` (the ONE remaining analytic input, carried as
+an explicit hypothesis — brick 3b′ discharges it) yields the effective Binet bound.
+conjecture1_proved = False. -/
+
+/-- **Branch-safe log-quotient step** on the right half-plane:
+    `log(s+1) − log s = log(1+s⁻¹)` for `Re s > 0` (both args have `|arg| < π/2`, so the
+    difference of logs has imaginary part in `(−π, π)` and `log_exp` applies). -/
+theorem log_succ_sub_log {s : ℂ} (hs : 0 < s.re) :
+    Complex.log (s + 1) - Complex.log s = Complex.log (1 + s⁻¹) := by
+  have hs0 : s ≠ 0 := by
+    intro h; rw [h] at hs; simp at hs
+  have hs1 : s + 1 ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp only [Complex.add_re, Complex.one_re, Complex.zero_re] at hre
+    linarith
+  have hexp : Complex.exp (Complex.log (s + 1) - Complex.log s) = 1 + s⁻¹ := by
+    rw [Complex.exp_sub, Complex.exp_log hs1, Complex.exp_log hs0, add_div,
+      div_self hs0, one_div]
+  have harg1 : |Complex.arg (s + 1)| < Real.pi / 2 :=
+    Complex.abs_arg_lt_pi_div_two_iff.mpr (Or.inl (by
+      simp only [Complex.add_re, Complex.one_re]; linarith))
+  have harg2 : |Complex.arg s| < Real.pi / 2 :=
+    Complex.abs_arg_lt_pi_div_two_iff.mpr (Or.inl hs)
+  have hIm : (Complex.log (s + 1) - Complex.log s).im
+      = Complex.arg (s + 1) - Complex.arg s := by
+    simp [Complex.sub_im, Complex.log_im]
+  rw [abs_lt] at harg1 harg2
+  have h1 : -Real.pi < (Complex.log (s + 1) - Complex.log s).im := by
+    rw [hIm]; linarith [harg1.1, harg2.2]
+  have h2 : (Complex.log (s + 1) - Complex.log s).im ≤ Real.pi := by
+    rw [hIm]; linarith [harg1.2, harg2.1]
+  rw [← hexp, Complex.log_exp h1 h2]
+
+/-- Telescoped log shift: `log(s+N) − log s = Σ_{k<N} log(1+(s+k)⁻¹)` on `Re s > 0`. -/
+theorem log_shift {s : ℂ} (hs : 0 < s.re) (N : ℕ) :
+    Complex.log (s + N) - Complex.log s
+      = ∑ k ∈ Finset.range N, Complex.log (1 + (s + k)⁻¹) := by
+  induction N with
+  | zero => simp
+  | succ n ih =>
+    have hsk : 0 < (s + (n : ℂ)).re := by
+      simp only [Complex.add_re, Complex.natCast_re]
+      linarith [Nat.cast_nonneg (α := ℝ) n]
+    have hcast : s + ((n + 1 : ℕ) : ℂ) = (s + (n : ℂ)) + 1 := by push_cast; ring
+    rw [hcast, Finset.sum_range_succ, ← ih, ← log_succ_sub_log hsk]
+    ring
+
+/-- **The telescoped Binet identity** (finite form): for `Re s > 0` and any `N`,
+    `ψ(s) − log s = (ψ(s+N) − log(s+N)) − Σ_{k<N} ((s+k)⁻¹ − log(1+(s+k)⁻¹))`. -/
+theorem digamma_sub_log_telescoped {s : ℂ} (hs : 0 < s.re) (N : ℕ) :
+    Complex.digamma s - Complex.log s
+      = (Complex.digamma (s + N) - Complex.log (s + N))
+        - ∑ k ∈ Finset.range N, ((s + k)⁻¹ - Complex.log (1 + (s + k)⁻¹)) := by
+  have h1 := digamma_shift hs N
+  have h2 := log_shift hs N
+  rw [Finset.sum_sub_distrib, h1]
+  have h2' : Complex.log (s + N)
+      = Complex.log s + ∑ k ∈ Finset.range N, Complex.log (1 + (s + k)⁻¹) := by
+    linear_combination h2
+  rw [h2']
+  ring
+
+/-- Elementary inline telescoping tail: `Σ_{k<N} 1/(x+k)² ≤ 1/(x−1) − 1/(x−1+N)` for `1 < x`. -/
+theorem sum_one_div_sq_le {x : ℝ} (hx : 1 < x) (N : ℕ) :
+    ∑ k ∈ Finset.range N, 1 / (x + k) ^ 2 ≤ 1 / (x - 1) - 1 / (x - 1 + N) := by
+  induction N with
+  | zero => simp
+  | succ n ih =>
+    have hn : (0:ℝ) ≤ n := Nat.cast_nonneg n
+    have hp1 : (0:ℝ) < x - 1 + n := by linarith
+    have hp2 : (0:ℝ) < x + n := by linarith
+    have hstep : 1 / (x + n) ^ 2 ≤ 1 / (x - 1 + n) - 1 / (x + n) := by
+      have hsplit : 1 / (x - 1 + n) - 1 / (x + n) = 1 / ((x - 1 + n) * (x + n)) := by
+        rw [div_sub_div _ _ (ne_of_gt hp1) (ne_of_gt hp2)]
+        congr 1 <;> ring
+      rw [hsplit]
+      apply one_div_le_one_div_of_le (by positivity)
+      nlinarith
+    have hcast : x - 1 + ((n + 1 : ℕ) : ℝ) = x + n := by push_cast; ring
+    rw [Finset.sum_range_succ, hcast]
+    linarith [ih, hstep]
+
+/-- The Binet-series tail is bounded UNIFORMLY in `N`: for `2 ≤ Re s`,
+    `Σ_{k<N} ‖(s+k)⁻¹ − log(1+(s+k)⁻¹)‖ ≤ 1/(Re s − 1)`. -/
+theorem sum_norm_inv_sub_log_le {s : ℂ} (hs : 2 ≤ s.re) (N : ℕ) :
+    ∑ k ∈ Finset.range N, ‖(s + k)⁻¹ - Complex.log (1 + (s + k)⁻¹)‖ ≤ 1 / (s.re - 1) := by
+  have hterm : ∀ k ∈ Finset.range N,
+      ‖(s + k)⁻¹ - Complex.log (1 + (s + k)⁻¹)‖ ≤ 1 / (s.re + k) ^ 2 := by
+    intro k _
+    have hk : (0:ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+    have hre : s.re + k ≤ ‖s + k‖ := by
+      have h := Complex.re_le_norm (s + k)
+      simpa [Complex.add_re, Complex.natCast_re] using h
+    have h2 : (2:ℝ) ≤ ‖s + k‖ := by linarith
+    have h1 : (1:ℝ) < ‖s + k‖ := by linarith
+    have hb := norm_inv_sub_log_one_add_inv_le (s := s + k) h1
+    have hnormpos : (0:ℝ) < ‖s + k‖ := by linarith
+    have hrepos : (0:ℝ) < s.re + k := by linarith
+    have htv : ‖(s + k)⁻¹‖ = 1 / ‖s + k‖ := by rw [norm_inv, inv_eq_one_div]
+    have htle : ‖(s + k)⁻¹‖ ≤ 1 / (s.re + k) := by
+      rw [htv]; exact one_div_le_one_div_of_le hrepos hre
+    have hthalf : ‖(s + k)⁻¹‖ ≤ 1 / 2 := by
+      rw [htv]; exact one_div_le_one_div_of_le (by norm_num) h2
+    have htnn : (0:ℝ) ≤ ‖(s + k)⁻¹‖ := norm_nonneg _
+    have hinv2 : (1 - ‖(s + k)⁻¹‖)⁻¹ ≤ 2 := by
+      rw [inv_eq_one_div]
+      have hhalf : (1:ℝ) / 2 ≤ 1 - ‖(s + k)⁻¹‖ := by linarith
+      calc 1 / (1 - ‖(s + k)⁻¹‖) ≤ 1 / (1 / 2) :=
+            one_div_le_one_div_of_le (by norm_num) hhalf
+        _ = 2 := by norm_num
+    have hinvnn : (0:ℝ) ≤ (1 - ‖(s + k)⁻¹‖)⁻¹ := by
+      apply inv_nonneg.mpr; linarith
+    calc ‖(s + k)⁻¹ - Complex.log (1 + (s + k)⁻¹)‖
+        ≤ ‖(s + k)⁻¹‖ ^ 2 * (1 - ‖(s + k)⁻¹‖)⁻¹ / 2 := hb
+      _ ≤ ‖(s + k)⁻¹‖ ^ 2 * 2 / 2 := by
+          have := mul_le_mul_of_nonneg_left hinv2 (sq_nonneg ‖(s + k)⁻¹‖)
+          linarith
+      _ = ‖(s + k)⁻¹‖ ^ 2 := by ring
+      _ ≤ (1 / (s.re + k)) ^ 2 := by
+          have := mul_le_mul htle htle htnn (le_trans htnn htle)
+          calc ‖(s + k)⁻¹‖ ^ 2 = ‖(s + k)⁻¹‖ * ‖(s + k)⁻¹‖ := pow_two _
+            _ ≤ (1 / (s.re + k)) * (1 / (s.re + k)) := this
+            _ = (1 / (s.re + k)) ^ 2 := (pow_two _).symm
+      _ = 1 / (s.re + k) ^ 2 := by rw [div_pow, one_pow]
+  have hx : (1:ℝ) < s.re := by linarith
+  calc ∑ k ∈ Finset.range N, ‖(s + k)⁻¹ - Complex.log (1 + (s + k)⁻¹)‖
+      ≤ ∑ k ∈ Finset.range N, 1 / (s.re + k) ^ 2 := Finset.sum_le_sum hterm
+    _ ≤ 1 / (s.re - 1) - 1 / (s.re - 1 + N) := sum_one_div_sq_le hx N
+    _ ≤ 1 / (s.re - 1) := by
+        have : (0:ℝ) ≤ 1 / (s.re - 1 + N) := by positivity
+        linarith
+
+/-- **The effective Binet bound, modulo the anchor** (brick 3b capstone):
+    for `2 ≤ Re s`, given the anchor `ψ(s+N) − log(s+N) → 0` (the one remaining analytic
+    input — brick 3b′), `‖ψ(s) − log s‖ ≤ 1/(Re s − 1)`. -/
+theorem norm_digamma_sub_log_le_of_anchor {s : ℂ} (hs : 2 ≤ s.re)
+    (hanchor : Filter.Tendsto
+      (fun N : ℕ => Complex.digamma (s + N) - Complex.log (s + N))
+      Filter.atTop (nhds 0)) :
+    ‖Complex.digamma s - Complex.log s‖ ≤ 1 / (s.re - 1) := by
+  have hs0 : 0 < s.re := by linarith
+  have hbound : ∀ N : ℕ, ‖Complex.digamma s - Complex.log s‖
+      ≤ ‖Complex.digamma (s + N) - Complex.log (s + N)‖ + 1 / (s.re - 1) := by
+    intro N
+    rw [digamma_sub_log_telescoped hs0 N]
+    refine le_trans (norm_sub_le _ _) (add_le_add_left ?_ _)
+    exact le_trans (norm_sum_le _ _) (sum_norm_inv_sub_log_le hs N)
+  have hlim : Filter.Tendsto
+      (fun N : ℕ => ‖Complex.digamma (s + N) - Complex.log (s + N)‖ + 1 / (s.re - 1))
+      Filter.atTop (nhds (0 + 1 / (s.re - 1))) := by
+    have hnorm := hanchor.norm
+    rw [norm_zero] at hnorm
+    exact hnorm.add tendsto_const_nhds
+  have hfin := ge_of_tendsto hlim (Filter.Eventually.of_forall hbound)
+  linarith [hfin]
+
 end ZeroFreeBridge
