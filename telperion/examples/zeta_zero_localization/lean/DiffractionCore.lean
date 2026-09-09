@@ -456,4 +456,36 @@ theorem bd_weighted_logDeriv_zeta
   simp only [smul_eq_mul] at hSum hGE ⊢
   linear_combination hSum + hGE
 
+/-! ## Brick 4 (P1): the prime keystone — `logDeriv ζ = −L(Λ)` on `Re s > 1`.
+
+Mathlib's `LSeries_vonMangoldt_eq_deriv_riemannZeta_div` supplies the arithmetic side whole:
+`L(Λ) s = −ζ′(s)/ζ(s)` for `Re s > 1`.  Restated in the harness's `logDeriv` vocabulary, this is
+the identity that lets `bd_weighted_logDeriv_zeta`'s RIGHT EDGE (placed in `Re > 1`) speak primes:
+the edge integrand `g·logDeriv ζ` becomes `−g·Σ Λ(n) n^{−s}` — the Bragg peaks at `k·log p`,
+awaiting only the series–integral interchange (P2: dominated convergence along the compact edge,
+`|Λ(n)n^{−s}| = Λ(n)n^{−σ₁}` summable).  conjecture1_proved = False. -/
+
+/-- **The prime keystone:** `logDeriv ζ(s) = −L(Λ)(s)` for `Re s > 1`. -/
+theorem logDeriv_zeta_eq_neg_LSeries_vonMangoldt {s : ℂ} (hs : 1 < s.re) :
+    logDeriv riemannZeta s
+      = - LSeries (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ)) s := by
+  have h := ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs
+  rw [logDeriv_apply,
+    show LSeries (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ)) s
+      = - deriv riemannZeta s / riemannZeta s from h]
+  ring
+
+/-- The weighted right-edge integrand in prime form: for `1 < σ₁`, pointwise along the edge,
+    `g·logDeriv ζ = −g·L(Λ)` — the shape P2's interchange turns into `−Σ_n Λ(n)·∫ g·n^{−s}`. -/
+theorem right_edge_weighted_prime_integrand (sigma1 : ℝ) (hσ : 1 < sigma1) (g : ℂ → ℂ) (y : ℝ) :
+    g ((sigma1 : ℂ) + y * I) * logDeriv riemannZeta ((sigma1 : ℂ) + y * I)
+      = - (g ((sigma1 : ℂ) + y * I)
+          * LSeries (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ)) ((sigma1 : ℂ) + y * I)) := by
+  rw [logDeriv_zeta_eq_neg_LSeries_vonMangoldt (by
+    simp only [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im,
+      Complex.ofReal_re, Complex.ofReal_im, mul_one, mul_zero, zero_mul, add_zero,
+      zero_add, sub_zero]
+    exact hσ)]
+  ring
+
 end DiffractionCore
