@@ -94,4 +94,98 @@ theorem riemannSiegelTheta_deriv (t : ℝ) :
     deriv riemannSiegelTheta t = thetaIntegrand t :=
   Continuous.deriv_integral thetaIntegrand thetaIntegrand_continuous 0 t
 
+/-! ## Brick 2: the Archimedean bridge — `θ'` IS the `Gammaℝ` log-derivative on the critical line.
+
+`Gammaℝ s = π^(-s/2)·Γ(s/2)` is the Archimedean factor of the completed zeta
+(`Λ = Gammaℝ · ζ` up to the `s(s-1)` polynomial), the object the T3 rectangle identity
+splits off of `logDeriv Λ`.  We compute `logDeriv Gammaℝ s = -(log π)/2 + (1/2)·ψ(s/2)`
+on `Re(s/2) > 0` and specialize to the critical line `s = 1/2 + iu`, where `s/2 = thetaRay u`:
+the θ integrand is EXACTLY `Re (logDeriv Gammaℝ (1/2 + iu))`.  This hard-wires the
+branch-cut-free `θ` into the counting formula's Archimedean term. -/
+
+/-- The π-power factor of `Gammaℝ`. -/
+noncomputable def gammaRArch (z : ℂ) : ℂ := (Real.pi : ℂ) ^ (-z / 2)
+
+theorem gammaRArch_exp :
+    gammaRArch = fun z => Complex.exp (Complex.log (Real.pi : ℂ) * (-z / 2)) :=
+  funext fun z => Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero) _
+
+theorem gammaRArch_hasDerivAt (s : ℂ) :
+    HasDerivAt gammaRArch
+      (Complex.exp (Complex.log (Real.pi : ℂ) * (-s / 2))
+        * (Complex.log (Real.pi : ℂ) * (-(1 / 2)))) s := by
+  rw [gammaRArch_exp]
+  have hL : HasDerivAt (fun z : ℂ => Complex.log (Real.pi : ℂ) * (-z / 2))
+      (Complex.log (Real.pi : ℂ) * (-(1 / 2))) s := by
+    have hbase : HasDerivAt (fun z : ℂ => -z / 2) (-(1 / 2) : ℂ) s := by
+      have h1 : HasDerivAt (fun z : ℂ => -z) (-1 : ℂ) s := (hasDerivAt_id s).neg
+      have h2 := h1.div_const 2
+      norm_num at h2
+      exact h2
+    exact hbase.const_mul _
+  exact hL.cexp
+
+theorem gammaRArch_ne_zero (s : ℂ) : gammaRArch s ≠ 0 := by
+  rw [gammaRArch_exp]
+  exact Complex.exp_ne_zero _
+
+theorem logDeriv_gammaRArch (s : ℂ) :
+    logDeriv gammaRArch s = -(Real.log Real.pi : ℂ) / 2 := by
+  rw [logDeriv_apply, (gammaRArch_hasDerivAt s).deriv]
+  rw [show gammaRArch s = Complex.exp (Complex.log (Real.pi : ℂ) * (-s / 2)) by
+    rw [gammaRArch_exp]]
+  rw [mul_div_cancel_left₀ _ (Complex.exp_ne_zero _)]
+  rw [← Complex.ofReal_log Real.pi_pos.le]
+  ring
+
+/-- **The `Gammaℝ` log-derivative** on `Re(s/2) > 0`:
+    `logDeriv Gammaℝ s = -(log π)/2 + (1/2)·ψ(s/2)`. -/
+theorem logDeriv_gammaR (s : ℂ) (hs : 0 < (s / 2).re) :
+    logDeriv Gammaℝ s = -(Real.log Real.pi : ℂ) / 2
+      + (1 / 2) * Complex.digamma (s / 2) := by
+  have hpole : ∀ m : ℕ, s / 2 ≠ -(m : ℂ) := by
+    intro m hm
+    rw [hm] at hs
+    simp only [Complex.neg_re, Complex.natCast_re] at hs
+    linarith [Nat.cast_nonneg (α := ℝ) m]
+  have hhalf : HasDerivAt (fun z : ℂ => z / 2) ((1 : ℂ) / 2) s := by
+    have h := (hasDerivAt_id s).div_const 2
+    norm_num at h
+    exact h
+  have hΓd : HasDerivAt Gamma (deriv Gamma (s / 2)) (s / 2) :=
+    (Complex.differentiableAt_Gamma _ hpole).hasDerivAt
+  have hB : HasDerivAt (fun z : ℂ => Gamma (z / 2)) (deriv Gamma (s / 2) * (1 / 2)) s :=
+    hΓd.comp s hhalf
+  have hBne : Gamma (s / 2) ≠ 0 := Complex.Gamma_ne_zero_of_re_pos hs
+  have hGdef : Gammaℝ = fun z : ℂ => gammaRArch z * Gamma (z / 2) := rfl
+  rw [hGdef, logDeriv_mul s (gammaRArch_ne_zero s) hBne
+    (gammaRArch_hasDerivAt s).differentiableAt hB.differentiableAt]
+  rw [logDeriv_gammaRArch]
+  have hlogB : logDeriv (fun z : ℂ => Gamma (z / 2)) s = (1 / 2) * Complex.digamma (s / 2) := by
+    rw [logDeriv_apply, hB.deriv, Complex.digamma_def, logDeriv_apply]
+    field_simp [hBne]
+    ring
+  rw [hlogB]
+
+/-- **The Archimedean bridge:** the θ integrand equals `Re (logDeriv Gammaℝ)` on the critical
+    line — `thetaIntegrand u = Re (logDeriv Gammaℝ (1/2 + iu))`.  With `θ(0) = 0` and the FTC
+    derivative (`riemannSiegelTheta_deriv`), this identifies the branch-cut-free `θ` with the
+    Archimedean phase of the completed zeta, the term the T3 rectangle identity
+    `N(T) = θ(T)/π + 1 + S(T)` splits off of `logDeriv Λ`. -/
+theorem thetaIntegrand_eq_re_logDeriv_gammaR (u : ℝ) :
+    thetaIntegrand u = (logDeriv Gammaℝ ((1 / 2 : ℂ) + u * I)).re := by
+  have hhalf : ((1 / 2 : ℂ) + u * I) / 2 = thetaRay u := by
+    unfold thetaRay
+    push_cast
+    ring
+  have hs : 0 < ((((1 / 2 : ℂ) + u * I)) / 2).re := by
+    rw [hhalf, thetaRay_re]; norm_num
+  rw [logDeriv_gammaR _ hs, hhalf]
+  have h1 : (-(Real.log Real.pi : ℂ) / 2) = ((-(Real.log Real.pi) / 2 : ℝ) : ℂ) := by
+    push_cast; ring
+  have h2 : ((1 : ℂ) / 2) = (((1 : ℝ) / 2 : ℝ) : ℂ) := by push_cast; ring
+  rw [h1, h2, Complex.add_re, Complex.ofReal_re, Complex.re_ofReal_mul]
+  unfold thetaIntegrand
+  ring
+
 end ZeroFreeBridge

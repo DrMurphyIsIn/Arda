@@ -56,3 +56,5 @@ import DlvpTheta
 #print axioms ZeroFreeBridge.riemannSiegelTheta_zero
 #print axioms ZeroFreeBridge.riemannSiegelTheta_deriv
 #print axioms ZeroFreeBridge.thetaIntegrand_continuous
+#print axioms ZeroFreeBridge.logDeriv_gammaR
+#print axioms ZeroFreeBridge.thetaIntegrand_eq_re_logDeriv_gammaR
