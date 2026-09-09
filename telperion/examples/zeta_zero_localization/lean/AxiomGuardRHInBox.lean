@@ -231,3 +231,4 @@ import StripClear
 #print axioms DiffractionCore.continuous_logDeriv_zeta_vLine
 #print axioms DiffractionCore.fold_pointwise
 #print axioms DiffractionCore.argChangeVert_fold
+#print axioms DiffractionCore.pole_total_argChange
