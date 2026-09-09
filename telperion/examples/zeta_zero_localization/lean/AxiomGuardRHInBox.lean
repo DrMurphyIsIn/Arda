@@ -225,3 +225,5 @@ import StripClear
 #print axioms DiffractionCore.zeta_total_argChange_eq_count
 #print axioms DiffractionCore.theta_eq_argChangeVert_gammaR
 #print axioms DiffractionCore.count_eq_argZeta_diff_sub_left
+#print axioms DiffractionCore.logDeriv_zeta_conj
+#print axioms DiffractionCore.logDeriv_gammaR_conj
