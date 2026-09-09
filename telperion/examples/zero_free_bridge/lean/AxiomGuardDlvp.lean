@@ -71,3 +71,6 @@ import DlvpTheta
 #print axioms ZeroFreeBridge.tendsto_binetR_add
 #print axioms ZeroFreeBridge.tendsto_digamma_sub_log_ofReal
 #print axioms ZeroFreeBridge.norm_digamma_sub_log_le_ofReal
+#print axioms ZeroFreeBridge.binetLimit_eq_zero
+#print axioms ZeroFreeBridge.tendsto_digamma_sub_log
+#print axioms ZeroFreeBridge.norm_digamma_sub_log_le

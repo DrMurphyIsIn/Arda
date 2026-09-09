@@ -646,4 +646,214 @@ theorem norm_digamma_sub_log_le_ofReal {x : ℝ} (hx2 : 2 ≤ x) (hx3 : x ≤ 3)
     (tendsto_digamma_sub_log_ofReal (by linarith) hx3)
   simpa using h
 
+/-! ## Brick 3b′-iii: the IDENTITY THEOREM — the anchor discharged for ALL `Re s ≥ 2`.
+
+The limit function `binetLimit s := (ψ(s) − log s) + Σ′_k [(s+k)⁻¹ − log(1+(s+k)⁻¹)]` is the
+`N → ∞` limit of `ψ(s+N) − log(s+N)` (partial sums = the telescoped Binet identity).  It is
+HOLOMORPHIC on `U = {Re > 3/2}` (Weierstrass M-test: `‖tail_k‖ ≤ (3/2)/(3/2+k)²`, uniform on
+`U`, summable by our own partial-sum lemma), and VANISHES on the real segment `[2,3]` (brick
+ii-b's squeeze + uniqueness of limits).  The identity theorem on the convex half-plane then
+forces `binetLimit ≡ 0` on all of `U` — so the anchor `ψ(s+N) − log(s+N) → 0` holds for EVERY
+`s` with `Re s ≥ 2`, and the effective Binet bound `‖ψ(s) − log s‖ ≤ 1/(Re s − 1)` is
+UNCONDITIONAL.  The analytic heart of Turing rung T2 is complete.
+conjecture1_proved = False. -/
+
+/-- The Binet tail term. -/
+noncomputable def binetTail (s : ℂ) (k : ℕ) : ℂ := (s + k)⁻¹ - Complex.log (1 + (s + k)⁻¹)
+
+/-- The Binet limit function. -/
+noncomputable def binetLimit (s : ℂ) : ℂ :=
+  (Complex.digamma s - Complex.log s) + ∑' k : ℕ, binetTail s k
+
+/-- Uniform tail bound on `{Re > 3/2}`: `‖binetTail s k‖ ≤ (3/2)/(3/2+k)²`. -/
+theorem binetTail_norm_le {s : ℂ} (hs : 3/2 < s.re) (k : ℕ) :
+    ‖binetTail s k‖ ≤ (3/2) * (1 / (3/2 + k) ^ 2) := by
+  have hk : (0:ℝ) ≤ (k:ℝ) := Nat.cast_nonneg k
+  have hre : (3/2 + k : ℝ) ≤ ‖s + k‖ := by
+    have h := Complex.re_le_norm (s + k)
+    simp only [Complex.add_re, Complex.natCast_re] at h
+    linarith
+  have hrepos : (0:ℝ) < 3/2 + k := by linarith
+  have h1 : (1:ℝ) < ‖s + k‖ := by linarith
+  have hb := norm_inv_sub_log_one_add_inv_le (s := s + k) h1
+  have htv : ‖(s + k)⁻¹‖ = 1 / ‖s + k‖ := by rw [norm_inv, inv_eq_one_div]
+  have htle : ‖(s + k)⁻¹‖ ≤ 1 / (3/2 + k) := by
+    rw [htv]; exact one_div_le_one_div_of_le hrepos hre
+  have hth : ‖(s + k)⁻¹‖ ≤ 2/3 := by
+    refine le_trans htle ?_
+    rw [div_le_div_iff₀ hrepos (by norm_num)]
+    linarith
+  have htnn : (0:ℝ) ≤ ‖(s + k)⁻¹‖ := norm_nonneg _
+  have hinv3 : (1 - ‖(s + k)⁻¹‖)⁻¹ ≤ 3 := by
+    rw [inv_eq_one_div]
+    have hthird : (1:ℝ)/3 ≤ 1 - ‖(s + k)⁻¹‖ := by linarith
+    calc 1 / (1 - ‖(s + k)⁻¹‖) ≤ 1 / (1/3) := one_div_le_one_div_of_le (by norm_num) hthird
+      _ = 3 := by norm_num
+  calc ‖binetTail s k‖
+      ≤ ‖(s + k)⁻¹‖ ^ 2 * (1 - ‖(s + k)⁻¹‖)⁻¹ / 2 := hb
+    _ ≤ ‖(s + k)⁻¹‖ ^ 2 * 3 / 2 := by
+        have := mul_le_mul_of_nonneg_left hinv3 (sq_nonneg ‖(s + k)⁻¹‖)
+        linarith
+    _ ≤ (1 / (3/2 + k)) ^ 2 * 3 / 2 := by
+        have hsq : ‖(s + k)⁻¹‖ ^ 2 ≤ (1 / (3/2 + k)) ^ 2 := by
+          calc ‖(s + k)⁻¹‖ ^ 2 = ‖(s + k)⁻¹‖ * ‖(s + k)⁻¹‖ := pow_two _
+            _ ≤ (1 / (3/2 + k)) * (1 / (3/2 + k)) :=
+                mul_le_mul htle htle htnn (le_trans htnn htle)
+            _ = (1 / (3/2 + k)) ^ 2 := (pow_two _).symm
+        linarith
+    _ = (3/2) * (1 / (3/2 + k) ^ 2) := by rw [div_pow, one_pow]; ring
+
+/-- The uniform majorant is summable (our own partial-sum lemma + boundedness). -/
+theorem summable_binetMajorant : Summable (fun k : ℕ => (3/2 : ℝ) * (1 / (3/2 + k) ^ 2)) := by
+  refine summable_of_sum_range_le (c := 3) (fun n => by positivity) (fun n => ?_)
+  rw [← Finset.mul_sum]
+  have h := sum_one_div_sq_le (x := (3/2 : ℝ)) (by norm_num) n
+  have h3 : (0:ℝ) ≤ 1 / (3/2 - 1 + n) := by positivity
+  nlinarith [h]
+
+/-- Each tail term is differentiable on `{Re > 3/2}`. -/
+theorem binetTail_differentiableOn (k : ℕ) :
+    DifferentiableOn ℂ (fun s => binetTail s k) {s : ℂ | 3/2 < s.re} := by
+  intro s hs
+  have hsre : 3/2 < s.re := hs
+  have hne : s + k ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    simp only [Complex.add_re, Complex.natCast_re, Complex.zero_re] at this
+    have hk : (0:ℝ) ≤ (k:ℝ) := Nat.cast_nonneg k
+    linarith
+  have hinvDA : DifferentiableAt ℂ (fun z : ℂ => (z + k)⁻¹) s :=
+    (differentiableAt_id.add_const (k : ℂ)).inv hne
+  have hgDA : DifferentiableAt ℂ (fun z : ℂ => 1 + (z + k)⁻¹) s := hinvDA.const_add 1
+  have hrepos : (0:ℝ) < (s + k).re := by
+    simp only [Complex.add_re, Complex.natCast_re]
+    have hk : (0:ℝ) ≤ (k:ℝ) := Nat.cast_nonneg k
+    linarith
+  have hslit : (1 + (s + k)⁻¹) ∈ Complex.slitPlane := by
+    rw [Complex.mem_slitPlane_iff]
+    left
+    have hinvre : (0:ℝ) ≤ ((s + k)⁻¹).re := by
+      rw [Complex.inv_re]
+      exact div_nonneg hrepos.le (Complex.normSq_nonneg _)
+    simp only [Complex.add_re, Complex.one_re]
+    linarith
+  have hlogDA : DifferentiableAt ℂ (fun z : ℂ => Complex.log (1 + (z + k)⁻¹)) s :=
+    hgDA.clog hslit
+  exact (hinvDA.sub hlogDA).differentiableWithinAt
+
+/-- `Γ` is analytic at every point of the right half-plane. -/
+theorem gamma_analyticAt_re_pos {s : ℂ} (hs : 0 < s.re) : AnalyticAt ℂ Complex.Gamma s := by
+  have hopen : IsOpen {z : ℂ | 0 < z.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hdiff : DifferentiableOn ℂ Complex.Gamma {z : ℂ | 0 < z.re} := by
+    intro z hz
+    refine (Complex.differentiableAt_Gamma z ?_).differentiableWithinAt
+    intro m hm
+    rw [hm] at hz
+    simp only [Set.mem_setOf_eq, Complex.neg_re, Complex.natCast_re] at hz
+    linarith [Nat.cast_nonneg (α := ℝ) m]
+  exact (hdiff.analyticOnNhd hopen) s hs
+
+/-- **`binetLimit` is holomorphic on `{Re > 3/2}`** (M-test + Weierstrass). -/
+theorem binetLimit_differentiableOn :
+    DifferentiableOn ℂ binetLimit {s : ℂ | 3/2 < s.re} := by
+  have hUopen : IsOpen {z : ℂ | 3/2 < z.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hd : DifferentiableOn ℂ (fun s => Complex.digamma s - Complex.log s)
+      {z : ℂ | 3/2 < z.re} := by
+    intro z hz
+    have hzre : (3/2:ℝ) < z.re := hz
+    have hana := gamma_analyticAt_re_pos (s := z) (by linarith)
+    have hΓne : Complex.Gamma z ≠ 0 := Complex.Gamma_ne_zero_of_re_pos (by linarith)
+    have hψ : DifferentiableAt ℂ Complex.digamma z := by
+      have heq : Complex.digamma = fun w => deriv Complex.Gamma w / Complex.Gamma w := by
+        funext w; rw [Complex.digamma_def, logDeriv_apply]
+      rw [heq]
+      exact (hana.deriv.differentiableAt).div hana.differentiableAt hΓne
+    have hzslit : z ∈ Complex.slitPlane := by
+      rw [Complex.mem_slitPlane_iff]; left; linarith
+    have hlog : DifferentiableAt ℂ Complex.log z := by
+      have h : DifferentiableAt ℂ (fun w : ℂ => Complex.log w) z :=
+        differentiableAt_id.clog hzslit
+      exact h
+    exact (hψ.sub hlog).differentiableWithinAt
+  have hts : DifferentiableOn ℂ (fun s => ∑' k : ℕ, binetTail s k) {z : ℂ | 3/2 < z.re} := by
+    refine differentiableOn_tsum_of_summable_norm summable_binetMajorant
+      binetTail_differentiableOn hUopen (fun k w hw => ?_)
+    exact binetTail_norm_le hw k
+  exact fun z hz => ((hd z hz).add (hts z hz))
+
+/-- The partial sums of the tail are the telescoped Binet identity:
+    `ψ(s+N) − log(s+N) → binetLimit s` for `Re s ≥ 2`. -/
+theorem tendsto_binetLimit {s : ℂ} (hs : 2 ≤ s.re) :
+    Filter.Tendsto (fun N : ℕ => Complex.digamma (s + N) - Complex.log (s + N))
+      Filter.atTop (nhds (binetLimit s)) := by
+  have hs0 : 0 < s.re := by linarith
+  have hsummn : Summable (fun k => ‖binetTail s k‖) := by
+    refine summable_of_sum_range_le (c := 1 / (s.re - 1)) (fun n => norm_nonneg _) (fun n => ?_)
+    exact sum_norm_inv_sub_log_le hs n
+  have hsumm : Summable (binetTail s) := hsummn.of_norm
+  have hpartial := (hsumm.hasSum_iff_tendsto_nat).mp hsumm.hasSum
+  have hlim := (tendsto_const_nhds (x := Complex.digamma s - Complex.log s)
+    (f := Filter.atTop (α := ℕ))).add hpartial
+  refine hlim.congr fun N => ?_
+  have h := digamma_sub_log_telescoped hs0 N
+  simp only [binetTail]
+  linear_combination h
+
+/-- `binetLimit` vanishes on the real segment `[2, 3]` (squeeze + uniqueness of limits). -/
+theorem binetLimit_eq_zero_ofReal {x : ℝ} (hx2 : 2 ≤ x) (hx3 : x ≤ 3) :
+    binetLimit ((x : ℝ) : ℂ) = 0 := by
+  have h1 := tendsto_binetLimit (s := ((x:ℝ):ℂ)) (by simpa using hx2)
+  have h2 := tendsto_digamma_sub_log_ofReal (by linarith) hx3
+  exact tendsto_nhds_unique h1 h2
+
+/-- **THE IDENTITY THEOREM:** `binetLimit ≡ 0` on `{Re > 3/2}`. -/
+theorem binetLimit_eq_zero {s : ℂ} (hs : 3/2 < s.re) : binetLimit s = 0 := by
+  have hUopen : IsOpen {z : ℂ | 3/2 < z.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hFana : AnalyticOnNhd ℂ binetLimit {z : ℂ | 3/2 < z.re} :=
+    binetLimit_differentiableOn.analyticOnNhd hUopen
+  have h0ana : AnalyticOnNhd ℂ (fun _ => (0:ℂ)) {z : ℂ | 3/2 < z.re} :=
+    fun z _ => analyticAt_const
+  have hpre : IsPreconnected {z : ℂ | 3/2 < z.re} :=
+    (convex_halfSpace_re_gt (3/2)).isPreconnected
+  have hz₀ : ((5/2 : ℝ) : ℂ) ∈ {z : ℂ | 3/2 < z.re} := by
+    simp only [Set.mem_setOf_eq, Complex.ofReal_re]; norm_num
+  have hfreq : ∃ᶠ z in nhdsWithin ((5/2 : ℝ) : ℂ) {((5/2 : ℝ) : ℂ)}ᶜ,
+      binetLimit z = (fun _ => (0:ℂ)) z := by
+    rw [Filter.frequently_iff]
+    intro V hV
+    rw [Metric.mem_nhdsWithin_iff] at hV
+    obtain ⟨ε, hε, hsub⟩ := hV
+    set δ : ℝ := min (ε/2) (1/2) with hδdef
+    have hδpos : 0 < δ := by
+      apply lt_min <;> [linarith; norm_num]
+    have hδle : δ ≤ 1/2 := min_le_right _ _
+    have hδlt : δ < ε := lt_of_le_of_lt (min_le_left _ _) (by linarith)
+    refine ⟨((5/2 + δ : ℝ) : ℂ), hsub ⟨?_, ?_⟩, ?_⟩
+    · rw [Metric.mem_ball, Complex.dist_eq]
+      have : ((5/2 + δ : ℝ) : ℂ) - ((5/2 : ℝ) : ℂ) = ((δ : ℝ) : ℂ) := by push_cast; ring
+      rw [this, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hδpos]
+      exact hδlt
+    · simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
+      intro h
+      have := congrArg Complex.re h
+      simp only [Complex.ofReal_re] at this
+      linarith
+    · exact binetLimit_eq_zero_ofReal (by linarith) (by linarith)
+  exact (hFana.eqOn_of_preconnected_of_frequently_eq h0ana hpre hz₀ hfreq) hs
+
+/-- **THE ANCHOR, UNCONDITIONAL:** for every `s` with `2 ≤ Re s`,
+    `ψ(s+N) − log(s+N) → 0`. -/
+theorem tendsto_digamma_sub_log {s : ℂ} (hs : 2 ≤ s.re) :
+    Filter.Tendsto (fun N : ℕ => Complex.digamma (s + N) - Complex.log (s + N))
+      Filter.atTop (nhds 0) := by
+  have h := tendsto_binetLimit hs
+  rwa [binetLimit_eq_zero (by linarith)] at h
+
+/-- **THE UNCONDITIONAL EFFECTIVE BINET BOUND** (T2 analytic heart, complete):
+    `‖ψ(s) − log s‖ ≤ 1/(Re s − 1)` for ALL `s` with `Re s ≥ 2` — no hypotheses.
+    conjecture1_proved = False. -/
+theorem norm_digamma_sub_log_le {s : ℂ} (hs : 2 ≤ s.re) :
+    ‖Complex.digamma s - Complex.log s‖ ≤ 1 / (s.re - 1) :=
+  norm_digamma_sub_log_le_of_anchor hs (tendsto_digamma_sub_log hs)
+
 end ZeroFreeBridge
