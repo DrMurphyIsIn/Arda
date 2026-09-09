@@ -163,3 +163,4 @@ import StripClear
 #print axioms RHInBox_1d2000000_1999999d2000000_1950_2000.rh_in_box_1d2000000_1999999d2000000_1950_2000
 #print axioms AllZeros_h2000.haC_2000
 #print axioms AllZeros_h2000.all_nontrivial_zeros_up_to_height_2000_of_bands
+#print axioms DiffractionCore.integral_vonMangoldt_term
