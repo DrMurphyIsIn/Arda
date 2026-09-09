@@ -285,3 +285,5 @@ import StripClear
 #print axioms DiffractionCore.logDeriv_xiTele_reflect
 #print axioms DiffractionCore.logDeriv_xiTele_conj
 #print axioms DiffractionCore.fold_pointwise_xiTele
+#print axioms DiffractionCore.continuousOn_logDeriv_xiTele_seg
+#print axioms DiffractionCore.argChangeVert_xiTele_fold
