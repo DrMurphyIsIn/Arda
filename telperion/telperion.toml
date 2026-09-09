@@ -632,3 +632,8 @@ group = "flint"    # Arb lambda-enclosures for xi-line zeros; needs python-flint
 name = "jensen_hyperbolicity"
 script = "examples/jensen_hyperbolicity/generate.py"
 group = "flint"    # Jensen d=2 hyperbolicity; needs python-flint (drift-checked in telperion-lean-e2e)
+
+[[check]]
+name = "li_positivity"
+script = "examples/li_positivity/generate.py"
+group = "flint"    # 20 Li-criterion rungs + refutation atom; Arb enclosures need python-flint
