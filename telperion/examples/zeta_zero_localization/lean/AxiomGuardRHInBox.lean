@@ -72,3 +72,4 @@ import AllZeros_h200
 #print axioms DiffractionCore.rect_weighted_residue_sum_generic
 #print axioms DiffractionCore.bd_weighted_logDeriv_zeta
 #print axioms DiffractionCore.logDeriv_zeta_eq_neg_LSeries_vonMangoldt
+#print axioms DiffractionCore.right_edge_prime_expansion

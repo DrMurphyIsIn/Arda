@@ -488,4 +488,112 @@ theorem right_edge_weighted_prime_integrand (sigma1 : ℝ) (hσ : 1 < sigma1) (g
     exact hσ)]
   ring
 
+/-! ## Brick 5 (P2): the series–integral interchange on the right edge.
+
+With the right edge at `Re = σ₁ > 1`, the weighted edge integral of `L(Λ)` expands TERMWISE:
+`∫ g·L(Λ) = Σ'_n ∫ g·term(Λ, n)` — dominated convergence with the `y`-independent majorant
+`C·‖term(Λ, σ₁, n)‖` (vertical-line norm invariance is Mathlib's `norm_term_eq`: the norm
+depends only on `Re s`; summability is `LSeriesSummable_vonMangoldt` + `summable_norm_iff`).
+Combined with brick 4 this makes the right edge of `bd_weighted_logDeriv_zeta` a sum of
+prime-power integrals `−Σ Λ(n)·∫ g·n^{−s}` — the Bragg peaks.  conjecture1_proved = False. -/
+
+/-- **The right-edge prime expansion** (series–integral interchange): for `1 < σ₁`,
+    `∫ g·L(Λ) dy = Σ'_n ∫ g·term(Λ,n) dy` along the edge `Re = σ₁`, `y ∈ [T0, T1]`. -/
+theorem right_edge_prime_expansion
+    (sigma1 T0 T1 : ℝ) (hσ : 1 < sigma1) (hT : T0 ≤ T1)
+    (g : ℂ → ℂ)
+    (hgc : ContinuousOn (fun y : ℝ => g ((sigma1 : ℂ) + y * I)) (Set.uIcc T0 T1))
+    (C : ℝ) (hC : ∀ y ∈ Set.uIcc T0 T1, ‖g ((sigma1 : ℂ) + y * I)‖ ≤ C) :
+    (∫ y in T0..T1, g ((sigma1 : ℂ) + y * I)
+        * LSeries (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ)) ((sigma1 : ℂ) + y * I))
+      = ∑' n : ℕ, (∫ y in T0..T1, g ((sigma1 : ℂ) + y * I)
+          * LSeries.term (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+              ((sigma1 : ℂ) + y * I) n) := by
+  set vM : ℕ → ℂ := fun n => (ArithmeticFunction.vonMangoldt n : ℂ) with hvM
+  have hre : ∀ y : ℝ, ((sigma1 : ℂ) + y * I).re = sigma1 := by
+    intro y
+    simp
+  have hsub' : Set.Ioc T0 T1 ⊆ Set.uIcc T0 T1 := by
+    rw [Set.uIcc_of_le hT]
+    exact Set.Ioc_subset_Icc_self
+  have hσ' : 1 < ((sigma1 : ℂ)).re := by simpa using hσ
+  have hsummC : Summable (fun n => LSeries.term vM (sigma1 : ℂ) n) :=
+    ArithmeticFunction.LSeriesSummable_vonMangoldt hσ'
+  have hsumm : Summable (fun n => ‖LSeries.term vM (sigma1 : ℂ) n‖) :=
+    summable_norm_iff.mpr hsummC
+  have hC0 : 0 ≤ C := le_trans (norm_nonneg _) (hC T0 Set.left_mem_uIcc)
+  -- pointwise: pull `g` inside the defining tsum of `LSeries`
+  have hpt : Set.EqOn
+      (fun y : ℝ => g ((sigma1 : ℂ) + y * I) * LSeries vM ((sigma1 : ℂ) + y * I))
+      (fun y : ℝ => ∑' n : ℕ, g ((sigma1 : ℂ) + y * I)
+        * LSeries.term vM ((sigma1 : ℂ) + y * I) n)
+      (Set.uIcc T0 T1) := by
+    intro y _
+    simp only [LSeries]
+    exact (tsum_mul_left).symm
+  -- measurability of each summand on the edge
+  have hmeas : ∀ n : ℕ, MeasureTheory.AEStronglyMeasurable
+      (fun y : ℝ => g ((sigma1 : ℂ) + y * I) * LSeries.term vM ((sigma1 : ℂ) + y * I) n)
+      (MeasureTheory.volume.restrict (Set.Ioc T0 T1)) := by
+    intro n
+    refine MeasureTheory.ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioc
+    refine ContinuousOn.mul (hgc.mono hsub') ?_
+    by_cases hn : n = 0
+    · subst hn
+      simp only [LSeries.term_zero]
+      exact continuousOn_const
+    · have hterm : (fun y : ℝ => LSeries.term vM ((sigma1 : ℂ) + y * I) n)
+          = fun y : ℝ => vM n / ((n : ℂ) ^ ((sigma1 : ℂ) + y * I)) := by
+        funext y
+        rw [LSeries.term_of_ne_zero hn]
+      rw [hterm]
+      refine ContinuousOn.div continuousOn_const ?_ ?_
+      · exact (Continuous.const_cpow (by fun_prop)
+          (Or.inl (Nat.cast_ne_zero.mpr hn))).continuousOn
+      · intro y _
+        rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hn)]
+        exact Complex.exp_ne_zero _
+  -- the dominated bound: each edge lintegral is at most `len · C·‖term(σ₁,n)‖`
+  have hbound : ∀ n : ℕ,
+      (∫⁻ y in Set.Ioc T0 T1, ‖g ((sigma1 : ℂ) + y * I)
+          * LSeries.term vM ((sigma1 : ℂ) + y * I) n‖ₑ ∂MeasureTheory.volume)
+        ≤ ENNReal.ofReal (C * ‖LSeries.term vM (sigma1 : ℂ) n‖)
+            * ENNReal.ofReal (T1 - T0) := by
+    intro n
+    have hptb : ∀ y ∈ Set.Ioc T0 T1,
+        ‖g ((sigma1 : ℂ) + y * I) * LSeries.term vM ((sigma1 : ℂ) + y * I) n‖ₑ
+          ≤ ENNReal.ofReal (C * ‖LSeries.term vM (sigma1 : ℂ) n‖) := by
+      intro y hy
+      rw [← ofReal_norm]
+      refine ENNReal.ofReal_le_ofReal ?_
+      rw [norm_mul]
+      have h2 : ‖LSeries.term vM ((sigma1 : ℂ) + y * I) n‖
+          = ‖LSeries.term vM (sigma1 : ℂ) n‖ := by
+        rw [LSeries.norm_term_eq, LSeries.norm_term_eq, hre y, Complex.ofReal_re]
+      rw [h2]
+      exact mul_le_mul_of_nonneg_right (hC y (hsub' hy)) (norm_nonneg _)
+    calc (∫⁻ y in Set.Ioc T0 T1, ‖g ((sigma1 : ℂ) + y * I)
+            * LSeries.term vM ((sigma1 : ℂ) + y * I) n‖ₑ ∂MeasureTheory.volume)
+        ≤ ∫⁻ _ in Set.Ioc T0 T1,
+            ENNReal.ofReal (C * ‖LSeries.term vM (sigma1 : ℂ) n‖) ∂MeasureTheory.volume := by
+          refine MeasureTheory.lintegral_mono_ae ?_
+          filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioc] with y hy
+          exact hptb y hy
+      _ = ENNReal.ofReal (C * ‖LSeries.term vM (sigma1 : ℂ) n‖)
+            * ENNReal.ofReal (T1 - T0) := by
+          rw [MeasureTheory.setLIntegral_const, Real.volume_Ioc]
+  have hfin : (∑' n : ℕ, ∫⁻ y in Set.Ioc T0 T1, ‖g ((sigma1 : ℂ) + y * I)
+      * LSeries.term vM ((sigma1 : ℂ) + y * I) n‖ₑ ∂MeasureTheory.volume) ≠ ⊤ := by
+    refine ne_top_of_le_ne_top ?_ (ENNReal.tsum_le_tsum hbound)
+    rw [ENNReal.tsum_mul_right]
+    refine ENNReal.mul_ne_top ?_ ENNReal.ofReal_ne_top
+    rw [← ENNReal.ofReal_tsum_of_nonneg
+      (fun n => mul_nonneg hC0 (norm_nonneg _)) (hsumm.mul_left C)]
+    exact ENNReal.ofReal_ne_top
+  -- assemble: congr to the tsum integrand, swap, restore interval form termwise
+  rw [intervalIntegral.integral_congr hpt,
+    intervalIntegral.integral_of_le hT,
+    MeasureTheory.integral_tsum hmeas hfin]
+  exact tsum_congr fun n => (intervalIntegral.integral_of_le hT).symm
+
 end DiffractionCore
