@@ -1827,4 +1827,38 @@ theorem completedZeta_argChange_critical_eq_zeta_add_theta (T0 T1 : ℝ) (hT0 : 
   rw [theta_eq_argChangeVert_gammaR, theta_eq_argChangeVert_gammaR, hsplit]
   linarith [hθadd]
 
+/-! ## The pole "+1", first stone: extracting `ζ`'s simple pole at `s = 1` from its log-derivative.
+
+RvM's `+1` is the pole of `ζ` at `s = 1`.  The honest way to expose it (given the holomorphic
+Blaschke machinery `bd_logDeriv_zeta_eq_count` STRUCTURALLY excludes `s = 1`, via `hs1 : 1 ∉ ball`)
+is the meromorphic factorisation `ζ(s) = h(s)/(s − 1)` with `h(s) = ζ(s)·(s − 1)` analytic across
+`s = 1` (`h(1) = 1`, the residue) and `h`'s zeros in the strip EXACTLY `ζ`'s zeros (`s − 1 ≠ 0`
+off `1`).  Log-differentiating (where `ζ ≠ 0`, `s ≠ 1`):
+
+  `(log ζ)′(s) = (log h)′(s) − (s − 1)⁻¹`
+
+— the `−(s − 1)⁻¹` is the pole term whose box-winding is `−2π` (equivalently `+2π` for `h`'s
+factor), i.e. the `+1`, supplied by `pole_total_argChange`.  This is the pointwise stone; the
+remaining gap for the literal `+1` is the argument principle for `h` (entire across `s = 1`,
+same zeros) — a meromorphic re-instantiation of the holomorphic core, honestly out of brick scope.
+conjecture1_proved = False. -/
+
+/-- **The pole extraction**: `(log ζ)′(s) = (log(ζ·(·−1)))′(s) − (s−1)⁻¹` for `s ≠ 1`, `ζ(s) ≠ 0`.
+    Exhibits `ζ`'s simple pole at `s = 1` as the `−(s−1)⁻¹` term; `ζ·(·−1)` is the pole-free
+    (analytic-across-`1`) companion with the same strip zeros. -/
+theorem logDeriv_zeta_pole_extract {s : ℂ} (hs1 : s ≠ 1) (hζ : riemannZeta s ≠ 0) :
+    logDeriv riemannZeta s
+      = logDeriv (fun z : ℂ => riemannZeta z * (z - 1)) s - (s - 1)⁻¹ := by
+  have hd_zeta : DifferentiableAt ℂ riemannZeta s := differentiableAt_riemannZeta hs1
+  have hd_sub : DifferentiableAt ℂ (fun z : ℂ => z - 1) s :=
+    ((hasDerivAt_id s).sub_const 1).differentiableAt
+  have hsub_ne : (s - 1) ≠ 0 := sub_ne_zero.mpr hs1
+  have hmul : logDeriv (fun z : ℂ => riemannZeta z * (z - 1)) s
+      = logDeriv riemannZeta s + (s - 1)⁻¹ := by
+    have h := logDeriv_mul (f := riemannZeta) (g := fun z : ℂ => z - 1) s
+      hζ hsub_ne hd_zeta hd_sub
+    simp only [logDeriv_sub_const] at h
+    exact h
+  rw [hmul]; ring
+
 end DiffractionCore
