@@ -1576,4 +1576,45 @@ theorem argChangeVert_fold {sigma0 T0 T1 : ℝ} (hσ : sigma0 < 0) (hT0 : 0 < T0
   rw [eRe _ iζ0, eRe _ iζ1, eRe _ iΓ0, eRe _ iΓ1]
   linarith [main]
 
+/-! ## Brick 14 (THE POLE "+1"): the winding of the pole factor `(·−1)⁻¹`.
+
+RvM's `+1` is the contribution of the `s(s−1)/2` factor of `ξ` — equivalently, the single simple
+pole of `ζ` (or zero of `s−1`) at `s = 1`.  In argument-change vocabulary: the total continuous
+argument change of `fun s => s − 1` counterclockwise around any box containing `1` is exactly `2π`
+(winding number `1`).  Read off `rect_winding_generic` at `ρ = 1` via `logDeriv (·−1) = (·−1)⁻¹`
+and `.im`.  conjecture1_proved = False. -/
+
+/-- `logDeriv (fun s => s − c) = (· − c)⁻¹`. -/
+theorem logDeriv_sub_const (c z : ℂ) : logDeriv (fun s : ℂ => s - c) z = (z - c)⁻¹ := by
+  have hd : HasDerivAt (fun s : ℂ => s - c) 1 z := (hasDerivAt_id z).sub_const c
+  rw [logDeriv_apply, hd.deriv, one_div]
+
+/-- **THE POLE "+1"**: total argument change of `fun s => s − 1` around a box containing `1`
+    equals `2π` (winding number `1`) — the `+1` of `N(T) = θ(T)/π + 1 + S(T)`. -/
+theorem pole_total_argChange (sigma0 sigma1 T0 T1 : ℝ)
+    (hre0 : sigma0 < 1) (hre1 : 1 < sigma1) (him0 : T0 < 0) (him1 : 0 < T1) :
+    argChangeHoriz (fun s => s - 1) T0 sigma0 sigma1
+        - argChangeHoriz (fun s => s - 1) T1 sigma0 sigma1
+        + argChangeVert (fun s => s - 1) sigma1 T0 T1
+        - argChangeVert (fun s => s - 1) sigma0 T0 T1
+      = 2 * π := by
+  have hlog : ∀ z : ℂ, logDeriv (fun s : ℂ => s - 1) z = (z - 1)⁻¹ := fun z => logDeriv_sub_const 1 z
+  have hw := RHInBoxAnalytic.rect_winding_generic sigma0 sigma1 T0 T1 1
+    (by simpa using hre0) (by simpa using hre1) (by simpa using him0) (by simpa using him1)
+  unfold argChangeHoriz argChangeVert
+  simp only [hlog]
+  set A := ∫ x in sigma0..sigma1, ((↑x + (T0 : ℂ) * I) - 1)⁻¹ with hA
+  set B := ∫ x in sigma0..sigma1, ((↑x + (T1 : ℂ) * I) - 1)⁻¹ with hB
+  set C := ∫ y in T0..T1, (((sigma1 : ℂ) + ↑y * I) - 1)⁻¹ with hC
+  set D := ∫ y in T0..T1, (((sigma0 : ℂ) + ↑y * I) - 1)⁻¹ with hD
+  have him := congrArg Complex.im hw
+  rw [show (A - B + I • C - I • D).im = A.im - B.im + C.re - D.re by
+        simp only [Complex.sub_im, Complex.add_im, smul_eq_mul, Complex.mul_im,
+          Complex.I_im, Complex.I_re, one_mul, zero_mul, zero_add, mul_zero]] at him
+  rw [show (2 * (↑π : ℂ) * I).im = 2 * π by
+        simp only [Complex.mul_im, Complex.mul_re, Complex.I_im, Complex.I_re,
+          Complex.ofReal_re, Complex.ofReal_im, Complex.re_ofNat, Complex.im_ofNat]
+        ring] at him
+  linarith [him]
+
 end DiffractionCore
