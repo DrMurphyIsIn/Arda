@@ -40,6 +40,7 @@ import DlvpZetaRateEffective
 import DlvpZetaZeroFree
 import DlvpZetaSymmetry
 import DlvpTheta
+import DlvpCorridor
 
 #print axioms ZeroFreeBridge.dlvp_zeta_region_concrete
 #print axioms ZeroFreeBridge.dlvp_zeta_region_rate
@@ -74,3 +75,5 @@ import DlvpTheta
 #print axioms ZeroFreeBridge.binetLimit_eq_zero
 #print axioms ZeroFreeBridge.tendsto_digamma_sub_log
 #print axioms ZeroFreeBridge.norm_digamma_sub_log_le
+#print axioms ZeroFreeBridge.exists_gap_point
+#print axioms ZeroFreeBridge.norm_digamma_sub_log_add_three_le

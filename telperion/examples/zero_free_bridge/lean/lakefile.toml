@@ -387,3 +387,7 @@ name = "DlvpZetaSymmetry"
 # ray analyticity + integrand continuity + FTC derivative).  TURING_METHOD_SCOPING §3.
 [[lean_lib]]
 name = "DlvpTheta"
+
+# CORRIDOR bricks (Summit 1): C2 zero-gap pigeonhole + psi-shift effective digamma.
+[[lean_lib]]
+name = "DlvpCorridor"
