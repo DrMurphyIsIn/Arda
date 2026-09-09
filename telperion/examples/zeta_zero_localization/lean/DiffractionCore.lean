@@ -22,6 +22,8 @@
     conjecture1_proved = False. -/
 import Mathlib
 import RHInBoxAnalytic
+import ZetaZeroConfinement
+import DlvpTheta
 
 open Complex MeasureTheory Real
 open scoped Topology
@@ -775,5 +777,121 @@ theorem integral_vonMangoldt_term (σ T0 T1 : ℝ) {n : ℕ} (hn : 2 ≤ n) :
   have := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun y _ => hF y) hcont
   rw [this]
   ring
+
+/-! ## Brick 8 (EDGES-TO-LIMITS, structural half): the reflection identities — the LEFT edge
+speaks primes and Archimedean, with ZERO Arb inputs.
+
+The classical route sends the explicit formula's remaining edges to limits via the functional
+equation: `Λ(1−s) = Λ(s)` reflects the left edge (`Re < 0`) into the prime region (`Re > 1`).
+Here, kernel-side:
+
+  * `logDeriv_completedZeta_reflect` — `(log Λ)′(1−s) = −(log Λ)′(s)` (the FE, differentiated);
+  * `logDeriv_zeta_add_gammaR` — the split `(log Λ)′ = (log ζ)′ + (log Γℝ)′`;
+  * `logDeriv_zeta_reflect` — the ζ reflection identity;
+  * `left_edge_prime_reflection` — **for `Re s < 0`, `Im s ≠ 0`:**
+
+      `(log ζ)′(s) = L(Λ)(1−s) − (log Γℝ)′(s) − (log Γℝ)′(1−s)`
+
+    with EVERY hypothesis derived (`s ∉ {0,1}` from `Re < 0`; `ζ(s) ≠ 0` from the strip-location
+    theorem; `ζ(1−s) ≠ 0` and `Γℝ(1−s) ≠ 0` from `Re(1−s) > 1`; `Γℝ(s) ≠ 0` from `Im ≠ 0`;
+    the prime keystone at `1−s`).  The LEFT edge of any explicit-formula box in `Re < 0` is
+    therefore prime sums (mirrored) + two Archimedean `ψ`-integrals (`logDeriv_gammaR` expands
+    them into digammas — where the θ/Binet machinery lives) — **no ζ data, no Arb input**.
+
+    Remaining for the full classical limit: the horizontal edges as `T → ∞`, which requires the
+    `|ζ′/ζ| = O(log² T)` corridor lemma (zero-avoiding heights) — genuine further analysis,
+    honestly out of scope here.  conjecture1_proved = False. -/
+
+/-- The functional equation, log-differentiated: `(log Λ)′(1−s) = −(log Λ)′(s)`. -/
+theorem logDeriv_completedZeta_reflect {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
+    logDeriv completedRiemannZeta (1 - s) = - logDeriv completedRiemannZeta s := by
+  have h10 : (1 : ℂ) - s ≠ 0 := fun h => hs1 (by linear_combination -h)
+  have h11 : (1 : ℂ) - s ≠ 1 := fun h => hs0 (by linear_combination -h)
+  have hd1s : DifferentiableAt ℂ completedRiemannZeta (1 - s) :=
+    differentiableAt_completedZeta h10 h11
+  have hsymm : (fun z : ℂ => completedRiemannZeta (1 - z)) = completedRiemannZeta :=
+    funext fun z => completedRiemannZeta_one_sub z
+  have hinner : HasDerivAt (fun z : ℂ => (1 : ℂ) - z) (-1) s := by
+    simpa using (hasDerivAt_id s).const_sub 1
+  have hcomp : HasDerivAt (fun z : ℂ => completedRiemannZeta (1 - z))
+      (deriv completedRiemannZeta (1 - s) * (-1)) s :=
+    hd1s.hasDerivAt.comp s hinner
+  have h1 := hcomp.deriv
+  rw [hsymm] at h1
+  have hkey : deriv completedRiemannZeta (1 - s) = - deriv completedRiemannZeta s := by
+    linear_combination h1
+  rw [logDeriv_apply, logDeriv_apply, completedRiemannZeta_one_sub, hkey]
+  ring
+
+/-- The split `(log Λ)′ = (log ζ)′ + (log Γℝ)′` at any `s ∉ {0,1}` with `ζ(s), Γℝ(s) ≠ 0`. -/
+theorem logDeriv_zeta_add_gammaR {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
+    (hζ : riemannZeta s ≠ 0) (hG : Gammaℝ s ≠ 0) :
+    logDeriv completedRiemannZeta s = logDeriv riemannZeta s + logDeriv Gammaℝ s := by
+  have hGdiff : DifferentiableAt ℂ Gammaℝ s := by
+    have hpole : ∀ m : ℕ, s / 2 ≠ -(m : ℂ) := by
+      intro m hm
+      apply hG
+      rw [Complex.Gammaℝ_eq_zero_iff]
+      exact ⟨m, by linear_combination 2 * hm⟩
+    have hhalf : HasDerivAt (fun z : ℂ => z / 2) ((1 : ℂ) / 2) s := by
+      simpa using (hasDerivAt_id s).div_const 2
+    have hB : HasDerivAt (fun z : ℂ => Complex.Gamma (z / 2))
+        (deriv Complex.Gamma (s / 2) * (1 / 2)) s :=
+      ((Complex.differentiableAt_Gamma _ hpole).hasDerivAt).comp s hhalf
+    have hGdef : Gammaℝ = fun z : ℂ => ZeroFreeBridge.gammaRArch z * Complex.Gamma (z / 2) := rfl
+    rw [hGdef]
+    exact ((ZeroFreeBridge.gammaRArch_hasDerivAt s).differentiableAt).mul hB.differentiableAt
+  have hζdiff : DifferentiableAt ℂ riemannZeta s := differentiableAt_riemannZeta hs1
+  have hev : completedRiemannZeta =ᶠ[nhds s] fun z => riemannZeta z * Gammaℝ z := by
+    filter_upwards [isOpen_ne.mem_nhds hs0, hGdiff.continuousAt.eventually_ne hG] with z hz0 hzG
+    rw [riemannZeta_def_of_ne_zero hz0]
+    field_simp
+  rw [RHInBoxAnalytic.logDeriv_congr_nhds hev, logDeriv_mul s hζ hG hζdiff hGdiff]
+
+/-- **The ζ reflection identity** (log-differentiated functional equation, split form). -/
+theorem logDeriv_zeta_reflect {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
+    (hζs : riemannZeta s ≠ 0) (hζ1s : riemannZeta (1 - s) ≠ 0)
+    (hGs : Gammaℝ s ≠ 0) (hG1s : Gammaℝ (1 - s) ≠ 0) :
+    logDeriv riemannZeta (1 - s)
+      = - logDeriv riemannZeta s - logDeriv Gammaℝ s - logDeriv Gammaℝ (1 - s) := by
+  have h10 : (1 : ℂ) - s ≠ 0 := fun h => hs1 (by linear_combination -h)
+  have h11 : (1 : ℂ) - s ≠ 1 := fun h => hs0 (by linear_combination -h)
+  have h1 := logDeriv_zeta_add_gammaR h10 h11 hζ1s hG1s
+  have h2 := logDeriv_zeta_add_gammaR hs0 hs1 hζs hGs
+  have h3 := logDeriv_completedZeta_reflect hs0 hs1
+  linear_combination h3 - h1 - h2
+
+/-- **THE LEFT EDGE SPEAKS PRIMES — zero Arb inputs.**  For `Re s < 0`, `Im s ≠ 0`:
+    `(log ζ)′(s) = L(Λ)(1−s) − (log Γℝ)′(s) − (log Γℝ)′(1−s)` — every hypothesis derived. -/
+theorem left_edge_prime_reflection {s : ℂ} (hre : s.re < 0) (him : s.im ≠ 0) :
+    logDeriv riemannZeta s
+      = LSeries (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ)) (1 - s)
+        - logDeriv Gammaℝ s - logDeriv Gammaℝ (1 - s) := by
+  have hs0 : s ≠ 0 := fun h => by rw [h] at hre; simp at hre
+  have hs1 : s ≠ 1 := fun h => by rw [h] at hre; norm_num at hre
+  have hre1s : 1 < (1 - s).re := by
+    rw [Complex.sub_re, Complex.one_re]
+    linarith
+  have hζs : riemannZeta s ≠ 0 := fun hz =>
+    absurd (ZetaZeroConfinement.zeta_zero_re_mem_strip him hz).1 (by linarith)
+  have hζ1s : riemannZeta (1 - s) ≠ 0 :=
+    riemannZeta_ne_zero_of_one_le_re (le_of_lt hre1s)
+  have hGs : Gammaℝ s ≠ 0 := by
+    rw [Ne, Complex.Gammaℝ_eq_zero_iff]
+    rintro ⟨n, hn⟩
+    apply him
+    rw [hn]
+    simp
+  have hG1s : Gammaℝ (1 - s) ≠ 0 :=
+    Complex.Gammaℝ_ne_zero_of_re_pos (by linarith)
+  -- reflect, then expand the mirror point (`Re > 1`) by the prime keystone
+  have hrefl := logDeriv_zeta_reflect
+    (fun h => hs1 (by linear_combination -h))   -- (1−s) ≠ 0 case reuses: apply at s' := 1−s
+    (fun h => hs0 (by linear_combination -h))
+    hζ1s (by rw [show (1:ℂ) - (1 - s) = s by ring]; exact hζs)
+    hG1s (by rw [show (1:ℂ) - (1 - s) = s by ring]; exact hGs)
+  rw [show (1:ℂ) - (1 - s) = s by ring] at hrefl
+  have hkey := logDeriv_zeta_eq_neg_LSeries_vonMangoldt hre1s
+  linear_combination hrefl - hkey
 
 end DiffractionCore
