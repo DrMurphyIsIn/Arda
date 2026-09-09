@@ -9,7 +9,10 @@ reader should understand them: first where the zeros \emph{cannot} be (zero-free
 regions, culminating in an effective de la Vallée-Poussin region), then where
 they \emph{are} (a complete finite Turing verification to height $4000$), and
 finally what they \emph{mean} (the finite-height explicit formula---the
-diffraction identity of Dyson's quasicrystal picture \cite{dyson2009}). Each
+diffraction identity of Dyson's quasicrystal picture \cite{dyson2009})---with,
+along the way, finite prefixes of two classical RH criteria and the
+largely-built kernel program toward the Riemann--von Mangoldt counting formula.
+Each
 result is stated with an honest account of how it sits relative to the classical
 literature, and in every case it falls well short of the Riemann Hypothesis.
 
@@ -84,7 +87,7 @@ but we have not improved the rate (Vinogradov--Korobov is stronger still), and a
 zero-free region is not RH. The contribution, here as throughout, is the
 machine-checked path---dVP is a theorem of 1896---stated at exactly its strength.
 
-\subsection{A second criterion: Jensen--P\'olya hyperbolicity}
+\subsection{Criterion prefixes: Jensen--P\'olya hyperbolicity and Li positivity}
 
 The zero-free regions are not the only honestly-scoped RH statement the pipeline
 reaches. The Griffin--Ono--Rolen--Zagier theorem \cite{gorz2019} restates RH as the
@@ -101,18 +104,18 @@ second, independent, honestly-scoped kernel-verified statement about $\zeta$,
 produced by the same pipeline and exhibiting yet another certificate shape (a
 real-rootedness / hyperbolicity certificate rather than a positivity one).
 
-A second criterion has since joined it in the same prefix-certificate shape:
-\emph{Li's criterion}. Building on an external Lean formalization of the upstream
+Li's criterion has since joined it in the same prefix-certificate shape.
+Building on an external Lean formalization of the upstream
 reduction ($\mathrm{RH} \leftrightarrow \forall n,\ 0 \le
 \operatorname{Re}(\text{taylorCoeff}\ \xi\ n)$; credited in the repository's
 \texttt{NOTICE}), a Telperion emitter certifies finite rungs of the positivity
 ladder, each from a certified positive rational lower bound on the actual $\xi$
-Taylor coefficient --- the bound an explicit Arb hypothesis, the same trust seam
+Taylor coefficient---the bound an explicit Arb hypothesis, the same trust seam
 as every enclosure in this section. Two flags travel with it, stated as
 sharply as the Borel--Carath\'eodory draft's: at this writing the emitted Lean is
 verified locally but not yet in the CI compile (it awaits the upstream library as
 a build dependency), so it does not yet sit on the CI-guarded list; and the
-uniform $\forall n$ \emph{is} RH itself --- finitely many rungs are emphatically
+uniform $\forall n$ \emph{is} RH itself---finitely many rungs are emphatically
 not, and never will be.
 
 \subsection{A third route: verifying RH inside a box}
@@ -214,7 +217,7 @@ certificate shape (winding / argument-principle zero-counting).
 The tiled certificates above consume their per-band winding integers as
 documented numeric hypotheses. The classical machine that \emph{derives} such
 counts is the Riemann--von Mangoldt formula, $N(T) = \theta(T)/\pi + 1 + S(T)$
---- and a program to bring that machine into the kernel is now largely built.
+---and a program to bring that machine into the kernel is now largely built.
 We report it at exact strength: every claim in this subsection is a merged,
 CI-axiom-guarded theorem, and the one thing that is \emph{not} yet a theorem is
 named at the end.
@@ -231,21 +234,21 @@ splits exactly,
 \[
   \Delta_L \arg \Lambda \;=\; \theta(T) + \pi S(T),
 \]
-with a single hypothesis --- $\zeta \ne 0$ on the height-$T$ horizontal, the
+with a single hypothesis---$\zeta \ne 0$ on the height-$T$ horizontal, the
 classical ``$T$ not a zero ordinate'' caveat, carried as a hypothesis rather than
 prose. Two symmetry folds (the functional-equation reflection and Schwarz
 conjugation) give $\Delta_{\mathrm{box}} = 2\,\Delta_L$.
 
 The formula's $+1$ is the pole of $\zeta$ at $s = 1$, and it too is now a theorem
 rather than a citation: the companion $H(s) = (s-1)\zeta(s)$, with the removable
-singularity filled by the residue, is \emph{entire}, and --- the lesson of this
-campaign applied --- its zero set is not asserted but \emph{proved}:
+singularity filled by the residue, is \emph{entire}, and---the lesson of this
+campaign applied---its zero set is not asserted but \emph{proved}:
 $H(z) = 0 \leftrightarrow z \ne 1 \wedge \zeta(z) = 0$, in the axiom guard. The
 box argument principle, made generic and instantiated at $H$, then yields the
 meromorphic count for $\zeta$ itself: for a box containing $s = 1$, the zero count
 is the boundary winding over $2\pi$ \emph{plus one}. On the classical rectangle
 $[-1,2] \times [T_0,T_1]$ the same machinery gives a band-difference decomposition
-of $2\pi N$ into edge data --- precisely the object each tiled band consumes ---
+of $2\pi N$ into edge data---precisely the object each tiled band consumes ---
 so this program, completed, would \emph{derive} what the ladder currently assumes,
 shrinking the numeric trust surface exactly as the left-edge reflection did for
 the explicit-formula box.
@@ -253,12 +256,12 @@ the explicit-formula box.
 The honest ceiling, stated as the merged PRs state it: the literal
 $N(T) = \theta(T)/\pi + 1 + S(T)$ still requires the box argument principle for
 $\Lambda$ with its poles at $0$ and $1$, together with the $T_0 \to 0^+$
-real-axis base --- genuine construction, not assembly, and \emph{not claimed}.
+real-axis base---genuine construction, not assembly, and \emph{not claimed}.
 One mid-course correction is part of the record and worth citing as lived
 practice for \cref{sec:vacuity}: an early route through the entire function
 $\Lambda_0$ was retired when its zero set was checked against Mathlib's own
 $\Lambda = \Lambda_0 - 1/s - 1/(1-s)$ (the nontrivial zeros are \emph{not}
-$\Lambda_0$'s), the correction written into the corpus --- the kernel guards
+$\Lambda_0$'s), the correction written into the corpus---the kernel guards
 statements, and the discipline guards what the statements are about.
 
 \subsection{A fourth shape: the explicit formula at finite height}
