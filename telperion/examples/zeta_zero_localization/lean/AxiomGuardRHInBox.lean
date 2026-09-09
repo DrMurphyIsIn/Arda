@@ -232,3 +232,4 @@ import StripClear
 #print axioms DiffractionCore.fold_pointwise
 #print axioms DiffractionCore.argChangeVert_fold
 #print axioms DiffractionCore.pole_total_argChange
+#print axioms DiffractionCore.zero_count_band_edge_decomp

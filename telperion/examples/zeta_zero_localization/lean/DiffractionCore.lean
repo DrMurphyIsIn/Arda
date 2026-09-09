@@ -1617,4 +1617,52 @@ theorem pole_total_argChange (sigma0 sigma1 T0 T1 : ℝ)
         ring] at him
   linarith [him]
 
+/-! ## Brick 15 (THE RvM BAND-DIFFERENCE CAPSTONE): the zero-count of a height band as explicit
+edge argument-changes.
+
+Combining the four RvM ingredients on the classical symmetric rectangle `[−1, 2] × [T0, T1]`
+(`σ₀ = −1` ⟹ `1 − σ₀ = 2`, so the fold's mirror line IS the right edge):
+
+  `2π · N_band  =  2·AV(ζ,2) + AH(ζ,T1,·,−1) − AH(ζ,T0,·,−1) + AV(Γℝ,−1) + AV(Γℝ,2)`
+
+— `count_eq_argZeta_diff_sub_left` gives the count as the argZeta jump minus the left edge;
+`argChangeVert_zeta_line2_add` telescopes the `Re = 2` verticals; `argChangeVert_fold` eliminates
+the left edge in favour of the right edge + the two Archimedean edges.  This is the DIFFERENCE
+(band) form of Riemann–von Mangoldt — the exact object the tiling/Turing height-ladder consumes
+(`N(T1) − N(T0)`); the pole `+1` correctly does NOT appear (the pole `s = 1` sits at height `0`,
+below the band `0 < T0`).  The full `N(T) = θ(T)/π + 1 + S(T)` is the `T0 → 0⁺` limit with the
+real-axis base (where `pole_total_argChange` supplies the `+1`) and the ξ-doubling that identifies
+the edge Archimedean terms with `θ` on the critical line — the honestly-remaining geometric
+reduction.  conjecture1_proved = False. -/
+
+/-- **RvM, band-difference form**: the ζ-zero count of `[−1,2] × [T0,T1]` (positive band) as an
+    explicit combination of ζ- and Γℝ-argument-changes on the box edges. -/
+theorem zero_count_band_edge_decomp (T0 T1 : ℝ) (hT0 : 0 < T0) (hT : T0 ≤ T1)
+    (c : ℂ) (R : ℝ)
+    (hbox_ball : ∀ ρ : ℂ, ((-1 : ℝ) ≤ ρ.re ∧ ρ.re ≤ 2) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hs1 : (1 : ℂ) ∉ Metric.ball c R)
+    (hnzb : ∀ x ∈ Set.uIcc (-1 : ℝ) 2, riemannZeta (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc (-1 : ℝ) 2, riemannZeta (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, riemannZeta (((-1 : ℝ) : ℂ) + ↑y * I) ≠ 0)
+    (hins : ∀ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+      (-1 : ℝ) < ρ.re ∧ ρ.re < 2 ∧ T0 < ρ.im ∧ ρ.im < T1) :
+    2 * π * (∑ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+        (((MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ) ρ : ℤ) : ℝ))
+      = 2 * argChangeVert riemannZeta 2 T0 T1
+        + argChangeHoriz riemannZeta T1 2 (-1) - argChangeHoriz riemannZeta T0 2 (-1)
+        + argChangeVert Gammaℝ (-1) T0 T1 + argChangeVert Gammaℝ 2 T0 T1 := by
+  have hcount := count_eq_argZeta_diff_sub_left (-1) T0 T1 (by norm_num) hT c R
+    hbox_ball hs1 hnzb hnzt hnzl hins
+  have hfold := argChangeVert_fold (sigma0 := -1) (by norm_num) hT0 hT
+  -- fold at σ₀ = -1 : 1 - (-1) = 2
+  rw [show (1 : ℝ) - (-1) = 2 by norm_num] at hfold
+  -- expand argZeta and telescope the Re = 2 verticals
+  have hadd := argChangeVert_zeta_line2_add T0 T1
+  unfold argZeta at hcount
+  -- argZeta (-1) T1 - argZeta (-1) T0
+  --   = (AV(ζ,2,0,T1) + AH(ζ,T1,2,-1)) - (AV(ζ,2,0,T0) + AH(ζ,T0,2,-1))
+  -- AV(ζ,2,0,T1) - AV(ζ,2,0,T0) = AV(ζ,2,T0,T1)   [hadd]
+  linarith [hcount, hfold, hadd]
+
 end DiffractionCore
