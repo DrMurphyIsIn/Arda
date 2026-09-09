@@ -282,3 +282,6 @@ import StripClear
 #print axioms DiffractionCore.argChangeL_sub_const
 #print axioms DiffractionCore.pole_pathL_eq_pi
 #print axioms DiffractionCore.xiTele_pathL_eq
+#print axioms DiffractionCore.logDeriv_xiTele_reflect
+#print axioms DiffractionCore.logDeriv_xiTele_conj
+#print axioms DiffractionCore.fold_pointwise_xiTele
