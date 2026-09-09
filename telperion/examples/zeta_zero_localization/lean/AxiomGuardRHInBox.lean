@@ -223,3 +223,4 @@ import StripClear
 #print axioms DiffractionCore.left_edge_prime_reflection
 #print axioms DiffractionCore.bd_logDeriv_zeta_eq_count
 #print axioms DiffractionCore.zeta_total_argChange_eq_count
+#print axioms DiffractionCore.theta_eq_argChangeVert_gammaR

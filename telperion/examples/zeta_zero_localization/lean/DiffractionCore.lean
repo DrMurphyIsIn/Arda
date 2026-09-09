@@ -1009,4 +1009,71 @@ theorem zeta_total_argChange_eq_count
       = (Nsum : ℝ) := by rw [hNsum]; push_cast; ring
   rw [hsumcast]
 
+/-! ## Brick 11 (RvM bookkeeping, phase 1): `S(T)` defined branch-free, and
+`θ(T)` IS the Archimedean argument-change up the critical line.
+
+With the argChange vocabulary the classical objects become DEFINITIONS, not constructions:
+
+  * `riemannS T` — the argument of `ζ` at `1/2 + iT` by continuous variation along the standard
+    zero-avoiding path (`2 → 2 + iT → 1/2 + iT`), divided by `π`.  Branch-free: each leg is an
+    `Im`/`Re` of a log-derivative integral.  (Total function; its RvM meaning requires the path
+    to avoid zeros, i.e. `T` not a zero-ordinate — the classical caveat, honestly inherited.)
+  * `theta_eq_argChangeVert_gammaR` — **`θ(T) = argChangeVert Γℝ (1/2) 0 T`**: the Riemann–Siegel
+    phase IS the continuous Archimedean argument change up the critical line, welding the
+    `DlvpTheta` campaign to the argument-principle machinery.  (Proof: the Archimedean bridge
+    `thetaIntegrand_eq_re_logDeriv_gammaR` + `intervalIntegral_re`; integrability from the
+    digamma ray continuity built in `DlvpTheta`.)
+
+Remaining RvM assembly: the Λ-split of the box argument-change (linearity over
+`logDeriv_zeta_add_gammaR`), the FE-fold, and the `s(s−1)/2` pole bookkeeping — assembly on
+these pieces.  conjecture1_proved = False. -/
+
+/-- **`S(T)`, branch-free**: `π·S(T)` is the continuous argument change of `ζ` along
+    `2 → 2+iT → 1/2+iT`. -/
+noncomputable def riemannS (T : ℝ) : ℝ :=
+  (argChangeVert riemannZeta 2 0 T + argChangeHoriz riemannZeta T 2 (1/2)) / π
+
+/-- The vertical leg at `Re = 2` starts at zero. -/
+theorem argChangeVert_zero (f : ℂ → ℂ) (σ : ℝ) : argChangeVert f σ 0 0 = 0 := by
+  unfold argChangeVert
+  rw [intervalIntegral.integral_same]
+  rfl
+
+/-- The critical-line `Γℝ` log-derivative is continuous in the height (via the digamma ray). -/
+theorem continuous_logDeriv_gammaR_line :
+    Continuous (fun y : ℝ => logDeriv Gammaℝ ((1/2 : ℂ) + y * I)) := by
+  have hfun : (fun y : ℝ => logDeriv Gammaℝ ((1/2 : ℂ) + y * I))
+      = fun y : ℝ => -(Real.log Real.pi : ℂ) / 2
+          + (1 / 2) * Complex.digamma (ZeroFreeBridge.thetaRay y) := by
+    funext y
+    have hhalf : ((1/2 : ℂ) + y * I) / 2 = ZeroFreeBridge.thetaRay y := by
+      unfold ZeroFreeBridge.thetaRay
+      push_cast
+      ring
+    have hs : 0 < (((1/2 : ℂ) + y * I) / 2).re := by
+      rw [hhalf, ZeroFreeBridge.thetaRay_re]
+      norm_num
+    rw [ZeroFreeBridge.logDeriv_gammaR _ hs, hhalf]
+  rw [hfun]
+  refine continuous_const.add (continuous_const.mul ?_)
+  refine continuous_iff_continuousAt.mpr fun y => ?_
+  exact (ZeroFreeBridge.digamma_continuousAt_thetaRay y).comp
+    ZeroFreeBridge.thetaRay_continuous.continuousAt
+
+/-- **`θ` IS the Archimedean argument change up the critical line**:
+    `riemannSiegelTheta T = argChangeVert Γℝ (1/2) 0 T`. -/
+theorem theta_eq_argChangeVert_gammaR (T : ℝ) :
+    ZeroFreeBridge.riemannSiegelTheta T = argChangeVert Gammaℝ (1/2) 0 T := by
+  have hInt : IntervalIntegrable (fun y : ℝ => logDeriv Gammaℝ ((1/2 : ℂ) + y * I))
+      MeasureTheory.volume 0 T :=
+    continuous_logDeriv_gammaR_line.intervalIntegrable 0 T
+  have h := intervalIntegral.intervalIntegral_re (𝕜 := ℂ) hInt
+  simp only [RCLike.re_to_complex] at h
+  unfold argChangeVert
+  rw [show (((1/2 : ℝ)) : ℂ) = (1/2 : ℂ) by norm_num, ← h]
+  unfold ZeroFreeBridge.riemannSiegelTheta
+  apply intervalIntegral.integral_congr
+  intro u _
+  exact ZeroFreeBridge.thetaIntegrand_eq_re_logDeriv_gammaR u
+
 end DiffractionCore
