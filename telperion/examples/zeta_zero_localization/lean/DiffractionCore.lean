@@ -1861,4 +1861,74 @@ theorem logDeriv_zeta_pole_extract {s : ℂ} (hs1 : s ≠ 1) (hζ : riemannZeta 
     exact h
   rw [hmul]; ring
 
+/-! ## The pole-free companion `H = (s−1)·ζ(s)`, ENTIRE — the analytic foundation of the `+1`.
+
+The pole-extraction (`logDeriv_zeta_pole_extract`) reduces the `+1` to the argument principle for
+`h(s) = (s−1)·ζ(s)`, but that principle needs `h` ANALYTIC across `s = 1` (the holomorphic Blaschke
+core cannot see a pole).  `ζ` has a simple pole at `1`, so `(s−1)·ζ(s)` has a REMOVABLE singularity:
+`riemannZeta_residue_one` gives `(s−1)·ζ(s) → 1` as `s → 1`.  Defining
+
+  `zetaPoleCompanion = update (fun z => (z−1)·ζ(z)) 1 1`
+
+the removable-singularity theorem (`analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt`)
+makes it ENTIRE, with `H(1) = 1 ≠ 0` and zeros EXACTLY `ζ`'s non-`1` zeros.  This is the complete
+analytic prerequisite the `h`-argument-principle stands on — everything except the (large)
+re-instantiation of the Blaschke winding-count for `H`, which is the honestly-remaining lift.
+conjecture1_proved = False. -/
+
+/-- The pole-free companion `H(s) = (s−1)·ζ(s)`, with the removable singularity at `1` filled by
+    its residue `H(1) = 1`. -/
+noncomputable def zetaPoleCompanion : ℂ → ℂ :=
+  Function.update (fun z : ℂ => (z - 1) * riemannZeta z) 1 1
+
+/-- Off `1`, the companion IS `(s−1)·ζ(s)`. -/
+theorem zetaPoleCompanion_apply_of_ne {z : ℂ} (hz : z ≠ 1) :
+    zetaPoleCompanion z = (z - 1) * riemannZeta z := by
+  rw [zetaPoleCompanion, Function.update_of_ne hz]
+
+/-- At `1` the companion equals the residue `1`. -/
+theorem zetaPoleCompanion_one : zetaPoleCompanion 1 = 1 := by
+  rw [zetaPoleCompanion, Function.update_self]
+
+/-- **The removable singularity**: the companion is analytic at `1` (residue fills the pole). -/
+theorem analyticAt_zetaPoleCompanion_one : AnalyticAt ℂ zetaPoleCompanion 1 := by
+  apply analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt
+  · filter_upwards [self_mem_nhdsWithin] with z hz
+    have hz1 : z ≠ 1 := hz
+    have heq : zetaPoleCompanion =ᶠ[nhds z] fun w : ℂ => (w - 1) * riemannZeta w := by
+      filter_upwards [isOpen_ne.mem_nhds hz1] with w hw
+      exact zetaPoleCompanion_apply_of_ne hw
+    rw [heq.differentiableAt_iff]
+    have hd_sub : DifferentiableAt ℂ (fun w : ℂ => w - 1) z :=
+      ((hasDerivAt_id z).sub_const 1).differentiableAt
+    exact hd_sub.mul (differentiableAt_riemannZeta hz1)
+  · rw [zetaPoleCompanion, continuousAt_update_same]
+    exact riemannZeta_residue_one
+
+/-- **The companion is ENTIRE**: analytic at every point (product off `1`, removable at `1`). -/
+theorem analyticAt_zetaPoleCompanion (z : ℂ) : AnalyticAt ℂ zetaPoleCompanion z := by
+  rcases eq_or_ne z 1 with rfl | hz1
+  · exact analyticAt_zetaPoleCompanion_one
+  · have heq : zetaPoleCompanion =ᶠ[nhds z] fun w : ℂ => (w - 1) * riemannZeta w := by
+      filter_upwards [isOpen_ne.mem_nhds hz1] with w hw
+      exact zetaPoleCompanion_apply_of_ne hw
+    have hsub : AnalyticAt ℂ (fun w : ℂ => w - 1) z :=
+      (analyticAt_id).sub analyticAt_const
+    exact (hsub.mul (analyticOn_riemannZeta z hz1)).congr heq.symm
+
+/-- `H` is differentiable on all of `ℂ` (entire). -/
+theorem differentiable_zetaPoleCompanion : Differentiable ℂ zetaPoleCompanion :=
+  fun z => (analyticAt_zetaPoleCompanion z).differentiableAt
+
+/-- **The zeros of the companion are EXACTLY `ζ`'s non-`1` zeros**: `H z = 0 ↔ z ≠ 1 ∧ ζ z = 0`.
+    (`H(1) = 1 ≠ 0`; off `1`, `H = (s−1)·ζ` vanishes iff `ζ` does.) -/
+theorem zetaPoleCompanion_eq_zero_iff {z : ℂ} :
+    zetaPoleCompanion z = 0 ↔ z ≠ 1 ∧ riemannZeta z = 0 := by
+  rcases eq_or_ne z 1 with rfl | hz1
+  · rw [zetaPoleCompanion_one]
+    simp
+  · rw [zetaPoleCompanion_apply_of_ne hz1, mul_eq_zero]
+    have hsub : (z - 1) ≠ 0 := sub_ne_zero.mpr hz1
+    simp [hsub, hz1]
+
 end DiffractionCore

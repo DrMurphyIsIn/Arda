@@ -239,3 +239,7 @@ import StripClear
 #print axioms DiffractionCore.argChangeVert_gammaR_line_add
 #print axioms DiffractionCore.completedZeta_argChange_critical_eq_zeta_add_theta
 #print axioms DiffractionCore.logDeriv_zeta_pole_extract
+#print axioms DiffractionCore.analyticAt_zetaPoleCompanion_one
+#print axioms DiffractionCore.analyticAt_zetaPoleCompanion
+#print axioms DiffractionCore.differentiable_zetaPoleCompanion
+#print axioms DiffractionCore.zetaPoleCompanion_eq_zero_iff
