@@ -119,3 +119,4 @@ import StripClear
 #print axioms StripClear.hclear_low_of_box_certs
 #print axioms StripClear.height_floor_of_box_certs
 #print axioms StripClear.all_nontrivial_zeros_up_to_height_100_strip_cleared
+#print axioms DiffractionCore.rect_explicit_formula
