@@ -111,10 +111,16 @@ The move at `par_w = node[leaf_w, par_v, *Other]`, `par_v = node[leaf_v, *Bv]` (
 
 - **usize**: `usize` congruence + `usize(par_v)=usize(par_v')` (leaf->stem is size-preserving at v; leaf_w
   moves into stem). Mechanical.
-- **Aobj (`<=`)**: root-invariance (`Aobj_node_perm`) roots the whole tree at `par_w`; then the closed-form
-  increment `= PB·PO·N / [2(nB+2)(nO+1)(nO+2)]` with `N = N(QB,QO,nB,nO)` and `N >= N0 = nO(nB·nO+nB+nO-2)`.
-  Direct cavity computation (like `twoHub_le_tie` / the PC6 bridge) + `nlinarith`. This is the substantial
-  half (needs the closed forms of `node[leaf_w,par_v,Other]` and `node[par_v',Other]`).
+- **Aobj (`<=`)**: BETTER than root-invariance — the move **LIFTS unconditionally** (verified: the acted
+  node `par_w` satisfies BOTH gains `G1: Ztot(dtSub) up` and `G2: Zopen(dtSub)/udeg up`, 0/40000, given
+  `nB>=1`). So use the existing `dtSub_gains_lift` + `Aobj_child_replace_of_gains` machinery (like
+  `FlpStepAt`), no re-rooting. The base gains reduce to real-var inequalities in the aggregates
+  `(PB,QB,nB,PO,QO,nO)` via `Ztot_dtSub_node_eq` (`Ztot(dtSub node cs) = ∏·(1 + qSum/(len+1))`), the flp
+  cavity values, and `qContrib(par_v) = 1/(nB+3+QB)` (the `PB` cancels).
+  **★ CORE ARITHMETIC LEAN-VERIFIED:** after cancelling `1/(nB+3+QB)`,
+    G1  ⟺  `2(2+nO)[(nB+3+QB)(4+nO+QO)+1] <= (3+nO)[(3nB+7+3QB)(2+nO+QO)+3]`  — proven by `nlinarith`;
+    G2  ⟺  `2(2+nO)(nB+3+QB) <= (3nB+7+3QB)(3+nO)`  — all-positive coeffs (`5nB+9+5QB+nB·nO+nO+QB·nO >= 0`).
+  So the substantial half is DE-RISKED: the hard cavity inequality is `nlinarith`-tractable and confirmed.
 - **strDefect (`<`)**: the novel structural core — `nB=0 ⟹ par_v=cherry (piece), par_v'=arm (piece)`, a
   piece->piece change, and `leaf_w` a piece, so the move preserves `strDefect`; hence a `strDefect`-reducing
   instance forces `nB>=1`. Pure `isPiece` computation. Then package the `nB>=1` defect drop.
