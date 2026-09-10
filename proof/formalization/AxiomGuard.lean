@@ -77,6 +77,7 @@ import R3Cert.R47TieArgmax
 import R3Cert.R47AdjLeafStruct
 import R3Cert.R47AdjLeafGains
 import R3Cert.R47AdjLeafStep
+import R3Cert.R47CoverRelation
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -359,3 +360,7 @@ import R3Cert.R47AdjLeafStep
 
 -- ADJACENT LEAF StraightStep COMPLETE (2026-09-10): the first coverage extension beyond FlpStepAt.
 #print axioms R3Cert.Step3.adjLeaf_straightStep
+
+-- COVER RELATION (2026-09-10): CoverR = FlpStepAt + AdjLeafStep refines StraightStep_sized; Hnorm reduces
+-- to CoverR coverage (hnorm_of_coverR_coverage). Sole open obligation = coverage.
+#print axioms R3Cert.Step3.hnorm_of_coverR_coverage
