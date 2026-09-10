@@ -317,6 +317,32 @@ _SPECIAL_KINDS = (
     "multilinear_perturbation",
     "poly_geom_closure",
     "twopoint_moment",
+    # NS/Euler wave-4 (2026-09-09): 2x2 solution-entry bound (scalar, no Matrix),
+    # ratio-recurrence telescoping (factorial/geometric/index normal forms),
+    # monomial budget ladder (symbolic-base exponent absorption), rpow exponent
+    # budget (k-power collapse, linarith at the exponent level).
+    "two_row_solve",
+    "ratio_telescope",
+    "monomial_ladder",
+    "rpow_budget",
+    # NS/Euler wave-5 (2026-09-09): comparability/Lipschitz envelope atoms
+    # (rpow both-signs, sqrt conjugate-multiply, 1+x^2 denominator kill),
+    # discrete-moment atoms (simplex second moment + squareDecay convolution
+    # calculus incl. the reciprocal-square telescope), and parameterized
+    # poly-exp absorption exp(-1/(2lam))/lam^m <= (4m)^m exp(-1/(4lam)).
+    "comparability_envelope",
+    "discrete_moment",
+    "poly_exp_absorption",
+    # NS/Euler wave-6 (2026-09-09, campaign closeout): graded-convolution
+    # endpoint identities, power-tower recurrence closure, Faa di Bruno
+    # partition-sum bound, forbidden-factor word invariant (first discrete
+    # axis), low-order + geometric-tail hybrid, eventual scaling threshold.
+    "graded_convolution",
+    "power_tower",
+    "partition_composition",
+    "regular_word",
+    "low_order_tail",
+    "eventual_threshold",
 )
 
 # kind -> "module:certify_point_fn" for the generic (family.special) emitters.
@@ -483,6 +509,38 @@ _SPECIAL_DISPATCH = {
     "twopoint_moment":
         ("emit_twopoint_moment", "certify_twopoint_moment_point",
          "TwoPointMomentEmitter"),
+    "two_row_solve":
+        ("emit_two_row_solve", "certify_two_row_solve_point", "TwoRowSolveEmitter"),
+    "ratio_telescope":
+        ("emit_ratio_telescope", "certify_ratio_telescope_point", "RatioTelescopeEmitter"),
+    "monomial_ladder":
+        ("emit_monomial_ladder", "certify_monomial_ladder_point", "MonomialLadderEmitter"),
+    "rpow_budget":
+        ("emit_rpow_budget", "certify_rpow_budget_point", "RpowBudgetEmitter"),
+    "comparability_envelope":
+        ("emit_comparability_envelope", "certify_comparability_envelope_point",
+         "ComparabilityEnvelopeEmitter"),
+    "discrete_moment":
+        ("emit_discrete_moment", "certify_discrete_moment_point",
+         "DiscreteMomentEmitter"),
+    "poly_exp_absorption":
+        ("emit_poly_exp_absorption", "certify_poly_exp_absorption_point",
+         "PolyExpAbsorptionEmitter"),
+    "graded_convolution":
+        ("emit_graded_convolution", "certify_graded_convolution_point",
+         "GradedConvolutionEmitter"),
+    "power_tower":
+        ("emit_power_tower", "certify_power_tower_point", "PowerTowerEmitter"),
+    "partition_composition":
+        ("emit_partition_composition", "certify_partition_composition_point",
+         "PartitionCompositionEmitter"),
+    "regular_word":
+        ("emit_regular_word", "certify_regular_word_point", "RegularWordEmitter"),
+    "low_order_tail":
+        ("emit_low_order_tail", "certify_low_order_tail_point", "LowOrderTailEmitter"),
+    "eventual_threshold":
+        ("emit_eventual_threshold", "certify_eventual_threshold_point",
+         "EventualThresholdEmitter"),
 }
 
 

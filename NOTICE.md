@@ -42,7 +42,9 @@ credited in their generators' docstrings and in the emitted `.lean` headers.
 
 ## Ported code + proof shapes — anthropics/zeta-23-lean (arXiv:2608.13637)
 
-The `hermitian_moment` Telperion certificate family builds on the Anthropic
+A growing family of Telperion certificate emitters (beginning with
+`hermitian_moment`; the authoritative, current list is
+`telperion/docs/SECOND_PASS_EMITTER_CATALOG.md`) builds on the Anthropic
 **zeta-23-lean** development (**arXiv:2608.13637**, *"More than two thirds of
 the zeros of ζ lie on the critical line"*; public repo
 `anthropics/zeta-23-lean`, **Apache-2.0**). Two distinct things were taken,
@@ -76,10 +78,27 @@ file) was distilled in waves from a certificate-mining pass over OpenAI's
 (Apache-2.0). What was taken is **certificate shapes only** — the
 generator-shaped, kernel-cheap arithmetic atoms recurring in that development —
 re-implemented independently in Telperion's Python idiom, exactly as with the
-AxiomMath/ZetaZeros emitters above. No Lean or other source files were copied;
+AxiomMath/ZetaZeros emitters above --- with one explicitly-flagged exception:
+the \`partition_composition\` emitter carries, as its emitted-Lean core, a
+verbatim port of the 144-line Fa\`a di Bruno factorial-square partition bound
+from \`Euler/GevreyCompositionPartitions.lean\` (Apache-2.0; self-contained
+over Mathlib's \`OrderedFinpartition\`), credited in the emitter's own
+docstring. Beyond that single port, no Lean or other source files were copied;
 the PDE/matrix/ODE machinery of the source was treated as out-of-scope prelude,
 and its analytic facts enter Telperion certificates only as explicit
 hypotheses.
+
+## Certified onto an upstream formalization — li-criterion-rh-equivalence-lean
+
+The `li_positivity` emitter certifies finite rungs of Li's criterion \emph{onto}
+an external Lean formalization surfaced by the Palomar miner:
+**`nicholasbulka/li-criterion-rh-equivalence-lean`** (Apache-2.0), which proves
+the upstream reduction `RiemannHypothesis ↔ ∀ n, 0 ≤ (taylorCoeff riemannXi n).re`.
+What is taken is the **statement interface** (the emitter's theorems target that
+formalization's positivity ladder); no code was copied, and the numeric lower
+bounds the emitter certifies are documented external Arb/mpmath hypotheses
+(see `telperion/docs/LI_POSITIVITY_LADDER.md`, including its honest ceiling:
+finitely many rungs never decide RH).
 
 ## Engineering patterns — AXLE (arXiv:2606.26442)
 
@@ -105,10 +124,14 @@ idiom (parameterized inequality families → exact sympy certification → emitt
 Lean re-proved from scratch by Mathlib's kernel). No Lean, Python, or other
 source files were copied verbatim from AxiomMath/ZetaZeros, AXLE, ten-proofs,
 comparator, nanoda, or openai/NavierStokesAndEuler. What is shared is the
-*mathematical idea*, credited above. The **single exception** in this repository is the `RHLinalg` prelude
-(`telperion/examples/hermitian_moment/lean/RHLinalg/`), a flagged verbatim port
-of eight Apache-2.0 Lean files from `anthropics/zeta-23-lean`, attributed in
-its own section above and in `PORT_NOTES.md` alongside the files.
+*mathematical idea*, credited above. The **two exceptions** in this repository are (1) the `RHLinalg`
+prelude (`telperion/examples/hermitian_moment/lean/RHLinalg/`), a flagged
+verbatim port of eight Apache-2.0 Lean files from `anthropics/zeta-23-lean`,
+attributed in its own section above and in `PORT_NOTES.md` alongside the
+files; and (2) the Fa\`a di Bruno partition core carried by the
+`partition_composition` emitter, a flagged verbatim port of one Apache-2.0
+Lean file from `openai/NavierStokesAndEuler`, attributed in that section
+above and in the emitter's docstring.
 
 ## A note on scope
 

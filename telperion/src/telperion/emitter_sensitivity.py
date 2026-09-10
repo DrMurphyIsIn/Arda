@@ -158,14 +158,24 @@ REGISTRY: dict[str, SensitivityStance] = {
                                 "(2−κ)N − err ≤ count from two moment-bound "
                                 "hypotheses via nlinarith off Real.sqrt_le_sqrt; the "
                                 "moment bounds are the analytic trust seam, the "
-                                "arithmetic implication carries no corruptible identity"),
+                                "arithmetic implication carries no corruptible identity",
+                                # Structural, yet a statement-level kernel control exists:
+                                # the Davenport–Heilbronn over-claim (concluded proportion
+                                # inflated past what the moments support) is genuinely
+                                # false and kernel-rejected.  See
+                                # negctrl_adapters/adapter_two_moment_count.py.
+                                neg_control=NegControlStance(NEG_CONTROL_ADAPTER)),
     "RankTraceScalarEmitter": _S(STRUCTURALLY_NONVACUOUS,
                                  "integrality atom 2c·x−c² ≤ x² = (x−c)²≥0 via "
                                  "nlinarith [sq_nonneg]; a pure square-positivity fact"),
     "LiPositivityLadderEmitter": _S(STRUCTURALLY_NONVACUOUS,
                                     "0 ≤ (taylorCoeff riemannXi n).re from a certified "
                                     "positive lower bound (hypothesis hlo = the Arb enclosure, "
-                                    "the trust seam) via le_trans; positivity, no corruptible identity"),
+                                    "the trust seam) via le_trans; positivity, no corruptible identity",
+                                    # Structural, yet a kernel control exists: the in-proof
+                                    # norm_num gate 0 ≤ lo makes a sign-corrupted lower bound
+                                    # kernel-rejected.  See negctrl_adapters/adapter_li_positivity.py.
+                                    neg_control=NegControlStance(NEG_CONTROL_ADAPTER)),
     "EnclosureIntervalFoldEmitter": _S(STRUCTURALLY_NONVACUOUS,
                                        "integer near-CUE row-band check rowsOK…=true by decide; "
                                        "the Arb enclosures are the input trust seam, the kernel "
@@ -321,12 +331,10 @@ REGISTRY: dict[str, SensitivityStance] = {
         "Emits supplied concrete integer facts p_i*q_w < p_w*q_i (and p_w<q_w) closed by norm_num; the winner/competitor rationals are a separately-supplied payload (spec callback) whose"),
     "HalfPlaneDiskEmitter": _S(STRUCTURALLY_NONVACUOUS,
         "Payload carries only positive-rational B + 2 bools; the core 4B(B-Re w)>=0 is a product-of-nonnegatives closed by nlinarith from B>0 and Re w<=B"),
-    "BCSplitEmitter": _S(STRUCTURALLY_NONVACUOUS,
-        "Log-derivative split+entire-bound combine: w=Z+E, ‖E‖≤B enter as hypotheses; the emitted -Re w ≤ B-Re Z+slack is structural (|Re E|≤‖E‖). Payload is only the nonneg-rational slack; a negative slack is refused at cert time (no corruptible witness in the Lean)"),
-    "JensenZeroCountEmitter": _S(STRUCTURALLY_NONVACUOUS,
-        "Wraps Mathlib AnalyticOnNhd.sum_divisor_le; the analyticity/norm bounds are hypotheses and the only payload is the ordered rational radius pair 0<r<R (side goals by norm_num). A non-ordered pair is refused at cert time"),
-    "SphereBoundEmitter": _S(STRUCTURALLY_NONVACUOUS,
-        "Strip-type pointwise bound -> uniform sphere bound; fully general, the growth bound enters as a hypothesis and the uniformization is structural glue (self-contained import Mathlib). No separately-supplied corruptible identity"),
+    # (BCSplit / JensenZeroCount / SphereBound stances live in the 2026-09-05
+    #  entire-part batch below — earlier copies here were silently shadowed
+    #  dict-literal duplicates, removed 2026-09-09; see
+    #  test_registry_source_has_no_duplicate_keys.)
     "IntegralityGateEmitter": _S(STRUCTURALLY_NONVACUOUS,
         "All emitted goals are concrete ℤ/ℕ literals: divisibility norm_num + per-row norm_num + a decide over a literal List(ℤ×ℤ). No separate multiplier/Gram/cofactor is consumed"),
     "LFunctionProductEmitter": _S(STRUCTURALLY_NONVACUOUS,
@@ -466,6 +474,60 @@ REGISTRY: dict[str, SensitivityStance] = {
         "eventually-bounded -> globally-bounded with the explicit Finset-sum "
         "witness C = A + sum |f n|/w n; a single fully-generic fixed atom, no "
         "per-instance data and no corruptible cofactor"),
+    "GradedConvolutionEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "graded-convolution endpoint identities (congr-below / strict-congr / "
+        "next-delta): fully-generic fixed exact identities over abstract modules, "
+        "no per-instance data and no corruptible cofactor"),
+    "PowerTowerEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "power-tower recurrence closure C q <= (9L)^(3^q): fully-generic fixed "
+        "induction atoms over an abstract sequence; no corruptible cofactor"),
+    "PartitionCompositionEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "Faa di Bruno factorial-square partition-sum bound over Mathlib "
+        "OrderedFinpartition (extendEquiv recursion): fully-generic fixed calculus, "
+        "no corruptible cofactor"),
+    "RegularWordEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "forbidden-factor word invariant 2*losses <= len+1 over List Bool: "
+        "decidable structural recursion + omega; first discrete axis, no "
+        "corruptible cofactor"),
+    "LowOrderTailEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "low-order grades + doubled geometric tail hybrid: fully-generic fixed "
+        "atoms (geometric sums <= 2 / <= 2q^a + the assembled bound); no "
+        "corruptible cofactor"),
+    "EventualThresholdEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "eventual scaling threshold with explicit nested-max-of-ratios witness: "
+        "the arity IS the statement; witness assembly re-derived in-kernel by "
+        "le_max chains + div_lt_iff0; no corruptible cofactor"),
+    "ComparabilityEnvelopeEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "comparability/Lipschitz envelope atoms (rpow both-signs, sqrt "
+        "conjugate-multiply, 1+x^2 denominator kill): fully-generic fixed atoms, "
+        "no per-instance data and no corruptible cofactor"),
+    "DiscreteMomentEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "discrete-sum moment atoms (simplex second moment, squareDecay telescope + "
+        "antidiagonal convolution <= 8): fully-generic fixed atoms, no per-instance "
+        "data and no corruptible cofactor"),
+    "PolyExpAbsorptionEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "poly-exp absorption exp(-1/(2lam))/lam^m <= (4m)^m exp(-1/(4lam)): the "
+        "power m and exact constant (4m)^m ARE the statement, re-decided in-kernel "
+        "(add_one_le_exp + pow + norm_num); m=0 refused at certify time (negative "
+        "control); no corruptible cofactor"),
+    "TwoRowSolveEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "2x2 solution-entry bound from row-scale + ratio-gap hypotheses: a single "
+        "fully-generic fixed atom (eq_div_iff/abs algebra + nlinarith), no per-instance "
+        "data and no corruptible cofactor"),
+    "RatioTelescopeEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "ratio-recurrence telescoping (factorial/geometric/index normal forms): three "
+        "fully-generic fixed induction atoms over abstract sequences; no per-instance "
+        "data and no corruptible cofactor"),
+    "MonomialLadderEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "master-budget monomial rungs c*e*Theta^k <= b: the (Cm,Kmax,rung) rationals ARE "
+        "the statement; each rung is re-derived in-kernel by pow_le_pow_right0 + "
+        "mul_le_mul + linarith off the master hypothesis; violated rung budget refused "
+        "at certify time (negative control); no corruptible cofactor"),
+    "RpowBudgetEmitter": _S(STRUCTURALLY_NONVACUOUS,
+        "k-power product collapse with linarith at the exponent level: the exponent "
+        "rationals ARE the statement; the collapse identity is re-proved by "
+        "rpow_add/rpow_mul_natCast + ring and the margin by linarith; violated exponent "
+        "margin refused at certify time (negative control); no corruptible cofactor"),
     "MultilinearPerturbationEmitter": _S(STRUCTURALLY_NONVACUOUS,
         "Leibniz telescoping product-perturbation envelope |prod F - prod G| <= C*eta: "
         "the arity and rational bounds ARE the statement; the envelope C = sum prod_{j!=i} M_j "

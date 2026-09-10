@@ -2957,4 +2957,789 @@ theorem fold_pointwise_completedZeta (sigma y : ℝ) (hy : 0 < y) :
   simp only [Complex.conj_re, Complex.neg_re] at hre
   linarith [hre]
 
+/-! ## THE ξ FUNCTION — ENTIRE, WITH NO REMOVABLE-SINGULARITY WORK.
+
+The classical `ξ(s) = ½ s(s−1) Λ(s)` (`Λ = completedRiemannZeta`, poles at `0,1`) is entire because
+the `s(s−1)` factor kills both poles.  Rather than build that via two removable-singularity limits,
+use the exact identity `ξ(s) = ½ s(s−1) Λ₀(s) + ½` (the pole corrections `−1/s − 1/(1−s)` of
+`completedRiemannZeta_eq` cancel algebraically against `s(s−1)`).  Since `Λ₀` is ALREADY entire
+(`differentiable_completedZeta₀`), this definition is MANIFESTLY entire — no limits.  It is symmetric
+(`ξ(1−s)=ξ(s)`, since `½s(s−1)` and `Λ₀` both are) and conj-symmetric, and equals the classical
+`½s(s−1)Λ` off `{0,1}`.  Its strip zeros are exactly the nontrivial `ζ`-zeros — the entire,
+symmetric object RvM's box argument principle wants.  conjecture1_proved = False. -/
+
+/-- **The Riemann `ξ`**, defined via the entire `Λ₀` (so manifestly entire):
+    `ξ(s) = ½ s(s−1) Λ₀(s) + ½ = ½ s(s−1) Λ(s)`. -/
+noncomputable def xiTele (s : ℂ) : ℂ :=
+  (1 / 2) * (s * (s - 1)) * completedRiemannZeta₀ s + 1 / 2
+
+/-- `ξ` is ENTIRE (no removable singularities — `Λ₀` is already entire). -/
+theorem differentiable_xiTele : Differentiable ℂ xiTele := by
+  have hpoly : Differentiable ℂ (fun s : ℂ => (1 / 2) * (s * (s - 1))) := by fun_prop
+  exact (hpoly.mul differentiable_completedZeta₀).add_const _
+
+/-- **`ξ(s) = ½ s(s−1) Λ(s)`** off the poles (`s ∉ {0,1}`): the classical form. -/
+theorem xiTele_eq_completedZeta_mul {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
+    xiTele s = (1 / 2) * (s * (s - 1)) * completedRiemannZeta s := by
+  have h1s : (1 : ℂ) - s ≠ 0 := sub_ne_zero.mpr fun h => hs1 h.symm
+  unfold xiTele
+  rw [completedRiemannZeta_eq]
+  field_simp
+  ring
+
+/-- **`ξ` is symmetric**: `ξ(1−s) = ξ(s)` (both `½s(s−1)` and `Λ₀` are `s↦1−s`-symmetric). -/
+theorem xiTele_one_sub (s : ℂ) : xiTele (1 - s) = xiTele s := by
+  unfold xiTele
+  rw [completedRiemannZeta₀_one_sub]
+  ring
+
+/-- **`ξ` is conjugation-symmetric**: `ξ(s̄) = conj ξ(s)`. -/
+theorem xiTele_conj (s : ℂ) : xiTele ((starRingEnd ℂ) s) = (starRingEnd ℂ) (xiTele s) := by
+  unfold xiTele
+  rw [ZetaZeroLocalization.completedRiemannZeta₀_conj]
+  simp only [map_add, map_mul, map_sub, map_one, map_div₀, map_ofNat]
+
+/-- **`ξ`'s zeros off `{0,1}` are exactly `ζ`'s zeros** in the analytic-`Λ` region: for `s ∉ {0,1}`
+    with `Γℝ s ≠ 0` (e.g. `Re s > 0`), `ξ s = 0 ↔ ζ s = 0`.  (`½s(s−1) ≠ 0` off `{0,1}`,
+    `Λ = Γℝ·ζ`.) -/
+theorem xiTele_eq_zero_iff {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) (hG : Gammaℝ s ≠ 0) :
+    xiTele s = 0 ↔ riemannZeta s = 0 := by
+  have hfac : (1 / 2 : ℂ) * (s * (s - 1)) ≠ 0 :=
+    mul_ne_zero (by norm_num) (mul_ne_zero hs0 (sub_ne_zero.mpr hs1))
+  have hΛ : completedRiemannZeta s = riemannZeta s * Gammaℝ s := by
+    rw [riemannZeta_def_of_ne_zero hs0]; field_simp
+  rw [xiTele_eq_completedZeta_mul hs0 hs1, hΛ]
+  constructor
+  · intro h
+    rcases mul_eq_zero.mp h with hA | hζΓ
+    · exact absurd hA hfac
+    · rcases mul_eq_zero.mp hζΓ with hζ | hΓ0
+      · exact hζ
+      · exact absurd hΓ0 hG
+  · intro h; rw [h]; ring
+
+/-! ## BRICK 1: the ξ box argument principle — ξ zero-count = boundary winding.
+
+`ξ` is entire, so it meets the three prerequisites of the generic Blaschke count more cleanly than
+`ζ` did (no pole to dodge, order finite everywhere seeded from `ξ(1) = ½ ≠ 0`).  Instantiating
+`analytic_count_eq_winding_generic` at `ξ` gives: for a box with `ξ ≠ 0` on the edges and its zeros
+strictly interior, if the boundary winding of `logDeriv ξ` is `2πiN` then the box zero-count of `ξ`
+is `N` — no `+1` (unlike the `ζ` route, `ξ` is entire, no pole enclosed).  Via `xiTele_eq_zero_iff`,
+those box zeros are the nontrivial `ζ`-zeros.  conjecture1_proved = False. -/
+
+/-- `ξ` analytic on any set (entire). -/
+theorem analyticOnNhd_xiTele (U : Set ℂ) : AnalyticOnNhd ℂ xiTele U :=
+  fun z _ => (differentiable_xiTele.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
+
+/-- `ξ` analytic at every point. -/
+theorem analyticAt_xiTele (z : ℂ) : AnalyticAt ℂ xiTele z :=
+  analyticOnNhd_xiTele Set.univ z (Set.mem_univ z)
+
+/-- **Prereq 2**: `ξ`'s meromorphic order is finite everywhere (entire, not `≡ 0` since
+    `ξ(1) = ½`). -/
+theorem meromorphicOrderAt_xiTele_ne_top (u : ℂ) : meromorphicOrderAt xiTele u ≠ ⊤ := by
+  have hMero : MeromorphicOn xiTele (Set.univ : Set ℂ) :=
+    fun z _ => (analyticAt_xiTele z).meromorphicAt
+  have hAt1 : AnalyticAt ℂ xiTele 1 := analyticAt_xiTele 1
+  have hne1 : xiTele 1 ≠ 0 := by
+    have h : xiTele 1 = 1 / 2 := by unfold xiTele; ring
+    rw [h]; norm_num
+  have hord1 : meromorphicOrderAt xiTele 1 ≠ ⊤ := by
+    rw [hAt1.meromorphicOrderAt_eq, hAt1.analyticOrderAt_eq_zero.mpr hne1]; simp
+  exact hMero.meromorphicOrderAt_ne_top_of_isPreconnected isPreconnected_univ
+    (Set.mem_univ 1) (Set.mem_univ u) hord1
+
+/-- **Prereq 3**: `ξ`'s divisor is finite on any ball (entire ⟹ meromorphic on the closed ball). -/
+theorem divisor_xiTele_ball_support_finite (c : ℂ) (R : ℝ) :
+    (MeromorphicOn.divisor xiTele (Metric.ball c R)).support.Finite := by
+  have hMero : MeromorphicOn xiTele (Metric.closedBall c R) :=
+    fun z _ => (analyticAt_xiTele z).meromorphicAt
+  exact hMero.divisor_ball_support_finite
+
+/-- **THE ξ BOX ARGUMENT PRINCIPLE**: for a box with `ξ ≠ 0` on the edges, its zeros strictly
+    interior, and `ξ` boundary winding `2πiN`, the box zero-count of `ξ` is `N` (no `+1`: `ξ` is
+    entire).  All `hArb` integrabilities discharged internally. -/
+theorem xiTele_count_eq_winding
+    (sigma0 sigma1 T0 T1 : ℝ) (c : ℂ) (R : ℝ) (N : ℤ)
+    (hsig : sigma0 ≤ sigma1) (hT : T0 ≤ T1)
+    (hbox_ball : ∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+      ρ ∈ Metric.ball c R)
+    (hnzb : ∀ x ∈ Set.uIcc sigma0 sigma1, xiTele (↑x + (T0 : ℂ) * I) ≠ 0)
+    (hnzt : ∀ x ∈ Set.uIcc sigma0 sigma1, xiTele (↑x + (T1 : ℂ) * I) ≠ 0)
+    (hnzr : ∀ y ∈ Set.uIcc T0 T1, xiTele ((sigma1 : ℂ) + ↑y * I) ≠ 0)
+    (hnzl : ∀ y ∈ Set.uIcc T0 T1, xiTele ((sigma0 : ℂ) + ↑y * I) ≠ 0)
+    (hin : ∀ ρ ∈ (divisor_xiTele_ball_support_finite c R).toFinset,
+      sigma0 < ρ.re ∧ ρ.re < sigma1 ∧ T0 < ρ.im ∧ ρ.im < T1)
+    (hwind : (∫ x in sigma0..sigma1, logDeriv xiTele (↑x + (T0 : ℂ) * I))
+        - (∫ x in sigma0..sigma1, logDeriv xiTele (↑x + (T1 : ℂ) * I))
+        + I • (∫ y in T0..T1, logDeriv xiTele ((sigma1 : ℂ) + ↑y * I))
+        - I • (∫ y in T0..T1, logDeriv xiTele ((sigma0 : ℂ) + ↑y * I))
+      = 2 * π * I * (N : ℂ)) :
+    ∃ (s : Finset ℂ) (d : ℂ → ℤ),
+      (∀ ρ ∈ s, (1 : ℤ) ≤ d ρ) ∧
+      (∀ ρ : ℂ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+        xiTele ρ = 0 → ρ ∈ s) ∧
+      (∑ ρ ∈ s, d ρ) = N := by
+  refine analytic_count_eq_winding_generic xiTele sigma0 sigma1 T0 T1 c R N
+    (analyticOnNhd_xiTele _) (fun u _ => meromorphicOrderAt_xiTele_ne_top u)
+    (divisor_xiTele_ball_support_finite c R) hsig hT hbox_ball hwind ?_
+  intro E _s _d hEholo _hker
+  refine ⟨hnzb, hnzt, hnzr, hnzl, hin, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_horiz (ne_of_lt (hin ρ hρ).2.2.1) _ _
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_horiz ((ne_of_lt (hin ρ hρ).2.2.2).symm) _ _
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_vert ((ne_of_lt (hin ρ hρ).2.1).symm) _ _
+  · exact fun ρ hρ => intervalIntegrable_inv_sub_vert (ne_of_lt (hin ρ hρ).1) _ _
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_horiz (ne_of_lt (hin ρ hρ).2.2.1) _ _).const_mul _)
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_horiz ((ne_of_lt (hin ρ hρ).2.2.2).symm) _ _).const_mul _)
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_vert ((ne_of_lt (hin ρ hρ).2.1).symm) _ _).const_mul _)
+  · exact intervalIntegrable_finsetSum _ (fun ρ hρ =>
+      (intervalIntegrable_inv_sub_vert (ne_of_lt (hin ρ hρ).1) _ _).const_mul _)
+  · exact intervalIntegrable_diffBox_horiz ⟨le_refl _, hT⟩ hsig hEholo
+  · exact intervalIntegrable_diffBox_horiz ⟨hT, le_refl _⟩ hsig hEholo
+  · exact intervalIntegrable_diffBox_vert ⟨hsig, le_refl _⟩ hT hEholo
+  · exact intervalIntegrable_diffBox_vert ⟨le_refl _, hsig⟩ hT hEholo
+
+/-! ## BRICK 3 (pointwise): the `logDeriv ξ` split — the pole/`+1` factor separated from `Λ`.
+
+`ξ = ½s(s−1)·Λ` off `{0,1}`, so `logDeriv ξ = logDeriv[½s(s−1)] + logDeriv Λ`.  The polynomial's
+log-derivative is `1/s + 1/(s−1)` (the `½` drops), whose argument change along the right-half path
+is the `+1`; the `Λ` part's is `θ + πS` (`completedZeta_pathL_eq_theta_add_piS`).
+conjecture1_proved = False. -/
+
+/-- `logDeriv[½s(s−1)] = 1/s + 1/(s−1)` (the constant `½` drops out of the log-derivative). -/
+theorem logDeriv_halfPoly {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
+    logDeriv (fun z : ℂ => (1 / 2) * (z * (z - 1))) s = s⁻¹ + (s - 1)⁻¹ := by
+  have hsub : s - 1 ≠ 0 := sub_ne_zero.mpr hs1
+  have hid : HasDerivAt (fun z : ℂ => z) 1 s := hasDerivAt_id' (x := s)
+  have hprod : HasDerivAt (fun z : ℂ => z * (z - 1)) (1 * (s - 1) + s * 1) s :=
+    hid.mul (hid.sub_const 1)
+  have hd : HasDerivAt (fun z : ℂ => (1 / 2) * (z * (z - 1)))
+      ((1 / 2) * (1 * (s - 1) + s * 1)) s := hprod.const_mul (1 / 2)
+  rw [logDeriv_apply, hd.deriv]
+  field_simp
+
+/-- **The `logDeriv ξ` split**: `logDeriv ξ (s) = (1/s + 1/(s−1)) + logDeriv Λ (s)` for `s ∉ {0,1}`,
+    `ζ s ≠ 0`, `Γℝ s ≠ 0`. -/
+theorem logDeriv_xiTele_split {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1)
+    (hζ : riemannZeta s ≠ 0) (hG : Gammaℝ s ≠ 0) :
+    logDeriv xiTele s = (s⁻¹ + (s - 1)⁻¹) + logDeriv completedRiemannZeta s := by
+  have hΛ : completedRiemannZeta s ≠ 0 := by
+    have hval : completedRiemannZeta s = riemannZeta s * Gammaℝ s := by
+      rw [riemannZeta_def_of_ne_zero hs0]; field_simp
+    rw [hval]; exact mul_ne_zero hζ hG
+  have hfac : (1 / 2 : ℂ) * (s * (s - 1)) ≠ 0 :=
+    mul_ne_zero (by norm_num) (mul_ne_zero hs0 (sub_ne_zero.mpr hs1))
+  have heq : xiTele =ᶠ[nhds s]
+      fun z : ℂ => ((1 / 2) * (z * (z - 1))) * completedRiemannZeta z := by
+    filter_upwards [isOpen_ne.mem_nhds hs0, isOpen_ne.mem_nhds hs1] with z hz0 hz1
+    exact xiTele_eq_completedZeta_mul hz0 hz1
+  rw [RHInBoxAnalytic.logDeriv_congr_nhds heq,
+    logDeriv_mul s hfac hΛ (by fun_prop) (differentiableAt_completedZeta hs0 hs1),
+    logDeriv_halfPoly hs0 hs1]
+
+/-! ## BRICK 3 (integral): the pole factor's path argument change IS the `+1`.
+
+`Δ_L arg(·−r)` along `L : 2 → 2+iT → ½+iT` telescopes (shared corner `2+iT` cancels; start `2−r`
+is positive-real, arg `0`) to `arg((½−r)+iT)`, for real `r < 2`.  Summing the two pole factors
+`r = 0, 1` (`logDeriv[½s(s−1)] = (·)⁻¹ + (·−1)⁻¹`) gives `arg(½+iT) + arg(−½+iT) = π` — the RvM `+1`
+(after `÷π`), a boundary-log computation, not a winding number.  conjecture1_proved = False. -/
+
+
+/-- **`Δ_L arg(·−ρ)` along the L-path** (`ρ` with `Im ρ = 0`, `Re ρ < 2`): telescopes to
+    `arg((½−ρ)+iT)`. -/
+theorem argChangeL_sub_const (ρ : ℂ) (T : ℝ) (hT : 0 < T) (hρim : ρ.im = 0) (hρre : ρ.re < 2) :
+    argChangeVert (fun z : ℂ => z - ρ) 2 0 T
+      + argChangeHoriz (fun z : ℂ => z - ρ) T 2 (1/2)
+      = (((1/2 : ℝ) : ℂ) + (T : ℂ) * I - ρ).arg := by
+  have hreV : ∀ y : ℝ, ((2:ℂ)+(y:ℂ)*I-ρ).re = 2 - ρ.re := by intro y; simp
+  have himH : ∀ x : ℝ, ((x:ℂ)+(T:ℂ)*I-ρ).im = T - ρ.im := by intro x; simp
+  -- VERTICAL leg antiderivative (Re = 2 − Re ρ > 0 ⇒ slitPlane)
+  have hFderiv : ∀ y : ℝ, HasDerivAt (fun y : ℝ => Complex.log ((2:ℂ)+(y:ℂ)*I-ρ))
+      (I • ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹) y := by
+    intro y
+    have hpath : HasDerivAt (fun y : ℝ => (2:ℂ)+(y:ℂ)*I-ρ) I y := by
+      have h1 : HasDerivAt (fun y:ℝ => (y:ℂ)) 1 y := by simpa using (hasDerivAt_id y).ofReal_comp
+      have h2 : HasDerivAt (fun y:ℝ => (y:ℂ)*I) I y := by simpa using h1.mul_const I
+      exact (h2.const_add (2:ℂ)).sub_const ρ
+    have hslit : ((2:ℂ)+(y:ℂ)*I-ρ) ∈ Complex.slitPlane := by
+      rw [Complex.mem_slitPlane_iff]; left; rw [hreV y]; linarith
+    have hd := hpath.clog_real hslit
+    rw [div_eq_mul_inv, ← smul_eq_mul] at hd
+    exact hd
+  have hcontVpath : Continuous (fun y : ℝ => (2:ℂ)+(y:ℂ)*I-ρ) :=
+    (continuous_const.add ((Complex.continuous_ofReal).mul continuous_const)).sub continuous_const
+  have hcontV : Continuous (fun y : ℝ => I • ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹) :=
+    (hcontVpath.inv₀ (fun y => by
+      intro hc; have := congrArg Complex.re hc; rw [hreV y] at this; simp at this; linarith)).const_smul I
+  have hV : I • (∫ y in (0:ℝ)..T, ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹)
+      = Complex.log ((2:ℂ)+(T:ℂ)*I-ρ) - Complex.log ((2:ℂ)+((0:ℝ):ℂ)*I-ρ) := by
+    rw [← intervalIntegral.integral_smul]
+    exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun y _ => hFderiv y)
+      (hcontV.intervalIntegrable _ _)
+  -- HORIZONTAL leg antiderivative (Im = T > 0 ⇒ slitPlane)
+  have hGderiv : ∀ x : ℝ, HasDerivAt (fun x : ℝ => Complex.log ((x:ℂ)+(T:ℂ)*I-ρ))
+      (((x:ℂ)+(T:ℂ)*I-ρ)⁻¹) x := by
+    intro x
+    have hpath : HasDerivAt (fun x:ℝ => (x:ℂ)+(T:ℂ)*I-ρ) 1 x := by
+      have h1 : HasDerivAt (fun x:ℝ => (x:ℂ)) 1 x := by simpa using (hasDerivAt_id x).ofReal_comp
+      exact (h1.add_const ((T:ℂ)*I)).sub_const ρ
+    have hslit : ((x:ℂ)+(T:ℂ)*I-ρ) ∈ Complex.slitPlane := by
+      rw [Complex.mem_slitPlane_iff]; right; rw [himH x, hρim, sub_zero]; exact ne_of_gt hT
+    have hd := hpath.clog_real hslit
+    rwa [one_div] at hd
+  have hcontHpath : Continuous (fun x : ℝ => (x:ℂ)+(T:ℂ)*I-ρ) :=
+    ((Complex.continuous_ofReal).add continuous_const).sub continuous_const
+  have hcontH : Continuous (fun x : ℝ => ((x:ℂ)+(T:ℂ)*I-ρ)⁻¹) :=
+    hcontHpath.inv₀ (fun x => by
+      intro hc; have := congrArg Complex.im hc; rw [himH x, hρim, sub_zero] at this
+      exact (ne_of_gt hT) this)
+  have hH : (∫ x in (2:ℝ)..(1/2), ((x:ℂ)+(T:ℂ)*I-ρ)⁻¹)
+      = Complex.log (((1/2:ℝ):ℂ)+(T:ℂ)*I-ρ) - Complex.log (((2:ℝ):ℂ)+(T:ℂ)*I-ρ) :=
+    intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hGderiv x)
+      (hcontH.intervalIntegrable _ _)
+  unfold argChangeVert argChangeHoriz
+  rw [show (((2:ℝ)):ℂ) = (2:ℂ) by norm_num]
+  rw [intervalIntegral.integral_congr (g := fun y => ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹)
+        (fun y _ => logDeriv_sub_const ρ _),
+      intervalIntegral.integral_congr (g := fun x => ((x:ℂ)+(T:ℂ)*I-ρ)⁻¹)
+        (fun x _ => logDeriv_sub_const ρ _)]
+  have hAV : (∫ y in (0:ℝ)..T, ((2:ℂ)+(y:ℂ)*I-ρ)⁻¹).re
+      = (Complex.log ((2:ℂ)+(T:ℂ)*I-ρ) - Complex.log ((2:ℂ)+((0:ℝ):ℂ)*I-ρ)).im := by
+    have h := congrArg Complex.im hV
+    simpa [Complex.mul_im] using h
+  rw [hAV, hH]
+  have hcorner : Complex.log ((2:ℂ)+(T:ℂ)*I-ρ) = Complex.log (((2:ℝ):ℂ)+(T:ℂ)*I-ρ) := by
+    norm_num
+  have hstart : (Complex.log ((2:ℂ)+((0:ℝ):ℂ)*I-ρ)).im = 0 := by
+    rw [Complex.log_im, Complex.arg_eq_zero_iff]
+    refine ⟨?_, ?_⟩
+    · have : ((2:ℂ)+((0:ℝ):ℂ)*I-ρ).re = 2 - ρ.re := by simp
+      rw [this]; linarith
+    · have : ((2:ℂ)+((0:ℝ):ℂ)*I-ρ).im = -ρ.im := by simp
+      rw [this, hρim, neg_zero]
+  rw [hcorner, Complex.sub_im, Complex.sub_im, hstart]
+  simp only [Complex.log_im]
+  ring
+
+/-- **THE `+1`, path form**: `Δ_L arg[½s(s−1)] = π`. -/
+theorem pole_pathL_eq_pi (T : ℝ) (hT : 0 < T) :
+    argChangeVert (fun z : ℂ => (1 / 2) * (z * (z - 1))) 2 0 T
+      + argChangeHoriz (fun z : ℂ => (1 / 2) * (z * (z - 1))) T 2 (1/2) = π := by
+  have h0 := argChangeL_sub_const 0 T hT (by simp) (by simp)
+  have h1 := argChangeL_sub_const 1 T hT (by simp) (by norm_num)
+  have hsplitV : ∀ y : ℝ, logDeriv (fun z : ℂ => (1/2)*(z*(z-1))) ((2:ℂ)+(y:ℂ)*I)
+      = logDeriv (fun z:ℂ=>z-(0:ℂ)) ((2:ℂ)+(y:ℂ)*I)
+        + logDeriv (fun z:ℂ=>z-(1:ℂ)) ((2:ℂ)+(y:ℂ)*I) := by
+    intro y
+    have hne0 : ((2:ℂ)+(y:ℂ)*I) ≠ 0 := by intro h; have := congrArg Complex.re h; simp at this
+    have hne1 : ((2:ℂ)+(y:ℂ)*I) ≠ 1 := by intro h; have := congrArg Complex.re h; simp at this
+    rw [logDeriv_halfPoly hne0 hne1, logDeriv_sub_const, logDeriv_sub_const, sub_zero]
+  have hsplitH : ∀ x : ℝ, logDeriv (fun z : ℂ => (1/2)*(z*(z-1))) ((x:ℂ)+(T:ℂ)*I)
+      = logDeriv (fun z:ℂ=>z-(0:ℂ)) ((x:ℂ)+(T:ℂ)*I)
+        + logDeriv (fun z:ℂ=>z-(1:ℂ)) ((x:ℂ)+(T:ℂ)*I) := by
+    intro x
+    have him : ((x:ℂ)+(T:ℂ)*I).im ≠ 0 := by
+      have h : ((x:ℂ)+(T:ℂ)*I).im = T := by simp
+      rw [h]; exact ne_of_gt hT
+    have hne0 : ((x:ℂ)+(T:ℂ)*I) ≠ 0 := by intro h; apply him; rw [h]; simp
+    have hne1 : ((x:ℂ)+(T:ℂ)*I) ≠ 1 := by intro h; apply him; rw [h]; simp
+    rw [logDeriv_halfPoly hne0 hne1, logDeriv_sub_const, logDeriv_sub_const, sub_zero]
+  have cpV : Continuous (fun y : ℝ => (2:ℂ)+(y:ℂ)*I) :=
+    continuous_const.add ((Complex.continuous_ofReal).mul continuous_const)
+  have cpH : Continuous (fun x : ℝ => (x:ℂ)+(T:ℂ)*I) :=
+    (Complex.continuous_ofReal).add continuous_const
+  have iv0 : IntervalIntegrable (fun y:ℝ => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((2:ℂ)+(y:ℂ)*I))
+      MeasureTheory.volume 0 T := by
+    have he : (fun y:ℝ => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((2:ℂ)+(y:ℂ)*I))
+        = fun y:ℝ => ((2:ℂ)+(y:ℂ)*I)⁻¹ := by funext y; rw [logDeriv_sub_const, sub_zero]
+    rw [he]; apply Continuous.intervalIntegrable
+    exact cpV.inv₀ (fun y => by intro h; have := congrArg Complex.re h; simp at this)
+  have iv1 : IntervalIntegrable (fun y:ℝ => logDeriv (fun z:ℂ=>z-(1:ℂ)) ((2:ℂ)+(y:ℂ)*I))
+      MeasureTheory.volume 0 T := by
+    have he : (fun y:ℝ => logDeriv (fun z:ℂ=>z-(1:ℂ)) ((2:ℂ)+(y:ℂ)*I))
+        = fun y:ℝ => ((2:ℂ)+(y:ℂ)*I-1)⁻¹ := by funext y; rw [logDeriv_sub_const]
+    rw [he]; apply Continuous.intervalIntegrable
+    refine Continuous.inv₀ (f := fun y:ℝ => (2:ℂ)+(y:ℂ)*I-1)
+      (cpV.sub continuous_const) (fun y => ?_)
+    intro hz
+    have hre1 : ((2:ℂ)+(y:ℂ)*I-1).re = 1 := by simp; norm_num
+    rw [hz] at hre1; simp at hre1
+  have ih0 : IntervalIntegrable (fun x:ℝ => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((x:ℂ)+(T:ℂ)*I))
+      MeasureTheory.volume 2 (1/2) := by
+    have he : (fun x:ℝ => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((x:ℂ)+(T:ℂ)*I))
+        = fun x:ℝ => ((x:ℂ)+(T:ℂ)*I)⁻¹ := by funext x; rw [logDeriv_sub_const, sub_zero]
+    rw [he]; apply Continuous.intervalIntegrable
+    refine cpH.inv₀ (fun x => ?_)
+    intro h; have h2 := congrArg Complex.im h; simp at h2; linarith
+  have ih1 : IntervalIntegrable (fun x:ℝ => logDeriv (fun z:ℂ=>z-(1:ℂ)) ((x:ℂ)+(T:ℂ)*I))
+      MeasureTheory.volume 2 (1/2) := by
+    have he : (fun x:ℝ => logDeriv (fun z:ℂ=>z-(1:ℂ)) ((x:ℂ)+(T:ℂ)*I))
+        = fun x:ℝ => ((x:ℂ)+(T:ℂ)*I-1)⁻¹ := by funext x; rw [logDeriv_sub_const]
+    rw [he]; apply Continuous.intervalIntegrable
+    refine Continuous.inv₀ (f := fun x:ℝ => (x:ℂ)+(T:ℂ)*I-1)
+      (cpH.sub continuous_const) (fun x => ?_)
+    intro hz
+    apply ne_of_gt hT
+    have h2 := congrArg Complex.im hz
+    simpa using h2
+  have hAVsplit : argChangeVert (fun z:ℂ=>(1/2)*(z*(z-1))) 2 0 T
+      = argChangeVert (fun z:ℂ=>z-(0:ℂ)) 2 0 T + argChangeVert (fun z:ℂ=>z-(1:ℂ)) 2 0 T := by
+    unfold argChangeVert
+    rw [show (((2:ℝ)):ℂ) = (2:ℂ) by norm_num,
+      intervalIntegral.integral_congr (g := fun y => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((2:ℂ)+(y:ℂ)*I)
+        + logDeriv (fun z:ℂ=>z-(1:ℂ)) ((2:ℂ)+(y:ℂ)*I)) (fun y _ => hsplitV y),
+      intervalIntegral.integral_add iv0 iv1, Complex.add_re]
+  have hAHsplit : argChangeHoriz (fun z:ℂ=>(1/2)*(z*(z-1))) T 2 (1/2)
+      = argChangeHoriz (fun z:ℂ=>z-(0:ℂ)) T 2 (1/2) + argChangeHoriz (fun z:ℂ=>z-(1:ℂ)) T 2 (1/2) := by
+    unfold argChangeHoriz
+    rw [intervalIntegral.integral_congr (g := fun x => logDeriv (fun z:ℂ=>z-(0:ℂ)) ((x:ℂ)+(T:ℂ)*I)
+        + logDeriv (fun z:ℂ=>z-(1:ℂ)) ((x:ℂ)+(T:ℂ)*I)) (fun x _ => hsplitH x),
+      intervalIntegral.integral_add ih0 ih1, Complex.add_im]
+  -- arg(½+iT) + arg(−½+iT) = π (reflection pair, via log_neg_sub_im_neg + arg_conj)
+  have harg : (((1/2:ℝ):ℂ)+(T:ℂ)*I-(0:ℂ)).arg + (((1/2:ℝ):ℂ)+(T:ℂ)*I-(1:ℂ)).arg = π := by
+    set w : ℂ := ((1/2:ℝ):ℂ)+(T:ℂ)*I with hw
+    set x : ℂ := ((1/2:ℝ):ℂ)-(T:ℂ)*I with hx
+    have e0 : (((1/2:ℝ):ℂ)+(T:ℂ)*I-(0:ℂ)) = w := by rw [hw]; ring
+    have e1 : (((1/2:ℝ):ℂ)+(T:ℂ)*I-(1:ℂ)) = -x := by rw [hx]; push_cast; ring
+    have hxim : x.im < 0 := by
+      have hxi : x.im = -T := by rw [hx]; simp
+      rw [hxi]; linarith
+    have hlog := RHInBoxAnalytic.log_neg_sub_im_neg x hxim
+    have him : (-x).arg - x.arg = π := by
+      have h := congrArg Complex.im hlog
+      rw [Complex.sub_im, Complex.log_im, Complex.log_im] at h
+      simpa [Complex.mul_im] using h
+    have hconj : x = (starRingEnd ℂ) w := by
+      rw [hx, hw]; apply Complex.ext <;> simp [Complex.conj_re, Complex.conj_im]
+    have hwne : w.arg ≠ π := by
+      intro h; have hlt := (Complex.arg_eq_pi_iff.mp h).1
+      rw [hw] at hlt
+      have hre : (((1/2:ℝ):ℂ)+(T:ℂ)*I).re = 1/2 := by simp
+      rw [hre] at hlt; norm_num at hlt
+    have hxarg : x.arg = -w.arg := by
+      rw [hconj, Complex.arg_conj, if_neg hwne]
+    rw [e0, e1]
+    linarith [him, hxarg]
+  rw [hAVsplit, hAHsplit]
+  linarith [h0, h1, harg]
+
+
+/-! ## BRICK 3 (assemble): `Δ_L ξ = π + θ + πS`.
+
+Integrating the pointwise `logDeriv_xiTele_split` (`logDeriv ξ = logDeriv[½s(s−1)] + logDeriv Λ`)
+along the right-half path `L : 2 → 2+iT → ½+iT`: the `½s(s−1)` part contributes `π`
+(`pole_pathL_eq_pi`), the `Λ` part contributes `θ + πS` (`completedZeta_pathL_eq_theta_add_piS`).
+`ζ ≠ 0` on the height-`T` horizontal is the classical zero-ordinate caveat.
+conjecture1_proved = False. -/
+
+theorem xiTele_pathL_eq (T : ℝ) (hT : 0 < T)
+    (hζT : ∀ x ∈ Set.uIcc (2 : ℝ) (1/2), riemannZeta (↑x + (T : ℂ) * I) ≠ 0) :
+    argChangeVert xiTele 2 0 T + argChangeHoriz xiTele T 2 (1/2)
+      = π + (ZeroFreeBridge.riemannSiegelTheta T + π * riemannS T) := by
+  -- path continuities
+  have cpV : Continuous (fun y : ℝ => (2:ℂ)+(y:ℂ)*I) :=
+    continuous_const.add ((Complex.continuous_ofReal).mul continuous_const)
+  -- Re=2 nonvanishing facts
+  have hne0V : ∀ y : ℝ, ((2:ℂ)+(y:ℂ)*I) ≠ 0 := fun y => by
+    intro h; have := congrArg Complex.re h; simp at this
+  have hne1V : ∀ y : ℝ, ((2:ℂ)+(y:ℂ)*I) ≠ 1 := fun y => by
+    intro h; have := congrArg Complex.re h; simp at this
+  have hζV : ∀ y : ℝ, riemannZeta ((2:ℂ)+(y:ℂ)*I) ≠ 0 := fun y =>
+    riemannZeta_ne_zero_of_one_le_re (by simp)
+  have hGV : ∀ y : ℝ, Gammaℝ ((2:ℂ)+(y:ℂ)*I) ≠ 0 := fun y =>
+    Complex.Gammaℝ_ne_zero_of_re_pos (by simp)
+  -- VERTICAL leg continuities
+  have chpV : Continuous (fun y:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((2:ℂ)+(y:ℂ)*I)) := by
+    have he : (fun y:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((2:ℂ)+(y:ℂ)*I))
+        = fun y:ℝ => ((2:ℂ)+(y:ℂ)*I)⁻¹ + ((2:ℂ)+(y:ℂ)*I-1)⁻¹ := by
+      funext y; rw [logDeriv_halfPoly (hne0V y) (hne1V y)]
+    rw [he]
+    refine Continuous.add (cpV.inv₀ hne0V) ?_
+    refine Continuous.inv₀ (f := fun y:ℝ => (2:ℂ)+(y:ℂ)*I-1) (cpV.sub continuous_const) (fun y => ?_)
+    intro hz
+    have hre1 : ((2:ℂ)+(y:ℂ)*I-1).re = 1 := by simp; norm_num
+    rw [hz] at hre1; simp at hre1
+  have cΛV : Continuous (fun y:ℝ => logDeriv completedRiemannZeta ((2:ℂ)+(y:ℂ)*I)) := by
+    have he : (fun y:ℝ => logDeriv completedRiemannZeta ((2:ℂ)+(y:ℂ)*I))
+        = fun y:ℝ => logDeriv riemannZeta ((2:ℂ)+(y:ℂ)*I) + logDeriv Gammaℝ ((2:ℂ)+(y:ℂ)*I) := by
+      funext y; exact logDeriv_zeta_add_gammaR (hne0V y) (hne1V y) (hζV y) (hGV y)
+    rw [he]; exact continuous_logDeriv_zeta_line2.add continuous_logDeriv_gammaR_line2
+  -- VERTICAL split: AV(ξ) = AV(hp) + AV(Λ)
+  have hptV : ∀ y : ℝ, logDeriv xiTele ((2:ℂ)+(y:ℂ)*I)
+      = logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((2:ℂ)+(y:ℂ)*I)
+        + logDeriv completedRiemannZeta ((2:ℂ)+(y:ℂ)*I) := by
+    intro y
+    rw [logDeriv_xiTele_split (hne0V y) (hne1V y) (hζV y) (hGV y),
+      logDeriv_halfPoly (hne0V y) (hne1V y)]
+  have hAV : argChangeVert xiTele 2 0 T
+      = argChangeVert (fun z:ℂ=>(1/2)*(z*(z-1))) 2 0 T + argChangeVert completedRiemannZeta 2 0 T := by
+    unfold argChangeVert
+    rw [show (((2:ℝ)):ℂ)=(2:ℂ) by norm_num,
+      intervalIntegral.integral_congr (fun y _ => hptV y),
+      intervalIntegral.integral_add (chpV.intervalIntegrable _ _) (cΛV.intervalIntegrable _ _),
+      Complex.add_re]
+  -- HORIZONTAL leg: nonvanishing + continuities on the segment (Im = T)
+  have himH : ∀ x : ℝ, ((x:ℂ)+(T:ℂ)*I).im ≠ 0 := fun x => by
+    have h : ((x:ℂ)+(T:ℂ)*I).im = T := by simp
+    rw [h]; exact ne_of_gt hT
+  have hne0H : ∀ x : ℝ, ((x:ℂ)+(T:ℂ)*I) ≠ 0 := fun x => by
+    intro h; apply himH x; rw [h]; simp
+  have hne1H : ∀ x : ℝ, ((x:ℂ)+(T:ℂ)*I) ≠ 1 := fun x => by
+    intro h; apply himH x; rw [h]; simp
+  have hGH : ∀ x : ℝ, Gammaℝ ((x:ℂ)+(T:ℂ)*I) ≠ 0 := fun x =>
+    gammaR_ne_zero_of_im_ne (himH x)
+  have chpH : ContinuousOn (fun x:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((x:ℂ)+(T:ℂ)*I))
+      (Set.uIcc (2:ℝ) (1/2)) := by
+    have he : Set.EqOn (fun x:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((x:ℂ)+(T:ℂ)*I))
+        (fun x:ℝ => ((x:ℂ)+(T:ℂ)*I)⁻¹ + ((x:ℂ)+(T:ℂ)*I-1)⁻¹) (Set.uIcc (2:ℝ) (1/2)) := by
+      intro x _; dsimp only; rw [logDeriv_halfPoly (hne0H x) (hne1H x)]
+    apply ContinuousOn.congr _ he
+    have cpH : Continuous (fun x:ℝ => (x:ℂ)+(T:ℂ)*I) :=
+      (Complex.continuous_ofReal).add continuous_const
+    refine (cpH.inv₀ hne0H).continuousOn.add ?_
+    refine (Continuous.inv₀ (f := fun x:ℝ => (x:ℂ)+(T:ℂ)*I-1) (cpH.sub continuous_const)
+      (fun x => ?_)).continuousOn
+    intro hz; apply ne_of_gt hT
+    have h2 := congrArg Complex.im hz; simpa using h2
+  have cΛH : ContinuousOn (fun x:ℝ => logDeriv completedRiemannZeta ((x:ℂ)+(T:ℂ)*I))
+      (Set.uIcc (2:ℝ) (1/2)) := by
+    have he : Set.EqOn (fun x:ℝ => logDeriv completedRiemannZeta ((x:ℂ)+(T:ℂ)*I))
+        (fun x:ℝ => logDeriv riemannZeta ((x:ℂ)+(T:ℂ)*I) + logDeriv Gammaℝ ((x:ℂ)+(T:ℂ)*I))
+        (Set.uIcc (2:ℝ) (1/2)) := by
+      intro x hx; exact logDeriv_zeta_add_gammaR (hne0H x) (hne1H x) (hζT x hx) (hGH x)
+    apply ContinuousOn.congr _ he
+    have cζ : ContinuousOn (fun x:ℝ => logDeriv riemannZeta ((x:ℂ)+(T:ℂ)*I)) (Set.uIcc (2:ℝ) (1/2)) := by
+      intro x hx
+      have hana : AnalyticAt ℂ riemannZeta ((x:ℂ)+(T:ℂ)*I) := analyticOn_riemannZeta _ (hne1H x)
+      have hcAt : ContinuousAt (logDeriv riemannZeta) ((x:ℂ)+(T:ℂ)*I) := by
+        have heq : logDeriv riemannZeta = fun w => deriv riemannZeta w / riemannZeta w := by
+          funext w; rw [logDeriv_apply]
+        rw [heq]; exact (hana.deriv.continuousAt).div hana.continuousAt (hζT x hx)
+      exact (ContinuousAt.comp (g := logDeriv riemannZeta) (f := fun t:ℝ => ((t:ℂ)+(T:ℂ)*I))
+        hcAt (by fun_prop)).continuousWithinAt
+    have cΓ : ContinuousOn (fun x:ℝ => logDeriv Gammaℝ ((x:ℂ)+(T:ℂ)*I)) (Set.uIcc (2:ℝ) (1/2)) := by
+      intro x hx
+      exact (ContinuousAt.comp (g := logDeriv Gammaℝ) (f := fun t:ℝ => ((t:ℂ)+(T:ℂ)*I))
+        (logDeriv_gammaR_continuousAt_of_im_ne (himH x)) (by fun_prop)).continuousWithinAt
+    exact cζ.add cΓ
+  -- HORIZONTAL split: AH(ξ) = AH(hp) + AH(Λ)
+  have hptH : Set.EqOn (fun x:ℝ => logDeriv xiTele ((x:ℂ)+(T:ℂ)*I))
+      (fun x:ℝ => logDeriv (fun z:ℂ=>(1/2)*(z*(z-1))) ((x:ℂ)+(T:ℂ)*I)
+        + logDeriv completedRiemannZeta ((x:ℂ)+(T:ℂ)*I)) (Set.uIcc (2:ℝ) (1/2)) := by
+    intro x hx
+    dsimp only
+    rw [logDeriv_xiTele_split (hne0H x) (hne1H x) (hζT x hx) (hGH x),
+      logDeriv_halfPoly (hne0H x) (hne1H x)]
+  have hAH : argChangeHoriz xiTele T 2 (1/2)
+      = argChangeHoriz (fun z:ℂ=>(1/2)*(z*(z-1))) T 2 (1/2) + argChangeHoriz completedRiemannZeta T 2 (1/2) := by
+    unfold argChangeHoriz
+    rw [intervalIntegral.integral_congr hptH,
+      intervalIntegral.integral_add (chpH.intervalIntegrable) (cΛH.intervalIntegrable),
+      Complex.add_im]
+  have hpole := pole_pathL_eq_pi T hT
+  have hΛ := completedZeta_pathL_eq_theta_add_piS T hT hζT
+  rw [hAV, hAH]
+  linarith [hpole, hΛ]
+
+/-! ## BRICK 2 (the ξ folds): reflection + conjugation of `logDeriv ξ`.
+
+`ξ` is entire, `ξ(1−s) = ξ(s)` (`xiTele_one_sub`), `ξ(s̄) = conj ξ(s)` (`xiTele_conj`).  Differentiating
+the reflection gives `logDeriv ξ (1−s) = −logDeriv ξ s`; combined with conjugation, the vertical
+argument-change integrand is anti-symmetric across `Re = ½`:
+
+  `Re(logDeriv ξ (σ+iy)) + Re(logDeriv ξ ((1−σ)+iy)) = 0`
+
+— the entire, pole-free fold (RHS exactly `0`, no `Γℝ` remainder) on the object whose zeros are the
+nontrivial `ζ`-zeros.  This is the reflection symmetry that collapses the RvM box's left half onto
+its right.  The full `Δ_box ξ = 2·Δ_L ξ` additionally needs the bottom-edge reality (`ξ` real on the
+real axis) and the top-edge horizontal reflection — the honestly-remaining geometric reduction.
+conjecture1_proved = False. -/
+
+/-- **The ξ reflection**: `logDeriv ξ (1−s) = −logDeriv ξ s` (differentiate `ξ(1−s)=ξ(s)`). -/
+theorem logDeriv_xiTele_reflect (s : ℂ) :
+    logDeriv xiTele (1 - s) = - logDeriv xiTele s := by
+  have hsymm : (fun z : ℂ => xiTele (1 - z)) = xiTele := funext xiTele_one_sub
+  have hd : DifferentiableAt ℂ xiTele (1 - s) := differentiable_xiTele _
+  have hinner : HasDerivAt (fun z : ℂ => (1 : ℂ) - z) (-1) s := by
+    simpa using (hasDerivAt_id s).const_sub 1
+  have hcomp : HasDerivAt (fun z : ℂ => xiTele (1 - z)) (deriv xiTele (1 - s) * (-1)) s :=
+    hd.hasDerivAt.comp s hinner
+  have h1 := hcomp.deriv
+  rw [hsymm] at h1
+  have hkey : deriv xiTele (1 - s) = - deriv xiTele s := by linear_combination h1
+  rw [logDeriv_apply, logDeriv_apply, xiTele_one_sub, hkey]; ring
+
+/-- `ξ` log-derivative under conjugation. -/
+theorem logDeriv_xiTele_conj (s : ℂ) :
+    logDeriv xiTele ((starRingEnd ℂ) s) = (starRingEnd ℂ) (logDeriv xiTele s) :=
+  logDeriv_conj_of_conj_symm (fun z => xiTele_conj z) (differentiable_xiTele s)
+
+/-- **THE ξ FOLD, pointwise**: `Re(logDeriv ξ (σ+iy)) + Re(logDeriv ξ ((1−σ)+iy)) = 0`. -/
+theorem fold_pointwise_xiTele (sigma y : ℝ) :
+    (logDeriv xiTele ((sigma : ℂ) + y * I)).re
+      + (logDeriv xiTele (((1 - sigma : ℝ) : ℂ) + y * I)).re = 0 := by
+  set s : ℂ := (sigma : ℂ) + y * I with hs
+  set s' : ℂ := ((1 - sigma : ℝ) : ℂ) + y * I with hs'
+  have hconj : (1 : ℂ) - s = (starRingEnd ℂ) s' := by
+    rw [hs, hs']; apply Complex.ext <;> simp <;> ring
+  have hrefl := logDeriv_xiTele_reflect s
+  rw [hconj, logDeriv_xiTele_conj s'] at hrefl
+  have hre := congrArg Complex.re hrefl
+  simp only [Complex.conj_re, Complex.neg_re] at hre
+  linarith [hre]
+
+/-! ## BRICK 2 (B): the vertical fold integrated — `AV(ξ,σ₀) + AV(ξ,1−σ₀) = 0`.
+
+Integrating `fold_pointwise_xiTele` over a zero-free vertical band: the two mirror vertical edges of
+the RvM box cancel.  For the symmetric box `[−1,2]` (`1−(−1)=2`) this is `AV(ξ,−1) + AV(ξ,2) = 0`.
+`ξ ≠ 0` on the edges is the classical zero-free-contour caveat.  conjecture1_proved = False. -/
+
+/-- `logDeriv ξ` continuous on a vertical segment where `ξ ≠ 0` (`ξ` entire). -/
+theorem continuousOn_logDeriv_xiTele_seg (σ T0 T1 : ℝ) (hT : T0 ≤ T1)
+    (hz : ∀ y ∈ Set.Icc T0 T1, xiTele ((σ : ℂ) + y * I) ≠ 0) :
+    ContinuousOn (fun y : ℝ => logDeriv xiTele ((σ : ℂ) + y * I)) (Set.uIcc T0 T1) := by
+  rw [Set.uIcc_of_le hT]
+  intro y hy
+  have hana : AnalyticAt ℂ xiTele ((σ : ℂ) + y * I) := analyticAt_xiTele _
+  have hcAt : ContinuousAt (logDeriv xiTele) ((σ : ℂ) + y * I) := by
+    have heq : logDeriv xiTele = fun w => deriv xiTele w / xiTele w := by
+      funext w; rw [logDeriv_apply]
+    rw [heq]; exact (hana.deriv.continuousAt).div hana.continuousAt (hz y hy)
+  exact (ContinuousAt.comp (g := logDeriv xiTele) (f := fun t : ℝ => (σ : ℂ) + t * I)
+    hcAt (by fun_prop)).continuousWithinAt
+
+/-- **The ξ vertical fold, integrated**: `AV(ξ,σ₀,T0,T1) + AV(ξ,1−σ₀,T0,T1) = 0`
+    (`ξ ≠ 0` on both mirror edges). -/
+theorem argChangeVert_xiTele_fold (sigma0 T0 T1 : ℝ) (hT : T0 ≤ T1)
+    (hzL : ∀ y ∈ Set.Icc T0 T1, xiTele ((sigma0 : ℂ) + y * I) ≠ 0)
+    (hzR : ∀ y ∈ Set.Icc T0 T1, xiTele (((1 - sigma0 : ℝ) : ℂ) + y * I) ≠ 0) :
+    argChangeVert xiTele sigma0 T0 T1 + argChangeVert xiTele (1 - sigma0) T0 T1 = 0 := by
+  have cL := continuousOn_logDeriv_xiTele_seg sigma0 T0 T1 hT hzL
+  have cR := continuousOn_logDeriv_xiTele_seg (1 - sigma0) T0 T1 hT hzR
+  have iL := cL.intervalIntegrable (μ := MeasureTheory.volume)
+  have iR := cR.intervalIntegrable (μ := MeasureTheory.volume)
+  have rL : IntervalIntegrable (fun y : ℝ => (logDeriv xiTele ((sigma0 : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 :=
+    (Complex.continuous_re.comp_continuousOn cL).intervalIntegrable
+  have rR : IntervalIntegrable
+      (fun y : ℝ => (logDeriv xiTele (((1 - sigma0 : ℝ) : ℂ) + y * I)).re)
+      MeasureTheory.volume T0 T1 :=
+    (Complex.continuous_re.comp_continuousOn cR).intervalIntegrable
+  have eRe : ∀ (F : ℝ → ℂ), IntervalIntegrable F MeasureTheory.volume T0 T1 →
+      (∫ y in T0..T1, F y).re = ∫ y in T0..T1, (F y).re := by
+    intro F hI
+    have := intervalIntegral.intervalIntegral_re (𝕜 := ℂ) hI
+    simp only [RCLike.re_to_complex] at this
+    exact this.symm
+  have main : (∫ y in T0..T1, ((logDeriv xiTele ((sigma0 : ℂ) + y * I)).re
+        + (logDeriv xiTele (((1 - sigma0 : ℝ) : ℂ) + y * I)).re)) = ∫ _y in T0..T1, (0 : ℝ) := by
+    apply intervalIntegral.integral_congr
+    intro y _
+    exact fold_pointwise_xiTele sigma0 y
+  rw [intervalIntegral.integral_add rL rR, intervalIntegral.integral_zero] at main
+  unfold argChangeVert
+  rw [eRe _ iL, eRe _ iR]
+  linarith [main]
+
+/-! ## BRICK 2 (A): the bottom edge vanishes — `ξ` real on the real axis.
+
+`ξ(x̄) = conj ξ(x)` (`xiTele_conj`); at real `x`, `x̄ = x`, so `ξ(x)` is real, hence `logDeriv ξ(x)`
+is real (`Im = 0`).  The bottom edge of the RvM box lies on the real axis, so its horizontal
+argument change is `0`.  `ξ ≠ 0` on the edge is the zero-free-contour caveat.
+conjecture1_proved = False. -/
+
+/-- `logDeriv ξ` is REAL on the real axis. -/
+theorem logDeriv_xiTele_im_zero (x : ℝ) : (logDeriv xiTele ((x : ℂ))).im = 0 := by
+  have h := logDeriv_xiTele_conj ((x : ℝ) : ℂ)
+  rw [Complex.conj_ofReal] at h
+  have h2 := congrArg Complex.im h
+  rw [Complex.conj_im] at h2
+  linarith
+
+/-- **The bottom edge vanishes**: `argChangeHoriz ξ 0 σ0 σ1 = 0` (`ξ` real on the real axis). -/
+theorem argChangeHoriz_xiTele_realAxis (σ0 σ1 : ℝ) (hσ : σ0 ≤ σ1)
+    (hz : ∀ x ∈ Set.Icc σ0 σ1, xiTele ((x : ℂ)) ≠ 0) :
+    argChangeHoriz xiTele 0 σ0 σ1 = 0 := by
+  have hpt : ∀ x : ℝ, ((x : ℂ) + ((0:ℝ) : ℂ) * I) = ((x : ℝ) : ℂ) := by intro x; simp
+  have hcont : ContinuousOn (fun x : ℝ => logDeriv xiTele ((x : ℝ) : ℂ)) (Set.uIcc σ0 σ1) := by
+    rw [Set.uIcc_of_le hσ]
+    intro x hx
+    have hana : AnalyticAt ℂ xiTele ((x : ℝ) : ℂ) := analyticAt_xiTele _
+    have hcAt : ContinuousAt (logDeriv xiTele) ((x : ℝ) : ℂ) := by
+      have heq : logDeriv xiTele = fun w => deriv xiTele w / xiTele w := by
+        funext w; rw [logDeriv_apply]
+      rw [heq]; exact (hana.deriv.continuousAt).div hana.continuousAt (hz x hx)
+    exact (hcAt.comp (Complex.continuous_ofReal.continuousAt)).continuousWithinAt
+  have hint := hcont.intervalIntegrable (μ := MeasureTheory.volume)
+  unfold argChangeHoriz
+  have hcongr : (∫ x in σ0..σ1, logDeriv xiTele ((x : ℂ) + ((0:ℝ) : ℂ) * I))
+      = ∫ x in σ0..σ1, logDeriv xiTele ((x : ℝ) : ℂ) :=
+    intervalIntegral.integral_congr (fun x _ => by rw [hpt x])
+  rw [hcongr]
+  have eIm : (∫ x in σ0..σ1, logDeriv xiTele ((x : ℝ) : ℂ)).im
+      = ∫ x in σ0..σ1, (logDeriv xiTele ((x : ℝ) : ℂ)).im := by
+    have := intervalIntegral.intervalIntegral_im (𝕜 := ℂ) hint
+    simp only [RCLike.im_to_complex] at this
+    exact this.symm
+  rw [eIm]
+  have hz2 : (∫ x in σ0..σ1, (logDeriv xiTele ((x : ℝ) : ℂ)).im) = ∫ _x in σ0..σ1, (0:ℝ) :=
+    intervalIntegral.integral_congr (fun x _ => logDeriv_xiTele_im_zero x)
+  rw [hz2, intervalIntegral.integral_zero]
+
+/-! ## BRICK 2 (C): the top-edge horizontal reflection — `AH(ξ,T,½,−1) = AH(ξ,T,2,½)`.
+
+The top edge (`Im = T`) of the RvM box splits at `Re = ½`; the left half `[½,−1]` folds onto the
+right half `[2,½]` under `x ↦ 1−x` (i.e. `s ↦ 1−s̄` at fixed height).  Pointwise,
+`Im(logDeriv ξ ((1−x)+iT)) = Im(logDeriv ξ (x+iT))` (reflect: `logDeriv ξ(1−s̄)=−conj logDeriv ξ s`,
+so imaginary parts agree), and a change of variables closes it.  `ξ ≠ 0` on the top edge is the
+zero-free-contour caveat.  conjecture1_proved = False. -/
+
+/-- `logDeriv ξ` continuous on a horizontal segment (`Im = T`) where `ξ ≠ 0`. -/
+theorem continuousOn_logDeriv_xiTele_hseg (T a b : ℝ)
+    (hz : ∀ x ∈ Set.uIcc a b, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0) :
+    ContinuousOn (fun x : ℝ => logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)) (Set.uIcc a b) := by
+  intro x hx
+  have hana : AnalyticAt ℂ xiTele ((x : ℂ) + (T : ℂ) * I) := analyticAt_xiTele _
+  have hcAt : ContinuousAt (logDeriv xiTele) ((x : ℂ) + (T : ℂ) * I) := by
+    have heq : logDeriv xiTele = fun w => deriv xiTele w / xiTele w := by
+      funext w; rw [logDeriv_apply]
+    rw [heq]; exact (hana.deriv.continuousAt).div hana.continuousAt (hz x hx)
+  exact (ContinuousAt.comp (g := logDeriv xiTele) (f := fun t : ℝ => (t : ℂ) + (T : ℂ) * I)
+    hcAt (by fun_prop)).continuousWithinAt
+
+/-- **The top-edge reflection**: `AH(ξ,T,½,−1) = AH(ξ,T,2,½)` (`ξ ≠ 0` on the top edge `[−1,2]`). -/
+theorem argChangeHoriz_xiTele_topReflect (T : ℝ)
+    (hz : ∀ x ∈ Set.Icc (-1:ℝ) 2, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0) :
+    argChangeHoriz xiTele T (1/2) (-1) = argChangeHoriz xiTele T 2 (1/2) := by
+  -- pointwise imaginary-part symmetry across Re=½
+  have hkey : ∀ x : ℝ, (logDeriv xiTele (((1 - x : ℝ) : ℂ) + (T : ℂ) * I)).im
+      = (logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    intro x
+    have hs : (((1 - x : ℝ) : ℂ) + (T : ℂ) * I)
+        = 1 - (starRingEnd ℂ) ((x : ℂ) + (T : ℂ) * I) := by
+      apply Complex.ext <;> simp <;> ring
+    rw [hs, logDeriv_xiTele_reflect, logDeriv_xiTele_conj]
+    simp [Complex.neg_im, Complex.conj_im]
+  -- integrabilities on the two sub-edges
+  have hzL : ∀ x ∈ Set.uIcc (1/2:ℝ) (-1), xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+    intro x hx; rw [Set.uIcc_of_ge (by norm_num)] at hx
+    exact hz x ⟨hx.1, by linarith [hx.2]⟩
+  have hzR : ∀ x ∈ Set.uIcc (2:ℝ) (1/2), xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+    intro x hx; rw [Set.uIcc_of_ge (by norm_num)] at hx
+    exact hz x ⟨by linarith [hx.1], hx.2⟩
+  have iL := (continuousOn_logDeriv_xiTele_hseg T (1/2) (-1) hzL).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iR := (continuousOn_logDeriv_xiTele_hseg T 2 (1/2) hzR).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  unfold argChangeHoriz
+  -- LHS .im → ∫ Im
+  have eL : (∫ x in (1/2:ℝ)..(-1), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im
+      = ∫ x in (1/2:ℝ)..(-1), (logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    have := intervalIntegral.intervalIntegral_im (𝕜 := ℂ) iL
+    simp only [RCLike.im_to_complex] at this; exact this.symm
+  have eR : (∫ x in (2:ℝ)..(1/2), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im
+      = ∫ x in (2:ℝ)..(1/2), (logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    have := intervalIntegral.intervalIntegral_im (𝕜 := ℂ) iR
+    simp only [RCLike.im_to_complex] at this; exact this.symm
+  rw [eL, eR]
+  -- rewrite G(x) = G(1-x) via hkey, then change of variables x ↦ 1-x
+  have hcongr : (∫ x in (1/2:ℝ)..(-1), (logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im)
+      = ∫ x in (1/2:ℝ)..(-1), (logDeriv xiTele (((1 - x : ℝ) : ℂ) + (T : ℂ) * I)).im :=
+    intervalIntegral.integral_congr (fun x _ => (hkey x).symm)
+  rw [hcongr]
+  have hcov := intervalIntegral.integral_comp_sub_left
+    (fun u : ℝ => (logDeriv xiTele ((u : ℂ) + (T : ℂ) * I)).im) (a := (1/2:ℝ)) (b := (-1:ℝ)) 1
+  rw [show (1:ℝ) - (-1) = 2 by norm_num, show (1:ℝ) - 1/2 = 1/2 by norm_num] at hcov
+  exact hcov
+
+/-! ## BRICK 4: `Δ_box ξ = 2·Δ_L ξ` and the RvM formula `N(T) = 1 + θ/π + S`.
+
+Assembling (A) bottom-edge reality, (B) vertical fold, (C) top-edge reflection over the symmetric
+box `[−1,2]×[0,T]`: the boundary winding of `logDeriv ξ` is `2·(AV(ξ,2,0,T) + AH(ξ,T,2,½)) = 2·Δ_L`.
+With the box argument principle (`2πi·N = winding`, `xiTele_count_eq_winding`) and
+`Δ_L ξ = π + θ + πS` (`xiTele_pathL_eq`), this is `2πN = 2(π + θ + πS)`, i.e.
+
+  `N(T) = 1 + θ(T)/π + S(T)` — the Riemann–von Mangoldt formula.
+
+conjecture1_proved = False. -/
+
+/-- Top edge full-width: `AH(ξ,T,−1,2) = −2·AH(ξ,T,2,½)` (additivity at `½` + symmetry + reflection). -/
+theorem argChangeHoriz_xiTele_topfull (T : ℝ)
+    (hz : ∀ x ∈ Set.Icc (-1:ℝ) 2, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0) :
+    argChangeHoriz xiTele T (-1) 2 = -2 * argChangeHoriz xiTele T 2 (1/2) := by
+  have hzL : ∀ x ∈ Set.uIcc (-1:ℝ) (1/2), xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+    intro x hx; rw [Set.uIcc_of_le (by norm_num)] at hx; exact hz x ⟨hx.1, by linarith [hx.2]⟩
+  have hzR : ∀ x ∈ Set.uIcc (1/2:ℝ) 2, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+    intro x hx; rw [Set.uIcc_of_le (by norm_num)] at hx; exact hz x ⟨by linarith [hx.1], hx.2⟩
+  have iL := (continuousOn_logDeriv_xiTele_hseg T (-1) (1/2) hzL).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have iR := (continuousOn_logDeriv_xiTele_hseg T (1/2) 2 hzR).intervalIntegrable
+    (μ := MeasureTheory.volume)
+  have hC := argChangeHoriz_xiTele_topReflect T hz
+  unfold argChangeHoriz at hC ⊢
+  rw [← intervalIntegral.integral_add_adjacent_intervals iL iR, Complex.add_im]
+  have hsym1 : (∫ x in (-1:ℝ)..(1/2), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im
+      = -(∫ x in (1/2:ℝ)..(-1), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    rw [intervalIntegral.integral_symm, Complex.neg_im]
+  have hsym2 : (∫ x in (1/2:ℝ)..2, logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im
+      = -(∫ x in (2:ℝ)..(1/2), logDeriv xiTele ((x : ℂ) + (T : ℂ) * I)).im := by
+    rw [intervalIntegral.integral_symm, Complex.neg_im]
+  rw [hsym1, hsym2, hC]; ring
+
+/-- **THE RIEMANN–VON MANGOLDT FORMULA** (for the winding integer `N` of the symmetric box
+    `[−1,2]×[0,T]`): if `ξ ≠ 0` on the box boundary, `ζ ≠ 0` on the height-`T` critical segment, and
+    the boundary winding of `logDeriv ξ` is `2πiN`, then `N = 1 + θ(T)/π + S(T)`.  Combined with
+    `xiTele_count_eq_winding` (`N` = the box ξ-zero count = # nontrivial ζ-zeros to height `T`), this
+    is `N(T) = θ(T)/π + 1 + S(T)`.  conjecture1_proved = False. -/
+theorem xiTele_winding_eq_RvM (T : ℝ) (hT : 0 < T) (N : ℤ)
+    (hnzBot : ∀ x ∈ Set.Icc (-1:ℝ) 2, xiTele ((x : ℂ)) ≠ 0)
+    (hnzTop : ∀ x ∈ Set.Icc (-1:ℝ) 2, xiTele ((x : ℂ) + (T : ℂ) * I) ≠ 0)
+    (hnzL : ∀ y ∈ Set.Icc (0:ℝ) T, xiTele (((-1:ℝ) : ℂ) + (y : ℂ) * I) ≠ 0)
+    (hnzR : ∀ y ∈ Set.Icc (0:ℝ) T, xiTele (((2:ℝ) : ℂ) + (y : ℂ) * I) ≠ 0)
+    (hζT : ∀ x ∈ Set.uIcc (2:ℝ) (1/2), riemannZeta ((x : ℂ) + (T : ℂ) * I) ≠ 0)
+    (hwind : (∫ x in (-1:ℝ)..2, logDeriv xiTele (↑x + ((0:ℝ) : ℂ) * I))
+        - (∫ x in (-1:ℝ)..2, logDeriv xiTele (↑x + ((T:ℝ) : ℂ) * I))
+        + I • (∫ y in (0:ℝ)..T, logDeriv xiTele (((2:ℝ) : ℂ) + ↑y * I))
+        - I • (∫ y in (0:ℝ)..T, logDeriv xiTele (((-1:ℝ) : ℂ) + ↑y * I))
+      = 2 * ↑π * I * (N : ℂ)) :
+    (N : ℝ) = 1 + ZeroFreeBridge.riemannSiegelTheta T / π + riemannS T := by
+  -- take .im of the winding identity
+  have him := congrArg Complex.im hwind
+  set Bb := ∫ x in (-1:ℝ)..2, logDeriv xiTele (↑x + ((0:ℝ) : ℂ) * I) with hBb
+  set Bt := ∫ x in (-1:ℝ)..2, logDeriv xiTele (↑x + ((T:ℝ) : ℂ) * I) with hBt
+  set Br := ∫ y in (0:ℝ)..T, logDeriv xiTele (((2:ℝ) : ℂ) + ↑y * I) with hBr
+  set Bl := ∫ y in (0:ℝ)..T, logDeriv xiTele (((-1:ℝ) : ℂ) + ↑y * I) with hBl
+  have hlhs : (Bb - Bt + I • Br - I • Bl).im = Bb.im - Bt.im + Br.re - Bl.re := by
+    simp only [Complex.sub_im, Complex.add_im, smul_eq_mul, Complex.mul_im, Complex.I_im,
+      Complex.I_re, one_mul, zero_mul, zero_add, mul_zero, sub_zero]
+  have hrhs : (2 * ↑π * I * (N : ℂ)).im = 2 * π * (N : ℝ) := by
+    rw [show (2 * (↑π : ℂ) * I * (N : ℂ)) = (((2 * π * (N : ℝ)) : ℝ) : ℂ) * I by push_cast; ring,
+      Complex.mul_I_im, Complex.ofReal_re]
+  rw [hlhs, hrhs] at him
+  -- identify the four edges
+  have hBbim : Bb.im = 0 := argChangeHoriz_xiTele_realAxis (-1) 2 (by norm_num) hnzBot
+  have hBtim : Bt.im = -2 * argChangeHoriz xiTele T 2 (1/2) :=
+    argChangeHoriz_xiTele_topfull T hnzTop
+  have hBrre : Br.re = argChangeVert xiTele 2 0 T := rfl
+  have hBlre : Bl.re = argChangeVert xiTele (-1) 0 T := rfl
+  -- vertical fold: AV(ξ,-1) = -AV(ξ,2)
+  have hfold := argChangeVert_xiTele_fold (-1) 0 T (le_of_lt hT)
+    (by simpa using hnzL) (by rw [show (1:ℝ) - (-1) = 2 by norm_num]; simpa using hnzR)
+  rw [show (1:ℝ) - (-1) = 2 by norm_num] at hfold
+  -- path decomposition Δ_L = π + θ + πS
+  have hpath := xiTele_pathL_eq T hT hζT
+  -- assemble: 2πN = 2(AV(ξ,2)+AH(ξ,T,2,½)) = 2(π+θ+πS)
+  rw [hBbim, hBtim, hBrre, hBlre] at him
+  -- him : 0 - (-2 AH) + AV(2) - AV(-1) = 2πN ;  hfold : AV(-1) + AV(2) = 0
+  have hkey : 2 * π * (N : ℝ)
+      = 2 * (argChangeVert xiTele 2 0 T + argChangeHoriz xiTele T 2 (1/2)) := by
+    linarith [him, hfold]
+  rw [hpath] at hkey
+  have hπ : (0:ℝ) < π := Real.pi_pos
+  field_simp
+  linarith [hkey]
+
 end DiffractionCore

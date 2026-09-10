@@ -93,7 +93,15 @@ jobs:
             R3Cert.BGSCLFlpStepAt \
             R3Cert.R47R7StuckChar \
             R3Cert.R47WPairLift \
-            R3Cert.R47MHubTelescope
+            R3Cert.R47MHubTelescope \
+            R3Cert.R47WPair6 \
+            R3Cert.R47PC6Cells \
+            R3Cert.R47PC6Bridge \
+            R3Cert.R47PC6Transport \
+            R3Cert.R47PC6Reduce \
+            R3Cert.R47PC6Assemble \
+            R3Cert.R47PC6Final \
+            R3Cert.R47TieArgmax
 
       # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
       # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build

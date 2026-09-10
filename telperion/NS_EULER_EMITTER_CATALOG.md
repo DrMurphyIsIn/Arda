@@ -44,6 +44,19 @@ The atoms below recur across that surface.
 | `multilinear_perturbation` | `emit_multilinear_perturbation.py` | `NavierStokes/MovingFrameODE.lean` (generalized from arity 2) | Leibniz telescoping `\|∏F − ∏G\| ≤ C·η`, `C = Σᵢ∏_{j≠i}Mⱼ` exact; auto-generated `ring` identity + deterministic `mul_le_mul` chains, arity 2–6 |
 | `poly_geom_closure` | `emit_poly_geom_closure.py` | `Euler/PacketFieldSobolevBudget.lean` (mechanized) | `Σ p(n)·rⁿ ≤ B` uniformly in N via SYNTHESIZED exact remainder invariant `q(N) = p(N) + ρ·q(N+1)` (triangular rational solve; certificate-sensitive) |
 | `twopoint_moment` | `emit_twopoint_moment.py` | `NavierStokes/LoopMoments.lean` (Apache-2.0 port) | rank-2 pseudo-expectation feasibility WITNESS: explicit two-point measure with prescribed mean/variance under a strict affine constraint — the dual of the SOS shapes; SoS 3-XOR-relevant |
+| `two_row_solve` | `emit_two_row_solve.py` | `NavierStokes/OutgoingPulseBounds.lean` (Rmax-generalized) | 2×2 solution-entry bound `λ·\|xᵢ\| ≤ ((1+Rmax)/k)·(\|d₀\|+\|d₁\|)` from row-scale + ratio-gap data; pure scalar, no Matrix |
+| `ratio_telescope` | `emit_ratio_telescope.py` | 3 Euler files (genericized) | PRODUCT closure of ratio recursions: factorial normalizer `f n ≤ x·(n!)²`, geometric reciprocal `1/aₙ ≤ (1/a₀)(1/2)ⁿ`, index domination `(n:ℝ)+1 ≤ xₙ` |
+| `monomial_ladder` | `emit_monomial_ladder.py` | `Euler/PacketGeometryGuards.lean` | one master budget `Cm·e·Θ^Kmax ≤ 1` absorbs a family of rungs `c·e·Θ^k ≤ b` (symbolic base, exact `c ≤ Cm·b` certification per rung) |
+| `rpow_budget` | `emit_rpow_budget.py` | `Euler/PacketExponentialTail.lean` | k-power product collapse `∏Fᵢ·ρ^{N+1} ≤ k^t` with linarith at the exponent level; margin `Σa + r(N₀+1) ≤ t` certified exactly |
+| `comparability_envelope` | `emit_comparability_envelope.py` | PhysicalGraphBounds / PulseCovariance / MovingFrameODE | fixed atoms: `comparable_rpow` (`Q^e ≤ 2^\|e\|·q^e`, both exponent signs), `sqrt_shift_lipschitz` (`\|√(c+s²)−√(c+t²)\| ≤ \|s−t\|`), `reciprocal_quadratic_difference` (1+x² denominator kill) — closes 3 catalog shapes |
+| `discrete_moment` | `emit_discrete_moment.py` | GevreyInversePartitions / AxisWeightEstimates | `simplex_second_moment` (genericized off OrderedFinpartition) + the full `squareDecay` telescope/convolution calculus (`Σ ≤ 2`, antidiagonal `≤ 8×`) — closes 2 catalog shapes + round-0 TelescopingReciprocalSquare |
+| `poly_exp_absorption` | `emit_poly_exp_absorption.py` | `OutgoingPulseBounds.lean` (generalized from m=2) | `exp(−1/(2λ))/λ^m ≤ (4m)^m·exp(−1/(4λ))` for any m ≥ 1, exact constant certified (m=2 reproduces the source's 64) |
+| `graded_convolution` | `emit_graded_convolution.py` | FiniteGradeDiagonal/Triangular (truncation-genericized) | exact identities on `gconv B u v n = Σ B(uᵢ)(v_{n−i})`: congr-below, strict-congr (zero constant term), next-delta endpoint extraction |
+| `power_tower` | `emit_power_tower.py` | `H6PressureConstants.lean` (capstone genericized to abstract sequences) | cubic self-composition recursion closed to `C q ≤ (9L)^(3^q)` — the tower normal form |
+| `partition_composition` | `emit_partition_composition.py` | `GevreyCompositionPartitions.lean` (verbatim, 144 lines) | Faà di Bruno factorial-square partition sum `≤ (x+2)ⁿ(n!)²` over Mathlib `OrderedFinpartition` — the composition companion of `gevrey_majorant` |
+| `regular_word` | `emit_regular_word.py` | `VolterraAnalyticBounds.lean` | forbidden-factor word invariant `2·losses ≤ len+1` over `List Bool` — Telperion's first DISCRETE axis |
+| `low_order_tail` | `emit_low_order_tail.py` | PacketFiniteSumBounds / PacketTailBound | finitely many explicit low grades + doubled geometric tail (`Σκⁿ·Aₙ ≤ κC₁+κ²C₂+2B(κB)³` uniformly in N) |
+| `eventual_threshold` | `emit_eventual_threshold.py` | `ConeAlgebra.lean` (genericized) | `∃p₀ ∀p>p₀, ∧ᵢ aᵢ < p·cᵢ` with explicit nested-max-of-ratios witness, arity 1–6 |
 
 ### `affine_ledger` — the exponent ledger (flagship)
 
@@ -239,10 +252,22 @@ as generator-shaped emitters.
 
 ---
 
-## Skills (mining infrastructure)
+## Skills (mining infrastructure) — BUILT (2026-09-09, with wave 6)
 
-Both extend the existing source-mining subsystem
-(`source_mining.py` + adapters, PR #328) — build once that lands on main.
+Both extend the source-mining subsystem (#328), now on main:
+
+1. **OpenAI-formalization source adapter** — `GITHUB_REPOS` extended with
+   `openai/NavierStokesAndEuler`, `anthropics/zeta-23-lean`, `AxiomMath/ZetaZeros`
+   (LEAD_FORMALIZED port leads; picked up by the weekly poll automatically).
+2. **Comparator-challenge ingest** — `source_mining_challenges.py`:
+   `find/ingest_challenges` parse `ComparatorChallenges/*.json` (same schema as
+   Telperion's own `comparator.py` output) into leads; `challenge_source` wires
+   into `mine_source`/`build_source` (`TELPERION_CHALLENGE_REPO_PATH` env);
+   `run_comparator_check` optionally executes `lake exe comparator` with honest
+   skip/fail gating. Live-verified on the NS clone (both Clay-alternative
+   challenges ingested).
+
+Original design sketch (superseded by the above):
 
 1. **OpenAI-formalization source adapter** (`lead_type = LEAD_FORMALIZED`). Watch
    `openai/NavierStokesAndEuler` (and DeepMind `formal-conjectures`, from which the

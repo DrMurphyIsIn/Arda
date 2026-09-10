@@ -13,3 +13,66 @@ rev = "35df682f3b709ffe5fbcfdd452dfa964bd622b87"
 
 [[lean_lib]]
 name = "LiPositivity"
+
+[[lean_lib]]
+name = "LiLadder"
+
+[[lean_lib]]
+name = "RvMXiBridge"
+
+[[lean_lib]]
+name = "RvMRHInBox"
+
+[[lean_lib]]
+name = "RvMLambdaLineReal"
+
+[[lean_lib]]
+name = "RvMDlvpTheta"
+
+[[lean_lib]]
+name = "RvMDiffractionCore"
+
+[[lean_lib]]
+name = "RvMLiUnified"
+
+[[lean_lib]]
+name = "RvMLiCountBridge"
+
+[[lean_lib]]
+name = "RvMLiStratum2"
+
+[[lean_lib]]
+name = "RvMLiStratum3"
+
+[[lean_lib]]
+name = "RvMLiFrontierA"
+
+[[lean_lib]]
+name = "RvMLiFrontierD"
+
+[[lean_lib]]
+name = "RvMLiOrthogonal"
+
+[[lean_lib]]
+name = "RvMDigammaSeries"
+
+[[lean_lib]]
+name = "RvMWeierstrass"
+
+[[lean_lib]]
+name = "RvMDigammaProd"
+
+[[lean_lib]]
+name = "RvMDigammaLogDeriv"
+
+[[lean_lib]]
+name = "RvMDigammaSummable"
+
+[[lean_lib]]
+name = "RvMDigammaTprod"
+
+[[lean_lib]]
+name = "RvMDigammaComplete"
+
+[[lean_lib]]
+name = "RvMTrigamma"
