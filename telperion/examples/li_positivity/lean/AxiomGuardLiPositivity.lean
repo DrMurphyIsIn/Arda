@@ -26,6 +26,7 @@ import LiLadder
 import RvMXiBridge
 import RvMDigammaProd
 import RvMDigammaLogDeriv
+import RvMDigammaSummable
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -60,3 +61,7 @@ import RvMDigammaLogDeriv
 -- logDeriv (wFactor n) s = 1/(s+(n+1)) - 1/(n+1) -- the classical digamma summand; the per-factor
 -- input to logDeriv_tprod_eq_tsum in the b4 assembly. conjecture1_proved = False.
 #print axioms RvMWeierstrass.logDeriv_wFactor
+
+-- Phase 2 brick 4 (part 2): summability of the digamma summands (O(1/n^2)) -- the Summable
+-- hypothesis feeding logDeriv_tprod_eq_tsum in the b4 assembly. conjecture1_proved = False.
+#print axioms RvMWeierstrass.summable_logDeriv_wFactor
