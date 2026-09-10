@@ -28,6 +28,7 @@ import RvMDigammaProd
 import RvMDigammaLogDeriv
 import RvMDigammaSummable
 import RvMDigammaTprod
+import RvMDigammaComplete
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -72,3 +73,9 @@ import RvMDigammaTprod
 -- (factors entire+nonzero, summands summable [part 2], product loc-unif convergent [b2] and
 -- nonzero [b3]). conjecture1_proved = False.
 #print axioms RvMWeierstrass.logDeriv_tprod_wFactor
+
+-- Phase 2 brick 4 (part 4, FINAL, b4 COMPLETE): the digamma series for Complex.digamma.
+-- digamma s = -1/s - gamma - sum'_n (1/(s+n+1) - 1/(n+1)) (poles excluded). Bridge: G z =
+-- z e^{gamma z} prod' wFactor = (Gamma z)^{-1} EVERYWHERE (Continuous.ext_on, dense pole complement),
+-- so logDeriv G s = -digamma s; product rule = 1/s + gamma + series. conjecture1_proved = False.
+#print axioms RvMWeierstrass.digamma_series

@@ -70,3 +70,6 @@ name = "RvMDigammaSummable"
 
 [[lean_lib]]
 name = "RvMDigammaTprod"
+
+[[lean_lib]]
+name = "RvMDigammaComplete"
