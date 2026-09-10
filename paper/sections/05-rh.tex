@@ -340,6 +340,58 @@ a conclusion about it---and it exhibits a fourth distinct certificate shape (a
 weighted explicit-formula / diffraction identity), alongside positivity,
 real-rootedness, and winding counts.
 
+\subsection{The bridge to Li's coefficients: one weighted engine}
+
+The counting formula and the explicit formula above turn out to be the same
+machine read with different test weights, and choosing the weight that Li's
+criterion cares about carries the apparatus back to the object this section
+opened with. The engine is a single weighted argument principle
+(\texttt{analytic\_weighted\_count\_eq\_winding}; CI-axiom-guarded, axioms
+$\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$): for
+analytic $f$ and any holomorphic weight $g$, the weighted boundary winding
+equals $2\pi i \sum_{\rho} \operatorname{mult}(\rho)\, g(\rho)$. Weight
+$g \equiv 1$ returns the zero-count $N(T)$ of the previous subsections; weight
+$g(\rho) = 1 - (1 - 1/\rho)^n$ returns the finite box-sum of Li's summands. The
+Riemann--von Mangoldt count and the finite Li-sum are \emph{one functional, two
+weights}---not an analogy but the same theorem, instantiated twice.
+
+Two further facts, both kernel-clean, place the coefficients themselves. First,
+specializing the finite explicit formula to the Li weight
+(\texttt{li\_finite\_explicit\_formula}, derived from
+\texttt{rect\_explicit\_formula}) yields the finite, rectangular skeleton of the
+Bombieri--Lagarias arithmetic form of Li's coefficients
+\cite{bombierilagarias1999}: the weighted zero-sum equals von Mangoldt prime
+terms on the right edge plus the boundary integrals, the same diffraction shape
+as before but now carrying the Li weight. Second
+(\texttt{liCoeff\_isLimit\_partialSums}), the $n$-th coefficient---the Taylor
+coefficient of $\xi$ whose nonnegativity is Li's criterion---is the limit of
+finite partial sums over finite subsets of the zeros, conditional on two named
+analytic inputs (genus-one summability $\sum 1/\lVert\rho\rVert^2$ and the
+Hadamard product), left as explicit hypotheses. So $\lambda_n$ is reached as the
+exhaustion limit of exactly the finite sums the engine computes. And the two
+developments are provably about \emph{one} function: \texttt{xiTele\_eq\_riemannXi}
+is a \texttt{ring} identity, so the $\xi$ whose box zero-count the counting
+formula computes is the very $\xi$ whose Taylor coefficients characterize RH
+(recorded, as a conjunction of the two facts, in
+\texttt{rvm\_and\_li\_share\_riemannXi}).
+
+The honesty line is the whole point of stating this, and it is drawn sharply.
+These are three separate kernel theorems, \emph{deliberately not stitched} into a
+claim that the count $N(T)$ determines the coefficients $\lambda_n$. Two seams
+remain open and are named as such. The exhaustion limit indexes zeros by $\xi$'s
+nontrivial-zero set while the finite explicit formula indexes them by $\zeta$'s
+meromorphic divisor; matching the two indices (and the weight's pole at the
+origin) is bookkeeping we have not done. More fundamentally, the one place where
+the zero density $dN(T) \sim (1/2\pi)\log(T/2\pi)$ becomes load-bearing for the
+coefficients---the Bombieri--Lagarias main term $\lambda_n \sim (n/2)\log n$---is
+an Archimedean main-term extraction from the boundary integrals in the
+$T \to \infty$ limit. That is genuinely new asymptotic analysis: it is present in
+neither this development nor its upstream, and it is not obtainable by rewriting
+the pieces we hold. We build the finite skeleton up to its edge and name exactly
+what the classical bridge would require; we do not claim it. As everywhere in
+this section, \texttt{conjecture1\_proved = False}: nothing here proves or
+approaches RH.
+
 For completeness we note one boundary item we deliberately keep out of the
 verified list, stated as it is: a Borel--Carath\'eodory theorem is present in the
 development but is a \emph{draft}---its constant is not sharp, it is not
