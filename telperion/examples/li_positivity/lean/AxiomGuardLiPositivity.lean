@@ -37,6 +37,7 @@ import RvMDigammaSummable
 import RvMDigammaTprod
 import RvMDigammaComplete
 import RvMTrigamma
+import RvMPolygamma
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -141,3 +142,9 @@ import RvMTrigamma
 -- neighbourhood (reusable). conjecture1_proved = False.
 #print axioms RvMWeierstrass.poleCompl_mem_nhds
 #print axioms RvMWeierstrass.deriv_digamma_one_half
+
+-- Phase 4a foundation: the general trigamma series (any s off the poles).
+-- deriv Complex.digamma s = sum'_k 1/(s+k)^2. Differentiate digamma_series term-by-term on the ball
+-- B(s, eps/2) with a case-split O(1/n^2) bound; reindex/summability from the differentiation HasSum.
+-- Base case for the polygamma induction. conjecture1_proved = False.
+#print axioms RvMWeierstrass.deriv_digamma_eq_tsum

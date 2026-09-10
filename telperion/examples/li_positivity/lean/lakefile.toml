@@ -76,3 +76,6 @@ name = "RvMDigammaComplete"
 
 [[lean_lib]]
 name = "RvMTrigamma"
+
+[[lean_lib]]
+name = "RvMPolygamma"
