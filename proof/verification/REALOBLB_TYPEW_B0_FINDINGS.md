@@ -52,3 +52,26 @@ tight; embedding can push either way). No clean local gate certifies it.
 (`hnorm_of_coverage`) is in hand; what is missing is a certifiable safe-move-SELECTION rule for the
 conditional SPR moves — the sign of each embedded increment depends on global degree structure. `Hnorm`
 stays open; `conjecture1_proved = False`.
+
+## MECHANISTIC ROOT CAUSE (why the residual is hard): the G1 lift-gain fails
+
+The `FlpStepAt` machinery lifts a move through ANY context UNCONDITIONALLY iff the acted node satisfies
+BOTH cavity gains (`dtSub_gains_lift` + `Aobj_child_replace_of_gains`):
+- **G1**: `Ztot(dtSub before) <= Ztot(dtSub after)`
+- **G2**: `Zopen(dtSub before)/udeg(before) <= Zopen(dtSub after)/udeg(after)`
+
+For the Case-B whole-hub move (acted node `node[star_j, star_k] -> node[node(replicate(j-1) leaf ++
+[node[star_k]])]`), computed exactly over `j,k in 1..8`:
+- **G1 FAILS in 55/64** cases — the move DECREASES the acted node's `Ztot(dtSub)`.
+- G2 holds (0/64 violations).
+
+So the whole-hub move CANNOT use the lift machinery: it lowers the acted node's total, so a parent sees a
+weaker child and the embedded Aobj can drop. G1 is restored only in a tiny sub-region (`j >= 2k+2`:
+relocate a SMALL star onto a MUCH larger one — `j=4->k<=1, j=6->k<=2, j=8->k<=3, j=10->k<=4`), which covers
+**0.2%** of the genuine core (union with sibling stays 78.2%).
+
+**Conclusion.** The existing lift machinery certifies EXACTLY the sibling-FLP class (**78.2%**). Every
+residual-covering move (distant leaf, whole-hub k-star) FAILS G1 and therefore requires a fundamentally
+NON-LOCAL certification (its Aobj sign depends on the global tree, not on the acted node alone). That is the
+precise, mechanistic wall for the coverage route to `Hnorm` — the clean-liftable ceiling is 78.2%, and
+closing the remaining 21.4% (to 99.6%) plus the final 2-tree symmetric core is genuine open research.
