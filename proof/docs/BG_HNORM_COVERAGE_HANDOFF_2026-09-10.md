@@ -72,11 +72,26 @@ defective trees — `proof/verification/COVER_RELATION_STATUS.md`):
 
 **(A) A `RerootStep` class: 62.7% → 99.3%.  HIGHEST LEVERAGE next build.**
 A reroot to a lower-`strDefect` rooting is a valid `StraightStep_sized` (same vertices ⇒ `usize` equal;
-`Aobj` is a graph invariant ⇒ equal; `strDefect` lower).  Infrastructure that EXISTS:
-`BGSCLObligationB.Aobj_root_invariant_of_iso` (root-invariance capstone) + `R47RootInvariance` (engine:
-`per(lapl)/∏deg` is a vertex-labeling invariant).  What must be BUILT: a reroot operation on `UTree`, the
-concrete `SimpleGraph.Iso` for a specific SPR re-rooting (to invoke the capstone), and the
-`strDefect`-drop-selecting move.  Then `CoverR := FlpStepAt ∨ AdjLeafStep ∨ RerootStep` and re-measure.
+`Aobj` is a graph invariant ⇒ equal; `strDefect` lower).
+
+DE-RISK (2026-09-10, `_reroot_derisk` over rooted trees n<12) — two findings that PIN the design:
+- The single-edge **root-shift** `node(node ds :: rest) → node(ds ++ [node rest])` (new root = the adjacent
+  child) is **Aobj-INVARIANT exactly** (0/23713 violations).  So Aobj-invariance for an ARBITRARY reroot
+  follows by COMPOSING single-shift invariance — no `SimpleGraph.Iso` needed if the single-shift identity is
+  proved directly in the cavity model.
+- BUT a single shift **cannot always lower `strDefect`** (1143 cases have the global min below `d0` yet no
+  adjacent shift drops it — sideways shifts at equal defect).  So `RerootStep` must be "reroot to ANY
+  lower-defect rooting" (a COMPOSITE of shifts), taken as ONE `StraightStep` (the intermediate sideways
+  shifts are absorbed into the composite; only the endpoint defect must be lower).
+
+BUILD PLAN: (i) prove the single-shift Aobj identity `Aobj(node(ds ++ [node rest])) = Aobj(node(node ds ::
+rest))` in the cavity model (this IS the root-invariance seam, Obligation B — either via
+`BGSCLObligationB.Aobj_root_invariant_of_iso` + the concrete iso, or a direct `rooting_identity`-based
+derivation; the de-risk confirms it holds exactly); (ii) define `reroot(t, v)` as the shift-composite to
+vertex `v` and lift the identity to `Aobj(reroot(t,v)) = Aobj(t)`; (iii) `RerootStep t t' := ∃ v,
+t' = reroot(t,v) ∧ strDefect t' < strDefect t`, with `usize` preserved and Aobj equal ⇒
+`StraightStep_sized`; (iv) `CoverR := FlpStepAt ∨ AdjLeafStep ∨ RerootStep`, re-measure (expect ~99.3%).
+The single-shift Aobj identity (i) is the crux and the substantial part.
 
 **(B) The whole-hub (Case-B) 0.7% residual.  Genuine open research.**
 The 125 residual trees are the symmetric/asymmetric two-`k`-star family.  Their straightening move fails

@@ -78,6 +78,7 @@ import R3Cert.R47AdjLeafStruct
 import R3Cert.R47AdjLeafGains
 import R3Cert.R47AdjLeafStep
 import R3Cert.R47CoverRelation
+import R3Cert.R47RootShift
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -364,3 +365,6 @@ import R3Cert.R47CoverRelation
 -- COVER RELATION (2026-09-10): CoverR = FlpStepAt + AdjLeafStep refines StraightStep_sized; Hnorm reduces
 -- to CoverR coverage (hnorm_of_coverR_coverage). Sole open obligation = coverage.
 #print axioms R3Cert.Step3.hnorm_of_coverR_coverage
+
+-- ROOT-SHIFT Aobj-invariance (2026-09-10): the crux enabler for a RerootStep coverage class (no graph-iso).
+#print axioms R3Cert.Step3.Aobj_rootShift
