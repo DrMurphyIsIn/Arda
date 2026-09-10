@@ -76,6 +76,7 @@ import R3Cert.R47PC6Final
 import R3Cert.R47TieArgmax
 import R3Cert.R47AdjLeafStruct
 import R3Cert.R47AdjLeafGains
+import R3Cert.R47AdjLeafStep
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -355,3 +356,6 @@ import R3Cert.R47AdjLeafGains
 
 -- ADJACENT LEAF StraightStep, Aobj half (2026-09-10): base cavity gains G1/G2 + the lifted Aobj clause.
 #print axioms R3Cert.Step3.adjLeaf_Aobj_le
+
+-- ADJACENT LEAF StraightStep COMPLETE (2026-09-10): the first coverage extension beyond FlpStepAt.
+#print axioms R3Cert.Step3.adjLeaf_straightStep
