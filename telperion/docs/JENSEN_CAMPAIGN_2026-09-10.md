@@ -30,21 +30,28 @@ real-rootedness certificate shape; (2) a **refutation instrument** — a certifi
    `nlinarith`-shaped certificate the merged deg-2 route (`hyperbolic_deg2_of_discrim_nonneg`) uses.
    So `d=3` extends the existing pattern directly. The Hermite–Bezoutian PSD engine is required only
    for **`d ≥ 4`**, where `Δ ≥ 0` is necessary but not sufficient (need the full Hermite form PSD).
-2. **The deg-2 seed is on a FOSSIL branch.** `origin/merge/jensen-to-main` is **556 commits behind
-   main** (its diff vs current main is −108,559 lines / 784 files). It **cannot be merged** — a PR
-   would revert the session's entire body of work. The seed must be **re-ported**: cherry-pick /
-   re-emit the two Jensen Lean files (`JensenHyperbolicity.lean` with
-   `jensen_box_hyperbolic_deg2_{0,1,2}`, `JensenBridge.lean` with
-   `hyperbolic_deg2_of_discrim_nonneg`) + an `AxiomGuardJensenHyperbolicity.lean` onto **current
-   `origin/main`** as a fresh `examples/jensen_polynomial/lean/` project, verified by a local build.
+2. **The deg-2 seed is on a FOSSIL branch.** `origin/merge/jensen-to-main` is **595 commits behind
+   main** (its diff vs current main is −121,019 lines / 814 files). It **cannot be merged** — a PR
+   would revert the session's entire body of work.
+   **★ CORRECTION (2026-09-10, verified): the seed is ALREADY ON `origin/main` — no re-port needed.**
+   `telperion/examples/jensen_hyperbolicity/` is on main (landed via `dddcf22e`
+   "FIRST kernel-verified J^{2,0} hyperbolicity cert for zeta — MILESTONE"), byte-identical to the
+   fossil: `JensenBridge.lean` (`hyperbolic_deg2_of_discrim_nonneg` + `#print axioms`,
+   `[propext, Classical.choice, Quot.sound]`), `JensenHyperbolicity.lean`
+   (`jensen_box_hyperbolic_deg2_{0,1,2}`, no `sorry`), on the **v4.32.0 main toolchain** (not a
+   separate island), CI-wired as `jensen-hyperbolicity-compiles` in `telperion-lean-e2e.yml`
+   (`generate.py --grid --check` + `lake build`). An honest rigor-fix `aa97f10f` already reverted an
+   unsound `α(5)` path back to the sound `n=0,1,2` grid. So **Brick 0 is DONE**; the campaign starts
+   at Brick 1. (The re-port instructions below are retained struck-through for provenance only.)
 3. **Mathlib gap (as of 2026-09-10):** only `LinearAlgebra/Matrix/Charpoly/Disc.lean` (a matrix
    discriminant def). **No** Sturm-chain real-root-count theorem, **no** Hermite–Bezoutian
    PSD→all-roots-real bridge. So both the `d≥4` engine and any Sturm route are genuinely from-scratch.
 
 ## Bricks (dependency-ordered, each its own guard-verified session)
 
-- **Brick 0 — re-port the deg-2 seed onto current main** (small, but Lean; verify guard locally).
-  Re-emit the two files + guard as a fresh example project; land via CI (not admin) or auto-merge.
+- **Brick 0 — re-port the deg-2 seed onto current main** — **✅ ALREADY DONE on main** (see the
+  CORRECTION under Recon #2): `telperion/examples/jensen_hyperbolicity/` landed via `dddcf22e`,
+  CI-wired, axiom-clean, no `sorry`. No action; the campaign starts at Brick 1.
 - **Brick 1 — `d=3` via the cubic discriminant.** Bridge lemma `hyperbolic_deg3_of_discrim_nonneg`:
   for a real cubic with leading coeff `> 0`, `Δ ≥ 0 ⟹ roots.card = 3` (all real). Elementary,
   `nlinarith`-shaped, extends Brick 0. Emit `jensen_box_hyperbolic_deg3_{small n}` boxes from
