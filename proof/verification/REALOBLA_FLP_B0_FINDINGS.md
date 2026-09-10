@@ -72,6 +72,34 @@ leaf moves (all cone-certifiable via the same leaf-path-extension G-machinery, g
 8% = the genuine whole-hub (Case-B k-star) residual. The unqualified "98%" below counts UNSAFE distant
 moves too and is NOT the certifiable figure.
 
+## UPDATE 2 (closed-form de-risk): the degree-equalizing cert is NOT cleanly gateable — NO-GO
+
+Derived the degree-equalizing distant-leaf increment SYMBOLICALLY (cavity factorization, adjacent case:
+`par_v` a child of `par_w`), verified EXACT against real-tree Aobj (0/3000 mismatches):
+
+    increment = PB * PO * N / [ 2 (nB+2)(nO+1)(nO+2) ]        (denominator: positive linear factors)
+    N = QB*QO*nO + 4*QB*QO + QB*nO^2 + QB*nO + QO*nB*nO + 4*QO*nB + QO*nO + 8*QO
+        + nB*nO^2 + nB*nO + nO^2 - 2*nO
+
+where `(PB,QB,nB)` = par_v's OTHER children (Bv), `(PO,QO,nO)` = par_w's OTHER children, `QO<=nO`, `QB<=nB`
+(each qContrib in (0,1]). **`N` is NOT sign-definite under the degree gate `deg(par_w) > deg(par_v)`**
+(i.e. `nO > nB`): 839/300000 realizable draws give `N < 0`. The violation region is precise — at
+`nB=0, nO=1, QB=0`: `N >= 0  <=>  QO >= 1/9`; for `nO >= 2` it is nonneg. So the increment DROPS when
+`par_w` has a single HIGH-degree other child (`QO < 1/9`).
+
+**VERDICT: NO clean cert.** The degree gate alone does NOT sign the increment; a correct gate must also
+bound `par_w`'s other-children bushiness (`nO >= 2` OR `QO >= threshold`), i.e. couple to global structure
+(or to defect-reduction, which is non-local — that is WHY the coverage sweep saw 0 violations among
+defect-reducing moves: those instances avoid the `nO=1`-bushy region, but not by any LOCAL rule). The
+adjacent case is the BEST case; the general (deeper `par_v`) distant move only adds path denominators and
+is worse. So `DegEqLeafStepAt` is NOT an `nlinarith`-tractable analogue of `FlpStepAt`.
+
+**Consequence for Problem B.** The clean, cone-certifiable coverage stalls at the sibling class
+(`FlpStepAt`, 78.2%). The +13.5% to 91.5% requires either (a) a COMPOUND-gated distant cert (messy,
+couples to `QO`/defect-reduction), or (b) a different move family for the residual. This is a genuine
+research obstruction, not a mechanical packaging step — the de-risk (verify before Lean) prevented writing
+a false or vacuously-narrow cert. The 8.5% whole-hub Type-W (Case-B k-star) remains the final residual.
+
 ## State of the Lean packaging (already done) and the true open residual
 
 The local step is ALREADY packaged and kernel-clean in `R3Cert/BGSCLFlpStepAt.lean`:
