@@ -67,3 +67,6 @@ name = "RvMDigammaLogDeriv"
 
 [[lean_lib]]
 name = "RvMDigammaSummable"
+
+[[lean_lib]]
+name = "RvMDigammaTprod"
