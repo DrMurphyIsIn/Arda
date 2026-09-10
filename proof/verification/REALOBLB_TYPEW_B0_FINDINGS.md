@@ -75,3 +75,28 @@ residual-covering move (distant leaf, whole-hub k-star) FAILS G1 and therefore r
 NON-LOCAL certification (its Aobj sign depends on the global tree, not on the acted node alone). That is the
 precise, mechanistic wall for the coverage route to `Hnorm` — the clean-liftable ceiling is 78.2%, and
 closing the remaining 21.4% (to 99.6%) plus the final 2-tree symmetric core is genuine open research.
+
+## The EXACT non-local safe condition, and the sharp open lemma
+
+For an acted node that is a child of a degree-`k` parent whose OTHER children contribute `QO` to `qSum`,
+the cavity factorization gives the parent-Aobj increment `∝ (1 + QO/k)·G1 + (1/k)·G2`. Hence the move is
+Aobj-nondecreasing IFF
+
+    G2  >=  (k + QO)·(-G1)          [ G1 <= 0 for the residual moves; G2 >= 0 ]
+
+an explicit condition that couples the LOCAL gains `(G1,G2)` to the NON-LOCAL context `(k, QO)` (larger
+parent degree / more siblings ⇒ harder). This is the precise certification target; there is no local-only
+strengthening (deeper embeddings only add more context factors).
+
+Empirically a satisfying site ALWAYS exists: greedy DEEPEST-DEFECT-FIRST, picking the Aobj-MAX
+defect-reducing SPR move, straightens every genuine tree (n<=12: 30/30) with **0 Aobj decreases**. But this
+is near-tautological — the max move is safe *because* a safe move exists. It reduces `Hnorm` coverage to
+one crisp, genuinely-open lemma:
+
+> **(Hnorm residual)** For every tree `t` with `strDefect t > 0`, there EXISTS an SPR move `t -> t'` with
+> `strDefect t' < strDefect t` and `Aobj t <= Aobj t'`.
+
+This "a straightening direction never costs `Aobj`" claim is a weak-but-genuine form of the BG extremality
+principle. It is verified exhaustively (n<=12 via generic SPR, 100%) but has no local cavity certificate —
+proving it is the open frontier (a global potential / amortized argument, or a direct `per(L)/prod deg`
+bound). `conjecture1_proved = False`.
