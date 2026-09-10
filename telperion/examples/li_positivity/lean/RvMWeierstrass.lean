@@ -70,4 +70,59 @@ theorem norm_wFactor_sub_one_le {n : ℕ} {s : ℂ} (hw : ‖s / ((n : ℂ) + 1)
     _ ≤ ‖w‖ ^ 2 + 2 * ‖w‖ ^ 2 := by gcongr
     _ = 3 * ‖w‖ ^ 2 := by ring
 
+/-! ### b2: local-uniform convergence of the Weierstrass product. -/
+
+set_option maxHeartbeats 1000000 in
+open Filter Topology in
+/-- A summable majorant for `‖wFactor n z - 1‖`, uniform over a compact `Z`, eventually in `n`. -/
+theorem wFactor_bound_aux {Z : Set ℂ} (hZ : IsCompact Z) :
+    ∃ u : ℕ → ℝ, Summable u ∧ ∀ᶠ n in Filter.atTop, ∀ z ∈ Z, ‖wFactor n z - 1‖ ≤ u n := by
+  have hf : ContinuousOn (fun z : ℂ => ‖z‖) Z := by fun_prop
+  obtain ⟨C, hC⟩ := bddAbove_def.mp (IsCompact.bddAbove_image hZ hf)
+  have hCz : ∀ z ∈ Z, ‖z‖ ≤ C := fun z hz => hC _ ⟨z, hz, rfl⟩
+  refine ⟨fun n => ‖(3 * C ^ 2 : ℝ) / ((n : ℝ) + 1) ^ 2‖, ?_, ?_⟩
+  · have h := summable_pow_div_add (3 * C ^ 2 : ℝ) 2 1 Nat.one_lt_two
+    simpa only [Nat.cast_one] using h
+  · obtain ⟨N, hN⟩ := exists_nat_ge (max C 1)
+    refine Filter.eventually_atTop.2 ⟨N, fun n hn z hz => ?_⟩
+    have hnN : (max C 1 : ℝ) ≤ (n : ℝ) := le_trans hN (by exact_mod_cast hn)
+    have hnpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+    have hnormn : ‖((n : ℂ) + 1)‖ = (n : ℝ) + 1 := by
+      rw [show ((n : ℂ) + 1) = ((n + 1 : ℕ) : ℂ) by push_cast; ring, Complex.norm_natCast]
+      push_cast; ring
+    have hCge : C ≤ (n : ℝ) := le_trans (le_max_left _ _) hnN
+    have hwnorm : ‖z / ((n : ℂ) + 1)‖ = ‖z‖ / ((n : ℝ) + 1) := by rw [norm_div, hnormn]
+    have hw1 : ‖z / ((n : ℂ) + 1)‖ ≤ 1 := by
+      rw [hwnorm, div_le_one hnpos]; exact le_trans (hCz z hz) (by linarith)
+    have hbound := norm_wFactor_sub_one_le (n := n) (s := z) hw1
+    have hCnn : (0 : ℝ) ≤ C := le_trans (norm_nonneg z) (hCz z hz)
+    have hun : ‖(3 * C ^ 2 : ℝ) / ((n : ℝ) + 1) ^ 2‖ = 3 * C ^ 2 / ((n : ℝ) + 1) ^ 2 := by
+      rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    dsimp only
+    rw [hun]
+    refine le_trans hbound ?_
+    rw [hwnorm, div_pow, mul_div_assoc]
+    have hsq : ‖z‖ ^ 2 ≤ C ^ 2 := by nlinarith [hCz z hz, norm_nonneg z, hCnn]
+    gcongr
+
+/-- **b2 — the Weierstrass product converges uniformly on every compact.** -/
+theorem multipliableUniformlyOn_wFactor {Z : Set ℂ} (hZC : IsCompact Z) :
+    MultipliableUniformlyOn (fun n : ℕ => fun s : ℂ => wFactor n s) Z := by
+  obtain ⟨u, hu, hbd⟩ := wFactor_bound_aux hZC
+  have hrw : (fun n : ℕ => fun s : ℂ => wFactor n s)
+      = (fun n : ℕ => fun s : ℂ => 1 + (wFactor n s - 1)) := by funext n s; ring
+  rw [hrw]
+  refine Summable.multipliableUniformlyOn_nat_one_add hZC hu ?_ ?_
+  · filter_upwards [hbd] with n hn z hz using hn z hz
+  · intro n; unfold wFactor; fun_prop
+
+/-- **b2 — the product converges locally uniformly on all of `ℂ`** (to its `tprod`). -/
+theorem hasProdLocallyUniformlyOn_wFactor :
+    HasProdLocallyUniformlyOn (fun n : ℕ => fun s : ℂ => wFactor n s)
+      (fun s => ∏' n : ℕ, wFactor n s) (Set.univ : Set ℂ) := by
+  apply hasProdLocallyUniformlyOn_of_forall_compact isOpen_univ
+  intro Z _ hZC
+  exact (multipliableUniformlyOn_wFactor hZC).hasProdUniformlyOn.congr_right
+    (fun s _ => rfl)
+
 end RvMWeierstrass
