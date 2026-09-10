@@ -376,21 +376,33 @@ formula computes is the very $\xi$ whose Taylor coefficients characterize RH
 \texttt{rvm\_and\_li\_share\_riemannXi}).
 
 The honesty line is the whole point of stating this, and it is drawn sharply.
-These are three separate kernel theorems, \emph{deliberately not stitched} into a
-claim that the count $N(T)$ determines the coefficients $\lambda_n$. Two seams
-remain open and are named as such. The exhaustion limit indexes zeros by $\xi$'s
-nontrivial-zero set while the finite explicit formula indexes them by $\zeta$'s
-meromorphic divisor; matching the two indices (and the weight's pole at the
-origin) is bookkeeping we have not done. More fundamentally, the one place where
-the zero density $dN(T) \sim (1/2\pi)\log(T/2\pi)$ becomes load-bearing for the
-coefficients---the Bombieri--Lagarias main term $\lambda_n \sim (n/2)\log n$---is
-an Archimedean main-term extraction from the boundary integrals in the
-$T \to \infty$ limit. That is genuinely new asymptotic analysis: it is present in
-neither this development nor its upstream, and it is not obtainable by rewriting
-the pieces we hold. We build the finite skeleton up to its edge and name exactly
-what the classical bridge would require; we do not claim it. As everywhere in
-this section, \texttt{conjecture1\_proved = False}: nothing here proves or
-approaches RH.
+These are separate kernel theorems, \emph{deliberately not stitched} into a
+claim that the count $N(T)$ determines the coefficients $\lambda_n$. Two
+structural seams that once stood between them are now formalized. The
+$\xi$-versus-$\zeta$ index mismatch is closed: a finite weighted box-sum over
+$\zeta$'s strip zeros is a value-preserving sub-sum of $\xi$'s nontrivial-zero
+index (\texttt{zeroFinset\_sum\_via\_nontrivial}, a reindexing). And the
+$\xi$-side algebra is complete: the four-way split
+$(\log\xi)' = s^{-1} + (s-1)^{-1} + (\log\zeta)' + (\log\Gamma_{\mathbb R})'$
+(\texttt{logDeriv\_xiTele\_four\_split}) isolates the Archimedean factor exactly,
+reducing it to $\tfrac12\,\psi(s/2)$ with $\psi$ the digamma function.
+
+What remains is then a single, named obstruction---and naming it precisely is
+more honest than calling it ``hard analysis.'' The Bombieri--Lagarias main term
+$\lambda_n \sim (n/2)\log n$, the one place the zero density
+$dN(T) \sim (1/2\pi)\log(T/2\pi)$ becomes load-bearing, requires the
+large-argument asymptotic of the digamma function, $\psi(w) \sim \log w$,
+integrated against the concentrating weight $g_n$ and extracted by a saddle-point
+argument as the contour grows. That asymptotic is \emph{not in the Mathlib we
+build against}: its digamma development carries the special values, the
+recurrence $\psi(s{+}1) = \psi(s) + 1/s$, and meromorphy, but nothing at
+infinity; its Stirling development has only the discrete factorial form, not the
+continuous complex $\log\Gamma$ asymptotic. So the frontier is a specific absent
+lemma---a genuine, Mathlib-caliber piece of new formalization---together with the
+saddle-point extraction that would sit on top of it. We build the finite skeleton
+to that edge and name the missing input exactly; we do not claim it. As
+everywhere in this section, \texttt{conjecture1\_proved = False}: nothing here
+proves or approaches RH.
 
 For completeness we note one boundary item we deliberately keep out of the
 verified list, stated as it is: a Borel--Carath\'eodory theorem is present in the
