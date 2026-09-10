@@ -101,7 +101,8 @@ jobs:
             R3Cert.R47PC6Reduce \
             R3Cert.R47PC6Assemble \
             R3Cert.R47PC6Final \
-            R3Cert.R47TieArgmax
+            R3Cert.R47TieArgmax \
+            R3Cert.R47AdjLeafStruct
 
       # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
       # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build

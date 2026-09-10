@@ -74,6 +74,7 @@ import R3Cert.R47MHubTelescope
 import R3Cert.R47WPair6
 import R3Cert.R47PC6Final
 import R3Cert.R47TieArgmax
+import R3Cert.R47AdjLeafStruct
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -346,3 +347,7 @@ import R3Cert.R47TieArgmax
 -- single hub of each size) discharges the whole Hdom side; Conjecture 1 now reduces to Hnorm alone.
 #print axioms R3Cert.Step3.hdom_capstone
 #print axioms R3Cert.Step3.conjecture1_of_Hnorm
+
+-- ADJACENT LEAF StraightStep, structural core (2026-09-10): nB=0 defect-neutrality -> defect-reducing
+-- adjacent leaf move forces nB>=1 (the Aobj-safe region N>=N0>=0). Crux (a) of the monomer-dimer program.
+#print axioms R3Cert.Step3.strDefect_adjLeaf_nB0
