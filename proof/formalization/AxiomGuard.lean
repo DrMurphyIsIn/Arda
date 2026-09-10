@@ -71,6 +71,9 @@ import R3Cert.BGSCLFlpStepAt
 import R3Cert.R47R7StuckChar
 import R3Cert.R47WPairLift
 import R3Cert.R47MHubTelescope
+import R3Cert.R47WPair6
+import R3Cert.R47PC6Final
+import R3Cert.R47TieArgmax
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -322,3 +325,24 @@ import R3Cert.R47MHubTelescope
 #print axioms R3Cert.Step3.backbone_tail_aobj
 #print axioms R3Cert.Step3.mhub_le_single_of_pairCollapse
 #print axioms R3Cert.Step3.hdom_of_pairCollapse_and_singleHubDom
+
+-- A3 v2 (2026-09-08): the CORRECTED 1/6-weighted collapse invariant (v1 PairCollapse falsified
+-- by the exact-Fraction de-risk; witness (0,5,1|47,1,1)).  Capped frames carry >= 6 children, so
+-- the ancestor weights obey w <= 1/6 and the weighted pair self-propagates.
+#print axioms R3Cert.Step3.dtSub_wpair6_lift
+#print axioms R3Cert.Step3.Aobj_child_replace_of_wpair6
+#print axioms R3Cert.Step3.backbone_tail_wpair6
+#print axioms R3Cert.Step3.backbone_tail_aobj6
+#print axioms R3Cert.Step3.mhub_le_single_of_pairCollapse6
+#print axioms R3Cert.Step3.hdom_of_pairCollapse6_and_singleHubDom
+
+-- A3(2) COMPLETE (2026-09-09): PairCollapse6 is a THEOREM (the m>=3 collapse certificate --
+-- 138 polynomial cells + closed-form transport + reductions + the exists-assembly), so the
+-- multi-hub Hdom reduces to the single-hub tie bound (hdom_of_singleHubDom).
+#print axioms R3Cert.Step3.PC6.pairCollapse6
+#print axioms R3Cert.Step3.PC6.hdom_of_singleHubDom
+
+-- TIE-DEFINITION LAYER CLOSED (2026-09-09): a concrete per-size tie `tieArgmax` (the finite argmax
+-- single hub of each size) discharges the whole Hdom side; Conjecture 1 now reduces to Hnorm alone.
+#print axioms R3Cert.Step3.hdom_capstone
+#print axioms R3Cert.Step3.conjecture1_of_Hnorm
