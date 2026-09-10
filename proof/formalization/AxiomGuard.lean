@@ -75,6 +75,7 @@ import R3Cert.R47WPair6
 import R3Cert.R47PC6Final
 import R3Cert.R47TieArgmax
 import R3Cert.R47AdjLeafStruct
+import R3Cert.R47AdjLeafGains
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -351,3 +352,6 @@ import R3Cert.R47AdjLeafStruct
 -- ADJACENT LEAF StraightStep, structural core (2026-09-10): nB=0 defect-neutrality -> defect-reducing
 -- adjacent leaf move forces nB>=1 (the Aobj-safe region N>=N0>=0). Crux (a) of the monomer-dimer program.
 #print axioms R3Cert.Step3.strDefect_adjLeaf_nB0
+
+-- ADJACENT LEAF StraightStep, Aobj half (2026-09-10): base cavity gains G1/G2 + the lifted Aobj clause.
+#print axioms R3Cert.Step3.adjLeaf_Aobj_le
