@@ -43,3 +43,6 @@ name = "RvMLiStratum2"
 
 [[lean_lib]]
 name = "RvMLiStratum3"
+
+[[lean_lib]]
+name = "RvMLiFrontierA"
