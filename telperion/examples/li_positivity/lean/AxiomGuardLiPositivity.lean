@@ -29,6 +29,7 @@ import RvMDigammaLogDeriv
 import RvMDigammaSummable
 import RvMDigammaTprod
 import RvMDigammaComplete
+import RvMTrigamma
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -79,3 +80,10 @@ import RvMDigammaComplete
 -- z e^{gamma z} prod' wFactor = (Gamma z)^{-1} EVERYWHERE (Continuous.ext_on, dense pole complement),
 -- so logDeriv G s = -digamma s; product rule = 1/s + gamma + series. conjecture1_proved = False.
 #print axioms RvMWeierstrass.digamma_series
+
+-- Phase 3: the trigamma value psi'(1/2) = pi^2/2 + the pole-complement-neighbourhood foundation.
+-- deriv Complex.digamma (1/2) = pi^2/2: differentiate digamma_series (b4) term-by-term on B(1/2,1/4)
+-- (hasSum_deriv_of_summable_norm) and sum via Phase 1. poleCompl_mem_nhds: the pole complement is a
+-- neighbourhood (reusable). conjecture1_proved = False.
+#print axioms RvMWeierstrass.poleCompl_mem_nhds
+#print axioms RvMWeierstrass.deriv_digamma_one_half
