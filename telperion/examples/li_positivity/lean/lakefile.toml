@@ -55,3 +55,6 @@ name = "RvMLiOrthogonal"
 
 [[lean_lib]]
 name = "RvMDigammaSeries"
+
+[[lean_lib]]
+name = "RvMWeierstrass"
