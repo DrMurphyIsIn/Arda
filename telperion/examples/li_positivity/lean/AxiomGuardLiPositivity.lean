@@ -24,6 +24,7 @@
 import LiPositivity
 import LiLadder
 import RvMXiBridge
+import RvMDigammaProd
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -45,3 +46,11 @@ import RvMXiBridge
 #print axioms LiPositivity.logDeriv_riemannXi_reflect
 #print axioms LiPositivity.logDeriv_riemannXi_conj
 #print axioms LiPositivity.fold_pointwise_riemannXi
+
+-- Phase 2 brick 3 (the crux): the Weierstrass product equals 1/Gamma.
+-- core_prod_identity: s*prod(1+s/(n+1)) = prod(s+j)/N!; partial_wFactor_prod: closed-form
+-- partial product; weierstrass_prod_eq_inv_Gamma: s*e^{gamma s}*prod' wFactor = 1/Gamma,
+-- gamma pinned via GammaSeq_tendsto_Gamma + tendsto_harmonic_sub_log. conjecture1_proved = False.
+#print axioms RvMWeierstrass.core_prod_identity
+#print axioms RvMWeierstrass.partial_wFactor_prod
+#print axioms RvMWeierstrass.weierstrass_prod_eq_inv_Gamma
