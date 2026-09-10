@@ -82,3 +82,6 @@ name = "RvMPolygamma"
 
 [[lean_lib]]
 name = "RvMPolygammaHigher"
+
+[[lean_lib]]
+name = "RvMGammaR"
