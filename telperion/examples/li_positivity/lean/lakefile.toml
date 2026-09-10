@@ -37,3 +37,9 @@ name = "RvMLiUnified"
 
 [[lean_lib]]
 name = "RvMLiCountBridge"
+
+[[lean_lib]]
+name = "RvMLiStratum2"
+
+[[lean_lib]]
+name = "RvMLiStratum3"
