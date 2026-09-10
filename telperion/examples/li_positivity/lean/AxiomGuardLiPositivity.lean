@@ -25,6 +25,13 @@ import LiPositivity
 import LiLadder
 import RvMXiBridge
 import RvMDigammaProd
+import RvMLiUnified
+import RvMLiCountBridge
+import RvMLiStratum2
+import RvMLiStratum3
+import RvMLiFrontierA
+import RvMLiFrontierD
+import RvMLiOrthogonal
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -54,3 +61,51 @@ import RvMDigammaProd
 #print axioms RvMWeierstrass.core_prod_identity
 #print axioms RvMWeierstrass.partial_wFactor_prod
 #print axioms RvMWeierstrass.weierstrass_prod_eq_inv_Gamma
+
+-- ============================================================================
+-- The N(T) <-> lambda_n bridge arc (S1-S3 + frontier a + d + orthogonal reroute).
+-- These headline theorems were merged in #427/#429/#430/#431/#434/#436 but were
+-- not wired into this guard; below closes that gap so CI enforces their
+-- sorryAx-freedom too. conjecture1_proved = False throughout.
+-- ============================================================================
+
+-- RvMLiUnified (#427): the two developments are about ONE function. xiTele_eq_riemannXi
+-- is a `ring` identity; riemannXi_winding_eq_RvM restates the RvM count for the upstream
+-- riemannXi; rvm_and_li_share_riemannXi is the CONJUNCTION of the two facts -- it asserts
+-- NO implication linking the count N(T) to the coefficients lambda_n. conjecture1_proved = False.
+#print axioms RvMLiUnified.xiTele_eq_riemannXi
+#print axioms RvMLiUnified.riemannXi_winding_eq_RvM
+#print axioms RvMLiUnified.rvm_and_li_share_riemannXi
+
+-- RvMLiCountBridge (#429, Stratum 1): the shared weighted argument-principle engine.
+-- analytic_weighted_count_eq_winding computes 2*pi*i*sum mult*g(rho) for arbitrary
+-- analytic f and holomorphic weight g -- weight 1 gives N(T), weight liWeight n gives
+-- the finite Li partial sum. One engine, two weights. conjecture1_proved = False.
+#print axioms DiffractionCore.analytic_weighted_count_eq_winding
+#print axioms DiffractionCore.liWeight_analyticAt
+#print axioms DiffractionCore.liWeight_at_zero
+
+-- RvMLiStratum2 (#430): lambda_n is the limit of finite partial sums over zero-subsets,
+-- conditional on genus-1 summability (hgenus) and the Hadamard product (hhad) -- the two
+-- named analytic hypotheses, left undischarged. conjecture1_proved = False.
+#print axioms RvMLiStratum2.liCoeff_isLimit_partialSums
+
+-- RvMLiStratum3 (#430): the finite Li explicit formula, DERIVED from rect_explicit_formula.
+-- Prime (Bragg) side on the right edge as a term-level von Mangoldt sum; the left/horizontal
+-- edges remain raw integrals of liWeight*zeta'/zeta -- the archimedean residual is NOT closed
+-- here. This is the finite skeleton of Bombieri-Lagarias, NOT the lambda_n asymptotic (which
+-- needs the archimedean main-term extraction). conjecture1_proved = False.
+#print axioms DiffractionCore.li_finite_explicit_formula
+
+-- RvMLiFrontierA (#431): the xi four-way split (log xi)' = 1/s + 1/(s-1) + (log zeta)' +
+-- (log Gamma_R)' -- isolates the archimedean factor as 1/2 psi(s/2). conjecture1_proved = False.
+#print axioms DiffractionCore.logDeriv_xiTele_four_split
+
+-- RvMLiFrontierD (#434): the divisor <-> NontrivialZero index-match (value-preserving reindex).
+-- conjecture1_proved = False.
+#print axioms RvMLiFrontierD.zeroFinset_sum_via_nontrivial
+
+-- RvMLiOrthogonal (#436): the reroute base stone. logDeriv_gammaR_one = -(gamma + log 4pi)/2,
+-- the exact k=0 archimedean datum at s=1 -- the digamma asymptotic barrier is route-specific,
+-- and this Taylor/Mobius route samples at the fixed point s=1. conjecture1_proved = False.
+#print axioms RvMLiOrthogonal.logDeriv_gammaR_one
