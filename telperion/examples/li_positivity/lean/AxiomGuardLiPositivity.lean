@@ -39,6 +39,7 @@ import RvMDigammaComplete
 import RvMTrigamma
 import RvMPolygamma
 import RvMPolygammaHigher
+import RvMGammaR
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -155,3 +156,9 @@ import RvMPolygammaHigher
 -- = (-1)^(m+1) m! sum' 1/(s+k)^(m+1) (m>=1), by induction. conjecture1_proved = False.
 #print axioms RvMWeierstrass.hasDerivAt_P
 #print axioms RvMWeierstrass.iteratedDeriv_digamma
+
+-- Phase 4b: the archimedean log-derivative identity. logDeriv Gammaℝ s = -log pi/2 + (1/2) psi(s/2)
+-- (s/2 off the non-positive integers), from Gammaℝ = pi^(-s/2)*Gamma(s/2) via logDeriv_mul +
+-- HasDerivAt.const_cpow + Gamma chain rule. Reduces the archimedean factor to the Phase-4a polygamma
+-- values at 1/2; m=0 recovers logDeriv_gammaR_one. conjecture1_proved = False.
+#print axioms RvMWeierstrass.logDeriv_Gammaℝ_eq
