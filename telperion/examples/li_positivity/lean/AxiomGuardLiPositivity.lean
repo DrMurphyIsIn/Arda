@@ -27,6 +27,7 @@ import RvMXiBridge
 import RvMDigammaProd
 import RvMDigammaLogDeriv
 import RvMDigammaSummable
+import RvMDigammaTprod
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -65,3 +66,9 @@ import RvMDigammaSummable
 -- Phase 2 brick 4 (part 2): summability of the digamma summands (O(1/n^2)) -- the Summable
 -- hypothesis feeding logDeriv_tprod_eq_tsum in the b4 assembly. conjecture1_proved = False.
 #print axioms RvMWeierstrass.summable_logDeriv_wFactor
+
+-- Phase 2 brick 4 (part 3): log-derivative of the Weierstrass product = the digamma series.
+-- logDeriv (prod'_n wFactor n) s = sum'_n (1/(s+n+1) - 1/(n+1)), via logDeriv_tprod_eq_tsum
+-- (factors entire+nonzero, summands summable [part 2], product loc-unif convergent [b2] and
+-- nonzero [b3]). conjecture1_proved = False.
+#print axioms RvMWeierstrass.logDeriv_tprod_wFactor
