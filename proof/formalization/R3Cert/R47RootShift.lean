@@ -87,5 +87,45 @@ theorem RootShiftStep.straightStep {t t' : UTree} (h : RootShiftStep t t') : Str
   obtain ⟨ds, rest, rfl, rfl, hlt⟩ := h
   exact ⟨usize_rootShift ds rest, le_of_eq (Aobj_rootShift ds rest).symm, hlt⟩
 
+/-! ### Composite reroot: reach ANY rerooting via shifts + child-reorderings, `Aobj`/`usize` invariant -/
+
+/-- One elementary re-rooting move: shift the root to its first child, OR reorder the root's children
+    (needed to bring any child to the front before shifting). -/
+def RerootStep1 (t t' : UTree) : Prop :=
+  (∃ ds rest : List UTree, t = UTree.node (UTree.node ds :: rest) ∧ t' = UTree.node (ds ++ [UTree.node rest]))
+    ∨ (∃ cs cs' : List UTree, cs.Perm cs' ∧ t = UTree.node cs ∧ t' = UTree.node cs')
+
+theorem RerootStep1.aobj {t t' : UTree} (h : RerootStep1 t t') : Aobj t = Aobj t' := by
+  rcases h with ⟨ds, rest, rfl, rfl⟩ | ⟨cs, cs', hp, rfl, rfl⟩
+  · exact (Aobj_rootShift ds rest).symm
+  · exact Aobj_node_perm hp
+
+theorem RerootStep1.usize {t t' : UTree} (h : RerootStep1 t t') : usize t = usize t' := by
+  rcases h with ⟨ds, rest, rfl, rfl⟩ | ⟨cs, cs', hp, rfl, rfl⟩
+  · exact usize_rootShift ds rest
+  · rw [usize_node, usize_node, usizeList_perm hp]
+
+/-- The reflexive-transitive closure: `t'` is any rerooting/reordering of `t`. -/
+def RerootRel : UTree → UTree → Prop := Relation.ReflTransGen RerootStep1
+
+theorem RerootRel.aobj {t t' : UTree} (h : RerootRel t t') : Aobj t = Aobj t' := by
+  induction h with
+  | refl => rfl
+  | tail _ hbc ih => exact ih.trans hbc.aobj
+
+theorem RerootRel.usize {t t' : UTree} (h : RerootRel t t') : usize t = usize t' := by
+  induction h with
+  | refl => rfl
+  | tail _ hbc ih => exact ih.trans hbc.usize
+
+/-- **The composite reroot as a straightening step**: reroot to ANY lower-`strDefect` rooting.  `Aobj` and
+    `usize` are invariant (composed over `Aobj_rootShift` / `Aobj_node_perm`), so this is a
+    `StraightStep_sized` whenever the target rooting has strictly lower defect.  Reaching the measured 99.3%
+    coverage (`COVER_RELATION_STATUS.md`). -/
+def CompRerootStep (t t' : UTree) : Prop := RerootRel t t' ∧ strDefect t' < strDefect t
+
+theorem CompRerootStep.straightStep {t t' : UTree} (h : CompRerootStep t t') : StraightStep_sized t t' :=
+  ⟨h.1.usize, le_of_eq h.1.aobj, h.2⟩
+
 end Step3
 end R3Cert

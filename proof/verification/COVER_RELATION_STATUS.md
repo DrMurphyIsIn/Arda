@@ -46,12 +46,14 @@ inequality (the `Aobj = Σ_matchings ∏ 1/(d_u d_v)` reformulation is the found
 equal).  Coverage with the single-shift reroot: **89.6%** (rooted defective, n<12) vs 67.3% for
 `FlpStepAt ∨ AdjLeafStep`.
 
-To reach the full **99.3%**: generalize `RootShiftStep` to a COMPOSITE reroot (reroot to ANY lower-defect
-vertex via composed shifts) — Aobj-invariance lifts by composing `Aobj_rootShift` along the shift path.  That
-composite is the next extension; then only the **0.7%** whole-hub (Case-B) core remains.
+**DONE (2026-09-10):** `CompRerootStep` — the COMPOSITE reroot — is built and folded in:
+`CoverR := FlpStepAt ∨ AdjLeafStep ∨ CompRerootStep`.  `RerootRel := ReflTransGen` of {single shift-to-front
+∨ child-permutation} reaches ANY rerooting; `Aobj`/`usize` are invariant by composition (`Aobj_rootShift` +
+`Aobj_node_perm`); `CompRerootStep := RerootRel ∧ strDefect drops` is a `StraightStep_sized`.  So `CoverR`
+now covers the full **99.3%** (every 'a reroot lowers defect' tree + the two direct classes), leaving only
+the **0.7%** whole-hub (Case-B) core.
 
 ## Status
 
-`Hnorm` reduced to `CoverR` coverage (kernel-clean); `CoverR` (3 classes) covers **89.6%** with single-shift
-reroot, **99.3%** with the composite reroot (crux `Aobj_rootShift` proven), leaving the **0.7%** whole-hub
-core as the genuine open problem.  `conjecture1_proved = False`.
+`Hnorm` reduced to `CoverR` coverage (kernel-clean); `CoverR` (3 classes, composite reroot) covers the full **99.3%**
+(kernel-clean refinement), leaving ONLY the **0.7%** whole-hub (Case-B) core as the genuine open problem.  `conjecture1_proved = False`.
