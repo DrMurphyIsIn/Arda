@@ -38,8 +38,20 @@ acted node's `Ztot(dtSub)`, so it cannot lift context-independently.  Closing it
 inequality (the `Aobj = Σ_matchings ∏ 1/(d_u d_v)` reformulation is the foundation;
 `AOBJ_MATCHING_POLYNOMIAL_REFORMULATION.md`).  Genuine open research.
 
+## UPDATE (2026-09-10): RootShiftStep folded in — `CoverR` is now 3 classes
+
+`CoverR := FlpStepAt ∨ AdjLeafStep ∨ RootShiftStep` (all three proven `StraightStep_sized`, kernel-clean).
+`RootShiftStep` = the single-edge root-shift `node(node ds :: rest) → node(ds ++ [node rest])` when it lowers
+`strDefect` (`Aobj` equal by `Aobj_rootShift` — proven directly in the cavity model, NO graph-iso; `usize`
+equal).  Coverage with the single-shift reroot: **89.6%** (rooted defective, n<12) vs 67.3% for
+`FlpStepAt ∨ AdjLeafStep`.
+
+To reach the full **99.3%**: generalize `RootShiftStep` to a COMPOSITE reroot (reroot to ANY lower-defect
+vertex via composed shifts) — Aobj-invariance lifts by composing `Aobj_rootShift` along the shift path.  That
+composite is the next extension; then only the **0.7%** whole-hub (Case-B) core remains.
+
 ## Status
 
-`Hnorm` reduced to `CoverR` coverage (kernel-clean); `CoverR` proven to cover **62.7%** directly, **99.3%**
-with a reroot class (infrastructure identified), leaving the **0.7%** whole-hub core as the genuine open
-problem.  `conjecture1_proved = False`.
+`Hnorm` reduced to `CoverR` coverage (kernel-clean); `CoverR` (3 classes) covers **89.6%** with single-shift
+reroot, **99.3%** with the composite reroot (crux `Aobj_rootShift` proven), leaving the **0.7%** whole-hub
+core as the genuine open problem.  `conjecture1_proved = False`.
