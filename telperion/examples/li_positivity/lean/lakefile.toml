@@ -61,3 +61,6 @@ name = "RvMWeierstrass"
 
 [[lean_lib]]
 name = "RvMDigammaProd"
+
+[[lean_lib]]
+name = "RvMDigammaLogDeriv"

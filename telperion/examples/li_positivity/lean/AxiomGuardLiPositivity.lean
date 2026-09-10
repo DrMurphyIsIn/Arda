@@ -25,6 +25,7 @@ import LiPositivity
 import LiLadder
 import RvMXiBridge
 import RvMDigammaProd
+import RvMDigammaLogDeriv
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -54,3 +55,8 @@ import RvMDigammaProd
 #print axioms RvMWeierstrass.core_prod_identity
 #print axioms RvMWeierstrass.partial_wFactor_prod
 #print axioms RvMWeierstrass.weierstrass_prod_eq_inv_Gamma
+
+-- Phase 2 brick 4 (part 1): log-derivative of a Weierstrass factor.
+-- logDeriv (wFactor n) s = 1/(s+(n+1)) - 1/(n+1) -- the classical digamma summand; the per-factor
+-- input to logDeriv_tprod_eq_tsum in the b4 assembly. conjecture1_proved = False.
+#print axioms RvMWeierstrass.logDeriv_wFactor
