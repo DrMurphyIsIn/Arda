@@ -94,11 +94,19 @@ defect-reducing moves: those instances avoid the `nO=1`-bushy region, but not by
 adjacent case is the BEST case; the general (deeper `par_v`) distant move only adds path denominators and
 is worse. So `DegEqLeafStepAt` is NOT an `nlinarith`-tractable analogue of `FlpStepAt`.
 
-**Consequence for Problem B.** The clean, cone-certifiable coverage stalls at the sibling class
-(`FlpStepAt`, 78.2%). The +13.5% to 91.5% requires either (a) a COMPOUND-gated distant cert (messy,
-couples to `QO`/defect-reduction), or (b) a different move family for the residual. This is a genuine
-research obstruction, not a mechanical packaging step — the de-risk (verify before Lean) prevented writing
-a false or vacuously-narrow cert. The 8.5% whole-hub Type-W (Case-B k-star) remains the final residual.
+**A clean LOCAL cert exists but is nearly empty.** All `N<0` violations have `nO=1` (0 at `nO>=2`). `N` is
+monotone-increasing in `QB,QO` (all coeffs >=0), so `N >= N0 = nO*(nB*nO + nB + nO - 2)`, and
+`N0 >= 0  <=>  nB*nO+nB+nO >= 2`, failing ONLY at `nB=0,nO=1`. Hence under the LOCAL gate `nO >= 2`
+(`deg(par_w) >= 4`) the increment is provably `>= 0` (an `nlinarith`-trivial cert). BUT this local-gated
+adjacent move covers only **30 trees, +10 over sibling -> 80.2%** of the genuine core (n<=14): the very
+restrictions that make it clean (adjacent `par_v`, `nO>=2`) are what most safe distant moves violate.
+
+**Consequence for Problem B (decisive).** The clean, cone-certifiable coverage ceiling is **~80.2%**
+(sibling `FlpStepAt` 78.2% + the clean local degeq cert +2%). Reaching 91.5% needs NON-local conditions
+(the `nO=1, QO>=1/9` gate, or deeper-`par_v` formulas with path denominators); reaching 100% needs the
+8.5% whole-hub Type-W (Case-B k-star). So the coverage route to Hnorm is a genuine RESEARCH obstruction
+past ~80%, not mechanical packaging. The de-risk (verify before Lean) mapped this precisely and prevented
+building a false, or vacuously-narrow (+2%), cert dressed up as progress.
 
 ## State of the Lean packaging (already done) and the true open residual
 
