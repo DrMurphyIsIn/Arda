@@ -52,3 +52,6 @@ name = "RvMLiFrontierD"
 
 [[lean_lib]]
 name = "RvMLiOrthogonal"
+
+[[lean_lib]]
+name = "RvMDigammaSeries"
