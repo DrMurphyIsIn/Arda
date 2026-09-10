@@ -49,3 +49,6 @@ name = "RvMLiFrontierA"
 
 [[lean_lib]]
 name = "RvMLiFrontierD"
+
+[[lean_lib]]
+name = "RvMLiOrthogonal"
