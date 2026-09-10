@@ -32,6 +32,11 @@ import RvMLiStratum3
 import RvMLiFrontierA
 import RvMLiFrontierD
 import RvMLiOrthogonal
+import RvMDigammaLogDeriv
+import RvMDigammaSummable
+import RvMDigammaTprod
+import RvMDigammaComplete
+import RvMTrigamma
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -109,3 +114,30 @@ import RvMLiOrthogonal
 -- the exact k=0 archimedean datum at s=1 -- the digamma asymptotic barrier is route-specific,
 -- and this Taylor/Mobius route samples at the fixed point s=1. conjecture1_proved = False.
 #print axioms RvMLiOrthogonal.logDeriv_gammaR_one
+-- Phase 2 brick 4 (part 1): log-derivative of a Weierstrass factor.
+-- logDeriv (wFactor n) s = 1/(s+(n+1)) - 1/(n+1) -- the classical digamma summand; the per-factor
+-- input to logDeriv_tprod_eq_tsum in the b4 assembly. conjecture1_proved = False.
+#print axioms RvMWeierstrass.logDeriv_wFactor
+
+-- Phase 2 brick 4 (part 2): summability of the digamma summands (O(1/n^2)) -- the Summable
+-- hypothesis feeding logDeriv_tprod_eq_tsum in the b4 assembly. conjecture1_proved = False.
+#print axioms RvMWeierstrass.summable_logDeriv_wFactor
+
+-- Phase 2 brick 4 (part 3): log-derivative of the Weierstrass product = the digamma series.
+-- logDeriv (prod'_n wFactor n) s = sum'_n (1/(s+n+1) - 1/(n+1)), via logDeriv_tprod_eq_tsum
+-- (factors entire+nonzero, summands summable [part 2], product loc-unif convergent [b2] and
+-- nonzero [b3]). conjecture1_proved = False.
+#print axioms RvMWeierstrass.logDeriv_tprod_wFactor
+
+-- Phase 2 brick 4 (part 4, FINAL, b4 COMPLETE): the digamma series for Complex.digamma.
+-- digamma s = -1/s - gamma - sum'_n (1/(s+n+1) - 1/(n+1)) (poles excluded). Bridge: G z =
+-- z e^{gamma z} prod' wFactor = (Gamma z)^{-1} EVERYWHERE (Continuous.ext_on, dense pole complement),
+-- so logDeriv G s = -digamma s; product rule = 1/s + gamma + series. conjecture1_proved = False.
+#print axioms RvMWeierstrass.digamma_series
+
+-- Phase 3: the trigamma value psi'(1/2) = pi^2/2 + the pole-complement-neighbourhood foundation.
+-- deriv Complex.digamma (1/2) = pi^2/2: differentiate digamma_series (b4) term-by-term on B(1/2,1/4)
+-- (hasSum_deriv_of_summable_norm) and sum via Phase 1. poleCompl_mem_nhds: the pole complement is a
+-- neighbourhood (reusable). conjecture1_proved = False.
+#print axioms RvMWeierstrass.poleCompl_mem_nhds
+#print axioms RvMWeierstrass.deriv_digamma_one_half
