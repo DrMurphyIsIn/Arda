@@ -19,6 +19,7 @@
 import Mathlib
 import R3Cert.BGSCLFlpDeepLift
 import R3Cert.R47BackboneAmp
+import R3Cert.R47R7Sized
 
 namespace R3Cert
 namespace Step3
@@ -68,6 +69,23 @@ theorem Aobj_rootShift (ds rest : List UTree) :
   push_cast
   field_simp
   ring
+
+/-- The root-shift preserves the vertex count. -/
+theorem usize_rootShift (ds rest : List UTree) :
+    usize (UTree.node (UTree.node ds :: rest)) = usize (UTree.node (ds ++ [UTree.node rest])) := by
+  simp only [usize_node, usizeList_cons, usizeList_append, usizeList_nil]
+  omega
+
+/-- **The single-edge root-shift as a straightening step relation.**  Reroot to the adjacent child when
+    that lowers `strDefect` (`Aobj` equal by `Aobj_rootShift`, `usize` equal). -/
+def RootShiftStep (t t' : UTree) : Prop :=
+  ∃ ds rest : List UTree,
+    t = UTree.node (UTree.node ds :: rest) ∧ t' = UTree.node (ds ++ [UTree.node rest]) ∧
+    strDefect t' < strDefect t
+
+theorem RootShiftStep.straightStep {t t' : UTree} (h : RootShiftStep t t') : StraightStep_sized t t' := by
+  obtain ⟨ds, rest, rfl, rfl, hlt⟩ := h
+  exact ⟨usize_rootShift ds rest, le_of_eq (Aobj_rootShift ds rest).symm, hlt⟩
 
 end Step3
 end R3Cert

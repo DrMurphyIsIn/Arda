@@ -18,6 +18,7 @@
 import Mathlib
 import R3Cert.BGSCLFlpStepAt
 import R3Cert.R47AdjLeafStep
+import R3Cert.R47RootShift
 
 namespace R3Cert
 namespace Step3
@@ -37,12 +38,14 @@ theorem AdjLeafStep.straightStep {t t' : UTree} (h : AdjLeafStep t t') : Straigh
   obtain ⟨pre, post, Bv, Other, hBv, hcherry, hOther, rfl, rfl⟩ := h
   exact adjLeaf_straightStep pre post Bv Other hBv hcherry hOther
 
-/-- **The covering relation**: a straightening step is a sibling multi-flip OR an adjacent leaf move. -/
-def CoverR (t t' : UTree) : Prop := FlpStepAt t t' ∨ AdjLeafStep t t'
+/-- **The covering relation**: a straightening step is a sibling multi-flip, an adjacent leaf move, OR a
+    single-edge root-shift (reroot to a lower-defect adjacent rooting). -/
+def CoverR (t t' : UTree) : Prop := FlpStepAt t t' ∨ AdjLeafStep t t' ∨ RootShiftStep t t'
 
-/-- **`CoverR` refines `StraightStep_sized`** -- both classes are proven straightening steps. -/
+/-- **`CoverR` refines `StraightStep_sized`** -- all three classes are proven straightening steps. -/
 theorem CoverR.straightStep {t t' : UTree} (h : CoverR t t') : StraightStep_sized t t' := by
-  rcases h with h | h
+  rcases h with h | h | h
+  · exact h.straightStep
   · exact h.straightStep
   · exact h.straightStep
 
