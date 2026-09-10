@@ -85,3 +85,6 @@ name = "RvMPolygammaHigher"
 
 [[lean_lib]]
 name = "RvMGammaR"
+
+[[lean_lib]]
+name = "RvMGammaRIterate"

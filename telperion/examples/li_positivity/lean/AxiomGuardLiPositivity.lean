@@ -40,6 +40,7 @@ import RvMTrigamma
 import RvMPolygamma
 import RvMPolygammaHigher
 import RvMGammaR
+import RvMGammaRIterate
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -162,3 +163,12 @@ import RvMGammaR
 -- HasDerivAt.const_cpow + Gamma chain rule. Reduces the archimedean factor to the Phase-4a polygamma
 -- values at 1/2; m=0 recovers logDeriv_gammaR_one. conjecture1_proved = False.
 #print axioms RvMWeierstrass.logDeriv_Gammaℝ_eq
+
+-- Phase 4b iterate (COMPLETE): local iterated chain rule for the half-argument digamma.
+-- digamma_contDiffOn_re_pos (analytic on {Re>0}), iteratedDeriv_digamma_half (iteratedDeriv m
+-- (psi(s/2)) x = (1/2)^m psi^(m)(x/2) via iteratedDerivWithin_comp_const_smul + open-set conversion),
+-- iteratedDeriv_logDeriv_GammaR_one: iteratedDeriv m (logDeriv GammaR) 1 = (1/2)^(m+1) iteratedDeriv m
+-- digamma (1/2) (m>=1). conjecture1_proved = False.
+#print axioms RvMWeierstrass.digamma_contDiffOn_re_pos
+#print axioms RvMWeierstrass.iteratedDeriv_digamma_half
+#print axioms RvMWeierstrass.iteratedDeriv_logDeriv_Gammaℝ_one
