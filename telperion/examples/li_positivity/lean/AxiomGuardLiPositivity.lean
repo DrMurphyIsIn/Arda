@@ -38,6 +38,7 @@ import RvMDigammaTprod
 import RvMDigammaComplete
 import RvMTrigamma
 import RvMPolygamma
+import RvMPolygammaHigher
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -148,3 +149,9 @@ import RvMPolygamma
 -- B(s, eps/2) with a case-split O(1/n^2) bound; reindex/summability from the differentiation HasSum.
 -- Base case for the polygamma induction. conjecture1_proved = False.
 #print axioms RvMWeierstrass.deriv_digamma_eq_tsum
+
+-- Phase 4a proper: higher polygamma values. hasDerivAt_P: d/ds sum' 1/(s+k)^p = -p sum'
+-- 1/(s+k)^(p+1) (p>=2, case-split O(1/n^p) bound). iteratedDeriv_digamma: iteratedDeriv m digamma s
+-- = (-1)^(m+1) m! sum' 1/(s+k)^(m+1) (m>=1), by induction. conjecture1_proved = False.
+#print axioms RvMWeierstrass.hasDerivAt_P
+#print axioms RvMWeierstrass.iteratedDeriv_digamma
