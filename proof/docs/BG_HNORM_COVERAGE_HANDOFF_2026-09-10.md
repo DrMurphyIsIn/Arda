@@ -70,7 +70,10 @@ defective trees — `proof/verification/COVER_RELATION_STATUS.md`):
 
 ### Two remaining pieces (priority order)
 
-**(A) A `RerootStep` class: 62.7% → 99.3%.  HIGHEST LEVERAGE next build.**
+**(A) A `RerootStep` class: 62.7% → 99.3%.  ✅ DONE (2026-09-10).**  `CompRerootStep` (composite reroot,
+`RerootRel := ReflTransGen{shift-to-front ∨ child-perm}`, `Aobj`/`usize` invariant by composition) is built
+and folded into `CoverR := FlpStepAt ∨ AdjLeafStep ∨ CompRerootStep` (kernel-clean; reaches 99.3%).  Only the
+coverage lemma for `CoverR` and the 0.7% whole-hub residual (piece B) remain.  Original plan retained below.
 A reroot to a lower-`strDefect` rooting is a valid `StraightStep_sized` (same vertices ⇒ `usize` equal;
 `Aobj` is a graph invariant ⇒ equal; `strDefect` lower).
 
