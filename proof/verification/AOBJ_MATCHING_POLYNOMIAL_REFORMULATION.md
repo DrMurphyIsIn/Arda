@@ -74,9 +74,30 @@ Plus the whole-hub (Case-B) family — needed for the last ~8% — whose increme
 (1529 defect-reducing negatives survive the gate; `G1` lift-gain fails), so it needs a genuinely global
 monomer-dimer inequality, not a gate.
 
+## RESOLVED: crux (a) for the ADJACENT leaf move — no gate needed, defect-reduction alone certifies
+
+The structural-implies-analytic link is now a complete, formalizable proof for the adjacent case (`par_v`
+a child of `par_w`; root at `par_w` by `Aobj` root-invariance):
+
+1. **`nB = 0 ⟹ non-defect-reducing.**  If `par_v` has no children besides the target leaf `v`, then
+   `par_v = node[v]` is a CHERRY (piece) before and `par_v' = node[stem]` an ARM (piece) after; no
+   piece-status changes anywhere, so `strDefect` is unchanged. (Pure `isPiece` computation — Lean-ready.)
+2. **Hence `strDefect`-reducing ⟹ `nB ≥ 1`** (contrapositive).
+3. **`N` has nonnegative `QB,QO` coefficients**, so `N ≥ N0 := N|_{QB=QO=0} = nO·(nB·nO + nB + nO − 2)`.
+4. **`nB ≥ 1 ⟹ nB·nO + nB + nO ≥ 2 ⟹ N0 ≥ 0`** (arithmetic), hence `N ≥ 0`, hence
+   `increment = PB·PO·N / [2(nB+2)(nO+1)(nO+2)] ≥ 0`.
+
+Verified exhaustively (3025 adjacent configs, 90 defect-reducing): **0 with `nB=0`, 0 with Aobj decrease**;
+and `N ≥ 0` for every realizable `nB≥1` (0/300000). So **every defect-reducing ADJACENT leaf-onto-leaf move
+is Aobj-nondecreasing — unconditionally, no degree gate.** This closes the analytic half of crux (a): the
+degree gate was only a sufficient proxy; the true certificate is the structural fact `defect-reducing ⟹
+nB≥1`, which lands the closed form in its provably-nonneg region.
+
 ## Status
 
-This is a **reformulation + partial result**, not a proof: the monomer-dimer identity is exhaustively
-verified; the degree-equalizing gate is a clean SUFFICIENT condition for defect-reducing leaf moves; and the
-open crux is now pinned to two precise sub-problems (link defect-reduction to `N`'s safe region; a global
-inequality for the whole-hub family). It does NOT close `Hnorm`. `conjecture1_proved = False`.
+**Progress, not full closure.** The monomer-dimer identity is exhaustively verified; and crux (a) is now
+RESOLVED for the adjacent leaf move (a clean, Lean-ready proof: `defect-reducing ⟹ nB≥1 ⟹ N≥0`, no gate).
+Remaining: (a') the same for NON-adjacent (deeper `par_v`) leaf moves — a different closed form with path
+denominators, expected to yield the analogous structural link; and (b) the whole-hub (Case-B) family, still
+needing a global monomer-dimer inequality (`G1` lift-gain fails). It does NOT yet close `Hnorm`.
+`conjecture1_proved = False`.
