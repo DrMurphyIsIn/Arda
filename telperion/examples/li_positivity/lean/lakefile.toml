@@ -58,3 +58,6 @@ name = "RvMDigammaSeries"
 
 [[lean_lib]]
 name = "RvMWeierstrass"
+
+[[lean_lib]]
+name = "RvMDigammaProd"
