@@ -50,6 +50,7 @@ import RvMLiConnection
 import RvMLiCoeffSplit
 import RvMZetaPoleReg
 import RvMLiCoeffId
+import RvMGammaRCapstone
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -245,3 +246,11 @@ import RvMLiCoeffId
 -- + taylorCoeff GammaR n -- every non-arithmetic term explicit. conjecture1_proved=False.
 #print axioms RvMWeierstrass.taylorCoeff_id_eq_one
 #print axioms RvMWeierstrass.taylorCoeff_riemannXi_split_explicit
+
+-- The archimedean Li coefficient as one explicit polygamma-at-1/2 combination.
+-- iteratedDeriv_logDeriv_GammaR_one_eq_archGamma: iteratedDeriv m (logDeriv GammaR) 1 = archGamma m
+-- (archGamma 0 = -log pi/2 + (1/2)psi(1/2); archGamma m = (1/2)^(m+1) psi^(m)(1/2) for m>=1).
+-- taylorCoeff_GammaR_polygamma: taylorCoeff GammaR n = Leibniz/FaaDiBruno finite combination of
+-- archGamma (glues #458->#456->#453/#452). conjecture1_proved=False.
+#print axioms RvMWeierstrass.iteratedDeriv_logDeriv_Gammaℝ_one_eq_archGamma
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_polygamma

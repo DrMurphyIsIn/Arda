@@ -115,3 +115,6 @@ name = "RvMZetaPoleReg"
 
 [[lean_lib]]
 name = "RvMLiCoeffId"
+
+[[lean_lib]]
+name = "RvMGammaRCapstone"
