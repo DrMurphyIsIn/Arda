@@ -51,6 +51,11 @@ import RvMArchimedeanCoeff
 import RvMLiConnection
 import RvMLiCoeffSplit
 import RvMZetaPoleReg
+import RvMLiCoeffId
+import RvMGammaRCapstone
+import RvMRouteP
+import RvMOnLinePositivity
+import RvMPairedSummandAnatomy
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -239,3 +244,40 @@ import RvMZetaPoleReg
 -- taylorCoeff zetaPoleCompanion n is a FINITE datum with the s=1 pole cancelled. conjecture1_proved=False.
 #print axioms RvMWeierstrass.logDeriv_phi_zetaPoleCompanion_regularizes
 #print axioms RvMWeierstrass.analyticAt_logDeriv_phi_zetaPoleCompanion
+
+-- The elementary summand resolved + the explicit split.
+-- taylorCoeff_id_eq_one: taylorCoeff (fun s=>s) n = 1 (the 1/s pole pulls back to M, deriv^[n] M 0 = n!).
+-- taylorCoeff_riemannXi_split_explicit: taylorCoeff riemannXi n = 1 + taylorCoeff zetaPoleCompanion n
+-- + taylorCoeff GammaR n -- every non-arithmetic term explicit. conjecture1_proved=False.
+#print axioms RvMWeierstrass.taylorCoeff_id_eq_one
+#print axioms RvMWeierstrass.taylorCoeff_riemannXi_split_explicit
+
+-- The archimedean Li coefficient as one explicit polygamma-at-1/2 combination.
+-- iteratedDeriv_logDeriv_GammaR_one_eq_archGamma: iteratedDeriv m (logDeriv GammaR) 1 = archGamma m
+-- (archGamma 0 = -log pi/2 + (1/2)psi(1/2); archGamma m = (1/2)^(m+1) psi^(m)(1/2) for m>=1).
+-- taylorCoeff_GammaR_polygamma: taylorCoeff GammaR n = Leibniz/FaaDiBruno finite combination of
+-- archGamma (glues #458->#456->#453/#452). conjecture1_proved=False.
+#print axioms RvMWeierstrass.iteratedDeriv_logDeriv_Gammaℝ_one_eq_archGamma
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_polygamma
+
+-- Route P: RH localized onto the companion coefficient (kernel reduction, NOT a proof).
+-- rh_iff_companion_ge: RiemannHypothesis <-> forall n, -(1+(taylorCoeff GammaR n).re) <=
+-- (taylorCoeff zetaPoleCompanion n).re. An IFF -- relocates RH onto one explicit inequality per n;
+-- proves nothing about RH. conjecture1_proved=False.
+#print axioms RvMWeierstrass.rh_iff_companion_ge
+
+-- Route P (creative): manifest positivity of on-line zero contributions.
+-- onLine_liPairedSummand_eq_normSq: for a nontrivial zero with re=1/2, liPairedSummand n rho =
+-- normSq(1 - (1-1/rho)^(n+1)) -- a perfect square (|w|=1 => w^-(n+1)=conj w^(n+1)); nonneg + real.
+-- Unconditional; the on-line side of the signature dichotomy. Does NOT prove RH. conjecture1_proved=False.
+#print axioms RvMWeierstrass.onLine_liPairedSummand_eq_normSq
+#print axioms RvMWeierstrass.onLine_liPairedSummand_nonneg
+#print axioms RvMWeierstrass.onLine_liPairedSummand_im
+
+-- Route P extended: unconditional anatomy of the paired Li summand.
+-- liPairedSummand_eq_two_sub_v_sub_inv: liPairedSummand n ρ = 2 - v - v⁻¹ (v=(1-1/ρ)^(n+1)), ANY zero.
+-- liPairedSummand_re_nonneg_iff: 0 ≤ (·).re ↔ (v+v⁻¹).re ≤ 2 (the exact per-zero positivity condition).
+-- onLine_re_v_add_inv_le_two: on-line (|v|=1) ⟹ condition holds automatically. conjecture1_proved=False.
+#print axioms RvMWeierstrass.liPairedSummand_eq_two_sub_v_sub_inv
+#print axioms RvMWeierstrass.liPairedSummand_re_nonneg_iff
+#print axioms RvMWeierstrass.onLine_re_v_add_inv_le_two

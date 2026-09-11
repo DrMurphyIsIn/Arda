@@ -124,3 +124,18 @@ name = "RvMLiCoeffSplit"
 
 [[lean_lib]]
 name = "RvMZetaPoleReg"
+
+[[lean_lib]]
+name = "RvMLiCoeffId"
+
+[[lean_lib]]
+name = "RvMGammaRCapstone"
+
+[[lean_lib]]
+name = "RvMRouteP"
+
+[[lean_lib]]
+name = "RvMOnLinePositivity"
+
+[[lean_lib]]
+name = "RvMPairedSummandAnatomy"
