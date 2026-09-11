@@ -61,6 +61,7 @@ import RvMCompanionPrime
 import RvMCompanionBragg
 import RvMLiWeightReconcile
 import RvMLiWeightTsum
+import RvMCompanionCoeff
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -309,3 +310,9 @@ import RvMLiWeightTsum
 -- reindex level (does NOT license the split). conjecture1_proved=False.
 #print axioms RvMWeierstrass.taylorCoeff_riemannXi_eq_liWeight_paired_tsum
 #print axioms RvMWeierstrass.tsum_liWeight_pairedZero_eq
+
+-- Route P Brick D2b-3: isolation of the companion Taylor coefficient (zero-sum side).
+-- taylorCoeff_companion_eq_liWeight_paired_tsum: taylorCoeff zetaPoleCompanion n = 2⁻¹·∑'_ρ (liWeight
+-- (n+1) ρ + liWeight (n+1) (pairedZero ρ)) - 1 - taylorCoeff GammaR n. Combines D2b-2 (#478) + split
+-- (#463); conditional hgenus/hhad (undischarged). Prime/Bragg-side dual stays category-(c) frontier.
+#print axioms RvMWeierstrass.taylorCoeff_companion_eq_liWeight_paired_tsum
