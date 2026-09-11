@@ -45,6 +45,7 @@ import RvMMobius
 import RvMPhiChain
 import RvMFaaDiBruno
 import RvMLeibniz
+import RvMArchimedeanCoeff
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -202,3 +203,10 @@ import RvMLeibniz
 #print axioms RvMWeierstrass.leibniz_sum_step
 #print axioms RvMWeierstrass.iteratedDerivWithin_mul
 #print axioms RvMWeierstrass.iteratedDeriv_mul_of_isOpen
+
+-- Phase 4c CAPSTONE: the archimedean Li coefficient as a Leibniz sum.
+-- taylorCoeff_GammaR_leibniz (n): LiCriterion.taylorCoeff Complex.GammaR n = (sum_{k<=n} C(n,k) *
+-- iteratedDeriv k (logDeriv GammaR o M) 0 * (n-k+1)!) / n!. Assembles logDeriv_phi + Leibniz (iterated
+-- Deriv_mul_of_isOpen) + Mobius derivs, wired to the upstream taylorCoeff. Composition-derivs are the
+-- Phase-4c Faa di Bruno sums of Phase-4b polygamma values. conjecture1_proved = False.
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_leibniz
