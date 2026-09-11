@@ -100,3 +100,6 @@ name = "RvMFaaDiBruno"
 
 [[lean_lib]]
 name = "RvMLeibniz"
+
+[[lean_lib]]
+name = "RvMArchimedeanCoeff"
