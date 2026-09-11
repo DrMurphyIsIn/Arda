@@ -43,6 +43,7 @@ import RvMGammaR
 import RvMGammaRIterate
 import RvMMobius
 import RvMPhiChain
+import RvMFaaDiBruno
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -185,3 +186,10 @@ import RvMPhiChain
 -- logDeriv (fun w => f((1-w)^{-1})) z = logDeriv f ((1-z)^{-1}) * M'(z) (logDeriv_comp). Separates the
 -- outer logDeriv f (frontier-a split) from the inner Mobius derivative. conjecture1_proved = False.
 #print axioms RvMWeierstrass.logDeriv_phi
+
+-- Phase 4c core: Faa di Bruno on the archimedean composition (logDeriv GammaR) o M, M=(1-z)^{-1}.
+-- iteratedDeriv_logDerivGammaR_comp_mobius (i): iteratedDeriv i (fun z => logDeriv GammaR ((1-z)^{-1}))
+-- 0 = sum_{c:OrderedFinpartition i} (prod_j (c.partSize j)!) . iteratedDeriv c.length (logDeriv GammaR) 1.
+-- Via iteratedDeriv_scomp_eq_sum_orderedFinpartition (logDeriv GammaR analytic at 1, M smooth at 0) +
+-- iteratedDeriv_mobius_zero. conjecture1_proved = False.
+#print axioms RvMWeierstrass.iteratedDeriv_logDerivGammaℝ_comp_mobius
