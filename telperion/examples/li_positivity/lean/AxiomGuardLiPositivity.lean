@@ -56,6 +56,7 @@ import RvMOnLinePositivity
 import RvMPairedSummandAnatomy
 import RvMCompanionPrime
 import RvMCompanionBragg
+import RvMLiWeightReconcile
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -295,3 +296,9 @@ import RvMCompanionBragg
 -- explicit formula integrates. Corollary of D1; sets up the finite Bragg identity (D2b). NOT a step
 -- toward RH. conjecture1_proved=False.
 #print axioms RvMWeierstrass.companion_right_edge_prime_integrand
+
+-- Route P, Brick D2b-1 (weight-reconciliation hinge): liPairedSummand n ρ =
+-- liWeight (n+1) ρ + liWeight (n+1) (pairedZero ρ). Elementary/unconditional (both sides
+-- 2 - w^(n+1) - w^(-(n+1))); bridges Stratum 2's coefficient sum (liPairedSummand) to
+-- li_finite_explicit_formula (liWeight). First target of D2b. conjecture1_proved=False.
+#print axioms RvMWeierstrass.liPairedSummand_eq_liWeight_paired
