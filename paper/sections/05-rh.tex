@@ -408,17 +408,34 @@ large-argument asymptotic is simply off the path, replaced by exact local
 constants. The base datum is already in the kernel:
 $(\log \Gamma_{\mathbb R})'(1) = -(\gamma + \log 4\pi)/2$
 (\texttt{logDeriv\_gammaR\_one}, CI-axiom-guarded), from Mathlib's own derivative
-of $\Gamma$ at $1$. The route's genuine residual is therefore a \emph{different},
-more elementary frontier: the higher polygamma values $\psi^{(k)}(\tfrac12)$
-(exact $\zeta$-value constants, but a polygamma theory Mathlib currently lacks
-entirely), a Fa\`a di Bruno assembly of the composition (algebra), and the growth
-of the resulting explicit sequence (asymptotics of a known real sequence, not a
-uniform complex estimate on a growing contour). We have opened this route and
-planted its first exact stone; we have not walked it, and we do not claim the main
-term. The honest shape of the frontier is what changed---from ``an absent complex
-asymptotic'' to ``a bounded, namable polygamma build''---not the conclusion. As
-everywhere in this section, \texttt{conjecture1\_proved = False}: nothing here
-proves or approaches RH.
+of $\Gamma$ at $1$. The route's residual has since been \emph{built}. The polygamma theory Mathlib
+lacked is now in the kernel from the ground up: the Gauss--Weierstrass digamma
+series (\texttt{digamma\_series}, obtained by log-differentiating the Weierstrass
+product $s\,e^{\gamma s}\prod(1+s/n)e^{-s/n} = 1/\Gamma$, with $\gamma$ pinned by
+Mathlib's harmonic-minus-log limit), the trigamma value $\psi'(\tfrac12) = \pi^2/2$
+(\texttt{deriv\_digamma\_one\_half}, its series summed via Basel), and the higher
+$\psi^{(k)}(\tfrac12)$ as exact $\zeta$-value data. A Fa\`a di Bruno expansion of
+the composition and a Leibniz rule for iterated derivatives---both filling their
+own Mathlib gaps---then assemble the Archimedean coefficient in closed form
+(\texttt{taylorCoeff\_Gamma}\(\mathbb{R}\)\texttt{\_leibniz}), and the Li coefficient itself splits, as a
+kernel theorem, into its exact parts:
+\[
+  \lambda_n = \texttt{taylorCoeff}(\mathrm{id})_n
+    + \texttt{taylorCoeff}(H)_n
+    + \texttt{taylorCoeff}(\Gamma_{\mathbb R})_n
+\]
+(\texttt{taylorCoeff\_riemannXi\_split}, with $H=(s-1)\zeta$ the analytic
+$\zeta$-companion at $s=1$), the last summand being the closed polygamma data. This
+is the exact, finite coefficient---built, not asserted.
+
+What that leaves is a single, sharper residual: the \emph{growth} of this
+now-explicit sequence, $\lambda_n \sim (n/2)\log n$. That is no longer an absent
+complex asymptotic on a growing contour, nor a theory to build---it is one named
+asymptotic estimate of a known real sequence of $\zeta$-value constants, and it is
+the one place the zero density $dN(T) \sim (1/2\pi)\log(T/2\pi)$ would become
+load-bearing. We have the exact coefficient; we do not have---and do not claim---its
+asymptotic. As everywhere in this section, \texttt{conjecture1\_proved = False}:
+nothing here proves or approaches RH.
 
 For completeness we note one boundary item we deliberately keep out of the
 verified list, stated as it is: a Borel--Carath\'eodory theorem is present in the
