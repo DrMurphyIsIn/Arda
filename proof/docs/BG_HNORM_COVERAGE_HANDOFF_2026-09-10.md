@@ -22,9 +22,9 @@ Status of each:
 | layer | status |
 |---|---|
 | **`Hdom`** — single-hub, two-hub, m≥3 multi-hub, AND the tie-definition | **CLOSED** (kernel-clean). `pairCollapse6` (m≥3) is a theorem; `tieArgmax` (finite-argmax single hub) discharges the tie layer; `conjecture1_of_Hnorm` (`R47TieArgmax.lean:119`) gives Conjecture 1 conditional on **`Hnorm` alone**. |
-| **`Hnorm`** | **OPEN**, reduced to `CoverR` coverage (see §3). |
+| **`Hnorm`** | **OPEN**, and has TWO layers (correction 2026-09-11): (i) size-preserving tree→general-backbone coverage — reduced kernel-clean to `hcore`/whole-hub (§3); (ii) the Balanced+Capped size-preserving NORMALIZATION (general backbone → arms∈{4,5}, ≥5 arms/hub) — a SEPARATE open layer NOT fed by `tree_to_hub_sized`. `conjecture1_of_layers_fixedN` needs BOTH; `hnorm_of_coverR_coverage` supplies only (i)'s usize-shape. So Conjecture 1 rests on hcore AND the normalization layer, not hcore alone. |
 
-So **Conjecture 1 now rests on `Hnorm` alone**, and `Hnorm` is reduced to a single coverage lemma.
+So Conjecture 1 rests on `Hnorm`; `Hnorm` = layer (i) coverage (reduced to `hcore`) + layer (ii) the Balanced+Capped size-preserving normalization (separate open). See the correction in `proof/verification/COVER_RELATION_STATUS.md`.
 
 ---
 

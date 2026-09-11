@@ -96,8 +96,32 @@ the GLOBAL monomer-dimer / Heilmann-Lieb argument (foundation: `Aobj = Σ_matchi
 `AOBJ_MATCHING_POLYNOMIAL_REFORMULATION.md`; the isolated symmetric base is already proven Aobj-neutral in
 `BGSCLRealOblBSymBase.lean`).
 
-## Status
+## CORRECTION (2026-09-11): what `hcore` actually reduces, and the SECOND open Hnorm layer
 
-`Hnorm` reduced (kernel-clean) to `hcore`; `hcore` splits into the `FlpStepAt` CONSTRUCTOR (has-site,
-mechanical) and ONE genuine open research lemma — the whole-hub Case-B move on the branching-defect residual.
-`conjecture1_proved = False`.
+Verified by type-checking (`conjecture1_of_Hnorm (hnorm_of_coverR_coverage hcov)` FAILS): my `CoverR` /
+`CompRerootStep` / `hcore` chain feeds **`tree_to_hub_sized`**, whose output is
+`∃ s, usize(backboneU s) = usize t ∧ Aobj t ≤ Aobj(backboneU s)` — a **general** backbone (usize-shape).
+The well-posed capstone `conjecture1_of_layers_fixedN` needs
+`∃ s, Balanced s ∧ Capped s ∧ stateSize s = usize t ∧ Aobj t ≤ Aobj(backboneU s)` — i.e. the witness must ALSO
+be **Balanced** (arms ∈ {4,5}) and **Capped** (≥5 arms/hub).  `usize_backbone` bridges usize↔stateSize, but
+NOTHING here upgrades a general backbone to Balanced+Capped.
+
+**So the earlier claim "Conjecture 1 rests on `hcore` alone" was INCORRECT.**  There are (at least) TWO open
+`Hnorm` layers:
+
+1. **Size-preserving coverage** (tree → general defect-0 backbone): reduced — kernel-clean — to `hcore`,
+   which splits into the `FlpStepAt` constructor (has-site) + the whole-hub Case-B residual (no-site).  This
+   is the genuine, real progress of this branch.
+2. **The Balanced+Capped normalization** (general backbone → Balanced+Capped hub-state, size-preservingly and
+   `Aobj`-non-decreasingly = arm-balance to load 4/5 + de-load/cap to ≥5 arms).  This is a SEPARATE layer,
+   NOT provided by `tree_to_hub_sized` (general backbone) NOR by `hnorm_of_rewrite` (Balanced+Capped but
+   size-CHANGING, so it feeds only the ill-posed single-tie `conjecture1_of_layers`).  Per the program
+   history this is the genuinely-hard "cross-boundary / aligned-n" residual.
+
+## Status (corrected)
+
+`Hdom`: CLOSED.  `Hnorm`: reduced to `hcore` ONLY for the size-preserving-general-backbone target
+(`tree_to_hub_sized`); `hcore` = `FlpStepAt` constructor + whole-hub Case-B residual.  The well-posed capstone
+additionally needs the **Balanced+Capped size-preserving normalization** — a second, separate open layer.  So
+Conjecture 1 rests on TWO open `Hnorm` obligations (whole-hub coverage AND Balanced+Capped normalization),
+not one.  `conjecture1_proved = False`.
