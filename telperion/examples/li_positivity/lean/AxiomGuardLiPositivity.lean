@@ -53,6 +53,7 @@ import RvMLiCoeffId
 import RvMGammaRCapstone
 import RvMRouteP
 import RvMOnLinePositivity
+import RvMPairedSummandAnatomy
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -270,3 +271,11 @@ import RvMOnLinePositivity
 #print axioms RvMWeierstrass.onLine_liPairedSummand_eq_normSq
 #print axioms RvMWeierstrass.onLine_liPairedSummand_nonneg
 #print axioms RvMWeierstrass.onLine_liPairedSummand_im
+
+-- Route P extended: unconditional anatomy of the paired Li summand.
+-- liPairedSummand_eq_two_sub_v_sub_inv: liPairedSummand n ρ = 2 - v - v⁻¹ (v=(1-1/ρ)^(n+1)), ANY zero.
+-- liPairedSummand_re_nonneg_iff: 0 ≤ (·).re ↔ (v+v⁻¹).re ≤ 2 (the exact per-zero positivity condition).
+-- onLine_re_v_add_inv_le_two: on-line (|v|=1) ⟹ condition holds automatically. conjecture1_proved=False.
+#print axioms RvMWeierstrass.liPairedSummand_eq_two_sub_v_sub_inv
+#print axioms RvMWeierstrass.liPairedSummand_re_nonneg_iff
+#print axioms RvMWeierstrass.onLine_re_v_add_inv_le_two
