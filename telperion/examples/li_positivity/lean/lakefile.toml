@@ -109,3 +109,6 @@ name = "RvMLiConnection"
 
 [[lean_lib]]
 name = "RvMLiCoeffSplit"
+
+[[lean_lib]]
+name = "RvMZetaPoleReg"

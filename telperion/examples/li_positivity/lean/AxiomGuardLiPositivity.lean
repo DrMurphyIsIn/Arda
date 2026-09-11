@@ -48,6 +48,7 @@ import RvMLeibniz
 import RvMArchimedeanCoeff
 import RvMLiConnection
 import RvMLiCoeffSplit
+import RvMZetaPoleReg
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -228,3 +229,11 @@ import RvMLiCoeffSplit
 -- n being the exact polygamma data (taylorCoeff_GammaR_leibniz). Via companion regularisation of the
 -- zeta pole + full-nbhd split (continuity upgrade) + iteratedDeriv_add. conjecture1_proved = False.
 #print axioms RvMWeierstrass.taylorCoeff_riemannXi_split
+
+-- The ζ-pole regularization of the coefficient split, made explicit.
+-- logDeriv_phi_zetaPoleCompanion_regularizes: on 𝓝[≠]0 the companion pullback = pole pullback
+-- logDeriv(phi (·-1)) + ζ pullback logDeriv(phi ζ) (both singular at 0);
+-- analyticAt_logDeriv_phi_zetaPoleCompanion: yet the companion pullback is analytic at 0, so
+-- taylorCoeff zetaPoleCompanion n is a FINITE datum with the s=1 pole cancelled. conjecture1_proved=False.
+#print axioms RvMWeierstrass.logDeriv_phi_zetaPoleCompanion_regularizes
+#print axioms RvMWeierstrass.analyticAt_logDeriv_phi_zetaPoleCompanion
