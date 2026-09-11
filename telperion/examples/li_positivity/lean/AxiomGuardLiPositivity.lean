@@ -47,6 +47,7 @@ import RvMFaaDiBruno
 import RvMLeibniz
 import RvMArchimedeanCoeff
 import RvMLiConnection
+import RvMLiCoeffSplit
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -219,3 +220,11 @@ import RvMLiConnection
 -- summand of the Li coefficient generating function, via logDeriv_phi + xiTele_eq_riemannXi + the
 -- frontier-a four-split. conjecture1_proved = False.
 #print axioms RvMWeierstrass.logDeriv_phi_riemannXi_split
+
+-- The coefficient-level connection to the upstream Li machinery.
+-- taylorCoeff_riemannXi_split (n): LiCriterion.taylorCoeff riemannXi n = taylorCoeff (fun s=>s) n +
+-- taylorCoeff zetaPoleCompanion n + taylorCoeff GammaR n. The actual Li coefficient (whose positivity
+-- li_criterion_rh_iff equates to RH) decomposed additively, the archimedean summand taylorCoeff GammaR
+-- n being the exact polygamma data (taylorCoeff_GammaR_leibniz). Via companion regularisation of the
+-- zeta pole + full-nbhd split (continuity upgrade) + iteratedDeriv_add. conjecture1_proved = False.
+#print axioms RvMWeierstrass.taylorCoeff_riemannXi_split

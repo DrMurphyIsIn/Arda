@@ -106,3 +106,6 @@ name = "RvMArchimedeanCoeff"
 
 [[lean_lib]]
 name = "RvMLiConnection"
+
+[[lean_lib]]
+name = "RvMLiCoeffSplit"
