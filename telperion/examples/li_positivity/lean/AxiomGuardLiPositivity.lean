@@ -42,6 +42,7 @@ import RvMPolygammaHigher
 import RvMGammaR
 import RvMGammaRIterate
 import RvMMobius
+import RvMPhiChain
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -179,3 +180,8 @@ import RvMMobius
 -- on the (logDeriv GammaR) o (1/(1-z)) composition. conjecture1_proved = False.
 #print axioms RvMWeierstrass.iteratedDeriv_mobius
 #print axioms RvMWeierstrass.iteratedDeriv_mobius_zero
+
+-- Phase 4c foundation: log-derivative of the Mobius pullback phi f = f o M, M(z)=(1-z)^{-1}.
+-- logDeriv (fun w => f((1-w)^{-1})) z = logDeriv f ((1-z)^{-1}) * M'(z) (logDeriv_comp). Separates the
+-- outer logDeriv f (frontier-a split) from the inner Mobius derivative. conjecture1_proved = False.
+#print axioms RvMWeierstrass.logDeriv_phi

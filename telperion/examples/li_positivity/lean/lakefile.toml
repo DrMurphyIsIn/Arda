@@ -91,3 +91,6 @@ name = "RvMGammaRIterate"
 
 [[lean_lib]]
 name = "RvMMobius"
+
+[[lean_lib]]
+name = "RvMPhiChain"
