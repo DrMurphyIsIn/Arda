@@ -112,3 +112,6 @@ name = "RvMLiCoeffSplit"
 
 [[lean_lib]]
 name = "RvMZetaPoleReg"
+
+[[lean_lib]]
+name = "RvMLiCoeffId"
