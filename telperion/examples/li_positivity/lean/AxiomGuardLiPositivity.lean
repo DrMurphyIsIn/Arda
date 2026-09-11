@@ -46,6 +46,7 @@ import RvMPhiChain
 import RvMFaaDiBruno
 import RvMLeibniz
 import RvMArchimedeanCoeff
+import RvMLiConnection
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -210,3 +211,11 @@ import RvMArchimedeanCoeff
 -- Deriv_mul_of_isOpen) + Mobius derivs, wired to the upstream taylorCoeff. Composition-derivs are the
 -- Phase-4c Faa di Bruno sums of Phase-4b polygamma values. conjecture1_proved = False.
 #print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_leibniz
+
+-- The FULL connection to the upstream Li machinery.
+-- logDeriv_phi_riemannXi_split: logDeriv (phi riemannXi) z = (1/s)M' + (1/(s-1))M' + logDeriv zeta(s)M'
+-- + logDeriv (phi GammaR) z, s=(1-z)^{-1}. Exhibits the archimedean generating function logDeriv(phi
+-- GammaR) (whose Taylor coeffs = Phase-4 polygamma data, taylorCoeff_GammaR_leibniz) as an explicit
+-- summand of the Li coefficient generating function, via logDeriv_phi + xiTele_eq_riemannXi + the
+-- frontier-a four-split. conjecture1_proved = False.
+#print axioms RvMWeierstrass.logDeriv_phi_riemannXi_split
