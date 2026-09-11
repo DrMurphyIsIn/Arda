@@ -118,3 +118,6 @@ name = "RvMLiCoeffId"
 
 [[lean_lib]]
 name = "RvMGammaRCapstone"
+
+[[lean_lib]]
+name = "RvMRouteP"

@@ -51,6 +51,7 @@ import RvMLiCoeffSplit
 import RvMZetaPoleReg
 import RvMLiCoeffId
 import RvMGammaRCapstone
+import RvMRouteP
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -254,3 +255,9 @@ import RvMGammaRCapstone
 -- archGamma (glues #458->#456->#453/#452). conjecture1_proved=False.
 #print axioms RvMWeierstrass.iteratedDeriv_logDeriv_Gammaℝ_one_eq_archGamma
 #print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_polygamma
+
+-- Route P: RH localized onto the companion coefficient (kernel reduction, NOT a proof).
+-- rh_iff_companion_ge: RiemannHypothesis <-> forall n, -(1+(taylorCoeff GammaR n).re) <=
+-- (taylorCoeff zetaPoleCompanion n).re. An IFF -- relocates RH onto one explicit inequality per n;
+-- proves nothing about RH. conjecture1_proved=False.
+#print axioms RvMWeierstrass.rh_iff_companion_ge
