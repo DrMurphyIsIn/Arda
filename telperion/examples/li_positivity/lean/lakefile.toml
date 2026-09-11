@@ -103,3 +103,6 @@ name = "RvMLeibniz"
 
 [[lean_lib]]
 name = "RvMArchimedeanCoeff"
+
+[[lean_lib]]
+name = "RvMLiConnection"
