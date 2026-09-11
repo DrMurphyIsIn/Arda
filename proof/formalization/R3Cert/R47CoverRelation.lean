@@ -87,5 +87,35 @@ theorem hnorm_of_minimalCore
     ∀ t : UTree, ∃ s : List Hub, usize (backboneU s) = usize t ∧ Aobj t ≤ Aobj (backboneU s) :=
   hnorm_of_coverR_coverage (coverR_coverage_of_minimalCore hcore)
 
+/-- **The whole-hub obligation is the SOLE remaining input** for `CoverR` coverage.  On a reroot-minimal
+    defective tree, `FlpStepAt` fires whenever it applies (has-site); the non-reroot-minimal case is handled
+    by `CompRerootStep` directly (no path construction).  So the only trees needing a further move are the
+    reroot-minimal defective ones with NO `FlpStepAt` move -- exactly the whole-hub (Case-B / adaptive
+    de-branch) residual.  `hwh` supplies a `CoverR` move for precisely those. -/
+theorem coverR_coverage_of_wholehub
+    (hwh : ∀ t : UTree, strDefect t ≠ 0 → RerootMinimal t → (¬ ∃ t', FlpStepAt t t') →
+        ∃ t', CoverR t t') :
+    ∀ t : UTree, strDefect t ≠ 0 → ∃ t', CoverR t t' := by
+  intro t hd
+  by_cases hmin : RerootMinimal t
+  · by_cases hflp : ∃ t', FlpStepAt t t'
+    · obtain ⟨t', h⟩ := hflp; exact ⟨t', Or.inl h⟩
+    · exact hwh t hd hmin hflp
+  · rw [RerootMinimal] at hmin; push_neg at hmin
+    obtain ⟨t', hrel, hlt⟩ := hmin
+    exact ⟨t', Or.inr (Or.inr ⟨hrel, by omega⟩)⟩
+
+/-- **Hnorm (size-preserving general-backbone target) from the whole-hub obligation ALONE.**  Everything
+    mechanical -- `FlpStepAt` (has-site), `CompRerootStep` (non-reroot-minimal) -- is discharged; the only
+    open input is `hwh`: a `CoverR` move for reroot-minimal defective trees with no `FlpStepAt` move (the
+    adaptive de-branch / whole-hub Case-B core).  (Feeds `tree_to_hub_sized`'s usize-shape; the well-posed
+    capstone additionally needs the Balanced+Capped normalization + aligned-n scoping -- see
+    `proof/verification/COVER_RELATION_STATUS.md`.) -/
+theorem hnorm_of_wholehub
+    (hwh : ∀ t : UTree, strDefect t ≠ 0 → RerootMinimal t → (¬ ∃ t', FlpStepAt t t') →
+        ∃ t', CoverR t t') :
+    ∀ t : UTree, ∃ s : List Hub, usize (backboneU s) = usize t ∧ Aobj t ≤ Aobj (backboneU s) :=
+  hnorm_of_coverR_coverage (coverR_coverage_of_wholehub hwh)
+
 end Step3
 end R3Cert
