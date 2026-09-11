@@ -54,6 +54,7 @@ import RvMGammaRCapstone
 import RvMRouteP
 import RvMOnLinePositivity
 import RvMPairedSummandAnatomy
+import RvMCompanionPrime
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -279,3 +280,10 @@ import RvMPairedSummandAnatomy
 #print axioms RvMWeierstrass.liPairedSummand_eq_two_sub_v_sub_inv
 #print axioms RvMWeierstrass.liPairedSummand_re_nonneg_iff
 #print axioms RvMWeierstrass.onLine_re_v_add_inv_le_two
+
+-- Route P, Brick D1 (diffraction reading): the companion IS the log-prime spectrum plus the pole.
+-- logDeriv_zetaPoleCompanion_eq_vonMangoldt: for Re s>1, logDeriv zetaPoleCompanion s = -L(Λ) s + (s-1)⁻¹
+-- (von Mangoldt Bragg peaks at k·log p, + explicit pole). Compose of logDeriv_zeta_eq_companion_sub_pole
+-- (#461) + logDeriv_zeta_eq_neg_LSeries_vonMangoldt. Re-coordinatization onto the prime side, NOT a step
+-- toward RH (the series converges only Re s>1). See ROUTEP_DIFFRACTION_SCOPE. conjecture1_proved=False.
+#print axioms RvMWeierstrass.logDeriv_zetaPoleCompanion_eq_vonMangoldt

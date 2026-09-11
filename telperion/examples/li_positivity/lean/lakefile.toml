@@ -1,5 +1,5 @@
 name = "LiPositivity"
-defaultTargets = ["LiPositivity"]
+defaultTargets = ["LiPositivity", "RvMCompanionPrime"]
 
 # The Li ladder rungs cite `taylorCoeff riemannXi` and feed
 # `LiCriterion.li_criterion_rh_iff`, both from the upstream, already-formalized
@@ -127,3 +127,6 @@ name = "RvMOnLinePositivity"
 
 [[lean_lib]]
 name = "RvMPairedSummandAnatomy"
+
+[[lean_lib]]
+name = "RvMCompanionPrime"
