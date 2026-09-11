@@ -166,6 +166,17 @@ argument (monomer-dimer / Heilmann-Lieb) that signs the ADAPTIVELY-chosen move's
 ruled out the two natural fixed-move shortcuts — the honest remaining target is the adaptive de-branch with a
 global Aobj bound.
 
+## FINDING 3 (2026-09-11): safe moves are ABUNDANT but resist the simple averaging certificate
+
+Tested the natural global-existence argument (a safe move exists because the SUM of Aobj-increments over
+defect-reducing relocations is sign-definite): the sum is `> 0` for 1044/1079 reroot-minimal defective trees
+but `< 0` for **35** — so the uniform-average argument FAILS.  However, safe moves are ABUNDANT: every one of
+the 1079 trees has a safe move, with **≥33.8%** (avg 70%) of its defect-reducing relocations being
+Aobj-nondecreasing.  So existence holds robustly (matching a6-locality 100%), but neither a fixed move nor a
+uniform-averaging certificate proves it — a WEIGHTED / structural global argument is needed.  This is the
+genuine open BG core: safe-move existence is empirically abundant yet has no simple local or averaging
+certificate.
+
 ## Status (fully corrected)
 
 `Hdom`: CLOSED (kernel-clean).  `Hnorm` is genuinely reduced ONLY for the size-preserving-general-backbone
