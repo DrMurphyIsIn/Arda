@@ -1,5 +1,11 @@
 name = "LiPositivity"
-defaultTargets = ["LiPositivity"]
+# AxiomGuardLiPositivity is a lean_lib in defaultTargets so bare `lake build` (the CI step before
+# the axiom-guard step) compiles the guard AND transitively every module it imports -- guaranteeing
+# the guard's `lake env lean` step never hits an unbuilt import, regardless of Lake version and with
+# NO defaultTargets list to keep in sync as new libs land. (cf. #448, where a guard import missing
+# from an explicit defaultTargets list went dark; and #451 audit, which found this island's coverage
+# had been relying on v4.34's build-all-libs behavior.)
+defaultTargets = ["LiPositivity", "AxiomGuardLiPositivity"]
 
 # The Li ladder rungs cite `taylorCoeff riemannXi` and feed
 # `LiCriterion.li_criterion_rh_iff`, both from the upstream, already-formalized
@@ -13,6 +19,12 @@ rev = "35df682f3b709ffe5fbcfdd452dfa964bd622b87"
 
 [[lean_lib]]
 name = "LiPositivity"
+
+# The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
+# It is still run separately via `lake env lean AxiomGuardLiPositivity.lean` for the #print axioms /
+# sorryAx check; building it here only guarantees its import closure is present at that step.
+[[lean_lib]]
+name = "AxiomGuardLiPositivity"
 
 [[lean_lib]]
 name = "LiLadder"
