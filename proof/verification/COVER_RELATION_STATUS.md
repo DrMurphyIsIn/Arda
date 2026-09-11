@@ -118,10 +118,25 @@ NOTHING here upgrades a general backbone to Balanced+Capped.
    size-CHANGING, so it feeds only the ill-posed single-tie `conjecture1_of_layers`).  Per the program
    history this is the genuinely-hard "cross-boundary / aligned-n" residual.
 
-## Status (corrected)
+## CORRECTION 2 (2026-09-11): the capstone `Hnorm` is ALIGNED-N scoped — unsatisfiable for small/non-aligned n
 
-`Hdom`: CLOSED.  `Hnorm`: reduced to `hcore` ONLY for the size-preserving-general-backbone target
-(`tree_to_hub_sized`); `hcore` = `FlpStepAt` constructor + whole-hub Case-B residual.  The well-posed capstone
-additionally needs the **Balanced+Capped size-preserving normalization** — a second, separate open layer.  So
-Conjecture 1 rests on TWO open `Hnorm` obligations (whole-hub coverage AND Balanced+Capped normalization),
-not one.  `conjecture1_proved = False`.
+A Balanced+Capped hub-state has `hubSize = 1 + 11a + 9b + 2c` per hub (a load-5, b load-4 arms) with
+`a+b ≥ 5` (Capped) — so the **minimum Balanced+Capped state size is 46**.  Checked: of the sizes `n ≤ 70`,
+**48 have NO Balanced+Capped hub-state** (all of 2..45, plus 47, 49, 51, 53).  For those `n`, the capstone's
+`Hnorm` (`∃ Balanced+Capped s, stateSize s = usize t ∧ ...`) is **UNSATISFIABLE** — the hypothesis of
+`conjecture1_of_layers_fixedN` cannot be provided.
+
+So the capstone reduction is inherently **aligned-n scoped**: it can only prove Conjecture 1 for `n` where a
+Balanced+Capped state exists (n≥46, specific residues).  Small and non-aligned `n` are a SEPARATE residual
+(finite check for small n + the non-aligned-n layer) — the program's known "aligned-n scoping / off-lattice
+tie is a placeholder" open item.  My recent summaries ("Conjecture 1 rests on `hcore`/`Hnorm`") glossed over
+this; the honest statement is "Conjecture 1 FOR ALIGNED n rests on the aligned `Hnorm`".
+
+## Status (fully corrected)
+
+`Hdom`: CLOSED (kernel-clean).  `Hnorm` is genuinely reduced ONLY for the size-preserving-general-backbone
+target (`tree_to_hub_sized`, my `CoverR`/`hcore` work — real, kernel-clean).  Reaching the WELL-POSED capstone
+needs, beyond `hcore`: **(ii)** the Balanced+Capped size-preserving normalization, AND is inherently
+**aligned-n scoped** (Hnorm unsatisfiable off-lattice / for n<46).  So Conjecture 1 rests on: `hcore`/whole-hub
++ Balanced+Capped normalization + the aligned-n scoping (small/non-aligned n separate).  NOT `hcore` alone,
+NOT even a single extra layer.  `conjecture1_proved = False`.
