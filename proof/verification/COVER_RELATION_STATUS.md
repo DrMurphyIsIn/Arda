@@ -73,8 +73,31 @@ Case-B family."**  Two genuine paths remain: (a) prove `FlpStepAt` coverage of t
 reroot-minimal trees (structural, a6-locality-adjacent — the 88.4%); (b) the whole-hub Case-B move for the
 11.6% residual (global monomer-dimer / Heilmann-Lieb — the one true open research nut).
 
+## UPDATE (2026-09-11): `hcore` splits by "has a `FlpStepAt` site" — path (a) is the CONSTRUCTOR, not a theorem
+
+The residual is characterized EXACTLY: all 125 (reroot-minimal defective, no `FlpStepAt` site, n≤12) have a
+BRANCHING node (≥2 non-piece non-cherry children) and `strDefect = 1`.  The distinguishing marker is precisely
+"∃ `FlpStepAt` site".  So `hcore` splits by excluded middle on that marker:
+- **has-site → `FlpStepAt` fires** — this is just the `FlpStepAt.here` CONSTRUCTOR (+ `.lift` to embed).
+  MECHANICAL — there is no hard "88.4% structural theorem"; that fraction is exactly "has a site", and for
+  those the move exists by construction.
+- **no-site → the whole-hub (Case-B) move** — the residual (a branching-defect tree), needing the
+  Aobj-nondecreasing de-branch/Case-B move.
+
+**So `hcore`'s ENTIRE non-mechanical content is the whole-hub.**  The proof of Conjecture 1 reduces to ONE
+genuine research lemma:
+
+> **(whole-hub)** A reroot-minimal defective tree with NO `FlpStepAt` site (∴ a branching-defect / whole-hub
+> form; all such have `strDefect = 1`) admits an `Aobj`-nondecreasing, `strDefect`-reducing move — the
+> Case-B / de-branch relocation.
+
+This move's `Aobj`-monotonicity fails the local `G1` lift-gain (`REALOBLB_TYPEW_B0_FINDINGS.md`), so it needs
+the GLOBAL monomer-dimer / Heilmann-Lieb argument (foundation: `Aobj = Σ_matchings ∏ 1/(d_u d_v)`,
+`AOBJ_MATCHING_POLYNOMIAL_REFORMULATION.md`; the isolated symmetric base is already proven Aobj-neutral in
+`BGSCLRealOblBSymBase.lean`).
+
 ## Status
 
-`Hnorm` reduced (kernel-clean) to `hcore` — a single structural obligation on reroot-minimal defective
-trees.  `hcore` = `FlpStepAt` coverage (88.4%, structural) + the whole-hub Case-B residual (11.6%, the open
-research problem).  `conjecture1_proved = False`.
+`Hnorm` reduced (kernel-clean) to `hcore`; `hcore` splits into the `FlpStepAt` CONSTRUCTOR (has-site,
+mechanical) and ONE genuine open research lemma — the whole-hub Case-B move on the branching-defect residual.
+`conjecture1_proved = False`.
