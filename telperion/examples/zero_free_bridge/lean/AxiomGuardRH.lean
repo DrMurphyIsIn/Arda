@@ -1,7 +1,8 @@
 /- AxiomGuardRH — CI kernel-axiom guard for the RH zero-free-region formalization.
 
-   This is a TOP-LEVEL module: it is NOT a `lean_lib` in the lakefile and is not
-   root-imported anywhere. CI runs it explicitly with
+   This is a `lean_lib` in defaultTargets, so `lake build` compiles it (and thus all its imports),
+   guaranteeing the guard's import closure is built before the check -- no defaultTargets list to
+   keep in sync. CI still runs it explicitly with
 
        lake env lean AxiomGuardRH.lean
 

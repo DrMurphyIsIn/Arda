@@ -1,5 +1,5 @@
 name = "ZeroFreeBridge"
-defaultTargets = ["ZeroFreeBridge", "StripRepr", "StripReprR3", "StripReprR2", "StripReprR1", "StripReprAssembled", "StripBound", "ZeroFreeRegion", "ZeroFreeElementary", "ZetaLogBound", "RayPowerEstimate", "EmittedShapes", "ZeroFreePolylog", "DlvpZeroSum", "DlvpPole", "DlvpBCSum", "DlvpZetaDisk", "DlvpHerglotz", "DlvpEntire", "DlvpTransfer", "DlvpBridge", "DlvpZetaSplit", "DlvpLogBranch", "DlvpBCDeriv", "DlvpEntireBound", "DlvpMaxMod", "DlvpBoundaryDecomp", "DlvpZetaLower", "DlvpZeroFactor", "DlvpLogProd", "DlvpZetaZeroFactor", "DlvpBlaschke", "DlvpBlaschkeSphere", "DlvpBlaschkeAnalytic", "DlvpSphereDense", "DlvpCanonicalNorm", "DlvpCanonicalBound", "DlvpCanonicalLogDeriv", "DlvpBlaschkeHerglotz", "DlvpBlaschkeProdAnalytic", "DlvpBlaschkeSplit", "DlvpCorrectionBound", "DlvpBlaschkeSplitExpand", "DlvpBCSumBlaschke", "DlvpHerglotzLower", "DlvpZetaSphereLog", "DlvpZetaFactor", "DlvpRegionBound", "DlvpBlaschkeToSkeleton", "DlvpBCDerivInterior", "DlvpEntirePlumbing", "DlvpZetaRegion", "DlvpZetaRecenter", "DlvpDivisorTranslate", "DlvpZetaBcBridge", "DlvpZetaCanonical", "DlvpZetaEntire", "DlvpZetaRecenterDecomp", "DlvpBlaschkeCenter", "DlvpZetaCentreRel", "DlvpZetaCentreFac", "DlvpBlaschkeCont", "DlvpZetaZeroLoc", "DlvpZetaStripSum", "DlvpZetaSphereLogStrip", "DlvpHALArith", "DlvpZetaCountStrip", "DlvpZetaConcrete", "DlvpBcSumConcrete", "DlvpZetaContSphere", "DlvpCanonicalClosedBall", "DlvpZetaGBound", "DlvpZetaHAL", "DlvpZetaCountReconcile", "DlvpZetaAzeta", "DlvpZetaHgBoundGamma", "DlvpZetaHbc1", "DlvpZetaHpole", "DlvpZetaRecenterEq", "DlvpZetaAnaFoundation", "DlvpZetaConcreteWired", "DlvpZetaConcreteClose", "DlvpZetaConcreteRate", "DlvpZetaPoleEffective", "DlvpZetaRateEffective", "DlvpZetaZeroFree", "DlvpZetaSymmetry", "DlvpTheta", "DlvpCorridor"]
+defaultTargets = ["ZeroFreeBridge", "StripRepr", "StripReprR3", "StripReprR2", "StripReprR1", "StripReprAssembled", "StripBound", "ZeroFreeRegion", "ZeroFreeElementary", "ZetaLogBound", "RayPowerEstimate", "EmittedShapes", "ZeroFreePolylog", "DlvpZeroSum", "DlvpPole", "DlvpBCSum", "DlvpZetaDisk", "DlvpHerglotz", "DlvpEntire", "DlvpTransfer", "DlvpBridge", "DlvpZetaSplit", "DlvpLogBranch", "DlvpBCDeriv", "DlvpEntireBound", "DlvpMaxMod", "DlvpBoundaryDecomp", "DlvpZetaLower", "DlvpZeroFactor", "DlvpLogProd", "DlvpZetaZeroFactor", "DlvpBlaschke", "DlvpBlaschkeSphere", "DlvpBlaschkeAnalytic", "DlvpSphereDense", "DlvpCanonicalNorm", "DlvpCanonicalBound", "DlvpCanonicalLogDeriv", "DlvpBlaschkeHerglotz", "DlvpBlaschkeProdAnalytic", "DlvpBlaschkeSplit", "DlvpCorrectionBound", "DlvpBlaschkeSplitExpand", "DlvpBCSumBlaschke", "DlvpHerglotzLower", "DlvpZetaSphereLog", "DlvpZetaFactor", "DlvpRegionBound", "DlvpBlaschkeToSkeleton", "DlvpBCDerivInterior", "DlvpEntirePlumbing", "DlvpZetaRegion", "DlvpZetaRecenter", "DlvpDivisorTranslate", "DlvpZetaBcBridge", "DlvpZetaCanonical", "DlvpZetaEntire", "DlvpZetaRecenterDecomp", "DlvpBlaschkeCenter", "DlvpZetaCentreRel", "DlvpZetaCentreFac", "DlvpBlaschkeCont", "DlvpZetaZeroLoc", "DlvpZetaStripSum", "DlvpZetaSphereLogStrip", "DlvpHALArith", "DlvpZetaCountStrip", "DlvpZetaConcrete", "DlvpBcSumConcrete", "DlvpZetaContSphere", "DlvpCanonicalClosedBall", "DlvpZetaGBound", "DlvpZetaHAL", "DlvpZetaCountReconcile", "DlvpZetaAzeta", "DlvpZetaHgBoundGamma", "DlvpZetaHbc1", "DlvpZetaHpole", "DlvpZetaRecenterEq", "DlvpZetaAnaFoundation", "DlvpZetaConcreteWired", "DlvpZetaConcreteClose", "DlvpZetaConcreteRate", "DlvpZetaPoleEffective", "DlvpZetaRateEffective", "DlvpZetaZeroFree", "DlvpZetaSymmetry", "DlvpTheta", "DlvpCorridor", "AxiomGuardDlvp", "AxiomGuardPolylog", "AxiomGuardRH"]
 
 [[require]]
 name = "mathlib"
@@ -391,3 +391,17 @@ name = "DlvpTheta"
 # CORRIDOR bricks (Summit 1): C2 zero-gap pigeonhole + psi-shift effective digamma.
 [[lean_lib]]
 name = "DlvpCorridor"
+
+# The three CI axiom guards, declared as libs so bare `lake build` compiles each and thus
+# transitively every module it imports -- so a future Dlvp*/Strip* lib a guard imports is built
+# automatically, with no defaultTargets list to keep in sync (cf. #448, which went dark exactly
+# because DlvpCorridor was imported by AxiomGuardDlvp but missing from defaultTargets). CI still
+# runs each guard via `lake env lean AxiomGuard*.lean` for the #print axioms / sorryAx check.
+[[lean_lib]]
+name = "AxiomGuardDlvp"
+
+[[lean_lib]]
+name = "AxiomGuardPolylog"
+
+[[lean_lib]]
+name = "AxiomGuardRH"

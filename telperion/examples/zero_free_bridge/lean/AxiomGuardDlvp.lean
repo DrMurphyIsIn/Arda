@@ -5,7 +5,9 @@
    `ZeroFreeElementary` (imported by `AxiomGuardRH`).  Importing both in one module is an
    environment clash, so the dVP guard lives in its own top-level file.
 
-   Like `AxiomGuardRH`, this is NOT a `lean_lib`; CI runs it explicitly with
+   Like `AxiomGuardRH`, this is a `lean_lib` in defaultTargets so `lake build` compiles it (and
+   thus all its imports -- guaranteeing the guard's import closure is built before the check, with
+   no defaultTargets list to keep in sync).  CI still runs it explicitly with
 
        lake env lean AxiomGuardDlvp.lean
 
