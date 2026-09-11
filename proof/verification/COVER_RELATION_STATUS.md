@@ -149,6 +149,23 @@ onto a shallow leaf), whose `Aobj`-monotonicity is exactly the **Kelmans "Obliga
 route should target THIS move (de-branch), not the Case-B collapse.  This redirects the whole-hub effort to
 the correct, but genuinely-open, target.
 
+## FINDING 2 (2026-09-11): NO fixed whole-hub move is unconditionally Aobj-monotone — the straightening is ADAPTIVE
+
+De-risked both candidate fixed de-branch moves:
+- **Case-B collapse** (relocate star onto sibling star): DECREASES Aobj embedded (Finding 1).
+- **Hub-attach** (`R47R7Debranch`: `node(node As :: B :: rest) → node(node(As++[B]) :: rest)`, attach branch
+  `B` onto a hub): **CONDITIONAL — fails ~50%** (29450 neg / 60000; concentrated at `|rest|=0`).  This moves
+  `B` DEEPER (sibling → grandchild); the actual residual-safe move moves the branch SHALLOWER (toward the
+  spine).
+
+So **no fixed whole-hub/de-branch move is unconditionally Aobj-monotone** — the correct Kelmans straightening
+is genuinely **adaptive / context-dependent** (the safe target depends on the global tree; matches the
+program's "selection is adaptive argmax, not box-certifiable" finding).  This is why the whole-hub residual
+is the genuine BG hard core (Pant 2026 open): there is no local, fixed-move certificate; it needs a GLOBAL
+argument (monomer-dimer / Heilmann-Lieb) that signs the ADAPTIVELY-chosen move's increment.  De-risking has
+ruled out the two natural fixed-move shortcuts — the honest remaining target is the adaptive de-branch with a
+global Aobj bound.
+
 ## Status (fully corrected)
 
 `Hdom`: CLOSED (kernel-clean).  `Hnorm` is genuinely reduced ONLY for the size-preserving-general-backbone
