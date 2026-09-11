@@ -55,6 +55,7 @@ import RvMRouteP
 import RvMOnLinePositivity
 import RvMPairedSummandAnatomy
 import RvMCompanionPrime
+import RvMCompanionBragg
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -287,3 +288,10 @@ import RvMCompanionPrime
 -- (#461) + logDeriv_zeta_eq_neg_LSeries_vonMangoldt. Re-coordinatization onto the prime side, NOT a step
 -- toward RH (the series converges only Re s>1). See ROUTEP_DIFFRACTION_SCOPE. conjecture1_proved=False.
 #print axioms RvMWeierstrass.logDeriv_zetaPoleCompanion_eq_vonMangoldt
+
+-- Route P, Brick D2a (diffraction reading): the companion right-edge Bragg integrand.
+-- companion_right_edge_prime_integrand: for 1<σ₁, g·logDeriv zetaPoleCompanion = g·(-L(Λ)+(·-1)⁻¹) on
+-- the edge Re=σ₁ -- the companion analogue of right_edge_weighted_prime_integrand, the integrand the
+-- explicit formula integrates. Corollary of D1; sets up the finite Bragg identity (D2b). NOT a step
+-- toward RH. conjecture1_proved=False.
+#print axioms RvMWeierstrass.companion_right_edge_prime_integrand
