@@ -97,3 +97,6 @@ name = "RvMPhiChain"
 
 [[lean_lib]]
 name = "RvMFaaDiBruno"
+
+[[lean_lib]]
+name = "RvMLeibniz"
