@@ -80,6 +80,7 @@ import R3Cert.R47AdjLeafStep
 import R3Cert.R47CoverRelation
 import R3Cert.R47RootShift
 import R3Cert.R47AlignedMinSize
+import R3Cert.R47HnormFalse52
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -373,3 +374,11 @@ import R3Cert.R47AlignedMinSize
 -- ALIGNED-N SCOPING (2026-09-11): Balanced+Capped hub-state size >= 46, so capstone Hnorm is unsatisfiable
 -- for 0 < n < 46 (small/off-lattice n are a separate residual). Correction 2, kernel-formalized.
 #print axioms R3Cert.Step3.no_capped_state_of_size_lt_46
+
+-- HNORM FALSE AT 52 (2026-09-11): the four-core witness T52 (usize 52) strictly exceeds every
+-- Balanced+Capped state of size 52, so the capstone Hnorm is genuinely FALSE at aligned multi-hub
+-- sizes -- sharpening the residual beyond mere aligned-n scoping. Exact-fraction counterexample.
+#print axioms R3Cert.Step3.aobj_T52_eq
+#print axioms R3Cert.Step3.tieArgmax_52_lt_T52
+#print axioms R3Cert.Step3.r47_hnorm_false_at_52
+#print axioms R3Cert.Step3.hnorm_capstone_false
