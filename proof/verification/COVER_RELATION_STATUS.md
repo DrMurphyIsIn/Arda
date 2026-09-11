@@ -53,7 +53,28 @@ equal).  Coverage with the single-shift reroot: **89.6%** (rooted defective, n<1
 now covers the full **99.3%** (every 'a reroot lowers defect' tree + the two direct classes), leaving only
 the **0.7%** whole-hub (Case-B) core.
 
+## UPDATE (2026-09-11): coverage reduced to the reroot-minimal core; `hcore` characterized exactly
+
+`coverR_coverage_of_minimalCore` (kernel-clean) discharges the reroot half with NO path construction:
+`Hnorm ⟸ hcore`, where **`hcore` := every reroot-minimal defective tree has a `FlpStepAt`/`AdjLeafStep` move**
+(`RerootMinimal t := ∀ t', RerootRel t t' → strDefect t ≤ strDefect t'`).  So the WHOLE proof of Conjecture 1
+now rests on the single obligation `hcore`.
+
+`hcore` characterized exactly (reroot-minimal defective trees, n≤12, 1079 of them):
+- **`hcore` holds for 88.4%** (954) — ALL via `FlpStepAt`.
+- **residual 11.6%** (125, all first at n=12) — the whole-hub family `((),(),(node(X,Y)))` (root = two leaves +
+  a node with ≥2 non-piece children); needs the whole-hub (Case-B) move.
+- **`AdjLeafStep` fires 0%** on the reroot-minimal core — it is REDUNDANT for `hcore` (`FlpStepAt` subsumes it
+  there; the earlier "+20 trees" was on the looser min-over-roots measure).  It remains a valid, correct class
+  but is not load-bearing for `hcore`.
+
+So `hcore` sharpens to: **"every reroot-minimal defective tree has a `FlpStepAt` move, EXCEPT the whole-hub
+Case-B family."**  Two genuine paths remain: (a) prove `FlpStepAt` coverage of the non-whole-hub
+reroot-minimal trees (structural, a6-locality-adjacent — the 88.4%); (b) the whole-hub Case-B move for the
+11.6% residual (global monomer-dimer / Heilmann-Lieb — the one true open research nut).
+
 ## Status
 
-`Hnorm` reduced to `CoverR` coverage (kernel-clean); `CoverR` (3 classes, composite reroot) covers the full **99.3%**
-(kernel-clean refinement), leaving ONLY the **0.7%** whole-hub (Case-B) core as the genuine open problem.  `conjecture1_proved = False`.
+`Hnorm` reduced (kernel-clean) to `hcore` — a single structural obligation on reroot-minimal defective
+trees.  `hcore` = `FlpStepAt` coverage (88.4%, structural) + the whole-hub Case-B residual (11.6%, the open
+research problem).  `conjecture1_proved = False`.
