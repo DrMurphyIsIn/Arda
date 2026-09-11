@@ -55,6 +55,8 @@ import RvMRouteP
 import RvMOnLinePositivity
 import RvMPairedSummandAnatomy
 import RvMCompanionPrime
+import RvMCompanionBragg
+import RvMLiWeightReconcile
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -287,3 +289,11 @@ import RvMCompanionPrime
 -- (#461) + logDeriv_zeta_eq_neg_LSeries_vonMangoldt. Re-coordinatization onto the prime side, NOT a step
 -- toward RH (the series converges only Re s>1). See ROUTEP_DIFFRACTION_SCOPE. conjecture1_proved=False.
 #print axioms RvMWeierstrass.logDeriv_zetaPoleCompanion_eq_vonMangoldt
+
+-- Route P, Brick D2a: the companion right-edge Bragg integrand.
+-- companion_right_edge_prime_integrand: for 1<σ₁, g·logDeriv zetaPoleCompanion = g·(-L(Λ)+(·-1)⁻¹).
+#print axioms RvMWeierstrass.companion_right_edge_prime_integrand
+
+-- Route P, Brick D2b-1: the liWeight <-> liPairedSummand reconciliation.
+-- liPairedSummand_eq_liWeight_paired: liPairedSummand n ρ = liWeight (n+1) ρ + liWeight (n+1) (pairedZero ρ).
+#print axioms RvMWeierstrass.liPairedSummand_eq_liWeight_paired
