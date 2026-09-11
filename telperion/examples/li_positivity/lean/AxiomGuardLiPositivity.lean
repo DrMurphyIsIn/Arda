@@ -49,6 +49,7 @@ import RvMArchimedeanCoeff
 import RvMLiConnection
 import RvMLiCoeffSplit
 import RvMZetaPoleReg
+import RvMLiCoeffId
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -237,3 +238,10 @@ import RvMZetaPoleReg
 -- taylorCoeff zetaPoleCompanion n is a FINITE datum with the s=1 pole cancelled. conjecture1_proved=False.
 #print axioms RvMWeierstrass.logDeriv_phi_zetaPoleCompanion_regularizes
 #print axioms RvMWeierstrass.analyticAt_logDeriv_phi_zetaPoleCompanion
+
+-- The elementary summand resolved + the explicit split.
+-- taylorCoeff_id_eq_one: taylorCoeff (fun s=>s) n = 1 (the 1/s pole pulls back to M, deriv^[n] M 0 = n!).
+-- taylorCoeff_riemannXi_split_explicit: taylorCoeff riemannXi n = 1 + taylorCoeff zetaPoleCompanion n
+-- + taylorCoeff GammaR n -- every non-arithmetic term explicit. conjecture1_proved=False.
+#print axioms RvMWeierstrass.taylorCoeff_id_eq_one
+#print axioms RvMWeierstrass.taylorCoeff_riemannXi_split_explicit
