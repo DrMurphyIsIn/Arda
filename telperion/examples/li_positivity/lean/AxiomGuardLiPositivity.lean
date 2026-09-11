@@ -1,6 +1,9 @@
 /-  AxiomGuardLiPositivity -- CI kernel-axiom guard for the Li positivity ladder.
 
-    Mirrors AxiomGuardRHInBox.lean: NOT a `lean_lib`; CI runs it explicitly with
+    Declared as a `lean_lib` in defaultTargets, so `lake build` compiles this file and thus
+    transitively every module it imports -- the guard's import closure is always built before the
+    check, with no defaultTargets list to maintain (cf. #448/#451). CI then still runs it explicitly
+    with
 
         lake env lean AxiomGuardLiPositivity.lean
 
