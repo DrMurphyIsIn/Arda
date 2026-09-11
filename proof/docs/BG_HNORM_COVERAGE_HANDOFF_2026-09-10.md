@@ -44,12 +44,22 @@ All kernel-clean, wired into `AxiomGuard.lean` + `.github/workflows/proof-lean.y
   leaf move (usize= via `usize_child_replace`; Aobj≤ via `adjLeaf_Aobj_le`; strDefect< via
   `strDefect_child_replace_lt`).  Firing condition: `Bv` a NONEMPTY cherry list (so `par_v'` is an arm/piece)
   and a non-piece sibling in `Other` (`1 ≤ npCount Other`).
-- **`R47CoverRelation.lean`** — `AdjLeafStep` (whole-tree relation), `CoverR := FlpStepAt ∨ AdjLeafStep`,
-  `CoverR.straightStep` (refines `StraightStep_sized`), and **`hnorm_of_coverR_coverage`**: `Hnorm` from
-  `CoverR` coverage.
+- **`R47RootShift.lean`** — `Aobj_rootShift` (single-edge root-shift is Aobj-INVARIANT, proven directly in
+  the cavity model as a real identity — NO graph-iso); `RerootStep1`/`RerootRel` (ReflTransGen, Aobj/usize
+  invariant); `CompRerootStep` (composite reroot to any lower-defect rooting) + its `StraightStep`.
+- **`R47CoverRelation.lean`** — `AdjLeafStep`, `CoverR := FlpStepAt ∨ AdjLeafStep ∨ CompRerootStep`,
+  `CoverR.straightStep`, `hnorm_of_coverR_coverage`; `RerootMinimal`; `coverR_coverage_of_minimalCore`
+  (reroot half discharged, no path construction); and **`hnorm_of_wholehub`** — the size-preserving Hnorm
+  reduces to ONE explicit hypothesis: a `CoverR` move for reroot-minimal defective trees with NO `FlpStepAt`
+  move (the whole-hub / adaptive de-branch residual).
+- **`R47AlignedMinSize.lean`** — `no_capped_state_of_size_lt_46`: no Balanced+Capped hub-state has size
+  `0 < n < 46`, so the capstone `Hnorm` is UNSATISFIABLE there (aligned-n scoping, kernel-formalized).
 
 Plus the research map (in `proof/verification/`): the monomer-dimer reformulation, the mechanistic G1
-analysis, and the coverage measurement.
+analysis, the coverage measurement, and the CORRECTIONS (`COVER_RELATION_STATUS.md`): Hnorm has TWO open
+layers (whole-hub coverage + Balanced+Capped normalization) and is aligned-n scoped; the whole-hub
+straightening is the ADAPTIVE de-branch (Case-B / hub-attach / uniform-averaging all ruled out — no fixed or
+local certificate; it is the BG open core, Pant 2026).
 
 ---
 
