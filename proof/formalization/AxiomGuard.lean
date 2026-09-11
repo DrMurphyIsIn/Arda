@@ -79,6 +79,7 @@ import R3Cert.R47AdjLeafGains
 import R3Cert.R47AdjLeafStep
 import R3Cert.R47CoverRelation
 import R3Cert.R47RootShift
+import R3Cert.R47AlignedMinSize
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -368,3 +369,7 @@ import R3Cert.R47RootShift
 
 -- ROOT-SHIFT Aobj-invariance (2026-09-10): the crux enabler for a RerootStep coverage class (no graph-iso).
 #print axioms R3Cert.Step3.Aobj_rootShift
+
+-- ALIGNED-N SCOPING (2026-09-11): Balanced+Capped hub-state size >= 46, so capstone Hnorm is unsatisfiable
+-- for 0 < n < 46 (small/off-lattice n are a separate residual). Correction 2, kernel-formalized.
+#print axioms R3Cert.Step3.no_capped_state_of_size_lt_46
