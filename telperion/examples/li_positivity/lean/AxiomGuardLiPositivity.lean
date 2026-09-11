@@ -62,6 +62,7 @@ import RvMCompanionBragg
 import RvMLiWeightReconcile
 import RvMLiWeightTsum
 import RvMCompanionCoeff
+import RvMCompanionBraggLimit
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -316,3 +317,11 @@ import RvMCompanionCoeff
 -- (n+1) ρ + liWeight (n+1) (pairedZero ρ)) - 1 - taylorCoeff GammaR n. Combines D2b-2 (#478) + split
 -- (#463); conditional hgenus/hhad (undischarged). Prime/Bragg-side dual stays category-(c) frontier.
 #print axioms RvMWeierstrass.taylorCoeff_companion_eq_liWeight_paired_tsum
+
+-- Route P D2b-3 (prime/Bragg side): CONDITIONAL reduction (frontier quarantined).
+-- taylorCoeff_companion_bragg_of_exhaustion_limits: GIVEN the finite explicit formula along a box
+-- exhaustion + the exhaustion/boundary/Bragg LIMITS (the unbuilt T→∞ + archimedean-extraction frontier,
+-- carried as explicit hypotheses -- NONE established here), THEN companion coeff = (boundaryLim-braggLim)
+-- /(2πi) - 1 - GammaR. Real limit-passage (tendsto_nhds_unique) + split (#463). Proves nothing about RH;
+-- pins the frontier as three named limits. conjecture1_proved=False.
+#print axioms RvMWeierstrass.taylorCoeff_companion_bragg_of_exhaustion_limits
