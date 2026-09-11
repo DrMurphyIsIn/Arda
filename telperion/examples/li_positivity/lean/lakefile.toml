@@ -155,3 +155,6 @@ name = "RvMLiWeightTsum"
 
 [[lean_lib]]
 name = "RvMCompanionCoeff"
+
+[[lean_lib]]
+name = "RvMCompanionBraggLimit"
