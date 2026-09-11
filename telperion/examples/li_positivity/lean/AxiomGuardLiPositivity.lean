@@ -60,6 +60,7 @@ import RvMPairedSummandAnatomy
 import RvMCompanionPrime
 import RvMCompanionBragg
 import RvMLiWeightReconcile
+import RvMLiWeightTsum
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -300,3 +301,11 @@ import RvMLiWeightReconcile
 -- Route P, Brick D2b-1: the liWeight <-> liPairedSummand reconciliation.
 -- liPairedSummand_eq_liWeight_paired: liPairedSummand n ρ = liWeight (n+1) ρ + liWeight (n+1) (pairedZero ρ).
 #print axioms RvMWeierstrass.liPairedSummand_eq_liWeight_paired
+
+-- Route P Brick D2b-2: the paired coefficient sum as a liWeight sum.
+-- taylorCoeff_riemannXi_eq_liWeight_paired_tsum: taylorCoeff riemannXi n = 2⁻¹·∑'_ρ (liWeight (n+1) ρ
+-- + liWeight (n+1) (pairedZero ρ)), conditional on hgenus/hhad (undischarged). Stays PAIRED -- the
+-- unpaired liWeight tsum diverges, so no tsum_add split. tsum_liWeight_pairedZero_eq: FE symmetry at
+-- reindex level (does NOT license the split). conjecture1_proved=False.
+#print axioms RvMWeierstrass.taylorCoeff_riemannXi_eq_liWeight_paired_tsum
+#print axioms RvMWeierstrass.tsum_liWeight_pairedZero_eq

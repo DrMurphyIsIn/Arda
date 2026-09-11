@@ -149,3 +149,6 @@ name = "RvMCompanionBragg"
 
 [[lean_lib]]
 name = "RvMLiWeightReconcile"
+
+[[lean_lib]]
+name = "RvMLiWeightTsum"
