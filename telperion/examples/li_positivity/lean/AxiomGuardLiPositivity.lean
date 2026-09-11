@@ -44,6 +44,7 @@ import RvMGammaRIterate
 import RvMMobius
 import RvMPhiChain
 import RvMFaaDiBruno
+import RvMLeibniz
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -193,3 +194,11 @@ import RvMFaaDiBruno
 -- Via iteratedDeriv_scomp_eq_sum_orderedFinpartition (logDeriv GammaR analytic at 1, M smooth at 0) +
 -- iteratedDeriv_mobius_zero. conjecture1_proved = False.
 #print axioms RvMWeierstrass.iteratedDeriv_logDerivGammaℝ_comp_mobius
+
+-- Phase 4c: the Leibniz product rule for iterated derivatives (Mathlib GAP -- only had the norm
+-- bound). leibniz_sum_step (Pascal reindex), iteratedDerivWithin_mul (open set, ContDiffOn top),
+-- iteratedDeriv_mul_of_isOpen. iteratedDeriv n (f*g) x = sum_k C(n,k) iteratedDeriv k f x . iteratedDeriv
+-- (n-k) g x. conjecture1_proved = False.
+#print axioms RvMWeierstrass.leibniz_sum_step
+#print axioms RvMWeierstrass.iteratedDerivWithin_mul
+#print axioms RvMWeierstrass.iteratedDeriv_mul_of_isOpen
