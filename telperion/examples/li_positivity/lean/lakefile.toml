@@ -124,3 +124,6 @@ name = "RvMRouteP"
 
 [[lean_lib]]
 name = "RvMOnLinePositivity"
+
+[[lean_lib]]
+name = "RvMPairedSummandAnatomy"
