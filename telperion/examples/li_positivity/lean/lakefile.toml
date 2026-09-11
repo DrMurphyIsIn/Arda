@@ -152,3 +152,6 @@ name = "RvMLiWeightReconcile"
 
 [[lean_lib]]
 name = "RvMLiWeightTsum"
+
+[[lean_lib]]
+name = "RvMCompanionCoeff"
