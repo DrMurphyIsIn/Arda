@@ -57,5 +57,35 @@ theorem hnorm_of_coverR_coverage
     ∀ t : UTree, ∃ s : List Hub, usize (backboneU s) = usize t ∧ Aobj t ≤ Aobj (backboneU s) :=
   hnorm_of_coverage CoverR (fun h => CoverR.straightStep h) hcov
 
+/-- `t` is REROOT-MINIMAL: no rerooting has strictly lower `strDefect`. -/
+def RerootMinimal (t : UTree) : Prop := ∀ t' : UTree, RerootRel t t' → strDefect t ≤ strDefect t'
+
+/-- **`CoverR` coverage reduces to the reroot-minimal ("genuine") core.**  The reroot half is FULLY
+    discharged: any non-reroot-minimal defective tree is covered by `CompRerootStep` directly (a lower-defect
+    rerooting exists BY DEFINITION of `¬ RerootMinimal` -- no path construction needed).  So the sole
+    remaining obligation is coverage of the reroot-minimal defective trees by `FlpStepAt`/`AdjLeafStep` --
+    where, empirically, the residual is the 0.7% whole-hub (Case-B) family (`COVER_RELATION_STATUS.md`). -/
+theorem coverR_coverage_of_minimalCore
+    (hcore : ∀ t : UTree, strDefect t ≠ 0 → RerootMinimal t →
+        ∃ t', FlpStepAt t t' ∨ AdjLeafStep t t') :
+    ∀ t : UTree, strDefect t ≠ 0 → ∃ t', CoverR t t' := by
+  intro t hd
+  by_cases hmin : RerootMinimal t
+  · obtain ⟨t', h⟩ := hcore t hd hmin
+    rcases h with h | h
+    · exact ⟨t', Or.inl h⟩
+    · exact ⟨t', Or.inr (Or.inl h)⟩
+  · rw [RerootMinimal] at hmin; push_neg at hmin
+    obtain ⟨t', hrel, hlt⟩ := hmin
+    exact ⟨t', Or.inr (Or.inr ⟨hrel, by omega⟩)⟩
+
+/-- **Hnorm from the reroot-minimal core** -- the full reduction: `Hnorm` follows from `FlpStepAt`/
+    `AdjLeafStep` coverage of the reroot-minimal defective trees alone. -/
+theorem hnorm_of_minimalCore
+    (hcore : ∀ t : UTree, strDefect t ≠ 0 → RerootMinimal t →
+        ∃ t', FlpStepAt t t' ∨ AdjLeafStep t t') :
+    ∀ t : UTree, ∃ s : List Hub, usize (backboneU s) = usize t ∧ Aobj t ≤ Aobj (backboneU s) :=
+  hnorm_of_coverR_coverage (coverR_coverage_of_minimalCore hcore)
+
 end Step3
 end R3Cert
