@@ -132,6 +132,23 @@ Balanced+Capped state exists (n≥46, specific residues).  Small and non-aligned
 tie is a placeholder" open item.  My recent summaries ("Conjecture 1 rests on `hcore`/`Hnorm`") glossed over
 this; the honest statement is "Conjecture 1 FOR ALIGNED n rests on the aligned `Hnorm`".
 
+## FINDING (2026-09-11): the whole-hub straightening is the DE-BRANCH move, not Case-B (Case-B is a red herring)
+
+De-risked the whole-hub residual `t = node(leaf, leaf, node(star_k, star_k))` (the simplest one):
+- The **isolated-neutral Case-B move** (`BGSCLRealOblBSymBase`: relocate one `star_k` onto a leaf of the
+  sibling `star_k`) **DECREASES `Aobj`** when embedded here, for ALL k (e.g. k=2: `50/9 → 128/27`, incr
+  `-22/27`), despite reducing defect.  So the isolated Case-B move does NOT lift to a valid `StraightStep` in
+  the residual context — **Case-B is a red herring for the whole-hub straightening.**
+- The ACTUAL valid moves (44 found for k=2, all `Aobj`-INCREASING, defect→0) **relocate the whole branching
+  subtree `node(star_k,star_k)` onto a shallow (root) leaf** — the DE-BRANCH-onto-spine move (matching the
+  phase-0 SPR finding).  e.g. k=2: `dAobj = +55/72`.
+
+So the whole-hub straightening for the residual is the general **de-branch** (relocate an off-spine branch
+onto a shallow leaf), whose `Aobj`-monotonicity is exactly the **Kelmans "Obligation A" cavity inequality**
+(`R47R7Debranch` isolates it) — the known BG hard core (Pant 2026 open).  The monomer-dimer / Heilmann-Lieb
+route should target THIS move (de-branch), not the Case-B collapse.  This redirects the whole-hub effort to
+the correct, but genuinely-open, target.
+
 ## Status (fully corrected)
 
 `Hdom`: CLOSED (kernel-clean).  `Hnorm` is genuinely reduced ONLY for the size-preserving-general-backbone
