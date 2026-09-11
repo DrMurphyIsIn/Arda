@@ -41,6 +41,7 @@ import RvMPolygamma
 import RvMPolygammaHigher
 import RvMGammaR
 import RvMGammaRIterate
+import RvMMobius
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -172,3 +173,9 @@ import RvMGammaRIterate
 #print axioms RvMWeierstrass.digamma_contDiffOn_re_pos
 #print axioms RvMWeierstrass.iteratedDeriv_digamma_half
 #print axioms RvMWeierstrass.iteratedDeriv_logDeriv_Gammaℝ_one
+
+-- Phase 4c foundation: Mobius iterated derivatives. iteratedDeriv n (1-w)^{-1} z = n!/(1-z)^(n+1)
+-- (induction, eventual-eq on {w!=1}, HasDerivAt.pow.inv.const_mul); at 0 gives n!. Feeds Faa di Bruno
+-- on the (logDeriv GammaR) o (1/(1-z)) composition. conjecture1_proved = False.
+#print axioms RvMWeierstrass.iteratedDeriv_mobius
+#print axioms RvMWeierstrass.iteratedDeriv_mobius_zero
