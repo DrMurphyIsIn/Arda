@@ -267,3 +267,47 @@ on the platform, with explanation and citation attached, ledgered.
 - **Reputational surface of autonomous text** (explanations,
   comments): templates in the skill keep generated prose factual,
   cited, and minimal.
+
+## Implementation deviations (recorded at final review, 2026-09-11)
+
+Recorded where the implementation diverged from the design spec during
+the final-review fix wave. All deviations are deliberate and narrower
+than the spec, not wider.
+
+- **VerifyRejected exception replaced by ledgered record verdicts.**
+  The design listed `VerifyRejected` as a typed exception in the error
+  hierarchy. The implementation instead ledgers specific verdict strings
+  (`Rejected`, `BuildFailed`, `CertifyRefused`, `SubmittedUnknown`,
+  `PollTimeout`) and returns `AttemptRecord` from `run_attempt`.
+  `SubmittedUnknown` is appended when `verify()` succeeds but a
+  subsequent 5xx burst prevents resolving the verdict — the exception
+  is then re-raised so the caller surfaces it, while the ledger records
+  the fact that a submission was sent (no-repeat rule fires).
+  `PollTimeout` replaces the former `("Rejected", "poll timeout")` so
+  the two failure modes are distinguishable in ledger queries and
+  `win_rate` denominators.
+
+- **`submit` folded into `attempt` (I5); `ledger` CLI folded into
+  `status`.** The spec listed `telperion p2m submit` and `telperion p2m
+  ledger` as distinct subcommands. The implementation folds submission
+  into `attempt` (controlled by `--no-submit`) and the ledger view into
+  `status`, keeping the surface minimal and consistent with I5 (a
+  rejection is re-triaged from the same `attempt` flow, not a separate
+  submit command).
+
+- **Ranking implements confidence × win-rate-prior with
+  `status == open` as availability proxy; effort and first-proof factors
+  deferred.** The spec listed four ranking factors (shape-match
+  confidence, first-proof availability, estimated effort, realized
+  win rate). The implementation uses a confidence × win-rate-prior
+  composite, with `status == "open"` as the availability gate. Effort
+  estimation and first-proof leaf detection are deferred to live tuning
+  once the ledger has enough data to calibrate them.
+
+- **Disproof submissions not yet supported (I3 verbatim gate) —
+  escalate instead.** The spec described a disproof path (negate and
+  resubmit when `diagnose` returns FALSE). I3's verbatim gate means a
+  disproof requires a different `formal_statement` target, which the
+  current bridge does not compose automatically. When `diagnose` returns
+  FALSE the skill instructs the agent to STOP and escalate to the user
+  with the counterexample rather than attempting an autonomous disproof.

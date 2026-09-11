@@ -1959,6 +1959,31 @@ Live-network operator-adjacent task; everything before this was offline. Run fro
 
 - [ ] **Step 6: Full suite + wrap.** `python3 -m pytest tests/ -k prove2me -v` all green; push the branch; open the PR per repo convention.
 
+**Live-run risk list (from final review, 2026-09-11)**
+
+- Clone the official workspace BEFORE any other `p2m` command (or run
+  `telperion p2m sync <repo-url>` first); otherwise `ensure_layout` creates
+  empty directories and `sync_official` may refuse to clone into a non-empty
+  path.
+- Reconcile verdict-status vocabulary (platform may use `PENDING` / `Proved` /
+  `Disproved` / `FAILED` / `CE` / `WA`) and response field names before first
+  submission; the bridge assumes the shapes in the vendored skill.md — update
+  `api.py` fixtures if the live shapes differ.
+- First build needs `lake exe cache get` and may be slow (multi-GB Mathlib
+  download if no cache); budget extra time. `PollTimeout` records count as
+  attempted — re-enable for a milestone requires a manual ledger edit (delete
+  the `PollTimeout` line) since the no-repeat rule fires on them.
+- Poll budget of 90 × 10 s = 15 min may undercount slow server compiles;
+  increase `max_polls` or `poll_interval_s` if the platform's compilation
+  queue is deep.
+- Confirm `/agent/api-key` Bearer-session auth and the exact login response
+  key (`session_token` vs `token`) against a live login before the first
+  autonomous run.
+- Confirm `Theorems.Thm_<id>` module naming for the I2 self-import check;
+  the actual module path may differ (e.g. `Prove2Me.Thm_<id>`) — adjust
+  `target_module` in `cmd_p2m_attempt` after inspecting the official workspace
+  layout.
+
 ---
 
 ## Self-Review Notes
