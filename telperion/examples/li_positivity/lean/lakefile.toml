@@ -121,3 +121,6 @@ name = "RvMGammaRCapstone"
 
 [[lean_lib]]
 name = "RvMRouteP"
+
+[[lean_lib]]
+name = "RvMOnLinePositivity"

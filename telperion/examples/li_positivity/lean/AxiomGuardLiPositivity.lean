@@ -52,6 +52,7 @@ import RvMZetaPoleReg
 import RvMLiCoeffId
 import RvMGammaRCapstone
 import RvMRouteP
+import RvMOnLinePositivity
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -261,3 +262,11 @@ import RvMRouteP
 -- (taylorCoeff zetaPoleCompanion n).re. An IFF -- relocates RH onto one explicit inequality per n;
 -- proves nothing about RH. conjecture1_proved=False.
 #print axioms RvMWeierstrass.rh_iff_companion_ge
+
+-- Route P (creative): manifest positivity of on-line zero contributions.
+-- onLine_liPairedSummand_eq_normSq: for a nontrivial zero with re=1/2, liPairedSummand n rho =
+-- normSq(1 - (1-1/rho)^(n+1)) -- a perfect square (|w|=1 => w^-(n+1)=conj w^(n+1)); nonneg + real.
+-- Unconditional; the on-line side of the signature dichotomy. Does NOT prove RH. conjecture1_proved=False.
+#print axioms RvMWeierstrass.onLine_liPairedSummand_eq_normSq
+#print axioms RvMWeierstrass.onLine_liPairedSummand_nonneg
+#print axioms RvMWeierstrass.onLine_liPairedSummand_im
