@@ -407,3 +407,345 @@ name = "RvMBacklundLogCont"
 
 [[lean_lib]]
 name = "RvMBacklundExplicit"
+
+[[lean_lib]]
+name = "RvMNTEffective"
+
+[[lean_lib]]
+name = "RvMNTCount"
+
+[[lean_lib]]
+name = "RvMRoutePFalsify"
+
+[[lean_lib]]
+name = "AllZerosUpToHeight"
+
+[[lean_lib]]
+name = "AllZeros_h100"
+
+[[lean_lib]]
+name = "AllZeros_h2000"
+
+[[lean_lib]]
+name = "AllZeros_h4000"
+
+[[lean_lib]]
+name = "BlaschkeBox"
+
+[[lean_lib]]
+name = "BoxArgPrinciple"
+
+[[lean_lib]]
+name = "BoxArgPrincipleZeta"
+
+[[lean_lib]]
+name = "BoxLocalization"
+
+[[lean_lib]]
+name = "DlvpZetaSymmetry"
+
+[[lean_lib]]
+name = "DlvpZetaZeroFree"
+
+[[lean_lib]]
+name = "LambdaLineReal"
+
+[[lean_lib]]
+name = "NoZerosInBox_0_1d1000_0_55d16"
+
+[[lean_lib]]
+name = "NoZerosInBox_1d1000_999d1000_0_55d16"
+
+[[lean_lib]]
+name = "RHInBox"
+
+[[lean_lib]]
+name = "RHInBoxBands"
+
+[[lean_lib]]
+name = "RHInBoxCore"
+
+[[lean_lib]]
+name = "RHInBox_1d1000000_999999d1000000_0_100"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_0_100"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1000_1050"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_100_150"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1050_1100"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1100_1150"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1150_1200"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1200_1250"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1250_1300"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1300_1350"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1350_1400"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1400_1450"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1450_1500"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1500_1550"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_150_200"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1550_1600"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1600_1650"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1650_1700"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1700_1750"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1750_1800"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1800_1850"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1850_1900"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1900_1950"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_1950_2000"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2000_2040"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_200_250"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2040_2080"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2080_2120"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2120_2160"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2160_2200"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2200_2240"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2240_2280"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2280_2320"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2320_2360"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2360_2400"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2400_2440"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2440_2480"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2480_2520"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_250_300"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2520_2560"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2560_2600"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2600_2640"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2640_2680"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2680_2720"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2720_2760"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2760_2800"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2800_2840"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2840_2880"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2880_2920"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2920_2960"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_2960_3000"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3000_3040"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_300_350"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3040_3080"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3080_3120"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3120_3160"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3160_3200"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3200_3240"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3240_3280"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3280_3320"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3320_3360"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3360_3400"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3400_3440"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3440_3480"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3480_3520"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_350_400"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3520_3560"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3560_3600"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3600_3640"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3640_3680"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3680_3720"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3720_3760"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3760_3800"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3800_3840"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3840_3880"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3880_3920"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3920_3960"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_3960_4000"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_400_450"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_450_500"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_500_550"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_550_600"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_600_650"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_650_700"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_700_750"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_750_800"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_800_850"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_850_900"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_900_950"
+
+[[lean_lib]]
+name = "RHInBox_1d2000000_1999999d2000000_950_1000"
+
+[[lean_lib]]
+name = "StripClear"
+
+[[lean_lib]]
+name = "WindingCount"
+
+[[lean_lib]]
+name = "XiLineZeros"
+
+[[lean_lib]]
+name = "ZetaZeroConfinement"
+
+[[lean_lib]]
+name = "RvMNTLadder"

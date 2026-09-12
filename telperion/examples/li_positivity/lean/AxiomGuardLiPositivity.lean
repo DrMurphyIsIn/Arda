@@ -82,6 +82,12 @@ import RvMBacklundCountJensen
 import RvMBacklundS
 import RvMBacklundLogCont
 import RvMBacklundExplicit
+import RvMNTEffective
+import RvMNTCount
+import RvMRoutePFalsify
+import RvMNTLadder
+import AllZeros_h4000
+import StripClear
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -292,6 +298,13 @@ import RvMBacklundExplicit
 -- proves nothing about RH. conjecture1_proved=False.
 #print axioms RvMWeierstrass.rh_iff_companion_ge
 
+-- Route P (Brick D3 part 1): the falsifiability atom.
+-- companion_below_floor_refutes_rh (n)(h: (taylorCoeff zetaPoleCompanion n).re <
+--   -(1+(taylorCoeff GammaR n).re)): ¬RiemannHypothesis. Contrapositive of rh_iff_companion_ge --
+--   one sub-floor companion value refutes RH. The negative face the bragg_floor emitter targets;
+--   never expected to fire. Proves nothing about RH. conjecture1_proved=False.
+#print axioms RvMWeierstrass.companion_below_floor_refutes_rh
+
 -- Route P (creative): manifest positivity of on-line zero contributions.
 -- onLine_liPairedSummand_eq_normSq: for a nontrivial zero with re=1/2, liPairedSummand n rho =
 -- normSq(1 - (1-1/rho)^(n+1)) -- a perfect square (|w|=1 => w^-(n+1)=conj w^(n+1)); nonneg + real.
@@ -462,3 +475,33 @@ import RvMBacklundExplicit
 --   the PR-6 headline with ‖F_T 2‖ majorized away by its Jensen-centre floor 2−π²/6
 --   (backlundAux_two_norm_ge), giving a closed-form O(log T) in T alone. conjecture1_proved=False.
 #print axioms Backlund.riemannS_abs_le_log_explicit
+
+-- Arc A (effective RvM), PR A2: the effective Riemann-von Mangoldt bound.
+-- nt_effective_bound (T)(hT:4≤T)(N)(4 xi-edge nonvanishings)(hζne)(hwind=2πiN):
+--   |(N:ℝ) − 1 − θ(T)/π| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 -- the winding integer pinned to the
+--   smooth main term 1+θ/π within explicit O(log T); error = riemannS T bounded by PR A1. Composes
+--   xiTele_winding_eq_RvM (N=1+θ/π+S) with riemannS_abs_le_log_explicit. conjecture1_proved=False.
+#print axioms Backlund.nt_effective_bound
+
+-- Arc A (effective RvM), PR A3: the effective bound on the box xi-zero count.
+-- nt_count_effective_bound (T)(hT:4≤T)(c R N)(hbox_ball)(4 Icc edge nonvanishings)(hin strict
+--   interior)(hζne)(hwind=2πiN): ∃ s d, zeros⊆s ∧ Σd=N ∧ |(Σd:ℝ) − 1 − θ/π| ≤ bound. Composes
+--   xiTele_count_eq_winding (box zero count = N) with nt_effective_bound. The zero count is derived
+--   from the boundary winding, never assumed. conjecture1_proved=False.
+#print axioms Backlund.nt_count_effective_bound
+
+-- Arc A (effective RvM), PR A5: the LADDER PORT + interlock. The complete tiled Turing ladder
+-- (AllZeros_h100..h4000 + StripClear + its RHInBox/confinement chain, 110 files) is PORTED from the
+-- v4.32 zeta_zero_localization/zero_free_bridge islands onto this island (method of #424/#427/#483:
+-- source copy, single import redirect RHInBoxAnalytic->RvMRHInBox; ZERO content drift). The two RH
+-- tracks now interlock in ONE kernel statement:
+-- zeta_segment_ne_zero_of_ladder: ladder conclusion + single-point ζ(1/2+iT)≠0 ⟹ the segment hζne --
+--   the "T not a zero-ordinate" caveat COLLAPSES TO ONE POINT for T ≤ 4000.
+-- nt_effective_bound_of_ladder: the effective RvM bound with the trust-shrunk hypothesis set.
+-- all_nontrivial_zeros_up_to_height_4000_of_bands: the ported ladder capstone (3,474 zeros), its
+--   per-band Arb bundles the documented trust seam, now importable beside the Li/RvM corpus.
+-- conjecture1_proved=False throughout: finite verification + classical count; nothing approaches RH.
+#print axioms Backlund.zeta_segment_ne_zero_of_ladder
+#print axioms Backlund.nt_effective_bound_of_ladder
+#print axioms AllZeros_h4000.all_nontrivial_zeros_up_to_height_4000_of_bands
+#print axioms StripClear.height_floor_of_box_certs
