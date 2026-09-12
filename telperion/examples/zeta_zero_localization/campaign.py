@@ -110,8 +110,10 @@ def plan_bands(t_from: int, t_to: int) -> list[tuple[int, int, int]]:
 
 from fractions import Fraction
 
-_POKE = Fraction(8, 100)  # conservative ball-poke clearance (actual = sqrt(2.25+h^2/4+1/16)-h/2
-                          # ~= 2.31/h: 0.075 at h=31, smaller for taller bands; 0.08 covers h >= 29)
+_POKE = Fraction(9, 100)  # conservative ball-poke clearance (actual = sqrt(2.25+h^2/4+1/16)-h/2
+                          # ~= 2.31/h: 0.0826 at h=28 (campaign band width), smaller for taller
+                          # bands; 0.09 covers h >= 25.7 -- 8/100 did NOT cover h=28, see the
+                          # [66686,66714] leg-11 refusal)
 
 
 _STRETCH_CACHE_FILE = Path(__file__).resolve().parent / "edge_stretch.json"
