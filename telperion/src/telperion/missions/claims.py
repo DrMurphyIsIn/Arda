@@ -12,7 +12,7 @@ as UTC if naive).
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .registry import load_campaign
@@ -41,7 +41,7 @@ def is_stale(claim: Claim, _now: datetime | None = None) -> bool:
         started_dt = started_dt.replace(tzinfo=timezone.utc)
 
     age = _now - started_dt
-    ttl_delta = __import__("datetime").timedelta(hours=claim.ttl_hours)
+    ttl_delta = timedelta(hours=claim.ttl_hours)
     return age >= ttl_delta
 
 
@@ -185,7 +185,8 @@ def claim(root: Path, slug: str, session: str, ttl_hours: int = 24, note: str = 
 def release(root: Path, slug: str, session: str) -> None:
     """Release a claim, removing its file.
 
-    Only the claiming session (or the session that claimed-over it) may release.
+    Only the current claim holder may release. After a claim-over, the
+    displaced session has no further authority over the claim.
 
     Args:
         root: campaign root directory.
@@ -193,7 +194,7 @@ def release(root: Path, slug: str, session: str) -> None:
         session: session ID releasing the claim.
 
     Raises:
-        ClaimError: if the node is not claimed by this session, or if no claim
+        ClaimError: if the claim is not held by this session, or if no claim
                     file exists.
     """
     root = Path(root)
@@ -205,8 +206,8 @@ def release(root: Path, slug: str, session: str) -> None:
 
     existing = load_claim(claim_file)
 
-    # Allow release by the current session or by the session that superseded it
-    if session != existing.session and session != existing.superseded:
+    # Only the current holder may release
+    if session != existing.session:
         raise ClaimError(
             f"Session {session!r} cannot release a claim held by {existing.session!r}."
         )

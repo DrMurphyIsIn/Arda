@@ -168,3 +168,40 @@ def test_is_stale_boundary_at_ttl(tmp_path):
     # One second before the boundary, it should be fresh
     now_t1_minus_1s = now_t1 - timedelta(seconds=1)
     assert is_stale(claim_obj, _now=now_t1_minus_1s) is False
+
+
+def test_release_after_claimover_by_new_holder(tmp_path):
+    """After claim-over, only the new holder can release the claim."""
+    root = copy_demo(tmp_path)
+    now_t0 = datetime(2026, 9, 11, 12, 0, 0, tzinfo=timezone.utc)
+    now_t1 = now_t0 + timedelta(hours=25)  # Stale
+
+    # Session 1 claims at t0
+    claim(root, "Demo_lemma_a", "session_1", ttl_hours=24, _now=now_t0)
+    claim_file = root / "claims" / "Demo_lemma_a.toml"
+    assert claim_file.exists()
+
+    # Session 2 claims-over at t1 (claim 1 is now stale)
+    claim2 = claim(root, "Demo_lemma_a", "session_2", ttl_hours=24, _now=now_t1)
+    assert claim2.superseded == "session_1"
+
+    # Session 2 (new holder) can release
+    release(root, "Demo_lemma_a", "session_2")
+    assert not claim_file.exists()
+
+
+def test_release_after_claimover_by_displaced_raises(tmp_path):
+    """After claim-over, the displaced session cannot release."""
+    root = copy_demo(tmp_path)
+    now_t0 = datetime(2026, 9, 11, 12, 0, 0, tzinfo=timezone.utc)
+    now_t1 = now_t0 + timedelta(hours=25)  # Stale
+
+    # Session 1 claims at t0
+    claim(root, "Demo_lemma_a", "session_1", ttl_hours=24, _now=now_t0)
+
+    # Session 2 claims-over at t1
+    claim(root, "Demo_lemma_a", "session_2", ttl_hours=24, _now=now_t1)
+
+    # Session 1 (displaced) tries to release -> ClaimError
+    with pytest.raises(ClaimError):
+        release(root, "Demo_lemma_a", "session_1")
