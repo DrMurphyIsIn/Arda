@@ -65,6 +65,23 @@ import RvMCompanionCoeff
 import RvMCompanionBraggLimit
 import ZetaLogBound
 import DlvpZetaRateEffective
+import RvMBacklundAux
+import RvMBacklundIVT
+import RvMBacklundCenter
+import RvMBacklundJensen
+import RvMBacklundConfine
+import RvMBacklundPartition
+import RvMBacklundSignConst
+import RvMBacklundFinite
+import RvMBacklundOrder
+import RvMBacklundConfineNonstrict
+import RvMBacklundSignClosed
+import RvMBacklundCount
+import RvMBacklundZeta
+import RvMBacklundCountJensen
+import RvMBacklundS
+import RvMBacklundLogCont
+import RvMBacklundExplicit
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -334,3 +351,114 @@ import DlvpZetaRateEffective
 -- limit / li-weighted archimedean boundary extraction needs. conjecture1_proved=False.
 #print axioms ZeroFreeBridge.zeta_log_bound
 #print axioms ZeroFreeBridge.dlvp_zeta_region_rate_effective
+
+-- Backlund S(T)=O(log T), PR 1: the auxiliary function F_T(z)=½(ζ(z+iT)+ζ(z-iT)).
+-- backlundAux_ofReal: F_T(σ)=Re ζ(σ+iT) on the real axis (via riemannZeta_conj); backlundAux_analyticAt:
+-- analytic off the poles z=1∓iT. Foundation for the sign-change/Jensen zero-count bound. conjecture1_proved=False.
+#print axioms Backlund.backlundAux_ofReal
+#print axioms Backlund.backlundAux_analyticAt
+
+-- Backlund S(T)=O(log T), PR 2: sign changes of Re ζ yield real zeros of F_T (IVT).
+-- backlundAux_im (real on axis); continuous_backlundAux_line (T≠0, poles 1∓iT off the axis);
+-- backlundAux_root_of_sign_change (opposite signs ⟹ real zero of F_T). conjecture1_proved=False.
+#print axioms Backlund.backlundAux_root_of_sign_change
+#print axioms Backlund.continuous_backlundAux_line
+
+-- Backlund S(T)=O(log T), PR 3a: the Jensen centre lower bound.
+-- re_zeta_two_ge: 2-π²/6 ≤ Re ζ(2+iT) (Re-analogue of zeta_norm_ge_two_sub, via Dirichlet series +
+-- basel_tail); backlundAux_two_norm_ge: 2-π²/6 ≤ ‖F_T(2)‖ (the Jensen denominator). conjecture1_proved=False.
+#print axioms Backlund.re_zeta_two_ge
+#print axioms Backlund.backlundAux_two_norm_ge
+
+-- Backlund S(T)=O(log T), PR 3b: the Jensen zero-count of F_T is O(log T).
+-- backlundAux_zero_count_le (T≥4): ∑ᶠ divisor F_T (closedBall 2 (3/2)) ≤ log((4T+19)/‖F_T(2)‖)/log(7/6),
+-- via zeta_strip_bound (Re>0 sphere bound, survives below 1/2) + PR 3a centre bound + AnalyticOnNhd.
+-- sum_divisor_le. Explicit O(log T). conjecture1_proved=False.
+#print axioms Backlund.backlundAux_zero_count_le
+#print axioms Backlund.backlundAux_analyticOnNhd_ball
+
+-- Backlund S(T)=O(log T), PR 4a: half-plane argument-confinement (the hardest piece).
+-- argChangeHoriz_abs_lt_pi_of_rePos: if Re f > 0 on the segment [x0,x1]+iT (and f differentiable,
+-- logDeriv f continuous there), then |argChangeHoriz f T x0 x1| < π -- FTC (clog_real) turns Im ∫ f'/f
+-- into arg f(x1+iT) - arg f(x0+iT), both in (-π/2,π/2). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_lt_pi_of_rePos
+
+-- Backlund S(T)=O(log T), PR 4b: partition + sum.
+-- argChangeHoriz_abs_lt_pi_of_re_sign: |argChangeHoriz f| < π when Re f is one sign (pos OR neg) on the
+--   segment -- the Re<0 case reduces to PR 4a via f↦-f (logDeriv invariant, logDeriv_const_mul a=-1).
+-- argChangeHoriz_abs_le_partition: over a partition σ0<...<σn with per-piece |argChangeHoriz|≤π, the
+--   total ≤ n·π (sum_integral_adjacent_intervals + Finset.abs_sum_le_sum_abs). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_lt_pi_of_re_sign
+#print axioms Backlund.argChangeHoriz_abs_le_partition
+
+-- Backlund S(T)=O(log T), PR 4c (first piece): sign-constancy => confinement.
+-- argChangeHoriz_abs_lt_pi_of_re_ne_zero: if Re f is continuous and NONVANISHING on the segment, then
+--   |argChangeHoriz f| < π. A continuous nowhere-zero real fn on connected [[x0,x1]] can't change sign
+--   (IVT intermediate_value_uIcc), so Re f one sign => PR 4b either-sign confinement. Reduces the
+--   per-piece hyp to the natural output of partitioning at Re ζ's zeros. conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_lt_pi_of_re_ne_zero
+
+-- Backlund S(T)=O(log T), PR 4c (finiteness): F_T's real zeros are finite.
+-- backlundAux_real_zeros_finite: {σ ∈ [1/2,2] | F_T σ = 0} is finite -- it injects (Complex.ofReal)
+--   into the finite support of F_T's divisor on closedBall 2 (3/2) (PR 3b machinery). A real zero σ
+--   gives ↑σ with F_T ↑σ=0: analyticOrderAt ≠0 (analyticOrderAt_ne_zero) and ≠⊤ (identity theorem, else
+--   F_T≡0 contra F_T(2)≠0), so ↑σ ∈ divisor support. conjecture1_proved=False.
+#print axioms Backlund.backlundAux_real_zeros_finite
+
+-- Backlund S(T)=O(log T), PR 4c (ordering): finite forbidden set => monotone partition.
+-- exists_monotone_partition_of_finite (Z:Finset ℝ)(a b)(hab)(hZ: Z ⊆ [a,b]): ∃ N σ, Monotone σ ∧ σ0=a
+--   ∧ σN=b ∧ N≤Z.card+1 ∧ (∀k, σk∈[a,b]) ∧ (∀k<N, ∀z∈Z, z≤σk ∨ σ(k+1)≤z). Pure order theory:
+--   sort {a,b}∪Z via Finset.orderEmbOfFin (strict-mono enum, _zero=min, _last=max, order-reflecting =>
+--   nothing strictly between consecutive). Feeds PR 4b partition sum. conjecture1_proved=False.
+#print axioms Backlund.exists_monotone_partition_of_finite
+
+-- Backlund S(T)=O(log T), PR 4c (nonstrict): confinement allowing zeros at endpoints.
+-- argChangeHoriz_abs_le_pi_of_re_nonneg: Re f ≥ 0 ∧ f ≠ 0 on segment ⟹ |argChangeHoriz| ≤ π (arg ∈
+--   [-π/2,π/2] via Complex.abs_arg_le_pi_div_two_iff; FTC via f∈slitPlane from Re≥0∧f≠0).
+-- argChangeHoriz_abs_le_pi_of_re_sign': either sign (Re f ≥0 OR ≤0) ∧ f≠0 ⟹ ≤π (Re≤0 case via -f).
+-- Needed because partition endpoints ARE zeros (Re=0). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_le_pi_of_re_nonneg
+#print axioms Backlund.argChangeHoriz_abs_le_pi_of_re_sign'
+
+-- Backlund S(T)=O(log T), PR 4c (sign-on-closed): bridge 4c-order -> 4c-nonstrict.
+-- re_one_sign_of_ne_zero_Ioo (g)(x0 x1)(hlt:x0<x1)(hcont: g cont on Icc)(hopen: g≠0 on Ioo): 0≤g on Icc
+--   OR g≤0 on Icc. A continuous fn nonzero on the OPEN interval is one sign on the CLOSED (endpoints are
+--   sign-compatible limits) -- else IVT (intermediate_value_uIcc between midpoint & opposite-sign point)
+--   forces a zero strictly inside. Feeds 4c-nonstrict (endpoints = zeros ok). conjecture1_proved=False.
+#print axioms Backlund.re_one_sign_of_ne_zero_Ioo
+
+-- Backlund S(T)=O(log T), PR 4c (count): the capstone assembly.
+-- argChangeHoriz_abs_le_card_zeros (f)(T a b)(hab)(Z)(hdiff)(hcont)(hne: f≠0 on segment)(hZsub: Z⊆[a,b])
+--   (hZzero: Re f=0 => in Z): |argChangeHoriz f T a b| ≤ (Z.card+1)·π. Combines 4c-order (partition) +
+--   4c-sign-on-closed (Re f one sign per closed piece) + 4c-nonstrict (piece ≤π, endpoints=zeros ok) +
+--   4b (sum) + degenerate pieces=0 (integral_same). Horizontal half of Backlund S(T). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_le_card_zeros
+
+-- Backlund S(T)=O(log T), PR 5: the ζ instantiation of the horizontal bound.
+-- zeta_argChangeHoriz_abs_le (hT:4≤T)(hζne: ζ≠0 on [1/2,2]+iT CARRIED = S(T)-jump)(hlogcont: logDeriv ζ
+--   cont CARRIED): |argChangeHoriz ζ T (1/2) 2| ≤ ((F_T real zeros).toFinset.card + 1)·π. Instantiates
+--   the capstone argChangeHoriz_abs_le_card_zeros at f=riemannZeta; hdiff via differentiableAt_riemannZeta
+--   (segment avoids pole s=1 since im=T≠0), hZsub/hZzero via backlundAux_ofReal (F_T ↑x=↑(Re ζ)).
+--   conjecture1_proved=False.
+#print axioms Backlund.zeta_argChangeHoriz_abs_le
+
+-- Backlund S(T)=O(log T), PR 5 step 3: the EXPLICIT O(log T) horizontal bound.
+-- zeta_argChangeHoriz_abs_le_log (hT:4≤T)(hζne)(hlogcont): |argChangeHoriz ζ T (1/2) 2| ≤
+--   (log((4T+19)/‖F_T 2‖)/log(7/6) + 1)·π. Real zeros of F_T inject (ofReal) into divisor support (each
+--   positive analytic order), so count ≤ card(support) ≤ Σᶠ divisor (≥1 on support) ≤ Jensen (PR 3b).
+--   conjecture1_proved=False.
+#print axioms Backlund.zeta_argChangeHoriz_abs_le_log
+
+-- Backlund S(T)=O(log T), PR 6: discharging hlogcont.
+-- continuousOn_logDeriv_zeta_segment (hT:4≤T)(hζne): logDeriv ζ continuous on [1/2,2]+iT -- derived from
+--   ζ-analyticity (AnalyticOnNhd on {≠1}, .deriv, .continuousOn, comp path) + ζ≠0 (ContinuousOn.div).
+-- riemannS_abs_le_log_of_ne_zero (hT:4≤T)(hζne): |riemannS T| ≤ log((4T+19)/‖F_T 2‖)/log(7/6)+2 --
+--   the SLIMMED S(T)=O(log T), carrying ONLY hζne. conjecture1_proved=False.
+#print axioms Backlund.continuousOn_logDeriv_zeta_segment
+#print axioms Backlund.riemannS_abs_le_log_of_ne_zero
+
+-- Arc A (effective RvM), PR A1: the pure-in-T Backlund bound.
+-- riemannS_abs_le_log_explicit (hT:4≤T)(hζne): |riemannS T| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 --
+--   the PR-6 headline with ‖F_T 2‖ majorized away by its Jensen-centre floor 2−π²/6
+--   (backlundAux_two_norm_ge), giving a closed-form O(log T) in T alone. conjecture1_proved=False.
+#print axioms Backlund.riemannS_abs_le_log_explicit

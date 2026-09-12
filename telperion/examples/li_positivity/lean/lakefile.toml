@@ -356,3 +356,54 @@ name = "ZeroFreeRegion"
 
 [[lean_lib]]
 name = "ZetaLogBound"
+
+[[lean_lib]]
+name = "RvMBacklundAux"
+
+[[lean_lib]]
+name = "RvMBacklundIVT"
+
+[[lean_lib]]
+name = "RvMBacklundCenter"
+
+[[lean_lib]]
+name = "RvMBacklundJensen"
+
+[[lean_lib]]
+name = "RvMBacklundConfine"
+
+[[lean_lib]]
+name = "RvMBacklundPartition"
+
+[[lean_lib]]
+name = "RvMBacklundSignConst"
+
+[[lean_lib]]
+name = "RvMBacklundFinite"
+
+[[lean_lib]]
+name = "RvMBacklundOrder"
+
+[[lean_lib]]
+name = "RvMBacklundConfineNonstrict"
+
+[[lean_lib]]
+name = "RvMBacklundSignClosed"
+
+[[lean_lib]]
+name = "RvMBacklundCount"
+
+[[lean_lib]]
+name = "RvMBacklundZeta"
+
+[[lean_lib]]
+name = "RvMBacklundCountJensen"
+
+[[lean_lib]]
+name = "RvMBacklundS"
+
+[[lean_lib]]
+name = "RvMBacklundLogCont"
+
+[[lean_lib]]
+name = "RvMBacklundExplicit"

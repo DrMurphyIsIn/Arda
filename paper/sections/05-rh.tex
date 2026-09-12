@@ -1,9 +1,8 @@
 \section{Main results: the zeta program}
 \label{sec:rh}
 
-This section is the paper's spine, and it comes with a warning label we want to
-put first, in bold, so there is no chance of misreading: \textbf{we do not claim
-the Riemann Hypothesis.} What we have is a connected body of genuine,
+This section presents the paper's main results---first, in bold, so there is no
+chance of misreading: \textbf{we do not claim the Riemann Hypothesis.} What we have is a connected body of genuine,
 machine-checked results \emph{about} the zeta function---built in the order a
 reader should understand them: first where the zeros \emph{cannot} be (zero-free
 regions, culminating in an effective de la Vallée-Poussin region), then where
@@ -30,13 +29,29 @@ enforced, not asserted:
     $1 \le \sigma \le 2,\ |t| \ge 2$, with an explicit constant
     (\texttt{zeta\_log\_bound});
   \item an elementary, Hadamard-free zero-free region
-    $\operatorname{Re} s > 1 - c/|t|^5$ (\texttt{riemannZeta\_zero\_free\_poly});
+    $\operatorname{Re} s > 1 - c/|t|^5$ (\texttt{riemannZeta\_zero\_free\allowbreak\_poly});
   \item a sharper region $\operatorname{Re} s > 1 - c/\!\left(|t|^4 (1 + \log 2|t|)\right)$
-    (\texttt{riemannZeta\_zero\_free\_polylog}).
+    (\texttt{riemannZeta\_zero\_free\allowbreak\_polylog}).
 \end{enumerate}
 
 To our knowledge, the last two are the first unconditional, Hadamard-free
 zero-free regions to be machine-checked in Lean.
+
+\subsection{One engine, four certificate shapes}
+
+The results that follow are not unrelated: they are four readings of one machine.
+Every certificate below is an instance of a single weighted argument
+principle---for analytic $f$ and holomorphic weight $g$, the boundary winding of
+$g$ against $f$ equals $2\pi i \sum_{\rho} \operatorname{mult}(\rho)\, g(\rho)$---and
+the results exhibit it in four distinct \emph{certificate shapes}: positivity,
+real-rootedness, argument-principle winding, and the explicit-formula/diffraction
+identity. That one finite engine reaches all four on the same object is the
+methodological point, and the shape-diversity is deliberate evidence of the
+method's range. We stress at the outset what this unification does \emph{not}
+claim: the finite instances are deliberately not stitched into any assertion that
+the count $N(T)$ determines the Li coefficients $\lambda_n$ (\cref{sub:bridge}).
+Each result remains finite, each falls well short of RH, and
+$\texttt{conjecture1\_proved} = \texttt{False}$ throughout.
 
 \subsection{The honest comparison---and a second route to the full rate}
 
@@ -164,7 +179,7 @@ $100$ lands in the box is now itself kernel-derived from the zero-free region.
 And the construction \emph{scales}: the certified height grows by
 \emph{band-stacking}. Kernel gluing lemmas (\texttt{rh\_box\_two\_bands} and its
 $n$-band generalization
-\texttt{all\_nontrivial\_zeros\_up\_to\_height\_on\_line\_tiled}) compose
+\texttt{all\_nontrivial\_zeros\_up\_to\allowbreak\_height\_on\_line\_tiled}) compose
 per-band certificates---each band carrying its own small winding count, short
 contour edges, and local on-line list, so the per-band numeric certificates stay
 cheap, independent, and parallelizable. The first stack, \texttt{AllZeros\_h200},
@@ -173,7 +188,7 @@ bands to $T = 1000$ ($649$ zeros); a further stack,
 \texttt{AllZeros\_h2000}, extended the ladder with twenty further bands of height
 $50$ to $T = 2000$ ($1517$ zeros). The ladder is now \emph{unbounded in
 principle}: segment certificates over any $[A, B]$
-(\texttt{all\_nontrivial\_zeros\_in\_segment\_on\_line}) compose with an
+(\texttt{all\_nontrivial\_zeros\_in\allowbreak\_segment\_on\_line}) compose with an
 up-to-$A$ certificate through a constant-cost chain lemma
 (\texttt{height\_chain}), so no single glue theorem ever grows with the total
 height. Its first exercise is the current milestone, \texttt{AllZeros\_h4000}:
@@ -268,9 +283,18 @@ Two honest notes close the account. First, the formula \emph{counts} zeros; it
 does not place them on the critical line, and nothing here bears on RH:
 Riemann--von Mangoldt is classical, unconditional mathematics, formalized. Its
 role in this program is the trust-shrink trajectory---it derives what the
-tiled ladder currently assumes---and running this section's effective
-machinery on the $S$-identity (toward Backlund's
-$|S(T)| \le a \log T + b$) is the named next step. Second, one mid-course
+tiled ladder currently assumes---and that named next step is now taken: running this section's effective
+machinery on the $S$-identity yields Backlund's bound $|S(T)| = O(\log T)$ as a
+kernel theorem (\texttt{riemannS\_abs\_le\_log\_of\_ne\_zero}: for $T \ge 4$ with
+$T$ off a zero ordinate,
+$|S(T)| \le \log\!\big((4T{+}19)/\lVert F_T(2)\rVert\big)/\log(7/6) + 2$), through
+a formalized Backlund argument---the auxiliary function
+$F_T(z) = \tfrac12\big(\zeta(z{+}iT)+\zeta(z{-}iT)\big)$, real on the axis with
+$F_T = \operatorname{Re}\zeta(\cdot{+}iT)$, whose real zeros bound the sign
+changes of $\operatorname{Re}\zeta$ and are counted by the finite-height Jensen
+bound of the previous subsection. The constant is honest rather than sharp, and
+this remains unconditional error-term analysis: it bounds the \emph{fluctuation}
+in the zero count and says nothing about where the zeros lie. Second, one mid-course
 correction is part of the record and is the lived practice
 \cref{sec:vacuity} recounts: an early route through $\Lambda_0$ alone was
 retired when its zero set was checked against Mathlib's own defining identity,
@@ -340,13 +364,147 @@ a conclusion about it---and it exhibits a fourth distinct certificate shape (a
 weighted explicit-formula / diffraction identity), alongside positivity,
 real-rootedness, and winding counts.
 
+\subsection{The bridge to Li's coefficients: one weighted engine}
+\label{sub:bridge}
+
+The counting formula and the explicit formula above turn out to be the same
+machine read with different test weights, and choosing the weight that Li's
+criterion cares about carries the apparatus back to the object this section
+opened with. The engine is a single weighted argument principle
+(\texttt{analytic\_weighted\_count\_eq\_winding}; CI-axiom-guarded, axioms
+$\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$): for
+analytic $f$ and any holomorphic weight $g$, the weighted boundary winding
+equals $2\pi i \sum_{\rho} \operatorname{mult}(\rho)\, g(\rho)$. Weight
+$g \equiv 1$ returns the zero-count $N(T)$ of the previous subsections; weight
+$g(\rho) = 1 - (1 - 1/\rho)^n$ returns the finite box-sum of Li's summands. The
+Riemann--von Mangoldt count and the finite Li-sum are \emph{one functional, two
+weights}---not an analogy but the same theorem, instantiated twice.
+
+Two further facts, both kernel-clean, place the coefficients themselves. First,
+specializing the finite explicit formula to the Li weight
+(\texttt{li\_finite\_explicit\_formula}, derived from
+\texttt{rect\_explicit\_formula}) yields the finite, rectangular skeleton of the
+Bombieri--Lagarias arithmetic form of Li's coefficients
+\cite{bombierilagarias1999}: the weighted zero-sum equals von Mangoldt prime
+terms on the right edge plus the boundary integrals, the same diffraction shape
+as before but now carrying the Li weight. Second
+(\texttt{liCoeff\_isLimit\_partialSums}), the $n$-th coefficient---the Taylor
+coefficient of $\xi$ whose nonnegativity is Li's criterion---is the limit of
+finite partial sums over finite subsets of the zeros, conditional on two named
+analytic inputs (genus-one summability $\sum 1/\lVert\rho\rVert^2$ and the
+Hadamard product), left as explicit hypotheses. So $\lambda_n$ is reached as the
+exhaustion limit of exactly the finite sums the engine computes. And the two
+developments are provably about \emph{one} function: \texttt{xiTele\_eq\_riemannXi}
+is a \texttt{ring} identity, so the $\xi$ whose box zero-count the counting
+formula computes is the very $\xi$ whose Taylor coefficients characterize RH
+(recorded, as a conjunction of the two facts, in
+\texttt{rvm\_and\_li\_share\_riemannXi}).
+
+The honesty line is the whole point of stating this, and it is drawn sharply.
+These are separate kernel theorems, \emph{deliberately not stitched} into a
+claim that the count $N(T)$ determines the coefficients $\lambda_n$. Two
+structural seams that once stood between them are now formalized. The
+$\xi$-versus-$\zeta$ index mismatch is closed: a finite weighted box-sum over
+$\zeta$'s strip zeros is a value-preserving sub-sum of $\xi$'s nontrivial-zero
+index (\texttt{zeroFinset\_sum\_via\_nontrivial}, a reindexing). And the
+$\xi$-side algebra is complete: the four-way split
+$(\log\xi)' = s^{-1} + (s-1)^{-1} + (\log\zeta)' + (\log\Gamma_{\mathbb R})'$
+(\texttt{logDeriv\_xiTele\_four\_split}) isolates the Archimedean factor exactly,
+reducing it to $\tfrac12\,\psi(s/2)$ with $\psi$ the digamma function.
+
+What remains is then an obstruction we can name precisely---and naming it, we
+find it is \emph{route-specific}, not intrinsic. Computed the contour way, the
+Bombieri--Lagarias main term $\lambda_n \sim (n/2)\log n$ (the one place the zero
+density $dN(T) \sim (1/2\pi)\log(T/2\pi)$ becomes load-bearing) requires the
+large-argument asymptotic of the digamma function, $\psi(w) \sim \log w$,
+integrated against the concentrating weight $g_n$ and extracted by a saddle-point
+argument as the contour grows. That asymptotic is \emph{not in the Mathlib we
+build against}: its digamma development carries the special values, the recurrence
+$\psi(s{+}1) = \psi(s) + 1/s$, and meromorphy, but nothing at infinity; its
+Stirling development has only the discrete factorial form, not the continuous
+complex $\log\Gamma$ asymptotic.
+
+But the asymptotic is only forced by the contour. Li's own definition takes the
+Taylor route---$\lambda_n$ is a coefficient of $(\log \xi)'$ under the M\"obius
+change of variable $z \mapsto 1/(1-z)$, which sends the expansion point $z=0$ to
+the \emph{fixed point} $s=1$. Along that route the Archimedean factor is sampled,
+with all its derivatives, at $s=1$---never at infinity---so the missing
+large-argument asymptotic is simply off the path, replaced by exact local
+constants. The base datum is already in the kernel:
+$(\log \Gamma_{\mathbb R})'(1) = -(\gamma + \log 4\pi)/2$
+(\texttt{logDeriv\_gammaR\_one}, CI-axiom-guarded), from Mathlib's own derivative
+of $\Gamma$ at $1$. The route's residual has since been \emph{built}. The polygamma theory Mathlib
+lacked is now in the kernel from the ground up: the Gauss--Weierstrass digamma
+series (\texttt{digamma\_series}, obtained by log-differentiating the Weierstrass
+product $s\,e^{\gamma s}\prod(1+s/n)e^{-s/n} = 1/\Gamma$, with $\gamma$ pinned by
+Mathlib's harmonic-minus-log limit), the trigamma value $\psi'(\tfrac12) = \pi^2/2$
+(\texttt{deriv\_digamma\_one\_half}, its series summed via Basel), and the higher
+$\psi^{(k)}(\tfrac12)$ as exact $\zeta$-value data. A Fa\`a di Bruno expansion of
+the composition and a Leibniz rule for iterated derivatives---both filling their
+own Mathlib gaps---then assemble the Archimedean coefficient in closed form
+(\texttt{taylorCoeff\_Gamma}\(\mathbb{R}\)\texttt{\_leibniz}), and the Li coefficient itself splits, as a
+kernel theorem, into its exact parts:
+\[
+  \lambda_n = \texttt{taylorCoeff}(\mathrm{id})_n
+    + \texttt{taylorCoeff}(H)_n
+    + \texttt{taylorCoeff}(\Gamma_{\mathbb R})_n
+\]
+(\texttt{taylorCoeff\_riemannXi\_split}, with $H=(s-1)\zeta$ the analytic
+$\zeta$-companion at $s=1$), the last summand being the closed polygamma data. This
+is the exact, finite coefficient---built, not asserted.
+
+What that leaves is a single, sharper residual: the \emph{growth} of this
+now-explicit sequence, $\lambda_n \sim (n/2)\log n$. That is no longer an absent
+complex asymptotic on a growing contour, nor a theory to build---it is one named
+asymptotic estimate of a known real sequence of $\zeta$-value constants, and it is
+the one place the zero density $dN(T) \sim (1/2\pi)\log(T/2\pi)$ would become
+load-bearing. We have the exact coefficient; we do not have---and do not claim---its
+asymptotic. As everywhere in this section, \texttt{conjecture1\_proved = False}:
+nothing here proves or approaches RH.
+
 For completeness we note one boundary item we deliberately keep out of the
 verified list, stated as it is: a Borel--Carath\'eodory theorem is present in the
 development but is a \emph{draft}---its constant is not sharp, it is not
 axiom-guarded, and it is not yet wired into the region argument, so we do not lean
 on it. We flag it rather than let it blur into the verified results above.
 
-The methodological point for this paper is that the same
-untrusted-generator/trusted-kernel discipline that handled a combinatorial
-extremal problem also produces honest analytic results---and, just as important,
-makes it easy to state exactly how strong they are and are not.
+\subsection{Directions: the uniformization axes}
+
+Every classical route to the Riemann Hypothesis supplies a \emph{uniform
+object} together with an equivalence $\mathrm{RH}\Leftrightarrow(\text{the object
+holds uniformly})$: positivity of every Keiper--Li coefficient $\lambda_n$
+(Li 1997; Bombieri--Lagarias 1999), hyperbolicity of every Jensen polynomial
+$J^{d,n}_\gamma$ (P\'olya 1927; Griffin--Ono--Rolen--Zagier 2019), positivity of
+the Weil functional on the whole test space (Weil 1952; Bombieri 2000), a
+zero-free half-strip reaching $\mathrm{Re}=1/2$, vanishing of the
+Nyman--Beurling distance $d_N\to 0$ (Beurling 1955; B\'aez-Duarte 2003), or
+self-adjointness of a Hilbert--P\'olya operator. In each case the equivalence
+factors as \emph{finite faces plus an infinite quantifier}: a certificate-
+compilation engine (untrusted generator, trusted kernel) can discharge the
+finite faces---individual rungs, discriminant/Gram/PSD instances, finite-height
+identities---but the completion is an infinite conjunction or uniform-in-parameter
+statement whose discharge \emph{is} RH. This is the honesty theorem: a complete
+uniform certificate exists if and only if RH holds. The six axes are one wall in
+six coordinate systems---height-universality, degree-exhaustion, cone-exhaustion,
+basis-exhaustion, and spectral-realization---and the confirmed partial results
+(Freitas' infinitely-many-negative-$\lambda_n$; GORZ's ineffective threshold
+$n_0(d)$ worsening as $d\to\infty$; the $\log T/T$ Weil tail budget; Burnol's
+unconditional positive lower bound on $d_N$) show the wall is intrinsic to each
+system: changing coordinates changes only what the infinite quantifier ranges
+over, never its cardinality. As \emph{program directions}, the highest-value
+targets for finite kernel-checked certificate work are the two axes whose rungs
+are decidable and shovel-ready: Jensen--P\'olya hyperbolicity (each
+$J^{d,n}$ a discriminant/Hermite-PSD certificate, extending the
+$d\le 9\times10^{24}$ unconditional range) and finite-window Weil positivity
+(reduced by recent work to the PSD-ness of a single explicit Gram matrix,
+with a two-sided certification calculus over a certified archimedean-tail
+budget). We stress the ceiling explicitly: none of these routes closes RH, each
+route's completion is itself the open problem, and $\texttt{conjecture1\_proved}
+= \texttt{False}$. The contribution is a verified ladder of finite rungs and the
+certification calculus on top of them---never the uniform object, which is RH.
+
+The methodological point is that the same untrusted-generator/trusted-kernel
+discipline makes it easy to state exactly how strong these results are and are
+not. The same discipline applies well beyond the zeta function---to a still-open
+extremal-combinatorics problem and a proof-complexity lower bound (mathematics
+due to others)---reported separately~\cite{telperion-companion}.
