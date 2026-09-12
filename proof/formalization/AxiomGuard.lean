@@ -84,6 +84,7 @@ import R3Cert.R47HnormFalse52
 import R3Cert.R47HnormMulti
 import R3Cert.R47HwhLeafDecomp
 import R3Cert.R47HwhPieceDecomp
+import R3Cert.R47HwhAdjDecomp
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -414,3 +415,9 @@ import R3Cert.R47HwhPieceDecomp
 #print axioms R3Cert.Step3.hwh_piece_decomp
 #print axioms R3Cert.Step3.piece_move_monotone
 #print axioms R3Cert.Step3.hwh_piece_decomp_leaf
+
+-- Adjacent-p,w leaf decomposition (2026-09-11): the p~w case; identity + B2adj>=0 (adjacent counting
+-- P11<=(a-2)(b-1)P00) + monotonicity. Open input again B1>=0.
+#print axioms R3Cert.Step3.hwh_adj_decomp
+#print axioms R3Cert.Step3.B2adj_nonneg
+#print axioms R3Cert.Step3.adj_move_monotone

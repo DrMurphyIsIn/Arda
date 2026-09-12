@@ -186,6 +186,21 @@ stronger bound that does NOT hold unconditionally), so monotonicity uses the ful
 (`piece_move_monotone`). This extends coverage to all piece classes; the open core (`B1`-type existence)
 is unchanged.
 
+### Adjacent `p ~ w` case (mechanical coverage)
+
+The leaf/piece decompositions above assume `p,w` non-adjacent. `hwh_adj_decomposition.py` +
+`R3Cert/R47HwhAdjDecomp.lean` cover the ADJACENT case: `G = T - leaf` contains the edge `p-w`; a matching
+using it contributes `Z(H) = P00` (before `P00/(ab)`, after `P00/((a-1)(b+1))`). Over the P-sums restricted
+to matchings NOT using `p-w`:
+
+```
+(AobjAfter - AobjBefore) * a(b+1) = (a+b+1)*B1 + (a-b-1)*B2adj,   B2adj = P00 - (P00+P11)/(b(a-1)).
+```
+
+Verified exact (0 mismatches, 5940 adjacent leaf-moves). `B2adj >= 0` is provable (adjacent counting
+`q != w, r != p` gives `P11 <= (a-2)(b-1) P00`, hence `P00+P11 <= (a-1)b P00`) -- 0 counterexamples.
+Kernel-clean `hwh_adj_decomp`, `B2adj_nonneg`, `adj_move_monotone`. The open input is again `B1 >= 0`.
+
 ## Research attempt on `B1` existence: every natural certificate FAILS
 
 Attacking the `B1`-existence conjecture as a research problem, all standard certificate strategies were
