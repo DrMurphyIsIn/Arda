@@ -2948,6 +2948,10 @@
    "secs": 44.2,
    "status": "ok"
   },
+  "1d4000000_3999999d4000000_24031_24062": {
+   "error": "ValueError: run_box_turing: zero in ball-poke sliver of [24031,24062] (poke=0.0744); re-plan the band edge",
+   "status": "refused"
+  },
   "1d4000000_3999999d4000000_24062_24094": {
    "density": 1.0,
    "n": 43,
@@ -2980,6 +2984,10 @@
    "secs": 44.7,
    "status": "ok"
   },
+  "1d4000000_3999999d4000000_24188_24219": {
+   "error": "ValueError: run_box_turing: zero in ball-poke sliver of [24188,24219] (poke=0.0744); re-plan the band edge",
+   "status": "refused"
+  },
   "1d4000000_3999999d4000000_24219_24250": {
    "density": 1.0,
    "n": 40,
@@ -2987,6 +2995,10 @@
    "route": "t5",
    "secs": 43.9,
    "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24250_24281": {
+   "error": "ValueError: run_box_turing: zero in ball-poke sliver of [24250,24281] (poke=0.0744); re-plan the band edge",
+   "status": "refused"
   },
   "1d4000000_3999999d4000000_24281_24312": {
    "density": 1.0,
@@ -3026,6 +3038,486 @@
    "prec": 300,
    "route": "t5",
    "secs": 39.5,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24438_24469": {
+   "density": 1.0,
+   "n": 40,
+   "prec": 300,
+   "route": "t5",
+   "secs": 38.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24469_24500": {
+   "error": "ValueError: run_box_turing: zero in ball-poke sliver of [24469,24500] (poke=0.0744); re-plan the band edge",
+   "status": "refused"
+  },
+  "1d4000000_3999999d4000000_24500_24531": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 38.0,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24531_24562": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 39.0,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24562_24594": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 39.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24594_24625": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.0,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24625_24656": {
+   "error": "ValueError: run_box_turing: zero in ball-poke sliver of [24625,24656] (poke=0.0744); re-plan the band edge",
+   "status": "refused"
+  },
+  "1d4000000_3999999d4000000_24656_24688": {
+   "density": 1.0,
+   "n": 43,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.3,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24688_24719": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 39.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24719_24750": {
+   "density": 1.0,
+   "n": 40,
+   "prec": 300,
+   "route": "t5",
+   "secs": 39.3,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24750_24781": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24781_24812": {
+   "error": "ValueError: run_box_turing: zero in ball-poke sliver of [24781,24812] (poke=0.0744); re-plan the band edge",
+   "status": "refused"
+  },
+  "1d4000000_3999999d4000000_24812_24844": {
+   "density": 1.0,
+   "n": 43,
+   "prec": 300,
+   "route": "t5",
+   "secs": 41.9,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24844_24875": {
+   "density": 1.0,
+   "n": 40,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.2,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24875_24906": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24906_24938": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 41.5,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24938_24969": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.2,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_24969_25000": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 39.9,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25000_25031": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25031_25062": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.2,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25062_25094": {
+   "error": "ValueError: run_box_turing: zero in ball-poke sliver of [25062,25094] (poke=0.0721); re-plan the band edge",
+   "status": "refused"
+  },
+  "1d4000000_3999999d4000000_25094_25125": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 42.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25125_25156": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.7,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25156_25188": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 42.5,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25188_25219": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 41.0,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25219_25250": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.6,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25250_25281": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 41.7,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25281_25312": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 42.0,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25312_25344": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 43.6,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25344_25375": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 42.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25375_25406": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 42.9,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25406_25438": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 43.7,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25438_25469": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 41.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25469_25500": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 41.5,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25500_25531": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 42.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25531_25562": {
+   "error": "ValueError: run_box_turing: zero in ball-poke sliver of [25531,25562] (poke=0.0744); re-plan the band edge",
+   "status": "refused"
+  },
+  "1d4000000_3999999d4000000_25562_25594": {
+   "error": "ValueError: run_box_turing: zero in ball-poke sliver of [25562,25594] (poke=0.0721); re-plan the band edge",
+   "status": "refused"
+  },
+  "1d4000000_3999999d4000000_25594_25625": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 40.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25625_25656": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 39.5,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25656_25688": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 38.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25688_25719": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 36.8,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25719_25750": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 35.6,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25750_25781": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 35.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25781_25812": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 34.2,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25812_25844": {
+   "density": 1.0,
+   "n": 43,
+   "prec": 300,
+   "route": "t5",
+   "secs": 25.2,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25844_25875": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 24.8,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25875_25906": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 24.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25906_25938": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 24.0,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25938_25969": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 23.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_25969_26000": {
+   "density": 1.0,
+   "n": 40,
+   "prec": 300,
+   "route": "t5",
+   "secs": 22.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26000_26031": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 22.2,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26031_26062": {
+   "density": 1.0,
+   "n": 40,
+   "prec": 300,
+   "route": "t5",
+   "secs": 22.0,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26062_26094": {
+   "density": 1.0,
+   "n": 43,
+   "prec": 300,
+   "route": "t5",
+   "secs": 23.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26094_26125": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 22.2,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26125_26156": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 22.5,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26156_26188": {
+   "density": 1.0,
+   "n": 43,
+   "prec": 300,
+   "route": "t5",
+   "secs": 23.6,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26250_26281": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 22.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26281_26312": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 23.0,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26344_26375": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 22.7,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26375_26406": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 22.4,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26438_26469": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 23.1,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26469_26500": {
+   "density": 1.0,
+   "n": 41,
+   "prec": 300,
+   "route": "t5",
+   "secs": 23.0,
+   "status": "ok"
+  },
+  "1d4000000_3999999d4000000_26500_26531": {
+   "density": 1.0,
+   "n": 42,
+   "prec": 300,
+   "route": "t5",
+   "secs": 23.3,
    "status": "ok"
   },
   "1d4000000_3999999d4000000_4000_4040": {
