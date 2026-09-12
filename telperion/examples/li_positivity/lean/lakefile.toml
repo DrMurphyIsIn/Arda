@@ -359,3 +359,6 @@ name = "ZetaLogBound"
 
 [[lean_lib]]
 name = "RvMBacklundAux"
+
+[[lean_lib]]
+name = "RvMBacklundIVT"

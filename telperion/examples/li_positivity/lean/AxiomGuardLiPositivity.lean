@@ -66,6 +66,7 @@ import RvMCompanionBraggLimit
 import ZetaLogBound
 import DlvpZetaRateEffective
 import RvMBacklundAux
+import RvMBacklundIVT
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -341,3 +342,9 @@ import RvMBacklundAux
 -- analytic off the poles z=1∓iT. Foundation for the sign-change/Jensen zero-count bound. conjecture1_proved=False.
 #print axioms Backlund.backlundAux_ofReal
 #print axioms Backlund.backlundAux_analyticAt
+
+-- Backlund S(T)=O(log T), PR 2: sign changes of Re ζ yield real zeros of F_T (IVT).
+-- backlundAux_im (real on axis); continuous_backlundAux_line (T≠0, poles 1∓iT off the axis);
+-- backlundAux_root_of_sign_change (opposite signs ⟹ real zero of F_T). conjecture1_proved=False.
+#print axioms Backlund.backlundAux_root_of_sign_change
+#print axioms Backlund.continuous_backlundAux_line
