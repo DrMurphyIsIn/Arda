@@ -150,6 +150,11 @@ def test_scaffold_package_toolchain_and_lakefile(tmp_path):
     lakefile_text = paths["lakefile.toml"].read_text()
     assert manifest.environment_mathlib_rev in lakefile_text
     assert "Statements" in lakefile_text
+    # Both must be present or deep-lean is silently vacuous / lake update fails
+    assert 'defaultTargets = ["Statements"]' in lakefile_text, \
+        "defaultTargets missing -- lake build would be a no-op"
+    assert 'scope = "leanprover-community"' in lakefile_text, \
+        "mathlib scope missing -- lake update would fail"
 
 
 # ---------------------------------------------------------------------------
