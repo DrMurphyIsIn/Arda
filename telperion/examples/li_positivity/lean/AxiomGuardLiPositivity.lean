@@ -83,6 +83,7 @@ import RvMBacklundS
 import RvMBacklundLogCont
 import RvMBacklundExplicit
 import RvMNTEffective
+import RvMNTCount
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -470,3 +471,10 @@ import RvMNTEffective
 --   smooth main term 1+θ/π within explicit O(log T); error = riemannS T bounded by PR A1. Composes
 --   xiTele_winding_eq_RvM (N=1+θ/π+S) with riemannS_abs_le_log_explicit. conjecture1_proved=False.
 #print axioms Backlund.nt_effective_bound
+
+-- Arc A (effective RvM), PR A3: the effective bound on the box xi-zero count.
+-- nt_count_effective_bound (T)(hT:4≤T)(c R N)(hbox_ball)(4 Icc edge nonvanishings)(hin strict
+--   interior)(hζne)(hwind=2πiN): ∃ s d, zeros⊆s ∧ Σd=N ∧ |(Σd:ℝ) − 1 − θ/π| ≤ bound. Composes
+--   xiTele_count_eq_winding (box zero count = N) with nt_effective_bound. The zero count is derived
+--   from the boundary winding, never assumed. conjecture1_proved=False.
+#print axioms Backlund.nt_count_effective_bound
