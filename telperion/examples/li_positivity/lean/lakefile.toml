@@ -389,3 +389,6 @@ name = "RvMBacklundConfineNonstrict"
 
 [[lean_lib]]
 name = "RvMBacklundSignClosed"
+
+[[lean_lib]]
+name = "RvMBacklundCount"
