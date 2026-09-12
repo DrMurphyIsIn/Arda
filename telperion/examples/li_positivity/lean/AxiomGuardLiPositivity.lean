@@ -75,6 +75,7 @@ import RvMBacklundSignConst
 import RvMBacklundFinite
 import RvMBacklundOrder
 import RvMBacklundConfineNonstrict
+import RvMBacklundSignClosed
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -412,3 +413,10 @@ import RvMBacklundConfineNonstrict
 -- Needed because partition endpoints ARE zeros (Re=0). conjecture1_proved=False.
 #print axioms Backlund.argChangeHoriz_abs_le_pi_of_re_nonneg
 #print axioms Backlund.argChangeHoriz_abs_le_pi_of_re_sign'
+
+-- Backlund S(T)=O(log T), PR 4c (sign-on-closed): bridge 4c-order -> 4c-nonstrict.
+-- re_one_sign_of_ne_zero_Ioo (g)(x0 x1)(hlt:x0<x1)(hcont: g cont on Icc)(hopen: g≠0 on Ioo): 0≤g on Icc
+--   OR g≤0 on Icc. A continuous fn nonzero on the OPEN interval is one sign on the CLOSED (endpoints are
+--   sign-compatible limits) -- else IVT (intermediate_value_uIcc between midpoint & opposite-sign point)
+--   forces a zero strictly inside. Feeds 4c-nonstrict (endpoints = zeros ok). conjecture1_proved=False.
+#print axioms Backlund.re_one_sign_of_ne_zero_Ioo
