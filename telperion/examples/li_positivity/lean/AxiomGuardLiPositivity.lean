@@ -445,3 +445,11 @@ import RvMBacklundCountJensen
 --   positive analytic order), so count ≤ card(support) ≤ Σᶠ divisor (≥1 on support) ≤ Jensen (PR 3b).
 --   conjecture1_proved=False.
 #print axioms Backlund.zeta_argChangeHoriz_abs_le_log
+
+-- Backlund S(T)=O(log T), PR 6: discharging hlogcont.
+-- continuousOn_logDeriv_zeta_segment (hT:4≤T)(hζne): logDeriv ζ continuous on [1/2,2]+iT -- derived from
+--   ζ-analyticity (AnalyticOnNhd on {≠1}, .deriv, .continuousOn, comp path) + ζ≠0 (ContinuousOn.div).
+-- riemannS_abs_le_log_of_ne_zero (hT:4≤T)(hζne): |riemannS T| ≤ log((4T+19)/‖F_T 2‖)/log(7/6)+2 --
+--   the SLIMMED S(T)=O(log T), carrying ONLY hζne. conjecture1_proved=False.
+#print axioms Backlund.continuousOn_logDeriv_zeta_segment
+#print axioms Backlund.riemannS_abs_le_log_of_ne_zero
