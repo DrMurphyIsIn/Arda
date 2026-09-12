@@ -20,6 +20,7 @@ from telperion.missions.registry import (  # noqa: E402
 from telperion.missions.statements import write_statement  # noqa: E402
 from telperion.missions.verify import (  # noqa: E402
     GateError,
+    _compute_closures,
     normalize_lean,
     statement_matches,
     refutation_matches,
@@ -309,3 +310,174 @@ def test_normalize_strips_comments_and_sorry():
     result2 = normalize_lean(raw2)
     assert ":= sorry" not in result2
     assert "theorem bar" in result2
+
+
+# ---------------------------------------------------------------------------
+# C2: verify_campaign is read-only — stale closure_clean must be reported
+#     but NOT repaired on disk
+# ---------------------------------------------------------------------------
+
+def test_verify_campaign_is_readonly_stale_closure_reported_not_repaired(tmp_path):
+    root = tmp_path / "campaign"
+    root.mkdir()
+    (root / "nodes").mkdir()
+    manifest = _manifest()
+    from telperion.missions.schema import save_manifest
+    save_manifest(manifest, root / "mission.toml")
+
+    # Node B: proved direct, clean
+    node_b = Node(
+        name="Ro.b", title="B", kind="lemma", status="proved",
+        depends_on=(), statement_module="Statements.Ro_b",
+        proof=Proof(artifact="proof/Ro_b.lean", artifact_kind="lean_module",
+                    via="direct", closure_clean=True),
+        created="2026-09-11", updated="2026-09-11",
+    )
+    save_node(node_b, root / "nodes" / "Ro_b.toml")
+
+    # Node C: open — NOT proved
+    node_c = Node(
+        name="Ro.c", title="C", kind="lemma", status="open",
+        depends_on=(), statement_module="Statements.Ro_c",
+        created="2026-09-11", updated="2026-09-11",
+    )
+    save_node(node_c, root / "nodes" / "Ro_c.toml")
+
+    # Node A: proved via reduction of B+C; closure_clean=True is STALE
+    # (C is not proved, so the true value should be False)
+    stmt_a = "theorem ro_a : True"
+    artifact_path = root / "proof" / "Ro_a.lean"
+    artifact_path.parent.mkdir(parents=True, exist_ok=True)
+    artifact_path.write_text(f"{stmt_a} := by trivial\n")
+
+    node_a = Node(
+        name="Ro.a", title="A", kind="lemma", status="proved",
+        depends_on=("Ro_b", "Ro_c"),
+        statement_module="Statements.Ro_a",
+        proof=Proof(artifact="proof/Ro_a.lean", artifact_kind="lean_module",
+                    via="reduction", closure_clean=True),  # stale: should be False
+        created="2026-09-11", updated="2026-09-11",
+    )
+    save_node(node_a, root / "nodes" / "Ro_a.toml")
+
+    # Write statement file so regen_diff passes for Ro_a
+    write_statement(root, node_a, stmt_a, manifest)
+
+    report = verify_campaign(root)
+
+    # The stale closure_clean flag must appear as an error
+    errors_combined = "\n".join(report.errors)
+    assert "Ro_a" in errors_combined, f"Expected Ro_a closure error; got: {report.errors}"
+    assert "closure_clean" in errors_combined
+
+    # On-disk Ro_a must still carry the stale closure_clean=True (not repaired)
+    on_disk = load_node(root / "nodes" / "Ro_a.toml")
+    assert on_disk.proof is not None
+    assert on_disk.proof.closure_clean is True, (
+        "verify_campaign must NOT repair closure_clean on disk (it is read-only)"
+    )
+
+
+# ---------------------------------------------------------------------------
+# I1: grant_status raises GateError on empty normalized statement
+# ---------------------------------------------------------------------------
+
+def test_gate_raises_on_empty_normalized_statement(tmp_path):
+    root = tmp_path / "campaign"
+    root.mkdir()
+    (root / "nodes").mkdir()
+    manifest = _manifest()
+    from telperion.missions.schema import save_manifest
+    save_manifest(manifest, root / "mission.toml")
+
+    # Statement file contains ONLY a header line + import lines — no proposition
+    stmt_imports_only = "import Mathlib.Tactic"
+    node = _open_node_with_proof("Test.empty", artifact="proof/Test_empty.lean")
+    save_node(node, root / "nodes" / "Test_empty.toml")
+    # Write statement file with imports-only body so _normalized_statement returns ""
+    write_statement(root, node, stmt_imports_only, manifest)
+
+    artifact_path = root / "proof" / "Test_empty.lean"
+    artifact_path.parent.mkdir(parents=True, exist_ok=True)
+    artifact_path.write_text("-- proof\ntheorem something : True := by trivial\n")
+
+    campaign = load_campaign(root)
+    with pytest.raises(GateError, match="normalized statement is empty"):
+        grant_status(campaign, "Test_empty")
+
+    # Status must remain open
+    assert load_node(root / "nodes" / "Test_empty.toml").status == "open"
+
+
+# ---------------------------------------------------------------------------
+# I2: refutation_matches fallback uses the proposition, not the module name
+# ---------------------------------------------------------------------------
+
+def test_refutation_matches_fallback_uses_proposition(tmp_path):
+    root = tmp_path / "campaign"
+    root.mkdir()
+    (root / "nodes").mkdir()
+    manifest = _manifest()
+    from telperion.missions.schema import save_manifest
+    save_manifest(manifest, root / "mission.toml")
+
+    prop = "theorem ref_prop : 1 = 2"
+    node = Node(
+        name="Test.ref_fallback",
+        title="Refutation fallback test",
+        kind="lemma",
+        status="open",
+        depends_on=(),
+        statement_module="Statements.Test_ref_fallback",
+        # No refutation_statement set -> fallback path
+        created="2026-09-11", updated="2026-09-11",
+    )
+    save_node(node, root / "nodes" / "Test_ref_fallback.toml")
+    write_statement(root, node, prop, manifest)
+
+    norm_prop = normalize_lean(prop)
+
+    # Artifact with ¬ AND the normalized proposition inline (not in a comment) -> matches.
+    # norm_prop = "theorem ref_prop : 1 = 2"; we embed it literally in the proof body
+    # so normalize_lean preserves it.
+    artifact_match = f"theorem refutes_it : ¬(1 = 2) := by simp\naxiom base : {norm_prop}"
+    assert refutation_matches(artifact_match, node, root) is True
+
+    # Artifact with proposition but NO ¬ -> does not match
+    artifact_no_neg = f"theorem no_neg : {norm_prop} := by simp\n"
+    assert refutation_matches(artifact_no_neg, node, root) is False
+
+    # Sanity: module name "Statements.Test_ref_fallback" must NOT be the criterion.
+    # The module name alone (with ¬ present) should NOT satisfy the prop-containment check.
+    artifact_module_name_only = "theorem x : ¬Statements.Test_ref_fallback := by simp"
+    assert refutation_matches(artifact_module_name_only, node, root) is False
+
+
+# ---------------------------------------------------------------------------
+# I3: _normalized_statement handles blank first line correctly, and matches
+#     write_statement output
+# ---------------------------------------------------------------------------
+
+def test_normalized_statement_matches_write_statement_output(tmp_path):
+    root = tmp_path / "campaign"
+    root.mkdir()
+    manifest = _manifest()
+
+    stmt = "theorem i3_check (n : Nat) : n = n"
+    node = Node(
+        name="Test.i3", title="I3 check", kind="lemma", status="open",
+        depends_on=(), statement_module="Statements.Test_i3",
+        created="2026-09-11", updated="2026-09-11",
+    )
+    write_statement(root, node, stmt, manifest)
+
+    from telperion.missions.verify import _normalized_statement
+    result = _normalized_statement(node, root)
+
+    # Must contain the theorem declaration (sorry stripped)
+    assert "theorem i3_check" in result
+    assert ":= by sorry" not in result
+
+    # Module name must NOT appear as the result
+    assert result != "Statements.Test_i3"
+    assert result != normalize_lean("Statements.Test_i3")
