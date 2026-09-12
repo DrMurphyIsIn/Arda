@@ -88,6 +88,7 @@ import RvMRoutePFalsify
 import RvMNTLadder
 import AllZeros_h4000
 import StripClear
+import RvMArchElemSeries
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -505,3 +506,12 @@ import StripClear
 #print axioms Backlund.nt_effective_bound_of_ladder
 #print axioms AllZeros_h4000.all_nontrivial_zeros_up_to_height_4000_of_bands
 #print axioms StripClear.height_floor_of_box_certs
+
+-- Arc B (archimedean Li growth), PR B1a: the ELEMENTARY series identity.
+-- logDeriv_phi_Gammaℝ_eq_elem (hz:‖z‖<1/2): logDeriv (Γℝ∘M) z = −(γ+logπ)/2·M² − M + Σ'_j
+--   [M²/(2(j+1)) − M/((2j+3)−(2j+2)z)], M=(1−z)⁻¹ -- the polygamma content of the archimedean
+--   factor as ONE elementary series of rational functions (logDeriv_phi + logDeriv_Gammaℝ_eq +
+--   digamma_series, denominators cleared through the Mobius map). Each summand's n-th Taylor
+--   coefficient is explicit, making taylorCoeff Γℝ n ~ (n/2)log n a harmonic-number statement
+--   (growth = later PRs). Γ-function calculus only. conjecture1_proved=False.
+#print axioms RvMWeierstrass.logDeriv_phi_Gammaℝ_eq_elem
