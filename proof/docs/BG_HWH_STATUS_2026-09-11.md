@@ -339,9 +339,18 @@ exact), and under `m_i = t_i+2` the numerator `N` has ALL NON-NEGATIVE COEFFICIE
 `N >= 0` -- `symstar3_move_certificate` (kernel-clean). This covers the non-balanced symmetric residual
 variants (`[4,3,3]`, `[5,4,4]`, `[5,3,2]`, ...) at hub-count 3, not just the balanced `ST(3,m)`.
 
-Remaining scope: balanced `ST(k,m)` (all `k`) + general 3-hub are certified. General non-balanced `k >= 4`
-follows the same de-branching move + shifted-nonneg-coefficient method (the move is verified monotone on all
-non-balanced multi-stars tested); its `k`-uniform closed form is the natural next increment.
+**k-UNIFORM non-balanced certificate (2026-09-12)** (`R3Cert/R47HwhSymStarGenCert.lean`): the WHOLE family
+is now certified -- any centre degree `k >= 3`, ARBITRARY hub sizes `m_i >= 2`, any number of spectators.
+Key structural fact (verified exact): the spectators enter `Aobj` only through the symmetric functions
+`S = prod_(j>=3) alpha_j` and `S1 = sum_(j>=3) prod-all-but-one`, and the move's `Aobj` change is LINEAR in
+them: `DeltaAobj = S*coeff_S + S1*coeff_S1` with `coeff_S, coeff_S1` depending ONLY on `m1,m2,k`. Then:
+- `coeff_S1 >= 0` (`symstar_gen_coeffS1_nonneg`);
+- every `alpha_j <= 2` gives `S1 >= S*(k-2)/2`, so `DeltaAobj >= S*G`, `G = coeff_S + (k-2)/2*coeff_S1`;
+- `G >= 0` (`symstar_gen_G_nonneg`, `2G` all-nonneg-coeff after `(m1,m2,k)=(u+2,v+2,w+3)`);
+- assembly `symstar_gen_move_monotone`: `S >= 0, S1 >= S*hk, coeff_S1 >= 0, G >= 0 => DeltaAobj >= 0`.
+All kernel-clean. The move is also defect-reducing (verified). So the de-branching move is `Aobj`-monotone,
+size-preserving and defect-reducing on the ENTIRE symmetric multi-star family -- the localized open core of
+`hwh` is now UNIFORMLY closed for every centre-plus-hubs tree with hubs of size `>= 2`.
 
 ## Honest verdict / what a proof needs
 

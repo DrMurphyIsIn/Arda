@@ -90,6 +90,7 @@ import R3Cert.R47HwhB1Partial
 import R3Cert.R47MatchingSum
 import R3Cert.R47HwhSymStarCert
 import R3Cert.R47HwhSymStar3Cert
+import R3Cert.R47HwhSymStarGenCert
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -457,3 +458,8 @@ import R3Cert.R47HwhSymStar3Cert
 #print axioms R3Cert.Step3.symstar_move_certificate
 -- Non-balanced extension (2026-09-12): general 3-hub multi-star (arbitrary m_i>=2), via all-nonneg-coeff shift.
 #print axioms R3Cert.Step3.symstar3_move_certificate
+-- k-UNIFORM non-balanced certificate (2026-09-12): de-branching move Aobj-monotone on EVERY multi-star
+-- (any k>=3, any hub sizes m_i>=2, any spectators), via coeff_S1>=0, G>=0 (shifted nonneg coeffs) + assembly.
+#print axioms R3Cert.Step3.symstar_gen_coeffS1_nonneg
+#print axioms R3Cert.Step3.symstar_gen_G_nonneg
+#print axioms R3Cert.Step3.symstar_gen_move_monotone
