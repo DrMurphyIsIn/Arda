@@ -281,18 +281,127 @@ def _box_tag(re_lo, re_hi, im_lo, im_hi) -> str:
     return s.replace("-", "m")
 
 
-def _online_sweep_zero_count(im_lo, im_hi, prec: int) -> int:
+def _online_sweep_zero_count_platt(im_lo, im_hi, prec: int) -> int:
+    """Platt-hinted on-line sweep: rigorous zero inventory -> midpoint sampling.
+
+    Uses FLINT's Platt machinery (arb_platt.zeros_in_interval) to pin N and
+    enclose every zero ordinate in [im_lo, im_hi], then certifies signs of
+    Lambda at the MIDPOINTS between consecutive zero enclosures (plus the two
+    endpoints) via `enclose_lambda` — deterministic close-pair handling with
+    ~n+1 evaluations instead of a ~1.6n grid + density retries.
+
+    TRUST: the Platt inventory is a HINT.  The returned count is derived
+    entirely from the enclose_lambda sign boxes (the existing documented Arb
+    input class); a wrong hint produces a mismatch error, never a wrong count."""
+    from telperion.arb_platt import PLATT_AVAILABLE, zeros_in_interval
+    if not PLATT_AVAILABLE:
+        raise RuntimeError("platt machinery unavailable")
+    im_lo = Fraction(im_lo)
+    im_hi = Fraction(im_hi)
+    zs = zeros_in_interval(im_lo, im_hi, prec=max(prec, 96))
+    pts = [im_lo]
+    for (_l1, h1), (l2, _h2) in zip(zs, zs[1:]):
+        m = (Fraction(h1) + Fraction(l2)) / 2
+        mm = m.limit_denominator(10 ** 6)
+        if not (h1 < mm < l2):
+            mm = m
+        pts.append(mm)
+    pts.append(im_hi)
+    samples = []
+    for t in pts:
+        (lo, hi), _im = enclose_lambda("1/2", str(t), prec)
+        samples.append((t, (lo, hi)))
+    n = sign_change_count(samples)
+    if n != len(zs):
+        raise RuntimeError(
+            f"platt sweep mismatch: {n} sign changes vs {len(zs)} inventoried zeros"
+        )
+    return n
+
+
+def _online_sweep_zero_count_grid(im_lo, im_hi, prec: int) -> int:
+    """FFT-amortized on-line sweep: one Platt multieval grid for the whole band.
+
+    Program Anduril C1.  Calls `arb_platt.platt_grid` once -- an FFT-amortized
+    scaled-Lambda evaluation at a uniform grid of N = A*B points covering
+    [im_lo, im_hi] (spacing 1/A = 0.25 by default) -- and counts the sign changes
+    of the (sign-preserving, positively scaled) Lambda boxes.  This replaces N
+    per-point acb evaluations with a SINGLE DFT call, removing the residual
+    sqrt(T) per-point cost.
+
+    CLOSE-PAIR FALLBACK: a coarse grid can miss a pair of zeros closer than the
+    grid spacing (both sign changes collapse into one same-sign step).  We
+    cross-check the grid sign-change count against the RIGOROUS zero count
+    `N(im_hi) - N(im_lo)` (each edge pinned by `zeta_nzeros`, a cheap analytic
+    Backlund/Turing count -- NOT zero-finding, ~microseconds; the same trust-hint
+    class the per-point path already relies on).  If they disagree, OR any grid
+    box straddles 0 (sign-indefinite), we fall back to
+    `_online_sweep_zero_count_platt` (adaptive midpoint sampling between
+    inventoried zeros -- deterministic close-pair resolution).
+
+    TRUST: the returned count is derived entirely from sign-definite Lambda boxes
+    (the documented Arb input class) and is accepted only when it equals the
+    rigorous edge N-difference; a wrong grid produces a fallback or a mismatch,
+    never a wrong count.  Grid values are the same Arb ball class as
+    `enclose_lambda`; nothing in the emitted Lean depends on them.
+    conjecture1_proved = False."""
+    import math as _m
+
+    from telperion.arb_platt import (
+        PLATT_GRID_AVAILABLE,
+        platt_grid,
+        zeta_nzeros,
+    )
+    if not PLATT_GRID_AVAILABLE:
+        raise RuntimeError("platt grid (scaled_lambda_vec) unavailable")
+    im_lo = Fraction(im_lo)
+    im_hi = Fraction(im_hi)
+    grid = platt_grid(im_lo, im_hi, prec=prec)
+    straddle = any(not (lo > 0 or hi < 0) for _t, (lo, hi) in grid)
+    n_grid = sign_change_count(grid)
+    # Rigorous edge N-difference cross-check (cheap: two analytic N(t) counts,
+    # each pinned to an integer -- no per-zero enclosure).
+    nlo_l, nlo_h = zeta_nzeros(im_lo, prec=max(prec, 96))
+    nhi_l, nhi_h = zeta_nzeros(im_hi, prec=max(prec, 96))
+    n_lo, n_hi = _m.floor(nlo_l), _m.floor(nhi_l)
+    pinned = (_m.floor(nlo_h) == n_lo and _m.floor(nhi_h) == n_hi)
+    n_true = n_hi - n_lo
+    if not pinned:
+        # Edge N not pinned to an integer -- cannot trust the N-difference target;
+        # defer entirely to the close-pair-safe per-point path.
+        return _online_sweep_zero_count_platt(im_lo, im_hi, prec)
+    if not straddle and n_grid == n_true:
+        return n_grid
+    # Ambiguous grid (a close pair collapsed into one step, or a sign-indefinite
+    # box).  Retry with denser grids -- still one FFT each, same trust class --
+    # before the (more expensive) per-point midpoint fallback.  Accept only a
+    # straddle-free count that matches the rigorous edge N-difference.
+    for spacing_den in (8, 16):
+        rgrid = platt_grid(im_lo, im_hi, prec=prec, spacing_den=spacing_den)
+        if any(not (lo > 0 or hi < 0) for _t, (lo, hi) in rgrid):
+            continue
+        if sign_change_count(rgrid) == n_true:
+            return n_true
+    # Grid could not disambiguate; per-interval midpoint logic (close-pair safe).
+    return _online_sweep_zero_count_platt(im_lo, im_hi, prec)
+
+
+def _online_sweep_zero_count(im_lo, im_hi, prec: int, density: float = 1.0) -> int:
     """Count on-line zeros of Lambda in [im_lo, im_hi] via a sign-change sweep on the critical line.
 
     Sample spacing is strictly below `pi / log(max(im_hi, 2))` (the mean zero spacing near height T
     is ~2*pi/log(T), so this resolves every zero).  Adaptively refines: if two consecutive
     sign-definite samples both have the same sign but the gap is large, the caller relies on the
-    dense spacing.  Returns the number of sign changes (distinct on-line zeros)."""
+    dense spacing.  Returns the number of sign changes (distinct on-line zeros).
+
+    `density > 1` shrinks the sample spacing by that factor — the close-pair re-sweep knob
+    (a pair of zeros closer than the mean spacing needs a denser grid to expose both sign
+    changes; the T=2000..4000 campaign cured all refusals by density ≤ 6)."""
     im_lo = Fraction(im_lo)
     im_hi = Fraction(im_hi)
     spacing_cap = math.pi / math.log(max(float(im_hi), 2.0))
     # Use 0.9 of the cap for a strict inequality margin.
-    step_target = spacing_cap * 0.9
+    step_target = spacing_cap * 0.9 / max(density, 1.0)
     n_steps = max(3, int(math.ceil(float(im_hi - im_lo) / step_target)) + 1)
     step = (im_hi - im_lo) / (n_steps - 1)
     samples = []
@@ -305,7 +414,7 @@ def _online_sweep_zero_count(im_lo, im_hi, prec: int) -> int:
 
 def run_box(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, winding_prec: int = 160,
             n_seed: int = 4, out_dir: Path | None = None, write: bool = True,
-            check: bool = False) -> str:
+            check: bool = False, density: float = 1.0) -> str:
     """Driver: compute the winding N, on-line N_line, edge non-vanishing for an arbitrary box, then
     emit (and optionally write) a Lean file instantiating `RHInBox.rh_in_box_of_certificate`.
 
@@ -326,7 +435,12 @@ def run_box(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, winding_prec: int = 
     n_total = wind.n
 
     # 2. On-line sign-change zero count N_line over [im_lo, im_hi].
-    n_line = _online_sweep_zero_count(il, ih, prec)
+    #    Platt-hinted midpoint sweep first (deterministic close pairs, fewer
+    #    evals); any failure falls back to the density-graded grid sweep.
+    try:
+        n_line = _online_sweep_zero_count_platt(il, ih, prec)
+    except Exception:
+        n_line = _online_sweep_zero_count(il, ih, prec, density)
     if n_line < 1:
         raise ValueError(
             f"run_box: on-line sweep resolved no zeros (N_line=0) in [{il},{ih}]; nothing to localize"
@@ -364,6 +478,94 @@ def run_box(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, winding_prec: int = 
         else:
             out_path.write_text(text, encoding="utf-8")
             print(f"wrote {out_path} ({len(text)} bytes)")
+    return text
+
+
+def run_box_turing(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, edge_prec: int = 160,
+                   out_dir: Path | None = None, write: bool = True) -> str:
+    """T5 driver: RvM edge-decomposition band certificate (no winding contour).
+
+    Computes the on-line count (Platt-hinted sweep), the five edge argument-change
+    enclosures (arb_edges), cross-checks the RvM-pinned integer against the line
+    count, verifies the ball-poke slivers hold no zeros (Platt inventory), and
+    emits RHInBoxT_<tag>.lean instantiating TuringBand.turing_band_on_line.
+
+    REFUSALS: pinned integer != line count; enclosure too wide to pin; a zero in
+    the ball-poke sliver (band edge must be re-planned)."""
+    import math as _m
+
+    from telperion.arb_edges import enclose_band_edges
+    from telperion.arb_platt import zeros_in_interval
+    from telperion.emit_turing_band import (
+        choose_ball_tight,
+        emit_turing_band_instantiation,
+    )
+
+    rl, rh, il, ih = (Fraction(v) for v in (re_lo, re_hi, im_lo, im_hi))
+    # C1: FFT-amortized grid sweep first (one Platt multieval for the whole
+    # band); on any failure fall back to the per-point Platt-hinted midpoint
+    # sweep (itself close-pair safe).  The grid path already self-falls-back to
+    # the midpoint sweep on a close-pair/straddle ambiguity, so a raised
+    # exception here means the grid entry point is unavailable, not a miscount.
+    try:
+        n_line = _online_sweep_zero_count_grid(il, ih, prec)
+    except Exception:
+        n_line = _online_sweep_zero_count_platt(il, ih, prec)
+    # persistent horizontal-edge cache: AH at height T is shared by the bands
+    # below and above T (each interior edge priced once across the campaign)
+    cache_dir = _OUT.parent.parent / "edges_cache"
+    cache_dir.mkdir(exist_ok=True)
+
+    def _cache_get(t):
+        p = cache_dir / f"ah_{str(t).replace('/', 'd')}_{edge_prec}.json"
+        if p.exists():
+            import json as _json
+            lo_s, hi_s = _json.loads(p.read_text())
+            return (Fraction(lo_s), Fraction(hi_s))
+        return None
+
+    def _cache_put(t, val):
+        import json as _json
+        p = cache_dir / f"ah_{str(t).replace('/', 'd')}_{edge_prec}.json"
+        tmp = p.with_suffix(".tmp")
+        tmp.write_text(_json.dumps([str(val[0]), str(val[1])]))
+        tmp.replace(p)
+
+    edges = enclose_band_edges(il, ih, prec=edge_prec, bot_cache=_cache_get(il))
+    if _cache_get(il) is None:
+        _cache_put(il, edges["ahb"])
+    _cache_put(ih, edges["aht"])
+    L = 2 * edges["av2"][0] + edges["aht"][0] - edges["ahb"][1] + edges["ag1"][0] + edges["ag2"][0]
+    H = 2 * edges["av2"][1] + edges["aht"][1] - edges["ahb"][0] + edges["ag1"][1] + edges["ag2"][1]
+    k = round((float(L) + float(H)) / 2 / (2 * _m.pi))
+    if k != n_line:
+        raise ValueError(
+            f"run_box_turing: RvM edge count {k} != on-line count {n_line} in [{il},{ih}]")
+    # ball-poke sliver check: no zero ordinate within `poke` outside the band
+    _cx, _cy, rsq = choose_ball_tight(-1, 2, il, ih)
+    poke = _m.sqrt(float(rsq)) - float(ih - il) / 2 + 1e-9
+    below = zeros_in_interval(il - 1, il)
+    above = zeros_in_interval(ih, ih + 1)
+    if any(float(hi_z) > float(il) - poke for _lo_z, hi_z in below) or \
+       any(float(lo_z) < float(ih) + poke for lo_z, _hi_z in above):
+        raise ValueError(
+            f"run_box_turing: zero in ball-poke sliver of [{il},{ih}] (poke={poke:.4f}); "
+            f"re-plan the band edge")
+    tag = _box_tag(rl, rh, il, ih)
+    cert_sink: dict = {}
+    text = emit_turing_band_instantiation(
+        n=n_line, re_lo=rl, re_hi=rh, im_lo=il, im_hi=ih, edges=edges, tag=tag,
+        cert_sink=cert_sink)
+    print(f"run_box_turing [{rl},{rh}]x[{il},{ih}]: RvM edge count N={k}, "
+          f"on-line N_line={n_line} (agree); emitted rh_in_box_{tag} (T5)")
+    if write:
+        import json as _json
+        out_path = (out_dir or _OUT.parent) / f"RHInBoxT_{tag}.lean"
+        out_path.write_text(text, encoding="utf-8")
+        # machine-readable certificate sidecar (statement_match audit input)
+        (out_path.with_suffix(".cert.json")).write_text(
+            _json.dumps(cert_sink, indent=1), encoding="utf-8")
+        print(f"wrote {out_path} ({len(text)} bytes) + cert.json sidecar")
     return text
 
 
@@ -405,7 +607,8 @@ def _parse_box_arg(box_str: str):
 
 
 def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int = 300,
-         box=None, height=None, empty_band=None) -> int:
+         box=None, height=None, empty_band=None, density: float = 1.0,
+         turing: bool = False) -> int:
     # Empty-band (zero-free) driver mode: winding N == 0 => box holds no zeta zero.
     if empty_band is not None:
         from telperion.driver_empty_band import run_empty_band
@@ -415,7 +618,10 @@ def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int 
     # Per-box driver mode: compute winding + on-line count, emit instantiation.
     if box is not None:
         rl, rh, il, ih = _parse_box_arg(box)
-        run_box(rl, rh, il, ih, prec=prec, check=check)
+        if turing:
+            run_box_turing(rl, rh, il, ih, prec=prec)
+        else:
+            run_box(rl, rh, il, ih, prec=prec, check=check, density=density)
         return 0
     if height is not None:
         # Shortcut for the critical strip box [2/5, 3/5] x [0, T].
@@ -483,6 +689,10 @@ if __name__ == "__main__":
                          "instantiating rh_in_box_of_certificate; refuses invalid/under-resolved boxes")
     ap.add_argument("--height", type=str, default=None,
                     help="per-box driver shortcut for the strip box [2/5,3/5] x [0,T]")
+    ap.add_argument("--density", type=float, default=1.0,
+                    help="on-line sweep density factor (>1 = denser close-pair re-sweep)")
+    ap.add_argument("--turing", action="store_true",
+                    help="T5 route: RvM edge-decomposition certificate (no winding contour)")
     ap.add_argument("--empty-band", type=str, default=None,
                     help="empty-band (zero-free) driver: sigma0,sigma1,T0,T1 (rationals). Computes "
                          "winding N, asserts N == 0, and emits NoZerosInBox_<tag>.lean certifying the "
@@ -499,4 +709,6 @@ if __name__ == "__main__":
         box=args.box,
         height=args.height,
         empty_band=args.empty_band,
+        density=args.density,
+        turing=args.turing,
     ))
