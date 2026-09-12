@@ -249,11 +249,17 @@ self-contained weighted-matching-sum theory `Zsum`/`ZsumAvoid` DISCHARGES the es
 `B2` hypothesis rather than assuming it: `ZsumAvoid_antitone` (deletion monotonicity -- avoiding more
 vertices never increases the nonneg-weighted matching sum, since those matchings are a subfamily),
 `B2_termwise` (`Z(H-q-r) <= Z(H)`), `B2_bound_of_terms` (a sum of `<= K` terms, each a coefficient in
-`[0,1]` times a value `<= P00`, is `<= K*P00`). Composing these gives `P11 <= (a-1)b P00 = ` the `B2`
-bound. The only remaining glue is the DEFINITIONAL identification `P00 = ZsumAvoid {p,w}`,
-`P11 = sum_{q,r} (1/deg_q)(1/deg_r) ZsumAvoid {p,q,w,r}` (matchings using a fixed edge <-> matchings of
-the rest) -- standard matching combinatorics. The mathematical heart (deletion monotonicity) is now proven,
-not hypothesized.
+`[0,1]` times a value `<= P00`, is `<= K*P00`). `B2_bound` COMPOSES these into the actual inequality: with `P00 := ZsumAvoid {p,w}` and
+`P11 := sum_{(q,r) in pairs} (1/deg_q)(1/deg_r) ZsumAvoid {p,q,w,r}` and degrees `>= 1`,
+
+    P11 <= pairs.card * P00,
+
+which is `P11 <= (a-1)b P00` once `pairs.card <= (a-1)b`.  So the `B2` HYPOTHESIS of `R47HwhLeafDecomp`
+is now a THEOREM over the matching theory -- no longer assumed.  The only residual is the DEFINITIONAL
+identification that the marked-vertex matching-classified `P00,P11` equal these `ZsumAvoid` expressions
+(the matchings-using-a-fixed-edge <-> matchings-of-the-rest bijection) -- standard matching combinatorics,
+and the separate cavity-`Aobj` <-> matching-sum bridge.  The mathematical content of `B2` (deletion
+monotonicity + counting) is proven, not hypothesized.
 
 ## Honest verdict / what a proof needs
 

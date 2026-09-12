@@ -72,6 +72,11 @@ theorem B2_termwise (E : Finset (Sym2 V)) (w : Sym2 V → ℝ) (hw : ∀ e, 0 �
   · exact Or.inl h
   · exact Or.inr (Or.inr (Or.inl h))
 
+/-- The (weighted) matching sum is non-negative when the edge weights are. -/
+theorem ZsumAvoid_nonneg (E : Finset (Sym2 V)) (w : Sym2 V → ℝ) (hw : ∀ e, 0 ≤ w e) (S : Finset V) :
+    0 ≤ ZsumAvoid E w S :=
+  Finset.sum_nonneg (fun M _ => Finset.prod_nonneg (fun e _ => hw e))
+
 /-- **The counting that assembles `B2`**: a sum over a finset `T` of terms `c t * z t`, where each
     `0 <= c t <= 1` and `0 <= z t <= P00`, is bounded by `T.card * P00`.  Applied with `T` the `(q,r)`
     pairs (`<= (a-1)*b` of them), `c = (1/deg_q)(1/deg_r)`, `z = ZsumAvoid {p,q,wv,r}`, this yields
@@ -88,6 +93,36 @@ theorem B2_bound_of_terms {ι : Type*} (T : Finset ι) (c z : ι → ℝ) (P00 :
           _ = z t := one_mul _
           _ ≤ P00 := hz t ht
     _ = T.card * P00 := by rw [Finset.sum_const, nsmul_eq_mul]
+
+/-- **The `B2` bound, fully assembled over the matching theory.**  With `P00 := ZsumAvoid {p,wv}` and
+    `P11 := sum over the (q,r) pairs of (1/deg_q)(1/deg_r) * ZsumAvoid {p,q,wv,r}`, and degrees `>= 1`:
+
+        P11 <= pairs.card * P00.
+
+    This is `P11 <= (a-1)*b*P00` once `pairs.card <= (a-1)*b` -- i.e. the `B2` hypothesis of
+    `R47HwhLeafDecomp` is now a THEOREM (deletion monotonicity `B2_termwise` + the counting
+    `B2_bound_of_terms`), no longer assumed.  The coefficients `(1/deg_q)(1/deg_r) in [0,1]` (degrees
+    `>= 1`) and each `ZsumAvoid {p,q,wv,r} <= ZsumAvoid {p,wv}` by deletion monotonicity. -/
+theorem B2_bound (E : Finset (Sym2 V)) (w : Sym2 V → ℝ) (hw : ∀ e, 0 ≤ w e) (p wv : V)
+    (pairs : Finset (V × V)) (deg : V → ℝ) (hdeg : ∀ t ∈ pairs, 1 ≤ deg t.1 ∧ 1 ≤ deg t.2) :
+    (∑ t ∈ pairs, (1 / deg t.1) * (1 / deg t.2) * ZsumAvoid E w {p, t.1, wv, t.2})
+      ≤ pairs.card * ZsumAvoid E w {p, wv} := by
+  apply B2_bound_of_terms pairs (fun t => (1 / deg t.1) * (1 / deg t.2))
+    (fun t => ZsumAvoid E w {p, t.1, wv, t.2}) (ZsumAvoid E w {p, wv})
+    (ZsumAvoid_nonneg E w hw _)
+  · intro t ht
+    obtain ⟨h1, h2⟩ := hdeg t ht
+    have : (0:ℝ) ≤ 1 / deg t.1 := by positivity
+    have : (0:ℝ) ≤ 1 / deg t.2 := by positivity
+    positivity
+  · intro t ht
+    obtain ⟨h1, h2⟩ := hdeg t ht
+    have e1 : (1:ℝ) / deg t.1 ≤ 1 := by rw [div_le_one (by linarith)]; exact h1
+    have e2 : (1:ℝ) / deg t.2 ≤ 1 := by rw [div_le_one (by linarith)]; exact h2
+    have h0 : (0:ℝ) ≤ 1 / deg t.2 := by positivity
+    exact mul_le_one₀ e1 h0 e2
+  · intro t _; exact ZsumAvoid_nonneg E w hw _
+  · intro t _; exact B2_termwise E w hw p t.1 wv t.2
 
 end Step3
 end R3Cert

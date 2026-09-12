@@ -439,3 +439,7 @@ import R3Cert.R47MatchingSum
 #print axioms R3Cert.Step3.ZsumAvoid_antitone
 #print axioms R3Cert.Step3.B2_termwise
 #print axioms R3Cert.Step3.B2_bound_of_terms
+#print axioms R3Cert.Step3.ZsumAvoid_nonneg
+-- B2 bound fully assembled over the matching theory (2026-09-12): P11 <= pairs.card * P00, i.e. the
+-- B2 hypothesis of R47HwhLeafDecomp is now a THEOREM (no longer assumed).
+#print axioms R3Cert.Step3.B2_bound
