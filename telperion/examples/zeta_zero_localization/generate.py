@@ -281,6 +281,46 @@ def _box_tag(re_lo, re_hi, im_lo, im_hi) -> str:
     return s.replace("-", "m")
 
 
+def _online_sweep_zero_count_platt(im_lo, im_hi, prec: int) -> int:
+    """Platt-hinted on-line sweep: rigorous zero inventory -> midpoint sampling.
+
+    Uses FLINT's Platt machinery (arb_platt.zeros_in_interval) to pin N and
+    enclose every zero ordinate in [im_lo, im_hi], then certifies signs of
+    Lambda at the MIDPOINTS between consecutive zero enclosures (plus the two
+    endpoints) via `enclose_lambda` — deterministic close-pair handling with
+    ~n+1 evaluations instead of a ~1.6n grid + density retries.
+
+    TRUST: the Platt inventory is a HINT.  The returned count is derived
+    entirely from the enclose_lambda sign boxes (the existing documented Arb
+    input class); a wrong hint produces a mismatch error, never a wrong count."""
+    from telperion.arb_platt import PLATT_AVAILABLE, zeros_in_interval
+    if not PLATT_AVAILABLE:
+        raise RuntimeError("platt machinery unavailable")
+    im_lo = Fraction(im_lo)
+    im_hi = Fraction(im_hi)
+    if im_lo.denominator != 1 or im_hi.denominator != 1:
+        raise RuntimeError("platt sweep requires integer band edges")
+    zs = zeros_in_interval(int(im_lo), int(im_hi), prec=max(prec, 96))
+    pts = [im_lo]
+    for (_l1, h1), (l2, _h2) in zip(zs, zs[1:]):
+        m = (Fraction(h1) + Fraction(l2)) / 2
+        mm = m.limit_denominator(10 ** 6)
+        if not (h1 < mm < l2):
+            mm = m
+        pts.append(mm)
+    pts.append(im_hi)
+    samples = []
+    for t in pts:
+        (lo, hi), _im = enclose_lambda("1/2", str(t), prec)
+        samples.append((t, (lo, hi)))
+    n = sign_change_count(samples)
+    if n != len(zs):
+        raise RuntimeError(
+            f"platt sweep mismatch: {n} sign changes vs {len(zs)} inventoried zeros"
+        )
+    return n
+
+
 def _online_sweep_zero_count(im_lo, im_hi, prec: int, density: float = 1.0) -> int:
     """Count on-line zeros of Lambda in [im_lo, im_hi] via a sign-change sweep on the critical line.
 
@@ -330,7 +370,12 @@ def run_box(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, winding_prec: int = 
     n_total = wind.n
 
     # 2. On-line sign-change zero count N_line over [im_lo, im_hi].
-    n_line = _online_sweep_zero_count(il, ih, prec, density)
+    #    Platt-hinted midpoint sweep first (deterministic close pairs, fewer
+    #    evals); any failure falls back to the density-graded grid sweep.
+    try:
+        n_line = _online_sweep_zero_count_platt(il, ih, prec)
+    except Exception:
+        n_line = _online_sweep_zero_count(il, ih, prec, density)
     if n_line < 1:
         raise ValueError(
             f"run_box: on-line sweep resolved no zeros (N_line=0) in [{il},{ih}]; nothing to localize"
