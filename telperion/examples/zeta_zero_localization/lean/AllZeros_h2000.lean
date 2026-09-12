@@ -1,159 +1,108 @@
-/-  TILED MILESTONE (T = 2000): all nontrivial zeta zeros up to height 2000 lie on Re = 1/2,
-    from THIRTY-NINE per-band certificates via the tiled capstone — 1517 zeros.
-
-    Partition: the 19 bands of AllZeros_h1000 ([0,100] + 50-bands to 1000) + TWENTY fresh
-    50-bands [1000,2000] (n = 40..46 each; five needed the 6x close-pair sweep: [1300,1350],
-    [1400,1450], [1750,1800], [1850,1900], [1950,2000]).  Census: 649 + 868 = 1517 = N(2000);
-    the [1000,2000] half-bands independently re-sum the earlier fat-band windings (868 = 868).
-
-    `haC_2000` uses the SHARED rational bound `ZeroFreeBridge.dlvpRateC_lower` (9/1369088 ≤ c),
-    so the height instantiation is one `log 2000 ≤ 8` estimate — the first consumer of the
-    factored numeric core.  Certificate shape per the measured binder-budget law: per-band
-    theorems carry raw Arb inputs; this file glues CONCLUSIONS only.
+/-  Height-chain step: all nontrivial zeta zeros up to height 2000 on Re = 1/2 --
+    `AllZeros_h1000` + a `[1000, 2000]` SEGMENT certificate (25 bands, width 1/4000000)
+    composed by `AllZerosUpToHeight.height_chain`.  Emitted by campaign.py.
     conjecture1_proved = False. -/
 import Mathlib
 import DlvpZetaZeroFree
 import DlvpZetaRateEffective
 import ZetaZeroConfinement
 import AllZerosUpToHeight
-import RHInBox_1d2000000_1999999d2000000_0_100
-import RHInBox_1d2000000_1999999d2000000_100_150
-import RHInBox_1d2000000_1999999d2000000_150_200
-import RHInBox_1d2000000_1999999d2000000_200_250
-import RHInBox_1d2000000_1999999d2000000_250_300
-import RHInBox_1d2000000_1999999d2000000_300_350
-import RHInBox_1d2000000_1999999d2000000_350_400
-import RHInBox_1d2000000_1999999d2000000_400_450
-import RHInBox_1d2000000_1999999d2000000_450_500
-import RHInBox_1d2000000_1999999d2000000_500_550
-import RHInBox_1d2000000_1999999d2000000_550_600
-import RHInBox_1d2000000_1999999d2000000_600_650
-import RHInBox_1d2000000_1999999d2000000_650_700
-import RHInBox_1d2000000_1999999d2000000_700_750
-import RHInBox_1d2000000_1999999d2000000_750_800
-import RHInBox_1d2000000_1999999d2000000_800_850
-import RHInBox_1d2000000_1999999d2000000_850_900
-import RHInBox_1d2000000_1999999d2000000_900_950
-import RHInBox_1d2000000_1999999d2000000_950_1000
-import RHInBox_1d2000000_1999999d2000000_1000_1050
-import RHInBox_1d2000000_1999999d2000000_1050_1100
-import RHInBox_1d2000000_1999999d2000000_1100_1150
-import RHInBox_1d2000000_1999999d2000000_1150_1200
-import RHInBox_1d2000000_1999999d2000000_1200_1250
-import RHInBox_1d2000000_1999999d2000000_1250_1300
-import RHInBox_1d2000000_1999999d2000000_1300_1350
-import RHInBox_1d2000000_1999999d2000000_1350_1400
-import RHInBox_1d2000000_1999999d2000000_1400_1450
-import RHInBox_1d2000000_1999999d2000000_1450_1500
-import RHInBox_1d2000000_1999999d2000000_1500_1550
-import RHInBox_1d2000000_1999999d2000000_1550_1600
-import RHInBox_1d2000000_1999999d2000000_1600_1650
-import RHInBox_1d2000000_1999999d2000000_1650_1700
-import RHInBox_1d2000000_1999999d2000000_1700_1750
-import RHInBox_1d2000000_1999999d2000000_1750_1800
-import RHInBox_1d2000000_1999999d2000000_1800_1850
-import RHInBox_1d2000000_1999999d2000000_1850_1900
-import RHInBox_1d2000000_1999999d2000000_1900_1950
-import RHInBox_1d2000000_1999999d2000000_1950_2000
+import AllZeros_h1000
+import RHInBoxT_1d4000000_3999999d4000000_1000_1040
+import RHInBoxT_1d4000000_3999999d4000000_1040_1080
+import RHInBoxT_1d4000000_3999999d4000000_1080_1120
+import RHInBoxT_1d4000000_3999999d4000000_1120_1160
+import RHInBoxT_1d4000000_3999999d4000000_1160_1200
+import RHInBoxT_1d4000000_3999999d4000000_1200_1240
+import RHInBoxT_1d4000000_3999999d4000000_1240_1280
+import RHInBoxT_1d4000000_3999999d4000000_1280_1320
+import RHInBoxT_1d4000000_3999999d4000000_5279d4_1360
+import RHInBoxT_1d4000000_3999999d4000000_1360_1400
+import RHInBoxT_1d4000000_3999999d4000000_1400_1440
+import RHInBoxT_1d4000000_3999999d4000000_1440_1480
+import RHInBoxT_1d4000000_3999999d4000000_1480_1520
+import RHInBoxT_1d4000000_3999999d4000000_1520_1560
+import RHInBoxT_1d4000000_3999999d4000000_1560_6401d4
+import RHInBoxT_1d4000000_3999999d4000000_1600_1640
+import RHInBoxT_1d4000000_3999999d4000000_1640_6721d4
+import RHInBoxT_1d4000000_3999999d4000000_1680_1720
+import RHInBoxT_1d4000000_3999999d4000000_1720_1760
+import RHInBoxT_1d4000000_3999999d4000000_1760_7201d4
+import RHInBoxT_1d4000000_3999999d4000000_1800_1840
+import RHInBoxT_1d4000000_3999999d4000000_1840_1880
+import RHInBoxT_1d4000000_3999999d4000000_1880_1920
+import RHInBoxT_1d4000000_3999999d4000000_7679d4_1960
+import RHInBoxT_1d4000000_3999999d4000000_1960_2000
 
 open Complex MeasureTheory Real
 open scoped Topology
 
 namespace AllZeros_h2000
 
-/-- The density-adaptive 39-band partition of `[0, 2000]`. -/
-noncomputable def bnd : ℕ → ℝ := fun i => match i with
-  | 0 => 0
-  | 1 => 100
-  | 2 => 150
-  | 3 => 200
-  | 4 => 250
-  | 5 => 300
-  | 6 => 350
-  | 7 => 400
-  | 8 => 450
-  | 9 => 500
-  | 10 => 550
-  | 11 => 600
-  | 12 => 650
-  | 13 => 700
-  | 14 => 750
-  | 15 => 800
-  | 16 => 850
-  | 17 => 900
-  | 18 => 950
-  | 19 => 1000
-  | 20 => 1050
-  | 21 => 1100
-  | 22 => 1150
-  | 23 => 1200
-  | 24 => 1250
-  | 25 => 1300
-  | 26 => 1350
-  | 27 => 1400
-  | 28 => 1450
-  | 29 => 1500
-  | 30 => 1550
-  | 31 => 1600
-  | 32 => 1650
-  | 33 => 1700
-  | 34 => 1750
-  | 35 => 1800
-  | 36 => 1850
-  | 37 => 1900
-  | 38 => 1950
-  | 39 => 2000
+/-- The 25-band partition of `[1000, 2000]`. -/
+noncomputable def bndSeg : ℕ → ℝ := fun i => match i with
+  | 0 => 1000
+  | 1 => 1040
+  | 2 => 1080
+  | 3 => 1120
+  | 4 => 1160
+  | 5 => 1200
+  | 6 => 1240
+  | 7 => 1280
+  | 8 => 1320
+  | 9 => 1360
+  | 10 => 1400
+  | 11 => 1440
+  | 12 => 1480
+  | 13 => 1520
+  | 14 => 1560
+  | 15 => 1600
+  | 16 => 1640
+  | 17 => 1680
+  | 18 => 1720
+  | 19 => 1760
+  | 20 => 1800
+  | 21 => 1840
+  | 22 => 1880
+  | 23 => 1920
+  | 24 => 1960
+  | 25 => 2000
   | _ => 2000
 
-theorem bnd_mono : Monotone bnd := by
+theorem bndSeg_mono : Monotone bndSeg := by
   refine monotone_nat_of_le_succ ?_
   intro nn
-  rcases nn with _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | nn
-  · show ((0:ℝ)) ≤ (100); norm_num
-  · show ((100:ℝ)) ≤ (150); norm_num
-  · show ((150:ℝ)) ≤ (200); norm_num
-  · show ((200:ℝ)) ≤ (250); norm_num
-  · show ((250:ℝ)) ≤ (300); norm_num
-  · show ((300:ℝ)) ≤ (350); norm_num
-  · show ((350:ℝ)) ≤ (400); norm_num
-  · show ((400:ℝ)) ≤ (450); norm_num
-  · show ((450:ℝ)) ≤ (500); norm_num
-  · show ((500:ℝ)) ≤ (550); norm_num
-  · show ((550:ℝ)) ≤ (600); norm_num
-  · show ((600:ℝ)) ≤ (650); norm_num
-  · show ((650:ℝ)) ≤ (700); norm_num
-  · show ((700:ℝ)) ≤ (750); norm_num
-  · show ((750:ℝ)) ≤ (800); norm_num
-  · show ((800:ℝ)) ≤ (850); norm_num
-  · show ((850:ℝ)) ≤ (900); norm_num
-  · show ((900:ℝ)) ≤ (950); norm_num
-  · show ((950:ℝ)) ≤ (1000); norm_num
-  · show ((1000:ℝ)) ≤ (1050); norm_num
-  · show ((1050:ℝ)) ≤ (1100); norm_num
-  · show ((1100:ℝ)) ≤ (1150); norm_num
-  · show ((1150:ℝ)) ≤ (1200); norm_num
-  · show ((1200:ℝ)) ≤ (1250); norm_num
-  · show ((1250:ℝ)) ≤ (1300); norm_num
-  · show ((1300:ℝ)) ≤ (1350); norm_num
-  · show ((1350:ℝ)) ≤ (1400); norm_num
-  · show ((1400:ℝ)) ≤ (1450); norm_num
-  · show ((1450:ℝ)) ≤ (1500); norm_num
-  · show ((1500:ℝ)) ≤ (1550); norm_num
-  · show ((1550:ℝ)) ≤ (1600); norm_num
-  · show ((1600:ℝ)) ≤ (1650); norm_num
-  · show ((1650:ℝ)) ≤ (1700); norm_num
-  · show ((1700:ℝ)) ≤ (1750); norm_num
-  · show ((1750:ℝ)) ≤ (1800); norm_num
-  · show ((1800:ℝ)) ≤ (1850); norm_num
-  · show ((1850:ℝ)) ≤ (1900); norm_num
-  · show ((1900:ℝ)) ≤ (1950); norm_num
-  · show ((1950:ℝ)) ≤ (2000); norm_num
+  rcases nn with _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | nn
+  · show ((1000:ℝ)) ≤ (1040); norm_num
+  · show ((1040:ℝ)) ≤ (1080); norm_num
+  · show ((1080:ℝ)) ≤ (1120); norm_num
+  · show ((1120:ℝ)) ≤ (1160); norm_num
+  · show ((1160:ℝ)) ≤ (1200); norm_num
+  · show ((1200:ℝ)) ≤ (1240); norm_num
+  · show ((1240:ℝ)) ≤ (1280); norm_num
+  · show ((1280:ℝ)) ≤ (1320); norm_num
+  · show ((1320:ℝ)) ≤ (1360); norm_num
+  · show ((1360:ℝ)) ≤ (1400); norm_num
+  · show ((1400:ℝ)) ≤ (1440); norm_num
+  · show ((1440:ℝ)) ≤ (1480); norm_num
+  · show ((1480:ℝ)) ≤ (1520); norm_num
+  · show ((1520:ℝ)) ≤ (1560); norm_num
+  · show ((1560:ℝ)) ≤ (1600); norm_num
+  · show ((1600:ℝ)) ≤ (1640); norm_num
+  · show ((1640:ℝ)) ≤ (1680); norm_num
+  · show ((1680:ℝ)) ≤ (1720); norm_num
+  · show ((1720:ℝ)) ≤ (1760); norm_num
+  · show ((1760:ℝ)) ≤ (1800); norm_num
+  · show ((1800:ℝ)) ≤ (1840); norm_num
+  · show ((1840:ℝ)) ≤ (1880); norm_num
+  · show ((1880:ℝ)) ≤ (1920); norm_num
+  · show ((1920:ℝ)) ≤ (1960); norm_num
+  · show ((1960:ℝ)) ≤ (2000); norm_num
   · show ((2000:ℝ)) ≤ (2000); norm_num
   · exact le_refl _
 
-/-- `1/(2·10⁶) ≤ dlvpRateC / log 2000` — via the shared `dlvpRateC_lower` and `log 2000 ≤ 8`
-    (`2.7⁸ ≈ 2824 ≥ 2000`).  conjecture1_proved = False. -/
-theorem haC_2000 : (1 / 2000000 : ℝ) ≤ ZeroFreeBridge.dlvpRateC / Real.log 2000 := by
+/-- `1/4000000 ≤ dlvpRateC / log 2000` (`log 2000 ≤ 8`, `2.7^8 ≥ 2000`). -/
+theorem haC_2000 : (1 / 4000000 : ℝ) ≤ ZeroFreeBridge.dlvpRateC / Real.log 2000 := by
   have hlog : Real.log 2000 ≤ 8 := by
     rw [Real.log_le_iff_le_exp (by norm_num)]
     have he1 : (2.7 : ℝ) ≤ Real.exp 1 := by linarith [Real.exp_one_gt_d9]
@@ -162,141 +111,262 @@ theorem haC_2000 : (1 / 2000000 : ℝ) ≤ ZeroFreeBridge.dlvpRateC / Real.log 2
     rw [h8]; nlinarith [hpow]
   have hpos : 0 < Real.log 2000 := Real.log_pos (by norm_num)
   rw [le_div_iff₀ hpos]
-  calc (1 / 2000000 : ℝ) * Real.log 2000
-      ≤ (1 / 2000000) * 8 := by nlinarith [hlog, hpos]
+  calc (1 / 4000000 : ℝ) * Real.log 2000
+      ≤ (1 / 4000000) * 8 := by nlinarith [hlog, hpos]
     _ ≤ 9 / 1369088 := by norm_num
     _ ≤ ZeroFreeBridge.dlvpRateC := ZeroFreeBridge.dlvpRateC_lower
 
-/-- **T = 2000 from the 39 band CONCLUSIONS** — 1517 zeros.  conjecture1_proved = False. -/
-theorem all_nontrivial_zeros_up_to_height_2000_of_bands
-    (hband0 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((0) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (100)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband1 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((100) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (150)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband2 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((150) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (200)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband3 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((200) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (250)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband4 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((250) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (300)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband5 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((300) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (350)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband6 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((350) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (400)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband7 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((400) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (450)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband8 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((450) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (500)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband9 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((500) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (550)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband10 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((550) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (600)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband11 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((600) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (650)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband12 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((650) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (700)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband13 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((700) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (750)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband14 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((750) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (800)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband15 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((800) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (850)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband16 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((850) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (900)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband17 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((900) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (950)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband18 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((950) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1000)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband19 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1000) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1050)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband20 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1050) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1100)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband21 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1100) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1150)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband22 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1150) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1200)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband23 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1200) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1250)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband24 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1250) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1300)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband25 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1300) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1350)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband26 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1350) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1400)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband27 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1400) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1450)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband28 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1450) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1500)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband29 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1500) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1550)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband30 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1550) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1600)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband31 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1600) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1650)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband32 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1650) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1700)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband33 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1700) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1750)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband34 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1750) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1800)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband35 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1800) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1850)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband36 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1850) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1900)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband37 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1900) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1950)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
-    (hband38 : ∀ ρ : ℂ, (((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (1999999 / 2000000)) →
-      (((1950) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (2000)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+/-- The `[1000, 2000]` SEGMENT: every zero with `1000 ≤ Im ≤ 2000` is on the line. -/
+theorem segment_1000_2000
+    (hseg0 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1000) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1040)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg1 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1040) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1080)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg2 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1080) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1120)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg3 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1120) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1160)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg4 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1160) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1200)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg5 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1200) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1240)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg6 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1240) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1280)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg7 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1280) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1320)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg8 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((5279 / 4) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1360)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg9 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1360) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1400)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg10 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1400) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1440)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg11 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1440) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1480)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg12 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1480) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1520)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg13 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1520) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1560)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg14 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1560) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (6401 / 4)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg15 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1600) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1640)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg16 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1640) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (6721 / 4)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg17 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1680) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1720)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg18 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1720) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1760)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg19 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1760) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (7201 / 4)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg20 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1800) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1840)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg21 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1840) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1880)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg22 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1880) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1920)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg23 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((7679 / 4) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1960)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg24 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1960) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (2000)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
     (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 2000 → 55 / 16 ≤ |ρ.im|) :
-    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 2000 → ρ.re = 1 / 2 := by
-  have hre_eq : (1 : ℝ) - 1 / 2000000 = 1999999 / 2000000 := by norm_num
-  refine AllZerosUpToHeight.all_nontrivial_zeros_up_to_height_on_line_tiled
-    (1 / 2000000) 2000 bnd 39 (by norm_num) bnd_mono rfl rfl haC_2000 (by norm_num) (by norm_num)
-    ?_ hγ
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → (1000:ℝ) ≤ ρ.im → ρ.im ≤ 2000 → ρ.re = 1 / 2 := by
+  have hre_eq : (1 : ℝ) - 1 / 4000000 = 3999999 / 4000000 := by norm_num
+  refine AllZerosUpToHeight.all_nontrivial_zeros_in_segment_on_line
+    (1 / 4000000) 1000 2000 bndSeg 25 (by norm_num) bndSeg_mono rfl rfl haC_2000
+    (by norm_num) (by norm_num) ?_ hγ
   intro i hi ρ hre him hz
-  have hre' : ((1 / 2000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ 1999999 / 2000000 := by
+  have hre' : ((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ 3999999 / 4000000 := by
     refine ⟨hre.1, ?_⟩
     have h2 := hre.2
     linarith [h2, hre_eq]
   interval_cases i
-  · exact hband0 ρ hre' him hz
-  · exact hband1 ρ hre' him hz
-  · exact hband2 ρ hre' him hz
-  · exact hband3 ρ hre' him hz
-  · exact hband4 ρ hre' him hz
-  · exact hband5 ρ hre' him hz
-  · exact hband6 ρ hre' him hz
-  · exact hband7 ρ hre' him hz
-  · exact hband8 ρ hre' him hz
-  · exact hband9 ρ hre' him hz
-  · exact hband10 ρ hre' him hz
-  · exact hband11 ρ hre' him hz
-  · exact hband12 ρ hre' him hz
-  · exact hband13 ρ hre' him hz
-  · exact hband14 ρ hre' him hz
-  · exact hband15 ρ hre' him hz
-  · exact hband16 ρ hre' him hz
-  · exact hband17 ρ hre' him hz
-  · exact hband18 ρ hre' him hz
-  · exact hband19 ρ hre' him hz
-  · exact hband20 ρ hre' him hz
-  · exact hband21 ρ hre' him hz
-  · exact hband22 ρ hre' him hz
-  · exact hband23 ρ hre' him hz
-  · exact hband24 ρ hre' him hz
-  · exact hband25 ρ hre' him hz
-  · exact hband26 ρ hre' him hz
-  · exact hband27 ρ hre' him hz
-  · exact hband28 ρ hre' him hz
-  · exact hband29 ρ hre' him hz
-  · exact hband30 ρ hre' him hz
-  · exact hband31 ρ hre' him hz
-  · exact hband32 ρ hre' him hz
-  · exact hband33 ρ hre' him hz
-  · exact hband34 ρ hre' him hz
-  · exact hband35 ρ hre' him hz
-  · exact hband36 ρ hre' him hz
-  · exact hband37 ρ hre' him hz
-  · exact hband38 ρ hre' him hz
+  · exact hseg0 ρ hre' ⟨le_trans (show ((1000) : ℝ) ≤ (1000) by norm_num) him.1, le_trans him.2 (show ((1040) : ℝ) ≤ (1040) by norm_num)⟩ hz
+  · exact hseg1 ρ hre' ⟨le_trans (show ((1040) : ℝ) ≤ (1040) by norm_num) him.1, le_trans him.2 (show ((1080) : ℝ) ≤ (1080) by norm_num)⟩ hz
+  · exact hseg2 ρ hre' ⟨le_trans (show ((1080) : ℝ) ≤ (1080) by norm_num) him.1, le_trans him.2 (show ((1120) : ℝ) ≤ (1120) by norm_num)⟩ hz
+  · exact hseg3 ρ hre' ⟨le_trans (show ((1120) : ℝ) ≤ (1120) by norm_num) him.1, le_trans him.2 (show ((1160) : ℝ) ≤ (1160) by norm_num)⟩ hz
+  · exact hseg4 ρ hre' ⟨le_trans (show ((1160) : ℝ) ≤ (1160) by norm_num) him.1, le_trans him.2 (show ((1200) : ℝ) ≤ (1200) by norm_num)⟩ hz
+  · exact hseg5 ρ hre' ⟨le_trans (show ((1200) : ℝ) ≤ (1200) by norm_num) him.1, le_trans him.2 (show ((1240) : ℝ) ≤ (1240) by norm_num)⟩ hz
+  · exact hseg6 ρ hre' ⟨le_trans (show ((1240) : ℝ) ≤ (1240) by norm_num) him.1, le_trans him.2 (show ((1280) : ℝ) ≤ (1280) by norm_num)⟩ hz
+  · exact hseg7 ρ hre' ⟨le_trans (show ((1280) : ℝ) ≤ (1280) by norm_num) him.1, le_trans him.2 (show ((1320) : ℝ) ≤ (1320) by norm_num)⟩ hz
+  · exact hseg8 ρ hre' ⟨le_trans (show ((5279 / 4) : ℝ) ≤ (1320) by norm_num) him.1, le_trans him.2 (show ((1360) : ℝ) ≤ (1360) by norm_num)⟩ hz
+  · exact hseg9 ρ hre' ⟨le_trans (show ((1360) : ℝ) ≤ (1360) by norm_num) him.1, le_trans him.2 (show ((1400) : ℝ) ≤ (1400) by norm_num)⟩ hz
+  · exact hseg10 ρ hre' ⟨le_trans (show ((1400) : ℝ) ≤ (1400) by norm_num) him.1, le_trans him.2 (show ((1440) : ℝ) ≤ (1440) by norm_num)⟩ hz
+  · exact hseg11 ρ hre' ⟨le_trans (show ((1440) : ℝ) ≤ (1440) by norm_num) him.1, le_trans him.2 (show ((1480) : ℝ) ≤ (1480) by norm_num)⟩ hz
+  · exact hseg12 ρ hre' ⟨le_trans (show ((1480) : ℝ) ≤ (1480) by norm_num) him.1, le_trans him.2 (show ((1520) : ℝ) ≤ (1520) by norm_num)⟩ hz
+  · exact hseg13 ρ hre' ⟨le_trans (show ((1520) : ℝ) ≤ (1520) by norm_num) him.1, le_trans him.2 (show ((1560) : ℝ) ≤ (1560) by norm_num)⟩ hz
+  · exact hseg14 ρ hre' ⟨le_trans (show ((1560) : ℝ) ≤ (1560) by norm_num) him.1, le_trans him.2 (show ((1600) : ℝ) ≤ (6401 / 4) by norm_num)⟩ hz
+  · exact hseg15 ρ hre' ⟨le_trans (show ((1600) : ℝ) ≤ (1600) by norm_num) him.1, le_trans him.2 (show ((1640) : ℝ) ≤ (1640) by norm_num)⟩ hz
+  · exact hseg16 ρ hre' ⟨le_trans (show ((1640) : ℝ) ≤ (1640) by norm_num) him.1, le_trans him.2 (show ((1680) : ℝ) ≤ (6721 / 4) by norm_num)⟩ hz
+  · exact hseg17 ρ hre' ⟨le_trans (show ((1680) : ℝ) ≤ (1680) by norm_num) him.1, le_trans him.2 (show ((1720) : ℝ) ≤ (1720) by norm_num)⟩ hz
+  · exact hseg18 ρ hre' ⟨le_trans (show ((1720) : ℝ) ≤ (1720) by norm_num) him.1, le_trans him.2 (show ((1760) : ℝ) ≤ (1760) by norm_num)⟩ hz
+  · exact hseg19 ρ hre' ⟨le_trans (show ((1760) : ℝ) ≤ (1760) by norm_num) him.1, le_trans him.2 (show ((1800) : ℝ) ≤ (7201 / 4) by norm_num)⟩ hz
+  · exact hseg20 ρ hre' ⟨le_trans (show ((1800) : ℝ) ≤ (1800) by norm_num) him.1, le_trans him.2 (show ((1840) : ℝ) ≤ (1840) by norm_num)⟩ hz
+  · exact hseg21 ρ hre' ⟨le_trans (show ((1840) : ℝ) ≤ (1840) by norm_num) him.1, le_trans him.2 (show ((1880) : ℝ) ≤ (1880) by norm_num)⟩ hz
+  · exact hseg22 ρ hre' ⟨le_trans (show ((1880) : ℝ) ≤ (1880) by norm_num) him.1, le_trans him.2 (show ((1920) : ℝ) ≤ (1920) by norm_num)⟩ hz
+  · exact hseg23 ρ hre' ⟨le_trans (show ((7679 / 4) : ℝ) ≤ (1920) by norm_num) him.1, le_trans him.2 (show ((1960) : ℝ) ≤ (1960) by norm_num)⟩ hz
+  · exact hseg24 ρ hre' ⟨le_trans (show ((1960) : ℝ) ≤ (1960) by norm_num) him.1, le_trans him.2 (show ((2000) : ℝ) ≤ (2000) by norm_num)⟩ hz
+
+/-- **T = 2000 via the HEIGHT CHAIN**: `[0,1000]` ∘ `[1000,2000]` (segment).
+    conjecture1_proved = False. -/
+theorem all_nontrivial_zeros_up_to_height_2000_of_bands
+    (hband0 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (41)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband1 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((41) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (81)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband2 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((81) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (121)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband3 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((121) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (161)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband4 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((161) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (201)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband5 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((201) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (965 / 4)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband6 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((241) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (281)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband7 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((281) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (321)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband8 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((321) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (361)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband9 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((361) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (401)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband10 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((401) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (441)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband11 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((441) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (481)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband12 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((481) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (520)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband13 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((520) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (560)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband14 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((560) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (600)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband15 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((600) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (640)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband16 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((640) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (680)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband17 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((680) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (720)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband18 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((720) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (760)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband19 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((760) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (800)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband20 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((800) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (840)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband21 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((840) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (880)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband22 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((880) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (920)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband23 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((920) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (960)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hband24 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((960) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1000)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg0 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1000) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1040)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg1 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1040) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1080)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg2 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1080) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1120)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg3 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1120) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1160)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg4 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1160) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1200)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg5 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1200) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1240)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg6 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1240) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1280)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg7 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1280) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1320)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg8 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((5279 / 4) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1360)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg9 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1360) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1400)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg10 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1400) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1440)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg11 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1440) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1480)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg12 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1480) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1520)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg13 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1520) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1560)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg14 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1560) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (6401 / 4)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg15 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1600) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1640)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg16 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1640) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (6721 / 4)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg17 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1680) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1720)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg18 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1720) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1760)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg19 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1760) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (7201 / 4)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg20 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1800) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1840)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg21 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1840) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1880)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg22 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1880) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1920)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg23 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((7679 / 4) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (1960)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hseg24 : ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ((3999999 / 4000000))) →
+      (((1960) : ℝ) ≤ ρ.im ∧ ρ.im ≤ (2000)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 2000 → 55 / 16 ≤ |ρ.im|) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 2000 → ρ.re = 1 / 2 := by
+  have hγ1000 : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 1000 → 55 / 16 ≤ |ρ.im| :=
+    fun ρ hz h0 h2 => hγ ρ hz h0 (le_trans h2 (by norm_num))
+  exact AllZerosUpToHeight.height_chain 1000 2000
+    (AllZeros_h1000.all_nontrivial_zeros_up_to_height_1000_of_bands
+    hband0
+    hband1
+    hband2
+    hband3
+    hband4
+    hband5
+    hband6
+    hband7
+    hband8
+    hband9
+    hband10
+    hband11
+    hband12
+    hband13
+    hband14
+    hband15
+    hband16
+    hband17
+    hband18
+    hband19
+    hband20
+    hband21
+    hband22
+    hband23
+    hband24
+      hγ1000)
+    (segment_1000_2000
+      hseg0
+      hseg1
+      hseg2
+      hseg3
+      hseg4
+      hseg5
+      hseg6
+      hseg7
+      hseg8
+      hseg9
+      hseg10
+      hseg11
+      hseg12
+      hseg13
+      hseg14
+      hseg15
+      hseg16
+      hseg17
+      hseg18
+      hseg19
+      hseg20
+      hseg21
+      hseg22
+      hseg23
+      hseg24
+      hγ)
 
 end AllZeros_h2000

@@ -106,4 +106,12 @@ theorem rh_in_box_1d4000000_3999999d4000000_24875_24906
     hbox_ball hs1PB hnzb hnzt hnzl hins hAV2 hAHt hAHb hAG1 hAG2 hpinL hpinH
     T hTline hTzero hTbox hcountN
 
+/-- Kernel statement-match gate: `rh_in_box_1d4000000_3999999d4000000_24875_24906` states EXACTLY the canonical
+    `TuringBand.BandStatement` at this band's parameters (defeq).  -/
+theorem statement_match :
+    TuringBand.BandStatement (((1 / 4000000)) : ℝ) ((3999999 / 4000000)) (24875) (24906) 41
+      (471843951321 / 1000000000000) (235921975661 / 500000000000) (-90901899 / 200000000000) (-227254747 / 500000000000) (29586156147 / 200000000000) (2311418449 / 15625000000)
+      (64203823754869 / 500000000000) (128407647509739 / 1000000000000) (12840764747221 / 100000000000) (128407647472211 / 1000000000000) cPB RPB hs1PB :=
+  rh_in_box_1d4000000_3999999d4000000_24875_24906
+
 end RHInBoxT_1d4000000_3999999d4000000_24875_24906
