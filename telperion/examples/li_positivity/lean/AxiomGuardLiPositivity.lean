@@ -89,6 +89,7 @@ import RvMNTLadder
 import AllZeros_h4000
 import StripClear
 import RvMArchElemSeries
+import RvMArchElemBound
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -515,3 +516,12 @@ import RvMArchElemSeries
 --   coefficient is explicit, making taylorCoeff Γℝ n ~ (n/2)log n a harmonic-number statement
 --   (growth = later PRs). Γ-function calculus only. conjecture1_proved=False.
 #print axioms RvMWeierstrass.logDeriv_phi_Gammaℝ_eq_elem
+
+-- Arc B, PR B1b part 1: compact form + uniform bound + uniform convergence.
+-- archSummand_eq_compact: archSummand j z = M²/(2(j+1)·D_j), D_j=2(j+1)(1−z)+1 -- the pairing
+--   cancellation as one fraction (O(1/j²) decay manifest). archSummand_norm_le: ‖·‖ ≤ 2/(j+1)² on
+--   ‖z‖≤1/4. tendstoUniformlyOn_archSummand: partial sums → tsum uniformly on closedBall(0,1/4) --
+--   the single convergence input for coefficient extraction. conjecture1_proved=False.
+#print axioms RvMWeierstrass.archSummand_eq_compact
+#print axioms RvMWeierstrass.archSummand_norm_le
+#print axioms RvMWeierstrass.tendstoUniformlyOn_archSummand

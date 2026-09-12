@@ -752,3 +752,6 @@ name = "RvMNTLadder"
 
 [[lean_lib]]
 name = "RvMArchElemSeries"
+
+[[lean_lib]]
+name = "RvMArchElemBound"
