@@ -88,6 +88,30 @@ middle; every primary-route band already emitted stays valid — the chain
 composes segments of different certificate types through their width-free
 conclusions).
 
+## T5 LANDED (same day) — reassessed wall time
+
+The Turing band template is BUILT and adopted (`TuringBand.lean` +
+`arb_edges.py` + `emit_turing_band.py` + `--turing`; `TURING_FROM = 24000`).
+Measured A/B on the same N=42 band: driver 9.1 → 2.3 s (4×), Lean 51 → 4.8 s
+(10.6×, now n-independent — profiling showed the true bottleneck was the
+2N+1-component existential `obtain`, killed by the list-form `hLine`).
+
+**Reassessed cost for the remaining climb [2.4·10⁴, 10⁶] (~40,000 bands):**
+
+| Workload | Pre-T5 | With T5 |
+|---|---|---|
+| Lean | ~1,230 core-hr | **~55 core-hr** (4.8 s/band, flat) |
+| Driver | ~1,490 core-hr | **~190 core-hr** (2.3 s at 4k, √T growth on ζ parts) |
+| **Wall on this M3 Ultra (~27 lanes)** | ~4–5 days | **~9–12 hours** |
+
+Driver now dominates; the Platt-multieval line sweep (OS front, shim already
+in-tree) is the next ~30–40% cut.  Remaining structural item: the chain-glue
+`AllZeros_h<B>` files still accumulate hypotheses linearly (h24000 = 636
+binders / 134 KB) — tolerable to ~10⁵, then apply the same list/bundling trick
+to the segment hypotheses (the per-band listing is documentary only; nothing
+is ever discharged in-kernel, so a single indexed hypothesis per segment is
+trust-equivalent).
+
 ## Trust boundary (unchanged)
 
 KERNEL: dVP zero-free region + functional equation + argument principle +
