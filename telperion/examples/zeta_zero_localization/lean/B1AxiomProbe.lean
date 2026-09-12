@@ -1,0 +1,5 @@
+import AllZeros_h36000
+import AllZeros_h1000
+
+#print axioms AllZeros_h36000.all_nontrivial_zeros_up_to_height_36000_of_bands
+#print axioms AllZeros_h1000.upTo_1
