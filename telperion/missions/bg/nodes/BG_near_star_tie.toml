@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "BG.near_star_tie"
+statement_module = "Statements.BG_near_star_tie"
+status = "proved"
+title = "Near-star tie diagonal: logPhi (N(c,k)) = 0 when c+k = 5 (the six 11-vertex ties)"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/NearStar.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "Whenever c+k = 5 the near-star N(c,k) has log-amplitude exactly zero -- the six eleven-vertex ties of the rooted invariant."

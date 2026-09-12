@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "BG.cavity_recursion"
+statement_module = "Statements.BG_cavity_recursion"
+status = "proved"
+title = "H2 cavity recursion node step: Zopen/Ztot ratio collapses to 1/(1+sum w r)"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/Matching.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "For a rooted-tree node with finitely many children whose total partition functions are nonzero, the ratio of root-unmatched to total matching partition function equals 1/(1 + sum of edge weight times child cavity ratio) -- the per-node step the tree induction turns into the H2 recursion."

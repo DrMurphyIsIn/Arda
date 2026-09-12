@@ -1,0 +1,7 @@
+description = "Migration of the BG campaign prose tracking (PROOF_ASSEMBLY.md, PROOF_STATUS.md, STATUS.md) into the missions registry. The registry is the tracking truth; conjecture1_proved = False and the goal node is draft."
+environment_mathlib_rev = "v4.32.0"
+environment_toolchain = "leanprover/lean4:v4.32.0"
+goal_node = "BG_conjecture1"
+name = "BG.conjecture1"
+sources = ["Brualdi, R.A. and Goldwasser, J.L. (1984), Permanent of the Laplacian matrix of trees and bipartite graphs, Discrete Mathematics 48, 1-21", "telperion/PROOF_ASSEMBLY.md", "telperion/PROOF_STATUS.md", "STATUS.md", "proof/ (R3Cert Lean 4 island, toolchain v4.32.0)"]
+title = "Brualdi-Goldwasser <=-half: Phi^11(T) <= 1 for all trees, equality only at the six 11-vertex ties"

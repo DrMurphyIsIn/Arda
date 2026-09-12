@@ -159,3 +159,76 @@ aware** (it is a growth-rate, not an algebraic certificate), and **integrality-b
 *Session-honest note: the near-star spine is proven with Lean CI green on the arithmetic
 cores; the conjecture is not. Every "ruled out" above carries its reason. The toolkit's
 `conjecture1_proved` flag is `False` throughout, by design.*
+
+---
+
+<!-- missions:bg:begin -->
+The missions registry (`telperion/missions/bg/`) is now the tracking truth for this
+campaign; this block is generated (`telperion mission status bg`, 2026-09-11). Every
+`proved`/`refuted` status below was earned through the registry's verify gate against the
+named `proof/` artifact; the goal node is `draft` — `conjecture1_proved = False`.
+
+```
+Brualdi-Goldwasser <=-half: Phi^11(T) <= 1 for all trees, equality only at the six 11-vertex ties
+
+  ✓ BG_cavity_recursion  (lemma, proved)
+  · BG_conjecture1  (goal, draft)  -> BG_master_inequality, BG_r2_multihub_maximality, BG_phi_le_one, BG_h1_bridge, BG_cavity_recursion, BG_merge_layer, BG_gstep_closure, BG_near_star_tail, BG_near_star_tie, BG_fractal_asymptote, BG_lb_classification, BG_r2_double_near_star
+  ✓ BG_fractal_asymptote  (lemma, proved)
+  ✓ BG_gstep_closure  (milestone, proved)
+  ✓ BG_h1_bridge  (lemma, proved)  -> BG_cavity_recursion
+  ✗ BG_hnorm_capstone  (lemma, refuted)
+  ✓ BG_lb_classification  (lemma, proved)
+  · BG_master_inequality  (lemma, draft)
+  ✓ BG_merge_layer  (lemma, proved)  -> BG_h1_bridge
+  ✓ BG_near_star_tail  (lemma, proved)
+  ✓ BG_near_star_tie  (lemma, proved)
+  ✓ BG_phi_le_one  (milestone, proved)  -> BG_lb_classification
+  ○ BG_r2_double_near_star  (lemma, open)
+  · BG_r2_multihub_maximality  (lemma, draft)
+```
+
+Migration notes (2026-09-11, findings in the task-9 report): `BG_hnorm_capstone` is the
+2026-09-11 refutation (`R47HnormFalse52.lean` — Hnorm is FALSE at aligned n=52, four-core
+witness `T(6,6,6,6)`). `BG_r2_double_near_star` is prose-PROVEN (exact toolkit arithmetic)
+but has NO kernel artifact, so it migrated as `open` per the fidelity rule.
+`BG_master_inequality` and `BG_r2_multihub_maximality` carry PROVISIONAL statement
+renderings (no kernel vocabulary exists for them yet) and stay `draft` pending independent
+audit.
+<!-- missions:bg:end -->
+
+<!-- missions:rh:begin -->
+The missions registry (`telperion/missions/rh/`) is now the tracking truth for the RH
+campaign; this block is generated (`telperion mission status rh`, 2026-09-11). Every
+`proved` status below was earned through the registry's verify gate against the named
+island artifact (v4.34 li_positivity island; one cross-island grant against the v4.32
+zero_free_bridge island); the goal node is `draft` — **RH is NOT claimed proved**,
+`conjecture1_proved = False`.
+
+```
+Riemann Hypothesis campaign: unconditional zero-free regions, the sharp zeta log bound, the effective dVP rate, and the Li-criterion ladder (v4.34 island, #483 unification)
+
+  ✓ RH_borel_caratheodory_deriv  (lemma, proved)
+  · RH_conjecture  (goal, draft)  -> RH_zeta_repr_R1, RH_strip_repr, RH_zeta_log_bound, RH_zero_free_gamma5, RH_zero_free_polylog, RH_borel_caratheodory_deriv, RH_dlvp_region_effective, RH_dlvp_zero_free_region, RH_li_rung_certificates, RH_li_ladder_reduction, RH_li_neg_refutes_rh
+  ✓ RH_dlvp_region_effective  (milestone, proved)  -> RH_borel_caratheodory_deriv, RH_strip_repr
+  ✓ RH_dlvp_zero_free_region  (milestone, proved)  -> RH_dlvp_region_effective
+  ✓ RH_li_ladder_reduction  (lemma, proved)
+  ✓ RH_li_neg_refutes_rh  (lemma, proved)
+  ✓ RH_li_rung_certificates  (lemma, proved)
+  ✓ RH_strip_repr  (milestone, proved)  -> RH_zeta_repr_R1
+  ✓ RH_zero_free_gamma5  (milestone, proved)  -> RH_strip_repr
+  ✓ RH_zero_free_polylog  (milestone, proved)  -> RH_zero_free_gamma5, RH_zeta_log_bound
+  ✓ RH_zeta_log_bound  (milestone, proved)  -> RH_strip_repr
+  ✓ RH_zeta_repr_R1  (lemma, proved)
+```
+
+Migration notes (2026-09-11, findings in the task-10 report): the Li rungs are each
+CONDITIONAL on their Arb enclosure hypothesis (the documented trust seam) and the rungs
+node's statement is the topmost rung `li_rung_19`, representative of the 20 homogeneous
+generated rungs. `RH_dlvp_zero_free_region`'s artifact (`DlvpZetaZeroFree.lean`) was NOT
+among the 66 files #483 ported to v4.34 — it is granted cross-island against the v4.32
+island where its own CI kernel-checks it (AxiomGuardDlvp); its `closure_clean` flag stays
+**false** in the registry until cross-island CI recomputation is wired, since this repo's
+missions CI builds only the v4.34 statement package and cannot recompute that closure
+itself. The Borel–Carathéodory derivative bound,
+expected open at migration planning time, is in fact PROVED (`DlvpBCDeriv.lean`).
+<!-- missions:rh:end -->

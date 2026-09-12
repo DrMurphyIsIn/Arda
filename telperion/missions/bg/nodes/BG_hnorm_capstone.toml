@@ -1,0 +1,20 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "BG.hnorm_capstone"
+refutation_statement = "theorem hnorm_capstone_false :\n    ¬ (∀ t : UTree, ∃ s : List Hub, Balanced s ∧ Capped s ∧\n        stateSize s = usize t ∧ Aobj t ≤ Aobj (backboneU s))"
+statement_module = "Statements.BG_hnorm_capstone"
+status = "refuted"
+title = "Capstone Hnorm (tree->hub normalization): every tree is dominated by a Balanced+Capped state of its own size -- REFUTED at n=52"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/R47HnormFalse52.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "The tree-to-hub normalization Hnorm: every bare tree would be Aobj-dominated by some balanced capped hub state of exactly its own vertex count -- REFUTED 2026-09-11 by the exact four-core witness T(6,6,6,6) at n = 52 (R47HnormFalse52)."

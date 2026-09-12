@@ -13,6 +13,8 @@ Source-of-truth documents:
 - [`PUBLICATION_LEDGER.md`](PUBLICATION_LEDGER.md) — conservative, provisional novelty tally.
 - [`proof/`](proof/) — the Lean 4 formalization (R3Cert / R47 / Φ≤1 / capped-joint) and exact-arithmetic verification harnesses.
 
+RH and BG campaign tracking now lives in the missions registry (`telperion/missions/`; see [`telperion/docs/MISSIONS_HOWTO.md`](telperion/docs/MISSIONS_HOWTO.md)).
+
 ---
 
 ## Brualdi–Goldwasser (1984): `Φ¹¹(T) ≤ 1` for all trees, equality only at the six 11-vertex ties

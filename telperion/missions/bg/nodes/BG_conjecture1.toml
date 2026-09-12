@@ -1,0 +1,8 @@
+created = "2026-09-11"
+depends_on = ["BG_master_inequality", "BG_r2_multihub_maximality", "BG_phi_le_one", "BG_h1_bridge", "BG_cavity_recursion", "BG_merge_layer", "BG_gstep_closure", "BG_near_star_tail", "BG_near_star_tie", "BG_fractal_asymptote", "BG_lb_classification", "BG_r2_double_near_star"]
+kind = "goal"
+name = "BG.conjecture1"
+statement_module = "Statements.BG_conjecture1"
+status = "draft"
+title = "BG <=-half sharp statement (Branch-model rendering): logPhi <= 0 everywhere, = 0 exactly on the near-star tie diagonal c+k=5"
+updated = "2026-09-11"

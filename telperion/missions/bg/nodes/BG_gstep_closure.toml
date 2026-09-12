@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "milestone"
+name = "BG.gstep_closure"
+statement_module = "Statements.BG_gstep_closure"
+status = "proved"
+title = "Capped-joint g-step closure: the config g-step is <= 1 at every arity over achievable messages"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/CappedJointClosure.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "For every list of achievable cavity messages, the capped-joint g-step value (base^11 times the product of per-child caps over gamma) is at most 1, at every arity."

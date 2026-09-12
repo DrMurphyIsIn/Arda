@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "RH.li_rung_certificates"
+statement_module = "Statements.RH_li_rung_certificates"
+status = "proved"
+title = "Li ladder rungs 0..19 (20 emitted certificates, each conditional on its Arb enclosure hypothesis); statement = the topmost rung li_rung_19"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/LiPositivity.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "rh-migration-session-2026-09-11"
+date = "2026-09-11"
+text = "The topmost of the 20 emitted Li rungs: 0 <= lambda_20 = (taylorCoeff riemannXi 19).re, GIVEN the certified rational lower bound as an explicit hypothesis (the Arb enclosure trust seam).  Representative of the 20 homogeneous generated rungs n = 0..19, each a finite necessary-condition check conditional on its own enclosure hypothesis; NO finite prefix proves RH."

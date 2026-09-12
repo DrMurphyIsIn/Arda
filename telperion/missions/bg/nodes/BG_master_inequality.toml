@@ -1,0 +1,8 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "BG.master_inequality"
+statement_module = "Statements.BG_master_inequality"
+status = "draft"
+title = "Master inequality (arm-maximality; PROVISIONAL rendering): (2+mu_B)^11 F_B <= (64/621) 3^11 with F_B = exp(11 logPhi)"
+updated = "2026-09-11"

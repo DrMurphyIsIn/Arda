@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = ["BG_cavity_recursion"]
+kind = "lemma"
+name = "BG.h1_bridge"
+statement_module = "Statements.BG_h1_bridge"
+status = "proved"
+title = "P1 bridge capstone: Aobj IS the Laplacian permanent ratio of the realized tree (pi_utree)"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/R47Tree.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "For every bare rooted tree, the permanent of the Laplacian of its true-degree realization divided by the product of vertex degrees equals the raw matching partition function Aobj -- the machine-checked per(L) bridge (P1 capstone)."
