@@ -12,7 +12,7 @@ open ──(verified artifact linked)─────────> proved | refut
 any ──(with deprecated_reason)────────────> deprecated
 ```
 
-**Key rule:** `proved` and `refuted` are **granted only by the kernel** via `mission grant` (which runs CI verification locally or in the cloud). A node may link an artifact, but until CI kernel-checks it and verifies the statement match, the status stays unchanged. For reductions (proofs that import sorry-statements of other open nodes), the flag `closure_clean: false` until the entire import closure is sorry-free.
+**Key rule:** `proved` and `refuted` are **granted only by the kernel** via `mission grant` (which checks artifact existence and normalized statement containment — a syntactic, local gate). A node may link an artifact, but until the gate verifies the statement match, the status stays unchanged. The KERNEL authority for whether the artifact's Lean proof actually elaborates is the artifact's home package's own CI (e.g. proof-lean for BG; the home island for RH cross-island nodes); `mission grant` does not re-run that build. Pass `--deep-lean` to `mission verify` to lake-build the campaign's statement package (statements elaborate; proofs are not re-checked here). For reductions (proofs that import sorry-statements of other open nodes), the flag `closure_clean: false` until the entire import closure is sorry-free.
 
 ## Claims & the Claim Protocol
 
@@ -35,7 +35,7 @@ A claim reserves a node for one session for a TTL (default: 24 hours). Claims ar
 | `link <slug> --artifact P --kind K --via V` | Attach a proof/disproof artifact (K: `lean_module` or `frozen_cert`; V: `direct` or `reduction`) |
 | `attempt <slug> --session S --route R --verdict V --detail D` | Log a work attempt; verdict: `Proved`, `Refuted`, `NoGo`, `Stalled` |
 | `grant <slug>` | **Gate verb:** run CI verification and flip `proved`/`refuted` (only verb that changes status) |
-| `verify [campaign]` | Run all CI invariants locally (node schema, DAG acyclicity, statement elaboration, artifact kernel-checks) |
+| `verify [campaign]` | Run the shallow coherence battery locally (node schema, DAG acyclicity, artifact existence, normalized statement containment) — read-only; add `--deep-lean` to also lake-build the campaign's statement package |
 | `graph [campaign]` | Emit DOT export of the dependency DAG with node statuses |
 
 ## Five-Minute Quickstart
@@ -70,7 +70,7 @@ A claim reserves a node for one session for a TTL (default: 24 hours). Claims ar
    ```bash
    telperion mission grant node_slug
    ```
-   The kernel verifies: artifact exists, kernel-checks in its home package, statement matches the registry. If all pass, status flips to `proved` (or `refuted` for disprovfs). If closure_clean was false (reduction), it's recomputed.
+   The gate checks: artifact exists and its normalized content contains the registry statement (syntactic, local — no Lean build). If both pass, status flips to `proved` (or `refuted` for disproofs). The KERNEL authority for the proof's elaboration is the artifact's home package CI, not this gate. If closure_clean was false (reduction), it's recomputed.
 
 7. **Release the claim:**
    ```bash

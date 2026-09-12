@@ -156,11 +156,18 @@ def _compute_closures(campaign: Campaign) -> Dict[str, bool]:
     for sl, node in campaign.nodes.items():
         if node.proof is None:
             continue
-        if node.proof.via == "direct":
-            closure[sl] = True
-        else:
-            # Seed from stored value; fixpoint will correct
-            closure[sl] = node.proof.closure_clean
+        # Seed from the stored closure_clean flag for ALL via types.
+        #
+        # For direct proofs: the stored flag IS authoritative — grant_status
+        # writes True for normal grants, but a controller ruling may leave it
+        # False (e.g. cross-island artifacts whose kernel authority lives on
+        # a different Lean island and has not yet been wired into this campaign's
+        # CI).  We must not overwrite that deliberate False with an unconditional
+        # True here.
+        #
+        # For reduction proofs: the fixpoint loop below will correct the stored
+        # value based on the transitive dependency chain regardless.
+        closure[sl] = node.proof.closure_clean
 
     # Fixpoint iteration until stable
     changed = True

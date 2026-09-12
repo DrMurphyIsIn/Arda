@@ -481,3 +481,77 @@ def test_normalized_statement_matches_write_statement_output(tmp_path):
     # Module name must NOT appear as the result
     assert result != "Statements.Test_i3"
     assert result != normalize_lean("Statements.Test_i3")
+
+
+# ---------------------------------------------------------------------------
+# F2 regression: direct-proved node with stored closure_clean=False keeps
+# that False after recompute_closures, and a reduction depending on it
+# also computes closure_clean=False.
+#
+# Controller ruling: via="direct" nodes store the authoritative closure_clean
+# flag (e.g. for cross-island artifacts whose kernel CI is on another Lean
+# island). _compute_closures must seed from the stored value, not overwrite
+# it with unconditional True.
+# ---------------------------------------------------------------------------
+
+def test_direct_false_closure_survives_recompute(tmp_path):
+    root = tmp_path / "campaign"
+    root.mkdir()
+    (root / "nodes").mkdir()
+    manifest = _manifest()
+    from telperion.missions.schema import save_manifest
+    save_manifest(manifest, root / "mission.toml")
+
+    # Node D: proved, via=direct, but closure_clean=False (cross-island scenario:
+    # kernel authority lives on a different Lean island not yet wired into CI).
+    node_d = Node(
+        name="Ci.d", title="D cross-island", kind="lemma", status="proved",
+        depends_on=(), statement_module="Statements.Ci_d",
+        proof=Proof(artifact="proof/Ci_d.lean", artifact_kind="lean_module",
+                    via="direct", closure_clean=False),
+        created="2026-09-11", updated="2026-09-11",
+    )
+    save_node(node_d, root / "nodes" / "Ci_d.toml")
+
+    # Node R: proved, via=reduction, depends only on D; closure_clean=True (stale).
+    node_r = Node(
+        name="Ci.r", title="R reduction of D", kind="lemma", status="proved",
+        depends_on=("Ci_d",), statement_module="Statements.Ci_r",
+        proof=Proof(artifact="proof/Ci_r.lean", artifact_kind="lean_module",
+                    via="reduction", closure_clean=True),
+        created="2026-09-11", updated="2026-09-11",
+    )
+    save_node(node_r, root / "nodes" / "Ci_r.toml")
+
+    campaign = load_campaign(root)
+    closures = recompute_closures(campaign)
+
+    # D is direct with stored False — must remain False, not be promoted to True.
+    assert closures.get("Ci_d") is False, (
+        "direct-proved node with stored closure_clean=False must stay False "
+        "after recompute_closures (controller ruling: stored flag is authoritative)"
+    )
+
+    # R depends on D (which is not closure-clean) so R must also be False.
+    assert closures.get("Ci_r") is False, (
+        "reduction node depending on a False-closure direct node must also "
+        "compute closure_clean=False"
+    )
+
+    # On-disk D must still carry False (recompute_closures only writes changes;
+    # D's stored value already matches the computed value, so no write needed,
+    # but either way the flag must remain False on disk).
+    on_disk_d = load_node(root / "nodes" / "Ci_d.toml")
+    assert on_disk_d.proof is not None
+    assert on_disk_d.proof.closure_clean is False, (
+        "recompute_closures must NOT flip a direct-proved node's closure_clean "
+        "from False to True on disk"
+    )
+
+    # On-disk R must now carry False (its stale True was corrected by recompute).
+    on_disk_r = load_node(root / "nodes" / "Ci_r.toml")
+    assert on_disk_r.proof is not None
+    assert on_disk_r.proof.closure_clean is False, (
+        "recompute_closures must write back the corrected False for R, "
+        "whose stale stored value was True"
+    )

@@ -467,3 +467,15 @@ Same procedure as Task 9 with: env toolchain `leanprover/lean4:v4.34.0-rc1`, mat
 - **Bridge non-dependency:** T4 explicitly reimplements the ledger shape; nothing imports `telperion.prove2me` (unmerged on this branch).
 - **Known judgment areas, named:** T9/T10 node sets are indicative — the implementer reads the prose docs and uses real module/lemma names; disagreements between prose and gate results are REPORTED, not smoothed over. T7 makes `audit` the draft→open trigger (spec §3's "read-back recorded" transition) — single verb, no separate promote command.
 - **Type consistency check:** `Claim.node`/slug keying, `Proof` field names, and `verify.grant_status` naming are used identically in T1/T2/T3/T6/T7.
+
+---
+
+## Post-review tickets (2026-09-12)
+
+- **deep-lean statement-package CI workflow:** Wire `mission verify --deep-lean` into GitHub Actions as a required job on the campaigns that have Lean statement packages (BG, RH). The job should lake-build each campaign's `lean/` statement package and fail the workflow on any elaboration error. This closes the gap between the shallow gate (syntactic containment) and real Lean kernel authority for the statements themselves.
+
+- **`Proof.environment` field for durable cross-island closure semantics:** Add an optional `environment` field to the `Proof` schema (e.g. `environment = "zero_free_bridge/v4.32"`) that names the Lean island and toolchain revision where the artifact was kernel-checked. `recompute_closures` and `verify_campaign` should surface this when `closure_clean = false` on a direct-proved node, so the registry explains *why* the flag is false rather than leaving it implicit in the readback prose. This enables future automation to re-derive `closure_clean` once cross-island CI wiring is in place.
+
+- **`AttemptLog` corrupt-line counting surfaced as verify warning:** `verify_campaign` currently raises an error if `log.records()` throws, which is appropriate for total parse failure. Add partial fault tolerance: count lines that fail JSON parsing individually (skip them), and surface the count as a `warnings` entry rather than an `errors` entry when the ledger is mostly readable. A fully unreadable ledger remains an error.
+
+- **`BGDefs`/`RHDefs` drift check wiring into verify/CI:** The campaigns' Lean statement packages import from `BGDefs`/`RHDefs` definition modules. If those modules drift from the node statement files (e.g. a constant is renamed), `regen_diff` will catch statement-file drift but not definition-file drift. Add a `verify_campaign` check (or a separate `verify --check-defs` flag) that imports the campaign's `Defs` module and confirms that every `proved`/`open` node's statement file can be elaborated against the current `Defs` — catching drift before it blocks a `--deep-lean` lake build.
