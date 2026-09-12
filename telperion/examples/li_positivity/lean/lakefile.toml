@@ -383,3 +383,6 @@ name = "RvMBacklundFinite"
 
 [[lean_lib]]
 name = "RvMBacklundOrder"
+
+[[lean_lib]]
+name = "RvMBacklundConfineNonstrict"
