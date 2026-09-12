@@ -371,3 +371,6 @@ name = "RvMBacklundJensen"
 
 [[lean_lib]]
 name = "RvMBacklundConfine"
+
+[[lean_lib]]
+name = "RvMBacklundPartition"

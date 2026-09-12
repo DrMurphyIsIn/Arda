@@ -70,6 +70,7 @@ import RvMBacklundIVT
 import RvMBacklundCenter
 import RvMBacklundJensen
 import RvMBacklundConfine
+import RvMBacklundPartition
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -370,3 +371,11 @@ import RvMBacklundConfine
 -- logDeriv f continuous there), then |argChangeHoriz f T x0 x1| < π -- FTC (clog_real) turns Im ∫ f'/f
 -- into arg f(x1+iT) - arg f(x0+iT), both in (-π/2,π/2). conjecture1_proved=False.
 #print axioms Backlund.argChangeHoriz_abs_lt_pi_of_rePos
+
+-- Backlund S(T)=O(log T), PR 4b: partition + sum.
+-- argChangeHoriz_abs_lt_pi_of_re_sign: |argChangeHoriz f| < π when Re f is one sign (pos OR neg) on the
+--   segment -- the Re<0 case reduces to PR 4a via f↦-f (logDeriv invariant, logDeriv_const_mul a=-1).
+-- argChangeHoriz_abs_le_partition: over a partition σ0<...<σn with per-piece |argChangeHoriz|≤π, the
+--   total ≤ n·π (sum_integral_adjacent_intervals + Finset.abs_sum_le_sum_abs). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_lt_pi_of_re_sign
+#print axioms Backlund.argChangeHoriz_abs_le_partition
