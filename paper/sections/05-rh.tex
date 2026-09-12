@@ -268,9 +268,18 @@ Two honest notes close the account. First, the formula \emph{counts} zeros; it
 does not place them on the critical line, and nothing here bears on RH:
 Riemann--von Mangoldt is classical, unconditional mathematics, formalized. Its
 role in this program is the trust-shrink trajectory---it derives what the
-tiled ladder currently assumes---and running this section's effective
-machinery on the $S$-identity (toward Backlund's
-$|S(T)| \le a \log T + b$) is the named next step. Second, one mid-course
+tiled ladder currently assumes---and that named next step is now taken: running this section's effective
+machinery on the $S$-identity yields Backlund's bound $|S(T)| = O(\log T)$ as a
+kernel theorem (\texttt{riemannS\_abs\_le\_log\_of\_ne\_zero}: for $T \ge 4$ with
+$T$ off a zero ordinate,
+$|S(T)| \le \log\!\big((4T{+}19)/\lVert F_T(2)\rVert\big)/\log(7/6) + 2$), through
+a formalized Backlund argument---the auxiliary function
+$F_T(z) = \tfrac12\big(\zeta(z{+}iT)+\zeta(z{-}iT)\big)$, real on the axis with
+$F_T = \operatorname{Re}\zeta(\cdot{+}iT)$, whose real zeros bound the sign
+changes of $\operatorname{Re}\zeta$ and are counted by the finite-height Jensen
+bound of the previous subsection. The constant is honest rather than sharp, and
+this remains unconditional error-term analysis: it bounds the \emph{fluctuation}
+in the zero count and says nothing about where the zeros lie. Second, one mid-course
 correction is part of the record and is the lived practice
 \cref{sec:vacuity} recounts: an early route through $\Lambda_0$ alone was
 retired when its zero set was checked against Mathlib's own defining identity,
