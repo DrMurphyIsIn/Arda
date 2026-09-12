@@ -119,3 +119,39 @@ winding algebra + IVT sign-change zeros + rate inequality + all glue.
 ARB NON-KERNEL INPUT (documented hypotheses of every band theorem): the winding
 count N, the on-line zeros (`hLine`), the edge/integrability bundle (`hArb`),
 and the height floor `hγ` (55/16), discharged at assembly by StripClear.
+
+## HONESTY FLAG (2026-09-12, evening): the winding-route `hArb` is over-quantified — VACUOUS as stated
+
+**Finding.**  The winding-route per-band hypothesis
+`hArb : ∀ (E s d), DifferentiableOn E rect → (split identity on ball) → (… ∧ (∀ ρ ∈ s, ρ in-band) ∧ …)`
+is mathematically FALSE for every band: augment the canonical Blaschke data
+with an out-of-band junk point `ρ'` carrying `d ρ' = 0` (or `ρ'` outside the
+ball with any `d`, absorbed into `E`) — the split premise is preserved and the
+in-band conjunct fails.  A false hypothesis can never be discharged, so the
+winding-route band theorems are vacuous implications; the tiled ladder's
+honest content currently rests only on their (unfalsifiable) hypothesis shape.
+This is a STATEMENT bug in the emitter (over-quantification chosen to avoid
+naming `hs1` in the signature), NOT a driver-data or kernel bug — and it is
+PRE-EXISTING: the same shape ships in the T=100 … T=4000 milestones on main
+(#265–#358).  Independently, `choose_ball`'s pole-midpoint radius (~T/√2 at
+height) makes the in-band conjunct false even for honest instances.
+
+**Not affected.**  The T5 route (TuringBand): `hins` is stated at the
+CANONICAL `zeroFinset cPB RPB hs1PB` (hs1 exposed as a top-level theorem), the
+ball is tight (`choose_ball_tight`), and the driver verifies the poke slivers
+zero-free via the Platt inventory.  The kernel theorems of BOTH routes
+(`rh_in_box_of_certificate`, `zeta_count_eq_winding_generic`, `TuringBand.*`)
+are valid implications throughout — the defect is confined to the emitted
+hypothesis SHAPE of winding-route band files.
+
+**Remediation (recommended): re-base the ladder on T5.**
+1. upTo-1 base lemma (vacuous below the 55/16 height floor via `hγ`).
+2. One T5 band `[1,100]` (N = 29; `T0 = 1 > 0` keeps the pole outside).
+3. Re-emit `[100, 24000]` uniformly at width 1/4e6 on T5 (~640 bands ≈ 2 h
+   driver + 1 h Lean at measured T5 rates) + regenerate the chain files.
+   Conclusion shapes are unchanged, so nothing downstream moves.
+4. Quarter-integer band-edge nudging for the poke refusals (26/128 in leg 6).
+Until then, the honest claim is: kernel-verified T5 certificates from 24000 up
+(once leg 6 lands) + kernel-valid but hypothesis-vacuous winding certificates
+below.  conjecture1_proved = False, and the T≤24000 milestone claims are
+SUSPENDED pending re-emission.
