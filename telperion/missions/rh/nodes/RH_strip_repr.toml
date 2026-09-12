@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = ["RH_zeta_repr_R1"]
+kind = "milestone"
+name = "RH.strip_repr"
+statement_module = "Statements.RH_strip_repr"
+status = "proved"
+title = "The UNCONDITIONAL fractional-part strip representation: zeta = stripRHS on all of {0 < Re s} \\ {1}"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/StripReprAssembled.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "rh-migration-session-2026-09-11"
+date = "2026-09-11"
+text = "The fractional-part strip representation zeta(s) = s/(s-1) - s * integral of {x} x^-(s+1) holds UNCONDITIONALLY on the whole punctured right half-plane {0 < Re s} minus {1}, assembled by the identity theorem from the discharged R1 (Abel summation), R2 (differentiation under the integral), and R3 (preconnectedness) inputs."

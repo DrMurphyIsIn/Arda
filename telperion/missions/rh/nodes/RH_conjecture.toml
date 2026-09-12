@@ -1,0 +1,8 @@
+created = "2026-09-11"
+depends_on = ["RH_zeta_repr_R1", "RH_strip_repr", "RH_zeta_log_bound", "RH_zero_free_gamma5", "RH_zero_free_polylog", "RH_borel_caratheodory_deriv", "RH_dlvp_region_effective", "RH_dlvp_zero_free_region", "RH_li_rung_certificates", "RH_li_ladder_reduction", "RH_li_neg_refutes_rh"]
+kind = "goal"
+name = "RH.conjecture"
+statement_module = "Statements.RH_conjecture"
+status = "draft"
+title = "The Riemann Hypothesis (Mathlib's RiemannHypothesis) -- NOT proved; the campaign goal"
+updated = "2026-09-11"

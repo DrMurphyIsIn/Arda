@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = ["RH_dlvp_region_effective"]
+kind = "milestone"
+name = "RH.dlvp_zero_free_region"
+statement_module = "Statements.RH_dlvp_zero_free_region"
+status = "proved"
+title = "The SELF-CONTAINED effective dVP zero-free region (no multiplicity hypothesis; artifact on the v4.32 island)"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../examples/zero_free_bridge/lean/DlvpZetaZeroFree.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "rh-migration-session-2026-09-11"
+date = "2026-09-11"
+text = "Self-contained form: zeta(beta + i gamma) is nonzero whenever |gamma| >= 55/16 and beta > 1 - dlvpRateC / log |gamma| -- no multiplicity hypothesis remains.  The artifact lives on the v4.32 zero_free_bridge island (it was NOT among the 66 files #483 ported); cross-island grant per design section 2, kernel-checked by that island's own CI (AxiomGuardDlvp)."

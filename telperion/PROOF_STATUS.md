@@ -195,3 +195,37 @@ but has NO kernel artifact, so it migrated as `open` per the fidelity rule.
 renderings (no kernel vocabulary exists for them yet) and stay `draft` pending independent
 audit.
 <!-- missions:bg:end -->
+
+<!-- missions:rh:begin -->
+The missions registry (`telperion/missions/rh/`) is now the tracking truth for the RH
+campaign; this block is generated (`telperion mission status rh`, 2026-09-11). Every
+`proved` status below was earned through the registry's verify gate against the named
+island artifact (v4.34 li_positivity island; one cross-island grant against the v4.32
+zero_free_bridge island); the goal node is `draft` — **RH is NOT claimed proved**,
+`conjecture1_proved = False`.
+
+```
+Riemann Hypothesis campaign: unconditional zero-free regions, the sharp zeta log bound, the effective dVP rate, and the Li-criterion ladder (v4.34 island, #483 unification)
+
+  ✓ RH_borel_caratheodory_deriv  (lemma, proved)
+  · RH_conjecture  (goal, draft)  -> RH_zeta_repr_R1, RH_strip_repr, RH_zeta_log_bound, RH_zero_free_gamma5, RH_zero_free_polylog, RH_borel_caratheodory_deriv, RH_dlvp_region_effective, RH_dlvp_zero_free_region, RH_li_rung_certificates, RH_li_ladder_reduction, RH_li_neg_refutes_rh
+  ✓ RH_dlvp_region_effective  (milestone, proved)  -> RH_borel_caratheodory_deriv, RH_strip_repr
+  ✓ RH_dlvp_zero_free_region  (milestone, proved)  -> RH_dlvp_region_effective
+  ✓ RH_li_ladder_reduction  (lemma, proved)
+  ✓ RH_li_neg_refutes_rh  (lemma, proved)
+  ✓ RH_li_rung_certificates  (lemma, proved)
+  ✓ RH_strip_repr  (milestone, proved)  -> RH_zeta_repr_R1
+  ✓ RH_zero_free_gamma5  (milestone, proved)  -> RH_strip_repr
+  ✓ RH_zero_free_polylog  (milestone, proved)  -> RH_zero_free_gamma5, RH_zeta_log_bound
+  ✓ RH_zeta_log_bound  (milestone, proved)  -> RH_strip_repr
+  ✓ RH_zeta_repr_R1  (lemma, proved)
+```
+
+Migration notes (2026-09-11, findings in the task-10 report): the Li rungs are each
+CONDITIONAL on their Arb enclosure hypothesis (the documented trust seam) and the rungs
+node's statement is the topmost rung `li_rung_19`, representative of the 20 homogeneous
+generated rungs. `RH_dlvp_zero_free_region`'s artifact (`DlvpZetaZeroFree.lean`) was NOT
+among the 66 files #483 ported to v4.34 — it is granted cross-island against the v4.32
+island where its own CI kernel-checks it. The Borel–Carathéodory derivative bound,
+expected open at migration planning time, is in fact PROVED (`DlvpBCDeriv.lean`).
+<!-- missions:rh:end -->
