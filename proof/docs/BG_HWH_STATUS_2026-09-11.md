@@ -201,6 +201,18 @@ Verified exact (0 mismatches, 5940 adjacent leaf-moves). `B2adj >= 0` is provabl
 `q != w, r != p` gives `P11 <= (a-2)(b-1) P00`, hence `P00+P11 <= (a-1)b P00`) -- 0 counterexamples.
 Kernel-clean `hwh_adj_decomp`, `B2adj_nonneg`, `adj_move_monotone`. The open input is again `B1 >= 0`.
 
+**Grid complete.** The adjacent GENERAL-piece case (`R3Cert/R47HwhAdjPieceDecomp.lean`, verified exact for
+cherry/arm) folds the `Z,rho` piece scalars into the `p-w`-edge correction:
+
+```
+(AobjAfter - AobjBefore) * a(b+1)
+  = (a-b-1)*(rho*P00 - Z*(P00+P11)/(b(a-1))) + (Z*(b+1)+rho*a)/(a-1)*P10 - (Z*a+rho*(b+1))/b*P01.
+```
+
+The full mechanical grid (leaf/piece x non-adjacent/adjacent) is now derived, exactly verified, and
+kernel-clean: `R47HwhLeafDecomp`, `R47HwhPieceDecomp`, `R47HwhAdjDecomp`, `R47HwhAdjPieceDecomp`. Every
+branch bottoms out at the same open input `B1 >= 0`.
+
 ## Research attempt on `B1` existence: every natural certificate FAILS
 
 Attacking the `B1`-existence conjecture as a research problem, all standard certificate strategies were

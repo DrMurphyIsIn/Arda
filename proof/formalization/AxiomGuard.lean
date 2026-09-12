@@ -85,6 +85,7 @@ import R3Cert.R47HnormMulti
 import R3Cert.R47HwhLeafDecomp
 import R3Cert.R47HwhPieceDecomp
 import R3Cert.R47HwhAdjDecomp
+import R3Cert.R47HwhAdjPieceDecomp
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -421,3 +422,7 @@ import R3Cert.R47HwhAdjDecomp
 #print axioms R3Cert.Step3.hwh_adj_decomp
 #print axioms R3Cert.Step3.B2adj_nonneg
 #print axioms R3Cert.Step3.adj_move_monotone
+
+-- Adjacent general-piece decomposition (2026-09-12): completes the grid (leaf/piece x non-adj/adj).
+#print axioms R3Cert.Step3.hwh_adj_piece_decomp
+#print axioms R3Cert.Step3.adj_piece_move_monotone

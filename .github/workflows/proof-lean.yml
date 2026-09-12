@@ -112,7 +112,8 @@ jobs:
             R3Cert.R47HnormMulti \
             R3Cert.R47HwhLeafDecomp \
             R3Cert.R47HwhPieceDecomp \
-            R3Cert.R47HwhAdjDecomp
+            R3Cert.R47HwhAdjDecomp \
+            R3Cert.R47HwhAdjPieceDecomp
 
       # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
       # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build
