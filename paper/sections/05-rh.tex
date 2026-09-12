@@ -443,6 +443,41 @@ development but is a \emph{draft}---its constant is not sharp, it is not
 axiom-guarded, and it is not yet wired into the region argument, so we do not lean
 on it. We flag it rather than let it blur into the verified results above.
 
+\subsection{Directions: the uniformization axes}
+
+Every classical route to the Riemann Hypothesis supplies a \emph{uniform
+object} together with an equivalence $\mathrm{RH}\Leftrightarrow(\text{the object
+holds uniformly})$: positivity of every Keiper--Li coefficient $\lambda_n$
+(Li 1997; Bombieri--Lagarias 1999), hyperbolicity of every Jensen polynomial
+$J^{d,n}_\gamma$ (P\'olya 1927; Griffin--Ono--Rolen--Zagier 2019), positivity of
+the Weil functional on the whole test space (Weil 1952; Bombieri 2000), a
+zero-free half-strip reaching $\mathrm{Re}=1/2$, vanishing of the
+Nyman--Beurling distance $d_N\to 0$ (Beurling 1955; B\'aez-Duarte 2003), or
+self-adjointness of a Hilbert--P\'olya operator. In each case the equivalence
+factors as \emph{finite faces plus an infinite quantifier}: a certificate-
+compilation engine (untrusted generator, trusted kernel) can discharge the
+finite faces---individual rungs, discriminant/Gram/PSD instances, finite-height
+identities---but the completion is an infinite conjunction or uniform-in-parameter
+statement whose discharge \emph{is} RH. This is the honesty theorem: a complete
+uniform certificate exists if and only if RH holds. The six axes are one wall in
+six coordinate systems---height-universality, degree-exhaustion, cone-exhaustion,
+basis-exhaustion, and spectral-realization---and the confirmed partial results
+(Freitas' infinitely-many-negative-$\lambda_n$; GORZ's ineffective threshold
+$n_0(d)$ worsening as $d\to\infty$; the $\log T/T$ Weil tail budget; Burnol's
+unconditional positive lower bound on $d_N$) show the wall is intrinsic to each
+system: changing coordinates changes only what the infinite quantifier ranges
+over, never its cardinality. As \emph{program directions}, the highest-value
+targets for finite kernel-checked certificate work are the two axes whose rungs
+are decidable and shovel-ready: Jensen--P\'olya hyperbolicity (each
+$J^{d,n}$ a discriminant/Hermite-PSD certificate, extending the
+$d\le 9\times10^{24}$ unconditional range) and finite-window Weil positivity
+(reduced by recent work to the PSD-ness of a single explicit Gram matrix,
+with a two-sided certification calculus over a certified archimedean-tail
+budget). We stress the ceiling explicitly: none of these routes closes RH, each
+route's completion is itself the open problem, and $\texttt{conjecture1\_proved}
+= \texttt{False}$. The contribution is a verified ladder of finite rungs and the
+certification calculus on top of them---never the uniform object, which is RH.
+
 The methodological point for this paper is that the same
 untrusted-generator/trusted-kernel discipline that handled a combinatorial
 extremal problem also produces honest analytic results---and, just as important,
