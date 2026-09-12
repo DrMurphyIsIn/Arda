@@ -755,3 +755,6 @@ name = "RvMArchElemSeries"
 
 [[lean_lib]]
 name = "RvMArchElemBound"
+
+[[lean_lib]]
+name = "RvMArchElemCoeff"

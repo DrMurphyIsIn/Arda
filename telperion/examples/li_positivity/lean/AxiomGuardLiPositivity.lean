@@ -90,6 +90,7 @@ import AllZeros_h4000
 import StripClear
 import RvMArchElemSeries
 import RvMArchElemBound
+import RvMArchElemCoeff
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -525,3 +526,20 @@ import RvMArchElemBound
 #print axioms RvMWeierstrass.archSummand_eq_compact
 #print axioms RvMWeierstrass.archSummand_norm_le
 #print axioms RvMWeierstrass.tendstoUniformlyOn_archSummand
+
+-- Arc B, PR B1b part 2: the Taylor-coefficient extraction.
+-- taylorCoeff_Gammaℝ_elem (headline): taylorCoeff Γℝ n = −(γ+logπ)/2·(n+1) − 1 + Σ'_j
+--   [(n+1)/(2(j+1)) − 1 + ((2j+2)/(2j+3))^(n+1)] -- the n-th Taylor coefficient of the archimedean
+--   Li generating function as an explicit harmonic-number-shaped elementary series. Built from the
+--   single-summand derivative iteratedDeriv_archSummand_zero (the two Mobius closed forms
+--   iteratedDeriv_invOneSub_sq + iteratedDeriv_scaledMobius via the linear split archSummand_eq_linear),
+--   and THE SWAP iteratedDeriv_tsum_archSummand (differentiation commutes with the infinite sum, by
+--   iterating Mathlib's locally-uniform-limit derivative theorem on ball(0,1/4) -- no per-order
+--   summable bounds, only B1b-pt1's 0-th-order uniform bound). Γ-function calculus only.
+--   conjecture1_proved=False.
+#print axioms RvMWeierstrass.iteratedDeriv_invOneSub_sq
+#print axioms RvMWeierstrass.iteratedDeriv_scaledMobius
+#print axioms RvMWeierstrass.archSummand_eq_linear
+#print axioms RvMWeierstrass.iteratedDeriv_archSummand_zero
+#print axioms RvMWeierstrass.iteratedDeriv_tsum_archSummand
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_elem
