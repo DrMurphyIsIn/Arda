@@ -72,6 +72,7 @@ import RvMBacklundJensen
 import RvMBacklundConfine
 import RvMBacklundPartition
 import RvMBacklundSignConst
+import RvMBacklundFinite
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -387,3 +388,10 @@ import RvMBacklundSignConst
 --   (IVT intermediate_value_uIcc), so Re f one sign => PR 4b either-sign confinement. Reduces the
 --   per-piece hyp to the natural output of partitioning at Re ζ's zeros. conjecture1_proved=False.
 #print axioms Backlund.argChangeHoriz_abs_lt_pi_of_re_ne_zero
+
+-- Backlund S(T)=O(log T), PR 4c (finiteness): F_T's real zeros are finite.
+-- backlundAux_real_zeros_finite: {σ ∈ [1/2,2] | F_T σ = 0} is finite -- it injects (Complex.ofReal)
+--   into the finite support of F_T's divisor on closedBall 2 (3/2) (PR 3b machinery). A real zero σ
+--   gives ↑σ with F_T ↑σ=0: analyticOrderAt ≠0 (analyticOrderAt_ne_zero) and ≠⊤ (identity theorem, else
+--   F_T≡0 contra F_T(2)≠0), so ↑σ ∈ divisor support. conjecture1_proved=False.
+#print axioms Backlund.backlundAux_real_zeros_finite
