@@ -281,18 +281,22 @@ def _box_tag(re_lo, re_hi, im_lo, im_hi) -> str:
     return s.replace("-", "m")
 
 
-def _online_sweep_zero_count(im_lo, im_hi, prec: int) -> int:
+def _online_sweep_zero_count(im_lo, im_hi, prec: int, density: float = 1.0) -> int:
     """Count on-line zeros of Lambda in [im_lo, im_hi] via a sign-change sweep on the critical line.
 
     Sample spacing is strictly below `pi / log(max(im_hi, 2))` (the mean zero spacing near height T
     is ~2*pi/log(T), so this resolves every zero).  Adaptively refines: if two consecutive
     sign-definite samples both have the same sign but the gap is large, the caller relies on the
-    dense spacing.  Returns the number of sign changes (distinct on-line zeros)."""
+    dense spacing.  Returns the number of sign changes (distinct on-line zeros).
+
+    `density > 1` shrinks the sample spacing by that factor — the close-pair re-sweep knob
+    (a pair of zeros closer than the mean spacing needs a denser grid to expose both sign
+    changes; the T=2000..4000 campaign cured all refusals by density ≤ 6)."""
     im_lo = Fraction(im_lo)
     im_hi = Fraction(im_hi)
     spacing_cap = math.pi / math.log(max(float(im_hi), 2.0))
     # Use 0.9 of the cap for a strict inequality margin.
-    step_target = spacing_cap * 0.9
+    step_target = spacing_cap * 0.9 / max(density, 1.0)
     n_steps = max(3, int(math.ceil(float(im_hi - im_lo) / step_target)) + 1)
     step = (im_hi - im_lo) / (n_steps - 1)
     samples = []
@@ -305,7 +309,7 @@ def _online_sweep_zero_count(im_lo, im_hi, prec: int) -> int:
 
 def run_box(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, winding_prec: int = 160,
             n_seed: int = 4, out_dir: Path | None = None, write: bool = True,
-            check: bool = False) -> str:
+            check: bool = False, density: float = 1.0) -> str:
     """Driver: compute the winding N, on-line N_line, edge non-vanishing for an arbitrary box, then
     emit (and optionally write) a Lean file instantiating `RHInBox.rh_in_box_of_certificate`.
 
@@ -326,7 +330,7 @@ def run_box(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, winding_prec: int = 
     n_total = wind.n
 
     # 2. On-line sign-change zero count N_line over [im_lo, im_hi].
-    n_line = _online_sweep_zero_count(il, ih, prec)
+    n_line = _online_sweep_zero_count(il, ih, prec, density)
     if n_line < 1:
         raise ValueError(
             f"run_box: on-line sweep resolved no zeros (N_line=0) in [{il},{ih}]; nothing to localize"
@@ -405,7 +409,7 @@ def _parse_box_arg(box_str: str):
 
 
 def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int = 300,
-         box=None, height=None, empty_band=None) -> int:
+         box=None, height=None, empty_band=None, density: float = 1.0) -> int:
     # Empty-band (zero-free) driver mode: winding N == 0 => box holds no zeta zero.
     if empty_band is not None:
         from telperion.driver_empty_band import run_empty_band
@@ -415,7 +419,7 @@ def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int 
     # Per-box driver mode: compute winding + on-line count, emit instantiation.
     if box is not None:
         rl, rh, il, ih = _parse_box_arg(box)
-        run_box(rl, rh, il, ih, prec=prec, check=check)
+        run_box(rl, rh, il, ih, prec=prec, check=check, density=density)
         return 0
     if height is not None:
         # Shortcut for the critical strip box [2/5, 3/5] x [0, T].
@@ -483,6 +487,8 @@ if __name__ == "__main__":
                          "instantiating rh_in_box_of_certificate; refuses invalid/under-resolved boxes")
     ap.add_argument("--height", type=str, default=None,
                     help="per-box driver shortcut for the strip box [2/5,3/5] x [0,T]")
+    ap.add_argument("--density", type=float, default=1.0,
+                    help="on-line sweep density factor (>1 = denser close-pair re-sweep)")
     ap.add_argument("--empty-band", type=str, default=None,
                     help="empty-band (zero-free) driver: sigma0,sigma1,T0,T1 (rationals). Computes "
                          "winding N, asserts N == 0, and emits NoZerosInBox_<tag>.lean certifying the "
@@ -499,4 +505,5 @@ if __name__ == "__main__":
         box=args.box,
         height=args.height,
         empty_band=args.empty_band,
+        density=args.density,
     ))
