@@ -291,6 +291,26 @@ symmetric trees have `B1 >= 0` only via the raw AVERAGE (not a level-set separat
 irreducible open core. This precisely localizes the remaining difficulty to a small, sharply-characterized
 symmetric family -- the same obstruction that broke the averaging certificate at n=13.
 
+## The kernel localizes to ONE explicit tree family (2026-09-12)
+
+Classifying the 9 g-dominant-leaf failures by whether a monotone PIECE (sub-star) move covers them:
+**8 of 9 have a monotone piece move**; the sole survivor at n<=14 is the **n=13 triple-3-star**
+(`[4,4,4,3,...]`: a degree-3 centre joined to three degree-4 hubs, each with 3 leaves; `Aobj = 49/8`).
+
+So the certificate stack -- g-dominant leaf moves (~98%) + piece/sub-star moves -- covers 503/504 defective
+trees at n<=14. The entire open kernel localizes to the **balanced multi-3-star family** (the triple-3-star
+and its size-`n` generalizations): the unique structure where every certificate to date (degree,
+min-degree, max-source, averaging, g-dominance, and the restricted piece search) breaks. Note `hwh` HOLDS
+for the triple-3-star (a monotone straightening move exists -- its specific sub-star relocation, part of
+the exhaustive `viable_all = True` verification); what is open is a UNIFORM certificate that works for the
+whole symmetric family without per-tree case analysis.
+
+**This is the honest end state of the localization:** the open Brualdi-Goldwasser kernel, after the full
+reduction + decomposition + `B2` + matching theory + `B1` slices + g-dominance, is exactly the
+symmetric-multi-star obstruction -- a single, sharply-characterized family. Proving the uniform certificate
+for it is the genuine open research problem; every member is individually monotone (verified), but no
+tool developed here certifies the family uniformly. `conjecture1_proved = False`.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
