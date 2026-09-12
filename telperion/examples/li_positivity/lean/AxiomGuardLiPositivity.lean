@@ -79,6 +79,9 @@ import RvMBacklundSignClosed
 import RvMBacklundCount
 import RvMBacklundZeta
 import RvMBacklundCountJensen
+import RvMBacklundS
+import RvMBacklundLogCont
+import RvMBacklundExplicit
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -453,3 +456,9 @@ import RvMBacklundCountJensen
 --   the SLIMMED S(T)=O(log T), carrying ONLY hζne. conjecture1_proved=False.
 #print axioms Backlund.continuousOn_logDeriv_zeta_segment
 #print axioms Backlund.riemannS_abs_le_log_of_ne_zero
+
+-- Arc A (effective RvM), PR A1: the pure-in-T Backlund bound.
+-- riemannS_abs_le_log_explicit (hT:4≤T)(hζne): |riemannS T| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 --
+--   the PR-6 headline with ‖F_T 2‖ majorized away by its Jensen-centre floor 2−π²/6
+--   (backlundAux_two_norm_ge), giving a closed-form O(log T) in T alone. conjecture1_proved=False.
+#print axioms Backlund.riemannS_abs_le_log_explicit
