@@ -89,6 +89,7 @@ import BraggFloor
 import RvMNTLadder
 import AllZeros_h4000
 import StripClear
+import RvMNTLadderH4000
 import RvMArchElemSeries
 import RvMArchElemBound
 import RvMArchElemCoeff
@@ -525,6 +526,13 @@ import RvMArchElemCoeff
 #print axioms Backlund.nt_effective_bound_of_ladder
 #print axioms AllZeros_h4000.all_nontrivial_zeros_up_to_height_4000_of_bands
 #print axioms StripClear.height_floor_of_box_certs
+
+-- Arc A, the h4000-instantiated corollary: nt_effective_bound_h4000 (4≤T≤4000)(90 ladder cert
+-- hypotheses = the Arb trust seam)(hhalf: ζ(1/2+iT)≠0)(ξ edges)(hwind=2πiN):
+-- |N − 1 − θ(T)/π| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 -- the effective RvM under the ladder's own
+-- certificate bundle, whole-segment hζne fully replaced by the one-point caveat. Mechanical
+-- instantiation of nt_effective_bound_of_ladder at the ported h4000 capstone. conjecture1_proved=False.
+#print axioms Backlund.nt_effective_bound_h4000
 
 -- Arc B (archimedean Li growth), PR B1a: the ELEMENTARY series identity.
 -- logDeriv_phi_Gammaℝ_eq_elem (hz:‖z‖<1/2): logDeriv (Γℝ∘M) z = −(γ+logπ)/2·M² − M + Σ'_j
