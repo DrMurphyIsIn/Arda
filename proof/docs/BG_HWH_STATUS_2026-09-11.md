@@ -280,6 +280,17 @@ checkable:
 Still open, but now a threshold/level-set statement about a local matching functional -- a more tractable
 target than the raw average comparison (it removes the averaging and asks for a clean level-set separation).
 
+**Testing the sharpened conjecture (n<=14): g-dominant-move EXISTENCE FAILS on a small symmetric residual.**
+Exhaustive check of "does a g-dominant defect-reducing lower-degree leaf move exist":
+- non-adjacent moves only: fails on 21/504 defective trees;
+- allowing adjacent moves too: fails on **9/504** trees.
+The 9 survivors are exactly the highly-symmetric high-degree multi-hubs -- the triple-3-star family and
+kin (`[4,4,4,3,...]`, `[4,4,4,4,...]`, `[5,4,4,3,...]`, `[3,2,2,...,2,...]`). So g-dominance is a genuine
+sufficient condition covering ~98% of trees (all but 9 at n<=14), but it does NOT close the kernel: those 9
+symmetric trees have `B1 >= 0` only via the raw AVERAGE (not a level-set separation), which is the
+irreducible open core. This precisely localizes the remaining difficulty to a small, sharply-characterized
+symmetric family -- the same obstruction that broke the averaging certificate at n=13.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
