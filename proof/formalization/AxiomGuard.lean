@@ -391,3 +391,9 @@ import R3Cert.R47HnormMulti
 #print axioms R3Cert.Step3.hnormMulti_of_hnorm
 #print axioms R3Cert.Step3.hnormMulti_holds_at_T52
 #print axioms R3Cert.Step3.singleHub_refuted_but_multiHub_open
+
+-- HnormMulti is discharged by the pre-existing whole-hub obligation hwh (unrefuted by the n=52
+-- counterexample -- hwh feeds only the general-backbone straightening; the refutation killed the
+-- SEPARATE general->Balanced+Capped normalization). hwh + HdomMulti => broadened conjecture 1.
+#print axioms R3Cert.Step3.hnormMulti_of_wholehub
+#print axioms R3Cert.Step3.conjecture1_of_HnormMulti_of_wholehub

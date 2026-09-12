@@ -54,16 +54,34 @@ Broaden the class; the tie becomes the per-size multi-hub backbone argmax:
 All axiom-clean `[propext, Classical.choice, Quot.sound]`, no `sorry`. Wired into `AxiomGuard.lean` +
 `proof-lean.yml`.
 
+## `HnormMulti` is discharged by the pre-existing `hwh` -- and `hwh` was NOT refuted
+
+**Clarification / correction of framing.**  `hnorm_of_wholehub` (R47CoverRelation.lean:114) already reduces
+the whole-hub obligation `hwh` to the GENERAL-backbone Hnorm (`exists s : List Hub, usize (backboneU s) =
+usize t /\ ...`) -- with NO `Balanced /\ Capped`.  That is exactly `HnormMulti`.  So:
+
+- `usize_backboneU_of_ne_nil`, `hnormMulti_of_wholehub` -- `hwh => HnormMulti` (realization seam +
+  single-leaf edge case).
+- `conjecture1_of_HnormMulti_of_wholehub` -- `hwh + HdomMulti => forall t, Aobj t <= Aobj (tie (usize t))`.
+
+Consequently the n=52 refutation did **not** kill `hwh`.  `hwh` feeds only the tree->general-backbone
+straightening; what `r47_hnorm_false_at_52` refuted is the SEPARATE general->Balanced+Capped normalization
+(the extra step the single-hub `tieArgmax` capstone needed): `T52` is a general backbone with no
+Balanced+Capped dominator of its size.  Earlier phrasing that called `hwh` "false / unprovable" was
+imprecise -- the refuted statement is the Balanced+Capped normalization, not `hwh`.  `hwh` (the original
+"adaptive de-branch" object) survives as the sole open mathematical obligation for the salvaged capstone,
+and is plausibly true (all n<=90 maximizers are backbones).
+
 ## Honest verdict
 
 The FRAMEWORK salvages cleanly: broaden `Hnorm`'s target to multi-hub backbones, define the tie as the
-multi-hub backbone argmax (making `HdomMulti` tautological), and the n=52 refutation no longer bites.
+multi-hub backbone argmax (making `HdomMulti` tautological), and the n=52 refutation no longer bites.  The
+sole open mathematical obligation is `hwh` (= `HnormMulti`, the tree->backbone straightening), unrefuted.
 
-There is no free lunch. With `tie` = the backbone argmax, `conjecture1` reduces to `HnormMulti` -- every
-tree straightens (without decreasing `Aobj`) to a hub-backbone of its size -- equivalently, the per-size
-`Aobj`-maximizer over all trees IS a multi-hub cherry-backbone. That structural claim (strongly supported
-by the data above, all n<=90) is the open Brualdi-Goldwasser core (Pant 2026). The refutation corrected
-the target; it did not make BG tractable. `conjecture1_proved = False` stands.
+There is no free lunch.  `HnormMulti`/`hwh` is equivalently the claim that the per-size `Aobj`-maximizer
+over all trees IS a multi-hub cherry-backbone -- strongly supported by the data above (all n<=90), but it
+is the open Brualdi-Goldwasser core (Pant 2026).  The refutation corrected the target and revived `hwh` as
+the right obligation; it did not make BG tractable.  `conjecture1_proved = False` stands.
 
 ## Reproduce
 

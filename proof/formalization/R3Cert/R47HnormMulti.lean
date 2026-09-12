@@ -30,6 +30,7 @@
 -/
 import Mathlib
 import R3Cert.R47HnormFalse52
+import R3Cert.R47CoverRelation
 
 namespace R3Cert
 namespace Step3
@@ -82,6 +83,55 @@ theorem singleHub_refuted_but_multiHub_open :
     (¬ ∃ s : List Hub, Balanced s ∧ Capped s ∧ stateSize s = 52 ∧ Aobj T52 ≤ Aobj (backboneU s))
     ∧ (∃ s : List Hub, stateSize s = usize T52 ∧ Aobj T52 ≤ Aobj (backboneU s)) :=
   ⟨r47_hnorm_false_at_52, hnormMulti_holds_at_T52⟩
+
+/-! ### `HnormMulti` is discharged by the pre-existing whole-hub obligation `hwh`
+
+    IMPORTANT CLARIFICATION.  The n=52 refutation (`r47_hnorm_false_at_52`) did NOT kill the whole-hub
+    straightening `hwh`.  The repo's `hnorm_of_wholehub` (R47CoverRelation.lean:114) already reduces
+    `hwh` to the GENERAL-backbone Hnorm (`∃ s : List Hub, usize (backboneU s) = usize t ∧ ...`) with NO
+    `Balanced ∧ Capped` -- which is exactly `HnormMulti`.  What the refutation killed is the FURTHER
+    general->Balanced+Capped normalization (the extra step the single-hub `tieArgmax` capstone needed):
+    `T52` is a general backbone with no Balanced+Capped dominator of its size.  `hwh` itself feeds only
+    the general-backbone straightening and survives -- and is precisely the sole open obligation for the
+    BROADENED capstone. -/
+
+/-- `usize (backboneU s) = stateSize s` for a nonempty state (the realization seam). -/
+theorem usize_backboneU_of_ne_nil {s : List Hub} (hs : s ≠ []) :
+    usize (backboneU s) = stateSize s := by
+  obtain ⟨hd, tl, rfl⟩ := List.exists_cons_of_ne_nil hs
+  have h := usizeList_tailU (hd :: tl)
+  rw [tailU_cons, usizeList_cons, usizeList_nil, Nat.add_zero] at h
+  exact h
+
+/-- **`HnormMulti` follows from the whole-hub obligation `hwh`.**  `hnorm_of_wholehub` produces a
+    general backbone dominating `t` at matching `usize`; convert to the `stateSize` form (nonempty via
+    the realization seam; the single-leaf `s = []` case uses the size-1 hub `[([],0)]`, whose backbone
+    is the same `node []`).  So `hwh` -- unrefuted by the n=52 counterexample -- discharges `HnormMulti`. -/
+theorem hnormMulti_of_wholehub
+    (hwh : ∀ t : UTree, strDefect t ≠ 0 → RerootMinimal t → (¬ ∃ t', FlpStepAt t t') →
+        ∃ t', CoverR t t') :
+    ∀ t : UTree, ∃ s : List Hub, stateSize s = usize t ∧ Aobj t ≤ Aobj (backboneU s) := by
+  intro t
+  obtain ⟨s, hsz, hle⟩ := hnorm_of_wholehub hwh t
+  rcases eq_or_ne s [] with rfl | hne
+  · have hb0 : backboneU ([] : List Hub) = UTree.node [] := rfl
+    have ht1 : usize t = 1 := by
+      rw [hb0, usize_node, usizeList_nil] at hsz; omega
+    refine ⟨[([], 0)], ?_, ?_⟩
+    · rw [ht1]; rfl
+    · rw [show backboneU [([], 0)] = UTree.node [] from rfl, ← hb0]; exact hle
+  · exact ⟨s, by rw [← usize_backboneU_of_ne_nil hne]; exact hsz, hle⟩
+
+/-- **The broadened capstone, discharged by `hwh` + `HdomMulti`.**  Conjecture 1 (in the `usize`-tie
+    form) follows from the whole-hub straightening `hwh` (the ORIGINAL open object -- unrefuted) together
+    with the per-size backbone-dominating tie `HdomMulti` (tautological for the multi-hub argmax).  This
+    is the honest state of the salvaged program: `hwh` is the sole open mathematical obligation. -/
+theorem conjecture1_of_HnormMulti_of_wholehub (tie : ℕ → UTree)
+    (hwh : ∀ t : UTree, strDefect t ≠ 0 → RerootMinimal t → (¬ ∃ t', FlpStepAt t t') →
+        ∃ t', CoverR t t')
+    (HdomMulti : ∀ s : List Hub, Aobj (backboneU s) ≤ Aobj (tie (stateSize s))) :
+    ∀ t : UTree, Aobj t ≤ Aobj (tie (usize t)) :=
+  conjecture1_of_HnormMulti tie (hnormMulti_of_wholehub hwh) HdomMulti
 
 end Step3
 end R3Cert
