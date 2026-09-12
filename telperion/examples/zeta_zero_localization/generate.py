@@ -438,7 +438,30 @@ def run_box_turing(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, edge_prec: in
 
     rl, rh, il, ih = (Fraction(v) for v in (re_lo, re_hi, im_lo, im_hi))
     n_line = _online_sweep_zero_count_platt(il, ih, prec)
-    edges = enclose_band_edges(il, ih, prec=edge_prec)
+    # persistent horizontal-edge cache: AH at height T is shared by the bands
+    # below and above T (each interior edge priced once across the campaign)
+    cache_dir = _OUT.parent.parent / "edges_cache"
+    cache_dir.mkdir(exist_ok=True)
+
+    def _cache_get(t):
+        p = cache_dir / f"ah_{t}_{edge_prec}.json"
+        if p.exists():
+            import json as _json
+            lo_s, hi_s = _json.loads(p.read_text())
+            return (Fraction(lo_s), Fraction(hi_s))
+        return None
+
+    def _cache_put(t, val):
+        import json as _json
+        p = cache_dir / f"ah_{t}_{edge_prec}.json"
+        tmp = p.with_suffix(".tmp")
+        tmp.write_text(_json.dumps([str(val[0]), str(val[1])]))
+        tmp.replace(p)
+
+    edges = enclose_band_edges(il, ih, prec=edge_prec, bot_cache=_cache_get(il))
+    if _cache_get(il) is None:
+        _cache_put(il, edges["ahb"])
+    _cache_put(ih, edges["aht"])
     L = 2 * edges["av2"][0] + edges["aht"][0] - edges["ahb"][1] + edges["ag1"][0] + edges["ag2"][0]
     H = 2 * edges["av2"][1] + edges["aht"][1] - edges["ahb"][0] + edges["ag1"][1] + edges["ag2"][1]
     k = round((float(L) + float(H)) / 2 / (2 * _m.pi))
