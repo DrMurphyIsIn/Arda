@@ -11,7 +11,7 @@
 \newtheorem{proposition}{Proposition}
 \newtheorem{definition}{Definition}
 
-\title{Toward Dyson's Quasicrystal:\\ Kernel-Verified Diffraction and Localization\\ of the Riemann Zeta Zeros\\[0.6em] \large with the Telperion certificate engine}
+\title{Toward Dyson's Quasicrystal:\\ Kernel-Verified Diffraction, Finite-Height Localization,\\ and an Effective Zero-Free Region for the\\ Riemann Zeta Zeros\\[0.6em] \large with the Telperion certificate engine}
 \author{Peter W. Murphy, MD}
 \date{\today}
 
@@ -43,19 +43,15 @@ compiler built on the principle \emph{check the witness, don't trust the author}
 an untrusted generator certifies each claim in exact arithmetic and emits Lean
 that Mathlib's kernel re-proves from scratch, with a self-verification layer
 (sensitivity declarations, forge-the-witness negative controls, an independent
-second checker) against true-but-vacuous theorems. Two further frontiers---a
-machine-checked analytic core for the (still open) Brualdi--Goldwasser
-tree-maximizer conjecture, and a kernel-checked, symbolic-in-$n$ sum-of-squares
-lower bound in proof complexity---demonstrate that the same discipline carries
-across combinatorial, analytic, and proof-theoretic mathematics.
+second checker) against true-but-vacuous theorems. The same engine has been
+applied to open problems in extremal combinatorics and proof complexity,
+reported separately.
 \end{abstract}
 
 \input{sections/01-intro}
 \input{sections/05-rh}
 \input{sections/02-system}
 \input{sections/03-vacuity}
-\input{sections/04-bg}
-\input{sections/06-proofcomplexity}
 \input{sections/07-evaluation}
 \input{sections/08-related}
 \input{sections/09-conclusion}
