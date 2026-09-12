@@ -56,3 +56,7 @@ roots = ["LogZetaSeries"]
 [[lean_lib]]
 name = "SignChain"
 roots = ["SignChain"]
+
+[[lean_lib]]
+name = "StirlingBinet"
+roots = ["StirlingBinet"]
