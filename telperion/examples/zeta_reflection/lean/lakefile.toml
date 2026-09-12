@@ -28,3 +28,11 @@ roots = ["Spike.Toy"]
 [[lean_lib]]
 name = "DIntvDef"
 roots = ["DIntvDef"]
+
+[[lean_lib]]
+name = "LogBranches"
+roots = ["LogBranches"]
+
+[[lean_lib]]
+name = "DIntvCorrect"
+roots = ["DIntvCorrect"]
