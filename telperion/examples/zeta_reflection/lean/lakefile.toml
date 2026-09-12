@@ -36,3 +36,7 @@ roots = ["LogBranches"]
 [[lean_lib]]
 name = "DIntvCorrect"
 roots = ["DIntvCorrect"]
+
+[[lean_lib]]
+name = "TaylorKernels"
+roots = ["TaylorKernels"]
