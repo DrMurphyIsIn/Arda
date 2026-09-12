@@ -1,5 +1,5 @@
 name = "ZetaReflectionSpike"
-defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef"]
+defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD"]
 
 # Same Mathlib pin as the sibling zeta_zero_localization island (v4.32.0), so the
 # path require below shares the on-disk Mathlib build cache -- `lake exe cache get`
@@ -40,3 +40,15 @@ roots = ["DIntvCorrect"]
 [[lean_lib]]
 name = "TaylorKernels"
 roots = ["TaylorKernels"]
+
+[[lean_lib]]
+name = "CertVerify"
+roots = ["CertVerify"]
+
+[[lean_lib]]
+name = "Spike_BenchExpD"
+roots = ["Spike.BenchExpD"]
+
+[[lean_lib]]
+name = "LogZetaSeries"
+roots = ["LogZetaSeries"]

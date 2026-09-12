@@ -147,3 +147,43 @@ below 10⁹. This is the one place A0 data tightens the plan.
   type-checked target — restate as a theorem and prove (FTC / `intervalIntegral.integral_deriv`).
 - **A4 (`checkBand`)**: BandData must be `Array`-shaped; budget `native_decide` for discharge;
   reserve pure `decide` for the small-band purity spot-check protocol (E-track).
+
+---
+
+## A1 addendum — expD kernel micro-benchmark (`dintv-core`, 2026-09-12)
+
+*Measured on the same M3 Ultra, under concurrent 10⁶ campaign load. conjecture1_proved = False.*
+
+**Object.** `TaylorKernels.hornerD` evaluating a **degree-10 exp Taylor partial sum** on a
+**128-bit dyadic** DIntv argument (`x = 2^127·2^{-128} ≈ 0.5`), accumulator pinned at
+exponent −128, dropping 8 bits/step via `roundTo`.  Discharged by `rfl` against the concrete
+127-bit-mantissa endpoints (`Spike/BenchExpD.lean` → `bench_expD`), so the kernel is forced
+through complete whnf of every `mul`/`add`/`roundTo`/shift in the fold.
+
+**Result (3 runs, `-Dprofiler=true`):**
+
+| Metric | Value |
+|---|---|
+| Kernel `type checking` (full degree-10 fold, 128-bit, `rfl`) | **6.0–6.3 ms** |
+| Elaboration | 35–42 ms |
+| `#print axioms bench_expD` | `[propext, Quot.sound]` — no `sorryAx`, no `ofReduceBool` |
+
+**Reading.** ~21 interval-ops/eval (10 `mul` + 10 `add` + `roundTo`s) in ~6 ms ⇒ a single
+128-bit expD costs the kernel ≈ **6 ms**, i.e. ~3.4·10³ interval-ops/s on this path — the same
+order as the A0 raw figure (~1–2·10⁴), confirming A0's **reduction-step-count** bottleneck
+(128-bit mantissas did NOT proportionally worsen it vs A0's mixed-width Toy). Consequence for
+A2/A4: one exp/cos/sin evaluation per gLine sign box is ~single-digit-ms kernel; a band with
+~10²–10³ transcendental evals is seconds-to-minutes of pure kernel — reinforcing the hybrid
+charter (kernel-only for spot-check/small heights, `native_decide` for the bulk).
+
+## A1 deliverables summary (`dintv-core`)
+- `DIntvCorrect.lean` — sub/neg/abs/scale2/ofInt/roundTo/hull + sign predicates + interval
+  separation, all mem-sound (no sorry). `roundTo` = directed-outward width-control primitive.
+- `TaylorKernels.lean` — exp/cos/sin two-sided Real brackets (via Mathlib `exp_bound`/
+  `cos_bound`/`sin_bound`), exp endpoint-monotonicity bridge, DIntv soundness contracts,
+  computable division-free Horner kernel (`hornerD`/`forceExp`).
+- `CertVerify.lean` — invSqrt / inv / ln (via exp bracket) / π (Mathlib `pi_d20`, ~66 bits)
+  certificate soundness (no sorry).
+- `AxiomGuardReflection.lean` — 33 headlines, all exactly `[propext, Classical.choice,
+  Quot.sound]`, zero `sorryAx`.
+- **UNSOUND-pending: none.** Every op landed with its soundness lemma.
