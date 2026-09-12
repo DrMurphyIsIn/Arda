@@ -88,6 +88,7 @@ import R3Cert.R47HwhAdjDecomp
 import R3Cert.R47HwhAdjPieceDecomp
 import R3Cert.R47HwhB1Partial
 import R3Cert.R47MatchingSum
+import R3Cert.R47HwhSymStarCert
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -446,3 +447,10 @@ import R3Cert.R47MatchingSum
 -- B2 bound fully assembled over the matching theory (2026-09-12): P11 <= pairs.card * P00, i.e. the
 -- B2 hypothesis of R47HwhLeafDecomp is now a THEOREM (no longer assumed).
 #print axioms R3Cert.Step3.B2_bound
+
+-- UNIFORM certificate for the symmetric-multi-star obstruction (2026-09-12): the de-branching move is
+-- Aobj-monotone on the WHOLE balanced multi-star family ST(k,m), k>=3,m>=2 (incl. the triple-3-star),
+-- via F_num>=0 reduced to two shifted-nonneg-coeff cubic positivities.
+#print axioms R3Cert.Step3.symstar_cubicA_nonneg
+#print axioms R3Cert.Step3.symstar_cubicF3_nonneg
+#print axioms R3Cert.Step3.symstar_move_certificate

@@ -311,6 +311,31 @@ symmetric-multi-star obstruction -- a single, sharply-characterized family. Prov
 for it is the genuine open research problem; every member is individually monotone (verified), but no
 tool developed here certifies the family uniformly. `conjecture1_proved = False`.
 
+## UNIFORM CERTIFICATE for the symmetric-multi-star family (2026-09-12)
+
+The localized obstruction -- the balanced multi-star `ST(k,m)` (centre degree `k`, `k` hubs each with `m`
+leaves; includes the triple-3-star `ST(3,3)`) -- is now handled UNIFORMLY, kernel-checked
+(`R3Cert/R47HwhSymStarCert.lean`, `symstar_uniform_cert.py`).
+
+Closed forms (verified exact against the cavity engine): `Aobj(ST(k,m)) = 2*alpha^(k-1)`,
+`alpha=(2m+1)/(m+1)`; the DE-BRANCHING move (detach an arm, re-attach it as a pendant path via a leaf-leaf
+edge) gives `Aobj(ST_move) = tau2*alpha^(k-2) + (nu2*alpha^(k-2)+(k-2)tau2*alpha^(k-3))/((k-1)(m+1))` with
+`tau2=(20m^2-2m-1)/(4m(m+1))`, `nu2=(10m-3)/(4m)`. Monotonicity `Aobj(ST_move) >= Aobj(ST)` reduces (factor
+`alpha^(k-3)>0`, clear `(k-1)(m+1)>0`) to
+
+    F_num(k,m) = (k-3)*(2m+1)(4m^3+2m^2-7m-1) + (2m+1)(8m^3+4m^2-11m-3) >= 0,   linear in k.
+
+Both cubics are positive for `m>=2` (shift `m=t+2`: `4t^3+26t^2+49t+25`, `8t^3+52t^2+101t+55`, all
+coefficients `>0`) and `k>=3`, so `F_num >= 0` -- `symstar_move_certificate` (kernel-clean). Hence the
+de-branching move is `Aobj`-monotone on the ENTIRE balanced multi-star family, so this symmetric obstruction
+is uniformly NOT a counterexample to `hwh` -- the family the averaging/g-dominance certificates could not
+reach is now closed by an explicit Positivstellensatz certificate (shifted nonneg-coefficient positivity,
+Telperion-shaped).
+
+Scope: this certifies the BALANCED family `ST(k,m)`. The residual also contained a few non-balanced
+symmetric variants (`[5,4,4,3]`, mixed-degree hubs); the same de-branching move + an analogous (messier)
+closed form is expected to cover them, but only the balanced family is certified here.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
