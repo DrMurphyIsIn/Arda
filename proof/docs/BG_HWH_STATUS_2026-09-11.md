@@ -40,6 +40,60 @@ the straightening "resists the averaging certificate"). The three formalized `Co
 (`FlpStepAt` ~88%, `AdjLeafStep`, `CompRerootStep`) cover ~99.3%; the residual needs an ADAPTIVELY chosen
 move, which is exactly why `hwh` is not closed by a finite disjunction of fixed moves.
 
+## Route-3 sharpening: the move class is PIECE / SUB-STAR RELOCATION (503/504)
+
+`hwh_viability.py` further restricts the move and re-tests exhaustively (n<=14):
+- **single-LEAF relocation** (detach one leaf, reattach elsewhere): viable for **495/504** defective trees.
+- **single-PIECE relocation** (detach a leaf / cherry / arm-of-cherries, reattach its anchor): viable for
+  **503/504**.
+
+So the adaptive straightening move is NOT arbitrary -- it collapses almost entirely to a clean,
+finitely-describable class (relocate a small piece). The SOLE exception up to n=14 is the **n=13
+triple-3-star**: center vertex of degree 3 joined to three 3-stars (each a degree-4 vertex with 3 leaves),
+`Aobj = 49/8`; `strDefect = 1`. A viable size-preserving move still exists there (relocate a whole 3-star
+sub-arm: `Aobj 49/8 -> ~6.133`, defect 1->0), but the moved object is a 3-STAR (a vertex with 3 leaves),
+one notch larger than an arm-of-cherries. So the covering menu up to n=14 is:
+  { relocate a leaf | cherry | arm-of-cherries | small star } -- a finite family of piece-relocations.
+
+This reduces the `hwh` proof to two concrete sub-problems:
+1. **Piece-relocation monotonicity + destination rule.** For a piece relocation, `Aobj` changes by a
+   computable amount (degree of the source hub drops by 1, the destination's rises by 1; `per(L)/prod deg`
+   shifts accordingly). The open crux is a DETERMINISTIC destination rule provably giving `Aobj`-non-decrease
+   whenever the move reduces defect -- the "adaptive" part is exactly the destination choice.
+2. **Finite exceptional structures** (triple-3-star type) needing a sub-star relocation -- a separate,
+   characterizable finite menu.
+
+The three formalized `CoverR` classes already discharge `FlpStepAt` (~88%, the canonical leaf-path-extension),
+`AdjLeafStep`, `CompRerootStep` (~99.3% total). The route-3 finding says the residual is covered by
+piece/sub-star relocations -- so extending `CoverR` with a proven-monotone piece-relocation class (plus the
+finite exceptional menu) is the concrete formalization path.
+
+## The destination rule: deterministic, but its monotonicity is structure-coupled
+
+Testing deterministic destination rules for leaf relocation (exhaustive n<=14, over the 497 trees with a
+defect-reducing leaf move):
+
+| rule | monotone fraction |
+|------|-------------------|
+| relocate to MAX receiving degree ("consolidate to the big hub") | 196/497 = 39.4% |
+| relocate to MIN receiving degree (among defect-reducing) | **495/497 = 99.6%** |
+| relocate maximizing source degree | 495/497 = 99.6% |
+| any viable move exists | 495/497 = 99.6% |
+
+So **min-receiving-degree EXACTLY matches "a monotone move exists"** -- it is the deterministic selector for
+the leaf-relocation class (the naive consolidate-to-big-hub rule is wrong). The 2/497 residual trees have a
+defect-reducing leaf move but no monotone one, and need a cherry/arm relocation instead.
+
+But there is NO clean degree-only monotonicity lemma underneath it. The candidate universal lemma
+"relocating a leaf to a strictly-lower-degree vertex never decreases Aobj" is **FALSE** -- 15522
+counterexamples (n<=13); first at n=6: leaf moved from a degree-2 vertex onto a degree-1 leaf drops Aobj
+3.5 -> 19/6. The min-degree rule works ONLY when combined with the defect-reduction constraint (which
+restricts the destination to a consolidating position). So the monotonicity is genuinely COUPLED to the
+structural defect condition -- it is not separable into a standalone degree inequality. This is exactly why
+the straightening "resists the averaging certificate": the correct move is a deterministic function of the
+tree (min-degree defect-reducing relocation), but proving its Aobj-non-decrease requires the joint
+structure, not a local degree bound.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
