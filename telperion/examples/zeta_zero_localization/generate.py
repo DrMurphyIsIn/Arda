@@ -319,6 +319,73 @@ def _online_sweep_zero_count_platt(im_lo, im_hi, prec: int) -> int:
     return n
 
 
+def _online_sweep_zero_count_grid(im_lo, im_hi, prec: int) -> int:
+    """FFT-amortized on-line sweep: one Platt multieval grid for the whole band.
+
+    Program Anduril C1.  Calls `arb_platt.platt_grid` once -- an FFT-amortized
+    scaled-Lambda evaluation at a uniform grid of N = A*B points covering
+    [im_lo, im_hi] (spacing 1/A = 0.25 by default) -- and counts the sign changes
+    of the (sign-preserving, positively scaled) Lambda boxes.  This replaces N
+    per-point acb evaluations with a SINGLE DFT call, removing the residual
+    sqrt(T) per-point cost.
+
+    CLOSE-PAIR FALLBACK: a coarse grid can miss a pair of zeros closer than the
+    grid spacing (both sign changes collapse into one same-sign step).  We
+    cross-check the grid sign-change count against the RIGOROUS zero count
+    `N(im_hi) - N(im_lo)` (each edge pinned by `zeta_nzeros`, a cheap analytic
+    Backlund/Turing count -- NOT zero-finding, ~microseconds; the same trust-hint
+    class the per-point path already relies on).  If they disagree, OR any grid
+    box straddles 0 (sign-indefinite), we fall back to
+    `_online_sweep_zero_count_platt` (adaptive midpoint sampling between
+    inventoried zeros -- deterministic close-pair resolution).
+
+    TRUST: the returned count is derived entirely from sign-definite Lambda boxes
+    (the documented Arb input class) and is accepted only when it equals the
+    rigorous edge N-difference; a wrong grid produces a fallback or a mismatch,
+    never a wrong count.  Grid values are the same Arb ball class as
+    `enclose_lambda`; nothing in the emitted Lean depends on them.
+    conjecture1_proved = False."""
+    import math as _m
+
+    from telperion.arb_platt import (
+        PLATT_GRID_AVAILABLE,
+        platt_grid,
+        zeta_nzeros,
+    )
+    if not PLATT_GRID_AVAILABLE:
+        raise RuntimeError("platt grid (scaled_lambda_vec) unavailable")
+    im_lo = Fraction(im_lo)
+    im_hi = Fraction(im_hi)
+    grid = platt_grid(im_lo, im_hi, prec=prec)
+    straddle = any(not (lo > 0 or hi < 0) for _t, (lo, hi) in grid)
+    n_grid = sign_change_count(grid)
+    # Rigorous edge N-difference cross-check (cheap: two analytic N(t) counts,
+    # each pinned to an integer -- no per-zero enclosure).
+    nlo_l, nlo_h = zeta_nzeros(im_lo, prec=max(prec, 96))
+    nhi_l, nhi_h = zeta_nzeros(im_hi, prec=max(prec, 96))
+    n_lo, n_hi = _m.floor(nlo_l), _m.floor(nhi_l)
+    pinned = (_m.floor(nlo_h) == n_lo and _m.floor(nhi_h) == n_hi)
+    n_true = n_hi - n_lo
+    if not pinned:
+        # Edge N not pinned to an integer -- cannot trust the N-difference target;
+        # defer entirely to the close-pair-safe per-point path.
+        return _online_sweep_zero_count_platt(im_lo, im_hi, prec)
+    if not straddle and n_grid == n_true:
+        return n_grid
+    # Ambiguous grid (a close pair collapsed into one step, or a sign-indefinite
+    # box).  Retry with denser grids -- still one FFT each, same trust class --
+    # before the (more expensive) per-point midpoint fallback.  Accept only a
+    # straddle-free count that matches the rigorous edge N-difference.
+    for spacing_den in (8, 16):
+        rgrid = platt_grid(im_lo, im_hi, prec=prec, spacing_den=spacing_den)
+        if any(not (lo > 0 or hi < 0) for _t, (lo, hi) in rgrid):
+            continue
+        if sign_change_count(rgrid) == n_true:
+            return n_true
+    # Grid could not disambiguate; per-interval midpoint logic (close-pair safe).
+    return _online_sweep_zero_count_platt(im_lo, im_hi, prec)
+
+
 def _online_sweep_zero_count(im_lo, im_hi, prec: int, density: float = 1.0) -> int:
     """Count on-line zeros of Lambda in [im_lo, im_hi] via a sign-change sweep on the critical line.
 
@@ -435,7 +502,15 @@ def run_box_turing(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, edge_prec: in
     )
 
     rl, rh, il, ih = (Fraction(v) for v in (re_lo, re_hi, im_lo, im_hi))
-    n_line = _online_sweep_zero_count_platt(il, ih, prec)
+    # C1: FFT-amortized grid sweep first (one Platt multieval for the whole
+    # band); on any failure fall back to the per-point Platt-hinted midpoint
+    # sweep (itself close-pair safe).  The grid path already self-falls-back to
+    # the midpoint sweep on a close-pair/straddle ambiguity, so a raised
+    # exception here means the grid entry point is unavailable, not a miscount.
+    try:
+        n_line = _online_sweep_zero_count_grid(il, ih, prec)
+    except Exception:
+        n_line = _online_sweep_zero_count_platt(il, ih, prec)
     # persistent horizontal-edge cache: AH at height T is shared by the bands
     # below and above T (each interior edge priced once across the campaign)
     cache_dir = _OUT.parent.parent / "edges_cache"
