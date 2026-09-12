@@ -23,6 +23,10 @@ class SchemaError(Exception):
     """A mission file violates the schema; message names path/field."""
 
 
+class ClaimError(Exception):
+    """A claim operation failed; message describes why."""
+
+
 def slug_of(name: str) -> str:
     return name.replace(".", "_")
 
