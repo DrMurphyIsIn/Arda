@@ -31,6 +31,40 @@ open Complex MeasureTheory intervalIntegral
 
 namespace TuringBand
 
+/-- **The canonical T5 band statement** — the single, hand-audited Prop that every
+    emitted `RHInBoxT_*` band theorem must state, up to kernel definitional
+    equality, at its own parameters.
+
+    Each emitted band file carries
+    `theorem statement_match : BandStatement σ0 σ1 T0 T1 n L1 … H5 cPB RPB hs1PB := rh_in_box_<tag>`,
+    which elaborates iff the band theorem's Π-type is DEFEQ to this definition's
+    body — a kernel-enforced statement-match gate.  The statement SHAPE therefore
+    comes from this reviewed definition, not from the emitter: an over-quantified,
+    weakened, or truncated emitted statement fails the build (the exact bug class
+    of the 2026-09-12 winding-route `hArb` finding).  The emitter can only vary
+    the PARAMETERS, and those are cross-checked numerically by the driver
+    (RvM edge sum pins `n`; the Platt inventory checks the poke slivers).
+
+    conjecture1_proved = False. -/
+def BandStatement (sigma0 sigma1 T0 T1 : ℝ) (n : ℕ)
+    (L1 H1 L2 H2 L3 H3 L4 H4 L5 H5 : ℝ) (c : ℂ) (R : ℝ)
+    (hs1 : (1 : ℂ) ∉ Metric.ball c R) : Prop :=
+  (∃ xs : List ℝ, xs.length = n ∧ xs.IsChain (· < ·) ∧
+    (∀ t ∈ xs, T0 ≤ t ∧ t ≤ T1) ∧
+    (∀ t ∈ xs, completedRiemannZeta (1 / 2 + (t : ℂ) * Complex.I) = 0)) →
+  ((∀ x ∈ Set.uIcc (-1 : ℝ) 2, riemannZeta (↑x + (T0 : ℂ) * I) ≠ 0) ∧
+   (∀ x ∈ Set.uIcc (-1 : ℝ) 2, riemannZeta (↑x + (T1 : ℂ) * I) ≠ 0) ∧
+   (∀ y ∈ Set.uIcc T0 T1, riemannZeta (((-1 : ℝ) : ℂ) + ↑y * I) ≠ 0) ∧
+   (∀ ρ ∈ RHInBoxAnalytic.zeroFinset c R hs1,
+     (-1 : ℝ) < ρ.re ∧ ρ.re < 2 ∧ T0 < ρ.im ∧ ρ.im < T1) ∧
+   DiffractionCore.argChangeVert riemannZeta 2 T0 T1 ∈ Set.Icc L1 H1 ∧
+   DiffractionCore.argChangeHoriz riemannZeta T1 2 (-1) ∈ Set.Icc L2 H2 ∧
+   DiffractionCore.argChangeHoriz riemannZeta T0 2 (-1) ∈ Set.Icc L3 H3 ∧
+   DiffractionCore.argChangeVert Gammaℝ (-1) T0 T1 ∈ Set.Icc L4 H4 ∧
+   DiffractionCore.argChangeVert Gammaℝ 2 T0 T1 ∈ Set.Icc L5 H5) →
+  ∀ ρ, (sigma0 ≤ ρ.re ∧ ρ.re ≤ sigma1) → (T0 ≤ ρ.im ∧ ρ.im ≤ T1) →
+    riemannZeta ρ = 0 → ρ.re = 1 / 2
+
 /-- **T5 count pinning**: the band zero count (with multiplicity) equals `N`,
     from rational interval enclosures of the five RvM edge argument-changes.
 

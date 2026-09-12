@@ -477,14 +477,20 @@ def run_box_turing(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, edge_prec: in
             f"run_box_turing: zero in ball-poke sliver of [{il},{ih}] (poke={poke:.4f}); "
             f"re-plan the band edge")
     tag = _box_tag(rl, rh, il, ih)
+    cert_sink: dict = {}
     text = emit_turing_band_instantiation(
-        n=n_line, re_lo=rl, re_hi=rh, im_lo=il, im_hi=ih, edges=edges, tag=tag)
+        n=n_line, re_lo=rl, re_hi=rh, im_lo=il, im_hi=ih, edges=edges, tag=tag,
+        cert_sink=cert_sink)
     print(f"run_box_turing [{rl},{rh}]x[{il},{ih}]: RvM edge count N={k}, "
           f"on-line N_line={n_line} (agree); emitted rh_in_box_{tag} (T5)")
     if write:
+        import json as _json
         out_path = (out_dir or _OUT.parent) / f"RHInBoxT_{tag}.lean"
         out_path.write_text(text, encoding="utf-8")
-        print(f"wrote {out_path} ({len(text)} bytes)")
+        # machine-readable certificate sidecar (statement_match audit input)
+        (out_path.with_suffix(".cert.json")).write_text(
+            _json.dumps(cert_sink, indent=1), encoding="utf-8")
+        print(f"wrote {out_path} ({len(text)} bytes) + cert.json sidecar")
     return text
 
 

@@ -235,11 +235,15 @@ def cmd_emit_bands(args) -> int:
     bands = plan_bands(args.t_from, args.t_to)
     st = load_state()
     todo = []
+    force = getattr(args, "force", False)
     for den, lo, hi in bands:
         tag = band_tag(den, lo, hi)
         rec = st["bands"].get(tag)
         lean_file = LEAN_DIR / f"{band_module(den, lo, hi)}.lean"
-        if rec and rec.get("status") == "ok" and lean_file.exists():
+        sidecar = lean_file.with_suffix(".cert.json")
+        needs_gate = int(lo) >= TURING_FROM and not sidecar.exists()
+        if (rec and rec.get("status") == "ok" and lean_file.exists()
+                and not force and not needs_gate):
             continue
         todo.append((den, lo, hi))
     print(f"{len(bands)} bands planned, {len(bands) - len(todo)} done, "
@@ -569,6 +573,62 @@ def cmd_plan(args) -> int:
     return 0
 
 
+def cmd_verify_bands(args) -> int:
+    """Post-hoc statement_match audit: for sampled T5 bands, check the compiled
+    band theorem's type is defeq to `TuringBand.BandStatement <params>` with the
+    params re-rendered INDEPENDENTLY from the `.cert.json` sidecar (one batched
+    `lake env lean` run).  Includes a doctored negative control (n+1) that must
+    MISMATCH — a run whose negative control passes is itself a failure."""
+    import random
+
+    from telperion.statement_match import statement_match_check
+
+    sidecars = sorted(LEAN_DIR.glob("RHInBoxT_*.cert.json"))
+    if args.sample and len(sidecars) > args.sample:
+        rng = random.Random(args.seed)
+        sidecars = sorted(rng.sample(sidecars, args.sample))
+    if not sidecars:
+        print("verify-bands: no .cert.json sidecars found")
+        return 1
+
+    def _btype(cert, n):
+        e = {k: (cert["edges"][k][0], cert["edges"][k][1]) for k in cert["edges"]}
+        def fr(s):
+            f = Fraction(s)
+            return f"({f.numerator} / {f.denominator} : ℝ)" if f.denominator != 1 \
+                else f"({f.numerator} : ℝ)"
+        ns = None  # filled by caller
+        return (f"TuringBand.BandStatement {fr(cert['re_lo'])} {fr(cert['re_hi'])} "
+                f"{fr(cert['im_lo'])} {fr(cert['im_hi'])} {n} "
+                + " ".join(fr(e[k][i]) for k in ("av2", "aht", "ahb", "ag1", "ag2")
+                           for i in (0, 1))
+                + " {NS}.cPB {NS}.RPB {NS}.hs1PB")
+
+    intended, imports = {}, ["import Mathlib", "import TuringBand"]
+    neg_name = None
+    for i, sc in enumerate(sidecars):
+        cert = json.loads(sc.read_text())
+        ns = sc.name[: -len(".cert.json")]
+        tag = ns[len("RHInBoxT_"):]
+        imports.append(f"import {ns}")
+        intended[f"{ns}.rh_in_box_{tag}"] = _btype(cert, cert["n"]).replace("{NS}", ns)
+        if i == 0:  # negative control: doctored count must MISMATCH
+            neg_name = f"{ns}.rh_in_box_{tag}"
+            intended["__NEGCTRL__"] = _btype(cert, cert["n"] + 1).replace("{NS}", ns)
+    # run the real checks
+    neg_type = intended.pop("__NEGCTRL__")
+    res = statement_match_check(intended, env_dir=str(LEAN_DIR),
+                                imports=tuple(imports))
+    print(res.summary())
+    negres = statement_match_check({neg_name: neg_type}, env_dir=str(LEAN_DIR),
+                                   imports=tuple(imports))
+    if negres.all_match:
+        print("NEGATIVE CONTROL FAILED TO FAIL — audit invalid")
+        return 1
+    print(f"negative control (n+1) correctly MISMATCHED for {neg_name}")
+    return 0 if res.all_match else 1
+
+
 def cmd_status(args) -> int:
     st = load_state()
     ok = [t for t, r in st["bands"].items() if r.get("status") == "ok"]
@@ -589,6 +649,8 @@ def main() -> int:
         p.add_argument("--to", dest="t_to", type=int, required=True)
         if name == "emit-bands":
             p.add_argument("--jobs", type=int, default=8)
+            p.add_argument("--force", action="store_true",
+                           help="re-emit even if the band file exists")
         if name == "register-lakefile":
             p.add_argument("--segments", action="store_true",
                            help="also register AllZeros_h<seg> modules")
@@ -597,11 +659,16 @@ def main() -> int:
     p.add_argument("--base", type=int, default=None,
                    help="1 = re-based ladder bottom (upTo_1 base lemma, no prev import)")
     sub.add_parser("status")
+    p = sub.add_parser("verify-bands")
+    p.add_argument("--sample", type=int, default=12,
+                   help="number of sidecars to audit (0 = all)")
+    p.add_argument("--seed", type=int, default=20260912)
     args = ap.parse_args()
     return {"plan": cmd_plan, "emit-bands": cmd_emit_bands,
             "register-lakefile": cmd_register_lakefile,
             "emit-segment": cmd_emit_segment, "status": cmd_status,
-            "guard-update": cmd_guard_update, "assemble": cmd_assemble}[args.cmd](args)
+            "guard-update": cmd_guard_update, "assemble": cmd_assemble,
+            "verify-bands": cmd_verify_bands}[args.cmd](args)
 
 
 if __name__ == "__main__":
