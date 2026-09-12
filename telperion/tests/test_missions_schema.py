@@ -7,7 +7,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from telperion.missions.schema import (  # noqa: E402
     Claim, MissionManifest, Node, Proof, Readback, SchemaError,
-    dumps_toml, load_node, loads_toml, save_node, slug_of,
+    dumps_toml, load_claim, load_manifest, load_node, loads_toml,
+    save_claim, save_manifest, save_node, slug_of,
 )
 
 
@@ -62,3 +63,52 @@ def test_deprecated_requires_reason():
 def test_proved_requires_proof():
     with pytest.raises(SchemaError, match="proof"):
         node(status="proved")
+
+
+def test_dumps_roundtrip_embedded_newline_and_equals():
+    # A value containing \n and " = " must survive dumps->loads->dumps unchanged.
+    tricky = "line one\nkey = value\r\nline three"
+    doc = {"note": tricky}
+    assert loads_toml(dumps_toml(doc)) == doc
+    assert dumps_toml(loads_toml(dumps_toml(doc))) == dumps_toml(doc)
+
+
+def test_manifest_roundtrip_via_files(tmp_path):
+    m = MissionManifest(
+        name="BG.mission",
+        title="Bethe-Gurland inequality campaign",
+        description="Prove the BG conjecture end-to-end",
+        goal_node="BG.master_inequality",
+        environment_toolchain="leanprover/lean4:v4.33.1",
+        environment_mathlib_rev="abc123",
+        sources=("Statements/BG.lean", "Proofs/BG_final.lean"),
+    )
+    p = tmp_path / "mission.toml"
+    save_manifest(m, p)
+    assert load_manifest(p) == m
+
+
+def test_claim_roundtrip_via_files(tmp_path):
+    # Claim with superseded set
+    c1 = Claim(node="BG.master_inequality", session="sess-abc",
+               started="2026-09-11T10:00:00", ttl_hours=48,
+               note="working on it", superseded="sess-old")
+    p1 = tmp_path / "claim1.toml"
+    save_claim(c1, p1)
+    assert load_claim(p1) == c1
+
+    # Claim with all defaults
+    c2 = Claim(node="BG.phi_le_one", session="sess-xyz", started="2026-09-11T12:00:00")
+    p2 = tmp_path / "claim2.toml"
+    save_claim(c2, p2)
+    assert load_claim(p2) == c2
+
+
+def test_load_node_missing_key_raises_schema_error_with_path(tmp_path):
+    # A TOML file missing the required 'name' field should raise SchemaError
+    # whose message includes the file path.
+    p = tmp_path / "broken.toml"
+    p.write_text('title = "Missing name field"\nkind = "milestone"\nstatus = "draft"\n')
+    with pytest.raises(SchemaError) as exc_info:
+        load_node(p)
+    assert str(p) in str(exc_info.value)

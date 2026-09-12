@@ -9,7 +9,7 @@ Round-trip is tested; hand-written files are read by tomllib in CI.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Tuple
 
@@ -34,7 +34,8 @@ def dumps_toml(doc: dict) -> str:
         if isinstance(v, int):
             return str(v)
         if isinstance(v, str):
-            return '"' + v.replace("\\", "\\\\").replace('"', '\\"') + '"'
+            return ('"' + v.replace("\\", "\\\\").replace('"', '\\"')
+                    .replace("\n", "\\n").replace("\r", "\\r") + '"')
         raise SchemaError(f"unsupported TOML scalar: {type(v).__name__}")
 
     lines, tables = [], []
