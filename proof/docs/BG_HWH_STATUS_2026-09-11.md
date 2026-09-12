@@ -367,6 +367,24 @@ the coverage hypothesis holds, hence that `hwh` holds on every tree up to 15 ver
 a proof: coverage for all `n` is unproven and is the open kernel. `conjecture1_proved = False`; no
 completeness claimed.
 
+## Coverage classification attempt -- REFUTED at n=15 (residual grows uncleanly)
+
+Two honest research pushes on `Hcoverage`:
+- **Empirical coverage extended**: `viable_all` (a monotone size-preserving straightening move exists) is
+  verified exhaustively to **n <= 15** (1793 defective trees, 0 failures) -- `hwh` holds on every tree up to
+  15 vertices.
+- **Classification attempt**: "every tree with no g-dominant/leaf move and no small-piece move is a
+  symmetric multi-star." Tested by class-coverage {leaf move, piece <= 5, multi-star}: at n<=14 the sole
+  uncovered tree is the triple-3-star (a multi-star, covered by `symstar_gen`), but at **n=15 the
+  classification FAILS** -- two uncovered trees (`[4,4,4,3,2,2,...]`, `[4,4,4,3,3,...]`) have RADIUS 3 (NOT
+  multi-stars); their only monotone moves relocate a LARGE component (~12 vertices), not a small piece.
+
+So `Hcoverage` cannot be closed by any FIXED finite class-set: the residual of hard trees grows into deeper
+structures ("triple-3-star with extra branches") that need ever-larger relocations, with no clean
+characterization. This is a negative-but-honest result: the classification route hits the same wall as every
+prior certificate -- the exhaustiveness is the open Brualdi-Goldwasser kernel, not a mergeable gap. `hwh` is
+true on all trees tested (n<=15) but a uniform proof remains open. `conjecture1_proved = False`.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
