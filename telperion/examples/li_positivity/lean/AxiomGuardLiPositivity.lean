@@ -91,6 +91,8 @@ import StripClear
 import RvMArchElemSeries
 import RvMArchElemBound
 import RvMArchElemCoeff
+import RvMArchGrowthBounds
+import RvMArchGrowth
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -543,3 +545,32 @@ import RvMArchElemCoeff
 #print axioms RvMWeierstrass.iteratedDeriv_archSummand_zero
 #print axioms RvMWeierstrass.iteratedDeriv_tsum_archSummand
 #print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_elem
+
+-- Arc B, PR B2: the real form + per-term bounds + tails.
+-- taylorCoeff_Gammaℝ_re_eq: (taylorCoeff Γℝ n).re = −((γ+logπ)/2)·(n+1) − 1 + Σ'_j archRe n j -- the
+--   honest REAL form (the B1b complex series is a tsum of reals, via Complex.ofReal_tsum).
+-- archRe_lower/archRe_upper_crude/archRe_upper_bonferroni: the three elementary per-term inequalities
+--   (Bernoulli lower ⇒ positivity, r^(n+1)≤1 crude upper, second-order Bonferroni upper).
+-- summable_archRe: the real series is summable (dominated by the two O(1/j²) Bonferroni tails).
+-- tsum_tail_inv_sq_le: Σ'_k 1/(n+k+1)² ≤ 1/n (telescoping). Γ-function calculus only.
+--   conjecture1_proved=False.
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_re_eq
+#print axioms RvMWeierstrass.archRe_lower
+#print axioms RvMWeierstrass.archRe_upper_crude
+#print axioms RvMWeierstrass.archRe_upper_bonferroni
+#print axioms RvMWeierstrass.summable_archRe
+#print axioms RvMWeierstrass.tsum_tail_inv_sq_le
+
+-- Arc B, PR B3: the harmonic bridge + the UNCONDITIONAL growth headline.
+-- log_add_one_le_Hsum / Hsum_le_one_add_log: H_n = Σ_{j<n} 1/(j+1) bracketed by log via Mathlib's
+--   harmonic bounds (Hsum = (harmonic n : ℝ)).
+-- tsum_archRe_lower / tsum_archRe_upper: split at K=n, the series bracketed by (n+1)/2·H_n ± O(n).
+-- taylorCoeff_Gammaℝ_re_growth (HEADLINE): ∃ C>0, ∀ n≥2, |(taylorCoeff Γℝ n).re − (n/2)·log n| ≤ C·n
+--   (with explicit C=8, verified against the 40-digit numerics). The archimedean Li coefficient grows
+--   like (n/2)·log n -- a harmonic-number statement. Γ-function calculus only; the uniform ∀ n that
+--   would bear on RH is NOT here. conjecture1_proved=False.
+#print axioms RvMWeierstrass.log_add_one_le_Hsum
+#print axioms RvMWeierstrass.Hsum_le_one_add_log
+#print axioms RvMWeierstrass.tsum_archRe_lower
+#print axioms RvMWeierstrass.tsum_archRe_upper
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_re_growth
