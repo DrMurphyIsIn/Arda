@@ -82,6 +82,7 @@ import R3Cert.R47RootShift
 import R3Cert.R47AlignedMinSize
 import R3Cert.R47HnormFalse52
 import R3Cert.R47HnormMulti
+import R3Cert.R47HwhLeafDecomp
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -397,3 +398,11 @@ import R3Cert.R47HnormMulti
 -- SEPARATE general->Balanced+Capped normalization). hwh + HdomMulti => broadened conjecture 1.
 #print axioms R3Cert.Step3.hnormMulti_of_wholehub
 #print axioms R3Cert.Step3.conjecture1_of_HnormMulti_of_wholehub
+
+-- hwh leaf-move decomposition (2026-09-11): exact identity
+-- (AobjAfter-AobjBefore)*a(b+1) = (a+b+1)*B1 + (a-b-1)*B2; B2>=0 from the proven combinatorial bound
+-- P11<=(a-1)b*P00; monotone leaf move when B1>=0, that bound, and b+1<=a. B1>=0 under min-degree
+-- defect-reducing selection is the open core.
+#print axioms R3Cert.Step3.hwh_leaf_decomp
+#print axioms R3Cert.Step3.leafB2_nonneg
+#print axioms R3Cert.Step3.leaf_move_monotone

@@ -109,7 +109,8 @@ jobs:
             R3Cert.R47RootShift \
             R3Cert.R47AlignedMinSize \
             R3Cert.R47HnormFalse52 \
-            R3Cert.R47HnormMulti
+            R3Cert.R47HnormMulti \
+            R3Cert.R47HwhLeafDecomp
 
       # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
       # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build

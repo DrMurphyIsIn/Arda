@@ -123,6 +123,35 @@ under the min-degree defect-reducing move (the cherry/arm/sub-star classes still
 decomposition). This is genuine progress -- an exact analytic handle and one proven lemma -- but NOT a
 closure; `B1`'s structural guarantee is the open core.
 
+## (a) `B2` PROVEN; `B1` characterized
+
+Writing `H = G - p - w` and `Z(.)` for the reduced matching sum, the P-sums factor as
+`P00 = Z(H)`, `P10 = sum_{q~p} (1/deg_q) Z(H-q)`, `P01 = sum_{r~w} (1/deg_r) Z(H-r)`,
+`P11 = sum_{q~p, r~w, q!=r} (1/deg_q)(1/deg_r) Z(H-q-r)` (verified exactly, 0 mismatches).
+
+**`B2 >= 0` is PROVEN (universal, any a>=2, b>=1).** For each pair `(q,r)`, `Z(H-q-r) <= Z(H) = P00`
+(matchings of `H-q-r` are a subset of those of `H`, positive weights) and `1/deg_q, 1/deg_r <= 1`; there are
+`<= (a-1) b` pairs, so `P11 <= (a-1) b P00`, i.e. `B2 = P00 - P11/(b(a-1)) >= 0`. Confirmed with 0
+counterexamples WITHOUT the `b <= a-1` restriction.
+
+**`B1` characterized.** With `g(v) := Z(H-v)/deg_v`, `B1 = P10/(a-1) - P01/b = avg_{q~p} g(q) - avg_{r~w}
+g(r)`. So `B1 >= 0` iff `p`'s neighbours have at least the average matching-connectivity `g` of `w`'s
+neighbours. This is the exact sharp residual: the min-degree defect-reducing move must send the leaf to a
+`w` whose neighbourhood is no better-connected (in `g`) than `p`'s. Not a degree-only fact; genuinely
+structural -- the open core, now precisely a neighbourhood-average comparison of a local matching functional.
+
+## (b) Lean scaffolding
+
+`R3Cert/R47HwhLeafDecomp.lean` (kernel-clean) formalizes the algebra and the monotonicity criterion over
+abstract nonnegative reals `P00,P10,P01,P11`:
+- `hwh_leaf_decomp` -- the exact identity `(AobjAfter - AobjBefore) * (a*(b+1)) = (a+b+1)*B1 + (a-b-1)*B2`.
+- `B2_nonneg_of_dom` -- `P11 <= (a-1)*b*P00 => 0 <= B2` (the proven combinatorial bound as hypothesis).
+- `leaf_move_monotone` -- from `0 <= B1`, `P11 <= (a-1)*b*P00`, and `b+1 <= a`: `AobjBefore <= AobjAfter`.
+
+The matching-sum inputs (that `AobjBefore/After` equal the P-expressions, and `P11 <= (a-1)b P00`) are the
+hypotheses -- proven on paper in (a); a full Lean discharge needs a weighted-matching theory bridged to the
+cavity `Aobj`, which is future work. conjecture1_proved = False.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
