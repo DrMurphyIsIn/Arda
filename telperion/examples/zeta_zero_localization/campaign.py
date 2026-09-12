@@ -340,19 +340,43 @@ def _log_exp_bound(b: int) -> int:
 
 
 def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list) -> str:
-    """AllZeros_h<top>.lean following the AllZeros_h4000 template."""
+    """AllZeros_h<top>.lean — INDEXED segment/capstone form (B1).
+
+    `prev_bands` is unused by the indexed form (the previous capstone now
+    consumes one hypothesis per PRIOR SEGMENT via its own `BandHyp` predicate,
+    not per band).  It is kept in the signature for call-site compatibility.
+
+    Shape:
+      * `bndSeg`/`bndSeg_mono` — the nominal `[A, B]` partition (unchanged);
+      * `bLo`/`bHi` — the per-band STRETCHED certificate-box edges (`band_box`);
+      * `hcover : ∀ i, i < K → bLo i ≤ bndSeg i ∧ bndSeg (i+1) ≤ bHi i` — one
+        `interval_cases`+`norm_num` proof weakening nominal→stretched;
+      * `BandHyp` — the segment's ONE indexed band hypothesis (re-range at the
+        campaign width + STRETCHED im-range `bLo i .. bHi i`);
+      * `segment_A_B` — takes one `hbands : BandHyp` (+ hγ), forwards to the
+        kernel lemma weakening the nominal partition bounds via `hcover`;
+      * capstone `all_...of_bands` — takes ONE `hbands_<segTop>` per prior
+        segment (typed `AllZeros_h<segTop>.BandHyp`) plus its own `hbands`,
+        forwarding positionally to the previous capstone + `segment_A_B`.
+    """
     K = len(seg_bands)
     den = seg_bands[0][0]
     L = _log_exp_bound(top)
     edges = [b[1] for b in seg_bands] + [seg_bands[-1][2]]
+    boxes = [band_box(*b) for b in seg_bands]          # (den, blo, bhi) stretched
     A, B = prev_top, top
+    re_lo = f"(1 / {den})"
+    re_hi = f"{den - 1} / {den}"
+    # prior segment tops (one BandHyp binder per prior segment): [1000, 2000, ..., A]
+    prior_tops = [] if A == 1 else segment_tops(1, A)
 
     out = []
     w = out.append
     w(f"/-  Height-chain step: all nontrivial zeta zeros up to height {B} on Re = 1/2 --\n"
       f"    `AllZeros_h{A}` + a `[{A}, {B}]` SEGMENT certificate ({K} bands, width 1/{den})\n"
-      f"    composed by `AllZerosUpToHeight.height_chain`.  Emitted by campaign.py.\n"
-      f"    conjecture1_proved = False. -/\n")
+      f"    composed by `AllZerosUpToHeight.height_chain`.  INDEXED-hypothesis form\n"
+      f"    (B1): one `BandHyp` per segment instead of per-band binders.\n"
+      f"    Emitted by campaign.py.  conjecture1_proved = False. -/\n")
     w("import Mathlib\nimport DlvpZetaZeroFree\nimport DlvpZetaRateEffective\n"
       "import ZetaZeroConfinement\nimport AllZerosUpToHeight\n")
     if A != 1:
@@ -362,8 +386,8 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
     w("\nopen Complex MeasureTheory Real\nopen scoped Topology\n\n")
     w(f"namespace AllZeros_h{B}\n\n")
 
-    # bndSeg
-    w(f"/-- The {K}-band partition of `[{A}, {B}]`. -/\n")
+    # bndSeg (nominal partition)
+    w(f"/-- The {K}-band NOMINAL partition of `[{A}, {B}]`. -/\n")
     w("noncomputable def bndSeg : ℕ → ℝ := fun i => match i with\n")
     for i, e in enumerate(edges):
         w(f"  | {i} => {e}\n")
@@ -378,6 +402,26 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
         a, b2 = edges[min(i, K)], edges[min(i + 1, K)]
         w(f"  · show (({a}:ℝ)) ≤ ({b2}); norm_num\n")
     w("  · exact le_refl _\n\n")
+
+    # bLo / bHi (stretched certificate-box edges, per band)
+    w(f"/-- The lower edges of the {K} STRETCHED certificate boxes. -/\n")
+    w("noncomputable def bLo : ℕ → ℝ := fun i => match i with\n")
+    for i, (_d, blo, _bhi) in enumerate(boxes):
+        w(f"  | {i} => {_fr(blo)}\n")
+    w(f"  | _ => {_fr(boxes[-1][1])}\n\n")
+    w(f"/-- The upper edges of the {K} STRETCHED certificate boxes. -/\n")
+    w("noncomputable def bHi : ℕ → ℝ := fun i => match i with\n")
+    for i, (_d, _blo, bhi) in enumerate(boxes):
+        w(f"  | {i} => {_fr(bhi)}\n")
+    w(f"  | _ => {_fr(boxes[-1][2])}\n\n")
+
+    # hcover : nominal partition ⊆ stretched box, band by band
+    w(f"/-- Each nominal band `[bndSeg i, bndSeg (i+1)]` sits inside the stretched\n"
+      f"    certificate box `[bLo i, bHi i]`. -/\n")
+    w(f"theorem hcover : ∀ i, i < {K} → bLo i ≤ bndSeg i ∧ bndSeg (i + 1) ≤ bHi i := by\n")
+    w("  intro i hi\n")
+    w("  interval_cases i <;>\n")
+    w("    exact ⟨by norm_num [bLo, bndSeg], by norm_num [bndSeg, bHi]⟩\n\n")
 
     # haC
     w(f"/-- `1/{den} ≤ dlvpRateC / log {B}` (`log {B} ≤ {L}`, `2.7^{L} ≥ {B}`). -/\n")
@@ -395,14 +439,17 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
     w("    _ ≤ 9 / 1369088 := by norm_num\n")
     w("    _ ≤ ZeroFreeBridge.dlvpRateC := ZeroFreeBridge.dlvpRateC_lower\n\n")
 
-    # segment theorem — band hypotheses stated at the (possibly stretched)
-    # certificate boxes; the interval_cases branches weaken the nominal
-    # partition bounds into them (le_trans + norm_num, uniform).
-    boxes = [band_box(*b) for b in seg_bands]
+    # BandHyp — the ONE indexed band hypothesis for this segment (stretched boxes).
+    w(f"/-- The `[{A}, {B}]` segment's band hypothesis: every band `i < {K}` certifies\n"
+      f"    its STRETCHED box `[bLo i, bHi i]`.  One binder replaces the {K} per-band\n"
+      f"    hypotheses; the previous capstone consumes one such predicate per segment. -/\n")
+    w("def BandHyp : Prop :=\n")
+    w(f"  ∀ i, i < {K} → ∀ ρ : ℂ, (({re_lo} : ℝ) ≤ ρ.re ∧ ρ.re ≤ ({re_hi})) →\n")
+    w("    (bLo i ≤ ρ.im ∧ ρ.im ≤ bHi i) → riemannZeta ρ = 0 → ρ.re = 1 / 2\n\n")
+
+    # segment theorem — takes ONE hbands : BandHyp; weakens nominal→stretched via hcover.
     w(f"/-- The `[{A}, {B}]` SEGMENT: every zero with `{A} ≤ Im ≤ {B}` is on the line. -/\n")
-    w(f"theorem segment_{A}_{B}\n")
-    for i, bb in enumerate(boxes):
-        w(_hyp(f"hseg{i}", *bb))
+    w(f"theorem segment_{A}_{B} (hbands : BandHyp)\n")
     w(f"    (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ {B} → 55 / 16 ≤ |ρ.im|) :\n")
     w(f"    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ({A}:ℝ) ≤ ρ.im → ρ.im ≤ {B} → ρ.re = 1 / 2 := by\n")
     w(f"  have hre_eq : (1 : ℝ) - 1 / {den} = {den - 1} / {den} := by norm_num\n")
@@ -410,16 +457,11 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
     w(f"    (1 / {den}) {A} {B} bndSeg {K} (by norm_num) bndSeg_mono rfl rfl haC_{B}\n")
     w("    (by norm_num) (by norm_num) ?_ hγ\n")
     w("  intro i hi ρ hre him hz\n")
-    w(f"  have hre' : ((1 / {den}) : ℝ) ≤ ρ.re ∧ ρ.re ≤ {den - 1} / {den} := by\n")
+    w(f"  have hre' : (({re_lo}) : ℝ) ≤ ρ.re ∧ ρ.re ≤ {re_hi} := by\n")
     w("    refine ⟨hre.1, ?_⟩\n    have h2 := hre.2\n    linarith [h2, hre_eq]\n")
-    w("  interval_cases i\n")
-    for i in range(K):
-        _d, blo, bhi = boxes[i]
-        e_lo, e_hi = seg_bands[i][1], seg_bands[i][2]
-        w(f"  · exact hseg{i} ρ hre' ⟨le_trans (show (({_fr(blo)}) : ℝ) ≤ ({_fr(e_lo)}) "
-          f"by norm_num) him.1, le_trans him.2 (show (({_fr(e_hi)}) : ℝ) ≤ ({_fr(bhi)}) "
-          f"by norm_num)⟩ hz\n")
-    w("\n")
+    w("  obtain ⟨hcov1, hcov2⟩ := hcover i hi\n")
+    w("  exact hbands i hi ρ hre'\n")
+    w("    ⟨le_trans hcov1 him.1, le_trans him.2 hcov2⟩ hz\n\n")
 
     # base lemma (re-based ladder bottom): upTo-1 is vacuous below the 55/16 floor
     if A == 1:
@@ -434,14 +476,13 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
         w("  have habs : (55 / 16 : ℝ) ≤ 1 := le_trans h h1\n")
         w("  norm_num at habs\n\n")
 
-    # capstone _of_bands
+    # capstone _of_bands — one hbands_<segTop> per prior segment + own hbands.
     w(f"/-- **T = {B} via the HEIGHT CHAIN**: `[0,{A}]` ∘ `[{A},{B}]` (segment).\n"
-      f"    conjecture1_proved = False. -/\n")
+      f"    One `BandHyp` binder per segment (indexed form).  conjecture1_proved = False. -/\n")
     w(f"theorem all_nontrivial_zeros_up_to_height_{B}_of_bands\n")
-    for i, b in enumerate(prev_bands):
-        w(_hyp(f"hband{i}", *band_box(*b)))
-    for i, bb in enumerate(boxes):
-        w(_hyp(f"hseg{i}", *bb))
+    for pt in prior_tops:
+        w(f"    (hbands_{pt} : AllZeros_h{pt}.BandHyp)\n")
+    w("    (hbands : BandHyp)\n")
     w(f"    (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ {B} → 55 / 16 ≤ |ρ.im|) :\n")
     w(f"    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ {B} → ρ.re = 1 / 2 := by\n")
     w(f"  have hγ{A} : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ {A} → 55 / 16 ≤ |ρ.im| :=\n")
@@ -451,13 +492,10 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
         w(f"    (upTo_1 hγ{A})\n")
     else:
         w(f"    (AllZeros_h{A}.all_nontrivial_zeros_up_to_height_{A}_of_bands\n")
-        for i in range(len(prev_bands)):
-            w(f"    hband{i}\n")
+        for pt in prior_tops:
+            w(f"      hbands_{pt}\n")
         w(f"      hγ{A})\n")
-    w(f"    (segment_{A}_{B}\n")
-    for i in range(len(seg_bands)):
-        w(f"      hseg{i}\n")
-    w("      hγ)\n\n")
+    w(f"    (segment_{A}_{B} hbands hγ)\n\n")
     w(f"end AllZeros_h{B}\n")
     return "".join(out)
 
