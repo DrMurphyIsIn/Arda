@@ -76,6 +76,7 @@ import RvMBacklundFinite
 import RvMBacklundOrder
 import RvMBacklundConfineNonstrict
 import RvMBacklundSignClosed
+import RvMBacklundCount
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -420,3 +421,10 @@ import RvMBacklundSignClosed
 --   sign-compatible limits) -- else IVT (intermediate_value_uIcc between midpoint & opposite-sign point)
 --   forces a zero strictly inside. Feeds 4c-nonstrict (endpoints = zeros ok). conjecture1_proved=False.
 #print axioms Backlund.re_one_sign_of_ne_zero_Ioo
+
+-- Backlund S(T)=O(log T), PR 4c (count): the capstone assembly.
+-- argChangeHoriz_abs_le_card_zeros (f)(T a b)(hab)(Z)(hdiff)(hcont)(hne: f≠0 on segment)(hZsub: Z⊆[a,b])
+--   (hZzero: Re f=0 => in Z): |argChangeHoriz f T a b| ≤ (Z.card+1)·π. Combines 4c-order (partition) +
+--   4c-sign-on-closed (Re f one sign per closed piece) + 4c-nonstrict (piece ≤π, endpoints=zeros ok) +
+--   4b (sum) + degenerate pieces=0 (integral_same). Horizontal half of Backlund S(T). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_le_card_zeros
