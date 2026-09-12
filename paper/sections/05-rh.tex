@@ -29,9 +29,9 @@ enforced, not asserted:
     $1 \le \sigma \le 2,\ |t| \ge 2$, with an explicit constant
     (\texttt{zeta\_log\_bound});
   \item an elementary, Hadamard-free zero-free region
-    $\operatorname{Re} s > 1 - c/|t|^5$ (\texttt{riemannZeta\_zero\_free\_poly});
+    $\operatorname{Re} s > 1 - c/|t|^5$ (\texttt{riemannZeta\_zero\_free\allowbreak\_poly});
   \item a sharper region $\operatorname{Re} s > 1 - c/\!\left(|t|^4 (1 + \log 2|t|)\right)$
-    (\texttt{riemannZeta\_zero\_free\_polylog}).
+    (\texttt{riemannZeta\_zero\_free\allowbreak\_polylog}).
 \end{enumerate}
 
 To our knowledge, the last two are the first unconditional, Hadamard-free
@@ -179,7 +179,7 @@ $100$ lands in the box is now itself kernel-derived from the zero-free region.
 And the construction \emph{scales}: the certified height grows by
 \emph{band-stacking}. Kernel gluing lemmas (\texttt{rh\_box\_two\_bands} and its
 $n$-band generalization
-\texttt{all\_nontrivial\_zeros\_up\_to\_height\_on\_line\_tiled}) compose
+\texttt{all\_nontrivial\_zeros\_up\_to\allowbreak\_height\_on\_line\_tiled}) compose
 per-band certificates---each band carrying its own small winding count, short
 contour edges, and local on-line list, so the per-band numeric certificates stay
 cheap, independent, and parallelizable. The first stack, \texttt{AllZeros\_h200},
@@ -188,7 +188,7 @@ bands to $T = 1000$ ($649$ zeros); a further stack,
 \texttt{AllZeros\_h2000}, extended the ladder with twenty further bands of height
 $50$ to $T = 2000$ ($1517$ zeros). The ladder is now \emph{unbounded in
 principle}: segment certificates over any $[A, B]$
-(\texttt{all\_nontrivial\_zeros\_in\_segment\_on\_line}) compose with an
+(\texttt{all\_nontrivial\_zeros\_in\allowbreak\_segment\_on\_line}) compose with an
 up-to-$A$ certificate through a constant-cost chain lemma
 (\texttt{height\_chain}), so no single glue theorem ever grows with the total
 height. Its first exercise is the current milestone, \texttt{AllZeros\_h4000}:
