@@ -3,6 +3,11 @@ depends_on = []
 kind = "lemma"
 name = "BG.master_inequality"
 statement_module = "Statements.BG_master_inequality"
-status = "draft"
+status = "open"
 title = "Master inequality (arm-maximality; PROVISIONAL rendering): (2+mu_B)^11 F_B <= (64/621) 3^11 with F_B = exp(11 logPhi)"
-updated = "2026-09-11"
+updated = "2026-09-12"
+
+[readback]
+auditor = "blind-renderer-fable-a7835da4 (2026-09-12)"
+date = "2026-09-12"
+text = "For every finite rooted tree with natural-number node labels, the 11th power of its normalized amplitude Phi (node-wise product of a(c,n)*(1+zS), each factor pre-divided by rho_B^(1+2c), rho_B=(621/64)^(1/11)) satisfies (2+cav B)^11 * Phi(B)^11 <= (64/621)*3^11 — an unconditional universal bound with equality at the single-vertex unlabeled branch. [Blind independent rendering; author=migration-session; auditor saw only the statement files.]"
