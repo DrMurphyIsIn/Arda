@@ -74,6 +74,7 @@ import RvMBacklundPartition
 import RvMBacklundSignConst
 import RvMBacklundFinite
 import RvMBacklundOrder
+import RvMBacklundConfineNonstrict
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -403,3 +404,11 @@ import RvMBacklundOrder
 --   sort {a,b}∪Z via Finset.orderEmbOfFin (strict-mono enum, _zero=min, _last=max, order-reflecting =>
 --   nothing strictly between consecutive). Feeds PR 4b partition sum. conjecture1_proved=False.
 #print axioms Backlund.exists_monotone_partition_of_finite
+
+-- Backlund S(T)=O(log T), PR 4c (nonstrict): confinement allowing zeros at endpoints.
+-- argChangeHoriz_abs_le_pi_of_re_nonneg: Re f ≥ 0 ∧ f ≠ 0 on segment ⟹ |argChangeHoriz| ≤ π (arg ∈
+--   [-π/2,π/2] via Complex.abs_arg_le_pi_div_two_iff; FTC via f∈slitPlane from Re≥0∧f≠0).
+-- argChangeHoriz_abs_le_pi_of_re_sign': either sign (Re f ≥0 OR ≤0) ∧ f≠0 ⟹ ≤π (Re≤0 case via -f).
+-- Needed because partition endpoints ARE zeros (Re=0). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_le_pi_of_re_nonneg
+#print axioms Backlund.argChangeHoriz_abs_le_pi_of_re_sign'
