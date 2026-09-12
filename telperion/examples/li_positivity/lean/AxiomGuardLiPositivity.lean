@@ -78,6 +78,7 @@ import RvMBacklundConfineNonstrict
 import RvMBacklundSignClosed
 import RvMBacklundCount
 import RvMBacklundZeta
+import RvMBacklundCountJensen
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -437,3 +438,10 @@ import RvMBacklundZeta
 --   (segment avoids pole s=1 since im=T≠0), hZsub/hZzero via backlundAux_ofReal (F_T ↑x=↑(Re ζ)).
 --   conjecture1_proved=False.
 #print axioms Backlund.zeta_argChangeHoriz_abs_le
+
+-- Backlund S(T)=O(log T), PR 5 step 3: the EXPLICIT O(log T) horizontal bound.
+-- zeta_argChangeHoriz_abs_le_log (hT:4≤T)(hζne)(hlogcont): |argChangeHoriz ζ T (1/2) 2| ≤
+--   (log((4T+19)/‖F_T 2‖)/log(7/6) + 1)·π. Real zeros of F_T inject (ofReal) into divisor support (each
+--   positive analytic order), so count ≤ card(support) ≤ Σᶠ divisor (≥1 on support) ≤ Jensen (PR 3b).
+--   conjecture1_proved=False.
+#print axioms Backlund.zeta_argChangeHoriz_abs_le_log
