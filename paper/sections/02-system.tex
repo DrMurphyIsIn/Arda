@@ -79,8 +79,6 @@ rounding, and combinatorial and analytic certificates alike.
     Analytic & zero-free-region atoms, half-plane/disk bounds, transcendental
       enclosures, box-robust positivity, degree-2 hyperbolicity (real-rootedness),
       two-scale disk separation, far-pole rational-sum bounds, Herglotz lower bounds \\
-    Combinatorial (this campaign) & tight-cap enclosure, cavity/recursion
-      closure, curvature-boundary extrema \\
     \bottomrule
   \end{tabular}
   \caption{A representative sample of Telperion's certificate shapes. For the
@@ -91,10 +89,7 @@ rounding, and combinatorial and analytic certificates alike.
 
 \subsection{Reproducibility}
 
-Because the generator is untrusted, reproducibility has teeth. Every emitted file
+Because the generator is untrusted, reproducibility has teeth: every emitted file
 regenerates byte-for-byte (\texttt{generate.py -{}-check} is the drift gate), and
-continuous integration compiles the emitted Lean against the pinned Mathlib on
-every change. A reviewer does not have to take our word for any of it: the recipe
-to regenerate a certificate and re-run the kernel check is a handful of commands,
-given in the reproducibility appendix, and the CI status badges are standing
-evidence that the checks are green.
+continuous integration compiles the emitted Lean against pinned Mathlib on every
+change. The full regenerate-and-recheck recipe is Appendix~\ref{sec:reproducibility}.

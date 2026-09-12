@@ -1,9 +1,8 @@
 \section{Main results: the zeta program}
 \label{sec:rh}
 
-This section is the paper's spine, and it comes with a warning label we want to
-put first, in bold, so there is no chance of misreading: \textbf{we do not claim
-the Riemann Hypothesis.} What we have is a connected body of genuine,
+This section presents the paper's main results---first, in bold, so there is no
+chance of misreading: \textbf{we do not claim the Riemann Hypothesis.} What we have is a connected body of genuine,
 machine-checked results \emph{about} the zeta function---built in the order a
 reader should understand them: first where the zeros \emph{cannot} be (zero-free
 regions, culminating in an effective de la Vallée-Poussin region), then where
@@ -37,6 +36,22 @@ enforced, not asserted:
 
 To our knowledge, the last two are the first unconditional, Hadamard-free
 zero-free regions to be machine-checked in Lean.
+
+\subsection{One engine, four certificate shapes}
+
+The results that follow are not unrelated: they are four readings of one machine.
+Every certificate below is an instance of a single weighted argument
+principle---for analytic $f$ and holomorphic weight $g$, the boundary winding of
+$g$ against $f$ equals $2\pi i \sum_{\rho} \operatorname{mult}(\rho)\, g(\rho)$---and
+the results exhibit it in four distinct \emph{certificate shapes}: positivity,
+real-rootedness, argument-principle winding, and the explicit-formula/diffraction
+identity. That one finite engine reaches all four on the same object is the
+methodological point, and the shape-diversity is deliberate evidence of the
+method's range. We stress at the outset what this unification does \emph{not}
+claim: the finite instances are deliberately not stitched into any assertion that
+the count $N(T)$ determines the Li coefficients $\lambda_n$ (\cref{sub:bridge}).
+Each result remains finite, each falls well short of RH, and
+$\texttt{conjecture1\_proved} = \texttt{False}$ throughout.
 
 \subsection{The honest comparison---and a second route to the full rate}
 
@@ -350,6 +365,7 @@ weighted explicit-formula / diffraction identity), alongside positivity,
 real-rootedness, and winding counts.
 
 \subsection{The bridge to Li's coefficients: one weighted engine}
+\label{sub:bridge}
 
 The counting formula and the explicit formula above turn out to be the same
 machine read with different test weights, and choosing the weight that Li's
@@ -487,7 +503,8 @@ route's completion is itself the open problem, and $\texttt{conjecture1\_proved}
 = \texttt{False}$. The contribution is a verified ladder of finite rungs and the
 certification calculus on top of them---never the uniform object, which is RH.
 
-The methodological point for this paper is that the same
-untrusted-generator/trusted-kernel discipline that handled a combinatorial
-extremal problem also produces honest analytic results---and, just as important,
-makes it easy to state exactly how strong they are and are not.
+The methodological point is that the same untrusted-generator/trusted-kernel
+discipline makes it easy to state exactly how strong these results are and are
+not. The same discipline applies well beyond the zeta function---to a still-open
+extremal-combinatorics problem and a proof-complexity lower bound (mathematics
+due to others)---reported separately~\cite{telperion-companion}.

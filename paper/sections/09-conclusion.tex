@@ -20,22 +20,20 @@ generator hands you a certificate instead of an argument, you can accept its
 work without trusting it, because a trusted kernel re-checks the certificate
 from scratch. Built into a tool---with a self-verification layer for the one
 thing a kernel cannot see, and an explicit account of the one thing no
-machinery can settle---that idea scales to hundreds of kernel-checked theorems,
-and it carries across subjects: the same discipline that assembled the
-diffraction identity also machine-checked the analytic core of a 42-year-old
-extremal tree conjecture (still open, with the missing bridge named) and a
-symbolic-in-$n$ lower bound in proof complexity (where the mathematics is
-someone else's).
+machinery can settle---that idea scales to hundreds of kernel-checked theorems. The same discipline has
+been carried to open problems well outside number theory, reported
+separately~\cite{telperion-companion}.
 
-The road ahead is marked rather than promised: running the effective machinery
-on the now-proved counting formula's $S$-identity, toward Backlund's
-$|S(T)| \le a\log T + b$ and a derived (rather than assumed) band census for
-the height ladder; estimating the explicit
-formula's boundary terms and sending the box to its limits; extending the
-Turing verification beyond height $4000$, which the height-chain architecture
+The road ahead is marked rather than promised: sharpening the effective
+$|S(T)| = O(\log T)$ bound (above) toward Backlund's optimal constant, with a
+derived (rather than assumed) band census for the height ladder; estimating the
+explicit formula's boundary terms and sending the box to its limits; extending
+the Turing verification beyond height $4000$, which the height-chain architecture
 makes a driver exercise rather than a proof (the repository carries a
-measured-cost route to height $10^6$, marked rather than promised); and letting the finite identity
-meet concrete test functions and real prime data. In each case the interesting
+measured-cost route to height $10^6$); and, with a larger certified zero set,
+kernel-certifying the truncated Bragg amplitudes with rigorous finite-size error
+bars---watching the log-prime peaks of Dyson's quasicrystal picture sharpen as
+the certified height grows. In each case the interesting
 content and the honest boundary will be stated in the same breath---which is
 exactly what a certificate engine, whose value is that you need not trust it,
 ought to make easy. The open fronts stay open; we would rather leave them

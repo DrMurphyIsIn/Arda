@@ -61,8 +61,9 @@ theorems, many of them generated rather than hand-written---raise a trust
 question. Search procedures, heuristics, and increasingly large language models
 are very good at producing arguments that \emph{look} right, and the more
 fluent the generator, the more convincing its mistakes. Our answer is old and
-clean: \emph{check the witness, don't trust the author}. The instrument behind
-every result above is \emph{Telperion}, a certificate compiler for Lean~4: you
+clean: \emph{check the witness, don't trust the author}. A second contribution
+of this paper is the method behind the first: \emph{Telperion}, a certificate
+compiler for Lean~4: you
 describe a family of concrete claims, Telperion certifies each instance in
 exact rational arithmetic and emits Lean, and Mathlib's kernel re-proves every
 line from scratch (\cref{sec:system}). The generator is untrusted by design---a
@@ -71,16 +72,12 @@ cannot catch a theorem that is true but \emph{vacuous}, Telperion adds a
 self-verification layer---per-emitter sensitivity declarations,
 forge-the-witness negative controls, and an independent second checker---and is
 honest about the one thing no machinery can settle: whether a formal statement
-means the informal claim a human intended (\cref{sec:vacuity}).
-
-\paragraph{The instrument elsewhere.} The same discipline carries to problems
-far from the zeta function, and we include two of them as evidence that the
-method, not the subject, is what generalizes: a machine-checked analytic core
-for the (still open) Brualdi--Goldwasser tree-maximizer conjecture, where we
-say exactly which bridge is missing (\cref{sec:bg}); and a kernel-checked,
-symbolic-in-$n$ sum-of-squares lower bound for the Grigoriev knapsack system in
-proof complexity, where the mathematics is due to others and our contribution
-is the certified pipeline (\cref{sec:pc}).
+means the informal claim a human intended (\cref{sec:vacuity}).\footnote{The
+same untrusted-generator/trusted-kernel discipline has been applied to open
+problems well beyond the zeta function---an extremal-combinatorics tree-maximizer
+(still open, with the missing bridge named) and a proof-complexity sum-of-squares
+lower bound (mathematics due to others)---reported separately in a companion
+Telperion methods paper~\cite{telperion-companion}.}
 
 \paragraph{A note on posture.} A reader will notice that we spend as much care
 on what is \emph{not} proved as on what is. That is deliberate. The honesty
