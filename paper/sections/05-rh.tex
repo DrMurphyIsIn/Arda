@@ -294,7 +294,12 @@ $F_T = \operatorname{Re}\zeta(\cdot{+}iT)$, whose real zeros bound the sign
 changes of $\operatorname{Re}\zeta$ and are counted by the finite-height Jensen
 bound of the previous subsection. The constant is honest rather than sharp, and
 this remains unconditional error-term analysis: it bounds the \emph{fluctuation}
-in the zero count and says nothing about where the zeros lie. Second, one mid-course
+in the zero count and says nothing about where the zeros lie. Feeding this back
+into the counting formula pins the count to its main term:
+$|N(T) - 1 - \theta(T)/\pi| \le \log\!\big((4T{+}19)/(2-\pi^2/6)\big)/\log(7/6) + 2$
+(\texttt{nt\_effective\_bound}), so $N(T)$ sits within an explicit $O(\log T)$ of
+$1 + \theta(T)/\pi$---an effective Riemann--von Mangoldt count, the classical
+error term made explicit. It too counts zeros, not places them. Second, one mid-course
 correction is part of the record and is the lived practice
 \cref{sec:vacuity} recounts: an early route through $\Lambda_0$ alone was
 retired when its zero set was checked against Mathlib's own defining identity,
