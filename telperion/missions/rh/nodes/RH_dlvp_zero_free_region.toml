@@ -10,10 +10,10 @@ updated = "2026-09-11"
 [proof]
 artifact = "../../examples/zero_free_bridge/lean/DlvpZetaZeroFree.lean"
 artifact_kind = "lean_module"
-closure_clean = true
+closure_clean = false
 via = "direct"
 
 [readback]
 auditor = "rh-migration-session-2026-09-11"
 date = "2026-09-11"
-text = "Self-contained form: zeta(beta + i gamma) is nonzero whenever |gamma| >= 55/16 and beta > 1 - dlvpRateC / log |gamma| -- no multiplicity hypothesis remains.  The artifact lives on the v4.32 zero_free_bridge island (it was NOT among the 66 files #483 ported); cross-island grant per design section 2, kernel-checked by that island's own CI (AxiomGuardDlvp)."
+text = "Self-contained form: zeta(beta + i gamma) is nonzero whenever |gamma| >= 55/16 and beta > 1 - dlvpRateC / log |gamma| -- no multiplicity hypothesis remains.  The artifact lives on the v4.32 zero_free_bridge island (it was NOT among the 66 files #483 ported); cross-island grant per design section 2, kernel-checked by that island's own CI (AxiomGuardDlvp).  Kernel-proved on its v4.32 home island (AxiomGuardDlvp CI guard); closure_clean stays false in the registry until cross-island CI recomputation is wired."

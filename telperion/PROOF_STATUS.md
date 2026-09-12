@@ -226,6 +226,9 @@ CONDITIONAL on their Arb enclosure hypothesis (the documented trust seam) and th
 node's statement is the topmost rung `li_rung_19`, representative of the 20 homogeneous
 generated rungs. `RH_dlvp_zero_free_region`'s artifact (`DlvpZetaZeroFree.lean`) was NOT
 among the 66 files #483 ported to v4.34 — it is granted cross-island against the v4.32
-island where its own CI kernel-checks it. The Borel–Carathéodory derivative bound,
+island where its own CI kernel-checks it (AxiomGuardDlvp); its `closure_clean` flag stays
+**false** in the registry until cross-island CI recomputation is wired, since this repo's
+missions CI builds only the v4.34 statement package and cannot recompute that closure
+itself. The Borel–Carathéodory derivative bound,
 expected open at migration planning time, is in fact PROVED (`DlvpBCDeriv.lean`).
 <!-- missions:rh:end -->
