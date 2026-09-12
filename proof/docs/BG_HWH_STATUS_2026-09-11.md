@@ -186,6 +186,26 @@ stronger bound that does NOT hold unconditionally), so monotonicity uses the ful
 (`piece_move_monotone`). This extends coverage to all piece classes; the open core (`B1`-type existence)
 is unchanged.
 
+## Research attempt on `B1` existence: every natural certificate FAILS
+
+Attacking the `B1`-existence conjecture as a research problem, all standard certificate strategies were
+tried and exhaustively falsified:
+
+| strategy | result |
+|---|---|
+| degree-only lemma `deg_w < deg_p => Aobj nondecr` | FALSE (15522 counterexamples, first n=6) |
+| deterministic rule: min receiving degree | monotone 99.6% but NOT a degree-certifiable fact |
+| deterministic rule: max-degree source forces `B1>=0` | FALSE (29/369; existence fails on 14 trees) |
+| "any lower-degree defect-reducing move is monotone" | FALSE (233/3662 decrease `Aobj`) |
+| **averaging certificate** `sum_moves B1 >= 0` (=> some move has `B1>=0`) | holds n<=12 (30/30) but **FAILS at n=13 (4/131)** |
+
+The averaging certificate failing precisely at n=13 (the triple-3-star obstruction) is the crux: the
+straightening genuinely "resists the averaging certificate," so a proof of `B1` existence cannot come from
+degrees, a fixed rule, or a uniform average -- it needs per-structure reasoning that handles the triple-3-star
+family. This is a NEGATIVE result: the natural certificates provably do not suffice, so closing `hwh`
+requires a genuinely different idea (a correlation/FKG inequality on the matching measure, or a Kelmans-type
+structural induction). The conjecture remains open; no closure is claimed.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
