@@ -86,6 +86,7 @@ import R3Cert.R47HwhLeafDecomp
 import R3Cert.R47HwhPieceDecomp
 import R3Cert.R47HwhAdjDecomp
 import R3Cert.R47HwhAdjPieceDecomp
+import R3Cert.R47HwhB1Partial
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -426,3 +427,8 @@ import R3Cert.R47HwhAdjPieceDecomp
 -- Adjacent general-piece decomposition (2026-09-12): completes the grid (leaf/piece x non-adj/adj).
 #print axioms R3Cert.Step3.hwh_adj_piece_decomp
 #print axioms R3Cert.Step3.adj_piece_move_monotone
+
+-- PARTIAL B1 (2026-09-12): B1>=0 on the P01=0 slice (target has no H-neighbours); the cherry-forming
+-- move (leaf onto adjacent sibling leaf) is unconditionally Aobj-monotone. A proven slice of the open core.
+#print axioms R3Cert.Step3.B1_nonneg_of_P01_zero
+#print axioms R3Cert.Step3.cherry_forming_monotone
