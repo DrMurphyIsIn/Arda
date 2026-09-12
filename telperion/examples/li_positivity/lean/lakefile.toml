@@ -158,3 +158,201 @@ name = "RvMCompanionCoeff"
 
 [[lean_lib]]
 name = "RvMCompanionBraggLimit"
+
+[[lean_lib]]
+name = "StripRepr"
+
+[[lean_lib]]
+name = "DlvpBCDeriv"
+
+[[lean_lib]]
+name = "DlvpBCDerivInterior"
+
+[[lean_lib]]
+name = "DlvpBCSum"
+
+[[lean_lib]]
+name = "DlvpBCSumBlaschke"
+
+[[lean_lib]]
+name = "DlvpBcSumConcrete"
+
+[[lean_lib]]
+name = "DlvpBlaschke"
+
+[[lean_lib]]
+name = "DlvpBlaschkeAnalytic"
+
+[[lean_lib]]
+name = "DlvpBlaschkeCenter"
+
+[[lean_lib]]
+name = "DlvpBlaschkeCont"
+
+[[lean_lib]]
+name = "DlvpBlaschkeHerglotz"
+
+[[lean_lib]]
+name = "DlvpBlaschkeProdAnalytic"
+
+[[lean_lib]]
+name = "DlvpBlaschkeSphere"
+
+[[lean_lib]]
+name = "DlvpBlaschkeSplit"
+
+[[lean_lib]]
+name = "DlvpBlaschkeSplitExpand"
+
+[[lean_lib]]
+name = "DlvpBlaschkeToSkeleton"
+
+[[lean_lib]]
+name = "DlvpCanonicalClosedBall"
+
+[[lean_lib]]
+name = "DlvpCanonicalLogDeriv"
+
+[[lean_lib]]
+name = "DlvpCanonicalNorm"
+
+[[lean_lib]]
+name = "DlvpCorrectionBound"
+
+[[lean_lib]]
+name = "DlvpDivisorTranslate"
+
+[[lean_lib]]
+name = "DlvpEntireBound"
+
+[[lean_lib]]
+name = "DlvpEntirePlumbing"
+
+[[lean_lib]]
+name = "DlvpHALArith"
+
+[[lean_lib]]
+name = "DlvpHerglotzLower"
+
+[[lean_lib]]
+name = "DlvpLogBranch"
+
+[[lean_lib]]
+name = "DlvpMaxMod"
+
+[[lean_lib]]
+name = "DlvpPole"
+
+[[lean_lib]]
+name = "DlvpRegionBound"
+
+[[lean_lib]]
+name = "DlvpSphereDense"
+
+[[lean_lib]]
+name = "DlvpTransfer"
+
+[[lean_lib]]
+name = "DlvpZeroSum"
+
+[[lean_lib]]
+name = "DlvpZetaAnaFoundation"
+
+[[lean_lib]]
+name = "DlvpZetaAzeta"
+
+[[lean_lib]]
+name = "DlvpZetaBcBridge"
+
+[[lean_lib]]
+name = "DlvpZetaCentreFac"
+
+[[lean_lib]]
+name = "DlvpZetaCentreRel"
+
+[[lean_lib]]
+name = "DlvpZetaConcrete"
+
+[[lean_lib]]
+name = "DlvpZetaConcreteWired"
+
+[[lean_lib]]
+name = "DlvpZetaContSphere"
+
+[[lean_lib]]
+name = "DlvpZetaCountReconcile"
+
+[[lean_lib]]
+name = "DlvpZetaCountStrip"
+
+[[lean_lib]]
+name = "DlvpZetaDisk"
+
+[[lean_lib]]
+name = "DlvpZetaGBound"
+
+[[lean_lib]]
+name = "DlvpZetaHAL"
+
+[[lean_lib]]
+name = "DlvpZetaHbc1"
+
+[[lean_lib]]
+name = "DlvpZetaHgBoundGamma"
+
+[[lean_lib]]
+name = "DlvpZetaLower"
+
+[[lean_lib]]
+name = "DlvpZetaPoleEffective"
+
+[[lean_lib]]
+name = "DlvpZetaRateEffective"
+
+[[lean_lib]]
+name = "DlvpZetaRecenter"
+
+[[lean_lib]]
+name = "DlvpZetaRecenterDecomp"
+
+[[lean_lib]]
+name = "DlvpZetaRecenterEq"
+
+[[lean_lib]]
+name = "DlvpZetaRegion"
+
+[[lean_lib]]
+name = "DlvpZetaSphereLogStrip"
+
+[[lean_lib]]
+name = "DlvpZetaZeroLoc"
+
+[[lean_lib]]
+name = "StripBound"
+
+[[lean_lib]]
+name = "StripReprAssembled"
+
+[[lean_lib]]
+name = "StripReprR1"
+
+[[lean_lib]]
+name = "StripReprR2"
+
+[[lean_lib]]
+name = "StripReprR3"
+
+[[lean_lib]]
+name = "ZeroFreeBridge"
+
+[[lean_lib]]
+name = "ZeroFreeElementary"
+
+[[lean_lib]]
+name = "ZeroFreePolylog"
+
+[[lean_lib]]
+name = "ZeroFreeRegion"
+
+[[lean_lib]]
+name = "ZetaLogBound"

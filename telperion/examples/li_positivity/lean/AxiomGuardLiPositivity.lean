@@ -63,6 +63,8 @@ import RvMLiWeightReconcile
 import RvMLiWeightTsum
 import RvMCompanionCoeff
 import RvMCompanionBraggLimit
+import ZetaLogBound
+import DlvpZetaRateEffective
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -325,3 +327,10 @@ import RvMCompanionBraggLimit
 -- /(2πi) - 1 - GammaR. Real limit-passage (tendsto_nhds_unique) + split (#463). Proves nothing about RH;
 -- pins the frontier as three named limits. conjecture1_proved=False.
 #print axioms RvMWeierstrass.taylorCoeff_companion_bragg_of_exhaustion_limits
+
+-- Toolchain unification (2026-09-11): the v4.32 de la Vallee Poussin zero-free region +
+-- zeta log-bound cascade (66 files, ~6255 lines) ported to the v4.34 li_positivity island -- 0 drift.
+-- These supply the analytic-control inputs (zeta magnitude bound + dVP region) the RvM box->half-line
+-- limit / li-weighted archimedean boundary extraction needs. conjecture1_proved=False.
+#print axioms ZeroFreeBridge.zeta_log_bound
+#print axioms ZeroFreeBridge.dlvp_zeta_region_rate_effective
