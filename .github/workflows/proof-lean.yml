@@ -23,7 +23,7 @@ concurrency:
 jobs:
   lean-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 150
     defaults:
       run:
         working-directory: proof/formalization
@@ -108,7 +108,18 @@ jobs:
             R3Cert.R47CoverRelation \
             R3Cert.R47RootShift \
             R3Cert.R47AlignedMinSize \
-            R3Cert.R47HnormFalse52
+            R3Cert.R47HnormFalse52 \
+            R3Cert.R47HnormMulti \
+            R3Cert.R47HwhLeafDecomp \
+            R3Cert.R47HwhPieceDecomp \
+            R3Cert.R47HwhAdjDecomp \
+            R3Cert.R47HwhAdjPieceDecomp \
+            R3Cert.R47HwhB1Partial \
+            R3Cert.R47MatchingSum \
+            R3Cert.R47HwhSymStarCert \
+            R3Cert.R47HwhSymStar3Cert \
+            R3Cert.R47HwhSymStarGenCert \
+            R3Cert.R47HwhAssembly
 
       # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
       # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build
