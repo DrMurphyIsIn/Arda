@@ -52,3 +52,7 @@ roots = ["Spike.BenchExpD"]
 [[lean_lib]]
 name = "LogZetaSeries"
 roots = ["LogZetaSeries"]
+
+[[lean_lib]]
+name = "SignChain"
+roots = ["SignChain"]
