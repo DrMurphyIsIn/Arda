@@ -83,6 +83,7 @@ import R3Cert.R47AlignedMinSize
 import R3Cert.R47HnormFalse52
 import R3Cert.R47HnormMulti
 import R3Cert.R47HwhLeafDecomp
+import R3Cert.R47HwhPieceDecomp
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -406,3 +407,10 @@ import R3Cert.R47HwhLeafDecomp
 #print axioms R3Cert.Step3.hwh_leaf_decomp
 #print axioms R3Cert.Step3.leafB2_nonneg
 #print axioms R3Cert.Step3.leaf_move_monotone
+
+-- General piece-relocation decomposition (2026-09-11): extends the leaf decomposition to any rigid
+-- piece (leaf/cherry/arm/sub-star) via cavity scalars Z=Ztot(dtSub K), rho=phi/dc. Exact identity +
+-- monotonicity-from-RHS. Leaf case (Z=rho=1) recovers R47HwhLeafDecomp's B1/B2 form.
+#print axioms R3Cert.Step3.hwh_piece_decomp
+#print axioms R3Cert.Step3.piece_move_monotone
+#print axioms R3Cert.Step3.hwh_piece_decomp_leaf

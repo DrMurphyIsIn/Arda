@@ -167,6 +167,25 @@ The matching-sum inputs (that `AobjBefore/After` equal the P-expressions, and `P
 hypotheses -- proven on paper in (a); a full Lean discharge needs a weighted-matching theory bridged to the
 cavity `Aobj`, which is future work. conjecture1_proved = False.
 
+### General piece classes (cherry / arm / sub-star)
+
+`hwh_piece_decomposition.py` + `R3Cert/R47HwhPieceDecomp.lean` extend the decomposition from a leaf to ANY
+rigid piece `K` (anchor `c`, degree `dc`) via two cavity scalars `Z = Ztot(dtSub K)` and `rho = phi/dc`
+(`phi` = matchings of `K` with `c` unmatched). Exact identity (verified 0 mismatches for leaf/cherry/arm-1..3;
+kernel-clean `hwh_piece_decomp`):
+
+```
+(AobjAfter - AobjBefore) * a(b+1)
+   = rho*(a-b-1)*P00 + (Z*(b+1)+rho*a)/(a-1)*P10 - (Z*a+rho*(b+1))/b*P01 - Z*(a-b-1)/(b*(a-1))*P11.
+```
+
+Leaf `Z=rho=1` recovers the `B1/B2` form (`hwh_piece_decomp_leaf`); cherry `Z=3/2, rho=1/2`; arm-`j`
+`Z=(3/2)^j(1+j/(3(j+1))), rho=(3/2)^j/(j+1)`. NOTE: the clean `B2 >= 0` split is special to the leaf --
+for a general piece the `P00,P11` coefficient needs `rho*(a-1)*b*P00 >= Z*P11` (for the cherry, a 3x
+stronger bound that does NOT hold unconditionally), so monotonicity uses the full right-hand side
+(`piece_move_monotone`). This extends coverage to all piece classes; the open core (`B1`-type existence)
+is unchanged.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
