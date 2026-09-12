@@ -1,0 +1,30 @@
+name = "ZetaReflectionSpike"
+defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef"]
+
+# Same Mathlib pin as the sibling zeta_zero_localization island (v4.32.0), so the
+# path require below shares the on-disk Mathlib build cache -- `lake exe cache get`
+# pulls the identical artifacts.
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+# WS-A statement-level de-risk: import DiffractionCore from the sibling island for the
+# `argChangeVert_eq_im_log_sub` bridge elaboration check.  Mirrors (in reverse) the way
+# zeta_zero_localization's lakefile requires ZeroFreeBridge by relative path.  Same
+# Mathlib rev, so the cache is shared.
+[[require]]
+name = "LambdaLineReal"
+path = "../../zeta_zero_localization/lean"
+
+[[lean_lib]]
+name = "Spike_DIntvMini"
+roots = ["Spike.DIntvMini"]
+
+[[lean_lib]]
+name = "Spike_Toy"
+roots = ["Spike.Toy"]
+
+[[lean_lib]]
+name = "DIntvDef"
+roots = ["DIntvDef"]
