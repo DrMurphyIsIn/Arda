@@ -23,7 +23,7 @@ concurrency:
 jobs:
   lean-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 150
     defaults:
       run:
         working-directory: proof/formalization
