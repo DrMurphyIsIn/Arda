@@ -404,3 +404,6 @@ name = "RvMBacklundS"
 
 [[lean_lib]]
 name = "RvMBacklundLogCont"
+
+[[lean_lib]]
+name = "RvMBacklundExplicit"
