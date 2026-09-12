@@ -272,7 +272,139 @@ def cmd_emit_bands(args) -> int:
 
 # ---------------------------------------------------------------- lakefile
 
+# B2 lake-package sharding: one package per LAKE_BLOCK-height block, all
+# requiring a shared `zzl_core` package.  The band modules and the AllZeros_h*
+# chain files whose TOP falls in block N live in that block's package; the chain
+# composes across packages via conclusion-level `height_chain` (package-agnostic).
+LAKE_BLOCK = 25_000            # height per lake package (charter B2)
+CORE_PKG = "zzl_core"          # shared height-independent core package
+MATHLIB_REV = "v4.32.0"        # matches lean-toolchain / the monolith require
+
+
+def lake_block_top(t: int) -> int:
+    """The LAKE_BLOCK top height for a module ending at height `t`."""
+    return ((t - 1) // LAKE_BLOCK + 1) * LAKE_BLOCK
+
+
+def block_pkg_name(top: int) -> str:
+    return f"ZetaBands_h{top}"
+
+
+def emit_block_lakefile(top: int, modules: list[str]) -> str:
+    """The `lakefile.toml` text for one block package `ZetaBands_h<top>/`.
+
+    Requires mathlib, ZeroFreeBridge, and the shared `zzl_core` package; its
+    `defaultTargets` and `[[lean_lib]]` stanzas cover ONLY this block's modules
+    (bounded size regardless of total campaign height)."""
+    out = [f'name = "{block_pkg_name(top)}"\n']
+    targets = ", ".join(f'"{m}"' for m in modules)
+    out.append(f"defaultTargets = [{targets}]\n\n")
+    out.append("[[require]]\nname = \"mathlib\"\nscope = \"leanprover-community\"\n"
+               f'rev = "{MATHLIB_REV}"\n\n')
+    out.append("[[require]]\nname = \"ZeroFreeBridge\"\n"
+               'path = "../../../zero_free_bridge/lean"\n\n')
+    out.append(f'[[require]]\nname = "{CORE_PKG}"\npath = "../{CORE_PKG}"\n\n')
+    for m in modules:
+        out.append(f'[[lean_lib]]\nname = "{m}"\n')
+    return "".join(out)
+
+
+def emit_umbrella_lakefile(block_tops: list[int]) -> str:
+    """The root umbrella `lakefile.toml`: requires zzl_core + every block package.
+
+    The capstone chain composes across packages via `height_chain`, so the
+    umbrella needs no lean_lib of its own -- it just pulls the block packages in."""
+    out = ['name = "zzl_umbrella"\n']
+    out.append("defaultTargets = []\n\n")
+    out.append("[[require]]\nname = \"mathlib\"\nscope = \"leanprover-community\"\n"
+               f'rev = "{MATHLIB_REV}"\n\n')
+    out.append(f'[[require]]\nname = "{CORE_PKG}"\npath = "{CORE_PKG}"\n\n')
+    for top in sorted(block_tops):
+        pkg = block_pkg_name(top)
+        out.append(f'[[require]]\nname = "{pkg}"\npath = "{pkg}"\n\n')
+    return "".join(out).rstrip() + "\n"
+
+
+def register_lakefile_sharded(t_from: int, t_to: int, segments: bool,
+                              lean_dir: Path) -> dict[int, list[str]]:
+    """Route each module into its block package's lakefile (B2).
+
+    Returns {block_top: [modules registered]}.  Creates the block package
+    skeleton (`lakefile.toml`) on first module in a block, and rewrites the root
+    umbrella to require all block packages.  Modules whose TOP height falls in a
+    block go to that block's package."""
+    bands = plan_bands(t_from, t_to)
+    # module -> top height it belongs to (band top = hi; chain file top = its height)
+    routed: dict[int, list[str]] = {}
+    for den, lo, hi in bands:
+        routed.setdefault(lake_block_top(hi), []).append(band_module(den, lo, hi))
+    if segments:
+        for top in segment_tops(t_from, t_to):
+            routed.setdefault(lake_block_top(top), []).append(f"AllZeros_h{top}")
+
+    added: dict[int, list[str]] = {}
+    for top, mods in routed.items():
+        pkg_dir = lean_dir / block_pkg_name(top)
+        pkg_lake = pkg_dir / "lakefile.toml"
+        existing = []
+        if pkg_lake.exists():
+            txt = pkg_lake.read_text()
+            existing = [m for m in mods if f'name = "{m}"' in txt]
+        new_mods = [m for m in mods if m not in existing]
+        if not new_mods and pkg_lake.exists():
+            continue
+        # full module list for the package = existing (parsed) + new, order-stable
+        all_mods = _existing_block_modules(pkg_lake) if pkg_lake.exists() else []
+        for m in new_mods:
+            if m not in all_mods:
+                all_mods.append(m)
+        pkg_dir.mkdir(parents=True, exist_ok=True)
+        pkg_lake.write_text(emit_block_lakefile(top, all_mods))
+        added[top] = new_mods
+
+    # rewrite umbrella to require every block package that now exists
+    block_tops = _discover_block_tops(lean_dir)
+    (lean_dir / "lakefile.umbrella.toml").write_text(
+        emit_umbrella_lakefile(block_tops))
+    return added
+
+
+def _existing_block_modules(pkg_lake: Path) -> list[str]:
+    """Parse the ordered module names out of a block lakefile's lean_lib stanzas."""
+    mods = []
+    for ln in pkg_lake.read_text().splitlines():
+        ln = ln.strip()
+        if ln.startswith('name = "') and not ln.startswith('name = "ZetaBands'):
+            name = ln[len('name = "'):-1]
+            if name not in (CORE_PKG, "mathlib", "ZeroFreeBridge"):
+                mods.append(name)
+    return mods
+
+
+def _discover_block_tops(lean_dir: Path) -> list[int]:
+    tops = []
+    for p in lean_dir.glob("ZetaBands_h*"):
+        if p.is_dir() and (p / "lakefile.toml").exists():
+            try:
+                tops.append(int(p.name.split("_h")[1]))
+            except (IndexError, ValueError):
+                pass
+    return sorted(tops)
+
+
 def cmd_register_lakefile(args) -> int:
+    if getattr(args, "sharded", False):
+        added = register_lakefile_sharded(
+            args.t_from, args.t_to, args.segments, LEAN_DIR)
+        total = sum(len(v) for v in added.values())
+        if not total:
+            print("lakefile (sharded): nothing to add")
+            return 0
+        for top in sorted(added):
+            print(f"  block {block_pkg_name(top)}: +{len(added[top])} modules")
+        print(f"lakefile (sharded): added {total} modules across "
+              f"{len(added)} block package(s) + umbrella")
+        return 0
     bands = plan_bands(args.t_from, args.t_to)
     text = LAKEFILE.read_text()
     added = []
@@ -702,6 +834,9 @@ def main() -> int:
         if name == "register-lakefile":
             p.add_argument("--segments", action="store_true",
                            help="also register AllZeros_h<seg> modules")
+            p.add_argument("--sharded", action="store_true",
+                           help="B2: route modules into per-block lake packages "
+                                "(ZetaBands_h<top>/) + umbrella, not the monolith")
     p = sub.add_parser("emit-segment")
     p.add_argument("--upto", type=int, required=True)
     p.add_argument("--base", type=int, default=None,
