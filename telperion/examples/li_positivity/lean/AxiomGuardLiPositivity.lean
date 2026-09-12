@@ -84,6 +84,7 @@ import RvMBacklundLogCont
 import RvMBacklundExplicit
 import RvMNTEffective
 import RvMNTCount
+import RvMRoutePFalsify
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -293,6 +294,13 @@ import RvMNTCount
 -- (taylorCoeff zetaPoleCompanion n).re. An IFF -- relocates RH onto one explicit inequality per n;
 -- proves nothing about RH. conjecture1_proved=False.
 #print axioms RvMWeierstrass.rh_iff_companion_ge
+
+-- Route P (Brick D3 part 1): the falsifiability atom.
+-- companion_below_floor_refutes_rh (n)(h: (taylorCoeff zetaPoleCompanion n).re <
+--   -(1+(taylorCoeff GammaR n).re)): ¬RiemannHypothesis. Contrapositive of rh_iff_companion_ge --
+--   one sub-floor companion value refutes RH. The negative face the bragg_floor emitter targets;
+--   never expected to fire. Proves nothing about RH. conjecture1_proved=False.
+#print axioms RvMWeierstrass.companion_below_floor_refutes_rh
 
 -- Route P (creative): manifest positivity of on-line zero contributions.
 -- onLine_liPairedSummand_eq_normSq: for a nontrivial zero with re=1/2, liPairedSummand n rho =
