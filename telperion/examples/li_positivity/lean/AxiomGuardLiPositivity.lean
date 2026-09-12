@@ -67,6 +67,7 @@ import ZetaLogBound
 import DlvpZetaRateEffective
 import RvMBacklundAux
 import RvMBacklundIVT
+import RvMBacklundCenter
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -348,3 +349,9 @@ import RvMBacklundIVT
 -- backlundAux_root_of_sign_change (opposite signs ⟹ real zero of F_T). conjecture1_proved=False.
 #print axioms Backlund.backlundAux_root_of_sign_change
 #print axioms Backlund.continuous_backlundAux_line
+
+-- Backlund S(T)=O(log T), PR 3a: the Jensen centre lower bound.
+-- re_zeta_two_ge: 2-π²/6 ≤ Re ζ(2+iT) (Re-analogue of zeta_norm_ge_two_sub, via Dirichlet series +
+-- basel_tail); backlundAux_two_norm_ge: 2-π²/6 ≤ ‖F_T(2)‖ (the Jensen denominator). conjecture1_proved=False.
+#print axioms Backlund.re_zeta_two_ge
+#print axioms Backlund.backlundAux_two_norm_ge
