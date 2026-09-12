@@ -741,19 +741,58 @@ def _missions_root(args) -> "Path":
     """Resolve the missions root from --missions-root or a sane per-repo default.
 
     Resolution order (first that exists wins):
-    1. args.missions_root if explicitly set
+    1. args.missions_root if explicitly set (passed as --missions-root)
     2. Path.cwd() / "missions"
     3. Path.cwd() / "telperion" / "missions"
-    4. args.missions_root as-is (fallback, may not exist — callers can mkdir)
+    4. Walk cwd.parents upward; for each ancestor check ancestor/"missions"
+       and ancestor/"telperion"/"missions"
+    5. Fall through to Path.cwd() / "missions" (callers can mkdir as needed)
     """
     explicit = getattr(args, "missions_root", None)
     if explicit is not None:
         return Path(explicit)
     cwd = Path.cwd()
-    for candidate in (cwd / "missions", cwd / "telperion" / "missions"):
-        if candidate.is_dir():
-            return candidate
+    search_dirs = [cwd] + list(cwd.parents)
+    for d in search_dirs:
+        for candidate in (d / "missions", d / "telperion" / "missions"):
+            if candidate.is_dir():
+                return candidate
     return cwd / "missions"
+
+
+def _resolve_campaign(root: "Path", slug: str, campaign: "str | None") -> "Path | None":
+    """Return the campaign root that owns *slug*, or None on error (already printed).
+
+    If *campaign* is given: return root/campaign unconditionally (the caller
+    must handle a missing campaign dir themselves, as usual).
+
+    Otherwise: scan all campaign subdirs for nodes/<slug>.toml.
+    - Exactly one hit   -> return that campaign root.
+    - Zero hits         -> print message, return None.
+    - Multiple hits     -> print message listing them with --campaign hint, return None.
+    """
+    if campaign:
+        return Path(root) / campaign
+    root = Path(root)
+    if not root.is_dir():
+        print(f"Missions root {root} does not exist; pass --missions-root or --campaign")
+        return None
+    hits = [
+        d for d in sorted(root.iterdir())
+        if d.is_dir() and (d / "mission.toml").exists()
+        and (d / "nodes" / f"{slug}.toml").exists()
+    ]
+    if len(hits) == 1:
+        return hits[0]
+    if len(hits) == 0:
+        print(f"No campaign contains node {slug!r}. Pass --campaign or check the slug.")
+        return None
+    names = ", ".join(h.name for h in hits)
+    print(
+        f"Node {slug!r} found in multiple campaigns: {names}. "
+        "Pass --campaign to disambiguate."
+    )
+    return None
 
 
 def _campaign_roots(root: "Path", campaign: "str | None") -> "list[Path]":
@@ -810,11 +849,14 @@ def cmd_mission_claim(args) -> int:
     from .missions.claims import claim
     from .missions.schema import ClaimError
 
-    root = _missions_root(args) / args.campaign
+    camp_root = _resolve_campaign(_missions_root(args), args.slug,
+                                  getattr(args, "campaign", None))
+    if camp_root is None:
+        return 1
     ttl = getattr(args, "ttl", 24) or 24
     note = getattr(args, "note", "") or ""
     try:
-        claim(root, args.slug, args.session, ttl_hours=ttl, note=note)
+        claim(camp_root, args.slug, args.session, ttl_hours=ttl, note=note)
     except ClaimError as exc:
         print(str(exc))
         return 1
@@ -826,9 +868,12 @@ def cmd_mission_release(args) -> int:
     from .missions.claims import release
     from .missions.schema import ClaimError
 
-    root = _missions_root(args) / args.campaign
+    camp_root = _resolve_campaign(_missions_root(args), args.slug,
+                                  getattr(args, "campaign", None))
+    if camp_root is None:
+        return 1
     try:
-        release(root, args.slug, args.session)
+        release(camp_root, args.slug, args.session)
     except ClaimError as exc:
         print(str(exc))
         return 1
@@ -863,7 +908,11 @@ def cmd_mission_add(args) -> int:
     if args.statement:
         stmt_text = args.statement
     elif args.statement_file:
-        stmt_text = Path(args.statement_file).read_text()
+        try:
+            stmt_text = Path(args.statement_file).read_text()
+        except OSError as exc:
+            print(f"Cannot read statement file {args.statement_file!r}: {exc}")
+            return 1
     else:
         print("--statement or --statement-file required")
         return 1
@@ -898,35 +947,43 @@ def cmd_mission_audit(args) -> int:
     from datetime import date as _date
 
     from .missions.registry import load_campaign, promote_to_open
-    from .missions.schema import Readback, SchemaError, load_node, save_node, slug_of
+    from .missions.schema import Readback, SchemaError, save_node, slug_of
 
-    root = _missions_root(args) / args.campaign
     slug = slug_of(args.slug)
+    camp_root = _resolve_campaign(_missions_root(args), slug,
+                                  getattr(args, "campaign", None))
+    if camp_root is None:
+        return 1
 
     try:
-        camp = load_campaign(root)
+        camp = load_campaign(camp_root)
     except SchemaError as exc:
         print(f"Schema error: {exc}")
         return 1
 
     if slug not in camp.nodes:
-        print(f"Node {slug!r} not found in campaign {args.campaign!r}")
+        print(f"Node {slug!r} not found in campaign {camp_root.name!r}")
         return 1
 
     node = camp.nodes[slug]
     today = _date.today().isoformat()
     rb = Readback(text=args.text, auditor=args.auditor, date=today)
     new_node = _dc.replace(node, readback=rb, updated=today)
-    node_path = root / "nodes" / f"{slug}.toml"
+    node_path = camp_root / "nodes" / f"{slug}.toml"
     save_node(new_node, node_path)
     camp.nodes[slug] = new_node
 
-    # Promote draft -> open now that readback is set
-    try:
-        promoted = promote_to_open(camp, slug)
-        print(f"{slug}: status -> {promoted.status}")
-    except SchemaError as exc:
-        print(f"{slug}: readback recorded; promote failed: {exc}")
+    # Promote draft -> open if applicable; return 1 if promote raises SchemaError.
+    # Only draft nodes are eligible; readback is always durably written above.
+    if node.status == "draft":
+        try:
+            promoted = promote_to_open(camp, slug)
+            print(f"{slug}: status -> {promoted.status}")
+        except SchemaError as exc:
+            print(f"{slug}: readback recorded; promote failed: {exc}")
+            return 1
+    else:
+        print(f"{slug}: readback recorded (status {node.status!r} unchanged)")
     return 0
 
 
@@ -934,11 +991,14 @@ def cmd_mission_link(args) -> int:
     from .missions.registry import load_campaign, set_proof
     from .missions.schema import Proof, SchemaError, slug_of
 
-    root = _missions_root(args) / args.campaign
     slug = slug_of(args.slug)
+    camp_root = _resolve_campaign(_missions_root(args), slug,
+                                  getattr(args, "campaign", None))
+    if camp_root is None:
+        return 1
 
     try:
-        camp = load_campaign(root)
+        camp = load_campaign(camp_root)
     except SchemaError as exc:
         print(f"Schema error: {exc}")
         return 1
@@ -964,11 +1024,14 @@ def cmd_mission_attempt(args) -> int:
     from .missions.attempts import Attempt, AttemptLog
     from .missions.schema import slug_of
 
-    root = _missions_root(args) / args.campaign
     slug = slug_of(args.slug)
-    ledger = AttemptLog(root / "attempts.jsonl")
+    camp_root = _resolve_campaign(_missions_root(args), slug,
+                                  getattr(args, "campaign", None))
+    if camp_root is None:
+        return 1
+    ledger = AttemptLog(camp_root / "attempts.jsonl")
     attempt = Attempt(
-        node=args.slug,
+        node=slug,          # store normalised slug, not raw args.slug
         session=args.session,
         route=args.route,
         verdict=args.verdict,
@@ -985,11 +1048,14 @@ def cmd_mission_grant(args) -> int:
     from .missions.schema import SchemaError, slug_of
     from .missions.verify import GateError, grant_status
 
-    root = _missions_root(args) / args.campaign
     slug = slug_of(args.slug)
+    camp_root = _resolve_campaign(_missions_root(args), slug,
+                                  getattr(args, "campaign", None))
+    if camp_root is None:
+        return 1
 
     try:
-        camp = load_campaign(root)
+        camp = load_campaign(camp_root)
     except SchemaError as exc:
         print(f"Schema error: {exc}")
         return 1
@@ -1283,23 +1349,27 @@ def main(argv=None) -> int:
                    help="include claimed nodes")
     p.set_defaults(mission_fn=cmd_mission_open_leaves)
 
-    # claim SLUG --campaign C --session S [--ttl H] [--note N]
+    # claim SLUG [--campaign C] --session S [--ttl H] [--note N]
+    # --campaign is OPTIONAL: when omitted, _resolve_campaign auto-discovers
     p = msub.add_parser("claim", help="claim a node for a session")
     p.add_argument("slug")
-    p.add_argument("--campaign", required=True)
+    p.add_argument("--campaign", default=None,
+                   help="campaign name (auto-resolved from slug when omitted)")
     p.add_argument("--session", required=True)
     p.add_argument("--ttl", type=int, default=24, help="TTL in hours")
     p.add_argument("--note", default="")
     p.set_defaults(mission_fn=cmd_mission_claim)
 
-    # release SLUG --campaign C --session S
+    # release SLUG [--campaign C] --session S
     p = msub.add_parser("release", help="release a node claim")
     p.add_argument("slug")
-    p.add_argument("--campaign", required=True)
+    p.add_argument("--campaign", default=None,
+                   help="campaign name (auto-resolved from slug when omitted)")
     p.add_argument("--session", required=True)
     p.set_defaults(mission_fn=cmd_mission_release)
 
     # add CAMPAIGN NAME --title T --kind K [--deps a,b] (--statement TEXT | --statement-file F)
+    # add uses positional CAMPAIGN (not --campaign) so it stays required
     p = msub.add_parser("add", help="add a new node to a campaign")
     p.add_argument("campaign")
     p.add_argument("name", help="node name (e.g. My.lemma_x)")
@@ -1311,27 +1381,30 @@ def main(argv=None) -> int:
                    help="path to file containing statement text")
     p.set_defaults(mission_fn=cmd_mission_add)
 
-    # audit SLUG --campaign C --text T --auditor A
+    # audit SLUG [--campaign C] --text T --auditor A
     p = msub.add_parser("audit", help="record a readback and promote draft -> open")
     p.add_argument("slug")
-    p.add_argument("--campaign", required=True)
+    p.add_argument("--campaign", default=None,
+                   help="campaign name (auto-resolved from slug when omitted)")
     p.add_argument("--text", required=True)
     p.add_argument("--auditor", required=True)
     p.set_defaults(mission_fn=cmd_mission_audit)
 
-    # link SLUG --campaign C --artifact P --kind K --via V
+    # link SLUG [--campaign C] --artifact P --kind K --via V
     p = msub.add_parser("link", help="record a proof artifact link (status unchanged)")
     p.add_argument("slug")
-    p.add_argument("--campaign", required=True)
+    p.add_argument("--campaign", default=None,
+                   help="campaign name (auto-resolved from slug when omitted)")
     p.add_argument("--artifact", required=True)
     p.add_argument("--kind", required=True, choices=("lean_module", "frozen_cert"))
     p.add_argument("--via", required=True, choices=("direct", "reduction"))
     p.set_defaults(mission_fn=cmd_mission_link)
 
-    # attempt SLUG --campaign C --session S --route R --verdict V --detail D
+    # attempt SLUG [--campaign C] --session S --route R --verdict V --detail D
     p = msub.add_parser("attempt", help="record a work attempt in the ledger")
     p.add_argument("slug")
-    p.add_argument("--campaign", required=True)
+    p.add_argument("--campaign", default=None,
+                   help="campaign name (auto-resolved from slug when omitted)")
     p.add_argument("--session", required=True)
     p.add_argument("--route", required=True)
     p.add_argument("--verdict", required=True,
@@ -1339,10 +1412,11 @@ def main(argv=None) -> int:
     p.add_argument("--detail", required=True)
     p.set_defaults(mission_fn=cmd_mission_attempt)
 
-    # grant SLUG --campaign C
+    # grant SLUG [--campaign C]
     p = msub.add_parser("grant", help="flip open -> proved/refuted via the verify gate")
     p.add_argument("slug")
-    p.add_argument("--campaign", required=True)
+    p.add_argument("--campaign", default=None,
+                   help="campaign name (auto-resolved from slug when omitted)")
     p.set_defaults(mission_fn=cmd_mission_grant)
 
     # verify [CAMPAIGN] [--deep-lean]

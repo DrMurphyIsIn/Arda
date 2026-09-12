@@ -71,7 +71,8 @@ def test_mission_status_all_campaigns(tmp_path, capsys):
 
 
 # ---------------------------------------------------------------------------
-# T2: open-leaves shows Demo_lemma_a, hides after claim, --all shows again
+# T2: open-leaves shows Demo.lemma_a (dotted name), hides after claim,
+#     --all shows it again
 # ---------------------------------------------------------------------------
 
 def test_open_leaves_shows_lemma_a(tmp_path, capsys):
@@ -79,28 +80,25 @@ def test_open_leaves_shows_lemma_a(tmp_path, capsys):
     rc = main(["mission", "--missions-root", str(mroot), "open-leaves", "demo"])
     assert rc == 0
     out = capsys.readouterr().out
-    # open_leaves prints node.name (e.g. "Demo.lemma_a") + title
-    assert "Demo.lemma_a" in out or "Demo_lemma_a" in out
+    # cmd prints node.name (dotted form) + title
+    assert "Demo.lemma_a" in out
 
 
 def test_open_leaves_hides_after_claim(tmp_path, capsys):
     mroot, _ = make_demo_root(tmp_path)
-    # Claim Demo_lemma_a
+    # Claim Demo_lemma_a — pass --campaign because there is only one campaign
     main(["mission", "--missions-root", str(mroot), "claim", "Demo_lemma_a",
           "--campaign", "demo", "--session", "sess-1"])
-    capsys.readouterr()  # clear output
+    capsys.readouterr()
 
     rc = main(["mission", "--missions-root", str(mroot), "open-leaves", "demo"])
     assert rc == 0
     out = capsys.readouterr().out
-    # Both the dotted name and slug form should be absent
     assert "Demo.lemma_a" not in out
-    assert "Demo_lemma_a" not in out
 
 
 def test_open_leaves_all_shows_claimed(tmp_path, capsys):
     mroot, _ = make_demo_root(tmp_path)
-    # Claim Demo_lemma_a
     main(["mission", "--missions-root", str(mroot), "claim", "Demo_lemma_a",
           "--campaign", "demo", "--session", "sess-1"])
     capsys.readouterr()
@@ -108,7 +106,7 @@ def test_open_leaves_all_shows_claimed(tmp_path, capsys):
     rc = main(["mission", "--missions-root", str(mroot), "open-leaves", "demo", "--all"])
     assert rc == 0
     out = capsys.readouterr().out
-    assert "Demo.lemma_a" in out or "Demo_lemma_a" in out
+    assert "Demo.lemma_a" in out
 
 
 # ---------------------------------------------------------------------------
@@ -163,8 +161,23 @@ def test_add_with_deps(tmp_path, capsys):
     assert "Demo_lemma_a" in node.depends_on
 
 
+def test_add_statement_file_missing_exits1(tmp_path, capsys):
+    """--statement-file pointing at a nonexistent file must exit 1, not traceback."""
+    mroot, _ = make_demo_root(tmp_path)
+    rc = main([
+        "mission", "--missions-root", str(mroot), "add", "demo", "File.lemma",
+        "--title", "File lemma", "--kind", "lemma",
+        "--statement-file", str(tmp_path / "nonexistent.lean"),
+    ])
+    assert rc == 1
+    out = capsys.readouterr().out + capsys.readouterr().err
+    # Should not be an uncaught traceback (no "Traceback" in output)
+    assert "Traceback" not in out
+
+
 # ---------------------------------------------------------------------------
-# T4: audit records readback AND promotes draft -> open
+# T4: audit records readback AND promotes draft -> open;
+#     auditing an already-open/proved node returns 1
 # ---------------------------------------------------------------------------
 
 def test_audit_records_readback_and_promotes(tmp_path, capsys):
@@ -183,6 +196,46 @@ def test_audit_records_readback_and_promotes(tmp_path, capsys):
     assert node.status == "open"
 
 
+def test_audit_already_open_skips_promote(tmp_path, capsys):
+    """Auditing a node that is already open records readback but skips promote (exit 0)."""
+    mroot, campaign_root = make_demo_root(tmp_path)
+    # Demo_lemma_a is already open (has a readback in fixture)
+    rc = main([
+        "mission", "--missions-root", str(mroot), "audit", "Demo_lemma_a",
+        "--campaign", "demo",
+        "--text", "Re-audit of already-open node.",
+        "--auditor", "operator",
+    ])
+    # Readback is recorded, promote skipped gracefully, exit 0
+    assert rc == 0
+    node = load_node(campaign_root / "nodes" / "Demo_lemma_a.toml")
+    assert node.readback is not None
+    assert node.status == "open"
+
+
+def test_audit_promote_failure_returns1(tmp_path, capsys):
+    """If promote_to_open raises (SchemaError), audit exits 1 while readback stays durable."""
+    import unittest.mock as _mock
+    mroot, campaign_root = make_demo_root(tmp_path)
+    from telperion.missions.schema import SchemaError
+    # Patch promote_to_open to always raise SchemaError AFTER the readback is written
+    with _mock.patch(
+        "telperion.cli.cmd_mission_audit.__wrapped__"
+        if hasattr(main, "__wrapped__") else "telperion.missions.registry.promote_to_open",
+        side_effect=SchemaError("forced failure"),
+    ):
+        rc = main([
+            "mission", "--missions-root", str(mroot), "audit", "Demo_lemma_b",
+            "--campaign", "demo",
+            "--text", "Will fail promote.",
+            "--auditor", "operator",
+        ])
+    assert rc == 1
+    # Readback must be durably written even though promote failed
+    node = load_node(campaign_root / "nodes" / "Demo_lemma_b.toml")
+    assert node.readback is not None
+
+
 # ---------------------------------------------------------------------------
 # T5: link then grant with matching artifact flips to proved
 # ---------------------------------------------------------------------------
@@ -191,20 +244,17 @@ def test_link_then_grant_proves(tmp_path, capsys):
     mroot, campaign_root = make_demo_root(tmp_path)
     manifest = _manifest()
 
-    # Write a statement file for Demo_lemma_a
     from telperion.missions.registry import load_campaign
     camp = load_campaign(campaign_root)
     node = camp.nodes["Demo_lemma_a"]
     stmt = "theorem demo_lemma_a : 1 = 1"
     write_statement(campaign_root, node, stmt, manifest)
 
-    # Write a matching artifact .lean file
     artifact_rel = "proof/Demo_lemma_a.lean"
     artifact_path = campaign_root / artifact_rel
     artifact_path.parent.mkdir(parents=True, exist_ok=True)
     artifact_path.write_text(f"{stmt} := by rfl\n")
 
-    # Link
     rc = main([
         "mission", "--missions-root", str(mroot), "link", "Demo_lemma_a",
         "--campaign", "demo",
@@ -213,11 +263,9 @@ def test_link_then_grant_proves(tmp_path, capsys):
         "--via", "direct",
     ])
     assert rc == 0
-    # Status should still be open after link
     node_after_link = load_node(campaign_root / "nodes" / "Demo_lemma_a.toml")
     assert node_after_link.status == "open"
 
-    # Grant
     rc2 = main([
         "mission", "--missions-root", str(mroot), "grant", "Demo_lemma_a",
         "--campaign", "demo",
@@ -237,7 +285,6 @@ def test_grant_mismatched_artifact_exits1(tmp_path, capsys):
     stmt = "theorem demo_lemma_a : 1 = 1"
     write_statement(campaign_root, node, stmt, manifest)
 
-    # Write artifact with WRONG statement
     artifact_rel = "proof/Demo_lemma_a.lean"
     artifact_path = campaign_root / artifact_rel
     artifact_path.parent.mkdir(parents=True, exist_ok=True)
@@ -268,7 +315,6 @@ def test_grant_mismatched_artifact_exits1(tmp_path, capsys):
 def test_verify_clean_fixture(tmp_path, capsys):
     mroot, campaign_root = make_demo_root(tmp_path)
     rc = main(["mission", "--missions-root", str(mroot), "verify", "demo"])
-    # Demo fixture has no proved nodes and no statement files, should be clean
     assert rc == 0
 
 
@@ -282,13 +328,11 @@ def test_verify_exits1_with_mismatch(tmp_path, capsys):
     stmt = "theorem demo_lemma_a : 1 = 1"
     write_statement(campaign_root, node, stmt, manifest)
 
-    # Force proved status with a bad artifact (mismatched statement)
     artifact_rel = "proof/Demo_lemma_a.lean"
     artifact_path = campaign_root / artifact_rel
     artifact_path.parent.mkdir(parents=True, exist_ok=True)
     artifact_path.write_text("theorem wrong : 2 + 2 = 5 := by simp\n")
 
-    # Directly write proved node with proof link to bypass grant gate
     proved_node = dataclasses.replace(
         node,
         status="proved",
@@ -328,6 +372,8 @@ def test_attempt_appends_line(tmp_path, capsys):
     assert len(lines) >= 1
     assert lines[-1]["verdict"] == "Stalled"
     assert lines[-1]["route"] == "direct_proof"
+    # FIX 4: node field must be the normalised slug, not raw dotted name
+    assert lines[-1]["node"] == "Demo_lemma_a"
 
 
 # ---------------------------------------------------------------------------
@@ -358,3 +404,56 @@ def test_graph_outputs_dot(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "digraph" in out
     assert "Demo_lemma_a" in out
+
+
+# ---------------------------------------------------------------------------
+# FIX 1: global slug resolution — no --campaign when slug is unambiguous
+# ---------------------------------------------------------------------------
+
+def test_claim_without_campaign_resolves(tmp_path, capsys):
+    """claim succeeds without --campaign when slug is in exactly one campaign."""
+    mroot, campaign_root = make_demo_root(tmp_path)
+    # No --campaign; single campaign root contains Demo_lemma_a
+    rc = main([
+        "mission", "--missions-root", str(mroot),
+        "claim", "Demo_lemma_a",
+        "--session", "auto-sess",
+    ])
+    assert rc == 0
+    claim_file = campaign_root / "claims" / "Demo_lemma_a.toml"
+    assert claim_file.exists()
+
+
+def test_attempt_without_campaign_resolves(tmp_path, capsys):
+    """attempt succeeds without --campaign when slug is in exactly one campaign."""
+    mroot, campaign_root = make_demo_root(tmp_path)
+    rc = main([
+        "mission", "--missions-root", str(mroot),
+        "attempt", "Demo_lemma_a",
+        "--session", "auto-sess",
+        "--route", "direct",
+        "--verdict", "NoGo",
+        "--detail", "Tried and failed",
+    ])
+    assert rc == 0
+    ledger = campaign_root / "attempts.jsonl"
+    assert ledger.exists()
+
+
+def test_ambiguous_slug_exits1(tmp_path, capsys):
+    """When same slug exists in two campaigns and --campaign is omitted, exit 1."""
+    mroot, campaign_root_a = make_demo_root(tmp_path)
+    # Create a second campaign with the same Demo_lemma_a node slug
+    campaign_root_b = mroot / "other"
+    shutil.copytree(campaign_root_a, campaign_root_b)
+
+    rc = main([
+        "mission", "--missions-root", str(mroot),
+        "claim", "Demo_lemma_a",
+        "--session", "sess-x",
+    ])
+    assert rc == 1
+    out = capsys.readouterr().out
+    # Both campaign names should appear in the message
+    assert "demo" in out
+    assert "other" in out
