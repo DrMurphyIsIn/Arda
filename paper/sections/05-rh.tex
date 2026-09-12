@@ -340,6 +340,103 @@ a conclusion about it---and it exhibits a fourth distinct certificate shape (a
 weighted explicit-formula / diffraction identity), alongside positivity,
 real-rootedness, and winding counts.
 
+\subsection{The bridge to Li's coefficients: one weighted engine}
+
+The counting formula and the explicit formula above turn out to be the same
+machine read with different test weights, and choosing the weight that Li's
+criterion cares about carries the apparatus back to the object this section
+opened with. The engine is a single weighted argument principle
+(\texttt{analytic\_weighted\_count\_eq\_winding}; CI-axiom-guarded, axioms
+$\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$): for
+analytic $f$ and any holomorphic weight $g$, the weighted boundary winding
+equals $2\pi i \sum_{\rho} \operatorname{mult}(\rho)\, g(\rho)$. Weight
+$g \equiv 1$ returns the zero-count $N(T)$ of the previous subsections; weight
+$g(\rho) = 1 - (1 - 1/\rho)^n$ returns the finite box-sum of Li's summands. The
+Riemann--von Mangoldt count and the finite Li-sum are \emph{one functional, two
+weights}---not an analogy but the same theorem, instantiated twice.
+
+Two further facts, both kernel-clean, place the coefficients themselves. First,
+specializing the finite explicit formula to the Li weight
+(\texttt{li\_finite\_explicit\_formula}, derived from
+\texttt{rect\_explicit\_formula}) yields the finite, rectangular skeleton of the
+Bombieri--Lagarias arithmetic form of Li's coefficients
+\cite{bombierilagarias1999}: the weighted zero-sum equals von Mangoldt prime
+terms on the right edge plus the boundary integrals, the same diffraction shape
+as before but now carrying the Li weight. Second
+(\texttt{liCoeff\_isLimit\_partialSums}), the $n$-th coefficient---the Taylor
+coefficient of $\xi$ whose nonnegativity is Li's criterion---is the limit of
+finite partial sums over finite subsets of the zeros, conditional on two named
+analytic inputs (genus-one summability $\sum 1/\lVert\rho\rVert^2$ and the
+Hadamard product), left as explicit hypotheses. So $\lambda_n$ is reached as the
+exhaustion limit of exactly the finite sums the engine computes. And the two
+developments are provably about \emph{one} function: \texttt{xiTele\_eq\_riemannXi}
+is a \texttt{ring} identity, so the $\xi$ whose box zero-count the counting
+formula computes is the very $\xi$ whose Taylor coefficients characterize RH
+(recorded, as a conjunction of the two facts, in
+\texttt{rvm\_and\_li\_share\_riemannXi}).
+
+The honesty line is the whole point of stating this, and it is drawn sharply.
+These are separate kernel theorems, \emph{deliberately not stitched} into a
+claim that the count $N(T)$ determines the coefficients $\lambda_n$. Two
+structural seams that once stood between them are now formalized. The
+$\xi$-versus-$\zeta$ index mismatch is closed: a finite weighted box-sum over
+$\zeta$'s strip zeros is a value-preserving sub-sum of $\xi$'s nontrivial-zero
+index (\texttt{zeroFinset\_sum\_via\_nontrivial}, a reindexing). And the
+$\xi$-side algebra is complete: the four-way split
+$(\log\xi)' = s^{-1} + (s-1)^{-1} + (\log\zeta)' + (\log\Gamma_{\mathbb R})'$
+(\texttt{logDeriv\_xiTele\_four\_split}) isolates the Archimedean factor exactly,
+reducing it to $\tfrac12\,\psi(s/2)$ with $\psi$ the digamma function.
+
+What remains is then an obstruction we can name precisely---and naming it, we
+find it is \emph{route-specific}, not intrinsic. Computed the contour way, the
+Bombieri--Lagarias main term $\lambda_n \sim (n/2)\log n$ (the one place the zero
+density $dN(T) \sim (1/2\pi)\log(T/2\pi)$ becomes load-bearing) requires the
+large-argument asymptotic of the digamma function, $\psi(w) \sim \log w$,
+integrated against the concentrating weight $g_n$ and extracted by a saddle-point
+argument as the contour grows. That asymptotic is \emph{not in the Mathlib we
+build against}: its digamma development carries the special values, the recurrence
+$\psi(s{+}1) = \psi(s) + 1/s$, and meromorphy, but nothing at infinity; its
+Stirling development has only the discrete factorial form, not the continuous
+complex $\log\Gamma$ asymptotic.
+
+But the asymptotic is only forced by the contour. Li's own definition takes the
+Taylor route---$\lambda_n$ is a coefficient of $(\log \xi)'$ under the M\"obius
+change of variable $z \mapsto 1/(1-z)$, which sends the expansion point $z=0$ to
+the \emph{fixed point} $s=1$. Along that route the Archimedean factor is sampled,
+with all its derivatives, at $s=1$---never at infinity---so the missing
+large-argument asymptotic is simply off the path, replaced by exact local
+constants. The base datum is already in the kernel:
+$(\log \Gamma_{\mathbb R})'(1) = -(\gamma + \log 4\pi)/2$
+(\texttt{logDeriv\_gammaR\_one}, CI-axiom-guarded), from Mathlib's own derivative
+of $\Gamma$ at $1$. The route's residual has since been \emph{built}. The polygamma theory Mathlib
+lacked is now in the kernel from the ground up: the Gauss--Weierstrass digamma
+series (\texttt{digamma\_series}, obtained by log-differentiating the Weierstrass
+product $s\,e^{\gamma s}\prod(1+s/n)e^{-s/n} = 1/\Gamma$, with $\gamma$ pinned by
+Mathlib's harmonic-minus-log limit), the trigamma value $\psi'(\tfrac12) = \pi^2/2$
+(\texttt{deriv\_digamma\_one\_half}, its series summed via Basel), and the higher
+$\psi^{(k)}(\tfrac12)$ as exact $\zeta$-value data. A Fa\`a di Bruno expansion of
+the composition and a Leibniz rule for iterated derivatives---both filling their
+own Mathlib gaps---then assemble the Archimedean coefficient in closed form
+(\texttt{taylorCoeff\_Gamma}\(\mathbb{R}\)\texttt{\_leibniz}), and the Li coefficient itself splits, as a
+kernel theorem, into its exact parts:
+\[
+  \lambda_n = \texttt{taylorCoeff}(\mathrm{id})_n
+    + \texttt{taylorCoeff}(H)_n
+    + \texttt{taylorCoeff}(\Gamma_{\mathbb R})_n
+\]
+(\texttt{taylorCoeff\_riemannXi\_split}, with $H=(s-1)\zeta$ the analytic
+$\zeta$-companion at $s=1$), the last summand being the closed polygamma data. This
+is the exact, finite coefficient---built, not asserted.
+
+What that leaves is a single, sharper residual: the \emph{growth} of this
+now-explicit sequence, $\lambda_n \sim (n/2)\log n$. That is no longer an absent
+complex asymptotic on a growing contour, nor a theory to build---it is one named
+asymptotic estimate of a known real sequence of $\zeta$-value constants, and it is
+the one place the zero density $dN(T) \sim (1/2\pi)\log(T/2\pi)$ would become
+load-bearing. We have the exact coefficient; we do not have---and do not claim---its
+asymptotic. As everywhere in this section, \texttt{conjecture1\_proved = False}:
+nothing here proves or approaches RH.
+
 For completeness we note one boundary item we deliberately keep out of the
 verified list, stated as it is: a Borel--Carath\'eodory theorem is present in the
 development but is a \emph{draft}---its constant is not sharp, it is not
