@@ -68,6 +68,7 @@ import DlvpZetaRateEffective
 import RvMBacklundAux
 import RvMBacklundIVT
 import RvMBacklundCenter
+import RvMBacklundJensen
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -355,3 +356,10 @@ import RvMBacklundCenter
 -- basel_tail); backlundAux_two_norm_ge: 2-π²/6 ≤ ‖F_T(2)‖ (the Jensen denominator). conjecture1_proved=False.
 #print axioms Backlund.re_zeta_two_ge
 #print axioms Backlund.backlundAux_two_norm_ge
+
+-- Backlund S(T)=O(log T), PR 3b: the Jensen zero-count of F_T is O(log T).
+-- backlundAux_zero_count_le (T≥4): ∑ᶠ divisor F_T (closedBall 2 (3/2)) ≤ log((4T+19)/‖F_T(2)‖)/log(7/6),
+-- via zeta_strip_bound (Re>0 sphere bound, survives below 1/2) + PR 3a centre bound + AnalyticOnNhd.
+-- sum_divisor_le. Explicit O(log T). conjecture1_proved=False.
+#print axioms Backlund.backlundAux_zero_count_le
+#print axioms Backlund.backlundAux_analyticOnNhd_ball
