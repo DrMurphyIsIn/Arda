@@ -79,6 +79,7 @@ import RvMBacklundSignClosed
 import RvMBacklundCount
 import RvMBacklundZeta
 import RvMBacklundCountJensen
+import RvMBacklundLogCont
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
