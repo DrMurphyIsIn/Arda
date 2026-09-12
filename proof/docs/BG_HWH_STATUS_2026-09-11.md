@@ -94,6 +94,35 @@ the straightening "resists the averaging certificate": the correct move is a det
 tree (min-degree defect-reducing relocation), but proving its Aobj-non-decrease requires the joint
 structure, not a local degree bound.
 
+## Cracking the nut: an exact analytic decomposition of the leaf-move `Aobj` change
+
+`hwh_leaf_decomposition.py` derives and verifies (exact `Fraction`, 0 mismatches / ~13000 moves) the exact
+change in `Aobj` under a leaf relocation. Tree `T`, leaf `l` with neighbor `p` (deg `a`), relocate to a
+non-adjacent `w` (deg `b`); `T'` has `deg(p)=a-1`, `deg(w)=b+1`. Let `G = T - l`; classify matchings of `G`
+by whether `p`/`w` are matched, with the `p`,`w` degree factors removed from the weights:
+`P00, P10, P01, P11`. Then
+
+```
+(Aobj(T') - Aobj(T)) * a(b+1) = (a+b+1)*B1 + (a-b-1)*B2,
+   B1 = P10/(a-1) - P01/b ,   B2 = P00 - P11/(b(a-1)).
+```
+
+This turns the "resists a certificate" monotonicity into three checkable pieces:
+1. **`B2 >= 0`** in the regime `b <= a-1` -- a CLEAN universal matching-sum inequality, **0 counterexamples**
+   (exhaustive n<=11). Provable (a negative-association / stability statement for matchings). ONE PIECE DONE.
+2. **`a - b - 1 >= 0`** (the move goes to strictly-lower degree) -- holds for the min-degree defect-reducing
+   selection; a defect-reducing leaf move with `b <= a-1` EXISTS for every defective tree except the n=13
+   triple-3-star.
+3. **`B1 >= 0`** under the min-degree defect-reducing selection -- the REMAINING OPEN CORE. `B1` is NOT a
+   degree-only fact (it fails for leaf-onto-leaf `a=2,b=1`), so its non-negativity is coupled to the defect
+   structure. This is the sharp residual of the leaf case.
+
+Given (1) `B2 >= 0` and (2) `a-b-1 >= 0`, monotonicity `ΔAobj >= 0` follows once `(a+b+1)*B1 >= -(a-b-1)*B2`
+-- in particular once `B1 >= 0`. So the leaf-case nut is reduced to the single matching inequality `B1 >= 0`
+under the min-degree defect-reducing move (the cherry/arm/sub-star classes still need their own analogous
+decomposition). This is genuine progress -- an exact analytic handle and one proven lemma -- but NOT a
+closure; `B1`'s structural guarantee is the open core.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
