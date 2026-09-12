@@ -1,0 +1,8 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "BG.r2_multihub_maximality"
+statement_module = "Statements.BG_r2_multihub_maximality"
+status = "draft"
+title = "R2 multi-hub maximality (PROVISIONAL rendering): at any size carrying a DN, the best DN dominates every multi-hub tree"
+updated = "2026-09-11"

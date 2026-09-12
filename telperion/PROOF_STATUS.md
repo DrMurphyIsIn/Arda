@@ -159,3 +159,39 @@ aware** (it is a growth-rate, not an algebraic certificate), and **integrality-b
 *Session-honest note: the near-star spine is proven with Lean CI green on the arithmetic
 cores; the conjecture is not. Every "ruled out" above carries its reason. The toolkit's
 `conjecture1_proved` flag is `False` throughout, by design.*
+
+---
+
+<!-- missions:bg:begin -->
+The missions registry (`telperion/missions/bg/`) is now the tracking truth for this
+campaign; this block is generated (`telperion mission status bg`, 2026-09-11). Every
+`proved`/`refuted` status below was earned through the registry's verify gate against the
+named `proof/` artifact; the goal node is `draft` — `conjecture1_proved = False`.
+
+```
+Brualdi-Goldwasser <=-half: Phi^11(T) <= 1 for all trees, equality only at the six 11-vertex ties
+
+  ✓ BG_cavity_recursion  (lemma, proved)
+  · BG_conjecture1  (goal, draft)  -> BG_master_inequality, BG_r2_multihub_maximality, BG_phi_le_one, BG_h1_bridge, BG_cavity_recursion, BG_merge_layer, BG_gstep_closure, BG_near_star_tail, BG_near_star_tie, BG_fractal_asymptote, BG_lb_classification, BG_r2_double_near_star
+  ✓ BG_fractal_asymptote  (lemma, proved)
+  ✓ BG_gstep_closure  (milestone, proved)
+  ✓ BG_h1_bridge  (lemma, proved)  -> BG_cavity_recursion
+  ✗ BG_hnorm_capstone  (lemma, refuted)
+  ✓ BG_lb_classification  (lemma, proved)
+  · BG_master_inequality  (lemma, draft)
+  ✓ BG_merge_layer  (lemma, proved)  -> BG_h1_bridge
+  ✓ BG_near_star_tail  (lemma, proved)
+  ✓ BG_near_star_tie  (lemma, proved)
+  ✓ BG_phi_le_one  (milestone, proved)  -> BG_lb_classification
+  ○ BG_r2_double_near_star  (lemma, open)
+  · BG_r2_multihub_maximality  (lemma, draft)
+```
+
+Migration notes (2026-09-11, findings in the task-9 report): `BG_hnorm_capstone` is the
+2026-09-11 refutation (`R47HnormFalse52.lean` — Hnorm is FALSE at aligned n=52, four-core
+witness `T(6,6,6,6)`). `BG_r2_double_near_star` is prose-PROVEN (exact toolkit arithmetic)
+but has NO kernel artifact, so it migrated as `open` per the fidelity rule.
+`BG_master_inequality` and `BG_r2_multihub_maximality` carry PROVISIONAL statement
+renderings (no kernel vocabulary exists for them yet) and stay `draft` pending independent
+audit.
+<!-- missions:bg:end -->

@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = ["BG_lb_classification"]
+kind = "milestone"
+name = "BG.phi_le_one"
+statement_module = "Statements.BG_phi_le_one"
+status = "proved"
+title = "The Phi <= 1 hinge: logPhi b <= 0 for every Branch (discharging potential telescoped)"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/PotentialFinal.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "The log-amplitude of every branch of the DEC cavity model is at most zero, i.e. Phi <= 1 holds unconditionally over the Branch model (non-strict half; the sharp statement remains open)."

@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "BG.lb_classification"
+statement_module = "Statements.BG_lb_classification"
+status = "proved"
+title = "(L)/(B) classification capstone: Pval is a valid plain potential"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/PotentialFinal.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "The explicit piecewise potential Pval is nonnegative and satisfies the per-node super-solution inequality at every plain node -- the classification capstone the telescoped Phi<=1 bound consumes."

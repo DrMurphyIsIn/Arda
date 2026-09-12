@@ -207,9 +207,11 @@ def scaffold_package(root: Path, manifest: MissionManifest) -> List[Path]:
     lakefile_path = lean_dir / "lakefile.toml"
     lakefile_content = (
         'name = "Statements"\n'
+        'defaultTargets = ["Statements"]\n'
         "\n"
         "[[require]]\n"
         'name = "mathlib"\n'
+        'scope = "leanprover-community"\n'
         f'rev = "{manifest.environment_mathlib_rev}"\n'
         "\n"
         "[[lean_lib]]\n"
