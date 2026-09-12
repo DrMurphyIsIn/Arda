@@ -1,0 +1,205 @@
+/-  COMBINATION (kernel): all nontrivial zeta zeros up to height T lie on Re = 1/2.
+
+    This is the capstone composition of:
+    * `ZetaZeroConfinement.zero_in_band` (Task 3, this branch): every nontrivial zero up
+      to height T lies in the band `[a, 1-a]` (derived from the effective dVP zero-free
+      region + the functional equation).
+    * `RHInBox.rh_in_box_of_certificate` (PR #312, this branch): every zero IN a box
+      `[sigma0,sigma1]x[T0,T1]` lies on the critical line (derived from the argument
+      principle + winding count).
+
+    The combination: set `sigma0 = a, sigma1 = 1-a, T0 = 0, T1 = T`.  Confinement puts
+    every nontrivial zero up to T inside the box.  Box-localization then forces it onto
+    Re = 1/2.  The conclusion `∀ ρ, ζ ρ = 0 → 0 < ρ.im → ρ.im ≤ T → ρ.re = 1/2` is
+    DERIVED from the two atoms; it is NOT assumed.
+
+    RESIDUALS (honest, documented):
+    * `hγ_all`: `∀ ρ, ζ ρ = 0 → 0 < ρ.im → ρ.im ≤ T → 55/16 ≤ |ρ.im|` -- no Mathlib
+      fact that all nontrivial zeros have imaginary part at least 14 > 55/16 ~ 3.44.
+      Discharged at any concrete T by the on-line sweep (e.g. at T=100, all 29 zeros
+      have height ≥ 14).
+    * `ha_half`: `a ≤ 1/2` -- needed to supply `hsig : a ≤ 1-a` to the box theorem.
+      Follows from `ha0 : 0 < a` + `haC : a ≤ dlvpRateC / log T` in practice (for
+      T ≥ 100 and dlvpRateC ≤ 1/1792, the ratio is much smaller than 1/2), but we
+      carry it as a hypothesis to avoid adding the concrete bound computation here.
+    * The Arb bundle (`harb`), winding value (`hwind`), and on-line zero Finset (`Ton`)
+      at box `[a,1-a]x[0,T]` are external inputs, exactly as for `rh_in_box_of_certificate`.
+
+    `conjecture1_proved = False`.  This is a kernel-verified CONDITIONAL theorem (all
+    zeros up to T on the line, given the documented Arb inputs + the height floor), NOT
+    a proof of the Riemann Hypothesis.
+-/
+import Mathlib
+import DlvpZetaZeroFree
+import ZetaZeroConfinement
+import RHInBox
+import RHInBoxBands
+
+open Complex MeasureTheory Real
+open scoped Topology
+
+namespace AllZerosUpToHeight
+
+/-- **All nontrivial zeta zeros up to height T lie on Re = 1/2** (combination theorem).
+
+    Composes `ZetaZeroConfinement.zero_in_band` (every zero up to T is in `[a,1-a]`)
+    with `RHInBox.rh_in_box_of_certificate` (every zero in the box `[a,1-a]x[0,T]` is on
+    the critical line) to conclude that every nontrivial zero `ρ` with `0 < ρ.im ≤ T`
+    satisfies `ρ.re = 1/2`.
+
+    **Parameters:**
+    - `a T : ℝ` — the band/box half-width and height bound (free variables).
+    - `haC : a ≤ dlvpRateC / log T` — ties `a` to the effective dVP rate.
+    - `ha0 : 0 < a` — positivity of the band half-width.
+    - `ha_half : a ≤ 1/2` — so that `a ≤ 1-a` (needed by the box theorem).
+    - `hT : 100 ≤ T` — height floor (dVP region requires log T > 0, i.e. T > 1).
+    - `c : ℂ`, `R : ℝ`, `N : ℤ` — Blaschke ball center/radius and winding count (free).
+    - `hRpos : 0 < R` — ball radius positive.
+    - `hbox_ball` — the box `[a,1-a]x[0,T]` is contained in `ball c R`.
+    - `hs1 : (1:ℂ) ∉ ball c R` — the pole at 1 is outside the ball.
+    - `Ton : Finset ℂ` — on-line zeros of `riemannZeta` in the box (supplied by Arb sweep).
+    - `hTline`, `hTzero`, `hTbox` — membership properties of `Ton`.
+    - `hwind` — winding number of the logDeriv integral around the box equals `2πiN`.
+    - `harb` — the Arb regularity bundle (boundary nonvanishing + integrability).
+    - `hcount : N = Ton.card` — the winding count equals the number of on-line zeros.
+    - `hγ_all` — documented residual: all nontrivial zeros up to T have |Im| ≥ 55/16.
+
+    **Conclusion:** `∀ ρ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ T → ρ.re = 1/2`.
+
+    conjecture1_proved = False. -/
+theorem all_nontrivial_zeros_up_to_height_on_line
+    (a T : ℝ)
+    (haC : a ≤ ZeroFreeBridge.dlvpRateC / Real.log T)
+    (ha0 : 0 < a)
+    (ha_half : a ≤ 1 / 2)
+    (hT : 100 ≤ T)
+    (c : ℂ) (R : ℝ) (N : ℤ)
+    (hRpos : 0 < R)
+    (hbox_ball : ∀ ρ : ℂ, (a ≤ ρ.re ∧ ρ.re ≤ 1 - a) → ((0 : ℝ) ≤ ρ.im ∧ ρ.im ≤ T) →
+      ρ ∈ Metric.ball c R)
+    (hs1 : (1 : ℂ) ∉ Metric.ball c R)
+    (Ton : Finset ℂ)
+    (hTline : ∀ z ∈ Ton, z.re = 1 / 2)
+    (hTzero : ∀ z ∈ Ton, riemannZeta z = 0)
+    (hTbox : ∀ z ∈ Ton, (a ≤ z.re ∧ z.re ≤ 1 - a) ∧ ((0 : ℝ) ≤ z.im ∧ z.im ≤ T))
+    (hwind : (∫ x in a..(1 - a), logDeriv riemannZeta (↑x + ((0 : ℝ) : ℂ) * I))
+        - (∫ x in a..(1 - a), logDeriv riemannZeta (↑x + (T : ℂ) * I))
+        + I • (∫ y in (0 : ℝ)..T, logDeriv riemannZeta (((1 - a : ℝ) : ℂ) + ↑y * I))
+        - I • (∫ y in (0 : ℝ)..T, logDeriv riemannZeta ((a : ℂ) + ↑y * I))
+      = 2 * π * I * (N : ℂ))
+    (harb : ∀ (E : ℂ → ℂ),
+      let s := RHInBoxAnalytic.zeroFinset c R hs1
+      let d := (MeromorphicOn.divisor riemannZeta (Metric.ball c R) : ℂ → ℤ)
+      DifferentiableOn ℂ E (Set.Icc a (1 - a) ×ℂ Set.Icc (0 : ℝ) T) →
+      (∀ z ∈ Metric.ball c R, riemannZeta z ≠ 0 →
+        logDeriv riemannZeta z = (∑ ρ ∈ s, (d ρ : ℂ) / (z - ρ)) + E z) →
+      (∀ x ∈ Set.uIcc a (1 - a), riemannZeta (↑x + ((0 : ℝ) : ℂ) * I) ≠ 0) ∧
+      (∀ x ∈ Set.uIcc a (1 - a), riemannZeta (↑x + (T : ℂ) * I) ≠ 0) ∧
+      (∀ y ∈ Set.uIcc (0 : ℝ) T, riemannZeta (((1 - a : ℝ) : ℂ) + ↑y * I) ≠ 0) ∧
+      (∀ y ∈ Set.uIcc (0 : ℝ) T, riemannZeta ((a : ℂ) + ↑y * I) ≠ 0) ∧
+      (∀ ρ ∈ s, a < ρ.re ∧ ρ.re < 1 - a ∧ (0 : ℝ) < ρ.im ∧ ρ.im < T) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun x : ℝ => ((↑x + ((0 : ℝ) : ℂ) * I) - ρ)⁻¹) volume a (1 - a)) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun x : ℝ => ((↑x + (T : ℂ) * I) - ρ)⁻¹) volume a (1 - a)) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun y : ℝ => ((((1 - a : ℝ) : ℂ) + ↑y * I) - ρ)⁻¹) volume (0 : ℝ) T) ∧
+      (∀ ρ ∈ s, IntervalIntegrable
+        (fun y : ℝ => (((a : ℂ) + ↑y * I) - ρ)⁻¹) volume (0 : ℝ) T) ∧
+      (IntervalIntegrable
+        (fun x : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + ((0 : ℝ) : ℂ) * I) - ρ)⁻¹) volume a (1 - a)) ∧
+      (IntervalIntegrable
+        (fun x : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * ((↑x + (T : ℂ) * I) - ρ)⁻¹) volume a (1 - a)) ∧
+      (IntervalIntegrable
+        (fun y : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * ((((1 - a : ℝ) : ℂ) + ↑y * I) - ρ)⁻¹) volume (0 : ℝ) T) ∧
+      (IntervalIntegrable
+        (fun y : ℝ => ∑ ρ ∈ s, (d ρ : ℂ) * (((a : ℂ) + ↑y * I) - ρ)⁻¹) volume (0 : ℝ) T) ∧
+      (IntervalIntegrable (fun x : ℝ => E (↑x + ((0 : ℝ) : ℂ) * I)) volume a (1 - a)) ∧
+      (IntervalIntegrable (fun x : ℝ => E (↑x + (T : ℂ) * I)) volume a (1 - a)) ∧
+      (IntervalIntegrable (fun y : ℝ => E (((1 - a : ℝ) : ℂ) + ↑y * I)) volume (0 : ℝ) T) ∧
+      (IntervalIntegrable (fun y : ℝ => E ((a : ℂ) + ↑y * I)) volume (0 : ℝ) T))
+    (hcount : (N : ℤ) = (Ton.card : ℤ))
+    (hγ_all : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ T → 55 / 16 ≤ |ρ.im|) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ T → ρ.re = 1 / 2 := by
+  intro ρ hzero him0 himT
+  -- Step 1: confinement — ρ is in the band [a, 1-a].
+  obtain ⟨hlo, hhi⟩ := ZetaZeroConfinement.zero_in_band a T haC ha0 hT hzero him0 himT
+    (hγ_all ρ hzero him0 himT)
+  -- Step 2: box-localization — every zero in [a,1-a]x[0,T] is on Re=1/2.
+  have hsig : a ≤ 1 - a := by linarith
+  have hTle : (0 : ℝ) ≤ T := by linarith
+  exact RHInBox.rh_in_box_of_certificate a (1 - a) 0 T c R N hRpos hsig hTle
+    hbox_ball hs1 Ton hTline hTzero hTbox hwind harb hcount
+    ρ ⟨hlo, hhi⟩ ⟨le_of_lt him0, himT⟩ hzero
+
+/-- **TILED capstone: all nontrivial zeros up to height `T` on the line, from PER-BAND box
+    certificates.**  The T-scaling form of `all_nontrivial_zeros_up_to_height_on_line`: instead of
+    ONE box certificate over `[a, 1-a] × [0, T]` (whose winding count `N ~ (T/2π)·log T` and
+    length-`T` vertical edges make a single tall certificate expensive), take `n` consecutive
+    height-bands `b 0 = 0 < b 1 < ... < b n = T` and, for each `i < n`, the CONCLUSION of an
+    `RHInBox.rh_in_box_of_certificate` instance on the band box `[a, 1-a] × [b i, b (i+1)]`
+    (`hbands` — each band carries its own small winding count, short vertical edges, and local
+    on-line list; bands are independent and parallelizable).
+
+    Composition: dVP+FE confinement (`ZetaZeroConfinement.zero_in_band`) puts every nontrivial
+    zero up to `T` in the band `[a, 1-a]`; height-tiling (`RHInBoxBands.rh_box_of_bands`) glues the
+    per-band on-line conclusions over `[0, T]`.  The height floor `hγ_all` is the usual residual
+    (dischargeable via `StripClear`/`no_low_zeros_of_strip_clear` from the two winding-0 low boxes).
+
+    This makes a `T = 200` (or `T = 1000`) certificate a PURE DRIVER exercise: emit `n` band
+    certificates + reuse the low-strip certs; no further kernel work.
+
+    conjecture1_proved = False. -/
+theorem all_nontrivial_zeros_up_to_height_on_line_tiled
+    (a T : ℝ) (b : ℕ → ℝ) (n : ℕ) (hn : 1 ≤ n) (hmono : Monotone b)
+    (hb0 : b 0 = 0) (hbn : b n = T)
+    (haC : a ≤ ZeroFreeBridge.dlvpRateC / Real.log T)
+    (ha0 : 0 < a)
+    (hT : 100 ≤ T)
+    (hbands : ∀ i, i < n → ∀ ρ : ℂ, (a ≤ ρ.re ∧ ρ.re ≤ 1 - a) →
+      (b i ≤ ρ.im ∧ ρ.im ≤ b (i + 1)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hγ_all : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ T → 55 / 16 ≤ |ρ.im|) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ T → ρ.re = 1 / 2 := by
+  intro ρ hzero him0 himT
+  -- Step 1: confinement — ρ is in the band [a, 1-a].
+  obtain ⟨hlo, hhi⟩ := ZetaZeroConfinement.zero_in_band a T haC ha0 hT hzero him0 himT
+    (hγ_all ρ hzero him0 himT)
+  -- Step 2: height-tiling — glue the per-band on-line conclusions over [b 0, b n] = [0, T].
+  exact RHInBoxBands.rh_box_of_bands a (1 - a) b hmono n hn hbands ρ ⟨hlo, hhi⟩
+    ⟨by rw [hb0]; exact le_of_lt him0, by rw [hbn]; exact himT⟩ hzero
+
+/-- **SEGMENT certificate: all nontrivial zeros with `A ≤ Im ≤ B` lie on the line** — the
+    tiled capstone freed from its `[0, T]` anchor.  Confinement at height `B` puts every such
+    zero in the band `[a, 1-a]`; height-tiling over a partition of `[A, B]` does the rest.
+    This is the UNBOUNDED-LADDER unit: segments compose by `height_chain` to any height,
+    with no single glue theorem ever exceeding the measured `interval_cases`/binder budgets. -/
+theorem all_nontrivial_zeros_in_segment_on_line
+    (a A B : ℝ) (b : ℕ → ℝ) (n : ℕ) (hn : 1 ≤ n) (hmono : Monotone b)
+    (hb0 : b 0 = A) (hbn : b n = B)
+    (haC : a ≤ ZeroFreeBridge.dlvpRateC / Real.log B)
+    (ha0 : 0 < a)
+    (hB : 100 ≤ B)
+    (hbands : ∀ i, i < n → ∀ ρ : ℂ, (a ≤ ρ.re ∧ ρ.re ≤ 1 - a) →
+      (b i ≤ ρ.im ∧ ρ.im ≤ b (i + 1)) → riemannZeta ρ = 0 → ρ.re = 1 / 2)
+    (hγ_all : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ B → 55 / 16 ≤ |ρ.im|) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → A ≤ ρ.im → ρ.im ≤ B → ρ.re = 1 / 2 := by
+  intro ρ hzero him0 himA himB
+  obtain ⟨hlo, hhi⟩ := ZetaZeroConfinement.zero_in_band a B haC ha0 hB hzero him0 himB
+    (hγ_all ρ hzero him0 himB)
+  exact RHInBoxBands.rh_box_of_bands a (1 - a) b hmono n hn hbands ρ ⟨hlo, hhi⟩
+    ⟨by rw [hb0]; exact himA, by rw [hbn]; exact himB⟩ hzero
+
+/-- **THE HEIGHT CHAIN:** an up-to-`A` certificate and an `[A, B]` segment certificate compose
+    to an up-to-`B` certificate.  Conclusion-level, constant cost, arbitrary iteration depth —
+    the ladder to any height is a fold of this lemma over segments, immune to the
+    `interval_cases` and binder-budget ceilings measured on the monolithic forms. -/
+theorem height_chain (A B : ℝ)
+    (hupA : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ A → ρ.re = 1 / 2)
+    (hseg : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → A ≤ ρ.im → ρ.im ≤ B → ρ.re = 1 / 2) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ B → ρ.re = 1 / 2 := by
+  intro ρ hz him0 himB
+  rcases le_total ρ.im A with h | h
+  · exact hupA ρ hz him0 h
+  · exact hseg ρ hz him0 h himB
+
+end AllZerosUpToHeight

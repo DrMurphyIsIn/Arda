@@ -85,6 +85,9 @@ import RvMBacklundExplicit
 import RvMNTEffective
 import RvMNTCount
 import RvMRoutePFalsify
+import RvMNTLadder
+import AllZeros_h4000
+import StripClear
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -486,3 +489,19 @@ import RvMRoutePFalsify
 --   xiTele_count_eq_winding (box zero count = N) with nt_effective_bound. The zero count is derived
 --   from the boundary winding, never assumed. conjecture1_proved=False.
 #print axioms Backlund.nt_count_effective_bound
+
+-- Arc A (effective RvM), PR A5: the LADDER PORT + interlock. The complete tiled Turing ladder
+-- (AllZeros_h100..h4000 + StripClear + its RHInBox/confinement chain, 110 files) is PORTED from the
+-- v4.32 zeta_zero_localization/zero_free_bridge islands onto this island (method of #424/#427/#483:
+-- source copy, single import redirect RHInBoxAnalytic->RvMRHInBox; ZERO content drift). The two RH
+-- tracks now interlock in ONE kernel statement:
+-- zeta_segment_ne_zero_of_ladder: ladder conclusion + single-point ζ(1/2+iT)≠0 ⟹ the segment hζne --
+--   the "T not a zero-ordinate" caveat COLLAPSES TO ONE POINT for T ≤ 4000.
+-- nt_effective_bound_of_ladder: the effective RvM bound with the trust-shrunk hypothesis set.
+-- all_nontrivial_zeros_up_to_height_4000_of_bands: the ported ladder capstone (3,474 zeros), its
+--   per-band Arb bundles the documented trust seam, now importable beside the Li/RvM corpus.
+-- conjecture1_proved=False throughout: finite verification + classical count; nothing approaches RH.
+#print axioms Backlund.zeta_segment_ne_zero_of_ladder
+#print axioms Backlund.nt_effective_bound_of_ladder
+#print axioms AllZeros_h4000.all_nontrivial_zeros_up_to_height_4000_of_bands
+#print axioms StripClear.height_floor_of_box_certs
