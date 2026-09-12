@@ -5,4 +5,9 @@ name = "BG.r2_multihub_maximality"
 statement_module = "Statements.BG_r2_multihub_maximality"
 status = "draft"
 title = "R2 multi-hub maximality (PROVISIONAL rendering): at any size carrying a DN, the best DN dominates every multi-hub tree"
-updated = "2026-09-11"
+updated = "2026-09-12"
+
+[readback]
+auditor = "blind-renderer-fable-a7835da4 (2026-09-12)"
+date = "2026-09-12"
+text = "Blind rendering: for every rooted tree t of even size 2+2a+2b (a,b>=2) with >=2 vertices of degree >=3 (per PROVISIONAL registry-only hubCountRoot), SOME split a'+b'=a+b of two adjacent cherry-hubs Aobj-dominates t. AUDIT FLAGS, promotion withheld: (1) hubCountRoot has no proof/-island counterpart; (2) odd sizes and size<10 are covered only VACUOUSLY, but the prose claim (PROOF_ASSEMBLY R2 maximality) says 'at each n' — resolve whether the intended claim is even-n-only before opening."
