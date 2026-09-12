@@ -81,6 +81,7 @@ import R3Cert.R47CoverRelation
 import R3Cert.R47RootShift
 import R3Cert.R47AlignedMinSize
 import R3Cert.R47HnormFalse52
+import R3Cert.R47HnormMulti
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -382,3 +383,11 @@ import R3Cert.R47HnormFalse52
 #print axioms R3Cert.Step3.tieArgmax_52_lt_T52
 #print axioms R3Cert.Step3.r47_hnorm_false_at_52
 #print axioms R3Cert.Step3.hnorm_capstone_false
+
+-- BROADENED capstone (2026-09-11): reduce every tree to an ARBITRARY multi-hub cherry-backbone
+-- (not just a Balanced+Capped single hub). The n=52 refutation dissolves (T52 witnesses its own
+-- HnormMulti clause); the sole open piece is the tree->backbone straightening = open BG structural core.
+#print axioms R3Cert.Step3.conjecture1_of_HnormMulti
+#print axioms R3Cert.Step3.hnormMulti_of_hnorm
+#print axioms R3Cert.Step3.hnormMulti_holds_at_T52
+#print axioms R3Cert.Step3.singleHub_refuted_but_multiHub_open
