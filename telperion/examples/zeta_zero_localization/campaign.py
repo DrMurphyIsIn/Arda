@@ -584,11 +584,21 @@ def cmd_verify_bands(args) -> int:
     from telperion.statement_match import statement_match_check
 
     sidecars = sorted(LEAN_DIR.glob("RHInBoxT_*.cert.json"))
+    # Only audit BUILT modules: the batched check shares one import list, so a
+    # single not-yet-built band would poison every check in the run (including
+    # the per-decl attribution re-runs, which reuse the same imports).
+    olean_dir = LEAN_DIR / ".lake" / "build" / "lib" / "lean"
+    built = [sc for sc in sidecars
+             if (olean_dir / (sc.name[: -len(".cert.json")] + ".olean")).exists()]
+    skipped = len(sidecars) - len(built)
+    if skipped:
+        print(f"verify-bands: skipping {skipped} not-yet-built band(s)")
+    sidecars = built
     if args.sample and len(sidecars) > args.sample:
         rng = random.Random(args.seed)
         sidecars = sorted(rng.sample(sidecars, args.sample))
     if not sidecars:
-        print("verify-bands: no .cert.json sidecars found")
+        print("verify-bands: no built .cert.json sidecars found")
         return 1
 
     def _btype(cert, n):
