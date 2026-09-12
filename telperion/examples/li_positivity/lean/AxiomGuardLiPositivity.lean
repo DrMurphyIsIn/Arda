@@ -73,6 +73,7 @@ import RvMBacklundConfine
 import RvMBacklundPartition
 import RvMBacklundSignConst
 import RvMBacklundFinite
+import RvMBacklundOrder
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -395,3 +396,10 @@ import RvMBacklundFinite
 --   gives ↑σ with F_T ↑σ=0: analyticOrderAt ≠0 (analyticOrderAt_ne_zero) and ≠⊤ (identity theorem, else
 --   F_T≡0 contra F_T(2)≠0), so ↑σ ∈ divisor support. conjecture1_proved=False.
 #print axioms Backlund.backlundAux_real_zeros_finite
+
+-- Backlund S(T)=O(log T), PR 4c (ordering): finite forbidden set => monotone partition.
+-- exists_monotone_partition_of_finite (Z:Finset ℝ)(a b)(hab)(hZ: Z ⊆ [a,b]): ∃ N σ, Monotone σ ∧ σ0=a
+--   ∧ σN=b ∧ N≤Z.card+1 ∧ (∀k, σk∈[a,b]) ∧ (∀k<N, ∀z∈Z, z≤σk ∨ σ(k+1)≤z). Pure order theory:
+--   sort {a,b}∪Z via Finset.orderEmbOfFin (strict-mono enum, _zero=min, _last=max, order-reflecting =>
+--   nothing strictly between consecutive). Feeds PR 4b partition sum. conjecture1_proved=False.
+#print axioms Backlund.exists_monotone_partition_of_finite
