@@ -177,3 +177,22 @@ SUSPENDED pending re-emission.
    worth doing carefully, not hastily, since its whole value is catching
    emitter statement bugs of exactly the kind found today.  Sample-based audit
    (per-segment, not per-band) keeps it affordable.
+
+## G0 GATE RESULT (A0 spike, 2026-09-12 evening) — DIntv confirmed, charter reading adjusted
+
+Measured (M3 Ultra, v4.32, under campaign load): pure-kernel DIntv throughput
+~1.0–1.9·10⁴ interval-ops/s (raw RED per plan thresholds); Rat is NOT
+kernel-reflectable AT ALL (gcd WF-recursion sticks both rfl and decide) — the
+Rat fallback is categorically refuted, DIntv (pure-Int dyadic) confirmed;
+elaboration (not kernel) dominates end-to-end and is killed by Array-Int
+literals (List-of-tuples caused 30–68s typeclass blowups + a maxRecDepth wall).
+
+CONSEQUENCES (within the plan's pre-authorized A0 kill-criteria path):
+1. A4 BandData is Array-Int-shaped, never nested List tuples.
+2. Full in-kernel `decide` of a whole RvM band (~4·10⁷ ops) is impractical at
+   any height; kernel-only `decide` remains viable for SMALL spot-check units.
+3. G4 reading adjusted: "10⁹ kernel-only" → "10⁹ with native_decide bulk +
+   kernel-only-decide SPOT-CHECK protocol (random bands, pure 3-axiom)" —
+   flagged to the operator; matches the hybrid-ladder charter's spirit, moves
+   the native island earlier on the critical path.
+4. girving/interval stays only as the native-island week-3 trigger.
