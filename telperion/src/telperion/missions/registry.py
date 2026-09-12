@@ -202,8 +202,12 @@ def _load_and_save(campaign: Campaign, slug: str, **changes) -> Node:
 def promote_to_open(campaign: Campaign, slug: str) -> Node:
     """Transition a draft node to open.
 
-    Raises SchemaError unless a readback is recorded on the node.
-    This is the ONLY draft->open path.
+    Raises SchemaError if:
+    - the node's status is not 'draft' (only draft->open is a valid transition here)
+    - no readback is recorded on the node
+
+    This is the ONLY draft->open path. The status guard is checked first so that
+    callers cannot accidentally reopen proved/refuted/deprecated nodes.
 
     Loads the node exactly once: guard check and mutation happen on the
     same in-memory object, eliminating the TOCTOU window of a separate
@@ -211,6 +215,11 @@ def promote_to_open(campaign: Campaign, slug: str) -> Node:
     """
     node_path = campaign.root / "nodes" / f"{slug}.toml"
     node = load_node(node_path)
+    if node.status != "draft":
+        raise SchemaError(
+            f"Cannot promote {slug!r} to open: status is {node.status!r}, "
+            "only draft->open is allowed by promote_to_open."
+        )
     if node.readback is None:
         raise SchemaError(
             f"Cannot promote {slug!r} to open: no readback recorded. "

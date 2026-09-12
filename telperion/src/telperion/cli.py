@@ -973,18 +973,17 @@ def cmd_mission_audit(args) -> int:
     save_node(new_node, node_path)
     camp.nodes[slug] = new_node
 
-    # Promote draft -> open if applicable; return 1 if promote raises SchemaError.
-    # Only draft nodes are eligible; readback is always durably written above.
-    if node.status == "draft":
-        try:
-            promoted = promote_to_open(camp, slug)
-            print(f"{slug}: status -> {promoted.status}")
-        except SchemaError as exc:
-            print(f"{slug}: readback recorded; promote failed: {exc}")
-            return 1
-    else:
-        print(f"{slug}: readback recorded (status {node.status!r} unchanged)")
-    return 0
+    # Promote draft -> open. promote_to_open is the authority on valid transitions:
+    # it raises SchemaError for any non-draft status (proved, refuted, open,
+    # deprecated) and for missing readback. Readback is always durably written
+    # above before this call, so it survives a promote failure.
+    try:
+        promoted = promote_to_open(camp, slug)
+        print(f"{slug}: status -> {promoted.status}")
+        return 0
+    except SchemaError as exc:
+        print(f"{slug}: readback recorded; promote failed: {exc}")
+        return 1
 
 
 def cmd_mission_link(args) -> int:

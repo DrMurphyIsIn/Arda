@@ -196,8 +196,9 @@ def test_audit_records_readback_and_promotes(tmp_path, capsys):
     assert node.status == "open"
 
 
-def test_audit_already_open_skips_promote(tmp_path, capsys):
-    """Auditing a node that is already open records readback but skips promote (exit 0)."""
+def test_audit_already_open_exits1_readback_recorded(tmp_path, capsys):
+    """Auditing an already-open node: readback is durably written, promote_to_open
+    raises SchemaError (non-draft status guard), audit exits 1, on-disk status stays open."""
     mroot, campaign_root = make_demo_root(tmp_path)
     # Demo_lemma_a is already open (has a readback in fixture)
     rc = main([
@@ -206,34 +207,45 @@ def test_audit_already_open_skips_promote(tmp_path, capsys):
         "--text", "Re-audit of already-open node.",
         "--auditor", "operator",
     ])
-    # Readback is recorded, promote skipped gracefully, exit 0
-    assert rc == 0
+    # promote_to_open rejects non-draft status -> exit 1
+    assert rc == 1
+    # Readback is durably written even though promote failed
     node = load_node(campaign_root / "nodes" / "Demo_lemma_a.toml")
     assert node.readback is not None
+    assert node.readback.text == "Re-audit of already-open node."
+    # Status must NOT regress
     assert node.status == "open"
 
 
-def test_audit_promote_failure_returns1(tmp_path, capsys):
-    """If promote_to_open raises (SchemaError), audit exits 1 while readback stays durable."""
-    import unittest.mock as _mock
+def test_audit_proved_node_exits1_status_preserved(tmp_path, capsys):
+    """Auditing a proved node: readback is durably written, promote_to_open raises
+    SchemaError (proved is not draft), audit exits 1, on-disk status stays proved."""
+    import dataclasses as _dc
     mroot, campaign_root = make_demo_root(tmp_path)
-    from telperion.missions.schema import SchemaError
-    # Patch promote_to_open to always raise SchemaError AFTER the readback is written
-    with _mock.patch(
-        "telperion.cli.cmd_mission_audit.__wrapped__"
-        if hasattr(main, "__wrapped__") else "telperion.missions.registry.promote_to_open",
-        side_effect=SchemaError("forced failure"),
-    ):
-        rc = main([
-            "mission", "--missions-root", str(mroot), "audit", "Demo_lemma_b",
-            "--campaign", "demo",
-            "--text", "Will fail promote.",
-            "--auditor", "operator",
-        ])
+    from telperion.missions.schema import Proof, save_node
+    # Mutate Demo_lemma_a on disk to proved (simulates a previously verified node)
+    node_path = campaign_root / "nodes" / "Demo_lemma_a.toml"
+    existing = load_node(node_path)
+    proved = _dc.replace(
+        existing,
+        status="proved",
+        proof=Proof("proof/Demo_lemma_a.lean", "lean_module", "direct", True),
+    )
+    save_node(proved, node_path)
+
+    rc = main([
+        "mission", "--missions-root", str(mroot), "audit", "Demo_lemma_a",
+        "--campaign", "demo",
+        "--text", "Audit of a proved node should not regress it.",
+        "--auditor", "operator",
+    ])
     assert rc == 1
-    # Readback must be durably written even though promote failed
-    node = load_node(campaign_root / "nodes" / "Demo_lemma_b.toml")
-    assert node.readback is not None
+    # Readback written durably
+    on_disk = load_node(node_path)
+    assert on_disk.readback is not None
+    assert on_disk.readback.text == "Audit of a proved node should not regress it."
+    # Status must stay proved — the guard blocked the regression
+    assert on_disk.status == "proved"
 
 
 # ---------------------------------------------------------------------------

@@ -199,6 +199,48 @@ def test_promote_to_open_requires_readback(tmp_path):
     assert result.status == "open"
 
 
+def test_promote_to_open_rejects_non_draft_status(tmp_path):
+    """promote_to_open raises SchemaError when the node status is not 'draft'.
+
+    This guards against status regressions: a proved/refuted/deprecated node
+    must never be silently re-opened by the audit path.
+    """
+    import dataclasses as _dc
+    root = copy_demo(tmp_path)
+    # Demo_lemma_a is already open in the fixture; prove it on disk
+    node_path = root / "nodes" / "Demo_lemma_a.toml"
+    existing = load_node(node_path)
+    proved = _dc.replace(
+        existing,
+        status="proved",
+        proof=Proof("proof/Demo_lemma_a.lean", "lean_module", "direct", True),
+    )
+    save_node(proved, node_path)
+
+    campaign = load_campaign(root)
+
+    # Calling promote_to_open on a proved node must raise SchemaError
+    with pytest.raises(SchemaError, match="proved"):
+        promote_to_open(campaign, "Demo_lemma_a")
+
+    # On-disk status must remain proved — no silent regression
+    on_disk = load_node(node_path)
+    assert on_disk.status == "proved"
+
+    # Same guard applies to a refuted node (schema requires proof when refuted)
+    refuted = _dc.replace(
+        existing,
+        status="refuted",
+        proof=Proof("proof/Demo_lemma_a.lean", "lean_module", "direct", False),
+    )
+    save_node(refuted, node_path)
+    campaign2 = load_campaign(root)
+    with pytest.raises(SchemaError, match="refuted"):
+        promote_to_open(campaign2, "Demo_lemma_a")
+    on_disk2 = load_node(node_path)
+    assert on_disk2.status == "refuted"
+
+
 def test_set_proof_never_sets_proved(tmp_path):
     root = copy_demo(tmp_path)
     campaign = load_campaign(root)
