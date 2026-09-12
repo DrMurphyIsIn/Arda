@@ -418,6 +418,19 @@ def cmd_guard_update(args) -> int:
     return 0
 
 
+def cmd_assemble(args) -> int:
+    """One-shot leg assembly: register-lakefile + emit all segments + guard-update."""
+    rc = cmd_register_lakefile(argparse.Namespace(
+        t_from=args.t_from, t_to=args.t_to, segments=True))
+    if rc:
+        return rc
+    for top in segment_tops(args.t_from, args.t_to):
+        rc = cmd_emit_segment(argparse.Namespace(upto=top))
+        if rc:
+            return rc
+    return cmd_guard_update(args)
+
+
 def cmd_plan(args) -> int:
     bands = plan_bands(args.t_from, args.t_to)
     dens_lo = math.log(args.t_from / (2 * math.pi)) / (2 * math.pi) if args.t_from > 7 else 0
@@ -446,7 +459,7 @@ def cmd_status(args) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("plan", "emit-bands", "register-lakefile", "guard-update"):
+    for name in ("plan", "emit-bands", "register-lakefile", "guard-update", "assemble"):
         p = sub.add_parser(name)
         p.add_argument("--from", dest="t_from", type=int, required=True)
         p.add_argument("--to", dest="t_to", type=int, required=True)
@@ -462,7 +475,7 @@ def main() -> int:
     return {"plan": cmd_plan, "emit-bands": cmd_emit_bands,
             "register-lakefile": cmd_register_lakefile,
             "emit-segment": cmd_emit_segment, "status": cmd_status,
-            "guard-update": cmd_guard_update}[args.cmd](args)
+            "guard-update": cmd_guard_update, "assemble": cmd_assemble}[args.cmd](args)
 
 
 if __name__ == "__main__":
