@@ -98,14 +98,10 @@ theorem band_count_eq
       linarith
     linarith
   have hpipos : (0 : ℝ) < 2 * Real.pi := by positivity
-  have hltN : ((N : ℝ) - 1) < (Sz : ℝ) := by
-    have := (mul_lt_mul_left hpipos).mp (by linarith [hlo] :
-      2 * Real.pi * ((N : ℝ) - 1) < 2 * Real.pi * (Sz : ℝ))
-    linarith [this]
-  have hgtN : (Sz : ℝ) < ((N : ℝ) + 1) := by
-    have := (mul_lt_mul_left hpipos).mp (by linarith [hhi] :
-      2 * Real.pi * (Sz : ℝ) < 2 * Real.pi * ((N : ℝ) + 1))
-    linarith [this]
+  have hltN : ((N : ℝ) - 1) < (Sz : ℝ) :=
+    lt_of_mul_lt_mul_left (by linarith [hlo]) (le_of_lt hpipos)
+  have hgtN : (Sz : ℝ) < ((N : ℝ) + 1) :=
+    lt_of_mul_lt_mul_left (by linarith [hhi]) (le_of_lt hpipos)
   have hzlt : (N : ℤ) - 1 < Sz := by exact_mod_cast hltN
   have hzgt : Sz < (N : ℤ) + 1 := by exact_mod_cast hgtN
   omega

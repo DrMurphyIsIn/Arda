@@ -416,6 +416,57 @@ def run_box(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, winding_prec: int = 
     return text
 
 
+def run_box_turing(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, edge_prec: int = 160,
+                   out_dir: Path | None = None, write: bool = True) -> str:
+    """T5 driver: RvM edge-decomposition band certificate (no winding contour).
+
+    Computes the on-line count (Platt-hinted sweep), the five edge argument-change
+    enclosures (arb_edges), cross-checks the RvM-pinned integer against the line
+    count, verifies the ball-poke slivers hold no zeros (Platt inventory), and
+    emits RHInBoxT_<tag>.lean instantiating TuringBand.turing_band_on_line.
+
+    REFUSALS: pinned integer != line count; enclosure too wide to pin; a zero in
+    the ball-poke sliver (band edge must be re-planned)."""
+    import math as _m
+
+    from telperion.arb_edges import enclose_band_edges
+    from telperion.arb_platt import zeros_in_interval
+    from telperion.emit_turing_band import (
+        choose_ball_tight,
+        emit_turing_band_instantiation,
+    )
+
+    rl, rh, il, ih = (Fraction(v) for v in (re_lo, re_hi, im_lo, im_hi))
+    n_line = _online_sweep_zero_count_platt(il, ih, prec)
+    edges = enclose_band_edges(il, ih, prec=edge_prec)
+    L = 2 * edges["av2"][0] + edges["aht"][0] - edges["ahb"][1] + edges["ag1"][0] + edges["ag2"][0]
+    H = 2 * edges["av2"][1] + edges["aht"][1] - edges["ahb"][0] + edges["ag1"][1] + edges["ag2"][1]
+    k = round((float(L) + float(H)) / 2 / (2 * _m.pi))
+    if k != n_line:
+        raise ValueError(
+            f"run_box_turing: RvM edge count {k} != on-line count {n_line} in [{il},{ih}]")
+    # ball-poke sliver check: no zero ordinate within `poke` outside the band
+    _cx, _cy, rsq = choose_ball_tight(-1, 2, il, ih)
+    poke = _m.sqrt(float(rsq)) - float(ih - il) / 2 + 1e-9
+    below = zeros_in_interval(int(il) - 1, int(il))
+    above = zeros_in_interval(int(ih), int(ih) + 1)
+    if any(float(hi_z) > float(il) - poke for _lo_z, hi_z in below) or \
+       any(float(lo_z) < float(ih) + poke for lo_z, _hi_z in above):
+        raise ValueError(
+            f"run_box_turing: zero in ball-poke sliver of [{il},{ih}] (poke={poke:.4f}); "
+            f"re-plan the band edge")
+    tag = _box_tag(rl, rh, il, ih)
+    text = emit_turing_band_instantiation(
+        n=n_line, re_lo=rl, re_hi=rh, im_lo=il, im_hi=ih, edges=edges, tag=tag)
+    print(f"run_box_turing [{rl},{rh}]x[{il},{ih}]: RvM edge count N={k}, "
+          f"on-line N_line={n_line} (agree); emitted rh_in_box_{tag} (T5)")
+    if write:
+        out_path = (out_dir or _OUT.parent) / f"RHInBoxT_{tag}.lean"
+        out_path.write_text(text, encoding="utf-8")
+        print(f"wrote {out_path} ({len(text)} bytes)")
+    return text
+
+
 def _box_localization_negative_control() -> None:
     """Stage-3 capstone guard: assert the localization certificate ACCEPTS the real capstone
     instance (n_line = n_total = 5 on [2/5,3/5]x[10,35]) and REFUSES the fabricated off-line
@@ -454,7 +505,8 @@ def _parse_box_arg(box_str: str):
 
 
 def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int = 300,
-         box=None, height=None, empty_band=None, density: float = 1.0) -> int:
+         box=None, height=None, empty_band=None, density: float = 1.0,
+         turing: bool = False) -> int:
     # Empty-band (zero-free) driver mode: winding N == 0 => box holds no zeta zero.
     if empty_band is not None:
         from telperion.driver_empty_band import run_empty_band
@@ -464,7 +516,10 @@ def main(*, check: bool = False, a=None, b=None, n_samples: int = 51, prec: int 
     # Per-box driver mode: compute winding + on-line count, emit instantiation.
     if box is not None:
         rl, rh, il, ih = _parse_box_arg(box)
-        run_box(rl, rh, il, ih, prec=prec, check=check, density=density)
+        if turing:
+            run_box_turing(rl, rh, il, ih, prec=prec)
+        else:
+            run_box(rl, rh, il, ih, prec=prec, check=check, density=density)
         return 0
     if height is not None:
         # Shortcut for the critical strip box [2/5, 3/5] x [0, T].
@@ -534,6 +589,8 @@ if __name__ == "__main__":
                     help="per-box driver shortcut for the strip box [2/5,3/5] x [0,T]")
     ap.add_argument("--density", type=float, default=1.0,
                     help="on-line sweep density factor (>1 = denser close-pair re-sweep)")
+    ap.add_argument("--turing", action="store_true",
+                    help="T5 route: RvM edge-decomposition certificate (no winding contour)")
     ap.add_argument("--empty-band", type=str, default=None,
                     help="empty-band (zero-free) driver: sigma0,sigma1,T0,T1 (rationals). Computes "
                          "winding N, asserts N == 0, and emits NoZerosInBox_<tag>.lean certifying the "
@@ -551,4 +608,5 @@ if __name__ == "__main__":
         height=args.height,
         empty_band=args.empty_band,
         density=args.density,
+        turing=args.turing,
     ))

@@ -45,6 +45,8 @@ LEGACY_DEN = 2_000_000         # the [0,4000] ladder width
 TARGET_N = 43                  # zeros per band target (ceiling ~46 measured)
 MAX_BAND_H = 40
 SEG_BANDS = 50                 # bands per segment file (measured budget)
+TURING_FROM = 24_000           # bands at/above this height use the T5 route
+                               # (RHInBoxT_* modules; 10x cheaper Lean, 4x driver)
 
 # Retry ladder for close-pair refusals: (density, prec)
 RETRY_LADDER = [(1.0, 300), (2.0, 300), (4.0, 300), (6.0, 300), (8.0, 450)]
@@ -105,7 +107,8 @@ def band_tag(den: int, lo: int, hi: int) -> str:
 
 
 def band_module(den: int, lo: int, hi: int) -> str:
-    return f"RHInBox_{band_tag(den, lo, hi)}"
+    prefix = "RHInBoxT_" if lo >= TURING_FROM else "RHInBox_"
+    return f"{prefix}{band_tag(den, lo, hi)}"
 
 
 # ---------------------------------------------------------------- state
@@ -128,21 +131,23 @@ def emit_one_band(den: int, lo: int, hi: int) -> dict:
     """Run the per-band driver with the retry ladder.  Returns a state record."""
     tag = band_tag(den, lo, hi)
     box = f"1/{den},{den - 1}/{den},{lo},{hi}"
+    turing = lo >= TURING_FROM
     for density, prec in RETRY_LADDER:
         t0 = time.time()
-        proc = subprocess.run(
-            [sys.executable, str(GENERATE), "--box", box,
-             "--prec", str(prec), "--density", str(density)],
-            capture_output=True, text=True, cwd=str(HERE),
-        )
+        cmd = [sys.executable, str(GENERATE), "--box", box,
+               "--prec", str(prec), "--density", str(density)]
+        if turing:
+            cmd.append("--turing")
+        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(HERE))
         secs = round(time.time() - t0, 1)
         if proc.returncode == 0:
             n = None
             for line in proc.stdout.splitlines():
-                if "winding N=" in line:
-                    n = int(line.split("winding N=")[1].split(",")[0])
+                for key in ("winding N=", "edge count N="):
+                    if key in line:
+                        n = int(line.split(key)[1].split(",")[0])
             return {"status": "ok", "n": n, "density": density,
-                    "prec": prec, "secs": secs}
+                    "prec": prec, "secs": secs, "route": "t5" if turing else "wind"}
         last_err = (proc.stderr or proc.stdout).strip().splitlines()
         last_err = last_err[-1] if last_err else "unknown"
     return {"status": "refused", "error": last_err}
