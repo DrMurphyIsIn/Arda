@@ -233,6 +233,28 @@ family. This is a NEGATIVE result: the natural certificates provably do not suff
 requires a genuinely different idea (a correlation/FKG inequality on the matching measure, or a Kelmans-type
 structural induction). The conjecture remains open; no closure is claimed.
 
+## Partial progress toward closing the core (2026-09-12)
+
+Two honest, kernel-clean partial advances (neither claims the full `B1`):
+
+**(1) `B1 >= 0` on a structural slice** (`R3Cert/R47HwhB1Partial.lean`). When the target `w` has no
+neighbours in `H` (`P01 = 0` -- e.g. `w` a degree-1 vertex adjacent to `p`), `B1 = P10/(a-1) >= 0`
+outright (`B1_nonneg_of_P01_zero`). The canonical instance is the CHERRY-FORMING move (relocate a leaf
+onto an adjacent sibling leaf, `b=1`, `p~w`): there `P01 = P11 = 0`, so `B1 >= 0` and `B2adj =
+P00(a-2)/(a-1) >= 0` UNCONDITIONALLY, hence the move never decreases `Aobj` (`cherry_forming_monotone`;
+verified 0 decreases / 3230 moves). A fully-proven slice of the open straightening.
+
+**(2) The `B2` matching-sum lemma, from an actual matching theory** (`R3Cert/R47MatchingSum.lean`). A
+self-contained weighted-matching-sum theory `Zsum`/`ZsumAvoid` DISCHARGES the essential content of the
+`B2` hypothesis rather than assuming it: `ZsumAvoid_antitone` (deletion monotonicity -- avoiding more
+vertices never increases the nonneg-weighted matching sum, since those matchings are a subfamily),
+`B2_termwise` (`Z(H-q-r) <= Z(H)`), `B2_bound_of_terms` (a sum of `<= K` terms, each a coefficient in
+`[0,1]` times a value `<= P00`, is `<= K*P00`). Composing these gives `P11 <= (a-1)b P00 = ` the `B2`
+bound. The only remaining glue is the DEFINITIONAL identification `P00 = ZsumAvoid {p,w}`,
+`P11 = sum_{q,r} (1/deg_q)(1/deg_r) ZsumAvoid {p,q,w,r}` (matchings using a fixed edge <-> matchings of
+the rest) -- standard matching combinatorics. The mathematical heart (deletion monotonicity) is now proven,
+not hypothesized.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM

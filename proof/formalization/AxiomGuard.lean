@@ -87,6 +87,7 @@ import R3Cert.R47HwhPieceDecomp
 import R3Cert.R47HwhAdjDecomp
 import R3Cert.R47HwhAdjPieceDecomp
 import R3Cert.R47HwhB1Partial
+import R3Cert.R47MatchingSum
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -432,3 +433,9 @@ import R3Cert.R47HwhB1Partial
 -- move (leaf onto adjacent sibling leaf) is unconditionally Aobj-monotone. A proven slice of the open core.
 #print axioms R3Cert.Step3.B1_nonneg_of_P01_zero
 #print axioms R3Cert.Step3.cherry_forming_monotone
+
+-- Weighted-matching-sum theory (2026-09-12): discharges the ESSENTIAL content of the B2 hypothesis
+-- (deletion monotonicity Z(H-S) antitone) from an actual matching theory, not an assumption.
+#print axioms R3Cert.Step3.ZsumAvoid_antitone
+#print axioms R3Cert.Step3.B2_termwise
+#print axioms R3Cert.Step3.B2_bound_of_terms
