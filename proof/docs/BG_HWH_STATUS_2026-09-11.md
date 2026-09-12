@@ -140,6 +140,21 @@ neighbours. This is the exact sharp residual: the min-degree defect-reducing mov
 `w` whose neighbourhood is no better-connected (in `g`) than `p`'s. Not a degree-only fact; genuinely
 structural -- the open core, now precisely a neighbourhood-average comparison of a local matching functional.
 
+### The residual as an EXISTENCE statement (cleaner target)
+
+Rather than pin a specific selection rule, the leaf case reduces to: *every non-backbone tree has SOME
+leaf move that is defect-reducing, to strictly-lower degree (`b <= a-1`), with `B1 >= 0`.* With proven
+`B2 >= 0`, any such move is `Aobj`-monotone. Exhaustive check (n<=12): this existence holds with **0
+failures** (30/30 non-backbone trees), except the finite sub-star exceptions (n=13 triple-3-star) which
+need a cherry/arm/sub-star move of the same form. So the sharp remaining conjecture for the leaf case is:
+
+> **(hwh leaf conjecture)** Every non-backbone tree (outside finite sub-star exceptions) admits a
+> defect-reducing strictly-lower-degree leaf move with `avg_{q~p} g(q) >= avg_{r~w} g(r)`
+> (`g(v)=Z(H-v)/deg_v`).
+
+This is strongly evidenced but unproven -- it is the open Brualdi-Goldwasser structural core, now stated as
+a concrete neighbourhood-matching existence claim.
+
 ## (b) Lean scaffolding
 
 `R3Cert/R47HwhLeafDecomp.lean` (kernel-clean) formalizes the algebra and the monotonicity criterion over
