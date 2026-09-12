@@ -352,6 +352,21 @@ All kernel-clean. The move is also defect-reducing (verified). So the de-branchi
 size-preserving and defect-reducing on the ENTIRE symmetric multi-star family -- the localized open core of
 `hwh` is now UNIFORMLY closed for every centre-plus-hubs tree with hubs of size `>= 2`.
 
+## Assembly reduction + coverage evidence (2026-09-12)
+
+`R3Cert/R47HwhAssembly.lean` (`hwh_of_extended_coverage`, kernel-clean) packages the whole program: it names
+the three proven straightening-move classes as predicates `P_gdom` / `P_piece` / `P_symstar`, takes their
+"refines to `StraightStep_sized`" interfaces (discharged by `B1_nonneg_of_gdominance`, the
+`B2`/piece decompositions, and `symstar_gen_move_monotone` respectively), and proves that if every defective
+tree is COVERED by one of them (`Hcoverage`), then `hwh`/`Hnorm` holds (via the proven `hnorm_of_coverage`).
+COVERAGE is the SOLE genuinely-open input -- and it is exactly the open Brualdi-Goldwasser exhaustiveness.
+
+Coverage evidence: `viable_all` (every defective tree has a monotone size-preserving straightening move) is
+now exhaustively verified to **n <= 15** (1793 defective trees, 0 failures) -- direct empirical support that
+the coverage hypothesis holds, hence that `hwh` holds on every tree up to 15 vertices. This is EVIDENCE, not
+a proof: coverage for all `n` is unproven and is the open kernel. `conjecture1_proved = False`; no
+completeness claimed.
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM

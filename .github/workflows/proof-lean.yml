@@ -118,7 +118,8 @@ jobs:
             R3Cert.R47MatchingSum \
             R3Cert.R47HwhSymStarCert \
             R3Cert.R47HwhSymStar3Cert \
-            R3Cert.R47HwhSymStarGenCert
+            R3Cert.R47HwhSymStarGenCert \
+            R3Cert.R47HwhAssembly
 
       # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
       # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build

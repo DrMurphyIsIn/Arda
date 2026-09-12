@@ -91,6 +91,7 @@ import R3Cert.R47MatchingSum
 import R3Cert.R47HwhSymStarCert
 import R3Cert.R47HwhSymStar3Cert
 import R3Cert.R47HwhSymStarGenCert
+import R3Cert.R47HwhAssembly
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -463,3 +464,6 @@ import R3Cert.R47HwhSymStarGenCert
 #print axioms R3Cert.Step3.symstar_gen_coeffS1_nonneg
 #print axioms R3Cert.Step3.symstar_gen_G_nonneg
 #print axioms R3Cert.Step3.symstar_gen_move_monotone
+-- ASSEMBLY reduction (2026-09-12): hwh <= (named move-classes refine to StraightStep) + COVERAGE
+-- (exhaustiveness, the sole open obligation; empirically verified n<=15, viable_all 0 failures).
+#print axioms R3Cert.Step3.hwh_of_extended_coverage
