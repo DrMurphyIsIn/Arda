@@ -159,34 +159,41 @@ def checkAltQ : List Rat -> Bool
     | some sp, some sq => (sp != sq) && checkAltQ (q :: rest)
     | _, _ => false
 
--- NOTE: `rfl` does NOT reduce Rat arithmetic in the kernel (Rat is a structure with a
--- reduced-fraction invariant; its ops normalize via GCD and are not definitionally
--- transparent to `rfl`).  `decide` reduces the Bool via the Decidable instance instead --
--- this is itself a spike finding: the Rat path is not rfl-reflectable, only decide-able.
-theorem toy_ok_rat : checkAltQ ptsQ = true := by decide
+-- SPIKE FINDING (measured 2026-09-12): the Rat path is NOT kernel-reflectable AT ALL.
+--   * `theorem toy_ok_rat : checkAltQ ptsQ = true := rfl`      -- FAILS: `rfl` does not
+--       reduce Rat arithmetic (Rat is a structure with a reduced-fraction invariant; its
+--       mul/lt normalize via `Nat.gcd`, opaque to definitional unfolding).
+--   * `theorem toy_ok_rat : checkAltQ ptsQ = true := by decide` -- ALSO FAILS: the kernel
+--       gets stuck at `Rat.instDecidableLt` (GCD via well-founded recursion the kernel
+--       will not unfold).  Error: "reduction got stuck at the `Decidable` instance".
+-- Conclusion: Rat gives NO finite dyadic/Rat ratio -- it is an infinite wall, not a tax.
+-- Both statements are left OUT (they would redden the file); this comment IS the result.
+-- The DIntv (pure-Int) path in Toy.lean reduces cleanly by `rfl`.
 
 end Spike
 """
 
 
-def emit_lit(n=100_000):
-    """100k Int literals + a trivial fold -- isolates big-literal ELABORATION cost."""
+def emit_lit(n=20_000):
+    """N Int literals in an ARRAY + a trivial fold -- isolates big-literal ELABORATION
+    cost from kernel cost.  Uses `Array` (not `List`) so the trivial `all` check does not
+    recurse N-deep (the 100k `List` variant blew `maxRecDepth`; that is itself a finding:
+    naive `List` literals do not scale, production BandData must be `Array`/chunked)."""
     # literals: i-th literal is (i*2654435761 mod 2^40) to force large-ish Ints.
     vals = [(i * 2654435761) % (1 << 40) for i in range(n)]
     lits = ",".join(str(v) for v in vals)
-    # trivial checker: fold that every element is < 2^40 (all true by construction).
     return f"""{HEADER}set_option maxHeartbeats 0
-set_option maxRecDepth 100000
+set_option maxRecDepth 1000000
 
 namespace Spike
 
-/-- {n} Int literals -- ELABORATION-cost isolation (trivial kernel work). -/
-def bigLits : List Int := [{lits}]
+/-- {n} Int literals in an Array -- ELABORATION-cost isolation (trivial kernel work). -/
+def bigLits : Array Int := #[{lits}]
 
-/-- Trivial fold: all literals are < 2^40. -/
-def checkLit (xs : List Int) : Bool := xs.all (fun x => x < 1099511627776)
+/-- Trivial fold: all literals are < 2^40 (true by construction). -/
+def checkLit (xs : Array Int) : Bool := xs.all (fun x => x < 1099511627776)
 
-theorem lit_ok : checkLit bigLits = true := rfl
+theorem lit_ok : checkLit bigLits = true := by decide
 
 end Spike
 """
