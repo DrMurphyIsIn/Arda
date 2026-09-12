@@ -69,6 +69,7 @@ import RvMBacklundAux
 import RvMBacklundIVT
 import RvMBacklundCenter
 import RvMBacklundJensen
+import RvMBacklundConfine
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -363,3 +364,9 @@ import RvMBacklundJensen
 -- sum_divisor_le. Explicit O(log T). conjecture1_proved=False.
 #print axioms Backlund.backlundAux_zero_count_le
 #print axioms Backlund.backlundAux_analyticOnNhd_ball
+
+-- Backlund S(T)=O(log T), PR 4a: half-plane argument-confinement (the hardest piece).
+-- argChangeHoriz_abs_lt_pi_of_rePos: if Re f > 0 on the segment [x0,x1]+iT (and f differentiable,
+-- logDeriv f continuous there), then |argChangeHoriz f T x0 x1| < π -- FTC (clog_real) turns Im ∫ f'/f
+-- into arg f(x1+iT) - arg f(x0+iT), both in (-π/2,π/2). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_lt_pi_of_rePos
