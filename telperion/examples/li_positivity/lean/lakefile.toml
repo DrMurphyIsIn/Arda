@@ -356,3 +356,6 @@ name = "ZeroFreeRegion"
 
 [[lean_lib]]
 name = "ZetaLogBound"
+
+[[lean_lib]]
+name = "RvMBacklundAux"
