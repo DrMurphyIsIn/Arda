@@ -374,3 +374,6 @@ name = "RvMBacklundConfine"
 
 [[lean_lib]]
 name = "RvMBacklundPartition"
+
+[[lean_lib]]
+name = "RvMBacklundSignConst"

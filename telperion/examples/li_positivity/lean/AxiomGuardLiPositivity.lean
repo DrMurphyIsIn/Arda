@@ -71,6 +71,7 @@ import RvMBacklundCenter
 import RvMBacklundJensen
 import RvMBacklundConfine
 import RvMBacklundPartition
+import RvMBacklundSignConst
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -379,3 +380,10 @@ import RvMBacklundPartition
 --   total ≤ n·π (sum_integral_adjacent_intervals + Finset.abs_sum_le_sum_abs). conjecture1_proved=False.
 #print axioms Backlund.argChangeHoriz_abs_lt_pi_of_re_sign
 #print axioms Backlund.argChangeHoriz_abs_le_partition
+
+-- Backlund S(T)=O(log T), PR 4c (first piece): sign-constancy => confinement.
+-- argChangeHoriz_abs_lt_pi_of_re_ne_zero: if Re f is continuous and NONVANISHING on the segment, then
+--   |argChangeHoriz f| < π. A continuous nowhere-zero real fn on connected [[x0,x1]] can't change sign
+--   (IVT intermediate_value_uIcc), so Re f one sign => PR 4b either-sign confinement. Reduces the
+--   per-piece hyp to the natural output of partitioning at Re ζ's zeros. conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_lt_pi_of_re_ne_zero
