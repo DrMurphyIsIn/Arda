@@ -57,6 +57,7 @@ def load_campaign(root: Path) -> Campaign:
     - mission.toml or any node file is malformed
     - two node files have the same slug (duplicate name)
     - a depends_on target slug is not present in the loaded node set
+    - the dependency graph contains a cycle (assert_acyclic is called here)
     """
     root = Path(root)
     manifest = load_manifest(root / "mission.toml")
@@ -82,7 +83,9 @@ def load_campaign(root: Path) -> Campaign:
                     f"Node {sl!r} depends_on {dep!r} which is not in the campaign."
                 )
 
-    return Campaign(root=root, manifest=manifest, nodes=nodes)
+    campaign = Campaign(root=root, manifest=manifest, nodes=nodes)
+    assert_acyclic(campaign)
+    return campaign
 
 
 # ---------------------------------------------------------------------------
@@ -138,9 +141,14 @@ def open_leaves(
     A node with no dependencies is a leaf candidate if it is open.
     Freshly-claimed nodes are excluded unless *include_claimed* is True.
 
+    Staleness semantics for claims belong to Task 3 (claims.load_fresh_claims).
+    Callers pass ONLY fresh (non-expired) claims here; this function does not
+    inspect TTL or claim timestamps. See claims.load_fresh_claims (Task 3).
+
     Args:
         campaign: loaded campaign.
-        claims: mapping of node-slug -> Claim for active claims.
+        claims: mapping of node-slug -> Claim containing ONLY fresh claims
+            (staleness filtering is the caller's responsibility).
         include_claimed: if False (default), exclude nodes that have an
             active claim in *claims*.
 
@@ -178,12 +186,17 @@ def _today() -> str:
 
 
 def _load_and_save(campaign: Campaign, slug: str, **changes) -> Node:
-    """Load node from disk, apply changes via dataclasses.replace, save, return."""
+    """Load node from disk, apply changes via dataclasses.replace, save, return.
+
+    Also updates campaign.nodes[slug] so callers see the new state without
+    reloading the campaign.
+    """
     node_path = campaign.root / "nodes" / f"{slug}.toml"
     node = load_node(node_path)
-    updated = dataclasses.replace(node, updated=_today(), **changes)
-    save_node(updated, node_path)
-    return updated
+    new_node = dataclasses.replace(node, updated=_today(), **changes)
+    save_node(new_node, node_path)
+    campaign.nodes[slug] = new_node
+    return new_node
 
 
 def promote_to_open(campaign: Campaign, slug: str) -> Node:
@@ -191,6 +204,10 @@ def promote_to_open(campaign: Campaign, slug: str) -> Node:
 
     Raises SchemaError unless a readback is recorded on the node.
     This is the ONLY draft->open path.
+
+    Loads the node exactly once: guard check and mutation happen on the
+    same in-memory object, eliminating the TOCTOU window of a separate
+    pre-check load.
     """
     node_path = campaign.root / "nodes" / f"{slug}.toml"
     node = load_node(node_path)
@@ -199,7 +216,10 @@ def promote_to_open(campaign: Campaign, slug: str) -> Node:
             f"Cannot promote {slug!r} to open: no readback recorded. "
             "Record a readback first (mission audit <slug>)."
         )
-    return _load_and_save(campaign, slug, status="open")
+    new_node = dataclasses.replace(node, status="open", updated=_today())
+    save_node(new_node, node_path)
+    campaign.nodes[slug] = new_node
+    return new_node
 
 
 def deprecate(campaign: Campaign, slug: str, reason: str) -> Node:
@@ -260,10 +280,10 @@ def render_dot(campaign: Campaign) -> str:
         node = campaign.nodes[sl]
         glyph = _GLYPHS.get(node.status, "?")
         label = f"{glyph} {sl}"
-        lines.append(f'  {sl} [label="{label}"];')
+        lines.append(f'  "{sl}" [label="{label}"];')
     for sl in sorted(campaign.nodes):
         node = campaign.nodes[sl]
         for dep in node.depends_on:
-            lines.append(f'  {sl} -> {dep};')
+            lines.append(f'  "{sl}" -> "{dep}";')
     lines.append("}")
     return "\n".join(lines) + "\n"

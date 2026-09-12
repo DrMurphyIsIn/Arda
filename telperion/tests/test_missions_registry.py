@@ -61,6 +61,9 @@ def test_load_campaign_and_unknown_dep_raises(tmp_path):
 
 def test_assert_acyclic_detects_cycle(tmp_path):
     # Create a two-node cycle: a -> b -> a.
+    # load_campaign now calls assert_acyclic internally, so the cycle is
+    # detected at load time. We also verify assert_acyclic directly on a
+    # hand-built Campaign to keep the public API tested.
     root = tmp_path / "cycle"
     root.mkdir()
     nodes_dir = root / "nodes"
@@ -89,13 +92,29 @@ def test_assert_acyclic_detects_cycle(tmp_path):
     save_node(node_a, nodes_dir / "Cycle_a.toml")
     save_node(node_b, nodes_dir / "Cycle_b.toml")
 
-    campaign = load_campaign(root)
+    # Cycle is caught at load time (load_campaign calls assert_acyclic)
     with pytest.raises(SchemaError) as exc_info:
-        assert_acyclic(campaign)
+        load_campaign(root)
     msg = str(exc_info.value)
-    # Both slugs appear in the error message
     assert "Cycle_a" in msg
     assert "Cycle_b" in msg
+
+    # Also verify assert_acyclic directly on a hand-built Campaign
+    from telperion.missions.schema import MissionManifest as MM
+    hand_built = Campaign(
+        root=root,
+        manifest=MM(
+            name="Cycle.goal", title="Cycle campaign", description="cycle test",
+            goal_node="Cycle_a", environment_toolchain="leanprover/lean4:v4.32.0",
+            environment_mathlib_rev="v4.32.0",
+        ),
+        nodes={"Cycle_a": node_a, "Cycle_b": node_b},
+    )
+    with pytest.raises(SchemaError) as exc_info2:
+        assert_acyclic(hand_built)
+    msg2 = str(exc_info2.value)
+    assert "Cycle_a" in msg2
+    assert "Cycle_b" in msg2
 
 
 def test_open_leaves_requires_deps_proved(tmp_path):
@@ -197,6 +216,37 @@ def test_set_proof_never_sets_proved(tmp_path):
     assert reloaded.proof is not None
 
 
+def test_mutators_update_campaign_nodes_in_memory(tmp_path):
+    # After deprecate(), campaign.nodes reflects the change without reloading.
+    # open_leaves and render_status on the SAME campaign object should see
+    # the deprecated status immediately.
+    root = copy_demo(tmp_path)
+    campaign = load_campaign(root)
+
+    # Demo_lemma_a is open before mutation
+    assert campaign.nodes["Demo_lemma_a"].status == "open"
+    leaves_before = open_leaves(campaign)
+    assert any(n.name == "Demo.lemma_a" for n in leaves_before)
+
+    # Deprecate it in place
+    deprecate(campaign, "Demo_lemma_a", reason="Superseded by Demo.lemma_c")
+
+    # In-memory campaign.nodes must reflect the new status immediately
+    assert campaign.nodes["Demo_lemma_a"].status == "deprecated"
+
+    # open_leaves on the same campaign object must no longer include it
+    leaves_after = open_leaves(campaign)
+    assert all(n.name != "Demo.lemma_a" for n in leaves_after)
+
+    # render_status on same object must show the deprecated glyph for lemma_a.
+    # Match the node's own line (starts with glyph + slug), not a dep-reference line.
+    out = render_status(campaign)
+    lines = out.splitlines()
+    # Each node line has the form "  <glyph> <slug>  (<kind>, <status>)..."
+    lemma_a_line = next(l for l in lines if "Demo_lemma_a  " in l)
+    assert "†" in lemma_a_line
+
+
 def test_render_status_contains_tree_and_statuses(tmp_path):
     root = copy_demo(tmp_path)
     campaign = load_campaign(root)
@@ -205,11 +255,14 @@ def test_render_status_contains_tree_and_statuses(tmp_path):
     # Output must contain the campaign title
     assert "Demo Campaign" in output
 
-    # Must have one line per node (4 nodes)
-    assert "Demo_goal" in output or "Demo.goal" in output
-    assert "Demo_lemma_a" in output or "Demo.lemma_a" in output
+    # render_status uses slugs (slug_of(name)), not raw Lean names.
+    # Verify the slug form is present for each node.
+    assert "Demo_goal" in output
+    assert "Demo_lemma_a" in output
+    assert "Demo_lemma_b" in output
+    assert "Demo_dead" in output
 
     # Status glyphs must appear: draft=·, open=○, deprecated=†
-    assert "·" in output   # draft glyph
-    assert "○" in output   # open glyph
-    assert "†" in output  # deprecated glyph (†)
+    assert "·" in output   # draft glyph (Demo_goal, Demo_lemma_b)
+    assert "○" in output   # open glyph (Demo_lemma_a)
+    assert "†" in output  # deprecated glyph (Demo_dead)
