@@ -332,9 +332,16 @@ is uniformly NOT a counterexample to `hwh` -- the family the averaging/g-dominan
 reach is now closed by an explicit Positivstellensatz certificate (shifted nonneg-coefficient positivity,
 Telperion-shaped).
 
-Scope: this certifies the BALANCED family `ST(k,m)`. The residual also contained a few non-balanced
-symmetric variants (`[5,4,4,3]`, mixed-degree hubs); the same de-branching move + an analogous (messier)
-closed form is expected to cover them, but only the balanced family is certified here.
+**Non-balanced extension (3-hub), 2026-09-12** (`R3Cert/R47HwhSymStar3Cert.lean`): the full 3-hub family
+with ARBITRARY hub sizes `m1,m2,m3 >= 2` is now certified. The de-branching move (detach hub1 onto hub2,
+spectator hub3) gives `Aobj(MS_move)-Aobj(MS) = N(m1,m2,m3)/(12 m1(m1+1)(m2+1)(m3+1))` (closed form verified
+exact), and under `m_i = t_i+2` the numerator `N` has ALL NON-NEGATIVE COEFFICIENTS (constant term 495), so
+`N >= 0` -- `symstar3_move_certificate` (kernel-clean). This covers the non-balanced symmetric residual
+variants (`[4,3,3]`, `[5,4,4]`, `[5,3,2]`, ...) at hub-count 3, not just the balanced `ST(3,m)`.
+
+Remaining scope: balanced `ST(k,m)` (all `k`) + general 3-hub are certified. General non-balanced `k >= 4`
+follows the same de-branching move + shifted-nonneg-coefficient method (the move is verified monotone on all
+non-balanced multi-stars tested); its `k`-uniform closed form is the natural next increment.
 
 ## Honest verdict / what a proof needs
 

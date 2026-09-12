@@ -49,3 +49,25 @@ if __name__ == "__main__":
     print(f"Aobj(ST)=2*alpha^(k-1): verified. Aobj(ST_move) closed form: {bad} mismatches (k=3..8,m=2..8).")
     print("D = Aobj(ST_move)-Aobj(ST) >= 0 and F_num >= 0 for all k=3..8, m=2..8: verified.")
     print("Uniform certificate (F_num>=0 via shifted cubics) kernel-checked: R47HwhSymStarCert.symstar_move_certificate")
+
+
+def Nnum3(m1, m2, m3):
+    """Non-balanced 3-hub certificate numerator; Aobj(MS_move)-Aobj(MS) = N/(12 m1(m1+1)(m2+1)(m3+1))."""
+    return (24*m1**2*m2*m3 + 26*m1**2*m2 - 10*m1**2*m3 - 7*m1**2 + 20*m1*m2*m3 + 23*m1*m2 - m1*m3
+            - 36*m2*m3 - 27*m2 - 15*m3 - 9)
+
+
+def _verify_nonbalanced_3hub():
+    """N(m1,m2,m3) >= 0 for m_i >= 2 (all-nonneg coeffs after m=t+2 shift). Kernel-checked:
+    R47HwhSymStar3Cert.symstar3_move_certificate."""
+    bad = 0
+    for a in range(2, 14):
+        for b in range(2, 14):
+            for c in range(2, 14):
+                if Nnum3(a, b, c) < 0:
+                    bad += 1
+    print(f"non-balanced 3-hub N(m1,m2,m3) >= 0 over [2,13]^3: {bad} violations")
+
+
+if __name__ == "__main__":
+    _verify_nonbalanced_3hub()

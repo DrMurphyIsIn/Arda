@@ -89,6 +89,7 @@ import R3Cert.R47HwhAdjPieceDecomp
 import R3Cert.R47HwhB1Partial
 import R3Cert.R47MatchingSum
 import R3Cert.R47HwhSymStarCert
+import R3Cert.R47HwhSymStar3Cert
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -454,3 +455,5 @@ import R3Cert.R47HwhSymStarCert
 #print axioms R3Cert.Step3.symstar_cubicA_nonneg
 #print axioms R3Cert.Step3.symstar_cubicF3_nonneg
 #print axioms R3Cert.Step3.symstar_move_certificate
+-- Non-balanced extension (2026-09-12): general 3-hub multi-star (arbitrary m_i>=2), via all-nonneg-coeff shift.
+#print axioms R3Cert.Step3.symstar3_move_certificate
