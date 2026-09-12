@@ -395,3 +395,6 @@ name = "RvMBacklundCount"
 
 [[lean_lib]]
 name = "RvMBacklundZeta"
+
+[[lean_lib]]
+name = "RvMBacklundCountJensen"
