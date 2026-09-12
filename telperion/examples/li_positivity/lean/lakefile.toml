@@ -401,3 +401,6 @@ name = "RvMBacklundCountJensen"
 
 [[lean_lib]]
 name = "RvMBacklundS"
+
+[[lean_lib]]
+name = "RvMBacklundLogCont"
