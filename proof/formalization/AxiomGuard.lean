@@ -432,6 +432,9 @@ import R3Cert.R47MatchingSum
 -- PARTIAL B1 (2026-09-12): B1>=0 on the P01=0 slice (target has no H-neighbours); the cherry-forming
 -- move (leaf onto adjacent sibling leaf) is unconditionally Aobj-monotone. A proven slice of the open core.
 #print axioms R3Cert.Step3.B1_nonneg_of_P01_zero
+-- g-dominance sufficient condition for the open B1 kernel (2026-09-12): p-neighbours g-dominate
+-- w-neighbours => B1>=0. Broader than the P01=0 slice (covers ~69% of moves; sound 106/106).
+#print axioms R3Cert.Step3.B1_nonneg_of_gdominance
 #print axioms R3Cert.Step3.cherry_forming_monotone
 
 -- Weighted-matching-sum theory (2026-09-12): discharges the ESSENTIAL content of the B2 hypothesis

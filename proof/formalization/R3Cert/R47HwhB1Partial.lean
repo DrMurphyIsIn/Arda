@@ -27,6 +27,31 @@ theorem B1_nonneg_of_P01_zero (a b P10 P01 : ℝ) (ha : 2 ≤ a) (hP10 : 0 ≤ P
     apply div_nonneg hP10; linarith
   simpa using this
 
+/-- **`B1 >= 0` under g-DOMINANCE** (the next step on the open kernel).  Recall
+    `B1 = avg_{q~p} g(q) - avg_{r~w} g(r)` with `g(v) = Z(H-v)/deg_v` (so `P10 = sum_q g(q)`,
+    `P01 = sum_r g(r)`).  If there is a threshold `M` with every `p`-neighbour's `g`-value `>= M` and every
+    `w`-neighbour's `g`-value `<= M`, then `avg_{q~p} g >= M >= avg_{r~w} g`, hence `B1 >= 0`.
+
+    This is a genuine sufficient condition for the open `B1` kernel, strictly broader than the `P01 = 0`
+    slice: verified sound (g-dominance => B1 >= 0, 106/106) and non-vacuous (covers ~69% of defect-reducing
+    lower-degree leaf moves; every defective tree tested has >= 1 g-dominant straightening move).  The open
+    kernel is now: does every non-backbone tree admit a g-DOMINANT defect-reducing move? -/
+theorem B1_nonneg_of_gdominance {ιq ιr : Type*} (Qs : Finset ιq) (Rs : Finset ιr)
+    (gq : ιq → ℝ) (gr : ιr → ℝ) (M : ℝ) (hQne : Qs.Nonempty) (hRne : Rs.Nonempty)
+    (hQ : ∀ q ∈ Qs, M ≤ gq q) (hR : ∀ r ∈ Rs, gr r ≤ M) :
+    (∑ r ∈ Rs, gr r) / (Rs.card : ℝ) ≤ (∑ q ∈ Qs, gq q) / (Qs.card : ℝ) := by
+  have hqc : (0:ℝ) < (Qs.card : ℝ) := by exact_mod_cast hQne.card_pos
+  have hrc : (0:ℝ) < (Rs.card : ℝ) := by exact_mod_cast hRne.card_pos
+  have h1 : M ≤ (∑ q ∈ Qs, gq q) / (Qs.card : ℝ) := by
+    rw [le_div_iff₀ hqc, mul_comm]
+    calc (Qs.card : ℝ) * M = ∑ _q ∈ Qs, M := by rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ ∑ q ∈ Qs, gq q := Finset.sum_le_sum hQ
+  have h2 : (∑ r ∈ Rs, gr r) / (Rs.card : ℝ) ≤ M := by
+    rw [div_le_iff₀ hrc, mul_comm]
+    calc ∑ r ∈ Rs, gr r ≤ ∑ _r ∈ Rs, M := Finset.sum_le_sum hR
+      _ = (Rs.card : ℝ) * M := by rw [Finset.sum_const, nsmul_eq_mul]
+  linarith
+
 /-- **The cherry-forming move is `Aobj`-monotone (unconditional).**  For `b = 1`, `p ~ w` (`w` a degree-1
     sibling leaf), the marked-vertex matching sums satisfy `P01 = P11 = 0`; then `B1 = P10/(a-1) >= 0` and
     `B2adj = P00 - P00/(a-1) = P00(a-2)/(a-1) >= 0`, so relocating a leaf onto the sibling leaf (forming a

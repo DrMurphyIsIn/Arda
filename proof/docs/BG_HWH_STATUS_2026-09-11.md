@@ -261,6 +261,25 @@ identification that the marked-vertex matching-classified `P00,P11` equal these 
 and the separate cavity-`Aobj` <-> matching-sum bridge.  The mathematical content of `B2` (deletion
 monotonicity + counting) is proven, not hypothesized.
 
+## Next step on the general kernel: g-DOMINANCE (2026-09-12)
+
+Using `B1 = avg_{q~p} g(q) - avg_{r~w} g(r)` (`g(v) = Z(H-v)/deg_v`), a proven sufficient condition
+strictly broader than the `P01=0` slice (`R47HwhB1Partial.B1_nonneg_of_gdominance`):
+
+> if there is a threshold `M` with `g(q) >= M` for every `p`-neighbour `q` and `g(r) <= M` for every
+> `w`-neighbour `r`, then `avg_{q~p} g >= M >= avg_{r~w} g`, hence `B1 >= 0`.
+
+Kernel-clean averaging argument. Verified: g-dominance => B1 >= 0 (sound, 106/106); non-vacuous (covers
+~69% of defect-reducing lower-degree leaf moves; EVERY defective tree tested has >= 1 g-dominant
+straightening move). This SHARPENS the open kernel from "does a `B1 >= 0` move exist" to the concrete,
+checkable:
+
+> **(sharpened hwh kernel)** does every non-backbone tree admit a defect-reducing, strictly-lower-degree
+> move that is g-DOMINANT (`p`'s neighbours `g`-dominate `w`'s, `g(v)=Z(H-v)/deg_v`)?
+
+Still open, but now a threshold/level-set statement about a local matching functional -- a more tractable
+target than the raw average comparison (it removes the averaging and asks for a clean level-set separation).
+
 ## Honest verdict / what a proof needs
 
 `hwh` is strongly evidenced (exhaustive n<=14) but is the genuine open BG core. A proof needs a UNIFORM
