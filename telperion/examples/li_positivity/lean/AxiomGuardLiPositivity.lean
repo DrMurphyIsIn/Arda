@@ -65,6 +65,7 @@ import RvMCompanionCoeff
 import RvMCompanionBraggLimit
 import ZetaLogBound
 import DlvpZetaRateEffective
+import RvMBacklundAux
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -334,3 +335,9 @@ import DlvpZetaRateEffective
 -- limit / li-weighted archimedean boundary extraction needs. conjecture1_proved=False.
 #print axioms ZeroFreeBridge.zeta_log_bound
 #print axioms ZeroFreeBridge.dlvp_zeta_region_rate_effective
+
+-- Backlund S(T)=O(log T), PR 1: the auxiliary function F_T(z)=½(ζ(z+iT)+ζ(z-iT)).
+-- backlundAux_ofReal: F_T(σ)=Re ζ(σ+iT) on the real axis (via riemannZeta_conj); backlundAux_analyticAt:
+-- analytic off the poles z=1∓iT. Foundation for the sign-change/Jensen zero-count bound. conjecture1_proved=False.
+#print axioms Backlund.backlundAux_ofReal
+#print axioms Backlund.backlundAux_analyticAt
