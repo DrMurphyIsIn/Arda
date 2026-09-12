@@ -82,6 +82,7 @@ import RvMBacklundCountJensen
 import RvMBacklundS
 import RvMBacklundLogCont
 import RvMBacklundExplicit
+import RvMNTEffective
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -462,3 +463,10 @@ import RvMBacklundExplicit
 --   the PR-6 headline with ‖F_T 2‖ majorized away by its Jensen-centre floor 2−π²/6
 --   (backlundAux_two_norm_ge), giving a closed-form O(log T) in T alone. conjecture1_proved=False.
 #print axioms Backlund.riemannS_abs_le_log_explicit
+
+-- Arc A (effective RvM), PR A2: the effective Riemann-von Mangoldt bound.
+-- nt_effective_bound (T)(hT:4≤T)(N)(4 xi-edge nonvanishings)(hζne)(hwind=2πiN):
+--   |(N:ℝ) − 1 − θ(T)/π| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 -- the winding integer pinned to the
+--   smooth main term 1+θ/π within explicit O(log T); error = riemannS T bounded by PR A1. Composes
+--   xiTele_winding_eq_RvM (N=1+θ/π+S) with riemannS_abs_le_log_explicit. conjecture1_proved=False.
+#print axioms Backlund.nt_effective_bound

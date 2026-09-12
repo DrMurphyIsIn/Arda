@@ -407,3 +407,6 @@ name = "RvMBacklundLogCont"
 
 [[lean_lib]]
 name = "RvMBacklundExplicit"
+
+[[lean_lib]]
+name = "RvMNTEffective"
