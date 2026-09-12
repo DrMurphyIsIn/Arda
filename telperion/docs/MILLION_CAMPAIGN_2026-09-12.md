@@ -155,3 +155,25 @@ Until then, the honest claim is: kernel-verified T5 certificates from 24000 up
 (once leg 6 lands) + kernel-valid but hypothesis-vacuous winding certificates
 below.  conjecture1_proved = False, and the T≤24000 milestone claims are
 SUSPENDED pending re-emission.
+
+## Remediation execution (same day, late)
+
+1. **Quarter-integer stretch planner — DONE.**  Band certificate boxes stretch
+   outward by quarters (cached per edge, Platt-checked against `_POKE = 0.08`)
+   until the ball-poke slivers are zero-free; the nominal partition stays round
+   and segment glue weakens bounds per branch (`le_trans` + `norm_num`).  The
+   26 leg-6 refusals all re-emitted cleanly (~7 s each).
+2. **T5 re-base of [1, 24000] — RUNNING.**  `TURING_FROM = 1`; new base lemma
+   `upTo_1` (vacuous below the 55/16 floor); uniform width 1/4e6 plan from 1;
+   all AllZeros_h1000 … h24000 chain files regenerate against the new plan.
+3. **`turing_band` as a first-class Telperion kind — DESIGNED, next session.**
+   Registration follows the `certify.py` registry pattern
+   (`"turing_band": ("emit_turing_band", "certify_turing_band_point", "TuringBandEmitter")`),
+   with the refusal guards already implemented in `run_box_turing` (RvM==line
+   cross-check, pinning-width check, poke check) moving into
+   `turing_band_certificate`.  The `statement_match` gate
+   (`statement_match.statement_match_check`) needs a `.cert.json` sidecar per
+   band (n, box, edge literals) plus an INDEPENDENT intended-type renderer —
+   worth doing carefully, not hastily, since its whole value is catching
+   emitter statement bugs of exactly the kind found today.  Sample-based audit
+   (per-segment, not per-band) keeps it affordable.

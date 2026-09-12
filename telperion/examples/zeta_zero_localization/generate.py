@@ -298,9 +298,7 @@ def _online_sweep_zero_count_platt(im_lo, im_hi, prec: int) -> int:
         raise RuntimeError("platt machinery unavailable")
     im_lo = Fraction(im_lo)
     im_hi = Fraction(im_hi)
-    if im_lo.denominator != 1 or im_hi.denominator != 1:
-        raise RuntimeError("platt sweep requires integer band edges")
-    zs = zeros_in_interval(int(im_lo), int(im_hi), prec=max(prec, 96))
+    zs = zeros_in_interval(im_lo, im_hi, prec=max(prec, 96))
     pts = [im_lo]
     for (_l1, h1), (l2, _h2) in zip(zs, zs[1:]):
         m = (Fraction(h1) + Fraction(l2)) / 2
@@ -444,7 +442,7 @@ def run_box_turing(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, edge_prec: in
     cache_dir.mkdir(exist_ok=True)
 
     def _cache_get(t):
-        p = cache_dir / f"ah_{t}_{edge_prec}.json"
+        p = cache_dir / f"ah_{str(t).replace('/', 'd')}_{edge_prec}.json"
         if p.exists():
             import json as _json
             lo_s, hi_s = _json.loads(p.read_text())
@@ -453,7 +451,7 @@ def run_box_turing(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, edge_prec: in
 
     def _cache_put(t, val):
         import json as _json
-        p = cache_dir / f"ah_{t}_{edge_prec}.json"
+        p = cache_dir / f"ah_{str(t).replace('/', 'd')}_{edge_prec}.json"
         tmp = p.with_suffix(".tmp")
         tmp.write_text(_json.dumps([str(val[0]), str(val[1])]))
         tmp.replace(p)
@@ -471,8 +469,8 @@ def run_box_turing(re_lo, re_hi, im_lo, im_hi, *, prec: int = 300, edge_prec: in
     # ball-poke sliver check: no zero ordinate within `poke` outside the band
     _cx, _cy, rsq = choose_ball_tight(-1, 2, il, ih)
     poke = _m.sqrt(float(rsq)) - float(ih - il) / 2 + 1e-9
-    below = zeros_in_interval(int(il) - 1, int(il))
-    above = zeros_in_interval(int(ih), int(ih) + 1)
+    below = zeros_in_interval(il - 1, il)
+    above = zeros_in_interval(ih, ih + 1)
     if any(float(hi_z) > float(il) - poke for _lo_z, hi_z in below) or \
        any(float(lo_z) < float(ih) + poke for lo_z, _hi_z in above):
         raise ValueError(

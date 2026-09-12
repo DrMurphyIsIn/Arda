@@ -34,6 +34,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+
 HERE = Path(__file__).resolve().parent
 LEAN_DIR = HERE / "lean"
 GENERATE = HERE / "generate.py"
@@ -45,8 +47,12 @@ LEGACY_DEN = 2_000_000         # the [0,4000] ladder width
 TARGET_N = 43                  # zeros per band target (ceiling ~46 measured)
 MAX_BAND_H = 40
 SEG_BANDS = 50                 # bands per segment file (measured budget)
-TURING_FROM = 24_000           # bands at/above this height use the T5 route
-                               # (RHInBoxT_* modules; 10x cheaper Lean, 4x driver)
+TURING_FROM = 1                # bands at/above this height use the T5 route
+                               # (RHInBoxT_* modules; 10x cheaper Lean, 4x driver).
+                               # Set to 1 for the FULL T5 RE-BASE (2026-09-12: the
+                               # winding-route hArb was found over-quantified/vacuous
+                               # -- see MILLION_CAMPAIGN doc HONESTY FLAG; the whole
+                               # ladder [1, 24000] re-emits on T5, base = upTo_1).
 
 # Retry ladder for close-pair refusals: (density, prec)
 RETRY_LADDER = [(1.0, 300), (2.0, 300), (4.0, 300), (6.0, 300), (8.0, 450)]
@@ -102,13 +108,84 @@ def plan_bands(t_from: int, t_to: int) -> list[tuple[int, int, int]]:
     return bands
 
 
-def band_tag(den: int, lo: int, hi: int) -> str:
-    return f"1d{den}_{den - 1}d{den}_{lo}_{hi}"
+from fractions import Fraction
+
+_POKE = Fraction(8, 100)  # conservative ball-poke clearance (actual = sqrt(2.25+h^2/4+1/16)-h/2
+                          # ~= 2.31/h: 0.075 at h=31, smaller for taller bands; 0.08 covers h >= 29)
 
 
-def band_module(den: int, lo: int, hi: int) -> str:
-    prefix = "RHInBoxT_" if lo >= TURING_FROM else "RHInBox_"
-    return f"{prefix}{band_tag(den, lo, hi)}"
+_STRETCH_CACHE_FILE = Path(__file__).resolve().parent / "edge_stretch.json"
+_stretch_cache: dict | None = None
+
+
+def _stretch_lookup(key: str):
+    global _stretch_cache
+    if _stretch_cache is None:
+        _stretch_cache = (json.loads(_STRETCH_CACHE_FILE.read_text())
+                          if _STRETCH_CACHE_FILE.exists() else {})
+    return _stretch_cache.get(key)
+
+
+def _stretch_store(key: str, val: str) -> None:
+    _stretch_cache[key] = val
+    tmp = _STRETCH_CACHE_FILE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(_stretch_cache, sort_keys=True))
+    tmp.replace(_STRETCH_CACHE_FILE)
+
+
+def stretch_box(lo, hi):
+    """Deterministic outward quarter-stretch of a band's certificate box.
+
+    The nominal partition edge stays put; the band's BOX (what the T5
+    certificate covers) stretches down/up by quarters until no zero ordinate
+    lies within the ball-poke sliver outside the box.  Adjacent boxes may
+    overlap — harmless (each certificate is independent; segment glue weakens
+    bounds to the nominal partition).  Returns (box_lo, box_hi) Fractions.
+    Results are cached per edge (Platt queries are ~0.3 s each)."""
+    from telperion.arb_platt import PLATT_AVAILABLE, zeros_in_interval
+    lo, hi = Fraction(lo), Fraction(hi)
+    if not PLATT_AVAILABLE:
+        return lo, hi
+
+    def _clear(edge, direction):
+        key = f"{direction}:{edge}"
+        hit = _stretch_lookup(key)
+        if hit is not None:
+            return Fraction(hit)
+        for k in range(5):
+            cand = edge - Fraction(k, 4) if direction == "down" else edge + Fraction(k, 4)
+            if direction == "down":
+                zs = zeros_in_interval(cand - 1, cand)
+                ok = all(hz < cand - _POKE for _lz, hz in zs)
+            else:
+                zs = zeros_in_interval(cand, cand + 1)
+                ok = all(lz > cand + _POKE for lz, _hz in zs)
+            if ok:
+                _stretch_store(key, str(cand))
+                return cand
+        raise RuntimeError(f"stretch_box: no clear {direction} edge near {edge}")
+
+    return _clear(lo, "down"), _clear(hi, "up")
+
+
+def band_box(den: int, lo, hi):
+    """The certificate box for a band: stretched on the T5 route, nominal otherwise."""
+    if int(lo) >= TURING_FROM:
+        blo, bhi = stretch_box(lo, hi)
+        return den, blo, bhi
+    return den, Fraction(lo), Fraction(hi)
+
+
+def band_tag(den: int, lo, hi) -> str:
+    def _f(v):
+        v = Fraction(v)
+        return f"{v.numerator}" if v.denominator == 1 else f"{v.numerator}d{v.denominator}"
+    return f"1d{den}_{den - 1}d{den}_{_f(lo)}_{_f(hi)}"
+
+
+def band_module(den: int, lo, hi) -> str:
+    prefix = "RHInBoxT_" if int(lo) >= TURING_FROM else "RHInBox_"
+    return f"{prefix}{band_tag(*band_box(den, lo, hi))}"
 
 
 # ---------------------------------------------------------------- state
@@ -129,9 +206,10 @@ def save_state(st: dict) -> None:
 
 def emit_one_band(den: int, lo: int, hi: int) -> dict:
     """Run the per-band driver with the retry ladder.  Returns a state record."""
-    tag = band_tag(den, lo, hi)
-    box = f"1/{den},{den - 1}/{den},{lo},{hi}"
-    turing = lo >= TURING_FROM
+    bden, blo, bhi = band_box(den, lo, hi)
+    tag = band_tag(bden, blo, bhi)
+    box = f"1/{den},{den - 1}/{den},{blo},{bhi}"
+    turing = int(lo) >= TURING_FROM
     for density, prec in RETRY_LADDER:
         t0 = time.time()
         cmd = [sys.executable, str(GENERATE), "--box", box,
@@ -237,10 +315,15 @@ def segment_tops(t_from: int, t_to: int) -> list[int]:
     return tops
 
 
-def _hyp(name: str, den: int, lo: int, hi: int) -> str:
+def _fr(v) -> str:
+    v = Fraction(v)
+    return f"{v.numerator}" if v.denominator == 1 else f"{v.numerator} / {v.denominator}"
+
+
+def _hyp(name: str, den: int, lo, hi) -> str:
     return (f"    ({name} : ∀ ρ : ℂ, (((1 / {den}) : ℝ) ≤ ρ.re ∧ "
             f"ρ.re ≤ (({den - 1} / {den}))) →\n"
-            f"      ((({lo}) : ℝ) ≤ ρ.im ∧ ρ.im ≤ ({hi})) → "
+            f"      ((({_fr(lo)}) : ℝ) ≤ ρ.im ∧ ρ.im ≤ ({_fr(hi)})) → "
             f"riemannZeta ρ = 0 → ρ.re = 1 / 2)\n")
 
 
@@ -268,7 +351,8 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
       f"    conjecture1_proved = False. -/\n")
     w("import Mathlib\nimport DlvpZetaZeroFree\nimport DlvpZetaRateEffective\n"
       "import ZetaZeroConfinement\nimport AllZerosUpToHeight\n")
-    w(f"import AllZeros_h{A}\n")
+    if A != 1:
+        w(f"import AllZeros_h{A}\n")
     for b in seg_bands:
         w(f"import {band_module(*b)}\n")
     w("\nopen Complex MeasureTheory Real\nopen scoped Topology\n\n")
@@ -307,11 +391,14 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
     w("    _ ≤ 9 / 1369088 := by norm_num\n")
     w("    _ ≤ ZeroFreeBridge.dlvpRateC := ZeroFreeBridge.dlvpRateC_lower\n\n")
 
-    # segment theorem
+    # segment theorem — band hypotheses stated at the (possibly stretched)
+    # certificate boxes; the interval_cases branches weaken the nominal
+    # partition bounds into them (le_trans + norm_num, uniform).
+    boxes = [band_box(*b) for b in seg_bands]
     w(f"/-- The `[{A}, {B}]` SEGMENT: every zero with `{A} ≤ Im ≤ {B}` is on the line. -/\n")
     w(f"theorem segment_{A}_{B}\n")
-    for i, b in enumerate(seg_bands):
-        w(_hyp(f"hseg{i}", *b))
+    for i, bb in enumerate(boxes):
+        w(_hyp(f"hseg{i}", *bb))
     w(f"    (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ {B} → 55 / 16 ≤ |ρ.im|) :\n")
     w(f"    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ({A}:ℝ) ≤ ρ.im → ρ.im ≤ {B} → ρ.re = 1 / 2 := by\n")
     w(f"  have hre_eq : (1 : ℝ) - 1 / {den} = {den - 1} / {den} := by norm_num\n")
@@ -323,26 +410,46 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
     w("    refine ⟨hre.1, ?_⟩\n    have h2 := hre.2\n    linarith [h2, hre_eq]\n")
     w("  interval_cases i\n")
     for i in range(K):
-        w(f"  · exact hseg{i} ρ hre' him hz\n")
+        _d, blo, bhi = boxes[i]
+        e_lo, e_hi = seg_bands[i][1], seg_bands[i][2]
+        w(f"  · exact hseg{i} ρ hre' ⟨le_trans (show (({_fr(blo)}) : ℝ) ≤ ({_fr(e_lo)}) "
+          f"by norm_num) him.1, le_trans him.2 (show (({_fr(e_hi)}) : ℝ) ≤ ({_fr(bhi)}) "
+          f"by norm_num)⟩ hz\n")
     w("\n")
 
+    # base lemma (re-based ladder bottom): upTo-1 is vacuous below the 55/16 floor
+    if A == 1:
+        w("/-- Below height 1 the ladder is vacuous: the height floor `55/16 ≤ |Im ρ|`\n"
+          "    (carried `hγ`, discharged by StripClear at assembly) contradicts `Im ρ ≤ 1`. -/\n")
+        w("theorem upTo_1\n")
+        w("    (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 1 → 55 / 16 ≤ |ρ.im|) :\n")
+        w("    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 1 → ρ.re = 1 / 2 := by\n")
+        w("  intro ρ hz h0 h1\n")
+        w("  have h := hγ ρ hz h0 h1\n")
+        w("  rw [abs_of_pos h0] at h\n")
+        w("  have habs : (55 / 16 : ℝ) ≤ 1 := le_trans h h1\n")
+        w("  norm_num at habs\n\n")
+
     # capstone _of_bands
-    w(f"/-- **T = {B} via the HEIGHT CHAIN**: `[0,{A}]` (AllZeros_h{A}) ∘ `[{A},{B}]` (segment).\n"
+    w(f"/-- **T = {B} via the HEIGHT CHAIN**: `[0,{A}]` ∘ `[{A},{B}]` (segment).\n"
       f"    conjecture1_proved = False. -/\n")
     w(f"theorem all_nontrivial_zeros_up_to_height_{B}_of_bands\n")
     for i, b in enumerate(prev_bands):
-        w(_hyp(f"hband{i}", *b))
-    for i, b in enumerate(seg_bands):
-        w(_hyp(f"hseg{i}", *b))
+        w(_hyp(f"hband{i}", *band_box(*b)))
+    for i, bb in enumerate(boxes):
+        w(_hyp(f"hseg{i}", *bb))
     w(f"    (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ {B} → 55 / 16 ≤ |ρ.im|) :\n")
     w(f"    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ {B} → ρ.re = 1 / 2 := by\n")
     w(f"  have hγ{A} : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ {A} → 55 / 16 ≤ |ρ.im| :=\n")
     w(f"    fun ρ hz h0 h2 => hγ ρ hz h0 (le_trans h2 (by norm_num))\n")
     w(f"  exact AllZerosUpToHeight.height_chain {A} {B}\n")
-    w(f"    (AllZeros_h{A}.all_nontrivial_zeros_up_to_height_{A}_of_bands\n")
-    for i in range(len(prev_bands)):
-        w(f"    hband{i}\n")
-    w(f"      hγ{A})\n")
+    if A == 1:
+        w(f"    (upTo_1 hγ{A})\n")
+    else:
+        w(f"    (AllZeros_h{A}.all_nontrivial_zeros_up_to_height_{A}_of_bands\n")
+        for i in range(len(prev_bands)):
+            w(f"    hband{i}\n")
+        w(f"      hγ{A})\n")
     w(f"    (segment_{A}_{B}\n")
     for i in range(len(seg_bands)):
         w(f"      hseg{i}\n")
@@ -353,22 +460,32 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
 
 def cmd_emit_segment(args) -> int:
     top = args.upto
-    # previous capstone: largest existing AllZeros_h<A> with A < top
-    prevs = sorted(
-        int(p.stem.split("_h")[1]) for p in LEAN_DIR.glob("AllZeros_h*.lean")
-        if p.stem.split("_h")[1].isdigit() and int(p.stem.split("_h")[1]) < top
-    )
-    if not prevs:
-        print("no previous AllZeros_h* capstone found", file=sys.stderr)
-        return 1
-    prev_top = prevs[-1]
-    # prev hypothesis list: legacy ladder + campaign bands up to prev_top
-    prev_bands = list(legacy_bands())
-    if prev_top < 4000:
-        print(f"previous capstone {prev_top} < 4000 unsupported", file=sys.stderr)
-        return 1
-    if prev_top > 4000:
-        prev_bands += plan_bands(4000, prev_top)
+    if getattr(args, "base", None) == 1:
+        # re-based ladder bottom: upTo_1 (vacuous below the 55/16 floor) + [1, top]
+        prev_top = 1
+        prev_bands = []
+    else:
+        # previous capstone: largest existing AllZeros_h<A> with A < top
+        # (in the re-based world, only re-generated capstones >= 1000 count)
+        floor_prev = 1000 if TURING_FROM <= 1 else 0
+        prevs = sorted(
+            int(p.stem.split("_h")[1]) for p in LEAN_DIR.glob("AllZeros_h*.lean")
+            if p.stem.split("_h")[1].isdigit()
+            and floor_prev <= int(p.stem.split("_h")[1]) < top
+        )
+        if not prevs:
+            print("no previous AllZeros_h* capstone found", file=sys.stderr)
+            return 1
+        prev_top = prevs[-1]
+        if TURING_FROM <= 1:
+            prev_bands = plan_bands(1, prev_top)
+        else:
+            prev_bands = list(legacy_bands())
+            if prev_top < 4000:
+                print(f"previous capstone {prev_top} < 4000 unsupported", file=sys.stderr)
+                return 1
+            if prev_top > 4000:
+                prev_bands += plan_bands(4000, prev_top)
     seg_bands = plan_bands(prev_top, top)
     if len(seg_bands) > SEG_BANDS:
         print(f"segment [{prev_top},{top}] has {len(seg_bands)} bands > {SEG_BANDS} budget",
@@ -401,7 +518,7 @@ def cmd_guard_update(args) -> int:
         mod = band_module(*b)
         if f"import {mod}\n" not in text:
             imports.append(f"import {mod}\n")
-            prints.append(f"#print axioms {mod}.rh_in_box_{band_tag(*b)}\n")
+            prints.append(f"#print axioms {mod}.rh_in_box_{band_tag(*band_box(*b))}\n")
     prev = None
     for i, top in enumerate(tops):
         mod = f"AllZeros_h{top}"
@@ -429,8 +546,10 @@ def cmd_assemble(args) -> int:
         t_from=args.t_from, t_to=args.t_to, segments=True))
     if rc:
         return rc
-    for top in segment_tops(args.t_from, args.t_to):
-        rc = cmd_emit_segment(argparse.Namespace(upto=top))
+    tops = segment_tops(args.t_from, args.t_to)
+    for top in tops:
+        base = 1 if (args.t_from == 1 and top == tops[0]) else None
+        rc = cmd_emit_segment(argparse.Namespace(upto=top, base=base))
         if rc:
             return rc
     return cmd_guard_update(args)
@@ -475,6 +594,8 @@ def main() -> int:
                            help="also register AllZeros_h<seg> modules")
     p = sub.add_parser("emit-segment")
     p.add_argument("--upto", type=int, required=True)
+    p.add_argument("--base", type=int, default=None,
+                   help="1 = re-based ladder bottom (upTo_1 base lemma, no prev import)")
     sub.add_parser("status")
     args = ap.parse_args()
     return {"plan": cmd_plan, "emit-bands": cmd_emit_bands,
