@@ -85,6 +85,7 @@ import RvMBacklundExplicit
 import RvMNTEffective
 import RvMNTCount
 import RvMRoutePFalsify
+import BraggFloor
 import RvMNTLadder
 import AllZeros_h4000
 import StripClear
@@ -331,6 +332,22 @@ import StripClear
 -- Route P, Brick D2a: the companion right-edge Bragg integrand.
 -- companion_right_edge_prime_integrand: for 1<σ₁, g·logDeriv zetaPoleCompanion = g·(-L(Λ)+(·-1)⁻¹).
 #print axioms RvMWeierstrass.companion_right_edge_prime_integrand
+
+-- Route P, Brick D3 part 2: the bragg_floor diffraction ladder (emitted, DO NOT EDIT BY HAND).
+-- bragg_rung_0 / bragg_rung_19: the first and last emitted Bragg rungs -- the truncated log-prime
+-- (von Mangoldt / Bragg) amplitude at base point s0>1, net of a certified tail, clears the explicit
+-- archimedean floor -(1+Re taylorCoeff GammaR n). A FINITE rational inequality (norm_num); the three
+-- literals are Arb (python-flint) enclosures (the documented trust seam). Mid-range orders n=1..5 are
+-- honestly REFUSED (the fixed-s0 order-0 amplitude does not dominate their floors), so the emitted
+-- orders are n=0 and n=6..19. conjecture1_proved=False.
+#print axioms BraggFloor.bragg_rung_0
+#print axioms BraggFloor.bragg_rung_19
+-- bragg_below_floor_refutes_rh (n)(braggVal)(hcomp: (taylorCoeff zetaPoleCompanion n).re = braggVal)
+--   (hbelow: braggVal < -(1+(taylorCoeff GammaR n).re)): ¬RiemannHypothesis. The falsifiability face:
+--   a certified sub-floor Bragg datum refutes RH via companion_below_floor_refutes_rh, but ONLY through
+--   hcomp -- the CONDITIONAL, RH-hard taylorCoeff_companion_bragg_of_exhaustion_limits seam, carried as
+--   an UNDISCHARGED hypothesis (never crossed). Never expected to fire. conjecture1_proved=False.
+#print axioms BraggFloor.bragg_below_floor_refutes_rh
 
 -- Route P, Brick D2b-1: the liWeight <-> liPairedSummand reconciliation.
 -- liPairedSummand_eq_liWeight_paired: liPairedSummand n ρ = liWeight (n+1) ρ + liWeight (n+1) (pairedZero ρ).
