@@ -37,6 +37,9 @@
 import Mathlib.NumberTheory.ZetaValues
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
+import Mathlib.MeasureTheory.Function.Floor
+import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 open MeasureTheory intervalIntegral Set
 open scoped Real
@@ -54,6 +57,17 @@ noncomputable def sawBernoulli (k : ℕ) (x : ℝ) : ℝ := bernoulliFun k (Int.
 
 @[simp] lemma sawBernoulli_zero (x : ℝ) : sawBernoulli 0 x = 1 := by
   simp [sawBernoulli, bernoulliFun_zero]
+
+/-- The saw is measurable: `bernoulliFun k` is continuous and `Int.fract` is measurable. -/
+lemma sawBernoulli_measurable (k : ℕ) : Measurable (sawBernoulli k) :=
+  (contDiff_bernoulliFun (k := k)).continuous.measurable.comp measurable_fract
+
+/-- The order-1 saw is bounded by `1/2` (it is `{x} − 1/2` with `{x} ∈ [0, 1)`). -/
+lemma abs_sawBernoulli_one_le (x : ℝ) : |sawBernoulli 1 x| ≤ 1 / 2 := by
+  rw [sawBernoulli, bernoulliFun_one, abs_le]
+  have h0 : (0 : ℝ) ≤ Int.fract x := Int.fract_nonneg x
+  have h1 : Int.fract x < 1 := Int.fract_lt_one x
+  constructor <;> linarith
 
 /-- On the half-open unit cell starting at an integer, the saw agrees with the raw Bernoulli
     function shifted to that cell. -/
@@ -380,5 +394,29 @@ theorem em_zeta_partial_real (s : ℝ) {N : ℕ} (hN : 1 ≤ N) :
     exact Or.inl (by simp only [id_eq]; exact ne_of_gt (by linarith))
   simpa using euler_maclaurin_one_window (f := fun x => x ^ (-s))
     (f' := fun x => -s * x ^ (-s - 1)) 1 N hN hderiv hf'int
+
+/-- The order-1 saw remainder integrand `sawBernoulli 1 · (−s·x^{−s−1})` is integrable on
+    `(1, ∞)` when `s > 1`: dominate by `(s/2)·x^{−s−1}`, integrable there since the exponent
+    `−s−1 < −1`.  This is the convergence input for the `N → ∞` limit (Part D'). -/
+theorem em_zeta_remainder_integrableOn (s : ℝ) (hs : 1 < s) :
+    IntegrableOn (fun x : ℝ => sawBernoulli 1 x * (-s * x ^ (-s - 1))) (Ioi 1) := by
+  have hbase : IntegrableOn (fun x : ℝ => (s * (1 / 2)) * x ^ (-s - 1)) (Ioi 1) :=
+    (integrableOn_Ioi_rpow_of_lt (a := -s - 1) (c := (1 : ℝ)) (by linarith) (by norm_num)).const_mul _
+  have hrpowmeas : Measurable (fun x : ℝ => x ^ (-s - 1)) := by measurability
+  refine Integrable.mono' hbase ?_ ?_
+  · exact (sawBernoulli_measurable 1).aestronglyMeasurable.mul
+      ((measurable_const.mul hrpowmeas).aestronglyMeasurable)
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
+    have hxpos : (0 : ℝ) < x := by have : (1 : ℝ) < x := hx; linarith
+    have hrpownn : (0 : ℝ) ≤ x ^ (-s - 1) := Real.rpow_nonneg hxpos.le _
+    have hsaw := abs_sawBernoulli_one_le x
+    have heq : ‖sawBernoulli 1 x * (-s * x ^ (-s - 1))‖
+        = |sawBernoulli 1 x| * (s * x ^ (-s - 1)) := by
+      rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_neg (by linarith : (-s : ℝ) < 0),
+        abs_of_nonneg hrpownn, neg_neg]
+    rw [heq]
+    calc |sawBernoulli 1 x| * (s * x ^ (-s - 1))
+        ≤ (1 / 2) * (s * x ^ (-s - 1)) := by gcongr
+      _ = (s * (1 / 2)) * x ^ (-s - 1) := by ring
 
 end ZetaReflection

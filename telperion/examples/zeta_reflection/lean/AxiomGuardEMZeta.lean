@@ -9,6 +9,8 @@
 
       Part A (periodized "saw" Bernoulli):
         * sawBernoulli_zero
+        * sawBernoulli_measurable
+        * abs_sawBernoulli_one_le
         * sawBernoulli_eq_on_Ico
         * sawBernoulli_one_eq_on_Ico
       Part B (one-step Euler-Maclaurin over a unit cell):
@@ -18,15 +20,19 @@
         * euler_maclaurin_one_window     -- general integer window [M, N]
       Part D (zeta base case, real exponent):
         * em_zeta_partial_real           -- EM representation of the partial zeta sum
+        * em_zeta_remainder_integrableOn -- saw remainder integrable on (1,∞) for s>1 (D' input)
 
     conjecture1_proved = False (NOT a proof of RH; a classical analysis lemma).
 -/
 import EMZeta
 
 #print axioms ZetaReflection.sawBernoulli_zero
+#print axioms ZetaReflection.sawBernoulli_measurable
+#print axioms ZetaReflection.abs_sawBernoulli_one_le
 #print axioms ZetaReflection.sawBernoulli_eq_on_Ico
 #print axioms ZetaReflection.sawBernoulli_one_eq_on_Ico
 #print axioms ZetaReflection.em_unit_step
 #print axioms ZetaReflection.euler_maclaurin_one
 #print axioms ZetaReflection.euler_maclaurin_one_window
 #print axioms ZetaReflection.em_zeta_partial_real
+#print axioms ZetaReflection.em_zeta_remainder_integrableOn
