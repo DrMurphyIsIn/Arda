@@ -96,6 +96,10 @@ import RvMArchElemBound
 import RvMArchElemCoeff
 import RvMArchGrowthBounds
 import RvMArchGrowth
+import RvMArchSharperS1
+import RvMArchSharperS2a
+import RvMArchSharperS2b
+import RvMArchSharper
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -626,3 +630,47 @@ import RvMArchGrowth
 #print axioms RvMWeierstrass.tsum_archRe_lower
 #print axioms RvMWeierstrass.tsum_archRe_upper
 #print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_re_growth
+
+-- Arc B, PR S1 (sharper archimedean constant): the exact first-difference identity + AH = 1 − log 2.
+-- archRe_diff_eq: archRe(n+1) j − archRe n j = AHterm j + Dterm(n+1) j (per-term difference).
+-- arch_succ_sub_eq: arch_{n+1} − arch_n = −(γ+log π)/2 + AH + Dseries(n+1) (EXACT difference id,
+--   telescoping the tsums; AH = Σ'_j (1/(2j+2) − 1/(2j+3)), Dseries m = Σ'_j (1 − r_j^m)/(2j+3)).
+-- AH_eq: AH = 1 − log 2 (harmonic partial sums Σ_{j<J} AHterm j = H_J − H_{2J+1} + 1, then
+--   Real.tendsto_harmonic_sub_log; the γ's cancel). Γ-function calculus only. conjecture1_proved=False.
+#print axioms RvMWeierstrass.archRe_diff_eq
+#print axioms RvMWeierstrass.arch_succ_sub_eq
+#print axioms RvMWeierstrass.AH_eq
+
+-- Arc B, PR S2a: singularity-free geometric identity + the odd-harmonic asymptotic.
+-- one_sub_pow_div_eq_geom: (1 − (1−t)^m)/t = Σ_{i<m}(1−t)^i for t≠0 (via geom_sum_mul; NO
+--   removable singularity -- the design's cleanest route to H_m = Σ_{i<m} 1/(i+1)).
+-- oddSum_sub_half_log_tendsto: Σ_{j<J} 1/(2j+3) − (1/2)log J → γ/2 + log 2 − 1 (the oddH constant),
+--   via Σ_{j<J} 1/(2j+3) = H_{2J+1} − (1/2)H_J − 1 + Real.tendsto_harmonic_sub_log.
+--   Elementary real analysis only. conjecture1_proved=False.
+#print axioms RvMWeierstrass.one_sub_pow_div_eq_geom
+#print axioms RvMWeierstrass.oddSum_sub_half_log_tendsto
+
+-- Arc B, PR S2b: the Fubini reformulation of the D-series (scaffolding for the crux limit).
+-- Dterm_eq_geom: Dterm m j = Σ_{i<m} ε_j²(1−ε_j)^i (per-term geometric expansion, ε_j = 1/(2j+3)).
+-- Dseries_eq_sum_aCoeff: Dseries m = Σ_{i<m} aCoeff i (Summable.tsum_finsetSum; reduces the 2-D
+--   crux limit to a 1-D sum, aCoeff i = Σ'_j ε_j²(1−ε_j)^i, numerically aCoeff i · 2i → 1).
+--   Elementary real analysis only. conjecture1_proved=False.
+#print axioms RvMWeierstrass.Dterm_eq_geom
+#print axioms RvMWeierstrass.Dseries_eq_sum_aCoeff
+
+-- Arc B, PR S3 (sharper archimedean constant HEADLINE, conditional on the S2b crux limit).
+-- cesaro_of_diff_tendsto_zero: Δu_n → 0 ⟹ u_n/n → 0 (self-contained Cesàro).
+-- dtrend_sub_half_log_tendsto: trend(n+1) − trend n − (1/2)log(n+1) → (γ − log 2π)/2
+--   (from n·log(1+1/n) → 1 via (1+1/n)^n → e).
+-- archDiff_sub_dtrend_tendsto_zero: Δa_n → 0, a_n = arch_n − trend_n (S1a + AH_eq + DseriesAsymptotic
+--   + trend asymptotic; the four limit constants cancel to 0 EXACTLY).
+-- taylorCoeff_Gammaℝ_re_asymptotic_of_DseriesAsymptotic (HEADLINE): assuming the S2b crux limit
+--   DseriesAsymptotic (Dseries m − (1/2)log m → γ − 1 + (log 2)/2), the linear-term constant is
+--   exactly (γ − 1 − log 2π)/2:  (arch_n − (n/2)(log n + γ − 1 − log 2π))/n → 0. This SHARPENS the
+--   merged taylorCoeff_Gammaℝ_re_growth (|·−(n/2)log n| ≤ 8n). A Γ-function fact; nothing about RH.
+--   conjecture1_proved=False. (DseriesAsymptotic is the sole remaining analytic obligation -- a
+--   Riemann-sum comparison aCoeff i ~ 1/(2(i+1)); it is a Prop hypothesis, NOT an axiom or sorry.)
+#print axioms RvMWeierstrass.cesaro_of_diff_tendsto_zero
+#print axioms RvMWeierstrass.dtrend_sub_half_log_tendsto
+#print axioms RvMWeierstrass.archDiff_sub_dtrend_tendsto_zero
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_re_asymptotic_of_DseriesAsymptotic
