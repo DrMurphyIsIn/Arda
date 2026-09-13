@@ -785,3 +785,6 @@ name = "RvMNTLadderH4000"
 
 [[lean_lib]]
 name = "RvMArchSharperS1"
+
+[[lean_lib]]
+name = "RvMArchSharperS2a"
