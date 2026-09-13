@@ -86,6 +86,7 @@ import RvMNTEffective
 import RvMNTCount
 import RvMRoutePFalsify
 import BraggFloor
+import RvMRoutePInertia
 import RvMNTLadder
 import AllZeros_h4000
 import StripClear
@@ -354,6 +355,32 @@ import RvMArchGrowth
 --   hcomp -- the CONDITIONAL, RH-hard taylorCoeff_companion_bragg_of_exhaustion_limits seam, carried as
 --   an UNDISCHARGED hypothesis (never crossed). Never expected to fire. conjecture1_proved=False.
 #print axioms BraggFloor.bragg_below_floor_refutes_rh
+
+-- Route P, Brick D4 (diffraction/inertia bridge): the finite Weil-Gram form from the two diffraction
+-- channels (on-line perfect-square amplitude s>=0; Bragg-vs-floor clearance q), with its inertia read
+-- by the ported RHLinalg (PosIndex/HermitianPosPart/Sylvester/Inertia; source-ported verbatim from
+-- the v4.32 hermitian_moment island, 0 drift). weilGram s q = diagonal ![s,q].
+-- weilGram_hermForm: hermForm = s*x0^2 + q*x1^2 (the diffraction quadratic form).
+-- weilGram_posDef_of_pos / weilGram_posIndex_eq_two: both channels >0 => positive definite, posIndex=2
+--   (the (2,0), RH-consistent reading -- no negative direction).
+-- weilGram_neg_dir_of_floor_below / _not_posSemidef_of_floor_below / _neg_posIndex_ge_one: a certified
+--   SUB-FLOOR Bragg datum (q<0) forces a negative direction; posIndex(-weilGram)>=1 -- the Bombieri
+--   (1,1)-signature obstruction (Sylvester subspace bound on span{e1}).
+-- weilGram_onLine_channel_eq_liPairedSummand: the s-channel IS the on-line perfect-square paired Li
+--   summand (#466), unconditional.
+-- weilGram_floor_below_refutes_rh: a sub-floor Bragg channel refutes RH -- but ONLY through hcomp, the
+--   CONDITIONAL, RH-hard exhaustion/extraction seam carried as an UNDISCHARGED hypothesis (never
+--   crossed). Category-(b)/structural: KERNEL facts about a FINITE matrix built from certified D3 data;
+--   proves NOTHING new about RH; the uniform forall-n and the exhaustion limits are untouched.
+--   conjecture1_proved=False.
+#print axioms RvMWeierstrass.weilGram_hermForm
+#print axioms RvMWeierstrass.weilGram_posDef_of_pos
+#print axioms RvMWeierstrass.weilGram_posIndex_eq_two
+#print axioms RvMWeierstrass.weilGram_neg_dir_of_floor_below
+#print axioms RvMWeierstrass.weilGram_not_posSemidef_of_floor_below
+#print axioms RvMWeierstrass.weilGram_neg_posIndex_ge_one
+#print axioms RvMWeierstrass.weilGram_onLine_channel_eq_liPairedSummand
+#print axioms RvMWeierstrass.weilGram_floor_below_refutes_rh
 
 -- Route P, Brick D2b-1: the liWeight <-> liPairedSummand reconciliation.
 -- liPairedSummand_eq_liWeight_paired: liPairedSummand n ρ = liWeight (n+1) ρ + liWeight (n+1) (pairedZero ρ).
