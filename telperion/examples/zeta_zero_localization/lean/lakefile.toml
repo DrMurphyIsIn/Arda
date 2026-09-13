@@ -23,9 +23,6 @@ name = "CosEnclosure"
 name = "BraggH100"
 
 [[lean_lib]]
-name = "AxiomGuardBragg"
-
-[[lean_lib]]
 name = "XiLineZeros"
 
 [[lean_lib]]
