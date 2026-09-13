@@ -56,3 +56,11 @@ roots = ["LogZetaSeries"]
 [[lean_lib]]
 name = "SignChain"
 roots = ["SignChain"]
+
+[[lean_lib]]
+name = "EMZeta"
+roots = ["EMZeta"]
+
+[[lean_lib]]
+name = "EMZetaWip"
+roots = ["EMZetaWip"]
