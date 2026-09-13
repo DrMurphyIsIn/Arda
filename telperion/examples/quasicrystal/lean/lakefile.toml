@@ -1,0 +1,25 @@
+name = "Quasicrystal"
+defaultTargets = ["LeeYangCore"]
+
+# PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
+# stable-polynomial classification frontier.  conjecture1_proved = False --
+# this is NOT a proof of RH; every kernel claim is finite/unconditional.
+#
+# Same Mathlib pin (v4.32.0) as the sibling reflection + zeta_zero_localization
+# islands, so the CoW-cloned .lake shares the on-disk Mathlib build cache.
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+# In-corpus RvM / N(T) counting machinery lives in the zeta_zero_localization
+# island; required by relative path (same Mathlib rev, cache shared) for the
+# increment-(iv) boundary lemmas.  Mirrors the reflection island's require.
+[[require]]
+name = "LambdaLineReal"
+path = "../../zeta_zero_localization/lean"
+
+[[lean_lib]]
+name = "LeeYangCore"
+roots = ["LeeYangCore"]
