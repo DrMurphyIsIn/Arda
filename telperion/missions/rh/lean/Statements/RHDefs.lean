@@ -49,3 +49,32 @@ noncomputable def dlvpRateK : ℝ :=
 noncomputable def dlvpRateC : ℝ := 1 / (112 * 16 * dlvpRateK)
 
 end ZeroFreeBridge
+
+namespace DiffractionCore
+open Real Complex
+
+-- ===== RvMDiffractionCore.lean:916-917,921-922 (v4.34 island) =====
+noncomputable def argChangeVert (f : ℂ → ℂ) (σ T0 T1 : ℝ) : ℝ :=
+  (∫ y in T0..T1, logDeriv f ((σ : ℂ) + y * I)).re
+
+noncomputable def argChangeHoriz (f : ℂ → ℂ) (T x0 x1 : ℝ) : ℝ :=
+  (∫ x in x0..x1, logDeriv f ((x : ℂ) + T * I)).im
+
+-- ===== RvMDiffractionCore.lean:1001-1002 (v4.34 island) =====
+noncomputable def riemannS (T : ℝ) : ℝ :=
+  (argChangeVert riemannZeta 2 0 T + argChangeHoriz riemannZeta T 2 (1/2)) / π
+
+-- ===== RvMDiffractionCore.lean:1691-1692 (v4.34 island) =====
+noncomputable def zetaPoleCompanion : ℂ → ℂ :=
+  Function.update (fun z : ℂ => (z - 1) * riemannZeta z) 1 1
+
+end DiffractionCore
+
+namespace Backlund
+open Complex
+
+-- ===== RvMBacklundAux.lean:24-25 (v4.34 island) =====
+noncomputable def backlundAux (T : ℝ) (z : ℂ) : ℂ :=
+  (riemannZeta (z + (T : ℂ) * I) + riemannZeta (z - (T : ℂ) * I)) / 2
+
+end Backlund

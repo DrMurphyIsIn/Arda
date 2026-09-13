@@ -1,0 +1,19 @@
+created = "2026-09-13"
+depends_on = []
+kind = "lemma"
+name = "RH.companion_bragg_reduction"
+statement_module = "Statements.RH_companion_bragg_reduction"
+status = "proved"
+title = "Route P D2b-3 CONDITIONAL reduction: the companion coefficient isolates as (boundaryLim - braggLim)/(2 pi i) - 1 - arch, GIVEN the three exhaustion/archimedean limit primitives (the named unbuilt Stratum-3 frontier, carried as hypotheses)"
+updated = "2026-09-13"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/RvMCompanionBraggLimit.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "controller-session-2026-09-13 (verbatim-extract precedent)"
+date = "2026-09-13"
+text = "A genuine CONDITIONAL: given three limit primitives carried as hypotheses — the finite explicit-formula identity along an abstract exhaustion, the Stratum-2 capture of 2*pi*i times the xi Taylor coefficient by the zero sums, and convergence of the boundary and Bragg pieces — the n-th Taylor coefficient of the pole-free companion (s-1)zeta(s) equals (boundaryLim - braggLim)/(2 pi i) - 1 - taylorCoeff GammaR n. The three limits are the named unbuilt Stratum-3 frontier; this theorem proves only the limit-passage isolating the companion, not the limits. [Verbatim extract of the proved #480 theorem; session-audited per the verbatim-extract precedent.]"

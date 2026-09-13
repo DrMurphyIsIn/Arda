@@ -95,7 +95,29 @@ namespace ZeroFreeBridge
     "",
     ex("DlvpZetaRateEffective.lean", 28, 28),
     """
-end ZeroFreeBridge""",
+end ZeroFreeBridge
+
+namespace DiffractionCore
+open Real Complex
+""",
+    "-- ===== RvMDiffractionCore.lean:916-917,921-922 (v4.34 island) =====",
+    ex("RvMDiffractionCore.lean", 916, 917),
+    "",
+    ex("RvMDiffractionCore.lean", 921, 922),
+    "\n-- ===== RvMDiffractionCore.lean:1001-1002 (v4.34 island) =====",
+    ex("RvMDiffractionCore.lean", 1001, 1002),
+    "\n-- ===== RvMDiffractionCore.lean:1691-1692 (v4.34 island) =====",
+    ex("RvMDiffractionCore.lean", 1691, 1692),
+    """
+end DiffractionCore
+
+namespace Backlund
+open Complex
+""",
+    "-- ===== RvMBacklundAux.lean:24-25 (v4.34 island) =====",
+    ex("RvMBacklundAux.lean", 24, 25),
+    """
+end Backlund""",
 ]
 
 
