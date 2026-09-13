@@ -278,6 +278,54 @@ def cmd_merge_shards(args) -> int:
     return 0
 
 
+# ---------------------------------------------------------------- migrate
+
+def parse_tag(tag: str) -> tuple[int, str, str]:
+    """Recover (den, lo, hi) from a band tag `1d{den}_{den-1}d{den}_{lo}_{hi}`.
+
+    lo/hi may be integers or dyadics rendered `NdD` (see campaign.band_tag);
+    returned as the strings campaign uses so a re-render round-trips."""
+    parts = tag.split("_")
+    # parts: [1d{den}, {den-1}d{den}, lo, hi]  (lo/hi never contain '_')
+    den = int(parts[0].split("d")[1])
+    lo, hi = parts[2], parts[3]
+    return den, lo, hi
+
+
+def cmd_migrate_to_journal(args) -> int:
+    """Dump an existing legacy campaign_state.json's bands into ONE synthetic
+    journal, so the live climb can switch to journal mode without losing history.
+
+    Idempotent: re-running appends nothing new (read_journal folds by tag).  The
+    synthetic records carry the legacy fields verbatim plus tag/den/lo/hi and a
+    `ts` derived from position (monotone) so later real emits always supersede."""
+    src = Path(args.state) if args.state else C.STATE
+    if not src.exists():
+        print(f"migrate: no state file at {src}", file=sys.stderr)
+        return 1
+    st = json.loads(src.read_text())
+    bands = st.get("bands", {})
+    state_dir = Path(args.state_dir) if args.state_dir else STATE_DIR
+    jpath = (journal_path(args.t_from, args.t_to, state_dir)
+             if args.t_from is not None and args.t_to is not None
+             else state_dir / "shard_migrated.jsonl")
+
+    already = read_journal(jpath)
+    n_written = 0
+    for i, (tag, rec) in enumerate(sorted(bands.items())):
+        if tag in already:
+            continue
+        den, lo, hi = parse_tag(tag)
+        out = {"tag": tag, "den": den, "lo": lo, "hi": hi,
+               "ts": float(i)}  # position-derived; < any real emit's wall-clock ts
+        out.update({k: v for k, v in rec.items() if k != "ts"})
+        append_journal(jpath, out)
+        n_written += 1
+    print(f"migrate: {len(bands)} legacy band(s) -> {jpath}: "
+          f"{n_written} written, {len(bands) - n_written} already present")
+    return 0
+
+
 # ---------------------------------------------------------------- main
 
 def main() -> int:
@@ -301,9 +349,19 @@ def main() -> int:
                    help="merge INTO this legacy state file (default: campaign_state.json)")
     p.add_argument("--no-stretch-write", action="store_true")
 
+    p = sub.add_parser("migrate-to-journal",
+                       help="dump legacy campaign_state.json bands into a journal")
+    p.add_argument("--state", default=None,
+                   help="legacy state file (default: campaign_state.json)")
+    p.add_argument("--state-dir", default=None, help="journal dir (default: ./state)")
+    p.add_argument("--from", dest="t_from", type=int, default=None,
+                   help="name the journal shard_<from>_<to> (default: shard_migrated)")
+    p.add_argument("--to", dest="t_to", type=int, default=None)
+
     args = ap.parse_args()
     return {"shard-emit": cmd_shard_emit,
-            "merge-shards": cmd_merge_shards}[args.cmd](args)
+            "merge-shards": cmd_merge_shards,
+            "migrate-to-journal": cmd_migrate_to_journal}[args.cmd](args)
 
 
 if __name__ == "__main__":

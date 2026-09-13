@@ -282,3 +282,70 @@ def test_aligned_shards_have_disjoint_band_tags():
     b1 = {C.band_tag(*b) for b in C.plan_bands(25000, 26000)}
     b2 = {C.band_tag(*b) for b in C.plan_bands(26000, 27000)}
     assert b1 and b2 and not (b1 & b2)
+
+
+# --- migrate-to-journal shim ----------------------------------------------------
+
+def test_parse_tag_roundtrips_int_and_dyadic():
+    from fractions import Fraction
+    tag = C.band_tag(4_000_000, 25000, 25029)
+    assert S.parse_tag(tag) == (4_000_000, "25000", "25029")
+    dtag = C.band_tag(4_000_000, Fraction(40715, 4), Fraction(25000))
+    den, lo, hi = S.parse_tag(dtag)
+    assert den == 4_000_000
+    # re-render round-trips to the same tag
+    assert C.band_tag(den, Fraction(lo.replace("d", "/")),
+                      Fraction(hi.replace("d", "/"))) == dtag
+
+
+def test_migrate_to_journal_dumps_bands(tmp_path):
+    # a legacy state file with two bands migrates into one synthetic journal,
+    # folding 1:1 by tag.
+    state = tmp_path / "campaign_state.json"
+    t1 = C.band_tag(4_000_000, 25000, 25029)
+    t2 = C.band_tag(4_000_000, 25029, 25057)
+    state.write_text(json.dumps({"bands": {
+        t1: {"status": "ok", "n": 43, "secs": 2.1, "route": "t5"},
+        t2: {"status": "refused", "error": "close pair"}}}))
+    ns = argparse.Namespace(state=str(state), state_dir=str(tmp_path / "state"),
+                            t_from=None, t_to=None)
+    assert S.cmd_migrate_to_journal(ns) == 0
+    jp = tmp_path / "state" / "shard_migrated.jsonl"
+    folded = S.read_journal(jp)
+    assert set(folded) == {t1, t2}
+    assert folded[t1]["status"] == "ok" and folded[t1]["n"] == 43
+    assert folded[t1]["den"] == 4_000_000 and folded[t1]["lo"] == "25000"
+
+
+def test_migrate_to_journal_idempotent(tmp_path):
+    state = tmp_path / "campaign_state.json"
+    t1 = C.band_tag(4_000_000, 25000, 25029)
+    state.write_text(json.dumps({"bands": {t1: {"status": "ok", "n": 43}}}))
+    ns = argparse.Namespace(state=str(state), state_dir=str(tmp_path / "state"),
+                            t_from=None, t_to=None)
+    S.cmd_migrate_to_journal(ns)
+    jp = tmp_path / "state" / "shard_migrated.jsonl"
+    n_lines_1 = len(jp.read_text().splitlines())
+    S.cmd_migrate_to_journal(ns)  # second run appends nothing
+    assert len(jp.read_text().splitlines()) == n_lines_1
+
+
+def test_migrate_ts_below_real_emit(tmp_path):
+    # migrated records carry a small position-derived ts so a later REAL emit
+    # (wall-clock ts) always supersedes on merge.
+    state = tmp_path / "campaign_state.json"
+    t1 = C.band_tag(4_000_000, 25000, 25029)
+    state.write_text(json.dumps({"bands": {t1: {"status": "ok", "n": 43}}}))
+    ns = argparse.Namespace(state=str(state), state_dir=str(tmp_path / "state"),
+                            t_from=None, t_to=None)
+    S.cmd_migrate_to_journal(ns)
+    jp = tmp_path / "state" / "shard_migrated.jsonl"
+    migrated = S.read_journal(jp)[t1]
+    assert migrated["ts"] < 1e6  # position index, not a wall-clock epoch
+
+
+def test_migrate_no_state_file(tmp_path):
+    ns = argparse.Namespace(state=str(tmp_path / "nope.json"),
+                            state_dir=str(tmp_path / "state"),
+                            t_from=None, t_to=None)
+    assert S.cmd_migrate_to_journal(ns) == 1
