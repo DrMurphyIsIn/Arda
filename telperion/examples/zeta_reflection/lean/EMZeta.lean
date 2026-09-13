@@ -41,7 +41,7 @@ import Mathlib.MeasureTheory.Function.Floor
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
-open MeasureTheory intervalIntegral Set
+open MeasureTheory intervalIntegral Set Filter Topology
 open scoped Real
 
 namespace ZetaReflection
@@ -418,5 +418,70 @@ theorem em_zeta_remainder_integrableOn (s : ℝ) (hs : 1 < s) :
     calc |sawBernoulli 1 x| * (s * x ^ (-s - 1))
         ≤ (1 / 2) * (s * x ^ (-s - 1)) := by gcongr
       _ = (s * (1 / 2)) * x ^ (-s - 1) := by ring
+
+/-- **First-order Euler-Maclaurin representation of the real zeta series** (Part D').
+
+    For real `s > 1`, taking `N → ∞` in `em_zeta_partial_real`:
+        ∑' n, n^{-s} = ∫_1^∞ x^{-s} dx + 1^{-s}/2 + ∫_1^∞ (sawBernoulli 1 x)·(−s·x^{−s−1}) dx.
+    All three limits are legitimate:
+      * the partial sum `∑_{n<N} n^{-s} → ∑' n` since the series is summable (`Real.summable_nat_rpow`);
+      * the two finite integrals converge to their improper integrals over `(1, ∞)`
+        (`intervalIntegral_tendsto_integral_Ioi`, using `em_zeta_remainder_integrableOn` and
+        `integrableOn_Ioi_rpow_of_lt`);
+      * the endpoint term `N^{-s} → 0` (`tendsto_rpow_neg_atTop`).
+    Note `∑' n, n^{-s}` here is the real-`rpow` Dirichlet series; connecting it to `riemannZeta`
+    (a complex-`cpow` object) is a separate small bridge, left to the complex extension (E).
+
+    This is the clean unconditional real-`s > 1` statement.  Euler-Maclaurin is absent from
+    Mathlib; this is upstreamable. -/
+theorem em_zeta_real (s : ℝ) (hs : 1 < s) :
+    (∑' n : ℕ, (n : ℝ) ^ (-s))
+      = (∫ x in Ioi (1 : ℝ), x ^ (-s)) + (1 : ℝ) ^ (-s) / 2
+        + ∫ x in Ioi (1 : ℝ), sawBernoulli 1 x * (-s * x ^ (-s - 1)) := by
+  have hI : IntegrableOn (fun x : ℝ => x ^ (-s)) (Ioi 1) :=
+    integrableOn_Ioi_rpow_of_lt (a := -s) (c := (1 : ℝ)) (by linarith) (by norm_num)
+  have hR := em_zeta_remainder_integrableOn s hs
+  have hsummable : Summable (fun n : ℕ => (n : ℝ) ^ (-s)) := by
+    rw [Real.summable_nat_rpow]; linarith
+  have h0 : ((0 : ℕ) : ℝ) ^ (-s) = 0 := by rw [Nat.cast_zero, Real.zero_rpow (by linarith)]
+  -- LHS: partial sum over `Ico 1 N` → the tsum (the `n = 0` term is `0^{-s} = 0`).
+  have hLHS : Tendsto (fun N : ℕ => ∑ n ∈ Finset.Ico 1 N, (n : ℝ) ^ (-s)) atTop
+      (𝓝 (∑' n : ℕ, (n : ℝ) ^ (-s))) := by
+    have hrange : (fun N : ℕ => ∑ n ∈ Finset.Ico 1 N, (n : ℝ) ^ (-s))
+        = (fun N : ℕ => ∑ n ∈ Finset.range N, (n : ℝ) ^ (-s)) := by
+      funext N
+      rcases Nat.eq_zero_or_pos N with hN | hN
+      · subst hN; simp
+      · rw [Finset.range_eq_Ico, ← Finset.sum_Ico_consecutive (fun n => (n : ℝ) ^ (-s))
+            (Nat.zero_le 1) (by lia : 1 ≤ N), Nat.Ico_zero_eq_range, Finset.sum_range_one,
+            h0, zero_add]
+    rw [hrange]; exact hsummable.hasSum.tendsto_sum_nat
+  -- RHS component limits: the two finite integrals → improper, and the endpoint term → 0.
+  have hA : Tendsto (fun N : ℕ => ∫ x in (1 : ℝ)..(N : ℝ), x ^ (-s)) atTop
+      (𝓝 (∫ x in Ioi (1 : ℝ), x ^ (-s))) :=
+    intervalIntegral_tendsto_integral_Ioi 1 hI tendsto_natCast_atTop_atTop
+  have hEnd : Tendsto (fun N : ℕ => -((((N : ℝ)) ^ (-s) - (1 : ℝ) ^ (-s)) / 2)) atTop
+      (𝓝 ((1 : ℝ) ^ (-s) / 2)) := by
+    have hz : Tendsto (fun N : ℕ => ((N : ℝ)) ^ (-s)) atTop (𝓝 0) :=
+      (tendsto_rpow_neg_atTop (y := s) (by linarith)).comp tendsto_natCast_atTop_atTop
+    have h2 := ((hz.sub_const ((1 : ℝ) ^ (-s))).div_const 2).neg
+    convert h2 using 2; ring
+  have hRem : Tendsto
+      (fun N : ℕ => ∫ x in (1 : ℝ)..(N : ℝ), sawBernoulli 1 x * (-s * x ^ (-s - 1))) atTop
+      (𝓝 (∫ x in Ioi (1 : ℝ), sawBernoulli 1 x * (-s * x ^ (-s - 1)))) :=
+    intervalIntegral_tendsto_integral_Ioi 1 hR tendsto_natCast_atTop_atTop
+  -- The finite identity from `em_zeta_partial_real`, eventually in `N`.
+  have hEq : ∀ᶠ N : ℕ in atTop, (∑ n ∈ Finset.Ico 1 N, (n : ℝ) ^ (-s))
+      = (∫ x in (1 : ℝ)..(N : ℝ), x ^ (-s)) + -((((N : ℝ)) ^ (-s) - (1 : ℝ) ^ (-s)) / 2)
+        + ∫ x in (1 : ℝ)..(N : ℝ), sawBernoulli 1 x * (-s * x ^ (-s - 1)) := by
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    have hp := em_zeta_partial_real s (N := N) hN
+    rw [hp]; ring
+  have hRHS := (hA.add hEnd).add hRem
+  have hLHS' : Tendsto (fun N : ℕ =>
+      (∫ x in (1 : ℝ)..(N : ℝ), x ^ (-s)) + -((((N : ℝ)) ^ (-s) - (1 : ℝ) ^ (-s)) / 2)
+        + ∫ x in (1 : ℝ)..(N : ℝ), sawBernoulli 1 x * (-s * x ^ (-s - 1))) atTop
+      (𝓝 (∑' n : ℕ, (n : ℝ) ^ (-s))) := hLHS.congr' hEq
+  exact tendsto_nhds_unique hLHS' hRHS
 
 end ZetaReflection

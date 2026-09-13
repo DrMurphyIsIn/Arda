@@ -21,6 +21,8 @@
       Part D (zeta base case, real exponent):
         * em_zeta_partial_real           -- EM representation of the partial zeta sum
         * em_zeta_remainder_integrableOn -- saw remainder integrable on (1,∞) for s>1 (D' input)
+      Part D' (N → ∞ limit, real s > 1):
+        * em_zeta_real                   -- EM representation of ∑' n, n^{-s}
 
     conjecture1_proved = False (NOT a proof of RH; a classical analysis lemma).
 -/
@@ -36,3 +38,4 @@ import EMZeta
 #print axioms ZetaReflection.euler_maclaurin_one_window
 #print axioms ZetaReflection.em_zeta_partial_real
 #print axioms ZetaReflection.em_zeta_remainder_integrableOn
+#print axioms ZetaReflection.em_zeta_real
