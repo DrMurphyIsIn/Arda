@@ -10,6 +10,7 @@
     conjecture1_proved = False (NOT a proof of RH).
 -/
 import LeeYangCore
+import KSConstruction
 
 open Quasicrystal
 
@@ -19,3 +20,9 @@ open Quasicrystal
 #print axioms Quasicrystal.expPoly_root_iff_eval_zero
 #print axioms Quasicrystal.expPoly_root_on_circle
 #print axioms Quasicrystal.leeYang_root_norm_one
+
+/-! ### increment (ii) -- KSConstruction crystalline structure + Poisson -/
+#print axioms Quasicrystal.preimage_eq_latticeAP
+#print axioms Quasicrystal.mem_zeroSet_iff
+#print axioms Quasicrystal.latticeAP_mem
+#print axioms Quasicrystal.poisson_shifted_lattice

@@ -23,3 +23,7 @@ path = "../../zeta_zero_localization/lean"
 [[lean_lib]]
 name = "LeeYangCore"
 roots = ["LeeYangCore"]
+
+[[lean_lib]]
+name = "KSConstruction"
+roots = ["KSConstruction"]
