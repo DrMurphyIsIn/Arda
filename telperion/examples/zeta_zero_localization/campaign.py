@@ -110,10 +110,19 @@ def plan_bands(t_from: int, t_to: int) -> list[tuple[int, int, int]]:
 
 from fractions import Fraction
 
-_POKE = Fraction(9, 100)  # conservative ball-poke clearance (actual = sqrt(2.25+h^2/4+1/16)-h/2
-                          # ~= 2.31/h: 0.0826 at h=28 (campaign band width), smaller for taller
-                          # bands; 0.09 covers h >= 25.7 -- 8/100 did NOT cover h=28, see the
-                          # [66686,66714] leg-11 refusal)
+def _poke_for(h) -> Fraction:
+    """Ball-poke clearance for a band of height h: sqrt(2.25+h^2/4+1/16)-h/2
+    (~= 2.31/h), rounded UP with margin.  Band heights SHRINK as T climbs
+    (the planner targets n~43 zeros/band against rising density: h=28 at
+    T~8e4, h=25 at T~1.6e5, h~22.6 at T=1e6), so a fixed constant keeps
+    expiring -- 8/100 died at h=28 (leg 11, [66686,66714]), 9/100 died at
+    h=25 (leg 14, [159231,159256]).  Computed from the NOMINAL band height,
+    which is conservative: stretching only widens the box, shrinking the
+    true poke."""
+    import math as _m
+    hf = float(h)
+    poke = _m.sqrt(2.25 + hf * hf / 4 + 0.0625) - hf / 2
+    return Fraction(int(_m.ceil((poke + 1e-9) * 100000) + 1), 100000)
 
 
 _STRETCH_CACHE_FILE = Path(__file__).resolve().parent / "edge_stretch.json"
@@ -149,21 +158,30 @@ def stretch_box(lo, hi):
     if not PLATT_AVAILABLE:
         return lo, hi
 
+    poke = _poke_for(hi - lo)
+
     def _clear(edge, direction):
+        # cache value format: "cand" (legacy, cleared at 9/100) or "cand|poke".
+        # A hit is valid only if it was cleared at >= the clearance we need.
         key = f"{direction}:{edge}"
         hit = _stretch_lookup(key)
         if hit is not None:
-            return Fraction(hit)
-        for k in range(5):
+            if "|" in hit:
+                cand_s, poke_s = hit.split("|")
+                if Fraction(poke_s) >= poke:
+                    return Fraction(cand_s)
+            elif Fraction(9, 100) >= poke:
+                return Fraction(hit)
+        for k in range(8):
             cand = edge - Fraction(k, 4) if direction == "down" else edge + Fraction(k, 4)
             if direction == "down":
                 zs = zeros_in_interval(cand - 1, cand)
-                ok = all(hz < cand - _POKE for _lz, hz in zs)
+                ok = all(hz < cand - poke for _lz, hz in zs)
             else:
                 zs = zeros_in_interval(cand, cand + 1)
-                ok = all(lz > cand + _POKE for lz, _hz in zs)
+                ok = all(lz > cand + poke for lz, _hz in zs)
             if ok:
-                _stretch_store(key, str(cand))
+                _stretch_store(key, f"{cand}|{poke}")
                 return cand
         raise RuntimeError(f"stretch_box: no clear {direction} edge near {edge}")
 
