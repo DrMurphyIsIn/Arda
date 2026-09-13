@@ -20,6 +20,12 @@
       §4  Remainder envelope for Re z ≥ 1/4:
         * re_shift_ge
         * binet_remainder_envelope
+      §5  Packaged enclosure (the interval-evaluator artifact):
+        * logDeriv_gammaR_enclosure
+      §6  Re/Im part enclosures (argChangeVert / θ integrands):
+        * re_logDeriv_gammaR_enclosure
+        * im_logDeriv_gammaR_enclosure
+        * theta_integrand_enclosure
 
     conjecture1_proved = False (a finite computable enclosure, NOT a proof of RH).
 -/
@@ -33,3 +39,7 @@ import StirlingBinet
 #print axioms ZetaReflection.logDeriv_gammaR_stirling_shift
 #print axioms ZetaReflection.re_shift_ge
 #print axioms ZetaReflection.binet_remainder_envelope
+#print axioms ZetaReflection.logDeriv_gammaR_enclosure
+#print axioms ZetaReflection.re_logDeriv_gammaR_enclosure
+#print axioms ZetaReflection.im_logDeriv_gammaR_enclosure
+#print axioms ZetaReflection.theta_integrand_enclosure
