@@ -466,12 +466,29 @@ the Lipschitz bound $|\cos a - \cos b| \le |a - b|$ to absorb bracket width);
 and per-band \emph{partial-sum interval boxes} emitted alongside each band
 certificate and tree-folded across bands---the height-chain trick applied to
 sums, so the certificate mass stays per-band and parallel. The pilot
-instance---a kernel-checked enclosure of $F_{100}(u^*)$ at the rational
-frequency $u^* = 693147/10^6 \approx \log 2$ over the twenty-nine zeros below
-height $100$, complete with the count-anchored argument that the twenty-nine
-witnessed zeros are \emph{all} the zeros---is in progress on the same
-certificate pipeline. When it scales, theorems of the form
-$|F_T(m\log p) - A| \le \varepsilon$ will constitute, to our knowledge, the
+instance is \emph{done}: the kernel-verified theorem
+\texttt{BraggH100.bragg\_amplitude\_h100} (axioms $\{$\texttt{propext},
+\texttt{Classical.choice}, \texttt{Quot.sound}$\}$, no \texttt{sorryAx})
+proves that the twenty-nine certified on-line zeros
+$x_1 < \cdots < x_{29}$ below height $100$ satisfy
+\[
+  F_{100}(u^*) \;=\; \sum_{k=1}^{29} \cos(x_k u^*) \;\in\;
+  [-7.07809487,\, -7.07805467],
+  \qquad u^* = \tfrac{693147}{10^6} \approx \log 2,
+\]
+an enclosure of width $4\times10^{-5}$ produced by the full pipeline:
+Arb-verified sign-change brackets of width $10^{-6}$ per zero, a certified
+cosine evaluator that range-reduces \emph{without} $\pi$ (thirty double-angle
+steps from Mathlib's order-four bracket---the net error
+$\theta^4\cdot\tfrac{5}{96}/2^{2M}$ \emph{decreases} with the reduction depth
+$M$, so no high-order Taylor kernel is needed), Lipschitz absorption of the
+bracket width, and an interval fold over the twenty-nine terms. One
+formulation gap is carried honestly: the theorem sums over the twenty-nine
+\emph{witnessed} zeros (exactly what the certified sign chain exhibits);
+promoting it to the abstract zero set via the exactly-twenty-nine count of
+\texttt{AllZeros\_h100} is a pigeonhole step in progress. As the pipeline
+scales along the ladder, theorems of the form
+$|F_T(m\log p) - A| \le \varepsilon$ constitute, to our knowledge, the
 first machine-checked diffraction pattern of the zeta zeros: the finite,
 unconditional part of Dyson's picture, with the Guinand--Weil identity of the
 previous subsection as the bridge from the certified peaks to the primes.
