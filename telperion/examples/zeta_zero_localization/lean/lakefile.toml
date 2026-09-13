@@ -17,6 +17,15 @@ path = "../../zero_free_bridge/lean"
 name = "LambdaLineReal"
 
 [[lean_lib]]
+name = "CosEnclosure"
+
+[[lean_lib]]
+name = "BraggH100"
+
+[[lean_lib]]
+name = "AxiomGuardBragg"
+
+[[lean_lib]]
 name = "XiLineZeros"
 
 [[lean_lib]]
