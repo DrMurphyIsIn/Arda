@@ -761,3 +761,9 @@ name = "RvMArchElemBound"
 
 [[lean_lib]]
 name = "RvMArchElemCoeff"
+
+[[lean_lib]]
+name = "RvMArchGrowthBounds"
+
+[[lean_lib]]
+name = "RvMArchGrowth"
