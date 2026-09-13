@@ -12,4 +12,5 @@ import Statements.BG_near_star_tail
 import Statements.BG_near_star_tie
 import Statements.BG_phi_le_one
 import Statements.BG_r2_double_near_star
+import Statements.BG_r2_multihub_ceiling
 import Statements.BG_r2_multihub_maximality
