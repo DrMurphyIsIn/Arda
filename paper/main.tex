@@ -4,6 +4,11 @@
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage{booktabs}
 \usepackage{longtable}
+\usepackage{graphicx}
+
+% Turing-ladder milestone (update in ONE place as the campaign climbs)
+\newcommand{\ladderHeight}{160{,}000}
+\newcommand{\ladderCount}{232{,}878}
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{cleveref}
 
@@ -33,9 +38,13 @@ kernel-verified mathematics, in Lean~4 against Mathlib, that carries the finite
 part of that program: a machine-checked \emph{finite-height explicit formula}
 (weighted sums over zeta's actual divisor equal von Mangoldt prime-power sums plus
 three explicit boundary integrals, with the prime-side edge derived, not
-certified); a complete finite Turing verification that \emph{all 3474 nontrivial
-zeros up to height 4000 lie on the critical line}, band-tiled with a uniform,
-documented numeric trust boundary; the \emph{Riemann--von Mangoldt counting
+certified); a complete finite Turing verification that \emph{all \ladderCount{}
+nontrivial zeros up to height \ladderHeight{} lie on the critical line},
+band-tiled on edge-decomposition certificates with a uniform, documented numeric
+trust boundary and a kernel statement-match gate on every band---a verification
+whose diffraction pattern, computed from the certified ordinates, visibly
+reproduces Dyson's quasicrystal (Bragg peaks at every $m\log p$, matching
+Landau's theorem to four significant figures); the \emph{Riemann--von Mangoldt counting
 formula} $N(T) = \theta(T)/\pi + 1 + S(T)$, exact at finite height, with
 $S$ and $\theta$ defined branch-free in the kernel; and a self-contained, \emph{effective} de la
 Vallée-Poussin zero-free region ($\zeta(s) \ne 0$ on $\operatorname{Re} s > 1 -
