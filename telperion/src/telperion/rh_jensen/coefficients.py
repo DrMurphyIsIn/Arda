@@ -39,11 +39,13 @@ This coefficient-membership fact (alpha(m) in [lo, hi]) is the plan's ONE
 documented non-kernel input: it is certified by Arb ball arithmetic (python-flint),
 not by the Lean kernel. Everything downstream of the rational box IS kernel-checked.
 
-Dependency: python-flint (Arb/FLINT). See pyproject.toml.
+Dependency: python-flint (Arb/FLINT). See pyproject.toml. The ``flint`` import is
+performed lazily inside ``_xi_series_coeffs`` (its only consumer) so that merely
+importing ``telperion`` -- which pulls this module in transitively via the
+Bragg-floor emitter -- does NOT hard-require python-flint. flint is needed only when
+actually computing coefficient enclosures.
 """
 from fractions import Fraction
-
-from flint import acb, acb_series, ctx
 
 
 def _arb_ball_to_fractions(ball) -> tuple[Fraction, Fraction]:
@@ -79,6 +81,9 @@ def _xi_series_coeffs(max_index: int, prec_bits: int) -> list:
     Coefficient index k corresponds to the t^k term. ``max_index`` is the highest
     index that must be available (so we request series length max_index + 1).
     """
+    # Lazy import: keeps `import telperion` flint-free (see module docstring).
+    from flint import acb, acb_series, ctx
+
     length = max_index + 1
     old_prec = ctx.prec
     try:
