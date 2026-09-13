@@ -20,6 +20,9 @@ name = "LambdaLineReal"
 name = "CosEnclosure"
 
 [[lean_lib]]
+name = "BraggSupport"
+
+[[lean_lib]]
 name = "BraggH100"
 
 [[lean_lib]]

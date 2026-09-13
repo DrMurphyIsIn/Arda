@@ -27,6 +27,8 @@
 -/
 import CosEnclosure
 import BraggH100
+import BraggSupport
+import RHInBoxCore
 
 /-! ### CosEnclosure -- certified cos machinery -/
 #print axioms CosEnclosure.cos_base
@@ -37,5 +39,11 @@ import BraggH100
 #print axioms CosEnclosure.cos_encl_bracket
 #print axioms CosEnclosure.add_encl
 
-/-! ### BraggH100 -- the headline certified Bragg amplitude -/
+/-! ### Exhaustion bridge (winding count -> Finset identity -> sum over the actual zero set) -/
+#print axioms RHInBoxCore.support_eq_witnesses
+#print axioms RHInBoxCore.sum_over_box_zeros_eq
+#print axioms BraggSupport.sum_cos_over_zero_support_eq
+
+/-! ### BraggH100 -- the headline certified Bragg amplitudes -/
 #print axioms BraggH100.bragg_amplitude_h100
+#print axioms BraggH100.bragg_amplitude_h100_complete

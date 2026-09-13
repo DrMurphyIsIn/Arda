@@ -227,13 +227,40 @@ def _henc_params(z: dict) -> list[str]:
             f"(hencb{i} : gLine {_q(z['b'])} ≤ {_q(bhi_)})"]
 
 
+def emit_cosbox_lemma(z: dict, out: list) -> None:
+    """Emit a standalone reusable per-zero cos-box lemma:
+    `bragg_cosbox_k (t : ℝ) (hta : a_k ≤ t) (htb : t ≤ b_k) : box_lo ≤ cos(t*uStar) ≤ box_hi`.
+    Consumed by BOTH the witnessed theorem (at the IVT root) and the completeness theorem
+    (at each actual zero ordinate, which lies in the bracket)."""
+    i = z["idx"]
+    a, b = z["a"], z["b"]
+    cu = z["c"] * U_STAR
+    w = z["w"]
+    out.append("")
+    out.append(f"/-- cos-box for zero {i} of 29: for ANY `t ∈ [{float(a):.7f}, {float(b):.7f}]`,")
+    out.append(f"    `cos (t·uStar)` lies in the certified box (double-angle chain + Lipschitz). -/")
+    out.append(f"theorem bragg_cosbox_{i} (t : ℝ) (hta : {_q(a)} ≤ t) (htb : t ≤ {_q(b)}) :")
+    out.append(f"    {_q(z['box_lo'])} ≤ Real.cos (t * uStar) ∧ "
+               f"Real.cos (t * uStar) ≤ {_q(z['box_hi'])} := by")
+    hcos = emit_cos_chain(z, out)
+    out.append(f"  have hdist : |t * uStar - {_q(cu)}| ≤ {_q(w)} := by")
+    out.append(f"    have hcu : ({_q(cu)} : ℝ) = {_q(z['c'])} * uStar := by rw [uStar]; norm_num")
+    out.append(f"    rw [hcu, ← sub_mul, abs_mul, abs_of_nonneg (by rw [uStar]; norm_num : (0:ℝ) ≤ uStar)]")
+    out.append(f"    have hrc : |t - {_q(z['c'])}| ≤ {_q(z['b'] - z['a'])} := by")
+    out.append(f"      rw [abs_le]; constructor <;> [linarith [hta, htb]; linarith [hta, htb]]")
+    out.append(f"    calc |t - {_q(z['c'])}| * uStar ≤ {_q(z['b'] - z['a'])} * uStar := by")
+    out.append(f"            apply mul_le_mul_of_nonneg_right hrc (by rw [uStar]; norm_num)")
+    out.append(f"      _ ≤ {_q(w)} := by rw [uStar]; norm_num")
+    out.append(f"  have h := CosEnclosure.cos_encl_bracket (arg := t * uStar) (c := {_q(cu)}) "
+               f"(w := {_q(w)}) (by norm_num) hdist {hcos}.1 {hcos}.2")
+    out.append(f"  exact ⟨by linarith [h.1], by linarith [h.2]⟩")
+
+
 def emit_zero_lemma(z: dict, out: list) -> None:
     """Emit a self-contained per-zero lemma: from its 2 gLine sign hyps, produce a
     root r in (a, b) with Lambda(1/2+ri)=0 and cos(r*uStar) in [box_lo, box_hi]."""
     i = z["idx"]
     a, b = z["a"], z["b"]
-    cu = z["c"] * U_STAR
-    w = z["w"]
     out.append("")
     out.append(f"/-- Zero {i} of 29: root in ({float(a):.7f}, {float(b):.7f}) with certified cos box. -/")
     out.append(f"theorem bragg_zero_{i}")
@@ -277,22 +304,8 @@ def emit_zero_lemma(z: dict, out: list) -> None:
         out.append(f"    · exfalso; rw [h] at hz; rw [hz] at hneg{i}; exact lt_irrefl 0 hneg{i}")
     out.append(f"  have hLam : completedRiemannZeta (1 / 2 + (r : ℂ) * Complex.I) = 0 := by")
     out.append(f"    rw [lambda_eq_gLine, hz]; simp")
-    # cos chain (uses local name r); emit_cos_chain uses r{i} -> adapt: it references r{i}? No, chain uses c*u* literals.
-    hcos = emit_cos_chain(z, out)
-    # Lipschitz absorption
-    out.append(f"  have hdist : |r * uStar - {_q(cu)}| ≤ {_q(w)} := by")
-    out.append(f"    have hcu : ({_q(cu)} : ℝ) = {_q(z['c'])} * uStar := by rw [uStar]; norm_num")
-    out.append(f"    rw [hcu, ← sub_mul, abs_mul, abs_of_nonneg (by rw [uStar]; norm_num : (0:ℝ) ≤ uStar)]")
-    out.append(f"    have hrc : |r - {_q(z['c'])}| ≤ {_q(z['b'] - z['a'])} := by")
-    out.append(f"      rw [abs_le]; constructor <;> [linarith [hrlo, hrhi]; linarith [hrlo, hrhi]]")
-    out.append(f"    calc |r - {_q(z['c'])}| * uStar ≤ {_q(z['b'] - z['a'])} * uStar := by")
-    out.append(f"            apply mul_le_mul_of_nonneg_right hrc (by rw [uStar]; norm_num)")
-    out.append(f"      _ ≤ {_q(w)} := by rw [uStar]; norm_num")
-    out.append(f"  have hbox : {_q(z['box_lo'])} ≤ Real.cos (r * uStar) ∧ "
-               f"Real.cos (r * uStar) ≤ {_q(z['box_hi'])} := by")
-    out.append(f"    have h := CosEnclosure.cos_encl_bracket (arg := r * uStar) (c := {_q(cu)}) "
-               f"(w := {_q(w)}) (by norm_num) hdist {hcos}.1 {hcos}.2")
-    out.append(f"    exact ⟨by linarith [h.1], by linarith [h.2]⟩")
+    # reuse the standalone cos-box lemma at the IVT root r.
+    out.append(f"  have hbox := bragg_cosbox_{i} r (le_of_lt hrlo) (le_of_lt hrhi)")
     out.append(f"  exact ⟨r, ⟨hrlo, hrhi⟩, hLam, hbox⟩")
 
 
@@ -338,6 +351,9 @@ def emit(data: dict) -> str:
     out.append("import Mathlib")
     out.append("import XiLineZeros")
     out.append("import CosEnclosure")
+    out.append("import RHInBox")
+    out.append("import RHInBoxCore")
+    out.append("import BraggSupport")
     out.append("")
     out.append("open Complex Real")
     out.append("open XiLineZeros")
@@ -350,7 +366,13 @@ def emit(data: dict) -> str:
     out.append(f"noncomputable def uStar : ℝ := {_q(U_STAR)}")
     out.append("")
 
-    # ---- per-zero lemmas ----
+    # ---- per-zero cos-box lemmas (reused by witnessed + completeness theorems) ----
+    out.append("/-! ### Per-zero cos boxes (reusable: any point in the bracket) -/")
+    for z in zeros:
+        emit_cosbox_lemma(z, out)
+
+    # ---- per-zero root+box lemmas ----
+    out.append("")
     out.append("/-! ### Per-zero certified roots + cos boxes (one lemma each) -/")
     for z in zeros:
         emit_zero_lemma(z, out)
@@ -404,9 +426,110 @@ def emit(data: dict) -> str:
     out.append("  · exact ⟨" + ", ".join(ord_terms) + "⟩")
     out.append("  · exact ⟨" + ", ".join(f"hLam{z['idx']}" for z in zeros) + "⟩")
     out.append(f"  · exact ⟨by linarith [{acc}.1], by linarith [{acc}.2]⟩")
+
+    # ---- completeness theorem: sum over the ACTUAL zero set ----
+    emit_complete_theorem(data, out)
+
     out.append("")
     out.append("end BraggH100")
     return W(out) + "\n"
+
+
+def emit_complete_theorem(data: dict, out: list) -> None:
+    """Emit bragg_amplitude_h100_complete: the cos-sum over the ACTUAL zero support Finset
+    `s` (all zeta zeros in the T=100 box) lies in [A_lo, A_hi].
+
+    Bridge (honest trust boundary, identical to AllZeros_h100):
+      * `s : Finset ℂ` is the intrinsic support of the box zeros; `T` is the on-line witness
+        Finset built from the 29 IVT roots this file certifies.  The winding certificate
+        (documented Arb input) supplies `hd1`/`hsum`/`hTsub` — the SAME facts
+        `zeta_count_eq_winding_generic` produces — so `RHInBoxCore.support_eq_witnesses`
+        gives `s = T`.
+      * Each witness `ρ_k = 1/2 + r_k·I` has `ρ_k.im = r_k` in bracket `[a_k, b_k]`, so
+        `cos(ρ_k.im · uStar)` is bounded by `bragg_cosbox_k`.
+      * `RHInBoxCore.sum_over_box_zeros_eq` rewrites `∑_{ρ∈s} = ∑_{ρ∈T}`; the T-sum equals
+        the r_k-sum (T is the injective image of the r_k), bounded by the fold.
+    conjecture1_proved = False."""
+    zeros = data["zeros"]
+    N = N_ZEROS
+    out.append("")
+    out.append("/-! ### Completeness: the Bragg amplitude over the ACTUAL zero set -/")
+    out.append("")
+    out.append("/-- **Kernel-certified Bragg amplitude over the ACTUAL zero set at T = 100.**")
+    out.append("    Let `s : Finset ℂ` be the support of the zeta zeros in the box")
+    out.append("    `[1/10⁶, 1-1/10⁶] × [0,100]` with divisor `d`.  Given the winding-count exhaustion")
+    out.append("    data (documented Arb inputs, same trust class as AllZeros_h100): `d ≥ 1` on `s`,")
+    out.append("    `∑_{ρ∈s} d = 29`, and the 29 on-line witnesses (this file's IVT roots, each a")
+    out.append("    box zero) — packaged as `hwitness`.  Then the diffraction sum over EVERY box zero")
+    out.append("    satisfies `∑_{ρ∈s} cos(ρ.im · u*) ∈ [A_lo, A_hi]` — the same interval as the")
+    out.append("    witnessed sum.  Exhaustion (`RHInBoxCore.support_eq_witnesses`) forces `s = T`, so")
+    out.append("    the 29 witnesses ARE all the zeros.  conjecture1_proved = False. -/")
+    out.append("theorem bragg_amplitude_h100_complete")
+    out.append("    (s : Finset ℂ) (d : ℂ → ℤ)")
+    out.append("    (hd1 : ∀ ρ ∈ s, (1 : ℤ) ≤ d ρ)")
+    out.append(f"    (hsum : (∑ ρ ∈ s, d ρ) = ({N} : ℤ))")
+    rvars = " ".join(f"r{z['idx']}" for z in zeros)
+    out.append(f"    (hwitness : ∃ {rvars} : ℝ,")
+    conds = []
+    for z in zeros:
+        i = z["idx"]
+        conds.append(f"({_q(z['a'])} < r{i} ∧ r{i} < {_q(z['b'])}) ∧ "
+                     f"(1 / 2 + (r{i} : ℂ) * Complex.I) ∈ s")
+    # strict ordering across witnesses (for distinctness/card)
+    order = " ∧ ".join([f"r{i} < r{i+1}" for i in range(1, N)])
+    out.append("      (" + order + ") ∧")
+    out.append("      " + " ∧\n      ".join(conds) + ") :")
+    out.append("    (∑ ρ ∈ s, Real.cos (ρ.im * uStar)) ∈ "
+               f"Set.Icc ({_q(data['A_lo'])} : ℝ) ({_q(data['A_hi'])}) := by")
+    # destructure: ordering bundle + per-zero (bracket, mem).  Existential vars need COMMAS.
+    # The conjunction is FLAT (br1 ∧ mem1 ∧ br2 ∧ mem2 ∧ ...); destructure flat, no sub-tuples.
+    rvars_comma = ", ".join(f"r{z['idx']}" for z in zeros)
+    perzero = ", ".join(f"hbr{z['idx']}, hmem{z['idx']}" for z in zeros)
+    out.append(f"  obtain ⟨{rvars_comma}, hord, {perzero}⟩ := hwitness")
+    # unpack the ordering conjunction into hlt{i}: r{i} < r{i+1}
+    if N == 2:
+        out.append(f"  have hlt1 := hord")
+    elif N >= 3:
+        lt_names = ", ".join(f"hlt{i}" for i in range(1, N))
+        out.append(f"  obtain ⟨{lt_names}⟩ := hord")
+    # bracket bounds per zero
+    for z in zeros:
+        i = z["idx"]
+        out.append(f"  obtain ⟨hra{i}, hrb{i}⟩ := hbr{i}")
+    # witness ordinate list; ALL the Finset/exhaustion cost is in BraggSupport (generic, once).
+    rlist = "[" + ", ".join(f"r{z['idx']}" for z in zeros) + "]"
+    out.append(f"  -- witness ordinate list")
+    out.append(f"  have hchain : ({rlist} : List ℝ).IsChain (· < ·) := by")
+    out.append(f"    simp only [List.isChain_cons_cons]")
+    chain_terms = ", ".join(f"hlt{i}" for i in range(1, N)) + ", List.IsChain.singleton _"
+    out.append(f"    exact ⟨{chain_terms}⟩")
+    # membership: each on-line witness in s
+    out.append(f"  have hmemlist : ∀ t ∈ ({rlist} : List ℝ), "
+               f"((1 / 2 : ℂ) + (t : ℂ) * Complex.I) ∈ s := by")
+    out.append(f"    intro t ht")
+    out.append(f"    simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at ht")
+    mem_cases = " | ".join("rfl" for _ in zeros)
+    out.append(f"    rcases ht with {mem_cases}")
+    for z in zeros:
+        out.append(f"    · exact hmem{z['idx']}")
+    # length fact: [r1..rN].length = N
+    out.append(f"  have hlen : (({rlist} : List ℝ).length : ℤ) = ({N} : ℤ) := by norm_num")
+    # generic collapse: ∑_{ρ∈s} cos(ρ.im·uStar) = list sum
+    out.append(f"  have hsumeq := BraggSupport.sum_cos_over_zero_support_eq uStar s d {rlist} "
+               f"hchain hd1 (by rw [hlen]; exact hsum) hmemlist")
+    out.append(f"  rw [Set.mem_Icc, hsumeq]")
+    out.append(f"  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]")
+    # cos boxes per zero (r_k in [a_k,b_k])
+    for z in zeros:
+        i = z["idx"]
+        out.append(f"  have hcb{i} := bragg_cosbox_{i} r{i} (le_of_lt hra{i}) (le_of_lt hrb{i})")
+    # fold
+    acc = "hcb1"
+    for k in range(1, N):
+        fname = f"hcbsum{k+1}"
+        out.append(f"  have {fname} := CosEnclosure.add_encl {acc} hcb{k+1}")
+        acc = fname
+    out.append(f"  exact ⟨by linarith [{acc}.1], by linarith [{acc}.2]⟩")
 
 
 def write_lean():
