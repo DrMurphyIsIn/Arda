@@ -791,3 +791,6 @@ name = "RvMArchSharperS2a"
 
 [[lean_lib]]
 name = "RvMArchSharperS2b"
+
+[[lean_lib]]
+name = "RvMArchSharper"
