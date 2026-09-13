@@ -176,4 +176,41 @@ theorem binet_remainder_envelope {z : ℂ} (hz : (1 / 4 : ℝ) ≤ z.re) {m : �
   have hnn : (0 : ℝ) ≤ 1 / 2 := by norm_num
   exact mul_le_mul_of_nonneg_left hbound hnn
 
+/-! ## 5.  The packaged enclosure: `logDeriv Γℝ` = explicit finite part ± rational envelope.
+
+This is the artifact the interval evaluator instantiates.  `stirlingFinite z m` is the EXPLICIT
+finite Stirling/Binet approximant (no `ψ`, no `Γ` -- just `log`, a reciprocal sum, and `log π`),
+and `logDeriv_gammaR_enclosure` bounds the error against a RATIONAL envelope, so a dyadic evaluator
+supplied with enclosures of `log(z/2+m)`, the `(z/2+k)⁻¹` reciprocals, and `log π` boxes the true
+`logDeriv Γℝ(z)`.  Combined with `DiffractionCore.argChangeVert` (an integral of `logDeriv Γℝ`) and
+`LogBranches.argChangeVert_eq_im_log_sub`, this discharges the H4 Γℝ box edges; combined with
+`DiffractionCore.theta_eq_argChangeVert_gammaR` it feeds the A3 `θ`. -/
+
+/-- **The explicit finite Stirling/Binet approximant** of `logDeriv Γℝ(z)` at shift `m`:
+    `−(log π)/2 + (1/2)·log(z/2 + m) − (1/2)·Σ_{k<m} (z/2 + k)⁻¹`.
+    Elementary (`log`, reciprocals, `log π`) -- no `ψ`, no `Γ`; directly boxable by the evaluator. -/
+noncomputable def stirlingFinite (z : ℂ) (m : ℕ) : ℂ :=
+  -(Real.log Real.pi : ℂ) / 2
+    + (1 / 2) * Complex.log (z / 2 + m)
+    - (1 / 2) * ∑ k ∈ Finset.range m, (z / 2 + k)⁻¹
+
+/-- **THE Γℝ ENCLOSURE (A2 Theorem 2 capstone, `K = 1`).**  For `Re z ≥ 1/4`, `2 ≤ m`, and the
+    shifted-point anchor, the true `logDeriv Γℝ(z)` differs from the explicit finite approximant
+    `stirlingFinite z m` by at most the rational envelope `(1/2)/((z/2+m).re − 1)`:
+        ‖logDeriv Γℝ(z) − stirlingFinite z m‖ ≤ (1/2)·1/((z/2 + m).re − 1).
+    With `m = 2` the shift already reaches `Re(z/2+m) ≥ 2` (envelope ≤ (1/2)/((z.re/2)+1)). -/
+theorem logDeriv_gammaR_enclosure {z : ℂ} (hz : (1 / 4 : ℝ) ≤ z.re) {m : ℕ} (hm : 2 ≤ m)
+    (hanchor : Filter.Tendsto
+      (fun N : ℕ => Complex.digamma ((z / 2 + m) + N) - Complex.log ((z / 2 + m) + N))
+      Filter.atTop (nhds 0)) :
+    ‖logDeriv Complex.Gammaℝ z - stirlingFinite z m‖
+      ≤ (1 / 2) * (1 / ((z / 2 + m).re - 1)) := by
+  have hzpos : 0 < z.re := by linarith
+  have hdiff : logDeriv Complex.Gammaℝ z - stirlingFinite z m
+      = (1 / 2 : ℂ) * binetRem (z / 2 + m) := by
+    rw [logDeriv_gammaR_stirling_shift hzpos m, stirlingFinite]
+    ring
+  rw [hdiff]
+  exact binet_remainder_envelope hz hm hanchor
+
 end ZetaReflection

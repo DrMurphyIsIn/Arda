@@ -60,3 +60,9 @@ roots = ["SignChain"]
 [[lean_lib]]
 name = "StirlingBinet"
 roots = ["StirlingBinet"]
+
+# WIP (K ≥ 2 Bernoulli tail) -- registered so the statement architecture typechecks, but
+# deliberately NOT in defaultTargets and NOT guard-imported: it carries `sorry` placeholders.
+[[lean_lib]]
+name = "StirlingBinetWip"
+roots = ["StirlingBinetWip"]
