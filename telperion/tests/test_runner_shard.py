@@ -25,6 +25,20 @@ import campaign as C          # noqa: E402
 import campaign_shard as S    # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def _hermetic(tmp_path, monkeypatch):
+    """Redirect all shared production state to tmp so no test writes it.
+
+    `band_module`/`band_box` (exercised by the B2 codegen path) call
+    `stretch_box`, which memoizes Platt lookups into `edge_stretch.json` -- the
+    LIVE shared cache.  Point it (and the default STATE/journal dir) at tmp so
+    the suite is hermetic and never churns the root-owned campaign state."""
+    monkeypatch.setattr(C, "_STRETCH_CACHE_FILE", tmp_path / "edge_stretch.json")
+    monkeypatch.setattr(C, "_stretch_cache", None)
+    monkeypatch.setattr(C, "STATE", tmp_path / "campaign_state.json")
+    monkeypatch.setattr(S, "STATE_DIR", tmp_path / "state")
+
+
 def _rec(den, lo, hi, status="ok", n=43, ts=1.0, **extra):
     r = {"status": status, "ts": ts}
     if status == "ok":
