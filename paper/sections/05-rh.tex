@@ -247,8 +247,8 @@ count enters as an edge-integral value, never as ``$N$ zeros and no others,'' an
 ``all zeros on the line'' is the \emph{derived} conclusion. It is, once more,
 emphatically \emph{not} a proof of RH---but it is a kernel-verified, complete finite
 Turing verification up to height \ladderHeight{} \cite{turing1953}---to our
-knowledge the first kernel-checked Turing verification at any height, and a
-height at the machine-computed frontier of the mid-1960s (Lehman's
+knowledge the first kernel-checked Turing verification at any height, with a
+zero count now past the machine-computed frontier of the mid-1960s (Lehman's
 quarter-million zeros \cite{lehman1966}; the rigorous-numerics record, without
 kernel verification, stands at $3\cdot10^{12}$
 \cite{platttrudgian2021})---and it exhibits a third distinct certificate shape
@@ -387,7 +387,8 @@ real-rootedness, and winding counts.
 \label{sec:diffraction}
 
 The explicit formula says the zeros should diffract off the primes; the Turing
-ladder supplies a quarter-million certified zeros to diffract. The oldest
+ladder supplies \ladderCount{} certified zeros to diffract (the demonstration
+below uses its $T = 160000$ snapshot). The oldest
 metaphor in the subject---the \emph{music of the primes}, each zero a pure
 tone, the explicit formula the score---is here made operational: strike every
 frequency at once and record which notes the certified zeros answer. Putting
@@ -462,11 +463,13 @@ cosine evaluator that range-reduces \emph{without} $\pi$ (thirty double-angle
 steps from Mathlib's order-four bracket---the net error
 $\theta^4\cdot\tfrac{5}{96}/2^{2M}$ \emph{decreases} with the reduction depth
 $M$, so no high-order Taylor kernel is needed), Lipschitz absorption of the
-bracket width, and an interval fold over the twenty-nine terms. One
-formulation gap is carried honestly: the theorem sums over the twenty-nine
-\emph{witnessed} zeros (exactly what the certified sign chain exhibits);
-promoting it to the abstract zero set via the exactly-twenty-nine count of
-\texttt{AllZeros\_h100} is a pigeonhole step in progress. As the pipeline
+bracket width, and an interval fold over the twenty-nine terms. The
+companion theorem \texttt{bragg\_amplitude\_h100\_complete} closes the
+formulation gap: for the \emph{intrinsic} support of zeta's divisor in the
+box, given the winding exhaustion data, the diffraction sum over
+\emph{every} zero in the box lands in the same interval---the exhaustion
+argument forces the support to \emph{equal} the witness set, so the sum is
+genuinely over the actual zeros, not an exhibited subset. As the pipeline
 scales along the ladder, theorems of the form
 $|F_T(m\log p) - A| \le \varepsilon$ constitute, to our knowledge, the
 first machine-checked diffraction pattern of the zeta zeros: the finite,
