@@ -3,14 +3,15 @@
     NOT imported by any AxiomGuard.  Anything here is unfinished and may contain `sorry`.
     Fully-proven, sorry-free lemmas are promoted to `EMZeta.lean`.
 
+    DONE in EMZeta.lean (kernel-clean): Part A (saw Bernoulli), Part B (`em_unit_step`),
+    Part C (`euler_maclaurin_one`, `euler_maclaurin_one_window`), Part D
+    (`em_zeta_partial_real` — finite-N EM representation of the partial zeta sum, real `s`).
+
     Roadmap for the remaining Euler-Maclaurin scaffolding (bottom-up):
-      - C.  `euler_maclaurin_one`: sum the one-step identity `em_unit_step` over `m = 0..N-1`.
-            Telescoping the trapezoid endpoints gives `∑_{n=1}^{N} f n = ∫_0^N f + (fN - f0)/2
-            + ∫_0^N sawBernoulli 1 · f'`; the integral telescopes via
-            `intervalIntegral.sum_integral_adjacent_intervals`.
-      - D.  `em_zeta_real_K1`: specialise `f x = x^{-s}` (real `s > 1`) on `[1, N]`, take
-            `N → ∞`; matches Mathlib's fractional-part route
-            (`Mathlib.NumberTheory.Harmonic.ZetaAsymp`, `zeta_limit_aux1`).
+      - D'. `N → ∞` limit of `em_zeta_partial_real` for real `s > 1`: the saw remainder integral
+            `∫_1^∞ sawBernoulli 1 · (-s x^{-s-1})` converges (|saw| ≤ 1/2, integrand O(x^{-s-1})),
+            and `∑_{n<N} n^{-s} → ζ(s)`.  Reuse Mathlib's `Mathlib.NumberTheory.Harmonic.ZetaAsymp`
+            (`zeta_limit_aux1`, `termTSum`) rather than reproving convergence.
       - E.  order-K induction (periodized `bernoulliFun k`, k ≥ 2) + complex interval-σ form
             valid `Re s > 1 - 2K` by `AnalyticOnNhd.eqOn` + explicit remainder bound.
 

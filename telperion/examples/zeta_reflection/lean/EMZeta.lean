@@ -36,6 +36,7 @@
 -/
 import Mathlib.NumberTheory.ZetaValues
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
+import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
 open MeasureTheory intervalIntegral Set
 open scoped Real
@@ -161,6 +162,18 @@ private lemma trapezoid_sum (f : ℝ → ℝ) (N : ℕ) :
       rw [Finset.sum_range_succ, ih, Finset.sum_Icc_succ_top (by lia : 1 ≤ p + 1)]
       push_cast; ring
 
+/-- Trapezoid-sum bookkeeping over a general window `[M, N)`:
+    `∑_{k∈[M,N)} (f k + f (k+1))/2 = ∑_{n∈[M,N)} f n + (f N − f M)/2`. -/
+private lemma trapezoid_sum_window (f : ℝ → ℝ) {M N : ℕ} (hMN : M ≤ N) :
+    (∑ k ∈ Finset.Ico M N, (f (k : ℝ) + f ((k : ℝ) + 1)) / 2)
+      = (∑ n ∈ Finset.Ico M N, f (n : ℝ)) + (f N - f M) / 2 := by
+  induction N, hMN using Nat.le_induction with
+  | base => simp
+  | succ p hp ih =>
+      rw [Finset.sum_Ico_succ_top hp (fun k => (f (k : ℝ) + f ((k : ℝ) + 1)) / 2),
+          Finset.sum_Ico_succ_top hp (fun n => f (n : ℝ)), ih]
+      push_cast; ring
+
 /-- **First-order Euler-Maclaurin summation** over `[0, N]`.
 
     For `f` with derivative `f'` on all of `[0, N]` and `f'` interval-integrable on each unit
@@ -240,5 +253,132 @@ theorem euler_maclaurin_one {f f' : ℝ → ℝ} (N : ℕ)
   rw [Finset.sum_sub_distrib] at hsum
   rw [htel_f, htel_saw, trapezoid_sum f N] at hsum
   linarith [hsum]
+
+/-! ## D. Zeta base case: first-order Euler-Maclaurin for `f x = x^{-s}` on `[1, N]`
+
+    The reusable finite-`N` statement.  Specialising the general `[M, N]` machinery below to
+    `M = 1`, `f x = x^{-s}` with derivative `f' x = -s · x^{-s-1}` (valid for `x ≠ 0`, hence on
+    all of `[1, N]`), we get the classical finite Euler-Maclaurin representation of the partial
+    zeta sum.  Taking `N → ∞` (real `s > 1`) matches the fractional-part representation in
+    `Mathlib.NumberTheory.Harmonic.ZetaAsymp` (`zeta_limit_aux1`, `termTSum`).
+-/
+
+/-- **First-order Euler-Maclaurin over a general integer window `[M, N]`.**
+
+    Half-open indexing: the sum runs over `n ∈ [M, N)` (i.e. `n = M, …, N-1`), the integrals
+    over `[M, N]`:
+        ∑_{n=M}^{N-1} f n = ∫_M^N f − (f N − f M)/2 + ∫_M^N (sawBernoulli 1 x)·f'(x) dx.
+    This is the form the zeta base case needs (window `[1, N]`, avoiding the singularity of
+    `x^{-s}` at `0`).  The requirement is `f` differentiable on `[M, N]` with `f'` interval
+    integrable on each cell. -/
+theorem euler_maclaurin_one_window {f f' : ℝ → ℝ} (M N : ℕ) (hMN : M ≤ N)
+    (hf : ∀ x ∈ Icc (M : ℝ) N, HasDerivAt f (f' x) x)
+    (hf' : ∀ k ∈ Finset.Ico M N, IntervalIntegrable f' volume (k : ℝ) (k + 1)) :
+    (∑ n ∈ Finset.Ico M N, f (n : ℝ))
+      = (∫ x in (M : ℝ)..N, f x) - (f N - f M) / 2
+        + ∫ x in (M : ℝ)..N, sawBernoulli 1 x * f' x := by
+  -- Per-cell derivative availability on each `[k, k+1] ⊆ [M, N]`.
+  have hcell : ∀ k ∈ Finset.Ico M N, ∀ x ∈ Icc (k : ℝ) (k + 1), HasDerivAt f (f' x) x := by
+    intro k hk x hx
+    rw [Finset.mem_Ico] at hk
+    refine hf x ⟨?_, ?_⟩
+    · exact le_trans (by exact_mod_cast hk.1) hx.1
+    · have : (k : ℝ) + 1 ≤ (N : ℝ) := by exact_mod_cast hk.2
+      linarith [hx.2]
+  -- One-step identity per cell (recast the ℤ cell into ℕ).
+  have hstep : ∀ k ∈ Finset.Ico M N,
+      (∫ x in (k : ℝ)..(k + 1), f x)
+        = (f k + f (k + 1)) / 2 - ∫ x in (k : ℝ)..(k + 1), sawBernoulli 1 x * f' x := by
+    intro k hk
+    have hcast : (((k : ℤ)) : ℝ) = (k : ℝ) := by push_cast; ring
+    have hstepZ := em_unit_step (f := f) (f' := f') (k : ℤ)
+      (by intro x hx; rw [hcast] at hx; exact hcell k hk x hx)
+      (by rw [hcast]; exact hf' k hk)
+    simp only [hcast] at hstepZ
+    exact hstepZ
+  have hsum := Finset.sum_congr rfl hstep
+  -- Telescope `∫ f` over `Ico M N` → `∫_M^N f`.
+  have hfint_cell : ∀ k ∈ Finset.Ico M N, IntervalIntegrable f volume (k : ℝ) (k + 1) := by
+    intro k hk
+    have hcont : ContinuousOn f (uIcc (k : ℝ) (k + 1)) := by
+      rw [uIcc_of_le (by linarith)]
+      exact fun x hx => (hcell k hk x hx).continuousAt.continuousWithinAt
+    exact hcont.intervalIntegrable
+  have htel_f : (∑ k ∈ Finset.Ico M N, ∫ x in (k : ℝ)..(k + 1), f x)
+      = ∫ x in (M : ℝ)..N, f x := by
+    have hint : ∀ k ∈ Set.Ico M N,
+        IntervalIntegrable f volume ((fun k : ℕ => (k : ℝ)) k) ((fun k : ℕ => (k : ℝ)) (k + 1)) := by
+      intro k hk
+      simpa [Nat.cast_succ] using hfint_cell k (Finset.mem_Ico.mpr hk)
+    have := intervalIntegral.sum_integral_adjacent_intervals_Ico
+      (a := fun k : ℕ => (k : ℝ)) (f := f) (μ := volume) hMN hint
+    simpa using this
+  -- Telescope the saw remainder over `Ico M N` → `∫_M^N saw·f'`.
+  have hsawf'_cell : ∀ k ∈ Finset.Ico M N,
+      IntervalIntegrable (fun x => sawBernoulli 1 x * f' x) volume (k : ℝ) (k + 1) := by
+    intro k hk
+    have hcc : (k : ℝ) ≤ (k : ℝ) + 1 := by linarith
+    have hcont : IntervalIntegrable (fun x => (x - k - 1 / 2) * f' x) volume (k : ℝ) (k + 1) :=
+      (hf' k hk).continuousOn_mul (by fun_prop)
+    refine (intervalIntegrable_congr_ae ?_).mpr hcont
+    have hnull : ∀ᵐ x, x ≠ ((k : ℝ) + 1) := MeasureTheory.Measure.ae_ne _ _
+    rw [Filter.EventuallyEq, MeasureTheory.ae_restrict_iff' measurableSet_uIoc]
+    filter_upwards [hnull] with x hxne hxmem
+    rw [uIoc_of_le hcc] at hxmem
+    have hxIco : x ∈ Ico ((k : ℤ) : ℝ) (((k : ℤ) : ℝ) + 1) := by
+      refine ⟨?_, ?_⟩
+      · have : (k : ℝ) < x := hxmem.1
+        push_cast; linarith
+      · have hlt : x < (k : ℝ) + 1 := lt_of_le_of_ne hxmem.2 hxne
+        push_cast; linarith
+    rw [sawBernoulli_one_eq_on_Ico hxIco]
+    push_cast; ring_nf
+  have htel_saw : (∑ k ∈ Finset.Ico M N, ∫ x in (k : ℝ)..(k + 1), sawBernoulli 1 x * f' x)
+      = ∫ x in (M : ℝ)..N, sawBernoulli 1 x * f' x := by
+    have hint : ∀ k ∈ Set.Ico M N,
+        IntervalIntegrable (fun x => sawBernoulli 1 x * f' x) volume
+          ((fun k : ℕ => (k : ℝ)) k) ((fun k : ℕ => (k : ℝ)) (k + 1)) := by
+      intro k hk
+      simpa [Nat.cast_succ] using hsawf'_cell k (Finset.mem_Ico.mpr hk)
+    have := intervalIntegral.sum_integral_adjacent_intervals_Ico
+      (a := fun k : ℕ => (k : ℝ)) (f := fun x => sawBernoulli 1 x * f' x) (μ := volume) hMN hint
+    simpa using this
+  rw [Finset.sum_sub_distrib, htel_f, htel_saw, trapezoid_sum_window f hMN] at hsum
+  linarith [hsum]
+
+/-- **First-order Euler-Maclaurin representation of the partial zeta sum** (real exponent).
+
+    For real `s` and `N ≥ 1`, applying `euler_maclaurin_one_window` to `f x = x^{-s}` (real
+    `rpow`, derivative `-s·x^{-s-1}`, valid on `[1, N]` since `x ≠ 0` there) gives
+        ∑_{n=1}^{N-1} n^{-s} = ∫_1^N x^{-s} dx − (N^{-s} − 1)/2
+                               + ∫_1^N (sawBernoulli 1 x)·(−s·x^{-s-1}) dx.
+    Taking `N → ∞` for `s > 1` recovers `ζ(s)` up to the (convergent) integral remainder;
+    this matches Mathlib's fractional-part route in `Mathlib.NumberTheory.Harmonic.ZetaAsymp`
+    (`zeta_limit_aux1`, `termTSum`).  The `N → ∞` limit and the general-K refinement are WIP
+    (see EMZetaWip.lean). -/
+theorem em_zeta_partial_real (s : ℝ) {N : ℕ} (hN : 1 ≤ N) :
+    (∑ n ∈ Finset.Ico 1 N, (n : ℝ) ^ (-s))
+      = (∫ x in (1 : ℝ)..N, x ^ (-s)) - ((N : ℝ) ^ (-s) - (1 : ℝ) ^ (-s)) / 2
+        + ∫ x in (1 : ℝ)..N, sawBernoulli 1 x * (-s * x ^ (-s - 1)) := by
+  have hderiv : ∀ x ∈ Icc ((1 : ℕ) : ℝ) N, HasDerivAt (fun x => x ^ (-s)) (-s * x ^ (-s - 1)) x := by
+    intro x hx
+    have hx1 : (1 : ℝ) ≤ x := by have := hx.1; push_cast at this; linarith
+    have hx0 : x ≠ 0 := ne_of_gt (lt_of_lt_of_le zero_lt_one hx1)
+    simpa [neg_mul] using Real.hasDerivAt_rpow_const (x := x) (p := -s) (Or.inl hx0)
+  have hf'int : ∀ k ∈ Finset.Ico 1 N,
+      IntervalIntegrable (fun x => -s * x ^ (-s - 1)) volume (k : ℝ) (k + 1) := by
+    intro k hk
+    rw [Finset.mem_Ico] at hk
+    have hk1 : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk.1
+    -- On `[k, k+1]` with `k ≥ 1`, `x^{-s-1}` is continuous (argument bounded away from 0).
+    apply ContinuousOn.intervalIntegrable
+    rw [uIcc_of_le (by linarith)]
+    apply ContinuousOn.mul continuousOn_const
+    apply ContinuousOn.rpow_const continuousOn_id
+    intro x hx
+    have hx1 : (1 : ℝ) ≤ x := le_trans hk1 hx.1
+    exact Or.inl (by simp only [id_eq]; exact ne_of_gt (by linarith))
+  simpa using euler_maclaurin_one_window (f := fun x => x ^ (-s))
+    (f' := fun x => -s * x ^ (-s - 1)) 1 N hN hderiv hf'int
 
 end ZetaReflection
