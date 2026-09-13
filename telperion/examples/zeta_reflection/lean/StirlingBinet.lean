@@ -213,4 +213,61 @@ theorem logDeriv_gammaR_enclosure {z : ℂ} (hz : (1 / 4 : ℝ) ≤ z.re) {m : �
   rw [hdiff]
   exact binet_remainder_envelope hz hm hanchor
 
+/-! ## 6.  Real- and imaginary-part enclosures (the `argChangeVert` / `θ` integrands).
+
+`DiffractionCore.argChangeVert Γℝ σ T0 T1 = (∫ y in T0..T1, logDeriv Γℝ (σ + iy)).re`, so the
+integrand is `Re (logDeriv Γℝ)`; the A3 `θ` integrand is the same on `σ = 1/2`
+(`DiffractionCore.theta_eq_argChangeVert_gammaR`, `DlvpTheta.thetaIntegrand_eq_re_logDeriv_gammaR`).
+The CONTINUOUS-BRANCH `Im` enters via `LogBranches.argChangeVert_eq_im_log_sub` as
+`Im L(top) − Im L(bottom)` with `deriv L = logDeriv Γℝ`.  Both the `Re` and `Im` of `logDeriv Γℝ`
+inherit the Stirling enclosure from `logDeriv_gammaR_enclosure` because `|w.re|, |w.im| ≤ ‖w‖`.
+These are the pointwise enclosures the interval evaluator integrates. -/
+
+/-- **Real-part enclosure** (the `argChangeVert`/`θ` integrand): `Re (logDeriv Γℝ z)` lies within
+    the rational envelope of `Re (stirlingFinite z m)`.  For `σ = 1/2`, `z = 1/2 + iy`, this is the
+    `θ` integrand `thetaIntegrand y` boxed by an elementary finite part. -/
+theorem re_logDeriv_gammaR_enclosure {z : ℂ} (hz : (1 / 4 : ℝ) ≤ z.re) {m : ℕ} (hm : 2 ≤ m)
+    (hanchor : Filter.Tendsto
+      (fun N : ℕ => Complex.digamma ((z / 2 + m) + N) - Complex.log ((z / 2 + m) + N))
+      Filter.atTop (nhds 0)) :
+    |(logDeriv Complex.Gammaℝ z).re - (stirlingFinite z m).re|
+      ≤ (1 / 2) * (1 / ((z / 2 + m).re - 1)) := by
+  have h := logDeriv_gammaR_enclosure hz hm hanchor
+  rw [show (logDeriv Complex.Gammaℝ z).re - (stirlingFinite z m).re
+        = (logDeriv Complex.Gammaℝ z - stirlingFinite z m).re from (Complex.sub_re _ _).symm]
+  exact le_trans (Complex.abs_re_le_norm _) h
+
+/-- **Imaginary-part enclosure** (the continuous-branch `Im`): `Im (logDeriv Γℝ z)` lies within the
+    rational envelope of `Im (stirlingFinite z m)`.  This is the pointwise datum behind the
+    `Im L(top) − Im L(bottom)` argument change that `LogBranches.argChangeVert_eq_im_log_sub`
+    delivers -- `logDeriv Γℝ` is the derivative of that branch, and its `Im` is Stirling-enclosed. -/
+theorem im_logDeriv_gammaR_enclosure {z : ℂ} (hz : (1 / 4 : ℝ) ≤ z.re) {m : ℕ} (hm : 2 ≤ m)
+    (hanchor : Filter.Tendsto
+      (fun N : ℕ => Complex.digamma ((z / 2 + m) + N) - Complex.log ((z / 2 + m) + N))
+      Filter.atTop (nhds 0)) :
+    |(logDeriv Complex.Gammaℝ z).im - (stirlingFinite z m).im|
+      ≤ (1 / 2) * (1 / ((z / 2 + m).re - 1)) := by
+  have h := logDeriv_gammaR_enclosure hz hm hanchor
+  rw [show (logDeriv Complex.Gammaℝ z).im - (stirlingFinite z m).im
+        = (logDeriv Complex.Gammaℝ z - stirlingFinite z m).im from (Complex.sub_im _ _).symm]
+  exact le_trans (Complex.abs_im_le_norm _) h
+
+/-- **`θ`-integrand enclosure** (the A3 Riemann–Siegel consumer, `σ = 1/2`).  The branch-cut-free
+    `θ` integrand `thetaIntegrand y = Re (logDeriv Γℝ (1/2 + iy))`
+    (`DlvpTheta.thetaIntegrand_eq_re_logDeriv_gammaR`) is boxed by the elementary finite Stirling
+    part at `z = 1/2 + iy` (note `Re z = 1/2 ≥ 1/4`, so the hypothesis is met for all real `y`). -/
+theorem theta_integrand_enclosure (y : ℝ) {m : ℕ} (hm : 2 ≤ m)
+    (hanchor : Filter.Tendsto
+      (fun N : ℕ => Complex.digamma (((1 / 2 : ℂ) + y * I) / 2 + m + N)
+        - Complex.log (((1 / 2 : ℂ) + y * I) / 2 + m + N))
+      Filter.atTop (nhds 0)) :
+    |ZeroFreeBridge.thetaIntegrand y - (stirlingFinite ((1 / 2 : ℂ) + y * I) m).re|
+      ≤ (1 / 2) * (1 / ((((1 / 2 : ℂ) + y * I) / 2 + m).re - 1)) := by
+  have hz : (1 / 4 : ℝ) ≤ ((1 / 2 : ℂ) + y * I).re := by
+    simp only [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.one_re, Complex.div_re]
+    norm_num
+  rw [ZeroFreeBridge.thetaIntegrand_eq_re_logDeriv_gammaR y]
+  exact re_logDeriv_gammaR_enclosure hz hm hanchor
+
 end ZetaReflection
