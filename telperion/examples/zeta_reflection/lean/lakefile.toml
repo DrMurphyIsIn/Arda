@@ -64,3 +64,7 @@ roots = ["EMZeta"]
 [[lean_lib]]
 name = "EMZetaWip"
 roots = ["EMZetaWip"]
+
+[[lean_lib]]
+name = "StirlingBinet"
+roots = ["StirlingBinet"]
