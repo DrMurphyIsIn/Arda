@@ -27,8 +27,8 @@ parts = [
   files elaborate standalone against Mathlib; the *registry statements* are the node files,
   which the verify gate matches against the real proof/ artifacts by normalized containment.
 
-  The final PROVISIONAL block (hubCount*) is registry-only vocabulary (no proof/ counterpart)
-  used by the DRAFT node BG_r2_multihub_maximality; it is NOT part of any proved statement.
+  The PROVISIONAL blocks (hubCount*, cavR/phi11R) are registry-only vocabulary (no proof/
+  counterpart) used by draft nodes only; they are NOT part of any proved statement.
 -/
 import Mathlib
 
@@ -98,9 +98,10 @@ namespace R3Cert
     "\n-- ===== R47OrderedStep.lean:43-58 (the ordered merge relation) =====",
     ex("R47OrderedStep.lean", 43, 58),
     """
--- ===== PROVISIONAL (registry-only; no proof/ counterpart; used only by the DRAFT node
--- BG_r2_multihub_maximality).  Hub count of a bare rooted tree: vertices of structural
--- degree >= 3 (root degree = child count; non-root degree = children + parent edge). =====
+-- ===== PROVISIONAL (registry-only; no proof/ counterpart; used by the DRAFT/deprecated
+-- nodes BG_r2_multihub_maximality [deprecated 2026-09-13] and BG_r2_multihub_ceiling).
+-- Hub count of a bare rooted tree: vertices of structural degree >= 3 (root degree =
+-- child count; non-root degree = children + parent edge). =====
 mutual
 def hubCountRoot : UTree → ℕ
   | .node cs => (if 3 ≤ cs.length then 1 else 0) + hubCountList cs
@@ -109,6 +110,37 @@ def hubCountSub : UTree → ℕ
 def hubCountList : List UTree → ℕ
   | [] => 0
   | K :: rest => hubCountSub K + hubCountList rest
+end
+
+-- ===== PROVISIONAL (registry-only; no proof/ counterpart; used only by the DRAFT node
+-- BG_r2_multihub_ceiling).  The ROOTED branch Phi^11 recursion in exact rationals,
+-- mirroring telperion/src/telperion/bg/rooted_phi.py::phi11_rooted line-by-line
+-- (cr=0 plain-tree model): at a vertex with child list cs, S = sum of child cavities,
+-- d = cs.length + 1 (virtual parent edge), z = 3/(3*d);
+--   cavR    = z / (1 + z*S)
+--   phi11R  = (64/621) * (1 + z*S)^11 * prod over children of phi11R.
+-- The tree invariant is max over roots; a CEILING stated for ALL UTree (all rooted
+-- representations) is equivalent to the max-over-roots ceiling on unrooted trees. =====
+mutual
+def cavR : UTree → ℚ
+  | .node cs =>
+      let d : ℚ := ((cs.length + 1 : ℕ) : ℚ)
+      let z : ℚ := 3 / (3 * d)
+      z / (1 + z * cavRList cs)
+def cavRList : List UTree → ℚ
+  | [] => 0
+  | K :: rest => cavR K + cavRList rest
+end
+
+mutual
+def phi11R : UTree → ℚ
+  | .node cs =>
+      let d : ℚ := ((cs.length + 1 : ℕ) : ℚ)
+      let z : ℚ := 3 / (3 * d)
+      (64 / 621) * (1 + z * cavRList cs) ^ 11 * phi11RList cs
+def phi11RList : List UTree → ℚ
+  | [] => 1
+  | K :: rest => phi11R K * phi11RList rest
 end
 
 end Step3
