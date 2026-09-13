@@ -141,4 +141,104 @@ theorem em_unit_step {f f' : ℝ → ℝ} (m : ℤ)
   rw [hwL, hwR] at key
   linarith [key]
 
+/-! ## C. Summed first-order Euler-Maclaurin over `[0, N]`
+
+    Summing `em_unit_step` over the cells `[0,1], [1,2], …, [N-1,N]` and telescoping the two
+    integrals with `intervalIntegral.sum_integral_adjacent_intervals` gives the classical
+    first-order Euler-Maclaurin formula (sum indexed `1..N`, integral over `[0,N]`)
+        ∑_{n=1}^{N} f n = ∫_0^N f + (f N − f 0)/2 + ∫_0^N (sawBernoulli 1 x)·f'(x) dx.
+    (Equivalently `∑_{n=0}^{N} f n = ∫_0^N f + (f 0 + f N)/2 + remainder`, the textbook form.)
+-/
+
+/-- Trapezoid-sum bookkeeping (real function evaluated at natural casts):
+    `∑_{m<N} (f m + f (m+1))/2 = ∑_{n=1}^{N} f n + (f 0 − f N)/2`. -/
+private lemma trapezoid_sum (f : ℝ → ℝ) (N : ℕ) :
+    (∑ m ∈ Finset.range N, (f (m : ℝ) + f ((m : ℝ) + 1)) / 2)
+      = (∑ n ∈ Finset.Icc 1 N, f (n : ℝ)) + (f 0 - f (N : ℝ)) / 2 := by
+  induction N with
+  | zero => simp
+  | succ p ih =>
+      rw [Finset.sum_range_succ, ih, Finset.sum_Icc_succ_top (by lia : 1 ≤ p + 1)]
+      push_cast; ring
+
+/-- **First-order Euler-Maclaurin summation** over `[0, N]`.
+
+    For `f` with derivative `f'` on all of `[0, N]` and `f'` interval-integrable on each unit
+    cell, the sum `∑_{n=1}^{N} f n` equals the integral `∫_0^N f`, plus the trapezoidal
+    endpoint correction `(f N − f 0)/2`, plus the order-1 saw remainder
+    `∫_0^N (sawBernoulli 1 x)·f'(x) dx`. -/
+theorem euler_maclaurin_one {f f' : ℝ → ℝ} (N : ℕ)
+    (hf : ∀ x ∈ Icc (0 : ℝ) N, HasDerivAt f (f' x) x)
+    (hf' : ∀ k < N, IntervalIntegrable f' volume (k : ℝ) (k + 1)) :
+    (∑ n ∈ Finset.Icc 1 N, f n)
+      = (∫ x in (0 : ℝ)..N, f x) + (f N - f 0) / 2
+        + ∫ x in (0 : ℝ)..N, sawBernoulli 1 x * f' x := by
+  -- Per-cell derivative availability, cast the ℕ cell `[k, k+1]` into the global `[0, N]`.
+  have hcell : ∀ k, k < N → ∀ x ∈ Icc (k : ℝ) (k + 1), HasDerivAt f (f' x) x := by
+    intro k hk x hx
+    refine hf x ⟨le_trans (by positivity) hx.1, ?_⟩
+    have : (k : ℝ) + 1 ≤ (N : ℝ) := by exact_mod_cast hk
+    linarith [hx.2]
+  -- Apply the one-step identity in each cell.
+  have hstep : ∀ k ∈ Finset.range N,
+      (∫ x in (k : ℝ)..(k + 1), f x)
+        = (f k + f (k + 1)) / 2 - ∫ x in (k : ℝ)..(k + 1), sawBernoulli 1 x * f' x := by
+    intro k hk
+    have hkN : k < N := Finset.mem_range.mp hk
+    have hcast : (((k : ℤ)) : ℝ) = (k : ℝ) := by push_cast; ring
+    have hstepZ := em_unit_step (f := f) (f' := f') (k : ℤ)
+      (by intro x hx; rw [hcast] at hx; exact hcell k hkN x hx)
+      (by rw [hcast]; exact hf' k hkN)
+    simp only [hcast] at hstepZ
+    exact hstepZ
+  -- Sum the per-cell identity over `range N`.
+  have hsum := Finset.sum_congr rfl hstep
+  -- Telescope `∫ f` over cells → `∫_0^N f`.
+  have hfint_cell : ∀ k < N, IntervalIntegrable f volume (k : ℝ) (k + 1) := by
+    intro k hk
+    have hcont : ContinuousOn f (uIcc (k : ℝ) (k + 1)) := by
+      rw [uIcc_of_le (by linarith)]
+      exact fun x hx => (hcell k hk x hx).continuousAt.continuousWithinAt
+    exact hcont.intervalIntegrable
+  have htel_f : (∑ k ∈ Finset.range N, ∫ x in (k : ℝ)..(k + 1), f x)
+      = ∫ x in (0 : ℝ)..N, f x := by
+    have := intervalIntegral.sum_integral_adjacent_intervals (a := fun k : ℕ => (k : ℝ))
+      (f := f) (n := N) (by intro k hk; simpa using hfint_cell k hk)
+    simpa using this
+  -- Telescope the saw remainder over cells → `∫_0^N saw·f'`.
+  -- `sawBernoulli 1` is discontinuous (jumps at integers), but on the cell it equals the
+  -- continuous affine `x - k - 1/2` a.e., so the product is interval integrable there.
+  have hsawf'_cell : ∀ k < N,
+      IntervalIntegrable (fun x => sawBernoulli 1 x * f' x) volume (k : ℝ) (k + 1) := by
+    intro k hk
+    have hcc : (k : ℝ) ≤ (k : ℝ) + 1 := by linarith
+    -- The continuous affine surrogate on the cell.
+    have hcont : IntervalIntegrable (fun x => (x - k - 1 / 2) * f' x) volume (k : ℝ) (k + 1) :=
+      (hf' k hk).continuousOn_mul (by fun_prop)
+    -- a.e. equality of the two integrands on `Ι k (k+1)`.
+    refine (intervalIntegrable_congr_ae ?_).mpr hcont
+    have hnull : ∀ᵐ x, x ≠ ((k : ℝ) + 1) := MeasureTheory.Measure.ae_ne _ _
+    rw [Filter.EventuallyEq, MeasureTheory.ae_restrict_iff' measurableSet_uIoc]
+    filter_upwards [hnull] with x hxne hxmem
+    rw [uIoc_of_le hcc] at hxmem
+    have hxIco : x ∈ Ico ((k : ℤ) : ℝ) (((k : ℤ) : ℝ) + 1) := by
+      refine ⟨?_, ?_⟩
+      · have : (k : ℝ) < x := hxmem.1
+        push_cast; linarith
+      · have : x ≤ (k : ℝ) + 1 := hxmem.2
+        have hlt : x < (k : ℝ) + 1 := lt_of_le_of_ne this hxne
+        push_cast; linarith
+    rw [sawBernoulli_one_eq_on_Ico hxIco]
+    push_cast; ring_nf
+  have htel_saw : (∑ k ∈ Finset.range N, ∫ x in (k : ℝ)..(k + 1), sawBernoulli 1 x * f' x)
+      = ∫ x in (0 : ℝ)..N, sawBernoulli 1 x * f' x := by
+    have := intervalIntegral.sum_integral_adjacent_intervals (a := fun k : ℕ => (k : ℝ))
+      (f := fun x => sawBernoulli 1 x * f' x) (n := N)
+      (by intro k hk; simpa using hsawf'_cell k hk)
+    simpa using this
+  -- Assemble: LHS sum = trapezoid sum − saw sum; substitute telescopes + trapezoid_sum.
+  rw [Finset.sum_sub_distrib] at hsum
+  rw [htel_f, htel_saw, trapezoid_sum f N] at hsum
+  linarith [hsum]
+
 end ZetaReflection

@@ -13,6 +13,8 @@
         * sawBernoulli_one_eq_on_Ico
       Part B (one-step Euler-Maclaurin over a unit cell):
         * em_unit_step
+      Part C (summed first-order Euler-Maclaurin over [0, N]):
+        * euler_maclaurin_one
 
     conjecture1_proved = False (NOT a proof of RH; a classical analysis lemma).
 -/
@@ -22,3 +24,4 @@ import EMZeta
 #print axioms ZetaReflection.sawBernoulli_eq_on_Ico
 #print axioms ZetaReflection.sawBernoulli_one_eq_on_Ico
 #print axioms ZetaReflection.em_unit_step
+#print axioms ZetaReflection.euler_maclaurin_one
