@@ -568,6 +568,10 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
     w(f"  | _ => {_fr(boxes[-1][2])}\n\n")
 
     # hcover : nominal partition ⊆ stretched box, band by band
+    # heartbeat budget: the 40-case interval_cases/norm_num grows with literal
+    # size; the default 200k budget first expired at h206000 (leg 16).
+    # NB set_option..in must precede the doc comment, not sit inside it.
+    w(f"set_option maxHeartbeats 1600000 in\n")
     w(f"/-- Each nominal band `[bndSeg i, bndSeg (i+1)]` sits inside the stretched\n"
       f"    certificate box `[bLo i, bHi i]`. -/\n")
     w(f"theorem hcover : ∀ i, i < {K} → bLo i ≤ bndSeg i ∧ bndSeg (i + 1) ≤ bHi i := by\n")
