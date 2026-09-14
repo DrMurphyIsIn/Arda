@@ -223,4 +223,76 @@ theorem em_saw_step (k : ℕ) (m : ℤ) (fk fk1 : ℝ → ℝ)
   rw [hcancel]
   linear_combination key
 
+/-! ## H. The order-K tail remainder integrals and their explicit `N`-decaying bounds.
+
+    The consumer needs a remainder over the TAIL `[N, ∞)` whose norm decays in `N`.  We work with
+    the complex integrand `sawBernoulli k x · (c · (x:ℂ)^(-s-k))` where `c` is the falling-factorial
+    coefficient `(-1)^k s(s+1)…(s+k-1)` (the k-th derivative coefficient of `x^{-s}`).  The norm
+    bound is the clean product form
+        ‖∫_N^∞ saw_k · c·x^{-s-k}‖ ≤ Bsup_k · ‖c‖ · N^{-Re s - k + 1} / (Re s + k - 1),
+    from `‖saw_k‖ ≤ Bsup_k`, `‖x^{-s-k}‖ = x^{-Re s - k}`, and `∫_N^∞ x^{-Re s -k} = N^{-Re s -k+1}/(Re s+k-1)`. -/
+
+/-- Generic explicit tail bound for a saw-weighted power integrand on `[N, ∞)`.
+    If `‖sawBernoulli k x‖ ≤ B` for all `x` (as a real bound on the real saw) and the integrand is
+    `sawBernoulli k x · (c · (x:ℂ)^(-s-k))`, then over `[N,∞)` with `N ≥ 1` and `Re s + k > 1`,
+        ‖∫‖ ≤ B · ‖c‖ · N^{-(Re s + k - 1)} / (Re s + k - 1).
+    This is the single reusable engine for all K. -/
+theorem em_tail_integral_bound {k : ℕ} {s c : ℂ} {B : ℝ} {N : ℕ}
+    (hN : 1 ≤ N) (hexp : 1 < s.re + k) (hB : 0 ≤ B)
+    (hsawB : ∀ x : ℝ, |sawBernoulli k x| ≤ B) :
+    ‖∫ x in Ioi (N : ℝ), (sawBernoulli k x : ℂ) * (c * (x : ℂ) ^ (-s - k))‖
+      ≤ B * ‖c‖ * (N : ℝ) ^ (-(s.re + k - 1)) / (s.re + k - 1) := by
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hN
+  have hσk1 : 0 < s.re + k - 1 := by linarith
+  -- exponent for the norm: -(Re s + k) < -1.
+  have hexplt : -(s.re + (k : ℝ)) < -1 := by
+    have : (1 : ℝ) < s.re + k := hexp
+    linarith
+  -- integrand norm domination: ‖·‖ ≤ (B·‖c‖) · x^{-(Re s + k)} on (N,∞).
+  have hdom : IntegrableOn (fun x : ℝ => (B * ‖c‖) * x ^ (-(s.re + (k : ℝ)))) (Ioi (N : ℝ)) :=
+    (integrableOn_Ioi_rpow_of_lt (a := -(s.re + (k : ℝ))) hexplt hNpos).const_mul _
+  have hInt : IntegrableOn (fun x : ℝ => (sawBernoulli k x : ℂ) * (c * (x : ℂ) ^ (-s - k)))
+      (Ioi (N : ℝ)) := by
+    refine Integrable.mono' hdom ?_ ?_
+    · apply Measurable.aestronglyMeasurable
+      exact (Complex.measurable_ofReal.comp (sawBernoulli_measurable k)).mul
+        (measurable_const.mul (Complex.measurable_ofReal.pow_const _))
+    · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
+      have hxpos : (0 : ℝ) < x := lt_trans hNpos hx
+      have hnormcpow : ‖(x : ℂ) ^ (-s - k)‖ = x ^ (-(s.re + (k : ℝ))) := by
+        rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos]
+        congr 1
+        rw [Complex.sub_re, Complex.neg_re, Complex.natCast_re]
+        ring
+      have hrpownn : (0 : ℝ) ≤ x ^ (-(s.re + (k : ℝ))) := Real.rpow_nonneg hxpos.le _
+      rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, hnormcpow]
+      calc |sawBernoulli k x| * (‖c‖ * x ^ (-(s.re + (k : ℝ))))
+          ≤ B * (‖c‖ * x ^ (-(s.re + (k : ℝ)))) := by
+            gcongr; exact hsawB x
+        _ = (B * ‖c‖) * x ^ (-(s.re + (k : ℝ))) := by ring
+  -- ‖∫‖ ≤ ∫‖·‖ ≤ ∫ dom = (B‖c‖)·N^{-(σ+k-1)}/(σ+k-1).
+  calc ‖∫ x in Ioi (N : ℝ), (sawBernoulli k x : ℂ) * (c * (x : ℂ) ^ (-s - k))‖
+      ≤ ∫ x in Ioi (N : ℝ), ‖(sawBernoulli k x : ℂ) * (c * (x : ℂ) ^ (-s - k))‖ :=
+        norm_integral_le_integral_norm _
+    _ ≤ ∫ x in Ioi (N : ℝ), (B * ‖c‖) * x ^ (-(s.re + (k : ℝ))) := by
+        apply setIntegral_mono_on hInt.norm hdom measurableSet_Ioi
+        intro x hx
+        have hxpos : (0 : ℝ) < x := lt_trans hNpos hx
+        have hnormcpow : ‖(x : ℂ) ^ (-s - k)‖ = x ^ (-(s.re + (k : ℝ))) := by
+          rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos]
+          congr 1
+          rw [Complex.sub_re, Complex.neg_re, Complex.natCast_re]; ring
+        rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, hnormcpow]
+        calc |sawBernoulli k x| * (‖c‖ * x ^ (-(s.re + (k : ℝ))))
+            ≤ B * (‖c‖ * x ^ (-(s.re + (k : ℝ)))) := by
+              gcongr; exact hsawB x
+          _ = (B * ‖c‖) * x ^ (-(s.re + (k : ℝ))) := by ring
+    _ = B * ‖c‖ * (N : ℝ) ^ (-(s.re + k - 1)) / (s.re + k - 1) := by
+        rw [MeasureTheory.integral_const_mul,
+          integral_Ioi_rpow_of_lt (a := -(s.re + (k : ℝ))) hexplt hNpos]
+        have hexp1 : -(s.re + (k : ℝ)) + 1 = -(s.re + k - 1) := by ring
+        rw [hexp1]
+        have hne : s.re + (k : ℝ) - 1 ≠ 0 := ne_of_gt hσk1
+        field_simp
+
 end ZetaReflection
