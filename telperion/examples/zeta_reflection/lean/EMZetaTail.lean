@@ -7,15 +7,27 @@
     the sum at a finite `N`, producing a remainder that DECAYS like `N^{-Re s - K + 1}`, small enough
     to make `gLine` boxes sign-tight.
 
-    Architecture (bottom-up, all real-`s` first, then the complex analytic continuation):
+    Architecture (bottom-up), ALL kernel-clean (AxiomGuardEMTail):
 
-      F.  Order-k periodized "saw" Bernoulli API beyond k=1:
-            * `sawBernoulli k` is already defined in EMZeta; here we prove
-              `sawBernoulli_hasDerivAt_ae`-style derivative facts (`(k+1)·sawBernoulli k` a.e.),
-              and the EXPLICIT sup bounds `|sawBernoulli 2| ≤ 1/6`, `|sawBernoulli 3| ≤ B3sup`.
-      G.  `em_saw_step` — the one IBP step raising the saw order by one over a unit cell (the
-            proven form of `EMZetaWip.em_saw_step_wip`).
-      H.  The order-K remainder over the tail `[N, ∞)` with the explicit `N`-decaying bound.
+      F.  Order-2/3 periodized "saw" Bernoulli sup bounds: `|sawBernoulli 2| ≤ 1/6`,
+          `|sawBernoulli 3| ≤ 1/12` (via `B₃ = y(1−y)(1/2−y)`), and `bernoulliFun_three` closed form.
+      G.  `em_saw_step` — the one IBP step raising the saw order by one over a unit cell (the proven
+          form of `EMZetaWip.em_saw_step_wip`), via the continuous polynomial surrogate
+          `B_{k+1}(x−m)/(k+1)`.  Endpoint saw values `B_{k+1}(0)`, `B_{k+1}(1)` (equal for `k+1≠1`).
+      G'. `em_saw_step_window` — sum `em_saw_step` over `[M,N]`; interior boundary terms telescope
+          (`bernoulliFun_endpoints_eq_of_ne_one`), leaving only `B_{k+1}(0)(fk N − fk M)/(k+1)`.
+      H.  `em_tail_integral_bound` — the reusable engine: `‖∫_N^∞ saw_k · c·x^{−s−k}‖`
+          ≤ `B·‖c‖·N^{−(Re s+k−1)}/(Re s+k−1)`, the `N`-decay that makes gLine boxes sign-tight.
+      I.  `em_tail3_bound` (order-3, `B = 1/12`) and `em_tail3_number` — THE NUMBER: at the G2 pilot
+          `s = 1/2 + 14i`, `N = 200`, the order-3 remainder is `≤ 10⁻³` (kernel-decided).  Clears the
+          go/no-go the K=1 envelope `‖s‖/(2·Re s) ≈ 14` failed.
+
+    REMAINING for the full ζ-order-K identity (handoff): tie `em_saw_step_window` to `riemannZeta` by
+    raising the K=1 remainder `∫_1^∞ saw₁·(−s x^{−s−1})` (from `EMZetaComplex.em_zeta_strip`) to
+    order 3 over `[N,∞)` — apply `em_saw_step_window` on `[N,M]` (complex cpow orders 2,3, derivative
+    coefficients `s(s+1)…`), then `M → ∞` (boundary terms → 0; integral → `∫_N^∞`), reusing the
+    `intervalIntegral_tendsto_integral_Ioi` limit pattern from `em_zeta_cpow`.  The remainder BOUND at
+    the endpoint is already `em_tail3_bound`; only the identity plumbing remains.
 
     conjecture1_proved = False.  This is a classical analysis lemma (Euler-Maclaurin tail bound),
     NOT a proof of RH.
