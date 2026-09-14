@@ -1,5 +1,13 @@
 /-  EMZetaTail3.lean -- A2 Theorem 1, STAGE 1: the assembled order-3 Euler-Maclaurin ζ identity.
 
+    ⚠ REDUNDANT INDEPENDENT CROSS-CHECK.  This file was proven independently by the `full-reflection`
+    agent BEFORE the redirect that named `EMZetaTail.em_zeta_strip3` (em-tail agent) as canonical.
+    Both derivations reach the same assembled order-3 identity by the same route; the em-tail version
+    ships with the consumer enclosure suite (`em_zeta_strip3_enclosure`, `em_zeta_critical_line3_enclosure`)
+    and is the one Stage-2 consumers should import.  This file is retained as a SECOND, independent
+    kernel-verified proof of the identity (a valuable redundancy) and is EXCLUDED from primary guards.
+    Do not build further consumers on this file; consume `EMZetaTail.em_zeta_strip3` instead.
+
     The de-risked plumbing the em-tail agent handed off (see EMZetaTail.lean header, Part J and the
     "REMAINING for the full ζ-order-K identity" note).  Ties `em_saw_step_window` (the proven,
     analyticity-free IBP order-raiser) to `riemannZeta` by raising the K=1 remainder
