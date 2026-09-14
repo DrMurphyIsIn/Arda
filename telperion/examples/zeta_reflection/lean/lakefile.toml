@@ -80,6 +80,12 @@ roots = ["StirlingBinetWip"]
 name = "EMZetaComplex"
 roots = ["EMZetaComplex"]
 
+# TAIL track: order-K Euler-Maclaurin remainder engine (the reflection blocker).  Builds on
+# EMZeta + EMZetaComplex; delivers the N-decaying remainder bound that makes gLine boxes sign-tight.
+[[lean_lib]]
+name = "EMZetaTail"
+roots = ["EMZetaTail"]
+
 # A4 / G2: the reflected-band pilot checker + once-proven soundness.  Imports XiLineZeros from
 # the sibling zeta_zero_localization island (via the LambdaLineReal path require above).
 [[lean_lib]]
