@@ -339,4 +339,113 @@ theorem em_zeta_cpow_riemannZeta {s : ℂ} (hs : 1 < s.re) :
   refine tsum_congr (fun n => ?_)
   rw [Complex.cpow_neg, one_div]
 
+/-! ## E3. K=1 analytic continuation into the critical strip (THE PRIZE).
+
+    Define the EM closed form on `{Re s > 0}`:
+        emZetaRemainder s := ∫_1^∞ (sawBernoulli 1 x)·(−s·x^{−s−1})   -- converges for Re s > 0
+        emZetaClosed s     := 1/(s−1) + 1/2 + emZetaRemainder s
+    For `Re s > 1`, `∫_1^∞ x^{−s} = 1/(s−1)` and `1^{−s} = 1`, so `emZetaClosed s = riemannZeta s`
+    (from `em_zeta_cpow_riemannZeta`).  Both `riemannZeta` and `emZetaClosed` are analytic on
+    `{Re s > 0} \ {1}`, agree on the open set `{Re s > 1}` (which has accumulation points in the
+    larger strip), so by the identity theorem they agree on all of `{Re s > 0} \ {1}`.  That is
+    `em_zeta_strip`, which covers the whole critical strip. -/
+
+/-- The EM remainder integral `R(s) = ∫_1^∞ (sawBernoulli 1 x)·(−s·x^{−s−1})`.  Converges
+    absolutely for `Re s > 0` (integrand norm ≤ `(‖s‖/2)·x^{−Re s−1}`). -/
+noncomputable def emZetaRemainder (s : ℂ) : ℂ :=
+  ∫ x in Ioi (1 : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))
+
+/-- The EM closed form `1/(s−1) + 1/2 + R(s)` — analytic on `{Re s > 0} \ {1}`, agreeing with
+    `riemannZeta` there.  For `Re s > 1` the `1/(s−1)` is exactly `∫_1^∞ x^{−s}` and `1/2` is
+    `1^{−s}/2`. -/
+noncomputable def emZetaClosed (s : ℂ) : ℂ :=
+  1 / (s - 1) + 1 / 2 + emZetaRemainder s
+
+/-- The saw remainder integrand is integrable on `(1, ∞)` for the *weaker* hypothesis `Re s > 0`
+    (not just `Re s > 1`): the same domination `‖·‖ ≤ (‖s‖/2)·x^{−Re s−1}` works, integrable since
+    `−Re s − 1 < −1 ⇔ Re s > 0`.  This is the convergence that powers the continuation. -/
+theorem em_cpow_remainder_integrableOn_strip {s : ℂ} (hs : 0 < s.re) :
+    IntegrableOn (fun x : ℝ => (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))) (Ioi 1) := by
+  have hbase : IntegrableOn (fun x : ℝ => (‖s‖ * (1 / 2)) * x ^ (-s.re - 1)) (Ioi 1) :=
+    (integrableOn_Ioi_rpow_of_lt (a := -s.re - 1) (c := (1 : ℝ)) (by linarith)
+      (by norm_num)).const_mul _
+  refine Integrable.mono' hbase ?_ ?_
+  · apply Measurable.aestronglyMeasurable
+    apply Measurable.mul
+    · exact Complex.measurable_ofReal.comp (sawBernoulli_measurable 1)
+    · exact measurable_const.mul (Complex.measurable_ofReal.pow_const _)
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
+    have hxpos : (0 : ℝ) < x := lt_trans zero_lt_one hx
+    have hsaw := abs_sawBernoulli_one_le x
+    have hnormcpow : ‖(x : ℂ) ^ (-s - 1)‖ = x ^ (-s.re - 1) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos, Complex.sub_re, Complex.neg_re,
+        Complex.one_re]
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, hnormcpow, norm_neg]
+    have hrpownn : (0 : ℝ) ≤ x ^ (-s.re - 1) := Real.rpow_nonneg hxpos.le _
+    calc |sawBernoulli 1 x| * (‖s‖ * x ^ (-s.re - 1))
+        ≤ (1 / 2) * (‖s‖ * x ^ (-s.re - 1)) := by gcongr
+      _ = (‖s‖ * (1 / 2)) * x ^ (-s.re - 1) := by ring
+
+/-- **Explicit remainder bound** (E3, valid for all `Re s > 0`):
+        ‖emZetaRemainder s‖ ≤ ‖s‖ / (2 · Re s).
+    Absolute integral bound: `‖∫‖ ≤ ∫‖·‖ ≤ (‖s‖/2)·∫_1^∞ x^{−Re s−1} = (‖s‖/2)·(1/Re s)`. -/
+theorem emZetaRemainder_bound {s : ℂ} (hs : 0 < s.re) :
+    ‖emZetaRemainder s‖ ≤ ‖s‖ / (2 * s.re) := by
+  have hint := em_cpow_remainder_integrableOn_strip hs
+  -- ‖∫‖ ≤ ∫ ‖·‖
+  have hbound1 : ‖emZetaRemainder s‖
+      ≤ ∫ x in Ioi (1 : ℝ), ‖(sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))‖ :=
+    norm_integral_le_integral_norm _
+  -- pointwise: ‖·‖ ≤ (‖s‖/2)·x^{−Re s−1}
+  have hdom : IntegrableOn (fun x : ℝ => (‖s‖ * (1 / 2)) * x ^ (-s.re - 1)) (Ioi 1) :=
+    (integrableOn_Ioi_rpow_of_lt (a := -s.re - 1) (c := (1 : ℝ)) (by linarith)
+      (by norm_num)).const_mul _
+  have hptwise : ∀ x ∈ Ioi (1 : ℝ),
+      ‖(sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))‖
+        ≤ (‖s‖ * (1 / 2)) * x ^ (-s.re - 1) := by
+    intro x hx
+    have hxpos : (0 : ℝ) < x := lt_trans zero_lt_one hx
+    have hsaw := abs_sawBernoulli_one_le x
+    have hnormcpow : ‖(x : ℂ) ^ (-s - 1)‖ = x ^ (-s.re - 1) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos, Complex.sub_re, Complex.neg_re,
+        Complex.one_re]
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, hnormcpow, norm_neg]
+    have hrpownn : (0 : ℝ) ≤ x ^ (-s.re - 1) := Real.rpow_nonneg hxpos.le _
+    calc |sawBernoulli 1 x| * (‖s‖ * x ^ (-s.re - 1))
+        ≤ (1 / 2) * (‖s‖ * x ^ (-s.re - 1)) := by gcongr
+      _ = (‖s‖ * (1 / 2)) * x ^ (-s.re - 1) := by ring
+  have hbound2 : (∫ x in Ioi (1 : ℝ), ‖(sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))‖)
+      ≤ ∫ x in Ioi (1 : ℝ), (‖s‖ * (1 / 2)) * x ^ (-s.re - 1) := by
+    apply setIntegral_mono_on hint.norm hdom measurableSet_Ioi hptwise
+  -- closed form of the dominating integral: (‖s‖/2)·∫ x^{−σ−1} = (‖s‖/2)·(1/σ)
+  have hclosed : (∫ x in Ioi (1 : ℝ), (‖s‖ * (1 / 2)) * x ^ (-s.re - 1))
+      = ‖s‖ / (2 * s.re) := by
+    rw [MeasureTheory.integral_const_mul, integral_Ioi_rpow_of_lt (a := -s.re - 1) (by linarith)
+      (by norm_num : (0:ℝ) < 1)]
+    have hexp : (-s.re - 1 + 1) = -s.re := by ring
+    rw [hexp, Real.one_rpow]
+    have hne : s.re ≠ 0 := ne_of_gt hs
+    field_simp
+  calc ‖emZetaRemainder s‖ ≤ _ := hbound1
+    _ ≤ _ := hbound2
+    _ = ‖s‖ / (2 * s.re) := hclosed
+
+/-- For `Re s > 1`, `emZetaClosed s = riemannZeta s` (unconditional identity in the region of
+    convergence).  The `1/(s−1)` is `∫_1^∞ x^{−s}` and `1/2` is `1^{−s}/2`. -/
+theorem emZetaClosed_eq_riemannZeta_of_one_lt {s : ℂ} (hs : 1 < s.re) :
+    emZetaClosed s = riemannZeta s := by
+  have hs1 : s ≠ 1 := by
+    intro h; rw [h] at hs; simp at hs
+  -- ∫_1^∞ x^{−s} = 1/(s−1)
+  have hIntClosed : (∫ x in Ioi (1 : ℝ), (x : ℂ) ^ (-s)) = 1 / (s - 1) := by
+    have hI := integral_Ioi_cpow_of_lt (a := -s) (by rw [Complex.neg_re]; linarith)
+      (c := (1 : ℝ)) (by norm_num)
+    rw [hI, Complex.ofReal_one, Complex.one_cpow]
+    have hs1' : s - 1 ≠ 0 := sub_ne_zero.mpr hs1
+    rw [div_eq_div_iff (by simpa [neg_add_eq_sub] using sub_ne_zero.mpr (Ne.symm hs1)) hs1']
+    ring
+  have hone : ((1 : ℝ) : ℂ) ^ (-s) = 1 := by
+    rw [Complex.ofReal_one, Complex.one_cpow]
+  rw [emZetaClosed, emZetaRemainder, em_zeta_cpow_riemannZeta hs, hIntClosed, hone]
+
 end ZetaReflection
