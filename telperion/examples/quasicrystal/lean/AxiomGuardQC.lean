@@ -42,6 +42,13 @@ open Quasicrystal
 #print axioms Quasicrystal.exists_close_of_card_gt
 #print axioms Quasicrystal.zeta_ordinates_not_uniformlyDiscrete
 
+/-! ### increment (iv) W2c -- the N(T) brick: discharging the counting hypothesis -/
+#print axioms Quasicrystal.exists_close_of_gap_lt
+#print axioms Quasicrystal.exists_gap_le_of_window
+#print axioms Quasicrystal.windowedDensity_of_unboundedMeanDensity
+#print axioms Quasicrystal.not_uniformlyDiscrete_of_windowedDensity
+#print axioms Quasicrystal.zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density
+
 /-! ### handoff K1 -- TwoFreqRigidity (Theorem A) -/
 #print axioms Quasicrystal.twoFreq_eq_zero_iff
 #print axioms Quasicrystal.twoFreq_zero_norm
