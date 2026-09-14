@@ -141,3 +141,9 @@ roots = ["ZeroHypBand_t14"]
 [[lean_lib]]
 name = "ArctanTaylor"
 roots = ["ArctanTaylor"]
+
+# ANDÚRIL θ-value: finite Im-part pipeline (arg atom + Im L_n formula + Gauss-product bridge)
+# plus the two named remaining Props (rate + branch bridge).
+[[lean_lib]]
+name = "ThetaValue"
+roots = ["ThetaValue"]
