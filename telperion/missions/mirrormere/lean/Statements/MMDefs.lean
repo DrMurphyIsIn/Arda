@@ -44,6 +44,20 @@ def RvMUnboundedMeanDensity (S : Set ℝ) : Prop :=
 def zetaOrdinates : Set ℝ :=
   {t : ℝ | ∃ ρ : ℂ, riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 ∧ ρ.im = t}
 
+-- ===== AUTHORED for the torus-section ladder (QC_TORUS_SECTION_LADDER memo, T1;
+-- NOT in the island).  The cut-and-project vocabulary: the orbit of the Kronecker
+-- line through T^N, the linear form on the torus, and the 1-D exponential-sum
+-- section.  twoFreq (verbatim above) is the N=2 instance under the dictionary
+-- identity (node MM_torus_section_dictionary). =====
+noncomputable def torusOrbit (N : ℕ) (lam : Fin N → ℝ) (x : ℂ) : Fin N → ℂ :=
+  fun j => Complex.exp ((lam j : ℂ) * x * Complex.I)
+
+def linearTorusForm (N : ℕ) (c : Fin N → ℂ) (z : Fin N → ℂ) : ℂ :=
+  ∑ j, c j * z j
+
+noncomputable def expSum (N : ℕ) (c : Fin N → ℂ) (lam : Fin N → ℝ) (x : ℂ) : ℂ :=
+  ∑ j, c j * Complex.exp ((lam j : ℂ) * x * Complex.I)
+
 end Quasicrystal
 
 namespace RHLinalg

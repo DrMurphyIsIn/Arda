@@ -1,0 +1,8 @@
+created = "2026-09-14"
+depends_on = []
+kind = "lemma"
+name = "MM.torus_section_dictionary"
+statement_module = "Statements.MM_torus_section_dictionary"
+status = "draft"
+title = "Torus-section ladder T1, the dictionary identity: every N-frequency exponential sum is the restriction of the linear torus form along the torus orbit (expSum = linearTorusForm on torusOrbit) -- the formal cut-and-project vocabulary anchor (QC_TORUS_SECTION_LADDER memo section 5)"
+updated = "2026-09-14"
