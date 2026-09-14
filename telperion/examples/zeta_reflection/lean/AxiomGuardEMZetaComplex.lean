@@ -36,3 +36,6 @@ import EMZetaComplex
 #print axioms ZetaReflection.em_cpow_remainder_integrableOn_strip
 #print axioms ZetaReflection.emZetaRemainder_bound
 #print axioms ZetaReflection.emZetaClosed_eq_riemannZeta_of_one_lt
+#print axioms ZetaReflection.emZetaRemainder_hasDerivAt
+#print axioms ZetaReflection.hasDerivAt_emIntegrand
+#print axioms ZetaReflection.log_le_rpow_div

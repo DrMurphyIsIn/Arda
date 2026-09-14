@@ -448,4 +448,175 @@ theorem emZetaClosed_eq_riemannZeta_of_one_lt {s : ℂ} (hs : 1 < s.re) :
     rw [Complex.ofReal_one, Complex.one_cpow]
   rw [emZetaClosed, emZetaRemainder, em_zeta_cpow_riemannZeta hs, hIntClosed, hone]
 
+/-! ### E3 helpers for the analytic continuation. -/
+
+/-- Elementary global bound `log x ≤ x^δ / δ` for `x ≥ 1`, `δ > 0` (log grows slower than any
+    positive power).  `δ·log x = log(x^δ) ≤ x^δ − 1 ≤ x^δ`. -/
+theorem log_le_rpow_div {δ : ℝ} (hδ : 0 < δ) {x : ℝ} (hx : 1 ≤ x) :
+    Real.log x ≤ x ^ δ / δ := by
+  have hxpos : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one hx
+  have hlog : δ * Real.log x = Real.log (x ^ δ) := (Real.log_rpow hxpos δ).symm
+  have hxδpos : (0 : ℝ) < x ^ δ := Real.rpow_pos_of_pos hxpos δ
+  have hle : Real.log (x ^ δ) ≤ x ^ δ - 1 := Real.log_le_sub_one_of_pos hxδpos
+  rw [le_div_iff₀ hδ]
+  calc Real.log x * δ = δ * Real.log x := by ring
+    _ = Real.log (x ^ δ) := hlog
+    _ ≤ x ^ δ - 1 := hle
+    _ ≤ x ^ δ := by linarith
+
+/-- The `s`-derivative of the EM remainder integrand at fixed real `x > 0`:
+        ∂_s [ ↑(saw x)·(−s·x^{−s−1}) ] = ↑(saw x)·((−1 + s·log(x:ℂ))·x^{−s−1}).
+    From `HasDerivAt.const_cpow` (derivative in the exponent) and the product/const-mul rules. -/
+theorem hasDerivAt_emIntegrand (x : ℝ) (hx : 0 < x) (s : ℂ) :
+    HasDerivAt (fun s : ℂ => (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+      ((sawBernoulli 1 x : ℂ) * ((-1 + s * Complex.log (x : ℂ)) * (x : ℂ) ^ (-s - 1))) s := by
+  have hxc : (x : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hx
+  -- exponent map e s = -s - 1, derivative -1.
+  have he : HasDerivAt (fun s : ℂ => -s - 1) (-1) s := by
+    simpa using ((hasDerivAt_id s).neg.sub_const (1 : ℂ))
+  -- (x:ℂ)^(e s) via const_cpow: derivative (x:ℂ)^(e s)·log(x:ℂ)·(-1).
+  have hcpow : HasDerivAt (fun s : ℂ => (x : ℂ) ^ (-s - 1))
+      ((x : ℂ) ^ (-s - 1) * Complex.log (x : ℂ) * (-1)) s :=
+    he.const_cpow (Or.inl hxc)
+  -- -s, derivative -1.
+  have hlin : HasDerivAt (fun s : ℂ => -s) (-1) s := (hasDerivAt_id s).neg
+  -- product (-s)·(x:ℂ)^(e s), then const-mul by ↑(saw x); package as the target function.
+  have hfull : HasDerivAt (fun s : ℂ => (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+      ((sawBernoulli 1 x : ℂ)
+        * (-1 * (x : ℂ) ^ (-s - 1) + -s * ((x : ℂ) ^ (-s - 1) * Complex.log (x : ℂ) * -1))) s :=
+    (hlin.mul hcpow).const_mul (sawBernoulli 1 x : ℂ)
+  -- reconcile the derivative value algebraically.
+  have hval : (sawBernoulli 1 x : ℂ)
+        * (-1 * (x : ℂ) ^ (-s - 1) + -s * ((x : ℂ) ^ (-s - 1) * Complex.log (x : ℂ) * -1))
+      = (sawBernoulli 1 x : ℂ) * ((-1 + s * Complex.log (x : ℂ)) * (x : ℂ) ^ (-s - 1)) := by
+    ring
+  rw [hval] at hfull
+  exact hfull
+
+/-- Integrability on `(1,∞)` of the dominating bound `C · x^{−σ−1} + D · x^{δ−σ−1}` used for
+    differentiation under the integral, when `0 < δ < σ` (so both exponents are `< −1`). -/
+private theorem bound_integrableOn {C D σ δ : ℝ} (hσ : 0 < σ) (hδ : 0 < δ) (hδσ : δ < σ) :
+    IntegrableOn (fun x : ℝ => C * x ^ (-σ - 1) + D * x ^ (δ - σ - 1)) (Ioi 1) := by
+  have h1 : IntegrableOn (fun x : ℝ => C * x ^ (-σ - 1)) (Ioi 1) :=
+    (integrableOn_Ioi_rpow_of_lt (a := -σ - 1) (by linarith) (by norm_num : (0:ℝ) < 1)).const_mul _
+  have h2 : IntegrableOn (fun x : ℝ => D * x ^ (δ - σ - 1)) (Ioi 1) :=
+    (integrableOn_Ioi_rpow_of_lt (a := δ - σ - 1) (by linarith) (by norm_num : (0:ℝ) < 1)).const_mul _
+  exact h1.add h2
+
+/-- **The EM remainder integral is complex-differentiable on `{Re s > 0}`** (E3 analytic core).
+    Differentiation under the integral sign via `hasDerivAt_integral_of_dominated_loc_of_deriv_le`,
+    with the local uniform domination `‖∂_s integrand‖ ≤ bound x` on a ball inside the half-plane
+    and `bound` integrable by `bound_integrableOn`. -/
+theorem emZetaRemainder_hasDerivAt {s₀ : ℂ} (hs₀ : 0 < s₀.re) :
+    HasDerivAt emZetaRemainder
+      (∫ x in Ioi (1 : ℝ),
+        (sawBernoulli 1 x : ℂ) * ((-1 + s₀ * Complex.log (x : ℂ)) * (x : ℂ) ^ (-s₀ - 1))) s₀ := by
+  set σ : ℝ := s₀.re / 2 with hσdef
+  set ε : ℝ := s₀.re / 2 with hεdef
+  set δ : ℝ := σ / 2 with hδdef
+  have hσpos : 0 < σ := by rw [hσdef]; linarith
+  have hεpos : 0 < ε := by rw [hεdef]; linarith
+  have hδpos : 0 < δ := by rw [hδdef]; linarith
+  have hδσ : δ < σ := by rw [hδdef]; linarith
+  -- The ball `s` region and the re-lower-bound on it.
+  set S : Set ℂ := Metric.ball s₀ ε with hSdef
+  have hS_nhds : S ∈ 𝓝 s₀ := Metric.ball_mem_nhds s₀ hεpos
+  have hre_lb : ∀ s ∈ S, σ ≤ s.re := by
+    intro s hs
+    rw [hSdef, Metric.mem_ball] at hs
+    have h1 : |s.re - s₀.re| ≤ ‖s - s₀‖ := by
+      simpa using Complex.abs_re_le_norm (s - s₀)
+    have h2 : ‖s - s₀‖ < ε := by rwa [Complex.dist_eq] at hs
+    have : |s.re - s₀.re| < ε := lt_of_le_of_lt h1 h2
+    have := (abs_lt.mp this).1
+    rw [hσdef, hεdef]; rw [hεdef] at this; linarith
+  -- Integrand F and derivative F'.
+  set F : ℂ → ℝ → ℂ := fun s x => (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)) with hFdef
+  set F' : ℂ → ℝ → ℂ := fun s x =>
+    (sawBernoulli 1 x : ℂ) * ((-1 + s * Complex.log (x : ℂ)) * (x : ℂ) ^ (-s - 1)) with hF'def
+  -- The dominating bound.
+  set bnd : ℝ → ℝ := fun x => (1 / 2) * x ^ (-σ - 1)
+    + ((1 / 2) * (‖s₀‖ + ε) * (1 / δ)) * x ^ (δ - σ - 1) with hbnddef
+  -- (a) measurability of F near s₀
+  have hF_meas : ∀ᶠ s in 𝓝 s₀, AEStronglyMeasurable (F s) (volume.restrict (Ioi 1)) := by
+    filter_upwards with s
+    apply Measurable.aestronglyMeasurable
+    rw [hFdef]
+    exact (Complex.measurable_ofReal.comp (sawBernoulli_measurable 1)).mul
+      (measurable_const.mul (Complex.measurable_ofReal.pow_const _))
+  -- (b) F s₀ integrable
+  have hF_int : Integrable (F s₀) (volume.restrict (Ioi 1)) :=
+    em_cpow_remainder_integrableOn_strip hs₀
+  -- (c) F' s₀ measurable
+  have hF'_meas : AEStronglyMeasurable (F' s₀) (volume.restrict (Ioi 1)) := by
+    apply Measurable.aestronglyMeasurable
+    rw [hF'def]
+    apply (Complex.measurable_ofReal.comp (sawBernoulli_measurable 1)).mul
+    apply Measurable.mul
+    · exact measurable_const.add (measurable_const.mul
+        (Complex.measurable_log.comp Complex.measurable_ofReal))
+    · exact Complex.measurable_ofReal.pow_const _
+  -- (d) uniform bound on S
+  have h_bound : ∀ᵐ x ∂(volume.restrict (Ioi 1)), ∀ s ∈ S, ‖F' s x‖ ≤ bnd x := by
+    rw [ae_restrict_iff' measurableSet_Ioi]
+    filter_upwards with x hx s hs
+    have hx1 : (1 : ℝ) ≤ x := le_of_lt hx
+    have hxpos : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one hx1
+    have hsre : σ ≤ s.re := hre_lb s hs
+    have hslt : ‖s‖ ≤ ‖s₀‖ + ε := by
+      have : ‖s - s₀‖ < ε := by rw [hSdef, Metric.mem_ball, Complex.dist_eq] at hs; exact hs
+      calc ‖s‖ = ‖s₀ + (s - s₀)‖ := by ring_nf
+        _ ≤ ‖s₀‖ + ‖s - s₀‖ := norm_add_le _ _
+        _ ≤ ‖s₀‖ + ε := by linarith
+    -- ‖F' s x‖ = |saw|·‖(-1 + s log x)·x^{-s-1}‖ ≤ (1/2)·(1 + ‖s‖ log x)·x^{-σ-1}
+    have hlogeq : Complex.log (x : ℂ) = ((Real.log x : ℝ) : ℂ) := (Complex.ofReal_log hxpos.le).symm
+    have hnormcpow : ‖(x : ℂ) ^ (-s - 1)‖ = x ^ (-s.re - 1) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos, Complex.sub_re, Complex.neg_re,
+        Complex.one_re]
+    have hlognn : 0 ≤ Real.log x := Real.log_nonneg hx1
+    have hcpownn : (0 : ℝ) ≤ x ^ (-s.re - 1) := Real.rpow_nonneg hxpos.le _
+    have hsaw := abs_sawBernoulli_one_le x
+    -- factor bound
+    have hfac : ‖(-1 + s * Complex.log (x : ℂ)) * (x : ℂ) ^ (-s - 1)‖
+        ≤ (1 + ‖s‖ * Real.log x) * x ^ (-s.re - 1) := by
+      rw [norm_mul, hnormcpow]
+      gcongr
+      calc ‖(-1 + s * Complex.log (x : ℂ))‖
+          ≤ ‖(-1 : ℂ)‖ + ‖s * Complex.log (x : ℂ)‖ := norm_add_le _ _
+        _ = 1 + ‖s‖ * ‖Complex.log (x : ℂ)‖ := by rw [norm_mul]; norm_num
+        _ = 1 + ‖s‖ * Real.log x := by
+            rw [hlogeq, Complex.norm_real, Real.norm_of_nonneg hlognn]
+    -- log bound: log x ≤ x^δ / δ
+    have hlogbd : Real.log x ≤ x ^ δ / δ := log_le_rpow_div hδpos hx1
+    have hxδdivnn : (0 : ℝ) ≤ x ^ δ / δ := by positivity
+    have hs₀εnn : (0 : ℝ) ≤ ‖s₀‖ + ε := by positivity
+    have hexpmono : x ^ (-s.re - 1) ≤ x ^ (-σ - 1) :=
+      Real.rpow_le_rpow_of_exponent_le hx1 (by linarith)
+    have hcpowσnn : (0 : ℝ) ≤ x ^ (-σ - 1) := Real.rpow_nonneg hxpos.le _
+    rw [hF'def, norm_mul, Complex.norm_real, Real.norm_eq_abs]
+    calc |sawBernoulli 1 x| * ‖(-1 + s * Complex.log (x : ℂ)) * (x : ℂ) ^ (-s - 1)‖
+        ≤ (1 / 2) * ((1 + ‖s‖ * Real.log x) * x ^ (-s.re - 1)) := by
+          gcongr
+      _ ≤ (1 / 2) * ((1 + (‖s₀‖ + ε) * (x ^ δ / δ)) * x ^ (-σ - 1)) := by
+          gcongr
+      _ = bnd x := by
+          have hxadd : x ^ (δ - σ - 1) = x ^ δ * x ^ (-σ - 1) := by
+            rw [← Real.rpow_add hxpos]; congr 1; ring
+          have hδne : δ ≠ 0 := ne_of_gt hδpos
+          simp only [hbnddef, hxadd]
+          field_simp
+  -- Assemble via the parametric-integral differentiation lemma.
+  have hbnd_int : Integrable bnd (volume.restrict (Ioi 1)) := by
+    rw [hbnddef]
+    exact bound_integrableOn (C := 1 / 2) (D := (1 / 2) * (‖s₀‖ + ε) * (1 / δ))
+      hσpos hδpos hδσ
+  have h_diff : ∀ᵐ x ∂(volume.restrict (Ioi 1)), ∀ s ∈ S, HasDerivAt (fun s => F s x) (F' s x) s := by
+    rw [ae_restrict_iff' measurableSet_Ioi]
+    filter_upwards with x hx s _
+    have hxpos : (0 : ℝ) < x := lt_of_lt_of_le zero_lt_one (le_of_lt hx)
+    exact hasDerivAt_emIntegrand x hxpos s
+  obtain ⟨_, hderiv⟩ := hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (bound := bnd) (F := F) (F' := F') hS_nhds hF_meas hF_int hF'_meas h_bound hbnd_int h_diff
+  exact hderiv
+
 end ZetaReflection
