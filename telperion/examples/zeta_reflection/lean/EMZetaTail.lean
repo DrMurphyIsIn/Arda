@@ -883,3 +883,107 @@ theorem em_tail2_step {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re) (hs1 : 
   rw [hbern2]
   push_cast
   ring
+
+/-- Third σ-direction derivative of `x^{-s}`: `d/dx(s(s+1)·x^{-s-2}) = -s(s+1)(s+2)·x^{-s-3}` for
+    `x > 0` and `s ≠ -2` (so `-s-2 ≠ 0`). -/
+theorem hasDerivAt_cpow_neg3 {s : ℂ} (hs : s ≠ -2) {x : ℝ} (hx : 0 < x) :
+    HasDerivAt (fun x : ℝ => s * (s + 1) * (x : ℂ) ^ (-s - 2))
+      (-(s * (s + 1) * (s + 2)) * (x : ℂ) ^ (-s - 3)) x := by
+  have hx0 : x ≠ 0 := ne_of_gt hx
+  have hr : (-s - 2 : ℂ) ≠ 0 := by intro h; apply hs; linear_combination -h
+  have hstep : HasDerivAt (fun x : ℝ => (x : ℂ) ^ (-s - 2))
+      ((-s - 2) * (x : ℂ) ^ (-s - 2 - 1)) x := hasDerivAt_ofReal_cpow_const hx0 hr
+  have hfull := hstep.const_mul (s * (s + 1))
+  have hval : (s * (s + 1)) * ((-s - 2) * (x : ℂ) ^ (-s - 2 - 1))
+      = -(s * (s + 1) * (s + 2)) * (x : ℂ) ^ (-s - 3) := by
+    rw [show (-s - 2 - 1 : ℂ) = -s - 3 by ring]; ring
+  rw [hval] at hfull
+  exact hfull
+
+/-- Integrability of the order-3 tail integrand `saw₃·(c₃(s) x^{−s−3})` on `(N, ∞)`. -/
+theorem em_tail3_integrableOn {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re) :
+    IntegrableOn (fun x : ℝ => (sawBernoulli 3 x : ℂ) * (emTailCoeff3 s * (x : ℂ) ^ (-s - 3))) (Ioi (N : ℝ)) := by
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hN
+  have hbase : IntegrableOn (fun x : ℝ => (‖emTailCoeff3 s‖ * (1 / 12)) * x ^ (-s.re - 3)) (Ioi (N : ℝ)) :=
+    (integrableOn_Ioi_rpow_of_lt (a := -s.re - 3) (by linarith) hNpos).const_mul _
+  refine Integrable.mono' hbase ?_ ?_
+  · apply Measurable.aestronglyMeasurable
+    exact (Complex.measurable_ofReal.comp (sawBernoulli_measurable 3)).mul
+      (measurable_const.mul (Complex.measurable_ofReal.pow_const _))
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
+    have hxpos : (0 : ℝ) < x := lt_trans hNpos hx
+    have hnormcpow : ‖(x : ℂ) ^ (-s - 3)‖ = x ^ (-s.re - 3) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos]; congr 1
+    have hsaw := abs_sawBernoulli_three_le x
+    have hrpownn : (0 : ℝ) ≤ x ^ (-s.re - 3) := Real.rpow_nonneg hxpos.le _
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, hnormcpow]
+    calc |sawBernoulli 3 x| * (‖emTailCoeff3 s‖ * x ^ (-s.re - 3))
+        ≤ (1 / 12) * (‖emTailCoeff3 s‖ * x ^ (-s.re - 3)) := by gcongr
+      _ = (‖emTailCoeff3 s‖ * (1 / 12)) * x ^ (-s.re - 3) := by ring
+
+/-- **Order-3 tail EM step** (closed form).  For `Re s > 0`, `N ≥ 1`, `s ≠ -2`:
+        ∫_N^∞ saw₂·(s(s+1) x^{−s−2}) = −(∫_N^∞ saw₃·(c₃(s) x^{−s−3}))/3.
+    The boundary term VANISHES because `bernoulli 3 = 0` (odd Bernoulli numbers past B₁ are zero) —
+    so the order-3 correction contributes no explicit finite term, only a smaller remainder. -/
+theorem em_tail3_step {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re) (hs2 : s ≠ -2) :
+    (∫ x in Ioi (N : ℝ), (sawBernoulli 2 x : ℂ) * (s * (s + 1) * (x : ℂ) ^ (-s - 2)))
+      = - (∫ x in Ioi (N : ℝ), (sawBernoulli 3 x : ℂ) * (emTailCoeff3 s * (x : ℂ) ^ (-s - 3))) / 3 := by
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hN
+  set fk : ℝ → ℂ := fun x => s * (s + 1) * (x : ℂ) ^ (-s - 2) with hfk
+  set fk1 : ℝ → ℂ := fun x => emTailCoeff3 s * (x : ℂ) ^ (-s - 3) with hfk1
+  have hI2 := em_tail2_integrableOn hN hs
+  have hI3 := em_tail3_integrableOn hN hs
+  have hfk1_eq : ∀ x : ℝ, fk1 x = -(s * (s + 1) * (s + 2)) * (x : ℂ) ^ (-s - 3) := by
+    intro x; rw [hfk1, emTailCoeff3]
+  have hwin : ∀ M : ℕ, N ≤ M →
+      (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 2 x : ℂ) * fk x)
+        = (0 : ℂ) * (fk M - fk N) / (2 + 1)
+          - (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 3 x : ℂ) * fk1 x) / (2 + 1) := by
+    intro M hM
+    have hd : ∀ x ∈ Icc (N : ℝ) M, HasDerivAt fk (fk1 x) x := by
+      intro x hx
+      have hx1 : (1 : ℝ) ≤ x := le_trans (by exact_mod_cast hN) hx.1
+      rw [hfk1_eq x]
+      exact hasDerivAt_cpow_neg3 hs2 (lt_of_lt_of_le zero_lt_one hx1)
+    have hi : ∀ j ∈ Finset.Ico N M, IntervalIntegrable fk1 volume (j : ℝ) (j + 1) := by
+      intro j hj
+      rw [Finset.mem_Ico] at hj
+      have hj1 : (1 : ℝ) ≤ (j : ℝ) := by exact_mod_cast le_trans hN hj.1
+      apply ContinuousOn.intervalIntegrable
+      rw [uIcc_of_le (by linarith), hfk1]
+      apply ContinuousOn.mul continuousOn_const
+      apply ContinuousOn.cpow_const Complex.continuous_ofReal.continuousOn
+      intro x hx
+      have : (1 : ℝ) ≤ x := le_trans hj1 hx.1
+      exact Or.inl (by simp only [Complex.ofReal_re]; linarith)
+    have hstep := em_saw_step_window_cpow (k := 2) (by norm_num) N M hM fk fk1 hd hi
+    have hb3 : (bernoulliFun (2 + 1) 0 : ℂ) = 0 := by
+      norm_num [bernoulliFun_eval_zero, bernoulli_eq_zero_of_odd (by decide : Odd 3) (by norm_num)]
+    rw [hb3] at hstep
+    have h3 : (2 : ℕ) + 1 = 3 := rfl
+    rw [h3] at hstep
+    convert hstep using 3 <;> norm_num
+  have hA : Tendsto (fun M : ℕ => ∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 2 x : ℂ) * fk x) atTop
+      (𝓝 (∫ x in Ioi (N : ℝ), (sawBernoulli 2 x : ℂ) * fk x)) :=
+    intervalIntegral_tendsto_integral_Ioi N hI2 tendsto_natCast_atTop_atTop
+  have hB : Tendsto (fun M : ℕ => ∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 3 x : ℂ) * fk1 x) atTop
+      (𝓝 (∫ x in Ioi (N : ℝ), (sawBernoulli 3 x : ℂ) * fk1 x)) :=
+    intervalIntegral_tendsto_integral_Ioi N hI3 tendsto_natCast_atTop_atTop
+  have hRHS : Tendsto (fun M : ℕ =>
+      (0 : ℂ) * (fk M - fk N) / (2 + 1)
+        - (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 3 x : ℂ) * fk1 x) / (2 + 1)) atTop
+      (𝓝 ((0 : ℂ) * (0 - fk N) / (2 + 1)
+        - (∫ x in Ioi (N : ℝ), (sawBernoulli 3 x : ℂ) * fk1 x) / (2 + 1))) := by
+    apply Tendsto.sub
+    · simp
+    · exact hB.div_const (2 + 1)
+  have hEq : ∀ᶠ M : ℕ in atTop,
+      (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 2 x : ℂ) * fk x)
+        = (0 : ℂ) * (fk M - fk N) / (2 + 1)
+          - (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 3 x : ℂ) * fk1 x) / (2 + 1) := by
+    filter_upwards [eventually_ge_atTop N] with M hM using hwin M hM
+  have hlim := tendsto_nhds_unique (hA.congr' hEq) hRHS
+  rw [hlim]
+  ring
+
+end ZetaReflection
