@@ -1,0 +1,13 @@
+created = "2026-09-14"
+depends_on = []
+kind = "milestone"
+name = "AND.ladder_h280000"
+statement_module = "Statements.AND_ladder_h280000"
+status = "open"
+title = "Current certified height: every nontrivial zeta zero with |Im rho| <= 280000 lies on Re = 1/2 (432,474 zeros, leg 17). Artifact carries per-segment BandHyp binders (all_nontrivial_zeros_up_to_height_280000_of_bands); this node's hypothesis-free form is the roadmap's StripClear two-box capstone deliverable -- grant on that discharge + the branch reconcile"
+updated = "2026-09-14"
+
+[readback]
+auditor = "missions-migration-session-2026-09-14"
+date = "2026-09-14"
+text = "Every zero of the Riemann zeta function in the open critical strip 0 < Re s < 1 whose imaginary part has absolute value at most 280000 lies exactly on the critical line Re s = 1/2. The artifact proves this GIVEN one BandHyp hypothesis per height segment; each BandHyp is discharged by the kernel-checked RHInBoxT band modules of the zeta_zero_localization island (T5 route: RvM edge-decomposition band certificates with statement-match gates). The registry statement is the hypothesis-free conclusion; the artifact-side discharge glue (StripClear two-box capstone) is a named roadmap deliverable, so this node stays open until that glue plus the rh/million-turing -> main reconcile land. Finite verification to a finite height -- NOT a proof of RH."

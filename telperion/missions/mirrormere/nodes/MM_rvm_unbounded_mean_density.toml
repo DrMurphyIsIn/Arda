@@ -1,0 +1,13 @@
+created = "2026-09-14"
+depends_on = []
+kind = "lemma"
+name = "MM.rvm_unbounded_mean_density"
+statement_module = "Statements.MM_rvm_unbounded_mean_density"
+status = "open"
+title = "The W2c residual, named: RvMUnboundedMeanDensity -- the zeta-ordinate mean density exceeds every finite bound (Riemann-von Mangoldt growth input; discharge route = the li-island effective RvM count, cross-island)"
+updated = "2026-09-14"
+
+[readback]
+auditor = "missions-migration-session-2026-09-14"
+date = "2026-09-14"
+text = "The open analytic input isolated by W2c: for every r there are windows in which the ordinates of the nontrivial zeta zeros have mean density exceeding r -- the recognizable form of N(T) ~ (T/2pi) log T. Unconditional in the literature (Riemann-von Mangoldt / Backlund), absent from Mathlib, and not dischargeable by any finite certified ladder stage. The intended artifact is the v4.34 li-island effective RvM machinery (RvMBacklundLogCont and companions), consumed cross-island per design section 2. Open, unlinked: this node IS the frontier."

@@ -1,0 +1,19 @@
+created = "2026-09-14"
+depends_on = []
+kind = "milestone"
+name = "MM.selfinversive_iff_hardyz_real"
+statement_module = "Statements.MM_selfinversive_iff_hardyz_real"
+status = "open"
+title = "W2a involution dictionary: the self-inversive identity forces the finite Hardy-Z analogue to be real on the circle's preimage (selfInversive_iff_hardyZ_real) -- the finite model of Lambda real on the critical line, under the z = e^{i omega x} intertwiner"
+updated = "2026-09-14"
+
+[proof]
+artifact = "../../examples/quasicrystal/lean/InvolutionDictionary.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
+date = "2026-09-14"
+text = "If a complex polynomial p satisfies the self-inversive identity z^deg(p) * conj(p(1/conj z)) = phase * p(z) for all nonzero z, and u is a unit-norm square root of the phase, then for every real omega and x the finite Hardy-Z analogue hardyZ p u omega x (the half-degree-phase-normalized exponential sum) has zero imaginary part. This is the functional-equation <-> self-inversive dictionary's reality theorem: conjugation composed with the self-inversive identity fixes Z on the unit circle's preimage, the exact finite model of the completed zeta being real on Re s = 1/2, with u^2 = phase the finite analogue of the archimedean completion factor. [Verbatim extract of the proved selfInversive_iff_hardyZ_real; artifact on rh/million-turing, grant deferred to the branch reconcile.]"
