@@ -57,6 +57,17 @@ U5 = F(1609437, 1000000)     # ~ log 5
 LOG6 = math.log(6)           # a non-log-prime frequency (log2+log3): should be atom-free
 GENERIC_U = 1.0              # a generic non-lattice frequency
 
+# Davenport-Heilbronn coefficient vector c=[1, kappa, -kappa, -1, 0] period 5
+# (QC_DH_SCOUT.md: kappa = (sqrt(10-2sqrt5)-2)/(sqrt5-1)).  Used to drive the
+# W3a multiplicativity check from the REAL periodic coefficients, not a caricature.
+_DH_KAPPA = (math.sqrt(10 - 2 * math.sqrt(5)) - 2) / (math.sqrt(5) - 1)
+
+
+def _DH_C(n_mod5: int) -> float:
+    """c(n) for n = n_mod5 mod 5 (n_mod5 in 0..4).  c=[1, kappa, -kappa, -1, 0]
+    indexed so c(1)=1, c(2)=kappa, c(3)=-kappa, c(4)=-1, c(5)=c(0)=0."""
+    return {1: 1.0, 2: _DH_KAPPA, 3: -_DH_KAPPA, 4: -1.0, 0: 0.0}[n_mod5 % 5]
+
 
 # ===========================================================================
 # Zoo objects
@@ -81,6 +92,18 @@ class ZooObject:
     defect_count: int = 0
     defect_grows: bool = False
     tempered: bool = True
+    # multiplicativity (W3a, B-mult): the Dirichlet coefficient sequence whose
+    # log-derivative supplies the prime-side amplitudes.  When present, the harness
+    # certifies the amplitude generation law  a(p^m) = (log p) w(p)^m  directly from
+    # this sequence (a genuine finite computation, not a descriptor lookup).
+    #   'euler_product'  -- completely multiplicative a(n) (zeta: a(n)=1)  -> generation holds
+    #   'periodic_mod_q' -- a periodic coefficient vector (DH: c=[1,k,-k,-1,0])  -> generation fails
+    #   'none'           -- no Dirichlet-coefficient model (lattice/ksly/random)
+    mult_model: str = "none"
+    # the finite coefficient data for mult_model:
+    #   euler_product  -> ('cm', dict{prime: a(p)})     completely-multiplicative seed a(p)
+    #   periodic_mod_q -> ('periodic', list c[0..q-1])  the period-q vector, c indexed by n mod q
+    mult_coeffs: object = None
 
 
 def _load_zeta(t_max: float = 100.0) -> ZooObject:
@@ -97,6 +120,10 @@ def _load_zeta(t_max: float = 100.0) -> ZooObject:
         spectrum="prime_log_lattice",     # GW image -- pure-pointness is RH-conditional
         weights="positive_prime",         # (log p) p^{-k/2} > 0  (unconditional, arithmetic)
         defect_count=0, defect_grows=False, tempered=True,
+        # zeta: a(n)=1 for all n (completely multiplicative, Euler product).  Its
+        # -zeta'/zeta coefficients are Lambda(n) -> the amplitudes a(p^m)=(log p)p^{-m/2}
+        # are generated multiplicatively from the prime layer w(p)=p^{-1/2}.
+        mult_model="euler_product", mult_coeffs=("cm", {}),  # {} => a(p)=1 for every p
     )
 
 
@@ -116,6 +143,12 @@ def _load_dh(t_max: float = 100.0) -> ZooObject:
         weights="complex_char_mixed",     # no Euler product -> character-mixed complex weights
         defect_count=off_all, defect_grows=True,   # positive proportion off-line: k(T)->inf
         tempered=True,
+        # DH: D(s)=sum c(n)n^{-s}, c=[1,kappa,-kappa,-1,0] period 5 (QC_DH_SCOUT).
+        # This is a PERIODIC (character-combination) sequence, NOT multiplicative:
+        # it has no Euler product, so -D'/D has nonzero coefficients at COMPOSITE n
+        # and the prime-layer amplitudes are sign-varying -> generation law fails.
+        mult_model="periodic_mod_q",
+        mult_coeffs=("periodic", [_DH_C(0), _DH_C(1), _DH_C(2), _DH_C(3), _DH_C(4)]),
     )
 
 
@@ -251,6 +284,133 @@ def check_weight_positivity(obj: ZooObject) -> tuple[str, str]:
     return FAIL, f"weights {w}"
 
 
+# ---------------------------------------------------------------------------
+# W3a: the B-mult multiplicativity clause  (the adjudicated primitive)
+# ---------------------------------------------------------------------------
+def _von_mangoldt_analogue(a: list[float], N: int) -> list[float]:
+    """Given Dirichlet coefficients a[1..N] (a[0] unused, a[1]=1), return the
+    log-derivative coefficients b[1..N] of -f'/f where f = sum a(n) n^{-s}, via the
+    standard recursion  a(n) log n = sum_{d|n} b(d) a(n/d).  For a completely
+    multiplicative a (an Euler product) b is supported ONLY on prime powers with
+    b(p^m) = (log p); for a non-multiplicative a, b(n) != 0 at composite n."""
+    b = [0.0] * (N + 1)
+    for n in range(2, N + 1):
+        s = a[n] * math.log(n)
+        for d in range(2, n):
+            if n % d == 0:
+                s -= b[d] * a[n // d]
+        b[n] = s  # a[1] == 1
+    return b
+
+
+def _prime_powers_upto(N: int) -> dict:
+    """Return {p: [p, p^2, ...]} for prime powers <= N."""
+    out: dict[int, list[int]] = {}
+    for p in range(2, N + 1):
+        if all(p % q for q in range(2, int(p ** 0.5) + 1)):
+            pk, ms = p, []
+            while pk <= N:
+                ms.append(pk)
+                pk *= p
+            out[p] = ms
+    return out
+
+
+def check_multiplicativity(obj: ZooObject, N: int = 60, tol: float = 1e-6) -> tuple[str, str]:
+    """(B-mult / W3a) THE ADJUDICATED KILLER: the prime-side amplitudes are
+    MULTIPLICATIVELY GENERATED from the prime layer -- there is a per-prime weight
+    w(p) with  a(p^m) = (log p) w(p)^m  (for zeta w(p)=p^{-1/2}), AND no amplitude
+    at composite (non-prime-power) frequencies.  This is the Euler-product primitive.
+
+    Certified finite computation (not a descriptor lookup): build the actual
+    log-derivative coefficient sequence b(n) from the object's Dirichlet coefficients
+    and TEST the generation law directly.
+      * zeta (euler_product):  b(6)=0, b(p^m)=log p, geometric law holds -> PASS
+                               (pure-pointness of the DUAL comb is still RH; the
+                               multiplicative GENERATION of the amplitudes is
+                               unconditional/arithmetic, exactly like B-iii weights.)
+      * DH (periodic_mod_q):   b(6)!=0 (composite atom), and prime-layer signs vary
+                               -> generation law FAILS.
+      * lattice/ksly/random (no Dirichlet model): no multiplicative prime-layer at
+                               all -> FAIL (B-mult is STRICTLY SHARPER than B: it
+                               excludes generic Lee-Yang FQs, carving out the
+                               arithmetic ones -- this is the intended feature)."""
+    if obj.mult_model == "none":
+        # No Dirichlet-coefficient / prime-layer structure exists.  A generic FQ
+        # (ksly), a plain lattice, or a random comb has amplitudes that are NOT the
+        # multiplicative image of a prime layer.  B-mult excludes them by design.
+        return FAIL, ("no multiplicative prime-layer (not an Euler-product amplitude "
+                      "sequence); B-mult excludes generic/non-arithmetic combs")
+
+    kind, data = obj.mult_coeffs
+    a = [0.0] * (N + 1)
+    if kind == "cm":
+        # completely multiplicative from seed a(p) (default 1): a(n) = prod a(p)^{v_p}
+        seed = data
+        a[1] = 1.0
+        for n in range(2, N + 1):
+            # factor n
+            val, m = 1.0, n
+            for p in range(2, n + 1):
+                while m % p == 0:
+                    val *= seed.get(p, 1.0)
+                    m //= p
+                if m == 1:
+                    break
+            a[n] = val
+    elif kind == "periodic":
+        c = data  # c[0..q-1], indexed by n mod q
+        q = len(c)
+        for n in range(1, N + 1):
+            a[n] = c[n % q]
+    elif kind == "cm_corrupt":
+        # a completely-multiplicative base (a(p)=1 => a(n)=1) with a SINGLE composite
+        # amplitude overridden, genuinely breaking multiplicativity: data={n0: val}.
+        for n in range(1, N + 1):
+            a[n] = 1.0
+        for n0, val in data.items():
+            a[n0] = val
+    else:  # pragma: no cover
+        return FAIL, f"unknown mult_coeffs kind {kind}"
+
+    if abs(a[1] - 1.0) > tol:
+        return FAIL, f"a(1)={a[1]} != 1: not normalizable as -f'/f prime side"
+
+    b = _von_mangoldt_analogue(a, N)
+    pps = _prime_powers_upto(N)
+    prime_power_set = {pk for ms in pps.values() for pk in ms}
+
+    # (M1) NO amplitude at composite (non-prime-power) frequencies.
+    composite_hits = [n for n in range(2, N + 1)
+                      if n not in prime_power_set and abs(b[n]) > tol]
+    if composite_hits:
+        c0 = composite_hits[0]
+        return FAIL, (f"generation law breaks: nonzero amplitude at COMPOSITE "
+                      f"n={c0} (b({c0})={b[c0]:+.4f}); no Euler product => not "
+                      f"multiplicatively generated")
+
+    # (M2) per-prime geometric generation a(p^m)=(log p) w(p)^m with the SAME real
+    # positive w(p) across all m, i.e. b(p^m) real, sign-constant, and
+    # b(p^m)/b(p^{m-1}) == p^{-1/2}-consistent (for zeta, b(p^m)=log p exactly, so
+    # the AMPLITUDE a(p^m)=b(p^m) p^{-m/2} obeys a(p^m)/a(p^{m-1})=p^{-1/2}).
+    for p, ms in pps.items():
+        bs = [b[pk] for pk in ms]
+        # prime-layer amplitude must be real & positive (character sign forbidden)
+        if bs[0] <= tol:
+            return FAIL, (f"prime-layer amplitude b({p})={bs[0]:+.4f} not strictly "
+                          f"positive (character/sign-varying) => no positive w(p)")
+        # generation: b(p^m) must equal b(p) (von Mangoldt is m-constant for an
+        # Euler product), giving amplitude ratio exactly p^{-1/2}.
+        for m in range(1, len(bs)):
+            if abs(bs[m] - bs[0]) > tol * max(1.0, abs(bs[0])):
+                return FAIL, (f"generation breaks at {p}^{m+1}: b={bs[m]:+.4f} != "
+                              f"prime-layer b({p})={bs[0]:+.4f}")
+
+    return PASS, ("amplitudes multiplicatively generated: b(composite)=0, "
+                  "b(p^m)=(log p) constant in m => a(p^m)=(log p)p^{-m/2}=(log p)w(p)^m, "
+                  "w(p)=p^{-1/2} (Euler product; unconditional/arithmetic)")
+
+
 def check_signed_decay(obj: ZooObject) -> tuple[str, str]:
     """(C-iii): |c(u)| = O((log p)p^{-k/2}); positivity DROPPED.  This is the DEAD
     control variant -- DH PASSES it (its signed weights DO decay), which is exactly
@@ -290,14 +450,21 @@ def check_temperedness(obj: ZooObject) -> tuple[str, str]:
 # The clause registry: (clause key, human name, variants it belongs to, checker)
 # NB the STRICT prime-log-lattice spectrum clause is A/B/D only; variant C uses the
 # LOOSE reading (its own clause), which is exactly what lets DH survive C.
+# Variant "Bm" = B-mult (W3a): the spectrum primitive RESTATED as multiplicativity.
+# It inherits B's support-density, pure-point atomic-spectrum (still RH-conditional),
+# and temperedness, and REPLACES the (B-iii) positivity clause with the sharper
+# (B-mult) multiplicative-generation clause.  B-mult is strictly sharper than B:
+# multiplicative generation implies positivity of the prime layer (each b(p)=log p>0)
+# AND excludes generic non-arithmetic FQs (ksly) that B admitted.
 CLAUSES = [
-    ("support_density", "(A-i/B-i) support density", ["A", "B", "C", "D"], check_support_density),
-    ("atomic_spectrum", "(A-ii/B-ii) atomic spectrum on prime Lambda_log", ["A", "B", "D"], check_atomic_spectrum_loglattice),
+    ("support_density", "(A-i/B-i) support density", ["A", "B", "Bm", "C", "D"], check_support_density),
+    ("atomic_spectrum", "(A-ii/B-ii) atomic spectrum on prime Lambda_log", ["A", "B", "Bm", "D"], check_atomic_spectrum_loglattice),
     ("atomic_spectrum_loose", "(C-ii) atomic spectrum on any log-lattice", ["C"], check_atomic_spectrum_loose),
     ("weight_positivity", "(B-iii) weight positivity + decay [KILLER]", ["B"], check_weight_positivity),
+    ("multiplicativity", "(B-mult) multiplicative amplitude generation [W3a KILLER]", ["Bm"], check_multiplicativity),
     ("signed_decay", "(C-iii) signed decay only", ["C"], check_signed_decay),
     ("defect_bounded", "(D-ii) bounded defect k", ["D"], check_defect_bounded),
-    ("temperedness", "(A-iv..D) temperedness", ["A", "B", "C", "D"], check_temperedness),
+    ("temperedness", "(A-iv..D) temperedness", ["A", "B", "Bm", "C", "D"], check_temperedness),
 ]
 
 
@@ -363,6 +530,22 @@ def forged_controls() -> list[dict]:
     out.append({"control": "nontempered_weights", "clause": "temperedness",
                 "genuine": PASS, "forged_verdict": v, "flipped": v == FAIL, "detail": d})
 
+    # 6b. multiplicativity (W3a): the genuine zeta amplitude sequence PASSES B-mult;
+    #     corrupt ONE amplitude (override a(6)=1.5, breaking a(6)=a(2)a(3)=1) so the
+    #     log-derivative acquires a nonzero COMPOSITE amplitude b(6)!=0 -> the
+    #     generation law FAILS.  Verdict flips PASS -> FAIL.
+    genuine_zeta_mult, _ = check_multiplicativity(_load_zeta())
+    forged_mult = ZooObject(name="forged_broken_multiplicativity", kind="zeta",
+                            spectrum="prime_log_lattice", weights="positive_prime",
+                            density_count=50, density_model=50.0, t_max=100.0,
+                            mult_model="euler_product",
+                            mult_coeffs=("cm_corrupt", {6: 1.5}))  # a(6)!=a(2)a(3)
+    v, d = check_multiplicativity(forged_mult)
+    out.append({"control": "broken_multiplicativity", "clause": "multiplicativity",
+                "genuine": genuine_zeta_mult, "forged_verdict": v,
+                "flipped": v == FAIL and genuine_zeta_mult == PASS,
+                "detail": f"genuine zeta B-mult={genuine_zeta_mult}; corrupt a(2)=1.3 -> {v}: {d}"})
+
     # 7. CORRUPTED CERTIFIED INPUT: flip the certified DH off-line flag to on-line;
     #    the defect check must then WRONGLY report bounded (PASS) -- i.e. corrupting the
     #    input FLIPS the DH verdict, proving the verdict is a real function of the data.
@@ -396,7 +579,7 @@ def build_matrix(t_max: float = 100.0) -> dict:
     # per-variant object verdict: variant is a killer for an object iff object FAILs
     # >=1 clause of that variant.
     variant_kill = {}
-    for variant in ("A", "B", "C", "D"):
+    for variant in ("A", "B", "Bm", "C", "D"):
         variant_kill[variant] = {}
         for obj in objs:
             clauses = [k for k, _, vs, _ in CLAUSES if variant in vs]
@@ -445,6 +628,11 @@ def run_asserts(result: dict) -> tuple[list[str], list[str]]:
         "GOV: DH must FAIL (D-ii) bounded-defect")
     req(m["dh"]["atomic_spectrum"]["verdict"] == FAIL,
         "GOV: DH must FAIL variant-A atomic-spectrum (prime log-lattice)")
+    # 1b. W3a: DH FAILS the B-mult multiplicativity clause (the adjudicated killer).
+    req(m["dh"]["multiplicativity"]["verdict"] == FAIL,
+        "GOV: DH must FAIL (B-mult) multiplicativity -- no Euler product")
+    req(vk["Bm"]["dh"]["killed"],
+        "GOV: DH must be killed by variant B-mult")
     # 2. DH PASSES variant C (dead control): all C clauses PASS/COND.
     req(vk["C"]["dh"]["survives"] and not vk["C"]["dh"]["killed"],
         "GOV: DH must SURVIVE (pass) variant C -- the dead control")
@@ -457,12 +645,34 @@ def run_asserts(result: dict) -> tuple[list[str], list[str]]:
         "GOV: zeta pure-point spectrum must be CONDITIONAL, not unqualified PASS")
     req(m["zeta"]["defect_bounded"]["verdict"] == COND,
         "GOV: zeta defect must be CONDITIONAL (k=0 <=> RH)")
+    # W3a: zeta PASSES multiplicative amplitude generation (unconditional/arithmetic,
+    # exactly like (B-iii) weights); pure-pointness of the dual comb (atomic_spectrum)
+    # remains the RH-conditional clause.
+    req(m["zeta"]["multiplicativity"]["verdict"] == PASS,
+        "GOV: zeta must PASS (B-mult) multiplicative generation (unconditional)")
+    req(m["zeta"]["atomic_spectrum"]["verdict"] == COND,
+        "GOV: zeta pure-point spectrum stays CONDITIONAL even under B-mult")
+    # W3a: zeta SURVIVES variant B-mult (admitted on PASS/COND clauses only).
+    req(vk["Bm"]["zeta"]["survives"],
+        "GOV: zeta must survive variant B-mult")
     # 4. lattice/ksly pass FQ-shaped clauses; random FAILS atomic spectrum.
     req(vk["B"]["lattice"]["survives"], "GOV: lattice must survive variant B")
     req(vk["B"]["ksly"]["survives"], "GOV: ksly must survive variant B (canonical FQ)")
     req(m["random"]["atomic_spectrum"]["verdict"] == FAIL,
         "GOV: random must FAIL atomic-spectrum")
     req(vk["B"]["random"]["killed"], "GOV: random must be killed by variant B")
+    # 4b. W3a INTENDED SHARPENING: B-mult is STRICTLY sharper than B.  ksly (a generic
+    #     Lee-Yang FQ) SURVIVES B (positive-mass FQ) but is KILLED by B-mult (its
+    #     amplitudes are not the multiplicative image of a prime layer).  lattice too.
+    #     This is a FEATURE (the axiom aims at zeta's arithmetic class), asserted as a
+    #     rail so a regression that vacuously admits generic FQs is caught.
+    req(vk["B"]["ksly"]["survives"] and vk["Bm"]["ksly"]["killed"],
+        "GOV: B-mult must be STRICTLY sharper than B on ksly "
+        "(ksly survives B but is killed by B-mult)")
+    req(m["ksly"]["multiplicativity"]["verdict"] == FAIL,
+        "GOV: generic Lee-Yang FQ (ksly) must FAIL B-mult multiplicativity")
+    req(m["random"]["multiplicativity"]["verdict"] == FAIL,
+        "GOV: random must FAIL B-mult multiplicativity")
     # 5. forged controls all flip.
     for fc in result["forged_controls"]:
         req(fc["flipped"],
@@ -483,6 +693,23 @@ def run_asserts(result: dict) -> tuple[list[str], list[str]]:
             and m["dh"]["weight_positivity"]["verdict"] == FAIL):
         findings.append("A2-CONTRADICTION: the C(pass)/B(fail) split that isolates "
                         "positivity as the DH-killer did not hold")
+    # W3a cross-check: multiplicativity implies positivity of the prime layer.  Any
+    # object that PASSES B-mult must also PASS (B-iii) positivity -- the adjudicated
+    # primitive should DOMINATE the old killer.  A contradiction here means the
+    # multiplicativity clause is not actually stronger than positivity.
+    for name in result["objects"]:
+        if m[name]["multiplicativity"]["verdict"] == PASS and \
+           m[name]["weight_positivity"]["verdict"] not in (PASS, COND):
+            findings.append(
+                f"W3a-CONTRADICTION: {name} passes B-mult multiplicativity but not "
+                f"(B-iii) positivity -- multiplicativity should imply positive prime layer")
+    # W3a positive record: confirm the intended strict sharpening (ksly: B survives,
+    # B-mult kills).  Recorded as a NOTE (not a contradiction) for the report.
+    if vk["B"]["ksly"]["survives"] and vk["Bm"]["ksly"]["killed"]:
+        result.setdefault("w3a_notes", []).append(
+            "B-mult STRICTLY sharper than B: ksly (generic Lee-Yang FQ) survives B but "
+            "is excluded by B-mult -- the multiplicativity primitive carves out the "
+            "arithmetic FQs (Euler-product amplitudes) from the generic Lee-Yang class.")
     # Epstein is optional; note if we ever add it and it survives A/B.
     return findings, failures
 
@@ -510,7 +737,7 @@ def human_table(result: dict) -> str:
     vk = result["variant_kill"]
     lines.append("variant \\ object".ljust(40) + "".join(o.rjust(w) for o in objs))
     lines.append("-" * (40 + w * len(objs)))
-    for variant in ("A", "B", "C", "D"):
+    for variant in ("A", "B", "Bm", "C", "D"):
         row = f"variant {variant}".ljust(40)
         for o in objs:
             k = vk[variant][o]
