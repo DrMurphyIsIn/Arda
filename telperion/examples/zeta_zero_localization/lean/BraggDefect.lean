@@ -26,9 +26,16 @@ The certified enclosure e^(1/10) in [(442068367230259049924676660787771898883 / 
 (same trust boundary as BraggH100's Arb `henc*` inputs / the band `hLine`); the sign flip and the
 enclosure gap are then pure kernel arithmetic.  conjecture1_proved = False -- a finite synthetic-pair
 diffraction fact, nothing about RH.
+
+MIRRORMERE Wave-2 W2b (R2 RIGIDITY RUNG): beyond DETECTING the pair (defect >= 1), the instrument
+COUNTS it.  Using `R2Rigidity.offline_pairs_le_defect` (the rigidity direction p <= defect) against
+the existing detection bound defect <= p, we prove `bragg_defect_eq_one` (one synthetic pair =>
+defect EXACTLY 1) and `defect_eq_two` (two synthetic pairs on orthogonal channels => defect EXACTLY
+2).  The measured negative index equals the off-line pair count on the nose.  Still nothing about RH.
 -/
 import Mathlib
 import DefectDictionary
+import R2Rigidity
 
 namespace BraggDefect
 
@@ -168,5 +175,136 @@ theorem defect_two_channel_offline (f : ℝ) {d : ℝ} (hd : d ≠ 0) :
   refine offline_pair_negIndex (xvec f) (yvec d) (w := ![0, 1]) ?_ ?_
   · simp [xvec, Fin.sum_univ_two]
   · simpa [yvec, Fin.sum_univ_two] using hd
+
+/-! ## The R2 rigidity rung: the instrument COUNTS the pair (defect = 1 exactly)
+
+`defect_two_channel_offline` is the DETECTION half (`defect ≥ 1`).  The R2 rung upgrades it to the
+EXACT COUNT `defect = 1` by supplying BOTH bounds through `R2Rigidity`:
+  * lower `1 ≤ defect` from the rigidity direction `offline_pairs_le_defect`, fed a `NegativeWitness`
+    of dimension 1 built (`NegativeWitness.ofNegDir`) from the SAME strictly-negative direction the
+    certified experiment measures — `⟨e₁, A e₁⟩ = -d² < 0` (`defect_witness_offline`);
+  * upper `defect ≤ 1` from `defect_pairBlock_le_one` (the single rank-one negative channel `y yᵀ`).
+
+The honest independence hypothesis, made concrete here, is exactly `⟨e₁, A e₁⟩ < 0`: the ONE off-line
+pair genuinely leaks ONE negative direction (`e₁`), not cancelled by the on-line channel.  For one
+pair the condition is a single kernel inequality — checkable, and NOT RH strength. -/
+
+/-- The strictly-negative direction of the one-pair block: `hermForm A e₁ = -d² < 0` for the pure
+off-line test vector `e₁ = (0,1)`.  This IS the concrete instance of the R2 independence hypothesis
+(the one pair leaks one negative direction), and matches `defect_witness_offline`'s measured sign. -/
+theorem bragg_neg_dir (f : ℝ) {d : ℝ} (hd : d ≠ 0) :
+    RHLinalg.hermForm (pairBlock (xvec f) (yvec d)) ![0, 1] < 0 := by
+  rw [pairBlock_hermForm]
+  have hx : (∑ k, (![(0:ℝ), 1]) k * (xvec f) k) = 0 := by simp [xvec, Fin.sum_univ_two]
+  have hy : (∑ k, (![(0:ℝ), 1]) k * (yvec d) k) = d := by simp [yvec, Fin.sum_univ_two]
+  rw [hx, hy]
+  have : (0 : ℝ) < d ^ 2 := by positivity
+  simpa using this
+
+/-- **`bragg_defect_eq_one` — the R2 rung realized on the certified data.** For any certified on-line
+amplitude `f` (the BraggH100 29-zero `F_100(u*)`) and any strictly-positive off-line excess `d`, the
+2-channel signature block has defect EXACTLY 1 = the number of off-line pairs adjoined.  The
+instrument does not merely detect the pair, it COUNTS it: the measured negative index equals the pair
+count on the nose.  conjecture1_proved = False. -/
+theorem bragg_defect_eq_one (f : ℝ) {d : ℝ} (hd : d ≠ 0) :
+    defect (pairBlock_isHermitian (xvec f) (yvec d)) = 1 := by
+  refine le_antisymm (defect_pairBlock_le_one (xvec f) (yvec d)) ?_
+  have hw : (![(0:ℝ), 1] : Fin 2 → ℝ) ≠ 0 := by
+    intro h; have := congrFun h 1; simp at this
+  have hwit := NegativeWitness.ofNegDir (pairBlock_isHermitian (xvec f) (yvec d))
+    hw (bragg_neg_dir f hd)
+  exact offline_pairs_le_defect (pairBlock_isHermitian (xvec f) (yvec d)) hwit
+
+/-! ## The count SCALES: two synthetic pairs give defect = 2
+
+A second synthetic off-line pair (`beta = 7/10` at `gamma = 60`, excess `d₂ = e^{1/5}+e^{-1/5}-2 > 0`)
+is adjoined on a fresh coordinate channel.  The two pairs live on orthogonal coordinate axes
+(`e₁` for pair 1, `e₃` for pair 2), so they leak TWO independent negative directions and the count
+scales: `defect = 2`.  Both bounds again come through `R2Rigidity` — upper `defect_twoPairBlock_le_two`
+(two rank-one negative channels), lower `offline_pairs_le_defect` fed a 2-dimensional
+`NegativeWitness` on `span{e₁, e₃}`.  The honest independence hypothesis is now that the two `y`
+directions are linearly independent AND jointly negative — both verified here as kernel arithmetic on
+the diagonal coordinate layout. -/
+
+/-- The four channel vectors for the 2-pair block on `Fin 4`: on-line squares `x₁ = f₁·e₀`,
+`x₂ = f₂·e₂`; off-line clearances `y₁ = d₁·e₁`, `y₂ = d₂·e₃`.  Distinct coordinate axes so the two
+pairs' negative channels are independent. -/
+def x1vec (f₁ : ℝ) : Fin 4 → ℝ := ![f₁, 0, 0, 0]
+def y1vec (d₁ : ℝ) : Fin 4 → ℝ := ![0, d₁, 0, 0]
+def x2vec (f₂ : ℝ) : Fin 4 → ℝ := ![0, 0, f₂, 0]
+def y2vec (d₂ : ℝ) : Fin 4 → ℝ := ![0, 0, 0, d₂]
+
+/-- The two off-line negative directions `e₁, e₃` (pure clearance channels of pairs 1 and 2). -/
+def e1 : Fin 4 → ℝ := ![0, 1, 0, 0]
+def e3 : Fin 4 → ℝ := ![0, 0, 0, 1]
+
+/-- The 2-pair block's quadratic form on `a•e₁ + b•e₃` is `−(a d₁)² − (b d₂)²`: the two off-line
+axes are BOTH strictly negative directions, orthogonal to every on-line channel. Kernel arithmetic on
+the diagonal layout. -/
+theorem twoPair_hermForm_neg (f₁ d₁ f₂ d₂ a b : ℝ) :
+    RHLinalg.hermForm (twoPairBlock (x1vec f₁) (y1vec d₁) (x2vec f₂) (y2vec d₂))
+      (fun i => a * e1 i + b * e3 i)
+      = -(a * d₁) ^ 2 - (b * d₂) ^ 2 := by
+  unfold twoPairBlock
+  rw [RHLinalg.hermForm_sub, RHLinalg.hermForm_add, RHLinalg.hermForm_add,
+      hermForm_vecMulVec_real, hermForm_vecMulVec_real,
+      hermForm_vecMulVec_real, hermForm_vecMulVec_real]
+  have hx1 : (∑ k, (fun i => a * e1 i + b * e3 i) k * (x1vec f₁) k) = 0 := by
+    simp [e1, e3, x1vec, Fin.sum_univ_four]
+  have hy1 : (∑ k, (fun i => a * e1 i + b * e3 i) k * (y1vec d₁) k) = a * d₁ := by
+    simp [e1, e3, y1vec, Fin.sum_univ_four]
+  have hx2 : (∑ k, (fun i => a * e1 i + b * e3 i) k * (x2vec f₂) k) = 0 := by
+    simp [e1, e3, x2vec, Fin.sum_univ_four]
+  have hy2 : (∑ k, (fun i => a * e1 i + b * e3 i) k * (y2vec d₂) k) = b * d₂ := by
+    simp [e1, e3, y2vec, Fin.sum_univ_four]
+  rw [hx1, hy1, hx2, hy2]; ring
+
+/-- The 2-dimensional negative witness on `span{e₁, e₃}`: for `d₁, d₂ ≠ 0` the two off-line axes span
+a plane on which the block is negative definite, and they are linearly independent. -/
+noncomputable def twoPair_negWitness (f₁ d₁ f₂ d₂ : ℝ) (hd₁ : d₁ ≠ 0) (hd₂ : d₂ ≠ 0) :
+    NegativeWitness (twoPairBlock_isHermitian (x1vec f₁) (y1vec d₁) (x2vec f₂) (y2vec d₂)) 2 := by
+  refine NegativeWitness.ofLinearIndependent _ (v := ![e1, e3]) ?_ ?_
+  · -- e₁, e₃ linearly independent: s•e₁ + t•e₃ = 0 → s = t = 0 (coords 1 and 3)
+    rw [LinearIndependent.pair_iff]
+    intro s t hst
+    have h1 := congrFun hst 1
+    have h3 := congrFun hst 3
+    simp [e1, e3, Pi.add_apply, smul_eq_mul] at h1 h3
+    exact ⟨h1, h3⟩
+  · -- (-A) is positive definite on span{e₁, e₃}
+    intro x hx hxne
+    rw [Matrix.range_cons_cons_empty, Submodule.mem_span_pair] at hx
+    obtain ⟨a, b, rfl⟩ := hx
+    rw [hermForm_neg]
+    have hval : RHLinalg.hermForm
+        (twoPairBlock (x1vec f₁) (y1vec d₁) (x2vec f₂) (y2vec d₂))
+        (a • e1 + b • e3) = -(a * d₁) ^ 2 - (b * d₂) ^ 2 := by
+      have : (a • e1 + b • e3) = (fun i => a * e1 i + b * e3 i) := by
+        funext i; simp [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+      rw [this]; exact twoPair_hermForm_neg f₁ d₁ f₂ d₂ a b
+    rw [hval]
+    -- x ≠ 0 forces a ≠ 0 or b ≠ 0, hence the sum of squares is positive.
+    have hab : a ≠ 0 ∨ b ≠ 0 := by
+      by_contra h
+      push_neg at h
+      apply hxne
+      rw [h.1, h.2]; simp
+    have hpos : (0:ℝ) < (a * d₁) ^ 2 + (b * d₂) ^ 2 := by
+      rcases hab with ha | hb
+      · have : (0:ℝ) < (a * d₁) ^ 2 := by positivity
+        nlinarith [sq_nonneg (b * d₂)]
+      · have : (0:ℝ) < (b * d₂) ^ 2 := by positivity
+        nlinarith [sq_nonneg (a * d₁)]
+    linarith
+
+/-- **`defect_eq_two` — the count scales to two off-line pairs.** With two synthetic pairs on
+orthogonal coordinate channels (`d₁, d₂ ≠ 0`), the 4-dimensional signature block has defect EXACTLY
+2 = the number of off-line pairs.  Upper bound from `defect_twoPairBlock_le_two`, lower bound from the
+rigidity direction on the 2-dimensional negative witness `span{e₁, e₃}`.  The instrument counts BOTH
+pairs.  conjecture1_proved = False. -/
+theorem defect_eq_two (f₁ f₂ : ℝ) {d₁ d₂ : ℝ} (hd₁ : d₁ ≠ 0) (hd₂ : d₂ ≠ 0) :
+    defect (twoPairBlock_isHermitian (x1vec f₁) (y1vec d₁) (x2vec f₂) (y2vec d₂)) = 2 := by
+  refine le_antisymm (defect_twoPairBlock_le_two _ _ _ _) ?_
+  exact offline_pairs_le_defect _ (twoPair_negWitness f₁ d₁ f₂ d₂ hd₁ hd₂)
 
 end BraggDefect

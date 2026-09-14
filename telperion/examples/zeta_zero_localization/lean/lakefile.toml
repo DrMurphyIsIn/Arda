@@ -26,6 +26,9 @@ globs = ["RHLinalg.+"]
 name = "DefectDictionary"
 
 [[lean_lib]]
+name = "R2Rigidity"
+
+[[lean_lib]]
 name = "BraggDefect"
 
 [[lean_lib]]

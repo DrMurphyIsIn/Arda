@@ -37,6 +37,7 @@
     one synthetic pair; they prove NOTHING new about the Riemann Hypothesis.
 -/
 import DefectDictionary
+import R2Rigidity
 import BraggDefect
 
 /-! ### Dictionary rows (a), (b), (c) + supporting algebra -/
@@ -57,3 +58,21 @@ import BraggDefect
 /-! ### The 2-channel signature bridge (29 certified zeros + 1 synthetic pair) -/
 #print axioms BraggDefect.defect_two_channel_online
 #print axioms BraggDefect.defect_two_channel_offline
+
+/-! ### The R2 rigidity rung (W2b): the instrument COUNTS the off-line pairs
+
+  * DefectDictionary.offline_pairs_le_defect       -- rigidity direction (abstract): a p-dim
+    negative-definite subspace forces defect >= p (dual of finrank_le_posIndex_of_posDefOn on -A).
+  * DefectDictionary.PairDecomp.defect_eq_offline_pairs -- the two-sided count defect = p (abstract).
+  * DefectDictionary.defect_pairBlock_le_one / defect_twoPairBlock_le_two -- rank-one/rank-two
+    negative-channel upper bounds.
+  * BraggDefect.bragg_defect_eq_one   -- INSTANTIATION: one synthetic pair => defect EXACTLY 1.
+  * BraggDefect.defect_eq_two         -- INSTANTIATION: two synthetic pairs => defect EXACTLY 2. -/
+#print axioms DefectDictionary.offline_pairs_le_defect
+#print axioms DefectDictionary.PairDecomp.defect_eq_offline_pairs
+#print axioms DefectDictionary.defect_pairBlock_le_one
+#print axioms DefectDictionary.defect_twoPairBlock_le_two
+#print axioms BraggDefect.bragg_neg_dir
+#print axioms BraggDefect.bragg_defect_eq_one
+#print axioms BraggDefect.twoPair_hermForm_neg
+#print axioms BraggDefect.defect_eq_two
