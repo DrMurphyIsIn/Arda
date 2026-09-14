@@ -118,14 +118,28 @@ def test_bmult_strictly_sharper_than_b(result):
 
 
 def test_multiplicativity_implies_positivity(result):
-    """W3a dominance: any object passing B-mult also passes (B-iii) positivity --
-    the adjudicated primitive dominates the old killer (no object passes mult but
-    fails positivity)."""
+    """W3a/W3c TWIST-AWARE dominance.  The relation between B-mult-twisted and bare
+    (B-iii) positivity depends on the twist:
+      * TRIVIAL twist (zeta): B-mult => positivity (t(p)=+1 => real positive layer).
+      * UNIMODULAR-COMPLEX twist (L(chi)): B-mult-twisted holds but bare positivity
+        legitimately FAILS -- this is the W3c discovery (bare positivity is
+        zeta-unique / over-sharp), NOT a dominance violation.
+    So: trivial-twist objects passing B-mult must pass positivity; twisted ones need
+    not (and, being genuinely complex, must not)."""
     m = result["matrix"]
     for name in result["objects"]:
-        if m[name]["multiplicativity"]["verdict"] == zoo.PASS:
-            assert m[name]["weight_positivity"]["verdict"] in (zoo.PASS, zoo.COND), (
-                f"{name} passes B-mult but not positivity")
+        if m[name]["multiplicativity"]["verdict"] != zoo.PASS:
+            continue
+        detail = m[name]["multiplicativity"]["detail"]
+        twisted = ("UNIMODULAR" in detail) or ("chi(p)" in detail)
+        pos = m[name]["weight_positivity"]["verdict"]
+        if not twisted:
+            assert pos in (zoo.PASS, zoo.COND), (
+                f"{name} passes B-mult (trivial twist) but not positivity")
+        else:
+            assert pos == zoo.FAIL, (
+                f"{name} passes B-mult-TWISTED (complex) but ALSO passes bare "
+                f"positivity -- the over-sharpness claim would be wrong")
 
 
 def test_broken_multiplicativity_forged_control_flips(result):
@@ -135,6 +149,96 @@ def test_broken_multiplicativity_forged_control_flips(result):
               if c["control"] == "broken_multiplicativity")
     assert fc["flipped"]
     assert fc["genuine"] == zoo.PASS and fc["forged_verdict"] == zoo.FAIL
+
+
+def test_l_function_passes_bmult_twisted(result):
+    """W3c L-COLUMN (the decisive falsification test): a genuine Dirichlet L-function
+    L(chi) -- an Euler product with a UNIMODULAR character twist -- PASSES the
+    B-mult-twisted clause, and does so via the TWISTED (character) reading, not the
+    trivial-twist zeta reading."""
+    m = result["matrix"]["l_chi5"]
+    assert m["multiplicativity"]["verdict"] == zoo.PASS
+    detail = m["multiplicativity"]["detail"]
+    assert "UNIMODULAR" in detail or "chi(p)" in detail
+    assert result["variant_kill"]["Bm"]["l_chi5"]["survives"]
+
+
+def test_l_function_fails_bare_positivity_oversharp(result):
+    """W3c: L(chi)'s prime layer is (log p) chi(p)^m p^{-m/2} -- UNIMODULAR COMPLEX,
+    not strictly-positive-real.  So it FAILS the bare (B-iii) positivity clause.  This
+    is the DOCUMENTED over-sharpness of bare positivity: it selects zeta ALONE among
+    Euler products; B-mult-twisted is the correct arithmetic-class primitive."""
+    m = result["matrix"]["l_chi5"]
+    assert m["weight_positivity"]["verdict"] == zoo.FAIL
+    # zeta (trivial twist) still passes bare positivity: the two are genuinely different
+    assert result["matrix"]["zeta"]["weight_positivity"]["verdict"] == zoo.PASS
+
+
+def test_l_function_grh_conditional_labels(result):
+    """W3c: L(chi) is a genuine L-function -- density/temperedness unconditional, but
+    pure-pointness and defect-0 are GRH-CONDITIONAL, EXACTLY zeta's status."""
+    m = result["matrix"]["l_chi5"]
+    assert m["support_density"]["verdict"] == zoo.PASS
+    assert m["temperedness"]["verdict"] == zoo.PASS
+    assert m["atomic_spectrum"]["verdict"] == zoo.COND    # GRH, never unqualified PASS
+    assert m["defect_bounded"]["verdict"] == zoo.COND     # k=0 <=> GRH
+
+
+def test_dh_is_nonmultiplicative_sum_of_passing_Ls(result):
+    """W3c -- THE POINT: DH = (1-ik)/2 L(chi) + (1+ik)/2 L(chi-bar) is the
+    NON-MULTIPLICATIVE SUM of two objects that each PASS B-mult-twisted, yet DH
+    itself STILL FAILS B-mult (composite atom b(6)!=0).  Multiplicativity is not
+    preserved under linear combination -- exactly why it discriminates DH."""
+    assert result["matrix"]["l_chi5"]["multiplicativity"]["verdict"] == zoo.PASS
+    assert result["matrix"]["dh"]["multiplicativity"]["verdict"] == zoo.FAIL
+    assert "COMPOSITE" in result["matrix"]["dh"]["multiplicativity"]["detail"]
+
+
+def test_bmult_twisted_admits_arithmetic_class_not_zeta_alone(result):
+    """W3c resolves the class-not-description objection: B-mult-twisted admits BOTH
+    zeta and L(chi) (the arithmetic class) while excluding DH, generic FQ, lattice,
+    random.  It is a genuine CLASS predicate, not a description of zeta alone."""
+    vk = result["variant_kill"]
+    assert vk["Bm"]["zeta"]["survives"]
+    assert vk["Bm"]["l_chi5"]["survives"]
+    for other in ("dh", "lattice", "ksly", "random"):
+        assert vk["Bm"][other]["killed"], f"{other} must be killed by B-mult-twisted"
+
+
+def test_broken_character_twist_forged_control_flips(result):
+    """W3c forged negative control: corrupting a single character value (chi(2)=0.5,
+    breaking |chi(2)|=1 and complete multiplicativity) makes the generation law fail
+    -> the genuine L(chi) PASS flips to FAIL, proving the twisted clause is a real
+    function of the character data, not a descriptor lookup."""
+    fc = next(c for c in result["forged_controls"]
+              if c["control"] == "broken_character_twist")
+    assert fc["flipped"]
+    assert fc["genuine"] == zoo.PASS and fc["forged_verdict"] == zoo.FAIL
+
+
+def test_l_chi5_eval_rigorous_and_reconstructs_dh():
+    """The certified L-driver: l_chi5_eval encloses L(s,chi) (cross-checked vs a
+    high-precision reference), and the DH identity closes through the two L balls:
+    (1-ik)/2 L(chi) + (1+ik)/2 L(chi-bar) == D(s)."""
+    try:
+        from telperion.arb_dh import l_chi5_eval, dh_eval, dh_kappa_interval, DH_AVAILABLE
+    except Exception:
+        pytest.skip("arb_dh unavailable")
+    if not DH_AVAILABLE:
+        pytest.skip("libflint acb_dirichlet_hurwitz unavailable")
+
+    def mid(box):
+        a, b, c, d = [float(x) for x in box]
+        return complex((a + b) / 2, (c + d) / 2)
+
+    lchi = mid(l_chi5_eval("4/5", "857/10", 160, conj=False))
+    lbar = mid(l_chi5_eval("4/5", "857/10", 160, conj=True))
+    klo, khi = dh_kappa_interval(160)
+    k = float((klo + khi) / 2)
+    dh_recon = (1 - 1j * k) / 2 * lchi + (1 + 1j * k) / 2 * lbar
+    dh_direct = mid(dh_eval("4/5", "857/10", 160))
+    assert abs(dh_recon - dh_direct) < 1e-10, (
+        f"DH reconstruction from L balls off: {dh_recon} vs {dh_direct}")
 
 
 def test_corrupted_certified_input_flips_verdict(result):

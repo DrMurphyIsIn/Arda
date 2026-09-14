@@ -618,3 +618,205 @@ would need to formulate rigorously.
   (unconditional) content, leaving RH cleanly isolated in the defect grading.
 
 `conjecture1_proved = False`.
+
+---
+
+# APPENDIX (v3, W3c) — B-mult-TWISTED: the honest arithmetic-class generalization
+
+*(PROGRAM MIRRORMERE, Wave-3 rung W3c `qc3-torus`. Appended, not rewriting the
+v2 appendix. `conjecture1_proved = False`.)*
+
+## W3c.0 Why this appendix exists — the class-not-description objection
+
+The v2 appendix (W3a) adjudicated **multiplicativity** as the primitive and showed
+B-mult admits **only ζ** across the then-current zoo `{ζ, DH, lattice, KS-FQ,
+random}`. That sharpness is a double-edged sword, and the mission that produced this
+appendix stated the edge precisely:
+
+> B-mult is **zeta-UNIQUE** across the zoo. That is either the right sharpness (it
+> selects the ARITHMETIC class) or **over-sharpness** (a description of ζ alone,
+> which would make the "classification" circular).
+
+The decisive test: **genuine L-functions should pass; DH — their non-multiplicative
+linear combination — should keep failing.** If a whole family of arithmetic objects
+(not just ζ) passes while DH fails, the clause is a genuine *class* predicate; if
+only ζ passes, it is a *description*. W3c ran that test with the two L-functions DH
+is literally built from, and the answer is: **class, not description** — but the
+clause as stated in v2 needed **one honest generalization to admit them: a unimodular
+character twist.**
+
+## W3c.1 The two L-function objects (the experiment)
+
+DH is, verbatim from `arb_dh.py` / `QC_DH_SCOUT.md`,
+\[ D(s) \;=\; \tfrac{1-i\kappa}{2}\,L(s,\chi) \;+\; \tfrac{1+i\kappa}{2}\,L(s,\bar\chi),
+   \qquad \kappa=\tfrac{\sqrt{10-2\sqrt5}-2}{\sqrt5-1}=0.284079\ldots \]
+for the **odd primitive character `χ mod 5`**. With `2` a generator of `(ℤ/5)^*`
+(`2¹=2, 2²=4, 2³=3, 2⁴=1`) and the odd character sending the generator to `i`:
+\[ \chi = [\chi(1),\chi(2),\chi(3),\chi(4)] = [\,1,\; i,\; -i,\; -1\,],\quad \chi(5)=0. \]
+This is verified: `(1-iκ)/2·χ(n) + (1+iκ)/2·χ̄(n)` reproduces exactly the real DH
+vector `c=[1, κ, −κ, −1, 0]` (all imaginary parts vanish to machine precision), and
+the two-L combination equals the 4-Hurwitz DH driver to `<10⁻²⁰` (mpmath) and
+`<10⁻¹²` through the certified FLINT balls.
+
+Each `L(s,χ)` is a **bona-fide degree-1 arithmetic L-function with an Euler product**
+`L(s,χ)=∏_p (1−χ(p)p^{−s})^{−1}`. Its prime-side comb is
+`−L'/L(s,χ) = Σ_n Λ(n)χ(n) n^{−s}`, so the Bragg amplitudes are
+\[ c(m\log p) \;=\; \Lambda(p^m)\,\chi(p)^m\,p^{-m/2} \;=\; (\log p)\,\chi(p)^m\,p^{-m/2}, \]
+i.e. **zeta's positive prime layer times a UNIMODULAR twist `χ(p)^m`** (`|χ(p)|=1` on
+`(ℤ/5)^*`, `χ(5)=0` at the conductor prime — a trivial local factor, no atom).
+
+New in-worktree driver: `arb_dh.l_chi5_eval(s_re, s_im, prec, conj)` — rigorous
+Arb-ball `L(s,χ)`/`L(s,χ̄)` via the same period-5 → Hurwitz collapse as `dh_eval`
+(`L(s,χ)=5^{−s}Σ_{a=1}^{4} χ(a)ζ(s,a/5)`).
+
+## W3c.2 The axiom, verbatim (B-mult-twisted)
+
+Let `μ` be a symmetric, log-density, tempered atomic measure ((A-i),(A-iv)) whose
+dual comb `μ̂` is pure-point ((B-ii), still RH/GRH-conditional). Write the Bragg
+atoms `{(u, c(u)) : u ∈ supp μ̂, u>0}`.
+
+> **(B-mult-twisted) — Multiplicative amplitude generation with a unimodular twist.**
+> The atomic support of `μ̂` is contained in the prime log-lattice
+> `Λ_log={±m log p}` with **no atoms at composite (non-prime-power) frequencies**
+> (`c(u)=0` for every `u=log n`, `n` composite), and there is a **per-prime twist**
+> `t : {primes} → S¹ ∪ {0}` — a value on the unit circle, or `0` at the finitely many
+> primes dividing a fixed conductor `q` (ramified: trivial local factor, no atom) —
+> such that for every unramified prime `p` and every `m ≥ 1`
+> \[ \; c(m\log p) \;=\; (\log p)\, t(p)^m\, p^{-m/2}, \qquad |t(p)|=1. \; \]
+> Equivalently: the dual comb is the log-derivative of a **completely multiplicative
+> Dirichlet series with unimodular coefficients** — an Euler product
+> `∏_p(1−t(p)p^{−s})^{−1}` over the unramified primes. **B-mult (v2) is the special
+> case `t(p)≡+1`** (trivial twist); **B-mult-twisted (v3) allows any unimodular
+> `t(p)`** — the Dirichlet-character generalization.
+
+**Reading.** "On the prime log-lattice" is still *derived*: it means "the amplitude
+sequence is the log-derivative of an Euler product," now allowing the Euler factor to
+carry a unit-modulus character. The composite-vanishing `c(log n)=0` is the Euler-
+product fingerprint (unchanged from v2). The new content is only in the prime layer:
+its modulus is `(log p)p^{−m/2}` (constant-in-`m` modulus `log p` for the raw von-
+Mangoldt coefficient `b(p^m)=(log p)t(p)^m`), and its **phase** advances by the fixed
+per-prime twist `t(p)`.
+
+**Relation to v2 B-mult and to B-iii (the precise dominance).**
+- **B-mult (v2) ⊂ B-mult-twisted (v3):** `t(p)≡1` is the trivial twist.
+- **B-mult-twisted ⟹ B-iii positivity ONLY for the trivial twist.** For `t(p)≡+1`
+  the prime layer `(log p)p^{−m/2}` is real-positive, so positivity is a *corollary*
+  (as in v2). For a **genuinely complex** twist (`t(p)=χ(p)` a nontrivial root of
+  unity) the prime layer is **unimodular-complex, not positive-real** — so
+  B-mult-twisted holds while **bare (B-iii) positivity FAILS.** This is the crux
+  finding: **bare positivity is `t(p)≡+1`-unique, i.e. ζ-unique — over-sharp for the
+  arithmetic class.** B-mult-twisted is the corrected primitive; positivity is
+  recovered only in the trivial-twist (ζ) fiber.
+
+## W3c.3 The DH refutation, twist-language (which amplitude breaks the law)
+
+DH is `D(s)=Σ_n c(n)n^{−s}`, `c=[1,κ,−κ,−1,0]` period 5. As a **sum** of two Euler
+products it is **not itself an Euler product**, so `−D'/D=Σ_n b(n)n^{−s}` is the log-
+derivative of a **non-multiplicative** series. Computing `b(n)` from the exact
+recursion `a(n)log n=Σ_{d|n} b(d)a(n/d)` (mechanized in the zoo, real coefficients)
+gives, certified:
+
+| n | 2 | 3 | 4=2² | 6=2·3 | 9=3² | 25=5² |
+|---|---|---|---|---|---|---|
+| DH `b(n)`   | +0.1969 | −0.3121 | −1.4422 | **+1.9364** | −2.2859 | 0.0000 |
+| ζ `Λ(n)`    | +0.6931 | +1.0986 | +0.6931 | **0.0000**  | +1.0986 | +1.6094 |
+| L(χ) `b(n)` | `+0.6931 i` | `−1.0986 i` | `−0.6931` | **0.0000** | `−1.0986` | 0.0000 |
+
+Two independent, certified failures of B-mult-twisted for DH — the **primary** one is
+now sharper because we can point at *why the sum breaks it*:
+
+1. **Composite atom (primary kill).** `b(6)=+1.9364 ≠ 0`. B-mult-twisted demands
+   `c(log 6)=0`. **Each summand** `L(χ)`, `L(χ̄)` satisfies this (their `b(6)=0`,
+   verified above — genuine Euler products); **the sum does not**, because
+   multiplicativity is *not preserved under linear combination*. Concretely the DH
+   amplitude at `log p` is `(log p)(χ(p)+χ̄(p))p^{−1/2}·(½-type normalization)` and the
+   generation to `m=2` fails because, at `p=2,3`,
+   \[ (\chi(p)+\bar\chi(p))^2 = 0 \quad\text{but}\quad \chi(p^2)+\bar\chi(p^2) = -2, \]
+   (verified: `χ(2)=i ⇒ χ(2)+χ̄(2)=0`, while `χ(4)+χ̄(4)=−2`) — the `m=1` prime-layer
+   datum cannot generate the `m=2` datum, so no single twist `t(2)` fits. The cross
+   term between the two characters is exactly the composite-frequency leakage `b(6)`.
+2. **Real-but-sign-varying prime layer (redundant kill).** `b(2)=+0.197>0` but
+   `b(3)=−0.312<0`: no **unimodular** `t(p)` (which would give `|b(p)|=log p`, i.e.
+   `|b(2)|=0.693, |b(3)|=1.099`) matches DH's `|b(2)|=0.197, |b(3)|=0.312`. DH's prime
+   layer is not even of the `(log p)·(\text{unit})` modulus form.
+
+Either fingerprint kills DH; the zoo trips on (1) first (`b(6)≠0`) and reports it.
+
+## W3c.4 The updated matrix row + the class verdict
+
+The zoo mechanizes B-mult-twisted as the (upgraded) `multiplicativity` clause,
+`check_multiplicativity` over **complex** amplitudes with a unimodular-twist test and
+ramified-prime handling. Re-running the full matrix (T=100):
+
+```
+clause \ object                                  zeta     dh    l_chi5  lattice  ksly  random
+(A-ii/B-ii) atomic spectrum on prime Lambda_log  COND    FAIL   COND    PASS    PASS   FAIL
+(B-iii) weight positivity + decay  [KILLER]      PASS    FAIL   FAIL    PASS    PASS   FAIL
+(B-mult) multiplicative generation [W3a KILLER]  PASS    FAIL   PASS    FAIL    FAIL   FAIL
+```
+
+**New/updated variant verdict rows:**
+
+| Variant | ζ | DH | L(χ) | Lat | KS-LY | Rnd | Variant verdict |
+|---|---|---|---|---|---|---|---|
+| **B** positive (v1) | P (uncond.) / P* (RH) | F | **F** (twist complex ⇒ not positive) | P | P | F | ζ-UNIQUE among Euler products (over-sharp) |
+| **B-mult** trivial-twist (v2) | **P** / P* | F | **F** (nontrivial twist) | F | F | F | ζ-UNIQUE (the over-sharpness the objection named) |
+| **B-mult-twisted** (v3) | **P** (t≡1) / P* | **F** (sum-of-L, `b(6)≠0`) | **P** (t=χ) / P* (GRH) | F | F | F | **ARITHMETIC CLASS** — admits {ζ, L(χ)}, excludes DH; class predicate, not a description |
+
+The class-not-description question is thereby **settled at the finite-instrument
+level**: B-mult-twisted admits at least two genuinely distinct arithmetic objects (ζ
+with trivial twist, `L(χ)` with a nontrivial character twist) and excludes DH (their
+own non-multiplicative combination) plus every non-arithmetic object. It is a genuine
+predicate on the *amplitude sequence's arithmetic type*, not a lookup of ζ.
+
+- **L(χ)'s conditional labels mirror ζ's exactly (honest).** L(χ) is a genuine
+  L-function: **support density and temperedness are unconditional PASS**; **atomic-
+  spectrum pure-pointness and defect-0 are GRH-CONDITIONAL** (`k=0 ⟺` GRH for `L(χ)`;
+  Alpöge–Furman extends to primitive Dirichlet L-functions). L(χ) has **no known off-
+  line zeros** — the DH off-line zeros come from the *combination*, not the summands —
+  so its defect is `0` conditionally, exactly ζ's status.
+- **Forged twist control (discriminating power).** Corrupting a single character
+  value (`χ(2): i → 0.5`, breaking both `|χ(2)|=1` and complete multiplicativity)
+  flips L(χ)'s B-mult-twisted verdict `PASS → FAIL`. The clause is a real function of
+  the character data, not a descriptor.
+
+## W3c.5 What B-mult-twisted buys (verdict memo)
+
+- **The primitive is now provably a class predicate.** v2 left open whether B-mult was
+  "ζ or a description of ζ." v3 answers: it is the **arithmetic (Euler-product-with-
+  unimodular-twist) class**, i.e. the amplitude side of **degree-1 (`GL(1)`)
+  automorphic L-functions** — Dirichlet L-functions. Positivity (B-iii) is the *ζ
+  fiber* (trivial twist) of this class, which is why bare positivity looked ζ-unique.
+- **The updated classification-shaped conjecture (arithmetic Lee–Yang, v3).**
+
+  > **Conjecture (arithmetic Lee–Yang, W3c).** Let `μ` be a log-density symmetric
+  > ℤ-mass atomic measure with pure-point dual comb `μ̂` whose amplitude sequence
+  > satisfies **(B-mult-twisted)** — the log-derivative of a completely multiplicative
+  > Dirichlet series with unimodular coefficients (an Euler product with a character
+  > twist). Then `μ` is the GW image of a degree-1 arithmetic L-function `L(s,χ)`, and
+  > its support is real (⟺ that L-function satisfies GRH). Slogan: **twisted-
+  > multiplicative FQ ⟹ Dirichlet Euler-product structure ⟹ (with defect-0) real
+  > support.**
+
+  This is strictly stronger evidence than the v2 statement: the finite instruments now
+  exhibit **two** points of the conjectured class and correctly reject their non-
+  multiplicative span. The step "completely-multiplicative-unimodular ⟹ *Dirichlet*
+  character (vs an exotic non-arithmetic unimodular sequence)" is where a functional-
+  equation / conductor hypothesis is still needed — flagged, not proved (this is the
+  `GL(1)` shadow of the Selberg-class classification; see `QC_TORUS_MEMO.md`).
+
+**Honest ledger — definitional vs provable.**
+
+- **Provable now (unconditional, mechanized):** ζ (trivial twist) and `L(χ)`
+  (character twist) both satisfy B-mult-twisted; DH — their non-multiplicative sum —
+  fails it (`b(6)=+1.936≠0`); bare positivity is the trivial-twist fiber only; all
+  certified via Arb/interval orchestration + exact coefficient recursion (**not** a
+  Lean kernel proof).
+- **Still definitional:** whether "completely-multiplicative unimodular" forces a
+  *Dirichlet character* (vs an exotic Euler-product sequence), and whether the class
+  extends to `GL(n)` (Satake, non-unimodular `a_p` — see `QC_TORUS_MEMO.md` §Wave-4).
+- **Still RH/GRH-hard:** the defect-0 / pure-point clause. B-mult-twisted **does not**
+  move it — by design; it absorbs *all* the arithmetic content, leaving GRH isolated
+  in the defect grading, uniformly across the class.
+
+`conjecture1_proved = False`.
