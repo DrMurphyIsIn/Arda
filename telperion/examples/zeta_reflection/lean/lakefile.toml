@@ -128,3 +128,11 @@ roots = ["FullyReflectedBand_t14"]
 [[lean_lib]]
 name = "TrigReduceOperating"
 roots = ["TrigReduceOperating"]
+
+# G2-full: the ZERO-HYPOTHESIS ζ-term sign box on the critical line at t=14.  Closes the ζ half of a
+# gLine box with no numeric hypotheses (atom term_re/term_im + amplitude box + instrument A), isolating
+# gap (B) -- the Γℝ phase/value enclosure -- as the sole residual.  See file header for the design
+# decision (Route B1) and the refusal arithmetic.
+[[lean_lib]]
+name = "ZeroHypBand_t14"
+roots = ["ZeroHypBand_t14"]
