@@ -45,6 +45,18 @@ roots = ["TaylorKernels"]
 name = "CertVerify"
 roots = ["CertVerify"]
 
+# ANDÚRIL instrument (A): verified large-argument trig reduction (π-free double-angle) -- the
+# cos/sin(t·log n) enclosures that unblock the zero-hypothesis reflected band.
+[[lean_lib]]
+name = "TrigReduce"
+roots = ["TrigReduce"]
+
+# Computable DIntv paired-doubling driver for the trig instrument (the emitter target: a single
+# kernel `decide` climb instead of an M-step straight-line unroll).
+[[lean_lib]]
+name = "TrigReduceD"
+roots = ["TrigReduceD"]
+
 [[lean_lib]]
 name = "Spike_BenchExpD"
 roots = ["Spike.BenchExpD"]
@@ -111,3 +123,8 @@ roots = ["ReflectedBand_t14"]
 [[lean_lib]]
 name = "FullyReflectedBand_t14"
 roots = ["FullyReflectedBand_t14"]
+
+# Operating-point certificates: cos/sin(14 log n), n in {2,200}.
+[[lean_lib]]
+name = "TrigReduceOperating"
+roots = ["TrigReduceOperating"]
