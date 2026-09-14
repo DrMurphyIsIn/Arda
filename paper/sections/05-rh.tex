@@ -579,6 +579,62 @@ development but is a \emph{draft}---its constant is not sharp, it is not
 axiom-guarded, and it is not yet wired into the region argument, so we do not lean
 on it. We flag it rather than let it blur into the verified results above.
 
+\subsection{The reverse program: instruments for Dyson's classification proposal}
+\label{sec:mirrormere}
+
+Dyson's proposal runs the diffraction picture backward: classify
+one-dimensional quasicrystals, locate the zeta point set in the
+classification, and derive zero-localization. The tame one-dimensional case
+has recently \emph{closed} in the literature: by the loop
+Kurasov--Sarnak $\to$ Olevskii--Ulanovskii $\to$ Alon--Cohen--Vinzant, an
+$\mathbb{N}$-valued Fourier quasicrystal is precisely the zero-counting
+measure of a Lee--Yang exponential polynomial---and Lee--Yang zeros are real
+by construction, so \emph{membership forces reality of support}: exactly the
+shape Dyson wanted. The zeta comb, however, sits outside the classified
+class, and where it escapes is now a pair of kernel theorems, not folklore: the
+prime-log frequency set is dense (hence not Bohr-discrete;
+\texttt{primeLogSpectrum\_dense}, unconditional) and the ordinate gaps shrink
+below any uniform-discreteness bound (a pigeonhole driver against the
+counting formula). On the same footing we have formalized the base of the
+classification itself (the Lee--Yang circle bridge and the one-frequency
+Kurasov--Sarnak crystalline structure, in Poisson test-function form) and a
+first \emph{rigidity theorem in the reverse direction}
+(\texttt{twoFreq\_realRooted\_iff}, kernel, both directions): a two-frequency
+exponential sum has all zeros on a single horizontal line, and is real-rooted
+\emph{iff} its coefficients have equal modulus---reality of support forced by
+a dual-side condition, in the smallest honest instance; the
+rationally-dependent case reduces, in kernel, to Lee--Yang-on-the-circle.
+
+Two further instruments discipline the search for axioms. A \emph{certified
+control zoo}: a rigorous Davenport--Heilbronn driver (ball-arithmetic Hurwitz
+evaluation, the mixing constant enclosed from integer surds) yields a
+winding-certified zero inventory to height $300$---$204$ on-line, $4$
+off-line, correcting two published values along the way (the off-line zero
+near $\gamma \approx 166.5$ has $\beta \approx 0.60$, not the tabulated
+$0.785$, which our winding count rejects; the tabulated off-line zero near
+$\gamma \approx 243.1$ does not exist)---and a mechanized falsification
+harness that runs candidate axiom sets against certified data. Its verdict:
+the clause that kills DH (which has off-line zeros, so every admissible axiom
+set \emph{must} kill it) while zeta's unconditionally-checkable clauses pass
+is \emph{weight positivity}---the Euler product---isolated by a
+deliberately-dead control variant that DH survives. And a \emph{defect
+instrument}: the inertia arithmetic of the finite Weil-form compression
+\cite{alpogefurman} (an off-line pair contributes a signature-$(1,1)$ block)
+is formalized as a defect dictionary---negative index $\le$ number of
+off-line pairs, defect $0$ unconditionally for on-line configurations---and
+exercised in a certified perturbation experiment: adjoining one synthetic
+off-line pair ($\beta = 3/5$) to the twenty-nine certified zeros below $100$
+produces a kernel-observable defect of $-1.00167\times10^{-4}$ against the
+honest configuration's $0$. The conservation-of-difficulty map that emerges
+is stated plainly in the program documents: positivity, multiplicativity,
+density, and the defect arithmetic are unconditional (and now partly
+kernel-checked); RH-hardness concentrates in exactly one clause---FQ-grade
+temperedness of the dual comb---of which the classification's entrance fee
+is the disguise. \emph{None of this proves anything about RH}; it builds the
+finite, machine-checked floor---ground truth, falsification instruments, and
+the first theorems of the rigidity ladder---on which any serious attempt at
+the reverse derivation would have to stand.
+
 \subsection{Directions: the uniformization axes}
 
 Every classical route to the Riemann Hypothesis supplies a \emph{uniform
