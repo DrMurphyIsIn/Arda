@@ -14,6 +14,7 @@ import KSConstruction
 import BoundaryLemmas
 import TwoFreqRigidity
 import RationalFreqReduction
+import InvolutionDictionary
 
 open Quasicrystal
 
@@ -52,6 +53,20 @@ open Quasicrystal
 #print axioms Quasicrystal.ratFreq_eq_zero_iff
 #print axioms Quasicrystal.ratFreq_realRooted_of_leeYangCircle
 #print axioms Quasicrystal.leeYangCircle_reached_of_realRooted
+
+/-! ### Wave-2 handoff W2a -- InvolutionDictionary (functional equation ⟺
+    self-inversive symmetry) -/
+#print axioms Quasicrystal.intertwiner
+#print axioms Quasicrystal.fixed_locus_correspondence
+#print axioms Quasicrystal.selfInversive_zeros_symmetric
+#print axioms Quasicrystal.inv_conj_exp_real
+#print axioms Quasicrystal.selfInversive_circle_identity
+#print axioms Quasicrystal.selfInversive_iff_hardyZ_real
+#print axioms Quasicrystal.binomialPoly_eval
+#print axioms Quasicrystal.binomialPoly_natDegree
+#print axioms Quasicrystal.twoFreq_dictionary
+#print axioms Quasicrystal.selfInversive_binomial_realRooted
+#print axioms Quasicrystal.fixed_locus_dichotomy
 
 /-! ### increment (iii) -- CharacterizationStatements
 
