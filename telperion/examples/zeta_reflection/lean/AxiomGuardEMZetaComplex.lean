@@ -39,3 +39,8 @@ import EMZetaComplex
 #print axioms ZetaReflection.emZetaRemainder_hasDerivAt
 #print axioms ZetaReflection.hasDerivAt_emIntegrand
 #print axioms ZetaReflection.log_le_rpow_div
+#print axioms ZetaReflection.emZetaRemainder_differentiableAt
+#print axioms ZetaReflection.isPreconnected_rightHalfPlane_diff_one
+#print axioms ZetaReflection.emZetaClosed_analyticOnNhd
+#print axioms ZetaReflection.riemannZeta_analyticOnNhd_strip
+#print axioms ZetaReflection.em_zeta_strip

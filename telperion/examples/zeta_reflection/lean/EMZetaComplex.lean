@@ -619,4 +619,136 @@ theorem emZetaRemainder_hasDerivAt {s₀ : ℂ} (hs₀ : 0 < s₀.re) :
     (bound := bnd) (F := F) (F' := F') hS_nhds hF_meas hF_int hF'_meas h_bound hbnd_int h_diff
   exact hderiv
 
+/-- `emZetaRemainder` is differentiable at every `s` with `Re s > 0`. -/
+theorem emZetaRemainder_differentiableAt {s : ℂ} (hs : 0 < s.re) :
+    DifferentiableAt ℂ emZetaRemainder s :=
+  (emZetaRemainder_hasDerivAt hs).differentiableAt
+
+/-! ### The critical-strip half-plane, slit at `1`, is preconnected. -/
+
+/-- The open right half-plane `{Re s > 0}`. -/
+def rightHalfPlane : Set ℂ := {s : ℂ | 0 < s.re}
+
+/-- The half-plane slit at `1` is preconnected: cover by four convex half-space intersections
+    (im>0, im<0, re<1, re>1), each avoiding `1` (whose im=0, re=1), chained by shared points. -/
+theorem isPreconnected_rightHalfPlane_diff_one :
+    IsPreconnected (rightHalfPlane \ {1}) := by
+  have hHconv : Convex ℝ rightHalfPlane := convex_halfSpace_re_gt 0
+  -- Four convex pieces.
+  set U₁ : Set ℂ := rightHalfPlane ∩ {s : ℂ | 0 < s.im} with hU₁
+  set U₂ : Set ℂ := rightHalfPlane ∩ {s : ℂ | s.im < 0} with hU₂
+  set U₃ : Set ℂ := rightHalfPlane ∩ {s : ℂ | s.re < 1} with hU₃
+  set U₄ : Set ℂ := rightHalfPlane ∩ {s : ℂ | 1 < s.re} with hU₄
+  have pc₁ : IsPathConnected U₁ :=
+    (hHconv.inter (convex_halfSpace_im_gt 0)).isPathConnected ⟨1 + I, by
+      constructor <;> simp [rightHalfPlane]⟩
+  have pc₂ : IsPathConnected U₂ :=
+    (hHconv.inter (convex_halfSpace_im_lt 0)).isPathConnected ⟨1 - I, by
+      constructor <;> simp [rightHalfPlane]⟩
+  have pc₃ : IsPathConnected U₃ :=
+    (hHconv.inter (convex_halfSpace_re_lt 1)).isPathConnected ⟨1/2, by
+      constructor <;> simp [rightHalfPlane] <;> norm_num⟩
+  have pc₄ : IsPathConnected U₄ :=
+    (hHconv.inter (convex_halfSpace_re_gt 1)).isPathConnected ⟨2, by
+      constructor <;> simp [rightHalfPlane] <;> norm_num⟩
+  -- Shared points to chain: (U₃∪U₄ region) ∪ (U₁) ∪ (U₂).
+  -- First glue U₃ and U₁ via 1/2 + I; then that with U₂ via 1/2 - I; then with U₄ via 2 - I... but
+  -- U₄ meets U₂ via 2 - I.  Chain: ((U₃ ∪ U₁) ∪ U₂) ∪ U₄.
+  have g31 : IsPathConnected (U₃ ∪ U₁) :=
+    pc₃.union pc₁ ⟨1/2 + I, by
+      refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩⟩ <;> simp [rightHalfPlane] <;> norm_num⟩
+  have g312 : IsPathConnected ((U₃ ∪ U₁) ∪ U₂) :=
+    g31.union pc₂ ⟨1/2 - I, by
+      refine ⟨Or.inl ⟨?_, ?_⟩, ⟨?_, ?_⟩⟩ <;> simp [rightHalfPlane] <;> norm_num⟩
+  have g3124 : IsPathConnected (((U₃ ∪ U₁) ∪ U₂) ∪ U₄) :=
+    g312.union pc₄ ⟨2 - I, by
+      refine ⟨Or.inr ⟨?_, ?_⟩, ⟨?_, ?_⟩⟩ <;> simp [rightHalfPlane] <;> norm_num⟩
+  -- The union equals `H \ {1}`.
+  have hcover : ((U₃ ∪ U₁) ∪ U₂) ∪ U₄ = rightHalfPlane \ {1} := by
+    ext z
+    simp only [hU₁, hU₂, hU₃, hU₄, Set.mem_union, Set.mem_inter_iff, Set.mem_diff,
+      Set.mem_singleton_iff, Set.mem_setOf_eq, rightHalfPlane]
+    constructor
+    · rintro (((⟨hz, _⟩ | ⟨hz, _⟩) | ⟨hz, _⟩) | ⟨hz, _⟩) <;>
+        exact ⟨hz, by
+          rintro rfl <;> simp_all⟩
+    · rintro ⟨hz, hz1⟩
+      by_cases him : z.im = 0
+      · -- on real axis, re ≠ 1
+        have hre1 : z.re ≠ 1 := by
+          intro h; exact hz1 (by apply Complex.ext <;> simp [h, him])
+        rcases lt_or_gt_of_ne hre1 with h | h
+        · exact Or.inl (Or.inl (Or.inl ⟨hz, h⟩))
+        · exact Or.inr ⟨hz, h⟩
+      · rcases lt_or_gt_of_ne him with h | h
+        · exact Or.inl (Or.inr ⟨hz, h⟩)
+        · exact Or.inl (Or.inl (Or.inr ⟨hz, h⟩))
+  rw [← hcover]
+  exact g3124.isConnected.isPreconnected
+
+/-! ### E3 capstone: the identity theorem transfer. -/
+
+/-- `emZetaClosed` is analytic on the slit half-plane `{Re s > 0} \ {1}`. -/
+theorem emZetaClosed_analyticOnNhd :
+    AnalyticOnNhd ℂ emZetaClosed (rightHalfPlane \ {1}) := by
+  apply DifferentiableOn.analyticOnNhd _ ?_
+  · intro s hs
+    have hs0 : 0 < s.re := hs.1
+    have hs1 : s ≠ 1 := by simpa using hs.2
+    have hpole : DifferentiableAt ℂ (fun s : ℂ => 1 / (s - 1)) s := by
+      apply DifferentiableAt.div (differentiableAt_const _)
+        ((differentiableAt_id).sub (differentiableAt_const _))
+      exact sub_ne_zero.mpr hs1
+    have hrem : DifferentiableAt ℂ emZetaRemainder s := emZetaRemainder_differentiableAt hs0
+    have : DifferentiableAt ℂ emZetaClosed s := by
+      unfold emZetaClosed
+      exact (hpole.add (differentiableAt_const _)).add hrem
+    exact this.differentiableWithinAt
+  · -- the slit half-plane is open
+    apply IsOpen.sdiff _ isClosed_singleton
+    exact (isOpen_lt continuous_const Complex.continuous_re)
+
+/-- `riemannZeta` is analytic on the slit half-plane `{Re s > 0} \ {1}` (it is analytic on all of
+    `{1}ᶜ`). -/
+theorem riemannZeta_analyticOnNhd_strip :
+    AnalyticOnNhd ℂ riemannZeta (rightHalfPlane \ {1}) := by
+  apply DifferentiableOn.analyticOnNhd _ ?_
+  · intro s hs
+    have hs1 : s ≠ 1 := by simpa using hs.2
+    exact (differentiableAt_riemannZeta hs1).differentiableWithinAt
+  · apply IsOpen.sdiff _ isClosed_singleton
+    exact (isOpen_lt continuous_const Complex.continuous_re)
+
+/-- **THE PRIZE (E3): K=1 analytic continuation of the Euler-Maclaurin representation of ζ into
+    the critical strip.**  For every `s` with `0 < Re s` and `s ≠ 1`,
+        riemannZeta s = 1/(s−1) + 1/2 + ∫_1^∞ (sawBernoulli 1 x)·(−s·x^{−s−1}) dx,
+    with the remainder integral converging absolutely and bounded by `‖s‖/(2·Re s)`
+    (`emZetaRemainder_bound`).  This covers the entire critical strip `0 < Re s < 1`.
+
+    Proof: both sides are analytic on the (preconnected) slit half-plane and agree on the open
+    subset `{Re s > 1}` (where the series converges), so by the identity theorem
+    (`AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq`, anchored at `s = 2`) they agree on the
+    whole slit half-plane. -/
+theorem em_zeta_strip {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) :
+    riemannZeta s
+      = 1 / (s - 1) + 1 / 2
+        + ∫ x in Ioi (1 : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)) := by
+  -- reduce to `emZetaClosed s = riemannZeta s`.
+  suffices h : Set.EqOn emZetaClosed riemannZeta (rightHalfPlane \ {1}) by
+    have hmem : s ∈ rightHalfPlane \ {1} := ⟨hs, by simpa using hs1⟩
+    have heq := h hmem
+    rw [emZetaClosed, emZetaRemainder] at heq
+    exact heq.symm
+  -- identity theorem, anchored at s = 2.
+  have h2mem : (2 : ℂ) ∈ rightHalfPlane \ {1} := by
+    refine ⟨?_, ?_⟩ <;> simp [rightHalfPlane]
+  have hevent : emZetaClosed =ᶠ[𝓝 (2 : ℂ)] riemannZeta := by
+    have hopen : IsOpen {s : ℂ | 1 < s.re} := isOpen_lt continuous_const Complex.continuous_re
+    have hnhds : {s : ℂ | 1 < s.re} ∈ 𝓝 (2 : ℂ) :=
+      hopen.mem_nhds (by simp)
+    filter_upwards [hnhds] with z hz
+    exact emZetaClosed_eq_riemannZeta_of_one_lt hz
+  exact emZetaClosed_analyticOnNhd.eqOn_of_preconnected_of_eventuallyEq
+    riemannZeta_analyticOnNhd_strip isPreconnected_rightHalfPlane_diff_one h2mem hevent
+
 end ZetaReflection
