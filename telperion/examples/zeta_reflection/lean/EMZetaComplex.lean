@@ -751,4 +751,74 @@ theorem em_zeta_strip {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) :
   exact emZetaClosed_analyticOnNhd.eqOn_of_preconnected_of_eventuallyEq
     riemannZeta_analyticOnNhd_strip isPreconnected_rightHalfPlane_diff_one h2mem hevent
 
+/-! ## E4. Evaluator-facing enclosure (the A4 `checkBand` consumer shape).
+
+    The A4 interval evaluator needs: an EXPLICIT finite part it can box with `DIntv` arithmetic,
+    plus a RATIONAL error envelope on the (unevaluated) remainder.  `em_zeta_strip` already
+    delivers exactly this at `K = 1`: the finite part is the elementary closed form
+    `1/(s−1) + 1/2` (a reciprocal + a constant — directly boxable), and the remainder envelope is
+    `‖s‖/(2·Re s)`.  We package it as a single norm enclosure, and give the `σ = 1/2 + it`
+    critical-line specialization (the band the evaluator sweeps).
+
+    Interface for A4 (`DIntvDef.DIntv.memR`): supplied dyadic-interval enclosures of `Re(1/(s−1))`,
+    `Im(1/(s−1))`, the constant `1/2`, and the scalar envelope `‖s‖/(2·Re s)`, the evaluator boxes
+    `Re(ζ s)` and `Im(ζ s)` within
+        [Re(finite) − env, Re(finite) + env]  ×  [Im(finite) − env, Im(finite) + env].
+    (`stirlingFinite`-style, mirroring `StirlingBinet.logDeriv_gammaR_enclosure`.) -/
+
+/-- **The explicit finite part** of the `K = 1` EM enclosure of `ζ` on the strip: `1/(s−1) + 1/2`.
+    Elementary (one reciprocal + a constant) — directly boxable by the `DIntv` evaluator, no `ζ`,
+    no integral. -/
+noncomputable def emZetaFinite (s : ℂ) : ℂ := 1 / (s - 1) + 1 / 2
+
+/-- **THE ζ ENCLOSURE (A4 `checkBand` consumer, `K = 1`).**  For `0 < Re s`, `s ≠ 1`, the true
+    `ζ(s)` differs from the explicit finite part `emZetaFinite s` by at most the rational envelope
+    `‖s‖/(2·Re s)`:
+        ‖riemannZeta s − emZetaFinite s‖ ≤ ‖s‖ / (2·Re s).
+    This is the statement the interval evaluator instantiates: box `emZetaFinite s` with `DIntv`
+    reciprocal+add, then widen by the envelope. -/
+theorem em_zeta_strip_enclosure {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) :
+    ‖riemannZeta s - emZetaFinite s‖ ≤ ‖s‖ / (2 * s.re) := by
+  have hstrip := em_zeta_strip hs hs1
+  have hdiff : riemannZeta s - emZetaFinite s = emZetaRemainder s := by
+    rw [hstrip, emZetaFinite, emZetaRemainder]; ring
+  rw [hdiff]
+  exact emZetaRemainder_bound hs
+
+/-- **Real-part enclosure** (the evaluator boxes `Re(ζ s)`): `|Re(ζ s) − Re(emZetaFinite s)|` lies
+    within the rational envelope.  Mirrors `StirlingBinet.re_logDeriv_gammaR_enclosure`. -/
+theorem re_em_zeta_strip_enclosure {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) :
+    |(riemannZeta s).re - (emZetaFinite s).re| ≤ ‖s‖ / (2 * s.re) := by
+  have h := em_zeta_strip_enclosure hs hs1
+  rw [show (riemannZeta s).re - (emZetaFinite s).re
+        = (riemannZeta s - emZetaFinite s).re from (Complex.sub_re _ _).symm]
+  exact le_trans (Complex.abs_re_le_norm _) h
+
+/-- **Imaginary-part enclosure** (the evaluator boxes `Im(ζ s)`).  Mirrors
+    `StirlingBinet.im_logDeriv_gammaR_enclosure`. -/
+theorem im_em_zeta_strip_enclosure {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) :
+    |(riemannZeta s).im - (emZetaFinite s).im| ≤ ‖s‖ / (2 * s.re) := by
+  have h := em_zeta_strip_enclosure hs hs1
+  rw [show (riemannZeta s).im - (emZetaFinite s).im
+        = (riemannZeta s - emZetaFinite s).im from (Complex.sub_im _ _).symm]
+  exact le_trans (Complex.abs_im_le_norm _) h
+
+/-- **Critical-line specialization** (the `σ = 1/2` band the A4 evaluator sweeps).  For `s = 1/2 + it`
+    with real `t`, `s ≠ 1` automatically (`Re s = 1/2 < 1`), and the envelope is
+    `‖1/2 + it‖ / (2·(1/2)) = ‖1/2 + it‖`.  This is the ζ-band enclosure `checkBand` consumes on the
+    critical line. -/
+theorem em_zeta_critical_line_enclosure (t : ℝ) :
+    ‖riemannZeta ((1 / 2 : ℂ) + t * I) - emZetaFinite ((1 / 2 : ℂ) + t * I)‖
+      ≤ ‖(1 / 2 : ℂ) + t * I‖ / (2 * (1 / 2)) := by
+  have hre : ((1 / 2 : ℂ) + t * I).re = 1 / 2 := by
+    simp [Complex.add_re, Complex.mul_re, Complex.div_re]
+  have hs : 0 < ((1 / 2 : ℂ) + t * I).re := by rw [hre]; norm_num
+  have hs1 : (1 / 2 : ℂ) + t * I ≠ 1 := by
+    intro h
+    have : ((1 / 2 : ℂ) + t * I).re = (1 : ℂ).re := by rw [h]
+    rw [hre] at this; simp at this
+  have h := em_zeta_strip_enclosure hs hs1
+  rw [hre] at h
+  exact h
+
 end ZetaReflection

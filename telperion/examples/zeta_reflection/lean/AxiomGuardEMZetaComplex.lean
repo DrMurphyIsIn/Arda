@@ -44,3 +44,7 @@ import EMZetaComplex
 #print axioms ZetaReflection.emZetaClosed_analyticOnNhd
 #print axioms ZetaReflection.riemannZeta_analyticOnNhd_strip
 #print axioms ZetaReflection.em_zeta_strip
+#print axioms ZetaReflection.em_zeta_strip_enclosure
+#print axioms ZetaReflection.re_em_zeta_strip_enclosure
+#print axioms ZetaReflection.im_em_zeta_strip_enclosure
+#print axioms ZetaReflection.em_zeta_critical_line_enclosure
