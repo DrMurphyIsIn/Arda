@@ -986,4 +986,110 @@ theorem em_tail3_step {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re) (hs2 : 
   rw [hlim]
   ring
 
+/-! ## L. The assembled order-3 tail identity and the ζ enclosure (checkBand consumer form). -/
+
+/-- **Combined order-3 tail identity.**  Chaining `em_tail2_step` and `em_tail3_step`, the K=1 saw
+    remainder over `[N, ∞)` equals an explicit `N`-decaying finite term plus the order-3 tail:
+        ∫_N^∞ saw₁·(−s x^{−s−1})
+          = (bernoulli 2 : ℂ)·(s·N^{−s−1})/2  +  (∫_N^∞ saw₃·(c₃(s) x^{−s−3}))/6.
+    The `/6` remainder is bounded by `em_tail3_bound`; the finite term `B₂·s·N^{−s−1}/2` is
+    elementary (directly boxable). -/
+theorem em_tail_order3_identity {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re)
+    (hs1 : s ≠ -1) (hs2 : s ≠ -2) :
+    (∫ x in Ioi (N : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+      = (bernoulli 2 : ℂ) * (s * (N : ℝ) ^ (-s - 1)) / 2
+        + (∫ x in Ioi (N : ℝ), (sawBernoulli 3 x : ℂ) * (emTailCoeff3 s * (x : ℂ) ^ (-s - 3))) / 6 := by
+  rw [em_tail2_step hN hs hs1, em_tail3_step hN hs hs2]
+  ring
+
+/-- **THE ASSEMBLED ζ IDENTITY (order-3, `[N,∞)` tail cut).**  For `0 < Re s`, `s ≠ 1`, `N ≥ 1`
+    (and `s ≠ -1, -2`, automatic on the strip):
+        riemannZeta s
+          = 1/(s−1) + 1/2
+            + ∫_1^N saw₁·(−s x^{−s−1})               -- the finite `[1,N]` saw part
+            + (bernoulli 2 : ℂ)·(s·N^{−s−1})/2         -- the order-2 boundary correction at N
+            + R₃(s, N),                                 -- the order-3 remainder
+    where `R₃(s,N) = (∫_N^∞ saw₃·(c₃(s) x^{−s−3}))/6` and `‖R₃(s,N)‖` is `em_tail3_bound / 6`.
+    At `s = 1/2 + 14i`, `N = 200`, `‖R₃‖ ≤ (1/6)·(1/1000) < 2·10⁻⁴` (`em_tail3_number`).
+
+    This is the checkBand-consumer form: everything before `R₃` is elementary/boxable (a reciprocal,
+    constants, one finite saw integral, one `N^{−s−1}` power), and `R₃` is the small controlled tail.
+-/
+theorem em_zeta_strip3 {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) {N : ℕ} (hN : 1 ≤ N)
+    (hsm1 : s ≠ -1) (hsm2 : s ≠ -2) :
+    riemannZeta s
+      = 1 / (s - 1) + 1 / 2
+        + (∫ x in (1 : ℝ)..(N : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+        + (bernoulli 2 : ℂ) * (s * (N : ℝ) ^ (-s - 1)) / 2
+        + (∫ x in Ioi (N : ℝ), (sawBernoulli 3 x : ℂ) * (emTailCoeff3 s * (x : ℂ) ^ (-s - 3))) / 6 := by
+  -- K=1 identity: ζ = 1/(s-1) + 1/2 + ∫_1^∞ saw₁·(-s x^{-s-1}).
+  have hK1 := em_zeta_strip hs hs1
+  -- Split ∫_1^∞ = ∫_1^N + ∫_N^∞.
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hN
+  have h1N : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hI1_Ioi : IntegrableOn (fun x : ℝ => (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))) (Ioi 1) :=
+    em_cpow_remainder_integrableOn_strip hs
+  have hsplit : (∫ x in Ioi (1 : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+      = (∫ x in (1 : ℝ)..(N : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+        + ∫ x in Ioi (N : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)) := by
+    have hIcc : IntegrableOn (fun x : ℝ => (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))) (Ioc 1 N) :=
+      hI1_Ioi.mono_set (Ioc_subset_Ioi_self)
+    have hIoiN : IntegrableOn (fun x : ℝ => (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))) (Ioi N) :=
+      hI1_Ioi.mono_set (Ioi_subset_Ioi h1N)
+    have hunion : (∫ x in Ioi (1 : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+        = (∫ x in Ioc (1:ℝ) N, (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+          + ∫ x in Ioi (N:ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)) := by
+      rw [← setIntegral_union (Set.Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi hIcc hIoiN,
+        Set.Ioc_union_Ioi_eq_Ioi h1N]
+    rw [hunion, ← intervalIntegral.integral_of_le h1N]
+  rw [hK1, hsplit, em_tail_order3_identity hN hs hsm1 hsm2]
+  ring
+
+/-- The explicit order-3 finite part of the ζ enclosure: everything except the order-3 tail
+    remainder.  Elementary/boxable: a reciprocal, constants, one finite `[1,N]` saw integral, and an
+    `N^{−s−1}` power. -/
+noncomputable def emZetaFinite3 (s : ℂ) (N : ℕ) : ℂ :=
+  1 / (s - 1) + 1 / 2
+    + (∫ x in (1 : ℝ)..(N : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+    + (bernoulli 2 : ℂ) * (s * (N : ℝ) ^ (-s - 1)) / 2
+
+/-- **THE ζ ENCLOSURE (order-3, checkBand consumer).**  `ζ(s)` differs from the explicit finite part
+    `emZetaFinite3 s N` by exactly the order-3 tail remainder `R₃(s,N)/6`, whose norm is bounded by
+    `em_tail3_bound / 6` — the sign-tight envelope the K=1 form could not provide. -/
+theorem em_zeta_strip3_enclosure {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) {N : ℕ} (hN : 1 ≤ N)
+    (hsm1 : s ≠ -1) (hsm2 : s ≠ -2) :
+    ‖riemannZeta s - emZetaFinite3 s N‖
+      ≤ (1 / 12) * ‖s * (s + 1) * (s + 2)‖ * (N : ℝ) ^ (-(s.re + 3 - 1)) / (s.re + 3 - 1) / 6 := by
+  have hid := em_zeta_strip3 hs hs1 hN hsm1 hsm2
+  have hdiff : riemannZeta s - emZetaFinite3 s N
+      = (∫ x in Ioi (N : ℝ), (sawBernoulli 3 x : ℂ) * (emTailCoeff3 s * (x : ℂ) ^ (-s - 3))) / 6 := by
+    rw [hid, emZetaFinite3]; ring
+  rw [hdiff, norm_div, Complex.norm_ofNat]
+  apply div_le_div_of_nonneg_right (em_tail3_bound hN hs) (by norm_num)
+
+/-- **Critical-line order-3 enclosure** (the `σ = 1/2` band A4 sweeps).  For `s = 1/2 + it`,
+    `‖ζ(s) − emZetaFinite3 s N‖ ≤ (1/12)·‖s(s+1)(s+2)‖·N^{−5/2}/(5/2)/6`.  At `t = 14`, `N = 200`
+    this is `< 2·10⁻⁴` (`em_tail3_number`), making the `gLine` box sign-tight. -/
+theorem em_zeta_critical_line3_enclosure (t : ℝ) {N : ℕ} (hN : 1 ≤ N) :
+    ‖riemannZeta ((1 / 2 : ℂ) + t * Complex.I) - emZetaFinite3 ((1 / 2 : ℂ) + t * Complex.I) N‖
+      ≤ (1 / 12) * ‖((1 / 2 : ℂ) + t * Complex.I) * ((1 / 2 : ℂ) + t * Complex.I + 1)
+            * ((1 / 2 : ℂ) + t * Complex.I + 2)‖
+          * (N : ℝ) ^ (-((1 / 2 : ℝ) + 3 - 1)) / ((1 / 2 : ℝ) + 3 - 1) / 6 := by
+  set s : ℂ := (1 / 2 : ℂ) + t * Complex.I with hsdef
+  have hre : s.re = 1 / 2 := by
+    rw [hsdef]; simp [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im]
+  have hs : 0 < s.re := by rw [hre]; norm_num
+  have hs1 : s ≠ 1 := by
+    intro h; have : s.re = (1 : ℂ).re := by rw [h]
+    rw [hre] at this; simp at this
+  have hsm1 : s ≠ -1 := by
+    intro h; have : s.re = (-1 : ℂ).re := by rw [h]
+    rw [hre] at this; norm_num at this
+  have hsm2 : s ≠ -2 := by
+    intro h; have : s.re = (-2 : ℂ).re := by rw [h]
+    rw [hre] at this; norm_num at this
+  have h := em_zeta_strip3_enclosure hs hs1 hN hsm1 hsm2
+  rw [hre] at h
+  exact h
+
 end ZetaReflection
