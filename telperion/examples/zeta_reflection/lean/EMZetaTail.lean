@@ -295,4 +295,98 @@ theorem em_tail_integral_bound {k : ℕ} {s c : ℂ} {B : ℝ} {N : ℕ}
         have hne : s.re + (k : ℝ) - 1 ≠ 0 := ne_of_gt hσk1
         field_simp
 
+/-! ## I. The K = 3 instance and THE NUMBER (the go/no-go for full reflection).
+
+    The order-3 tail remainder integrand is `sawBernoulli 3 x · (c₃(s) · x^{-s-3})` where
+    `c₃(s) = -s(s+1)(s+2)` is the coefficient of `x^{-s-3}` in `d³/dx³(x^{-s})`.  `em_tail_integral_bound`
+    bounds this integral for ANY complex `c`; here we record it with the honest falling-factorial
+    coefficient and the proven saw-3 sup bound `1/12`, then evaluate the numeric envelope at the G2
+    pilot point `s = 1/2 + 14i` and certify a tail cut making it `< 10⁻³` (the K = 1 envelope
+    `‖s‖/(2·Re s) ≈ 14` did NOT — see EMZetaComplex.em_zeta_strip_enclosure). -/
+
+/-- The order-3 falling-factorial coefficient `c₃(s) = -s(s+1)(s+2)` (the `x^{-s-3}`-coefficient of
+    the 3rd `x`-derivative of `x^{-s}`). -/
+noncomputable def emTailCoeff3 (s : ℂ) : ℂ := -(s * (s + 1) * (s + 2))
+
+/-- **The order-3 tail remainder bound.**  For `N ≥ 1` and `Re s > 0` (hence `Re s + 3 > 1`), the
+    order-3 EM tail integral is bounded by the explicit `N`-decaying envelope with the proven saw-3
+    sup constant `1/12`:
+        ‖∫_N^∞ saw₃ · c₃(s)·x^{-s-3}‖ ≤ (1/12)·‖s(s+1)(s+2)‖·N^{-(Re s+2)}/(Re s+2). -/
+theorem em_tail3_bound {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re) :
+    ‖∫ x in Ioi (N : ℝ), (sawBernoulli 3 x : ℂ) * (emTailCoeff3 s * (x : ℂ) ^ (-s - 3))‖
+      ≤ (1 / 12) * ‖s * (s + 1) * (s + 2)‖ * (N : ℝ) ^ (-(s.re + 3 - 1)) / (s.re + 3 - 1) := by
+  have hexp : (1 : ℝ) < s.re + ((3 : ℕ) : ℝ) := by push_cast; linarith
+  have hcnorm : ‖emTailCoeff3 s‖ = ‖s * (s + 1) * (s + 2)‖ := by rw [emTailCoeff3, norm_neg]
+  have hbnd := em_tail_integral_bound (k := 3) (s := s) (c := emTailCoeff3 s) (B := 1 / 12)
+    (N := N) hN hexp (by norm_num) (fun x => abs_sawBernoulli_three_le x)
+  rw [hcnorm] at hbnd
+  have hcast : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+  rw [hcast] at hbnd
+  exact hbnd
+
+/-- **THE NUMBER (go/no-go for full reflection).**  At the G2 pilot point `s = 1/2 + 14·i` with a
+    tail cut `N = 200`, the order-3 Euler-Maclaurin remainder is bounded (in-kernel) by `< 10⁻³` —
+    the threshold that makes the `gLine` interval boxes sign-tight.
+
+    The certified rational bound is `(1/12)·‖s(s+1)(s+2)‖·200^{-5/2}/(5/2)`.  We enclose
+    `‖s(s+1)(s+2)‖ ≤ 15³ = 3375` (each factor norm `< 15`) and `200^{-5/2} = 1/(200²·√200) ≤ 1/(40000·14)`
+    (since `√200 > 14`), giving envelope `≤ 3375/(12·40000·14·(5/2)) ≈ 2.0·10⁻⁴ < 10⁻³`.
+    (Tight value: `≈ 1.65·10⁻⁴`; see the module report.) -/
+theorem em_tail3_number :
+    ‖∫ x in Ioi (200 : ℝ),
+        (sawBernoulli 3 x : ℂ)
+          * (emTailCoeff3 ((1 / 2 : ℂ) + 14 * Complex.I)
+              * (x : ℂ) ^ (-((1 / 2 : ℂ) + 14 * Complex.I) - 3))‖
+      ≤ (1 : ℝ) / 1000 := by
+  set s : ℂ := (1 / 2 : ℂ) + 14 * Complex.I with hs
+  have hsre : s.re = 1 / 2 := by
+    rw [hs]; simp [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im]
+  have hs0 : 0 < s.re := by rw [hsre]; norm_num
+  have hbnd := em_tail3_bound (s := s) (N := 200) (by norm_num) hs0
+  rw [hsre] at hbnd
+  -- Normalise the exponent and denominator to the ℝ-literal `-(5/2)` and `5/2`.
+  have hexpeq : (-(1 / 2 + (3 : ℝ) - 1) : ℝ) = -(5 / 2 : ℝ) := by norm_num
+  have hdeneq : ((1 / 2 : ℝ) + 3 - 1) = (5 / 2 : ℝ) := by norm_num
+  rw [hexpeq, hdeneq] at hbnd
+  refine le_trans hbnd ?_
+  -- Enclose the norm factor: ‖s(s+1)(s+2)‖ ≤ 3375.
+  -- `‖a + b·I‖ ≤ 15` whenever `a² + b² ≤ 225`.
+  have hfac : ∀ a b : ℝ, a ^ 2 + b ^ 2 ≤ 225 → ‖(a : ℂ) + b * Complex.I‖ ≤ 15 := by
+    intro a b hab
+    rw [Complex.norm_add_mul_I]
+    rw [show (15 : ℝ) = Real.sqrt (225) by
+      rw [show (225:ℝ) = 15^2 by norm_num, Real.sqrt_sq (by norm_num)]]
+    exact Real.sqrt_le_sqrt hab
+  have hs_eq : s = (1 / 2 : ℝ) + (14 : ℝ) * Complex.I := by rw [hs]; push_cast; ring
+  have hs1_eq : s + 1 = (3 / 2 : ℝ) + (14 : ℝ) * Complex.I := by rw [hs]; push_cast; ring
+  have hs2_eq : s + 2 = (5 / 2 : ℝ) + (14 : ℝ) * Complex.I := by rw [hs]; push_cast; ring
+  have hn0 : ‖s‖ ≤ 15 := by rw [hs_eq]; exact hfac _ _ (by norm_num)
+  have hn1 : ‖s + 1‖ ≤ 15 := by rw [hs1_eq]; exact hfac _ _ (by norm_num)
+  have hn2 : ‖s + 2‖ ≤ 15 := by rw [hs2_eq]; exact hfac _ _ (by norm_num)
+  have hnormle : ‖s * (s + 1) * (s + 2)‖ ≤ 3375 := by
+    calc ‖s * (s + 1) * (s + 2)‖ = ‖s‖ * ‖s + 1‖ * ‖s + 2‖ := by rw [norm_mul, norm_mul]
+      _ ≤ 15 * 15 * 15 := by gcongr
+      _ = 3375 := by norm_num
+  -- Enclose the power factor: 200^{-5/2} = 1/(200²·√200) ≤ 1/560000  (√200 > 14).
+  have hsqrt : (14 : ℝ) ≤ (200 : ℝ) ^ (1 / 2 : ℝ) := by
+    rw [← Real.sqrt_eq_rpow,
+      show (14 : ℝ) = Real.sqrt 196 by rw [show (196:ℝ) = 14^2 by norm_num, Real.sqrt_sq (by norm_num)]]
+    apply Real.sqrt_le_sqrt; norm_num
+  have hpowle : (200 : ℝ) ^ (-(5 / 2 : ℝ)) ≤ 1 / 560000 := by
+    rw [Real.rpow_neg (by norm_num),
+      show (5 / 2 : ℝ) = 2 + 1 / 2 by norm_num, Real.rpow_add (by norm_num), Real.rpow_two]
+    have hden_pos : (0 : ℝ) < (200 : ℝ) ^ 2 * (200 : ℝ) ^ (1 / 2 : ℝ) :=
+      mul_pos (by norm_num) (Real.rpow_pos_of_pos (by norm_num) _)
+    have hden_ge : (560000 : ℝ) ≤ (200 : ℝ) ^ 2 * (200 : ℝ) ^ (1 / 2 : ℝ) := by
+      calc (560000 : ℝ) = 40000 * 14 := by norm_num
+        _ ≤ (200 : ℝ) ^ 2 * (200 : ℝ) ^ (1 / 2 : ℝ) := by gcongr; norm_num
+    calc ((200 : ℝ) ^ 2 * (200 : ℝ) ^ (1 / 2 : ℝ))⁻¹
+        ≤ (560000 : ℝ)⁻¹ := inv_anti₀ (by norm_num) hden_ge
+      _ = 1 / 560000 := by rw [one_div]
+  -- Assemble the scalar inequality by monotonicity (all factors nonneg).
+  have hpownn : (0 : ℝ) ≤ (200 : ℝ) ^ (-(5 / 2 : ℝ)) := Real.rpow_nonneg (by norm_num) _
+  calc (1 / 12) * ‖s * (s + 1) * (s + 2)‖ * (200 : ℝ) ^ (-(5 / 2 : ℝ)) / (5 / 2)
+      ≤ (1 / 12) * 3375 * (1 / 560000) / (5 / 2) := by gcongr
+    _ ≤ 1 / 1000 := by norm_num
+
 end ZetaReflection
