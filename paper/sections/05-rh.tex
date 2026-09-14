@@ -597,6 +597,159 @@ development but is a \emph{draft}---its constant is not sharp, it is not
 axiom-guarded, and it is not yet wired into the region argument, so we do not lean
 on it. We flag it rather than let it blur into the verified results above.
 
+\subsection{The reverse program: instruments for Dyson's classification proposal}
+\label{sec:mirrormere}
+
+Dyson's proposal runs the diffraction picture backward: classify
+one-dimensional quasicrystals, locate the zeta point set in the
+classification, and derive zero-localization. The tame one-dimensional case
+has recently \emph{closed} in the literature: by the loop
+Kurasov--Sarnak $\to$ Olevskii--Ulanovskii $\to$ Alon--Cohen--Vinzant, an
+$\mathbb{N}$-valued Fourier quasicrystal is precisely the zero-counting
+measure of a Lee--Yang exponential polynomial---and Lee--Yang zeros are real
+by construction, so \emph{membership forces reality of support}: exactly the
+shape Dyson wanted. The zeta comb, however, sits outside the classified
+class, and where it escapes is now a pair of kernel theorems, not folklore: the
+prime-log frequency set is dense (hence not Bohr-discrete;
+\texttt{primeLogSpectrum\_dense}, unconditional) and the ordinate gaps shrink
+below any uniform-discreteness bound (a pigeonhole driver against the
+counting formula). On the same footing we have formalized the base of the
+classification itself (the Lee--Yang circle bridge and the one-frequency
+Kurasov--Sarnak crystalline structure, in Poisson test-function form) and a
+first \emph{rigidity theorem in the reverse direction}
+(\texttt{twoFreq\_realRooted\_iff}, kernel, both directions): a two-frequency
+exponential sum has all zeros on a single horizontal line, and is real-rooted
+\emph{iff} its coefficients have equal modulus---reality of support forced by
+a dual-side condition, in the smallest honest instance; the
+rationally-dependent case reduces, in kernel, to Lee--Yang-on-the-circle.
+
+Two further instruments discipline the search for axioms. A \emph{certified
+control zoo}: a rigorous Davenport--Heilbronn driver (ball-arithmetic Hurwitz
+evaluation, the mixing constant enclosed from integer surds) yields a
+winding-certified zero inventory to height $300$---$204$ on-line, $4$
+off-line, correcting two published values along the way (the off-line zero
+near $\gamma \approx 166.5$ has $\beta \approx 0.60$, not the tabulated
+$0.785$, which our winding count rejects; the tabulated off-line zero near
+$\gamma \approx 243.1$ does not exist)---and a mechanized falsification
+harness that runs candidate axiom sets against certified data. Its verdict:
+the clause that kills DH (which has off-line zeros, so every admissible axiom
+set \emph{must} kill it) while zeta's unconditionally-checkable clauses pass
+is \emph{weight positivity}---the Euler product---isolated by a
+deliberately-dead control variant that DH survives. And a \emph{defect
+instrument}: the inertia arithmetic of the finite Weil-form compression
+\cite{alpogefurman} (an off-line pair contributes a signature-$(1,1)$ block)
+is formalized as a defect dictionary---negative index $\le$ number of
+off-line pairs, defect $0$ unconditionally for on-line configurations---and
+exercised in a certified perturbation experiment: adjoining one synthetic
+off-line pair ($\beta = 3/5$) to the twenty-nine certified zeros below $100$
+produces a kernel-observable defect of $-1.00167\times10^{-4}$ against the
+honest configuration's $0$. The conservation-of-difficulty map that emerges
+is stated plainly in the program documents: positivity, multiplicativity,
+density, and the defect arithmetic are unconditional (and now partly
+kernel-checked); RH-hardness concentrates in exactly one clause---FQ-grade
+temperedness of the dual comb---of which the classification's entrance fee
+is the disguise. \emph{None of this proves anything about RH}; it builds the
+finite, machine-checked floor---ground truth, falsification instruments, and
+the first theorems of the rigidity ladder---on which any serious attempt at
+the reverse derivation would have to stand.
+
+\subsection{Reflection, and the return of the classical objects}
+\label{sec:reflection}
+
+Every certificate in the ladder of \cref{sec:rh} rests, by design, on one
+documented seam: numeric enclosures enter the kernel as \emph{hypotheses},
+supplied by ball arithmetic and audited but never re-derived. The
+\emph{reflection program} asks whether that seam can be removed---whether the
+kernel can \emph{compute} the numerics itself---and this section reports how
+far it has gone and what happened along the way. The short answer: the seam
+is eliminable in principle and now partially eliminated in fact; and at every
+step where the machinery was forced to choose a representation, it chose,
+unprompted, a classical object of the subject's history.
+
+The architecture is computational reflection in the standard sense: a
+checker \texttt{checkBand : BandData $\to$ Bool} written in the restricted
+fragment the kernel evaluates well (integer-mantissa dyadic intervals, list
+folds, structural recursion---no rationals, whose GCD normalization defeats
+kernel reduction), a soundness theorem proven once, and per-band certificates
+of the form \texttt{ok : checkBand d = true := by decide}. The pilot band
+landed with an axiom print worth exhibiting: the kernel decision
+\texttt{ReflectedBand\_t14.ok} depends on \emph{propext alone}---no choice,
+no quotients, no numeric hypotheses---with the classical axioms entering only
+downstream, where the soundness bridge converts the decided bit into the
+existence of on-line zeros via the intermediate value theorem. The analytic
+engine beneath it is a kernel-complete Euler--Maclaurin theory built for the
+purpose (and absent from Mathlib): the order-3 identity
+\[
+  \zeta(s) \;=\; \frac{1}{s-1} + \frac12
+  + \int_1^N \widetilde{B}_1(x)\,(-s)x^{-s-1}\,dx
+  + \frac{B_2}{2}\,s\,N^{-s-1} + R_3(s,N),
+  \qquad 0 < \operatorname{Re} s,\ s \ne 1,
+\]
+with $R_3$ an explicit saw-kernel integral, culminating in a
+\emph{kernel-decided} numeric theorem:
+$\lVert \zeta(\tfrac12 + 14i) - \mathrm{emZetaFinite}_3 \rVert \le 10^{-3}$
+at $N = 200$ (the proven envelope is $6\times$ smaller). Two smaller
+felicities deserve record: the order-3 boundary term vanishes because
+$B_3 = 0$---the odd Bernoulli zeros doing concrete labor in a certificate
+format---and the large trigonometric arguments the evaluator needs
+($\cos(t\log n)$ with $t\log n \approx 74$, a dozen full periods) are reduced
+\emph{without any enclosure of $\pi$}: iterated exact halving into the Taylor
+domain and doubling back through $\cos 2y = 2\cos^2 y - 1$, the reduction
+error \emph{shrinking} geometrically with depth. On these instruments the
+first fully unconditional evaluation landed: a no-argument kernel theorem
+placing $\operatorname{Re}\, 2^{-(1/2+14i)}$ in an interval of width
+$2\times10^{-4}$---to our knowledge the first value of a $\zeta$-series term
+on the critical line ever computed, rather than certified, inside a proof
+assistant's trusted core. The full $\zeta(\tfrac12+it)$ box is a mechanical
+sum of two hundred such terms plus the tail theorem above.
+
+Now the striking part, which we did not design. The remaining factor of
+$\Lambda = \Gamma_{\mathbb{R}}\,\zeta$ is the Archimedean one, and the
+economical route is not to enclose $\Gamma_{\mathbb{R}}$'s value but to use
+the reality of $\Lambda$ on the line: the sign of $\mathrm{gLine}$
+decomposes as
+$\operatorname{sign}(\cos\varphi\cdot\operatorname{Re}\zeta -
+\sin\varphi\cdot\operatorname{Im}\zeta)$ with
+$\varphi = \arg\Gamma_{\mathbb{R}}(\tfrac12+it)$, the positive modulus
+dropping out. The quantity this leaves behind is precisely the
+\emph{Hardy $Z$-function}, and the phase $\varphi$ is precisely the
+\emph{Riemann--Siegel theta}: the evaluator, asked only for the cheapest
+sound decomposition, reconstructed the instrument of every zero verification
+since Hardy, and the reflected campaign converges---from the axioms of type
+theory upward---on Turing's own method. The same phenomenon occurred one
+level down in the finite models of \cref{sec:mirrormere}: the reality
+criterion for a self-inversive exponential sum forces a normalization by a
+unimodular \emph{square root} of the functional-equation phase, $u^2 =
+\mathrm{phase}$---Hardy's half-phase $e^{i\theta}$, reappearing in a
+two-term binomial because the symmetry demands it, not because we put it
+there. We take this recurrence seriously as evidence of a correct frame:
+when independent mechanized searches for the \emph{cheapest checkable
+certificate} keep terminating on the classical objects---$Z$, $\theta$, the
+half-phase, the Selberg-class axioms recovered clause-by-clause by
+falsification against Davenport--Heilbronn (\cref{sec:mirrormere})---the
+suggestion is that those objects are not historical conveniences but
+something like the optimal certificates of the theory, rediscoverable by
+any sufficiently honest verifier.
+
+One instrument now separates the program from a zero-hypothesis band---a
+kernel value for $\theta(t)$ itself. The corpus route (quadrature of the
+enclosed $\log\Gamma_{\mathbb{R}}$-derivative) is genuinely blocked: it
+requires a digamma series representation and polygamma bounds that exist
+nowhere in Mathlib, and we decline to manufacture them mid-campaign. But a
+back door stands open, and it is three centuries old: Euler's limit formula
+(already formalized in Mathlib as the $\Gamma$-sequence) gives
+$\arg\Gamma(z)$ at finite stage $n$ as
+$y\log n - \sum_{k\le n} \arctan\!\big(y/(x+k)\big)$---arctangents at
+rational arguments, exactly telescoping harmonic sums, and explicit
+$O(1/n)$ rates, every ingredient already in the toolkit. That assembly is in
+progress as we write. If it closes, the resulting theorem---the existence of
+a nontrivial zero of $\zeta$, proven by a term that takes no arguments and
+invokes no oracle---would be the natural endpoint of the trust programme
+this paper describes: not a verified \emph{account} of a computation, but
+the computation itself, carried out where nothing unverified can reach it.
+As everywhere: \texttt{conjecture1\_proved = False}; the reflection program
+changes what a finite verification \emph{is}, not what it proves.
+
 \subsection{Directions: the uniformization axes}
 
 Every classical route to the Riemann Hypothesis supplies a \emph{uniform
