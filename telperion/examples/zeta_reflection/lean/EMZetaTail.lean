@@ -242,6 +242,13 @@ private lemma sum_telescope_diff (g : ℝ → ℝ) {M N : ℕ} (hMN : M ≤ N) :
   | base => simp
   | succ p hp ih => rw [Finset.sum_Ico_succ_top hp, ih]; push_cast; ring
 
+/-- ℂ-valued telescoping sum of first differences. -/
+private lemma sum_telescope_diff_cpow (g : ℝ → ℂ) {M N : ℕ} (hMN : M ≤ N) :
+    (∑ j ∈ Finset.Ico M N, (g ((j : ℝ) + 1) - g (j : ℝ))) = g (N : ℝ) - g (M : ℝ) := by
+  induction N, hMN using Nat.le_induction with
+  | base => simp
+  | succ p hp ih => rw [Finset.sum_Ico_succ_top hp, ih]; push_cast; ring
+
 /-! ## G'. Summed saw-order-raising over an integer window `[M, N]`.
 
     Summing `em_saw_step` over the cells `[M,M+1], …, [N-1,N]` and telescoping via
@@ -548,5 +555,192 @@ theorem hasDerivAt_cpow_neg2 {s : ℂ} (hs : s ≠ -1) {x : ℝ} (hx : 0 < x) :
     rw [show (-s - 1 - 1 : ℂ) = -s - 2 by ring]; ring
   rw [hval] at hfull
   exact hfull
+
+/-! ### ℂ-valued saw-order-raising over a window (for the ζ integrand).
+
+    The ℂ lift of `em_saw_step` and `em_saw_step_window`.  The saw factor `sawBernoulli k x` stays
+    REAL (cast to ℂ); `fk, fk1` are ℂ-valued.  Proof structure is identical to the real versions
+    with `linear_combination` in place of `linarith` for the final ℂ arithmetic. -/
+
+/-- ℂ-valued one-step saw-order-raising over the unit cell `[m, m+1]`. -/
+theorem em_saw_step_cpow (k : ℕ) (m : ℤ) (fk fk1 : ℝ → ℂ)
+    (hd : ∀ x ∈ Icc (m : ℝ) (m + 1), HasDerivAt fk (fk1 x) x)
+    (hi : IntervalIntegrable fk1 volume (m : ℝ) (m + 1)) :
+    (∫ x in (m : ℝ)..(m + 1), (sawBernoulli k x : ℂ) * fk x)
+      = ((bernoulliFun (k + 1) 1 : ℂ) * fk (m + 1) - (bernoulliFun (k + 1) 0 : ℂ) * fk m) / (k + 1)
+        - (∫ x in (m : ℝ)..(m + 1), (sawBernoulli (k + 1) x : ℂ) * fk1 x) / (k + 1) := by
+  have hcc : (m : ℝ) ≤ (m : ℝ) + 1 := by linarith
+  -- ℂ-cast polynomial surrogate W x = B_{k+1}(x-m)/(k+1).
+  set W : ℝ → ℂ := fun y => (bernoulliFun (k + 1) (y - m) / (k + 1) : ℝ) with hWdef
+  have hW' : ∀ x, HasDerivAt W ((bernoulliFun k (x - m) : ℂ)) x := by
+    intro x
+    have hreal := sawSurrogate_hasDerivAt k m x
+    have := hreal.ofReal_comp
+    simpa [hWdef, sawSurrogate, Function.comp] using this
+  have hWcont : Continuous W := by
+    rw [hWdef]; fun_prop
+  have huv : ∀ x ∈ uIcc (m : ℝ) (m + 1), HasDerivAt W ((bernoulliFun k (x - m) : ℂ)) x :=
+    fun x _ => hW' x
+  have hfd : ∀ x ∈ uIcc (m : ℝ) (m + 1), HasDerivAt fk (fk1 x) x := by
+    intro x hx; rw [uIcc_of_le hcc] at hx; exact hd x hx
+  have hW'int : IntervalIntegrable (fun x => (bernoulliFun k (x - m) : ℂ)) volume (m : ℝ) (m + 1) := by
+    apply Continuous.intervalIntegrable; fun_prop
+  have hIBP := integral_deriv_mul_eq_sub huv hfd hW'int hi
+  have hWL : W (m : ℝ) = (bernoulliFun (k + 1) 0 : ℂ) / (k + 1) := by
+    simp [hWdef]
+  have hWR : W ((m : ℝ) + 1) = (bernoulliFun (k + 1) 1 : ℂ) / (k + 1) := by
+    simp only [hWdef, add_sub_cancel_left]; push_cast; ring
+  have hWfk1int : IntervalIntegrable (fun x => W x * fk1 x) volume (m : ℝ) (m + 1) :=
+    hi.continuousOn_mul hWcont.continuousOn
+  have hW'fkint : IntervalIntegrable (fun x => (bernoulliFun k (x - m) : ℂ) * fk x) volume (m : ℝ) (m + 1) := by
+    have hfkcont : ContinuousOn fk (uIcc (m : ℝ) (m + 1)) := fun x hx =>
+      (hfd x hx).continuousAt.continuousWithinAt
+    exact (hfkcont.intervalIntegrable).continuousOn_mul (by fun_prop)
+  have hsplit :
+      (∫ x in (m : ℝ)..(m + 1), (bernoulliFun k (x - m) : ℂ) * fk x + W x * fk1 x)
+        = (∫ x in (m : ℝ)..(m + 1), (bernoulliFun k (x - m) : ℂ) * fk x)
+          + ∫ x in (m : ℝ)..(m + 1), W x * fk1 x := by
+    rw [intervalIntegral.integral_add hW'fkint hWfk1int]
+  have hsaw_k : (∫ x in (m : ℝ)..(m + 1), (sawBernoulli k x : ℂ) * fk x)
+      = ∫ x in (m : ℝ)..(m + 1), (bernoulliFun k (x - m) : ℂ) * fk x := by
+    apply intervalIntegral.integral_congr_ae
+    have hnull : ∀ᵐ x, x ≠ ((m : ℝ) + 1) := MeasureTheory.Measure.ae_ne _ _
+    filter_upwards [hnull] with x hxne hxmem
+    rw [uIoc_of_le hcc] at hxmem
+    have hxIco : x ∈ Ico (m : ℝ) (m + 1) := ⟨le_of_lt hxmem.1, lt_of_le_of_ne hxmem.2 hxne⟩
+    rw [sawBernoulli_eq_on_Ico k hxIco]
+  have hsaw_k1 : (∫ x in (m : ℝ)..(m + 1), (sawBernoulli (k + 1) x : ℂ) * fk1 x)
+      = ∫ x in (m : ℝ)..(m + 1), ((k + 1 : ℂ) * W x) * fk1 x := by
+    apply intervalIntegral.integral_congr_ae
+    have hnull : ∀ᵐ x, x ≠ ((m : ℝ) + 1) := MeasureTheory.Measure.ae_ne _ _
+    filter_upwards [hnull] with x hxne hxmem
+    rw [uIoc_of_le hcc] at hxmem
+    have hxIco : x ∈ Ico (m : ℝ) (m + 1) := ⟨le_of_lt hxmem.1, lt_of_le_of_ne hxmem.2 hxne⟩
+    have hk1 : ((k : ℂ) + 1) ≠ 0 := by
+      have : ((k : ℝ) + 1) ≠ 0 := by positivity
+      exact_mod_cast this
+    rw [sawBernoulli_eq_on_Ico (k + 1) hxIco, hWdef]
+    push_cast
+    field_simp
+  rw [hsaw_k]
+  have key : (∫ x in (m : ℝ)..(m + 1), (bernoulliFun k (x - m) : ℂ) * fk x)
+      + ∫ x in (m : ℝ)..(m + 1), W x * fk1 x
+      = W ((m : ℝ) + 1) * fk ((m : ℝ) + 1) - W (m : ℝ) * fk (m : ℝ) := by
+    rw [← hsplit]; exact hIBP
+  rw [hWL, hWR] at key
+  have hk1 : ((k : ℂ) + 1) ≠ 0 := by
+    have : ((k : ℝ) + 1) ≠ 0 := by positivity
+    exact_mod_cast this
+  rw [hsaw_k1]
+  have hpull : (∫ x in (m : ℝ)..(m + 1), ((k + 1 : ℂ) * W x) * fk1 x)
+      = ((k : ℂ) + 1) * ∫ x in (m : ℝ)..(m + 1), W x * fk1 x := by
+    rw [← intervalIntegral.integral_const_mul]
+    apply intervalIntegral.integral_congr
+    intro x _; push_cast; ring
+  rw [hpull]
+  have hcancel : (((k : ℂ) + 1) * ∫ x in (m : ℝ)..(m + 1), W x * fk1 x) / ((k : ℂ) + 1)
+      = ∫ x in (m : ℝ)..(m + 1), W x * fk1 x := by
+    rw [mul_comm]; exact mul_div_cancel_right₀ _ hk1
+  rw [hcancel]
+  push_cast
+  linear_combination key
+
+/-- ℂ-valued summed saw-order-raising over `[M, N]` (`k ≥ 1`).  ℂ lift of `em_saw_step_window`. -/
+theorem em_saw_step_window_cpow {k : ℕ} (hk : 1 ≤ k) (M N : ℕ) (hMN : M ≤ N) (fk fk1 : ℝ → ℂ)
+    (hd : ∀ x ∈ Icc (M : ℝ) N, HasDerivAt fk (fk1 x) x)
+    (hi : ∀ j ∈ Finset.Ico M N, IntervalIntegrable fk1 volume (j : ℝ) (j + 1)) :
+    (∫ x in (M : ℝ)..N, (sawBernoulli k x : ℂ) * fk x)
+      = (bernoulliFun (k + 1) 0 : ℂ) * (fk N - fk M) / (k + 1)
+        - (∫ x in (M : ℝ)..N, (sawBernoulli (k + 1) x : ℂ) * fk1 x) / (k + 1) := by
+  have hk1ne : k + 1 ≠ 1 := by omega
+  have hendeq : (bernoulliFun (k + 1) 1 : ℂ) = (bernoulliFun (k + 1) 0 : ℂ) := by
+    exact_mod_cast bernoulliFun_endpoints_eq_of_ne_one hk1ne
+  have hcell : ∀ j ∈ Finset.Ico M N, ∀ x ∈ Icc (j : ℝ) (j + 1), HasDerivAt fk (fk1 x) x := by
+    intro j hj x hx
+    rw [Finset.mem_Ico] at hj
+    refine hd x ⟨le_trans (by exact_mod_cast hj.1) hx.1, ?_⟩
+    have : (j : ℝ) + 1 ≤ (N : ℝ) := by exact_mod_cast hj.2
+    linarith [hx.2]
+  have hstep : ∀ j ∈ Finset.Ico M N,
+      (∫ x in (j : ℝ)..(j + 1), (sawBernoulli k x : ℂ) * fk x)
+        = ((bernoulliFun (k + 1) 1 : ℂ) * fk (j + 1) - (bernoulliFun (k + 1) 0 : ℂ) * fk j) / (k + 1)
+          - (∫ x in (j : ℝ)..(j + 1), (sawBernoulli (k + 1) x : ℂ) * fk1 x) / (k + 1) := by
+    intro j hj
+    have hcast : (((j : ℤ)) : ℝ) = (j : ℝ) := by push_cast; ring
+    have := em_saw_step_cpow k (j : ℤ) fk fk1
+      (by intro x hx; rw [hcast] at hx; exact hcell j hj x hx)
+      (by rw [hcast]; exact hi j hj)
+    simpa [hcast] using this
+  have hsum := Finset.sum_congr rfl hstep
+  -- Integrability per cell (ℂ).
+  have hint_k : ∀ j ∈ Finset.Ico M N,
+      IntervalIntegrable (fun x => (sawBernoulli k x : ℂ) * fk x) volume (j : ℝ) (j + 1) := by
+    intro j hj
+    have hcc : (j : ℝ) ≤ (j : ℝ) + 1 := by linarith
+    have hfkcont : ContinuousOn fk (Icc (j : ℝ) (j + 1)) :=
+      fun x hx => (hcell j hj x hx).continuousAt.continuousWithinAt
+    have hcont : IntervalIntegrable (fun x => (bernoulliFun k (x - j) : ℂ) * fk x) volume (j : ℝ) (j + 1) := by
+      apply ContinuousOn.intervalIntegrable
+      rw [uIcc_of_le hcc]
+      exact (Continuous.continuousOn (by fun_prop)).mul hfkcont
+    refine (intervalIntegrable_congr_ae ?_).mpr hcont
+    have hnull : ∀ᵐ x, x ≠ ((j : ℝ) + 1) := MeasureTheory.Measure.ae_ne _ _
+    rw [Filter.EventuallyEq, MeasureTheory.ae_restrict_iff' measurableSet_uIoc]
+    filter_upwards [hnull] with x hxne hxmem
+    rw [uIoc_of_le hcc] at hxmem
+    have hxIco : x ∈ Ico ((j : ℤ) : ℝ) (((j : ℤ) : ℝ) + 1) := by
+      refine ⟨?_, ?_⟩
+      · have : (j : ℝ) < x := hxmem.1; push_cast; linarith
+      · have hlt : x < (j : ℝ) + 1 := lt_of_le_of_ne hxmem.2 hxne; push_cast; linarith
+    rw [sawBernoulli_eq_on_Ico k hxIco]; norm_num
+  have htel_k : (∑ j ∈ Finset.Ico M N, ∫ x in (j : ℝ)..(j + 1), (sawBernoulli k x : ℂ) * fk x)
+      = ∫ x in (M : ℝ)..N, (sawBernoulli k x : ℂ) * fk x := by
+    have hint : ∀ j ∈ Set.Ico M N,
+        IntervalIntegrable (fun x => (sawBernoulli k x : ℂ) * fk x) volume
+          ((fun j : ℕ => (j : ℝ)) j) ((fun j : ℕ => (j : ℝ)) (j + 1)) := by
+      intro j hj; simpa [Nat.cast_succ] using hint_k j (Finset.mem_Ico.mpr hj)
+    have := intervalIntegral.sum_integral_adjacent_intervals_Ico
+      (a := fun j : ℕ => (j : ℝ)) (f := fun x => (sawBernoulli k x : ℂ) * fk x) (μ := volume) hMN hint
+    simpa using this
+  have hint_k1 : ∀ j ∈ Finset.Ico M N,
+      IntervalIntegrable (fun x => (sawBernoulli (k + 1) x : ℂ) * fk1 x) volume (j : ℝ) (j + 1) := by
+    intro j hj
+    have hcc : (j : ℝ) ≤ (j : ℝ) + 1 := by linarith
+    have hcont : IntervalIntegrable (fun x => (bernoulliFun (k + 1) (x - j) : ℂ) * fk1 x) volume
+        (j : ℝ) (j + 1) := (hi j hj).continuousOn_mul (by fun_prop)
+    refine (intervalIntegrable_congr_ae ?_).mpr hcont
+    have hnull : ∀ᵐ x, x ≠ ((j : ℝ) + 1) := MeasureTheory.Measure.ae_ne _ _
+    rw [Filter.EventuallyEq, MeasureTheory.ae_restrict_iff' measurableSet_uIoc]
+    filter_upwards [hnull] with x hxne hxmem
+    rw [uIoc_of_le hcc] at hxmem
+    have hxIco : x ∈ Ico ((j : ℤ) : ℝ) (((j : ℤ) : ℝ) + 1) := by
+      refine ⟨?_, ?_⟩
+      · have : (j : ℝ) < x := hxmem.1; push_cast; linarith
+      · have hlt : x < (j : ℝ) + 1 := lt_of_le_of_ne hxmem.2 hxne; push_cast; linarith
+    rw [sawBernoulli_eq_on_Ico (k + 1) hxIco]; norm_num
+  have htel_k1 : (∑ j ∈ Finset.Ico M N, ∫ x in (j : ℝ)..(j + 1), (sawBernoulli (k + 1) x : ℂ) * fk1 x)
+      = ∫ x in (M : ℝ)..N, (sawBernoulli (k + 1) x : ℂ) * fk1 x := by
+    have hint : ∀ j ∈ Set.Ico M N,
+        IntervalIntegrable (fun x => (sawBernoulli (k + 1) x : ℂ) * fk1 x) volume
+          ((fun j : ℕ => (j : ℝ)) j) ((fun j : ℕ => (j : ℝ)) (j + 1)) := by
+      intro j hj; simpa [Nat.cast_succ] using hint_k1 j (Finset.mem_Ico.mpr hj)
+    have := intervalIntegral.sum_integral_adjacent_intervals_Ico
+      (a := fun j : ℕ => (j : ℝ)) (f := fun x => (sawBernoulli (k + 1) x : ℂ) * fk1 x) (μ := volume) hMN hint
+    simpa using this
+  -- Boundary telescoping (ℂ).
+  have hbdry : (∑ j ∈ Finset.Ico M N,
+        ((bernoulliFun (k + 1) 1 : ℂ) * fk (j + 1) - (bernoulliFun (k + 1) 0 : ℂ) * fk j)) / (k + 1)
+      = (bernoulliFun (k + 1) 0 : ℂ) * (fk N - fk M) / (k + 1) := by
+    congr 1
+    rw [hendeq]
+    have hcongr : (∑ j ∈ Finset.Ico M N,
+        ((bernoulliFun (k + 1) 0 : ℂ) * fk (j + 1) - (bernoulliFun (k + 1) 0 : ℂ) * fk j))
+        = (∑ j ∈ Finset.Ico M N,
+            (bernoulliFun (k + 1) 0 : ℂ) * (fk ((j : ℝ) + 1) - fk (j : ℝ))) := by
+      apply Finset.sum_congr rfl; intro j _; ring
+    rw [hcongr, ← Finset.mul_sum, sum_telescope_diff_cpow fk hMN]
+  rw [Finset.sum_sub_distrib] at hsum
+  rw [← Finset.sum_div, ← Finset.sum_div, htel_k1, htel_k, hbdry] at hsum
+  exact hsum
 
 end ZetaReflection
