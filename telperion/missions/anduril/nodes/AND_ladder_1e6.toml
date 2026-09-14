@@ -1,0 +1,8 @@
+created = "2026-09-14"
+depends_on = ["AND_ladder_h280000"]
+kind = "milestone"
+name = "AND.ladder_1e6"
+statement_module = "Statements.AND_ladder_1e6"
+status = "draft"
+title = "G1: every nontrivial zeta zero with |Im rho| <= 10^6 lies on Re = 1/2 (~1.8M zeros; roadmap: nothing structural remains on current T5 machinery, wall-clock only)"
+updated = "2026-09-14"
