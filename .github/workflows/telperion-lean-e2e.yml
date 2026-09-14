@@ -2204,3 +2204,129 @@ jobs:
           if echo "$out" | grep -q 'sorryAx'; then echo "::error::a guarded theorem depends on sorry"; exit 1; fi
           if echo "$out" | grep -qE 'error:'; then echo "::error::AxiomGuardRHInBox.lean did not elaborate cleanly"; exit 1; fi
           echo "OK: all guarded theorems kernel-clean."
+
+  # --- PROGRAM ANDÚRIL × MIRRORMERE emitters (2026-09-14): the four minted certificate shapes. ---
+
+  bragg-amplitude-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the Bragg-amplitude instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/bragg_amplitude/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Bragg-amplitude lib (uses the island's CosEnclosure)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake build BraggAmplitudeInstances
+
+  defect-witness-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the defect-witness Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/defect_witness/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/defect_witness/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/defect_witness/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- DefectWitness)
+        working-directory: telperion/examples/defect_witness/lean
+        run: lake build
+
+  selfinversive-rigidity-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the self-inversive-rigidity instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/selfinversive_rigidity/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake exe cache get
+
+      - name: Build the emitted rigidity lib (uses the island's TwoFreqRigidity)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake build SelfInversiveRigidityInstances
+
+  winding-box-zero-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      # winding_box_zero is an Arb-trust-class kind: it ships a .cert.json sidecar + a doc stub
+      # (NO kernel theorem), so there is no Lean to build.  The gate is the deterministic drift
+      # check (which re-verifies each winding at doubled precision + density) plus the unit tests.
+      - name: Regenerate the winding-box-zero sidecar + doc stub (drift check)
+        working-directory: telperion
+        run: |
+          python examples/winding_box_zero/generate.py --check
+
+      - name: Unit tests (self-check pass + negative-control refusals)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_winding_box_zero.py -q

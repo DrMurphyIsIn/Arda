@@ -37,6 +37,12 @@ name = "LambdaLineReal"
 [[lean_lib]]
 name = "CosEnclosure"
 
+# Telperion bragg_amplitude emitter example (2026-09-14): a base-case (3-ordinate,
+# |c|≤1) instance of the BraggH100 CosEnclosure fold, emitted by
+# examples/bragg_amplitude/generate.py.
+[[lean_lib]]
+name = "BraggAmplitudeInstances"
+
 [[lean_lib]]
 name = "BraggSupport"
 
