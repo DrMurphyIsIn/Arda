@@ -1,0 +1,595 @@
+{
+  "t_max": 100.0,
+  "objects": [
+    "zeta",
+    "dh",
+    "lattice",
+    "ksly",
+    "random"
+  ],
+  "clauses": [
+    [
+      "support_density",
+      "(A-i/B-i) support density"
+    ],
+    [
+      "atomic_spectrum",
+      "(A-ii/B-ii) atomic spectrum on prime Lambda_log"
+    ],
+    [
+      "atomic_spectrum_loose",
+      "(C-ii) atomic spectrum on any log-lattice"
+    ],
+    [
+      "weight_positivity",
+      "(B-iii) weight positivity + decay [KILLER]"
+    ],
+    [
+      "signed_decay",
+      "(C-iii) signed decay only"
+    ],
+    [
+      "defect_bounded",
+      "(D-ii) bounded defect k"
+    ],
+    [
+      "temperedness",
+      "(A-iv..D) temperedness"
+    ]
+  ],
+  "matrix": {
+    "zeta": {
+      "support_density": {
+        "verdict": "PASS",
+        "detail": "count=29, model~28.1, ratio=1.03, envelope<=300",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-i/B-i) support density"
+      },
+      "atomic_spectrum": {
+        "verdict": "CONDITIONAL",
+        "detail": "pure-point at log-prime freqs is RH-adjacent (GW image of reality)",
+        "variants": [
+          "A",
+          "B",
+          "D"
+        ],
+        "name": "(A-ii/B-ii) atomic spectrum on prime Lambda_log"
+      },
+      "atomic_spectrum_loose": {
+        "verdict": "CONDITIONAL",
+        "detail": "pure-point at log-prime freqs is RH-adjacent (GW image of reality)",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-ii) atomic spectrum on any log-lattice"
+      },
+      "weight_positivity": {
+        "verdict": "PASS",
+        "detail": "GW prime side (log p)p^{-k/2} > 0 (unconditional, arithmetic)",
+        "variants": [
+          "B"
+        ],
+        "name": "(B-iii) weight positivity + decay [KILLER]"
+      },
+      "signed_decay": {
+        "verdict": "CONDITIONAL",
+        "detail": "signed decay holds; pure-pointness still RH-conditional",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-iii) signed decay only"
+      },
+      "defect_bounded": {
+        "verdict": "CONDITIONAL",
+        "detail": "finite k at each height (Alpoge-Furman); k=0 <=> RH -- unconditionally PARTIAL",
+        "variants": [
+          "D"
+        ],
+        "name": "(D-ii) bounded defect k"
+      },
+      "temperedness": {
+        "verdict": "PASS",
+        "detail": "finite-order tempered",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-iv..D) temperedness"
+      }
+    },
+    "dh": {
+      "support_density": {
+        "verdict": "PASS",
+        "detail": "count=53, model~53.7, ratio=0.99, envelope<=300",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-i/B-i) support density"
+      },
+      "atomic_spectrum": {
+        "verdict": "FAIL",
+        "detail": "spectrum on conductor-5 log-lattice, not the PRIME log-lattice (fragile sep., A2 s6)",
+        "variants": [
+          "A",
+          "B",
+          "D"
+        ],
+        "name": "(A-ii/B-ii) atomic spectrum on prime Lambda_log"
+      },
+      "atomic_spectrum_loose": {
+        "verdict": "PASS",
+        "detail": "spectrum on a (conductor-5) log-lattice -- loose C-reading admits it",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-ii) atomic spectrum on any log-lattice"
+      },
+      "weight_positivity": {
+        "verdict": "FAIL",
+        "detail": "no Euler product: F'/F mixes chi(p),chi-bar(p) -> complex/sign-varying, positivity fails",
+        "variants": [
+          "B"
+        ],
+        "name": "(B-iii) weight positivity + decay [KILLER]"
+      },
+      "signed_decay": {
+        "verdict": "PASS",
+        "detail": "signed amplitudes decay within the envelope (positivity not required)",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-iii) signed decay only"
+      },
+      "defect_bounded": {
+        "verdict": "FAIL",
+        "detail": "unbounded defect: 4 off-line pairs certified, k(T)->inf",
+        "variants": [
+          "D"
+        ],
+        "name": "(D-ii) bounded defect k"
+      },
+      "temperedness": {
+        "verdict": "PASS",
+        "detail": "finite-order tempered",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-iv..D) temperedness"
+      }
+    },
+    "lattice": {
+      "support_density": {
+        "verdict": "PASS",
+        "detail": "count=100, model~100.0, ratio=1.00, envelope<=300",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-i/B-i) support density"
+      },
+      "atomic_spectrum": {
+        "verdict": "PASS",
+        "detail": "atomic pure-point spectrum (integer_lattice)",
+        "variants": [
+          "A",
+          "B",
+          "D"
+        ],
+        "name": "(A-ii/B-ii) atomic spectrum on prime Lambda_log"
+      },
+      "atomic_spectrum_loose": {
+        "verdict": "PASS",
+        "detail": "atomic pure-point spectrum (integer_lattice)",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-ii) atomic spectrum on any log-lattice"
+      },
+      "weight_positivity": {
+        "verdict": "PASS",
+        "detail": "positive-mass atoms (positive_single)",
+        "variants": [
+          "B"
+        ],
+        "name": "(B-iii) weight positivity + decay [KILLER]"
+      },
+      "signed_decay": {
+        "verdict": "PASS",
+        "detail": "signed amplitudes decay within the envelope (positivity not required)",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-iii) signed decay only"
+      },
+      "defect_bounded": {
+        "verdict": "PASS",
+        "detail": "no off-line pairs (defect k=0)",
+        "variants": [
+          "D"
+        ],
+        "name": "(D-ii) bounded defect k"
+      },
+      "temperedness": {
+        "verdict": "PASS",
+        "detail": "finite-order tempered",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-iv..D) temperedness"
+      }
+    },
+    "ksly": {
+      "support_density": {
+        "verdict": "PASS",
+        "detail": "count=32, model~31.8, ratio=1.01, envelope<=300",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-i/B-i) support density"
+      },
+      "atomic_spectrum": {
+        "verdict": "PASS",
+        "detail": "atomic pure-point spectrum (exp_poly_freqs)",
+        "variants": [
+          "A",
+          "B",
+          "D"
+        ],
+        "name": "(A-ii/B-ii) atomic spectrum on prime Lambda_log"
+      },
+      "atomic_spectrum_loose": {
+        "verdict": "PASS",
+        "detail": "atomic pure-point spectrum (exp_poly_freqs)",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-ii) atomic spectrum on any log-lattice"
+      },
+      "weight_positivity": {
+        "verdict": "PASS",
+        "detail": "positive-mass atoms (positive_ly)",
+        "variants": [
+          "B"
+        ],
+        "name": "(B-iii) weight positivity + decay [KILLER]"
+      },
+      "signed_decay": {
+        "verdict": "PASS",
+        "detail": "signed amplitudes decay within the envelope (positivity not required)",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-iii) signed decay only"
+      },
+      "defect_bounded": {
+        "verdict": "PASS",
+        "detail": "no off-line pairs (defect k=0)",
+        "variants": [
+          "D"
+        ],
+        "name": "(D-ii) bounded defect k"
+      },
+      "temperedness": {
+        "verdict": "PASS",
+        "detail": "finite-order tempered",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-iv..D) temperedness"
+      }
+    },
+    "random": {
+      "support_density": {
+        "verdict": "PASS",
+        "detail": "count=100, model~100.0, ratio=1.00, envelope<=300",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-i/B-i) support density"
+      },
+      "atomic_spectrum": {
+        "verdict": "FAIL",
+        "detail": "no atomic diffraction spectrum (Poisson-random)",
+        "variants": [
+          "A",
+          "B",
+          "D"
+        ],
+        "name": "(A-ii/B-ii) atomic spectrum on prime Lambda_log"
+      },
+      "atomic_spectrum_loose": {
+        "verdict": "FAIL",
+        "detail": "no atomic diffraction spectrum (Poisson-random)",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-ii) atomic spectrum on any log-lattice"
+      },
+      "weight_positivity": {
+        "verdict": "FAIL",
+        "detail": "no atomic spectrum; weights undefined/sign-random",
+        "variants": [
+          "B"
+        ],
+        "name": "(B-iii) weight positivity + decay [KILLER]"
+      },
+      "signed_decay": {
+        "verdict": "FAIL",
+        "detail": "no atomic spectrum -> no decaying amplitude sequence",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-iii) signed decay only"
+      },
+      "defect_bounded": {
+        "verdict": "FAIL",
+        "detail": "not even defect-crystalline (no atomic spectrum)",
+        "variants": [
+          "D"
+        ],
+        "name": "(D-ii) bounded defect k"
+      },
+      "temperedness": {
+        "verdict": "PASS",
+        "detail": "finite-order tempered",
+        "variants": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "name": "(A-iv..D) temperedness"
+      }
+    }
+  },
+  "variant_kill": {
+    "A": {
+      "zeta": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "dh": {
+        "fails": [
+          "atomic_spectrum"
+        ],
+        "killed": true,
+        "survives": false
+      },
+      "lattice": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "ksly": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "random": {
+        "fails": [
+          "atomic_spectrum"
+        ],
+        "killed": true,
+        "survives": false
+      }
+    },
+    "B": {
+      "zeta": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "dh": {
+        "fails": [
+          "atomic_spectrum",
+          "weight_positivity"
+        ],
+        "killed": true,
+        "survives": false
+      },
+      "lattice": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "ksly": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "random": {
+        "fails": [
+          "atomic_spectrum",
+          "weight_positivity"
+        ],
+        "killed": true,
+        "survives": false
+      }
+    },
+    "C": {
+      "zeta": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "dh": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "lattice": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "ksly": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "random": {
+        "fails": [
+          "atomic_spectrum_loose",
+          "signed_decay"
+        ],
+        "killed": true,
+        "survives": false
+      }
+    },
+    "D": {
+      "zeta": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "dh": {
+        "fails": [
+          "atomic_spectrum",
+          "defect_bounded"
+        ],
+        "killed": true,
+        "survives": false
+      },
+      "lattice": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "ksly": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "random": {
+        "fails": [
+          "atomic_spectrum",
+          "defect_bounded"
+        ],
+        "killed": true,
+        "survives": false
+      }
+    }
+  },
+  "object_meta": {
+    "zeta": {
+      "density_count": 29,
+      "offline_pairs": 0,
+      "spectrum": "prime_log_lattice",
+      "weights": "positive_prime"
+    },
+    "dh": {
+      "density_count": 53,
+      "offline_pairs": 1,
+      "spectrum": "single_modulus_log",
+      "weights": "complex_char_mixed"
+    },
+    "lattice": {
+      "density_count": 100,
+      "offline_pairs": 0,
+      "spectrum": "integer_lattice",
+      "weights": "positive_single"
+    },
+    "ksly": {
+      "density_count": 32,
+      "offline_pairs": 0,
+      "spectrum": "exp_poly_freqs",
+      "weights": "positive_ly"
+    },
+    "random": {
+      "density_count": 100,
+      "offline_pairs": 0,
+      "spectrum": "none",
+      "weights": "iid_random"
+    }
+  },
+  "trust": "arb/interval orchestration (certified inventories); NOT kernel",
+  "conjecture1_proved": false,
+  "forged_controls": [
+    {
+      "control": "superdense_support",
+      "clause": "support_density",
+      "genuine": "PASS",
+      "forged_verdict": "FAIL",
+      "flipped": true,
+      "detail": "count=100000, model~50.0, ratio=2000.00, envelope<=300"
+    },
+    {
+      "control": "nonlattice_atom",
+      "clause": "atomic_spectrum",
+      "genuine": "PASS",
+      "forged_verdict": "FAIL",
+      "flipped": true,
+      "detail": "no atomic diffraction spectrum (Poisson-random)"
+    },
+    {
+      "control": "negative_weight_at_log2",
+      "clause": "weight_positivity",
+      "genuine": "PASS",
+      "forged_verdict": "FAIL",
+      "flipped": true,
+      "detail": "no Euler product: F'/F mixes chi(p),chi-bar(p) -> complex/sign-varying, positivity fails"
+    },
+    {
+      "control": "O1_atom_large_u",
+      "clause": "signed_decay",
+      "genuine": "PASS",
+      "forged_verdict": "FAIL",
+      "flipped": true,
+      "detail": "no atomic spectrum -> no decaying amplitude sequence"
+    },
+    {
+      "control": "growing_defect",
+      "clause": "defect_bounded",
+      "genuine": "PASS",
+      "forged_verdict": "FAIL",
+      "flipped": true,
+      "detail": "unbounded defect: 17 off-line pairs certified, k(T)->inf"
+    },
+    {
+      "control": "nontempered_weights",
+      "clause": "temperedness",
+      "genuine": "PASS",
+      "forged_verdict": "FAIL",
+      "flipped": true,
+      "detail": "non-tempered (exponential weights)"
+    },
+    {
+      "control": "corrupt_dh_offline_flag",
+      "clause": "defect_bounded",
+      "genuine": "FAIL",
+      "forged_verdict": "PASS",
+      "flipped": true,
+      "detail": "genuine DH defect=FAIL; with off-line flag corrupted -> PASS"
+    }
+  ],
+  "a2_findings": [],
+  "governance_failures": []
+}

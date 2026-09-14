@@ -26,6 +26,9 @@ name = "BraggSupport"
 name = "BraggH100"
 
 [[lean_lib]]
+name = "ZooDH"
+
+[[lean_lib]]
 name = "XiLineZeros"
 
 [[lean_lib]]
