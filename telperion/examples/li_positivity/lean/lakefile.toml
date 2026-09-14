@@ -782,3 +782,15 @@ name = "RvMArchGrowth"
 
 [[lean_lib]]
 name = "RvMNTLadderH4000"
+
+[[lean_lib]]
+name = "RvMArchSharperS1"
+
+[[lean_lib]]
+name = "RvMArchSharperS2a"
+
+[[lean_lib]]
+name = "RvMArchSharperS2b"
+
+[[lean_lib]]
+name = "RvMArchSharper"
