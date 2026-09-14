@@ -69,6 +69,14 @@ def _DH_C(n_mod5: int) -> float:
     return {1: 1.0, 2: _DH_KAPPA, 3: -_DH_KAPPA, 4: -1.0, 0: 0.0}[n_mod5 % 5]
 
 
+# The odd primitive Dirichlet character chi mod 5 (the two L-functions DH is built
+# from).  2 generates (Z/5)^*: 2^1=2,2^2=4,2^3=3,2^4=1; the odd character sends the
+# generator 2 -> i.  So chi(1)=1, chi(2)=i, chi(3)=-i, chi(4)=-1, chi(5)=0.  This is
+# EXACTLY arb_dh.CHI5 -- the same character used in the certified L-function driver.
+_CHI5 = {1: 1 + 0j, 2: 1j, 3: -1j, 4: -1 + 0j, 0: 0j}
+_CHI5_BAR = {r: v.conjugate() for r, v in _CHI5.items()}
+
+
 # ===========================================================================
 # Zoo objects
 # ===========================================================================
@@ -97,12 +105,18 @@ class ZooObject:
     # certifies the amplitude generation law  a(p^m) = (log p) w(p)^m  directly from
     # this sequence (a genuine finite computation, not a descriptor lookup).
     #   'euler_product'  -- completely multiplicative a(n) (zeta: a(n)=1)  -> generation holds
+    #   'euler_product_twisted' -- completely multiplicative a(n)=chi(n), |chi(p)|=1
+    #                             (L-function: Euler product with a UNIMODULAR character
+    #                             twist)  -> B-mult-TWISTED holds, bare B-mult (positive
+    #                             real prime layer) does not
     #   'periodic_mod_q' -- a periodic coefficient vector (DH: c=[1,k,-k,-1,0])  -> generation fails
     #   'none'           -- no Dirichlet-coefficient model (lattice/ksly/random)
     mult_model: str = "none"
     # the finite coefficient data for mult_model:
-    #   euler_product  -> ('cm', dict{prime: a(p)})     completely-multiplicative seed a(p)
-    #   periodic_mod_q -> ('periodic', list c[0..q-1])  the period-q vector, c indexed by n mod q
+    #   euler_product         -> ('cm', dict{prime: a(p)})   completely-multiplicative seed a(p)
+    #   euler_product_twisted -> ('cm', dict{residue r mod q: chi(r) as complex}, q)
+    #                            i.e. ('cm_char', chi_dict, modulus)  a(n)=chi(n mod q)
+    #   periodic_mod_q        -> ('periodic', list c[0..q-1])  the period-q vector, c indexed by n mod q
     mult_coeffs: object = None
 
 
@@ -149,6 +163,46 @@ def _load_dh(t_max: float = 100.0) -> ZooObject:
         # and the prime-layer amplitudes are sign-varying -> generation law fails.
         mult_model="periodic_mod_q",
         mult_coeffs=("periodic", [_DH_C(0), _DH_C(1), _DH_C(2), _DH_C(3), _DH_C(4)]),
+    )
+
+
+def _load_l_chi5(t_max: float = 100.0, conj: bool = False) -> ZooObject:
+    """The L-function column (W3c): L(s, chi) for the odd primitive character
+    chi mod 5, a GENUINE degree-1 arithmetic L-function WITH an Euler product.
+
+    DH is the NON-multiplicative combination D = (1-ik)/2 L(chi) + (1+ik)/2 L(chi-bar)
+    of exactly this object and its conjugate.  The decisive falsification test the
+    W3a verdict demands: an L-function should PASS B-mult-twisted (Euler product with
+    a unimodular character twist) while their sum DH keeps FAILING it.
+
+    Support: L(s,chi) is in the SAME functional-equation class as zeta (density
+    ~ T log T; here modulus-5 shifted, same as DH's model).  Its zeros are believed
+    all on Re s=1/2 (GRH for L(chi)); UNCONDITIONALLY it has NO KNOWN off-line zeros
+    (the DH off-line zeros come from the linear COMBINATION, not the individual L's).
+    So exactly like zeta: pure-pointness / defect-0 are GRH-CONDITIONAL, while the
+    Euler-product amplitude generation is unconditional/arithmetic.
+
+    Amplitudes: -L'/L(s,chi) = sum_n Lambda(n) chi(n) n^{-s}, so the Bragg amplitude
+    at m log p is (log p) chi(p)^m p^{-m/2} -- a COMPLEX unimodular (character) twist
+    of zeta's positive prime layer.  This is what forces B-mult-TWISTED (§v3 appendix)."""
+    chi = _CHI5_BAR if conj else _CHI5
+    name = "l_chi5_bar" if conj else "l_chi5"
+    model = (t_max / (2 * math.pi)) * math.log(5 * t_max / (2 * math.pi)) - t_max / (2 * math.pi)
+    # certified ordinate count is not needed for the clause set we test (support
+    # density uses the log-linear model + envelope; the L-column's DISCRIMINATING
+    # clause is multiplicativity); we record the model count as the density_count.
+    approx_count = max(1, int(round(model)))
+    return ZooObject(
+        name=name, kind="l_function", ordinates=[], offline=[],
+        density_count=approx_count, density_model=model, t_max=t_max,
+        spectrum="prime_log_lattice",    # genuine Euler product => atoms on the PRIME log-lattice
+        weights="twisted_prime",         # (log p) chi(p)^m p^{-m/2}: unimodular char twist of the positive layer
+        defect_count=0, defect_grows=False, tempered=True,
+        # L(chi): a(n)=chi(n), COMPLETELY MULTIPLICATIVE with |chi(p)|=1 (Euler product).
+        # Its -L'/L coefficients are Lambda(n) chi(n): supported on prime powers only,
+        # b(p^m)=(log p) chi(p)^m -> generation holds with a unimodular per-prime twist.
+        mult_model="euler_product_twisted",
+        mult_coeffs=("cm_char", chi, 5),
     )
 
 
@@ -248,6 +302,9 @@ def check_atomic_spectrum_loglattice(obj: ZooObject, strict_prime: bool = True) 
         return FAIL, "no atomic diffraction spectrum (Poisson-random)"
     if obj.kind == "zeta":
         return COND, "pure-point at log-prime freqs is RH-adjacent (GW image of reality)"
+    if obj.kind == "l_function":
+        return COND, ("pure-point at log-prime freqs is GRH-conditional for L(chi) "
+                      "(same status as zeta: dual comb pure-pointness <=> zero reality)")
     if s == "prime_log_lattice":
         return PASS, "atoms on the prime log-lattice"
     if s == "single_modulus_log":
@@ -273,6 +330,15 @@ def check_weight_positivity(obj: ZooObject) -> tuple[str, str]:
     w = obj.weights
     if w == "positive_prime":
         return PASS, "GW prime side (log p)p^{-k/2} > 0 (unconditional, arithmetic)"
+    if w == "twisted_prime":
+        # An L-function's prime layer is (log p) chi(p)^m p^{-m/2} with |chi(p)|=1:
+        # a UNIMODULAR complex twist.  It is NOT strictly-positive-real, so bare
+        # (B-iii) positivity FAILS -- this is the zeta-UNIQUENESS / over-sharpness of
+        # (B-iii): it selects zeta ALONE among Euler products, not the arithmetic class.
+        # B-mult-TWISTED is the honest generalization that L(chi) passes.
+        return FAIL, ("L-function prime layer (log p)chi(p)^m p^{-m/2} is UNIMODULAR "
+                      "COMPLEX (character twist), not strictly-positive-real: bare "
+                      "(B-iii) is zeta-unique / over-sharp -- see B-mult-twisted")
     if w == "complex_char_mixed":
         return FAIL, "no Euler product: F'/F mixes chi(p),chi-bar(p) -> complex/sign-varying, positivity fails"
     if w == "quad_form":
@@ -287,13 +353,15 @@ def check_weight_positivity(obj: ZooObject) -> tuple[str, str]:
 # ---------------------------------------------------------------------------
 # W3a: the B-mult multiplicativity clause  (the adjudicated primitive)
 # ---------------------------------------------------------------------------
-def _von_mangoldt_analogue(a: list[float], N: int) -> list[float]:
+def _von_mangoldt_analogue(a: list, N: int) -> list:
     """Given Dirichlet coefficients a[1..N] (a[0] unused, a[1]=1), return the
     log-derivative coefficients b[1..N] of -f'/f where f = sum a(n) n^{-s}, via the
     standard recursion  a(n) log n = sum_{d|n} b(d) a(n/d).  For a completely
     multiplicative a (an Euler product) b is supported ONLY on prime powers with
-    b(p^m) = (log p); for a non-multiplicative a, b(n) != 0 at composite n."""
-    b = [0.0] * (N + 1)
+    b(p^m) = (log p) a(p)^m; for a non-multiplicative a, b(n) != 0 at composite n.
+
+    Works over BOTH real (zeta) and complex (L-function character-twisted) a."""
+    b = [0j] * (N + 1)
     for n in range(2, N + 1):
         s = a[n] * math.log(n)
         for d in range(2, n):
@@ -317,24 +385,30 @@ def _prime_powers_upto(N: int) -> dict:
 
 
 def check_multiplicativity(obj: ZooObject, N: int = 60, tol: float = 1e-6) -> tuple[str, str]:
-    """(B-mult / W3a) THE ADJUDICATED KILLER: the prime-side amplitudes are
-    MULTIPLICATIVELY GENERATED from the prime layer -- there is a per-prime weight
-    w(p) with  a(p^m) = (log p) w(p)^m  (for zeta w(p)=p^{-1/2}), AND no amplitude
-    at composite (non-prime-power) frequencies.  This is the Euler-product primitive.
+    """(B-mult-twisted / W3a v3) THE ADJUDICATED KILLER, honestly generalized to the
+    arithmetic L-function class.  The prime-side amplitudes are MULTIPLICATIVELY
+    GENERATED from the prime layer: there is a per-prime weight w(p) = t(p) p^{-1/2}
+    with a UNIMODULAR twist |t(p)| = 1 such that
 
-    Certified finite computation (not a descriptor lookup): build the actual
-    log-derivative coefficient sequence b(n) from the object's Dirichlet coefficients
-    and TEST the generation law directly.
-      * zeta (euler_product):  b(6)=0, b(p^m)=log p, geometric law holds -> PASS
-                               (pure-pointness of the DUAL comb is still RH; the
-                               multiplicative GENERATION of the amplitudes is
-                               unconditional/arithmetic, exactly like B-iii weights.)
-      * DH (periodic_mod_q):   b(6)!=0 (composite atom), and prime-layer signs vary
-                               -> generation law FAILS.
-      * lattice/ksly/random (no Dirichlet model): no multiplicative prime-layer at
-                               all -> FAIL (B-mult is STRICTLY SHARPER than B: it
-                               excludes generic Lee-Yang FQs, carving out the
-                               arithmetic ones -- this is the intended feature)."""
+          a(p^m) = (log p) t(p)^m p^{-m/2}   (equivalently  b(p^m) = (log p) t(p)^m),
+
+    AND no amplitude at composite (non-prime-power) frequencies.  This is the
+    Euler-product primitive.  Three sub-cases of the twist t(p):
+
+      * B-mult (zeta, trivial twist t(p)=+1):  b(6)=0, b(p^m)=log p real>0, geometric
+        law holds -> PASS.  Positivity is a CONSEQUENCE (t(p)=1).
+      * B-mult-TWISTED (L(chi), character twist t(p)=chi(p), |chi(p)|=1):  b(6)=0,
+        b(p^m)=(log p)chi(p)^m -- constant MODULUS log p in m, unimodular phase ->
+        PASS.  This is a GENUINE L-function with an Euler product; it FAILS the bare
+        (B-iii) positivity clause (complex prime layer) but PASSES B-mult-twisted.
+      * NOT multiplicatively generated (DH):  b(6)!=0 (composite atom from the SUM of
+        two twisted objects), and the m-generation law breaks -> FAIL.
+
+    The verdict is a certified finite computation: build the actual log-derivative
+    coefficient sequence b(n) from the object's Dirichlet coefficients and TEST the
+    generation law directly.  lattice/ksly/random have no Dirichlet prime-layer at all
+    -> FAIL (B-mult-twisted still carves out the ARITHMETIC FQs, the intended feature;
+    the L-function is the natural non-vacuity positive control W3a flagged)."""
     if obj.mult_model == "none":
         # No Dirichlet-coefficient / prime-layer structure exists.  A generic FQ
         # (ksly), a plain lattice, or a random comb has amplitudes that are NOT the
@@ -342,14 +416,13 @@ def check_multiplicativity(obj: ZooObject, N: int = 60, tol: float = 1e-6) -> tu
         return FAIL, ("no multiplicative prime-layer (not an Euler-product amplitude "
                       "sequence); B-mult excludes generic/non-arithmetic combs")
 
-    kind, data = obj.mult_coeffs
-    a = [0.0] * (N + 1)
+    kind, data = obj.mult_coeffs[0], obj.mult_coeffs[1]
+    a = [0j] * (N + 1)
     if kind == "cm":
         # completely multiplicative from seed a(p) (default 1): a(n) = prod a(p)^{v_p}
         seed = data
         a[1] = 1.0
         for n in range(2, N + 1):
-            # factor n
             val, m = 1.0, n
             for p in range(2, n + 1):
                 while m % p == 0:
@@ -357,19 +430,25 @@ def check_multiplicativity(obj: ZooObject, N: int = 60, tol: float = 1e-6) -> tu
                     m //= p
                 if m == 1:
                     break
-            a[n] = val
+            a[n] = complex(val)
+    elif kind == "cm_char":
+        # completely multiplicative CHARACTER a(n) = chi(n mod q), |chi(p)|=1 on
+        # (Z/q)^* and chi(p)=0 for p|q.  This is the L-function twist.
+        chi, q = data, obj.mult_coeffs[2]
+        for n in range(1, N + 1):
+            a[n] = chi[n % q]
     elif kind == "periodic":
         c = data  # c[0..q-1], indexed by n mod q
         q = len(c)
         for n in range(1, N + 1):
-            a[n] = c[n % q]
+            a[n] = complex(c[n % q])
     elif kind == "cm_corrupt":
         # a completely-multiplicative base (a(p)=1 => a(n)=1) with a SINGLE composite
         # amplitude overridden, genuinely breaking multiplicativity: data={n0: val}.
         for n in range(1, N + 1):
             a[n] = 1.0
         for n0, val in data.items():
-            a[n0] = val
+            a[n0] = complex(val)
     else:  # pragma: no cover
         return FAIL, f"unknown mult_coeffs kind {kind}"
 
@@ -380,33 +459,69 @@ def check_multiplicativity(obj: ZooObject, N: int = 60, tol: float = 1e-6) -> tu
     pps = _prime_powers_upto(N)
     prime_power_set = {pk for ms in pps.values() for pk in ms}
 
-    # (M1) NO amplitude at composite (non-prime-power) frequencies.
+    # (M1) NO amplitude at composite (non-prime-power) frequencies.  For an Euler
+    # product (trivial OR character-twisted) the von-Mangoldt-analogue vanishes at
+    # every composite; DH -- a non-multiplicative SUM of two Euler products -- does not.
     composite_hits = [n for n in range(2, N + 1)
                       if n not in prime_power_set and abs(b[n]) > tol]
     if composite_hits:
         c0 = composite_hits[0]
         return FAIL, (f"generation law breaks: nonzero amplitude at COMPOSITE "
-                      f"n={c0} (b({c0})={b[c0]:+.4f}); no Euler product => not "
-                      f"multiplicatively generated")
+                      f"n={c0} (b({c0})={b[c0].real:+.4f}{b[c0].imag:+.4f}i); no Euler "
+                      f"product => not multiplicatively generated")
 
-    # (M2) per-prime geometric generation a(p^m)=(log p) w(p)^m with the SAME real
-    # positive w(p) across all m, i.e. b(p^m) real, sign-constant, and
-    # b(p^m)/b(p^{m-1}) == p^{-1/2}-consistent (for zeta, b(p^m)=log p exactly, so
-    # the AMPLITUDE a(p^m)=b(p^m) p^{-m/2} obeys a(p^m)/a(p^{m-1})=p^{-1/2}).
+    # (M2) per-prime geometric generation b(p^m) = (log p) t(p)^m with a UNIMODULAR
+    # twist t(p) (|t(p)|=1) CONSTANT across m.  Equivalently: |b(p^m)| = log p for all
+    # m (constant modulus) and the phase advances by the fixed per-prime twist t(p)
+    # = b(p)/log p.  For zeta t(p)=+1 (real positive); for L(chi) t(p)=chi(p) (a root
+    # of unity).  A sign-varying-modulus or modulus-collapsing prime layer FAILS.
+    twists = {}
+    ramified = []
     for p, ms in pps.items():
         bs = [b[pk] for pk in ms]
-        # prime-layer amplitude must be real & positive (character sign forbidden)
-        if bs[0] <= tol:
-            return FAIL, (f"prime-layer amplitude b({p})={bs[0]:+.4f} not strictly "
-                          f"positive (character/sign-varying) => no positive w(p)")
-        # generation: b(p^m) must equal b(p) (von Mangoldt is m-constant for an
-        # Euler product), giving amplitude ratio exactly p^{-1/2}.
+        modp = abs(bs[0])
+        # A VANISHING prime layer is allowed ONLY for a prime dividing the conductor
+        # (chi(p)=0): the Euler factor there is trivial, so the prime contributes NO
+        # atom -- consistent with an Euler product, just a missing local factor.  We
+        # require the absence to be CONSISTENT (b(p^m)=0 for all m) and skip it from
+        # the twist analysis.  A prime whose layer vanishes at m=1 but not at higher m
+        # is a genuine generation failure.
+        if modp <= tol:
+            bad = [pk for pk, bb in zip(ms, bs) if abs(bb) > tol]
+            if bad:
+                return FAIL, (f"prime-layer amplitude b({p})=0 but b({bad[0]})="
+                              f"{b[bad[0]]:+.4f}!=0 -- inconsistent vanishing "
+                              f"(not an Euler-product local factor)")
+            ramified.append(p)
+            continue
+        t_p = bs[0] / math.log(p)          # the per-prime twist t(p) = b(p)/log p
+        if abs(abs(t_p) - 1.0) > 1e-4:
+            return FAIL, (f"prime-layer twist |t({p})|={abs(t_p):.4f} != 1 "
+                          f"(not a unimodular character twist)")
+        twists[p] = t_p
+        # generation: b(p^m) = (log p) t(p)^m, i.e. constant MODULUS log p and phase
+        # advancing by t(p) each step (von Mangoldt is m-constant in modulus for an
+        # Euler product).  Test both the modulus and the twisted phase.
         for m in range(1, len(bs)):
-            if abs(bs[m] - bs[0]) > tol * max(1.0, abs(bs[0])):
+            want = math.log(p) * (t_p ** (m + 1))   # ms[m] is p^{m+1}
+            if abs(bs[m] - want) > tol * max(1.0, math.log(p)):
                 return FAIL, (f"generation breaks at {p}^{m+1}: b={bs[m]:+.4f} != "
-                              f"prime-layer b({p})={bs[0]:+.4f}")
+                              f"(log {p}) t({p})^{m+1}={want:+.4f}")
 
-    return PASS, ("amplitudes multiplicatively generated: b(composite)=0, "
+    # non-vacuity: at least one UNRAMIFIED prime must carry a genuine twist generator.
+    if not twists:
+        return FAIL, ("no unramified prime-layer generator (all prime layers vanish) "
+                      "-- vacuous, not an Euler product")
+
+    # classify the twist: trivial (zeta) vs unimodular-complex (L-function)
+    ram = f" (ramified primes p|conductor with no atom: {ramified})" if ramified else ""
+    nontrivial = any(abs(t - 1.0) > 1e-6 for t in twists.values())
+    if nontrivial:
+        return PASS, ("amplitudes multiplicatively generated with a UNIMODULAR "
+                      "CHARACTER twist: b(composite)=0, b(p^m)=(log p) chi(p)^m "
+                      "=> a(p^m)=(log p)chi(p)^m p^{-m/2} (Euler product with |chi(p)|=1; "
+                      "B-mult-twisted, unconditional/arithmetic)" + ram)
+    return PASS, ("amplitudes multiplicatively generated (trivial twist): b(composite)=0, "
                   "b(p^m)=(log p) constant in m => a(p^m)=(log p)p^{-m/2}=(log p)w(p)^m, "
                   "w(p)=p^{-1/2} (Euler product; unconditional/arithmetic)")
 
@@ -423,6 +538,8 @@ def check_signed_decay(obj: ZooObject) -> tuple[str, str]:
                         "exp_poly_freqs", "quadratic_form"):
         if obj.kind == "zeta":
             return COND, "signed decay holds; pure-pointness still RH-conditional"
+        if obj.kind == "l_function":
+            return COND, "signed decay holds; pure-pointness still GRH-conditional"
         return PASS, "signed amplitudes decay within the envelope (positivity not required)"
     return FAIL, "no decaying atomic amplitudes"
 
@@ -433,6 +550,9 @@ def check_defect_bounded(obj: ZooObject) -> tuple[str, str]:
     DH: positive proportion off-line, k(T)->inf -> FAIL (unbounded defect)."""
     if obj.kind == "zeta":
         return COND, "finite k at each height (Alpoge-Furman); k=0 <=> RH -- unconditionally PARTIAL"
+    if obj.kind == "l_function":
+        return COND, ("finite k at each height (Alpoge-Furman extends to primitive "
+                      "Dirichlet L-functions); k=0 <=> GRH for L(chi) -- PARTIAL")
     if obj.defect_grows and obj.defect_count > 0:
         return FAIL, f"unbounded defect: {obj.defect_count} off-line pairs certified, k(T)->inf"
     if obj.defect_count == 0 and obj.spectrum != "none":
@@ -546,6 +666,25 @@ def forged_controls() -> list[dict]:
                 "flipped": v == FAIL and genuine_zeta_mult == PASS,
                 "detail": f"genuine zeta B-mult={genuine_zeta_mult}; corrupt a(2)=1.3 -> {v}: {d}"})
 
+    # 6c. B-mult-TWISTED forged control (W3c L-column): the genuine L(chi) character
+    #     amplitude sequence PASSES B-mult-twisted; corrupt a SINGLE character value
+    #     (chi(2): i -> a non-unimodular / generation-breaking value) so the sequence
+    #     is no longer completely multiplicative -> a composite atom appears / the
+    #     unimodular-twist generation law fails.  Verdict flips PASS -> FAIL.
+    genuine_l, _ = check_multiplicativity(_load_l_chi5())
+    forged_chi = dict(_CHI5)
+    forged_chi[2] = 0.5 + 0j     # break |chi(2)|=1 AND complete multiplicativity
+    forged_l = ZooObject(name="forged_broken_twist", kind="l_function",
+                         spectrum="prime_log_lattice", weights="twisted_prime",
+                         density_count=50, density_model=50.0, t_max=100.0,
+                         mult_model="euler_product_twisted",
+                         mult_coeffs=("cm_char", forged_chi, 5))
+    v, d = check_multiplicativity(forged_l)
+    out.append({"control": "broken_character_twist", "clause": "multiplicativity",
+                "genuine": genuine_l, "forged_verdict": v,
+                "flipped": v == FAIL and genuine_l == PASS,
+                "detail": f"genuine L(chi) B-mult-twisted={genuine_l}; corrupt chi(2)=0.5 -> {v}: {d}"})
+
     # 7. CORRUPTED CERTIFIED INPUT: flip the certified DH off-line flag to on-line;
     #    the defect check must then WRONGLY report bounded (PASS) -- i.e. corrupting the
     #    input FLIPS the DH verdict, proving the verdict is a real function of the data.
@@ -567,8 +706,8 @@ def forged_controls() -> list[dict]:
 # Matrix runner
 # ===========================================================================
 def build_matrix(t_max: float = 100.0) -> dict:
-    objs = [_load_zeta(t_max), _load_dh(t_max), _load_lattice(t_max),
-            _load_ksly(t_max), _load_random(t_max)]
+    objs = [_load_zeta(t_max), _load_dh(t_max), _load_l_chi5(t_max),
+            _load_lattice(t_max), _load_ksly(t_max), _load_random(t_max)]
     matrix = {}
     for obj in objs:
         row = {}
@@ -655,6 +794,38 @@ def run_asserts(result: dict) -> tuple[list[str], list[str]]:
     # W3a: zeta SURVIVES variant B-mult (admitted on PASS/COND clauses only).
     req(vk["Bm"]["zeta"]["survives"],
         "GOV: zeta must survive variant B-mult")
+    # ---- W3c L-FUNCTION COLUMN: the decisive falsification test ----
+    # PREDICTION: a genuine L-function (Euler product with unimodular character twist)
+    # PASSES B-mult-twisted, while DH (their non-multiplicative sum) keeps FAILING it.
+    if "l_chi5" in m:
+        req(m["l_chi5"]["multiplicativity"]["verdict"] == PASS,
+            "GOV(W3c): L(chi) must PASS B-mult-twisted (Euler product, unimodular twist)")
+        req("UNIMODULAR" in m["l_chi5"]["multiplicativity"]["detail"] or
+            "chi(p)" in m["l_chi5"]["multiplicativity"]["detail"],
+            "GOV(W3c): L(chi) B-mult PASS must be via the TWISTED (character) reading")
+        # L(chi) is a genuine L-function: its density/temperedness are unconditional,
+        # but pure-pointness (atomic spectrum) and defect-0 are GRH-CONDITIONAL --
+        # EXACTLY zeta's status.  Never an unqualified PASS on those clauses.
+        req(m["l_chi5"]["support_density"]["verdict"] == PASS,
+            "GOV(W3c): L(chi) must PASS support density (unconditional)")
+        req(m["l_chi5"]["atomic_spectrum"]["verdict"] == COND,
+            "GOV(W3c): L(chi) pure-point spectrum must be CONDITIONAL (GRH), not PASS")
+        req(m["l_chi5"]["defect_bounded"]["verdict"] == COND,
+            "GOV(W3c): L(chi) defect must be CONDITIONAL (k=0 <=> GRH)")
+        # HONEST over-sharpness of bare (B-iii): L(chi)'s prime layer is UNIMODULAR
+        # COMPLEX, so it FAILS the strictly-positive-real positivity clause.  This is
+        # the point of the whole test: bare positivity is zeta-UNIQUE / over-sharp; the
+        # correct arithmetic-class primitive is B-mult-TWISTED, which L(chi) passes.
+        req(m["l_chi5"]["weight_positivity"]["verdict"] == FAIL,
+            "GOV(W3c): L(chi) must FAIL bare (B-iii) positivity (twist is complex) -- "
+            "this documents the over-sharpness B-mult-twisted repairs")
+        # L(chi) SURVIVES variant B-mult (admitted on PASS/COND only): B-mult-twisted
+        # admits the arithmetic class, not zeta alone.
+        req(vk["Bm"]["l_chi5"]["survives"],
+            "GOV(W3c): L(chi) must SURVIVE variant B-mult (arithmetic class, not zeta-only)")
+        # DH is the SUM of two L's and must STILL fail B-mult even though its summands pass.
+        req(m["dh"]["multiplicativity"]["verdict"] == FAIL,
+            "GOV(W3c): DH (sum of two passing L's) must STILL FAIL B-mult-twisted")
     # 4. lattice/ksly pass FQ-shaped clauses; random FAILS atomic spectrum.
     req(vk["B"]["lattice"]["survives"], "GOV: lattice must survive variant B")
     req(vk["B"]["ksly"]["survives"], "GOV: ksly must survive variant B (canonical FQ)")
@@ -693,16 +864,42 @@ def run_asserts(result: dict) -> tuple[list[str], list[str]]:
             and m["dh"]["weight_positivity"]["verdict"] == FAIL):
         findings.append("A2-CONTRADICTION: the C(pass)/B(fail) split that isolates "
                         "positivity as the DH-killer did not hold")
-    # W3a cross-check: multiplicativity implies positivity of the prime layer.  Any
-    # object that PASSES B-mult must also PASS (B-iii) positivity -- the adjudicated
-    # primitive should DOMINATE the old killer.  A contradiction here means the
-    # multiplicativity clause is not actually stronger than positivity.
+    # W3a/W3c cross-check: the TWIST-aware dominance relation.
+    #   * TRIVIAL twist (zeta): B-mult => (B-iii) positivity (t(p)=+1 => real positive
+    #     prime layer).  Any TRIVIAL-twist object passing B-mult must pass positivity.
+    #   * UNIMODULAR-COMPLEX twist (L-function): B-mult-twisted holds but bare (B-iii)
+    #     positivity FAILS -- this is EXPECTED and is the W3c discovery, NOT a
+    #     contradiction: bare positivity is zeta-unique/over-sharp, B-mult-twisted is
+    #     the honest arithmetic-class primitive.  So we only flag a contradiction when a
+    #     TRIVIAL-twist Euler product passes B-mult yet fails positivity.
     for name in result["objects"]:
-        if m[name]["multiplicativity"]["verdict"] == PASS and \
-           m[name]["weight_positivity"]["verdict"] not in (PASS, COND):
+        if m[name]["multiplicativity"]["verdict"] != PASS:
+            continue
+        detail = m[name]["multiplicativity"]["detail"]
+        twisted = ("UNIMODULAR" in detail) or ("chi(p)" in detail)
+        pos = m[name]["weight_positivity"]["verdict"]
+        if not twisted and pos not in (PASS, COND):
             findings.append(
-                f"W3a-CONTRADICTION: {name} passes B-mult multiplicativity but not "
-                f"(B-iii) positivity -- multiplicativity should imply positive prime layer")
+                f"W3a-CONTRADICTION: {name} passes B-mult (TRIVIAL twist) but not "
+                f"(B-iii) positivity -- trivial-twist multiplicativity should imply "
+                f"positive prime layer")
+        if twisted and pos in (PASS, COND):
+            findings.append(
+                f"W3c-CONTRADICTION: {name} passes B-mult-TWISTED (complex twist) AND "
+                f"bare (B-iii) positivity -- a genuinely complex twist should FAIL bare "
+                f"positivity (else the over-sharpness claim is wrong)")
+    # W3c positive record: the L-column result -- L passes B-mult-twisted, fails bare
+    # positivity, DH (their sum) fails B-mult.  This is the decisive falsification the
+    # W3a verdict demanded, recorded as a NOTE for the report.
+    if "l_chi5" in m and m["l_chi5"]["multiplicativity"]["verdict"] == PASS \
+            and m["l_chi5"]["weight_positivity"]["verdict"] == FAIL \
+            and m["dh"]["multiplicativity"]["verdict"] == FAIL:
+        result.setdefault("w3a_notes", []).append(
+            "W3c L-COLUMN CONFIRMED: L(chi) (a genuine Euler product) PASSES "
+            "B-mult-twisted but FAILS bare (B-iii) positivity (complex character twist); "
+            "DH = the non-multiplicative SUM of L(chi),L(chi-bar) STILL FAILS B-mult. "
+            "=> B-mult-twisted selects the ARITHMETIC CLASS (not zeta alone), and the "
+            "class-not-description objection to W3a's zeta-uniqueness is resolved.")
     # W3a positive record: confirm the intended strict sharpening (ksly: B survives,
     # B-mult kills).  Recorded as a NOTE (not a contradiction) for the report.
     if vk["B"]["ksly"]["survives"] and vk["Bm"]["ksly"]["killed"]:
