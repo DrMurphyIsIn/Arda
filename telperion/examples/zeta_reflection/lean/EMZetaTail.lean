@@ -743,4 +743,143 @@ theorem em_saw_step_window_cpow {k : ℕ} (hk : 1 ≤ k) (M N : ℕ) (hMN : M �
   rw [← Finset.sum_div, ← Finset.sum_div, htel_k1, htel_k, hbdry] at hsum
   exact hsum
 
-end ZetaReflection
+/-! ## K. The order-2 tail identity for the ζ integrand, and its `[N, ∞)` form.
+
+    Raising the K=1 saw remainder integrand `saw₁·(−s x^{−s−1})` to order 2 on the tail `[N, ∞)`.
+    Over a finite window `[N, M]` this is `em_saw_step_window_cpow` (k=1); taking `M → ∞` (the K=1
+    endpoint value `−s·M^{−s−1} → 0`, and both integrals converge for `Re s > 0`) yields
+        ∫_N^∞ saw₁·(−s x^{−s−1})
+          = B₂(0)·(s·N^{−s−1})/2  −  (∫_N^∞ saw₂·(s(s+1) x^{−s−2}))/2,
+    with `B₂(0) = bernoulli 2 = 1/6`.  This is the order-2 tail EM step in closed form. -/
+
+/-- Integrability of the order-2 tail integrand `saw₂·(s(s+1) x^{−s−2})` on `(N, ∞)` for
+    `Re s > 0` (dominated by `(‖s(s+1)‖·(1/6)) x^{−Re s−2}`, exponent `< −1`). -/
+theorem em_tail2_integrableOn {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re) :
+    IntegrableOn (fun x : ℝ => (sawBernoulli 2 x : ℂ) * (s * (s + 1) * (x : ℂ) ^ (-s - 2))) (Ioi (N : ℝ)) := by
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hN
+  have hbase : IntegrableOn (fun x : ℝ => (‖s * (s + 1)‖ * (1 / 6)) * x ^ (-s.re - 2)) (Ioi (N : ℝ)) :=
+    (integrableOn_Ioi_rpow_of_lt (a := -s.re - 2) (by linarith) hNpos).const_mul _
+  refine Integrable.mono' hbase ?_ ?_
+  · apply Measurable.aestronglyMeasurable
+    exact (Complex.measurable_ofReal.comp (sawBernoulli_measurable 2)).mul
+      (measurable_const.mul (Complex.measurable_ofReal.pow_const _))
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
+    have hxpos : (0 : ℝ) < x := lt_trans hNpos hx
+    have hnormcpow : ‖(x : ℂ) ^ (-s - 2)‖ = x ^ (-s.re - 2) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos]
+      congr 1
+    have hsaw := abs_sawBernoulli_two_le x
+    have hrpownn : (0 : ℝ) ≤ x ^ (-s.re - 2) := Real.rpow_nonneg hxpos.le _
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, hnormcpow]
+    calc |sawBernoulli 2 x| * (‖s * (s + 1)‖ * x ^ (-s.re - 2))
+        ≤ (1 / 6) * (‖s * (s + 1)‖ * x ^ (-s.re - 2)) := by gcongr
+      _ = (‖s * (s + 1)‖ * (1 / 6)) * x ^ (-s.re - 2) := by ring
+
+/-- The K=1 saw remainder integrand `saw₁·(−s x^{−s−1})` is integrable on `(N, ∞)` for `Re s > 0`
+    (the `Ioi 1` version is `EMZetaComplex.em_cpow_remainder_integrableOn_strip`; the `Ioi N`
+    version follows since `(N,∞) ⊆ (1,∞)` — but we reprove directly for a clean `N`-based form). -/
+theorem em_tail1_integrableOn {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re) :
+    IntegrableOn (fun x : ℝ => (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))) (Ioi (N : ℝ)) := by
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hN
+  have hbase : IntegrableOn (fun x : ℝ => (‖s‖ * (1 / 2)) * x ^ (-s.re - 1)) (Ioi (N : ℝ)) :=
+    (integrableOn_Ioi_rpow_of_lt (a := -s.re - 1) (by linarith) hNpos).const_mul _
+  refine Integrable.mono' hbase ?_ ?_
+  · apply Measurable.aestronglyMeasurable
+    exact (Complex.measurable_ofReal.comp (sawBernoulli_measurable 1)).mul
+      (measurable_const.mul (Complex.measurable_ofReal.pow_const _))
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
+    have hxpos : (0 : ℝ) < x := lt_trans hNpos hx
+    have hnormcpow : ‖(x : ℂ) ^ (-s - 1)‖ = x ^ (-s.re - 1) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos, Complex.sub_re, Complex.neg_re, Complex.one_re]
+    have hsaw := abs_sawBernoulli_one_le x
+    have hrpownn : (0 : ℝ) ≤ x ^ (-s.re - 1) := Real.rpow_nonneg hxpos.le _
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, hnormcpow, norm_neg]
+    calc |sawBernoulli 1 x| * (‖s‖ * x ^ (-s.re - 1))
+        ≤ (1 / 2) * (‖s‖ * x ^ (-s.re - 1)) := by gcongr
+      _ = (‖s‖ * (1 / 2)) * x ^ (-s.re - 1) := by ring
+
+/-- **Order-2 tail EM step** (closed form).  For `Re s > 0`, `N ≥ 1`, `s ≠ -1`:
+        ∫_N^∞ saw₁·(−s x^{−s−1})
+          = (bernoulli 2 : ℂ)·(s·N^{−s−1})/2  −  (∫_N^∞ saw₂·(s(s+1) x^{−s−2}))/2.
+    Proven by `em_saw_step_window_cpow` (k=1) over `[N,M]` and `M → ∞`. -/
+theorem em_tail2_step {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re) (hs1 : s ≠ -1) :
+    (∫ x in Ioi (N : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+      = (bernoulli 2 : ℂ) * (s * (N : ℝ) ^ (-s - 1)) / 2
+        - (∫ x in Ioi (N : ℝ), (sawBernoulli 2 x : ℂ) * (s * (s + 1) * (x : ℂ) ^ (-s - 2))) / 2 := by
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hN
+  set fk : ℝ → ℂ := fun x => -s * (x : ℂ) ^ (-s - 1) with hfk
+  set fk1 : ℝ → ℂ := fun x => s * (s + 1) * (x : ℂ) ^ (-s - 2) with hfk1
+  have hI1 := em_tail1_integrableOn hN hs
+  have hI2 := em_tail2_integrableOn hN hs
+  -- Finite-window identity for M ≥ N.
+  have hwin : ∀ M : ℕ, N ≤ M →
+      (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 1 x : ℂ) * fk x)
+        = (6⁻¹ : ℂ) * (fk M - fk N) / (1 + 1)
+          - (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 2 x : ℂ) * fk1 x) / (1 + 1) := by
+    intro M hM
+    have hd : ∀ x ∈ Icc (N : ℝ) M, HasDerivAt fk (fk1 x) x := by
+      intro x hx
+      have hx1 : (1 : ℝ) ≤ x := le_trans (by exact_mod_cast hN) hx.1
+      exact hasDerivAt_cpow_neg2 hs1 (lt_of_lt_of_le zero_lt_one hx1)
+    have hi : ∀ j ∈ Finset.Ico N M, IntervalIntegrable fk1 volume (j : ℝ) (j + 1) := by
+      intro j hj
+      rw [Finset.mem_Ico] at hj
+      have hj1 : (1 : ℝ) ≤ (j : ℝ) := by exact_mod_cast le_trans hN hj.1
+      apply ContinuousOn.intervalIntegrable
+      rw [uIcc_of_le (by linarith)]
+      apply ContinuousOn.mul continuousOn_const
+      apply ContinuousOn.cpow_const Complex.continuous_ofReal.continuousOn
+      intro x hx
+      have : (1 : ℝ) ≤ x := le_trans hj1 hx.1
+      exact Or.inl (by simp only [Complex.ofReal_re]; linarith)
+    have hstep := em_saw_step_window_cpow (k := 1) le_rfl N M hM fk fk1 hd hi
+    have hb2 : (bernoulliFun (1 + 1) 0 : ℂ) = 6⁻¹ := by
+      norm_num [bernoulliFun_eval_zero]
+    rw [hb2] at hstep
+    have h2 : (1 : ℕ) + 1 = 2 := rfl
+    rw [h2] at hstep
+    convert hstep using 3 <;> norm_num
+  -- Limits as M → ∞ (over ℕ).
+  have hA : Tendsto (fun M : ℕ => ∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 1 x : ℂ) * fk x) atTop
+      (𝓝 (∫ x in Ioi (N : ℝ), (sawBernoulli 1 x : ℂ) * fk x)) :=
+    intervalIntegral_tendsto_integral_Ioi N hI1 tendsto_natCast_atTop_atTop
+  have hB : Tendsto (fun M : ℕ => ∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 2 x : ℂ) * fk1 x) atTop
+      (𝓝 (∫ x in Ioi (N : ℝ), (sawBernoulli 2 x : ℂ) * fk1 x)) :=
+    intervalIntegral_tendsto_integral_Ioi N hI2 tendsto_natCast_atTop_atTop
+  -- endpoint `fk M = -s·M^{-s-1} → 0`.
+  have hEnd0 : Tendsto (fun M : ℕ => fk (M : ℝ)) atTop (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    have hnorm : (fun M : ℕ => ‖fk (M : ℝ)‖) =ᶠ[atTop] (fun M : ℕ => ‖s‖ * (M : ℝ) ^ (-s.re - 1)) := by
+      filter_upwards [eventually_gt_atTop 0] with M hM
+      have hMpos : (0 : ℝ) < M := by exact_mod_cast hM
+      rw [hfk, norm_mul, norm_neg, Complex.norm_cpow_eq_rpow_re_of_pos hMpos,
+        Complex.sub_re, Complex.neg_re, Complex.one_re]
+    refine Tendsto.congr' hnorm.symm ?_
+    have hz : Tendsto (fun M : ℕ => (M : ℝ) ^ (-s.re - 1)) atTop (𝓝 0) := by
+      have h0 : Tendsto (fun M : ℕ => (M : ℝ) ^ (-(s.re + 1))) atTop (𝓝 0) :=
+        (tendsto_rpow_neg_atTop (y := s.re + 1) (by linarith)).comp tendsto_natCast_atTop_atTop
+      refine h0.congr (fun M => ?_)
+      rw [show -(s.re + 1) = -s.re - 1 by ring]
+    simpa using hz.const_mul ‖s‖
+  -- The RHS of the finite identity converges to the claimed limit.
+  have hRHS : Tendsto (fun M : ℕ =>
+      (6⁻¹ : ℂ) * (fk M - fk N) / (1 + 1)
+        - (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 2 x : ℂ) * fk1 x) / (1 + 1)) atTop
+      (𝓝 ((6⁻¹ : ℂ) * (0 - fk N) / (1 + 1)
+        - (∫ x in Ioi (N : ℝ), (sawBernoulli 2 x : ℂ) * fk1 x) / (1 + 1))) := by
+    apply Tendsto.sub
+    · apply Tendsto.div_const
+      apply Tendsto.const_mul
+      exact hEnd0.sub_const (fk N)
+    · exact hB.div_const (1 + 1)
+  have hEq : ∀ᶠ M : ℕ in atTop,
+      (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 1 x : ℂ) * fk x)
+        = (6⁻¹ : ℂ) * (fk M - fk N) / (1 + 1)
+          - (∫ x in (N : ℝ)..(M : ℝ), (sawBernoulli 2 x : ℂ) * fk1 x) / (1 + 1) := by
+    filter_upwards [eventually_ge_atTop N] with M hM using hwin M hM
+  have hlim := tendsto_nhds_unique (hA.congr' hEq) hRHS
+  rw [hlim, hfk]
+  have hbern2 : (bernoulli 2 : ℂ) = 6⁻¹ := by norm_num
+  rw [hbern2]
+  push_cast
+  ring
