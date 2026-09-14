@@ -21,8 +21,21 @@
       Part I (K=3 instance and THE NUMBER):
         * em_tail3_bound                   -- order-3 tail bound with proven saw-3 sup 1/12
         * em_tail3_number                  -- ‖R₃(1/2+14i, N=200)‖ ≤ 1/1000  (go/no-go, kernel-decided)
-      Part J (order-2 σ-derivative building block for the ζ-identity handoff):
+      Part J (ℂ order-raising + σ-derivatives for the ζ-identity assembly):
         * hasDerivAt_cpow_neg2             -- d/dx(-s·x^{-s-1}) = s(s+1)·x^{-s-2}
+        * hasDerivAt_cpow_neg3             -- d/dx(s(s+1)·x^{-s-2}) = -s(s+1)(s+2)·x^{-s-3}
+        * em_saw_step_cpow                 -- ℂ one-step saw-order-raising
+        * em_saw_step_window_cpow          -- ℂ summed order-raising over [M,N]
+      Part K (order-2/3 tail EM steps with the M→∞ limit, closed form):
+        * em_tail2_step                    -- ∫_N^∞ saw₁·(-s x^{-s-1}) = B₂·s·N^{-s-1}/2 - (∫saw₂·…)/2
+        * em_tail3_step                    -- ∫_N^∞ saw₂·s(s+1)x^{-s-2} = -(∫saw₃·…)/3  (B₃=0, no bdry)
+      Part L (the ASSEMBLED ζ identity + checkBand-consumer enclosure):
+        * em_tail_order3_identity          -- combined K=1-tail = B₂·s·N^{-s-1}/2 + (∫saw₃·…)/6
+        * em_zeta_strip3                   -- riemannZeta s = 1/(s-1)+1/2 + ∫_1^N saw₁ + B₂ term + R₃
+        * em_tail3_envelope_le             -- (1/12)·‖s(s+1)(s+2)‖·200^{-5/2}/(5/2) ≤ 1/1000 (reused)
+        * em_zeta_strip3_enclosure         -- ‖ζ s − emZetaFinite3 s N‖ ≤ em_tail3_bound/6
+        * em_zeta_critical_line3_enclosure -- σ=1/2 band specialization (the A4 gLine box)
+        * em_zeta_critical_line3_number     -- ‖ζ(1/2+14i) − emZetaFinite3 … 200‖ ≤ 1/1000 (THE ζ-BOX)
 
     conjecture1_proved = False (NOT a proof of RH; a classical analysis lemma).
 -/
@@ -38,3 +51,14 @@ import EMZetaTail
 #print axioms ZetaReflection.em_tail3_bound
 #print axioms ZetaReflection.em_tail3_number
 #print axioms ZetaReflection.hasDerivAt_cpow_neg2
+#print axioms ZetaReflection.hasDerivAt_cpow_neg3
+#print axioms ZetaReflection.em_saw_step_cpow
+#print axioms ZetaReflection.em_saw_step_window_cpow
+#print axioms ZetaReflection.em_tail2_step
+#print axioms ZetaReflection.em_tail3_step
+#print axioms ZetaReflection.em_tail_order3_identity
+#print axioms ZetaReflection.em_zeta_strip3
+#print axioms ZetaReflection.em_tail3_envelope_le
+#print axioms ZetaReflection.em_zeta_strip3_enclosure
+#print axioms ZetaReflection.em_zeta_critical_line3_enclosure
+#print axioms ZetaReflection.em_zeta_critical_line3_number
