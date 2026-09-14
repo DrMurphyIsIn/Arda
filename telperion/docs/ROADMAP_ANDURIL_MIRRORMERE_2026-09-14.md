@@ -41,6 +41,7 @@ at round milestones.
 | **W3a: multiplicativity axiom** | Symmetry adjudicated the primitive | Restate variant B with the multiplicative (adelic-torus) spectrum primitive; re-run the zoo matrix against it. Doc + harness work. |
 | **W3b: GW-finite assembly** | All bricks on main (scoped §1 of GW_OS_BRAGG doc) | The 3–6 PR assembly: fixed-rectangle explicit-formula identity with carried remainders. THE bridge theorem — feeds both programs. Staff after E-track (shares digamma/Stirling machinery). |
 | **W3c: infinite-torus formulation** | The pillar-2 extension, framed | Formulate log-density FQ axioms as restriction-from-∏_p S¹; NOT RH-hard on its face; the deepest open formulation problem. Research memo first. |
+| **W3d: recurrence dictionary** | Four faces of RH identified: positivity (Weil defect-0), temperedness (R1 clause), rigidity (crystalline reality), recurrence (Bagchi 1981: RH ⟺ strong recurrence of ζ in the strip) | Memo-mission: dictionary rows connecting defect-k to quantified recurrence-failure — an off-line pair degrades Bagchi-recurrence by a computable amount (the dynamical reading of the −1.00167e-4 defect witness). Dynamics frame: the quasicrystal = Poincaré section of the Kronecker flow on ∏_p S¹; KS construction = section theory; W3c and W3d are the same torus seen spatially vs dynamically. |
 | Flagged, NOT attempted | — | de Branges/Hermite–Biehler (R1's deep home); full ACV converse formalization (wait for W3c). |
 
 ## Convergence & publication
