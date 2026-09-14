@@ -204,12 +204,11 @@ The Alpöge–Furman (2026) inertia/rank-trace machinery is the concrete instrum
   crystalline yet have `|μ̂|` non-tempered → not an FQ. **This is the precise hook for
   the zeta comb** (see §2, §3): the archimedean/error terms in the explicit formula
   are exactly what threatens temperedness of the absolute dual comb.
-- **"Adve" attribution.** No paper by Anshul Adve surfaced as the author of the 1-D
-  characterization; the 1-D iff is ACV + O–U + KS as above. Adjacent recent works in
-  the same orbit (generalized FQs / bounded-density spectrum / almost-periodic sets:
-  arXiv 2203.06733, 2311.02728, 2308.07585) exist but I could **not verify** an Adve
-  authorship or a distinct Adve theorem to program precision. **Marked uncertain;
-  B4/qc-rigidity should re-check the name against the generalized-FQ literature.**
+- **"Adve" attribution — RESOLVED (B4 re-check, 2026-09-14).** There is no Adve
+  theorem in this orbit: arXiv 2203.06733 is **Favorov (sole author)**; the 1-D iff
+  is ACV + O–U + KS as above, and the bounded-density rigidity in that orbit is
+  Favorov's (uniform-discreteness hypothesis — off zeta's path). The "Adve"
+  name in the program charter was a hallucinated attribution; do not cite it.
 
 ### 1.7 The Weil explicit formula as a (near-)crystalline measure — the Dyson lineage
 
@@ -349,11 +348,15 @@ failure of `|μ|`; it is a Delone/uniform-discreteness failure.
    Weil–Gram bricks to this `n₊/n₋` language.
 3. **Complex-supported / defect-tolerant crystallinity.** Direct hits are thin. The
    Favorov separation (§1.6) is the cleanest *defect-tolerant* result (crystalline but
-   not FQ). No paper found constructs crystalline measures with genuinely **complex**
-   (off-line) support as a *classification*; the off-line object is exactly what the
-   Weil form's indefinite block encodes. **This gap is an opportunity, not a
-   liability:** the complex-supported rigidity conjecture (B4) has no competing prior
-   art to contradict, and the inertia instrument gives it a finite test.
+   not FQ). **CORRECTION (B4 re-check, 2026-09-14): strip-supported FQ theory is NOT
+   virgin territory.** Favorov–Değer (arXiv 2605.10766, May 2026; also 2408.09563)
+   own the strip-FQ category: their result is a **growth dichotomy** under a
+   per-window ℤ-independence hypothesis — it does NOT force support onto ℝ (an
+   automated summary claiming reality-forcing was checked against the verbatim
+   abstract and discarded). The program's R1/R2 conjectures must be positioned as
+   the **arithmetic-spectrum + defect-graded specialization** of the Favorov–Değer
+   program and cite them; the *reality-forcing* question in the arithmetic
+   specialization remains open, and the inertia instrument gives it a finite test.
 4. **Regularization is mandatory.** Any axiom set (A2) that treats the zeta zero comb
    as a bare crystalline measure is DEAD on arrival (§1.7): the explicit formula pairs
    the combs only through the archimedean Γ-factor and a test function. The axiom must
@@ -379,9 +382,9 @@ failure of `|μ|`; it is a Delone/uniform-discreteness failure.
    crystalline-up-to-defect-k iff its compressed Weil form has negative index ≤ k."
    Prove the easy direction (finite compression) in kernel; leave the converse as a
    named Prop. **Gated on §1.8 dictionary; jointly owned with B3.**
-4. **Resolve the "Adve" attribution** (§1.6). Confirm/deny an Anshul Adve theorem in
-   the generalized-FQ / bounded-density-spectrum literature; if real, add its exact
-   hypotheses (it may weaken the ℕ-valued restriction, which would matter for whether
+4. ~~**Resolve the "Adve" attribution**~~ **RESOLVED** (§1.6): no such theorem;
+   arXiv 2203.06733 is Favorov sole-author. Remaining sub-question only: whether any
+   generalized-FQ work weakens the ℕ-valued restriction (which would matter for whether
    a *ℝ-valued* or signed zeta comb is in scope). **Unverified — do not build on it.**
 5. **Complex-supported rigidity classification** (hardest). Is there any nontrivial
    classification of crystalline/FQ-type measures with off-line (complex) support?
