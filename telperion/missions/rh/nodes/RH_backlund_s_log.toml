@@ -1,0 +1,19 @@
+created = "2026-09-13"
+depends_on = []
+kind = "milestone"
+name = "RH.backlund_s_log"
+statement_module = "Statements.RH_backlund_s_log"
+status = "proved"
+title = "Backlund S(T) = O(log T) carrying only zeta-nonvanishing on the segment: |S(T)| <= log((4T+19)/|F_T(2)|)/log(7/6) + 2 for T >= 4"
+updated = "2026-09-13"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/RvMBacklundLogCont.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "controller-session-2026-09-13 (verbatim-extract precedent)"
+date = "2026-09-13"
+text = "For T >= 4, assuming only that zeta is nonvanishing on the horizontal segment Re in [1/2,2] at height T, the Backlund argument-count S(T) (continuous argument change of zeta along 2 -> 2+iT -> 1/2+iT, divided by pi) satisfies the explicit bound |S(T)| <= log((4T+19)/|F_T(2)|)/log(7/6) + 2, where F_T is Backlund's auxiliary function (zeta(z+iT)+zeta(z-iT))/2 — the classical S(T)=O(log T) with an explicit constant, slimmed to one hypothesis. [Verbatim extract of the proved RvMBacklundLogCont theorem; session-audited per the verbatim-extract precedent.]"
