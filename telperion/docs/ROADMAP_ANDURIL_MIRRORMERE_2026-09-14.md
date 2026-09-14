@@ -44,6 +44,30 @@ at round milestones.
 | **W3d: recurrence dictionary** | Four faces of RH identified: positivity (Weil defect-0), temperedness (R1 clause), rigidity (crystalline reality), recurrence (Bagchi 1981: RH ⟺ strong recurrence of ζ in the strip) | Memo-mission: dictionary rows connecting defect-k to quantified recurrence-failure — an off-line pair degrades Bagchi-recurrence by a computable amount (the dynamical reading of the −1.00167e-4 defect witness). Dynamics frame: the quasicrystal = Poincaré section of the Kronecker flow on ∏_p S¹; KS construction = section theory; W3c and W3d are the same torus seen spatially vs dynamically. |
 | Flagged, NOT attempted | — | de Branges/Hermite–Biehler (R1's deep home); full ACV converse formalization (wait for W3c). |
 
+## THE SEVEN FACES — the architecture of the obstruction
+
+RH has 100+ known equivalences; they cluster into families ("faces"). The
+program tracks the faces that admit a FINITE, KERNEL-CHECKABLE shadow — each
+face gets a probe instrument, and conservation of difficulty predicts the
+probes are interderivable. Four faces are instrumented; three join as W4.
+
+| # | Face | RH ⟺ … | Finite probe (status) |
+|---|---|---|---|
+| 1 | **Positivity** | Weil form positive; Li λₙ ≥ 0 | Defect instrument + Li ladder (BUILT: DefectDictionary, R2Rigidity, λ₁…λ₂₀ certified) |
+| 2 | **Temperedness** | FQ-grade dual comb; Mertens/Robin growth | The R1 clause, named + isolated (QC_RIGIDITY_MEMO); zoo temperedness clauses (BUILT) |
+| 3 | **Rigidity** | crystalline support real; Jensen hyperbolicity | TwoFreqRigidity + Lee–Yang island + involution dictionary (BUILT) |
+| 4 | **Recurrence** | Bagchi strong recurrence in the strip | W3d memo-mission: defect-k ⟷ quantified recurrence-failure (QUEUED) |
+| 5 | **Deformation/criticality** | de Bruijn–Newman Λ = 0 (Λ≥0 Rodgers–Tao; RH ⟺ Λ≤0) | **W4a**: certified finite Λ-bounds ride the ladder's certified-zero data (Platt–Trudgian-shaped; our pipeline's kind) |
+| 6 | **Spectral/approximation** | Nyman–Beurling–Báez-Duarte density in L²(0,1) | **W4b**: certified Báez-Duarte distances d²_N — computable, interval-certifiable; the Hilbert-space Bragg box |
+| 7 | **Derivative geometry** | Speiser: ζ′ ≠ 0 in 0 < Re s < ½ | **W4c**: ζ′ zero-free boxes are EXACTLY our winding-box certificate shape — T5 machinery retargeted at ζ′ |
+
+Not instrumentable (tracked, not staffed): pseudo-randomness (Möbius
+cancellation — statistical, no finite certificate), cohomological (Frobenius
+purity — the only face ever cashed, in function fields; a program, not a
+probe). W4 staffing decision after Wave 3; W4c (Speiser) is the cheapest
+(existing machinery retargeted) and W4a the most publishable (certified
+Λ-bounds at record certified heights).
+
 ## Convergence & publication
 
 - Every ANDÚRIL milestone feeds MIRRORMERE ground truth (falsification data);
