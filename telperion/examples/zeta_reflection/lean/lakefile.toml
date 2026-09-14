@@ -97,3 +97,10 @@ roots = ["CheckBand"]
 [[lean_lib]]
 name = "ReflectedBand_t14"
 roots = ["ReflectedBand_t14"]
+
+# A4 / STAGE 2: the finite-part + kernel-verified-envelope band checker (toward zero-hypothesis).
+# checkBandFull computes the envelope widening + sign + alternation in-kernel; residual hypothesis is
+# only the finite-part enclosure (the mod-2pi + Gamma-R-value blocked piece; see file header budget).
+[[lean_lib]]
+name = "FullyReflectedBand_t14"
+roots = ["FullyReflectedBand_t14"]
