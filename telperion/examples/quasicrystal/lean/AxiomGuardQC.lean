@@ -13,6 +13,7 @@ import LeeYangCore
 import KSConstruction
 import BoundaryLemmas
 import TwoFreqRigidity
+import RationalFreqReduction
 
 open Quasicrystal
 
@@ -44,6 +45,13 @@ open Quasicrystal
 #print axioms Quasicrystal.twoFreq_eq_zero_iff
 #print axioms Quasicrystal.twoFreq_zero_norm
 #print axioms Quasicrystal.twoFreq_realRooted_iff
+
+/-! ### handoff K2 -- RationalFreqReduction (Theorem B bridge) -/
+#print axioms Quasicrystal.norm_exp_omega
+#print axioms Quasicrystal.im_zero_iff_norm_one
+#print axioms Quasicrystal.ratFreq_eq_zero_iff
+#print axioms Quasicrystal.ratFreq_realRooted_of_leeYangCircle
+#print axioms Quasicrystal.leeYangCircle_reached_of_realRooted
 
 /-! ### increment (iii) -- CharacterizationStatements
 
