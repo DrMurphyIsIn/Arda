@@ -248,4 +248,136 @@ theorem zeta_ordinates_not_uniformlyDiscrete
   obtain ⟨x, hxF, y, hyF, hxy, hclose⟩ := exists_close_of_card_gt hδ hFmem hFcard
   exact ⟨x, hFsub hxF, y, hFsub hyF, hxy, hclose⟩
 
+/-! ### (a) SPACE side, W2c increment -- discharging the counting hypothesis
+
+The theorem `zeta_ordinates_not_uniformlyDiscrete` above carries the analytic
+input as the verbose per-`δ` window hypothesis `hRvMcount`.  This increment does
+two things, both entirely inside the QC-1 package (no coupling to the zeta build):
+
+  1. It ISOLATES that input to a single named, standard-shaped Prop
+     `RvMUnboundedMeanDensity` -- the recognizable form of the Riemann-von
+     Mangoldt density statement `N(T)/T → ∞` (windows of unbounded linear point
+     density).  A reduction chain proves the escape from it, so the sole
+     remaining analytic obligation is a familiar object, not a bespoke list.
+
+  2. It supplies the UNCONDITIONAL bounded companion `exists_ordinate_gap_le_of_window`:
+     a SINGLE finite window of `N ≥ 2` ordinates in `[a, a+L]` forces two of them
+     within any `δ > L/(N-1)` -- no RvM input at all, pure pigeonhole.  This is the
+     honest kernel content the in-corpus certified zero ladder actually delivers
+     (each certified band EXHIBITS a concrete window: e.g. 29 ordinates in `[0,100]`,
+     50 in `[100,200]`), quantifying a real finite gap bound.  The ladder gives
+     gaps `≤ L/(N-1)` at each stage but not `→ 0` for EVERY `δ`; closing the `∀δ`
+     version is exactly `RvMUnboundedMeanDensity`, which no finite ladder stage
+     attains (see the honest caveat on that def).
+
+conjecture1_proved = False throughout: this is discreteness bookkeeping, not RH. -/
+
+/-- **UNCONDITIONAL bounded companion.**  If a finite set `F` of `N ≥ 2` reals lies
+in `[a, a+L]`, then for every `δ > L/(N-1)` two distinct points of `F` are within
+`< δ`.  (Refines `exists_close_of_card_gt`: the crude `L/(N-1)` mean-gap threshold
+replaces the floor-count bound.  Pure pigeonhole -- no RvM asymptotic.) -/
+theorem exists_close_of_gap_lt {F : Finset ℝ} {a L δ : ℝ}
+    (hδ : 0 < δ) (hmem : ∀ x ∈ F, x ∈ Set.Icc a (a + L))
+    (hN : 2 ≤ F.card) (hgap : L / (F.card - 1 : ℝ) < δ) :
+    ∃ x ∈ F, ∃ y ∈ F, x ≠ y ∧ |x - y| < δ := by
+  apply exists_close_of_card_gt hδ hmem
+  set N := F.card with hNdef
+  have hFne : F.Nonempty := Finset.card_pos.mp (by omega)
+  obtain ⟨x0, hx0⟩ := hFne
+  have hL0 : 0 ≤ L := by obtain ⟨hlo, hhi⟩ := hmem x0 hx0; linarith
+  have hNm1pos : (0 : ℝ) < (N : ℝ) - 1 := by
+    have : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+    linarith
+  have hLδ : L / δ < (N : ℝ) - 1 := by
+    rw [div_lt_iff₀ hδ]; rw [div_lt_iff₀ hNm1pos] at hgap; linarith [hgap]
+  have hnn : 0 ≤ L / δ := div_nonneg hL0 hδ.le
+  have hlt : (⌊L / δ⌋₊ : ℝ) ≤ L / δ := Nat.floor_le hnn
+  have : (↑(⌊L / δ⌋₊ + 1) : ℝ) < (N : ℝ) := by push_cast; linarith
+  exact_mod_cast this
+
+/-- **UNCONDITIONAL gap bound for a point set from one window.**  If `F ⊆ S` is a
+finite window of `N ≥ 2` points of `S` in `[a, a+L]`, then `S` contains two distinct
+points within every `δ > L/(N-1)`.  This is the honest, quantitative escape the
+certified zero ladder supplies at each stage (finite, not `∀δ`). -/
+theorem exists_gap_le_of_window {S : Set ℝ} {F : Finset ℝ} {a L : ℝ}
+    (hFsub : ↑F ⊆ S) (hmem : ∀ x ∈ F, x ∈ Set.Icc a (a + L))
+    (hN : 2 ≤ F.card) :
+    ∀ δ : ℝ, L / (F.card - 1 : ℝ) < δ →
+      ∃ x ∈ S, ∃ y ∈ S, x ≠ y ∧ |x - y| < δ := by
+  intro δ hδgap
+  have hLpos : 0 ≤ L := by
+    obtain ⟨x0, hx0⟩ := Finset.card_pos.mp (by omega : 0 < F.card)
+    obtain ⟨hlo, hhi⟩ := hmem x0 hx0; linarith
+  have hNm1pos : (0 : ℝ) < (F.card : ℝ) - 1 := by
+    have h2 : (2 : ℝ) ≤ (F.card : ℝ) := by exact_mod_cast hN
+    linarith
+  have hδpos : 0 < δ := lt_of_le_of_lt (div_nonneg hLpos hNm1pos.le) hδgap
+  obtain ⟨x, hxF, y, hyF, hxy, hclose⟩ := exists_close_of_gap_lt hδpos hmem hN hδgap
+  exact ⟨x, hFsub hxF, y, hFsub hyF, hxy, hclose⟩
+
+/-- **The isolated windowed-count input** (the shape `zeta_ordinates_not_uniformlyDiscrete`
+already consumes, named once): for every target gap `δ` some finite window
+`[a, a+L]` of `S` holds strictly more than `⌊L/δ⌋+1` points. -/
+def RvMWindowedDensity (S : Set ℝ) : Prop :=
+  ∀ δ : ℝ, 0 < δ → ∃ (F : Finset ℝ) (a L : ℝ),
+    (↑F ⊆ S) ∧ (∀ x ∈ F, x ∈ Set.Icc a (a + L)) ∧ ⌊L / δ⌋₊ + 1 < F.card
+
+/-- **The STANDARD missing analytic input, named honestly.**  `RvMUnboundedMeanDensity S`
+says: for every mean linear density target `r > 0` there is a finite window
+`[a, a+L]` (`L ≥ 0`) of `S` whose point count exceeds `r·L + 1`.  This is the
+recognizable form of the Riemann-von Mangoldt density statement
+`N(T) ~ (T/2π)·log(T/2π)`, i.e. `N(T)/T → ∞`: the ordinate set has windows of
+UNBOUNDED linear density.
+
+HONEST CAVEAT (why this is the true frontier, not a finite fact).  The in-corpus
+certified zero ladder attains, at each finite stage, a window of SOME fixed mean
+density (e.g. `29/100`, then `50/100`, ..., increasing but bounded at every
+stage).  `RvMUnboundedMeanDensity` requires the density to exceed EVERY `r`, which
+no finite stage delivers; it is equivalent to the superlinear growth of `N(T)` and
+is NOT proved unconditionally anywhere in the corpus (the RvM box-counting
+machinery in the `zeta_zero_localization` island is per-window and conditional on
+zero-free edges + an argument-principle input).  So this def is the precise,
+minimal, standard hypothesis that would finish the `∀δ` escape -- carried, not
+asserted.  conjecture1_proved = False. -/
+def RvMUnboundedMeanDensity (S : Set ℝ) : Prop :=
+  ∀ r : ℝ, 0 < r → ∃ (F : Finset ℝ) (a L : ℝ),
+    0 ≤ L ∧ (↑F ⊆ S) ∧ (∀ x ∈ F, x ∈ Set.Icc a (a + L)) ∧ r * L + 1 < F.card
+
+/-- **Reduction.**  The standard unbounded-mean-density input implies the
+windowed-count input (instantiate the density target `r := 1/δ`; the crude
+`⌊L/δ⌋ ≤ L/δ = (1/δ)·L` step converts the mean-density excess into the count
+excess the pigeonhole driver needs). -/
+theorem windowedDensity_of_unboundedMeanDensity {S : Set ℝ}
+    (h : RvMUnboundedMeanDensity S) : RvMWindowedDensity S := by
+  intro δ hδ
+  obtain ⟨F, a, L, hL0, hFsub, hmem, hcard⟩ := h (1 / δ) (by positivity)
+  refine ⟨F, a, L, hFsub, hmem, ?_⟩
+  have hfloor_le : (⌊L / δ⌋₊ : ℝ) ≤ (1 / δ) * L := by
+    have hnn : 0 ≤ L / δ := div_nonneg hL0 hδ.le
+    calc (⌊L / δ⌋₊ : ℝ) ≤ L / δ := Nat.floor_le hnn
+      _ = (1 / δ) * L := by ring
+  have : (↑(⌊L / δ⌋₊ + 1) : ℝ) < (F.card : ℝ) := by push_cast; linarith
+  exact_mod_cast this
+
+/-- **(a) SPACE ESCAPE from the named windowed-count input.**  If the ordinate set
+satisfies `RvMWindowedDensity`, it is not uniformly discrete.  (Same content as
+`zeta_ordinates_not_uniformlyDiscrete`, packaged against the named Prop.) -/
+theorem not_uniformlyDiscrete_of_windowedDensity {S : Set ℝ}
+    (hRvM : RvMWindowedDensity S) : ¬ IsUniformlyDiscrete S := by
+  apply not_uniformlyDiscrete_of_gaps_to_zero
+  intro δ hδ
+  obtain ⟨F, a, L, hFsub, hFmem, hFcard⟩ := hRvM δ hδ
+  obtain ⟨x, hxF, y, hyF, hxy, hclose⟩ := exists_close_of_card_gt hδ hFmem hFcard
+  exact ⟨x, hFsub hxF, y, hFsub hyF, hxy, hclose⟩
+
+/-- **(a) SPACE ESCAPE from the STANDARD RvM density input.**  If the ordinate set
+has unbounded windowed mean density (`N(T)/T → ∞`), it is NOT uniformly discrete:
+the zeta ordinates escape the crystalline class on the SPACE side.  The analytic
+content is isolated to the single standard hypothesis `RvMUnboundedMeanDensity`;
+everything else (the reduction and the pigeonhole packing) is proved in kernel. -/
+theorem zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density
+    {Ordinates : Set ℝ} (hRvM : RvMUnboundedMeanDensity Ordinates) :
+    ¬ IsUniformlyDiscrete Ordinates :=
+  not_uniformlyDiscrete_of_windowedDensity (windowedDensity_of_unboundedMeanDensity hRvM)
+
 end Quasicrystal
