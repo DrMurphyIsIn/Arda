@@ -13,6 +13,24 @@ rev = "v4.32.0"
 name = "ZeroFreeBridge"
 path = "../../zero_free_bridge/lean"
 
+# MIRRORMERE QC-B3 (qc-wedge): the inertia dictionary + certified defect experiment.
+# RHLinalg = the §3 linear-algebra prelude of arXiv:2608.13637, source-ported VERBATIM from the
+# sibling v4.32.0 hermitian_moment island (which ports anthropics/formal-math zeta23/Zeta23/LinAlg/
+# at commit fbdc36bbf17d20af3fd0447c6d1a8a02773c9844, Apache-2.0). Same pin, byte-identical copy.
+# `globs` picks up the whole RHLinalg/ subdirectory (dotted module names RHLinalg.*).
+[[lean_lib]]
+name = "RHLinalg"
+globs = ["RHLinalg.+"]
+
+[[lean_lib]]
+name = "DefectDictionary"
+
+[[lean_lib]]
+name = "BraggDefect"
+
+[[lean_lib]]
+name = "AxiomGuardDefect"
+
 [[lean_lib]]
 name = "LambdaLineReal"
 
