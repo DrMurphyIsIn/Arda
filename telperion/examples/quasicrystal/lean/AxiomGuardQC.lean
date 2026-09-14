@@ -12,6 +12,7 @@
 import LeeYangCore
 import KSConstruction
 import BoundaryLemmas
+import TwoFreqRigidity
 
 open Quasicrystal
 
@@ -38,6 +39,11 @@ open Quasicrystal
 #print axioms Quasicrystal.not_uniformlyDiscrete_of_gaps_to_zero
 #print axioms Quasicrystal.exists_close_of_card_gt
 #print axioms Quasicrystal.zeta_ordinates_not_uniformlyDiscrete
+
+/-! ### handoff K1 -- TwoFreqRigidity (Theorem A) -/
+#print axioms Quasicrystal.twoFreq_eq_zero_iff
+#print axioms Quasicrystal.twoFreq_zero_norm
+#print axioms Quasicrystal.twoFreq_realRooted_iff
 
 /-! ### increment (iii) -- CharacterizationStatements
 
