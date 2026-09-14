@@ -75,6 +75,13 @@ roots = ["StirlingBinet"]
 name = "StirlingBinetWip"
 roots = ["StirlingBinetWip"]
 
+# The HONEST higher-rate Binet ingredients (kernel-clean, guard-imported): the height-aware
+# per-term Binet bound (large-height sharpening, no trigamma required).  The exact cos-form K=4
+# stays in StirlingBinetWip pending the digamma<->trigamma-series bridge (Mathlib gap).
+[[lean_lib]]
+name = "StirlingK4"
+roots = ["StirlingK4"]
+
 # E-track: complex Euler-Maclaurin lift + K=1 analytic continuation into the critical strip.
 [[lean_lib]]
 name = "EMZetaComplex"

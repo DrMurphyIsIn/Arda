@@ -48,6 +48,8 @@ import EMZetaTail
 #print axioms ZetaReflection.em_saw_step
 #print axioms ZetaReflection.em_saw_step_window
 #print axioms ZetaReflection.em_tail_integral_bound
+#print axioms ZetaReflection.integral_Ioi_shift_rpow
+#print axioms ZetaReflection.em_tail_integral_bound_shifted
 #print axioms ZetaReflection.em_tail3_bound
 #print axioms ZetaReflection.em_tail3_number
 #print axioms ZetaReflection.hasDerivAt_cpow_neg2

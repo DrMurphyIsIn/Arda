@@ -436,6 +436,111 @@ theorem em_tail_integral_bound {k : ℕ} {s c : ℂ} {B : ℝ} {N : ℕ}
         have hne : s.re + (k : ℝ) - 1 ≠ 0 := ne_of_gt hσk1
         field_simp
 
+/-! ## H'. The SHIFTED-BASE tail engine `(w + x)^{-a}` (the Binet / Γℝ substrate).
+
+    The base-1 engine `em_tail_integral_bound` bounds saw-weighted `x^{-s-k}` tails.  The Binet
+    remainder `μ_K(w)` (Stirling series for `ψ`) is, up to the finite Bernoulli peel, an
+    Euler–Maclaurin tail of the trigamma power series `Σ (w+n)^{-2-k}` — a SHIFTED-BASE `(w+x)^{-a}`
+    tail.  This subsection generalizes the engine to that base.  Crucially the exponent is kept REAL
+    (`a : ℝ`, `a > 1`) — which is exactly the form the trigamma tail needs (`a = 2 + k ∈ ℕ`) — so
+    the norm is `‖(w+x)^{-a}‖ = ‖w+x‖^{-a}` (`Complex.norm_cpow_real`, no `exp(arg·im)` factor), and
+    the honest `N`-decay is driven by the base lower bound `‖w+x‖ ≥ Re(w+x) = Re w + x ≥ Re w + N`. -/
+
+/-- Value of the shifted power tail integral: for `1 < a`, `0 < d`, `0 ≤ N`,
+    `∫_{Ioi N} (d + x)^{-a} dx = (d + N)^{-(a-1)}/(a-1)`.  Antiderivative form (mirrors
+    `integral_Ioi_rpow_of_lt` with an affine shift `d + x` in place of `x`). -/
+theorem integral_Ioi_shift_rpow {a d : ℝ} (ha : 1 < a) (hd : 0 < d) (N : ℝ) (hN : 0 ≤ N) :
+    ∫ x in Ioi (N : ℝ), (d + x) ^ (-a) = (d + N) ^ (-(a - 1)) / (a - 1) := by
+  have hae : (-a) < -1 := by linarith
+  have hd' : ∀ x ∈ Ici (N : ℝ), HasDerivAt (fun t : ℝ => (d + t) ^ (-a + 1) / (-a + 1))
+      ((d + x) ^ (-a)) x := by
+    intro x hx
+    have hdx : 0 < d + x := by have := mem_Ici.mp hx; linarith
+    have hbase : HasDerivAt (fun t : ℝ => d + t) 1 x := by
+      simpa using (hasDerivAt_id x).const_add d
+    have hcomp := (Real.hasDerivAt_rpow_const (p := -a + 1) (Or.inl hdx.ne')).comp x hbase
+    simp only [mul_one] at hcomp
+    have hne : (-a + 1) ≠ 0 := by intro h; linarith
+    have hval : ((-a + 1) * (d + x) ^ (-a + 1 - 1)) / (-a + 1) = (d + x) ^ (-a) := by
+      rw [show (-a + 1 - 1 : ℝ) = -a by ring, mul_comm, mul_div_assoc, div_self hne, mul_one]
+    have := hcomp.div_const (-a + 1)
+    rw [hval] at this
+    exact this
+  have ht : Tendsto (fun t : ℝ => (d + t) ^ (-a + 1) / (-a + 1)) atTop (𝓝 (0 / (-a + 1))) := by
+    apply Tendsto.div_const
+    rw [← neg_neg (-a + 1)]
+    exact (tendsto_rpow_neg_atTop (by linarith : 0 < -(-a + 1))).comp
+      (tendsto_atTop_add_const_left _ d tendsto_id)
+  have hint : IntegrableOn (fun x : ℝ => (d + x) ^ (-a)) (Ioi (N : ℝ)) := by
+    have := integrableOn_add_rpow_Ioi_of_lt (a := -a) (c := N) (m := d) hae (by linarith)
+    simpa [add_comm] using this
+  have hres := integral_Ioi_of_hasDerivAt_of_tendsto' hd' hint ht
+  rw [hres]
+  simp only [zero_div, zero_sub]
+  rw [show (-a + 1) = -(a - 1) by ring]
+  rw [div_neg, neg_neg]
+
+/-- **The shifted-base tail engine.**  Generalization of `em_tail_integral_bound` to base `(w + x)`
+    for a complex shift `w` with `Re w > 0` and a REAL exponent `a > 1`.  For the saw-weighted
+    power integrand `sawBernoulli k x · (c · (w + x)^(-a))` on `[N, ∞)` with `‖sawBernoulli k‖ ≤ B`,
+        ‖∫_N^∞ saw_k · c·(w+x)^{-a}‖ ≤ B · ‖c‖ · (Re w + N)^{-(a-1)} / (a - 1).
+    The `N`-decay carries the honest constant `(Re w + N)^{-(a-1)}`: the shifted power decays from the
+    base `Re(w+x) = Re w + x ≥ Re w + N`.  This is the reusable substrate for the Binet trigamma tail
+    `Σ (w+n)^{-2-k}` and hence the K = 4 Stirling remainder (see `StirlingBinetWip`/`StirlingK4`). -/
+theorem em_tail_integral_bound_shifted {k : ℕ} {w c : ℂ} {a B : ℝ} {N : ℕ}
+    (hw : 0 < w.re) (ha : 1 < a) (hB : 0 ≤ B)
+    (hsawB : ∀ x : ℝ, |sawBernoulli k x| ≤ B) :
+    ‖∫ x in Ioi (N : ℝ), (sawBernoulli k x : ℂ) * (c * (w + (x : ℂ)) ^ (-(a : ℂ)))‖
+      ≤ B * ‖c‖ * (w.re + N) ^ (-(a - 1)) / (a - 1) := by
+  have hNnn : (0 : ℝ) ≤ N := Nat.cast_nonneg N
+  have ham1 : 0 < a - 1 := by linarith
+  -- domination bound: ‖integrand‖ ≤ (B·‖c‖) · (Re w + x)^{-a} on (N,∞).
+  have hdom : IntegrableOn (fun x : ℝ => (B * ‖c‖) * (w.re + x) ^ (-a)) (Ioi (N : ℝ)) := by
+    have hbase : IntegrableOn (fun x : ℝ => (w.re + x) ^ (-a)) (Ioi (N : ℝ)) := by
+      have := integrableOn_add_rpow_Ioi_of_lt (a := -a) (c := (N : ℝ)) (m := w.re)
+        (by linarith) (by linarith)
+      simpa [add_comm] using this
+    exact hbase.const_mul _
+  -- pointwise: ‖saw·(c·(w+x)^{-a})‖ ≤ (B·‖c‖)·(Re w + x)^{-a}.
+  have hpt : ∀ x : ℝ, N < x →
+      ‖(sawBernoulli k x : ℂ) * (c * (w + (x : ℂ)) ^ (-(a : ℂ)))‖
+        ≤ (B * ‖c‖) * (w.re + x) ^ (-a) := by
+    intro x hx
+    have hxpos : (0 : ℝ) < x := lt_of_le_of_lt hNnn hx
+    have hwx_norm : (w.re + x) ≤ ‖w + (x : ℂ)‖ := by
+      calc (w.re + x) = (w + (x : ℂ)).re := by rw [Complex.add_re, Complex.ofReal_re]
+        _ ≤ ‖w + (x : ℂ)‖ := Complex.re_le_norm _
+    have hnormcpow : ‖(w + (x : ℂ)) ^ (-(a : ℂ))‖ = ‖w + (x : ℂ)‖ ^ (-a) := by
+      rw [show (-(a : ℂ)) = ((-a : ℝ) : ℂ) by push_cast; ring, Complex.norm_cpow_real]
+    have hbase_pos : (0 : ℝ) < w.re + x := by linarith
+    have hantitone : ‖w + (x : ℂ)‖ ^ (-a) ≤ (w.re + x) ^ (-a) :=
+      Real.rpow_le_rpow_of_nonpos hbase_pos hwx_norm (by linarith)
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, hnormcpow]
+    calc |sawBernoulli k x| * (‖c‖ * ‖w + (x : ℂ)‖ ^ (-a))
+        ≤ B * (‖c‖ * (w.re + x) ^ (-a)) := by
+          apply mul_le_mul (hsawB x) ?_ (by positivity) hB
+          exact mul_le_mul_of_nonneg_left hantitone (norm_nonneg c)
+      _ = (B * ‖c‖) * (w.re + x) ^ (-a) := by ring
+  -- integrability of the integrand.
+  have hInt : IntegrableOn (fun x : ℝ => (sawBernoulli k x : ℂ) * (c * (w + (x : ℂ)) ^ (-(a : ℂ))))
+      (Ioi (N : ℝ)) := by
+    refine Integrable.mono' hdom ?_ ?_
+    · apply Measurable.aestronglyMeasurable
+      exact (Complex.measurable_ofReal.comp (sawBernoulli_measurable k)).mul
+        (measurable_const.mul ((measurable_const.add Complex.measurable_ofReal).pow_const _))
+    · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
+      exact hpt x hx
+  calc ‖∫ x in Ioi (N : ℝ), (sawBernoulli k x : ℂ) * (c * (w + (x : ℂ)) ^ (-(a : ℂ)))‖
+      ≤ ∫ x in Ioi (N : ℝ), ‖(sawBernoulli k x : ℂ) * (c * (w + (x : ℂ)) ^ (-(a : ℂ)))‖ :=
+        norm_integral_le_integral_norm _
+    _ ≤ ∫ x in Ioi (N : ℝ), (B * ‖c‖) * (w.re + x) ^ (-a) := by
+        apply setIntegral_mono_on hInt.norm hdom measurableSet_Ioi
+        intro x hx; exact hpt x hx
+    _ = B * ‖c‖ * (w.re + N) ^ (-(a - 1)) / (a - 1) := by
+        rw [MeasureTheory.integral_const_mul,
+          integral_Ioi_shift_rpow ha hw (N : ℝ) hNnn]
+        ring
+
 /-! ## I. The K = 3 instance and THE NUMBER (the go/no-go for full reflection).
 
     The order-3 tail remainder integrand is `sawBernoulli 3 x · (c₃(s) · x^{-s-3})` where
