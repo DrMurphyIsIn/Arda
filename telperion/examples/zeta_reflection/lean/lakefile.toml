@@ -74,3 +74,8 @@ roots = ["StirlingBinet"]
 [[lean_lib]]
 name = "StirlingBinetWip"
 roots = ["StirlingBinetWip"]
+
+# E-track: complex Euler-Maclaurin lift + K=1 analytic continuation into the critical strip.
+[[lean_lib]]
+name = "EMZetaComplex"
+roots = ["EMZetaComplex"]
