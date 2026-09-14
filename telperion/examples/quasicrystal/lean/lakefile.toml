@@ -40,6 +40,13 @@ roots = ["CharacterizationStatements"]
 name = "TwoFreqRigidity"
 roots = ["TwoFreqRigidity"]
 
+# Telperion selfinversive_rigidity emitter example (2026-09-14): equal-modulus
+# real-rootedness instances applying twoFreq_realRooted_iff, emitted by
+# examples/selfinversive_rigidity/generate.py.
+[[lean_lib]]
+name = "SelfInversiveRigidityInstances"
+roots = ["SelfInversiveRigidityInstances"]
+
 [[lean_lib]]
 name = "RationalFreqReduction"
 roots = ["RationalFreqReduction"]
