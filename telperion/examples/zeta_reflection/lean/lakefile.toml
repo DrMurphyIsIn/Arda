@@ -51,6 +51,12 @@ roots = ["CertVerify"]
 name = "TrigReduce"
 roots = ["TrigReduce"]
 
+# Computable DIntv paired-doubling driver for the trig instrument (the emitter target: a single
+# kernel `decide` climb instead of an M-step straight-line unroll).
+[[lean_lib]]
+name = "TrigReduceD"
+roots = ["TrigReduceD"]
+
 [[lean_lib]]
 name = "Spike_BenchExpD"
 roots = ["Spike.BenchExpD"]
@@ -110,3 +116,8 @@ roots = ["ReflectedBand_t14"]
 [[lean_lib]]
 name = "FullyReflectedBand_t14"
 roots = ["FullyReflectedBand_t14"]
+
+# Operating-point certificates: cos/sin(14 log n), n in {2,200}.
+[[lean_lib]]
+name = "TrigReduceOperating"
+roots = ["TrigReduceOperating"]
