@@ -86,11 +86,6 @@ roots = ["EMZetaComplex"]
 name = "EMZetaTail"
 roots = ["EMZetaTail"]
 
-# STAGE 1: the assembled order-3 EM ζ identity (ties em_saw_step_window to riemannZeta).
-[[lean_lib]]
-name = "EMZetaTail3"
-roots = ["EMZetaTail3"]
-
 # A4 / G2: the reflected-band pilot checker + once-proven soundness.  Imports XiLineZeros from
 # the sibling zeta_zero_localization island (via the LambdaLineReal path require above).
 [[lean_lib]]
@@ -102,3 +97,10 @@ roots = ["CheckBand"]
 [[lean_lib]]
 name = "ReflectedBand_t14"
 roots = ["ReflectedBand_t14"]
+
+# A4 / STAGE 2: the finite-part + kernel-verified-envelope band checker (toward zero-hypothesis).
+# checkBandFull computes the envelope widening + sign + alternation in-kernel; residual hypothesis is
+# only the finite-part enclosure (the mod-2pi + Gamma-R-value blocked piece; see file header budget).
+[[lean_lib]]
+name = "FullyReflectedBand_t14"
+roots = ["FullyReflectedBand_t14"]
