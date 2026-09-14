@@ -374,3 +374,247 @@ any of these as named Props.
   `telperion/examples/zeta_zero_localization/{BraggH100,BraggSupport,bragg_refine.py}`.
 
 `conjecture1_proved = False`.
+
+---
+
+# APPENDIX (v2, W3a) — Variant B-mult: the MULTIPLICATIVITY restatement
+
+*(PROGRAM MIRRORMERE, Wave-3 rung W3a `qc3-mult`. Appended, not rewriting the
+history above. `conjecture1_proved = False`.)*
+
+## W3a.0 Why this appendix exists — the adjudication
+
+§9 above left the sharpest open definitional problem: what is the correct **primitive**
+for "spectrum on the prime log-lattice"? Three candidates were on the table —
+(a) the positive **weights** `(log p)p^{−k/2}`, (b) a **Diophantine separation**
+condition on atom locations, (c) the **multiplicativity / Euler-product** structure of
+the amplitude sequence. §9(c) already flagged (c) as "arguably the deepest and the one
+that most directly excludes DH."
+
+The program's symmetry analysis adjudicated for **(c) multiplicativity**, on the
+following grounds (this is the W3a input, from the ROADMAP and QC_LITERATURE §1.3):
+
+- The **classified** ℕ-valued FQs (ACV Cor 1.4) are restrictions-from-finite-tori:
+  a real-rooted `f(x) = e^{λ_0 x} p(e^{ixℓ})` with `ℓ ∈ ℝ₊ⁿ` ℚ-linearly independent,
+  whose **spectrum lies in a finitely generated group `ℤ⟨ℓ⟩`** (ACV hypothesis (iv)).
+  The generating structure — a **product** over finitely many independent
+  frequencies — is what the classification is *about*, not a metric/separation
+  condition on locations.
+- Zeta's upstairs object is the **infinite torus `∏_p S¹`** (one circle per prime),
+  and its Euler product `ζ(s) = ∏_p (1−p^{−s})^{−1}` is *literally* a product over that
+  torus's factors. The **product structure**, not a Diophantine gap, is what
+  generalizes from the finite-`n` ACV picture to zeta's infinite-`n` picture (W3c).
+- The zoo already showed (variant C, §3 and §6) that DH's admission under the **loose**
+  lattice reading is exactly what the *definitional slipperiness* of "on `Λ_log`"
+  buys DH. A2 §6 made that operational; multiplicativity removes the slipperiness at
+  the root, because it is a property of the **amplitude sequence**, not the atom set.
+
+So B-mult replaces B's **weight-positivity** primitive (B-iii) with a strictly
+stronger **multiplicative-generation** primitive. Positivity becomes a *consequence*
+(each prime-layer von-Mangoldt amplitude is `+log p > 0`), not the axiom.
+
+## W3a.1 The axiom, verbatim
+
+Let `μ` be a symmetric, log-density, tempered atomic measure (clauses (A-i), (A-iv) as
+in Variant A) whose dual comb `μ̂` is pure-point (clause (B-ii), still RH-conditional
+for zeta). Write the Bragg (prime-side) atoms as frequency–amplitude pairs
+`{(u, c(u)) : u ∈ supp μ̂, u > 0}`.
+
+> **(B-mult) — Multiplicative amplitude generation.**
+> The frequency–amplitude pairs are **generated multiplicatively from the prime
+> layer**. Precisely: the atomic support of `μ̂` is `Λ_log = {±m log p : p prime,
+> m ∈ ℤ_{≥1}}` — **no atoms at any non-prime-power frequency** (in particular
+> `c(u) = 0` for every `u = log n` with `n` composite) — and there is a **per-prime
+> weight** `w : {primes} → ℝ_{>0}` such that for every prime `p` and every `m ≥ 1`
+> the amplitude at `u = m log p` is
+> \[ \; c(m\log p) \;=\; (\log p)\, w(p)^m . \; \]
+> Equivalently: the dual comb is the image of a **completely multiplicative** structure
+> on the free commutative monoid over the primes — the pairs
+> `{(m log p, (log p)·w(p)^m)}` are the multiplicative closure of the prime-layer pairs
+> `{(log p, (log p)·w(p))}`, with the arithmetic normalization `w(p) = p^{−1/2}`.
+
+**Reading.** "On the prime log-lattice" is now *derived*: it means precisely
+"the amplitude sequence is the log-derivative of an Euler product." The condition
+`c(u)=0` at composite `u` is the finite fingerprint of the Euler product (a completely
+multiplicative Dirichlet series has von-Mangoldt coefficients supported only on prime
+powers). The geometric law `c(mlog p)/c((m−1)log p) = w(p)` (independent of `m`) is the
+per-prime self-similarity that a single circle-factor `S¹_p` of the torus contributes.
+
+**Relation to B (dominance).** B-mult ⟹ B-iii: `c(log p) = (log p)w(p) = (log p)p^{−1/2}
+> 0`, so positivity of the prime layer is automatic, and the decay envelope
+`c_− ≤ 1 ≤ c_+` holds with `w(p)=p^{−1/2}`. The converse fails (a signed-but-positive-at-
+primes comb need not be multiplicatively generated), so **B-mult ⊋ B** as an axiom.
+
+## W3a.2 Zeta instance (unconditional — the Euler product)
+
+For zeta the prime side of the GW explicit formula is the log-derivative of the Euler
+product:
+\[ -\frac{\zeta'}{\zeta}(s) = \sum_{p}\sum_{m\ge1} (\log p)\, p^{-ms}
+   = \sum_n \Lambda(n) n^{-s},\qquad \Lambda(p^m)=\log p,\ \Lambda(\text{composite})=0. \]
+Hence the Bragg amplitudes are `c(m log p) = Λ(p^m)·p^{−m/2} = (log p)·p^{−m/2}`, which
+is exactly `(log p)·w(p)^m` with `w(p)=p^{−1/2}`. Both fingerprints hold **arithmetically,
+with no appeal to RH**:
+
+- **Composite-vanishing:** `Λ(6)=Λ(10)=…=0` (verified in the zoo: `b(6)=b(10)=b(25)=0`).
+- **Per-prime geometric law:** `c(m log p)/c((m−1)log p)=p^{−1/2}` exactly for every
+  `p,m` (verified: ratios `2^{−1/2}, 3^{−1/2}, 5^{−1/2}, …` to machine precision).
+
+**This is the clean split preserved from §2**: the *generation of the amplitudes*
+(B-mult) is **unconditional/arithmetic** — zeta PASSes it outright — while the
+*pure-pointness of the dual comb* (B-ii) remains the RH-conditional clause. B-mult
+changes **which** unconditional property is the DH-killer (multiplicativity, not bare
+positivity); it does **not** move any RH content.
+
+## W3a.3 DH refutation, made precise (which amplitude breaks the law)
+
+DH is the period-5 Dirichlet series `D(s) = Σ_n c(n) n^{−s}` with coefficient vector
+`c = [1, κ, −κ, −1, 0]` (indexed `c(1)=1, c(2)=κ, c(3)=−κ, c(4)=−1, c(5)=0`, repeating),
+`κ = (√(10−2√5)−2)/(√5−1) ≈ 0.284079` (QC_DH_SCOUT.md). Equivalently
+`D = (1−iκ)/2·L(s,χ) + (1+iκ)/2·L(s,χ̄)` for `χ mod 5`. **DH has no Euler product**, so
+its "prime side" `−D'/D(s) = Σ_n b(n) n^{−s}` is the log-derivative of a
+**non-multiplicative** series. Computing `b(n)` from the exact recursion
+`c(n)log n = Σ_{d|n} b(d) c(n/d)` (mechanized in the zoo) exhibits the breakage
+**at the very first composite**:
+
+| n | 2 | 3 | 4=2² | 6=2·3 | 9=3² | 25=5² |
+|---|---|---|---|---|---|---|
+| DH `b(n)` | +0.1969 | **−0.3121** | −1.4422 | **+1.9364** | −2.2859 | 0.0000 |
+| ζ `Λ(n)` | +0.6931 | +1.0986 | +0.6931 | **0.0000** | +1.0986 | +1.6094 |
+
+Two independent failures of B-mult, both certified:
+
+1. **Composite atom (the primary kill).** `b(6) = +1.9364 ≠ 0`. The generation law
+   demands `c(log 6)=0` (no atom at the composite frequency `log 6 = log 2 + log 3`).
+   DH's von-Mangoldt-analogue coefficient at `n=6` is *manifestly nonzero* — this is the
+   direct fingerprint of "no Euler product," and it is the amplitude the zoo reports as
+   the failing one. (The DH coefficients are `Λ(n)·(χ(n)+χ̄(n))`-flavored — sign-varying
+   with `n mod 5` — so `b` acquires cross terms at composite `n` that any multiplicative
+   series kills.)
+2. **Sign-varying prime layer + broken m-generation (the redundant kill).** Already at
+   `m=1`: `b(2)=+0.197 > 0` but `b(3)=−0.312 < 0` — no **positive** `w(p)` can produce a
+   negative prime-layer amplitude, so even restricted to primes the sequence is not
+   `(log p)w(p)`. And the `m=2` layer breaks generation from `m=1`: for zeta
+   `Λ(4)=Λ(2)=log 2` (m-constant), whereas DH has `b(4)=−1.442 ≠ b(2)=+0.197`, opposite
+   sign — the geometric law `c(m log p)=(log p)w(p)^m` fails at `2²`.
+
+Either fingerprint alone kills DH; the zoo trips on (1) first (`b(6)≠0`) and reports it.
+
+## W3a.4 Relation to the infinite-torus formulation (W3c) and the ACV hypothesis
+
+B-mult is the **finite/spatial shadow** of the W3c torus formulation. ACV (QC_LIT §1.3
+hyp (iv)) classifies ℕ-FQs whose spectrum lies in a **finitely generated group**
+`ℤ⟨ℓ⟩` — a *finite* torus `(S¹)^n`. B-mult is precisely the statement that zeta's dual
+comb is the restriction of a completely multiplicative structure on the **free monoid
+over all primes** — the *infinite* analogue, `∏_p S¹`, one generator `w(p)` per prime.
+The two connect as:
+
+- **Finite (ACV / W3b GW-finite):** truncate to primes `p ≤ e^R` inside a window
+  `[−R,R]`; B-mult restricted to the window is exactly ACV's finitely-generated-group
+  condition with generators `ℓ = (log p)_{p≤e^R}` and the *specific* Lee–Yang polynomial
+  being the local Euler factor product `∏_{p≤e^R}(1−z_p)^{−1}` evaluated on `z_p=e^{−ix log p}`.
+- **Infinite (W3c):** the whole dual comb is the restriction-from-`∏_p S¹` of the
+  Kronecker character; B-mult is the **spatial (Poincaré-section) reading** of that
+  restriction, W3d the **dynamical (Kronecker-flow) reading** — "W3c and W3d are the
+  same torus seen spatially vs dynamically" (ROADMAP). B-mult is thus the correct
+  finite-checkable primitive that **survives the limit `n → ∞`**: it is a per-prime
+  local condition, so it does not depend on the (basis-dependent, dense-mod-1)
+  windowing that made §9's "is `u ∈ Λ_log`?" test ill-posed.
+
+This is why multiplicativity, not Diophantine separation, is the right primitive:
+separation is a *global* metric property of the atom set that degenerates as the
+log-primes fill in densely (§9); multiplicativity is a *local, per-generator* property
+of the amplitude that is stable under the torus dimension going to infinity.
+
+## W3a.5 The updated matrix row + verdict
+
+The zoo mechanizes B-mult as a new clause `multiplicativity` (variant tag `Bm`),
+`check_multiplicativity`: it rebuilds the log-derivative coefficients from each object's
+Dirichlet-coefficient model and tests both fingerprints directly. Re-running the full
+matrix (T=100):
+
+```
+clause \ object                                  zeta     dh   lattice  ksly  random
+(A-ii/B-ii) atomic spectrum on prime Lambda_log  COND    FAIL   PASS    PASS   FAIL
+(B-iii) weight positivity + decay  [KILLER]      PASS    FAIL   PASS    PASS   FAIL
+(B-mult) multiplicative generation [W3a KILLER]  PASS    FAIL   FAIL    FAIL   FAIL
+```
+
+**New variant verdict row:**
+
+| Variant | ζ | DH | Eps | Lat | KS-LY | Rnd | Variant verdict |
+|---|---|---|---|---|---|---|---|
+| **B-mult** multiplicative generation (W3a) | **P** on (B-mult) generation [uncond., Euler product]; **P\*** on (B-ii) pure-point [RH] | **F** (no Euler product ⇒ `b(6)=+1.936 ≠ 0` at composite `log 6`; prime layer sign-varying) | **F** (Epstein `r_Q(n)` not multiplicative; no Euler product) | **F** (no Dirichlet-coefficient / prime-layer structure at all) | **F** (generic Lee–Yang FQ: amplitudes not multiplicatively generated) | **F** (no atomic spectrum) | **SHARPEST** — admits **only ζ**; DH dead by non-multiplicativity; positivity now a *consequence* |
+
+**The KS-FQ interpretation call (honest).** A generic Kurasov–Sarnak Lee–Yang FQ
+(the zoo's `ksly`, zeros of `cos x − c`) **FAILS B-mult** — and this is correct and
+intended. Its Bragg amplitudes are the Fourier coefficients of a periodic function on a
+*single* frequency generator; they are **not** the multiplicative image of a prime
+layer (there is no prime-indexed `w(p)` structure at all). So B-mult **excludes generic
+Lee–Yang FQs** that B (which only asked for positive mass) admitted. Under B, `ksly`
+survives as the positive control that the axiom is non-vacuous; under B-mult it is
+**killed**. This makes B-mult **strictly sharper than B**: it carves the *arithmetic*
+FQs (those with Euler-product amplitudes) out of the generic Lee–Yang class. This is a
+**FEATURE** — the axiom is aimed at zeta's class specifically, not at all FQs — but it
+means the "non-vacuity" role that `ksly` played for B must, under B-mult, be played by a
+**genuinely arithmetic** FQ (a Dirichlet L-function comb), which is the natural next
+positive control (flagged for W3b/W3c). The harness reflects this honestly:
+`ksly`'s B-mult verdict is FAIL with detail "no multiplicative prime-layer," and the
+governance rail `test_bmult_strictly_sharper_than_b` asserts the B-survives/B-mult-kills
+split rather than papering over it.
+
+**Forged negative control (discriminating power).** Corrupting a single amplitude of
+zeta's sequence so that `a(6) ≠ a(2)a(3)` (override `a(6)=1.5` on the completely-
+multiplicative base) injects a nonzero composite atom `b(6) ≠ 0`; the B-mult verdict
+flips PASS → FAIL. This proves the clause is a real function of the amplitude data, not
+a descriptor lookup.
+
+## W3a.6 What B-mult buys (verdict memo)
+
+**B-mult + defect-0 (variant D at `k=0`) is the sharpest current candidate for the
+"zeta class."** The two live primitives now read:
+
+- **B-mult** (unconditional/arithmetic): the dual comb's amplitudes are the
+  multiplicative image of the prime layer — the *Euler-product* fingerprint. Zeta
+  satisfies it outright; **every** other zoo object (DH, Epstein, generic FQ, lattice,
+  random) fails it. It is the tightest **necessary** arithmetic condition isolated so
+  far, and it makes the old positivity killer (B-iii) a **corollary**.
+- **Defect-0** (RH-conditional, Alpöge–Furman graded): the dual comb is genuinely
+  pure-point with no off-line leakage — the *reality* fingerprint. `k=0 ⟺ RH`.
+
+Their conjunction is the natural axiomatic home of "zeta, and RH": *B-mult pins the
+arithmetic (which L-function class), defect-0 pins the analysis (RH within it).*
+
+**The classification-shaped conjecture B-mult suggests (arithmetic Lee–Yang).**
+
+> **Conjecture (arithmetic Lee–Yang, W3a).** Let `μ` be a log-density symmetric ℤ-mass
+> atomic measure with pure-point dual comb `μ̂` whose amplitude sequence satisfies
+> **(B-mult)** — i.e. is the log-derivative of a completely multiplicative Dirichlet
+> series (an Euler product). Then `μ` is the GW image of a degree-1 arithmetic
+> L-function, and its support is real (⟺ that L-function satisfies its Riemann
+> Hypothesis). In slogan: **multiplicative FQ ⟹ Euler-product structure ⟹ (with
+> defect-0) real support.**
+
+This is the B-mult analogue of ACV Cor 1.4 ("every ℕ-FQ is a Lee–Yang zero set"): where
+ACV forces *generic* real-rootedness from the finite-torus structure, the arithmetic-
+Lee–Yang conjecture would force *arithmeticity* from the multiplicative (infinite-torus)
+structure, with RH as the residual defect-0 clause. It is the strongest classification
+target the matrix now points at, and it is the precise statement W3c (infinite-torus)
+would need to formulate rigorously.
+
+**Honest ledger — definitional vs provable.**
+
+- **Provable now (unconditional, mechanized):** zeta satisfies B-mult (Euler product,
+  arithmetic); DH/Epstein/generic-FQ/lattice/random all fail it; positivity is a
+  consequence of B-mult. These are the certified zoo verdicts (Arb/interval-trust
+  orchestration + exact rational coefficient recursion — **not** a Lean kernel proof).
+- **Still definitional:** whether B-mult as stated is the *unique minimal* arithmetic
+  primitive, or whether the "completely multiplicative ⟹ degree-1 L-function" step needs
+  additional hypotheses (functional equation, conductor bound) to exclude exotic
+  Euler-product Dirichlet series. The infinite-torus formulation (W3c) is where this is
+  decided; B-mult is its finite-checkable shadow, adjudicated as the primitive but not
+  yet proven to be *sufficient* for the classification conjecture.
+- **Still RH-hard:** the defect-0 / pure-point clause. B-mult **does not** move it — by
+  design. The whole value of the split is that B-mult absorbs *all* the arithmetic
+  (unconditional) content, leaving RH cleanly isolated in the defect grading.
+
+`conjecture1_proved = False`.
