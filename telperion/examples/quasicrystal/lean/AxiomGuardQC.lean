@@ -38,3 +38,13 @@ open Quasicrystal
 #print axioms Quasicrystal.not_uniformlyDiscrete_of_gaps_to_zero
 #print axioms Quasicrystal.exists_close_of_card_gt
 #print axioms Quasicrystal.zeta_ordinates_not_uniformlyDiscrete
+
+/-! ### increment (iii) -- CharacterizationStatements
+
+    DELIBERATELY NOT GUARDED HERE.  `CharacterizationStatements.lean` contains only
+    `def ... : Prop` STATEMENTS of the published 1-D FQ characterization
+    (Kurasov-Sarnak / Olevskii-Ulanovskii / Alon-Cohen-Vinzant Cor 1.4 /
+    Lev-Olevskii / AKKV) and the OPEN program conjectures.  Nothing there is a
+    theorem, so there are no axioms to print.  It builds green (no sorry) and is
+    a defaultTarget; listing its `def`s under `#print axioms` would be a category
+    error (they are Props, not proofs). -/

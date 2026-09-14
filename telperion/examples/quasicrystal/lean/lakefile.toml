@@ -1,5 +1,5 @@
 name = "Quasicrystal"
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas"]
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements"]
 
 # PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
 # stable-polynomial classification frontier.  conjecture1_proved = False --
@@ -31,3 +31,7 @@ roots = ["KSConstruction"]
 [[lean_lib]]
 name = "BoundaryLemmas"
 roots = ["BoundaryLemmas"]
+
+[[lean_lib]]
+name = "CharacterizationStatements"
+roots = ["CharacterizationStatements"]
