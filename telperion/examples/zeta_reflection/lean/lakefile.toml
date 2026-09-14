@@ -136,3 +136,14 @@ roots = ["TrigReduceOperating"]
 [[lean_lib]]
 name = "ZeroHypBand_t14"
 roots = ["ZeroHypBand_t14"]
+
+# ANDÚRIL θ-value instrument: reusable arctan Taylor bracket (rigorous, no special-function anchors).
+[[lean_lib]]
+name = "ArctanTaylor"
+roots = ["ArctanTaylor"]
+
+# ANDÚRIL θ-value: finite Im-part pipeline (arg atom + Im L_n formula + Gauss-product bridge)
+# plus the two named remaining Props (rate + branch bridge).
+[[lean_lib]]
+name = "ThetaValue"
+roots = ["ThetaValue"]
