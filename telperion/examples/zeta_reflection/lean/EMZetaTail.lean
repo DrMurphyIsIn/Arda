@@ -523,4 +523,30 @@ theorem em_tail3_number :
       ≤ (1 / 12) * 3375 * (1 / 560000) / (5 / 2) := by gcongr
     _ ≤ 1 / 1000 := by norm_num
 
+/-! ## J. The order-2 windowed EM identity for the ζ integrand (complex).
+
+    We raise the K=1 windowed complex EM identity (`euler_maclaurin_one_window_cpow` applied to
+    `f x = (x:ℂ)^(-s)`) to order 2 using `em_saw_step_window` (real coefficients, applied to the
+    real and imaginary parts — but here directly to the ℂ integrand via linearity of the identity
+    over the real saw).  The order-2 remainder integrand carries the coefficient `c₂(s) = s(s+1)`.
+
+    We give the complex σ-direction derivatives to order 2 (the inputs `em_saw_step_window` needs),
+    then the windowed order-2 identity.  This is the reusable step; iterating once more gives order 3,
+    and the `[N,∞)` limit (handoff) yields the ζ representation. -/
+
+/-- Second σ-direction derivative of `x^{-s}`: `d/dx(-s·x^{-s-1}) = s(s+1)·x^{-s-2}` for `x > 0`
+    and `s ≠ -1` (so the intermediate exponent `-s-1 ≠ 0`; always holds on `Re s > 0`). -/
+theorem hasDerivAt_cpow_neg2 {s : ℂ} (hs : s ≠ -1) {x : ℝ} (hx : 0 < x) :
+    HasDerivAt (fun x : ℝ => -s * (x : ℂ) ^ (-s - 1)) (s * (s + 1) * (x : ℂ) ^ (-s - 2)) x := by
+  have hx0 : x ≠ 0 := ne_of_gt hx
+  have hr : (-s - 1 : ℂ) ≠ 0 := by
+    intro h; apply hs; linear_combination -h
+  have hstep : HasDerivAt (fun x : ℝ => (x : ℂ) ^ (-s - 1))
+      ((-s - 1) * (x : ℂ) ^ (-s - 1 - 1)) x := hasDerivAt_ofReal_cpow_const hx0 hr
+  have hfull := hstep.const_mul (-s)
+  have hval : (-s) * ((-s - 1) * (x : ℂ) ^ (-s - 1 - 1)) = s * (s + 1) * (x : ℂ) ^ (-s - 2) := by
+    rw [show (-s - 1 - 1 : ℂ) = -s - 2 by ring]; ring
+  rw [hval] at hfull
+  exact hfull
+
 end ZetaReflection

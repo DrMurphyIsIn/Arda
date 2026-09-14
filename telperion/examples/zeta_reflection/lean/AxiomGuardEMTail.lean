@@ -21,6 +21,8 @@
       Part I (K=3 instance and THE NUMBER):
         * em_tail3_bound                   -- order-3 tail bound with proven saw-3 sup 1/12
         * em_tail3_number                  -- ‖R₃(1/2+14i, N=200)‖ ≤ 1/1000  (go/no-go, kernel-decided)
+      Part J (order-2 σ-derivative building block for the ζ-identity handoff):
+        * hasDerivAt_cpow_neg2             -- d/dx(-s·x^{-s-1}) = s(s+1)·x^{-s-2}
 
     conjecture1_proved = False (NOT a proof of RH; a classical analysis lemma).
 -/
@@ -35,3 +37,4 @@ import EMZetaTail
 #print axioms ZetaReflection.em_tail_integral_bound
 #print axioms ZetaReflection.em_tail3_bound
 #print axioms ZetaReflection.em_tail3_number
+#print axioms ZetaReflection.hasDerivAt_cpow_neg2
