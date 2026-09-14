@@ -465,33 +465,17 @@ theorem em_tail3_bound {s : ℂ} {N : ℕ} (hN : 1 ≤ N) (hs : 0 < s.re) :
   rw [hcast] at hbnd
   exact hbnd
 
-/-- **THE NUMBER (go/no-go for full reflection).**  At the G2 pilot point `s = 1/2 + 14·i` with a
-    tail cut `N = 200`, the order-3 Euler-Maclaurin remainder is bounded (in-kernel) by `< 10⁻³` —
-    the threshold that makes the `gLine` interval boxes sign-tight.
-
-    The certified rational bound is `(1/12)·‖s(s+1)(s+2)‖·200^{-5/2}/(5/2)`.  We enclose
-    `‖s(s+1)(s+2)‖ ≤ 15³ = 3375` (each factor norm `< 15`) and `200^{-5/2} = 1/(200²·√200) ≤ 1/(40000·14)`
-    (since `√200 > 14`), giving envelope `≤ 3375/(12·40000·14·(5/2)) ≈ 2.0·10⁻⁴ < 10⁻³`.
-    (Tight value: `≈ 1.65·10⁻⁴`; see the module report.) -/
-theorem em_tail3_number :
-    ‖∫ x in Ioi (200 : ℝ),
-        (sawBernoulli 3 x : ℂ)
-          * (emTailCoeff3 ((1 / 2 : ℂ) + 14 * Complex.I)
-              * (x : ℂ) ^ (-((1 / 2 : ℂ) + 14 * Complex.I) - 3))‖
-      ≤ (1 : ℝ) / 1000 := by
+/-- The numeric envelope bound at the pilot point, factored out for reuse by both `em_tail3_number`
+    and the critical-line corollary: with `s = 1/2 + 14i`,
+        (1/12)·‖s(s+1)(s+2)‖·200^{−5/2}/(5/2) ≤ 1/1000,
+    via `‖s(s+1)(s+2)‖ ≤ 3375` and `200^{−5/2} ≤ 1/560000` (`√200 > 14`). -/
+theorem em_tail3_envelope_le :
+    (1 / 12) * ‖((1 / 2 : ℂ) + 14 * Complex.I) * ((1 / 2 : ℂ) + 14 * Complex.I + 1)
+          * ((1 / 2 : ℂ) + 14 * Complex.I + 2)‖
+        * (200 : ℝ) ^ (-(5 / 2 : ℝ)) / (5 / 2)
+      ≤ 1 / 1000 := by
   set s : ℂ := (1 / 2 : ℂ) + 14 * Complex.I with hs
-  have hsre : s.re = 1 / 2 := by
-    rw [hs]; simp [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im]
-  have hs0 : 0 < s.re := by rw [hsre]; norm_num
-  have hbnd := em_tail3_bound (s := s) (N := 200) (by norm_num) hs0
-  rw [hsre] at hbnd
-  -- Normalise the exponent and denominator to the ℝ-literal `-(5/2)` and `5/2`.
-  have hexpeq : (-(1 / 2 + (3 : ℝ) - 1) : ℝ) = -(5 / 2 : ℝ) := by norm_num
-  have hdeneq : ((1 / 2 : ℝ) + 3 - 1) = (5 / 2 : ℝ) := by norm_num
-  rw [hexpeq, hdeneq] at hbnd
-  refine le_trans hbnd ?_
-  -- Enclose the norm factor: ‖s(s+1)(s+2)‖ ≤ 3375.
-  -- `‖a + b·I‖ ≤ 15` whenever `a² + b² ≤ 225`.
+  -- Enclose the norm factor: ‖s(s+1)(s+2)‖ ≤ 3375. `‖a + b·I‖ ≤ 15` whenever `a² + b² ≤ 225`.
   have hfac : ∀ a b : ℝ, a ^ 2 + b ^ 2 ≤ 225 → ‖(a : ℂ) + b * Complex.I‖ ≤ 15 := by
     intro a b hab
     rw [Complex.norm_add_mul_I]
@@ -520,15 +504,36 @@ theorem em_tail3_number :
       mul_pos (by norm_num) (Real.rpow_pos_of_pos (by norm_num) _)
     have hden_ge : (560000 : ℝ) ≤ (200 : ℝ) ^ 2 * (200 : ℝ) ^ (1 / 2 : ℝ) := by
       calc (560000 : ℝ) = 40000 * 14 := by norm_num
-        _ ≤ (200 : ℝ) ^ 2 * (200 : ℝ) ^ (1 / 2 : ℝ) := by gcongr; norm_num
+        _ ≤ (200 : ℝ) ^ 2 * (200 : ℝ) ^ (1 / 2 : ℝ) := by
+              gcongr <;> norm_num
     calc ((200 : ℝ) ^ 2 * (200 : ℝ) ^ (1 / 2 : ℝ))⁻¹
         ≤ (560000 : ℝ)⁻¹ := inv_anti₀ (by norm_num) hden_ge
       _ = 1 / 560000 := by rw [one_div]
-  -- Assemble the scalar inequality by monotonicity (all factors nonneg).
   have hpownn : (0 : ℝ) ≤ (200 : ℝ) ^ (-(5 / 2 : ℝ)) := Real.rpow_nonneg (by norm_num) _
   calc (1 / 12) * ‖s * (s + 1) * (s + 2)‖ * (200 : ℝ) ^ (-(5 / 2 : ℝ)) / (5 / 2)
       ≤ (1 / 12) * 3375 * (1 / 560000) / (5 / 2) := by gcongr
     _ ≤ 1 / 1000 := by norm_num
+
+/-- **THE NUMBER (go/no-go for full reflection).**  At the G2 pilot point `s = 1/2 + 14·i` with a
+    tail cut `N = 200`, the order-3 Euler-Maclaurin remainder is bounded (in-kernel) by `≤ 10⁻³` —
+    the threshold that makes the `gLine` interval boxes sign-tight.  See `em_tail3_envelope_le` for
+    the certified rational envelope (`‖s(s+1)(s+2)‖ ≤ 3375`, `200^{-5/2} ≤ 1/560000`). -/
+theorem em_tail3_number :
+    ‖∫ x in Ioi (200 : ℝ),
+        (sawBernoulli 3 x : ℂ)
+          * (emTailCoeff3 ((1 / 2 : ℂ) + 14 * Complex.I)
+              * (x : ℂ) ^ (-((1 / 2 : ℂ) + 14 * Complex.I) - 3))‖
+      ≤ (1 : ℝ) / 1000 := by
+  have hsre : ((1 / 2 : ℂ) + 14 * Complex.I).re = 1 / 2 := by
+    simp [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im]
+  have hs0 : 0 < ((1 / 2 : ℂ) + 14 * Complex.I).re := by rw [hsre]; norm_num
+  have hbnd := em_tail3_bound (s := (1 / 2 : ℂ) + 14 * Complex.I) (N := 200) (by norm_num) hs0
+  rw [hsre] at hbnd
+  refine le_trans hbnd ?_
+  have hexpeq : (-(1 / 2 + (3 : ℝ) - 1) : ℝ) = -(5 / 2 : ℝ) := by norm_num
+  have hdeneq : ((1 / 2 : ℝ) + 3 - 1) = (5 / 2 : ℝ) := by norm_num
+  rw [hexpeq, hdeneq]
+  exact em_tail3_envelope_le
 
 /-! ## J. The order-2 windowed EM identity for the ζ integrand (complex).
 
@@ -1091,5 +1096,41 @@ theorem em_zeta_critical_line3_enclosure (t : ℝ) {N : ℕ} (hN : 1 ≤ N) :
   have h := em_zeta_strip3_enclosure hs hs1 hN hsm1 hsm2
   rw [hre] at h
   exact h
+
+/-- **THE ζ-BOX NUMBER (in-kernel).**  At the G2 pilot point `s = 1/2 + 14·i` with tail cut
+    `N = 200`, the true `ζ(s)` lies within `10⁻³` of the explicit finite part `emZetaFinite3 s N`:
+        ‖riemannZeta (1/2 + 14i) − emZetaFinite3 (1/2 + 14i) 200‖ ≤ 1/1000.
+    This is the sign-tight `gLine` box `checkBand` consumes on the critical line — the order-3 tail
+    remainder is `em_tail3_number / 6 < 2·10⁻⁴`, well inside `10⁻³`.  The K=1 enclosure could not
+    deliver this (its envelope at `t = 14` is `≈ 14`). -/
+theorem em_zeta_critical_line3_number :
+    ‖riemannZeta ((1 / 2 : ℂ) + 14 * Complex.I)
+        - emZetaFinite3 ((1 / 2 : ℂ) + 14 * Complex.I) 200‖ ≤ (1 : ℝ) / 1000 := by
+  set s : ℂ := (1 / 2 : ℂ) + 14 * Complex.I with hsdef
+  have hre : s.re = 1 / 2 := by
+    rw [hsdef]; simp [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im]
+  have hs : 0 < s.re := by rw [hre]; norm_num
+  have hs1 : s ≠ 1 := by
+    intro h; have : s.re = (1 : ℂ).re := by rw [h]
+    rw [hre] at this; simp at this
+  have hsm1 : s ≠ -1 := by
+    intro h; have : s.re = (-1 : ℂ).re := by rw [h]
+    rw [hre] at this; norm_num at this
+  have hsm2 : s ≠ -2 := by
+    intro h; have : s.re = (-2 : ℂ).re := by rw [h]
+    rw [hre] at this; norm_num at this
+  -- Reuse the order-3 enclosure and bound its envelope by em_tail3_envelope_le/6 ≤ 1/1000.
+  have henc := em_zeta_strip3_enclosure hs hs1 (N := 200) (by norm_num) hsm1 hsm2
+  rw [hre] at henc
+  refine le_trans henc ?_
+  -- The envelope is (1/12)·‖s(s+1)(s+2)‖·200^{-(1/2+3-1)}/(1/2+3-1)/6.  Normalise to -(5/2), 5/2.
+  have hexpeq : (-(1 / 2 + (3 : ℝ) - 1) : ℝ) = -(5 / 2 : ℝ) := by norm_num
+  have hdeneq : ((1 / 2 : ℝ) + 3 - 1) = (5 / 2 : ℝ) := by norm_num
+  rw [hexpeq, hdeneq, hsdef]
+  calc (1 / 12) * ‖((1 / 2 : ℂ) + 14 * Complex.I) * ((1 / 2 : ℂ) + 14 * Complex.I + 1)
+            * ((1 / 2 : ℂ) + 14 * Complex.I + 2)‖ * (200 : ℝ) ^ (-(5 / 2 : ℝ)) / (5 / 2) / 6
+      ≤ (1 / 1000) / 6 := by
+        apply div_le_div_of_nonneg_right em_tail3_envelope_le (by norm_num)
+    _ ≤ 1 / 1000 := by norm_num
 
 end ZetaReflection

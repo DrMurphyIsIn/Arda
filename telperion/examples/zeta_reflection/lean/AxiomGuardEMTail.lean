@@ -32,8 +32,10 @@
       Part L (the ASSEMBLED ζ identity + checkBand-consumer enclosure):
         * em_tail_order3_identity          -- combined K=1-tail = B₂·s·N^{-s-1}/2 + (∫saw₃·…)/6
         * em_zeta_strip3                   -- riemannZeta s = 1/(s-1)+1/2 + ∫_1^N saw₁ + B₂ term + R₃
+        * em_tail3_envelope_le             -- (1/12)·‖s(s+1)(s+2)‖·200^{-5/2}/(5/2) ≤ 1/1000 (reused)
         * em_zeta_strip3_enclosure         -- ‖ζ s − emZetaFinite3 s N‖ ≤ em_tail3_bound/6
         * em_zeta_critical_line3_enclosure -- σ=1/2 band specialization (the A4 gLine box)
+        * em_zeta_critical_line3_number     -- ‖ζ(1/2+14i) − emZetaFinite3 … 200‖ ≤ 1/1000 (THE ζ-BOX)
 
     conjecture1_proved = False (NOT a proof of RH; a classical analysis lemma).
 -/
@@ -56,5 +58,7 @@ import EMZetaTail
 #print axioms ZetaReflection.em_tail3_step
 #print axioms ZetaReflection.em_tail_order3_identity
 #print axioms ZetaReflection.em_zeta_strip3
+#print axioms ZetaReflection.em_tail3_envelope_le
 #print axioms ZetaReflection.em_zeta_strip3_enclosure
 #print axioms ZetaReflection.em_zeta_critical_line3_enclosure
+#print axioms ZetaReflection.em_zeta_critical_line3_number
