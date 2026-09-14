@@ -88,6 +88,55 @@ def test_all_forged_controls_flip(result):
             f"(genuine={fc['genuine']} forged={fc['forged_verdict']})")
 
 
+def test_dh_fails_bmult_multiplicativity(result):
+    """W3a: DH FAILS the B-mult multiplicativity clause -- no Euler product means the
+    log-derivative has a nonzero amplitude at the COMPOSITE frequency log 6."""
+    m = result["matrix"]["dh"]
+    assert m["multiplicativity"]["verdict"] == zoo.FAIL
+    assert "COMPOSITE" in m["multiplicativity"]["detail"]
+    assert result["variant_kill"]["Bm"]["dh"]["killed"]
+
+
+def test_zeta_passes_bmult_generation_unconditionally(result):
+    """W3a: the multiplicative GENERATION of zeta's amplitudes is unconditional/
+    arithmetic (PASS), while pure-pointness of the dual comb stays RH-conditional."""
+    m = result["matrix"]["zeta"]
+    assert m["multiplicativity"]["verdict"] == zoo.PASS
+    assert m["atomic_spectrum"]["verdict"] == zoo.COND   # RH clause unchanged by B-mult
+    assert result["variant_kill"]["Bm"]["zeta"]["survives"]
+
+
+def test_bmult_strictly_sharper_than_b(result):
+    """W3a: B-mult excludes generic Lee-Yang FQs that B admitted.  ksly survives B
+    (positive-mass FQ) but is killed by B-mult (amplitudes not multiplicatively
+    generated) -- the axiom carves out the arithmetic FQs.  This is the FEATURE."""
+    vk = result["variant_kill"]
+    assert vk["B"]["ksly"]["survives"]
+    assert vk["Bm"]["ksly"]["killed"]
+    assert result["matrix"]["ksly"]["multiplicativity"]["verdict"] == zoo.FAIL
+    assert result["matrix"]["random"]["multiplicativity"]["verdict"] == zoo.FAIL
+
+
+def test_multiplicativity_implies_positivity(result):
+    """W3a dominance: any object passing B-mult also passes (B-iii) positivity --
+    the adjudicated primitive dominates the old killer (no object passes mult but
+    fails positivity)."""
+    m = result["matrix"]
+    for name in result["objects"]:
+        if m[name]["multiplicativity"]["verdict"] == zoo.PASS:
+            assert m[name]["weight_positivity"]["verdict"] in (zoo.PASS, zoo.COND), (
+                f"{name} passes B-mult but not positivity")
+
+
+def test_broken_multiplicativity_forged_control_flips(result):
+    """W3a forged negative control: corrupting a single amplitude (a(6)!=a(2)a(3))
+    injects a composite atom -> generation FAILS -> verdict flips PASS->FAIL."""
+    fc = next(c for c in result["forged_controls"]
+              if c["control"] == "broken_multiplicativity")
+    assert fc["flipped"]
+    assert fc["genuine"] == zoo.PASS and fc["forged_verdict"] == zoo.FAIL
+
+
 def test_corrupted_certified_input_flips_verdict(result):
     """The load-bearing negative control: corrupting the DH off-line flag must flip
     the defect verdict, proving verdicts are a real function of the certified data."""
