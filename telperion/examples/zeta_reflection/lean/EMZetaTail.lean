@@ -223,6 +223,128 @@ theorem em_saw_step (k : ℕ) (m : ℤ) (fk fk1 : ℝ → ℝ)
   rw [hcancel]
   linear_combination key
 
+/-- Telescoping sum of first differences of a real function evaluated at ℕ casts. -/
+private lemma sum_telescope_diff (g : ℝ → ℝ) {M N : ℕ} (hMN : M ≤ N) :
+    (∑ j ∈ Finset.Ico M N, (g ((j : ℝ) + 1) - g (j : ℝ))) = g (N : ℝ) - g (M : ℝ) := by
+  induction N, hMN using Nat.le_induction with
+  | base => simp
+  | succ p hp ih => rw [Finset.sum_Ico_succ_top hp, ih]; push_cast; ring
+
+/-! ## G'. Summed saw-order-raising over an integer window `[M, N]`.
+
+    Summing `em_saw_step` over the cells `[M,M+1], …, [N-1,N]` and telescoping via
+    `sum_integral_adjacent_intervals_Ico`, the interior boundary terms cancel (for `k+1 ≠ 1` the
+    saw endpoint values `B_{k+1}(0) = B_{k+1}(1)` agree, so adjacent cells contribute
+    `+B_{k+1}(0)·f(j)` and `−B_{k+1}(0)·f(j)`), leaving only the two outer endpoints:
+        ∫_M^N saw_k · fk
+          = B_{k+1}(0)·(fk N − fk M)/(k+1)  −  (∫_M^N saw_{k+1} · fk1)/(k+1).
+    (Here `k ≥ 1` so `k + 1 ≠ 1`, which is what makes the telescoping clean.) -/
+
+/-- **Summed saw-order-raising over `[M, N]`.**  For `k ≥ 1`, `fk` differentiable on `[M,N]` with
+    `fk1` interval-integrable per cell. -/
+theorem em_saw_step_window {k : ℕ} (hk : 1 ≤ k) (M N : ℕ) (hMN : M ≤ N) (fk fk1 : ℝ → ℝ)
+    (hd : ∀ x ∈ Icc (M : ℝ) N, HasDerivAt fk (fk1 x) x)
+    (hi : ∀ j ∈ Finset.Ico M N, IntervalIntegrable fk1 volume (j : ℝ) (j + 1)) :
+    (∫ x in (M : ℝ)..N, sawBernoulli k x * fk x)
+      = bernoulliFun (k + 1) 0 * (fk N - fk M) / (k + 1)
+        - (∫ x in (M : ℝ)..N, sawBernoulli (k + 1) x * fk1 x) / (k + 1) := by
+  have hk1ne : k + 1 ≠ 1 := by omega
+  have hendeq : bernoulliFun (k + 1) 1 = bernoulliFun (k + 1) 0 :=
+    bernoulliFun_endpoints_eq_of_ne_one hk1ne
+  -- Per-cell derivative availability.
+  have hcell : ∀ j ∈ Finset.Ico M N, ∀ x ∈ Icc (j : ℝ) (j + 1), HasDerivAt fk (fk1 x) x := by
+    intro j hj x hx
+    rw [Finset.mem_Ico] at hj
+    refine hd x ⟨le_trans (by exact_mod_cast hj.1) hx.1, ?_⟩
+    have : (j : ℝ) + 1 ≤ (N : ℝ) := by exact_mod_cast hj.2
+    linarith [hx.2]
+  -- Per-cell one-step identity.
+  have hstep : ∀ j ∈ Finset.Ico M N,
+      (∫ x in (j : ℝ)..(j + 1), sawBernoulli k x * fk x)
+        = (bernoulliFun (k + 1) 1 * fk (j + 1) - bernoulliFun (k + 1) 0 * fk j) / (k + 1)
+          - (∫ x in (j : ℝ)..(j + 1), sawBernoulli (k + 1) x * fk1 x) / (k + 1) := by
+    intro j hj
+    have hcast : (((j : ℤ)) : ℝ) = (j : ℝ) := by push_cast; ring
+    have := em_saw_step k (j : ℤ) fk fk1
+      (by intro x hx; rw [hcast] at hx; exact hcell j hj x hx)
+      (by rw [hcast]; exact hi j hj)
+    simpa [hcast] using this
+  have hsum := Finset.sum_congr rfl hstep
+  -- Telescope the saw_k integral and the saw_{k+1} remainder over cells.
+  have hint_k : ∀ j ∈ Finset.Ico M N,
+      IntervalIntegrable (fun x => sawBernoulli k x * fk x) volume (j : ℝ) (j + 1) := by
+    intro j hj
+    have hcc : (j : ℝ) ≤ (j : ℝ) + 1 := by linarith
+    have hfkcont : ContinuousOn fk (Icc (j : ℝ) (j + 1)) :=
+      fun x hx => (hcell j hj x hx).continuousAt.continuousWithinAt
+    -- saw_k·fk = (poly surrogate)·fk a.e. on the cell; both factors continuous ⇒ integrable.
+    have hcont : IntervalIntegrable (fun x => bernoulliFun k (x - j) * fk x) volume (j : ℝ) (j + 1) := by
+      apply ContinuousOn.intervalIntegrable
+      rw [uIcc_of_le hcc]
+      exact (Continuous.continuousOn (by fun_prop)).mul hfkcont
+    refine (intervalIntegrable_congr_ae ?_).mpr hcont
+    have hnull : ∀ᵐ x, x ≠ ((j : ℝ) + 1) := MeasureTheory.Measure.ae_ne _ _
+    rw [Filter.EventuallyEq, MeasureTheory.ae_restrict_iff' measurableSet_uIoc]
+    filter_upwards [hnull] with x hxne hxmem
+    rw [uIoc_of_le hcc] at hxmem
+    have hxIco : x ∈ Ico ((j : ℤ) : ℝ) (((j : ℤ) : ℝ) + 1) := by
+      refine ⟨?_, ?_⟩
+      · have : (j : ℝ) < x := hxmem.1; push_cast; linarith
+      · have hlt : x < (j : ℝ) + 1 := lt_of_le_of_ne hxmem.2 hxne; push_cast; linarith
+    rw [sawBernoulli_eq_on_Ico k hxIco]
+    norm_num
+  have htel_k : (∑ j ∈ Finset.Ico M N, ∫ x in (j : ℝ)..(j + 1), sawBernoulli k x * fk x)
+      = ∫ x in (M : ℝ)..N, sawBernoulli k x * fk x := by
+    have hint : ∀ j ∈ Set.Ico M N,
+        IntervalIntegrable (fun x => sawBernoulli k x * fk x) volume
+          ((fun j : ℕ => (j : ℝ)) j) ((fun j : ℕ => (j : ℝ)) (j + 1)) := by
+      intro j hj; simpa [Nat.cast_succ] using hint_k j (Finset.mem_Ico.mpr hj)
+    have := intervalIntegral.sum_integral_adjacent_intervals_Ico
+      (a := fun j : ℕ => (j : ℝ)) (f := fun x => sawBernoulli k x * fk x) (μ := volume) hMN hint
+    simpa using this
+  have hint_k1 : ∀ j ∈ Finset.Ico M N,
+      IntervalIntegrable (fun x => sawBernoulli (k + 1) x * fk1 x) volume (j : ℝ) (j + 1) := by
+    intro j hj
+    have hcc : (j : ℝ) ≤ (j : ℝ) + 1 := by linarith
+    have hcont : IntervalIntegrable (fun x => bernoulliFun (k + 1) (x - j) * fk1 x) volume
+        (j : ℝ) (j + 1) := (hi j hj).continuousOn_mul (by fun_prop)
+    refine (intervalIntegrable_congr_ae ?_).mpr hcont
+    have hnull : ∀ᵐ x, x ≠ ((j : ℝ) + 1) := MeasureTheory.Measure.ae_ne _ _
+    rw [Filter.EventuallyEq, MeasureTheory.ae_restrict_iff' measurableSet_uIoc]
+    filter_upwards [hnull] with x hxne hxmem
+    rw [uIoc_of_le hcc] at hxmem
+    have hxIco : x ∈ Ico ((j : ℤ) : ℝ) (((j : ℤ) : ℝ) + 1) := by
+      refine ⟨?_, ?_⟩
+      · have : (j : ℝ) < x := hxmem.1; push_cast; linarith
+      · have hlt : x < (j : ℝ) + 1 := lt_of_le_of_ne hxmem.2 hxne; push_cast; linarith
+    rw [sawBernoulli_eq_on_Ico (k + 1) hxIco]
+    norm_num
+  have htel_k1 : (∑ j ∈ Finset.Ico M N, ∫ x in (j : ℝ)..(j + 1), sawBernoulli (k + 1) x * fk1 x)
+      = ∫ x in (M : ℝ)..N, sawBernoulli (k + 1) x * fk1 x := by
+    have hint : ∀ j ∈ Set.Ico M N,
+        IntervalIntegrable (fun x => sawBernoulli (k + 1) x * fk1 x) volume
+          ((fun j : ℕ => (j : ℝ)) j) ((fun j : ℕ => (j : ℝ)) (j + 1)) := by
+      intro j hj; simpa [Nat.cast_succ] using hint_k1 j (Finset.mem_Ico.mpr hj)
+    have := intervalIntegral.sum_integral_adjacent_intervals_Ico
+      (a := fun j : ℕ => (j : ℝ)) (f := fun x => sawBernoulli (k + 1) x * fk1 x) (μ := volume) hMN hint
+    simpa using this
+  -- The boundary-sum telescopes: (∑ (B(1)f(j+1) - B(0)f(j)))/(k+1) = B(0)(f N - f M)/(k+1).
+  have hbdry : (∑ j ∈ Finset.Ico M N,
+        (bernoulliFun (k + 1) 1 * fk (j + 1) - bernoulliFun (k + 1) 0 * fk j)) / (k + 1)
+      = bernoulliFun (k + 1) 0 * (fk N - fk M) / (k + 1) := by
+    congr 1
+    rw [hendeq]
+    have : (∑ j ∈ Finset.Ico M N,
+        (bernoulliFun (k + 1) 0 * fk (j + 1) - bernoulliFun (k + 1) 0 * fk j))
+        = (∑ j ∈ Finset.Ico M N,
+            bernoulliFun (k + 1) 0 * (fk ((j : ℝ) + 1) - fk (j : ℝ))) := by
+      apply Finset.sum_congr rfl; intro j _; ring
+    rw [this, ← Finset.mul_sum, sum_telescope_diff fk hMN]
+  -- Assemble: sum of per-cell identities, telescoped.
+  rw [Finset.sum_sub_distrib] at hsum
+  rw [← Finset.sum_div, ← Finset.sum_div, htel_k1, htel_k, hbdry] at hsum
+  exact hsum
+
 /-! ## H. The order-K tail remainder integrals and their explicit `N`-decaying bounds.
 
     The consumer needs a remainder over the TAIL `[N, ∞)` whose norm decays in `N`.  We work with

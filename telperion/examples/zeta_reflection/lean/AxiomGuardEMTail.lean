@@ -14,6 +14,8 @@
       Part G (saw-order-raising IBP step):
         * sawAntideriv_hasDerivAt_Ioo      -- shifted Bernoulli antiderivative on the open cell
         * em_saw_step                      -- the one-step IBP raising the saw order (proven WIP shape)
+      Part G' (summed order-raising over a window, telescoped boundary terms):
+        * em_saw_step_window               -- ∫_M^N saw_k·fk in terms of ∫_M^N saw_{k+1}·fk1
       Part H (N-decaying tail remainder engine):
         * em_tail_integral_bound           -- ‖∫_N^∞ saw_k·c·x^{-s-k}‖ ≤ B·‖c‖·N^{-(σ+k-1)}/(σ+k-1)
       Part I (K=3 instance and THE NUMBER):
@@ -29,6 +31,7 @@ import EMZetaTail
 #print axioms ZetaReflection.abs_sawBernoulli_three_le
 #print axioms ZetaReflection.sawAntideriv_hasDerivAt_Ioo
 #print axioms ZetaReflection.em_saw_step
+#print axioms ZetaReflection.em_saw_step_window
 #print axioms ZetaReflection.em_tail_integral_bound
 #print axioms ZetaReflection.em_tail3_bound
 #print axioms ZetaReflection.em_tail3_number
