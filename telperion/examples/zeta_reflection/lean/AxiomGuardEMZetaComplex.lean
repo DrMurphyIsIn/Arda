@@ -29,3 +29,7 @@ import EMZetaComplex
 #print axioms ZetaReflection.euler_maclaurin_one_window_cpow
 #print axioms ZetaReflection.hasDerivAt_cpow_neg
 #print axioms ZetaReflection.em_cpow_partial
+#print axioms ZetaReflection.cpow_neg_integrableOn_Ioi
+#print axioms ZetaReflection.em_cpow_remainder_integrableOn
+#print axioms ZetaReflection.em_zeta_cpow
+#print axioms ZetaReflection.em_zeta_cpow_riemannZeta

@@ -216,9 +216,127 @@ theorem em_cpow_partial {s : ℂ} (hs : s ≠ 0) {N : ℕ} (hN : 1 ≤ N) :
     · intro x hx
       have hx1 : (1 : ℝ) ≤ x := le_trans hk1 hx.1
       exact Or.inl (by simp only [Complex.ofReal_re]; linarith)
-  have hcast1 : (((1 : ℕ) : ℝ) : ℂ) ^ (-s) = ((1 : ℝ) : ℂ) ^ (-s) := by norm_num
-  have := euler_maclaurin_one_window_cpow (f := fun x => (x : ℂ) ^ (-s))
+  have hEM := euler_maclaurin_one_window_cpow (f := fun x => (x : ℂ) ^ (-s))
     (f' := fun x => -s * (x : ℂ) ^ (-s - 1)) 1 N hN hderiv hf'int
-  simpa using this
+  simpa using hEM
+
+/-! ## E2. The `N → ∞` complex representation for `Re s > 1`, tied to `riemannZeta`.
+
+    Lift of `em_zeta_real` (Part D').  The three limits: partial sum → tsum (`summable_one_div_
+    nat_cpow`), the two finite integrals → improper (`intervalIntegral_tendsto_integral_Ioi`),
+    endpoint `N^{-s} → 0` (norm → 0).  Then `zeta_eq_tsum_one_div_nat_cpow` ties it to `ζ`. -/
+
+/-- The complex `x^{-s}` is integrable on `(1, ∞)` for `Re s > 1`: its norm is `x^{-Re s}`,
+    integrable there since `-Re s < -1`. -/
+theorem cpow_neg_integrableOn_Ioi {s : ℂ} (hs : 1 < s.re) :
+    IntegrableOn (fun x : ℝ => (x : ℂ) ^ (-s)) (Ioi 1) := by
+  have hmeas : AEStronglyMeasurable (fun x : ℝ => (x : ℂ) ^ (-s)) (volume.restrict (Ioi 1)) := by
+    apply Measurable.aestronglyMeasurable
+    exact (Complex.measurable_ofReal.pow_const _)
+  have hbase : IntegrableOn (fun x : ℝ => x ^ (-s.re)) (Ioi 1) :=
+    integrableOn_Ioi_rpow_of_lt (a := -s.re) (c := (1 : ℝ)) (by linarith) (by norm_num)
+  refine (integrable_norm_iff hmeas).mp ?_
+  refine hbase.congr_fun ?_ measurableSet_Ioi
+  intro x hx
+  have hxpos : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  simp only [Complex.norm_cpow_eq_rpow_re_of_pos hxpos, Complex.neg_re]
+
+/-- The complex saw remainder integrand is integrable on `(1, ∞)` for `Re s > 1`: dominate its
+    norm by `(‖s‖/2)·x^{−Re s−1}`, integrable there since `−Re s − 1 < −1`. -/
+theorem em_cpow_remainder_integrableOn {s : ℂ} (hs : 1 < s.re) :
+    IntegrableOn (fun x : ℝ => (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))) (Ioi 1) := by
+  have hbase : IntegrableOn (fun x : ℝ => (‖s‖ * (1 / 2)) * x ^ (-s.re - 1)) (Ioi 1) :=
+    (integrableOn_Ioi_rpow_of_lt (a := -s.re - 1) (c := (1 : ℝ)) (by linarith)
+      (by norm_num)).const_mul _
+  refine Integrable.mono' hbase ?_ ?_
+  · apply Measurable.aestronglyMeasurable
+    apply Measurable.mul
+    · exact Complex.measurable_ofReal.comp (sawBernoulli_measurable 1)
+    · exact measurable_const.mul (Complex.measurable_ofReal.pow_const _)
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
+    have hxpos : (0 : ℝ) < x := lt_trans zero_lt_one hx
+    have hsaw := abs_sawBernoulli_one_le x
+    have hnormcpow : ‖(x : ℂ) ^ (-s - 1)‖ = x ^ (-s.re - 1) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hxpos, Complex.sub_re, Complex.neg_re,
+        Complex.one_re]
+    rw [norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs, hnormcpow, norm_neg]
+    have hrpownn : (0 : ℝ) ≤ x ^ (-s.re - 1) := Real.rpow_nonneg hxpos.le _
+    calc |sawBernoulli 1 x| * (‖s‖ * x ^ (-s.re - 1))
+        ≤ (1 / 2) * (‖s‖ * x ^ (-s.re - 1)) := by
+          gcongr
+      _ = (‖s‖ * (1 / 2)) * x ^ (-s.re - 1) := by ring
+
+/-- **Complex first-order Euler-Maclaurin representation of the ζ series** (`Re s > 1`).
+        ∑' n, n^{-s} = ∫_1^∞ x^{-s} + 1^{-s}/2 + ∫_1^∞ (sawBernoulli 1 x)·(−s·x^{−s−1}). -/
+theorem em_zeta_cpow {s : ℂ} (hs : 1 < s.re) :
+    (∑' n : ℕ, (n : ℂ) ^ (-s))
+      = (∫ x in Ioi (1 : ℝ), (x : ℂ) ^ (-s)) + ((1 : ℝ) : ℂ) ^ (-s) / 2
+        + ∫ x in Ioi (1 : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)) := by
+  have hs0 : s ≠ 0 := by intro h; rw [h] at hs; simp at hs; linarith
+  have hI : IntegrableOn (fun x : ℝ => (x : ℂ) ^ (-s)) (Ioi 1) := cpow_neg_integrableOn_Ioi hs
+  have hR := em_cpow_remainder_integrableOn hs
+  have hsummable : Summable (fun n : ℕ => (n : ℂ) ^ (-s)) := by
+    have hsm := (Complex.summable_one_div_nat_cpow (p := s)).mpr hs
+    refine hsm.congr (fun n => ?_)
+    rw [Complex.cpow_neg, one_div]
+  have h0 : ((0 : ℕ) : ℂ) ^ (-s) = 0 := by
+    rw [Nat.cast_zero, Complex.zero_cpow (neg_ne_zero.mpr hs0)]
+  -- LHS: partial sum over `Ico 1 N` → the tsum.
+  have hLHS : Tendsto (fun N : ℕ => ∑ n ∈ Finset.Ico 1 N, (n : ℂ) ^ (-s)) atTop
+      (𝓝 (∑' n : ℕ, (n : ℂ) ^ (-s))) := by
+    have hrange : (fun N : ℕ => ∑ n ∈ Finset.Ico 1 N, (n : ℂ) ^ (-s))
+        = (fun N : ℕ => ∑ n ∈ Finset.range N, (n : ℂ) ^ (-s)) := by
+      funext N
+      rcases Nat.eq_zero_or_pos N with hN | hN
+      · subst hN; simp
+      · rw [Finset.range_eq_Ico, ← Finset.sum_Ico_consecutive (fun n => (n : ℂ) ^ (-s))
+            (Nat.zero_le 1) (by lia : 1 ≤ N), Nat.Ico_zero_eq_range, Finset.sum_range_one,
+            h0, zero_add]
+    rw [hrange]; exact hsummable.hasSum.tendsto_sum_nat
+  -- RHS component limits.
+  have hA : Tendsto (fun N : ℕ => ∫ x in (1 : ℝ)..(N : ℝ), (x : ℂ) ^ (-s)) atTop
+      (𝓝 (∫ x in Ioi (1 : ℝ), (x : ℂ) ^ (-s))) :=
+    intervalIntegral_tendsto_integral_Ioi 1 hI tendsto_natCast_atTop_atTop
+  have hEnd : Tendsto (fun N : ℕ => -((((N : ℝ) : ℂ) ^ (-s) - ((1 : ℝ) : ℂ) ^ (-s)) / 2)) atTop
+      (𝓝 (((1 : ℝ) : ℂ) ^ (-s) / 2)) := by
+    have hz : Tendsto (fun N : ℕ => (((N : ℝ) : ℂ)) ^ (-s)) atTop (𝓝 0) := by
+      rw [tendsto_zero_iff_norm_tendsto_zero]
+      have hnorm : (fun N : ℕ => ‖(((N : ℝ) : ℂ)) ^ (-s)‖)
+          =ᶠ[atTop] (fun N : ℕ => (N : ℝ) ^ (-s.re)) := by
+        filter_upwards [eventually_gt_atTop 0] with N hN
+        rw [Complex.norm_cpow_eq_rpow_re_of_pos (by exact_mod_cast hN), Complex.neg_re]
+      refine Tendsto.congr' hnorm.symm ?_
+      exact (tendsto_rpow_neg_atTop (y := s.re) (by linarith)).comp tendsto_natCast_atTop_atTop
+    have h2 := ((hz.sub_const (((1 : ℝ) : ℂ) ^ (-s))).div_const 2).neg
+    convert h2 using 2; ring
+  have hRem : Tendsto
+      (fun N : ℕ => ∫ x in (1 : ℝ)..(N : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))
+      atTop
+      (𝓝 (∫ x in Ioi (1 : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)))) :=
+    intervalIntegral_tendsto_integral_Ioi 1 hR tendsto_natCast_atTop_atTop
+  have hEq : ∀ᶠ N : ℕ in atTop, (∑ n ∈ Finset.Ico 1 N, (n : ℂ) ^ (-s))
+      = (∫ x in (1 : ℝ)..(N : ℝ), (x : ℂ) ^ (-s))
+        + -((((N : ℝ) : ℂ) ^ (-s) - ((1 : ℝ) : ℂ) ^ (-s)) / 2)
+        + ∫ x in (1 : ℝ)..(N : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)) := by
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    have hp := em_cpow_partial hs0 (N := N) hN
+    rw [hp]; ring
+  have hRHS := (hA.add hEnd).add hRem
+  have hLHS' : Tendsto (fun N : ℕ =>
+      (∫ x in (1 : ℝ)..(N : ℝ), (x : ℂ) ^ (-s))
+        + -((((N : ℝ) : ℂ) ^ (-s) - ((1 : ℝ) : ℂ) ^ (-s)) / 2)
+        + ∫ x in (1 : ℝ)..(N : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1))) atTop
+      (𝓝 (∑' n : ℕ, (n : ℂ) ^ (-s))) := hLHS.congr' hEq
+  exact tendsto_nhds_unique hLHS' hRHS
+
+/-- **Euler-Maclaurin representation of `riemannZeta`** for `Re s > 1`, via
+    `zeta_eq_tsum_one_div_nat_cpow`. -/
+theorem em_zeta_cpow_riemannZeta {s : ℂ} (hs : 1 < s.re) :
+    riemannZeta s
+      = (∫ x in Ioi (1 : ℝ), (x : ℂ) ^ (-s)) + ((1 : ℝ) : ℂ) ^ (-s) / 2
+        + ∫ x in Ioi (1 : ℝ), (sawBernoulli 1 x : ℂ) * (-s * (x : ℂ) ^ (-s - 1)) := by
+  rw [zeta_eq_tsum_one_div_nat_cpow hs, ← em_zeta_cpow hs]
+  refine tsum_congr (fun n => ?_)
+  rw [Complex.cpow_neg, one_div]
 
 end ZetaReflection
