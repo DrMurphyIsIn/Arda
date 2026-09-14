@@ -11,6 +11,7 @@
 -/
 import LeeYangCore
 import KSConstruction
+import BoundaryLemmas
 
 open Quasicrystal
 
@@ -26,3 +27,14 @@ open Quasicrystal
 #print axioms Quasicrystal.mem_zeroSet_iff
 #print axioms Quasicrystal.latticeAP_mem
 #print axioms Quasicrystal.poisson_shifted_lattice
+
+/-! ### increment (iv) -- BoundaryLemmas "where zeta escapes" -/
+#print axioms Quasicrystal.not_uniformlyDiscrete_of_dense
+#print axioms Quasicrystal.two_pow_ne_three_pow
+#print axioms Quasicrystal.log_two_three_incommensurable
+#print axioms Quasicrystal.log_two_three_incommensurable_int
+#print axioms Quasicrystal.primeLogSpectrum_dense
+#print axioms Quasicrystal.primeLogSpectrum_not_uniformlyDiscrete
+#print axioms Quasicrystal.not_uniformlyDiscrete_of_gaps_to_zero
+#print axioms Quasicrystal.exists_close_of_card_gt
+#print axioms Quasicrystal.zeta_ordinates_not_uniformlyDiscrete

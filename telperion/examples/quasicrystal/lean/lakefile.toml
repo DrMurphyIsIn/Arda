@@ -27,3 +27,7 @@ roots = ["LeeYangCore"]
 [[lean_lib]]
 name = "KSConstruction"
 roots = ["KSConstruction"]
+
+[[lean_lib]]
+name = "BoundaryLemmas"
+roots = ["BoundaryLemmas"]
