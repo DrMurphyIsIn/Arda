@@ -45,6 +45,12 @@ roots = ["TaylorKernels"]
 name = "CertVerify"
 roots = ["CertVerify"]
 
+# ANDÚRIL instrument (A): verified large-argument trig reduction (π-free double-angle) -- the
+# cos/sin(t·log n) enclosures that unblock the zero-hypothesis reflected band.
+[[lean_lib]]
+name = "TrigReduce"
+roots = ["TrigReduce"]
+
 [[lean_lib]]
 name = "Spike_BenchExpD"
 roots = ["Spike.BenchExpD"]
