@@ -2242,7 +2242,6 @@ jobs:
         run: lake build BraggAmplitudeInstances
 
   defect-witness-compiles:
-  robin-growth-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2256,22 +2255,12 @@ jobs:
         working-directory: telperion
         run: |
           python examples/defect_witness/generate.py --check
-      - run: pip install sympy pytest mpmath python-flint
-
-      - name: Emitter self-check / negative-control tests (RH Face 2)
-        working-directory: telperion
-        run: PYTHONPATH=src python -m pytest tests/test_emit_robin_growth.py -q
-
-      - name: Regenerate RobinGrowth Lean from the family definition
-        working-directory: telperion
-        run: PYTHONPATH=src python examples/robin_growth/generate.py --check
 
       - name: Cache elan toolchain
         uses: actions/cache@v4
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/defect_witness/lean/lean-toolchain') }}
-          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/robin_growth/lean/lean-toolchain') }}
 
       - name: Install elan
         run: |
@@ -2289,16 +2278,6 @@ jobs:
   selfinversive-rigidity-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 180
-        working-directory: telperion/examples/robin_growth/lean
-        run: lake exe cache get
-
-      - name: Build the emitted Lean (RH Face 2 — Robin growth / temperedness)
-        working-directory: telperion/examples/robin_growth/lean
-        run: lake build
-
-  baez-duarte-compiles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -2310,22 +2289,12 @@ jobs:
         working-directory: telperion
         run: |
           python examples/selfinversive_rigidity/generate.py --check
-      - run: pip install sympy pytest mpmath python-flint
-
-      - name: Emitter self-check / negative-control tests (RH Face 6)
-        working-directory: telperion
-        run: PYTHONPATH=src python -m pytest tests/test_emit_baez_duarte.py -q
-
-      - name: Regenerate BaezDuarte Lean from the family definition
-        working-directory: telperion
-        run: PYTHONPATH=src python examples/baez_duarte/generate.py --check
 
       - name: Cache elan toolchain
         uses: actions/cache@v4
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
-          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/baez_duarte/lean/lean-toolchain') }}
 
       - name: Install elan
         run: |
@@ -2343,16 +2312,6 @@ jobs:
   winding-box-zero-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-        working-directory: telperion/examples/baez_duarte/lean
-        run: lake exe cache get
-
-      - name: Build the emitted Lean (RH Face 6 — Baez-Duarte / spectral)
-        working-directory: telperion/examples/baez_duarte/lean
-        run: lake build
-
-  lehmer-pair-compiles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -2371,6 +2330,89 @@ jobs:
       - name: Unit tests (self-check pass + negative-control refusals)
         working-directory: telperion
         run: PYTHONPATH=src python -m pytest tests/test_emit_winding_box_zero.py -q
+
+  robin-growth-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath python-flint
+
+      - name: Emitter self-check / negative-control tests (RH Face 2)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_robin_growth.py -q
+
+      - name: Regenerate RobinGrowth Lean from the family definition
+        working-directory: telperion
+        run: PYTHONPATH=src python examples/robin_growth/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/robin_growth/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/robin_growth/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (RH Face 2 — Robin growth / temperedness)
+        working-directory: telperion/examples/robin_growth/lean
+        run: lake build
+
+  baez-duarte-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath python-flint
+
+      - name: Emitter self-check / negative-control tests (RH Face 6)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_baez_duarte.py -q
+
+      - name: Regenerate BaezDuarte Lean from the family definition
+        working-directory: telperion
+        run: PYTHONPATH=src python examples/baez_duarte/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/baez_duarte/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/baez_duarte/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (RH Face 6 — Baez-Duarte / spectral)
+        working-directory: telperion/examples/baez_duarte/lean
+        run: lake build
+
+  lehmer-pair-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - run: pip install sympy pytest mpmath python-flint
 
       - name: Emitter self-check / negative-control tests (RH Face 5)
