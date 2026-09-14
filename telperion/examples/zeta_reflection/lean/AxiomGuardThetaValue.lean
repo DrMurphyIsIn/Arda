@@ -18,3 +18,6 @@ import ThetaValue
 #print axioms ThetaValue.arg_eq_arctan_of_re_pos
 #print axioms ThetaValue.imLn_formula
 #print axioms ThetaValue.exp_Ln_eq_gammaSeq
+#print axioms ThetaValue.arctan_inv28_box
+#print axioms ThetaValue.arctan28_box
+#print axioms ThetaGap.phi_box_of_rate_and_partial
