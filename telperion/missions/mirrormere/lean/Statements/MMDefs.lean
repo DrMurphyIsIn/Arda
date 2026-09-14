@@ -14,8 +14,18 @@
   keeps the ordinate set as a FREE variable (BoundaryLemmas takes `Ordinates : Set ℝ`);
   the registry's unconditional W2c nodes need it pinned.  Flagged for the blind
   read-back audit cycle.  conjecture1_proved = False.
+
+  CONTEXT MIRROR (CI fix 2026-09-14): the island source files declare
+  `noncomputable section` (TwoFreqRigidity.lean:36, InvolutionDictionary.lean:54,
+  RHLinalg/PosIndex.lean:28, DefectDictionary.lean:53) and PosIndex.lean:30-31
+  declares file-level `open Matrix Finset` + `open scoped ComplexOrder`; the
+  original extraction dropped these, so the verbatim def bodies failed to compile
+  here.  The section/open context below restores the sources' elaboration
+  environment; the def bodies remain verbatim.
 -/
 import Mathlib
+
+noncomputable section
 
 namespace Quasicrystal
 
@@ -62,6 +72,9 @@ end Quasicrystal
 
 namespace RHLinalg
 
+open Matrix Finset
+open scoped ComplexOrder
+
 variable {𝕜 : Type*} [RCLike 𝕜]
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
@@ -73,7 +86,6 @@ def hermForm (A : Matrix n n 𝕜) (x : n → 𝕜) : ℝ :=
 def PosDefOn (A : Matrix n n 𝕜) (W : Submodule 𝕜 (n → 𝕜)) : Prop :=
   ∀ x ∈ W, x ≠ 0 → 0 < hermForm A x
 
-open Finset in
 -- ===== RHLinalg/PosIndex.lean:41-42 =====
 def posIndex {A : Matrix n n 𝕜} (hA : A.IsHermitian) : ℕ :=
   #{i | 0 < hA.eigenvalues i}
@@ -121,3 +133,5 @@ noncomputable def expLo : ℝ := (442068367230259049924676660787771898883 / 4000
 noncomputable def expHi : ℝ := (11051709180756476248117094953514706601127 / 10000000000000000000000000000000000000000 : ℝ)
 
 end BraggDefect
+
+end
