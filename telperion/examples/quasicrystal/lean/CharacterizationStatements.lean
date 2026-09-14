@@ -64,6 +64,14 @@ variable (IsPeriodicCombination : Meas → Prop)
 Alon-Kummer-Kurasov-Vinzant Thm 2.9 (§1.4). -/
 variable (IsStealthyHyperuniform : Meas → Prop)
 
+/- Vocabulary for ACV Theorem 1.1 (§1.3), stated over an opaque type `ExpPoly` of
+exponential polynomials `f(x) = Σ_j c_j e^{λ_j x}` on ℝ. `IsRealRooted f`: all
+(complex) zeros of `f` are real. `IsLeeYangRestriction f`: there exist a
+multivariate Lee-Yang polynomial `p` and positive ℚ-linearly-independent
+frequencies `ℓ` with `f(x) = e^{λ₀ x} · p(exp(i x ℓ))`. -/
+variable {ExpPoly : Type*}
+variable (IsRealRooted IsLeeYangRestriction : ExpPoly → Prop)
+
 /-! ## The named statements (literature; NOT proved here) -/
 
 /- **Kurasov-Sarnak (§1.1), forward direction.**  Every Lee-Yang counting measure
@@ -71,10 +79,22 @@ is an ℕ-valued Fourier quasicrystal.  [J. Math. Phys. 61 (2020) 083501] -/
 def KurasovSarnak_forward : Prop :=
   ∀ μ : Meas, IsLeeYangCountingMeasure μ → IsNValuedFQ μ
 
-/-- **Olevskii-Ulanovskii (§1.2), converse (1-D).**  A discrete unit-mass measure is
-a Fourier quasicrystal iff its support is the real zero set of a real-rooted
-exponential polynomial.  [C. R. Math. Acad. Sci. Paris 358 (2020) 1207-1211]  Here
-recorded in the direction used by the loop: ℕ-valued FQ ⇒ Lee-Yang counting. -/
+/-- **Alon-Cohen-Vinzant Theorem 1.1 (§1.3).**  Every real-rooted exponential
+polynomial is the restriction of a Lee-Yang polynomial: if `f(x) = Σ_j c_j e^{λ_j x}`
+is real rooted, then there are a Lee-Yang polynomial `p` and positive ℚ-linearly
+independent frequencies `ℓ` with `f(x) = e^{λ₀ x} p(exp(i x ℓ))`.
+[J. Funct. Anal. (2024), arXiv 2303.03201]  This is the structural lemma that, with
+O-U, closes the loop to Cor 1.4; it is the polynomial-level form of the increment-(i)
+bridge (`expPoly`). -/
+def ACV_thm11_realrooted_is_leeyang_restriction : Prop :=
+  ∀ f : ExpPoly, IsRealRooted f → IsLeeYangRestriction f
+
+/-- **Olevskii-Ulanovskii (§1.2), converse (1-D).**  Literature statement is a
+two-way equivalence: a discrete unit-mass measure is a Fourier quasicrystal IFF its
+support is the real zero set of a real-rooted exponential polynomial with imaginary
+frequencies.  [C. R. Math. Acad. Sci. Paris 358 (2020) 1207-1211]  We record here the
+direction consumed by the classification loop (ℕ-valued FQ ⇒ Lee-Yang counting); the
+reverse inclusion is `KurasovSarnak_forward`. -/
 def OlevskiiUlanovskii_converse : Prop :=
   ∀ μ : Meas, IsNValuedFQ μ → IsLeeYangCountingMeasure μ
 
@@ -86,8 +106,10 @@ classification of the well-behaved 1-D objects is COMPLETE. -/
 def ACV_characterization : Prop :=
   ∀ μ : Meas, IsNValuedFQ μ ↔ IsLeeYangCountingMeasure μ
 
-/-- The characterization is exactly the conjunction of the two inclusions
-(KS ⇐ closes with O-U/ACV ⇒).  Recorded to make the loop structure explicit. -/
+/-- INTERNAL bookkeeping observation (NOT a literature statement): Cor 1.4's iff is
+the conjunction of its two directions -- the KS forward inclusion and the O-U/ACV
+converse.  Recorded only to make the loop structure explicit; it bakes in no
+zeta-side primitive and asserts nothing beyond propositional shape. -/
 def characterization_is_two_inclusions : Prop :=
   (KurasovSarnak_forward IsNValuedFQ IsLeeYangCountingMeasure ∧
     OlevskiiUlanovskii_converse IsNValuedFQ IsLeeYangCountingMeasure)
