@@ -221,3 +221,7 @@ roots = ["ForgeThetaBox"]
 [[lean_lib]]
 name = "ForgeFirstZeroKernel"
 roots = ["ForgeFirstZeroKernel"]
+
+[[lean_lib]]
+name = "ForgePhi14Terms"
+roots = ["ForgePhi14Terms"]
