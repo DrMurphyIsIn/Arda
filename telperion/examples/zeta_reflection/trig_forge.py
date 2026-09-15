@@ -547,7 +547,7 @@ def emit_dirichlet_re_box_lean(t: int, N: int, name: str) -> tuple[str, F, F]:
         L.append(f"  have b{n} := re_term_{n}")
         L.append(f"  norm_num at b{n}")
     hyps = ", ".join(f"b{n}.1, b{n}.2" for n in range(2, N))
-    L.append(f"  constructor <;> nlinarith [{hyps}]")
+    L.append(f"  constructor <;> linarith [{hyps}]")
     return "\n".join(L), slo, shi
 
 
@@ -568,7 +568,7 @@ def emit_dirichlet_im_box_lean(t: int, N: int, name: str) -> tuple[str, F, F]:
         L.append(f"  have b{n} := im_term_{n}")
         L.append(f"  norm_num at b{n}")
     hyps = ", ".join(f"b{n}.1, b{n}.2" for n in range(2, N))
-    L.append(f"  constructor <;> nlinarith [{hyps}]")
+    L.append(f"  constructor <;> linarith [{hyps}]")
     return "\n".join(L), slo, shi
 
 
@@ -683,6 +683,21 @@ def emit_zeta_box_lean(t: int, N: int, tail_bound: F, prefix: str) -> tuple[str,
         L.append(f"  rw [abs_le] at htail")
         L.append(f"  constructor <;> [linarith [hef.1, htail.1]; linarith [hef.2, htail.2]]")
     return "\n".join(L), re_lo, re_hi, im_lo, im_hi, sre_lo, sre_hi, sim_lo, sim_hi, Tre_lo, Tre_hi, Tim_lo, Tim_hi
+
+
+def emit_zeta_assembly_file(t: int, N: int, tail_bound: F, terms_ns: str, ns: str, prefix: str):
+    """Emit the ζ-assembly file: imports the terms olean, does the two folds + tail + ζ boxes.
+    Returns (lean_text, re_lo, re_hi, im_lo, im_hi)."""
+    lre, _, _ = emit_dirichlet_re_box_lean(t, N, "reSum")
+    lim, _, _ = emit_dirichlet_im_box_lean(t, N, "imSum")
+    zres = emit_zeta_box_lean(t, N, tail_bound, prefix)
+    parts = [
+        f"import {terms_ns}", "import ForgeTailTerms", "import ForgeTail", "import ZetaEMSum",
+        "import Mathlib.NumberTheory.Bernoulli",
+        f"open TrigReduce Real Complex ZetaReflection {terms_ns}",
+        "set_option maxHeartbeats 4000000", f"namespace {ns}", "",
+        lre, "", lim, "", zres[0], f"\nend {ns}"]
+    return "\n".join(parts), zres[1], zres[2], zres[3], zres[4]
 
 
 def emit_trig_file(pairs: list[tuple[int, int]], ns: str, fname: str) -> str:
