@@ -418,6 +418,139 @@ namespace {ns}
 """
 
 
+# ---------------------------------------------------------------------------------------------------
+# Stage 2: amplitude boxes (n^{-1/2}) + per-term Re/Im boxes + Dirichlet sum fold + Re/Im zeta box.
+# ---------------------------------------------------------------------------------------------------
+
+def amp_box(n: int) -> tuple[F, F, F, F]:
+    """Rational box for n^{-1/2} = 1/sqrt n and the sqrt-n bracket [sqlo, sqhi] it uses.
+    Returns (lo, hi, sqlo, sqhi) with sqlo^2 <= n <= sqhi^2 and 1/sqhi <= n^{-1/2} <= 1/sqlo."""
+    root = mp.sqrt(n)
+    sqlo = F(int(mp.floor(root * 10 ** 8)), 10 ** 8)
+    sqhi = F(int(mp.ceil(root * 10 ** 8)), 10 ** 8)
+    assert sqlo ** 2 <= n <= sqhi ** 2, f"sqrt bracket invalid n={n}"
+    lo = 1 / sqhi
+    hi = 1 / sqlo
+    # snap to a compact rational
+    lo = rfloor(lo)
+    hi = rceil(hi)
+    return lo, hi, sqlo, sqhi
+
+
+def emit_amp_box_lean(n: int, name: str) -> str:
+    """Emit `theorem <name> : lo ≤ (n:ℝ)^(-(1/2)) ∧ (n:ℝ)^(-(1/2)) ≤ hi` (generalizes inv_sqrt2_box)."""
+    lo, hi, sqlo, sqhi = amp_box(n)
+    L = []
+    L.append(f"theorem {name} : (({frac_str(lo)}) : ℝ) ≤ ({n} : ℝ) ^ (-(1 / 2) : ℝ) "
+             f"∧ ({n} : ℝ) ^ (-(1 / 2) : ℝ) ≤ ({frac_str(hi)}) := by")
+    L.append(f"  have h2 : ({n} : ℝ) ^ (-(1 / 2) : ℝ) = (Real.sqrt {n})⁻¹ := by")
+    L.append(f"    rw [Real.sqrt_eq_rpow, ← Real.rpow_neg (by norm_num)]")
+    L.append(f"  rw [h2]")
+    L.append(f"  have hslo : ({frac_str(sqlo)} : ℝ) ≤ Real.sqrt {n} := by")
+    L.append(f"    rw [show ({frac_str(sqlo)} : ℝ) = Real.sqrt (({frac_str(sqlo)}) ^ 2) by rw [Real.sqrt_sq (by norm_num)]]")
+    L.append(f"    apply Real.sqrt_le_sqrt; norm_num")
+    L.append(f"  have hshi : Real.sqrt {n} ≤ ({frac_str(sqhi)} : ℝ) := by")
+    L.append(f"    rw [show ({frac_str(sqhi)} : ℝ) = Real.sqrt (({frac_str(sqhi)}) ^ 2) by rw [Real.sqrt_sq (by norm_num)]]")
+    L.append(f"    apply Real.sqrt_le_sqrt; norm_num")
+    L.append(f"  refine ⟨?_, ?_⟩")
+    L.append(f"  · calc ({frac_str(lo)} : ℝ) ≤ ({frac_str(sqhi)} : ℝ)⁻¹ := by norm_num")
+    L.append(f"      _ ≤ (Real.sqrt {n})⁻¹ := inv_anti₀ (by positivity) hshi")
+    L.append(f"  · calc (Real.sqrt {n})⁻¹ ≤ ({frac_str(sqlo)} : ℝ)⁻¹ := "
+             f"inv_anti₀ (by norm_num) hslo")
+    L.append(f"      _ ≤ ({frac_str(hi)} : ℝ) := by norm_num")
+    return "\n".join(L)
+
+
+def term_box(t: int, n: int) -> tuple[F, F, F, F]:
+    """Real- and imag-part boxes for n^{-(1/2+it)} at height t.
+    Re = n^{-1/2} cos(t log n),  Im = -n^{-1/2} sin(t log n).  Sign-aware interval products.
+    Returns (re_lo, re_hi, im_lo, im_hi)."""
+    tc = build_trig_climb(t, n)
+    alo, ahi, _, _ = amp_box(n)
+    cbx, sbx = tc.cos_box, tc.sin_box
+    # Re = amp * cos : interval product of [alo,ahi] (>=0) and cos box
+    re_corners = [alo * cbx.lo, alo * cbx.hi, ahi * cbx.lo, ahi * cbx.hi]
+    re_lo, re_hi = rfloor(min(re_corners)), rceil(max(re_corners))
+    # Im = -(amp * sin)
+    s_corners = [alo * sbx.lo, alo * sbx.hi, ahi * sbx.lo, ahi * sbx.hi]
+    im_lo, im_hi = rfloor(-max(s_corners)), rceil(-min(s_corners))
+    return re_lo, re_hi, im_lo, im_hi
+
+
+def _mul_encl_args(alo: F, ahi: F, blo: F, bhi: F, plo: F, phi: F) -> str:
+    """The 8 corner-product `by norm_num` args for ForgeLogBracket.mul_encl."""
+    return "(by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)"
+
+
+def emit_term_re_box_lean(t: int, n: int, tag: str) -> str:
+    """Emit `re_term_<tag> : re_lo ≤ (((n:ℕ):ℂ)^(-(1/2+t·i))).re ∧ ... ≤ re_hi` via term_re + amp + cos."""
+    re_lo, re_hi, _, _ = term_box(t, n)
+    alo, ahi, _, _ = amp_box(n)
+    tc = build_trig_climb(t, n)
+    cbx = tc.cos_box
+    trigtag = f"T{t}_{n}"
+    L = []
+    L.append(f"theorem re_term_{tag} :")
+    L.append(f"    (({frac_str(re_lo)}) : ℝ) ≤ ((({n}:ℕ):ℂ) ^ (-((1 : ℂ) / 2 + ({t} : ℝ) * I))).re")
+    L.append(f"      ∧ ((({n}:ℕ):ℂ) ^ (-((1 : ℂ) / 2 + ({t} : ℝ) * I))).re ≤ ({frac_str(re_hi)}) := by")
+    L.append(f"  have hterm := ZeroHypBand_t14.term_re {n} (by norm_num) {t}")
+    L.append(f"  rw [hterm]; simp only [Nat.cast_ofNat]")
+    L.append(f"  rw [show Real.exp (-(1 / 2) * Real.log {n}) = ({n} : ℝ) ^ (-(1 / 2) : ℝ) by "
+             f"rw [Real.rpow_def_of_pos (by norm_num)]; ring_nf]")
+    L.append(f"  exact ForgeLogBracket.mul_encl (by norm_num) amp_{tag} cos_{trigtag} {_mul_encl_args(alo,ahi,cbx.lo,cbx.hi,re_lo,re_hi)}")
+    return "\n".join(L)
+
+
+def emit_term_im_box_lean(t: int, n: int, tag: str) -> str:
+    """Emit `im_term_<tag> : im_lo ≤ (((n:ℕ):ℂ)^(-(1/2+t·i))).im ∧ ... ≤ im_hi`.
+    Im = -(amp·sin); use mul_encl for amp·sin then negate."""
+    _, _, im_lo, im_hi = term_box(t, n)
+    alo, ahi, _, _ = amp_box(n)
+    tc = build_trig_climb(t, n)
+    sbx = tc.sin_box
+    trigtag = f"T{t}_{n}"
+    # amp·sin box = [-im_hi, -im_lo]  (since im = -(amp·sin))
+    ps_lo, ps_hi = -im_hi, -im_lo
+    L = []
+    L.append(f"theorem im_term_{tag} :")
+    L.append(f"    (({frac_str(im_lo)}) : ℝ) ≤ ((({n}:ℕ):ℂ) ^ (-((1 : ℂ) / 2 + ({t} : ℝ) * I))).im")
+    L.append(f"      ∧ ((({n}:ℕ):ℂ) ^ (-((1 : ℂ) / 2 + ({t} : ℝ) * I))).im ≤ ({frac_str(im_hi)}) := by")
+    L.append(f"  have hterm := ZeroHypBand_t14.term_im {n} (by norm_num) {t}")
+    L.append(f"  rw [hterm]; simp only [Nat.cast_ofNat]")
+    L.append(f"  rw [show Real.exp (-(1 / 2) * Real.log {n}) = ({n} : ℝ) ^ (-(1 / 2) : ℝ) by "
+             f"rw [Real.rpow_def_of_pos (by norm_num)]; ring_nf]")
+    L.append(f"  have hps : ({frac_str(ps_lo)} : ℝ) ≤ ({n}:ℝ)^(-(1/2):ℝ) * Real.sin ({t} * Real.log {n}) ∧ ({n}:ℝ)^(-(1/2):ℝ) * Real.sin ({t} * Real.log {n}) ≤ ({frac_str(ps_hi)}) :=")
+    L.append(f"    ForgeLogBracket.mul_encl (by norm_num) amp_{tag} sin_{trigtag} {_mul_encl_args(alo,ahi,sbx.lo,sbx.hi,ps_lo,ps_hi)}")
+    L.append(f"  exact ⟨by linarith [hps.2], by linarith [hps.1]⟩")
+    return "\n".join(L)
+
+
+def emit_dirichlet_re_box_lean(t: int, N: int, name: str) -> tuple[str, F, F]:
+    """Emit `<name> : ΣLo ≤ (∑ n∈Ico 1 N, (n:ℂ)^(-s)).re ∧ ... ≤ ΣHi` for s = 1/2+it.
+    Uses re_sum + sum_Ico_eq_sum_range + sum_range_succ expansion, then per-term re boxes (n≥2)
+    and n=1 auto-simplifies to 1.  Returns (lean, ΣLo, ΣHi)."""
+    # per-term boxes n=2..N-1
+    re_boxes = {n: term_box(t, n)[:2] for n in range(2, N)}
+    slo = F(1) + sum(re_boxes[n][0] for n in range(2, N))
+    shi = F(1) + sum(re_boxes[n][1] for n in range(2, N))
+    scnt = N - 1                       # range count after sum_Ico_eq_sum_range (upper = N-1)
+    L = []
+    L.append(f"theorem {name} :")
+    L.append(f"    (({frac_str(slo)}) : ℝ) ≤ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1:ℂ)/2 + ({t}:ℝ)*I)))).re")
+    L.append(f"      ∧ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1:ℂ)/2 + ({t}:ℝ)*I)))).re ≤ ({frac_str(shi)}) := by")
+    L.append(f"  rw [Complex.re_sum, Finset.sum_Ico_eq_sum_range]")
+    L.append(f"  rw [show ({N}-1) = {N-1} from rfl,")
+    L.append(f"    {' '.join(['Finset.sum_range_succ,'] * (N - 1))} Finset.sum_range_zero]")
+    L.append(f"  norm_num")
+    # normalize the per-term boxes into the same (norm-num) atom the expanded sum uses.
+    for n in range(2, N):
+        L.append(f"  have b{n} := re_term_{n}")
+        L.append(f"  norm_num at b{n}")
+    hyps = ", ".join(f"b{n}.1, b{n}.2" for n in range(2, N))
+    L.append(f"  constructor <;> nlinarith [{hyps}]")
+    return "\n".join(L), slo, shi
+
+
 def emit_trig_file(pairs: list[tuple[int, int]], ns: str, fname: str) -> str:
     """Emit a full trig-cert Lean file for a list of (t, n) pairs."""
     body = [TRIG_HEADER.format(fname=fname, t="t", yred=YRED, tag_note="", ns=ns)]

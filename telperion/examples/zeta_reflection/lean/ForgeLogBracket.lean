@@ -68,4 +68,28 @@ theorem log_nat_bracket {n lo hi : ℝ} (hn : 0 < n)
     lo ≤ Real.log n ∧ Real.log n ≤ hi :=
   CertVerify.ln_of_exp_bracket hn hExpLo hExpHi
 
+/-- **Interval product with a nonneg left factor.**  If `0 ≤ xlo ≤ x ≤ xhi`, `ylo ≤ y ≤ yhi`, and
+    rationals `plo, phi` bound the four corner products, then `x*y ∈ [plo,phi]`.  The forge's ζ-term
+    amplitude `n^{-1/2}` is nonneg, so this covers Re/Im term boxes (trig factor of either sign). -/
+theorem mul_encl {x y xlo xhi ylo yhi plo phi : ℝ} (hxlo0 : 0 ≤ xlo)
+    (hx : xlo ≤ x ∧ x ≤ xhi) (hy : ylo ≤ y ∧ y ≤ yhi)
+    (hL1 : plo ≤ xlo * ylo) (hL2 : plo ≤ xlo * yhi) (hL3 : plo ≤ xhi * ylo) (hL4 : plo ≤ xhi * yhi)
+    (hU1 : xlo * ylo ≤ phi) (hU2 : xlo * yhi ≤ phi) (hU3 : xhi * ylo ≤ phi) (hU4 : xhi * yhi ≤ phi) :
+    plo ≤ x * y ∧ x * y ≤ phi := by
+  obtain ⟨hxlo, hxhi⟩ := hx
+  obtain ⟨hylo, hyhi⟩ := hy
+  have hx0 : 0 ≤ x := le_trans hxlo0 hxlo
+  constructor
+  · rcases le_total 0 y with hy0 | hy0
+    · -- y ≥ 0: x*y ≥ xlo*y ≥ xlo*ylo (all nonneg)
+      nlinarith [mul_le_mul_of_nonneg_right hxlo hy0, mul_le_mul_of_nonneg_left hylo hxlo0, hL1]
+    · -- y ≤ 0: x*y ≥ xhi*y ≥ xhi*ylo
+      nlinarith [mul_le_mul_of_nonpos_right hxhi hy0, mul_le_mul_of_nonneg_left hylo (le_trans hxlo0 hxlo), hL3]
+  · rcases le_total 0 y with hy0 | hy0
+    · -- y ≥ 0: x*y ≤ xhi*y ≤ xhi*yhi
+      nlinarith [mul_le_mul_of_nonneg_right hxhi hy0, mul_le_mul_of_nonneg_left hyhi (le_trans hxlo0 hxlo), hU4]
+    · -- y ≤ 0: x*y ≤ xlo*y ≤ xlo*yhi
+      nlinarith [mul_le_mul_of_nonpos_right hxlo hy0, mul_le_mul_of_nonneg_left hyhi hxlo0, hU2]
+
+
 end ForgeLogBracket
