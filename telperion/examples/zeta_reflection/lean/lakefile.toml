@@ -201,3 +201,23 @@ roots = ["ForgeFirstZero"]
 [[lean_lib]]
 name = "ForgeRate"
 roots = ["ForgeRate"]
+
+[[lean_lib]]
+name = "ForgePhi15Terms"
+roots = ["ForgePhi15Terms"]
+
+[[lean_lib]]
+name = "ForgePhiFold14"
+roots = ["ForgePhiFold14"]
+
+[[lean_lib]]
+name = "ForgePhiFold15"
+roots = ["ForgePhiFold15"]
+
+[[lean_lib]]
+name = "ForgeThetaBox"
+roots = ["ForgeThetaBox"]
+
+[[lean_lib]]
+name = "ForgeFirstZeroKernel"
+roots = ["ForgeFirstZeroKernel"]
