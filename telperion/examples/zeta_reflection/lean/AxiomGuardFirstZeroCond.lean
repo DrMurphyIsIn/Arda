@@ -1,0 +1,2 @@
+import ForgeFirstZero
+#print axioms ForgeFirstZero.first_zero_of_theta_boxes

@@ -1,0 +1,888 @@
+/-  Height-chain step: all nontrivial zeta zeros up to height 296000 on Re = 1/2 --
+    `AllZeros_h295000` + a `[295000, 296000]` SEGMENT certificate (40 bands, width 1/4000000)
+    composed by `AllZerosUpToHeight.height_chain`.  INDEXED-hypothesis form
+    (B1): one `BandHyp` per segment instead of per-band binders.
+    Emitted by campaign.py.  conjecture1_proved = False. -/
+import Mathlib
+import DlvpZetaZeroFree
+import DlvpZetaRateEffective
+import ZetaZeroConfinement
+import AllZerosUpToHeight
+import AllZeros_h295000
+import RHInBoxT_1d4000000_3999999d4000000_295000_295025
+import RHInBoxT_1d4000000_3999999d4000000_295025_295050
+import RHInBoxT_1d4000000_3999999d4000000_295050_295075
+import RHInBoxT_1d4000000_3999999d4000000_295075_295100
+import RHInBoxT_1d4000000_3999999d4000000_1180399d4_295125
+import RHInBoxT_1d4000000_3999999d4000000_295125_295150
+import RHInBoxT_1d4000000_3999999d4000000_295150_1180701d4
+import RHInBoxT_1d4000000_3999999d4000000_295175_1180801d4
+import RHInBoxT_1d4000000_3999999d4000000_295200_295225
+import RHInBoxT_1d4000000_3999999d4000000_295225_295250
+import RHInBoxT_1d4000000_3999999d4000000_1180999d4_295275
+import RHInBoxT_1d4000000_3999999d4000000_295275_295300
+import RHInBoxT_1d4000000_3999999d4000000_295300_295325
+import RHInBoxT_1d4000000_3999999d4000000_295325_1181401d4
+import RHInBoxT_1d4000000_3999999d4000000_295350_295375
+import RHInBoxT_1d4000000_3999999d4000000_295375_295400
+import RHInBoxT_1d4000000_3999999d4000000_295400_295425
+import RHInBoxT_1d4000000_3999999d4000000_295425_295450
+import RHInBoxT_1d4000000_3999999d4000000_295450_295475
+import RHInBoxT_1d4000000_3999999d4000000_295475_1182001d4
+import RHInBoxT_1d4000000_3999999d4000000_295500_295525
+import RHInBoxT_1d4000000_3999999d4000000_295525_295550
+import RHInBoxT_1d4000000_3999999d4000000_1182199d4_1182301d4
+import RHInBoxT_1d4000000_3999999d4000000_295575_295600
+import RHInBoxT_1d4000000_3999999d4000000_295600_295625
+import RHInBoxT_1d4000000_3999999d4000000_295625_295650
+import RHInBoxT_1d4000000_3999999d4000000_295650_295675
+import RHInBoxT_1d4000000_3999999d4000000_295675_295700
+import RHInBoxT_1d4000000_3999999d4000000_295700_1182901d4
+import RHInBoxT_1d4000000_3999999d4000000_295725_295750
+import RHInBoxT_1d4000000_3999999d4000000_295750_295775
+import RHInBoxT_1d4000000_3999999d4000000_295775_295800
+import RHInBoxT_1d4000000_3999999d4000000_295800_295825
+import RHInBoxT_1d4000000_3999999d4000000_295825_1183401d4
+import RHInBoxT_1d4000000_3999999d4000000_295850_1183501d4
+import RHInBoxT_1d4000000_3999999d4000000_295875_295900
+import RHInBoxT_1d4000000_3999999d4000000_295900_295925
+import RHInBoxT_1d4000000_3999999d4000000_295925_295950
+import RHInBoxT_1d4000000_3999999d4000000_295950_295975
+import RHInBoxT_1d4000000_3999999d4000000_295975_296000
+
+open Complex MeasureTheory Real
+open scoped Topology
+
+namespace AllZeros_h296000
+
+/-- The 40-band NOMINAL partition of `[295000, 296000]`. -/
+noncomputable def bndSeg : ℕ → ℝ := fun i => match i with
+  | 0 => 295000
+  | 1 => 295025
+  | 2 => 295050
+  | 3 => 295075
+  | 4 => 295100
+  | 5 => 295125
+  | 6 => 295150
+  | 7 => 295175
+  | 8 => 295200
+  | 9 => 295225
+  | 10 => 295250
+  | 11 => 295275
+  | 12 => 295300
+  | 13 => 295325
+  | 14 => 295350
+  | 15 => 295375
+  | 16 => 295400
+  | 17 => 295425
+  | 18 => 295450
+  | 19 => 295475
+  | 20 => 295500
+  | 21 => 295525
+  | 22 => 295550
+  | 23 => 295575
+  | 24 => 295600
+  | 25 => 295625
+  | 26 => 295650
+  | 27 => 295675
+  | 28 => 295700
+  | 29 => 295725
+  | 30 => 295750
+  | 31 => 295775
+  | 32 => 295800
+  | 33 => 295825
+  | 34 => 295850
+  | 35 => 295875
+  | 36 => 295900
+  | 37 => 295925
+  | 38 => 295950
+  | 39 => 295975
+  | 40 => 296000
+  | _ => 296000
+
+theorem bndSeg_mono : Monotone bndSeg := by
+  refine monotone_nat_of_le_succ ?_
+  intro nn
+  rcases nn with _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | _ | nn
+  · show ((295000:ℝ)) ≤ (295025); norm_num
+  · show ((295025:ℝ)) ≤ (295050); norm_num
+  · show ((295050:ℝ)) ≤ (295075); norm_num
+  · show ((295075:ℝ)) ≤ (295100); norm_num
+  · show ((295100:ℝ)) ≤ (295125); norm_num
+  · show ((295125:ℝ)) ≤ (295150); norm_num
+  · show ((295150:ℝ)) ≤ (295175); norm_num
+  · show ((295175:ℝ)) ≤ (295200); norm_num
+  · show ((295200:ℝ)) ≤ (295225); norm_num
+  · show ((295225:ℝ)) ≤ (295250); norm_num
+  · show ((295250:ℝ)) ≤ (295275); norm_num
+  · show ((295275:ℝ)) ≤ (295300); norm_num
+  · show ((295300:ℝ)) ≤ (295325); norm_num
+  · show ((295325:ℝ)) ≤ (295350); norm_num
+  · show ((295350:ℝ)) ≤ (295375); norm_num
+  · show ((295375:ℝ)) ≤ (295400); norm_num
+  · show ((295400:ℝ)) ≤ (295425); norm_num
+  · show ((295425:ℝ)) ≤ (295450); norm_num
+  · show ((295450:ℝ)) ≤ (295475); norm_num
+  · show ((295475:ℝ)) ≤ (295500); norm_num
+  · show ((295500:ℝ)) ≤ (295525); norm_num
+  · show ((295525:ℝ)) ≤ (295550); norm_num
+  · show ((295550:ℝ)) ≤ (295575); norm_num
+  · show ((295575:ℝ)) ≤ (295600); norm_num
+  · show ((295600:ℝ)) ≤ (295625); norm_num
+  · show ((295625:ℝ)) ≤ (295650); norm_num
+  · show ((295650:ℝ)) ≤ (295675); norm_num
+  · show ((295675:ℝ)) ≤ (295700); norm_num
+  · show ((295700:ℝ)) ≤ (295725); norm_num
+  · show ((295725:ℝ)) ≤ (295750); norm_num
+  · show ((295750:ℝ)) ≤ (295775); norm_num
+  · show ((295775:ℝ)) ≤ (295800); norm_num
+  · show ((295800:ℝ)) ≤ (295825); norm_num
+  · show ((295825:ℝ)) ≤ (295850); norm_num
+  · show ((295850:ℝ)) ≤ (295875); norm_num
+  · show ((295875:ℝ)) ≤ (295900); norm_num
+  · show ((295900:ℝ)) ≤ (295925); norm_num
+  · show ((295925:ℝ)) ≤ (295950); norm_num
+  · show ((295950:ℝ)) ≤ (295975); norm_num
+  · show ((295975:ℝ)) ≤ (296000); norm_num
+  · show ((296000:ℝ)) ≤ (296000); norm_num
+  · exact le_refl _
+
+/-- The lower edges of the 40 STRETCHED certificate boxes. -/
+noncomputable def bLo : ℕ → ℝ := fun i => match i with
+  | 0 => 295000
+  | 1 => 295025
+  | 2 => 295050
+  | 3 => 295075
+  | 4 => 1180399 / 4
+  | 5 => 295125
+  | 6 => 295150
+  | 7 => 295175
+  | 8 => 295200
+  | 9 => 295225
+  | 10 => 1180999 / 4
+  | 11 => 295275
+  | 12 => 295300
+  | 13 => 295325
+  | 14 => 295350
+  | 15 => 295375
+  | 16 => 295400
+  | 17 => 295425
+  | 18 => 295450
+  | 19 => 295475
+  | 20 => 295500
+  | 21 => 295525
+  | 22 => 1182199 / 4
+  | 23 => 295575
+  | 24 => 295600
+  | 25 => 295625
+  | 26 => 295650
+  | 27 => 295675
+  | 28 => 295700
+  | 29 => 295725
+  | 30 => 295750
+  | 31 => 295775
+  | 32 => 295800
+  | 33 => 295825
+  | 34 => 295850
+  | 35 => 295875
+  | 36 => 295900
+  | 37 => 295925
+  | 38 => 295950
+  | 39 => 295975
+  | _ => 295975
+
+/-- The upper edges of the 40 STRETCHED certificate boxes. -/
+noncomputable def bHi : ℕ → ℝ := fun i => match i with
+  | 0 => 295025
+  | 1 => 295050
+  | 2 => 295075
+  | 3 => 295100
+  | 4 => 295125
+  | 5 => 295150
+  | 6 => 1180701 / 4
+  | 7 => 1180801 / 4
+  | 8 => 295225
+  | 9 => 295250
+  | 10 => 295275
+  | 11 => 295300
+  | 12 => 295325
+  | 13 => 1181401 / 4
+  | 14 => 295375
+  | 15 => 295400
+  | 16 => 295425
+  | 17 => 295450
+  | 18 => 295475
+  | 19 => 1182001 / 4
+  | 20 => 295525
+  | 21 => 295550
+  | 22 => 1182301 / 4
+  | 23 => 295600
+  | 24 => 295625
+  | 25 => 295650
+  | 26 => 295675
+  | 27 => 295700
+  | 28 => 1182901 / 4
+  | 29 => 295750
+  | 30 => 295775
+  | 31 => 295800
+  | 32 => 295825
+  | 33 => 1183401 / 4
+  | 34 => 1183501 / 4
+  | 35 => 295900
+  | 36 => 295925
+  | 37 => 295950
+  | 38 => 295975
+  | 39 => 296000
+  | _ => 296000
+
+set_option maxHeartbeats 1600000 in
+/-- Each nominal band `[bndSeg i, bndSeg (i+1)]` sits inside the stretched
+    certificate box `[bLo i, bHi i]`. -/
+theorem hcover : ∀ i, i < 40 → bLo i ≤ bndSeg i ∧ bndSeg (i + 1) ≤ bHi i := by
+  intro i hi
+  interval_cases i <;>
+    exact ⟨by norm_num [bLo, bndSeg], by norm_num [bndSeg, bHi]⟩
+
+/-- `1/4000000 ≤ dlvpRateC / log 296000` (`log 296000 ≤ 13`, `2.7^13 ≥ 296000`). -/
+theorem haC_296000 : (1 / 4000000 : ℝ) ≤ ZeroFreeBridge.dlvpRateC / Real.log 296000 := by
+  have hlog : Real.log 296000 ≤ 13 := by
+    rw [Real.log_le_iff_le_exp (by norm_num)]
+    have he1 : (2.7 : ℝ) ≤ Real.exp 1 := by linarith [Real.exp_one_gt_d9]
+    have h13 : Real.exp 13 = (Real.exp 1) ^ 13 := by rw [← Real.exp_nat_mul]; norm_num
+    have hpow : (2.7 : ℝ) ^ 13 ≤ (Real.exp 1) ^ 13 := pow_le_pow_left₀ (by norm_num) he1 13
+    rw [h13]; nlinarith [hpow]
+  have hpos : 0 < Real.log 296000 := Real.log_pos (by norm_num)
+  rw [le_div_iff₀ hpos]
+  calc (1 / 4000000 : ℝ) * Real.log 296000
+      ≤ (1 / 4000000) * 13 := by nlinarith [hlog, hpos]
+    _ ≤ 9 / 1369088 := by norm_num
+    _ ≤ ZeroFreeBridge.dlvpRateC := ZeroFreeBridge.dlvpRateC_lower
+
+/-- The `[295000, 296000]` segment's band hypothesis: every band `i < 40` certifies
+    its STRETCHED box `[bLo i, bHi i]`.  One binder replaces the 40 per-band
+    hypotheses; the previous capstone consumes one such predicate per segment. -/
+def BandHyp : Prop :=
+  ∀ i, i < 40 → ∀ ρ : ℂ, (((1 / 4000000) : ℝ) ≤ ρ.re ∧ ρ.re ≤ (3999999 / 4000000)) →
+    (bLo i ≤ ρ.im ∧ ρ.im ≤ bHi i) → riemannZeta ρ = 0 → ρ.re = 1 / 2
+
+/-- The `[295000, 296000]` SEGMENT: every zero with `295000 ≤ Im ≤ 296000` is on the line. -/
+theorem segment_295000_296000 (hbands : BandHyp)
+    (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 296000 → 55 / 16 ≤ |ρ.im|) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → (295000:ℝ) ≤ ρ.im → ρ.im ≤ 296000 → ρ.re = 1 / 2 := by
+  have hre_eq : (1 : ℝ) - 1 / 4000000 = 3999999 / 4000000 := by norm_num
+  refine AllZerosUpToHeight.all_nontrivial_zeros_in_segment_on_line
+    (1 / 4000000) 295000 296000 bndSeg 40 (by norm_num) bndSeg_mono rfl rfl haC_296000
+    (by norm_num) (by norm_num) ?_ hγ
+  intro i hi ρ hre him hz
+  have hre' : (((1 / 4000000)) : ℝ) ≤ ρ.re ∧ ρ.re ≤ 3999999 / 4000000 := by
+    refine ⟨hre.1, ?_⟩
+    have h2 := hre.2
+    linarith [h2, hre_eq]
+  obtain ⟨hcov1, hcov2⟩ := hcover i hi
+  exact hbands i hi ρ hre'
+    ⟨le_trans hcov1 him.1, le_trans him.2 hcov2⟩ hz
+
+/-- **T = 296000 via the HEIGHT CHAIN**: `[0,295000]` ∘ `[295000,296000]` (segment).
+    One `BandHyp` binder per segment (indexed form).  conjecture1_proved = False. -/
+theorem all_nontrivial_zeros_up_to_height_296000_of_bands
+    (hbands_1000 : AllZeros_h1000.BandHyp)
+    (hbands_2000 : AllZeros_h2000.BandHyp)
+    (hbands_3000 : AllZeros_h3000.BandHyp)
+    (hbands_4000 : AllZeros_h4000.BandHyp)
+    (hbands_5000 : AllZeros_h5000.BandHyp)
+    (hbands_6000 : AllZeros_h6000.BandHyp)
+    (hbands_7000 : AllZeros_h7000.BandHyp)
+    (hbands_8000 : AllZeros_h8000.BandHyp)
+    (hbands_9000 : AllZeros_h9000.BandHyp)
+    (hbands_10000 : AllZeros_h10000.BandHyp)
+    (hbands_11000 : AllZeros_h11000.BandHyp)
+    (hbands_12000 : AllZeros_h12000.BandHyp)
+    (hbands_13000 : AllZeros_h13000.BandHyp)
+    (hbands_14000 : AllZeros_h14000.BandHyp)
+    (hbands_15000 : AllZeros_h15000.BandHyp)
+    (hbands_16000 : AllZeros_h16000.BandHyp)
+    (hbands_17000 : AllZeros_h17000.BandHyp)
+    (hbands_18000 : AllZeros_h18000.BandHyp)
+    (hbands_19000 : AllZeros_h19000.BandHyp)
+    (hbands_20000 : AllZeros_h20000.BandHyp)
+    (hbands_21000 : AllZeros_h21000.BandHyp)
+    (hbands_22000 : AllZeros_h22000.BandHyp)
+    (hbands_23000 : AllZeros_h23000.BandHyp)
+    (hbands_24000 : AllZeros_h24000.BandHyp)
+    (hbands_25000 : AllZeros_h25000.BandHyp)
+    (hbands_26000 : AllZeros_h26000.BandHyp)
+    (hbands_27000 : AllZeros_h27000.BandHyp)
+    (hbands_28000 : AllZeros_h28000.BandHyp)
+    (hbands_29000 : AllZeros_h29000.BandHyp)
+    (hbands_30000 : AllZeros_h30000.BandHyp)
+    (hbands_31000 : AllZeros_h31000.BandHyp)
+    (hbands_32000 : AllZeros_h32000.BandHyp)
+    (hbands_33000 : AllZeros_h33000.BandHyp)
+    (hbands_34000 : AllZeros_h34000.BandHyp)
+    (hbands_35000 : AllZeros_h35000.BandHyp)
+    (hbands_36000 : AllZeros_h36000.BandHyp)
+    (hbands_37000 : AllZeros_h37000.BandHyp)
+    (hbands_38000 : AllZeros_h38000.BandHyp)
+    (hbands_39000 : AllZeros_h39000.BandHyp)
+    (hbands_40000 : AllZeros_h40000.BandHyp)
+    (hbands_41000 : AllZeros_h41000.BandHyp)
+    (hbands_42000 : AllZeros_h42000.BandHyp)
+    (hbands_43000 : AllZeros_h43000.BandHyp)
+    (hbands_44000 : AllZeros_h44000.BandHyp)
+    (hbands_45000 : AllZeros_h45000.BandHyp)
+    (hbands_46000 : AllZeros_h46000.BandHyp)
+    (hbands_47000 : AllZeros_h47000.BandHyp)
+    (hbands_48000 : AllZeros_h48000.BandHyp)
+    (hbands_49000 : AllZeros_h49000.BandHyp)
+    (hbands_50000 : AllZeros_h50000.BandHyp)
+    (hbands_51000 : AllZeros_h51000.BandHyp)
+    (hbands_52000 : AllZeros_h52000.BandHyp)
+    (hbands_53000 : AllZeros_h53000.BandHyp)
+    (hbands_54000 : AllZeros_h54000.BandHyp)
+    (hbands_55000 : AllZeros_h55000.BandHyp)
+    (hbands_56000 : AllZeros_h56000.BandHyp)
+    (hbands_57000 : AllZeros_h57000.BandHyp)
+    (hbands_58000 : AllZeros_h58000.BandHyp)
+    (hbands_59000 : AllZeros_h59000.BandHyp)
+    (hbands_60000 : AllZeros_h60000.BandHyp)
+    (hbands_61000 : AllZeros_h61000.BandHyp)
+    (hbands_62000 : AllZeros_h62000.BandHyp)
+    (hbands_63000 : AllZeros_h63000.BandHyp)
+    (hbands_64000 : AllZeros_h64000.BandHyp)
+    (hbands_65000 : AllZeros_h65000.BandHyp)
+    (hbands_66000 : AllZeros_h66000.BandHyp)
+    (hbands_67000 : AllZeros_h67000.BandHyp)
+    (hbands_68000 : AllZeros_h68000.BandHyp)
+    (hbands_69000 : AllZeros_h69000.BandHyp)
+    (hbands_70000 : AllZeros_h70000.BandHyp)
+    (hbands_71000 : AllZeros_h71000.BandHyp)
+    (hbands_72000 : AllZeros_h72000.BandHyp)
+    (hbands_73000 : AllZeros_h73000.BandHyp)
+    (hbands_74000 : AllZeros_h74000.BandHyp)
+    (hbands_75000 : AllZeros_h75000.BandHyp)
+    (hbands_76000 : AllZeros_h76000.BandHyp)
+    (hbands_77000 : AllZeros_h77000.BandHyp)
+    (hbands_78000 : AllZeros_h78000.BandHyp)
+    (hbands_79000 : AllZeros_h79000.BandHyp)
+    (hbands_80000 : AllZeros_h80000.BandHyp)
+    (hbands_81000 : AllZeros_h81000.BandHyp)
+    (hbands_82000 : AllZeros_h82000.BandHyp)
+    (hbands_83000 : AllZeros_h83000.BandHyp)
+    (hbands_84000 : AllZeros_h84000.BandHyp)
+    (hbands_85000 : AllZeros_h85000.BandHyp)
+    (hbands_86000 : AllZeros_h86000.BandHyp)
+    (hbands_87000 : AllZeros_h87000.BandHyp)
+    (hbands_88000 : AllZeros_h88000.BandHyp)
+    (hbands_89000 : AllZeros_h89000.BandHyp)
+    (hbands_90000 : AllZeros_h90000.BandHyp)
+    (hbands_91000 : AllZeros_h91000.BandHyp)
+    (hbands_92000 : AllZeros_h92000.BandHyp)
+    (hbands_93000 : AllZeros_h93000.BandHyp)
+    (hbands_94000 : AllZeros_h94000.BandHyp)
+    (hbands_95000 : AllZeros_h95000.BandHyp)
+    (hbands_96000 : AllZeros_h96000.BandHyp)
+    (hbands_97000 : AllZeros_h97000.BandHyp)
+    (hbands_98000 : AllZeros_h98000.BandHyp)
+    (hbands_99000 : AllZeros_h99000.BandHyp)
+    (hbands_100000 : AllZeros_h100000.BandHyp)
+    (hbands_101000 : AllZeros_h101000.BandHyp)
+    (hbands_102000 : AllZeros_h102000.BandHyp)
+    (hbands_103000 : AllZeros_h103000.BandHyp)
+    (hbands_104000 : AllZeros_h104000.BandHyp)
+    (hbands_105000 : AllZeros_h105000.BandHyp)
+    (hbands_106000 : AllZeros_h106000.BandHyp)
+    (hbands_107000 : AllZeros_h107000.BandHyp)
+    (hbands_108000 : AllZeros_h108000.BandHyp)
+    (hbands_109000 : AllZeros_h109000.BandHyp)
+    (hbands_110000 : AllZeros_h110000.BandHyp)
+    (hbands_111000 : AllZeros_h111000.BandHyp)
+    (hbands_112000 : AllZeros_h112000.BandHyp)
+    (hbands_113000 : AllZeros_h113000.BandHyp)
+    (hbands_114000 : AllZeros_h114000.BandHyp)
+    (hbands_115000 : AllZeros_h115000.BandHyp)
+    (hbands_116000 : AllZeros_h116000.BandHyp)
+    (hbands_117000 : AllZeros_h117000.BandHyp)
+    (hbands_118000 : AllZeros_h118000.BandHyp)
+    (hbands_119000 : AllZeros_h119000.BandHyp)
+    (hbands_120000 : AllZeros_h120000.BandHyp)
+    (hbands_121000 : AllZeros_h121000.BandHyp)
+    (hbands_122000 : AllZeros_h122000.BandHyp)
+    (hbands_123000 : AllZeros_h123000.BandHyp)
+    (hbands_124000 : AllZeros_h124000.BandHyp)
+    (hbands_125000 : AllZeros_h125000.BandHyp)
+    (hbands_126000 : AllZeros_h126000.BandHyp)
+    (hbands_127000 : AllZeros_h127000.BandHyp)
+    (hbands_128000 : AllZeros_h128000.BandHyp)
+    (hbands_129000 : AllZeros_h129000.BandHyp)
+    (hbands_130000 : AllZeros_h130000.BandHyp)
+    (hbands_131000 : AllZeros_h131000.BandHyp)
+    (hbands_132000 : AllZeros_h132000.BandHyp)
+    (hbands_133000 : AllZeros_h133000.BandHyp)
+    (hbands_134000 : AllZeros_h134000.BandHyp)
+    (hbands_135000 : AllZeros_h135000.BandHyp)
+    (hbands_136000 : AllZeros_h136000.BandHyp)
+    (hbands_137000 : AllZeros_h137000.BandHyp)
+    (hbands_138000 : AllZeros_h138000.BandHyp)
+    (hbands_139000 : AllZeros_h139000.BandHyp)
+    (hbands_140000 : AllZeros_h140000.BandHyp)
+    (hbands_141000 : AllZeros_h141000.BandHyp)
+    (hbands_142000 : AllZeros_h142000.BandHyp)
+    (hbands_143000 : AllZeros_h143000.BandHyp)
+    (hbands_144000 : AllZeros_h144000.BandHyp)
+    (hbands_145000 : AllZeros_h145000.BandHyp)
+    (hbands_146000 : AllZeros_h146000.BandHyp)
+    (hbands_147000 : AllZeros_h147000.BandHyp)
+    (hbands_148000 : AllZeros_h148000.BandHyp)
+    (hbands_149000 : AllZeros_h149000.BandHyp)
+    (hbands_150000 : AllZeros_h150000.BandHyp)
+    (hbands_151000 : AllZeros_h151000.BandHyp)
+    (hbands_152000 : AllZeros_h152000.BandHyp)
+    (hbands_153000 : AllZeros_h153000.BandHyp)
+    (hbands_154000 : AllZeros_h154000.BandHyp)
+    (hbands_155000 : AllZeros_h155000.BandHyp)
+    (hbands_156000 : AllZeros_h156000.BandHyp)
+    (hbands_157000 : AllZeros_h157000.BandHyp)
+    (hbands_158000 : AllZeros_h158000.BandHyp)
+    (hbands_159000 : AllZeros_h159000.BandHyp)
+    (hbands_160000 : AllZeros_h160000.BandHyp)
+    (hbands_161000 : AllZeros_h161000.BandHyp)
+    (hbands_162000 : AllZeros_h162000.BandHyp)
+    (hbands_163000 : AllZeros_h163000.BandHyp)
+    (hbands_164000 : AllZeros_h164000.BandHyp)
+    (hbands_165000 : AllZeros_h165000.BandHyp)
+    (hbands_166000 : AllZeros_h166000.BandHyp)
+    (hbands_167000 : AllZeros_h167000.BandHyp)
+    (hbands_168000 : AllZeros_h168000.BandHyp)
+    (hbands_169000 : AllZeros_h169000.BandHyp)
+    (hbands_170000 : AllZeros_h170000.BandHyp)
+    (hbands_171000 : AllZeros_h171000.BandHyp)
+    (hbands_172000 : AllZeros_h172000.BandHyp)
+    (hbands_173000 : AllZeros_h173000.BandHyp)
+    (hbands_174000 : AllZeros_h174000.BandHyp)
+    (hbands_175000 : AllZeros_h175000.BandHyp)
+    (hbands_176000 : AllZeros_h176000.BandHyp)
+    (hbands_177000 : AllZeros_h177000.BandHyp)
+    (hbands_178000 : AllZeros_h178000.BandHyp)
+    (hbands_179000 : AllZeros_h179000.BandHyp)
+    (hbands_180000 : AllZeros_h180000.BandHyp)
+    (hbands_181000 : AllZeros_h181000.BandHyp)
+    (hbands_182000 : AllZeros_h182000.BandHyp)
+    (hbands_183000 : AllZeros_h183000.BandHyp)
+    (hbands_184000 : AllZeros_h184000.BandHyp)
+    (hbands_185000 : AllZeros_h185000.BandHyp)
+    (hbands_186000 : AllZeros_h186000.BandHyp)
+    (hbands_187000 : AllZeros_h187000.BandHyp)
+    (hbands_188000 : AllZeros_h188000.BandHyp)
+    (hbands_189000 : AllZeros_h189000.BandHyp)
+    (hbands_190000 : AllZeros_h190000.BandHyp)
+    (hbands_191000 : AllZeros_h191000.BandHyp)
+    (hbands_192000 : AllZeros_h192000.BandHyp)
+    (hbands_193000 : AllZeros_h193000.BandHyp)
+    (hbands_194000 : AllZeros_h194000.BandHyp)
+    (hbands_195000 : AllZeros_h195000.BandHyp)
+    (hbands_196000 : AllZeros_h196000.BandHyp)
+    (hbands_197000 : AllZeros_h197000.BandHyp)
+    (hbands_198000 : AllZeros_h198000.BandHyp)
+    (hbands_199000 : AllZeros_h199000.BandHyp)
+    (hbands_200000 : AllZeros_h200000.BandHyp)
+    (hbands_201000 : AllZeros_h201000.BandHyp)
+    (hbands_202000 : AllZeros_h202000.BandHyp)
+    (hbands_203000 : AllZeros_h203000.BandHyp)
+    (hbands_204000 : AllZeros_h204000.BandHyp)
+    (hbands_205000 : AllZeros_h205000.BandHyp)
+    (hbands_206000 : AllZeros_h206000.BandHyp)
+    (hbands_207000 : AllZeros_h207000.BandHyp)
+    (hbands_208000 : AllZeros_h208000.BandHyp)
+    (hbands_209000 : AllZeros_h209000.BandHyp)
+    (hbands_210000 : AllZeros_h210000.BandHyp)
+    (hbands_211000 : AllZeros_h211000.BandHyp)
+    (hbands_212000 : AllZeros_h212000.BandHyp)
+    (hbands_213000 : AllZeros_h213000.BandHyp)
+    (hbands_214000 : AllZeros_h214000.BandHyp)
+    (hbands_215000 : AllZeros_h215000.BandHyp)
+    (hbands_216000 : AllZeros_h216000.BandHyp)
+    (hbands_217000 : AllZeros_h217000.BandHyp)
+    (hbands_218000 : AllZeros_h218000.BandHyp)
+    (hbands_219000 : AllZeros_h219000.BandHyp)
+    (hbands_220000 : AllZeros_h220000.BandHyp)
+    (hbands_221000 : AllZeros_h221000.BandHyp)
+    (hbands_222000 : AllZeros_h222000.BandHyp)
+    (hbands_223000 : AllZeros_h223000.BandHyp)
+    (hbands_224000 : AllZeros_h224000.BandHyp)
+    (hbands_225000 : AllZeros_h225000.BandHyp)
+    (hbands_226000 : AllZeros_h226000.BandHyp)
+    (hbands_227000 : AllZeros_h227000.BandHyp)
+    (hbands_228000 : AllZeros_h228000.BandHyp)
+    (hbands_229000 : AllZeros_h229000.BandHyp)
+    (hbands_230000 : AllZeros_h230000.BandHyp)
+    (hbands_231000 : AllZeros_h231000.BandHyp)
+    (hbands_232000 : AllZeros_h232000.BandHyp)
+    (hbands_233000 : AllZeros_h233000.BandHyp)
+    (hbands_234000 : AllZeros_h234000.BandHyp)
+    (hbands_235000 : AllZeros_h235000.BandHyp)
+    (hbands_236000 : AllZeros_h236000.BandHyp)
+    (hbands_237000 : AllZeros_h237000.BandHyp)
+    (hbands_238000 : AllZeros_h238000.BandHyp)
+    (hbands_239000 : AllZeros_h239000.BandHyp)
+    (hbands_240000 : AllZeros_h240000.BandHyp)
+    (hbands_241000 : AllZeros_h241000.BandHyp)
+    (hbands_242000 : AllZeros_h242000.BandHyp)
+    (hbands_243000 : AllZeros_h243000.BandHyp)
+    (hbands_244000 : AllZeros_h244000.BandHyp)
+    (hbands_245000 : AllZeros_h245000.BandHyp)
+    (hbands_246000 : AllZeros_h246000.BandHyp)
+    (hbands_247000 : AllZeros_h247000.BandHyp)
+    (hbands_248000 : AllZeros_h248000.BandHyp)
+    (hbands_249000 : AllZeros_h249000.BandHyp)
+    (hbands_250000 : AllZeros_h250000.BandHyp)
+    (hbands_251000 : AllZeros_h251000.BandHyp)
+    (hbands_252000 : AllZeros_h252000.BandHyp)
+    (hbands_253000 : AllZeros_h253000.BandHyp)
+    (hbands_254000 : AllZeros_h254000.BandHyp)
+    (hbands_255000 : AllZeros_h255000.BandHyp)
+    (hbands_256000 : AllZeros_h256000.BandHyp)
+    (hbands_257000 : AllZeros_h257000.BandHyp)
+    (hbands_258000 : AllZeros_h258000.BandHyp)
+    (hbands_259000 : AllZeros_h259000.BandHyp)
+    (hbands_260000 : AllZeros_h260000.BandHyp)
+    (hbands_261000 : AllZeros_h261000.BandHyp)
+    (hbands_262000 : AllZeros_h262000.BandHyp)
+    (hbands_263000 : AllZeros_h263000.BandHyp)
+    (hbands_264000 : AllZeros_h264000.BandHyp)
+    (hbands_265000 : AllZeros_h265000.BandHyp)
+    (hbands_266000 : AllZeros_h266000.BandHyp)
+    (hbands_267000 : AllZeros_h267000.BandHyp)
+    (hbands_268000 : AllZeros_h268000.BandHyp)
+    (hbands_269000 : AllZeros_h269000.BandHyp)
+    (hbands_270000 : AllZeros_h270000.BandHyp)
+    (hbands_271000 : AllZeros_h271000.BandHyp)
+    (hbands_272000 : AllZeros_h272000.BandHyp)
+    (hbands_273000 : AllZeros_h273000.BandHyp)
+    (hbands_274000 : AllZeros_h274000.BandHyp)
+    (hbands_275000 : AllZeros_h275000.BandHyp)
+    (hbands_276000 : AllZeros_h276000.BandHyp)
+    (hbands_277000 : AllZeros_h277000.BandHyp)
+    (hbands_278000 : AllZeros_h278000.BandHyp)
+    (hbands_279000 : AllZeros_h279000.BandHyp)
+    (hbands_280000 : AllZeros_h280000.BandHyp)
+    (hbands_281000 : AllZeros_h281000.BandHyp)
+    (hbands_282000 : AllZeros_h282000.BandHyp)
+    (hbands_283000 : AllZeros_h283000.BandHyp)
+    (hbands_284000 : AllZeros_h284000.BandHyp)
+    (hbands_285000 : AllZeros_h285000.BandHyp)
+    (hbands_286000 : AllZeros_h286000.BandHyp)
+    (hbands_287000 : AllZeros_h287000.BandHyp)
+    (hbands_288000 : AllZeros_h288000.BandHyp)
+    (hbands_289000 : AllZeros_h289000.BandHyp)
+    (hbands_290000 : AllZeros_h290000.BandHyp)
+    (hbands_291000 : AllZeros_h291000.BandHyp)
+    (hbands_292000 : AllZeros_h292000.BandHyp)
+    (hbands_293000 : AllZeros_h293000.BandHyp)
+    (hbands_294000 : AllZeros_h294000.BandHyp)
+    (hbands_295000 : AllZeros_h295000.BandHyp)
+    (hbands : BandHyp)
+    (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 296000 → 55 / 16 ≤ |ρ.im|) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 296000 → ρ.re = 1 / 2 := by
+  have hγ295000 : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 295000 → 55 / 16 ≤ |ρ.im| :=
+    fun ρ hz h0 h2 => hγ ρ hz h0 (le_trans h2 (by norm_num))
+  exact AllZerosUpToHeight.height_chain 295000 296000
+    (AllZeros_h295000.all_nontrivial_zeros_up_to_height_295000_of_bands
+      hbands_1000
+      hbands_2000
+      hbands_3000
+      hbands_4000
+      hbands_5000
+      hbands_6000
+      hbands_7000
+      hbands_8000
+      hbands_9000
+      hbands_10000
+      hbands_11000
+      hbands_12000
+      hbands_13000
+      hbands_14000
+      hbands_15000
+      hbands_16000
+      hbands_17000
+      hbands_18000
+      hbands_19000
+      hbands_20000
+      hbands_21000
+      hbands_22000
+      hbands_23000
+      hbands_24000
+      hbands_25000
+      hbands_26000
+      hbands_27000
+      hbands_28000
+      hbands_29000
+      hbands_30000
+      hbands_31000
+      hbands_32000
+      hbands_33000
+      hbands_34000
+      hbands_35000
+      hbands_36000
+      hbands_37000
+      hbands_38000
+      hbands_39000
+      hbands_40000
+      hbands_41000
+      hbands_42000
+      hbands_43000
+      hbands_44000
+      hbands_45000
+      hbands_46000
+      hbands_47000
+      hbands_48000
+      hbands_49000
+      hbands_50000
+      hbands_51000
+      hbands_52000
+      hbands_53000
+      hbands_54000
+      hbands_55000
+      hbands_56000
+      hbands_57000
+      hbands_58000
+      hbands_59000
+      hbands_60000
+      hbands_61000
+      hbands_62000
+      hbands_63000
+      hbands_64000
+      hbands_65000
+      hbands_66000
+      hbands_67000
+      hbands_68000
+      hbands_69000
+      hbands_70000
+      hbands_71000
+      hbands_72000
+      hbands_73000
+      hbands_74000
+      hbands_75000
+      hbands_76000
+      hbands_77000
+      hbands_78000
+      hbands_79000
+      hbands_80000
+      hbands_81000
+      hbands_82000
+      hbands_83000
+      hbands_84000
+      hbands_85000
+      hbands_86000
+      hbands_87000
+      hbands_88000
+      hbands_89000
+      hbands_90000
+      hbands_91000
+      hbands_92000
+      hbands_93000
+      hbands_94000
+      hbands_95000
+      hbands_96000
+      hbands_97000
+      hbands_98000
+      hbands_99000
+      hbands_100000
+      hbands_101000
+      hbands_102000
+      hbands_103000
+      hbands_104000
+      hbands_105000
+      hbands_106000
+      hbands_107000
+      hbands_108000
+      hbands_109000
+      hbands_110000
+      hbands_111000
+      hbands_112000
+      hbands_113000
+      hbands_114000
+      hbands_115000
+      hbands_116000
+      hbands_117000
+      hbands_118000
+      hbands_119000
+      hbands_120000
+      hbands_121000
+      hbands_122000
+      hbands_123000
+      hbands_124000
+      hbands_125000
+      hbands_126000
+      hbands_127000
+      hbands_128000
+      hbands_129000
+      hbands_130000
+      hbands_131000
+      hbands_132000
+      hbands_133000
+      hbands_134000
+      hbands_135000
+      hbands_136000
+      hbands_137000
+      hbands_138000
+      hbands_139000
+      hbands_140000
+      hbands_141000
+      hbands_142000
+      hbands_143000
+      hbands_144000
+      hbands_145000
+      hbands_146000
+      hbands_147000
+      hbands_148000
+      hbands_149000
+      hbands_150000
+      hbands_151000
+      hbands_152000
+      hbands_153000
+      hbands_154000
+      hbands_155000
+      hbands_156000
+      hbands_157000
+      hbands_158000
+      hbands_159000
+      hbands_160000
+      hbands_161000
+      hbands_162000
+      hbands_163000
+      hbands_164000
+      hbands_165000
+      hbands_166000
+      hbands_167000
+      hbands_168000
+      hbands_169000
+      hbands_170000
+      hbands_171000
+      hbands_172000
+      hbands_173000
+      hbands_174000
+      hbands_175000
+      hbands_176000
+      hbands_177000
+      hbands_178000
+      hbands_179000
+      hbands_180000
+      hbands_181000
+      hbands_182000
+      hbands_183000
+      hbands_184000
+      hbands_185000
+      hbands_186000
+      hbands_187000
+      hbands_188000
+      hbands_189000
+      hbands_190000
+      hbands_191000
+      hbands_192000
+      hbands_193000
+      hbands_194000
+      hbands_195000
+      hbands_196000
+      hbands_197000
+      hbands_198000
+      hbands_199000
+      hbands_200000
+      hbands_201000
+      hbands_202000
+      hbands_203000
+      hbands_204000
+      hbands_205000
+      hbands_206000
+      hbands_207000
+      hbands_208000
+      hbands_209000
+      hbands_210000
+      hbands_211000
+      hbands_212000
+      hbands_213000
+      hbands_214000
+      hbands_215000
+      hbands_216000
+      hbands_217000
+      hbands_218000
+      hbands_219000
+      hbands_220000
+      hbands_221000
+      hbands_222000
+      hbands_223000
+      hbands_224000
+      hbands_225000
+      hbands_226000
+      hbands_227000
+      hbands_228000
+      hbands_229000
+      hbands_230000
+      hbands_231000
+      hbands_232000
+      hbands_233000
+      hbands_234000
+      hbands_235000
+      hbands_236000
+      hbands_237000
+      hbands_238000
+      hbands_239000
+      hbands_240000
+      hbands_241000
+      hbands_242000
+      hbands_243000
+      hbands_244000
+      hbands_245000
+      hbands_246000
+      hbands_247000
+      hbands_248000
+      hbands_249000
+      hbands_250000
+      hbands_251000
+      hbands_252000
+      hbands_253000
+      hbands_254000
+      hbands_255000
+      hbands_256000
+      hbands_257000
+      hbands_258000
+      hbands_259000
+      hbands_260000
+      hbands_261000
+      hbands_262000
+      hbands_263000
+      hbands_264000
+      hbands_265000
+      hbands_266000
+      hbands_267000
+      hbands_268000
+      hbands_269000
+      hbands_270000
+      hbands_271000
+      hbands_272000
+      hbands_273000
+      hbands_274000
+      hbands_275000
+      hbands_276000
+      hbands_277000
+      hbands_278000
+      hbands_279000
+      hbands_280000
+      hbands_281000
+      hbands_282000
+      hbands_283000
+      hbands_284000
+      hbands_285000
+      hbands_286000
+      hbands_287000
+      hbands_288000
+      hbands_289000
+      hbands_290000
+      hbands_291000
+      hbands_292000
+      hbands_293000
+      hbands_294000
+      hbands_295000
+      hγ295000)
+    (segment_295000_296000 hbands hγ)
+
+end AllZeros_h296000

@@ -51,7 +51,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification)
         working-directory: telperion/examples/toy_box/lean
         run: lake build
-
   jensen-hyperbolicity-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -131,7 +130,6 @@ jobs:
         run: |
           lake env lean AxiomGuardLiPositivity.lean | tee axioms.out
           ! grep -q "sorryAx" axioms.out
-
   tangent-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -165,8 +163,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — tangent-line trick)
         working-directory: telperion/examples/tangent_sum/lean
         run: lake build
-
-
   primality-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -200,7 +196,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Lucas/Pratt primality)
         working-directory: telperion/examples/primality/lean
         run: lake build
-
   cs-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -234,7 +229,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Cauchy-Schwarz)
         working-directory: telperion/examples/cauchy_schwarz/lean
         run: lake build
-
   bilinear-corner-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -268,7 +262,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — bilinear worst-corner box)
         working-directory: telperion/examples/bilinear_corner/lean
         run: lake build
-
   algebraic-bracket-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -302,7 +295,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — algebraic √ bracket)
         working-directory: telperion/examples/algebraic_bracket/lean
         run: lake build
-
   halfplane-disk-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -336,7 +328,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Borel–Carathéodory half-plane→disk)
         working-directory: telperion/examples/halfplane_disk/lean
         run: lake build
-
   finite-argmax-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -370,7 +361,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — finite-argmax margin)
         working-directory: telperion/examples/finite_argmax/lean
         run: lake build
-
   magnitude-split-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -404,7 +394,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — triangle magnitude split)
         working-directory: telperion/examples/magnitude_split/lean
         run: lake build
-
   disk-coord-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -438,7 +427,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — disk→coordinate bounds)
         working-directory: telperion/examples/disk_coord/lean
         run: lake build
-
   cauchy-deriv-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -472,7 +460,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Cauchy derivative estimate)
         working-directory: telperion/examples/cauchy_deriv/lean
         run: lake build
-
   logderiv-region-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -506,7 +493,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — dVP log-derivative region core)
         working-directory: telperion/examples/logderiv_region/lean
         run: lake build
-
   pe-duality-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -540,7 +526,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — pseudo-expectation SoS-duality)
         working-directory: telperion/examples/pe_duality/lean
         run: lake build
-
   order-balance-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -574,7 +559,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — order-balance boundary hinge)
         working-directory: telperion/examples/order_balance/lean
         run: lake build
-
   lfunction-product-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -608,7 +592,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — nonneg-cosine L-product)
         working-directory: telperion/examples/lfunction_product/lean
         run: lake build
-
   parametric-holomorphy-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -642,7 +625,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — parametric-integral holomorphy)
         working-directory: telperion/examples/parametric_holomorphy/lean
         run: lake build
-
   symmetric-quad-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -676,7 +658,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — symbolic-n moment PSD)
         working-directory: telperion/examples/symmetric_quad/lean
         run: lake build
-
   polytope-max-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -710,7 +691,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — multi-affine corner box positivity)
         working-directory: telperion/examples/polytope_max/lean
         run: lake build
-
   second-order-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -744,7 +724,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — 2nd-order recurrence closed form)
         working-directory: telperion/examples/second_order/lean
         run: lake build
-
   integrality-gate-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -778,7 +757,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — p-adic integrality gate)
         working-directory: telperion/examples/integrality_gate/lean
         run: lake build
-
   domination-ratio-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -812,7 +790,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — rational domination ratio)
         working-directory: telperion/examples/domination_ratio/lean
         run: lake build
-
   achievability-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -846,7 +823,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — achievability closure)
         working-directory: telperion/examples/achievability/lean
         run: lake build
-
   separable-convex-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -880,7 +856,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — separable-convex min/homogeneous)
         working-directory: telperion/examples/separable_convex/lean
         run: lake build
-
   scale-invariance-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -914,7 +889,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — objective-degeneracy / homogeneity)
         working-directory: telperion/examples/scale_invariance/lean
         run: lake build
-
   concave-stationary-max-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -948,7 +922,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Kelly concave-stationary max)
         working-directory: telperion/examples/concave_stationary_max/lean
         run: lake build
-
   symmetric-quad-d2-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -982,7 +955,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — symbolic-in-n d=2 moment PSD)
         working-directory: telperion/examples/symmetric_quad_d2/lean
         run: lake build
-
   tight-cap-enclosure-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1016,7 +988,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG g-step fixed-config tight-cap closure)
         working-directory: telperion/examples/tight_cap_enclosure/lean
         run: lake build
-
   affine-param-endpoint-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1050,7 +1021,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — affine-in-parameter interval -> two endpoints (SCLStep price collapse))
         working-directory: telperion/examples/affine_param_endpoint/lean
         run: lake build
-
   recursion-closure-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1084,7 +1054,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — node tangent+ceiling assembly at fixed price)
         working-directory: telperion/examples/recursion_closure/lean
         run: lake build
-
   cavity-exchange-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1118,7 +1087,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Kelmans de-branch bilinear-corner exchange)
         working-directory: telperion/examples/cavity_exchange/lean
         run: lake build
-
   per-size-dominance-sweep-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1152,7 +1120,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — finite per-size dominance sweep)
         working-directory: telperion/examples/per_size_dominance_sweep/lean
         run: lake build
-
   curvature-boundary-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1186,7 +1153,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — curvature-sign -> boundary extremum (AxiomMath port))
         working-directory: telperion/examples/curvature_boundary/lean
         run: lake build
-
   transcendental-enclosure-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1220,7 +1186,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — rational enclosure of log(1+x) (BG cells))
         working-directory: telperion/examples/transcendental_enclosure/lean
         run: lake build
-
   log-combination-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1254,7 +1219,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — F*-folding log-combination (BG dogfood))
         working-directory: telperion/examples/log_combination/lean
         run: lake build
-
   psd-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1288,7 +1252,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — LDLT PSD form)
         working-directory: telperion/examples/psd_form/lean
         run: lake build
-
   xor3-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1322,7 +1285,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — 3-XOR moment PSD)
         working-directory: telperion/examples/xor3_moment/lean
         run: lake build
-
   bg-family-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1356,7 +1318,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG base-cell Bernstein positivity)
         working-directory: telperion/examples/bg_family/lean
         run: lake build
-
   bg-floor-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1384,7 +1345,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG R7 chain-class ledger floor)
         working-directory: telperion/examples/bg_floor/lean
         run: lake build
-
   bg-floor-families-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -1412,7 +1372,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG R7 bare-leaf + nl=2 floors)
         working-directory: telperion/examples/bg_floor_families/lean
         run: lake build
-
   bg-floor-r7-facets-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -1440,7 +1399,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG R7 m=0/m>=4/tax-window facets)
         working-directory: telperion/examples/bg_floor_r7_facets/lean
         run: lake build
-
   hinge-floor-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1474,7 +1432,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — hinge floor)
         working-directory: telperion/examples/hinge_floor/lean
         run: lake build
-
   borel-caratheodory-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1499,7 +1456,6 @@ jobs:
       - name: Build the drafted Borel-Caratheodory theorem (Moebius-Schwarz, 12 theorems)
         working-directory: telperion/examples/borel_caratheodory/lean
         run: lake build
-
   bg-flag-discharge-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1533,7 +1489,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — flag-discharge m_2 cut norm_num atoms)
         working-directory: telperion/examples/bg_flag_discharge/lean
         run: lake build
-
   bg-caterpillar-concavity-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1567,7 +1522,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — density concavity + strict max at a=7)
         working-directory: telperion/examples/bg_caterpillar_concavity/lean
         run: lake build
-
   bg-m3-moment-cut-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1601,7 +1555,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — caterpillar = degree-3 moment argmax)
         working-directory: telperion/examples/bg_m3_moment_cut/lean
         run: lake build
-
   bg-arm-balancing-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1635,7 +1588,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — m=2 arm-balancing strictly increases Z)
         working-directory: telperion/examples/bg_arm_balancing/lean
         run: lake build
-
   bg-broom-optimum-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1669,7 +1621,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — star-of-brooms c=5 optimum)
         working-directory: telperion/examples/bg_broom_optimum/lean
         run: lake build
-
   bg-tie-cherry-worst-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1703,7 +1654,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — tie-regime cherry-worst k<=20)
         working-directory: telperion/examples/bg_tie_cherry_worst/lean
         run: lake build
-
   bg-tie-slack-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1737,7 +1687,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — slack bound slack_g(k)<=F* for k>=16)
         working-directory: telperion/examples/bg_tie_slack/lean
         run: lake build
-
   bg-mixed-kkt-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1771,7 +1720,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — mixed<=B(k) k<=15 via per-child KKT V(c)<V(cherry))
         working-directory: telperion/examples/bg_mixed_kkt/lean
         run: lake build
-
   bg-hi-degree-tail-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1805,7 +1753,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — d>=7 envelope tail V(c)<V(cherry) via ell<=0)
         working-directory: telperion/examples/bg_hi_degree_tail/lean
         run: lake build
-
   bg-smooth-nogo-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1839,7 +1786,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — f_cont(24/5) > F*, the integrality-gap no-go)
         working-directory: telperion/examples/bg_smooth_nogo/lean
         run: lake build
-
   bg-spider-vs-caterpillar-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1873,7 +1819,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — spider F*>F(a) beats every caterpillar)
         working-directory: telperion/examples/bg_spider_vs_caterpillar/lean
         run: lake build
-
   bg-broom-vs-cherry-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1907,7 +1852,6 @@ jobs:
       - name: Build the emitted Lean (broom-vs-cherry-on-I norm_num atoms)
         working-directory: telperion/examples/bg_broom_vs_cherry/lean
         run: lake build
-
   bg-leaf-exchange-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2175,7 +2119,6 @@ jobs:
             if echo "$out" | grep -qE 'error:'; then echo "::error::$G did not elaborate cleanly"; exit 1; fi
           done
           echo "OK: all guarded theorems kernel-clean."
-
   zeta-localization-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -2204,7 +2147,6 @@ jobs:
           if echo "$out" | grep -q 'sorryAx'; then echo "::error::a guarded theorem depends on sorry"; exit 1; fi
           if echo "$out" | grep -qE 'error:'; then echo "::error::AxiomGuardRHInBox.lean did not elaborate cleanly"; exit 1; fi
           echo "OK: all guarded theorems kernel-clean."
-
   mission-statements-compile:
     # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
     # statement package: a statement that does not elaborate cannot enter the
@@ -2233,4 +2175,268 @@ jobs:
         run: lake exe cache get
       - name: Build the statement package (statements must elaborate; sorry bodies expected)
         working-directory: telperion/missions/${{ matrix.campaign }}/lean
+        run: lake build
+  bragg-amplitude-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the Bragg-amplitude instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/bragg_amplitude/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Bragg-amplitude lib (uses the island's CosEnclosure)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: lake build BraggAmplitudeInstances
+  defect-witness-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the defect-witness Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/defect_witness/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/defect_witness/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/defect_witness/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- DefectWitness)
+        working-directory: telperion/examples/defect_witness/lean
+        run: lake build
+  selfinversive-rigidity-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the self-inversive-rigidity instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/selfinversive_rigidity/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake exe cache get
+
+      - name: Build the emitted rigidity lib (uses the island's TwoFreqRigidity)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake build SelfInversiveRigidityInstances
+  winding-box-zero-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      # winding_box_zero is an Arb-trust-class kind: it ships a .cert.json sidecar + a doc stub
+      # (NO kernel theorem), so there is no Lean to build.  The gate is the deterministic drift
+      # check (which re-verifies each winding at doubled precision + density) plus the unit tests.
+      - name: Regenerate the winding-box-zero sidecar + doc stub (drift check)
+        working-directory: telperion
+        run: |
+          python examples/winding_box_zero/generate.py --check
+
+      - name: Unit tests (self-check pass + negative-control refusals)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_winding_box_zero.py -q
+  robin-growth-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath python-flint
+
+      - name: Emitter self-check / negative-control tests (RH Face 2)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_robin_growth.py -q
+
+      - name: Regenerate RobinGrowth Lean from the family definition
+        working-directory: telperion
+        run: PYTHONPATH=src python examples/robin_growth/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/robin_growth/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/robin_growth/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (RH Face 2 — Robin growth / temperedness)
+        working-directory: telperion/examples/robin_growth/lean
+        run: lake build
+  baez-duarte-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath python-flint
+
+      - name: Emitter self-check / negative-control tests (RH Face 6)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_baez_duarte.py -q
+
+      - name: Regenerate BaezDuarte Lean from the family definition
+        working-directory: telperion
+        run: PYTHONPATH=src python examples/baez_duarte/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/baez_duarte/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/baez_duarte/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (RH Face 6 — Baez-Duarte / spectral)
+        working-directory: telperion/examples/baez_duarte/lean
+        run: lake build
+  lehmer-pair-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath python-flint
+
+      - name: Emitter self-check / negative-control tests (RH Face 5)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_lehmer_pair.py -q
+
+      - name: Regenerate LehmerPair Lean from the family definition
+        working-directory: telperion
+        run: PYTHONPATH=src python examples/lehmer_pair/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/lehmer_pair/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/lehmer_pair/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (RH Face 5 — Lehmer pairs / de Bruijn-Newman)
+        working-directory: telperion/examples/lehmer_pair/lean
+        run: lake build
+  bagchi-recurrence-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath python-flint
+
+      - name: Emitter self-check / negative-control tests (RH Face 4)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_bagchi_recurrence.py -q
+
+      - name: Regenerate BagchiRecurrence Lean from the family definition
+        working-directory: telperion
+        run: PYTHONPATH=src python examples/bagchi_recurrence/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bagchi_recurrence/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bagchi_recurrence/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (RH Face 4 — Bagchi recurrence)
+        working-directory: telperion/examples/bagchi_recurrence/lean
         run: lake build
