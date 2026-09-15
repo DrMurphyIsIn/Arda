@@ -536,8 +536,8 @@ def emit_dirichlet_re_box_lean(t: int, N: int, name: str) -> tuple[str, F, F]:
     scnt = N - 1                       # range count after sum_Ico_eq_sum_range (upper = N-1)
     L = []
     L.append(f"theorem {name} :")
-    L.append(f"    (({frac_str(slo)}) : ℝ) ≤ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1:ℂ)/2 + ({t}:ℝ)*I)))).re")
-    L.append(f"      ∧ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1:ℂ)/2 + ({t}:ℝ)*I)))).re ≤ ({frac_str(shi)}) := by")
+    L.append(f"    (({frac_str(slo)}) : ℝ) ≤ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1/2:ℂ) + ({t}:ℂ)*Complex.I)))).re")
+    L.append(f"      ∧ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1/2:ℂ) + ({t}:ℂ)*Complex.I)))).re ≤ ({frac_str(shi)}) := by")
     L.append(f"  rw [Complex.re_sum, Finset.sum_Ico_eq_sum_range]")
     L.append(f"  rw [show ({N}-1) = {N-1} from rfl,")
     L.append(f"    {' '.join(['Finset.sum_range_succ,'] * (N - 1))} Finset.sum_range_zero]")
@@ -558,8 +558,8 @@ def emit_dirichlet_im_box_lean(t: int, N: int, name: str) -> tuple[str, F, F]:
     shi = sum(im_boxes[n][1] for n in range(2, N))
     L = []
     L.append(f"theorem {name} :")
-    L.append(f"    (({frac_str(slo)}) : ℝ) ≤ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1:ℂ)/2 + ({t}:ℝ)*I)))).im")
-    L.append(f"      ∧ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1:ℂ)/2 + ({t}:ℝ)*I)))).im ≤ ({frac_str(shi)}) := by")
+    L.append(f"    (({frac_str(slo)}) : ℝ) ≤ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1/2:ℂ) + ({t}:ℂ)*Complex.I)))).im")
+    L.append(f"      ∧ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1/2:ℂ) + ({t}:ℂ)*Complex.I)))).im ≤ ({frac_str(shi)}) := by")
     L.append(f"  rw [Complex.im_sum, Finset.sum_Ico_eq_sum_range]")
     L.append(f"  rw [show ({N}-1) = {N-1} from rfl,")
     L.append(f"    {' '.join(['Finset.sum_range_succ,'] * (N - 1))} Finset.sum_range_zero]")
@@ -625,7 +625,64 @@ def emit_zeta_box_lean(t: int, N: int, tail_bound: F, prefix: str) -> tuple[str,
     L.append(f"    have hne : ((1/2 + ({t}:ℝ)*I) - 1) ≠ 0 := by intro h; have := congrArg Complex.im h; simp at this")
     L.append(f"    rw [div_eq_iff hne]; apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.sub_re, Complex.sub_im] <;> norm_num")
     L.append(f"  rw [hdiv]; apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.div_re, Complex.div_im, Complex.inv_re, Complex.inv_im, Complex.normSq] <;> norm_num")
-    return "\n".join(L), re_lo, re_hi, im_lo, im_hi
+    # ---- tail T.re / T.im boxes via ForgeTailTerms.tail_re_im + Bval + n=N term box ----
+    # Note: term boxes re_term_N / im_term_N are about (((N:ℕ):ℂ)^(-((1:ℂ)/2+t*I))).re/.im;
+    # tail_re_im needs ((N:ℂ)^(-s)).re/.im with s = 1/2+t*I.  Bridge by norm_num.
+    # s in the ℕ-cast form tail_re_im/emZetaFinite3_eq_dirichlet produce:
+    sc = f"((1/2:ℂ) + ({t}:ℂ)*Complex.I)"
+    Texpr = (f"(({N}:ℕ):ℂ)^(1-{sc})/({sc}-1) + (({N}:ℕ):ℂ)^(-{sc})/2 "
+             f"+ (bernoulli 2:ℂ)*({sc}*((({N}:ℕ):ℝ))^(-{sc}-1))/2")
+    bval_conv = (f"(by have h := {prefix}_Bval; "
+                 f"convert h using 2 <;> push_cast <;> ring)")
+    tri = f"ForgeTailTerms.tail_re_im {sc} {N} (by norm_num) (by intro h; have := congrArg Complex.im h; simp at this) ({frac_str(Bre)}) ({frac_str(Bim)}) {bval_conv}"
+    for part, lo, hi, comp in [("Tre", Tre_lo, Tre_hi, ".re"), ("Tim", Tim_lo, Tim_hi, ".im")]:
+        sel = "1" if part == "Tre" else "2"
+        L.append(f"theorem {prefix}_{part} :")
+        L.append(f"    (({frac_str(lo)}) : ℝ) ≤ ({Texpr}){comp}")
+        L.append(f"      ∧ ({Texpr}){comp} ≤ ({frac_str(hi)}) := by")
+        L.append(f"  rw [({tri}).{sel}]")
+        L.append(f"  have hP := re_term_{N}")
+        L.append(f"  have hQ := im_term_{N}")
+        L.append(f"  norm_num at hP hQ ⊢")
+        L.append(f"  obtain ⟨hplo,hphi⟩ := hP; obtain ⟨hqlo,hqhi⟩ := hQ")
+        L.append(f"  constructor <;> nlinarith [hplo,hphi,hqlo,hqhi]")
+    # ---- emF.re / emF.im boxes (sum + tail), then ζ.re / ζ.im boxes (± EM tail) ----
+    sc = f"((1/2:ℂ) + ({t}:ℂ)*Complex.I)"
+    efre_lo = sre_lo + Tre_lo; efre_hi = sre_hi + Tre_hi
+    efim_lo = sim_lo + Tim_lo; efim_hi = sim_hi + Tim_hi
+    sumexpr = f"∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-{sc}))"
+    Texpr2 = (f"(({N}:ℕ):ℂ)^(1-{sc})/({sc}-1) + (({N}:ℕ):ℂ)^(-{sc})/2 "
+              f"+ (bernoulli 2:ℂ)*({sc}*((({N}:ℕ):ℝ))^(-{sc}-1))/2")
+    for part, comp, sumbox, tbox, eflo, efhi in [
+            ("re", ".re", "reSum", f"{prefix}_Tre", efre_lo, efre_hi),
+            ("im", ".im", "imSum", f"{prefix}_Tim", efim_lo, efim_hi)]:
+        L.append(f"theorem {prefix}_emf_{part} :")
+        L.append(f"    (({frac_str(eflo)}) : ℝ) ≤ (emZetaFinite3 {sc} {N}){comp}")
+        L.append(f"      ∧ (emZetaFinite3 {sc} {N}){comp} ≤ ({frac_str(efhi)}) := by")
+        L.append(f"  rw [ZetaEMSum.emZetaFinite3_eq_dirichlet (by intro h; have := congrArg Complex.re h; simp at this) (by intro h; have := congrArg Complex.im h; simp at this) (by norm_num) (by norm_num)]")
+        L.append(f"  rw [show ({sumexpr}) + (({N}:ℕ):ℂ)^(1-{sc})/({sc}-1) + (({N}:ℕ):ℂ)^(-{sc})/2 + (bernoulli 2:ℂ)*({sc}*((({N}:ℕ):ℝ))^(-{sc}-1))/2")
+        L.append(f"      = ({sumexpr}) + ({Texpr2}) by ring]")
+        L.append(f"  rw [Complex.add_{part}]")
+        L.append(f"  have hs := {sumbox}")
+        L.append(f"  have ht := {tbox}")
+        L.append(f"  constructor <;> [linarith [hs.1, ht.1]; linarith [hs.2, ht.2]]")
+    # ζ boxes
+    for part, comp, efbox, eflo, efhi, zlo, zhi in [
+            ("re", ".re", f"{prefix}_emf_re", efre_lo, efre_hi, re_lo, re_hi),
+            ("im", ".im", f"{prefix}_emf_im", efim_lo, efim_hi, im_lo, im_hi)]:
+        absname = "Complex.abs_re_le_norm" if part == "re" else "Complex.abs_im_le_norm"
+        L.append(f"theorem {prefix}_zeta_{part} :")
+        L.append(f"    (({frac_str(zlo)}) : ℝ) ≤ (riemannZeta {sc}){comp}")
+        L.append(f"      ∧ (riemannZeta {sc}){comp} ≤ ({frac_str(zhi)}) := by")
+        L.append(f"  have hef := {efbox}")
+        L.append(f"  have htail : |(riemannZeta {sc}){comp} - (emZetaFinite3 {sc} {N}){comp}| ≤ ({frac_str(tail_bound)}) := by")
+        L.append(f"    calc |(riemannZeta {sc}){comp} - (emZetaFinite3 {sc} {N}){comp}|")
+        L.append(f"        = |(riemannZeta {sc} - emZetaFinite3 {sc} {N}){comp}| := by rw [Complex.sub_{part}]")
+        L.append(f"      _ ≤ ‖riemannZeta {sc} - emZetaFinite3 {sc} {N}‖ := {absname} _")
+        L.append(f"      _ ≤ ({frac_str(tail_bound)}) := ForgeTail.zeta_tail_t{t}")
+        L.append(f"  rw [abs_le] at htail")
+        L.append(f"  constructor <;> [linarith [hef.1, htail.1]; linarith [hef.2, htail.2]]")
+    return "\n".join(L), re_lo, re_hi, im_lo, im_hi, sre_lo, sre_hi, sim_lo, sim_hi, Tre_lo, Tre_hi, Tim_lo, Tim_hi
 
 
 def emit_trig_file(pairs: list[tuple[int, int]], ns: str, fname: str) -> str:
