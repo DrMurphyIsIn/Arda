@@ -11,3 +11,4 @@ import Statements.MM_zeta_ordinates_not_uniformly_discrete
 import Statements.MM_torus_section_dictionary
 import Statements.MM_torus_section_n2_rigidity
 import Statements.MM_euler_factor_section_offline
+import Statements.MM_bragg_bridge
