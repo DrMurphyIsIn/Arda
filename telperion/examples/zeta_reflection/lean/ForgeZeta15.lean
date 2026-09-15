@@ -272,7 +272,7 @@ theorem zt15_zeta_re :
     calc |(riemannZeta ((1/2:ℂ) + (15:ℂ)*Complex.I)).re - (emZetaFinite3 ((1/2:ℂ) + (15:ℂ)*Complex.I) 50).re|
         = |(riemannZeta ((1/2:ℂ) + (15:ℂ)*Complex.I) - emZetaFinite3 ((1/2:ℂ) + (15:ℂ)*Complex.I) 50).re| := by rw [Complex.sub_re]
       _ ≤ ‖riemannZeta ((1/2:ℂ) + (15:ℂ)*Complex.I) - emZetaFinite3 ((1/2:ℂ) + (15:ℂ)*Complex.I) 50‖ := Complex.abs_re_le_norm _
-      _ ≤ (3 / 2000) := ForgeTail.zeta_tail_t15
+      _ ≤ (3 / 2000) := le_trans ForgeTail.zeta_tail_t15 (by norm_num)
   rw [abs_le] at htail
   constructor <;> [linarith [hef.1, htail.1]; linarith [hef.2, htail.2]]
 theorem zt15_zeta_im :
@@ -283,7 +283,7 @@ theorem zt15_zeta_im :
     calc |(riemannZeta ((1/2:ℂ) + (15:ℂ)*Complex.I)).im - (emZetaFinite3 ((1/2:ℂ) + (15:ℂ)*Complex.I) 50).im|
         = |(riemannZeta ((1/2:ℂ) + (15:ℂ)*Complex.I) - emZetaFinite3 ((1/2:ℂ) + (15:ℂ)*Complex.I) 50).im| := by rw [Complex.sub_im]
       _ ≤ ‖riemannZeta ((1/2:ℂ) + (15:ℂ)*Complex.I) - emZetaFinite3 ((1/2:ℂ) + (15:ℂ)*Complex.I) 50‖ := Complex.abs_im_le_norm _
-      _ ≤ (3 / 2000) := ForgeTail.zeta_tail_t15
+      _ ≤ (3 / 2000) := le_trans ForgeTail.zeta_tail_t15 (by norm_num)
   rw [abs_le] at htail
   constructor <;> [linarith [hef.1, htail.1]; linarith [hef.2, htail.2]]
 
