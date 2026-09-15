@@ -33,14 +33,15 @@ private theorem zbridge15 : ((1/2:ℂ) + (15:ℂ)*Complex.I) = ((1/2:ℂ)+(15:�
 theorem first_zero_of_theta_boxes
     (Λ14 : ℝ) (hΛ14 : Filter.Tendsto (imLnVal (1/4) (14/2)) Filter.atTop (nhds Λ14))
     (Λ15 : ℝ) (hΛ15 : Filter.Tendsto (imLnVal (1/4) (15/2)) Filter.atTop (nhds Λ15))
-    (hcos14lo : (-23/100 : ℝ) ≤ Real.cos (Λ14 - (14/2)*Real.log Real.pi))
-    (hcos14hi : Real.cos (Λ14 - (14/2)*Real.log Real.pi) ≤ (-19/100 : ℝ))
-    (hsin14lo : (-99/100 : ℝ) ≤ Real.sin (Λ14 - (14/2)*Real.log Real.pi))
-    (hsin14hi : Real.sin (Λ14 - (14/2)*Real.log Real.pi) ≤ (-96/100 : ℝ))
-    (hcos15lo : (18/100 : ℝ) ≤ Real.cos (Λ15 - (15/2)*Real.log Real.pi))
-    (hcos15hi : Real.cos (Λ15 - (15/2)*Real.log Real.pi) ≤ (22/100 : ℝ))
-    (hsin15lo : (-99/100 : ℝ) ≤ Real.sin (Λ15 - (15/2)*Real.log Real.pi))
-    (hsin15hi : Real.sin (Λ15 - (15/2)*Real.log Real.pi) ≤ (-96/100 : ℝ)) :
+    -- θ boxes at a φ-box half-width of ≈0.15 rad (the loose target the θ instrument must hit):
+    (hcos14lo : (-36/100 : ℝ) ≤ Real.cos (Λ14 - (14/2)*Real.log Real.pi))
+    (hcos14hi : Real.cos (Λ14 - (14/2)*Real.log Real.pi) ≤ (-6/100 : ℝ))
+    (hsin14lo : (-100/100 : ℝ) ≤ Real.sin (Λ14 - (14/2)*Real.log Real.pi))
+    (hsin14hi : Real.sin (Λ14 - (14/2)*Real.log Real.pi) ≤ (-93/100 : ℝ))
+    (hcos15lo : (5/100 : ℝ) ≤ Real.cos (Λ15 - (15/2)*Real.log Real.pi))
+    (hcos15hi : Real.cos (Λ15 - (15/2)*Real.log Real.pi) ≤ (35/100 : ℝ))
+    (hsin15lo : (-100/100 : ℝ) ≤ Real.sin (Λ15 - (15/2)*Real.log Real.pi))
+    (hsin15hi : Real.sin (Λ15 - (15/2)*Real.log Real.pi) ≤ (-93/100 : ℝ)) :
     ∃ r : ℝ, 14 < r ∧ r < 15 ∧ completedRiemannZeta (1 / 2 + (r : ℂ) * Complex.I) = 0 := by
   -- ζ boxes (PROVEN), bridged to the (t:ℝ) form.
   obtain ⟨hRe14hi, hRe14lo⟩ := ForgeZeta14.zt14_zeta_re
@@ -58,7 +59,7 @@ theorem first_zero_of_theta_boxes
   set I14 := (riemannZeta ((1/2:ℂ)+(14:ℝ)*I)).im
   -- cos·Re ≤ 0 (cos ≤ 0, Re ≥ 0); sin·Im ≥ (0.96)(0.0951) > 0.09 (both ≤ 0). Hence S < 0.
   have hcR14 : c14 * R14 ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (by linarith [hcos14hi]) (by linarith [hRe14lo])
-  have hsI14 : (9 : ℝ)/100 ≤ s14 * I14 := by
+  have hsI14 : (88 : ℝ)/1000 ≤ s14 * I14 := by
     nlinarith [hsin14lo, hsin14hi, hIm14lo, hIm14hi]
   have hsign14 : c14 * R14 - s14 * I14 < 0 := by linarith [hcR14, hsI14]
   -- S(15) > 0.  cos φ ∈ [.18,.22], Re ζ ∈ [.138,.156]; sin φ ∈ [-.99,-.96], Im ζ ∈ [.696,.714].
@@ -67,8 +68,8 @@ theorem first_zero_of_theta_boxes
   set s15 := Real.sin (Λ15 - (15/2)*Real.log Real.pi)
   set R15 := (riemannZeta ((1/2:ℂ)+(15:ℝ)*I)).re
   set I15 := (riemannZeta ((1/2:ℂ)+(15:ℝ)*I)).im
-  have hcR15 : (2 : ℝ)/100 ≤ c15 * R15 := by nlinarith [hcos15lo, hcos15hi, hRe15lo, hRe15hi]
-  have hsI15 : s15 * I15 ≤ (-6 : ℝ)/10 := by nlinarith [hsin15lo, hsin15hi, hIm15lo, hIm15hi]
+  have hcR15 : (6 : ℝ)/1000 ≤ c15 * R15 := by nlinarith [hcos15lo, hcos15hi, hRe15lo, hRe15hi]
+  have hsI15 : s15 * I15 ≤ (-64 : ℝ)/100 := by nlinarith [hsin15lo, hsin15hi, hIm15lo, hIm15hi]
   have hsign15 : 0 < c15 * R15 - s15 * I15 := by linarith [hcR15, hsI15]
   -- Apply the proved magnitude-free bridge.
   exact first_zero_of_sign_quantities Λ14 hΛ14 Λ15 hΛ15 hsign14 hsign15
