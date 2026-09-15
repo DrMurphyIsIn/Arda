@@ -572,6 +572,62 @@ def emit_dirichlet_im_box_lean(t: int, N: int, name: str) -> tuple[str, F, F]:
     return "\n".join(L), slo, shi
 
 
+def tail_B(t: int, N: int) -> tuple[F, F]:
+    """Exact rational (Bre, Bim) of B = N/(s-1) + 1/2 + b2*s/(2N), s = 1/2 + it, b2 = 1/6."""
+    a, b = F(-1, 2), F(t)              # s - 1 = a + i b
+    den = a * a + b * b
+    Bre = F(N) * a / den + F(1, 2) + F(1, 6) * F(1, 2) / (2 * N)
+    Bim = -F(N) * b / den + F(1, 6) * F(t) / (2 * N)
+    return Bre, Bim
+
+
+def emit_zeta_box_lean(t: int, N: int, tail_bound: F, prefix: str) -> tuple[str, F, F, F, F]:
+    """Emit Re/Im ζ(1/2+it) boxes for tail cut N.  Requires (in scope): re_term_k/im_term_k for
+    k=2..N, amp_N/cos_TN/sin_TN, the sum folds reSum/imSum, and ForgeTail.zeta_tail_t{t}.
+    Returns (lean, re_lo, re_hi, im_lo, im_hi)."""
+    Bre, Bim = tail_B(t, N)
+    # sum boxes
+    re_boxes = {n: term_box(t, n)[:2] for n in range(2, N)}
+    im_boxes = {n: term_box(t, n)[2:] for n in range(2, N)}
+    sre_lo = F(1) + sum(re_boxes[n][0] for n in range(2, N))
+    sre_hi = F(1) + sum(re_boxes[n][1] for n in range(2, N))
+    sim_lo = sum(im_boxes[n][0] for n in range(2, N))
+    sim_hi = sum(im_boxes[n][1] for n in range(2, N))
+    # n=N term box for P = Re(N^{-s}), Q = Im(N^{-s})
+    Pre_lo, Pre_hi, Qim_lo, Qim_hi = term_box(t, N)
+    # tail T.re = P*Bre - Q*Bim  ; T.im = P*Bim + Q*Bre  (interval arithmetic)
+    def prod_iv(alo, ahi, blo, bhi):
+        c = [alo*blo, alo*bhi, ahi*blo, ahi*bhi]
+        return min(c), max(c)
+    pBre = prod_iv(Pre_lo, Pre_hi, Bre, Bre)   # P*Bre
+    qBim = prod_iv(Qim_lo, Qim_hi, Bim, Bim)   # Q*Bim
+    pBim = prod_iv(Pre_lo, Pre_hi, Bim, Bim)
+    qBre = prod_iv(Qim_lo, Qim_hi, Bre, Bre)
+    Tre_lo = rfloor(pBre[0] - qBim[1]); Tre_hi = rceil(pBre[1] - qBim[0])
+    Tim_lo = rfloor(pBim[0] + qBre[0]); Tim_hi = rceil(pBim[1] + qBre[1])
+    # emF.re in [sre_lo+Tre_lo, sre_hi+Tre_hi]; zeta.re in [that -+ tail_bound]
+    re_lo = rfloor(sre_lo + Tre_lo - tail_bound)
+    re_hi = rceil(sre_hi + Tre_hi + tail_bound)
+    im_lo = rfloor(sim_lo + Tim_lo - tail_bound)
+    im_hi = rceil(sim_hi + Tim_hi + tail_bound)
+    L = []
+    # N/(s-1) exact rational (r1 + i1·I)
+    a, b = F(-1, 2), F(t)
+    den = a * a + b * b
+    r1 = F(N) * a / den
+    i1 = -F(N) * b / den
+    L.append(f"-- exact rational B = N/(s-1)+1/2+b2 s/(2N): Bre={frac_str(Bre)}, Bim={frac_str(Bim)}")
+    L.append(f"theorem {prefix}_Bval :")
+    L.append(f"    (({N}:ℂ) / ((1/2 + ({t}:ℝ)*I) - 1) + 1 / 2 + (bernoulli 2 : ℂ) * (1/2 + ({t}:ℝ)*I) / (2 * ({N}:ℂ)))")
+    L.append(f"      = (({frac_str(Bre)} : ℝ) : ℂ) + (({frac_str(Bim)} : ℝ) : ℂ) * I := by")
+    L.append(f"  rw [show (bernoulli 2 : ℂ) = 6⁻¹ by rw [bernoulli_two]; norm_num]")
+    L.append(f"  have hdiv : ({N}:ℂ) / ((1/2 + ({t}:ℝ)*I) - 1) = (({frac_str(r1)} : ℝ):ℂ) + (({frac_str(i1)}:ℝ):ℂ)*I := by")
+    L.append(f"    have hne : ((1/2 + ({t}:ℝ)*I) - 1) ≠ 0 := by intro h; have := congrArg Complex.im h; simp at this")
+    L.append(f"    rw [div_eq_iff hne]; apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.sub_re, Complex.sub_im] <;> norm_num")
+    L.append(f"  rw [hdiv]; apply Complex.ext <;> simp [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.div_re, Complex.div_im, Complex.inv_re, Complex.inv_im, Complex.normSq] <;> norm_num")
+    return "\n".join(L), re_lo, re_hi, im_lo, im_hi
+
+
 def emit_trig_file(pairs: list[tuple[int, int]], ns: str, fname: str) -> str:
     """Emit a full trig-cert Lean file for a list of (t, n) pairs."""
     body = [TRIG_HEADER.format(fname=fname, t="t", yred=YRED, tag_note="", ns=ns)]
