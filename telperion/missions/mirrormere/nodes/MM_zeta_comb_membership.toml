@@ -1,5 +1,5 @@
 created = "2026-09-14"
-depends_on = ["MM_twofreq_realrooted_iff", "MM_primelog_spectrum_dense", "MM_selfinversive_iff_hardyz_real", "MM_offline_pairs_le_defect", "MM_bragg_defect_witness", "MM_nt_brick_conditional", "MM_rvm_unbounded_mean_density", "MM_zeta_ordinates_not_uniformly_discrete", "MM_torus_section_dictionary", "MM_torus_section_n2_rigidity", "MM_euler_factor_section_offline"]
+depends_on = ["MM_twofreq_realrooted_iff", "MM_primelog_spectrum_dense", "MM_selfinversive_iff_hardyz_real", "MM_offline_pairs_le_defect", "MM_bragg_defect_witness", "MM_nt_brick_conditional", "MM_rvm_unbounded_mean_density", "MM_zeta_ordinates_not_uniformly_discrete", "MM_torus_section_dictionary", "MM_torus_section_n2_rigidity", "MM_euler_factor_section_offline", "MM_bragg_bridge"]
 kind = "goal"
 name = "MM.zeta_comb_membership"
 statement_module = "Statements.MM_zeta_comb_membership"

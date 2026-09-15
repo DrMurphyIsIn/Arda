@@ -134,4 +134,37 @@ noncomputable def expHi : ℝ := (11051709180756476248117094953514706601127 / 10
 
 end BraggDefect
 
+namespace RHInBoxAnalytic
+
+open Complex Filter MeasureTheory Real
+open scoped Topology
+
+-- ===== RvMRHInBox.lean (v4.34 li_positivity island; cross-island vocabulary per
+-- design section 2).  SUPPORT LEMMA carried as `sorry` HERE ONLY so that
+-- `zeroFinset` elaborates: it is PROVED on the li island (same file) and is NOT
+-- a registry node; the sorry is vocabulary scaffolding in the statement package,
+-- the same trust class as the node statements themselves. =====
+theorem divisor_ball_support_finite_of_one_notMem
+    (c : ℂ) (R : ℝ) (hs1 : (1 : ℂ) ∉ Metric.ball c R) :
+    (MeromorphicOn.divisor riemannZeta (Metric.ball c R)).support.Finite := by sorry
+
+-- ===== RvMRHInBox.lean:310-311 =====
+noncomputable def zeroFinset (c : ℂ) (R : ℝ) (hs1 : (1 : ℂ) ∉ Metric.ball c R) : Finset ℂ :=
+  (divisor_ball_support_finite_of_one_notMem c R hs1).toFinset
+
+end RHInBoxAnalytic
+
+namespace DiffractionCore
+
+open Complex MeasureTheory Real
+open scoped Topology
+
+-- ===== RvMBraggBridge.lean:52-55 (v4.34 li_positivity island, W3b) =====
+noncomputable def braggTerm (sigma1 T0 T1 : ℝ) (n : ℕ) : ℂ :=
+  (LSeries.term (fun m : ℕ => (ArithmeticFunction.vonMangoldt m : ℂ)) ((sigma1 : ℂ) + T1 * I) n
+      - LSeries.term (fun m : ℕ => (ArithmeticFunction.vonMangoldt m : ℂ)) ((sigma1 : ℂ) + T0 * I) n)
+    / (-(I * (Real.log n : ℂ)))
+
+end DiffractionCore
+
 end
