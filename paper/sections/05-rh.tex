@@ -731,24 +731,44 @@ suggestion is that those objects are not historical conveniences but
 something like the optimal certificates of the theory, rediscoverable by
 any sufficiently honest verifier.
 
-One instrument now separates the program from a zero-hypothesis band---a
-kernel value for $\theta(t)$ itself. The corpus route (quadrature of the
-enclosed $\log\Gamma_{\mathbb{R}}$-derivative) is genuinely blocked: it
-requires a digamma series representation and polygamma bounds that exist
-nowhere in Mathlib, and we decline to manufacture them mid-campaign. But a
-back door stands open, and it is three centuries old: Euler's limit formula
-(already formalized in Mathlib as the $\Gamma$-sequence) gives
-$\arg\Gamma(z)$ at finite stage $n$ as
+One instrument stood between the program and a zero-hypothesis band---a
+kernel value for $\theta(t)$ itself---and it has now been built. The corpus
+route (quadrature of the enclosed $\log\Gamma_{\mathbb{R}}$-derivative) was
+genuinely blocked: it requires a digamma series representation and polygamma
+bounds that exist nowhere in Mathlib, and we declined to manufacture them
+mid-campaign. But a back door stood open, and it is three centuries old:
+Euler's limit formula (already formalized in Mathlib as the
+$\Gamma$-sequence) gives $\arg\Gamma(z)$ at finite stage $n$ as
 $y\log n - \sum_{k\le n} \arctan\!\big(y/(x+k)\big)$---arctangents at
 rational arguments, exactly telescoping harmonic sums, and explicit
-$O(1/n)$ rates, every ingredient already in the toolkit. That assembly is in
-progress as we write. If it closes, the resulting theorem---the existence of
-a nontrivial zero of $\zeta$, proven by a term that takes no arguments and
-invokes no oracle---would be the natural endpoint of the trust programme
-this paper describes: not a verified \emph{account} of a computation, but
-the computation itself, carried out where nothing unverified can reach it.
-As everywhere: \texttt{conjecture1\_proved = False}; the reflection program
-changes what a finite verification \emph{is}, not what it proves.
+$O(1/n)$ rates, every ingredient already in the toolkit. Through it,
+the phase $\theta(14)$ and $\theta(15)$ were boxed in the kernel (the
+convergence and its rate discharged as theorems, not hypotheses; the
+$\arctan$ near its awkward argument $u\approx1$ handled by the addition
+identity $\arctan u = \tfrac\pi4 + \arctan\tfrac{u-1}{1+u}$), the sign
+quantity $\cos\theta\cdot\operatorname{Re}\zeta -
+\sin\theta\cdot\operatorname{Im}\zeta$---the Hardy $Z$-function---was
+exhibited negative at $14$ and positive at $15$ from kernel-computed
+boxes on both factors, and the intermediate value theorem closed it:
+\[
+  \texttt{first\_zero\_kernel} \;:\;
+  \exists\, r,\ 14 < r < 15 \ \wedge\
+  \Lambda\!\left(\tfrac12 + r i\right) = 0,
+\]
+axioms $\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$,
+no \texttt{sorryAx}, no \texttt{ofReduceBool}, and---the point---\emph{no
+arguments and no numeric hypotheses whatsoever}. To our knowledge this is
+the first nontrivial zero of the Riemann zeta function whose existence has
+been verified by \emph{pure computation inside a proof-assistant kernel}:
+not a verified \emph{account} of a computation, but the computation itself,
+carried out where nothing unverified can reach it. It is the natural
+endpoint of the trust programme this paper describes, and its method is
+height-agnostic---the second zero, and the thousandth, cost only
+certificates. As everywhere, the honesty line is exact:
+\texttt{conjecture1\_proved = False}. This is \emph{one} certified zero, at
+$\gamma_1 \approx 14.1347$; it is not, and does not approach, a proof of the
+Riemann Hypothesis. The reflection program changes what a finite
+verification \emph{is}, not what it proves.
 
 \subsection{Directions: the uniformization axes}
 
