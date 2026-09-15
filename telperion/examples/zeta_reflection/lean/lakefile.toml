@@ -160,3 +160,15 @@ roots = ["ThetaConverge"]
 [[lean_lib]]
 name = "ZeroSignDecomp_t14"
 roots = ["ZeroSignDecomp_t14"]
+
+[[lean_lib]]
+name = "ZetaEMSum"
+roots = ["ZetaEMSum"]
+
+[[lean_lib]]
+name = "ForgeLogBracket"
+roots = ["ForgeLogBracket"]
+
+[[lean_lib]]
+name = "ForgeTail"
+roots = ["ForgeTail"]
