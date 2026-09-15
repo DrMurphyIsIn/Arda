@@ -551,6 +551,27 @@ def emit_dirichlet_re_box_lean(t: int, N: int, name: str) -> tuple[str, F, F]:
     return "\n".join(L), slo, shi
 
 
+def emit_dirichlet_im_box_lean(t: int, N: int, name: str) -> tuple[str, F, F]:
+    """Emit `<name> : ΣLo ≤ (∑ n∈Ico 1 N, (n:ℂ)^(-s)).im ∧ ... ≤ ΣHi`.  n=1 term Im = 0."""
+    im_boxes = {n: term_box(t, n)[2:] for n in range(2, N)}
+    slo = sum(im_boxes[n][0] for n in range(2, N))
+    shi = sum(im_boxes[n][1] for n in range(2, N))
+    L = []
+    L.append(f"theorem {name} :")
+    L.append(f"    (({frac_str(slo)}) : ℝ) ≤ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1:ℂ)/2 + ({t}:ℝ)*I)))).im")
+    L.append(f"      ∧ (∑ n ∈ Finset.Ico 1 {N}, (((n:ℕ):ℂ) ^ (-((1:ℂ)/2 + ({t}:ℝ)*I)))).im ≤ ({frac_str(shi)}) := by")
+    L.append(f"  rw [Complex.im_sum, Finset.sum_Ico_eq_sum_range]")
+    L.append(f"  rw [show ({N}-1) = {N-1} from rfl,")
+    L.append(f"    {' '.join(['Finset.sum_range_succ,'] * (N - 1))} Finset.sum_range_zero]")
+    L.append(f"  norm_num")
+    for n in range(2, N):
+        L.append(f"  have b{n} := im_term_{n}")
+        L.append(f"  norm_num at b{n}")
+    hyps = ", ".join(f"b{n}.1, b{n}.2" for n in range(2, N))
+    L.append(f"  constructor <;> nlinarith [{hyps}]")
+    return "\n".join(L), slo, shi
+
+
 def emit_trig_file(pairs: list[tuple[int, int]], ns: str, fname: str) -> str:
     """Emit a full trig-cert Lean file for a list of (t, n) pairs."""
     body = [TRIG_HEADER.format(fname=fname, t="t", yred=YRED, tag_note="", ns=ns)]
