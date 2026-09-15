@@ -197,3 +197,7 @@ roots = ["ForgeZeta15"]
 [[lean_lib]]
 name = "ForgeFirstZero"
 roots = ["ForgeFirstZero"]
+
+[[lean_lib]]
+name = "ForgeRate"
+roots = ["ForgeRate"]
