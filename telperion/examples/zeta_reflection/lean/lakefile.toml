@@ -153,3 +153,10 @@ roots = ["ThetaValue"]
 [[lean_lib]]
 name = "ThetaConverge"
 roots = ["ThetaConverge"]
+
+# ANDÚRIL G2-FULL: the phase-decomposition sign bridge -- gLine t = M·(cos φ·Re ζ − sin φ·Im ζ), M > 0.
+# Removes the Γℝ-VALUE (magnitude) blocker permanently; conditional first-zero in (14,15) from the two
+# magnitude-free sign quantities.  Depends (via XiLineZeros.olean on LEAN_PATH) on the sibling island.
+[[lean_lib]]
+name = "ZeroSignDecomp_t14"
+roots = ["ZeroSignDecomp_t14"]
