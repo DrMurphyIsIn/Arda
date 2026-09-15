@@ -147,3 +147,9 @@ roots = ["ArctanTaylor"]
 [[lean_lib]]
 name = "ThetaValue"
 roots = ["ThetaValue"]
+
+# ANDÚRIL θ-bridge: discharges ThetaGap.ConvergenceObligation (branch bridge) + ThetaGap.RateObligation
+# (explicit C/n) -- the entire remaining distance to the φ(14) value box.
+[[lean_lib]]
+name = "ThetaConverge"
+roots = ["ThetaConverge"]
