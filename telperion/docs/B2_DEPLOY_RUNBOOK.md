@@ -214,17 +214,28 @@ plus `zzl_core` plus the umbrella.
    independent and can be farmed to separate nodes (charter: height-sharded
    multi-node), each node building a contiguous run of blocks.
 
-**Disk requirement (full migration).** The block oleans are the bulk and are
-irreducible — they equal the monolith's current island-olean footprint, just
-partitioned across `ceil(H/25000)` package `.lake/build` dirs instead of one.
-The monolith island oleans are ~ (117 GB total `.lake`) − (mathlib+deps, ~7 GB)
-≈ **~110 GB of island oleans**; sharded, that same ~110 GB is redistributed, plus
-~0.7 GB shared (ZFB + zzl_core), plus negligible per-package skeleton overhead.
-The dep packages are shared by symlink, so they are counted ONCE, not per block —
-this is a strict improvement over N independent full checkouts. Pilot
-extrapolation: block h400000 alone is `<measured>` for 1075 modules; at ~1000
-modules/block the per-block cost scales with band density (bands shrink as T
-climbs, so higher blocks hold more capstones' worth of bands).
+**Disk requirement (full migration) — measured breakdown.** The monolith `.lake`
+is **117 GB**, but that splits very unevenly:
+
+| Component | Size | Notes |
+|---|---:|---|
+| `.lake/build/lib` (island **oleans**) | 7.5 GB | the load-bearing artifacts |
+| `.lake/packages` (mathlib + deps) | 7.6 GB | shared ONCE via symlink, not per-block |
+| `.lake/build/ir` (C intermediates, traces) | **102 GB** | needed only for native codegen, NOT for olean reuse or `#print axioms` |
+
+So the irreducible sharded footprint is ~7.5 GB of island oleans (redistributed
+across the block packages) + 7.6 GB deps (counted once) + ~0.7 GB shared shard
+core (ZFB + zzl_core) ≈ **~16 GB** — provided `.lake/build/ir` is pruned after
+each block builds (it is regenerable and not needed to reuse oleans or run the
+axiom battery). The pilot block h400000 measured **480 MB oleans + 6.7 GB IR**;
+pruning IR drops the per-block cost by ~14×. At the current H=400000 frontier
+there are `ceil(400000/25000) = 16` blocks.
+
+The dep packages are shared by symlink and counted ONCE, not per block — a strict
+improvement over N independent full checkouts. **Recommendation: prune
+`<block>/.lake/build/ir` after each block goes green** (keep `lib`); this is the
+single biggest disk lever for the full migration and brings the whole sharded
+island under ~16 GB vs the monolith's 117 GB.
 
 **Wall time (full migration).** Dominated by compiling the island oleans once —
 the same total CPU the monolith already spent (41k jobs). Sharding does not add
