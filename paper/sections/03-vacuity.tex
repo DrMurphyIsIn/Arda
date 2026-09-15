@@ -58,36 +58,6 @@ set was not asserted but \emph{proved}, as an iff, in the axiom guard. The
 kernel guards statements; the discipline must guard what the statements are
 about.
 
-\subsection{The gap, encountered a second time---and caught by the machinery}
-
-A harder instance arrived during the Turing-ladder campaign (\cref{sec:rh}),
-and this time the discipline of this section, not luck, caught it. The original
-winding-route band certificates carried an edge-hypothesis bundle of the shape
-``for every decomposition of the boundary data satisfying $P$, the interior
-zeros are confined''---universally quantified over a decomposition that the
-intended Arb data was supposed to instantiate. Auditing the shape before
-scaling the campaign, we asked the sensitivity question this section mandates:
-\emph{what else satisfies the premise?} The answer was: junk. A decomposition
-padding the zero multiset with a phantom point of multiplicity zero, or
-absorbing an off-ball point into the error term, satisfies $P$ while violating
-the confinement clause---so the bundled hypothesis was false for every band,
-the per-band theorems true but \emph{vacuous} as certificates, and the
-milestone claims built on them empty. The kernel had accepted every one of
-them, because every one of them was true. Three consequences followed, each the
-recommendation of this section made concrete. First, the affected milestone
-claims were \emph{suspended publicly}, in the pull request and the campaign
-document, the day the vacuity was found. Second, the replacement certificate
-shape was made \emph{canonical and audited}: every re-based band instantiates
-one fixed Prop (\texttt{TuringBand.BandStatement}) whose shape is pinned by
-hand-audited kernel code, so an emitter can vary only parameters that are
-numerically cross-checked, and a kernel statement-match gate plus
-forge-the-witness negative controls run over every band in continuous
-verification. Third, the entire ladder---every zero of every prior
-milestone---was re-verified on the new shape before any claim was reinstated;
-the re-based census agrees with the rigorous count $N(T)$ exactly at every
-thousand-block. The episode cost one day. Scaling a quarter-million-zero
-verification on a vacuous certificate shape would have cost the paper.
-
 \subsection{The floor we cannot get under}
 
 Honesty requires stating the limit, too. No amount of machinery decides whether a
