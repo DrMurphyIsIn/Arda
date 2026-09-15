@@ -679,7 +679,7 @@ def emit_zeta_box_lean(t: int, N: int, tail_bound: F, prefix: str) -> tuple[str,
         L.append(f"    calc |(riemannZeta {sc}){comp} - (emZetaFinite3 {sc} {N}){comp}|")
         L.append(f"        = |(riemannZeta {sc} - emZetaFinite3 {sc} {N}){comp}| := by rw [Complex.sub_{part}]")
         L.append(f"      _ ≤ ‖riemannZeta {sc} - emZetaFinite3 {sc} {N}‖ := {absname} _")
-        L.append(f"      _ ≤ ({frac_str(tail_bound)}) := ForgeTail.zeta_tail_t{t}")
+        L.append(f"      _ ≤ ({frac_str(tail_bound)}) := le_trans ForgeTail.zeta_tail_t{t} (by norm_num)")
         L.append(f"  rw [abs_le] at htail")
         L.append(f"  constructor <;> [linarith [hef.1, htail.1]; linarith [hef.2, htail.2]]")
     return "\n".join(L), re_lo, re_hi, im_lo, im_hi, sre_lo, sre_hi, sim_lo, sim_hi, Tre_lo, Tre_hi, Tim_lo, Tim_hi
