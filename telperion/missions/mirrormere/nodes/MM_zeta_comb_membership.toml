@@ -1,0 +1,8 @@
+created = "2026-09-14"
+depends_on = ["MM_twofreq_realrooted_iff", "MM_primelog_spectrum_dense", "MM_selfinversive_iff_hardyz_real", "MM_offline_pairs_le_defect", "MM_bragg_defect_witness", "MM_nt_brick_conditional", "MM_rvm_unbounded_mean_density", "MM_zeta_ordinates_not_uniformly_discrete", "MM_torus_section_dictionary", "MM_torus_section_n2_rigidity", "MM_euler_factor_section_offline", "MM_bragg_bridge"]
+kind = "goal"
+name = "MM.zeta_comb_membership"
+statement_module = "Statements.MM_zeta_comb_membership"
+status = "draft"
+title = "The zeta zero comb is a Fourier quasicrystal (the Dyson membership target) -- RH-hard, NOT claimed; the campaign goal, tracked draft exactly as RH_conjecture is in the rh campaign. Draft statement = Mathlib RiemannHypothesis via the island's zeta_FQ_iff_RH dictionary (CharacterizationStatements.lean:154); the concrete log-density FQ membership statement is the W3c authoring item and MUST replace the placeholder before this node leaves draft"
+updated = "2026-09-14"

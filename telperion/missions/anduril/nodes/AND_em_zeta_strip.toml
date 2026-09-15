@@ -1,0 +1,19 @@
+created = "2026-09-14"
+depends_on = []
+kind = "milestone"
+name = "AND.em_zeta_strip"
+statement_module = "Statements.AND_em_zeta_strip"
+status = "open"
+title = "A2 E-track headliner: the verified Euler-Maclaurin representation of zeta continued into the critical strip -- zeta(s) = 1/(s-1) + 1/2 + integral of sawBernoulli-weighted power tail, for 0 < Re s, s /= 1 (em_zeta_strip, E3 of the em-complex agent)"
+updated = "2026-09-14"
+
+[proof]
+artifact = "../../examples/zeta_reflection/lean/EMZetaComplex.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
+date = "2026-09-14"
+text = "For every complex s with positive real part and s /= 1, the Riemann zeta function equals 1/(s-1) + 1/2 plus the integral over x > 1 of the first sawtooth-Bernoulli function of x times -s x^(-s-1) -- the K=1 Euler-Maclaurin closed form, valid on the whole slit right half-plane and hence across the entire critical strip. Proved by the identity theorem from the classical region Re s > 1, anchored at s = 2. This is the load-bearing analytic gap of the A2 verified-evaluator track, closed. [Verbatim extract of the proved em_zeta_strip theorem; artifact on rh/million-turing, grant deferred to the branch reconcile.]"

@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "RH.zeta_repr_R1"
+statement_module = "Statements.RH_zeta_repr_R1"
+status = "proved"
+title = "Strip representation seed (R1): zeta = stripRHS on Re s > 1, by Abel summation"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/StripReprR1.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "rh-migration-session-2026-09-11"
+date = "2026-09-11"
+text = "On the half-plane Re s > 1, the Riemann zeta function equals s/(s-1) - s * integral over x > 1 of {x} x^-(s+1) dx (the stripRHS) -- the Abel-summation seed identity of the fractional-part strip representation."

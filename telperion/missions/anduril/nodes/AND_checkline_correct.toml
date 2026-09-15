@@ -1,0 +1,19 @@
+created = "2026-09-14"
+depends_on = []
+kind = "milestone"
+name = "AND.checkline_correct"
+statement_module = "Statements.AND_checkline_correct"
+status = "open"
+title = "A4 reflection core: checkLine_correct -- the once-proven correctness theorem for the Boolean band checker over dyadic-interval sign boxes (BandData -> Bool; per-band certificates become data discharged by decide, not tactic scripts)"
+updated = "2026-09-14"
+
+[proof]
+artifact = "../../examples/zeta_reflection/lean/CheckBand.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
+date = "2026-09-14"
+text = "The once-proven reflection correctness theorem: given band data d whose n+1 dyadic boxes each enclose the real value of the completed zeta function on the critical line (gLine) at a strictly increasing grid of heights p 0 < ... < p n inside [T0, T1], if the computable Boolean checker d.check (checkLine: adjacent boxes have definite, alternating signs) returns true, then there exist n strictly increasing heights in [T0, T1] at which the completed Riemann zeta function vanishes on the critical line. Certificates become data (Int-mantissa dyadic literals) discharged by kernel decide; the correctness proof is paid once. [Verbatim extract of the proved checkLine_correct (CheckBand.lean:234); artifact on rh/million-turing, grant deferred to the branch reconcile.]"

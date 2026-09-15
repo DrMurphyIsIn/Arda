@@ -1,9 +1,8 @@
 \section{Main results: the zeta program}
 \label{sec:rh}
 
-This section is the paper's spine, and it comes with a warning label we want to
-put first, in bold, so there is no chance of misreading: \textbf{we do not claim
-the Riemann Hypothesis.} What we have is a connected body of genuine,
+This section presents the paper's main results---first, in bold, so there is no
+chance of misreading: \textbf{we do not claim the Riemann Hypothesis.} What we have is a connected body of genuine,
 machine-checked results \emph{about} the zeta function---built in the order a
 reader should understand them: first where the zeros \emph{cannot} be (zero-free
 regions, culminating in an effective de la Vallée-Poussin region), then where
@@ -30,13 +29,29 @@ enforced, not asserted:
     $1 \le \sigma \le 2,\ |t| \ge 2$, with an explicit constant
     (\texttt{zeta\_log\_bound});
   \item an elementary, Hadamard-free zero-free region
-    $\operatorname{Re} s > 1 - c/|t|^5$ (\texttt{riemannZeta\_zero\_free\_poly});
+    $\operatorname{Re} s > 1 - c/|t|^5$ (\texttt{riemannZeta\_zero\_free\allowbreak\_poly});
   \item a sharper region $\operatorname{Re} s > 1 - c/\!\left(|t|^4 (1 + \log 2|t|)\right)$
-    (\texttt{riemannZeta\_zero\_free\_polylog}).
+    (\texttt{riemannZeta\_zero\_free\allowbreak\_polylog}).
 \end{enumerate}
 
 To our knowledge, the last two are the first unconditional, Hadamard-free
 zero-free regions to be machine-checked in Lean.
+
+\subsection{One engine, four certificate shapes}
+
+The results that follow are not unrelated: they are four readings of one machine.
+Every certificate below is an instance of a single weighted argument
+principle---for analytic $f$ and holomorphic weight $g$, the boundary winding of
+$g$ against $f$ equals $2\pi i \sum_{\rho} \operatorname{mult}(\rho)\, g(\rho)$---and
+the results exhibit it in four distinct \emph{certificate shapes}: positivity,
+real-rootedness, argument-principle winding, and the explicit-formula/diffraction
+identity. That one finite engine reaches all four on the same object is the
+methodological point, and the shape-diversity is deliberate evidence of the
+method's range. We stress at the outset what this unification does \emph{not}
+claim: the finite instances are deliberately not stitched into any assertion that
+the count $N(T)$ determines the Li coefficients $\lambda_n$ (\cref{sub:bridge}).
+Each result remains finite, each falls well short of RH, and
+$\texttt{conjecture1\_proved} = \texttt{False}$ throughout.
 
 \subsection{The honest comparison---and a second route to the full rate}
 
@@ -164,7 +179,7 @@ $100$ lands in the box is now itself kernel-derived from the zero-free region.
 And the construction \emph{scales}: the certified height grows by
 \emph{band-stacking}. Kernel gluing lemmas (\texttt{rh\_box\_two\_bands} and its
 $n$-band generalization
-\texttt{all\_nontrivial\_zeros\_up\_to\_height\_on\_line\_tiled}) compose
+\texttt{all\_nontrivial\_zeros\_up\_to\allowbreak\_height\_on\_line\_tiled}) compose
 per-band certificates---each band carrying its own small winding count, short
 contour edges, and local on-line list, so the per-band numeric certificates stay
 cheap, independent, and parallelizable. The first stack, \texttt{AllZeros\_h200},
@@ -173,7 +188,7 @@ bands to $T = 1000$ ($649$ zeros); a further stack,
 \texttt{AllZeros\_h2000}, extended the ladder with twenty further bands of height
 $50$ to $T = 2000$ ($1517$ zeros). The ladder is now \emph{unbounded in
 principle}: segment certificates over any $[A, B]$
-(\texttt{all\_nontrivial\_zeros\_in\_segment\_on\_line}) compose with an
+(\texttt{all\_nontrivial\_zeros\_in\allowbreak\_segment\_on\_line}) compose with an
 up-to-$A$ certificate through a constant-cost chain lemma
 (\texttt{height\_chain}), so no single glue theorem ever grows with the total
 height. Its first exercise is the current milestone, \texttt{AllZeros\_h4000}:
@@ -204,55 +219,21 @@ reflection $\rho \mapsto 1 - \bar\rho$. The trust boundary is thereby
 \emph{uniform}: every numeric input is of the same winding/edge kind, and no
 classical fact enters bare.
 
-The ladder has since been \emph{re-founded and industrialized}. A self-audit of
-the winding-route certificate shape found its edge-hypothesis bundle to be
-vacuous---satisfiable by junk instances, so that the per-band theorems, while
-true, did not do the advertised work (the full story, and the discipline that
-caught it, is told in \cref{sec:vacuity}). The entire ladder was re-based the
-same day onto a second, immune certificate shape, the \emph{edge-decomposition
-(Turing--Backlund) band}: the band count is pinned by
-Riemann--von Mangoldt edge integrals (five explicit argument-change enclosures,
-cross-checked against the on-line sweep count), each band instantiates one
-canonical, audited Prop (\texttt{TuringBand.BandStatement}) so an emitter can
-vary only numerically-cross-checked parameters, and a kernel
-\emph{statement-match gate} plus forge-the-witness negative controls run over
-every band in continuous verification. On this shape the campaign climbed: as
-of this writing the capstone \texttt{AllZeros\_h160000} certifies
-\[
-  \forall\, \rho:\quad \zeta(\rho) = 0 \ \wedge\ 0 < \operatorname{Im}\rho \le 160000
-  \quad\Longrightarrow\quad \operatorname{Re}\rho = \tfrac12,
-\]
-all \ladderCount{} nontrivial zeros to height \ladderHeight{}---at each
-thousand-block the certified census is checked against FLINT's rigorous
-$N(T)$ (radius-zero ball enclosures of \texttt{acb\_dirichlet\_zeta\_nzeros}),
-and it agrees \emph{exactly} at every milestone. The chain glue is indexed
-(one bundled band-hypothesis binder per segment), so capstone files stay
-kilobytes and elaboration constant-cost as the height grows; the per-band
-driver is FFT-amortized (Platt multi-evaluation); and the whole island---some
-$21{,}670$ build jobs---rebuilds green with an axiom guard printing
-$\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$, zero
-\texttt{sorryAx}, on all $6{,}820$ guarded theorems.
-
 The caveats are stated as sharply as the claim. It is \emph{finite}---up to height
-\ladderHeight{}, not all of $\mathbb{C}$; Turing's method verifies RH in a region, it does
+$4000$, not all of $\mathbb{C}$; Turing's method verifies RH in a region, it does
 not prove RH. And it is \emph{conditional on certified numeric input}: the
-per-band edge argument-change enclosures, the exhibited on-line zeros, and the
+per-band boundary winding integers, the $3474$ exhibited on-line zeros, and the
 edge non-vanishing are supplied by high-precision interval (Arb) arithmetic and
 carried as explicit, non-kernel Lean hypotheses---a documented trust boundary,
 exactly as with the constant enclosures elsewhere in the system. The kernel proves
 \emph{every implication} from those inputs---the confinement, the argument
 principle, the strip clearing, and the effective-rate inequality all
-in-kernel---but it does not verify the enclosures themselves. The chain is non-circular by construction: the band
-count enters as an edge-integral value, never as ``$N$ zeros and no others,'' and
+in-kernel---but it does not verify the enclosures themselves. The chain is non-circular by construction: the winding
+count enters as a boundary-contour value, never as ``$N$ zeros and no others,'' and
 ``all zeros on the line'' is the \emph{derived} conclusion. It is, once more,
 emphatically \emph{not} a proof of RH---but it is a kernel-verified, complete finite
-Turing verification up to height \ladderHeight{} \cite{turing1953}---to our
-knowledge the first kernel-checked Turing verification at any height, with a
-zero count now past the machine-computed frontier of the mid-1960s (Lehman's
-quarter-million zeros \cite{lehman1966}; the rigorous-numerics record, without
-kernel verification, stands at $3\cdot10^{12}$
-\cite{platttrudgian2021})---and it exhibits a third distinct certificate shape
-(argument-principle zero-counting by edge decomposition).
+Turing verification up to height $4000$, and it exhibits a third distinct
+certificate shape (winding / argument-principle zero-counting).
 
 \subsection{The counting formula: Riemann--von Mangoldt in the kernel}
 
@@ -313,7 +294,12 @@ $F_T = \operatorname{Re}\zeta(\cdot{+}iT)$, whose real zeros bound the sign
 changes of $\operatorname{Re}\zeta$ and are counted by the finite-height Jensen
 bound of the previous subsection. The constant is honest rather than sharp, and
 this remains unconditional error-term analysis: it bounds the \emph{fluctuation}
-in the zero count and says nothing about where the zeros lie. Second, one mid-course
+in the zero count and says nothing about where the zeros lie. Feeding this back
+into the counting formula pins the count to its main term:
+$|N(T) - 1 - \theta(T)/\pi| \le \log\!\big((4T{+}19)/(2-\pi^2/6)\big)/\log(7/6) + 2$
+(\texttt{nt\_effective\_bound}), so $N(T)$ sits within an explicit $O(\log T)$ of
+$1 + \theta(T)/\pi$---an effective Riemann--von Mangoldt count, the classical
+error term made explicit. It too counts zeros, not places them. Second, one mid-course
 correction is part of the record and is the lived practice
 \cref{sec:vacuity} recounts: an early route through $\Lambda_0$ alone was
 retired when its zero set was checked against Mathlib's own defining identity,
@@ -383,101 +369,8 @@ a conclusion about it---and it exhibits a fourth distinct certificate shape (a
 weighted explicit-formula / diffraction identity), alongside positivity,
 real-rootedness, and winding counts.
 
-\subsection{The quasicrystal at finite height: diffraction of the certified zeros}
-\label{sec:diffraction}
-
-The explicit formula says the zeros should diffract off the primes; the Turing
-ladder supplies \ladderCount{} certified zeros to diffract. The oldest
-metaphor in the subject---the \emph{music of the primes}, each zero a pure
-tone, the explicit formula the score---is here made operational: strike every
-frequency at once and record which notes the certified zeros answer. Putting
-the two together produces the picture this paper is named for
-(\cref{fig:diffraction}): the truncated diffraction sum
-\[
-  F_T(u) \;=\; \sum_{0 < \gamma \le T} \cos(\gamma u),
-  \qquad T = 160000,
-\]
-evaluated over the \ladderCount{} ordinates of the certified ladder, is flat at
-the random-phase scale $\sqrt{N/2} \approx 566$ everywhere \emph{except} at the
-logarithms of prime powers, where Bragg peaks of height
-$-\tfrac{T}{2\pi}\,(\log p)\,p^{-m/2}$ stand $18$--$54$ standard deviations out
-of the noise. This is Landau's theorem
-\cite{landau1912}---$\sum_{0<\gamma\le T} x^{\rho} = -\tfrac{T}{2\pi}\Lambda(x)
-+ O(\log T)$ for fixed $x > 1$---made visible: at all twenty-six prime powers
-$p^m \le 67$ the measured amplitude matches the Landau main term to four
-significant figures (maximum deviation $8\times10^{-5}$ in normalized units against a noise band of
-$8.9\times10^{-3}$ --- down from $2\times10^{-4}$ at $T=160000$: the peaks
-sharpen at the $1/T$ rate the quasicrystal picture demands, a prediction now
-confirmed across a $2.75\times$ growth of the certified corpus). The resonances are sharp in the
-strict instrumental sense: detuning from $u = \log 2$ by two parts in
-$10^{5}$ collapses the amplitude into the noise band, and the linewidth
-narrows as $1/T$ as the ladder climbs---the ensemble rings only at the
-primes, and more purely the more of it is certified. Pure point spectrum on the
-logarithms of the prime powers is precisely Dyson's quasicrystal description of
-the zeros \cite{dyson2009}, here realized as a finite-volume pattern over a
-kernel-certified point set: the primes, read off the zeros.
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\textwidth]{figures/dyson_diffraction_T400000}
-  \caption{Diffraction of the \ladderCount{} certified zeros at $T = \ladderHeight$.
-  Stems: exact sums $-F_T(m\log p)/(T/2\pi)$ at the prime-power frequencies
-  (labels $p$, $p^m$). Red dashes: the Landau main term $(\log p)\,p^{-m/2}$,
-  visually indistinguishable from the stems at every peak. The faint trace is a
-  uniform frequency scan, which stays inside the random-phase band (orange)
-  away from the prime powers: pure point diffraction. The peaks are
-  $\sim T^{-1}$-narrow, so the uniform scan undersamples them; the stems are
-  computed exactly at each $m \log p$.}
-  \label{fig:diffraction}
-\end{figure}
-
-The trust label on this subsection differs from its neighbors, and we state it
-plainly: \cref{fig:diffraction} is a \emph{numerical demonstration}, not a
-kernel theorem. The summed ordinates are rigorous Arb ball enclosures (width
-$\le 3\times10^{-11}$, the same certified-inventory class that gates the band
-certificates), but the cosine sum itself is floating-point, and the kernel has
-not seen it. What the kernel currently certifies about each zero is its
-existence, line position, and a sign-change bracket of width $\sim 0.3$---too
-coarse by five orders of magnitude for a certified $233{,}000$-term
-trigonometric sum. Closing that gap is mechanical, and staged: a
-\emph{refinement pass} bisecting each certified bracket to width $10^{-6}$
-(the same IVT machinery, $\sim 21$ extra amortized evaluations per zero); a
-\emph{certified cosine} lemma family in Lean (high-order Taylor with explicit
-Lagrange remainder, $\pi$-free range reduction by iterated double-angle, plus
-the Lipschitz bound $|\cos a - \cos b| \le |a - b|$ to absorb bracket width);
-and per-band \emph{partial-sum interval boxes} emitted alongside each band
-certificate and tree-folded across bands---the height-chain trick applied to
-sums, so the certificate mass stays per-band and parallel. The pilot
-instance is \emph{done}: the kernel-verified theorem
-\texttt{BraggH100.bragg\_amplitude\_h100} (axioms $\{$\texttt{propext},
-\texttt{Classical.choice}, \texttt{Quot.sound}$\}$, no \texttt{sorryAx})
-proves that the twenty-nine certified on-line zeros
-$x_1 < \cdots < x_{29}$ below height $100$ satisfy
-\[
-  F_{100}(u^*) \;=\; \sum_{k=1}^{29} \cos(x_k u^*) \;\in\;
-  [-7.07809487,\, -7.07805467],
-  \qquad u^* = \tfrac{693147}{10^6} \approx \log 2,
-\]
-an enclosure of width $4\times10^{-5}$ produced by the full pipeline:
-Arb-verified sign-change brackets of width $10^{-6}$ per zero, a certified
-cosine evaluator that range-reduces \emph{without} $\pi$ (thirty double-angle
-steps from Mathlib's order-four bracket---the net error
-$\theta^4\cdot\tfrac{5}{96}/2^{2M}$ \emph{decreases} with the reduction depth
-$M$, so no high-order Taylor kernel is needed), Lipschitz absorption of the
-bracket width, and an interval fold over the twenty-nine terms. The
-companion theorem \texttt{bragg\_amplitude\_h100\_complete} closes the
-formulation gap: for the \emph{intrinsic} support of zeta's divisor in the
-box, given the winding exhaustion data, the diffraction sum over
-\emph{every} zero in the box lands in the same interval---the exhaustion
-argument forces the support to \emph{equal} the witness set, so the sum is
-genuinely over the actual zeros, not an exhibited subset. As the pipeline
-scales along the ladder, theorems of the form
-$|F_T(m\log p) - A| \le \varepsilon$ constitute, to our knowledge, the
-first machine-checked diffraction pattern of the zeta zeros: the finite,
-unconditional part of Dyson's picture, with the Guinand--Weil identity of the
-previous subsection as the bridge from the certified peaks to the primes.
-
 \subsection{The bridge to Li's coefficients: one weighted engine}
+\label{sub:bridge}
 
 The counting formula and the explicit formula above turn out to be the same
 machine read with different test weights, and choosing the weight that Li's
@@ -580,178 +473,58 @@ development but is a \emph{draft}---its constant is not sharp, it is not
 axiom-guarded, and it is not yet wired into the region argument, so we do not lean
 on it. We flag it rather than let it blur into the verified results above.
 
-\subsection{The reverse program: instruments for Dyson's classification proposal}
-\label{sec:mirrormere}
+\subsection{The archimedean growth, closed to a linear window; and the diffraction floor}
 
-Dyson's proposal runs the diffraction picture backward: classify
-one-dimensional quasicrystals, locate the zeta point set in the
-classification, and derive zero-localization. The tame one-dimensional case
-has recently \emph{closed} in the literature: by the loop
-Kurasov--Sarnak $\to$ Olevskii--Ulanovskii $\to$ Alon--Cohen--Vinzant, an
-$\mathbb{N}$-valued Fourier quasicrystal is precisely the zero-counting
-measure of a Lee--Yang exponential polynomial---and Lee--Yang zeros are real
-by construction, so \emph{membership forces reality of support}: exactly the
-shape Dyson wanted. The zeta comb, however, sits outside the classified
-class, and where it escapes is now a pair of kernel theorems, not folklore: the
-prime-log frequency set is dense (hence not Bohr-discrete;
-\texttt{primeLogSpectrum\_dense}, unconditional) and the ordinate gaps shrink
-below any uniform-discreteness bound (a pigeonhole driver against the
-counting formula). On the same footing we have formalized the base of the
-classification itself (the Lee--Yang circle bridge and the one-frequency
-Kurasov--Sarnak crystalline structure, in Poisson test-function form) and a
-first \emph{rigidity theorem in the reverse direction}
-(\texttt{twoFreq\_realRooted\_iff}, kernel, both directions): a two-frequency
-exponential sum has all zeros on a single horizontal line, and is real-rooted
-\emph{iff} its coefficients have equal modulus---reality of support forced by
-a dual-side condition, in the smallest honest instance; the
-rationally-dependent case reduces, in kernel, to Lee--Yang-on-the-circle.
-
-Two further instruments discipline the search for axioms. A \emph{certified
-control zoo}: a rigorous Davenport--Heilbronn driver (ball-arithmetic Hurwitz
-evaluation, the mixing constant enclosed from integer surds) yields a
-winding-certified zero inventory to height $300$---$204$ on-line, $4$
-off-line, correcting two published values along the way (the off-line zero
-near $\gamma \approx 166.5$ has $\beta \approx 0.60$, not the tabulated
-$0.785$, which our winding count rejects; the tabulated off-line zero near
-$\gamma \approx 243.1$ does not exist)---and a mechanized falsification
-harness that runs candidate axiom sets against certified data. Its verdict:
-the clause that kills DH (which has off-line zeros, so every admissible axiom
-set \emph{must} kill it) while zeta's unconditionally-checkable clauses pass
-is \emph{weight positivity}---the Euler product---isolated by a
-deliberately-dead control variant that DH survives. And a \emph{defect
-instrument}: the inertia arithmetic of the finite Weil-form compression
-\cite{alpogefurman} (an off-line pair contributes a signature-$(1,1)$ block)
-is formalized as a defect dictionary---negative index $\le$ number of
-off-line pairs, defect $0$ unconditionally for on-line configurations---and
-exercised in a certified perturbation experiment: adjoining one synthetic
-off-line pair ($\beta = 3/5$) to the twenty-nine certified zeros below $100$
-produces a kernel-observable defect of $-1.00167\times10^{-4}$ against the
-honest configuration's $0$. The conservation-of-difficulty map that emerges
-is stated plainly in the program documents: positivity, multiplicativity,
-density, and the defect arithmetic are unconditional (and now partly
-kernel-checked); RH-hardness concentrates in exactly one clause---FQ-grade
-temperedness of the dual comb---of which the classification's entrance fee
-is the disguise. \emph{None of this proves anything about RH}; it builds the
-finite, machine-checked floor---ground truth, falsification instruments, and
-the first theorems of the rigidity ladder---on which any serious attempt at
-the reverse derivation would have to stand.
-
-\subsection{Reflection, and the return of the classical objects}
-\label{sec:reflection}
-
-Every certificate in the ladder of \cref{sec:rh} rests, by design, on one
-documented seam: numeric enclosures enter the kernel as \emph{hypotheses},
-supplied by ball arithmetic and audited but never re-derived. The
-\emph{reflection program} asks whether that seam can be removed---whether the
-kernel can \emph{compute} the numerics itself---and this section reports how
-far it has gone and what happened along the way. The short answer: the seam
-is eliminable in principle and now partially eliminated in fact; and at every
-step where the machinery was forced to choose a representation, it chose,
-unprompted, a classical object of the subject's history.
-
-The architecture is computational reflection in the standard sense: a
-checker \texttt{checkBand : BandData $\to$ Bool} written in the restricted
-fragment the kernel evaluates well (integer-mantissa dyadic intervals, list
-folds, structural recursion---no rationals, whose GCD normalization defeats
-kernel reduction), a soundness theorem proven once, and per-band certificates
-of the form \texttt{ok : checkBand d = true := by decide}. The pilot band
-landed with an axiom print worth exhibiting: the kernel decision
-\texttt{ReflectedBand\_t14.ok} depends on \emph{propext alone}---no choice,
-no quotients, no numeric hypotheses---with the classical axioms entering only
-downstream, where the soundness bridge converts the decided bit into the
-existence of on-line zeros via the intermediate value theorem. The analytic
-engine beneath it is a kernel-complete Euler--Maclaurin theory built for the
-purpose (and absent from Mathlib): the order-3 identity
+Two developments have since moved the frontier that the previous subsection drew.
+First, the growth residual is now substantially \emph{closed}---by yet another
+reroute. The polygamma closed form above is exact but combinatorially opaque
+(sums over ordered set partitions); composing the same three kernel stones
+differently---the M\"obius chain rule, the reduction to $\psi(s/2)$, and the
+Gauss--Weierstrass digamma series, with every denominator cleared through the
+M\"obius map---turns the \emph{whole} archimedean factor into one elementary
+series of rational functions (\texttt{logDeriv\_phi\_Gamma}\(\mathbb{R}\)\texttt{\_eq\_elem}),
+whose $n$-th Taylor coefficients are explicit. The kernel then holds the exact
+elementary formula
 \[
-  \zeta(s) \;=\; \frac{1}{s-1} + \frac12
-  + \int_1^N \widetilde{B}_1(x)\,(-s)x^{-s-1}\,dx
-  + \frac{B_2}{2}\,s\,N^{-s-1} + R_3(s,N),
-  \qquad 0 < \operatorname{Re} s,\ s \ne 1,
+  \texttt{taylorCoeff}(\Gamma_{\mathbb R})_n
+    = -\frac{\gamma + \log\pi}{2}(n+1) - 1
+      + \sum_{j\ge 0}\Bigl[\frac{n+1}{2(j+1)} - 1
+        + \Bigl(\frac{2j+2}{2j+3}\Bigr)^{n+1}\Bigr]
 \]
-with $R_3$ an explicit saw-kernel integral, culminating in a
-\emph{kernel-decided} numeric theorem:
-$\lVert \zeta(\tfrac12 + 14i) - \mathrm{emZetaFinite}_3 \rVert \le 10^{-3}$
-at $N = 200$ (the proven envelope is $6\times$ smaller). Two smaller
-felicities deserve record: the order-3 boundary term vanishes because
-$B_3 = 0$---the odd Bernoulli zeros doing concrete labor in a certificate
-format---and the large trigonometric arguments the evaluator needs
-($\cos(t\log n)$ with $t\log n \approx 74$, a dozen full periods) are reduced
-\emph{without any enclosure of $\pi$}: iterated exact halving into the Taylor
-domain and doubling back through $\cos 2y = 2\cos^2 y - 1$, the reduction
-error \emph{shrinking} geometrically with depth. On these instruments the
-first fully unconditional evaluation landed: a no-argument kernel theorem
-placing $\operatorname{Re}\, 2^{-(1/2+14i)}$ in an interval of width
-$2\times10^{-4}$---to our knowledge the first value of a $\zeta$-series term
-on the critical line ever computed, rather than certified, inside a proof
-assistant's trusted core. The full $\zeta(\tfrac12+it)$ box is a mechanical
-sum of two hundred such terms plus the tail theorem above.
-
-Now the striking part, which we did not design. The remaining factor of
-$\Lambda = \Gamma_{\mathbb{R}}\,\zeta$ is the Archimedean one, and the
-economical route is not to enclose $\Gamma_{\mathbb{R}}$'s value but to use
-the reality of $\Lambda$ on the line: the sign of $\mathrm{gLine}$
-decomposes as
-$\operatorname{sign}(\cos\varphi\cdot\operatorname{Re}\zeta -
-\sin\varphi\cdot\operatorname{Im}\zeta)$ with
-$\varphi = \arg\Gamma_{\mathbb{R}}(\tfrac12+it)$, the positive modulus
-dropping out. The quantity this leaves behind is precisely the
-\emph{Hardy $Z$-function}, and the phase $\varphi$ is precisely the
-\emph{Riemann--Siegel theta}: the evaluator, asked only for the cheapest
-sound decomposition, reconstructed the instrument of every zero verification
-since Hardy, and the reflected campaign converges---from the axioms of type
-theory upward---on Turing's own method. The same phenomenon occurred one
-level down in the finite models of \cref{sec:mirrormere}: the reality
-criterion for a self-inversive exponential sum forces a normalization by a
-unimodular \emph{square root} of the functional-equation phase, $u^2 =
-\mathrm{phase}$---Hardy's half-phase $e^{i\theta}$, reappearing in a
-two-term binomial because the symmetry demands it, not because we put it
-there. We take this recurrence seriously as evidence of a correct frame:
-when independent mechanized searches for the \emph{cheapest checkable
-certificate} keep terminating on the classical objects---$Z$, $\theta$, the
-half-phase, the Selberg-class axioms recovered clause-by-clause by
-falsification against Davenport--Heilbronn (\cref{sec:mirrormere})---the
-suggestion is that those objects are not historical conveniences but
-something like the optimal certificates of the theory, rediscoverable by
-any sufficiently honest verifier.
-
-One instrument stood between the program and a zero-hypothesis band---a
-kernel value for $\theta(t)$ itself---and it has now been built. The corpus
-route (quadrature of the enclosed $\log\Gamma_{\mathbb{R}}$-derivative) was
-genuinely blocked: it requires a digamma series representation and polygamma
-bounds that exist nowhere in Mathlib, and we declined to manufacture them
-mid-campaign. But a back door stood open, and it is three centuries old:
-Euler's limit formula (already formalized in Mathlib as the
-$\Gamma$-sequence) gives $\arg\Gamma(z)$ at finite stage $n$ as
-$y\log n - \sum_{k\le n} \arctan\!\big(y/(x+k)\big)$---arctangents at
-rational arguments, exactly telescoping harmonic sums, and explicit
-$O(1/n)$ rates, every ingredient already in the toolkit. Through it,
-the phase $\theta(14)$ and $\theta(15)$ were boxed in the kernel (the
-convergence and its rate discharged as theorems, not hypotheses; the
-$\arctan$ near its awkward argument $u\approx1$ handled by the addition
-identity $\arctan u = \tfrac\pi4 + \arctan\tfrac{u-1}{1+u}$), the sign
-quantity $\cos\theta\cdot\operatorname{Re}\zeta -
-\sin\theta\cdot\operatorname{Im}\zeta$---the Hardy $Z$-function---was
-exhibited negative at $14$ and positive at $15$ from kernel-computed
-boxes on both factors, and the intermediate value theorem closed it:
+(\texttt{taylorCoeff\_Gamma}\(\mathbb{R}\)\texttt{\_elem}; the term-by-term coefficient
+extraction through the infinite sum is done by iterating the locally-uniform-limit
+derivative theorem over partial sums---no per-order bounds, one uniform
+$2/(j+1)^2$ envelope), and, from it, the unconditional growth window
 \[
-  \texttt{first\_zero\_kernel} \;:\;
-  \exists\, r,\ 14 < r < 15 \ \wedge\
-  \Lambda\!\left(\tfrac12 + r i\right) = 0,
+  \Bigl|\,\mathrm{Re}\,\texttt{taylorCoeff}(\Gamma_{\mathbb R})_n
+    - \tfrac{n}{2}\log n\,\Bigr| \;\le\; 8n \qquad (n \ge 2)
 \]
-axioms $\{$\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}$\}$,
-no \texttt{sorryAx}, no \texttt{ofReduceBool}, and---the point---\emph{no
-arguments and no numeric hypotheses whatsoever}. To our knowledge this is
-the first nontrivial zero of the Riemann zeta function whose existence has
-been verified by \emph{pure computation inside a proof-assistant kernel}:
-not a verified \emph{account} of a computation, but the computation itself,
-carried out where nothing unverified can reach it. It is the natural
-endpoint of the trust programme this paper describes, and its method is
-height-agnostic---the second zero, and the thousandth, cost only
-certificates. As everywhere, the honesty line is exact:
-\texttt{conjecture1\_proved = False}. This is \emph{one} certified zero, at
-$\gamma_1 \approx 14.1347$; it is not, and does not approach, a proof of the
-Riemann Hypothesis. The reflection program changes what a finite
-verification \emph{is}, not what it proves.
+(\texttt{taylorCoeff\_Gamma}\(\mathbb{R}\)\texttt{\_re\_growth}), by Bernoulli and
+second-Bonferroni bounds on each summand, a split of the sum at $j = n$, and
+Mathlib's harmonic--logarithm inequalities. The sentence ``we do not have its
+asymptotic'' above is thereby superseded in its main clause: the $(n/2)\log n$
+trend of the archimedean summand is a kernel theorem, unconditionally, with an
+explicit linear window. What remains unformalized is the sharper classical form
+$\tfrac{n}{2}(\log n + \gamma - 1 - \log 2\pi) + o(n)$---the constant of the
+linear term---and, as ever, everything about the \emph{companion} summand, whose
+temperedness is where the Riemann Hypothesis itself lives (Voros's dichotomy);
+nothing here touches it.
+
+Second, the companion has acquired its own finite certificate family. Through the
+relocation $\mathrm{RH} \leftrightarrow \forall n,\ -(1 +
+\mathrm{Re}\,\texttt{taylorCoeff}(\Gamma_{\mathbb R})_n) \le
+\mathrm{Re}\,\texttt{taylorCoeff}(H_\zeta)_n$ the explicit archimedean data
+becomes a \emph{floor}, and a Telperion emitter (\texttt{bragg\_floor}) certifies,
+per order, that the truncated von Mangoldt (Bragg) amplitude at a fixed base
+point, net of a certified tail, clears it---fifteen kernel-checked rational
+inequalities, with the Arb enclosures the same documented trust seam as the Li
+ladder, and a falsifiability atom
+(\texttt{bragg\_below\_floor\_refutes\_rh}) whose passage to the companion runs
+through the \emph{conditional} exhaustion identity and carries it as an explicit,
+undischarged hypothesis. The emitter \emph{refuses} the orders its fixed-base
+amplitude cannot clear rather than fake the RH-hard comb expansion---the honest
+shape of a certificate family that could have falsified and did not. As
+everywhere: \texttt{conjecture1\_proved = False}.
 
 \subsection{Directions: the uniformization axes}
 
@@ -788,7 +561,8 @@ route's completion is itself the open problem, and $\texttt{conjecture1\_proved}
 = \texttt{False}$. The contribution is a verified ladder of finite rungs and the
 certification calculus on top of them---never the uniform object, which is RH.
 
-The methodological point for this paper is that the same
-untrusted-generator/trusted-kernel discipline that handled a combinatorial
-extremal problem also produces honest analytic results---and, just as important,
-makes it easy to state exactly how strong they are and are not.
+The methodological point is that the same untrusted-generator/trusted-kernel
+discipline makes it easy to state exactly how strong these results are and are
+not. The same discipline applies well beyond the zeta function---to a still-open
+extremal-combinatorics problem and a proof-complexity lower bound (mathematics
+due to others)---reported separately~\cite{telperion-companion}.
