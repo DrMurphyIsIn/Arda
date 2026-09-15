@@ -172,3 +172,28 @@ roots = ["ForgeLogBracket"]
 [[lean_lib]]
 name = "ForgeTail"
 roots = ["ForgeTail"]
+
+# cert-forge Stage-2/3: tail-term factoring, sharded per-t term boxes, ζ boxes, final assembly.
+[[lean_lib]]
+name = "ForgeTailTerms"
+roots = ["ForgeTailTerms"]
+
+[[lean_lib]]
+name = "ForgeZ14Terms"
+roots = ["ForgeZ14Terms"]
+
+[[lean_lib]]
+name = "ForgeZ15Terms"
+roots = ["ForgeZ15Terms"]
+
+[[lean_lib]]
+name = "ForgeZeta14"
+roots = ["ForgeZeta14"]
+
+[[lean_lib]]
+name = "ForgeZeta15"
+roots = ["ForgeZeta15"]
+
+[[lean_lib]]
+name = "ForgeFirstZero"
+roots = ["ForgeFirstZero"]
