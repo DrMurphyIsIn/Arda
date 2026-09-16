@@ -7,6 +7,13 @@ status = "open"
 title = "Routes-roadmap E4a (Face 4 <-> Face 1 witness bridge): the Bagchi recurrence deficit (e^delta - 1)(1 - e^(-delta)) equals the Bragg amplification excess at the certified displacement delta = 1/10, and is strictly positive for every positive displacement -- the recurrence and defect instruments measure the same off-line signal. Discharge: Real.exp ring algebra + strict monotonicity; QC_RECURRENCE section 4.2 says kernel-ready now (RH_ROUTES_ROADMAP_2026-09-16 section 9)"
 updated = "2026-09-16"
 
+[proof]
+artifact = "../lean/Proofs/MM_recurrence_deficit_eq_excess_proof.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+note = "AUTHORED proof (recurrence_deficit_eq_excess). Kernel-verified locally on rh/routes-node-proofs (v4.32.0, CoW-cloned quasicrystal Mathlib): #print axioms = [propext, Classical.choice, Quot.sound], 0 sorryAx. Imports Statements.MMDefs verbatim (recurrenceDeficit/excess/Aoff/Aon). Real.exp_add identity + Real.one_lt_exp_iff/Real.exp_lt_one_iff positivity. Artifact on rh/routes-node-proofs, main-CI grant deferred to branch reconcile. conjecture1_proved = False."
+
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"

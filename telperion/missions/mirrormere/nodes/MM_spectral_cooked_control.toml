@@ -7,6 +7,13 @@ status = "open"
 title = "Routes-roadmap D4a (the spectral triviality NEGATIVE CONTROL): any finite real multiset is the characteristic-polynomial spectrum of a Hermitian matrix (the diagonal one) -- kernel-certifying that 'an operator whose eigenvalues are the zeros' has ZERO content without the arithmetic-construction and completion clauses. The route-D honesty marker: bare finite operator existence is vacuous; all content lives in the positivity/completion clause (= the wall). Discharge: Matrix.diagonal + charpoly of diagonal (RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)"
 updated = "2026-09-16"
 
+[proof]
+artifact = "../lean/Proofs/MM_spectral_cooked_control_proof.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+note = "AUTHORED proof (spectral_cooked_control). Kernel-verified locally on rh/routes-node-proofs (v4.32.0): #print axioms = [propext, Classical.choice, Quot.sound], 0 sorryAx. Imports Mathlib only. Witness diag(gamma): Hermitian via Matrix.diagonal_conjTranspose + Complex.conj_ofReal, charpoly via Matrix.charpoly_diagonal. TRIVIAL BY DESIGN (declared negative control). Artifact on rh/routes-node-proofs, main-CI grant deferred. conjecture1_proved = False."
+
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"

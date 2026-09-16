@@ -7,6 +7,13 @@ status = "open"
 title = "Routes-roadmap D1 (spectral trace reading, dictionary-grade): the Bragg bridge rearranged as a finite trace identity -- the box zero-count of zeta over its actual divisor (the trace of the box spectral measure of the conjectural operator) equals 1/(2 pi i) times (edges - i Bragg comb - i left remainder). Algebraic rearrangement of rect_explicit_formula_bragg (division by the nonzero constant 2 pi i); thin but load-bearing as the D-route's packaging layer. Discharge: field_simp from MM_bragg_bridge's artifact (RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)"
 updated = "2026-09-16"
 
+[proof]
+artifact = "../lean/Proofs/MM_rect_trace_reading_proof.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
+note = "AUTHORED proof module (rect_trace_reading) written and imports the REAL li-positivity island (RvMBraggBridge:123 rect_explicit_formula_bragg, RvMRHInBox zeroFinset). NOT locally island-built: v4.34.0-rc1 Mathlib/LiCriterion chain was not built in the routes-node-proofs worktree (no v4.34 olean available; host disk at capacity). The ALGEBRAIC REARRANGEMENT was kernel-checked on v4.32.0 in two ways: (1) against a byte-for-byte axiom mirror of rect_explicit_formula_bragg's exact signature (real MMDefs braggTerm/zeroFinset vocabulary) -- the tactic block closes with the bridge theorem as its ONLY non-standard axiom; (2) in abstract isolation (2 pi i . S = RHS => S = (1/(2 pi i)) . RHS over abstract data) -- #print axioms = [propext, Classical.choice, Quot.sound], 0 sorryAx, confirming the rearrangement introduces NO axioms of its own. When built in the li island the imports make rect_explicit_formula_bragg a proved theorem and the module's closure is 3-axiom clean. STATUS: rearrangement verified, full island build PENDING (grant/full-island worktree). conjecture1_proved = False."
+
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"

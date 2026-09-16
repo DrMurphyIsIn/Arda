@@ -7,6 +7,13 @@ status = "open"
 title = "Routes-roadmap E4b (the isolation lemma, QC_RECURRENCE section 4.3): any finite set of points in the open critical strip admits a single positive radius whose closed discs are pairwise disjoint and stay inside the strip -- the geometric substrate for counting off-line zeros by disjoint recurrence-deficit discs (Rouche-template leg of the finite-grade interderivability E5). Pure metric topology, dischargeable now (RH_ROUTES_ROADMAP_2026-09-16 section 9)"
 updated = "2026-09-16"
 
+[proof]
+artifact = "../lean/Proofs/MM_offline_disjoint_discs_proof.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+note = "AUTHORED proof (offline_disjoint_discs). Kernel-verified locally on rh/routes-node-proofs (v4.32.0): #print axioms = [propext, Classical.choice, Quot.sound], 0 sorryAx. Imports Mathlib only. Radius = one third of min over {1} u {distinct pairwise distances} u {boundary gaps min(re,1-re)}; disjointness via Metric.closedBall_disjoint_closedBall, strip containment via Complex.abs_re_le_norm. Empty/singleton benign. Artifact on rh/routes-node-proofs, main-CI grant deferred. conjecture1_proved = False."
+
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"
