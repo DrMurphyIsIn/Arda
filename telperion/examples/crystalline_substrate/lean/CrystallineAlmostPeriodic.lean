@@ -65,7 +65,28 @@ theorem isAlmostPeriodic_smul (c : ℂ) {f : ℝ → ℂ} (hf : IsAlmostPeriodic
           exact mul_le_mul_of_nonneg_left (hτ x) hcpos.le
       _ = ε := by field_simp
 
+/-- **Brick 3 — translation-invariance**: a translate of a Bohr almost-periodic
+function is Bohr almost-periodic.  The ε-almost-period SET is itself unchanged by
+translating the function (the almost-period condition is translation-invariant), so
+relative density transfers directly. -/
+theorem isAlmostPeriodic_comp_add_right {f : ℝ → ℂ} (hf : IsAlmostPeriodic f) (t : ℝ) :
+    IsAlmostPeriodic (fun x => f (x + t)) := by
+  intro ε hε
+  have hset : almostPeriods (fun x => f (x + t)) ε = almostPeriods f ε := by
+    ext τ
+    simp only [almostPeriods, Set.mem_setOf_eq]
+    constructor
+    · intro h y
+      have h' := h (y - t)
+      rwa [show (y - t) + τ + t = y + τ by ring, show (y - t) + t = y by ring] at h'
+    · intro h x
+      have h' := h (x + t)
+      rwa [show (x + t) + τ = x + τ + t by ring] at h'
+  rw [hset]
+  exact hf ε hε
+
 end CrystallineSubstrate
 
 #print axioms CrystallineSubstrate.isAlmostPeriodic_smul
 #print axioms CrystallineSubstrate.relativelyDense_mono
+#print axioms CrystallineSubstrate.isAlmostPeriodic_comp_add_right
