@@ -48,7 +48,21 @@ theorem trivial_zero_is_archimedean (n : ℕ) :
       ∧ Gammaℝ (-2 * ((n : ℂ) + 1)) = 0 :=
   ⟨riemannZeta_def_of_ne_zero (trivial_arg_ne_zero n), gammaℝ_zero_at_trivial n⟩
 
+/-- **NEGATIVE CONTROL — the trivial zeros are off the critical line.**
+`Re(−2(n+1)) = −2(n+1) ≠ 1/2`.  These are *known off-line zeros of ζ*, so any
+reality-forcing / positivity argument on the closure map must be consistent with
+them lying off `Re = 1/2` — a built-in refutation test (forge-the-witness
+discipline): a method that would push these onto the line is thereby wrong. -/
+theorem trivial_zero_off_critical_line (n : ℕ) :
+    (-2 * ((n : ℂ) + 1)).re ≠ 1 / 2 := by
+  have h : (-2 * ((n : ℂ) + 1)) = ((-2 * ((n : ℝ) + 1) : ℝ) : ℂ) := by push_cast; ring
+  rw [h, Complex.ofReal_re]
+  have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+  intro he
+  nlinarith [he, hn]
+
 end TrivialZeroLocalization
 
 #print axioms TrivialZeroLocalization.trivial_zero_is_archimedean
 #print axioms TrivialZeroLocalization.gammaℝ_zero_at_trivial
+#print axioms TrivialZeroLocalization.trivial_zero_off_critical_line
