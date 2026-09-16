@@ -85,8 +85,25 @@ theorem isAlmostPeriodic_comp_add_right {f : ℝ → ℂ} (hf : IsAlmostPeriodic
   rw [hset]
   exact hf ε hε
 
+/-- **Brick 4 — the integer lattice is relatively dense** (window `P`).  This is the
+support skeleton of every periodic function and pure tone `e^{iλx}`: their exact
+periods form the lattice `Pℤ`, which meets every window, hence (being a subset of the
+ε-almost-periods) makes them Bohr almost-periodic.  A support-side tool — exactly the
+side the multiplicative-rigidity search (wylptmzxv) identified as load-bearing. -/
+theorem relativelyDense_intMul (P : ℝ) (hP : 0 < P) :
+    RelativelyDense {y : ℝ | ∃ k : ℤ, y = (k : ℝ) * P} := by
+  refine ⟨P, hP, fun x => ⟨(⌈x / P⌉ : ℝ) * P, ⟨⌈x / P⌉, rfl⟩, ?_, ?_⟩⟩
+  · have h1 : x / P ≤ (⌈x / P⌉ : ℝ) := Int.le_ceil _
+    have := mul_le_mul_of_nonneg_right h1 hP.le
+    rwa [div_mul_cancel₀ x (ne_of_gt hP)] at this
+  · have h2 : (⌈x / P⌉ : ℝ) < x / P + 1 := Int.ceil_lt_add_one _
+    have := mul_lt_mul_of_pos_right h2 hP
+    rw [add_mul, div_mul_cancel₀ x (ne_of_gt hP), one_mul] at this
+    linarith
+
 end CrystallineSubstrate
 
 #print axioms CrystallineSubstrate.isAlmostPeriodic_smul
 #print axioms CrystallineSubstrate.relativelyDense_mono
 #print axioms CrystallineSubstrate.isAlmostPeriodic_comp_add_right
+#print axioms CrystallineSubstrate.relativelyDense_intMul
