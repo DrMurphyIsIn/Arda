@@ -28,41 +28,80 @@ pilot). Read that first for the *why*; this doc is the *how* for the real climb.
 4. `PATH=$HOME/.elan/bin:$PATH`; toolchain pinned to `v4.32.0`
    (`cat lean/lean-toolchain`).
 
-## The single blocking gap (MUST fix before first cutover)
+## The blocker (FIXED — `register-lakefile --sharded` is now turnkey)
 
-`campaign.py:register_lakefile_sharded` currently emits block lakefiles via
-`emit_block_lakefile()` / `emit_umbrella_lakefile()`, which produce **incomplete**
-packages:
+**Status: RESOLVED.** `b2_pilot_emit.py`'s disk-safe wiring has been folded into
+`campaign.py`'s sharded emitter, so a single `register-lakefile --sharded` call
+now emits production-ready, buildable block packages. What changed in
+`campaign.py`:
 
-- **no `srcDir = ".."`** → the package cannot find the flat `.lean` sources;
-- **no prior-block `[[require]]`** → the cross-block chain edge does not resolve;
-- **no disk-safe wiring** (`lake-manifest.json` copy, `.lake/packages` symlink,
-  `ZeroFreeBridge` path rewrite, `lean-toolchain` drop) → each block would
-  re-clone Mathlib (~7.7 GB/block, pilot-measured).
+- **`emit_block_lakefile(top, modules, prior_top=None)`** now emits
+  `srcDir = ".."`, `[[require]] zzl_core (path ../zzl_core)`, and — when a prior
+  block exists — `[[require]] ZetaBands_h<prior_top> (path ../ZetaBands_h<prior_top>)`.
+  The lowest block (h25000) correctly gets NO prior require.
+- **`emit_core_lakefile()` / `emit_core_pkg()`** (new) materialise the shared
+  `zzl_core` package (16 core modules, `srcDir=".."`, mathlib + ZeroFreeBridge
+  requires) with disk-safe wiring. `register_lakefile_sharded` emits it once per run.
+- **`_pkg_wiring(pkg_dir, lean_dir, require_core, extra_path_deps)`** (ported from
+  `b2_pilot_emit.py`) per package: copies + patches the monolith
+  `lake-manifest.json` (rewrites the `ZeroFreeBridge` path relative to the
+  package's depth), symlinks `<pkg>/.lake/packages → ../.lake/packages` (deps
+  reused in place, zero re-clone), and drops a `lean-toolchain` (pins v4.32.0).
+- **Full transitive prior-block closure in the manifest.** The lakefile declares
+  only the IMMEDIATE prior require (lake resolves the rest via each prior's own
+  lakefile), but the MANIFEST must carry EVERY lower block as a path dep —
+  otherwise an isolated block build fails with
+  `dependency 'ZetaBands_h<lower>' of 'ZetaBands_h<prior>' not in manifest`.
+  `register_lakefile_sharded` writes the full closure (all lower blocks +
+  zzl_core + ZFB) into each block's manifest via `extra_path_deps`.
+- **Idempotent, non-clobbering.** `_block_is_well_wired()` checks `srcDir` +
+  zzl_core require + prior-block require (when due) + `.lake/packages` symlink +
+  manifest transitive closure. A correctly-wired block with no new modules is
+  left byte-untouched; a stale (srcDir-less, or closure-outdated) block is
+  re-emitted with the full module set. Verified: a second `register-lakefile
+  --sharded` run rewrites ZERO files.
 
-The disk-safe, buildable wiring lives ONLY in `b2_pilot_emit.py`
-(`emit_core`, `emit_block`, `_pkg_wiring`, `emit_prior_boundary`). **Before the
-first live cutover, fold `b2_pilot_emit.py`'s wiring into
-`campaign.py:emit_block_lakefile` + a new `_pkg_wiring` step in
-`register_lakefile_sharded`** so `register-lakefile --sharded` emits
-production-ready packages in one call. Concretely `emit_block_lakefile` must add:
+**Validation:** `register-lakefile --sharded --from 1 --to 560000 --segments`
+now produces 23 block packages (736–1125 modules per 25k block) + a 23-require
+umbrella, ALL with `srcDir` + full requires + disk-safe wiring; the previously
+clobbered pilot h375000 is restored to a correctly-wired full block (1075
+modules, prior require h350000); the pilot h400000 is preserved and re-wired with
+the full closure; `zzl_core` and `ZetaBands_h400000` build green from the cached
+oleans and `#print axioms` on the h400000 top capstone is the clean 3-axiom set
+with 0 `sorryAx`. **No pre-cutover code change remains.**
 
-```
-srcDir = ".."                                    # zero-move source layout
-[[require]] name="zzl_core"    path="../zzl_core"
-[[require]] name="ZetaBands_h<prior_top>" path="../ZetaBands_h<prior_top>"   # if prior block exists
-```
+Note: `b2_pilot_emit.py` is retained as the pilot record / reference; the
+production path is now `campaign.py register-lakefile --sharded` alone.
 
-and `register_lakefile_sharded` must, per package, copy+patch the monolith
-`lake-manifest.json`, symlink `<pkg>/.lake/packages → ../.lake/packages`, and
-drop a `lean-toolchain`. **Validation status:** running the CURRENT
-`register-lakefile --sharded --from 1 --to 560000 --segments` produced 23 block
-packages + a 23-require umbrella with correct module ROUTING (736–1125 modules
-per 25k block, growing with height), but every emitted lakefile had `srcDir=0`
-and no wiring — it also **clobbered the committed pilot h375000** (rewrote it
-srcDir-less). So: the router is correct; the emitter is not yet disk-safe. Do not
-run the live cutover until the fold-in lands and re-emits all blocks with
-`srcDir` + wiring.
+## Topology note: transitive manifest closure vs `lake env` depth (validated)
+
+The fixed emitter writes the FULL transitive prior-block closure into each
+block's `lake-manifest.json` (every lower block as a path dep). This is REQUIRED
+for an isolated block build (`cd lean/ZetaBands_h<top> && lake build`): without
+it, lake aborts with `dependency 'ZetaBands_h<lower>' of 'ZetaBands_h<prior>' not
+in manifest`. Validated: with the closure, `zzl_core` + the cross-block
+`ZetaBands_h400000` (require → h375000, closure h25000..h375000) build green
+(exit 0, 1075/1075 oleans); the manifest error is gone.
+
+**However** — a deep block's `lake env` (used by `#print axioms` tooling)
+constructs a workspace over its whole require closure, and at ~15 blocks deep
+(h400000) `lake env <cmd>` fails ("could not execute external process"), whereas
+at 1 block deep (h50000) it works cleanly (LEAN_PATH ~14 entries) and
+`lake env lean` reports the h50000 top capstone's axioms as
+`[propext, Classical.choice, Quot.sound]`, 0 `sorryAx`, exercising the fixed
+cross-block require edge (h50000 → h25000). **Implication for the cutover:**
+
+- For BUILDS at any depth, the full-closure manifest is correct — use it.
+- For `lake env` / `#print axioms` tooling on a DEEP block, prefer the
+  **boundary-Replay** shape (the block requires only its immediate prior, whose
+  `.lake/build/lib/lean` is symlinked at the monolith build lib), which keeps the
+  env shallow. OR run the axiom battery via direct `lean` with a hand-composed
+  LEAN_PATH against the block-package olean + the monolith chain cache (the
+  established guard path), which does not go through `lake env`.
+
+Both the emitter output and the guard tooling are therefore fine; just do not
+rely on `lake env` for a 15+-deep block. This is a tooling-ergonomics caveat, not
+a build correctness issue.
 
 ## One-time prerequisites (done once, reused by every leg thereafter)
 
@@ -83,7 +122,7 @@ cd -
 
 ```
 cd telperion/examples/zeta_zero_localization
-python3 b2_pilot_emit.py          # (or: campaign.py register-lakefile --sharded, once folded)
+python3 campaign.py register-lakefile --sharded --from 1 --to <H> --segments  # emits zzl_core + all blocks + umbrella, disk-safe
 cd lean/zzl_core && lake build && cd ../..   # 16 core oleans, ~113 MB, Replay deps
 ```
 
@@ -222,14 +261,17 @@ retry the sharded build offline.
 
 ## Order of operations for the FIRST live cutover (checklist)
 
-1. [ ] Fold `b2_pilot_emit.py` wiring into `campaign.py` (the blocking gap).
+1. [x] Fold `b2_pilot_emit.py` wiring into `campaign.py` — DONE (the emitter is
+       now turnkey; see "The blocker (FIXED)" above).
 2. [ ] Confirm climb quiescent; frontier leg certified.
 3. [ ] P1: build ZeroFreeBridge (once).
-4. [ ] P2: emit + build `zzl_core` (once).
-5. [ ] `register-lakefile --sharded --from 1 --to <H> --segments` → all blocks +
-       umbrella (now with srcDir + wiring).
-6. [ ] Bootstrap historical blocks via `emit_prior_boundary` symlink-Replay OR
-       build bottom-up on spare nodes (does not block the frontier).
+4. [ ] `register-lakefile --sharded --from 1 --to <H> --segments` → emits
+       zzl_core + all blocks + umbrella (srcDir + full requires + disk-safe
+       wiring + transitive manifest closure).
+5. [ ] Build `zzl_core` (once).
+6. [ ] Bootstrap historical blocks: symlink each block's `.lake/build/lib/lean`
+       at the monolith build lib (Replay, ~57 s/block, 0 recompile) OR build
+       bottom-up on spare nodes (does not block the frontier).
 7. [ ] Build the top block; `#print axioms` on `AllZeros_h<H>` = clean 3-axiom
        set, 0 `sorryAx`.
 8. [ ] Prune each block's `.lake/build/ir`.
