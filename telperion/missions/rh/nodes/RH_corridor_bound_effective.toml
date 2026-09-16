@@ -1,0 +1,8 @@
+created = "2026-09-16"
+depends_on = []
+kind = "lemma"
+name = "RH.corridor_bound_effective"
+statement_module = "Statements.RH_corridor_bound_effective"
+status = "draft"
+title = "Routes-roadmap E7 (the corridor bound, GATED on RvM): for T >= 3 and a vertical-edge point sigma+iT with -1 <= sigma <= 2 at distance >= delta from every nontrivial zero within height 1 of T, the log-derivative satisfies |zeta'/zeta(sigma+iT)| <= (Cpf + Ccount/delta)*(log T)^2 -- the classical O(log^2 T) corridor estimate in EFFECTIVE-CONSTANT form. The RvM local zero-count bound card(Znear) <= Ccount*log T enters as the explicit hypothesis hlocalcount (UNPROVED unconditionally in-corpus: RvMUnboundedMeanDensity residual), so the node is GATED on the RvM port; the reduction from partial-fractions + local-count + gap to the log^2 bound is itself RvM-independent inequality algebra. The unique four-consumer blocker feeding A3/B5/D6 (RH_ROUTES_ROADMAP_2026-09-16 sections 6, 9). conjecture1_proved = False"
+updated = "2026-09-16"
