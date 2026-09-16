@@ -101,9 +101,53 @@ theorem relativelyDense_intMul (P : ℝ) (hP : 0 < P) :
     rw [add_mul, div_mul_cancel₀ x (ne_of_gt hP), one_mul] at this
     linarith
 
+/-- Relative density of the lattice `Pℤ` for any nonzero `P` (via `{kP} = {k(-P)}`). -/
+theorem relativelyDense_intMul_of_ne (P : ℝ) (hP : P ≠ 0) :
+    RelativelyDense {y : ℝ | ∃ k : ℤ, y = (k : ℝ) * P} := by
+  rcases lt_or_gt_of_ne hP with hneg | hpos
+  · have hset : {y : ℝ | ∃ k : ℤ, y = (k : ℝ) * P}
+             = {y : ℝ | ∃ k : ℤ, y = (k : ℝ) * (-P)} := by
+      ext y
+      constructor
+      · rintro ⟨k, rfl⟩; exact ⟨-k, by push_cast; ring⟩
+      · rintro ⟨k, rfl⟩; exact ⟨-k, by push_cast; ring⟩
+    rw [hset]
+    exact relativelyDense_intMul (-P) (by linarith)
+  · exact relativelyDense_intMul P hpos
+
+/-- **Brick 5 — the pure tone `e^{iλx}` is Bohr almost-periodic.**  The first genuine
+diffraction object (a single Bragg peak) in the substrate: its exact periods form the
+lattice `(2π/λ)ℤ`, relatively dense, on which the tone returns to its value
+(`e^{2πik}=1`), so those are ε-almost-periods for every `ε`. -/
+theorem isAlmostPeriodic_pureTone (lam : ℝ) :
+    IsAlmostPeriodic (fun x : ℝ => Complex.exp (Complex.I * (lam : ℂ) * (x : ℂ))) := by
+  rcases eq_or_ne lam 0 with h0 | h0
+  · have hfun : (fun x : ℝ => Complex.exp (Complex.I * (lam : ℂ) * (x : ℂ)))
+             = (fun _ : ℝ => (1 : ℂ)) := by
+      funext x
+      simp only [h0, Complex.ofReal_zero, mul_zero, zero_mul, Complex.exp_zero]
+    rw [hfun]; exact isAlmostPeriodic_const 1
+  · intro ε hε
+    have hlam : (lam : ℂ) ≠ 0 := by exact_mod_cast h0
+    set P : ℝ := 2 * Real.pi / lam with hPdef
+    have hPne : P ≠ 0 := by
+      rw [hPdef]; exact div_ne_zero (mul_ne_zero two_ne_zero Real.pi_ne_zero) h0
+    refine relativelyDense_mono (S := {y : ℝ | ∃ k : ℤ, y = (k : ℝ) * P}) ?_
+      (relativelyDense_intMul_of_ne P hPne)
+    rintro τ ⟨k, rfl⟩ x
+    have harg : Complex.I * (lam : ℂ) * ((x + (k : ℝ) * P : ℝ) : ℂ)
+             = Complex.I * (lam : ℂ) * (x : ℂ) + (k : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
+      rw [hPdef]; push_cast; field_simp
+    show ‖Complex.exp (Complex.I * (lam : ℂ) * ((x + (k : ℝ) * P : ℝ) : ℂ))
+        - Complex.exp (Complex.I * (lam : ℂ) * (x : ℂ))‖ ≤ ε
+    rw [harg, Complex.exp_add, Complex.exp_int_mul_two_pi_mul_I, mul_one, sub_self, norm_zero]
+    exact hε.le
+
 end CrystallineSubstrate
 
 #print axioms CrystallineSubstrate.isAlmostPeriodic_smul
 #print axioms CrystallineSubstrate.relativelyDense_mono
 #print axioms CrystallineSubstrate.isAlmostPeriodic_comp_add_right
 #print axioms CrystallineSubstrate.relativelyDense_intMul
+#print axioms CrystallineSubstrate.relativelyDense_intMul_of_ne
+#print axioms CrystallineSubstrate.isAlmostPeriodic_pureTone
