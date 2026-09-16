@@ -1,0 +1,31 @@
+ZeroFreeRegion/MeromorphicAux.lean:8928:5: warning: `circleIntegrable_log_norm_meromorphicOn` has been deprecated: Use `MeromorphicOn.circleIntegrable_log_norm` instead
+ZeroFreeRegion/MeromorphicAux.lean:8997:5: warning: `circleIntegrable_log_norm_meromorphicOn` has been deprecated: Use `MeromorphicOn.circleIntegrable_log_norm` instead
+ZeroFreeRegion/MeromorphicAux.lean:12588:34: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ZeroFreeRegion/MeromorphicAux.lean:13516:4: warning: 'change ‖conj (u - c) * (z - c)‖ < ‖((R : ℂ) ^ 2)‖' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+ZeroFreeRegion/MeromorphicAux.lean:14127:28: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ZeroFreeRegion/MeromorphicAux.lean:14374:28: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ZeroFreeRegion/MeromorphicAux.lean:14386:78: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ZeroFreeRegion/MeromorphicAux.lean:14555:28: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ZeroFreeRegion/MeromorphicAux.lean:14567:78: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ZeroFreeRegion/MeromorphicAux.lean:19669:55: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ZeroFreeRegion/MeromorphicAux.lean:24820:29: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ZeroFreeRegion/MeromorphicAux.lean:24933:11: warning: `AnalyticAt.comp_of_eq'` has been deprecated: Use `AnalyticAt.fun_comp_of_eq` instead
+ZeroFreeRegion/MeromorphicAux.lean:25922:10: warning: `circleIntegrable_log_norm_meromorphicOn` has been deprecated: Use `MeromorphicOn.circleIntegrable_log_norm` instead

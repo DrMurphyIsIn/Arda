@@ -1,0 +1,14 @@
+PrimeNumberTheorem.lean:4054:46: warning: This simp argument is unused:
+  not_isPrimePow_zero
+
+Hint: Omit it from the simp argument list.
+  simp [ArithmeticFunction.vonMangoldt,̵ ̵n̵o̵t̵_̵i̵s̵P̵r̵i̵m̵e̵P̵o̵w̵_̵z̵e̵r̵o̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+PrimeNumberTheorem.lean:4084:44: warning: This simp argument is unused:
+  not_isPrimePow_zero
+
+Hint: Omit it from the simp argument list.
+  simp [ArithmeticFunction.vonMangoldt,̵ ̵n̵o̵t̵_̵i̵s̵P̵r̵i̵m̵e̵P̵o̵w̵_̵z̵e̵r̵o̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
