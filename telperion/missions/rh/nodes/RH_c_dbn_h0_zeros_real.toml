@@ -1,0 +1,8 @@
+created = "2026-09-16"
+depends_on = []
+kind = "lemma"
+name = "RH.c_dbn_h0_zeros_real"
+statement_module = "Statements.RH_c_dbn_h0_zeros_real"
+status = "draft"
+title = "Routes-roadmap C4 (de Bruijn-Newman equivalence, FIRST formalization target): the Riemann Hypothesis holds IF AND ONLY IF every zero of H_0 is real, where H_0(z) = (1/8) xi(1/2 + i z/2) is the base of the de Bruijn-Newman heat flow (Rodgers-Tao arXiv:1904.12438 formula 1; kernel Phi + family H_t = formulas 3,4). STATEMENT ONLY -- the proof reduces to the H_0 = xi/8 identity (C2 representation theorem: Mellin<->Fourier via Jacobi theta, DEFERRED) composed with the standard xi-zeros<->zeta-nontrivial-zeros<->critical-line dictionary; the heat-reality theory (t>=Lambda <=> real zeros; de Bruijn 1950, Newman 1976) is the DEFERRED C3 milestone. conjecture1_proved = False (RH_ROUTES_ROADMAP_2026-09-16 section 4, node C4)"
+updated = "2026-09-16"
