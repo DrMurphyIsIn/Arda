@@ -1,10 +1,19 @@
 name = "Statements"
-defaultTargets = ["Statements"]
+defaultTargets = ["Statements", "RvMPort"]
 
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.32.0"
+
+# The ported cc-chen-tech superlinear-distinct zero-density closure (255 modules,
+# source github.com/cc-chen-tech/riemann-pnt-lean4 @ 6d07f7371, ported to v4.32 with
+# 3 proof-carrying shims) + the distinct-bridge + discharge.  Provides
+# RvMGlue.rvm_unbounded_mean_density, imported by Statements/MM_rvm_unbounded_mean_density.
+[[lean_lib]]
+name = "RvMPort"
+srcDir = "RvMPortSrc"
+globs = ["RvMDischarge", "RvMDistinctBridge", "RiemannExplorer", "HardyTheorem.+", "PrimeNumberTheorem.+", "ZeroFreeRegion.+", "MathlibAux.+"]
 
 [[lean_lib]]
 name = "Statements"
