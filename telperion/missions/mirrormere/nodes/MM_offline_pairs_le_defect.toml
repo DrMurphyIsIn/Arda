@@ -1,0 +1,19 @@
+created = "2026-09-14"
+depends_on = []
+kind = "milestone"
+name = "MM.offline_pairs_le_defect"
+statement_module = "Statements.MM_offline_pairs_le_defect"
+status = "open"
+title = "W2b, the publishable rung: the defect instrument COUNTS off-line pairs (offline_pairs_le_defect) -- a p-dimensional negative-definite witness subspace forces p <= defect; independent off-line pairs contribute independently"
+updated = "2026-09-14"
+
+[proof]
+artifact = "../../examples/zeta_zero_localization/lean/R2Rigidity.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
+date = "2026-09-14"
+text = "For a Hermitian matrix A (the Weil-form Gram block of a zero configuration), if there is a NegativeWitness of dimension p -- a p-dimensional subspace on which the Hermitian form of A is negative definite -- then p is at most the defect of A (the number of negative eigenvalues, i.e. the negative index of inertia). Dual to the positive-index rank bound applied to -A. Consequence: off-line zero pairs, each of which supplies an independent negative direction (Vandermonde-type test vectors keep them linearly independent), are COUNTED by the defect, not merely detected -- the R2 defect-k rigidity direction. [Verbatim extract of the proved offline_pairs_le_defect; artifact on rh/million-turing, grant deferred to the branch reconcile.]"

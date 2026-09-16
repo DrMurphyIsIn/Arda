@@ -21,6 +21,18 @@ rev = "35df682f3b709ffe5fbcfdd452dfa964bd622b87"
 [[lean_lib]]
 name = "LiPositivity"
 
+# Route P Brick D4 (diffraction/inertia bridge): the four RHLinalg linear-algebra modules
+# (PosIndex, HermitianPosPart, Sylvester, Inertia) source-ported verbatim from the v4.32.0
+# hermitian_moment island into this v4.34.0-rc1 island (the islands are separate Lake projects;
+# source-port is the repo's pattern, cf. #424/#427/#483/#513). `globs` picks up the whole
+# RHLinalg/ subdirectory (dotted module names RHLinalg.*). RvMRoutePInertia consumes them.
+[[lean_lib]]
+name = "RHLinalg"
+globs = ["RHLinalg.+"]
+
+[[lean_lib]]
+name = "RvMRoutePInertia"
+
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardLiPositivity.lean` for the #print axioms /
 # sorryAx check; building it here only guarantees its import closure is present at that step.
@@ -770,3 +782,15 @@ name = "RvMArchGrowth"
 
 [[lean_lib]]
 name = "RvMNTLadderH4000"
+
+[[lean_lib]]
+name = "RvMArchSharperS1"
+
+[[lean_lib]]
+name = "RvMArchSharperS2a"
+
+[[lean_lib]]
+name = "RvMArchSharperS2b"
+
+[[lean_lib]]
+name = "RvMArchSharper"

@@ -597,6 +597,59 @@ development but is a \emph{draft}---its constant is not sharp, it is not
 axiom-guarded, and it is not yet wired into the region argument, so we do not lean
 on it. We flag it rather than let it blur into the verified results above.
 
+\subsection{The archimedean growth, closed to a linear window; and the diffraction floor}
+
+Two developments have since moved the frontier that the previous subsection drew.
+First, the growth residual is now substantially \emph{closed}---by yet another
+reroute. The polygamma closed form above is exact but combinatorially opaque
+(sums over ordered set partitions); composing the same three kernel stones
+differently---the M\"obius chain rule, the reduction to $\psi(s/2)$, and the
+Gauss--Weierstrass digamma series, with every denominator cleared through the
+M\"obius map---turns the \emph{whole} archimedean factor into one elementary
+series of rational functions (\texttt{logDeriv\_phi\_Gamma}\(\mathbb{R}\)\texttt{\_eq\_elem}),
+whose $n$-th Taylor coefficients are explicit. The kernel then holds the exact
+elementary formula
+\[
+  \texttt{taylorCoeff}(\Gamma_{\mathbb R})_n
+    = -\frac{\gamma + \log\pi}{2}(n+1) - 1
+      + \sum_{j\ge 0}\Bigl[\frac{n+1}{2(j+1)} - 1
+        + \Bigl(\frac{2j+2}{2j+3}\Bigr)^{n+1}\Bigr]
+\]
+(\texttt{taylorCoeff\_Gamma}\(\mathbb{R}\)\texttt{\_elem}; the term-by-term coefficient
+extraction through the infinite sum is done by iterating the locally-uniform-limit
+derivative theorem over partial sums---no per-order bounds, one uniform
+$2/(j+1)^2$ envelope), and, from it, the unconditional growth window
+\[
+  \Bigl|\,\mathrm{Re}\,\texttt{taylorCoeff}(\Gamma_{\mathbb R})_n
+    - \tfrac{n}{2}\log n\,\Bigr| \;\le\; 8n \qquad (n \ge 2)
+\]
+(\texttt{taylorCoeff\_Gamma}\(\mathbb{R}\)\texttt{\_re\_growth}), by Bernoulli and
+second-Bonferroni bounds on each summand, a split of the sum at $j = n$, and
+Mathlib's harmonic--logarithm inequalities. The sentence ``we do not have its
+asymptotic'' above is thereby superseded in its main clause: the $(n/2)\log n$
+trend of the archimedean summand is a kernel theorem, unconditionally, with an
+explicit linear window. What remains unformalized is the sharper classical form
+$\tfrac{n}{2}(\log n + \gamma - 1 - \log 2\pi) + o(n)$---the constant of the
+linear term---and, as ever, everything about the \emph{companion} summand, whose
+temperedness is where the Riemann Hypothesis itself lives (Voros's dichotomy);
+nothing here touches it.
+
+Second, the companion has acquired its own finite certificate family. Through the
+relocation $\mathrm{RH} \leftrightarrow \forall n,\ -(1 +
+\mathrm{Re}\,\texttt{taylorCoeff}(\Gamma_{\mathbb R})_n) \le
+\mathrm{Re}\,\texttt{taylorCoeff}(H_\zeta)_n$ the explicit archimedean data
+becomes a \emph{floor}, and a Telperion emitter (\texttt{bragg\_floor}) certifies,
+per order, that the truncated von Mangoldt (Bragg) amplitude at a fixed base
+point, net of a certified tail, clears it---fifteen kernel-checked rational
+inequalities, with the Arb enclosures the same documented trust seam as the Li
+ladder, and a falsifiability atom
+(\texttt{bragg\_below\_floor\_refutes\_rh}) whose passage to the companion runs
+through the \emph{conditional} exhaustion identity and carries it as an explicit,
+undischarged hypothesis. The emitter \emph{refuses} the orders its fixed-base
+amplitude cannot clear rather than fake the RH-hard comb expansion---the honest
+shape of a certificate family that could have falsified and did not. As
+everywhere: \texttt{conjecture1\_proved = False}.
+
 \subsection{The reverse program: instruments for Dyson's classification proposal}
 \label{sec:mirrormere}
 

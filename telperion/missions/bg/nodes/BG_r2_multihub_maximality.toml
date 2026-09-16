@@ -1,8 +1,14 @@
 created = "2026-09-11"
 depends_on = []
+deprecated_reason = "Statement as drafted is FALSE. Investigation 2026-09-13 (blind-audit follow-up): (1) the n<=13 verification (bg/double_near_star.py) actually checks size-matched DN-maximality only at EVEN n>=10 plus a family-peak CEILING at all n — the draft's even-only quantification was faithful to (i); but (2) the draft's Aobj objective diverges from the verified Phi11 objective (argmaxes differ at n=13: 3-hub vs 2-hub), and (3) the claim fails in BOTH objectives at large n: exact witness T(6,6,6,6) (4-hub cherry backbone, n=52) has Aobj = 1180837892027061/26306674688 ~ 44887.39 > best DN(13,12) = 18922778944227/436207616 ~ 43380.21 (Aobj crossover at n=36: 4-hub[4,4,4,4] 1672.09 > bestDN 1671.30), and Phi11(4-hub[5,5,4,4], n=40) = 0.6068 > bestDN 0.5995 (Phi11 crossover n in (36,40]). DN-maximality is a small-n phenomenon. The load-bearing R2 content survives as the CEILING claim: every multi-hub tree stays below the DN-family peak Phi11 = 0.85238 < 1 (n=52 4-hub: 0.5466 — consistent). Correct reformulation = the ceiling, which needs Phi11-side vocabulary in BGDefs."
 kind = "lemma"
 name = "BG.r2_multihub_maximality"
 statement_module = "Statements.BG_r2_multihub_maximality"
-status = "draft"
+status = "deprecated"
 title = "R2 multi-hub maximality (PROVISIONAL rendering): at any size carrying a DN, the best DN dominates every multi-hub tree"
-updated = "2026-09-11"
+updated = "2026-09-13"
+
+[readback]
+auditor = "blind-renderer-fable-a7835da4 (2026-09-12)"
+date = "2026-09-12"
+text = "Blind rendering: for every rooted tree t of even size 2+2a+2b (a,b>=2) with >=2 vertices of degree >=3 (per PROVISIONAL registry-only hubCountRoot), SOME split a'+b'=a+b of two adjacent cherry-hubs Aobj-dominates t. AUDIT FLAGS, promotion withheld: (1) hubCountRoot has no proof/-island counterpart; (2) odd sizes and size<10 are covered only VACUOUSLY, but the prose claim (PROOF_ASSEMBLY R2 maximality) says 'at each n' — resolve whether the intended claim is even-n-only before opening."

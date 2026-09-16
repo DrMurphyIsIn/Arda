@@ -1,0 +1,8 @@
+created = "2026-09-14"
+depends_on = []
+kind = "lemma"
+name = "MM.torus_section_dictionary"
+statement_module = "Statements.MM_torus_section_dictionary"
+status = "draft"
+title = "Torus-section ladder T1, the dictionary BRIDGE: the island's verbatim twoFreq is the N=2 instance of the section vocabulary (twoFreq = linearTorusForm 2 on torusOrbit 2) -- the lemma the N=2 rigidity discharge consumes. REVISED post-audit: the original general-N identity was flagged TRIVIAL (definitionally rfl) by the 2026-09-14 blind read-back; replaced with this contentful bridge; awaiting re-audit"
+updated = "2026-09-14"
