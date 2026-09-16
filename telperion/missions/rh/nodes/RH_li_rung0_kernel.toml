@@ -1,0 +1,8 @@
+created = "2026-09-16"
+depends_on = ["RH_li_rung_certificates"]
+kind = "lemma"
+name = "RH.li_rung0_kernel"
+statement_module = "Statements.RH_li_rung0_kernel"
+status = "draft"
+title = "Routes-roadmap B2 (the hypothesis-free rung anchor): 0 <= Re(taylorCoeff riemannXi 0) with NO Arb enclosure hypothesis -- the first Li rung evaluated entirely in-kernel over rational certificates. HONESTY (skeptic reclassification honored): this is a TAYLOR COEFFICIENT of log xi (a derivative object), not a function value -- the first_zero_kernel template does NOT cover it; class = hard-known-shape, needing a certified difference-quotient or series bracket for logDeriv (phi riemannXi) at 0 (RH_ROUTES_ROADMAP_2026-09-16 sections 3, 9)"
+updated = "2026-09-16"

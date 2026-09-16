@@ -1,0 +1,8 @@
+created = "2026-09-16"
+depends_on = []
+kind = "lemma"
+name = "RH.bl_finite_multiset"
+statement_module = "Statements.RH_bl_finite_multiset"
+status = "draft"
+title = "Routes-roadmap B7-i (the Bombieri-Lagarias finite core): for a finite set of points avoiding 0 and 1 and symmetric under rho -> 1 - conj(rho), the Li-type sums Re sum (1 - ((1 - 1/rho)^{-1})^n) are nonnegative for every positive n IF AND ONLY IF every point lies on Re = 1/2. Pure finite algebra (on-line: termwise 1 - cos >= 0 via unit modulus; off-line: paired growth r^n + r^{-n} forces negativity); carries ZERO zeta-specific content by design -- the finite layer of the BL bridge, quarantining where the analytic layer (B7-ii) and the wall begin (RH_ROUTES_ROADMAP_2026-09-16 sections 3, 9)"
+updated = "2026-09-16"
