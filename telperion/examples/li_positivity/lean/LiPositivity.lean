@@ -1,5 +1,5 @@
-/- telperion 0.1.6 | family LiPositivity | input-hash c4e9883e70bc4828
-   20 theorems, 20 generation-time self-checks passed.
+/- telperion 0.1.6 | family LiPositivity | input-hash eff4839908a29e2b
+   40 theorems, 40 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
 
@@ -138,5 +138,125 @@ theorem li_rung_18 (hlo : ((795374309431 / 100000000000) : ℝ) ≤ (taylorCoeff
 -- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
 theorem li_rung_19 (hlo : ((876927687209 / 100000000000) : ℝ) ≤ (taylorCoeff riemannXi 19).re) : 0 ≤ (taylorCoeff riemannXi 19).re :=
   le_trans (by norm_num : (0:ℝ) ≤ (876927687209 / 100000000000)) hlo
+
+-- li_rung_20: Li-criterion rung n=20 — 0 ≤ (taylorCoeff riemannXi 20).re, witnessed by the certified lower bound lo=480898036157/50000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_20 (hlo : ((480898036157 / 50000000000) : ℝ) ≤ (taylorCoeff riemannXi 20).re) : 0 ≤ (taylorCoeff riemannXi 20).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (480898036157 / 50000000000)) hlo
+
+-- li_rung_21: Li-criterion rung n=21 — 0 ≤ (taylorCoeff riemannXi 21).re, witnessed by the certified lower bound lo=104986481349/10000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_21 (hlo : ((104986481349 / 10000000000) : ℝ) ≤ (taylorCoeff riemannXi 21).re) : 0 ≤ (taylorCoeff riemannXi 21).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (104986481349 / 10000000000)) hlo
+
+-- li_rung_22: Li-criterion rung n=22 — 0 ≤ (taylorCoeff riemannXi 22).re, witnessed by the certified lower bound lo=22820343621/2000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_22 (hlo : ((22820343621 / 2000000000) : ℝ) ≤ (taylorCoeff riemannXi 22).re) : 0 ≤ (taylorCoeff riemannXi 22).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (22820343621 / 2000000000)) hlo
+
+-- li_rung_23: Li-criterion rung n=23 — 0 ≤ (taylorCoeff riemannXi 23).re, witnessed by the certified lower bound lo=4940539157/400000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_23 (hlo : ((4940539157 / 400000000) : ℝ) ≤ (taylorCoeff riemannXi 23).re) : 0 ≤ (taylorCoeff riemannXi 23).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (4940539157 / 400000000)) hlo
+
+-- li_rung_24: Li-criterion rung n=24 — 0 ≤ (taylorCoeff riemannXi 24).re, witnessed by the certified lower bound lo=8325612633/625000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_24 (hlo : ((8325612633 / 625000000) : ℝ) ≤ (taylorCoeff riemannXi 24).re) : 0 ≤ (taylorCoeff riemannXi 24).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (8325612633 / 625000000)) hlo
+
+-- li_rung_25: Li-criterion rung n=25 — 0 ≤ (taylorCoeff riemannXi 25).re, witnessed by the certified lower bound lo=71589322743/5000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_25 (hlo : ((71589322743 / 5000000000) : ℝ) ≤ (taylorCoeff riemannXi 25).re) : 0 ≤ (taylorCoeff riemannXi 25).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (71589322743 / 5000000000)) hlo
+
+-- li_rung_26: Li-criterion rung n=26 — 0 ≤ (taylorCoeff riemannXi 26).re, witnessed by the certified lower bound lo=153407928657/10000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_26 (hlo : ((153407928657 / 10000000000) : ℝ) ≤ (taylorCoeff riemannXi 26).re) : 0 ≤ (taylorCoeff riemannXi 26).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (153407928657 / 10000000000)) hlo
+
+-- li_rung_27: Li-criterion rung n=27 — 0 ≤ (taylorCoeff riemannXi 27).re, witnessed by the certified lower bound lo=32777115063/2000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_27 (hlo : ((32777115063 / 2000000000) : ℝ) ≤ (taylorCoeff riemannXi 27).re) : 0 ≤ (taylorCoeff riemannXi 27).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (32777115063 / 2000000000)) hlo
+
+-- li_rung_28: Li-criterion rung n=28 — 0 ≤ (taylorCoeff riemannXi 28).re, witnessed by the certified lower bound lo=174599554769/10000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_28 (hlo : ((174599554769 / 10000000000) : ℝ) ≤ (taylorCoeff riemannXi 28).re) : 0 ≤ (taylorCoeff riemannXi 28).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (174599554769 / 10000000000)) hlo
+
+-- li_rung_29: Li-criterion rung n=29 — 0 ≤ (taylorCoeff riemannXi 29).re, witnessed by the certified lower bound lo=46384480727/2500000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_29 (hlo : ((46384480727 / 2500000000) : ℝ) ≤ (taylorCoeff riemannXi 29).re) : 0 ≤ (taylorCoeff riemannXi 29).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (46384480727 / 2500000000)) hlo
+
+-- li_rung_30: Li-criterion rung n=30 — 0 ≤ (taylorCoeff riemannXi 30).re, witnessed by the certified lower bound lo=196688862281/10000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_30 (hlo : ((196688862281 / 10000000000) : ℝ) ≤ (taylorCoeff riemannXi 30).re) : 0 ≤ (taylorCoeff riemannXi 30).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (196688862281 / 10000000000)) hlo
+
+-- li_rung_31: Li-criterion rung n=31 — 0 ≤ (taylorCoeff riemannXi 31).re, witnessed by the certified lower bound lo=26005090143/1250000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_31 (hlo : ((26005090143 / 1250000000) : ℝ) ≤ (taylorCoeff riemannXi 31).re) : 0 ≤ (taylorCoeff riemannXi 31).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (26005090143 / 1250000000)) hlo
+
+-- li_rung_32: Li-criterion rung n=32 — 0 ≤ (taylorCoeff riemannXi 32).re, witnessed by the certified lower bound lo=109791025649/5000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_32 (hlo : ((109791025649 / 5000000000) : ℝ) ≤ (taylorCoeff riemannXi 32).re) : 0 ≤ (taylorCoeff riemannXi 32).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (109791025649 / 5000000000)) hlo
+
+-- li_rung_33: Li-criterion rung n=33 — 0 ≤ (taylorCoeff riemannXi 33).re, witnessed by the certified lower bound lo=231301644563/10000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_33 (hlo : ((231301644563 / 10000000000) : ℝ) ≤ (taylorCoeff riemannXi 33).re) : 0 ≤ (taylorCoeff riemannXi 33).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (231301644563 / 10000000000)) hlo
+
+-- li_rung_34: Li-criterion rung n=34 — 0 ≤ (taylorCoeff riemannXi 34).re, witnessed by the certified lower bound lo=24318856773/1000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_34 (hlo : ((24318856773 / 1000000000) : ℝ) ≤ (taylorCoeff riemannXi 34).re) : 0 ≤ (taylorCoeff riemannXi 34).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (24318856773 / 1000000000)) hlo
+
+-- li_rung_35: Li-criterion rung n=35 — 0 ≤ (taylorCoeff riemannXi 35).re, witnessed by the certified lower bound lo=63808048959/2500000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_35 (hlo : ((63808048959 / 2500000000) : ℝ) ≤ (taylorCoeff riemannXi 35).re) : 0 ≤ (taylorCoeff riemannXi 35).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (63808048959 / 2500000000)) hlo
+
+-- li_rung_36: Li-criterion rung n=36 — 0 ≤ (taylorCoeff riemannXi 36).re, witnessed by the certified lower bound lo=267422243639/10000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_36 (hlo : ((267422243639 / 10000000000) : ℝ) ≤ (taylorCoeff riemannXi 36).re) : 0 ≤ (taylorCoeff riemannXi 36).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (267422243639 / 10000000000)) hlo
+
+-- li_rung_37: Li-criterion rung n=37 — 0 ≤ (taylorCoeff riemannXi 37).re, witnessed by the certified lower bound lo=279748795147/10000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_37 (hlo : ((279748795147 / 10000000000) : ℝ) ≤ (taylorCoeff riemannXi 37).re) : 0 ≤ (taylorCoeff riemannXi 37).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (279748795147 / 10000000000)) hlo
+
+-- li_rung_38: Li-criterion rung n=38 — 0 ≤ (taylorCoeff riemannXi 38).re, witnessed by the certified lower bound lo=146101165547/5000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_38 (hlo : ((146101165547 / 5000000000) : ℝ) ≤ (taylorCoeff riemannXi 38).re) : 0 ≤ (taylorCoeff riemannXi 38).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (146101165547 / 5000000000)) hlo
+
+-- li_rung_39: Li-criterion rung n=39 — 0 ≤ (taylorCoeff riemannXi 39).re, witnessed by the certified lower bound lo=304773754237/10000000000.
+-- Trust seam: hlo (the Arb enclosure of ξ's Taylor coefficient) is a HYPOTHESIS.
+-- Feeds LiCriterion.li_criterion_rh_iff (RH ⟺ ∀ n, 0 ≤ this); a finite rung, NOT RH.
+theorem li_rung_39 (hlo : ((304773754237 / 10000000000) : ℝ) ≤ (taylorCoeff riemannXi 39).re) : 0 ≤ (taylorCoeff riemannXi 39).re :=
+  le_trans (by norm_num : (0:ℝ) ≤ (304773754237 / 10000000000)) hlo
 
 end LiPositivity

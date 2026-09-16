@@ -91,7 +91,8 @@ def test_emitter_is_classified():
     assert "LiPositivityLadderEmitter" not in set(unclassified_emitters())
 
 
-# --- ladder finish (2026-09-09): refutation atom + generated N=20 example ----
+# --- ladder finish (2026-09-09): refutation atom + generated N=40 example ----
+# (B1 rh/b1-li-prefix: extended 20 -> 40 rungs.)
 
 def test_refutation_atom_shape():
     """The falsifiability face: a certified NEGATIVE upper bound on any rung
@@ -110,7 +111,8 @@ def test_refutation_atom_shape():
     assert "hi < 0" in txt
 
 
-def test_generated_ladder_has_twenty_rungs_and_refutation_atom():
+def test_generated_ladder_has_forty_rungs_and_refutation_atom():
+    # B1 (rh/b1-li-prefix): the certified prefix was extended 20 -> 40 rungs.
     pytest.importorskip("flint")
     import importlib.util as _u
     gen_path = (Path(__file__).resolve().parents[1]
@@ -119,7 +121,8 @@ def test_generated_ladder_has_twenty_rungs_and_refutation_atom():
     mod = _u.module_from_spec(spec)
     spec.loader.exec_module(mod)
     text = mod.build()
-    assert text.count("theorem li_rung_") == 20
+    assert mod.N_RUNGS == 40
+    assert text.count("theorem li_rung_") == 40
     assert text.count("theorem li_neg_refutes_rh") == 1
     assert "import Lc.LiCriterion.XiOrderBridge" in text
     assert "open LiCriterion" in text

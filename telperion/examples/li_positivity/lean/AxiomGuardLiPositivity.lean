@@ -10,9 +10,12 @@
     AFTER `lake build`, and FAILS if any `#print axioms` output mentions `sorryAx`.
 
     Guarded anchors:
-      * LiPositivity.li_rung_0 / li_rung_19 -- the first and last emitted rungs
-        (0 ≤ (taylorCoeff riemannXi n).re from the certified rational lower
-        bound hypothesis; the Arb enclosure is the documented trust seam).
+      * LiPositivity.li_rung_0 / li_rung_19 / li_rung_29 / li_rung_39 -- the
+        first, the former last (n=19), a mid-prefix, and the NEW last emitted
+        rung (0 ≤ (taylorCoeff riemannXi n).re from the certified rational lower
+        bound hypothesis; the Arb enclosure is the documented trust seam).  The
+        prefix was extended 20 -> 40 on rh/b1-li-prefix; guarding both the old
+        and new endpoints keeps the axiom-hygiene check spanning the full range.
       * LiPositivity.li_neg_refutes_rh -- the falsifiability face: a certified
         negative upper bound on any rung refutes RH through the upstream
         equivalence.  Never expected to fire.
@@ -103,6 +106,8 @@ import RvMArchSharper
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
+#print axioms LiPositivity.li_rung_29
+#print axioms LiPositivity.li_rung_39
 #print axioms LiPositivity.li_neg_refutes_rh
 #print axioms LiCriterion.li_criterion_rh_iff
 

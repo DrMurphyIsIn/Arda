@@ -3,13 +3,13 @@
     python examples/li_positivity/generate.py           # write lean/LiPositivity.lean
     python examples/li_positivity/generate.py --check    # drift check (no write)
 
-Twenty rungs of Li's criterion (RH-roadmap Track 2), onto the upstream
+Forty rungs of Li's criterion (RH-roadmap Track 2), onto the upstream
 already-formalized reduction (pinned in lean/lakefile.toml):
 
     LiCriterion.li_criterion_rh_iff :
         RiemannHypothesis ↔ (∀ n : ℕ, 0 ≤ (taylorCoeff riemannXi n).re)
 
-Per rung n = 0..19 the emitter proves `0 ≤ (taylorCoeff riemannXi n).re` from a
+Per rung n = 0..39 the emitter proves `0 ≤ (taylorCoeff riemannXi n).re` from a
 certified positive rational lower bound (kind `li_positivity`); the bound comes
 from `telperion.li_coeff.enclose_li_coeffs` — Arb ball arithmetic on the
 pole-free series route, self-checked against the published Li–Keiper values
@@ -44,8 +44,14 @@ from telperion.family import GridSpec  # noqa: E402
 from telperion.lean import LeanProfile  # noqa: E402
 from telperion.li_coeff import enclose_li_coeffs  # noqa: E402
 
-N_RUNGS = 20
-PREC_BITS = 192
+# B1 extension (rh/b1-li-prefix): extended the certified prefix from 20 to 40
+# rungs.  The Arb enclosure cost is trivial (see COST_MODEL.md): reachable-n
+# scales ~1:1 with prec_bits and 40 coefficients enclose in <20ms.  N=40 is a
+# MODEST extension, far short of the n~1000 packaging wall (~1000 simultaneous
+# Arb hypotheses per certified prefix — the discipline that does not yet exist).
+# PREC_BITS raised to 256 for extra margin (192 already clears n<191).
+N_RUNGS = 40
+PREC_BITS = 256
 _OUT = Path(__file__).resolve().parent / "lean" / "LiPositivity.lean"
 
 
