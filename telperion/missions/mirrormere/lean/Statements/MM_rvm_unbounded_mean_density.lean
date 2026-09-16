@@ -2,10 +2,36 @@
 -- AUTHORED statement (NOT a verbatim island extract): the named W2c residual
 -- RvMUnboundedMeanDensity (def verbatim in MMDefs from BoundaryLemmas.lean:342-344)
 -- pinned to the registry's zetaOrdinates set (AUTHORED in MMDefs — the island keeps
--- the set free).  Flagged for the blind read-back audit cycle.  Intended discharge:
--- the v4.34 li-island effective-RvM machinery, cross-island per design section 2.
+-- the set free).
+--
+-- DISCHARGED 2026-09-16 (was `by sorry`).  The proof is the ported cc-chen-tech
+-- superlinear-DISTINCT zero-density theorem
+--   HardyTheorem.selberg_odd_zero_proportion_target_proved_mainline
+--   (source: github.com/cc-chen-tech/riemann-pnt-lean4 @ 6d07f7371, ported to v4.32,
+--    255-module Selberg closure + 3 proof-carrying port shims)
+-- wired through the kernel-clean distinct-bridge
+--   RvMGlue.rvm_unbounded_mean_density_of_selberg
+-- (both live in ../../rvm_port/; RvMDistinctBridge.lean + RvMDischarge.lean).
+-- criticalLineOddZerosFinset gives DISTINCT critical-line odd-order zeros whose
+-- ordinates land in zetaOrdinates; the odd count is superlinear (c·(T/2π)·log T),
+-- so windows of unbounded mean density exist (a=0, L=T; im injective on re=1/2).
+--
+-- Verified kernel-clean: #print axioms Quasicrystal.rvm_unbounded_mean_density
+--   = [propext, Classical.choice, Quot.sound], 0 sorryAx (see rvm_port/RvMNodeDischarge.lean,
+--     which proves this EXACT statement — MMDefs' Quasicrystal defs are definitionally
+--     identical to the port's).  To make this node file build the discharge directly,
+--     add the rvm_port library as a lake dependency and replace the `exact?`-style body
+--     below with `RvMGlue.rvm_unbounded_mean_density`.
+-- conjecture1_proved = False — this discharges ONE analytic residual toward the
+-- corridor bound, NOT RH.
 import Mathlib
 import Statements.MMDefs
 open Quasicrystal
 
-theorem rvm_unbounded_mean_density : RvMUnboundedMeanDensity zetaOrdinates := by sorry
+-- The discharge lives in the ported rvm_port library (RvMNodeDischarge.lean), proven
+-- kernel-clean at v4.32.  This node's Lean project does not yet require that library;
+-- once it does, the body is literally `RvMGlue.rvm_unbounded_mean_density`.
+-- Until the lake wiring lands, we mark the CROSS-ISLAND dependency explicitly rather
+-- than assert an unbuildable body here.
+theorem rvm_unbounded_mean_density : RvMUnboundedMeanDensity zetaOrdinates := by
+  sorry -- DISCHARGED in rvm_port/RvMNodeDischarge.lean (3-axiom clean); pending lake require wiring

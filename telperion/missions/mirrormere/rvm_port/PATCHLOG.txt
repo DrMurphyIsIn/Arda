@@ -1,0 +1,5 @@
+# Port patch log (v4.33-rc2 @ 6d07f7371 -> v4.32). Each entry: module | drift | fix.
+HardyTheorem/SelbergPerronKernel.lean | unknown const Complex.div_cpow_ofReal_nonneg (added post-v4.32) | injected proof-carrying shim in namespace Complex (from mul_cpow_ofReal_nonneg + inv_cpow_eq_ite + arg_ofReal_of_nonneg)
+HardyTheorem/SelbergJForwardBridge.lean | unknown const Set.mem_ofPred_eq (renamed from mem_setOf_eq post-v4.32) | injected alias shim (Set.mem_ofPred_eq := rfl form of mem_setOf_eq)
+# (Reverse+Diagonal inherit the mem_ofPred_eq shim transitively via ForwardBridge import; no separate patch needed)
+HardyTheorem/SelbergNonconstantFourierMass.lean | unknown consts integral_comp_log_Ioi + integrableOn_comp_exp_Ioi (log/exp change-of-variables on Ioi, added post-v4.32) | injected 2 proof-carrying shims from v4.32 integral_image_eq_integral_abs_deriv_smul / integrableOn_image_iff_integrableOn_abs_deriv_smul; inherited by SelbergExplicitFourierMass + SelbergGlobalFourierMass downstream
