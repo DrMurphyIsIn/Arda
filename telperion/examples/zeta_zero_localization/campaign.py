@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import subprocess
 import sys
 import time
@@ -310,20 +311,37 @@ def block_pkg_name(top: int) -> str:
     return f"ZetaBands_h{top}"
 
 
-def emit_block_lakefile(top: int, modules: list[str]) -> str:
+def emit_block_lakefile(top: int, modules: list[str],
+                        prior_top: int | None = None) -> str:
     """The `lakefile.toml` text for one block package `ZetaBands_h<top>/`.
 
-    Requires mathlib, ZeroFreeBridge, and the shared `zzl_core` package; its
+    Emits the disk-safe, BUILDABLE layout proven in the B2 pilot
+    (`B2_DEPLOY_RUNBOOK.md`):
+
+    * `srcDir = ".."` -- the package lakefile lives in `ZetaBands_h<top>/` but
+      reads the FLAT `.lean` files IN PLACE from the island root; module identity
+      is preserved (no file moves), so every existing `import Foo` keeps
+      resolving and the monolith still builds untouched.
+    * requires mathlib, ZeroFreeBridge, and the shared `zzl_core` package;
+    * requires the PRIOR block package `ZetaBands_h<prior_top>` when one exists,
+      so the cross-block capstone chain edge (this block's lowest capstone imports
+      the prior block's top capstone -> ... -> h100) resolves package-to-package
+      off lake's require graph (lake ignores a pre-set LEAN_PATH).
+
     `defaultTargets` and `[[lean_lib]]` stanzas cover ONLY this block's modules
     (bounded size regardless of total campaign height)."""
     out = [f'name = "{block_pkg_name(top)}"\n']
     targets = ", ".join(f'"{m}"' for m in modules)
-    out.append(f"defaultTargets = [{targets}]\n\n")
+    out.append(f"defaultTargets = [{targets}]\n")
+    out.append('srcDir = ".."\n\n')
     out.append("[[require]]\nname = \"mathlib\"\nscope = \"leanprover-community\"\n"
                f'rev = "{MATHLIB_REV}"\n\n')
     out.append("[[require]]\nname = \"ZeroFreeBridge\"\n"
                'path = "../../../zero_free_bridge/lean"\n\n')
     out.append(f'[[require]]\nname = "{CORE_PKG}"\npath = "../{CORE_PKG}"\n\n')
+    if prior_top is not None:
+        out.append(f'[[require]]\nname = "{block_pkg_name(prior_top)}"\n'
+                   f'path = "../{block_pkg_name(prior_top)}"\n\n')
     for m in modules:
         out.append(f'[[lean_lib]]\nname = "{m}"\n')
     return "".join(out)
@@ -345,14 +363,112 @@ def emit_umbrella_lakefile(block_tops: list[int]) -> str:
     return "".join(out).rstrip() + "\n"
 
 
+# --- disk-safe dependency wiring (ported from b2_pilot_emit.py; see B2_DEPLOY_RUNBOOK.md)
+# A NEW package that `require`s mathlib would, by default, re-clone mathlib + its
+# whole transitive dep set (~7.7 GB/package, pilot-measured) even though it does
+# not recompile them.  The cure: copy the monolith's lake-manifest.json so every
+# dep rev matches, symlink the package's `.lake/packages` at the monolith's
+# already-built packages dir (lake then finds every dep in place), and pin the
+# toolchain.  Net dep disk added per package: ~0.
+
+# 16 height-independent core modules (import closure of block modules minus the
+# bands/capstones); shared by every block via the zzl_core package.
+CORE_MODULES = [
+    "LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple",
+    "BoxArgPrincipleZeta", "RigorousWinding", "BlaschkeBox", "BoxLocalization",
+    "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBoxBands",
+    "DiffractionCore", "ZetaZeroConfinement", "AllZerosUpToHeight", "TuringBand",
+]
+
+
+def _pkg_wiring(pkg_dir: Path, lean_dir: Path, require_core: bool = False,
+                extra_path_deps: "list[tuple[str, str]] | None" = None) -> None:
+    """Copy the monolith manifest + symlink the built packages dir so all deps
+    resolve to the existing checkouts (zero re-clone), and pin the toolchain.
+
+    Idempotent: overwrites the manifest/toolchain (cheap, deterministic) and only
+    creates the packages symlink if absent.  All build-lib search paths (ZFB,
+    zzl_core, prior boundary) come from `[[require]]` path deps -- lake derives
+    LEAN_PATH from the require graph, so no LEAN_PATH sidecar is needed."""
+    import os
+    mono_manifest = lean_dir / "lake-manifest.json"
+    mono_packages = lean_dir / ".lake" / "packages"
+    zfb_dir = lean_dir.parent.parent / "zero_free_bridge" / "lean"
+    toolchain = (lean_dir / "lean-toolchain").read_text()
+
+    pkg_dir.mkdir(parents=True, exist_ok=True)
+    (pkg_dir / "lean-toolchain").write_text(toolchain)
+    # Copy the monolith manifest, rewriting the ZeroFreeBridge path dep so it
+    # resolves relative to THIS package dir (one level deeper than the monolith
+    # root).  Other deps are git/scope-based and resolve via the symlinked
+    # packages dir, so they need no rewrite.
+    manifest = json.loads(mono_manifest.read_text())
+    zfb_rel = os.path.relpath(zfb_dir, pkg_dir)
+    for p in manifest.get("packages", []):
+        if p.get("name") == "ZeroFreeBridge" and p.get("type") == "path":
+            p["dir"] = zfb_rel
+    new_deps: list[tuple[str, str]] = []
+    if require_core:
+        new_deps.append((CORE_PKG, os.path.relpath(lean_dir / CORE_PKG, pkg_dir)))
+    for name, rel in (extra_path_deps or []):
+        new_deps.append((name, rel))
+    # de-dup: don't insert a path dep the manifest already carries
+    have = {p.get("name") for p in manifest.get("packages", [])}
+    for name, rel in new_deps:
+        if name in have:
+            continue
+        manifest["packages"].insert(0, {
+            "type": "path", "scope": "", "name": name,
+            "manifestFile": "lake-manifest.json", "inherited": False,
+            "dir": rel, "configFile": "lakefile.toml",
+        })
+    (pkg_dir / "lake-manifest.json").write_text(json.dumps(manifest, indent=1))
+    lake = pkg_dir / ".lake"
+    lake.mkdir(exist_ok=True)
+    link = lake / "packages"
+    if not link.exists():
+        link.symlink_to(mono_packages)
+
+
+def emit_core_lakefile() -> str:
+    """The `lakefile.toml` text for the shared `zzl_core` package."""
+    out = [f'name = "{CORE_PKG}"\n']
+    targets = ", ".join(f'"{m}"' for m in CORE_MODULES)
+    out.append(f"defaultTargets = [{targets}]\n")
+    out.append('srcDir = ".."\n\n')
+    out.append("[[require]]\nname = \"mathlib\"\nscope = \"leanprover-community\"\n"
+               f'rev = "{MATHLIB_REV}"\n\n')
+    out.append("[[require]]\nname = \"ZeroFreeBridge\"\n"
+               'path = "../../../zero_free_bridge/lean"\n\n')
+    for m in CORE_MODULES:
+        out.append(f'[[lean_lib]]\nname = "{m}"\n')
+    return "".join(out)
+
+
+def emit_core_pkg(lean_dir: Path) -> Path:
+    """Materialise the shared `zzl_core` package (lakefile + disk-safe wiring)."""
+    pkg = lean_dir / CORE_PKG
+    pkg.mkdir(parents=True, exist_ok=True)
+    _pkg_wiring(pkg, lean_dir)
+    (pkg / "lakefile.toml").write_text(emit_core_lakefile())
+    return pkg
+
+
 def register_lakefile_sharded(t_from: int, t_to: int, segments: bool,
                               lean_dir: Path) -> dict[int, list[str]]:
     """Route each module into its block package's lakefile (B2).
 
-    Returns {block_top: [modules registered]}.  Creates the block package
-    skeleton (`lakefile.toml`) on first module in a block, and rewrites the root
-    umbrella to require all block packages.  Modules whose TOP height falls in a
-    block go to that block's package."""
+    Returns {block_top: [modules registered]}.  Emits PRODUCTION-READY, buildable
+    block packages -- each with `srcDir = ".."`, requires for zzl_core / the prior
+    block / mathlib / ZeroFreeBridge, AND the disk-safe manifest+symlink wiring
+    (`_pkg_wiring`) so no dep is re-cloned.  Also emits/refreshes the shared
+    `zzl_core` package and rewrites the root umbrella.
+
+    Idempotent: a block whose lakefile already lists all its modules AND is
+    already correctly wired (has `srcDir` + the prior-block require when one is
+    due + a `.lake/packages` symlink) is left untouched; otherwise it is
+    (re-)emitted with the full module set.  This never clobbers a correctly-wired
+    block into a srcDir-less one."""
     bands = plan_bands(t_from, t_to)
     # module -> top height it belongs to (band top = hi; chain file top = its height)
     routed: dict[int, list[str]] = {}
@@ -362,31 +478,100 @@ def register_lakefile_sharded(t_from: int, t_to: int, segments: bool,
         for top in segment_tops(t_from, t_to):
             routed.setdefault(lake_block_top(top), []).append(f"AllZeros_h{top}")
 
+    # shared core package (emit once; wiring refresh is cheap + idempotent)
+    emit_core_pkg(lean_dir)
+
+    # the set of block tops that will exist after this run (existing on disk plus
+    # any routed here) -- used to decide whether a prior-block require is due.
+    will_exist = set(_discover_block_tops(lean_dir)) | set(routed)
+
+    all_tops = sorted(will_exist)
     added: dict[int, list[str]] = {}
-    for top, mods in routed.items():
+    for top in sorted(routed):
+        mods = routed[top]
         pkg_dir = lean_dir / block_pkg_name(top)
         pkg_lake = pkg_dir / "lakefile.toml"
-        existing = []
-        if pkg_lake.exists():
-            txt = pkg_lake.read_text()
-            existing = [m for m in mods if f'name = "{m}"' in txt]
-        new_mods = [m for m in mods if m not in existing]
-        if not new_mods and pkg_lake.exists():
-            continue
-        # full module list for the package = existing (parsed) + new, order-stable
-        all_mods = _existing_block_modules(pkg_lake) if pkg_lake.exists() else []
-        for m in new_mods:
+        prior = top - LAKE_BLOCK
+        prior_top = prior if prior in will_exist else None
+
+        # full module list for the package = existing (parsed, order-stable) + new
+        existing_mods = _existing_block_modules(pkg_lake) if pkg_lake.exists() else []
+        all_mods = list(existing_mods)
+        new_mods = []
+        for m in mods:
             if m not in all_mods:
                 all_mods.append(m)
+                new_mods.append(m)
+
+        # decide whether the package is already correct (skip) or needs a rewrite.
+        # A block whose lakefile already lists all its modules AND is correctly
+        # wired (srcDir + zzl_core require + prior-block require when due + the
+        # symlink/manifest with the full transitive prior-block closure) is left
+        # untouched.
+        lower_tops = [bt for bt in all_tops if bt < top]
+        well_wired = _block_is_well_wired(pkg_dir, pkg_lake, prior_top,
+                                          expected_prior_tops=lower_tops)
+        if not new_mods and well_wired:
+            continue
+
+        # The lakefile declares only the IMMEDIATE prior require (lake resolves the
+        # rest transitively via each prior's own lakefile).  The MANIFEST, however,
+        # must carry the FULL transitive path-dep closure: when block N is built as
+        # a root, lake validates every transitively-required package
+        # (N-1, N-2, ..., 25000) against N's manifest.  So write every LOWER block
+        # (plus zzl_core, ZFB) as a manifest path dep.
         pkg_dir.mkdir(parents=True, exist_ok=True)
-        pkg_lake.write_text(emit_block_lakefile(top, all_mods))
-        added[top] = new_mods
+        pkg_lake.write_text(emit_block_lakefile(top, all_mods, prior_top))
+        prior_closure = [(block_pkg_name(bt),
+                          os.path.relpath(lean_dir / block_pkg_name(bt), pkg_dir))
+                         for bt in all_tops if bt < top]
+        _pkg_wiring(pkg_dir, lean_dir, require_core=True,
+                    extra_path_deps=prior_closure)
+        if new_mods:
+            added[top] = new_mods
 
     # rewrite umbrella to require every block package that now exists
     block_tops = _discover_block_tops(lean_dir)
     (lean_dir / "lakefile.umbrella.toml").write_text(
         emit_umbrella_lakefile(block_tops))
     return added
+
+
+def _block_is_well_wired(pkg_dir: Path, pkg_lake: Path,
+                         prior_top: "int | None",
+                         expected_prior_tops: "list[int] | None" = None) -> bool:
+    """True iff the block package is already correctly wired: lakefile has
+    `srcDir`, a zzl_core require, the prior-block require (when one is due); the
+    manifest exists AND carries the full transitive prior-block closure
+    (`expected_prior_tops` = every LOWER block); and the `.lake/packages` symlink
+    exists.  Used to skip re-emitting a correct block AND to force a rewrite of a
+    stale (srcDir-less, or transitive-closure-outdated) one."""
+    if not pkg_lake.exists():
+        return False
+    txt = pkg_lake.read_text()
+    if 'srcDir = ".."' not in txt:
+        return False
+    if f'name = "{CORE_PKG}"' not in txt:
+        return False
+    if prior_top is not None and block_pkg_name(prior_top) not in txt:
+        return False
+    manifest_path = pkg_dir / "lake-manifest.json"
+    if not manifest_path.exists():
+        return False
+    if not (pkg_dir / ".lake" / "packages").exists():
+        return False
+    # manifest must carry the full transitive prior-block closure (otherwise an
+    # isolated block build fails with "dependency ... not in manifest")
+    if expected_prior_tops:
+        try:
+            names = {p.get("name")
+                     for p in json.loads(manifest_path.read_text()).get("packages", [])}
+        except (ValueError, OSError):
+            return False
+        for bt in expected_prior_tops:
+            if block_pkg_name(bt) not in names:
+                return False
+    return True
 
 
 def _existing_block_modules(pkg_lake: Path) -> list[str]:
