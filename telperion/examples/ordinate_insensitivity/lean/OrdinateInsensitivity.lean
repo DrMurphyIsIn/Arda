@@ -49,8 +49,22 @@ theorem offline_zero_has_distinct_partner (ρ : ℂ) (hρ : completedRiemannZeta
     apply hoff
     linarith
 
+/-- **Conjugation symmetry of the zeta zero set** (Schwarz reflection
+`ζ(conj s) = conj(ζ s)`): `ρ` is a zero iff `conj ρ` is — a distinct zero at the SAME
+real part and the OPPOSITE ordinate.  Combined with the functional-equation reflection
+above, the nontrivial zeros come in quadruples `(ρ, 1−ρ, conj ρ, 1−conj ρ)`, and the pair
+`(ρ, 1−conj ρ)` sits at the SAME ordinate with mirrored real parts `{β, 1−β}` — the
+precise structure that keeps any reflection-invariant real-part functional from ever
+separating an on-line zero from an off-line pair. -/
+theorem riemannZeta_zero_conj (ρ : ℂ) (hρ : riemannZeta ρ = 0) :
+    riemannZeta (starRingEnd ℂ ρ) = 0
+      ∧ (starRingEnd ℂ ρ).re = ρ.re ∧ (starRingEnd ℂ ρ).im = -ρ.im := by
+  refine ⟨?_, by simp, by simp⟩
+  rw [riemannZeta_conj, hρ, map_zero]
+
 end OrdinateInsensitivity
 
 #print axioms OrdinateInsensitivity.completedZeta_zero_reflect
 #print axioms OrdinateInsensitivity.zero_reflected_partner
 #print axioms OrdinateInsensitivity.offline_zero_has_distinct_partner
+#print axioms OrdinateInsensitivity.riemannZeta_zero_conj
