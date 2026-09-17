@@ -1,0 +1,13 @@
+created = "2026-09-16"
+depends_on = []
+kind = "milestone"
+name = "MM.speiser_box_probe"
+statement_module = "Statements.MM_speiser_box_probe"
+status = "open"
+title = "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)"
+updated = "2026-09-16"
+
+[readback]
+auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
+date = "2026-09-16"
+text = "deriv riemannZeta has no zero in the concrete closed rectangle [1/4, 3/8] x [6, 10], strictly left of the critical line. A single bounded, finitely-checkable winding/argument-principle target -- verifying one box does NOT decide RH; correctly NOT the RH-equivalent Speiser strip statement. Truth rests on actual zeta' zero locations (known to cluster right of the line); the auditor did not compute the winding number. No flags."
