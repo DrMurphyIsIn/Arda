@@ -115,9 +115,16 @@ Verified anchors: KS20 arXiv:2004.05678; OU20 2009.12810; ACV24 2303.03201;
 KP degree classification (Acta 182 / Annals 173); Favorov–Değer 2605.10766
 (growth dichotomy, *not* reality-forcing); Gonçalves–Vedana 2504.02741 (general
 summation-formula classification, no arithmetic clause); Lawton–Tsikh 2403.08659;
-Alpöge–Furman 2608.13637 (**≥** 2/3 of zeros simple and on the line — the
-report's ">" was corrected; the "RH ⟺ n₋ = 0 for every finite compression" gloss
-is a corpus paraphrase, not verified against the paper's own statements).
+Alpöge–Furman arXiv:2608.13637 (Aug 2026; proof credited to Claude, Lean 4 in
+anthropics/formal-math `zeta23`; **verified 2026-09-17**): Theorem A(i)
+N₀ˢ(T,2T) ≥ (2/3 − o(1)) N(T,2T) unconditionally — **≥** 2/3 simple and on the line
+as a liminf, 0.6725 with the Montgomery–Taylor window (the title's "more than"), 5/6
+distinct; prior records 5/12 (PRZZ 2020), 0.6603 (Wu 2015); independently re-proved
+by Lamzouri arXiv:2609.02882. The "RH ⟺ n₋ = 0 for every finite compression" gloss
+is NOT a statement in the paper: it paraphrases the Weil criterion (AF §1.2) plus
+Bombieri's (2000) observation, quoted in AF §1.3/§7.1, that a finite truncation's
+negative index counts the off-line pairs *seen by that truncation* — cite Bombieri
+2000 for it. The signature-(1,1)-per-off-line-pair language is AF item (Z)
 
 ---
 
@@ -165,16 +172,27 @@ a corpus doc miscites this as Annals; erratum §8), RH ⟺ Λ = 0: **RH holds wi
 zero slack under heat flow**. The route's unique honesty property: its
 distance-to-RH is a single certified real number.
 
-**The cost curve (corrected):** the Polymath15 barrier converts certified-zero
-height into Λ ≤ t₀ + y₀²/2. The **only sound anchor** is P15 itself (X = 6·10¹⁰,
-t₀ = y₀ = 0.2 ⇒ Λ ≤ 0.22; Platt–Trudgian height ⇒ Λ ≤ 0.2). The second
-calibration point (Λ ≤ 0.1787854, Gomila 2026) is an *unreviewed blog
-computation* — the two-point calibration C ≈ 4.7–5.0 in the researcher's curve is
-single-anchor extrapolation and all G4/G5 projections below carry that caveat.
-Inverted: Λ ≤ ε costs verified height ~ exp(C/ε); ε = 0.1 ~ 10²⁰, ε = 0.01 ~
-10²⁰⁰. P15's own ninth thread warns the analytic estimates themselves may fail
-below ~0.1. Unconditional baseline: Λ < ½ (Ki–Kim–Lee 2009) — any certified
-bound must beat ½ to be non-trivial and 0.2 to be a record.
+**The cost curve (corrected 2026-09-17, see `RH_ROADMAP_CLAIMS_VERIFICATION_2026-09-17.md`):**
+the Polymath15 barrier (Thm 1.2 of arXiv:1904.12438, Res. Math. Sci. 2019) converts
+RH verified to height X/2 in the strip σ ≥ (1+y₀)/2, plus a certified zero-free
+canopy at time t₀ and a certified barrier at X, into Λ ≤ t₀ + y₀²/2. Sound anchors:
+P15 itself (X ≈ 6·10¹⁰, t₀ = y₀ = 0.2 ⇒ Λ ≤ 0.22) and P15 Table 1 row 2 +
+Platt–Trudgian (BLMS 2021, height 3·10¹²) ⇒ Λ ≤ 0.2, the current published record.
+Two 2026 computer-assisted claims exist at the same height — Gomila Λ ≤ 0.1787854
+(X = 6.000000185827·10¹², t₀ = 129/800, y₀² = 87677/2.5·10⁶; a GitHub audit
+repository with a 22-page write-up independently checked by Romik, **not journal-
+reviewed**) and Gordon Λ < 0.158 (partial Lean audit conditional on analytic inputs,
+not reviewed) — neither is an anchor. The cost curve should be calibrated on P15's
+own 12-row conditional Table 1 (§10), which gives Λ·ln T ≈ 5.8 → 5.0 as Λ goes
+0.21 → 0.10 (T = assumed verification height): T ≳ exp(C/ε) with C ≈ 5–6, slowly
+decreasing, consistent with P15's heuristic Λ ≤ O(1/log T) and Tao's "exp(C′/Λ₀)"
+remark; a C fitted through the 2026 points measures numerics quality, not curve
+shape. Inverted: ε = 0.1 needs T ≈ 4.5·10²¹ (P15's own figure); ε = 0.01 needs
+T ~ 10²²⁰⁺. P15's ninth thread warned of the limits of the Euler-mollifier bounds
+near 0.22 at X ≈ 6·10¹⁰, not of a failure below 0.1; the published table certifies
+the analytic hypotheses down to Λ = 0.10 conditionally. Unconditional baseline:
+Λ < ½ (Ki–Kim–Lee, Adv. Math. 222 (2009)) — any certified bound must beat ½ to be
+non-trivial, 0.2 to beat the published record (0.158 to beat the unreviewed one).
 
 | id | class | scale | deps | milestone |
 |---|---|---|---|---|
@@ -268,8 +286,9 @@ zero pairing), and the m-hub/limit-passage pattern applies.
 **The E6 probe (highest-value single action):** two external Lean artifacts may
 discharge `RvMUnboundedMeanDensity` — the zeta-23-lean line and
 cc-chen-tech/riemann-pnt-lean4 (claims a formalized RvM formula). **Go/no-go
-gate, not a promise** (skeptic refuted the sourcing claim on the first: its
-README does not list RvM among analytic inputs): clone → build → `#print axioms`
+gate, not a promise** (the skeptic's "zeta-23-lean does not source RvM" note was itself
+WRONG — the 2026-09-17 probe found `Zeta23/RvM/` proves RvM in-repo and Theorem A
+supplies the distinct-ordinate input; verdict CONDITIONAL-GO, see `E6_PROBE_2026-09-17.md`): clone → build → `#print axioms`
 → statement-match under the comparator harness → **dependency-closure audit**
 (conditional/axiom-carrying uncle theorems disqualify). If it lands: a named
 open-research residual becomes an engineering port, W2c completes, E7 unblocks.
@@ -320,6 +339,16 @@ CC 2020 "proves positivity" → "potential conceptual reason"; E3/E5
 open-research (blocked on queued statements/undefined signature); E8
 hard-known-shape; zeta-23-lean RvM sourcing refuted (probe, not port);
 Titchmarsh 9.6(A) page-unverified; Λ < ½ (Ki–Kim–Lee) baseline was missing.
+
+**2026-09-17 verification pass** (`RH_ROADMAP_CLAIMS_VERIFICATION_2026-09-17.md`):
+§4 cost curve rewritten — Gomila 2026 is a Romik-checked GitHub audit repo, not a
+blog, still unrefereed; a second unreviewed claim (Gordon, Λ < 0.158) exists;
+calibrate C on P15 Table 1 (C ≈ 5–6, not 4.7–5.0); ε = 0.1 ⇒ T ≈ 4.5·10²¹, not 10²⁰;
+the "ninth thread warns below ~0.1" sentence was unsupported. §2 Alpöge–Furman
+passage refined — "≥ 2/3" confirmed as Theorem A(i); the finite-compression gloss
+is Weil + Bombieri 2000, not an AF statement. §6 E6 — the skeptic's zeta-23-lean
+sourcing refutation was wrong (RvM is in-repo); the discharge input for
+`RvMUnboundedMeanDensity` is Theorem A (distinct ordinates), not the RvM formula alone.
 
 Corpus errata (for the million-line session): RH_MARGINALITY_LEHMER cites
 Rodgers–Tao as *Annals* — actual venue Forum of Mathematics Pi 8 (2020) e6;

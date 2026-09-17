@@ -1,0 +1,8 @@
+created = "2026-09-17"
+depends_on = ["RH_backlund_s_log"]
+kind = "milestone"
+name = "RH.rvm_unconditional"
+statement_module = "Statements.RH_rvm_unconditional"
+status = "draft"
+title = "Riemann-von Mangoldt UNCONDITIONAL (routes-roadmap A4/D5, the E6 target): |N(T) - (T/2pi log(T/2pi) - T/2pi + 7/8)| <= C log T for all T >= 2, N(T) the multiplicity RECTANGLE count -- no edge/ball/winding hypotheses (contrast nt_count_effective_bound); implies MM_rvm_unbounded_mean_density"
+updated = "2026-09-17"

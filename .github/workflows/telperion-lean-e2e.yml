@@ -136,16 +136,26 @@ jobs:
   # integrability) + AxiomGuardDBN.  Same toolchain/Mathlib pin as li_positivity (through the
   # LiCriterion dependency), separate Lake project.  Hand-authored Lean, no generate.py.
   dbn-compiles:
+  rvm-bridge-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Drift check (node statement + mirrored defs still match the mirrormere registry)
+        working-directory: telperion
+        run: |
+          python examples/rvm_bridge/generate.py --check
 
       - name: Cache elan toolchain
         uses: actions/cache@v4
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/dbn/lean/lean-toolchain') }}
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/rvm_bridge/lean/lean-toolchain') }}
 
       - name: Install elan
         run: |
@@ -169,6 +179,22 @@ jobs:
         working-directory: telperion/examples/dbn/lean
         run: |
           lake env lean AxiomGuardDBN.lean | tee axioms.out
+      # Zeta23 (anthropics/formal-math, public, Apache-2.0; ~1.6 MB repo) is cloned by Lake at the
+      # pinned commit; Mathlib oleans come from the cache through that dependency. Zeta23 itself
+      # (118 modules) compiles from source: ~2 min on 32 cores locally, expect ~15-25 min on a
+      # 4-core hosted runner.
+      - name: Fetch Mathlib olean cache (through the Zeta23 dependency)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the bridge against the pinned zeta-23-lean (the actual verification)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake build
+
+      - name: Axiom guard (fails on sorryAx anywhere in the anchors or the consumed upstream inputs)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: |
+          lake env lean AxiomGuardRvMBridge.lean | tee axioms.out
           ! grep -q "sorryAx" axioms.out
 
   tangent-compiles:
