@@ -128,6 +128,20 @@ open Complex
     """
 end Backlund
 
+namespace RvMCount
+
+-- ===== AUTHORED for the registry (NOT in the island; 2026-09-17 critical-path nodes).  The
+-- nontrivial-zero count to height T WITH MULTIPLICITY: a finsum over the strip zeros with
+-- 0 < Im <= T of the order given by zeta's meromorphic divisor on the open critical strip.
+-- RECTANGLE-based by design: a ball-based count (the island's RHInBoxAnalytic.zeroFinset shape)
+-- miscounts conjugates (routes roadmap section 9).  finsum is 0 on infinite support, so the
+-- definition is total; finiteness of the support is a theorem, not an assumption. =====
+noncomputable def zetaZeroCount (T : ℝ) : ℕ :=
+  ∑ᶠ ρ ∈ {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ 0 < ρ.im ∧ ρ.im ≤ T},
+    ((MeromorphicOn.divisor riemannZeta {s : ℂ | 0 < s.re ∧ s.re < 1} : ℂ → ℤ) ρ).toNat
+
+end RvMCount
+
 namespace DBN
 """,
     "-- ===== examples/dbn/lean/DBNDefs.lean:40-41 (v4.34 dbn island, Route C) =====",
