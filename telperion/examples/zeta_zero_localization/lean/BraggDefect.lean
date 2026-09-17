@@ -119,6 +119,17 @@ theorem defect_witness_offline
   · -- -excess^2 <= off_hi = -d_lo^2, i.e. excess^2 >= d_lo^2
     nlinarith [hd_lo, hd_pos]
 
+/-- **`bragg_defect_witness`** -- the two kernel witnesses packaged as one declaration, in the exact
+form the MIRRORMERE registry node `MM_bragg_defect_witness` states (its grant gate is syntactic
+containment of the node statement in this artifact): the on-line configuration's defect functional
+is exactly `0`, AND the off-line configuration's is bracketed strictly below `0`.  Carries the same
+`e^(1/10)` enclosure hypothesis as `defect_witness_offline`. -/
+theorem bragg_defect_witness
+    (hexp : expLo ≤ Real.exp (1 / 10) ∧ Real.exp (1 / 10) ≤ expHi) :
+    defectFunctional 0 = 0 ∧
+    ((-1957503930982498711627558116252003079150110082803036995985602456729126067929069837779873677055641334915004924707647824293913235373458273903210508792181881 / 19542444130562717342736579894714125276139669165907166175656490622972757664768900000000000000000000000000000000000000000000000000000000000000000000000000000000 : ℝ) ≤ defectFunctional excess ∧ defectFunctional excess ≤ (-1957503930982498711614926803795741251867682177931660778058090203284392257792384397626586656512971699612677910422316624293913235373458273903210508792181881 / 19542444130562717342737210934295300643770643047158621178046789521488913388427220640000000000000000000000000000000000000000000000000000000000000000000000000000 : ℝ)) :=
+  ⟨defect_witness_online, defect_witness_offline hexp⟩
+
 /-- **`defect_leakage_gap`** -- the two enclosures are SEPARATED: the off-line functional's upper
 bound is strictly below the on-line functional's value (`B' < A`).  The defect is a kernel-observable
 quantity, not a rounding artifact: no test vector can read the off-line configuration as crystalline.
