@@ -426,7 +426,9 @@ def _pkg_wiring(pkg_dir: Path, lean_dir: Path, require_core: bool = False,
     lake = pkg_dir / ".lake"
     lake.mkdir(exist_ok=True)
     link = lake / "packages"
-    if not link.exists():
+    # is_symlink(): a dangling link (packages dir not built yet) is still "present";
+    # exists() would follow it, report False, and the re-link would FileExistsError.
+    if not (link.is_symlink() or link.exists()):
         link.symlink_to(mono_packages)
 
 
