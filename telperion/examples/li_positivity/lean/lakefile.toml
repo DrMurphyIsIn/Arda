@@ -60,6 +60,15 @@ name = "RvMDiffractionCore"
 [[lean_lib]]
 name = "RvMBraggBridge"
 
+# MIRRORMERE Route D cheap layers (RH_ROUTES_ROADMAP_2026-09-16 section 5): D1 = the trace reading
+# of the Bragg bridge (registry node MM_rect_trace_reading), D4 = the cooked-spectrum negative
+# control (registry node MM_spectral_cooked_control, Mathlib only). conjecture1_proved = False.
+[[lean_lib]]
+name = "RvMTraceReading"
+
+[[lean_lib]]
+name = "RvMSpectralCookedControl"
+
 [[lean_lib]]
 name = "RvMLiUnified"
 
