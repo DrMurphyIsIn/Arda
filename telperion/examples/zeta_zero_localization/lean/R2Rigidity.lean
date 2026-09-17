@@ -213,3 +213,23 @@ theorem defect_eq_offline_pairs (hwit : NegativeWitness D.blockA_isHermitian D.p
 end PairDecomp
 
 end DefectDictionary
+
+
+/-! ## Standalone restatement for the missions grant gate
+
+The registry node `MM_offline_pairs_le_defect` states `offline_pairs_le_defect` with the section
+variables `{𝕜} [RCLike 𝕜] {n} [Fintype n] [DecidableEq n]` inlined as explicit binders (so the
+statement module elaborates on its own).  The grant gate is syntactic containment of that statement
+in this artifact, which the section form above cannot satisfy; this restatement is the same theorem
+with the binders explicit, proved by the section theorem.  It lives in its own sub-namespace so that
+`open DefectDictionary` users of `offline_pairs_le_defect` see no ambiguity. -/
+namespace DefectDictionary.Standalone
+
+theorem offline_pairs_le_defect {𝕜 : Type*} [RCLike 𝕜]
+    {n : Type*} [Fintype n] [DecidableEq n]
+    {A : Matrix n n 𝕜} (hA : A.IsHermitian) {p : ℕ}
+    (hwit : NegativeWitness hA p) :
+    p ≤ defect hA :=
+  DefectDictionary.offline_pairs_le_defect hA hwit
+
+end DefectDictionary.Standalone
