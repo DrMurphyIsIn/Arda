@@ -14,6 +14,9 @@ import urllib.request
 from pathlib import Path
 
 LI = Path(__file__).resolve().parents[2] / "examples" / "li_positivity" / "lean"
+# Route C (de Bruijn-Newman) island: same toolchain/Mathlib pin as li_positivity, separate Lake
+# project (examples/dbn/lean); the DBN block below is extracted from it by exact line range.
+DBN = Path(__file__).resolve().parents[2] / "examples" / "dbn" / "lean"
 OUT = Path(__file__).resolve().parent / "lean" / "Statements" / "RHDefs.lean"
 
 UPSTREAM_REV = "35df682f3b709ffe5fbcfdd452dfa964bd622b87"
@@ -41,6 +44,11 @@ def ex(module: str, lo: int, hi: int) -> str:
     return "\n".join(lines[lo - 1:hi])
 
 
+def exd(module: str, lo: int, hi: int) -> str:
+    lines = (DBN / module).read_text().split("\n")
+    return "\n".join(lines[lo - 1:hi])
+
+
 def verify_upstream() -> None:
     text = urllib.request.urlopen(UPSTREAM_URL, timeout=30).read().decode()
     lines = text.split("\n")
@@ -56,10 +64,11 @@ parts = [
     """/-
   Statements.RHDefs -- vocabulary mirror for the RH missions registry.  NOT a node statement.
 
-  Every definition below is a VERBATIM copy: the ZeroFreeBridge block by exact line range
-  from the v4.34 li_positivity island (toolchain leanprover/lean4:v4.34.0-rc1), source
-  module cited above each extract; the LiCriterion block from the upstream pinned
-  dependency nicholasbulka/li-criterion-rh-equivalence-lean @ 35df682f,
+  Every definition below is a VERBATIM copy: the ZeroFreeBridge/DiffractionCore/Backlund
+  blocks by exact line range from the v4.34 li_positivity island (toolchain
+  leanprover/lean4:v4.34.0-rc1) and the DBN block from the v4.34 examples/dbn island
+  (Route C, same pin), source module cited above each extract; the LiCriterion block from
+  the upstream pinned dependency nicholasbulka/li-criterion-rh-equivalence-lean @ 35df682f,
   Lc/LiCriterion/Basic.lean, lines cited.  The copies are regenerated/diffed by
   missions/rh/build_rhdefs.py (--verify-upstream re-fetches and diffs the upstream block).
   This file exists so that node statement files elaborate standalone against Mathlib; the
@@ -117,7 +126,20 @@ open Complex
     "-- ===== RvMBacklundAux.lean:24-25 (v4.34 island) =====",
     ex("RvMBacklundAux.lean", 24, 25),
     """
-end Backlund""",
+end Backlund
+
+namespace DBN
+""",
+    "-- ===== examples/dbn/lean/DBNDefs.lean:40-41 (v4.34 dbn island, Route C) =====",
+    exd("DBNDefs.lean", 40, 41),
+    "\n-- ===== examples/dbn/lean/DBNDefs.lean:211-214 (v4.34 dbn island, Route C) =====",
+    exd("DBNDefs.lean", 211, 214),
+    "\n-- ===== examples/dbn/lean/DBNDefs.lean:408-409 (v4.34 dbn island, Route C) =====",
+    exd("DBNDefs.lean", 408, 409),
+    "\n-- ===== examples/dbn/lean/DBNDefs.lean:413 (v4.34 dbn island, Route C) =====",
+    exd("DBNDefs.lean", 413, 413),
+    """
+end DBN""",
 ]
 
 
