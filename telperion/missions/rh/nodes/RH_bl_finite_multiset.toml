@@ -1,0 +1,13 @@
+created = "2026-09-16"
+depends_on = []
+kind = "lemma"
+name = "RH.bl_finite_multiset"
+statement_module = "Statements.RH_bl_finite_multiset"
+status = "open"
+title = "Routes-roadmap B7-i (the Bombieri-Lagarias finite core): for a finite set of points avoiding 0 and 1 and symmetric under rho -> 1 - conj(rho), the Li-type sums Re sum (1 - ((1 - 1/rho)^{-1})^n) are nonnegative for every positive n IF AND ONLY IF every point lies on Re = 1/2. Pure finite algebra (on-line: termwise 1 - cos >= 0 via unit modulus; off-line: paired growth r^n + r^{-n} forces negativity); carries ZERO zeta-specific content by design -- the finite layer of the BL bridge, quarantining where the analytic layer (B7-ii) and the wall begin (RH_ROUTES_ROADMAP_2026-09-16 sections 3, 9)"
+updated = "2026-09-16"
+
+[readback]
+auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
+date = "2026-09-16"
+text = "For a finite S avoiding 0 and 1 and closed under rho -> 1 - conj(rho): nonnegativity of Re sum (1 - ((1 - 1/rho)^{-1})^n) for all n > 0 IFF every point has Re = 1/2. Auditor verified both directions numerically: on-line points give |w| = 1 hence termwise 1 - cos >= 0 (symmetry not needed for this direction); the off-line symmetric pair 0.7+3i / 0.3+3i drives the sum negative at n = 18, so hsym is genuinely load-bearing for the forward direction. h0/h1 exclusions load-bearing (Lean junk-value inverses). Zeta-free by design -- the finite algebraic core of Bombieri-Lagarias, NOT itself RH. No flags."

@@ -12,3 +12,8 @@ import Statements.MM_torus_section_dictionary
 import Statements.MM_torus_section_n2_rigidity
 import Statements.MM_euler_factor_section_offline
 import Statements.MM_bragg_bridge
+import Statements.MM_recurrence_deficit_eq_excess
+import Statements.MM_offline_disjoint_discs
+import Statements.MM_speiser_box_probe
+import Statements.MM_rect_trace_reading
+import Statements.MM_spectral_cooked_control
