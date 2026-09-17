@@ -3,6 +3,114 @@
  "packagesDir": ".lake/packages",
  "packages": [
   {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h250000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h250000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h225000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h225000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h200000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h200000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h175000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h175000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h150000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h150000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h125000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h125000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h100000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h100000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h75000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h75000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h50000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h50000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZetaBands_h25000",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../ZetaBands_h25000",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "zzl_core",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../zzl_core",
+   "configFile": "lakefile.toml"
+  },
+  {
+   "type": "path",
+   "scope": "",
+   "name": "ZeroFreeBridge",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../../../zero_free_bridge/lean",
+   "configFile": "lakefile.toml"
+  },
+  {
    "url": "https://github.com/leanprover-community/mathlib4",
    "type": "git",
    "subDir": null,
@@ -111,7 +219,7 @@
    "configFile": "lakefile.toml"
   }
  ],
- "name": "ZetaReflectionSpike",
+ "name": "LambdaLineReal",
  "lakeDir": ".lake",
  "fixedToolchain": false
 }

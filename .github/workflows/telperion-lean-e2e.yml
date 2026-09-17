@@ -2119,9 +2119,18 @@ jobs:
             if echo "$out" | grep -qE 'error:'; then echo "::error::$G did not elaborate cleanly"; exit 1; fi
           done
           echo "OK: all guarded theorems kernel-clean."
-  zeta-localization-suite:
+  # B2 ladder suite (replaces the monolith `lake build` that hit E2BIG at ~16k targets).
+  # Builds zzl_core + ZeroFreeBridge + zzl_aux (height-100 island, Bragg, zoo) and then the
+  # 25k-height block packages in ascending order up to H_CI, running the axiom battery on
+  # each block-top capstone.  Green == every `all_nontrivial_zeros_up_to_height_<top>_of_bands`
+  # up to H_CI compiles with axioms exactly [propext, Classical.choice, Quot.sound], 0 sorryAx.
+  # H_CI is a policy dial (telperion/docs/B2_MAIN_CI.md): the climb runs hotter than CI;
+  # the paper cites H_CI, campaign_state tracks H.  conjecture1_proved = False.
+  zeta-ladder-suite:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 360
+    env:
+      H_CI: "100000"
     steps:
       - uses: actions/checkout@v4
       - name: Cache elan toolchain
@@ -2133,20 +2142,55 @@ jobs:
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Fetch Mathlib olean cache (ONCE; shared with sibling zero_free_bridge)
-        working-directory: telperion/examples/zeta_zero_localization/lean
-        run: lake exe cache get
-      - name: Build ALL zeta_zero_localization libraries
-        working-directory: telperion/examples/zeta_zero_localization/lean
-        run: lake build
-      - name: Axiom guard (RH-in-box family) -- fail on sorryAx or elaboration error
+      - name: Wire the sharded packages to one shared deps dir (B2 layout; .lake is gitignored)
         working-directory: telperion/examples/zeta_zero_localization/lean
         run: |
-          out="$(lake env lean AxiomGuardRHInBox.lean 2>&1 || true)"
-          echo "$out"
-          if echo "$out" | grep -q 'sorryAx'; then echo "::error::a guarded theorem depends on sorry"; exit 1; fi
-          if echo "$out" | grep -qE 'error:'; then echo "::error::AxiomGuardRHInBox.lean did not elaborate cleanly"; exit 1; fi
-          echo "OK: all guarded theorems kernel-clean."
+          mkdir -p .lake/packages
+          for d in zzl_core zzl_aux ZetaBands_h*; do
+            mkdir -p "$d/.lake" && ln -sfn ../../.lake/packages "$d/.lake/packages"
+          done
+          mkdir -p ../../zero_free_bridge/lean/.lake
+          ln -sfn ../../../zeta_zero_localization/lean/.lake/packages ../../zero_free_bridge/lean/.lake/packages
+      - name: Fetch Mathlib olean cache (ONCE, into the shared deps dir)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_core
+        run: lake exe cache get
+      - name: Build zzl_core (16 height-independent modules) + ZeroFreeBridge
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_core
+        run: lake build
+      - name: Build zzl_aux (height-100 island, Bragg family, zoo, R2Rigidity) + its guards
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
+        run: |
+          lake build
+          for g in AxiomGuardBragg AxiomGuardDefect AxiomGuardZoo; do
+            [ -f "../$g.lean" ] || continue
+            out="$(lake env lean "../$g.lean" 2>&1 || true)"
+            echo "== $g"; echo "$out"
+            if echo "$out" | grep -q 'sorryAx'; then echo "::error::$g: a guarded theorem depends on sorry"; exit 1; fi
+            if echo "$out" | grep -qE 'error:'; then echo "::error::$g did not elaborate cleanly"; exit 1; fi
+          done
+      - name: Build the band ladder block-by-block up to H_CI (strict chain) + per-block axiom guard
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: |
+          set -e
+          for d in $(ls -d ZetaBands_h*/ | sed 's#/##' | sort -t h -k2 -n); do
+            top=${d#ZetaBands_h}
+            if [ "$top" -gt "$H_CI" ]; then echo "skip $d (above H_CI=$H_CI)"; continue; fi
+            echo "::group::build $d"
+            t0=$(date +%s)
+            ( cd "$d" && lake build )
+            echo "$d built in $(( $(date +%s) - t0 ))s"
+            echo "::endgroup::"
+            cap="AllZeros_h${top}.all_nontrivial_zeros_up_to_height_${top}_of_bands"
+            printf 'import AllZeros_h%s\n#print axioms %s\n' "$top" "$cap" > "/tmp/Guard_h$top.lean"
+            out="$(cd "$d" && lake env lean "/tmp/Guard_h$top.lean" 2>&1 || true)"
+            echo "$out"
+            if echo "$out" | grep -q 'sorryAx'; then echo "::error::$cap depends on sorry"; exit 1; fi
+            if echo "$out" | grep -qE 'error:'; then echo "::error::guard for $cap did not elaborate"; exit 1; fi
+            # lean wraps the list across lines; compare whitespace-free against the exact 3-axiom set
+            echo "$out" | tr -d ' \n' | grep -q "dependsonaxioms:\[propext,Classical.choice,Quot.sound\]" || { echo "::error::$cap: unexpected axiom set"; exit 1; }
+            rm -rf "$d/.lake/build/ir"
+          done
+          echo "OK: ladder CI-verified to H_CI=$H_CI (kernel-clean, 3 standard axioms)."
   mission-statements-compile:
     # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
     # statement package: a statement that does not elaborate cannot enter the
@@ -2202,12 +2246,22 @@ jobs:
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      - name: Fetch Mathlib olean cache
+      - name: Wire the sharded packages to one shared deps dir (B2 layout; .lake is gitignored)
         working-directory: telperion/examples/zeta_zero_localization/lean
+        run: |
+          mkdir -p .lake/packages
+          for d in zzl_core zzl_aux ZetaBands_h*; do
+            mkdir -p "$d/.lake" && ln -sfn ../../.lake/packages "$d/.lake/packages"
+          done
+          mkdir -p ../../zero_free_bridge/lean/.lake
+          ln -sfn ../../../zeta_zero_localization/lean/.lake/packages ../../zero_free_bridge/lean/.lake/packages
+
+      - name: Fetch Mathlib olean cache (into the shared deps dir)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
         run: lake exe cache get
 
-      - name: Build the emitted Bragg-amplitude lib (uses the island's CosEnclosure)
-        working-directory: telperion/examples/zeta_zero_localization/lean
+      - name: Build the emitted Bragg-amplitude lib (zzl_aux owns CosEnclosure + the Bragg family)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
         run: lake build BraggAmplitudeInstances
   defect-witness-compiles:
     runs-on: ubuntu-latest

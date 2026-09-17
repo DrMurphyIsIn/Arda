@@ -29,6 +29,7 @@ import argparse
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 import time
@@ -299,6 +300,7 @@ def cmd_emit_bands(args) -> int:
 # composes across packages via conclusion-level `height_chain` (package-agnostic).
 LAKE_BLOCK = 25_000            # height per lake package (charter B2)
 CORE_PKG = "zzl_core"          # shared height-independent core package
+AUX_PKG = "zzl_aux"            # legacy/aux modules (height-100 island, Bragg, zoo, ...) -- their B2 home
 MATHLIB_REV = "v4.32.0"        # matches lean-toolchain / the monolith require
 
 
@@ -456,6 +458,56 @@ def emit_core_pkg(lean_dir: Path) -> Path:
     return pkg
 
 
+_AUX_SKIP = {"AxiomGuardRHInBox"}   # the monolith-wide guard: 27k imports, cannot live in a shard
+
+
+def aux_modules(lean_dir: Path) -> list[str]:
+    """Every monolith `[[lean_lib]]` that is neither a core module nor part of the
+    band ladder (RHInBoxT_* bands / AllZeros_h<N> chain capstones with N >= 1000):
+    the height-100 island (RHInBox_*, NoZerosInBox_*, AllZeros_h100/h200, StripClear),
+    the Bragg family, the zoo, R2Rigidity, RHLinalg, ...  Data-driven from the
+    monolith lakefile so nothing silently falls out of the CI net.  Sorted."""
+    mono = lean_dir / "lakefile.toml"
+    if not mono.exists():
+        return []
+    names = re.findall(r'^\[\[lean_lib\]\]\s*\nname = "([^"]+)"', mono.read_text(), re.M)
+    out: list[str] = []
+    for n in names:
+        if n in CORE_MODULES or n in _AUX_SKIP or n.startswith("RHInBoxT_"):
+            continue
+        m = re.fullmatch(r"AllZeros_h(\d+)", n)
+        if m and int(m.group(1)) >= 1000:
+            continue
+        if n not in out:
+            out.append(n)
+    return sorted(out)
+
+
+def emit_aux_lakefile(modules: list[str]) -> str:
+    """The `lakefile.toml` text for the `zzl_aux` package (requires zzl_core)."""
+    out = [f'name = "{AUX_PKG}"\n']
+    targets = ", ".join(f'"{m}"' for m in modules)
+    out.append(f"defaultTargets = [{targets}]\n")
+    out.append('srcDir = ".."\n\n')
+    out.append("[[require]]\nname = \"mathlib\"\nscope = \"leanprover-community\"\n"
+               f'rev = "{MATHLIB_REV}"\n\n')
+    out.append("[[require]]\nname = \"ZeroFreeBridge\"\n"
+               'path = "../../../zero_free_bridge/lean"\n\n')
+    out.append(f"[[require]]\nname = \"{CORE_PKG}\"\npath = \"../{CORE_PKG}\"\n\n")
+    for m in modules:
+        out.append(f'[[lean_lib]]\nname = "{m}"\n')
+    return "".join(out)
+
+
+def emit_aux_pkg(lean_dir: Path) -> Path:
+    """Materialise the `zzl_aux` package (lakefile + disk-safe wiring)."""
+    pkg = lean_dir / AUX_PKG
+    pkg.mkdir(parents=True, exist_ok=True)
+    _pkg_wiring(pkg, lean_dir, require_core=True)
+    (pkg / "lakefile.toml").write_text(emit_aux_lakefile(aux_modules(lean_dir)))
+    return pkg
+
+
 def register_lakefile_sharded(t_from: int, t_to: int, segments: bool,
                               lean_dir: Path) -> dict[int, list[str]]:
     """Route each module into its block package's lakefile (B2).
@@ -482,6 +534,7 @@ def register_lakefile_sharded(t_from: int, t_to: int, segments: bool,
 
     # shared core package (emit once; wiring refresh is cheap + idempotent)
     emit_core_pkg(lean_dir)
+    emit_aux_pkg(lean_dir)
 
     # the set of block tops that will exist after this run (existing on disk plus
     # any routed here) -- used to decide whether a prior-block require is due.
