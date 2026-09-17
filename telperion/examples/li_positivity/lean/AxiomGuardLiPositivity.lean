@@ -101,6 +101,8 @@ import RvMArchSharperS2a
 import RvMArchSharperS2b
 import RvMArchSharper
 import RvMBraggBridge
+import RvMTraceReading
+import RvMSpectralCookedControl
 import RvMBlFiniteMultiset
 
 #print axioms LiPositivity.li_rung_0
@@ -564,6 +566,21 @@ import RvMBlFiniteMultiset
 -- edges + left edge carried as explicit remainders. Kernel-verified, unconditional, NO limit taken.
 -- conjecture1_proved = False.
 #print axioms DiffractionCore.rect_explicit_formula_bragg
+
+-- MIRRORMERE Route D, layer D1 -- rect_trace_reading (RvMTraceReading): the TRACE READING of the
+-- Bragg bridge. rect_explicit_formula_bragg divided through by 2*pi*i: the box divisor count of
+-- zeta (the finite trace) isolated on the left, the diffraction data (bottom - top - i*Bragg comb
+-- - i*left edge) on the right. Same hypotheses as the bridge; a dictionary-grade rearrangement.
+-- Mirrors registry node MM_rect_trace_reading VERBATIM. conjecture1_proved = False.
+#print axioms DiffractionCore.rect_trace_reading
+
+-- MIRRORMERE Route D, layer D4 -- spectral_cooked_control (RvMSpectralCookedControl, Mathlib only):
+-- the cooked-spectrum NEGATIVE CONTROL. For ANY gamma : Fin n -> R there is a Hermitian complex
+-- matrix with charpoly = prod_i (X - C (gamma i)) (the diagonal matrix). Marks "finite operator
+-- with prescribed real spectrum" as content-free; the Route-D wall is the completion/positivity
+-- clause, never operator existence. Mirrors registry node MM_spectral_cooked_control VERBATIM.
+-- conjecture1_proved = False.
+#print axioms spectral_cooked_control
 -- Arc A (effective RvM), PR A1: the pure-in-T Backlund bound.
 -- riemannS_abs_le_log_explicit (hT:4≤T)(hζne): |riemannS T| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 --
 --   the PR-6 headline with ‖F_T 2‖ majorized away by its Jensen-centre floor 2−π²/6
