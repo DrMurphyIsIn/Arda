@@ -1,0 +1,19 @@
+created = "2026-09-14"
+depends_on = ["AND_em_zeta_strip"]
+kind = "lemma"
+name = "AND.em_tail3_number"
+statement_module = "Statements.AND_em_tail3_number"
+status = "open"
+title = "Order-K EM tail engine, THE NUMBER: the order-3 Euler-Maclaurin tail remainder is kernel-decided below 10^-3 (em_tail3_number; the shared substrate for Stirling K=4 and the A3 theta branch)"
+updated = "2026-09-14"
+
+[proof]
+artifact = "../../examples/zeta_reflection/lean/EMZetaTail.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
+date = "2026-09-14"
+text = "THE NUMBER: the norm of the integral over x > 200 of the third sawtooth-Bernoulli function times emTailCoeff3(s) * x^(-s-3), evaluated at the concrete point s = 1/2 + 14i (with emTailCoeff3 s = -(s(s+1)(s+2)), the order-3 Euler-Maclaurin tail coefficient), is at most 1/1000. A fully explicit, kernel-checked numeric bound on the order-3 EM tail remainder at a concrete critical-line point -- the first output of the order-K tail engine and the substrate for Stirling K=4 and the A3 theta branch. [Verbatim extract of the proved em_tail3_number (EMZetaTail.lean:469); artifact on rh/million-turing, grant deferred to the branch reconcile.]"

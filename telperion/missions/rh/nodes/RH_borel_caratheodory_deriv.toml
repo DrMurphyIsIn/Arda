@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "RH.borel_caratheodory_deriv"
+statement_module = "Statements.RH_borel_caratheodory_deriv"
+status = "proved"
+title = "Borel-Caratheodory + Cauchy derivative bound: |deriv h c| <= 2M'/(R-r) from the real-part sup on a disk"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/DlvpBCDeriv.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "rh-migration-session-2026-09-11"
+date = "2026-09-11"
+text = "Borel-Caratheodory composed with a Cauchy estimate: if h is holomorphic on ball c R and its real part exceeds its centre value by at most M' > 0 on the disk, then |deriv h c| <= 2 M' / (R - r) for every 0 < r < R -- the derivative-from-real-part control the dVP region consumes."

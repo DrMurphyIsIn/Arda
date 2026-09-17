@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = ["RH_strip_repr"]
+kind = "milestone"
+name = "RH.zeta_log_bound"
+statement_module = "Statements.RH_zeta_log_bound"
+status = "proved"
+title = "The sharp near-line growth bound: |zeta(sigma+it)| <= 6(1 + log|t|) for 1 <= sigma <= 2, |t| >= 2"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/ZetaLogBound.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "rh-migration-session-2026-09-11"
+date = "2026-09-11"
+text = "For 1 <= sigma <= 2 and |t| >= 2, the norm of zeta(sigma + it) is at most 6 (1 + log |t|) -- the sharp near-line growth bound with explicit uniform constant 6."

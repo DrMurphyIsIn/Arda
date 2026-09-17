@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "BG.fractal_asymptote"
+statement_module = "Statements.BG_fractal_asymptote"
+status = "proved"
+title = "Near-star asymptote arithmetic core: (3/2)^11 < (621/64)^2, i.e. D_infinity < 1"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/FractalTail.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "The rational inequality (3/2)^11 < (621/64)^2 -- the arithmetic core certifying that the near-star family's per-vertex density limit lies strictly below 1."

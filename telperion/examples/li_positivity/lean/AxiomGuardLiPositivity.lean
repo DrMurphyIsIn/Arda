@@ -16,6 +16,14 @@
       * LiPositivity.li_neg_refutes_rh -- the falsifiability face: a certified
         negative upper bound on any rung refutes RH through the upstream
         equivalence.  Never expected to fire.
+      * LiPositivity.li_prefix_of_bundle / li_rh_iff_tail_of_bundle -- the BUNDLE face
+        (Route B / B1): the same 20 bounds as ONE list literal + ONE aggregated
+        hypothesis `LiBundleHyp`, one kernel `decide`; the hypothesis-aggregation
+        discipline for an N ~ 10^3 ladder.  Same Arb trust seam, packaged once.
+      * LiNegativeControl.negctrl_fires / negctrl_detects_offline -- the NEGATIVE-CONTROL
+        TWIN: on a synthetic off-line quadruple the Li-type sum is NEGATIVE at n = 6,
+        decided in-kernel (no hypothesis at all) and routed through bl_finite_multiset.
+        Zero zeta/RH content; proves the instrument is not tautologically positive.
       * LiCriterion.li_criterion_rh_iff -- the UPSTREAM reduction itself
         (nicholasbulka/li-criterion-rh-equivalence-lean, pinned in
         lakefile.toml): RiemannHypothesis ↔ ∀ n, 0 ≤ (taylorCoeff riemannXi n).re.
@@ -60,6 +68,49 @@ import RvMPairedSummandAnatomy
 import RvMCompanionPrime
 import RvMCompanionBragg
 import RvMLiWeightReconcile
+import RvMLiWeightTsum
+import RvMCompanionCoeff
+import RvMCompanionBraggLimit
+import ZetaLogBound
+import DlvpZetaRateEffective
+import RvMBacklundAux
+import RvMBacklundIVT
+import RvMBacklundCenter
+import RvMBacklundJensen
+import RvMBacklundConfine
+import RvMBacklundPartition
+import RvMBacklundSignConst
+import RvMBacklundFinite
+import RvMBacklundOrder
+import RvMBacklundConfineNonstrict
+import RvMBacklundSignClosed
+import RvMBacklundCount
+import RvMBacklundZeta
+import RvMBacklundCountJensen
+import RvMBacklundS
+import RvMBacklundLogCont
+import RvMBacklundExplicit
+import RvMNTEffective
+import RvMNTCount
+import RvMRoutePFalsify
+import BraggFloor
+import RvMRoutePInertia
+import RvMNTLadder
+import AllZeros_h4000
+import StripClear
+import RvMNTLadderH4000
+import RvMArchElemSeries
+import RvMArchElemBound
+import RvMArchElemCoeff
+import RvMArchGrowthBounds
+import RvMArchGrowth
+import RvMArchSharperS1
+import RvMArchSharperS2a
+import RvMArchSharperS2b
+import RvMArchSharper
+import RvMBlFiniteMultiset
+import LiPositivityBundle
+import LiNegativeControl
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -270,6 +321,13 @@ import RvMLiWeightReconcile
 -- proves nothing about RH. conjecture1_proved=False.
 #print axioms RvMWeierstrass.rh_iff_companion_ge
 
+-- Route P (Brick D3 part 1): the falsifiability atom.
+-- companion_below_floor_refutes_rh (n)(h: (taylorCoeff zetaPoleCompanion n).re <
+--   -(1+(taylorCoeff GammaR n).re)): ¬RiemannHypothesis. Contrapositive of rh_iff_companion_ge --
+--   one sub-floor companion value refutes RH. The negative face the bragg_floor emitter targets;
+--   never expected to fire. Proves nothing about RH. conjecture1_proved=False.
+#print axioms RvMWeierstrass.companion_below_floor_refutes_rh
+
 -- Route P (creative): manifest positivity of on-line zero contributions.
 -- onLine_liPairedSummand_eq_normSq: for a nontrivial zero with re=1/2, liPairedSummand n rho =
 -- normSq(1 - (1-1/rho)^(n+1)) -- a perfect square (|w|=1 => w^-(n+1)=conj w^(n+1)); nonneg + real.
@@ -297,6 +355,346 @@ import RvMLiWeightReconcile
 -- companion_right_edge_prime_integrand: for 1<σ₁, g·logDeriv zetaPoleCompanion = g·(-L(Λ)+(·-1)⁻¹).
 #print axioms RvMWeierstrass.companion_right_edge_prime_integrand
 
+-- Route P, Brick D3 part 2: the bragg_floor diffraction ladder (emitted, DO NOT EDIT BY HAND).
+-- bragg_rung_0 / bragg_rung_19: the first and last emitted Bragg rungs -- the truncated log-prime
+-- (von Mangoldt / Bragg) amplitude at base point s0>1, net of a certified tail, clears the explicit
+-- archimedean floor -(1+Re taylorCoeff GammaR n). A FINITE rational inequality (norm_num); the three
+-- literals are Arb (python-flint) enclosures (the documented trust seam). Mid-range orders n=1..5 are
+-- honestly REFUSED (the fixed-s0 order-0 amplitude does not dominate their floors), so the emitted
+-- orders are n=0 and n=6..19. conjecture1_proved=False.
+#print axioms BraggFloor.bragg_rung_0
+#print axioms BraggFloor.bragg_rung_19
+-- bragg_below_floor_refutes_rh (n)(braggVal)(hcomp: (taylorCoeff zetaPoleCompanion n).re = braggVal)
+--   (hbelow: braggVal < -(1+(taylorCoeff GammaR n).re)): ¬RiemannHypothesis. The falsifiability face:
+--   a certified sub-floor Bragg datum refutes RH via companion_below_floor_refutes_rh, but ONLY through
+--   hcomp -- the CONDITIONAL, RH-hard taylorCoeff_companion_bragg_of_exhaustion_limits seam, carried as
+--   an UNDISCHARGED hypothesis (never crossed). Never expected to fire. conjecture1_proved=False.
+#print axioms BraggFloor.bragg_below_floor_refutes_rh
+
+-- Route P, Brick D4 (diffraction/inertia bridge): the finite Weil-Gram form from the two diffraction
+-- channels (on-line perfect-square amplitude s>=0; Bragg-vs-floor clearance q), with its inertia read
+-- by the ported RHLinalg (PosIndex/HermitianPosPart/Sylvester/Inertia; source-ported verbatim from
+-- the v4.32 hermitian_moment island, 0 drift). weilGram s q = diagonal ![s,q].
+-- weilGram_hermForm: hermForm = s*x0^2 + q*x1^2 (the diffraction quadratic form).
+-- weilGram_posDef_of_pos / weilGram_posIndex_eq_two: both channels >0 => positive definite, posIndex=2
+--   (the (2,0), RH-consistent reading -- no negative direction).
+-- weilGram_neg_dir_of_floor_below / _not_posSemidef_of_floor_below / _neg_posIndex_ge_one: a certified
+--   SUB-FLOOR Bragg datum (q<0) forces a negative direction; posIndex(-weilGram)>=1 -- the Bombieri
+--   (1,1)-signature obstruction (Sylvester subspace bound on span{e1}).
+-- weilGram_onLine_channel_eq_liPairedSummand: the s-channel IS the on-line perfect-square paired Li
+--   summand (#466), unconditional.
+-- weilGram_floor_below_refutes_rh: a sub-floor Bragg channel refutes RH -- but ONLY through hcomp, the
+--   CONDITIONAL, RH-hard exhaustion/extraction seam carried as an UNDISCHARGED hypothesis (never
+--   crossed). Category-(b)/structural: KERNEL facts about a FINITE matrix built from certified D3 data;
+--   proves NOTHING new about RH; the uniform forall-n and the exhaustion limits are untouched.
+--   conjecture1_proved=False.
+#print axioms RvMWeierstrass.weilGram_hermForm
+#print axioms RvMWeierstrass.weilGram_posDef_of_pos
+#print axioms RvMWeierstrass.weilGram_posIndex_eq_two
+#print axioms RvMWeierstrass.weilGram_neg_dir_of_floor_below
+#print axioms RvMWeierstrass.weilGram_not_posSemidef_of_floor_below
+#print axioms RvMWeierstrass.weilGram_neg_posIndex_ge_one
+#print axioms RvMWeierstrass.weilGram_onLine_channel_eq_liPairedSummand
+#print axioms RvMWeierstrass.weilGram_floor_below_refutes_rh
+
 -- Route P, Brick D2b-1: the liWeight <-> liPairedSummand reconciliation.
 -- liPairedSummand_eq_liWeight_paired: liPairedSummand n ρ = liWeight (n+1) ρ + liWeight (n+1) (pairedZero ρ).
 #print axioms RvMWeierstrass.liPairedSummand_eq_liWeight_paired
+
+-- Route P Brick D2b-2: the paired coefficient sum as a liWeight sum.
+-- taylorCoeff_riemannXi_eq_liWeight_paired_tsum: taylorCoeff riemannXi n = 2⁻¹·∑'_ρ (liWeight (n+1) ρ
+-- + liWeight (n+1) (pairedZero ρ)), conditional on hgenus/hhad (undischarged). Stays PAIRED -- the
+-- unpaired liWeight tsum diverges, so no tsum_add split. tsum_liWeight_pairedZero_eq: FE symmetry at
+-- reindex level (does NOT license the split). conjecture1_proved=False.
+#print axioms RvMWeierstrass.taylorCoeff_riemannXi_eq_liWeight_paired_tsum
+#print axioms RvMWeierstrass.tsum_liWeight_pairedZero_eq
+
+-- Route P Brick D2b-3: isolation of the companion Taylor coefficient (zero-sum side).
+-- taylorCoeff_companion_eq_liWeight_paired_tsum: taylorCoeff zetaPoleCompanion n = 2⁻¹·∑'_ρ (liWeight
+-- (n+1) ρ + liWeight (n+1) (pairedZero ρ)) - 1 - taylorCoeff GammaR n. Combines D2b-2 (#478) + split
+-- (#463); conditional hgenus/hhad (undischarged). Prime/Bragg-side dual stays category-(c) frontier.
+#print axioms RvMWeierstrass.taylorCoeff_companion_eq_liWeight_paired_tsum
+
+-- Route P D2b-3 (prime/Bragg side): CONDITIONAL reduction (frontier quarantined).
+-- taylorCoeff_companion_bragg_of_exhaustion_limits: GIVEN the finite explicit formula along a box
+-- exhaustion + the exhaustion/boundary/Bragg LIMITS (the unbuilt T→∞ + archimedean-extraction frontier,
+-- carried as explicit hypotheses -- NONE established here), THEN companion coeff = (boundaryLim-braggLim)
+-- /(2πi) - 1 - GammaR. Real limit-passage (tendsto_nhds_unique) + split (#463). Proves nothing about RH;
+-- pins the frontier as three named limits. conjecture1_proved=False.
+#print axioms RvMWeierstrass.taylorCoeff_companion_bragg_of_exhaustion_limits
+
+-- Toolchain unification (2026-09-11): the v4.32 de la Vallee Poussin zero-free region +
+-- zeta log-bound cascade (66 files, ~6255 lines) ported to the v4.34 li_positivity island -- 0 drift.
+-- These supply the analytic-control inputs (zeta magnitude bound + dVP region) the RvM box->half-line
+-- limit / li-weighted archimedean boundary extraction needs. conjecture1_proved=False.
+#print axioms ZeroFreeBridge.zeta_log_bound
+#print axioms ZeroFreeBridge.dlvp_zeta_region_rate_effective
+
+-- Backlund S(T)=O(log T), PR 1: the auxiliary function F_T(z)=½(ζ(z+iT)+ζ(z-iT)).
+-- backlundAux_ofReal: F_T(σ)=Re ζ(σ+iT) on the real axis (via riemannZeta_conj); backlundAux_analyticAt:
+-- analytic off the poles z=1∓iT. Foundation for the sign-change/Jensen zero-count bound. conjecture1_proved=False.
+#print axioms Backlund.backlundAux_ofReal
+#print axioms Backlund.backlundAux_analyticAt
+
+-- Backlund S(T)=O(log T), PR 2: sign changes of Re ζ yield real zeros of F_T (IVT).
+-- backlundAux_im (real on axis); continuous_backlundAux_line (T≠0, poles 1∓iT off the axis);
+-- backlundAux_root_of_sign_change (opposite signs ⟹ real zero of F_T). conjecture1_proved=False.
+#print axioms Backlund.backlundAux_root_of_sign_change
+#print axioms Backlund.continuous_backlundAux_line
+
+-- Backlund S(T)=O(log T), PR 3a: the Jensen centre lower bound.
+-- re_zeta_two_ge: 2-π²/6 ≤ Re ζ(2+iT) (Re-analogue of zeta_norm_ge_two_sub, via Dirichlet series +
+-- basel_tail); backlundAux_two_norm_ge: 2-π²/6 ≤ ‖F_T(2)‖ (the Jensen denominator). conjecture1_proved=False.
+#print axioms Backlund.re_zeta_two_ge
+#print axioms Backlund.backlundAux_two_norm_ge
+
+-- Backlund S(T)=O(log T), PR 3b: the Jensen zero-count of F_T is O(log T).
+-- backlundAux_zero_count_le (T≥4): ∑ᶠ divisor F_T (closedBall 2 (3/2)) ≤ log((4T+19)/‖F_T(2)‖)/log(7/6),
+-- via zeta_strip_bound (Re>0 sphere bound, survives below 1/2) + PR 3a centre bound + AnalyticOnNhd.
+-- sum_divisor_le. Explicit O(log T). conjecture1_proved=False.
+#print axioms Backlund.backlundAux_zero_count_le
+#print axioms Backlund.backlundAux_analyticOnNhd_ball
+
+-- Backlund S(T)=O(log T), PR 4a: half-plane argument-confinement (the hardest piece).
+-- argChangeHoriz_abs_lt_pi_of_rePos: if Re f > 0 on the segment [x0,x1]+iT (and f differentiable,
+-- logDeriv f continuous there), then |argChangeHoriz f T x0 x1| < π -- FTC (clog_real) turns Im ∫ f'/f
+-- into arg f(x1+iT) - arg f(x0+iT), both in (-π/2,π/2). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_lt_pi_of_rePos
+
+-- Backlund S(T)=O(log T), PR 4b: partition + sum.
+-- argChangeHoriz_abs_lt_pi_of_re_sign: |argChangeHoriz f| < π when Re f is one sign (pos OR neg) on the
+--   segment -- the Re<0 case reduces to PR 4a via f↦-f (logDeriv invariant, logDeriv_const_mul a=-1).
+-- argChangeHoriz_abs_le_partition: over a partition σ0<...<σn with per-piece |argChangeHoriz|≤π, the
+--   total ≤ n·π (sum_integral_adjacent_intervals + Finset.abs_sum_le_sum_abs). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_lt_pi_of_re_sign
+#print axioms Backlund.argChangeHoriz_abs_le_partition
+
+-- Backlund S(T)=O(log T), PR 4c (first piece): sign-constancy => confinement.
+-- argChangeHoriz_abs_lt_pi_of_re_ne_zero: if Re f is continuous and NONVANISHING on the segment, then
+--   |argChangeHoriz f| < π. A continuous nowhere-zero real fn on connected [[x0,x1]] can't change sign
+--   (IVT intermediate_value_uIcc), so Re f one sign => PR 4b either-sign confinement. Reduces the
+--   per-piece hyp to the natural output of partitioning at Re ζ's zeros. conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_lt_pi_of_re_ne_zero
+
+-- Backlund S(T)=O(log T), PR 4c (finiteness): F_T's real zeros are finite.
+-- backlundAux_real_zeros_finite: {σ ∈ [1/2,2] | F_T σ = 0} is finite -- it injects (Complex.ofReal)
+--   into the finite support of F_T's divisor on closedBall 2 (3/2) (PR 3b machinery). A real zero σ
+--   gives ↑σ with F_T ↑σ=0: analyticOrderAt ≠0 (analyticOrderAt_ne_zero) and ≠⊤ (identity theorem, else
+--   F_T≡0 contra F_T(2)≠0), so ↑σ ∈ divisor support. conjecture1_proved=False.
+#print axioms Backlund.backlundAux_real_zeros_finite
+
+-- Backlund S(T)=O(log T), PR 4c (ordering): finite forbidden set => monotone partition.
+-- exists_monotone_partition_of_finite (Z:Finset ℝ)(a b)(hab)(hZ: Z ⊆ [a,b]): ∃ N σ, Monotone σ ∧ σ0=a
+--   ∧ σN=b ∧ N≤Z.card+1 ∧ (∀k, σk∈[a,b]) ∧ (∀k<N, ∀z∈Z, z≤σk ∨ σ(k+1)≤z). Pure order theory:
+--   sort {a,b}∪Z via Finset.orderEmbOfFin (strict-mono enum, _zero=min, _last=max, order-reflecting =>
+--   nothing strictly between consecutive). Feeds PR 4b partition sum. conjecture1_proved=False.
+#print axioms Backlund.exists_monotone_partition_of_finite
+
+-- Backlund S(T)=O(log T), PR 4c (nonstrict): confinement allowing zeros at endpoints.
+-- argChangeHoriz_abs_le_pi_of_re_nonneg: Re f ≥ 0 ∧ f ≠ 0 on segment ⟹ |argChangeHoriz| ≤ π (arg ∈
+--   [-π/2,π/2] via Complex.abs_arg_le_pi_div_two_iff; FTC via f∈slitPlane from Re≥0∧f≠0).
+-- argChangeHoriz_abs_le_pi_of_re_sign': either sign (Re f ≥0 OR ≤0) ∧ f≠0 ⟹ ≤π (Re≤0 case via -f).
+-- Needed because partition endpoints ARE zeros (Re=0). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_le_pi_of_re_nonneg
+#print axioms Backlund.argChangeHoriz_abs_le_pi_of_re_sign'
+
+-- Backlund S(T)=O(log T), PR 4c (sign-on-closed): bridge 4c-order -> 4c-nonstrict.
+-- re_one_sign_of_ne_zero_Ioo (g)(x0 x1)(hlt:x0<x1)(hcont: g cont on Icc)(hopen: g≠0 on Ioo): 0≤g on Icc
+--   OR g≤0 on Icc. A continuous fn nonzero on the OPEN interval is one sign on the CLOSED (endpoints are
+--   sign-compatible limits) -- else IVT (intermediate_value_uIcc between midpoint & opposite-sign point)
+--   forces a zero strictly inside. Feeds 4c-nonstrict (endpoints = zeros ok). conjecture1_proved=False.
+#print axioms Backlund.re_one_sign_of_ne_zero_Ioo
+
+-- Backlund S(T)=O(log T), PR 4c (count): the capstone assembly.
+-- argChangeHoriz_abs_le_card_zeros (f)(T a b)(hab)(Z)(hdiff)(hcont)(hne: f≠0 on segment)(hZsub: Z⊆[a,b])
+--   (hZzero: Re f=0 => in Z): |argChangeHoriz f T a b| ≤ (Z.card+1)·π. Combines 4c-order (partition) +
+--   4c-sign-on-closed (Re f one sign per closed piece) + 4c-nonstrict (piece ≤π, endpoints=zeros ok) +
+--   4b (sum) + degenerate pieces=0 (integral_same). Horizontal half of Backlund S(T). conjecture1_proved=False.
+#print axioms Backlund.argChangeHoriz_abs_le_card_zeros
+
+-- Backlund S(T)=O(log T), PR 5: the ζ instantiation of the horizontal bound.
+-- zeta_argChangeHoriz_abs_le (hT:4≤T)(hζne: ζ≠0 on [1/2,2]+iT CARRIED = S(T)-jump)(hlogcont: logDeriv ζ
+--   cont CARRIED): |argChangeHoriz ζ T (1/2) 2| ≤ ((F_T real zeros).toFinset.card + 1)·π. Instantiates
+--   the capstone argChangeHoriz_abs_le_card_zeros at f=riemannZeta; hdiff via differentiableAt_riemannZeta
+--   (segment avoids pole s=1 since im=T≠0), hZsub/hZzero via backlundAux_ofReal (F_T ↑x=↑(Re ζ)).
+--   conjecture1_proved=False.
+#print axioms Backlund.zeta_argChangeHoriz_abs_le
+
+-- Backlund S(T)=O(log T), PR 5 step 3: the EXPLICIT O(log T) horizontal bound.
+-- zeta_argChangeHoriz_abs_le_log (hT:4≤T)(hζne)(hlogcont): |argChangeHoriz ζ T (1/2) 2| ≤
+--   (log((4T+19)/‖F_T 2‖)/log(7/6) + 1)·π. Real zeros of F_T inject (ofReal) into divisor support (each
+--   positive analytic order), so count ≤ card(support) ≤ Σᶠ divisor (≥1 on support) ≤ Jensen (PR 3b).
+--   conjecture1_proved=False.
+#print axioms Backlund.zeta_argChangeHoriz_abs_le_log
+
+-- Backlund S(T)=O(log T), PR 6: discharging hlogcont.
+-- continuousOn_logDeriv_zeta_segment (hT:4≤T)(hζne): logDeriv ζ continuous on [1/2,2]+iT -- derived from
+--   ζ-analyticity (AnalyticOnNhd on {≠1}, .deriv, .continuousOn, comp path) + ζ≠0 (ContinuousOn.div).
+-- riemannS_abs_le_log_of_ne_zero (hT:4≤T)(hζne): |riemannS T| ≤ log((4T+19)/‖F_T 2‖)/log(7/6)+2 --
+--   the SLIMMED S(T)=O(log T), carrying ONLY hζne. conjecture1_proved=False.
+#print axioms Backlund.continuousOn_logDeriv_zeta_segment
+#print axioms Backlund.riemannS_abs_le_log_of_ne_zero
+
+-- Arc A (effective RvM), PR A1: the pure-in-T Backlund bound.
+-- riemannS_abs_le_log_explicit (hT:4≤T)(hζne): |riemannS T| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 --
+--   the PR-6 headline with ‖F_T 2‖ majorized away by its Jensen-centre floor 2−π²/6
+--   (backlundAux_two_norm_ge), giving a closed-form O(log T) in T alone. conjecture1_proved=False.
+#print axioms Backlund.riemannS_abs_le_log_explicit
+
+-- Arc A (effective RvM), PR A2: the effective Riemann-von Mangoldt bound.
+-- nt_effective_bound (T)(hT:4≤T)(N)(4 xi-edge nonvanishings)(hζne)(hwind=2πiN):
+--   |(N:ℝ) − 1 − θ(T)/π| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 -- the winding integer pinned to the
+--   smooth main term 1+θ/π within explicit O(log T); error = riemannS T bounded by PR A1. Composes
+--   xiTele_winding_eq_RvM (N=1+θ/π+S) with riemannS_abs_le_log_explicit. conjecture1_proved=False.
+#print axioms Backlund.nt_effective_bound
+
+-- Arc A (effective RvM), PR A3: the effective bound on the box xi-zero count.
+-- nt_count_effective_bound (T)(hT:4≤T)(c R N)(hbox_ball)(4 Icc edge nonvanishings)(hin strict
+--   interior)(hζne)(hwind=2πiN): ∃ s d, zeros⊆s ∧ Σd=N ∧ |(Σd:ℝ) − 1 − θ/π| ≤ bound. Composes
+--   xiTele_count_eq_winding (box zero count = N) with nt_effective_bound. The zero count is derived
+--   from the boundary winding, never assumed. conjecture1_proved=False.
+#print axioms Backlund.nt_count_effective_bound
+
+-- Arc A (effective RvM), PR A5: the LADDER PORT + interlock. The complete tiled Turing ladder
+-- (AllZeros_h100..h4000 + StripClear + its RHInBox/confinement chain, 110 files) is PORTED from the
+-- v4.32 zeta_zero_localization/zero_free_bridge islands onto this island (method of #424/#427/#483:
+-- source copy, single import redirect RHInBoxAnalytic->RvMRHInBox; ZERO content drift). The two RH
+-- tracks now interlock in ONE kernel statement:
+-- zeta_segment_ne_zero_of_ladder: ladder conclusion + single-point ζ(1/2+iT)≠0 ⟹ the segment hζne --
+--   the "T not a zero-ordinate" caveat COLLAPSES TO ONE POINT for T ≤ 4000.
+-- nt_effective_bound_of_ladder: the effective RvM bound with the trust-shrunk hypothesis set.
+-- all_nontrivial_zeros_up_to_height_4000_of_bands: the ported ladder capstone (3,474 zeros), its
+--   per-band Arb bundles the documented trust seam, now importable beside the Li/RvM corpus.
+-- conjecture1_proved=False throughout: finite verification + classical count; nothing approaches RH.
+#print axioms Backlund.zeta_segment_ne_zero_of_ladder
+#print axioms Backlund.nt_effective_bound_of_ladder
+#print axioms AllZeros_h4000.all_nontrivial_zeros_up_to_height_4000_of_bands
+#print axioms StripClear.height_floor_of_box_certs
+
+-- Arc A, the h4000-instantiated corollary: nt_effective_bound_h4000 (4≤T≤4000)(90 ladder cert
+-- hypotheses = the Arb trust seam)(hhalf: ζ(1/2+iT)≠0)(ξ edges)(hwind=2πiN):
+-- |N − 1 − θ(T)/π| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 -- the effective RvM under the ladder's own
+-- certificate bundle, whole-segment hζne fully replaced by the one-point caveat. Mechanical
+-- instantiation of nt_effective_bound_of_ladder at the ported h4000 capstone. conjecture1_proved=False.
+#print axioms Backlund.nt_effective_bound_h4000
+
+-- Arc B (archimedean Li growth), PR B1a: the ELEMENTARY series identity.
+-- logDeriv_phi_Gammaℝ_eq_elem (hz:‖z‖<1/2): logDeriv (Γℝ∘M) z = −(γ+logπ)/2·M² − M + Σ'_j
+--   [M²/(2(j+1)) − M/((2j+3)−(2j+2)z)], M=(1−z)⁻¹ -- the polygamma content of the archimedean
+--   factor as ONE elementary series of rational functions (logDeriv_phi + logDeriv_Gammaℝ_eq +
+--   digamma_series, denominators cleared through the Mobius map). Each summand's n-th Taylor
+--   coefficient is explicit, making taylorCoeff Γℝ n ~ (n/2)log n a harmonic-number statement
+--   (growth = later PRs). Γ-function calculus only. conjecture1_proved=False.
+#print axioms RvMWeierstrass.logDeriv_phi_Gammaℝ_eq_elem
+
+-- Arc B, PR B1b part 1: compact form + uniform bound + uniform convergence.
+-- archSummand_eq_compact: archSummand j z = M²/(2(j+1)·D_j), D_j=2(j+1)(1−z)+1 -- the pairing
+--   cancellation as one fraction (O(1/j²) decay manifest). archSummand_norm_le: ‖·‖ ≤ 2/(j+1)² on
+--   ‖z‖≤1/4. tendstoUniformlyOn_archSummand: partial sums → tsum uniformly on closedBall(0,1/4) --
+--   the single convergence input for coefficient extraction. conjecture1_proved=False.
+#print axioms RvMWeierstrass.archSummand_eq_compact
+#print axioms RvMWeierstrass.archSummand_norm_le
+#print axioms RvMWeierstrass.tendstoUniformlyOn_archSummand
+
+-- Arc B, PR B1b part 2: the Taylor-coefficient extraction.
+-- taylorCoeff_Gammaℝ_elem (headline): taylorCoeff Γℝ n = −(γ+logπ)/2·(n+1) − 1 + Σ'_j
+--   [(n+1)/(2(j+1)) − 1 + ((2j+2)/(2j+3))^(n+1)] -- the n-th Taylor coefficient of the archimedean
+--   Li generating function as an explicit harmonic-number-shaped elementary series. Built from the
+--   single-summand derivative iteratedDeriv_archSummand_zero (the two Mobius closed forms
+--   iteratedDeriv_invOneSub_sq + iteratedDeriv_scaledMobius via the linear split archSummand_eq_linear),
+--   and THE SWAP iteratedDeriv_tsum_archSummand (differentiation commutes with the infinite sum, by
+--   iterating Mathlib's locally-uniform-limit derivative theorem on ball(0,1/4) -- no per-order
+--   summable bounds, only B1b-pt1's 0-th-order uniform bound). Γ-function calculus only.
+--   conjecture1_proved=False.
+#print axioms RvMWeierstrass.iteratedDeriv_invOneSub_sq
+#print axioms RvMWeierstrass.iteratedDeriv_scaledMobius
+#print axioms RvMWeierstrass.archSummand_eq_linear
+#print axioms RvMWeierstrass.iteratedDeriv_archSummand_zero
+#print axioms RvMWeierstrass.iteratedDeriv_tsum_archSummand
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_elem
+
+-- Arc B, PR B2: the real form + per-term bounds + tails.
+-- taylorCoeff_Gammaℝ_re_eq: (taylorCoeff Γℝ n).re = −((γ+logπ)/2)·(n+1) − 1 + Σ'_j archRe n j -- the
+--   honest REAL form (the B1b complex series is a tsum of reals, via Complex.ofReal_tsum).
+-- archRe_lower/archRe_upper_crude/archRe_upper_bonferroni: the three elementary per-term inequalities
+--   (Bernoulli lower ⇒ positivity, r^(n+1)≤1 crude upper, second-order Bonferroni upper).
+-- summable_archRe: the real series is summable (dominated by the two O(1/j²) Bonferroni tails).
+-- tsum_tail_inv_sq_le: Σ'_k 1/(n+k+1)² ≤ 1/n (telescoping). Γ-function calculus only.
+--   conjecture1_proved=False.
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_re_eq
+#print axioms RvMWeierstrass.archRe_lower
+#print axioms RvMWeierstrass.archRe_upper_crude
+#print axioms RvMWeierstrass.archRe_upper_bonferroni
+#print axioms RvMWeierstrass.summable_archRe
+#print axioms RvMWeierstrass.tsum_tail_inv_sq_le
+
+-- Arc B, PR B3: the harmonic bridge + the UNCONDITIONAL growth headline.
+-- log_add_one_le_Hsum / Hsum_le_one_add_log: H_n = Σ_{j<n} 1/(j+1) bracketed by log via Mathlib's
+--   harmonic bounds (Hsum = (harmonic n : ℝ)).
+-- tsum_archRe_lower / tsum_archRe_upper: split at K=n, the series bracketed by (n+1)/2·H_n ± O(n).
+-- taylorCoeff_Gammaℝ_re_growth (HEADLINE): ∃ C>0, ∀ n≥2, |(taylorCoeff Γℝ n).re − (n/2)·log n| ≤ C·n
+--   (with explicit C=8, verified against the 40-digit numerics). The archimedean Li coefficient grows
+--   like (n/2)·log n -- a harmonic-number statement. Γ-function calculus only; the uniform ∀ n that
+--   would bear on RH is NOT here. conjecture1_proved=False.
+#print axioms RvMWeierstrass.log_add_one_le_Hsum
+#print axioms RvMWeierstrass.Hsum_le_one_add_log
+#print axioms RvMWeierstrass.tsum_archRe_lower
+#print axioms RvMWeierstrass.tsum_archRe_upper
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_re_growth
+
+-- Arc B, PR S1 (sharper archimedean constant): the exact first-difference identity + AH = 1 − log 2.
+-- archRe_diff_eq: archRe(n+1) j − archRe n j = AHterm j + Dterm(n+1) j (per-term difference).
+-- arch_succ_sub_eq: arch_{n+1} − arch_n = −(γ+log π)/2 + AH + Dseries(n+1) (EXACT difference id,
+--   telescoping the tsums; AH = Σ'_j (1/(2j+2) − 1/(2j+3)), Dseries m = Σ'_j (1 − r_j^m)/(2j+3)).
+-- AH_eq: AH = 1 − log 2 (harmonic partial sums Σ_{j<J} AHterm j = H_J − H_{2J+1} + 1, then
+--   Real.tendsto_harmonic_sub_log; the γ's cancel). Γ-function calculus only. conjecture1_proved=False.
+#print axioms RvMWeierstrass.archRe_diff_eq
+#print axioms RvMWeierstrass.arch_succ_sub_eq
+#print axioms RvMWeierstrass.AH_eq
+
+-- Arc B, PR S2a: singularity-free geometric identity + the odd-harmonic asymptotic.
+-- one_sub_pow_div_eq_geom: (1 − (1−t)^m)/t = Σ_{i<m}(1−t)^i for t≠0 (via geom_sum_mul; NO
+--   removable singularity -- the design's cleanest route to H_m = Σ_{i<m} 1/(i+1)).
+-- oddSum_sub_half_log_tendsto: Σ_{j<J} 1/(2j+3) − (1/2)log J → γ/2 + log 2 − 1 (the oddH constant),
+--   via Σ_{j<J} 1/(2j+3) = H_{2J+1} − (1/2)H_J − 1 + Real.tendsto_harmonic_sub_log.
+--   Elementary real analysis only. conjecture1_proved=False.
+#print axioms RvMWeierstrass.one_sub_pow_div_eq_geom
+#print axioms RvMWeierstrass.oddSum_sub_half_log_tendsto
+
+-- Arc B, PR S2b: the Fubini reformulation of the D-series (scaffolding for the crux limit).
+-- Dterm_eq_geom: Dterm m j = Σ_{i<m} ε_j²(1−ε_j)^i (per-term geometric expansion, ε_j = 1/(2j+3)).
+-- Dseries_eq_sum_aCoeff: Dseries m = Σ_{i<m} aCoeff i (Summable.tsum_finsetSum; reduces the 2-D
+--   crux limit to a 1-D sum, aCoeff i = Σ'_j ε_j²(1−ε_j)^i, numerically aCoeff i · 2i → 1).
+--   Elementary real analysis only. conjecture1_proved=False.
+#print axioms RvMWeierstrass.Dterm_eq_geom
+#print axioms RvMWeierstrass.Dseries_eq_sum_aCoeff
+
+-- Arc B, PR S3 (sharper archimedean constant HEADLINE, conditional on the S2b crux limit).
+-- cesaro_of_diff_tendsto_zero: Δu_n → 0 ⟹ u_n/n → 0 (self-contained Cesàro).
+-- dtrend_sub_half_log_tendsto: trend(n+1) − trend n − (1/2)log(n+1) → (γ − log 2π)/2
+--   (from n·log(1+1/n) → 1 via (1+1/n)^n → e).
+-- archDiff_sub_dtrend_tendsto_zero: Δa_n → 0, a_n = arch_n − trend_n (S1a + AH_eq + DseriesAsymptotic
+--   + trend asymptotic; the four limit constants cancel to 0 EXACTLY).
+-- taylorCoeff_Gammaℝ_re_asymptotic_of_DseriesAsymptotic (HEADLINE): assuming the S2b crux limit
+--   DseriesAsymptotic (Dseries m − (1/2)log m → γ − 1 + (log 2)/2), the linear-term constant is
+--   exactly (γ − 1 − log 2π)/2:  (arch_n − (n/2)(log n + γ − 1 − log 2π))/n → 0. This SHARPENS the
+--   merged taylorCoeff_Gammaℝ_re_growth (|·−(n/2)log n| ≤ 8n). A Γ-function fact; nothing about RH.
+--   conjecture1_proved=False. (DseriesAsymptotic is the sole remaining analytic obligation -- a
+--   Riemann-sum comparison aCoeff i ~ 1/(2(i+1)); it is a Prop hypothesis, NOT an axiom or sorry.)
+#print axioms RvMWeierstrass.cesaro_of_diff_tendsto_zero
+#print axioms RvMWeierstrass.dtrend_sub_half_log_tendsto
+#print axioms RvMWeierstrass.archDiff_sub_dtrend_tendsto_zero
+#print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_re_asymptotic_of_DseriesAsymptotic
+-- Routes-roadmap B7-i: Bombieri-Lagarias FINITE-multiset positivity core (zeta-free; RH_bl_finite_multiset node).
+#print axioms bl_finite_multiset
+-- Routes-roadmap B1: the ladder's BUNDLE face (one list literal + one aggregated Arb hypothesis;
+-- generated with LiPositivity.lean, drift-checked together). Finite prefix, NOT RH.
+#print axioms LiPositivity.liLowerBounds_pos
+#print axioms LiPositivity.li_prefix_of_bundle
+#print axioms LiPositivity.li_rh_iff_tail_of_bundle
+-- Routes-roadmap B1: the NEGATIVE-CONTROL TWIN (synthetic off-line quadruple; Li-type sum < 0 at n = 6,
+-- decided in-kernel; routed through bl_finite_multiset). Zero zeta content, zero RH content.
+#print axioms LiNegativeControl.negctrl_fires_value
+#print axioms LiNegativeControl.negctrl_fires
+#print axioms LiNegativeControl.negctrl_neg_refutes_online
+#print axioms LiNegativeControl.negctrl_detects_offline

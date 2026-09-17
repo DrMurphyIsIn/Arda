@@ -1,0 +1,10 @@
+name = "Statements"
+defaultTargets = ["Statements"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "de5ce8a9"
+
+[[lean_lib]]
+name = "Statements"

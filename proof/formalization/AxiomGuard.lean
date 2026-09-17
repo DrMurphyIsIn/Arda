@@ -74,6 +74,24 @@ import R3Cert.R47MHubTelescope
 import R3Cert.R47WPair6
 import R3Cert.R47PC6Final
 import R3Cert.R47TieArgmax
+import R3Cert.R47AdjLeafStruct
+import R3Cert.R47AdjLeafGains
+import R3Cert.R47AdjLeafStep
+import R3Cert.R47CoverRelation
+import R3Cert.R47RootShift
+import R3Cert.R47AlignedMinSize
+import R3Cert.R47HnormFalse52
+import R3Cert.R47HnormMulti
+import R3Cert.R47HwhLeafDecomp
+import R3Cert.R47HwhPieceDecomp
+import R3Cert.R47HwhAdjDecomp
+import R3Cert.R47HwhAdjPieceDecomp
+import R3Cert.R47HwhB1Partial
+import R3Cert.R47MatchingSum
+import R3Cert.R47HwhSymStarCert
+import R3Cert.R47HwhSymStar3Cert
+import R3Cert.R47HwhSymStarGenCert
+import R3Cert.R47HwhAssembly
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -346,3 +364,106 @@ import R3Cert.R47TieArgmax
 -- single hub of each size) discharges the whole Hdom side; Conjecture 1 now reduces to Hnorm alone.
 #print axioms R3Cert.Step3.hdom_capstone
 #print axioms R3Cert.Step3.conjecture1_of_Hnorm
+
+-- ADJACENT LEAF StraightStep, structural core (2026-09-10): nB=0 defect-neutrality -> defect-reducing
+-- adjacent leaf move forces nB>=1 (the Aobj-safe region N>=N0>=0). Crux (a) of the monomer-dimer program.
+#print axioms R3Cert.Step3.strDefect_adjLeaf_nB0
+
+-- ADJACENT LEAF StraightStep, Aobj half (2026-09-10): base cavity gains G1/G2 + the lifted Aobj clause.
+#print axioms R3Cert.Step3.adjLeaf_Aobj_le
+
+-- ADJACENT LEAF StraightStep COMPLETE (2026-09-10): the first coverage extension beyond FlpStepAt.
+#print axioms R3Cert.Step3.adjLeaf_straightStep
+
+-- COVER RELATION (2026-09-10): CoverR = FlpStepAt + AdjLeafStep refines StraightStep_sized; Hnorm reduces
+-- to CoverR coverage (hnorm_of_coverR_coverage). Sole open obligation = coverage.
+#print axioms R3Cert.Step3.hnorm_of_coverR_coverage
+
+-- ROOT-SHIFT Aobj-invariance (2026-09-10): the crux enabler for a RerootStep coverage class (no graph-iso).
+#print axioms R3Cert.Step3.Aobj_rootShift
+
+-- ALIGNED-N SCOPING (2026-09-11): Balanced+Capped hub-state size >= 46, so capstone Hnorm is unsatisfiable
+-- for 0 < n < 46 (small/off-lattice n are a separate residual). Correction 2, kernel-formalized.
+#print axioms R3Cert.Step3.no_capped_state_of_size_lt_46
+
+-- HNORM FALSE AT 52 (2026-09-11): the four-core witness T52 (usize 52) strictly exceeds every
+-- Balanced+Capped state of size 52, so the capstone Hnorm is genuinely FALSE at aligned multi-hub
+-- sizes -- sharpening the residual beyond mere aligned-n scoping. Exact-fraction counterexample.
+#print axioms R3Cert.Step3.aobj_T52_eq
+#print axioms R3Cert.Step3.tieArgmax_52_lt_T52
+#print axioms R3Cert.Step3.r47_hnorm_false_at_52
+#print axioms R3Cert.Step3.hnorm_capstone_false
+
+-- BROADENED capstone (2026-09-11): reduce every tree to an ARBITRARY multi-hub cherry-backbone
+-- (not just a Balanced+Capped single hub). The n=52 refutation dissolves (T52 witnesses its own
+-- HnormMulti clause); the sole open piece is the tree->backbone straightening = open BG structural core.
+#print axioms R3Cert.Step3.conjecture1_of_HnormMulti
+#print axioms R3Cert.Step3.hnormMulti_of_hnorm
+#print axioms R3Cert.Step3.hnormMulti_holds_at_T52
+#print axioms R3Cert.Step3.singleHub_refuted_but_multiHub_open
+
+-- HnormMulti is discharged by the pre-existing whole-hub obligation hwh (unrefuted by the n=52
+-- counterexample -- hwh feeds only the general-backbone straightening; the refutation killed the
+-- SEPARATE general->Balanced+Capped normalization). hwh + HdomMulti => broadened conjecture 1.
+#print axioms R3Cert.Step3.hnormMulti_of_wholehub
+#print axioms R3Cert.Step3.conjecture1_of_HnormMulti_of_wholehub
+
+-- hwh leaf-move decomposition (2026-09-11): exact identity
+-- (AobjAfter-AobjBefore)*a(b+1) = (a+b+1)*B1 + (a-b-1)*B2; B2>=0 from the proven combinatorial bound
+-- P11<=(a-1)b*P00; monotone leaf move when B1>=0, that bound, and b+1<=a. B1>=0 under min-degree
+-- defect-reducing selection is the open core.
+#print axioms R3Cert.Step3.hwh_leaf_decomp
+#print axioms R3Cert.Step3.leafB2_nonneg
+#print axioms R3Cert.Step3.leaf_move_monotone
+
+-- General piece-relocation decomposition (2026-09-11): extends the leaf decomposition to any rigid
+-- piece (leaf/cherry/arm/sub-star) via cavity scalars Z=Ztot(dtSub K), rho=phi/dc. Exact identity +
+-- monotonicity-from-RHS. Leaf case (Z=rho=1) recovers R47HwhLeafDecomp's B1/B2 form.
+#print axioms R3Cert.Step3.hwh_piece_decomp
+#print axioms R3Cert.Step3.piece_move_monotone
+#print axioms R3Cert.Step3.hwh_piece_decomp_leaf
+
+-- Adjacent-p,w leaf decomposition (2026-09-11): the p~w case; identity + B2adj>=0 (adjacent counting
+-- P11<=(a-2)(b-1)P00) + monotonicity. Open input again B1>=0.
+#print axioms R3Cert.Step3.hwh_adj_decomp
+#print axioms R3Cert.Step3.B2adj_nonneg
+#print axioms R3Cert.Step3.adj_move_monotone
+
+-- Adjacent general-piece decomposition (2026-09-12): completes the grid (leaf/piece x non-adj/adj).
+#print axioms R3Cert.Step3.hwh_adj_piece_decomp
+#print axioms R3Cert.Step3.adj_piece_move_monotone
+
+-- PARTIAL B1 (2026-09-12): B1>=0 on the P01=0 slice (target has no H-neighbours); the cherry-forming
+-- move (leaf onto adjacent sibling leaf) is unconditionally Aobj-monotone. A proven slice of the open core.
+#print axioms R3Cert.Step3.B1_nonneg_of_P01_zero
+-- g-dominance sufficient condition for the open B1 kernel (2026-09-12): p-neighbours g-dominate
+-- w-neighbours => B1>=0. Broader than the P01=0 slice (covers ~69% of moves; sound 106/106).
+#print axioms R3Cert.Step3.B1_nonneg_of_gdominance
+#print axioms R3Cert.Step3.cherry_forming_monotone
+
+-- Weighted-matching-sum theory (2026-09-12): discharges the ESSENTIAL content of the B2 hypothesis
+-- (deletion monotonicity Z(H-S) antitone) from an actual matching theory, not an assumption.
+#print axioms R3Cert.Step3.ZsumAvoid_antitone
+#print axioms R3Cert.Step3.B2_termwise
+#print axioms R3Cert.Step3.B2_bound_of_terms
+#print axioms R3Cert.Step3.ZsumAvoid_nonneg
+-- B2 bound fully assembled over the matching theory (2026-09-12): P11 <= pairs.card * P00, i.e. the
+-- B2 hypothesis of R47HwhLeafDecomp is now a THEOREM (no longer assumed).
+#print axioms R3Cert.Step3.B2_bound
+
+-- UNIFORM certificate for the symmetric-multi-star obstruction (2026-09-12): the de-branching move is
+-- Aobj-monotone on the WHOLE balanced multi-star family ST(k,m), k>=3,m>=2 (incl. the triple-3-star),
+-- via F_num>=0 reduced to two shifted-nonneg-coeff cubic positivities.
+#print axioms R3Cert.Step3.symstar_cubicA_nonneg
+#print axioms R3Cert.Step3.symstar_cubicF3_nonneg
+#print axioms R3Cert.Step3.symstar_move_certificate
+-- Non-balanced extension (2026-09-12): general 3-hub multi-star (arbitrary m_i>=2), via all-nonneg-coeff shift.
+#print axioms R3Cert.Step3.symstar3_move_certificate
+-- k-UNIFORM non-balanced certificate (2026-09-12): de-branching move Aobj-monotone on EVERY multi-star
+-- (any k>=3, any hub sizes m_i>=2, any spectators), via coeff_S1>=0, G>=0 (shifted nonneg coeffs) + assembly.
+#print axioms R3Cert.Step3.symstar_gen_coeffS1_nonneg
+#print axioms R3Cert.Step3.symstar_gen_G_nonneg
+#print axioms R3Cert.Step3.symstar_gen_move_monotone
+-- ASSEMBLY reduction (2026-09-12): hwh <= (named move-classes refine to StraightStep) + COVERAGE
+-- (exhaustiveness, the sole open obligation; empirically verified n<=15, viable_all 0 failures).
+#print axioms R3Cert.Step3.hwh_of_extended_coverage

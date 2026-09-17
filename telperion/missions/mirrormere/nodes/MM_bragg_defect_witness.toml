@@ -1,0 +1,19 @@
+created = "2026-09-14"
+depends_on = ["MM_offline_pairs_le_defect"]
+kind = "lemma"
+name = "MM.bragg_defect_witness"
+statement_module = "Statements.MM_bragg_defect_witness"
+status = "open"
+title = "The certified defect witness pair: the all-on-line configuration has defect functional exactly 0 (defect_witness_online, unconditional) while one synthetic off-line pair drives it strictly negative (defect_witness_offline, ~ -1.00167e-4; carries one Arb exp-enclosure hypothesis) -- the Alpoge-Furman signature-(1,1) leakage as a measured theorem object"
+updated = "2026-09-14"
+
+[proof]
+artifact = "../../examples/zeta_zero_localization/lean/BraggDefect.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
+
+[readback]
+auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
+date = "2026-09-14"
+text = "Two kernel theorems about the explicit 29+1-configuration defect functional: (i) at off-line displacement 0 (all zeros on the line) the functional is exactly 0 -- unconditional, pure ring arithmetic; (ii) at the synthetic off-line displacement the functional is strictly negative, with the excess bracketed by explicit rationals derived from a certified e^(1/10) enclosure -- this leg CARRIES the Arb exponential-enclosure hypothesis, hence closure_clean = false until that enclosure is itself reflected. Together with offline_pairs_le_defect this instantiates defect exactly 1 on the BraggDefect configuration. [Verbatim extract of the proved defect_witness_online / defect_witness_offline; artifact on rh/million-turing, grant deferred to the branch reconcile.]"
