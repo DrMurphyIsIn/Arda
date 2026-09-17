@@ -1,0 +1,8 @@
+created = "2026-09-17"
+depends_on = ["RH_rvm_unconditional"]
+kind = "milestone"
+name = "RH.corridor_bound"
+statement_module = "Statements.RH_corridor_bound"
+status = "draft"
+title = "The CORRIDOR BOUND (routes-roadmap E7 = A3 = B5 = D6, the unique four-consumer blocker): for every T >= 2 some height T' in [T, T+1] has a zero-free horizontal segment -1 <= sigma <= 2 on which |zeta'/zeta(sigma + iT')| <= C log^2 T; O-form constant, effective form queued"
+updated = "2026-09-17"
