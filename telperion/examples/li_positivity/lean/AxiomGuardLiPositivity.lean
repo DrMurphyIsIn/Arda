@@ -16,6 +16,14 @@
       * LiPositivity.li_neg_refutes_rh -- the falsifiability face: a certified
         negative upper bound on any rung refutes RH through the upstream
         equivalence.  Never expected to fire.
+      * LiPositivity.li_prefix_of_bundle / li_rh_iff_tail_of_bundle -- the BUNDLE face
+        (Route B / B1): the same 20 bounds as ONE list literal + ONE aggregated
+        hypothesis `LiBundleHyp`, one kernel `decide`; the hypothesis-aggregation
+        discipline for an N ~ 10^3 ladder.  Same Arb trust seam, packaged once.
+      * LiNegativeControl.negctrl_fires / negctrl_detects_offline -- the NEGATIVE-CONTROL
+        TWIN: on a synthetic off-line quadruple the Li-type sum is NEGATIVE at n = 6,
+        decided in-kernel (no hypothesis at all) and routed through bl_finite_multiset.
+        Zero zeta/RH content; proves the instrument is not tautologically positive.
       * LiCriterion.li_criterion_rh_iff -- the UPSTREAM reduction itself
         (nicholasbulka/li-criterion-rh-equivalence-lean, pinned in
         lakefile.toml): RiemannHypothesis ↔ ∀ n, 0 ≤ (taylorCoeff riemannXi n).re.
@@ -101,6 +109,8 @@ import RvMArchSharperS2a
 import RvMArchSharperS2b
 import RvMArchSharper
 import RvMBlFiniteMultiset
+import LiPositivityBundle
+import LiNegativeControl
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -677,3 +687,14 @@ import RvMBlFiniteMultiset
 #print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_re_asymptotic_of_DseriesAsymptotic
 -- Routes-roadmap B7-i: Bombieri-Lagarias FINITE-multiset positivity core (zeta-free; RH_bl_finite_multiset node).
 #print axioms bl_finite_multiset
+-- Routes-roadmap B1: the ladder's BUNDLE face (one list literal + one aggregated Arb hypothesis;
+-- generated with LiPositivity.lean, drift-checked together). Finite prefix, NOT RH.
+#print axioms LiPositivity.liLowerBounds_pos
+#print axioms LiPositivity.li_prefix_of_bundle
+#print axioms LiPositivity.li_rh_iff_tail_of_bundle
+-- Routes-roadmap B1: the NEGATIVE-CONTROL TWIN (synthetic off-line quadruple; Li-type sum < 0 at n = 6,
+-- decided in-kernel; routed through bl_finite_multiset). Zero zeta content, zero RH content.
+#print axioms LiNegativeControl.negctrl_fires_value
+#print axioms LiNegativeControl.negctrl_fires
+#print axioms LiNegativeControl.negctrl_neg_refutes_online
+#print axioms LiNegativeControl.negctrl_detects_offline
