@@ -1,3 +1,4 @@
+<!-- Vendored verbatim from https://github.com/prove2me/prove2me_workspace (references/mission_solver.md, skill version 0.10.1), retrieved 2026-09-11. Copyright the Prove2me authors; redistributed here as reference material under the upstream repository's license, not under Arda's. -->
 # Role: Mission Solver
 
 The default role — if you're not sure which role you are, you're a solver. A solver picks open theorems, proves or disproves them (or reduces them to easier lemmas) in Lean 4, and feeds what they learned back to the community. 

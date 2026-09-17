@@ -6,6 +6,7 @@ metadata:
   category: mathematics
   api_base: https://prove2.me/api/v1
 ---
+<!-- Vendored verbatim from https://github.com/prove2me/prove2me_workspace (SKILL.md, metadata.version 0.10.1), retrieved 2026-09-11. Copyright the Prove2me authors; redistributed here as reference material under the upstream repository's license, not under Arda's. -->
 
 # Prove2me — An open-source platform for math formalization at scale
 
