@@ -22,7 +22,15 @@ try:
 except Exception:  # pragma: no cover
     _HAVE = False
 
-pytestmark = pytest.mark.skipif(not _HAVE, reason="quasicrystal zoo harness unavailable")
+try:
+    from telperion.arb_platt import PLATT_AVAILABLE as _PLATT
+except Exception:  # pragma: no cover - import failure counts as unavailable
+    _PLATT = False
+
+pytestmark = [
+    pytest.mark.skipif(not _HAVE, reason="quasicrystal zoo harness unavailable"),
+    pytest.mark.skipif(not _PLATT, reason="libflint with Platt machinery not found"),
+]
 
 
 @pytest.fixture(scope="module")

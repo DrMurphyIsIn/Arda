@@ -227,9 +227,17 @@ def test_umbrella_lakefile_golden():
     assert "[[lean_lib]]" not in txt
 
 
+def _seed_monolith(lean_dir):
+    """Minimal monolith root: `_pkg_wiring` copies the monolith's lean-toolchain
+    and lake-manifest.json into every block package (production always has both)."""
+    lean_dir.mkdir()
+    (lean_dir / "lean-toolchain").write_text("leanprover/lean4:v4.32.0\n")
+    (lean_dir / "lake-manifest.json").write_text('{"version": "1.1.0", "packages": []}\n')
+
+
 def test_register_lakefile_sharded_routes_and_creates_packages(tmp_path):
     lean_dir = tmp_path / "lean"
-    lean_dir.mkdir()
+    _seed_monolith(lean_dir)
     # a band range wholly inside one block; segments too.  lake_block_top rounds
     # a module's TOP height UP to the next 25000-multiple, so bands ending in
     # (25000, 50000] route to block 50000.
@@ -249,7 +257,7 @@ def test_register_lakefile_sharded_routes_and_creates_packages(tmp_path):
 
 def test_register_lakefile_sharded_idempotent(tmp_path):
     lean_dir = tmp_path / "lean"
-    lean_dir.mkdir()
+    _seed_monolith(lean_dir)
     C.register_lakefile_sharded(25000, 25200, segments=True, lean_dir=lean_dir)
     pkg = lean_dir / "ZetaBands_h50000" / "lakefile.toml"
     before = pkg.read_text()
@@ -262,7 +270,7 @@ def test_register_lakefile_sharded_idempotent(tmp_path):
 
 def test_register_lakefile_sharded_multi_block(tmp_path):
     lean_dir = tmp_path / "lean"
-    lean_dir.mkdir()
+    _seed_monolith(lean_dir)
     # a range crossing the 25000/50000 block boundary
     added = C.register_lakefile_sharded(24800, 25200, segments=True,
                                         lean_dir=lean_dir)
