@@ -103,3 +103,46 @@ torus grids in a fugacity variable. Not built.
   `tomli` shim for `telperion verify`). No python ≥ 3.11 with sympy on PATH.
 - Actions cache is at its 10 GB cap: do not design CI around `actions/cache` for oleans;
   `lake exe cache get` (Mathlib CDN) is the dependable path.
+
+## Addendum 2026-09-17 (owner session, after review against live state)
+
+Verified: #540 stacks on #539; the three campaign branches are local-only and
+fully contained in `rh/million-turing`; leg 27 is untracked and unbuilt; the
+`zzl_aux` cold build is complete (686 oleans, `lake build --no-build` clean);
+the three grant-ledger FAIL reasons match `attempts.jsonl` on main.
+
+Corrections to the text above:
+- **#539 shows three red Lean jobs** (`bragg-amplitude-compiles`,
+  `selfinversive-rigidity-compiles`, `zeta-localization-suite`). They fail
+  identically on the base branch at `cf3ac2a` (Lake cannot spawn the freshly
+  built Mathlib `cache` binary -- the oversized-lakefile E2BIG problem), and
+  #540 removes/relocates those jobs; on #540 the bragg and selfinversive jobs
+  pass. Merge #539 despite the red.
+- **The quasicrystal standalone local build had NOT finished** when this file
+  was written (`LeeYangCore`, `BoundaryLemmas` out of date). It has since been
+  run to completion locally (3114 jobs) and the CI job on #540 passes.
+- `~/arda-million` also carries **eight modified tracked files**, not only
+  untracked ones: three are #540's own content applied locally (quasicrystal
+  lakefile/manifest, `campaign.py`, the h375000 lakefile) and five are leg-27
+  registrations (`lakefile.toml` +3601 sharded libs, `AxiomGuardRHInBox.lean`
+  +3680 band imports, `campaign_state.json`, `edge_stretch.json`). All
+  regenerable; "leave it" covers them too.
+
+Grant pass -- no longer blocked on authoring, only on the reconcile:
+- **#542** (`fix/grant-preflight` -> `rh/million-turing`, stacked on #540):
+  artifact-side restatements `BraggDefect.bragg_defect_witness` and
+  `DefectDictionary.Standalone.offline_pairs_le_defect`; both axiom-clean.
+- **#543** (`fix/grant-preflight-and-statement` -> `main`): `AND_g2_reflected_band`
+  re-authored through the registry writer to the contiguous span
+  d / ok / grid / pilot; ledger attempts for all three nodes.
+- All three nodes now MATCH under main's gate. **The registry is main-owned**:
+  main carries the sha256 statement headers and the #532 nodes that the climb
+  branch lacks, and the climb branch's `verify.py` predates the #534 stripper
+  fix (its `/--` handling produces false mismatches). Make registry edits on
+  main and artifact edits on the climb branch; grant from main after #506.
+
+Merge order now: #539 -> #540 -> #542 (all into `rh/million-turing`), #538 and
+#543 into `main` (both independent, ready), then #506.
+
+E6 probe launched (cc-chen-tech/riemann-pnt-lean4 vs `RvMUnboundedMeanDensity
+zetaOrdinates`); result to be filed as `E6_PROBE_2026-09-17.md` when in.
