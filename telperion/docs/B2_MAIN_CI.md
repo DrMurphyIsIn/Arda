@@ -209,3 +209,22 @@ imposes no ceiling (H=560000 = 23 blocks already routes cleanly).
   LOCAL climb until the between-legs cutover (`B2_CUTOVER_PLAN.md`); CI no longer
   touches them. Retiring them is step 3 above, after one green cycle.
 - `conjecture1_proved = False` — unchanged by any of this.
+
+
+## 2026-09-17 addendum: the legacy boxes leave the per-PR path
+
+The first hosted-runner run of `zeta-ladder-suite` (PR #540) never reached the
+ladder step: it spent 3 h 40 min (then was cancelled; projected ~5.3 h, past the
+6 h timeout) in "Build zzl_aux", because `zzl_aux` had inherited all 671
+pre-band `RHInBox_*` box certificates from the monolith `defaultTargets`
+(~1.9 core-min each, measured locally: 40 min wall on 32 cores). Only two of them
+are imported by anything (`AllZeros_h100` / `AllZeros_h200`).
+
+`campaign.py` now splits them: `aux_modules` keeps the non-box modules plus the
+boxes reachable from them (transitively), and `legacy_box_modules` collects the
+rest into a new `zzl_legacy_boxes` package (same requires). The legacy package
+is re-verified by `.github/workflows/telperion-legacy-boxes.yml` (weekly +
+`workflow_dispatch`, 4-way sharded, per-shard axiom guard cut from
+`AxiomGuardRHInBox.lean`). The ladder job is unchanged except that step 8 is
+now minutes, so the per-block timing that drives the `H_CI` decision is finally
+measurable.

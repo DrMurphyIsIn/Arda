@@ -301,6 +301,7 @@ def cmd_emit_bands(args) -> int:
 LAKE_BLOCK = 25_000            # height per lake package (charter B2)
 CORE_PKG = "zzl_core"          # shared height-independent core package
 AUX_PKG = "zzl_aux"            # legacy/aux modules (height-100 island, Bragg, zoo, ...) -- their B2 home
+LEGACY_PKG = "zzl_legacy_boxes"  # the pre-band RHInBox_* box certificates nothing imports (T=2000-era record)
 MATHLIB_REV = "v4.32.0"        # matches lean-toolchain / the monolith require
 
 
@@ -461,7 +462,7 @@ def emit_core_pkg(lean_dir: Path) -> Path:
 _AUX_SKIP = {"AxiomGuardRHInBox"}   # the monolith-wide guard: 27k imports, cannot live in a shard
 
 
-def aux_modules(lean_dir: Path) -> list[str]:
+def _monolith_aux_candidates(lean_dir: Path) -> list[str]:
     """Every monolith `[[lean_lib]]` that is neither a core module nor part of the
     band ladder (RHInBoxT_* bands / AllZeros_h<N> chain capstones with N >= 1000):
     the height-100 island (RHInBox_*, NoZerosInBox_*, AllZeros_h100/h200, StripClear),
@@ -483,9 +484,54 @@ def aux_modules(lean_dir: Path) -> list[str]:
     return sorted(out)
 
 
-def emit_aux_lakefile(modules: list[str]) -> str:
-    """The `lakefile.toml` text for the `zzl_aux` package (requires zzl_core)."""
-    out = [f'name = "{AUX_PKG}"\n']
+_BOX_RE = re.compile(r"^import (RHInBox_\S+)", re.M)
+
+
+def _box_imports(lean_dir: Path, module: str) -> list[str]:
+    src = lean_dir / f"{module}.lean"
+    return _BOX_RE.findall(src.read_text()) if src.exists() else []
+
+
+def _reachable_boxes(lean_dir: Path, candidates: list[str]) -> set[str]:
+    """The RHInBox_* modules reachable (transitively, through other boxes) from the
+    NON-box candidates -- i.e. the boxes something still consumes (AllZeros_h100/h200
+    import two of them).  Everything else is a legacy certificate."""
+    boxes = {n for n in candidates if n.startswith("RHInBox_")}
+    frontier = [b for n in candidates if n not in boxes for b in _box_imports(lean_dir, n)]
+    seen: set[str] = set()
+    while frontier:
+        b = frontier.pop()
+        if b in seen or b not in boxes:
+            continue
+        seen.add(b)
+        frontier.extend(_box_imports(lean_dir, b))
+    return seen
+
+
+def aux_modules(lean_dir: Path) -> list[str]:
+    """The `zzl_aux` CI set: every monolith aux candidate EXCEPT the legacy boxes
+    (RHInBox_* modules no non-box module imports).  2026-09-17: the first hosted-runner
+    measurement showed 671 pre-band box certificates (~1.9 core-min each) sitting in
+    front of the ladder step -- ~5.3 h on a 4-vCPU runner, past the job timeout -- while
+    only two of them are consumed.  The rest move to `zzl_legacy_boxes`."""
+    cands = _monolith_aux_candidates(lean_dir)
+    keep = _reachable_boxes(lean_dir, cands)
+    return [n for n in cands if not n.startswith("RHInBox_") or n in keep]
+
+
+def legacy_box_modules(lean_dir: Path) -> list[str]:
+    """The `zzl_legacy_boxes` set: RHInBox_* certificates nothing imports.  Still a
+    kernel-verified record (the T=2000 milestone, 2026-09-09); built on demand / on a
+    schedule, never in front of the per-PR ladder."""
+    cands = _monolith_aux_candidates(lean_dir)
+    keep = _reachable_boxes(lean_dir, cands)
+    return [n for n in cands if n.startswith("RHInBox_") and n not in keep]
+
+
+def emit_aux_lakefile(modules: list[str], pkg_name: str = AUX_PKG) -> str:
+    """The `lakefile.toml` text for the `zzl_aux` package (requires zzl_core); also
+    used, with `pkg_name`, for the `zzl_legacy_boxes` package (same requires)."""
+    out = [f'name = "{pkg_name}"\n']
     targets = ", ".join(f'"{m}"' for m in modules)
     out.append(f"defaultTargets = [{targets}]\n")
     out.append('srcDir = ".."\n\n')
@@ -505,6 +551,16 @@ def emit_aux_pkg(lean_dir: Path) -> Path:
     pkg.mkdir(parents=True, exist_ok=True)
     _pkg_wiring(pkg, lean_dir, require_core=True)
     (pkg / "lakefile.toml").write_text(emit_aux_lakefile(aux_modules(lean_dir)))
+    return pkg
+
+
+def emit_legacy_pkg(lean_dir: Path) -> Path:
+    """Materialise the `zzl_legacy_boxes` package (lakefile + disk-safe wiring)."""
+    pkg = lean_dir / LEGACY_PKG
+    pkg.mkdir(parents=True, exist_ok=True)
+    _pkg_wiring(pkg, lean_dir, require_core=True)
+    (pkg / "lakefile.toml").write_text(
+        emit_aux_lakefile(legacy_box_modules(lean_dir), pkg_name=LEGACY_PKG))
     return pkg
 
 
@@ -535,6 +591,7 @@ def register_lakefile_sharded(t_from: int, t_to: int, segments: bool,
     # shared core package (emit once; wiring refresh is cheap + idempotent)
     emit_core_pkg(lean_dir)
     emit_aux_pkg(lean_dir)
+    emit_legacy_pkg(lean_dir)
 
     # the set of block tops that will exist after this run (existing on disk plus
     # any routed here) -- used to decide whether a prior-block require is due.
