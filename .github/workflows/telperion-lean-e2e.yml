@@ -2120,7 +2120,8 @@ jobs:
           done
           echo "OK: all guarded theorems kernel-clean."
   # B2 ladder suite (replaces the monolith `lake build` that hit E2BIG at ~16k targets).
-  # Builds zzl_core + ZeroFreeBridge + zzl_aux (height-100 island, Bragg, zoo) and then the
+  # Builds zzl_core + ZeroFreeBridge + zzl_aux (height-100 island, Bragg, zoo; the 669 legacy
+  # RHInBox_* boxes live in zzl_legacy_boxes and run weekly, see telperion-legacy-boxes.yml) and then the
   # 25k-height block packages in ascending order up to H_CI, running the axiom battery on
   # each block-top capstone.  Green == every `all_nontrivial_zeros_up_to_height_<top>_of_bands`
   # up to H_CI compiles with axioms exactly [propext, Classical.choice, Quot.sound], 0 sorryAx.
