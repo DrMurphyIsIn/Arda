@@ -22,30 +22,61 @@ missions registry (`telperion/missions/{rh,anduril,mirrormere}`), the roadmap
 Closed: #501 (superseded; masking audit run — the guard is a lake default target, the
 only main run in the import-missing window was cancelled, **no masking occurred**).
 
-## Open PRs, in merge order
+## Open PRs, in merge order (refreshed 2026-09-17 evening, after the second parallel session closed)
 
-1. **#539** `fix/million-manifest` → `rh/million-turing`. Registers the 8 climb-branch
-   islands in `telperion.toml`; this is the ONLY remaining cause of the red `unit (3.x)`
-   + `r47-regen-diff` jobs on #506 (pytest itself passes: 2085 green). Small, safe.
-2. **#540** `b2/ci-migration` → `rh/million-turing` (stacks on #539). The B2 CI landing:
-   26 block packages committed, new `zzl_aux` package for the 686 non-ladder targets,
-   `zeta-ladder-suite` (strict chain to `H_CI = 100000`, per-block-top axiom guard)
-   replaces the E2BIG monolith job, bragg job moved to `zzl_aux`, quasicrystal
-   island made standalone. **Watch its `zeta-ladder-suite` job**: it is the first
-   hosted-runner measurement of block build time. If a block exceeds ~40 min, lower
-   `H_CI`; if all four land under ~20 min each, raise to 200000 in a follow-up.
-3. **#538** `rh/bl-finite-multiset` → `main`. `RH_bl_finite_multiset` proved (zeta-free
-   finite Bombieri–Lagarias positivity core); `bl_finite_multiset` wired into
-   `AxiomGuardLiPositivity` — the `li-positivity-compiles` job passed, so the 3-axiom
-   claim is CI-enforced. Mergeable once the remaining jobs report.
-4. **#506** `rh/million-turing` → `main` = **the reconcile**. Title is stale: the branch
-   is at T = 640000 (1,072,715 zeros, leg 26), 86,874 files, +4.99 M lines. After
-   #539 + #540 merge into it and its ladder job is green, it is mergeable; the
-   operator merges it (merges are classifier-blocked for the agent).
+Merged since the morning: #538 (BL proof, main), #539 (manifest, climb), #540 (B2 CI landing,
+climb), #542 (artifact-side restatements for the two mirrormere grant pre-flight failures, climb),
+#543 (AND_g2_reflected_band re-authored + all three pre-flight fixes ledgered, main). The grant
+pre-flight blockers listed further down are therefore DONE; only the reconcile remains.
 
-Older open PRs untouched today: #525 (paper reconcile), #481 (prove2me bridge),
-#470 (Route P spec), #305 (codegen drift). #481/#470 are docs/spec-level and can
-wait; #305 should be re-checked against main after #506 lands.
+**Climb branch (`rh/million-turing`), in order:**
+1. **#552** `fix/zzl-legacy-boxes`. Corrects a real defect in #540: `zzl_aux` inherited the 671
+   pre-band `RHInBox_*` box certificates (~1.9 core-min each); the first hosted-runner ladder run
+   spent 3 h 40 min in that step and never reached a block. The 669 boxes nothing imports move to
+   `zzl_legacy_boxes`, built by a weekly 4-way-sharded workflow (`telperion-legacy-boxes.yml`,
+   per-shard guard cut from `AxiomGuardRHInBox.lean`); `zzl_aux` keeps 17 targets. Split logic is
+   reachability through box imports (reviewed: sound). **Its `zeta-ladder-suite` run is the first
+   real per-block timing** — read the `built in Ns` lines and set `H_CI` from them.
+2. **#544** `reconcile/main-into-million`. Merges main into the climb (one conflict, the
+   Li-positivity guard, resolved as union). Required before #506 can merge (#506 is CONFLICTING
+   until this lands).
+3. **#549** `feat/d1-d4-artifacts`. Route D cheap layers: `rect_trace_reading` (the Bragg bridge
+   divided by 2πi) and `spectral_cooked_control` (diagonal matrix Hermitian with prescribed real
+   spectrum — the declared negative control). Axiom-clean, pre-flight MATCH. NOTE: touches
+   `AxiomGuardLiPositivity.lean`, as does #551 on main → one union-merge at the #506 reconcile.
+
+**Main, in order (all clean against main; two additive pairwise overlaps noted):**
+4. **#546** roadmap corrections (docs; cost-curve calibration, Alpöge–Furman gloss, E6 sourcing).
+5. **#545** registers the critical path: `RH_rvm_unconditional` (cumulative RvM, divisor count)
+   and `RH_corridor_bound` (classical: some T′ ∈ [T, T+1] with a zero-free segment −1 ≤ σ ≤ 2 and
+   ‖ζ′/ζ‖ ≤ C log² T). Draft, blind read-back pending. Statements reviewed: classical shape, the
+   zero-free conjunct makes the bound non-vacuous under Lean's x/0 = 0.
+6. **#547** the E6 bridge: a third toolchain island (v4.33.0-rc2, zeta-23-lean pin) proving
+   `RvMUnboundedMeanDensity zetaOrdinates` VERBATIM (both defs checked byte-equal to `MMDefs.lean`
+   modulo comments) from `Zeta23.thmA₀` (≥ 2/3 of zeros simple and on the line ⇒ distinct
+   ordinates, superlinear in a dyadic window). Axiom guard lists the bridge and every consumed
+   Zeta23 theorem at the 3 standard axioms. This REVERSES the 09-15 survey verdict ("no
+   unconditional proof in corpus"): the survey missed `Zeta23/RvM/` and Theorem A. Reviewed:
+   valid — Theorem A, not the RvM formula, is the load-bearing input, and the PR says so.
+   Cross-island grant (precedent: `RH_dlvp_zero_free_region`). Apache-2.0 attribution in NOTICE.md.
+7. **#548** proof-links for #547 and #549 in the mirrormere registry (merge after #547; grants
+   after `rvm-bridge-compiles` is green and #549 reaches main via #506).
+8. **#550** Route C foundations: DBN island (Φ even, super-exponential decay, H_t entire for every
+   t, ξ bridge) + DRAFT C2/C3/C4 nodes; the representation theorem H₀ = ξ/8 is REGISTERED, not
+   proved. Pairwise overlaps: with #545 on `RHDefs.lean`/`Statements.lean` (both append), with
+   #547 on the workflow (both add a job) → rebase #550 after #545 and #547, keep both sides.
+9. **#551** Route B/B1: Li-ladder throughput measured to n = 10³ in-kernel (cubic cost fit,
+   ~1 bit precision loss per rung), bundle face (one hypothesis instead of N), negative-control
+   twin decided in-kernel (fires at n = 6 on the off-line quadruple), and a real bug fix
+   (`nsimplify` could silently substitute a nearby rational; now exact). Instrumentation, not
+   evidence, and labelled so.
+10. **#541** this handoff.
+
+**Then #506**, the reconcile of the climb into main, after #544 and #552 are in and the ladder is
+green. Merges are operator-run (`gh pr merge <n> --merge`); the agent is classifier-blocked.
+
+Older open PRs untouched: #525 (paper reconcile), #481 (prove2me bridge), #470 (Route P spec),
+#305 (codegen drift — re-check after #506).
 
 ## In flight / local state (do not clobber)
 
@@ -66,8 +97,10 @@ wait; #305 should be re-checked against main after #506 lands.
 
 ## Grant pass (blocked until #506 lands)
 
-The pre-flight ledger (#534) says three nodes FAIL grant as-authored and need
-re-authoring, all mechanical:
+UPDATE: the three re-authorings below were DONE in #542 (climb) + #543 (main, merged).
+What remains is the reconcile, then `mission verify --deep-lean` + per-node `mission grant`,
+plus the cross-island grant of `MM_rvm_unbounded_mean_density` once #547 is on main.
+Original list, for the record:
 - `AND_g2_reflected_band`: statement bundles `def d` + `theorem pilot` as one span; the
   artifact interposes other decls — split into two spans / re-author to one decl.
 - `MM_bragg_defect_witness`: decl name `bragg_defect_witness` no longer exists in
