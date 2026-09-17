@@ -41,8 +41,12 @@ def liLowerBounds : List (ℤ × ℕ) :=
 /-- The real value of a listed bound. -/
 noncomputable def liLo (p : ℤ × ℕ) : ℝ := (p.1 : ℝ) / (p.2 : ℝ)
 
+-- `rfl`/`decide` on an N-element list recurse ~N deep in the elaborator (default maxRecDepth 512
+-- fails at N = 500); the kernel check itself is linear in N.  Budget: 8N + 512.
+set_option maxRecDepth 672 in
 theorem liLowerBounds_length : liLowerBounds.length = 20 := by rfl
 
+set_option maxRecDepth 672 in
 /-- Every listed numerator is positive: ONE kernel `decide` for the whole prefix
     (the analogue of the per-rung `by norm_num : (0:ℝ) ≤ lo`). -/
 theorem liLowerBounds_pos : liLowerBounds.all (fun p => decide (0 < p.1)) = true := by decide
