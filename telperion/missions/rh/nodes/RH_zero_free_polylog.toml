@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = ["RH_zero_free_gamma5", "RH_zeta_log_bound"]
+kind = "milestone"
+name = "RH.zero_free_polylog"
+statement_module = "Statements.RH_zero_free_polylog"
+status = "proved"
+title = "The polylog-improved unconditional zero-free region: beta <= 1 - c/(gamma^4 (1 + log 2 gamma)), strictly sharper than gamma^-5"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/ZeroFreePolylog.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "rh-migration-session-2026-09-11"
+date = "2026-09-11"
+text = "There is c > 0 such that every zero beta + i gamma of zeta with gamma >= 2 satisfies beta <= 1 - c / (gamma^4 (1 + log 2 gamma)) -- strictly sharper than the elementary gamma^-5 region, still unconditional and Hadamard-free; the 2t factor is upgraded via the sharp zeta log bound.  Not a proof of RH."

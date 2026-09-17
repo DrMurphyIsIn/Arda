@@ -74,9 +74,60 @@ Plus the whole-hub (Case-B) family — needed for the last ~8% — whose increme
 (1529 defect-reducing negatives survive the gate; `G1` lift-gain fails), so it needs a genuinely global
 monomer-dimer inequality, not a gate.
 
+## RESOLVED: crux (a) for the ADJACENT leaf move — no gate needed, defect-reduction alone certifies
+
+The structural-implies-analytic link is now a complete, formalizable proof for the adjacent case (`par_v`
+a child of `par_w`; root at `par_w` by `Aobj` root-invariance):
+
+1. **`nB = 0 ⟹ non-defect-reducing.**  If `par_v` has no children besides the target leaf `v`, then
+   `par_v = node[v]` is a CHERRY (piece) before and `par_v' = node[stem]` an ARM (piece) after; no
+   piece-status changes anywhere, so `strDefect` is unchanged. (Pure `isPiece` computation — Lean-ready.)
+2. **Hence `strDefect`-reducing ⟹ `nB ≥ 1`** (contrapositive).
+3. **`N` has nonnegative `QB,QO` coefficients**, so `N ≥ N0 := N|_{QB=QO=0} = nO·(nB·nO + nB + nO − 2)`.
+4. **`nB ≥ 1 ⟹ nB·nO + nB + nO ≥ 2 ⟹ N0 ≥ 0`** (arithmetic), hence `N ≥ 0`, hence
+   `increment = PB·PO·N / [2(nB+2)(nO+1)(nO+2)] ≥ 0`.
+
+Verified exhaustively (3025 adjacent configs, 90 defect-reducing): **0 with `nB=0`, 0 with Aobj decrease**;
+and `N ≥ 0` for every realizable `nB≥1` (0/300000). So **every defect-reducing ADJACENT leaf-onto-leaf move
+is Aobj-nondecreasing — unconditionally, no degree gate.** This closes the analytic half of crux (a): the
+degree gate was only a sufficient proxy; the true certificate is the structural fact `defect-reducing ⟹
+nB≥1`, which lands the closed form in its provably-nonneg region.
+
+## (a') deeper `par_v` is NOT a clean analogue; and the adjacent move's coverage
+
+- **(a') deeper `par_v` needs the gate.** For `par_v` deeper than a child of `par_w`, "defect-reducing
+  alone" does NOT certify: the random deeper sweep found **35 Aobj-DECREASING defect-reducing moves** (all
+  with the gate violated, `deg(par_source) <= deg(par_target)`); the degree gate rescues them (322/322 safe).
+  So the clean, gate-free `defect-reducing ⟹ nB≥1 ⟹ N≥0` result is **adjacent-specific**; the deeper case is
+  a `defect-reducing + gate` statement over a different (path-denominator) closed form — genuine further work.
+- **Coverage of the adjacent move.** On the genuine core (n<=14): sibling `FlpStepAt` 78.2% (394);
+  **adjacent defect-reducing leaf move 29.2% (147); union 82.1% (414) — +20 trees over sibling.** So the
+  adjacent move is a real, cleanly-certifiable coverage extension beyond `FlpStepAt` (worth formalizing).
+
+## Lean formalization plan (adjacent leaf StraightStep — the first extension beyond FlpStepAt)
+
+The move at `par_w = node[leaf_w, par_v, *Other]`, `par_v = node[leaf_v, *Bv]` (nB=|Bv|>=1) →
+`node[par_v', *Other]`, `par_v' = node[stem, *Bv]`, `stem = node[leaf]`.
+
+- **usize**: `usize` congruence + `usize(par_v)=usize(par_v')` (leaf->stem is size-preserving at v; leaf_w
+  moves into stem). Mechanical.
+- **Aobj (`<=`)**: BETTER than root-invariance — the move **LIFTS unconditionally** (verified: the acted
+  node `par_w` satisfies BOTH gains `G1: Ztot(dtSub) up` and `G2: Zopen(dtSub)/udeg up`, 0/40000, given
+  `nB>=1`). So use the existing `dtSub_gains_lift` + `Aobj_child_replace_of_gains` machinery (like
+  `FlpStepAt`), no re-rooting. The base gains reduce to real-var inequalities in the aggregates
+  `(PB,QB,nB,PO,QO,nO)` via `Ztot_dtSub_node_eq` (`Ztot(dtSub node cs) = ∏·(1 + qSum/(len+1))`), the flp
+  cavity values, and `qContrib(par_v) = 1/(nB+3+QB)` (the `PB` cancels).
+  **★ CORE ARITHMETIC LEAN-VERIFIED:** after cancelling `1/(nB+3+QB)`,
+    G1  ⟺  `2(2+nO)[(nB+3+QB)(4+nO+QO)+1] <= (3+nO)[(3nB+7+3QB)(2+nO+QO)+3]`  — proven by `nlinarith`;
+    G2  ⟺  `2(2+nO)(nB+3+QB) <= (3nB+7+3QB)(3+nO)`  — all-positive coeffs (`5nB+9+5QB+nB·nO+nO+QB·nO >= 0`).
+  So the substantial half is DE-RISKED: the hard cavity inequality is `nlinarith`-tractable and confirmed.
+- **strDefect (`<`)**: the novel structural core — `nB=0 ⟹ par_v=cherry (piece), par_v'=arm (piece)`, a
+  piece->piece change, and `leaf_w` a piece, so the move preserves `strDefect`; hence a `strDefect`-reducing
+  instance forces `nB>=1`. Pure `isPiece` computation. Then package the `nB>=1` defect drop.
+
 ## Status
 
-This is a **reformulation + partial result**, not a proof: the monomer-dimer identity is exhaustively
-verified; the degree-equalizing gate is a clean SUFFICIENT condition for defect-reducing leaf moves; and the
-open crux is now pinned to two precise sub-problems (link defect-reduction to `N`'s safe region; a global
-inequality for the whole-hub family). It does NOT close `Hnorm`. `conjecture1_proved = False`.
+**Progress, not full closure.** Monomer-dimer identity verified; crux (a) RESOLVED for the adjacent leaf
+move (Lean-ready proof `defect-reducing ⟹ nB≥1 ⟹ N≥0`, no gate); adjacent move adds +20 trees coverage
+(-> 82.1%). Open: (a') deeper `par_v` (gate + path-denominator closed form); (b) whole-hub Case-B (global
+monomer-dimer inequality; `G1` fails). Does NOT close `Hnorm`. `conjecture1_proved = False`.

@@ -1,0 +1,27 @@
+name = "RvMBridge"
+# E6 bridge island (routes roadmap E6, 2026-09-17): discharges the MIRRORMERE residual
+# MM_rvm_unbounded_mean_density from Anthropic's zeta-23-lean (Alpoege--Furman, Theorem A +
+# the unconditional Riemann--von Mangoldt main clause). SEPARATE toolchain island by
+# necessity: zeta-23-lean pins Lean v4.33.0-rc2 / Mathlib 51e6992e, which matches neither the
+# v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
+# AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
+# module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
+defaultTargets = ["E6Bridge", "AxiomGuardRvMBridge"]
+
+# anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
+# `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
+# built and audited locally (see README.md). Transitively pins Mathlib
+# 51e6992efd06126df61a496bebf8f49482a4e129 (tag v4.33.0-rc2); `lake exe cache get` works
+# through this dependency.
+[[require]]
+name = "Zeta23"
+git = "https://github.com/anthropics/formal-math"
+rev = "fbdc36bbf17d20af3fd0447c6d1a8a02773c9844"
+subDir = "zeta23"
+
+[[lean_lib]]
+name = "E6Bridge"
+
+# The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
+[[lean_lib]]
+name = "AxiomGuardRvMBridge"

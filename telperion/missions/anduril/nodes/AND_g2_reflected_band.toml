@@ -1,0 +1,19 @@
+created = "2026-09-14"
+depends_on = ["AND_checkline_correct"]
+kind = "milestone"
+name = "AND.g2_reflected_band"
+statement_module = "Statements.AND_g2_reflected_band"
+status = "open"
+title = "G2: THE FIRST REFLECTED BAND (ReflectedBand_t14) -- a band certificate proved by kernel decide through checkLine rather than emitted norm_num, consumed by the height chain interchangeably with T5 bands"
+updated = "2026-09-14"
+
+[proof]
+artifact = "../../examples/zeta_reflection/lean/ReflectedBand_t14.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
+date = "2026-09-14"
+text = "The G2 pilot: for the concrete three-box band datum d (dyadic intervals with ~75-digit Int mantissas at heights 14, 15, 22), the sign chain is verified INSIDE the kernel -- theorem ok : checkLine d.boxes = true := by decide -- and theorem pilot derives, from the three Arb-supplied enclosure hypotheses (gLine at each grid height lies in its box), that there exist 2 strictly increasing heights in [14, 22] where the completed zeta function vanishes on the critical line. The first band certificate proved by computational reflection rather than emitted norm_num: the regime change the 10^13 charter rests on, live. [Verbatim extract of the proved ok + pilot (ReflectedBand_t14.lean); artifact on rh/million-turing, grant deferred to the branch reconcile.]"

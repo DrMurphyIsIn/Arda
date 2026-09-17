@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "BG.near_star_tail"
+statement_module = "Statements.BG_near_star_tail"
+status = "proved"
+title = "Near-star tail: logPhi (N(c,k)) <= 0 for the whole family"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/NearStar.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "Every near-star N(c,k) has log-amplitude at most zero -- the all-n near-star tail bound."

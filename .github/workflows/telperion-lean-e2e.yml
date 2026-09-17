@@ -132,6 +132,49 @@ jobs:
           lake env lean AxiomGuardLiPositivity.lean | tee axioms.out
           ! grep -q "sorryAx" axioms.out
 
+  rvm-bridge-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Drift check (node statement + mirrored defs still match the mirrormere registry)
+        working-directory: telperion
+        run: |
+          python examples/rvm_bridge/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/rvm_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # Zeta23 (anthropics/formal-math, public, Apache-2.0; ~1.6 MB repo) is cloned by Lake at the
+      # pinned commit; Mathlib oleans come from the cache through that dependency. Zeta23 itself
+      # (118 modules) compiles from source: ~2 min on 32 cores locally, expect ~15-25 min on a
+      # 4-core hosted runner.
+      - name: Fetch Mathlib olean cache (through the Zeta23 dependency)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the bridge against the pinned zeta-23-lean (the actual verification)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake build
+
+      - name: Axiom guard (fails on sorryAx anywhere in the anchors or the consumed upstream inputs)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: |
+          lake env lean AxiomGuardRvMBridge.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
+
   tangent-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2204,3 +2247,33 @@ jobs:
           if echo "$out" | grep -q 'sorryAx'; then echo "::error::a guarded theorem depends on sorry"; exit 1; fi
           if echo "$out" | grep -qE 'error:'; then echo "::error::AxiomGuardRHInBox.lean did not elaborate cleanly"; exit 1; fi
           echo "OK: all guarded theorems kernel-clean."
+
+  mission-statements-compile:
+    # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
+    # statement package: a statement that does not elaborate cannot enter the
+    # graph."  This job closes the gap for ALL four campaigns (bg/rh predate it
+    # too).  `by sorry` bodies are expected (statements, not proofs) -- lake
+    # emits warnings, not errors; the gate is elaboration.
+    strategy:
+      fail-fast: false
+      matrix:
+        campaign: [bg, rh, anduril, mirrormere]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles(format('telperion/missions/{0}/lean/lean-toolchain', matrix.campaign)) }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/missions/${{ matrix.campaign }}/lean
+        run: lake exe cache get
+      - name: Build the statement package (statements must elaborate; sorry bodies expected)
+        working-directory: telperion/missions/${{ matrix.campaign }}/lean
+        run: lake build

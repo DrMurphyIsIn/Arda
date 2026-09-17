@@ -1,0 +1,13 @@
+created = "2026-09-16"
+depends_on = ["MM_bragg_defect_witness"]
+kind = "lemma"
+name = "MM.recurrence_deficit_eq_excess"
+statement_module = "Statements.MM_recurrence_deficit_eq_excess"
+status = "open"
+title = "Routes-roadmap E4a (Face 4 <-> Face 1 witness bridge): the Bagchi recurrence deficit (e^delta - 1)(1 - e^(-delta)) equals the Bragg amplification excess at the certified displacement delta = 1/10, and is strictly positive for every positive displacement -- the recurrence and defect instruments measure the same off-line signal. Discharge: Real.exp ring algebra + strict monotonicity; QC_RECURRENCE section 4.2 says kernel-ready now (RH_ROUTES_ROADMAP_2026-09-16 section 9)"
+updated = "2026-09-16"
+
+[readback]
+auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
+date = "2026-09-16"
+text = "The theorem asserts two claims about the authored recurrenceDeficit delta = (e^delta - 1)(1 - e^(-delta)): at delta = 1/10 it equals excess = Aoff - Aon = e^(1/10) + e^(-1/10) - 2 (a TRUE identity -- the product expands to e^delta + e^(-delta) - 2 for all delta, requiring exp_neg/exp_add, NOT rfl), and it is strictly positive for every delta > 0 (both factors strictly positive). No flags."

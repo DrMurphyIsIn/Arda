@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = []
+kind = "lemma"
+name = "RH.li_neg_refutes_rh"
+statement_module = "Statements.RH_li_neg_refutes_rh"
+status = "proved"
+title = "The falsifiability face: a certified NEGATIVE upper bound on any Li rung refutes RH via the upstream equivalence"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/LiPositivity.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "rh-migration-session-2026-09-11"
+date = "2026-09-11"
+text = "The falsifiability face of the ladder: a certified NEGATIVE upper bound on any Li coefficient (taylorCoeff riemannXi n).re refutes RH through the upstream Li-criterion equivalence.  Never expected to fire; emitted so the ladder is falsifiable rather than confirmation-only."

@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = ["BG_h1_bridge"]
+kind = "lemma"
+name = "BG.merge_layer"
+statement_module = "Statements.BG_merge_layer"
+status = "proved"
+title = "Certified merge layer capstone: every Balanced+Capped state ordered-merges to a perL-non-decreasing normal form"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/R47MergePerL.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "migration-session-2026-09-12"
+date = "2026-09-11"
+text = "Every balanced capped hub state rewrites by ordered merges to a stuck normal form whose Laplacian-permanent ratio is no smaller -- the certified merge layer in perL form."

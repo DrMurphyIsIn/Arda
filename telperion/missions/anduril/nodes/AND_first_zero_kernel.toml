@@ -1,0 +1,19 @@
+created = "2026-09-15"
+depends_on = ["AND_em_zeta_strip", "AND_em_tail3_number", "AND_g2_reflected_band"]
+kind = "milestone"
+name = "AND.first_zero_kernel"
+statement_module = "Statements.AND_first_zero_kernel"
+status = "open"
+title = "REFLECTION CAPSTONE: first_zero_kernel -- an argument-free, hypothesis-free nontrivial zeta zero in (14, 15), verified entirely by kernel computation over rational certificates (no Arb enclosure hypotheses). The first purely-kernel-COMPUTED nontrivial zero of the completed zeta function; the reflection track's answer to what the T5 band certificates supply as data."
+updated = "2026-09-15"
+
+[proof]
+artifact = "../../examples/zeta_reflection/lean/ForgeFirstZeroKernel.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "missions-migration-session-2026-09-15 (verbatim-extract precedent, AND_g2_reflected_band)"
+date = "2026-09-15"
+text = "The reflection-track capstone. Unlike every band certificate on the ladder -- which discharges an Arb-supplied enclosure hypothesis (gLine lies in its dyadic box) -- first_zero_kernel takes NO arguments and NO hypotheses: it asserts, and the kernel verifies, that there exists a real r with 14 < r < 15 at which completedRiemannZeta (1/2 + r*i) = 0, with the entire evaluation done inside the kernel over rational certificates. The proof instantiates ForgeFirstZero.first_zero_of_theta_boxes with (i) the two θ-limits Λ14, Λ15 and their Tendsto, supplied by ThetaConverge.convergence_obligation at (x,y) = (1/4, 7) and (1/4, 15/2) via the Euler route (π^{-s/2} split + argΓ from convergence), and (ii) the four cos/sin φ boxes ForgeThetaBox.cossin_{14,15} (201 arctan terms per height folded to imLnVal, plus the tight rate n0=200 and log π, mapped to cos/sin via -φ monotonicity); the sign is read off the magnitude-free Hardy-Z decomposition (M > 0 cancels). This is the first purely-kernel-COMPUTED nontrivial zeta zero -- the reflection answer to what the T5 edge-decomposition bands supply as external Arb data. Axiom closure on the artifact: [propext, Classical.choice, Quot.sound], 0 sorryAx, argument-free. conjecture1_proved = False -- ONE verified zero, not a proof of RH. [Verbatim extract of the proved first_zero_kernel (ForgeFirstZeroKernel.lean:32); artifact on rh/million-turing, NOT in main CI -- kernel-verified in its home reflection island and locally; grant deferred until the artifact lands on this line.]"

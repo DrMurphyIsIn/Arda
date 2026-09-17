@@ -1,0 +1,19 @@
+created = "2026-09-11"
+depends_on = ["RH_borel_caratheodory_deriv", "RH_strip_repr"]
+kind = "milestone"
+name = "RH.dlvp_region_effective"
+statement_module = "Statements.RH_dlvp_region_effective"
+status = "proved"
+title = "The de la Vallee Poussin region at the classical rate, EFFECTIVE constant (multiplicity-hypothesis form)"
+updated = "2026-09-11"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/DlvpZetaRateEffective.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "rh-migration-session-2026-09-11"
+date = "2026-09-11"
+text = "Every zeta-zero beta + i gamma with 3/4 <= beta < 1, |gamma| >= 55/16, and divisor value k >= 1 in the disk of radius 11/8 about 2 + i gamma satisfies beta <= 1 - dlvpRateC / log |gamma|, with dlvpRateC an explicit closed-form positive constant -- the classical de la Vallee Poussin rate made effective; the disk multiplicity datum enters as a hypothesis (discharged by the self-contained v4.32 wrapper node)."
