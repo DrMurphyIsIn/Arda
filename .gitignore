@@ -22,3 +22,6 @@ __pycache__/
 
 # SDD scratch (superpowers planning files; never committed)
 .superpowers/
+
+# Li-ladder throughput trial files (generate.py --trial N; measured, never committed)
+telperion/examples/li_positivity/lean/LiPositivityTrial*.lean
