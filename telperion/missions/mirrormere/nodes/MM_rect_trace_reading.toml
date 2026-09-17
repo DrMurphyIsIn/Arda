@@ -5,7 +5,13 @@ name = "MM.rect_trace_reading"
 statement_module = "Statements.MM_rect_trace_reading"
 status = "open"
 title = "Routes-roadmap D1 (spectral trace reading, dictionary-grade): the Bragg bridge rearranged as a finite trace identity -- the box zero-count of zeta over its actual divisor (the trace of the box spectral measure of the conjectural operator) equals 1/(2 pi i) times (edges - i Bragg comb - i left remainder). Algebraic rearrangement of rect_explicit_formula_bragg (division by the nonzero constant 2 pi i); thin but load-bearing as the D-route's packaging layer. Discharge: field_simp from MM_bragg_bridge's artifact (RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)"
-updated = "2026-09-16"
+updated = "2026-09-17"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/RvMTraceReading.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
 
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
