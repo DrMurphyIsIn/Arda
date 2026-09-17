@@ -1,0 +1,13 @@
+created = "2026-09-16"
+depends_on = []
+kind = "lemma"
+name = "MM.spectral_cooked_control"
+statement_module = "Statements.MM_spectral_cooked_control"
+status = "open"
+title = "Routes-roadmap D4a (the spectral triviality NEGATIVE CONTROL): any finite real multiset is the characteristic-polynomial spectrum of a Hermitian matrix (the diagonal one) -- kernel-certifying that 'an operator whose eigenvalues are the zeros' has ZERO content without the arithmetic-construction and completion clauses. The route-D honesty marker: bare finite operator existence is vacuous; all content lives in the positivity/completion clause (= the wall). Discharge: Matrix.diagonal + charpoly of diagonal (RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)"
+updated = "2026-09-16"
+
+[readback]
+auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
+date = "2026-09-16"
+text = "For every n and every real n-tuple gamma there is a Hermitian complex matrix whose characteristic polynomial is exactly prod (X - gamma_i) -- TRUE via the diagonal matrix. TRIVIAL (intended): the triviality IS the declared negative-control point, marking finite-operator-with-prescribed-real-spectrum as content-free so the RH difficulty is located in the completion/positivity clause. Flag: TRIVIAL (intended), not a defect."

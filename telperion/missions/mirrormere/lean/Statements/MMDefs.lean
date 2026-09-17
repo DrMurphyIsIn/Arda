@@ -54,6 +54,13 @@ def RvMUnboundedMeanDensity (S : Set ℝ) : Prop :=
 def zetaOrdinates : Set ℝ :=
   {t : ℝ | ∃ ρ : ℂ, riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 ∧ ρ.im = t}
 
+-- ===== AUTHORED for the recurrence dictionary (QC_RECURRENCE section 4.2 / W3d;
+-- NOT in the island).  The recurrence deficit of an off-line displacement delta:
+-- the algebraic identity recurrenceDeficit delta = e^delta + e^(-delta) - 2 ties
+-- it to BraggDefect.excess at delta = 1/10 (node MM_recurrence_deficit_eq_excess). =====
+noncomputable def recurrenceDeficit (δ : ℝ) : ℝ :=
+  (Real.exp δ - 1) * (1 - Real.exp (-δ))
+
 -- ===== AUTHORED for the torus-section ladder (QC_TORUS_SECTION_LADDER memo, T1;
 -- NOT in the island).  The cut-and-project vocabulary: the orbit of the Kronecker
 -- line through T^N, the linear form on the torus, and the 1-D exponential-sum
