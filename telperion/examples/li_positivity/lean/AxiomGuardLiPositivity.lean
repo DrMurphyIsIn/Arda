@@ -101,6 +101,7 @@ import RvMArchSharperS2a
 import RvMArchSharperS2b
 import RvMArchSharper
 import RvMBraggBridge
+import RvMBlFiniteMultiset
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -713,3 +714,5 @@ import RvMBraggBridge
 #print axioms RvMWeierstrass.dtrend_sub_half_log_tendsto
 #print axioms RvMWeierstrass.archDiff_sub_dtrend_tendsto_zero
 #print axioms RvMWeierstrass.taylorCoeff_Gammaℝ_re_asymptotic_of_DseriesAsymptotic
+-- Routes-roadmap B7-i: Bombieri-Lagarias FINITE-multiset positivity core (zeta-free; RH_bl_finite_multiset node).
+#print axioms bl_finite_multiset
