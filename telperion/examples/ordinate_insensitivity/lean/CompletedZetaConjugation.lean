@@ -1,6 +1,14 @@
 /-
 CompletedZetaConjugation — the Λ-conjugation brick, completing the reflection quadruple.
 
+REPLICATION NOTE (2026-09-16): built concurrently with, and without knowledge of, the
+sibling derivation appended to OrdinateInsensitivity.lean (ed7c94a72: Gammaℝ_conj,
+completedRiemannZeta_conj_ne, same_ordinate_partner). Two independent kernel derivations
+of the same symmetry agree — kept as replication evidence. Deltas here: the hypothesis is
+discharged to `0 < Re s` (vs an explicit Γℝ-nonvanishing hypothesis), and
+`same_ordinate_mirror_partner` adds the coincidence characterization
+`(1 − conj ρ = ρ ↔ Re ρ = ½)`.
+
 The wall map (RH_WALL_THREE_SWEEP_MAP_2026-09-16.md) records: "the same-ordinate refinement
 — the partner 1 − conj(ρ) at the SAME ordinate — needs a Λ-conjugation lemma absent from
 Mathlib; a clean next brick."  This is that brick.  Mathlib (v4.32 pin) has the two raw
