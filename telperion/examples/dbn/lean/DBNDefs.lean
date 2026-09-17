@@ -2,7 +2,7 @@
   DBNDefs -- Route C (de Bruijn-Newman) foundations, milestone C2 of
   telperion/docs/RH_ROUTES_ROADMAP_2026-09-16.md section 4.
 
-  Conventions (Polymath15 arXiv:1904.12010 section 1, Rodgers-Tao Forum Math. Pi 8 (2020) e6):
+  Conventions (Polymath15 arXiv:1904.12438 section 1, Rodgers-Tao Forum Math. Pi 8 (2020) e6):
 
     Φ(u) := ∑_{n ≥ 1} (2π²n⁴e^{9u} − 3πn²e^{5u}) exp(−πn²e^{4u}),
     H_t(z) := ∫_0^∞ e^{tu²} Φ(u) cos(zu) du,

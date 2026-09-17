@@ -23,7 +23,7 @@ H_t(z) := ∫_0^∞ e^{t u²} Φ(u) cos(z u) du                                 
 ```
 
 - Polymath15, *Effective approximation of heat flow evolution of the Riemann ξ function, and a
-  new upper bound for the de Bruijn–Newman constant*, arXiv:1904.12010, §1 eqs. (1)–(3).
+  new upper bound for the de Bruijn–Newman constant*, arXiv:1904.12438, §1 eqs. (1)–(3).
 - B. Rodgers, T. Tao, *The de Bruijn–Newman constant is non-negative*, Forum Math. Pi 8 (2020)
   e6 (**not** Annals — the corpus miscitation flagged in the roadmap), §1.
 - N. G. de Bruijn, *The roots of trigonometric integrals*, Duke Math. J. 17 (1950) 197–226
