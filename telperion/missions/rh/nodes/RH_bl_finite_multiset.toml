@@ -3,11 +3,23 @@ depends_on = []
 kind = "lemma"
 name = "RH.bl_finite_multiset"
 statement_module = "Statements.RH_bl_finite_multiset"
-status = "open"
+status = "proved"
 title = "Routes-roadmap B7-i (the Bombieri-Lagarias finite core): for a finite set of points avoiding 0 and 1 and symmetric under rho -> 1 - conj(rho), the Li-type sums Re sum (1 - ((1 - 1/rho)^{-1})^n) are nonnegative for every positive n IF AND ONLY IF every point lies on Re = 1/2. Pure finite algebra (on-line: termwise 1 - cos >= 0 via unit modulus; off-line: paired growth r^n + r^{-n} forces negativity); carries ZERO zeta-specific content by design -- the finite layer of the BL bridge, quarantining where the analytic layer (B7-ii) and the wall begin (RH_ROUTES_ROADMAP_2026-09-16 sections 3, 9)"
 updated = "2026-09-16"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/RvMBlFiniteMultiset.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+fidelity_note = "PROVED and kernel-verified LOCALLY on branch rh/bl-finite-multiset (NOT on main CI). `bl_finite_multiset` in RvMBlFiniteMultiset.lean has a signature byte-identical to Statements.RH_bl_finite_multiset (diffed) and `#print axioms bl_finite_multiset` = [propext, Classical.choice, Quot.sound], 0 sorryAx (verified via `lake env lean` in the v4.34.0-rc1 li_positivity island; module builds green under `lake build RvMBlFiniteMultiset`, 8708 jobs). Proof method: reverse via unit-modulus |w|<=1 termwise; forward (contrapositive) via the rho->1-conj rho symmetry forcing max modulus R>1, then SIMULTANEOUS TOPOLOGICAL RECURRENCE on the compact torus (Bolzano-Weierstrass / IsCompact.tendsto_subseq) -- NO equidistribution axiom, NO Pringsheim. conjecture1_proved = False: this is the ZETA-FREE finite face only; the analytic/admissibility layer (BL band-limitedness, T->infinity limit) is DEFERRED to B6/B7 and is NOT included here."
 
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"
 text = "For a finite S avoiding 0 and 1 and closed under rho -> 1 - conj(rho): nonnegativity of Re sum (1 - ((1 - 1/rho)^{-1})^n) for all n > 0 IFF every point has Re = 1/2. Auditor verified both directions numerically: on-line points give |w| = 1 hence termwise 1 - cos >= 0 (symmetry not needed for this direction); the off-line symmetric pair 0.7+3i / 0.3+3i drives the sum negative at n = 18, so hsym is genuinely load-bearing for the forward direction. h0/h1 exclusions load-bearing (Lean junk-value inverses). Zeta-free by design -- the finite algebraic core of Bombieri-Lagarias, NOT itself RH. No flags."
+
+[nonvacuity]
+checker = "B7-i-session 2026-09-16 (self-skeptic pass)"
+date = "2026-09-16"
+text = "NON-VACUOUS -- the positivity is a genuine, corruptible strict inequality, not degenerate/trivially-true. Certified in Lean against the proved theorem: for the concrete symmetric off-line set S with rho_a = 0.7+3i (and 1 - conj(rho_a) = 0.3+3i in S), `bl_finite_multiset S ... : ... <-> forall rho in S, rho.re = 1/2` FORCES the LHS positivity to be FALSE (since rho_a.re = 0.7 != 1/2), i.e. the theorem PREDICTS an n>0 with Re-sum < 0 -- matching the auditor's n=18 witness. The forward direction is proved as a real strict `< 0` (`forward_neg`), not asserted; a numeric stress test (2000 random symmetric off-line configs, incl. two-max-modulus TIE cases) found a negative n in every case, and NO bounded universal n exists (worst first-negative n grows without bound as points approach the line), confirming the forward direction is irreducibly an existence/recurrence statement with real content. hsym, h0, h1 all load-bearing."
