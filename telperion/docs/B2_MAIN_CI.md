@@ -181,3 +181,31 @@ imposes no ceiling (H=560000 = 23 blocks already routes cleanly).
 3. Delete `lean/lakefile.toml` (the 2.9 MB monolith). Sources stay put
    (`srcDir=".."`); the umbrella + blocks are the source of truth. This removes
    the E2BIG file entirely and makes `lake env` work repo-wide.
+
+## Landed 2026-09-17 (first honest bump)
+
+- **`zeta-ladder-suite`** replaces the monolith `zeta-localization-suite` in
+  `telperion-lean-e2e.yml`: shared deps dir wired by symlink (`.lake` is
+  gitignored, so CI recreates the links), `lake exe cache get` once in `zzl_core`,
+  then `zzl_core` + ZeroFreeBridge, then `zzl_aux`, then every `ZetaBands_h<top>`
+  with `top <= H_CI` in ascending order (strict chain, single job, IR pruned after
+  each block). Per block the guard is `#print axioms
+  AllZeros_h<top>.all_nontrivial_zeros_up_to_height_<top>_of_bands`, compared
+  whitespace-free against exactly `[propext, Classical.choice, Quot.sound]`.
+- **`H_CI = 100000`** (4 blocks). Cold-build measurement on the M3 Ultra: block
+  h25000 (736 modules) = 24 min wall, ~3.5 s CPU/module; a 4-core hosted runner
+  should land a block in 15–25 min. Raise `H_CI` after the first green cycle.
+- **`zzl_aux`** (new, emitted by `campaign.py emit_aux_pkg`, data-driven from the
+  monolith lakefile): the 686 monolith targets that are neither core nor ladder —
+  the height-100 island (671 `RHInBox_*`, `NoZerosInBox_*`, `AllZeros_h100/h200`,
+  `StripClear`), the Bragg family + `CosEnclosure`, `DefectDictionary`,
+  `R2Rigidity`, `RHLinalg`, `ZooDH`, `AxiomGuardDefect`. The sharded layout had no
+  home for these; locally that was masked by the monolith's cached oleans and would
+  have broken a cold CI build. Guards `AxiomGuardBragg/Defect/Zoo` run against it.
+- `bragg-amplitude-compiles` builds in `zzl_aux`; the quasicrystal island dropped
+  its unused path-require on the monolith (`selfinversive-rigidity-compiles` is
+  now standalone).
+- The monolith `lean/lakefile.toml` and `AxiomGuardRHInBox.lean` remain for the
+  LOCAL climb until the between-legs cutover (`B2_CUTOVER_PLAN.md`); CI no longer
+  touches them. Retiring them is step 3 above, after one green cycle.
+- `conjecture1_proved = False` — unchanged by any of this.

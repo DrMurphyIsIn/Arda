@@ -16,9 +16,6 @@ rev = "v4.32.0"
 # In-corpus RvM / N(T) counting machinery lives in the zeta_zero_localization
 # island; required by relative path (same Mathlib rev, cache shared) for the
 # increment-(iv) boundary lemmas.  Mirrors the reflection island's require.
-[[require]]
-name = "LambdaLineReal"
-path = "../../zeta_zero_localization/lean"
 
 [[lean_lib]]
 name = "LeeYangCore"
