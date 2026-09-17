@@ -13,7 +13,7 @@ conjecture1_proved = False. A diagnostic guardrail, NOT an RH route.
 -/
 import Mathlib
 
-open Complex
+open Complex Real
 
 namespace OrdinateInsensitivity
 
@@ -62,9 +62,57 @@ theorem riemannZeta_zero_conj (ρ : ℂ) (hρ : riemannZeta ρ = 0) :
   refine ⟨?_, by simp, by simp⟩
   rw [riemannZeta_conj, hρ, map_zero]
 
+/-- Gammaℝ commutes with complex conjugation (Mathlib-gap lemma). -/
+theorem Gammaℝ_conj (s : ℂ) :
+    Gammaℝ (starRingEnd ℂ s) = starRingEnd ℂ (Gammaℝ s) := by
+  have hπ : (↑π : ℂ).arg ≠ π := by
+    rw [Complex.arg_ofReal_of_nonneg Real.pi_pos.le]; exact Real.pi_pos.ne
+  simp only [Gammaℝ_def, map_mul]
+  congr 1
+  · rw [show -(starRingEnd ℂ s) / 2 = starRingEnd ℂ (-s / 2) by
+        simp [map_div₀, map_neg, map_ofNat]]
+    rw [Complex.cpow_conj (↑π) (-s / 2) hπ, Complex.conj_ofReal]
+  · rw [show starRingEnd ℂ s / 2 = starRingEnd ℂ (s / 2) by simp [map_div₀, map_ofNat]]
+    exact Complex.Gamma_conj (s / 2)
+
+/-- **Completed-zeta conjugation** where the archimedean factor is nonzero (covers every
+nontrivial zero): `Λ(conj s) = conj(Λ s)`. -/
+theorem completedRiemannZeta_conj_ne (s : ℂ) (hs : s ≠ 0)
+    (hΓ : Gammaℝ (starRingEnd ℂ s) ≠ 0) :
+    completedRiemannZeta (starRingEnd ℂ s) = starRingEnd ℂ (completedRiemannZeta s) := by
+  have hcs : starRingEnd ℂ s ≠ 0 := by simpa using hs
+  have h1 : riemannZeta (starRingEnd ℂ s)
+      = completedRiemannZeta (starRingEnd ℂ s) / Gammaℝ (starRingEnd ℂ s) :=
+    riemannZeta_def_of_ne_zero hcs
+  have h2 : riemannZeta (starRingEnd ℂ s)
+      = starRingEnd ℂ (completedRiemannZeta s) / Gammaℝ (starRingEnd ℂ s) := by
+    rw [riemannZeta_conj, riemannZeta_def_of_ne_zero hs, map_div₀, Gammaℝ_conj]
+  have e : completedRiemannZeta (starRingEnd ℂ s) / Gammaℝ (starRingEnd ℂ s)
+      = starRingEnd ℂ (completedRiemannZeta s) / Gammaℝ (starRingEnd ℂ s) := h1 ▸ h2
+  field_simp [hΓ] at e
+  exact e
+
+/-- **Same-ordinate partner** — the sharp reflection-trilogy statement.  A nontrivial
+completed-zeta zero `ρ` has a zero at `1 - conj ρ`, at the SAME ordinate (`Im = ρ.im`) with
+mirrored real part (`1 - ρ.re`).  So an off-line zero has an off-line partner at the identical
+height — precisely why a reflection-invariant ordinate statistic (Selberg's `S(t)` second
+moment) can never separate an on-line zero from an off-line pair.  conjecture1_proved = False. -/
+theorem same_ordinate_partner (ρ : ℂ) (hρ : completedRiemannZeta ρ = 0)
+    (hs : ρ ≠ 0) (hΓ : Gammaℝ (starRingEnd ℂ ρ) ≠ 0) :
+    completedRiemannZeta (1 - starRingEnd ℂ ρ) = 0
+      ∧ (1 - starRingEnd ℂ ρ).im = ρ.im
+      ∧ (1 - starRingEnd ℂ ρ).re = 1 - ρ.re := by
+  have hconj : completedRiemannZeta (starRingEnd ℂ ρ) = 0 := by
+    rw [completedRiemannZeta_conj_ne ρ hs hΓ, hρ, map_zero]
+  refine ⟨?_, by simp, by simp⟩
+  rw [completedRiemannZeta_one_sub]; exact hconj
+
 end OrdinateInsensitivity
 
 #print axioms OrdinateInsensitivity.completedZeta_zero_reflect
 #print axioms OrdinateInsensitivity.zero_reflected_partner
 #print axioms OrdinateInsensitivity.offline_zero_has_distinct_partner
 #print axioms OrdinateInsensitivity.riemannZeta_zero_conj
+#print axioms OrdinateInsensitivity.Gammaℝ_conj
+#print axioms OrdinateInsensitivity.completedRiemannZeta_conj_ne
+#print axioms OrdinateInsensitivity.same_ordinate_partner
