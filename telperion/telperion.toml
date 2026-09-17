@@ -637,3 +637,8 @@ group = "flint"    # Jensen d=2 hyperbolicity; needs python-flint (drift-checked
 name = "li_positivity"
 script = "examples/li_positivity/generate.py"
 group = "flint"    # 20 Li-criterion rungs + refutation atom; Arb enclosures need python-flint
+
+[[check]]
+name = "rvm_bridge"
+script = "examples/rvm_bridge/generate.py"
+group = "quick"    # E6 bridge island (v4.33.0-rc2 / zeta-23-lean): drift check that the node statement + mirrored defs still match the mirrormere registry; ~0.1 s
