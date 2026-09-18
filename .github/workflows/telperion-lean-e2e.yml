@@ -2284,6 +2284,51 @@ jobs:
           lake env lean AxiomGuardDBN.lean | tee axioms.out
           ! grep -q "sorryAx" axioms.out
 
+  # Interval-Gram inertia (2026-09-18): the exact signature (posIndex, defect) shared by EVERY
+  # Hermitian matrix inside a rational interval box.  ISLAND PIN: the prelude sits on the ported
+  # RHLinalg block (Apache-2.0, anthropics zeta-23-lean, Lean v4.32.0) carried by the sibling
+  # hermitian_moment island, which this island `path`-requires -- so RHLinalg is built from source
+  # here (7 small modules) while Mathlib comes from the olean cache.
+  gram-inertia-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the inertia boxes (certify -> emit) and check they match on-disk
+        working-directory: telperion
+        run: |
+          python examples/gram_inertia/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/gram_inertia/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/gram_inertia/lean
+        run: lake exe cache get
+
+      - name: Build the bridge + the emitted certificates (the actual verification)
+        working-directory: telperion/examples/gram_inertia/lean
+        run: lake build
+
+      - name: Axiom guard (fails on sorryAx anywhere in the bridge or the certificates)
+        working-directory: telperion/examples/gram_inertia/lean
+        run: |
+          lake env lean AxiomGuardGramInertia.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
+
   mission-statements-compile:
     # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
     # statement package: a statement that does not elaborate cannot enter the

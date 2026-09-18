@@ -647,3 +647,10 @@ group = "quick"    # E6 bridge island (v4.33.0-rc2 / zeta-23-lean): drift check 
 name = "prove2me_compat"
 script = "examples/prove2me_compat/generate.py"
 group = "quick"    # prove2.me platform-pin smoke (Bernoulli family emitted under Lean 4.33.1); exact, no flint
+
+[[check]]
+name = "gram_inertia"
+script = "examples/gram_inertia/generate.py"
+group = "quick"    # interval-Gram inertia: exact signature (posIndex, defect) of every Hermitian
+                   # matrix in a rational box, via the RHInertia bridge over RHLinalg; exact
+                   # rationals, no flint; ~0.1 s
