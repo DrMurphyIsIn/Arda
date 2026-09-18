@@ -228,3 +228,20 @@ is re-verified by `.github/workflows/telperion-legacy-boxes.yml` (weekly +
 `AxiomGuardRHInBox.lean`). The ladder job is unchanged except that step 8 is
 now minutes, so the per-block timing that drives the `H_CI` decision is finally
 measurable.
+
+## Addendum 2026-09-17 (late): first hosted-runner timings + the guard as a module
+
+- First run that reached the ladder (#552): `ZetaBands_h25000` **1778 s** (736 modules),
+  `ZetaBands_h50000` **3728 s** (856 modules — per-module cost grows with height as bands
+  carry more zeros). Four blocks would overrun the 6 h job, so **`H_CI = 50000`** for now.
+  The path to 200000 is the prior-block-cache / matrix shape (Stage 1 above), not one job.
+- The `lake env lean <guard>` step failed at h50000 with `could not execute external
+  process 'lean'` on the runner even though the block had just built (h25000's guard ran
+  fine). Locally the same `lake env` has a 14-entry LEAN_PATH, so this is not path size and
+  could not be reproduced. The guard is now a **generated module** `Guard_h<top>.lean`
+  (`campaign.py emit_guard_module`, routed into every block whose top capstone exists and
+  listed in the block's `defaultTargets`): `#guard_msgs (whitespace := lax) in #print axioms
+  <capstone>` makes a bare `lake build` fail on any axiom set other than the three standard
+  ones. Validated locally: builds in 22 s on the built h25000 block; a corrupted expectation
+  fails the build. No `lake env` anywhere in the per-PR path.
+- `conjecture1_proved = False`.
