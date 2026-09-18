@@ -647,3 +647,8 @@ group = "quick"    # E6 bridge island (v4.33.0-rc2 / zeta-23-lean): drift check 
 name = "prove2me_compat"
 script = "examples/prove2me_compat/generate.py"
 group = "quick"    # prove2.me platform-pin smoke (Bernoulli family emitted under Lean 4.33.1); exact, no flint
+
+[[check]]
+name = "weil_form_enclosure"
+script = "examples/weil_form_enclosure/generate.py"
+group = "flint"    # E8 Weil pairing (archSide - primeSide) enclosed by Arb for two C_c^inf bumps + their 2x2 Gram block; needs python-flint; archimedean quadrature to |r| <= 1024, ~4 min

@@ -1,0 +1,29 @@
+name = "WeilFormEnclosure"
+defaultTargets = ["WeilFormDefs", "WeilFormEnclosure", "AxiomGuardWeilForm"]
+
+# Telperion weil_form_enclosure dogfood island (2026-09-18): the E8 Weil pairing
+# (RH_limit_explicit_formula / WeilExplicit) evaluated by Arb and emitted as a
+# NAMED-HYPOTHESIS trust seam whose kernel consequence is positivity of a certified
+# autocorrelation pairing / positive-definiteness of a 2x2 Weil-Gram block.
+# conjecture1_proved = False -- no RH progress is claimed.
+#
+# Same Mathlib pin (v4.32.0) as the sibling quasicrystal / zeta_zero_localization
+# islands, so the .lake build cache is shared.
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "WeilFormDefs"
+roots = ["WeilFormDefs"]
+
+[[lean_lib]]
+name = "WeilFormEnclosure"
+roots = ["WeilFormEnclosure"]
+
+# The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
+[[lean_lib]]
+name = "AxiomGuardWeilForm"
+roots = ["AxiomGuardWeilForm"]
