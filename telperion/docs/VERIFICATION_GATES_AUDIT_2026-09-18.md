@@ -15,13 +15,31 @@ outside the axiom guard's import closure. Checking three independently built wor
 (`arda-li-ladder`, `arda-gw-finite`, `arda-main-refreeze`), `ZeroFreePolylog.olean` and
 `ZeroFreeElementary.olean` are absent from all of them while their neighbours are present.
 
-Those nodes are `RH_zero_free_gamma5` and `RH_zero_free_polylog`. Fixed here by importing
-`ZeroFreePolylog` into `AxiomGuardLiPositivity.lean`, which is a `lean_lib` in `defaultTargets`,
-so `lake build` now compiles both modules and the guard prints their axioms.
+Those nodes are `RH_zero_free_gamma5` and `RH_zero_free_polylog`. Fixed here by a dedicated
+guard, `AxiomGuardZeroFree.lean`, added to `defaultTargets` so `lake build` compiles both modules
+and a CI step prints and checks their axioms. (The first attempt folded them into the existing
+guard; CI rejected that, for a reason worth reading.)
 
-**If those two files do not in fact compile, this change will turn the `li-positivity-compiles`
-job red. That is the correct outcome and is the whole point: it converts an unverified claim into
-a verified one or an honest failure.**
+**CI RESULT (run 35383833607).** Both modules **do** compile: `Built ZeroFreePolylog (9.5s)`,
+`ZeroFreeElementary` likewise, warnings only. So the two theorems are real; they had simply never
+been built. The first attempt nevertheless failed the job, and usefully:
+
+```
+error: AxiomGuardLiPositivity.lean:35:0: import ZeroFreeElementary failed,
+       environment already contains 'ZeroFreeBridge.zeta_sphere_bound' from DlvpZetaDisk
+```
+
+`ZeroFreeBridge.zeta_sphere_bound` is declared in **three** modules on this island:
+`DlvpZetaDisk`, `DlvpZetaCountStrip` and `ZeroFreeElementary`. Because nothing ever imported
+`ZeroFreeElementary` alongside the others, the duplication was invisible. Consolidating it is a
+separate change and should not block getting the artifacts under the kernel, so the two nodes get
+their own minimal guard, `AxiomGuardZeroFree.lean`, whose closure is exactly
+`ZeroFreePolylog -> ZeroFreeElementary -> StripBound` plus `ZetaLogBound`. It is in
+`defaultTargets`, so `lake build` now compiles both artifacts, and a second CI step runs the same
+exact-axiom assertion over it.
+
+**Follow-up worth doing:** collapse the triplicated `zeta_sphere_bound` (and whatever else those
+three modules share) into one module. Two of the three copies are dead weight.
 
 ## 1. What was verified and found sound
 
@@ -62,7 +80,8 @@ Stated first so the rest is read in proportion.
 **(2) and (3) — axiom guards.** `telperion-production.yml` already had the right idiom; the
 rvm_bridge and li_positivity jobs did not. Both now assert that *every* printed `depends on axioms`
 line is exactly `[propext, Classical.choice, Quot.sound]`, run under `set -euo pipefail`, and fail
-if the guard printed fewer lines than it has anchors (45 for rvm_bridge, 165 for li_positivity).
+if the guard printed fewer lines than it has anchors (45 for rvm_bridge, 163 for li_positivity,
+2 for the new zero-free guard).
 That last check is the one that catches a guard which silently did not run.
 
 **(4) — the battery never ran.** `mission verify` now runs inside the **required** `unit` job in

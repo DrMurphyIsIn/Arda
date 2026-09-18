@@ -133,13 +133,32 @@ jobs:
           set -euo pipefail
           lake env lean AxiomGuardLiPositivity.lean 2>&1 | tee axioms.out
           n=$(grep -c "depends on axioms" axioms.out || true)
-          if [ "$n" -lt "165" ]; then
-            echo "::error::axiom guard printed $n axiom lines, expected at least 165 -- the guard did not run or was silently truncated"; exit 1; fi
+          if [ "$n" -lt "163" ]; then
+            echo "::error::axiom guard printed $n axiom lines, expected at least 163 -- the guard did not run or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
           # every printed axioms line must be EXACTLY Lean's three standard axioms
           if grep -E "depends on axioms" axioms.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
             echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
             grep -E "depends on axioms" axioms.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
+            exit 1; fi
+
+      # The two zero-free-region node artifacts (ZeroFreePolylog + ZeroFreeElementary) are imported
+      # by nothing, so until 2026-09-18 no build compiled them and no guard elaborated them. They
+      # need a SEPARATE guard: ZeroFreeElementary re-declares ZeroFreeBridge.zeta_sphere_bound,
+      # which DlvpZetaDisk already declares, so they cannot share an import closure.
+      - name: "Axiom guard (zero-free-region artifacts): exact axiom set, no sorryAx, guard actually ran"
+        working-directory: telperion/examples/li_positivity/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean AxiomGuardZeroFree.lean 2>&1 | tee zerofree.out
+          n=$(grep -c "depends on axioms" zerofree.out || true)
+          if [ "$n" -lt "2" ]; then
+            echo "::error::zero-free guard printed $n axiom lines, expected 2 -- the guard did not run"; exit 1; fi
+          if grep -q "sorryAx" zerofree.out; then echo "::error::sorryAx present"; exit 1; fi
+          if grep -E "depends on axioms" zerofree.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
+            grep -E "depends on axioms" zerofree.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
             exit 1; fi
 
   rvm-bridge-compiles:

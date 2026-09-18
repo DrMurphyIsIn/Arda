@@ -114,9 +114,6 @@ import RvMSpectralCookedControl
 import RvMBlFiniteMultiset
 import LiPositivityBundle
 import LiNegativeControl
--- Terminal artifacts: nothing else imports these, so WITHOUT this line `lake build`
--- never compiles them and the two zero-free-region nodes are granted against unbuilt Lean.
-import ZeroFreePolylog
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -757,11 +754,11 @@ import ZeroFreePolylog
 #print axioms LiNegativeControl.negctrl_fires
 #print axioms LiNegativeControl.negctrl_neg_refutes_online
 #print axioms LiNegativeControl.negctrl_detects_offline
--- rh registry nodes whose artifacts live on this island but were NOT axiom-guarded before
--- (audit 2026-09-18). ZeroFreeBridge.riemannZeta_zero_free_poly / _polylog were also outside
--- the guard's import closure entirely, so CI was not compiling their artifacts at all.
+-- rh registry nodes whose artifacts are in this guard's closure but were NOT axiom-guarded
+-- before (audit 2026-09-18).  The two zero-free-region nodes CANNOT be guarded here:
+-- ZeroFreeElementary re-declares ZeroFreeBridge.zeta_sphere_bound, which DlvpZetaDisk (already
+-- in this closure) also declares, so Lean refuses the co-import.  They get their own guard,
+-- AxiomGuardZeroFree.lean, which is also what puts them under `lake build` at all.
 #print axioms ZeroFreeBridge.zeta_repr_R1
 #print axioms ZeroFreeBridge.zeta_fract_repr
 #print axioms ZeroFreeBridge.norm_deriv_le_of_re_le
-#print axioms ZeroFreeBridge.riemannZeta_zero_free_poly
-#print axioms ZeroFreeBridge.riemannZeta_zero_free_polylog
