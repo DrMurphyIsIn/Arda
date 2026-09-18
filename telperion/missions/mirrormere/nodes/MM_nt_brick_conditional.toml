@@ -3,14 +3,14 @@ depends_on = ["MM_rvm_unbounded_mean_density"]
 kind = "lemma"
 name = "MM.nt_brick_conditional"
 statement_module = "Statements.MM_nt_brick_conditional"
-status = "open"
+status = "proved"
 title = "W2c, R2-honest: the zeta ordinates are not uniformly discrete, GIVEN the named counting hypothesis RvMUnboundedMeanDensity (the Riemann-von Mangoldt mean-density input no finite ladder stage can supply)"
 updated = "2026-09-14"
 
 [proof]
 artifact = "../../examples/quasicrystal/lean/BoundaryLemmas.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]

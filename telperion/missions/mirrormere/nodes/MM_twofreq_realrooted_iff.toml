@@ -3,7 +3,7 @@ depends_on = []
 kind = "milestone"
 name = "MM.twofreq_realrooted_iff"
 statement_module = "Statements.MM_twofreq_realrooted_iff"
-status = "open"
+status = "proved"
 title = "First rigidity theorem, R3(n=2): a two-frequency exponential sum is real-rooted iff its coefficients have equal modulus (twoFreq_realRooted_iff; reality of the support governed by the coefficients alone)"
 updated = "2026-09-14"
 
