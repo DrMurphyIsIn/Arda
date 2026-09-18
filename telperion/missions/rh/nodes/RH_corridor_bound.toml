@@ -3,9 +3,15 @@ depends_on = ["RH_rvm_unconditional"]
 kind = "milestone"
 name = "RH.corridor_bound"
 statement_module = "Statements.RH_corridor_bound"
-status = "open"
+status = "proved"
 title = "The CORRIDOR BOUND (routes-roadmap E7 = A3 = B5 = D6, the unique four-consumer blocker): for every T >= 2 some height T' in [T, T+1] has a zero-free horizontal segment -1 <= sigma <= 2 on which |zeta'/zeta(sigma + iT')| <= C log^2 T; O-form constant, effective form queued"
-updated = "2026-09-17"
+updated = "2026-09-18"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge3.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
 
 [readback]
 auditor = "blind-auditor-critical-path 2026-09-17 (independent blind read-back, AUDIT_TESTIMONY_CRITICAL_PATH_2026-09-17.md; statements elaborated at the mission pin, trivial-close probes closed nothing)"
