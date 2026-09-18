@@ -15,6 +15,8 @@ import BoundaryLemmas
 import TwoFreqRigidity
 import RationalFreqReduction
 import InvolutionDictionary
+import OfflineDiscs
+import OfflineDiscsInstances
 
 open Quasicrystal
 
@@ -74,6 +76,17 @@ open Quasicrystal
 #print axioms Quasicrystal.twoFreq_dictionary
 #print axioms Quasicrystal.selfInversive_binomial_realRooted
 #print axioms Quasicrystal.fixed_locus_dichotomy
+
+/-! ### MIRRORMERE E4b -- OfflineDiscs (registry node MM_offline_disjoint_discs,
+    QC_RECURRENCE section 4.3 isolation lemma) -/
+#print axioms Quasicrystal.exists_pos_lower_bound_of_finset
+#print axioms Quasicrystal.abs_re_sub_le_dist
+#print axioms Quasicrystal.offline_disjoint_discs
+
+/-! ### MIRRORMERE E4b instances -- OfflineDiscsInstances (emitted by the Telperion
+    `disjoint_discs` kind; the points are INPUT, not a claim about zeta) -/
+#print axioms OfflineDiscsInstances.offline_discs_online_pair
+#print axioms OfflineDiscsInstances.offline_discs_offline_bank
 
 /-! ### increment (iii) -- CharacterizationStatements
 

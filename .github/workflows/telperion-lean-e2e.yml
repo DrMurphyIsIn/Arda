@@ -2328,6 +2328,49 @@ jobs:
       - name: Build the emitted rigidity lib (uses the island's TwoFreqRigidity)
         working-directory: telperion/examples/quasicrystal/lean
         run: lake build SelfInversiveRigidityInstances
+  disjoint-discs-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the disjoint-discs isolation instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/disjoint_discs/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake exe cache get
+
+      - name: Build the E4b isolation lemma and the emitted instances
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          lake build OfflineDiscs
+          lake build OfflineDiscsInstances
+
+      - name: Axiom guard (OfflineDiscs + instances must be sorry-free and axiom-clean)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          lake env lean AxiomGuardQC.lean 2>&1 | tee guard.txt
+          if grep -q "sorryAx" guard.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
+          grep -q "Quasicrystal.offline_disjoint_discs" guard.txt || { echo "GUARD FAILED: node theorem not printed"; exit 1; }
+          grep -q "OfflineDiscsInstances.offline_discs_offline_bank" guard.txt || { echo "GUARD FAILED: instance not printed"; exit 1; }
   winding-box-zero-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 20
