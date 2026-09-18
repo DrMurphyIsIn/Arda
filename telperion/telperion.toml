@@ -639,6 +639,11 @@ script = "examples/li_positivity/generate.py"
 group = "flint"    # 20 Li-criterion rungs + refutation atom; Arb enclosures need python-flint
 
 [[check]]
+name = "shape_audit"
+script = "examples/shape_audit/generate.py"
+group = "quick"    # statement-SHAPE audit (bounded_hypothesis_collapse): kernel-checkable witness that a decaying-error + height-indexed-hypothesis + T-independent-conclusion shape collapses under an explicit constant; dogfooded by the MIRRORMERE D3 authoring pass; exact, no flint
+
+[[check]]
 name = "rvm_bridge"
 script = "examples/rvm_bridge/generate.py"
 group = "quick"    # E6 bridge island (v4.33.0-rc2 / zeta-23-lean): drift check that the node statement + mirrored defs still match the mirrormere registry; ~0.1 s

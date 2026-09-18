@@ -353,6 +353,10 @@ _SPECIAL_KINDS = (
     # Γℝ n).  A FINITE rational inequality (category-b); the passage to the companion coefficient and
     # the Route-P falsifiability atom is the CONDITIONAL, RH-hard exhaustion seam (never discharged).
     "bragg_floor",
+    # Statement-shape audit (2026-09-18, MIRRORMERE D3 authoring): certifies that a
+    # registry SHAPE (decaying error + height-indexed hypothesis + T-independent
+    # conclusion) collapses under an explicit constant, i.e. carries no content.
+    "bounded_hypothesis_collapse",
 )
 
 # kind -> "module:certify_point_fn" for the generic (family.special) emitters.
@@ -436,6 +440,10 @@ _SPECIAL_DISPATCH = {
         ("emit_spacing_tail", "certify_spacing_tail_bound_point", "SpacingTailBoundEmitter"),
     "autocorr_support":
         ("emit_autocorr_support", "certify_autocorr_support_point", "AutocorrSupportEmitter"),
+    # Statement-shape audit emitter (2026-09-18, MIRRORMERE D3 authoring).
+    "bounded_hypothesis_collapse":
+        ("emit_bounded_hypothesis_collapse", "certify_bounded_hypothesis_collapse_point",
+         "BoundedHypothesisCollapseEmitter"),
     # Axiom-Math bgp212 + Dyson-quasicrystal emitters (2026-09-09).
     "rayleigh_gram":
         ("emit_rayleigh_gram", "certify_rayleigh_gram_point", "RayleighGramEmitter"),

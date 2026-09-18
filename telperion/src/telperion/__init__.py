@@ -88,6 +88,10 @@ from .emit_spacing_tail import (  # noqa: F401
 from .emit_autocorr_support import (  # noqa: F401
     AutocorrSupportEmitter, autocorr_support_certificate, autocorr_support_family,
 )
+from .emit_bounded_hypothesis_collapse import (  # noqa: F401
+    BoundedHypothesisCollapseEmitter, bounded_hypothesis_collapse_certificate,
+    bounded_hypothesis_collapse_family,
+)
 from .emit_rayleigh_gram import (  # noqa: F401
     RayleighGramEmitter, rayleigh_gram_certificate, rayleigh_gram_family,
 )

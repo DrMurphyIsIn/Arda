@@ -150,6 +150,18 @@ REGISTRY: dict[str, SensitivityStance] = {
                           "LeanProfile for reference identities)"),
     "ExactFactEmitter": _S(CERTIFICATE_SENSITIVE,
                            "concrete exact fact/power; corruption breaks norm_num"),
+    "BoundedHypothesisCollapseEmitter": _S(
+        CERTIFICATE_SENSITIVE,
+        "statement-SHAPE audit: the explicit collapsing constant max 0 (-W)·B^k/log T0 is in "
+        "the emitted statement and is load-bearing -- a corrupted exponent, base or factor "
+        "breaks the nlinarith/le_div_iff chain.  Certifies that an audited registry shape is "
+        "contentless (closable by a classical case split); refutes a sentence, never a theorem",
+        neg_control=NegControlStance(
+            NEG_CONTROL_DECLARED_UNWIRED,
+            "certificate-sensitive, so a two-sided kernel control is possible (emit a corrupted "
+            "constant and the Lean proof must fail), but no adapter is built in "
+            "negative_control_harness.ADAPTERS yet -- the gap is named rather than papered over"),
+    ),
     # --- structurally non-vacuous: positivity / decidable / finite / glue ---
     "DirectPolyaEmitter": _S(STRUCTURALLY_NONVACUOUS,
                              "0 ≤ f via positivity on an all-nonneg form; the "

@@ -1,0 +1,9 @@
+{
+  "family": "ShapeAudit",
+  "input_hash": "e60369f39226c4f843153b77bd25d0f12d4b8eae088cd63533c2d5c51361d33b",
+  "tool_version": "0.1.6",
+  "files": [
+    "ShapeAudit.lean"
+  ],
+  "n_theorems": 2
+}

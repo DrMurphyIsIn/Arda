@@ -15,6 +15,14 @@
   the registry's unconditional W2c nodes need it pinned.  Flagged for the blind
   read-back audit cycle.  conjecture1_proved = False.
 
+  ADDED 2026-09-18 (MIRRORMERE D3 authoring, node MM_weil_form_certified_height): a second
+  MIRROR block `WeilExplicit` -- the six E8 definitions carried VERBATIM from the v4.34
+  missions/rh RHDefs.lean AUTHORED block (branch rh/e8-statement), the same text that
+  examples/rvm_bridge/lean/E6Bridge4.lean mirrors at v4.33.0-rc2, so a cross-island grant's
+  normalized-containment gate can fire -- and an AUTHORED block `MMWeil` (autocorr, weilForm,
+  zeroSideBelow), Weil's functional in g-coordinates.  Design memo:
+  telperion/docs/MM_mm-d3-certified-height-weil-bound_DESIGN_2026-09-18.md.
+
   CONTEXT MIRROR (CI fix 2026-09-14): the island source files declare
   `noncomputable section` (TwoFreqRigidity.lean:36, InvolutionDictionary.lean:54,
   RHLinalg/PosIndex.lean:28, DefectDictionary.lean:53) and PosIndex.lean:30-31
@@ -173,5 +181,87 @@ noncomputable def braggTerm (sigma1 T0 T1 : ℝ) (n : ℕ) : ℂ :=
     / (-(I * (Real.log n : ℂ)))
 
 end DiffractionCore
+
+namespace WeilExplicit
+
+open MeasureTheory Complex
+
+-- ===== MIRROR of the AUTHORED `WeilExplicit` block of
+-- missions/rh/lean/Statements/RHDefs.lean (branch rh/e8-statement, v4.34 island), carried
+-- here VERBATIM as the v4.32 copy; the same six definitions are mirrored verbatim in
+-- examples/rvm_bridge/lean/E6Bridge4.lean (v4.33.0-rc2, the E8 proof island).  The node
+-- MM_weil_form_certified_height is stated in this vocabulary, so `zeroMult`, `weilKernel`,
+-- `archSide` and `primeSide` must read here EXACTLY as they read there or the cross-island
+-- grant gate (normalized containment) cannot fire.  Flagged for the blind read-back audit
+-- cycle.  conjecture1_proved = False. =====
+
+/-- The E8 test class: smooth, compactly supported g : R -> C. -/
+def IsWeilTest (g : ℝ → ℂ) : Prop :=
+  ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ HasCompactSupport g
+
+/-- H_g(s) = ∫ g(u) e^{(s - 1/2) u} du, the zero-side transform.  With s = 1/2 + i r this is
+    h(r) = ∫ g(u) e^{i r u} du (the Iwaniec-Kowalski pair); entire for compactly supported g,
+    so H_g(ρ) at a zero ρ = 1/2 + iγ is h(γ) with γ complex when ρ is off the line.
+    H_g(0) = h(i/2) and H_g(1) = h(-i/2) are the two pole terms. -/
+noncomputable def weilKernel (g : ℝ → ℂ) (s : ℂ) : ℂ :=
+  ∫ u : ℝ, g u * Complex.exp ((s - 1 / 2) * (u : ℂ))
+
+/-- Multiplicity of ρ as a nontrivial zero: the order of ζ at ρ on the open critical strip
+    (0 off the strip and at non-zeros).  The SAME divisor expression as
+    RvMCount.zetaZeroCount, so the E8 zero side and the RvM count carry identical weights. -/
+noncomputable def zeroMult (ρ : ℂ) : ℕ :=
+  ((MeromorphicOn.divisor riemannZeta {s : ℂ | 0 < s.re ∧ s.re < 1} : ℂ → ℤ) ρ).toNat
+
+/-- The archimedean integrand h(r) · Re ψ(1/4 + i r/2), ψ = Γ'/Γ = Complex.digamma. -/
+noncomputable def archIntegrand (g : ℝ → ℂ) (r : ℝ) : ℂ :=
+  weilKernel g (1 / 2 + (r : ℂ) * I) * ((Complex.digamma (1 / 4 + ((r : ℂ) / 2) * I)).re : ℂ)
+
+/-- The archimedean side: h(i/2) + h(-i/2) - g(0) log π + (1/2π) ∫ h(r) Re ψ(1/4 + i r/2) dr. -/
+noncomputable def archSide (g : ℝ → ℂ) : ℂ :=
+  weilKernel g 0 + weilKernel g 1 - g 0 * (Real.log Real.pi : ℂ)
+    + (1 / (2 * (Real.pi : ℂ))) * ∫ r : ℝ, archIntegrand g r
+
+/-- The prime side: Σ_n Λ(n)/√n · (g(log n) + g(-log n)); a finite sum for compactly
+    supported g (Λ(0) = Λ(1) = 0; the two terms are the two vertical edges of the finite
+    explicit formula rect_explicit_formula in the T → ∞ limit). -/
+noncomputable def primeSide (g : ℝ → ℂ) : ℂ :=
+  ∑' n : ℕ, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ)
+    * (g (Real.log n) + g (-Real.log n))
+
+end WeilExplicit
+
+namespace MMWeil
+
+open MeasureTheory Complex WeilExplicit
+
+-- ===== AUTHORED for the D3 reformulation (routes-roadmap D3, memo
+-- MM_mm-d3-certified-height-weil-bound_DESIGN_2026-09-18.md; NOT in any island).  Weil's
+-- positivity functional in g-COORDINATES: the test function on the prime side is the
+-- autocorrelation f = g ⋆ g~ (g~(u) = conj (g (-u))), whose transform factors as
+-- H_f(s) = H_g(s) · conj (H_g (1 - conj s)) -- equal to ‖H_g(s)‖² exactly on Re s = 1/2
+-- (the on-line square channel, the emit_unit_modulus_sos shape), and NOT a square off it.
+-- Off-line values of H_g are literal (the transform is entire), so the Paley-Wiener
+-- obstruction that refuted the band-limited D3 does not arise.  conjecture1_proved = False. =====
+
+/-- The autocorrelation f = g ⋆ g~ with g~(u) = conj (g (-u)), written as the correlation
+    integral: (g ⋆ g~)(u) = ∫ g(u + v) conj (g v) dv.  Smooth with compact support when g is
+    (a classical convolution fact, carried as the hypothesis `IsWeilTest (autocorr g)`). -/
+noncomputable def autocorr (g : ℝ → ℂ) : ℝ → ℂ :=
+  fun u => ∫ v : ℝ, g (u + v) * (starRingEnd ℂ) (g v)
+
+/-- Weil's functional read off the PRIMES side: W(f) = archSide f - primeSide f.  By the
+    limit explicit formula (RH_limit_explicit_formula, proved on the rvm_bridge island) this
+    equals the zero-side sum Σ_ρ m(ρ) H_f(ρ); Weil positivity is the assertion that
+    W (autocorr g) has nonnegative real part for every test g. -/
+noncomputable def weilForm (f : ℝ → ℂ) : ℂ :=
+  WeilExplicit.archSide f - WeilExplicit.primeSide f
+
+/-- The zero-side summand truncated at height T: the E8 summand m(ρ) H_f(ρ) for |Im ρ| ≤ T
+    and 0 beyond it.  Summing this family is the CERTIFIED-HEIGHT part of the zero side --
+    the part the zero ladder controls. -/
+noncomputable def zeroSideBelow (f : ℝ → ℂ) (T : ℝ) (ρ : ℂ) : ℂ :=
+  if |ρ.im| ≤ T then (WeilExplicit.zeroMult ρ : ℂ) * WeilExplicit.weilKernel f ρ else 0
+
+end MMWeil
 
 end
