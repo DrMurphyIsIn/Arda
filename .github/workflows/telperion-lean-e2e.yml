@@ -2262,6 +2262,49 @@ jobs:
       - name: Build the emitted Bragg-amplitude lib (zzl_aux owns CosEnclosure + the Bragg family)
         working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
         run: lake build BraggAmplitudeInstances
+  exp-enclosure-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the exp-enclosure instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/exp_enclosure/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Wire the sharded packages to one shared deps dir (B2 layout; .lake is gitignored)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: |
+          mkdir -p .lake/packages
+          for d in zzl_core zzl_aux ZetaBands_h*; do
+            mkdir -p "$d/.lake" && ln -sfn ../../.lake/packages "$d/.lake/packages"
+          done
+          mkdir -p ../../zero_free_bridge/lean/.lake
+          ln -sfn ../../../zeta_zero_localization/lean/.lake/packages ../../zero_free_bridge/lean/.lake/packages
+
+      - name: Fetch Mathlib olean cache (into the shared deps dir)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
+        run: lake exe cache get
+
+      - name: Build the emitted exp-enclosure lib (zzl_aux owns BraggDefect, which the bridge imports)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
+        run: lake build ExpEnclosureInstances
   defect-witness-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
