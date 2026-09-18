@@ -24,7 +24,7 @@ from generate import (  # noqa: E402  # type: ignore[import]
 from telperion import DirectPolyaEmitter, certify, emit  # noqa: E402
 
 
-def main() -> int:
+def main(check: bool = False) -> int:
     res = emit(
         certify(bernoulli_family()),
         bernoulli_profile(),
@@ -35,10 +35,23 @@ def main() -> int:
     out = HERE / "lean" / "Prove2MeCompat.lean"
     # res.files is a dict[str, str]; we want the single emitted file.
     (text,) = res.files.values()
+    if check:
+        # drift check (telperion verify): regenerate in memory, never write
+        if not out.exists():
+            print(f"DRIFT: {out} missing")
+            return 1
+        if out.read_text() != text:
+            print(f"DRIFT: {out} differs from regeneration")
+            return 1
+        print("check: OK (regeneration matches frozen output byte-for-byte)")
+        return 0
     out.write_text(text)
     print(f"emitted {res.n_theorems} theorems -> {out}")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--check", action="store_true", help="drift check; do not write")
+    raise SystemExit(main(check=ap.parse_args().check))
