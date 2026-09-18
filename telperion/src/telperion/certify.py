@@ -353,6 +353,11 @@ _SPECIAL_KINDS = (
     # Γℝ n).  A FINITE rational inequality (category-b); the passage to the companion coefficient and
     # the Route-P falsifiability atom is the CONDITIONAL, RH-hard exhaustion seam (never discharged).
     "bragg_floor",
+    # MIRRORMERE W3c goal authoring (2026-09-18): certified two-sided rational enclosure of the
+    # Weil form W = Re (weilForm (autocorr g)) at ONE explicit test function -- the finite value
+    # certificate the membership goal's read-back (and the D2/D3 finite faces) consume.  The
+    # universal statement over the class is RH-equivalent and is never attempted.
+    "weil_form_enclosure",
 )
 
 # kind -> "module:certify_point_fn" for the generic (family.special) emitters.
@@ -557,6 +562,9 @@ _SPECIAL_DISPATCH = {
     # RvMCompanionBraggLimit, pinned in the li_positivity island lakefile).
     "bragg_floor":
         ("emit_bragg_floor", "certify_bragg_floor_point", "BraggFloorEmitter"),
+    # MIRRORMERE W3c (Weil-form value certificate; backend telperion.weil_gauss).
+    "weil_form_enclosure":
+        ("emit_weil_form_enclosure", "certify_weil_form_point", "WeilFormEnclosureEmitter"),
 }
 
 

@@ -182,6 +182,23 @@ REGISTRY: dict[str, SensitivityStance] = {
                                 "|u|=1 side condition is a hypothesis, positivity is by structure with "
                                 "no separately-supplied corruptible identity (the degenerate power "
                                 "m<1 is refused at certify time — the negative control)"),
+    "WeilFormEnclosureEmitter": _S(STRUCTURALLY_NONVACUOUS,
+                                  "MIRRORMERE W3c value certificate: from an Arb-enclosed pair "
+                                  "lo <= W <= hi for the Weil form W = Re (weilForm (autocorr g)) "
+                                  "at ONE explicit test function, the emitted theorem is the pure "
+                                  "rational implication (hlo, hhi) => 0 < W (or W < 0), the sign "
+                                  "comparison decided by norm_num.  lo/hi are python-flint ball "
+                                  "arithmetic -- the documented trust seam; the certificate REFUSES "
+                                  "an enclosure that straddles zero (sign undecided), an "
+                                  "inconsistent one, and one DISJOINT from the independent "
+                                  "zero-side reading of the same functional (the E8 explicit-formula "
+                                  "cross-check).  Finite category-b: the membership goal quantifies "
+                                  "over the whole class and is RH-equivalent, never attempted "
+                                  "(conjecture1_proved = False)",
+                                  # Structural, with a kernel control: a corrupted bound making the
+                                  # emitted sign comparison false is kernel-rejected by norm_num.
+                                  # See negctrl_adapters/adapter_weil_form_enclosure.py.
+                                  neg_control=NegControlStance(NEG_CONTROL_ADAPTER)),
     "BraggFloorEmitter": _S(STRUCTURALLY_NONVACUOUS,
                             "Route P Brick D3 diffraction rung floorHi ≤ braggLo − tailHi: a concrete "
                             "rational inequality discharged by norm_num (the truncated von Mangoldt "

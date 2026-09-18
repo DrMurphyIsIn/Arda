@@ -35,6 +35,12 @@ grant gate relies on:
      halves are skipped with a printed notice when the registry file (or the
      `WeilExplicit` block) is absent from this checkout, since the E8 registry node lives
      on its own branch until merged.
+  7. (MIRRORMERE second copy, 2026-09-18) the six `WeilExplicit.*` definitions mirrored
+     into `missions/mirrormere/lean/Statements/MMDefs.lean` for the W3c goal node
+     `MM_zeta_comb_membership` match `lean/E6Bridge4.lean` def-for-def -- the gate that
+     keeps the cross-campaign mirror from drifting away from the kernel-checked island
+     copy (the two AUTHORED defs `autocorr` / `weilForm` live only in MMDefs and are
+     covered by the mirrormere statements build instead).
 
 Any drift in the registry statement or definitions fails this check, so the
 island cannot silently stop matching the node it discharges.
@@ -193,6 +199,26 @@ def check() -> int:
         notices.append(f"NOTICE: {_RHDEFS.relative_to(_TELPERION)} has no `WeilExplicit` block in this "
                        "checkout (E8 registry vocabulary not merged here); the six mirrored-def "
                        "checks for E6Bridge4 are skipped")
+    # 7. the MIRRORMERE second copy of the same WeilExplicit vocabulary (2026-09-18, W3c goal
+    #    authoring): missions/mirrormere/.../MMDefs.lean mirrors the six defs so the goal node
+    #    MM_zeta_comb_membership elaborates standalone.  That is a SECOND copy of a block the rh
+    #    campaign owns, so it gets its own gate here, against the island file (which is itself
+    #    checked against RHDefs above whenever RHDefs is present in the checkout).  The two
+    #    AUTHORED defs `autocorr` / `weilForm` exist only in MMDefs and have no counterpart to
+    #    compare; they are covered by the mirrormere statements build, not by this gate.
+    mmdefs_text = _MMDEFS.read_text(encoding="utf-8")
+    if "namespace WeilExplicit" in mmdefs_text:
+        for name in _DEF_NAMES4:
+            want = _def_block(mmdefs_text, name)
+            have = _def_block(bridge4, name)
+            if want != have:
+                failures.append(
+                    f"`def {name}` drifted between the MIRRORMERE mirror and the island:\n"
+                    f"  MMDefs.lean: {want}\n  island:      {have}")
+    else:
+        notices.append(f"NOTICE: {_MMDEFS.relative_to(_TELPERION)} has no `WeilExplicit` block in "
+                       "this checkout; the six MIRRORMERE mirrored-def checks are skipped")
+
     for n in notices:
         print(n)
 
@@ -207,7 +233,9 @@ def check() -> int:
           f"({_BRIDGE2.relative_to(_TELPERION)}); "
           f"RH corridor node statement matches ({_BRIDGE3.relative_to(_TELPERION)}); "
           f"RH explicit-formula node statement matches its embedded copy"
-          f"{'' if notices else ' and the registry'} ({_BRIDGE4.relative_to(_TELPERION)})")
+          f"{'' if notices else ' and the registry'} ({_BRIDGE4.relative_to(_TELPERION)}); "
+          f"MIRRORMERE mirrors the same {len(_DEF_NAMES4)} WeilExplicit defs "
+          f"({_MMDEFS.relative_to(_TELPERION)})")
     return 0
 
 

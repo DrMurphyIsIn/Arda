@@ -75,6 +75,11 @@ from .emit_bragg_floor import (  # noqa: F401
     bragg_floor_family, certify_bragg_floor_point,
     bragg_below_floor_refutes_rh_lean,
 )
+from .emit_weil_form_enclosure import (  # noqa: F401
+    WeilFormEnclosureEmitter, WeilFormCert, WeilFormData, weil_form_certificate,
+    weil_form_family, certify_weil_form_point,
+    weil_form_neg_refutes_rh_lean, weil_form_membership_face_lean,
+)
 from .emit_enclosure_fold import (  # noqa: F401
     EnclosureIntervalFoldEmitter, enclosure_interval_fold_certificate,
     enclosure_interval_fold_family,
