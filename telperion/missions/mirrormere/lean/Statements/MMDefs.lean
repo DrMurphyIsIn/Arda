@@ -237,7 +237,8 @@ noncomputable def primeSide (g : ℝ → ℂ) : ℂ :=
     island, neither hypothesised here):
 
     * `crossCorr g₂ g₁ u = conj (crossCorr g₁ g₂ (-u))` (substitute `v ↦ v + u`), whence
-      `weilGram` is Hermitian on the PRIMES side alone -- no zero symmetry is used;
+      `weilGram` is Hermitian on the ARITHMETIC side alone (the von Mangoldt sum together
+      with the archimedean digamma term) -- no zero symmetry is used;
     * `weilKernel (crossCorr g₁ g₂) s = weilKernel g₁ s * conj (weilKernel g₂ (1 - conj s))`
       (Fubini on compact supports), which is the factorisation the trace conjunct reads.
 
