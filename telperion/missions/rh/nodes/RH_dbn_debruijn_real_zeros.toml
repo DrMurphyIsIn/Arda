@@ -1,0 +1,8 @@
+created = "2026-09-17"
+depends_on = ["RH_dbn_H0_eq_xi"]
+kind = "milestone"
+name = "RH.dbn_debruijn_real_zeros"
+statement_module = "Statements.RH_dbn_debruijn_real_zeros"
+status = "draft"
+title = "Route C / C3 de Bruijn 1950: for t >= 1/2 every zero of H_t is real (the unconditional Lambda <= 1/2 half of the de Bruijn-Newman theory); STATED ONLY, not proved"
+updated = "2026-09-17"
