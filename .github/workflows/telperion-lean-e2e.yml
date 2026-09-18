@@ -169,6 +169,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # The drift check imports the telperion package (statement-port matching), which pulls
+      # sympy. Without this the step dies with ModuleNotFoundError before it checks anything --
+      # a drift check that cannot start is a drift check that cannot fail on drift.
+      - run: pip install sympy
 
       - name: Drift check (node statements + mirrored defs still match the mirrormere and rh registries)
         working-directory: telperion
