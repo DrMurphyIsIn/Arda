@@ -126,11 +126,21 @@ jobs:
         working-directory: telperion/examples/li_positivity/lean
         run: lake build
 
-      - name: Axiom guard (fails on sorryAx anywhere in the anchors)
+      - name: "Axiom guard (Li ladder anchors): exact axiom set, no sorryAx, guard actually ran"
         working-directory: telperion/examples/li_positivity/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardLiPositivity.lean | tee axioms.out
-          ! grep -q "sorryAx" axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardLiPositivity.lean 2>&1 | tee axioms.out
+          n=$(grep -c "depends on axioms" axioms.out || true)
+          if [ "$n" -lt "165" ]; then
+            echo "::error::axiom guard printed $n axiom lines, expected at least 165 -- the guard did not run or was silently truncated"; exit 1; fi
+          if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
+          # every printed axioms line must be EXACTLY Lean's three standard axioms
+          if grep -E "depends on axioms" axioms.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
+            grep -E "depends on axioms" axioms.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
+            exit 1; fi
 
   rvm-bridge-compiles:
     runs-on: ubuntu-latest
@@ -169,11 +179,21 @@ jobs:
         working-directory: telperion/examples/rvm_bridge/lean
         run: lake build
 
-      - name: Axiom guard (fails on sorryAx anywhere in the anchors or the consumed upstream inputs)
+      - name: "Axiom guard (45 anchors incl. consumed upstream inputs): exact axiom set, no sorryAx, guard actually ran"
         working-directory: telperion/examples/rvm_bridge/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardRvMBridge.lean | tee axioms.out
-          ! grep -q "sorryAx" axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardRvMBridge.lean 2>&1 | tee axioms.out
+          n=$(grep -c "depends on axioms" axioms.out || true)
+          if [ "$n" -lt "45" ]; then
+            echo "::error::axiom guard printed $n axiom lines, expected at least 45 -- the guard did not run or was silently truncated"; exit 1; fi
+          if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
+          # every printed axioms line must be EXACTLY Lean's three standard axioms
+          if grep -E "depends on axioms" axioms.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
+            grep -E "depends on axioms" axioms.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
+            exit 1; fi
 
   tangent-compiles:
     runs-on: ubuntu-latest
