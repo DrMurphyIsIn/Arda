@@ -1,0 +1,8 @@
+created = "2026-09-17"
+depends_on = ["RH_limit_explicit_formula", "RH_bl_finite_multiset"]
+kind = "milestone"
+name = "RH.bl_explicit_formula"
+statement_module = "Statements.RH_bl_explicit_formula"
+status = "draft"
+title = "The BOMBIERI-LAGARIAS EXPLICIT FORMULA on Li's test class (routes-roadmap B7-ii, the B6 -> B7 test-class extension of E8): for every n >= 1 the SYMMETRIC window sums sum_{|Im rho| <= T} m(rho) (1 - (1 - 1/rho)^n) over the nontrivial zeros (RvMCount / E8 multiplicity) converge as T -> infinity to S_inf(n) + S_f(n), S_inf(n) = 1 - (n/2)(gamma + log pi + 2 log 2) + sum_{j=2}^n (-1)^j C(n,j)(1 - 2^{-j}) zeta(j) the archimedean closed form and S_f(n) = -sum_{j=1}^n C(n,j) eta_{j-1} the finite part, eta_j the Taylor coefficients at s = 1 of -zeta'/zeta(s) - 1/(s-1) (BL 1999 Thm 2, Li 1997); the limit is Li's lambda_n. Li's kernel decays like 1/|r| on the line, is in neither the E8 nor the Guinand class, the family is NOT summable (HasSum false, one-sided windows diverge), and the naive prime sum diverges: the arithmetic side is the residue form, not a prime comb. Stated only, NOT proved; conjecture1_proved = False"
+updated = "2026-09-17"
