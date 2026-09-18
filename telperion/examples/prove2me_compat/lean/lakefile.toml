@@ -1,0 +1,13 @@
+name = "Prove2MeCompat"
+defaultTargets = ["Prove2MeCompat"]
+
+# Mathlib pinned to the prove2.me default environment's exact commit.
+# Discovered from https://github.com/prove2me/prove2me_workspace (SKILL.md /
+# references/lean-setup.md, retrieved 2026-09-11).
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "0df444a360eaa60ab8c11dca51a86af692955474"
+
+[[lean_lib]]
+name = "Prove2MeCompat"
