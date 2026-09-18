@@ -3,6 +3,11 @@ depends_on = ["RH_rvm_unconditional", "RH_corridor_bound"]
 kind = "milestone"
 name = "RH.limit_explicit_formula"
 statement_module = "Statements.RH_limit_explicit_formula"
-status = "draft"
+status = "open"
 title = "The LIMIT EXPLICIT FORMULA (routes-roadmap E8 = B6 = D6, the T -> infinity Guinand-Weil identity in diffraction form): for every smooth compactly supported g : R -> C, Sum_rho m(rho) H_g(rho) = h(i/2) + h(-i/2) - g(0) log pi + (1/2pi) int h(r) Re psi(1/4+ir/2) dr - Sum_n Lambda(n)/sqrt n (g(log n)+g(-log n)), zero side over ALL nontrivial zeros with the RvMCount multiplicity, stated as HasSum (summability is part of the claim); the limit of rect_explicit_formula, consumes the corridor bound and RvM; Weil 1952 / Iwaniec-Kowalski 5.12 normalisation, no evenness hypothesis"
 updated = "2026-09-17"
+
+[readback]
+auditor = "blind-auditor-e8 2026-09-18 (independent blind read-back, AUDIT_TESTIMONY_E8_2026-09-18.md; explicit formula re-derived from the Lambda-prime/Lambda contour, mpmath 20-digit agreement with non-even test functions, each wrong sign/factor variant off at order one; multiplicity and index-set probes proved in Lean; trivial-close probes closed nothing)"
+date = "2026-09-17"
+text = "For every smooth compactly supported complex test function g on the prime side, the archimedean integrand is integrable and the sum over all complex rho of (multiplicity of rho as a zero of zeta on the open critical strip, zero elsewhere) times the transform H_g(rho) = integral of g(u) e^{(rho-1/2)u} du converges (HasSum, so summability is part of the claim) to H_g(0) + H_g(1) - g(0) log pi + (1/2pi) integral of H_g(1/2+ir) Re psi(1/4+ir/2) dr minus the finite prime-power sum of Lambda(n)/sqrt(n) (g(log n) + g(-log n)). This is the Weil 1952 / Guinand 1948 explicit formula in the non-even form; rho and its conjugate are separate terms, matching the prime side carrying both g(log n) and g(-log n). Non-summability would make it false, not vacuous; the class is nonempty and not a singleton."
