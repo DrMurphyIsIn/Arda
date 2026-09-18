@@ -1,0 +1,8 @@
+created = "2026-09-17"
+depends_on = ["RH_dbn_H0_eq_xi"]
+kind = "milestone"
+name = "RH.dbn_rh_iff_H0_real_zeros"
+statement_module = "Statements.RH_dbn_rh_iff_H0_real_zeros"
+status = "draft"
+title = "Route C / C4: RH (AND_ladder grammar: every nontrivial zero in the open strip has real part 1/2) iff every zero of H_0 is real; STATED ONLY, not proved"
+updated = "2026-09-17"

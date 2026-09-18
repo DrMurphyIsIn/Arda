@@ -100,6 +100,23 @@ bounds the emitter certifies are documented external Arb/mpmath hypotheses
 (see `telperion/docs/LI_POSITIVITY_LADDER.md`, including its honest ceiling:
 finitely many rungs never decide RH).
 
+## Discharged onto an upstream formalization — zeta-23-lean (anthropics/formal-math)
+
+The `rvm_bridge` island (`telperion/examples/rvm_bridge/lean/`, Lean v4.33.0-rc2)
+discharges the MIRRORMERE residual `MM_rvm_unbounded_mean_density` \emph{onto}
+Anthropic's **zeta-23-lean** — the `zeta23/` directory of
+[anthropics/formal-math](https://github.com/anthropics/formal-math) (Apache-2.0,
+Copyright 2026 Anthropic, PBC; its own NOTICE records code derived from
+Kontorovich–Tao's `PrimeNumberTheoremAnd`), the machine-checked formalization of
+Alpöge–Furman, *More than two thirds of the zeta zeros are simple and on the
+critical line* (arXiv:2608.13637). What is taken is the **theorem interface**
+(`Zeta23.thmA₀`, `Zeta23.riemannVonMangoldt_zeta`, `Zeta23.zetaSeam`) as a pinned
+Lake dependency at commit `fbdc36bbf17d20af3fd0447c6d1a8a02773c9844`; no code was
+copied. Theorem A and the upstream Riemann–von Mangoldt package are not this
+repository's work. The bridge itself is definition-level assembly plus elementary
+real analysis; it is not RH and does not approach it
+(`telperion/docs/E6_PROBE_2026-09-17.md`).
+
 ## Engineering patterns — AXLE (arXiv:2606.26442)
 
 Telperion's verify / gap-fill / repair / negative-control / bundle / normalize

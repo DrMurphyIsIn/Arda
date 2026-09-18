@@ -677,3 +677,7 @@ group = "quick"    # exact self-inversive rigidity certificate (no flint)
 name = "winding_box_zero"
 script = "examples/winding_box_zero/generate.py"
 group = "flint"    # Arb winding-number sidecar; needs python-flint
+[[check]]
+name = "rvm_bridge"
+script = "examples/rvm_bridge/generate.py"
+group = "quick"    # E6 bridge island (v4.33.0-rc2 / zeta-23-lean): drift check that the node statement + mirrored defs still match the mirrormere registry; ~0.1 s

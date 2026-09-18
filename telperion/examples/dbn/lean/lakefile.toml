@@ -1,0 +1,21 @@
+name = "DBN"
+# Route C (de Bruijn-Newman) foundations island -- RH_ROUTES_ROADMAP_2026-09-16.md section 4,
+# milestones C2 (DBNDefs) / C3 / C4. Same toolchain and Mathlib pin as li_positivity
+# (LiCriterion -> Mathlib de5ce8a9 / Lean v4.34.0-rc1) so `LiCriterion.riemannXi` is the shared
+# xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
+# compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
+# rationale, #448/#451).
+defaultTargets = ["DBNDefs", "AxiomGuardDBN"]
+
+[[require]]
+name = "LiCriterion"
+git = "https://github.com/nicholasbulka/li-criterion-rh-equivalence-lean"
+rev = "35df682f3b709ffe5fbcfdd452dfa964bd622b87"
+
+[[lean_lib]]
+name = "DBNDefs"
+
+# The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
+# It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.
+[[lean_lib]]
+name = "AxiomGuardDBN"
