@@ -1,0 +1,8 @@
+created = "2026-09-17"
+depends_on = []
+kind = "lemma"
+name = "RH.dbn_H0_eq_xi"
+statement_module = "Statements.RH_dbn_H0_eq_xi"
+status = "draft"
+title = "Route C / C2 representation theorem: H_0(z) = (1/8) xi(1/2 + iz/2) -- the heat-flow family at t = 0 is the Riemann xi function (Polymath15 eq. (3), Titchmarsh 10.1); STATED ONLY, not proved"
+updated = "2026-09-17"
