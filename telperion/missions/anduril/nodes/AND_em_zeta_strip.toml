@@ -3,7 +3,7 @@ depends_on = []
 kind = "milestone"
 name = "AND.em_zeta_strip"
 statement_module = "Statements.AND_em_zeta_strip"
-status = "open"
+status = "proved"
 title = "A2 E-track headliner: the verified Euler-Maclaurin representation of zeta continued into the critical strip -- zeta(s) = 1/(s-1) + 1/2 + integral of sawBernoulli-weighted power tail, for 0 < Re s, s /= 1 (em_zeta_strip, E3 of the em-complex agent)"
 updated = "2026-09-14"
 
