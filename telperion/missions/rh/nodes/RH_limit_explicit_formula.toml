@@ -1,0 +1,8 @@
+created = "2026-09-17"
+depends_on = ["RH_rvm_unconditional", "RH_corridor_bound"]
+kind = "milestone"
+name = "RH.limit_explicit_formula"
+statement_module = "Statements.RH_limit_explicit_formula"
+status = "draft"
+title = "The LIMIT EXPLICIT FORMULA (routes-roadmap E8 = B6 = D6, the T -> infinity Guinand-Weil identity in diffraction form): for every smooth compactly supported g : R -> C, Sum_rho m(rho) H_g(rho) = h(i/2) + h(-i/2) - g(0) log pi + (1/2pi) int h(r) Re psi(1/4+ir/2) dr - Sum_n Lambda(n)/sqrt n (g(log n)+g(-log n)), zero side over ALL nontrivial zeros with the RvMCount multiplicity, stated as HasSum (summability is part of the claim); the limit of rect_explicit_formula, consumes the corridor bound and RvM; Weil 1952 / Iwaniec-Kowalski 5.12 normalisation, no evenness hypothesis"
+updated = "2026-09-17"
