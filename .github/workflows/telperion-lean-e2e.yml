@@ -141,7 +141,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Drift check (node statement + mirrored defs still match the mirrormere registry)
+      - name: Drift check (node statements + mirrored defs still match the mirrormere and rh registries)
         working-directory: telperion
         run: |
           python examples/rvm_bridge/generate.py --check
@@ -2247,6 +2247,42 @@ jobs:
           if echo "$out" | grep -q 'sorryAx'; then echo "::error::a guarded theorem depends on sorry"; exit 1; fi
           if echo "$out" | grep -qE 'error:'; then echo "::error::AxiomGuardRHInBox.lean did not elaborate cleanly"; exit 1; fi
           echo "OK: all guarded theorems kernel-clean."
+
+  dbn-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/dbn/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache (through the LiCriterion dependency)
+        working-directory: telperion/examples/dbn/lean
+        run: lake exe cache get
+
+      - name: No `sorry` in the island (the registry statements live in missions/rh, not here)
+        working-directory: telperion/examples/dbn/lean
+        run: |
+          ! grep -rnwE "sorry|admit" --include='*.lean' --exclude-dir=.lake .
+
+      - name: Build the DBN foundations island (DBNDefs + AxiomGuardDBN)
+        working-directory: telperion/examples/dbn/lean
+        run: lake build
+
+      - name: Axiom guard (fails on sorryAx anywhere in the island)
+        working-directory: telperion/examples/dbn/lean
+        run: |
+          lake env lean AxiomGuardDBN.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
 
   mission-statements-compile:
     # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each

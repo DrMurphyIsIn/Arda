@@ -14,6 +14,9 @@ import urllib.request
 from pathlib import Path
 
 LI = Path(__file__).resolve().parents[2] / "examples" / "li_positivity" / "lean"
+# Route C (de Bruijn-Newman) island: same toolchain/Mathlib pin as li_positivity, separate Lake
+# project (examples/dbn/lean); the DBN block below is extracted from it by exact line range.
+DBN = Path(__file__).resolve().parents[2] / "examples" / "dbn" / "lean"
 OUT = Path(__file__).resolve().parent / "lean" / "Statements" / "RHDefs.lean"
 
 UPSTREAM_REV = "35df682f3b709ffe5fbcfdd452dfa964bd622b87"
@@ -41,6 +44,11 @@ def ex(module: str, lo: int, hi: int) -> str:
     return "\n".join(lines[lo - 1:hi])
 
 
+def exd(module: str, lo: int, hi: int) -> str:
+    lines = (DBN / module).read_text().split("\n")
+    return "\n".join(lines[lo - 1:hi])
+
+
 def verify_upstream() -> None:
     text = urllib.request.urlopen(UPSTREAM_URL, timeout=30).read().decode()
     lines = text.split("\n")
@@ -51,28 +59,6 @@ def verify_upstream() -> None:
                 f"upstream drift at Basic.lean:{lo}-{hi}:\n{actual!r}\n!=\n{extract!r}")
     print(f"upstream extracts verified against {UPSTREAM_REV[:12]}")
 
-
-# ---------------------------------------------------------------------------
-# AUTHORED registry vocabulary (NOT in the island).  Each block is a literal; the marker
-# comment inside the block says AUTHORED so a reader of RHDefs.lean cannot mistake it for
-# an extract.  conjecture1_proved = False.
-# ---------------------------------------------------------------------------
-
-# 2026-09-17 critical-path nodes (RH_rvm_unconditional): the multiplicity rectangle count.
-RVMCOUNT_BLOCK = """
-namespace RvMCount
-
--- ===== AUTHORED for the registry (NOT in the island; 2026-09-17 critical-path nodes).  The
--- nontrivial-zero count to height T WITH MULTIPLICITY: a finsum over the strip zeros with
--- 0 < Im <= T of the order given by zeta's meromorphic divisor on the open critical strip.
--- RECTANGLE-based by design: a ball-based count (the island's RHInBoxAnalytic.zeroFinset shape)
--- miscounts conjugates (routes roadmap section 9).  finsum is 0 on infinite support, so the
--- definition is total; finiteness of the support is a theorem, not an assumption. =====
-noncomputable def zetaZeroCount (T : ℝ) : ℕ :=
-  ∑ᶠ ρ ∈ {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ 0 < ρ.im ∧ ρ.im ≤ T},
-    ((MeromorphicOn.divisor riemannZeta {s : ℂ | 0 < s.re ∧ s.re < 1} : ℂ → ℤ) ρ).toNat
-
-end RvMCount"""
 
 # 2026-09-18 E8 (RH_limit_explicit_formula): the Weil test class and the three sides of the
 # limit explicit formula.  Design memo: docs/E8_LIMIT_EXPLICIT_FORMULA_DESIGN_2026-09-18.md.
@@ -128,19 +114,17 @@ noncomputable def primeSide (g : ℝ → ℂ) : ℂ :=
 
 end WeilExplicit"""
 
-
 parts = [
     """/-
   Statements.RHDefs -- vocabulary mirror for the RH missions registry.  NOT a node statement.
 
-  Every definition below is a VERBATIM copy: the ZeroFreeBridge block by exact line range
-  from the v4.34 li_positivity island (toolchain leanprover/lean4:v4.34.0-rc1), source
-  module cited above each extract; the LiCriterion block from the upstream pinned
-  dependency nicholasbulka/li-criterion-rh-equivalence-lean @ 35df682f,
+  Every definition below is a VERBATIM copy: the ZeroFreeBridge/DiffractionCore/Backlund
+  blocks by exact line range from the v4.34 li_positivity island (toolchain
+  leanprover/lean4:v4.34.0-rc1) and the DBN block from the v4.34 examples/dbn island
+  (Route C, same pin), source module cited above each extract; the LiCriterion block from
+  the upstream pinned dependency nicholasbulka/li-criterion-rh-equivalence-lean @ 35df682f,
   Lc/LiCriterion/Basic.lean, lines cited.  The copies are regenerated/diffed by
   missions/rh/build_rhdefs.py (--verify-upstream re-fetches and diffs the upstream block).
-  Blocks marked AUTHORED (RvMCount, WeilExplicit) are registry vocabulary with no island
-  source; they are literals in the same script.
   This file exists so that node statement files elaborate standalone against Mathlib; the
   *registry statements* are the node files, which the verify gate matches against the real
   island artifacts by normalized containment.  conjecture1_proved = False.
@@ -196,11 +180,35 @@ open Complex
     "-- ===== RvMBacklundAux.lean:24-25 (v4.34 island) =====",
     ex("RvMBacklundAux.lean", 24, 25),
     """
-end Backlund""",
-    # ===== AUTHORED registry vocabulary (NOT island extracts).  Literal blocks, each carrying its
-    # own AUTHORED marker.  RvMCount was hand-appended in 05eaaadbc without a parts entry (mirror
-    # drift); it is reproduced here byte-for-byte so regeneration is faithful. =====
-    RVMCOUNT_BLOCK,
+end Backlund
+
+namespace RvMCount
+
+-- ===== AUTHORED for the registry (NOT in the island; 2026-09-17 critical-path nodes).  The
+-- nontrivial-zero count to height T WITH MULTIPLICITY: a finsum over the strip zeros with
+-- 0 < Im <= T of the order given by zeta's meromorphic divisor on the open critical strip.
+-- RECTANGLE-based by design: a ball-based count (the island's RHInBoxAnalytic.zeroFinset shape)
+-- miscounts conjugates (routes roadmap section 9).  finsum is 0 on infinite support, so the
+-- definition is total; finiteness of the support is a theorem, not an assumption. =====
+noncomputable def zetaZeroCount (T : ℝ) : ℕ :=
+  ∑ᶠ ρ ∈ {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ 0 < ρ.im ∧ ρ.im ≤ T},
+    ((MeromorphicOn.divisor riemannZeta {s : ℂ | 0 < s.re ∧ s.re < 1} : ℂ → ℤ) ρ).toNat
+
+end RvMCount
+
+namespace DBN
+""",
+    "-- ===== examples/dbn/lean/DBNDefs.lean:40-41 (v4.34 dbn island, Route C) =====",
+    exd("DBNDefs.lean", 40, 41),
+    "\n-- ===== examples/dbn/lean/DBNDefs.lean:211-214 (v4.34 dbn island, Route C) =====",
+    exd("DBNDefs.lean", 211, 214),
+    "\n-- ===== examples/dbn/lean/DBNDefs.lean:408-409 (v4.34 dbn island, Route C) =====",
+    exd("DBNDefs.lean", 408, 409),
+    "\n-- ===== examples/dbn/lean/DBNDefs.lean:413 (v4.34 dbn island, Route C) =====",
+    exd("DBNDefs.lean", 413, 413),
+    """
+end DBN""",
+    # ===== AUTHORED (2026-09-18 E8): Weil test class + the three sides of the limit explicit formula =====
     WEIL_EXPLICIT_BLOCK,
 ]
 
