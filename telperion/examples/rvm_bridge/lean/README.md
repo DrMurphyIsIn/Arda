@@ -1,6 +1,6 @@
 # rvm_bridge/lean — the E6 bridge island (Lean v4.33.0-rc2)
 
-A self-contained Lean 4 project that discharges two registry nodes from an external,
+A self-contained Lean 4 project that discharges three registry nodes from an external,
 independently machine-checked formalization: Anthropic's **zeta-23-lean** (Alpöge–Furman,
 *More than two thirds of the zeta zeros are simple and on the critical line*,
 arXiv:2608.13637). It is the outcome of the routes-roadmap **E6 probe** (2026-09-17,
@@ -11,18 +11,26 @@ arXiv:2608.13637). It is the outcome of the routes-roadmap **E6 probe** (2026-09
 2. the RH critical-path node `RH_rvm_unconditional` — the **cumulative** Riemann–von Mangoldt
    formula `N(T) = (T/2π) log(T/2π) − T/2π + 7/8 + O(log T)` for all `T ≥ 2`, no hypotheses
    (`E6Bridge2.lean`). zeta-23-lean states only the dyadic clause; the cumulative `O(log T)`
-   form is re-assembled here from its general-window internals (see below).
+   form is re-assembled here from its general-window internals (see below), and
+3. the RH four-consumer blocker `RH_corridor_bound` (roadmap milestone E7 = A3 = B5 = D6) — the
+   **good-ordinate lemma**: for every `T ≥ 2` some `T' ∈ [T, T+1]` has a zero-free horizontal
+   segment `−1 ≤ σ ≤ 2` on which `|ζ'/ζ(σ + iT')| ≤ C log² T` (`E6Bridge3.lean`,
+   `telperion/docs/CORRIDOR_BOUND_BRIDGE_2026-09-17.md`). zeta-23-lean's own good-height lemma is
+   at integer heights and only on `1/2 ≤ σ ≤ 2`; the real-height selection and the reflected
+   half `−1 ≤ σ < 1/2` (functional equation + Γℝ log-derivative bounds) are done here.
 
-**No RH progress is claimed.** Both discharged statements are classical (Selberg-type density
-and the von Mangoldt / Backlund zero count, Titchmarsh 9.4). `conjecture1_proved = False`.
+**No RH progress is claimed.** All three discharged statements are classical (Selberg-type
+density; the von Mangoldt / Backlund zero count, Titchmarsh 9.4; the good-ordinate lemma,
+Davenport ch. 15–17 / Titchmarsh 9.6). `conjecture1_proved = False`.
 
 | file | role |
 |---|---|
 | `lean-toolchain`, `lakefile.toml` | Lean `v4.33.0-rc2`; `Zeta23` pinned to `anthropics/formal-math@fbdc36bbf17d20af3fd0447c6d1a8a02773c9844` (`subDir = zeta23`), which transitively pins Mathlib `51e6992efd06126df61a496bebf8f49482a4e129` (tag `v4.33.0-rc2`) |
 | `E6Bridge.lean` | the first bridge: mirrors of the two registry definitions (`MMDefs.lean:48-53`), `eventually_Ncount_ge` (the `T log T` lower bound from the RvM main clause), and the node statement `theorem rvm_unbounded_mean_density : RvMUnboundedMeanDensity zetaOrdinates` verbatim |
 | `E6Bridge2.lean` | the second bridge: mirror of `RvMCount.zetaZeroCount` (`RHDefs.lean`), the definitional seam `zetaZeroCount_eq_Ncount` (divisor count = Zeta23's `Ncount 0 T`), integrated Stirling on a general window (`int_mu_cumulative`), the cumulative assembly (`rvm_cumulative_eventually`, `rvm_cumulative`) and the node statement `theorem rvm_unconditional` verbatim |
-| `AxiomGuardRvMBridge.lean` | CI guard: `#print axioms` for both bridges' theorems AND the consumed upstream inputs; CI fails on `sorryAx` |
-| `../generate.py --check` | drift check registered in `telperion.toml`: both node statements (name + binder-free form) and the three mirrored definitions must still match the registry files verbatim, and the toolchain pin must be the zeta-23-lean pin |
+| `E6Bridge3.lean` | the third bridge: Γℝ log-derivative bounds off the real axis (`logDeriv_Gammaℝ_shift`, `norm_logDeriv_Gammaℝ_le_log_strip`), the functional-equation identity `logDeriv_zeta_reflect`, the real-height good ordinate `good_height_real`, the two ranges `corridor_large` (`T ≥ 7`) / `corridor_small` (`2 ≤ T ≤ 7`, compactness) and the node statement `theorem corridor_bound` verbatim |
+| `AxiomGuardRvMBridge.lean` | CI guard: `#print axioms` for all three bridges' theorems AND the consumed upstream inputs; CI fails on `sorryAx` |
+| `../generate.py --check` | drift check registered in `telperion.toml`: all three node statements (name + binder-free form) and the three mirrored definitions must still match the registry files verbatim, and the toolchain pin must be the zeta-23-lean pin |
 
 ## Why a third toolchain island
 
@@ -69,9 +77,27 @@ finite range `2 ≤ T < T₀` absorbed into the constant. The multiplicity seam
 (`MeromorphicOn.divisor` vs `analyticOrderAt`) is `MeromorphicOn.AnalyticOnNhd.divisor_apply`
 plus `Zeta23.RvM.analyticOnNhd_riemannZeta` on the open strip.
 
+## The third bridge: the corridor bound from Landau's partial fraction + the functional equation
+
+zeta-23-lean proves (for its Weil explicit formula) a good-height lemma
+`Zeta23.WeilEF.good_heights_at`: for integer `j ≥ 7` some `R ∈ [j, j+1]` has `ζ ≠ 0` and
+`‖ζ'/ζ‖ ≤ C log²(j+3)` on `Im s = ±R`, `1/2 ≤ Re s ≤ 2`. The registry node needs a **real** `T`
+(window `[T, T+1]`) and the segment **`−1 ≤ σ ≤ 2`**, so `E6Bridge3.lean` re-runs the selection
+at a real height (the upstream pigeonhole gap lemma `exists_far_point` already takes a real
+endpoint; the zero count near `±T` is six unit windows of `zeta_local_zero_count`), consuming
+`zeta_logDeriv_partial_fraction` (Landau about `2 + it`, `|t| ≥ 6`) as a black box. The left half
+`σ < 1/2` is reached through `Λ(s) = Λ(1−s)`:
+`ζ'/ζ(s) = −ζ'/ζ(1−s) − Γℝ'/Γℝ(1−s) − Γℝ'/Γℝ(s)` (`logDeriv_completedZeta`,
+`logDeriv_completedZeta_one_sub`), with both Γℝ terms `≤ log(|t|+3) + 6` from Stirling for `ψ`
+(`digamma_stirling`) and the shift `Γℝ'/Γℝ(u) = Γℝ'/Γℝ(u+2) − 1/u`. The range `2 ≤ T ≤ 7` is
+absorbed by compactness: on the closed subset of `[−1,2] × [2,8]` whose ordinate is `δ`-far from
+the finitely many zero ordinates there, `ζ'/ζ` is continuous, hence bounded. Three small
+`Zeta23.XiPrime.*` lemmas (Γℝ shift and bounds) are re-proved locally because that challenge tree
+is not built on this island.
+
 ## Recorded results at the pin (local build, 2026-09-17, macOS arm64, 32 cores)
 
-`lake update` + `lake exe cache get` + `lake build` (8,819 jobs, Zeta23 compiled from source)
+`lake update` + `lake exe cache get` + `lake build` (8,823 jobs, Zeta23 compiled from source)
 + `lake env lean AxiomGuardRvMBridge.lean`, verbatim:
 
 ```
@@ -82,6 +108,14 @@ plus `Zeta23.RvM.analyticOnNhd_riemannZeta` on the open strip.
 'RvMBridge2.rvm_cumulative_eventually' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RvMBridge2.int_mu_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RvMBridge2.zetaZeroCount_eq_Ncount' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge3.corridor_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge3.corridor_large' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge3.corridor_small' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge3.good_height_real' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge3.logDeriv_zeta_reflect' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge3.zeta_ne_zero_of_reflect' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge3.logDeriv_Gammaℝ_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge3.norm_logDeriv_Gammaℝ_le_log_strip' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Zeta23.RvM.N_eq_halfContour_completedZeta' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Zeta23.RvM.halfContour_completedZeta_split' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Zeta23.RvM.gamma_side' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -93,6 +127,12 @@ plus `Zeta23.RvM.analyticOnNhd_riemannZeta` on the open strip.
 'Zeta23.riemannVonMangoldt_zeta' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Zeta23.RvM.zeta_local_zero_count' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Zeta23.zetaSeam' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23.WeilEF.zeta_logDeriv_partial_fraction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23.WeilEF.exists_far_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23.WeilEF.logDeriv_completedZeta' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23.WeilEF.logDeriv_completedZeta_one_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23.StirlingVert.digamma_stirling' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Zeta23.RvM.riemannZeta_zeros_finite_of_isCompact' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
 Upstream's own `AUDIT.md` at the same commit records the same three axioms for all 27 Comparator
@@ -125,7 +165,15 @@ directory of [anthropics/formal-math](https://github.com/anthropics/formal-math)
   `Zeta23.riemannVonMangoldt_zeta`, `Zeta23.zetaSeam`, and for the second bridge the RvM
   internals `Zeta23.RvM.{N_eq_halfContour_completedZeta, halfContour_completedZeta_split,
   gamma_side, backlund_horizontal, vertical_two, zeta_local_zero_count, exists_goodHeight}`
-  and `Zeta23.StirlingVert.mu_stirling`) at commit
-  `fbdc36bbf17d20af3fd0447c6d1a8a02773c9844` (2026-09-05). Theorem A and the RvM package are
-  **not** this repository's work and must not be attributed to it; the bridges (`E6Bridge.lean`,
-  `E6Bridge2.lean`) are definition-level assembly plus elementary real analysis.
+  and `Zeta23.StirlingVert.mu_stirling`; for the third bridge
+  `Zeta23.WeilEF.{zeta_logDeriv_partial_fraction, exists_far_point, logDeriv_completedZeta,
+  logDeriv_completedZeta_one_sub}`, `Zeta23.RvM.{zeta_local_zero_count,
+  riemannZeta_zeros_finite_of_isCompact, logDeriv_Gammaℝ}` and
+  `Zeta23.StirlingVert.digamma_stirling`) at commit
+  `fbdc36bbf17d20af3fd0447c6d1a8a02773c9844` (2026-09-05). Theorem A, the RvM package and the
+  Landau/good-height machinery are **not** this repository's work and must not be attributed to
+  it; the bridges (`E6Bridge.lean`, `E6Bridge2.lean`, `E6Bridge3.lean`) are definition-level
+  assembly plus elementary real/complex analysis. `E6Bridge3.lean` additionally transcribes the
+  proof shape of `Zeta23.WeilEF.good_heights_at` (real height in place of integer) and three
+  short lemmas from `Zeta23.XiPrime.Hardy.Basic` / `Zeta23.XiPrime.Hardy.TwoLine` /
+  `Zeta23.XiPrime.ZeroCount.Y` (Apache-2.0, attributed in the file header).
