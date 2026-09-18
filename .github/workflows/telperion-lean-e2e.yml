@@ -132,6 +132,50 @@ jobs:
           lake env lean AxiomGuardLiPositivity.lean | tee axioms.out
           ! grep -q "sorryAx" axioms.out
 
+  weil-form-enclosure-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest python-flint
+
+      # Regenerates the E8 Weil-pairing enclosures from scratch with Arb (archimedean
+      # quadrature to |r| <= 1024 plus a 5-fold integration-by-parts tail) and checks the
+      # frozen Lean matches byte-for-byte; also gates the WeilExplicit vocabulary mirror
+      # against the PROVED node in examples/rvm_bridge/lean/E6Bridge4.lean.  ~4 min.
+      - name: Regenerate the Weil-form ladder (enclose -> certify -> emit) and check it matches on-disk
+        working-directory: telperion
+        run: |
+          python examples/weil_form_enclosure/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/weil_form_enclosure/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake exe cache get
+
+      - name: Build the vocabulary mirror and the emitted ladder (the actual verification)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake build
+
+      - name: Axiom guard (fails on sorryAx anywhere in the emitted theorems)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: |
+          lake env lean AxiomGuardWeilForm.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
+
   rvm-bridge-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
