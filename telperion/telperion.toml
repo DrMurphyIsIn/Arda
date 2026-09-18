@@ -642,3 +642,8 @@ group = "flint"    # 20 Li-criterion rungs + refutation atom; Arb enclosures nee
 name = "rvm_bridge"
 script = "examples/rvm_bridge/generate.py"
 group = "quick"    # E6 bridge island (v4.33.0-rc2 / zeta-23-lean): drift check that the node statement + mirrored defs still match the mirrormere registry; ~0.1 s
+
+[[check]]
+name = "prove2me_compat"
+script = "examples/prove2me_compat/generate.py"
+group = "quick"    # prove2.me platform-pin smoke (Bernoulli family emitted under Lean 4.33.1); exact, no flint
