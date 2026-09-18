@@ -3,7 +3,7 @@ depends_on = ["AND_em_zeta_strip", "AND_em_tail3_number", "AND_g2_reflected_band
 kind = "milestone"
 name = "AND.first_zero_kernel"
 statement_module = "Statements.AND_first_zero_kernel"
-status = "open"
+status = "proved"
 title = "REFLECTION CAPSTONE: first_zero_kernel -- an argument-free, hypothesis-free nontrivial zeta zero in (14, 15), verified entirely by kernel computation over rational certificates (no Arb enclosure hypotheses). The first purely-kernel-COMPUTED nontrivial zero of the completed zeta function; the reflection track's answer to what the T5 band certificates supply as data."
 updated = "2026-09-15"
 

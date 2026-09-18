@@ -3,7 +3,7 @@ depends_on = ["AND_em_zeta_strip"]
 kind = "lemma"
 name = "AND.em_tail3_number"
 statement_module = "Statements.AND_em_tail3_number"
-status = "open"
+status = "proved"
 title = "Order-K EM tail engine, THE NUMBER: the order-3 Euler-Maclaurin tail remainder is kernel-decided below 10^-3 (em_tail3_number; the shared substrate for Stirling K=4 and the A3 theta branch)"
 updated = "2026-09-14"
 
