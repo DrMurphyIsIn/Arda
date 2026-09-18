@@ -19,7 +19,10 @@ grant gate relies on:
      match `missions/mirrormere/lean/Statements/MMDefs.lean` verbatim modulo
      whitespace/comments;
   3. the island's toolchain pin is the zeta-23-lean pin recorded in
-     `lean/lakefile.toml` (Lean v4.33.0-rc2).
+     `lean/lakefile.toml` (Lean v4.33.0-rc2);
+  4. (second bridge, 2026-09-17) `lean/E6Bridge2.lean` contains the node statement
+     of `missions/rh/lean/Statements/RH_rvm_unconditional.lean` verbatim, and its
+     mirrored `RvMCount.zetaZeroCount` matches `missions/rh/lean/Statements/RHDefs.lean`.
 
 Any drift in the registry statement or definitions fails this check, so the
 island cannot silently stop matching the node it discharges.
@@ -40,6 +43,10 @@ _BRIDGE = _ISLAND / "E6Bridge.lean"
 _TOOLCHAIN = _ISLAND / "lean-toolchain"
 _NODE = _TELPERION / "missions" / "mirrormere" / "lean" / "Statements" / "MM_rvm_unbounded_mean_density.lean"
 _MMDEFS = _TELPERION / "missions" / "mirrormere" / "lean" / "Statements" / "MMDefs.lean"
+_BRIDGE2 = _ISLAND / "E6Bridge2.lean"
+_NODE2 = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RH_rvm_unconditional.lean"
+_RHDEFS = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RHDefs.lean"
+_DEF_NAMES2 = ("zetaZeroCount",)
 
 _EXPECTED_TOOLCHAIN = "leanprover/lean4:v4.33.0-rc2"
 _DEF_NAMES = ("RvMUnboundedMeanDensity", "zetaOrdinates")
@@ -55,12 +62,12 @@ def _normalize(text: str) -> str:
     return re.sub(r"\s+", " ", _strip_comments(text)).strip()
 
 
-def _node_statement(node_text: str) -> str:
+def _node_statement(node_text: str, node_path: Path = _NODE) -> str:
     """The `theorem NAME : BODY` of the node file, with the `:= by sorry` tail dropped."""
     body = _normalize(node_text)
     m = re.search(r"(theorem\s+\S+\s*:.*?)\s*:=\s*by\s+sorry", body)
     if not m:
-        raise SystemExit(f"cannot find the node theorem in {_NODE}")
+        raise SystemExit(f"cannot find the node theorem in {node_path}")
     return m.group(1)
 
 
@@ -99,13 +106,30 @@ def check() -> int:
     if tc != _EXPECTED_TOOLCHAIN:
         failures.append(f"lean-toolchain is {tc!r}, expected {_EXPECTED_TOOLCHAIN!r}")
 
+    # 4. the second bridge: the RH node RH_rvm_unconditional + its mirrored definition
+    bridge2 = _BRIDGE2.read_text(encoding="utf-8")
+    bridge2_norm = _normalize(bridge2)
+    stmt2 = _node_statement(_NODE2.read_text(encoding="utf-8"), _NODE2)
+    if stmt2 not in bridge2_norm:
+        failures.append(f"node statement not contained verbatim in E6Bridge2.lean: {stmt2!r}")
+    if re.search(r":=\s*by\s+sorry", bridge2_norm) or "sorry" in bridge2_norm.split():
+        failures.append("E6Bridge2.lean contains a `sorry`")
+    rhdefs = _RHDEFS.read_text(encoding="utf-8")
+    for name in _DEF_NAMES2:
+        want = _def_block(rhdefs, name)
+        have = _def_block(bridge2, name)
+        if want != have:
+            failures.append(f"`def {name}` drifted from RHDefs.lean:\n  registry: {want}\n  island:   {have}")
+
     if failures:
         print("rvm_bridge drift check FAILED:")
         for f in failures:
             print("  - " + f)
         return 1
     print(f"rvm_bridge: node statement + {len(_DEF_NAMES)} mirrored defs + toolchain pin match "
-          f"({_BRIDGE.relative_to(_TELPERION)})")
+          f"({_BRIDGE.relative_to(_TELPERION)}); "
+          f"RH node statement + {len(_DEF_NAMES2)} mirrored def match "
+          f"({_BRIDGE2.relative_to(_TELPERION)})")
     return 0
 
 

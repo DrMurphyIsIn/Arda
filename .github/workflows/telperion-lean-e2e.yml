@@ -141,7 +141,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Drift check (node statement + mirrored defs still match the mirrormere registry)
+      - name: Drift check (node statements + mirrored defs still match the mirrormere and rh registries)
         working-directory: telperion
         run: |
           python examples/rvm_bridge/generate.py --check
