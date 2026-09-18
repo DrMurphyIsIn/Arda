@@ -318,7 +318,7 @@ would show at order one.
 
 Zero-side order (first 300 ordinate pairs, `T = 541.8`, `n = 1, 2, 3`): symmetric window sums
 `0.02150, 0.08595, 0.19324` against targets `0.02310, 0.09235, 0.20764`, with the leading tail
-`Σ_{γ>T} n/γ² ≈ 0.0016 n` accounting for the gap at `n = 1` (`0.023099`); the one-sided sums are
+`Σ_{γ>T} n²/γ² ≈ 0.0013 n²` (section 2.1's law; the earlier `n/γ²` reading here was wrong and agreed only at `n = 1`, blind audit 2026-09-18) accounting for the gap at `n = 1` (`0.023099`); the one-sided sums are
 `0.0107 − 1.565i`, `0.0430 − 3.130i`, `0.0966 − 4.693i` — the imaginary part grows like
 `−i n (log(T/2π))²/(4π) = −1.58 i n`, as §2.1 predicts.
 

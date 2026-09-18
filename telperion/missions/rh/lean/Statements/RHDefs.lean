@@ -184,7 +184,9 @@ open Complex
 -- near s = 1 (eta_0 = -gamma).  The function -logDeriv zeta - 1/(s-1) is extended at s = 1 by
 -- its limit -gamma (Mathlib tendsto_riemannZeta_sub_one_div) so that iteratedDeriv sees the
 -- analytic extension; without the update Lean's junk value of logDeriv riemannZeta at the pole
--- would make every eta_j with j >= 1 equal to 0 and the statement FALSE for n >= 2.  Numerically
+-- would make every eta_j equal to 0 (eta_0 included: -logDeriv riemannZeta 1 - 1/(1-1) = 0,
+-- since riemannZeta is not differentiable at 1 so deriv returns the junk value 0) and the
+-- statement FALSE already for n = 1 (finiteSide 1 = 0 instead of gamma).  Numerically
 -- verified to 1e-39 for n = 1..8 against Li's generating function (memo section 5). =====
 
 /-- Li's kernel `1 - (1 - 1/ρ)^n`; `λ_n = Σ_ρ liKernel n ρ` in the symmetric order. -/
