@@ -10,10 +10,14 @@
   R2Rigidity.lean), the BraggDefect block from BraggDefect.lean.  To be
   regenerated/diffed by missions/mirrormere/build_mmdefs.py (grant-pass deliverable).
 
-  ONE AUTHORED (non-verbatim) definition: `Quasicrystal.zetaOrdinates`.  The island
-  keeps the ordinate set as a FREE variable (BoundaryLemmas takes `Ordinates : Set ℝ`);
-  the registry's unconditional W2c nodes need it pinned.  Flagged for the blind
-  read-back audit cycle.  conjecture1_proved = False.
+  AUTHORED (non-verbatim) definitions, flagged for the blind read-back audit cycle:
+  `Quasicrystal.zetaOrdinates` (below), `Quasicrystal.recurrenceDeficit`, the torus-section
+  trio, and (2026-09-18, node MM_weil_gram_trace) `WeilExplicit.crossCorr` +
+  `WeilExplicit.weilGram`.  The six other `WeilExplicit` definitions are a CROSS-REGISTRY
+  MIRROR of the RH registry's E8 block (RHDefs.lean, branch rh/e8-statement) and are verbatim;
+  see the block comment there.  (`zetaOrdinates` exists because the island keeps the ordinate
+  set as a FREE variable -- BoundaryLemmas takes `Ordinates : Set ℝ` -- while the registry's
+  unconditional W2c nodes need it pinned.)  conjecture1_proved = False.
 
   CONTEXT MIRROR (CI fix 2026-09-14): the island source files declare
   `noncomputable section` (TwoFreqRigidity.lean:36, InvolutionDictionary.lean:54,
@@ -173,5 +177,87 @@ noncomputable def braggTerm (sigma1 T0 T1 : ℝ) (n : ℕ) : ℂ :=
     / (-(I * (Real.log n : ℂ)))
 
 end DiffractionCore
+
+namespace WeilExplicit
+open MeasureTheory Complex
+
+-- ===== MIRRORED VERBATIM (2026-09-18) from the AUTHORED `WeilExplicit` block of
+-- telperion/missions/rh/lean/Statements/RHDefs.lean (branch rh/e8-statement), the
+-- vocabulary of the RH-registry node RH_limit_explicit_formula (E8, the unconditional
+-- Weil 1952 / Guinand 1948 limit explicit formula; design memo
+-- telperion/docs/E8_LIMIT_EXPLICIT_FORMULA_DESIGN_2026-09-18.md).  Cross-registry mirror
+-- for the MIRRORMERE D2 node MM_weil_gram_trace: the six definitions below are copied
+-- CHARACTER FOR CHARACTER so that a future rvm_bridge drift check (examples/rvm_bridge/
+-- generate.py, the E6Bridge4 pattern) can compare the two registries' blocks directly.
+-- DO NOT re-word them here; re-word them in RHDefs.lean and re-mirror.
+-- The two AUTHORED D2 definitions (crossCorr, weilGram) follow the six and are NOT part
+-- of the mirror.  conjecture1_proved = False. =====
+
+/-- The E8 test class: smooth, compactly supported g : R -> C. -/
+def IsWeilTest (g : ℝ → ℂ) : Prop :=
+  ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ HasCompactSupport g
+
+/-- H_g(s) = ∫ g(u) e^{(s - 1/2) u} du, the zero-side transform.  With s = 1/2 + i r this is
+    h(r) = ∫ g(u) e^{i r u} du (the Iwaniec-Kowalski pair); entire for compactly supported g,
+    so H_g(ρ) at a zero ρ = 1/2 + iγ is h(γ) with γ complex when ρ is off the line.
+    H_g(0) = h(i/2) and H_g(1) = h(-i/2) are the two pole terms. -/
+noncomputable def weilKernel (g : ℝ → ℂ) (s : ℂ) : ℂ :=
+  ∫ u : ℝ, g u * Complex.exp ((s - 1 / 2) * (u : ℂ))
+
+/-- Multiplicity of ρ as a nontrivial zero: the order of ζ at ρ on the open critical strip
+    (0 off the strip and at non-zeros).  The SAME divisor expression as
+    RvMCount.zetaZeroCount, so the E8 zero side and the RvM count carry identical weights. -/
+noncomputable def zeroMult (ρ : ℂ) : ℕ :=
+  ((MeromorphicOn.divisor riemannZeta {s : ℂ | 0 < s.re ∧ s.re < 1} : ℂ → ℤ) ρ).toNat
+
+/-- The archimedean integrand h(r) · Re ψ(1/4 + i r/2), ψ = Γ'/Γ = Complex.digamma. -/
+noncomputable def archIntegrand (g : ℝ → ℂ) (r : ℝ) : ℂ :=
+  weilKernel g (1 / 2 + (r : ℂ) * I) * ((Complex.digamma (1 / 4 + ((r : ℂ) / 2) * I)).re : ℂ)
+
+/-- The archimedean side: h(i/2) + h(-i/2) - g(0) log π + (1/2π) ∫ h(r) Re ψ(1/4 + i r/2) dr. -/
+noncomputable def archSide (g : ℝ → ℂ) : ℂ :=
+  weilKernel g 0 + weilKernel g 1 - g 0 * (Real.log Real.pi : ℂ)
+    + (1 / (2 * (Real.pi : ℂ))) * ∫ r : ℝ, archIntegrand g r
+
+/-- The prime side: Σ_n Λ(n)/√n · (g(log n) + g(-log n)); a finite sum for compactly
+    supported g (Λ(0) = Λ(1) = 0; the two terms are the two vertical edges of the finite
+    explicit formula rect_explicit_formula in the T → ∞ limit). -/
+noncomputable def primeSide (g : ℝ → ℂ) : ℂ :=
+  ∑' n : ℕ, ((ArithmeticFunction.vonMangoldt n / Real.sqrt n : ℝ) : ℂ)
+    * (g (Real.log n) + g (-Real.log n))
+
+-- ===== AUTHORED for the registry, D2 / MM_weil_gram_trace (2026-09-18; design memo
+-- telperion/docs/MM_mm-d2-weil-gram-trace_DESIGN_2026-09-18.md).  NOT in any island. =====
+
+/-- **The cross-correlation of two test functions**, `(g₁ ⋆ g₂⁻)(u) = ∫ g₁(v) conj(g₂(v - u)) dv`.
+    It is the polarisation of the Weil autocorrelation: `crossCorr g g` is the `autocorr g`
+    of the Weil-positivity vocabulary (`f ⋆ f̃` with `f̃(u) = conj (f (-u))`), so the diagonal
+    of `weilGram` below is the Weil form of an honest autocorrelation.  Two facts fix its
+    normalisation and are the whole content of D2's Hermitian-ness (both PROVED on the proof
+    island, neither hypothesised here):
+
+    * `crossCorr g₂ g₁ u = conj (crossCorr g₁ g₂ (-u))` (substitute `v ↦ v + u`), whence
+      `weilGram` is Hermitian on the PRIMES side alone -- no zero symmetry is used;
+    * `weilKernel (crossCorr g₁ g₂) s = weilKernel g₁ s * conj (weilKernel g₂ (1 - conj s))`
+      (Fubini on compact supports), which is the factorisation the trace conjunct reads.
+
+    `crossCorr g₁ g₂` is again smooth with compact support when `g₁` and `g₂` are (support in
+    `supp g₁ - supp g₂`; smoothness from `HasCompactSupport.contDiff_convolution_*`), so the
+    Bochner integrals of `archSide`/`primeSide` applied to it are honest, NOT junk-valued. -/
+noncomputable def crossCorr (g₁ g₂ : ℝ → ℂ) (u : ℝ) : ℂ :=
+  ∫ v : ℝ, g₁ v * (starRingEnd ℂ) (g₂ (v - u))
+
+/-- **The primes-side Weil-Gram matrix of a finite test family** (routes-roadmap D2).
+    Entry `(i, j)` is the Weil functional `archSide - primeSide` of `crossCorr (g i) (g j)`:
+    a FINITE von Mangoldt sum, two transform values, one `log π` term, and one digamma
+    integral.  No zero of ζ occurs in the definition -- the zeros enter only through the
+    trace conjunct of `MM_weil_gram_trace`, which is where the instrument reads them.
+    The archimedean `Re ψ` integral inside `archSide` is exactly the term the finite Bragg
+    bridge does NOT have (roadmap D2 skeptic); building this matrix from `braggTerm` instead
+    would give a non-Hermitian object that is not the Weil form. -/
+noncomputable def weilGram {k : ℕ} (g : Fin k → ℝ → ℂ) : Matrix (Fin k) (Fin k) ℂ :=
+  fun i j => archSide (crossCorr (g i) (g j)) - primeSide (crossCorr (g i) (g j))
+
+end WeilExplicit
 
 end

@@ -1,0 +1,8 @@
+created = "2026-09-18"
+depends_on = ["MM_rect_trace_reading", "MM_bragg_bridge", "MM_offline_pairs_le_defect"]
+kind = "lemma"
+name = "MM.weil_gram_trace"
+statement_module = "Statements.MM_weil_gram_trace"
+status = "draft"
+title = "Routes-roadmap D2 (primes-side Weil-Gram matrix, dictionary-grade): the finite Hermitian Gram matrix of a finite family of smooth compactly supported test functions, entry (i,j) = the Weil functional archSide - primeSide of the cross-correlation crossCorr (g i) (g j) -- a FINITE von Mangoldt sum plus one digamma integral, with no zero of zeta in the definition -- together with (a) Hermitian-ness, which holds on the PRIMES side alone (no zero symmetry), (b) the trace reading: each entry is the zeroMult-weighted sum over all rho of the FACTORISED kernel weilKernel (g i) rho * conj (weilKernel (g j) (1 - conj rho)) (E8 applied to the cross-correlation), and (c) the quadratic-form reading hermForm (weilGram g) x = Re (Weil form of the autocorrelation of the conjugated combination), which is the seam to the defect instrument. D1 read ONE box; D2 is the infinite-height trace identity packaged as the finite object the defect instrument can read. The archimedean Re psi term of archSide is exactly what the finite Bragg bridge lacks (roadmap D2 skeptic) -- a Gram built from braggTerm is neither Hermitian nor the Weil form. NOTHING about inertia is claimed: posIndex = k for ALL families IS Weil criterion = RH; for one family it is data. Discharge: E8 (RH_limit_explicit_formula) applied to crossCorr (g i) (g j) + the Fubini kernel factorisation + convolution smoothness; cross-island on rvm_bridge (v4.33.0-rc2)"
+updated = "2026-09-18"

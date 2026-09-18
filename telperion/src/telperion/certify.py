@@ -353,6 +353,12 @@ _SPECIAL_KINDS = (
     # Γℝ n).  A FINITE rational inequality (category-b); the passage to the companion coefficient and
     # the Route-P falsifiability atom is the CONDITIONAL, RH-hard exhaustion seam (never discharged).
     "bragg_floor",
+    # Routes-roadmap D2 numeric substrate (2026-09-18, MM_weil_gram_trace): the Arb-enclosed Weil
+    # form of a test-function pair folded into one certified rational interval (exact finite prime
+    # side + one archimedean interval), and the kernel-read inertia of the resulting INTERVAL
+    # Hermitian Gram matrix (certified negative direction, or certified strict diagonal dominance).
+    # Finite category-b; no PosDef / posIndex / defect claim and no RH content.
+    "weil_form_enclosure", "interval_gram_inertia",
 )
 
 # kind -> "module:certify_point_fn" for the generic (family.special) emitters.
@@ -557,6 +563,14 @@ _SPECIAL_DISPATCH = {
     # RvMCompanionBraggLimit, pinned in the li_positivity island lakefile).
     "bragg_floor":
         ("emit_bragg_floor", "certify_bragg_floor_point", "BraggFloorEmitter"),
+    # Routes-roadmap D2 (MIRRORMERE MM_weil_gram_trace): Weil-form interval fold, and the
+    # interval-Hermitian inertia reading that consumes it.
+    "weil_form_enclosure":
+        ("emit_weil_form_enclosure", "certify_weil_form_enclosure_point",
+         "WeilFormEnclosureEmitter"),
+    "interval_gram_inertia":
+        ("emit_interval_gram_inertia", "certify_interval_gram_inertia_point",
+         "IntervalGramInertiaEmitter"),
 }
 
 

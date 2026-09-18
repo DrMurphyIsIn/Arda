@@ -195,6 +195,47 @@ REGISTRY: dict[str, SensitivityStance] = {
                             # making floorHi ≤ braggLo − tailHi FALSE is kernel-rejected by norm_num.
                             # See negctrl_adapters/adapter_bragg_floor.py.
                             neg_control=NegControlStance(NEG_CONTROL_ADAPTER)),
+    "WeilFormEnclosureEmitter": _S(CERTIFICATE_SENSITIVE,
+                                  "routes-roadmap D2 (MM_weil_gram_trace) numeric substrate: the "
+                                  "emitted pair is (i) an exact rational IDENTITY -- the prime-side "
+                                  "interval endpoints ARE the sum of the supplied per-prime-power "
+                                  "term endpoints, by norm_num -- and (ii) the interval implication "
+                                  "lo <= arch - prime <= hi by linarith.  (i) is a corruptible "
+                                  "identity certificate in the strict sense: change any endpoint and "
+                                  "the kernel rejects the fold.  The Arb (python-flint) enclosures "
+                                  "of the archimedean side and of each Lambda(n)/sqrt n term are the "
+                                  "documented trust seam; certify REFUSES an inverted interval, a "
+                                  "fold that disagrees with the re-derivation, and an incomplete "
+                                  "prime-power list.  No zeta zero and no RH content "
+                                  "(conjecture1_proved = False)",
+                                  checked_in=None,
+                                  neg_control=NegControlStance(
+                                      NEG_CONTROL_DECLARED_UNWIRED,
+                                      "the fold identity IS kernel-corruptible (a forged endpoint "
+                                      "makes the emitted norm_num identity FALSE and the kernel "
+                                      "rejects it), but no adapter exists yet in "
+                                      "negative_control_harness.ADAPTERS: this emitter has no "
+                                      "examples/ harness or Lean island of its own, which the D2 "
+                                      "design memo (section 8.3) names as the remaining wiring")),
+    "IntervalGramInertiaEmitter": _S(STRUCTURALLY_NONVACUOUS,
+                                     "routes-roadmap D2 inertia reading of an INTERVAL Hermitian "
+                                     "Weil-Gram matrix: either a certified negative direction "
+                                     "(hermForm A x <= box_max < 0 for a rational witness, by "
+                                     "linarith over the entry box -- a positivity/refutation shape "
+                                     "with no separately-supplied corruptible identity) or certified "
+                                     "strict diagonal dominance (per-entry modulus bounds by "
+                                     "nlinarith plus constant row inequalities).  certify REFUSES "
+                                     "the zero witness, a box whose maximum is >= 0, a non-positive "
+                                     "diagonal lower bound and a row whose modulus budget does not "
+                                     "clear it -- no vacuous or false inequality ships.  NOTHING "
+                                     "about PosDef / posIndex / defect is emitted, and defect = 0 "
+                                     "for every family would be Weil's criterion = RH, which is not "
+                                     "claimed (conjecture1_proved = False).  Negative control: "
+                                     "not_applicable in the adapter sense -- there is no separately "
+                                     "supplied identity to forge; the certify-time refusals (zero "
+                                     "witness, box maximum >= 0, non-dominant row) are the honest "
+                                     "control, and a corrupted box bound makes the emitted linarith "
+                                     "/ nlinarith goal unprovable rather than falsely provable"),
     "EnclosureIntervalFoldEmitter": _S(STRUCTURALLY_NONVACUOUS,
                                        "integer near-CUE row-band check rowsOK…=true by decide; "
                                        "the Arb enclosures are the input trust seam, the kernel "

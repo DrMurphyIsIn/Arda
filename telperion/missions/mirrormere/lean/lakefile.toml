@@ -8,3 +8,11 @@ rev = "v4.32.0"
 
 [[lean_lib]]
 name = "Statements"
+
+# Trivial-close / non-vacuity PROBES for authored node statements (2026-09-18, D2).
+# Deliberately NOT in defaultTargets: `lake build` builds only the node statements, and
+# `lake build Probes` runs the probe battery.  Probe modules contain NO `sorry` and no
+# node statement -- each `example` is a kernel-checked record that a closing tactic FAILS
+# (`fail_if_success`) or that a witness EXISTS.  conjecture1_proved = False.
+[[lean_lib]]
+name = "Probes"
