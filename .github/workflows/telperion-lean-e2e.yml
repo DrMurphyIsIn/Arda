@@ -141,6 +141,8 @@ jobs:
         with:
           python-version: "3.12"
 
+      - run: pip install sympy
+
       - name: Drift check (node statements + mirrored defs still match the mirrormere and rh registries)
         working-directory: telperion
         run: |
