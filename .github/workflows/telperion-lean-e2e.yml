@@ -2328,6 +2328,14 @@ jobs:
       - name: Build the emitted rigidity lib (uses the island's TwoFreqRigidity)
         working-directory: telperion/examples/quasicrystal/lean
         run: lake build SelfInversiveRigidityInstances
+
+      - name: Build the emitted OFFLINE lib + the T2 negative-control node (mode="offline")
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake build SelfInversiveOfflineInstances EulerFactorOffline
+
+      - name: Axiom guard (T2 negative control must be sorry-free)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake env lean AxiomGuardQC.lean
   winding-box-zero-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 20

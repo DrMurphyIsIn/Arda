@@ -1,5 +1,5 @@
 name = "Quasicrystal"
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary"]
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "EulerFactorOffline", "SelfInversiveOfflineInstances"]
 
 # PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
 # stable-polynomial classification frontier.  conjecture1_proved = False --
@@ -51,3 +51,17 @@ roots = ["RationalFreqReduction"]
 [[lean_lib]]
 name = "InvolutionDictionary"
 roots = ["InvolutionDictionary"]
+
+# MIRRORMERE torus-section ladder rung T2, THE NEGATIVE CONTROL (2026-09-18): registry node
+# MM_euler_factor_section_offline -- the p = 2 Euler-factor section is NOT real-rooted, with the
+# explicit off-line witness x = i/2.  conjecture1_proved = False.
+[[lean_lib]]
+name = "EulerFactorOffline"
+roots = ["EulerFactorOffline"]
+
+# Telperion selfinversive_rigidity emitter, mode="offline" (2026-09-18): the p = 2, 3, 5
+# Euler-factor sections certified NOT real-rooted from the exact normSq INEQUALITY, emitted by
+# examples/selfinversive_rigidity/generate.py (the T2 dogfood; p = 3, 5 are not nodes).
+[[lean_lib]]
+name = "SelfInversiveOfflineInstances"
+roots = ["SelfInversiveOfflineInstances"]
