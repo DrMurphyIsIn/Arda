@@ -94,3 +94,33 @@ A certified λₙ < 0 (`li_neg_refutes_rh`); a persistent band count deficit con
 off-line winding-1 box; a genuine-data negative defect window; a certified Bagchi
 lower bound; Lehmer-pair quality trending to 0. Any of these is the program's only
 decade-scale positive-payoff event: a certified refutation.
+
+## Addendum 2026-09-18 (overnight): the critical path closed
+
+Between 23:00 and 02:30 the three critical-path bricks were kernel-checked on the
+`rvm_bridge` island (v4.33.0-rc2, zeta-23-lean as a Lake dependency), each stated
+verbatim as its registry node and each re-verified independently by the reviewer (axiom
+guard exactly `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, grant-gate
+containment True):
+
+| node | PR | artifact | route |
+|---|---|---|---|
+| `RH_rvm_unconditional` (A4/D5) | #557 | `E6Bridge2.lean` | new assembly on Zeta23's window lemmas (Zeta23 has no cumulative RvM) |
+| `RH_corridor_bound` (E7 = A3 = B5 = D6) | #558 | `E6Bridge3.lean` | Landau partial fraction + local count + gap lemma at real heights; left half via Λ(s)=Λ(1−s) |
+| `RH_limit_explicit_formula` (E8) | #560 | `E6Bridge4.lean` | normalisation bridge: `Zeta23.WeilEF.EF_lit_zetaZeroConfig` IS the explicit formula |
+
+E8's statement was authored (#559) with a design memo fixing the test class (smooth
+compactly supported g on the prime side, non-even) and blind-audited at derivation level
+(20-digit numerics, each wrong-sign variant off at order one). The 09-15 survey verdict
+("no unconditional RvM in the corpus") was wrong because it missed `Zeta23/RvM/` and
+`Zeta23/WeilEF/`; the corrected lesson for the source-mining subsystem: grep the
+dependency's full namespace tree before declaring a discharge route dead.
+
+What this does and does not change. Every route's "hard-known-shape" consumer of the
+corridor bound and the explicit formula is now unblocked (B6, D6, A3, Route A/D
+instruments). The wall clause is exactly as it was: uniform-in-N / all-support / all-height
+positivity, operator with completion. Next bricks, in order: the B6→B7 limiting node
+(Bombieri–Lagarias test functions decay like 1/|r| and are NOT in the E8 class, so the
+explicit formula must be extended to that class as its own node); effective-constant
+forms of E7/E8 (standing queue); registry proof-links + cross-island grants for the three
+nodes once the stack merges. `conjecture1_proved = False`.
