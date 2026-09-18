@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -39,6 +39,14 @@ name = "E6Bridge3"
 # (Zeta23.WeilEF.EF_lit_zetaZeroConfig): transform/index-set/multiplicity/archimedean-term seams.
 [[lean_lib]]
 name = "E6Bridge4"
+
+# W2c assembly (2026-09-18): the MIRRORMERE milestone MM_zeta_ordinates_not_uniformly_discrete
+# (the zeta ordinates are not uniformly discrete, unconditional), from a VERBATIM re-proof of
+# the v4.32 quasicrystal island's pigeonhole brick (BoundaryLemmas.lean) applied to
+# E6Bridge.rvm_unbounded_mean_density. Cross-toolchain assembly: the brick is re-proved here,
+# not consumed as a v4.32 olean.
+[[lean_lib]]
+name = "W2cAssembly"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]
