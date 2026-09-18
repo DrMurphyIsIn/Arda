@@ -16,6 +16,14 @@
       * Zeta23.RvM.{N_eq_halfContour_completedZeta, halfContour_completedZeta_split, gamma_side,
         backlund_horizontal, vertical_two} / Zeta23.StirlingVert.mu_stirling -- the upstream
         general-window internals the second bridge consumes as black boxes.
+      * RvMBridge3.corridor_bound            -- the RH node RH_corridor_bound, verbatim (the
+        good-ordinate lemma: zero-free segment -1 <= sigma <= 2 at a height in [T, T+1] with
+        |zeta'/zeta| <= C log^2 T); plus its stages good_height_real (real-height good ordinate),
+        corridor_large (T >= 7, both halves), corridor_small (2 <= T <= 7, compactness), the
+        functional-equation identity logDeriv_zeta_reflect and the Gamma_R bounds.
+      * Zeta23.WeilEF.{zeta_logDeriv_partial_fraction, exists_far_point, logDeriv_completedZeta,
+        logDeriv_completedZeta_one_sub} / Zeta23.StirlingVert.digamma_stirling -- the upstream
+        inputs the third bridge consumes as black boxes.
       * Zeta23.thmA₀ / Zeta23.two_thirds_on_critical_line -- Theorem A (Alpoege--Furman), the
         UPSTREAM input (anthropics/formal-math zeta23/, pinned in lakefile.toml); guarding it here
         re-verifies the dependency's axiom hygiene at our pin.
@@ -27,6 +35,7 @@
     conjecture1_proved = False. -/
 import E6Bridge
 import E6Bridge2
+import E6Bridge3
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -35,6 +44,14 @@ import E6Bridge2
 #print axioms RvMBridge2.rvm_cumulative_eventually
 #print axioms RvMBridge2.int_mu_cumulative
 #print axioms RvMBridge2.zetaZeroCount_eq_Ncount
+#print axioms RvMBridge3.corridor_bound
+#print axioms RvMBridge3.corridor_large
+#print axioms RvMBridge3.corridor_small
+#print axioms RvMBridge3.good_height_real
+#print axioms RvMBridge3.logDeriv_zeta_reflect
+#print axioms RvMBridge3.zeta_ne_zero_of_reflect
+#print axioms RvMBridge3.logDeriv_Gammaℝ_shift
+#print axioms RvMBridge3.norm_logDeriv_Gammaℝ_le_log_strip
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
@@ -46,3 +63,9 @@ import E6Bridge2
 #print axioms Zeta23.riemannVonMangoldt_zeta
 #print axioms Zeta23.RvM.zeta_local_zero_count
 #print axioms Zeta23.zetaSeam
+#print axioms Zeta23.WeilEF.zeta_logDeriv_partial_fraction
+#print axioms Zeta23.WeilEF.exists_far_point
+#print axioms Zeta23.WeilEF.logDeriv_completedZeta
+#print axioms Zeta23.WeilEF.logDeriv_completedZeta_one_sub
+#print axioms Zeta23.StirlingVert.digamma_stirling
+#print axioms Zeta23.RvM.riemannZeta_zeros_finite_of_isCompact

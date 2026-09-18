@@ -22,7 +22,10 @@ grant gate relies on:
      `lean/lakefile.toml` (Lean v4.33.0-rc2);
   4. (second bridge, 2026-09-17) `lean/E6Bridge2.lean` contains the node statement
      of `missions/rh/lean/Statements/RH_rvm_unconditional.lean` verbatim, and its
-     mirrored `RvMCount.zetaZeroCount` matches `missions/rh/lean/Statements/RHDefs.lean`.
+     mirrored `RvMCount.zetaZeroCount` matches `missions/rh/lean/Statements/RHDefs.lean`;
+  5. (third bridge, 2026-09-17) `lean/E6Bridge3.lean` contains the node statement of
+     `missions/rh/lean/Statements/RH_corridor_bound.lean` verbatim (no mirrored
+     definitions: the statement is in Mathlib vocabulary only).
 
 Any drift in the registry statement or definitions fails this check, so the
 island cannot silently stop matching the node it discharges.
@@ -47,6 +50,8 @@ _BRIDGE2 = _ISLAND / "E6Bridge2.lean"
 _NODE2 = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RH_rvm_unconditional.lean"
 _RHDEFS = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RHDefs.lean"
 _DEF_NAMES2 = ("zetaZeroCount",)
+_BRIDGE3 = _ISLAND / "E6Bridge3.lean"
+_NODE3 = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RH_corridor_bound.lean"
 
 _EXPECTED_TOOLCHAIN = "leanprover/lean4:v4.33.0-rc2"
 _DEF_NAMES = ("RvMUnboundedMeanDensity", "zetaOrdinates")
@@ -121,6 +126,15 @@ def check() -> int:
         if want != have:
             failures.append(f"`def {name}` drifted from RHDefs.lean:\n  registry: {want}\n  island:   {have}")
 
+    # 5. the third bridge: the RH node RH_corridor_bound (Mathlib vocabulary only, no mirrored defs)
+    bridge3 = _BRIDGE3.read_text(encoding="utf-8")
+    bridge3_norm = _normalize(bridge3)
+    stmt3 = _node_statement(_NODE3.read_text(encoding="utf-8"), _NODE3)
+    if stmt3 not in bridge3_norm:
+        failures.append(f"node statement not contained verbatim in E6Bridge3.lean: {stmt3!r}")
+    if re.search(r":=\s*by\s+sorry", bridge3_norm) or "sorry" in bridge3_norm.split():
+        failures.append("E6Bridge3.lean contains a `sorry`")
+
     if failures:
         print("rvm_bridge drift check FAILED:")
         for f in failures:
@@ -129,7 +143,8 @@ def check() -> int:
     print(f"rvm_bridge: node statement + {len(_DEF_NAMES)} mirrored defs + toolchain pin match "
           f"({_BRIDGE.relative_to(_TELPERION)}); "
           f"RH node statement + {len(_DEF_NAMES2)} mirrored def match "
-          f"({_BRIDGE2.relative_to(_TELPERION)})")
+          f"({_BRIDGE2.relative_to(_TELPERION)}); "
+          f"RH corridor node statement matches ({_BRIDGE3.relative_to(_TELPERION)})")
     return 0
 
 

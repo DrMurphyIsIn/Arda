@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -26,6 +26,12 @@ name = "E6Bridge"
 # Riemann--von Mangoldt, O(log T) remainder), re-assembled from Zeta23's general-window internals.
 [[lean_lib]]
 name = "E6Bridge2"
+
+# Third bridge (2026-09-17): the RH registry node RH_corridor_bound (routes-roadmap milestone
+# E7 = A3 = B5 = D6, the good-ordinate lemma), from Zeta23's Landau partial fraction + local count
+# + the completed-zeta functional equation.
+[[lean_lib]]
+name = "E6Bridge3"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]
