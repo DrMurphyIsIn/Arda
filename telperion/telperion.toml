@@ -639,6 +639,45 @@ script = "examples/li_positivity/generate.py"
 group = "flint"    # 20 Li-criterion rungs + refutation atom; Arb enclosures need python-flint
 
 [[check]]
+name = "baez_duarte"
+script = "examples/baez_duarte/generate.py"
+group = "flint"    # Baez-Duarte criterion instance; Arb enclosures need python-flint
+
+[[check]]
+name = "bagchi_recurrence"
+script = "examples/bagchi_recurrence/generate.py"
+group = "flint"    # Bagchi recurrence instance; Arb enclosures need python-flint
+
+[[check]]
+name = "bragg_amplitude"
+script = "examples/bragg_amplitude/generate.py"
+group = "quick"    # exact rational Bragg amplitudes (no flint)
+
+[[check]]
+name = "defect_witness"
+script = "examples/defect_witness/generate.py"
+group = "quick"    # exact rational defect witness (no flint)
+
+[[check]]
+name = "lehmer_pair"
+script = "examples/lehmer_pair/generate.py"
+group = "flint"    # Lehmer-pair quality via Platt zeros; needs python-flint with Platt machinery
+
+[[check]]
+name = "robin_growth"
+script = "examples/robin_growth/generate.py"
+group = "flint"    # Robin growth instance; Arb enclosures need python-flint
+
+[[check]]
+name = "selfinversive_rigidity"
+script = "examples/selfinversive_rigidity/generate.py"
+group = "quick"    # exact self-inversive rigidity certificate (no flint)
+
+[[check]]
+name = "winding_box_zero"
+script = "examples/winding_box_zero/generate.py"
+group = "flint"    # Arb winding-number sidecar; needs python-flint
+[[check]]
 name = "rvm_bridge"
 script = "examples/rvm_bridge/generate.py"
 group = "quick"    # E6 bridge island (v4.33.0-rc2 / zeta-23-lean): drift check that the node statement + mirrored defs still match the mirrormere registry; ~0.1 s

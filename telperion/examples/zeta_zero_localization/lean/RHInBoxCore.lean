@@ -47,4 +47,31 @@ theorem rh_in_box_core
   rw [hsT] at hρs
   exact hTline ρ hρs
 
+/-- **Support = witnesses (exhaustion bridge).**  If the on-line Finset `T ⊆ s` has
+    `T.card = n`, each multiplicity `d ρ ≥ 1` on `s`, and `∑_{ρ ∈ s} d ρ = n`, then the
+    support `s` is EXACTLY `T`.  Thin re-export of `BoxLocalization.exhaustion_by_count`'s
+    first conjunct: the bridge from a winding COUNT to a Finset IDENTITY, which promotes
+    any sum/statement over the intrinsic zero support `s` to one over the concrete
+    witness Finset `T`.  `conjecture1_proved = False`. -/
+theorem support_eq_witnesses {s T : Finset ℂ} {d : ℂ → ℤ} {n : ℕ}
+    (hTsub : T ⊆ s) (hTcard : T.card = n)
+    (hd1 : ∀ ρ ∈ s, (1 : ℤ) ≤ d ρ)
+    (hsum : (∑ ρ ∈ s, d ρ) = (n : ℤ)) :
+    s = T :=
+  (BoxLocalization.exhaustion_by_count hTsub hTcard hd1 hsum).1
+
+/-- **Sum over box zeros = sum over witnesses.**  Under the same exhaustion hypotheses,
+    any real-valued (or additive) function summed over the intrinsic zero support `s`
+    equals its sum over the witness Finset `T`.  This is the load-bearing rewrite for a
+    diffraction / Bragg amplitude stated over the ACTUAL zero set: `∑_{ρ ∈ s} f ρ =
+    ∑_{ρ ∈ T} f ρ`.  `conjecture1_proved = False`. -/
+theorem sum_over_box_zeros_eq {β : Type*} [AddCommMonoid β]
+    {s T : Finset ℂ} {d : ℂ → ℤ} {n : ℕ}
+    (hTsub : T ⊆ s) (hTcard : T.card = n)
+    (hd1 : ∀ ρ ∈ s, (1 : ℤ) ≤ d ρ)
+    (hsum : (∑ ρ ∈ s, d ρ) = (n : ℤ))
+    (f : ℂ → β) :
+    (∑ ρ ∈ s, f ρ) = (∑ ρ ∈ T, f ρ) := by
+  rw [support_eq_witnesses hTsub hTcard hd1 hsum]
+
 end RHInBoxCore

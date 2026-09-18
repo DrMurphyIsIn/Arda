@@ -1,0 +1,115 @@
+name = "zzl_umbrella"
+defaultTargets = []
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[require]]
+name = "zzl_core"
+path = "zzl_core"
+
+[[require]]
+name = "ZetaBands_h25000"
+path = "ZetaBands_h25000"
+
+[[require]]
+name = "ZetaBands_h50000"
+path = "ZetaBands_h50000"
+
+[[require]]
+name = "ZetaBands_h75000"
+path = "ZetaBands_h75000"
+
+[[require]]
+name = "ZetaBands_h100000"
+path = "ZetaBands_h100000"
+
+[[require]]
+name = "ZetaBands_h125000"
+path = "ZetaBands_h125000"
+
+[[require]]
+name = "ZetaBands_h150000"
+path = "ZetaBands_h150000"
+
+[[require]]
+name = "ZetaBands_h175000"
+path = "ZetaBands_h175000"
+
+[[require]]
+name = "ZetaBands_h200000"
+path = "ZetaBands_h200000"
+
+[[require]]
+name = "ZetaBands_h225000"
+path = "ZetaBands_h225000"
+
+[[require]]
+name = "ZetaBands_h250000"
+path = "ZetaBands_h250000"
+
+[[require]]
+name = "ZetaBands_h275000"
+path = "ZetaBands_h275000"
+
+[[require]]
+name = "ZetaBands_h300000"
+path = "ZetaBands_h300000"
+
+[[require]]
+name = "ZetaBands_h325000"
+path = "ZetaBands_h325000"
+
+[[require]]
+name = "ZetaBands_h350000"
+path = "ZetaBands_h350000"
+
+[[require]]
+name = "ZetaBands_h375000"
+path = "ZetaBands_h375000"
+
+[[require]]
+name = "ZetaBands_h400000"
+path = "ZetaBands_h400000"
+
+[[require]]
+name = "ZetaBands_h425000"
+path = "ZetaBands_h425000"
+
+[[require]]
+name = "ZetaBands_h450000"
+path = "ZetaBands_h450000"
+
+[[require]]
+name = "ZetaBands_h475000"
+path = "ZetaBands_h475000"
+
+[[require]]
+name = "ZetaBands_h500000"
+path = "ZetaBands_h500000"
+
+[[require]]
+name = "ZetaBands_h525000"
+path = "ZetaBands_h525000"
+
+[[require]]
+name = "ZetaBands_h550000"
+path = "ZetaBands_h550000"
+
+[[require]]
+name = "ZetaBands_h575000"
+path = "ZetaBands_h575000"
+
+[[require]]
+name = "ZetaBands_h600000"
+path = "ZetaBands_h600000"
+
+[[require]]
+name = "ZetaBands_h625000"
+path = "ZetaBands_h625000"
+
+[[require]]
+name = "ZetaBands_h650000"
+path = "ZetaBands_h650000"

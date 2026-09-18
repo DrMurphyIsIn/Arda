@@ -1,0 +1,45 @@
+name = "zzl_core"
+defaultTargets = ["LambdaLineReal", "XiLineZeros", "WindingCount", "BoxArgPrinciple", "BoxArgPrincipleZeta", "RigorousWinding", "BlaschkeBox", "BoxLocalization", "RHInBoxCore", "RHInBoxAnalytic", "RHInBox", "RHInBoxBands", "DiffractionCore", "ZetaZeroConfinement", "AllZerosUpToHeight", "TuringBand"]
+srcDir = ".."
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[require]]
+name = "ZeroFreeBridge"
+path = "../../../zero_free_bridge/lean"
+
+[[lean_lib]]
+name = "LambdaLineReal"
+[[lean_lib]]
+name = "XiLineZeros"
+[[lean_lib]]
+name = "WindingCount"
+[[lean_lib]]
+name = "BoxArgPrinciple"
+[[lean_lib]]
+name = "BoxArgPrincipleZeta"
+[[lean_lib]]
+name = "RigorousWinding"
+[[lean_lib]]
+name = "BlaschkeBox"
+[[lean_lib]]
+name = "BoxLocalization"
+[[lean_lib]]
+name = "RHInBoxCore"
+[[lean_lib]]
+name = "RHInBoxAnalytic"
+[[lean_lib]]
+name = "RHInBox"
+[[lean_lib]]
+name = "RHInBoxBands"
+[[lean_lib]]
+name = "DiffractionCore"
+[[lean_lib]]
+name = "ZetaZeroConfinement"
+[[lean_lib]]
+name = "AllZerosUpToHeight"
+[[lean_lib]]
+name = "TuringBand"
