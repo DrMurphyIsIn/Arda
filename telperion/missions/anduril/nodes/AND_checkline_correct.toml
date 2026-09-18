@@ -3,7 +3,7 @@ depends_on = []
 kind = "milestone"
 name = "AND.checkline_correct"
 statement_module = "Statements.AND_checkline_correct"
-status = "open"
+status = "proved"
 title = "A4 reflection core: checkLine_correct -- the once-proven correctness theorem for the Boolean band checker over dyadic-interval sign boxes (BandData -> Bool; per-band certificates become data discharged by decide, not tactic scripts)"
 updated = "2026-09-14"
 

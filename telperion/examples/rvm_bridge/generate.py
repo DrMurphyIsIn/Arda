@@ -22,7 +22,19 @@ grant gate relies on:
      `lean/lakefile.toml` (Lean v4.33.0-rc2);
   4. (second bridge, 2026-09-17) `lean/E6Bridge2.lean` contains the node statement
      of `missions/rh/lean/Statements/RH_rvm_unconditional.lean` verbatim, and its
-     mirrored `RvMCount.zetaZeroCount` matches `missions/rh/lean/Statements/RHDefs.lean`.
+     mirrored `RvMCount.zetaZeroCount` matches `missions/rh/lean/Statements/RHDefs.lean`;
+  5. (third bridge, 2026-09-17) `lean/E6Bridge3.lean` contains the node statement of
+     `missions/rh/lean/Statements/RH_corridor_bound.lean` verbatim (no mirrored
+     definitions: the statement is in Mathlib vocabulary only).
+  6. (fourth bridge, 2026-09-18) `lean/E6Bridge4.lean` contains the node statement of
+     `missions/rh/lean/Statements/RH_limit_explicit_formula.lean` verbatim, and its six
+     mirrored `WeilExplicit.*` definitions match the AUTHORED block of
+     `missions/rh/lean/Statements/RHDefs.lean`.  The statement is ALSO checked against
+     the copy embedded in the module's header comment between the lines
+     `BEGIN REGISTRY STATEMENT` / `END REGISTRY STATEMENT` (always); the registry-file
+     halves are skipped with a printed notice when the registry file (or the
+     `WeilExplicit` block) is absent from this checkout, since the E8 registry node lives
+     on its own branch until merged.
 
 Any drift in the registry statement or definitions fails this check, so the
 island cannot silently stop matching the node it discharges.
@@ -47,6 +59,11 @@ _BRIDGE2 = _ISLAND / "E6Bridge2.lean"
 _NODE2 = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RH_rvm_unconditional.lean"
 _RHDEFS = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RHDefs.lean"
 _DEF_NAMES2 = ("zetaZeroCount",)
+_BRIDGE3 = _ISLAND / "E6Bridge3.lean"
+_NODE3 = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RH_corridor_bound.lean"
+_BRIDGE4 = _ISLAND / "E6Bridge4.lean"
+_NODE4 = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RH_limit_explicit_formula.lean"
+_DEF_NAMES4 = ("IsWeilTest", "weilKernel", "zeroMult", "archIntegrand", "archSide", "primeSide")
 
 _EXPECTED_TOOLCHAIN = "leanprover/lean4:v4.33.0-rc2"
 _DEF_NAMES = ("RvMUnboundedMeanDensity", "zetaOrdinates")
@@ -63,9 +80,10 @@ def _normalize(text: str) -> str:
 
 
 def _node_statement(node_text: str, node_path: Path = _NODE) -> str:
-    """The `theorem NAME : BODY` of the node file, with the `:= by sorry` tail dropped."""
+    """The `theorem NAME [binders] : BODY` of the node file, with the `:= by sorry` tail dropped.
+    Binders are explicit `(x : T)` groups (the E8 node takes `(g : ℝ → ℂ) (hg : ...)`)."""
     body = _normalize(node_text)
-    m = re.search(r"(theorem\s+\S+\s*:.*?)\s*:=\s*by\s+sorry", body)
+    m = re.search(r"(theorem\s+\S+(?:\s*\([^()]*\))*\s*:.*?)\s*:=\s*by\s+sorry", body)
     if not m:
         raise SystemExit(f"cannot find the node theorem in {node_path}")
     return m.group(1)
@@ -79,6 +97,17 @@ def _def_block(text: str, name: str) -> str:
     if not m:
         raise SystemExit(f"cannot find `def {name}` in the source")
     return re.sub(r"\s+", " ", m.group(0)).strip()
+
+
+def _embedded_statement(bridge_text: str, bridge_path: Path) -> str:
+    """The normalized theorem embedded in the module header between the two marker lines."""
+    m = re.search(r"BEGIN REGISTRY STATEMENT\s*(.*?)\s*END REGISTRY STATEMENT", bridge_text, flags=re.S)
+    if not m:
+        raise SystemExit(f"cannot find the BEGIN/END REGISTRY STATEMENT markers in {bridge_path}")
+    body = re.sub(r"\s+", " ", m.group(1)).strip()
+    if not body.startswith("theorem "):
+        raise SystemExit(f"embedded registry statement in {bridge_path} does not start with `theorem`")
+    return body
 
 
 def check() -> int:
@@ -121,6 +150,52 @@ def check() -> int:
         if want != have:
             failures.append(f"`def {name}` drifted from RHDefs.lean:\n  registry: {want}\n  island:   {have}")
 
+    # 5. the third bridge: the RH node RH_corridor_bound (Mathlib vocabulary only, no mirrored defs)
+    bridge3 = _BRIDGE3.read_text(encoding="utf-8")
+    bridge3_norm = _normalize(bridge3)
+    stmt3 = _node_statement(_NODE3.read_text(encoding="utf-8"), _NODE3)
+    if stmt3 not in bridge3_norm:
+        failures.append(f"node statement not contained verbatim in E6Bridge3.lean: {stmt3!r}")
+    if re.search(r":=\s*by\s+sorry", bridge3_norm) or "sorry" in bridge3_norm.split():
+        failures.append("E6Bridge3.lean contains a `sorry`")
+
+    # 6. the fourth bridge: the RH node RH_limit_explicit_formula + its six mirrored definitions.
+    #    The registry node lives on branch rh/e8-statement until merged, so each registry half is
+    #    skipped with a notice when its file/block is absent; the embedded copy is always checked.
+    bridge4 = _BRIDGE4.read_text(encoding="utf-8")
+    bridge4_norm = _normalize(bridge4)
+    stmt4_embedded = _embedded_statement(bridge4, _BRIDGE4)
+    if stmt4_embedded not in bridge4_norm:
+        failures.append("embedded registry statement not contained verbatim in E6Bridge4.lean: "
+                        f"{stmt4_embedded!r}")
+    if re.search(r":=\s*by\s+sorry", bridge4_norm) or "sorry" in bridge4_norm.split():
+        failures.append("E6Bridge4.lean contains a `sorry`")
+    notices = []
+    if _NODE4.exists():
+        stmt4 = _node_statement(_NODE4.read_text(encoding="utf-8"), _NODE4)
+        if stmt4 not in bridge4_norm:
+            failures.append(f"node statement not contained verbatim in E6Bridge4.lean: {stmt4!r}")
+        if stmt4 != stmt4_embedded:
+            failures.append("E6Bridge4.lean's embedded registry statement drifted from "
+                            f"{_NODE4.relative_to(_TELPERION)}:\n  registry: {stmt4}\n  embedded: {stmt4_embedded}")
+    else:
+        notices.append(f"NOTICE: {_NODE4.relative_to(_TELPERION)} is absent from this checkout "
+                       "(E8 registry node not merged here); the registry half of the E6Bridge4 "
+                       "statement check is skipped, the embedded-copy half was checked")
+    rhdefs4 = _RHDEFS.read_text(encoding="utf-8") if _RHDEFS.exists() else ""
+    if "namespace WeilExplicit" in rhdefs4:
+        for name in _DEF_NAMES4:
+            want = _def_block(rhdefs4, name)
+            have = _def_block(bridge4, name)
+            if want != have:
+                failures.append(f"`def {name}` drifted from RHDefs.lean (WeilExplicit):\n  registry: {want}\n  island:   {have}")
+    else:
+        notices.append(f"NOTICE: {_RHDEFS.relative_to(_TELPERION)} has no `WeilExplicit` block in this "
+                       "checkout (E8 registry vocabulary not merged here); the six mirrored-def "
+                       "checks for E6Bridge4 are skipped")
+    for n in notices:
+        print(n)
+
     if failures:
         print("rvm_bridge drift check FAILED:")
         for f in failures:
@@ -129,7 +204,10 @@ def check() -> int:
     print(f"rvm_bridge: node statement + {len(_DEF_NAMES)} mirrored defs + toolchain pin match "
           f"({_BRIDGE.relative_to(_TELPERION)}); "
           f"RH node statement + {len(_DEF_NAMES2)} mirrored def match "
-          f"({_BRIDGE2.relative_to(_TELPERION)})")
+          f"({_BRIDGE2.relative_to(_TELPERION)}); "
+          f"RH corridor node statement matches ({_BRIDGE3.relative_to(_TELPERION)}); "
+          f"RH explicit-formula node statement matches its embedded copy"
+          f"{'' if notices else ' and the registry'} ({_BRIDGE4.relative_to(_TELPERION)})")
     return 0
 
 

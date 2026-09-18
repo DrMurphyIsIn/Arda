@@ -108,6 +108,9 @@ import RvMArchSharperS1
 import RvMArchSharperS2a
 import RvMArchSharperS2b
 import RvMArchSharper
+import RvMBraggBridge
+import RvMTraceReading
+import RvMSpectralCookedControl
 import RvMBlFiniteMultiset
 import LiPositivityBundle
 import LiNegativeControl
@@ -535,6 +538,59 @@ import LiNegativeControl
 #print axioms Backlund.continuousOn_logDeriv_zeta_segment
 #print axioms Backlund.riemannS_abs_le_log_of_ne_zero
 
+-- ============================================================================
+-- MIRRORMERE W3b (the Bragg bridge): the finite-height Guinand-Weil explicit
+-- formula in DIFFRACTION FORM. These headline bricks (RvMDiffractionCore +
+-- RvMBraggBridge) turn the certified box zero-count into an explicit identity
+-- with a closed-form Bragg comb over prime powers, with the horizontal + left
+-- edges carried as HONEST explicit remainder integrals (NO T->infty limit --
+-- that needs the |zeta'/zeta|=O(log^2 T) corridor bound, out of scope).
+-- conjecture1_proved = False throughout.
+-- ============================================================================
+
+-- rect_explicit_formula (brick 6): the finite GW identity for a box with right edge in Re>1 --
+-- 2*pi*i*sum d(rho)*g(rho) = (bottom)-(top) - i*sum'_n integral(g*term(Lambda,.,n)) - i*(left),
+-- weighted zero-sums over zeta's ACTUAL divisor = von Mangoldt (prime-power) sums + 3 boundary
+-- integrals. Nothing assumed about the zeros. conjecture1_proved = False.
+#print axioms DiffractionCore.rect_explicit_formula
+
+-- integral_vonMangoldt_term (brick 7): the Bragg oscillation in closed form -- for n>=2,
+-- integral over [T0,T1] of term(Lambda,sigma+iy,n) = (term(T1)-term(T0))/(-i*log n), a pure
+-- oscillation of frequency log n, amplitude Lambda(n)*n^{-sigma}/log n. conjecture1_proved = False.
+#print axioms DiffractionCore.integral_vonMangoldt_term
+
+-- braggTerm support (RvMBraggBridge): the closed-form n-th peak vanishes at n in {0,1} and off the
+-- prime powers (Lambda(n)=0), so the comb is supported EXACTLY on {n : IsPrimePow n} -- the Bragg
+-- peaks at k*log p. conjecture1_proved = False.
+#print axioms DiffractionCore.braggTerm_zero
+#print axioms DiffractionCore.braggTerm_one
+#print axioms DiffractionCore.braggTerm_eq_zero_of_not_isPrimePow
+
+-- rect_bragg_prime_edge (RvMBraggBridge): at the diffraction weight g=1, the term-by-term prime
+-- edge collapses to the explicit closed-form Bragg comb sum'_n braggTerm n. conjecture1_proved = False.
+#print axioms DiffractionCore.rect_bragg_prime_edge
+
+-- rect_explicit_formula_bragg (RvMBraggBridge -- THE BRIDGE): the finite explicit formula in
+-- diffraction form. Zero side = 2*pi*i*(box zeta zero-count over its actual divisor); prime side =
+-- explicit closed-form Bragg comb sum'_n braggTerm n (supported on prime powers); two horizontal
+-- edges + left edge carried as explicit remainders. Kernel-verified, unconditional, NO limit taken.
+-- conjecture1_proved = False.
+#print axioms DiffractionCore.rect_explicit_formula_bragg
+
+-- MIRRORMERE Route D, layer D1 -- rect_trace_reading (RvMTraceReading): the TRACE READING of the
+-- Bragg bridge. rect_explicit_formula_bragg divided through by 2*pi*i: the box divisor count of
+-- zeta (the finite trace) isolated on the left, the diffraction data (bottom - top - i*Bragg comb
+-- - i*left edge) on the right. Same hypotheses as the bridge; a dictionary-grade rearrangement.
+-- Mirrors registry node MM_rect_trace_reading VERBATIM. conjecture1_proved = False.
+#print axioms DiffractionCore.rect_trace_reading
+
+-- MIRRORMERE Route D, layer D4 -- spectral_cooked_control (RvMSpectralCookedControl, Mathlib only):
+-- the cooked-spectrum NEGATIVE CONTROL. For ANY gamma : Fin n -> R there is a Hermitian complex
+-- matrix with charpoly = prod_i (X - C (gamma i)) (the diagonal matrix). Marks "finite operator
+-- with prescribed real spectrum" as content-free; the Route-D wall is the completion/positivity
+-- clause, never operator existence. Mirrors registry node MM_spectral_cooked_control VERBATIM.
+-- conjecture1_proved = False.
+#print axioms spectral_cooked_control
 -- Arc A (effective RvM), PR A1: the pure-in-T Backlund bound.
 -- riemannS_abs_le_log_explicit (hT:4≤T)(hζne): |riemannS T| ≤ log((4T+19)/(2−π²/6))/log(7/6)+2 --
 --   the PR-6 headline with ‖F_T 2‖ majorized away by its Jensen-centre floor 2−π²/6

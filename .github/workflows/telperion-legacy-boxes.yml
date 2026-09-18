@@ -1,0 +1,100 @@
+# Telperion -- the LEGACY box certificates (zzl_legacy_boxes), on demand / weekly.
+#
+# The 669 pre-band `RHInBox_*` box certificates (the T=2000 milestone record,
+# 2026-09-09) are kernel-verified artifacts nothing on the band ladder imports.
+# On 2026-09-17 the first hosted-runner measurement of the B2 ladder job showed
+# them sitting in FRONT of the ladder step: ~1.9 core-min each => ~5.3 h on a
+# 4-vCPU runner, past the 6 h job timeout, before a single ladder block ran.
+# They now live in their own package and are re-verified here, sharded 4-way,
+# on a weekly schedule or by hand -- never in the per-PR path.
+# conjecture1_proved = False.
+name: telperion-legacy-boxes
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 1"   # Mondays 03:17 UTC
+
+concurrency:
+  group: telperion-legacy-boxes
+  cancel-in-progress: false
+
+jobs:
+  legacy-boxes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    env:
+      SHARDS: "4"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Wire the packages to one shared deps dir (B2 layout; .lake is gitignored)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: |
+          mkdir -p .lake/packages
+          for d in zzl_core zzl_legacy_boxes; do
+            mkdir -p "$d/.lake" && ln -sfn ../../.lake/packages "$d/.lake/packages"
+          done
+          mkdir -p ../../zero_free_bridge/lean/.lake
+          ln -sfn ../../../zeta_zero_localization/lean/.lake/packages ../../zero_free_bridge/lean/.lake/packages
+      - name: Fetch Mathlib olean cache (ONCE, into the shared deps dir)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_core
+        run: lake exe cache get
+      - name: Build zzl_core + ZeroFreeBridge
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_core
+        run: lake build
+      - name: Build this shard of the legacy boxes
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_legacy_boxes
+        run: |
+          set -e
+          mods=$(python3 - <<'PY'
+          import os, re
+          names = re.findall(r'^\[\[lean_lib\]\]\s*\nname = "([^"]+)"', open("lakefile.toml").read(), re.M)
+          k, n = int(os.environ["SHARD"]), int(os.environ["SHARDS"])
+          print(" ".join(m for i, m in enumerate(sorted(names)) if i % n == k))
+          PY
+          )
+          echo "shard $SHARD/$SHARDS: $(echo $mods | wc -w) modules"
+          lake build $mods
+        env:
+          SHARD: ${{ matrix.shard }}
+      - name: Axiom guard for this shard (the box lines of AxiomGuardRHInBox.lean)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_legacy_boxes
+        run: |
+          set -e
+          python3 - <<'PY'
+          import os, re
+          names = sorted(re.findall(r'^\[\[lean_lib\]\]\s*\nname = "([^"]+)"', open("lakefile.toml").read(), re.M))
+          k, n = int(os.environ["SHARD"]), int(os.environ["SHARDS"])
+          mine = {m for i, m in enumerate(names) if i % n == k}
+          out = ["import " + m for m in sorted(mine)]
+          for line in open("../AxiomGuardRHInBox.lean"):
+              if line.startswith("#print axioms "):
+                  decl = line.split()[2]
+                  if decl.rsplit(".", 1)[0] in mine:
+                      out.append(line.rstrip())
+          open("/tmp/GuardShard.lean", "w").write("\n".join(out) + "\n")
+          print(f"guard: {len(mine)} imports, {len(out) - len(mine)} #print lines")
+          PY
+          out="$(lake env lean /tmp/GuardShard.lean 2>&1 || true)"
+          echo "$out" | tail -5
+          if echo "$out" | grep -q 'sorryAx'; then echo "::error::a legacy box depends on sorry"; exit 1; fi
+          if echo "$out" | grep -qE 'error:'; then echo "::error::legacy-box guard did not elaborate"; exit 1; fi
+          bad=$(echo "$out" | grep -c 'depends on axioms' || true)
+          ok=$(echo "$out" | tr -d ' ' | grep -c 'dependsonaxioms:\[propext,Classical.choice,Quot.sound\]' || true)
+          echo "axiom lines: $bad, standard-three: $ok"
+          [ "$bad" = "$ok" ] || { echo "::error::unexpected axiom set in a legacy box"; exit 1; }
+        env:
+          SHARD: ${{ matrix.shard }}

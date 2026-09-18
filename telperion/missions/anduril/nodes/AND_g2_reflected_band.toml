@@ -3,7 +3,7 @@ depends_on = ["AND_checkline_correct"]
 kind = "milestone"
 name = "AND.g2_reflected_band"
 statement_module = "Statements.AND_g2_reflected_band"
-status = "open"
+status = "proved"
 title = "G2: THE FIRST REFLECTED BAND (ReflectedBand_t14) -- a band certificate proved by kernel decide through checkLine rather than emitted norm_num, consumed by the height chain interchangeably with T5 bands"
 updated = "2026-09-14"
 

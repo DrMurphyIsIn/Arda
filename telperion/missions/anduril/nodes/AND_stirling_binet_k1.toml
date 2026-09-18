@@ -3,7 +3,7 @@ depends_on = []
 kind = "lemma"
 name = "AND.stirling_binet_k1"
 statement_module = "Statements.AND_stirling_binet_k1"
-status = "open"
+status = "proved"
 title = "A2 Stirling/Binet K=1: logDeriv_gammaR_stirling -- the Gamma_R logarithmic derivative with explicit Binet remainder on Re z > 0 (serves both the Gamma_R edges and, at K=4 via the tail engine, the A3 theta branch)"
 updated = "2026-09-14"
 

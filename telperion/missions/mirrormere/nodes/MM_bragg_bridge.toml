@@ -3,7 +3,7 @@ depends_on = []
 kind = "milestone"
 name = "MM.bragg_bridge"
 statement_module = "Statements.MM_bragg_bridge"
-status = "open"
+status = "proved"
 title = "W3b DONE, the Bragg bridge: the finite-height explicit formula in diffraction form -- 2 pi i times the box zero-count of zeta over its ACTUAL divisor equals the edge integrals minus i times the closed-form Bragg comb (braggTerm, supported EXACTLY on prime powers) minus the honest left-edge remainder; NO limit taken; unconditional, 3-axiom clean. The measured quasicrystal (paper Figure 1) is now a KERNEL IDENTITY with the primes. Cross-island artifact (v4.34 li island) per design section 2. T->inf needs the |zeta'/zeta| = O(log^2 T) corridor bound (future campaign)"
 updated = "2026-09-15"
 

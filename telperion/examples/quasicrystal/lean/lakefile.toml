@@ -1,0 +1,53 @@
+name = "Quasicrystal"
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary"]
+
+# PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
+# stable-polynomial classification frontier.  conjecture1_proved = False --
+# this is NOT a proof of RH; every kernel claim is finite/unconditional.
+#
+# Same Mathlib pin (v4.32.0) as the sibling reflection + zeta_zero_localization
+# islands, so the CoW-cloned .lake shares the on-disk Mathlib build cache.
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+# In-corpus RvM / N(T) counting machinery lives in the zeta_zero_localization
+# island; required by relative path (same Mathlib rev, cache shared) for the
+# increment-(iv) boundary lemmas.  Mirrors the reflection island's require.
+
+[[lean_lib]]
+name = "LeeYangCore"
+roots = ["LeeYangCore"]
+
+[[lean_lib]]
+name = "KSConstruction"
+roots = ["KSConstruction"]
+
+[[lean_lib]]
+name = "BoundaryLemmas"
+roots = ["BoundaryLemmas"]
+
+[[lean_lib]]
+name = "CharacterizationStatements"
+roots = ["CharacterizationStatements"]
+
+[[lean_lib]]
+name = "TwoFreqRigidity"
+roots = ["TwoFreqRigidity"]
+
+# Telperion selfinversive_rigidity emitter example (2026-09-14): equal-modulus
+# real-rootedness instances applying twoFreq_realRooted_iff, emitted by
+# examples/selfinversive_rigidity/generate.py.
+[[lean_lib]]
+name = "SelfInversiveRigidityInstances"
+roots = ["SelfInversiveRigidityInstances"]
+
+[[lean_lib]]
+name = "RationalFreqReduction"
+roots = ["RationalFreqReduction"]
+
+[[lean_lib]]
+name = "InvolutionDictionary"
+roots = ["InvolutionDictionary"]

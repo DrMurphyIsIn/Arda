@@ -3,7 +3,7 @@ depends_on = []
 kind = "milestone"
 name = "MM.offline_pairs_le_defect"
 statement_module = "Statements.MM_offline_pairs_le_defect"
-status = "open"
+status = "proved"
 title = "W2b, the publishable rung: the defect instrument COUNTS off-line pairs (offline_pairs_le_defect) -- a p-dimensional negative-definite witness subspace forces p <= defect; independent off-line pairs contribute independently"
 updated = "2026-09-14"
 
