@@ -137,9 +137,14 @@ jobs:
             echo "::error::axiom guard printed $n axiom lines, expected at least 163 -- the guard did not run or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
           # every printed axioms line must be EXACTLY Lean's three standard axioms
-          if grep -E "depends on axioms" axioms.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
+          # list and reports a false positive.  Join lines, then extract each complete
+          # "depends on axioms: [...]" group and require it to be exactly the three.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
             echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-            grep -E "depends on axioms" axioms.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
+            tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
             exit 1; fi
 
       # The two zero-free-region node artifacts (ZeroFreePolylog + ZeroFreeElementary) are imported
@@ -156,9 +161,14 @@ jobs:
           if [ "$n" -lt "2" ]; then
             echo "::error::zero-free guard printed $n axiom lines, expected 2 -- the guard did not run"; exit 1; fi
           if grep -q "sorryAx" zerofree.out; then echo "::error::sorryAx present"; exit 1; fi
-          if grep -E "depends on axioms" zerofree.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
+          # list and reports a false positive.  Join lines, then extract each complete
+          # "depends on axioms: [...]" group and require it to be exactly the three.
+          if tr "\n" " " < zerofree.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
             echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-            grep -E "depends on axioms" zerofree.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
+            tr "\n" " " < zerofree.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
             exit 1; fi
 
   rvm-bridge-compiles:
@@ -213,9 +223,14 @@ jobs:
             echo "::error::axiom guard printed $n axiom lines, expected at least 45 -- the guard did not run or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
           # every printed axioms line must be EXACTLY Lean's three standard axioms
-          if grep -E "depends on axioms" axioms.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
+          # list and reports a false positive.  Join lines, then extract each complete
+          # "depends on axioms: [...]" group and require it to be exactly the three.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
             echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-            grep -E "depends on axioms" axioms.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
+            tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
             exit 1; fi
 
   tangent-compiles:
