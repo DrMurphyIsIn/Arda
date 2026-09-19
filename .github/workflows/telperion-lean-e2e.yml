@@ -215,6 +215,57 @@ jobs:
           lake env lean AxiomGuardWeilForm.lean | tee axioms.out
           ! grep -q "sorryAx" axioms.out
 
+  window-form-floor-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # No python-flint here: the window_form_floor instances carry Zhu's PUBLISHED constants,
+      # and the only recomputation is the finite von Mangoldt comb mass, which is exact sympy.
+      - run: pip install sympy pytest
+
+      # Regenerates Zhu's window-floor certificates (arXiv:2608.24827 Thm 1.1 / Thm 1.2) and
+      # checks the frozen Lean matches byte-for-byte.  The generator RE-DERIVES A_L from L and
+      # beta* from (T#, A_L) and refuses on disagreement -- the retraction guard, which is what
+      # catches an A_eff-for-A_L substitution of the kind the paper itself withdrew.  ~2 s.
+      - name: Regenerate the window-floor certificates (certify -> emit) and check they match on-disk
+        working-directory: telperion
+        run: |
+          python examples/window_form_floor/generate.py --check
+
+      - name: Emitter unit tests (refusals, re-derivation, emission)
+        working-directory: telperion
+        run: |
+          PYTHONPATH=src python -m pytest tests/test_emit_window_form_floor.py -q
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/weil_form_enclosure/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake exe cache get
+
+      - name: Build the emitted window-floor instances (the actual verification)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake build WindowFormFloorInstances AxiomGuardWindowFormFloor
+
+      - name: Axiom guard (fails on sorryAx anywhere in the emitted window-floor theorems)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: |
+          lake env lean AxiomGuardWindowFormFloor.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
+
   rvm-bridge-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
