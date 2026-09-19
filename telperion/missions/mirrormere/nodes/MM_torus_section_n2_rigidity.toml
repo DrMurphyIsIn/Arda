@@ -3,14 +3,14 @@ depends_on = ["MM_torus_section_dictionary", "MM_twofreq_realrooted_iff"]
 kind = "milestone"
 name = "MM.torus_section_n2_rigidity"
 statement_module = "Statements.MM_torus_section_n2_rigidity"
-status = "open"
+status = "proved"
 title = "Torus-section ladder T1, the N=2 rung in ladder vocabulary: the section of the linear form c1 z1 + c2 z2 along the T^2 orbit is real-rooted iff the coefficient moduli are equal -- KS section theory at d=2, 2-D parent governing 1-D rigidity. Discharge route: short bridge from twoFreq_realRooted_iff (QC_TORUS_SECTION_LADDER memo sections 1, 5)"
 updated = "2026-09-18"
 
 [proof]
 artifact = "../../examples/quasicrystal/lean/TorusSectionLadder.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]

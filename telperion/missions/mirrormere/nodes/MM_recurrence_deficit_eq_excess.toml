@@ -3,14 +3,14 @@ depends_on = ["MM_bragg_defect_witness"]
 kind = "lemma"
 name = "MM.recurrence_deficit_eq_excess"
 statement_module = "Statements.MM_recurrence_deficit_eq_excess"
-status = "open"
+status = "proved"
 title = "Routes-roadmap E4a (Face 4 <-> Face 1 witness bridge): the Bagchi recurrence deficit (e^delta - 1)(1 - e^(-delta)) equals the Bragg amplification excess at the certified displacement delta = 1/10, and is strictly positive for every positive displacement -- the recurrence and defect instruments measure the same off-line signal. Discharge: Real.exp ring algebra + strict monotonicity; QC_RECURRENCE section 4.2 says kernel-ready now (RH_ROUTES_ROADMAP_2026-09-16 section 9)"
 updated = "2026-09-18"
 
 [proof]
 artifact = "../../examples/zeta_zero_localization/lean/RecurrenceDeficit.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]
