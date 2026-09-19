@@ -1,5 +1,5 @@
 name = "Quasicrystal"
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary"]
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder"]
 
 # PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
 # stable-polynomial classification frontier.  conjecture1_proved = False --
@@ -51,3 +51,10 @@ roots = ["RationalFreqReduction"]
 [[lean_lib]]
 name = "InvolutionDictionary"
 roots = ["InvolutionDictionary"]
+
+# MIRRORMERE torus-section ladder T1 (2026-09-18): the registry nodes
+# MM_torus_section_dictionary + MM_torus_section_n2_rigidity, stated verbatim,
+# discharged as vocabulary bridges over TwoFreqRigidity (simp-grade; not a win).
+[[lean_lib]]
+name = "TorusSectionLadder"
+roots = ["TorusSectionLadder"]

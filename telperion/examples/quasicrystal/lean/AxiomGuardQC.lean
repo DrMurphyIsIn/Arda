@@ -15,6 +15,7 @@ import BoundaryLemmas
 import TwoFreqRigidity
 import RationalFreqReduction
 import InvolutionDictionary
+import TorusSectionLadder
 
 open Quasicrystal
 
@@ -74,6 +75,13 @@ open Quasicrystal
 #print axioms Quasicrystal.twoFreq_dictionary
 #print axioms Quasicrystal.selfInversive_binomial_realRooted
 #print axioms Quasicrystal.fixed_locus_dichotomy
+
+/-! ### MIRRORMERE torus-section ladder T1 -- TorusSectionLadder (2026-09-18):
+    registry nodes MM_torus_section_dictionary + MM_torus_section_n2_rigidity.
+    Vocabulary bridges over TwoFreqRigidity (simp-grade; recorded, not counted). -/
+#print axioms Quasicrystal.expSum_eq_linearTorusForm_torusOrbit
+#print axioms Quasicrystal.torus_section_dictionary
+#print axioms Quasicrystal.torus_section_n2_rigidity
 
 /-! ### increment (iii) -- CharacterizationStatements
 
