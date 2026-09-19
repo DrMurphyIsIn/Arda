@@ -114,6 +114,65 @@ noncomputable def primeSide (g : ℝ → ℂ) : ℂ :=
 
 end WeilExplicit"""
 
+# 2026-09-18 B7 (RH_bl_explicit_formula): the Bombieri-Lagarias / Li vocabulary -- Li's kernel,
+# the symmetric window zero sums, and the two sides of the BL arithmetic formula.  Design memo:
+# docs/B7_BL_EXPLICIT_FORMULA_DESIGN_2026-09-18.md.
+BOMBIERI_LAGARIAS_BLOCK = """
+namespace BombieriLagarias
+open Complex
+
+-- ===== AUTHORED for the registry (NOT in the island; 2026-09-18 B7, the Bombieri-Lagarias
+-- explicit formula on Li's test class, design memo
+-- telperion/docs/B7_BL_EXPLICIT_FORMULA_DESIGN_2026-09-18.md).  Vocabulary for
+-- RH_bl_explicit_formula.  Zero side: Li's kernel 1 - (1 - 1/rho)^n (Li 1997, eq. (1.2);
+-- Bombieri-Lagarias 1999, eq. (1.1)) weighted by the E8 / RvMCount divisor multiplicity, summed
+-- over the SYMMETRIC windows |Im rho| <= T.  The family rho |-> m(rho) (1 - (1 - 1/rho)^n) is NOT
+-- summable in C (its terms are ~ n/(i gamma) and sum 1/gamma diverges since N(T) ~ (T/2pi) log T),
+-- so a HasSum statement would be FALSE, and the one-sided windows 0 < Im rho <= T diverge
+-- (imaginary part ~ -i n (log(T/2pi))^2/(4pi)); only the symmetric order converges, because the
+-- window is closed under rho -> 1 - rho and the paired terms are O(1/gamma^2).  Right-hand side:
+-- Bombieri-Lagarias 1999, Theorem 2: the archimedean closed form S_inf(n) and the finite part
+-- S_f(n) = - sum_{j=1}^n C(n,j) eta_{j-1}, where -zeta'/zeta(s) - 1/(s-1) = sum_j eta_j (s-1)^j
+-- near s = 1 (eta_0 = -gamma).  The function -logDeriv zeta - 1/(s-1) is extended at s = 1 by
+-- its limit -gamma (Mathlib tendsto_riemannZeta_sub_one_div) so that iteratedDeriv sees the
+-- analytic extension; without the update Lean's junk value of logDeriv riemannZeta at the pole
+-- would make every eta_j equal to 0 (eta_0 included: -logDeriv riemannZeta 1 - 1/(1-1) = 0,
+-- since riemannZeta is not differentiable at 1 so deriv returns the junk value 0) and the
+-- statement FALSE already for n = 1 (finiteSide 1 = 0 instead of gamma).  Numerically
+-- verified to 1e-39 for n = 1..8 against Li's generating function (memo section 5). =====
+
+/-- Li's kernel `1 - (1 - 1/ρ)^n`; `λ_n = Σ_ρ liKernel n ρ` in the symmetric order. -/
+noncomputable def liKernel (n : ℕ) (ρ : ℂ) : ℂ := 1 - (1 - 1 / ρ) ^ n
+
+/-- The symmetric partial zero sum: strip zeros with `|Im ρ| ≤ T`, weight
+    `WeilExplicit.zeroMult` (the E8 / RvMCount divisor).  `finsum` is 0 on infinite support, so
+    the definition is total; finiteness of every window is a theorem. -/
+noncomputable def liZeroSum (n : ℕ) (T : ℝ) : ℂ :=
+  ∑ᶠ ρ ∈ {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im| ≤ T},
+    (WeilExplicit.zeroMult ρ : ℂ) * liKernel n ρ
+
+/-- The archimedean side `S_∞(n) = 1 - (n/2)(γ + log π + 2 log 2)
+    + Σ_{j=2}^n (-1)^j C(n,j) (1 - 2^{-j}) ζ(j)` (Bombieri-Lagarias 1999, Thm 2). -/
+noncomputable def archSide (n : ℕ) : ℂ :=
+  1 - ((n : ℂ) / 2) * ((Real.eulerMascheroniConstant : ℂ) + (Real.log Real.pi : ℂ)
+      + 2 * (Real.log 2 : ℂ))
+    + ∑ j ∈ Finset.Icc 2 n,
+        (-1 : ℂ) ^ j * (n.choose j : ℂ) * (1 - 1 / (2 : ℂ) ^ j) * riemannZeta (j : ℂ)
+
+/-- `-ζ'/ζ(s) - 1/(s - 1)`, extended at `s = 1` by its limit `-γ`. -/
+noncomputable def zetaLogDerivReg : ℂ → ℂ :=
+  Function.update (fun s : ℂ => -logDeriv riemannZeta s - 1 / (s - 1)) 1
+    (-(Real.eulerMascheroniConstant : ℂ))
+
+/-- The Laurent constants `η_j`: `-ζ'/ζ(s) - 1/(s-1) = Σ_j η_j (s-1)^j`, `η_0 = -γ`. -/
+noncomputable def eta (j : ℕ) : ℂ := iteratedDeriv j zetaLogDerivReg 1 / (j.factorial : ℂ)
+
+/-- The finite part `S_f(n) = -Σ_{j=1}^n C(n,j) η_{j-1}` (Bombieri-Lagarias 1999, Thm 2). -/
+noncomputable def finiteSide (n : ℕ) : ℂ :=
+  -∑ j ∈ Finset.Icc 1 n, (n.choose j : ℂ) * eta (j - 1)
+
+end BombieriLagarias"""
+
 parts = [
     """/-
   Statements.RHDefs -- vocabulary mirror for the RH missions registry.  NOT a node statement.
@@ -210,6 +269,8 @@ namespace DBN
 end DBN""",
     # ===== AUTHORED (2026-09-18 E8): Weil test class + the three sides of the limit explicit formula =====
     WEIL_EXPLICIT_BLOCK,
+    # ===== AUTHORED (2026-09-18 B7): Bombieri-Lagarias / Li vocabulary =====
+    BOMBIERI_LAGARIAS_BLOCK,
 ]
 
 
