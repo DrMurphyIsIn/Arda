@@ -2240,6 +2240,57 @@ jobs:
   # modules, so building the guards builds every artifact and then checks its axioms.
   # NOTE none of the six is in the lakefile's defaultTargets, so a bare `lake build` does
   # NOT cover them -- they are named explicitly here on purpose.
+  # The wall-analysis islands. Both shipped 2026-09-19 with NO CI job, and wall_adversary
+  # had no lakefile at all -- a loose .lean file no project could build -- while the ascent
+  # plan cited its contents as "kernel-checked". BarrierScopeXR is the refutation of the
+  # barrier proposed in wall_barrier, so leaving it unbuilt left the retraction unverified
+  # too. 19 axiom anchors across the three modules.
+  wall-analysis-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/wall_barrier/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Build + axiom-guard wall_barrier
+        working-directory: telperion/examples/wall_barrier/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake exe cache get
+          lake build
+          : > out.txt
+          for m in WallBarrierAM FEUniformBarrierAM; do lake env lean "$m.lean" 2>&1 | tee -a out.txt; done
+          n=$(grep -c "depends on axioms" out.txt || true)
+          if [ "$n" -lt "11" ]; then echo "::error::printed $n axiom lines, expected >= 11"; exit 1; fi
+          if grep -q "sorryAx" out.txt; then echo "::error::sorryAx present"; exit 1; fi
+          if grep -E "depends on axioms" out.txt | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+            echo "::error::unexpected axiom"; grep -E "depends on axioms" out.txt | grep -v "\[propext, Classical.choice, Quot.sound\]"; exit 1; fi
+
+      - name: Build + axiom-guard wall_adversary (the refutation)
+        working-directory: telperion/examples/wall_adversary/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake exe cache get
+          lake build
+          lake env lean BarrierScopeXR.lean 2>&1 | tee out.txt
+          n=$(grep -c "depends on axioms" out.txt || true)
+          if [ "$n" -lt "8" ]; then echo "::error::printed $n axiom lines, expected >= 8"; exit 1; fi
+          if grep -q "sorryAx" out.txt; then echo "::error::sorryAx present"; exit 1; fi
+          if grep -E "depends on axioms" out.txt | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+            echo "::error::unexpected axiom"; grep -E "depends on axioms" out.txt | grep -v "\[propext, Classical.choice, Quot.sound\]"; exit 1; fi
+
   zeta-reflection-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
