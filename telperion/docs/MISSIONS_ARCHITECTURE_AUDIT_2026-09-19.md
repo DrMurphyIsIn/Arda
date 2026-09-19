@@ -99,7 +99,8 @@ substantive, and one of them caught a statement that was definitionally `rfl`. B
 * Across 58 readbacks there are 14 self-declared auditor labels, and across every node commit
   in the repository there are three git identities.
 * The independence requirement ("the renderer must not be the statement's author") lives in
-  `MISSIONS_DESIGN_2026-09-11.md` §8 and the HOWTO. It is enforced nowhere.
+  `MISSIONS_DESIGN_2026-09-11.md` §8 **only**. It is absent from the how-to that sessions
+  actually read, and enforced nowhere. See §4d.
 
 So the single strongest link in the chain is the one with no mechanism behind it. This is not
 a hypothetical worry in a project where the authors, the auditors and the integrators are all
@@ -110,6 +111,93 @@ provenance — a `[grant]` block carrying the artifact digest, the date and the 
 actually saw — and record the statement's author at creation so the gate can refuse a readback
 whose auditor matches it. Neither makes self-certification impossible; both make it *visible*,
 which is the achievable goal.
+
+---
+
+## 4b. The data layer: three ways to corrupt the registry, all closed
+
+Driven with real concurrent processes, not inspection.
+
+**Writes were not atomic, and a torn file could read back as a valid node.** `save_node`
+truncated in place. Under two writers and two readers, 1325 of 8000 reads saw an empty file
+and 399 saw torn TOML. Most torn reads fail loudly — but an exhaustive byte-prefix scan of
+all 66 live node files found **201 truncation points that load as a VALID node with a field
+silently missing**, `readback` among them in 64 of the 66. Because the registry reads,
+replaces one field and writes back, a session reading a torn file mid-write permanently
+erased the read-back, which is the record gating promotion. All seven writers now use temp
+file plus `os.replace`.
+
+**Claims did not exclude.** Six racing processes each returned a claim naming themselves in
+one of thirty trials, and a racing stale-steal left a torn claim file that broke every claim
+operation in the campaign. Now created `O_CREAT|O_EXCL`; re-probed with eight processes over
+twelve trials, exactly one winner every time.
+
+**Granting destroyed hand-written evidence.** Any key the schema did not model was dropped on
+save. A live node carries a `[nonvacuity]` table and a `proof.fidelity_note` recording that
+its proof is kernel-verified *locally and not on main CI* — precisely the kind of honesty
+field whose loss matters — and any mutation erased 1978 characters of it without a word.
+
+**Two parsers meant two truths.** `loads_toml` fell back to a hand-rolled subset parser when
+`tomllib` was absent, so CI and an older developer machine could read the same file
+differently, silently: extra spaces around `=` produced a key with a trailing space so the
+field vanished; a dotted key became a top-level key so the proof was absent; a duplicated
+`[proof]` table from a botched merge was last-wins locally while CI rejected the file
+outright. `tomli` is now a dependency and the fallback refuses the shapes it used to guess
+at. All 74 live files parse identically under both today, so nothing on disk is corrupt.
+
+The healthy part: `attempts.jsonl` appends are atomic even at 300 KB lines. Its weakness was
+swallowing malformed lines anywhere in the file, so recorded work vanished from every digest;
+skipped lines are now counted and surfaced.
+
+---
+
+## 4c. The operator surface: what an agent can actually do
+
+Seven mutating subcommands. Only `grant` carried a real gate.
+
+| Command | Was validated by | Now |
+|---|---|---|
+| `claim` / `release` | node open, TTL staleness | plus exclusive creation |
+| `add` | slug uniqueness, kind enum, non-empty statement | unchanged — §4 |
+| `audit` | status is draft, readback non-None | plus non-empty text and auditor |
+| `link` | two enums | plus artifact must exist, and refuses to repoint a proved node without `--force` |
+| `attempt` | verdict enum | plus malformed lines surfaced |
+| `grant` | the full gate | §2, §3 |
+
+The MCP surface is clean and is the one surface with no finding against it: only
+`mission_status` and `mission_open_leaves` are exposed, both read-only. An agent must use the
+CLI or edit files by hand.
+
+**`open-leaves` would have crashed on the cross-campaign dependency form introduced this
+week** — the command the how-to tells every session to run first. No live node uses a
+qualified reference yet, so it was latent. Fixed.
+
+---
+
+## 4d. The self-certification measurement
+
+§4 said the read-back is the link with no mechanism. The data says it is also, already, the
+normal case:
+
+* Of 47 proved nodes, **37 carry a read-back whose declared auditor is the same migration or
+  catch-up session that registered them**, many self-describing as "verbatim-extract
+  precedent" in the auditor string itself.
+* **Ten** have a `blind-auditor` read-back backed by a testimony document.
+* The distinct auditor values are self-assigned labels. Git authorship carries no signal:
+  every commit touching the registry belongs to one of two identities of the same person.
+
+And the likely reason is a documentation gap rather than shortcutting. The independence rule
+lives in `MISSIONS_DESIGN_2026-09-11.md` §8. The document a session actually reads first is
+`MISSIONS_HOWTO.md`, whose entire treatment of the ceremony is one line that never mentions
+independence or blindness. **A session that reads the how-to and audits its own node has
+followed the instructions it was given.**
+
+The cheapest repair is to copy that sentence into the how-to. Beyond that, two non-blocking
+changes make self-certification visible rather than impossible: a `--testimony PATH` flag on
+`mission audit` that must resolve and is hashed into the read-back, and a battery warning
+when a node's auditor string matches a session that logged attempts against that same node.
+Real independence is not enforceable in code here — any identity an agent can supply for
+itself it can supply for another — so visibility is the achievable goal.
 
 ---
 
@@ -162,8 +250,10 @@ reproducible.
 
 ## 7. What to do next, in order
 
-1. **Decide the identity question** (§4). Everything else is a smaller risk than a
-   self-certified read-back, and no amount of gate hardening touches it.
+1. **Decide the identity question** (§4, §4d). Everything else is a smaller risk than a
+   self-certified read-back, and no amount of gate hardening touches it. The one-line
+   documentation fix — copying the independence sentence into the how-to — costs nothing and
+   addresses the measured cause.
 2. **Fix `proof-lean`** (§6). Nine proved nodes currently rest on a verification that has not
    completed in a week.
 3. **Theorem-level guard coverage** (§5). Two nodes are guarded by nothing; the check is a
