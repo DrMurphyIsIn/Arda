@@ -95,3 +95,26 @@ unchanged, global cycle detection, and six closure cases covering unproved,
 proved-but-dirty, no-universe, transitive dirt, and the direct-proof asymmetry.
 The full mission subset stays green at 331 passed, and all four real campaigns
 load as a universe and verify OK.
+
+## Follow-up landed with this mechanism: the reduction premise precondition
+
+Ascent-plan op **F1-2**. `grant_status` now refuses to flip a node whose proof
+is `via = "reduction"` when any `depends_on` target is not already `proved`, or
+does not resolve at all. Cross-campaign targets resolve through the universe.
+
+A `direct` proof is deliberately exempt, for the same reason its closure is
+exempt: it stands on its artifact and the gate that checked it, and its edges
+are documentary. Enforcing the precondition on direct proofs would have blocked
+legitimate grants whose edges merely record context, and would not have caught
+the demonstrated exploit, which was a stub artifact rather than a bad edge.
+
+With this, a reduction node cannot be granted over a draft, open, or
+unresolvable premise, and cannot be *closure-clean* unless the whole chain is
+clean under the global fixpoint. Those are two different checks and both are
+now present: the first at the moment of granting, the second continuously.
+
+**Not done, and why.** Ops F1-3 and F1-4 would extend the closure fixpoint to
+`direct` proofs behind a `closure_override_reason` field. That is a semantic
+change to what `closure_clean` means for 43 already-clean nodes, so it needs an
+owner's decision rather than an implementer's; it is left queued.
+
