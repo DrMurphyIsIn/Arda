@@ -14,6 +14,17 @@
       * CosEnclosure.cos_encl / cos_encl_bracket -- terminal cos contract + Lipschitz
         bracket-width absorption (`Real.abs_cos_sub_cos_le`).
       * CosEnclosure.add_encl -- interval-sum fold glue.
+      * ExpLaurentDeficit.expLaurent_recurrence_deficit{,_sq} -- the emitted exp-Laurent
+        certificates (kind `exp_laurent_identity`): the clearance PRODUCT equals the
+        amplification excess, and its Weil-energy square, both an exact reduction modulo
+        the single relation e^d * e^(-d) = 1.
+      * Quasicrystal.recurrence_deficit_eq_excess -- MIRRORMERE node
+        MM_recurrence_deficit_eq_excess: the Face 4 (Bagchi recurrence) <-> Face 1 (Bragg
+        defect) dictionary row at the certified displacement delta = 1/10, plus strict
+        positivity of the deficit at every positive displacement.  A dictionary row between
+        two finite instruments -- NOT an analytic theorem and NOT a step toward RH.
+      * Quasicrystal.recurrence_deficit_sq_eq_abs_defect -- its second-order (Weil-energy)
+        companion: the squared deficit is |defectFunctional excess|.
       * BraggH100.bragg_amplitude_h100 -- THE HEADLINE: the first kernel-certified
         truncated Bragg amplitude F_100(u*) = sum cos(gamma_k * u*) over the 29 certified
         zeros up to height 100, enclosed in the certified interval.  The gLine sign
@@ -29,6 +40,8 @@ import CosEnclosure
 import BraggH100
 import BraggSupport
 import RHInBoxCore
+import ExpLaurentDeficit
+import RecurrenceDeficit
 
 /-! ### CosEnclosure -- certified cos machinery -/
 #print axioms CosEnclosure.cos_base
@@ -43,6 +56,12 @@ import RHInBoxCore
 #print axioms RHInBoxCore.support_eq_witnesses
 #print axioms RHInBoxCore.sum_over_box_zeros_eq
 #print axioms BraggSupport.sum_cos_over_zero_support_eq
+
+/-! ### ExpLaurentDeficit / RecurrenceDeficit -- the Face 4 <-> Face 1 dictionary row -/
+#print axioms ExpLaurentDeficit.expLaurent_recurrence_deficit
+#print axioms ExpLaurentDeficit.expLaurent_recurrence_deficit_sq
+#print axioms Quasicrystal.recurrence_deficit_eq_excess
+#print axioms Quasicrystal.recurrence_deficit_sq_eq_abs_defect
 
 /-! ### BraggH100 -- the headline certified Bragg amplitudes -/
 #print axioms BraggH100.bragg_amplitude_h100

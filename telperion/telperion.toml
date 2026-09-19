@@ -629,6 +629,12 @@ script = "examples/zeta_zero_localization/generate.py"
 group = "flint"    # Arb lambda-enclosures for xi-line zeros; needs python-flint
 
 [[check]]
+name = "exp_laurent_deficit"
+script = "examples/exp_laurent_deficit/generate.py"
+group = "quick"    # exp-Laurent recurrence-deficit rows (MIRRORMERE W3d); pure sympy, ~0.1 s.
+                   # Emits INTO the zeta_zero_localization island (lean/ExpLaurentDeficit.lean).
+
+[[check]]
 name = "jensen_hyperbolicity"
 script = "examples/jensen_hyperbolicity/generate.py"
 group = "flint"    # Jensen d=2 hyperbolicity; needs python-flint (drift-checked in telperion-lean-e2e)
@@ -654,6 +660,11 @@ script = "examples/bragg_amplitude/generate.py"
 group = "quick"    # exact rational Bragg amplitudes (no flint)
 
 [[check]]
+name = "exp_enclosure"
+script = "examples/exp_enclosure/generate.py"
+group = "quick"    # exact rational Real.exp brackets from Real.exp_bound (no flint)
+
+[[check]]
 name = "defect_witness"
 script = "examples/defect_witness/generate.py"
 group = "quick"    # exact rational defect witness (no flint)
@@ -672,6 +683,16 @@ group = "flint"    # Robin growth instance; Arb enclosures need python-flint
 name = "selfinversive_rigidity"
 script = "examples/selfinversive_rigidity/generate.py"
 group = "quick"    # exact self-inversive rigidity certificate (no flint)
+
+[[check]]
+name = "disjoint_discs"
+script = "examples/disjoint_discs/generate.py"
+group = "quick"    # MIRRORMERE E4b isolation instances (exact rationals, no flint)
+
+[[check]]
+name = "twofreq_offline"
+script = "examples/twofreq_offline/generate.py"
+group = "quick"    # exact off-line displacement certificate (no flint)
 
 [[check]]
 name = "winding_box_zero"

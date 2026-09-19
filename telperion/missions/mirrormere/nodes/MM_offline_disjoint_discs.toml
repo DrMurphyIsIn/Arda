@@ -5,7 +5,13 @@ name = "MM.offline_disjoint_discs"
 statement_module = "Statements.MM_offline_disjoint_discs"
 status = "open"
 title = "Routes-roadmap E4b (the isolation lemma, QC_RECURRENCE section 4.3): any finite set of points in the open critical strip admits a single positive radius whose closed discs are pairwise disjoint and stay inside the strip -- the geometric substrate for counting off-line zeros by disjoint recurrence-deficit discs (Rouche-template leg of the finite-grade interderivability E5). Pure metric topology, dischargeable now (RH_ROUTES_ROADMAP_2026-09-16 section 9)"
-updated = "2026-09-16"
+updated = "2026-09-18"
+
+[proof]
+artifact = "../../examples/quasicrystal/lean/OfflineDiscs.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
 
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"

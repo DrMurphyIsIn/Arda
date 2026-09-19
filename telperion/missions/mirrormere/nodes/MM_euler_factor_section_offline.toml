@@ -5,7 +5,13 @@ name = "MM.euler_factor_section_offline"
 statement_module = "Statements.MM_euler_factor_section_offline"
 status = "open"
 title = "Torus-section ladder T2, THE NEGATIVE CONTROL: the p=2 Euler factor 1 - 2^(-s), read on s = 1/2 + ix as the two-frequency section twoFreq(1, -1/sqrt 2; 0, -log 2), is NOT real-rooted -- its zeros sit uniformly at Im x = 1/2 (the Re s = 0 line). Certifies that no per-rung line-membership claim survives finite truncation (the Turan/Montgomery obstruction, in-house); critical-line membership is an infinite-N continuation phenomenon. Discharge route: twoFreq_realRooted_iff + norm arithmetic, ||1|| /= 2^(-1/2) (QC_TORUS_SECTION_LADDER memo section 4b)"
-updated = "2026-09-14"
+updated = "2026-09-18"
+
+[proof]
+artifact = "../../examples/quasicrystal/lean/EulerFactorSectionOffline.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
 
 [readback]
 auditor = "blind-auditor 2026-09-14 (independent blind read-back, AUDIT_TESTIMONY_ANDURIL_MIRRORMERE_2026-09-14.md)"
