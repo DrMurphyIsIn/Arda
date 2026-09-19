@@ -12,6 +12,14 @@ cross-package dependency, the emitted instances are written as a NEW lib inside 
 Two equal-modulus instances (|c₁|² = |c₂|² exactly ⟹ real-rooted):
   - c₁ = 3/5 + 4/5 i, c₂ = 1        (|c|² = 1),  λ = 1, 2
   - c₁ = 1 + i,       c₂ = 1 − i    (|c|² = 2),  λ = 0, 3
+
+OFFLINE mode (2026-09-18, MIRRORMERE torus-section ladder T2 / node
+MM_euler_factor_section_offline): a SECOND lib `SelfInversiveOfflineInstances.lean` with the
+p = 2, 3, 5 Euler-factor sections twoFreq(1, −(1/√p); 0, −log p) — |c₁|² = 1 ≠ 1/p = |c₂|² EXACTLY,
+so each is certified NOT real-rooted (.mp of twoFreq_realRooted_iff) and ships the explicit
+witness x = i/2.  The p = 2 instance is the emitter dogfood of the registry node, whose VERBATIM
+statement lives hand-stated in the island's TorusSectionLadder.lean; p = 3, 5 are free extras
+and are NOT nodes.  conjecture1_proved = False.
 """
 import argparse
 import sys
@@ -35,6 +43,16 @@ _NAMES = {0: "rigidity_unit_modulus", 1: "rigidity_conjugate_pair"}
 _ISLAND = Path(__file__).resolve().parents[1] / "quasicrystal" / "lean"
 _OUT = _ISLAND / "SelfInversiveRigidityInstances.lean"
 
+# OFFLINE mode: the p-th Euler-factor section on s = 1/2 + ix is twoFreq(1, −(1/√p); 0, −log p),
+# and −(1/√p) = (−1/p)·√p in the emitter's r·√q coefficient form.
+_OFFLINE_PRIMES = {0: 2, 1: 3, 2: 5}
+_OFFLINE_OUT = _ISLAND / "SelfInversiveOfflineInstances.lean"
+
+
+def _euler_spec(p: int) -> dict:
+    return {"mode": "offline", "c1": "1", "c2": {"rat": f"-1/{p}", "sqrt": p},
+            "lam1": "0", "lam2": {"rat": "-1", "log": p}}
+
 
 def build() -> str:
     fam = selfinversive_rigidity_family(
@@ -53,16 +71,35 @@ def build() -> str:
     return next(iter(report.files.values()))
 
 
+def build_offline() -> str:
+    fam = selfinversive_rigidity_family(
+        "SelfInversiveOfflineInstances",
+        GridSpec([("case", [0, 1, 2])]),
+        lambda pt: f"euler_factor_p{_OFFLINE_PRIMES[pt['case']]}_offline",
+        spec=lambda pt: _euler_spec(_OFFLINE_PRIMES[pt["case"]]),
+    )
+    report = emit(
+        certify(fam),
+        LeanProfile(namespace=("SelfInversiveOfflineInstances",),
+                    imports=("Mathlib", "TwoFreqRigidity")),
+        [SelfInversiveRigidityEmitter()],
+        ValidationReport(checks=(("selfinversive_rigidity_offline", True),)),
+    )
+    return next(iter(report.files.values()))
+
+
 def main(*, check: bool = False) -> int:
-    text = build()
+    outputs = ((_OUT, build()), (_OFFLINE_OUT, build_offline()))
     if check:
-        if not _OUT.exists() or _OUT.read_text(encoding="utf-8") != text:
-            print("DRIFT: SelfInversiveRigidityInstances.lean does not match regeneration")
-            return 1
-        print("check: OK (regeneration matches frozen output byte-for-byte)")
+        for out, text in outputs:
+            if not out.exists() or out.read_text(encoding="utf-8") != text:
+                print(f"DRIFT: {out.name} does not match regeneration")
+                return 1
+        print("check: OK (regeneration matches frozen output byte-for-byte, both libs)")
         return 0
-    _OUT.write_text(text, encoding="utf-8")
-    print(f"wrote {_OUT} ({len(text)} bytes)")
+    for out, text in outputs:
+        out.write_text(text, encoding="utf-8")
+        print(f"wrote {out} ({len(text)} bytes)")
     return 0
 
 

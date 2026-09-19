@@ -18,6 +18,8 @@ import InvolutionDictionary
 import TorusSectionLadder
 import OfflineDiscs
 import OfflineDiscsInstances
+import EulerFactorOffline
+import SelfInversiveOfflineInstances
 
 open Quasicrystal
 
@@ -94,6 +96,29 @@ open Quasicrystal
     `disjoint_discs` kind; the points are INPUT, not a claim about zeta) -/
 #print axioms OfflineDiscsInstances.offline_discs_online_pair
 #print axioms OfflineDiscsInstances.offline_discs_offline_bank
+/-! ### torus-section ladder T2 -- TorusSectionLadder, THE NEGATIVE CONTROL
+    (registry node MM_euler_factor_section_offline + explicit off-line witness) -/
+#print axioms TorusSectionLadder.euler_factor_coeff_ne_zero
+#print axioms TorusSectionLadder.euler_factor_freq_ne
+#print axioms TorusSectionLadder.euler_factor_section_offline
+#print axioms TorusSectionLadder.euler_factor_section_witness
+#print axioms TorusSectionLadder.euler_factor_section_witness_im
+#print axioms TorusSectionLadder.euler_factor_section_offline_of_witness
+
+/-! ### torus-section ladder T2 -- the emitter dogfood (selfinversive_rigidity mode="offline"):
+    the p = 2, 3, 5 Euler-factor sections, refuted from the exact normSq inequality -/
+#print axioms SelfInversiveOfflineInstances.euler_factor_p2_offline
+#print axioms SelfInversiveOfflineInstances.euler_factor_p2_offline_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p2_offline_of_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p2_offline_node
+#print axioms SelfInversiveOfflineInstances.euler_factor_p3_offline
+#print axioms SelfInversiveOfflineInstances.euler_factor_p3_offline_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p3_offline_of_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p3_offline_node
+#print axioms SelfInversiveOfflineInstances.euler_factor_p5_offline
+#print axioms SelfInversiveOfflineInstances.euler_factor_p5_offline_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p5_offline_of_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p5_offline_node
 
 /-! ### increment (iii) -- CharacterizationStatements
 
