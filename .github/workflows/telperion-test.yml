@@ -57,3 +57,13 @@ jobs:
       - name: Manifest verify, quick group (drift net + byte-stability across sympy versions)
         working-directory: telperion
         run: PYTHONPATH=src python -m telperion.cli verify --group quick
+
+      # Registry gate (added 2026-09-18): nothing in CI ran the missions invariant battery,
+      # so a node could sit at status=proved with an artifact that no longer contains its
+      # statement and nothing would notice. This runs verify_campaign over every campaign
+      # (rh, mirrormere, anduril, bg): schema + acyclicity, artifact existence, statement /
+      # refutation containment for every proved node, closure-flag coherence and regen drift.
+      # Pure Python, seconds, and it rides the REQUIRED `unit` check so it actually gates.
+      - name: Missions registry verify (every campaign's invariant battery)
+        working-directory: telperion
+        run: PYTHONPATH=src python -m telperion.cli mission verify
