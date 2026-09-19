@@ -46,6 +46,14 @@ roots = ["TwoFreqRigidity"]
 name = "SelfInversiveRigidityInstances"
 roots = ["SelfInversiveRigidityInstances"]
 
+# Telperion twofreq_offline emitter example (2026-09-18): the COMPLEMENT of the
+# rigidity instances -- certified OFF-line displacement of the Euler-factor sections
+# 1 - p^(-s) on s = 1/2 + i x (MIRRORMERE ladder rung T2), emitted by
+# examples/twofreq_offline/generate.py.  Not in defaultTargets until the CI job is green.
+[[lean_lib]]
+name = "EulerFactorSectionOffline"
+roots = ["EulerFactorSectionOffline"]
+
 [[lean_lib]]
 name = "RationalFreqReduction"
 roots = ["RationalFreqReduction"]

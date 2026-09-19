@@ -2594,14 +2594,45 @@ jobs:
       - name: Build the emitted rigidity lib (uses the island's TwoFreqRigidity)
         working-directory: telperion/examples/quasicrystal/lean
         run: lake build SelfInversiveRigidityInstances
+  twofreq-offline-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
 
-      - name: Build the emitted OFFLINE lib + the T2 negative-control node (mode="offline")
-        working-directory: telperion/examples/quasicrystal/lean
-        run: lake build SelfInversiveOfflineInstances EulerFactorOffline
+      - name: Unit tests (self-check pass + anti-phantom refusals + negative-control twins)
+        working-directory: telperion
+        run: |
+          PYTHONPATH=src python -m pytest tests/test_emit_twofreq_offline.py \
+            tests/test_negctrl_twofreq_offline.py -q
 
-      - name: Axiom guard (T2 negative control must be sorry-free)
+      - name: Regenerate the Euler-factor off-line sections from the family definition
+        working-directory: telperion
+        run: |
+          python examples/twofreq_offline/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
         working-directory: telperion/examples/quasicrystal/lean
-        run: lake env lean AxiomGuardQC.lean
+        run: lake exe cache get
+
+      - name: Build the emitted off-line sections (uses the island's TwoFreqRigidity)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake build EulerFactorSectionOffline
   winding-box-zero-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 20

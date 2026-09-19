@@ -690,6 +690,11 @@ script = "examples/disjoint_discs/generate.py"
 group = "quick"    # MIRRORMERE E4b isolation instances (exact rationals, no flint)
 
 [[check]]
+name = "twofreq_offline"
+script = "examples/twofreq_offline/generate.py"
+group = "quick"    # exact off-line displacement certificate (no flint)
+
+[[check]]
 name = "winding_box_zero"
 script = "examples/winding_box_zero/generate.py"
 group = "flint"    # Arb winding-number sidecar; needs python-flint
