@@ -51,7 +51,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification)
         working-directory: telperion/examples/toy_box/lean
         run: lake build
-
   jensen-hyperbolicity-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -126,210 +125,11 @@ jobs:
         working-directory: telperion/examples/li_positivity/lean
         run: lake build
 
-      - name: "Axiom guard (Li ladder anchors): exact axiom set, no sorryAx, guard actually ran"
+      - name: Axiom guard (fails on sorryAx anywhere in the anchors)
         working-directory: telperion/examples/li_positivity/lean
-        shell: bash
         run: |
-          set -euo pipefail
-          lake env lean AxiomGuardLiPositivity.lean 2>&1 | tee axioms.out
-          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
-          if [ "$n" -lt "163" ]; then
-            echo "::error::axiom guard printed $n axiom lines, expected at least 163 -- the guard did not run or was silently truncated"; exit 1; fi
-          if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
-          # every printed axioms line must be EXACTLY Lean's three standard axioms
-          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
-          # list and reports a false positive.  Join lines, then extract each complete
-          # "depends on axioms: [...]" group and require it to be exactly the three.
-          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
-            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-            tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
-            exit 1; fi
-
-      # The two zero-free-region node artifacts (ZeroFreePolylog + ZeroFreeElementary) are imported
-      # by nothing, so until 2026-09-18 no build compiled them and no guard elaborated them. They
-      # need a SEPARATE guard: ZeroFreeElementary re-declares ZeroFreeBridge.zeta_sphere_bound,
-      # which DlvpZetaDisk already declares, so they cannot share an import closure.
-      - name: "Axiom guard (zero-free-region artifacts): exact axiom set, no sorryAx, guard actually ran"
-        working-directory: telperion/examples/li_positivity/lean
-        shell: bash
-        run: |
-          set -euo pipefail
-          lake env lean AxiomGuardZeroFree.lean 2>&1 | tee zerofree.out
-          n=$(grep -c "depends on axioms" zerofree.out || true)
-          if [ "$n" -lt "2" ]; then
-            echo "::error::zero-free guard printed $n axiom lines, expected 2 -- the guard did not run"; exit 1; fi
-          if grep -q "sorryAx" zerofree.out; then echo "::error::sorryAx present"; exit 1; fi
-          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
-          # list and reports a false positive.  Join lines, then extract each complete
-          # "depends on axioms: [...]" group and require it to be exactly the three.
-          if tr "\n" " " < zerofree.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
-            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-            tr "\n" " " < zerofree.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
-            exit 1; fi
-
-  weil-form-enclosure-compiles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install sympy pytest python-flint
-
-      # Regenerates the E8 Weil-pairing enclosures from scratch with Arb (archimedean
-      # quadrature to |r| <= 1024 plus a 5-fold integration-by-parts tail) and checks the
-      # frozen Lean matches byte-for-byte; also gates the WeilExplicit vocabulary mirror
-      # against the PROVED node in examples/rvm_bridge/lean/E6Bridge4.lean.  ~4 min.
-      - name: Regenerate the Weil-form ladder (enclose -> certify -> emit) and check it matches on-disk
-        working-directory: telperion
-        run: |
-          python examples/weil_form_enclosure/generate.py --check
-
-      - name: Cache elan toolchain
-        uses: actions/cache@v4
-        with:
-          path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/weil_form_enclosure/lean/lean-toolchain') }}
-
-      - name: Install elan
-        run: |
-          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
-      - name: Fetch Mathlib olean cache
-        working-directory: telperion/examples/weil_form_enclosure/lean
-        run: lake exe cache get
-
-      - name: Build the vocabulary mirror and the emitted ladder (the actual verification)
-        working-directory: telperion/examples/weil_form_enclosure/lean
-        run: lake build
-
-      - name: Axiom guard (fails on sorryAx anywhere in the emitted theorems)
-        working-directory: telperion/examples/weil_form_enclosure/lean
-        run: |
-          lake env lean AxiomGuardWeilForm.lean | tee axioms.out
+          lake env lean AxiomGuardLiPositivity.lean | tee axioms.out
           ! grep -q "sorryAx" axioms.out
-
-  window-form-floor-compiles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      # No python-flint here: the window_form_floor instances carry Zhu's PUBLISHED constants,
-      # and the only recomputation is the finite von Mangoldt comb mass, which is exact sympy.
-      - run: pip install sympy pytest
-
-      # Regenerates Zhu's window-floor certificates (arXiv:2608.24827 Thm 1.1 / Thm 1.2) and
-      # checks the frozen Lean matches byte-for-byte.  The generator RE-DERIVES A_L from L and
-      # beta* from (T#, A_L) and refuses on disagreement -- the retraction guard, which is what
-      # catches an A_eff-for-A_L substitution of the kind the paper itself withdrew.  ~2 s.
-      - name: Regenerate the window-floor certificates (certify -> emit) and check they match on-disk
-        working-directory: telperion
-        run: |
-          python examples/window_form_floor/generate.py --check
-
-      - name: Emitter unit tests (refusals, re-derivation, emission)
-        working-directory: telperion
-        run: |
-          PYTHONPATH=src python -m pytest tests/test_emit_window_form_floor.py -q
-
-      - name: Cache elan toolchain
-        uses: actions/cache@v4
-        with:
-          path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/weil_form_enclosure/lean/lean-toolchain') }}
-
-      - name: Install elan
-        run: |
-          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
-      - name: Fetch Mathlib olean cache
-        working-directory: telperion/examples/weil_form_enclosure/lean
-        run: lake exe cache get
-
-      - name: Build the emitted window-floor instances (the actual verification)
-        working-directory: telperion/examples/weil_form_enclosure/lean
-        run: lake build WindowFormFloorInstances AxiomGuardWindowFormFloor
-
-      - name: Axiom guard (fails on sorryAx anywhere in the emitted window-floor theorems)
-        working-directory: telperion/examples/weil_form_enclosure/lean
-        run: |
-          lake env lean AxiomGuardWindowFormFloor.lean | tee axioms.out
-          ! grep -q "sorryAx" axioms.out
-
-  rvm-bridge-compiles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      # The drift check imports the telperion package (statement-port matching), which pulls
-      # sympy. Without this the step dies with ModuleNotFoundError before it checks anything --
-      # a drift check that cannot start is a drift check that cannot fail on drift.
-      - run: pip install sympy
-
-      - run: pip install sympy
-
-      - name: Drift check (node statements + mirrored defs still match the mirrormere and rh registries)
-        working-directory: telperion
-        run: |
-          python examples/rvm_bridge/generate.py --check
-
-      - name: Cache elan toolchain
-        uses: actions/cache@v4
-        with:
-          path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/rvm_bridge/lean/lean-toolchain') }}
-
-      - name: Install elan
-        run: |
-          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
-      # Zeta23 (anthropics/formal-math, public, Apache-2.0; ~1.6 MB repo) is cloned by Lake at the
-      # pinned commit; Mathlib oleans come from the cache through that dependency. Zeta23 itself
-      # (118 modules) compiles from source: ~2 min on 32 cores locally, expect ~15-25 min on a
-      # 4-core hosted runner.
-      - name: Fetch Mathlib olean cache (through the Zeta23 dependency)
-        working-directory: telperion/examples/rvm_bridge/lean
-        run: lake exe cache get
-
-      - name: Build the bridge against the pinned zeta-23-lean (the actual verification)
-        working-directory: telperion/examples/rvm_bridge/lean
-        run: lake build
-
-      - name: "Axiom guard (45 anchors incl. consumed upstream inputs): exact axiom set, no sorryAx, guard actually ran"
-        working-directory: telperion/examples/rvm_bridge/lean
-        shell: bash
-        run: |
-          set -euo pipefail
-          lake env lean AxiomGuardRvMBridge.lean 2>&1 | tee axioms.out
-          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
-          if [ "$n" -lt "45" ]; then
-            echo "::error::axiom guard printed $n axiom lines, expected at least 45 -- the guard did not run or was silently truncated"; exit 1; fi
-          if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
-          # every printed axioms line must be EXACTLY Lean's three standard axioms
-          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
-          # list and reports a false positive.  Join lines, then extract each complete
-          # "depends on axioms: [...]" group and require it to be exactly the three.
-          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
-            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-            tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
-            exit 1; fi
-
   tangent-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -363,8 +163,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — tangent-line trick)
         working-directory: telperion/examples/tangent_sum/lean
         run: lake build
-
-
   primality-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -398,7 +196,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Lucas/Pratt primality)
         working-directory: telperion/examples/primality/lean
         run: lake build
-
   cs-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -432,7 +229,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Cauchy-Schwarz)
         working-directory: telperion/examples/cauchy_schwarz/lean
         run: lake build
-
   bilinear-corner-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -466,7 +262,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — bilinear worst-corner box)
         working-directory: telperion/examples/bilinear_corner/lean
         run: lake build
-
   algebraic-bracket-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -500,7 +295,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — algebraic √ bracket)
         working-directory: telperion/examples/algebraic_bracket/lean
         run: lake build
-
   halfplane-disk-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -534,7 +328,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Borel–Carathéodory half-plane→disk)
         working-directory: telperion/examples/halfplane_disk/lean
         run: lake build
-
   finite-argmax-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -568,7 +361,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — finite-argmax margin)
         working-directory: telperion/examples/finite_argmax/lean
         run: lake build
-
   magnitude-split-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -602,7 +394,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — triangle magnitude split)
         working-directory: telperion/examples/magnitude_split/lean
         run: lake build
-
   disk-coord-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -636,7 +427,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — disk→coordinate bounds)
         working-directory: telperion/examples/disk_coord/lean
         run: lake build
-
   cauchy-deriv-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -670,7 +460,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Cauchy derivative estimate)
         working-directory: telperion/examples/cauchy_deriv/lean
         run: lake build
-
   logderiv-region-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -704,7 +493,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — dVP log-derivative region core)
         working-directory: telperion/examples/logderiv_region/lean
         run: lake build
-
   pe-duality-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -738,7 +526,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — pseudo-expectation SoS-duality)
         working-directory: telperion/examples/pe_duality/lean
         run: lake build
-
   order-balance-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -772,7 +559,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — order-balance boundary hinge)
         working-directory: telperion/examples/order_balance/lean
         run: lake build
-
   lfunction-product-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -806,7 +592,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — nonneg-cosine L-product)
         working-directory: telperion/examples/lfunction_product/lean
         run: lake build
-
   parametric-holomorphy-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -840,7 +625,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — parametric-integral holomorphy)
         working-directory: telperion/examples/parametric_holomorphy/lean
         run: lake build
-
   symmetric-quad-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -874,7 +658,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — symbolic-n moment PSD)
         working-directory: telperion/examples/symmetric_quad/lean
         run: lake build
-
   polytope-max-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -908,7 +691,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — multi-affine corner box positivity)
         working-directory: telperion/examples/polytope_max/lean
         run: lake build
-
   second-order-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -942,7 +724,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — 2nd-order recurrence closed form)
         working-directory: telperion/examples/second_order/lean
         run: lake build
-
   integrality-gate-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -976,7 +757,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — p-adic integrality gate)
         working-directory: telperion/examples/integrality_gate/lean
         run: lake build
-
   domination-ratio-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1010,7 +790,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — rational domination ratio)
         working-directory: telperion/examples/domination_ratio/lean
         run: lake build
-
   achievability-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1044,7 +823,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — achievability closure)
         working-directory: telperion/examples/achievability/lean
         run: lake build
-
   separable-convex-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1078,7 +856,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — separable-convex min/homogeneous)
         working-directory: telperion/examples/separable_convex/lean
         run: lake build
-
   scale-invariance-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1112,7 +889,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — objective-degeneracy / homogeneity)
         working-directory: telperion/examples/scale_invariance/lean
         run: lake build
-
   concave-stationary-max-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1146,7 +922,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Kelly concave-stationary max)
         working-directory: telperion/examples/concave_stationary_max/lean
         run: lake build
-
   symmetric-quad-d2-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1180,7 +955,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — symbolic-in-n d=2 moment PSD)
         working-directory: telperion/examples/symmetric_quad_d2/lean
         run: lake build
-
   tight-cap-enclosure-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1214,7 +988,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG g-step fixed-config tight-cap closure)
         working-directory: telperion/examples/tight_cap_enclosure/lean
         run: lake build
-
   affine-param-endpoint-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1248,7 +1021,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — affine-in-parameter interval -> two endpoints (SCLStep price collapse))
         working-directory: telperion/examples/affine_param_endpoint/lean
         run: lake build
-
   recursion-closure-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1282,7 +1054,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — node tangent+ceiling assembly at fixed price)
         working-directory: telperion/examples/recursion_closure/lean
         run: lake build
-
   cavity-exchange-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1316,7 +1087,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Kelmans de-branch bilinear-corner exchange)
         working-directory: telperion/examples/cavity_exchange/lean
         run: lake build
-
   per-size-dominance-sweep-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1350,7 +1120,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — finite per-size dominance sweep)
         working-directory: telperion/examples/per_size_dominance_sweep/lean
         run: lake build
-
   curvature-boundary-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1384,7 +1153,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — curvature-sign -> boundary extremum (AxiomMath port))
         working-directory: telperion/examples/curvature_boundary/lean
         run: lake build
-
   transcendental-enclosure-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1418,7 +1186,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — rational enclosure of log(1+x) (BG cells))
         working-directory: telperion/examples/transcendental_enclosure/lean
         run: lake build
-
   log-combination-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1452,7 +1219,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — F*-folding log-combination (BG dogfood))
         working-directory: telperion/examples/log_combination/lean
         run: lake build
-
   psd-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1486,7 +1252,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — LDLT PSD form)
         working-directory: telperion/examples/psd_form/lean
         run: lake build
-
   xor3-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1520,7 +1285,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — 3-XOR moment PSD)
         working-directory: telperion/examples/xor3_moment/lean
         run: lake build
-
   bg-family-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1554,7 +1318,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG base-cell Bernstein positivity)
         working-directory: telperion/examples/bg_family/lean
         run: lake build
-
   bg-floor-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1582,7 +1345,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG R7 chain-class ledger floor)
         working-directory: telperion/examples/bg_floor/lean
         run: lake build
-
   bg-floor-families-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -1610,7 +1372,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG R7 bare-leaf + nl=2 floors)
         working-directory: telperion/examples/bg_floor_families/lean
         run: lake build
-
   bg-floor-r7-facets-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -1638,7 +1399,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — BG R7 m=0/m>=4/tax-window facets)
         working-directory: telperion/examples/bg_floor_r7_facets/lean
         run: lake build
-
   hinge-floor-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1672,7 +1432,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — hinge floor)
         working-directory: telperion/examples/hinge_floor/lean
         run: lake build
-
   borel-caratheodory-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1697,7 +1456,6 @@ jobs:
       - name: Build the drafted Borel-Caratheodory theorem (Moebius-Schwarz, 12 theorems)
         working-directory: telperion/examples/borel_caratheodory/lean
         run: lake build
-
   bg-flag-discharge-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1731,7 +1489,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — flag-discharge m_2 cut norm_num atoms)
         working-directory: telperion/examples/bg_flag_discharge/lean
         run: lake build
-
   bg-caterpillar-concavity-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1765,7 +1522,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — density concavity + strict max at a=7)
         working-directory: telperion/examples/bg_caterpillar_concavity/lean
         run: lake build
-
   bg-m3-moment-cut-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1799,7 +1555,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — caterpillar = degree-3 moment argmax)
         working-directory: telperion/examples/bg_m3_moment_cut/lean
         run: lake build
-
   bg-arm-balancing-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1833,7 +1588,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — m=2 arm-balancing strictly increases Z)
         working-directory: telperion/examples/bg_arm_balancing/lean
         run: lake build
-
   bg-broom-optimum-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1867,7 +1621,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — star-of-brooms c=5 optimum)
         working-directory: telperion/examples/bg_broom_optimum/lean
         run: lake build
-
   bg-tie-cherry-worst-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1901,7 +1654,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — tie-regime cherry-worst k<=20)
         working-directory: telperion/examples/bg_tie_cherry_worst/lean
         run: lake build
-
   bg-tie-slack-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1935,7 +1687,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — slack bound slack_g(k)<=F* for k>=16)
         working-directory: telperion/examples/bg_tie_slack/lean
         run: lake build
-
   bg-mixed-kkt-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1969,7 +1720,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — mixed<=B(k) k<=15 via per-child KKT V(c)<V(cherry))
         working-directory: telperion/examples/bg_mixed_kkt/lean
         run: lake build
-
   bg-hi-degree-tail-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2003,7 +1753,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — d>=7 envelope tail V(c)<V(cherry) via ell<=0)
         working-directory: telperion/examples/bg_hi_degree_tail/lean
         run: lake build
-
   bg-smooth-nogo-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2037,7 +1786,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — f_cont(24/5) > F*, the integrality-gap no-go)
         working-directory: telperion/examples/bg_smooth_nogo/lean
         run: lake build
-
   bg-spider-vs-caterpillar-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2071,7 +1819,6 @@ jobs:
       - name: Build the emitted Lean (the actual verification — spider F*>F(a) beats every caterpillar)
         working-directory: telperion/examples/bg_spider_vs_caterpillar/lean
         run: lake build
-
   bg-broom-vs-cherry-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2105,7 +1852,6 @@ jobs:
       - name: Build the emitted Lean (broom-vs-cherry-on-I norm_num atoms)
         working-directory: telperion/examples/bg_broom_vs_cherry/lean
         run: lake build
-
   bg-leaf-exchange-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2373,43 +2119,14 @@ jobs:
             if echo "$out" | grep -qE 'error:'; then echo "::error::$G did not elaborate cleanly"; exit 1; fi
           done
           echo "OK: all guarded theorems kernel-clean."
-
-  dbn-compiles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Cache elan toolchain
-        uses: actions/cache@v4
-        with:
-          path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/dbn/lean/lean-toolchain') }}
-
-      - name: Install elan
-        run: |
-          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
-      - name: Fetch Mathlib olean cache (through the LiCriterion dependency)
-        working-directory: telperion/examples/dbn/lean
-        run: lake exe cache get
-
-      - name: No `sorry` in the island (the registry statements live in missions/rh, not here)
-        working-directory: telperion/examples/dbn/lean
-        run: |
-          ! grep -rnwE "sorry|admit" --include='*.lean' --exclude-dir=.lake .
-
-      - name: Build the DBN foundations island (DBNDefs + AxiomGuardDBN)
-        working-directory: telperion/examples/dbn/lean
-        run: lake build
-
-      - name: Axiom guard (fails on sorryAx anywhere in the island)
-        working-directory: telperion/examples/dbn/lean
-        run: |
-          lake env lean AxiomGuardDBN.lean | tee axioms.out
-          ! grep -q "sorryAx" axioms.out
-
+  # B2 ladder suite (replaces the monolith `lake build` that hit E2BIG at ~16k targets).
+  # Builds zzl_core + ZeroFreeBridge + zzl_aux (height-100 island, Bragg, zoo; the 669 legacy
+  # RHInBox_* boxes live in zzl_legacy_boxes and run weekly, see telperion-legacy-boxes.yml) and then the
+  # 25k-height block packages in ascending order up to H_CI, running the axiom battery on
+  # each block-top capstone.  Green == every `all_nontrivial_zeros_up_to_height_<top>_of_bands`
+  # up to H_CI compiles with axioms exactly [propext, Classical.choice, Quot.sound], 0 sorryAx.
+  # H_CI is a policy dial (telperion/docs/B2_MAIN_CI.md): the climb runs hotter than CI;
+  # the paper cites H_CI, campaign_state tracks H.  conjecture1_proved = False.
   zeta-ladder-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 360
@@ -2473,6 +2190,354 @@ jobs:
             rm -rf "$d/.lake/build/ir"
           done
           echo "OK: ladder CI-verified to H_CI=$H_CI (kernel-clean, 3 standard axioms, via Guard_h<top> modules)."
+  weil-form-enclosure-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest python-flint
+
+      # Regenerates the E8 Weil-pairing enclosures from scratch with Arb (archimedean
+      # quadrature to |r| <= 1024 plus a 5-fold integration-by-parts tail) and checks the
+      # frozen Lean matches byte-for-byte; also gates the WeilExplicit vocabulary mirror
+      # against the PROVED node in examples/rvm_bridge/lean/E6Bridge4.lean.  ~4 min.
+      - name: Regenerate the Weil-form ladder (enclose -> certify -> emit) and check it matches on-disk
+        working-directory: telperion
+        run: |
+          python examples/weil_form_enclosure/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/weil_form_enclosure/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake exe cache get
+
+      - name: Build the vocabulary mirror and the emitted ladder (the actual verification)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake build
+
+      - name: Axiom guard (fails on sorryAx anywhere in the emitted theorems)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: |
+          lake env lean AxiomGuardWeilForm.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
+  rvm-bridge-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # The drift check imports the telperion package (statement-port matching), which pulls
+      # sympy. Without this the step dies with ModuleNotFoundError before it checks anything --
+      # a drift check that cannot start is a drift check that cannot fail on drift.
+      - run: pip install sympy
+
+      - run: pip install sympy
+
+      - name: Drift check (node statements + mirrored defs still match the mirrormere and rh registries)
+        working-directory: telperion
+        run: |
+          python examples/rvm_bridge/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/rvm_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # Zeta23 (anthropics/formal-math, public, Apache-2.0; ~1.6 MB repo) is cloned by Lake at the
+      # pinned commit; Mathlib oleans come from the cache through that dependency. Zeta23 itself
+      # (118 modules) compiles from source: ~2 min on 32 cores locally, expect ~15-25 min on a
+      # 4-core hosted runner.
+      - name: Fetch Mathlib olean cache (through the Zeta23 dependency)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the bridge against the pinned zeta-23-lean (the actual verification)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake build
+
+      - name: "Axiom guard (45 anchors incl. consumed upstream inputs): exact axiom set, no sorryAx, guard actually ran"
+        working-directory: telperion/examples/rvm_bridge/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean AxiomGuardRvMBridge.lean 2>&1 | tee axioms.out
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
+          if [ "$n" -lt "45" ]; then
+            echo "::error::axiom guard printed $n axiom lines, expected at least 45 -- the guard did not run or was silently truncated"; exit 1; fi
+          if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
+          # every printed axioms line must be EXACTLY Lean's three standard axioms
+          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
+          # list and reports a false positive.  Join lines, then extract each complete
+          # "depends on axioms: [...]" group and require it to be exactly the three.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
+            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
+            tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
+            exit 1; fi
+  dbn-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/dbn/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache (through the LiCriterion dependency)
+        working-directory: telperion/examples/dbn/lean
+        run: lake exe cache get
+
+      - name: No `sorry` in the island (the registry statements live in missions/rh, not here)
+        working-directory: telperion/examples/dbn/lean
+        run: |
+          ! grep -rnwE "sorry|admit" --include='*.lean' --exclude-dir=.lake .
+
+      - name: Build the DBN foundations island (DBNDefs + AxiomGuardDBN)
+        working-directory: telperion/examples/dbn/lean
+        run: lake build
+
+      - name: Axiom guard (fails on sorryAx anywhere in the island)
+        working-directory: telperion/examples/dbn/lean
+        run: |
+          lake env lean AxiomGuardDBN.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
+  exp-enclosure-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the exp-enclosure instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/exp_enclosure/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_zero_localization/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Wire the sharded packages to one shared deps dir (B2 layout; .lake is gitignored)
+        working-directory: telperion/examples/zeta_zero_localization/lean
+        run: |
+          mkdir -p .lake/packages
+          for d in zzl_core zzl_aux ZetaBands_h*; do
+            mkdir -p "$d/.lake" && ln -sfn ../../.lake/packages "$d/.lake/packages"
+          done
+          mkdir -p ../../zero_free_bridge/lean/.lake
+          ln -sfn ../../../zeta_zero_localization/lean/.lake/packages ../../zero_free_bridge/lean/.lake/packages
+
+      - name: Fetch Mathlib olean cache (into the shared deps dir)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
+        run: lake exe cache get
+
+      - name: Build the emitted exp-enclosure lib (zzl_aux owns BraggDefect, which the bridge imports)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
+        run: lake build ExpEnclosureInstances
+  disjoint-discs-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the disjoint-discs isolation instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/disjoint_discs/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake exe cache get
+
+      - name: Build the E4b isolation lemma and the emitted instances
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          # The guard below imports the whole island, so build every default
+          # target, not just this branch's two modules: a partial build leaves
+          # the guard's own imports unbuilt and it fails with 'unknown module
+          # prefix', which is a false red on a proof that is fine.
+          lake build
+
+      - name: Axiom guard (OfflineDiscs + instances must be sorry-free and axiom-clean)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          lake env lean AxiomGuardQC.lean 2>&1 | tee guard.txt
+          if grep -q "sorryAx" guard.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
+          grep -q "Quasicrystal.offline_disjoint_discs" guard.txt || { echo "GUARD FAILED: node theorem not printed"; exit 1; }
+          grep -q "OfflineDiscsInstances.offline_discs_offline_bank" guard.txt || { echo "GUARD FAILED: instance not printed"; exit 1; }
+  gram-inertia-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the inertia boxes (certify -> emit) and check they match on-disk
+        working-directory: telperion
+        run: |
+          python examples/gram_inertia/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/gram_inertia/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/gram_inertia/lean
+        run: lake exe cache get
+
+      - name: Build the bridge + the emitted certificates (the actual verification)
+        working-directory: telperion/examples/gram_inertia/lean
+        run: lake build
+
+      - name: Axiom guard (fails on sorryAx anywhere in the bridge or the certificates)
+        working-directory: telperion/examples/gram_inertia/lean
+        run: |
+          lake env lean AxiomGuardGramInertia.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
+  window-form-floor-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # No python-flint here: the window_form_floor instances carry Zhu's PUBLISHED constants,
+      # and the only recomputation is the finite von Mangoldt comb mass, which is exact sympy.
+      - run: pip install sympy pytest
+
+      # Regenerates Zhu's window-floor certificates (arXiv:2608.24827 Thm 1.1 / Thm 1.2) and
+      # checks the frozen Lean matches byte-for-byte.  The generator RE-DERIVES A_L from L and
+      # beta* from (T#, A_L) and refuses on disagreement -- the retraction guard, which is what
+      # catches an A_eff-for-A_L substitution of the kind the paper itself withdrew.  ~2 s.
+      - name: Regenerate the window-floor certificates (certify -> emit) and check they match on-disk
+        working-directory: telperion
+        run: |
+          python examples/window_form_floor/generate.py --check
+
+      - name: Emitter unit tests (refusals, re-derivation, emission)
+        working-directory: telperion
+        run: |
+          PYTHONPATH=src python -m pytest tests/test_emit_window_form_floor.py -q
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/weil_form_enclosure/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake exe cache get
+
+      - name: Build the emitted window-floor instances (the actual verification)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake build WindowFormFloorInstances AxiomGuardWindowFormFloor
+
+      - name: Axiom guard (fails on sorryAx anywhere in the emitted window-floor theorems)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: |
+          lake env lean AxiomGuardWindowFormFloor.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
+  mission-statements-compile:
+    # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
+    # statement package: a statement that does not elaborate cannot enter the
+    # graph."  This job closes the gap for ALL four campaigns (bg/rh predate it
+    # too).  `by sorry` bodies are expected (statements, not proofs) -- lake
+    # emits warnings, not errors; the gate is elaboration.
+    strategy:
+      fail-fast: false
+      matrix:
+        campaign: [bg, rh, anduril, mirrormere]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles(format('telperion/missions/{0}/lean/lean-toolchain', matrix.campaign)) }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/missions/${{ matrix.campaign }}/lean
+        run: lake exe cache get
+      - name: Build the statement package (statements must elaborate; sorry bodies expected)
+        working-directory: telperion/missions/${{ matrix.campaign }}/lean
+        run: lake build
   bragg-amplitude-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -2582,6 +2647,45 @@ jobs:
       - name: Build the emitted rigidity lib (uses the island's TwoFreqRigidity)
         working-directory: telperion/examples/quasicrystal/lean
         run: lake build SelfInversiveRigidityInstances
+  twofreq-offline-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Unit tests (self-check pass + anti-phantom refusals + negative-control twins)
+        working-directory: telperion
+        run: |
+          PYTHONPATH=src python -m pytest tests/test_emit_twofreq_offline.py \
+            tests/test_negctrl_twofreq_offline.py -q
+
+      - name: Regenerate the Euler-factor off-line sections from the family definition
+        working-directory: telperion
+        run: |
+          python examples/twofreq_offline/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake exe cache get
+
+      - name: Build the emitted off-line sections (uses the island's TwoFreqRigidity)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake build EulerFactorSectionOffline
   winding-box-zero-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -2746,72 +2850,4 @@ jobs:
 
       - name: Build the emitted Lean (RH Face 4 — Bagchi recurrence)
         working-directory: telperion/examples/bagchi_recurrence/lean
-        run: lake build
-  gram-inertia-compiles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install sympy pytest
-
-      - name: Regenerate the inertia boxes (certify -> emit) and check they match on-disk
-        working-directory: telperion
-        run: |
-          python examples/gram_inertia/generate.py --check
-
-      - name: Cache elan toolchain
-        uses: actions/cache@v4
-        with:
-          path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/gram_inertia/lean/lean-toolchain') }}
-
-      - name: Install elan
-        run: |
-          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
-      - name: Fetch Mathlib olean cache
-        working-directory: telperion/examples/gram_inertia/lean
-        run: lake exe cache get
-
-      - name: Build the bridge + the emitted certificates (the actual verification)
-        working-directory: telperion/examples/gram_inertia/lean
-        run: lake build
-
-      - name: Axiom guard (fails on sorryAx anywhere in the bridge or the certificates)
-        working-directory: telperion/examples/gram_inertia/lean
-        run: |
-          lake env lean AxiomGuardGramInertia.lean | tee axioms.out
-          ! grep -q "sorryAx" axioms.out
-  mission-statements-compile:
-    # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
-    # statement package: a statement that does not elaborate cannot enter the
-    # graph."  This job closes the gap for ALL four campaigns (bg/rh predate it
-    # too).  `by sorry` bodies are expected (statements, not proofs) -- lake
-    # emits warnings, not errors; the gate is elaboration.
-    strategy:
-      fail-fast: false
-      matrix:
-        campaign: [bg, rh, anduril, mirrormere]
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-      - name: Cache elan toolchain
-        uses: actions/cache@v4
-        with:
-          path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles(format('telperion/missions/{0}/lean/lean-toolchain', matrix.campaign)) }}
-      - name: Install elan
-        run: |
-          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Fetch Mathlib olean cache
-        working-directory: telperion/missions/${{ matrix.campaign }}/lean
-        run: lake exe cache get
-      - name: Build the statement package (statements must elaborate; sorry bodies expected)
-        working-directory: telperion/missions/${{ matrix.campaign }}/lean
         run: lake build

@@ -15,6 +15,12 @@ import BoundaryLemmas
 import TwoFreqRigidity
 import RationalFreqReduction
 import InvolutionDictionary
+import TorusSectionLadder
+import OfflineDiscs
+import OfflineDiscsInstances
+import EulerFactorOffline
+import SelfInversiveOfflineInstances
+import EulerFactorSectionOffline
 
 open Quasicrystal
 
@@ -75,6 +81,46 @@ open Quasicrystal
 #print axioms Quasicrystal.selfInversive_binomial_realRooted
 #print axioms Quasicrystal.fixed_locus_dichotomy
 
+/-! ### MIRRORMERE torus-section ladder T1 -- TorusSectionLadder (2026-09-18):
+    registry nodes MM_torus_section_dictionary + MM_torus_section_n2_rigidity.
+    Vocabulary bridges over TwoFreqRigidity (simp-grade; recorded, not counted). -/
+#print axioms Quasicrystal.expSum_eq_linearTorusForm_torusOrbit
+#print axioms Quasicrystal.torus_section_dictionary
+#print axioms Quasicrystal.torus_section_n2_rigidity
+/-! ### MIRRORMERE E4b -- OfflineDiscs (registry node MM_offline_disjoint_discs,
+    QC_RECURRENCE section 4.3 isolation lemma) -/
+#print axioms Quasicrystal.exists_pos_lower_bound_of_finset
+#print axioms Quasicrystal.abs_re_sub_le_dist
+#print axioms Quasicrystal.offline_disjoint_discs
+
+/-! ### MIRRORMERE E4b instances -- OfflineDiscsInstances (emitted by the Telperion
+    `disjoint_discs` kind; the points are INPUT, not a claim about zeta) -/
+#print axioms OfflineDiscsInstances.offline_discs_online_pair
+#print axioms OfflineDiscsInstances.offline_discs_offline_bank
+/-! ### torus-section ladder T2 -- TorusSectionLadder, THE NEGATIVE CONTROL
+    (registry node MM_euler_factor_section_offline + explicit off-line witness) -/
+#print axioms TorusSectionLadder.euler_factor_coeff_ne_zero
+#print axioms TorusSectionLadder.euler_factor_freq_ne
+#print axioms TorusSectionLadder.euler_factor_section_offline
+#print axioms TorusSectionLadder.euler_factor_section_witness
+#print axioms TorusSectionLadder.euler_factor_section_witness_im
+#print axioms TorusSectionLadder.euler_factor_section_offline_of_witness
+
+/-! ### torus-section ladder T2 -- the emitter dogfood (selfinversive_rigidity mode="offline"):
+    the p = 2, 3, 5 Euler-factor sections, refuted from the exact normSq inequality -/
+#print axioms SelfInversiveOfflineInstances.euler_factor_p2_offline
+#print axioms SelfInversiveOfflineInstances.euler_factor_p2_offline_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p2_offline_of_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p2_offline_node
+#print axioms SelfInversiveOfflineInstances.euler_factor_p3_offline
+#print axioms SelfInversiveOfflineInstances.euler_factor_p3_offline_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p3_offline_of_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p3_offline_node
+#print axioms SelfInversiveOfflineInstances.euler_factor_p5_offline
+#print axioms SelfInversiveOfflineInstances.euler_factor_p5_offline_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p5_offline_of_witness
+#print axioms SelfInversiveOfflineInstances.euler_factor_p5_offline_node
+
 /-! ### increment (iii) -- CharacterizationStatements
 
     DELIBERATELY NOT GUARDED HERE.  `CharacterizationStatements.lean` contains only
@@ -84,3 +130,14 @@ open Quasicrystal
     theorem, so there are no axioms to print.  It builds green (no sorry) and is
     a defaultTarget; listing its `def`s under `#print axioms` would be a category
     error (they are Props, not proofs). -/
+
+-- MM_euler_factor_section_offline's proof-link artifact (emitter-generated,
+-- drift-gated by examples/twofreq_offline/generate.py --check).
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_offline_zero
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_displacement
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p3
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p3_offline_zero
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p3_displacement
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p5
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p5_offline_zero
