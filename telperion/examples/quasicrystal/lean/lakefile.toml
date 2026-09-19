@@ -1,5 +1,6 @@
 name = "Quasicrystal"
 defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder"]
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "OfflineDiscs", "OfflineDiscsInstances"]
 
 # PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
 # stable-polynomial classification frontier.  conjecture1_proved = False --
@@ -58,3 +59,15 @@ roots = ["InvolutionDictionary"]
 [[lean_lib]]
 name = "TorusSectionLadder"
 roots = ["TorusSectionLadder"]
+# PROGRAM MIRRORMERE E4b isolation lemma (2026-09-18): registry node
+# MM_offline_disjoint_discs stated verbatim and proved (pure Mathlib metric
+# topology).  conjecture1_proved = False.
+[[lean_lib]]
+name = "OfflineDiscs"
+roots = ["OfflineDiscs"]
+
+# Telperion disjoint_discs emitter example (2026-09-18): concrete isolation
+# instances applying OfflineDiscs, emitted by examples/disjoint_discs/generate.py.
+[[lean_lib]]
+name = "OfflineDiscsInstances"
+roots = ["OfflineDiscsInstances"]

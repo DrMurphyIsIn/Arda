@@ -674,6 +674,11 @@ script = "examples/selfinversive_rigidity/generate.py"
 group = "quick"    # exact self-inversive rigidity certificate (no flint)
 
 [[check]]
+name = "disjoint_discs"
+script = "examples/disjoint_discs/generate.py"
+group = "quick"    # MIRRORMERE E4b isolation instances (exact rationals, no flint)
+
+[[check]]
 name = "winding_box_zero"
 script = "examples/winding_box_zero/generate.py"
 group = "flint"    # Arb winding-number sidecar; needs python-flint
