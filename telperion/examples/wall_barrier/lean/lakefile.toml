@@ -1,0 +1,12 @@
+name = "wall_barrier"
+defaultTargets = ["WallBarrierAM", "FEUniformBarrierAM"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
+[[lean_lib]]
+name = "WallBarrierAM"
+
+[[lean_lib]]
+name = "FEUniformBarrierAM"
