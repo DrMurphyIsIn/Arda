@@ -42,8 +42,13 @@ Iwaniec–Kowalski Thm 5.12). `conjecture1_proved = False`.
 | `E6Bridge2.lean` | the second bridge: mirror of `RvMCount.zetaZeroCount` (`RHDefs.lean`), the definitional seam `zetaZeroCount_eq_Ncount` (divisor count = Zeta23's `Ncount 0 T`), integrated Stirling on a general window (`int_mu_cumulative`), the cumulative assembly (`rvm_cumulative_eventually`, `rvm_cumulative`) and the node statement `theorem rvm_unconditional` verbatim |
 | `E6Bridge3.lean` | the third bridge: Γℝ log-derivative bounds off the real axis (`logDeriv_Gammaℝ_shift`, `norm_logDeriv_Gammaℝ_le_log_strip`), the functional-equation identity `logDeriv_zeta_reflect`, the real-height good ordinate `good_height_real`, the two ranges `corridor_large` (`T ≥ 7`) / `corridor_small` (`2 ≤ T ≤ 7`, compactness) and the node statement `theorem corridor_bound` verbatim |
 | `E6Bridge4.lean` | the fourth bridge: verbatim mirror of the six `WeilExplicit.*` registry definitions (`RHDefs.lean`, branch `rh/e8-statement`), the transform seam `weilKernel_eq_Hfn`, Fourier inversion at the origin `inversion_zero`, the archimedean integrability `integrable_archIntegrand`, the normalisation `archSide_sub_primeSide` (= upstream `literatureRHS`), the divisor/`analyticOrderAt` seam (`zeroMult_eq_of_strip`, `zeroMult_eq_zero_of_not_nontrivial`) and the node statement `theorem limit_explicit_formula` verbatim |
-| `AxiomGuardRvMBridge.lean` | CI guard: `#print axioms` for all four bridges' theorems AND the consumed upstream inputs; CI fails on `sorryAx` |
-| `../generate.py --check` | drift check registered in `telperion.toml`: all four node statements (name + binders + body) and the mirrored definitions must still match the registry files verbatim, and the toolchain pin must be the zeta-23-lean pin; for the E8 node the theorem is always checked against the copy embedded in the `E6Bridge4.lean` header, and the registry-file halves are skipped with a printed notice when the E8 registry files are absent from the checkout |
+| `W2cAssembly.lean` | the W2c assembly (not a bridge): a VERBATIM re-proof of the v4.32 quasicrystal island's pigeonhole brick (`BoundaryLemmas.lean`, branch `rh/million-turing`, blob `b019e8e9`) — `IsUniformlyDiscrete`, `not_uniformlyDiscrete_of_gaps_to_zero`, `exists_close_of_card_gt`, `RvMWindowedDensity`, `windowedDensity_of_unboundedMeanDensity`, `not_uniformlyDiscrete_of_windowedDensity`, `zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density` — composed with `E6Bridge.rvm_unbounded_mean_density` to give the MIRRORMERE node statement `theorem zeta_ordinates_not_uniformly_discrete : ¬ IsUniformlyDiscrete zetaOrdinates` verbatim |
+| `AxiomGuardRvMBridge.lean` | CI guard: `#print axioms` for all four bridges' theorems, the W2c assembly and its ported brick, AND the consumed upstream inputs; CI fails on `sorryAx` |
+| `../generate.py --check` | drift check registered in `telperion.toml`: all five node statements (name + binders + body) and the mirrored definitions must still match the registry files verbatim, the toolchain pin must be the zeta-23-lean pin, and every statement ported into `W2cAssembly.lean` must equal the pinned v4.32 `BoundaryLemmas.lean` text (diffed against the live file too, when that island is in the checkout); for the E8 node the theorem is always checked against the copy embedded in the `E6Bridge4.lean` header, and the registry-file halves are skipped with a printed notice when the E8 registry files are absent from the checkout |
+
+Since 2026-09-18 the island also carries a **fifth** artifact, which is an assembly rather than a
+bridge: the MIRRORMERE milestone `MM_zeta_ordinates_not_uniformly_discrete` (W2c, unconditional
+form) in `W2cAssembly.lean` — see "The W2c assembly" below.
 
 ## Why a third toolchain island
 
@@ -143,14 +148,53 @@ good-height lemma and local zero count play those roles inside `EF_lit_zetaZeroC
 fourth bridge imports neither. The design memo's "pole-in-box seam" (§8, step 3) does not arise:
 the upstream contour runs on the completed zeta `Λ(s)` with the poles at `0, 1` as residues.
 
+## The W2c assembly: a cross-toolchain composition by verbatim re-proof
+
+The MIRRORMERE milestone `MM_zeta_ordinates_not_uniformly_discrete` says, with no hypotheses,
+that the ordinates of the nontrivial zeta zeros are **not uniformly discrete**. Both of its
+registry dependencies are proved, but on different toolchains:
+
+* `MM_nt_brick_conditional` — the elementary pigeonhole brick
+  `zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density`, on the **v4.32.0** quasicrystal
+  island (`telperion/examples/quasicrystal/lean/BoundaryLemmas.lean`, branch `rh/million-turing`
+  `@0bac3e608`, blob `b019e8e9167d51504a8775e9006ec8fceb9255bd`). Mathlib-only, zeta-free.
+* `MM_rvm_unbounded_mean_density` — `RvMBridge.rvm_unbounded_mean_density` on **this** island
+  (`E6Bridge.lean`, v4.33.0-rc2), from `Zeta23.thmA₀` + the RvM main clause.
+
+Two Lean toolchains cannot meet in one environment, so the composition happens here by
+**re-proving the brick verbatim**: `W2cAssembly.lean` copies the four theorems and two
+definitions line-for-line from the v4.32 file (source line ranges cited above each block; only
+the namespace and the docstrings differ) and applies the result to the E6 bridge's discharge.
+
+**HONESTY LINE.** The registry dependency `MM_nt_brick_conditional` is therefore satisfied by a
+verbatim re-proof on this island, **not** by consuming the v4.32 artifact. The guarantee that the
+re-proof says the same thing is mechanical, not editorial: `../generate.py --check` item (7) pins
+every ported statement to the v4.32 text (`_BRICK_V432_TEXT`) and fails on any drift — and when
+the quasicrystal island is present in the checkout, that pin is itself diffed against the live
+file. The load-bearing analytic input remains zeta-23-lean Theorem A, via `E6Bridge`; everything
+added here is elementary pigeonhole packing (bin `x ↦ ⌊(x−a)/δ⌋`, more points than bins).
+
+No RH progress is claimed: "the zeta ordinates escape the crystalline class on the space side"
+is a classical consequence of `N(T)/T → ∞`. `conjecture1_proved = False`.
+
 ## Recorded results at the pin (local build, 2026-09-18, macOS arm64, 32 cores)
 
 `lake update` + `lake exe cache get` + `lake build` (8,825 jobs, Zeta23 compiled from source)
-+ `lake env lean AxiomGuardRvMBridge.lean`, verbatim (45 anchors):
++ `lake env lean AxiomGuardRvMBridge.lean`, verbatim (51 anchors; the last six lines of the
+`RvMBridge` block were added by the W2c assembly on 2026-09-18, whose own build reused the
+cached Mathlib/Zeta23 oleans):
 
 ```
 'RvMBridge.rvm_unbounded_mean_density' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RvMBridge.eventually_Ncount_ge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge.zeta_ordinates_not_uniformly_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge.zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RvMBridge.exists_close_of_card_gt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge.not_uniformlyDiscrete_of_gaps_to_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge.windowedDensity_of_unboundedMeanDensity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RvMBridge.not_uniformlyDiscrete_of_windowedDensity' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RvMBridge2.rvm_unconditional' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RvMBridge2.rvm_cumulative' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RvMBridge2.rvm_cumulative_eventually' depends on axioms: [propext, Classical.choice, Quot.sound]

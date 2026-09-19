@@ -36,6 +36,20 @@ grant gate relies on:
      `WeilExplicit` block) is absent from this checkout, since the E8 registry node lives
      on its own branch until merged.
 
+  7. (W2c assembly, 2026-09-18) `lean/W2cAssembly.lean` contains the node statement of
+     `missions/mirrormere/lean/Statements/MM_zeta_ordinates_not_uniformly_discrete.lean`
+     verbatim, its mirrored `IsUniformlyDiscrete` matches `MMDefs.lean`, it has no `sorry`,
+     AND every ported brick statement (the four theorems + `RvMWindowedDensity`, plus
+     `RvMUnboundedMeanDensity` from E6Bridge) equals, normalized, the v4.32 quasicrystal
+     island's text (BoundaryLemmas.lean on branch rh/million-turing, blob
+     b019e8e9167d51504a8775e9006ec8fceb9255bd; the statement lines are PINNED below as
+     `_BRICK_V432_TEXT` because that island is not part of this checkout).  The comparison
+     runs through `telperion.port_match.port_match_pinned`, the cross-toolchain port-match
+     gate: statements must match, proofs may differ, and when the v4.32 file IS present in
+     the checkout the pin is additionally diffed against it so the pin cannot rot.
+     This is the certificate that the cross-toolchain RE-PROOF of MM_nt_brick_conditional
+     cannot drift from the artifact it re-proves.
+
 Any drift in the registry statement or definitions fails this check, so the
 island cannot silently stop matching the node it discharges.
 
@@ -47,6 +61,9 @@ import argparse
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+from telperion.port_match import port_match_pinned  # noqa: E402
 
 _HERE = Path(__file__).resolve().parent
 _TELPERION = _HERE.parents[1]
@@ -64,6 +81,52 @@ _NODE3 = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RH_corridor_b
 _BRIDGE4 = _ISLAND / "E6Bridge4.lean"
 _NODE4 = _TELPERION / "missions" / "rh" / "lean" / "Statements" / "RH_limit_explicit_formula.lean"
 _DEF_NAMES4 = ("IsWeilTest", "weilKernel", "zeroMult", "archIntegrand", "archSide", "primeSide")
+
+_ASSEMBLY = _ISLAND / "W2cAssembly.lean"
+_NODE_W2C = _TELPERION / "missions" / "mirrormere" / "lean" / "Statements" / "MM_zeta_ordinates_not_uniformly_discrete.lean"
+_QC_BRICK = _TELPERION / "examples" / "quasicrystal" / "lean" / "BoundaryLemmas.lean"
+_DEF_NAMES_W2C = ("IsUniformlyDiscrete",)
+# The ported brick: statement text of telperion/examples/quasicrystal/lean/BoundaryLemmas.lean
+# (branch rh/million-turing @ 0bac3e608, blob b019e8e9167d51504a8775e9006ec8fceb9255bd),
+# lines 42-43, 170-172, 183-186, 321-323, 342-344, 350-351, 365-366, 378-380, verbatim.
+_BRICK_V432_TEXT = """
+def IsUniformlyDiscrete (S : Set ℝ) : Prop :=
+  ∃ δ : ℝ, 0 < δ ∧ ∀ ⦃x⦄, x ∈ S → ∀ ⦃y⦄, y ∈ S → x ≠ y → δ ≤ |x - y|
+
+theorem not_uniformlyDiscrete_of_gaps_to_zero {S : Set ℝ}
+    (hgap : ∀ δ : ℝ, 0 < δ → ∃ x ∈ S, ∃ y ∈ S, x ≠ y ∧ |x - y| < δ) :
+    ¬ IsUniformlyDiscrete S := by
+
+theorem exists_close_of_card_gt {F : Finset ℝ} {a L δ : ℝ}
+    (hδ : 0 < δ) (hmem : ∀ x ∈ F, x ∈ Set.Icc a (a + L))
+    (hcard : ⌊L / δ⌋₊ + 1 < F.card) :
+    ∃ x ∈ F, ∃ y ∈ F, x ≠ y ∧ |x - y| < δ := by
+
+def RvMWindowedDensity (S : Set ℝ) : Prop :=
+  ∀ δ : ℝ, 0 < δ → ∃ (F : Finset ℝ) (a L : ℝ),
+    (↑F ⊆ S) ∧ (∀ x ∈ F, x ∈ Set.Icc a (a + L)) ∧ ⌊L / δ⌋₊ + 1 < F.card
+
+def RvMUnboundedMeanDensity (S : Set ℝ) : Prop :=
+  ∀ r : ℝ, 0 < r → ∃ (F : Finset ℝ) (a L : ℝ),
+    0 ≤ L ∧ (↑F ⊆ S) ∧ (∀ x ∈ F, x ∈ Set.Icc a (a + L)) ∧ r * L + 1 < F.card
+
+theorem windowedDensity_of_unboundedMeanDensity {S : Set ℝ}
+    (h : RvMUnboundedMeanDensity S) : RvMWindowedDensity S := by
+
+theorem not_uniformlyDiscrete_of_windowedDensity {S : Set ℝ}
+    (hRvM : RvMWindowedDensity S) : ¬ IsUniformlyDiscrete S := by
+
+theorem zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density
+    {Ordinates : Set ℝ} (hRvM : RvMUnboundedMeanDensity Ordinates) :
+    ¬ IsUniformlyDiscrete Ordinates :=
+"""
+# every declaration the assembly re-proves, in source order (defs and theorems alike:
+# the gate takes each one's kind from the pinned source side)
+_PORTED_BRICK = ("IsUniformlyDiscrete", "not_uniformlyDiscrete_of_gaps_to_zero",
+                 "exists_close_of_card_gt", "RvMWindowedDensity", "RvMUnboundedMeanDensity",
+                 "windowedDensity_of_unboundedMeanDensity",
+                 "not_uniformlyDiscrete_of_windowedDensity",
+                 "zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density")
 
 _EXPECTED_TOOLCHAIN = "leanprover/lean4:v4.33.0-rc2"
 _DEF_NAMES = ("RvMUnboundedMeanDensity", "zetaOrdinates")
@@ -193,6 +256,41 @@ def check() -> int:
         notices.append(f"NOTICE: {_RHDEFS.relative_to(_TELPERION)} has no `WeilExplicit` block in this "
                        "checkout (E8 registry vocabulary not merged here); the six mirrored-def "
                        "checks for E6Bridge4 are skipped")
+    # 7. the W2c assembly: MIRRORMERE node MM_zeta_ordinates_not_uniformly_discrete + the mirrored
+    #    IsUniformlyDiscrete + the ported v4.32 brick (statements pinned in _BRICK_V432_TEXT).
+    assembly = _ASSEMBLY.read_text(encoding="utf-8")
+    assembly_norm = _normalize(assembly)
+    stmt_w2c = _node_statement(_NODE_W2C.read_text(encoding="utf-8"), _NODE_W2C)
+    if stmt_w2c not in assembly_norm:
+        failures.append(f"node statement not contained verbatim in W2cAssembly.lean: {stmt_w2c!r}")
+    if re.search(r":=\s*by\s+sorry", assembly_norm) or "sorry" in assembly_norm.split():
+        failures.append("W2cAssembly.lean contains a `sorry`")
+    for name in _DEF_NAMES_W2C:
+        want = _def_block(mmdefs, name)
+        have = _def_block(assembly, name)
+        if want != have:
+            failures.append(f"`def {name}` drifted from MMDefs.lean:\n  registry: {want}\n  island:   {have}")
+    # The ported brick, through the cross-toolchain port-match gate `telperion.port_match`:
+    # target = W2cAssembly.lean + E6Bridge.lean (RvMUnboundedMeanDensity was mirrored there
+    # by the first bridge), source = the pinned v4.32 text, plus the live v4.32 file when the
+    # quasicrystal island happens to be in this checkout (so the pin itself cannot rot).
+    live = _QC_BRICK.read_text(encoding="utf-8") if _QC_BRICK.exists() else None
+    port, pin_vs_live = port_match_pinned(
+        _BRICK_V432_TEXT,
+        [(assembly, "W2cAssembly.lean"), (bridge, "E6Bridge.lean")],
+        _PORTED_BRICK,
+        live=live,
+        pin_label="v4.32 BoundaryLemmas pin",
+        target_label="rvm_bridge island",
+        live_label=str(_QC_BRICK.relative_to(_TELPERION)),
+    )
+    failures.extend(port.failure_lines())
+    if pin_vs_live is None:
+        notices.append(f"NOTICE: {_QC_BRICK.relative_to(_TELPERION)} is absent from this checkout "
+                       "(v4.32 quasicrystal island lives on rh/million-turing); the ported brick was "
+                       "checked against the pinned v4.32 text only")
+    else:
+        failures.extend(pin_vs_live.failure_lines())
     for n in notices:
         print(n)
 
@@ -207,7 +305,10 @@ def check() -> int:
           f"({_BRIDGE2.relative_to(_TELPERION)}); "
           f"RH corridor node statement matches ({_BRIDGE3.relative_to(_TELPERION)}); "
           f"RH explicit-formula node statement matches its embedded copy"
-          f"{'' if notices else ' and the registry'} ({_BRIDGE4.relative_to(_TELPERION)})")
+          f"{'' if notices else ' and the registry'} ({_BRIDGE4.relative_to(_TELPERION)}); "
+          f"W2c node statement + {len(_DEF_NAMES_W2C)} mirrored def match, and the "
+          f"{len(_PORTED_BRICK)} ported v4.32 brick declarations pass the port-match gate "
+          f"({_ASSEMBLY.relative_to(_TELPERION)})")
     return 0
 
 

@@ -35,6 +35,13 @@
         Zeta23.WeilEF.gammaR_bracket / Zeta23.WeilEF.integrable_mul_logDeriv_Gammaℝ_of_decay --
         the upstream inputs the fourth bridge consumes as black boxes (the literature-form
         explicit formula itself, Fourier inversion, the Gamma_R bracket, the majorant lemma).
+      * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
+        MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
+        ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
+        quasicrystal pigeonhole brick it composes with rvm_unbounded_mean_density
+        (zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density and its stages
+        exists_close_of_card_gt, not_uniformlyDiscrete_of_gaps_to_zero,
+        windowedDensity_of_unboundedMeanDensity, not_uniformlyDiscrete_of_windowedDensity).
       * Zeta23.thmA₀ / Zeta23.two_thirds_on_critical_line -- Theorem A (Alpoege--Furman), the
         UPSTREAM input (anthropics/formal-math zeta23/, pinned in lakefile.toml); guarding it here
         re-verifies the dependency's axiom hygiene at our pin.
@@ -48,9 +55,16 @@ import E6Bridge
 import E6Bridge2
 import E6Bridge3
 import E6Bridge4
+import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
+#print axioms RvMBridge.zeta_ordinates_not_uniformly_discrete
+#print axioms RvMBridge.zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density
+#print axioms RvMBridge.exists_close_of_card_gt
+#print axioms RvMBridge.not_uniformlyDiscrete_of_gaps_to_zero
+#print axioms RvMBridge.windowedDensity_of_unboundedMeanDensity
+#print axioms RvMBridge.not_uniformlyDiscrete_of_windowedDensity
 #print axioms RvMBridge2.rvm_unconditional
 #print axioms RvMBridge2.rvm_cumulative
 #print axioms RvMBridge2.rvm_cumulative_eventually
