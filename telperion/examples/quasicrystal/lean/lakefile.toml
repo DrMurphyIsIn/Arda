@@ -1,7 +1,5 @@
 name = "Quasicrystal"
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder"]
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "OfflineDiscs", "OfflineDiscsInstances"]
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "EulerFactorOffline", "SelfInversiveOfflineInstances"]
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder", "OfflineDiscs", "OfflineDiscsInstances", "EulerFactorOffline", "SelfInversiveOfflineInstances", "EulerFactorSectionOffline"]
 
 # PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
 # stable-polynomial classification frontier.  conjecture1_proved = False --
@@ -49,7 +47,8 @@ roots = ["SelfInversiveRigidityInstances"]
 # Telperion twofreq_offline emitter example (2026-09-18): the COMPLEMENT of the
 # rigidity instances -- certified OFF-line displacement of the Euler-factor sections
 # 1 - p^(-s) on s = 1/2 + i x (MIRRORMERE ladder rung T2), emitted by
-# examples/twofreq_offline/generate.py.  Not in defaultTargets until the CI job is green.
+# examples/twofreq_offline/generate.py.  In defaultTargets: it is the proof-link artifact
+# of MM_euler_factor_section_offline, so a bare `lake build` must compile it.
 [[lean_lib]]
 name = "EulerFactorSectionOffline"
 roots = ["EulerFactorSectionOffline"]

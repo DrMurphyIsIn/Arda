@@ -20,6 +20,7 @@ import OfflineDiscs
 import OfflineDiscsInstances
 import EulerFactorOffline
 import SelfInversiveOfflineInstances
+import EulerFactorSectionOffline
 
 open Quasicrystal
 
@@ -129,3 +130,14 @@ open Quasicrystal
     theorem, so there are no axioms to print.  It builds green (no sorry) and is
     a defaultTarget; listing its `def`s under `#print axioms` would be a category
     error (they are Props, not proofs). -/
+
+-- MM_euler_factor_section_offline's proof-link artifact (emitter-generated,
+-- drift-gated by examples/twofreq_offline/generate.py --check).
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_offline_zero
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_displacement
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p3
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p3_offline_zero
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p3_displacement
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p5
+#print axioms EulerFactorSectionOffline.euler_factor_section_offline_p5_offline_zero
