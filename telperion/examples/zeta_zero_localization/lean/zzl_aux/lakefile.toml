@@ -1,5 +1,5 @@
 name = "zzl_aux"
-defaultTargets = ["AllZeros_h100", "AllZeros_h200", "AxiomGuardDefect", "BraggAmplitudeInstances", "BraggDefect", "BraggH100", "BraggSupport", "CosEnclosure", "DefectDictionary", "NoZerosInBox_0_1d1000_0_55d16", "NoZerosInBox_1d1000_999d1000_0_55d16", "R2Rigidity", "RHInBox_1d1000000_999999d1000000_0_100", "RHInBox_1d1000000_999999d1000000_100_200", "RHLinalg", "StripClear", "ZooDH"]
+defaultTargets = ["AllZeros_h100", "AllZeros_h200", "AxiomGuardDefect", "BraggAmplitudeInstances", "BraggDefect", "BraggH100", "BraggSupport", "CosEnclosure", "DefectDictionary", "ExpLaurentDeficit", "NoZerosInBox_0_1d1000_0_55d16", "NoZerosInBox_1d1000_999d1000_0_55d16", "R2Rigidity", "RecurrenceDeficit", "RHInBox_1d1000000_999999d1000000_0_100", "RHInBox_1d1000000_999999d1000000_100_200", "RHLinalg", "StripClear", "ZooDH"]
 srcDir = ".."
 
 [[require]]
@@ -34,11 +34,15 @@ name = "CosEnclosure"
 [[lean_lib]]
 name = "DefectDictionary"
 [[lean_lib]]
+name = "ExpLaurentDeficit"
+[[lean_lib]]
 name = "NoZerosInBox_0_1d1000_0_55d16"
 [[lean_lib]]
 name = "NoZerosInBox_1d1000_999d1000_0_55d16"
 [[lean_lib]]
 name = "R2Rigidity"
+[[lean_lib]]
+name = "RecurrenceDeficit"
 [[lean_lib]]
 name = "RHInBox_1d1000000_999999d1000000_0_100"
 [[lean_lib]]

@@ -629,6 +629,12 @@ script = "examples/zeta_zero_localization/generate.py"
 group = "flint"    # Arb lambda-enclosures for xi-line zeros; needs python-flint
 
 [[check]]
+name = "exp_laurent_deficit"
+script = "examples/exp_laurent_deficit/generate.py"
+group = "quick"    # exp-Laurent recurrence-deficit rows (MIRRORMERE W3d); pure sympy, ~0.1 s.
+                   # Emits INTO the zeta_zero_localization island (lean/ExpLaurentDeficit.lean).
+
+[[check]]
 name = "jensen_hyperbolicity"
 script = "examples/jensen_hyperbolicity/generate.py"
 group = "flint"    # Jensen d=2 hyperbolicity; needs python-flint (drift-checked in telperion-lean-e2e)
