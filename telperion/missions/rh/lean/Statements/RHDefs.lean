@@ -221,21 +221,44 @@ noncomputable def finiteSide (n : ℕ) : ℂ :=
 
 end BombieriLagarias
 
-namespace WeilWindow
-open MeasureTheory Complex WeilExplicit
+namespace WeilForm
+open WeilExplicit
 
--- ===== AUTHORED for the registry (NOT in any island; 2026-09-19, the Zhu compact-window import;
+/-- The Weil pairing of a test function: the E8 right-hand side `archSide f - primeSide f`,
+    which `RH_limit_explicit_formula` identifies with the sum over the zeros
+    `Σ_ρ zeroMult ρ · weilKernel f ρ`.  Evaluating THIS is what the `weil_form_enclosure`
+    emitter's Arb backend does; the kernel only ever sees an enclosure of it as a hypothesis. -/
+noncomputable def weilForm (f : ℝ → ℂ) : ℂ :=
+  archSide f - primeSide f
+
+/-- The cross-correlation `f_{ij}(x) = ∫ g_i(t) conj (g_j (t - x)) dt`.  Its diagonal
+    `crossCorr g g` is the autocorrelation `g ⋆ g̃` on which Weil positivity is stated; the
+    off-diagonal entries are the Weil-Gram matrix's off-diagonal entries. -/
+noncomputable def crossCorr (gi gj : ℝ → ℂ) : ℝ → ℂ :=
+  fun x => ∫ t : ℝ, gi t * (starRingEnd ℂ) (gj (t - x))
+
+/-- The autocorrelation, the diagonal of `crossCorr`. -/
+noncomputable abbrev autocorr (g : ℝ → ℂ) : ℝ → ℂ := crossCorr g g
+
+end WeilForm
+
+namespace WeilWindow
+open MeasureTheory Complex WeilExplicit WeilForm
+
+-- ===== AUTHORED for the registry (NOT in the island; 2026-09-19, the Zhu compact-window import;
 -- design memo telperion/docs/ZHU_WINDOW_POSITIVITY_IMPORT_2026-09-19.md).  Vocabulary for
 -- RH_weil_window_floor_of_certified_block, the one-stroke window reduction of Xuefeng Zhu,
 -- arXiv:2608.24827 v2, Theorem 1.1, whose certified execution at L = 0.8 (Theorem 1.2) is the
 -- unconditional bound Q(f) >= 8.9e-18 ||f||_2^2 on autocorrelation support 1.6, i.e. 2.3 times
 -- the classical (log 2)/2 range of Yoshida and Connes-Consani.
 --
--- `weilForm` and `crossCorr` below are the SAME definitions as
--- telperion/examples/weil_form_enclosure/lean/WeilFormDefs.lean, where they are the proposed
--- registry vocabulary for the `weil_form_enclosure` emitter; `weilForm f = archSide f - primeSide f`
--- is the right-hand side that the PROVED node RH_limit_explicit_formula identifies with the sum over
--- the zeros.  That identification is what makes a window statement expressible here at all.
+-- The `WeilForm` namespace ABOVE is a VERBATIM mirror of
+-- telperion/examples/weil_form_enclosure/lean/WeilFormDefs.lean, where those names are the
+-- `weil_form_enclosure` emitter's proposed registry vocabulary; `weilForm f = archSide f -
+-- primeSide f` is the right-hand side that the PROVED node RH_limit_explicit_formula identifies
+-- with the sum over the zeros.  That identification is what makes a window statement expressible
+-- here at all.  Mirroring it verbatim (rather than renaming it into WeilWindow) is what keeps the
+-- island and the registry from silently decoupling.  Zhu's Q(f) is (weilForm (autocorr f)).re.
 --
 -- THE SEAM.  Zhu's reduction is NOT one step in Lean.  It is a chain:
 --   RH_limit_explicit_formula (PROVED on main)
@@ -252,24 +275,12 @@ open MeasureTheory Complex WeilExplicit
 -- wrong reason.  A certified NUMBER must not masquerade as a proved THEOREM.
 --
 -- SCOPE.  `WindowFloor L lam` with `lam > 0` at a FIXED L is a finite fragment of RH.  The
--- RH-equivalent clause is `forall L, WindowFloor L 0` (Weil 1952; Bombieri 2000 on C_c^infinity),
--- and nothing here reduces, weakens or approaches it.  Zhu's own Theorem 1.4 proves the
--- pointwise-envelope route to it is closed: any application of Theorem 1.1 needs
+-- RH-equivalent clause is `WindowFloor L 0` for EVERY L (Weil 1952; Bombieri 2000 on
+-- C_c^infinity), and nothing here reduces, weakens or approaches it.  Zhu's own Theorem 1.4
+-- proves the pointwise-envelope route to it is closed: any application of Theorem 1.1 needs
 -- T# > T_1 = 2 pi e^{A_L} with A_L = (4 + o(1)) e^L, so the certificate size is doubly exponential
 -- in the support, and by Lemma 3.2 (sup_t of the prime comb = A_L exactly, by Weyl equidistribution
 -- on {log p}) that threshold cannot be lowered.  PRE-WALL.  conjecture1_proved = False. =====
-
-/-- The Weil pairing `archSide f - primeSide f`, which `RH_limit_explicit_formula` identifies
-    with `Σ_ρ zeroMult ρ · weilKernel f ρ`.  Zhu's `Q(f)` is `(weilForm (autocorr f)).re`. -/
-noncomputable def weilForm (f : ℝ → ℂ) : ℂ :=
-  WeilExplicit.archSide f - WeilExplicit.primeSide f
-
-/-- The cross-correlation `f_{ij}(x) = ∫ g_i(t) conj (g_j (t - x)) dt`. -/
-noncomputable def crossCorr (gi gj : ℝ → ℂ) : ℝ → ℂ :=
-  fun x => ∫ t : ℝ, gi t * (starRingEnd ℂ) (gj (t - x))
-
-/-- The autocorrelation `g ⋆ g̃`, the diagonal of `crossCorr`. -/
-noncomputable abbrev autocorr (g : ℝ → ℂ) : ℝ → ℂ := crossCorr g g
 
 /-- Zhu eq. (1): the window floor.  `WindowFloor L lam` says the Weil form of every smooth
     compactly supported test function supported in `[-L, L]` is at least `lam ‖f‖₂²`.  Zhu's
@@ -277,7 +288,7 @@ noncomputable abbrev autocorr (g : ℝ → ℂ) : ℝ → ℂ := crossCorr g g
     of RH, and `∀ L, WindowFloor L 0` is RH-equivalent. -/
 def WindowFloor (L lam : ℝ) : Prop :=
   ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → tsupport f ⊆ Set.Icc (-L) L →
-    lam * (∫ x : ℝ, ‖f x‖ ^ 2) ≤ (weilForm (autocorr f)).re
+    lam * (∫ x : ℝ, ‖f x‖ ^ 2) ≤ (WeilForm.weilForm (WeilForm.autocorr f)).re
 
 /-- Zhu's comb mass `A_L = Σ_{log n < 2L} 2 Λ(n)/√n`.  A FINITE sum (`n < e^{2L}`), and the
     only information about the prime comb that the reduction uses; by Lemma 3.2 it is the exact
