@@ -2407,8 +2407,11 @@ jobs:
       - name: Build the E4b isolation lemma and the emitted instances
         working-directory: telperion/examples/quasicrystal/lean
         run: |
-          lake build OfflineDiscs
-          lake build OfflineDiscsInstances
+          # The guard below imports the whole island, so build every default
+          # target, not just this branch's two modules: a partial build leaves
+          # the guard's own imports unbuilt and it fails with 'unknown module
+          # prefix', which is a false red on a proof that is fine.
+          lake build
 
       - name: Axiom guard (OfflineDiscs + instances must be sorry-free and axiom-clean)
         working-directory: telperion/examples/quasicrystal/lean
