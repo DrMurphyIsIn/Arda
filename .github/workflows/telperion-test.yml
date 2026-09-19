@@ -41,7 +41,10 @@ jobs:
       # (exit 2, no traceback) mid-suite on py3.11-3.13. macOS wheels use Accelerate
       # (no MKL), which is why the suite is green locally. Pin to the last-good 3.2.9
       # until scs fixes the 3.3.x Linux MKL packaging.
-      - run: pip install "${{ matrix.sympy }}" pytest networkx numpy cvxpy "scs<3.3"
+      # pyyaml: the missions build-coverage checker parses .github/workflows to answer
+      # "does CI actually compile this artifact". It has a dependency-free fallback, but
+      # the YAML path is the precise one and the two are asserted equal by a test.
+      - run: pip install "${{ matrix.sympy }}" pytest networkx numpy cvxpy "scs<3.3" pyyaml
       - name: Unit tests
         working-directory: telperion
         # faulthandler stays on as a safety net: it dumps a C stack + the running

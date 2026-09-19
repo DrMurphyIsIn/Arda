@@ -4,6 +4,33 @@
 *`conjecture1_proved = False`. No RH progress is claimed here; this memo bounds what a
 class of arguments can do, it does not advance any of them.*
 
+> **RETRACTED IN PART — 2026-09-19.** The headline below (§0: *"no FE-uniform argument can
+> prove any route's wall clause, and one witness refutes all four routes at once"*, and §1's
+> claim that "one witness, all four routes" is new) **does not hold as a barrier**, and the
+> refutation is kernel-checked in the same pull request that shipped this memo:
+> `telperion/examples/wall_adversary/lean/BarrierScopeXR.lean`.
+>
+> * `barrier_silent` exhibits `(s - 1/2)^2` as a bundle member that SATISFIES the RH analogue,
+>   so the bundle contains both kinds of member.
+> * `transfer_to_member_fails` proves the negation of the transfer this memo needs: refuting
+>   the universal `∀ E : FEData, RHfor E` does NOT refute the claim about any single member.
+>   Every route's wall clause is a statement about ONE member, the completed zeta.
+> * `uniform_refutation_decides_nothing` extends that to every criterion the barrier claimed
+>   to kill.
+> * This memo's own `FEUniformBarrierAM.poly_refutes_poor_bundle` (line 157) shows `s * (s - 1)`
+>   already refutes the bundle unconditionally, so the Davenport–Heilbronn witness contributes
+>   nothing at the current bundle strength. The bundle is too weak to exclude polynomials.
+>
+> The barrier is **sound but empty**: its conclusion is compatible with either truth value of
+> every route's wall clause. Route B was never inside its class anyway, because the Li ladder's
+> corpus proof consumes Euler-product non-vanishing.
+>
+> **§5 operations OP 3 and OP 4 are struck**: do NOT register `RH_barrier_fe_uniform`. Neither
+> proposed node is on main, so nothing downstream is affected. The transfer theorems themselves
+> remain valid one-line modus tollens; what is withdrawn is their force as a barrier.
+> See `telperion/docs/RH_ASCENT_PLAN_2026-09-18.md` for the full treatment.
+
+
 ## 0. One-paragraph statement
 
 Every RH-equivalence this program owns or targets -- Li positivity (route B), Weil
