@@ -50,8 +50,15 @@ jobs:
       # schedule) saves a fresh cache -- this refreshes GitHub's 7-day eviction timer, keeping the cache
       # perpetually warm; `restore-keys` restores the most recent prior build (same toolchain + deps) so
       # `lake build` only recompiles CHANGED modules. Toolchain/manifest change forces a full rebuild.
-      - name: Cache Lean project build (incremental, self-refreshing)
-        uses: actions/cache@v4
+      # RESTORE only. The save is a separate `if: always()` step at the END of the job.
+      # WHY (2026-09-18): with a single actions/cache@v4 step the save runs as a POST step,
+      # which is SKIPPED when the job is killed or terminated. Once the warm cache expired,
+      # every run did a cold ~2575-theorem rebuild, was killed around 104 min, saved NOTHING,
+      # and so the next run started cold again -- a self-perpetuating spiral that broke this
+      # daily verification from 2026-09-12 onward. Saving unconditionally means a partial
+      # build is always kept, so consecutive runs make forward progress until one completes.
+      - name: Restore Lean project build cache (incremental)
+        uses: actions/cache/restore@v4
         with:
           path: proof/formalization/.lake/build
           key: lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-${{ github.run_id }}
@@ -172,3 +179,13 @@ jobs:
             exit 1
           fi
           echo "No genuine sorry/admit/native_decide across R3Cert + R7Hyps."
+
+      # Always save, even when a build step above failed or the job ran out of time: a partial
+      # .lake/build is what lets the NEXT run resume instead of starting cold. Keyed on run_id
+      # so the key is unique per run and the 7-day eviction timer is refreshed every time.
+      - name: Save Lean project build cache (even on failure — breaks the cold-rebuild spiral)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-${{ github.run_id }}
