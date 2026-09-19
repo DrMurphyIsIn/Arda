@@ -132,7 +132,7 @@ jobs:
         run: |
           set -euo pipefail
           lake env lean AxiomGuardLiPositivity.lean 2>&1 | tee axioms.out
-          n=$(grep -c "depends on axioms" axioms.out || true)
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
           if [ "$n" -lt "163" ]; then
             echo "::error::axiom guard printed $n axiom lines, expected at least 163 -- the guard did not run or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
@@ -208,7 +208,7 @@ jobs:
         run: |
           set -euo pipefail
           lake env lean AxiomGuardRvMBridge.lean 2>&1 | tee axioms.out
-          n=$(grep -c "depends on axioms" axioms.out || true)
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
           if [ "$n" -lt "45" ]; then
             echo "::error::axiom guard printed $n axiom lines, expected at least 45 -- the guard did not run or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
