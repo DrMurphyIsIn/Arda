@@ -6,7 +6,11 @@ name = "LiPositivity"
 # from an explicit defaultTargets list went dark; and #451 audit, which found this island's coverage
 # had been relying on v4.34's build-all-libs behavior.) The per-brick libs (RvMCompanionPrime,
 # RvMCompanionBragg, RvMLiWeightReconcile, ...) are now redundant here -- the guard imports them all.
-defaultTargets = ["LiPositivity", "AxiomGuardLiPositivity", "RvMBlFiniteMultiset"]
+# AxiomGuardZeroFree is in defaultTargets for the same reason AxiomGuardLiPositivity is: it is
+# what puts ZeroFreePolylog + ZeroFreeElementary (the two zero-free-region node artifacts,
+# imported by nothing else) under `lake build` at all. Separate guard because
+# ZeroFreeElementary collides with DlvpZetaDisk on ZeroFreeBridge.zeta_sphere_bound.
+defaultTargets = ["LiPositivity", "AxiomGuardLiPositivity", "RvMBlFiniteMultiset", "AxiomGuardZeroFree"]
 
 # The Li ladder rungs cite `taylorCoeff riemannXi` and feed
 # `LiCriterion.li_criterion_rh_iff`, both from the upstream, already-formalized
@@ -38,6 +42,9 @@ name = "RvMRoutePInertia"
 # sorryAx check; building it here only guarantees its import closure is present at that step.
 [[lean_lib]]
 name = "AxiomGuardLiPositivity"
+
+[[lean_lib]]
+name = "AxiomGuardZeroFree"
 
 [[lean_lib]]
 name = "LiLadder"

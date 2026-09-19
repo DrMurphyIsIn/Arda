@@ -126,11 +126,50 @@ jobs:
         working-directory: telperion/examples/li_positivity/lean
         run: lake build
 
-      - name: Axiom guard (fails on sorryAx anywhere in the anchors)
+      - name: "Axiom guard (Li ladder anchors): exact axiom set, no sorryAx, guard actually ran"
         working-directory: telperion/examples/li_positivity/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardLiPositivity.lean | tee axioms.out
-          ! grep -q "sorryAx" axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardLiPositivity.lean 2>&1 | tee axioms.out
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
+          if [ "$n" -lt "163" ]; then
+            echo "::error::axiom guard printed $n axiom lines, expected at least 163 -- the guard did not run or was silently truncated"; exit 1; fi
+          if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
+          # every printed axioms line must be EXACTLY Lean's three standard axioms
+          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
+          # list and reports a false positive.  Join lines, then extract each complete
+          # "depends on axioms: [...]" group and require it to be exactly the three.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
+            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
+            tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
+            exit 1; fi
+
+      # The two zero-free-region node artifacts (ZeroFreePolylog + ZeroFreeElementary) are imported
+      # by nothing, so until 2026-09-18 no build compiled them and no guard elaborated them. They
+      # need a SEPARATE guard: ZeroFreeElementary re-declares ZeroFreeBridge.zeta_sphere_bound,
+      # which DlvpZetaDisk already declares, so they cannot share an import closure.
+      - name: "Axiom guard (zero-free-region artifacts): exact axiom set, no sorryAx, guard actually ran"
+        working-directory: telperion/examples/li_positivity/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean AxiomGuardZeroFree.lean 2>&1 | tee zerofree.out
+          n=$(grep -c "depends on axioms" zerofree.out || true)
+          if [ "$n" -lt "2" ]; then
+            echo "::error::zero-free guard printed $n axiom lines, expected 2 -- the guard did not run"; exit 1; fi
+          if grep -q "sorryAx" zerofree.out; then echo "::error::sorryAx present"; exit 1; fi
+          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
+          # list and reports a false positive.  Join lines, then extract each complete
+          # "depends on axioms: [...]" group and require it to be exactly the three.
+          if tr "\n" " " < zerofree.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
+            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
+            tr "\n" " " < zerofree.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
+            exit 1; fi
 
   weil-form-enclosure-compiles:
     runs-on: ubuntu-latest
@@ -184,6 +223,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # The drift check imports the telperion package (statement-port matching), which pulls
+      # sympy. Without this the step dies with ModuleNotFoundError before it checks anything --
+      # a drift check that cannot start is a drift check that cannot fail on drift.
+      - run: pip install sympy
 
       - run: pip install sympy
 
@@ -215,11 +258,26 @@ jobs:
         working-directory: telperion/examples/rvm_bridge/lean
         run: lake build
 
-      - name: Axiom guard (fails on sorryAx anywhere in the anchors or the consumed upstream inputs)
+      - name: "Axiom guard (45 anchors incl. consumed upstream inputs): exact axiom set, no sorryAx, guard actually ran"
         working-directory: telperion/examples/rvm_bridge/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardRvMBridge.lean | tee axioms.out
-          ! grep -q "sorryAx" axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardRvMBridge.lean 2>&1 | tee axioms.out
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
+          if [ "$n" -lt "45" ]; then
+            echo "::error::axiom guard printed $n axiom lines, expected at least 45 -- the guard did not run or was silently truncated"; exit 1; fi
+          if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
+          # every printed axioms line must be EXACTLY Lean's three standard axioms
+          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
+          # list and reports a false positive.  Join lines, then extract each complete
+          # "depends on axioms: [...]" group and require it to be exactly the three.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
+            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
+            tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
+            exit 1; fi
 
   tangent-compiles:
     runs-on: ubuntu-latest
