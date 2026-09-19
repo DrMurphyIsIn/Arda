@@ -80,6 +80,21 @@ straight from Mathlib; the order bound carried as a NAMED hypothesis because
 Mathlib). So the bundle is non-vacuous on the object the program cares about: an FE-uniform
 argument really would apply to zeta.
 
+**HONESTY CHECK, and it is the most important paragraph in this memo.** A barrier is only
+as strong as the bundle it quantifies over, and the four clauses of `FEData` above are
+refuted by a POLYNOMIAL: `polyFEData`, `s ↦ s * (s - 1)`, is entire, self-dual, of order
+zero, and vanishes at `0` and `1`. `poly_refutes_poor_bundle` proves
+`¬ (∀ E : FEData, RHfor E)` UNCONDITIONALLY, with no Davenport-Heilbronn hypothesis at all.
+So over the bundle as written the barrier rules out only arguments that use nothing beyond
+entirety, self-duality and order one -- a class no route actually lives in. The DH witness
+earns its keep only over an ENRICHED bundle carrying a normalized Dirichlet series
+(`a 1 = 1`, bounded coefficients, degree one), which excludes polynomials and every other
+cheap witness while still admitting Davenport-Heilbronn. Enriching `FEData` to that form and
+re-proving `zetaFEData` against it is task number one, not an optional refinement. What this
+file delivers today is therefore the TRANSFER SCHEMA (sections 2 and 5), kernel-checked, plus
+an honest kernel measurement of its current reach -- not yet the barrier over the bundle that
+matters.
+
 `mobius_disc_iff : ρ ≠ 0 → (‖1 - 1 / ρ‖ < 1 ↔ 1 / 2 < ρ.re)` is proved as the concrete
 instance: it is the entire geometric content of Li's criterion, and it mentions no
 arithmetic. The Li ladder transmits the POSITIONS of the zeros and adds nothing to them.
@@ -216,14 +231,25 @@ in section 2's theorems.
 5. **Barrier II's primary source was not read.** Two verbatim quotes from a published
    restatement (arXiv:2004.11501v2) carry it. Anyone relying on the DMV constants should read
    Math. Ann. 334 (2006) directly.
-6. **The bundle could be too weak.** If a future argument uses a bundle clause this memo did
+6. **The bundle AS FORMALIZED is too weak, provably** -- see the honesty check in section 2.
+   The barrier over the rich bundle is the classical statement and remains SKETCHED; only the
+   transfer schema, the polynomial measurement and the symmetry scoping are proved.
+7. **The bundle could still be too weak after enrichment.** If a future argument uses a bundle clause this memo did
    not list (say, a Ramanujan-type coefficient bound that Davenport-Heilbronn fails), the
    barrier does not apply to it. That is the honest way past this barrier, and naming such a
    clause is the most valuable thing a route can now do.
 
-## 7. Next step
+## 7. Next steps, in order
 
-The one move that converts this memo into a hard in-corpus theorem: **generalize the
+**FIRST: enrich `FEData`** with a normalized Dirichlet-series clause, so that the bundle
+excludes `polyFEData` and the barrier starts covering real arguments. Concretely: carry both
+the completed `Ξ` and the underlying `L` with `L s = γ(s) * Ξ s`-style relation, `a 1 = 1`,
+`∃ B, ∀ n, ‖a n‖ ≤ B`, and `HasSum (fun n => a n * (n : ℂ) ^ (-s)) (L s)` for `1 < s.re`.
+Re-prove `zetaFEData` against it (Mathlib has the Dirichlet series for `riemannZeta` and the
+completed-zeta relation). Until this is done the barrier's reach is the polynomial's, not
+Davenport-Heilbronn's.
+
+**SECOND.** The one move that converts this memo into a hard in-corpus theorem: **generalize the
 LiCriterion chain from `riemannXi` to an abstract `f` satisfying `FEData`.** The upstream
 package proves everything for `riemannXi` specifically, but its own proof structure
 (`biconditional_rh_li_of_hadamard_order_one`) already shows the chain never uses zeta. With

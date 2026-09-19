@@ -99,6 +99,64 @@ theorem no_fe_uniform_sufficient_condition (L : FEData → Prop)
     ¬ (∀ E : FEData, L E) :=
   fun h => hoff (hsuff D (h D) ρ hz)
 
+/-! ### HONESTY CHECK: the bundle above is TOO POOR, and the kernel says so
+
+A barrier is only as strong as the bundle it quantifies over.  The four clauses of `FEData`
+are refuted by a POLYNOMIAL -- `s * (s - 1)` is entire, self-dual under `s -> 1 - s`, of
+order zero, and vanishes at `0` and `1`, both off the critical line.  So
+`fe_uniform_rh_is_false` holds unconditionally over THIS bundle, and Davenport-Heilbronn is
+not needed for it.
+
+That is not a defect of the barrier; it is the measurement of its current reach, and it is
+stated in the kernel rather than in prose.  The consequence for the integrator is precise:
+
+  * over the bundle AS WRITTEN, the barrier rules out only arguments that use nothing beyond
+    entirety, self-duality and order one -- a class no route actually lives in;
+  * the DH witness earns its keep only over an ENRICHED bundle, one carrying a normalized
+    Dirichlet series (`a 1 = 1`, bounded coefficients, degree one) that excludes polynomials
+    and every other cheap witness while still admitting Davenport-Heilbronn;
+  * enriching `FEData` to that form, and re-proving `zetaFEData` against it, is therefore the
+    first task, not an optional refinement.  Until it is done, the honest statement of the
+    barrier is the classical one about the RICH bundle, with this file supplying the
+    transfer schema and the Arb certificate supplying the witness.
+
+`poly_refutes_poor_bundle` is deliberately UNCONDITIONAL: it takes no hypothesis, so it
+cannot be mistaken for the Davenport-Heilbronn result. -/
+
+noncomputable def polyFEData : FEData where
+  Ξ := fun s => s * (s - 1)
+  entire := by fun_prop
+  fe := by intro s; ring
+  orderOne := by
+    refine ⟨1, 2, fun s => ?_⟩
+    set r := ‖s‖ with hr
+    have hr0 : 0 ≤ r := norm_nonneg s
+    have hb : ‖s * (s - 1)‖ ≤ (1 + r) ^ 2 := by
+      have h1 : ‖s - 1‖ ≤ r + 1 := by
+        calc ‖s - 1‖ ≤ ‖s‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
+          _ = r + 1 := by simp [hr]
+      calc ‖s * (s - 1)‖ = r * ‖s - 1‖ := by rw [norm_mul]
+        _ ≤ (1 + r) * (r + 1) := by
+            apply mul_le_mul (by linarith) h1 (norm_nonneg _) (by linarith)
+        _ = (1 + r) ^ 2 := by ring
+    have hexp : (2 + r) ^ 2 ≤ Real.exp (2 * (1 + r) * Real.log (2 + r)) := by
+      have h2 : Real.exp (2 * Real.log (2 + r)) = (2 + r) ^ 2 := by
+        rw [two_mul, Real.exp_add, Real.exp_log (by linarith)]; ring
+      rw [← h2]
+      refine Real.exp_le_exp.mpr ?_
+      have hlog : 0 ≤ Real.log (2 + r) := Real.log_nonneg (by linarith)
+      nlinarith
+    have hmono : (1 + r) ^ 2 ≤ (2 + r) ^ 2 := by nlinarith
+    calc ‖s * (s - 1)‖ ≤ (1 + r) ^ 2 := hb
+      _ ≤ (2 + r) ^ 2 := hmono
+      _ ≤ Real.exp (2 * (1 + r) * Real.log (2 + r)) := hexp
+      _ = 1 * Real.exp (2 * (1 + r) * Real.log (2 + r)) := by ring
+
+/-- The bundle as written is refuted by a polynomial, unconditionally.  Measures the
+barrier's current reach; see the section docstring. -/
+theorem poly_refutes_poor_bundle : ¬ (∀ E : FEData, RHfor E) :=
+  fe_uniform_rh_is_false polyFEData 0 (by simp [polyFEData]) (by simp [OnLine])
+
 /-! ### The Li kernel is purely positional (arithmetic-free)
 
 Li's criterion runs through the Moebius map `rho -> 1 - 1/rho`, which carries the open
@@ -133,5 +191,6 @@ theorem mobius_disc_iff {ρ : ℂ} (hρ : ρ ≠ 0) : ‖1 - 1 / ρ‖ < 1 ↔ 1
 #print axioms FEBarrier.no_fe_uniform_sufficient_condition
 #print axioms FEBarrier.mobius_disc_iff
 #print axioms FEBarrier.zetaFEData
+#print axioms FEBarrier.poly_refutes_poor_bundle
 
 end FEBarrier

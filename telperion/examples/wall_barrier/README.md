@@ -22,3 +22,11 @@ Design memo, scope limits and the exact registry operations:
 
 No RH progress is claimed.  These results bound a class of arguments; they do not advance
 any of them.
+
+## Honest grading
+
+`poly_refutes_poor_bundle` proves, unconditionally and in the kernel, that `FEData` as
+written is refuted by the polynomial `s * (s - 1)`.  So what is delivered today is the
+TRANSFER SCHEMA plus a measurement of its reach, not yet the barrier over the bundle that
+covers the program's actual arguments.  Enriching `FEData` with a normalized Dirichlet-series
+clause is the first task; see section 7 of the design memo.
