@@ -94,18 +94,32 @@ the target class exists (the "un-graded classification trap").
 | A1c | open-research | months–years | A1b | Primitivity instrument (the empty dictionary row; only shadow = the DH kill) |
 | A1d | open-research | years | A0, A1b | GL(1) fiber theorem: unimodular completely-multiplicative + FE ⇒ degree-1 Selberg element (both endpoint classifications exist: KP Acta 1999 degree ≤ 1) |
 | A1e | open-research | decade+ | A1a, A1c, A1d | Arithmetic FQ ⟺ Selberg element, all degrees. Bounded below by the Selberg degree conjecture — which has moved exactly one unit interval (1<d<2, Kaczorowski–Perelli, *Annals* 173 (2011); d∈[0,1] Acta 182 (1999)) in thirty years; even finite-dimensional n>1 FQ converse open (Lawton–Tsikh) |
-| A2a | **mechanical** (↓ from engineering, skeptic) | days | — | Defect-exactly-1 witness: *already proved* — `defect_eq_offline_pairs` (R2Rigidity.lean:209) and `bragg_defect_eq_one` (BraggDefect.lean:209) exist in-kernel; residual work is wiring/registry, and the theorem quantifies over a synthetic 2×2 block, not the 29-zero data (skeptic caveat) |
+| A2a | **mechanical** (↓ from engineering, skeptic) | days | — | Defect-exactly-1 witness: *already proved* — `defect_eq_offline_pairs` (R2Rigidity.lean:209) and `bragg_defect_eq_one` (BraggDefect.lean:209) exist in-kernel. **Synthetic-2×2 caveat ANSWERED 2026-09-19:** `offline_pairs_le_defect` itself was always fully general (any `RCLike`, any `Fintype`, any Hermitian `A`); the caveat bites only on the `BraggDefect` instantiations, where `f` is a free real and the 29-zero amplitude appears only in a docstring. `QuadrupleDefect.sumPairBlock` extends the block to arbitrary ambient dimension `d`, arbitrary on-line count `m`, arbitrary off-line count `k`, with `defect ≤ k` unconditional (`defect_sumPairBlock_le`) and `defect = k` under independence + orthogonality (`defect_sumPairBlock_eq`). The extension is **free in size, NOT free in the separation hypothesis** — `orthogonality_is_load_bearing` shows the on-line channel can absorb an off-line one entirely (`defect = 0` at `k = 1`). Scope note: `bragg_defect_eq_one`'s single synthetic pair is ONE σ-pair, i.e. half a functional-equation quadruple |
 | A2b | engineering | weeks | — | Leakage dictionary as kernel lemmas: completely-multiplicative amplitude ⇒ zero composite Bragg amplitude + the certified DH instance. *Trivial-direction trap flagged: the Λ-support direction is rfl-grade; the content is the log-derivative coefficient functional — statement queued* |
 | A2c | open-research | months–years | A2a, A2b, A4 | Defect-in-N instrumentation (torus ladder T3): certified defect under completion sequences — MEASURE, never claim |
 | A3 | hard-known-shape | months | **A4-grade zero-counting** (skeptic: the ∅-dependency was wrong — every corridor template consumes N(T+1)−N(T) = O(log T)) | Corridor bound \|ζ′/ζ\| = O(log²T) on zero-avoiding edges |
 | A4 | hard-known-shape | months | — | `RvMUnboundedMeanDensity` unconditional + in-kernel (see E6 probe) |
 | A5 | **rh-hard-wall** | — | A0, A1e, A2c, A3 | Defect-0 membership of the regularized triple ⟺ RH. Refused decomposition (precedent-mandated) |
 
-**Quadruple caveat (skeptic):** genuine off-line zeros come in functional-equation
-quadruples (ρ, 1−ρ, ρ̄, 1−ρ̄), not free pairs; witness-dimension bookkeeping per
-quadruple is an unresolved detail in the defect-counting story. **Never-run
-check:** AKKV stealthy-hyperuniformity (Invent. Math. 2025) consistency against
-the zeta comb.
+**Quadruple caveat — RESOLVED 2026-09-19, and it corrected the W2b gloss**
+(`MM_W2B_QUADRUPLE_AUDIT_2026-09-19.md`; artifact `QuadrupleDefect.lean`, axiom-clean).
+The caveat was right to fire. Kernel results: (i) `DefectDictionary`'s counter `p` counts
+σ-orbits (σρ = 1−ρ̄), and a genuine off-line zero (Re ≠ ½, Im ≠ 0) has a **4-point quadruple
+splitting into exactly 2 σ-orbits**, so one off-line zero costs **p = 2**
+(`offline_quadruple_sigma_pair_count`); degenerations kernel-checked (real off-line zero ⇒ p = 1,
+`quad_real_offline`; on-line ⇒ p = 0, `quad_online_card`). (ii) The **witness dimension per
+quadruple is NOT determined by the quadruple** — it is `dim span{y₁,y₂} ∈ {1,2}` — and the
+reflection-degenerate evaluation relation `v(ρ̄) = conj v(ρ)` (forced by a node set pointwise
+invariant under τ ↦ −τ) makes it **1**: `quadruple_witness_dimension_not_determined` gives two
+`Fin 4` configurations with the same on-line channel and two nonzero off-line channels each,
+defects 1 and 2. Consequence: `defect ≤ p = 2q` is unconditional, `p ≤ defect` requires the
+`NegativeWitness` and **can fail on genuine off-line data**, and the W2b node title/readback were
+corrected accordingly (the readback's "Vandermonde-type test vectors keep them linearly
+independent" was unproved and is false in general). Residual named obligation:
+`QuadrupleChannelIndependence`. A **convention trap** is now named: a half-sum (Im > 0) compression
+gives p = 1 per quadruple on the same matrix, so at most one convention can satisfy `defect = p`;
+`DefectDictionary` does not fix the convention. **Never-run check:** AKKV
+stealthy-hyperuniformity (Invent. Math. 2025) consistency against the zeta comb.
 
 **Assessment (post-skeptic):** A2a/A2b/A3/A4 land with high confidence; A1a ~75%;
 A1d perhaps 15–25%/decade (needs a converse-theorem-to-diffraction transplant

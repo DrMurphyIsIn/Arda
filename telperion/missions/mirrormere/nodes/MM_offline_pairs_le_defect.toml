@@ -4,8 +4,8 @@ kind = "milestone"
 name = "MM.offline_pairs_le_defect"
 statement_module = "Statements.MM_offline_pairs_le_defect"
 status = "proved"
-title = "W2b, the publishable rung: the defect instrument COUNTS off-line pairs (offline_pairs_le_defect) -- a p-dimensional negative-definite witness subspace forces p <= defect; independent off-line pairs contribute independently"
-updated = "2026-09-14"
+title = "W2b, the CONDITIONAL rigidity direction: a p-dimensional negative-definite witness subspace forces p <= defect (offline_pairs_le_defect). The witness is load-bearing and is NOT supplied by the off-line pair count -- one functional-equation quadruple carries p = 2 sigma-pairs but can leak only ONE negative direction (QuadrupleDefect.quadruple_witness_dimension_not_determined), so the defect does not unconditionally COUNT off-line pairs; unconditionally defect <= p"
+updated = "2026-09-19"
 
 [proof]
 artifact = "../../examples/zeta_zero_localization/lean/R2Rigidity.lean"
@@ -16,4 +16,4 @@ via = "direct"
 [readback]
 auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
 date = "2026-09-14"
-text = "For a Hermitian matrix A (the Weil-form Gram block of a zero configuration), if there is a NegativeWitness of dimension p -- a p-dimensional subspace on which the Hermitian form of A is negative definite -- then p is at most the defect of A (the number of negative eigenvalues, i.e. the negative index of inertia). Dual to the positive-index rank bound applied to -A. Consequence: off-line zero pairs, each of which supplies an independent negative direction (Vandermonde-type test vectors keep them linearly independent), are COUNTED by the defect, not merely detected -- the R2 defect-k rigidity direction. [Verbatim extract of the proved offline_pairs_le_defect; artifact on rh/million-turing, grant deferred to the branch reconcile.]"
+text = "For a Hermitian matrix A (the Weil-form Gram block of a zero configuration), if there is a NegativeWitness of dimension p -- a p-dimensional subspace on which the Hermitian form of A is negative definite -- then p is at most the defect of A (the number of negative eigenvalues, i.e. the negative index of inertia). Dual to the positive-index rank bound applied to -A. Consequence: off-line zero pairs are COUNTED by the defect EXACTLY WHEN a witness of that dimension exists; they are otherwise only detected and upper-bounded (defect <= p is the unconditional half). CORRECTION 2026-09-19 (quadruple audit, QuadrupleDefect.lean): the parenthetical of the 2026-09-14 migration readback -- \"Vandermonde-type test vectors keep them linearly independent\" -- was an unproved assertion stated as fact and is FALSE in general; a genuine off-line zero contributes p = 2 sigma-pairs (offline_quadruple_sigma_pair_count) whose two imaginary channels are anti-parallel for a node set pointwise invariant under tau |-> -tau, so the quadruple leaks ONE negative direction and p <= defect FAILS there (quadruple_witness_dimension_not_determined). [Verbatim extract of the proved offline_pairs_le_defect; artifact on rh/million-turing, grant deferred to the branch reconcile.]"
