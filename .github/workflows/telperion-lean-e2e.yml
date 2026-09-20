@@ -2970,14 +2970,35 @@ jobs:
 
       - name: Axiom guard (LeakageDictionary + LeakageInstances must be sorry-free and axiom-clean)
         working-directory: telperion/examples/quasicrystal/lean
+        shell: bash
         run: |
+          set -euo pipefail
           lake env lean AxiomGuardLeakage.lean 2>&1 | tee guard-leakage.txt
-          if grep -q "sorryAx" guard-leakage.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
-          if grep -q "ofReduceBool" guard-leakage.txt; then echo "GUARD FAILED: ofReduceBool present"; exit 1; fi
+          if grep -q "sorryAx" guard-leakage.txt; then echo "::error::GUARD FAILED: sorryAx present"; exit 1; fi
+          if grep -q "ofReduceBool" guard-leakage.txt; then echo "::error::GUARD FAILED: ofReduceBool present"; exit 1; fi
           # The node theorem, its contrapositive instrument, and BOTH controls must print.
-          if ! grep -q "Quasicrystal.composite_bragg_amplitude_zero" guard-leakage.txt; then echo "GUARD FAILED: node theorem not printed"; exit 1; fi
+          #
+          # The line below used to name composite_bragg_amplitude_zero while calling itself
+          # the node-theorem check.  That is a different declaration, so NOTHING verified
+          # that the node's own theorem was guarded.  Found by a blind read-back that built
+          # the island; the node does print, and the check now says so.  Both names are
+          # asserted, since the theory lemma is worth guarding in its own right.
+          if ! grep -q "Quasicrystal.leakage_composite_zero" guard-leakage.txt; then echo "::error::GUARD FAILED: the NODE theorem is not printed"; exit 1; fi
+          if ! grep -q "Quasicrystal.composite_bragg_amplitude_zero" guard-leakage.txt; then echo "::error::GUARD FAILED: theory lemma not printed"; exit 1; fi
           if ! grep -q "Quasicrystal.not_completelyMultiplicative_of_composite_leak" guard-leakage.txt; then echo "GUARD FAILED: instrument not printed"; exit 1; fi
           if ! grep -q "LeakageInstances.leak_chi5_composite_vanishes" guard-leakage.txt; then echo "GUARD FAILED: positive control not printed"; exit 1; fi
           if ! grep -q "LeakageInstances.leak_dh_composite_leak_pos" guard-leakage.txt; then echo "GUARD FAILED: negative control not printed"; exit 1; fi
           if ! grep -q "LeakageInstances.leak_dh_enclosure" guard-leakage.txt; then echo "GUARD FAILED: certified b(6) enclosure not printed"; exit 1; fi
-          if ! grep -q "LeakageInstances.leak_dh_multiplicativity_is_necessary" guard-leakage.txt; then echo "GUARD FAILED: falsification twin not printed"; exit 1; fi
+          if ! grep -q "LeakageInstances.leak_dh_multiplicativity_is_necessary" guard-leakage.txt; then echo "::error::GUARD FAILED: falsification twin not printed"; exit 1; fi
+          # Every printed axiom list must be a SUBSET of the three standard axioms.  A
+          # blind read-back confirmed all 47 guarded declarations print exactly those
+          # three, but nothing was ASSERTING it, so the claim was unenforced.  Join lines
+          # before extracting: Lean wraps a long list, and a line-based grep would read the
+          # wrapped remainder as a violation.
+          if tr "\n" " " < guard-leakage.txt | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
+          echo "axiom guard: every printed list is a subset of the three standard axioms"
