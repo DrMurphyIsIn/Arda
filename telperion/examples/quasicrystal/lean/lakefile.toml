@@ -1,5 +1,5 @@
 name = "Quasicrystal"
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder", "OfflineDiscs", "OfflineDiscsInstances", "EulerFactorOffline", "SelfInversiveOfflineInstances", "EulerFactorSectionOffline", "SatakeDegreeTwo"]
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder", "OfflineDiscs", "OfflineDiscsInstances", "EulerFactorOffline", "SelfInversiveOfflineInstances", "EulerFactorSectionOffline", "LeakageDictionary", "LeakageInstances", "LeakageNode", "SatakeDegreeTwo"]
 
 # PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
 # stable-polynomial classification frontier.  conjecture1_proved = False --
@@ -92,6 +92,25 @@ roots = ["EulerFactorOffline"]
 [[lean_lib]]
 name = "SelfInversiveOfflineInstances"
 roots = ["SelfInversiveOfflineInstances"]
+
+[[lean_lib]]
+name = "LeakageDictionary"
+roots = ["LeakageDictionary"]
+
+# Telperion leakage_dictionary emitter example (2026-09-19, ROUTE A item A2b): the
+# re-derived log-derivative coefficient rows at the composite frequency log 6 --
+# chi_5 vanishes (positive control), Davenport-Heilbronn leaks (negative control),
+# emitted by examples/leakage_dictionary/generate.py.
+[[lean_lib]]
+name = "LeakageInstances"
+roots = ["LeakageInstances"]
+
+# MIRRORMERE ROUTE A item A2b registry node (2026-09-19): MM_leakage_composite_zero
+# stated verbatim and proved -- the dictionary, its non-vacuity, the certified DH
+# instance b(6) = +1.9364, and the falsification twin.  conjecture1_proved = False.
+[[lean_lib]]
+name = "LeakageNode"
+roots = ["LeakageNode"]
 
 # PROGRAM MIRRORMERE ROUTE A milestone A1b (2026-09-19): the GL(2) Satake
 # FALSIFICATION of clause (B-mult-twisted) -- registry node

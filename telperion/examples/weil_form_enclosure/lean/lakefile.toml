@@ -1,5 +1,5 @@
 name = "WeilFormEnclosure"
-defaultTargets = ["WeilFormDefs", "WeilFormEnclosure", "AxiomGuardWeilForm"]
+defaultTargets = ["WeilFormDefs", "WeilFormEnclosure", "WindowFormFloorInstances", "AxiomGuardWeilForm", "AxiomGuardWindowFormFloor"]
 
 # Telperion weil_form_enclosure dogfood island (2026-09-18): the E8 Weil pairing
 # (RH_limit_explicit_formula / WeilExplicit) evaluated by Arb and emitted as a
@@ -23,7 +23,20 @@ roots = ["WeilFormDefs"]
 name = "WeilFormEnclosure"
 roots = ["WeilFormEnclosure"]
 
+# Telperion window_form_floor dogfood (2026-09-19): Zhu arXiv:2608.24827 Thm 1.1 window-floor
+# certificates, emitted by examples/window_form_floor/generate.py.  Lives here rather than in its
+# own island so it can reuse the WeilExplicit / WeilForm vocabulary of WeilFormDefs (and this
+# island's Mathlib v4.32.0 olean cache) instead of a fragile cross-package require.
+[[lean_lib]]
+name = "WindowFormFloorInstances"
+roots = ["WindowFormFloorInstances"]
+
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]
 name = "AxiomGuardWeilForm"
 roots = ["AxiomGuardWeilForm"]
+
+# The window_form_floor axiom guard, likewise declared as a lib so `lake build` compiles it.
+[[lean_lib]]
+name = "AxiomGuardWindowFormFloor"
+roots = ["AxiomGuardWindowFormFloor"]

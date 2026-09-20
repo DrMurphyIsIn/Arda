@@ -2160,14 +2160,36 @@ jobs:
         run: lake build
       - name: Build zzl_aux (height-100 island, Bragg family, zoo, R2Rigidity) + its guards
         working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
+        shell: bash
         run: |
+          set -euo pipefail
           lake build
+          # zzl_aux owns the proof artifacts of three MIRRORMERE nodes -- R2Rigidity
+          # (MM_offline_pairs_le_defect, the campaign's publishable rung), BraggDefect
+          # (MM_bragg_defect_witness) and RecurrenceDeficit (MM_recurrence_deficit_eq_excess).
+          # This guard step used to check only for `sorryAx` and `error:`, which is strictly
+          # weaker than every other island's guard: a theorem resting on a self-supplied
+          # `axiom`, or on any Mathlib axiom beyond the standard three, printed a clean-looking
+          # line and passed.  It now asserts the EXACT axiom set, counts the anchors so a
+          # silently-truncated guard cannot pass as a green one, and joins wrapped lines first
+          # (Lean wraps a long axiom list, and a line-based grep then reads a truncated list
+          # as an unexpected axiom -- a false positive that cost a CI round on #562).
+          declare -A MIN_ANCHORS=( [AxiomGuardBragg]=16 [AxiomGuardDefect]=21 [AxiomGuardZoo]=5 )
           for g in AxiomGuardBragg AxiomGuardDefect AxiomGuardZoo; do
-            [ -f "../$g.lean" ] || continue
-            out="$(lake env lean "../$g.lean" 2>&1 || true)"
-            echo "== $g"; echo "$out"
-            if echo "$out" | grep -q 'sorryAx'; then echo "::error::$g: a guarded theorem depends on sorry"; exit 1; fi
-            if echo "$out" | grep -qE 'error:'; then echo "::error::$g did not elaborate cleanly"; exit 1; fi
+            [ -f "../$g.lean" ] || { echo "::error::$g.lean is missing"; exit 1; }
+            echo "== $g"
+            lake env lean "../$g.lean" 2>&1 | tee "$g.out"
+            if grep -qE 'error:' "$g.out"; then echo "::error::$g did not elaborate cleanly"; exit 1; fi
+            if grep -q 'sorryAx' "$g.out"; then echo "::error::$g: a guarded theorem depends on sorry"; exit 1; fi
+            n=$(grep -cE "depends on axioms|does not depend on any axioms" "$g.out" || true)
+            if [ "$n" -lt "${MIN_ANCHORS[$g]}" ]; then
+              echo "::error::$g printed $n axiom lines, expected at least ${MIN_ANCHORS[$g]} -- the guard did not run or was silently truncated"; exit 1; fi
+            if tr "\n" " " < "$g.out" | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+                 | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
+              echo "::error::$g: unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
+              tr "\n" " " < "$g.out" | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+                 | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
+              exit 1; fi
           done
       - name: Build the band ladder block-by-block up to H_CI (strict chain; Guard_h<top> is a default target)
         working-directory: telperion/examples/zeta_zero_localization/lean
@@ -2459,6 +2481,130 @@ jobs:
         run: |
           lake env lean AxiomGuardGramInertia.lean | tee axioms.out
           ! grep -q "sorryAx" axioms.out
+  window-form-floor-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # No python-flint here: the window_form_floor instances carry Zhu's PUBLISHED constants,
+      # and the only recomputation is the finite von Mangoldt comb mass, which is exact sympy.
+      - run: pip install sympy pytest
+
+      # Regenerates Zhu's window-floor certificates (arXiv:2608.24827 Thm 1.1 / Thm 1.2) and
+      # checks the frozen Lean matches byte-for-byte.  The generator RE-DERIVES A_L from L and
+      # beta* from (T#, A_L) and refuses on disagreement -- the retraction guard, which is what
+      # catches an A_eff-for-A_L substitution of the kind the paper itself withdrew.  ~2 s.
+      - name: Regenerate the window-floor certificates (certify -> emit) and check they match on-disk
+        working-directory: telperion
+        run: |
+          python examples/window_form_floor/generate.py --check
+
+      - name: Emitter unit tests (refusals, re-derivation, emission)
+        working-directory: telperion
+        run: |
+          PYTHONPATH=src python -m pytest tests/test_emit_window_form_floor.py -q
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/weil_form_enclosure/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake exe cache get
+
+      - name: Build the emitted window-floor instances (the actual verification)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: lake build WindowFormFloorInstances AxiomGuardWindowFormFloor
+
+      - name: Axiom guard (fails on sorryAx anywhere in the emitted window-floor theorems)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        run: |
+          lake env lean AxiomGuardWindowFormFloor.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
+  satake-degree-two-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # zoo.py had NO CI coverage before this job.  It runs the falsification
+      # matrix, whose governance rails include the A1b assertions: Delta must look
+      # like zeta/L(chi) on every non-arithmetic clause and be killed by the
+      # arithmetic one alone.  It also exercises the anti-phantom tau refusal.
+      - name: Falsification matrix (zoo) -- A1b governance rails must hold
+        working-directory: telperion/examples/quasicrystal
+        run: |
+          python zoo.py | tee zoo.txt
+          grep -q "A1b FALSIFICATION CONFIRMED" zoo.txt || {
+            echo "A1b GATE FAILED: the clause no longer rejects L(s,Delta)."
+            echo "If the clause was repaired deliberately, update the roadmap A1b row"
+            echo "and the assertions in zoo.py _run_asserts."; exit 1; }
+          grep -q "GOVERNANCE: all required outcomes hold" zoo.txt || {
+            echo "GOVERNANCE RAIL BROKEN"; exit 1; }
+
+      - name: Anti-phantom refusal (a corrupted eta exponent must REFUSE, not report)
+        working-directory: telperion/examples/quasicrystal
+        run: python antiphantom_probe.py
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake exe cache get
+
+      - name: Build the island (the axiom guard imports all of it)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake build
+
+      - name: Axiom guard (A1b falsification must be sorry-free and axiom-clean)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          lake env lean AxiomGuardQC.lean 2>&1 | tee guard.txt
+          if grep -q "sorryAx" guard.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
+          if grep -q "ofReduceBool" guard.txt; then echo "GUARD FAILED: native_decide"; exit 1; fi
+          for t in scalarGenerated_powerSum_iff unitary_deg2_not_scalarGenerated \
+                   delta_satakeDet_two delta_rejected_by_B_mult_twisted \
+                   delta_rejected_nonvacuous tau_hecke_p2 tau_mult_six; do
+            grep -q "SatakeDegreeTwo.$t" guard.txt || { echo "GUARD FAILED: $t not printed"; exit 1; }
+          done
+
+      - name: Anti-triviality gate (every trivial-close probe MUST refuse)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          if lake env lean ProbeSatake.lean > probes.txt 2>&1; then
+            cat probes.txt
+            echo "ANTI-TRIVIALITY GATE FAILED: a rfl/simp/decide probe compiled."
+            echo "A trivially-closable statement is a wrong statement."
+            exit 1
+          fi
+          n=$(grep -cE '^ProbeSatake\.lean:[0-9]+:[0-9]+: error' probes.txt)
+          if [ "$n" -ne 14 ]; then
+            cat probes.txt
+            echo "PROBE DRIFT: $n trivial-close refusals, expected 14"; exit 1
+          fi
+          echo "anti-triviality gate OK: 14/14 trivial-close probes refused"
   mission-statements-compile:
     # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
     # statement package: a statement that does not elaborate cannot enter the
@@ -2802,13 +2948,11 @@ jobs:
         working-directory: telperion/examples/bagchi_recurrence/lean
         run: lake build
 
-  # PROGRAM MIRRORMERE ROUTE A milestone A1b (2026-09-19): the GL(2) Satake
-  # FALSIFICATION of clause (B-mult-twisted).  Hand-written node (no emitter and
-  # no generate.py -- the refutation is uniform in the prime, so a per-prime
-  # emitted family would re-emit one theorem; same precedent as OfflineDiscs.lean
-  # and EulerFactorOffline.lean).  In addition to the build + axiom guard this
-  # job runs the ANTI-TRIVIALITY GATE: the trivial-close probes must all refuse.
-  satake-degree-two-compiles:
+  leakage-dictionary-compiles:
+    # PROGRAM MIRRORMERE, ROUTE A item A2b: the leakage dictionary
+    # (completely-multiplicative amplitude => zero COMPOSITE Bragg amplitude) as
+    # kernel lemmas, plus the certified Davenport-Heilbronn instance b(6) = +1.9364.
+    # conjecture1_proved = False.
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -2816,25 +2960,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - run: pip install sympy mpmath pytest
 
-      # zoo.py had NO CI coverage before this job.  It runs the falsification
-      # matrix, whose governance rails include the A1b assertions: Delta must look
-      # like zeta/L(chi) on every non-arithmetic clause and be killed by the
-      # arithmetic one alone.  It also exercises the anti-phantom tau refusal.
-      - name: Falsification matrix (zoo) -- A1b governance rails must hold
-        working-directory: telperion/examples/quasicrystal
+      - name: Unit tests (row re-derivation + the two-directional certify refusals)
+        working-directory: telperion
         run: |
-          python zoo.py | tee zoo.txt
-          grep -q "A1b FALSIFICATION CONFIRMED" zoo.txt || {
-            echo "A1b GATE FAILED: the clause no longer rejects L(s,Delta)."
-            echo "If the clause was repaired deliberately, update the roadmap A1b row"
-            echo "and the assertions in zoo.py _run_asserts."; exit 1; }
-          grep -q "GOVERNANCE: all required outcomes hold" zoo.txt || {
-            echo "GOVERNANCE RAIL BROKEN"; exit 1; }
+          PYTHONPATH=src python -m pytest tests/test_emit_leakage_dictionary.py -q
 
-      - name: Anti-phantom refusal (a corrupted eta exponent must REFUSE, not report)
-        working-directory: telperion/examples/quasicrystal
-        run: python antiphantom_probe.py
+      - name: Regenerate the leakage instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/leakage_dictionary/generate.py --check
 
       - name: Cache elan toolchain
         uses: actions/cache@v4
@@ -2851,34 +2987,24 @@ jobs:
         working-directory: telperion/examples/quasicrystal/lean
         run: lake exe cache get
 
-      - name: Build the island (the axiom guard imports all of it)
-        working-directory: telperion/examples/quasicrystal/lean
-        run: lake build
-
-      - name: Axiom guard (A1b falsification must be sorry-free and axiom-clean)
+      - name: Build the dictionary and the emitted instances
         working-directory: telperion/examples/quasicrystal/lean
         run: |
-          lake env lean AxiomGuardQC.lean 2>&1 | tee guard.txt
-          if grep -q "sorryAx" guard.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
-          if grep -q "ofReduceBool" guard.txt; then echo "GUARD FAILED: native_decide"; exit 1; fi
-          for t in scalarGenerated_powerSum_iff unitary_deg2_not_scalarGenerated \
-                   delta_satakeDet_two delta_rejected_by_B_mult_twisted \
-                   delta_rejected_nonvacuous tau_hecke_p2 tau_mult_six; do
-            grep -q "SatakeDegreeTwo.$t" guard.txt || { echo "GUARD FAILED: $t not printed"; exit 1; }
-          done
+          # The guard imports the whole branch, so build every default target: a
+          # partial build leaves the guard's imports unbuilt and fails with
+          # 'unknown module prefix', a false red on a proof that is fine.
+          lake build
 
-      - name: Anti-triviality gate (every trivial-close probe MUST refuse)
+      - name: Axiom guard (LeakageDictionary + LeakageInstances must be sorry-free and axiom-clean)
         working-directory: telperion/examples/quasicrystal/lean
         run: |
-          if lake env lean ProbeSatake.lean > probes.txt 2>&1; then
-            cat probes.txt
-            echo "ANTI-TRIVIALITY GATE FAILED: a rfl/simp/decide probe compiled."
-            echo "A trivially-closable statement is a wrong statement."
-            exit 1
-          fi
-          n=$(grep -cE '^ProbeSatake\.lean:[0-9]+:[0-9]+: error' probes.txt)
-          if [ "$n" -ne 14 ]; then
-            cat probes.txt
-            echo "PROBE DRIFT: $n trivial-close refusals, expected 14"; exit 1
-          fi
-          echo "anti-triviality gate OK: 14/14 trivial-close probes refused"
+          lake env lean AxiomGuardLeakage.lean 2>&1 | tee guard-leakage.txt
+          if grep -q "sorryAx" guard-leakage.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
+          if grep -q "ofReduceBool" guard-leakage.txt; then echo "GUARD FAILED: ofReduceBool present"; exit 1; fi
+          # The node theorem, its contrapositive instrument, and BOTH controls must print.
+          if ! grep -q "Quasicrystal.composite_bragg_amplitude_zero" guard-leakage.txt; then echo "GUARD FAILED: node theorem not printed"; exit 1; fi
+          if ! grep -q "Quasicrystal.not_completelyMultiplicative_of_composite_leak" guard-leakage.txt; then echo "GUARD FAILED: instrument not printed"; exit 1; fi
+          if ! grep -q "LeakageInstances.leak_chi5_composite_vanishes" guard-leakage.txt; then echo "GUARD FAILED: positive control not printed"; exit 1; fi
+          if ! grep -q "LeakageInstances.leak_dh_composite_leak_pos" guard-leakage.txt; then echo "GUARD FAILED: negative control not printed"; exit 1; fi
+          if ! grep -q "LeakageInstances.leak_dh_enclosure" guard-leakage.txt; then echo "GUARD FAILED: certified b(6) enclosure not printed"; exit 1; fi
+          if ! grep -q "LeakageInstances.leak_dh_multiplicativity_is_necessary" guard-leakage.txt; then echo "GUARD FAILED: falsification twin not printed"; exit 1; fi
