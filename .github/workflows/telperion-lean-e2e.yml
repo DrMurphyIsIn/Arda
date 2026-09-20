@@ -2657,6 +2657,53 @@ jobs:
       - name: Unit tests (self-check pass + negative-control refusals)
         working-directory: telperion
         run: PYTHONPATH=src python -m pytest tests/test_emit_winding_box_zero.py -q
+  speiser-box-probe-compiles:
+    # MM_speiser_box_probe (routes-roadmap E9, Face 7 pilot, W4c): a Lipschitz-net
+    # ZERO-FREENESS certificate for `deriv riemannZeta` on [1/4, 3/8] x [6, 10].
+    # NOT the Speiser wall -- Speiser (1935) makes non-vanishing of zeta' on the WHOLE
+    # open left strip equivalent to RH, and no finite union of boxes exhausts a strip.
+    # This job decides nothing about RH.  conjecture1_proved = False.
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest mpmath
+
+      - name: Emitter self-check pass + Layer-1 negative-control refusals
+        working-directory: telperion
+        run: PYTHONPATH=src python -m pytest tests/test_emit_grid_modulus_nonvanishing.py -q
+
+      - name: Regenerate the certificate arithmetic + sidecar (drift check)
+        working-directory: telperion
+        run: PYTHONPATH=src python examples/speiser_box_probe/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/speiser_box_probe/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/speiser_box_probe/lean
+        run: lake exe cache get
+
+      - name: Build the island (instrument + box + emitted certificate arithmetic)
+        working-directory: telperion/examples/speiser_box_probe/lean
+        run: lake build
+
+      - name: Axiom guard (fails on sorryAx anywhere in the island)
+        working-directory: telperion/examples/speiser_box_probe/lean
+        run: |
+          lake env lean AxiomGuardSpeiserBoxProbe.lean | tee axioms.out
+          ! grep -q "sorryAx" axioms.out
   robin-growth-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
