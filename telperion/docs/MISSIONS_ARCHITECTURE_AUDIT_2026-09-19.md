@@ -236,6 +236,15 @@ date from 2026-08-21, so the trigger was the cache expiring, not new code. The f
 work is a time-boxed first pass that saves the cache *before* the danger zone, or moving those
 cells to their own job. Nine proved bg nodes depend on this layer.
 
+**The six anduril nodes are verified WEEKLY, not per-PR.** Wiring `zeta_reflection` into the
+per-PR workflow was the first attempt and it failed: that island path-requires
+`zeta_zero_localization/lean`, whose lakefile is the 54,280-line monolith the B2 migration
+deliberately moved off the per-PR path, and the island genuinely uses it. It now has its own
+scheduled workflow, on the same footing as the legacy box certificates. `coverage.py` counts
+an island as built when any workflow builds it, so the nodes are covered — on a weekly
+cadence, which is the honest description of that evidence and worth stating wherever those
+six nodes are cited.
+
 **Ten orphan islands remain** — Lean in the tree that no workflow builds. Down from 13. They
 carry no node, which is why the battery reports them as a warning: erroring would turn the
 check into an allowlist that rots. Surfacing them is what stops one quietly acquiring six

@@ -1,0 +1,91 @@
+# Telperion -- the zeta_reflection island, weekly / on demand.
+#
+# WHY THIS IS NOT IN THE PER-PR PATH. This island is the home of ALL SIX proved anduril
+# node artifacts (CheckBand, EMZetaTail, EMZetaComplex, ForgeFirstZeroKernel,
+# ReflectedBand_t14, StirlingBinet). Until 2026-09-19 no workflow built it at all: six
+# nodes were granted `proved` against Lean that CI never compiled, which is exactly the
+# hole `missions/coverage.py` now refuses.
+#
+# It cannot simply join `telperion-lean-e2e.yml`, and the first attempt to do so failed.
+# `zeta_reflection/lean/lakefile.toml` path-requires `../../zeta_zero_localization/lean`,
+# whose lakefile is the 54,280-line MONOLITH that the B2 migration deliberately moved out
+# of the per-PR path (E2BIG, and hours of build before a single guard runs). The island
+# genuinely uses it -- CheckBand and the A4 guard import XiLineZeros and DiffractionCore --
+# so the dependency is real and not removable here.
+#
+# So it is verified on the same footing as the legacy box certificates: weekly, sharded
+# off the critical path, never blocking a PR. `coverage.py` counts an island as built when
+# ANY workflow runs `lake build` in it, so the six nodes remain covered -- just on a weekly
+# cadence, which is the honest description of what this evidence is.
+#
+# conjecture1_proved = False.
+name: telperion-zeta-reflection
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 4 * * 2"   # Tuesdays 04:41 UTC, off the legacy-boxes slot
+
+concurrency:
+  group: telperion-zeta-reflection
+  cancel-in-progress: false
+
+jobs:
+  zeta-reflection-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_reflection/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # The path-require means Lake resolves deps through the sibling island. Share ONE
+      # packages dir between them, the way the ladder job already does for zero_free_bridge,
+      # so the Mathlib cache is fetched once and both packages see it.
+      - name: Wire zeta_reflection to the sibling island's shared deps dir
+        working-directory: telperion/examples
+        run: |
+          set -euo pipefail
+          mkdir -p zeta_zero_localization/lean/.lake/packages
+          mkdir -p zeta_reflection/lean/.lake
+          ln -sfn ../../../zeta_zero_localization/lean/.lake/packages \
+                  zeta_reflection/lean/.lake/packages
+
+      - name: Fetch Mathlib olean cache (once, into the shared deps dir)
+        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_core
+        run: lake exe cache get
+
+      - name: Build the six anduril artifacts through their guards (the actual verification)
+        working-directory: telperion/examples/zeta_reflection/lean
+        run: |
+          lake build AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex \
+                     AxiomGuardFirstZeroKernel AxiomGuardStirling
+
+      - name: "Axiom guard (six anduril artifacts): exact axiom set, no sorryAx, guards actually ran"
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > reflect.out
+          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex \
+                   AxiomGuardFirstZeroKernel AxiomGuardStirling; do
+            echo "== $g" | tee -a reflect.out
+            lake env lean "$g.lean" 2>&1 | tee -a reflect.out
+          done
+          n=$(grep -c "depends on axioms" reflect.out || true)
+          if [ "$n" -lt "67" ]; then
+            echo "::error::guards printed $n axiom lines, expected at least 67 -- a guard did not run"; exit 1; fi
+          if grep -q "sorryAx" reflect.out; then echo "::error::sorryAx present"; exit 1; fi
+          if grep -E "depends on axioms" reflect.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
+            grep -E "depends on axioms" reflect.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
+            exit 1; fi

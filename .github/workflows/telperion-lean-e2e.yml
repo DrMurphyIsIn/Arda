@@ -2233,18 +2233,6 @@ jobs:
         run: |
           lake env lean AxiomGuardWeilForm.lean | tee axioms.out
           ! grep -q "sorryAx" axioms.out
-  # The zeta_reflection island is the home of ALL SIX proved anduril node artifacts
-  # (CheckBand, EMZetaTail, EMZetaComplex, ForgeFirstZeroKernel, ReflectedBand_t14,
-  # StirlingBinet). Until 2026-09-19 no workflow built it: six nodes were granted `proved`
-  # against Lean that CI never compiled. The five guards below import exactly those six
-  # modules, so building the guards builds every artifact and then checks its axioms.
-  # NOTE none of the six is in the lakefile's defaultTargets, so a bare `lake build` does
-  # NOT cover them -- they are named explicitly here on purpose.
-  # The wall-analysis islands. Both shipped 2026-09-19 with NO CI job, and wall_adversary
-  # had no lakefile at all -- a loose .lean file no project could build -- while the ascent
-  # plan cited its contents as "kernel-checked". BarrierScopeXR is the refutation of the
-  # barrier proposed in wall_barrier, so leaving it unbuilt left the retraction unverified
-  # too. 19 axiom anchors across the three modules.
   wall-analysis-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -2290,53 +2278,6 @@ jobs:
           if grep -q "sorryAx" out.txt; then echo "::error::sorryAx present"; exit 1; fi
           if grep -E "depends on axioms" out.txt | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
             echo "::error::unexpected axiom"; grep -E "depends on axioms" out.txt | grep -v "\[propext, Classical.choice, Quot.sound\]"; exit 1; fi
-
-  zeta-reflection-compiles:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Cache elan toolchain
-        uses: actions/cache@v4
-        with:
-          path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_reflection/lean/lean-toolchain') }}
-
-      - name: Install elan
-        run: |
-          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
-      - name: Fetch Mathlib olean cache
-        working-directory: telperion/examples/zeta_reflection/lean
-        run: lake exe cache get
-
-      - name: Build the six anduril artifacts through their guards (the actual verification)
-        working-directory: telperion/examples/zeta_reflection/lean
-        run: |
-          lake build AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex \
-                     AxiomGuardFirstZeroKernel AxiomGuardStirling
-
-      - name: "Axiom guard (six anduril artifacts): exact axiom set, no sorryAx, guards actually ran"
-        working-directory: telperion/examples/zeta_reflection/lean
-        shell: bash
-        run: |
-          set -euo pipefail
-          : > reflect.out
-          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex \
-                   AxiomGuardFirstZeroKernel AxiomGuardStirling; do
-            echo "== $g" | tee -a reflect.out
-            lake env lean "$g.lean" 2>&1 | tee -a reflect.out
-          done
-          n=$(grep -c "depends on axioms" reflect.out || true)
-          if [ "$n" -lt "67" ]; then
-            echo "::error::guards printed $n axiom lines, expected at least 67 -- a guard did not run"; exit 1; fi
-          if grep -q "sorryAx" reflect.out; then echo "::error::sorryAx present"; exit 1; fi
-          if grep -E "depends on axioms" reflect.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
-            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-            grep -E "depends on axioms" reflect.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
-            exit 1; fi
 
   rvm-bridge-compiles:
     runs-on: ubuntu-latest
