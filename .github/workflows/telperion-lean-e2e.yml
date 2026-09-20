@@ -2801,3 +2801,84 @@ jobs:
       - name: Build the emitted Lean (RH Face 4 — Bagchi recurrence)
         working-directory: telperion/examples/bagchi_recurrence/lean
         run: lake build
+
+  # PROGRAM MIRRORMERE ROUTE A milestone A1b (2026-09-19): the GL(2) Satake
+  # FALSIFICATION of clause (B-mult-twisted).  Hand-written node (no emitter and
+  # no generate.py -- the refutation is uniform in the prime, so a per-prime
+  # emitted family would re-emit one theorem; same precedent as OfflineDiscs.lean
+  # and EulerFactorOffline.lean).  In addition to the build + axiom guard this
+  # job runs the ANTI-TRIVIALITY GATE: the trivial-close probes must all refuse.
+  satake-degree-two-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # zoo.py had NO CI coverage before this job.  It runs the falsification
+      # matrix, whose governance rails include the A1b assertions: Delta must look
+      # like zeta/L(chi) on every non-arithmetic clause and be killed by the
+      # arithmetic one alone.  It also exercises the anti-phantom tau refusal.
+      - name: Falsification matrix (zoo) -- A1b governance rails must hold
+        working-directory: telperion/examples/quasicrystal
+        run: |
+          python zoo.py | tee zoo.txt
+          grep -q "A1b FALSIFICATION CONFIRMED" zoo.txt || {
+            echo "A1b GATE FAILED: the clause no longer rejects L(s,Delta)."
+            echo "If the clause was repaired deliberately, update the roadmap A1b row"
+            echo "and the assertions in zoo.py _run_asserts."; exit 1; }
+          grep -q "GOVERNANCE: all required outcomes hold" zoo.txt || {
+            echo "GOVERNANCE RAIL BROKEN"; exit 1; }
+
+      - name: Anti-phantom refusal (a corrupted eta exponent must REFUSE, not report)
+        working-directory: telperion/examples/quasicrystal
+        run: python antiphantom_probe.py
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake exe cache get
+
+      - name: Build the island (the axiom guard imports all of it)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake build
+
+      - name: Axiom guard (A1b falsification must be sorry-free and axiom-clean)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          lake env lean AxiomGuardQC.lean 2>&1 | tee guard.txt
+          if grep -q "sorryAx" guard.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
+          if grep -q "ofReduceBool" guard.txt; then echo "GUARD FAILED: native_decide"; exit 1; fi
+          for t in scalarGenerated_powerSum_iff unitary_deg2_not_scalarGenerated \
+                   delta_satakeDet_two delta_rejected_by_B_mult_twisted \
+                   delta_rejected_nonvacuous tau_hecke_p2 tau_mult_six; do
+            grep -q "SatakeDegreeTwo.$t" guard.txt || { echo "GUARD FAILED: $t not printed"; exit 1; }
+          done
+
+      - name: Anti-triviality gate (every trivial-close probe MUST refuse)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          if lake env lean ProbeSatake.lean > probes.txt 2>&1; then
+            cat probes.txt
+            echo "ANTI-TRIVIALITY GATE FAILED: a rfl/simp/decide probe compiled."
+            echo "A trivially-closable statement is a wrong statement."
+            exit 1
+          fi
+          n=$(grep -cE '^ProbeSatake\.lean:[0-9]+:[0-9]+: error' probes.txt)
+          if [ "$n" -ne 14 ]; then
+            cat probes.txt
+            echo "PROBE DRIFT: $n trivial-close refusals, expected 14"; exit 1
+          fi
+          echo "anti-triviality gate OK: 14/14 trivial-close probes refused"

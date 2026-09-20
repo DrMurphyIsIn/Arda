@@ -21,6 +21,7 @@ import OfflineDiscsInstances
 import EulerFactorOffline
 import SelfInversiveOfflineInstances
 import EulerFactorSectionOffline
+import SatakeDegreeTwo
 
 open Quasicrystal
 
@@ -141,3 +142,35 @@ open Quasicrystal
 #print axioms EulerFactorSectionOffline.euler_factor_section_offline_p3_displacement
 #print axioms EulerFactorSectionOffline.euler_factor_section_offline_p5
 #print axioms EulerFactorSectionOffline.euler_factor_section_offline_p5_offline_zero
+
+/-! ### ROUTE A milestone A1b (2026-09-19) -- SatakeDegreeTwo, THE FALSIFICATION.
+
+    Registry node MM_satake_degree_two_rejects_delta.  These theorems PROVE THE
+    ISLAND'S OWN CLAUSE (B-mult-twisted) FALSE: it rejects `L(s, Delta)`, a
+    degree-2 Selberg element tempered by Deligne's theorem.  The rejection is
+    unconditional; Ramanujan-Petersson is a NAMED input used only to certify that
+    the rejected object belongs to the class, and no theorem here consumes it.
+
+    `tau` is re-derived in-kernel from Delta = q * prod (1-q^n)^24; the Hecke and
+    multiplicativity cross-checks below are the anti-phantom refusal.
+
+    conjecture1_proved = False. -/
+#print axioms SatakeDegreeTwo.scalarGenerated_powerSum_iff
+#print axioms SatakeDegreeTwo.deg1_scalarGenerated
+#print axioms SatakeDegreeTwo.zeta_layer_scalarGenerated
+#print axioms SatakeDegreeTwo.lchi_layer_scalarGenerated
+#print axioms SatakeDegreeTwo.unitary_deg2_not_scalarGenerated
+#print axioms SatakeDegreeTwo.satake_pair_exists
+#print axioms SatakeDegreeTwo.deg2_amplitude_defect
+#print axioms SatakeDegreeTwo.tau_one
+#print axioms SatakeDegreeTwo.tau_two
+#print axioms SatakeDegreeTwo.tau_three
+#print axioms SatakeDegreeTwo.tau_four
+#print axioms SatakeDegreeTwo.tau_six
+#print axioms SatakeDegreeTwo.tau_hecke_p2
+#print axioms SatakeDegreeTwo.tau_mult_six
+#print axioms SatakeDegreeTwo.delta_satakeDet_two
+#print axioms SatakeDegreeTwo.delta_twist_not_unimodular
+#print axioms SatakeDegreeTwo.delta_amplitude_defect_two
+#print axioms SatakeDegreeTwo.delta_rejected_by_B_mult_twisted
+#print axioms SatakeDegreeTwo.delta_rejected_nonvacuous

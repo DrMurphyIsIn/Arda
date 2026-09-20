@@ -4,6 +4,7 @@
     "zeta",
     "dh",
     "l_chi5",
+    "delta",
     "lattice",
     "ksly",
     "random"
@@ -240,6 +241,83 @@
       "multiplicativity": {
         "verdict": "PASS",
         "detail": "amplitudes multiplicatively generated with a UNIMODULAR CHARACTER twist: b(composite)=0, b(p^m)=(log p) chi(p)^m => a(p^m)=(log p)chi(p)^m p^{-m/2} (Euler product with |chi(p)|=1; B-mult-twisted, unconditional/arithmetic) (ramified primes p|conductor with no atom: [5])",
+        "variants": [
+          "Bm"
+        ],
+        "name": "(B-mult) multiplicative amplitude generation [W3a KILLER]"
+      },
+      "signed_decay": {
+        "verdict": "CONDITIONAL",
+        "detail": "signed decay holds; pure-pointness still GRH-conditional",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-iii) signed decay only"
+      },
+      "defect_bounded": {
+        "verdict": "CONDITIONAL",
+        "detail": "finite k at each height (Alpoge-Furman extends to primitive Dirichlet L-functions); k=0 <=> GRH for L(chi) -- PARTIAL",
+        "variants": [
+          "D"
+        ],
+        "name": "(D-ii) bounded defect k"
+      },
+      "temperedness": {
+        "verdict": "PASS",
+        "detail": "finite-order tempered",
+        "variants": [
+          "A",
+          "B",
+          "Bm",
+          "C",
+          "D"
+        ],
+        "name": "(A-iv..D) temperedness"
+      }
+    },
+    "delta": {
+      "support_density": {
+        "verdict": "PASS",
+        "detail": "count=56, model~56.3, ratio=1.00, envelope<=300",
+        "variants": [
+          "A",
+          "B",
+          "Bm",
+          "C",
+          "D"
+        ],
+        "name": "(A-i/B-i) support density"
+      },
+      "atomic_spectrum": {
+        "verdict": "CONDITIONAL",
+        "detail": "pure-point at log-prime freqs is GRH-conditional for L(chi) (same status as zeta: dual comb pure-pointness <=> zero reality)",
+        "variants": [
+          "A",
+          "B",
+          "Bm",
+          "D"
+        ],
+        "name": "(A-ii/B-ii) atomic spectrum on prime Lambda_log"
+      },
+      "atomic_spectrum_loose": {
+        "verdict": "CONDITIONAL",
+        "detail": "pure-point at log-prime freqs is GRH-conditional for L(chi) (same status as zeta: dual comb pure-pointness <=> zero reality)",
+        "variants": [
+          "C"
+        ],
+        "name": "(C-ii) atomic spectrum on any log-lattice"
+      },
+      "weight_positivity": {
+        "verdict": "FAIL",
+        "detail": "GL(2) prime layer (log p)(alpha^m+beta^m)p^{-m/2} is a real but SIGN-VARYING Newton power sum (tau(2) < 0), not strictly positive: (B-iii) is zeta-unique / over-sharp",
+        "variants": [
+          "B"
+        ],
+        "name": "(B-iii) weight positivity + decay [KILLER]"
+      },
+      "multiplicativity": {
+        "verdict": "FAIL",
+        "detail": "prime-layer twist |t(2)|=0.5303 != 1 (not a unimodular character twist)",
         "variants": [
           "Bm"
         ],
@@ -525,6 +603,11 @@
         "killed": false,
         "survives": true
       },
+      "delta": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
       "lattice": {
         "fails": [],
         "killed": false,
@@ -558,6 +641,13 @@
         "survives": false
       },
       "l_chi5": {
+        "fails": [
+          "weight_positivity"
+        ],
+        "killed": true,
+        "survives": false
+      },
+      "delta": {
         "fails": [
           "weight_positivity"
         ],
@@ -602,6 +692,13 @@
         "killed": false,
         "survives": true
       },
+      "delta": {
+        "fails": [
+          "multiplicativity"
+        ],
+        "killed": true,
+        "survives": false
+      },
       "lattice": {
         "fails": [
           "multiplicativity"
@@ -637,6 +734,11 @@
         "survives": true
       },
       "l_chi5": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
+      "delta": {
         "fails": [],
         "killed": false,
         "survives": true
@@ -679,6 +781,11 @@
         "killed": false,
         "survives": true
       },
+      "delta": {
+        "fails": [],
+        "killed": false,
+        "survives": true
+      },
       "lattice": {
         "fails": [],
         "killed": false,
@@ -717,6 +824,12 @@
       "offline_pairs": 0,
       "spectrum": "prime_log_lattice",
       "weights": "twisted_prime"
+    },
+    "delta": {
+      "density_count": 56,
+      "offline_pairs": 0,
+      "spectrum": "prime_log_lattice",
+      "weights": "satake_deg2"
     },
     "lattice": {
       "density_count": 100,
@@ -817,6 +930,8 @@
     "W3c L-COLUMN CONFIRMED: L(chi) (a genuine Euler product) PASSES B-mult-twisted but FAILS bare (B-iii) positivity (complex character twist); DH = the non-multiplicative SUM of L(chi),L(chi-bar) STILL FAILS B-mult. => B-mult-twisted selects the ARITHMETIC CLASS (not zeta alone), and the class-not-description objection to W3a's zeta-uniqueness is resolved.",
     "B-mult STRICTLY sharper than B: ksly (generic Lee-Yang FQ) survives B but is excluded by B-mult -- the multiplicativity primitive carves out the arithmetic FQs (Euler-product amplitudes) from the generic Lee-Yang class."
   ],
-  "a2_findings": [],
+  "a2_findings": [
+    "A1b FALSIFICATION CONFIRMED: clause (B-mult-twisted) REJECTS L(s,Delta), a tempered degree-2 Selberg element (Deligne). Reason: prime-layer twist |t(2)|=0.5303 != 1 (not a unimodular character twist). Kernel proof of the rejection (an IFF -- the clause holds for a degree-2 layer iff the Satake determinant VANISHES, i.e. only in degree <= 1): lean/SatakeDegreeTwo.lean, node MM_satake_degree_two_rejects_delta. The clause is a GL(1) predicate mistaken for an arithmetic-class one."
+  ],
   "governance_failures": []
 }

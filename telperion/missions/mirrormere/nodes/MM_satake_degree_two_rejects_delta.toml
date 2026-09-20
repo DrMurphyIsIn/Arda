@@ -1,0 +1,8 @@
+created = "2026-09-19"
+depends_on = ["MM_euler_factor_section_offline"]
+kind = "lemma"
+name = "MM_satake_degree_two_rejects_delta"
+statement_module = "Statements.MM_satake_degree_two_rejects_delta"
+status = "draft"
+title = "A1b GL(2) Satake FALSIFICATION: clause (B-mult-twisted) is FALSE -- it rejects L(s,Delta), a degree-2 Selberg element [membership half cites Ramanujan-Petersson (Deligne) as a NAMED input; the kernel rejection uses none]"
+updated = "2026-09-19"
