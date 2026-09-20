@@ -2801,3 +2801,64 @@ jobs:
       - name: Build the emitted Lean (RH Face 4 — Bagchi recurrence)
         working-directory: telperion/examples/bagchi_recurrence/lean
         run: lake build
+
+  leakage-dictionary-compiles:
+    # PROGRAM MIRRORMERE, ROUTE A item A2b: the leakage dictionary
+    # (completely-multiplicative amplitude => zero COMPOSITE Bragg amplitude) as
+    # kernel lemmas, plus the certified Davenport-Heilbronn instance b(6) = +1.9364.
+    # conjecture1_proved = False.
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy mpmath pytest
+
+      - name: Unit tests (row re-derivation + the two-directional certify refusals)
+        working-directory: telperion
+        run: |
+          PYTHONPATH=src python -m pytest tests/test_emit_leakage_dictionary.py -q
+
+      - name: Regenerate the leakage instances from the family definition
+        working-directory: telperion
+        run: |
+          python examples/leakage_dictionary/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake exe cache get
+
+      - name: Build the dictionary and the emitted instances
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          # The guard imports the whole branch, so build every default target: a
+          # partial build leaves the guard's imports unbuilt and fails with
+          # 'unknown module prefix', a false red on a proof that is fine.
+          lake build
+
+      - name: Axiom guard (LeakageDictionary + LeakageInstances must be sorry-free and axiom-clean)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          lake env lean AxiomGuardLeakage.lean 2>&1 | tee guard-leakage.txt
+          if grep -q "sorryAx" guard-leakage.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
+          if grep -q "ofReduceBool" guard-leakage.txt; then echo "GUARD FAILED: ofReduceBool present"; exit 1; fi
+          # The node theorem, its contrapositive instrument, and BOTH controls must print.
+          if ! grep -q "Quasicrystal.composite_bragg_amplitude_zero" guard-leakage.txt; then echo "GUARD FAILED: node theorem not printed"; exit 1; fi
+          if ! grep -q "Quasicrystal.not_completelyMultiplicative_of_composite_leak" guard-leakage.txt; then echo "GUARD FAILED: instrument not printed"; exit 1; fi
+          if ! grep -q "LeakageInstances.leak_chi5_composite_vanishes" guard-leakage.txt; then echo "GUARD FAILED: positive control not printed"; exit 1; fi
+          if ! grep -q "LeakageInstances.leak_dh_composite_leak_pos" guard-leakage.txt; then echo "GUARD FAILED: negative control not printed"; exit 1; fi
+          if ! grep -q "LeakageInstances.leak_dh_enclosure" guard-leakage.txt; then echo "GUARD FAILED: certified b(6) enclosure not printed"; exit 1; fi
+          if ! grep -q "LeakageInstances.leak_dh_multiplicativity_is_necessary" guard-leakage.txt; then echo "GUARD FAILED: falsification twin not printed"; exit 1; fi
