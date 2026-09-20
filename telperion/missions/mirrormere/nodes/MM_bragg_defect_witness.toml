@@ -10,7 +10,7 @@ updated = "2026-09-14"
 [proof]
 artifact = "../../examples/zeta_zero_localization/lean/BraggDefect.lean"
 artifact_kind = "lean_module"
-closure_clean = true
+closure_clean = false
 via = "direct"
 
 [readback]

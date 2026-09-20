@@ -1,0 +1,8 @@
+created = "2026-09-19"
+depends_on = ["RH_limit_explicit_formula"]
+kind = "lemma"
+name = "RH.weil_window_floor_of_certified_block"
+statement_module = "Statements.RH_weil_window_floor_of_certified_block"
+status = "draft"
+title = "Zhu compact-window reduction (arXiv:2608.24827 Thm 1.1), CONDITIONAL on four named UNDISCHARGED inputs -- the frequency-side symbol representation (eq. 2), the digamma envelope (Lemma 3.1), the Legendre/spherical-Bessel localization (eqs. 6 and 12) and an Arb-certified least-eigenvalue floor lam0 for the finite Legendre head -- concludes a positive window floor min(lam0, beta* - epsD) - epsB for the Weil form on supp f in [-L, L], where beta* = log(T#/2pi) - 1/T# - A_L and A_L is the finite von Mangoldt comb mass; STATED ONLY, not proved. Numerically instantiated at L = 0.8 by Zhu Thm 1.2 (8.9e-18, support 1.6, 2.3x the classical (log 2)/2 range) but the kernel asserts NO number. Route closed by Thm 1.4 at doubly exponential cost; PRE-WALL; conjecture1_proved = False"
+updated = "2026-09-19"

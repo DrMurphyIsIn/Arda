@@ -383,7 +383,10 @@ NOT the Speiser wall), `MM_rect_trace_reading` (D1, dictionary-grade),
 **Deliberately NOT registered — the statement is the work** (three of the plan's
 ten nodes were dropped during authoring for exactly the discipline the plan
 mandates): `MM_leakage_composite_zero` (the non-trivial content is the
-log-derivative coefficient functional; the Λ-support direction is rfl-bait),
+log-derivative coefficient functional; the Λ-support direction is rfl-bait)
+— **registered 2026-09-20**, status `draft`, once the statement had actually
+been authored and proved: see `examples/quasicrystal/lean/LeakageNode.lean`
+and the new `leakage_dictionary` emitter kind; grant awaits blind read-back,
 `MM_ks_forward_smallN` (the island's FQ vocabulary is deliberately abstract; a
 concrete faithful statement is W3c-formulation work), `RH_rvm_explicit_remainder`
 (author the statement AT the E6 gate to match the port candidate; a ball-based
