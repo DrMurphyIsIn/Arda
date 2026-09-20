@@ -2975,21 +2975,34 @@ jobs:
           set -euo pipefail
           lake env lean AxiomGuardLeakage.lean 2>&1 | tee guard-leakage.txt
           if grep -q "sorryAx" guard-leakage.txt; then echo "::error::GUARD FAILED: sorryAx present"; exit 1; fi
-          if grep -q "ofReduceBool" guard-leakage.txt; then echo "::error::GUARD FAILED: ofReduceBool present"; exit 1; fi
+          for marker in ofReduceBool ofReduceNat; do
+            if grep -q "$marker" guard-leakage.txt; then echo "::error::GUARD FAILED: $marker present"; exit 1; fi
+          done
           # The node theorem, its contrapositive instrument, and BOTH controls must print.
+          #
+          # Each check is ANCHORED on the printed form rather than matching a bare
+          # substring.  The substring form was satisfiable by a LONGER name: the
+          # enclosure check passed on leak_dh_enclosure_decimal alone, without the
+          # enclosure itself ever printing.  Verified on fixtures before landing.
+          #
+          # LIMITATION, stated rather than left for the next reader to discover: these
+          # assert that a NAME printed, never that its STATEMENT is unchanged.  A theorem
+          # weakened by an added hypothesis passes every one of them.  What actually
+          # guards the statement is the registry's normalized-containment gate at grant
+          # time, not this job.
           #
           # The line below used to name composite_bragg_amplitude_zero while calling itself
           # the node-theorem check.  That is a different declaration, so NOTHING verified
           # that the node's own theorem was guarded.  Found by a blind read-back that built
           # the island; the node does print, and the check now says so.  Both names are
           # asserted, since the theory lemma is worth guarding in its own right.
-          if ! grep -q "Quasicrystal.leakage_composite_zero" guard-leakage.txt; then echo "::error::GUARD FAILED: the NODE theorem is not printed"; exit 1; fi
-          if ! grep -q "Quasicrystal.composite_bragg_amplitude_zero" guard-leakage.txt; then echo "::error::GUARD FAILED: theory lemma not printed"; exit 1; fi
-          if ! grep -q "Quasicrystal.not_completelyMultiplicative_of_composite_leak" guard-leakage.txt; then echo "GUARD FAILED: instrument not printed"; exit 1; fi
-          if ! grep -q "LeakageInstances.leak_chi5_composite_vanishes" guard-leakage.txt; then echo "GUARD FAILED: positive control not printed"; exit 1; fi
-          if ! grep -q "LeakageInstances.leak_dh_composite_leak_pos" guard-leakage.txt; then echo "GUARD FAILED: negative control not printed"; exit 1; fi
-          if ! grep -q "LeakageInstances.leak_dh_enclosure" guard-leakage.txt; then echo "GUARD FAILED: certified b(6) enclosure not printed"; exit 1; fi
-          if ! grep -q "LeakageInstances.leak_dh_multiplicativity_is_necessary" guard-leakage.txt; then echo "::error::GUARD FAILED: falsification twin not printed"; exit 1; fi
+          if ! grep -qE "'Quasicrystal\\.leakage_composite_zero' (depends on axioms|does not depend)" guard-leakage.txt; then echo "::error::GUARD FAILED: the NODE theorem is not printed"; exit 1; fi
+          if ! grep -qE "'Quasicrystal\\.composite_bragg_amplitude_zero' (depends on axioms|does not depend)" guard-leakage.txt; then echo "::error::GUARD FAILED: theory lemma not printed"; exit 1; fi
+          if ! grep -qE "'Quasicrystal\\.not_completelyMultiplicative_of_composite_leak' (depends on axioms|does not depend)" guard-leakage.txt; then echo "GUARD FAILED: instrument not printed"; exit 1; fi
+          if ! grep -qE "'LeakageInstances\\.leak_chi5_composite_vanishes' (depends on axioms|does not depend)" guard-leakage.txt; then echo "GUARD FAILED: positive control not printed"; exit 1; fi
+          if ! grep -qE "'LeakageInstances\\.leak_dh_composite_leak_pos' (depends on axioms|does not depend)" guard-leakage.txt; then echo "GUARD FAILED: negative control not printed"; exit 1; fi
+          if ! grep -qE "'LeakageInstances\\.leak_dh_enclosure' (depends on axioms|does not depend)" guard-leakage.txt; then echo "GUARD FAILED: certified b(6) enclosure not printed"; exit 1; fi
+          if ! grep -qE "'LeakageInstances\\.leak_dh_multiplicativity_is_necessary' (depends on axioms|does not depend)" guard-leakage.txt; then echo "::error::GUARD FAILED: falsification twin not printed"; exit 1; fi
           # Every printed axiom list must be a SUBSET of the three standard axioms.  A
           # blind read-back confirmed all 47 guarded declarations print exactly those
           # three, but nothing was ASSERTING it, so the claim was unenforced.  Join lines
