@@ -2318,13 +2318,24 @@ jobs:
       # on the runner.  Invoked DIRECTLY it runs fine -- it got far enough to report a
       # Lean module-search-path error, which only a running process can do.
       #
-      # So lake is not failing to execute the binary; it is failing to SPAWN it by the
-      # path it constructs.  That path is relative to the root package, and this is the
-      # only island whose lakefile path-requires a sibling that itself path-requires
-      # another, so the root lake resolves against is not the one the relative path was
-      # built for.  Running cache from inside the mathlib package, which is what Mathlib
-      # itself documents, sidesteps the root resolution entirely and puts the oleans
-      # exactly where they belong.
+      # So lake is not failing to execute the binary; it is failing to SPAWN it from the
+      # island root.  The precise trigger is NOT characterised, and this comment does not
+      # pretend otherwise: an earlier draft blamed the two-level sibling path-require
+      # chain, which does not survive contact with the evidence, because gram_inertia
+      # also path-requires a sibling and its job passes.
+      #
+      # What IS established, by direct reproduction rather than inference:
+      #   * invoked directly the binary runs, far enough to report a Lean search-path
+      #     error, so it is neither corrupt nor unexecutable;
+      #   * the same failure reproduces LOCALLY, with the identical message, on the
+      #     zeta_zero_localization island -- so it is not specific to this island or to
+      #     the hosted runner, and it is the same cause as the 12 lake-dependent tests
+      #     that fail in a fresh worktree;
+      #   * running cache from inside the mathlib package succeeds where the island-root
+      #     invocation fails.  Verified locally.
+      #
+      # That last line is the fix, and it is also what Mathlib's own documentation tells
+      # users to do.
       - name: Fetch Mathlib olean cache (from inside the mathlib package; see comment)
         working-directory: telperion/examples/zeta_reflection/lean
         shell: bash
