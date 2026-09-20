@@ -2310,38 +2310,29 @@ jobs:
 
       # This job is NEW: the zeta_reflection island was referenced by no CI job at all,
       # which is how six proved anduril nodes came to rest on Lean nothing had compiled.
-      # Its first two runs died here, identically and reproducibly, with
+      # Its first three runs died here with
       #   could not execute external process '.../mathlib/.lake/build/bin/cache'
-      # AFTER lake reported "Built cache:exe" successfully.  A binary that builds and then
-      # cannot be exec'd has a small set of causes -- truncated file, missing exec bit, bad
-      # interpreter, exhausted disk -- and the bare error distinguishes none of them.  So
-      # this step reports WHICH one instead of failing blind, retries once, and falls back
-      # to invoking the binary directly.  No other island needs this; reduce it back to a
-      # plain `lake exe cache get` once the cause is known.
-      - name: Fetch Mathlib olean cache (instrumented; this step has never succeeded)
+      # AFTER lake reported "Built cache:exe".  An instrumented round settled what it is,
+      # and it is none of the obvious answers.  The binary is a complete, executable,
+      # 119 MB ELF with the exec bit set, every shared library resolving, and 82 GB free
+      # on the runner.  Invoked DIRECTLY it runs fine -- it got far enough to report a
+      # Lean module-search-path error, which only a running process can do.
+      #
+      # So lake is not failing to execute the binary; it is failing to SPAWN it by the
+      # path it constructs.  That path is relative to the root package, and this is the
+      # only island whose lakefile path-requires a sibling that itself path-requires
+      # another, so the root lake resolves against is not the one the relative path was
+      # built for.  Running cache from inside the mathlib package, which is what Mathlib
+      # itself documents, sidesteps the root resolution entirely and puts the oleans
+      # exactly where they belong.
+      - name: Fetch Mathlib olean cache (from inside the mathlib package; see comment)
         working-directory: telperion/examples/zeta_reflection/lean
         shell: bash
         run: |
-          set -uo pipefail
-          CACHE_BIN=".lake/packages/mathlib/.lake/build/bin/cache"
-          if lake exe cache get; then echo "cache get: OK on first attempt"; exit 0; fi
-          echo "::warning::lake exe cache get failed; collecting diagnostics"
-          echo "--- disk"; df -h . /home/runner || true
-          echo "--- binary"; ls -l "$CACHE_BIN" 2>&1 || echo "MISSING: $CACHE_BIN"
-          if [ -f "$CACHE_BIN" ]; then
-            echo "--- size: $(wc -c < "$CACHE_BIN") bytes"
-            echo "--- type"; file "$CACHE_BIN" 2>&1 || true
-            echo "--- head"; head -c 16 "$CACHE_BIN" | od -c | head -2 || true
-            echo "--- ldd"; ldd "$CACHE_BIN" 2>&1 | head -10 || true
-            chmod +x "$CACHE_BIN" || true
-          fi
-          echo "--- packages present"; ls -la .lake/packages 2>&1 | head -20 || true
-          echo "--- retrying lake exe cache get"
-          if lake exe cache get; then echo "cache get: OK on retry after chmod"; exit 0; fi
-          echo "--- falling back to invoking the binary directly"
-          if "$CACHE_BIN" get; then echo "cache get: OK via direct invocation"; exit 0; fi
-          echo "::error::Mathlib cache fetch failed; the diagnostics above say which cause it is"
-          exit 1
+          set -euo pipefail
+          lake update -R 2>/dev/null || true   # materialise .lake/packages without building
+          cd .lake/packages/mathlib
+          lake exe cache get
 
       - name: Build the six anduril artifacts through their guards (the actual verification)
         working-directory: telperion/examples/zeta_reflection/lean
