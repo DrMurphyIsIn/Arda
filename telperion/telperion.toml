@@ -724,3 +724,10 @@ group = "quick"    # Zhu arXiv:2608.24827 Thm 1.1 window-floor certificates at L
 name = "weil_form_enclosure"
 script = "examples/weil_form_enclosure/generate.py"
 group = "flint"    # E8 Weil pairing (archSide - primeSide) enclosed by Arb for two C_c^inf bumps + their 2x2 Gram block; needs python-flint; archimedean quadrature to |r| <= 1024, ~4 min
+
+[[check]]
+name = "leakage_dictionary"
+script = "examples/leakage_dictionary/generate.py"
+group = "quick"    # MIRRORMERE ROUTE A item A2b: re-derived log-derivative coefficient rows at the
+                   # composite frequency log 6 (chi_5 vanishes, Davenport-Heilbronn leaks); exact
+                   # sympy + a 50-digit mpmath re-derivation of the published b(n) row, no flint; ~1 s
