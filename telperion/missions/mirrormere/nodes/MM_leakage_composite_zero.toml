@@ -1,0 +1,14 @@
+created = "2026-09-20"
+depends_on = []
+kind = "lemma"
+name = "MM.leakage_composite_zero"
+statement_module = "Statements.MM_leakage_composite_zero"
+status = "draft"
+title = "Leakage dictionary (ROUTE A item A2b), kernel-clean and UNCONDITIONAL -- no undischarged input: (i) a completely multiplicative amplitude forces b n = 0 at every non-prime-power n, where b is the log-derivative coefficient functional pinned only IMPLICITLY by the divisor recursion a n log n = sum_{d|n} b d a(n/d); (ii) the hypothesis class is inhabited by a NON-zero functional (b 2 = log 2), so the conclusion is not the trivial b = 0; (iii) the certified Davenport-Heilbronn instance -- its functional exists and 1.93635 < b 6 < 1.93636, the published b(6) = +1.9364, and DH is thereby REFUSED complete multiplicativity; (iv) the falsification twin -- (i) WITHOUT its multiplicativity hypothesis is FALSE, refuted in-kernel by DH, which is what separates this node from the rfl-grade von Mangoldt-support statement the roadmap flagged as a trap. No Arb enclosure, no discharged hypothesis, no sorry. Says nothing about zeros, temperedness or RH; conjecture1_proved = False"
+updated = "2026-09-20"
+
+[proof]
+artifact = "../../examples/quasicrystal/lean/LeakageNode.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
