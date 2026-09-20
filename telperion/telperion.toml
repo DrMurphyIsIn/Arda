@@ -726,6 +726,11 @@ group = "quick"    # interval-Gram inertia: exact signature (posIndex, defect) o
                    # rationals, no flint; ~0.1 s
 
 [[check]]
+name = "window_form_floor"
+script = "examples/window_form_floor/generate.py"
+group = "quick"    # Zhu arXiv:2608.24827 Thm 1.1 window-floor certificates at L = 0.8 (T# = 200 and the T# = 150 cross-check); exact rationals + a finite von Mangoldt comb mass, no flint; ~2 s
+
+[[check]]
 name = "weil_form_enclosure"
 script = "examples/weil_form_enclosure/generate.py"
 group = "flint"    # E8 Weil pairing (archSide - primeSide) enclosed by Arb for two C_c^inf bumps + their 2x2 Gram block; needs python-flint; archimedean quadrature to |r| <= 1024, ~4 min
