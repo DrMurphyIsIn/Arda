@@ -410,4 +410,48 @@ def GaussianPositivity : Prop :=
 
 end RvMBridge10
 
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, WALL ASSAULT seam C) =====
+  VERBATIM from the rvm_bridge island (v4.33), source lines cited: RvMBridge7.constB
+  (E6Bridge7.lean:441-444, the lam = 1 local-count majorant constant) and RvMBridge12.WindowOnLine
+  / lamThreshold (E6Bridge12.lean:73-76, 104-107).  Vocabulary for MM_gaussian_positivity_of_window,
+  the single-near-zero form of the ladder-certified region.  The DOMINANCE form
+  (gaussian_positivity_of_window_dominance) is NOT registered: its vocabulary zeroWindow /
+  windowSum / tailEnvelope rests on the THEOREM zeroWindowSet_finite (Zeta23.zetaSeam.finite_window),
+  which is not mirrorable as a definition on this statement island.  WindowOnLine is a HYPOTHESIS
+  supplied cross-island by the Turing ladder at registry level, never a Lean import; nothing here
+  proves anything about RH.  conjecture1_proved = False.
+-/
+namespace RvMBridge7
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit
+
+-- ===== E6Bridge7.lean:441-444 =====
+def constB (c : ℝ) : ℝ :=
+  ∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℝ)
+    * ((Real.exp (1 / 2) * (2 * c ^ 2 + 13 / 4) / (min 1 1) ^ 2)
+        / (1 + Complex.normSq (gammaOf ρ)))
+
+end RvMBridge7
+
+namespace RvMBridge12
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit RvMBridge6 RvMBridge7
+
+-- ===== E6Bridge12.lean:73-76 =====
+/-- All nontrivial zeros with ordinate within D of c lie on the line (what the Turing ladder
+certifies for c <= T - D; carried here as a hypothesis, cross-island). -/
+def WindowOnLine (c D : ℝ) : Prop :=
+  ∀ ρ : ℂ, IsNontrivialZero ρ → |ρ.im - c| ≤ D → ρ.re = 1 / 2
+
+-- ===== E6Bridge12.lean:104-107 =====
+/-- The lam threshold: max 1 (B e^{2 (D^2 - 1/4)} / (2 kappa delta^2)), kappa = D^2 - 1/4 - d^2,
+B = constB c. -/
+def lamThreshold (c D d δ : ℝ) : ℝ :=
+  max 1 (constB c * Real.exp (2 * (D ^ 2 - 1 / 4)) / (2 * (D ^ 2 - 1 / 4 - d ^ 2) * δ ^ 2))
+
+end RvMBridge12
+
 end
