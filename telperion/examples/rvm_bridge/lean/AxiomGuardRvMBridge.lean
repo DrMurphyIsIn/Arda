@@ -80,6 +80,10 @@
       * RvMBridge13.{gaussianExplicitFormula, gaussian_positivity_small_lam,
         rh_iff_gaussian_positivity_above_lam0} -- THE WALL MAP: RH <-> Gaussian positivity on
         widths above lam0 only.  Equivalence; NOT a proof of RH.  conjecture1_proved = False.
+      * RvMBridge14.{effective_gaussian_dominance, offline_zeros_small_or_margin,
+        effectiveThreshold_unbounded_of_small_spacing} -- open lemma 1 (2026-09-21): effective
+        Gaussian dominance with the explicit threshold and the localisation instrument; the
+        spacing floor is load-bearing.  NOT a proof of RH.  conjecture1_proved = False.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -109,6 +113,7 @@ import E6Bridge10
 import E6Bridge11
 import E6Bridge12
 import E6Bridge13
+import E6Bridge14
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -369,6 +374,20 @@ import W2cAssembly
 #print axioms RvMBridge13.gaussianExplicitFormula
 #print axioms RvMBridge13.gaussian_positivity_small_lam
 #print axioms RvMBridge13.rh_iff_gaussian_positivity_above_lam₀
+#print axioms RvMBridge14.one_le_effectiveThreshold
+#print axioms RvMBridge14.effectiveThreshold_pos
+#print axioms RvMBridge14.le_exp_of_log_le
+#print axioms RvMBridge14.effectiveThreshold_mono_B
+#print axioms RvMBridge14.effectiveThreshold_unbounded_of_small_spacing
+#print axioms RvMBridge14.tsum_winSet_eq_sum
+#print axioms RvMBridge14.re_term_centre
+#print axioms RvMBridge14.re_term_centre_nonpos
+#print axioms RvMBridge14.norm_term_le_competitor
+#print axioms RvMBridge14.re_window_sum_le
+#print axioms RvMBridge14.effective_gaussian_dominance
+#print axioms RvMBridge14.band_finite
+#print axioms RvMBridge14.offline_zeros_small_or_margin
+#print axioms RvMBridge14.windowCount_le_Ncount
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
