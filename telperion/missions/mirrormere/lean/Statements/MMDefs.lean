@@ -452,6 +452,26 @@ B = constB c. -/
 def lamThreshold (c D d δ : ℝ) : ℝ :=
   max 1 (constB c * Real.exp (2 * (D ^ 2 - 1 / 4)) / (2 * (D ^ 2 - 1 / 4 - d ^ 2) * δ ^ 2))
 
+-- ===== E6Bridge12.lean:83-84 (added 2026-09-21 for MM_effective_gaussian_dominance) =====
+/-- The ordinate window as an index set. -/
+def winSet (c D : ℝ) : Set ℂ := {ρ : ℂ | |ρ.im - c| ≤ D}
+
+-- ===== E6Bridge12.lean:383-385 =====
+/-- The nontrivial zeros with |Im rho - c| <= D: finite by the local zero count
+(Zeta23.zetaSeam.finite_window), generalised from E6Bridge7's centre rho_0 to (c, D). -/
+def zeroWindowSet (c D : ℝ) : Set ℂ := {ρ | IsNontrivialZero ρ} ∩ winSet c D
+
+-- ===== E6Bridge12.lean:387-392 (rvm_bridge island, v4.33).  SUPPORT LEMMA carried as `sorry`
+-- HERE ONLY so that `zeroWindow` elaborates: it is PROVED on the rvm_bridge island (same file,
+-- via Zeta23.zetaSeam.finite_window) and is NOT a registry node; the sorry is vocabulary
+-- scaffolding in the statement package, the same trust class as the node statements
+-- themselves, and never enters an axiom guard (same precedent as
+-- RHInBoxAnalytic.divisor_ball_support_finite_of_one_notMem above). =====
+lemma zeroWindowSet_finite (c D : ℝ) : (zeroWindowSet c D).Finite := by sorry
+
+/-- The certified window as a Finset. -/
+def zeroWindow (c D : ℝ) : Finset ℂ := (zeroWindowSet_finite c D).toFinset
+
 end RvMBridge12
 
 /-
@@ -489,5 +509,106 @@ def envelopeX (lam : ℝ) : ℝ :=
 def envelopeC (lam : ℝ) : ℝ := 2 * Real.exp (9 + 2 * envelopeX lam) + 2 / Real.sqrt lam
 
 end RvMBridge11
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, effective Gaussian dominance) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/E6Bridge14.lean (namespace RvMBridge14, v4.33
+  island), source lines cited: effectiveThreshold (63-68), the explicit lam threshold of open
+  lemma 1.  Vocabulary for MM_effective_threshold_unbounded.  The main theorem
+  RvMBridge14.effective_gaussian_dominance is NOT registered as a node: its window-count
+  hypothesis sums over RvMBridge12.zeroWindow, which rests on the THEOREM zeroWindowSet_finite
+  (Zeta23.zetaSeam.finite_window) and is not mirrorable as a definition on this statement island;
+  it is recorded as a cross-island prose link in the registry ledger and docs.
+  Nothing here proves anything about RH.  conjecture1_proved = False.
+-/
+namespace RvMBridge14
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit RvMBridge6 RvMBridge7 RvMBridge12
+
+-- ===== E6Bridge14.lean:63-68 =====
+/-- The explicit lam threshold for effective Gaussian dominance with parameters
+(y0 = distance floor from the line, xmin = ordinate spacing floor, N = window count,
+B = tail constant, D = window half-width). -/
+def effectiveThreshold (y0 xmin : ℝ) (N : ℕ) (B D : ℝ) : ℝ :=
+  max 1 (max (Real.log (max 1 (4 * N * (D ^ 2 + 1 / 4) / y0 ^ 2)) / (2 * xmin ^ 2))
+             (Real.log (max 1 (4 * B / y0 ^ 2)) / (2 * y0 ^ 2)))
+
+end RvMBridge14
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, the sharp envelope of the Wall) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/E6Bridge16.lean (namespace RvMBridge16, v4.33
+  island), source lines cited: primeAbsTerm (390-393), primeAbs (395-397), tailRadius (651-652),
+  envelopeCsharp (654-657).  Vocabulary for MM_gaussian_positivity_envelope_sharp.  Nothing here
+  proves anything about RH.  conjecture1_proved = False.
+-/
+namespace RvMBridge16
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit RvMBridge11
+
+-- ===== E6Bridge16.lean:390-393 =====
+/-- The n-th absolute prime term, in units of A. -/
+def primeAbsTerm (lam : ℝ) (n : ℕ) : ℝ :=
+  ArithmeticFunction.vonMangoldt n / Real.sqrt n
+    * (|1 - (Real.log n) ^ 2 / (4 * lam)| * Real.exp (-(Real.log n) ^ 2 / (8 * lam)))
+
+-- ===== E6Bridge16.lean:395-397 =====
+/-- primeAbs lam = 2 Σ_n Λ(n) n^{-1/2} |1 - (log n)^2/(4 lam)| e^{-(log n)^2/(8 lam)}: the exact
+size of the c-uniform prime side in units of A. -/
+def primeAbs (lam : ℝ) : ℝ := 2 * ∑' n : ℕ, primeAbsTerm lam n
+
+-- ===== E6Bridge16.lean:651-652 =====
+/-- The tail radius: lam L^2 = 16 + 2 primeAbs lam, so the tail is e^{-16 - 2 P}. -/
+def tailRadius (lam : ℝ) : ℝ := Real.sqrt ((16 + 2 * primeAbs lam) / lam)
+
+-- ===== E6Bridge16.lean:654-657 =====
+/-- THE SHARP ENVELOPE THRESHOLD: c1(lam) = 2 pi e^{primeAbs lam + 1/2} + tailRadius lam
++ 3/sqrt lam + 1. -/
+def envelopeCsharp (lam : ℝ) : ℝ :=
+  2 * Real.pi * Real.exp (primeAbs lam + 1 / 2) + tailRadius lam + 3 / Real.sqrt lam + 1
+
+end RvMBridge16
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, the Theta face) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/E6Bridge17.lean (namespace RvMBridge17, v4.33
+  island), source lines cited: plainGauss (43-44), Theta (46-47), heatVar (498-500), heatKernel
+  (502-503), ThetaFree (884-885), ThetaWidths (887-888).  Vocabulary for MM_rh_iff_theta_positivity,
+  MM_theta_heat_monotone and MM_rh_iff_theta_widths.  Nothing here proves anything about RH.
+  conjecture1_proved = False.
+-/
+namespace RvMBridge17
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit RvMBridge6 RvMBridge7 RvMBridge12 RvMBridge14
+
+-- ===== E6Bridge17.lean:43-44 =====
+/-- The plain Gaussian transform G_{c,lam}(z) = exp (-2 lam (z - c)^2). -/
+def plainGauss (c lam : ℝ) (z : ℂ) : ℂ := Complex.exp (-(2 * lam) * (z - c) ^ 2)
+
+-- ===== E6Bridge17.lean:46-47 =====
+/-- The plain Gaussian face Theta(c, lam) = Re Sum_rho m(rho) G_{c,lam}(gamma_rho). -/
+def Theta (c lam : ℝ) : ℝ := (zeroSide (plainGauss c lam)).re
+
+-- ===== E6Bridge17.lean:498-500 =====
+/-- The variance of the heat step from width lam to width lam' < lam:
+sigma^2 = 1/(4 lam') - 1/(4 lam) = (lam - lam')/(4 lam lam'). -/
+def heatVar (lam' lam : ℝ) : ℝ := (lam - lam') / (4 * lam * lam')
+
+-- ===== E6Bridge17.lean:502-503 =====
+/-- The Gaussian (heat) kernel of variance sigma^2. -/
+def heatKernel (σ2 u : ℝ) : ℝ := Real.exp (-(u ^ 2) / (2 * σ2)) / Real.sqrt (2 * Real.pi * σ2)
+
+-- ===== E6Bridge17.lean:884-885 =====
+/-- Width lam is Theta-free: Theta(c, lam) >= 0 at every centre. -/
+def ThetaFree (lam : ℝ) : Prop := ∀ c : ℝ, 0 ≤ Theta c lam
+
+-- ===== E6Bridge17.lean:887-888 =====
+/-- The set of positive free widths; Lambda_Theta is its supremum (possibly 0 or infinity). -/
+def ThetaWidths : Set ℝ := {lam : ℝ | 0 < lam ∧ ThetaFree lam}
+
+end RvMBridge17
 
 end

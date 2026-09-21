@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = ["MM_rh_iff_gaussian_positivity"]
+kind = "lemma"
+name = "MM.rh_iff_theta_positivity"
+statement_module = "Statements.MM_rh_iff_theta_positivity"
+status = "proved"
+title = "THE THETA FACE (2026-09-21): Mathlib's RiemannHypothesis is EQUIVALENT to positivity of the PLAIN Gaussian face Theta(c, lam) = Re Sum m(rho) e^{-2 lam (gamma_rho - c)^2} at every centre and width (F = -(1/2) d Theta/d lam is the Wall face). Converse: the Gaussian-dominance argument with the bracket cos(4 lam x y) and a generic centre off the window ordinates. An equivalence; proves NOTHING about either side. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge17.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-theta-face-2026-09-21 (AUDIT_TESTIMONY_THETA_FACE_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: Mathlib's RiemannHypothesis is equivalent to nonnegativity of the plain Gaussian face Theta at every centre and width. Audit 8/8: forward from on-line zeros; converse = the dominance argument with bracket cos(4 lam x y) and a generic centre avoiding the window ordinates (at an ordinate the summand is positive, independently re-derived). An equivalence; neither side asserted. conjecture1_proved = False."

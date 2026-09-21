@@ -170,6 +170,79 @@ def lower_bound_constants():
     return lo, rhs
 
 
+def prime_abs(lam, table, N):
+    """P_abs(lam) := 2 sum_{n>=2} Lambda(n) n^{-1/2} |1 - (log n)^2/(4 lam)| exp(-(log n)^2/(8 lam))
+    (= E6Bridge16.primeAbs lam), the c-uniform size of the prime side in units of A, and the PNT
+    tail estimate beyond n = N (integrand in absolute value: an error bar)."""
+    s = mp.mpf(0)
+    for n, L in table.items():
+        u = mp.log(n)
+        s += L / mp.sqrt(n) * abs(1 - u * u / (4 * lam)) * mp.exp(-u * u / (8 * lam))
+    tail = mp.quad(lambda u: 2 * abs(1 - u * u / (4 * lam)) * mp.exp(-u * u / (8 * lam)) * mp.exp(u / 2),
+                   [mp.log(N), mp.log(N) + 20 * mp.sqrt(lam) + 5])
+    return 2 * s, tail
+
+
+def envelope_sharp(lam, pabs):
+    """E6Bridge16.envelopeCsharp: 2 pi e^{P_abs + 1/2} + sqrt((16 + 2 P_abs)/lam) + 3/sqrt(lam) + 1."""
+    return 2 * mp.pi * mp.exp(pabs + mp.mpf(1) / 2) + mp.sqrt((16 + 2 * pabs) / lam) + 3 / mp.sqrt(lam) + 1
+
+
+def envelope_crude(lam):
+    """E6Bridge11.envelopeC: 2 e^{9 + 2 X} + 2/sqrt lam, X = 4 e^{2 lam} sqrt(32 pi lam) + 16 e^{16 lam}."""
+    X = 4 * mp.exp(2 * lam) * mp.sqrt(32 * mp.pi * lam) + 16 * mp.exp(16 * lam)
+    return 2 * mp.exp(9 + 2 * X) + 2 / mp.sqrt(lam)
+
+
+def band_edge_table(table, N, T=mp.mpf(640000)):
+    """The band-edge table for docs/WALL_SHARP_ENVELOPE_2026-09-21.md.  Ladder side (E6Bridge12):
+    constB(c) = sum_rho m(rho) e^{1/2} (2 c^2 + 13/4)/(1 + gamma^2) ~ 0.04619 e^{1/2} (2 c^2 + 13/4)
+    (sum_rho 1/(1 + gamma_rho^2) = 2 sum_{gamma > 0} 1/(1 + gamma^2) = 0.04619, from the first 2000
+    zeros + Riemann-von Mangoldt tail; PROXY).  lamThreshold(c, 2, 1, delta) = max 1 (constB
+    e^{15/2} / (11 delta^2 / 2)); the dominance form needs lam >= 1 and tailEnvelope = e^{-15 (lam - 1)/2}
+    constB <= windowSum ~ (4/2pi) log(c/2pi) * mean(x^2 e^{-2 lam x^2} on |x| <= 2) (PROXY)."""
+    print("# band edge: P_abs(lam), sharp envelope c1'(lam) = 2 pi e^{P_abs + 1/2} + sqrt((16 + 2 P_abs)/lam) + 3/sqrt lam + 1 (E6Bridge16.envelopeCsharp), crude envelopeC(lam) (E6Bridge11)")
+    print(f"{'lam':>5} {'P_abs':>10} {'tail-bar':>9} {'c1sharp':>12} {'2pi e^Pabs':>12} {'envelopeC(crude)':>18}")
+    rows = {}
+    for lam in ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '1', '1.1', '1.2', '1.3', '1.5', '2']:
+        lam = mp.mpf(lam)
+        pa, tl = prime_abs(lam, table, N)
+        rows[lam] = pa
+        print(f"{mp.nstr(lam, 3):>5} {mp.nstr(pa, 5):>10} {mp.nstr(tl, 2):>9} {mp.nstr(envelope_sharp(lam, pa), 4):>12} {mp.nstr(2 * mp.pi * mp.exp(pa), 4):>12} {mp.nstr(envelope_crude(lam), 4):>18}")
+    # lam_* : c1sharp(lam_*) = T by bisection on a log-linear interpolation of P_abs
+    lams = sorted(rows)
+    def pa_interp(l):
+        for a, b in zip(lams, lams[1:]):
+            if a <= l <= b:
+                t = (l - a) / (b - a)
+                return rows[a] + t * (rows[b] - rows[a])
+        return rows[lams[-1]]
+    for Tv in [T, mp.mpf('3e12')]:
+        lo, hi = lams[0], lams[-1]
+        for _ in range(60):
+            mid = (lo + hi) / 2
+            if envelope_sharp(mid, pa_interp(mid)) <= Tv:
+                lo = mid
+            else:
+                hi = mid
+        print(f"# lam_* with c1sharp(lam_*) = T = {mp.nstr(Tv, 6)}: lam_* ~ {mp.nstr(lo, 4)} (P_abs ~ {mp.nstr(pa_interp(lo), 4)}, log(T/2pi) = {mp.nstr(mp.log(Tv/(2*mp.pi)), 4)}); for lam <= lam_* Gaussian positivity holds for ALL |c| >= T (E6Bridge16.gaussian_positivity_above_height)")
+    print("# ladder side (PROXY constants): single-near-zero threshold lamThreshold(c,2,1,delta) and dominance-form lam_dom(c)")
+    print(f"{'c':>10} {'constB~':>12} {'lamThr(d=.25)':>14} {'lamThr(d=.5)':>13} {'lam_dom~':>9}")
+    S = mp.mpf('0.04619')
+    for c in [mp.mpf(x) for x in ['100', '1000', '10000', '100000', '640000']]:
+        constB = S * mp.exp(mp.mpf(1) / 2) * (2 * c * c + mp.mpf(13) / 4)
+        thr = lambda d: max(1, constB * mp.exp(mp.mpf(15) / 2) / (mp.mpf(11) * d * d / 2))
+        # dominance: lam >= 1 with e^{-7.5 (lam-1)} constB <= W(lam); W = (4/2pi) log(c/2pi) * mean_{|x|<=2} x^2 e^{-2 lam x^2}
+        lam = mp.mpf(1)
+        for _ in range(50):
+            W = (4 / (2 * mp.pi)) * mp.log(c / (2 * mp.pi)) * mp.quad(lambda x: x * x * mp.exp(-2 * lam * x * x), [-2, 2]) / 4
+            lam = max(1, 1 + (mp.log(constB) - mp.log(W)) / mp.mpf('7.5'))
+        print(f"{mp.nstr(c, 6):>10} {mp.nstr(constB, 4):>12} {mp.nstr(thr(mp.mpf('0.25')), 4):>14} {mp.nstr(thr(mp.mpf('0.5')), 4):>13} {mp.nstr(lam, 4):>9}")
+    print("# overlap test: the dominance form needs lam >= 1 (hlam : 1 <= lam in E6Bridge12); at lam = 1 the sharp envelope needs |c| >= c1sharp(1) ~ 2 pi e^{P_abs(1)}")
+    pa1 = rows[mp.mpf(1)]
+    print(f"#   c1sharp(1) = {mp.nstr(envelope_sharp(mp.mpf(1), pa1), 4)} vs T = {mp.nstr(T, 6)}: ratio {mp.nstr(envelope_sharp(mp.mpf(1), pa1) / T, 3)} -> NO OVERLAP; and lam_dom(T) ~ 4.3 > 1 makes it worse (P_abs(4.3) ~ 1e3).")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--zeros", type=int, default=2000)
@@ -178,8 +251,15 @@ def main():
     ap.add_argument("--lams", default="0.005,0.01,0.02,0.05,0.1,0.2,0.5,1")
     ap.add_argument("--no-zero-side", action="store_true")
     ap.add_argument("--dps", type=int, default=20, help="mpmath working precision (digits)")
+    ap.add_argument("--band-edge", action="store_true", help="print the band-edge table (E6Bridge16) and exit")
+    ap.add_argument("--sieve", type=int, default=10 ** 6, help="Lambda sieve limit")
     args = ap.parse_args()
     mp.mp.dps = args.dps
+    if args.band_edge:
+        N = args.sieve
+        print(f"# sieving Lambda(n), n <= {N}", file=sys.stderr)
+        band_edge_table(von_mangoldt_table(N), N)
+        return
 
     centers = [mp.mpf(x) for x in args.centers.split(",")]
     lams = [mp.mpf(x) for x in args.lams.split(",")]

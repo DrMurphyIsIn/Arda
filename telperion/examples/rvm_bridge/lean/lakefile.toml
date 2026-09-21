@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -118,6 +118,125 @@ name = "E6Bridge11"
 # An equivalence; NOT a proof of RH. conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge13"
+
+# Fourteenth bridge (2026-09-21, open lemma 1): EFFECTIVE Gaussian dominance. An off-line zero of
+# maximal distance y0 in its window, with local spacing floor xmin, window count N and tail
+# constant B, makes the Gaussian zero sum at its ordinate negative for every lam above the
+# EXPLICIT effectiveThreshold (y0, xmin, N, B, D); plus the localisation instrument
+# offline_zeros_small_or_margin. The spacing floor is load-bearing (threshold unbounded as
+# xmin -> 0: the clustering control the sweep named). Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge14"
+
+# Fifteenth bridge (2026-09-21, open lemma 2): the WEIL-TO-LI dictionary. The rh node
+# RH_bl_explicit_formula (B7): liZeroSum_tendsto proves the CONVERGENCE half (symmetric window
+# sums of Li's kernel converge, by conjugation pairing + the local-count majorant);
+# bl_explicit_formula_of proves the node verbatim MODULO the named value obligation LiValue n
+# (Bombieri-Lagarias Thm 2: needs the global xi'/xi partial fraction, absent from Mathlib/Zeta23);
+# rh_implies_liLimit_re_nonneg is Li's criterion, forward half. Nothing about RH is proved.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge15"
+
+# Sixteenth bridge (2026-09-21, seam B sharpened): the SHARP c-uniform envelope.
+# gaussian_positivity_envelope_sharp: F(c, lam) >= 0 for |c| >= envelopeCsharp lam =
+# 2 pi e^{primeAbs lam + 1/2} + small lam-only terms, primeAbs the exact absolute prime-side
+# constant (explicit convergent series). Band edge lam_* = 0.597 at T = 640000: the band above
+# the ladder is EMPTY for lam <= 0.6. No overlap with the ladder instrument (needs lam >= 1).
+# Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge16"
+
+# Seventeenth bridge (2026-09-21, the THETA FACE): the plain Gaussian face Theta(c, lam) =
+# Re Sum m(rho) e^{-2 lam (gamma_rho - c)^2}. rh_iff_theta_positivity (RH <-> Theta >= 0 everywhere);
+# theta_heat / theta_pos_mono (heat-monotone in width: positivity at one width on the whole line
+# implies it at every smaller width, so the free widths form an initial segment ThetaWidths);
+# rh_iff_thetaWidths_eq (RH <-> every width is free); not_thetaFree_of_offline (an off-line zero
+# bounds the free widths). A de Bruijn-Newman-type constant for the zero measure. Equivalences and
+# an instrument; NOT a proof of RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge17"
+
+# Eighteenth bridge (2026-09-21, the xi partial fraction WITHOUT Hadamard): the constant-free
+# DERIVATIVE partial fraction (logDeriv xi)' = -Sum m(rho)/(s-rho)^2. PROVED: summability,
+# the log-growth Liouville lemma eq_const_of_log_growth, real-axis decay of the sum, assembly
+# xi_logDeriv_deriv_eq_of. MODULO two named analytic obligations: XiDiffRegular (the difference
+# extends to an entire function of logarithmic growth) and XiLogDerivDerivDecay (real-axis decay
+# of (logDeriv xi)'). Consumer: LiValue (E6Bridge19). Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge18"
+
+# Twentieth bridge (2026-09-21, obligation 1 part A): the ENTIRE EXTENSION xiDiffExt of
+# deriv(logDeriv xi) + Sum m(rho)/(s-rho)^2 across the zeros (order = E8 multiplicity, double pole
+# cancelled exactly), the functional equation xiDiffExt(1-s) = xiDiffExt(s), and the assembly
+# xiDiffRegular_of : XiDiffExtGrowth -> XiDiffRegular. Remaining obligation: the log-growth bound
+# XiDiffExtGrowthRight on Re s >= 1/2. Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge20"
+
+# Twenty-first bridge (2026-09-21, obligation 2 DISCHARGED): XiLogDerivDerivDecay --
+# (log xi)''(sigma) -> 0 along the real axis (termwise differentiation on Re s > 1: rational terms,
+# the trigamma series bound 1/(x - 1/2), and L(log Lambda)(sigma) -> 0 by Tannery). So the
+# derivative partial fraction rests on XiDiffRegular alone (xi_logDeriv_deriv_eq_of_regular).
+# Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge21"
+
+# Twenty-second bridge (2026-09-21, obligation 1 parts B+C): the growth bound reduced to TWO
+# classical inequalities -- LocalCountSum (Sum m(rho)/(1+(Im rho - a)^2) = O(log a), the textbook
+# consequence of the local zero count) and StripDerivBound (Landau's local partial fraction
+# transferred to the derivative on the strip by Cauchy + Stirling). Proved: the compact region,
+# the right half-plane derivative bound (from E6Bridge21), the far-sum bounds, continuity across
+# the zeros, and the full chain xiLogDerivDerivEq_of_two. Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge22"
+
+# Nineteenth bridge (2026-09-21, the LiValue TAYLOR BOOKKEEPING): given the derivative partial
+# fraction of xi (XiDerivPartialFraction, definitionally RvMBridge18.XiLogDerivDerivEq) and no real
+# zero of zeta in (0,1) (NoRealZeroInUnitInterval), liValue_of proves the Bombieri-Lagarias value
+# identity LiValue n for every n >= 1: power sums j >= 2 from the Taylor data at 0, the paired j = 1
+# sum from the FTC on [0,1] + functional equation, the closed forms via eta_j and the polygamma
+# values at 1/2 (iteratedDeriv_psiHalf: the (1 - 2^{-j}) zeta(j) terms). Numerically checked to
+# 1e-27 against Li's generating function. With E6Bridge22: B7 = LocalCountSum + StripDerivBound +
+# NoRealZeroInUnitInterval. Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge19"
+
+# Twenty-third bridge (2026-09-21, LocalCountSum DISCHARGED): Sum m(rho)/(1 + (Im rho - a)^2)
+# <= C(1 + log(2 + |a|)) from Zeta23's per-unit-window zero count, by regrouping finite partial
+# sums on integer ceilings; xiLogDerivDerivEq_of_strip: the partial fraction rests on
+# StripDerivBound alone. Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge23"
+
+# Twenty-fifth bridge (2026-09-21, NoRealZeroInUnitInterval DISCHARGED): Re zeta(sigma) < 0 on
+# (0,1) from the summation-by-parts representation zeta(s) = 1/2 + 1/(s-1) + s J(s) with the sharp
+# bound |J(sigma)| <= 1/(2 sigma); liValue_of_two / bl_explicit_formula_of_two: the
+# Bombieri-Lagarias formula rests on LocalCountSum + StripDerivBound (with E6Bridge23, on
+# StripDerivBound alone). Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge25"
+
+# Twenty-sixth bridge (2026-09-21): ASSEMBLY -- liValue_of_strip / bl_explicit_formula_of_strip:
+# the Bombieri-Lagarias explicit formula (rh node B7) modulo StripDerivBound ALONE.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge26"
+
+# Twenty-fourth bridge (2026-09-21, StripDerivBound DISCHARGED): Landau's local partial fraction
+# transferred to the derivative on the strip 1/4 <= Re s <= 9/4, |Im s| >= 5 -- divide out the window
+# zeros, Cauchy on a zero-free circle of radius in (1/4, 1/2), the symmetric difference of Landau's
+# ball and the window bounded by the local zero count, Stirling for the digamma, the functional
+# equation for the left half, the compact bound for |Im s| <= 7. Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge24"
+
+# Twenty-seventh bridge (2026-09-21): THE UNCONDITIONAL ASSEMBLY. xi_logDeriv_deriv_eq (the
+# derivative partial fraction of xi'/xi, no Hadamard product), liValue (the Bombieri-Lagarias value
+# identity), bl_explicit_formula (the rh node RH_bl_explicit_formula, B7, statement verbatim).
+# Identities about zeros and primes, valid whether or not RH holds. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge27"
 
 [[lean_lib]]
 name = "W2cAssembly"

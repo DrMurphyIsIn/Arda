@@ -1,0 +1,76 @@
+{
+  "campaign": "FIXED-WIDTH LENS: Dirichlet polynomials, almost periodicity, large values",
+  "date": "2026-09-21",
+  "conjecture1_proved": false,
+  "worktree": "/Users/peterwmurphy/arda-goal-weil (branch mm/wall-fixed-width, shared, no git state changes)",
+  "prose": "telperion/docs/research/FIXED_WIDTH_LENS_DIRICHLET_2026-09-21.md",
+  "taxonomy": ["FOOTHOLD", "COLLAPSE_TO_RH", "COLLAPSE_TO_FREE", "TRANSFER", "UNRESOLVED"],
+  "object": {
+    "prime_side": "prime(c, lam) = Sum_{n>=2} a_n cos(c log n), a_n = 2 Lambda(n) n^{-1/2} f0(log n), f0(u) = A (1 - u^2/(4 lam)) e^{-u^2/(8 lam)}, A = 1/(8 sqrt(2 pi) lam^{3/2}); F = arch - prime",
+    "floor_true": "arch/A -> log(c/(2 pi)) as c -> infinity (Re psi(1/4 + i r/2) = log(r/2) + O(1/r^2))",
+    "floor_in_kernel": "theta (1 - 3 e^{-4}) - 15 e^{-4} - log pi, theta = log((|c| - 2/sqrt lam)/2) - 5  (seam B 4b)",
+    "ladder_height_T": 640000
+  },
+  "numbers_units_of_A": {
+    "note": "double-precision sieve to 1e7 + psi(x)~x tail integral; float estimates, not enclosures",
+    "rows": [
+      {"lam": 0.3, "S_l1": 4.60, "sigma2": 0.88, "L1": 10.3, "N_eff": 223, "K_p90": 9, "c1_sharp": 6.3e2, "c1_crude": 1.7e5, "M_points": 0},
+      {"lam": 0.5, "S_l1": 8.74, "sigma2": 1.59, "L1": 25.4, "N_eff": 1511, "K_p90": 22, "c1_sharp": 3.9e4, "c1_crude": 1.4e7, "M_points": 0},
+      {"lam": 0.6, "S_l1": 11.10, "sigma2": 1.96, "L1": 35.9, "N_eff": 3583, "K_p90": 31, "c1_sharp": 4.2e5, "c1_crude": 1.7e8, "M_points": 0},
+      {"lam": 0.7, "S_l1": 13.78, "sigma2": 2.34, "L1": 48.8, "N_eff": 8117, "K_p90": 44, "c1_sharp": 6.1e6, "c1_crude": 2.9e9, "M_points": 2.6e8},
+      {"lam": 0.8, "S_l1": 16.79, "sigma2": 2.71, "L1": 64.4, "N_eff": 17683, "K_p90": 62, "c1_sharp": 1.2e8, "c1_crude": 6.9e10, "M_points": 7.9e9},
+      {"lam": 1.0, "S_l1": 23.72, "sigma2": 3.48, "L1": 104.8, "N_eff": 77573, "K_p90": 123, "c1_sharp": 1.26e11, "c1_crude": 1.06e14, "M_points": 1.3e13},
+      {"lam": 1.5, "S_l1": 48.9, "sigma2": 5.40, "L1": 282, "N_eff": 2246417, "K_p90": 591, "c1_sharp": 1.1e22, "c1_crude": 4.1e25, "M_points": 3e24},
+      {"lam": 2.0, "S_l1": 89.6, "sigma2": 7.34, "L1": 630, "N_eff": null, "K_p90": 2591, "c1_sharp": 5e39, "c1_crude": 2e44, "M_points": 3e42}
+    ],
+    "floor_at_T": {"true": 11.53, "in_kernel": 5.83},
+    "lam_star_trivial_bound_closes_band_above_T": {"sharp_floor_T_6.4e5": 0.618, "in_kernel_floor_T_6.4e5": 0.361, "sharp_floor_T_3e12": 1.078, "in_kernel_floor_T_3e12": 0.909},
+    "empirical_probe_window_T_to_T_plus_4000": {"lam_0.6_max": 5.54, "lam_0.8_max": 6.69, "lam_1.0_max": 7.35, "argmax_c": 643005.18, "rms_equals_sigma": true},
+    "corrections": [
+      "band at lam = 1 with sharp floor is [6.4e5, 1.26e11], not [6.4e5, ~1e8] (brief used P without the polynomial factor, erratum E5)",
+      "S(1) = 23.7 by direct sieve vs reconciliation P_abs/f(0) = 27: discrepancy flagged for the numerics thread, not load-bearing",
+      "shipped envelopeC(lam) with 16 e^{16 lam} is 10^41499 at lam = 0.5: unusable as a band edge; the mechanism with S(lam) in place of X(lam) gives c1_crude"
+    ]
+  },
+  "questions": [
+    {"id": "Q1", "topic": "sup over bounded range vs l1", "verdict": "COLLAPSE_TO_FREE for lam <= 0.618 (trivial bound + sharp floor; 0.361 with in-kernel floor); TRANSFER for lam in (0.62, 0.85]; wall above",
+     "wall": "SUP WALL: no theorem below the l1 norm for a bounded-range sup of an unstructured trigonometric polynomial; large-value theory bounds counts/measure (V ~ sqrt(GN) regime), reducing to Chebyshev C G/V^2 here (2.6 % at lam = 1, c = T); Kronecker pigeonhole alignment height eps^{-K_p} = 10^123 at lam = 1 is an upper bound only",
+     "sources": ["arXiv:2405.20552", "arXiv:0708.3990", "arXiv:1507.05840", "arXiv:1409.6035"]},
+    {"id": "Q2", "topic": "consistency; fixed-lam envelope positivity as a theorem", "verdict": "COLLAPSE_TO_FREE (already E6Bridge11 gaussian_positivity_envelope; sharp constant c1 = 2 pi e^{S(lam)} is elementary, proposal P1)",
+     "wall": "fixed-lam positivity is not RH; resonance/model maxima sigma sqrt(2 log c) are below the floor log(c/2 pi) once log c >~ 2 sigma^2 (inside the ladder), so the residual band is heuristically safe by a factor 1.6-2.5 but only the l1 bound is rigorous",
+     "sources": ["arXiv:0708.3990", "arXiv:1507.05840", "E6Bridge11"]},
+    {"id": "Q3", "topic": "mean square / moments / certification cost", "verdict": "FOOTHOLD as a lemma (negative-set density C^{1-eta}, prime side only, resolves S10 unconditionally); COLLAPSE_TO_FREE as RH progress; TRANSFER for Lipschitz-grid certification (feasible lam <= 0.8, heroic 0.9, infeasible 1.0)",
+     "wall": "MOMENT WALL: exceedance level log c needs moment order k ~ log^2 c / sigma^2 but moments match the model only for k <= log c/(3 log N) (LLR Lemma 3.2); Sobolev sup bounds scale with C; Lean: no Montgomery-Vaughan in Mathlib",
+     "cost_flops": {"lam_0.7": 2e12, "lam_0.8": 1.4e14, "lam_0.9": 1e16, "lam_1.0": 1e18},
+     "sources": ["arXiv:1402.6682", "arXiv:2203.14950", "Montgomery-Vaughan 1974 (UNRESOLVED)"]},
+    {"id": "Q4", "topic": "Selberg CLT / smoothed zeta'/zeta / Hinkkanen-Lagarias", "verdict": "TRANSFER (coordinates): prime(c, lam) = 2 Re of Gaussian-smoothed -zeta'/zeta at 1/2 + ic read from Re w = a > 1/2; shifting to Re w = 0 is the explicit formula; S8 is the rational-kernel version",
+     "wall": "Selberg CLT is the growing-truncation regime with variance (1/2) log log t; fixed lam has fixed variance sigma^2(lam) and a Bohr-Jessen limit law that says nothing at level log c",
+     "sources": ["arXiv:1509.06827", "arXiv:1402.6682"]},
+    {"id": "Q5", "topic": "Bohr a.p., Besicovitch, Turan, GUE", "verdict": "COLLAPSE_TO_FREE",
+     "wall": "prime(., lam) is uniformly almost periodic with sup S*(lam) <= S(lam) attained on a relatively dense set, so the l1 envelope is sharp for any polynomial-only bound; Turan factor (n/(8e(m+n)))^n < 1e-150 at K_p ~ 100; GUE only on the zero side (S9)",
+     "sources": ["Bohr 1925 (UNRESOLVED)", "Turan second main theorem (UNRESOLVED, Wikipedia restatement)"]}
+  ],
+  "proposals_ranked": [
+    {"id": "P1", "name": "sharpen the archimedean floor", "kind": "Lean, small", "cost": "one Stirling-remainder lemma (Re psi(1/4 + ir/2) >= log(|r|/2) - 1/|r|) + full-bump integration + per-lam S(lam) fact; days", "establishes": "F(c, lam) >= 0 for all |c| >= T at every lam <= 0.618; with seam C, full horizontal lines of the wall map at lam in [lamThreshold, 0.618]", "does_not": "the forall-lam quantifier (RH)"},
+    {"id": "P2", "name": "Lipschitz-grid band certificate", "kind": "numerics + registry hypothesis", "cost": "2e12 flops (lam 0.7), 1.4e14 (0.8), 1e16 (0.9) interval arithmetic", "establishes": "extends P1 lines to lam <= 0.8-0.9", "does_not": "lam >= 1 (doubly exponential band edge); enters as computed data like the ladder"},
+    {"id": "P3", "name": "adopt Platt-Trudgian height 3e12 as WindowOnLine hypothesis", "kind": "registry-level, external", "cost": "re-derive lamThreshold constants at height 3e12", "establishes": "band empty for lam <= 1.078 (0.909 with shipped floor)", "does_not": "in-house certification; trust in an external interval-arithmetic certificate"},
+    {"id": "P4", "name": "negative-set density lemma", "kind": "paper", "cost": "2-3 pages (Montgomery-Vaughan + moments up to k <= log C/(3 log N)); Lean blocked on a mean-value theorem", "establishes": "|{c in [C,2C] : F(c, lam) < 0}| <= C^{1-eta}, unconditional, prime side only; resolves S10", "does_not": "any sup, any (c, lam) instance, anything about zeros"},
+    {"id": "P5", "name": "heuristic margin scan", "kind": "float probe", "cost": "hours (NUFFT over [T, 1e8], lam in {0.7, 0.8, 1})", "establishes": "nothing; informs P2's adaptive budget", "does_not": "rigor"}
+  ],
+  "sources": [
+    {"ref": "Guth, Maynard, New large value estimates for Dirichlet polynomials, arXiv:2405.20552", "checked": true, "how": "HTML, Theorem 1.1 and classical comparison bound"},
+    {"ref": "Soundararajan, Extreme values of zeta and L-functions, arXiv:0708.3990", "checked": true, "how": "PDF, Theorem 1, resonator (2), r(p) = A/sqrt p choice"},
+    {"ref": "Bondarenko, Seip, Large GCD sums and extreme values of the Riemann zeta function, arXiv:1507.05840", "checked": true, "how": "abstract"},
+    {"ref": "Aistleitner, Lower bounds for the maximum of the Riemann zeta function along vertical lines, arXiv:1409.6035", "checked": true, "how": "abstract"},
+    {"ref": "Radziwill, Soundararajan, Selberg's central limit theorem for log|zeta(1/2+it)|, arXiv:1509.06827", "checked": true, "how": "abstract"},
+    {"ref": "Lamzouri, Lester, Radziwill, Discrepancy bounds for the distribution of the Riemann zeta-function, arXiv:1402.6682", "checked": true, "how": "PDF, Theorem 1.1, Lemma 3.2; no Baker's theorem"},
+    {"ref": "Platt, Trudgian, The Riemann hypothesis is true up to 3e12, arXiv:2004.09765", "checked": true, "how": "abstract"},
+    {"ref": "Montgomery-Vaughan weighted Hilbert inequality restated in arXiv:2203.14950", "checked": true, "how": "HTML"},
+    {"ref": "Montgomery, Vaughan, Hilbert's inequality, JLMS 1974", "checked": false, "why": "paywalled"},
+    {"ref": "Huxley, Large values of Dirichlet polynomials, Acta Arith 24 (1973)", "checked": false, "why": "EUDML landing only, PDF 403"},
+    {"ref": "Halasz-Montgomery / Montgomery LNM 227", "checked": false, "why": "no open primary"},
+    {"ref": "Turan second main theorem", "checked": false, "why": "Wikipedia restatement only"},
+    {"ref": "Bohr 1925; Kronecker; Bohr-Jessen 1930/32; Selberg 1946; Baker-type effective Kronecker", "checked": false, "why": "textbook knowledge, no primary fetched"}
+  ],
+  "honesty": "RH not proved; no (c, lam) instance newly proved; numerics are float sieve sums over a 4000-wide probe window; Claim A of Q3 is a paper-level sketch"
+}

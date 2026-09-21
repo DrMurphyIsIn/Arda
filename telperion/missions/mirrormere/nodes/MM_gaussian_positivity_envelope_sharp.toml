@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = ["MM_gaussian_positivity_envelope", "MM_gaussian_explicit_formula"]
+kind = "lemma"
+name = "MM.gaussian_positivity_envelope_sharp"
+statement_module = "Statements.MM_gaussian_positivity_envelope_sharp"
+status = "proved"
+title = "SEAM B SHARPENED (2026-09-21), UNCONDITIONAL: the sharp c-uniform envelope of the two-parameter Wall -- for every width lam > 0 the Gaussian-weighted zero sum is nonnegative at every centre |c| >= envelopeCsharp(lam) = 2 pi e^{primeAbs(lam) + 1/2} + small lam-only terms, where primeAbs(lam) is the EXACT absolute prime-side constant (explicit convergent series; 8.74 at lam = 0.5, 23.7 at lam = 1). Consequence: at the ladder height T = 640000 the band T - D < |c| < envelopeCsharp(lam) is EMPTY for lam <= 0.597, and 2 pi e^{primeAbs} is the floor of ANY c-uniform argument (the exact constant is sharp by Bohr almost-periodicity), so envelopeCsharp(1) = 2.07e11 cannot be improved below 1.26e11 by this method. No overlap with the ladder instrument (needs lam >= 1). Nothing about RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge16.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-sharp-envelope-2026-09-21 (AUDIT_TESTIMONY_SHARP_ENVELOPE_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: for every width lam > 0 and every centre |c| >= envelopeCsharp(lam) = 2 pi e^{primeAbs(lam)+1/2} + small terms, the Gaussian zero sum is nonnegative; primeAbs is the exact absolute prime-side series. Audit 8/8: complex-frequency transform re-derived and checked to 4e-22, pole terms evaluated, prime bound exact up to |cos| <= 1, Stirling remainder 20/r^2, tail e^{-16-2P}, capped floor, every constant re-derived; envelope(0.5) = 6.46e4, envelope(1) = 2.07e11 from the definition; crossings lam_* = 0.597 (T=640000), 1.065 (T=3e12). Unconditional; not RH. conjecture1_proved = False."

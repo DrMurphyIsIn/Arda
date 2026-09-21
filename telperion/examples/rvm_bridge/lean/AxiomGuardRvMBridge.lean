@@ -80,6 +80,44 @@
       * RvMBridge13.{gaussianExplicitFormula, gaussian_positivity_small_lam,
         rh_iff_gaussian_positivity_above_lam0} -- THE WALL MAP: RH <-> Gaussian positivity on
         widths above lam0 only.  Equivalence; NOT a proof of RH.  conjecture1_proved = False.
+      * RvMBridge14.{effective_gaussian_dominance, offline_zeros_small_or_margin,
+        effectiveThreshold_unbounded_of_small_spacing} -- open lemma 1 (2026-09-21): effective
+        Gaussian dominance with the explicit threshold and the localisation instrument; the
+        spacing floor is load-bearing.  NOT a proof of RH.  conjecture1_proved = False.
+      * RvMBridge15.{liZeroSum_tendsto, bl_explicit_formula_of, rh_implies_liLimit_re_nonneg}
+        -- open lemma 2 (2026-09-21): the Weil-to-Li dictionary; B7 convergence half proved, the
+        node modulo the named LiValue obligation; Li's criterion forward half.  NOT a proof of RH.
+      * RvMBridge16.{gaussian_positivity_envelope_sharp, band_upper_edge} -- seam B sharpened
+        (2026-09-21): the sharp c-uniform envelope with the exact prime-side constant primeAbs;
+        plus stages (fourier_autocorrGauss, norm_primeSide_le_primeAbs, primeAbs_le_crude).
+        NOT a proof of RH.  conjecture1_proved = False.
+      * RvMBridge17.{rh_iff_theta_positivity, theta_heat, theta_pos_mono, rh_iff_thetaWidths_eq,
+        not_thetaFree_of_offline, rh_or_thetaWidths_bddAbove} -- the THETA FACE (2026-09-21): the
+        plain Gaussian face is heat-monotone in width; RH <-> every width free.  NOT a proof of RH.
+      * RvMBridge18.{xi_logDeriv_deriv_eq_of, eq_const_of_log_growth, summable_inv_sub_sq,
+        tsum_inv_sub_sq_tendsto, logDeriv_xi_eq} -- the xi derivative partial fraction skeleton
+        (2026-09-21), modulo the named obligations XiDiffRegular / XiLogDerivDerivDecay.
+      * RvMBridge20.{xiDiffExt_differentiable, xiDiffExt_eq, xiDiffExt_one_sub, exists_local_form,
+        analyticOrderAt_xi_eq, xiDiffRegular_of} -- obligation 1 part A (2026-09-21): the entire
+        extension across the zeros; growth remains the named obligation XiDiffExtGrowthRight.
+      * RvMBridge21.{xi_logDeriv_deriv_decay, xi_logDeriv_deriv_eq_of_regular,
+        digamma_deriv_tendsto_zero, zeta_logDeriv_deriv_tendsto_zero, hasSum_trigamma_of_re_pos}
+        -- obligation 2 DISCHARGED (2026-09-21): real-axis decay of (log xi)''.
+      * RvMBridge22.{xiLogDerivDerivEq_of_two, xiDiffExtGrowthRight_of_two, rightDerivBound,
+        growth_compact, growth_right, growth_strip, norm_tsum_far_le} -- obligation 1 reduced to
+        LocalCountSum + StripDerivBound (2026-09-21).
+      * RvMBridge19.{liValue_of, bl_explicit_formula_of_partialFraction, powerSum_eq_taylor,
+        pairedPowerSum_one_eq, iteratedDeriv_psiHalf, taylorOne_eq, liLimit_eq_taylorOne,
+        xiDerivPartialFraction_iff} -- the LiValue Taylor bookkeeping (2026-09-21), modulo
+        XiDerivPartialFraction + NoRealZeroInUnitInterval.
+      * RvMBridge23.{local_count_sum, xiLogDerivDerivEq_of_strip} -- LocalCountSum DISCHARGED
+        (2026-09-21).  RvMBridge25.{noRealZeroInUnitInterval, liValue_of_two,
+        bl_explicit_formula_of_two} -- no real zero in (0,1) DISCHARGED; B7 modulo StripDerivBound.
+      * RvMBridge24.{stripDerivBound, xiLogDerivDerivEq_of_localCount, Fwin_bound_core,
+        FwinExt_differentiableOn, exists_window_bound} -- StripDerivBound DISCHARGED (2026-09-21).
+      * RvMBridge27.{xi_logDeriv_deriv_eq, liValue, bl_explicit_formula} -- THE UNCONDITIONAL
+        ASSEMBLY: the derivative partial fraction of xi'/xi (no Hadamard), the Bombieri-Lagarias
+        value identity, and the rh node RH_bl_explicit_formula verbatim.  NOT about RH.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -109,6 +147,20 @@ import E6Bridge10
 import E6Bridge11
 import E6Bridge12
 import E6Bridge13
+import E6Bridge14
+import E6Bridge15
+import E6Bridge16
+import E6Bridge17
+import E6Bridge18
+import E6Bridge20
+import E6Bridge21
+import E6Bridge22
+import E6Bridge19
+import E6Bridge23
+import E6Bridge25
+import E6Bridge26
+import E6Bridge24
+import E6Bridge27
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -369,6 +421,429 @@ import W2cAssembly
 #print axioms RvMBridge13.gaussianExplicitFormula
 #print axioms RvMBridge13.gaussian_positivity_small_lam
 #print axioms RvMBridge13.rh_iff_gaussian_positivity_above_lam₀
+#print axioms RvMBridge14.one_le_effectiveThreshold
+#print axioms RvMBridge14.effectiveThreshold_pos
+#print axioms RvMBridge14.le_exp_of_log_le
+#print axioms RvMBridge14.effectiveThreshold_mono_B
+#print axioms RvMBridge14.effectiveThreshold_unbounded_of_small_spacing
+#print axioms RvMBridge14.tsum_winSet_eq_sum
+#print axioms RvMBridge14.re_term_centre
+#print axioms RvMBridge14.re_term_centre_nonpos
+#print axioms RvMBridge14.norm_term_le_competitor
+#print axioms RvMBridge14.re_window_sum_le
+#print axioms RvMBridge14.effective_gaussian_dominance
+#print axioms RvMBridge14.band_finite
+#print axioms RvMBridge14.offline_zeros_small_or_margin
+#print axioms RvMBridge14.windowCount_le_Ncount
+#print axioms RvMBridge15.isNontrivialZero_conj
+#print axioms RvMBridge15.isNontrivialZero_conj_iff
+#print axioms RvMBridge15.zeroMult_conj
+#print axioms RvMBridge15.mem_windowSet
+#print axioms RvMBridge15.conj_mem_windowSet
+#print axioms RvMBridge15.finite_zeros_window
+#print axioms RvMBridge15.liKernel_conj
+#print axioms RvMBridge15.liTerm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge15.liPaired_eq_zero_of_not_nontrivial
+#print axioms RvMBridge15.liTerm_conj
+#print axioms RvMBridge15.windowSupport_finite
+#print axioms RvMBridge15.liZeroSum_eq_tsum_indicator
+#print axioms RvMBridge15.indicator_liTerm_conj
+#print axioms RvMBridge15.summable_indicator_liTerm
+#print axioms RvMBridge15.liZeroSum_eq_tsum_paired
+#print axioms RvMBridge15.liZeroSum_im
+#print axioms RvMBridge15.liKernel_eq_sum
+#print axioms RvMBridge15.sum_choose_succ_le
+#print axioms RvMBridge15.abs_re_liKernel_le
+#print axioms RvMBridge15.liPaired_re
+#print axioms RvMBridge15.liPaired_im
+#print axioms RvMBridge15.norm_liPaired
+#print axioms RvMBridge15.norm_liPaired_le_majorant
+#print axioms RvMBridge15.finite_zeros_small
+#print axioms RvMBridge15.summable_liBound
+#print axioms RvMBridge15.norm_liPaired_le
+#print axioms RvMBridge15.summable_liPaired
+#print axioms RvMBridge15.liZeroSum_tendsto
+#print axioms RvMBridge15.bl_explicit_formula_of
+#print axioms RvMBridge15.norm_one_sub_inv_of_on_line
+#print axioms RvMBridge15.liPaired_re_nonneg_of_rh
+#print axioms RvMBridge15.rh_implies_liZeroSum_re_nonneg
+#print axioms RvMBridge15.rh_implies_liLimit_re_nonneg
+#print axioms RvMBridge16.integral_sq_mul_cexp_gaussian_fourier'
+#print axioms RvMBridge16.gaussA_mul_sqrt
+#print axioms RvMBridge16.fourier_autocorrGauss
+#print axioms RvMBridge16.weilKernel_zero_eq_gaussTest
+#print axioms RvMBridge16.weilKernel_one_eq_gaussTest
+#print axioms RvMBridge16.norm_gaussTest_half
+#print axioms RvMBridge16.norm_poles_le
+#print axioms RvMBridge16.primeAbsTerm_nonneg
+#print axioms RvMBridge16.primeAbsTerm_le
+#print axioms RvMBridge16.summable_primeAbsTerm
+#print axioms RvMBridge16.primeAbs_nonneg
+#print axioms RvMBridge16.primeAbs_le_crude
+#print axioms RvMBridge16.norm_autocorrGauss_add_neg_le
+#print axioms RvMBridge16.norm_primeSide_le_primeAbs
+#print axioms RvMBridge16.re_digamma_quarter_ge_log'
+#print axioms RvMBridge16.psiR_ge_log'
+#print axioms RvMBridge16.integral_indicator_bumpR_tail_le'
+#print axioms RvMBridge16.integral_bumpR_mul_psiR_ge_capped
+#print axioms RvMBridge16.tailRadius_sq
+#print axioms RvMBridge16.tailRadius_nonneg
+#print axioms RvMBridge16.re_weilForm_gauss_nonneg_sharp
+#print axioms RvMBridge16.gaussian_positivity_envelope_sharp
+#print axioms RvMBridge16.band_upper_edge
+#print axioms RvMBridge16.envelopeCsharp_le_crude
+#print axioms RvMBridge16.gaussian_positivity_above_height
+#print axioms RvMBridge16.gaussian_positivity_above_height_log
+#print axioms RvMBridge17.zeroSide_plain_eq
+#print axioms RvMBridge17.theta_eq
+#print axioms RvMBridge17.plainGauss_re_exponent
+#print axioms RvMBridge17.plainGauss_im_exponent
+#print axioms RvMBridge17.norm_plainGauss
+#print axioms RvMBridge17.norm_pterm
+#print axioms RvMBridge17.re_plainGauss
+#print axioms RvMBridge17.plainGauss_conj
+#print axioms RvMBridge17.plainGauss_ofReal
+#print axioms RvMBridge17.pterm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge17.norm_plainGauss_mul_le
+#print axioms RvMBridge17.plainC_nonneg
+#print axioms RvMBridge17.norm_pterm_le
+#print axioms RvMBridge17.summable_plain_zeroSide
+#print axioms RvMBridge17.zeroSide_plain_im
+#print axioms RvMBridge17.pterm_re_nonneg_of_rh
+#print axioms RvMBridge17.theta_nonneg_of_rh
+#print axioms RvMBridge17.exists_lam_cos_neg_one
+#print axioms RvMBridge17.exists_generic_centre'
+#print axioms RvMBridge17.pmajorant_nonneg
+#print axioms RvMBridge17.summable_pmajorant
+#print axioms RvMBridge17.norm_pterm_le_pmajorant
+#print axioms RvMBridge17.pconstA_nonneg
+#print axioms RvMBridge17.pconstB_nonneg
+#print axioms RvMBridge17.tsum_pmajorant
+#print axioms RvMBridge17.ptail_bound
+#print axioms RvMBridge17.theta_le_pair_add_tail
+#print axioms RvMBridge17.exists_theta_neg_of_offline
+#print axioms RvMBridge17.rh_iff_theta_positivity
+#print axioms RvMBridge17.heatVar_pos
+#print axioms RvMBridge17.heatKernel_nonneg
+#print axioms RvMBridge17.continuous_heatKernel
+#print axioms RvMBridge17.heat_A_eq
+#print axioms RvMBridge17.heat_integrand_eq
+#print axioms RvMBridge17.plainGauss_heat
+#print axioms RvMBridge17.real_gauss_heat
+#print axioms RvMBridge17.integrable_heatF
+#print axioms RvMBridge17.integral_norm_heatF_le
+#print axioms RvMBridge17.summable_integral_norm_heatF
+#print axioms RvMBridge17.nontrivialZeros_countable
+#print axioms RvMBridge17.tsum_pterm_NZ
+#print axioms RvMBridge17.tsum_pterm_re_NZ
+#print axioms RvMBridge17.theta_heat
+#print axioms RvMBridge17.theta_pos_mono
+#print axioms RvMBridge17.thetaFree_mono
+#print axioms RvMBridge17.thetaWidths_Ioc_subset
+#print axioms RvMBridge17.rh_iff_thetaFree_all
+#print axioms RvMBridge17.rh_iff_thetaWidths_eq
+#print axioms RvMBridge17.not_thetaFree_of_offline
+#print axioms RvMBridge17.thetaWidths_bddAbove_of_offline
+#print axioms RvMBridge17.rh_or_thetaWidths_bddAbove
+#print axioms RvMBridge18.xi_differentiable
+#print axioms RvMBridge18.xi_eq
+#print axioms RvMBridge18.xi_eventuallyEq
+#print axioms RvMBridge18.logDeriv_xi_eq
+#print axioms RvMBridge18.normSq_gammaOf_le
+#print axioms RvMBridge18.polTerm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge18.norm_polTerm
+#print axioms RvMBridge18.norm_polTerm_le_majorant
+#print axioms RvMBridge18.finite_zeros_near
+#print axioms RvMBridge18.summable_polBound
+#print axioms RvMBridge18.norm_polTerm_le
+#print axioms RvMBridge18.summable_inv_sub_sq
+#print axioms RvMBridge18.summable_polTerm
+#print axioms RvMBridge18.norm_polTerm_le_real
+#print axioms RvMBridge18.polTerm_tendsto_zero
+#print axioms RvMBridge18.tsum_inv_sub_sq_tendsto
+#print axioms RvMBridge18.eq_const_of_log_growth
+#print axioms RvMBridge18.not_nontrivialZero_of_one_le_re
+#print axioms RvMBridge18.xi_logDeriv_deriv_eq_of
+#print axioms RvMBridge20.xi_one_sub
+#print axioms RvMBridge20.xi_one
+#print axioms RvMBridge20.xi_ne_zero_of_one_le_re
+#print axioms RvMBridge20.xi_eq_zero_iff
+#print axioms RvMBridge20.xi_ne_zero_of_not_nontrivial
+#print axioms RvMBridge20.analyticOrderAt_xi_ne_top
+#print axioms RvMBridge20.analyticAt_completedZeta
+#print axioms RvMBridge20.analyticOrderAt_xi_eq_of_zero
+#print axioms RvMBridge20.analyticOrderAt_xi_eq
+#print axioms RvMBridge20.tsum_polTerm_eq
+#print axioms RvMBridge20.nearZeros_finite
+#print axioms RvMBridge20.exists_ball_avoid
+#print axioms RvMBridge20.polTerm_differentiableAt
+#print axioms RvMBridge20.exists_ball_rest
+#print axioms RvMBridge20.exists_unit_factor
+#print axioms RvMBridge20.analyticAt_logDeriv
+#print axioms RvMBridge20.deriv_logDeriv_xi_local
+#print axioms RvMBridge20.exists_local_form
+#print axioms RvMBridge20.xiDiffExt_eq
+#print axioms RvMBridge20.xiDiffExt_eventuallyEq
+#print axioms RvMBridge20.xiDiffExt_differentiable
+#print axioms RvMBridge20.isNontrivialZero_one_sub_iff
+#print axioms RvMBridge20.logDeriv_xi_one_sub
+#print axioms RvMBridge20.deriv_logDeriv_xi_one_sub
+#print axioms RvMBridge20.zeroMult_one_sub
+#print axioms RvMBridge20.tsum_polTerm_one_sub
+#print axioms RvMBridge20.xiDiffReg_one_sub
+#print axioms RvMBridge20.xiDiffExt_one_sub
+#print axioms RvMBridge20.xiDiffExtGrowth_of_right
+#print axioms RvMBridge20.xiDiffRegular_of
+#print axioms RvMBridge20.xiDiffRegular_of_right
+#print axioms RvMBridge21.ne_neg_nat_of_re_pos
+#print axioms RvMBridge21.isOpen_re_pos
+#print axioms RvMBridge21.analyticAt_Gamma_of_re_pos
+#print axioms RvMBridge21.analyticAt_digamma_of_re_pos
+#print axioms RvMBridge21.continuousAt_deriv_digamma
+#print axioms RvMBridge21.norm_trigTerm_le
+#print axioms RvMBridge21.summable_trigBound
+#print axioms RvMBridge21.continuousOn_trigSum
+#print axioms RvMBridge21.summable_trigTerm
+#print axioms RvMBridge21.eq_of_intCast_near
+#print axioms RvMBridge21.hasSum_trigamma_of_re_pos
+#print axioms RvMBridge21.sum_range_inv_sq_le
+#print axioms RvMBridge21.summable_inv_sq_real
+#print axioms RvMBridge21.tsum_inv_sq_real_le
+#print axioms RvMBridge21.norm_trigTerm_real
+#print axioms RvMBridge21.norm_deriv_digamma_real_le
+#print axioms RvMBridge21.digamma_deriv_tendsto_zero
+#print axioms RvMBridge21.abscissa_vonMangoldt_le_one
+#print axioms RvMBridge21.abscissa_vonMangoldt_lt
+#print axioms RvMBridge21.isOpen_one_lt_re
+#print axioms RvMBridge21.logDeriv_zeta_eq
+#print axioms RvMBridge21.deriv_logDeriv_zeta_eq
+#print axioms RvMBridge21.term_logMul_one
+#print axioms RvMBridge21.term_tendsto_zero
+#print axioms RvMBridge21.norm_term_le_of_two_le
+#print axioms RvMBridge21.zeta_logDeriv_deriv_tendsto_zero
+#print axioms RvMBridge21.logDeriv_xi_eq_of_one_lt_re
+#print axioms RvMBridge21.deriv_logDeriv_xi_real
+#print axioms RvMBridge21.tendsto_neg_inv_sq
+#print axioms RvMBridge21.tendsto_inv_sub_one_sq
+#print axioms RvMBridge21.xi_logDeriv_deriv_decay
+#print axioms RvMBridge21.xi_logDeriv_deriv_eq_of_regular
+#print axioms RvMBridge22.lcTerm_nonneg
+#print axioms RvMBridge22.lcTerm_le_majorant
+#print axioms RvMBridge22.summable_lcTerm
+#print axioms RvMBridge22.windowSet_finite
+#print axioms RvMBridge22.mem_window
+#print axioms RvMBridge22.norm_polTerm_le_lcTerm_right
+#print axioms RvMBridge22.norm_polTerm_le_lcTerm_far
+#print axioms RvMBridge22.norm_tsum_polTerm_le_right
+#print axioms RvMBridge22.norm_tsum_far_le
+#print axioms RvMBridge22.bound_of_bound_off_zeros
+#print axioms RvMBridge22.growth_compact
+#print axioms RvMBridge22.growth_right
+#print axioms RvMBridge22.isOpen_stripOpen
+#print axioms RvMBridge22.growth_strip_off_zeros
+#print axioms RvMBridge22.growth_strip
+#print axioms RvMBridge22.abs_im_le_norm'
+#print axioms RvMBridge22.xiDiffExtGrowthRight_of
+#print axioms RvMBridge22.xiDiffRegular_of_three
+#print axioms RvMBridge22.xiLogDerivDerivEq_of_three
+#print axioms RvMBridge22.deriv_logDeriv_xi_of_one_lt_re
+#print axioms RvMBridge22.norm_deriv_digamma_le
+#print axioms RvMBridge22.norm_term_le_of_two_le_re
+#print axioms RvMBridge22.summable_dirTerms
+#print axioms RvMBridge22.norm_deriv_logDeriv_zeta_le
+#print axioms RvMBridge22.rightDerivBound
+#print axioms RvMBridge22.xiDiffExtGrowthRight_of_two
+#print axioms RvMBridge22.xiLogDerivDerivEq_of_two
+#print axioms RvMBridge19.xi_one_sub
+#print axioms RvMBridge19.xi_zero
+#print axioms RvMBridge19.xi_one
+#print axioms RvMBridge19.xi_analyticAt
+#print axioms RvMBridge19.xi_eq_zero_iff
+#print axioms RvMBridge19.xiLogDerivDerivEq_def
+#print axioms RvMBridge19.smallZeros_finite
+#print axioms RvMBridge19.summable_zeroBound
+#print axioms RvMBridge19.inv_normSq_le_majorant
+#print axioms RvMBridge19.one_le_norm_of_nontrivial
+#print axioms RvMBridge19.norm_pos_of_nontrivial
+#print axioms RvMBridge19.norm_le_zeroBound
+#print axioms RvMBridge19.summable_of_zeroBound
+#print axioms RvMBridge19.iteratedDeriv_tsum_ball
+#print axioms RvMBridge19.analyticAt_tsum_ball
+#print axioms RvMBridge19.exists_zero_radius
+#print axioms RvMBridge19.zeroRadius_pos
+#print axioms RvMBridge19.zeroRadius_le_one
+#print axioms RvMBridge19.zeroRadius_le
+#print axioms RvMBridge19.not_nontrivialZero_of_mem_ball
+#print axioms RvMBridge19.norm_sub_ge_half
+#print axioms RvMBridge19.coef_succ
+#print axioms RvMBridge19.coef_zero
+#print axioms RvMBridge19.norm_coef
+#print axioms RvMBridge19.zterm_zero_eq
+#print axioms RvMBridge19.zterm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge19.hasDerivAt_zterm
+#print axioms RvMBridge19.norm_zterm_le
+#print axioms RvMBridge19.summable_zbound
+#print axioms RvMBridge19.norm_zterm_le_zbound
+#print axioms RvMBridge19.powerSum_term_eq_zero_of_not_nontrivial
+#print axioms RvMBridge19.summable_powerSum
+#print axioms RvMBridge19.powerSum_conj
+#print axioms RvMBridge19.powerSum_re
+#print axioms RvMBridge19.zterm_at_zero
+#print axioms RvMBridge19.tsum_zterm_zero
+#print axioms RvMBridge19.deriv_logDeriv_xi_eventuallyEq
+#print axioms RvMBridge19.iteratedDeriv_tsum_zterm
+#print axioms RvMBridge19.powerSum_eq_taylor
+#print axioms RvMBridge19.powerSum_eq_neg_taylor
+#print axioms RvMBridge19.pairedPowerSum_term_eq_zero_of_not_nontrivial
+#print axioms RvMBridge19.abs_re_inv_pow_le
+#print axioms RvMBridge19.summable_pairedPowerSum
+#print axioms RvMBridge19.pairedPowerSum_eq_powerSum
+#print axioms RvMBridge19.logDeriv_xi_one_sub
+#print axioms RvMBridge19.logDeriv_xi_eq
+#print axioms RvMBridge19.logDeriv_xi_analyticAt
+#print axioms RvMBridge19.hasDerivAt_logDeriv_xi
+#print axioms RvMBridge19.xi_ne_zero_on_segment
+#print axioms RvMBridge19.im_ne_zero_of_nontrivial
+#print axioms RvMBridge19.ofReal_ne_of_im_ne_zero
+#print axioms RvMBridge19.abs_im_le_norm_ofReal_sub
+#print axioms RvMBridge19.norm_zterm_zero_ofReal_le
+#print axioms RvMBridge19.inv_im_sq_le_majorant
+#print axioms RvMBridge19.norm_zterm_zero_ofReal_le_segBound
+#print axioms RvMBridge19.continuous_zterm_zero_ofReal
+#print axioms RvMBridge19.integral_zterm_zero
+#print axioms RvMBridge19.zeros_countable
+#print axioms RvMBridge19.support_zterm_subset
+#print axioms RvMBridge19.hasSum_integral_zterm
+#print axioms RvMBridge19.tsum_inv_add_inv_one_sub
+#print axioms RvMBridge19.refTerm_reflect
+#print axioms RvMBridge19.refTerm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge19.summable_refTerm
+#print axioms RvMBridge19.tsum_refTerm
+#print axioms RvMBridge19.pairedPowerSum_one_eq
+#print axioms RvMBridge19.logDeriv_zeta_eq_near_one
+#print axioms RvMBridge19.zetaLogDerivReg_eventuallyEq
+#print axioms RvMBridge19.logDeriv_zeta₁_analyticAt
+#print axioms RvMBridge19.eta_eq
+#print axioms RvMBridge19.dcoef_succ
+#print axioms RvMBridge19.norm_dcoef
+#print axioms RvMBridge19.re_pos_of_mem_ball
+#print axioms RvMBridge19.norm_le_of_mem_ball
+#print axioms RvMBridge19.norm_shift_ge
+#print axioms RvMBridge19.shift_ne_zero
+#print axioms RvMBridge19.hasDerivAt_dterm
+#print axioms RvMBridge19.summable_dbound
+#print axioms RvMBridge19.norm_dterm_le
+#print axioms RvMBridge19.iteratedDeriv_dtail
+#print axioms RvMBridge19.dtail_analyticAt
+#print axioms RvMBridge19.half_mem_integerComplement
+#print axioms RvMBridge19.psiHalf_eq
+#print axioms RvMBridge19.psiHalf_eventuallyEq
+#print axioms RvMBridge19.psiHalf_analyticAt
+#print axioms RvMBridge19.summable_inv_nat_pow
+#print axioms RvMBridge19.summable_even_inv_pow
+#print axioms RvMBridge19.summable_odd_inv_pow'
+#print axioms RvMBridge19.summable_odd_inv_pow
+#print axioms RvMBridge19.tsum_odd_inv_pow
+#print axioms RvMBridge19.iteratedDeriv_psiHalf
+#print axioms RvMBridge19.archFn_analyticAt
+#print axioms RvMBridge19.archCoeff_zero
+#print axioms RvMBridge19.archCoeff_succ
+#print axioms RvMBridge19.logDeriv_xi_eq_closed
+#print axioms RvMBridge19.closedFn_analyticAt
+#print axioms RvMBridge19.logDeriv_xi_eventuallyEq_one
+#print axioms RvMBridge19.iteratedDeriv_one_div
+#print axioms RvMBridge19.taylorOne_eq
+#print axioms RvMBridge19.iter_deriv_comp_add_const
+#print axioms RvMBridge19.taylorZero_eq
+#print axioms RvMBridge19.pairedPowerSum_succ_eq
+#print axioms RvMBridge19.liKernel_re
+#print axioms RvMBridge19.liPaired_eq_sum
+#print axioms RvMBridge19.liLimit_eq_sum
+#print axioms RvMBridge19.liLimit_eq_taylorOne
+#print axioms RvMBridge19.sum_choose_alt
+#print axioms RvMBridge19.sum_choose_eta
+#print axioms RvMBridge19.sum_choose_archCoeff
+#print axioms RvMBridge19.liValue_of
+#print axioms RvMBridge19.bl_explicit_formula_of_partialFraction
+#print axioms RvMBridge19.zeroSet_closed
+#print axioms RvMBridge19.logDeriv_xi_eq_lambda
+#print axioms RvMBridge19.logDeriv_xi_eventuallyEq_lambda
+#print axioms RvMBridge19.logDeriv_lambda_analyticAt
+#print axioms RvMBridge19.deriv_logDeriv_lambda_eq
+#print axioms RvMBridge19.lambdaDerivPartialFraction_of_xi
+#print axioms RvMBridge19.eq_of_continuousAt_of_eventually_ne
+#print axioms RvMBridge19.zeroMult_one_sub
+#print axioms RvMBridge19.tsum_zero_series_one_sub
+#print axioms RvMBridge19.deriv_logDeriv_xi_one_sub
+#print axioms RvMBridge19.xiDerivPartialFraction_of_lambda
+#print axioms RvMBridge19.xiDerivPartialFraction_iff
+#print axioms RvMBridge19.liValue_of_lambda
+#print axioms RvMBridge19.liValue_of_growth
+#print axioms RvMBridge19.bl_explicit_formula_of_growth
+#print axioms RvMBridge23.one_add_sq_le_of_ceil
+#print axioms RvMBridge23.lcTerm_le_fiber_weight
+#print axioms RvMBridge23.lcTerm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge23.zeroMult_cast_eq
+#print axioms RvMBridge23.sum_zeroMult_fiber_le
+#print axioms RvMBridge23.wt_nonneg
+#print axioms RvMBridge23.wlog_nonneg
+#print axioms RvMBridge23.summable_wt
+#print axioms RvMBridge23.log_add_four_le
+#print axioms RvMBridge23.log_div_le_rpow
+#print axioms RvMBridge23.summable_wlog
+#print axioms RvMBridge23.wcount_le
+#print axioms RvMBridge23.wcount_nonneg
+#print axioms RvMBridge23.summable_wbound
+#print axioms RvMBridge23.summable_wcount
+#print axioms RvMBridge23.sum_lcTerm_le
+#print axioms RvMBridge23.S1_nonneg
+#print axioms RvMBridge23.S2_nonneg
+#print axioms RvMBridge23.tsum_wcount_le
+#print axioms RvMBridge23.local_count_sum
+#print axioms RvMBridge23.xiDiffExtGrowthRight_of_strip
+#print axioms RvMBridge23.xiLogDerivDerivEq_of_strip
+#print axioms RvMBridge25.norm_tail_integral_le
+#print axioms RvMBridge25.re_riemannZeta_neg_of_unit_interval
+#print axioms RvMBridge25.riemannZeta_ne_zero_of_unit_interval
+#print axioms RvMBridge25.noRealZeroInUnitInterval
+#print axioms RvMBridge25.liValue_of_partialFraction
+#print axioms RvMBridge25.liValue_of_growth
+#print axioms RvMBridge25.liValue_of_two
+#print axioms RvMBridge25.bl_explicit_formula_of_two
+#print axioms RvMBridge26.liValue_of_strip
+#print axioms RvMBridge26.bl_explicit_formula_of_strip
+#print axioms RvMBridge24.zeroMult_eq_zeta23
+#print axioms RvMBridge24.zerosIn_finite
+#print axioms RvMBridge24.sum_le_Ncount
+#print axioms RvMBridge24.window_sum_le_five
+#print axioms RvMBridge24.exists_window_bound
+#print axioms RvMBridge24.norm_log_le
+#print axioms RvMBridge24.norm_digamma_le_log
+#print axioms RvMBridge24.landau_window
+#print axioms RvMBridge24.FwinExt_eq
+#print axioms RvMBridge24.isClosed_zeros
+#print axioms RvMBridge24.eventually_not_zero
+#print axioms RvMBridge24.logDeriv_xi_local
+#print axioms RvMBridge24.Fwin_differentiableAt
+#print axioms RvMBridge24.FwinExt_eventuallyEq_at_zero
+#print axioms RvMBridge24.FwinExt_differentiableOn
+#print axioms RvMBridge24.deriv_FwinExt
+#print axioms RvMBridge24.exists_radius
+#print axioms RvMBridge24.norm_deriv_FwinExt_le
+#print axioms RvMBridge24.window_one_sub
+#print axioms RvMBridge24.Fwin_one_sub
+#print axioms RvMBridge24.le_mul_one_add
+#print axioms RvMBridge24.Fwin_bound_core
+#print axioms RvMBridge24.sphere_bound
+#print axioms RvMBridge24.target_bound_high
+#print axioms RvMBridge24.tsum_lcTerm_le
+#print axioms RvMBridge24.target_bound_low
+#print axioms RvMBridge24.stripDerivBound
+#print axioms RvMBridge24.xiDiffExtGrowthRight_of_localCount
+#print axioms RvMBridge24.xiLogDerivDerivEq_of_localCount
+#print axioms RvMBridge27.xi_logDeriv_deriv_eq
+#print axioms RvMBridge27.liValue
+#print axioms RvMBridge27.bl_explicit_formula
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

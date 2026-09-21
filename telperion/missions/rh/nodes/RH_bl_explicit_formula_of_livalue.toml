@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = ["RH_li_zero_sums_converge"]
+kind = "lemma"
+name = "RH.bl_explicit_formula_of_livalue"
+statement_module = "Statements.RH_bl_explicit_formula_of_livalue"
+status = "proved"
+title = "B7 REDUCED (2026-09-21): the node RH_bl_explicit_formula holds verbatim GIVEN the named value obligation LiValue n : liLimit n = archSide n + finiteSide n (Bombieri-Lagarias Thm 2; needs the derivative partial fraction of xi'/xi, in flight as E6Bridge18/19). LiValue is FALSE at n = 0, so the node's 0 < n is load-bearing. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge15.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-weil-li-2026-09-21 (AUDIT_TESTIMONY_WEIL_LI_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: the node RH_bl_explicit_formula holds verbatim given the named value obligation LiValue n (liLimit n = archSide n + finiteSide n). Audit: registry statement matches the theorem with exactly one extra hypothesis; LiValue is false at n = 0 (independently re-proved), so 0 < n is load-bearing; automation neither proves nor refutes LiValue 1. A reduction; not RH. conjecture1_proved = False."

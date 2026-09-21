@@ -1,0 +1,216 @@
+{
+ "campaign": "Fixed-width survey: synthesis and refutation of the three lenses",
+ "date": "2026-09-21",
+ "conjecture1_proved": false,
+ "worktree": "/Users/peterwmurphy/arda-goal-weil (branch mm/wall-fixed-width)",
+ "prose": "telperion/docs/FIXED_WIDTH_SURVEY_SYNTHESIS_2026-09-21.md",
+ "inputs": [
+  "research/FIXED_WIDTH_LENS_DIRICHLET_2026-09-21",
+  "research/FIXED_WIDTH_LENS_ZEROS_2026-09-21",
+  "research/FIXED_WIDTH_LENS_HEAT_2026-09-21",
+  "FIXED_WIDTH_BAND_NUMERICS_2026-09-21.md",
+  "WALL_MAP_2026-09-21.md section 7",
+  "WALL_ASSAULT_SEAMS_RECONCILIATION_2026-09-21.md",
+  "WALL_EFFECTIVE_O2_2026-09-21.md"
+ ],
+ "taxonomy": [
+  "FOOTHOLD",
+  "COLLAPSE_TO_RH",
+  "COLLAPSE_TO_FREE",
+  "TRANSFER",
+  "UNRESOLVED"
+ ],
+ "settled_numbers": {
+  "S_F_sieve": {
+   "0.3": 4.603,
+   "0.5": 8.737,
+   "0.6": 11.101,
+   "0.618": 11.543,
+   "0.7": 13.779,
+   "0.8": 16.788,
+   "0.9": 20.052,
+   "1.0": 23.718,
+   "1.078": 26.877,
+   "1.5": 48.925,
+   "2.0": 89.632
+  },
+  "S_Theta_sieve": {
+   "0.3": 3.254,
+   "0.5": 5.62,
+   "0.7": 8.187,
+   "1.0": 12.574,
+   "1.5": 21.782,
+   "2.0": 34.16
+  },
+  "sigma2_sieve": {
+   "0.3": 0.876,
+   "0.5": 1.593,
+   "0.7": 2.337,
+   "1.0": 3.476,
+   "1.5": 5.402,
+   "2.0": 7.339
+  },
+  "S1_discrepancy": "23.72 = direct sieve (canonical); 26.83 = Rosser-Schoenfeld Abel majorant (reconciliation E5, valid upper bound); 16.53 = large-lam asymptotic 4 sqrt(2pi) lam^{3/2} e^{lam/2}; 33 = zeros-lens column with a spurious factor 2",
+  "width_thresholds_l1_only": {
+   "F_face_T6.4e5": 0.6175,
+   "F_face_T3e12": 1.0784,
+   "F_face_inkernel_floor_T6.4e5": 0.361,
+   "Theta_face_T6.4e5": 0.933,
+   "Theta_face_T3e12": 1.725
+  },
+  "floors_T6.4e5": {
+   "sharp": 11.531,
+   "in_kernel": 5.835
+  },
+  "Theta_strip_edge_dip_vs_background_T6.4e5": {
+   "0.6": [
+    0.00072,
+    2.97
+   ],
+   "1.0": [
+    0.024,
+    2.3
+   ],
+   "2.0": [
+    0.46,
+    1.63
+   ],
+   "3.6": [
+    3.07,
+    1.21
+   ]
+  },
+  "measure_lemma": "meas{c in [T,2T]: F<0} <= T sigma^2(lam)/log^2(T/2pi) + off-diagonal; zeros-lens 4 lam is the asymptotic diagonal (15 percent high at lam=1); moment exponent eta ~ 0.36-0.40 at lam=1, C=1e8 (LLR range k <= log C/(3 log N)), not 0.58"
+ },
+ "refutations": [
+  {
+   "id": "heat_Theta_face",
+   "claim": "plain Gaussian face Theta, semigroup (M), RH <-> Theta >= 0, Lambda_Theta >= lam_cert",
+   "verdict": "TRANSFER (instrument); COLLAPSE_TO_FREE as zero content",
+   "lenses": {
+    "collapse_to_goal": "no RH in (M) or (D); both re-derived algebraically (variances add; entire in the centre; Fubini via e^{lam/2} strip bound)",
+    "single_axis": "certification content = envelope + ladder (seam B/C); the monotonicity is new structure (Widder backward-heat ill-posedness = the residual)",
+    "literature": "Widder 1944 unread; Balanzario-Cardenas 2312.00108 read by heat lens; E6Bridge17 on disk, unaudited"
+   },
+   "grading": "RH <-> Theta >= 0: argued-not-proved for doctrine until E6Bridge17 audit; E6Bridge14 centre-at-ordinate trick does NOT transfer (pair term positive at x=0)",
+   "reduction": "one whole-line certificate at lam_cert closes all smaller widths for Theta (yes); not for F (negative source)",
+   "honest_number": "Lambda_Theta >= 0.93 (T=6.4e5) / 1.72 (3e12) by l1 alone, modulo Theta ladder threshold; asserts nothing detectable about zeros above the ladder (Theta blind to y=1/2 below lam ~ 3.6)"
+  },
+  {
+   "id": "measure_lemma",
+   "verdict": "FOOTHOLD as a lemma; COLLAPSE_TO_FREE as RH progress",
+   "wall": "moment wall: needed order log^2 c/sigma^2 vs available log c/(3 log N); measure never sup"
+  },
+  {
+   "id": "dirichlet_P1_floor",
+   "verdict": "COLLAPSE_TO_FREE (envelope mechanism, sharp constant); do as hygiene",
+   "arithmetic": "S(0.6175)=11.531=log(640000/2pi); in-kernel floor 5.835 crossed at 0.361; at 3e12 crossed at 1.078"
+  },
+  {
+   "id": "numerics_lam0.7_hours",
+   "verdict": "TRANSFER (finite certification), consistent with Dirichlet 2e12 flops (margin 1 vs measured 5.04)",
+   "content": "nil at lam=0.7 (y0=none)"
+  },
+  {
+   "id": "effective_O2_consumer",
+   "verdict": "COLLAPSE_TO_FREE as content; instrument available (E6Bridge14)",
+   "wall": "threshold unbounded as xmin -> 0; needs y<y1 above T"
+  },
+  {
+   "id": "other_lens_items",
+   "verdict": "COLLAPSE_TO_FREE / TRANSFER of shape (zero density, zero-free regions, pair correlation, spectral, function field, Jensen/Laguerre, Lee-Yang, Gabor, tropical, dBN, Turing)"
+  }
+ ],
+ "proposals_ranked": [
+  {
+   "rank": 1,
+   "id": "P1_floor_sharpening",
+   "establishes": "full F-lines lam in [thr, 0.618] above kernel ladder",
+   "cost": "days (Stirling lemma)",
+   "wall": "envelope mechanism",
+   "zero_content": "none"
+  },
+  {
+   "rank": 2,
+   "id": "P2_Theta_face_Lambda_Theta",
+   "establishes": "monotone reduction; Lambda_Theta >= 0.93 (kernel ladder)",
+   "cost": "~200 lines + constants; E6Bridge17 in flight",
+   "wall": "Lambda_Theta = infinity is RH",
+   "zero_content": "clean restatement"
+  },
+  {
+   "rank": 3,
+   "id": "P3_Lipschitz_grid",
+   "establishes": "F-lines to 0.8 (days) / 0.9 (heroic)",
+   "cost": "2e12-1e16 flops",
+   "wall": "doubly exponential band",
+   "zero_content": "sliver y > 0.39-0.45 at lam=1 only"
+  },
+  {
+   "rank": 4,
+   "id": "P4_Platt_Trudgian_height",
+   "establishes": "lines to lam 1.078 (F) / 1.72 (Theta)",
+   "cost": "registry composition + lamThreshold at 3e12",
+   "wall": "external trust",
+   "zero_content": "none new"
+  },
+  {
+   "rank": 5,
+   "id": "P5_measure_lemma",
+   "establishes": "first unconditional non-archimedean statement on the band",
+   "cost": "2-3 pages; Lean ~300 lines at k=1",
+   "wall": "measure not sup",
+   "zero_content": "none"
+  },
+  {
+   "rank": 6,
+   "id": "P6_effective_O2_consumer",
+   "establishes": "localisation from certified window data",
+   "cost": "pin constB; plumbing",
+   "wall": "inside ladder only",
+   "zero_content": "instrument"
+  },
+  {
+   "rank": 7,
+   "id": "P7_short_interval_density",
+   "establishes": "statement of the clustering lemma or why none exists",
+   "cost": "survey",
+   "wall": "S3/S10 clustering",
+   "zero_content": "none"
+  }
+ ],
+ "meta_verdict": "Orthogonal and surviving as instruments: the prime-side polynomial reading (a.p. polynomial under a log floor; measure lemma; sup wall) and the Theta heat structure (monotone in width on the plain face, not on F; Lambda_Theta). Everything else collapses. The residual closes at exactly the widths that see no zeros (lam <= 0.62 free, <= 0.9 by numerics, y0 = none); the widths that see zeros (lam >= 1.5) have bands to 1e22+; the diagonal joining them is RH.",
+ "errata": [
+  "E1 zeros-lens detection column factor 2 (use 4 sqrt(2pi))",
+  "E2 zeros-lens moment exponent (use log N_eff ~ 11-14 at lam=1; eta 0.36-0.40)",
+  "E3 Dirichlet 23.7 vs 27: RS majorant, not sign-change region",
+  "E4 heat lam_cert 0.4/0.9 -> 0.93/1.72 with S_Theta; E6Bridge14 trick does not transfer",
+  "E5 wall map addendum: Lambda_Theta <= C/y^2 configuration-dependent; add zero-content sentence"
+ ],
+ "unresolved_primaries": [
+  "Montgomery-Vaughan 1974",
+  "Huxley 1973",
+  "Halasz-Montgomery / Montgomery LNM 227",
+  "Turan second main theorem",
+  "Bohr 1925",
+  "Kronecker",
+  "Bohr-Jessen 1930/32",
+  "Selberg 1946",
+  "Baker-type effective Kronecker",
+  "Littlewood 1924 gaps; Hall-Hayman",
+  "Jutila 1983 / Conrey 1989",
+  "Mossinghoff-Trudgian-Yang 2024; Bellotti",
+  "Csordas-Smith-Varga 1994",
+  "Csordas-Norfolk-Varga 1986",
+  "Deninger foliated program",
+  "Weil/Castelnuovo-Severi (standard texts)",
+  "Trudgian Turing constants",
+  "Widder 1944",
+  "Platt-Trudgian Lambda <= 0.2 companion",
+  "Newman 1976",
+  "Littlewood/Selberg S(t)",
+  "Montgomery 1973",
+  "Hinkkanen 1997 / Lagarias 1999"
+ ],
+ "honesty": "conjecture1_proved = False. No new (c, lam) instance; sieve numbers float (n <= 1e7 + integral tail); (M)/(D) verified algebraically and numerically, not in Lean; single refuter pass."
+}
