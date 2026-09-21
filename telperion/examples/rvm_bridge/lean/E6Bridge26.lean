@@ -11,17 +11,19 @@
 import E6Bridge23
 import E6Bridge25
 
-open Filter Topology BombieriLagarias RvMBridge15 RvMBridge22
+open Filter Topology
 
 namespace RvMBridge26
 
 /-- The Bombieri-Lagarias value identity, modulo the strip derivative bound alone. -/
-theorem liValue_of_strip (h2 : StripDerivBound) (n : ℕ) (hn : 0 < n) : LiValue n :=
+theorem liValue_of_strip (h2 : RvMBridge22.StripDerivBound) (n : ℕ) (hn : 0 < n) :
+    RvMBridge15.LiValue n :=
   RvMBridge25.liValue_of_two RvMBridge23.local_count_sum h2 n hn
 
 /-- The rh node RH_bl_explicit_formula (B7), modulo the strip derivative bound alone. -/
-theorem bl_explicit_formula_of_strip (h2 : StripDerivBound) (n : ℕ) (hn : 0 < n) :
-    Tendsto (liZeroSum n) atTop (𝓝 (BombieriLagarias.archSide n + BombieriLagarias.finiteSide n)) :=
+theorem bl_explicit_formula_of_strip (h2 : RvMBridge22.StripDerivBound) (n : ℕ) (hn : 0 < n) :
+    Tendsto (RvMBridge15.BombieriLagarias.liZeroSum n) atTop
+      (𝓝 (RvMBridge15.BombieriLagarias.archSide n + RvMBridge15.BombieriLagarias.finiteSide n)) :=
   RvMBridge25.bl_explicit_formula_of_two RvMBridge23.local_count_sum h2 n hn
 
 end RvMBridge26
