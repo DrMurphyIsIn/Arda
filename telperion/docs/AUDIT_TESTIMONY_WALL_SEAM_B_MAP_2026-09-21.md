@@ -184,3 +184,44 @@ crude.
 - mpmath (25 digits): closed form, f(0) = A, ∫B = 2πA, line transform, digamma bounds, assembly at
   lam = 10^-7, 8·10^-7, 10^-6.
 - Probes/E6Bridge11_probe.lean is the author's own and was not relied on.
+
+## 8. Re-audit on the current file (1498 lines): the discharge and the envelope stages, PASS
+
+The version audited above already contained the E6Bridge10 import, section K (the island
+discharge `gaussianExplicitFormula` and the unconditional `gaussian_positivity_small_lam`,
+`gaussian_positivity_small_lam_explicit`) and section L (the envelope); section 2 above covers
+the envelope mechanism. The file has since grown to 1498 lines; everything below is on that file.
+
+- Kernel rerun: `lake build` green (8845 jobs); all 66 RvMBridge11 declarations plus R₀, lam₀ and
+  the 3 RvMBridge13 declarations print `[propext, Classical.choice, Quot.sound]` (70 of 70);
+  token grep zero hits; guard now 59 RvMBridge11 lines. `#check gaussian_positivity_small_lam :
+  ∃ lam₀ > 0, ∀ (c lam : ℝ), 0 < lam → lam ≤ lam₀ → 0 ≤ (zeroSide (gaussTest c lam)).re` and
+  `gaussian_positivity_envelope' : ∀ (lam : ℝ), 0 < lam → ∃ c₁, ∀ (c : ℝ), c₁ ≤ c → 0 ≤ (zeroSide
+  (gaussTest c lam)).re`, the latter derived from the two-sided |c| form with `le_abs_self`.
+- `re_digamma_quarter_ge_log` exact hypotheses: `2 ≤ |r|` (its #check), applied to Zeta23
+  `re_digamma_stirling' (0 < a) (a ≤ 1) (1/2 ≤ |t|)` with a = 1/4, t = r/2; the range |r| ≥ 2 is
+  what makes 5/t² ≤ 5 (t² ≥ 1). It does not apply at |r| = 1: probe
+  `Audit11_Envelope.lean:38:29: error: unsolved goals` (the side goal 2 ≤ 1). Inside the window the
+  proof uses it only where |r| ≥ |c| - L ≥ 2, ensured by `hc2`.
+- Tail-mass constant: `gaussA_half : gaussA (lam/2) = 2√2 gaussA lam` (elaborates; by hand
+  (lam/2)^{-3/2} = 2^{3/2} lam^{-3/2}). Pointwise, for |r - c| ≥ L = 2/√lam,
+  bumpR c lam r ≤ e^{-4} bumpR c (lam/2) r since e^{-2 lam (r-c)²} = e^{-lam (r-c)²} e^{-lam (r-c)²}
+  and lam (r-c)² ≥ lam L² = 4: my own `audit_tail_pointwise`, axiom-clean. Integrated:
+  `integral_indicator_bumpR_tail_le : ∫ (Ioo (c-L) (c+L))ᶜ.indicator (bumpR c lam) ≤ e^{-4} (2π
+  gaussA (lam/2))` (#check), i.e. e^{-4} · 2√2 · 2πA.
+- AM-GM prime bound direction: (log n)²/(16 lam) ≥ 2 log n - 16 lam ⟺ (log n - 16 lam)² ≥ 0, so
+  e^{-(log n)²/(16 lam)} ≤ e^{16 lam} n^{-2}: my own `audit_amgm`, axiom-clean; the file's
+  `prime_term_bound_uniform` uses exactly `nlinarith [sq_nonneg (Real.log n - 16 * lam)]`, and
+  `norm_primeSide_le_uniform : ‖primeSide ...‖ ≤ 16 gaussA lam e^{16 lam}` (#check) follows with
+  Λ(n)/√n ≤ 2 and Σ 1/n² ≤ 2.
+- |c| - L > 0: `audit_envelopeC_ge : 2 + 2/√lam ≤ envelopeC lam` (axiom-clean), so
+  |c| ≥ envelopeC lam gives |c| - L ≥ 2 (the file's `hc2`), and log((|c| - L)/2) ≥ 9 + 2X gives
+  θ ≥ 4 + 2X (`hθX`).
+- Both signs of c: `re_weilForm_gauss_nonneg_of_large_c` instantiated at c = -(envelopeC lam + 7)
+  elaborates, with the hypothesis envelopeC lam ≤ |c| discharged for that negative c; the
+  mechanism uses |c| and |r| ≥ |c| - |c - r| only.
+- The threshold is load-bearing: `gaussian_positivity_envelope 0 lam` cannot be supplied its
+  hypothesis (`Audit11_Envelope.lean:64:64: error: not a positivity goal`, envelopeC lam ≤ 0 is
+  false).
+- E6Bridge13 items are unchanged from section 4 above (discharge is a one-line rewrite; wall map is
+  the case split; converse hypothesis load-bearing).
