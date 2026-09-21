@@ -11,10 +11,23 @@ import E6Bridge11
 
 open RvMBridge11
 
--- the delivered theorems
+-- the delivered theorems (UNCONDITIONAL: the explicit formula is E6Bridge10.zeroSide_gaussTest_eq)
 #print axioms RvMBridge11.re_weilForm_gauss_nonneg
+#print axioms RvMBridge11.gaussianExplicitFormula
+#print axioms RvMBridge11.gaussian_positivity_small_lam
+#print axioms RvMBridge11.gaussian_positivity_small_lam_explicit
+#print axioms RvMBridge11.re_weilForm_gauss_nonneg_of_large_c
+#print axioms RvMBridge11.gaussian_positivity_envelope
+#print axioms RvMBridge11.gaussian_positivity_envelope'
+-- the same modulo the (now discharged) named hypothesis
 #print axioms RvMBridge11.gaussian_positivity_small_lam_of
 #print axioms RvMBridge11.gaussian_positivity_small_lam_explicit_of
+-- envelope stages
+#print axioms RvMBridge11.norm_primeSide_le_uniform
+#print axioms RvMBridge11.re_digamma_quarter_ge_log
+#print axioms RvMBridge11.integral_indicator_bumpR_tail_le
+#print axioms RvMBridge11.integral_bumpR_mul_psiR_ge_envelope
+#print axioms RvMBridge11.gaussA_half
 -- the stages
 #print axioms RvMBridge11.autocorr_gaussPhi
 #print axioms RvMBridge11.norm_autocorrGauss_le
@@ -35,5 +48,11 @@ open RvMBridge11
 -- the theorem statements, verbatim
 #check @RvMBridge11.re_weilForm_gauss_nonneg
 #check @RvMBridge11.gaussian_positivity_small_lam_of
+#check @RvMBridge11.gaussian_positivity_small_lam
+#check @RvMBridge11.re_weilForm_gauss_nonneg_of_large_c
+#check @RvMBridge11.gaussian_positivity_envelope
+#check @RvMBridge11.gaussian_positivity_envelope'
 #print RvMBridge11.lam₀
 #print RvMBridge11.R₀
+#print RvMBridge11.envelopeX
+#print RvMBridge11.envelopeC

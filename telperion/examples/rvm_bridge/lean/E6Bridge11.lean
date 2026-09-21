@@ -14,10 +14,13 @@
       0 <= Re [archSide (autocorr (gaussPhi c lam)) - primeSide (autocorr (gaussPhi c lam))]
                                                        for all c, all 0 < lam <= lam0 := 10^-7,
 
-  and hence, MODULO the named hypothesis GaussianExplicitFormula (the explicit formula for the
-  non-compactly-supported Gaussian test; being proved in a parallel file, restated here as a
-  `def : Prop` and consumed only as a hypothesis), that F(c, lam) >= 0 on the strip
-  0 < lam <= lam0 -- for EVERY centre c, so lam0 is ABSOLUTE.
+  and hence, through the Gaussian explicit formula (stated here as the `def : Prop`
+  GaussianExplicitFormula and DISCHARGED in section K from E6Bridge10.zeroSide_gaussTest_eq),
+  that F(c, lam) >= 0 on the strip 0 < lam <= lam0 -- for EVERY centre c, so lam0 is ABSOLUTE
+  (gaussian_positivity_small_lam, unconditional).  Section L adds the ENVELOPE form: for every
+  width lam > 0 an explicit c1(lam) = envelopeC lam with F(c, lam) >= 0 for all |c| >= c1(lam)
+  (gaussian_positivity_envelope, unconditional): at large height the bump-average of
+  Re psi ~ log(|c|/2) dominates the lam-only prime bound 16 A e^{16 lam}.
 
   Why this is Yoshida-type (unconditional) positivity: with f := phi * phi~ the autocorrelation
   of phi(u) = K u e^{-u^2/(4 lam)} e^{-icu}, an explicit computation (section B) gives
@@ -36,10 +39,15 @@
   archimedean side only ever HELPS (Re psi ~ log(|c|/2) near r ~ c).  Nothing here involves
   the zeros; the theorem is a statement about the E8 functional on one explicit test.
 
-  CONSTANTS ARE CRUDE: lam0 = 10^-7 is what the elementary inequalities below give.  The
-  numerics (telperion/examples/rvm_bridge/seam_b_small_lam.py, memo
-  telperion/docs/WALL_SEAM_B_SMALL_LAM_2026-09-21.md) show F(c, lam) >= 0 on the whole
-  tested grid lam <= 1, c <= 10^5; the Wall proper is lam > lam0 with c -> infinity.
+  CONSTANTS ARE CRUDE: lam0 = 10^-7 and c1(lam) = 2 e^{9 + 2 X(lam)} + 2/sqrt lam,
+  X(lam) = 4 e^{2 lam} sqrt(32 pi lam) + 16 e^{16 lam}, are what the elementary inequalities
+  below give; the numerics (telperion/examples/rvm_bridge/seam_b_small_lam.py, memo
+  telperion/docs/WALL_SEAM_B_SMALL_LAM_2026-09-21.md, and the landscape memo
+  WALL_LANDSCAPE_2026-09-21.md) put the true c-uniform threshold near lam ~ 0.01 (the
+  archimedean side itself turns negative at c <= 14 for lam >= 0.02) and the true envelope
+  c1(lam) far below ours.  Neither region touches the Wall proper (lam of order one, c -> infinity
+  at bounded lam): there the pair term of a hypothetical off-line zero is not dominated by
+  anything unconditional.
 
   Proves nothing about RH.  conjecture1_proved = False.
 -/
@@ -1259,7 +1267,6 @@ lemma gaussA_half {lam : ℝ} (hlam : 0 < lam) :
   have hsp : 0 < Real.sqrt (2 * Real.pi) := Real.sqrt_pos.mpr (by positivity)
   have h2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
   field_simp
-  linear_combination (8 * Real.sqrt (2 * Real.pi) * lam * Real.sqrt lam * gaussA lam) * 0 + (4 * Real.sqrt (2 * Real.pi) * lam * Real.sqrt lam) * h2
 
 /-- The bump at width lam/2 is the half-width Gaussian moment. -/
 lemma bumpR_half (c lam r : ℝ) :
@@ -1277,6 +1284,7 @@ lemma integral_indicator_bumpR_tail_le {c lam : ℝ} (hlam : 0 < lam) :
   have hLsq : lam * L ^ 2 = 4 := by
     rw [hL, div_pow, Real.sq_sqrt hlam.le]
     field_simp
+    norm_num
   have hbi : Integrable (bumpR c lam) := integrable_bumpR hlam
   have hind : Integrable ((Set.Ioo (c - L) (c + L))ᶜ.indicator (bumpR c lam)) :=
     hbi.indicator measurableSet_Ioo.compl
@@ -1286,7 +1294,9 @@ lemma integral_indicator_bumpR_tail_le {c lam : ℝ} (hlam : 0 < lam) :
       ≤ fun r : ℝ => Real.exp (-4) * bumpR c (lam / 2) r := by
     intro r
     by_cases hr : r ∈ (Set.Ioo (c - L) (c + L))ᶜ
-    · rw [Set.indicator_of_mem hr, bumpR_half]
+    · rw [Set.indicator_of_mem hr]
+      show bumpR c lam r ≤ Real.exp (-4) * bumpR c (lam / 2) r
+      rw [bumpR_half]
       unfold bumpR
       have hx : L ^ 2 ≤ (r - c) ^ 2 := by
         simp only [Set.mem_compl_iff, Set.mem_Ioo, not_and_or, not_lt] at hr
@@ -1455,7 +1465,6 @@ theorem re_weilForm_gauss_nonneg_of_large_c (c lam : ℝ) (hlam : 0 < lam) (hc :
       - (θ + 5) * (Real.exp (-4) * (2 * Real.pi * gaussA (lam / 2))))
       = θ * gaussA lam - (θ + 5) * Real.exp (-4) * gaussA (lam / 2) := by
     field_simp
-    ring
   rw [hid] at hJ'
   have htailA : (θ + 5) * Real.exp (-4) * gaussA (lam / 2) ≤ (θ + 5) * (1 / 54) * (3 * gaussA lam) := by
     apply mul_le_mul _ hhalf (gaussA_pos (by positivity)).le (by positivity)

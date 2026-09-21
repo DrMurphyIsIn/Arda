@@ -1,12 +1,34 @@
 # The Wall, seam B: the unconditional small-width region (2026-09-21)
 
-**Status line.** `conjecture1_proved = False`. Nothing here proves RH. This memo records a
-Yoshida-type UNCONDITIONAL positivity theorem for the Gaussian-derivative test of the Wall,
+**Status line.** `conjecture1_proved = False`. Nothing here proves RH. This memo records two
+Yoshida-type UNCONDITIONAL positivity theorems for the Gaussian-derivative test of the Wall,
 kernel-checked on the rvm_bridge island (`telperion/examples/rvm_bridge/lean/E6Bridge11.lean`,
 namespace `RvMBridge11`, axioms exactly `[propext, Classical.choice, Quot.sound]`, no `sorryAx`),
-plus the numerics behind it (`telperion/examples/rvm_bridge/seam_b_small_lam.py`). It covers the
-region `0 < lam <= lam0` of the two-parameter Wall for EVERY centre `c`; the Wall proper is
-`lam > lam0` with `c -> infinity`.
+plus the numerics behind them (`telperion/examples/rvm_bridge/seam_b_small_lam.py`):
+
+* (i) the SMALL-WIDTH region: an absolute `lam0 = 1e-7` with `F(c, lam) >= 0` for EVERY `c` and
+  `0 < lam <= lam0` (`gaussian_positivity_small_lam`);
+* (ii) the ENVELOPE: for EVERY `lam > 0` an explicit `c1(lam)` with `F(c, lam) >= 0` for all
+  `|c| >= c1(lam)` (`gaussian_positivity_envelope`).
+
+Both are unconditional because the Gaussian explicit formula is now proved on the island
+(`RvMBridge10.zeroSide_gaussTest_eq`, E6Bridge10); the `def : Prop` `GaussianExplicitFormula`
+of section 1 is kept and discharged (`gaussianExplicitFormula`). The Wall proper is `lam` of
+order one with `c -> infinity` at bounded `lam`, i.e. `lam > lam0` and `|c| < c1(lam)`.
+
+**Correction from the landscape numerics (WALL_LANDSCAPE_2026-09-21.md section 1, seam sweep
+probe P3).** The c-uniform lower-bound MECHANISM of section 2 is not the same thing as
+`F >= 0`: at `c <= 14` the archimedean side itself is negative for `lam >= 0.02` (see the
+`arch` column in section 3: `arch(0, 0.02) = -4.33`), so `F >= 0` there rests on the prime side
+being negative too, which no domination argument sees. Hence any absolute `lam0` obtained by
+dominating the prime side is of order `0.01` at best, and the landscape's measured
+`lam0(c) = 0.011 (c = 0), 0.018 (5), 0.026 (14.1), 0.27 - 0.42 (20 - 100), >= 1.4 (c >= 500)`
+is the honest picture: the threshold where the ENVELOPE mechanism works grows with `c`. My
+section-3 grid (`F >= 0` everywhere up to `lam = 1`) is consistent with that and does not
+contradict it: `F(0, lam)` for `lam >= 0.05` is the tiny positive zero-side value
+`2 gamma_1^2 e^{-2 lam gamma_1^2}`, not a domination margin. The Lean `lam0 = 1e-7` is the crude
+constant of section 2; `lam0 = 1/200` is NOT closed (it would need the bump-average of `Re psi`
+on `|r| <= 41` to be computed, not bounded by `-5`).
 
 ## 1. The seam
 
@@ -188,43 +210,94 @@ See section 7. The `c = 0`, `lam >= 0.05` rows above are already an exact-zero-s
 and `c <= 1000` with `lam >= 0.005` is fully covered by the first 2000 zeros since the bump `B`
 lives within `|r - c| <= 7/sqrt(2 lam) <= 70`.
 
+## 4b. The envelope form (ii): paper analysis
+
+Fix `lam > 0`, put `L := 2/sqrt lam` and `theta := log((|c| - L)/2) - 5`. Split the bump at
+`|r - c| = L`: the tail mass `int_{|r - c| >= L} B` is at most `e^{-4} int (r-c)^2 e^{-lam (r-c)^2}
+= e^{-4} 2 pi A(lam/2) = e^{-4} 2 sqrt2 (2 pi A)` (Lean: `integral_indicator_bumpR_tail_le`,
+`gaussA_half`), while on `|r - c| < L` one has `|r| >= |c| - L` and so `Re psi(1/4 + i r/2) >=
+log(|r|/2) - 5 >= theta` (Lean: `re_digamma_quarter_ge_log`, Stirling with `5/t^2 <= 5` at
+`|t| >= 1`). Hence (Lean: `integral_bumpR_mul_psiR_ge_envelope`)
+
+    int B Re psi >= theta (2 pi A) - (theta + 5) e^{-4} (2 pi A(lam/2)),   theta >= 0.
+
+The prime side needs a bound valid for ALL `lam` (the small-lam bound needs `log 2/(16 lam) >= 2`):
+AM-GM `(log n)^2/(16 lam) >= 2 log n - 16 lam` gives `|primeSide f| <= 16 A e^{16 lam}` (Lean:
+`norm_primeSide_le_uniform`). With the c-uniform pole bound `4 A e^{2 lam} sqrt(32 pi lam)`,
+
+    F/A >= theta (1 - 3 e^{-4}) - 15 e^{-4} - log pi - X(lam),
+    X(lam) := 4 e^{2 lam} sqrt(32 pi lam) + 16 e^{16 lam},
+
+which is `>= 0` as soon as `theta >= 4 + 2 X(lam)`, i.e. `|c| >= c1(lam) := 2 e^{9 + 2 X(lam)} + 2/sqrt lam`
+(Lean: `envelopeC`, `re_weilForm_gauss_nonneg_of_large_c`, `gaussian_positivity_envelope`). The
+`e^{16 lam}` inside the exponent is the price of the crude uniform prime bound (the true prime
+side is `O(A)` with a `sqrt lam`-scale constant, cf. the landscape's `P(lam) ~ e^{lam/2} sqrt(8 pi lam)`
+and `c1 ~ 2 pi e^{2 P}`); the mechanism (log growth of `Re psi` against a lam-only prime bound)
+is the same. The theorem is stated for `|c|`, so it covers both signs of the centre.
+
 ## 5. The Lean deliverable
 
-File: `telperion/examples/rvm_bridge/lean/E6Bridge11.lean` (imports E6Bridge8,
+File: `telperion/examples/rvm_bridge/lean/E6Bridge11.lean` (imports E6Bridge8, E6Bridge10,
 Zeta23.GammaFacts.{StirlingVert, Mu}, Zeta23.Analytic.Stirling, Zeta23.WeilEF.VerticalLine).
 Probe: `Probes/E6Bridge11_probe.lean`. Not added to lakefile.toml / AxiomGuardRvMBridge.lean
 (house rule for this task); the olean was produced with `lake env lean -o` for the probe.
 
-Delivered theorems (signatures verbatim):
+Delivered theorems (signatures verbatim; ALL UNCONDITIONAL):
 
 ```lean
 theorem re_weilForm_gauss_nonneg (c lam : ℝ) (hlam : 0 < lam) (hlam0 : lam ≤ lam₀) :
     0 ≤ (archSide (autocorr (RvMBridge8.gaussPhi c lam))
           - primeSide (autocorr (RvMBridge8.gaussPhi c lam))).re
--- UNCONDITIONAL; lam₀ := 1 / 10000000
+-- lam₀ := 1 / 10000000
 
-theorem gaussian_positivity_small_lam_of (hEF : GaussianExplicitFormula) :
+theorem gaussianExplicitFormula : GaussianExplicitFormula   -- from RvMBridge10.zeroSide_gaussTest_eq
+
+theorem gaussian_positivity_small_lam :
     ∃ lam₀ > 0, ∀ c lam : ℝ, 0 < lam → lam ≤ lam₀ →
       0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
 
-theorem gaussian_positivity_small_lam_explicit_of (hEF : GaussianExplicitFormula)
-    (c lam : ℝ) (hlam : 0 < lam) (hle : lam ≤ lam₀) :
+theorem gaussian_positivity_small_lam_explicit (c lam : ℝ) (hlam : 0 < lam) (hle : lam ≤ lam₀) :
     0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+
+def envelopeX (lam : ℝ) : ℝ :=
+  4 * Real.exp (2 * lam) * Real.sqrt (32 * Real.pi * lam) + 16 * Real.exp (16 * lam)
+def envelopeC (lam : ℝ) : ℝ := 2 * Real.exp (9 + 2 * envelopeX lam) + 2 / Real.sqrt lam
+
+theorem re_weilForm_gauss_nonneg_of_large_c (c lam : ℝ) (hlam : 0 < lam) (hc : envelopeC lam ≤ |c|) :
+    0 ≤ (archSide (autocorr (RvMBridge8.gaussPhi c lam))
+          - primeSide (autocorr (RvMBridge8.gaussPhi c lam))).re
+
+theorem gaussian_positivity_envelope (c lam : ℝ) (hlam : 0 < lam) (hc : envelopeC lam ≤ |c|) :
+    0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+
+theorem gaussian_positivity_envelope' :
+    ∀ lam : ℝ, 0 < lam → ∃ c₁ : ℝ, ∀ c : ℝ, c₁ ≤ c →
+      0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
 ```
+
+(The `_of` forms `gaussian_positivity_small_lam_of`, `gaussian_positivity_small_lam_explicit_of`,
+taking `GaussianExplicitFormula` as a hypothesis, are kept for the record.)
 
 `#print axioms` (probe output, verbatim): every one of
 
-    re_weilForm_gauss_nonneg, gaussian_positivity_small_lam_of,
-    gaussian_positivity_small_lam_explicit_of, autocorr_gaussPhi, norm_autocorrGauss_le,
-    norm_primeSide_le, norm_weilKernel_zero_le, norm_weilKernel_one_le,
-    integral_sq_mul_cexp_gaussian_fourier, weilKernel_autocorrGauss_line,
+    re_weilForm_gauss_nonneg, gaussianExplicitFormula, gaussian_positivity_small_lam,
+    gaussian_positivity_small_lam_explicit, re_weilForm_gauss_nonneg_of_large_c,
+    gaussian_positivity_envelope, gaussian_positivity_envelope',
+    gaussian_positivity_small_lam_of, gaussian_positivity_small_lam_explicit_of,
+    norm_primeSide_le_uniform, re_digamma_quarter_ge_log, integral_indicator_bumpR_tail_le,
+    integral_bumpR_mul_psiR_ge_envelope, gaussA_half,
+    autocorr_gaussPhi, norm_autocorrGauss_le, norm_primeSide_le, norm_weilKernel_zero_le,
+    norm_weilKernel_one_le, integral_sq_mul_cexp_gaussian_fourier, weilKernel_autocorrGauss_line,
     re_digamma_quarter_ge, re_digamma_quarter_ge_two, integrable_bumpR_mul_psiR,
     integral_bumpR, integral_bumpR_mul_psiR_ge, re_archSide_ge, integral_sq_mul_exp_neg_mul_sq
 
 depends on axioms: `[propext, Classical.choice, Quot.sound]`. No `sorry` anywhere in the file.
+No obligation remains open in this file.
 
-The ONLY obligation is `GaussianExplicitFormula` (a `def : Prop`, section 1), consumed as a
-hypothesis of the two `_of` theorems. Nothing else is assumed.
+NOT closed (named): a c-uniform threshold `lam0 = 1/200` (would need the bump-average of `Re psi`
+over `|r| <= 41` computed rather than bounded by `-5`, i.e. a quadrature-type certificate of
+`int_{-41}^{41} B(r) Re psi(1/4 + i r/2) dr` for every centre); a sharp envelope `c1(lam) ~ 2 pi
+e^{2 P(lam)}` (would need the sharp prime bound `P(lam)` in place of `16 e^{16 lam}`).
 
 Lemma list for the guard (all in `RvMBridge11`): `gaussA_pos`, `integral_sq_mul_exp_neg_mul_sq`,
 `integral_sq_mul_cexp_neg_mul_sq`, `re_digamma_quarter_ge`, `re_digamma_quarter_ge_two`,
@@ -238,9 +311,16 @@ Lemma list for the guard (all in `RvMBridge11`): `gaussA_pos`, `integral_sq_mul_
 `integrable_bumpR`, `integrable_bumpR_mul_psiR`, `bumpR_le`, `integral_bumpR`, `R₀_pos`,
 `setIntegral_bumpR_le`, `integral_bumpR_mul_psiR_ge`, `integral_archIntegrand_eq`,
 `re_archSide_ge`, `re_weilForm_gauss_nonneg`, `gaussian_positivity_small_lam_of`,
-`gaussian_positivity_small_lam_explicit_of`.
+`gaussian_positivity_small_lam_explicit_of`, `gaussianExplicitFormula`,
+`gaussian_positivity_small_lam`, `gaussian_positivity_small_lam_explicit`,
+`prime_term_bound_uniform`, `norm_primeSide_le_uniform`, `re_digamma_quarter_ge_log`, `psiR_ge_log`,
+`gaussA_half`, `bumpR_half`, `integral_indicator_bumpR_tail_le`,
+`integral_bumpR_mul_psiR_ge_envelope`, `envelopeX`, `envelopeC`, `envelopeX_nonneg`,
+`re_weilForm_gauss_nonneg_of_large_c`, `gaussian_positivity_envelope`,
+`gaussian_positivity_envelope'`.
 
-Upstream inputs consumed as black boxes: `Zeta23.StirlingVert.re_digamma_stirling'`,
+Upstream inputs consumed as black boxes: `RvMBridge10.zeroSide_gaussTest_eq` (E6Bridge10, the
+Gaussian explicit formula), `Zeta23.StirlingVert.re_digamma_stirling'`,
 `Zeta23.MuFields.re_digamma_vertical`, `Zeta23.Stirling.differentiableAt_digamma`,
 `Zeta23.WeilEF.digamma_growth_strip`; from E6Bridge8: `integral_mul_cexp_gaussian_fourier`,
 `integrable_abs_pow_mul_exp_quadratic_abs`, `integrable_mul_cexp_quadratic`, `gaussB_pos`;
@@ -260,14 +340,16 @@ Mathlib: `fourierIntegral_gaussian`, `integral_gaussian`, `integral_mul_deriv_eq
   from this session, so the exact statement/normalisation in Yoshida is marked UNRESOLVED. Our
   test is a Gaussian (not compactly supported), our window parameter is `lam`, and our proof is
   self-contained on the island; the attribution is to the mechanism, not to a theorem reused.
-* It covers the region `lam <= lam0` of the Wall for every `c`. The Wall proper, where RH lives,
-  is `lam > lam0` with `c -> infinity`: for `lam` of order one the pair contribution of an off-line
+* It covers the region `lam <= lam0` of the Wall for every `c`, and the region `|c| >= c1(lam)`
+  for every `lam`. The Wall proper, where RH lives, is `lam > lam0` with `|c| < c1(lam)`,
+  `c -> infinity` at bounded `lam`: for `lam` of order one the pair contribution of an off-line
   zero near `c` is not dominated by anything unconditional (that is E6Bridge7's dominance
   analysis run backwards), and no `c`-uniform lower bound of the kind above can exist there
   (it would prove RH).
-* It says NOTHING about the zeros; `re_weilForm_gauss_nonneg` is a statement about the E8
-  functional on one explicit test, and the transfer to the zero side is exactly the named
-  hypothesis. `conjecture1_proved = False`.
+* It says NOTHING about the zeros beyond what the explicit formula transports;
+  `re_weilForm_gauss_nonneg` and `re_weilForm_gauss_nonneg_of_large_c` are statements about the
+  E8 functional on one explicit test, and the transfer to the zero side is E6Bridge10's
+  `zeroSide_gaussTest_eq`. `conjecture1_proved = False`.
 
 ## 7. Zero-side cross-check results
 
