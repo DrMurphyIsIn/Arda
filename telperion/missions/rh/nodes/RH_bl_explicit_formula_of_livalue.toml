@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["RH_li_zero_sums_converge"]
+kind = "lemma"
+name = "RH.bl_explicit_formula_of_livalue"
+statement_module = "Statements.RH_bl_explicit_formula_of_livalue"
+status = "draft"
+title = "B7 REDUCED (2026-09-21): the node RH_bl_explicit_formula holds verbatim GIVEN the named value obligation LiValue n : liLimit n = archSide n + finiteSide n (Bombieri-Lagarias Thm 2; needs the derivative partial fraction of xi'/xi, in flight as E6Bridge18/19). LiValue is FALSE at n = 0, so the node's 0 < n is load-bearing. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge15.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

@@ -91,6 +91,9 @@
         (2026-09-21): the sharp c-uniform envelope with the exact prime-side constant primeAbs;
         plus stages (fourier_autocorrGauss, norm_primeSide_le_primeAbs, primeAbs_le_crude).
         NOT a proof of RH.  conjecture1_proved = False.
+      * RvMBridge17.{rh_iff_theta_positivity, theta_heat, theta_pos_mono, rh_iff_thetaWidths_eq,
+        not_thetaFree_of_offline, rh_or_thetaWidths_bddAbove} -- the THETA FACE (2026-09-21): the
+        plain Gaussian face is heat-monotone in width; RH <-> every width free.  NOT a proof of RH.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -123,6 +126,7 @@ import E6Bridge13
 import E6Bridge14
 import E6Bridge15
 import E6Bridge16
+import E6Bridge17
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -456,6 +460,57 @@ import W2cAssembly
 #print axioms RvMBridge16.envelopeCsharp_le_crude
 #print axioms RvMBridge16.gaussian_positivity_above_height
 #print axioms RvMBridge16.gaussian_positivity_above_height_log
+#print axioms RvMBridge17.zeroSide_plain_eq
+#print axioms RvMBridge17.theta_eq
+#print axioms RvMBridge17.plainGauss_re_exponent
+#print axioms RvMBridge17.plainGauss_im_exponent
+#print axioms RvMBridge17.norm_plainGauss
+#print axioms RvMBridge17.norm_pterm
+#print axioms RvMBridge17.re_plainGauss
+#print axioms RvMBridge17.plainGauss_conj
+#print axioms RvMBridge17.plainGauss_ofReal
+#print axioms RvMBridge17.pterm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge17.norm_plainGauss_mul_le
+#print axioms RvMBridge17.plainC_nonneg
+#print axioms RvMBridge17.norm_pterm_le
+#print axioms RvMBridge17.summable_plain_zeroSide
+#print axioms RvMBridge17.zeroSide_plain_im
+#print axioms RvMBridge17.pterm_re_nonneg_of_rh
+#print axioms RvMBridge17.theta_nonneg_of_rh
+#print axioms RvMBridge17.exists_lam_cos_neg_one
+#print axioms RvMBridge17.exists_generic_centre'
+#print axioms RvMBridge17.pmajorant_nonneg
+#print axioms RvMBridge17.summable_pmajorant
+#print axioms RvMBridge17.norm_pterm_le_pmajorant
+#print axioms RvMBridge17.pconstA_nonneg
+#print axioms RvMBridge17.pconstB_nonneg
+#print axioms RvMBridge17.tsum_pmajorant
+#print axioms RvMBridge17.ptail_bound
+#print axioms RvMBridge17.theta_le_pair_add_tail
+#print axioms RvMBridge17.exists_theta_neg_of_offline
+#print axioms RvMBridge17.rh_iff_theta_positivity
+#print axioms RvMBridge17.heatVar_pos
+#print axioms RvMBridge17.heatKernel_nonneg
+#print axioms RvMBridge17.continuous_heatKernel
+#print axioms RvMBridge17.heat_A_eq
+#print axioms RvMBridge17.heat_integrand_eq
+#print axioms RvMBridge17.plainGauss_heat
+#print axioms RvMBridge17.real_gauss_heat
+#print axioms RvMBridge17.integrable_heatF
+#print axioms RvMBridge17.integral_norm_heatF_le
+#print axioms RvMBridge17.summable_integral_norm_heatF
+#print axioms RvMBridge17.nontrivialZeros_countable
+#print axioms RvMBridge17.tsum_pterm_NZ
+#print axioms RvMBridge17.tsum_pterm_re_NZ
+#print axioms RvMBridge17.theta_heat
+#print axioms RvMBridge17.theta_pos_mono
+#print axioms RvMBridge17.thetaFree_mono
+#print axioms RvMBridge17.thetaWidths_Ioc_subset
+#print axioms RvMBridge17.rh_iff_thetaFree_all
+#print axioms RvMBridge17.rh_iff_thetaWidths_eq
+#print axioms RvMBridge17.not_thetaFree_of_offline
+#print axioms RvMBridge17.thetaWidths_bddAbove_of_offline
+#print axioms RvMBridge17.rh_or_thetaWidths_bddAbove
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

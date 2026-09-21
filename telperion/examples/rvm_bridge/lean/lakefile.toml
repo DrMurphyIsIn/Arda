@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -146,6 +146,16 @@ name = "E6Bridge15"
 # Nothing about RH. conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge16"
+
+# Seventeenth bridge (2026-09-21, the THETA FACE): the plain Gaussian face Theta(c, lam) =
+# Re Sum m(rho) e^{-2 lam (gamma_rho - c)^2}. rh_iff_theta_positivity (RH <-> Theta >= 0 everywhere);
+# theta_heat / theta_pos_mono (heat-monotone in width: positivity at one width on the whole line
+# implies it at every smaller width, so the free widths form an initial segment ThetaWidths);
+# rh_iff_thetaWidths_eq (RH <-> every width is free); not_thetaFree_of_offline (an off-line zero
+# bounds the free widths). A de Bruijn-Newman-type constant for the zero measure. Equivalences and
+# an instrument; NOT a proof of RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge17"
 
 [[lean_lib]]
 name = "W2cAssembly"

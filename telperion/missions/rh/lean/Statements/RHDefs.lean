@@ -363,3 +363,42 @@ opaque LegendreLocalization (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop
 opaque ReducedHeadFloor (L Tsharp lam0 : ℝ) (N : ℕ) : Prop
 
 end WeilWindow
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, the Weil-to-Li dictionary) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/E6Bridge15.lean (namespace RvMBridge15, v4.33
+  island), source lines cited: liPaired (155-157), liLimit (159-160), LiValue (437-443), with
+  docstrings.  The block sits in a `noncomputable section` because the island file does, so the
+  def texts stay byte-identical.  `liKernel`, `liZeroSum`, `archSide`, `finiteSide` are the
+  registry's own BombieriLagarias block above (the island re-declares them in
+  RvMBridge15.BombieriLagarias).  Vocabulary for RH_li_zero_sums_converge,
+  RH_bl_explicit_formula_of_livalue, RH_li_forward_half.  conjecture1_proved = False.
+-/
+noncomputable section
+
+namespace RvMBridge15
+open Complex Filter Topology
+open scoped ComplexConjugate
+open BombieriLagarias
+
+-- ===== E6Bridge15.lean:155-157 =====
+/-- The paired (real) family: m(rho) Re K_n(rho), as a complex number. -/
+def liPaired (n : ℕ) (ρ : ℂ) : ℂ :=
+  (WeilExplicit.zeroMult ρ : ℂ) * ((liKernel n ρ).re : ℂ)
+
+-- ===== E6Bridge15.lean:159-160 =====
+/-- The limit of the symmetric window sums (a genuine absolutely convergent sum, section C). -/
+def liLimit (n : ℕ) : ℂ := ∑' ρ : ℂ, liPaired n ρ
+
+-- ===== E6Bridge15.lean:437-443 =====
+/-- **Obligation (Bombieri-Lagarias 1999, Theorem 2; the value half of B7).**  The absolutely
+convergent paired sum equals the closed form: Sum_rho m(rho) Re (1 - (1 - 1/rho)^n) =
+S_inf(n) + S_f(n).  Content: the Hadamard / xi'/xi partial fraction at s = 1, i.e. the symmetric
+power sums Sum_rho rho^{-j} (j = 1..n) in terms of the Laurent coefficients eta_{j-1} and the
+digamma tower at 1/2.  Not in Zeta23 (whose partial fraction is Landau's local form).  Stated for
+0 < n; at n = 0 both sides are computable (0 vs 1) and the node excludes it. -/
+def LiValue (n : ℕ) : Prop := liLimit n = BombieriLagarias.archSide n + finiteSide n
+
+end RvMBridge15
+
+end
