@@ -65,6 +65,10 @@
         MM_zeta_comb_membership_iff_rh, verbatim: the Weil converse unconditional on this island
         and the dictionary theorem (goal statement <-> Mathlib RiemannHypothesis).  NOT a proof
         of RH.  conjecture1_proved = False.
+      * RvMBridge10.{rh_iff_gaussian_positivity, zeroSide_gaussTest_eq, rh_iff_gaussian_prime_le_arch}
+        -- WALL ASSAULT seam A (2026-09-21): the Wall in two real parameters (RH <-> Gaussian
+        positivity <-> prime side <= archimedean side for every centre and width), plus the
+        limit stages of the Gaussian explicit formula.  Equivalences only; NOT a proof of RH.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -90,6 +94,7 @@ import E6Bridge6
 import E6Bridge7
 import E6Bridge8
 import E6Bridge9
+import E6Bridge10
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -220,6 +225,47 @@ import W2cAssembly
 #print axioms RvMBridge9.weil_positivity_implies_rh
 #print axioms RvMBridge9.zeta_comb_membership_iff_rh
 #print axioms RvMBridge9.weil_negative_refutes_rh
+#print axioms RvMBridge10.gaussTest_ofReal
+#print axioms RvMBridge10.gaussTest_ofReal_re_nonneg
+#print axioms RvMBridge10.gammaOf_eq_im_of_rh
+#print axioms RvMBridge10.gauss_term_re_nonneg
+#print axioms RvMBridge10.rh_implies_gaussian_positivity
+#print axioms RvMBridge10.gaussian_positivity_implies_rh
+#print axioms RvMBridge10.rh_iff_gaussian_positivity
+#print axioms RvMBridge10.gaussian_positivity_iff_weil_positivity
+#print axioms RvMBridge10.exists_hermitian_gaussTests_bound
+#print axioms RvMBridge10.hermitianTransform_gaussTests_tendsto
+#print axioms RvMBridge10.zeroSide_gaussTests_tendsto
+#print axioms RvMBridge10.continuous_gaussPhi
+#print axioms RvMBridge10.norm_gaussTests_le
+#print axioms RvMBridge10.norm_phi_mul_phi_le
+#print axioms RvMBridge10.integrable_sq_add_mul_gauss
+#print axioms RvMBridge10.integrable_vMaj
+#print axioms RvMBridge10.gaussI0_nonneg
+#print axioms RvMBridge10.gaussI2_nonneg
+#print axioms RvMBridge10.autocorrMaj_nonneg
+#print axioms RvMBridge10.autocorrMaj_neg
+#print axioms RvMBridge10.integral_vMaj
+#print axioms RvMBridge10.norm_gaussTests_mul_conj_le
+#print axioms RvMBridge10.norm_autocorr_gaussTests_le
+#print axioms RvMBridge10.autocorr_gaussTests_tendsto
+#print axioms RvMBridge10.primeBound_nonneg
+#print axioms RvMBridge10.norm_primeTerm_le
+#print axioms RvMBridge10.summable_primeBound
+#print axioms RvMBridge10.primeSide_gaussTests_tendsto
+#print axioms RvMBridge10.continuous_autocorr_gaussTests
+#print axioms RvMBridge10.integrable_kernelMaj
+#print axioms RvMBridge10.norm_kernel_term_le
+#print axioms RvMBridge10.weilKernel_gaussTests_tendsto
+#print axioms RvMBridge10.gammaOf_half_add
+#print axioms RvMBridge10.exists_paperFT_autocorr_gaussTests_bound
+#print axioms RvMBridge10.integrable_archBound
+#print axioms RvMBridge10.norm_archIntegrand_le
+#print axioms RvMBridge10.archIntegral_gaussTests_tendsto
+#print axioms RvMBridge10.archSide_gaussTests_tendsto
+#print axioms RvMBridge10.zeroSide_gaussTest_eq
+#print axioms RvMBridge10.gaussian_positivity_iff_prime_le_arch
+#print axioms RvMBridge10.rh_iff_gaussian_prime_le_arch
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
