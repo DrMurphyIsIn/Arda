@@ -3,14 +3,14 @@ depends_on = []
 kind = "lemma"
 name = "MM.gaussian_dominance"
 statement_module = "Statements.MM_gaussian_dominance"
-status = "open"
+status = "proved"
 title = "Obligation O2 (GaussianDominance), the analytic heart of the Weil converse: if rho_0 is a nontrivial zero off the critical line then for some real centre c and some lam > 0 the Gaussian-weighted zero sum Sum_rho m(rho) (gamma_rho - c)^2 exp(-2 lam (gamma_rho - c)^2) has strictly negative real part. Weil/Bombieri localisation: generic centre within |1/2 - Re rho_0| of Im rho_0, the argmax of (Im gamma)^2 - (Re gamma - c)^2 over the zeros (attained, off-line, unique up to the pair rho <-> 1 - conj rho), a phase choice along lam_k -> infinity, and a tail bound from the local zero count. A statement about the zeros of zeta alone; vacuously true under RH, but its intended proof does not use RH; NOT RH-hard; open. This is where the converse attack stopped on 2026-09-20. conjecture1_proved = False."
 updated = "2026-09-20"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge7.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]
