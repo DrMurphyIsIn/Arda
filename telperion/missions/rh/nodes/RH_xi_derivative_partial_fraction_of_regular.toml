@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["RH_xi_logDeriv_deriv_decay", "RH_xi_derivative_partial_fraction_of"]
+kind = "lemma"
+name = "RH.xi_derivative_partial_fraction_of_regular"
+statement_module = "Statements.RH_xi_derivative_partial_fraction_of_regular"
+status = "draft"
+title = "THE XI PARTIAL FRACTION now rests on ONE obligation (2026-09-21): (log xi)'' = -Sum m(rho)/(s-rho)^2 GIVEN XiDiffRegular (equivalently, via E6Bridge20, the log-growth bound on Re s >= 1/2, in flight as E6Bridge22). conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge21.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

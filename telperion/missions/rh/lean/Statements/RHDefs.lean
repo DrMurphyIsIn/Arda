@@ -402,3 +402,90 @@ def LiValue (n : ℕ) : Prop := liLimit n = BombieriLagarias.archSide n + finite
 end RvMBridge15
 
 end
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, the xi partial fraction) =====
+  VERBATIM, source lines cited: Zeta23.IsNontrivialZero (vendored Zeta23 package,
+  Zeta23/Statement.lean:38, commit fbdc36bbf17d20af3fd0447c6d1a8a02773c9844);
+  RvMBridge18.xi (E6Bridge18.lean:56-57), xiDiffReg (188-190), XiLogDerivDerivEq (192-195),
+  XiDiffRegular (197-204), XiLogDerivDerivDecay (206-211); RvMBridge20.xiDiffExt
+  (E6Bridge20.lean:418-421, with its `open scoped Classical in` prefix), XiDiffExtGrowth (545-547),
+  XiDiffExtGrowthRight (549-551).  The blocks sit in a `noncomputable section` because the island
+  files do.  Vocabulary for RH_xi_derivative_partial_fraction_of, RH_xi_diff_entire_extension,
+  RH_xi_diff_regular_of_growth.  The obligations are `def ... : Prop` consumed only as hypotheses;
+  nothing here proves anything about RH.  conjecture1_proved = False.
+-/
+noncomputable section
+
+namespace Zeta23
+open Complex Set
+
+-- ===== Zeta23/Statement.lean:38 (Zeta23 @ fbdc36b) =====
+def IsNontrivialZero (ρ : ℂ) : Prop := riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1
+
+end Zeta23
+
+namespace RvMBridge18
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit
+
+-- ===== E6Bridge18.lean:56-57 =====
+/-- xi(s) = s (s - 1)/2 * Lambda_0(s) + 1/2 (Riemann's xi; = s(s-1)/2 * Lambda(s) off {0,1}). -/
+def xi (s : ℂ) : ℂ := s * (s - 1) / 2 * completedRiemannZeta₀ s + 1 / 2
+
+-- ===== E6Bridge18.lean:188-190 =====
+/-- xiDiffReg s = deriv (logDeriv xi) s + Sum'_rho m(rho)/(s - rho)^2 (junk at the zeros). -/
+def xiDiffReg (s : ℂ) : ℂ :=
+  deriv (logDeriv xi) s + ∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℂ) / (s - ρ) ^ 2
+
+-- ===== E6Bridge18.lean:192-195 =====
+/-- **The interface identity** (the derivative partial fraction of xi'/xi, no constant). -/
+def XiLogDerivDerivEq : Prop :=
+  ∀ s : ℂ, ¬ IsNontrivialZero s →
+    deriv (logDeriv xi) s = -∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℂ) / (s - ρ) ^ 2
+
+-- ===== E6Bridge18.lean:197-204 =====
+/-- **Obligation 1 (removable singularities + logarithmic growth).**  xiDiffReg extends across
+the zeros to an entire function G (at a zero of order m, deriv (logDeriv xi) = -m/(s-rho)^2 +
+analytic and the sum contributes exactly +m/(s-rho)^2) with |G(s)| <= C (1 + log (2 + |s|))
+(Landau's local partial fraction and Cauchy's estimate on |Re s| <= 2; Dirichlet series and
+Stirling on Re s >= 2; the functional equation on Re s <= -1). -/
+def XiDiffRegular : Prop :=
+  ∃ G : ℂ → ℂ, Differentiable ℂ G ∧ (∀ s : ℂ, ¬ IsNontrivialZero s → G s = xiDiffReg s) ∧
+    ∃ C : ℝ, ∀ s : ℂ, ‖G s‖ ≤ C * (1 + Real.log (2 + ‖s‖))
+
+-- ===== E6Bridge18.lean:206-211 =====
+/-- **Obligation 2 (decay of the logarithmic-derivative part along the real axis).**
+deriv (logDeriv xi)(sigma) = -1/sigma^2 - 1/(sigma-1)^2 + (1/4) psi'(sigma/2) + (zeta'/zeta)'(sigma)
+tends to 0 as sigma -> +infinity (psi' = O(1/sigma); the Dirichlet series of (zeta'/zeta)' is
+O(2^{-sigma})). -/
+def XiLogDerivDerivDecay : Prop :=
+  Tendsto (fun σ : ℝ => deriv (logDeriv xi) (σ : ℂ)) atTop (𝓝 0)
+
+end RvMBridge18
+
+namespace RvMBridge20
+open Zeta23 Complex MeasureTheory Filter Topology Metric
+open scoped ComplexConjugate
+open WeilExplicit RvMBridge18
+
+-- ===== E6Bridge20.lean:418-421 =====
+open scoped Classical in
+/-- The extension of xiDiffReg across the zeros: the punctured limit at a zero, xiDiffReg elsewhere. -/
+def xiDiffExt (s : ℂ) : ℂ :=
+  if IsNontrivialZero s then limUnder (𝓝[≠] s) xiDiffReg else xiDiffReg s
+
+-- ===== E6Bridge20.lean:545-547 =====
+/-- **Obligation (growth).**  The entire extension has logarithmic growth. -/
+def XiDiffExtGrowth : Prop :=
+  ∃ C : ℝ, ∀ s : ℂ, ‖xiDiffExt s‖ ≤ C * (1 + Real.log (2 + ‖s‖))
+
+-- ===== E6Bridge20.lean:549-551 =====
+/-- The same on the half-plane Re s >= 1/2 only (the functional equation supplies the rest). -/
+def XiDiffExtGrowthRight : Prop :=
+  ∃ C : ℝ, ∀ s : ℂ, 1 / 2 ≤ s.re → ‖xiDiffExt s‖ ≤ C * (1 + Real.log (2 + ‖s‖))
+
+end RvMBridge20
+
+end

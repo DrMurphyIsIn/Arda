@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.xi_diff_entire_extension"
+statement_module = "Statements.RH_xi_diff_entire_extension"
+status = "draft"
+title = "XI PARTIAL FRACTION, obligation 1 part A (2026-09-21): deriv(logDeriv xi) + Sum m(rho)/(s-rho)^2 extends to an ENTIRE function (order of xi at every point = the E8 multiplicity; the double pole at a zero of order m is cancelled exactly by its own term; xiDiffExt(1-s) = xiDiffExt(s)). Nothing about RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge20.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
