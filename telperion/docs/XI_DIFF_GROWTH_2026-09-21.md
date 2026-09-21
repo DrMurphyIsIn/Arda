@@ -130,3 +130,19 @@ Probes/E6Bridge22_obligation_probe.lean:25:29: error: unsolved goals    (not Loc
 Probes/E6Bridge22_obligation_probe.lean:29:31: error: unsolved goals    (not StripDerivBound)
 Probes/E6Bridge22_obligation_probe.lean:34:34: error: unsolved goals    (growth from rightDerivBound alone)
 ```
+
+## Composition with E6Bridge19 (xi-taylor), added after its landing
+
+`Probes/E6Bridge22_taylor_probe.lean` (imports E6Bridge19 and E6Bridge22) checks that the two
+interfaces coincide definitionally and closes the chain to the B7 value half:
+
+```
+'probe_xi_defeq' depends on axioms: [propext, Classical.choice, Quot.sound]            (RvMBridge19.xi = RvMBridge18.xi := rfl)
+'probe_partialFraction_iff' depends on axioms: [propext, Classical.choice, Quot.sound] (XiDerivPartialFraction ↔ XiLogDerivDerivEq := Iff.rfl)
+'probe_liValue_of_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+
+`probe_liValue_of_two (h1 : LocalCountSum) (h2 : StripDerivBound) (hR : RvMBridge19.NoRealZeroInUnitInterval)
+(n) (hn : 0 < n) : RvMBridge15.LiValue n`. With E6Bridge15's `bl_explicit_formula_of`, the node
+RH_bl_explicit_formula therefore rests on exactly three named real facts: the local-count sum, the
+Landau-Cauchy strip bound, and the absence of real zeros of ζ in (0, 1). conjecture1_proved = False.

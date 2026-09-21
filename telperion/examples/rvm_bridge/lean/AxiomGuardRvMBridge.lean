@@ -106,6 +106,10 @@
       * RvMBridge22.{xiLogDerivDerivEq_of_two, xiDiffExtGrowthRight_of_two, rightDerivBound,
         growth_compact, growth_right, growth_strip, norm_tsum_far_le} -- obligation 1 reduced to
         LocalCountSum + StripDerivBound (2026-09-21).
+      * RvMBridge19.{liValue_of, bl_explicit_formula_of_partialFraction, powerSum_eq_taylor,
+        pairedPowerSum_one_eq, iteratedDeriv_psiHalf, taylorOne_eq, liLimit_eq_taylorOne,
+        xiDerivPartialFraction_iff} -- the LiValue Taylor bookkeeping (2026-09-21), modulo
+        XiDerivPartialFraction + NoRealZeroInUnitInterval.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -143,6 +147,7 @@ import E6Bridge18
 import E6Bridge20
 import E6Bridge21
 import E6Bridge22
+import E6Bridge19
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -636,6 +641,132 @@ import W2cAssembly
 #print axioms RvMBridge22.rightDerivBound
 #print axioms RvMBridge22.xiDiffExtGrowthRight_of_two
 #print axioms RvMBridge22.xiLogDerivDerivEq_of_two
+#print axioms RvMBridge19.xi_one_sub
+#print axioms RvMBridge19.xi_zero
+#print axioms RvMBridge19.xi_one
+#print axioms RvMBridge19.xi_analyticAt
+#print axioms RvMBridge19.xi_eq_zero_iff
+#print axioms RvMBridge19.xiLogDerivDerivEq_def
+#print axioms RvMBridge19.smallZeros_finite
+#print axioms RvMBridge19.summable_zeroBound
+#print axioms RvMBridge19.inv_normSq_le_majorant
+#print axioms RvMBridge19.one_le_norm_of_nontrivial
+#print axioms RvMBridge19.norm_pos_of_nontrivial
+#print axioms RvMBridge19.norm_le_zeroBound
+#print axioms RvMBridge19.summable_of_zeroBound
+#print axioms RvMBridge19.iteratedDeriv_tsum_ball
+#print axioms RvMBridge19.analyticAt_tsum_ball
+#print axioms RvMBridge19.exists_zero_radius
+#print axioms RvMBridge19.zeroRadius_pos
+#print axioms RvMBridge19.zeroRadius_le_one
+#print axioms RvMBridge19.zeroRadius_le
+#print axioms RvMBridge19.not_nontrivialZero_of_mem_ball
+#print axioms RvMBridge19.norm_sub_ge_half
+#print axioms RvMBridge19.coef_succ
+#print axioms RvMBridge19.coef_zero
+#print axioms RvMBridge19.norm_coef
+#print axioms RvMBridge19.zterm_zero_eq
+#print axioms RvMBridge19.zterm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge19.hasDerivAt_zterm
+#print axioms RvMBridge19.norm_zterm_le
+#print axioms RvMBridge19.summable_zbound
+#print axioms RvMBridge19.norm_zterm_le_zbound
+#print axioms RvMBridge19.powerSum_term_eq_zero_of_not_nontrivial
+#print axioms RvMBridge19.summable_powerSum
+#print axioms RvMBridge19.powerSum_conj
+#print axioms RvMBridge19.powerSum_re
+#print axioms RvMBridge19.zterm_at_zero
+#print axioms RvMBridge19.tsum_zterm_zero
+#print axioms RvMBridge19.deriv_logDeriv_xi_eventuallyEq
+#print axioms RvMBridge19.iteratedDeriv_tsum_zterm
+#print axioms RvMBridge19.powerSum_eq_taylor
+#print axioms RvMBridge19.powerSum_eq_neg_taylor
+#print axioms RvMBridge19.pairedPowerSum_term_eq_zero_of_not_nontrivial
+#print axioms RvMBridge19.abs_re_inv_pow_le
+#print axioms RvMBridge19.summable_pairedPowerSum
+#print axioms RvMBridge19.pairedPowerSum_eq_powerSum
+#print axioms RvMBridge19.logDeriv_xi_one_sub
+#print axioms RvMBridge19.logDeriv_xi_eq
+#print axioms RvMBridge19.logDeriv_xi_analyticAt
+#print axioms RvMBridge19.hasDerivAt_logDeriv_xi
+#print axioms RvMBridge19.xi_ne_zero_on_segment
+#print axioms RvMBridge19.im_ne_zero_of_nontrivial
+#print axioms RvMBridge19.ofReal_ne_of_im_ne_zero
+#print axioms RvMBridge19.abs_im_le_norm_ofReal_sub
+#print axioms RvMBridge19.norm_zterm_zero_ofReal_le
+#print axioms RvMBridge19.inv_im_sq_le_majorant
+#print axioms RvMBridge19.norm_zterm_zero_ofReal_le_segBound
+#print axioms RvMBridge19.continuous_zterm_zero_ofReal
+#print axioms RvMBridge19.integral_zterm_zero
+#print axioms RvMBridge19.zeros_countable
+#print axioms RvMBridge19.support_zterm_subset
+#print axioms RvMBridge19.hasSum_integral_zterm
+#print axioms RvMBridge19.tsum_inv_add_inv_one_sub
+#print axioms RvMBridge19.refTerm_reflect
+#print axioms RvMBridge19.refTerm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge19.summable_refTerm
+#print axioms RvMBridge19.tsum_refTerm
+#print axioms RvMBridge19.pairedPowerSum_one_eq
+#print axioms RvMBridge19.logDeriv_zeta_eq_near_one
+#print axioms RvMBridge19.zetaLogDerivReg_eventuallyEq
+#print axioms RvMBridge19.logDeriv_zeta₁_analyticAt
+#print axioms RvMBridge19.eta_eq
+#print axioms RvMBridge19.dcoef_succ
+#print axioms RvMBridge19.norm_dcoef
+#print axioms RvMBridge19.re_pos_of_mem_ball
+#print axioms RvMBridge19.norm_le_of_mem_ball
+#print axioms RvMBridge19.norm_shift_ge
+#print axioms RvMBridge19.shift_ne_zero
+#print axioms RvMBridge19.hasDerivAt_dterm
+#print axioms RvMBridge19.summable_dbound
+#print axioms RvMBridge19.norm_dterm_le
+#print axioms RvMBridge19.iteratedDeriv_dtail
+#print axioms RvMBridge19.dtail_analyticAt
+#print axioms RvMBridge19.half_mem_integerComplement
+#print axioms RvMBridge19.psiHalf_eq
+#print axioms RvMBridge19.psiHalf_eventuallyEq
+#print axioms RvMBridge19.psiHalf_analyticAt
+#print axioms RvMBridge19.summable_inv_nat_pow
+#print axioms RvMBridge19.summable_even_inv_pow
+#print axioms RvMBridge19.summable_odd_inv_pow'
+#print axioms RvMBridge19.summable_odd_inv_pow
+#print axioms RvMBridge19.tsum_odd_inv_pow
+#print axioms RvMBridge19.iteratedDeriv_psiHalf
+#print axioms RvMBridge19.archFn_analyticAt
+#print axioms RvMBridge19.archCoeff_zero
+#print axioms RvMBridge19.archCoeff_succ
+#print axioms RvMBridge19.logDeriv_xi_eq_closed
+#print axioms RvMBridge19.closedFn_analyticAt
+#print axioms RvMBridge19.logDeriv_xi_eventuallyEq_one
+#print axioms RvMBridge19.iteratedDeriv_one_div
+#print axioms RvMBridge19.taylorOne_eq
+#print axioms RvMBridge19.iter_deriv_comp_add_const
+#print axioms RvMBridge19.taylorZero_eq
+#print axioms RvMBridge19.pairedPowerSum_succ_eq
+#print axioms RvMBridge19.liKernel_re
+#print axioms RvMBridge19.liPaired_eq_sum
+#print axioms RvMBridge19.liLimit_eq_sum
+#print axioms RvMBridge19.liLimit_eq_taylorOne
+#print axioms RvMBridge19.sum_choose_alt
+#print axioms RvMBridge19.sum_choose_eta
+#print axioms RvMBridge19.sum_choose_archCoeff
+#print axioms RvMBridge19.liValue_of
+#print axioms RvMBridge19.bl_explicit_formula_of_partialFraction
+#print axioms RvMBridge19.zeroSet_closed
+#print axioms RvMBridge19.logDeriv_xi_eq_lambda
+#print axioms RvMBridge19.logDeriv_xi_eventuallyEq_lambda
+#print axioms RvMBridge19.logDeriv_lambda_analyticAt
+#print axioms RvMBridge19.deriv_logDeriv_lambda_eq
+#print axioms RvMBridge19.lambdaDerivPartialFraction_of_xi
+#print axioms RvMBridge19.eq_of_continuousAt_of_eventually_ne
+#print axioms RvMBridge19.zeroMult_one_sub
+#print axioms RvMBridge19.tsum_zero_series_one_sub
+#print axioms RvMBridge19.deriv_logDeriv_xi_one_sub
+#print axioms RvMBridge19.xiDerivPartialFraction_of_lambda
+#print axioms RvMBridge19.xiDerivPartialFraction_iff
+#print axioms RvMBridge19.liValue_of_lambda
+#print axioms RvMBridge19.liValue_of_growth
+#print axioms RvMBridge19.bl_explicit_formula_of_growth
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
