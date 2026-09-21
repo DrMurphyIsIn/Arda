@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -156,6 +156,15 @@ name = "E6Bridge16"
 # an instrument; NOT a proof of RH. conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge17"
+
+# Eighteenth bridge (2026-09-21, the xi partial fraction WITHOUT Hadamard): the constant-free
+# DERIVATIVE partial fraction (logDeriv xi)' = -Sum m(rho)/(s-rho)^2. PROVED: summability,
+# the log-growth Liouville lemma eq_const_of_log_growth, real-axis decay of the sum, assembly
+# xi_logDeriv_deriv_eq_of. MODULO two named analytic obligations: XiDiffRegular (the difference
+# extends to an entire function of logarithmic growth) and XiLogDerivDerivDecay (real-axis decay
+# of (logDeriv xi)'). Consumer: LiValue (E6Bridge19). Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge18"
 
 [[lean_lib]]
 name = "W2cAssembly"

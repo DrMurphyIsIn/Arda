@@ -34,3 +34,7 @@ import Statements.MM_wall_map
 import Statements.MM_gaussian_positivity_envelope
 import Statements.MM_effective_threshold_unbounded
 import Statements.MM_effective_gaussian_dominance
+import Statements.MM_gaussian_positivity_envelope_sharp
+import Statements.MM_rh_iff_theta_positivity
+import Statements.MM_theta_heat_monotone
+import Statements.MM_rh_iff_theta_widths

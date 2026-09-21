@@ -94,6 +94,9 @@
       * RvMBridge17.{rh_iff_theta_positivity, theta_heat, theta_pos_mono, rh_iff_thetaWidths_eq,
         not_thetaFree_of_offline, rh_or_thetaWidths_bddAbove} -- the THETA FACE (2026-09-21): the
         plain Gaussian face is heat-monotone in width; RH <-> every width free.  NOT a proof of RH.
+      * RvMBridge18.{xi_logDeriv_deriv_eq_of, eq_const_of_log_growth, summable_inv_sub_sq,
+        tsum_inv_sub_sq_tendsto, logDeriv_xi_eq} -- the xi derivative partial fraction skeleton
+        (2026-09-21), modulo the named obligations XiDiffRegular / XiLogDerivDerivDecay.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -127,6 +130,7 @@ import E6Bridge14
 import E6Bridge15
 import E6Bridge16
 import E6Bridge17
+import E6Bridge18
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -511,6 +515,25 @@ import W2cAssembly
 #print axioms RvMBridge17.not_thetaFree_of_offline
 #print axioms RvMBridge17.thetaWidths_bddAbove_of_offline
 #print axioms RvMBridge17.rh_or_thetaWidths_bddAbove
+#print axioms RvMBridge18.xi_differentiable
+#print axioms RvMBridge18.xi_eq
+#print axioms RvMBridge18.xi_eventuallyEq
+#print axioms RvMBridge18.logDeriv_xi_eq
+#print axioms RvMBridge18.normSq_gammaOf_le
+#print axioms RvMBridge18.polTerm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge18.norm_polTerm
+#print axioms RvMBridge18.norm_polTerm_le_majorant
+#print axioms RvMBridge18.finite_zeros_near
+#print axioms RvMBridge18.summable_polBound
+#print axioms RvMBridge18.norm_polTerm_le
+#print axioms RvMBridge18.summable_inv_sub_sq
+#print axioms RvMBridge18.summable_polTerm
+#print axioms RvMBridge18.norm_polTerm_le_real
+#print axioms RvMBridge18.polTerm_tendsto_zero
+#print axioms RvMBridge18.tsum_inv_sub_sq_tendsto
+#print axioms RvMBridge18.eq_const_of_log_growth
+#print axioms RvMBridge18.not_nontrivialZero_of_one_le_re
+#print axioms RvMBridge18.xi_logDeriv_deriv_eq_of
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
