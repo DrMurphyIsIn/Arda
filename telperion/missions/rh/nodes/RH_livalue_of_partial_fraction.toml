@@ -3,12 +3,17 @@ depends_on = ["RH_bl_explicit_formula_of_livalue"]
 kind = "lemma"
 name = "RH.livalue_of_partial_fraction"
 statement_module = "Statements.RH_livalue_of_partial_fraction"
-status = "draft"
+status = "proved"
 title = "THE BOMBIERI-LAGARIAS VALUE IDENTITY, Taylor bookkeeping PROVED (2026-09-21): LiValue n (liLimit n = archSide n + finiteSide n) for every n >= 1, GIVEN the derivative partial fraction of xi and no real zero of zeta in (0,1). Power sums j >= 2 from the Taylor data of (log xi)'' at 0; the paired first power sum from the FTC on [0,1] and the functional equation; the closed forms through eta_j and the polygamma values at 1/2 (the (1 - 2^{-j}) zeta(j) terms). Numerically checked to 1e-27 against Li's generating function. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge19.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-livalue-taylor-2026-09-21 (AUDIT_TESTIMONY_LIVALUE_TAYLOR_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: the Bombieri-Lagarias value identity for every n >= 1 given the derivative partial fraction of xi and no real zero of zeta in (0,1). Audit 8/8: Lambda-form correction carries the product-rule signs; power-sum radius and termwise differentiation correct; the paired first power sum from the FTC on [0,1] and the reflection fold; closed forms via eta_j and the polygamma tower at 1/2 re-derived by hand; assembly matches RHDefs archSide + finiteSide exactly; Li's first four values reproduced to ~1e-30. conjecture1_proved = False."

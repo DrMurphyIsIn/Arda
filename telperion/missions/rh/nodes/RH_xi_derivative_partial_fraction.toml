@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["RH_strip_deriv_bound", "RH_xi_derivative_partial_fraction_of_strip"]
+kind = "lemma"
+name = "RH.xi_derivative_partial_fraction"
+statement_module = "Statements.RH_xi_derivative_partial_fraction"
+status = "draft"
+title = "THE XI PARTIAL FRACTION, DERIVATIVE FORM, UNCONDITIONAL (2026-09-21): (log xi)''(s) = -Sum m(rho)/(s - rho)^2 for every s that is not a nontrivial zero, proved WITHOUT the Hadamard product (entire difference of logarithmic growth is constant, and vanishes on the real axis). An identity valid whether or not RH holds. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge27.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
