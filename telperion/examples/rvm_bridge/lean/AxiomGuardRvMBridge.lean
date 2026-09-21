@@ -100,6 +100,9 @@
       * RvMBridge20.{xiDiffExt_differentiable, xiDiffExt_eq, xiDiffExt_one_sub, exists_local_form,
         analyticOrderAt_xi_eq, xiDiffRegular_of} -- obligation 1 part A (2026-09-21): the entire
         extension across the zeros; growth remains the named obligation XiDiffExtGrowthRight.
+      * RvMBridge21.{xi_logDeriv_deriv_decay, xi_logDeriv_deriv_eq_of_regular,
+        digamma_deriv_tendsto_zero, zeta_logDeriv_deriv_tendsto_zero, hasSum_trigamma_of_re_pos}
+        -- obligation 2 DISCHARGED (2026-09-21): real-axis decay of (log xi)''.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -135,6 +138,7 @@ import E6Bridge16
 import E6Bridge17
 import E6Bridge18
 import E6Bridge20
+import E6Bridge21
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -569,6 +573,38 @@ import W2cAssembly
 #print axioms RvMBridge20.xiDiffExtGrowth_of_right
 #print axioms RvMBridge20.xiDiffRegular_of
 #print axioms RvMBridge20.xiDiffRegular_of_right
+#print axioms RvMBridge21.ne_neg_nat_of_re_pos
+#print axioms RvMBridge21.isOpen_re_pos
+#print axioms RvMBridge21.analyticAt_Gamma_of_re_pos
+#print axioms RvMBridge21.analyticAt_digamma_of_re_pos
+#print axioms RvMBridge21.continuousAt_deriv_digamma
+#print axioms RvMBridge21.norm_trigTerm_le
+#print axioms RvMBridge21.summable_trigBound
+#print axioms RvMBridge21.continuousOn_trigSum
+#print axioms RvMBridge21.summable_trigTerm
+#print axioms RvMBridge21.eq_of_intCast_near
+#print axioms RvMBridge21.hasSum_trigamma_of_re_pos
+#print axioms RvMBridge21.sum_range_inv_sq_le
+#print axioms RvMBridge21.summable_inv_sq_real
+#print axioms RvMBridge21.tsum_inv_sq_real_le
+#print axioms RvMBridge21.norm_trigTerm_real
+#print axioms RvMBridge21.norm_deriv_digamma_real_le
+#print axioms RvMBridge21.digamma_deriv_tendsto_zero
+#print axioms RvMBridge21.abscissa_vonMangoldt_le_one
+#print axioms RvMBridge21.abscissa_vonMangoldt_lt
+#print axioms RvMBridge21.isOpen_one_lt_re
+#print axioms RvMBridge21.logDeriv_zeta_eq
+#print axioms RvMBridge21.deriv_logDeriv_zeta_eq
+#print axioms RvMBridge21.term_logMul_one
+#print axioms RvMBridge21.term_tendsto_zero
+#print axioms RvMBridge21.norm_term_le_of_two_le
+#print axioms RvMBridge21.zeta_logDeriv_deriv_tendsto_zero
+#print axioms RvMBridge21.logDeriv_xi_eq_of_one_lt_re
+#print axioms RvMBridge21.deriv_logDeriv_xi_real
+#print axioms RvMBridge21.tendsto_neg_inv_sq
+#print axioms RvMBridge21.tendsto_inv_sub_one_sq
+#print axioms RvMBridge21.xi_logDeriv_deriv_decay
+#print axioms RvMBridge21.xi_logDeriv_deriv_eq_of_regular
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
