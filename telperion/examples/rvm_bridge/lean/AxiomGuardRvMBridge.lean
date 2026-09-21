@@ -35,6 +35,20 @@
         Zeta23.WeilEF.gammaR_bracket / Zeta23.WeilEF.integrable_mul_logDeriv_Gammaℝ_of_decay --
         the upstream inputs the fourth bridge consumes as black boxes (the literature-form
         explicit formula itself, Fourier inversion, the Gamma_R bracket, the majorant lemma).
+      * RvMBridge5.rh_implies_weil_positivity -- the MIRRORMERE dictionary node
+        MM_rh_implies_weil_positivity, verbatim (Weil's criterion, forward half: Mathlib's
+        RiemannHypothesis implies 0 <= Re weilForm (autocorr g) for every IsWeilTest g); plus its
+        stages autocorr_eq_weilTest (autocorr = Zeta23's weilTest g g), isWeilTest_autocorr,
+        eq_half_add_im_of_rh, weilKernel_autocorr_line (the |h(r)|^2 factorisation on the line)
+        and term_re_nonneg.  Proves nothing about RH; discharges the hpos hypothesis of
+        weil_negative_refutes_rh.  conjecture1_proved = False.
+      * RvMBridge6.weil_positivity_implies_rh_of / weil_positivity_implies_rh_of' /
+        rh_iff_weil_positivity_of -- the Weil converse ATTACK (2026-09-20): Weil positivity implies
+        Mathlib's RiemannHypothesis MODULO the named obligations GaussianTransfer (or the zero-free
+        GaussianApprox) and GaussianDominance, carried as explicit hypotheses; plus every
+        unconditional stage (explicit formula with the zero side isolated, zeroSide real,
+        reflection symmetry gammaOf_reflect / zeroMult_reflect, strip_of_zero, pair split,
+        Gaussian summability, gaussianTransfer_of_approx).  Proves nothing about RH.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -55,6 +69,8 @@ import E6Bridge
 import E6Bridge2
 import E6Bridge3
 import E6Bridge4
+import E6Bridge5
+import E6Bridge6
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -86,6 +102,38 @@ import W2cAssembly
 #print axioms RvMBridge4.weilKernel_eq_Hfn
 #print axioms RvMBridge4.zeroMult_eq_of_strip
 #print axioms RvMBridge4.zeroMult_eq_zero_of_not_nontrivial
+#print axioms RvMBridge5.rh_implies_weil_positivity
+#print axioms RvMBridge5.autocorr_eq_weilTest
+#print axioms RvMBridge5.isWeilTest_autocorr
+#print axioms RvMBridge5.eq_half_add_im_of_rh
+#print axioms RvMBridge5.weilKernel_autocorr_line
+#print axioms RvMBridge5.term_re_nonneg
+#print axioms RvMBridge6.weilKernel_autocorr
+#print axioms RvMBridge6.hasSum_weilForm_autocorr
+#print axioms RvMBridge6.weilForm_autocorr_eq_zeroSide
+#print axioms RvMBridge6.summable_hermitian_zeroSide
+#print axioms RvMBridge6.reflect_reflect
+#print axioms RvMBridge6.gammaOf_reflect
+#print axioms RvMBridge6.zeroMult_reflect
+#print axioms RvMBridge6.zeroSide_conj
+#print axioms RvMBridge6.hermitianTransform_conj
+#print axioms RvMBridge6.gaussTest_conj
+#print axioms RvMBridge6.weilForm_autocorr_real
+#print axioms RvMBridge6.strip_of_zero
+#print axioms RvMBridge6.rh_of_all_on_line
+#print axioms RvMBridge6.weil_positivity_implies_rh_of
+#print axioms RvMBridge6.rh_iff_weil_positivity_of
+#print axioms RvMBridge6.reflect_ne_self
+#print axioms RvMBridge6.zeroSide_pair_split
+#print axioms RvMBridge6.gaussTest_axis
+#print axioms RvMBridge6.gaussTest_axis_re_neg
+#print axioms RvMBridge6.norm_gaussTest_mul_le
+#print axioms RvMBridge6.summable_mult_div_one_add_normSq
+#print axioms RvMBridge6.summable_gauss_zeroSide
+#print axioms RvMBridge6.gauss_zeroSide_real
+#print axioms RvMBridge6.gauss_zeroSide_pair_split
+#print axioms RvMBridge6.gaussianTransfer_of_approx
+#print axioms RvMBridge6.weil_positivity_implies_rh_of'
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
