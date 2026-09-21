@@ -33,3 +33,4 @@ import Statements.MM_gaussian_positivity_small_lam
 import Statements.MM_wall_map
 import Statements.MM_gaussian_positivity_envelope
 import Statements.MM_effective_threshold_unbounded
+import Statements.MM_effective_gaussian_dominance

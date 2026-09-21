@@ -452,6 +452,26 @@ B = constB c. -/
 def lamThreshold (c D d δ : ℝ) : ℝ :=
   max 1 (constB c * Real.exp (2 * (D ^ 2 - 1 / 4)) / (2 * (D ^ 2 - 1 / 4 - d ^ 2) * δ ^ 2))
 
+-- ===== E6Bridge12.lean:83-84 (added 2026-09-21 for MM_effective_gaussian_dominance) =====
+/-- The ordinate window as an index set. -/
+def winSet (c D : ℝ) : Set ℂ := {ρ : ℂ | |ρ.im - c| ≤ D}
+
+-- ===== E6Bridge12.lean:383-385 =====
+/-- The nontrivial zeros with |Im rho - c| <= D: finite by the local zero count
+(Zeta23.zetaSeam.finite_window), generalised from E6Bridge7's centre rho_0 to (c, D). -/
+def zeroWindowSet (c D : ℝ) : Set ℂ := {ρ | IsNontrivialZero ρ} ∩ winSet c D
+
+-- ===== E6Bridge12.lean:387-392 (rvm_bridge island, v4.33).  SUPPORT LEMMA carried as `sorry`
+-- HERE ONLY so that `zeroWindow` elaborates: it is PROVED on the rvm_bridge island (same file,
+-- via Zeta23.zetaSeam.finite_window) and is NOT a registry node; the sorry is vocabulary
+-- scaffolding in the statement package, the same trust class as the node statements
+-- themselves, and never enters an axiom guard (same precedent as
+-- RHInBoxAnalytic.divisor_ball_support_finite_of_one_notMem above). =====
+lemma zeroWindowSet_finite (c D : ℝ) : (zeroWindowSet c D).Finite := by sorry
+
+/-- The certified window as a Finset. -/
+def zeroWindow (c D : ℝ) : Finset ℂ := (zeroWindowSet_finite c D).toFinset
+
 end RvMBridge12
 
 /-

@@ -84,6 +84,9 @@
         effectiveThreshold_unbounded_of_small_spacing} -- open lemma 1 (2026-09-21): effective
         Gaussian dominance with the explicit threshold and the localisation instrument; the
         spacing floor is load-bearing.  NOT a proof of RH.  conjecture1_proved = False.
+      * RvMBridge15.{liZeroSum_tendsto, bl_explicit_formula_of, rh_implies_liLimit_re_nonneg}
+        -- open lemma 2 (2026-09-21): the Weil-to-Li dictionary; B7 convergence half proved, the
+        node modulo the named LiValue obligation; Li's criterion forward half.  NOT a proof of RH.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -114,6 +117,7 @@ import E6Bridge11
 import E6Bridge12
 import E6Bridge13
 import E6Bridge14
+import E6Bridge15
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -388,6 +392,39 @@ import W2cAssembly
 #print axioms RvMBridge14.band_finite
 #print axioms RvMBridge14.offline_zeros_small_or_margin
 #print axioms RvMBridge14.windowCount_le_Ncount
+#print axioms RvMBridge15.isNontrivialZero_conj
+#print axioms RvMBridge15.isNontrivialZero_conj_iff
+#print axioms RvMBridge15.zeroMult_conj
+#print axioms RvMBridge15.mem_windowSet
+#print axioms RvMBridge15.conj_mem_windowSet
+#print axioms RvMBridge15.finite_zeros_window
+#print axioms RvMBridge15.liKernel_conj
+#print axioms RvMBridge15.liTerm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge15.liPaired_eq_zero_of_not_nontrivial
+#print axioms RvMBridge15.liTerm_conj
+#print axioms RvMBridge15.windowSupport_finite
+#print axioms RvMBridge15.liZeroSum_eq_tsum_indicator
+#print axioms RvMBridge15.indicator_liTerm_conj
+#print axioms RvMBridge15.summable_indicator_liTerm
+#print axioms RvMBridge15.liZeroSum_eq_tsum_paired
+#print axioms RvMBridge15.liZeroSum_im
+#print axioms RvMBridge15.liKernel_eq_sum
+#print axioms RvMBridge15.sum_choose_succ_le
+#print axioms RvMBridge15.abs_re_liKernel_le
+#print axioms RvMBridge15.liPaired_re
+#print axioms RvMBridge15.liPaired_im
+#print axioms RvMBridge15.norm_liPaired
+#print axioms RvMBridge15.norm_liPaired_le_majorant
+#print axioms RvMBridge15.finite_zeros_small
+#print axioms RvMBridge15.summable_liBound
+#print axioms RvMBridge15.norm_liPaired_le
+#print axioms RvMBridge15.summable_liPaired
+#print axioms RvMBridge15.liZeroSum_tendsto
+#print axioms RvMBridge15.bl_explicit_formula_of
+#print axioms RvMBridge15.norm_one_sub_inv_of_on_line
+#print axioms RvMBridge15.liPaired_re_nonneg_of_rh
+#print axioms RvMBridge15.rh_implies_liZeroSum_re_nonneg
+#print axioms RvMBridge15.rh_implies_liLimit_re_nonneg
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
