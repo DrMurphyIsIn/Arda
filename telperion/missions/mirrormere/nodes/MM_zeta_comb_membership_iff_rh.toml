@@ -3,6 +3,11 @@ depends_on = ["MM_rh_implies_weil_positivity", "MM_weil_positivity_implies_rh"]
 kind = "lemma"
 name = "MM.zeta_comb_membership_iff_rh"
 statement_module = "Statements.MM_zeta_comb_membership_iff_rh"
-status = "draft"
+status = "open"
 title = "The dictionary theorem: the MIRRORMERE goal statement is EQUIVALENT to Mathlib's RiemannHypothesis, in-kernel -- replaces the 2026-09-14 placeholder's by-fiat identification (CharacterizationStatements.zeta_FQ_iff_RH is a def : Prop over opaque variables, never a theorem) with a proved equivalence; the goal node stays draft and RH-hard, now for a proved reason. conjecture1_proved = False."
 updated = "2026-09-20"
+
+[readback]
+auditor = "blind-auditor-converse-2026-09-20 (AUDIT_TESTIMONY_WEIL_CONVERSE_2026-09-20.md)"
+date = "2026-09-20"
+text = "Read-back: the goal statement (Weil positivity on autocorrelations over IsWeilTest) is equivalent to Mathlib's RiemannHypothesis. Forward half PROVED and granted (MM_rh_implies_weil_positivity); converse half reduced to the two Gaussian obligations. This is the dictionary theorem, not RH: it becomes proved when the converse lands and says nothing about whether either side holds. conjecture1_proved = False."

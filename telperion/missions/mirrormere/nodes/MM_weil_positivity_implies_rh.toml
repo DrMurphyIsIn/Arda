@@ -3,6 +3,11 @@ depends_on = ["MM_weil_positivity_implies_rh_of_gaussian", "MM_gaussian_transfer
 kind = "lemma"
 name = "MM.weil_positivity_implies_rh"
 statement_module = "Statements.MM_weil_positivity_implies_rh"
-status = "draft"
+status = "open"
 title = "Weil's criterion, converse half (Weil 1952; Bombieri 2000 on C_c^infinity): Weil positivity on Hermitian autocorrelations over IsWeilTest implies Mathlib's RiemannHypothesis -- classical analysis, NOT RH-hard, never before formalized here; an off-line zero must be turned into a test function with strictly negative pairing. conjecture1_proved = False. REDUCED 2026-09-20 to the two Gaussian obligations (see MM_weil_positivity_implies_rh_of_gaussian)."
 updated = "2026-09-20"
+
+[readback]
+auditor = "blind-auditor-converse-2026-09-20 (AUDIT_TESTIMONY_WEIL_CONVERSE_2026-09-20.md)"
+date = "2026-09-20"
+text = "Read-back: Weil positivity of weilForm on Hermitian autocorrelations over IsWeilTest implies Mathlib's RiemannHypothesis. Classical (Weil 1952; Bombieri 2000). Reduced on 2026-09-20 to the two Gaussian obligations via the granted node MM_weil_positivity_implies_rh_of_gaussian; lands when both obligations are discharged. Not RH-hard. conjecture1_proved = False."

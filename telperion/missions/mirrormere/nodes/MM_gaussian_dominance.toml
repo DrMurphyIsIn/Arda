@@ -3,6 +3,11 @@ depends_on = []
 kind = "lemma"
 name = "MM.gaussian_dominance"
 statement_module = "Statements.MM_gaussian_dominance"
-status = "draft"
+status = "open"
 title = "Obligation O2 (GaussianDominance), the analytic heart of the Weil converse: if rho_0 is a nontrivial zero off the critical line then for some real centre c and some lam > 0 the Gaussian-weighted zero sum Sum_rho m(rho) (gamma_rho - c)^2 exp(-2 lam (gamma_rho - c)^2) has strictly negative real part. Weil/Bombieri localisation: generic centre within |1/2 - Re rho_0| of Im rho_0, the argmax of (Im gamma)^2 - (Re gamma - c)^2 over the zeros (attained, off-line, unique up to the pair rho <-> 1 - conj rho), a phase choice along lam_k -> infinity, and a tail bound from the local zero count. A statement about the zeros of zeta alone; vacuously true under RH, but its intended proof does not use RH; NOT RH-hard; open. This is where the converse attack stopped on 2026-09-20. conjecture1_proved = False."
 updated = "2026-09-20"
+
+[readback]
+auditor = "blind-auditor-converse-2026-09-20 (AUDIT_TESTIMONY_WEIL_CONVERSE_2026-09-20.md)"
+date = "2026-09-20"
+text = "Read-back from the converse audit: this obligation is a def : Prop whose printed body never mentions RiemannHypothesis; it is neither trivially provable (simp/aesop make no progress; pathological parameters fail) nor trivially refutable; the tsum it quantifies over is proved summable. Believed true by the Weil/Bombieri argument (O2) resp. by complex-argument Gaussian Fourier analysis (O1'); GaussianTransfer follows from GaussianApprox by the proved gaussianTransfer_of_approx. Open, RH-free, attackable. conjecture1_proved = False."
