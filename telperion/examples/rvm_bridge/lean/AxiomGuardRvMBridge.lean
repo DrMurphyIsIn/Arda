@@ -110,6 +110,9 @@
         pairedPowerSum_one_eq, iteratedDeriv_psiHalf, taylorOne_eq, liLimit_eq_taylorOne,
         xiDerivPartialFraction_iff} -- the LiValue Taylor bookkeeping (2026-09-21), modulo
         XiDerivPartialFraction + NoRealZeroInUnitInterval.
+      * RvMBridge23.{local_count_sum, xiLogDerivDerivEq_of_strip} -- LocalCountSum DISCHARGED
+        (2026-09-21).  RvMBridge25.{noRealZeroInUnitInterval, liValue_of_two,
+        bl_explicit_formula_of_two} -- no real zero in (0,1) DISCHARGED; B7 modulo StripDerivBound.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -148,6 +151,8 @@ import E6Bridge20
 import E6Bridge21
 import E6Bridge22
 import E6Bridge19
+import E6Bridge23
+import E6Bridge25
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -767,6 +772,36 @@ import W2cAssembly
 #print axioms RvMBridge19.liValue_of_lambda
 #print axioms RvMBridge19.liValue_of_growth
 #print axioms RvMBridge19.bl_explicit_formula_of_growth
+#print axioms RvMBridge23.one_add_sq_le_of_ceil
+#print axioms RvMBridge23.lcTerm_le_fiber_weight
+#print axioms RvMBridge23.lcTerm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge23.zeroMult_cast_eq
+#print axioms RvMBridge23.sum_zeroMult_fiber_le
+#print axioms RvMBridge23.wt_nonneg
+#print axioms RvMBridge23.wlog_nonneg
+#print axioms RvMBridge23.summable_wt
+#print axioms RvMBridge23.log_add_four_le
+#print axioms RvMBridge23.log_div_le_rpow
+#print axioms RvMBridge23.summable_wlog
+#print axioms RvMBridge23.wcount_le
+#print axioms RvMBridge23.wcount_nonneg
+#print axioms RvMBridge23.summable_wbound
+#print axioms RvMBridge23.summable_wcount
+#print axioms RvMBridge23.sum_lcTerm_le
+#print axioms RvMBridge23.S1_nonneg
+#print axioms RvMBridge23.S2_nonneg
+#print axioms RvMBridge23.tsum_wcount_le
+#print axioms RvMBridge23.local_count_sum
+#print axioms RvMBridge23.xiDiffExtGrowthRight_of_strip
+#print axioms RvMBridge23.xiLogDerivDerivEq_of_strip
+#print axioms RvMBridge25.norm_tail_integral_le
+#print axioms RvMBridge25.re_riemannZeta_neg_of_unit_interval
+#print axioms RvMBridge25.riemannZeta_ne_zero_of_unit_interval
+#print axioms RvMBridge25.noRealZeroInUnitInterval
+#print axioms RvMBridge25.liValue_of_partialFraction
+#print axioms RvMBridge25.liValue_of_growth
+#print axioms RvMBridge25.liValue_of_two
+#print axioms RvMBridge25.bl_explicit_formula_of_two
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

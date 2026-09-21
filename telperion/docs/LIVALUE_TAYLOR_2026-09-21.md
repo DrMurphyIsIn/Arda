@@ -182,6 +182,9 @@ the zeros to 1e-7. The zeros+tail residual is the tail estimate's own error, not
 
 * `XiLogDerivDerivEq` itself: through E6Bridge20/21 it rests on `RvMBridge20.XiDiffExtGrowthRight`
   (a log-growth bound on Re s >= 1/2, in progress in E6Bridge22).
-* `NoRealZeroInUnitInterval` (elementary; or replace the segment by the L-shaped path, section 1).
+* `NoRealZeroInUnitInterval`: DISCHARGED in E6Bridge25 (`RvMBridge25.noRealZeroInUnitInterval`, from
+  the island's summation-by-parts representation `Zeta0EqZeta` at N = 1; see
+  NO_REAL_ZERO_2026-09-21.md); `liValue_of_two` / `bl_explicit_formula_of_two` there put the node on
+  E6Bridge22's two inequalities alone.
 * Registration: E6Bridge19 is not in `lakefile.toml` defaultTargets nor in `AxiomGuardRvMBridge`
   (not to be edited by this session); the olean was emitted by hand for the probe.
