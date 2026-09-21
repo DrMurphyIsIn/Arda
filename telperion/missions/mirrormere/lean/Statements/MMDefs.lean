@@ -368,4 +368,126 @@ def GaussianApprox : Prop :=
 
 end RvMBridge6
 
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, WALL ASSAULT seam A) =====
+  VERBATIM from the rvm_bridge island (v4.33), with docstrings and source lines cited:
+  RvMBridge8.gaussB / gaussK / gaussPhi (E6Bridge8.lean:156-169, the non-compactly-supported
+  Gaussian-derivative test whose Hermitian transform is RvMBridge6.gaussTest) and
+  RvMBridge10.GaussianPositivity (E6Bridge10.lean:50-52, the Wall in two real parameters).
+  Vocabulary for MM_rh_iff_gaussian_positivity, MM_gaussian_explicit_formula and
+  MM_rh_iff_gaussian_prime_le_arch; all three are equivalences or identities and prove nothing
+  about either side.  conjecture1_proved = False.
+-/
+namespace RvMBridge8
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit
+
+-- ===== E6Bridge8.lean:156-157 =====
+/-- b = 1/(4 lam): the Gaussian width whose transform has width lam. -/
+def gaussB (lam : ℝ) : ℝ := 1 / (4 * lam)
+
+-- ===== E6Bridge8.lean:162-164 =====
+/-- The normalising constant K = (2 lam i (pi/b)^{1/2})^{-1}. -/
+def gaussK (lam : ℝ) : ℂ :=
+  (2 * (lam : ℂ) * I * ((Real.pi : ℂ) / (gaussB lam : ℂ)) ^ (1 / 2 : ℂ))⁻¹
+
+-- ===== E6Bridge8.lean:166-169 =====
+/-- phi(u) = K u exp (-b u^2 - i c u): the (non-compactly-supported) inverse transform of
+gaussHalf. -/
+def gaussPhi (c lam : ℝ) (u : ℝ) : ℂ :=
+  gaussK lam * (u : ℂ) * cexp (-(gaussB lam : ℂ) * (u : ℂ) ^ 2 - I * c * u)
+
+end RvMBridge8
+
+namespace RvMBridge10
+open WeilExplicit RvMBridge6 RvMBridge8
+
+-- ===== E6Bridge10.lean:50-52 =====
+/-- Gaussian positivity: the Wall in two real parameters. -/
+def GaussianPositivity : Prop :=
+  ∀ (c lam : ℝ), 0 < lam → 0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+
+end RvMBridge10
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, WALL ASSAULT seam C) =====
+  VERBATIM from the rvm_bridge island (v4.33), source lines cited: RvMBridge7.constB
+  (E6Bridge7.lean:441-444, the lam = 1 local-count majorant constant) and RvMBridge12.WindowOnLine
+  / lamThreshold (E6Bridge12.lean:73-76, 104-107).  Vocabulary for MM_gaussian_positivity_of_window,
+  the single-near-zero form of the ladder-certified region.  The DOMINANCE form
+  (gaussian_positivity_of_window_dominance) is NOT registered: its vocabulary zeroWindow /
+  windowSum / tailEnvelope rests on the THEOREM zeroWindowSet_finite (Zeta23.zetaSeam.finite_window),
+  which is not mirrorable as a definition on this statement island.  WindowOnLine is a HYPOTHESIS
+  supplied cross-island by the Turing ladder at registry level, never a Lean import; nothing here
+  proves anything about RH.  conjecture1_proved = False.
+-/
+namespace RvMBridge7
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit
+
+-- ===== E6Bridge7.lean:441-444 =====
+def constB (c : ℝ) : ℝ :=
+  ∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℝ)
+    * ((Real.exp (1 / 2) * (2 * c ^ 2 + 13 / 4) / (min 1 1) ^ 2)
+        / (1 + Complex.normSq (gammaOf ρ)))
+
+end RvMBridge7
+
+namespace RvMBridge12
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit RvMBridge6 RvMBridge7
+
+-- ===== E6Bridge12.lean:73-76 =====
+/-- All nontrivial zeros with ordinate within D of c lie on the line (what the Turing ladder
+certifies for c <= T - D; carried here as a hypothesis, cross-island). -/
+def WindowOnLine (c D : ℝ) : Prop :=
+  ∀ ρ : ℂ, IsNontrivialZero ρ → |ρ.im - c| ≤ D → ρ.re = 1 / 2
+
+-- ===== E6Bridge12.lean:104-107 =====
+/-- The lam threshold: max 1 (B e^{2 (D^2 - 1/4)} / (2 kappa delta^2)), kappa = D^2 - 1/4 - d^2,
+B = constB c. -/
+def lamThreshold (c D d δ : ℝ) : ℝ :=
+  max 1 (constB c * Real.exp (2 * (D ^ 2 - 1 / 4)) / (2 * (D ^ 2 - 1 / 4 - d ^ 2) * δ ^ 2))
+
+end RvMBridge12
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, WALL ASSAULT seam B + wall map) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/E6Bridge11.lean (namespace RvMBridge11,
+  v4.33 island), source lines cited: GaussianExplicitFormula (63-69, the named hypothesis seam B
+  consumes; discharged by seam A's RvMBridge10.zeroSide_gaussTest_eq in E6Bridge13) and lam₀
+  (91-92, the absolute width threshold 1e-7).  Vocabulary for
+  MM_gaussian_positivity_small_lam_prime_side, MM_gaussian_positivity_small_lam and MM_wall_map.
+  Nothing here proves anything about RH.  conjecture1_proved = False.
+-/
+namespace RvMBridge11
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit
+
+-- ===== E6Bridge11.lean:63-69 =====
+/-- The explicit formula for the Gaussian-derivative test (NOT compactly supported, so outside
+the E8 class; a parallel file proves it by the same Tannery/DCT transfer as E6Bridge8).  Restated
+verbatim, consumed only as a hypothesis of gaussian_positivity_small_lam_of. -/
+def GaussianExplicitFormula : Prop := ∀ (c lam : ℝ), 0 < lam →
+  (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+    = (WeilExplicit.archSide (WeilExplicit.autocorr (RvMBridge8.gaussPhi c lam))
+        - WeilExplicit.primeSide (WeilExplicit.autocorr (RvMBridge8.gaussPhi c lam))).re
+
+-- ===== E6Bridge11.lean:91-92 =====
+/-- The absolute width threshold. -/
+def lam₀ : ℝ := 1 / 10000000
+
+-- ===== E6Bridge11.lean:1370-1374 (the envelope form, added later on 2026-09-21) =====
+/-- The explicit envelope threshold c₁(lam). -/
+def envelopeX (lam : ℝ) : ℝ :=
+  4 * Real.exp (2 * lam) * Real.sqrt (32 * Real.pi * lam) + 16 * Real.exp (16 * lam)
+
+def envelopeC (lam : ℝ) : ℝ := 2 * Real.exp (9 + 2 * envelopeX lam) + 2 / Real.sqrt lam
+
+end RvMBridge11
+
 end

@@ -65,6 +65,21 @@
         MM_zeta_comb_membership_iff_rh, verbatim: the Weil converse unconditional on this island
         and the dictionary theorem (goal statement <-> Mathlib RiemannHypothesis).  NOT a proof
         of RH.  conjecture1_proved = False.
+      * RvMBridge10.{rh_iff_gaussian_positivity, zeroSide_gaussTest_eq, rh_iff_gaussian_prime_le_arch}
+        -- WALL ASSAULT seam A (2026-09-21): the Wall in two real parameters (RH <-> Gaussian
+        positivity <-> prime side <= archimedean side for every centre and width), plus the
+        limit stages of the Gaussian explicit formula.  Equivalences only; NOT a proof of RH.
+      * RvMBridge12.{gaussian_positivity_of_window, gaussian_positivity_of_window_two,
+        gaussian_positivity_of_all_on_line} -- WALL ASSAULT seam C (2026-09-21): the
+        ladder-certified region instrument (WindowOnLine hypothesis + one certified near zero +
+        lam above an explicit threshold => Gaussian positivity at that centre); plus stages
+        (zeroSide_split, tail_bound_window, near_term_ge, tail_le_near_of_threshold).
+        NOT a proof of RH; the on-line hypothesis is load-bearing.
+      * RvMBridge11.re_weilForm_gauss_nonneg -- WALL ASSAULT seam B (2026-09-21): the small-width
+        region lam <= lam0 = 1e-7 is UNCONDITIONAL (archimedean dominance), plus its stages.
+      * RvMBridge13.{gaussianExplicitFormula, gaussian_positivity_small_lam,
+        rh_iff_gaussian_positivity_above_lam0} -- THE WALL MAP: RH <-> Gaussian positivity on
+        widths above lam0 only.  Equivalence; NOT a proof of RH.  conjecture1_proved = False.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -90,6 +105,10 @@ import E6Bridge6
 import E6Bridge7
 import E6Bridge8
 import E6Bridge9
+import E6Bridge10
+import E6Bridge11
+import E6Bridge12
+import E6Bridge13
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -219,6 +238,137 @@ import W2cAssembly
 #print axioms RvMBridge9.gaussian_transfer
 #print axioms RvMBridge9.weil_positivity_implies_rh
 #print axioms RvMBridge9.zeta_comb_membership_iff_rh
+#print axioms RvMBridge9.weil_negative_refutes_rh
+#print axioms RvMBridge10.gaussTest_ofReal
+#print axioms RvMBridge10.gaussTest_ofReal_re_nonneg
+#print axioms RvMBridge10.gammaOf_eq_im_of_rh
+#print axioms RvMBridge10.gauss_term_re_nonneg
+#print axioms RvMBridge10.rh_implies_gaussian_positivity
+#print axioms RvMBridge10.gaussian_positivity_implies_rh
+#print axioms RvMBridge10.rh_iff_gaussian_positivity
+#print axioms RvMBridge10.gaussian_positivity_iff_weil_positivity
+#print axioms RvMBridge10.exists_hermitian_gaussTests_bound
+#print axioms RvMBridge10.hermitianTransform_gaussTests_tendsto
+#print axioms RvMBridge10.zeroSide_gaussTests_tendsto
+#print axioms RvMBridge10.continuous_gaussPhi
+#print axioms RvMBridge10.norm_gaussTests_le
+#print axioms RvMBridge10.norm_phi_mul_phi_le
+#print axioms RvMBridge10.integrable_sq_add_mul_gauss
+#print axioms RvMBridge10.integrable_vMaj
+#print axioms RvMBridge10.gaussI0_nonneg
+#print axioms RvMBridge10.gaussI2_nonneg
+#print axioms RvMBridge10.autocorrMaj_nonneg
+#print axioms RvMBridge10.autocorrMaj_neg
+#print axioms RvMBridge10.integral_vMaj
+#print axioms RvMBridge10.norm_gaussTests_mul_conj_le
+#print axioms RvMBridge10.norm_autocorr_gaussTests_le
+#print axioms RvMBridge10.autocorr_gaussTests_tendsto
+#print axioms RvMBridge10.primeBound_nonneg
+#print axioms RvMBridge10.norm_primeTerm_le
+#print axioms RvMBridge10.summable_primeBound
+#print axioms RvMBridge10.primeSide_gaussTests_tendsto
+#print axioms RvMBridge10.continuous_autocorr_gaussTests
+#print axioms RvMBridge10.integrable_kernelMaj
+#print axioms RvMBridge10.norm_kernel_term_le
+#print axioms RvMBridge10.weilKernel_gaussTests_tendsto
+#print axioms RvMBridge10.gammaOf_half_add
+#print axioms RvMBridge10.exists_paperFT_autocorr_gaussTests_bound
+#print axioms RvMBridge10.integrable_archBound
+#print axioms RvMBridge10.norm_archIntegrand_le
+#print axioms RvMBridge10.archIntegral_gaussTests_tendsto
+#print axioms RvMBridge10.archSide_gaussTests_tendsto
+#print axioms RvMBridge10.zeroSide_gaussTest_eq
+#print axioms RvMBridge10.gaussian_positivity_iff_prime_le_arch
+#print axioms RvMBridge10.rh_iff_gaussian_prime_le_arch
+#print axioms RvMBridge12.windowOnLine_of_all_on_line
+#print axioms RvMBridge12.tailWeight_nonneg
+#print axioms RvMBridge12.summable_tailWeight
+#print axioms RvMBridge12.tsum_tailWeight
+#print axioms RvMBridge12.one_le_lamThreshold
+#print axioms RvMBridge12.re_term_of_on_line
+#print axioms RvMBridge12.re_term_nonneg_of_on_line
+#print axioms RvMBridge12.term_eq_zero_of_not_nontrivial
+#print axioms RvMBridge12.re_term_nonneg
+#print axioms RvMBridge12.near_term_ge
+#print axioms RvMBridge12.gaussian_positivity_of_all_on_line
+#print axioms RvMBridge12.summable_term_subtype
+#print axioms RvMBridge12.zeroSide_split
+#print axioms RvMBridge12.re_window_ge_term
+#print axioms RvMBridge12.phi_le_of_far
+#print axioms RvMBridge12.norm_term_le_tail
+#print axioms RvMBridge12.tail_bound_window
+#print axioms RvMBridge12.tail_le_near_of_threshold
+#print axioms RvMBridge12.gaussian_positivity_of_window
+#print axioms RvMBridge12.gaussian_positivity_of_window_two
+#print axioms RvMBridge12.zeroWindowSet_finite
+#print axioms RvMBridge12.mem_zeroWindow
+#print axioms RvMBridge12.windowSum_nonneg
+#print axioms RvMBridge12.tailEnvelope_nonneg
+#print axioms RvMBridge12.re_window_eq_windowSum
+#print axioms RvMBridge12.gaussian_positivity_of_window_dominance
+#print axioms RvMBridge12.re_zeroSide_ge_windowSum_sub
+#print axioms RvMBridge12.near_term_le_windowSum
+#print axioms RvMBridge11.gaussA_pos
+#print axioms RvMBridge11.integral_sq_mul_exp_neg_mul_sq
+#print axioms RvMBridge11.integral_sq_mul_cexp_neg_mul_sq
+#print axioms RvMBridge11.re_digamma_quarter_ge
+#print axioms RvMBridge11.re_digamma_quarter_ge_two
+#print axioms RvMBridge11.gaussPhi_mul_conj
+#print axioms RvMBridge11.autocorr_gaussPhi_eq_integral
+#print axioms RvMBridge11.integral_sq_sub_mul_cexp
+#print axioms RvMBridge11.gaussK_mul_conj
+#print axioms RvMBridge11.autocorr_gaussPhi
+#print axioms RvMBridge11.autocorrGauss_zero
+#print axioms RvMBridge11.abs_one_sub_two_mul_exp_le
+#print axioms RvMBridge11.norm_autocorrGauss_le
+#print axioms RvMBridge11.autocorr_gaussPhi_funext
+#print axioms RvMBridge11.prime_term_bound
+#print axioms RvMBridge11.norm_primeSide_le
+#print axioms RvMBridge11.norm_integral_autocorrGauss_mul_exp_le
+#print axioms RvMBridge11.weilKernel_zero_eq
+#print axioms RvMBridge11.weilKernel_one_eq
+#print axioms RvMBridge11.norm_weilKernel_zero_le
+#print axioms RvMBridge11.norm_weilKernel_one_le
+#print axioms RvMBridge11.integral_sq_mul_cexp_gaussian_fourier
+#print axioms RvMBridge11.weilKernel_line_eq
+#print axioms RvMBridge11.cpow_pi_div_a
+#print axioms RvMBridge11.weilKernel_autocorrGauss_line
+#print axioms RvMBridge11.psiR_eq
+#print axioms RvMBridge11.psiR_ge
+#print axioms RvMBridge11.psiR_ge_two
+#print axioms RvMBridge11.continuous_psiR
+#print axioms RvMBridge11.bumpR_nonneg
+#print axioms RvMBridge11.continuous_bumpR
+#print axioms RvMBridge11.integrable_bumpR
+#print axioms RvMBridge11.integrable_bumpR_mul_psiR
+#print axioms RvMBridge11.bumpR_le
+#print axioms RvMBridge11.integral_bumpR
+#print axioms RvMBridge11.R₀_pos
+#print axioms RvMBridge11.setIntegral_bumpR_le
+#print axioms RvMBridge11.integral_bumpR_mul_psiR_ge
+#print axioms RvMBridge11.integral_archIntegrand_eq
+#print axioms RvMBridge11.re_archSide_ge
+#print axioms RvMBridge11.re_weilForm_gauss_nonneg
+#print axioms RvMBridge11.gaussian_positivity_small_lam_of
+#print axioms RvMBridge11.gaussian_positivity_small_lam_explicit_of
+#print axioms RvMBridge11.gaussianExplicitFormula
+#print axioms RvMBridge11.gaussian_positivity_small_lam
+#print axioms RvMBridge11.gaussian_positivity_small_lam_explicit
+#print axioms RvMBridge11.prime_term_bound_uniform
+#print axioms RvMBridge11.norm_primeSide_le_uniform
+#print axioms RvMBridge11.re_digamma_quarter_ge_log
+#print axioms RvMBridge11.psiR_ge_log
+#print axioms RvMBridge11.gaussA_half
+#print axioms RvMBridge11.bumpR_half
+#print axioms RvMBridge11.integral_indicator_bumpR_tail_le
+#print axioms RvMBridge11.integral_bumpR_mul_psiR_ge_envelope
+#print axioms RvMBridge11.envelopeX_nonneg
+#print axioms RvMBridge11.re_weilForm_gauss_nonneg_of_large_c
+#print axioms RvMBridge11.gaussian_positivity_envelope
+#print axioms RvMBridge11.gaussian_positivity_envelope'
+#print axioms RvMBridge13.gaussianExplicitFormula
+#print axioms RvMBridge13.gaussian_positivity_small_lam
+#print axioms RvMBridge13.rh_iff_gaussian_positivity_above_lam₀
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

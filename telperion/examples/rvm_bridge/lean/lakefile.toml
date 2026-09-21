@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -85,6 +85,39 @@ name = "E6Bridge8"
 # conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge9"
+
+# Tenth bridge (2026-09-21, WALL ASSAULT seam A): the Wall in two real parameters.
+# RvMBridge10.rh_iff_gaussian_positivity: RH <-> for every centre c and width lam > 0 the
+# Gaussian-weighted zero sum is nonnegative; zeroSide_gaussTest_eq: that sum equals
+# archSide - primeSide of the Gaussian-derivative autocorrelation (the explicit formula for the
+# non-compactly-supported Gaussian test, by limits of E8); rh_iff_gaussian_prime_le_arch: RH <->
+# a prime-side inequality with no zeros in it. Equivalences only; nothing about RH is proved.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge10"
+
+# Twelfth bridge (2026-09-21, WALL ASSAULT seam C): the ladder-certified region of the
+# two-parameter Wall as a kernel INSTRUMENT. gaussian_positivity_of_window: if every nontrivial
+# zero within D of the centre c is on the line (WindowOnLine c D, what the Turing ladder certifies
+# for c <= T - D, carried as a cross-island HYPOTHESIS) and one certified zero sits at distance in
+# [delta, d] of c, then for lam >= lamThreshold(c, D, d, delta) the Gaussian zero sum is
+# nonnegative. Nothing about RH is proved; the hypothesis is load-bearing (probes).
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge12"
+
+# Eleventh bridge (2026-09-21, WALL ASSAULT seam B): the small-width region of the two-parameter
+# Wall is UNCONDITIONAL with the absolute threshold lam0 = 1e-7 (re_weilForm_gauss_nonneg:
+# archimedean dominance, the prime side exponentially small in 1/lam); the zero-side form is stated
+# modulo the Gaussian explicit formula, discharged in E6Bridge13. Yoshida-type. Nothing about RH.
+[[lean_lib]]
+name = "E6Bridge11"
+
+# Thirteenth bridge (2026-09-21): THE WALL MAP. rh_iff_gaussian_positivity_above_lam0: RH <->
+# Gaussian positivity on widths strictly above lam0 (below it, positivity is a theorem).
+# An equivalence; NOT a proof of RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge13"
 
 [[lean_lib]]
 name = "W2cAssembly"

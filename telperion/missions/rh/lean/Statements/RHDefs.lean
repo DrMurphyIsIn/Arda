@@ -166,6 +166,45 @@ noncomputable def primeSide (g : ℝ → ℂ) : ℂ :=
 
 end WeilExplicit
 
+-- ===== CROSS-CAMPAIGN VOCABULARY MIRROR (2026-09-21): the two AUTHORED definitions of
+-- telperion/missions/mirrormere/lean/Statements/MMDefs.lean (namespace WeilExplicit), VERBATIM
+-- with their docstrings, themselves mirrored on the rvm_bridge island in
+-- telperion/examples/rvm_bridge/lean/E6Bridge5.lean:55-59.  Vocabulary for RH_weil_criterion_iff,
+-- the rh campaign's consumption of MIRRORMERE's zeta_comb_membership_iff_rh (E6Bridge9).  The
+-- `WeilForm` namespace below (crossCorr + abbrev autocorr) is the weil_form_enclosure emitter's
+-- own vocabulary and is a DIFFERENT name: WeilForm.autocorr vs WeilExplicit.autocorr; both stay.
+-- conjecture1_proved = False. =====
+namespace WeilExplicit
+open MeasureTheory Complex
+
+-- ===== AUTHORED for the MIRRORMERE registry (NOT in any island, NOT in RHDefs): the two
+-- definitions the W3c membership goal needs on top of the mirrored E8 vocabulary.  Design
+-- memo telperion/docs/MM_w3c_goal_weil_membership_DESIGN_2026-09-18.md.  Flagged for the
+-- blind read-back audit cycle.  conjecture1_proved = False. =====
+
+/-- AUTHORED.  The Hermitian autocorrelation `g ⋆ g̃` with `g̃ u = conj (g (-u))`:
+    `(g ⋆ g̃) u = ∫ g v * conj (g (v - u)) dv`.  For `g` smooth and compactly supported so is
+    `autocorr g` (Mathlib compact-support convolution smoothness), so `archSide`/`primeSide`
+    take honest values on it and the membership statement is not a junk-value sentence.
+    Its transform factors: `weilKernel (autocorr g) s = weilKernel g s * conj (weilKernel g
+    (1 - conj s))`, which on the critical line `s = 1/2 + i r`, `r : ℝ`, is `‖h (r)‖ ^ 2` —
+    the Weil-criterion positivity shape.  `autocorr g` is Hermitian-even, NOT even: its
+    imaginary part is odd (E8 memo section 3.4), which is why the mirrored class keeps `g`
+    complex-valued with no parity hypothesis. -/
+noncomputable def autocorr (g : ℝ → ℂ) (u : ℝ) : ℂ :=
+  ∫ v : ℝ, g v * (starRingEnd ℂ) (g (v - u))
+
+/-- AUTHORED.  The Weil functional READ FROM THE PRIMES SIDE: `archSide f - primeSide f`.
+    By the kernel-checked E8 limit explicit formula (`RvMBridge4.limit_explicit_formula`,
+    rvm_bridge island, node `RH_limit_explicit_formula`) this value is exactly the zero-side
+    sum `∑_ρ zeroMult ρ * weilKernel f ρ`, so `weilForm` is the diffraction pairing of the
+    regularized triple (zero comb against `h`, prime comb against `g`, archimedean density
+    against `h`) with NO temperedness claim about any comb (the naive dual-comb temperedness
+    clause is unconditionally false, roadmap section 1). -/
+noncomputable def weilForm (f : ℝ → ℂ) : ℂ := archSide f - primeSide f
+
+end WeilExplicit
+
 namespace BombieriLagarias
 open Complex
 
