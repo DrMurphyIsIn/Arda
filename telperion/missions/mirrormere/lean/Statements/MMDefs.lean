@@ -368,4 +368,46 @@ def GaussianApprox : Prop :=
 
 end RvMBridge6
 
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, WALL ASSAULT seam A) =====
+  VERBATIM from the rvm_bridge island (v4.33), with docstrings and source lines cited:
+  RvMBridge8.gaussB / gaussK / gaussPhi (E6Bridge8.lean:156-169, the non-compactly-supported
+  Gaussian-derivative test whose Hermitian transform is RvMBridge6.gaussTest) and
+  RvMBridge10.GaussianPositivity (E6Bridge10.lean:50-52, the Wall in two real parameters).
+  Vocabulary for MM_rh_iff_gaussian_positivity, MM_gaussian_explicit_formula and
+  MM_rh_iff_gaussian_prime_le_arch; all three are equivalences or identities and prove nothing
+  about either side.  conjecture1_proved = False.
+-/
+namespace RvMBridge8
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit
+
+-- ===== E6Bridge8.lean:156-157 =====
+/-- b = 1/(4 lam): the Gaussian width whose transform has width lam. -/
+def gaussB (lam : ℝ) : ℝ := 1 / (4 * lam)
+
+-- ===== E6Bridge8.lean:162-164 =====
+/-- The normalising constant K = (2 lam i (pi/b)^{1/2})^{-1}. -/
+def gaussK (lam : ℝ) : ℂ :=
+  (2 * (lam : ℂ) * I * ((Real.pi : ℂ) / (gaussB lam : ℂ)) ^ (1 / 2 : ℂ))⁻¹
+
+-- ===== E6Bridge8.lean:166-169 =====
+/-- phi(u) = K u exp (-b u^2 - i c u): the (non-compactly-supported) inverse transform of
+gaussHalf. -/
+def gaussPhi (c lam : ℝ) (u : ℝ) : ℂ :=
+  gaussK lam * (u : ℂ) * cexp (-(gaussB lam : ℂ) * (u : ℂ) ^ 2 - I * c * u)
+
+end RvMBridge8
+
+namespace RvMBridge10
+open WeilExplicit RvMBridge6 RvMBridge8
+
+-- ===== E6Bridge10.lean:50-52 =====
+/-- Gaussian positivity: the Wall in two real parameters. -/
+def GaussianPositivity : Prop :=
+  ∀ (c lam : ℝ), 0 < lam → 0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+
+end RvMBridge10
+
 end
