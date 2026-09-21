@@ -5,7 +5,13 @@ name = "MM.gaussian_approx"
 statement_module = "Statements.MM_gaussian_approx"
 status = "open"
 title = "Obligation O1' (GaussianApprox): for every centre c and lam > 0 there are Weil tests g_n whose Hermitian transforms converge to the Gaussian-derivative transform G_{c,lam} pointwise on the strip |Im z| <= 1/2 with a truncation-uniform bound C/(1+|z|^2). A statement about test functions only, no zeros: pure Fourier analysis (complex-argument Gaussian transform via integral_cexp_quadratic + truncation-uniform integration by parts against a ContDiffBump cutoff). Open-research-grade formalization; NOT RH-hard; discharges O1 through the proved RvMBridge6.gaussianTransfer_of_approx. Stopped 2026-09-20 at the Fourier side (memo WEIL_CONVERSE_ATTACK_2026-09-20 section 4). conjecture1_proved = False."
-updated = "2026-09-20"
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge8.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
 
 [readback]
 auditor = "blind-auditor-converse-2026-09-20 (AUDIT_TESTIMONY_WEIL_CONVERSE_2026-09-20.md)"

@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -70,6 +70,21 @@ name = "E6Bridge6"
 # about RH is proved. conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge7"
+
+# Eighth bridge (2026-09-21): O1' GaussianApprox DISCHARGED (RvMBridge8.gaussian_approx): truncated
+# Gaussian-derivative Weil tests whose Hermitian transforms converge to gaussTest on the strip with
+# an n-uniform C/(1+|z|^2) bound (Gaussian Fourier integral + one integration by parts + DCT).
+# Pure Fourier analysis; no zeros mentioned.
+[[lean_lib]]
+name = "E6Bridge8"
+
+# Ninth bridge (2026-09-21): the ASSEMBLY. gaussian_transfer (O1 unconditional),
+# weil_positivity_implies_rh (the Weil converse, unconditional on this island) and
+# zeta_comb_membership_iff_rh (the MIRRORMERE dictionary theorem: goal statement <-> Mathlib RH).
+# NOT a proof of RH: an equivalence says nothing about whether either side holds.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge9"
 
 [[lean_lib]]
 name = "W2cAssembly"

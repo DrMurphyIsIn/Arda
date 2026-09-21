@@ -5,7 +5,13 @@ name = "MM.zeta_comb_membership_iff_rh"
 statement_module = "Statements.MM_zeta_comb_membership_iff_rh"
 status = "open"
 title = "The dictionary theorem: the MIRRORMERE goal statement is EQUIVALENT to Mathlib's RiemannHypothesis, in-kernel -- replaces the 2026-09-14 placeholder's by-fiat identification (CharacterizationStatements.zeta_FQ_iff_RH is a def : Prop over opaque variables, never a theorem) with a proved equivalence; the goal node stays draft and RH-hard, now for a proved reason. conjecture1_proved = False."
-updated = "2026-09-20"
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge9.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
 
 [readback]
 auditor = "blind-auditor-converse-2026-09-20 (AUDIT_TESTIMONY_WEIL_CONVERSE_2026-09-20.md)"
