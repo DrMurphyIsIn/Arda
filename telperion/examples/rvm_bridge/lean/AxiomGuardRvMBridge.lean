@@ -69,6 +69,12 @@
         -- WALL ASSAULT seam A (2026-09-21): the Wall in two real parameters (RH <-> Gaussian
         positivity <-> prime side <= archimedean side for every centre and width), plus the
         limit stages of the Gaussian explicit formula.  Equivalences only; NOT a proof of RH.
+      * RvMBridge12.{gaussian_positivity_of_window, gaussian_positivity_of_window_two,
+        gaussian_positivity_of_all_on_line} -- WALL ASSAULT seam C (2026-09-21): the
+        ladder-certified region instrument (WindowOnLine hypothesis + one certified near zero +
+        lam above an explicit threshold => Gaussian positivity at that centre); plus stages
+        (zeroSide_split, tail_bound_window, near_term_ge, tail_le_near_of_threshold).
+        NOT a proof of RH; the on-line hypothesis is load-bearing.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -95,6 +101,7 @@ import E6Bridge7
 import E6Bridge8
 import E6Bridge9
 import E6Bridge10
+import E6Bridge12
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -266,6 +273,26 @@ import W2cAssembly
 #print axioms RvMBridge10.zeroSide_gaussTest_eq
 #print axioms RvMBridge10.gaussian_positivity_iff_prime_le_arch
 #print axioms RvMBridge10.rh_iff_gaussian_prime_le_arch
+#print axioms RvMBridge12.windowOnLine_of_all_on_line
+#print axioms RvMBridge12.tailWeight_nonneg
+#print axioms RvMBridge12.summable_tailWeight
+#print axioms RvMBridge12.tsum_tailWeight
+#print axioms RvMBridge12.one_le_lamThreshold
+#print axioms RvMBridge12.re_term_of_on_line
+#print axioms RvMBridge12.re_term_nonneg_of_on_line
+#print axioms RvMBridge12.term_eq_zero_of_not_nontrivial
+#print axioms RvMBridge12.re_term_nonneg
+#print axioms RvMBridge12.near_term_ge
+#print axioms RvMBridge12.gaussian_positivity_of_all_on_line
+#print axioms RvMBridge12.summable_term_subtype
+#print axioms RvMBridge12.zeroSide_split
+#print axioms RvMBridge12.re_window_ge_term
+#print axioms RvMBridge12.phi_le_of_far
+#print axioms RvMBridge12.norm_term_le_tail
+#print axioms RvMBridge12.tail_bound_window
+#print axioms RvMBridge12.tail_le_near_of_threshold
+#print axioms RvMBridge12.gaussian_positivity_of_window
+#print axioms RvMBridge12.gaussian_positivity_of_window_two
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
