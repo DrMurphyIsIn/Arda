@@ -97,6 +97,9 @@
       * RvMBridge18.{xi_logDeriv_deriv_eq_of, eq_const_of_log_growth, summable_inv_sub_sq,
         tsum_inv_sub_sq_tendsto, logDeriv_xi_eq} -- the xi derivative partial fraction skeleton
         (2026-09-21), modulo the named obligations XiDiffRegular / XiLogDerivDerivDecay.
+      * RvMBridge20.{xiDiffExt_differentiable, xiDiffExt_eq, xiDiffExt_one_sub, exists_local_form,
+        analyticOrderAt_xi_eq, xiDiffRegular_of} -- obligation 1 part A (2026-09-21): the entire
+        extension across the zeros; growth remains the named obligation XiDiffExtGrowthRight.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -131,6 +134,7 @@ import E6Bridge15
 import E6Bridge16
 import E6Bridge17
 import E6Bridge18
+import E6Bridge20
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -534,6 +538,37 @@ import W2cAssembly
 #print axioms RvMBridge18.eq_const_of_log_growth
 #print axioms RvMBridge18.not_nontrivialZero_of_one_le_re
 #print axioms RvMBridge18.xi_logDeriv_deriv_eq_of
+#print axioms RvMBridge20.xi_one_sub
+#print axioms RvMBridge20.xi_one
+#print axioms RvMBridge20.xi_ne_zero_of_one_le_re
+#print axioms RvMBridge20.xi_eq_zero_iff
+#print axioms RvMBridge20.xi_ne_zero_of_not_nontrivial
+#print axioms RvMBridge20.analyticOrderAt_xi_ne_top
+#print axioms RvMBridge20.analyticAt_completedZeta
+#print axioms RvMBridge20.analyticOrderAt_xi_eq_of_zero
+#print axioms RvMBridge20.analyticOrderAt_xi_eq
+#print axioms RvMBridge20.tsum_polTerm_eq
+#print axioms RvMBridge20.nearZeros_finite
+#print axioms RvMBridge20.exists_ball_avoid
+#print axioms RvMBridge20.polTerm_differentiableAt
+#print axioms RvMBridge20.exists_ball_rest
+#print axioms RvMBridge20.exists_unit_factor
+#print axioms RvMBridge20.analyticAt_logDeriv
+#print axioms RvMBridge20.deriv_logDeriv_xi_local
+#print axioms RvMBridge20.exists_local_form
+#print axioms RvMBridge20.xiDiffExt_eq
+#print axioms RvMBridge20.xiDiffExt_eventuallyEq
+#print axioms RvMBridge20.xiDiffExt_differentiable
+#print axioms RvMBridge20.isNontrivialZero_one_sub_iff
+#print axioms RvMBridge20.logDeriv_xi_one_sub
+#print axioms RvMBridge20.deriv_logDeriv_xi_one_sub
+#print axioms RvMBridge20.zeroMult_one_sub
+#print axioms RvMBridge20.tsum_polTerm_one_sub
+#print axioms RvMBridge20.xiDiffReg_one_sub
+#print axioms RvMBridge20.xiDiffExt_one_sub
+#print axioms RvMBridge20.xiDiffExtGrowth_of_right
+#print axioms RvMBridge20.xiDiffRegular_of
+#print axioms RvMBridge20.xiDiffRegular_of_right
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

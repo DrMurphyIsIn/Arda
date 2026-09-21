@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -165,6 +165,14 @@ name = "E6Bridge17"
 # of (logDeriv xi)'). Consumer: LiValue (E6Bridge19). Nothing about RH. conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge18"
+
+# Twentieth bridge (2026-09-21, obligation 1 part A): the ENTIRE EXTENSION xiDiffExt of
+# deriv(logDeriv xi) + Sum m(rho)/(s-rho)^2 across the zeros (order = E8 multiplicity, double pole
+# cancelled exactly), the functional equation xiDiffExt(1-s) = xiDiffExt(s), and the assembly
+# xiDiffRegular_of : XiDiffExtGrowth -> XiDiffRegular. Remaining obligation: the log-growth bound
+# XiDiffExtGrowthRight on Re s >= 1/2. Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge20"
 
 [[lean_lib]]
 name = "W2cAssembly"
