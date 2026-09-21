@@ -7,7 +7,7 @@ By `RvMBridge6.gaussianTransfer_of_approx`, `RvMBridge6.GaussianTransfer` (O1) i
 also unconditional (probe `probe_gaussianTransfer`, same axiom list).
 
 This is pure Fourier analysis about test functions. Nothing about zeta, zeros or RH is proved
-here. conjecture1_proved = False. The Weil converse still carries O2 (GaussianDominance).
+here. conjecture1_proved = False. The Weil converse carried O2 when this memo was started (O2 was discharged the same day in E6Bridge7; see the final section) (GaussianDominance).
 
 ## Files
 
