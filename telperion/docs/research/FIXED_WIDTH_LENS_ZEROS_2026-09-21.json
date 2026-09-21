@@ -1,0 +1,55 @@
+{
+  "doc": "FIXED_WIDTH_LENS_ZEROS_2026-09-21.md",
+  "date": "2026-09-21",
+  "lens": "zeros, zero-density, spectral and geometric analogues",
+  "conjecture1_proved": false,
+  "rh_progress_claimed": false,
+  "shape": "RH <=> forall c, lam>0: F(c,lam) >= 0. At fixed lam the residual is the band T-D < |c| < c1(lam); positivity there is a near-line zero-free region |beta-1/2| <= y0(lam,t) with y0 growing in t and shrinking in lam; the zero-side threshold height (y0=1/2) coincides to leading order with the archimedean envelope c1(lam) = 2 pi exp(8 sqrt(2 pi) lam^{3/2} e^{lam/2}).",
+  "questions": [
+    {"id": 1, "topic": "zero-density estimates", "verdict": "COLLAPSE_TO_FREE",
+     "wall": "pointwise positivity on the band needs N(1/2+y0, X) = 0, a zero-free region; density gives X^{0.35-0.93} detectable zeros; averaged (measure-zero) form needs the effective-O2 clustering lemma on the zero route",
+     "numbers": {"guth_maynard_exponent": "30/13 (1-sigma)", "beats_ingham_for": "sigma > 7/10 (y > 0.2)", "trivial_for": "y < 1/12", "exponent_at_y0.3": {"ingham": 0.5, "guth_maynard": 0.462, "conrey": 0.657}}},
+    {"id": 2, "topic": "zero-free regions near the line", "verdict": "COLLAPSE_TO_RH",
+     "wall": "no region of the form beta <= 1/2 + y0 with y0 < 1/2 uniform in t is known; known regions (dlVP 1-1/(4.896 log t), VK 1-1/(55.241 (log t)^{2/3}(log log t)^{1/3})) have width -> 0; the fixed-width statement IS such a region on a bounded band"},
+    {"id": 3, "topic": "pair correlation / background lower bound", "verdict": "COLLAPSE_TO_FREE (fluctuation), COLLAPSE_TO_RH (lower bound)",
+     "wall": "background is made of the zeros in question; unconditional Littlewood gap 32/logloglog t bites only above the archimedean envelope (logloglog t >= 2 C sqrt lam vs loglog c1 = 3.5 at lam=1); RH-conditional 1/loglog t would bite inside the band but is circular",
+     "numbers": {"deterministic_y0_height": {"lam1": 4.5e4, "lam4": 3.3e8, "lam10": 1e13}}},
+    {"id": 4, "topic": "spectral / Hilbert-Polya / Connes-Consani / coherent states", "verdict": "COLLAPSE_TO_FREE",
+     "wall": "prime-side mass at fixed width; compact support and Gaussian width incompatible (Paley-Wiener); archimedean positivity has prime side identically zero, seam B has it small, fixed lam has neither",
+     "transfer": "F = -(1/2) d/dlam H(c,lam), H = Re sum m e^{-2 lam (gamma-c)^2}: RH <=> H non-increasing in lam for every c (coordinates only)"},
+    {"id": 5, "topic": "function-field analogue", "verdict": "TRANSFER of shape, COLLAPSE_TO_FREE of content",
+     "wall": "zero comb periodic (period 2 pi/log q, 2g zeros): the band is empty, the ladder is total; Hodge-index/Castelnuovo-Severi is a cone certificate of unbounded bandwidth; no Hodge-index inequality on any number-field surface (Deninger program, Connes adele class space: geometry without the index inequality)"},
+    {"id": 6, "topic": "creative items", "items": [
+      {"name": "Turing's method as fixed-width object", "verdict": "COLLAPSE_TO_FREE", "wall": "positivity certificates are real inequalities, counting needs an integer; lam_res(t) = (log(t/2pi))^2/(4 pi^2): 18.3 at 3e12 -> primes to 1e37 vs Riemann-Siegel 6.9e5 terms; on-line vs y<y0 indistinguishable at fixed width"},
+      {"name": "Lehmer pairs", "verdict": "correction: blind spot, not help", "wall": "close pair and its off-line twin differ by ~2 lam d^4, both below the background; separating d=0.005 at height 7005 needs lam ~ 6.5e5"},
+      {"name": "reflection symmetry", "verdict": "descriptive", "consequence": "family is a function of (rho-1/2)^2; certifies |beta-1/2| <= y0 only; c-average y-blind, second moment y-sensitive; keeps the prime side a Hermitian square (inside Weil class)"},
+      {"name": "zero-blind negative-set bound (upgrade of S10)", "verdict": "COLLAPSE_TO_FREE as foothold; PROVABLE as lemma", "statement": "meas{c in [T,2T]: F(c,lam) < 0} <= T (4 lam + o(1)) / log(T/2pi)^2 for T >= C e^{6 lam}; higher moments give T^{1 - loglog T/(5 lam)}", "numbers": {"lam4": {"T6.4e5": 0.12, "T3e12": 0.022, "T1e20": 0.008}}},
+      {"name": "de Bruijn-Newman coordinates", "verdict": "TRANSFER", "wall": "Polymath 15's ladder + asymptotic zone + barrier crosses a bounded band because zeros MOVE with t; nothing moves with lam; residual (0, 0.22] with asymptotic-zone height -> infinity as t -> 0"}
+    ]}
+  ],
+  "proposals": [
+    {"rank": 1, "name": "effective dominance with certified background", "type": "instrument/reduction", "cost": "paper ~5 pages, Lean ~400 lines", "establishes": "residual equivalent (explicit constants) to a near-line zero-free region on the band", "wall": "hypothesis y < y1 unknown above T"},
+    {"rank": 2, "name": "zero-blind measure lemma", "type": "instrument", "cost": "paper ~3 pages, Lean ~300 lines", "establishes": "first unconditional non-archimedean statement about F on the band; negative control", "wall": "averaged, pointwise is RH"},
+    {"rank": 3, "name": "de Bruijn-Newman barrier transplant", "type": "research", "cost": "unknown", "establishes": "if a lam-flow with continuous zero motion existed, a barrier across the band", "wall": "no dynamics in (c, lam); likely collapses to RH <=> Lambda = 0"},
+    {"rank": 4, "name": "density-averaged band statement via clustering lemma", "type": "research", "cost": "open lemma S3/S10", "establishes": "meas{F<0 on band} <= c1^{0.35-0.93}", "wall": "clustering at scale 1/(Lambda y0)"},
+    {"rank": 5, "name": "function-field dry run", "type": "instrument", "cost": "1 day numerics", "establishes": "negative control for TRANSFER claims", "wall": "no number-field content"}
+  ],
+  "sources": [
+    {"ref": "Guth-Maynard arXiv:2405.20552", "checked": true, "what": "abstract + HTML intro; N(sigma,T) <= T^{30(1-sigma)/13+o(1)}; Theorem 1.1 large values R <= T^{o(1)}(N^2V^-2 + N^{18/5}V^-4 + T N^{12/5} V^-4)"},
+    {"ref": "Polymath 15 arXiv:1904.12438", "checked": true, "what": "Lambda <= 0.22 unconditional; RH verified to ~3e10 at t=0; asymptotic zone; barrier by continuity of zero dynamics"},
+    {"ref": "Rodgers-Tao arXiv:1801.05914", "checked": true, "what": "Lambda >= 0"},
+    {"ref": "explicit Selberg density arXiv:1910.08274", "checked": true, "what": "abstract: Selberg 1946 N(sigma,T) << T^{1-(sigma-1/2)/4} log T made explicit; Jutila 1-eps and Conrey 8/7-eps via intro as reported by search (secondary)"},
+    {"ref": "Baluyot-Goldston-Suriajaya-Turnage-Butterbaugh arXiv:2306.04799", "checked": true, "what": "unconditional Montgomery theorem; 61.7% simple under thin-box density hypothesis"},
+    {"ref": "Connes-Consani-Moscovici arXiv:2310.18423", "checked": true, "what": "semilocal prolate operator, Sonin space, UV spectrum"},
+    {"ref": "Connes-Consani arXiv:2006.13771", "checked": false, "what": "verified by skeptic pass (Theorem 1, Corollary 2), not re-read here"},
+    {"ref": "Platt-Trudgian arXiv:2004.09765", "checked": true, "what": "RH true to 3e12, interval arithmetic"},
+    {"ref": "Milne arXiv:1509.00797", "checked": true, "what": "abstract only; Weil mechanism not re-read"},
+    {"ref": "Connes arXiv:math/9811068", "checked": true, "what": "RH reduced to validity of the trace formula on adele classes"},
+    {"ref": "Trudgian arXiv:0903.1885", "checked": true, "what": "abstract; Turing constants not re-read"},
+    {"ref": "arXiv:1001.0494", "checked": false, "what": "abstract read; Littlewood 32/logloglog and Hall-Hayman pi/2 attribution from search snippet only"},
+    {"ref": "Littlewood 1924 Proc. Cambridge Phil. Soc. 22 234-242", "checked": false},
+    {"ref": "Mossinghoff-Trudgian-Yang 2024 / Bellotti VK constants", "checked": false},
+    {"ref": "Csordas-Smith-Varga 1994 Lehmer pairs", "checked": false},
+    {"ref": "Deninger math/0505354, math/0204110", "checked": false}
+  ]
+}
