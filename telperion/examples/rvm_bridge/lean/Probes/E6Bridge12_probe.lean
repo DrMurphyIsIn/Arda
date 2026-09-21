@@ -24,6 +24,11 @@ open RvMBridge12
 #print axioms RvMBridge12.tail_bound_window
 #print axioms RvMBridge12.tail_le_near_of_threshold
 #print axioms RvMBridge12.tsum_tailWeight
+#print axioms RvMBridge12.gaussian_positivity_of_window_dominance
+#print axioms RvMBridge12.re_zeroSide_ge_windowSum_sub
+#print axioms RvMBridge12.re_window_eq_windowSum
+#print axioms RvMBridge12.zeroWindowSet_finite
+#print axioms RvMBridge12.near_term_le_windowSum
 
 /-! ### Signatures. -/
 #check @RvMBridge12.WindowOnLine
@@ -31,6 +36,20 @@ open RvMBridge12
 #check @RvMBridge12.gaussian_positivity_of_window
 #check @RvMBridge12.gaussian_positivity_of_window_two
 #check @RvMBridge12.gaussian_positivity_of_all_on_line
+#check @RvMBridge12.windowSum
+#check @RvMBridge12.tailEnvelope
+#check @RvMBridge12.gaussian_positivity_of_window_dominance
+#check @RvMBridge12.re_zeroSide_ge_windowSum_sub
+
+/-! ### The dominance hypothesis is a FINITE computable inequality: windowSum is a Finset sum over
+the certified zeros (definitional), tailEnvelope an explicit real. -/
+example (c D lam : ℝ) : RvMBridge12.windowSum c D lam
+    = ∑ ρ ∈ RvMBridge12.zeroWindow c D, (WeilExplicit.zeroMult ρ : ℝ)
+        * ((ρ.im - c) ^ 2 * Real.exp (-(2 * lam) * (ρ.im - c) ^ 2)) := rfl
+example (c D lam : ℝ) : RvMBridge12.tailEnvelope c D lam
+    = Real.exp (2 * (lam - 1) * (1 / 4 - D ^ 2)) * RvMBridge7.constB c := rfl
+example (c D : ℝ) (ρ : ℂ) : ρ ∈ RvMBridge12.zeroWindow c D ↔
+    IsNontrivialZero ρ ∧ |ρ.im - c| ≤ D := RvMBridge12.mem_zeroWindow
 
 /-! ### The hypothesis WindowOnLine is a genuine Prop about the zeros: neither closed nor refuted
 by simp/aesop at any (c, D). -/
