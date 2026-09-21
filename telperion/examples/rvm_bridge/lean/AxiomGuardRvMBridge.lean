@@ -49,6 +49,12 @@
         unconditional stage (explicit formula with the zero side isolated, zeroSide real,
         reflection symmetry gammaOf_reflect / zeroMult_reflect, strip_of_zero, pair split,
         Gaussian summability, gaussianTransfer_of_approx).  Proves nothing about RH.
+      * RvMBridge7.gaussian_dominance -- the MIRRORMERE node MM_gaussian_dominance, verbatim
+        (O2 DISCHARGED, 2026-09-21: every off-line nontrivial zero admits a centre c and width
+        lam > 0 with Re zeroSide (gaussTest c lam) < 0); plus its stages (window finiteness,
+        generic centre, maximiser with gap, phase choice exists_lam_re_gaussTest, tail_bound,
+        re_zeroSide_le) and weil_positivity_implies_rh_of_approx (the converse modulo the single
+        remaining Fourier obligation GaussianApprox).  Proves nothing about RH.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -71,6 +77,7 @@ import E6Bridge3
 import E6Bridge4
 import E6Bridge5
 import E6Bridge6
+import E6Bridge7
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -134,6 +141,31 @@ import W2cAssembly
 #print axioms RvMBridge6.gauss_zeroSide_pair_split
 #print axioms RvMBridge6.gaussianTransfer_of_approx
 #print axioms RvMBridge6.weil_positivity_implies_rh_of'
+#print axioms RvMBridge7.zeroSide_gauss_eq
+#print axioms RvMBridge7.norm_gaussTest
+#print axioms RvMBridge7.norm_term
+#print axioms RvMBridge7.re_gaussTest
+#print axioms RvMBridge7.exists_lam_trig
+#print axioms RvMBridge7.exists_lam_re_gaussTest
+#print axioms RvMBridge7.windowSet_finite
+#print axioms RvMBridge7.mem_window
+#print axioms RvMBridge7.self_mem_window
+#print axioms RvMBridge7.eq_badOf_of_phi_eq
+#print axioms RvMBridge7.badOf_mem_badSet
+#print axioms RvMBridge7.exists_generic_centre
+#print axioms RvMBridge7.eq_or_eq_reflect_of_phi_eq
+#print axioms RvMBridge7.exists_maximiser_gap
+#print axioms RvMBridge7.phi_neg_of_not_mem_window
+#print axioms RvMBridge7.majorant_nonneg
+#print axioms RvMBridge7.summable_majorant
+#print axioms RvMBridge7.norm_term_le_majorant
+#print axioms RvMBridge7.constA_nonneg
+#print axioms RvMBridge7.constB_nonneg
+#print axioms RvMBridge7.tsum_majorant
+#print axioms RvMBridge7.tail_bound
+#print axioms RvMBridge7.re_zeroSide_le
+#print axioms RvMBridge7.gaussian_dominance
+#print axioms RvMBridge7.weil_positivity_implies_rh_of_approx
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

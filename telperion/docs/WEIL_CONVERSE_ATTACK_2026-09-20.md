@@ -148,7 +148,44 @@ lam-uniform part, and the phase choice were not started. O1' stopped at the Four
 Gaussian transform at complex argument and the truncation-uniform integration by parts. Both are
 believed true on classical grounds (Weil 1952; Bombieri 2000, Thm 1) and neither uses RH.
 
-## 5. House notes
+## 5. O2 discharge (E6Bridge7, 2026-09-20)
+
+`RvMBridge7.gaussian_dominance : RvMBridge6.GaussianDominance` is kernel-checked with no
+sub-obligation (`#print axioms` = [propext, Classical.choice, Quot.sound]; file
+`telperion/examples/rvm_bridge/lean/E6Bridge7.lean`, probe `Probes/E6Bridge7_probe.lean`).
+Corollary `RvMBridge7.weil_positivity_implies_rh_of_approx (hA : GaussianApprox) (hpos) :
+RiemannHypothesis`: the Weil converse now rests on the single zero-free Fourier obligation O1'.
+
+The proof follows section 2 exactly, with these Lean choices:
+
+- Coordinates: `phi c ρ = (1/2 - Re ρ)^2 - (Im ρ - c)^2`, `wsq c ρ = (Im ρ - c)^2 + (1/2 - Re ρ)^2`,
+  `term c lam ρ = m(ρ) G_{c,lam}(gamma_ρ)`; `norm_term` gives |term| = m wsq e^{2 lam phi} and
+  `re_gaussTest` gives Re G = e^{2 lam phi}[(x^2 - y^2) cos(4 lam x y) + 2 x y sin(4 lam x y)].
+- Window: `window ρ₀` is the Finset of nontrivial zeros with Im ρ₀ - 1 < Im ρ <= Im ρ₀ + 1
+  (`zetaSeam.finite_window`).
+- Generic centre: `badOf ρ ρ'` is the unique tying centre for zeros of different ordinates
+  (`eq_badOf_of_phi_eq`); `badSet ρ₀` is its image over window × window; `exists_generic_centre`
+  picks c in the open interval |c - Im ρ₀| < |1/2 - Re ρ₀| outside the bad set
+  (`Set.Ioo_infinite`, `Set.Infinite.sdiff`).
+- Maximiser and gap: `Finset.exists_max_image` on the window; `eq_or_eq_reflect_of_phi_eq`
+  shows a tie at a generic centre forces ρ = ρ₁ or ρ = 1 - conj ρ₁; `exists_maximiser_gap` then
+  produces η > 0 with phi <= M - η on the window minus the pair (η := 1 if that set is empty).
+- Outside the window: `phi_neg_of_not_mem_window` (|Im ρ - c| > 1/2 >= |1/2 - Re ρ|).
+- Tail: `majorant` = e^{2 lam (M - η)} [ρ ∈ window] m wsq + m C₁/(1 + |gamma_ρ|^2), with C₁ the
+  lam = 1 strip constant of E6Bridge6; `norm_term_le_majorant` is the pointwise bound for
+  lam >= 1 off the pair (inside the window by the gap, outside by monotonicity of e^{2 lam phi} in
+  lam when phi < 0 and then `norm_gaussTest_mul_le` at lam = 1); `tail_bound` sums it with
+  `norm_tsum_le_tsum_norm`, `Summable.tsum_le_tsum`, `Summable.tsum_subtype_le`, giving
+  A e^{2 lam (M - η)} + B with A the finite window sum and B the majorant tsum.
+- Phase: `exists_lam_trig` picks theta = arg(-(x + i y)^2) (`Complex.cos_arg`, `sin_arg`) and an
+  integer k with lam = (theta + 2 pi k)/(4 x y) >= lam₀ (`exists_int_gt` / `exists_int_lt` by the
+  sign of x y; `Real.cos_add_int_mul_two_pi`); x = 0 needs no choice. The genericity of c was not
+  messy, so no `GenericCentre` sub-obligation was needed.
+- Assembly: `re_zeroSide_le` (pair term + tail via `zeroSide_pair_split` and
+  `Complex.re_le_norm`), then lam₀ := max(1, A/(2 η K), B/(2 M K)) with K = m₁ wsq₁ > 0 and
+  `Real.add_one_le_exp` twice.
+
+## 6. House notes
 
 - E6Bridge5 existed and compiled when this file was started, so `autocorr` and `weilForm` are
   imported from it, not redefined. The olean for E6Bridge6 was emitted with `lake env lean -o`
