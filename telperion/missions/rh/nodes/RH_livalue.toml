@@ -3,12 +3,17 @@ depends_on = ["RH_xi_derivative_partial_fraction", "RH_no_real_zero_unit_interva
 kind = "lemma"
 name = "RH.livalue"
 statement_module = "Statements.RH_livalue"
-status = "draft"
+status = "proved"
 title = "THE BOMBIERI-LAGARIAS VALUE IDENTITY, UNCONDITIONAL (2026-09-21): liLimit n = archSide n + finiteSide n for every n >= 1. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge27.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-b7-unconditional-2026-09-21 (AUDIT_TESTIMONY_B7_UNCONDITIONAL_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: the Bombieri-Lagarias value identity liLimit n = archSide n + finiteSide n for every n >= 1, unconditional. Composition of audited inputs; re-composed from the primitives in the audit probe. conjecture1_proved = False."

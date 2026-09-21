@@ -3,12 +3,17 @@ depends_on = ["RH_local_count_sum"]
 kind = "lemma"
 name = "RH.strip_deriv_bound"
 statement_module = "Statements.RH_strip_deriv_bound"
-status = "draft"
+status = "proved"
 title = "STRIP DERIVATIVE BOUND DISCHARGED (2026-09-21): Landau's local partial fraction transferred to the derivative of xi'/xi on 1/4 <= Re s <= 9/4, |Im s| >= 5 -- divide out the window zeros, Cauchy on a zero-free circle of radius in (1/4, 1/2), the symmetric difference of Landau's ball and the window bounded by the local zero count, Stirling for the digamma, the functional equation for the left half, the compact bound for |Im s| <= 7. Unconditional; nothing about RH. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge24.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-b7-unconditional-2026-09-21 (AUDIT_TESTIMONY_B7_UNCONDITIONAL_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: Landau's local partial fraction transferred to the derivative of xi'/xi on 1/4 <= Re s <= 9/4, |Im s| >= 5. Audit PASS: the window zeros divided out (double poles cancelled exactly), Cauchy on a zero-free circle, Landau's ball versus the window bounded by the local count, Stirling for the digamma, the functional equation for the left half, the compact bound for |Im s| <= 7; re-derived by hand. Unconditional. conjecture1_proved = False."
