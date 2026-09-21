@@ -113,6 +113,11 @@
       * RvMBridge23.{local_count_sum, xiLogDerivDerivEq_of_strip} -- LocalCountSum DISCHARGED
         (2026-09-21).  RvMBridge25.{noRealZeroInUnitInterval, liValue_of_two,
         bl_explicit_formula_of_two} -- no real zero in (0,1) DISCHARGED; B7 modulo StripDerivBound.
+      * RvMBridge24.{stripDerivBound, xiLogDerivDerivEq_of_localCount, Fwin_bound_core,
+        FwinExt_differentiableOn, exists_window_bound} -- StripDerivBound DISCHARGED (2026-09-21).
+      * RvMBridge27.{xi_logDeriv_deriv_eq, liValue, bl_explicit_formula} -- THE UNCONDITIONAL
+        ASSEMBLY: the derivative partial fraction of xi'/xi (no Hadamard), the Bombieri-Lagarias
+        value identity, and the rh node RH_bl_explicit_formula verbatim.  NOT about RH.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -154,6 +159,8 @@ import E6Bridge19
 import E6Bridge23
 import E6Bridge25
 import E6Bridge26
+import E6Bridge24
+import E6Bridge27
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -805,6 +812,38 @@ import W2cAssembly
 #print axioms RvMBridge25.bl_explicit_formula_of_two
 #print axioms RvMBridge26.liValue_of_strip
 #print axioms RvMBridge26.bl_explicit_formula_of_strip
+#print axioms RvMBridge24.zeroMult_eq_zeta23
+#print axioms RvMBridge24.zerosIn_finite
+#print axioms RvMBridge24.sum_le_Ncount
+#print axioms RvMBridge24.window_sum_le_five
+#print axioms RvMBridge24.exists_window_bound
+#print axioms RvMBridge24.norm_log_le
+#print axioms RvMBridge24.norm_digamma_le_log
+#print axioms RvMBridge24.landau_window
+#print axioms RvMBridge24.FwinExt_eq
+#print axioms RvMBridge24.isClosed_zeros
+#print axioms RvMBridge24.eventually_not_zero
+#print axioms RvMBridge24.logDeriv_xi_local
+#print axioms RvMBridge24.Fwin_differentiableAt
+#print axioms RvMBridge24.FwinExt_eventuallyEq_at_zero
+#print axioms RvMBridge24.FwinExt_differentiableOn
+#print axioms RvMBridge24.deriv_FwinExt
+#print axioms RvMBridge24.exists_radius
+#print axioms RvMBridge24.norm_deriv_FwinExt_le
+#print axioms RvMBridge24.window_one_sub
+#print axioms RvMBridge24.Fwin_one_sub
+#print axioms RvMBridge24.le_mul_one_add
+#print axioms RvMBridge24.Fwin_bound_core
+#print axioms RvMBridge24.sphere_bound
+#print axioms RvMBridge24.target_bound_high
+#print axioms RvMBridge24.tsum_lcTerm_le
+#print axioms RvMBridge24.target_bound_low
+#print axioms RvMBridge24.stripDerivBound
+#print axioms RvMBridge24.xiDiffExtGrowthRight_of_localCount
+#print axioms RvMBridge24.xiLogDerivDerivEq_of_localCount
+#print axioms RvMBridge27.xi_logDeriv_deriv_eq
+#print axioms RvMBridge27.liValue
+#print axioms RvMBridge27.bl_explicit_formula
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

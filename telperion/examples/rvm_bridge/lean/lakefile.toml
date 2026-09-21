@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -222,6 +222,21 @@ name = "E6Bridge25"
 # conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge26"
+
+# Twenty-fourth bridge (2026-09-21, StripDerivBound DISCHARGED): Landau's local partial fraction
+# transferred to the derivative on the strip 1/4 <= Re s <= 9/4, |Im s| >= 5 -- divide out the window
+# zeros, Cauchy on a zero-free circle of radius in (1/4, 1/2), the symmetric difference of Landau's
+# ball and the window bounded by the local zero count, Stirling for the digamma, the functional
+# equation for the left half, the compact bound for |Im s| <= 7. Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge24"
+
+# Twenty-seventh bridge (2026-09-21): THE UNCONDITIONAL ASSEMBLY. xi_logDeriv_deriv_eq (the
+# derivative partial fraction of xi'/xi, no Hadamard product), liValue (the Bombieri-Lagarias value
+# identity), bl_explicit_formula (the rh node RH_bl_explicit_formula, B7, statement verbatim).
+# Identities about zeros and primes, valid whether or not RH holds. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge27"
 
 [[lean_lib]]
 name = "W2cAssembly"
