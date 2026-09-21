@@ -27,6 +27,17 @@ theorem gaussian_positivity_envelope_sharp (c lam : ℝ) (hlam : 0 < lam)
 theorem band_upper_edge :
     ∀ lam : ℝ, 0 < lam → ∀ c : ℝ, envelopeCsharp lam ≤ |c| →
       0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+
+-- the HEIGHT FORM (the corollary in words: Gaussian positivity at width lam holds for every
+-- |c| >= T whenever the proved l1 prime constant satisfies envelopeCsharp lam <= T, essentially
+-- primeAbs lam + 1/2 <= log(T / 2 pi))
+theorem gaussian_positivity_above_height {lam T : ℝ} (hlam : 0 < lam) (hT : envelopeCsharp lam ≤ T) :
+    ∀ c : ℝ, T ≤ |c| → 0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+
+theorem gaussian_positivity_above_height_log {lam T : ℝ} (hlam : 0 < lam) (hT : 0 < T)
+    (hlog : primeAbs lam + 1 / 2 + Real.log 2 ≤ Real.log (T / (2 * Real.pi)))
+    (hadd : tailRadius lam + 3 / Real.sqrt lam + 1 ≤ 2 * Real.pi * Real.exp (primeAbs lam + 1 / 2)) :
+    ∀ c : ℝ, T ≤ |c| → 0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
 ```
 
 `primeAbs lam` is a real number defined by a convergent series (summability proved,
@@ -38,7 +49,8 @@ valid for every centre is `|cos| <= 1` (Lean: `norm_autocorrGauss_add_neg_le`,
 
 `#print axioms` (probe `Probes/E6Bridge16_probe.lean`, verbatim): every one of
 
-    gaussian_positivity_envelope_sharp, band_upper_edge, re_weilForm_gauss_nonneg_sharp,
+    gaussian_positivity_envelope_sharp, band_upper_edge, gaussian_positivity_above_height,
+    gaussian_positivity_above_height_log, re_weilForm_gauss_nonneg_sharp,
     envelopeCsharp_le_crude, integral_sq_mul_cexp_gaussian_fourier', fourier_autocorrGauss,
     weilKernel_zero_eq_gaussTest, weilKernel_one_eq_gaussTest, norm_gaussTest_half, norm_poles_le,
     norm_primeSide_le_primeAbs, summable_primeAbsTerm, primeAbs_le_crude,
@@ -79,6 +91,9 @@ Assembly: `F/A >= Theta - log pi - primeAbs - 0.13 - (Theta + 5) e^{-16 - 2P} 2 
   0.7     13.779   7.9e-16     9.983e+6     6.055e+6     1.306e+1016447
   0.8     16.788   2.7e-13     2.025e+8     1.228e+8     6.365e+5034047
   1.0     23.718   9.2e-10    2.071e+11    1.256e+11   1.205e+123494302
+  1.1     27.818    1.8e-8    1.249e+13    7.575e+12   4.046e+611670320
+  1.2      32.34    2.1e-7    1.149e+15    6.971e+14  6.541e+3029621701
+  1.3     37.353    1.7e-6    1.728e+17    1.048e+17 2.342e+15005812957
   1.5     48.925    5.0e-5    1.833e+22    1.112e+22 4.266e+368130547147
   2.0      89.62     0.012    8.644e+39    5.243e+39 1.984e+1097381692229395
 ```
@@ -115,12 +130,19 @@ form is what does NOT close.
 
 ## 4. The band, and the ladder
 
-With the ladder height `T = 640000` (E6Bridge12's certified window strip `|c| <= T - D`):
+With the ladder height `T = 640000` (E6Bridge12's certified window strip `|c| <= T - D`) and the
+Platt-Trudgian height `T = 3e12`:
 
-* `lam_*` with `c1sharp(lam_*) = T`: `lam_* = 0.597` (`P_abs = 11.0`). For `lam <= 0.597` the sharp
-  envelope covers `|c| >= T`, so the band `T - D < |c| < c1sharp(lam)` is EMPTY there and the whole
-  line at that width is covered by {small-lam foothold, ladder strip, envelope} PROVIDED the
-  ladder instrument certifies `|c| <= T - D` at that width. It does not: E6Bridge12's
+* `lam_*` with `c1sharp(lam_*) = T` (the largest width at which
+  `gaussian_positivity_above_height` covers ALL `|c| >= T`): `lam_* = 0.597` for `T = 640000`
+  (`P_abs = 11.03` against `log(T/2pi) = 11.53`) and `lam_* = 1.065` for `T = 3e12`
+  (`P_abs = 26.4` against `log(T/2pi) = 26.9`). In words: Gaussian positivity at width `lam`
+  holds for every `|c| >= T` whenever `primeAbs lam + 1/2 + (additive terms) <= log(T/2pi)`;
+  the lead's Dirichlet-lens figure `0.618` for `T = 640000` is the same statement with the `1/2`
+  margin and additive terms dropped (`2 pi e^{P_abs} = T` gives `P_abs = 11.53`, i.e. `lam = 0.62`).
+  For `lam <= lam_*` the band `T - D < |c| < c1sharp(lam)` is EMPTY and the whole line at that
+  width is covered by {small-lam foothold, ladder strip, envelope} PROVIDED the ladder
+  instrument certifies `|c| <= T - D` at that width. It does not: E6Bridge12's
   `gaussian_positivity_of_window*` require `1 <= lam` (`hlam`), and their thresholds at height `c`
   (PROXY constants: `constB(c) = Σ m(rho) e^{1/2}(2c^2 + 13/4)/(1 + gamma^2) ~ 0.0462 e^{1/2}
   (2c^2 + 13/4)` using `Σ_rho 1/(1 + gamma^2) = 0.0462`) are
