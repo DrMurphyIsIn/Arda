@@ -130,3 +130,38 @@ once its binders are discharged; the memo says so explicitly.
   threshold re-proof), 3 elaboration successes (threshold positive, window finiteness, both
   summabilities), 2 expected failures (hwin deleted; WindowOnLine by aesop).
 - Probes/E6Bridge12_probe.lean is the author's own and was not relied on.
+
+## 8. Section G, the dominance form (audited on the current 476-line file): PASS
+
+The file audited above IS the 476-line version; section G (lines 375-476) was read in full and
+its finiteness and collapse lemmas are already cited in item 2. Additional checks requested, with
+Probes/Audit12_SectionG.lean:
+
+- Window bounds. `zeroWindowSet_finite c D` uses `zetaSeam.finite_window (c - D - 1) (c + D)`,
+  i.e. the ordinate interval (c - D - 1, c + D]. For |Im ρ - c| ≤ D one has c - D ≤ Im ρ ≤ c + D,
+  hence c - D - 1 < Im ρ ≤ c + D (probe, elaborates by linarith). The Zeta23 field is
+  `finite_window : ∀ T₁ T₂ : ℝ, (carrier ∩ {ρ | T₁ < ρ.im ∧ ρ.im ≤ T₂}).Finite`
+  (Zeta23/Defs.lean:130), general in any real T₁, T₂; negative ordinates are covered
+  (`zeroWindowSet_finite (-100000) 2` elaborates). The ladder-side conjugation issue is
+  irrelevant to finiteness; it concerns only how the ladder supplies `WindowOnLine` at negative c,
+  which the memo states.
+- `mem_zeroWindow : ρ ∈ zeroWindow c D ↔ IsNontrivialZero ρ ∧ |ρ.im - c| ≤ D` elaborates as stated.
+- `windowSum c D lam` unfolds by `rfl` to `∑ ρ ∈ zeroWindow c D, m(ρ) ((Im ρ - c)² e^{-2 lam (Im ρ - c)²})`
+  and `tailEnvelope c D lam` by `rfl` to `exp(2 (lam - 1)(1/4 - D²)) * constB c`; `constB c` unfolds
+  by `rfl` to the tsum `Σ' m(ρ) C₁(c)/(1 + |γ_ρ|²)`. So windowSum is a finite explicit sum a
+  consumer evaluates from the certified zero list, while tailEnvelope is explicit only up to a
+  numeric UPPER bound on the infinite sum constB c; the memo says exactly this ("needs a numeric
+  UPPER bound on constB c ... from the unconditional zero count").
+- `re_window_eq_windowSum` (lines 424-440): under hwin the tsum over the window index set equals
+  the Finset sum (item 2 above); it is the load-bearing identity of the dominance form.
+- lam ≥ 1 gating. `gaussian_positivity_of_window_dominance` and `re_zeroSide_ge_windowSum_sub`
+  both carry `(hlam : 1 ≤ lam)` and call `tail_bound_window hD hlam`, whose statement requires
+  `1 ≤ lam`; the attempt to use the envelope at lam = 1/2 fails
+  (`Audit12_SectionG.lean:28:30: error: unsolved goals`, the side goal 1 ≤ 1/2). The envelope is
+  never used below 1.
+- hdom is load-bearing: the dominance proof with hdom deleted fails at
+  `Audit12_SectionG.lean:37:2: error: linarith failed to find a contradiction`.
+- Composition: `gaussian_positivity_of_window_dominance` follows from
+  `re_zeroSide_ge_windowSum_sub` + hdom by linarith (probe), and the single-near-zero form is the
+  special case through `near_term_le_windowSum` (probe elaborates).
+- Guard: 29 lines name RvMBridge12 in my checkout (the count includes the import line).
