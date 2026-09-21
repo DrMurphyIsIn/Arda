@@ -293,6 +293,14 @@ import W2cAssembly
 #print axioms RvMBridge12.tail_le_near_of_threshold
 #print axioms RvMBridge12.gaussian_positivity_of_window
 #print axioms RvMBridge12.gaussian_positivity_of_window_two
+#print axioms RvMBridge12.zeroWindowSet_finite
+#print axioms RvMBridge12.mem_zeroWindow
+#print axioms RvMBridge12.windowSum_nonneg
+#print axioms RvMBridge12.tailEnvelope_nonneg
+#print axioms RvMBridge12.re_window_eq_windowSum
+#print axioms RvMBridge12.gaussian_positivity_of_window_dominance
+#print axioms RvMBridge12.re_zeroSide_ge_windowSum_sub
+#print axioms RvMBridge12.near_term_le_windowSum
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

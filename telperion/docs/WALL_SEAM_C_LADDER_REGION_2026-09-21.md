@@ -12,8 +12,8 @@ The uncertified residual is the Wall. conjecture1_proved = False.
 ## Files
 
 - `telperion/examples/rvm_bridge/lean/E6Bridge12.lean` (namespace `RvMBridge12`, imports
-  `E6Bridge6` and `E6Bridge7`, 368 lines).
-- `telperion/examples/rvm_bridge/lean/Probes/E6Bridge12_probe.lean` (axiom audit of 14
+  `E6Bridge6` and `E6Bridge7`, 476 lines).
+- `telperion/examples/rvm_bridge/lean/Probes/E6Bridge12_probe.lean` (axiom audit of 19
   declarations + 2 probe theorems, signatures, non-triviality of the hypothesis, two load-bearing
   probes).
 - This memo.
@@ -60,6 +60,54 @@ theorem gaussian_positivity_of_window_two : ∀ {c δ lam : ℝ},
 theorem gaussian_positivity_of_all_on_line : (∀ (ρ : ℂ), IsNontrivialZero ρ → ρ.re = 1 / 2) →
   ∀ (c lam : ℝ), 0 < lam → 0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
 ```
+
+### Deliverable 2 (the primary instrument): the DOMINANCE form
+
+The landscape numerics (`docs/WALL_LANDSCAPE_2026-09-21.md`, section 2) show the single-near-term
+criterion above essentially never holds at real heights (a zero just inside D against one just
+outside), while the WHOLE window sum beats the tail at every centre tested, for lam >= 0.27 at
+D = 2. So the honest hypothesis is a computable finite inequality on the certified zeros:
+
+```lean
+/-- The nontrivial zeros with |Im rho - c| <= D, finite by the local zero count. -/
+def zeroWindow (c D : ℝ) : Finset ℂ            -- mem_zeroWindow : ρ ∈ zeroWindow c D ↔ IsNontrivialZero ρ ∧ |ρ.im - c| ≤ D
+
+/-- The FINITE certified window sum. -/
+def windowSum (c D lam : ℝ) : ℝ :=
+  ∑ ρ ∈ zeroWindow c D,
+    (WeilExplicit.zeroMult ρ : ℝ) * ((ρ.im - c) ^ 2 * Real.exp (-(2 * lam) * (ρ.im - c) ^ 2))
+
+/-- The certified tail envelope (tail_bound_window, lam >= 1). -/
+def tailEnvelope (c D lam : ℝ) : ℝ := Real.exp (2 * (lam - 1) * (1 / 4 - D ^ 2)) * constB c
+
+theorem gaussian_positivity_of_window_dominance : ∀ {c D lam : ℝ},
+  0 ≤ D → 1 ≤ lam → WindowOnLine c D →
+  tailEnvelope c D lam ≤ windowSum c D lam → 0 ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+
+theorem re_zeroSide_ge_windowSum_sub : ∀ {c D lam : ℝ},
+  0 ≤ D → 1 ≤ lam → WindowOnLine c D →
+  windowSum c D lam - tailEnvelope c D lam ≤ (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+```
+
+The key lemma is `re_window_eq_windowSum`: under `WindowOnLine c D` the window part of the zero
+side is EXACTLY `windowSum c D lam` (the tsum over the window index set collapses to the finite
+Finset sum via `tsum_subtype` + `tsum_eq_sum`, every summand being real by `re_term_of_on_line`).
+So the second theorem says: F(c, lam) is the certified window sum plus a tail of modulus at most
+`tailEnvelope`, and the certificate margin `windowSum - tailEnvelope` is itself a lower bound for
+F. The single-near-zero form (Deliverable 1) is the special case `near_term_le_windowSum` in which
+the window sum is bounded below by one of its terms; it is kept because it needs no evaluation, but
+the numerics say it is the wrong instrument at real heights.
+
+How a consumer instantiates `hdom`. `windowSum` is a Finset sum over the certified zeros with
+their multiplicities (all 1 on the ladder) and ordinates (rational enclosures from the band
+modules); `tailEnvelope` needs a numeric UPPER bound on `constB c`, which is an infinite sum over
+all zeros and is bounded from the unconditional zero count N(T) (E6Bridge2's Riemann-von Mangoldt),
+not from the finite certificate. Both are registry-level certificates, cross-island. The
+restriction lam >= 1 comes from the lam = 1 majorant behind `tailEnvelope` (the tail is bounded by
+its lam = 1 value times the decay e^{2 (lam - 1)(1/4 - D^2)}); the numerics' validity down to
+lam = 0.27 at D = 2 uses the sharper strip bound e^{lam/2} Sum ((t-c)^2 + 1/4) e^{-2 lam (t-c)^2},
+which this file does not formalise (it would need a lam-dependent majorant sum; below lam = 1 the
+present envelope is still a valid bound but not the numerics' one).
 
 `constB c` is E6Bridge7's lam-independent majorant constant
 `Sum_rho m(rho) e^{1/2} (2 c^2 + 13/4) / (1 + |gamma_rho|^2)` (finite by the local zero count,
@@ -165,6 +213,11 @@ i.e. a horizontal strip in c (all certified heights, both signs) above an explic
 lamThreshold(c) = max(1, constB(c) e^{2 (D^2 - 1/4)} / (2 kappa delta^2)) that grows like c^2
 (through constB's (2 c^2 + 13/4) factor) and like 1/delta^2 in the near-zero margin.
 
+With the dominance form the certified set is instead {|c| in [D, T - D], lam >= 1, hdom(c, lam)
+certified}: in lam the region is whatever the finite certificate checks, above lam = 1; the numerics
+say the check passes from lam = 0.27 (D = 2) at every c tested, so on the formal side the lam >= 1
+floor of `tailEnvelope`, not the certificate, is the binding constraint near the bottom.
+
 Seam B (parallel agent, small lam) covers the complementary region in lam: for each c, an interval
 0 < lam <= lam0(c) obtained from the lam -> 0 asymptotics of F. Together the certified region is
 
@@ -192,7 +245,10 @@ constants but not closed by them, since the certified windows are finite.
 `term_eq_zero_of_not_nontrivial`, `re_term_nonneg`, `near_term_ge`,
 `gaussian_positivity_of_all_on_line`, `summable_term_subtype`, `zeroSide_split`,
 `re_window_ge_term`, `phi_le_of_far`, `norm_term_le_tail`, `tail_bound_window`,
-`tail_le_near_of_threshold`, `gaussian_positivity_of_window`, `gaussian_positivity_of_window_two`.
+`tail_le_near_of_threshold`, `gaussian_positivity_of_window`, `gaussian_positivity_of_window_two`,
+`zeroWindowSet` (def), `zeroWindowSet_finite`, `zeroWindow` (def), `mem_zeroWindow`, `windowSum` (def),
+`windowSum_nonneg`, `tailEnvelope` (def), `tailEnvelope_nonneg`, `re_window_eq_windowSum`,
+`gaussian_positivity_of_window_dominance`, `re_zeroSide_ge_windowSum_sub`, `near_term_le_windowSum`.
 Probe file: `re_term_neg_of_off_line`, `some_gauss_negative_of_off_line_zero`.
 
 ## Guard lines for the integrator (AxiomGuardRvMBridge.lean, not edited here)
@@ -201,12 +257,16 @@ Probe file: `re_term_neg_of_off_line`, `some_gauss_negative_of_off_line_zero`.
 import E6Bridge12
 #print axioms RvMBridge12.gaussian_positivity_of_window
 #print axioms RvMBridge12.gaussian_positivity_of_window_two
+#print axioms RvMBridge12.gaussian_positivity_of_window_dominance
+#print axioms RvMBridge12.re_zeroSide_ge_windowSum_sub
 #print axioms RvMBridge12.gaussian_positivity_of_all_on_line
 ```
 and `"E6Bridge12"` in `defaultTargets` plus a `[[lean_lib]] name = "E6Bridge12"` stanza.
 
 ## What stopped me
 
-Nothing in scope. Not done, by design: the registry node itself (registry agent's call), any
+Nothing in scope. E6Bridge10 (seam A) is now on the island; `gaussian_positivity_of_all_on_line` stays
+self-contained rather than citing `RvMBridge10.rh_implies_gaussian_positivity`, so this file does
+not depend on E6Bridge10. Not done, by design: the registry node itself (registry agent's call), any
 numeric value of `constB c` or of `lamThreshold`, and the two small ladder-side facts (conjugation
 reflection for negative c, the real-axis exclusion for |c| < D) that live on the other island.

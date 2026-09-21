@@ -35,6 +35,13 @@
         e^{-2 lam kappa} <= 1/(2 lam kappa) this holds for every
         lam >= lamThreshold c D d delta := max 1 (B e^{2 (D^2 - 1/4)} / (2 kappa delta^2)).
         Explicit, log-free.  (For d <= 1, D >= 2: kappa >= 11/4.)
+    (G) DOMINANCE FORM (the instrument the numerics actually validate, section G): the window
+        part of the zero side is EXACTLY the finite certified sum
+            windowSum c D lam = Sum_{|Im rho - c| <= D} m(rho) (Im rho - c)^2 e^{-2 lam (Im rho - c)^2}
+        (finite by the local zero count), so  F(c, lam) >= windowSum - tailEnvelope  with
+        tailEnvelope c D lam = e^{2 (lam - 1)(1/4 - D^2)} constB c, and F >= 0 whenever the
+        computable inequality  tailEnvelope <= windowSum  holds (gaussian_positivity_of_window_dominance).
+        The single-near-zero form (A) is the special case windowSum >= one term.
 
   WHAT IS CONSUMED (all unconditional, #print axioms = [propext, Classical.choice, Quot.sound]):
     RvMBridge6.zeroSide, gaussTest, summable_gauss_zeroSide, summable_mult_div_one_add_normSq,
@@ -364,5 +371,106 @@ theorem gaussian_positivity_of_window_two {c δ lam : ℝ} (hδ : 0 < δ) (hwin 
     (hnear : ∃ ρ : ℂ, IsNontrivialZero ρ ∧ δ ≤ |ρ.im - c| ∧ |ρ.im - c| ≤ 1)
     (hlam : lamThreshold c 2 1 δ ≤ lam) : 0 ≤ (zeroSide (gaussTest c lam)).re :=
   gaussian_positivity_of_window (by norm_num) hδ (by norm_num) hwin hnear hlam
+
+/-! ## G. The dominance form: the FINITE certified window sum against the tail envelope.
+
+The landscape numerics (docs/WALL_LANDSCAPE_2026-09-21.md, section 2) show that a SINGLE near term
+essentially never beats the tail (a zero just inside D against one just outside), while the whole
+window sum does, at every centre tested, for lam >= 0.27 (D = 2).  So the honest instrument
+hypothesis is the computable finite inequality  tailEnvelope <= windowSum, evaluated on the
+ladder's certified zeros (a certificate, cross-island), not the existence of one near zero. -/
+
+/-- The nontrivial zeros with |Im rho - c| <= D: finite by the local zero count
+(Zeta23.zetaSeam.finite_window), generalised from E6Bridge7's centre rho_0 to (c, D). -/
+def zeroWindowSet (c D : ℝ) : Set ℂ := {ρ | IsNontrivialZero ρ} ∩ winSet c D
+
+lemma zeroWindowSet_finite (c D : ℝ) : (zeroWindowSet c D).Finite := by
+  refine (zetaSeam.finite_window (c - D - 1) (c + D)).subset ?_
+  rintro ρ ⟨hnt, hw⟩
+  have hw' : |ρ.im - c| ≤ D := hw
+  have h := abs_le.mp hw'
+  exact ⟨hnt, by linarith [h.1], by linarith [h.2]⟩
+
+/-- The certified window as a Finset. -/
+def zeroWindow (c D : ℝ) : Finset ℂ := (zeroWindowSet_finite c D).toFinset
+
+lemma mem_zeroWindow {c D : ℝ} {ρ : ℂ} :
+    ρ ∈ zeroWindow c D ↔ IsNontrivialZero ρ ∧ |ρ.im - c| ≤ D := by
+  unfold zeroWindow
+  rw [Set.Finite.mem_toFinset]
+  rfl
+
+/-- The FINITE certified window sum  Sum_{|Im rho - c| <= D} m(rho) (Im rho - c)^2 e^{-2 lam (Im rho - c)^2}
+(the on-line value of each summand; under WindowOnLine it IS the window part of the zero side). -/
+def windowSum (c D lam : ℝ) : ℝ :=
+  ∑ ρ ∈ zeroWindow c D,
+    (WeilExplicit.zeroMult ρ : ℝ) * ((ρ.im - c) ^ 2 * Real.exp (-(2 * lam) * (ρ.im - c) ^ 2))
+
+lemma windowSum_nonneg (c D lam : ℝ) : 0 ≤ windowSum c D lam :=
+  Finset.sum_nonneg fun ρ _ => by positivity
+
+/-- The certified tail envelope  e^{2 (lam - 1)(1/4 - D^2)} constB c  (tail_bound_window, lam >= 1). -/
+def tailEnvelope (c D lam : ℝ) : ℝ := Real.exp (2 * (lam - 1) * (1 / 4 - D ^ 2)) * constB c
+
+lemma tailEnvelope_nonneg (c D lam : ℝ) : 0 ≤ tailEnvelope c D lam :=
+  mul_nonneg (Real.exp_pos _).le (constB_nonneg c)
+
+/-- Under WindowOnLine the window part of the zero side is EXACTLY the finite window sum. -/
+lemma re_window_eq_windowSum {c D lam : ℝ} (hwin : WindowOnLine c D) :
+    (∑' ρ : winSet c D, term c lam ρ).re = windowSum c D lam := by
+  rw [tsum_subtype (winSet c D) (term c lam)]
+  have hzero : ∀ ρ ∉ zeroWindow c D, (winSet c D).indicator (term c lam) ρ = 0 := by
+    intro ρ hρ
+    by_cases hw : ρ ∈ winSet c D
+    · rw [Set.indicator_of_mem hw]
+      apply term_eq_zero_of_not_nontrivial
+      intro hnt
+      exact hρ (mem_zeroWindow.mpr ⟨hnt, hw⟩)
+    · exact Set.indicator_of_notMem hw _
+  rw [tsum_eq_sum hzero, Complex.re_sum]
+  unfold windowSum
+  refine Finset.sum_congr rfl fun ρ hρ => ?_
+  have h := mem_zeroWindow.mp hρ
+  rw [Set.indicator_of_mem (show ρ ∈ winSet c D from h.2), re_term_of_on_line c lam (hwin ρ h.1 h.2)]
+
+/-- **The ladder-certified region, dominance form.**  If every nontrivial zero with ordinate
+within D of c is on the line (the Turing certification) and the finite certified window sum
+dominates the tail envelope at this lam >= 1 (a computable inequality on the certified zeros),
+then F(c, lam) >= 0.  Both hypotheses are what a registry-level certificate supplies; nothing about
+zeros outside the window is assumed or concluded. -/
+theorem gaussian_positivity_of_window_dominance {c D lam : ℝ} (hD : 0 ≤ D) (hlam : 1 ≤ lam)
+    (hwin : WindowOnLine c D) (hdom : tailEnvelope c D lam ≤ windowSum c D lam) :
+    0 ≤ (zeroSide (gaussTest c lam)).re := by
+  have hlam0 : 0 < lam := by linarith
+  rw [zeroSide_split c D lam hlam0, Complex.add_re, re_window_eq_windowSum hwin]
+  have htail := tail_bound_window (c := c) hD hlam
+  have htailre : -(tailEnvelope c D lam) ≤ (∑' ρ : ↥(winSet c D)ᶜ, term c lam ρ).re := by
+    have h := abs_le.mp (Complex.abs_re_le_norm (∑' ρ : ↥(winSet c D)ᶜ, term c lam ρ))
+    unfold tailEnvelope
+    linarith [h.1]
+  linarith
+
+/-- The dominance form is exact on the window: under WindowOnLine, F(c, lam) is the window sum
+plus a tail of modulus at most tailEnvelope (so F >= windowSum - tailEnvelope, and the certificate
+margin windowSum - tailEnvelope is a lower bound for F itself). -/
+theorem re_zeroSide_ge_windowSum_sub {c D lam : ℝ} (hD : 0 ≤ D) (hlam : 1 ≤ lam)
+    (hwin : WindowOnLine c D) :
+    windowSum c D lam - tailEnvelope c D lam ≤ (zeroSide (gaussTest c lam)).re := by
+  have hlam0 : 0 < lam := by linarith
+  rw [zeroSide_split c D lam hlam0, Complex.add_re, re_window_eq_windowSum hwin]
+  have htail := tail_bound_window (c := c) hD hlam
+  have h := abs_le.mp (Complex.abs_re_le_norm (∑' ρ : ↥(winSet c D)ᶜ, term c lam ρ))
+  unfold tailEnvelope
+  linarith [h.1]
+
+/-- The single-near-zero form (section F) is the special case of the dominance form in which the
+window sum is bounded below by one term: near_term_ge + the term is a summand of windowSum. -/
+lemma near_term_le_windowSum {c D lam : ℝ} {ρ₁ : ℂ} (h₁nt : IsNontrivialZero ρ₁)
+    (h₁win : |ρ₁.im - c| ≤ D) :
+    (WeilExplicit.zeroMult ρ₁ : ℝ) * ((ρ₁.im - c) ^ 2 * Real.exp (-(2 * lam) * (ρ₁.im - c) ^ 2))
+      ≤ windowSum c D lam :=
+  Finset.single_le_sum (f := fun ρ : ℂ => (WeilExplicit.zeroMult ρ : ℝ)
+      * ((ρ.im - c) ^ 2 * Real.exp (-(2 * lam) * (ρ.im - c) ^ 2)))
+    (fun ρ _ => by positivity) (mem_zeroWindow.mpr ⟨h₁nt, h₁win⟩)
 
 end RvMBridge12
