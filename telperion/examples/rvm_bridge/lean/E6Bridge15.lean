@@ -11,7 +11,7 @@
   liZeroSum n T = Sum_{0 < Re rho < 1, |Im rho| <= T} m(rho) (1 - (1 - 1/rho)^n) with the E8
   divisor multiplicity m = WeilExplicit.zeroMult.
 
-  PROVED HERE (kernel-checked, no sorry): the CONVERGENCE half.  For every n the symmetric window
+  PROVED HERE (kernel-checked, no `sorry`): the CONVERGENCE half.  For every n the symmetric window
   sums converge,
       liZeroSum_tendsto (n) : Tendsto (liZeroSum n) atTop (nhds (liLimit n)),
       liLimit n := Sum'_rho m(rho) Re (1 - (1 - 1/rho)^n)     (absolutely convergent),
@@ -35,7 +35,7 @@
   sums Sum_rho rho^{-j} in terms of the Laurent coefficients eta_{j-1} and the digamma tower at
   1/2), which is not in Zeta23 (its partial fraction, WeilEF.zeta_logDeriv_partial_fraction, is
   Landau's LOCAL form with an unpinned O(log t) remainder).  It is carried as the single named
-  obligation LiValue below (def : Prop, never a sorry); bl_explicit_formula_of consumes it.
+  obligation LiValue below (def : Prop, never a `sorry`); bl_explicit_formula_of consumes it.
 
   ALSO PROVED (finite-grade dictionary content): the forward half of Li's criterion on this
   island's vocabulary, rh_implies_liLimit_nonneg : RiemannHypothesis -> 0 <= Re (liLimit n),
