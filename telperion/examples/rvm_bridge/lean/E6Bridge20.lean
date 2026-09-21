@@ -6,7 +6,7 @@
   extends across the nontrivial zeros to an ENTIRE function, with logarithmic growth.
   (2026-09-21; the constant-free derivative partial fraction of xi'/xi.)
 
-  PROVED HERE (kernel-checked, no sorry): the ENTIRE EXTENSION (part A of the plan).
+  PROVED HERE (kernel-checked, no `sorry`): the ENTIRE EXTENSION (part A of the plan).
     * xi_eq_zero_iff: xi vanishes exactly at the nontrivial zeros (strip: Lambda = Gamma_R * zeta;
       Re s >= 1: zeta and Gamma_R nonvanishing, xi 1 = 1/2; Re s <= 0: xi(1 - s) = xi(s)).
     * analyticOrderAt_xi_eq: the order of xi at s is the E8 divisor multiplicity m(s), for EVERY s
