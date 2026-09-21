@@ -186,5 +186,5 @@ the zeros to 1e-7. The zeros+tail residual is the tail estimate's own error, not
   the island's summation-by-parts representation `Zeta0EqZeta` at N = 1; see
   NO_REAL_ZERO_2026-09-21.md); `liValue_of_two` / `bl_explicit_formula_of_two` there put the node on
   E6Bridge22's two inequalities alone.
-* Registration: E6Bridge19 is not in `lakefile.toml` defaultTargets nor in `AxiomGuardRvMBridge`
+* Registration: E6Bridge19 was added to `lakefile.toml` defaultTargets and to `AxiomGuardRvMBridge` (126 guard lines) by the integrator on 2026-09-21; the earlier note that it was unregistered is superseded
   (not to be edited by this session); the olean was emitted by hand for the probe.
