@@ -3,12 +3,17 @@ depends_on = ["MM_rh_iff_theta_positivity"]
 kind = "lemma"
 name = "MM.theta_heat_monotone"
 statement_module = "Statements.MM_theta_heat_monotone"
-status = "draft"
+status = "proved"
 title = "THE HEAT INSTRUMENT (2026-09-21), UNCONDITIONAL: the plain Gaussian face is heat-monotone in width -- Theta(., lam') = sqrt(lam/lam') P_s Theta(., lam) for lam' < lam (theta_heat, valid for off-line zeros by the termwise complex-centre Gaussian identity), so positivity on the WHOLE LINE at one width implies it at every smaller width. The free widths form an initial segment; one certified width closes all smaller. The Wall face F has no such monotonicity (negative source term), which is why the F-Wall is a diagonal. Asserts nothing detectable about zeros by itself. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge17.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-theta-face-2026-09-21 (AUDIT_TESTIMONY_THETA_FACE_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: positivity of Theta on the whole line at width lam implies it at every smaller width. Audit: the complex-centre heat identity re-derived by hand and checked to 20 digits (direction sqrt(lam/lam') confirmed), the summed identity via a summable majorant over the countable zero set, the kernel positive; the certificate must be global (band-restricted hypothesis fails, probe); reversal fails (backward heat). Unconditional instrument; asserts nothing detectable about zeros by itself. conjecture1_proved = False."

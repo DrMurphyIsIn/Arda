@@ -88,6 +88,8 @@ version needs an explicit off-ordinate centre and a phase, and is left named bel
 
 ## 5. What would certify a lower bound, and why it is a wall
 
+> **Zero content, stated plainly (added 2026-09-21 after blind audit):** Lambda_Theta >= lam_cert asserts NOTHING detectable about zeros above the ladder at any reachable lam_cert. Theta is blind to a strip-edge zero until width about 3.6 (a strip-edge zero dips Theta by ~7e-4 at lam = 0.6 and ~0.024 at lam = 1 against an on-line background of order 2-3 at the ladder height), so a certified width is a clean restatement of what the ladder and the envelope already give, not new localisation.
+
 Lambda_Theta >= lam_cert follows from ONE whole-line certificate Theta(., lam_cert) >= 0: the
 ladder for |c| <= T - D, an envelope for |c| >= envelopeC(lam_cert), and the band between. Identity
 (M) then gives every smaller width for free, which removes the sub-threshold band of the F face.
