@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["MM_gaussian_explicit_formula"]
+kind = "lemma"
+name = "MM.gaussian_positivity_envelope"
+statement_module = "Statements.MM_gaussian_positivity_envelope"
+status = "draft"
+title = "WALL ASSAULT seam B, envelope form (2026-09-21), UNCONDITIONAL: for every width lam > 0 there is an explicit height envelopeC(lam) beyond which the Gaussian-weighted zero sum is nonnegative at every centre |c| >= envelopeC(lam) -- archimedean dominance at large height (Re digamma grows like log|c|/2 via Zeta23 Stirling) against a lam-uniform prime bound 16 A e^{16 lam}; the constant carries the crude e^{16 lam} and is not sharpened (the sharp c1(lam) ~ 2 pi e^{2P(lam)} is the sweep's P3). Nothing about RH: the Wall proper is the bounded-height complement above lam0. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge11.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

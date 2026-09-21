@@ -31,3 +31,4 @@ import Statements.MM_gaussian_positivity_of_window
 import Statements.MM_gaussian_positivity_small_lam_prime_side
 import Statements.MM_gaussian_positivity_small_lam
 import Statements.MM_wall_map
+import Statements.MM_gaussian_positivity_envelope

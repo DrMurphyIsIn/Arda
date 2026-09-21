@@ -481,6 +481,13 @@ def GaussianExplicitFormula : Prop := ∀ (c lam : ℝ), 0 < lam →
 /-- The absolute width threshold. -/
 def lam₀ : ℝ := 1 / 10000000
 
+-- ===== E6Bridge11.lean:1370-1374 (the envelope form, added later on 2026-09-21) =====
+/-- The explicit envelope threshold c₁(lam). -/
+def envelopeX (lam : ℝ) : ℝ :=
+  4 * Real.exp (2 * lam) * Real.sqrt (32 * Real.pi * lam) + 16 * Real.exp (16 * lam)
+
+def envelopeC (lam : ℝ) : ℝ := 2 * Real.exp (9 + 2 * envelopeX lam) + 2 / Real.sqrt lam
+
 end RvMBridge11
 
 end
