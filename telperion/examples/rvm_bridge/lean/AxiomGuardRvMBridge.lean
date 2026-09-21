@@ -75,6 +75,11 @@
         lam above an explicit threshold => Gaussian positivity at that centre); plus stages
         (zeroSide_split, tail_bound_window, near_term_ge, tail_le_near_of_threshold).
         NOT a proof of RH; the on-line hypothesis is load-bearing.
+      * RvMBridge11.re_weilForm_gauss_nonneg -- WALL ASSAULT seam B (2026-09-21): the small-width
+        region lam <= lam0 = 1e-7 is UNCONDITIONAL (archimedean dominance), plus its stages.
+      * RvMBridge13.{gaussianExplicitFormula, gaussian_positivity_small_lam,
+        rh_iff_gaussian_positivity_above_lam0} -- THE WALL MAP: RH <-> Gaussian positivity on
+        widths above lam0 only.  Equivalence; NOT a proof of RH.  conjecture1_proved = False.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -101,7 +106,9 @@ import E6Bridge7
 import E6Bridge8
 import E6Bridge9
 import E6Bridge10
+import E6Bridge11
 import E6Bridge12
+import E6Bridge13
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -301,6 +308,52 @@ import W2cAssembly
 #print axioms RvMBridge12.gaussian_positivity_of_window_dominance
 #print axioms RvMBridge12.re_zeroSide_ge_windowSum_sub
 #print axioms RvMBridge12.near_term_le_windowSum
+#print axioms RvMBridge11.gaussA_pos
+#print axioms RvMBridge11.integral_sq_mul_exp_neg_mul_sq
+#print axioms RvMBridge11.integral_sq_mul_cexp_neg_mul_sq
+#print axioms RvMBridge11.re_digamma_quarter_ge
+#print axioms RvMBridge11.re_digamma_quarter_ge_two
+#print axioms RvMBridge11.gaussPhi_mul_conj
+#print axioms RvMBridge11.autocorr_gaussPhi_eq_integral
+#print axioms RvMBridge11.integral_sq_sub_mul_cexp
+#print axioms RvMBridge11.gaussK_mul_conj
+#print axioms RvMBridge11.autocorr_gaussPhi
+#print axioms RvMBridge11.autocorrGauss_zero
+#print axioms RvMBridge11.abs_one_sub_two_mul_exp_le
+#print axioms RvMBridge11.norm_autocorrGauss_le
+#print axioms RvMBridge11.autocorr_gaussPhi_funext
+#print axioms RvMBridge11.prime_term_bound
+#print axioms RvMBridge11.norm_primeSide_le
+#print axioms RvMBridge11.norm_integral_autocorrGauss_mul_exp_le
+#print axioms RvMBridge11.weilKernel_zero_eq
+#print axioms RvMBridge11.weilKernel_one_eq
+#print axioms RvMBridge11.norm_weilKernel_zero_le
+#print axioms RvMBridge11.norm_weilKernel_one_le
+#print axioms RvMBridge11.integral_sq_mul_cexp_gaussian_fourier
+#print axioms RvMBridge11.weilKernel_line_eq
+#print axioms RvMBridge11.cpow_pi_div_a
+#print axioms RvMBridge11.weilKernel_autocorrGauss_line
+#print axioms RvMBridge11.psiR_eq
+#print axioms RvMBridge11.psiR_ge
+#print axioms RvMBridge11.psiR_ge_two
+#print axioms RvMBridge11.continuous_psiR
+#print axioms RvMBridge11.bumpR_nonneg
+#print axioms RvMBridge11.continuous_bumpR
+#print axioms RvMBridge11.integrable_bumpR
+#print axioms RvMBridge11.integrable_bumpR_mul_psiR
+#print axioms RvMBridge11.bumpR_le
+#print axioms RvMBridge11.integral_bumpR
+#print axioms RvMBridge11.R₀_pos
+#print axioms RvMBridge11.setIntegral_bumpR_le
+#print axioms RvMBridge11.integral_bumpR_mul_psiR_ge
+#print axioms RvMBridge11.integral_archIntegrand_eq
+#print axioms RvMBridge11.re_archSide_ge
+#print axioms RvMBridge11.re_weilForm_gauss_nonneg
+#print axioms RvMBridge11.gaussian_positivity_small_lam_of
+#print axioms RvMBridge11.gaussian_positivity_small_lam_explicit_of
+#print axioms RvMBridge13.gaussianExplicitFormula
+#print axioms RvMBridge13.gaussian_positivity_small_lam
+#print axioms RvMBridge13.rh_iff_gaussian_positivity_above_lam₀
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
