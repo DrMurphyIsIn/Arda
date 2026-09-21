@@ -3,12 +3,17 @@ depends_on = ["RH_local_count_sum", "RH_xi_derivative_partial_fraction_of_two"]
 kind = "lemma"
 name = "RH.xi_derivative_partial_fraction_of_strip"
 statement_module = "Statements.RH_xi_derivative_partial_fraction_of_strip"
-status = "draft"
+status = "proved"
 title = "THE XI PARTIAL FRACTION rests on StripDerivBound ALONE (2026-09-21). conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge23.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-b7-last-mile-2026-09-21 (AUDIT_TESTIMONY_B7_LAST_MILE_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: the derivative partial fraction of xi given StripDerivBound alone; composition with the audited local-count sum. conjecture1_proved = False."

@@ -3,12 +3,17 @@ depends_on = []
 kind = "lemma"
 name = "RH.local_count_sum"
 statement_module = "Statements.RH_local_count_sum"
-status = "draft"
+status = "proved"
 title = "LOCAL COUNT SUM DISCHARGED (2026-09-21): Sum m(rho)/(1 + (Im rho - a)^2) <= C(1 + log(2 + |a|)) for every real a -- finite partial sums regrouped on integer ceilings, each fiber bounded by Zeta23's per-unit-window zero count, two absolute constants from the integer p-series. Unconditional; nothing about RH. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge23.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-b7-last-mile-2026-09-21 (AUDIT_TESTIMONY_B7_LAST_MILE_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: Sum m(rho)/(1 + (Im rho - a)^2) <= C(1 + log(2 + |a|)) for every real a. Audit: Zeta23's per-unit-window count passed verbatim; ceiling fibering matches the left-open window; fiber-weight constant 4 re-proved in both sign cases; the two tail series summable by re-derived comparisons. Unconditional. conjecture1_proved = False."

@@ -3,12 +3,17 @@ depends_on = []
 kind = "lemma"
 name = "RH.no_real_zero_unit_interval"
 statement_module = "Statements.RH_no_real_zero_unit_interval"
-status = "draft"
+status = "proved"
 title = "NO REAL ZERO IN (0,1) DISCHARGED (2026-09-21): Re zeta(sigma) < 0 for 0 < sigma < 1, from the summation-by-parts representation zeta(s) = 1/2 + 1/(s-1) + s J(s) with the sharp bound |J(sigma)| <= 1/(2 sigma) (the eta-series continuation, absent from this pin, is avoided). Unconditional; nothing about RH. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge25.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-b7-last-mile-2026-09-21 (AUDIT_TESTIMONY_B7_LAST_MILE_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: zeta(sigma) is nonzero, indeed Re zeta(sigma) < 0, for 0 < sigma < 1. Audit: the summation-by-parts representation instantiated exactly at N = 1; the tail bound |J(sigma)| <= 1/(2 sigma) from the floor estimate and the improper power integral; the bound 1 - 1/(1 - sigma) < 0 re-proved; confirmed numerically (zeta(1/2) = -1.46). Unconditional. conjecture1_proved = False."

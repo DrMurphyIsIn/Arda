@@ -3,12 +3,17 @@ depends_on = ["RH_no_real_zero_unit_interval", "RH_xi_derivative_partial_fractio
 kind = "lemma"
 name = "RH.bl_explicit_formula_of_strip"
 statement_module = "Statements.RH_bl_explicit_formula_of_strip"
-status = "draft"
+status = "proved"
 title = "B7 (RH_bl_explicit_formula) MODULO STRIPDERIVBOUND ALONE (2026-09-21): the Bombieri-Lagarias explicit formula on Li's class holds given one remaining classical inequality (Landau's local partial fraction transferred to the derivative on the strip, E6Bridge24 in flight). conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge26.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-b7-last-mile-2026-09-21 (AUDIT_TESTIMONY_B7_LAST_MILE_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: B7 given StripDerivBound alone; a two-line composition of audited inputs; byte-identical to the registry statement once the single hypothesis and the namespace prefix are stripped. conjecture1_proved = False."
