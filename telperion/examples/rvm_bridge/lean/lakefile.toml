@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -45,6 +45,47 @@ name = "E6Bridge4"
 # the v4.32 quasicrystal island's pigeonhole brick (BoundaryLemmas.lean) applied to
 # E6Bridge.rvm_unbounded_mean_density. Cross-toolchain assembly: the brick is re-proved here,
 # not consumed as a v4.32 olean.
+# Fifth bridge (2026-09-20): the MIRRORMERE dictionary node MM_rh_implies_weil_positivity
+# (Weil's criterion, forward half: Mathlib's RiemannHypothesis implies Weil positivity of the
+# E8 primes-side functional on Hermitian autocorrelations), assembled from E6Bridge4's limit
+# explicit formula and Zeta23's transform factorisation paperFT_weilTest. Proves nothing about
+# RH itself; discharges the hypothesis hpos carried by weil_negative_refutes_rh.
+[[lean_lib]]
+name = "E6Bridge5"
+
+# Sixth bridge (2026-09-20): the Weil converse ATTACK. weil_positivity_implies_rh_of proves
+# Weil positivity -> Mathlib RiemannHypothesis MODULO two named analytic obligations
+# (GaussianTransfer / GaussianApprox, GaussianDominance), both carried as explicit hypotheses;
+# plus the unconditional rearrangements (explicit formula with the zero side isolated and real,
+# reflection symmetry, pair split, Gaussian summability, Tannery transfer). Nothing about RH is
+# proved; the obligations are registry nodes. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge6"
+
+# Seventh bridge (2026-09-21): O2 GaussianDominance DISCHARGED unconditionally
+# (RvMBridge7.gaussian_dominance: an off-line nontrivial zero makes some Gaussian-weighted
+# zero sum strictly negative -- finite ordinate window, generic centre, attained maximiser with a
+# gap, phase choice, lam-uniform tail majorant), so the Weil converse now rests on the single
+# zero-free Fourier obligation GaussianApprox (weil_positivity_implies_rh_of_approx). Nothing
+# about RH is proved. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge7"
+
+# Eighth bridge (2026-09-21): O1' GaussianApprox DISCHARGED (RvMBridge8.gaussian_approx): truncated
+# Gaussian-derivative Weil tests whose Hermitian transforms converge to gaussTest on the strip with
+# an n-uniform C/(1+|z|^2) bound (Gaussian Fourier integral + one integration by parts + DCT).
+# Pure Fourier analysis; no zeros mentioned.
+[[lean_lib]]
+name = "E6Bridge8"
+
+# Ninth bridge (2026-09-21): the ASSEMBLY. gaussian_transfer (O1 unconditional),
+# weil_positivity_implies_rh (the Weil converse, unconditional on this island) and
+# zeta_comb_membership_iff_rh (the MIRRORMERE dictionary theorem: goal statement <-> Mathlib RH).
+# NOT a proof of RH: an equivalence says nothing about whether either side holds.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge9"
+
 [[lean_lib]]
 name = "W2cAssembly"
 

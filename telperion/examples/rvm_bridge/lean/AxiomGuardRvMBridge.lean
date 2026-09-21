@@ -35,6 +35,36 @@
         Zeta23.WeilEF.gammaR_bracket / Zeta23.WeilEF.integrable_mul_logDeriv_Gammaℝ_of_decay --
         the upstream inputs the fourth bridge consumes as black boxes (the literature-form
         explicit formula itself, Fourier inversion, the Gamma_R bracket, the majorant lemma).
+      * RvMBridge5.rh_implies_weil_positivity -- the MIRRORMERE dictionary node
+        MM_rh_implies_weil_positivity, verbatim (Weil's criterion, forward half: Mathlib's
+        RiemannHypothesis implies 0 <= Re weilForm (autocorr g) for every IsWeilTest g); plus its
+        stages autocorr_eq_weilTest (autocorr = Zeta23's weilTest g g), isWeilTest_autocorr,
+        eq_half_add_im_of_rh, weilKernel_autocorr_line (the |h(r)|^2 factorisation on the line)
+        and term_re_nonneg.  Proves nothing about RH; discharges the hpos hypothesis of
+        weil_negative_refutes_rh.  conjecture1_proved = False.
+      * RvMBridge6.weil_positivity_implies_rh_of / weil_positivity_implies_rh_of' /
+        rh_iff_weil_positivity_of -- the Weil converse ATTACK (2026-09-20): Weil positivity implies
+        Mathlib's RiemannHypothesis MODULO the named obligations GaussianTransfer (or the zero-free
+        GaussianApprox) and GaussianDominance, carried as explicit hypotheses; plus every
+        unconditional stage (explicit formula with the zero side isolated, zeroSide real,
+        reflection symmetry gammaOf_reflect / zeroMult_reflect, strip_of_zero, pair split,
+        Gaussian summability, gaussianTransfer_of_approx).  Proves nothing about RH.
+      * RvMBridge7.gaussian_dominance -- the MIRRORMERE node MM_gaussian_dominance, verbatim
+        (O2 DISCHARGED, 2026-09-21: every off-line nontrivial zero admits a centre c and width
+        lam > 0 with Re zeroSide (gaussTest c lam) < 0); plus its stages (window finiteness,
+        generic centre, maximiser with gap, phase choice exists_lam_re_gaussTest, tail_bound,
+        re_zeroSide_le) and weil_positivity_implies_rh_of_approx (the converse modulo the single
+        remaining Fourier obligation GaussianApprox).  Proves nothing about RH.
+      * RvMBridge8.gaussian_approx -- the MIRRORMERE node MM_gaussian_approx, verbatim (O1'
+        DISCHARGED, 2026-09-21: truncated Gaussian-derivative Weil tests approximate gaussTest on
+        the strip with an n-uniform C/(1+|z|^2) bound); plus its stages (Gaussian Fourier integral
+        integral_mul_cexp_gaussian_fourier, paperFT_gaussPhi, the generic integration by parts
+        I_mul_paperFT_eq, the DCT limit and the uniform bound).
+      * RvMBridge9.gaussian_transfer / weil_positivity_implies_rh / zeta_comb_membership_iff_rh
+        -- the MIRRORMERE nodes MM_gaussian_transfer, MM_weil_positivity_implies_rh and
+        MM_zeta_comb_membership_iff_rh, verbatim: the Weil converse unconditional on this island
+        and the dictionary theorem (goal statement <-> Mathlib RiemannHypothesis).  NOT a proof
+        of RH.  conjecture1_proved = False.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -55,6 +85,11 @@ import E6Bridge
 import E6Bridge2
 import E6Bridge3
 import E6Bridge4
+import E6Bridge5
+import E6Bridge6
+import E6Bridge7
+import E6Bridge8
+import E6Bridge9
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -86,6 +121,104 @@ import W2cAssembly
 #print axioms RvMBridge4.weilKernel_eq_Hfn
 #print axioms RvMBridge4.zeroMult_eq_of_strip
 #print axioms RvMBridge4.zeroMult_eq_zero_of_not_nontrivial
+#print axioms RvMBridge5.rh_implies_weil_positivity
+#print axioms RvMBridge5.autocorr_eq_weilTest
+#print axioms RvMBridge5.isWeilTest_autocorr
+#print axioms RvMBridge5.eq_half_add_im_of_rh
+#print axioms RvMBridge5.weilKernel_autocorr_line
+#print axioms RvMBridge5.term_re_nonneg
+#print axioms RvMBridge6.weilKernel_autocorr
+#print axioms RvMBridge6.hasSum_weilForm_autocorr
+#print axioms RvMBridge6.weilForm_autocorr_eq_zeroSide
+#print axioms RvMBridge6.summable_hermitian_zeroSide
+#print axioms RvMBridge6.reflect_reflect
+#print axioms RvMBridge6.gammaOf_reflect
+#print axioms RvMBridge6.zeroMult_reflect
+#print axioms RvMBridge6.zeroSide_conj
+#print axioms RvMBridge6.hermitianTransform_conj
+#print axioms RvMBridge6.gaussTest_conj
+#print axioms RvMBridge6.weilForm_autocorr_real
+#print axioms RvMBridge6.strip_of_zero
+#print axioms RvMBridge6.rh_of_all_on_line
+#print axioms RvMBridge6.weil_positivity_implies_rh_of
+#print axioms RvMBridge6.rh_iff_weil_positivity_of
+#print axioms RvMBridge6.reflect_ne_self
+#print axioms RvMBridge6.zeroSide_pair_split
+#print axioms RvMBridge6.gaussTest_axis
+#print axioms RvMBridge6.gaussTest_axis_re_neg
+#print axioms RvMBridge6.norm_gaussTest_mul_le
+#print axioms RvMBridge6.summable_mult_div_one_add_normSq
+#print axioms RvMBridge6.summable_gauss_zeroSide
+#print axioms RvMBridge6.gauss_zeroSide_real
+#print axioms RvMBridge6.gauss_zeroSide_pair_split
+#print axioms RvMBridge6.gaussianTransfer_of_approx
+#print axioms RvMBridge6.weil_positivity_implies_rh_of'
+#print axioms RvMBridge7.zeroSide_gauss_eq
+#print axioms RvMBridge7.norm_gaussTest
+#print axioms RvMBridge7.norm_term
+#print axioms RvMBridge7.re_gaussTest
+#print axioms RvMBridge7.exists_lam_trig
+#print axioms RvMBridge7.exists_lam_re_gaussTest
+#print axioms RvMBridge7.windowSet_finite
+#print axioms RvMBridge7.mem_window
+#print axioms RvMBridge7.self_mem_window
+#print axioms RvMBridge7.eq_badOf_of_phi_eq
+#print axioms RvMBridge7.badOf_mem_badSet
+#print axioms RvMBridge7.exists_generic_centre
+#print axioms RvMBridge7.eq_or_eq_reflect_of_phi_eq
+#print axioms RvMBridge7.exists_maximiser_gap
+#print axioms RvMBridge7.phi_neg_of_not_mem_window
+#print axioms RvMBridge7.majorant_nonneg
+#print axioms RvMBridge7.summable_majorant
+#print axioms RvMBridge7.norm_term_le_majorant
+#print axioms RvMBridge7.constA_nonneg
+#print axioms RvMBridge7.constB_nonneg
+#print axioms RvMBridge7.tsum_majorant
+#print axioms RvMBridge7.tail_bound
+#print axioms RvMBridge7.re_zeroSide_le
+#print axioms RvMBridge7.gaussian_dominance
+#print axioms RvMBridge7.weil_positivity_implies_rh_of_approx
+#print axioms RvMBridge8.integrable_exp_quadratic
+#print axioms RvMBridge8.integrable_exp_quadratic_abs
+#print axioms RvMBridge8.abs_pow_le_exp
+#print axioms RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs
+#print axioms RvMBridge8.integrable_mul_cexp_quadratic
+#print axioms RvMBridge8.integral_mul_cexp_gaussian_fourier
+#print axioms RvMBridge8.gaussB_pos
+#print axioms RvMBridge8.gaussTest_eq_half_mul_conj
+#print axioms RvMBridge8.gaussK_ne_zero
+#print axioms RvMBridge8.paperFT_gaussPhi
+#print axioms RvMBridge8.cutoff_nonneg
+#print axioms RvMBridge8.cutoff_le_one
+#print axioms RvMBridge8.abs_cutoff_le_one
+#print axioms RvMBridge8.cutoff_eq_one
+#print axioms RvMBridge8.cutoff_eq_zero
+#print axioms RvMBridge8.contDiff_cutoff
+#print axioms RvMBridge8.hasCompactSupport_cutoff
+#print axioms RvMBridge8.contDiff_gaussPhi
+#print axioms RvMBridge8.isWeilTest_gaussTests
+#print axioms RvMBridge8.norm_gaussPhi
+#print axioms RvMBridge8.norm_cexp_I_mul_le
+#print axioms RvMBridge8.norm_gaussTests_mul_le
+#print axioms RvMBridge8.norm_gaussPhi_mul_le
+#print axioms RvMBridge8.integrable_majorant
+#print axioms RvMBridge8.paperFT_gaussTests_tendsto
+#print axioms RvMBridge8.hasDerivAt_gaussPhi
+#print axioms RvMBridge8.norm_gaussPhi'_le
+#print axioms RvMBridge8.exists_deriv_bump_bound
+#print axioms RvMBridge8.hasDerivAt_cutoff
+#print axioms RvMBridge8.hasDerivAt_gaussTests
+#print axioms RvMBridge8.integrable_derivMajorant
+#print axioms RvMBridge8.norm_deriv_gaussTests_mul_le
+#print axioms RvMBridge8.I_mul_paperFT_eq
+#print axioms RvMBridge8.norm_mul_paperFT_gaussTests_le
+#print axioms RvMBridge8.norm_paperFT_gaussTests_le
+#print axioms RvMBridge8.exists_paperFT_gaussTests_bound
+#print axioms RvMBridge8.norm_hermitianTransform_eq
+#print axioms RvMBridge8.gaussian_approx
+#print axioms RvMBridge9.gaussian_transfer
+#print axioms RvMBridge9.weil_positivity_implies_rh
+#print axioms RvMBridge9.zeta_comb_membership_iff_rh
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
