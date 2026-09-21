@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "MM.effective_threshold_unbounded"
+statement_module = "Statements.MM_effective_threshold_unbounded"
+status = "draft"
+title = "OPEN LEMMA 1, the load-bearing hypothesis made explicit (2026-09-21): the spacing floor in effective Gaussian dominance cannot be dropped -- for every distance floor 0 < y0 <= 1/2, window count N >= 1, window half-width D >= 1, tail constant B and every bound K, there is a spacing floor xmin > 0 with effectiveThreshold(y0, xmin, N, B, D) >= K, i.e. the explicit threshold max(1, log(4N(D^2+1/4)/y0^2)/(2 xmin^2), log(4B/y0^2)/(2 y0^2)) is unbounded as xmin -> 0. Pure real arithmetic on the threshold formula; this is why short-range clustering control (the wall sweep's named open input) is exactly the data a consumer must certify. The main theorem RvMBridge14.effective_gaussian_dominance (E6Bridge14, 14 guarded theorems, 3-axiom) is NOT registrable on this statement island because its window count sums over zeroWindow (rests on a finiteness theorem); it is a cross-island prose link. Nothing about RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge14.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

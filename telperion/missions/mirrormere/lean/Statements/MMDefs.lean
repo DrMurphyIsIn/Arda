@@ -490,4 +490,30 @@ def envelopeC (lam : ℝ) : ℝ := 2 * Real.exp (9 + 2 * envelopeX lam) + 2 / Re
 
 end RvMBridge11
 
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, effective Gaussian dominance) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/E6Bridge14.lean (namespace RvMBridge14, v4.33
+  island), source lines cited: effectiveThreshold (63-68), the explicit lam threshold of open
+  lemma 1.  Vocabulary for MM_effective_threshold_unbounded.  The main theorem
+  RvMBridge14.effective_gaussian_dominance is NOT registered as a node: its window-count
+  hypothesis sums over RvMBridge12.zeroWindow, which rests on the THEOREM zeroWindowSet_finite
+  (Zeta23.zetaSeam.finite_window) and is not mirrorable as a definition on this statement island;
+  it is recorded as a cross-island prose link in the registry ledger and docs.
+  Nothing here proves anything about RH.  conjecture1_proved = False.
+-/
+namespace RvMBridge14
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit RvMBridge6 RvMBridge7 RvMBridge12
+
+-- ===== E6Bridge14.lean:63-68 =====
+/-- The explicit lam threshold for effective Gaussian dominance with parameters
+(y0 = distance floor from the line, xmin = ordinate spacing floor, N = window count,
+B = tail constant, D = window half-width). -/
+def effectiveThreshold (y0 xmin : ℝ) (N : ℕ) (B D : ℝ) : ℝ :=
+  max 1 (max (Real.log (max 1 (4 * N * (D ^ 2 + 1 / 4) / y0 ^ 2)) / (2 * xmin ^ 2))
+             (Real.log (max 1 (4 * B / y0 ^ 2)) / (2 * y0 ^ 2)))
+
+end RvMBridge14
+
 end
