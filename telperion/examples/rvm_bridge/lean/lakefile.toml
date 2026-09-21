@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -181,6 +181,15 @@ name = "E6Bridge20"
 # Nothing about RH. conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge21"
+
+# Twenty-second bridge (2026-09-21, obligation 1 parts B+C): the growth bound reduced to TWO
+# classical inequalities -- LocalCountSum (Sum m(rho)/(1+(Im rho - a)^2) = O(log a), the textbook
+# consequence of the local zero count) and StripDerivBound (Landau's local partial fraction
+# transferred to the derivative on the strip by Cauchy + Stirling). Proved: the compact region,
+# the right half-plane derivative bound (from E6Bridge21), the far-sum bounds, continuity across
+# the zeros, and the full chain xiLogDerivDerivEq_of_two. Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge22"
 
 [[lean_lib]]
 name = "W2cAssembly"

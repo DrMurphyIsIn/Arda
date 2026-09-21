@@ -103,6 +103,9 @@
       * RvMBridge21.{xi_logDeriv_deriv_decay, xi_logDeriv_deriv_eq_of_regular,
         digamma_deriv_tendsto_zero, zeta_logDeriv_deriv_tendsto_zero, hasSum_trigamma_of_re_pos}
         -- obligation 2 DISCHARGED (2026-09-21): real-axis decay of (log xi)''.
+      * RvMBridge22.{xiLogDerivDerivEq_of_two, xiDiffExtGrowthRight_of_two, rightDerivBound,
+        growth_compact, growth_right, growth_strip, norm_tsum_far_le} -- obligation 1 reduced to
+        LocalCountSum + StripDerivBound (2026-09-21).
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -139,6 +142,7 @@ import E6Bridge17
 import E6Bridge18
 import E6Bridge20
 import E6Bridge21
+import E6Bridge22
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -605,6 +609,33 @@ import W2cAssembly
 #print axioms RvMBridge21.tendsto_inv_sub_one_sq
 #print axioms RvMBridge21.xi_logDeriv_deriv_decay
 #print axioms RvMBridge21.xi_logDeriv_deriv_eq_of_regular
+#print axioms RvMBridge22.lcTerm_nonneg
+#print axioms RvMBridge22.lcTerm_le_majorant
+#print axioms RvMBridge22.summable_lcTerm
+#print axioms RvMBridge22.windowSet_finite
+#print axioms RvMBridge22.mem_window
+#print axioms RvMBridge22.norm_polTerm_le_lcTerm_right
+#print axioms RvMBridge22.norm_polTerm_le_lcTerm_far
+#print axioms RvMBridge22.norm_tsum_polTerm_le_right
+#print axioms RvMBridge22.norm_tsum_far_le
+#print axioms RvMBridge22.bound_of_bound_off_zeros
+#print axioms RvMBridge22.growth_compact
+#print axioms RvMBridge22.growth_right
+#print axioms RvMBridge22.isOpen_stripOpen
+#print axioms RvMBridge22.growth_strip_off_zeros
+#print axioms RvMBridge22.growth_strip
+#print axioms RvMBridge22.abs_im_le_norm'
+#print axioms RvMBridge22.xiDiffExtGrowthRight_of
+#print axioms RvMBridge22.xiDiffRegular_of_three
+#print axioms RvMBridge22.xiLogDerivDerivEq_of_three
+#print axioms RvMBridge22.deriv_logDeriv_xi_of_one_lt_re
+#print axioms RvMBridge22.norm_deriv_digamma_le
+#print axioms RvMBridge22.norm_term_le_of_two_le_re
+#print axioms RvMBridge22.summable_dirTerms
+#print axioms RvMBridge22.norm_deriv_logDeriv_zeta_le
+#print axioms RvMBridge22.rightDerivBound
+#print axioms RvMBridge22.xiDiffExtGrowthRight_of_two
+#print axioms RvMBridge22.xiLogDerivDerivEq_of_two
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
