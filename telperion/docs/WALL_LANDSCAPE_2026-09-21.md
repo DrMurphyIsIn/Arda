@@ -1,5 +1,8 @@
 # Wall landscape: F(c, lam) measured, and the bandwidth barrier (2026-09-21)
 
+> **ERRATUM (2026-09-21, scoped; see WALL_ASSAULT_SEAMS_RECONCILIATION_2026-09-21.md, E2/E3):** the barrier table in section 3 normalises the truncation error against f(0), which at lam = 4 is a relative precision of ~1.6e-6, far stricter than certification (tail <= F itself) needs; the headline Lam_max = 2 is an artefact of that choice. Corrected cost law and table in the reconciliation: honest Lam_max under a 1e12 sieve is ~5 (full c-grid at height 1e4) to ~6 (height 1e12). The qualitative conclusions (y0 rises with height; bandwidth, not precision, is the obstacle) stand.
+
+
 Script: `telperion/examples/rvm_bridge/wall_landscape.py` (`--quick` 11 s, full 51 s; results json in the wall scratch dir).
 Measures only.  No Lean.  Real zeros (flint, on the line to working precision); nothing is claimed about the true zero set
 beyond the computed windows.  conjecture1_proved = False.

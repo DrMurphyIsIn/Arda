@@ -1,5 +1,8 @@
 # Wall assault, the seam sweep: what the in-kernel Weil criterion changes about the Wall (2026-09-21)
 
+> **ERRATA (2026-09-21, scoped; see WALL_ASSAULT_SEAMS_RECONCILIATION_2026-09-21.md, E1-E5):** the S2 cost table uses e^{4.2 lam} where the sweep's own formula gives e^{4.75 lam} at x1 = 0.43, so "lam <= 6-7 feasible" is optimistic (honest ~5-6); the S2/S7c barrier and resolution-gap sentences describe the prime-side Gaussian coordinates, not the Wall (the Laplace-in-lam face, new seam S8, evaluates every point exactly with no prime sum); the S4 ceiling 0.6818 is kernel-checked modulo the external EnclOK enclosures and assumes r(1) = 0; P(lam) omits a ~lam polynomial factor; "every rectangle certifiable" needs the stated scope. No verdict changes; the meta-verdict (coordinates, not content) is strengthened by S8.
+
+
 Adversarial map under the wall-sweep taxonomy (FOOTHOLD / COLLAPSE_TO_RH / COLLAPSE_TO_FREE /
 TRANSFER / UNRESOLVED). Research only; no Lean was written. Builds on the five-sweep capstone
 (every axis collapses into the temperedness/positivity clause) and does not re-derive it.
