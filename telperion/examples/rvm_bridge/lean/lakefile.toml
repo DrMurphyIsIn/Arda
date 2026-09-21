@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -137,6 +137,15 @@ name = "E6Bridge14"
 # conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge15"
+
+# Sixteenth bridge (2026-09-21, seam B sharpened): the SHARP c-uniform envelope.
+# gaussian_positivity_envelope_sharp: F(c, lam) >= 0 for |c| >= envelopeCsharp lam =
+# 2 pi e^{primeAbs lam + 1/2} + small lam-only terms, primeAbs the exact absolute prime-side
+# constant (explicit convergent series). Band edge lam_* = 0.597 at T = 640000: the band above
+# the ladder is EMPTY for lam <= 0.6. No overlap with the ladder instrument (needs lam >= 1).
+# Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge16"
 
 [[lean_lib]]
 name = "W2cAssembly"

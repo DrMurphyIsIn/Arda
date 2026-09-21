@@ -87,6 +87,10 @@
       * RvMBridge15.{liZeroSum_tendsto, bl_explicit_formula_of, rh_implies_liLimit_re_nonneg}
         -- open lemma 2 (2026-09-21): the Weil-to-Li dictionary; B7 convergence half proved, the
         node modulo the named LiValue obligation; Li's criterion forward half.  NOT a proof of RH.
+      * RvMBridge16.{gaussian_positivity_envelope_sharp, band_upper_edge} -- seam B sharpened
+        (2026-09-21): the sharp c-uniform envelope with the exact prime-side constant primeAbs;
+        plus stages (fourier_autocorrGauss, norm_primeSide_le_primeAbs, primeAbs_le_crude).
+        NOT a proof of RH.  conjecture1_proved = False.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -118,6 +122,7 @@ import E6Bridge12
 import E6Bridge13
 import E6Bridge14
 import E6Bridge15
+import E6Bridge16
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -425,6 +430,32 @@ import W2cAssembly
 #print axioms RvMBridge15.liPaired_re_nonneg_of_rh
 #print axioms RvMBridge15.rh_implies_liZeroSum_re_nonneg
 #print axioms RvMBridge15.rh_implies_liLimit_re_nonneg
+#print axioms RvMBridge16.integral_sq_mul_cexp_gaussian_fourier'
+#print axioms RvMBridge16.gaussA_mul_sqrt
+#print axioms RvMBridge16.fourier_autocorrGauss
+#print axioms RvMBridge16.weilKernel_zero_eq_gaussTest
+#print axioms RvMBridge16.weilKernel_one_eq_gaussTest
+#print axioms RvMBridge16.norm_gaussTest_half
+#print axioms RvMBridge16.norm_poles_le
+#print axioms RvMBridge16.primeAbsTerm_nonneg
+#print axioms RvMBridge16.primeAbsTerm_le
+#print axioms RvMBridge16.summable_primeAbsTerm
+#print axioms RvMBridge16.primeAbs_nonneg
+#print axioms RvMBridge16.primeAbs_le_crude
+#print axioms RvMBridge16.norm_autocorrGauss_add_neg_le
+#print axioms RvMBridge16.norm_primeSide_le_primeAbs
+#print axioms RvMBridge16.re_digamma_quarter_ge_log'
+#print axioms RvMBridge16.psiR_ge_log'
+#print axioms RvMBridge16.integral_indicator_bumpR_tail_le'
+#print axioms RvMBridge16.integral_bumpR_mul_psiR_ge_capped
+#print axioms RvMBridge16.tailRadius_sq
+#print axioms RvMBridge16.tailRadius_nonneg
+#print axioms RvMBridge16.re_weilForm_gauss_nonneg_sharp
+#print axioms RvMBridge16.gaussian_positivity_envelope_sharp
+#print axioms RvMBridge16.band_upper_edge
+#print axioms RvMBridge16.envelopeCsharp_le_crude
+#print axioms RvMBridge16.gaussian_positivity_above_height
+#print axioms RvMBridge16.gaussian_positivity_above_height_log
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

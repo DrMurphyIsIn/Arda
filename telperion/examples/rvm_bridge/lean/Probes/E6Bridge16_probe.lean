@@ -13,6 +13,8 @@ open RvMBridge16
 #print axioms RvMBridge16.band_upper_edge
 #print axioms RvMBridge16.re_weilForm_gauss_nonneg_sharp
 #print axioms RvMBridge16.envelopeCsharp_le_crude
+#print axioms RvMBridge16.gaussian_positivity_above_height
+#print axioms RvMBridge16.gaussian_positivity_above_height_log
 -- stages
 #print axioms RvMBridge16.integral_sq_mul_cexp_gaussian_fourier'
 #print axioms RvMBridge16.fourier_autocorrGauss
@@ -29,6 +31,8 @@ open RvMBridge16
 -- statements, verbatim
 #check @RvMBridge16.gaussian_positivity_envelope_sharp
 #check @RvMBridge16.band_upper_edge
+#check @RvMBridge16.gaussian_positivity_above_height
+#check @RvMBridge16.gaussian_positivity_above_height_log
 #check @RvMBridge16.fourier_autocorrGauss
 #print RvMBridge16.primeAbsTerm
 #print RvMBridge16.primeAbs
