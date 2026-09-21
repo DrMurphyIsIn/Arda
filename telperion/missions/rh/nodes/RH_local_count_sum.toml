@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.local_count_sum"
+statement_module = "Statements.RH_local_count_sum"
+status = "draft"
+title = "LOCAL COUNT SUM DISCHARGED (2026-09-21): Sum m(rho)/(1 + (Im rho - a)^2) <= C(1 + log(2 + |a|)) for every real a -- finite partial sums regrouped on integer ceilings, each fiber bounded by Zeta23's per-unit-window zero count, two absolute constants from the integer p-series. Unconditional; nothing about RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge23.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

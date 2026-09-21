@@ -578,3 +578,19 @@ open scoped ComplexConjugate
 def NoRealZeroInUnitInterval : Prop := ∀ σ : ℝ, 0 < σ → σ < 1 → riemannZeta (σ : ℂ) ≠ 0
 
 end RvMBridge19
+
+/-
+  ===== CROSS-ISLAND NAME RE-EXPORT (2026-09-21, B7 last mile) =====
+  On the rvm_bridge island the Bombieri-Lagarias vocabulary is declared INSIDE
+  `namespace RvMBridge15` as `RvMBridge15.BombieriLagarias.liKernel / liZeroSum / archSide /
+  zetaLogDerivReg / eta / finiteSide` (E6Bridge15.lean:61-93), and E6Bridge26 states
+  bl_explicit_formula_of_strip with those fully qualified names.  The registry's own copy is the
+  top-level `BombieriLagarias` block above (a VERBATIM mirror of the same six definitions, B7
+  authoring 2026-09-18).  So that the E6Bridge26 statement elaborates here with its text
+  unchanged (the containment gate matches text), the three names it uses are RE-EXPORTED under
+  the island's qualification as ALIASES of the registry definitions: no second copy, one source.
+  Vocabulary for RH_bl_explicit_formula_of_strip.  conjecture1_proved = False.
+-/
+namespace RvMBridge15.BombieriLagarias
+export _root_.BombieriLagarias (liZeroSum archSide finiteSide)
+end RvMBridge15.BombieriLagarias
