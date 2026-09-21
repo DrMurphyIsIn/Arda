@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.weil_criterion_iff"
+statement_module = "Statements.RH_weil_criterion_iff"
+status = "proved"
+title = "WEIL'S CRITERION, in-kernel (routes-roadmap section 1, the Positivity face pinned by theorem, 2026-09-21): Weil positivity of the E8 primes-side functional on Hermitian autocorrelations over IsWeilTest is EQUIVALENT to Mathlib's RiemannHypothesis -- cross-campaign consumption of MIRRORMERE's zeta_comb_membership_iff_rh (E6Bridge5-9, four blind audits). An equivalence; proves NOTHING about whether either side holds. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge9.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-converse-2026-09-21 (AUDIT_TESTIMONY_WEIL_O1_ASSEMBLY_2026-09-21.md; cross-campaign reuse)"
+date = "2026-09-21"
+text = "Weil's criterion as an in-kernel equivalence: for every smooth compactly supported g : R -> C (IsWeilTest), the real part of the E8 primes-side functional weilForm = archSide - primeSide evaluated at the Hermitian autocorrelation autocorr g is nonnegative, IF AND ONLY IF Mathlib's RiemannHypothesis holds. The artifact RvMBridge9.zeta_comb_membership_iff_rh (E6Bridge9.lean) is the pairing of four inputs proved on the rvm_bridge island and blind-audited separately: the forward half RvMBridge5.rh_implies_weil_positivity (E8 explicit formula + on-line terms m|h(gamma)|^2), the converse reduction RvMBridge6.weil_positivity_implies_rh_of modulo GaussianTransfer and GaussianDominance, and the discharges of those two obligations (E6Bridge7/E6Bridge8, O1 via GaussianApprox + Tannery, O2 via the Gaussian dominance argument). Axioms [propext, Classical.choice, Quot.sound], no sorry. It is an equivalence between two open statements: it proves NOTHING about whether either side holds, and RH is NOT proved. conjecture1_proved = False."
