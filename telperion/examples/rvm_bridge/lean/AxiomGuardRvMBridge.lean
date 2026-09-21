@@ -153,6 +153,7 @@ import E6Bridge22
 import E6Bridge19
 import E6Bridge23
 import E6Bridge25
+import E6Bridge26
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -802,6 +803,8 @@ import W2cAssembly
 #print axioms RvMBridge25.liValue_of_growth
 #print axioms RvMBridge25.liValue_of_two
 #print axioms RvMBridge25.bl_explicit_formula_of_two
+#print axioms RvMBridge26.liValue_of_strip
+#print axioms RvMBridge26.bl_explicit_formula_of_strip
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side
