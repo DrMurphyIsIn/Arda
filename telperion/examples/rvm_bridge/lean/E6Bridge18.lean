@@ -38,7 +38,7 @@
         and psi' = O(1/sigma)).                                                   OBLIGATION XiLogDerivDerivDecay.
     (5) Assembly: G = 0, hence the interface identity off the zeros.             PROVED.
 
-  Both obligations are def : Prop (never a sorry); probes show automation neither proves nor
+  Both obligations are def : Prop (never a `sorry`); probes show automation neither proves nor
   refutes them.  conjecture1_proved = False; nothing here bears on RH.
 -/
 import E6Bridge6
