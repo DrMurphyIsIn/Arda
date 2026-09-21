@@ -3,12 +3,17 @@ depends_on = ["MM_gaussian_explicit_formula"]
 kind = "lemma"
 name = "MM.gaussian_positivity_envelope"
 statement_module = "Statements.MM_gaussian_positivity_envelope"
-status = "draft"
+status = "proved"
 title = "WALL ASSAULT seam B, envelope form (2026-09-21), UNCONDITIONAL: for every width lam > 0 there is an explicit height envelopeC(lam) beyond which the Gaussian-weighted zero sum is nonnegative at every centre |c| >= envelopeC(lam) -- archimedean dominance at large height (Re digamma grows like log|c|/2 via Zeta23 Stirling) against a lam-uniform prime bound 16 A e^{16 lam}; the constant carries the crude e^{16 lam} and is not sharpened (the sharp c1(lam) ~ 2 pi e^{2P(lam)} is the sweep's P3). Nothing about RH: the Wall proper is the bounded-height complement above lam0. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge11.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-seam-B-map-2026-09-21 (AUDIT_TESTIMONY_WALL_SEAM_B_MAP_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: for every width lam > 0 and every centre with |c| >= envelopeC(lam) the Gaussian-weighted zero sum is nonnegative. Audit: prime side <= 16 A e^{16 lam} c-uniformly (AM-GM), Re digamma >= log(|r|/2) - 5 for |r| >= 2 (Zeta23 Stirling), bump mass outside |r-c| < 2/sqrt(lam) <= e^{-4} 2 pi 2 sqrt 2 A, closing inequality re-derived. Unconditional large-height positivity; the constant is crude (e^{16 lam}); not RH. conjecture1_proved = False."

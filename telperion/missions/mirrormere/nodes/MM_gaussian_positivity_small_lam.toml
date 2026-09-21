@@ -3,12 +3,17 @@ depends_on = ["MM_gaussian_positivity_small_lam_prime_side", "MM_gaussian_explic
 kind = "lemma"
 name = "MM.gaussian_positivity_small_lam"
 statement_module = "Statements.MM_gaussian_positivity_small_lam"
-status = "draft"
+status = "proved"
 title = "WALL ASSAULT seam B, zero-side form, UNCONDITIONAL: for every centre and every width <= lam0 the Gaussian-weighted zero sum is nonnegative (seam A's Gaussian explicit formula discharges seam B's hypothesis). conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge13.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-seam-B-map-2026-09-21 (AUDIT_TESTIMONY_WALL_SEAM_B_MAP_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: the same small-width region on the zero side; seam A's Gaussian explicit formula discharges the hypothesis by a one-line rewrite (audited). Unconditional; not RH. conjecture1_proved = False."
