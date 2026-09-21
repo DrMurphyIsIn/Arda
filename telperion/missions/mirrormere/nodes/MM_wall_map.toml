@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["MM_rh_iff_gaussian_positivity", "MM_gaussian_positivity_small_lam"]
+kind = "lemma"
+name = "MM.wall_map"
+statement_module = "Statements.MM_wall_map"
+status = "draft"
+title = "THE WALL MAP (2026-09-21): Mathlib's RiemannHypothesis is EQUIVALENT to Gaussian positivity on widths strictly above lam0 = 1e-7 only; below lam0 positivity is a theorem (MM_gaussian_positivity_small_lam). With MM_gaussian_positivity_of_window certifying |c| <= T - D from ladder data, the residual region {|c| > T - D, lam > lam0} IS the Wall. An equivalence; proves NOTHING about either side. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge13.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

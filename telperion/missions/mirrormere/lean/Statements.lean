@@ -28,3 +28,6 @@ import Statements.MM_rh_iff_gaussian_positivity
 import Statements.MM_gaussian_explicit_formula
 import Statements.MM_rh_iff_gaussian_prime_le_arch
 import Statements.MM_gaussian_positivity_of_window
+import Statements.MM_gaussian_positivity_small_lam_prime_side
+import Statements.MM_gaussian_positivity_small_lam
+import Statements.MM_wall_map

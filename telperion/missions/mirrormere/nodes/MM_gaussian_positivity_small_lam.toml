@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["MM_gaussian_positivity_small_lam_prime_side", "MM_gaussian_explicit_formula"]
+kind = "lemma"
+name = "MM.gaussian_positivity_small_lam"
+statement_module = "Statements.MM_gaussian_positivity_small_lam"
+status = "draft"
+title = "WALL ASSAULT seam B, zero-side form, UNCONDITIONAL: for every centre and every width <= lam0 the Gaussian-weighted zero sum is nonnegative (seam A's Gaussian explicit formula discharges seam B's hypothesis). conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge13.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

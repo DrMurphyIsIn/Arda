@@ -454,4 +454,33 @@ def lamThreshold (c D d δ : ℝ) : ℝ :=
 
 end RvMBridge12
 
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, WALL ASSAULT seam B + wall map) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/E6Bridge11.lean (namespace RvMBridge11,
+  v4.33 island), source lines cited: GaussianExplicitFormula (63-69, the named hypothesis seam B
+  consumes; discharged by seam A's RvMBridge10.zeroSide_gaussTest_eq in E6Bridge13) and lam₀
+  (91-92, the absolute width threshold 1e-7).  Vocabulary for
+  MM_gaussian_positivity_small_lam_prime_side, MM_gaussian_positivity_small_lam and MM_wall_map.
+  Nothing here proves anything about RH.  conjecture1_proved = False.
+-/
+namespace RvMBridge11
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit
+
+-- ===== E6Bridge11.lean:63-69 =====
+/-- The explicit formula for the Gaussian-derivative test (NOT compactly supported, so outside
+the E8 class; a parallel file proves it by the same Tannery/DCT transfer as E6Bridge8).  Restated
+verbatim, consumed only as a hypothesis of gaussian_positivity_small_lam_of. -/
+def GaussianExplicitFormula : Prop := ∀ (c lam : ℝ), 0 < lam →
+  (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re
+    = (WeilExplicit.archSide (WeilExplicit.autocorr (RvMBridge8.gaussPhi c lam))
+        - WeilExplicit.primeSide (WeilExplicit.autocorr (RvMBridge8.gaussPhi c lam))).re
+
+-- ===== E6Bridge11.lean:91-92 =====
+/-- The absolute width threshold. -/
+def lam₀ : ℝ := 1 / 10000000
+
+end RvMBridge11
+
 end
