@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["RH_xi_right_deriv_bound", "RH_xi_diff_regular_of_growth"]
+kind = "lemma"
+name = "RH.xi_growth_of_two"
+statement_module = "Statements.RH_xi_growth_of_two"
+status = "draft"
+title = "XI PARTIAL FRACTION, obligation 1 REDUCED to two classical inequalities (2026-09-21): the log-growth bound on Re s >= 1/2 follows from LocalCountSum (Sum m(rho)/(1+(Im rho - a)^2) = O(log a), the textbook consequence of the local zero count) and StripDerivBound (Landau's local partial fraction transferred to the derivative on 1/4 <= Re s <= 9/4 by Cauchy + Stirling). Plan correction recorded: on Re s >= 2 the double-pole sum is O(log t), not O(1). Both in flight (E6Bridge23/24). conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge22.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

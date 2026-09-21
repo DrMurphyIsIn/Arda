@@ -156,3 +156,65 @@ E6Bridge20 line 34 "conjecture1_proved = False. Nothing here bears on RH."
   `xiDiffExt_eq` at a zero).
 - Probes/E6Bridge18_probe.lean, E6Bridge18_obligation_probe.lean, E6Bridge20_probe.lean,
   E6Bridge20_obligation_probe.lean are the authors' own and were not relied on.
+
+## 11. Addendum: E6Bridge21, obligation 2 (real-axis decay) DISCHARGED: PASS
+
+Artifact: E6Bridge21.lean (409 lines, namespace RvMBridge21, imports E6Bridge18,
+Zeta23.Analytic.Stirling, Zeta23.RvM.GammaSide, Mathlib LSeries.Deriv and LSeries.Dirichlet).
+Probes: Probes/Audit21_Axioms.lean, Probes/Audit21_Probes.lean, plus mpmath.
+
+Status of the skeleton after this module: obligation 2 (`XiLogDerivDerivDecay`) is a THEOREM
+(`xi_logDeriv_deriv_decay`), so `xi_logDeriv_deriv_eq_of_regular : XiDiffRegular →
+XiLogDerivDerivEq`; with E6Bridge20 the single remaining obligation is `XiDiffExtGrowthRight`
+(E6Bridge22 in flight, not audited here).
+
+- Kernel: `lake build` green (8859 jobs); all 33 declarations print
+  `[propext, Classical.choice, Quot.sound]`; token grep: only the header's own axiom line (30);
+  guard 33 RvMBridge21 lines; E6Bridge21 imported by E6Bridge22, the guard and the author's probe.
+  `#check xi_logDeriv_deriv_decay : RvMBridge18.XiLogDerivDerivDecay`,
+  `xi_logDeriv_deriv_eq_of_regular : XiDiffRegular → XiLogDerivDerivEq`.
+- (a) Signs and normalisation. Zeta23 `logDeriv_completedZeta (hs1) (hζ) (0 < Re s) : logDeriv Λ s
+  = logDeriv Γℝ s + logDeriv ζ s` (XiLogDeriv.lean:67-69) and `RvM.logDeriv_Gammaℝ (0 < Re s) :
+  logDeriv Γℝ s = -(log π)/2 + (1/2) ψ(s/2)` (GammaSide.lean:65-66); Mathlib
+  `LSeries_vonMangoldt_eq_deriv_riemannZeta_div (1 < Re s) : L ↗Λ s = -deriv ζ s / ζ s`
+  (Dirichlet.lean:436-437), so `logDeriv_zeta_eq : logDeriv ζ s = -L(Λ)(s)`. Hence
+  `logDeriv_xi_eq_of_one_lt_re`: logDeriv ξ = s⁻¹ + (s-1)⁻¹ + (-(log π)/2 + ψ(s/2)/2) - L(Λ)(s),
+  the constant -(log π)/2 differentiating to 0 and ψ(s/2)/2 to (1/4)ψ'(s/2) (chain rule, `hψ`, `h3`).
+- (b) The L-series derivative. Mathlib `LSeries_hasDerivAt (h : abscissaOfAbsConv f < Re s) :
+  HasDerivAt (LSeries f) (-LSeries (logMul f) s) s` (Deriv.lean:80-81) with
+  `LSeries.logMul f n := log n * f n` (Deriv.lean:42, complex log); the abscissa of Λ is ≤ 1
+  (`abscissa_vonMangoldt_le_one` from `LSeriesSummable_vonMangoldt`). So deriv(-L(Λ)) =
+  +L(logMul Λ) (`deriv_logDeriv_zeta_eq`, `neg_neg`). Numerically (sieve to 2·10⁵):
+  L(logMul Λ)(3) = 0.17228 = the numerical derivative of ζ'/ζ at 3 (0.17228), both positive.
+- (c) Trigamma across the integers. Zeta23 `Stirling.hasSum_trigamma (z ∈ integerComplement) :
+  HasSum (fun n => 1/(z+n)²) (deriv digamma z)`. `hasSum_trigamma_of_re_pos (1/2 < Re z)` extends
+  it to integer z: the series side is continuous on Re w > 1/2 by `continuousOn_tsum` with the
+  uniform majorant ‖1/(w+n)²‖ ≤ 1/(n + 1/2)² (from ‖w + n‖ ≥ Re(w + n) ≥ n + 1/2, valid for
+  Re w ≥ 1/2, no ε needed; summable by comparison with 4/(n+1)²); the digamma side is continuous
+  (digamma analytic on Re z > 0, `continuousAt_deriv_digamma`); the two agree on the punctured ball
+  of radius 1/2 (no other integer within 1/2, `eq_of_intCast_near`), so `tendsto_nhds_unique`
+  gives equality at z. Sound.
+- (d) Telescoping. For a ≥ 1, 1/a² ≤ 1/(a - 1/2) - 1/(a + 1/2) = 1/(a² - 1/4) (my `audit_telescope`,
+  axiom-clean); summed, Σ_{i<N} 1/(x+i)² ≤ 1/(x - 1/2) - 1/(x + N - 1/2) (`sum_range_inv_sq_le`),
+  hence Σ' ≤ 1/(x - 1/2) (`tsum_inv_sq_real_le`) and `norm_deriv_digamma_real_le (1 ≤ x) :
+  ‖ψ'(x)‖ ≤ 1/(x - 1/2)`. mpmath: ψ'(1) = 1.6449 ≤ 2, ψ'(2) = 0.6449 ≤ 0.6667, ψ'(5) = 0.2213 ≤
+  0.2222, ψ'(20) = 0.05127 ≤ 0.05128. Then `digamma_deriv_tendsto_zero`: ψ'(σ/2) → 0.
+- (e) Tannery for L(logMul Λ)(σ) → 0. Term n = 0 is 0 (`LSeries.term_zero`); n = 1 is 0 since
+  log 1 = 0 (`term_logMul_one`); n ≥ 2: ‖term‖ = ‖logMul Λ n‖/n^σ → 0 (`term_tendsto_zero`, base
+  n > 1); for σ ≥ 2 each term is dominated by its σ = 2 value (`norm_term_le_of_two_le`, n^σ ≥ n²),
+  and the σ = 2 terms are absolutely summable (`LSeriesSummable_logMul_of_lt_re`, abscissa < 2).
+  `zeta_logDeriv_deriv_tendsto_zero` then applies `tendsto_tsum_of_dominated_convergence`.
+- Termwise formula. `deriv_logDeriv_xi_real (2 ≤ σ) : deriv (logDeriv ξ) σ = -1/σ² - 1/(σ-1)² +
+  (1/4) ψ'(σ/2) + deriv (logDeriv ζ) σ`, obtained by differentiating the Re s > 1 identity on the
+  open set (`Filter.EventuallyEq.deriv_eq`) with the four HasDerivAt pieces. mpmath check with
+  ξ(s) = s(s-1)/2 · Λ(s) (Λ with poles; equivalently s(s-1)/2 · Λ₀ + 1/2, the two agreeing to
+  1e-26): direct numerical derivative of ξ'/ξ versus the termwise formula, |diff| = 1.6e-27 at
+  σ = 3 and 8.1e-28 at σ = 7. (A first attempt of mine that wrongly added +1/2 to the Λ form
+  disagreed by 0.018; the file is right and my construction was wrong.)
+- Assembly `xi_logDeriv_deriv_decay`: the four pieces' limits (rational terms → 0,
+  (1/4)ψ'(σ/2) → 0, (ζ'/ζ)'(σ) → 0) added, and `congr'` with the termwise formula eventually
+  (σ ≥ 2). Probes: `xi_logDeriv_deriv_decay`, `xi_logDeriv_deriv_eq_of_regular`, the termwise
+  formula at σ = 3, both sign lemmas, the trigamma series at the integer 2, the bound at x = 1
+  all elaborate.
+- Overclaim: header lines 7 and 29-30 "nothing here bears on RH; conjecture1_proved = False",
+  "no named obligation remains on this side" (true: obligation 2 only). No wording says more.

@@ -1,7 +1,7 @@
 # LiValue: the Taylor bookkeeping and the assembly (E6Bridge19, 2026-09-21)
 
 *Module `telperion/examples/rvm_bridge/lean/E6Bridge19.lean` (namespace `RvMBridge19`, imports
-`E6Bridge15`), probe `Probes/E6Bridge19_probe.lean`. Every delivered theorem is kernel-checked with
+`E6Bridge15`, `E6Bridge20`, `E6Bridge21`), probe `Probes/E6Bridge19_probe.lean`. Every delivered theorem is kernel-checked with
 axioms exactly `[propext, Classical.choice, Quot.sound]`, no `sorry`. The analytic heart and one
 segment fact are carried as named `def : Prop` hypotheses (section 3). Nothing here says anything
 about whether RH holds. **`conjecture1_proved = False`.***
@@ -15,19 +15,25 @@ E6Bridge15 proved the convergence half of the Bombieri-Lagarias explicit formula
 
 E6Bridge19 proves `LiValue n` for every `0 < n` modulo two named Props:
 
-    liValue_of (hP : XiDerivPartialFraction) (hR : NoRealZeroInUnitInterval) (n) (hn : 0 < n) : LiValue n
+    liValue_of (hP : RvMBridge18.XiLogDerivDerivEq) (hR : NoRealZeroInUnitInterval) (n) (hn : 0 < n) : LiValue n
     bl_explicit_formula_of_partialFraction hP hR n hn :
         Tendsto (liZeroSum n) atTop (nhds (archSide n + finiteSide n))       -- the node, verbatim
+    liValue_of_growth (h : RvMBridge20.XiDiffExtGrowthRight) (hR) (n) (hn) : LiValue n
+    bl_explicit_formula_of_growth h hR n hn                                    -- ONE obligation away
 
-The whole value half is therefore reduced to the global partial fraction of `xi'/xi` (the partner
-module E6Bridge18) plus the elementary fact that `zeta` has no zero on the real segment `(0, 1)`.
+The whole value half is therefore reduced to the global partial fraction of `xi'/xi`
+(`RvMBridge18.XiLogDerivDerivEq`, which E6Bridge18/20/21 reduce to the single growth bound
+`RvMBridge20.XiDiffExtGrowthRight`) plus the elementary fact that `zeta` has no zero on the real
+segment `(0, 1)`.
 
 ## 1. The two named Props (verbatim)
 
 ```lean
-def xi (s : ℂ) : ℂ := s * (s - 1) / 2 * completedRiemannZeta₀ s + 1 / 2      -- Zeta23.WeilEF.xi, verbatim
+-- RvMBridge18.xi (E6Bridge18), the same formula as Zeta23.WeilEF.xi, whose module is not built here:
+def xi (s : ℂ) : ℂ := s * (s - 1) / 2 * completedRiemannZeta₀ s + 1 / 2
 
-def XiDerivPartialFraction : Prop := ∀ s : ℂ, ¬ IsNontrivialZero s →
+-- RvMBridge18.XiLogDerivDerivEq (E6Bridge18), consumed verbatim (xiLogDerivDerivEq_def : ... = rfl):
+def XiLogDerivDerivEq : Prop := ∀ s : ℂ, ¬ IsNontrivialZero s →
   deriv (logDeriv xi) s = -∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℂ) / (s - ρ) ^ 2
 
 def LambdaDerivPartialFraction : Prop := ∀ s : ℂ, s ≠ 0 → s ≠ 1 → ¬ IsNontrivialZero s →
@@ -58,7 +64,7 @@ and some height `t ∈ (0,1)` misses the finitely many ordinates), three FTC pie
 def powerSum (j : ℕ) : ℂ := ∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℂ) / ρ ^ j
 theorem summable_powerSum {j : ℕ} (hj : 2 ≤ j) : Summable (fun ρ : ℂ => (zeroMult ρ : ℂ) / ρ ^ j)
 theorem powerSum_conj (j : ℕ) : conj (powerSum j) = powerSum j                    -- the power sums are real
-theorem powerSum_eq_taylor (hP : XiDerivPartialFraction) (k : ℕ) :
+theorem powerSum_eq_taylor (hP : XiLogDerivDerivEq) (k : ℕ) :
     ((k : ℂ) + 1) * powerSum (k + 2) = -(iteratedDeriv k (deriv (logDeriv xi)) 0) / (k.factorial : ℂ)
 theorem powerSum_eq_neg_taylor (hP) (k) :
     powerSum (k + 2) = -(iteratedDeriv (k + 1) (logDeriv xi) 0) / ((k + 1).factorial : ℂ)
@@ -84,7 +90,7 @@ theorem pairedPowerSum_eq_powerSum {j : ℕ} (hj : 2 ≤ j) : pairedPowerSum j =
 theorem logDeriv_xi_one_sub (s : ℂ) : logDeriv xi (1 - s) = -logDeriv xi s          -- everywhere
 theorem tsum_inv_add_inv_one_sub (hP) (hR) :
     HasSum (fun ρ => (zeroMult ρ : ℂ) / ρ + (zeroMult ρ : ℂ) / (1 - ρ)) (logDeriv xi 1 - logDeriv xi 0)
-theorem pairedPowerSum_one_eq (hP : XiDerivPartialFraction) (hR : NoRealZeroInUnitInterval) :
+theorem pairedPowerSum_one_eq (hP : XiLogDerivDerivEq) (hR : NoRealZeroInUnitInterval) :
     pairedPowerSum 1 = -logDeriv xi 0
 ```
 
@@ -174,7 +180,8 @@ the zeros to 1e-7. The zeros+tail residual is the tail estimate's own error, not
 
 ## 8. What is NOT done
 
-* `XiDerivPartialFraction` itself (E6Bridge18, the Hadamard/partial-fraction analytic heart).
+* `XiLogDerivDerivEq` itself: through E6Bridge20/21 it rests on `RvMBridge20.XiDiffExtGrowthRight`
+  (a log-growth bound on Re s >= 1/2, in progress in E6Bridge22).
 * `NoRealZeroInUnitInterval` (elementary; or replace the segment by the L-shaped path, section 1).
 * Registration: E6Bridge19 is not in `lakefile.toml` defaultTargets nor in `AxiomGuardRvMBridge`
   (not to be edited by this session); the olean was emitted by hand for the probe.

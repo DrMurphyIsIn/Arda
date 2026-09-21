@@ -489,3 +489,92 @@ def XiDiffExtGrowthRight : Prop :=
 end RvMBridge20
 
 end
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, the growth bound of the entire extension) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/E6Bridge22.lean (namespace RvMBridge22, v4.33
+  island), source lines cited: lcTerm (48-49), LocalCountSum (71-75), windowSet (79-80), window
+  (89-90), StripDerivBound (166-175), RightDerivBound (177-181).  The finiteness lemma
+  windowSet_finite (82-88) is carried as a `sorry` scaffold, flagged below.  The block sits in a
+  `noncomputable section` because the island file does.  Vocabulary for RH_xi_right_deriv_bound,
+  RH_xi_growth_of_two, RH_xi_derivative_partial_fraction_of_two.  The obligations are
+  `def ... : Prop` consumed only as hypotheses; nothing here proves anything about RH.
+  conjecture1_proved = False.
+-/
+noncomputable section
+
+namespace RvMBridge22
+open Zeta23 Complex MeasureTheory Filter Topology Metric
+open scoped ComplexConjugate
+open WeilExplicit RvMBridge18 RvMBridge20
+
+-- ===== E6Bridge22.lean:48-49 =====
+/-- The local-count term m(rho) / (1 + (Im rho - a)^2). -/
+def lcTerm (a : ℝ) (ρ : ℂ) : ℝ := (WeilExplicit.zeroMult ρ : ℝ) / (1 + (ρ.im - a) ^ 2)
+
+-- ===== E6Bridge22.lean:71-75 =====
+/-- **Obligation (local zero count).**  Sum_rho m(rho)/(1 + (Im rho - a)^2) = O(log (2 + |a|)):
+O(log(|a| + k)) zeros in each unit window [a + k, a + k + 1) (Zeta23.RvM.zeta_local_zero_count)
+against the weights 1/(1 + k^2). -/
+def LocalCountSum : Prop :=
+  ∃ C : ℝ, ∀ a : ℝ, ∑' ρ : ℂ, lcTerm a ρ ≤ C * (1 + Real.log (2 + |a|))
+
+-- ===== E6Bridge22.lean:79-80 =====
+/-- The nontrivial zeros within ordinate distance 2 of s. -/
+def windowSet (s : ℂ) : Set ℂ := {ρ : ℂ | IsNontrivialZero ρ} ∩ {ρ : ℂ | |ρ.im - s.im| ≤ 2}
+
+-- ===== E6Bridge22.lean:82-88 (rvm_bridge island, v4.33).  SUPPORT LEMMA carried as `sorry`
+-- HERE ONLY so that `window` elaborates: it is PROVED on the rvm_bridge island (same file, via
+-- Zeta23.zetaSeam.finite_window) and is NOT a registry node; the sorry is vocabulary scaffolding
+-- in the statement package, the same trust class as the node statements themselves, and never
+-- enters an axiom guard (same precedent as RHInBoxAnalytic.divisor_ball_support_finite_of_one_notMem
+-- in MMDefs and RvMBridge12.zeroWindowSet_finite there). =====
+lemma windowSet_finite (s : ℂ) : (windowSet s).Finite := by sorry
+
+-- ===== E6Bridge22.lean:89-90 =====
+/-- The window as a Finset. -/
+def window (s : ℂ) : Finset ℂ := (windowSet_finite s).toFinset
+
+-- ===== E6Bridge22.lean:166-175 =====
+/-- **Obligation (strip, Landau-Cauchy).**  On the strip 1/4 ≤ Re s ≤ 9/4, |Im s| ≥ 5, off the
+zeros, the derivative of logDeriv xi with the window double poles removed is O(log|Im s|):
+Zeta23.WeilEF.zeta_logDeriv_partial_fraction (Landau) for zeta'/zeta on the disc D(s, 1/2), the
+Stirling bound for logDeriv Gamma_R, the rational factors, and Cauchy's estimate for the derivative
+of the O(log t) remainder.  Stated on a slightly larger closed region than (B) so that (B) is in
+its interior and the bound passes to the zeros by continuity. -/
+def StripDerivBound : Prop :=
+  ∃ C : ℝ, ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 9 / 4 → 5 ≤ |s.im| → ¬ IsNontrivialZero s →
+    ‖deriv (logDeriv xi) s + ∑ ρ ∈ window s, (WeilExplicit.zeroMult ρ : ℂ) / (s - ρ) ^ 2‖
+      ≤ C * (1 + Real.log (2 + |s.im|))
+
+-- ===== E6Bridge22.lean:177-181 =====
+/-- **Obligation (right half-plane).**  deriv (logDeriv xi) is bounded on Re s ≥ 2:
+-1/s^2 - 1/(s-1)^2 + (1/4) psi'(s/2) + (zeta'/zeta)'(s), with psi' the trigamma series and
+(zeta'/zeta)' = L(log * Lambda) absolutely convergent. -/
+def RightDerivBound : Prop :=
+  ∃ C : ℝ, ∀ s : ℂ, 2 ≤ s.re → ‖deriv (logDeriv xi) s‖ ≤ C
+
+end RvMBridge22
+
+end
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-09-21, the Bombieri-Lagarias value identity) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/E6Bridge19.lean (namespace RvMBridge19, v4.33
+  island): NoRealZeroInUnitInterval (96-97), the only definition its two node statements need
+  beyond what is already mirrored.  NOTE: E6Bridge19 declares NO `xi` and NO
+  `XiDerivPartialFraction`; it consumes RvMBridge18.xi through `open RvMBridge18 (xi ...)` and
+  takes RvMBridge18.XiLogDerivDerivEq (mirrored above) as its partial-fraction hypothesis, and
+  RvMBridge15.LiValue (mirrored above) as its conclusion.  Vocabulary for
+  RH_livalue_of_partial_fraction and RH_bl_explicit_formula_of_partial_fraction.
+  conjecture1_proved = False.
+-/
+namespace RvMBridge19
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+
+-- ===== E6Bridge19.lean:96-97 =====
+/-- zeta has no zero on the real segment (0, 1). -/
+def NoRealZeroInUnitInterval : Prop := ∀ σ : ℝ, 0 < σ → σ < 1 → riemannZeta (σ : ℂ) ≠ 0
+
+end RvMBridge19

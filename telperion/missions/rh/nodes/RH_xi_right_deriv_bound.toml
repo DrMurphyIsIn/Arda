@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.xi_right_deriv_bound"
+statement_module = "Statements.RH_xi_right_deriv_bound"
+status = "draft"
+title = "XI PARTIAL FRACTION, region C PROVED (2026-09-21): on Re s >= 2, (log xi)'' is bounded (rational terms, the trigamma series on Re z >= 1, and the L-series of log·Lambda for Re s >= 2). Unconditional. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge22.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

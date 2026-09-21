@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["RH_livalue_of_partial_fraction", "RH_xi_derivative_partial_fraction_of_two"]
+kind = "lemma"
+name = "RH.bl_explicit_formula_of_partial_fraction"
+statement_module = "Statements.RH_bl_explicit_formula_of_partial_fraction"
+status = "draft"
+title = "B7 (RH_bl_explicit_formula) holds GIVEN the derivative partial fraction of xi and no real zero in (0,1); with E6Bridge22 the partial fraction rests on LocalCountSum + StripDerivBound, so B7 = three named classical facts, all in flight (E6Bridge23/24/25). conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge19.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
