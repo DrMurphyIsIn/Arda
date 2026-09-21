@@ -3,12 +3,17 @@ depends_on = []
 kind = "lemma"
 name = "RH.xi_right_deriv_bound"
 statement_module = "Statements.RH_xi_right_deriv_bound"
-status = "draft"
+status = "proved"
 title = "XI PARTIAL FRACTION, region C PROVED (2026-09-21): on Re s >= 2, (log xi)'' is bounded (rational terms, the trigamma series on Re z >= 1, and the L-series of log·Lambda for Re s >= 2). Unconditional. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge22.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-xi-growth-2026-09-21 (AUDIT_TESTIMONY_XI_GROWTH_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: on Re s >= 2, (log xi)'' is bounded by an explicit constant (rational terms, the trigamma series bound, the absolutely convergent L-series of log Lambda at 2). Audit 8/8, every constant re-derived. Unconditional. conjecture1_proved = False."
