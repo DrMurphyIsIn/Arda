@@ -3,12 +3,17 @@ depends_on = ["RH_li_ladder_liLimit"]
 kind = "lemma"
 name = "RH.li_ladder_liLimit_sharp"
 statement_module = "Statements.RH_li_ladder_liLimit_sharp"
-status = "draft"
+status = "proved"
 title = "THE LI LADDER, SHARPENED (rvm_bridge island, E6Bridge29, 2026-09-22): zeros on the line up to T >= 1 give 0 <= Re(liLimit N) for N <= 2 pi (T - 1/2). Window lemma: for 3 pi/2 < |b| <= 2 pi with |a| <= 2 pi - |b|, cosh a cos b <= 1 (cos b = cos(2 pi - |b|)); |theta| + |log r| <= 1/(|Im| - 1/2). Numerically the true termwise threshold is N/(2 pi) + 1/2 + o(1), so this rate is sharp for the termwise method. Consumes localisation, produces none. Not RH. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge29.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-li-ladder-sharp-2026-09-22 (AUDIT_TESTIMONY_LI_LADDER_SHARP_2026-09-22.md)"
+date = "2026-09-21"
+text = "Read-back: zeros on the line up to T >= 1 give 0 <= Re(liLimit N) for N <= 2 pi (T - 1/2). The last window 3 pi/2 < |b| <= 2 pi is closed by reflecting to the deficit d = 2 pi - |b| in [0, pi/2) and applying Lemma A; |theta| + |log r| <= 1/(|Im| - 1/2) from the two E6Bridge28 bounds; three exhaustive cases; regrouping unchanged. Byte-identical statement; 17/17 kernel-clean. Numerics: no failure above N/(2 pi) + 1/2, failures just below with vanishing gap, so the rate is the true termwise threshold. Consumes localisation, produces none. Not RH. conjecture1_proved = False."
