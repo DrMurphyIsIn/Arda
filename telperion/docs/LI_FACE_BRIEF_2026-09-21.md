@@ -69,7 +69,9 @@ Lemma B (geometry of a zero). Let rho = beta + i gamma with 0 < beta < 1 and gam
     |theta| <= 1/gamma                                             (arctan x <= x),
     |log r| <= (1/2) |2 beta - 1| / (min(beta, 1-beta)^2 + gamma^2) <= 1/(2 gamma^2),
     and for gamma >= 1: |theta| >= pi/(4 gamma)  (arctan x >= (pi/4) x on [0,1]),
-    hence |log r| <= |theta| whenever gamma >= 1 (needs only gamma >= 2/pi).
+    hence |log r| <= |theta| whenever gamma >= 1. (Skeptic: this route needs gamma >= max(beta, 1-beta);
+    the inequality itself holds down to gamma ~ 0.285, but state it for gamma >= 1, or for the box
+    region of section 4. State Lemma B for arbitrary complex rho: w(conj rho) = conj(w rho).)
 
 Theorem C (termwise nonnegativity). If rho is a nontrivial zero with |Im rho| >= max(1, 2N/pi)
 then Re liPairedSummand (N-1) rho >= 0, whether or not rho is on the line.
@@ -81,9 +83,12 @@ Proof: every term of the paired sum is >= 0 (on-line zeros by section 2, the res
 m(rho) >= 0, Re of the tsum is the tsum of Re (summable by the weighted genus theorem), and a
 tsum of nonnegatives is nonnegative.
 
-Corollary (composition, conditional): `AllZeros_h4000` gives all zeros up to height 4000 on the
-line under its band hypotheses (Arb winding numbers etc., stated as hypotheses). Under exactly
-those hypotheses, rungs n = 0 .. 6282 are nonnegative. The existing rung certificates carry one
+Corollary (composition, conditional): `AllZeros_h4000` gives all zeros with 0 < Im <= 4000 on the
+line under its band hypotheses (Arb winding numbers etc., stated as hypotheses). Negative Im
+follows by conjugation; real zeros in (0,1) are NOT covered by the capstone and a hypothetical
+real zero beta /= 1/2 makes every even rung's pair term negative, so the composition also needs
+Box 1 (section 4) or an explicit real-zero exclusion. Under those hypotheses, rungs n = 0 .. 6282
+are nonnegative. The existing rung certificates carry one
 Arb enclosure hypothesis per rung; the ladder replaces them by the height certificates and
 extends the reach. It is still conditional. With T = 3 * 10^12 (Platt-Trudgian, NOT in kernel)
 the same theorem would give n + 1 <= 4.7 * 10^12.
@@ -92,13 +97,14 @@ Rung 0 (Li's lambda_1) needs no height at all: N = 1 gives 2 - w - 1/w = 1/(rho 
 whose real part is (beta (1 - beta) + gamma^2)/|rho (1-rho)|^2 > 0 for every zero. So the open
 node RH_li_rung0_kernel (roadmap B2) closes with no hypothesis.
 
-## 4. The low-height box (new unconditional zero localisation)
+## 4. The low-height box (folklore-level, new to the islands)
 
 For Re s > 0, s /= 1: zeta(s) = s/(s-1) - s J(s), J(s) = int_1^infty {x} x^(-s-1) dx, and
 |J(s)| <= int_1^infty {x} x^(-sigma-1) dx <= 1/(2 sigma) (the last by parts: the difference
 from (1/2) int x^(-sigma-1) is (sigma+1) int B(x) x^(-sigma-2) with B = ({x}^2 - {x})/2 <= 0).
-On the rvm island this is Zeta23's `Zeta0EqZeta` plus the bound used in E6Bridge25; on the li
-island it must be found or ported.
+On the rvm island Zeta23's `Zeta0EqZeta` gives the representation; the {x}-kernel bound must be
+proved on both islands by midpoint reflection on each unit interval (E6Bridge25 used the sawtooth
+kernel with the trivial 1/2 bound, which only yields |t| >= 0.770; rung 4 needs gamma >= 0.806).
 
 If zeta(s) = 0 with s = sigma + i t, 0 < sigma < 1, then |s|/|s-1| <= |s|/(2 sigma), i.e.
 4 sigma^2 <= (1 - sigma)^2 + t^2. The functional equation makes 1 - conj(s) a zero too, giving
@@ -108,13 +114,16 @@ If zeta(s) = 0 with s = sigma + i t, 0 < sigma < 1, then |s|/|s-1| <= |s|/(2 sig
     Box 2: every nontrivial zero satisfies (Re s - 1/2)^2 <= (Im s)^2 / 3 - 1/4.
 
 Consequences: with Box 1 and 2, Lemma B's |log r| <= |theta| holds for every zero (gamma >= 0.866
-> 2/pi and (1-beta)/gamma <= 0.91 <= 1 for gamma < 1), so Theorem D holds for all T >= sqrt(3)/2.
+> 2/pi and (1-beta)/gamma <= 0.91 <= 1 for gamma < 1), so Theorem D's proof also runs for T in [sqrt(3)/2, 1), which gains nothing beyond N = 1.
 Rungs 0..4 (Li's lambda_1..lambda_5) should be nonnegative with NO hypothesis: for N <= 5 the
 angle satisfies |b| <= 5 |theta| <= 5 pi/3 < 2 pi, and the only region where cos b > 0 with
 cosh a > 1 is b in (3 pi/2, 5 pi/3], forced near gamma ~ 0.87 where the confinement pins beta near
-1/2 and a is small (numerically cosh(a) cos(b) <= 0.5 there). Rung 5 (N = 6) FAILS termwise at
-(beta, gamma) ~ (0.64, 0.9), which the box allows, so 0..4 is the honest hypothesis-free reach
-of this method; beyond it the ladder needs height.
+1/2 and a is small (numerically cosh(a) cos(b) <= 0.4995 there; the Lean case work needs the EXACT bound
+log r <= (1/2) log 1.661 = 0.2537 from |beta - 1/2| <= 0.266 at gamma < 0.981, since log(1+x) <= x
+does not close). Skeptic numerics: minima of the pair term on the box region are 0.059, 0.23, 0.51,
+0.88, 1.02 for N = 1..5, and rungs 1..4 need only Box 1 (beta free). Rung 5 (N = 6) FAILS termwise
+(-0.71 at (0.30, 0.93); -0.53 at (0.64, 0.9)), so 0..4 is the honest hypothesis-free reach of this
+method; beyond it the ladder needs height. This is kernel novelty, not new knowledge about lambda_n.
 
 ## 5. The rvm island copy
 
@@ -134,6 +143,12 @@ pair (rho, 1 - conj rho) gives Re(liKernel N rho) + Re(liKernel N (1 - conj rho)
 * Not an attack on the diagonal. Rung N probes heights up to ~ pi T/2 with T the verified height;
   the Gaussian face probes offsets delta at width lam ~ 1/delta^2 at every height at once. Both
   are the same wall in different coordinates; section 7 of the wall map v2 will tabulate this.
+
+## 6b. Skeptic pass
+
+Reviewed 2026-09-21 (LI_FACE_SKEPTIC_2026-09-21.md): no item refuted; corrections above folded in.
+Summability for Re-of-tsum on the li island: `summable_weighted_Li_paired_summand_of_weighted_genus`.
+Divisor symmetry on the rvm island: `RvMBridge20.isNontrivialZero_one_sub_iff`, `zeroMult_one_sub`.
 
 ## 7. Workstreams
 
