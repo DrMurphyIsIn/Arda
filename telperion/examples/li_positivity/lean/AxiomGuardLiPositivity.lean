@@ -35,6 +35,8 @@
 import LiPositivity
 import LiLadder
 import LiLadderHeight
+import LowHeightBox
+import LiBoxRungs
 import RvMXiBridge
 import RvMDigammaProd
 import RvMLiUnified
@@ -162,6 +164,13 @@ import LiNegativeControl
 #print axioms LiLadderHeight.li_rungs_of_bands_4000_of_noRealZero
 #print axioms LiLadderHeight.li_rungs_of_bands_4000
 #print axioms LiLadderHeight.li_rungs_of_bands_4000_upto
+#print axioms LowHeightBox.fract_integral_le_half_inv
+#print axioms LowHeightBox.zeta_zero_confined
+#print axioms LowHeightBox.zeta_zero_im_ge
+#print axioms LowHeightBox.riemannZeta_ne_zero_of_unit_interval
+#print axioms LowHeightBox.liPairedSummand_re_nonneg
+#print axioms LowHeightBox.li_rung4
+#print axioms LowHeightBox.li_rungs_lt_five
 
 -- RvMXiBridge (shared-object anchor): the RvM reflection foundation ported to
 -- the UPSTREAM riemannXi -- the SAME function whose Taylor coefficients Li's

@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["RH_zeta_zero_confined"]
+kind = "lemma"
+name = "RH.li_rungs_lt_five"
+statement_module = "Statements.RH_li_rungs_lt_five"
+status = "draft"
+title = "LI RUNGS 0..4 WITH NO HYPOTHESIS (li_positivity island, 2026-09-21): 0 <= Re(taylorCoeff riemannXi n) for n < 5, i.e. Li's lambda_1..lambda_5 nonnegative in the kernel with no Arb enclosure and no height hypothesis. Route: the pair term is a polynomial Q_{n+1}(z) in z = 1/(rho(1-rho)); Box 2 puts z in the disk |z - 1/2| <= 1/2; explicit nonnegative certificates on that disk for N <= 5 (N = 6 has none and fails at box points). Kernel novelty, not new knowledge about lambda_n. Not RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/LiBoxRungs.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
