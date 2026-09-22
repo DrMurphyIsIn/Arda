@@ -2300,6 +2300,53 @@ jobs:
             echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
             exit 1
           fi
+
+  wall-analysis-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/wall_barrier/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Build + axiom-guard wall_barrier
+        working-directory: telperion/examples/wall_barrier/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake exe cache get
+          lake build
+          : > out.txt
+          for m in WallBarrierAM FEUniformBarrierAM; do lake env lean "$m.lean" 2>&1 | tee -a out.txt; done
+          n=$(grep -c "depends on axioms" out.txt || true)
+          if [ "$n" -lt "11" ]; then echo "::error::printed $n axiom lines, expected >= 11"; exit 1; fi
+          if grep -q "sorryAx" out.txt; then echo "::error::sorryAx present"; exit 1; fi
+          if grep -E "depends on axioms" out.txt | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+            echo "::error::unexpected axiom"; grep -E "depends on axioms" out.txt | grep -v "\[propext, Classical.choice, Quot.sound\]"; exit 1; fi
+
+      - name: Build + axiom-guard wall_adversary (the refutation)
+        working-directory: telperion/examples/wall_adversary/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake exe cache get
+          lake build
+          lake env lean BarrierScopeXR.lean 2>&1 | tee out.txt
+          n=$(grep -c "depends on axioms" out.txt || true)
+          if [ "$n" -lt "8" ]; then echo "::error::printed $n axiom lines, expected >= 8"; exit 1; fi
+          if grep -q "sorryAx" out.txt; then echo "::error::sorryAx present"; exit 1; fi
+          if grep -E "depends on axioms" out.txt | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
+            echo "::error::unexpected axiom"; grep -E "depends on axioms" out.txt | grep -v "\[propext, Classical.choice, Quot.sound\]"; exit 1; fi
+
   rvm-bridge-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90

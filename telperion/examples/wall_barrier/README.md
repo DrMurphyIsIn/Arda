@@ -2,6 +2,14 @@
 
 Branch `wall/barrier`, 2026-09-18.  `conjecture1_proved = False`.
 
+> **RETRACTED IN PART — 2026-09-19.** `FEUniformBarrierAM`'s barrier reading is **sound but
+> empty**, refuted in the kernel by `telperion/examples/wall_adversary/lean/BarrierScopeXR.lean`
+> (`barrier_silent`, `transfer_to_member_fails`, `uniform_refutation_decides_nothing`). The
+> theorems here remain valid; they refute only a universal over the bundle, while every wall
+> clause is about ONE member. `poly_refutes_poor_bundle` in this very module shows `s * (s - 1)`
+> already refutes the bundle, so the Davenport–Heilbronn witness adds nothing. Do not register
+> `RH_barrier_fe_uniform`. `WallBarrierAM` (the orientation-only result) is unaffected.
+
 Two sorry-free Lean modules, both elaborated with `lake env lean` against the v4.34
 rh-statements island (`leanprover/lean4:v4.34.0-rc1`); every theorem's `#print axioms`
 returns `[propext, Classical.choice, Quot.sound]`.

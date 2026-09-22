@@ -1,0 +1,14 @@
+name = "wall_adversary"
+# BarrierScopeXR is the KERNEL REFUTATION of the FE-uniformity barrier proposed in the
+# sibling wall_barrier island. It shipped in the same PR as the memo it refutes and, until
+# 2026-09-19, had no lakefile at all -- it was a loose .lean file that no project could build
+# and no CI job touched, while the ascent plan cited it as "kernel-checked". This lakefile and
+# the wall-barrier CI job make that phrase true rather than asserted.
+defaultTargets = ["BarrierScopeXR"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
+[[lean_lib]]
+name = "BarrierScopeXR"
