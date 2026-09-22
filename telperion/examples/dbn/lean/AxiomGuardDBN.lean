@@ -8,9 +8,13 @@
 
   Scope reminder: NOTHING here is the representation theorem H_0 = ξ/8, de Bruijn's t ≥ 1/2
   theorem, or RH.  Those are registry STATEMENTS (RH.dbn_H0_eq_xi, RH.dbn_debruijn_real_zeros,
-  RH.dbn_rh_iff_H0_real_zeros), not island theorems.  conjecture1_proved = False.
+  RH.dbn_rh_iff_H0_real_zeros), not island theorems.  DBNRealZerosIff proves the C4 bridge
+  RH <-> (all zeros of H_0 real) ONLY conditionally on C2 (explicit hypothesis / the named
+  Prop obligation DBN.H0EqXi); the unconditional registry theorem dbn_rh_iff_H0_real_zeros is
+  NOT stated anywhere on this island.  conjecture1_proved = False.
 -/
 import DBNDefs
+import DBNRealZerosIff
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -56,3 +60,17 @@ import DBNDefs
 #print axioms DBN.continuous_HIntegrand'
 #print axioms DBN.hasDerivAt_H
 #print axioms DBN.differentiable_H
+
+-- Route C / C4 bridge (DBNRealZerosIff): change of variables + upstream unpacking (unconditional)
+#print axioms DBN.xiArg_re
+#print axioms DBN.xiArg_re_eq_half_iff
+#print axioms DBN.xiArg_surj
+#print axioms DBN.xiArgInv_im
+#print axioms DBN.riemannXi_eq_zero_iff_strip_zero
+
+-- Route C / C4 bridge, CONDITIONAL on C2 (hypothesis hC2 / obligation DBN.H0EqXi); the
+-- expected closure is still [propext, Classical.choice, Quot.sound] because C2 is a hypothesis,
+-- not an axiom.  These are NOT the registry theorem dbn_rh_iff_H0_real_zeros.
+#print axioms DBN.H_zero_eq_zero_iff_of_H0_eq_xi
+#print axioms dbn_rh_iff_H0_real_zeros_of_H0_eq_xi
+#print axioms dbn_rh_iff_H0_real_zeros_of_obligation

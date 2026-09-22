@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from telperion.missions.mirrors import check_mirrors, declarations, drifted
+from telperion.missions.mirrors import NOT_MIRRORS, check_mirrors, declarations, drifted
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = ROOT / "examples"
@@ -73,3 +73,22 @@ def test_a_real_body_change_is_caught(tmp_path):
     island = tmp_path / "Island.lean"
     island.write_text("def f (x : Nat) : Nat :=\n  x + 2\n")
     assert declarations(registry)["f"] != declarations(island)["f"]
+
+
+@pytest.mark.skipif(not MMDEFS.is_file(), reason="mirrormere registry not present")
+def test_every_exemption_is_still_needed():
+    """An exemption that no longer differs is a hole: the pair would be a real mirror again
+    and any future drift in it would be masked.  Pin that each exempted pair still differs
+    and that both declarations still exist."""
+    base = declarations(MMDEFS)
+    for (name, suffix), reason in NOT_MIRRORS.items():
+        assert reason.strip(), f"exemption {name!r} needs a reason"
+        assert name in base, f"exempted {name!r} is no longer a registry definition"
+        matches = [p for p in EXAMPLES.glob("*/lean/**/*.lean")
+                   if ".lake" not in p.parts and p.as_posix().endswith(suffix)]
+        assert matches, f"exempted island file {suffix!r} not found"
+        for p in matches:
+            island = declarations(p)
+            assert name in island, f"{name!r} no longer declared in {suffix}"
+            assert island[name] != base[name], (
+                f"{name!r} in {suffix} is now verbatim -- drop the exemption so it is gated")

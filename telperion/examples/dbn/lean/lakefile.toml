@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -14,6 +14,14 @@ rev = "35df682f3b709ffe5fbcfdd452dfa964bd622b87"
 
 [[lean_lib]]
 name = "DBNDefs"
+
+# Route C / C4 bridge (registry node RH.dbn_rh_iff_H0_real_zeros): RH in the AND-ladder strip
+# grammar <-> every zero of H_0 is real, proved CONDITIONALLY on the C2 representation theorem
+# H_0 = xi/8 (registry node RH.dbn_H0_eq_xi, NOT a theorem here; carried as the named Prop
+# obligation DBN.H0EqXi). The C4 change of variables and the xi-zeros-are-strip-zeros unpacking
+# are unconditional. Nothing here proves RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNRealZerosIff"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.

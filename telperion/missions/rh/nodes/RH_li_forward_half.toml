@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.li_forward_half"
+statement_module = "Statements.RH_li_forward_half"
+status = "proved"
+title = "LI'S CRITERION, FORWARD HALF, on the rvm_bridge island (2026-09-21): under Mathlib's RiemannHypothesis every paired Li coefficient is nonnegative (on the line |1 - 1/rho| = 1). The converse lives on the v4.34 li_positivity island (li_criterion_rh_iff) and is not re-proved here. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge15.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-weil-li-2026-09-21 (AUDIT_TESTIMONY_WEIL_LI_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: under Mathlib's RiemannHypothesis every paired Li coefficient liLimit n has nonnegative real part (on the line |1 - 1/rho| = 1, independently re-proved). The converse is on the v4.34 li_positivity island and not re-proved here. Not RH. conjecture1_proved = False."

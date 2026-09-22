@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = ["MM_theta_heat_monotone", "MM_rh_iff_theta_positivity"]
+kind = "lemma"
+name = "MM.rh_iff_theta_widths"
+statement_module = "Statements.MM_rh_iff_theta_widths"
+status = "proved"
+title = "LAMBDA_THETA (2026-09-21): RH is EQUIVALENT to every positive width being Theta-free, i.e. to the de Bruijn-Newman-type constant of the zero measure being infinite; an off-line zero bounds the free widths (not_thetaFree_of_offline, rh_or_thetaWidths_bddAbove). A certified width lam_cert (ladder + envelope) gives Lambda_Theta >= lam_cert and every smaller width -- a wall, not a crossing. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge17.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-theta-face-2026-09-21 (AUDIT_TESTIMONY_THETA_FACE_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: RH is equivalent to every positive width being Theta-free (the free widths form an initial segment by heat monotonicity; an off-line zero bounds them). A de Bruijn-Newman-type constant for the zero measure, RH iff it is infinite. An equivalence; a certified width is a wall, not a crossing. conjecture1_proved = False."
