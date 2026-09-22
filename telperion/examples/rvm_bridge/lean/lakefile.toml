@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -237,6 +237,19 @@ name = "E6Bridge24"
 # Identities about zeros and primes, valid whether or not RH holds. conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge27"
+
+# Twenty-eighth bridge (2026-09-21): THE LI LADDER (Li face brief, section 5). The pair identity
+# Re K_N(rho) + Re K_N(1 - conj rho) = 2 - 2 cosh(N log r) cos(N theta) for w = rho/(rho-1) = r e^{i theta};
+# Lemma A (cosh a cos b <= 1 for |a| <= |b| <= pi/2), Lemma B (1/(2|gamma|) <= |theta| <= 1/|gamma|,
+# |log r| <= 1/(2 gamma^2) for |Im rho| >= 1), Theorem C (termwise nonnegativity for
+# N <= 3 pi |Im rho|/2), Theorem D (zeros on the line up to height T >= 1 give 0 <= Re liLimit N for
+# N <= 3 pi T/2, and 0 <= Re(archSide N + finiteSide N) via E6Bridge27); the low-height box (the
+# SHARP bound |int {x} x^{-s-1}| <= 1/(2 Re s) by unit-interval integration by parts + Zeta0EqZeta:
+# |Im rho| >= sqrt 3/2, (Re rho - 1/2)^2 <= Im^2/3 - 1/4); hypothesis-free rungs N = 1..5.
+# Consumes zero localisation, produces sign information about Li coefficients; nothing about RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge28"
 
 [[lean_lib]]
 name = "W2cAssembly"

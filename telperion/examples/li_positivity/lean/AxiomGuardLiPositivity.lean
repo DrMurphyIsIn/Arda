@@ -34,6 +34,9 @@
 -/
 import LiPositivity
 import LiLadder
+import LiLadderHeight
+import LowHeightBox
+import LiBoxRungs
 import RvMXiBridge
 import RvMDigammaProd
 import RvMLiUnified
@@ -126,6 +129,48 @@ import LiNegativeControl
 #print axioms LiPositivity.li_rh_iff_tail
 #print axioms LiPositivity.li_tail_peel
 #print axioms LiPositivity.li_rh_iff_tail_zero
+
+-- LiLadderHeight (hand-written, LI_FACE_BRIEF_2026-09-21 sections 1-3): the Li ladder priced in
+-- HEIGHT. taylorCoeff_eq_half_tsum_paired = the hypothesis-free paired zero sum (composition of
+-- the upstream order bridges); Lemma A (cosh*cos <= 1), Lemma B (zero geometry at |Im| >= 1),
+-- Theorem C (termwise sign at height), Theorem D (zeros on the line up to T buy every rung
+-- n + 1 <= pi T / 2, CONDITIONAL on the line hypothesis); li_rung0_kernel = registry node
+-- RH_li_rung0_kernel with NO hypothesis; li_rungs_of_bands_4000 = the h4000 composition,
+-- conditional on the capstone's conclusion (real-zero residual NoRealZeroInStrip discharged
+-- from LowHeightBox Box 1; the _of_noRealZero form keeps it explicit).
+-- Nothing here proves RH. conjecture1_proved = False.
+#print axioms LiLadderHeight.taylorCoeff_eq_half_tsum_paired
+#print axioms LiLadderHeight.liPairedSummand_eq_two_sub_pow_sub_inv
+#print axioms LiLadderHeight.liPairedSummand_eq_w
+#print axioms LiLadderHeight.liPairedSummand_eq_w_zpow
+#print axioms LiLadderHeight.re_pow_add_inv_pow
+#print axioms LiLadderHeight.re_liPairedSummand_eq
+#print axioms LiLadderHeight.cosh_mul_cos_le_one
+#print axioms LiLadderHeight.arg_one_sub_inv_eq
+#print axioms LiLadderHeight.abs_arg_base_le
+#print axioms LiLadderHeight.abs_log_norm_le_abs_arg
+#print axioms LiLadderHeight.re_liPairedSummand_nonneg_of_height
+#print axioms LiLadderHeight.re_liPairedSummand_nonneg_of_onLine
+#print axioms LiLadderHeight.cosh_mul_cos_le_one_of_le_three_pi_div_two
+#print axioms LiLadderHeight.summable_weighted_paired
+#print axioms LiLadderHeight.re_taylorCoeff_eq_half_tsum_re
+#print axioms LiLadderHeight.re_taylorCoeff_nonneg_of_termwise
+#print axioms LiLadderHeight.li_rung_of_zeros_on_line_below
+#print axioms LiLadderHeight.liPairedSummand_zero_eq
+#print axioms LiLadderHeight.re_liPairedSummand_zero_nonneg
+#print axioms li_rung0_kernel
+#print axioms LiLadderHeight.noRealZeroInStrip
+#print axioms LiLadderHeight.line_hyp_of_upper_half
+#print axioms LiLadderHeight.li_rungs_of_bands_4000_of_noRealZero
+#print axioms LiLadderHeight.li_rungs_of_bands_4000
+#print axioms LiLadderHeight.li_rungs_of_bands_4000_upto
+#print axioms LowHeightBox.fract_integral_le_half_inv
+#print axioms LowHeightBox.zeta_zero_confined
+#print axioms LowHeightBox.zeta_zero_im_ge
+#print axioms LowHeightBox.riemannZeta_ne_zero_of_unit_interval
+#print axioms LowHeightBox.liPairedSummand_re_nonneg
+#print axioms LowHeightBox.li_rung4
+#print axioms LowHeightBox.li_rungs_lt_five
 
 -- RvMXiBridge (shared-object anchor): the RvM reflection foundation ported to
 -- the UPSTREAM riemannXi -- the SAME function whose Taylor coefficients Li's

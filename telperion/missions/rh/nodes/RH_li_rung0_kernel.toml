@@ -3,11 +3,17 @@ depends_on = ["RH_li_rung_certificates"]
 kind = "lemma"
 name = "RH.li_rung0_kernel"
 statement_module = "Statements.RH_li_rung0_kernel"
-status = "open"
+status = "proved"
 title = "Routes-roadmap B2 (the hypothesis-free rung anchor): 0 <= Re(taylorCoeff riemannXi 0) with NO Arb enclosure hypothesis -- the first Li rung evaluated entirely in-kernel over rational certificates. HONESTY (skeptic reclassification honored): this is a TAYLOR COEFFICIENT of log xi (a derivative object), not a function value -- the first_zero_kernel template does NOT cover it; class = hard-known-shape, needing a certified difference-quotient or series bracket for logDeriv (phi riemannXi) at 0 (RH_ROUTES_ROADMAP_2026-09-16 sections 3, 9)"
-updated = "2026-09-16"
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/LiLadderHeight.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
 
 [readback]
-auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
-date = "2026-09-16"
-text = "Asserts 0 <= Re(taylorCoeff riemannXi 0) with NO hypotheses. Unfolded: deriv^[0] is the identity and 0! = 1, so this is logDeriv (phi riemannXi) at 0 with phi riemannXi 0 = riemannXi 1 -- the first Li coefficient lambda_1 under the criterion's conventions. Believed-true-UNPROVEN positivity (one rung of the Li ladder with the Arb hypothesis dropped), not a triviality: the sorry conceals real mathematical content. Flag: ELABORATION-RISK (minor) on the deriv^[0]/riemannXi reduction -- CI adjudicates."
+auditor = "blind-auditor-li-ladder-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: 0 <= Re(taylorCoeff riemannXi 0) with no hypothesis; the pair term at N = 1 is 1/(rho(1-rho)) with real part (beta(1-beta)+gamma^2)/|rho(1-rho)|^2 >= 0 for every nontrivial zero, summed through the hypothesis-free paired zero sum (composition of the pinned upstream order theorems). Statement byte-identical to the registry. Li's lambda_1 nonnegative in the kernel; one rung, NOT RH. conjecture1_proved = False."
