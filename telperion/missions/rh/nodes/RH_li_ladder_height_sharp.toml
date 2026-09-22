@@ -3,12 +3,17 @@ depends_on = ["RH_li_ladder_height"]
 kind = "lemma"
 name = "RH.li_ladder_height_sharp"
 statement_module = "Statements.RH_li_ladder_height_sharp"
-status = "draft"
+status = "proved"
 title = "THE LI LADDER, SHARPENED (li_positivity island, LiLadderSharp, 2026-09-22): zeros on the line up to T >= 1 give rung n for n + 1 <= 2 pi (T - 1/2); window lemma cos b = cos(2 pi - |b|) plus |theta| + |log r| <= 1/(|Im| - 1/2). Sharp for the termwise method (true threshold N/(2 pi) + 1/2 + o(1) numerically). Not RH. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-22"
 
 [proof]
 artifact = "../../examples/li_positivity/lean/LiLadderSharp.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-li-ladder-sharp-li-2026-09-22 (AUDIT_TESTIMONY_LI_LADDER_SHARP_LI_2026-09-22.md)"
+date = "2026-09-22"
+text = "Read-back: zeros on the line up to T >= 1 give rung n for n + 1 <= 2 pi (T - 1/2); window lemma by reflection to the deficit, combined bound |theta| + |log r| <= 1/(|Im| - 1/2), three exhaustive cases on LiLadderHeight's lemmas; byte-identical; 18/18 kernel-clean; sharp for the termwise method. Not RH. conjecture1_proved = False."
