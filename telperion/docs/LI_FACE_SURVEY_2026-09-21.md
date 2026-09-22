@@ -546,4 +546,145 @@ identity is unconditional and pins the comparison to a 2026 journal paper that a
 * Liu, alphaXiv "Certified Weil positivity beyond the unit window" (Sept 2026, preprint, UNVERIFIED).
 * Yoshida, Adv. Stud. Pure Math. 21 (1992) 281-325 (not accessed; cited via Bombieri 2000, Connes-Consani 2021, Suzuki 2026).
 
+## E. Follow-up: the archimedean side for Gaussian tests (Burnol/Yoshida kernels, Binet)
+
+conjecture1_proved = False. Everything here is about the archimedean term of the explicit formula,
+an identity valid whether or not RH holds. Notation: the island's test has autocorrelation
+f(u) = A (1 - u^2/(4 lam)) e^{-u^2/(8 lam)} e^{-icu}, spectral profile h(r) = (r - c)^2 e^{-2 lam (r - c)^2}
+(so h(r) = Int f(u) e^{iru} du up to the normalising constant A = sqrt(pi/(2 lam))/(4 lam), and the
+modulus profile f_0(u) := A (1 - u^2/(4 lam)) e^{-u^2/(8 lam)} satisfies Int h(r) cos(ru) dr = f_0(u) cos(cu)),
+and the archimedean side is
+
+    arch(c, lam) = (1/2 pi) Int h(r) Re psi(1/4 + i r/2) dr - (log pi) (1/2 pi) Int h(r) dr + h(i/2) + h(-i/2).
+
+### E.1 Exact statements of the small-support positivity results, and what they give off support
+
+Burnol 2000 (C. R. Acad. Sci. Paris 331, 423-428, arXiv math/0101068, Theorem 3.7, read). For g
+smooth with compact support in (0, infinity), k = g * g^*, g^ its Mellin transform on Re s = 1/2,
+and Z(k) := Sum_rho g^(rho) g^(1 - rho) (zero side), the explicit formula for k supported in [1/2, 2]
+(no prime power enters) reads
+
+    Z(k) = 2 Re k^(0) + Int_{s = 1/2 + i tau} h_+(tau) |g^(s)|^2 dtau/(2 pi),
+    h_+(tau) = - log pi + Re psi(1/4 + i tau/2),
+
+where 2 Re k^(0) is the pole term. Burnol's trick is the identity, valid ONLY for k supported in
+[1/2, 2], rewriting the pole term spectrally: 2 Re k^(0) = Int 8 sqrt 2 cos(tau log 2)/(1 + 4 tau^2) |g^|^2 dtau/(2 pi),
+so that Z(k) = Int alpha(tau) |g^(s)|^2 dtau/(2 pi) with alpha(tau) = 8 sqrt 2 cos(tau log 2)/(1 + 4 tau^2) + h_+(tau).
+Since alpha -> +infinity, for small eps there is A_eps with A_eps cos(eps tau) + alpha(tau) >= 0 for all tau,
+and Int cos(eps tau) |g^|^2 dtau = 0 when g is supported in [e^{-eps/2}, e^{eps/2}]; hence Z(k) >= 0 for
+support in [1/c, c], c = e^{eps/2}, some c in (1, sqrt 2), not made explicit ("computer calculations
+help being more precise").
+
+Yoshida 1992 (Adv. Stud. Pure Math. 21, 281-325; primary text NOT accessed, UNVERIFIED). As
+reported by Bombieri 2000 (p. 184) and Suzuki 2026 (p. 2): the Hermitian form H(v, v) = W(v * v~) on
+smooth functions supported in [-t, t] (variable u = log x), or on K(t) = {smooth 2t-periodic
+functions restricted to [-t, t]}; Lemma 2: positive definite for t sufficiently small; positivity
+on [-t, t] "reduced to a finite calculation depending on t" and verified for t = (log 2)/2 (again
+the prime-free window, autocorrelation in [1/2, 2]). Normalisation of W: Bombieri's Explicit
+Formula (2000, p. 186, read): Sum_rho f^(rho) = Int_0^inf f + Int_0^inf f^* - Sum Lambda(n)(f(n) + f^*(n))
+- (log 4 pi + gamma) f(1) - Int_1^inf (f(x) + f^*(x) - (2/x^2) f(1)) x dx/(x^2 - 1), and the last two
+terms equal -(log pi) f(1) + (1/2 pi i) Int_{(1/2)} (Gamma'/Gamma)(w/2) f^(w) dw. So Yoshida's and
+Burnol's archimedean term is the same h_+ integral; only the pole-term bookkeeping differs.
+
+Off support. Neither result yields a lower bound for the archimedean form on non-compactly
+supported f, for two separate reasons. (a) h_+(tau) is NOT nonnegative: h_+(0) = -log pi + psi(1/4)
+= -1.145 - 4.227 = -5.37, and h_+ < 0 for |tau| < ~4 (numerically Re psi(1/4 + i tau/2) crosses
+-log pi = -1.145 near tau ~ 2). So the archimedean term is not a positive-definite kernel by itself;
+the positivity of the prime-free window comes from the POLE term absorbing the negative part of
+h_+ at small tau, and Burnol's spectral rewriting of the pole term is exactly the step that needs
+support in [1/2, 2] (it uses k^(s)/s and the vanishing of Int k(u) u^{s-1} du outside the window).
+(b) The A_eps cos(eps tau) correction integrates to zero only against tests supported in
+[e^{-eps/2}, e^{eps/2}]; for a Gaussian its contribution is Gaussian-small, of size
+A_eps f_0(eps) ~ A_eps e^{-eps^2/(8 lam)}, not zero. What survives off support is only the
+pointwise inequality alpha(tau) + A_eps cos(eps tau) >= 0, i.e. a lower bound on h_+ by an explicit
+elementary function, which is the content of E.3 below, and the fact (for the island's test) that
+the two pole terms are themselves nonnegative:
+
+    h(i/2) + h(-i/2) = 2 (c^2 + 1/4) e^{lam/2} e^{-2 lam c^2}     [from g^(gamma) = (gamma - c) e^{-lam (gamma - c)^2};
+                                                                   check the island's sign convention for the pole terms].
+
+Connes-Consani 2021 add nothing here: Theorem 1 requires support in [2^{-1/2}, 2^{1/2}] for the Sonin
+compression, and the constant c |g^(0)|^2 in Theorem 6.11 is a correction, not a lower bound.
+
+### E.2 Binet's formula turns the digamma integral into a one-dimensional elementary integral
+
+For Re z > 0 (here z = 1/4 + i r/2, so Re z = 1/4 uniformly in r):
+
+    psi(z) = log z - 1/(2z) - Int_0^inf phi(t) e^{-zt} dt,   phi(t) = 1/(e^t - 1) - 1/t + 1/2,
+
+with 0 < phi(t) < 1/2, phi(t) ~ t/12 at 0, phi increasing to 1/2 (DLMF 5.9.13 form of Binet's first
+formula for psi). Taking real parts with |z|^2 = 1/16 + r^2/4 and Re(1/(2z)) = 1/(8 |z|^2):
+
+    Re psi(1/4 + i r/2) = (1/2) log(1/16 + r^2/4) - 1/(8 (1/16 + r^2/4)) - Int_0^inf phi(t) e^{-t/4} cos(rt/2) dt.
+
+Integrating against h(r) >= 0 and using Fubini (h Gaussian, phi bounded), with u = t/2:
+
+    (1/2 pi) Int h(r) Re psi(1/4 + i r/2) dr
+      = (1/2 pi) Int h(r) [ (1/2) log(1/16 + r^2/4) - 1/(8 (1/16 + r^2/4)) ] dr
+        - (1/pi) Int_0^inf phi(2u) e^{-u/2} f_0(u) cos(cu) du.                                   (E.2.1)
+
+Checked numerically (mpmath, 30 digits) at (c, lam) = (30, 0.05): both sides 75.65474981..., relative
+error 2e-30. The second line is the one-dimensional integral the team lead guessed: the c-dependence
+sits in cos(cu), the kernel phi(2u) e^{-u/2} = (1/(e^{2u} - 1) - 1/(2u) + 1/2) e^{-u/2} is elementary,
+and this is nothing but Bombieri's x dx/(x^2 - 1) term with x = e^u after the change of variables
+(e^{-u/2}/(e^{2u} - 1) = e^{-u/2} e^{-2u}/(1 - e^{-2u}); the -1/(2u) piece is the f(1) subtraction). So
+Binet is the derivation of Weil's classical archimedean kernel, not a new representation; what is
+new for Gaussian tests is only that Int h(r) cos(ru) dr = f_0(u) cos(cu) is closed-form.
+
+Closed forms. (i) The kernel piece: expand 1/(e^{2u} - 1) = Sum_{k >= 1} e^{-2ku}; each term
+Int_0^inf e^{-(2k + 1/2) u} e^{-u^2/(8 lam)} (1 - u^2/(4 lam)) cos(cu) du is a Gaussian times the complementary
+error function of the complex argument (2k + 1/2 - ic) sqrt(2 lam) (Faddeeva w-function), so the
+whole piece is a convergent erfc series; the -1/(2u) e^{-u/2} piece integrates to an exponential
+integral against the Gaussian. No published source does this for the island's test: Balanzario-
+Cardenas (arXiv 2312.00108, Theorem 1) work on the PRIME side with Hermite weights, under RH, and
+handle the archimedean side by asymptotics; Bombieri 2000 works with compactly supported f;
+Lagarias 2006, "Hilbert spaces of entire functions and Dirichlet L-functions" (Frontiers in
+Number Theory, Physics, and Geometry I, 365-377) uses de Branges spaces, no Gaussians (from
+memory, UNVERIFIED). The Gaussian explicit formula in E6Bridge10 is, as far as I can find, the
+only place the full identity is written for this family. (ii) The log piece
+Int h(r) log(1/16 + r^2/4) dr has no elementary closed form for c != 0; its derivative in the
+parameter b^2 = 1/16 is Int h(r)/(b^2 + r^2/4) dr, and for a centred Gaussian
+Int e^{-a r^2}/(r^2 + b^2) dr = (pi/b) e^{a b^2} erfc(b sqrt a) is classical, so the c = 0 value is an
+erfc integral in b; for general c one uses the lower bound in E.3 instead.
+
+### E.3 Explicit c-uniform lower bounds for the archimedean side
+
+Two pointwise bounds, both elementary, both checked numerically at r in {0, 0.1, 0.5, 1, 2, 5, 10,
+50, 1e3, 1e5} against mpmath's psi (equality at r = 0 for the first):
+
+    (B) Re psi(1/4 + i r/2) >= (1/2) log(1/16 + r^2/4) - 1/(8 (1/16 + r^2/4)) - 0.84116,
+        0.84116 = Int_0^inf phi(t) e^{-t/4} dt = log(1/4) - 2 - psi(1/4)   [exact, from Binet at z = 1/4];
+    (S) Re psi(1/4 + i r/2) >= (1/2) log(1/16 + r^2/4) - 1/(8 |z|^2) - 1/(6 |z|^2),
+        from the Stirling remainder bound |psi(z) - log z + 1/(2z)| <= (1/(12 |z|^2)) sec^2(arg z / 2)
+        with |arg z| < pi/2 (DLMF 5.11(ii)-type bound; the psi version is UNVERIFIED as a cited
+        theorem, numerically valid at the sampled points).
+
+(B) follows from |cos| <= 1 and phi > 0 in the Binet integral; it is tight at r = 0 and loses
+exactly 0.84 at large r. (S) is tight at large r and loses 1.8 at r = 0. Compared with the island's
+Re psi(1/4 + i r/2) >= log(|r|/2) - 5 (wall map, section 2), (B) gives log(|r|/2) - 2.84 uniformly
+(since (1/2) log(1/16 + r^2/4) >= log(|r|/2) and 1/(8 |z|^2) <= 2), i.e. an improvement of 2.16 in the
+additive constant, uniformly in r and hence in c, and it is finite at r = 0 where the old bound
+is -infinity. Integrated against the Gaussian profile, (E.2.1) gives the c-uniform statement
+
+    arch(c, lam) >= (1/2 pi) Int h(r) [ (1/2) log(1/16 + r^2/4) - 1/(8 (1/16 + r^2/4)) - 0.84116 - log pi ] dr
+                    + 2 (c^2 + 1/4) e^{lam/2 - 2 lam c^2},
+
+with the last term subject to the pole-term sign check above. The kernel piece can be kept
+exactly as the one-dimensional integral - (1/pi) Int_0^inf phi(2u) e^{-u/2} f_0(u) cos(cu) du if one
+wants c-dependence beyond a uniform bound; its absolute value is at most
+(1/pi) Int_0^inf phi(2u) e^{-u/2} |f_0(u)| du, a lam-only quantity.
+
+Published explicit c-uniform lower bounds for the archimedean side: none found. Burnol states
+only alpha(tau) -> +infinity; Connes-Consani give W_R as "a locally rational positive function
+tending to +infinity at 1" outside x = 1 (Appendix B, formula (150)), which is the kernel
+e^{-u/2}/(1 - e^{-2u}) in u; the explicit-formula literature (Bombieri 2000, Lagarias 2007 Lemma 6.2,
+Groskin 2026 Lemma 3.1 with h_+(r) <= log r as an UPPER envelope) uses O(log) bounds without
+constants. The Stirling-type bound (S) is the standard tool (e.g. in explicit zero-density papers
+such as Trudgian 2014, Hasanalizade-Shen-Wong 2022, for Re(Gamma'/Gamma)) but I found no paper
+stating it for the Gaussian family or in c-uniform form; the island's E6Bridge11 constant is, to my
+knowledge, the only kernel-checked one, and (B) is the cheap way to sharpen it.
+
+What this does not give: positivity of arch - prime for any lam beyond what the island's prime
+bound allows; the prime side is untouched by everything above. conjecture1_proved = False.
+
 conjecture1_proved = False.
