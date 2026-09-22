@@ -125,6 +125,10 @@
         Theorems C/D); the low-height box |Im rho| >= sqrt 3 / 2 and (Re rho - 1/2)^2 <=
         Im^2/3 - 1/4 from the sharp sawtooth bound; rungs N = 1..5 hypothesis-free.  Consumes
         zero localisation, proves nothing about RH.
+      * RvMBridge29.{pair_re_nonneg_of_far_sharp, liLimit_re_nonneg_of_line_below_sharp,
+        archSide_add_finiteSide_re_nonneg_of_line_below_sharp} -- the SHARPENED exchange rate
+        (2026-09-21): N <= 2 pi (T - 1/2) (Lemma A'' window, Lemma B'' combined bound).
+        Consumes zero localisation, proves nothing about RH.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -169,6 +173,7 @@ import E6Bridge26
 import E6Bridge24
 import E6Bridge27
 import E6Bridge28
+import E6Bridge29
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -936,6 +941,14 @@ import W2cAssembly
 #print axioms RvMBridge28.liKernel_five_re_nonneg
 #print axioms RvMBridge28.liLimit_five_re_nonneg
 #print axioms RvMBridge28.archSide_add_finiteSide_five_re_nonneg
+#print axioms RvMBridge29.cosh_mul_cos_le_one_window
+#print axioms RvMBridge29.inv_add_inv_two_sq_le
+#print axioms RvMBridge29.abs_arg_add_abs_log_le
+#print axioms RvMBridge29.abs_arg_add_abs_log_le_sharp
+#print axioms RvMBridge29.pair_re_nonneg_of_far_sharp
+#print axioms RvMBridge29.pair_re_nonneg_of_line_below_sharp
+#print axioms RvMBridge29.liLimit_re_nonneg_of_line_below_sharp
+#print axioms RvMBridge29.archSide_add_finiteSide_re_nonneg_of_line_below_sharp
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

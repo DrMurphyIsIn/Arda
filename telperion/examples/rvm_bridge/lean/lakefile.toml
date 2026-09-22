@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -250,6 +250,14 @@ name = "E6Bridge27"
 # conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge28"
+
+# Twenty-ninth bridge (2026-09-21): the SHARPENED exchange rate of the Li ladder. Lemma A''
+# (the window 3 pi/2 < |b| <= 2 pi with |a| <= 2 pi - |b|), Lemma B'' (|theta| + |log r| <=
+# 1/(|Im rho| - 1/2)), Theorem C'' (termwise nonnegativity for N <= 2 pi (|Im rho| - 1/2)),
+# Theorem D'' (zeros on the line up to height T >= 1 give 0 <= Re liLimit N for
+# N <= 2 pi (T - 1/2)). Consumes zero localisation; nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge29"
 
 [[lean_lib]]
 name = "W2cAssembly"

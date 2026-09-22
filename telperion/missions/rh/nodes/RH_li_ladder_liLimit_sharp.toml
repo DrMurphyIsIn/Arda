@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["RH_li_ladder_liLimit"]
+kind = "lemma"
+name = "RH.li_ladder_liLimit_sharp"
+statement_module = "Statements.RH_li_ladder_liLimit_sharp"
+status = "draft"
+title = "THE LI LADDER, SHARPENED (rvm_bridge island, E6Bridge29, 2026-09-22): zeros on the line up to T >= 1 give 0 <= Re(liLimit N) for N <= 2 pi (T - 1/2). Window lemma: for 3 pi/2 < |b| <= 2 pi with |a| <= 2 pi - |b|, cosh a cos b <= 1 (cos b = cos(2 pi - |b|)); |theta| + |log r| <= 1/(|Im| - 1/2). Numerically the true termwise threshold is N/(2 pi) + 1/2 + o(1), so this rate is sharp for the termwise method. Consumes localisation, produces none. Not RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge29.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
