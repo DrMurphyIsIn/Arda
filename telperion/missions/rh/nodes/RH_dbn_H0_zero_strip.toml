@@ -1,0 +1,8 @@
+created = "2026-09-22"
+depends_on = []
+kind = "lemma"
+name = "RH.dbn_H0_zero_strip"
+statement_module = "Statements.RH_dbn_H0_zero_strip"
+status = "draft"
+title = "Route C, the C2-free zero strip (authored 2026-09-22 per DESIGN_RH_dbn_debruijn_real_zeros_2026-09-22.md section 6.2): every zero of H_0 lies in the strip |Im z| <= 1, proved from the absolutely convergent half-plane of DBNDefs plus Mathlib, WITHOUT the representation theorem H_0 = xi/8. The clean seam between the zeta side and the heat-flow side; it says NOTHING about zeros inside the strip and is not a wall statement. STATED ONLY, not proved (obligation L1, ~950 lines). conjecture1_proved = False."
+updated = "2026-09-22"
