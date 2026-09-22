@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["RH_li_ladder_height_sharp", "RH_zeta_zero_im_ge"]
+kind = "lemma"
+name = "RH.li_rungs_of_height_4000_sharp"
+statement_module = "Statements.RH_li_rungs_of_height_4000_sharp"
+status = "draft"
+title = "LI RUNGS 0..25128 FROM THE HEIGHT-4000 CERTIFICATES, SHARP (li_positivity island, 2026-09-22): under the tiled capstone's conclusion shape (conditional on its Arb bands), every rung n <= 25128 is nonnegative (2 pi * 3999.5 = 25129.6, via Real.pi_gt_d6). Still conditional. Not RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/LiLadderSharp.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

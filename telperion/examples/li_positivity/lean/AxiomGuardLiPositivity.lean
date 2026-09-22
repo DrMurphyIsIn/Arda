@@ -35,6 +35,7 @@
 import LiPositivity
 import LiLadder
 import LiLadderHeight
+import LiLadderSharp
 import LowHeightBox
 import LiBoxRungs
 import RvMXiBridge
@@ -164,6 +165,19 @@ import LiNegativeControl
 #print axioms LiLadderHeight.li_rungs_of_bands_4000_of_noRealZero
 #print axioms LiLadderHeight.li_rungs_of_bands_4000
 #print axioms LiLadderHeight.li_rungs_of_bands_4000_upto
+
+-- LiLadderSharp: the SHARPENED exchange rate. Lemma A'' (window 3pi/2 < |b| <= 2pi), Lemma B''
+-- (|arg u| + |log|u|| <= 1/(|Im| - 1/2)), Theorem C'' (termwise sign for N <= 2 pi (|Im| - 1/2)),
+-- Theorem D'' (height T buys rungs n + 1 <= 2 pi (T - 1/2), CONDITIONAL on the line hypothesis),
+-- and the h4000 composition (rungs 0..25128 under the capstone conclusion). Nothing here proves
+-- RH. conjecture1_proved = False.
+#print axioms LiLadderHeight.cosh_mul_cos_le_one_window
+#print axioms LiLadderHeight.one_div_add_one_div_two_sq_le
+#print axioms LiLadderHeight.abs_arg_add_abs_log_le
+#print axioms LiLadderHeight.re_liPairedSummand_nonneg_of_height_sharp
+#print axioms LiLadderHeight.li_rung_of_zeros_on_line_below_sharp
+#print axioms LiLadderHeight.li_rungs_of_bands_4000_sharp
+#print axioms LiLadderHeight.li_rungs_of_bands_4000_upto_sharp
 #print axioms LowHeightBox.fract_integral_le_half_inv
 #print axioms LowHeightBox.zeta_zero_confined
 #print axioms LowHeightBox.zeta_zero_im_ge

@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = ["RH_li_ladder_height"]
+kind = "lemma"
+name = "RH.li_ladder_height_sharp"
+statement_module = "Statements.RH_li_ladder_height_sharp"
+status = "draft"
+title = "THE LI LADDER, SHARPENED (li_positivity island, LiLadderSharp, 2026-09-22): zeros on the line up to T >= 1 give rung n for n + 1 <= 2 pi (T - 1/2); window lemma cos b = cos(2 pi - |b|) plus |theta| + |log r| <= 1/(|Im| - 1/2). Sharp for the termwise method (true threshold N/(2 pi) + 1/2 + o(1) numerically). Not RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/LiLadderSharp.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
