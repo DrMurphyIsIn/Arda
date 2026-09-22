@@ -889,7 +889,7 @@ theorem archSide_add_finiteSide_four_re_nonneg : 0 ≤ (archSide 4 + finiteSide 
 
 /-! ### Rung 5: the box-2 parametrisation.  With u = beta - 1/2 and e = gamma^2 - 3 u^2 - 3/4 >= 0
 (Box 2), the rung-5 polynomial P^5 - Re (A + i gamma)^5 is Sum_k c_k(u) e^k with every c_k > 0 on
-|u| <= 1/2 (numerically min c_0 = 0.27 at u = -0.094; rung 6 FAILS termwise at (0.24, 0.95)). -/
+|u| <= 1/2 (numerically min c_0 = 0.27 at u = -0.094; rung 6 FAILS termwise at beta = 0.29, gamma = 0.939, inside Box 2). -/
 
 def li5c0 (u : ℝ) : ℝ :=
   1280 * u ^ 9 + 3200 * u ^ 8 + 1440 * u ^ 7 + 2000 * u ^ 6 + 561 * u ^ 5 + 845 / 2 * u ^ 4
