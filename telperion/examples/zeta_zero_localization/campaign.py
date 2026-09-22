@@ -985,6 +985,146 @@ def emit_segment_file(prev_top: int, top: int, prev_bands: list, seg_bands: list
     return "".join(out)
 
 
+# ------------------------------------------------- A2: indexed capstone wrapper
+
+def indexed_module_name(top: int) -> str:
+    return f"AllZeros_h{top}_Indexed"
+
+
+def _indexed_tables(top: int) -> tuple[list[int], list[int]]:
+    """(segment tops, band count per segment) for the ladder up to `top`.
+
+    Segment `k` is `[max(1, 1000 k), 1000 (k+1)]`; its band count is whatever
+    `plan_bands` planned, which THINS WITH HEIGHT (25 bands at segment 0, 40 from
+    ~152000 up).  The uniform-40 reading of the design memo is wrong.
+    """
+    tops = segment_tops(1, top)
+    counts = []
+    for i, t in enumerate(tops):
+        prev = 1 if i == 0 else tops[i - 1]
+        counts.append(len(plan_bands(prev, t)))
+    return tops, counts
+
+
+def emit_indexed_span(top: int) -> str:
+    """The REGISTRY SPAN of `AllZeros_h<top>_Indexed.lean`: `SegBandHyp` + the
+    wrapper theorem's signature, i.e. exactly the text a node statement file must
+    carry for the normalized-containment gate (`missions/verify.py`).
+
+    Emitted separately from the module so the two can never drift: the module
+    pastes this string in verbatim.
+    """
+    tops, _counts = _indexed_tables(top)
+    den = WIDTH_DEN
+    n = len(tops)
+    out = []
+    w = out.append
+    w(f"/-- Segment `k` covers `[1000 k, 1000 (k+1)]`; `SegBandHyp k` is that segment's\n"
+      f"    band hypothesis: each of its `segCount k` STRETCHED certificate boxes\n"
+      f"    `[segLo k i, segHi k i]` contains no off-line zero in the strip box.  These\n"
+      f"    are the Arb-class inputs of the `RHInBoxT_*` modules; NOTHING discharges them\n"
+      f"    in-kernel.  conjecture1_proved = False. -/\n")
+    w("def SegBandHyp (k : ℕ) : Prop :=\n")
+    w(f"  ∀ i, i < segCount k → ∀ ρ : ℂ, "
+      f"(((1 / {den}) : ℝ) ≤ ρ.re ∧ ρ.re ≤ ({den - 1} / {den})) →\n")
+    w("    (segLo k i ≤ ρ.im ∧ ρ.im ≤ segHi k i) → "
+      "riemannZeta ρ = 0 → ρ.re = 1 / 2\n\n")
+    w(f"/-- **T = {top}, ONE indexed hypothesis.**  Repackaging of\n"
+      f"    `AllZeros_h{top}.all_nontrivial_zeros_up_to_height_{top}_of_bands`, whose {n}\n"
+      f"    positional `BandHyp` binders become `∀ k, k < {n} → SegBandHyp k`.  Finite\n"
+      f"    verification to a finite height, NOT a proof of RH.  conjecture1_proved = False. -/\n")
+    w(f"theorem all_nontrivial_zeros_up_to_height_{top}\n")
+    w(f"    (hbands : ∀ k, k < {n} → SegBandHyp k)\n")
+    w(f"    (hγ : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → "
+      f"ρ.im ≤ {top} → 55 / 16 ≤ |ρ.im|) :\n")
+    w(f"    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → "
+      f"ρ.im ≤ {top} → ρ.re = 1 / 2")
+    return "".join(out)
+
+
+def emit_indexed_capstone(top: int) -> str:
+    """`AllZeros_h<top>_Indexed.lean` -- the SINGLE-hypothesis (A2) capstone wrapper.
+
+    `emit_segment_file` gives every segment its own `BandHyp` and the capstone one
+    POSITIONAL binder per segment, so at `top = 280000` the artifact carries 280
+    island-qualified binders + `hγ`.  A registry statement file imports only Mathlib
+    and `Statements.ANDDefs`, so it can name none of them.  This module repackages
+    them as one indexed hypothesis.
+
+    The segment data is emitted as three TABLES (`segCount`, `segLo`, `segHi`)
+    rather than as a match returning `AllZeros_h<segTop>.BandHyp`, so that the body
+    of `SegBandHyp` contains NO island name and can be mirrored verbatim into
+    `missions/anduril/lean/Statements/ANDDefs.lean` with the three tables abstract.
+    `SegBandHyp k` still reduces to `AllZeros_h<segTop>.BandHyp` by `rfl` at every
+    literal `k`, which is what discharges the artifact's binders.
+    """
+    tops, counts = _indexed_tables(top)
+    ns = indexed_module_name(top)
+    n = len(tops)
+    out = []
+    w = out.append
+    w(f"/-  INDEXED capstone wrapper for the height-{top} ladder: the {n} positional\n"
+      f"    `BandHyp` binders of `AllZeros_h{top}.all_nontrivial_zeros_up_to_height_{top}_of_bands`\n"
+      f"    repackaged as ONE indexed hypothesis `∀ k, k < {n} → SegBandHyp k`, so that a\n"
+      f"    registry statement file can carry the proposition without naming {n} island\n"
+      f"    modules.  The binders ARE the Arb trust boundary: every `RHInBoxT_*` module\n"
+      f"    CONSUMES interval-arithmetic data (`hLine`, `hArbT`) and nothing discharges it\n"
+      f"    in-kernel.  The kernel certifies the COMPOSITION only.  Emitted by campaign.py\n"
+      f"    (`emit_indexed_capstone`); DO NOT EDIT BY HAND.  This is a FINITE verification\n"
+      f"    to a finite height, NOT a proof of RH.  conjecture1_proved = False. -/\n")
+    w("import Mathlib\n")
+    w(f"import AllZeros_h{top}\n")
+    w("\nopen Complex MeasureTheory Real\nopen scoped Topology\n\n")
+    w(f"namespace {ns}\n\n")
+
+    w(f"/-- Bands per segment.  `plan_bands` thins bands as the zero density grows, so\n"
+      f"    this is NOT constant: {min(counts)} at segment 0, {max(counts)} at segment {n - 1}. -/\n")
+    w("def segCount : ℕ → ℕ := fun k => match k with\n")
+    for k, c in enumerate(counts):
+        w(f"  | {k} => {c}\n")
+    w("  | _ => 0\n\n")
+
+    w("/-- Lower edges of segment `k`'s STRETCHED certificate boxes. -/\n")
+    w("noncomputable def segLo : ℕ → ℕ → ℝ := fun k => match k with\n")
+    for k, t in enumerate(tops):
+        w(f"  | {k} => AllZeros_h{t}.bLo\n")
+    w("  | _ => fun _ => 0\n\n")
+
+    w("/-- Upper edges of segment `k`'s STRETCHED certificate boxes. -/\n")
+    w("noncomputable def segHi : ℕ → ℕ → ℝ := fun k => match k with\n")
+    for k, t in enumerate(tops):
+        w(f"  | {k} => AllZeros_h{t}.bHi\n")
+    w("  | _ => fun _ => 0\n\n")
+
+    w("-- >>> REGISTRY SPAN BEGIN (node AND_ladder_h280000 statement text)\n")
+    w(emit_indexed_span(top))
+    w(" :=\n")
+    w(f"  AllZeros_h{top}.all_nontrivial_zeros_up_to_height_{top}_of_bands\n")
+    for k in range(n):
+        w(f"    (hbands {k} (by norm_num))\n")
+    w("    hγ\n")
+    w("-- <<< REGISTRY SPAN END\n\n")
+    w(f"end {ns}\n")
+    return "".join(out)
+
+
+def cmd_emit_indexed(args) -> int:
+    top = args.upto
+    if not (LEAN_DIR / f"AllZeros_h{top}.lean").exists():
+        print(f"no AllZeros_h{top}.lean to wrap", file=sys.stderr)
+        return 1
+    text = emit_indexed_capstone(top)
+    out = LEAN_DIR / f"{indexed_module_name(top)}.lean"
+    out.write_text(text)
+    tops, _ = _indexed_tables(top)
+    print(f"wrote {out} ({len(text)} bytes): {len(tops)} segments indexed")
+    if args.statement:
+        sp = Path(args.statement)
+        sp.write_text(emit_indexed_span(top) + " := by sorry\n")
+        print(f"wrote {sp} (registry span)")
+    return 0
+
+
 def cmd_emit_segment(args) -> int:
     top = args.upto
     if getattr(args, "base", None) == 1:
@@ -1194,6 +1334,10 @@ def main() -> int:
     p.add_argument("--upto", type=int, required=True)
     p.add_argument("--base", type=int, default=None,
                    help="1 = re-based ladder bottom (upTo_1 base lemma, no prev import)")
+    p = sub.add_parser("emit-indexed")
+    p.add_argument("--upto", type=int, required=True)
+    p.add_argument("--statement", default=None,
+                   help="also write the registry span (statement file body) here")
     sub.add_parser("status")
     p = sub.add_parser("verify-bands")
     p.add_argument("--sample", type=int, default=12,
@@ -1202,7 +1346,8 @@ def main() -> int:
     args = ap.parse_args()
     return {"plan": cmd_plan, "emit-bands": cmd_emit_bands,
             "register-lakefile": cmd_register_lakefile,
-            "emit-segment": cmd_emit_segment, "status": cmd_status,
+            "emit-segment": cmd_emit_segment,
+            "emit-indexed": cmd_emit_indexed, "status": cmd_status,
             "guard-update": cmd_guard_update, "assemble": cmd_assemble,
             "verify-bands": cmd_verify_bands}[args.cmd](args)
 
