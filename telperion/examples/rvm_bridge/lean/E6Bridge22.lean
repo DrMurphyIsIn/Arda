@@ -30,10 +30,16 @@
   xiLogDerivDerivEq_of_two h1 h2 : RvMBridge18.XiLogDerivDerivEq.  TWO obligations remain:
   LocalCountSum and StripDerivBound.
 
+  2026-09-22: the complex-argument forms norm_term_le_of_two_le_re and deriv_logDeriv_xi_of_one_lt_re
+  this module had re-proved now live in E6Bridge21 (RvMBridge21.*), whose real-axis forms are their
+  corollaries; the compact bound uses the prelude's RvMBridgeXi.exists_bound_on_reProdIm.  Every
+  node theorem here is unchanged, statement verbatim.
+
   conjecture1_proved = False.  Nothing here bears on RH.
 -/
 import E6Bridge20
 import E6Bridge21
+import RvMBridgeXi
 
 open Zeta23 Complex MeasureTheory Filter Topology Metric
 open scoped ComplexConjugate
@@ -41,7 +47,7 @@ open scoped ComplexConjugate
 noncomputable section
 
 namespace RvMBridge22
-open WeilExplicit RvMBridge18 RvMBridge20
+open WeilExplicit RvMBridge18 RvMBridge20 RvMBridgeXi
 
 /-! ## A. The local-count sum: summable for every centre; its log bound is the obligation. -/
 
@@ -66,7 +72,7 @@ lemma lcTerm_le_majorant (a : ℝ) (ρ : ℂ) :
     simp
 
 theorem summable_lcTerm (a : ℝ) : Summable (lcTerm a) :=
-  (RvMBridge6.summable_mult_div_one_add_normSq _).of_nonneg_of_le (lcTerm_nonneg a) (lcTerm_le_majorant a)
+  (RvMBridgeGauss.summable_mult_div_one_add_normSq _).of_nonneg_of_le (lcTerm_nonneg a) (lcTerm_le_majorant a)
 
 /-- **Obligation (local zero count).**  Sum_rho m(rho)/(1 + (Im rho - a)^2) = O(log (2 + |a|)):
 O(log(|a| + k)) zeros in each unit window [a + k, a + k + 1) (Zeta23.RvM.zeta_local_zero_count)
@@ -207,12 +213,9 @@ theorem bound_of_bound_off_zeros {U : Set ℂ} (hU : IsOpen U) {B : ℂ → ℝ}
 /-- Region (A): the compact rectangle. -/
 theorem growth_compact :
     ∃ C : ℝ, ∀ s : ℂ, 1 / 2 ≤ s.re → s.re ≤ 2 → |s.im| ≤ 6 → ‖xiDiffExt s‖ ≤ C := by
-  have hK : IsCompact ((Set.Icc (1 / 2 : ℝ) 2) ×ℂ (Set.Icc (-6 : ℝ) 6)) :=
-    isCompact_Icc.reProdIm isCompact_Icc
-  obtain ⟨C, hC⟩ := hK.bddAbove_image xiDiffExt_differentiable.continuous.norm.continuousOn
-  refine ⟨C, fun s h1 h2 h3 => hC ⟨s, ?_, rfl⟩⟩
-  have h := abs_le.mp h3
-  exact Complex.mem_reProdIm.mpr ⟨⟨h1, h2⟩, ⟨h.1, h.2⟩⟩
+  obtain ⟨C, -, hC⟩ :=
+    exists_bound_on_reProdIm xiDiffExt_differentiable.continuous (1 / 2) 2 (-6) 6
+  exact ⟨C, fun s h1 h2 h3 => hC s h1 h2 (abs_le.mp h3).1 (abs_le.mp h3).2⟩
 
 /-- Region (C): Re s ≥ 2. -/
 theorem growth_right (h1 : LocalCountSum) (h3 : RightDerivBound) :
@@ -344,51 +347,9 @@ theorem xiLogDerivDerivEq_of_three (h1 : LocalCountSum) (h2 : StripDerivBound) (
     RvMBridge18.XiLogDerivDerivEq :=
   RvMBridge18.xi_logDeriv_deriv_eq_of (xiDiffRegular_of_three h1 h2 h3) RvMBridge21.xi_logDeriv_deriv_decay
 
-/-! ## G. The right half-plane obligation, DISCHARGED from E6Bridge21's pieces. -/
-
-open scoped LSeries.notation ArithmeticFunction in
-/-- The termwise derivative on Re s > 1 (complex argument; E6Bridge21.deriv_logDeriv_xi_real is the
-real-axis case, same proof). -/
-theorem deriv_logDeriv_xi_of_one_lt_re {s : ℂ} (hre : 1 < s.re) :
-    deriv (logDeriv xi) s = -1 / s ^ 2 - 1 / (s - 1) ^ 2
-      + (1 / 4 : ℂ) * deriv Complex.digamma (s / 2) + deriv (logDeriv riemannZeta) s := by
-  have hev : logDeriv xi =ᶠ[𝓝 s] fun z => z⁻¹ + (z - 1)⁻¹
-      + (-(Real.log Real.pi : ℂ) / 2 + (1 / 2 : ℂ) * Complex.digamma (z / 2)) + (-LSeries ↗Λ z) := by
-    filter_upwards [RvMBridge21.isOpen_one_lt_re.mem_nhds hre] with z hz
-    exact RvMBridge21.logDeriv_xi_eq_of_one_lt_re hz
-  have hs0 : s ≠ 0 := by
-    intro h; rw [h, Complex.zero_re] at hre; linarith
-  have hs1 : s - 1 ≠ 0 := by
-    intro h
-    have := congrArg Complex.re h
-    rw [Complex.sub_re, Complex.one_re, Complex.zero_re] at this; linarith
-  have h1 : HasDerivAt (fun z : ℂ => z⁻¹) (-1 / s ^ 2) s :=
-    (hasDerivAt_inv hs0).congr_deriv (by ring)
-  have h2 : HasDerivAt (fun z : ℂ => (z - 1)⁻¹) (-1 / (s - 1) ^ 2) s :=
-    ((hasDerivAt_inv hs1).comp s ((hasDerivAt_id' s).sub_const 1)).congr_deriv (by ring)
-  have hψ : HasDerivAt (fun z : ℂ => Complex.digamma (z / 2))
-      (deriv Complex.digamma (s / 2) * (1 / 2)) s := by
-    have hd : DifferentiableAt ℂ Complex.digamma (s / 2) := by
-      refine (RvMBridge21.analyticAt_digamma_of_re_pos ?_).differentiableAt
-      rw [Complex.div_re]
-      simp only [Complex.re_ofNat, Complex.im_ofNat, Complex.normSq_ofNat]
-      linarith
-    have hin : HasDerivAt (fun z : ℂ => z / 2) (1 / 2) s := by
-      simpa using (hasDerivAt_id s).div_const 2
-    exact hd.hasDerivAt.comp s hin
-  have h3 : HasDerivAt (fun z : ℂ => -(Real.log Real.pi : ℂ) / 2 + (1 / 2 : ℂ) * Complex.digamma (z / 2))
-      ((1 / 2 : ℂ) * (deriv Complex.digamma (s / 2) * (1 / 2))) s :=
-    (hψ.const_mul (1 / 2 : ℂ)).const_add _
-  have h4 : HasDerivAt (fun z : ℂ => -LSeries ↗Λ z) (-(-LSeries (LSeries.logMul ↗Λ) s)) s :=
-    (LSeries_hasDerivAt (RvMBridge21.abscissa_vonMangoldt_lt hre)).neg
-  have hall : HasDerivAt (fun z : ℂ => z⁻¹ + (z - 1)⁻¹
-      + (-(Real.log Real.pi : ℂ) / 2 + (1 / 2 : ℂ) * Complex.digamma (z / 2)) + (-LSeries ↗Λ z))
-      (-1 / s ^ 2 + -1 / (s - 1) ^ 2
-        + (1 / 2 : ℂ) * (deriv Complex.digamma (s / 2) * (1 / 2))
-        + -(-LSeries (LSeries.logMul ↗Λ) s)) s :=
-    ((h1.add h2).add h3).add h4
-  rw [hev.deriv_eq, hall.deriv, RvMBridge21.deriv_logDeriv_zeta_eq hre]
-  ring
+/-! ## G. The right half-plane obligation, DISCHARGED from E6Bridge21's pieces (the termwise
+derivative on Re s > 1 is RvMBridge21.deriv_logDeriv_xi_of_one_lt_re, the term comparison is
+RvMBridge21.norm_term_le_of_two_le_re). -/
 
 /-- The trigamma constant T = Sum_n 1/(n + 1/2)^2. -/
 def trigConst : ℝ := ∑' n : ℕ, 1 / ((n : ℝ) + 1 / 2) ^ 2
@@ -404,19 +365,6 @@ lemma norm_deriv_digamma_le {z : ℂ} (hz : 1 ≤ z.re) : ‖deriv Complex.digam
     RvMBridge21.summable_trigBound
 
 open scoped LSeries.notation ArithmeticFunction in
-lemma norm_term_le_of_two_le_re (f : ℕ → ℂ) {s : ℂ} (hs : 2 ≤ s.re) (n : ℕ) :
-    ‖LSeries.term f s n‖ ≤ ‖LSeries.term f (2 : ℂ) n‖ := by
-  rw [LSeries.norm_term_eq, LSeries.norm_term_eq]
-  rcases eq_or_ne n 0 with rfl | hn
-  · simp
-  · rw [if_neg hn, if_neg hn]
-    have h2 : ((2 : ℂ)).re = (2 : ℝ) := by simp
-    rw [h2]
-    have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn
-    exact div_le_div_of_nonneg_left (norm_nonneg _) (by positivity)
-      (Real.rpow_le_rpow_of_exponent_le hn1 hs)
-
-open scoped LSeries.notation ArithmeticFunction in
 /-- The Dirichlet-series constant L2 = Sum_n ‖log n * Lambda(n) n^{-2}‖. -/
 def dirConst : ℝ := ∑' n : ℕ, ‖LSeries.term (LSeries.logMul ↗Λ) (2 : ℂ) n‖
 
@@ -430,15 +378,16 @@ lemma norm_deriv_logDeriv_zeta_le {s : ℂ} (hs : 2 ≤ s.re) :
     ‖deriv (logDeriv riemannZeta) s‖ ≤ dirConst := by
   rw [RvMBridge21.deriv_logDeriv_zeta_eq (by linarith)]
   have hsum : Summable (fun n : ℕ => ‖LSeries.term (LSeries.logMul ↗Λ) s n‖) :=
-    summable_dirTerms.of_nonneg_of_le (fun n => norm_nonneg _) (norm_term_le_of_two_le_re _ hs)
+    summable_dirTerms.of_nonneg_of_le (fun n => norm_nonneg _)
+      (RvMBridge21.norm_term_le_of_two_le_re _ hs)
   unfold LSeries
   refine (norm_tsum_le_tsum_norm hsum).trans ?_
-  exact hsum.tsum_le_tsum (norm_term_le_of_two_le_re _ hs) summable_dirTerms
+  exact hsum.tsum_le_tsum (RvMBridge21.norm_term_le_of_two_le_re _ hs) summable_dirTerms
 
 /-- **Obligation (right half-plane) DISCHARGED.** -/
 theorem rightDerivBound : RightDerivBound := by
   refine ⟨1 / 4 + 1 + (1 / 4) * trigConst + dirConst, fun s hs => ?_⟩
-  rw [deriv_logDeriv_xi_of_one_lt_re (by linarith)]
+  rw [RvMBridge21.deriv_logDeriv_xi_of_one_lt_re (by linarith)]
   have hns : 2 ≤ ‖s‖ := hs.trans (Complex.re_le_norm s)
   have hns1 : 1 ≤ ‖s - 1‖ := by
     have := Complex.re_le_norm (s - 1)

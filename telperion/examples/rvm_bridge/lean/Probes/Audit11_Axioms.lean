@@ -26,7 +26,7 @@ import E6Bridge13
 #print axioms RvMBridge11.weilKernel_one_eq
 #print axioms RvMBridge11.norm_weilKernel_zero_le
 #print axioms RvMBridge11.norm_weilKernel_one_le
-#print axioms RvMBridge11.integral_sq_mul_cexp_gaussian_fourier
+#print axioms RvMBridgeGauss.integral_sq_mul_cexp_gaussian_fourier
 #print axioms RvMBridge11.weilKernel_line_eq
 #print axioms RvMBridge11.cpow_pi_div_a
 #print axioms RvMBridge11.weilKernel_autocorrGauss_line

@@ -49,7 +49,7 @@ import E6Bridge17
 #print axioms RvMBridge17.integrable_heatF
 #print axioms RvMBridge17.integral_norm_heatF_le
 #print axioms RvMBridge17.summable_integral_norm_heatF
-#print axioms RvMBridge17.nontrivialZeros_countable
+#print axioms RvMBridgeXi.nontrivialZeros_countable
 #print axioms RvMBridge17.NZ
 #print axioms RvMBridge17.tsum_pterm_NZ
 #print axioms RvMBridge17.tsum_pterm_re_NZ

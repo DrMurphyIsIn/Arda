@@ -44,8 +44,9 @@
         The single-near-zero form (A) is the special case windowSum >= one term.
 
   WHAT IS CONSUMED (all unconditional, #print axioms = [propext, Classical.choice, Quot.sound]):
-    RvMBridge6.zeroSide, gaussTest, summable_gauss_zeroSide, summable_mult_div_one_add_normSq,
-      norm_gaussTest_mul_le                                        (E6Bridge6)
+    RvMBridge6.zeroSide, gaussTest, summable_gauss_zeroSide, norm_gaussTest_mul_le   (E6Bridge6)
+    RvMBridgeGauss.summable_mult_div_one_add_normSq, norm_tsum_subtype_le_mul_tsum,
+      exp_two_mul_le_of_le, winSet, zeroWindow, mem_zeroWindow            (the prelude)
     RvMBridge7.term, phi, wsq, norm_term, re_gaussTest, constB, constB_nonneg   (E6Bridge7)
     RvMBridge4.zeroMult_eq_mult, zeroMult_eq_zero_of_not_nontrivial
     Zeta23.zetaSeam.one_le_mult, Zeta23.WeilEF.gammaOf_re / gammaOf_im / abs_gammaOf_im_lt
@@ -59,6 +60,7 @@
 -/
 import E6Bridge6
 import E6Bridge7
+import RvMBridgeGauss
 
 open Zeta23 Complex MeasureTheory Filter Topology
 open scoped ComplexConjugate
@@ -66,7 +68,7 @@ open scoped ComplexConjugate
 noncomputable section
 
 namespace RvMBridge12
-open WeilExplicit RvMBridge6 RvMBridge7
+open WeilExplicit RvMBridge6 RvMBridge7 RvMBridgeGauss
 
 /-! ## A. Vocabulary: the certified window and the tail weight. -/
 
@@ -80,8 +82,9 @@ lemma windowOnLine_of_all_on_line (h : ∀ ρ : ℂ, IsNontrivialZero ρ → ρ.
     WindowOnLine c D :=
   fun ρ hρ _ => h ρ hρ
 
-/-- The ordinate window as an index set. -/
-def winSet (c D : ℝ) : Set ℂ := {ρ : ℂ | |ρ.im - c| ≤ D}
+/-! The ordinate window winSet c D = {rho | |Im rho - c| <= D} and the certified finite window
+zeroWindow c D (with mem_zeroWindow) live in the prelude RvMBridgeGauss, section E
+(formerly here). -/
 
 /-- E6Bridge7's lam = 1 local-count majorant m(rho) C_1(c)/(1 + |gamma_rho|^2), with
 C_1(c) = e^{1/2} (2 c^2 + 13/4) / (min 1 1)^2; its tsum is constB c definitionally. -/
@@ -231,9 +234,8 @@ lemma norm_term_le_tail {c D : ℝ} (hD : 0 ≤ D) {lam : ℝ} (hlam : 1 ≤ lam
     have hm : (0 : ℝ) ≤ WeilExplicit.zeroMult ρ := Nat.cast_nonneg _
     have hexp : Real.exp (2 * lam * phi c ρ)
         ≤ Real.exp (2 * (lam - 1) * (1 / 4 - D ^ 2)) * Real.exp (2 * 1 * phi c ρ) := by
-      rw [← Real.exp_add]
-      apply Real.exp_le_exp.mpr
-      nlinarith [mul_le_mul_of_nonneg_left hφ (sub_nonneg.mpr hlam)]
+      rw [show (2 : ℝ) * 1 * phi c ρ = 2 * phi c ρ by ring]
+      exact exp_two_mul_le_of_le hlam hφ
     have h1 : (WeilExplicit.zeroMult ρ : ℝ) * wsq c ρ * Real.exp (2 * lam * phi c ρ)
         ≤ Real.exp (2 * (lam - 1) * (1 / 4 - D ^ 2))
           * ((WeilExplicit.zeroMult ρ : ℝ) * wsq c ρ * Real.exp (2 * 1 * phi c ρ)) := by
@@ -269,26 +271,14 @@ lemma norm_term_le_tail {c D : ℝ} (hD : 0 ≤ D) {lam : ℝ} (hlam : 1 ≤ lam
 lemma tail_bound_window {c D : ℝ} (hD : 0 ≤ D) {lam : ℝ} (hlam : 1 ≤ lam) :
     ‖∑' ρ : ↥(winSet c D)ᶜ, term c lam ρ‖
       ≤ Real.exp (2 * (lam - 1) * (1 / 4 - D ^ 2)) * constB c := by
-  set E : ℝ := Real.exp (2 * (lam - 1) * (1 / 4 - D ^ 2)) with hE
-  have hE0 : 0 ≤ E := (Real.exp_pos _).le
-  set S : Set ℂ := (winSet c D)ᶜ with hS
-  have hmaj : ∀ ρ : S, ‖term c lam ρ‖ ≤ E * tailWeight c ρ := by
-    intro ρ
-    have hfar : D < |(ρ : ℂ).im - c| := by
-      have h := ρ.2
-      simp only [hS, winSet, Set.mem_compl_iff, Set.mem_ofPred_eq, not_le] at h
-      exact h
-    exact norm_term_le_tail hD hlam hfar
-  have hsumE : Summable (fun ρ : ℂ => E * tailWeight c ρ) := (summable_tailWeight c).mul_left E
-  have hsumM : Summable (fun ρ : S => E * tailWeight c ρ) := hsumE.subtype S
-  have hsumN : Summable (fun ρ : S => ‖term c lam ρ‖) :=
-    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hmaj hsumM
-  calc ‖∑' ρ : S, term c lam ρ‖
-      ≤ ∑' ρ : S, ‖term c lam ρ‖ := norm_tsum_le_tsum_norm hsumN
-    _ ≤ ∑' ρ : S, E * tailWeight c ρ := hsumN.tsum_le_tsum hmaj hsumM
-    _ ≤ ∑' ρ : ℂ, E * tailWeight c ρ :=
-        hsumE.tsum_subtype_le _ _ (fun ρ => mul_nonneg hE0 (tailWeight_nonneg c ρ))
-    _ = E * constB c := by rw [tsum_mul_left, tsum_tailWeight]
+  rw [← tsum_tailWeight c]
+  refine norm_tsum_subtype_le_mul_tsum (winSet c D)ᶜ (Real.exp_pos _).le (summable_tailWeight c)
+    (tailWeight_nonneg c) fun ρ => ?_
+  have hfar : D < |(ρ : ℂ).im - c| := by
+    have h := ρ.2
+    simp only [winSet, Set.mem_compl_iff, Set.mem_ofPred_eq, not_le] at h
+    exact h
+  exact norm_term_le_tail hD hlam hfar
 
 /-! ## F. The threshold inequality and the assembly. -/
 
@@ -379,26 +369,6 @@ essentially never beats the tail (a zero just inside D against one just outside)
 window sum does, at every centre tested, for lam >= 0.27 (D = 2).  So the honest instrument
 hypothesis is the computable finite inequality  tailEnvelope <= windowSum, evaluated on the
 ladder's certified zeros (a certificate, cross-island), not the existence of one near zero. -/
-
-/-- The nontrivial zeros with |Im rho - c| <= D: finite by the local zero count
-(Zeta23.zetaSeam.finite_window), generalised from E6Bridge7's centre rho_0 to (c, D). -/
-def zeroWindowSet (c D : ℝ) : Set ℂ := {ρ | IsNontrivialZero ρ} ∩ winSet c D
-
-lemma zeroWindowSet_finite (c D : ℝ) : (zeroWindowSet c D).Finite := by
-  refine (zetaSeam.finite_window (c - D - 1) (c + D)).subset ?_
-  rintro ρ ⟨hnt, hw⟩
-  have hw' : |ρ.im - c| ≤ D := hw
-  have h := abs_le.mp hw'
-  exact ⟨hnt, by linarith [h.1], by linarith [h.2]⟩
-
-/-- The certified window as a Finset. -/
-def zeroWindow (c D : ℝ) : Finset ℂ := (zeroWindowSet_finite c D).toFinset
-
-lemma mem_zeroWindow {c D : ℝ} {ρ : ℂ} :
-    ρ ∈ zeroWindow c D ↔ IsNontrivialZero ρ ∧ |ρ.im - c| ≤ D := by
-  unfold zeroWindow
-  rw [Set.Finite.mem_toFinset]
-  rfl
 
 /-- The FINITE certified window sum  Sum_{|Im rho - c| <= D} m(rho) (Im rho - c)^2 e^{-2 lam (Im rho - c)^2}
 (the on-line value of each summand; under WindowOnLine it IS the window part of the zero side). -/

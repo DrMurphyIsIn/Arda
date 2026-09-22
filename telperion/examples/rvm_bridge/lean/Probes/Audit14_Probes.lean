@@ -108,7 +108,7 @@ example (B : ℝ) : ∃ xmin : ℝ, 0 < xmin ∧ (10 ^ 6 : ℝ) ≤ effectiveThr
 #print axioms threshold_example_ge
 
 section AuditProbes
-open Zeta23 Complex RvMBridge6 RvMBridge7 RvMBridge12 RvMBridge14 WeilExplicit
+open Zeta23 Complex RvMBridge6 RvMBridge7 RvMBridge12 RvMBridge14 WeilExplicit RvMBridgeGauss
 
 /- A1. hsep deleted: the competitor step has no spacing bound (expected FAIL). -/
 example {ρ₀ : ℂ} (h₀ : IsNontrivialZero ρ₀) {D xmin : ℝ}

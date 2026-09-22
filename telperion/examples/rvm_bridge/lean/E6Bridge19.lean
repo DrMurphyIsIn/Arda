@@ -38,11 +38,18 @@
   with Li's lambda_n from the generating function to 1e-27 (n = 1..8) and with the first 2000
   zeros + tail to 1e-6 (n = 1..4); lambda_1 = 0.0230957089661... = 1 + gamma/2 - (log 4 pi)/2.
 
+  2026-09-22: the shared xi vocabulary this module had re-proved in parallel with E6Bridge20 (the
+  reflection xi(1-s) = xi(s), xi_eq_zero_iff, the logDeriv antisymmetry and its derivative form,
+  the involution rho -> 1 - rho, the 9/4 strip inequalities, the zeroBound majorant atom, the
+  countable / closed zero set, eq_of_continuousAt_of_eventually_ne) now lives ONCE in the prelude
+  RvMBridgeXi; every node theorem below is unchanged, statement verbatim.
+
   conjecture1_proved = False.  Nothing here says anything about whether RH holds.
 -/
 import E6Bridge15
 import E6Bridge20
 import E6Bridge21
+import RvMBridgeXi
 import Zeta23.RvM.CountByIntegral
 import Zeta23.RvM.GammaSide
 import Zeta23.GammaFacts.Series
@@ -55,32 +62,11 @@ noncomputable section
 namespace RvMBridge19
 open WeilExplicit RvMBridge15 RvMBridge15.BombieriLagarias
 open RvMBridge18 (xi xi_differentiable xi_eq XiLogDerivDerivEq)
+open RvMBridgeXi
 
-/-! ## 0. xi (= RvMBridge18.xi, entire, = s(s-1)/2 Lambda(s) off {0, 1}), the partial-fraction
-Props, the real-segment Prop. -/
-
-theorem xi_one_sub (s : ℂ) : xi (1 - s) = xi s := by
-  unfold xi
-  rw [completedRiemannZeta₀_one_sub]
-  ring
-
-lemma xi_zero : xi 0 = 1 / 2 := by simp [xi]
-lemma xi_one : xi 1 = 1 / 2 := by simp [xi]
-
-lemma xi_analyticAt (s : ℂ) : AnalyticAt ℂ xi s :=
-  xi_differentiable.analyticAt s
-
-/-- xi vanishes exactly at the nontrivial zeros. -/
-theorem xi_eq_zero_iff (s : ℂ) : xi s = 0 ↔ IsNontrivialZero s := by
-  by_cases hs0 : s = 0
-  · subst hs0; simp [xi_zero, IsNontrivialZero]
-  by_cases hs1 : s = 1
-  · subst hs1; simp [xi_one, IsNontrivialZero]
-  rw [xi_eq s hs0 hs1, mul_eq_zero, ← RvM.completedRiemannZeta_eq_zero_iff]
-  have : s * (s - 1) / 2 ≠ 0 := by
-    have := sub_ne_zero.mpr hs1
-    simp [hs0, this]
-  simp [this]
+/-! ## 0. xi (= RvMBridge18.xi, entire, = s(s-1)/2 Lambda(s) off {0, 1}; its reflection, values at
+0 and 1, analyticity and zero set are the prelude's RvMBridgeXi.xi_one_sub / xi_zero / xi_one /
+xi_analyticAt / xi_eq_zero_iff), the partial-fraction Props, the real-segment Prop. -/
 
 /-- The analytic heart is RvMBridge18.XiLogDerivDerivEq (xi form): for every s that is not a
 nontrivial zero, deriv (logDeriv xi) s = -Sum' m(rho)/(s - rho)^2.  Restated here for the record. -/
@@ -99,38 +85,9 @@ def NoRealZeroInUnitInterval : Prop := ∀ σ : ℝ, 0 < σ → σ < 1 → riema
 /-! ## 1. Generic machinery: summability over the zeros by a local-count majorant, and
 term-by-term iterated differentiation of a series on a ball. -/
 
-/-- The finitely many nontrivial zeros with |Im rho| < 1. -/
-def smallZeros : Set ℂ := {ρ : ℂ | IsNontrivialZero ρ} ∩ {ρ : ℂ | |ρ.im| < 1}
-
-lemma smallZeros_finite : smallZeros.Finite := RvMBridge15.finite_zeros_small
-
-/-- The summable majorant shape: a finite-support part on the small zeros plus the local-count
-majorant m(rho) C/(1 + |gamma_rho|^2). -/
-def zeroBound (C : ℝ) (b : ℂ → ℝ) (ρ : ℂ) : ℝ :=
-  smallZeros.indicator b ρ + (WeilExplicit.zeroMult ρ : ℝ) * (C / (1 + Complex.normSq (gammaOf ρ)))
-
-lemma summable_zeroBound (C : ℝ) (b : ℂ → ℝ) : Summable (zeroBound C b) := by
-  unfold zeroBound
-  refine Summable.add ?_ (RvMBridge6.summable_mult_div_one_add_normSq C)
-  refine summable_of_ne_finset_zero (s := smallZeros_finite.toFinset) fun ρ hρ => ?_
-  rw [Set.Finite.mem_toFinset] at hρ
-  exact Set.indicator_of_notMem hρ _
-
-/-- On a nontrivial zero with |Im rho| >= 1: 1/|rho|^2 <= (9/4)/(1 + |gamma_rho|^2). -/
-lemma inv_normSq_le_majorant {ρ : ℂ} (h : IsNontrivialZero ρ) (him : 1 ≤ |ρ.im|) :
-    1 / Complex.normSq ρ ≤ (9 / 4) / (1 + Complex.normSq (gammaOf ρ)) := by
-  have hns : Complex.normSq ρ = ρ.re ^ 2 + ρ.im ^ 2 := by
-    rw [Complex.normSq_apply]; ring
-  have hγ : Complex.normSq (gammaOf ρ) = ρ.im ^ 2 + (1 / 2 - ρ.re) ^ 2 := by
-    rw [Complex.normSq_apply, Zeta23.WeilEF.gammaOf_re, Zeta23.WeilEF.gammaOf_im]; ring
-  have him2 : 1 ≤ ρ.im ^ 2 := by
-    have := sq_abs ρ.im
-    nlinarith [abs_nonneg ρ.im]
-  have hre := h.2.1
-  have hre1 := h.2.2
-  rw [div_le_div_iff₀ (by rw [hns]; positivity) (by linarith [Complex.normSq_nonneg (gammaOf ρ)])]
-  rw [hns, hγ]
-  nlinarith
+/-! The majorant atom (smallZeros, smallZeros_finite, zeroBound, summable_zeroBound,
+norm_le_zeroBound, summable_of_zeroBound) and the strip inequalities inv_normSq_le_majorant /
+inv_im_sq_le_majorant are the prelude's (RvMBridgeXi), statements unchanged. -/
 
 lemma one_le_norm_of_nontrivial {ρ : ℂ} (him : 1 ≤ |ρ.im|) : 1 ≤ ‖ρ‖ :=
   him.trans (Complex.abs_im_le_norm ρ)
@@ -141,38 +98,6 @@ lemma norm_pos_of_nontrivial {ρ : ℂ} (h : IsNontrivialZero ρ) : 0 < ‖ρ‖
   have := h.2.1
   rw [h0, Complex.zero_re] at this
   exact lt_irrefl _ this
-
-/-- A family vanishing off the zeros, bounded by the local-count majorant on the large zeros,
-is bounded by a zeroBound (with b any bound valid on the small zeros). -/
-lemma norm_le_zeroBound {f : ℂ → ℂ} {C : ℝ} {b : ℂ → ℝ}
-    (h0 : ∀ ρ, ¬ IsNontrivialZero ρ → f ρ = 0)
-    (hsmall : ∀ ρ, IsNontrivialZero ρ → |ρ.im| < 1 → ‖f ρ‖ ≤ b ρ)
-    (hlarge : ∀ ρ, IsNontrivialZero ρ → 1 ≤ |ρ.im| →
-      ‖f ρ‖ ≤ (WeilExplicit.zeroMult ρ : ℝ) * (C / (1 + Complex.normSq (gammaOf ρ))))
-    (hC : 0 ≤ C) (ρ : ℂ) : ‖f ρ‖ ≤ zeroBound C b ρ := by
-  unfold zeroBound
-  have hpos : 0 ≤ (WeilExplicit.zeroMult ρ : ℝ) * (C / (1 + Complex.normSq (gammaOf ρ))) := by
-    have := Complex.normSq_nonneg (gammaOf ρ)
-    positivity
-  by_cases h : IsNontrivialZero ρ
-  · by_cases him : |ρ.im| < 1
-    · rw [Set.indicator_of_mem (show ρ ∈ smallZeros from ⟨h, him⟩)]
-      linarith [hsmall ρ h him]
-    · rw [Set.indicator_of_notMem (fun hm => him hm.2), zero_add]
-      exact hlarge ρ h (not_lt.mp him)
-  · rw [h0 ρ h, norm_zero]
-    have hb : 0 ≤ smallZeros.indicator b ρ := by
-      rw [Set.indicator_of_notMem (fun hm => h hm.1)]
-    linarith
-
-/-- Summability of a zero family from the majorant. -/
-lemma summable_of_zeroBound {f : ℂ → ℂ} {C : ℝ} {b : ℂ → ℝ}
-    (h0 : ∀ ρ, ¬ IsNontrivialZero ρ → f ρ = 0)
-    (hsmall : ∀ ρ, IsNontrivialZero ρ → |ρ.im| < 1 → ‖f ρ‖ ≤ b ρ)
-    (hlarge : ∀ ρ, IsNontrivialZero ρ → 1 ≤ |ρ.im| →
-      ‖f ρ‖ ≤ (WeilExplicit.zeroMult ρ : ℝ) * (C / (1 + Complex.normSq (gammaOf ρ))))
-    (hC : 0 ≤ C) : Summable f :=
-  Summable.of_norm_bounded (summable_zeroBound C b) (norm_le_zeroBound h0 hsmall hlarge hC)
 
 /-- Term-by-term iterated differentiation of a series on a ball: if g (k+1) i is the derivative
 of g k i on the ball with summable uniform bounds u k, then the k-th derivative of the sum of the
@@ -506,29 +431,8 @@ theorem pairedPowerSum_eq_powerSum {j : ℕ} (hj : 2 ≤ j) : pairedPowerSum j =
     push_cast; ring
   rw [h1, powerSum_re]
 
-/-- The antisymmetry logDeriv xi (1 - s) = -logDeriv xi s, everywhere (xi entire, xi(1-s) = xi(s)). -/
-theorem logDeriv_xi_one_sub (s : ℂ) : logDeriv xi (1 - s) = -logDeriv xi s := by
-  have hcomp : xi = xi ∘ (fun u : ℂ => 1 - u) := by
-    funext u; simp [Function.comp, xi_one_sub]
-  have hd : DifferentiableAt ℂ xi (1 - s) := xi_differentiable _
-  have hg : DifferentiableAt ℂ (fun u : ℂ => 1 - u) s :=
-    (differentiableAt_const _).sub differentiableAt_id
-  have key := logDeriv_comp (x := s) hd hg
-  rw [← hcomp] at key
-  have hderiv : deriv (fun u : ℂ => 1 - u) s = -1 := by
-    rw [deriv_const_sub, deriv_id'']
-  rw [key, hderiv]
-  ring
-
-lemma logDeriv_xi_eq : logDeriv xi = fun z => deriv xi z / xi z := funext (logDeriv_apply xi)
-
-lemma logDeriv_xi_analyticAt {s : ℂ} (h : xi s ≠ 0) : AnalyticAt ℂ (logDeriv xi) s := by
-  rw [logDeriv_xi_eq]
-  exact (xi_analyticAt s).deriv.div (xi_analyticAt s) h
-
-lemma hasDerivAt_logDeriv_xi {s : ℂ} (h : xi s ≠ 0) :
-    HasDerivAt (logDeriv xi) (deriv (logDeriv xi) s) s :=
-  (logDeriv_xi_analyticAt h).differentiableAt.hasDerivAt
+/-! The antisymmetry logDeriv_xi_one_sub and the analyticity logDeriv_xi_analyticAt /
+hasDerivAt_logDeriv_xi are the prelude's (RvMBridgeXi). -/
 
 /-- Under NoRealZeroInUnitInterval, xi does not vanish on the real segment [0, 1]. -/
 lemma xi_ne_zero_on_segment (hR : NoRealZeroInUnitInterval) (σ : ℝ) :
@@ -567,20 +471,6 @@ lemma norm_zterm_zero_ofReal_le {ρ : ℂ} (hρ : ρ.im ≠ 0) (σ : ℝ) :
     exact pow_le_pow_left₀ (abs_nonneg _) h1 2
   have h3 : 0 < ρ.im ^ 2 := by positivity
   exact div_le_div_of_nonneg_left (Nat.cast_nonneg _) h3 h2
-
-/-- 1/(Im rho)^2 <= (9/4)/(1 + |gamma_rho|^2) on a large zero. -/
-lemma inv_im_sq_le_majorant {ρ : ℂ} (h : IsNontrivialZero ρ) (him : 1 ≤ |ρ.im|) :
-    1 / ρ.im ^ 2 ≤ (9 / 4) / (1 + Complex.normSq (gammaOf ρ)) := by
-  have hγ : Complex.normSq (gammaOf ρ) = ρ.im ^ 2 + (1 / 2 - ρ.re) ^ 2 := by
-    rw [Complex.normSq_apply, Zeta23.WeilEF.gammaOf_re, Zeta23.WeilEF.gammaOf_im]; ring
-  have him2 : 1 ≤ ρ.im ^ 2 := by
-    have := sq_abs ρ.im
-    nlinarith [abs_nonneg ρ.im]
-  have hre := h.2.1
-  have hre1 := h.2.2
-  rw [div_le_div_iff₀ (by positivity) (by linarith [Complex.normSq_nonneg (gammaOf ρ)])]
-  rw [hγ]
-  nlinarith
 
 /-- The summable bound for the segment interchange. -/
 def segBound : ℂ → ℝ := zeroBound (9 / 4) (fun ρ => (WeilExplicit.zeroMult ρ : ℝ) / ρ.im ^ 2)
@@ -638,21 +528,6 @@ lemma integral_zterm_zero (hR : NoRealZeroInUnitInterval) (ρ : ℂ) :
   · simp only [zterm_eq_zero_of_not_nontrivial h, RvMBridge4.zeroMult_eq_zero_of_not_nontrivial h]
     simp
 
-/-- The nontrivial zeros form a countable set (a countable union of finite windows). -/
-lemma zeros_countable : {ρ : ℂ | IsNontrivialZero ρ}.Countable := by
-  have h : {ρ : ℂ | IsNontrivialZero ρ}
-      = ⋃ n : ℕ, ({ρ : ℂ | IsNontrivialZero ρ} ∩ {ρ : ℂ | |ρ.im| ≤ (n : ℝ)}) := by
-    ext ρ
-    simp only [Set.mem_iUnion, Set.mem_inter_iff, Set.mem_ofPred_eq]
-    constructor
-    · intro hρ
-      obtain ⟨n, hn⟩ := exists_nat_ge |ρ.im|
-      exact ⟨n, hρ, hn⟩
-    · rintro ⟨n, hρ, _⟩
-      exact hρ
-  rw [h]
-  exact Set.countable_iUnion fun n => (RvMBridge15.finite_zeros_window (n : ℝ)).countable
-
 lemma support_zterm_subset (k : ℕ) (s : ℂ) :
     Function.support (fun ρ : ℂ => zterm k ρ s) ⊆ {ρ : ℂ | IsNontrivialZero ρ} := by
   intro ρ hρ
@@ -666,7 +541,7 @@ lemma hasSum_integral_zterm (hR : NoRealZeroInUnitInterval) :
     HasSum (fun ρ : ℂ => ∫ σ in (0 : ℝ)..1, zterm 0 ρ σ)
       (∫ σ in (0 : ℝ)..1, ∑' ρ : ℂ, zterm 0 ρ σ) := by
   set Z : Set ℂ := {ρ : ℂ | IsNontrivialZero ρ} with hZ
-  have : Countable Z := zeros_countable.to_subtype
+  have : Countable Z := nontrivialZeros_countable.to_subtype
   have hsupp : Function.support (fun ρ : ℂ => ∫ σ in (0 : ℝ)..1, zterm 0 ρ σ) ⊆ Z := by
     intro ρ hρ
     by_contra h
@@ -1197,17 +1072,7 @@ theorem logDeriv_xi_eventuallyEq_one : logDeriv xi =ᶠ[𝓝 (1 : ℂ)] closedFn
   have hL : ContinuousAt (logDeriv xi) 1 :=
     (logDeriv_xi_analyticAt (by rw [xi_one]; norm_num)).continuousAt
   have hR : ContinuousAt closedFn 1 := closedFn_analyticAt.continuousAt
-  have hat : logDeriv xi 1 = closedFn 1 := by
-    have h1 : Tendsto (logDeriv xi) (𝓝[≠] 1) (𝓝 (logDeriv xi 1)) :=
-      hL.tendsto.mono_left nhdsWithin_le_nhds
-    have h2 : Tendsto closedFn (𝓝[≠] 1) (𝓝 (closedFn 1)) :=
-      hR.tendsto.mono_left nhdsWithin_le_nhds
-    have h3 : Tendsto (logDeriv xi) (𝓝[≠] 1) (𝓝 (closedFn 1)) := by
-      refine h2.congr' ?_
-      rw [Filter.EventuallyEq, eventually_nhdsWithin_iff]
-      filter_upwards [hpunct] with s hs hs1
-      exact (hs hs1).symm
-    exact tendsto_nhds_unique h1 h3
+  have hat : logDeriv xi 1 = closedFn 1 := eq_of_continuousAt_of_eventually_ne hL hR hpunct
   filter_upwards [hpunct] with s hs
   by_cases hs1 : s = 1
   · rw [hs1]; exact hat
@@ -1398,12 +1263,6 @@ theorem bl_explicit_formula_of_partialFraction (hP : XiLogDerivDerivEq)
 
 /-! ## 6. The Lambda form of the partial fraction is equivalent to the xi form. -/
 
-lemma zeroSet_closed : IsClosed {s : ℂ | IsNontrivialZero s} := by
-  have h : {s : ℂ | IsNontrivialZero s} = xi ⁻¹' {0} := by
-    ext s; simp [xi_eq_zero_iff]
-  rw [h]
-  exact isClosed_singleton.preimage xi_differentiable.continuous
-
 /-- Off {0, 1} and off the zeros: logDeriv xi = 1/s + 1/(s-1) + logDeriv Lambda. -/
 lemma logDeriv_xi_eq_lambda {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) (hz : ¬ IsNontrivialZero s) :
     logDeriv xi s = 1 / s + 1 / (s - 1) + logDeriv completedRiemannZeta s := by
@@ -1432,7 +1291,7 @@ lemma logDeriv_xi_eq_lambda {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) (hz : ¬ I
 lemma logDeriv_xi_eventuallyEq_lambda {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) (hz : ¬ IsNontrivialZero s) :
     logDeriv xi =ᶠ[𝓝 s] fun u => 1 / u + 1 / (u - 1) + logDeriv completedRiemannZeta u := by
   have hopen : IsOpen (({0, 1} : Set ℂ)ᶜ ∩ {u : ℂ | IsNontrivialZero u}ᶜ) :=
-    (Set.toFinite _).isClosed.isOpen_compl.inter zeroSet_closed.isOpen_compl
+    (Set.toFinite _).isClosed.isOpen_compl.inter isClosed_zeros.isOpen_compl
   filter_upwards [hopen.mem_nhds ⟨by simp [hs0, hs1], hz⟩] with u hu
   obtain ⟨hu, huz⟩ := hu
   simp only [Set.mem_compl_iff, Set.mem_insert_iff, Set.mem_singleton_iff, not_or] at hu
@@ -1476,52 +1335,8 @@ theorem lambdaDerivPartialFraction_of_xi (h : XiLogDerivDerivEq) : LambdaDerivPa
   intro s hs0 hs1 hz
   rw [deriv_logDeriv_lambda_eq hs0 hs1 hz, h s hz]
 
-/-- Agreement on a punctured neighbourhood plus continuity at the point gives agreement at the point. -/
-lemma eq_of_continuousAt_of_eventually_ne {f g : ℂ → ℂ} {a : ℂ} (hf : ContinuousAt f a)
-    (hg : ContinuousAt g a) (h : ∀ᶠ z in 𝓝 a, z ≠ a → f z = g z) : f a = g a := by
-  have h1 : Tendsto f (𝓝[≠] a) (𝓝 (f a)) := hf.tendsto.mono_left nhdsWithin_le_nhds
-  have h2 : Tendsto g (𝓝[≠] a) (𝓝 (g a)) := hg.tendsto.mono_left nhdsWithin_le_nhds
-  have h3 : Tendsto f (𝓝[≠] a) (𝓝 (g a)) := by
-    refine h2.congr' ?_
-    rw [Filter.EventuallyEq, eventually_nhdsWithin_iff]
-    filter_upwards [h] with z hz hza
-    exact (hz hza).symm
-  exact tendsto_nhds_unique h1 h3
-
-/-- The map u -> 1 - u as an involutive equivalence. -/
-def oneSubEquiv : ℂ ≃ ℂ where
-  toFun u := 1 - u
-  invFun u := 1 - u
-  left_inv u := by simp
-  right_inv u := by simp
-
-lemma zeroMult_one_sub (ρ : ℂ) : WeilExplicit.zeroMult (1 - ρ) = WeilExplicit.zeroMult ρ := by
-  have h : (1 - ρ) = reflect (conj ρ) := by
-    unfold reflect; rw [Complex.conj_conj]
-  rw [h, RvMBridge6.zeroMult_reflect, RvMBridge15.zeroMult_conj]
-
-/-- The zero series is symmetric under s -> 1 - s. -/
-lemma tsum_zero_series_one_sub (s : ℂ) :
-    ∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℂ) / ((1 - s) - ρ) ^ 2
-      = ∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℂ) / (s - ρ) ^ 2 := by
-  rw [← oneSubEquiv.tsum_eq (fun ρ => (WeilExplicit.zeroMult ρ : ℂ) / ((1 - s) - ρ) ^ 2)]
-  refine tsum_congr fun ρ => ?_
-  simp only [oneSubEquiv, Equiv.coe_fn_mk, zeroMult_one_sub]
-  congr 1
-  ring
-
-/-- deriv (logDeriv xi) is symmetric under s -> 1 - s off the zeros. -/
-lemma deriv_logDeriv_xi_one_sub {s : ℂ} (hz : ¬ IsNontrivialZero s) :
-    deriv (logDeriv xi) (1 - s) = deriv (logDeriv xi) s := by
-  have hx : xi (1 - s) ≠ 0 := by rw [xi_one_sub, Ne, xi_eq_zero_iff]; exact hz
-  have hcomp : HasDerivAt (fun u => logDeriv xi (1 - u)) (deriv (logDeriv xi) (1 - s) * (0 - 1)) s :=
-    (hasDerivAt_logDeriv_xi hx).comp s ((hasDerivAt_const s (1 : ℂ)).sub (hasDerivAt_id s))
-  have h : HasDerivAt (logDeriv xi) (-(deriv (logDeriv xi) (1 - s) * (0 - 1))) s := by
-    refine hcomp.neg.congr_of_eventuallyEq (Filter.Eventually.of_forall fun u => ?_)
-    show logDeriv xi u = -logDeriv xi (1 - u)
-    rw [logDeriv_xi_one_sub, neg_neg]
-  rw [h.deriv]
-  ring
+/-! eq_of_continuousAt_of_eventually_ne, oneSubEquiv, zeroMult_one_sub, tsum_zero_series_one_sub
+and deriv_logDeriv_xi_one_sub are the prelude's (RvMBridgeXi). -/
 
 /-- Lambda form implies xi form: off {0,1} by the pole bookkeeping; at 0 and 1 by continuity
 (both sides analytic there) and the s -> 1 - s symmetry. -/

@@ -1,6 +1,6 @@
 /- Audit probes for E6Bridge12 section G (dominance form). -/
 import E6Bridge12
-open Zeta23 Complex MeasureTheory Filter Topology RvMBridge6 RvMBridge7 RvMBridge12 WeilExplicit
+open Zeta23 Complex MeasureTheory Filter Topology RvMBridge6 RvMBridge7 RvMBridge12 WeilExplicit RvMBridgeGauss
 
 /- 1. The finite_window bounds (c - D - 1, c + D] cover |Im ρ - c| ≤ D for ANY real c, D ≥ 0,
    negative ordinates included; and the finiteness lemma is general in (T₁, T₂) (expected SUCCESS). -/

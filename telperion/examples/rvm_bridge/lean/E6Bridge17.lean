@@ -23,10 +23,16 @@
         rh_iff_thetaFree_all;  not_thetaFree_of_offline: an off-line zero gives Lambda with
         not ThetaFree lam for EVERY lam > Lambda (one negative width from (1) plus (2)).
 
+  2026-09-22: the countability of the zero set (formerly nontrivialZeros_countable here, re-proved
+  as zeros_countable in E6Bridge19) and the finite-avoidance radius are the prelude's
+  (RvMBridgeXi.nontrivialZeros_countable / exists_mem_Ioo_notMem_finset); the node theorems here
+  are unchanged, statements verbatim.
+
   conjecture1_proved = False.  RH <-> Lambda_Theta = infinity where Lambda_Theta := sup of the free
   widths; certified widths bound Lambda_Theta from below and that is a wall, not a crossing.
 -/
 import E6Bridge14
+import RvMBridgeXi
 import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
 import Mathlib.MeasureTheory.Constructions.Polish.Basic
 
@@ -36,7 +42,7 @@ open scoped ComplexConjugate
 noncomputable section
 
 namespace RvMBridge17
-open WeilExplicit RvMBridge6 RvMBridge7 RvMBridge12 RvMBridge14
+open WeilExplicit RvMBridge6 RvMBridge7 RvMBridge12 RvMBridge14 RvMBridgeGauss
 
 /-! ## A. The plain Gaussian face. -/
 
@@ -251,15 +257,12 @@ def badSet' (ρ₀ : ℂ) : Finset ℝ := badSet ρ₀ ∪ (window ρ₀).image 
 lemma exists_generic_centre' {ρ₀ : ℂ} (h₀ : ρ₀.re ≠ 1 / 2) :
     ∃ c : ℝ, |c - ρ₀.im| < |1 / 2 - ρ₀.re| ∧ c ∉ badSet ρ₀ ∧ ∀ ρ ∈ window ρ₀, ρ.im ≠ c := by
   have hy : 0 < |1 / 2 - ρ₀.re| := abs_pos.mpr (sub_ne_zero.mpr (Ne.symm h₀))
-  have hinf : (Set.Ioo (ρ₀.im - |1 / 2 - ρ₀.re|) (ρ₀.im + |1 / 2 - ρ₀.re|)).Infinite :=
-    Set.Ioo_infinite (by linarith)
-  obtain ⟨c, hc⟩ := (hinf.sdiff (badSet' ρ₀).finite_toSet).nonempty
-  have hnot : c ∉ badSet' ρ₀ := by simpa using hc.2
+  obtain ⟨c, hc, hnot⟩ := RvMBridgeXi.exists_mem_Ioo_notMem_finset
+    (show ρ₀.im - |1 / 2 - ρ₀.re| < ρ₀.im + |1 / 2 - ρ₀.re| by linarith) (badSet' ρ₀)
   refine ⟨c, ?_, fun h => hnot (Finset.mem_union_left _ h), fun ρ hρ h => hnot ?_⟩
-  · have := hc.1
-    rw [Set.mem_Ioo] at this
+  · rw [Set.mem_Ioo] at hc
     rw [abs_lt]
-    constructor <;> linarith [this.1, this.2]
+    constructor <;> linarith [hc.1, hc.2]
   · exact Finset.mem_union_right _ (Finset.mem_image.mpr ⟨ρ, hρ, h⟩)
 
 /-- The plain majorant (E6Bridge7's majorant without the |w|^2 factor), lam = 1 tail constant. -/
@@ -352,20 +355,10 @@ lemma ptail_bound {ρ₀ : ℂ} {c : ℝ} (hc : |c - ρ₀.im| < 1 / 2) {ρ₁ :
     {lam : ℝ} (hlam : 1 ≤ lam) :
     ‖∑' ρ : {ρ : ℂ // ρ ≠ ρ₁ ∧ ρ ≠ reflect ρ₁}, pterm c lam ρ‖
       ≤ Real.exp (2 * lam * (phi c ρ₁ - η)) * pconstA ρ₀ + pconstB c := by
-  set S : Set ℂ := {ρ : ℂ | ρ ≠ ρ₁ ∧ ρ ≠ reflect ρ₁} with hS
-  have hmaj : ∀ ρ : S, ‖pterm c lam ρ‖ ≤ pmajorant ρ₀ c (phi c ρ₁) η lam ρ :=
+  rw [← tsum_pmajorant ρ₀ c (phi c ρ₁) η lam]
+  exact norm_tsum_subtype_le_tsum {ρ : ℂ | ρ ≠ ρ₁ ∧ ρ ≠ reflect ρ₁}
+    (summable_pmajorant ρ₀ c (phi c ρ₁) η lam) (pmajorant_nonneg ρ₀ c (phi c ρ₁) η lam)
     fun ρ => norm_pterm_le_pmajorant hc hgap hlam ρ.2.1 ρ.2.2
-  have hsumM : Summable (fun ρ : S => pmajorant ρ₀ c (phi c ρ₁) η lam ρ) :=
-    (summable_pmajorant ρ₀ c (phi c ρ₁) η lam).subtype _
-  have hsumN : Summable (fun ρ : S => ‖pterm c lam ρ‖) :=
-    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hmaj hsumM
-  calc ‖∑' ρ : S, pterm c lam ρ‖
-      ≤ ∑' ρ : S, ‖pterm c lam ρ‖ := norm_tsum_le_tsum_norm hsumN
-    _ ≤ ∑' ρ : S, pmajorant ρ₀ c (phi c ρ₁) η lam ρ := hsumN.tsum_le_tsum hmaj hsumM
-    _ ≤ ∑' ρ : ℂ, pmajorant ρ₀ c (phi c ρ₁) η lam ρ :=
-        (summable_pmajorant ρ₀ c (phi c ρ₁) η lam).tsum_subtype_le _ _
-          (pmajorant_nonneg ρ₀ c (phi c ρ₁) η lam)
-    _ = _ := tsum_pmajorant ρ₀ c (phi c ρ₁) η lam
 
 /-- Theta = pair term + tail, bounded above. -/
 lemma theta_le_pair_add_tail {ρ₀ : ℂ} {c : ℝ} (hc : |c - ρ₀.im| < 1 / 2) {ρ₁ : ℂ}
@@ -782,24 +775,11 @@ lemma summable_integral_norm_heatF {lam' lam : ℝ} (h0 : 0 < lam') (hlt : lam' 
   · rw [RvMBridge4.zeroMult_eq_zero_of_not_nontrivial hnt]
     simp
 
-/-- The nontrivial zeros form a countable set (a countable union of finite windows). -/
-lemma nontrivialZeros_countable : ({ρ : ℂ | IsNontrivialZero ρ}).Countable := by
-  have : {ρ : ℂ | IsNontrivialZero ρ}
-      = ⋃ n : ℤ, ({ρ : ℂ | IsNontrivialZero ρ} ∩ {ρ : ℂ | (n : ℝ) < ρ.im ∧ ρ.im ≤ n + 1}) := by
-    ext ρ
-    simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_inter_iff]
-    constructor
-    · intro h
-      exact ⟨Zeta23.WeilEF.key ρ.im, h, Zeta23.WeilEF.key_lt _, Zeta23.WeilEF.le_key_add_one _⟩
-    · rintro ⟨n, h, _⟩
-      exact h
-  rw [this]
-  exact Set.countable_iUnion fun n => (zetaSeam.finite_window n (n + 1)).countable
-
-/-- The nontrivial zeros as a (countable) index type for the zero sums. -/
+/-- The nontrivial zeros as a (countable) index type for the zero sums (countability:
+the prelude's RvMBridgeXi.nontrivialZeros_countable). -/
 def NZ : Set ℂ := {ρ : ℂ | IsNontrivialZero ρ}
 
-instance : Countable NZ := nontrivialZeros_countable.to_subtype
+instance : Countable NZ := RvMBridgeXi.nontrivialZeros_countable.to_subtype
 
 lemma tsum_pterm_NZ (c lam : ℝ) : ∑' ρ : NZ, pterm c lam ρ = ∑' ρ : ℂ, pterm c lam ρ :=
   tsum_subtype_eq_of_support_subset fun ρ hρ => by

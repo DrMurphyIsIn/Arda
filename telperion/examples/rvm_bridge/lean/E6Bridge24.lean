@@ -28,9 +28,15 @@
         the target equals xiDiffExt s - Sum_{rho ∉ window s} m/(s - rho)^2, bounded by the compact
         bound of xiDiffExt and E6Bridge22's far-sum comparison; no Landau needed.
 
+  2026-09-22: the closed zero set (isClosed_zeros / eventually_not_zero), the local unit factor
+  computation behind logDeriv_xi_local, the punctured-limit extension atom behind
+  FwinExt_eventuallyEq_at_zero, the finite-avoidance radius and the rectangle bound are the
+  prelude's (RvMBridgeXi); every node theorem here is unchanged, statement verbatim.
+
   conjecture1_proved = False.  Nothing here bears on RH.
 -/
 import E6Bridge22
+import RvMBridgeXi
 import Zeta23.WeilEF.Landau
 import Zeta23.GammaFacts.StirlingVert
 import Zeta23.RvM.GammaSide
@@ -41,7 +47,7 @@ open scoped ComplexConjugate
 noncomputable section
 
 namespace RvMBridge24
-open WeilExplicit RvMBridge18 RvMBridge20 RvMBridge22
+open WeilExplicit RvMBridge18 RvMBridge20 RvMBridge22 RvMBridgeXi
 
 /-! ## A. The window count from the local zero count. -/
 
@@ -294,19 +300,9 @@ lemma FwinExt_eq {s w : ℂ} (hw : ¬ IsNontrivialZero w) : FwinExt s w = Fwin s
   unfold FwinExt
   rw [if_neg hw]
 
-/-- The zero set is closed. -/
-lemma isClosed_zeros : IsClosed {w : ℂ | IsNontrivialZero w} := by
-  have : {w : ℂ | IsNontrivialZero w} = xi ⁻¹' {0} := by
-    ext w
-    simp [xi_eq_zero_iff]
-  rw [this]
-  exact isClosed_singleton.preimage xi_differentiable.continuous
+/-! The zero set is closed: isClosed_zeros / eventually_not_zero are the prelude's (RvMBridgeXi). -/
 
-lemma eventually_not_zero {w₀ : ℂ} (h : ¬ IsNontrivialZero w₀) :
-    ∀ᶠ w in 𝓝 w₀, ¬ IsNontrivialZero w :=
-  isClosed_zeros.isOpen_compl.mem_nhds (show w₀ ∈ {w : ℂ | IsNontrivialZero w}ᶜ from h)
-
-/-- The local form of logDeriv xi at s₀ (as in E6Bridge20). -/
+/-- The local form of logDeriv xi at s₀ (E6Bridge20's unit factor, the prelude's computation). -/
 lemma logDeriv_xi_local (s₀ : ℂ) : ∃ ε > 0, ∃ u : ℂ → ℂ,
     (∀ z ∈ ball s₀ ε, AnalyticAt ℂ u z ∧ u z ≠ 0) ∧
     ∀ z ∈ ball s₀ ε, z ≠ s₀ →
@@ -316,22 +312,8 @@ lemma logDeriv_xi_local (s₀ : ℂ) : ∃ ε > 0, ∃ u : ℂ → ℂ,
       AnalyticAt ℂ u z ∧ u z ≠ 0 :=
     hxu.and (hu.eventually_analyticAt.and (hu.continuousAt.eventually_ne hu0))
   obtain ⟨ε, hε, hεall⟩ := Metric.eventually_nhds_iff.mp hall
-  refine ⟨ε, hε, u, fun z hz => (hεall (mem_ball.mp hz)).2, fun z hz hne => ?_⟩
-  set m := WeilExplicit.zeroMult s₀
-  have hzball : dist z s₀ < ε := mem_ball.mp hz
-  have hz0 : z - s₀ ≠ 0 := sub_ne_zero.mpr hne
-  have hev : xi =ᶠ[𝓝 z] fun y => (y - s₀) ^ m * u y := by
-    have hball : ∀ᶠ y in 𝓝 z, dist y s₀ < ε :=
-      isOpen_ball.mem_nhds (show z ∈ ball s₀ ε from hzball)
-    filter_upwards [hball] with y hy
-    exact (hεall hy).1
-  rw [logDeriv_apply, hev.deriv_eq, hev.eq_of_nhds, ← logDeriv_apply]
-  rw [logDeriv_mul (f := fun y => (y - s₀) ^ m) (g := u) z (pow_ne_zero _ hz0) (hεall hzball).2.2
-    ((differentiableAt_id.sub_const s₀).pow m) (hεall hzball).2.1.differentiableAt]
-  congr 1
-  rw [logDeriv_fun_pow (f := fun y => y - s₀) (differentiableAt_id.sub_const s₀) m, logDeriv_apply]
-  rw [deriv_sub_const, deriv_id'']
-  ring
+  exact ⟨ε, hε, u, fun z hz => (hεall (mem_ball.mp hz)).2, fun z hz hne =>
+    logDeriv_of_unit_factor hεall (mem_ball.mp hz) hne⟩
 
 lemma Fwin_differentiableAt {s w₀ : ℂ} (hw₀ : ¬ IsNontrivialZero w₀) :
     DifferentiableAt ℂ (Fwin s) w₀ := by
@@ -416,20 +398,9 @@ lemma FwinExt_eventuallyEq_at_zero {s w₀ : ℂ} (hw₀ : IsNontrivialZero w₀
       (div_eq_mul_inv _ _).symm
     rw [this]
     ring
-  refine ⟨H, hHdiff, ?_⟩
-  filter_upwards [isOpen_ball.mem_nhds (Metric.mem_ball_self hr0)] with z hz
-  by_cases hne : z = w₀
-  · subst hne
-    unfold FwinExt
-    rw [if_pos hw₀]
-    apply Filter.Tendsto.limUnder_eq
-    have h1 : Tendsto H (𝓝[≠] z) (𝓝 (H z)) := hHdiff.continuousAt.continuousWithinAt.tendsto
-    refine h1.congr' ?_
-    rw [Filter.EventuallyEq, eventually_nhdsWithin_iff]
-    filter_upwards [isOpen_ball.mem_nhds (Metric.mem_ball_self hr0)] with y hy hyne
-    exact (hball y hy hyne).2.symm
-  · rw [FwinExt_eq (hball z hz hne).1]
-    exact (hball z hz hne).2
+  exact ⟨H, hHdiff, ext_eventuallyEq_of_punctured (P := IsNontrivialZero) (f := Fwin s) hr0
+    (fun _ hw => FwinExt_eq hw) (fun w hw => by unfold FwinExt; rw [if_pos hw])
+    hHdiff.continuousAt hball (fun h => absurd hw₀ h)⟩
 
 /-- FwinExt s is differentiable on the disc D(s, 1/2). -/
 theorem FwinExt_differentiableOn (s : ℂ) : DifferentiableOn ℂ (FwinExt s) (ball s (1 / 2)) := by
@@ -480,7 +451,7 @@ lemma exists_radius (s : ℂ) :
     ∃ r : ℝ, 1 / 4 < r ∧ r < 1 / 2 ∧ ∀ w ∈ sphere s r, ¬ IsNontrivialZero w := by
   classical
   set D : Finset ℝ := (window s).image (fun ρ => dist ρ s) with hD
-  obtain ⟨r, hr, hrD⟩ := (Set.Ioo_infinite (by norm_num : (1 / 4 : ℝ) < 1 / 2)).exists_notMem_finset D
+  obtain ⟨r, hr, hrD⟩ := exists_mem_Ioo_notMem_finset (by norm_num : (1 / 4 : ℝ) < 1 / 2) D
   refine ⟨r, hr.1, hr.2, fun w hw hz => ?_⟩
   rw [mem_sphere] at hw
   have himw : |w.im - s.im| ≤ 2 := by
@@ -816,7 +787,7 @@ lemma tsum_lcTerm_le (a : ℝ) :
     ∑' ρ : ℂ, lcTerm a ρ
       ≤ (13 / 4 + 2 * a ^ 2) * ∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℝ) * (1 / (1 + Complex.normSq (gammaOf ρ))) := by
   rw [← tsum_mul_left]
-  refine (summable_lcTerm a).tsum_le_tsum (fun ρ => ?_) ((RvMBridge6.summable_mult_div_one_add_normSq 1).mul_left _)
+  refine (summable_lcTerm a).tsum_le_tsum (fun ρ => ?_) ((RvMBridgeGauss.summable_mult_div_one_add_normSq 1).mul_left _)
   refine (lcTerm_le_majorant a ρ).trans (le_of_eq ?_)
   ring
 
@@ -824,13 +795,11 @@ theorem target_bound_low : ∃ K : ℝ, 0 ≤ K ∧ ∀ s : ℂ, 1 / 4 ≤ s.re 
     ¬ IsNontrivialZero s →
     ‖deriv (logDeriv xi) s + ∑ ρ ∈ window s, (WeilExplicit.zeroMult ρ : ℂ) / (s - ρ) ^ 2‖ ≤ K := by
   classical
-  have hK : IsCompact ((Set.Icc (1 / 4 : ℝ) (9 / 4)) ×ℂ (Set.Icc (-7 : ℝ) 7)) :=
-    isCompact_Icc.reProdIm isCompact_Icc
-  obtain ⟨M, hM⟩ := hK.bddAbove_image xiDiffExt_differentiable.continuous.norm.continuousOn
+  obtain ⟨M, hM0, hM⟩ :=
+    exists_bound_on_reProdIm xiDiffExt_differentiable.continuous (1 / 4) (9 / 4) (-7) 7
   set B₁ : ℝ := ∑' ρ : ℂ, (WeilExplicit.zeroMult ρ : ℝ) * (1 / (1 + Complex.normSq (gammaOf ρ))) with hB₁
   have hB₁0 : 0 ≤ B₁ := tsum_nonneg fun ρ => by
     have := Complex.normSq_nonneg (gammaOf ρ); positivity
-  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM ⟨1, Complex.mem_reProdIm.mpr ⟨⟨by norm_num, by norm_num⟩, ⟨by norm_num, by norm_num⟩⟩, rfl⟩)
   refine ⟨M + 2 * ((13 / 4 + 2 * 49) * B₁), by positivity, fun s hre hre' him hnz => ?_⟩
   have hsplit := (summable_polTerm s).sum_add_tsum_compl (s := window s)
   have hxi : xiDiffExt s = deriv (logDeriv xi) s + ∑' ρ : ℂ, polTerm s ρ := by
@@ -841,10 +810,7 @@ theorem target_bound_low : ∃ K : ℝ, 0 ≤ K ∧ ∀ s : ℂ, 1 / 4 ≤ s.re 
     change deriv (logDeriv xi) s + ∑ ρ ∈ window s, polTerm s ρ = _
     ring
   rw [heq]
-  have hMs : ‖xiDiffExt s‖ ≤ M := by
-    refine hM ⟨s, ?_, rfl⟩
-    have h := abs_le.mp him
-    exact Complex.mem_reProdIm.mpr ⟨⟨hre, hre'⟩, ⟨h.1, h.2⟩⟩
+  have hMs : ‖xiDiffExt s‖ ≤ M := hM s hre hre' (abs_le.mp him).1 (abs_le.mp him).2
   have hfar := norm_tsum_far_le s
   have hlc : ∑' ρ : ℂ, lcTerm s.im ρ ≤ (13 / 4 + 2 * 49) * B₁ := by
     refine (tsum_lcTerm_le s.im).trans ?_

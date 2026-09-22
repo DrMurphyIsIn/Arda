@@ -40,7 +40,7 @@
   and the instrument cannot see it; slide the band).
 
   WHAT IS CONSUMED (all unconditional, #print axioms = [propext, Classical.choice, Quot.sound]):
-    RvMBridge12.zeroSide_split, tail_bound_window, zeroWindow, mem_zeroWindow,
+    RvMBridge12.zeroSide_split, tail_bound_window;  RvMBridgeGauss.zeroWindow, mem_zeroWindow,
     term_eq_zero_of_not_nontrivial;  RvMBridge7.norm_term, phi, wsq, term;
     RvMBridge6.gaussTest_axis, constB_nonneg;  RvMBridge4.zeroMult_eq_mult;
     Zeta23.zetaSeam.finite_window, one_le_mult, WeilEF.gammaOf_re/gammaOf_im.
@@ -56,7 +56,7 @@ open scoped ComplexConjugate
 noncomputable section
 
 namespace RvMBridge14
-open WeilExplicit RvMBridge6 RvMBridge7 RvMBridge12
+open WeilExplicit RvMBridge6 RvMBridge7 RvMBridge12 RvMBridgeGauss
 
 /-! ## A. The explicit threshold. -/
 

@@ -1,6 +1,6 @@
 /- Audit probes for E6Bridge12. -/
 import E6Bridge12
-open Zeta23 Complex MeasureTheory Filter Topology RvMBridge6 RvMBridge7 RvMBridge12 WeilExplicit
+open Zeta23 Complex MeasureTheory Filter Topology RvMBridge6 RvMBridge7 RvMBridge12 WeilExplicit RvMBridgeGauss
 
 /- 1. hwin is load-bearing: an OFF-line nontrivial zero at ordinate c contributes a strictly
    NEGATIVE summand (expected SUCCESS). -/

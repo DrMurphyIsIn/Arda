@@ -25,7 +25,7 @@ open RvMBridge18 (xi XiLogDerivDerivEq)
 #print axioms RvMBridge19.liLimit_eq_taylorOne
 #print axioms RvMBridge19.liValue_of
 #print axioms RvMBridge19.bl_explicit_formula_of_partialFraction
-#print axioms RvMBridge19.xi_eq_zero_iff
+#print axioms RvMBridgeXi.xi_eq_zero_iff
 
 /-! ### The Lambda-form equivalence and the Lambda-form entry point. -/
 #print axioms RvMBridge19.xiDerivPartialFraction_iff

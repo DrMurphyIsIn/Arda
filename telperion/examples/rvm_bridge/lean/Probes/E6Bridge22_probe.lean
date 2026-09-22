@@ -21,7 +21,7 @@ open Zeta23 Complex Filter Topology RvMBridge18 RvMBridge20 RvMBridge22
 #print axioms RvMBridge22.norm_tsum_far_le
 #print axioms RvMBridge22.norm_tsum_polTerm_le_right
 #print axioms RvMBridge22.summable_lcTerm
-#print axioms RvMBridge22.deriv_logDeriv_xi_of_one_lt_re
+#print axioms RvMBridge21.deriv_logDeriv_xi_of_one_lt_re
 #print axioms RvMBridge22.norm_deriv_digamma_le
 #print axioms RvMBridge22.norm_deriv_logDeriv_zeta_le
 

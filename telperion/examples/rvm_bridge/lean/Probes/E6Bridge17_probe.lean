@@ -21,7 +21,7 @@ open RvMBridge17
 #print axioms RvMBridge17.rh_iff_thetaWidths_eq
 #print axioms RvMBridge17.not_thetaFree_of_offline
 #print axioms RvMBridge17.rh_or_thetaWidths_bddAbove
-#print axioms RvMBridge17.nontrivialZeros_countable
+#print axioms RvMBridgeXi.nontrivialZeros_countable
 
 #check @RvMBridge17.rh_iff_theta_positivity
 #check @RvMBridge17.theta_heat

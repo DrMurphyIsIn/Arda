@@ -32,10 +32,18 @@
   1/2 <= Re s <= 2, |Im s| >= 6, and Dirichlet-series / Stirling bounds on Re s >= 2 (see the memo).
   xiDiffRegular_of : XiDiffExtGrowth -> XiDiffRegular is the assembly.
 
+  2026-09-22: the xi vocabulary this module had re-proved in parallel with E6Bridge19 (xi_one_sub,
+  xi_one, xi_eq_zero_iff, analyticAt_logDeriv, the logDeriv antisymmetry and its derivative form,
+  oneSubEquiv / zeroMult_one_sub / tsum_polTerm_one_sub) now lives ONCE in the prelude RvMBridgeXi,
+  which also holds the local unit factor computation (logDeriv_of_unit_factor) and the
+  punctured-limit extension atom (ext_eventuallyEq_of_punctured) used below; every node theorem
+  here is unchanged, statement verbatim.
+
   conjecture1_proved = False.  Nothing here bears on RH.
 -/
 import E6Bridge15
 import E6Bridge18
+import RvMBridgeXi
 import Zeta23.WeilEF.XiLogDeriv
 
 open Zeta23 Complex MeasureTheory Filter Topology Metric
@@ -44,17 +52,10 @@ open scoped ComplexConjugate
 noncomputable section
 
 namespace RvMBridge20
-open WeilExplicit RvMBridge18
+open WeilExplicit RvMBridge18 RvMBridgeXi
 
-/-! ## A. The zero set and the order of xi. -/
-
-lemma xi_one_sub (s : ℂ) : xi (1 - s) = xi s := by
-  unfold xi
-  rw [completedRiemannZeta₀_one_sub]
-  ring
-
-lemma xi_one : xi 1 = 1 / 2 := by
-  unfold xi; simp
+/-! ## A. The zero set and the order of xi (xi_one_sub, xi_one, xi_eq_zero_iff and
+xi_ne_zero_of_not_nontrivial are the prelude's, RvMBridgeXi). -/
 
 lemma xi_ne_zero_of_one_le_re {s : ℂ} (h : 1 ≤ s.re) : xi s ≠ 0 := by
   by_cases hs1 : s = 1
@@ -66,27 +67,6 @@ lemma xi_ne_zero_of_one_le_re {s : ℂ} (h : 1 ≤ s.re) : xi s ≠ 0 := by
       rw [(Zeta23.WeilEF.completedZeta_eventuallyEq_mul hpos).eq_of_nhds]
       exact mul_ne_zero (Complex.Gammaℝ_ne_zero_of_re_pos hpos) (riemannZeta_ne_zero_of_one_le_re h)
     exact mul_ne_zero (div_ne_zero (mul_ne_zero hs0 (sub_ne_zero.mpr hs1)) two_ne_zero) hΛ
-
-/-- xi vanishes exactly at the nontrivial zeros of zeta. -/
-theorem xi_eq_zero_iff (s : ℂ) : xi s = 0 ↔ IsNontrivialZero s := by
-  rcases lt_or_ge s.re 1 with h1 | h1
-  · rcases le_or_gt s.re 0 with h0 | h0
-    · have hne : xi (1 - s) ≠ 0 :=
-        xi_ne_zero_of_one_le_re (by rw [Complex.sub_re, Complex.one_re]; linarith)
-      rw [xi_one_sub] at hne
-      exact ⟨fun h => absurd h hne, fun hz => absurd hz.2.1 (not_lt.mpr h0)⟩
-    · have hs0 : s ≠ 0 := fun h => by rw [h, Complex.zero_re] at h0; exact lt_irrefl _ h0
-      have hs1 : s ≠ 1 := fun h => by rw [h, Complex.one_re] at h1; exact lt_irrefl _ h1
-      rw [xi_eq s hs0 hs1, mul_eq_zero, (Zeta23.WeilEF.completedZeta_zeros_strip h0 h1).1]
-      constructor
-      · rintro (h | h)
-        · exact absurd h (div_ne_zero (mul_ne_zero hs0 (sub_ne_zero.mpr hs1)) two_ne_zero)
-        · exact h
-      · exact fun h => Or.inr h
-  · exact ⟨fun h => absurd h (xi_ne_zero_of_one_le_re h1), fun hz => absurd hz.2.2 (not_lt.mpr h1)⟩
-
-lemma xi_ne_zero_of_not_nontrivial {s : ℂ} (h : ¬ IsNontrivialZero s) : xi s ≠ 0 :=
-  fun h0 => h ((xi_eq_zero_iff s).mp h0)
 
 /-- xi is not locally zero anywhere (identity theorem + xi 1 = 1/2). -/
 lemma analyticOrderAt_xi_ne_top (s : ℂ) : analyticOrderAt xi s ≠ ⊤ := by
@@ -187,7 +167,7 @@ theorem exists_ball_rest (s₀ : ℂ) :
     set u : ℂ → ℝ := fun ρ => (nearZeros s₀).indicator (fun ρ => 4 * (WeilExplicit.zeroMult ρ : ℝ) / ε ^ 2) ρ
       + (WeilExplicit.zeroMult ρ : ℝ) * (A / (1 + Complex.normSq (gammaOf ρ))) with hu
     have hu_sum : Summable u := by
-      refine Summable.add ?_ (RvMBridge6.summable_mult_div_one_add_normSq A)
+      refine Summable.add ?_ (RvMBridgeGauss.summable_mult_div_one_add_normSq A)
       refine summable_of_ne_finset_zero (s := (nearZeros_finite s₀).toFinset) fun ρ hρ => ?_
       rw [Set.Finite.mem_toFinset] at hρ
       exact Set.indicator_of_notMem hρ _
@@ -305,13 +285,6 @@ lemma exists_unit_factor (s₀ : ℂ) :
     (xi_differentiable.analyticAt s₀).analyticOrderAt_eq_natCast.mp (analyticOrderAt_xi_eq s₀)
   exact ⟨u, hu, hu0, hxu.mono fun z hz => by rw [hz, smul_eq_mul]⟩
 
-/-- logDeriv of an analytic nonvanishing function is analytic. -/
-lemma analyticAt_logDeriv {u : ℂ → ℂ} {z : ℂ} (hu : AnalyticAt ℂ u z) (hz : u z ≠ 0) :
-    AnalyticAt ℂ (logDeriv u) z := by
-  have : logDeriv u = fun w => deriv u w / u w := funext fun w => logDeriv_apply u w
-  rw [this]
-  exact hu.deriv.div hu hz
-
 /-- The key local computation: on the ball where xi = (z - s0)^m u, at every w with
 (w - s0)^m ≠ 0,  deriv (logDeriv xi) w = -m/(w - s0)^2 + deriv (logDeriv u) w. -/
 lemma deriv_logDeriv_xi_local {s₀ : ℂ} {u : ℂ → ℂ} {ε : ℝ} (_hε : 0 < ε)
@@ -342,23 +315,9 @@ lemma deriv_logDeriv_xi_local {s₀ : ℂ} {u : ℂ → ℂ} {ε : ℝ} (_hε : 
     set V : Set ℂ := ball s₀ ε ∩ {z | z ≠ s₀} with hV
     have hVopen : IsOpen V := isOpen_ball.inter isOpen_ne
     have hwV : w ∈ V := ⟨hw, hw0⟩
-    -- on V, logDeriv xi z = m / (z - s0) + logDeriv u z
-    have hL : ∀ z ∈ V, logDeriv xi z = (m : ℂ) * (z - s₀)⁻¹ + logDeriv u z := by
-      intro z hz
-      obtain ⟨hz1, hz2⟩ := hz
-      have hzball : dist z s₀ < ε := hz1
-      have hz0 : z - s₀ ≠ 0 := sub_ne_zero.mpr hz2
-      have hev : xi =ᶠ[𝓝 z] fun y => (y - s₀) ^ m * u y := by
-        have hball : ∀ᶠ y in 𝓝 z, dist y s₀ < ε := isOpen_ball.mem_nhds (show z ∈ ball s₀ ε from hzball)
-        filter_upwards [hball] with y hy
-        exact (hxu y hy).1
-      rw [logDeriv_apply, hev.deriv_eq, hev.eq_of_nhds, ← logDeriv_apply]
-      rw [logDeriv_mul (f := fun y => (y - s₀) ^ m) (g := u) z (pow_ne_zero _ hz0) (hxu z hzball).2.2
-        ((differentiableAt_id.sub_const s₀).pow m) (hxu z hzball).2.1.differentiableAt]
-      congr 1
-      rw [logDeriv_fun_pow (f := fun y => y - s₀) (differentiableAt_id.sub_const s₀) m, logDeriv_apply]
-      rw [deriv_sub_const, deriv_id'']
-      ring
+    -- on V, logDeriv xi z = m / (z - s0) + logDeriv u z (the prelude's local unit factor)
+    have hL : ∀ z ∈ V, logDeriv xi z = (m : ℂ) * (z - s₀)⁻¹ + logDeriv u z := fun z hz =>
+      logDeriv_of_unit_factor hxu (mem_ball.mp hz.1) hz.2
     have hev : logDeriv xi =ᶠ[𝓝 w] fun z => (m : ℂ) * (z - s₀)⁻¹ + logDeriv u z := by
       filter_upwards [hVopen.mem_nhds hwV] with z hz
       exact hL z hz
@@ -428,25 +387,11 @@ theorem xiDiffExt_eq {s : ℂ} (hs : ¬ IsNontrivialZero s) : xiDiffExt s = xiDi
 theorem xiDiffExt_eventuallyEq (s₀ : ℂ) :
     ∃ H : ℂ → ℂ, DifferentiableAt ℂ H s₀ ∧ xiDiffExt =ᶠ[𝓝 s₀] H := by
   obtain ⟨r, hr, H, hH, hnoz, hpunct, hat⟩ := exists_local_form s₀
-  refine ⟨H, (hH s₀ (mem_ball_self hr)).differentiableAt (isOpen_ball.mem_nhds (mem_ball_self hr)), ?_⟩
-  have hHcont : ContinuousAt H s₀ :=
-    ((hH s₀ (mem_ball_self hr)).differentiableAt (isOpen_ball.mem_nhds (mem_ball_self hr))).continuousAt
-  filter_upwards [isOpen_ball.mem_nhds (mem_ball_self hr)] with w hw
-  by_cases hne : w = s₀
-  · subst hne
-    by_cases hz : IsNontrivialZero w
-    · unfold xiDiffExt
-      rw [if_pos hz]
-      apply Filter.Tendsto.limUnder_eq
-      have h1 : Tendsto H (𝓝[≠] w) (𝓝 (H w)) := hHcont.continuousWithinAt.tendsto
-      refine h1.congr' ?_
-      rw [Filter.EventuallyEq, eventually_nhdsWithin_iff]
-      filter_upwards [isOpen_ball.mem_nhds (mem_ball_self hr)] with z hz hzne
-      exact (hpunct z hz hzne).symm
-    · rw [xiDiffExt_eq hz]
-      exact hat hz
-  · rw [xiDiffExt_eq (hnoz w hw hne)]
-    exact hpunct w hw hne
+  have hHd : DifferentiableAt ℂ H s₀ :=
+    (hH s₀ (mem_ball_self hr)).differentiableAt (isOpen_ball.mem_nhds (mem_ball_self hr))
+  refine ⟨H, hHd, ext_eventuallyEq_of_punctured (P := IsNontrivialZero) (f := xiDiffReg) hr
+    (fun _ hs => xiDiffExt_eq hs) (fun s hs => by unfold xiDiffExt; rw [if_pos hs])
+    hHd.continuousAt (fun w hw hne => ⟨hnoz w hw hne, hpunct w hw hne⟩) hat⟩
 
 /-- **xiDiffExt is entire.** -/
 theorem xiDiffExt_differentiable : Differentiable ℂ xiDiffExt := by
@@ -468,52 +413,8 @@ lemma isNontrivialZero_one_sub_iff (s : ℂ) : IsNontrivialZero (1 - s) ↔ IsNo
   have := key (1 - s) h
   rwa [sub_sub_cancel] at this
 
-lemma logDeriv_xi_one_sub (z : ℂ) : logDeriv xi (1 - z) = -logDeriv xi z := by
-  have hd : HasDerivAt (fun u : ℂ => xi (1 - u)) (deriv xi (1 - z) * (-1)) z :=
-    (xi_differentiable (1 - z)).hasDerivAt.comp z ((hasDerivAt_id z).const_sub 1)
-  have hfun : (fun u : ℂ => xi (1 - u)) = xi := funext xi_one_sub
-  rw [hfun] at hd
-  rw [logDeriv_apply, logDeriv_apply, xi_one_sub, hd.deriv]
-  ring
-
-lemma deriv_logDeriv_xi_one_sub {s : ℂ} (hs : ¬ IsNontrivialZero s) :
-    deriv (logDeriv xi) (1 - s) = deriv (logDeriv xi) s := by
-  have hs' : ¬ IsNontrivialZero (1 - s) := fun h => hs ((isNontrivialZero_one_sub_iff s).mp h)
-  have hdiff : DifferentiableAt ℂ (logDeriv xi) (1 - s) :=
-    (analyticAt_logDeriv (xi_differentiable.analyticAt _) (xi_ne_zero_of_not_nontrivial hs')).differentiableAt
-  have h1 : HasDerivAt (fun u : ℂ => logDeriv xi (1 - u)) (deriv (logDeriv xi) (1 - s) * (-1)) s :=
-    hdiff.hasDerivAt.comp s ((hasDerivAt_id s).const_sub 1)
-  have hF : (fun u : ℂ => logDeriv xi (1 - u)) = fun u => -logDeriv xi u := funext logDeriv_xi_one_sub
-  rw [hF] at h1
-  have h2 : HasDerivAt (fun u : ℂ => -logDeriv xi u) (-deriv (logDeriv xi) s) s :=
-    ((analyticAt_logDeriv (xi_differentiable.analyticAt _)
-      (xi_ne_zero_of_not_nontrivial hs)).differentiableAt.hasDerivAt).neg
-  have := h1.unique h2
-  linear_combination -this
-
-/-- The reflection rho -> 1 - rho as an involutive equivalence. -/
-def oneSubEquiv : ℂ ≃ ℂ where
-  toFun := fun ρ => 1 - ρ
-  invFun := fun ρ => 1 - ρ
-  left_inv := fun ρ => by simp
-  right_inv := fun ρ => by simp
-
-lemma zeroMult_one_sub (ρ : ℂ) : WeilExplicit.zeroMult (1 - ρ) = WeilExplicit.zeroMult ρ := by
-  have h : (1 : ℂ) - ρ = reflect (conj ρ) := by
-    unfold reflect
-    rw [Complex.conj_conj]
-  rw [h, RvMBridge6.zeroMult_reflect, RvMBridge15.zeroMult_conj]
-
-lemma tsum_polTerm_one_sub (s : ℂ) : ∑' ρ : ℂ, polTerm (1 - s) ρ = ∑' ρ : ℂ, polTerm s ρ := by
-  calc ∑' ρ : ℂ, polTerm (1 - s) ρ = ∑' ρ : ℂ, polTerm s (oneSubEquiv ρ) := by
-        congr 1
-        funext ρ
-        unfold polTerm
-        simp only [oneSubEquiv, Equiv.coe_fn_mk]
-        rw [zeroMult_one_sub]
-        congr 1
-        ring
-    _ = ∑' ρ : ℂ, polTerm s ρ := oneSubEquiv.tsum_eq (polTerm s)
+/-! logDeriv_xi_one_sub, deriv_logDeriv_xi_one_sub, oneSubEquiv, zeroMult_one_sub and
+tsum_polTerm_one_sub are the prelude's (RvMBridgeXi). -/
 
 theorem xiDiffReg_one_sub {s : ℂ} (hs : ¬ IsNontrivialZero s) : xiDiffReg (1 - s) = xiDiffReg s := by
   unfold xiDiffReg

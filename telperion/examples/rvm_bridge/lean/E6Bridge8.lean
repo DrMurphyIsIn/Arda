@@ -20,6 +20,7 @@
   4 M^2 / (1 + ‖z‖)^2 <= 4 M^2 / (1 + normSq z).
 -/
 import E6Bridge6
+import RvMBridgeGauss
 
 open Zeta23 Complex MeasureTheory Filter Topology
 open scoped ComplexConjugate
@@ -27,129 +28,13 @@ open scoped ComplexConjugate
 noncomputable section
 
 namespace RvMBridge8
-open WeilExplicit
+open WeilExplicit RvMBridgeGauss
 
-/-! ## A. Gaussian majorants with an exponential weight. -/
-
-/-- exp (-b x^2 + k x) is integrable for b > 0 (the norm of a complex Gaussian quadratic). -/
-lemma integrable_exp_quadratic {b : ℝ} (hb : 0 < b) (k : ℝ) :
-    Integrable (fun x : ℝ => Real.exp (-b * x ^ 2 + k * x)) := by
-  have h := (integrable_cexp_quadratic (b := (b : ℂ)) (by simpa using hb) (k : ℂ) 0).norm
-  refine h.congr (Filter.Eventually.of_forall fun x => ?_)
-  show ‖cexp _‖ = Real.exp _
-  rw [Complex.norm_exp]
-  congr 1
-  simp [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, pow_two]
-
-/-- exp (-b x^2 + k |x|) is integrable for b > 0. -/
-lemma integrable_exp_quadratic_abs {b : ℝ} (hb : 0 < b) (k : ℝ) :
-    Integrable (fun x : ℝ => Real.exp (-b * x ^ 2 + k * |x|)) := by
-  refine ((integrable_exp_quadratic hb k).add (integrable_exp_quadratic hb (-k))).mono'
-    (by fun_prop) (Filter.Eventually.of_forall fun x => ?_)
-  rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
-  rcases le_or_gt 0 x with hx | hx
-  · rw [abs_of_nonneg hx]
-    exact le_add_of_nonneg_right (Real.exp_pos _).le
-  · rw [abs_of_neg hx]
-    have : -b * x ^ 2 + k * -x = -b * x ^ 2 + -k * x := by ring
-    rw [this]
-    exact le_add_of_nonneg_left (Real.exp_pos _).le
-
-/-- |x|^m <= exp (m |x|). -/
-lemma abs_pow_le_exp (x : ℝ) (m : ℕ) : |x| ^ m ≤ Real.exp (m * |x|) := by
-  have h1 : |x| ≤ Real.exp |x| := by
-    have := Real.add_one_le_exp |x|
-    linarith
-  calc |x| ^ m ≤ (Real.exp |x|) ^ m := pow_le_pow_left₀ (abs_nonneg x) h1 m
-    _ = Real.exp (m * |x|) := by rw [← Real.exp_nat_mul]
-
-/-- |x|^m exp (-b x^2 + k |x|) is integrable for b > 0. -/
-lemma integrable_abs_pow_mul_exp_quadratic_abs {b : ℝ} (hb : 0 < b) (k : ℝ) (m : ℕ) :
-    Integrable (fun x : ℝ => |x| ^ m * Real.exp (-b * x ^ 2 + k * |x|)) := by
-  refine (integrable_exp_quadratic_abs hb (k + m)).mono' (by fun_prop)
-    (Filter.Eventually.of_forall fun x => ?_)
-  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-  calc |x| ^ m * Real.exp (-b * x ^ 2 + k * |x|)
-      ≤ Real.exp (m * |x|) * Real.exp (-b * x ^ 2 + k * |x|) :=
-        mul_le_mul_of_nonneg_right (abs_pow_le_exp x m) (Real.exp_pos _).le
-    _ = Real.exp (-b * x ^ 2 + (k + m) * |x|) := by rw [← Real.exp_add]; congr 1; ring
-
-/-- x * exp (-b x^2 + c x) is integrable for real b > 0 and complex c. -/
-lemma integrable_mul_cexp_quadratic {b : ℝ} (hb : 0 < b) (c : ℂ) :
-    Integrable (fun x : ℝ => (x : ℂ) * cexp (-(b : ℂ) * x ^ 2 + c * x)) := by
-  refine (integrable_abs_pow_mul_exp_quadratic_abs hb |c.re| 1).mono' (by fun_prop)
-    (Filter.Eventually.of_forall fun x => ?_)
-  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_exp, pow_one]
-  refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (abs_nonneg x)
-  have hre : (-(b : ℂ) * (x : ℂ) ^ 2 + c * x).re = -b * x ^ 2 + c.re * x := by
-    simp [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, pow_two]
-  rw [hre]
-  have : c.re * x ≤ |c.re| * |x| := by rw [← abs_mul]; exact le_abs_self _
-  linarith
-
-/-! ## B. The transform of u exp (-b u^2): one integration by parts against
-fourierIntegral_gaussian.  Valid for EVERY complex w (no strip needed). -/
-
-/-- ∫ u exp (-b u^2) exp (i w u) du = (i w / (2 b)) (pi/b)^{1/2} exp (-w^2/(4 b)), b > 0 real. -/
-theorem integral_mul_cexp_gaussian_fourier {b : ℝ} (hb : 0 < b) (w : ℂ) :
-    ∫ x : ℝ, (x : ℂ) * cexp (-(b : ℂ) * x ^ 2) * cexp (I * w * x)
-      = (I * w / (2 * b)) * (((Real.pi : ℂ) / b) ^ (1 / 2 : ℂ) * cexp (-w ^ 2 / (4 * b))) := by
-  have hbC : 0 < (b : ℂ).re := by simpa using hb
-  have hb0 : (b : ℂ) ≠ 0 := by exact_mod_cast hb.ne'
-  -- derivatives of the two factors
-  have hv : ∀ x : ℝ, HasDerivAt (fun x : ℝ => cexp (-(b : ℂ) * (x : ℂ) ^ 2))
-      (cexp (-(b : ℂ) * (x : ℂ) ^ 2) * (-(b : ℂ) * (2 * x))) x := by
-    intro x
-    have := (((hasDerivAt_pow 2 (x : ℂ)).const_mul (-(b : ℂ))).cexp).comp_ofReal
-    convert this using 1
-    push_cast
-    ring
-  have hu : ∀ x : ℝ, HasDerivAt (fun x : ℝ => cexp (I * w * (x : ℂ)))
-      (cexp (I * w * (x : ℂ)) * (I * w)) x := by
-    intro x
-    have := (((hasDerivAt_id (x : ℂ)).const_mul (I * w)).cexp).comp_ofReal
-    simpa using this
-  -- integrability of the three products
-  have hi1 : Integrable (fun x : ℝ => cexp (I * w * (x : ℂ))
-      * (cexp (-(b : ℂ) * (x : ℂ) ^ 2) * (-(b : ℂ) * (2 * x)))) := by
-    have h := (integrable_mul_cexp_quadratic hb (I * w)).const_mul (-(b : ℂ) * 2)
-    refine h.congr (Filter.Eventually.of_forall fun x => ?_)
-    simp only [Complex.exp_add]
-    ring
-  have hi2 : Integrable (fun x : ℝ => cexp (I * w * (x : ℂ)) * (I * w)
-      * cexp (-(b : ℂ) * (x : ℂ) ^ 2)) := by
-    have h := (integrable_cexp_quadratic hbC (I * w) 0).const_mul (I * w)
-    refine h.congr (Filter.Eventually.of_forall fun x => ?_)
-    simp only [add_zero, Complex.exp_add]
-    ring
-  have hi3 : Integrable (fun x : ℝ => cexp (I * w * (x : ℂ)) * cexp (-(b : ℂ) * (x : ℂ) ^ 2)) := by
-    have h := integrable_cexp_quadratic hbC (I * w) 0
-    refine h.congr (Filter.Eventually.of_forall fun x => ?_)
-    simp only [add_zero, Complex.exp_add]
-    ring
-  have key := integral_mul_deriv_eq_deriv_mul_of_integrable (fun x _ => hu x) (fun x _ => hv x)
-    hi1 hi2 hi3
-  have hG := fourierIntegral_gaussian hbC w
-  -- rewrite both sides of key
-  have hL : ∫ x : ℝ, cexp (I * w * (x : ℂ)) * (cexp (-(b : ℂ) * (x : ℂ) ^ 2) * (-(b : ℂ) * (2 * x)))
-      = (-(b : ℂ) * 2) * ∫ x : ℝ, (x : ℂ) * cexp (-(b : ℂ) * x ^ 2) * cexp (I * w * x) := by
-    rw [← integral_const_mul]
-    congr 1
-    funext x
-    ring
-  have hR : ∫ x : ℝ, cexp (I * w * (x : ℂ)) * (I * w) * cexp (-(b : ℂ) * (x : ℂ) ^ 2)
-      = (I * w) * ∫ x : ℝ, cexp (I * w * x) * cexp (-(b : ℂ) * x ^ 2) := by
-    rw [← integral_const_mul]
-    congr 1
-    funext x
-    ring
-  rw [hL, hR, hG] at key
-  have h2 : (-(b : ℂ) * 2) ≠ 0 := by
-    apply mul_ne_zero (neg_ne_zero.mpr hb0) two_ne_zero
-  apply mul_left_cancel₀ h2
-  rw [key]
-  generalize ((Real.pi : ℂ) / b) ^ (1 / 2 : ℂ) * cexp (-w ^ 2 / (4 * b)) = G
-  field_simp
+/-! ## A/B. The Gaussian integrability calculus (integrable_exp_quadratic, _abs, abs_pow_le_exp,
+integrable_abs_pow_mul_exp_quadratic_abs, integrable_mul_cexp_quadratic) and the transform of
+u exp (-b u^2) at a complex frequency (integral_mul_cexp_gaussian_fourier, one integration by
+parts against fourierIntegral_gaussian) live in the prelude RvMBridgeGauss, sections A and B
+(formerly here). -/
 
 /-! ## C. The witness phi and its transform. -/
 

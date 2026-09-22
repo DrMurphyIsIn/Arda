@@ -1,5 +1,5 @@
 import E6Bridge16
-#print axioms RvMBridge16.integral_sq_mul_cexp_gaussian_fourier'
+#print axioms RvMBridgeGauss.integral_sq_mul_cexp_gaussian_fourier
 #print axioms RvMBridge16.gaussA_mul_sqrt
 #print axioms RvMBridge16.fourier_autocorrGauss
 #print axioms RvMBridge16.weilKernel_zero_eq_gaussTest

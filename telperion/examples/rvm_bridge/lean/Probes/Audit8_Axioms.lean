@@ -1,10 +1,10 @@
 import E6Bridge9
-#print axioms RvMBridge8.integrable_exp_quadratic
-#print axioms RvMBridge8.integrable_exp_quadratic_abs
-#print axioms RvMBridge8.abs_pow_le_exp
-#print axioms RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs
-#print axioms RvMBridge8.integrable_mul_cexp_quadratic
-#print axioms RvMBridge8.integral_mul_cexp_gaussian_fourier
+#print axioms RvMBridgeGauss.integrable_exp_quadratic
+#print axioms RvMBridgeGauss.integrable_exp_quadratic_abs
+#print axioms RvMBridgeGauss.abs_pow_le_exp
+#print axioms RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs
+#print axioms RvMBridgeGauss.integrable_mul_cexp_quadratic
+#print axioms RvMBridgeGauss.integral_mul_cexp_gaussian_fourier
 #print axioms RvMBridge8.gaussB
 #print axioms RvMBridge8.gaussB_pos
 #print axioms RvMBridge8.gaussK

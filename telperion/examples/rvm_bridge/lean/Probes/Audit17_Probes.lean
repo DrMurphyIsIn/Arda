@@ -44,5 +44,5 @@ example {lam' lam : ℝ} (h0 : 0 < lam') (hlt : lam' < lam) (c x : ℝ) :
       = Real.sqrt (lam' / lam) * Real.exp (-(2 * lam') * (x - c) ^ 2) := real_gauss_heat h0 hlt c x
 
 /- 7. Countability of the zero set and its use as an index (expected SUCCESS). -/
-example : ({ρ : ℂ | IsNontrivialZero ρ}).Countable := nontrivialZeros_countable
+example : ({ρ : ℂ | IsNontrivialZero ρ}).Countable := RvMBridgeXi.nontrivialZeros_countable
 example : Countable NZ := inferInstance

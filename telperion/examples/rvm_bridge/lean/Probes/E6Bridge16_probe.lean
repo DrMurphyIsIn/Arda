@@ -16,7 +16,7 @@ open RvMBridge16
 #print axioms RvMBridge16.gaussian_positivity_above_height
 #print axioms RvMBridge16.gaussian_positivity_above_height_log
 -- stages
-#print axioms RvMBridge16.integral_sq_mul_cexp_gaussian_fourier'
+#print axioms RvMBridgeGauss.integral_sq_mul_cexp_gaussian_fourier
 #print axioms RvMBridge16.fourier_autocorrGauss
 #print axioms RvMBridge16.weilKernel_zero_eq_gaussTest
 #print axioms RvMBridge16.weilKernel_one_eq_gaussTest

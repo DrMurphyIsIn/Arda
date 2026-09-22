@@ -21,6 +21,8 @@
     RvMBridge4.zeroMult_eq_mult, RvMBridge4.zeroMult_eq_zero_of_not_nontrivial
     RvMBridge5.autocorr_eq_weilTest, RvMBridge5.isWeilTest_autocorr   (forward-half file)
     RvMBridge5.rh_implies_weil_positivity   (only for the two-sided corollary at the end)
+    RvMBridgeGauss.summable_mult_div_one_add_normSq, tendsto_tsum_zeroMult_of_strip_bound
+                                            (the Gaussian prelude: local-count majorant, Tannery)
     Zeta23.EF.paperFT_weilTest              (h_{f * g~}(z) = h_f(z) conj (h_g (conj z)))
     Zeta23.zeta_reflect_zero, Zeta23.zeta_mult_reflect   (rho -> 1 - conj rho preserves the
                                               nontrivial zeros and their multiplicities)
@@ -67,6 +69,7 @@
   dominated-convergence statement independent of RH.  conjecture1_proved = False.
 -/
 import E6Bridge5
+import RvMBridgeGauss
 import Zeta23.Statement.SeamClosed
 import Mathlib.Analysis.Normed.Group.Tannery
 
@@ -477,38 +480,15 @@ lemma norm_gaussTest_mul_le (c lam : ℝ) (hlam : 0 < lam) {z : ℂ} (hz : |z.im
       gcongr
     _ = Real.exp (lam / 2) * (2 * c ^ 2 + 13 / 4) := by ring
 
-/-- The weighted local-count majorant Sum_rho m(rho) C/(1 + |gamma_rho|^2) over ALL rho : C
-(zero off the nontrivial zeros) is summable: Zeta23.WeilEF.zero_sum_inv_sq transported from the
-carrier subtype. -/
-lemma summable_mult_div_one_add_normSq (C : ℝ) :
-    Summable (fun ρ : ℂ => (WeilExplicit.zeroMult ρ : ℝ) * (C / (1 + Complex.normSq (gammaOf ρ)))) := by
-  set F : ℂ → ℝ := fun ρ => (WeilExplicit.zeroMult ρ : ℝ) * (C / (1 + Complex.normSq (gammaOf ρ)))
-    with hF
-  have hsub : Summable (F ∘ (Subtype.val : {ρ : ℂ | IsNontrivialZero ρ} → ℂ)) := by
-    have h := (Zeta23.WeilEF.zero_sum_inv_sq zetaSeam).mul_left C
-    refine h.congr fun ρ => ?_
-    simp only [Function.comp, hF]
-    have hm : (WeilExplicit.zeroMult ρ : ℝ) = (Zeta23.zeroMult ρ : ℝ) := by
-      rw [RvMBridge4.zeroMult_eq_mult ρ.2]
-      rfl
-    rw [hm]
-    ring
-  rw [summable_subtype_iff_indicator] at hsub
-  have hind : ({ρ : ℂ | IsNontrivialZero ρ} : Set ℂ).indicator F = F := by
-    rw [Set.indicator_eq_self]
-    intro ρ hρ
-    by_contra hn
-    apply hρ
-    simp only [hF, RvMBridge4.zeroMult_eq_zero_of_not_nontrivial hn]
-    simp
-  rwa [hind] at hsub
+/-! The weighted local-count majorant Sum_rho m(rho) C/(1 + |gamma_rho|^2) over ALL rho : C is the
+prelude's RvMBridgeGauss.summable_mult_div_one_add_normSq (formerly here). -/
 
 /-- The Gaussian zero sum converges absolutely for every centre c and every lam > 0
 (so the tsum in GaussianDominance is a genuine sum, not the junk value 0). -/
 theorem summable_gauss_zeroSide (c lam : ℝ) (hlam : 0 < lam) :
     Summable (fun ρ : ℂ => (WeilExplicit.zeroMult ρ : ℂ) * gaussTest c lam (gammaOf ρ)) := by
   set C : ℝ := Real.exp (lam / 2) * (2 * c ^ 2 + 13 / 4) / (min 1 lam) ^ 2 with hC
-  refine Summable.of_norm_bounded (summable_mult_div_one_add_normSq C) fun ρ => ?_
+  refine Summable.of_norm_bounded (RvMBridgeGauss.summable_mult_div_one_add_normSq C) fun ρ => ?_
   rw [norm_mul, Complex.norm_natCast]
   by_cases h : IsNontrivialZero ρ
   · have hz : |(gammaOf ρ).im| ≤ 1 / 2 := (Zeta23.WeilEF.abs_gammaOf_im_lt h.2).le
@@ -580,19 +560,7 @@ theorem gaussianTransfer_of_approx (hA : GaussianApprox) : GaussianTransfer := b
   have hT : Tendsto (fun n => zeroSide (hermitianTransform (g n))) atTop
       (𝓝 (zeroSide (gaussTest c lam))) := by
     unfold zeroSide
-    refine tendsto_tsum_of_dominated_convergence (summable_mult_div_one_add_normSq C) ?_
-      (Filter.Eventually.of_forall fun n ρ => ?_)
-    · intro ρ
-      by_cases h : IsNontrivialZero ρ
-      · exact ((hlim (gammaOf ρ) (Zeta23.WeilEF.abs_gammaOf_im_lt h.2).le).const_mul _)
-      · simp only [RvMBridge4.zeroMult_eq_zero_of_not_nontrivial h, Nat.cast_zero, zero_mul]
-        exact tendsto_const_nhds
-    · rw [norm_mul, Complex.norm_natCast]
-      by_cases h : IsNontrivialZero ρ
-      · exact mul_le_mul_of_nonneg_left
-          (hC n (gammaOf ρ) (Zeta23.WeilEF.abs_gammaOf_im_lt h.2).le) (Nat.cast_nonneg _)
-      · rw [RvMBridge4.zeroMult_eq_zero_of_not_nontrivial h]
-        simp
+    exact RvMBridgeGauss.tendsto_tsum_zeroMult_of_strip_bound hC hlim
   exact (Complex.continuous_re.tendsto _).comp hT
 
 /-- The delivered theorem with O1 replaced by the zero-free O1'. -/
