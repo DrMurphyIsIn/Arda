@@ -127,9 +127,27 @@ jobs:
 
       - name: Axiom guard (fails on sorryAx anywhere in the anchors)
         working-directory: telperion/examples/li_positivity/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardLiPositivity.lean | tee axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardLiPositivity.lean 2>&1 | tee axioms.out
+          # 163 `#print axioms` anchors in AxiomGuardLiPositivity.lean as of 2026-09-20.
+          # Without a floor, a guard that elaborates to NOTHING passes the checks
+          # below, because `! grep -q sorryAx` is satisfied by an empty file.
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
+          if [ "$n" -lt "146" ]; then
+            echo "::error::guard printed $n axiom lines, expected at least 146 --"
+            echo "::error::the guard did not run, or was silently truncated"; exit 1; fi
           ! grep -q "sorryAx" axioms.out
+          # Every printed axiom list must be a SUBSET of the three standard axioms.
+          # Join lines first: Lean WRAPS a long list, and a line-based grep would read
+          # the wrapped remainder as a violation.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
   tangent-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2112,11 +2130,20 @@ jobs:
       - name: Axiom guards (RH + dVP) -- fail on sorryAx or elaboration error
         working-directory: telperion/examples/zero_free_bridge/lean
         run: |
+          # This loop already catches an elaboration error, which the two-line guards on
+          # other islands did not.  What it did NOT do is assert the axiom SET, or notice
+          # a guard that printed nothing at all.  Both are added.
           for G in AxiomGuardRH.lean AxiomGuardDlvp.lean; do
             out="$(lake env lean $G 2>&1 || true)"
             echo "$out"
             if echo "$out" | grep -q 'sorryAx'; then echo "::error::$G depends on sorry"; exit 1; fi
             if echo "$out" | grep -qE 'error:'; then echo "::error::$G did not elaborate cleanly"; exit 1; fi
+            n=$(echo "$out" | grep -cE "depends on axioms|does not depend on any axioms" || true)
+            if [ "$n" -lt "1" ]; then echo "::error::$G printed no axiom lines at all"; exit 1; fi
+            if echo "$out" | tr "\n" " " | grep -oE "depends on axioms: \[[^]]*\]" \
+                 | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+                 | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+              echo "::error::$G lists an axiom outside the three standard ones"; exit 1; fi
           done
           echo "OK: all guarded theorems kernel-clean."
   # B2 ladder suite (replaces the monolith `lake build` that hit E2BIG at ~16k targets).
@@ -2252,9 +2279,27 @@ jobs:
 
       - name: Axiom guard (fails on sorryAx anywhere in the emitted theorems)
         working-directory: telperion/examples/weil_form_enclosure/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardWeilForm.lean | tee axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardWeilForm.lean 2>&1 | tee axioms.out
+          # 6 `#print axioms` anchors in AxiomGuardWeilForm.lean as of 2026-09-20.
+          # Without a floor, a guard that elaborates to NOTHING passes the checks
+          # below, because `! grep -q sorryAx` is satisfied by an empty file.
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
+          if [ "$n" -lt "5" ]; then
+            echo "::error::guard printed $n axiom lines, expected at least 5 --"
+            echo "::error::the guard did not run, or was silently truncated"; exit 1; fi
           ! grep -q "sorryAx" axioms.out
+          # Every printed axiom list must be a SUBSET of the three standard axioms.
+          # Join lines first: Lean WRAPS a long list, and a line-based grep would read
+          # the wrapped remainder as a violation.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
   rvm-bridge-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -2350,9 +2395,27 @@ jobs:
 
       - name: Axiom guard (fails on sorryAx anywhere in the island)
         working-directory: telperion/examples/dbn/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardDBN.lean | tee axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardDBN.lean 2>&1 | tee axioms.out
+          # 32 `#print axioms` anchors in AxiomGuardDBN.lean as of 2026-09-22.
+          # Without a floor, a guard that elaborates to NOTHING passes the checks
+          # below, because `! grep -q sorryAx` is satisfied by an empty file.
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
+          if [ "$n" -lt "30" ]; then
+            echo "::error::guard printed $n axiom lines, expected at least 30 --"
+            echo "::error::the guard did not run, or was silently truncated"; exit 1; fi
           ! grep -q "sorryAx" axioms.out
+          # Every printed axiom list must be a SUBSET of the three standard axioms.
+          # Join lines first: Lean WRAPS a long list, and a line-based grep would read
+          # the wrapped remainder as a violation.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
   exp-enclosure-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -2437,11 +2500,29 @@ jobs:
 
       - name: Axiom guard (OfflineDiscs + instances must be sorry-free and axiom-clean)
         working-directory: telperion/examples/quasicrystal/lean
+        shell: bash
         run: |
+          set -euo pipefail
           lake env lean AxiomGuardQC.lean 2>&1 | tee guard.txt
+          # 76 `#print axioms` anchors in AxiomGuardQC.lean as of 2026-09-20.
+          # Without a floor, a guard that elaborates to NOTHING passes the checks
+          # below, because `! grep -q sorryAx` is satisfied by an empty file.
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" guard.txt || true)
+          if [ "$n" -lt "68" ]; then
+            echo "::error::guard printed $n axiom lines, expected at least 68 --"
+            echo "::error::the guard did not run, or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" guard.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
           grep -q "Quasicrystal.offline_disjoint_discs" guard.txt || { echo "GUARD FAILED: node theorem not printed"; exit 1; }
           grep -q "OfflineDiscsInstances.offline_discs_offline_bank" guard.txt || { echo "GUARD FAILED: instance not printed"; exit 1; }
+          # Every printed axiom list must be a SUBSET of the three standard axioms.
+          # Join lines first: Lean WRAPS a long list, and a line-based grep would read
+          # the wrapped remainder as a violation.
+          if tr "\n" " " < guard.txt | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
   gram-inertia-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2478,9 +2559,27 @@ jobs:
 
       - name: Axiom guard (fails on sorryAx anywhere in the bridge or the certificates)
         working-directory: telperion/examples/gram_inertia/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardGramInertia.lean | tee axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardGramInertia.lean 2>&1 | tee axioms.out
+          # 8 `#print axioms` anchors in AxiomGuardGramInertia.lean as of 2026-09-20.
+          # Without a floor, a guard that elaborates to NOTHING passes the checks
+          # below, because `! grep -q sorryAx` is satisfied by an empty file.
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
+          if [ "$n" -lt "7" ]; then
+            echo "::error::guard printed $n axiom lines, expected at least 7 --"
+            echo "::error::the guard did not run, or was silently truncated"; exit 1; fi
           ! grep -q "sorryAx" axioms.out
+          # Every printed axiom list must be a SUBSET of the three standard axioms.
+          # Join lines first: Lean WRAPS a long list, and a line-based grep would read
+          # the wrapped remainder as a violation.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
   window-form-floor-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -2528,9 +2627,27 @@ jobs:
 
       - name: Axiom guard (fails on sorryAx anywhere in the emitted window-floor theorems)
         working-directory: telperion/examples/weil_form_enclosure/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardWindowFormFloor.lean | tee axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardWindowFormFloor.lean 2>&1 | tee axioms.out
+          # 3 `#print axioms` anchors in AxiomGuardWindowFormFloor.lean as of 2026-09-20.
+          # Without a floor, a guard that elaborates to NOTHING passes the checks
+          # below, because `! grep -q sorryAx` is satisfied by an empty file.
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
+          if [ "$n" -lt "2" ]; then
+            echo "::error::guard printed $n axiom lines, expected at least 2 --"
+            echo "::error::the guard did not run, or was silently truncated"; exit 1; fi
           ! grep -q "sorryAx" axioms.out
+          # Every printed axiom list must be a SUBSET of the three standard axioms.
+          # Join lines first: Lean WRAPS a long list, and a line-based grep would read
+          # the wrapped remainder as a violation.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
   mission-statements-compile:
     # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
     # statement package: a statement that does not elaborate cannot enter the
@@ -2773,9 +2890,24 @@ jobs:
 
       - name: Axiom guard (fails on sorryAx anywhere in the island)
         working-directory: telperion/examples/speiser_box_probe/lean
+        shell: bash
         run: |
-          lake env lean AxiomGuardSpeiserBoxProbe.lean | tee axioms.out
+          set -euo pipefail
+          lake env lean AxiomGuardSpeiserBoxProbe.lean 2>&1 | tee axioms.out
+          # 17 `#print axioms` anchors as of 2026-09-20.  Without a floor, a guard that
+          # elaborates to NOTHING passes, because `! grep -q sorryAx` is satisfied by an
+          # empty file.  Without `2>&1`, an elaboration error never reaches the file at all.
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
+          if [ "$n" -lt "15" ]; then
+            echo "::error::guard printed $n axiom lines, expected at least 15 --"
+            echo "::error::the guard did not run, or was silently truncated"; exit 1; fi
           ! grep -q "sorryAx" axioms.out
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
   robin-growth-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2970,14 +3102,55 @@ jobs:
 
       - name: Axiom guard (LeakageDictionary + LeakageInstances must be sorry-free and axiom-clean)
         working-directory: telperion/examples/quasicrystal/lean
+        shell: bash
         run: |
+          set -euo pipefail
           lake env lean AxiomGuardLeakage.lean 2>&1 | tee guard-leakage.txt
-          if grep -q "sorryAx" guard-leakage.txt; then echo "GUARD FAILED: sorryAx present"; exit 1; fi
-          if grep -q "ofReduceBool" guard-leakage.txt; then echo "GUARD FAILED: ofReduceBool present"; exit 1; fi
+          # 47 `#print axioms` anchors in AxiomGuardLeakage.lean as of 2026-09-20.
+          # Without a floor, a guard that elaborates to NOTHING passes the checks
+          # below, because `! grep -q sorryAx` is satisfied by an empty file.
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" guard-leakage.txt || true)
+          if [ "$n" -lt "42" ]; then
+            echo "::error::guard printed $n axiom lines, expected at least 42 --"
+            echo "::error::the guard did not run, or was silently truncated"; exit 1; fi
+          if grep -q "sorryAx" guard-leakage.txt; then echo "::error::GUARD FAILED: sorryAx present"; exit 1; fi
+          for marker in ofReduceBool ofReduceNat; do
+            if grep -q "$marker" guard-leakage.txt; then echo "::error::GUARD FAILED: $marker present"; exit 1; fi
+          done
           # The node theorem, its contrapositive instrument, and BOTH controls must print.
-          if ! grep -q "Quasicrystal.composite_bragg_amplitude_zero" guard-leakage.txt; then echo "GUARD FAILED: node theorem not printed"; exit 1; fi
-          if ! grep -q "Quasicrystal.not_completelyMultiplicative_of_composite_leak" guard-leakage.txt; then echo "GUARD FAILED: instrument not printed"; exit 1; fi
-          if ! grep -q "LeakageInstances.leak_chi5_composite_vanishes" guard-leakage.txt; then echo "GUARD FAILED: positive control not printed"; exit 1; fi
-          if ! grep -q "LeakageInstances.leak_dh_composite_leak_pos" guard-leakage.txt; then echo "GUARD FAILED: negative control not printed"; exit 1; fi
-          if ! grep -q "LeakageInstances.leak_dh_enclosure" guard-leakage.txt; then echo "GUARD FAILED: certified b(6) enclosure not printed"; exit 1; fi
-          if ! grep -q "LeakageInstances.leak_dh_multiplicativity_is_necessary" guard-leakage.txt; then echo "GUARD FAILED: falsification twin not printed"; exit 1; fi
+          #
+          # Each check is ANCHORED on the printed form rather than matching a bare
+          # substring.  The substring form was satisfiable by a LONGER name: the
+          # enclosure check passed on leak_dh_enclosure_decimal alone, without the
+          # enclosure itself ever printing.  Verified on fixtures before landing.
+          #
+          # LIMITATION, stated rather than left for the next reader to discover: these
+          # assert that a NAME printed, never that its STATEMENT is unchanged.  A theorem
+          # weakened by an added hypothesis passes every one of them.  What actually
+          # guards the statement is the registry's normalized-containment gate at grant
+          # time, not this job.
+          #
+          # The line below used to name composite_bragg_amplitude_zero while calling itself
+          # the node-theorem check.  That is a different declaration, so NOTHING verified
+          # that the node's own theorem was guarded.  Found by a blind read-back that built
+          # the island; the node does print, and the check now says so.  Both names are
+          # asserted, since the theory lemma is worth guarding in its own right.
+          if ! grep -qE "'Quasicrystal\\.leakage_composite_zero' (depends on axioms|does not depend)" guard-leakage.txt; then echo "::error::GUARD FAILED: the NODE theorem is not printed"; exit 1; fi
+          if ! grep -qE "'Quasicrystal\\.composite_bragg_amplitude_zero' (depends on axioms|does not depend)" guard-leakage.txt; then echo "::error::GUARD FAILED: theory lemma not printed"; exit 1; fi
+          if ! grep -qE "'Quasicrystal\\.not_completelyMultiplicative_of_composite_leak' (depends on axioms|does not depend)" guard-leakage.txt; then echo "GUARD FAILED: instrument not printed"; exit 1; fi
+          if ! grep -qE "'LeakageInstances\\.leak_chi5_composite_vanishes' (depends on axioms|does not depend)" guard-leakage.txt; then echo "GUARD FAILED: positive control not printed"; exit 1; fi
+          if ! grep -qE "'LeakageInstances\\.leak_dh_composite_leak_pos' (depends on axioms|does not depend)" guard-leakage.txt; then echo "GUARD FAILED: negative control not printed"; exit 1; fi
+          if ! grep -qE "'LeakageInstances\\.leak_dh_enclosure' (depends on axioms|does not depend)" guard-leakage.txt; then echo "GUARD FAILED: certified b(6) enclosure not printed"; exit 1; fi
+          if ! grep -qE "'LeakageInstances\\.leak_dh_multiplicativity_is_necessary' (depends on axioms|does not depend)" guard-leakage.txt; then echo "::error::GUARD FAILED: falsification twin not printed"; exit 1; fi
+          # Every printed axiom list must be a SUBSET of the three standard axioms.  A
+          # blind read-back confirmed all 47 guarded declarations print exactly those
+          # three, but nothing was ASSERTING it, so the claim was unenforced.  Join lines
+          # before extracting: Lean wraps a long list, and a line-based grep would read the
+          # wrapped remainder as a violation.
+          if tr "\n" " " < guard-leakage.txt | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
+          echo "axiom guard: every printed list is a subset of the three standard axioms"
