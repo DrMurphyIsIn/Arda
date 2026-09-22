@@ -1,0 +1,36 @@
+import LiBoxRungs
+#print axioms LowHeightBox.Q1
+#print axioms LowHeightBox.Q2
+#print axioms LowHeightBox.Q3
+#print axioms LowHeightBox.Q4
+#print axioms LowHeightBox.Q5
+#print axioms LowHeightBox.zOf
+#print axioms LowHeightBox.liPairedSummand_eq_pow
+#print axioms LowHeightBox.zOf_eq
+#print axioms LowHeightBox.w_mul_v
+#print axioms LowHeightBox.liPairedSummand_zero_eq
+#print axioms LowHeightBox.liPairedSummand_one_eq
+#print axioms LowHeightBox.liPairedSummand_two_eq
+#print axioms LowHeightBox.liPairedSummand_three_eq
+#print axioms LowHeightBox.liPairedSummand_four_eq
+#print axioms LowHeightBox.re_Q1_nonneg
+#print axioms LowHeightBox.re_Q2_nonneg
+#print axioms LowHeightBox.re_Q3_nonneg
+#print axioms LowHeightBox.re_Q4_nonneg
+#print axioms LowHeightBox.re_Q5_nonneg
+#print axioms LowHeightBox.re_mul_one_sub_ge_one
+#print axioms LowHeightBox.zOf_mem_disk
+#print axioms LowHeightBox.liPairedSummand_re_nonneg
+#print axioms LowHeightBox.taylorCoeff_eq_half_tsum_paired
+#print axioms LowHeightBox.taylorCoeff_re_nonneg_of_termwise
+#print axioms LowHeightBox.li_rung0
+#print axioms LowHeightBox.li_rung1
+#print axioms LowHeightBox.li_rung2
+#print axioms LowHeightBox.li_rung3
+#print axioms LowHeightBox.li_rung4
+#print axioms LowHeightBox.li_rungs_lt_five
+#print axioms LowHeightBox.zeta_zero_confined
+#print axioms LiCriterion.weighted_paired_sum_formula_of_standard_hypotheses
+#print axioms LiCriterion.xi_hasFiniteOrder
+#print axioms LiCriterion.xi_order_le_one
+#check @LowHeightBox.li_rungs_lt_five
