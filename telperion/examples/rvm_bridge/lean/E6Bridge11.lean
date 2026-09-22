@@ -53,6 +53,7 @@
 -/
 import E6Bridge8
 import E6Bridge10
+import RvMBridgeGauss
 import Zeta23.GammaFacts.StirlingVert
 import Zeta23.GammaFacts.Mu
 import Zeta23.Analytic.Stirling
@@ -116,12 +117,12 @@ theorem integral_sq_mul_exp_neg_mul_sq {a : ℝ} (ha : 0 < a) :
     have hneg : HasDerivAt (fun y : ℝ => -y) (-1) x := (hasDerivAt_id x).neg
     exact ((hneg.mul h1).div_const (2 * a)).congr_deriv (by field_simp; ring)
   have hi1 : Integrable (fun x : ℝ => x ^ 2 * Real.exp (-a * x ^ 2)) := by
-    have := RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs ha 0 2
+    have := RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs ha 0 2
     refine this.congr (Filter.Eventually.of_forall fun x => ?_)
     simp [sq_abs]
   have hi0 : Integrable (fun x : ℝ => Real.exp (-a * x ^ 2)) := integrable_exp_neg_mul_sq ha
   have hiF : Integrable (fun x : ℝ => -x * Real.exp (-a * x ^ 2) / (2 * a)) := by
-    have := (RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs ha 0 1).div_const (2 * a)
+    have := (RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs ha 0 1).div_const (2 * a)
     refine this.mono' (by fun_prop) (Filter.Eventually.of_forall fun x => ?_)
     simp only [Real.norm_eq_abs, zero_mul, add_zero, pow_one]
     rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < 2 * a), abs_mul, abs_neg,
@@ -249,7 +250,7 @@ lemma integral_sq_sub_mul_cexp {b : ℝ} (hb : 0 < b) (u : ℝ) :
     push_cast
     ring_nf
   have hi1 : Integrable (fun w : ℝ => (w : ℂ) ^ 2 * cexp (-(2 * (b : ℂ)) * (w : ℂ) ^ 2)) := by
-    have := (RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs h2b 0 2).ofReal (𝕜 := ℂ)
+    have := (RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs h2b 0 2).ofReal (𝕜 := ℂ)
     refine this.congr (Filter.Eventually.of_forall fun w => ?_)
     show (((|w| ^ 2 * Real.exp (-(2 * b) * w ^ 2 + 0 * |w|) : ℝ)) : ℂ)
       = (w : ℂ) ^ 2 * cexp (-(2 * (b : ℂ)) * (w : ℂ) ^ 2)
@@ -606,101 +607,9 @@ theorem norm_weilKernel_one_le {c lam : ℝ} (hlam : 0 < lam) :
 
 /-! ## H. The transform of f on the line: weilKernel f (1/2 + i r) = |h(r)|^2 = bumpR c lam r. -/
 
-/-- The second Gaussian moment with a real frequency: ∫ x^2 e^{-a x^2} e^{i w x} dx
-= (1/(2a)) (M0 + i w M1) where M0, M1 are the zeroth and first moments; one integration by
-parts (u = e^{iwx}, v = x e^{-a x^2}). -/
-theorem integral_sq_mul_cexp_gaussian_fourier {a : ℝ} (ha : 0 < a) (w : ℝ) :
-    ∫ x : ℝ, (x : ℂ) ^ 2 * cexp (-(a : ℂ) * (x : ℂ) ^ 2) * cexp (I * (w : ℂ) * (x : ℂ))
-      = (1 / (2 * (a : ℂ)))
-        * ((((Real.pi : ℂ) / a) ^ (1 / 2 : ℂ) * cexp (-(w : ℂ) ^ 2 / (4 * a)))
-          + I * w * ((I * w / (2 * a))
-              * (((Real.pi : ℂ) / a) ^ (1 / 2 : ℂ) * cexp (-(w : ℂ) ^ 2 / (4 * a))))) := by
-  have haC : 0 < (a : ℂ).re := by simpa using ha
-  have ha0 : (a : ℂ) ≠ 0 := by exact_mod_cast ha.ne'
-  have h2a : (2 * (a : ℂ)) ≠ 0 := mul_ne_zero two_ne_zero ha0
-  -- derivatives
-  have hu : ∀ x : ℝ, HasDerivAt (fun x : ℝ => cexp (I * (w : ℂ) * (x : ℂ)))
-      (cexp (I * (w : ℂ) * (x : ℂ)) * (I * w)) x := by
-    intro x
-    have := (((hasDerivAt_id (x : ℂ)).const_mul (I * (w : ℂ))).cexp).comp_ofReal
-    simpa using this
-  have hv : ∀ x : ℝ, HasDerivAt (fun x : ℝ => (x : ℂ) * cexp (-(a : ℂ) * (x : ℂ) ^ 2))
-      (cexp (-(a : ℂ) * (x : ℂ) ^ 2) * (1 - 2 * a * (x : ℂ) ^ 2)) x := by
-    intro x
-    have hE : HasDerivAt (fun z : ℂ => -(a : ℂ) * z ^ 2) (-(a : ℂ) * (2 * x)) (x : ℂ) := by
-      have := (hasDerivAt_pow 2 (x : ℂ)).const_mul (-(a : ℂ))
-      refine this.congr_deriv ?_
-      push_cast
-      ring
-    have h := ((hasDerivAt_id (x : ℂ)).mul hE.cexp).comp_ofReal
-    refine h.congr_deriv ?_
-    simp only [id]
-    ring
-  -- integrability
-  have hmaj : Integrable (fun x : ℝ => x ^ 2 * Real.exp (-a * x ^ 2)) := by
-    have := RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs ha 0 2
-    refine this.congr (Filter.Eventually.of_forall fun x => ?_)
-    simp [sq_abs]
-  have hi_sq : Integrable (fun x : ℝ => (x : ℂ) ^ 2 * cexp (-(a : ℂ) * (x : ℂ) ^ 2)
-      * cexp (I * (w : ℂ) * (x : ℂ))) := by
-    refine hmaj.mono' (by fun_prop) (Filter.Eventually.of_forall fun x => ?_)
-    rw [norm_mul, norm_mul, norm_pow, Complex.norm_real, Complex.norm_exp, Complex.norm_exp,
-      Real.norm_eq_abs, sq_abs]
-    have h1 : (-(a : ℂ) * (x : ℂ) ^ 2).re = -a * x ^ 2 := by
-      simp [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, pow_two]
-    have h2 : (I * (w : ℂ) * (x : ℂ)).re = 0 := by simp
-    rw [h1, h2, Real.exp_zero, mul_one]
-  have hi_uv : Integrable (fun x : ℝ => cexp (I * (w : ℂ) * (x : ℂ)) * cexp (-(a : ℂ) * (x : ℂ) ^ 2)) := by
-    have h := integrable_cexp_quadratic haC (I * w) 0
-    refine h.congr (Filter.Eventually.of_forall fun x => ?_)
-    simp only [add_zero, Complex.exp_add]
-    ring
-  have hi_xv : Integrable (fun x : ℝ => (x : ℂ) * cexp (-(a : ℂ) * (x : ℂ) ^ 2)
-      * cexp (I * (w : ℂ) * (x : ℂ))) := by
-    have h := RvMBridge8.integrable_mul_cexp_quadratic ha (I * w)
-    refine h.congr (Filter.Eventually.of_forall fun x => ?_)
-    simp only [Complex.exp_add]
-    ring
-  have hi1 : Integrable ((fun x : ℝ => cexp (I * (w : ℂ) * (x : ℂ)))
-      * fun x : ℝ => cexp (-(a : ℂ) * (x : ℂ) ^ 2) * (1 - 2 * a * (x : ℂ) ^ 2)) := by
-    refine (hi_uv.sub (hi_sq.const_mul (2 * (a : ℂ)))).congr (Filter.Eventually.of_forall fun x => ?_)
-    simp only [Pi.mul_apply, Pi.sub_apply]
-    ring
-  have hi2 : Integrable ((fun x : ℝ => cexp (I * (w : ℂ) * (x : ℂ)) * (I * w))
-      * fun x : ℝ => (x : ℂ) * cexp (-(a : ℂ) * (x : ℂ) ^ 2)) := by
-    refine (hi_xv.const_mul (I * w)).congr (Filter.Eventually.of_forall fun x => ?_)
-    simp only [Pi.mul_apply]
-    ring
-  have hi3 : Integrable ((fun x : ℝ => cexp (I * (w : ℂ) * (x : ℂ)))
-      * fun x : ℝ => (x : ℂ) * cexp (-(a : ℂ) * (x : ℂ) ^ 2)) := by
-    refine hi_xv.congr (Filter.Eventually.of_forall fun x => ?_)
-    simp only [Pi.mul_apply]
-    ring
-  have key := integral_mul_deriv_eq_deriv_mul_of_integrable (fun x _ => hu x) (fun x _ => hv x)
-    hi1 hi2 hi3
-  have hG := fourierIntegral_gaussian haC w
-  have hM1 := RvMBridge8.integral_mul_cexp_gaussian_fourier ha w
-  have hL : ∫ x : ℝ, cexp (I * (w : ℂ) * (x : ℂ)) * (cexp (-(a : ℂ) * (x : ℂ) ^ 2) * (1 - 2 * a * (x : ℂ) ^ 2))
-      = (∫ x : ℝ, cexp (I * (w : ℂ) * (x : ℂ)) * cexp (-(a : ℂ) * (x : ℂ) ^ 2))
-        - (2 * (a : ℂ)) * ∫ x : ℝ, (x : ℂ) ^ 2 * cexp (-(a : ℂ) * (x : ℂ) ^ 2) * cexp (I * (w : ℂ) * (x : ℂ)) := by
-    rw [← integral_const_mul, ← integral_sub hi_uv (hi_sq.const_mul _)]
-    congr 1
-    funext x
-    ring
-  have hR : ∫ x : ℝ, cexp (I * (w : ℂ) * (x : ℂ)) * (I * w) * ((x : ℂ) * cexp (-(a : ℂ) * (x : ℂ) ^ 2))
-      = (I * w) * ∫ x : ℝ, (x : ℂ) * cexp (-(a : ℂ) * (x : ℂ) ^ 2) * cexp (I * (w : ℂ) * (x : ℂ)) := by
-    rw [← integral_const_mul]
-    congr 1
-    funext x
-    ring
-  rw [hL, hR, hG, hM1] at key
-  set M2 := ∫ x : ℝ, (x : ℂ) ^ 2 * cexp (-(a : ℂ) * (x : ℂ) ^ 2) * cexp (I * (w : ℂ) * (x : ℂ)) with hM2
-  have hsolve : 2 * (a : ℂ) * M2
-      = (((Real.pi : ℂ) / a) ^ (1 / 2 : ℂ) * cexp (-(w : ℂ) ^ 2 / (4 * a)))
-        + I * w * ((I * w / (2 * a)) * (((Real.pi : ℂ) / a) ^ (1 / 2 : ℂ) * cexp (-(w : ℂ) ^ 2 / (4 * a)))) := by
-    linear_combination -key
-  rw [← hsolve]
-  field_simp
+/-! The second Gaussian moment ∫ x^2 e^{-a x^2} e^{i w x} dx at a real frequency w is the case
+w = (r : ℂ) of the prelude's RvMBridgeGauss.integral_sq_mul_cexp_gaussian_fourier (the
+real-frequency copy formerly here is gone). -/
 
 /-- weilKernel g (1/2 + i r) = ∫ g(u) e^{i r u} du. -/
 lemma weilKernel_line_eq (g : ℝ → ℂ) (r : ℝ) :
@@ -751,7 +660,7 @@ theorem weilKernel_autocorrGauss_line {c lam : ℝ} (hlam : 0 < lam) (r : ℝ) :
     push_cast
     ring
   have hmaj : Integrable (fun x : ℝ => x ^ 2 * Real.exp (-a * x ^ 2)) := by
-    have := RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs ha 0 2
+    have := RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs ha 0 2
     refine this.congr (Filter.Eventually.of_forall fun x => ?_)
     simp [sq_abs]
   have hi_sq : Integrable (fun x : ℝ => (x : ℂ) ^ 2 * cexp (-(a : ℂ) * (x : ℂ) ^ 2)
@@ -769,8 +678,8 @@ theorem weilKernel_autocorrGauss_line {c lam : ℝ} (hlam : 0 < lam) (r : ℝ) :
     simp only [add_zero, Complex.exp_add]
     ring
   rw [hfun, integral_sub (hi_uv.const_mul _) (hi_sq.const_mul _), integral_const_mul,
-    integral_const_mul, fourierIntegral_gaussian haC w, integral_sq_mul_cexp_gaussian_fourier ha w,
-    cpow_pi_div_a hlam]
+    integral_const_mul, fourierIntegral_gaussian haC w,
+    RvMBridgeGauss.integral_sq_mul_cexp_gaussian_fourier ha w, cpow_pi_div_a hlam]
   -- the exponential is real
   have hE : cexp (-(w : ℂ) ^ 2 / (4 * (a : ℂ))) = ((Real.exp (-(2 * lam) * w ^ 2) : ℝ) : ℂ) := by
     rw [Complex.ofReal_exp]
@@ -855,7 +764,7 @@ lemma continuous_bumpR (c lam : ℝ) : Continuous (bumpR c lam) := by
   fun_prop
 
 lemma integrable_bumpR {c lam : ℝ} (hlam : 0 < lam) : Integrable (bumpR c lam) := by
-  have h := (RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs (b := 2 * lam) (by positivity) 0 2).comp_sub_right c
+  have h := (RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs (b := 2 * lam) (by positivity) 0 2).comp_sub_right c
   refine h.congr (Filter.Eventually.of_forall fun r => ?_)
   unfold bumpR
   simp [sq_abs]
@@ -865,8 +774,8 @@ digamma_growth_strip) against the Gaussian bump. -/
 theorem integrable_bumpR_mul_psiR {c lam : ℝ} (hlam : 0 < lam) :
     Integrable (fun r : ℝ => bumpR c lam r * psiR r) := by
   obtain ⟨C, hC0, hC⟩ := Zeta23.WeilEF.digamma_growth_strip
-  have h2 := (RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs (b := 2 * lam) (by positivity) 0 2).comp_sub_right c
-  have h3 := (RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs (b := 2 * lam) (by positivity) 0 3).comp_sub_right c
+  have h2 := (RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs (b := 2 * lam) (by positivity) 0 2).comp_sub_right c
+  have h3 := (RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs (b := 2 * lam) (by positivity) 0 3).comp_sub_right c
   have hmaj : Integrable (fun r : ℝ => C * ((1 + |c| / 2) * |r - c| ^ 2 + (1 / 2) * |r - c| ^ 3)
       * Real.exp (-(2 * lam) * (r - c) ^ 2)) := by
     refine ((h2.const_mul (C * (1 + |c| / 2))).add (h3.const_mul (C * (1 / 2)))).congr

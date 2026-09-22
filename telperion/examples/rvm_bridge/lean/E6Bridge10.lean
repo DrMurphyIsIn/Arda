@@ -36,6 +36,7 @@
   conjecture1_proved = False.
 -/
 import E6Bridge9
+import RvMBridgeGauss
 
 open Zeta23 Complex MeasureTheory Filter Topology
 open scoped ComplexConjugate
@@ -43,7 +44,7 @@ open scoped ComplexConjugate
 noncomputable section
 
 namespace RvMBridge10
-open WeilExplicit RvMBridge6 RvMBridge8
+open WeilExplicit RvMBridge6 RvMBridge8 RvMBridgeGauss
 
 /-! ## A. Deliverable 1: the two-parameter Wall. -/
 
@@ -151,20 +152,8 @@ theorem zeroSide_gaussTests_tendsto (c lam : ℝ) (hlam : 0 < lam) :
       (𝓝 (zeroSide (gaussTest c lam))) := by
   obtain ⟨C, -, hC⟩ := exists_hermitian_gaussTests_bound c lam hlam
   unfold zeroSide
-  refine tendsto_tsum_of_dominated_convergence (summable_mult_div_one_add_normSq C) ?_
-    (Filter.Eventually.of_forall fun n ρ => ?_)
-  · intro ρ
-    by_cases h : IsNontrivialZero ρ
-    · exact ((hermitianTransform_gaussTests_tendsto hlam
-        (Zeta23.WeilEF.abs_gammaOf_im_lt h.2).le).const_mul _)
-    · simp only [RvMBridge4.zeroMult_eq_zero_of_not_nontrivial h, Nat.cast_zero, zero_mul]
-      exact tendsto_const_nhds
-  · rw [norm_mul, Complex.norm_natCast]
-    by_cases h : IsNontrivialZero ρ
-    · exact mul_le_mul_of_nonneg_left
-        (hC n (gammaOf ρ) (Zeta23.WeilEF.abs_gammaOf_im_lt h.2).le) (Nat.cast_nonneg _)
-    · rw [RvMBridge4.zeroMult_eq_zero_of_not_nontrivial h]
-      simp
+  exact tendsto_tsum_zeroMult_of_strip_bound hC
+    fun z hz => hermitianTransform_gaussTests_tendsto hlam hz
 
 /-! ## C. The autocorrelations: a Gaussian majorant uniform in n, and the pointwise limit
 autocorr (g n) u -> autocorr phi u. -/

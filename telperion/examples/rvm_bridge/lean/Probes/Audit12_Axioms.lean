@@ -23,10 +23,10 @@ import E6Bridge12
 #print axioms RvMBridge12.tail_le_near_of_threshold
 #print axioms RvMBridge12.gaussian_positivity_of_window
 #print axioms RvMBridge12.gaussian_positivity_of_window_two
-#print axioms RvMBridge12.zeroWindowSet
-#print axioms RvMBridge12.zeroWindowSet_finite
-#print axioms RvMBridge12.zeroWindow
-#print axioms RvMBridge12.mem_zeroWindow
+#print axioms RvMBridgeGauss.zeroWindowSet
+#print axioms RvMBridgeGauss.zeroWindowSet_finite
+#print axioms RvMBridgeGauss.zeroWindow
+#print axioms RvMBridgeGauss.mem_zeroWindow
 #print axioms RvMBridge12.windowSum
 #print axioms RvMBridge12.windowSum_nonneg
 #print axioms RvMBridge12.tailEnvelope

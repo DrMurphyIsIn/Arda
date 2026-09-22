@@ -28,8 +28,15 @@
 
   DELIVERED.  xi_logDeriv_deriv_decay : RvMBridge18.XiLogDerivDerivDecay, kernel-clean
   (axioms [propext, Classical.choice, Quot.sound]); no named obligation remains on this side.
+
+  2026-09-22: the COMPLEX-argument forms norm_term_le_of_two_le_re (‖term f s n‖ <= ‖term f 2 n‖ for
+  Re s >= 2) and deriv_logDeriv_xi_of_one_lt_re (the termwise derivative on Re s > 1), which
+  E6Bridge22 had re-proved, now live here (they need this module's digamma / LSeries machinery, so
+  they cannot go in the prelude RvMBridgeXi); the real-axis forms below are their corollaries at
+  s = sigma, statements unchanged.  Nothing about RH.  conjecture1_proved = False.
 -/
 import E6Bridge18
+import RvMBridgeXi
 import Zeta23.Analytic.Stirling
 import Zeta23.RvM.GammaSide
 import Mathlib.NumberTheory.LSeries.Deriv
@@ -142,27 +149,21 @@ theorem hasSum_trigamma_of_re_pos {z : ℂ} (hz : 1 / 2 < z.re) :
       have := hsum.hasSum
       rw [hEq] at this
       exact this
-    -- both sides tend to their values along the punctured neighbourhood
+    -- both sides are continuous at z and agree on the punctured neighbourhood (the prelude's atom)
     have hopen : IsOpen {w : ℂ | 1 / 2 < w.re} := isOpen_lt continuous_const continuous_re
-    have hT : Tendsto (fun w : ℂ => ∑' n : ℕ, trigTerm w n) (𝓝[≠] z)
-        (𝓝 (∑' n : ℕ, trigTerm z n)) :=
-      ((continuousOn_trigSum.continuousAt (hopen.mem_nhds hz)).tendsto).mono_left nhdsWithin_le_nhds
-    have hD : Tendsto (deriv Complex.digamma) (𝓝[≠] z) (𝓝 (deriv Complex.digamma z)) :=
-      ((continuousAt_deriv_digamma (by linarith)).tendsto).mono_left nhdsWithin_le_nhds
-    have hev : (fun w : ℂ => ∑' n : ℕ, trigTerm w n) =ᶠ[𝓝[≠] z] deriv Complex.digamma := by
-      have hball : Metric.ball z (1 / 2) ∈ 𝓝 z := Metric.ball_mem_nhds z (by norm_num)
-      filter_upwards [nhdsWithin_le_nhds hball, nhdsWithin_le_nhds (hopen.mem_nhds hz),
-        self_mem_nhdsWithin] with w hwb hwre hwne
-      have hwI : w ∈ Complex.integerComplement := by
-        rintro ⟨j, hj⟩
-        apply hwne
-        rw [← hj, ← hk]
-        refine eq_of_intCast_near ?_
-        rw [Metric.mem_ball, dist_eq_norm] at hwb
-        rw [hj, hk]
-        exact hwb
-      exact (Zeta23.Stirling.hasSum_trigamma hwI).tsum_eq
-    exact tendsto_nhds_unique hT (hD.congr' hev.symm)
+    refine RvMBridgeXi.eq_of_continuousAt_of_eventually_ne
+      (continuousOn_trigSum.continuousAt (hopen.mem_nhds hz)) (continuousAt_deriv_digamma (by linarith)) ?_
+    have hball : Metric.ball z (1 / 2) ∈ 𝓝 z := Metric.ball_mem_nhds z (by norm_num)
+    filter_upwards [hball] with w hwb hwne
+    have hwI : w ∈ Complex.integerComplement := by
+      rintro ⟨j, hj⟩
+      apply hwne
+      rw [← hj, ← hk]
+      refine eq_of_intCast_near ?_
+      rw [Metric.mem_ball, dist_eq_norm] at hwb
+      rw [hj, hk]
+      exact hwb
+    exact (Zeta23.Stirling.hasSum_trigamma hwI).tsum_eq
 
 /-! ## C. The trigamma bound on the real ray: psi'(x) <= 1/(x - 1/2) for x >= 1. -/
 
@@ -274,17 +275,23 @@ lemma term_tendsto_zero (f : ℕ → ℂ) (n : ℕ) :
     · refine tendsto_const_nhds.div_atTop ?_
       exact tendsto_rpow_atTop_of_base_gt_one (n : ℝ) (by exact_mod_cast hn)
 
-lemma norm_term_le_of_two_le (f : ℕ → ℂ) {σ : ℝ} (hσ : 2 ≤ σ) (n : ℕ) :
-    ‖LSeries.term f (σ : ℂ) n‖ ≤ ‖LSeries.term f (2 : ℂ) n‖ := by
+/-- ‖term f s n‖ ≤ ‖term f 2 n‖ for Re s ≥ 2 (complex argument). -/
+lemma norm_term_le_of_two_le_re (f : ℕ → ℂ) {s : ℂ} (hs : 2 ≤ s.re) (n : ℕ) :
+    ‖LSeries.term f s n‖ ≤ ‖LSeries.term f (2 : ℂ) n‖ := by
   rw [LSeries.norm_term_eq, LSeries.norm_term_eq]
   rcases eq_or_ne n 0 with rfl | hn
   · simp
-  · rw [if_neg hn, if_neg hn, Complex.ofReal_re]
+  · rw [if_neg hn, if_neg hn]
     have h2 : ((2 : ℂ)).re = (2 : ℝ) := by simp
     rw [h2]
     have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn
     exact div_le_div_of_nonneg_left (norm_nonneg _) (by positivity)
-      (Real.rpow_le_rpow_of_exponent_le hn1 hσ)
+      (Real.rpow_le_rpow_of_exponent_le hn1 hs)
+
+/-- The real-axis form: ‖term f σ n‖ ≤ ‖term f 2 n‖ for real σ ≥ 2. -/
+lemma norm_term_le_of_two_le (f : ℕ → ℂ) {σ : ℝ} (hσ : 2 ≤ σ) (n : ℕ) :
+    ‖LSeries.term f (σ : ℂ) n‖ ≤ ‖LSeries.term f (2 : ℂ) n‖ :=
+  norm_term_le_of_two_le_re f (by rw [Complex.ofReal_re]; exact hσ) n
 
 /-- Stage lemma: (zeta'/zeta)'(sigma) -> 0 as sigma -> +infinity (Tannery against the sigma = 2
 terms of the Dirichlet series of L(log * Lambda)). -/
@@ -325,49 +332,57 @@ lemma logDeriv_xi_eq_of_one_lt_re {s : ℂ} (hs : 1 < s.re) :
     Zeta23.RvM.logDeriv_Gammaℝ hre, logDeriv_zeta_eq hs, one_div, one_div]
   ring
 
-/-- **Stage lemma (the termwise derivative).**  For real sigma >= 2,
-deriv (logDeriv xi)(sigma) = -1/sigma^2 - 1/(sigma-1)^2 + (1/4) psi'(sigma/2) + (zeta'/zeta)'(sigma). -/
-theorem deriv_logDeriv_xi_real {σ : ℝ} (hσ : 2 ≤ σ) :
-    deriv (logDeriv xi) (σ : ℂ) = -1 / (σ : ℂ) ^ 2 - 1 / ((σ : ℂ) - 1) ^ 2
-      + (1 / 4 : ℂ) * deriv Complex.digamma ((σ : ℂ) / 2)
-      + deriv (logDeriv riemannZeta) (σ : ℂ) := by
-  have hre : 1 < (σ : ℂ).re := by rw [Complex.ofReal_re]; linarith
-  have hev : logDeriv xi =ᶠ[𝓝 (σ : ℂ)] fun z => z⁻¹ + (z - 1)⁻¹
+/-- **Stage lemma (the termwise derivative), complex argument.**  On Re s > 1,
+deriv (logDeriv xi) s = -1/s^2 - 1/(s-1)^2 + (1/4) psi'(s/2) + (zeta'/zeta)'(s). -/
+theorem deriv_logDeriv_xi_of_one_lt_re {s : ℂ} (hre : 1 < s.re) :
+    deriv (logDeriv xi) s = -1 / s ^ 2 - 1 / (s - 1) ^ 2
+      + (1 / 4 : ℂ) * deriv Complex.digamma (s / 2) + deriv (logDeriv riemannZeta) s := by
+  have hev : logDeriv xi =ᶠ[𝓝 s] fun z => z⁻¹ + (z - 1)⁻¹
       + (-(Real.log Real.pi : ℂ) / 2 + (1 / 2 : ℂ) * Complex.digamma (z / 2)) + (-LSeries ↗Λ z) := by
     filter_upwards [isOpen_one_lt_re.mem_nhds hre] with z hz
     exact logDeriv_xi_eq_of_one_lt_re hz
-  have hs0 : (σ : ℂ) ≠ 0 := by
-    intro h; have := congrArg Complex.re h; rw [Complex.ofReal_re, Complex.zero_re] at this; linarith
-  have hs1 : (σ : ℂ) - 1 ≠ 0 := by
-    intro h; have := congrArg Complex.re h
-    rw [Complex.sub_re, Complex.ofReal_re, Complex.one_re, Complex.zero_re] at this; linarith
-  have h1 : HasDerivAt (fun z : ℂ => z⁻¹) (-1 / (σ : ℂ) ^ 2) (σ : ℂ) :=
+  have hs0 : s ≠ 0 := by
+    intro h; rw [h, Complex.zero_re] at hre; linarith
+  have hs1 : s - 1 ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    rw [Complex.sub_re, Complex.one_re, Complex.zero_re] at this; linarith
+  have h1 : HasDerivAt (fun z : ℂ => z⁻¹) (-1 / s ^ 2) s :=
     (hasDerivAt_inv hs0).congr_deriv (by ring)
-  have h2 : HasDerivAt (fun z : ℂ => (z - 1)⁻¹) (-1 / ((σ : ℂ) - 1) ^ 2) (σ : ℂ) :=
-    ((hasDerivAt_inv hs1).comp (σ : ℂ) ((hasDerivAt_id' (σ : ℂ)).sub_const 1)).congr_deriv
-      (by ring)
+  have h2 : HasDerivAt (fun z : ℂ => (z - 1)⁻¹) (-1 / (s - 1) ^ 2) s :=
+    ((hasDerivAt_inv hs1).comp s ((hasDerivAt_id' s).sub_const 1)).congr_deriv (by ring)
   have hψ : HasDerivAt (fun z : ℂ => Complex.digamma (z / 2))
-      (deriv Complex.digamma ((σ : ℂ) / 2) * (1 / 2)) (σ : ℂ) := by
-    have hd : DifferentiableAt ℂ Complex.digamma ((σ : ℂ) / 2) := by
+      (deriv Complex.digamma (s / 2) * (1 / 2)) s := by
+    have hd : DifferentiableAt ℂ Complex.digamma (s / 2) := by
       refine (analyticAt_digamma_of_re_pos ?_).differentiableAt
-      rw [show (σ : ℂ) / 2 = ((σ / 2 : ℝ) : ℂ) by push_cast; rfl, Complex.ofReal_re]
+      rw [Complex.div_re]
+      simp only [Complex.re_ofNat, Complex.im_ofNat, Complex.normSq_ofNat]
       linarith
-    have hin : HasDerivAt (fun z : ℂ => z / 2) (1 / 2) (σ : ℂ) := by
-      simpa using (hasDerivAt_id (σ : ℂ)).div_const 2
-    exact hd.hasDerivAt.comp (σ : ℂ) hin
+    have hin : HasDerivAt (fun z : ℂ => z / 2) (1 / 2) s := by
+      simpa using (hasDerivAt_id s).div_const 2
+    exact hd.hasDerivAt.comp s hin
   have h3 : HasDerivAt (fun z : ℂ => -(Real.log Real.pi : ℂ) / 2 + (1 / 2 : ℂ) * Complex.digamma (z / 2))
-      ((1 / 2 : ℂ) * (deriv Complex.digamma ((σ : ℂ) / 2) * (1 / 2))) (σ : ℂ) :=
+      ((1 / 2 : ℂ) * (deriv Complex.digamma (s / 2) * (1 / 2))) s :=
     (hψ.const_mul (1 / 2 : ℂ)).const_add _
-  have h4 : HasDerivAt (fun z : ℂ => -LSeries ↗Λ z) (-(-LSeries (LSeries.logMul ↗Λ) (σ : ℂ))) (σ : ℂ) :=
+  have h4 : HasDerivAt (fun z : ℂ => -LSeries ↗Λ z) (-(-LSeries (LSeries.logMul ↗Λ) s)) s :=
     (LSeries_hasDerivAt (abscissa_vonMangoldt_lt hre)).neg
   have hall : HasDerivAt (fun z : ℂ => z⁻¹ + (z - 1)⁻¹
       + (-(Real.log Real.pi : ℂ) / 2 + (1 / 2 : ℂ) * Complex.digamma (z / 2)) + (-LSeries ↗Λ z))
-      (-1 / (σ : ℂ) ^ 2 + -1 / ((σ : ℂ) - 1) ^ 2
-        + (1 / 2 : ℂ) * (deriv Complex.digamma ((σ : ℂ) / 2) * (1 / 2))
-        + -(-LSeries (LSeries.logMul ↗Λ) (σ : ℂ))) (σ : ℂ) :=
+      (-1 / s ^ 2 + -1 / (s - 1) ^ 2
+        + (1 / 2 : ℂ) * (deriv Complex.digamma (s / 2) * (1 / 2))
+        + -(-LSeries (LSeries.logMul ↗Λ) s)) s :=
     ((h1.add h2).add h3).add h4
   rw [hev.deriv_eq, hall.deriv, deriv_logDeriv_zeta_eq hre]
   ring
+
+/-- **Stage lemma (the termwise derivative), real axis.**  For real sigma >= 2,
+deriv (logDeriv xi)(sigma) = -1/sigma^2 - 1/(sigma-1)^2 + (1/4) psi'(sigma/2) + (zeta'/zeta)'(sigma):
+the complex form at s = sigma. -/
+theorem deriv_logDeriv_xi_real {σ : ℝ} (hσ : 2 ≤ σ) :
+    deriv (logDeriv xi) (σ : ℂ) = -1 / (σ : ℂ) ^ 2 - 1 / ((σ : ℂ) - 1) ^ 2
+      + (1 / 4 : ℂ) * deriv Complex.digamma ((σ : ℂ) / 2)
+      + deriv (logDeriv riemannZeta) (σ : ℂ) :=
+  deriv_logDeriv_xi_of_one_lt_re (by rw [Complex.ofReal_re]; linarith)
 
 /-! ## F. Assembly: Obligation 2 of E6Bridge18. -/
 

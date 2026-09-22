@@ -10,8 +10,8 @@ import E6Bridge27
 #print axioms RvMBridge24.Fwin
 #print axioms RvMBridge24.FwinExt
 #print axioms RvMBridge24.FwinExt_eq
-#print axioms RvMBridge24.isClosed_zeros
-#print axioms RvMBridge24.eventually_not_zero
+#print axioms RvMBridgeXi.isClosed_zeros
+#print axioms RvMBridgeXi.eventually_not_zero
 #print axioms RvMBridge24.logDeriv_xi_local
 #print axioms RvMBridge24.Fwin_differentiableAt
 #print axioms RvMBridge24.FwinExt_eventuallyEq_at_zero

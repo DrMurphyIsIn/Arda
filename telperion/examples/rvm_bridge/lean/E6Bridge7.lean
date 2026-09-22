@@ -11,7 +11,8 @@
 
   WHAT IS CONSUMED (all unconditional, #print axioms = [propext, Classical.choice, Quot.sound]):
     RvMBridge6.zeroSide_pair_split, gaussTest_conj, summable_gauss_zeroSide,
-    norm_gaussTest_mul_le, summable_mult_div_one_add_normSq   (E6Bridge6)
+    norm_gaussTest_mul_le                                     (E6Bridge6)
+    RvMBridgeGauss.summable_mult_div_one_add_normSq, norm_tsum_subtype_le_tsum   (the prelude)
     RvMBridge4.zeroMult_eq_mult, zeroMult_eq_zero_of_not_nontrivial
     Zeta23.zetaSeam.finite_window   (finitely many nontrivial zeros in an ordinate window)
     Zeta23.zetaSeam.one_le_mult     (a nontrivial zero has multiplicity >= 1)
@@ -45,6 +46,7 @@
   over the zeros, wherever they are.  conjecture1_proved = False.
 -/
 import E6Bridge6
+import RvMBridgeGauss
 
 open Zeta23 Complex MeasureTheory Filter Topology
 open scoped ComplexConjugate
@@ -52,7 +54,7 @@ open scoped ComplexConjugate
 noncomputable section
 
 namespace RvMBridge7
-open WeilExplicit RvMBridge6
+open WeilExplicit RvMBridge6 RvMBridgeGauss
 
 /-! ## A. Vocabulary. -/
 
@@ -467,20 +469,10 @@ lemma tail_bound {ρ₀ : ℂ} {c : ℝ} (hc : |c - ρ₀.im| < 1 / 2) {ρ₁ : 
     {lam : ℝ} (hlam : 1 ≤ lam) :
     ‖∑' ρ : {ρ : ℂ // ρ ≠ ρ₁ ∧ ρ ≠ reflect ρ₁}, term c lam ρ‖
       ≤ Real.exp (2 * lam * (phi c ρ₁ - η)) * constA ρ₀ c + constB c := by
-  set S : Set ℂ := {ρ : ℂ | ρ ≠ ρ₁ ∧ ρ ≠ reflect ρ₁} with hS
-  have hmaj : ∀ ρ : S, ‖term c lam ρ‖ ≤ majorant ρ₀ c (phi c ρ₁) η lam ρ :=
+  rw [← tsum_majorant ρ₀ c (phi c ρ₁) η lam]
+  exact norm_tsum_subtype_le_tsum {ρ : ℂ | ρ ≠ ρ₁ ∧ ρ ≠ reflect ρ₁}
+    (summable_majorant ρ₀ c (phi c ρ₁) η lam) (majorant_nonneg ρ₀ c (phi c ρ₁) η lam)
     fun ρ => norm_term_le_majorant hc hgap hlam ρ.2.1 ρ.2.2
-  have hsumM : Summable (fun ρ : S => majorant ρ₀ c (phi c ρ₁) η lam ρ) :=
-    (summable_majorant ρ₀ c (phi c ρ₁) η lam).subtype _
-  have hsumN : Summable (fun ρ : S => ‖term c lam ρ‖) :=
-    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hmaj hsumM
-  calc ‖∑' ρ : S, term c lam ρ‖
-      ≤ ∑' ρ : S, ‖term c lam ρ‖ := norm_tsum_le_tsum_norm hsumN
-    _ ≤ ∑' ρ : S, majorant ρ₀ c (phi c ρ₁) η lam ρ := hsumN.tsum_le_tsum hmaj hsumM
-    _ ≤ ∑' ρ : ℂ, majorant ρ₀ c (phi c ρ₁) η lam ρ :=
-        (summable_majorant ρ₀ c (phi c ρ₁) η lam).tsum_subtype_le _ _
-          (majorant_nonneg ρ₀ c (phi c ρ₁) η lam)
-    _ = _ := tsum_majorant ρ₀ c (phi c ρ₁) η lam
 
 /-! ## F. Assembly: the theorem. -/
 

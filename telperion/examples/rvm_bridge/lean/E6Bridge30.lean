@@ -12,7 +12,7 @@
   derivative phi(u) = K u e^{-u^2/(4 lam)} e^{-icu}.  No zeros are involved anywhere in this file.
 
   The design is method (a) of docs/GAUSS_WINDOW_DESIGN_2026-09-22.md, section 7 (the spec), with
-  eight bands; every step below is the memo's step of the same number.
+  eight bands (section G repeats it with twelve bands for lam <= 3/2000, the registry node); every step below is the memo's step of the same number.
 
     1. pole_floor: the two pole terms are EVALUATED (E6Bridge16: weilKernel f 0 = gaussTest (i/2),
        weilKernel f 1 = gaussTest (-i/2)) and their sum P(c) = 2 e^{-2 lam (c^2 - 1/4)}

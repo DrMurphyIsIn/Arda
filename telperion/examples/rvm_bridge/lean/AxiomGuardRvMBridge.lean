@@ -42,6 +42,18 @@
         eq_half_add_im_of_rh, weilKernel_autocorr_line (the |h(r)|^2 factorisation on the line)
         and term_re_nonneg.  Proves nothing about RH; discharges the hpos hypothesis of
         weil_negative_refutes_rh.  conjecture1_proved = False.
+      * RvMBridgeGauss.{integrable_exp_quadratic, integrable_abs_pow_mul_exp_quadratic_abs,
+        integrable_mul_cexp_quadratic, integral_mul_cexp_gaussian_fourier,
+        integral_sq_mul_cexp_gaussian_fourier, norm_tsum_subtype_le_tsum, exp_two_mul_le_of_le,
+        summable_mult_div_one_add_normSq, tendsto_tsum_zeroMult_of_strip_bound,
+        zeroWindowSet_finite, mem_zeroWindow, ...} -- the Gaussian / Wall PRELUDE (2026-09-22): ONE
+        copy of the helper vocabulary that E6Bridge6, 7, 8, 10, 11, 12 and 16 (parallel agents) had
+        each re-proved (SHAPES_AUDIT_48H section 4, proposal P2; SHAPES_AUDIT_B N1, N5, D1, D5):
+        the Gaussian integrability calculus and the two Gaussian moments at a complex frequency,
+        the tsum tail envelope with its rate-splitting companion, the shared local-count majorant
+        over all rho : C with the Tannery transfer, and the certified ordinate window; imported by
+        E6Bridge6 and everything above it.  Helpers only: no registry node statement lives there,
+        and every node theorem stays verbatim in its own artifact file.  conjecture1_proved = False.
       * RvMBridge6.weil_positivity_implies_rh_of / weil_positivity_implies_rh_of' /
         rh_iff_weil_positivity_of -- the Weil converse ATTACK (2026-09-20): Weil positivity implies
         Mathlib's RiemannHypothesis MODULO the named obligations GaussianTransfer (or the zero-free
@@ -57,8 +69,9 @@
         remaining Fourier obligation GaussianApprox).  Proves nothing about RH.
       * RvMBridge8.gaussian_approx -- the MIRRORMERE node MM_gaussian_approx, verbatim (O1'
         DISCHARGED, 2026-09-21: truncated Gaussian-derivative Weil tests approximate gaussTest on
-        the strip with an n-uniform C/(1+|z|^2) bound); plus its stages (Gaussian Fourier integral
-        integral_mul_cexp_gaussian_fourier, paperFT_gaussPhi, the generic integration by parts
+        the strip with an n-uniform C/(1+|z|^2) bound); plus its stages (the Gaussian Fourier
+        integral integral_mul_cexp_gaussian_fourier, since 2026-09-22 in the prelude RvMBridgeGauss;
+        paperFT_gaussPhi, the generic integration by parts
         I_mul_paperFT_eq, the DCT limit and the uniform bound).
       * RvMBridge9.gaussian_transfer / weil_positivity_implies_rh / zeta_comb_membership_iff_rh
         -- the MIRRORMERE nodes MM_gaussian_transfer, MM_weil_positivity_implies_rh and
@@ -91,18 +104,31 @@
         (2026-09-21): the sharp c-uniform envelope with the exact prime-side constant primeAbs;
         plus stages (fourier_autocorrGauss, norm_primeSide_le_primeAbs, primeAbs_le_crude).
         NOT a proof of RH.  conjecture1_proved = False.
-      * RvMBridge17.{rh_iff_theta_positivity, theta_heat, theta_pos_mono, rh_iff_thetaWidths_eq,
-        not_thetaFree_of_offline, rh_or_thetaWidths_bddAbove} -- the THETA FACE (2026-09-21): the
-        plain Gaussian face is heat-monotone in width; RH <-> every width free.  NOT a proof of RH.
       * RvMBridge18.{xi_logDeriv_deriv_eq_of, eq_const_of_log_growth, summable_inv_sub_sq,
         tsum_inv_sub_sq_tendsto, logDeriv_xi_eq} -- the xi derivative partial fraction skeleton
         (2026-09-21), modulo the named obligations XiDiffRegular / XiLogDerivDerivDecay.
+      * RvMBridgeXi.{xi_one_sub, xi_eq_zero_iff, isClosed_zeros, analyticAt_logDeriv,
+        logDeriv_xi_one_sub, deriv_logDeriv_xi_one_sub, zeroMult_one_sub, tsum_reindex_zeroMult,
+        tsum_zero_series_one_sub, logDeriv_of_unit_factor, inv_im_sq_le_majorant,
+        summable_of_zeroBoundAt, nontrivialZeros_countable, eq_of_continuousAt_of_eventually_ne,
+        ext_eventuallyEq_of_punctured, exists_mem_Ioo_notMem_finset, exists_bound_on_reProdIm, ...}
+        -- the xi / partial-fraction PRELUDE (2026-09-22): ONE copy of the helper vocabulary that
+        E6Bridge19 and E6Bridge20 (parallel agents) had each re-proved and E6Bridge17 / E6Bridge24
+        duplicated (SHAPES_AUDIT_48H section 4, proposal P1), imported by E6Bridge17, 19, 20, 21, 22
+        and 24; the complex-argument forms of rows 9-10 are consolidated in RvMBridge21 instead.
+        Helpers only: no registry node statement lives there, and every node theorem stays verbatim
+        in its own artifact file.  conjecture1_proved = False.
+      * RvMBridge17.{rh_iff_theta_positivity, theta_heat, theta_pos_mono, rh_iff_thetaWidths_eq,
+        not_thetaFree_of_offline, rh_or_thetaWidths_bddAbove} -- the THETA FACE (2026-09-21): the
+        plain Gaussian face is heat-monotone in width; RH <-> every width free.  NOT a proof of RH.
       * RvMBridge20.{xiDiffExt_differentiable, xiDiffExt_eq, xiDiffExt_one_sub, exists_local_form,
         analyticOrderAt_xi_eq, xiDiffRegular_of} -- obligation 1 part A (2026-09-21): the entire
         extension across the zeros; growth remains the named obligation XiDiffExtGrowthRight.
       * RvMBridge21.{xi_logDeriv_deriv_decay, xi_logDeriv_deriv_eq_of_regular,
         digamma_deriv_tendsto_zero, zeta_logDeriv_deriv_tendsto_zero, hasSum_trigamma_of_re_pos}
-        -- obligation 2 DISCHARGED (2026-09-21): real-axis decay of (log xi)''.
+        -- obligation 2 DISCHARGED (2026-09-21): real-axis decay of (log xi)''; since 2026-09-22
+        also the complex-argument forms deriv_logDeriv_xi_of_one_lt_re / norm_term_le_of_two_le_re
+        (formerly re-proved in E6Bridge22), of which the real-axis forms are corollaries.
       * RvMBridge22.{xiLogDerivDerivEq_of_two, xiDiffExtGrowthRight_of_two, rightDerivBound,
         growth_compact, growth_right, growth_strip, norm_tsum_far_le} -- obligation 1 reduced to
         LocalCountSum + StripDerivBound (2026-09-21).
@@ -157,6 +183,7 @@ import E6Bridge2
 import E6Bridge3
 import E6Bridge4
 import E6Bridge5
+import RvMBridgeGauss
 import E6Bridge6
 import E6Bridge7
 import E6Bridge8
@@ -168,8 +195,9 @@ import E6Bridge13
 import E6Bridge14
 import E6Bridge15
 import E6Bridge16
-import E6Bridge17
 import E6Bridge18
+import RvMBridgeXi
+import E6Bridge17
 import E6Bridge20
 import E6Bridge21
 import E6Bridge22
@@ -219,6 +247,20 @@ import W2cAssembly
 #print axioms RvMBridge5.eq_half_add_im_of_rh
 #print axioms RvMBridge5.weilKernel_autocorr_line
 #print axioms RvMBridge5.term_re_nonneg
+#print axioms RvMBridgeGauss.integrable_exp_quadratic
+#print axioms RvMBridgeGauss.integrable_exp_quadratic_abs
+#print axioms RvMBridgeGauss.abs_pow_le_exp
+#print axioms RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs
+#print axioms RvMBridgeGauss.integrable_mul_cexp_quadratic
+#print axioms RvMBridgeGauss.integral_mul_cexp_gaussian_fourier
+#print axioms RvMBridgeGauss.integral_sq_mul_cexp_gaussian_fourier
+#print axioms RvMBridgeGauss.norm_tsum_subtype_le_tsum
+#print axioms RvMBridgeGauss.norm_tsum_subtype_le_mul_tsum
+#print axioms RvMBridgeGauss.exp_two_mul_le_of_le
+#print axioms RvMBridgeGauss.summable_mult_div_one_add_normSq
+#print axioms RvMBridgeGauss.tendsto_tsum_zeroMult_of_strip_bound
+#print axioms RvMBridgeGauss.zeroWindowSet_finite
+#print axioms RvMBridgeGauss.mem_zeroWindow
 #print axioms RvMBridge6.weilKernel_autocorr
 #print axioms RvMBridge6.hasSum_weilForm_autocorr
 #print axioms RvMBridge6.weilForm_autocorr_eq_zeroSide
@@ -239,7 +281,6 @@ import W2cAssembly
 #print axioms RvMBridge6.gaussTest_axis
 #print axioms RvMBridge6.gaussTest_axis_re_neg
 #print axioms RvMBridge6.norm_gaussTest_mul_le
-#print axioms RvMBridge6.summable_mult_div_one_add_normSq
 #print axioms RvMBridge6.summable_gauss_zeroSide
 #print axioms RvMBridge6.gauss_zeroSide_real
 #print axioms RvMBridge6.gauss_zeroSide_pair_split
@@ -270,12 +311,6 @@ import W2cAssembly
 #print axioms RvMBridge7.re_zeroSide_le
 #print axioms RvMBridge7.gaussian_dominance
 #print axioms RvMBridge7.weil_positivity_implies_rh_of_approx
-#print axioms RvMBridge8.integrable_exp_quadratic
-#print axioms RvMBridge8.integrable_exp_quadratic_abs
-#print axioms RvMBridge8.abs_pow_le_exp
-#print axioms RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs
-#print axioms RvMBridge8.integrable_mul_cexp_quadratic
-#print axioms RvMBridge8.integral_mul_cexp_gaussian_fourier
 #print axioms RvMBridge8.gaussB_pos
 #print axioms RvMBridge8.gaussTest_eq_half_mul_conj
 #print axioms RvMBridge8.gaussK_ne_zero
@@ -373,8 +408,6 @@ import W2cAssembly
 #print axioms RvMBridge12.tail_le_near_of_threshold
 #print axioms RvMBridge12.gaussian_positivity_of_window
 #print axioms RvMBridge12.gaussian_positivity_of_window_two
-#print axioms RvMBridge12.zeroWindowSet_finite
-#print axioms RvMBridge12.mem_zeroWindow
 #print axioms RvMBridge12.windowSum_nonneg
 #print axioms RvMBridge12.tailEnvelope_nonneg
 #print axioms RvMBridge12.re_window_eq_windowSum
@@ -402,7 +435,6 @@ import W2cAssembly
 #print axioms RvMBridge11.weilKernel_one_eq
 #print axioms RvMBridge11.norm_weilKernel_zero_le
 #print axioms RvMBridge11.norm_weilKernel_one_le
-#print axioms RvMBridge11.integral_sq_mul_cexp_gaussian_fourier
 #print axioms RvMBridge11.weilKernel_line_eq
 #print axioms RvMBridge11.cpow_pi_div_a
 #print axioms RvMBridge11.weilKernel_autocorrGauss_line
@@ -489,7 +521,6 @@ import W2cAssembly
 #print axioms RvMBridge15.liPaired_re_nonneg_of_rh
 #print axioms RvMBridge15.rh_implies_liZeroSum_re_nonneg
 #print axioms RvMBridge15.rh_implies_liLimit_re_nonneg
-#print axioms RvMBridge16.integral_sq_mul_cexp_gaussian_fourier'
 #print axioms RvMBridge16.gaussA_mul_sqrt
 #print axioms RvMBridge16.fourier_autocorrGauss
 #print axioms RvMBridge16.weilKernel_zero_eq_gaussTest
@@ -515,6 +546,61 @@ import W2cAssembly
 #print axioms RvMBridge16.envelopeCsharp_le_crude
 #print axioms RvMBridge16.gaussian_positivity_above_height
 #print axioms RvMBridge16.gaussian_positivity_above_height_log
+#print axioms RvMBridge18.xi_differentiable
+#print axioms RvMBridge18.xi_eq
+#print axioms RvMBridge18.xi_eventuallyEq
+#print axioms RvMBridge18.logDeriv_xi_eq
+#print axioms RvMBridge18.normSq_gammaOf_le
+#print axioms RvMBridge18.polTerm_eq_zero_of_not_nontrivial
+#print axioms RvMBridge18.norm_polTerm
+#print axioms RvMBridge18.norm_polTerm_le_majorant
+#print axioms RvMBridge18.finite_zeros_near
+#print axioms RvMBridge18.summable_polBound
+#print axioms RvMBridge18.norm_polTerm_le
+#print axioms RvMBridge18.summable_inv_sub_sq
+#print axioms RvMBridge18.summable_polTerm
+#print axioms RvMBridge18.norm_polTerm_le_real
+#print axioms RvMBridge18.polTerm_tendsto_zero
+#print axioms RvMBridge18.tsum_inv_sub_sq_tendsto
+#print axioms RvMBridge18.eq_const_of_log_growth
+#print axioms RvMBridge18.not_nontrivialZero_of_one_le_re
+#print axioms RvMBridge18.xi_logDeriv_deriv_eq_of
+#print axioms RvMBridgeXi.xi_one_sub
+#print axioms RvMBridgeXi.xi_zero
+#print axioms RvMBridgeXi.xi_one
+#print axioms RvMBridgeXi.xi_analyticAt
+#print axioms RvMBridgeXi.xi_eq_zero_iff
+#print axioms RvMBridgeXi.xi_ne_zero_of_not_nontrivial
+#print axioms RvMBridgeXi.isClosed_zeros
+#print axioms RvMBridgeXi.eventually_not_zero
+#print axioms RvMBridgeXi.analyticAt_logDeriv
+#print axioms RvMBridgeXi.logDeriv_xi_analyticAt
+#print axioms RvMBridgeXi.hasDerivAt_logDeriv_xi
+#print axioms RvMBridgeXi.logDeriv_xi_one_sub
+#print axioms RvMBridgeXi.deriv_logDeriv_xi_one_sub
+#print axioms RvMBridgeXi.zeroMult_one_sub
+#print axioms RvMBridgeXi.tsum_reindex_zeroMult
+#print axioms RvMBridgeXi.tsum_zero_series_one_sub
+#print axioms RvMBridgeXi.tsum_polTerm_one_sub
+#print axioms RvMBridgeXi.logDeriv_of_unit_factor
+#print axioms RvMBridgeXi.inv_im_sq_le_majorant
+#print axioms RvMBridgeXi.inv_normSq_le_majorant
+#print axioms RvMBridgeXi.windowZeros_finite
+#print axioms RvMBridgeXi.summable_zeroBoundAt
+#print axioms RvMBridgeXi.norm_le_zeroBoundAt
+#print axioms RvMBridgeXi.summable_of_zeroBoundAt
+#print axioms RvMBridgeXi.smallZeros_finite
+#print axioms RvMBridgeXi.smallZeros_eq
+#print axioms RvMBridgeXi.zeroBound_eq
+#print axioms RvMBridgeXi.summable_zeroBound
+#print axioms RvMBridgeXi.norm_le_zeroBound
+#print axioms RvMBridgeXi.summable_of_zeroBound
+#print axioms RvMBridgeXi.nontrivialZeros_countable
+#print axioms RvMBridgeXi.eq_of_continuousAt_of_eventually_ne
+#print axioms RvMBridgeXi.ext_eventuallyEq_of_punctured
+#print axioms RvMBridgeXi.differentiableAt_of_punctured
+#print axioms RvMBridgeXi.exists_mem_Ioo_notMem_finset
+#print axioms RvMBridgeXi.exists_bound_on_reProdIm
 #print axioms RvMBridge17.zeroSide_plain_eq
 #print axioms RvMBridge17.theta_eq
 #print axioms RvMBridge17.plainGauss_re_exponent
@@ -554,7 +640,6 @@ import W2cAssembly
 #print axioms RvMBridge17.integrable_heatF
 #print axioms RvMBridge17.integral_norm_heatF_le
 #print axioms RvMBridge17.summable_integral_norm_heatF
-#print axioms RvMBridge17.nontrivialZeros_countable
 #print axioms RvMBridge17.tsum_pterm_NZ
 #print axioms RvMBridge17.tsum_pterm_re_NZ
 #print axioms RvMBridge17.theta_heat
@@ -566,30 +651,7 @@ import W2cAssembly
 #print axioms RvMBridge17.not_thetaFree_of_offline
 #print axioms RvMBridge17.thetaWidths_bddAbove_of_offline
 #print axioms RvMBridge17.rh_or_thetaWidths_bddAbove
-#print axioms RvMBridge18.xi_differentiable
-#print axioms RvMBridge18.xi_eq
-#print axioms RvMBridge18.xi_eventuallyEq
-#print axioms RvMBridge18.logDeriv_xi_eq
-#print axioms RvMBridge18.normSq_gammaOf_le
-#print axioms RvMBridge18.polTerm_eq_zero_of_not_nontrivial
-#print axioms RvMBridge18.norm_polTerm
-#print axioms RvMBridge18.norm_polTerm_le_majorant
-#print axioms RvMBridge18.finite_zeros_near
-#print axioms RvMBridge18.summable_polBound
-#print axioms RvMBridge18.norm_polTerm_le
-#print axioms RvMBridge18.summable_inv_sub_sq
-#print axioms RvMBridge18.summable_polTerm
-#print axioms RvMBridge18.norm_polTerm_le_real
-#print axioms RvMBridge18.polTerm_tendsto_zero
-#print axioms RvMBridge18.tsum_inv_sub_sq_tendsto
-#print axioms RvMBridge18.eq_const_of_log_growth
-#print axioms RvMBridge18.not_nontrivialZero_of_one_le_re
-#print axioms RvMBridge18.xi_logDeriv_deriv_eq_of
-#print axioms RvMBridge20.xi_one_sub
-#print axioms RvMBridge20.xi_one
 #print axioms RvMBridge20.xi_ne_zero_of_one_le_re
-#print axioms RvMBridge20.xi_eq_zero_iff
-#print axioms RvMBridge20.xi_ne_zero_of_not_nontrivial
 #print axioms RvMBridge20.analyticOrderAt_xi_ne_top
 #print axioms RvMBridge20.analyticAt_completedZeta
 #print axioms RvMBridge20.analyticOrderAt_xi_eq_of_zero
@@ -600,17 +662,12 @@ import W2cAssembly
 #print axioms RvMBridge20.polTerm_differentiableAt
 #print axioms RvMBridge20.exists_ball_rest
 #print axioms RvMBridge20.exists_unit_factor
-#print axioms RvMBridge20.analyticAt_logDeriv
 #print axioms RvMBridge20.deriv_logDeriv_xi_local
 #print axioms RvMBridge20.exists_local_form
 #print axioms RvMBridge20.xiDiffExt_eq
 #print axioms RvMBridge20.xiDiffExt_eventuallyEq
 #print axioms RvMBridge20.xiDiffExt_differentiable
 #print axioms RvMBridge20.isNontrivialZero_one_sub_iff
-#print axioms RvMBridge20.logDeriv_xi_one_sub
-#print axioms RvMBridge20.deriv_logDeriv_xi_one_sub
-#print axioms RvMBridge20.zeroMult_one_sub
-#print axioms RvMBridge20.tsum_polTerm_one_sub
 #print axioms RvMBridge20.xiDiffReg_one_sub
 #print axioms RvMBridge20.xiDiffExt_one_sub
 #print axioms RvMBridge20.xiDiffExtGrowth_of_right
@@ -640,9 +697,11 @@ import W2cAssembly
 #print axioms RvMBridge21.deriv_logDeriv_zeta_eq
 #print axioms RvMBridge21.term_logMul_one
 #print axioms RvMBridge21.term_tendsto_zero
+#print axioms RvMBridge21.norm_term_le_of_two_le_re
 #print axioms RvMBridge21.norm_term_le_of_two_le
 #print axioms RvMBridge21.zeta_logDeriv_deriv_tendsto_zero
 #print axioms RvMBridge21.logDeriv_xi_eq_of_one_lt_re
+#print axioms RvMBridge21.deriv_logDeriv_xi_of_one_lt_re
 #print axioms RvMBridge21.deriv_logDeriv_xi_real
 #print axioms RvMBridge21.tendsto_neg_inv_sq
 #print axioms RvMBridge21.tendsto_inv_sub_one_sq
@@ -667,27 +726,15 @@ import W2cAssembly
 #print axioms RvMBridge22.xiDiffExtGrowthRight_of
 #print axioms RvMBridge22.xiDiffRegular_of_three
 #print axioms RvMBridge22.xiLogDerivDerivEq_of_three
-#print axioms RvMBridge22.deriv_logDeriv_xi_of_one_lt_re
 #print axioms RvMBridge22.norm_deriv_digamma_le
-#print axioms RvMBridge22.norm_term_le_of_two_le_re
 #print axioms RvMBridge22.summable_dirTerms
 #print axioms RvMBridge22.norm_deriv_logDeriv_zeta_le
 #print axioms RvMBridge22.rightDerivBound
 #print axioms RvMBridge22.xiDiffExtGrowthRight_of_two
 #print axioms RvMBridge22.xiLogDerivDerivEq_of_two
-#print axioms RvMBridge19.xi_one_sub
-#print axioms RvMBridge19.xi_zero
-#print axioms RvMBridge19.xi_one
-#print axioms RvMBridge19.xi_analyticAt
-#print axioms RvMBridge19.xi_eq_zero_iff
 #print axioms RvMBridge19.xiLogDerivDerivEq_def
-#print axioms RvMBridge19.smallZeros_finite
-#print axioms RvMBridge19.summable_zeroBound
-#print axioms RvMBridge19.inv_normSq_le_majorant
 #print axioms RvMBridge19.one_le_norm_of_nontrivial
 #print axioms RvMBridge19.norm_pos_of_nontrivial
-#print axioms RvMBridge19.norm_le_zeroBound
-#print axioms RvMBridge19.summable_of_zeroBound
 #print axioms RvMBridge19.iteratedDeriv_tsum_ball
 #print axioms RvMBridge19.analyticAt_tsum_ball
 #print axioms RvMBridge19.exists_zero_radius
@@ -719,20 +766,14 @@ import W2cAssembly
 #print axioms RvMBridge19.abs_re_inv_pow_le
 #print axioms RvMBridge19.summable_pairedPowerSum
 #print axioms RvMBridge19.pairedPowerSum_eq_powerSum
-#print axioms RvMBridge19.logDeriv_xi_one_sub
-#print axioms RvMBridge19.logDeriv_xi_eq
-#print axioms RvMBridge19.logDeriv_xi_analyticAt
-#print axioms RvMBridge19.hasDerivAt_logDeriv_xi
 #print axioms RvMBridge19.xi_ne_zero_on_segment
 #print axioms RvMBridge19.im_ne_zero_of_nontrivial
 #print axioms RvMBridge19.ofReal_ne_of_im_ne_zero
 #print axioms RvMBridge19.abs_im_le_norm_ofReal_sub
 #print axioms RvMBridge19.norm_zterm_zero_ofReal_le
-#print axioms RvMBridge19.inv_im_sq_le_majorant
 #print axioms RvMBridge19.norm_zterm_zero_ofReal_le_segBound
 #print axioms RvMBridge19.continuous_zterm_zero_ofReal
 #print axioms RvMBridge19.integral_zterm_zero
-#print axioms RvMBridge19.zeros_countable
 #print axioms RvMBridge19.support_zterm_subset
 #print axioms RvMBridge19.hasSum_integral_zterm
 #print axioms RvMBridge19.tsum_inv_add_inv_one_sub
@@ -786,16 +827,11 @@ import W2cAssembly
 #print axioms RvMBridge19.sum_choose_archCoeff
 #print axioms RvMBridge19.liValue_of
 #print axioms RvMBridge19.bl_explicit_formula_of_partialFraction
-#print axioms RvMBridge19.zeroSet_closed
 #print axioms RvMBridge19.logDeriv_xi_eq_lambda
 #print axioms RvMBridge19.logDeriv_xi_eventuallyEq_lambda
 #print axioms RvMBridge19.logDeriv_lambda_analyticAt
 #print axioms RvMBridge19.deriv_logDeriv_lambda_eq
 #print axioms RvMBridge19.lambdaDerivPartialFraction_of_xi
-#print axioms RvMBridge19.eq_of_continuousAt_of_eventually_ne
-#print axioms RvMBridge19.zeroMult_one_sub
-#print axioms RvMBridge19.tsum_zero_series_one_sub
-#print axioms RvMBridge19.deriv_logDeriv_xi_one_sub
 #print axioms RvMBridge19.xiDerivPartialFraction_of_lambda
 #print axioms RvMBridge19.xiDerivPartialFraction_iff
 #print axioms RvMBridge19.liValue_of_lambda
@@ -842,8 +878,6 @@ import W2cAssembly
 #print axioms RvMBridge24.norm_digamma_le_log
 #print axioms RvMBridge24.landau_window
 #print axioms RvMBridge24.FwinExt_eq
-#print axioms RvMBridge24.isClosed_zeros
-#print axioms RvMBridge24.eventually_not_zero
 #print axioms RvMBridge24.logDeriv_xi_local
 #print axioms RvMBridge24.Fwin_differentiableAt
 #print axioms RvMBridge24.FwinExt_eventuallyEq_at_zero

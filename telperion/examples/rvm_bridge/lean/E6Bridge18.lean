@@ -23,7 +23,7 @@
   THE CONSTANT-FREE ARGUMENT and what is closed here.  Let
       xiDiffReg s := deriv (logDeriv xi) s + Sum'_rho m(rho)/(s - rho)^2.
     (1) Summability of the sum for every s off the zeros: local-count majorant
-        (E6Bridge6.summable_mult_div_one_add_normSq = Zeta23 zero_sum_inv_sq) away from the
+        (RvMBridgeGauss.summable_mult_div_one_add_normSq = Zeta23 zero_sum_inv_sq) away from the
         ordinate of s, finitely many zeros near it (zetaSeam.finite_window).     PROVED.
     (2) xiDiffReg extends to an ENTIRE function G (the double poles of deriv (logDeriv xi) at a
         zero of order m are cancelled by the m/(s - rho)^2 term of the sum) with logarithmic growth
@@ -150,7 +150,7 @@ def polBound (s : ℂ) (ρ : ℂ) : ℝ :=
 
 lemma summable_polBound (s : ℂ) : Summable (polBound s) := by
   unfold polBound
-  refine Summable.add ?_ (RvMBridge6.summable_mult_div_one_add_normSq _)
+  refine Summable.add ?_ (RvMBridgeGauss.summable_mult_div_one_add_normSq _)
   refine summable_of_ne_finset_zero (s := (finite_zeros_near s).toFinset) fun ρ hρ => ?_
   rw [Set.Finite.mem_toFinset] at hρ
   exact Set.indicator_of_notMem hρ _
@@ -256,7 +256,7 @@ theorem tsum_inv_sub_sq_tendsto :
   rw [h0]
   refine tendsto_tsum_of_dominated_convergence
     (bound := fun ρ => (WeilExplicit.zeroMult ρ : ℝ) * (5 / 4 / (1 + Complex.normSq (gammaOf ρ))))
-    (RvMBridge6.summable_mult_div_one_add_normSq _) (fun ρ => polTerm_tendsto_zero ρ) ?_
+    (RvMBridgeGauss.summable_mult_div_one_add_normSq _) (fun ρ => polTerm_tendsto_zero ρ) ?_
   filter_upwards [eventually_ge_atTop (2 : ℝ)] with σ hσ ρ
   by_cases h : IsNontrivialZero ρ
   · exact norm_polTerm_le_real hσ h

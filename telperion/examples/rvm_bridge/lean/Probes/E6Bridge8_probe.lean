@@ -16,7 +16,7 @@ example : RvMBridge6.GaussianApprox := RvMBridge8.gaussian_approx
 #print axioms RvMBridge8.gaussian_approx
 
 /-! ### Stages. -/
-#print axioms RvMBridge8.integral_mul_cexp_gaussian_fourier
+#print axioms RvMBridgeGauss.integral_mul_cexp_gaussian_fourier
 #print axioms RvMBridge8.paperFT_gaussPhi
 #print axioms RvMBridge8.gaussTest_eq_half_mul_conj
 #print axioms RvMBridge8.isWeilTest_gaussTests
@@ -25,8 +25,8 @@ example : RvMBridge6.GaussianApprox := RvMBridge8.gaussian_approx
 #print axioms RvMBridge8.norm_mul_paperFT_gaussTests_le
 #print axioms RvMBridge8.norm_paperFT_gaussTests_le
 #print axioms RvMBridge8.exists_paperFT_gaussTests_bound
-#print axioms RvMBridge8.integrable_mul_cexp_quadratic
-#print axioms RvMBridge8.integrable_abs_pow_mul_exp_quadratic_abs
+#print axioms RvMBridgeGauss.integrable_mul_cexp_quadratic
+#print axioms RvMBridgeGauss.integrable_abs_pow_mul_exp_quadratic_abs
 
 /-! ### Composition with E6Bridge6: GaussianTransfer (O1) is now unconditional. -/
 theorem probe_gaussianTransfer : RvMBridge6.GaussianTransfer :=

@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -59,6 +59,17 @@ name = "E6Bridge5"
 # plus the unconditional rearrangements (explicit formula with the zero side isolated and real,
 # reflection symmetry, pair split, Gaussian summability, Tannery transfer). Nothing about RH is
 # proved; the obligations are registry nodes. conjecture1_proved = False.
+# The Gaussian / Wall PRELUDE (2026-09-22): one copy of the helper vocabulary that E6Bridge6, 7, 8,
+# 10, 11, 12 and 16 (parallel agents) had each re-proved -- the Gaussian integrability calculus and
+# the two Gaussian moments at a complex frequency (formerly E6Bridge8 / E6Bridge11 / E6Bridge16),
+# the tsum tail envelope with its rate-splitting companion (formerly E6Bridge7 AND E6Bridge12), the
+# shared local-count majorant over all rho : C and the Tannery transfer of a zero sum against it
+# (formerly E6Bridge6 AND E6Bridge10), and the certified ordinate window zeroWindow c D (formerly
+# E6Bridge12).  Imports E6Bridge4; imported by E6Bridge6 and everything above it.  Helpers only: no
+# registry node statement lives here.  conjecture1_proved = False.
+[[lean_lib]]
+name = "RvMBridgeGauss"
+
 [[lean_lib]]
 name = "E6Bridge6"
 
@@ -147,6 +158,26 @@ name = "E6Bridge15"
 [[lean_lib]]
 name = "E6Bridge16"
 
+# Eighteenth bridge (2026-09-21, the xi partial fraction WITHOUT Hadamard): the constant-free
+# DERIVATIVE partial fraction (logDeriv xi)' = -Sum m(rho)/(s-rho)^2. PROVED: summability,
+# the log-growth Liouville lemma eq_const_of_log_growth, real-axis decay of the sum, assembly
+# xi_logDeriv_deriv_eq_of. MODULO two named analytic obligations: XiDiffRegular (the difference
+# extends to an entire function of logarithmic growth) and XiLogDerivDerivDecay (real-axis decay
+# of (logDeriv xi)'). Consumer: LiValue (E6Bridge19). Nothing about RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge18"
+
+# The xi / partial-fraction PRELUDE (2026-09-22): one copy of the helper vocabulary that
+# E6Bridge19 and E6Bridge20 (parallel agents) had each re-proved -- xi(1-s) = xi(s), xi s = 0 <->
+# nontrivial zero, the closed zero set, logDeriv xi antisymmetry and its derivative form, the divisor
+# involution rho -> 1 - rho with the reindexed double-pole sum, the local unit factor, the 9/4 strip
+# inequalities, the zero-sum majorant atom (centred window + local-count majorant), countability of
+# the zeros, and the discipline atoms (punctured identity, punctured-limit extension, finite
+# avoidance, rectangle bound).  Imports E6Bridge15 + E6Bridge18; imported by E6Bridge17, 19, 20, 21,
+# 22, 24.  Helpers only: no registry node statement lives here.  conjecture1_proved = False.
+[[lean_lib]]
+name = "RvMBridgeXi"
+
 # Seventeenth bridge (2026-09-21, the THETA FACE): the plain Gaussian face Theta(c, lam) =
 # Re Sum m(rho) e^{-2 lam (gamma_rho - c)^2}. rh_iff_theta_positivity (RH <-> Theta >= 0 everywhere);
 # theta_heat / theta_pos_mono (heat-monotone in width: positivity at one width on the whole line
@@ -157,14 +188,6 @@ name = "E6Bridge16"
 [[lean_lib]]
 name = "E6Bridge17"
 
-# Eighteenth bridge (2026-09-21, the xi partial fraction WITHOUT Hadamard): the constant-free
-# DERIVATIVE partial fraction (logDeriv xi)' = -Sum m(rho)/(s-rho)^2. PROVED: summability,
-# the log-growth Liouville lemma eq_const_of_log_growth, real-axis decay of the sum, assembly
-# xi_logDeriv_deriv_eq_of. MODULO two named analytic obligations: XiDiffRegular (the difference
-# extends to an entire function of logarithmic growth) and XiLogDerivDerivDecay (real-axis decay
-# of (logDeriv xi)'). Consumer: LiValue (E6Bridge19). Nothing about RH. conjecture1_proved = False.
-[[lean_lib]]
-name = "E6Bridge18"
 
 # Twentieth bridge (2026-09-21, obligation 1 part A): the ENTIRE EXTENSION xiDiffExt of
 # deriv(logDeriv xi) + Sum m(rho)/(s-rho)^2 across the zeros (order = E8 multiplicity, double pole

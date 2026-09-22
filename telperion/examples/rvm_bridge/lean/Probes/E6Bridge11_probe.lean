@@ -34,7 +34,7 @@ open RvMBridge11
 #print axioms RvMBridge11.norm_primeSide_le
 #print axioms RvMBridge11.norm_weilKernel_zero_le
 #print axioms RvMBridge11.norm_weilKernel_one_le
-#print axioms RvMBridge11.integral_sq_mul_cexp_gaussian_fourier
+#print axioms RvMBridgeGauss.integral_sq_mul_cexp_gaussian_fourier
 #print axioms RvMBridge11.weilKernel_autocorrGauss_line
 #print axioms RvMBridge11.re_digamma_quarter_ge
 #print axioms RvMBridge11.re_digamma_quarter_ge_two

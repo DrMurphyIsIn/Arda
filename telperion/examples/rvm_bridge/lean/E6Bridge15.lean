@@ -24,7 +24,7 @@
     (C) the paired family is absolutely summable over ALL rho : C: on a nontrivial zero with
         |Im rho| >= 1, |Re K_n(rho)| <= 2^n / |rho|^2 <= (9/4) 2^n / (1 + |gamma_rho|^2) (binomial
         expansion; the j = 1 term Re(1/rho) = Re rho / |rho|^2 is where the pairing pays), and
-        the local-count majorant summable_mult_div_one_add_normSq of E6Bridge6 does the rest; the
+        the local-count majorant summable_mult_div_one_add_normSq of the prelude RvMBridgeGauss does the rest; the
         finitely many zeros with |Im rho| < 1 (Zeta23 zetaSeam.finite_window) are absorbed;
     (D) Tannery (tendsto_tsum_of_dominated_convergence) passes the indicator sums to the limit.
   The UNPAIRED family m(rho) K_n(rho) is NOT summable (terms ~ n/(i gamma)); nothing here claims
@@ -382,7 +382,7 @@ def liBound (n : ℕ) (ρ : ℂ) : ℝ :=
 
 lemma summable_liBound (n : ℕ) : Summable (liBound n) := by
   unfold liBound
-  refine Summable.add ?_ (RvMBridge6.summable_mult_div_one_add_normSq (liC n))
+  refine Summable.add ?_ (RvMBridgeGauss.summable_mult_div_one_add_normSq (liC n))
   refine summable_of_ne_finset_zero (s := finite_zeros_small.toFinset) fun ρ hρ => ?_
   rw [Set.Finite.mem_toFinset] at hρ
   exact Set.indicator_of_notMem hρ _

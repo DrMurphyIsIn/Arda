@@ -25,10 +25,10 @@ import E6Bridge22
 #print axioms RvMBridge22.xiDiffExtGrowthRight_of
 #print axioms RvMBridge22.xiDiffRegular_of_three
 #print axioms RvMBridge22.xiLogDerivDerivEq_of_three
-#print axioms RvMBridge22.deriv_logDeriv_xi_of_one_lt_re
+#print axioms RvMBridge21.deriv_logDeriv_xi_of_one_lt_re
 #print axioms RvMBridge22.trigConst
 #print axioms RvMBridge22.norm_deriv_digamma_le
-#print axioms RvMBridge22.norm_term_le_of_two_le_re
+#print axioms RvMBridge21.norm_term_le_of_two_le_re
 #print axioms RvMBridge22.dirConst
 #print axioms RvMBridge22.summable_dirTerms
 #print axioms RvMBridge22.norm_deriv_logDeriv_zeta_le

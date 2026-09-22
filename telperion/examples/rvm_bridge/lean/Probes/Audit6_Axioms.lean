@@ -25,7 +25,7 @@ import E6Bridge6
 #print axioms RvMBridge6.gaussTest_axis
 #print axioms RvMBridge6.gaussTest_axis_re_neg
 #print axioms RvMBridge6.norm_gaussTest_mul_le
-#print axioms RvMBridge6.summable_mult_div_one_add_normSq
+#print axioms RvMBridgeGauss.summable_mult_div_one_add_normSq
 #print axioms RvMBridge6.summable_gauss_zeroSide
 #print axioms RvMBridge6.gauss_zeroSide_real
 #print axioms RvMBridge6.gauss_zeroSide_pair_split
