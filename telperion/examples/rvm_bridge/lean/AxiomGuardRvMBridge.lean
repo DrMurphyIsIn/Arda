@@ -129,6 +129,13 @@
         archSide_add_finiteSide_re_nonneg_of_line_below_sharp} -- the SHARPENED exchange rate
         (2026-09-21): N <= 2 pi (T - 1/2) (Lemma A'' window, Lemma B'' combined bound).
         Consumes zero localisation, proves nothing about RH.
+      * RvMBridge30.{gaussian_positivity_small_lam_1e3, re_weilForm_gauss_nonneg_1e3, pole_floor,
+        psiR_mono, psiR_ge_rational, integral_bumpR_mul_psiR_ge_bands, cake_step} -- THE GAUSSIAN
+        WINDOW (2026-09-22): the hypothesis-free small-width region of the Wall raised from
+        lam0 = 1e-7 to lam0 = 1/1000 (eight-band layer cake on the archimedean side, evaluated pole
+        floor, rational series floors on Re psi(1/4 + i r/2)); the twelve-band stretch
+        gaussian_positivity_small_lam_3e3 certifies lam0 = 3/2000.  An unconditional statement
+        about one explicit test function's prime-side functional; involves no zeros.
       * RvMBridge.zeta_ordinates_not_uniformly_discrete -- the MIRRORMERE milestone
         MM_zeta_ordinates_not_uniformly_discrete, verbatim (W2c, unconditional form: the zeta
         ordinates are not uniformly discrete); plus the verbatim re-proof of the v4.32
@@ -174,6 +181,7 @@ import E6Bridge24
 import E6Bridge27
 import E6Bridge28
 import E6Bridge29
+import E6Bridge30
 import W2cAssembly
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -949,6 +957,29 @@ import W2cAssembly
 #print axioms RvMBridge29.pair_re_nonneg_of_line_below_sharp
 #print axioms RvMBridge29.liLimit_re_nonneg_of_line_below_sharp
 #print axioms RvMBridge29.archSide_add_finiteSide_re_nonneg_of_line_below_sharp
+#print axioms RvMBridge30.re_gaussTest_I_half
+#print axioms RvMBridge30.pole_floor
+#print axioms RvMBridge30.bumpR_le'
+#print axioms RvMBridge30.setIntegral_bumpR_le'
+#print axioms RvMBridge30.psiR_mono
+#print axioms RvMBridge30.serF_antitoneOn
+#print axioms RvMBridge30.sum_serF_ge
+#print axioms RvMBridge30.psiR_ge_series
+#print axioms RvMBridge30.psiR_ge_rational
+#print axioms RvMBridge30.eulerMascheroni_le
+#print axioms RvMBridge30.psiR_floor_0
+#print axioms RvMBridge30.psiR_floor_8
+#print axioms RvMBridge30.cake_step
+#print axioms RvMBridge30.cake_integral
+#print axioms RvMBridge30.integral_bumpR_mul_psiR_ge_bands
+#print axioms RvMBridge30.re_weilForm_gauss_nonneg_1e3
+#print axioms RvMBridge30.gaussian_positivity_small_lam_1e3
+#print axioms RvMBridge30.gaussian_positivity_small_lam_explicit_1e3
+#print axioms RvMBridge30.gaussian_positivity_small_lam'
+#print axioms RvMBridge30.integral_bumpR_mul_psiR_ge_bands12
+#print axioms RvMBridge30.re_weilForm_gauss_nonneg_3e3
+#print axioms RvMBridge30.gaussian_positivity_small_lam_3e3
+#print axioms RvMBridge30.gaussian_positivity_small_lam_explicit_3e3
 #print axioms Zeta23.RvM.N_eq_halfContour_completedZeta
 #print axioms Zeta23.RvM.halfContour_completedZeta_split
 #print axioms Zeta23.RvM.gamma_side

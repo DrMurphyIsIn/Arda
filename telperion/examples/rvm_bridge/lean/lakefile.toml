@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "W2cAssembly", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge17", "E6Bridge18", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "W2cAssembly", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -258,6 +258,16 @@ name = "E6Bridge28"
 # N <= 2 pi (T - 1/2)). Consumes zero localisation; nothing about RH. conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge29"
+
+# Thirtieth bridge (2026-09-22, THE GAUSSIAN WINDOW): the hypothesis-free small-width region of the
+# Wall raised from lam0 = 1e-7 (E6Bridge11) to lam0 = 1/1000 (gaussian_positivity_small_lam_1e3):
+# evaluated pole floor -e^{lam/2}/2, sup-of-bump window caps rho e^{-1}/lam, psiR monotone in |r|
+# (Zeta23 vertical-line series), rational floors on psiR at nine edges from 40 series terms + an
+# integral tail (gamma <= 0.58112 via Mathlib's H_128 - 7 log 2), an eight-band layer cake, and the
+# E6Bridge11 prime bound; margin 0.168 in units of A; the twelve-band stretch certifies lam0 = 3/2000
+# (margin 0.052). No zeros involved. conjecture1_proved = False.
+[[lean_lib]]
+name = "E6Bridge30"
 
 [[lean_lib]]
 name = "W2cAssembly"
