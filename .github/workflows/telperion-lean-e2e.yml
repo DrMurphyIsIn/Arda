@@ -2695,6 +2695,118 @@ jobs:
             echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
             exit 1
           fi
+
+  satake-degree-two-compiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # zoo.py imports the telperion package, which imports certify, which needs sympy.
+      # Without this the zoo CRASHED on ModuleNotFoundError and the gate below reported
+      # it as "the clause no longer rejects L(s,Delta)" -- a missing dependency read out
+      # as a mathematical result.  That is the same shape as finding 8 of the missions
+      # audit: a check counting evidence that does not exist.
+      - run: pip install sympy mpmath
+
+      # zoo.py had NO CI coverage before this job.  It runs the falsification
+      # matrix, whose governance rails include the A1b assertions: Delta must look
+      # like zeta/L(chi) on every non-arithmetic clause and be killed by the
+      # arithmetic one alone.  It also exercises the anti-phantom tau refusal.
+      - name: Falsification matrix (zoo) -- A1b governance rails must hold
+        working-directory: telperion/examples/quasicrystal
+        shell: bash
+        run: |
+          set -uo pipefail
+          # Run FIRST and check the exit status, so a crash is reported as a crash.
+          # The gate below may only speak about mathematics once the script has
+          # actually produced a verdict.
+          if ! python zoo.py > zoo.txt 2>&1; then
+            cat zoo.txt
+            echo "::error::zoo.py did not run to completion -- this is a TOOLING failure,"
+            echo "::error::not a mathematical one.  Do NOT read it as the clause changing."
+            exit 1
+          fi
+          cat zoo.txt
+          grep -q "A1b FALSIFICATION CONFIRMED" zoo.txt || {
+            echo "::error::A1b GATE FAILED: the clause no longer rejects L(s,Delta)."
+            echo "If the clause was repaired deliberately, update the roadmap A1b row"
+            echo "and the assertions in zoo.py _run_asserts."; exit 1; }
+          grep -q "GOVERNANCE: all required outcomes hold" zoo.txt || {
+            echo "::error::GOVERNANCE RAIL BROKEN"; exit 1; }
+
+      - name: Anti-phantom refusal (a corrupted eta exponent must REFUSE, not report)
+        working-directory: telperion/examples/quasicrystal
+        run: python antiphantom_probe.py
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quasicrystal/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake exe cache get
+
+      - name: Build the island (the axiom guard imports all of it)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: lake build
+
+      # A blind read-back found this step asserted LESS than the node claimed.  It grepped
+      # only for the absence of sorryAx and ofReduceBool, so "axiom-clean [propext,
+      # Classical.choice, Quot.sound]" was an UNENFORCED claim, and for the decide-proved
+      # tau theorems it is not even the right claim: those print the EMPTY axiom set, a
+      # SUBSET of the standard three.  The correct rule is therefore subset, not equality,
+      # and it is now enforced rather than asserted.  `pipefail` is set because `tee`
+      # otherwise masks lean's own exit code.
+      - name: Axiom guard (A1b falsification must be sorry-free and axiom-clean)
+        working-directory: telperion/examples/quasicrystal/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean AxiomGuardQC.lean 2>&1 | tee guard.txt
+          if grep -q "sorryAx" guard.txt; then echo "::error::GUARD FAILED: sorryAx present"; exit 1; fi
+          if grep -q "ofReduceBool" guard.txt; then echo "::error::GUARD FAILED: native_decide"; exit 1; fi
+          for t in scalarGenerated_powerSum_iff unitary_deg2_not_scalarGenerated \
+                   delta_satakeDet_two delta_rejected_by_B_mult_twisted \
+                   delta_rejected_nonvacuous tau_hecke_p2 tau_mult_six; do
+            grep -q "SatakeDegreeTwo.$t" guard.txt || { echo "::error::GUARD FAILED: $t not printed"; exit 1; }
+          done
+          # Every printed axiom list must be a SUBSET of the three standard axioms.
+          # Lean wraps a long list across lines, so join first, then extract each complete
+          # group; a line-based grep reads the wrapped remainder as a violation.
+          if tr "\n" " " < guard.txt | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
+          echo "axiom guard: every printed list is a subset of the three standard axioms"
+
+      - name: Anti-triviality gate (every trivial-close probe MUST refuse)
+        working-directory: telperion/examples/quasicrystal/lean
+        run: |
+          if lake env lean ProbeSatake.lean > probes.txt 2>&1; then
+            cat probes.txt
+            echo "ANTI-TRIVIALITY GATE FAILED: a rfl/simp/decide probe compiled."
+            echo "A trivially-closable statement is a wrong statement."
+            exit 1
+          fi
+          n=$(grep -cE '^ProbeSatake\.lean:[0-9]+:[0-9]+: error' probes.txt)
+          if [ "$n" -ne 14 ]; then
+            cat probes.txt
+            echo "PROBE DRIFT: $n trivial-close refusals, expected 14"; exit 1
+          fi
+          echo "anti-triviality gate OK: 14/14 trivial-close probes refused"
+
   mission-statements-compile:
     # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
     # statement package: a statement that does not elaborate cannot enter the

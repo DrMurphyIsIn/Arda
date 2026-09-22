@@ -1,5 +1,5 @@
 name = "Quasicrystal"
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder", "OfflineDiscs", "OfflineDiscsInstances", "EulerFactorOffline", "SelfInversiveOfflineInstances", "EulerFactorSectionOffline", "LeakageDictionary", "LeakageInstances", "LeakageNode"]
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder", "OfflineDiscs", "OfflineDiscsInstances", "EulerFactorOffline", "SelfInversiveOfflineInstances", "EulerFactorSectionOffline", "LeakageDictionary", "LeakageInstances", "LeakageNode", "SatakeDegreeTwo"]
 
 # PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
 # stable-polynomial classification frontier.  conjecture1_proved = False --
@@ -111,3 +111,13 @@ roots = ["LeakageInstances"]
 [[lean_lib]]
 name = "LeakageNode"
 roots = ["LeakageNode"]
+
+# PROGRAM MIRRORMERE ROUTE A milestone A1b (2026-09-19): the GL(2) Satake
+# FALSIFICATION of clause (B-mult-twisted) -- registry node
+# MM_satake_degree_two_rejects_delta.  L(s, Delta) is a degree-2 Selberg element,
+# tempered by Deligne, and the island's own arithmetic clause list REJECTS it.
+# A negative result about this program's working definition, NOT about RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "SatakeDegreeTwo"
+roots = ["SatakeDegreeTwo"]

@@ -675,6 +675,10 @@ Let `μ` be a symmetric, log-density, tempered atomic measure ((A-i),(A-iv)) who
 dual comb `μ̂` is pure-point ((B-ii), still RH/GRH-conditional). Write the Bragg
 atoms `{(u, c(u)) : u ∈ supp μ̂, u>0}`.
 
+> **[REFUTED 2026-09-19 — see APPENDIX (v4, A1b) at the end of this file. This
+> clause is FALSE as an arithmetic-class predicate: it rejects `L(s,Δ)`. It is
+> correct only on the GL(1) fiber. Do not build on it un-repaired.]**
+>
 > **(B-mult-twisted) — Multiplicative amplitude generation with a unimodular twist.**
 > The atomic support of `μ̂` is contained in the prime log-lattice
 > `Λ_log={±m log p}` with **no atoms at composite (non-prime-power) frequencies**
@@ -820,3 +824,167 @@ predicate on the *amplitude sequence's arithmetic type*, not a lookup of ζ.
   in the defect grading, uniformly across the class.
 
 `conjecture1_proved = False`.
+
+---
+
+# APPENDIX (v4, A1b) — B-mult-TWISTED IS FALSE: the GL(2) Satake falsification
+
+*(PROGRAM MIRRORMERE, ROUTE A milestone A1b, 2026-09-19. Appended, not rewriting the
+v3 appendix. Registry node `MM_satake_degree_two_rejects_delta` (NOT granted — awaiting
+independent blind read-back). Kernel module
+`examples/quasicrystal/lean/SatakeDegreeTwo.lean`. `conjecture1_proved = False`.)*
+
+## A1b.0 What this appendix does
+
+The v3 appendix settled "class, not description" by exhibiting **two** members, ζ and
+`L(s,χ)`. That test was passed with a sample of size two — and both samples were
+**degree 1**. This appendix runs the first degree-**2** test, and the clause fails it.
+
+`L(s,Δ)` — Ramanujan's modular discriminant, weight 12, level 1 — is a degree-2 element
+of the Selberg class, **tempered by Ramanujan–Petersson, a theorem of Deligne** (Weil I,
+Publ. IHES 43, 1974): `|α_p| = |β_p| = 1`. Its comb has the same amplitude-decay profile
+as ζ's. It is a genuine member of the arithmetic class (B-mult-twisted) claims to
+characterize. **The clause rejects it.** A classification clause that rejects a genuine
+member of its own class is false.
+
+## A1b.1 The kernel result — an IFF, not merely a rejection
+
+For a degree-≤2 local factor with Satake parameters `(α,β)` the prime-layer amplitude is
+the **Newton power sum**, because `−L'/L` has von-Mangoldt coefficients
+`b(p^m) = (log p)·(α^m + β^m)`:
+
+    c(m log p) = (log p)(α^m + β^m) p^{−m/2}.
+
+(B-mult-twisted) demands instead that this be **geometric in a single scalar**,
+`(log p) t(p)^m p^{−m/2}`. Kernel theorem (`scalarGenerated_powerSum_iff`, axiom-clean):
+
+> `(∃ t, ∀ m ≥ 1, α^m + β^m = t^m)  ⟺  α·β = 0.`
+
+`m = 1` forces `t = α+β`; `m = 2` then forces `α²+β² = (α+β)²`, i.e. `2αβ = 0`. So the
+clause admits **exactly the degenerate degree-≤1 factors** and nothing else. Unitary
+normalization of a GL(2) factor is `αβ = 1`, so every GL(2) form is rejected
+(`unitary_deg2_not_scalarGenerated`), with the `m = 2` defect exactly `2αβ`
+(`deg2_amplitude_defect`) — a constant that does not shrink at any prime for any form.
+
+**The predicate is stronger than the clause.** The Lean predicate drops the clause's own
+`|t| = 1` demand, so refuting it refutes the clause a fortiori: the rejection is not an
+artifact of unimodularity bookkeeping.
+
+**Anti-vacuity.** `deg1_scalarGenerated` proves the SAME predicate **holds** on the
+`β = 0` fiber. That is precisely why ζ (`t = 1`) and `L(s,χ)` (`t = χ(p)`) pass. The
+clause's defect is therefore localized at the degree-1 → degree-2 jump — **not** at
+unimodularity, **not** at positivity. 14 rfl/simp/decide probes on these statements all
+refuse (`ProbeSatake.lean`), CI-gated.
+
+## A1b.2 The Δ instance, with every constant re-derived
+
+τ is **computed** in-kernel from `Δ = q ∏(1−qⁿ)²⁴` by exact truncated integer power
+series — no τ value is quoted anywhere — giving `τ(2) = −24`, `τ(4) = −1472`. In the
+analytic normalization `λ(n) = τ(n)/n^{11/2}` both `λ(2)² = 9/32` and `λ(4) = −23/32` are
+rational, so the Satake determinant is **re-derived**, not assumed, from
+`a(p) = α+β` and `a(p²) = α²+αβ+β²`:
+
+    α₂β₂ = λ(2)² − λ(4) = 9/32 + 23/32 = 1   (exactly; `delta_satakeDet_two`).
+
+| quantity at p = 2 | clause demands | `L(s,Δ)` has |
+|---|---|---|
+| `m = 2` amplitude `α²+β²` | `t² = λ(2)² = 9/32` | `λ(2)² − 2 = −55/32` |
+| twist modulus `|t(2)|²` | `1` | `9/32` |
+
+Two independent failures; the defect is exactly `2`. **Anti-phantom:** the Hecke
+recursion `τ(4) = τ(2)² − 2¹¹` and coprime multiplicativity `τ(6) = τ(2)τ(3)` are kernel
+cross-checks (`tau_hecke_p2`, `tau_mult_six`) and the mirrored Python gate raises rather
+than reports. Both fire when the η-exponent 24 is corrupted — verified, not asserted
+(`antiphantom_probe.py`, CI-gated).
+
+## A1b.3 The updated matrix (T = 100) — Δ joins the zoo
+
+```
+clause \ object                                  zeta     dh    l_chi5   delta   lattice  ksly  random
+(A-i/B-i)   support density                      PASS    PASS    PASS     PASS     PASS    PASS   PASS
+(A-ii/B-ii) atomic spectrum on prime Lambda_log  COND    FAIL    COND     COND     PASS    PASS   FAIL
+(B-iii)     weight positivity          [KILLER]  PASS    FAIL    FAIL     FAIL     PASS    PASS   FAIL
+(B-mult-tw) multiplicative generation  [KILLER]  PASS    FAIL    PASS     FAIL     FAIL    FAIL   FAIL
+(D-ii)      bounded defect k                     COND    FAIL    COND     COND     PASS    PASS   FAIL
+(A-iv..D)   temperedness                         PASS    PASS    PASS     PASS     PASS    PASS   PASS
+```
+
+| Variant | ζ | DH | L(χ) | **Δ** | Lat | KS-LY | Rnd | verdict |
+|---|---|---|---|---|---|---|---|---|
+| **B-mult-twisted** (v3) | P | F | P | **F** | F | F | F | **REFUTED — rejects a genuine degree-2 member** |
+
+**Δ is killed by variant Bm and by Bm alone**; it survives A, C and D exactly as ζ and
+`L(s,χ)` do. So the rejection is not Δ being pathological — Δ is unconditionally tempered
+and its conditional labels mirror ζ's. The rejection is localized in the arithmetic
+clause, which is the whole point. The zoo asserts this as a governance rail and prints
+`A1b FALSIFICATION CONFIRMED`; if the clause is ever repaired, that rail is what must
+change, deliberately.
+
+## A1b.4 The diagnosis — a degree-1 coincidence promoted to a primitive
+
+At degree 1 the Dirichlet coefficient **equals** the single Satake parameter,
+`a_p = α_p`. So "unimodular coefficient" and "unimodular Satake parameter" are the same
+condition, and v3 could not tell which one it had written down. It wrote the coefficient
+one. At degree ≥ 2 they diverge: Ramanujan–Petersson says `|α_p| = |β_p| = 1` while
+`a_p = α_p + β_p` only satisfies `|a_p| ≤ 2`. **The clause kept the wrong one.** The
+deeper error is the *shape*: the clause asked the amplitude sequence to be geometric,
+which is a rank-1 statement; the truth is that it is a **power sum**, which is geometric
+only in rank 1.
+
+## A1b.5 The repair, and what it does and does not buy
+
+**The repair (identified, costed, NOT performed here).** Replace the scalar geometric law
+by the degree-`d` Satake power sum:
+
+> **(B-mult-Satake)** there are `α_{1,p},…,α_{d,p}` with `|α_{j,p}| = 1` such that
+> `c(m log p) = (log p)(Σ_j α_{j,p}^m) p^{−m/2}` for all `m ≥ 1`.
+
+The **composite-vanishing half** of the clause — the genuine Euler-product fingerprint,
+and the half that actually kills DH (`b(6) = +1.9364 ≠ 0`) — survives **unchanged** and is
+degree-agnostic. Only the prime layer is rewritten. `d = 1` recovers v3; `t(p) ≡ 1`
+recovers v2.
+
+**Cost.** (i) The clause acquires a degree parameter, and the generation law becomes a
+Newton/Chebyshev recursion rather than a geometric one, so the finite instrument must
+**fit** `d` parameters per prime instead of reading one off `m = 1`. (ii) The zoo's
+`check_multiplicativity` gate `|t(p)| = 1` must become "the local inverse polynomial has
+all reciprocal roots on the unit circle" — at `d = 2` a discriminant/real-rootedness
+test, not a modulus test. This is the same equal-modulus condition the island already
+formalized at `n = 2` (`twoFreq_realRooted_iff`), which is a genuine reuse and the reason
+this repair is cheap. (iii) An emitter becomes worthwhile at that point (a per-form,
+per-prime Satake family); the present node needs none, because the refutation is uniform
+in the prime.
+
+**What the repair does NOT buy — state this plainly.** Repairing the clause does not
+repair the conjecture it serves. "Unimodular Satake power sums ⇒ automorphic" is the
+`GL(n)` Selberg-class classification, bounded below by the **Selberg degree conjecture**,
+which has moved exactly one unit interval in thirty years (roadmap A1e,
+`open-research`, generational). **The clause is cheaply repairable; the conjecture it
+serves is not.** Claiming otherwise would repeat the error this appendix exists to
+correct.
+
+## A1b.6 Consequences for the route
+
+- **A1c (primitivity instrument) and A1d (GL(1) fiber theorem) inherit a broken
+  premise.** Both were scoped against (B-mult-twisted) as stated. Their statements need
+  re-basing on the repaired clause before either is attacked. A1d is the more
+  interesting for being *unaffected in substance* — it is explicitly the GL(1) fiber, and
+  A1b has now proved that the v3 clause characterizes exactly that fiber, which makes
+  A1d's scope precise rather than merely stipulated.
+- **The v3 "class, not description" verdict does not survive as stated.** What v3
+  established is that the clause admits more than ζ; what A1b establishes is that it
+  admits exactly the degree-1 arithmetic objects. That is a *class* — the `GL(1)` class —
+  but not the arithmetic class the conjecture needs.
+
+**Honest ledger.**
+
+- **Provable now (unconditional, kernel):** the IFF, the GL(2) rejection, the Δ instance
+  with re-derived constants, the anti-vacuity witness. Axiom-clean
+  `[propext, Classical.choice, Quot.sound]`.
+- **Named input, not formalized:** Ramanujan–Petersson (Deligne) — used ONLY to certify
+  that Δ is tempered and hence a legitimate class member. No theorem consumes it.
+- **Still open:** the repaired clause's own sufficiency, and the classification
+  conjecture (A1e).
+
+`conjecture1_proved = False.` This falsifies a clause in this program's own working
+definition. It proves nothing about RH.

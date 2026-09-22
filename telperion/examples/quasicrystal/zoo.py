@@ -206,6 +206,96 @@ def _load_l_chi5(t_max: float = 100.0, conj: bool = False) -> ZooObject:
     )
 
 
+
+# ===========================================================================
+# ROUTE A milestone A1b -- the GL(2) column: L(s, Delta)
+# ===========================================================================
+# THE FALSIFICATION OBJECT.  Delta = q prod (1-q^n)^24 is Ramanujan's modular
+# discriminant; L(s, Delta) is a degree-2 element of the Selberg class, TEMPERED by
+# Ramanujan-Petersson (a THEOREM OF DELIGNE, Weil I, Publ. IHES 43 (1974)):
+# |alpha_p| = |beta_p| = 1.  It is therefore a genuine member of the arithmetic class
+# that clause (B-mult-twisted) purports to characterize -- and the clause REJECTS it.
+# A classification clause that rejects a genuine member of its own class is FALSE.
+#
+# The kernel companion of this column is the quasicrystal island module
+# examples/quasicrystal/lean/SatakeDegreeTwo.lean (registry node
+# MM_satake_degree_two_rejects_delta): the rejection is proved unconditionally there,
+# with an IFF -- the clause's amplitude-generation law holds for a degree-2 layer if
+# and only if the Satake determinant VANISHES, i.e. exactly on the GL(1) fiber.
+#
+# conjecture1_proved = False.
+
+def _delta_tau_upto(n: int) -> dict:
+    """Ramanujan's tau(1..n), RE-DERIVED from Delta = q prod_{m>=1} (1-q^m)^24 by exact
+    truncated integer power series.  NO tau value is quoted anywhere in this file.
+
+    ANTI-PHANTOM: before returning, the result is cross-checked against two arithmetic
+    laws structurally independent of the q-expansion recursion -- the Hecke recursion
+    tau(p^2) = tau(p)^2 - p^11 and multiplicativity at coprime arguments.  A mismatch
+    RAISES; the harness refuses to run on a phantom tau rather than reporting one."""
+    M = n
+
+    def cmul(u, v):
+        return [sum(u[i] * v[k - i] for i in range(k + 1)) for k in range(M + 1)]
+
+    prod = [1] + [0] * M
+    for m in range(1, M + 1):
+        f = [0] * (M + 1)
+        f[0] = 1
+        f[m] = -1
+        fp = [1] + [0] * M
+        for _ in range(24):
+            fp = cmul(fp, f)
+        prod = cmul(prod, fp)
+    tau = {k: prod[k - 1] for k in range(1, n + 1)}
+
+    if tau.get(1) != 1:
+        raise AssertionError(f"tau(1)={tau.get(1)} != 1: Delta is not normalized")
+    for p, sq in ((2, 4), (3, 9), (5, 25), (7, 49)):
+        if sq <= n and tau[sq] != tau[p] ** 2 - p ** 11:
+            raise AssertionError(
+                f"ANTI-PHANTOM REFUSAL: Hecke recursion fails at p={p}: "
+                f"tau({sq})={tau[sq]} != tau({p})^2 - {p}^11 = {tau[p]**2 - p**11}")
+    for x, y in ((2, 3), (2, 5), (3, 5), (2, 7)):
+        if x * y <= n and tau[x * y] != tau[x] * tau[y]:
+            raise AssertionError(
+                f"ANTI-PHANTOM REFUSAL: multiplicativity fails: "
+                f"tau({x*y})={tau[x*y]} != tau({x})tau({y})={tau[x]*tau[y]}")
+    return tau
+
+
+def _load_delta(t_max: float = 100.0, n_coeff: int = 60) -> ZooObject:
+    """The GL(2) column (A1b): L(s, Delta), analytically normalized.
+
+    Dirichlet coefficients lambda(n) = tau(n)/n^{11/2} (weight 12 => shift 11/2), with
+    tau RE-DERIVED from the eta product.  These are handed to the SAME
+    check_multiplicativity code path that zeta and L(chi) take -- no special-casing --
+    so the verdict is a like-for-like comparison.
+
+    Local factor: (1 - alpha_p p^{-s})^{-1}(1 - beta_p p^{-s})^{-1} with
+    alpha_p beta_p = 1 and (Deligne) |alpha_p| = |beta_p| = 1.  The prime-layer Bragg
+    amplitude is therefore the NEWTON POWER SUM
+        c(m log p) = (log p)(alpha_p^m + beta_p^m) p^{-m/2},
+    NOT the single-scalar geometric law (log p) t(p)^m p^{-m/2} the clause demands.
+    Those agree only when alpha_p beta_p = 0, i.e. only in degree <= 1."""
+    tau = _delta_tau_upto(n_coeff)
+    lam = [0j] * (n_coeff + 1)
+    for k in range(1, n_coeff + 1):
+        lam[k] = complex(tau[k] / k ** 5.5)
+    # degree-2 zero-counting model: N(T) ~ (T/pi) log T (twice zeta's density)
+    model = (t_max / math.pi) * math.log(max(t_max, 2.0) / (2 * math.pi)) - t_max / math.pi
+    model = max(model, 1.0)
+    return ZooObject(
+        name="delta", kind="l_function", ordinates=[], offline=[],
+        density_count=max(1, int(round(model))), density_model=model, t_max=t_max,
+        spectrum="prime_log_lattice",   # genuine Euler product => prime-log-lattice atoms
+        weights="satake_deg2",          # (log p)(alpha^m+beta^m)p^{-m/2}: a POWER SUM
+        defect_count=0, defect_grows=False, tempered=True,
+        mult_model="satake_deg2",
+        mult_coeffs=("satake_deg2", lam),
+    )
+
+
 def _load_lattice(t_max: float = 100.0, alpha: float = 1.0) -> ZooObject:
     ords = [alpha * n for n in range(1, int(t_max / alpha) + 1)]
     return ZooObject(
@@ -339,6 +429,14 @@ def check_weight_positivity(obj: ZooObject) -> tuple[str, str]:
         return FAIL, ("L-function prime layer (log p)chi(p)^m p^{-m/2} is UNIMODULAR "
                       "COMPLEX (character twist), not strictly-positive-real: bare "
                       "(B-iii) is zeta-unique / over-sharp -- see B-mult-twisted")
+    if w == "satake_deg2":
+        # A GL(2) prime layer is (log p)(alpha_p^m + beta_p^m)p^{-m/2}: real (the Satake
+        # pair is conjugate under Ramanujan-Petersson) but SIGN-VARYING -- tau(2) < 0.
+        # So bare positivity fails, exactly as it does for L(chi), and for the same
+        # reason: (B-iii) is the trivial-twist (zeta) fiber.
+        return FAIL, ("GL(2) prime layer (log p)(alpha^m+beta^m)p^{-m/2} is a real but "
+                      "SIGN-VARYING Newton power sum (tau(2) < 0), not strictly "
+                      "positive: (B-iii) is zeta-unique / over-sharp")
     if w == "complex_char_mixed":
         return FAIL, "no Euler product: F'/F mixes chi(p),chi-bar(p) -> complex/sign-varying, positivity fails"
     if w == "quad_form":
@@ -442,6 +540,14 @@ def check_multiplicativity(obj: ZooObject, N: int = 60, tol: float = 1e-6) -> tu
         q = len(c)
         for n in range(1, N + 1):
             a[n] = complex(c[n % q])
+    elif kind == "satake_deg2":
+        # GL(2) Satake object (A1b).  The analytically-normalized Hecke eigenvalues
+        # lambda(n) are supplied directly and run through the SAME von-Mangoldt
+        # recursion as zeta and L(chi) -- deliberately no special-casing, so the
+        # FAIL below is a like-for-like verdict and not an artifact of this branch.
+        lam = data
+        for n in range(1, min(N, len(lam) - 1) + 1):
+            a[n] = complex(lam[n])
     elif kind == "cm_corrupt":
         # a completely-multiplicative base (a(p)=1 => a(n)=1) with a SINGLE composite
         # amplitude overridden, genuinely breaking multiplicativity: data={n0: val}.
@@ -707,6 +813,7 @@ def forged_controls() -> list[dict]:
 # ===========================================================================
 def build_matrix(t_max: float = 100.0) -> dict:
     objs = [_load_zeta(t_max), _load_dh(t_max), _load_l_chi5(t_max),
+            _load_delta(t_max),
             _load_lattice(t_max), _load_ksly(t_max), _load_random(t_max)]
     matrix = {}
     for obj in objs:
@@ -794,6 +901,55 @@ def run_asserts(result: dict) -> tuple[list[str], list[str]]:
     # W3a: zeta SURVIVES variant B-mult (admitted on PASS/COND clauses only).
     req(vk["Bm"]["zeta"]["survives"],
         "GOV: zeta must survive variant B-mult")
+    # ---- A1b GL(2) COLUMN: THE CLAUSE-FALSIFICATION TEST ----
+    # PREDICTION (roadmap ROUTE A, A1b): L(s, Delta) -- a degree-2 Selberg element,
+    # TEMPERED by Ramanujan-Petersson (Deligne) -- is a genuine member of the
+    # arithmetic class, and the CURRENT CLAUSE REJECTS IT.  The required outcome is
+    # therefore a FAILURE OF THE CLAUSE, asserted here so it cannot silently regress:
+    # Delta must look exactly like zeta/L(chi) on every NON-arithmetic clause, and be
+    # killed by the arithmetic one alone.  If a future clause repair lands, THIS BLOCK
+    # IS WHAT MUST CHANGE -- deliberately, and with the roadmap entry updated.
+    if "delta" in m:
+        # (a) Delta is not pathological: it passes/conditions every clause that is not
+        #     the arithmetic one, with the SAME verdict profile as zeta and L(chi).
+        req(m["delta"]["support_density"]["verdict"] == PASS,
+            "A1b: Delta must PASS support density (it is a genuine L-function)")
+        req(m["delta"]["temperedness"]["verdict"] == PASS,
+            "A1b: Delta must PASS temperedness -- Ramanujan-Petersson (Deligne)")
+        req(m["delta"]["atomic_spectrum"]["verdict"] == COND,
+            "A1b: Delta pure-point spectrum must be CONDITIONAL (GRH for L(s,Delta)), "
+            "not FAIL -- it is not excluded for being pathological")
+        req(m["delta"]["defect_bounded"]["verdict"] == COND,
+            "A1b: Delta defect must be CONDITIONAL (k=0 <=> GRH), exactly zeta's status")
+        # (b) THE FALSIFICATION: the arithmetic clause rejects it.
+        req(m["delta"]["multiplicativity"]["verdict"] == FAIL,
+            "A1b: Delta must FAIL (B-mult-twisted) -- this is THE FALSIFICATION; if it "
+            "ever PASSes, the clause was repaired and the roadmap must be updated")
+        req(vk["Bm"]["delta"]["killed"],
+            "A1b: variant B-mult must KILL Delta -- the clause excludes a genuine "
+            "degree-2 member of the very class it claims to characterize")
+        # (c) and it is killed by that variant ALONE among the live ones: Delta
+        #     survives A, C and D exactly as zeta and L(chi) do.  So the rejection is
+        #     localized in the arithmetic clause and nowhere else.
+        for variant in ("A", "C", "D"):
+            req(vk[variant]["delta"]["survives"],
+                f"A1b: Delta must SURVIVE variant {variant} (only the arithmetic "
+                f"clause rejects it)")
+        # (d) the REASON must be the degree-2 Satake obstruction, not an accident:
+        #     the clause's unimodular-twist gate is what trips, because the m=1 datum
+        #     of a degree-2 layer is alpha+beta (|alpha+beta| <= 2), not a single
+        #     unimodular Satake parameter.
+        _d = m["delta"]["multiplicativity"]["detail"]
+        req(("|t(2)|" in _d and "!= 1" in _d) or "generation breaks" in _d,
+            f"A1b: Delta's rejection must trip the twist/generation gate, got: {_d}")
+        findings.append(
+            "A1b FALSIFICATION CONFIRMED: clause (B-mult-twisted) REJECTS L(s,Delta), "
+            "a tempered degree-2 Selberg element (Deligne). Reason: " + _d + ". "
+            "Kernel proof of the rejection (an IFF -- the clause holds for a degree-2 "
+            "layer iff the Satake determinant VANISHES, i.e. only in degree <= 1): "
+            "lean/SatakeDegreeTwo.lean, node MM_satake_degree_two_rejects_delta. "
+            "The clause is a GL(1) predicate mistaken for an arithmetic-class one.")
+
     # ---- W3c L-FUNCTION COLUMN: the decisive falsification test ----
     # PREDICTION: a genuine L-function (Euler product with unimodular character twist)
     # PASSES B-mult-twisted, while DH (their non-multiplicative sum) keeps FAILING it.
