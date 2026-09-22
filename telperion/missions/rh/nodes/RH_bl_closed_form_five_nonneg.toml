@@ -3,12 +3,17 @@ depends_on = ["RH_livalue"]
 kind = "lemma"
 name = "RH.bl_closed_form_five_nonneg"
 statement_module = "Statements.RH_bl_closed_form_five_nonneg"
-status = "draft"
+status = "proved"
 title = "BOMBIERI-LAGARIAS CLOSED FORM, RUNG 5, NO HYPOTHESIS (rvm_bridge island, E6Bridge28, 2026-09-21): 0 <= Re(archSide 5 + finiteSide 5), i.e. the explicit expression in gamma, log pi, log 2, zeta(2..5) and the Laurent constants eta_0..eta_4 is nonnegative, unconditionally in the kernel (via liValue and the box-region positivity of the pair terms for N <= 5; rungs 1..4 likewise in the module). Not RH. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge28.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-li-ladder-rvm-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_RVM_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: 0 <= Re(archSide 5 + finiteSide 5) with no hypothesis, through liValue 5 and the unpaired termwise certificate Re K_5 >= 0 on Box 2 (five nonnegative coefficient polynomials in u = beta - 1/2 and e = gamma^2 - 3u^2 - 3/4, re-expanded symbolically). Closed forms N = 1..5 agree with Li's lambda_N by an independent Cauchy integral to 10 digits (0.0231, 0.0923, 0.2076, 0.3688, 0.5755). Rung 6 fails inside Box 2. Not RH. conjecture1_proved = False."

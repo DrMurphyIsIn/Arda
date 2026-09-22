@@ -34,7 +34,7 @@
       need only A >= 0, N = 4 needs Box 1 (6 A^2 >= gamma^2), N = 5 needs Box 2 through the
       parametrisation u = beta - 1/2, e = gamma^2 - 3u^2 - 3/4 >= 0 (the polynomial is
       Sum_k c_k(u) e^k with c_k > 0 on |u| <= 1/2; min c_0 = 0.27).  Rung N = 6 FAILS termwise
-      inside the box (at beta = 0.24, gamma^2 = 0.95), so N <= 5 is the reach of this method.
+      inside the box (at beta = 0.29, gamma = 0.939 (inside Box 2)), so N <= 5 is the reach of this method.
 
   The regrouping of the tsum uses the involution rho <-> 1 - conj rho as an equivalence of C,
   summability from E6Bridge15 (summable_liPaired), and the real part of the HasSum.
