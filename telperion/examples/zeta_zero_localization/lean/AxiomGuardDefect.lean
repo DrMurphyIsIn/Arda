@@ -33,12 +33,32 @@
 
     Expected on all: {propext, Classical.choice, Quot.sound} -- no sorryAx, no ofReduceBool.
 
+    ## The functional-equation quadruple audit (QuadrupleDefect.lean, W2b correction)
+      * QuadrupleDefect.offline_quadruple_sigma_pair_count -- a GENUINE off-line zero
+        (re != 1/2, im != 0) has a 4-element functional-equation quadruple that splits into
+        EXACTLY TWO sigma-orbits: one genuine off-line zero costs p = 2, not p = 1.
+      * QuadrupleDefect.quad_real_offline / quad_online -- the two degenerations (p = 1 for a real
+        off-line zero; p = 0 for an on-line zero, which is sigma-fixed).
+      * QuadrupleDefect.defect_sumPairBlock_le -- row (c) at ARBITRARY ambient dimension, ARBITRARY
+        numbers of on-line and off-line channels (answers the "synthetic 2x2" caveat).
+      * QuadrupleDefect.defect_sumPairBlock_ge_of_subspace / defect_sumPairBlock_eq -- the rigidity
+        direction and the two-sided count at that same arbitrary generality.
+      * QuadrupleDefect.defect_parallel_channels_eq_one -- the COUNTEREXAMPLE: two nonzero off-line
+        channels that are parallel leak ONE negative direction, so defect = 1 < 2 = p.
+      * QuadrupleDefect.quadruple_witness_dimension_not_determined -- the headline correction: same
+        ambient dimension, same on-line channel, two nonzero off-line channels in both cases,
+        defects 1 and 2.  The witness dimension a quadruple contributes is NOT a function of the
+        quadruple.
+      * QuadrupleDefect.twoPairBlock_reflection_degenerate_defect_eq_one -- the same read on the
+        island's own `twoPairBlock`, the shape `BraggDefect.defect_eq_two` is stated on.
+
     conjecture1_proved = False.  These are FINITE inertia/diffraction facts about certified data and
     one synthetic pair; they prove NOTHING new about the Riemann Hypothesis.
 -/
 import DefectDictionary
 import R2Rigidity
 import BraggDefect
+import QuadrupleDefect
 
 /-! ### Dictionary rows (a), (b), (c) + supporting algebra -/
 #print axioms DefectDictionary.hermForm_smul_sq
@@ -76,3 +96,25 @@ import BraggDefect
 #print axioms BraggDefect.bragg_defect_eq_one
 #print axioms BraggDefect.twoPair_hermForm_neg
 #print axioms BraggDefect.defect_eq_two
+
+/-! ### The functional-equation quadruple audit (W2b correction, QuadrupleDefect.lean) -/
+#print axioms QuadrupleDefect.sigmaRefl_eq_self_iff
+#print axioms QuadrupleDefect.quad_card_eq_four
+#print axioms QuadrupleDefect.quad_eq_union
+#print axioms QuadrupleDefect.sigmaPair_disjoint
+#print axioms QuadrupleDefect.offline_quadruple_sigma_pair_count
+#print axioms QuadrupleDefect.quad_real_offline
+#print axioms QuadrupleDefect.quad_online
+#print axioms QuadrupleDefect.fe_eq_conj_of_online
+#print axioms QuadrupleDefect.quad_online_card
+#print axioms QuadrupleDefect.defect_sumPairBlock_le_rank
+#print axioms QuadrupleDefect.defect_sumPairBlock_le
+#print axioms QuadrupleDefect.defect_sumPairBlock_ge_of_subspace
+#print axioms QuadrupleDefect.defect_sumPairBlock_eq
+#print axioms QuadrupleDefect.degenerate_channels
+#print axioms QuadrupleDefect.defect_parallel_channels_eq_one
+#print axioms QuadrupleDefect.orthogonality_is_load_bearing
+#print axioms QuadrupleDefect.defect_quadruple_block_le
+#print axioms QuadrupleDefect.sumPairBlock_two
+#print axioms QuadrupleDefect.quadruple_witness_dimension_not_determined
+#print axioms QuadrupleDefect.twoPairBlock_reflection_degenerate_defect_eq_one

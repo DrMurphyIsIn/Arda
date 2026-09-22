@@ -32,6 +32,9 @@ name = "R2Rigidity"
 name = "BraggDefect"
 
 [[lean_lib]]
+name = "QuadrupleDefect"
+
+[[lean_lib]]
 name = "AxiomGuardDefect"
 
 [[lean_lib]]
