@@ -699,6 +699,16 @@ name = "winding_box_zero"
 script = "examples/winding_box_zero/generate.py"
 group = "flint"    # Arb winding-number sidecar; needs python-flint
 [[check]]
+name = "speiser_box_probe"
+script = "examples/speiser_box_probe/generate.py"
+group = "flint"    # MM_speiser_box_probe Face-7 pilot: Lipschitz-net zero-freeness certificate
+                   # for deriv riemannZeta on [1/4,3/8]x[6,10].  Needs MPMATH (not python-flint),
+                   # but shares the flint group's off-the-per-push-verify posture because the
+                   # quick-group runner does not install it; the real gate is the dedicated
+                   # speiser-box-probe-compiles CI job, which installs mpmath, runs --check, runs
+                   # the unit tests, builds the Lean and runs the axiom guard.  ~9 s.
+                   # NOT the Speiser wall, NOT a step toward RH; conjecture1_proved = False.
+[[check]]
 name = "rvm_bridge"
 script = "examples/rvm_bridge/generate.py"
 group = "quick"    # E6 bridge island (v4.33.0-rc2 / zeta-23-lean): drift check that the node statement + mirrored defs still match the mirrormere registry; ~0.1 s
@@ -716,6 +726,18 @@ group = "quick"    # interval-Gram inertia: exact signature (posIndex, defect) o
                    # rationals, no flint; ~0.1 s
 
 [[check]]
+name = "window_form_floor"
+script = "examples/window_form_floor/generate.py"
+group = "quick"    # Zhu arXiv:2608.24827 Thm 1.1 window-floor certificates at L = 0.8 (T# = 200 and the T# = 150 cross-check); exact rationals + a finite von Mangoldt comb mass, no flint; ~2 s
+
+[[check]]
 name = "weil_form_enclosure"
 script = "examples/weil_form_enclosure/generate.py"
 group = "flint"    # E8 Weil pairing (archSide - primeSide) enclosed by Arb for two C_c^inf bumps + their 2x2 Gram block; needs python-flint; archimedean quadrature to |r| <= 1024, ~4 min
+
+[[check]]
+name = "leakage_dictionary"
+script = "examples/leakage_dictionary/generate.py"
+group = "quick"    # MIRRORMERE ROUTE A item A2b: re-derived log-derivative coefficient rows at the
+                   # composite frequency log 6 (chi_5 vanishes, Davenport-Heilbronn leaks); exact
+                   # sympy + a 50-digit mpmath re-derivation of the published b(n) row, no flint; ~1 s

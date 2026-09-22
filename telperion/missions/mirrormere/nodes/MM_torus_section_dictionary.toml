@@ -1,14 +1,20 @@
 created = "2026-09-14"
 depends_on = []
+deprecated_reason = "notation-only per the 2026-09-19 read-back and two 2026-09-22 blind read-backs (AUDIT_TESTIMONY_MM_torus_section_dictionary_2026-09-22_A1/A2.md); WALL_BACKLOG_MAP R5; the unblocking reason lapsed when MM_torus_section_n2_rigidity was granted via direct on 2026-09-19"
 kind = "lemma"
 name = "MM.torus_section_dictionary"
 statement_module = "Statements.MM_torus_section_dictionary"
-status = "draft"
-title = "Torus-section ladder T1, the dictionary BRIDGE: the island's verbatim twoFreq is the N=2 instance of the section vocabulary (twoFreq = linearTorusForm 2 on torusOrbit 2) -- the lemma the N=2 rigidity discharge consumes. REVISED post-audit: the original general-N identity was flagged TRIVIAL (definitionally rfl) by the 2026-09-14 blind read-back; replaced with this contentful bridge; awaiting re-audit"
-updated = "2026-09-18"
+status = "deprecated"
+title = "Torus-section ladder T1, NOTATION ONLY (not a bridge lemma): the island's twoFreq is the same two-term exponential sum as linearTorusForm 2 on torusOrbit 2, written with a summation sign instead of a plus sign. Proved by one `simp [..., Fin.sum_univ_two]`; the gap between the two sides is a two-element sum unfolding, two definitional projections of the ![.,.] literals, and one add_zero. 2026-09-19 BLIND READ-BACK VERDICT: no mathematical content. The 2026-09-14 audit rejected the general-N form as definitionally rfl; this N=2 revision is that same rejected identity instantiated and written out longhand, so the rejection was answered with a sum unfolding rather than with content. The island's own lakefile says the same thing ('vocabulary bridges over TwoFreqRigidity (simp-grade; not a win)'). Retained as plumbing the N=2 rigidity restatement consumes; HELD AT DRAFT and NOT to be granted as a rung"
+updated = "2026-09-22"
 
 [proof]
 artifact = "../../examples/quasicrystal/lean/TorusSectionLadder.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-torus-t1 2026-09-19 (independent blind read-back; shown the statement and MMDefs only, not the node title, not the campaign roadmap or memos)"
+date = "2026-09-19"
+text = "The statement asserts that a two-term exponential sum written longhand equals the same sum written with a summation sign. Unfolding twoFreq, linearTorusForm and torusOrbit, the gap between the two sides is exactly: Fin.sum_univ_two to unfold the two-element fold, two Matrix.cons_val projections of the ![.,.] literals which are rfl, and one add_zero to discharge the fold's trailing zero. A number theorist would recognise no mathematical assertion here, only a change of notation. Bare rfl probably does NOT close it, for the single uninteresting reason that add_zero on the complex numbers bottoms out in a quotient of Cauchy sequences and does not reduce definitionally; Mathlib itself proves Fin.sum_univ_two by simp rather than rfl for the same reason. That is not a distinction in content. The artifact proves it honestly with one simp line, contains no sorry, admit, native_decide, self-supplied axiom or unsafe declaration, is a default build target, and is covered by the island axiom guard. VERDICT: notation change, not a bridge lemma. Note that the 2026-09-14 audit rejected the general-N form of this same identity as definitionally rfl, and that rejected statement is still in the artifact proved by literal rfl; the revision answered a 'this is rfl' finding by instantiating it at N=2 and composing it with a sum unfolding. No mathematical content was added."

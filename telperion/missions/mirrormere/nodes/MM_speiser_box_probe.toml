@@ -5,7 +5,13 @@ name = "MM.speiser_box_probe"
 statement_module = "Statements.MM_speiser_box_probe"
 status = "open"
 title = "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)"
-updated = "2026-09-16"
+updated = "2026-09-20"
+
+[proof]
+artifact = "../../examples/speiser_box_probe/lean/SpeiserBoxProbe/SpeiserBox.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
 
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"

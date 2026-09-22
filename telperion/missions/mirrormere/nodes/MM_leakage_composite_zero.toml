@@ -1,0 +1,19 @@
+created = "2026-09-20"
+depends_on = []
+kind = "lemma"
+name = "MM.leakage_composite_zero"
+statement_module = "Statements.MM_leakage_composite_zero"
+status = "proved"
+title = "A2b, a FORMALIZATION win, not new mathematics: for a completely multiplicative normalized amplitude a, the Dirichlet coefficients b of -F'/F vanish at every non-prime-power index -- the classical identity -F'/F = sum Lambda(n) a(n) n^-s, Apostol-grade, whose content here is the kernel proof rather than the theorem. NOT the rfl-grade von Mangoldt support fact: unfolding both definitions leaves the goal untouched, and the proof is a real strong induction over the divisor recursion plus a well-founded construction of b. Carries a certified Davenport-Heilbronn counterexample at n = 6 showing the multiplicativity hypothesis is NECESSARY, and the only clause with numerical content is the kernel enclosure 1.93635 < b(6) < 1.93636, built from proved boxes for two square roots and two logarithms. NOTE the enclosure does NOT contain the published 4-dp figure 1.9364; it ROUNDS to it, proved in-kernel. Blind read-back 2026-09-20 verdict: CONTENTFUL, MODEST, CLASSICAL"
+updated = "2026-09-22"
+
+[proof]
+artifact = "../../examples/quasicrystal/lean/LeakageNode.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "workflow campaign-remainder 2026-09-22, two independent skeptics (rebuilt the quasicrystal island, 50-digit numerics, in-kernel probes; CAMPAIGN_REMAINDER_2026-09-22.md section 4)"
+date = "2026-09-22"
+text = "Read-back: the leakage dictionary (A2b), four conjuncts: a completely multiplicative amplitude forces b n = 0 at every non-prime-power n; the chi_5 instance vanishes at composite n; the Davenport-Heilbronn negative control leaks (b(6) enclosed, kappa numerics to 50 digits); multiplicativity is necessary (falsification twin). Gate mirror MMLeakageStatement.leakage_composite_zero appended to LeakageNode.lean, character-for-character the statement module, discharged by Quasicrystal.leakage_composite_zero; AxiomGuardLeakage 48 lines all [propext, Classical.choice, Quot.sound], 0 sorryAx. Two independent skeptics did not refute. Unconditional; kernel-clean; NOT RH. conjecture1_proved = False."

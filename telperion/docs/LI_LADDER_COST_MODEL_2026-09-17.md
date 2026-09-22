@@ -175,9 +175,18 @@ milestone adds a measured miniature of it and changes none of it.
   already verified on the line to height 3·10¹². A 10³ or 10⁴ ladder therefore cannot see anything
   that on-line verification has not already settled — this is what "morally forced by on-line
   verification" means, in numbers.
-* **Window certification cost is doubly exponential in support** (Zhu 2608.24827: −ln λ_min(L)
-  ~ the Landau–Widom rate) — the B3/B9 Weil–Gram route buys support only at that price; "grow L"
-  has no known method (roadmap B9).
+* **Window certification cost is doubly exponential in support.** Two claims of Zhu 2608.24827,
+  which that paper separates and this note previously fused:
+  * *Proved* (Thm 1.4): the certificate size needed to certify positivity on `supp f ⊆ [−L, L]`
+    grows doubly exponentially in `L`. This is a theorem, and it is the one that closes the route.
+  * *Measured, not proved* (Rmk 1.5): the margin `−ln λ*(L)` of the optimal window form is
+    observed to collapse at the Landau–Widom rate. The constant `2π² ≈ 19.74` is a **fit**, and
+    the fit is to a measurement of `20.13 ± 0.10` — close, but a numerical observation with an
+    unexplained residual, not a derived constant.
+
+  Both concern `λ*(L)`, the least eigenvalue of the *optimal* window form, not `λ_min(L)` of any
+  particular Gram block. The B3/B9 Weil–Gram route buys support only at the Thm 1.4 price; "grow
+  L" has no known method (roadmap B9).
 * **The totally-positive tail budget buys ~1 bit per doubling of certified height** (Groskin
   2607.02828) — the height-side analogue: exponentially more verification for each additional bit
   of tail control.

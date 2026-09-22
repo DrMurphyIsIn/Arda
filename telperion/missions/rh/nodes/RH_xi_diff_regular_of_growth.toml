@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = ["RH_xi_diff_entire_extension"]
+kind = "lemma"
+name = "RH.xi_diff_regular_of_growth"
+statement_module = "Statements.RH_xi_diff_regular_of_growth"
+status = "proved"
+title = "XI PARTIAL FRACTION, obligation 1 reduced (2026-09-21): XiDiffRegular follows from a logarithmic growth bound on Re s >= 1/2 (XiDiffExtGrowthRight: Landau + Cauchy + Stirling on the strip, Dirichlet-series and digamma bounds on Re s >= 2 -- in flight as E6Bridge22). conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge20.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-xi-partial-fraction-2026-09-21 (AUDIT_TESTIMONY_XI_PARTIAL_FRACTION_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: XiDiffRegular follows from a logarithmic growth bound of the entire extension on Re s >= 1/2 (constant C(1 + log 2) from the functional equation and the triangle inequality, re-derived). A reduction; the growth bound is the remaining obligation. conjecture1_proved = False."

@@ -1,11 +1,11 @@
 created = "2026-09-14"
 depends_on = ["MM_torus_section_dictionary", "MM_twofreq_realrooted_iff"]
-kind = "milestone"
+kind = "lemma"
 name = "MM.torus_section_n2_rigidity"
 statement_module = "Statements.MM_torus_section_n2_rigidity"
 status = "proved"
-title = "Torus-section ladder T1, the N=2 rung in ladder vocabulary: the section of the linear form c1 z1 + c2 z2 along the T^2 orbit is real-rooted iff the coefficient moduli are equal -- KS section theory at d=2, 2-D parent governing 1-D rigidity. Discharge route: short bridge from twoFreq_realRooted_iff (QC_TORUS_SECTION_LADDER memo sections 1, 5)"
-updated = "2026-09-18"
+title = "Torus-section ladder T1, the N=2 rung: RESTATES its sibling MM_twofreq_realrooted_iff in ladder vocabulary and proves nothing that theorem does not. Statement: for nonzero c1, c2 and distinct real lam1, lam2, the section of c1 z1 + c2 z2 along the orbit is real-rooted iff |c1| = |c2| -- TRUE and kernel-clean, but the whole delta from twoFreq_realRooted_iff is the one subterm twoFreq -> its Fin 2 sum spelling. Proof is two lines: `simp only [<- torus_section_dictionary]` DELETES the ladder vocabulary from the goal, then `exact twoFreq_realRooted_iff c1 c2 lam1 lam2 hc1 hc2 hlam` closes it with every argument passed through unchanged. The artifact says so itself ('Pure bridge; the mathematics lives in TwoFreqRigidity'), and the 2026-09-18 attempts ledger said kind 'milestone' is inflated and this is not a win -- the registry was granted anyway and never corrected. kind CORRECTED to lemma 2026-09-20. No torus structure is used: no irrationality, no rational independence, no Kronecker or cut-and-project hypothesis, and N is the literal numeral 2. Counts as ACCOUNTING, not as a ladder rung"
+updated = "2026-09-20"
 
 [proof]
 artifact = "../../examples/quasicrystal/lean/TorusSectionLadder.lean"
@@ -14,6 +14,6 @@ closure_clean = true
 via = "direct"
 
 [readback]
-auditor = "blind-auditor 2026-09-14 (independent blind read-back, AUDIT_TESTIMONY_ANDURIL_MIRRORMERE_2026-09-14.md)"
-date = "2026-09-14"
-text = "For nonzero complex c1, c2 and distinct real frequencies lam1 /= lam2: all complex zeros x of the section linearTorusForm 2 ![c1,c2] (torusOrbit 2 ![lam1,lam2] x) -- i.e. of the two-frequency exponential sum c1 e^(i lam1 x) + c2 e^(i lam2 x) -- have zero imaginary part IF AND ONLY IF the norms of c1 and c2 are equal. Well-stated rigidity biconditional; the vector literals and authored vocabulary elaborate under import Mathlib. No flags."
+auditor = "blind-auditor 2026-09-14 (first pass) + blind-auditor-torus-t1 2026-09-20 (second pass, shown the statement and the artifact only, not the node title, kind, or the campaign roadmap)"
+date = "2026-09-20"
+text = "2026-09-14 FIRST PASS, unchanged and still accurate as far as it goes: for nonzero complex c1, c2 and distinct real frequencies lam1 /= lam2, all complex zeros x of the section linearTorusForm 2 ![c1,c2] (torusOrbit 2 ![lam1,lam2] x), i.e. of the two-frequency exponential sum c1 e^(i lam1 x) + c2 e^(i lam2 x), have zero imaginary part IF AND ONLY IF the norms of c1 and c2 are equal. Well-stated rigidity biconditional; the vector literals and authored vocabulary elaborate under import Mathlib. No flags. 2026-09-20 SECOND PASS, the comparison the first pass did not make: against twoFreq_realRooted_iff in TwoFreqRigidity.lean the binders are identical, all three hypotheses are identical, the right side of the biconditional is identical, and the left side differs in EXACTLY ONE SUBTERM, twoFreq against its Fin 2 sum spelling, which is itself a simp-grade notation change. Nothing is generalized, strengthened, weakened or newly hypothesized; there is no N greater than 2, no new case, no new conclusion. The tactic script proves the point: the dictionary is rewritten RIGHT TO LEFT, which erases the ladder vocabulary before any mathematics happens, and exact then passes all three hypotheses through one to one. VERDICT: this node restates its sibling. Since twoFreq_realRooted_iff is already the proof artifact of another proved node, the same theorem is now granted twice, and the notation change that makes the restatement typecheck is granted as a third. Kernel hygiene is clean and the defect is purely in the accounting: the node is true, it is just not new. Also flagged: the word torus is actively misleading here, because the theorem is about whether zeros have nonzero imaginary part, which is exactly where the orbit map does NOT land in the torus."

@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.xi_derivative_partial_fraction_of"
+statement_module = "Statements.RH_xi_derivative_partial_fraction_of"
+status = "proved"
+title = "THE XI PARTIAL FRACTION, DERIVATIVE FORM, WITHOUT HADAMARD (2026-09-21): (log xi)''(s) = -Sum m(rho)/(s - rho)^2 for every s that is not a nontrivial zero, PROVED modulo two named analytic obligations -- XiDiffRegular (the difference extends to an entire function of logarithmic growth) and XiLogDerivDerivDecay (real-axis decay). Proved outright: summability, the log-growth Liouville lemma, the sum's decay, the assembly. Consumer: LiValue (the Bombieri-Lagarias value identity). Nothing about RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge18.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-xi-partial-fraction-2026-09-21 (AUDIT_TESTIMONY_XI_PARTIAL_FRACTION_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: (log xi)''(s) = -Sum m(rho)/(s-rho)^2 for every s not a nontrivial zero, GIVEN the two named obligations XiDiffRegular and XiLogDerivDerivDecay. Audit 10/10: xi matches Zeta23's definition; Liouville-with-log-growth re-derived and shown non-vacuous; summability and decay majorants re-derived; obligations are plain Props consumed only as hypotheses. Nothing about RH. conjecture1_proved = False."
