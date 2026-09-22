@@ -1,0 +1,19 @@
+created = "2026-09-20"
+depends_on = []
+kind = "lemma"
+name = "MM.rh_implies_weil_positivity"
+statement_module = "Statements.MM_rh_implies_weil_positivity"
+status = "proved"
+title = "Weil's criterion, forward half, on the E8 vocabulary: Mathlib's RiemannHypothesis implies Weil positivity of weilForm on Hermitian autocorrelations over IsWeilTest -- discharges the hypothesis hpos that weil_negative_refutes_rh (weil_form_enclosure island) has carried undischarged; proves NOTHING about RH itself. conjecture1_proved = False."
+updated = "2026-09-20"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge5.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-forward-2026-09-20 (AUDIT_TESTIMONY_WEIL_FORWARD_2026-09-20.md)"
+date = "2026-09-20"
+text = "Read-back: for every smooth compactly supported complex test function g, IF Mathlib's RiemannHypothesis holds THEN the real part of the primes-side Weil functional archSide - primeSide evaluated at the Hermitian autocorrelation g*g~ is nonnegative. Independently re-derived: E8 HasSum with every term m(rho)|h(gamma)|^2 under RH; hRH is load-bearing (proof fails with the goal RiemannHypothesis left open when removed); test class nonvacuous (ContDiffBump), autocorr of a bump nonzero; simp/aesop/positivity/exact? fail on the hypothesis-free sentence; definitions character-identical to MMDefs; no overclaim. This is the forward half of Weil's criterion only. conjecture1_proved = False."

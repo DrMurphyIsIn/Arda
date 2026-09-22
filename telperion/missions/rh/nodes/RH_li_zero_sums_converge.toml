@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.li_zero_sums_converge"
+statement_module = "Statements.RH_li_zero_sums_converge"
+status = "proved"
+title = "B7 CONVERGENCE HALF (2026-09-21, open lemma 2): for every n the SYMMETRIC window sums of Li's kernel over the nontrivial zeros converge as T -> infinity, to the absolutely convergent paired sum liLimit n = Sum m(rho) Re(1 - (1 - 1/rho)^n); the pairing rho <-> conj rho is necessary (the unpaired family is not summable) and sufficient (|Re K_n| <= 2^n/|rho|^2 + the local-count majorant). Unconditional. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge15.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-weil-li-2026-09-21 (AUDIT_TESTIMONY_WEIL_LI_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: for every n the symmetric window sums of Li's kernel over the nontrivial zeros converge as T -> infinity to the absolutely convergent paired sum liLimit n. Audit 8/8: window closed under conjugation, kernel commutes with conjugation, multiplicities matched (Zeta23 analyticOrderAt_zeta_conj + Mathlib riemannZeta_conj), |Re K_n| <= 2^n/|rho|^2 re-derived, Tannery along atTop on R. Unconditional; not RH. conjecture1_proved = False."

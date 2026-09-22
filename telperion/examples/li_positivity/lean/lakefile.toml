@@ -49,6 +49,35 @@ name = "AxiomGuardZeroFree"
 [[lean_lib]]
 name = "LiLadder"
 
+# The shared helper pack of the Li face (shapes audit P3, SHAPES_AUDIT_48H_2026-09-22 section 4.2):
+# one copy of the Mathlib-only lemmas that were proved on both islands (Lemma A/A'/A'', the
+# g-inequality, the strip-point log/arg bounds, the polar real part, the sharp fractional-part
+# kernel bound, the involution averaging helper) plus the upstream-vocabulary helpers that
+# LiLadderHeight and LiBoxRungs both proved (paired zero sum, pair-term normal forms). Imported by
+# LiLadderHeight, LiLadderSharp, LowHeightBox, LiBoxRungs; holds NO registry node theorem.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "LiFacePrelude"
+
+# The Li ladder priced in HEIGHT (LI_FACE_BRIEF_2026-09-21 sections 1-3): hypothesis-free paired
+# zero sum, Lemma A/B, Theorems C/D, rung 0 with no hypothesis (registry node RH_li_rung0_kernel),
+# and the height-4000 composition. conjecture1_proved = False.
+[[lean_lib]]
+name = "LiLadderHeight"
+
+# The SHARPENED exchange rate (Lemma A'' window, Lemma B'', Theorems C''/D''): height T buys every
+# rung n + 1 <= 2 pi (T - 1/2). Conditional on the line hypothesis. conjecture1_proved = False.
+[[lean_lib]]
+name = "LiLadderSharp"
+
+# li-box: the low-height zero box (Box 1 |Im| >= sqrt 3 / 2, Box 2 confinement), hypothesis-free;
+# imported by LiLadderHeight to discharge the real-zero residual. conjecture1_proved = False.
+[[lean_lib]]
+name = "LowHeightBox"
+
+[[lean_lib]]
+name = "LiBoxRungs"
+
 [[lean_lib]]
 name = "RvMXiBridge"
 

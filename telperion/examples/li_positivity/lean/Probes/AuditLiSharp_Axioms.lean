@@ -1,0 +1,19 @@
+import LiLadderSharp
+#print axioms LiFacePrelude.cosh_mul_cos_le_one_window
+#print axioms LiFacePrelude.one_div_add_one_div_two_sq_le
+#print axioms LiFacePrelude.abs_arg_add_abs_log_le
+#print axioms LiLadderHeight.re_liPairedSummand_nonneg_of_height_sharp
+#print axioms LiLadderHeight.li_rung_of_zeros_on_line_below_sharp
+#print axioms LiLadderHeight.li_rungs_of_bands_4000_sharp
+#print axioms LiLadderHeight.li_rungs_of_bands_4000_upto_sharp
+#print axioms LiFacePrelude.cosh_mul_cos_le_one
+#print axioms LiFacePrelude.cosh_mul_cos_le_one_of_le_three_pi_div_two
+#print axioms LiFacePrelude.abs_arg_base_le
+#print axioms LiFacePrelude.abs_log_norm_one_sub_inv_le
+#print axioms LiFacePrelude.abs_log_norm_le_abs_arg
+#print axioms LiFacePrelude.re_liPairedSummand_eq
+#print axioms LiLadderHeight.re_liPairedSummand_nonneg_of_onLine
+#print axioms LiFacePrelude.re_taylorCoeff_nonneg_of_termwise
+#print axioms LiLadderHeight.line_hyp_of_upper_half
+#print axioms LiLadderHeight.noRealZeroInStrip
+#print axioms Real.pi_gt_d6

@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.zeta_zero_im_ge"
+statement_module = "Statements.RH_zeta_zero_im_ge"
+status = "proved"
+title = "LOW-HEIGHT BOX 1 (li_positivity island, 2026-09-21): every nontrivial zero of zeta has |Im| >= sqrt 3 / 2. Hypothesis-free, from the fractional-part representation zeta(s) = s/(s-1) - s J(s) with the sharp bound |J(s)| <= 1/(2 Re s) (unit-cell midpoint reflection) and the functional equation. Folklore-level, new to the island; the first zero is at height 14.13. Not RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/LowHeightBox.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-li-ladder-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: every nontrivial zero has |Im| >= sqrt 3 / 2, hypothesis-free, from zeta_fract_repr with the sharp unit-cell bound |J(s)| <= 1/(2 Re s) and the functional-equation reflection; tight at sigma = 1/2, t^2 = 3/4; the first zero is at 14.13. Not RH. conjecture1_proved = False."

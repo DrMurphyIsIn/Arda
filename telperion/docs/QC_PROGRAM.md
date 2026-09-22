@@ -88,3 +88,18 @@ QC-M3): the R2 defect-k rigidity theorem proper; a lightweight in-kernel
 N(T) lower-bound brick to discharge BoundaryLemmas' counting hypothesis;
 de Branges/Hermite–Biehler is flagged as the deep home of R1 and explicitly
 NOT attempted.
+
+**UPDATE 2026-09-21 (PR #593, merged).** The "one place" is now a *theorem*, not an
+identification. The goal node's placeholder (`RiemannHypothesis` by fiat, via the
+opaque-variable `zeta_FQ_iff_RH`) was replaced by the concrete regularized statement —
+Weil positivity of the E8 primes-side functional `weilForm` on Hermitian autocorrelations
+`autocorr g` over the smooth compactly supported class — and Weil's criterion was
+formalized in both directions on the rvm_bridge island: `zeta_comb_membership_iff_rh`
+(forward: RH ⇒ positivity via `limit_explicit_formula` + `paperFT_weilTest`; converse:
+positivity ⇒ RH via the Gaussian dominance lemma O2 for an arbitrary off-line zero and the
+Gaussian approximation lemma O1′ for the test class, both unconditional and RH-free).
+Registry: `MM_rh_implies_weil_positivity`, `MM_weil_positivity_implies_rh`,
+`MM_gaussian_dominance`, `MM_gaussian_approx`, `MM_gaussian_transfer`,
+`MM_zeta_comb_membership_iff_rh` all `proved` after four blind audits. The goal node
+`MM_zeta_comb_membership` remains `draft`: it is RH, and the difficulty map's single wall is
+exactly the `∀ g` quantifier of that statement. `conjecture1_proved = False`.

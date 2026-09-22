@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = ["MM_rh_iff_gaussian_positivity", "MM_gaussian_explicit_formula"]
+kind = "lemma"
+name = "MM.rh_iff_gaussian_prime_le_arch"
+statement_module = "Statements.MM_rh_iff_gaussian_prime_le_arch"
+status = "proved"
+title = "WALL ASSAULT seam A: RH as a PRIME-SIDE inequality with no zeros in it -- for every centre c and width lam > 0, the prime side of the Gaussian-derivative test does not exceed its archimedean side. The Wall is the sign of one explicit function on the (c, lam) half-plane. An equivalence; proves NOTHING about either side. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge10.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-seam-A-2026-09-21 (AUDIT_TESTIMONY_WALL_SEAM_A_2026-09-21.md)"
+date = "2026-09-21"
+text = "RiemannHypothesis is equivalent to: for every real c and lam > 0, Re primeSide (autocorr (gaussPhi c lam)) <= Re archSide (autocorr (gaussPhi c lam)). It is rh_iff_gaussian_positivity composed with gaussian_positivity_iff_prime_le_arch, the latter being the Gaussian explicit formula zeroSide_gaussTest_eq rewritten through sub_re and sub_nonneg under the (c, lam) quantifier. The right-hand side mentions no zeros: it is the sign of one explicit function of two real parameters, an archimedean-minus-prime expression. Both sides of the inequality are in fact real (gauss_zeroSide_real) so the real parts lose nothing. The inequality is not closable by automation and is refuted by any off-line zero (audit non-vacuity probes). An equivalence; neither side is asserted; RH is NOT proved. Axioms [propext, Classical.choice, Quot.sound]. conjecture1_proved = False."

@@ -699,6 +699,16 @@ name = "winding_box_zero"
 script = "examples/winding_box_zero/generate.py"
 group = "flint"    # Arb winding-number sidecar; needs python-flint
 [[check]]
+name = "speiser_box_probe"
+script = "examples/speiser_box_probe/generate.py"
+group = "flint"    # MM_speiser_box_probe Face-7 pilot: Lipschitz-net zero-freeness certificate
+                   # for deriv riemannZeta on [1/4,3/8]x[6,10].  Needs MPMATH (not python-flint),
+                   # but shares the flint group's off-the-per-push-verify posture because the
+                   # quick-group runner does not install it; the real gate is the dedicated
+                   # speiser-box-probe-compiles CI job, which installs mpmath, runs --check, runs
+                   # the unit tests, builds the Lean and runs the axiom guard.  ~9 s.
+                   # NOT the Speiser wall, NOT a step toward RH; conjecture1_proved = False.
+[[check]]
 name = "rvm_bridge"
 script = "examples/rvm_bridge/generate.py"
 group = "quick"    # E6 bridge island (v4.33.0-rc2 / zeta-23-lean): drift check that the node statement + mirrored defs still match the mirrormere registry; ~0.1 s

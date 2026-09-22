@@ -8,8 +8,9 @@
     the island claims, so that a drifting emitter cannot silently drop a theorem
     from its own guard list.
 
-    Prints the axiom set of every theorem of the hand-written `LeakageDictionary.lean`
-    and of the emitted `LeakageInstances.lean`.  Expected on ALL of them:
+    Prints the axiom set of every theorem of the hand-written `LeakageDictionary.lean`,
+    of the emitted `LeakageInstances.lean`, and of both node declarations in
+    `LeakageNode.lean` (48 declarations in all).  Expected on ALL of them:
     {propext, Classical.choice, Quot.sound} -- no sorryAx, no ofReduceBool, no
     Lean.ofReduceNat.
 
@@ -23,6 +24,13 @@ open Quasicrystal
 
 /-! ### THE REGISTRY NODE (MM_leakage_composite_zero) -/
 #print axioms Quasicrystal.leakage_composite_zero
+
+/-! ### The registry GATE MIRROR of the node (2026-09-22): the statement module's
+    four inlined definitions and its theorem, restated CHARACTER FOR CHARACTER in
+    `namespace MMLeakageStatement` (LeakageNode.lean) and discharged by the island
+    theorem above through delta-definitional unfolding.  This is the declaration
+    whose text the grant gate matches; same expected axiom set. -/
+#print axioms MMLeakageStatement.leakage_composite_zero
 
 /-! ### The trivial direction, quarantined
 

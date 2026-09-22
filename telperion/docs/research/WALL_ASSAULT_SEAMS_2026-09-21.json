@@ -1,0 +1,183 @@
+{
+  "campaign": "WALL ASSAULT, seam sweep: what the in-kernel Weil criterion changes about the Wall",
+  "date": "2026-09-21",
+  "conjecture1_proved": false,
+  "worktree": "/Users/peterwmurphy/arda-goal-weil (branch mm/weil-consolidation)",
+  "prose": "telperion/docs/WALL_ASSAULT_SEAMS_2026-09-21.md",
+  "taxonomy": ["FOOTHOLD", "COLLAPSE_TO_RH", "COLLAPSE_TO_FREE", "TRANSFER", "UNRESOLVED"],
+  "input_theorem": {
+    "name": "RvMBridge9.zeta_comb_membership_iff_rh",
+    "files": ["telperion/examples/rvm_bridge/lean/E6Bridge5.lean", "E6Bridge6.lean", "E6Bridge7.lean", "E6Bridge8.lean", "E6Bridge9.lean"],
+    "statement": "(forall g, IsWeilTest g -> 0 <= (weilForm (autocorr g)).re) <-> RiemannHypothesis",
+    "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "converse_route": "gaussTest c lam z = (z-c)^2 exp(-2 lam (z-c)^2); O2 = RvMBridge7.gaussian_dominance; O1' = RvMBridge8.gaussian_approx",
+    "family_object": "F(c, lam) = Re Sum_rho m(rho) (gamma_rho - c)^2 exp(-2 lam (gamma_rho - c)^2)"
+  },
+  "meta_verdict": "The in-kernel Weil criterion changes the Wall's coordinates, not its content: the positivity clause becomes F(c, lam) >= 0 on the (height, resolution) quarter-plane; every bounded rectangle is certifiable at explicit cost; the residual is the infinite-height diagonal lam >= lam_res(c). No new foothold. Open lemmas: effective O2 (S3), BL admissibility dictionary (S5). One transfer: AF bandwidth (S4).",
+  "seams": [
+    {
+      "id": "S1a",
+      "claim": "RH <=> forall c, forall lam > 0, F(c, lam) >= 0 (two-parameter family reduction)",
+      "verdict": "TRANSFER",
+      "mechanism": "Forward: on-line zeros contribute x^2 e^{-2 lam x^2} >= 0, summable. Converse: contrapositive of gaussian_dominance plus rh_of_all_on_line.",
+      "limitation": "An equivalence: relocates the wall from the C_c^infinity cone to the (c, lam) quarter-plane. Zero-side form mentions no primes; prime-side form needs the Gaussian explicit formula (P2).",
+      "what_transfer_buys": "Coordinates for the Wall: c = height, lam = resolution. Kernel-derivable today.",
+      "sources": ["E6Bridge6", "E6Bridge7", "Bombieri 2000 (abstract)"],
+      "kernel_probe": "P1",
+      "confidence": 0.95
+    },
+    {
+      "id": "S1b",
+      "claim": "Region picture: envelope/small-lam region unconditional; ladder region from certified zeros; residual = Wall",
+      "verdict": "COLLAPSE_TO_FREE",
+      "initial_verdict": "FOOTHOLD",
+      "mechanism": "Envelope: archimedean integral ~ log(c/2pi) sqrt(pi)/(4 pi (2 lam)^{3/2}) beats absolute prime sum ~ P(lam) f(0), P(lam) ~ e^{lam/2} sqrt(8 pi lam); threshold c_1(lam) ~ 2 pi exp(2 P(lam)), doubly exponential in lam = Zhu T_1(L) = 2 pi e^{A_L} under L_eff = lam/2 + (1/2) log(2 pi lam). Ladder: uncertified tail bounded by e^{2 lam (1/4 - D^2)} times the summable majorant; D ~ 1-2 for lam >= 1.",
+      "limitation": "Envelope region never looks at the zero side (zero content). Ladder region factors through certified on-line zeros (B4: near-true by construction; cross-island). Residual: T - D < c < c_1(lam) for lam > lam_1(T) ~ 2 log log T (0.7 at 6.4e5, 1.6 at 3e12).",
+      "refutation": {
+        "collapse_to_goal": "not refuted (no RH used)",
+        "single_axis": "REFUTED: mechanism identical to Yoshida / Connes-Consani Thm 1 / Zhu Lemma 3.1 (archimedean dominance)",
+        "literature": "Zhu abstract and CC PDF read; consistent"
+      },
+      "sources": ["Zhu 2608.24827", "Connes-Consani 2006.13771", "Zeta23 zero_sum_inv_sq", "E6Bridge6 summable_mult_div_one_add_normSq"],
+      "kernel_probe": "P3, P4",
+      "confidence": 0.85
+    },
+    {
+      "id": "S2",
+      "claim": "Prime-side certification bandwidth; feasible lam; is it the Landau-Widom/Zhu barrier",
+      "verdict": "TRANSFER",
+      "as_foothold": "COLLAPSE_TO_FREE (dominated by the Turing ladder at every feasible height)",
+      "mechanism": "Adjudicated the prompt's formula exp(sqrt(8 lam log(1/eps))): it omits the e^{u/2} weight (Lambda(n) n^{-1/2} against ~n density). Tail beyond log X = U is ~ e^{lam/2} e^{-(U - 2 lam)^2/(8 lam)}; margin ~ x1^2 e^{-2 lam x1^2}; hence log X ~ 2 lam (1 + sqrt(1 + 4 x1^2 + 2 log(C/x1^2)/lam)) ~ (4 + O(x1^2)) lam.",
+      "cost_table": {"lam=4": "X~2e7", "lam=5": "X~1e9", "lam=6": "X~9e10", "lam=7": "X~6e12"},
+      "feasible_lam": "<= 6-7 by prime count; precision is not a barrier (cancellation e^{lam/2 + 2 lam x1^2})",
+      "landau_widom_in_these_coordinates": "Not in the cost sense: a point certificate is singly exponential in cost and margin (Zhu's doubly-exponential matrix and Landau-Widom margin collapse belong to the cone). It enters through resolution: lam_res(c) = (log(c/2pi))^2/(4 pi^2) to resolve one zero (1.4 at 1e4, 3.4 at 6.4e5, 18.7 at 3e12), and through the certified-resolution law lam_1(T) ~ 2 log log T.",
+      "limitation": "With lam <= 6-7 the instrument resolves individual zeros only below c ~ 3e7; combined cost per height X ~ c^{log c / pi^2}, super-polynomial, vs c^{1+o(1)} for direct verification.",
+      "sources": ["Zhu 2608.24827", "ZHU_WINDOW_POSITIVITY_IMPORT_2026-09-19.md", "PHASE0_GAUSSIAN_OBLIGATIONS_2026-09-21.md", "Zeta23 Chebyshev.sum_vonMangoldt_div_sqrt_le"],
+      "kernel_probe": "P2 then P3",
+      "confidence": 0.8
+    },
+    {
+      "id": "S3",
+      "claim": "O2 as a prime-side zero-localisation instrument: certified F >= 0 for lam <= Lambda near c => no off-line zero with |1/2 - beta| >= y_0(Lambda)",
+      "verdict": "COLLAPSE_TO_FREE",
+      "implication_status": "UNRESOLVED (open lemma: effective O2)",
+      "y0_table": {"Lambda=4, c=1e4 (x1~0.43, nearest-neighbour law)": 0.14, "Lambda=6, c=1e4": 0.10, "Lambda=4, c=3e12 (window law)": 0.23, "Lambda=6, c=3e12": 0.18},
+      "useless_hypothesis": "REFUTED numerically: y_0 is 0.1-0.23, not >= 1/2",
+      "mechanism": "Pair term at c = t0 is -2 y^2 e^{2 lam y^2}; competes with the window sum of on-line terms x_j^2 e^{-2 lam x_j^2} and with other off-line terms whose phase cos(2 arg w_j - 4 lam x_j y_j) turns positive near x_j ~ pi/(4 lam y).",
+      "limitation": "The implication is not a theorem: gaussian_dominance produces lam >= max(1, A/(2 eta K), B/(2 M K)) with eta (gap), A, B configuration-dependent and non-effective; the crude absolute bound fails once the window holds >= 2 other zeros. An effective O2 needs short-range zero-clustering control at scale 1/(Lambda y_0) (pair-correlation territory; unconditional input is only the O(log t) unit-window count). Candidate attack: average over lam in [Lambda/2, Lambda]; unproven. Even granted, the ladder certifies exactly at every feasible height.",
+      "refutation": {
+        "collapse_to_goal": "PARTIAL: the effective version's natural input is short-range zero repulsion, RH-adjacent",
+        "single_axis": "REFUTED as a foothold: dominated by direct verification wherever feasible",
+        "literature": "Phase-0 memo's lam* law is a nearest-neighbour model, not a bound"
+      },
+      "sources": ["E6Bridge7", "PHASE0_GAUSSIAN_OBLIGATIONS_2026-09-21.md", "E6Bridge9 weil_negative_refutes_rh"],
+      "kernel_probe": "P5 (paper proof first)",
+      "confidence": 0.8
+    },
+    {
+      "id": "S4",
+      "claim": "Alpoge-Furman transfer: sharper proportion from a better window or from the exact off-line pair phase",
+      "verdict": "TRANSFER",
+      "mechanism": "AF compress Weil's form to a finite Gram matrix over tests of Fourier support [-1,1], evaluate tr and ||.||_F^2 on the prime side by Montgomery-Vaughan (diagonal dominance, X <= T), apply rank-trace with Sylvester inertia.",
+      "why_corpus_pieces_cannot_help": "tr and Frobenius norm are unitarily invariant; an off-line pair block has signature (1,1) whatever its phase; the phase 2 arg w - 4 lam x y is basis-dependent and invisible to any rank-trace certificate by construction.",
+      "ceiling": "Zeta23.PairCeiling.ceiling_law256: every bandwidth-one certificate certifies at most 0.6818287 + 2.55e-6 (|r'(1)| + int |r''|); Montgomery-Taylor window 0.6725 is within 0.009 of the cap.",
+      "what_lies_beyond": "AF 7.2(a): X >> T needs prime-pair information; 7.3: Montgomery form factor on (-lambda_0, lambda_0) for all lambda_0 would give 100 percent; 7.2(e-f): higher moments unavailable unconditionally. In Gaussian coordinates bandwidth one is lam <~ log T/4, far below lam_res(T) ~ (log T)^2/(4 pi^2): bandwidth-one windows average ~log T zeros, giving proportions never a named zero.",
+      "open_lemma": "Unconditional prime-side evaluation of a compressed Weil form with Fourier support [-lambda_0, lambda_0], lambda_0 > 1 (equivalently Montgomery F(alpha, T) for 1 < alpha <= lambda_0), or of tr(A^3).",
+      "sources": ["Alpoge-Furman 2608.13637 (abstract; HTML section 7)", "Zeta23 README + PairCeiling (on disk)"],
+      "kernel_probe": "none (no corpus piece changes AF's certificate class)",
+      "confidence": 0.9
+    },
+    {
+      "id": "S5",
+      "claim": "Li face: li_criterion_rh_iff derivable in-kernel through a direct Weil -> Li dictionary",
+      "verdict_via_rh": "COLLAPSE_TO_FREE",
+      "verdict_direct": "UNRESOLVED",
+      "li_criterion_rh_iff_status": "PROVED upstream (LiCriterion pin 35df682f), axiom-guarded on the li_positivity island; referenced in docs/LI_POSITIVITY_LADDER.md, examples/li_positivity/lean/RvMRouteP.lean",
+      "toolchains": {"rvm_bridge": "leanprover/lean4:v4.33.0-rc2, Mathlib 51e6992efd06126df61a496bebf8f49482a4e129", "li_positivity": "leanprover/lean4:v4.34.0-rc1, Mathlib de5ce8a9a66a4aa68a9bdbb35b63a06d34d9ca11"},
+      "mechanism": "Composition Li <-> RH <-> Weil is vacuous (roadmap section 1) and is a two-island statement. Direct dictionary needs the explicit formula on BL's non-compact g_n (Tannery limit as in O1', majorant n^2/|rho|^2) and whether the Weil -> Li direction uses autocorrelation-type tests (unverified; BL 1999 paywalled).",
+      "non_vacuous_finite_content": "Localized vs global detectors: a zero at (t, y) needs Li index n ~ t^2/y at ~n bits (cubic cost) vs Gaussian lam ~ log(1/y)/x1^2 at c ~ t with primes to e^{4 lam}. At t = 1e12: n ~ 1e24 vs ~1e10 primes. Instrument fact only. Non-effective inter-conversion holds through existence of an off-line zero; effective map blocked by Freitas delocalization.",
+      "sources": ["Bombieri-Lagarias 1999 (UNRESOLVED)", "LI_LADDER_COST_MODEL_2026-09-17.md", "B7_BL_EXPLICIT_FORMULA_DESIGN_2026-09-18.md"],
+      "kernel_probe": "none until BL primary is read; toolchain reconcile is the prerequisite for any composition",
+      "confidence": 0.75
+    },
+    {
+      "id": "S6",
+      "claim": "Connes-Consani archimedean positivity and the small-lam region are the same foothold",
+      "verdict": "COLLAPSE_TO_FREE",
+      "cc_theorem_1_verified": "g in C_c^infinity, support [2^{-1/2}, 2^{1/2}], hat g(i/2) = hat g(0) = 0: W_infinity(g * g^*) >= Tr(theta(g) S theta(g)^*); at this support rational primes are not involved. Corollary 2: c |hat g(0)|^2 + Sum_S hat g(s) conj hat g(s) >= Tr(...), 13 < c < 17 (as if zeta were multiplied by (z - 1/2)^17).",
+      "mechanism": "Same archimedean-dominance foothold: prime side empty (CC, Yoshida) or negligible (Gaussian small lam / large c). Half-width (log 2)/2 = Yoshida's range, corroborated by Bombieri 2000 abstract and Zhu abstract.",
+      "limitation": "Does no work on zeros. Neither coordinate system extends past the prime threshold except by certified computation (Zhu L = 0.8). Prolate papers (Connes-Moscovici 2112.05500) are spectral realization, not positivity extension.",
+      "erratum_note": "Roadmap B9 cites the CC range as 2L <= log 2 without the vanishing conditions hat g(i/2) = hat g(0) = 0 that CC Theorem 1 carries; minor.",
+      "sources": ["Connes-Consani 2006.13771 (PDF read)", "Connes-Moscovici 2112.05500 (abstract)", "Bombieri 2000 (abstract)", "Zhu 2608.24827 (abstract)"],
+      "kernel_probe": "P3 (the Gaussian-coordinates anchor)",
+      "confidence": 0.9
+    },
+    {
+      "id": "S7a",
+      "claim": "c -> infinity asymptotics of F with the RvM density",
+      "verdict": "COLLAPSE_TO_FREE",
+      "mechanism": "Integral over c of the pair term is independent of y (contour shift of an entire Gaussian-type integrand): c-average of F = N sqrt(pi)/(2 (2 lam)^{3/2}) regardless of real parts. The ordinate sweep's reflection-blindness in Gaussian coordinates.",
+      "sources": ["RH_WALL_FIVE_SWEEP_CAPSTONE_2026-09-16.md"],
+      "kernel_probe": "none",
+      "confidence": 0.9
+    },
+    {
+      "id": "S7b",
+      "claim": "The phase term 4 lam x y is an asymmetric coupling in the capstone's sense",
+      "verdict": "NO",
+      "mechanism": "Pair term is even in y; the family lies inside the Weil class and re-symmetrizes (fails clause 3); it yields an equivalence, not an unconditional statement (fails clause 1). It is a joint (x, y) coupling: the capped joint axis.",
+      "sources": ["RH_WALL_FIVE_SWEEP_CAPSTONE_2026-09-16.md", "E6Bridge7 re_gaussTest"],
+      "kernel_probe": "none",
+      "confidence": 0.95
+    },
+    {
+      "id": "S7c",
+      "claim": "Diagonal-wall geometry: resolution curve vs certified resolution",
+      "verdict": "TRANSFER-grade observation (descriptive; no foothold claimed)",
+      "mechanism": "lam_res(c) = (log(c/2pi))^2/(4 pi^2) to resolve one zero at height c; certified resolution from a ladder of height T is lam_1(T) ~ 2 log log T (c_1(lam_1) = T with c_1(lam) ~ 2 pi exp(2 P(lam))). The gap widens without bound: 0.7 vs 3.4 at 6.4e5; 1.6 vs 18.7 at 3e12.",
+      "sources": ["this memo section 2-3"],
+      "kernel_probe": "P3 states c_1(lam) explicitly",
+      "confidence": 0.8
+    }
+  ],
+  "adjudications_of_committed_prose": [
+    {"target": "prompt formula 'primes up to exp(sqrt(8 lam log(1/eps)))'", "finding": "naive support criterion; omits the e^{u/2} weight; corrected cutoff log X ~ (4 + O(x1^2)) lam for the relevant eps ~ x1^2 e^{-2 lam x1^2}"},
+    {"target": "WEIL_CONVERSE_ATTACK section 2 'lam ~ (1/(2 y^2)) log(...)' rule", "finding": "already corrected by the Phase-0 memo (nearest-neighbour law); consistent with this sweep"},
+    {"target": "roadmap B9 'Yoshida/Connes-Consani 2L <= log 2'", "finding": "range confirmed (CC support [2^{-1/2}, 2^{1/2}]); CC Theorem 1 additionally requires hat g(i/2) = hat g(0) = 0"},
+    {"target": "roadmap 'window certification cost doubly exponential (Zhu)'", "finding": "holds for the cone; does NOT transfer to single Gaussian points, whose cost is singly exponential; the doubly-exponential object in Gaussian coordinates is the envelope threshold c_1(lam)"}
+  ],
+  "kernel_probes": [
+    {"id": "P1", "priority": 1, "statement": "theorem gaussian_criterion_iff : RiemannHypothesis <-> forall c lam : R, 0 < lam -> 0 <= (RvMBridge6.zeroSide (RvMBridge6.gaussTest c lam)).re", "inputs": ["Zeta23.RH_implies_on_line", "RvMBridge6.summable_gauss_zeroSide", "RvMBridge7.gaussian_dominance", "RvMBridge6.rh_of_all_on_line", "RvMBridge6.strip_of_zero"], "size": "~60 lines", "value": "the Wall in two real parameters, in-kernel; negative control gaussTest_axis_re_neg already present", "rh_content": "none (equivalence)"},
+    {"id": "P2", "priority": 2, "statement": "theorem gauss_explicit_formula (c lam) (h : 0 < lam) : archSide (autocorr (gaussPhi c lam)) - primeSide (autocorr (gaussPhi c lam)) = zeroSide (gaussTest c lam)", "inputs": ["RvMBridge8.gaussTests / paperFT_gaussTests_tendsto", "RvMBridge4.limit_explicit_formula", "Zeta23.Chebyshev.sum_vonMangoldt_div_sqrt_le (prime majorant)", "Zeta23.GammaFacts.re_digamma_vertical (arch majorant)"], "size": "~300 lines", "value": "turns P1 into the prime-side membership form F(c, lam) = arch - prime >= 0", "rh_content": "none"},
+    {"id": "P3", "priority": 3, "statement": "theorem gauss_positivity_of_large_height (lam) (h : 0 < lam) : exists c1, forall c >= c1, 0 <= F c lam", "inputs": ["P2", "Zeta23.GammaFacts.re_digamma_mono / re_digamma_vertical (Binet route absent from Mathlib)", "Chebyshev prime bound"], "size": "~400 lines", "value": "kernel anchor of the unconditional envelope region; states c_1(lam) ~ 2 pi e^{2 P(lam)} explicitly", "rh_content": "none"},
+    {"id": "P4", "priority": 4, "statement": "theorem gauss_positivity_below_ladder (T) (hT : forall rho, IsNontrivialZero rho -> |rho.im| <= T -> rho.re = 1/2) (lam) (h : 1 <= lam) (c) (hc : c <= T - 2) : 0 <= F c lam", "inputs": ["RvMBridge6.summable_mult_div_one_add_normSq", "Zeta23.WeilEF.zero_sum_inv_sq"], "size": "~200 lines", "value": "ladder-region instrument; cross-island consumer (li_positivity ladder statement as hypothesis); B4-grade significance warning", "rh_content": "none"},
+    {"id": "P5", "priority": 5, "statement": "effective O2: forall y0 > 0, forall t0, exists Lambda, forall rho, IsNontrivialZero rho -> 1/2 - rho.re >= y0 -> |rho.im - t0| <= 1/2 -> exists c in [t0-1, t0+1], exists lam <= Lambda, F c lam < 0", "inputs": ["paper proof required first: lam-averaging over [Lambda/2, Lambda]; needs a short-range clustering bound"], "size": "research", "value": "the only probe whose success is a new instrument", "rh_content": "none, but its natural input is RH-adjacent"}
+  ],
+  "sources": [
+    {"key": "Connes-Consani 2006.13771", "title": "Weil positivity and Trace formula, the archimedean place", "checked": true, "how": "arXiv PDF pages 1-4 read; Theorem 1 and Corollary 2 quoted"},
+    {"key": "Alpoge-Furman 2608.13637", "title": "More than two thirds of the zeta zeros are simple and on the critical line", "checked": true, "how": "arXiv abstract; HTML sections 7.2, 7.3; Zeta23 Lean README and PairCeiling on disk"},
+    {"key": "Zhu 2608.24827", "title": "Weil positivity in compact windows: a finite reduction, certified two-sided bounds, and a Landau-Widom decay law", "checked": true, "how": "arXiv abstract read; theorems via ZHU_WINDOW_POSITIVITY_IMPORT_2026-09-19.md"},
+    {"key": "Bombieri 2000", "title": "Remarks on Weil's quadratic functional in the theory of prime numbers, I (Rend. Lincei 11)", "checked": true, "how": "EUDML abstract only; body not read"},
+    {"key": "Connes-Moscovici 2112.05500", "title": "Prolate spheroidal operator and Zeta", "checked": true, "how": "arXiv abstract only"},
+    {"key": "Bombieri-Lagarias 1999", "title": "Complements to Li's criterion for the Riemann hypothesis (JNT 77)", "checked": false, "how": "sciencedirect 403; secondary only (Wikipedia, Semantic Scholar, corpus JSON)"},
+    {"key": "Landau-Widom 1980", "title": "Eigenvalue distribution of time and frequency limiting (JMAA 77)", "checked": false, "how": "sciencedirect 403, CORE 403; cited only through Zhu's abstract"},
+    {"key": "Yoshida 1992", "title": "On Hermitian forms attached to zeta functions (Adv. Stud. Pure Math. 21)", "checked": false, "how": "no primary access; range corroborated by Bombieri, Zhu, CC (all checked)"},
+    {"key": "Liu 2026 (alphaXiv)", "title": "Certified Weil positivity beyond the unit window", "checked": false, "how": "alphaXiv landing page read; preprint under review, not reproduced"},
+    {"key": "two-parameter Gaussian RH-equivalence attribution", "checked": false, "how": "no published statement found this session"}
+  ],
+  "unresolved": [
+    "Bombieri-Lagarias 1999 primary (S5 direct dictionary rests on it)",
+    "Landau-Widom 1980 primary (cited via Zhu only)",
+    "Yoshida 1992 primary",
+    "Liu 2026 alphaXiv preprint (L = 1, 17/16 claims)",
+    "Attribution of the two-parameter Gaussian equivalence to a published source",
+    "Effective O2 (S3) as a theorem",
+    "Replicate-then-reconcile not yet run on this sweep"
+  ],
+  "honesty": {
+    "conjecture1_proved": false,
+    "survivors_are_instrument_claims": true,
+    "numerics_are_float_models_not_enclosures": true,
+    "single_run": true
+  }
+}

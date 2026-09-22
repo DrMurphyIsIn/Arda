@@ -34,7 +34,7 @@ equivalent coordinates:
 | Face | Wall form | Equivalence grade |
 |---|---|---|
 | Line (trivial) | all nontrivial zeros on Re = ½ (Mathlib `RiemannHypothesis`) | itself |
-| Temperedness (A) | the **regularized** Guinand–Weil triple of the zeta comb is FQ-grade (defect-0) | R1 ⟺ (H-temp) ⟺ RH per QC_RIGIDITY §3.3; *precise statement queued* (QC_LITERATURE §1.7 grades it a program conjecture) |
+| Temperedness (A) | the **regularized** Guinand–Weil triple of the zeta comb is FQ-grade (defect-0) = Weil positivity of the E8 primes-side functional on Hermitian autocorrelations over `IsWeilTest` (`MM_zeta_comb_membership`, authored 2026-09-20) | **PROVED EQUIVALENCE, in-kernel (2026-09-21):** `zeta_comb_membership_iff_rh` (rvm_bridge E6Bridge5–9; registry `MM_zeta_comb_membership_iff_rh`, `RH_weil_criterion_iff`; four blind audits). Weil 1952 / Bombieri 2000 formalized: forward via E8 + `paperFT_weilTest`; converse via Gaussian dominance (O2) + Gaussian approximation (O1'). Supersedes "precise statement queued". The wall is now this clause BY THEOREM, not by identification. |
 | Positivity (B, D) | ∀n λₙ > 0 / W(g⋆g̃) ≥ 0 ∀ admissible g | Li 1997 + Bombieri–Lagarias 1999; corpus-pinned (`li_criterion_rh_iff`) |
 | Heat-flow (C) | Λ ≤ 0 (with Rodgers–Tao Λ ≥ 0 ⇒ RH ⟺ Λ = 0) | Newman 1976 + de Bruijn 1950; RT Forum Math. Pi 8 (2020) e6 |
 | Derivative (Speiser) | ζ′ ≠ 0 in 0 < Re s < ½ | Speiser 1935 |

@@ -1,0 +1,19 @@
+created = "2026-09-21"
+depends_on = ["MM_gaussian_dominance", "MM_effective_threshold_unbounded"]
+kind = "lemma"
+name = "MM.effective_gaussian_dominance"
+statement_module = "Statements.MM_effective_gaussian_dominance"
+status = "proved"
+title = "OPEN LEMMA 1 DISCHARGED (2026-09-21): EFFECTIVE Gaussian dominance -- an off-line zero of maximal distance y0 from the line within its height window (radius D >= 1), with local spacing floor xmin > 0, window multiplicity count <= N and tail constant B, makes the Gaussian zero sum at its ordinate strictly negative for every width above the EXPLICIT effectiveThreshold(y0, xmin, N, B, D) = max(1, log(4N(D^2+1/4)/y0^2)/(2 xmin^2), log(4B/y0^2)/(2 y0^2)). The spacing floor is load-bearing (threshold unbounded as xmin -> 0): this is the short-range clustering control the wall sweep named as the open input. Nothing about RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge14.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditor-effective-O2-2026-09-21 (AUDIT_TESTIMONY_EFFECTIVE_O2_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: an off-line zero of maximal distance y0 within its height window (radius D >= 1), with spacing floor xmin > 0 between distinct ordinates, window multiplicity count <= N and tail constant B, makes the Gaussian zero sum at its ordinate strictly negative for every width above the explicit threshold. Audit 8/8: centre term nonpositive for every same-ordinate zero, competitor bound uses maximality and spacing exactly once each, threshold arithmetic re-proved abstractly, deleting either hypothesis breaks the proof, numeric instance 299.57 in [297, 300]. Not RH. conjecture1_proved = False."
