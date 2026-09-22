@@ -688,3 +688,10 @@ What this does not give: positivity of arch - prime for any lam beyond what the 
 bound allows; the prime side is untouched by everything above. conjecture1_proved = False.
 
 conjecture1_proved = False.
+
+CORRECTION (2026-09-22, numerics in research/gauss_window_numerics.py): the expression above,
+2 (c^2 + 1/4) e^{lam/2 - 2 lam c^2}, is 2|h(i/2)|, an UPPER bound on |P|, not the pole sum. The island's
+pole sum is P = h(i/2) + h(-i/2) = 2 e^{-2 lam (c^2 - 1/4)} [(c^2 - 1/4) cos(2 lam c) + c sin(2 lam c)]
+(agreement to 10 digits with E6Bridge16's gaussTest at i/2), which is NEGATIVE at c = 0, equal to
+-e^{lam/2}/2 there. The correct c-uniform floor is P >= -e^{lam/2}/2 for lam <= 1/5
+(GAUSS_WINDOW_DESIGN_2026-09-22.md, step 1). The sign claim in this section is withdrawn.
