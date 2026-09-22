@@ -3,12 +3,17 @@ depends_on = ["MM_gaussian_positivity_small_lam"]
 kind = "lemma"
 name = "MM.gaussian_positivity_small_lam_3e3"
 statement_module = "Statements.MM_gaussian_positivity_small_lam_3e3"
-status = "draft"
+status = "proved"
 title = "THE GAUSSIAN PRIME-FREE WINDOW, WIDENED 15000x (rvm_bridge island, E6Bridge30, 2026-09-22): the Wall functional F(c, lam) is nonnegative for EVERY centre c and every 0 < lam <= 3/2000, hypothesis-free (was lam0 = 1e-7 in E6Bridge11). Route: twelve-band layer cake over |r| with rigorous rational digamma floors (series partial sums, integral tail, gamma <= 0.58112 from eulerMascheroniSeq' 128), c-uniform window caps rho e^{-1}/lam from bumpR <= e^{-1}/(2 lam), the exact pole floor -e^{lam/2}/2, E6Bridge11's prime bound; certified margin 0.052 (and 0.168 at lam <= 1/1000). The measured ceiling of any c-uniform prime-side argument for this family is lam = 0.0115 (GAUSS_WINDOW_DESIGN_2026-09-22.md); the literature's 0.03-0.12 window is for compactly supported tests and is NOT reachable this way. A statement about one explicit test function's prime-side functional; involves no zeros; NOT a proof of anything about RH. conjecture1_proved = False."
 updated = "2026-09-22"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge30.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-gauss-window-2026-09-22 (AUDIT_TESTIMONY_GAUSS_WINDOW_2026-09-22.md)"
+date = "2026-09-22"
+text = "Read-back: the Wall functional F(c, lam) is nonnegative for every centre c and every 0 < lam <= 3/2000, hypothesis-free: pole floor -e^{lam/2}/2, sup cap e^{-1}/(2 lam), window mass rho e^{-1}/lam, digamma monotone in |r| (Zeta23 re_digamma_mono), rational digamma floors by series plus integral tail with gamma <= 0.58112, twelve-band layer cake, E6Bridge11 prime bound; margin +0.052 re-derived; byte-identical statement; kernel-clean; refused at lam <= 1/500 by the assembly. One test function's prime-side functional, no zeros; NOT RH. conjecture1_proved = False."
