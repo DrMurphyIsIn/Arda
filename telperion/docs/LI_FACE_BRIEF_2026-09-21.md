@@ -17,7 +17,7 @@ The rh and mirrormere campaigns hold, in the kernel, two RH-equivalences:
 The Bombieri-Lagarias explicit formula (B7, `RvMBridge27.bl_explicit_formula`) says what each
 Li coefficient IS. This campaign asks what its SIGN costs, rung by rung, and maps that cost
 against the Gaussian face. The answer, derived below, is that the Li face is a ladder too, with
-a clean exchange rate: zeros on the line up to height T buy every rung n + 1 <= pi T / 2.
+a clean exchange rate: zeros on the line up to height T buy every rung n + 1 <= 3 pi T / 2.
 
 ## 1. Vocabulary (li island, upstream package)
 
@@ -73,12 +73,15 @@ Lemma B (geometry of a zero). Let rho = beta + i gamma with 0 < beta < 1 and gam
     the inequality itself holds down to gamma ~ 0.285, but state it for gamma >= 1, or for the box
     region of section 4. State Lemma B for arbitrary complex rho: w(conj rho) = conj(w rho).)
 
-Theorem C (termwise nonnegativity). If rho is a nontrivial zero with |Im rho| >= max(1, 2N/pi)
+Theorem C (termwise nonnegativity). If rho is a nontrivial zero with |Im rho| >= max(1, 2N/(3 pi))
 then Re liPairedSummand (N-1) rho >= 0, whether or not rho is on the line.
-Proof: a = N log r, b = N theta; |a| <= |b| by Lemma B, |b| <= N/gamma <= pi/2; apply Lemma A.
+Proof: a = N log r, b = N theta, |b| <= N/gamma <= 3 pi/2. If |b| <= pi/2: |a| <= |b| by Lemma B,
+apply Lemma A. If pi/2 <= |b| <= 3 pi/2: cos b <= 0, so 2 - 2 cosh(a) cos(b) >= 2 with no
+condition on a. (The factor 3 was found by the survey and confirmed by the skeptic, item 13.)
+Sharp for the termwise method: at b = 2 pi k the term is 2 - 2 cosh a < 0 off the line.
 
 Theorem D (the Li ladder). Let T >= 1. If every nontrivial zero with |Im rho| <= T has real
-part 1/2, then 0 <= Re(taylorCoeff riemannXi n) for every n with n + 1 <= pi T / 2.
+part 1/2, then 0 <= Re(taylorCoeff riemannXi n) for every n with n + 1 <= 3 pi T / 2.
 Proof: every term of the paired sum is >= 0 (on-line zeros by section 2, the rest by Theorem C),
 m(rho) >= 0, Re of the tsum is the tsum of Re (summable by the weighted genus theorem), and a
 tsum of nonnegatives is nonnegative.
@@ -87,11 +90,12 @@ Corollary (composition, conditional): `AllZeros_h4000` gives all zeros with 0 < 
 line under its band hypotheses (Arb winding numbers etc., stated as hypotheses). Negative Im
 follows by conjugation; real zeros in (0,1) are NOT covered by the capstone and a hypothetical
 real zero beta /= 1/2 makes every even rung's pair term negative, so the composition also needs
-Box 1 (section 4) or an explicit real-zero exclusion. Under those hypotheses, rungs n = 0 .. 6282
+Box 1 (section 4) or an explicit real-zero exclusion. Under those hypotheses, rungs n = 0 .. 18848
 are nonnegative. The existing rung certificates carry one
 Arb enclosure hypothesis per rung; the ladder replaces them by the height certificates and
 extends the reach. It is still conditional. With T = 3 * 10^12 (Platt-Trudgian, NOT in kernel)
-the same theorem would give n + 1 <= 4.7 * 10^12.
+the same theorem would give n + 1 <= 1.4 * 10^13. The literature's folklore rate is quadratic in
+T but asymptotic with no explicit constant (survey, section A1); this one is linear and explicit.
 
 Rung 0 (Li's lambda_1) needs no height at all: N = 1 gives 2 - w - 1/w = 1/(rho (1 - rho)),
 whose real part is (beta (1 - beta) + gamma^2)/|rho (1-rho)|^2 > 0 for every zero. So the open

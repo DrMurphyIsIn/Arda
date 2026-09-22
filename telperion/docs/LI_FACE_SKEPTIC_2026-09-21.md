@@ -230,3 +230,12 @@ Lean formalizers must build (items 5, 8, 10). The rest are CONFIRMED.
 * rvm-li: reindex-and-average, do not split on fixed points of rho -> 1 - conj rho.
 
 conjecture1_proved = False.
+
+## Addendum: the factor-3 improvement (survey claim)
+
+13. CONFIRMED. Theorem C holds with threshold |Im rho| >= max(1, 2N/(3 pi)): then
+    |b| = N|theta| <= N/gamma <= 3 pi/2; on |b| <= pi/2 Lemma A applies (|a| <= |b| from
+    Lemma B, gamma >= 1), and on pi/2 <= |b| <= 3 pi/2 cos b <= 0 so cosh(a) cos(b) <= 0 <= 1
+    with no condition on a. Hence Theorem D with n + 1 <= 3 pi T/2 for T >= 1 (T = 4000 gives
+    n <= 18848). Consistent with the numerics: the N = 5 threshold becomes max(1, 1.061) and the
+    grid shows no negative term above gamma = 0.806. Everything else in items 5 and 9 unchanged.
