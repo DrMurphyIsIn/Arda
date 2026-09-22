@@ -3,12 +3,17 @@ depends_on = ["RH_li_ladder_height", "RH_zeta_zero_im_ge"]
 kind = "lemma"
 name = "RH.li_rungs_of_height_4000"
 statement_module = "Statements.RH_li_rungs_of_height_4000"
-status = "draft"
+status = "proved"
 title = "LI RUNGS 0..18848 FROM THE HEIGHT-4000 CERTIFICATES (li_positivity island, 2026-09-21): under the exact conclusion shape of AllZeros_h4000 (all zeros with 0 < Im <= 4000 on the line; itself CONDITIONAL on its Arb band hypotheses), every Li rung n <= 18848 is nonnegative. Negative Im by conjugation; real zeros excluded by Box 1. Replaces one Arb enclosure per rung by the height certificates; still conditional. Not RH. conjecture1_proved = False."
 updated = "2026-09-21"
 
 [proof]
 artifact = "../../examples/li_positivity/lean/LiLadderHeight.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
+
+[readback]
+auditor = "blind-auditor-li-ladder-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_2026-09-21.md)"
+date = "2026-09-21"
+text = "Read-back: under the exact conclusion shape of the tiled height-4000 certificate (all zeros with 0 < Im <= 4000 on the line; the certificate's 89 band hypotheses and its 55/16 floor are NOT discharged here), rungs 0..18848 are nonnegative; negative Im by conjugation, real zeros by Box 1. Conditional. Not RH. conjecture1_proved = False."
