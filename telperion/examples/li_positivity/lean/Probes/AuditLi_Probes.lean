@@ -1,7 +1,7 @@
 /- Audit probes for LowHeightBox / LiLadderHeight (auditor-forward, 2026-09-21). -/
 import LiLadderHeight
 open scoped Real
-open LiCriterion LiLadderHeight LowHeightBox
+open LiCriterion LiLadderHeight LowHeightBox LiFacePrelude
 
 /- 1. Kernel + registry shape: rung 0 hypothesis-free, statement as in the registry (expected SUCCESS). -/
 example : 0 ≤ (LiCriterion.taylorCoeff LiCriterion.riemannXi 0).re := li_rung0_kernel

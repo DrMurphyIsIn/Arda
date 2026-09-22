@@ -1,7 +1,7 @@
 /- Audit probes for LiLadderSharp (auditor-forward, 2026-09-22). -/
 import LiLadderSharp
 open scoped Real
-open LiCriterion LiLadderHeight
+open LiCriterion LiLadderHeight LiFacePrelude
 
 #print axioms li_rungs_of_bands_4000_upto_sharp
 

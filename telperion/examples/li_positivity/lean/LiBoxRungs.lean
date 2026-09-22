@@ -4,11 +4,13 @@
 
      `liPairedSummand_re_nonneg` : for every nontrivial zero rho and every n <= 4,
                                     0 <= Re (liPairedSummand n rho);
-     `li_rung0` .. `li_rung4`     : 0 <= Re (taylorCoeff riemannXi n)   for n = 0, 1, 2, 3, 4.
+     `li_rung0` .. `li_rung4`     : 0 <= Re (taylorCoeff riemannXi n)   for n = 0, 1, 2, 3, 4;
+     `li_rungs_lt_five`           : the packaged form (registry node RH_li_rungs_lt_five).
 
    ROUTE (algebraic, no polar coordinates).  With w = rho/(rho - 1) the pair term is
-   2 - w^N - w^(-N) (N = n + 1), and w + 1/w = 2 - z where z := 1/(rho (1 - rho)).  Hence the pair
-   term is a polynomial Q_N(z) (Chebyshev-type: Q_N(2 - 2 cos t) = 2 - 2 cos (N t)):
+   2 - w^N - w^(-N) (N = n + 1; `LiFacePrelude.liPairedSummand_eq_pow`), and w + 1/w = 2 - z where
+   z := 1/(rho (1 - rho)).  Hence the pair term is a polynomial Q_N(z) (Chebyshev-type:
+   Q_N(2 - 2 cos t) = 2 - 2 cos (N t)):
 
        Q_1 = z,  Q_2 = 4z - z^2,  Q_3 = 9z - 6z^2 + z^3,  Q_4 = 16z - 20z^2 + 8z^3 - z^4,
        Q_5 = 25z - 50z^2 + 35z^3 - 10z^4 + z^5.
@@ -20,10 +22,11 @@
    `ring`).  N = 6 has no such certificate and the pair term is genuinely negative at box points
    (brief section 4), so rungs 0..4 are the honest reach of this method.
 
-   The rung statements then follow from the upstream paired sum formula
-   (`weighted_paired_sum_formula_of_standard_hypotheses` fed with `xi_hasFiniteOrder`,
-   `xi_order_le_one`): Re passes through the tsum when the series is summable, and a tsum of
-   nonnegative reals is nonnegative; if it were not summable the tsum is 0 and the claim is trivial.
+   The rung statements then follow from the hypothesis-free paired sum formula and the termwise
+   sign lemma of the shared pack (`LiFacePrelude.taylorCoeff_eq_half_tsum_paired`,
+   `LiFacePrelude.re_taylorCoeff_nonneg_of_termwise`; shapes audit P3, 2026-09-22: this module and
+   `LiLadderHeight` used to prove both twice).  Re passes through the tsum by the upstream
+   summability, and a tsum of nonnegative reals is nonnegative.
 
    Nothing here proves, or bears on, whether RH holds: Li's criterion needs ALL rungs; these are the
    first five.  conjecture1_proved = False.
@@ -31,6 +34,7 @@
 import Mathlib
 import LowHeightBox
 import Lc.LiCriterion.XiOrderBridge
+import LiFacePrelude
 
 open Complex LiCriterion
 
@@ -54,22 +58,6 @@ noncomputable def zOf (ρ : ℂ) : ℂ := 1 / (ρ * (1 - ρ))
 
 /-! ## The pair term in terms of `w = rho/(rho-1)`. -/
 
-/-- `liPairedSummand n rho = 2 - w^(n+1) - w^(-(n+1))` with `w = rho/(rho-1)`. -/
-theorem liPairedSummand_eq_pow (n : ℕ) (ρ : NontrivialZero) :
-    liPairedSummand n ρ
-      = 2 - (ρ.val / (ρ.val - 1)) ^ (n + 1) - ((ρ.val - 1) / ρ.val) ^ (n + 1) := by
-  have h0 : ρ.val ≠ 0 := ρ.ne_zero
-  have h1 : ρ.val - 1 ≠ 0 := sub_ne_zero.mpr ρ.ne_one
-  have h1' : 1 - ρ.val ≠ 0 := sub_ne_zero.mpr (Ne.symm ρ.ne_one)
-  simp only [liPairedSummand, liSummand, pairedZero_val]
-  have e1 : (1 - 1 / ρ.val) = (ρ.val - 1) / ρ.val := by field_simp
-  have e2 : (1 - 1 / (1 - ρ.val)) = ρ.val / (ρ.val - 1) := by
-    field_simp
-    ring
-  rw [e1, e2, show (-(n + 1 : ℤ)) = -((n + 1 : ℕ) : ℤ) by push_cast; ring, zpow_neg, zpow_natCast,
-    zpow_neg, zpow_natCast, ← inv_pow, ← inv_pow, inv_div, inv_div]
-  ring
-
 /-- `z(rho) = 2 - w - 1/w` with `w = rho/(rho-1)`. -/
 theorem zOf_eq (ρ : NontrivialZero) :
     zOf ρ.val = 2 - ρ.val / (ρ.val - 1) - (ρ.val - 1) / ρ.val := by
@@ -87,18 +75,17 @@ theorem w_mul_v (ρ : NontrivialZero) : ρ.val / (ρ.val - 1) * ((ρ.val - 1) / 
   field_simp
 
 theorem liPairedSummand_zero_eq (ρ : NontrivialZero) : liPairedSummand 0 ρ = Q1 (zOf ρ.val) := by
-  rw [liPairedSummand_eq_pow, zOf_eq]
-  simp only [Q1]
-  ring
+  rw [LiFacePrelude.liPairedSummand_zero_eq]
+  rfl
 
 theorem liPairedSummand_one_eq (ρ : NontrivialZero) : liPairedSummand 1 ρ = Q2 (zOf ρ.val) := by
-  rw [liPairedSummand_eq_pow, zOf_eq]
+  rw [LiFacePrelude.liPairedSummand_eq_pow, zOf_eq]
   simp only [Q2]
   have hv := w_mul_v ρ
   linear_combination (2 : ℂ) * hv
 
 theorem liPairedSummand_two_eq (ρ : NontrivialZero) : liPairedSummand 2 ρ = Q3 (zOf ρ.val) := by
-  rw [liPairedSummand_eq_pow, zOf_eq]
+  rw [LiFacePrelude.liPairedSummand_eq_pow, zOf_eq]
   simp only [Q3]
   have hv := w_mul_v ρ
   set w := ρ.val / (ρ.val - 1)
@@ -107,7 +94,7 @@ theorem liPairedSummand_two_eq (ρ : NontrivialZero) : liPairedSummand 2 ρ = Q3
 
 theorem liPairedSummand_three_eq (ρ : NontrivialZero) :
     liPairedSummand 3 ρ = Q4 (zOf ρ.val) := by
-  rw [liPairedSummand_eq_pow, zOf_eq]
+  rw [LiFacePrelude.liPairedSummand_eq_pow, zOf_eq]
   simp only [Q4]
   have hv := w_mul_v ρ
   set w := ρ.val / (ρ.val - 1)
@@ -116,7 +103,7 @@ theorem liPairedSummand_three_eq (ρ : NontrivialZero) :
 
 theorem liPairedSummand_four_eq (ρ : NontrivialZero) :
     liPairedSummand 4 ρ = Q5 (zOf ρ.val) := by
-  rw [liPairedSummand_eq_pow, zOf_eq]
+  rw [LiFacePrelude.liPairedSummand_eq_pow, zOf_eq]
   simp only [Q5]
   have hv := w_mul_v ρ
   set w := ρ.val / (ρ.val - 1)
@@ -249,54 +236,23 @@ theorem liPairedSummand_re_nonneg (n : ℕ) (hn : n ≤ 4) (ρ : NontrivialZero)
 
 /-! ## From termwise nonnegativity to the rungs. -/
 
-/-- The upstream paired sum formula with its two order inputs discharged (hypothesis-free). -/
-theorem taylorCoeff_eq_half_tsum_paired (n : ℕ) :
-    taylorCoeff riemannXi n
-      = (2⁻¹ : ℂ) * ∑' ρ : NontrivialZero,
-          (analyticOrderNatAt riemannXi ρ.val : ℂ) * liPairedSummand n ρ :=
-  weighted_paired_sum_formula_of_standard_hypotheses
-    (xi_weighted_genus_one_of_hadamard_order_one xi_hasFiniteOrder xi_order_le_one)
-    (xi_factorization_prod_with_multiplicity_of_hadamard_order_one xi_hasFiniteOrder
-      xi_order_le_one) n
-
-/-- If every paired summand at rung `n` has nonnegative real part, so does the rung. -/
-theorem taylorCoeff_re_nonneg_of_termwise (n : ℕ)
-    (h : ∀ ρ : NontrivialZero, 0 ≤ (liPairedSummand n ρ).re) :
-    0 ≤ (taylorCoeff riemannXi n).re := by
-  rw [taylorCoeff_eq_half_tsum_paired]
-  set f : NontrivialZero → ℂ :=
-    fun ρ => (analyticOrderNatAt riemannXi ρ.val : ℂ) * liPairedSummand n ρ with hf
-  have hterm : ∀ ρ, 0 ≤ (f ρ).re := by
-    intro ρ
-    simp only [hf, mul_re, natCast_re, natCast_im, zero_mul, sub_zero]
-    exact mul_nonneg (Nat.cast_nonneg _) (h ρ)
-  have htsum : 0 ≤ (∑' ρ, f ρ).re := by
-    by_cases hs : Summable f
-    · rw [Complex.re_tsum hs]
-      exact tsum_nonneg hterm
-    · rw [tsum_eq_zero_of_not_summable hs]
-      simp
-  have h2 : (2⁻¹ : ℂ) = ((2⁻¹ : ℝ) : ℂ) := by push_cast; ring
-  rw [h2, re_ofReal_mul]
-  positivity
-
 theorem li_rung0 : 0 ≤ (taylorCoeff riemannXi 0).re :=
-  taylorCoeff_re_nonneg_of_termwise 0 (liPairedSummand_re_nonneg 0 (by norm_num))
+  LiFacePrelude.re_taylorCoeff_nonneg_of_termwise 0 (liPairedSummand_re_nonneg 0 (by norm_num))
 
 theorem li_rung1 : 0 ≤ (taylorCoeff riemannXi 1).re :=
-  taylorCoeff_re_nonneg_of_termwise 1 (liPairedSummand_re_nonneg 1 (by norm_num))
+  LiFacePrelude.re_taylorCoeff_nonneg_of_termwise 1 (liPairedSummand_re_nonneg 1 (by norm_num))
 
 theorem li_rung2 : 0 ≤ (taylorCoeff riemannXi 2).re :=
-  taylorCoeff_re_nonneg_of_termwise 2 (liPairedSummand_re_nonneg 2 (by norm_num))
+  LiFacePrelude.re_taylorCoeff_nonneg_of_termwise 2 (liPairedSummand_re_nonneg 2 (by norm_num))
 
 theorem li_rung3 : 0 ≤ (taylorCoeff riemannXi 3).re :=
-  taylorCoeff_re_nonneg_of_termwise 3 (liPairedSummand_re_nonneg 3 (by norm_num))
+  LiFacePrelude.re_taylorCoeff_nonneg_of_termwise 3 (liPairedSummand_re_nonneg 3 (by norm_num))
 
 theorem li_rung4 : 0 ≤ (taylorCoeff riemannXi 4).re :=
-  taylorCoeff_re_nonneg_of_termwise 4 (liPairedSummand_re_nonneg 4 (by norm_num))
+  LiFacePrelude.re_taylorCoeff_nonneg_of_termwise 4 (liPairedSummand_re_nonneg 4 (by norm_num))
 
 /-- Rungs `0..4` packaged for `LiLadder`-style consumers: `∀ n < 5, 0 ≤ Re (taylorCoeff riemannXi n)`. -/
 theorem li_rungs_lt_five : ∀ n : ℕ, n < 5 → 0 ≤ (taylorCoeff riemannXi n).re :=
-  fun n hn => taylorCoeff_re_nonneg_of_termwise n (liPairedSummand_re_nonneg n (by omega))
+  fun n hn => LiFacePrelude.re_taylorCoeff_nonneg_of_termwise n (liPairedSummand_re_nonneg n (by omega))
 
 end LowHeightBox

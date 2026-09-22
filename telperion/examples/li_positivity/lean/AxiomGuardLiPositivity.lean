@@ -38,6 +38,7 @@ import LiLadderHeight
 import LiLadderSharp
 import LowHeightBox
 import LiBoxRungs
+import LiFacePrelude
 import RvMXiBridge
 import RvMDigammaProd
 import RvMLiUnified
@@ -131,33 +132,74 @@ import LiNegativeControl
 #print axioms LiPositivity.li_tail_peel
 #print axioms LiPositivity.li_rh_iff_tail_zero
 
+-- LiFacePrelude (hand-written, shapes audit P3 of SHAPES_AUDIT_48H_2026-09-22 section 4.2): the
+-- shared helper pack of the Li face, ONE copy of what LiLadderHeight / LiLadderSharp / LowHeightBox
+-- / LiBoxRungs used to prove separately (and the rvm island's E6Bridge28/29 duplicated).  Part I
+-- is Mathlib-only: Lemma A / A' / A'' (cosh a cos b <= 1 on |a| <= |b| <= pi/2, the 3 pi/2 and
+-- window variants), the g-inequality 1/g + 1/(2g^2) <= 1/(g - 1/2), the strip-point geometry
+-- (|log|u|| <= 1/(2 gamma^2), the angle identity, |arg u| <= 1/|gamma|, 1/(2|gamma|) <= |arg u|,
+-- Lemma B, Lemma B''), the polar real part, the sharp fractional-part kernel bound <= 1/(2 sigma)
+-- with its unit-cell lemmas, and the involution averaging helper.  Part II is upstream
+-- LiCriterion vocabulary: the hypothesis-free paired zero sum, its tsum plumbing, and the
+-- pair-term normal forms.  Holds NO registry node theorem; every node stays in its own module.
+-- Nothing here proves RH. conjecture1_proved = False.
+#print axioms LiFacePrelude.sinh_mul_cos_sub_cosh_mul_sin_nonpos
+#print axioms LiFacePrelude.cosh_mul_cos_le_one_of_nonneg_of_le_pi
+#print axioms LiFacePrelude.cosh_mul_cos_le_one
+#print axioms LiFacePrelude.cosh_mul_cos_le_one_of_le_three_pi_div_two
+#print axioms LiFacePrelude.cosh_mul_cos_le_one_window
+#print axioms LiFacePrelude.one_div_add_one_div_two_sq_le
+#print axioms LiFacePrelude.one_sub_inv_ne_zero
+#print axioms LiFacePrelude.one_sub_inv_re
+#print axioms LiFacePrelude.one_sub_inv_im
+#print axioms LiFacePrelude.normSq_one_sub_inv
+#print axioms LiFacePrelude.normSq_eq_re_sq_add_im_sq
+#print axioms LiFacePrelude.normSq_sub_one_eq
+#print axioms LiFacePrelude.ne_zero_of_re_pos
+#print axioms LiFacePrelude.log_norm_one_sub_inv
+#print axioms LiFacePrelude.abs_log_norm_one_sub_inv_le
+#print axioms LiFacePrelude.abs_arctan_le_abs
+#print axioms LiFacePrelude.arg_one_sub_inv_eq
+#print axioms LiFacePrelude.abs_arg_base_le
+#print axioms LiFacePrelude.one_div_two_abs_im_le_abs_arg
+#print axioms LiFacePrelude.abs_log_norm_le_abs_arg
+#print axioms LiFacePrelude.abs_arg_add_abs_log_le
+#print axioms LiFacePrelude.re_pow_add_inv_pow
+#print axioms LiFacePrelude.cell
+#print axioms LiFacePrelude.Ici_one_eq_iUnion_cell
+#print axioms LiFacePrelude.pairwise_disjoint_cells
+#print axioms LiFacePrelude.fract_eq_on_cell
+#print axioms LiFacePrelude.sub_mul_rpow_le
+#print axioms LiFacePrelude.integral_cell_centred
+#print axioms LiFacePrelude.continuousOn_kernel_cell
+#print axioms LiFacePrelude.cell_fract_integral_le
+#print axioms LiFacePrelude.integrableOn_fract_kernel
+#print axioms LiFacePrelude.integrableOn_half_kernel
+#print axioms LiFacePrelude.fract_integral_le_half_inv
+#print axioms LiFacePrelude.hasSum_involution_average
+#print axioms LiFacePrelude.taylorCoeff_eq_half_tsum_paired
+#print axioms LiFacePrelude.summable_weighted_paired
+#print axioms LiFacePrelude.re_taylorCoeff_eq_half_tsum_re
+#print axioms LiFacePrelude.re_taylorCoeff_nonneg_of_termwise
+#print axioms LiFacePrelude.liPairedSummand_eq_two_sub_pow_sub_inv
+#print axioms LiFacePrelude.liPairedSummand_eq_w
+#print axioms LiFacePrelude.liPairedSummand_eq_w_zpow
+#print axioms LiFacePrelude.liPairedSummand_eq_pow
+#print axioms LiFacePrelude.re_liPairedSummand_eq
+#print axioms LiFacePrelude.liPairedSummand_zero_eq
+
 -- LiLadderHeight (hand-written, LI_FACE_BRIEF_2026-09-21 sections 1-3): the Li ladder priced in
--- HEIGHT. taylorCoeff_eq_half_tsum_paired = the hypothesis-free paired zero sum (composition of
--- the upstream order bridges); Lemma A (cosh*cos <= 1), Lemma B (zero geometry at |Im| >= 1),
--- Theorem C (termwise sign at height), Theorem D (zeros on the line up to T buy every rung
--- n + 1 <= pi T / 2, CONDITIONAL on the line hypothesis); li_rung0_kernel = registry node
+-- HEIGHT. Theorem C (termwise sign at height, from the prelude's Lemma A' and Lemma B), Theorem D
+-- (zeros on the line up to T buy every rung n + 1 <= 3 pi T / 2, CONDITIONAL on the line
+-- hypothesis; registry node RH_li_ladder_height); li_rung0_kernel = registry node
 -- RH_li_rung0_kernel with NO hypothesis; li_rungs_of_bands_4000 = the h4000 composition,
 -- conditional on the capstone's conclusion (real-zero residual NoRealZeroInStrip discharged
--- from LowHeightBox Box 1; the _of_noRealZero form keeps it explicit).
--- Nothing here proves RH. conjecture1_proved = False.
-#print axioms LiLadderHeight.taylorCoeff_eq_half_tsum_paired
-#print axioms LiLadderHeight.liPairedSummand_eq_two_sub_pow_sub_inv
-#print axioms LiLadderHeight.liPairedSummand_eq_w
-#print axioms LiLadderHeight.liPairedSummand_eq_w_zpow
-#print axioms LiLadderHeight.re_pow_add_inv_pow
-#print axioms LiLadderHeight.re_liPairedSummand_eq
-#print axioms LiLadderHeight.cosh_mul_cos_le_one
-#print axioms LiLadderHeight.arg_one_sub_inv_eq
-#print axioms LiLadderHeight.abs_arg_base_le
-#print axioms LiLadderHeight.abs_log_norm_le_abs_arg
+-- from LowHeightBox Box 1; the _of_noRealZero form keeps it explicit); li_rungs_of_bands_4000_upto
+-- = registry node RH_li_rungs_of_height_4000. The paired zero sum, the pair-term normal forms and
+-- Lemmas A/B moved to LiFacePrelude (above). Nothing here proves RH. conjecture1_proved = False.
 #print axioms LiLadderHeight.re_liPairedSummand_nonneg_of_height
 #print axioms LiLadderHeight.re_liPairedSummand_nonneg_of_onLine
-#print axioms LiLadderHeight.cosh_mul_cos_le_one_of_le_three_pi_div_two
-#print axioms LiLadderHeight.summable_weighted_paired
-#print axioms LiLadderHeight.re_taylorCoeff_eq_half_tsum_re
-#print axioms LiLadderHeight.re_taylorCoeff_nonneg_of_termwise
 #print axioms LiLadderHeight.li_rung_of_zeros_on_line_below
-#print axioms LiLadderHeight.liPairedSummand_zero_eq
 #print axioms LiLadderHeight.re_liPairedSummand_zero_nonneg
 #print axioms li_rung0_kernel
 #print axioms LiLadderHeight.noRealZeroInStrip
@@ -166,19 +208,25 @@ import LiNegativeControl
 #print axioms LiLadderHeight.li_rungs_of_bands_4000
 #print axioms LiLadderHeight.li_rungs_of_bands_4000_upto
 
--- LiLadderSharp: the SHARPENED exchange rate. Lemma A'' (window 3pi/2 < |b| <= 2pi), Lemma B''
--- (|arg u| + |log|u|| <= 1/(|Im| - 1/2)), Theorem C'' (termwise sign for N <= 2 pi (|Im| - 1/2)),
--- Theorem D'' (height T buys rungs n + 1 <= 2 pi (T - 1/2), CONDITIONAL on the line hypothesis),
--- and the h4000 composition (rungs 0..25128 under the capstone conclusion). Nothing here proves
--- RH. conjecture1_proved = False.
-#print axioms LiLadderHeight.cosh_mul_cos_le_one_window
-#print axioms LiLadderHeight.one_div_add_one_div_two_sq_le
-#print axioms LiLadderHeight.abs_arg_add_abs_log_le
+-- LiLadderSharp: the SHARPENED exchange rate. Theorem C'' (termwise sign for
+-- N <= 2 pi (|Im| - 1/2), from the prelude's Lemma A'' and Lemma B''), Theorem D'' (height T buys
+-- rungs n + 1 <= 2 pi (T - 1/2), CONDITIONAL on the line hypothesis; registry node
+-- RH_li_ladder_height_sharp), and the h4000 composition (rungs 0..25128 under the capstone
+-- conclusion; registry node RH_li_rungs_of_height_4000_sharp). Nothing here proves RH.
+-- conjecture1_proved = False.
 #print axioms LiLadderHeight.re_liPairedSummand_nonneg_of_height_sharp
 #print axioms LiLadderHeight.li_rung_of_zeros_on_line_below_sharp
 #print axioms LiLadderHeight.li_rungs_of_bands_4000_sharp
 #print axioms LiLadderHeight.li_rungs_of_bands_4000_upto_sharp
-#print axioms LowHeightBox.fract_integral_le_half_inv
+
+-- LowHeightBox (li-box): the complex tail bound ||J(s)|| <= 1/(2 Re s) from the prelude's real
+-- kernel bound, 2 sigma <= |s - 1| at a zero, the functional-equation reflection, Box 2
+-- (registry node RH_zeta_zero_confined), Box 1 (registry node RH_zeta_zero_im_ge), the real-axis
+-- corollary; LiBoxRungs: rungs 0..4 hypothesis-free (registry node RH_li_rungs_lt_five).
+-- Nothing here proves RH. conjecture1_proved = False.
+#print axioms LowHeightBox.norm_fractIntegral_le_half
+#print axioms LowHeightBox.two_re_le_norm_sub_one
+#print axioms LowHeightBox.zeta_one_sub_zero
 #print axioms LowHeightBox.zeta_zero_confined
 #print axioms LowHeightBox.zeta_zero_im_ge
 #print axioms LowHeightBox.riemannZeta_ne_zero_of_unit_interval

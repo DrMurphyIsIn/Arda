@@ -2,7 +2,9 @@
 LiLadderSharp -- the SHARPENED exchange rate of the Li ladder.
 
 Campaign brief: telperion/docs/LI_FACE_BRIEF_2026-09-21.md (workstream li-rung0, follow-up).
-Builds on `LiLadderHeight` (Lemmas A, A', B; Theorems C, D there).  Hand-written, not emitted.
+Builds on `LiLadderHeight` (Theorems C, D there) and on the shared pack `LiFacePrelude` (Lemmas
+A, A', A'', B, B'' and the pair-term normal forms; shapes audit P3, 2026-09-22).  Hand-written,
+not emitted.
 
 Numerics put the true termwise threshold at |Im rho| = N/(2 pi) + 1/2 + o(1) (attained as
 beta -> 0).  This module proves the matching kernel statement: a zero at height
@@ -10,22 +12,27 @@ beta -> 0).  This module proves the matching kernel statement: a zero at height
 N <= 2 pi (|Im rho| - 1/2), so height T buys every rung with n + 1 <= 2 pi (T - 1/2)
 (against 3 pi T / 2 in `LiLadderHeight`; at T = 4000: rungs 0..25128 instead of 0..18848).
 
-  1. Lemma A'' `cosh_mul_cos_le_one_window`: if 3 pi/2 < |b| <= 2 pi and |a| <= 2 pi - |b| then
-     cosh a * cos b <= 1.  With d = 2 pi - |b| in [0, pi/2), cos b = cos d and Lemma A applies
-     to (a, d).
-  2. Lemma B'' `abs_arg_add_abs_log_le`: for 0 < Re z < 1 and |Im z| >= 1,
+The two lemmas it rests on live in `LiFacePrelude`, one copy for both islands:
+  Lemma A'' `cosh_mul_cos_le_one_window`: if 3 pi/2 < |b| <= 2 pi and |a| <= 2 pi - |b| then
+     cosh a * cos b <= 1 (with d = 2 pi - |b| in [0, pi/2), cos b = cos d and Lemma A applies).
+  Lemma B'' `abs_arg_add_abs_log_le`: for 0 < Re z < 1 and |Im z| >= 1,
         |arg u| + |log|u|| <= 1/|Im z| + 1/(2 (Im z)^2) <= 1/(|Im z| - 1/2),   u = 1 - 1/z,
-     from the two halves of Lemma B and the algebraic fact (2g+1)(2g-1) <= 4 g^2.
-  3. Theorem C'' `re_liPairedSummand_nonneg_of_height_sharp`: |Im rho| >= 1 and
+     from the two halves of Lemma B and the g-inequality `one_div_add_one_div_two_sq_le`
+     ((2g+1)(2g-1) <= 4 g^2).
+
+What this module proves, all with no `sorry`:
+
+  1. Theorem C'' `re_liPairedSummand_nonneg_of_height_sharp`: |Im rho| >= 1 and
      N <= 2 pi (|Im rho| - 1/2) give 0 <= Re (liPairedSummand n rho).  With b = N |arg u| and
      a = N log|u|: b <= 3 pi/2 is Lemma A' (|a| <= b by Lemma B); b > 3 pi/2 has
      |a| + b <= N (|log|u|| + |arg u|) <= N/(|Im rho| - 1/2) <= 2 pi, so Lemma A'' applies.
-  4. Theorem D'' `li_rung_of_zeros_on_line_below_sharp`: zeros on the line up to height T >= 1
-     buy every rung with n + 1 <= 2 pi (T - 1/2).  Conditional on the line hypothesis.
-  5. The height-4000 composition, sharp: `li_rungs_of_bands_4000_sharp` and
-     `li_rungs_of_bands_4000_upto_sharp` (rungs 0..25128; 7999 pi > 25129 needs `pi_gt_d6`),
-     under the capstone's conclusion shape only (real-zero residual discharged in
-     `LiLadderHeight` from the li-box module).
+  2. Theorem D'' `li_rung_of_zeros_on_line_below_sharp` (registry node
+     RH_li_ladder_height_sharp): zeros on the line up to height T >= 1 buy every rung with
+     n + 1 <= 2 pi (T - 1/2).  Conditional on the line hypothesis.
+  3. The height-4000 composition, sharp: `li_rungs_of_bands_4000_sharp` and
+     `li_rungs_of_bands_4000_upto_sharp` (registry node RH_li_rungs_of_height_4000_sharp; rungs
+     0..25128; 7999 pi > 25129 needs `pi_gt_d6`), under the capstone's conclusion shape only
+     (real-zero residual discharged in `LiLadderHeight` from the li-box module).
 
 conjecture1_proved = False.  Nothing here proves, or approaches, the Riemann Hypothesis: every
 theorem is a finite real inequality or an implication from a named zero-localisation hypothesis;
@@ -33,51 +40,16 @@ the uniform `forall n` IS RH (upstream `li_criterion_rh_iff`) and is not touched
 -/
 import Mathlib
 import LiLadderHeight
+import LiFacePrelude
 
 open scoped Real
 
 namespace LiLadderHeight
 
 open LiCriterion
+open LiFacePrelude
 
-/-! ### 1. Lemma A'': the window `3 pi/2 < |b| <= 2 pi` -/
-
-/-- **Lemma A''.**  If `3 pi/2 < |b| <= 2 pi` and `|a| <= 2 pi - |b|` then `cosh a * cos b <= 1`. -/
-theorem cosh_mul_cos_le_one_window {a b : ℝ} (hb1 : 3 * π / 2 < |b|) (hb2 : |b| ≤ 2 * π)
-    (ha : |a| ≤ 2 * π - |b|) : Real.cosh a * Real.cos b ≤ 1 := by
-  have hd0 : 0 ≤ 2 * π - |b| := by linarith
-  have hd : abs (2 * π - |b|) ≤ π / 2 := by
-    rw [abs_of_nonneg hd0]; linarith
-  have hcos : Real.cos b = Real.cos (2 * π - |b|) := by
-    rw [Real.cos_two_pi_sub, Real.cos_abs]
-  rw [hcos]
-  exact cosh_mul_cos_le_one (ha.trans (le_abs_self _)) hd
-
-/-! ### 2. Lemma B'': the combined angle-plus-log bound -/
-
-/-- `1/g + 1/(2 g^2) <= 1/(g - 1/2)` for `g > 1/2` (i.e. `(2g+1)(2g-1) <= 4g^2`). -/
-lemma one_div_add_one_div_two_sq_le {g : ℝ} (hg : 1 / 2 < g) :
-    1 / g + 1 / (2 * g ^ 2) ≤ 1 / (g - 1 / 2) := by
-  have hg0 : 0 < g := by linarith
-  have h1 : 1 / g + 1 / (2 * g ^ 2) = (2 * g + 1) / (2 * g ^ 2) := by
-    field_simp
-  rw [h1, div_le_div_iff₀ (by positivity) (by linarith)]
-  nlinarith
-
-/-- **Lemma B''.**  For `0 < Re z < 1` and `|Im z| >= 1`, with `u = 1 - 1/z`,
-`|arg u| + |log|u|| <= 1/(|Im z| - 1/2)`. -/
-theorem abs_arg_add_abs_log_le (z : ℂ) (h0 : 0 < z.re) (h1 : z.re < 1) (hγ : 1 ≤ |z.im|) :
-    |Complex.arg ((1 : ℂ) - 1 / z)| + |Real.log ‖(1 : ℂ) - 1 / z‖| ≤ 1 / (|z.im| - 1 / 2) := by
-  have hγ0 : z.im ≠ 0 := by
-    intro h; rw [h] at hγ; norm_num at hγ
-  have harg := abs_arg_base_le z h0 h1 hγ
-  have hlog := abs_log_norm_one_sub_inv_le z h0 h1 hγ0
-  have hsq : z.im ^ 2 = |z.im| ^ 2 := (sq_abs z.im).symm
-  rw [hsq] at hlog
-  have halg := one_div_add_one_div_two_sq_le (g := |z.im|) (by linarith)
-  linarith
-
-/-! ### 3. Theorem C'': the sharp termwise threshold -/
+/-! ### 1. Theorem C'': the sharp termwise threshold -/
 
 /-- **Theorem C''.**  A nontrivial zero with `|Im rho| >= 1` and
 `n + 1 <= 2 pi (|Im rho| - 1/2)` contributes a nonnegative term to rung `n`, on or off the
@@ -120,7 +92,7 @@ theorem re_liPairedSummand_nonneg_of_height_sharp (n : ℕ) (ρ : NontrivialZero
     have := cosh_mul_cos_le_one_window hbig hb2 ha
     linarith
 
-/-! ### 4. Theorem D'': the sharp ladder -/
+/-! ### 2. Theorem D'': the sharp ladder -/
 
 /-- **Theorem D''.**  Let `T >= 1`.  If every nontrivial zero with `|Im rho| <= T` has real part
 `1/2`, then `0 <= Re (taylorCoeff riemannXi n)` for every rung `n` with
@@ -139,7 +111,7 @@ theorem li_rung_of_zeros_on_line_below_sharp (T : ℝ) (hT : 1 ≤ T)
       mul_le_mul_of_nonneg_left (by linarith) (by positivity)
     linarith
 
-/-! ### 5. The height-4000 composition, sharp -/
+/-! ### 3. The height-4000 composition, sharp -/
 
 /-- **The height-4000 Li ladder, sharp.**  Under the capstone's conclusion shape alone (the
 real-zero residual discharged in `LiLadderHeight`), every rung `n + 1 <= 2 pi (4000 - 1/2)` is
