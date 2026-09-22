@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.zeta_zero_confined"
+statement_module = "Statements.RH_zeta_zero_confined"
+status = "draft"
+title = "LOW-HEIGHT BOX 2 (li_positivity island, 2026-09-21): every nontrivial zero satisfies (Re s - 1/2)^2 <= (Im s)^2 / 3 - 1/4, hypothesis-free (same route as Box 1; informative only for |Im s| < 1.2247). Not RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/LowHeightBox.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

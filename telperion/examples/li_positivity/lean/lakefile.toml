@@ -49,6 +49,17 @@ name = "AxiomGuardZeroFree"
 [[lean_lib]]
 name = "LiLadder"
 
+# The Li ladder priced in HEIGHT (LI_FACE_BRIEF_2026-09-21 sections 1-3): hypothesis-free paired
+# zero sum, Lemma A/B, Theorems C/D, rung 0 with no hypothesis (registry node RH_li_rung0_kernel),
+# and the height-4000 composition. conjecture1_proved = False.
+[[lean_lib]]
+name = "LiLadderHeight"
+
+# li-box: the low-height zero box (Box 1 |Im| >= sqrt 3 / 2, Box 2 confinement), hypothesis-free;
+# imported by LiLadderHeight to discharge the real-zero residual. conjecture1_proved = False.
+[[lean_lib]]
+name = "LowHeightBox"
+
 [[lean_lib]]
 name = "RvMXiBridge"
 

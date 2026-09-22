@@ -1,0 +1,14 @@
+created = "2026-09-21"
+depends_on = []
+kind = "lemma"
+name = "RH.li_ladder_height"
+statement_module = "Statements.RH_li_ladder_height"
+status = "draft"
+title = "THE LI LADDER (li_positivity island, 2026-09-21): if every nontrivial zero with |Im| <= T (T >= 1) lies on the line, then Li rung n is nonnegative for every n + 1 <= 3 pi T / 2. Termwise: a zero with |Im| >= 2(n+1)/(3 pi) contributes a nonnegative pair term whether or not it is on the line (cosh a cos b <= 1 for |a| <= |b| <= pi/2; cos <= 0 on [pi/2, 3 pi/2]). Consumes zero localisation, produces none. NOT a proof of anything about RH. conjecture1_proved = False."
+updated = "2026-09-21"
+
+[proof]
+artifact = "../../examples/li_positivity/lean/LiLadderHeight.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
