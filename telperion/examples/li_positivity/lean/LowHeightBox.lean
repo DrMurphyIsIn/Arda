@@ -12,16 +12,19 @@
        zeta(s) = s/(s-1) - s * J(s),   J(s) = ∫_{x>1} {x} x^{-(s+1)} dx     (Re s > 0, s ≠ 1),
 
    but only the crude bound |J(s)| ≤ 1/Re s (`zeta_repr_integral_bound`), which localises nothing
-   (it gives |Im s|^2 ≥ |2 Re s - 1|, empty at Re s = 1/2).  The new input here is the SHARP bound
+   (it gives |Im s|^2 ≥ |2 Re s - 1|, empty at Re s = 1/2).  The new input is the SHARP bound
 
        |J(s)| ≤ ∫_{x>1} {x} x^{-(σ+1)} dx ≤ 1/(2σ)          (σ = Re s > 0),
 
-   proved by cutting [1, ∞) into the unit cells [n+1, n+2) and, on each cell with midpoint
-   c = n + 3/2, using the pointwise sign inequality (x - c)(x^{-σ-1} - c^{-σ-1}) ≤ 0 (the kernel is
-   decreasing) together with ∫_cell (x - c) dx = 0.  No integration by parts and no continuity of
-   {x} is needed.  A zero then forces 2σ ≤ |s - 1|; the functional equation (Λ(1-s) = Λ(s), with
-   Gammaℝ s ≠ 0 for Re s > 0) makes 1 - s a zero too, forcing 2(1-σ) ≤ |s|; adding the squares
-   gives Box 2, and Box 2 gives Box 1.
+   whose real-exponent half `LiFacePrelude.fract_integral_le_half_inv` lives in the shared pack
+   `LiFacePrelude` (shapes audit P3, 2026-09-22; the rvm island's integration-by-parts proof of the
+   same fact is retired against it).  It is proved by cutting [1, ∞) into the unit cells
+   [n+1, n+2) and, on each cell with midpoint c = n + 3/2, using the pointwise sign inequality
+   (x - c)(x^{-σ-1} - c^{-σ-1}) ≤ 0 (the kernel is decreasing) together with ∫_cell (x - c) dx = 0.
+   No integration by parts and no continuity of {x} is needed.  Here the bound is transported to
+   the complex integral (`norm_fractIntegral_le_half`); a zero then forces 2σ ≤ |s - 1|; the
+   functional equation (Λ(1-s) = Λ(s), with Gammaℝ s ≠ 0 for Re s > 0) makes 1 - s a zero too,
+   forcing 2(1-σ) ≤ |s|; adding the squares gives Box 2, and Box 2 gives Box 1.
 
    Nothing here proves, or bears on, whether RH holds: the box is an unconditional finite
    localisation (no zeros below height sqrt 3 / 2 ~ 0.866; the first zero is at ~ 14.13).
@@ -29,168 +32,12 @@
 -/
 import Mathlib
 import StripReprAssembled
+import LiFacePrelude
 
 open Complex MeasureTheory Set Filter Topology
 open scoped Real
 
 namespace LowHeightBox
-
-/-! ## The sharp fractional-part integral bound, real exponent. -/
-
-/-- The unit cell `[n+1, n+2)`. -/
-def cell (n : ℕ) : Set ℝ := Ico ((n : ℝ) + 1) ((n : ℝ) + 2)
-
-/-- The unit cells `[n+1, n+2)`, `n : ℕ`, cover `[1, ∞)`. -/
-theorem Ici_one_eq_iUnion_cell : Ici (1 : ℝ) = ⋃ n : ℕ, cell n := by
-  ext x
-  simp only [cell, mem_Ici, mem_iUnion, mem_Ico]
-  constructor
-  · intro hx
-    refine ⟨⌊x - 1⌋₊, ?_, ?_⟩
-    · have := Nat.floor_le (show (0 : ℝ) ≤ x - 1 by linarith)
-      linarith
-    · have := Nat.lt_floor_add_one (x - 1)
-      linarith
-  · rintro ⟨n, hn, -⟩
-    have : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-    linarith
-
-/-- The unit cells are pairwise disjoint. -/
-theorem pairwise_disjoint_cells : Pairwise (Function.onFun Disjoint cell) := by
-  intro m n hmn
-  simp only [Function.onFun, cell]
-  rw [Set.disjoint_left]
-  intro x hxm hxn
-  simp only [mem_Ico] at hxm hxn
-  apply hmn
-  have h1 : (m : ℝ) < n + 1 := by linarith
-  have h2 : (n : ℝ) < m + 1 := by linarith
-  have h1' : m < n + 1 := by exact_mod_cast h1
-  have h2' : n < m + 1 := by exact_mod_cast h2
-  omega
-
-/-- On the cell `[n+1, n+2)` the fractional part is `x - (n+1)`. -/
-theorem fract_eq_on_cell {n : ℕ} {x : ℝ} (hx : x ∈ Ico ((n : ℝ) + 1) ((n : ℝ) + 2)) :
-    Int.fract x = x - ((n : ℝ) + 1) := by
-  rw [Int.fract_eq_iff]
-  refine ⟨by linarith [hx.1], by linarith [hx.2], ⟨(n : ℤ) + 1, ?_⟩⟩
-  push_cast; ring
-
-/-- The pointwise sign inequality on a cell: for the decreasing kernel `g x = x^(-(σ+1))` and the
-    cell midpoint `c`, `(x - c) * g x ≤ (x - c) * g c` for every `x > 0`. -/
-theorem sub_mul_rpow_le {σ c x : ℝ} (hσ : 0 < σ) (hc : 0 < c) (hx : 0 < x) :
-    (x - c) * x ^ (-(σ + 1)) ≤ (x - c) * c ^ (-(σ + 1)) := by
-  have hexp : -(σ + 1) ≤ 0 := by linarith
-  rcases le_or_gt x c with h | h
-  · -- x ≤ c : x - c ≤ 0 and g x ≥ g c
-    have hg : c ^ (-(σ + 1)) ≤ x ^ (-(σ + 1)) := Real.rpow_le_rpow_of_nonpos hx h hexp
-    nlinarith
-  · -- c < x : x - c ≥ 0 and g x ≤ g c
-    have hg : x ^ (-(σ + 1)) ≤ c ^ (-(σ + 1)) := Real.rpow_le_rpow_of_nonpos hc h.le hexp
-    nlinarith
-
-/-- The centred moment of a cell vanishes: `∫_{[n+1,n+2)} (x - (n + 3/2)) dx = 0`. -/
-theorem integral_cell_centred (n : ℕ) :
-    ∫ x in Ico ((n : ℝ) + 1) ((n : ℝ) + 2), (x - ((n : ℝ) + 3 / 2)) = 0 := by
-  rw [integral_Ico_eq_integral_Ioo, ← integral_Ioc_eq_integral_Ioo,
-    ← intervalIntegral.integral_of_le (by linarith)]
-  rw [intervalIntegral.integral_sub intervalIntegral.intervalIntegrable_id
-    intervalIntegrable_const, integral_id, intervalIntegral.integral_const]
-  simp only [smul_eq_mul]
-  ring
-
-/-- Continuity of the kernel `x ^ (-(σ+1))` on a cell (all points positive). -/
-theorem continuousOn_kernel_cell (σ : ℝ) (n : ℕ) :
-    ContinuousOn (fun x : ℝ => x ^ (-(σ + 1))) (Icc ((n : ℝ) + 1) ((n : ℝ) + 2)) := by
-  refine continuousOn_id.rpow_const ?_
-  intro x hx
-  left
-  have : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-  have : (1 : ℝ) ≤ x := by linarith [hx.1]
-  simp only [id]
-  exact ne_of_gt (by linarith)
-
-/-- Per-cell inequality: the fractional-part integral over a cell is at most half the kernel
-    integral over the cell. -/
-theorem cell_fract_integral_le {σ : ℝ} (hσ : 0 < σ) (n : ℕ) :
-    ∫ x in cell n, Int.fract x * x ^ (-(σ + 1))
-      ≤ ∫ x in cell n, (1 / 2 : ℝ) * x ^ (-(σ + 1)) := by
-  simp only [cell]
-  set c : ℝ := (n : ℝ) + 3 / 2 with hc
-  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-  have hcpos : 0 < c := by rw [hc]; linarith
-  have hIco : Ico ((n : ℝ) + 1) ((n : ℝ) + 2) ⊆ Icc ((n : ℝ) + 1) ((n : ℝ) + 2) := Ico_subset_Icc_self
-  -- integrability of the pieces on the cell (all continuous on the compact closure)
-  have hgc : ContinuousOn (fun x : ℝ => x ^ (-(σ + 1))) (Icc ((n : ℝ) + 1) ((n : ℝ) + 2)) :=
-    continuousOn_kernel_cell σ n
-  have hint1 : IntegrableOn (fun x : ℝ => (x - c) * x ^ (-(σ + 1)))
-      (Ico ((n : ℝ) + 1) ((n : ℝ) + 2)) :=
-    ((continuousOn_id.sub continuousOn_const).mul hgc).integrableOn_Icc.mono_set hIco
-  have hint2 : IntegrableOn (fun x : ℝ => (x - c) * c ^ (-(σ + 1)))
-      (Ico ((n : ℝ) + 1) ((n : ℝ) + 2)) :=
-    ((continuousOn_id.sub continuousOn_const).mul continuousOn_const).integrableOn_Icc.mono_set hIco
-  have hint3 : IntegrableOn (fun x : ℝ => (1 / 2 : ℝ) * x ^ (-(σ + 1)))
-      (Ico ((n : ℝ) + 1) ((n : ℝ) + 2)) :=
-    (continuousOn_const.mul hgc).integrableOn_Icc.mono_set hIco
-  -- rewrite the fractional part on the cell
-  have hcongr : ∫ x in Ico ((n : ℝ) + 1) ((n : ℝ) + 2), Int.fract x * x ^ (-(σ + 1))
-      = ∫ x in Ico ((n : ℝ) + 1) ((n : ℝ) + 2),
-          ((x - c) * x ^ (-(σ + 1)) + (1 / 2 : ℝ) * x ^ (-(σ + 1))) := by
-    refine setIntegral_congr_fun measurableSet_Ico (fun x hx => ?_)
-    rw [fract_eq_on_cell hx, hc]
-    ring
-  rw [hcongr, integral_add hint1 hint3]
-  -- the centred piece is ≤ 0
-  have hcent : ∫ x in Ico ((n : ℝ) + 1) ((n : ℝ) + 2), (x - c) * x ^ (-(σ + 1)) ≤ 0 := by
-    calc ∫ x in Ico ((n : ℝ) + 1) ((n : ℝ) + 2), (x - c) * x ^ (-(σ + 1))
-        ≤ ∫ x in Ico ((n : ℝ) + 1) ((n : ℝ) + 2), (x - c) * c ^ (-(σ + 1)) := by
-          refine setIntegral_mono_on hint1 hint2 measurableSet_Ico (fun x hx => ?_)
-          have hxpos : 0 < x := by linarith [hx.1]
-          exact sub_mul_rpow_le hσ hcpos hxpos
-      _ = c ^ (-(σ + 1)) * ∫ x in Ico ((n : ℝ) + 1) ((n : ℝ) + 2), (x - c) := by
-          rw [← integral_const_mul]
-          refine setIntegral_congr_fun measurableSet_Ico (fun x _ => ?_)
-          ring
-      _ = 0 := by rw [hc, integral_cell_centred, mul_zero]
-  linarith
-
-/-- Integrability of the fractional-part kernel on `[1, ∞)`. -/
-theorem integrableOn_fract_kernel {σ : ℝ} (hσ : 0 < σ) :
-    IntegrableOn (fun x : ℝ => Int.fract x * x ^ (-(σ + 1))) (Ici (1 : ℝ)) := by
-  rw [integrableOn_Ici_iff_integrableOn_Ioi]
-  have hdom : IntegrableOn (fun x : ℝ => x ^ (-(σ + 1))) (Ioi (1 : ℝ)) :=
-    integrableOn_Ioi_rpow_of_lt (by linarith) one_pos
-  have hmeas : AEStronglyMeasurable (fun x : ℝ => Int.fract x * x ^ (-(σ + 1)))
-      (volume.restrict (Ioi (1 : ℝ))) := by
-    apply Measurable.aestronglyMeasurable
-    exact Measurable.mul measurable_fract (measurable_id.pow_const _)
-  refine Integrable.mono' hdom hmeas ?_
-  filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-  have hx0 : (0 : ℝ) < x := lt_trans one_pos hx
-  rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (Int.fract_nonneg x) (Real.rpow_nonneg hx0.le _))]
-  exact mul_le_of_le_one_left (Real.rpow_nonneg hx0.le _) (Int.fract_lt_one x).le
-
-/-- Integrability of the half kernel on `[1, ∞)`. -/
-theorem integrableOn_half_kernel {σ : ℝ} (hσ : 0 < σ) :
-    IntegrableOn (fun x : ℝ => (1 / 2 : ℝ) * x ^ (-(σ + 1))) (Ici (1 : ℝ)) := by
-  rw [integrableOn_Ici_iff_integrableOn_Ioi]
-  exact (integrableOn_Ioi_rpow_of_lt (by linarith) one_pos).const_mul _
-
-/-- **The sharp bound**: `∫_{x>1} {x} x^{-(σ+1)} dx ≤ 1/(2σ)` for `σ > 0`. -/
-theorem fract_integral_le_half_inv {σ : ℝ} (hσ : 0 < σ) :
-    ∫ x in Ioi (1 : ℝ), Int.fract x * x ^ (-(σ + 1)) ≤ 1 / (2 * σ) := by
-  have hhalf : ∫ x in Ioi (1 : ℝ), (1 / 2 : ℝ) * x ^ (-(σ + 1)) = 1 / (2 * σ) := by
-    rw [integral_const_mul, integral_Ioi_rpow_of_lt (by linarith) one_pos, Real.one_rpow,
-      show -(σ + 1) + 1 = -σ by ring, neg_div_neg_eq, one_div_mul_one_div]
-  rw [← hhalf, ← integral_Ici_eq_integral_Ioi, ← integral_Ici_eq_integral_Ioi]
-  have hU := Ici_one_eq_iUnion_cell
-  have hm : ∀ n : ℕ, MeasurableSet (cell n) := fun _ => measurableSet_Ico
-  have h1 := hasSum_integral_iUnion (μ := volume) (f := fun x : ℝ => Int.fract x * x ^ (-(σ + 1)))
-    hm pairwise_disjoint_cells (hU ▸ integrableOn_fract_kernel hσ)
-  have h2 := hasSum_integral_iUnion (μ := volume) (f := fun x : ℝ => (1 / 2 : ℝ) * x ^ (-(σ + 1)))
-    hm pairwise_disjoint_cells (hU ▸ integrableOn_half_kernel hσ)
-  rw [← hU] at h1 h2
-  exact hasSum_le (fun n => cell_fract_integral_le hσ n) h1 h2
 
 /-! ## The complex tail integral. -/
 
@@ -210,7 +57,7 @@ theorem norm_fractIntegral_le_half {s : ℂ} (hs : 0 < s.re) :
         norm_integral_le_integral_norm _
     _ = ∫ x in Ioi (1 : ℝ), Int.fract x * x ^ (-(s.re + 1)) :=
         setIntegral_congr_fun measurableSet_Ioi hnorm
-    _ ≤ 1 / (2 * s.re) := fract_integral_le_half_inv hs
+    _ ≤ 1 / (2 * s.re) := LiFacePrelude.fract_integral_le_half_inv hs
 
 /-! ## Zeros in the strip. -/
 

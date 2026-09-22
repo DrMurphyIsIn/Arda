@@ -4,7 +4,7 @@ open Complex LiCriterion LowHeightBox
 
 /- 1. Chain re-composed from the pieces for rung 3 (expected SUCCESS). -/
 example : 0 ≤ (taylorCoeff riemannXi 3).re :=
-  taylorCoeff_re_nonneg_of_termwise 3 (fun ρ => by
+  LiFacePrelude.re_taylorCoeff_nonneg_of_termwise 3 (fun ρ => by
     rw [liPairedSummand_three_eq]; exact re_Q4_nonneg (zOf_mem_disk ρ))
 #print axioms li_rungs_lt_five
 

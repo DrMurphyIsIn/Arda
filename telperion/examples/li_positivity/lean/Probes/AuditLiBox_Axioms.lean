@@ -5,7 +5,7 @@ import LiBoxRungs
 #print axioms LowHeightBox.Q4
 #print axioms LowHeightBox.Q5
 #print axioms LowHeightBox.zOf
-#print axioms LowHeightBox.liPairedSummand_eq_pow
+#print axioms LiFacePrelude.liPairedSummand_eq_pow
 #print axioms LowHeightBox.zOf_eq
 #print axioms LowHeightBox.w_mul_v
 #print axioms LowHeightBox.liPairedSummand_zero_eq
@@ -21,8 +21,8 @@ import LiBoxRungs
 #print axioms LowHeightBox.re_mul_one_sub_ge_one
 #print axioms LowHeightBox.zOf_mem_disk
 #print axioms LowHeightBox.liPairedSummand_re_nonneg
-#print axioms LowHeightBox.taylorCoeff_eq_half_tsum_paired
-#print axioms LowHeightBox.taylorCoeff_re_nonneg_of_termwise
+#print axioms LiFacePrelude.taylorCoeff_eq_half_tsum_paired
+#print axioms LiFacePrelude.re_taylorCoeff_nonneg_of_termwise
 #print axioms LowHeightBox.li_rung0
 #print axioms LowHeightBox.li_rung1
 #print axioms LowHeightBox.li_rung2
