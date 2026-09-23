@@ -68,7 +68,12 @@ from the vertical-line digamma series (Zeta23 `re_digamma_vertical`), the Fourie
 e^{-b|u|} <-> 2b/(b^2 + r^2) and Tonelli (the series terms are nonnegative).  psi(1/4) - log pi
 = -5.372; the Dirichlet term supplies ~ log(1/L) + 2.8 for narrow supports.
 
-## 2. Stages
+## 2. Stages (status at the end of the session, 2026-09-23)
+
+PROVED: Stage 0; Stage 1 at L <= 1/14 by the r-space route (E6Bridge31); the u-space route
+(E6Bridge32-34) at L <= 1/10 (`RvMBridge34.weil_positivity_window_tenth`, margin 0.134 of
+||g||^2).  NOT PROVED: the full window 2L <= log 2 (named Prop `PrimeFreeWindowPositivity`).
+
 
 Stage 0 (prime side vanishes; PROVE).  tsupport g ⊆ Icc (-L) L gives tsupport (autocorr g)
 ⊆ Icc (-2L) (2L) (Zeta23 `tsupport_weilTest_subset`); for n >= 2, log n >= log 2 >= 2L and
@@ -91,6 +96,23 @@ Dirichlet u-space route below would reach L ~ 0.12 (Poincare split of g into its
 and the fluctuation; the mean part is nearly tight at the edge, the fluctuation part loses the
 crude kernel minimum k(2L)); the exact threshold is ~ 0.36.
 
+Stage 1b (the u-space route, PROVED at L <= 1/10; E6Bridge32, E6Bridge33, E6Bridge34).
+E6Bridge32: the Lorentzian pair e^{-b|u|} <-> 2b/(b^2+r^2) (Mathlib inversion through Zeta23
+`paper_inversion` of f, Fubini) and the digamma series (E6Bridge30 `psiR_ge_series`, M = 0)
+paired termwise: (1/2pi) ∫ |ĝ|^2 psiR >= (-gamma + sum_{n<N} 1/(n+1)) f(0) - Re ∫ f e^{-|u|/2}
+- sum_{n<N} Re ∫ f e^{-b_n|u|}, b_n = 2n + 5/2.  E6Bridge33: for one kernel, f(0) ∫ K_b
+- Re ∫ f K_b = (1/2) ∫∫ |g(v) - g(w)|^2 K_b(v - w) (Fubini, substitution, symmetrisation on
+the plane), and >= (2 e^{-bL}/b) f(0) + e^{-2bL} (2 L f(0) - |∫ g|^2) (pointwise split of the
+plane into the square and the cross regions; outer mass (e^{-b(L-v)} + e^{-b(L+v)})/b
+>= 2 e^{-bL}/b by AM-GM).  E6Bridge34: the pole terms refined to Re (W0 + W1) >= 2 |∫ g|^2
+- (2 D^2 + S^2/2) ||g||_1^2 (polarisation; ĝ(-i/2) + ĝ(i/2) - 2 ∫ g = ∫ g (e^{u/2} + e^{-u/2} - 2)
+is O(L^2)), the kernel sums by induction on N, k_10(2L) >= 2 so the |∫ g|^2 terms cancel
+against the poles, the tangent bound e^{-bL} >= e^{-b/10}(1 + b(1/10 - L)) to move from L to
+1/10, and (1 - x/16)^16 <= e^{-x} for the eleven exponentials; c_10 >= -4.2549, F_10(1/10)
+>= 5.1499, log pi <= 1.159, total margin 0.134.  The bound's own threshold is L ~ 0.125
+(k_N(2L) >= 2 fails beyond, and the Poincare split then needs the true first eigenvalue of
+the kernel on the interval, which is where Connes-Consani's prolate machinery starts).
+
 Stage 2 (full window).  Literature mechanism extracted (Connes-Consani 2006.13771, Yoshida): it
 is a theorem about the pole-free class only, and its proof is a Sonin-space compression plus a
 numerically computed Toeplitz spectrum.  The goal-node-class statement WINDOW((log 2)/2) has
@@ -104,7 +126,9 @@ for such g.  If time permits after Stage 1: the exact u-space series identity as
 ## 3. Files
 
 * `E6Bridge31.lean`: Stage 0, the pointwise bounds, the generic layer cake, Stage 1
-  (`weil_positivity_narrow_support`), the named Props and the reductions.
+  (`weil_positivity_narrow_support`, L <= 1/14), the named Props and the reductions.
+* `E6Bridge32.lean`, `E6Bridge33.lean`, `E6Bridge34.lean`: the u-space route,
+  `weil_positivity_window_tenth` (L <= 1/10).
 * `AxiomGuardRvMBridge.lean`: `#print axioms` for every new theorem.
 * `lakefile.toml`: `E6Bridge31` in defaultTargets.
 * `prime_free_window_numerics.py` (island directory): the numerics above.

@@ -221,6 +221,7 @@ import W2cAssembly
 import E6Bridge31
 import E6Bridge32
 import E6Bridge33
+import E6Bridge34
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
 
@@ -1107,3 +1108,11 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridge33.Eb_eq_half
 #print axioms RvMBridge33.Rfun_ge
 #print axioms RvMBridge33.Eb_ge
+
+-- E6Bridge34: the window at L <= 1/10 (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge34.re_poles_ge_sq
+#print axioms RvMBridge34.arch_ge_series
+#print axioms RvMBridge34.FN_tenth_ge
+#print axioms RvMBridge34.re_archSide_autocorr_ge_tenth
+#print axioms RvMBridge34.weil_positivity_window_tenth_of_nonneg
+#print axioms RvMBridge34.weil_positivity_window_tenth
