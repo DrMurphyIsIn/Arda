@@ -10,3 +10,6 @@ import Statements.AND_checkline_correct
 import Statements.AND_g2_reflected_band
 import Statements.AND_first_zero_kernel
 import Statements.AND_g2_reflected_band_kernel
+import Statements.AND_height_floor_kernel
+import Statements.AND_edge_clear_glue
+import Statements.AND_theta_branch
