@@ -219,6 +219,8 @@ import E6Bridge29
 import E6Bridge30
 import ZhuEnvelope
 import ZhuSymbol
+import ZhuLegendre
+import ZhuParity
 import W2cAssembly
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
@@ -1084,3 +1086,14 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridgeZhu.autocorr_eq_zero_of_two_mul_le
 #print axioms RvMBridgeZhu.symbol_representation_ofReal
 #print axioms RvMBridgeZhu.symbolRepresentation
+
+-- ZhuLegendre (2026-09-23): Zhu eqs. (6) and (12), PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.integral_one_sub_sq_pow
+#print axioms RvMBridgeZhu.sphericalBessel_abs_le
+#print axioms RvMBridgeZhu.integral_legendreP_mul_cos
+#print axioms RvMBridgeZhu.legendreModeFT_eq
+#print axioms RvMBridgeZhu.legendreModeFT_abs_le
+
+-- ZhuParity (2026-09-23): sector-floor vocabulary, trivial directions.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.evenSectorFloor_of_windowFloor
+#print axioms RvMBridgeZhu.oddSectorFloor_of_windowFloor
