@@ -6,20 +6,43 @@
 
       lake env lean AxiomGuard.lean
 
-  AFTER `lake build`, and fails the build if any listed `#print axioms` output
-  mentions `sorryAx` — i.e. if a guarded theorem secretly depends on a `sorry`.
+  AFTER `lake build`, and fails the build unless EVERY listed `#print axioms`
+  output depends only on Lean's three standard axioms: each reported set must be
+  a subset of `[propext, Classical.choice, Quot.sound]` (or "does not depend on
+  any axioms").  So a hidden `sorry` (`sorryAx`), a self-declared `axiom`
+  anywhere in a guarded cone, or the auxiliary axiom a `native_decide` proof
+  introduces (reported as `<decl>._native.native_decide.ax_*` on v4.32) all fail CI.  The step also requires one reported line per
+  `#print axioms` directive here, and requires the BG mission node theorems
+  (below) by name, so deleting a guard line cannot silently shrink coverage.
 
   `#print axioms` is the authoritative, false-positive-free detector: a grep for
   the string `sorry` over `.lean` sources cannot distinguish a real proof gap from
   docstring prose like "no `sorry`", but the kernel's axiom trace can.
 
-  A clean proof reports exactly `[propext, Classical.choice, Quot.sound]`.
+  A clean proof reports `[propext, Classical.choice, Quot.sound]` or a subset
+  (several structural lemmas legitimately report `[propext]` or
+  `[propext, Quot.sound]`).
 
   Anchors (the theorems whose integrity actually matters):
     * R3Cert.Step3.conjecture1_of_layers  — the R7' top capstone (conditional on
       the two open layers Hnorm/Hdom); guarding it guards its entire dependency cone.
     * R3Cert.phi_le_one                    — the Φ ≤ 1 analytic crux.
     * R3Cert.CappedJointConfig.gstep_le_one_achievable — the g-step / master ineq crux.
+
+  BG mission node theorems (telperion/missions/bg/nodes/*.toml, status proved):
+  every proved node's artifact theorem is printed BY NAME, not only via some
+  other anchor's cone (closure-run audit finding C5, 2026-09-22):
+    * BG_cavity_recursion   R3Cert.cavity_recursion               (R3Cert/Matching.lean)
+    * BG_fractal_asymptote  R3Cert.FractalTail.fractal_tail_as_ratio (R3Cert/FractalTail.lean)
+    * BG_gstep_closure      R3Cert.CappedJointConfig.gstep_le_one_achievable
+    * BG_h1_bridge          R3Cert.Step3.pi_utree                 (R3Cert/R47Tree.lean)
+    * BG_lb_classification  R3Cert.validPotentialPlain_holds      (R3Cert/PotentialFinal.lean)
+    * BG_merge_layer        R3Cert.Step3.merge_normalForm_perL    (R3Cert/R47MergePerL.lean)
+    * BG_near_star_tail     R3Cert.nearStar_nonpos                (R3Cert/NearStar.lean)
+    * BG_near_star_tie      R3Cert.nearStar_tie                   (R3Cert/NearStar.lean)
+    * BG_phi_le_one         R3Cert.phi_le_one
+  (and the refuted node BG_hnorm_capstone's R3Cert.Step3.hnorm_capstone_false, printed
+  further below).  conjecture1_proved = False.
 
   Additive SUBACTION ceiling (2026-09-03, branch bg/scl-on-main) — the current live
   line for the classical branch ceiling `∀ b, bell b ≤ 0`, after the multiplicative
@@ -92,10 +115,26 @@ import R3Cert.R47HwhSymStarCert
 import R3Cert.R47HwhSymStar3Cert
 import R3Cert.R47HwhSymStarGenCert
 import R3Cert.R47HwhAssembly
+-- BG mission node artifact modules (C5).  Matching/R47Tree/NearStar are already in the
+-- closure above; FractalTail and R47MergePerL are not, so these imports are load-bearing.
+import R3Cert.Matching
+import R3Cert.FractalTail
+import R3Cert.R47Tree
+import R3Cert.NearStar
+import R3Cert.R47MergePerL
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
 #print axioms R3Cert.CappedJointConfig.gstep_le_one_achievable
+
+-- BG mission node theorems not otherwise printed by name (C5, 2026-09-22).
+#print axioms R3Cert.cavity_recursion
+#print axioms R3Cert.FractalTail.fractal_tail_as_ratio
+#print axioms R3Cert.Step3.pi_utree
+#print axioms R3Cert.validPotentialPlain_holds
+#print axioms R3Cert.Step3.merge_normalForm_perL
+#print axioms R3Cert.nearStar_nonpos
+#print axioms R3Cert.nearStar_tie
 
 -- RealObligationA Case-A (leaf-path-extension, 92%) Aobj-monotonicity certificate (the F2 closed form).
 #print axioms R3Cert.BGSCL.f2_numerator_nonneg
