@@ -217,6 +217,7 @@ import E6Bridge27
 import E6Bridge28
 import E6Bridge29
 import E6Bridge30
+import ZhuEnvelope
 import W2cAssembly
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
@@ -1072,3 +1073,8 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms DogfoodZeroSumMajorant.liBound_regen_summable
 #print axioms DogfoodZeroSumMajorant.tail_regen_envelope
 #print axioms DogfoodZeroSumMajorant.tail_regen_rate
+
+-- ZhuEnvelope (2026-09-23): Zhu Lemma 3.1, the digamma envelope, PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.psiR_ge_stirling
+#print axioms RvMBridgeZhu.psiR_ge_envelope
+#print axioms RvMBridgeZhu.envelopeBound
