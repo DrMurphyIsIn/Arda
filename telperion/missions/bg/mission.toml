@@ -1,4 +1,4 @@
-description = "Migration of the BG campaign prose tracking (PROOF_ASSEMBLY.md, PROOF_STATUS.md, STATUS.md) into the missions registry. The registry is the tracking truth; conjecture1_proved = False and the goal node is draft."
+description = "Migration of the BG campaign prose tracking (PROOF_ASSEMBLY.md, PROOF_STATUS.md, STATUS.md) into the missions registry. The registry is the tracking truth; conjecture1_proved = False and the goal node is draft. [2026-09-23 closure-run audit] CI caveat: proof-lean.yml (the only job that builds proof/formalization R3Cert and runs AxiomGuard.lean) last passed 2026-09-09 (c710b09); 7 of the 9 proved node theorems are not printed by AxiomGuard.lean, and the guard step checks only for sorryAx, not the exact three-axiom set. Statuses unchanged pending a green guarded build."
 environment_mathlib_rev = "v4.32.0"
 environment_toolchain = "leanprover/lean4:v4.32.0"
 goal_node = "BG_conjecture1"
