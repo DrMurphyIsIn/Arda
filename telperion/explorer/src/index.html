@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telperion Registry Explorer</title>
+<meta name="description" content="A static explorer for the Telperion missions registry: the reverse-Dyson quasicrystal program, the falsification zoo, the wall map, the Li face, and every registered node with its status read from the registry. conjecture1_proved = False.">
+<script>
+(function(){try{var t=localStorage.getItem("telperion-explorer-theme");if(t==="dark"||t==="light"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}})();
+</script>
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="topbar">
+    <div class="banner">conjecture1_proved = False</div>
+    <button class="theme-btn" id="theme-toggle" type="button">Toggle light / dark</button>
+  </div>
+  <h1>Telperion Registry Explorer</h1>
+  <p class="sub">One registry of formal statements about the Riemann zeta function and its zeros, kept in TOML files and checked by a Lean 4 kernel, with the reverse-Dyson quasicrystal program in front. Every status on this page is read from the registry; nothing is inferred, and nothing here is a proof of the Riemann Hypothesis.</p>
+  <p class="note">The plots are computed live in your browser from bundled data. Where a number is a float-model estimate, an Arb enclosure, or a truncated sum, the plot says so. Where a theorem is conditional, its hypotheses are shown. Every recorded audit is self-attested.</p>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <button class="tab" role="tab" id="tab-qc" aria-selected="true" data-panel="qc">The quasicrystal</button>
+  <button class="tab" role="tab" id="tab-zoo" aria-selected="false" data-panel="zoo">The zoo</button>
+  <button class="tab" role="tab" id="tab-wall" aria-selected="false" data-panel="wall">The wall</button>
+  <button class="tab" role="tab" id="tab-li" aria-selected="false" data-panel="li">Li face</button>
+  <button class="tab" role="tab" id="tab-reg" aria-selected="false" data-panel="reg">The registry</button>
+  <button class="tab" role="tab" id="tab-known" aria-selected="false" data-panel="known">What is known</button>
+  <button class="tab" role="tab" id="tab-compute" aria-selected="false" data-panel="compute">Compute it yourself</button>
+</nav>
+
+<!-- ================================================================ -->
+<section class="panel active" id="panel-qc" role="tabpanel" aria-labelledby="tab-qc">
+  <h2>The quasicrystal</h2>
+
+  <div class="step"><div class="letter">a</div><div class="body">
+    <h3>What a Fourier quasicrystal is</h3>
+    <p>Take a discrete set of points on the real line and put a unit mass at each one. Call the result a comb. A comb is a <em>Fourier quasicrystal</em> when its Fourier transform is again a comb: a countable sum of point masses, the Bragg peaks of a diffraction picture, with no continuous part. A periodic lattice is the trivial example (Poisson summation). The interesting examples are not periodic. Kurasov and Sarnak (2020) showed that every Fourier quasicrystal with integer masses on the line is the real zero set of a Lee-Yang exponential polynomial, and Alon, Cohen and Vinzant (2024) showed the converse. The <code>quasicrystal</code> island carries the finite shadow of that dictionary in the kernel: a two-frequency exponential sum is real-rooted exactly when its two coefficients have equal modulus (node <code>MM_twofreq_realrooted_iff</code>), and a one-frequency Lee-Yang polynomial has a crystalline zero set (<code>KSConstruction</code>).</p>
+  </div></div>
+
+  <div class="step"><div class="letter">b</div><div class="body">
+    <h3>The dual comb picture</h3>
+    <p>The Guinand-Weil explicit formula pairs two combs. On one side sit the ordinates of the nontrivial zeros of zeta, symmetrised and weighted by multiplicity. On the other side sit the prime powers at frequencies <code>k log p</code> with weights <code>(log p) p^(-k/2)</code>, together with a smooth archimedean density and two pole terms. For an even test function <code>g</code> with transform <code>h</code>,</p>
+    <pre>sum over zeros of h(gamma)  =  archimedean(h)  -  2 sum over p, k of (log p) p^(-k/2) g(k log p)  +  poles</pre>
+    <p>The prime comb exists unconditionally and is, in the kernel, a finite-height identity with the zeros: node <code>MM_bragg_bridge</code> states the explicit formula in diffraction form for a rectangle, with no limit taken, and node <code>RH_limit_explicit_formula</code> states the full limit form (Weil 1952 / Guinand 1948) for smooth compactly supported tests. What is <em>not</em> known is whether the zero comb is real. Unconditionally the ordinates are complex numbers; the Riemann Hypothesis says they are all real.</p>
+  </div></div>
+
+  <div class="step"><div class="letter">c</div><div class="body">
+    <h3>Dyson's 2009 suggestion and the reverse-Dyson framing</h3>
+    <p>In <em>Birds and frogs</em> (Notices of the AMS, 2009) Freeman Dyson suggested classifying one-dimensional quasicrystals, on the grounds that if the zeros of zeta lie on the critical line then their comb is a quasicrystal with the prime powers as its spectrum, so a classification would have to contain it. The MIRRORMERE campaign runs this in reverse. It does not assume the zeros are on the line. It asks which weakening of the Fourier-quasicrystal axioms is the smallest one that still admits the zeta comb and still excludes the known counterfeits, and it tries to locate exactly where the hypothesis of reality enters. Kurasov and Sarnak already proved that the classical class is the wrong target: the zeta comb is not uniformly discrete (its counting function grows like <code>T log T</code>), so it is provably not a classical Fourier quasicrystal. Node <code>MM_primelog_spectrum_dense</code> and node <code>MM_zeta_ordinates_not_uniformly_discrete</code> put that obstruction in the kernel.</p>
+  </div></div>
+
+  <div class="step"><div class="letter">d</div><div class="body">
+    <h3>The axiom variants</h3>
+    <p>The draft axioms (<code>telperion/docs/QC_AXIOMS_DRAFT.md</code>) grade two axes: how dense the support may be, and how much is demanded of the spectrum and its weights.</p>
+    <table class="plain">
+      <tr><th>Variant</th><th>What it adds</th><th>Verdict in the draft</th></tr>
+      <tr><td>A</td><td>log-density support, pure-point spectrum on the prime log-lattice, no weight condition</td><td>live but fragile: separates Davenport-Heilbronn only through a loose lattice reading</td></tr>
+      <tr><td>B</td><td>A plus positive weights of the exact <code>(log p) p^(-k/2)</code> shape</td><td>recommended: the weight clause is unconditional for zeta and kills DH; the pure-point clause is the RH content</td></tr>
+      <tr><td>Bm</td><td>B with positivity replaced by multiplicative generation of the amplitudes from the prime layer (the Euler product fingerprint)</td><td>strictly sharper than B; falsified as an arithmetic-class predicate by <code>L(s, Delta)</code>, see the zoo</td></tr>
+      <tr><td>C</td><td>A with signed weights, positivity dropped</td><td>dead by design: DH passes it, which isolates positivity as the killer</td></tr>
+      <tr><td>D</td><td>B up to a bounded defect <code>k</code> of off-line pairs; <code>k = 0</code> is RH</td><td>live, partial: a finite <code>k</code> at each height is unconditional (Alpoge-Furman), driving it to zero is RH</td></tr>
+    </table>
+  </div></div>
+
+  <div class="step"><div class="letter">e</div><div class="body">
+    <h3>What the program actually claims, and what it does not</h3>
+    <div class="claim">
+      <p><strong>Claimed and in the kernel.</strong> The goal statement of the campaign, Weil positivity of the explicit-formula functional on Hermitian autocorrelations of smooth compactly supported tests, is equivalent to Mathlib's <code>RiemannHypothesis</code> (node <code>MM_zeta_comb_membership_iff_rh</code>, both directions). The same equivalence in two real parameters (node <code>MM_rh_iff_gaussian_positivity</code>), the unconditional free region of that parameter space (node <code>MM_gaussian_positivity_small_lam_3e3</code>), the Theta face with its heat monotonicity (node <code>MM_theta_heat_monotone</code>), and the finite instruments listed under the registry tab.</p>
+      <p><strong>Not claimed.</strong> That either side of any of these equivalences holds. The goal node <code>MM_zeta_comb_membership</code> is a draft and stays a draft: it is RH by theorem. <code>conjecture1_proved = False</code> throughout.</p>
+    </div>
+    <p>An equivalence changes the coordinates of the wall, not its content. The campaign's own adversarial sweep (WALL_MAP_2026-09-21, section 5) reached that verdict and its replication agreed.</p>
+  </div></div>
+</section>
+
+<!-- ================================================================ -->
+<section class="panel" id="panel-zoo" role="tabpanel" aria-labelledby="tab-zoo">
+  <h2>The zoo</h2>
+  <p>The falsification harness (<code>telperion/examples/quasicrystal/zoo.py</code>) runs each axiom clause against a zoo of control objects at height <code>T = 100</code> and records a verdict. The matrix exists to be falsified: a clause that the counterfeit passes is dead, and a clause that zeta only passes conditionally is labelled so.</p>
+  <div class="warn">Trust level of everything in this tab: <span id="zoo-trust"></span>. These are Arb / interval computations orchestrated in Python, not Lean kernel proofs. A PASS here is finite evidence at one height, never a theorem.</div>
+
+  <div class="step"><div class="letter">a</div><div class="body">
+    <h3>The falsification matrix</h3>
+    <p>Rows are clauses, columns are zoo objects. Hover or tap a cell for the recorded detail. <strong>PASS</strong>: the finite certified check succeeded. <strong>FAIL</strong>: it did not. <strong>CONDITIONAL</strong>: the clause is RH-adjacent for that object, so the harness refuses to emit an unqualified PASS; the finite evidence is consistent with the clause but cannot certify it.</p>
+    <div class="tablewrap"><table class="matrix" id="zoo-matrix"></table></div>
+    <div class="detail" id="zoo-detail">Select a cell.</div>
+    <h3>Which variant kills which object</h3>
+    <div class="tablewrap"><table class="matrix" id="zoo-kill"></table></div>
+    <p class="note" id="zoo-notes"></p>
+  </div></div>
+
+  <div class="step"><div class="letter">b</div><div class="body">
+    <h3>The prime comb and its diffraction</h3>
+    <p>The spectrum side of the explicit formula is the comb with mass <code>Lambda(n) / sqrt(n)</code> at <code>u = log n</code>, supported exactly on the prime powers. Summing its cosines gives a trigonometric polynomial in the height <code>t</code>; as more prime powers are included, it develops sharp dips at the zero ordinates. This is the picture Dyson had in mind, drawn from the bundled ordinates. The ordinates are a float model (mpmath <code>zetazero</code>), not the certified Arb ladder, and the sum is truncated at <code>n &lt;= N</code>.</p>
+    <div class="plotwrap">
+      <div class="controls">
+        <label>prime powers up to N <input type="range" id="comb-N" min="1" max="5" step="0.05" value="3"> <span class="mono" id="comb-N-val"></span></label>
+        <label>height window <input type="range" id="comb-T" min="30" max="400" step="10" value="120"> <span class="mono" id="comb-T-val"></span></label>
+      </div>
+      <canvas id="comb-canvas" width="1000" height="360"></canvas>
+      <div class="legend"><span><span class="sw" style="background:var(--cool)"></span>minus sum over n &lt;= N of Lambda(n) n^(-1/2) cos(t log n)</span><span><span class="sw" style="background:var(--accent)"></span>bundled zero ordinates (float model)</span></div>
+      <div class="readout" id="comb-readout"></div>
+    </div>
+    <div class="plotwrap">
+      <canvas id="stem-canvas" width="1000" height="220"></canvas>
+      <div class="legend"><span><span class="sw" style="background:var(--cool)"></span>the comb: mass Lambda(n)/sqrt(n) at u = log n, prime powers only</span></div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="letter">c</div><div class="body">
+    <h3>The negative control: Davenport-Heilbronn</h3>
+    <p>The Davenport-Heilbronn function satisfies a functional equation of zeta's type but has no Euler product, and it has zeros off the critical line. It is the object every live axiom variant must reject. The certified inventory (<code>zoo_data/dh_zeros.json</code>, argument-principle winding numbers in Arb interval arithmetic, not kernel) records every zero of the function up to height 300 together with its real part. The plot shows them beside zeta's bundled ordinates.</p>
+    <div class="plotwrap">
+      <canvas id="dh-canvas" width="1000" height="420"></canvas>
+      <div class="legend"><span><span class="sw" style="background:var(--cool)"></span>DH zero on the line</span><span><span class="sw" style="background:var(--refuted)"></span>DH zero off the line (with its mirror)</span><span><span class="sw" style="background:var(--faint)"></span>zeta ordinate (float model)</span></div>
+      <div class="readout" id="dh-readout"></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================================================================ -->
+<section class="panel" id="panel-wall" role="tabpanel" aria-labelledby="tab-wall">
+  <h2>The wall</h2>
+  <p>On 2026-09-21 the campaign put Weil's criterion in the kernel and then rewrote it in two real parameters, a centre <code>c</code> and a width <code>lam</code>. For the Gaussian-derivative test the zero side of the explicit formula is</p>
+  <pre>F(c, lam) = Re sum over zeros of m(rho) (gamma - c)^2 exp(-2 lam (gamma - c)^2),   gamma = (rho - 1/2)/i</pre>
+  <p>and node <code>MM_rh_iff_gaussian_positivity</code> says RH holds exactly when <code>F(c, lam) &gt;= 0</code> for every <code>c</code> and every <code>lam &gt; 0</code>. Under RH every term is a nonnegative real. The wall is the sign of one explicit function on a half-plane.</p>
+
+  <div class="step"><div class="letter">a</div><div class="body">
+    <h3>The map</h3>
+    <p>Three regions are certified today, and each is labelled with the node that certifies it. Everything else is the wall. Drawn on log axes.</p>
+    <ul>
+      <li><strong>Free, unconditional.</strong> Every centre, every width <code>lam &lt;= 3/2000</code> (node <code>MM_gaussian_positivity_small_lam_3e3</code>, a twelve-band layer cake with rational digamma floors; the earlier threshold was <code>10^-7</code>, node <code>MM_gaussian_positivity_small_lam</code>). Mechanism: the prime side is exponentially small in <code>1/lam</code>, the archimedean side is not. No zeros are involved.</li>
+      <li><strong>Free beyond the envelope.</strong> For every width, every centre with <code>|c| &gt;= envelopeCsharp(lam)</code> (node <code>MM_gaussian_positivity_envelope_sharp</code>). The envelope is <code>2 pi e^(primeAbs(lam) + 1/2)</code> plus small terms and grows doubly exponentially in <code>lam</code>; <code>primeAbs</code> is an explicit convergent series, evaluated here in floats.</li>
+      <li><strong>Ladder-certified, conditional.</strong> Node <code>MM_gaussian_positivity_of_window</code>: if every zero within distance <code>D</code> of <code>c</code> is on the line (the hypothesis <code>WindowOnLine c D</code>, which a finite ladder supplies as an Arb-conditional input, never as a theorem of this island), and <code>lam</code> is above an explicit threshold that is at least 1, then <code>F(c, lam) &gt;= 0</code>. The band drawn is schematic: its left edge is the floor <code>lam = 1</code>, not the true threshold, and its right edge is the ladder height you pick below.</li>
+    </ul>
+    <div class="plotwrap">
+      <div class="controls">
+        <label>ladder height T <select id="wall-T"></select></label>
+      </div>
+      <canvas id="wall-canvas" width="1000" height="460"></canvas>
+      <div class="legend"><span><span class="sw" style="background:var(--pass)"></span>unconditional (lam &lt;= 3/2000, and beyond the sharp envelope)</span><span><span class="sw" style="background:var(--cond)"></span>ladder band, conditional on WindowOnLine (schematic edges)</span><span><span class="sw" style="background:var(--fail)"></span>the residual: RH</span></div>
+      <div class="readout" id="wall-readout"></div>
+    </div>
+    <p class="note">The registry's proved height node is <code>RH_li_rungs_of_height_4000_sharp</code>, conditional on the tiled certificate's Arb band hypotheses. The wall-map memo cites a ladder height of 640000 but the registry holds no proved node at that height; the anduril ladder nodes are open. <code>3 x 10^12</code> is Platt-Trudgian (2021), literature only.</p>
+  </div></div>
+
+  <div class="step"><div class="letter">b</div><div class="body">
+    <h3>The Gaussian-derivative test, live</h3>
+    <p><code>F(c, lam)</code> computed in your browser from the bundled ordinates, all placed on the line (a float model of the RH side of the equivalence, truncated to the first 2000 zeros, so the picture is unreliable once <code>c</code> approaches the last bundled ordinate near 2515 or once <code>lam</code> is small enough for the tail to matter). Under RH the curve is never negative; the plot cannot show anything else because it assumes what it draws. Its purpose is to show the shape of the functional, not to test RH.</p>
+    <div class="plotwrap">
+      <div class="controls">
+        <label>lam <input type="range" id="F-lam" min="-3" max="0.7" step="0.01" value="-0.5"> <span class="mono" id="F-lam-val"></span></label>
+        <label>centre range <input type="range" id="F-c" min="20" max="2000" step="10" value="120"> <span class="mono" id="F-c-val"></span></label>
+        <label><input type="checkbox" id="F-inject"> inject a fictitious off-line zero at 1/2 + 0.2 + 40 i (illustration only)</label>
+      </div>
+      <canvas id="F-canvas" width="1000" height="360"></canvas>
+      <div class="readout" id="F-readout"></div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="letter">c</div><div class="body">
+    <h3>The Theta face and heat monotonicity</h3>
+    <p>The plain Gaussian face <code>Theta(c, lam) = Re sum m(rho) exp(-2 lam (gamma - c)^2)</code> is also equivalent to RH (node <code>MM_rh_iff_theta_positivity</code>) and, unlike <code>F</code>, is heat-monotone in the width: <code>Theta(., lam')</code> is a Gaussian convolution of <code>Theta(., lam)</code> for <code>lam' &lt; lam</code> (node <code>MM_theta_heat_monotone</code>), so positivity on the whole line at one width implies it at every smaller width. Move the slider: the smaller-width curve is always a smoothed, rescaled copy of the larger-width one. The free widths form an interval, and RH says that interval is all of <code>(0, infinity)</code>.</p>
+    <div class="plotwrap">
+      <div class="controls">
+        <label>lam <input type="range" id="th-lam" min="-2.5" max="0.5" step="0.01" value="-1"> <span class="mono" id="th-lam-val"></span></label>
+        <label>show also lam / 4 <input type="checkbox" id="th-half" checked></label>
+      </div>
+      <canvas id="th-canvas" width="1000" height="340"></canvas>
+      <div class="readout" id="th-readout"></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================================================================ -->
+<section class="panel" id="panel-li" role="tabpanel" aria-labelledby="tab-li">
+  <h2>Li face</h2>
+  <p>Li's criterion: RH holds exactly when every coefficient <code>lambda_N</code> of the Taylor expansion of <code>log xi(1/(1 - z))</code> at <code>z = 0</code> is nonnegative. The <code>li_positivity</code> island carries the upstream equivalence (Bulka's <code>LiCriterion</code>, pinned) and prices RH rung by rung. Each rung is a paired zero sum, and the Bombieri-Lagarias explicit formula (node <code>RH_bl_explicit_formula</code>, hypothesis-free) says what each rung is.</p>
+
+  <div class="step"><div class="letter">a</div><div class="body">
+    <h3>The coefficients</h3>
+    <p>Bars: <code>lambda_N</code> for <code>N = 1..Nmax</code>, computed in your browser as the paired zero sum over the bundled ordinates plus a smooth tail from the zero-counting density (a float model; the campaign's own numerics agree with a 3400-bit series to about 12 digits, see <code>research/li_face_numerics.md</code>). Highlights: rungs 0..4 (<code>N = 1..5</code>) are nonnegative in the kernel with no hypothesis at all (node <code>RH_li_rungs_lt_five</code>, from the low-height zero box). Rungs 0..19 carry a certified lower bound <code>hlo</code> that enters the kernel as a hypothesis (node <code>RH_li_rung_certificates</code>): Arb-conditional, shown as ticks.</p>
+    <div class="plotwrap">
+      <div class="controls">
+        <label>Nmax <input type="range" id="li-N" min="10" max="300" step="5" value="60"> <span class="mono" id="li-N-val"></span></label>
+        <label>scale <select id="li-scale"><option value="lin">linear</option><option value="sqrt">square root</option></select></label>
+      </div>
+      <canvas id="li-canvas" width="1000" height="360"></canvas>
+      <div class="legend"><span><span class="sw" style="background:var(--proved)"></span>N = 1..5: kernel, hypothesis-free</span><span><span class="sw" style="background:var(--cool)"></span>N = 6..20: Arb-conditional certified lower bound (tick)</span><span><span class="sw" style="background:var(--faint)"></span>N &gt; 20: float model only</span></div>
+      <div class="readout" id="li-readout"></div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="letter">b</div><div class="body">
+    <h3>The exchange rate: height buys rungs</h3>
+    <p>If every zero up to height <code>T</code> is on the line, then rung <code>n</code> is nonnegative for every <code>n + 1 &lt;= 3 pi T / 2</code> (node <code>RH_li_ladder_height</code>), sharpened to <code>n + 1 &lt;= 2 pi (T - 1/2)</code> (node <code>RH_li_ladder_height_sharp</code>). The rate is linear and explicit. The plot shows both lines with the heights that exist today. A verified height is finite; the tail of rungs is infinite; no finite prefix proves RH (node <code>RH_li_ladder_reduction</code> states exactly that).</p>
+    <div class="plotwrap">
+      <canvas id="rate-canvas" width="1000" height="360"></canvas>
+      <div class="legend"><span><span class="sw" style="background:var(--cool)"></span>n + 1 = 2 pi (T - 1/2), sharp</span><span><span class="sw" style="background:var(--faint)"></span>n + 1 = 3 pi T / 2, first form</span><span><span class="sw" style="background:var(--open)"></span>T = 4000 (proved node, Arb-conditional)</span><span><span class="sw" style="background:var(--draft)"></span>T = 3e12 (Platt-Trudgian, literature)</span></div>
+      <div class="readout" id="rate-readout"></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================================================================ -->
+<section class="panel" id="panel-reg" role="tabpanel" aria-labelledby="tab-reg">
+  <h2>The registry</h2>
+  <p>Four campaigns, one schema. A node is <strong>draft</strong> until a readback is recorded, <strong>open</strong> once it is, and <strong>proved</strong> or <strong>refuted</strong> only after the verify gate has matched its verbatim statement against a Lean artifact that carries no <code>sorry</code>, is compiled by a runnable CI step, and prints only the three standard axioms. Goal nodes are drafts by design. Every readback below is self-attested: it was recorded by the same session family that wrote the node.</p>
+  <div class="counts" id="reg-counts"></div>
+
+  <div class="step"><div class="letter">a</div><div class="body">
+    <h3>Dependency graph</h3>
+    <div class="plotwrap graphwrap">
+      <div class="controls">
+        <label>campaign <select id="graph-campaign"></select></label>
+        <label><input type="checkbox" id="graph-proved-only" checked> proved only</label>
+      </div>
+      <div id="graph-svg"></div>
+      <div class="legend"><span><span class="sw" style="background:var(--proved)"></span>proved</span><span><span class="sw" style="background:var(--open)"></span>open</span><span><span class="sw" style="background:var(--draft)"></span>draft</span><span><span class="sw" style="background:var(--refuted)"></span>refuted</span><span><span class="sw" style="background:var(--deprecated)"></span>deprecated</span><span>thick ring: goal node</span></div>
+      <div class="graphtip" id="graph-tip">Hover a node.</div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="letter">b</div><div class="body">
+    <h3>Nodes</h3>
+    <div class="controls">
+      <label>campaign <select id="cards-campaign"><option value="all">all</option></select></label>
+      <label><input type="checkbox" id="cards-proved-only" checked> proved only</label>
+      <label>search <input type="search" id="cards-search" placeholder="slug, title, artifact"></label>
+      <span id="cards-count"></span>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div></div>
+</section>
+
+<!-- ================================================================ -->
+<section class="panel" id="panel-known" role="tabpanel" aria-labelledby="tab-known">
+  <h2>What is known</h2>
+  <ul>
+    <li><strong>Weil's criterion, in the kernel, both ways.</strong> The MIRRORMERE goal statement (Weil positivity on Hermitian autocorrelations over the E8 test class) is equivalent to Mathlib's <code>RiemannHypothesis</code> (<code>MM_zeta_comb_membership_iff_rh</code>). Neither side is known to hold.</li>
+    <li><strong>The explicit formula, unconditional.</strong> Finite-height rectangle form with the Bragg comb on the prime side and no limit (<code>MM_bragg_bridge</code>); the limit form for smooth compactly supported tests, discharged from Anthropic's zeta-23-lean (<code>RH_limit_explicit_formula</code>); the Bombieri-Lagarias explicit formula on Li's class, hypothesis-free (<code>RH_bl_explicit_formula</code>).</li>
+    <li><strong>The wall in two parameters.</strong> RH is equivalent to Gaussian positivity above width <code>3/2000</code>; below that width positivity is a theorem with no zeros involved (<code>MM_wall_map</code>, <code>MM_gaussian_positivity_small_lam_3e3</code>). Beyond an explicit envelope in the centre, positivity is also a theorem (<code>MM_gaussian_positivity_envelope_sharp</code>). The Theta face is heat-monotone in the width (<code>MM_theta_heat_monotone</code>).</li>
+    <li><strong>Li rungs.</strong> Rungs 0..4 nonnegative with no hypothesis (<code>RH_li_rungs_lt_five</code>); rungs 0..19 nonnegative modulo an Arb enclosure hypothesis each; every rung up to <code>2 pi (T - 1/2)</code> nonnegative given zeros on the line up to height <code>T</code>, with <code>T = 4000</code> conditional on Arb band hypotheses.</li>
+    <li><strong>Zero-free regions.</strong> The de la Vallee Poussin region with an effective rate, the sharp zeta log bound, the elementary and polylog zero-free regions (rh campaign, granted 2026-09-11).</li>
+    <li><strong>Finite instruments of the quasicrystal program.</strong> Two-frequency rigidity, the Kurasov-Sarnak one-frequency construction, self-inversive polynomials versus the reality of Hardy's Z, the density of the prime-log spectrum and the resulting non-uniform-discreteness, the leakage dictionary (complete multiplicativity forces zero composite Bragg amplitude), the torus-section rung at <code>n = 2</code>, the Satake degree-two instrument that falsifies the multiplicative-twist clause on <code>L(s, Delta)</code>.</li>
+    <li><strong>The ladder track (ANDURIL).</strong> Six proved nodes on the verified-evaluator reflection track; the ladder heights themselves (<code>h280000</code>, <code>10^6</code>, <code>10^9</code>) are open, and their island had no working CI at the last closure audit.</li>
+    <li><strong>The Brualdi-Goldwasser campaign.</strong> Nine proved lemmas and one refuted capstone; the conjecture itself is a draft goal.</li>
+  </ul>
+  <div class="honesty">
+    <h3>What is not proved</h3>
+    <ul>
+      <li>The Riemann Hypothesis. <code>conjecture1_proved = False</code> in every campaign manifest and in this page.</li>
+      <li>The goal node of every campaign: <code>MM_zeta_comb_membership</code>, <code>RH_conjecture</code>, <code>AND_ladder_1e13</code>, <code>BG_conjecture1</code>. All four are drafts.</li>
+      <li>Anything that is Arb-conditional: the 20 Li rung certificates, the height-4000 composition, the ladder window hypothesis <code>WindowOnLine</code>, the DH inventory, every zoo verdict. A hypothesis discharged by interval arithmetic outside the kernel is not a kernel theorem.</li>
+      <li>Anything this page computes: every plot is a float model over a truncated list of ordinates that are themselves a float model.</li>
+      <li>Independence of any audit. Every readback recorded in the registry to date is self-attested.</li>
+      <li>Nodes marked "island-built-only" or "uncovered" below rest on Lean that no runnable CI step is known to compile; their status is what the TOML says, but the evidence behind it is weaker than a green build.</li>
+    </ul>
+  </div>
+  <h3>Further reading</h3>
+  <ul>
+    <li>Dyson, F. (2009). Birds and frogs. Notices of the AMS 56.</li>
+    <li>Kurasov, P. and Sarnak, P. (2020). Stable polynomials and crystalline measures. J. Math. Phys. 61.</li>
+    <li>Alon, Cohen and Vinzant (2024). Every real-rooted exponential polynomial is the restriction of a Lee-Yang polynomial.</li>
+    <li>Olevskii, A. and Ulanovskii, A. (2020). Fourier quasicrystals and Lagarias' problem.</li>
+    <li>Li, X.-J. (1997). The positivity of a sequence of numbers and the Riemann hypothesis. J. Number Theory 65.</li>
+    <li>Bombieri, E. and Lagarias, J. (1999). Complements to Li's criterion for the Riemann hypothesis. J. Number Theory 77. (Primary text not accessed by the campaign; recorded as unverified in the wall map.)</li>
+    <li>Platt, D. and Trudgian, T. (2021). The Riemann hypothesis is true up to 3 x 10^12. Bull. LMS.</li>
+    <li>Alpoge, L. and Furman (2026). zeta-23-lean, arXiv:2608.13637, the pinned upstream of the E8 explicit formula.</li>
+    <li>In the repository: <code>telperion/docs/QC_AXIOMS_DRAFT.md</code>, <code>QC_PROGRAM.md</code>, <code>QC_LITERATURE.md</code>, <code>ARITHMETIC_FQ_MEMBERSHIP_SPEC_2026-09-16.md</code>, <code>RH_ROUTES_ROADMAP_2026-09-16.md</code>, <code>WALL_MAP_2026-09-21.md</code>, <code>WALL_THETA_FACE_2026-09-21.md</code>.</li>
+  </ul>
+</section>
+
+<!-- ================================================================ -->
+<section class="panel" id="panel-compute" role="tabpanel" aria-labelledby="tab-compute">
+  <h2>Compute it yourself</h2>
+  <p>Everything on this page can be regenerated from the repository, and the claims behind it can be re-checked at three levels: the registry gate, the Lean kernel, and an independent second kernel.</p>
+
+  <h3>The registry gate</h3>
+  <p>The verify gate re-reads every campaign, matches each proved node's verbatim statement against its artifact, scans the artifact for incompleteness markers, and checks that a runnable CI step compiles the artifact's module. It is read-only.</p>
+  <pre>cd telperion
+python -m venv .venv &amp;&amp; .venv/bin/pip install -e . pyyaml
+.venv/bin/telperion mission status mirrormere
+.venv/bin/telperion mission verify mirrormere
+.venv/bin/telperion mission verify            # every campaign</pre>
+  <p class="note">Do not run <code>mission grant</code> or <code>mission audit</code> to reproduce this page; they mutate the registry. The page is built from the same loader the gate uses.</p>
+
+  <h3>Build an island</h3>
+  <p>Each example island is a self-contained Lake project with its own toolchain pin. The quasicrystal island and the rvm_bridge island are on v4.32.0; the li_positivity island is on v4.34.0-rc1. A full Mathlib build is required the first time.</p>
+  <pre>cd telperion/examples/rvm_bridge/lean
+lake exe cache get      # Mathlib oleans
+lake build              # every module in the lakefile's defaultTargets
+lake env lean AxiomGuardRvMBridge.lean   # prints #print axioms for each node theorem</pre>
+  <p>The axiom guard is what the phrase "3-axiom clean" means: each theorem prints exactly <code>[propext, Classical.choice, Quot.sound]</code>. A <code>sorryAx</code>, a smuggled <code>axiom</code>, or <code>native_decide</code>'s <code>Lean.ofReduceBool</code> fails the guard.</p>
+
+  <h3>The Comparator</h3>
+  <p>The Comparator (leanprover/comparator, from OpenAI's ten-proofs) exports a challenge module and a solution module with <code>lean4export</code> and asserts statement identity, an axiom whitelist, and a kernel replay in a second kernel (nanoda). The repository wires it as a CI job for the R3Cert proofs and for the emitter examples; <code>telperion/docs/COMPARATOR.md</code> is the reference.</p>
+
+  <h3>The zoo</h3>
+  <pre>cd telperion
+.venv/bin/pip install python-flint mpmath
+.venv/bin/python examples/quasicrystal/zoo.py      # rewrites zoo_data/zoo_verdicts.json</pre>
+  <p class="note">The zoo consumes the certified Arb ladder (python-flint). Without flint the harness cannot run; this page was built without it and therefore uses the mpmath ordinate table for its pictures.</p>
+
+  <h3>This page</h3>
+  <pre>cd telperion
+.venv/bin/python explorer/build.py           # rewrites explorer/data/*.json and docs/explorer/index.html
+.venv/bin/python explorer/build.py --check   # exit 1 if the committed page is stale
+.venv/bin/python -m pytest tests/test_explorer_build.py -q</pre>
+
+  <h3>The plots, in a few lines</h3>
+  <pre>import mpmath as mp
+mp.mp.dps = 30
+gam = [mp.im(mp.zetazero(k)) for k in range(1, 201)]        # ordinates (float model)
+def F(c, lam):                                              # the Gaussian-derivative face
+    return sum(2 * (g - c)**2 * mp.e**(-2 * lam * (g - c)**2) for g in gam)
+def li(N):                                                  # paired zero sum, no tail
+    return sum(2 * (1 - mp.cos(N * 2 * mp.atan(1 / (2 * g)))) for g in gam)</pre>
+</section>
+
+<footer class="bottom">
+  <p><strong>Telperion Registry Explorer.</strong> Built from the missions registry of <a href="https://github.com/DrMurphyIsIn/Arda">github.com/DrMurphyIsIn/Arda</a> by <code>telperion/explorer/build.py</code>. Statuses are the registry's; plots are float models over bundled data; <code>conjecture1_proved = False</code>.</p>
+  <p>Presentation modelled on the <a href="https://alozanoroble.github.io/riemann-hypothesis-explorer/">Riemann Hypothesis Explorer</a> by Alvaro Lozano-Robledo (University of Connecticut), shared under CC BY 4.0. The tabbed layout, the lettered steps, the "What is known" and "Compute it yourself" sections and the live-in-browser approach follow that page; no code was copied from it. This page's own code is under the repository's licence (see <code>LICENSING.md</code>): the mathematics Apache-2.0, the Telperion engine BSL 1.1.</p>
+  <p>Upstream inputs: Anthropic's zeta-23-lean (Alpoge-Furman, Apache-2.0) for the explicit formula; Bulka's li-criterion-rh-equivalence-lean for Li's criterion; Mathlib. Zero ordinates from mpmath; the DH inventory and the zoo verdicts from Arb via python-flint.</p>
+</footer>
+
+</div>
+<script id="registry-data" type="application/json">/*__REGISTRY__*/</script>
+<script id="plot-data" type="application/json">/*__PLOTS__*/</script>
+<script>
+/*__JS__*/
+</script>
+</body>
+</html>
