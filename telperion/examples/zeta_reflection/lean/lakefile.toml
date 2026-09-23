@@ -1,5 +1,9 @@
 name = "ZetaReflectionSpike"
-defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD"]
+# The six proved ANDURIL node artifacts are default targets (closure audit C2, 2026-09-22):
+# a bare `lake build` compiles every one of them, and the coverage checker
+# (telperion/src/telperion/missions/coverage.py) can see that it does.
+defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD",
+                  "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet"]
 
 # Same Mathlib pin as the sibling zeta_zero_localization island (v4.32.0), so the
 # path require below shares the on-disk Mathlib build cache -- `lake exe cache get`
@@ -9,13 +13,19 @@ name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.32.0"
 
-# WS-A statement-level de-risk: import DiffractionCore from the sibling island for the
-# `argChangeVert_eq_im_log_sub` bridge elaboration check.  Mirrors (in reverse) the way
-# zeta_zero_localization's lakefile requires ZeroFreeBridge by relative path.  Same
-# Mathlib rev, so the cache is shared.
+# The sibling island supplies XiLineZeros, DiffractionCore and TuringBand (imported by
+# CheckBand, StirlingBinet, SignChain, LogBranches, ZeroSignDecomp_t14, ...).  Same Mathlib
+# rev, so the cache is shared.
+#
+# This requires the SLIM `zzl_core` sub-project (16 height-independent libs, srcDir = "..",
+# so the very same source files), NOT the zeta_zero_localization monolith lakefile.  The
+# monolith declares ~27k `lean_lib`s and Lake v4.32 builds LEAN_SRC_PATH from every one of
+# them without deduplication (~2.2 MB), so `lake env` / `lake lean` could not even spawn
+# `lean` ("could not execute external process", E2BIG) -- which is why the axiom guards of
+# the six proved anduril nodes never ran in CI (closure audit C2, 2026-09-22).
 [[require]]
-name = "LambdaLineReal"
-path = "../../zeta_zero_localization/lean"
+name = "zzl_core"
+path = "../../zeta_zero_localization/lean/zzl_core"
 
 [[lean_lib]]
 name = "Spike_DIntvMini"
@@ -225,3 +235,30 @@ roots = ["ForgeFirstZeroKernel"]
 [[lean_lib]]
 name = "ForgePhi14Terms"
 roots = ["ForgePhi14Terms"]
+
+# ---------------------------------------------------------------------------------------------
+# Kernel-axiom guards of the six proved ANDURIL node artifacts (closure audit C2, 2026-09-22).
+# Declared as libs so `lake build <guard>` builds the artifact closure AND elaborates the guard
+# (a guard that stops elaborating fails the build); the axiom SET is then asserted from
+# `lake env lean <guard>.lean` output by .github/workflows/telperion-zeta-reflection.yml.
+# NOT default targets: building them only prints `#print axioms` lines.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "AxiomGuardA4"
+roots = ["AxiomGuardA4"]
+
+[[lean_lib]]
+name = "AxiomGuardEMTail"
+roots = ["AxiomGuardEMTail"]
+
+[[lean_lib]]
+name = "AxiomGuardEMZetaComplex"
+roots = ["AxiomGuardEMZetaComplex"]
+
+[[lean_lib]]
+name = "AxiomGuardFirstZeroKernel"
+roots = ["AxiomGuardFirstZeroKernel"]
+
+[[lean_lib]]
+name = "AxiomGuardStirling"
+roots = ["AxiomGuardStirling"]

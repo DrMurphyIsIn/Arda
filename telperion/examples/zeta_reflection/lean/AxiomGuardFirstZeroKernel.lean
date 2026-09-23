@@ -1,6 +1,6 @@
 /-  AxiomGuardFirstZeroKernel.lean -- ANDÚRIL final kernel-axiom guard.
 
-    NOT a `lean_lib`; run via the toolchain lean with a hand-built LEAN_PATH.  Expected:
+    A `lean_lib` (CI: telperion-zeta-reflection.yml builds it, then runs `lake env lean` on it).  Expected:
     {propext, Classical.choice, Quot.sound} -- no sorryAx, no ofReduceBool.
 
     `first_zero_kernel` is the argument-free, hypothesis-free theorem that a nontrivial zero of

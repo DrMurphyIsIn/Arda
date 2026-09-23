@@ -1,6 +1,6 @@
 /-  AxiomGuardA4.lean -- ANDÚRIL A4 / G2 kernel-axiom guard.
 
-    NOT a `lean_lib`; run explicitly with
+    A `lean_lib`; CI (telperion-zeta-reflection.yml) builds it, then runs
 
         lake env lean AxiomGuardA4.lean
 
