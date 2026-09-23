@@ -192,6 +192,19 @@ Before `draft → open`, a node needs a recorded read-back: an independent
 natural-language rendering of what the formal statement actually says,
 stored in the node file (`readback.text/auditor/date`). The renderer must
 not be the statement's author (an independent session, or the operator).
+
+**Enforced since 2026-09-23** (`AUDIT_INDEPENDENCE_2026-09-23.md`): `mission add`
+records `[author] {identity, session, date}`; `mission audit` records the
+auditor as `{auditor_identity, auditor_session}` and REFUSES the author's
+session or identity, a read-back under 120 characters, or one that only
+repeats the title. A subagent spawned by the authoring session is the
+author. A read-back counts as independent only if (i) it comes from a
+different session AND a different identity, or (ii) the `missions-comparator`
+job (openai/ten-proofs Comparator, two kernels, statement taken from the
+registry) passed on the node and the run is recorded with
+`mission comparator-record`. Every read-back recorded before 2026-09-23 is
+labelled `independence = "unverified"`; `mission provenance-report` lists
+the proved nodes that neither (i) nor (ii) covers.
 Where both sides are Lean (statement vs. a source formalization), the
 comparator machinery does the matching mechanically; for
 statement-vs-paper the read-back is prose. This is the gate that catches
