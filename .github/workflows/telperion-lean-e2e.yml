@@ -2769,13 +2769,35 @@ jobs:
       # it as "the clause no longer rejects L(s,Delta)" -- a missing dependency read out
       # as a mathematical result.  That is the same shape as finding 8 of the missions
       # audit: a check counting evidence that does not exist.
-      - run: pip install sympy mpmath
+      # python-flint (2026-09-23): zoo.py's zeta row calls telperion.arb_platt.zeta_nzeros,
+      # which needs libflint's Platt machinery; without the wheel every main run since the
+      # job was added died with "libflint with Platt machinery not found". Pinned to the
+      # version the other Platt jobs in this workflow use.
+      - run: pip install sympy mpmath "python-flint==0.9.0"
+
+      # If the wheel on this runner does not expose the Platt entry points arb_platt needs,
+      # say so loudly and SKIP the zoo -- do not fail the Lean build below over Python
+      # packaging, and do not let a tooling gap read as a mathematical result.
+      - name: Platt machinery available? (gates the zoo; the Lean steps never depend on it)
+        id: platt
+        working-directory: telperion
+        shell: bash
+        run: |
+          set -uo pipefail
+          if PYTHONPATH=src python -c "from telperion import arb_platt as a; import sys; sys.exit(0 if a.PLATT_AVAILABLE else 1)"; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "Platt machinery found: $(PYTHONPATH=src python -c 'from telperion import arb_platt as a; print(a._LIB_PATH)')"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::python-flint on this runner does not expose libflint's Platt machinery (arb_platt.PLATT_AVAILABLE is False); the zoo falsification matrix is SKIPPED, not failed. The Lean build and axiom guard below still run."
+          fi
 
       # zoo.py had NO CI coverage before this job.  It runs the falsification
       # matrix, whose governance rails include the A1b assertions: Delta must look
       # like zeta/L(chi) on every non-arithmetic clause and be killed by the
       # arithmetic one alone.  It also exercises the anti-phantom tau refusal.
       - name: Falsification matrix (zoo) -- A1b governance rails must hold
+        if: steps.platt.outputs.available == 'true'
         working-directory: telperion/examples/quasicrystal
         shell: bash
         run: |
@@ -2798,6 +2820,7 @@ jobs:
             echo "::error::GOVERNANCE RAIL BROKEN"; exit 1; }
 
       - name: Anti-phantom refusal (a corrupted eta exponent must REFUSE, not report)
+        if: steps.platt.outputs.available == 'true'
         working-directory: telperion/examples/quasicrystal
         run: python antiphantom_probe.py
 

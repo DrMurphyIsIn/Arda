@@ -37,8 +37,13 @@ name: telperion-zeta-reflection
 
 on:
   pull_request:
+    # Widened 2026-09-23 from `telperion/examples/zeta_reflection/**` alone: a required check
+    # must run on every PR it could gate, and a PR that touches only the registry or another
+    # island would otherwise show this job as "expected" forever. Wide paths cost a build only
+    # when a PR touches telperion at all; making the job required is a branch-protection
+    # setting (owner decision), not changed here.
     paths:
-      - "telperion/examples/zeta_reflection/**"
+      - "telperion/**"
       - ".github/workflows/telperion-zeta-reflection.yml"
   workflow_dispatch:
   schedule:
