@@ -4,16 +4,16 @@ kind = "milestone"
 name = "AND.g2_reflected_band"
 statement_module = "Statements.AND_g2_reflected_band"
 status = "proved"
-title = "G2: THE FIRST REFLECTED BAND (ReflectedBand_t14) -- a band certificate proved by kernel decide through checkLine rather than emitted norm_num, consumed by the height chain interchangeably with T5 bands"
+title = "G2: THE FIRST REFLECTED BAND (ReflectedBand_t14) -- a band certificate proved by kernel decide through checkLine rather than emitted norm_num, consumed by the height chain interchangeably with T5 bands (pilot carries three Arb gLine-enclosure hypotheses hmem0/hmem1/hmem2; only `ok` is kernel-decided; closure_clean = false per the MM_bragg_defect_witness ruling)"
 updated = "2026-09-14"
 
 [proof]
 artifact = "../../examples/zeta_reflection/lean/ReflectedBand_t14.lean"
 artifact_kind = "lean_module"
-closure_clean = true
+closure_clean = false
 via = "direct"
 
 [readback]
 auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
 date = "2026-09-14"
-text = "The G2 pilot: for the concrete three-box band datum d (dyadic intervals with ~75-digit Int mantissas at heights 14, 15, 22), the sign chain is verified INSIDE the kernel -- theorem ok : checkLine d.boxes = true := by decide -- and theorem pilot derives, from the three Arb-supplied enclosure hypotheses (gLine at each grid height lies in its box), that there exist 2 strictly increasing heights in [14, 22] where the completed zeta function vanishes on the critical line. The first band certificate proved by computational reflection rather than emitted norm_num: the regime change the 10^13 charter rests on, live. [Verbatim extract of the proved ok + pilot (ReflectedBand_t14.lean); artifact on rh/million-turing, grant deferred to the branch reconcile.]"
+text = "The G2 pilot: for the concrete three-box band datum d (dyadic intervals with ~75-digit Int mantissas at heights 14, 15, 22), the sign chain is verified INSIDE the kernel -- theorem ok : checkLine d.boxes = true := by decide -- and theorem pilot derives, from the three Arb-supplied enclosure hypotheses (gLine at each grid height lies in its box), that there exist 2 strictly increasing heights in [14, 22] where the completed zeta function vanishes on the critical line. The first band certificate proved by computational reflection rather than emitted norm_num: the regime change the 10^13 charter rests on, live. [Verbatim extract of the proved ok + pilot (ReflectedBand_t14.lean); artifact on rh/million-turing, grant deferred to the branch reconcile.] [2026-09-23 closure-run audit] Kernel-verified locally: from-source rebuild of the 103-module import closure with the pinned v4.32.0 toolchain, AxiomGuard output [propext, Classical.choice, Quot.sound] (or [propext] only), hardened gate statement_matches True, no markers in the transitive closure. telperion-zeta-reflection.yml has never run and cannot pass as written, and it is not a required check; see telperion/docs/CLOSURE_RUN_2026-09-22.md section 2a. conjecture1_proved = False. [2026-09-23] closure_clean set false by hand: the pilot conclusion depends on the undischarged Arb enclosure hypotheses hmem0, hmem1, hmem2 (checked non-vacuous at mpmath dps 150/200); only the checkLine sign chain `ok` is decided in the kernel."

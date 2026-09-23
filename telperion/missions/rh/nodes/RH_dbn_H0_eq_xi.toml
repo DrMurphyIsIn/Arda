@@ -3,6 +3,17 @@ depends_on = []
 kind = "lemma"
 name = "RH.dbn_H0_eq_xi"
 statement_module = "Statements.RH_dbn_H0_eq_xi"
-status = "draft"
-title = "Route C / C2 representation theorem: H_0(z) = (1/8) xi(1/2 + iz/2) -- the heat-flow family at t = 0 is the Riemann xi function (Polymath15 eq. (3), Titchmarsh 10.1); STATED ONLY, not proved"
-updated = "2026-09-17"
+status = "proved"
+title = "Route C / C2 representation theorem: H_0(z) = (1/8) xi(1/2 + iz/2) for every complex z -- the heat-flow family at t = 0 is the Riemann xi function (Polymath15 eq. (3), Titchmarsh 10.1). PROVED on the dbn island (DBNXi, modules A-E), an identity between entire functions, not RH-equivalent"
+updated = "2026-09-22"
+
+[proof]
+artifact = "../../examples/dbn/lean/DBNXi.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditors A1+A2 (independent, session 2026-09-22 closure run)"
+date = "2026-09-22"
+text = "RH.dbn_H0_eq_xi says that for every complex z, DBN.H 0 z = (1/8) * LiCriterion.riemannXi(1/2 + i z/2).\n\nDBN.H 0 z is the Bochner integral over (0, infinity) of Phi(u) cos(zu), where Phi(u) = sum_{n>=1} (2 pi^2 n^4 e^{9u} - 3 pi n^2 e^{5u}) exp(-pi n^2 e^{4u}). At t = 0 the heat factor e^{t u^2} is 1. Phi decays super-exponentially, so the integrand is integrable for every complex z and the integral never falls back to its junk value 0.\n\nriemannXi is the upstream entire xi, (1/2) s (s-1) Lambda0(s) + 1/2, built on Mathlib's completedRiemannZeta0. Away from s = 0 and s = 1 this equals the textbook (1/2) s (s-1) pi^{-s/2} Gamma(s/2) zeta(s), and it takes the value 1/2 at s = 0 and s = 1.\n\nSo the statement is Riemann's classical representation H_0(z) = xi(1/2 + iz/2)/8 (Titchmarsh 10.1; Polymath15 eq. (3)) in the standard normalisation. It is an identity between two entire functions, is not RH-equivalent, and says nothing about where any zero lies. At z = i it gives H_0(i) = 1/16.\n\nThe artifact DBNXi.dbn_H0_eq_xi proves exactly this statement, and it depends only on [propext, Classical.choice, Quot.sound]. The proof has five steps:\n(A) Riemann's symmetric integral for Lambda0, obtained by splitting Mathlib's f_modif and inverting it through the theta functional equation.\n(B) The substitution x = e^{4u}, which gives Lambda0(1/2 + iz/2) = 8 times the integral of g cos(z.), with g(u) = e^u psi(e^{4u}).\n(C) The identities g'' - g = 8 Phi and g'(0) = -1/2.\n(D) Two integrations by parts, which give (z^2 + 1) times that integral = 1/2 - 8 H_0(z).\n(E) The algebra s(s-1) = -(z^2 + 1)/4.\nI re-derived each step by hand and found no errors. A 30-digit mpmath check at z = i, 2+i, 10-0.7i, 3.5+0.25i and 28.2694 agrees to better than 1e-27, with Lambda0 computed both from Mathlib's Mellin definition and from Gamma times zeta. conjecture1_proved = False.\n\nIndependent second read-back (A2): Registry node RH.dbn_H0_eq_xi asserts that for every complex z, DBN.H 0 z = (1/8) * LiCriterion.riemannXi (1/2 + i z / 2). Here DBN.H 0 z is the Bochner integral over (0, oo) of Phi(u) cos(zu), where Phi(u) = sum over n >= 1 of (2 pi^2 n^4 e^{9u} - 3 pi n^2 e^{5u}) exp(-pi n^2 e^{4u}). DBNDefs proves this integrand is integrable for every t and z, so the integral is not a junk value. riemannXi(s) = (1/2) s (s-1) completedRiemannZeta0(s) + 1/2. Because Mathlib gives Lambda = Lambda0 - 1/s - 1/(1-s), this equals the classical entire xi(s) = (1/2) s (s-1) pi^{-s/2} Gamma(s/2) zeta(s), with value 1/2 at s = 0. The statement is the classical Riemann / Titchmarsh 10.1 / Polymath15 eq. (3) representation H_0(z) = xi(1/2 + iz/2)/8. It is an identity between two entire functions, is not RH-equivalent, and says nothing about the location of any zero. The corollary at z = i is H_0(i) = 1/16. conjecture1_proved = False.\n\nTestimony: docs/AUDIT_TESTIMONY_RH_dbn_H0_eq_xi_2026-09-22_A1.md, _A2.md (both pass, axioms_clean, statement_byte_identical)."

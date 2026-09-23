@@ -13,10 +13,10 @@
 
     H_0(z) = (1/8) xi(1/2 + i z/2)        (registry node RH.dbn_H0_eq_xi),
 
-  which is NOT a theorem of this island (Mellin <-> Fourier via Jacobi theta, two integrations by
-  parts with dominated convergence; status draft, no artifact).  C2 enters every conditional
-  statement below as an explicit hypothesis `hC2`, and is also packaged once as the named Prop
-  obligation `DBN.H0EqXi` so the blocked input has one canonical name.
+  which is NOT proved in THIS module.  (It is proved on the island as `dbn_H0_eq_xi` in DBNXi.lean,
+  modules A-E of DESIGN_RH_dbn_H0_eq_xi_2026-09-22.md; this module does not import it.)  C2 enters
+  every conditional statement below as an explicit hypothesis `hC2`, and is also packaged once as
+  the named Prop obligation `DBN.H0EqXi` so the input has one canonical name.
 
   What IS proved here, axiom-clean (AxiomGuardDBN.lean):
     * the C4 change of variables z |-> 1/2 + i z/2: its real part, the fact that it carries
@@ -30,9 +30,8 @@
       statement of RH.dbn_rh_iff_H0_real_zeros verbatim.
 
   The registry theorem `dbn_rh_iff_H0_real_zeros` itself is deliberately NOT stated in this
-  module: its registry statement is unconditional, and it becomes the one-line specialisation
-  `dbn_rh_iff_H0_real_zeros_of_H0_eq_xi dbn_H0_eq_xi` on the day C2 is a theorem on this island.
-  Until then the node cannot be granted, and nothing here pretends otherwise.
+  module: its registry statement is unconditional.  It is stated in DBNRealZerosIffFinal.lean as
+  the one-line specialisation `dbn_rh_iff_H0_real_zeros_of_H0_eq_xi dbn_H0_eq_xi`.
 
   SCOPE.  The equivalence is a BRIDGE between two grammars of the same open conjecture: proving
   it proves NOTHING about RH in either direction, bounds nothing about the de Bruijn-Newman
@@ -43,8 +42,9 @@ import DBNDefs
 namespace DBN
 
 /-- The C2 representation theorem `H_0(z) = (1/8) xi(1/2 + i z/2)` (registry node
-`RH.dbn_H0_eq_xi`) as a named Prop obligation.  NOT proved on this island: it is the single
-blocked input that every conditional theorem below consumes.  conjecture1_proved = False. -/
+`RH.dbn_H0_eq_xi`) as a named Prop obligation: the single input that every conditional theorem
+below consumes.  Not proved in this module; it is discharged as `DBN.H0EqXi_holds` in
+DBNRealZerosIffFinal.lean (from `dbn_H0_eq_xi`, DBNXi.lean).  conjecture1_proved = False. -/
 def H0EqXi : Prop :=
   ∀ z : ℂ, DBN.H 0 z = (1 / 8 : ℂ) * LiCriterion.riemannXi (1 / 2 + Complex.I * z / 2)
 
@@ -107,7 +107,7 @@ end DBN
 /-- Route C / C4, CONDITIONAL on C2.  The conclusion is the registry statement of
 `RH.dbn_rh_iff_H0_real_zeros` verbatim; the hypothesis `hC2` is the registry statement of
 `RH.dbn_H0_eq_xi` (`dbn_H0_eq_xi`), so the unconditional registry theorem is the one-line
-specialisation `dbn_rh_iff_H0_real_zeros_of_H0_eq_xi dbn_H0_eq_xi` once C2 is an island theorem.
+specialisation `dbn_rh_iff_H0_real_zeros_of_H0_eq_xi dbn_H0_eq_xi` (DBNRealZerosIffFinal.lean).
 
 Forward: a zero `z` of `H_0` gives `xi(1/2 + i z/2) = 0`, hence a strip zero `ρ = 1/2 + i z/2`
 of `ζ`; strip-RH puts `Re ρ = 1/2`, i.e. `Im z = 0`.  Backward: a strip zero `ρ` of `ζ` is a
