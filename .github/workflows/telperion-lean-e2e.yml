@@ -2770,34 +2770,41 @@ jobs:
       # as a mathematical result.  That is the same shape as finding 8 of the missions
       # audit: a check counting evidence that does not exist.
       # python-flint (2026-09-23): zoo.py's zeta row calls telperion.arb_platt.zeta_nzeros,
-      # which needs libflint's Platt machinery; without the wheel every main run since the
-      # job was added died with "libflint with Platt machinery not found". Pinned to the
-      # version the other Platt jobs in this workflow use.
+      # which loads libflint's Platt entry points (acb_dirichlet_zeta_nzeros,
+      # acb_dirichlet_hardy_z_zeros, acb_dirichlet_platt_scaled_lambda_vec, ...) by ctypes.
+      # Without the wheel every main run since the job was added died with "libflint with
+      # Platt machinery not found". The manylinux wheel of 0.9.0 bundles FLINT 3
+      # (libflint.so.24) under python_flint.libs/, which arb_platt._find_libflint searches,
+      # and every symbol it needs is exported there. Same pin as the other Platt jobs here.
       - run: pip install sympy mpmath "python-flint==0.9.0"
 
-      # If the wheel on this runner does not expose the Platt entry points arb_platt needs,
-      # say so loudly and SKIP the zoo -- do not fail the Lean build below over Python
-      # packaging, and do not let a tooling gap read as a mathematical result.
-      - name: Platt machinery available? (gates the zoo; the Lean steps never depend on it)
-        id: platt
+      # The install must WORK: if arb_platt cannot find the Platt machinery, fail here with
+      # a tooling error rather than let the zoo crash and read as a mathematical result.
+      - name: Platt machinery present (arb_platt must load libflint's Platt entry points)
         working-directory: telperion
         shell: bash
         run: |
           set -uo pipefail
-          if PYTHONPATH=src python -c "from telperion import arb_platt as a; import sys; sys.exit(0 if a.PLATT_AVAILABLE else 1)"; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-            echo "Platt machinery found: $(PYTHONPATH=src python -c 'from telperion import arb_platt as a; print(a._LIB_PATH)')"
-          else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::python-flint on this runner does not expose libflint's Platt machinery (arb_platt.PLATT_AVAILABLE is False); the zoo falsification matrix is SKIPPED, not failed. The Lean build and axiom guard below still run."
-          fi
+          PYTHONPATH=src python - <<'PY'
+          import sys
+          from telperion import arb_platt as a
+          print("libflint:", a._LIB_PATH)
+          print("PLATT_AVAILABLE:", a.PLATT_AVAILABLE, "PLATT_GRID_AVAILABLE:", a.PLATT_GRID_AVAILABLE)
+          if not a.PLATT_AVAILABLE:
+              print("::error::python-flint is installed but arb_platt cannot load libflint's Platt "
+                    "machinery on this runner (TOOLING failure, not a mathematical one). Check the "
+                    "wheel's python_flint.libs/ and arb_platt._find_libflint.")
+              sys.exit(1)
+          lo, hi = a.zeta_nzeros(100, prec=128)
+          print("N(100) enclosure:", lo, hi)
+          assert lo == hi == 29, (lo, hi)
+          PY
 
       # zoo.py had NO CI coverage before this job.  It runs the falsification
       # matrix, whose governance rails include the A1b assertions: Delta must look
       # like zeta/L(chi) on every non-arithmetic clause and be killed by the
       # arithmetic one alone.  It also exercises the anti-phantom tau refusal.
       - name: Falsification matrix (zoo) -- A1b governance rails must hold
-        if: steps.platt.outputs.available == 'true'
         working-directory: telperion/examples/quasicrystal
         shell: bash
         run: |
@@ -2820,7 +2827,6 @@ jobs:
             echo "::error::GOVERNANCE RAIL BROKEN"; exit 1; }
 
       - name: Anti-phantom refusal (a corrupted eta exponent must REFUSE, not report)
-        if: steps.platt.outputs.available == 'true'
         working-directory: telperion/examples/quasicrystal
         run: python antiphantom_probe.py
 
