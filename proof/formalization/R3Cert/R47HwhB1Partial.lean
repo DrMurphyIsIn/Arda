@@ -35,7 +35,7 @@ theorem B1_nonneg_of_P01_zero (a b P10 P01 : ℝ) (ha : 2 ≤ a) (hP10 : 0 ≤ P
     This is a genuine sufficient condition for the open `B1` kernel, strictly broader than the `P01 = 0`
     slice: verified sound (g-dominance => B1 >= 0, 106/106) and non-vacuous (covers ~69% of defect-reducing
     lower-degree leaf moves; every defective tree tested has >= 1 g-dominant straightening move).  The open
-    kernel is now: does every non-backbone tree admit a g-DOMINANT defect-reducing move? -/
+    kernel is now: does every non-backbone tree have a g-DOMINANT defect-reducing move? -/
 theorem B1_nonneg_of_gdominance {ιq ιr : Type*} (Qs : Finset ιq) (Rs : Finset ιr)
     (gq : ιq → ℝ) (gr : ιr → ℝ) (M : ℝ) (hQne : Qs.Nonempty) (hRne : Rs.Nonempty)
     (hQ : ∀ q ∈ Qs, M ≤ gq q) (hR : ∀ r ∈ Rs, gr r ≤ M) :
