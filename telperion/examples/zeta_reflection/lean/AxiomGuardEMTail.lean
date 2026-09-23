@@ -1,6 +1,6 @@
 /-  AxiomGuardEMTail.lean -- A2 Theorem 1 TAIL-track kernel-axiom guard.
 
-    NOT a `lean_lib`; run explicitly with
+    A `lean_lib`; CI (telperion-zeta-reflection.yml) builds it, then runs
 
         lake env lean AxiomGuardEMTail.lean
 
