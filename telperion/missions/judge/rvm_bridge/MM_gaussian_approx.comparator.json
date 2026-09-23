@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_gaussian_approx",
+  "solution_module": "MissionChallenges.MM_gaussian_approx",
+  "theorem_names": [
+    "MissionJudge.MM_gaussian_approx"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

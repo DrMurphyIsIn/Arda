@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_gaussian_positivity_of_window",
+  "solution_module": "MissionChallenges.MM_gaussian_positivity_of_window",
+  "theorem_names": [
+    "MissionJudge.MM_gaussian_positivity_of_window"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

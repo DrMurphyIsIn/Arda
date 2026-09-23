@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_bl_explicit_formula_of_partial_fraction",
+  "solution_module": "MissionChallenges.RH_bl_explicit_formula_of_partial_fraction",
+  "theorem_names": [
+    "MissionJudge.RH_bl_explicit_formula_of_partial_fraction"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

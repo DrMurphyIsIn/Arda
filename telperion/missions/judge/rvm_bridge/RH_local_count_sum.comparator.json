@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_local_count_sum",
+  "solution_module": "MissionChallenges.RH_local_count_sum",
+  "theorem_names": [
+    "MissionJudge.RH_local_count_sum"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

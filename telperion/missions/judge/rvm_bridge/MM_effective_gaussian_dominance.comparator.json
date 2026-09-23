@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_effective_gaussian_dominance",
+  "solution_module": "MissionChallenges.MM_effective_gaussian_dominance",
+  "theorem_names": [
+    "MissionJudge.MM_effective_gaussian_dominance"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
