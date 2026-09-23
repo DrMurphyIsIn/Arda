@@ -36,10 +36,14 @@ proof term can use it, and the node stays DRAFT.
 | eq. (12), `|j_n(x)| <= x^n/(2n+1)!!` | `sphericalBessel` | `ZhuLegendre.lean` | **PROVED**: `sphericalBessel_abs_le` (:166), from `integral_one_sub_sq_pow` (:146); entry decay `legendreModeFT_abs_le` (:364) |
 | eq. (13) tail data `eps_D`, `eps_B` (Gershgorin / Schur sums on the tail of `M_R = beta* I + 2pp^T + C`) | `poleVec`, `combMatrix`, `reducedMat`, `LegendreLocalization L T# N epsD epsB` | `ZhuLegendre.lean` | **REDUCED, defined concretely, NOT proved.** The tail sums are Zhu Section 5.3's numerically evaluated constants (both `< 1e-100`). Stays the hypothesis `hloc`. |
 | Arb head floor `lambda_min(A) >= lam0` | `ReducedHeadFloor` | none | **UNTOUCHED, opaque by design** (`hhead`). |
-| parity (Lemma 6.1 / Cor. 6.3), odd sector | `OddSectorFloor`, `EvenSectorFloor` | `ZhuParity.lean` | **DEFINED**; only the trivial directions proved. Carried as the new hypothesis `hodd` (section 3). |
+| parity (Lemma 6.1 / Cor. 6.3) | `WindowFloor`, `OddSectorFloor`, `EvenSectorFloor` | `ZhuParity.lean` | **PROVED**: `windowFloor_of_sectors` (EvenSectorFloor and OddSectorFloor give WindowFloor for complex f), from `weilForm_eq_zero_of_odd` (the Weil functional vanishes on odd tests), `Q_add_I_mul`, `Q_evenPart_add_oddPart`. |
+| eq. (2), ODD sector (Lemma 6.1, pole sign reversed) | `SymbolRepresentationOdd L` | `ZhuSymbol.lean` | **PROVED**: `symbolRepresentationOdd` (the even/odd proofs share `symbol_representation_ofReal` with a sign `ε`, `ε² = 1`). |
+| eq. (6) odd modes `∫ P_{2k+1} sin(xu) = (-1)^k 2 j_{2k+1}(x)` and the odd-mode decay | `legendreModeFTs` | `ZhuLegendre.lean` | **PROVED**: `integral_legendreP_mul_sin`, `legendreModeFTs_eq`, `legendreModeFTs_abs_le`. |
+| eq. (13) tail data, ODD sector | `poleVecOdd` (sinh), `combMatrixOdd`, `reducedMatOdd` (`β* I - 2 s sᵀ + C`), `LegendreLocalizationOdd` | `ZhuLegendre.lean` | **REDUCED, defined concretely, NOT proved** (as the even sector). Hypothesis `hlocOdd`. |
+| Arb head floor, ODD block (eq. 14, `8.2065e-15` at L = 0.8) | `ReducedHeadFloorOdd` | none | **ADDED as a second OPAQUE seam** on the lead's instruction (2026-09-23), same docstring discipline as `ReducedHeadFloor`. Hypothesis `hheadOdd`. |
 
-Guard: `AxiomGuardRvMBridge.lean` prints axioms for 15 new anchors (3 envelope, 3 symbol, 5
-Legendre, 2 parity, 2 split); every one reports `[propext, Classical.choice, Quot.sound]`. Island `lake build`
+Guard: `AxiomGuardRvMBridge.lean` prints axioms for 24 new anchors (3 envelope, 4 symbol, 8
+Legendre, 5 parity, 2 split; the two trivial parity directions were replaced by the real theorems); every one reports `[propext, Classical.choice, Quot.sound]`. Island `lake build`
 8897 jobs green; no `sorry`, `admit`, `native_decide`, `axiom` or `opaque` in the new modules.
 
 ## 2. How each proof goes (and what it reuses)
@@ -120,16 +124,21 @@ provenance hash (old `8d0bdb0b971ec222`, new in the file header). What changed i
 * `hhead : ReducedHeadFloor L Tsharp lam0 N` kept, opaque, untouched;
 * ADDED `hT : 0 < Tsharp`: the opaque draft did not force the split height positive, and
   `betaStar` with `Tsharp < 0` is `log(|Tsharp|/2pi) + 1/|Tsharp| - A_L`, which can be positive;
-* ADDED `hodd : OddSectorFloor L (min lam0 (beta - epsD) - epsB)`: Theorem 1.1 and the certified
-  even-mode Legendre block cover REAL EVEN `f`; `WindowFloor` quantifies over complex `f`. Zhu's
-  Lemma 6.1 gives `Q(f) = Q(Re f_e) + Q(Im f_e) + Q(Re f_o) + Q(Im f_o)` (the even/odd cross term
-  is an odd function whose Weil form vanishes; the real/imaginary cross term is `Im(F_r F_i)`, odd
-  in `t`), so the complex-`f` floor is `min` of the two sector floors, and the ODD sector needs its
-  own block with the pole sign reversed (eq. 14: `8.2e-15` at `L = 0.8`). Without `hodd` the
-  statement would let an even-mode certificate speak for complex `f`. The decoupling itself
-  (`WindowFloor <- EvenSectorFloor /\ OddSectorFloor`) is NOT proved on this branch; only the
-  trivial converse directions are;
-* conclusion `WindowFloor L (min lam0 (beta - epsD) - epsB)` UNCHANGED; the proof is still `by sorry`.
+* the PARITY SECTORS (lead's refinement, same day). Theorem 1.1 and the certified even-mode
+  Legendre block cover REAL EVEN `f`; `WindowFloor` quantifies over complex `f`. Zhu Lemma 6.1 is
+  now PROVED (`windowFloor_of_sectors`, section 2.6), so both sectors enter the statement on the
+  same footing: the ODD sector gets its own concrete localization data `hlocOdd :
+  LegendreLocalizationOdd L Tsharp N epsDodd epsBodd` and its own OPAQUE Arb seam `hheadOdd :
+  ReducedHeadFloorOdd L Tsharp lam0odd N` (the certified odd-block Cholesky floor, eq. 14:
+  `8.2065e-15` at `L = 0.8`), modelled exactly like `ReducedHeadFloor`. An earlier version of this
+  branch carried the odd sector as an analytic hypothesis `OddSectorFloor`; the lead's ruling that
+  it is a NUMERIC seam of the same kind as the even one replaced it (the definition remains as
+  vocabulary);
+* conclusion: `WindowFloor L (min (min lam0 (beta - epsD) - epsB) (min lam0odd (beta - epsDodd)
+  - epsBodd))`, the min over the two sectors (Corollary 6.3). This is the one change to the
+  conclusion: for `lam0odd = lam0`, `epsDodd = epsD`, `epsBodd = epsB` it is literally the old
+  one, and for the certified numbers the even sector is the binding one. The proof is still
+  `by sorry`.
 
 In `RHDefs.lean` the three `opaque` declarations were replaced by the verbatim island definitions
 (`weilSymbol`, `SymbolRepresentation`, `EnvelopeBound`, `legendreP`, `sphericalBessel`,
@@ -148,6 +157,22 @@ definition could close the node for the wrong reason. The definitions here are t
 objects, two of them are proved, and the seam that actually carries the certified number is
 still opaque, so the node cannot close at all; the memo's concern is honoured, not overridden.
 
+### 2.6 Parity decoupling, Zhu Lemma 6.1 (`ZhuParity.lean`)
+
+One fact carries everything: `weilForm_eq_zero_of_odd`, the Weil functional `archSide - primeSide`
+vanishes on every ODD test function `k` (the two pole terms are `∫ k(u)(e^{-u/2} + e^{u/2}) du = 0`
+by oddness, `k(0) = 0`, the archimedean integrand `weilKernel k (1/2 + ir) Re psi(1/4 + ir/2)` is
+odd in `r` because the transform is odd and `Re psi` is even (`RvMBridge30.psiR_neg`), and each
+prime term is `k(log n) + k(-log n) = 0`). The autocorrelation is sesquilinear
+(`crossCorr_add_left/right`, `crossCorr_const_mul_left/right`), and in both decompositions the
+cross term is odd: for `f = a + i b` with `a, b` real, `C(b,a)(u) = C(a,b)(-u)`
+(`crossCorr_swap_of_real`) makes `i(C(b,a) - C(a,b))` odd; for `a = a_e + a_o`,
+`crossCorr_neg_of_parity` gives `C(a_e,a_o)(-u) = -C(a_e,a_o)(u)`. With `weilForm_add`
+(additivity on the test class; the prime side is a finitely supported `tsum`) this is
+`Q_add_I_mul` and `Q_evenPart_add_oddPart`. The L² mass splits by the parallelogram identity
+`‖(z+w)/2‖² + ‖(z-w)/2‖² = (‖z‖² + ‖w‖²)/2` and neg-invariance of Lebesgue measure. Assembly:
+`windowFloor_of_sectors : EvenSectorFloor L lam → OddSectorFloor L lam → WindowFloor L lam`.
+
 ### 2.5 The envelope step of eq. (4) (`ZhuSplit.lean`)
 
 `weilSymbol_ge_betaStar`: for `15/4 <= T# <= t`, `Psi_L(t) >= beta*(L, T#)`, from `envelopeBound`
@@ -159,17 +184,17 @@ coefficients, `cos <= 1`). This is the inequality Zhu's Section 4 applies on `[T
 1. The frequency split, eq. (4), assembled: from `SymbolRepresentation`, `weilSymbol_ge_betaStar`,
    evenness of `|F|^2 Psi_L` and the half-line Parseval `int_0^oo |F|^2 = pi ||f||^2`, plus
    `T# >= 15/4` from `beta* > 0` and `A_L >= 0`. Elementary.
-2. The Legendre-basis representation of `R`: orthonormality and completeness of the Legendre
-   modes in `L^2_even[-L, L]` (Rodrigues + integration by parts for orthogonality; Weierstrass
+2. The Legendre-basis representation of `R` in each sector: orthonormality and completeness of the
+   Legendre modes in `L^2_even[-L, L]` and `L^2_odd[-L, L]` (Rodrigues + integration by parts for orthogonality; Weierstrass
    density for completeness), `R(f) = c^T M_R c` for the coefficient sequence. Substantial; not in
    Mathlib.
 3. The two-block bound, eq. (13), on `l^2`: pure linear algebra (the 2026-09-22 memo's Option 2).
-4. Parity decoupling, Lemma 6.1, to reach complex `f` from `EvenSectorFloor` and `hodd`.
-5. Structurally: `hhead` is opaque, so no proof term can use it. The node stays DRAFT until a
+4. (Parity decoupling: DONE, section 2.6.)
+5. Structurally: `hhead` and `hheadOdd` are opaque, so no proof term can use them. The node stays DRAFT until a
    registry trust-seam policy exists; that is by design and unchanged.
 
 ## 5. Numbers that are NOT theorems
 
-`9e-18`, `8.9e-18`, `8.2e-15`, `1e-100`, `T# = 200`, `N = 200` appear in comments only. The kernel
+`9e-18`, `8.9e-18`, `8.2065e-15`, `1e-100`, `T# = 200`, `N = 200` appear in comments only. The kernel
 asserts none of them. Grants are frozen campaign-wide; no `mission grant` or `mission audit` was
 run and no node status was changed.

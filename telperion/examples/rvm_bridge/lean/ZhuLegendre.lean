@@ -107,6 +107,42 @@ def LegendreLocalization (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop :=
     ∑' k : ℕ, (if N ≤ k then |reducedMat L Tsharp k j| else 0) ≤ epsB) ∧
   (∀ k, N ≤ k → ∑ j ∈ Finset.range N, |reducedMat L Tsharp k j| ≤ epsB)
 
+/-- The sine transform `∫ T_n(x) sin(tx) dx`; for odd `n` the full transform is `i` times it, so
+    `|T̂_n(t)|² = (∫ T_n sin(tx))²`. -/
+noncomputable def legendreModeFTs (L : ℝ) (n : ℕ) (t : ℝ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.sin (t * x)
+
+/-- The odd-sector pole vector `s_n = ∫ T_n(x) sinh(x/2) dx` (so `F(i/2) = -Σ c_n s_n` for odd
+    `f = Σ c_n T_n`, and the pole term is `-2 (Σ c_n s_n)²`, Zhu Lemma 6.1). -/
+noncomputable def poleVecOdd (L : ℝ) (n : ℕ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.sinh (x / 2)
+
+/-- The C-matrix on odd modes: `C_{nm} = (1/π) ∫_0^{T#} (Ψ_L(t) - β*) T̂_n(t) T̂_m(t) dt` with
+    `|T̂_n| = |∫ T_n sin(t·)|`. -/
+noncomputable def combMatrixOdd (L Tsharp : ℝ) (n m : ℕ) : ℝ :=
+  (1 / Real.pi) * ∫ t in (0 : ℝ)..Tsharp,
+    (weilSymbol L t - betaStar L Tsharp) * (legendreModeFTs L n t * legendreModeFTs L m t)
+
+/-- Zhu's ODD-sector reduced matrix `β* I - 2 s sᵀ + C` on the odd modes `1, 3, 5, …`, indexed by
+    `k ↦ 2k + 1` (Section 6: the pole sign is reversed). -/
+noncomputable def reducedMatOdd (L Tsharp : ℝ) (k j : ℕ) : ℝ :=
+  (if k = j then betaStar L Tsharp else 0)
+    - 2 * poleVecOdd L (2 * k + 1) * poleVecOdd L (2 * j + 1)
+    + combMatrixOdd L Tsharp (2 * k + 1) (2 * j + 1)
+
+/-- The eq. (13) tail data of the ODD sector, the same shape as `LegendreLocalization` on
+    `reducedMatOdd` (Zhu Section 6: "the tail and coupling bounds of Section 4 are unchanged"). -/
+def LegendreLocalizationOdd (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop :=
+  (∀ k, N ≤ k →
+    Summable (fun j : ℕ => if N ≤ j then
+      |reducedMatOdd L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ∧
+    ∑' j : ℕ, (if N ≤ j then
+      |reducedMatOdd L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ≤ epsD) ∧
+  (∀ j, j < N →
+    Summable (fun k : ℕ => if N ≤ k then |reducedMatOdd L Tsharp k j| else 0) ∧
+    ∑' k : ℕ, (if N ≤ k then |reducedMatOdd L Tsharp k j| else 0) ≤ epsB) ∧
+  (∀ k, N ≤ k → ∑ j ∈ Finset.range N, |reducedMatOdd L Tsharp k j| ≤ epsB)
+
 end WeilWindow
 
 /-! ## B. The proofs. -/
@@ -365,6 +401,80 @@ theorem legendreModeFT_abs_le {L : ℝ} (hL : 0 < L) (k : ℕ) {t : ℝ} (ht : 0
     |legendreModeFT L (2 * k) t|
       ≤ 2 * Real.sqrt (L * ((2 * k : ℕ) + 1 / 2)) * ((t * L) ^ (2 * k) / ((2 * (2 * k) + 1)‼ : ℕ)) := by
   rw [legendreModeFT_eq hL, abs_mul, abs_mul, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul,
+    abs_of_pos (by norm_num : (0 : ℝ) < 2), abs_of_nonneg (Real.sqrt_nonneg _)]
+  exact mul_le_mul_of_nonneg_left (sphericalBessel_abs_le _ (by positivity)) (by positivity)
+
+/-! ### B.8 The ODD modes: `∫_{-1}^1 P_{2k+1}(u) sin(xu) du = (-1)^k · 2 · j_{2k+1}(x)`. -/
+
+theorem integral_legendreP_mul_sin (k : ℕ) (x : ℝ) :
+    ∫ u in (-1 : ℝ)..1, Polynomial.eval u (legendreP (2 * k + 1)) * Real.sin (x * u)
+      = (-1) ^ k * 2 * sphericalBessel (2 * k + 1) x := by
+  unfold legendreP sphericalBessel
+  have hsin : ∀ t : ℝ, HasDerivAt (fun t => Real.sin (x * t)) (x * Real.cos (x * t)) t := by
+    intro t
+    refine (((hasDerivAt_id t).const_mul x).sin).congr_deriv ?_
+    simp only [id]
+    ring
+  have e : (fun u : ℝ => Polynomial.eval u (Polynomial.C (1 / (2 ^ (2 * k + 1) * ((2 * k + 1).factorial : ℝ)))
+      * Polynomial.derivative^[2 * k + 1] ((Polynomial.X ^ 2 - 1) ^ (2 * k + 1))) * Real.sin (x * u))
+      = fun u => (1 / (2 ^ (2 * k + 1) * ((2 * k + 1).factorial : ℝ)))
+        * (Polynomial.eval u (Polynomial.derivative^[2 * k + 1] ((Polynomial.X ^ 2 - 1) ^ (2 * k + 1)))
+          * Real.sin (x * u)) := by
+    funext u
+    rw [Polynomial.eval_mul, Polynomial.eval_C]
+    ring
+  rw [e, intervalIntegral.integral_const_mul, ibp_step (n := 2 * k + 1) (j := 2 * k) le_rfl hsin (by fun_prop)]
+  have e1 : ∫ t in (-1 : ℝ)..1, Polynomial.eval t (Polynomial.derivative^[2 * k] ((Polynomial.X ^ 2 - 1) ^ (2 * k + 1)))
+      * (x * Real.cos (x * t))
+      = x * ∫ t in (-1 : ℝ)..1, Polynomial.eval t (Polynomial.derivative^[2 * k] ((Polynomial.X ^ 2 - 1) ^ (2 * k + 1)))
+      * Real.cos (x * t) := by
+    rw [← intervalIntegral.integral_const_mul]
+    congr 1
+    funext t
+    ring
+  rw [e1, ibp_even (2 * k + 1) x k (by omega)]
+  have e2 : (fun t : ℝ => Polynomial.eval t ((Polynomial.X ^ 2 - 1) ^ (2 * k + 1)) * Real.cos (x * t))
+      = fun t => -((1 - t ^ 2) ^ (2 * k + 1) * Real.cos (x * t)) := by
+    funext t
+    simp only [Polynomial.eval_pow, Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_one]
+    rw [show t ^ 2 - 1 = -(1 - t ^ 2) by ring, Odd.neg_pow ⟨k, by ring⟩]
+    ring
+  rw [e2, intervalIntegral.integral_neg]
+  have e3 : (-(x ^ 2)) ^ k = (-1) ^ k * x ^ (2 * k) := by
+    rw [neg_eq_neg_one_mul, mul_pow, pow_mul]
+  rw [e3]
+  field_simp
+  ring
+
+theorem legendreModeFTs_eq {L : ℝ} (hL : 0 < L) (k : ℕ) (t : ℝ) :
+    legendreModeFTs L (2 * k + 1) t
+      = (-1) ^ k * 2 * Real.sqrt (L * ((2 * k + 1 : ℕ) + 1 / 2)) * sphericalBessel (2 * k + 1) (t * L) := by
+  unfold legendreModeFTs
+  have e1 : ∫ x in (-L)..L, legendreMode L (2 * k + 1) x * Real.sin (t * x)
+      = ∫ x in (-L)..L, Real.sqrt (((2 * k + 1 : ℕ) + 1 / 2) / L)
+          * ((fun u : ℝ => Polynomial.eval u (legendreP (2 * k + 1)) * Real.sin (t * L * u)) (x / L)) := by
+    refine intervalIntegral.integral_congr fun x hx => ?_
+    rw [Set.uIcc_of_le (by linarith)] at hx
+    simp only [legendreMode]
+    rw [if_pos (abs_le.mpr ⟨hx.1, hx.2⟩)]
+    have : t * L * (x / L) = t * x := by field_simp
+    rw [this]
+    ring
+  have e2 := intervalIntegral.integral_comp_div (a := -L) (b := L)
+    (fun u : ℝ => Polynomial.eval u (legendreP (2 * k + 1)) * Real.sin (t * L * u)) hL.ne'
+  rw [e1, intervalIntegral.integral_const_mul, e2, neg_div, div_self hL.ne',
+    integral_legendreP_mul_sin, smul_eq_mul]
+  have hsq := sqrt_div_mul_self hL (a := ((2 * k + 1 : ℕ) + 1 / 2)) (by positivity)
+  calc Real.sqrt (((2 * k + 1 : ℕ) + 1 / 2) / L) * (L * ((-1) ^ k * 2 * sphericalBessel (2 * k + 1) (t * L)))
+      = (Real.sqrt (((2 * k + 1 : ℕ) + 1 / 2) / L) * L) * ((-1) ^ k * 2 * sphericalBessel (2 * k + 1) (t * L)) := by
+        ring
+    _ = _ := by rw [hsq]; ring
+
+theorem legendreModeFTs_abs_le {L : ℝ} (hL : 0 < L) (k : ℕ) {t : ℝ} (ht : 0 ≤ t) :
+    |legendreModeFTs L (2 * k + 1) t|
+      ≤ 2 * Real.sqrt (L * ((2 * k + 1 : ℕ) + 1 / 2))
+        * ((t * L) ^ (2 * k + 1) / ((2 * (2 * k + 1) + 1)‼ : ℕ)) := by
+  rw [legendreModeFTs_eq hL, abs_mul, abs_mul, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul,
     abs_of_pos (by norm_num : (0 : ℝ) < 2), abs_of_nonneg (Real.sqrt_nonneg _)]
   exact mul_le_mul_of_nonneg_left (sphericalBessel_abs_le _ (by positivity)) (by positivity)
 

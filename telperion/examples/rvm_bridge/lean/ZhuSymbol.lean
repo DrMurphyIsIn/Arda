@@ -78,6 +78,17 @@ def SymbolRepresentation (L : ℝ) : Prop :=
         + (1 / (2 * Real.pi)) *
           ∫ t : ℝ, ‖WeilExplicit.weilKernel f (1 / 2 + (t : ℂ) * Complex.I)‖ ^ 2 * weilSymbol L t
 
+/-- Zhu eq. (2) in the ODD sector (Lemma 6.1): for real ODD smooth compactly supported `f`
+    supported in `[-L, L]`, `Q(f) = -2 F(i/2)² + (1/2π) ∫ |F(t)|² Ψ_L(t) dt`; the pole term
+    changes sign, the multiplier term is parity-blind. -/
+def SymbolRepresentationOdd (L : ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → (∀ x, (f x).im = 0) → (∀ x, f (-x) = -f x) →
+    tsupport f ⊆ Set.Icc (-L) L →
+    (WeilForm.weilForm (WeilForm.autocorr f)).re
+      = -2 * ‖WeilExplicit.weilKernel f 0‖ ^ 2
+        + (1 / (2 * Real.pi)) *
+          ∫ t : ℝ, ‖WeilExplicit.weilKernel f (1 / 2 + (t : ℂ) * Complex.I)‖ ^ 2 * weilSymbol L t
+
 end WeilWindow
 
 /-! ## C. The proof. -/
@@ -102,15 +113,37 @@ lemma autocorr_ofReal_eq (v : ℝ → ℝ) :
   push_cast
   ring
 
-/-- The autocorrelation of a real even function is even. -/
-lemma autocorr_neg_of_even {v : ℝ → ℝ} (hev : ∀ u, v (-u) = v u) (y : ℝ) :
+/-- The autocorrelation of a real function of definite parity (`v(-u) = ε v(u)`, `ε² = 1`) is
+even. -/
+lemma autocorr_neg_of_parity {v : ℝ → ℝ} {ε : ℝ} (hε : ε * ε = 1) (hpar : ∀ u, v (-u) = ε * v u)
+    (y : ℝ) :
     WeilExplicit.autocorr (fun u => (v u : ℂ)) (-y) = WeilExplicit.autocorr (fun u => (v u : ℂ)) y := by
+  have hεC : (ε : ℂ) * ε = 1 := by exact_mod_cast hε
   unfold WeilExplicit.autocorr
   conv_rhs => rw [← integral_neg_eq_self]
   congr 1
   funext x
   simp only
-  rw [hev x, sub_neg_eq_add, show -x - y = -(x + y) by ring, hev (x + y)]
+  rw [hpar x, sub_neg_eq_add, show -x - y = -(x + y) by ring, hpar (x + y), Complex.conj_ofReal,
+    Complex.conj_ofReal]
+  push_cast
+  linear_combination (-((v x : ℂ) * (v (x + y) : ℂ))) * hεC
+
+/-- The transform of a real function of definite parity: `h_v(-z) = ε h_v(z)`. -/
+lemma paperFT_neg_of_parity {v : ℝ → ℝ} {ε : ℝ} (hε : ε * ε = 1) (hpar : ∀ u, v (-u) = ε * v u)
+    (z : ℂ) :
+    paperFT (fun u => (v u : ℂ)) (-z) = (ε : ℂ) * paperFT (fun u => (v u : ℂ)) z := by
+  have hεC : (ε : ℂ) * ε = 1 := by exact_mod_cast hε
+  unfold paperFT
+  rw [← integral_const_mul]
+  conv_rhs => rw [← integral_neg_eq_self]
+  congr 1
+  funext u
+  simp only
+  rw [hpar u]
+  push_cast
+  rw [show Complex.I * z * -(u : ℂ) = Complex.I * -z * u by ring]
+  linear_combination (-((v u : ℂ) * Complex.exp (Complex.I * -z * u))) * hεC
 
 /-- Support: `f` supported in `[-L, L]` makes `autocorr f` vanish for `|y| ≥ 2L` (the boundary
 case is a single-point null set). -/
@@ -140,12 +173,13 @@ lemma autocorr_eq_zero_of_two_mul_le {v : ℝ → ℝ} {L : ℝ}
   · have : x = -L := le_antisymm (by linarith [h2.2]) h1.1
     simp [this]
 
-/-- The main computation, for `f = ofReal ∘ v`. -/
-theorem symbol_representation_ofReal {v : ℝ → ℝ} {L : ℝ}
-    (hf : IsWeilTest (fun u => (v u : ℂ))) (hev : ∀ u, v (-u) = v u)
+/-- The main computation, for `f = ofReal ∘ v` with `v(-u) = ε v(u)`, `ε² = 1` (`ε = 1` even,
+`ε = -1` odd): `Q(f) = 2 ε |F(i/2)|² + (1/2π) ∫ |F|² Ψ_L`. -/
+theorem symbol_representation_ofReal {v : ℝ → ℝ} {L ε : ℝ} (hε : ε * ε = 1)
+    (hf : IsWeilTest (fun u => (v u : ℂ))) (hev : ∀ u, v (-u) = ε * v u)
     (hsupp : tsupport (fun u => (v u : ℂ)) ⊆ Set.Icc (-L) L) :
     (WeilForm.weilForm (WeilForm.autocorr (fun u => (v u : ℂ)))).re
-      = 2 * ‖WeilExplicit.weilKernel (fun u => (v u : ℂ)) 0‖ ^ 2
+      = 2 * ε * ‖WeilExplicit.weilKernel (fun u => (v u : ℂ)) 0‖ ^ 2
         + (1 / (2 * Real.pi)) *
           ∫ t : ℝ, ‖WeilExplicit.weilKernel (fun u => (v u : ℂ)) (1 / 2 + (t : ℂ) * Complex.I)‖ ^ 2
             * WeilWindow.weilSymbol L t := by
@@ -170,14 +204,15 @@ theorem symbol_representation_ofReal {v : ℝ → ℝ} {L : ℝ}
     simp [Complex.conj_I, map_ofNat, neg_div]
   have hcI' : (starRingEnd ℂ) (-Complex.I / 2) = Complex.I / 2 := by
     simp [Complex.conj_I, map_ofNat, neg_div]
-  have hpole0 : weilKernel g 0 = ((‖weilKernel fC 0‖ ^ 2 : ℝ) : ℂ) := by
+  have hpole0 : weilKernel g 0 = ((ε * ‖weilKernel fC 0‖ ^ 2 : ℝ) : ℂ) := by
     rw [weilKernel_zero, hgdef, autocorr_eq_weilTest, EF.paperFT_weilTest hcont hcont hcs hcs, hcI,
-      hfC, Taper.paperFT_neg_of_even hev, Complex.mul_conj', weilKernel_zero]
+      hfC, paperFT_neg_of_parity hε hev, map_mul, Complex.conj_ofReal, mul_left_comm,
+      Complex.mul_conj', weilKernel_zero]
     push_cast
     ring
-  have hpole1 : weilKernel g 1 = ((‖weilKernel fC 0‖ ^ 2 : ℝ) : ℂ) := by
+  have hpole1 : weilKernel g 1 = ((ε * ‖weilKernel fC 0‖ ^ 2 : ℝ) : ℂ) := by
     rw [weilKernel_one, hgdef, autocorr_eq_weilTest, EF.paperFT_weilTest hcont hcont hcs hcs, hcI',
-      hfC, neg_div, Taper.paperFT_neg_of_even hev, Complex.mul_conj', weilKernel_zero]
+      hfC, neg_div, paperFT_neg_of_parity hε hev, mul_assoc, Complex.mul_conj', weilKernel_zero]
     push_cast
     ring
   /- g(0) = ‖f‖² and Plancherel -/
@@ -244,7 +279,7 @@ theorem symbol_representation_ofReal {v : ℝ → ℝ} {L : ℝ}
     fun n => Taper.integral_mul_cos_of_paperFT_eq hAc hAi hFint hFT (Real.log n)
   have hgeven : ∀ y, g (-y) = g y := fun y => by
     rw [hgdef]
-    exact autocorr_neg_of_even hev y
+    exact autocorr_neg_of_parity hε hev y
   have hgzero : ∀ y, 2 * L ≤ |y| → g y = 0 := fun y hy => by
     rw [hgdef]
     exact autocorr_eq_zero_of_two_mul_le hsupp hy
@@ -341,7 +376,7 @@ theorem symbol_representation_ofReal {v : ℝ → ℝ} {L : ℝ}
     ring
   /- assembly -/
   have hcomplex : archSide g - primeSide g
-      = ((2 * ‖weilKernel fC 0‖ ^ 2 + (1 / (2 * Real.pi)) *
+      = ((2 * ε * ‖weilKernel fC 0‖ ^ 2 + (1 / (2 * Real.pi)) *
           ∫ t : ℝ, F t * WeilWindow.weilSymbol L t : ℝ) : ℂ) := by
     unfold archSide
     rw [hpole0, hpole1, hg0, harch, hprime, hint, hplan]
@@ -354,10 +389,26 @@ theorem symbolRepresentation (L : ℝ) : WeilWindow.SymbolRepresentation L := by
   intro f hf hreal hev hsupp
   obtain ⟨v, rfl⟩ : ∃ v : ℝ → ℝ, f = fun u => (v u : ℂ) :=
     ⟨fun u => (f u).re, funext fun u => Complex.ext (by simp) (by simp [hreal u])⟩
-  have hev' : ∀ u, v (-u) = v u := fun u => by
+  have hev' : ∀ u, v (-u) = 1 * v u := fun u => by
     have h : ((v (-u) : ℝ) : ℂ) = (v u : ℝ) := hev u
+    rw [one_mul]
     exact_mod_cast h
-  exact symbol_representation_ofReal hf hev' hsupp
+  have := symbol_representation_ofReal (ε := 1) (by norm_num) hf hev' hsupp
+  rw [this]
+  ring
+
+/-- **Zhu eq. (2), ODD sector (Lemma 6.1), PROVED**: the registry's `SymbolRepresentationOdd L`. -/
+theorem symbolRepresentationOdd (L : ℝ) : WeilWindow.SymbolRepresentationOdd L := by
+  intro f hf hreal hodd hsupp
+  obtain ⟨v, rfl⟩ : ∃ v : ℝ → ℝ, f = fun u => (v u : ℂ) :=
+    ⟨fun u => (f u).re, funext fun u => Complex.ext (by simp) (by simp [hreal u])⟩
+  have hodd' : ∀ u, v (-u) = -1 * v u := fun u => by
+    have h : ((v (-u) : ℝ) : ℂ) = -(v u : ℝ) := hodd u
+    rw [neg_one_mul]
+    exact_mod_cast h
+  have := symbol_representation_ofReal (ε := -1) (by norm_num) hf hodd' hsupp
+  rw [this]
+  ring
 
 end RvMBridgeZhu
 

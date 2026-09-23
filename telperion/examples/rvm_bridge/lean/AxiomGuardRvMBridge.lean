@@ -1087,6 +1087,7 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridgeZhu.autocorr_eq_zero_of_two_mul_le
 #print axioms RvMBridgeZhu.symbol_representation_ofReal
 #print axioms RvMBridgeZhu.symbolRepresentation
+#print axioms RvMBridgeZhu.symbolRepresentationOdd
 
 -- ZhuLegendre (2026-09-23): Zhu eqs. (6) and (12), PROVED.  conjecture1_proved = False.
 #print axioms RvMBridgeZhu.integral_one_sub_sq_pow
@@ -1094,10 +1095,16 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridgeZhu.integral_legendreP_mul_cos
 #print axioms RvMBridgeZhu.legendreModeFT_eq
 #print axioms RvMBridgeZhu.legendreModeFT_abs_le
+#print axioms RvMBridgeZhu.integral_legendreP_mul_sin
+#print axioms RvMBridgeZhu.legendreModeFTs_eq
+#print axioms RvMBridgeZhu.legendreModeFTs_abs_le
 
--- ZhuParity (2026-09-23): sector-floor vocabulary, trivial directions.  conjecture1_proved = False.
-#print axioms RvMBridgeZhu.evenSectorFloor_of_windowFloor
-#print axioms RvMBridgeZhu.oddSectorFloor_of_windowFloor
+-- ZhuParity (2026-09-23): Zhu Lemma 6.1, parity decoupling, PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.weilForm_eq_zero_of_odd
+#print axioms RvMBridgeZhu.Q_add_of_cross_odd
+#print axioms RvMBridgeZhu.Q_add_I_mul
+#print axioms RvMBridgeZhu.Q_evenPart_add_oddPart
+#print axioms RvMBridgeZhu.windowFloor_of_sectors
 
 -- ZhuSplit (2026-09-23): the envelope step of eq. (4), PROVED.  conjecture1_proved = False.
 #print axioms RvMBridgeZhu.comb_le_combMass

@@ -319,9 +319,10 @@ name = "ZhuSymbol"
 [[lean_lib]]
 name = "ZhuLegendre"
 
-# Zhu parity (2026-09-23): the even/odd sector floors (Zhu Lemma 6.1 / Cor. 6.3 vocabulary) so the
-# re-specified rh window node carries the odd sector as an explicit hypothesis rather than letting
-# an even-mode certificate speak for complex f.  Definitions and the trivial directions only.
+# Zhu parity (2026-09-23): Zhu Lemma 6.1 PROVED -- the Weil functional vanishes on odd test
+# functions, hence Q(f) = Q(Re f) + Q(Im f) and Q(a) = Q(a_even) + Q(a_odd), and
+# windowFloor_of_sectors: the real even and real odd sector floors give the full (complex-f)
+# WindowFloor.  What lets the rh window node carry the odd sector as its own Arb seam.
 # conjecture1_proved = False.
 [[lean_lib]]
 name = "ZhuParity"

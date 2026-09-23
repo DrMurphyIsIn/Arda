@@ -311,9 +311,11 @@ open MeasureTheory Complex WeilExplicit WeilForm
 --     -> min(lam0, beta* - epsD) - epsB > 0                                -- norm_num
 -- Until 2026-09-23 the four analytic links were carried as OPAQUE predicates.  On 2026-09-23 the
 -- three analytic ones were RE-SPECIFIED as concrete definitions mirrored verbatim from the
--- rvm_bridge island (ZhuSymbol / ZhuEnvelope / ZhuLegendre / ZhuParity), where two are proved
--- outright and the third's analytic content is proved; the trust seam ReducedHeadFloor is
--- untouched and stays opaque, so a certified NUMBER still cannot masquerade as a proved THEOREM.
+-- rvm_bridge island (ZhuSymbol / ZhuEnvelope / ZhuLegendre / ZhuParity), for BOTH parity sectors
+-- (Zhu Lemma 6.1, proved: windowFloor_of_sectors), where the symbol representation and the
+-- envelope are proved outright and the localization's analytic content (eqs. 6, 12) is proved;
+-- the trust seams ReducedHeadFloor (even block) and ReducedHeadFloorOdd (odd block, added the
+-- same day) stay opaque, so a certified NUMBER still cannot masquerade as a proved THEOREM.
 --
 -- SCOPE.  `WindowFloor L lam` with `lam > 0` at a FIXED L is a finite fragment of RH.  The
 -- RH-equivalent clause is `WindowFloor L 0` for EVERY L (Weil 1952; Bombieri 2000 on
@@ -368,6 +370,17 @@ def SymbolRepresentation (L : ℝ) : Prop :=
     tsupport f ⊆ Set.Icc (-L) L →
     (WeilForm.weilForm (WeilForm.autocorr f)).re
       = 2 * ‖WeilExplicit.weilKernel f 0‖ ^ 2
+        + (1 / (2 * Real.pi)) *
+          ∫ t : ℝ, ‖WeilExplicit.weilKernel f (1 / 2 + (t : ℂ) * Complex.I)‖ ^ 2 * weilSymbol L t
+
+/-- Zhu eq. (2) in the ODD sector (Lemma 6.1): for real ODD smooth compactly supported `f`
+    supported in `[-L, L]`, `Q(f) = -2 F(i/2)² + (1/2π) ∫ |F(t)|² Ψ_L(t) dt`; the pole term
+    changes sign, the multiplier term is parity-blind. -/
+def SymbolRepresentationOdd (L : ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → (∀ x, (f x).im = 0) → (∀ x, f (-x) = -f x) →
+    tsupport f ⊆ Set.Icc (-L) L →
+    (WeilForm.weilForm (WeilForm.autocorr f)).re
+      = -2 * ‖WeilExplicit.weilKernel f 0‖ ^ 2
         + (1 / (2 * Real.pi)) *
           ∫ t : ℝ, ‖WeilExplicit.weilKernel f (1 / 2 + (t : ℂ) * Complex.I)‖ ^ 2 * weilSymbol L t
 
@@ -432,6 +445,42 @@ def LegendreLocalization (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop :=
     ∑' k : ℕ, (if N ≤ k then |reducedMat L Tsharp k j| else 0) ≤ epsB) ∧
   (∀ k, N ≤ k → ∑ j ∈ Finset.range N, |reducedMat L Tsharp k j| ≤ epsB)
 
+/-- The sine transform `∫ T_n(x) sin(tx) dx`; for odd `n` the full transform is `i` times it, so
+    `|T̂_n(t)|² = (∫ T_n sin(tx))²`. -/
+noncomputable def legendreModeFTs (L : ℝ) (n : ℕ) (t : ℝ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.sin (t * x)
+
+/-- The odd-sector pole vector `s_n = ∫ T_n(x) sinh(x/2) dx` (so `F(i/2) = -Σ c_n s_n` for odd
+    `f = Σ c_n T_n`, and the pole term is `-2 (Σ c_n s_n)²`, Zhu Lemma 6.1). -/
+noncomputable def poleVecOdd (L : ℝ) (n : ℕ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.sinh (x / 2)
+
+/-- The C-matrix on odd modes: `C_{nm} = (1/π) ∫_0^{T#} (Ψ_L(t) - β*) T̂_n(t) T̂_m(t) dt` with
+    `|T̂_n| = |∫ T_n sin(t·)|`. -/
+noncomputable def combMatrixOdd (L Tsharp : ℝ) (n m : ℕ) : ℝ :=
+  (1 / Real.pi) * ∫ t in (0 : ℝ)..Tsharp,
+    (weilSymbol L t - betaStar L Tsharp) * (legendreModeFTs L n t * legendreModeFTs L m t)
+
+/-- Zhu's ODD-sector reduced matrix `β* I - 2 s sᵀ + C` on the odd modes `1, 3, 5, …`, indexed by
+    `k ↦ 2k + 1` (Section 6: the pole sign is reversed). -/
+noncomputable def reducedMatOdd (L Tsharp : ℝ) (k j : ℕ) : ℝ :=
+  (if k = j then betaStar L Tsharp else 0)
+    - 2 * poleVecOdd L (2 * k + 1) * poleVecOdd L (2 * j + 1)
+    + combMatrixOdd L Tsharp (2 * k + 1) (2 * j + 1)
+
+/-- The eq. (13) tail data of the ODD sector, the same shape as `LegendreLocalization` on
+    `reducedMatOdd` (Zhu Section 6: "the tail and coupling bounds of Section 4 are unchanged"). -/
+def LegendreLocalizationOdd (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop :=
+  (∀ k, N ≤ k →
+    Summable (fun j : ℕ => if N ≤ j then
+      |reducedMatOdd L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ∧
+    ∑' j : ℕ, (if N ≤ j then
+      |reducedMatOdd L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ≤ epsD) ∧
+  (∀ j, j < N →
+    Summable (fun k : ℕ => if N ≤ k then |reducedMatOdd L Tsharp k j| else 0) ∧
+    ∑' k : ℕ, (if N ≤ k then |reducedMatOdd L Tsharp k j| else 0) ≤ epsB) ∧
+  (∀ k, N ≤ k → ∑ j ∈ Finset.range N, |reducedMatOdd L Tsharp k j| ≤ epsB)
+
 /-- The ODD-sector window floor (Zhu Section 6, eq. (14)): the Weil form of every real ODD smooth
     test function supported in `[-L, L]` is at least `lam ‖f‖₂²`.  Together with the real even
     sector this yields `WindowFloor L lam` for complex `f` (Zhu Lemma 6.1, Corollary 6.3). -/
@@ -451,6 +500,14 @@ def EvenSectorFloor (L lam : ℝ) : Prop :=
     residual at 50 digits (Zhu Lemma 5.2 and Section 5.4).  The kernel NEVER asserts it; it enters
     every statement as a hypothesis, exactly as the zero-localization ladder's enclosures do. -/
 opaque ReducedHeadFloor (L Tsharp lam0 : ℝ) (N : ℕ) : Prop
+
+/-- The ODD-sector ARB / MPMATH TRUST SEAM, OPAQUE (added 2026-09-23 on the lead's instruction):
+    the leading `N × N` ODD-mode Legendre block of Zhu's reduced form (`reducedMatOdd`, pole sign
+    reversed, Zhu Section 6.2) has least eigenvalue at least `lam0`.  In the certified run this is
+    the verified Cholesky residual at shift `8.2065e-15` (eq. 14).  A numeric seam of exactly the
+    same kind as `ReducedHeadFloor`: the kernel NEVER asserts it; it enters every statement as a
+    hypothesis, and the complex-`f` window floor is the min over both sectors (Corollary 6.3). -/
+opaque ReducedHeadFloorOdd (L Tsharp lam0 : ℝ) (N : ℕ) : Prop
 
 end WeilWindow
 
