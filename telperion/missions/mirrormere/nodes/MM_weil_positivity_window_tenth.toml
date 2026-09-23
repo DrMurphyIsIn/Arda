@@ -1,0 +1,14 @@
+created = "2026-09-23"
+depends_on = ["MM_zeta_comb_membership_iff_rh"]
+kind = "lemma"
+name = "MM.weil_positivity_window_tenth"
+statement_module = "Statements.MM_weil_positivity_window_tenth"
+status = "draft"
+title = "THE PRIME-FREE WINDOW AT L <= 1/10 ON THE GOAL NODE'S OWN TEST CLASS (rvm_bridge island, E6Bridge31-34, 2026-09-23): for every smooth compactly supported g with tsupport g in [-L, L], L <= 1/10, the Weil functional Re weilForm (autocorr g) is nonnegative, hypothesis-free. Stage 0: for 2L <= log 2 the prime side of autocorr g vanishes, so this is positivity of the archimedean side alone. Route (u-space): the digamma series paired with the Lorentzian pair e^{-b|u|} <-> 2b/(b^2+r^2) writes the archimedean integral as exponential-kernel Dirichlet forms (1/2) intint |g(v)-g(w)|^2 e^{-b|v-w|}, each bounded below from the support of g (outer mass 2e^{-bL}/b by AM-GM, kernel >= e^{-2bL} on the square), the pole terms by polarisation, eleven exponentials by (1-x/16)^16 <= e^{-x}; certified margin 0.134 ||g||^2. The r-space layer-cake route of E6Bridge31 gives L <= 1/14. The full window 2L <= log 2 is NOT proved: numerically its margin is 1.3e-3 (the floor of the zero sum sum_rho |ghat(gamma_rho)|^2 over window tests), and the literature theorem (Yoshida 1992, Connes-Consani 2021) is for the pole-free class ghat(i/2) = 0 (named Prop PrimeFreeWindowPositivityPoleFree). A statement about the archimedean functional on a region of the goal node's test class; involves no zeros; NOT a proof of anything about RH. conjecture1_proved = False."
+updated = "2026-09-23"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/E6Bridge34.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
