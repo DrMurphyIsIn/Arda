@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "ZhuEnvelope", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "ZhuEnvelope", "ZhuSymbol", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -299,6 +299,15 @@ name = "E6Bridge30"
 # conjecture1_proved = False.
 [[lean_lib]]
 name = "ZhuEnvelope"
+
+# Zhu symbol (2026-09-23): Zhu arXiv:2608.24827 eq. (2), the frequency-side symbol representation
+# Q(f) = 2 F(i/2)^2 + (1/2pi) int |F|^2 Psi_L of the E8 primes-side functional on autocorrelations
+# of real even tests supported in [-L, L], PROVED (transform factorisation, Fourier inversion at 0
+# and at log n, finite comb).  The registry's WeilWindow.SymbolRepresentation, made concrete, with
+# the Weil symbol WeilWindow.weilSymbol of eq. (3).  A rearrangement of a proved identity; nothing
+# about zeros.  conjecture1_proved = False.
+[[lean_lib]]
+name = "ZhuSymbol"
 
 [[lean_lib]]
 name = "W2cAssembly"

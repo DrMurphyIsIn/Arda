@@ -218,6 +218,7 @@ import E6Bridge28
 import E6Bridge29
 import E6Bridge30
 import ZhuEnvelope
+import ZhuSymbol
 import W2cAssembly
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
@@ -1078,3 +1079,8 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridgeZhu.psiR_ge_stirling
 #print axioms RvMBridgeZhu.psiR_ge_envelope
 #print axioms RvMBridgeZhu.envelopeBound
+
+-- ZhuSymbol (2026-09-23): Zhu eq. (2), the symbol representation, PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.autocorr_eq_zero_of_two_mul_le
+#print axioms RvMBridgeZhu.symbol_representation_ofReal
+#print axioms RvMBridgeZhu.symbolRepresentation
