@@ -105,9 +105,11 @@ FLOORS = [(0, -4.2315), (0.5, -2.1913), (0.6, -1.8138), (0.9, -1.0532), (1.4, -0
 
 
 def lean_bound(L):
-    """The E6Bridge31 lower bound of Q / ||g||^2 (pole terms >= -8 L e^L, layer cake)."""
+    """The E6Bridge31 lower bound of Q / ||g||^2: |ghat|^2 <= 2 L f(0), pole terms
+    >= -(e^{L/2} - e^{-L/2})^2 L f(0), 19-band layer cake."""
     band = sum((FLOORS[i][1] - FLOORS[i - 1][1]) * FLOORS[i][0] for i in range(1, len(FLOORS)))
-    return FLOORS[-1][1] - LOGPI - (4 * L / np.pi) * band - 8 * L * np.exp(L)
+    d = np.exp(L / 2) - np.exp(-L / 2)
+    return FLOORS[-1][1] - LOGPI - (2 * L / np.pi) * band - d ** 2 * L
 
 
 def crude_u_bound(L, N=2000):
@@ -134,6 +136,6 @@ if __name__ == "__main__":
               f"pole-free class={mineig_vanishing(A, M, Gp, Gm)[0]:+.6f}")
     ev, zs = zero_sum_of_minimiser(L0)
     print(f"at 2L = log 2: min eig {ev:.6f}; zero sum over first 200 zero pairs {zs:.6f}")
-    print("Lean bound threshold L =", brentq(lean_bound, 1e-4, 0.5), "value at 1/40:", lean_bound(1 / 40))
+    print("Lean bound threshold L =", brentq(lean_bound, 1e-4, 0.5), "value at 1/14:", lean_bound(1 / 14))
     print("crude-u threshold L =", brentq(crude_u_bound, 1e-4, 0.5))
     print("Dirichlet-u threshold L =", brentq(dirichlet_u_bound, 1e-4, 0.5))

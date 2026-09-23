@@ -1079,6 +1079,10 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridge31.weilForm_autocorr_eq_archSide
 #print axioms RvMBridge31.norm_autocorr_le
 #print axioms RvMBridge31.integral_hsq
+#print axioms RvMBridge31.sq_l1_le
+#print axioms RvMBridge31.hsq_le
+#print axioms RvMBridge31.re_poles_ge
+#print axioms RvMBridge31.re_poles_ge_of_le
 #print axioms RvMBridge31.integral_mul_psiR_ge_bands
 #print axioms RvMBridge31.re_archSide_autocorr_ge
 #print axioms RvMBridge31.weil_positivity_narrow_support_of_nonneg

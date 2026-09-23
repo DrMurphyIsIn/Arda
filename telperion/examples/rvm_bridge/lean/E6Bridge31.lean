@@ -12,15 +12,19 @@
       the boundary point log 2; Lambda(0) = Lambda(1) = 0.)
 
     Stage 1 (theorem weil_positivity_narrow_support), UNCONDITIONAL with explicit constants:
-      if tsupport g ⊆ Icc (-L) L and L <= 1/40 then 0 <= Re weilForm (autocorr g).
-      Archimedean dominance: with f = autocorr g and M = f(0) = ||g||_2^2,
-        |f(u)| <= M (AM-GM under the integral), supp f ⊆ [-2L, 2L], so
-        |h(r)| = |ĝ(r)|^2 <= 4 L M, the two pole terms are >= -8 L e^L M, ∫ |ĝ|^2 = 2 pi M (Fourier
-        inversion at the origin, E6Bridge4 inversion_zero), and a 19-band layer cake over the
-        E6Bridge30 floors of psiR(r) = Re psi(1/4 + i r/2) gives
-          (1/2pi) ∫ |ĝ|^2 psiR >= M [ 2.3499 - (4 L / pi) * 24.67252 ].
-      At L = 1/40 the total is >= M [2.3499 - 0.2052 - 0.7858 - log pi] >= 0.20 M >= 0.
-      (Numerics: the true threshold of this bound is L = 0.0300; the true threshold of the
+      if tsupport g ⊆ Icc (-L) L and L <= 1/14 then 0 <= Re weilForm (autocorr g).
+      Archimedean dominance: with f = autocorr g, M = f(0) = ||g||_2^2 and A = ||g||_1,
+        |ĝ(r)| <= A and A^2 <= 2 L M (AM-GM under the integral with a free parameter, i.e.
+        Cauchy-Schwarz against the indicator of [-L, L]), so h(r) = |ĝ(r)|^2 <= 2 L M;
+        ∫ |ĝ|^2 = 2 pi M (Fourier inversion at the origin, E6Bridge4 inversion_zero);
+        the two pole terms are ĝ(i/2) conj ĝ(-i/2) + its conjugate = 2 Re (ĝ(-i/2) conj ĝ(i/2))
+        >= -|ĝ(-i/2) - ĝ(i/2)|^2 / 2 (polarization), and ĝ(-i/2) - ĝ(i/2) = ∫ g (e^{u/2} - e^{-u/2})
+        is at most (e^{L/2} - e^{-L/2}) A, so the pole terms cost only (55/756)^2 L M at L <= 1/14
+        (an O(L^3) loss instead of the O(L) Cauchy-Schwarz loss);
+        a 19-band layer cake over the E6Bridge30 floors of psiR(r) = Re psi(1/4 + i r/2) gives
+          (1/2pi) ∫ |ĝ|^2 psiR >= M [ 2.3499 - (2 L / pi) * 24.67252 ].
+      At L = 1/14 the total is >= M [2.3499 - log pi - 1.1225 - 0.0004] >= 0.068 M >= 0.
+      (Numerics: the true threshold of this bound is L = 0.076; the true threshold of the
       statement itself is L ~ 0.36; see telperion/docs/PRIME_FREE_WINDOW_PLAN_2026-09-23.md.)
 
     Stage 2 (NOT proved; two named Props, no `sorry`):
@@ -151,52 +155,81 @@ lemma norm_autocorr_le {g : ℝ → ℂ} (hg : IsWeilTest g) (u : ℝ) :
         unfold mass
         ring
 
-/-! ## C. The transform bounds from the support. -/
+/-! ## C. The transform bounds: |ĝ| <= A = ||g||_1, A^2 <= 2 L M, and the pole terms. -/
 
-/-- The generic bound: if supp f ⊆ [-2L, 2L], |f| <= M and the exponential weight is <= c on the
-support, then |weilKernel f s| <= M c (4L). -/
-lemma norm_weilKernel_le_of_support {f : ℝ → ℂ} {L M c : ℝ} (hL : 0 ≤ L) (hM0 : 0 ≤ M)
-    (hts : tsupport f ⊆ Set.Icc (-(2 * L)) (2 * L)) (hM : ∀ u, ‖f u‖ ≤ M) (s : ℂ)
-    (hc : ∀ u ∈ Set.Icc (-(2 * L)) (2 * L), Real.exp ((s - 1 / 2).re * u) ≤ c) :
-    ‖weilKernel f s‖ ≤ M * c * (4 * L) := by
-  unfold weilKernel
-  have hind : Integrable ((Set.Icc (-(2 * L)) (2 * L)).indicator (fun _ : ℝ => M * c)) :=
+/-- A = ||g||_1. -/
+def l1 (g : ℝ → ℂ) : ℝ := ∫ u : ℝ, ‖g u‖
+
+lemma l1_nonneg (g : ℝ → ℂ) : 0 ≤ l1 g := integral_nonneg fun u => norm_nonneg _
+
+lemma integrable_norm {g : ℝ → ℂ} (hg : IsWeilTest g) : Integrable (fun u : ℝ => ‖g u‖) :=
+  (hg.1.continuous.integrable_of_hasCompactSupport hg.2).norm
+
+/-- AM-GM under the integral with a free parameter t > 0: A <= t M / 2 + L / t. -/
+lemma l1_le {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} (hL : 0 ≤ L)
+    (hsupp : tsupport g ⊆ Set.Icc (-L) L) {t : ℝ} (ht : 0 < t) :
+    l1 g ≤ t * mass g / 2 + L / t := by
+  unfold l1
+  have hi := integrable_normSq hg
+  have hi2 : Integrable (fun u : ℝ => t * ‖g u‖ ^ 2 / 2) := (hi.const_mul t).div_const 2
+  have hind : Integrable ((Set.Icc (-L) L).indicator (fun _ : ℝ => 1 / (2 * t))) :=
     (integrableOn_const (by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top)).integrable_indicator
       measurableSet_Icc
-  calc ‖∫ u : ℝ, f u * cexp ((s - 1 / 2) * (u : ℂ))‖
-      ≤ ∫ u : ℝ, (Set.Icc (-(2 * L)) (2 * L)).indicator (fun _ : ℝ => M * c) u := by
-        apply norm_integral_le_of_norm_le hind
-        filter_upwards with u
-        by_cases hu : u ∈ Set.Icc (-(2 * L)) (2 * L)
-        · rw [Set.indicator_of_mem hu, Complex.norm_mul, Complex.norm_exp]
-          have h1 := hM u
-          have h2 := hc u hu
-          rw [show ((s - 1 / 2) * (u : ℂ)).re = (s - 1 / 2).re * u by simp [Complex.mul_re]]
-          exact mul_le_mul h1 h2 (Real.exp_pos _).le hM0
-        · rw [Set.indicator_of_notMem hu,
-            image_eq_zero_of_notMem_tsupport (fun h => hu (hts h))]
+  calc ∫ u : ℝ, ‖g u‖
+      ≤ ∫ u : ℝ, (t * ‖g u‖ ^ 2 / 2 + (Set.Icc (-L) L).indicator (fun _ : ℝ => 1 / (2 * t)) u) := by
+        apply integral_mono (integrable_norm hg) (hi2.add hind)
+        intro u
+        show ‖g u‖ ≤ t * ‖g u‖ ^ 2 / 2 + (Set.Icc (-L) L).indicator (fun _ : ℝ => 1 / (2 * t)) u
+        by_cases hu : u ∈ Set.Icc (-L) L
+        · rw [Set.indicator_of_mem hu]
+          have h0 : 0 ≤ (t * ‖g u‖ - 1) ^ 2 / (2 * t) := by positivity
+          have e : (t * ‖g u‖ - 1) ^ 2 / (2 * t) = t * ‖g u‖ ^ 2 / 2 + 1 / (2 * t) - ‖g u‖ := by
+            field_simp
+            ring
+          linarith
+        · rw [Set.indicator_of_notMem hu, image_eq_zero_of_notMem_tsupport (fun h => hu (hsupp h))]
           simp
-    _ = M * c * (4 * L) := by
-        rw [integral_indicator_const _ measurableSet_Icc, Real.volume_real_Icc, smul_eq_mul]
-        rw [max_eq_left (by linarith)]
+    _ = t * mass g / 2 + L / t := by
+        rw [integral_add hi2 hind, integral_div, integral_const_mul,
+          integral_indicator_const _ measurableSet_Icc, Real.volume_real_Icc, smul_eq_mul,
+          max_eq_left (by linarith)]
+        unfold mass
+        field_simp
         ring
 
-/-- On the support [-2L, 2L], e^{-u/2} <= e^L. -/
-lemma exp_pole_zero_le {L : ℝ} (u : ℝ) (hu : u ∈ Set.Icc (-(2 * L)) (2 * L)) :
-    Real.exp (((0 : ℂ) - 1 / 2).re * u) ≤ Real.exp L := by
-  rw [show ((0 : ℂ) - 1 / 2).re = -1 / 2 by norm_num]
-  exact Real.exp_le_exp.mpr (by linarith [hu.1])
+/-- Cauchy-Schwarz against the indicator of [-L, L]: A^2 <= 2 L M. -/
+lemma sq_l1_le {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} (hL : 0 ≤ L)
+    (hsupp : tsupport g ⊆ Set.Icc (-L) L) : l1 g ^ 2 ≤ 2 * L * mass g := by
+  have hA0 := l1_nonneg g
+  have hM0 := mass_nonneg g
+  rcases eq_or_lt_of_le hA0 with hA | hA
+  · rw [← hA, sq, mul_zero]
+    positivity
+  rcases eq_or_lt_of_le hM0 with hM | hM
+  · -- M = 0: A <= L / t for every t > 0, so A <= L / (2L/A + 1), i.e. 2L + A <= L: absurd.
+    exfalso
+    have h := l1_le hg hL hsupp (t := 2 * L / l1 g + 1) (by positivity)
+    rw [← hM, mul_zero, zero_div, zero_add, le_div_iff₀ (by positivity)] at h
+    have e : l1 g * (2 * L / l1 g + 1) = 2 * L + l1 g := by
+      field_simp
+    rw [e] at h
+    linarith
+  · -- M > 0: t = A / M gives A <= A / 2 + L M / A, i.e. A^2 <= 2 L M.
+    have h := l1_le hg hL hsupp (t := l1 g / mass g) (div_pos hA hM)
+    have e : l1 g / mass g * mass g / 2 + L / (l1 g / mass g) = l1 g / 2 + L * mass g / l1 g := by
+      field_simp
+    rw [e] at h
+    have h2 : l1 g / 2 ≤ L * mass g / l1 g := by linarith
+    rw [div_le_div_iff₀ (by norm_num) hA] at h2
+    nlinarith
 
-/-- On the support [-2L, 2L], e^{u/2} <= e^L. -/
-lemma exp_pole_one_le {L : ℝ} (u : ℝ) (hu : u ∈ Set.Icc (-(2 * L)) (2 * L)) :
-    Real.exp (((1 : ℂ) - 1 / 2).re * u) ≤ Real.exp L := by
-  rw [show ((1 : ℂ) - 1 / 2).re = 1 / 2 by norm_num]
-  exact Real.exp_le_exp.mpr (by linarith [hu.2])
-
-/-- On the line the weight is 1. -/
-lemma exp_line_le {L : ℝ} (r u : ℝ) (_hu : u ∈ Set.Icc (-(2 * L)) (2 * L)) :
-    Real.exp (((1 / 2 : ℂ) + (r : ℂ) * I - 1 / 2).re * u) ≤ 1 := by
-  rw [show ((1 / 2 : ℂ) + (r : ℂ) * I - 1 / 2).re = 0 by simp]
+/-- |ĝ(z)| <= A for every real r (the phase has modulus one). -/
+lemma norm_paperFT_le_l1 (g : ℝ → ℂ) (r : ℝ) : ‖paperFT g r‖ ≤ l1 g := by
+  unfold paperFT l1
+  refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
+  congr 1
+  funext u
+  rw [Complex.norm_mul, Complex.norm_exp]
   simp
 
 /-- The square transform h(r) = |ĝ(r)|^2, as a real function. -/
@@ -212,27 +245,137 @@ lemma paperFT_autocorr_eq {g : ℝ → ℂ} (hg : IsWeilTest g) (r : ℝ) :
   push_cast
   ring
 
-/-- h(r) <= 4 L M. -/
+/-- h(r) <= 2 L M. -/
 lemma hsq_le {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} (hL : 0 ≤ L)
-    (hsupp : tsupport g ⊆ Set.Icc (-L) L) (r : ℝ) : hsq g r ≤ 4 * L * mass g := by
-  have h := norm_weilKernel_le_of_support hL (mass_nonneg g) (tsupport_autocorr_subset hsupp)
-    (norm_autocorr_le hg) (1 / 2 + (r : ℂ) * I) (exp_line_le r)
-  rw [RvMBridge4.weilKernel_line, paperFT_autocorr_eq hg, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_nonneg (hsq_nonneg g r)] at h
+    (hsupp : tsupport g ⊆ Set.Icc (-L) L) (r : ℝ) : hsq g r ≤ 2 * L * mass g := by
+  unfold hsq
+  have h1 := norm_paperFT_le_l1 g r
+  have h2 := sq_l1_le hg hL hsupp
+  have h0 := norm_nonneg (paperFT g r)
+  nlinarith
+
+/-- The two pole terms of the autocorrelation: W0 = ĝ(i/2) conj ĝ(-i/2). -/
+lemma weilKernel_autocorr_zero_eq {g : ℝ → ℂ} (hg : IsWeilTest g) :
+    weilKernel (autocorr g) 0 = paperFT g (I / 2) * (starRingEnd ℂ) (paperFT g (-I / 2)) := by
+  have hc := hg.1.continuous
+  rw [RvMBridge4.weilKernel_zero, RvMBridge5.autocorr_eq_weilTest,
+    Zeta23.EF.paperFT_weilTest hc hc hg.2 hg.2]
+  have : (starRingEnd ℂ) (I / 2) = -I / 2 := by
+    rw [map_div₀, Complex.conj_I, map_ofNat]
+  rw [this]
+
+/-- ... and W1 = ĝ(-i/2) conj ĝ(i/2). -/
+lemma weilKernel_autocorr_one_eq {g : ℝ → ℂ} (hg : IsWeilTest g) :
+    weilKernel (autocorr g) 1 = paperFT g (-I / 2) * (starRingEnd ℂ) (paperFT g (I / 2)) := by
+  have hc := hg.1.continuous
+  rw [RvMBridge4.weilKernel_one, RvMBridge5.autocorr_eq_weilTest,
+    Zeta23.EF.paperFT_weilTest hc hc hg.2 hg.2]
+  have : (starRingEnd ℂ) (-I / 2) = I / 2 := by
+    rw [map_div₀, map_neg, Complex.conj_I, map_ofNat]
+    ring
+  rw [this]
+
+/-- Polarization: Re (W0 + W1) = 2 Re (a conj b) >= -|a - b|^2 / 2, a = ĝ(-i/2), b = ĝ(i/2). -/
+lemma re_poles_ge {g : ℝ → ℂ} (hg : IsWeilTest g) :
+    -(Complex.normSq (paperFT g (-I / 2) - paperFT g (I / 2)) / 2)
+      ≤ (weilKernel (autocorr g) 0 + weilKernel (autocorr g) 1).re := by
+  rw [weilKernel_autocorr_zero_eq hg, weilKernel_autocorr_one_eq hg]
+  set a := paperFT g (-I / 2)
+  set b := paperFT g (I / 2)
+  have h1 : (b * (starRingEnd ℂ) a + a * (starRingEnd ℂ) b).re = 2 * (a * (starRingEnd ℂ) b).re := by
+    have : b * (starRingEnd ℂ) a = (starRingEnd ℂ) (a * (starRingEnd ℂ) b) := by
+      rw [map_mul, Complex.conj_conj, mul_comm]
+    rw [this, Complex.add_re, Complex.conj_re]
+    ring
+  rw [h1]
+  have h2 := Complex.normSq_add a b
+  have h3 := Complex.normSq_sub a b
+  have h4 := Complex.normSq_nonneg (a + b)
   linarith
 
-/-- The two pole terms are each bounded by 4 L e^L M. -/
-lemma norm_weilKernel_autocorr_zero_le {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} (hL : 0 ≤ L)
-    (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
-    ‖weilKernel (autocorr g) 0‖ ≤ mass g * Real.exp L * (4 * L) :=
-  norm_weilKernel_le_of_support hL (mass_nonneg g) (tsupport_autocorr_subset hsupp)
-    (norm_autocorr_le hg) 0 exp_pole_zero_le
+lemma integrable_mul_cexp {g : ℝ → ℂ} (hg : IsWeilTest g) (z : ℂ) :
+    Integrable (fun u : ℝ => g u * cexp (I * z * (u : ℂ))) := by
+  have hcs : HasCompactSupport (fun u : ℝ => g u * cexp (I * z * (u : ℂ))) :=
+    hg.2.mono' ((Function.support_mul_subset_left _ _).trans (subset_tsupport g))
+  exact (hg.1.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport hcs
 
-lemma norm_weilKernel_autocorr_one_le {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} (hL : 0 ≤ L)
+/-- ĝ(-i/2) - ĝ(i/2) = ∫ g(u) (e^{u/2} - e^{-u/2}) du. -/
+lemma paperFT_sub_eq {g : ℝ → ℂ} (hg : IsWeilTest g) :
+    paperFT g (-I / 2) - paperFT g (I / 2)
+      = ∫ u : ℝ, g u * ((Real.exp (u / 2) - Real.exp (-(u / 2)) : ℝ) : ℂ) := by
+  unfold paperFT
+  rw [← integral_sub (integrable_mul_cexp hg _) (integrable_mul_cexp hg _)]
+  congr 1
+  funext u
+  have e1 : I * (-I / 2) = (1 / 2 : ℂ) := by
+    rw [show I * (-I / 2) = -(I * I) / 2 by ring, Complex.I_mul_I]
+    norm_num
+  have e2 : I * (I / 2) = (-(1 / 2) : ℂ) := by
+    rw [show I * (I / 2) = (I * I) / 2 by ring, Complex.I_mul_I]
+    norm_num
+  rw [e1, e2, show (1 / 2 : ℂ) * (u : ℂ) = ((u / 2 : ℝ) : ℂ) by push_cast; ring,
+    show (-(1 / 2) : ℂ) * (u : ℂ) = ((-(u / 2) : ℝ) : ℂ) by push_cast; ring,
+    ← Complex.ofReal_exp, ← Complex.ofReal_exp]
+  push_cast
+  ring
+
+/-- On [-L, L], |e^{u/2} - e^{-u/2}| <= e^{L/2} - e^{-L/2}. -/
+lemma abs_exp_sub_le {L : ℝ} (u : ℝ) (hu : u ∈ Set.Icc (-L) L) :
+    |Real.exp (u / 2) - Real.exp (-(u / 2))| ≤ Real.exp (L / 2) - Real.exp (-(L / 2)) := by
+  have h1 := Real.exp_le_exp.mpr (show u / 2 ≤ L / 2 by linarith [hu.2])
+  have h2 := Real.exp_le_exp.mpr (show -(L / 2) ≤ -(u / 2) by linarith [hu.2])
+  have h3 := Real.exp_le_exp.mpr (show -(L / 2) ≤ u / 2 by linarith [hu.1])
+  have h4 := Real.exp_le_exp.mpr (show -(u / 2) ≤ L / 2 by linarith [hu.1])
+  rw [abs_le]
+  constructor <;> linarith
+
+/-- |ĝ(-i/2) - ĝ(i/2)| <= (e^{L/2} - e^{-L/2}) A. -/
+lemma norm_paperFT_sub_le {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ}
     (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
-    ‖weilKernel (autocorr g) 1‖ ≤ mass g * Real.exp L * (4 * L) :=
-  norm_weilKernel_le_of_support hL (mass_nonneg g) (tsupport_autocorr_subset hsupp)
-    (norm_autocorr_le hg) 1 exp_pole_one_le
+    ‖paperFT g (-I / 2) - paperFT g (I / 2)‖ ≤ (Real.exp (L / 2) - Real.exp (-(L / 2))) * l1 g := by
+  rw [paperFT_sub_eq hg]
+  unfold l1
+  rw [← integral_const_mul]
+  apply norm_integral_le_of_norm_le ((integrable_norm hg).const_mul _)
+  filter_upwards with u
+  rw [Complex.norm_mul, Complex.norm_real, Real.norm_eq_abs]
+  by_cases hu : u ∈ Set.Icc (-L) L
+  · rw [mul_comm]
+    exact mul_le_mul_of_nonneg_right (abs_exp_sub_le u hu) (norm_nonneg _)
+  · rw [image_eq_zero_of_notMem_tsupport (fun h => hu (hsupp h))]
+    simp
+
+/-- e^{L/2} - e^{-L/2} <= 55/756 for 0 <= L <= 1/14 (from 1 - x <= e^{-x}). -/
+lemma exp_half_sub_le {L : ℝ} (hL0 : 0 ≤ L) (hL : L ≤ 1 / 14) :
+    Real.exp (L / 2) - Real.exp (-(L / 2)) ≤ 55 / 756 := by
+  have hpos := Real.exp_pos (L / 2)
+  have h := Real.add_one_le_exp (-(L / 2))
+  have h2 : 27 / 28 ≤ Real.exp (-(L / 2)) := by linarith
+  rw [Real.exp_neg] at h
+  have h3 : Real.exp (L / 2) * (1 - L / 2) ≤ 1 := by
+    have := mul_le_mul_of_nonneg_left h hpos.le
+    rwa [mul_inv_cancel₀ hpos.ne', show -(L / 2) + 1 = 1 - L / 2 by ring] at this
+  have h4 : Real.exp (L / 2) * (27 / 28) ≤ Real.exp (L / 2) * (1 - L / 2) :=
+    mul_le_mul_of_nonneg_left (by linarith) hpos.le
+  linarith
+
+/-- The pole terms cost at most (55/756)^2 L M for L <= 1/14. -/
+lemma re_poles_ge_of_le {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} (hL0 : 0 ≤ L) (hL : L ≤ 1 / 14)
+    (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
+    -((55 / 756) ^ 2 * L * mass g)
+      ≤ (weilKernel (autocorr g) 0 + weilKernel (autocorr g) 1).re := by
+  refine le_trans ?_ (re_poles_ge hg)
+  rw [Complex.normSq_eq_norm_sq]
+  have h1 := norm_paperFT_sub_le hg hsupp
+  have h2 := exp_half_sub_le hL0 hL
+  have hA := l1_nonneg g
+  have hA2 := sq_l1_le hg hL0 hsupp
+  have h0 := norm_nonneg (paperFT g (-I / 2) - paperFT g (I / 2))
+  have h3 : ‖paperFT g (-I / 2) - paperFT g (I / 2)‖ ≤ (55 / 756) * l1 g :=
+    h1.trans (mul_le_mul_of_nonneg_right h2 hA)
+  have h4 : ‖paperFT g (-I / 2) - paperFT g (I / 2)‖ ^ 2 ≤ ((55 / 756) * l1 g) ^ 2 :=
+    pow_le_pow_left₀ h0 h3 2
+  nlinarith
 
 /-! ## D. The archimedean integral as a real integral; its mass. -/
 
@@ -428,21 +571,12 @@ lemma log_pi_le : Real.log Real.pi ≤ 1159 / 1000 := by
   have h3 : (3.15 : ℝ) / 2.7182818283 ≤ 1159 / 1000 := by norm_num
   linarith
 
-/-- e^L <= 40/39 for L <= 1/40 (from 1 - x <= e^{-x}). -/
-lemma exp_le_of_le_inv_forty {L : ℝ} (hL : L ≤ 1 / 40) : Real.exp L ≤ 40 / 39 := by
-  have h := Real.add_one_le_exp (-L)
-  rw [Real.exp_neg] at h
-  have hpos := Real.exp_pos L
-  have h2 : Real.exp L * (1 - L) ≤ 1 := by
-    have := mul_le_mul_of_nonneg_left h hpos.le
-    rwa [mul_inv_cancel₀ hpos.ne', show -L + 1 = 1 - L by ring] at this
-  nlinarith
-
-/-- Re archSide (autocorr g) >= M [phi_top - 8 L e^L - log pi - (4 L / pi) bandSumAll]. -/
-theorem re_archSide_autocorr_ge {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} (hL : 0 ≤ L)
-    (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
-    mass g * ((23499 / 10000) - 8 * L * Real.exp L - Real.log Real.pi
-        - (4 * L / Real.pi) * bandSumAll)
+/-- Re archSide (autocorr g) >= M [phi_top - log pi - (2 L / pi) bandSumAll - (55/756)^2 L]
+for 0 <= L <= 1/14. -/
+theorem re_archSide_autocorr_ge {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} (hL0 : 0 ≤ L)
+    (hL : L ≤ 1 / 14) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
+    mass g * ((23499 / 10000) - Real.log Real.pi - (2 * L / Real.pi) * bandSumAll
+        - (55 / 756) ^ 2 * L)
       ≤ (archSide (autocorr g)).re := by
   unfold archSide
   rw [integral_archIntegrand_autocorr_eq hg, autocorr_zero]
@@ -450,18 +584,14 @@ theorem re_archSide_autocorr_ge {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} 
   set W1 := weilKernel (autocorr g) 1 with hW1
   set J := ∫ r : ℝ, hsq g r * psiR r with hJ
   set M := mass g with hM
-  have h0 := (abs_le.mp (Complex.abs_re_le_norm W0)).1
-  have h1 := (abs_le.mp (Complex.abs_re_le_norm W1)).1
-  have hn0 := norm_weilKernel_autocorr_zero_le hg hL hsupp
-  have hn1 := norm_weilKernel_autocorr_one_le hg hL hsupp
-  rw [← hW0, ← hM] at hn0
-  rw [← hW1, ← hM] at hn1
-  have hJge := integral_mul_psiR_ge_bands (integrable_hsq hg) (hsq_nonneg g) (hsq_le hg hL hsupp)
+  have hpoles := re_poles_ge_of_le hg hL0 hL hsupp
+  rw [← hW0, ← hW1, ← hM] at hpoles
+  have hJge := integral_mul_psiR_ge_bands (integrable_hsq hg) (hsq_nonneg g) (hsq_le hg hL0 hsupp)
     (integrable_hsq_mul_psiR hg)
   rw [integral_hsq hg, ← hJ, ← hM] at hJge
   have hre : (W0 + W1 - (M : ℂ) * (Real.log Real.pi : ℂ)
       + (1 / (2 * (Real.pi : ℂ))) * (J : ℂ)).re
-      = W0.re + W1.re - M * Real.log Real.pi + (1 / (2 * Real.pi)) * J := by
+      = (W0 + W1).re - M * Real.log Real.pi + (1 / (2 * Real.pi)) * J := by
     rw [show (M : ℂ) * (Real.log Real.pi : ℂ) = ((M * Real.log Real.pi : ℝ) : ℂ) by
         push_cast; ring,
       show (1 / (2 * (Real.pi : ℂ))) * (J : ℂ) = (((1 / (2 * Real.pi)) * J : ℝ) : ℂ) by
@@ -470,47 +600,43 @@ theorem re_archSide_autocorr_ge {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ} 
   rw [hre]
   have hpi := Real.pi_pos
   have hJ' : (1 / (2 * Real.pi)) * ((23499 / 10000) * (2 * Real.pi * M)
-      - 2 * (4 * L * M) * bandSumAll) ≤ (1 / (2 * Real.pi)) * J :=
+      - 2 * (2 * L * M) * bandSumAll) ≤ (1 / (2 * Real.pi)) * J :=
     mul_le_mul_of_nonneg_left hJge (by positivity)
   have hid : (1 / (2 * Real.pi)) * ((23499 / 10000) * (2 * Real.pi * M)
-      - 2 * (4 * L * M) * bandSumAll)
-      = (23499 / 10000) * M - (4 * L / Real.pi) * bandSumAll * M := by
+      - 2 * (2 * L * M) * bandSumAll)
+      = (23499 / 10000) * M - (2 * L / Real.pi) * bandSumAll * M := by
     field_simp
   rw [hid] at hJ'
   nlinarith
 
-/-- STAGE 1, the theorem at L <= 1/40 with 0 <= L: the Weil functional of the goal node's test
+/-- STAGE 1, the theorem at L <= 1/14 with 0 <= L: the Weil functional of the goal node's test
 class is nonnegative for every test supported in [-L, L]. -/
 theorem weil_positivity_narrow_support_of_nonneg {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ}
-    (hL0 : 0 ≤ L) (hL : L ≤ 1 / 40) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
+    (hL0 : 0 ≤ L) (hL : L ≤ 1 / 14) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
     0 ≤ (weilForm (autocorr g)).re := by
   have hwin : 2 * L ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
   rw [weilForm_autocorr_eq_archSide hg hsupp hwin]
-  refine le_trans ?_ (re_archSide_autocorr_ge hg hL0 hsupp)
+  refine le_trans ?_ (re_archSide_autocorr_ge hg hL0 hL hsupp)
   apply mul_nonneg (mass_nonneg g)
   have hlog := log_pi_le
-  have hexp := exp_le_of_le_inv_forty hL
   have hpi := Real.pi_gt_d2
-  have hpos := Real.exp_pos L
-  have h1 : 8 * L * Real.exp L ≤ 8 * (1 / 40) * (40 / 39) := by
-    have : L * Real.exp L ≤ (1 / 40) * (40 / 39) :=
-      mul_le_mul hL hexp hpos.le (by norm_num)
-    linarith
-  have h2 : (4 * L / Real.pi) * bandSumAll ≤ (4 * (1 / 40) / 3.14) * bandSumAll := by
+  have h2 : (2 * L / Real.pi) * bandSumAll ≤ (2 * (1 / 14) / 3.14) * bandSumAll := by
     unfold bandSumAll
-    have : 4 * L / Real.pi ≤ 4 * (1 / 40) / 3.14 := by
+    have : 2 * L / Real.pi ≤ 2 * (1 / 14) / 3.14 := by
       rw [div_le_div_iff₀ Real.pi_pos (by norm_num)]
       nlinarith
     nlinarith
+  have h3 : (55 / 756 : ℝ) ^ 2 * L ≤ (55 / 756) ^ 2 * (1 / 14) :=
+    mul_le_mul_of_nonneg_left hL (by positivity)
   unfold bandSumAll at h2 ⊢
-  norm_num at h1 h2 ⊢
+  norm_num at h2 h3 ⊢
   linarith
 
-/-- STAGE 1 (registry shape, no sign condition on L): tsupport g ⊆ Icc (-L) L with L <= 1/40
+/-- STAGE 1 (registry shape, no sign condition on L): tsupport g ⊆ Icc (-L) L with L <= 1/14
 gives 0 <= Re weilForm (autocorr g).  (For L < 0 the support condition already forces g = 0;
 the proof passes through L' = max L 0.) -/
 theorem weil_positivity_narrow_support {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ}
-    (hL : L ≤ 1 / 40) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
+    (hL : L ≤ 1 / 14) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
     0 ≤ (weilForm (autocorr g)).re := by
   have hsupp' : tsupport g ⊆ Set.Icc (-(max L 0)) (max L 0) :=
     hsupp.trans (Set.Icc_subset_Icc (by linarith [le_max_left L 0]) (le_max_left L 0))
