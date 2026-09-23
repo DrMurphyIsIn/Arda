@@ -5,8 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos",
-  "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -79,6 +78,39 @@ name = "DBNRealZerosIffFinal"
 # about zeros inside the strip.  Nothing here proves RH.  conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNStrip"
+
+# Route C / C3 groundwork, obligation L4 of DESIGN_RH_dbn_debruijn_real_zeros_2026-09-22.md: the
+# discrete de Bruijn step (vertical-shift average T_delta contracts a horizontal zero strip by
+# delta^2 in Im^2) against an ABSTRACT even Hadamard product (EvenHadamardData). Pure Mathlib.
+# The Hadamard factorisation itself (L3) is NOT here. Nothing here proves RH.
+[[lean_lib]]
+name = "DBNStep"
+
+# Kernel-checked controls for DBNStep: POSITIVE (1 + z^2: hypotheses satisfiable, bound attained)
+# and NEGATIVE (z^2 - 2i: Hadamard data + strip but NOT real, conclusion fails -> the reality
+# hypothesis is load-bearing). Pure Mathlib. Nothing here proves RH.
+[[lean_lib]]
+name = "DBNStepControls"
+
+# Route C / C3 groundwork, obligation L2e: Hurwitz's theorem (zero-free limits of locally
+# uniformly convergent holomorphic functions), maximum-modulus proof. Pure Mathlib.
+[[lean_lib]]
+name = "DBNHurwitz"
+
+# Route C / C3 groundwork, obligations L2a-d: the de Bruijn approximants
+# G t N z = int_0^inf cosh(u sqrt(2t/N))^N Phi(u) cos(zu) du, the shift identity
+# G = T_delta^N (H 0), locally uniform convergence G t N -> H t, H t 0 > 0, and the Hurwitz
+# transfer to H t. Does NOT state or prove the registry node RH.dbn_debruijn_real_zeros.
+[[lean_lib]]
+name = "DBNHeatApprox"
+
+# Route C / C3 REDUCED to its two open inputs, carried as named Prop obligations (NOT proved):
+# H0ZeroFreeOffStrip (L1, contrapositive of registry lemma RH.dbn_H0_zero_strip) and
+# ApproxHadamard (L3, Hadamard data for every approximant). GIVEN both: zeros of G t N and of
+# H t lie in Im^2 <= max(1 - 2t, 0). CONDITIONAL; the registry node RH.dbn_debruijn_real_zeros is
+# NOT stated. Nothing here proves RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNDeBruijnReduction"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.

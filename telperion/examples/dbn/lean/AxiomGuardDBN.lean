@@ -29,6 +29,11 @@ import DBNXiIBP
 import DBNXi
 import DBNRealZerosIffFinal
 import DBNStrip
+import DBNStep
+import DBNStepControls
+import DBNHurwitz
+import DBNHeatApprox
+import DBNDeBruijnReduction
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -270,3 +275,102 @@ import DBNStrip
 #print axioms DBN.H0_zero_strip
 #print axioms DBN.H0_ne_zero
 #print axioms dbn_H0_zero_strip
+
+-- Route C / C3 groundwork, L4 (DBNStep): the vertical-shift average and the discrete de Bruijn
+-- step against abstract even Hadamard data (pure Mathlib)
+#print axioms DBN.differentiable_shiftAvg
+#print axioms DBN.shiftAvg_neg
+#print axioms DBN.shiftAvg_conj
+#print axioms DBN.eq_zero_of_tendsto_prod_of_eq_zero
+#print axioms DBN.prod_ne_zero_of_tendsto
+#print axioms DBN.EvenHadamardData.even
+#print axioms DBN.EvenHadamardData.eq_zero_of_factor
+#print axioms DBN.EvenHadamardData.apply_inv_eq_zero
+#print axioms DBN.EvenHadamardData.eq_const
+#print axioms DBN.EvenHadamardData.tendsto_prod_conj
+#print axioms DBN.EvenHadamardData.eq_zero_of_conj_factor
+#print axioms DBN.EvenHadamardData.ofHasProd
+#print axioms DBN.EvenHadamardData.ofMultipliable
+#print axioms DBN.hadQ_nonneg
+#print axioms DBN.hadQ_zero
+#print axioms DBN.EvenHadamardData.tendsto_sq_norm
+#print axioms DBN.sq_norm_sub_mul_norm_sub_conj
+#print axioms DBN.pair_lt
+#print axioms DBN.hadQ_eq
+#print axioms DBN.hadQ_lt
+#print axioms DBN.norm_sub_lt_norm_add
+#print axioms DBN.max_sub_max_zero
+#print axioms DBN.EvenHadamardData.norm_lt_norm
+#print axioms DBN.EvenHadamardData.shiftAvg_zero_im_sq_le
+#print axioms DBN.EvenHadamardData.shiftAvg_real_zeros
+#print axioms DBN.zero_im_sq_le_of_shiftAvg_iterate
+
+-- DBNStepControls: positive control (1 + z^2; hypotheses met, bound attained) and negative
+-- control (z^2 - 2i; not real, conclusion of the step lemma fails)
+#print axioms DBN.evenHadamardData_one_add_sq
+#print axioms DBN.one_add_sq_conj
+#print axioms DBN.one_add_sq_zero_im_sq_le
+#print axioms DBN.shiftAvg_one_add_sq
+#print axioms DBN.step_one_add_sq
+#print axioms DBN.step_bound_attained
+#print axioms DBN.evenHadamardData_sq_sub_two_I
+#print axioms DBN.sq_sub_two_I_zero_im_sq_le
+#print axioms DBN.shiftAvg_sq_sub_two_I
+#print axioms DBN.step_needs_reality
+
+-- Route C / C3 groundwork, L2e (DBNHurwitz): Hurwitz, maximum-modulus form (pure Mathlib)
+#print axioms DBN.hurwitz_ne_zero
+#print axioms DBN.hurwitz_ne_zero_of_entire
+
+-- Route C / C3 groundwork, L2a-d (DBNHeatApprox): the de Bruijn approximants
+#print axioms DBN.norm_cos_le_exp_abs_im
+#print axioms DBN.norm_cos_mul_le
+#print axioms DBN.one_add_sq_div_two_le_cosh
+#print axioms DBN.cosh_pow_le_exp
+#print axioms DBN.integrableOn_exp_mul_abs_Φ
+#print axioms DBN.continuous_GδIntegrand
+#print axioms DBN.norm_GδIntegrand_le
+#print axioms DBN.integrableOn_GδIntegrand
+#print axioms DBN.GδIntegrand_succ
+#print axioms DBN.Gδ_succ
+#print axioms DBN.Gδ_zero
+#print axioms DBN.Gδ_eq_iterate
+#print axioms DBN.differentiable_Gδ
+#print axioms DBN.Gδ_neg
+#print axioms DBN.Gδ_conj
+#print axioms DBN.Gδ_ofReal_im
+#print axioms DBN.norm_Gδ_le
+#print axioms DBN.cosh_le_exp_abs
+#print axioms DBN.mul_le_rpow_add_cube
+#print axioms DBN.cube_add_le_exp
+#print axioms DBN.norm_GδIntegrand_le_rpow
+#print axioms DBN.norm_Gδ_le_exp_rpow
+#print axioms DBN.norm_Gδ_le_exp_rpow_norm
+#print axioms DBN.cosh_sqrt_pow_le
+#print axioms DBN.one_add_div_pow_le_cosh_sqrt_pow
+#print axioms DBN.tendsto_cosh_sqrt_pow
+#print axioms DBN.continuous_approxErrIntegrand
+#print axioms DBN.approxErrIntegrand_nonneg
+#print axioms DBN.approxErrIntegrand_le
+#print axioms DBN.integrableOn_approxErrIntegrand
+#print axioms DBN.tendsto_approxErr
+#print axioms DBN.norm_H_sub_G_le
+#print axioms DBN.tendstoUniformlyOn_G
+#print axioms DBN.tendstoLocallyUniformly_G
+#print axioms DBN.norm_G_le
+#print axioms DBN.Φ_term_pos
+#print axioms DBN.Φ_pos
+#print axioms DBN.setIntegral_weight_mul_Φ_pos
+#print axioms DBN.H_zero_re_pos
+#print axioms DBN.H_zero_ne_zero
+#print axioms DBN.Gδ_zero_re_pos
+#print axioms DBN.H_ne_zero_of_approx_on
+#print axioms DBN.H_ne_zero_of_approx
+
+-- Route C / C3 REDUCED (DBNDeBruijnReduction), CONDITIONAL on the named obligations
+-- H0ZeroFreeOffStrip (L1) and ApproxHadamard (L3); they enter as hypotheses, so the expected
+-- closure is still [propext, Classical.choice, Quot.sound].  NOT the registry node.
+#print axioms DBN.Gδ_zero_delta
+#print axioms DBN.G_zero_im_sq_le_of_obligations
+#print axioms DBN.H_zero_im_sq_le_of_obligations
+#print axioms DBN.H_ne_zero_of_obligations
