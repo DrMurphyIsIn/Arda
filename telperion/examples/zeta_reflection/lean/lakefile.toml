@@ -3,7 +3,8 @@ name = "ZetaReflectionSpike"
 # a bare `lake build` compiles every one of them, and the coverage checker
 # (telperion/src/telperion/missions/coverage.py) can see that it does.
 defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD",
-                  "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet"]
+                  "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet",
+                  "ReflectedBand_t14_Kernel"]
 
 # Same Mathlib pin as the sibling zeta_zero_localization island (v4.32.0), so the
 # path require below shares the on-disk Mathlib build cache -- `lake exe cache get`
@@ -262,3 +263,43 @@ roots = ["AxiomGuardFirstZeroKernel"]
 [[lean_lib]]
 name = "AxiomGuardStirling"
 roots = ["AxiomGuardStirling"]
+
+# ---------------------------------------------------------------------------------------------
+# AND_g2_reflected_band, KERNEL DISCHARGE (2026-09-23): the pilot conclusion with NO hypotheses.
+#   KernelGammaEnvelope      -- |Gamma(s)| <= Gamma(Re s), reflection-formula lower bound, the
+#                               explicit gLine = M * S decomposition with (3/4)e^{-pi|t|/2} <= M <= 4.
+#   ForgeZ22Terms/ForgeZeta22 -- zeta(1/2+22i) boxes (trig_forge.py emitter, EM order 3, N = 10).
+#   ForgePhi22               -- cos/sin of the theta phase at t = 22 (imLnVal at n0 = 128 + rate).
+#   KernelBandEnclosures     -- the three gLine memberships (wide sign-definite dyadic boxes at
+#                               t = 14, 15, 22), PROVED; per-enclosure kernel times in its header.
+#   ReflectedBand_t14_Kernel -- the band: dK, okK (`checkLine` by decide), pilot_kernel (the
+#                               ReflectedBand_t14.pilot conclusion with no hypotheses).
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "KernelGammaEnvelope"
+roots = ["KernelGammaEnvelope"]
+
+[[lean_lib]]
+name = "ForgeZ22Terms"
+roots = ["ForgeZ22Terms"]
+
+[[lean_lib]]
+name = "ForgeZeta22"
+roots = ["ForgeZeta22"]
+
+[[lean_lib]]
+name = "ForgePhi22"
+roots = ["ForgePhi22"]
+
+[[lean_lib]]
+name = "KernelBandEnclosures"
+roots = ["KernelBandEnclosures"]
+
+[[lean_lib]]
+name = "ReflectedBand_t14_Kernel"
+roots = ["ReflectedBand_t14_Kernel"]
+
+# Kernel-axiom guard of the hypothesis-free pilot (prints #print axioms; not a default target).
+[[lean_lib]]
+name = "AxiomGuardArbKernel"
+roots = ["AxiomGuardArbKernel"]
