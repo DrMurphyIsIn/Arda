@@ -11,10 +11,14 @@
   RH.dbn_rh_iff_H0_real_zeros), not island theorems.  DBNRealZerosIff proves the C4 bridge
   RH <-> (all zeros of H_0 real) ONLY conditionally on C2 (explicit hypothesis / the named
   Prop obligation DBN.H0EqXi); the unconditional registry theorem dbn_rh_iff_H0_real_zeros is
-  NOT stated anywhere on this island.  conjecture1_proved = False.
+  NOT stated anywhere on this island.  DBNStrip proves the registry node RH.dbn_H0_zero_strip
+  (every zero of H_0 lies in the closed strip |Im z| <= 1) C2-FREE, from the absolutely
+  convergent half-plane Re s > 1 only; it says nothing about zeros inside the strip and is not
+  RH.  conjecture1_proved = False.
 -/
 import DBNDefs
 import DBNRealZerosIff
+import DBNStrip
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -74,3 +78,42 @@ import DBNRealZerosIff
 #print axioms DBN.H_zero_eq_zero_iff_of_H0_eq_xi
 #print axioms dbn_rh_iff_H0_real_zeros_of_H0_eq_xi
 #print axioms dbn_rh_iff_H0_real_zeros_of_obligation
+
+-- Route C / C3 input (DBNStrip): the zero strip of H_0, C2-free.  L1b Gamma integral on the line
+#print axioms DBN.integral_exp_smul_comp_exp
+#print axioms DBN.ofReal_exp_cpow
+#print axioms DBN.integral_cexp_mul_exp_neg_exp
+#print axioms DBN.integral_exp_mul_exp_neg_exp
+#print axioms DBN.integrable_cexp_mul_exp_neg_exp
+#print axioms DBN.integrable_exp_mul_exp_neg_exp
+
+-- DBNStrip L1a: two-sided fold and Schwarz reflection
+#print axioms DBN.continuous_expIntegrand
+#print axioms DBN.norm_cexp_mul_I_le
+#print axioms DBN.expIntegrand_neg
+#print axioms DBN.integrableOn_expIntegrand_Ioi
+#print axioms DBN.integrableOn_expIntegrand_Iic
+#print axioms DBN.integrable_expIntegrand
+#print axioms DBN.H_zero_eq_half_integral
+#print axioms DBN.H_conj
+
+-- DBNStrip L1b termwise + L1c Tonelli/Fubini and the half-plane identity (Im z < -1 only)
+#print axioms DBN.Φ_eq_tsum_ΦTerm
+#print axioms DBN.expTerm_eq
+#print axioms DBN.stripArg_re
+#print axioms DBN.one_div_pi_mul_sq_cpow
+#print axioms DBN.integral_expTerm
+#print axioms DBN.integrable_expTerm
+#print axioms DBN.norm_expTerm_le
+#print axioms DBN.pnat_pow_mul_one_div_rpow
+#print axioms DBN.summable_integral_norm_expTerm
+#print axioms DBN.hasSum_integral_expTerm
+#print axioms DBN.integral_expIntegrand_eq
+#print axioms DBN.H_zero_eq_of_im_lt
+
+-- DBNStrip L1d: nonvanishing off the strip, the zero strip, and the registry statement verbatim
+#print axioms DBN.H_zero_ne_zero_of_im_lt
+#print axioms DBN.H_zero_ne_zero_of_one_lt_im
+#print axioms DBN.H0_zero_strip
+#print axioms DBN.H0_ne_zero
+#print axioms dbn_H0_zero_strip

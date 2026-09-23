@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNStrip", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -22,6 +22,14 @@ name = "DBNDefs"
 # are unconditional. Nothing here proves RH. conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNRealZerosIff"
+
+# Route C / C3 input (registry node RH.dbn_H0_zero_strip): every zero of H_0 lies in the closed
+# strip |Im z| <= 1, proved C2-FREE from the absolutely convergent half-plane Re s > 1
+# (two-sided fold, termwise Gamma integral on the line, Tonelli/Fubini, Euler-product
+# nonvanishing of zeta; DESIGN_RH_dbn_debruijn_real_zeros_2026-09-22.md L1a-L1d).  Says nothing
+# about zeros inside the strip.  Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNStrip"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.
