@@ -34,6 +34,12 @@ import DBNStepControls
 import DBNHurwitz
 import DBNHeatApprox
 import DBNDeBruijnReduction
+import DBNHadamardCount
+import DBNHadamardProduct
+import DBNHadamardMean
+import DBNHadamardLinear
+import DBNHadamard
+import DBNHadamardApprox
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -374,3 +380,86 @@ import DBNDeBruijnReduction
 #print axioms DBN.G_zero_im_sq_le_of_obligations
 #print axioms DBN.H_zero_im_sq_le_of_obligations
 #print axioms DBN.H_ne_zero_of_obligations
+
+-- Route C / C3 obligation L3, the Hadamard factorisation (telperion/docs/HADAMARD_PLAN_2026-09-23.md):
+-- Mathlib-only pieces (Count/Product/Mean/Linear), the even factorisation theorem (DBNHadamard),
+-- and its instantiation on the approximants plus de Bruijn's theorem (DBNHadamardApprox).
+-- Everything unconditional; expected closure [propext, Classical.choice, Quot.sound].
+-- Classical, NOT RH: nothing about zeros of H_0 inside the strip.  conjecture1_proved = False.
+-- DBNHadamardCount
+#print axioms DBN.analyticOrderAt_ne_top_of_entire
+#print axioms DBN.divisor_eq_analyticOrderNatAt
+#print axioms DBN.one_le_analyticOrderNatAt
+#print axioms DBN.sum_ord_le_zeroCount
+#print axioms DBN.zeroCount_le
+#print axioms DBN.two_pow_dyadicIdx_le
+#print axioms DBN.lt_two_pow_dyadicIdx_succ
+#print axioms DBN.two_pow_rpow_neg_mul
+#print axioms DBN.two_pow_rpow_neg
+#print axioms DBN.dyadic_group_sum_le
+#print axioms DBN.summable_zero_multiplicity_rpow
+-- DBNHadamardProduct
+#print axioms DBN.factor_eq_one_add
+#print axioms DBN.factor_fun_eq
+#print axioms DBN.norm_neg_factor
+#print axioms DBN.summable_norm_neg_factor
+#print axioms DBN.multipliable_factor
+#print axioms DBN.differentiable_finset_prod_factor
+#print axioms DBN.differentiable_tprod_factor
+#print axioms DBN.tprod_factor_ne_zero
+#print axioms DBN.hasProd_evenProduct
+#print axioms DBN.differentiable_evenProduct
+#print axioms DBN.evenProduct_zero
+#print axioms DBN.evenProduct_neg
+#print axioms DBN.log_one_add_le_rpow
+#print axioms DBN.mul_sq_rpow_half
+#print axioms DBN.norm_factor_le_exp
+#print axioms DBN.norm_evenProduct_le
+#print axioms DBN.eq_zero_of_hasProd_of_eq_zero
+#print axioms DBN.evenProduct_eq_zero_iff
+#print axioms DBN.evenProduct_ne_zero
+#print axioms DBN.finite_setOf_factor_eq_zero
+#print axioms DBN.analyticOrderAt_factor
+#print axioms DBN.analyticOrderAt_finset_prod_factor
+#print axioms DBN.evenProduct_eq_finset_prod_mul
+#print axioms DBN.analyticOrderNatAt_evenProduct
+-- DBNHadamardMean
+#print axioms DBN.exists_exp_eq_of_ne_zero
+#print axioms DBN.abs_eq_two_mul_max_sub
+#print axioms DBN.posLog_exp_of_nonneg
+#print axioms DBN.circleAverage_re_eq
+#print axioms DBN.circleAverage_log_norm_nonneg
+#print axioms DBN.circleAverage_posLog_norm_le
+#print axioms DBN.circleAverage_abs_re_le
+-- DBNHadamardLinear
+#print axioms DBN.poissonKernel_zero_le
+#print axioms DBN.poissonKernel_zero_nonneg
+#print axioms DBN.poissonKernel_zero_le_three
+#print axioms DBN.continuousOn_poissonKernel_zero
+#print axioms DBN.abs_re_le_three_mul_circleAverage
+#print axioms DBN.norm_le_of_re_le
+#print axioms DBN.norm_deriv_le_of_forall_sphere
+#print axioms DBN.norm_deriv_deriv_le
+#print axioms DBN.eq_linear_of_circleAverage_abs_re_le
+-- DBNHadamard
+#print axioms DBN.analyticOrderAt_neg_of_even
+#print axioms DBN.analyticOrderNatAt_neg_of_even
+#print axioms DBN.even_analyticOrderNatAt_zero
+#print axioms DBN.isRep_or_isRep_neg
+#print axioms DBN.not_isRep_neg_of_isRep
+#print axioms DBN.summable_zeroIdx_rpow
+#print axioms DBN.countable_zeroIdx_of_summable
+#print axioms DBN.repSeq_apply
+#print axioms DBN.repSeq_of_notMem_range
+#print axioms DBN.summable_repSeq_rpow
+#print axioms DBN.ncard_factor_eq_analyticOrderNatAt
+#print axioms DBN.exists_quotient
+#print axioms DBN.evenHadamardData_of_order_lt_two
+-- DBNHadamardApprox
+#print axioms DBN.norm_Gδ_le_growth
+#print axioms DBN.Gδ_exists_ne_zero
+#print axioms DBN.approxHadamard
+#print axioms DBN.H0ZeroFreeOffStrip_holds
+#print axioms DBN.H_zero_im_sq_le
+#print axioms DBN.H_ne_zero_of_half_le
+#print axioms dbn_debruijn_real_zeros

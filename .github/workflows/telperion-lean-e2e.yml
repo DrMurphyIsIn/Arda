@@ -2796,6 +2796,9 @@ jobs:
             echo "and the assertions in zoo.py _run_asserts."; exit 1; }
           grep -q "GOVERNANCE: all required outcomes hold" zoo.txt || {
             echo "::error::GOVERNANCE RAIL BROKEN"; exit 1; }
+          grep -q "DEDEKIND CONTROL CONFIRMED" zoo.txt || {
+            echo "::error::DEDEKIND GATE FAILED: zeta_K = zeta * L(chi_-20) is no longer"
+            echo "rejected by (B-mult-twisted) -- the product-closure control regressed."; exit 1; }
 
       - name: Anti-phantom refusal (a corrupted eta exponent must REFUSE, not report)
         working-directory: telperion/examples/quasicrystal
@@ -2837,7 +2840,10 @@ jobs:
           if grep -q "ofReduceBool" guard.txt; then echo "::error::GUARD FAILED: native_decide"; exit 1; fi
           for t in scalarGenerated_powerSum_iff unitary_deg2_not_scalarGenerated \
                    delta_satakeDet_two delta_rejected_by_B_mult_twisted \
-                   delta_rejected_nonvacuous tau_hecke_p2 tau_mult_six; do
+                   delta_rejected_nonvacuous tau_hecke_p2 tau_mult_six \
+                   dedekind_split_rejected dedekind_inert_rejected \
+                   scalarGenerated_not_closed_under_product chi_m20_three chi_m20_eleven \
+                   dedekind_at_three_rejected dedekind_at_eleven_rejected; do
             grep -q "SatakeDegreeTwo.$t" guard.txt || { echo "::error::GUARD FAILED: $t not printed"; exit 1; }
           done
           # Every printed axiom list must be a SUBSET of the three standard axioms.
