@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-b7-last-mile-2026-09-21 (AUDIT_TESTIMONY_B7_LAST_MILE_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: B7 given StripDerivBound alone; a two-line composition of audited inputs; byte-identical to the registry statement once the single hypothesis and the namespace prefix are stripped. conjecture1_proved = False."

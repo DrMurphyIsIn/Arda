@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"
+independence = "unverified"
 text = "Under an identical hypothesis block to MM_bragg_bridge, the sum of zeta divisor multiplicities over the zero finset equals 1/(2 pi i) times the same right-hand bracket (bottom - top - i Bragg comb - i left). Verified against MM_bragg_bridge line by line: EXACTLY that equation divided through by 2 pi i (nonzero), identical hypotheses, identical vocabulary, identical bracket term-by-term -- no drift. No flags."

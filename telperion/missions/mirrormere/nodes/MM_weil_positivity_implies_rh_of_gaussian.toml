@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-converse-2026-09-20 (AUDIT_TESTIMONY_WEIL_CONVERSE_2026-09-20.md)"
 date = "2026-09-20"
+independence = "unverified"
 text = "Read-back: GIVEN (O1) that the Gaussian-derivative test's zero-side functional is a limit of Weil-test zero-side functionals and (O2) that every off-line nontrivial zero admits a centre c and width lam > 0 with Re zeroSide(gaussTest c lam) < 0, Weil positivity on Hermitian autocorrelations forces every nontrivial zero onto Re s = 1/2 (Mathlib RiemannHypothesis). Audit: all 33 declarations three-axiom, no sorryAx; RiemannHypothesis absent from both obligation bodies; O2 alone does not yield RH; the Gaussian zero sum is a genuine (proved summable) sum; deleting hpos, hO1 or hO2 each breaks the proof at the step that consumed it. A reduction, not a proof of RH. conjecture1_proved = False."

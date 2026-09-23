@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-theta-face-2026-09-21 (AUDIT_TESTIMONY_THETA_FACE_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: positivity of Theta on the whole line at width lam implies it at every smaller width. Audit: the complex-centre heat identity re-derived by hand and checked to 20 digits (direction sqrt(lam/lam') confirmed), the summed identity via a summable majorant over the countable zero set, the kernel positive; the certificate must be global (band-restricted hypothesis fails, probe); reversal fails (backward heat). Unconditional instrument; asserts nothing detectable about zeros by itself. conjecture1_proved = False."

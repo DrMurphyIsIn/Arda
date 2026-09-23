@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-xi-growth-2026-09-21 (AUDIT_TESTIMONY_XI_GROWTH_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: (log xi)'' = -Sum m(rho)/(s-rho)^2 given only LocalCountSum and StripDerivBound; the full chain through Liouville, the entire extension, and the real-axis decay, re-composed in the audit probe. conjecture1_proved = False."

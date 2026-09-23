@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-xi-partial-fraction-2026-09-21 (AUDIT_TESTIMONY_XI_PARTIAL_FRACTION_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: (log xi)''(s) = -Sum m(rho)/(s-rho)^2 for every s not a nontrivial zero, GIVEN the two named obligations XiDiffRegular and XiLogDerivDerivDecay. Audit 10/10: xi matches Zeta23's definition; Liouville-with-log-growth re-derived and shown non-vacuous; summability and decay majorants re-derived; obligations are plain Props consumed only as hypotheses. Nothing about RH. conjecture1_proved = False."
