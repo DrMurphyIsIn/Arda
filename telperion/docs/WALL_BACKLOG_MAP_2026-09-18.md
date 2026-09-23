@@ -47,7 +47,7 @@ their precedents are load-bearing for the wall argument.
 | `RH_li_rung0_kernel` | open / lemma | `RH_li_rung_certificates` | **F4** | **WORKABLE-NOW, but the dep is wrong.** Route (from CONSUMER_SWEEP): Mathlib `riemannZeta_one` gives `taylorCoeff riemannXi 0 = 1 + γ/2 − log(4π)/2`; discharge reduces to the numeric `2 + γ > log 4π`. That route consumes **nothing** from `RH_li_rung_certificates` (which are Arb-hypothesis-conditional, and this node is by definition hypothesis-free). See §2 op **R2**. |
 | `RH_dbn_H0_eq_xi` | draft / lemma | — | **F1** | **BLOCKED-ON (authoring).** Route C2, `H_0 = ξ/8`. No readback recorded, so `promote_to_open` will refuse. Not stale (authored 2026-09-17). Needs an audit pass, not new math. |
 | `RH_dbn_debruijn_real_zeros` | draft / milestone | `RH_dbn_H0_eq_xi` | **F2** | **BLOCKED-ON `RH_dbn_H0_eq_xi`.** de Bruijn 1950, `t ≥ 1/2`. Note this is the *unconditional* half of Λ ≤ 1/2 — genuine F2 content (an effective bound), not wall content. No readback. |
-| `RH_dbn_rh_iff_H0_real_zeros` | draft / milestone | `RH_dbn_H0_eq_xi` | **F0** | **IS-THE-WALL** (route C's C10 in disguise: RH ⟺ all zeros of `H_0` real). Correctly filed as a bridge, but it should be marked wall-grade so no one schedules it as workable. See §2 op **R3**. |
+| `RH_dbn_rh_iff_H0_real_zeros` | draft / milestone | `RH_dbn_H0_eq_xi` | **F4** | **CORRECTED 2026-09-22 (was F0 IS-THE-WALL; op R3 is withdrawn).** The node is an EQUIVALENCE, not the wall: RH ⟺ all zeros of `H_0` real is a one-line consequence of C2, and the bridge `dbn_rh_iff_H0_real_zeros_of_H0_eq_xi (hC2)` is written and kernel-clean on the dbn island (`DBNRealZerosIff.lean`, 8 theorems, 3 standard axioms). BLOCKED-ON `RH_dbn_H0_eq_xi` alone; it closes by one line the day C2 lands. Being RH-equivalent as a PROPOSITION is not the same as being unworkable, and filing it F0 hid a discharged bridge. |
 
 ### 1.2 mirrormere (5 open, 2 draft on main; 2 drafts off-main)
 
@@ -67,7 +67,7 @@ their precedents are load-bearing for the wall argument.
 
 | Node | Status / kind | Deps | Facet | Verdict |
 |---|---|---|---|---|
-| `AND_ladder_h280000` | open / milestone | — | **F4** | **BLOCKED-ON the StripClear two-box capstone + branch reconcile.** The artifact exists but carries per-segment `BandHyp` binders; the node's registered form is hypothesis-free. This is a *hypothesis-discharge* blocker, not a compute blocker. |
+| `AND_ladder_h280000` | open / milestone | — | **F4** | **CORRECTED 2026-09-22: a REGISTRY-SHAPE mismatch, not a capstone or a branch reconcile.** The artifact `all_nontrivial_zeros_up_to_height_280000_of_bands` carries 280 `BandHyp` binders plus `hgamma`, and ZERO of its 642 band files discharge a `BandHyp`: every one consumes Arb inputs. Those binders ARE the Arb trust boundary, not glue awaiting a capstone, so no amount of Lean work discharges them and the substring gate fails on the artifact and on any same-name conditional wrapper. The honest fix is to re-register the statement in the Arb-conditional shape (`DESIGN_AND_ladder_h280000_2026-09-22.md`, route A2), after which the node is grantable on the existing `~/arda-million` build. |
 | `AND_ladder_1e6` | open / milestone | `AND_ladder_h280000` | **F4** | **BLOCKED-ON `AND_ladder_h280000`.** Roadmap states nothing structural remains — wall-clock only. Correctly filed. |
 | `AND_ladder_1e9` | open / milestone | `AND_ladder_1e6`, `AND_checkline_correct` | **F4** | **MIS-FILED.** Title says the charter gates this on the **A3 Riemann–Siegel era** (theta branch + RS main sum + Gabcke C0 remainder), "nodes to be authored" — but `depends_on` names only the ladder predecessor and the band checker. The DAG therefore shows this as two hops from workable when it is gated on three unbuilt bricks. Same defect class as D3. See §2 op **R8**. |
 | `AND_ladder_1e13` | draft / goal | 8 nodes | **F4** | **ORPHANED-as-scheduled → keep, retitle.** Not the wall (it is finite), but at `native_decide`-era scale it is not on any 12–24-month path either. **Do not retire** — it is the campaign's declared goal and a useful honesty marker that the ladder is finite. Recommend leaving `draft` indefinitely, exactly as `RH_conjecture` is held. |
@@ -90,7 +90,7 @@ brief only where its machinery or its refutation precedents inform the RH wall.
 
 | Facet | Nodes | Note |
 |---|---|---|
-| F0 THE WALL | 4 | `RH_conjecture`, `MM_zeta_comb_membership`, `RH_dbn_rh_iff_H0_real_zeros`, (+`BG_conjecture1` for its own conjecture) |
+| F0 THE WALL | 3 | `RH_conjecture`, `MM_zeta_comb_membership`, (+`BG_conjecture1` for its own conjecture) -- `RH_dbn_rh_iff_H0_real_zeros` reclassified F4 on 2026-09-22, see row 50 |
 | F1 UNIFORMITY HARVEST | 4 | `RH_bl_explicit_formula`, `RH_dbn_H0_eq_xi`, `MM_weil_gram_trace`, `MM_weil_form_certified_height` |
 | F2 EFFECTIVE CONSTANTS | 1 registered | `RH_dbn_debruijn_real_zeros`. **This is the finding**: the facet that F1 depends on has almost no registered surface. See §2 op **R10**. |
 | F3 BLINDNESS | 5 | 3 of them have proofs sitting on unmerged branches |
@@ -138,14 +138,21 @@ Record the correction as a new ledger entry — `mission attempt RH_li_rung0_ker
 --verdict note` — rather than rewriting history. Then it is **WORKABLE-NOW** via
 `riemannZeta_one` + the `2 + γ > log 4π` bracket.
 
-**R3 — mark route-C's wall node.** Retitle `RH_dbn_rh_iff_H0_real_zeros` to carry the
-explicit prefix `WALL-GRADE (C10):` so `open-leaves` consumers never schedule it.
+**R3 — WITHDRAWN 2026-09-22.** The op asked for a `WALL-GRADE (C10):` prefix on
+`RH_dbn_rh_iff_H0_real_zeros`. That reading was wrong: the node is an equivalence that
+follows from C2 in one line, and the bridge is now written and kernel-clean. Prefixing it
+wall-grade would have retired a workable node. See row 50.
 
-**R4 — author the missing E9 machinery node** (F4), then re-dep `MM_speiser_box_probe`:
-`mission add MM_winding_second_derivative --campaign mirrormere --kind lemma` — the
-second-derivative EM evaluator variant for the winding integrand. Then
-`MM_speiser_box_probe --deps MM_winding_second_derivative`. Today the node is a DAG open
-leaf that is not actually workable; this makes the DAG honest.
+**R4 — STALE, NOT EXECUTED 2026-09-22.** The op asks for a node for the second-derivative
+EM evaluator of the WINDING integrand. That route was abandoned two days after this map was
+written: on 2026-09-20 the winding route was replaced by the grid-modulus Lipschitz-net kind
+`grid_modulus_nonvanishing` (numeric winding number 0, min |zeta'| on the box 0.1911 at the
+corner 3/8 + 6i). Registering `MM_winding_second_derivative` now would add a DAG node for a
+route nobody is taking, which is less honest than the gap it was meant to close. The node's
+REAL open obligations, per DESIGN_MM_speiser_box_probe_2026-09-22.md, are N1 (|zeta''| <= 3/10
+on the box) and N2 (eight |zeta'| >= 1/10 grid floors), on an island that is currently unbuilt
+anywhere; both hinted shortcuts were rejected with numbers. Author N1 and N2 as nodes when the
+island is built and their exact box and grid are pinned, not before.
 
 **R5 — audit the stale dictionary (highest-value cheap op).**
 `mission audit MM_torus_section_dictionary` with a blind read-back that explicitly tests
@@ -167,9 +174,14 @@ this. Until done, the mirrormere goal node's registered statement is Mathlib
 `RiemannHypothesis` via the island dictionary, which is *correct but uninformative*; the
 W3c concrete log-density FQ membership statement is the authoring item.
 
-**R8 — correct `AND_ladder_1e9`.** Author the three A3 bricks as `draft` nodes
-(`AND_theta_branch`, `AND_rs_main_sum`, `AND_gabcke_c0`) and add them to
-`AND_ladder_1e9.depends_on`. Until then the DAG understates the gate by three bricks.
+**R8 — DEFERRED 2026-09-22, and why.** The op is right that the DAG understates the 1e9
+gate by three A3 bricks, but it cannot be executed honestly yet: the anduril statement
+vocabulary (`Statements/ANDDefs.lean`) carries the Euler-Maclaurin and Binet machinery and
+has NO Riemann-Siegel theta, main sum or Gabcke remainder, and
+DESIGN_AND_ladder_1e9_2026-09-22.md designs the theta branch without pinning a Lean statement
+for any of the three. Registering three nodes on invented statements would put propositions in
+the registry that no island can elaborate. The memo is the honest placeholder until the
+vocabulary lands; ASCENT_PLAN F5-4 already says do-not-staff two of the three.
 
 **R9 — correct `BG_conjecture1`.** Author `BG_real_obligation_a` and `BG_sharp_rate_nf`
 as `draft` lemmas and add both to `BG_conjecture1.depends_on`, with the title of the

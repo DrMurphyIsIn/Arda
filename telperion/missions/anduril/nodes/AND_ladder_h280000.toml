@@ -4,8 +4,8 @@ kind = "milestone"
 name = "AND.ladder_h280000"
 statement_module = "Statements.AND_ladder_h280000"
 status = "open"
-title = "Current certified height: every nontrivial zeta zero with |Im rho| <= 280000 lies on Re = 1/2 (432,474 zeros, leg 17). Artifact carries per-segment BandHyp binders (all_nontrivial_zeros_up_to_height_280000_of_bands); this node's hypothesis-free form is the roadmap's StripClear two-box capstone deliverable -- grant on that discharge + the branch reconcile"
-updated = "2026-09-14"
+title = "Current certified height: every nontrivial zeta zero with |Im rho| <= 280000 lies on Re = 1/2 (432,474 zeros, leg 17). REGISTRY-SHAPE MISMATCH, corrected 2026-09-22: this node's registered statement is hypothesis-free, but the artifact all_nontrivial_zeros_up_to_height_280000_of_bands carries 280 BandHyp binders plus hgamma, and zero of its 642 band files discharge a BandHyp -- every one consumes Arb enclosures. Those binders ARE the Arb trust boundary, not glue: no Lean work discharges them, and the grant gate fails on the artifact. The node needs re-registering in the Arb-conditional shape (DESIGN_AND_ladder_h280000_2026-09-22.md route A2) before it can be linked and granted. The hypothesis-free form is a separate multi-quarter interval-arithmetic program. conjecture1_proved = False."
+updated = "2026-09-22"
 
 [readback]
 auditor = "missions-migration-session-2026-09-14"
