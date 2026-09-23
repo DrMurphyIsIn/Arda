@@ -218,6 +218,7 @@ import E6Bridge28
 import E6Bridge29
 import E6Bridge30
 import W2cAssembly
+import E6Bridge31
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
 
@@ -1072,3 +1073,17 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms DogfoodZeroSumMajorant.liBound_regen_summable
 #print axioms DogfoodZeroSumMajorant.tail_regen_envelope
 #print axioms DogfoodZeroSumMajorant.tail_regen_rate
+
+-- E6Bridge31: the prime-free window (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge31.primeSide_autocorr_eq_zero
+#print axioms RvMBridge31.weilForm_autocorr_eq_archSide
+#print axioms RvMBridge31.norm_autocorr_le
+#print axioms RvMBridge31.integral_hsq
+#print axioms RvMBridge31.integral_mul_psiR_ge_bands
+#print axioms RvMBridge31.re_archSide_autocorr_ge
+#print axioms RvMBridge31.weil_positivity_narrow_support_of_nonneg
+#print axioms RvMBridge31.weil_positivity_narrow_support
+#print axioms RvMBridge31.primeFreeWindow_iff_arch
+#print axioms RvMBridge31.primeFreeWindow_imp_poleFree
+#print axioms RvMBridge31.poles_vanish
+#print axioms RvMBridge31.archSide_autocorr_poleFree
