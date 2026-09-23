@@ -1,0 +1,17 @@
+[
+ {
+  "model": "circle (Hermitian Toeplitz)",
+  "eigenpolynomials": 31804,
+  "violations": 0,
+  "bound_attained_with_bound_positive": 5546,
+  "max_isotropy_residual": 1.3748141165377234e-14,
+  "min_hyperbolic_pairing": 2.497446613951064e-07
+ },
+ {
+  "model": "line (Hankel pencil)",
+  "eigenpolynomials": 19951,
+  "violations": 0,
+  "bound_attained_with_bound_positive": 9447,
+  "max_isotropy_residual": 1.9140783256189518e-08
+ }
+]

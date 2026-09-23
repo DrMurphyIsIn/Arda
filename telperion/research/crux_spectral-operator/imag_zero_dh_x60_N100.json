@@ -1,0 +1,38 @@
+{
+ "kind": "dh",
+ "x": "60",
+ "N": 100,
+ "dps": 180,
+ "rows": [
+  {
+   "index": 0,
+   "eig": "-0.943236",
+   "kappa_even": 0,
+   "kappa_odd": 0,
+   "imaginary_axis_zeros": [],
+   "endpoint_value_f_of_L_over_2": "-0.85152"
+  },
+  {
+   "index": 1,
+   "eig": "-4.16947e-11",
+   "kappa_even": 1,
+   "kappa_odd": 2,
+   "imaginary_axis_zeros": [
+    {
+     "y0": "47.770417928556025824",
+     "F_at_iy0_rel": "9.13e-181",
+     "sign_change": true
+    }
+   ],
+   "endpoint_value_f_of_L_over_2": "-7.1211e-5"
+  },
+  {
+   "index": 2,
+   "eig": "9.93368e-61",
+   "kappa_even": 2,
+   "kappa_odd": 2,
+   "imaginary_axis_zeros": [],
+   "endpoint_value_f_of_L_over_2": "5.566e-30"
+  }
+ ]
+}

@@ -1,0 +1,507 @@
+[
+  {
+    "check": "N1 admissible sets: place level = [-q,q], Lambda level = [-(q+1),q], Lambda + P4 = [-q,q]; non-RH admissible data exist iff q >= 5 (q = 2..40, n,d <= 60)",
+    "status": "PASS",
+    "detail": {
+      "first_rows": [
+        {
+          "q": 2,
+          "place_level": [
+            -2,
+            2
+          ],
+          "lambda_level": [
+            -3,
+            2
+          ],
+          "lambda_plus_P4": [
+            -2,
+            2
+          ],
+          "rh_range": [
+            -2,
+            2
+          ],
+          "gap_size": 0
+        },
+        {
+          "q": 3,
+          "place_level": [
+            -3,
+            3
+          ],
+          "lambda_level": [
+            -4,
+            3
+          ],
+          "lambda_plus_P4": [
+            -3,
+            3
+          ],
+          "rh_range": [
+            -3,
+            3
+          ],
+          "gap_size": 0
+        },
+        {
+          "q": 4,
+          "place_level": [
+            -4,
+            4
+          ],
+          "lambda_level": [
+            -5,
+            4
+          ],
+          "lambda_plus_P4": [
+            -4,
+            4
+          ],
+          "rh_range": [
+            -4,
+            4
+          ],
+          "gap_size": 0
+        },
+        {
+          "q": 5,
+          "place_level": [
+            -5,
+            5
+          ],
+          "lambda_level": [
+            -6,
+            5
+          ],
+          "lambda_plus_P4": [
+            -5,
+            5
+          ],
+          "rh_range": [
+            -4,
+            4
+          ],
+          "gap_size": 2
+        },
+        {
+          "q": 6,
+          "place_level": [
+            -6,
+            6
+          ],
+          "lambda_level": [
+            -7,
+            6
+          ],
+          "lambda_plus_P4": [
+            -6,
+            6
+          ],
+          "rh_range": [
+            -4,
+            4
+          ],
+          "gap_size": 4
+        },
+        {
+          "q": 7,
+          "place_level": [
+            -7,
+            7
+          ],
+          "lambda_level": [
+            -8,
+            7
+          ],
+          "lambda_plus_P4": [
+            -7,
+            7
+          ],
+          "rh_range": [
+            -5,
+            5
+          ],
+          "gap_size": 4
+        }
+      ],
+      "q_with_gap": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    }
+  },
+  {
+    "check": "N2 golden place counts a_1..a_10 match the Lean decide lemmas",
+    "status": "PASS",
+    "detail": {
+      "golden": [
+        1,
+        5,
+        25,
+        110,
+        500,
+        2215,
+        10000,
+        45100,
+        205200,
+        937874
+      ],
+      "anti_golden": [
+        11,
+        0,
+        55,
+        110,
+        748,
+        2200,
+        12320,
+        45100,
+        228800,
+        937750
+      ]
+    }
+  },
+  {
+    "check": "N2b over F_5 every trace in [-4,4] is realized by an elliptic curve (so |m|<=4 are genuine, m = +-5 are fakes)",
+    "status": "PASS",
+    "detail": {
+      "traces": [
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  },
+  {
+    "check": "N3 fake zeros 1/2 +- x0 + i(2k+1)pi/log5 (|XiA| < 1e-40; findroot agrees)",
+    "status": "PASS",
+    "detail": {
+      "x0": "0.29899371783272007487",
+      "first_height": "1.9519812658311713983",
+      "max_residual": "1.0891e-49",
+      "findroot_max_dev": "1.066e-50"
+    }
+  },
+  {
+    "check": "N4a Poisson formula for the fake Gaussian functional agrees with direct summation",
+    "status": "PASS",
+    "detail": {
+      "max_rel_dev": "4.3853e-31"
+    }
+  },
+  {
+    "check": "N4b the fake Gaussian functional is > 0 for every centre c iff lam < lam* = 0.18271142; at the corpus threshold 3/2000 its minimum is 2763.04",
+    "status": "PASS",
+    "detail": {
+      "table": [
+        {
+          "lam": "0.0015",
+          "argmin_c": "0.032533021",
+          "min": "2763.041535"
+        },
+        {
+          "lam": "0.01",
+          "argmin_c": "1.9519813",
+          "min": "160.5182077"
+        },
+        {
+          "lam": "0.05",
+          "argmin_c": "1.9519813",
+          "min": "13.76616396"
+        },
+        {
+          "lam": "0.1",
+          "argmin_c": "1.9519813",
+          "min": "2.635832934"
+        },
+        {
+          "lam": "0.15",
+          "argmin_c": "1.9519813",
+          "min": "0.3721479665"
+        },
+        {
+          "lam": "0.18",
+          "argmin_c": "1.9519813",
+          "min": "0.01803219702"
+        },
+        {
+          "lam": "0.19",
+          "argmin_c": "1.9519813",
+          "min": "-0.04118277823"
+        },
+        {
+          "lam": "0.2",
+          "argmin_c": "1.9519813",
+          "min": "-0.08369343213"
+        },
+        {
+          "lam": "0.25",
+          "argmin_c": "1.9519813",
+          "min": "-0.1703622103"
+        },
+        {
+          "lam": "0.5",
+          "argmin_c": "1.9519813",
+          "min": "-0.1955236924"
+        },
+        {
+          "lam": "1",
+          "argmin_c": "1.9519813",
+          "min": "-0.2137979721"
+        },
+        {
+          "lam": "2",
+          "argmin_c": "1.9519813",
+          "min": "-0.2556542639"
+        }
+      ],
+      "lam_star": "0.182711422586"
+    }
+  },
+  {
+    "check": "N5 fake Li coefficients (1-based Li indexing): lambda_1..lambda_62 > 0, lambda_63 < 0 (0-based corpus rungs: taylorCoeff 0..61 >= 0, rung 62 < 0); lambda_1 = XiA'(1)/XiA(1); paired zero sums (+ tail) agree with Taylor coefficients",
+    "status": "PASS",
+    "detail": {
+      "first_negative_1based": 63,
+      "lambda_1": "0.585250149976036",
+      "lambda_62": "0.1417470556",
+      "lambda_63": "-67.01529046",
+      "compare": [
+        {
+          "n": 1,
+          "taylor": "0.585250149976",
+          "zero_sum_K3000_plus_tail": "0.585250149976"
+        },
+        {
+          "n": 2,
+          "taylor": "2.24086823135",
+          "zero_sum_K3000_plus_tail": "2.24086823135"
+        },
+        {
+          "n": 3,
+          "taylor": "4.68495939755",
+          "zero_sum_K3000_plus_tail": "4.68495939755"
+        },
+        {
+          "n": 5,
+          "taylor": "10.2441953764",
+          "zero_sum_K3000_plus_tail": "10.2441953764"
+        },
+        {
+          "n": 10,
+          "taylor": "13.6715440082",
+          "zero_sum_K3000_plus_tail": "13.6715440084"
+        },
+        {
+          "n": 30,
+          "taylor": "57.3439048492",
+          "zero_sum_K3000_plus_tail": "57.3439048568"
+        },
+        {
+          "n": 61,
+          "taylor": "80.5781251073",
+          "zero_sum_K3000_plus_tail": "80.5781252316"
+        },
+        {
+          "n": 62,
+          "taylor": "0.141747055592",
+          "zero_sum_K3000_plus_tail": "0.141747188217"
+        },
+        {
+          "n": 63,
+          "taylor": "-67.0152904553",
+          "zero_sum_K3000_plus_tail": "-67.015290314"
+        }
+      ]
+    }
+  },
+  {
+    "check": "N6 hybrid Li coefficients lambda_n(xi) + lambda_n(fake): positive for n < 63, first negative at n = 63 (lambda_n(xi) by Cauchy integral, lambda_1(xi) = 0.02309570896...)",
+    "status": "PASS",
+    "detail": {
+      "lambda1_xi": "0.0230957089661210338",
+      "first_negative_hybrid": 63,
+      "sample": {
+        "5": [
+          "0.57554271",
+          "10.244195",
+          "10.819738"
+        ],
+        "30": [
+          "18.553792",
+          "57.343905",
+          "75.897697"
+        ],
+        "62": [
+          "59.903922",
+          "0.14174706",
+          "60.045669"
+        ],
+        "80": [
+          "85.961721",
+          "140.19847",
+          "226.16019"
+        ],
+        "63": [
+          "61.296213",
+          "-67.01529",
+          "-5.7190773"
+        ]
+      }
+    }
+  },
+  {
+    "check": "N7 Weil zero-side of the fake part for the triangle test (autocorrelation of an indicator of length a): exactly 2 L h(0) = 2 log 5 while a < log 5 (Zhu's window a = 1.6 included); indefinite (negative at a = 3) once the support passes L",
+    "status": "PASS",
+    "detail": {
+      "rows": [
+        {
+          "a": "0.8",
+          "in_window": true,
+          "direct": "3.218843018",
+          "poisson": "3.218875825"
+        },
+        {
+          "a": "1.2",
+          "in_window": true,
+          "direct": "3.218853954",
+          "poisson": "3.218875825"
+        },
+        {
+          "a": "1.6",
+          "in_window": true,
+          "direct": "3.218859446",
+          "poisson": "3.218875825"
+        },
+        {
+          "a": "2.0",
+          "in_window": false,
+          "direct": "1.81330295",
+          "poisson": "1.813316072"
+        },
+        {
+          "a": "2.5",
+          "in_window": false,
+          "direct": "0.6548924929",
+          "poisson": "0.6549029913"
+        },
+        {
+          "a": "3.0",
+          "in_window": false,
+          "direct": "-0.1173811437",
+          "poisson": "-0.1173723957"
+        }
+      ],
+      "window_half_width_for_autocorrelations": "0.80471896"
+    }
+  },
+  {
+    "check": "N8 pole shadow: weights 1 + delta^n - t_n(5,-5) >= 0 for all n <= 400 iff delta >= 3.741657387 > alpha = (5+sqrt5)/2 = 3.618033989; delta = 4 works (H4), and the matching pole sits at Re s = log(delta)/log 5",
+    "status": "PASS",
+    "detail": {
+      "delta_min": "3.74165738677394",
+      "alpha": "3.61803398874989",
+      "Re_s_of_pole_delta_min": "0.8198692566",
+      "Re_s_of_offline_zero": "0.7989937178",
+      "Re_s_of_H4_pole": "0.8613531161"
+    }
+  },
+  {
+    "check": "N9 every RH-violating genus-one datum over a prime power q in [5, 2000] has an off-line zero in the open strip at height <= pi/log q <= pi/log 5 = 1.9520 < 55/16",
+    "status": "PASS",
+    "detail": {
+      "data_checked": 545924,
+      "with_real_offline_zero": 272962,
+      "max_lowest_height": 1.9519812658311715
+    }
+  },
+  {
+    "check": "N10 hybrid Gaussian functional over c in [0,1500] (zeta: first 2000 zeros, on the line): no negative value for lam below lam*; above lam* the hybrid is NEGATIVE near the fake heights (so the full Wall does detect it), and the crossover centre beyond which the zeta part wins grows fast with lam (72 at 0.3, 334 at 0.5, > 1387 at 1)",
+    "status": "PASS",
+    "detail": {
+      "rows": [
+        {
+          "lam": 0.05,
+          "min_fake": 13.766163961702375,
+          "min_zeta_over_c_in_[100,1500]": 10.1394714522243,
+          "hybrid_negative_somewhere": false,
+          "largest_c_with_hybrid_negative": null
+        },
+        {
+          "lam": 0.18,
+          "min_fake": 0.018032200718806183,
+          "min_zeta_over_c_in_[100,1500]": 0.746747353404176,
+          "hybrid_negative_somewhere": false,
+          "largest_c_with_hybrid_negative": null
+        },
+        {
+          "lam": 0.3,
+          "min_fake": -0.1864535328753523,
+          "min_zeta_over_c_in_[100,1500]": 0.2508581939729423,
+          "hybrid_negative_somewhere": true,
+          "largest_c_with_hybrid_negative": 72.325
+        },
+        {
+          "lam": 0.5,
+          "min_fake": -0.19552368842290044,
+          "min_zeta_over_c_in_[100,1500]": 0.017834404424273777,
+          "hybrid_negative_somewhere": true,
+          "largest_c_with_hybrid_negative": 333.875
+        },
+        {
+          "lam": 1.0,
+          "min_fake": -0.213797966180678,
+          "min_zeta_over_c_in_[100,1500]": 0.00010875831861556125,
+          "hybrid_negative_somewhere": true,
+          "largest_c_with_hybrid_negative": 1387.9250000000002
+        },
+        {
+          "lam": 2.0,
+          "min_fake": -0.2556542529378786,
+          "min_zeta_over_c_in_[100,1500]": 1.9041378590007877e-07,
+          "hybrid_negative_somewhere": true,
+          "largest_c_with_hybrid_negative": 1497.275
+        }
+      ]
+    }
+  },
+  {
+    "check": "N11 Davenport-Heilbronn is not a class-P datum: b(6) != b(2) b(3) and its von Mangoldt coefficients take negative values",
+    "status": "PASS",
+    "detail": {
+      "kappa": 0.28407904384041227,
+      "b2": 0.28407904384041227,
+      "b3": -0.28407904384041227,
+      "b6": 1.0,
+      "first_negative_Lambda_at": [
+        3,
+        4,
+        9,
+        12,
+        13
+      ]
+    }
+  },
+  {
+    "check": "N12 variant (q,m) = (13,-8): admissible, RH-violating, first height pi/log 13 = 1.22482, window half-width log(13)/2 = 1.28247, Gaussian threshold lam* = 0.471147",
+    "status": "PASS",
+    "detail": {
+      "x0": "0.1807438005",
+      "first_height": "1.22481664",
+      "window": "1.282474679",
+      "lam_star": "0.4711473728"
+    }
+  }
+]

@@ -1,0 +1,247 @@
+{
+ "kind": "dh",
+ "x": "40",
+ "N": 60,
+ "dps": 140,
+ "build_eig_seconds": 28.2,
+ "even_lowest": [
+  "-0.00025877",
+  "3.2098e-39",
+  "4.1384e-31",
+  "1.455e-24",
+  "1.2662e-18",
+  "4.0009e-13",
+  "1.4294e-8"
+ ],
+ "odd_lowest": [
+  "-0.0010855",
+  "5.0415e-35",
+  "1.1886e-27",
+  "1.7025e-21",
+  "6.665e-16",
+  "1.2058e-10",
+  "4.2837e-7"
+ ],
+ "kappa_even_at_0": 1,
+ "kappa_odd_at_0": 1,
+ "rows": [
+  {
+   "sector": "even",
+   "index": 0,
+   "eig": "-0.00025877",
+   "kappa_even": 0,
+   "kappa_odd": 1,
+   "w_upper": 0,
+   "w_lower": 0,
+   "w_negative_real": 1,
+   "w_positive_real": 59,
+   "first_quadrant_zeros": 0,
+   "upper_halfplane_zeros": 1,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [],
+   "isotropy": []
+  },
+  {
+   "sector": "even",
+   "index": 1,
+   "eig": "3.2098e-39",
+   "kappa_even": 1,
+   "kappa_odd": 1,
+   "w_upper": 1,
+   "w_lower": 1,
+   "w_negative_real": 0,
+   "w_positive_real": 58,
+   "first_quadrant_zeros": 1,
+   "upper_halfplane_zeros": 2,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [
+    "(85.6897935432 + 0.305937641648j)"
+   ],
+   "isotropy": [
+    {
+     "w": "(7342.64712 + 52.4314667j)",
+     "B_RR_rel": "2.65e-142",
+     "B_RRbar_rel": "1.24e-36"
+    }
+   ]
+  },
+  {
+   "sector": "even",
+   "index": 2,
+   "eig": "4.1384e-31",
+   "kappa_even": 2,
+   "kappa_odd": 2,
+   "w_upper": 1,
+   "w_lower": 1,
+   "w_negative_real": 0,
+   "w_positive_real": 58,
+   "first_quadrant_zeros": 1,
+   "upper_halfplane_zeros": 2,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [
+    "(85.6319864959 + 0.285924078035j)"
+   ],
+   "isotropy": [
+    {
+     "w": "(7332.755359 + 48.96849358j)",
+     "B_RR_rel": "7.6e-143",
+     "B_RRbar_rel": "2.29e-29"
+    }
+   ]
+  },
+  {
+   "sector": "even",
+   "index": 3,
+   "eig": "1.455e-24",
+   "kappa_even": 3,
+   "kappa_odd": 3,
+   "w_upper": 0,
+   "w_lower": 0,
+   "w_negative_real": 0,
+   "w_positive_real": 60,
+   "first_quadrant_zeros": 0,
+   "upper_halfplane_zeros": 0,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [],
+   "isotropy": []
+  },
+  {
+   "sector": "even",
+   "index": 4,
+   "eig": "1.2662e-18",
+   "kappa_even": 4,
+   "kappa_odd": 4,
+   "w_upper": 1,
+   "w_lower": 1,
+   "w_negative_real": 0,
+   "w_positive_real": 58,
+   "first_quadrant_zeros": 1,
+   "upper_halfplane_zeros": 2,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [
+    "(83.083811832 + 1.07531422427j)"
+   ],
+   "isotropy": [
+    {
+     "w": "(6901.763488 + 178.6824093j)",
+     "B_RR_rel": "4.0e-142",
+     "B_RRbar_rel": "2.86e-18"
+    }
+   ]
+  },
+  {
+   "sector": "odd",
+   "index": 0,
+   "eig": "-0.0010855",
+   "kappa_even": 0,
+   "kappa_odd": 0,
+   "w_upper": 0,
+   "w_lower": 0,
+   "w_negative_real": 0,
+   "w_positive_real": 59,
+   "first_quadrant_zeros": 0,
+   "upper_halfplane_zeros": 0,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [],
+   "isotropy": []
+  },
+  {
+   "sector": "odd",
+   "index": 1,
+   "eig": "5.0415e-35",
+   "kappa_even": 2,
+   "kappa_odd": 1,
+   "w_upper": 1,
+   "w_lower": 1,
+   "w_negative_real": 0,
+   "w_positive_real": 57,
+   "first_quadrant_zeros": 1,
+   "upper_halfplane_zeros": 2,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [
+    "(85.6741087303 + 0.301463118021j)"
+   ],
+   "isotropy": [
+    {
+     "w": "(7339.962027 + 51.6551679j)",
+     "B_RR_rel": "3.99e-143",
+     "B_RRbar_rel": "8.67e-33"
+    }
+   ]
+  },
+  {
+   "sector": "odd",
+   "index": 2,
+   "eig": "1.1886e-27",
+   "kappa_even": 3,
+   "kappa_odd": 2,
+   "w_upper": 1,
+   "w_lower": 1,
+   "w_negative_real": 0,
+   "w_positive_real": 57,
+   "first_quadrant_zeros": 1,
+   "upper_halfplane_zeros": 2,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [
+    "(85.5361167564 + 0.22242529149j)"
+   ],
+   "isotropy": [
+    {
+     "w": "(7316.377797 + 38.0507914j)",
+     "B_RR_rel": "2.26e-142",
+     "B_RRbar_rel": "2.82e-26"
+    }
+   ]
+  },
+  {
+   "sector": "odd",
+   "index": 3,
+   "eig": "1.7025e-21",
+   "kappa_even": 4,
+   "kappa_odd": 3,
+   "w_upper": 0,
+   "w_lower": 0,
+   "w_negative_real": 0,
+   "w_positive_real": 59,
+   "first_quadrant_zeros": 0,
+   "upper_halfplane_zeros": 0,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [],
+   "isotropy": []
+  },
+  {
+   "sector": "odd",
+   "index": 4,
+   "eig": "6.665e-16",
+   "kappa_even": 5,
+   "kappa_odd": 4,
+   "w_upper": 1,
+   "w_lower": 1,
+   "w_negative_real": 0,
+   "w_positive_real": 57,
+   "first_quadrant_zeros": 1,
+   "upper_halfplane_zeros": 2,
+   "sector_bound_holds": true,
+   "full_bound_holds": true,
+   "first_quadrant_zeros_z": [
+    "(81.4102345722 + 2.79835085734j)"
+   ],
+   "isotropy": [
+    {
+     "w": "(6619.795526 + 455.6287994j)",
+     "B_RR_rel": "1.95e-142",
+     "B_RRbar_rel": "8.31e-16"
+    }
+   ]
+  }
+ ]
+}

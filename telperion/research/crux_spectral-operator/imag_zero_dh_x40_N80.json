@@ -1,0 +1,32 @@
+{
+ "kind": "dh",
+ "x": "40",
+ "N": 80,
+ "dps": 160,
+ "rows": [
+  {
+   "index": 0,
+   "eig": "-0.018912",
+   "kappa_even": 0,
+   "kappa_odd": 0,
+   "imaginary_axis_zeros": [],
+   "endpoint_value_f_of_L_over_2": "-0.52374"
+  },
+  {
+   "index": 1,
+   "eig": "2.31384e-39",
+   "kappa_even": 1,
+   "kappa_odd": 1,
+   "imaginary_axis_zeros": [],
+   "endpoint_value_f_of_L_over_2": "2.1787e-19"
+  },
+  {
+   "index": 2,
+   "eig": "2.64453e-31",
+   "kappa_even": 2,
+   "kappa_odd": 2,
+   "imaginary_axis_zeros": [],
+   "endpoint_value_f_of_L_over_2": "2.6085e-15"
+  }
+ ]
+}

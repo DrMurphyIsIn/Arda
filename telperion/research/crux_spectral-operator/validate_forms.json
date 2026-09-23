@@ -1,0 +1,321 @@
+{
+ "displacement": [
+  {
+   "kind": "zeta",
+   "sector": "even",
+   "x": 9,
+   "N": 12,
+   "dps": 40,
+   "residual": "6.09e-41",
+   "cmax": "144.9"
+  },
+  {
+   "kind": "zeta",
+   "sector": "even",
+   "x": 20,
+   "N": 12,
+   "dps": 40,
+   "residual": "5.31e-41",
+   "cmax": "55.38"
+  },
+  {
+   "kind": "zeta",
+   "sector": "even",
+   "x": 40,
+   "N": 12,
+   "dps": 40,
+   "residual": "5.64e-41",
+   "cmax": "78.22"
+  },
+  {
+   "kind": "zeta",
+   "sector": "odd",
+   "x": 9,
+   "N": 12,
+   "dps": 40,
+   "residual": "4.66e-41",
+   "cmax": "189.1"
+  },
+  {
+   "kind": "zeta",
+   "sector": "odd",
+   "x": 20,
+   "N": 12,
+   "dps": 40,
+   "residual": "5.34e-41",
+   "cmax": "62.77"
+  },
+  {
+   "kind": "zeta",
+   "sector": "odd",
+   "x": 40,
+   "N": 12,
+   "dps": 40,
+   "residual": "7.07e-41",
+   "cmax": "62.34"
+  },
+  {
+   "kind": "dh",
+   "sector": "even",
+   "x": 9,
+   "N": 12,
+   "dps": 40,
+   "residual": "5.89e-41",
+   "cmax": "99.84"
+  },
+  {
+   "kind": "dh",
+   "sector": "even",
+   "x": 20,
+   "N": 12,
+   "dps": 40,
+   "residual": "1.2e-40",
+   "cmax": "110.5"
+  },
+  {
+   "kind": "dh",
+   "sector": "even",
+   "x": 40,
+   "N": 12,
+   "dps": 40,
+   "residual": "8.52e-41",
+   "cmax": "86.27"
+  },
+  {
+   "kind": "dh",
+   "sector": "odd",
+   "x": 9,
+   "N": 12,
+   "dps": 40,
+   "residual": "6.16e-41",
+   "cmax": "119.2"
+  },
+  {
+   "kind": "dh",
+   "sector": "odd",
+   "x": 20,
+   "N": 12,
+   "dps": 40,
+   "residual": "8.54e-41",
+   "cmax": "86.03"
+  },
+  {
+   "kind": "dh",
+   "sector": "odd",
+   "x": 40,
+   "N": 12,
+   "dps": 40,
+   "residual": "9.48e-41",
+   "cmax": "77.52"
+  }
+ ],
+ "brute": [
+  {
+   "kind": "zeta",
+   "sector": "even",
+   "x": 9,
+   "basis": [
+    0,
+    0
+   ],
+   "closed": "0.0408551986827167",
+   "brute": "0.0408551986827167",
+   "diff": "3.31e-25"
+  },
+  {
+   "kind": "zeta",
+   "sector": "even",
+   "x": 9,
+   "basis": [
+    0,
+    2
+   ],
+   "closed": "0.0594322016778041",
+   "brute": "0.0594322016778041",
+   "diff": "2.83e-26"
+  },
+  {
+   "kind": "zeta",
+   "sector": "even",
+   "x": 9,
+   "basis": [
+    1,
+    3
+   ],
+   "closed": "0.0881676932246526",
+   "brute": "0.0881676932246526",
+   "diff": "1.62e-26"
+  },
+  {
+   "kind": "zeta",
+   "sector": "even",
+   "x": 9,
+   "basis": [
+    3,
+    3
+   ],
+   "closed": "0.094442051404",
+   "brute": "0.094442051404",
+   "diff": "3.88e-25"
+  },
+  {
+   "kind": "zeta",
+   "sector": "odd",
+   "x": 9,
+   "basis": [
+    1,
+    1
+   ],
+   "closed": "0.000564967904344088",
+   "brute": "0.000564967904344088",
+   "diff": "2.0e-25"
+  },
+  {
+   "kind": "zeta",
+   "sector": "odd",
+   "x": 9,
+   "basis": [
+    1,
+    3
+   ],
+   "closed": "0.00196709452198147",
+   "brute": "0.00196709452198147",
+   "diff": "1.2e-25"
+  },
+  {
+   "kind": "zeta",
+   "sector": "odd",
+   "x": 9,
+   "basis": [
+    2,
+    4
+   ],
+   "closed": "0.00676452906208478",
+   "brute": "0.00676452906208478",
+   "diff": "2.8e-26"
+  },
+  {
+   "kind": "zeta",
+   "sector": "odd",
+   "x": 9,
+   "basis": [
+    4,
+    4
+   ],
+   "closed": "0.0197714815655491",
+   "brute": "0.0197714815655491",
+   "diff": "7.61e-25"
+  },
+  {
+   "kind": "dh",
+   "sector": "even",
+   "x": 9,
+   "basis": [
+    0,
+    0
+   ],
+   "closed": "0.123955033922193",
+   "brute": "0.123955033922193",
+   "diff": "5.01e-26"
+  },
+  {
+   "kind": "dh",
+   "sector": "even",
+   "x": 9,
+   "basis": [
+    0,
+    2
+   ],
+   "closed": "-0.197156236892621",
+   "brute": "-0.197156236892621",
+   "diff": "1.94e-26"
+  },
+  {
+   "kind": "dh",
+   "sector": "even",
+   "x": 9,
+   "basis": [
+    1,
+    3
+   ],
+   "closed": "0.257639212552456",
+   "brute": "0.257639212552456",
+   "diff": "1.29e-26"
+  },
+  {
+   "kind": "dh",
+   "sector": "even",
+   "x": 9,
+   "basis": [
+    3,
+    3
+   ],
+   "closed": "2.41255563608217",
+   "brute": "2.41255563608217",
+   "diff": "6.72e-25"
+  },
+  {
+   "kind": "dh",
+   "sector": "odd",
+   "x": 9,
+   "basis": [
+    1,
+    1
+   ],
+   "closed": "0.0796663292057999",
+   "brute": "0.0796663292057999",
+   "diff": "6.75e-25"
+  },
+  {
+   "kind": "dh",
+   "sector": "odd",
+   "x": 9,
+   "basis": [
+    1,
+    3
+   ],
+   "closed": "-0.0152645213852993",
+   "brute": "-0.0152645213852993",
+   "diff": "1.96e-26"
+  },
+  {
+   "kind": "dh",
+   "sector": "odd",
+   "x": 9,
+   "basis": [
+    2,
+    4
+   ],
+   "closed": "0.369855854050586",
+   "brute": "0.369855854050586",
+   "diff": "6.46e-27"
+  },
+  {
+   "kind": "dh",
+   "sector": "odd",
+   "x": 9,
+   "basis": [
+    4,
+    4
+   ],
+   "closed": "1.80791587876591",
+   "brute": "1.80791587876591",
+   "diff": "8.01e-25"
+  }
+ ],
+ "weilwin_agreement": null,
+ "weilwin": [
+  {
+   "kind": "zeta",
+   "x": 13,
+   "N": 20,
+   "maxdiff": "3.67e-40"
+  },
+  {
+   "kind": "dh",
+   "x": 13,
+   "N": 20,
+   "maxdiff": "2.3e-40"
+  }
+ ]
+}

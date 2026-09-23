@@ -1,0 +1,5 @@
+i (disc -4, h = 1): cells [t, t+1] in (0.55, 0.99) x [1, 60] with nonzero winding: []; imprecise evaluations: 0
+2i in T_2(i) (disc -16, h = 1): cells [t, t+1] in (0.55, 0.99) x [1, 60] with nonzero winding: []; imprecise evaluations: 0
+3i in T_3(i) (disc -36, h = 2): cells [t, t+1] in (0.55, 0.99) x [1, 60] with nonzero winding: [(20.0, 1.0), (42.0, 1.0), (47.0, 1.0), (50.0, 1.0), (53.0, 1.0), (55.0, 1.0)]; imprecise evaluations: 0
+4i in T_4(i) (disc -64, h = 2): cells [t, t+1] in (0.55, 0.99) x [1, 60] with nonzero winding: [(28.0, 1.0), (32.0, 1.0), (47.0, 1.0), (53.0, 1.0)]; imprecise evaluations: 0
+21i/20 in T_420(i) (disc -4*420^2, h = 256): cells [t, t+1] in (0.55, 0.99) x [1, 60] with nonzero winding: [(21.0, 1.0), (38.0, 1.0)]; imprecise evaluations: 0

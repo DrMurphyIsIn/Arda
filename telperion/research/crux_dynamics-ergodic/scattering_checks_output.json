@@ -1,0 +1,115 @@
+{
+  "conjecture1_proved": false,
+  "trust_class": "mpmath floats (50 digits), not a certificate",
+  "a_max_|phi_xi|_on_sample_Re_s_ge_half": "0.999999957695",
+  "a_max_||phi_xi|-1|_on_axis_sample": "5.3455e-51",
+  "b_true_scattering_matrix_vs_phi_xi": [
+    {
+      "s": "1.001",
+      "|phi|": "955.7967081",
+      "|phi_xi|": "0.9548418662"
+    },
+    {
+      "s": "1.01",
+      "|phi|": "96.35926958",
+      "|phi_xi|": "0.954052174"
+    },
+    {
+      "s": "1.1",
+      "|phi|": "10.40818919",
+      "|phi_xi|": "0.9461990173"
+    },
+    {
+      "s": "1.5",
+      "|phi|": "2.736865555",
+      "|phi_xi|": "0.9122885184"
+    },
+    {
+      "s": "3",
+      "|phi|": "1.200776589",
+      "|phi_xi|": "0.8005177259"
+    }
+  ],
+  "c_phase_identity": [
+    {
+      "t": 0.3,
+      "logDeriv_phi_xi": "(-0.0925432752777 - 7.7194710476e-53j)",
+      "-4 Re xi'/xi(1+2it)": "-0.0925432752777"
+    },
+    {
+      "t": 1.0,
+      "logDeriv_phi_xi": "(-0.0942083341974 + 1.64074134256e-52j)",
+      "-4 Re xi'/xi(1+2it)": "-0.0942083341974"
+    },
+    {
+      "t": 3.7,
+      "logDeriv_phi_xi": "(-0.129816118209 - 1.10023482177e-52j)",
+      "-4 Re xi'/xi(1+2it)": "-0.129816118209"
+    },
+    {
+      "t": 7.05,
+      "logDeriv_phi_xi": "(-8.09608695206 - 6.7327135908e-51j)",
+      "-4 Re xi'/xi(1+2it)": "-8.09608695206"
+    },
+    {
+      "t": 14.0,
+      "logDeriv_phi_xi": "(-0.784122486838 - 5.32218409293e-52j)",
+      "-4 Re xi'/xi(1+2it)": "-0.784122486838"
+    },
+    {
+      "t": 25.5,
+      "logDeriv_phi_xi": "(-2.12330115925 - 3.86830746183e-51j)",
+      "-4 Re xi'/xi(1+2it)": "-2.12330115925"
+    }
+  ],
+  "d_max_|phi_fake|_on_sample": "0.9999640506",
+  "d_fake_value_at_rho0": "0.0",
+  "e_finite_euler_product_on_axis": [
+    {
+      "t": "0.3",
+      "|c_{2,3,5}(1/2+it)|": "1.607164"
+    },
+    {
+      "t": "0.1",
+      "|c_{2,3,5}(1/2+it)|": "28.864495"
+    },
+    {
+      "t": "0.03",
+      "|c_{2,3,5}(1/2+it)|": "1012.8308"
+    },
+    {
+      "t": "0.01",
+      "|c_{2,3,5}(1/2+it)|": "27214.347"
+    },
+    {
+      "t": "0.001",
+      "|c_{2,3,5}(1/2+it)|": "27198017.0"
+    }
+  ],
+  "f_DH_rational_face_slices_step_0.25": [
+    {
+      "sigma": 1.0,
+      "min_Re_LambdaDH'/LambdaDH_on_[1,200]": "0.103029",
+      "argmin_t": 1.0,
+      "first_t_with_negative_value": null
+    },
+    {
+      "sigma": 0.9,
+      "min_Re_LambdaDH'/LambdaDH_on_[1,200]": "0.0825952",
+      "argmin_t": 1.0,
+      "first_t_with_negative_value": null
+    },
+    {
+      "sigma": 0.82,
+      "min_Re_LambdaDH'/LambdaDH_on_[1,200]": "0.0661646",
+      "argmin_t": 1.0,
+      "first_t_with_negative_value": null
+    },
+    {
+      "sigma": 0.8,
+      "min_Re_LambdaDH'/LambdaDH_on_[1,200]": "-1.3409",
+      "argmin_t": 85.75,
+      "first_t_with_negative_value": 85.75
+    }
+  ]
+}

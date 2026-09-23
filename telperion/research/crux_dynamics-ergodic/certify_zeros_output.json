@@ -1,0 +1,99 @@
+{
+  "trust_class": "Arb interval arithmetic (python-flint 0.6), segment-certified winding; not a Lean kernel proof",
+  "conjecture1_proved": false,
+  "checks": [
+    {
+      "what": "E*(i, 3): Fourier vs lattice sum (M=250)",
+      "fourier": "[0.150257112894949 +/- 2.86e-16]",
+      "lattice": "0.1502571128860375"
+    },
+    {
+      "what": "E*(2i, 3): Fourier vs lattice sum (M=250)",
+      "fourier": "[0.544682034244191 +/- 1.61e-16]",
+      "lattice": "0.5446820342236511"
+    },
+    {
+      "what": "E*(21i/20, 3): Fourier vs lattice sum (M=250)",
+      "fourier": "[0.151612275016698 +/- 2.96e-16]",
+      "lattice": "0.15161227500773472"
+    },
+    {
+      "what": "E*(i sqrt5, 0.9+15.7i): rigorous Fourier vs genus identity",
+      "fourier": "[9.710025057812490788414e-12 +/- 3.90e-34] + [-5.88030113057354271817e-13 +/- 4.43e-34]j",
+      "genus": "[9.710025057812490788414145709738755233962323059695359043e-12 +/- 5.18e-67] + [-5.880301130573542718168012454427041654563315725531092213e-13 +/- 6.79e-68]j",
+      "overlap": true
+    }
+  ],
+  "certificates": [
+    {
+      "function": "i*sqrt5 (x^2+5y^2, h=2): Z_Q(s) via genus identity",
+      "located_zero": [
+        "[0.93296969748541410476 +/- 2.83e-21]",
+        "[15.668249531278472362 +/- 3.95e-19]"
+      ],
+      "box": {
+        "box": [
+          "9/10",
+          "24/25",
+          "391/25",
+          "157/10"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000000 +/- 1.27e-55]",
+        "certified_pieces": 64
+      },
+      "control_box": {
+        "box": [
+          "3/5",
+          "33/50",
+          "391/25",
+          "157/10"
+        ],
+        "winding": 0,
+        "winding_interval": "[+/- 1.02e-56]",
+        "certified_pieces": 32
+      },
+      "seconds": 0.4
+    },
+    {
+      "function": "Davenport-Heilbronn D(s)",
+      "located_zero": [
+        "[0.80851718245663738555 +/- 3.36e-21]",
+        "[85.699348485377592172 +/- 7.10e-20]"
+      ],
+      "box": {
+        "box": [
+          "79/100",
+          "83/100",
+          "2142/25",
+          "2143/25"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000000 +/- 4.99e-55]",
+        "certified_pieces": 39
+      },
+      "control_box": {
+        "box": [
+          "3/5",
+          "7/10",
+          "2142/25",
+          "2143/25"
+        ],
+        "winding": 0,
+        "winding_interval": "[+/- 1.04e-55]",
+        "certified_pieces": 32
+      },
+      "seconds": 0.1
+    }
+  ],
+  "numerical_only": {
+    "function": "E*(21i/20, s), 21i/20 in T_420(i)",
+    "zero": [
+      "[0.7759858498628036515878149 +/- 2.26e-26]",
+      "[21.66552639862992521508502 +/- 3.19e-24]"
+    ],
+    "rigorous_enclosure_of_E*_at_the_zero_midpoint": "[+/- 5.32e-42] + [+/- 5.30e-42]j",
+    "for_scale_rigorous_enclosure_of_E*_at_0.70+21.665i": "[-7.479676713684800083191421e-17 +/- 8.28e-42] + [-5.319711526005341709891819e-17 +/- 7.31e-42]j",
+    "status": "NUMERICAL: the point evaluation is a rigorous enclosure, but a small value at one point does not certify a zero; NOT segment-certified (see module docstring)"
+  }
+}

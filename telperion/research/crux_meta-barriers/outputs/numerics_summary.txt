@@ -1,0 +1,14 @@
+PASS N1 admissible sets: place level = [-q,q], Lambda level = [-(q+1),q], Lambda + P4 = [-q,q]; non-RH admissible data exist iff q >= 5 (q = 2..40, n,d <= 60)
+PASS N2 golden place counts a_1..a_10 match the Lean decide lemmas
+PASS N2b over F_5 every trace in [-4,4] is realized by an elliptic curve (so |m|<=4 are genuine, m = +-5 are fakes)
+PASS N3 fake zeros 1/2 +- x0 + i(2k+1)pi/log5 (|XiA| < 1e-40; findroot agrees)
+PASS N4a Poisson formula for the fake Gaussian functional agrees with direct summation
+PASS N4b the fake Gaussian functional is > 0 for every centre c iff lam < lam* = 0.18271142; at the corpus threshold 3/2000 its minimum is 2763.04
+PASS N5 fake Li coefficients (1-based Li indexing): lambda_1..lambda_62 > 0, lambda_63 < 0 (0-based corpus rungs: taylorCoeff 0..61 >= 0, rung 62 < 0); lambda_1 = XiA'(1)/XiA(1); paired zero sums (+ tail) agree with Taylor coefficients
+PASS N6 hybrid Li coefficients lambda_n(xi) + lambda_n(fake): positive for n < 63, first negative at n = 63 (lambda_n(xi) by Cauchy integral, lambda_1(xi) = 0.02309570896...)
+PASS N7 Weil zero-side of the fake part for the triangle test (autocorrelation of an indicator of length a): exactly 2 L h(0) = 2 log 5 while a < log 5 (Zhu's window a = 1.6 included); indefinite (negative at a = 3) once the support passes L
+PASS N8 pole shadow: weights 1 + delta^n - t_n(5,-5) >= 0 for all n <= 400 iff delta >= 3.741657387 > alpha = (5+sqrt5)/2 = 3.618033989; delta = 4 works (H4), and the matching pole sits at Re s = log(delta)/log 5
+PASS N9 every RH-violating genus-one datum over a prime power q in [5, 2000] has an off-line zero in the open strip at height <= pi/log q <= pi/log 5 = 1.9520 < 55/16
+PASS N10 hybrid Gaussian functional over c in [0,1500] (zeta: first 2000 zeros, on the line): no negative value for lam below lam*; above lam* the hybrid is NEGATIVE near the fake heights (so the full Wall does detect it), and the crossover centre beyond which the zeta part wins grows fast with lam (72 at 0.3, 334 at 0.5, > 1387 at 1)
+PASS N11 Davenport-Heilbronn is not a class-P datum: b(6) != b(2) b(3) and its von Mangoldt coefficients take negative values
+PASS N12 variant (q,m) = (13,-8): admissible, RH-violating, first height pi/log 13 = 1.22482, window half-width log(13)/2 = 1.28247, Gaussian threshold lam* = 0.471147
