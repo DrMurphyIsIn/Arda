@@ -1,0 +1,71 @@
+{
+ "meta": {
+  "tag": "T30000",
+  "format": "kernel",
+  "odd": true,
+  "tn": 30000,
+  "tq": 0,
+  "t": 30000.0,
+  "K": 6,
+  "order": 13,
+  "N": 10059,
+  "chunk": 500,
+  "nchunks": 21,
+  "terms": 10058,
+  "python_seconds": 0.06,
+  "cfg_module": "EMZetaHighK_T30000_Cfg",
+  "parts": [
+   "EMZetaHighK_T30000_P0"
+  ],
+  "assembly": "EMZetaHighK_T30000",
+  "lo_re": 0.38701261,
+  "hi_re": 0.38901189,
+  "lo_im": 0.8705057,
+  "hi_im": 0.87250498,
+  "E": 0.0009996279725467342,
+  "Q": 130606993219077238946790445929143348216032488628251093048352077,
+  "r": 100,
+  "D": 100000000,
+  "mpmath_re": 0.3880124998722247,
+  "mpmath_im": 0.8715053820656057,
+  "mpmath_inside": true,
+  "eval_rad_re": 9.719644567656506e-09
+ },
+ "cfg": {
+  "module": "EMZetaHighK_T30000_Cfg",
+  "rc": 0,
+  "kernel_ms": 0,
+  "n_kernel": 0,
+  "wall_s": 0.23,
+  "rss": 406781952,
+  "errors": [],
+  "olean_bytes": 199880
+ },
+ "parts": [
+  {
+   "module": "EMZetaHighK_T30000_P0",
+   "rc": 0,
+   "kernel_ms": 2229.7,
+   "n_kernel": 21,
+   "wall_s": 2.48,
+   "rss": 1045004288,
+   "errors": [],
+   "olean_bytes": 38528
+  }
+ ],
+ "wall_parts_s": 2.4843220710754395,
+ "assembly": {
+  "module": "EMZetaHighK_T30000",
+  "rc": 0,
+  "kernel_ms": 8.09,
+  "n_kernel": 2,
+  "wall_s": 3.34,
+  "rss": 2969944064,
+  "errors": [],
+  "olean_bytes": 74096
+ },
+ "kernel_ms_chunks": 2229.7,
+ "n_decls_checked": 21,
+ "us_per_term": 221.68423145754622,
+ "errors": []
+}

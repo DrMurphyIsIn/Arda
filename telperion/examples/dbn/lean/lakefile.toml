@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -111,6 +111,36 @@ name = "DBNHeatApprox"
 # NOT stated. Nothing here proves RH. conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNDeBruijnReduction"
+
+# Route C / C3 obligation L3 (Hadamard factorisation), Mathlib-only pieces
+# (telperion/docs/HADAMARD_PLAN_2026-09-23.md): L3a zero counting via Jensen's inequality and a
+# dyadic summation.  Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNHadamardCount"
+
+# L3b: the even canonical product prod (1 - z^2 tau_k^2): entire, growth, zeros, orders.
+[[lean_lib]]
+name = "DBNHadamardProduct"
+
+# L3c/L3d: logarithm of a zero-free entire function; circle-average estimate for |Re H| via
+# Jensen's formula in the mean (replaces the classical minimum-modulus step).
+[[lean_lib]]
+name = "DBNHadamardMean"
+
+# L3e: Poisson + Borel-Caratheodory + Cauchy: H with sub-quadratic mean growth is affine.
+[[lean_lib]]
+name = "DBNHadamardLinear"
+
+# L3 assembled: evenHadamardData_of_order_lt_two -- every even entire function of order < 2
+# carries DBNStep.EvenHadamardData.  Classical, not RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNHadamard"
+
+# L3 for the approximants (approxHadamard : ApproxHadamard) and the assembly of de Bruijn's
+# theorem RH.dbn_debruijn_real_zeros (Lambda <= 1/2), statement verbatim.  Says nothing about
+# zeros inside the strip.  Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNHadamardApprox"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.

@@ -10,7 +10,11 @@
 #   AND_first_zero_kernel   ForgeFirstZeroKernel    ForgeFirstZeroKernel.first_zero_kernel
 #   AND_stirling_binet_k1   StirlingBinet           ZetaReflection.logDeriv_gammaR_stirling
 #
-# The job builds the six modules and their five axiom-guard libs, then runs each guard and
+# Also built and guarded here (2026-09-23):
+#   AND_g2_reflected_band_kernel  ReflectedBand_t14_Kernel  ReflectedBand_t14_Kernel.pilot_kernel, .okK
+#   AND_theta_branch (proposed)   RSTheta                   RSDesignTheta.gaussBranch_theta_sub_thetaMain_le
+#
+# The job builds these modules and their seven axiom-guard libs, then runs each guard and
 # asserts (1) it elaborated, (2) no `sorryAx`, (3) every printed axiom list is a SUBSET of
 # {propext, Classical.choice, Quot.sound}, (4) at least the expected number of anchors printed,
 # and (5) every registry theorem above is among them.
@@ -77,13 +81,13 @@ jobs:
         working-directory: telperion/examples/zeta_reflection/lean
         run: lake exe cache get
 
-      - name: Build the six anduril artifacts and their five axiom guards
+      - name: Build the anduril artifacts and their axiom guards
         working-directory: telperion/examples/zeta_reflection/lean
         run: |
-          lake build CheckBand ReflectedBand_t14 EMZetaTail EMZetaComplex ForgeFirstZeroKernel StirlingBinet \
-                     AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling
+          lake build CheckBand ReflectedBand_t14 EMZetaTail EMZetaComplex ForgeFirstZeroKernel StirlingBinet ReflectedBand_t14_Kernel RSTheta HeightFloor EdgeClearGlue BandGlue \
+                     AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue
 
-      - name: "Axiom guard (six anduril artifacts): axioms within the standard three, no sorryAx, every registry theorem printed"
+      - name: "Axiom guard (anduril artifacts): axioms within the standard three, no sorryAx, every registry theorem printed"
         working-directory: telperion/examples/zeta_reflection/lean
         shell: bash
         run: |
@@ -92,16 +96,21 @@ jobs:
           # Anchor floor = the number of `#print axioms` lines in each guard file today.
           floor() { case "$1" in
             AxiomGuardA4) echo 8 ;; AxiomGuardEMTail) echo 23 ;; AxiomGuardEMZetaComplex) echo 23 ;;
-            AxiomGuardFirstZeroKernel) echo 1 ;; AxiomGuardStirling) echo 12 ;; *) echo 999 ;; esac; }
+            AxiomGuardFirstZeroKernel) echo 1 ;; AxiomGuardStirling) echo 12 ;; AxiomGuardArbKernel) echo 16 ;;
+            AxiomGuardRSTheta) echo 24 ;; AxiomGuardHeightFloor) echo 98 ;; AxiomGuardBandGlue) echo 39 ;; *) echo 999 ;; esac; }
           # The registry theorems (one per proved node; two for AND_g2_reflected_band).
           registry() { case "$1" in
             AxiomGuardA4) echo "ZetaReflection.checkLine_correct ReflectedBand_t14.ok ReflectedBand_t14.pilot" ;;
             AxiomGuardEMTail) echo "ZetaReflection.em_tail3_number" ;;
             AxiomGuardEMZetaComplex) echo "ZetaReflection.em_zeta_strip" ;;
             AxiomGuardFirstZeroKernel) echo "ForgeFirstZeroKernel.first_zero_kernel" ;;
-            AxiomGuardStirling) echo "ZetaReflection.logDeriv_gammaR_stirling" ;; esac; }
+            AxiomGuardStirling) echo "ZetaReflection.logDeriv_gammaR_stirling" ;;
+            AxiomGuardArbKernel) echo "ReflectedBand_t14_Kernel.pilot_kernel ReflectedBand_t14_Kernel.okK" ;;
+            AxiomGuardRSTheta) echo "RSDesignTheta.gaussBranch_theta_sub_thetaMain_le" ;;
+            AxiomGuardHeightFloor) echo "HeightFloor.height_floor HeightFloor.height_floor_280000" ;;
+            AxiomGuardBandGlue) echo "EdgeClearGlue.hnzl_discharged BandGlue.segBandHyp_of_certs" ;; esac; }
           total=0
-          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling; do
+          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue; do
             [ -f "$g.lean" ] || { echo "::error::$g.lean is missing"; exit 1; }
             echo "== $g"
             rc=0; lake env lean "$g.lean" > "$g.out" 2>&1 || rc=$?
@@ -127,4 +136,4 @@ jobs:
                 || { echo "::error::$g: registry theorem $thm was not printed"; exit 1; }
             done
           done
-          echo "OK: $total guarded anchors across 5 guards; every axiom list within the standard three; all 7 registry theorems present."
+          echo "OK: $total guarded anchors across 9 guards; every axiom list within the standard three; all 14 registry theorems present."

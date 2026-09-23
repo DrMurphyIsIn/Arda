@@ -1,0 +1,1963 @@
+/-  Probes/ArbEconomics_T30000.lean -- KERNEL-CHECKED enclosure of zeta(1/2 + 30000 i) (GENERATED; do not edit).
+
+    `zeta_re`, `zeta_im` bound Re / Im of riemannZeta (1/2 + 30000 i) with NO hypotheses:
+      * the Dirichlet sum over n = 1..469999 is kernel-evaluated in 940 `decide +kernel` chunks
+        (parts P0..P23) and composed by `ArbEcon.chunk_sound` (ArbEconomics_Sound);
+      * the EM order-3 tail at N = 470000 is `EMZetaTail.em_zeta_critical_line3_enclosure`
+        (via `ArbEcon.em3_remainder_le`, E = Q / (180 N^2 r), Q = 27000000131250, r = 685);
+      * `ArbEcon.zeta_re_bounds` / `zeta_im_bounds` (ArbEconomics_Zeta) assemble the result.
+    Certified: Re in [0.38699137, 0.38903363], Im in [0.87048425, 0.87252652] (width dominated by E).
+    conjecture1_proved = False.  One height, finite interval arithmetic; nothing about RH.
+-/
+import Probes.ArbEconomics_Zeta
+import Probes.ArbEconomics_T30000_P0
+import Probes.ArbEconomics_T30000_P1
+import Probes.ArbEconomics_T30000_P2
+import Probes.ArbEconomics_T30000_P3
+import Probes.ArbEconomics_T30000_P4
+import Probes.ArbEconomics_T30000_P5
+import Probes.ArbEconomics_T30000_P6
+import Probes.ArbEconomics_T30000_P7
+import Probes.ArbEconomics_T30000_P8
+import Probes.ArbEconomics_T30000_P9
+import Probes.ArbEconomics_T30000_P10
+import Probes.ArbEconomics_T30000_P11
+import Probes.ArbEconomics_T30000_P12
+import Probes.ArbEconomics_T30000_P13
+import Probes.ArbEconomics_T30000_P14
+import Probes.ArbEconomics_T30000_P15
+import Probes.ArbEconomics_T30000_P16
+import Probes.ArbEconomics_T30000_P17
+import Probes.ArbEconomics_T30000_P18
+import Probes.ArbEconomics_T30000_P19
+import Probes.ArbEconomics_T30000_P20
+import Probes.ArbEconomics_T30000_P21
+import Probes.ArbEconomics_T30000_P22
+import Probes.ArbEconomics_T30000_P23
+
+namespace ArbEcon.I_T30000
+
+theorem valid : ArbEcon.Valid cfg (30000 : ℝ) 9 where
+  one_eq := by decide
+  two1_eq := by decide
+  oneSq_eq := by decide
+  t_eq := by show (30000 : ℝ) = ((30000 : ℕ) : ℝ) / 2 ^ (0 : ℕ); norm_num
+  pi_ball := by
+    show |Real.pi / 2 * 2 ^ (64 : ℕ) - ((28976077832308491369 : ℕ) : ℝ)| ≤ ((2 : ℕ) : ℝ)
+    have h1 := Real.pi_gt_d20
+    have h2 := Real.pi_lt_d20
+    rw [abs_le]; constructor <;> norm_num <;> linarith
+  umax_le := by decide
+  dcos_eq := by decide
+  dsin_eq := by decide
+  tau_ok := by
+    show (2 : ℝ) ^ (64 : ℕ) * ArbEcon.taylorBnd 9 ≤ ((1 : ℕ) : ℝ)
+    unfold ArbEcon.taylorBnd; norm_num [Nat.factorial]
+  hc_eq := fun _ => rfl
+  hs_eq := fun _ => rfl
+  lnf_eq := fun _ => rfl
+
+theorem inv_0 : ArbEcon.Inv cfg (30000 : ℝ) 1 s0 := ArbEcon.inv_init cfg _ valid.one_eq
+theorem inv_1 : ArbEcon.Inv cfg (30000 : ℝ) 501 s1 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 1 s0 s1 inv_0 chunk_0
+theorem inv_2 : ArbEcon.Inv cfg (30000 : ℝ) 1001 s2 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 501 s1 s2 inv_1 chunk_1
+theorem inv_3 : ArbEcon.Inv cfg (30000 : ℝ) 1501 s3 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 1001 s2 s3 inv_2 chunk_2
+theorem inv_4 : ArbEcon.Inv cfg (30000 : ℝ) 2001 s4 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 1501 s3 s4 inv_3 chunk_3
+theorem inv_5 : ArbEcon.Inv cfg (30000 : ℝ) 2501 s5 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 2001 s4 s5 inv_4 chunk_4
+theorem inv_6 : ArbEcon.Inv cfg (30000 : ℝ) 3001 s6 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 2501 s5 s6 inv_5 chunk_5
+theorem inv_7 : ArbEcon.Inv cfg (30000 : ℝ) 3501 s7 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 3001 s6 s7 inv_6 chunk_6
+theorem inv_8 : ArbEcon.Inv cfg (30000 : ℝ) 4001 s8 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 3501 s7 s8 inv_7 chunk_7
+theorem inv_9 : ArbEcon.Inv cfg (30000 : ℝ) 4501 s9 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 4001 s8 s9 inv_8 chunk_8
+theorem inv_10 : ArbEcon.Inv cfg (30000 : ℝ) 5001 s10 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 4501 s9 s10 inv_9 chunk_9
+theorem inv_11 : ArbEcon.Inv cfg (30000 : ℝ) 5501 s11 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 5001 s10 s11 inv_10 chunk_10
+theorem inv_12 : ArbEcon.Inv cfg (30000 : ℝ) 6001 s12 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 5501 s11 s12 inv_11 chunk_11
+theorem inv_13 : ArbEcon.Inv cfg (30000 : ℝ) 6501 s13 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 6001 s12 s13 inv_12 chunk_12
+theorem inv_14 : ArbEcon.Inv cfg (30000 : ℝ) 7001 s14 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 6501 s13 s14 inv_13 chunk_13
+theorem inv_15 : ArbEcon.Inv cfg (30000 : ℝ) 7501 s15 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 7001 s14 s15 inv_14 chunk_14
+theorem inv_16 : ArbEcon.Inv cfg (30000 : ℝ) 8001 s16 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 7501 s15 s16 inv_15 chunk_15
+theorem inv_17 : ArbEcon.Inv cfg (30000 : ℝ) 8501 s17 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 8001 s16 s17 inv_16 chunk_16
+theorem inv_18 : ArbEcon.Inv cfg (30000 : ℝ) 9001 s18 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 8501 s17 s18 inv_17 chunk_17
+theorem inv_19 : ArbEcon.Inv cfg (30000 : ℝ) 9501 s19 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 9001 s18 s19 inv_18 chunk_18
+theorem inv_20 : ArbEcon.Inv cfg (30000 : ℝ) 10001 s20 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 9501 s19 s20 inv_19 chunk_19
+theorem inv_21 : ArbEcon.Inv cfg (30000 : ℝ) 10501 s21 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 10001 s20 s21 inv_20 chunk_20
+theorem inv_22 : ArbEcon.Inv cfg (30000 : ℝ) 11001 s22 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 10501 s21 s22 inv_21 chunk_21
+theorem inv_23 : ArbEcon.Inv cfg (30000 : ℝ) 11501 s23 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 11001 s22 s23 inv_22 chunk_22
+theorem inv_24 : ArbEcon.Inv cfg (30000 : ℝ) 12001 s24 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 11501 s23 s24 inv_23 chunk_23
+theorem inv_25 : ArbEcon.Inv cfg (30000 : ℝ) 12501 s25 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 12001 s24 s25 inv_24 chunk_24
+theorem inv_26 : ArbEcon.Inv cfg (30000 : ℝ) 13001 s26 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 12501 s25 s26 inv_25 chunk_25
+theorem inv_27 : ArbEcon.Inv cfg (30000 : ℝ) 13501 s27 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 13001 s26 s27 inv_26 chunk_26
+theorem inv_28 : ArbEcon.Inv cfg (30000 : ℝ) 14001 s28 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 13501 s27 s28 inv_27 chunk_27
+theorem inv_29 : ArbEcon.Inv cfg (30000 : ℝ) 14501 s29 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 14001 s28 s29 inv_28 chunk_28
+theorem inv_30 : ArbEcon.Inv cfg (30000 : ℝ) 15001 s30 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 14501 s29 s30 inv_29 chunk_29
+theorem inv_31 : ArbEcon.Inv cfg (30000 : ℝ) 15501 s31 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 15001 s30 s31 inv_30 chunk_30
+theorem inv_32 : ArbEcon.Inv cfg (30000 : ℝ) 16001 s32 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 15501 s31 s32 inv_31 chunk_31
+theorem inv_33 : ArbEcon.Inv cfg (30000 : ℝ) 16501 s33 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 16001 s32 s33 inv_32 chunk_32
+theorem inv_34 : ArbEcon.Inv cfg (30000 : ℝ) 17001 s34 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 16501 s33 s34 inv_33 chunk_33
+theorem inv_35 : ArbEcon.Inv cfg (30000 : ℝ) 17501 s35 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 17001 s34 s35 inv_34 chunk_34
+theorem inv_36 : ArbEcon.Inv cfg (30000 : ℝ) 18001 s36 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 17501 s35 s36 inv_35 chunk_35
+theorem inv_37 : ArbEcon.Inv cfg (30000 : ℝ) 18501 s37 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 18001 s36 s37 inv_36 chunk_36
+theorem inv_38 : ArbEcon.Inv cfg (30000 : ℝ) 19001 s38 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 18501 s37 s38 inv_37 chunk_37
+theorem inv_39 : ArbEcon.Inv cfg (30000 : ℝ) 19501 s39 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 19001 s38 s39 inv_38 chunk_38
+theorem inv_40 : ArbEcon.Inv cfg (30000 : ℝ) 20001 s40 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 19501 s39 s40 inv_39 chunk_39
+theorem inv_41 : ArbEcon.Inv cfg (30000 : ℝ) 20501 s41 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 20001 s40 s41 inv_40 chunk_40
+theorem inv_42 : ArbEcon.Inv cfg (30000 : ℝ) 21001 s42 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 20501 s41 s42 inv_41 chunk_41
+theorem inv_43 : ArbEcon.Inv cfg (30000 : ℝ) 21501 s43 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 21001 s42 s43 inv_42 chunk_42
+theorem inv_44 : ArbEcon.Inv cfg (30000 : ℝ) 22001 s44 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 21501 s43 s44 inv_43 chunk_43
+theorem inv_45 : ArbEcon.Inv cfg (30000 : ℝ) 22501 s45 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 22001 s44 s45 inv_44 chunk_44
+theorem inv_46 : ArbEcon.Inv cfg (30000 : ℝ) 23001 s46 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 22501 s45 s46 inv_45 chunk_45
+theorem inv_47 : ArbEcon.Inv cfg (30000 : ℝ) 23501 s47 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 23001 s46 s47 inv_46 chunk_46
+theorem inv_48 : ArbEcon.Inv cfg (30000 : ℝ) 24001 s48 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 23501 s47 s48 inv_47 chunk_47
+theorem inv_49 : ArbEcon.Inv cfg (30000 : ℝ) 24501 s49 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 24001 s48 s49 inv_48 chunk_48
+theorem inv_50 : ArbEcon.Inv cfg (30000 : ℝ) 25001 s50 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 24501 s49 s50 inv_49 chunk_49
+theorem inv_51 : ArbEcon.Inv cfg (30000 : ℝ) 25501 s51 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 25001 s50 s51 inv_50 chunk_50
+theorem inv_52 : ArbEcon.Inv cfg (30000 : ℝ) 26001 s52 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 25501 s51 s52 inv_51 chunk_51
+theorem inv_53 : ArbEcon.Inv cfg (30000 : ℝ) 26501 s53 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 26001 s52 s53 inv_52 chunk_52
+theorem inv_54 : ArbEcon.Inv cfg (30000 : ℝ) 27001 s54 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 26501 s53 s54 inv_53 chunk_53
+theorem inv_55 : ArbEcon.Inv cfg (30000 : ℝ) 27501 s55 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 27001 s54 s55 inv_54 chunk_54
+theorem inv_56 : ArbEcon.Inv cfg (30000 : ℝ) 28001 s56 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 27501 s55 s56 inv_55 chunk_55
+theorem inv_57 : ArbEcon.Inv cfg (30000 : ℝ) 28501 s57 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 28001 s56 s57 inv_56 chunk_56
+theorem inv_58 : ArbEcon.Inv cfg (30000 : ℝ) 29001 s58 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 28501 s57 s58 inv_57 chunk_57
+theorem inv_59 : ArbEcon.Inv cfg (30000 : ℝ) 29501 s59 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 29001 s58 s59 inv_58 chunk_58
+theorem inv_60 : ArbEcon.Inv cfg (30000 : ℝ) 30001 s60 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 29501 s59 s60 inv_59 chunk_59
+theorem inv_61 : ArbEcon.Inv cfg (30000 : ℝ) 30501 s61 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 30001 s60 s61 inv_60 chunk_60
+theorem inv_62 : ArbEcon.Inv cfg (30000 : ℝ) 31001 s62 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 30501 s61 s62 inv_61 chunk_61
+theorem inv_63 : ArbEcon.Inv cfg (30000 : ℝ) 31501 s63 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 31001 s62 s63 inv_62 chunk_62
+theorem inv_64 : ArbEcon.Inv cfg (30000 : ℝ) 32001 s64 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 31501 s63 s64 inv_63 chunk_63
+theorem inv_65 : ArbEcon.Inv cfg (30000 : ℝ) 32501 s65 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 32001 s64 s65 inv_64 chunk_64
+theorem inv_66 : ArbEcon.Inv cfg (30000 : ℝ) 33001 s66 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 32501 s65 s66 inv_65 chunk_65
+theorem inv_67 : ArbEcon.Inv cfg (30000 : ℝ) 33501 s67 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 33001 s66 s67 inv_66 chunk_66
+theorem inv_68 : ArbEcon.Inv cfg (30000 : ℝ) 34001 s68 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 33501 s67 s68 inv_67 chunk_67
+theorem inv_69 : ArbEcon.Inv cfg (30000 : ℝ) 34501 s69 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 34001 s68 s69 inv_68 chunk_68
+theorem inv_70 : ArbEcon.Inv cfg (30000 : ℝ) 35001 s70 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 34501 s69 s70 inv_69 chunk_69
+theorem inv_71 : ArbEcon.Inv cfg (30000 : ℝ) 35501 s71 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 35001 s70 s71 inv_70 chunk_70
+theorem inv_72 : ArbEcon.Inv cfg (30000 : ℝ) 36001 s72 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 35501 s71 s72 inv_71 chunk_71
+theorem inv_73 : ArbEcon.Inv cfg (30000 : ℝ) 36501 s73 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 36001 s72 s73 inv_72 chunk_72
+theorem inv_74 : ArbEcon.Inv cfg (30000 : ℝ) 37001 s74 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 36501 s73 s74 inv_73 chunk_73
+theorem inv_75 : ArbEcon.Inv cfg (30000 : ℝ) 37501 s75 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 37001 s74 s75 inv_74 chunk_74
+theorem inv_76 : ArbEcon.Inv cfg (30000 : ℝ) 38001 s76 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 37501 s75 s76 inv_75 chunk_75
+theorem inv_77 : ArbEcon.Inv cfg (30000 : ℝ) 38501 s77 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 38001 s76 s77 inv_76 chunk_76
+theorem inv_78 : ArbEcon.Inv cfg (30000 : ℝ) 39001 s78 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 38501 s77 s78 inv_77 chunk_77
+theorem inv_79 : ArbEcon.Inv cfg (30000 : ℝ) 39501 s79 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 39001 s78 s79 inv_78 chunk_78
+theorem inv_80 : ArbEcon.Inv cfg (30000 : ℝ) 40001 s80 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 39501 s79 s80 inv_79 chunk_79
+theorem inv_81 : ArbEcon.Inv cfg (30000 : ℝ) 40501 s81 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 40001 s80 s81 inv_80 chunk_80
+theorem inv_82 : ArbEcon.Inv cfg (30000 : ℝ) 41001 s82 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 40501 s81 s82 inv_81 chunk_81
+theorem inv_83 : ArbEcon.Inv cfg (30000 : ℝ) 41501 s83 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 41001 s82 s83 inv_82 chunk_82
+theorem inv_84 : ArbEcon.Inv cfg (30000 : ℝ) 42001 s84 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 41501 s83 s84 inv_83 chunk_83
+theorem inv_85 : ArbEcon.Inv cfg (30000 : ℝ) 42501 s85 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 42001 s84 s85 inv_84 chunk_84
+theorem inv_86 : ArbEcon.Inv cfg (30000 : ℝ) 43001 s86 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 42501 s85 s86 inv_85 chunk_85
+theorem inv_87 : ArbEcon.Inv cfg (30000 : ℝ) 43501 s87 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 43001 s86 s87 inv_86 chunk_86
+theorem inv_88 : ArbEcon.Inv cfg (30000 : ℝ) 44001 s88 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 43501 s87 s88 inv_87 chunk_87
+theorem inv_89 : ArbEcon.Inv cfg (30000 : ℝ) 44501 s89 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 44001 s88 s89 inv_88 chunk_88
+theorem inv_90 : ArbEcon.Inv cfg (30000 : ℝ) 45001 s90 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 44501 s89 s90 inv_89 chunk_89
+theorem inv_91 : ArbEcon.Inv cfg (30000 : ℝ) 45501 s91 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 45001 s90 s91 inv_90 chunk_90
+theorem inv_92 : ArbEcon.Inv cfg (30000 : ℝ) 46001 s92 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 45501 s91 s92 inv_91 chunk_91
+theorem inv_93 : ArbEcon.Inv cfg (30000 : ℝ) 46501 s93 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 46001 s92 s93 inv_92 chunk_92
+theorem inv_94 : ArbEcon.Inv cfg (30000 : ℝ) 47001 s94 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 46501 s93 s94 inv_93 chunk_93
+theorem inv_95 : ArbEcon.Inv cfg (30000 : ℝ) 47501 s95 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 47001 s94 s95 inv_94 chunk_94
+theorem inv_96 : ArbEcon.Inv cfg (30000 : ℝ) 48001 s96 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 47501 s95 s96 inv_95 chunk_95
+theorem inv_97 : ArbEcon.Inv cfg (30000 : ℝ) 48501 s97 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 48001 s96 s97 inv_96 chunk_96
+theorem inv_98 : ArbEcon.Inv cfg (30000 : ℝ) 49001 s98 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 48501 s97 s98 inv_97 chunk_97
+theorem inv_99 : ArbEcon.Inv cfg (30000 : ℝ) 49501 s99 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 49001 s98 s99 inv_98 chunk_98
+theorem inv_100 : ArbEcon.Inv cfg (30000 : ℝ) 50001 s100 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 49501 s99 s100 inv_99 chunk_99
+theorem inv_101 : ArbEcon.Inv cfg (30000 : ℝ) 50501 s101 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 50001 s100 s101 inv_100 chunk_100
+theorem inv_102 : ArbEcon.Inv cfg (30000 : ℝ) 51001 s102 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 50501 s101 s102 inv_101 chunk_101
+theorem inv_103 : ArbEcon.Inv cfg (30000 : ℝ) 51501 s103 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 51001 s102 s103 inv_102 chunk_102
+theorem inv_104 : ArbEcon.Inv cfg (30000 : ℝ) 52001 s104 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 51501 s103 s104 inv_103 chunk_103
+theorem inv_105 : ArbEcon.Inv cfg (30000 : ℝ) 52501 s105 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 52001 s104 s105 inv_104 chunk_104
+theorem inv_106 : ArbEcon.Inv cfg (30000 : ℝ) 53001 s106 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 52501 s105 s106 inv_105 chunk_105
+theorem inv_107 : ArbEcon.Inv cfg (30000 : ℝ) 53501 s107 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 53001 s106 s107 inv_106 chunk_106
+theorem inv_108 : ArbEcon.Inv cfg (30000 : ℝ) 54001 s108 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 53501 s107 s108 inv_107 chunk_107
+theorem inv_109 : ArbEcon.Inv cfg (30000 : ℝ) 54501 s109 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 54001 s108 s109 inv_108 chunk_108
+theorem inv_110 : ArbEcon.Inv cfg (30000 : ℝ) 55001 s110 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 54501 s109 s110 inv_109 chunk_109
+theorem inv_111 : ArbEcon.Inv cfg (30000 : ℝ) 55501 s111 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 55001 s110 s111 inv_110 chunk_110
+theorem inv_112 : ArbEcon.Inv cfg (30000 : ℝ) 56001 s112 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 55501 s111 s112 inv_111 chunk_111
+theorem inv_113 : ArbEcon.Inv cfg (30000 : ℝ) 56501 s113 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 56001 s112 s113 inv_112 chunk_112
+theorem inv_114 : ArbEcon.Inv cfg (30000 : ℝ) 57001 s114 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 56501 s113 s114 inv_113 chunk_113
+theorem inv_115 : ArbEcon.Inv cfg (30000 : ℝ) 57501 s115 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 57001 s114 s115 inv_114 chunk_114
+theorem inv_116 : ArbEcon.Inv cfg (30000 : ℝ) 58001 s116 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 57501 s115 s116 inv_115 chunk_115
+theorem inv_117 : ArbEcon.Inv cfg (30000 : ℝ) 58501 s117 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 58001 s116 s117 inv_116 chunk_116
+theorem inv_118 : ArbEcon.Inv cfg (30000 : ℝ) 59001 s118 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 58501 s117 s118 inv_117 chunk_117
+theorem inv_119 : ArbEcon.Inv cfg (30000 : ℝ) 59501 s119 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 59001 s118 s119 inv_118 chunk_118
+theorem inv_120 : ArbEcon.Inv cfg (30000 : ℝ) 60001 s120 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 59501 s119 s120 inv_119 chunk_119
+theorem inv_121 : ArbEcon.Inv cfg (30000 : ℝ) 60501 s121 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 60001 s120 s121 inv_120 chunk_120
+theorem inv_122 : ArbEcon.Inv cfg (30000 : ℝ) 61001 s122 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 60501 s121 s122 inv_121 chunk_121
+theorem inv_123 : ArbEcon.Inv cfg (30000 : ℝ) 61501 s123 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 61001 s122 s123 inv_122 chunk_122
+theorem inv_124 : ArbEcon.Inv cfg (30000 : ℝ) 62001 s124 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 61501 s123 s124 inv_123 chunk_123
+theorem inv_125 : ArbEcon.Inv cfg (30000 : ℝ) 62501 s125 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 62001 s124 s125 inv_124 chunk_124
+theorem inv_126 : ArbEcon.Inv cfg (30000 : ℝ) 63001 s126 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 62501 s125 s126 inv_125 chunk_125
+theorem inv_127 : ArbEcon.Inv cfg (30000 : ℝ) 63501 s127 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 63001 s126 s127 inv_126 chunk_126
+theorem inv_128 : ArbEcon.Inv cfg (30000 : ℝ) 64001 s128 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 63501 s127 s128 inv_127 chunk_127
+theorem inv_129 : ArbEcon.Inv cfg (30000 : ℝ) 64501 s129 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 64001 s128 s129 inv_128 chunk_128
+theorem inv_130 : ArbEcon.Inv cfg (30000 : ℝ) 65001 s130 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 64501 s129 s130 inv_129 chunk_129
+theorem inv_131 : ArbEcon.Inv cfg (30000 : ℝ) 65501 s131 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 65001 s130 s131 inv_130 chunk_130
+theorem inv_132 : ArbEcon.Inv cfg (30000 : ℝ) 66001 s132 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 65501 s131 s132 inv_131 chunk_131
+theorem inv_133 : ArbEcon.Inv cfg (30000 : ℝ) 66501 s133 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 66001 s132 s133 inv_132 chunk_132
+theorem inv_134 : ArbEcon.Inv cfg (30000 : ℝ) 67001 s134 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 66501 s133 s134 inv_133 chunk_133
+theorem inv_135 : ArbEcon.Inv cfg (30000 : ℝ) 67501 s135 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 67001 s134 s135 inv_134 chunk_134
+theorem inv_136 : ArbEcon.Inv cfg (30000 : ℝ) 68001 s136 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 67501 s135 s136 inv_135 chunk_135
+theorem inv_137 : ArbEcon.Inv cfg (30000 : ℝ) 68501 s137 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 68001 s136 s137 inv_136 chunk_136
+theorem inv_138 : ArbEcon.Inv cfg (30000 : ℝ) 69001 s138 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 68501 s137 s138 inv_137 chunk_137
+theorem inv_139 : ArbEcon.Inv cfg (30000 : ℝ) 69501 s139 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 69001 s138 s139 inv_138 chunk_138
+theorem inv_140 : ArbEcon.Inv cfg (30000 : ℝ) 70001 s140 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 69501 s139 s140 inv_139 chunk_139
+theorem inv_141 : ArbEcon.Inv cfg (30000 : ℝ) 70501 s141 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 70001 s140 s141 inv_140 chunk_140
+theorem inv_142 : ArbEcon.Inv cfg (30000 : ℝ) 71001 s142 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 70501 s141 s142 inv_141 chunk_141
+theorem inv_143 : ArbEcon.Inv cfg (30000 : ℝ) 71501 s143 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 71001 s142 s143 inv_142 chunk_142
+theorem inv_144 : ArbEcon.Inv cfg (30000 : ℝ) 72001 s144 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 71501 s143 s144 inv_143 chunk_143
+theorem inv_145 : ArbEcon.Inv cfg (30000 : ℝ) 72501 s145 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 72001 s144 s145 inv_144 chunk_144
+theorem inv_146 : ArbEcon.Inv cfg (30000 : ℝ) 73001 s146 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 72501 s145 s146 inv_145 chunk_145
+theorem inv_147 : ArbEcon.Inv cfg (30000 : ℝ) 73501 s147 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 73001 s146 s147 inv_146 chunk_146
+theorem inv_148 : ArbEcon.Inv cfg (30000 : ℝ) 74001 s148 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 73501 s147 s148 inv_147 chunk_147
+theorem inv_149 : ArbEcon.Inv cfg (30000 : ℝ) 74501 s149 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 74001 s148 s149 inv_148 chunk_148
+theorem inv_150 : ArbEcon.Inv cfg (30000 : ℝ) 75001 s150 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 74501 s149 s150 inv_149 chunk_149
+theorem inv_151 : ArbEcon.Inv cfg (30000 : ℝ) 75501 s151 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 75001 s150 s151 inv_150 chunk_150
+theorem inv_152 : ArbEcon.Inv cfg (30000 : ℝ) 76001 s152 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 75501 s151 s152 inv_151 chunk_151
+theorem inv_153 : ArbEcon.Inv cfg (30000 : ℝ) 76501 s153 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 76001 s152 s153 inv_152 chunk_152
+theorem inv_154 : ArbEcon.Inv cfg (30000 : ℝ) 77001 s154 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 76501 s153 s154 inv_153 chunk_153
+theorem inv_155 : ArbEcon.Inv cfg (30000 : ℝ) 77501 s155 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 77001 s154 s155 inv_154 chunk_154
+theorem inv_156 : ArbEcon.Inv cfg (30000 : ℝ) 78001 s156 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 77501 s155 s156 inv_155 chunk_155
+theorem inv_157 : ArbEcon.Inv cfg (30000 : ℝ) 78501 s157 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 78001 s156 s157 inv_156 chunk_156
+theorem inv_158 : ArbEcon.Inv cfg (30000 : ℝ) 79001 s158 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 78501 s157 s158 inv_157 chunk_157
+theorem inv_159 : ArbEcon.Inv cfg (30000 : ℝ) 79501 s159 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 79001 s158 s159 inv_158 chunk_158
+theorem inv_160 : ArbEcon.Inv cfg (30000 : ℝ) 80001 s160 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 79501 s159 s160 inv_159 chunk_159
+theorem inv_161 : ArbEcon.Inv cfg (30000 : ℝ) 80501 s161 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 80001 s160 s161 inv_160 chunk_160
+theorem inv_162 : ArbEcon.Inv cfg (30000 : ℝ) 81001 s162 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 80501 s161 s162 inv_161 chunk_161
+theorem inv_163 : ArbEcon.Inv cfg (30000 : ℝ) 81501 s163 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 81001 s162 s163 inv_162 chunk_162
+theorem inv_164 : ArbEcon.Inv cfg (30000 : ℝ) 82001 s164 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 81501 s163 s164 inv_163 chunk_163
+theorem inv_165 : ArbEcon.Inv cfg (30000 : ℝ) 82501 s165 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 82001 s164 s165 inv_164 chunk_164
+theorem inv_166 : ArbEcon.Inv cfg (30000 : ℝ) 83001 s166 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 82501 s165 s166 inv_165 chunk_165
+theorem inv_167 : ArbEcon.Inv cfg (30000 : ℝ) 83501 s167 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 83001 s166 s167 inv_166 chunk_166
+theorem inv_168 : ArbEcon.Inv cfg (30000 : ℝ) 84001 s168 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 83501 s167 s168 inv_167 chunk_167
+theorem inv_169 : ArbEcon.Inv cfg (30000 : ℝ) 84501 s169 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 84001 s168 s169 inv_168 chunk_168
+theorem inv_170 : ArbEcon.Inv cfg (30000 : ℝ) 85001 s170 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 84501 s169 s170 inv_169 chunk_169
+theorem inv_171 : ArbEcon.Inv cfg (30000 : ℝ) 85501 s171 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 85001 s170 s171 inv_170 chunk_170
+theorem inv_172 : ArbEcon.Inv cfg (30000 : ℝ) 86001 s172 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 85501 s171 s172 inv_171 chunk_171
+theorem inv_173 : ArbEcon.Inv cfg (30000 : ℝ) 86501 s173 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 86001 s172 s173 inv_172 chunk_172
+theorem inv_174 : ArbEcon.Inv cfg (30000 : ℝ) 87001 s174 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 86501 s173 s174 inv_173 chunk_173
+theorem inv_175 : ArbEcon.Inv cfg (30000 : ℝ) 87501 s175 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 87001 s174 s175 inv_174 chunk_174
+theorem inv_176 : ArbEcon.Inv cfg (30000 : ℝ) 88001 s176 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 87501 s175 s176 inv_175 chunk_175
+theorem inv_177 : ArbEcon.Inv cfg (30000 : ℝ) 88501 s177 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 88001 s176 s177 inv_176 chunk_176
+theorem inv_178 : ArbEcon.Inv cfg (30000 : ℝ) 89001 s178 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 88501 s177 s178 inv_177 chunk_177
+theorem inv_179 : ArbEcon.Inv cfg (30000 : ℝ) 89501 s179 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 89001 s178 s179 inv_178 chunk_178
+theorem inv_180 : ArbEcon.Inv cfg (30000 : ℝ) 90001 s180 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 89501 s179 s180 inv_179 chunk_179
+theorem inv_181 : ArbEcon.Inv cfg (30000 : ℝ) 90501 s181 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 90001 s180 s181 inv_180 chunk_180
+theorem inv_182 : ArbEcon.Inv cfg (30000 : ℝ) 91001 s182 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 90501 s181 s182 inv_181 chunk_181
+theorem inv_183 : ArbEcon.Inv cfg (30000 : ℝ) 91501 s183 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 91001 s182 s183 inv_182 chunk_182
+theorem inv_184 : ArbEcon.Inv cfg (30000 : ℝ) 92001 s184 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 91501 s183 s184 inv_183 chunk_183
+theorem inv_185 : ArbEcon.Inv cfg (30000 : ℝ) 92501 s185 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 92001 s184 s185 inv_184 chunk_184
+theorem inv_186 : ArbEcon.Inv cfg (30000 : ℝ) 93001 s186 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 92501 s185 s186 inv_185 chunk_185
+theorem inv_187 : ArbEcon.Inv cfg (30000 : ℝ) 93501 s187 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 93001 s186 s187 inv_186 chunk_186
+theorem inv_188 : ArbEcon.Inv cfg (30000 : ℝ) 94001 s188 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 93501 s187 s188 inv_187 chunk_187
+theorem inv_189 : ArbEcon.Inv cfg (30000 : ℝ) 94501 s189 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 94001 s188 s189 inv_188 chunk_188
+theorem inv_190 : ArbEcon.Inv cfg (30000 : ℝ) 95001 s190 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 94501 s189 s190 inv_189 chunk_189
+theorem inv_191 : ArbEcon.Inv cfg (30000 : ℝ) 95501 s191 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 95001 s190 s191 inv_190 chunk_190
+theorem inv_192 : ArbEcon.Inv cfg (30000 : ℝ) 96001 s192 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 95501 s191 s192 inv_191 chunk_191
+theorem inv_193 : ArbEcon.Inv cfg (30000 : ℝ) 96501 s193 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 96001 s192 s193 inv_192 chunk_192
+theorem inv_194 : ArbEcon.Inv cfg (30000 : ℝ) 97001 s194 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 96501 s193 s194 inv_193 chunk_193
+theorem inv_195 : ArbEcon.Inv cfg (30000 : ℝ) 97501 s195 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 97001 s194 s195 inv_194 chunk_194
+theorem inv_196 : ArbEcon.Inv cfg (30000 : ℝ) 98001 s196 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 97501 s195 s196 inv_195 chunk_195
+theorem inv_197 : ArbEcon.Inv cfg (30000 : ℝ) 98501 s197 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 98001 s196 s197 inv_196 chunk_196
+theorem inv_198 : ArbEcon.Inv cfg (30000 : ℝ) 99001 s198 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 98501 s197 s198 inv_197 chunk_197
+theorem inv_199 : ArbEcon.Inv cfg (30000 : ℝ) 99501 s199 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 99001 s198 s199 inv_198 chunk_198
+theorem inv_200 : ArbEcon.Inv cfg (30000 : ℝ) 100001 s200 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 99501 s199 s200 inv_199 chunk_199
+theorem inv_201 : ArbEcon.Inv cfg (30000 : ℝ) 100501 s201 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 100001 s200 s201 inv_200 chunk_200
+theorem inv_202 : ArbEcon.Inv cfg (30000 : ℝ) 101001 s202 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 100501 s201 s202 inv_201 chunk_201
+theorem inv_203 : ArbEcon.Inv cfg (30000 : ℝ) 101501 s203 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 101001 s202 s203 inv_202 chunk_202
+theorem inv_204 : ArbEcon.Inv cfg (30000 : ℝ) 102001 s204 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 101501 s203 s204 inv_203 chunk_203
+theorem inv_205 : ArbEcon.Inv cfg (30000 : ℝ) 102501 s205 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 102001 s204 s205 inv_204 chunk_204
+theorem inv_206 : ArbEcon.Inv cfg (30000 : ℝ) 103001 s206 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 102501 s205 s206 inv_205 chunk_205
+theorem inv_207 : ArbEcon.Inv cfg (30000 : ℝ) 103501 s207 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 103001 s206 s207 inv_206 chunk_206
+theorem inv_208 : ArbEcon.Inv cfg (30000 : ℝ) 104001 s208 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 103501 s207 s208 inv_207 chunk_207
+theorem inv_209 : ArbEcon.Inv cfg (30000 : ℝ) 104501 s209 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 104001 s208 s209 inv_208 chunk_208
+theorem inv_210 : ArbEcon.Inv cfg (30000 : ℝ) 105001 s210 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 104501 s209 s210 inv_209 chunk_209
+theorem inv_211 : ArbEcon.Inv cfg (30000 : ℝ) 105501 s211 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 105001 s210 s211 inv_210 chunk_210
+theorem inv_212 : ArbEcon.Inv cfg (30000 : ℝ) 106001 s212 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 105501 s211 s212 inv_211 chunk_211
+theorem inv_213 : ArbEcon.Inv cfg (30000 : ℝ) 106501 s213 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 106001 s212 s213 inv_212 chunk_212
+theorem inv_214 : ArbEcon.Inv cfg (30000 : ℝ) 107001 s214 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 106501 s213 s214 inv_213 chunk_213
+theorem inv_215 : ArbEcon.Inv cfg (30000 : ℝ) 107501 s215 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 107001 s214 s215 inv_214 chunk_214
+theorem inv_216 : ArbEcon.Inv cfg (30000 : ℝ) 108001 s216 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 107501 s215 s216 inv_215 chunk_215
+theorem inv_217 : ArbEcon.Inv cfg (30000 : ℝ) 108501 s217 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 108001 s216 s217 inv_216 chunk_216
+theorem inv_218 : ArbEcon.Inv cfg (30000 : ℝ) 109001 s218 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 108501 s217 s218 inv_217 chunk_217
+theorem inv_219 : ArbEcon.Inv cfg (30000 : ℝ) 109501 s219 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 109001 s218 s219 inv_218 chunk_218
+theorem inv_220 : ArbEcon.Inv cfg (30000 : ℝ) 110001 s220 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 109501 s219 s220 inv_219 chunk_219
+theorem inv_221 : ArbEcon.Inv cfg (30000 : ℝ) 110501 s221 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 110001 s220 s221 inv_220 chunk_220
+theorem inv_222 : ArbEcon.Inv cfg (30000 : ℝ) 111001 s222 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 110501 s221 s222 inv_221 chunk_221
+theorem inv_223 : ArbEcon.Inv cfg (30000 : ℝ) 111501 s223 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 111001 s222 s223 inv_222 chunk_222
+theorem inv_224 : ArbEcon.Inv cfg (30000 : ℝ) 112001 s224 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 111501 s223 s224 inv_223 chunk_223
+theorem inv_225 : ArbEcon.Inv cfg (30000 : ℝ) 112501 s225 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 112001 s224 s225 inv_224 chunk_224
+theorem inv_226 : ArbEcon.Inv cfg (30000 : ℝ) 113001 s226 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 112501 s225 s226 inv_225 chunk_225
+theorem inv_227 : ArbEcon.Inv cfg (30000 : ℝ) 113501 s227 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 113001 s226 s227 inv_226 chunk_226
+theorem inv_228 : ArbEcon.Inv cfg (30000 : ℝ) 114001 s228 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 113501 s227 s228 inv_227 chunk_227
+theorem inv_229 : ArbEcon.Inv cfg (30000 : ℝ) 114501 s229 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 114001 s228 s229 inv_228 chunk_228
+theorem inv_230 : ArbEcon.Inv cfg (30000 : ℝ) 115001 s230 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 114501 s229 s230 inv_229 chunk_229
+theorem inv_231 : ArbEcon.Inv cfg (30000 : ℝ) 115501 s231 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 115001 s230 s231 inv_230 chunk_230
+theorem inv_232 : ArbEcon.Inv cfg (30000 : ℝ) 116001 s232 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 115501 s231 s232 inv_231 chunk_231
+theorem inv_233 : ArbEcon.Inv cfg (30000 : ℝ) 116501 s233 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 116001 s232 s233 inv_232 chunk_232
+theorem inv_234 : ArbEcon.Inv cfg (30000 : ℝ) 117001 s234 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 116501 s233 s234 inv_233 chunk_233
+theorem inv_235 : ArbEcon.Inv cfg (30000 : ℝ) 117501 s235 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 117001 s234 s235 inv_234 chunk_234
+theorem inv_236 : ArbEcon.Inv cfg (30000 : ℝ) 118001 s236 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 117501 s235 s236 inv_235 chunk_235
+theorem inv_237 : ArbEcon.Inv cfg (30000 : ℝ) 118501 s237 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 118001 s236 s237 inv_236 chunk_236
+theorem inv_238 : ArbEcon.Inv cfg (30000 : ℝ) 119001 s238 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 118501 s237 s238 inv_237 chunk_237
+theorem inv_239 : ArbEcon.Inv cfg (30000 : ℝ) 119501 s239 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 119001 s238 s239 inv_238 chunk_238
+theorem inv_240 : ArbEcon.Inv cfg (30000 : ℝ) 120001 s240 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 119501 s239 s240 inv_239 chunk_239
+theorem inv_241 : ArbEcon.Inv cfg (30000 : ℝ) 120501 s241 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 120001 s240 s241 inv_240 chunk_240
+theorem inv_242 : ArbEcon.Inv cfg (30000 : ℝ) 121001 s242 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 120501 s241 s242 inv_241 chunk_241
+theorem inv_243 : ArbEcon.Inv cfg (30000 : ℝ) 121501 s243 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 121001 s242 s243 inv_242 chunk_242
+theorem inv_244 : ArbEcon.Inv cfg (30000 : ℝ) 122001 s244 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 121501 s243 s244 inv_243 chunk_243
+theorem inv_245 : ArbEcon.Inv cfg (30000 : ℝ) 122501 s245 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 122001 s244 s245 inv_244 chunk_244
+theorem inv_246 : ArbEcon.Inv cfg (30000 : ℝ) 123001 s246 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 122501 s245 s246 inv_245 chunk_245
+theorem inv_247 : ArbEcon.Inv cfg (30000 : ℝ) 123501 s247 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 123001 s246 s247 inv_246 chunk_246
+theorem inv_248 : ArbEcon.Inv cfg (30000 : ℝ) 124001 s248 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 123501 s247 s248 inv_247 chunk_247
+theorem inv_249 : ArbEcon.Inv cfg (30000 : ℝ) 124501 s249 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 124001 s248 s249 inv_248 chunk_248
+theorem inv_250 : ArbEcon.Inv cfg (30000 : ℝ) 125001 s250 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 124501 s249 s250 inv_249 chunk_249
+theorem inv_251 : ArbEcon.Inv cfg (30000 : ℝ) 125501 s251 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 125001 s250 s251 inv_250 chunk_250
+theorem inv_252 : ArbEcon.Inv cfg (30000 : ℝ) 126001 s252 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 125501 s251 s252 inv_251 chunk_251
+theorem inv_253 : ArbEcon.Inv cfg (30000 : ℝ) 126501 s253 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 126001 s252 s253 inv_252 chunk_252
+theorem inv_254 : ArbEcon.Inv cfg (30000 : ℝ) 127001 s254 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 126501 s253 s254 inv_253 chunk_253
+theorem inv_255 : ArbEcon.Inv cfg (30000 : ℝ) 127501 s255 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 127001 s254 s255 inv_254 chunk_254
+theorem inv_256 : ArbEcon.Inv cfg (30000 : ℝ) 128001 s256 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 127501 s255 s256 inv_255 chunk_255
+theorem inv_257 : ArbEcon.Inv cfg (30000 : ℝ) 128501 s257 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 128001 s256 s257 inv_256 chunk_256
+theorem inv_258 : ArbEcon.Inv cfg (30000 : ℝ) 129001 s258 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 128501 s257 s258 inv_257 chunk_257
+theorem inv_259 : ArbEcon.Inv cfg (30000 : ℝ) 129501 s259 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 129001 s258 s259 inv_258 chunk_258
+theorem inv_260 : ArbEcon.Inv cfg (30000 : ℝ) 130001 s260 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 129501 s259 s260 inv_259 chunk_259
+theorem inv_261 : ArbEcon.Inv cfg (30000 : ℝ) 130501 s261 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 130001 s260 s261 inv_260 chunk_260
+theorem inv_262 : ArbEcon.Inv cfg (30000 : ℝ) 131001 s262 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 130501 s261 s262 inv_261 chunk_261
+theorem inv_263 : ArbEcon.Inv cfg (30000 : ℝ) 131501 s263 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 131001 s262 s263 inv_262 chunk_262
+theorem inv_264 : ArbEcon.Inv cfg (30000 : ℝ) 132001 s264 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 131501 s263 s264 inv_263 chunk_263
+theorem inv_265 : ArbEcon.Inv cfg (30000 : ℝ) 132501 s265 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 132001 s264 s265 inv_264 chunk_264
+theorem inv_266 : ArbEcon.Inv cfg (30000 : ℝ) 133001 s266 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 132501 s265 s266 inv_265 chunk_265
+theorem inv_267 : ArbEcon.Inv cfg (30000 : ℝ) 133501 s267 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 133001 s266 s267 inv_266 chunk_266
+theorem inv_268 : ArbEcon.Inv cfg (30000 : ℝ) 134001 s268 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 133501 s267 s268 inv_267 chunk_267
+theorem inv_269 : ArbEcon.Inv cfg (30000 : ℝ) 134501 s269 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 134001 s268 s269 inv_268 chunk_268
+theorem inv_270 : ArbEcon.Inv cfg (30000 : ℝ) 135001 s270 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 134501 s269 s270 inv_269 chunk_269
+theorem inv_271 : ArbEcon.Inv cfg (30000 : ℝ) 135501 s271 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 135001 s270 s271 inv_270 chunk_270
+theorem inv_272 : ArbEcon.Inv cfg (30000 : ℝ) 136001 s272 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 135501 s271 s272 inv_271 chunk_271
+theorem inv_273 : ArbEcon.Inv cfg (30000 : ℝ) 136501 s273 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 136001 s272 s273 inv_272 chunk_272
+theorem inv_274 : ArbEcon.Inv cfg (30000 : ℝ) 137001 s274 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 136501 s273 s274 inv_273 chunk_273
+theorem inv_275 : ArbEcon.Inv cfg (30000 : ℝ) 137501 s275 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 137001 s274 s275 inv_274 chunk_274
+theorem inv_276 : ArbEcon.Inv cfg (30000 : ℝ) 138001 s276 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 137501 s275 s276 inv_275 chunk_275
+theorem inv_277 : ArbEcon.Inv cfg (30000 : ℝ) 138501 s277 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 138001 s276 s277 inv_276 chunk_276
+theorem inv_278 : ArbEcon.Inv cfg (30000 : ℝ) 139001 s278 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 138501 s277 s278 inv_277 chunk_277
+theorem inv_279 : ArbEcon.Inv cfg (30000 : ℝ) 139501 s279 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 139001 s278 s279 inv_278 chunk_278
+theorem inv_280 : ArbEcon.Inv cfg (30000 : ℝ) 140001 s280 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 139501 s279 s280 inv_279 chunk_279
+theorem inv_281 : ArbEcon.Inv cfg (30000 : ℝ) 140501 s281 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 140001 s280 s281 inv_280 chunk_280
+theorem inv_282 : ArbEcon.Inv cfg (30000 : ℝ) 141001 s282 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 140501 s281 s282 inv_281 chunk_281
+theorem inv_283 : ArbEcon.Inv cfg (30000 : ℝ) 141501 s283 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 141001 s282 s283 inv_282 chunk_282
+theorem inv_284 : ArbEcon.Inv cfg (30000 : ℝ) 142001 s284 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 141501 s283 s284 inv_283 chunk_283
+theorem inv_285 : ArbEcon.Inv cfg (30000 : ℝ) 142501 s285 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 142001 s284 s285 inv_284 chunk_284
+theorem inv_286 : ArbEcon.Inv cfg (30000 : ℝ) 143001 s286 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 142501 s285 s286 inv_285 chunk_285
+theorem inv_287 : ArbEcon.Inv cfg (30000 : ℝ) 143501 s287 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 143001 s286 s287 inv_286 chunk_286
+theorem inv_288 : ArbEcon.Inv cfg (30000 : ℝ) 144001 s288 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 143501 s287 s288 inv_287 chunk_287
+theorem inv_289 : ArbEcon.Inv cfg (30000 : ℝ) 144501 s289 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 144001 s288 s289 inv_288 chunk_288
+theorem inv_290 : ArbEcon.Inv cfg (30000 : ℝ) 145001 s290 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 144501 s289 s290 inv_289 chunk_289
+theorem inv_291 : ArbEcon.Inv cfg (30000 : ℝ) 145501 s291 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 145001 s290 s291 inv_290 chunk_290
+theorem inv_292 : ArbEcon.Inv cfg (30000 : ℝ) 146001 s292 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 145501 s291 s292 inv_291 chunk_291
+theorem inv_293 : ArbEcon.Inv cfg (30000 : ℝ) 146501 s293 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 146001 s292 s293 inv_292 chunk_292
+theorem inv_294 : ArbEcon.Inv cfg (30000 : ℝ) 147001 s294 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 146501 s293 s294 inv_293 chunk_293
+theorem inv_295 : ArbEcon.Inv cfg (30000 : ℝ) 147501 s295 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 147001 s294 s295 inv_294 chunk_294
+theorem inv_296 : ArbEcon.Inv cfg (30000 : ℝ) 148001 s296 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 147501 s295 s296 inv_295 chunk_295
+theorem inv_297 : ArbEcon.Inv cfg (30000 : ℝ) 148501 s297 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 148001 s296 s297 inv_296 chunk_296
+theorem inv_298 : ArbEcon.Inv cfg (30000 : ℝ) 149001 s298 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 148501 s297 s298 inv_297 chunk_297
+theorem inv_299 : ArbEcon.Inv cfg (30000 : ℝ) 149501 s299 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 149001 s298 s299 inv_298 chunk_298
+theorem inv_300 : ArbEcon.Inv cfg (30000 : ℝ) 150001 s300 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 149501 s299 s300 inv_299 chunk_299
+theorem inv_301 : ArbEcon.Inv cfg (30000 : ℝ) 150501 s301 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 150001 s300 s301 inv_300 chunk_300
+theorem inv_302 : ArbEcon.Inv cfg (30000 : ℝ) 151001 s302 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 150501 s301 s302 inv_301 chunk_301
+theorem inv_303 : ArbEcon.Inv cfg (30000 : ℝ) 151501 s303 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 151001 s302 s303 inv_302 chunk_302
+theorem inv_304 : ArbEcon.Inv cfg (30000 : ℝ) 152001 s304 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 151501 s303 s304 inv_303 chunk_303
+theorem inv_305 : ArbEcon.Inv cfg (30000 : ℝ) 152501 s305 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 152001 s304 s305 inv_304 chunk_304
+theorem inv_306 : ArbEcon.Inv cfg (30000 : ℝ) 153001 s306 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 152501 s305 s306 inv_305 chunk_305
+theorem inv_307 : ArbEcon.Inv cfg (30000 : ℝ) 153501 s307 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 153001 s306 s307 inv_306 chunk_306
+theorem inv_308 : ArbEcon.Inv cfg (30000 : ℝ) 154001 s308 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 153501 s307 s308 inv_307 chunk_307
+theorem inv_309 : ArbEcon.Inv cfg (30000 : ℝ) 154501 s309 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 154001 s308 s309 inv_308 chunk_308
+theorem inv_310 : ArbEcon.Inv cfg (30000 : ℝ) 155001 s310 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 154501 s309 s310 inv_309 chunk_309
+theorem inv_311 : ArbEcon.Inv cfg (30000 : ℝ) 155501 s311 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 155001 s310 s311 inv_310 chunk_310
+theorem inv_312 : ArbEcon.Inv cfg (30000 : ℝ) 156001 s312 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 155501 s311 s312 inv_311 chunk_311
+theorem inv_313 : ArbEcon.Inv cfg (30000 : ℝ) 156501 s313 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 156001 s312 s313 inv_312 chunk_312
+theorem inv_314 : ArbEcon.Inv cfg (30000 : ℝ) 157001 s314 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 156501 s313 s314 inv_313 chunk_313
+theorem inv_315 : ArbEcon.Inv cfg (30000 : ℝ) 157501 s315 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 157001 s314 s315 inv_314 chunk_314
+theorem inv_316 : ArbEcon.Inv cfg (30000 : ℝ) 158001 s316 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 157501 s315 s316 inv_315 chunk_315
+theorem inv_317 : ArbEcon.Inv cfg (30000 : ℝ) 158501 s317 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 158001 s316 s317 inv_316 chunk_316
+theorem inv_318 : ArbEcon.Inv cfg (30000 : ℝ) 159001 s318 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 158501 s317 s318 inv_317 chunk_317
+theorem inv_319 : ArbEcon.Inv cfg (30000 : ℝ) 159501 s319 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 159001 s318 s319 inv_318 chunk_318
+theorem inv_320 : ArbEcon.Inv cfg (30000 : ℝ) 160001 s320 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 159501 s319 s320 inv_319 chunk_319
+theorem inv_321 : ArbEcon.Inv cfg (30000 : ℝ) 160501 s321 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 160001 s320 s321 inv_320 chunk_320
+theorem inv_322 : ArbEcon.Inv cfg (30000 : ℝ) 161001 s322 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 160501 s321 s322 inv_321 chunk_321
+theorem inv_323 : ArbEcon.Inv cfg (30000 : ℝ) 161501 s323 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 161001 s322 s323 inv_322 chunk_322
+theorem inv_324 : ArbEcon.Inv cfg (30000 : ℝ) 162001 s324 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 161501 s323 s324 inv_323 chunk_323
+theorem inv_325 : ArbEcon.Inv cfg (30000 : ℝ) 162501 s325 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 162001 s324 s325 inv_324 chunk_324
+theorem inv_326 : ArbEcon.Inv cfg (30000 : ℝ) 163001 s326 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 162501 s325 s326 inv_325 chunk_325
+theorem inv_327 : ArbEcon.Inv cfg (30000 : ℝ) 163501 s327 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 163001 s326 s327 inv_326 chunk_326
+theorem inv_328 : ArbEcon.Inv cfg (30000 : ℝ) 164001 s328 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 163501 s327 s328 inv_327 chunk_327
+theorem inv_329 : ArbEcon.Inv cfg (30000 : ℝ) 164501 s329 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 164001 s328 s329 inv_328 chunk_328
+theorem inv_330 : ArbEcon.Inv cfg (30000 : ℝ) 165001 s330 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 164501 s329 s330 inv_329 chunk_329
+theorem inv_331 : ArbEcon.Inv cfg (30000 : ℝ) 165501 s331 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 165001 s330 s331 inv_330 chunk_330
+theorem inv_332 : ArbEcon.Inv cfg (30000 : ℝ) 166001 s332 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 165501 s331 s332 inv_331 chunk_331
+theorem inv_333 : ArbEcon.Inv cfg (30000 : ℝ) 166501 s333 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 166001 s332 s333 inv_332 chunk_332
+theorem inv_334 : ArbEcon.Inv cfg (30000 : ℝ) 167001 s334 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 166501 s333 s334 inv_333 chunk_333
+theorem inv_335 : ArbEcon.Inv cfg (30000 : ℝ) 167501 s335 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 167001 s334 s335 inv_334 chunk_334
+theorem inv_336 : ArbEcon.Inv cfg (30000 : ℝ) 168001 s336 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 167501 s335 s336 inv_335 chunk_335
+theorem inv_337 : ArbEcon.Inv cfg (30000 : ℝ) 168501 s337 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 168001 s336 s337 inv_336 chunk_336
+theorem inv_338 : ArbEcon.Inv cfg (30000 : ℝ) 169001 s338 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 168501 s337 s338 inv_337 chunk_337
+theorem inv_339 : ArbEcon.Inv cfg (30000 : ℝ) 169501 s339 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 169001 s338 s339 inv_338 chunk_338
+theorem inv_340 : ArbEcon.Inv cfg (30000 : ℝ) 170001 s340 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 169501 s339 s340 inv_339 chunk_339
+theorem inv_341 : ArbEcon.Inv cfg (30000 : ℝ) 170501 s341 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 170001 s340 s341 inv_340 chunk_340
+theorem inv_342 : ArbEcon.Inv cfg (30000 : ℝ) 171001 s342 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 170501 s341 s342 inv_341 chunk_341
+theorem inv_343 : ArbEcon.Inv cfg (30000 : ℝ) 171501 s343 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 171001 s342 s343 inv_342 chunk_342
+theorem inv_344 : ArbEcon.Inv cfg (30000 : ℝ) 172001 s344 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 171501 s343 s344 inv_343 chunk_343
+theorem inv_345 : ArbEcon.Inv cfg (30000 : ℝ) 172501 s345 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 172001 s344 s345 inv_344 chunk_344
+theorem inv_346 : ArbEcon.Inv cfg (30000 : ℝ) 173001 s346 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 172501 s345 s346 inv_345 chunk_345
+theorem inv_347 : ArbEcon.Inv cfg (30000 : ℝ) 173501 s347 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 173001 s346 s347 inv_346 chunk_346
+theorem inv_348 : ArbEcon.Inv cfg (30000 : ℝ) 174001 s348 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 173501 s347 s348 inv_347 chunk_347
+theorem inv_349 : ArbEcon.Inv cfg (30000 : ℝ) 174501 s349 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 174001 s348 s349 inv_348 chunk_348
+theorem inv_350 : ArbEcon.Inv cfg (30000 : ℝ) 175001 s350 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 174501 s349 s350 inv_349 chunk_349
+theorem inv_351 : ArbEcon.Inv cfg (30000 : ℝ) 175501 s351 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 175001 s350 s351 inv_350 chunk_350
+theorem inv_352 : ArbEcon.Inv cfg (30000 : ℝ) 176001 s352 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 175501 s351 s352 inv_351 chunk_351
+theorem inv_353 : ArbEcon.Inv cfg (30000 : ℝ) 176501 s353 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 176001 s352 s353 inv_352 chunk_352
+theorem inv_354 : ArbEcon.Inv cfg (30000 : ℝ) 177001 s354 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 176501 s353 s354 inv_353 chunk_353
+theorem inv_355 : ArbEcon.Inv cfg (30000 : ℝ) 177501 s355 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 177001 s354 s355 inv_354 chunk_354
+theorem inv_356 : ArbEcon.Inv cfg (30000 : ℝ) 178001 s356 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 177501 s355 s356 inv_355 chunk_355
+theorem inv_357 : ArbEcon.Inv cfg (30000 : ℝ) 178501 s357 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 178001 s356 s357 inv_356 chunk_356
+theorem inv_358 : ArbEcon.Inv cfg (30000 : ℝ) 179001 s358 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 178501 s357 s358 inv_357 chunk_357
+theorem inv_359 : ArbEcon.Inv cfg (30000 : ℝ) 179501 s359 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 179001 s358 s359 inv_358 chunk_358
+theorem inv_360 : ArbEcon.Inv cfg (30000 : ℝ) 180001 s360 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 179501 s359 s360 inv_359 chunk_359
+theorem inv_361 : ArbEcon.Inv cfg (30000 : ℝ) 180501 s361 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 180001 s360 s361 inv_360 chunk_360
+theorem inv_362 : ArbEcon.Inv cfg (30000 : ℝ) 181001 s362 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 180501 s361 s362 inv_361 chunk_361
+theorem inv_363 : ArbEcon.Inv cfg (30000 : ℝ) 181501 s363 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 181001 s362 s363 inv_362 chunk_362
+theorem inv_364 : ArbEcon.Inv cfg (30000 : ℝ) 182001 s364 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 181501 s363 s364 inv_363 chunk_363
+theorem inv_365 : ArbEcon.Inv cfg (30000 : ℝ) 182501 s365 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 182001 s364 s365 inv_364 chunk_364
+theorem inv_366 : ArbEcon.Inv cfg (30000 : ℝ) 183001 s366 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 182501 s365 s366 inv_365 chunk_365
+theorem inv_367 : ArbEcon.Inv cfg (30000 : ℝ) 183501 s367 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 183001 s366 s367 inv_366 chunk_366
+theorem inv_368 : ArbEcon.Inv cfg (30000 : ℝ) 184001 s368 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 183501 s367 s368 inv_367 chunk_367
+theorem inv_369 : ArbEcon.Inv cfg (30000 : ℝ) 184501 s369 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 184001 s368 s369 inv_368 chunk_368
+theorem inv_370 : ArbEcon.Inv cfg (30000 : ℝ) 185001 s370 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 184501 s369 s370 inv_369 chunk_369
+theorem inv_371 : ArbEcon.Inv cfg (30000 : ℝ) 185501 s371 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 185001 s370 s371 inv_370 chunk_370
+theorem inv_372 : ArbEcon.Inv cfg (30000 : ℝ) 186001 s372 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 185501 s371 s372 inv_371 chunk_371
+theorem inv_373 : ArbEcon.Inv cfg (30000 : ℝ) 186501 s373 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 186001 s372 s373 inv_372 chunk_372
+theorem inv_374 : ArbEcon.Inv cfg (30000 : ℝ) 187001 s374 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 186501 s373 s374 inv_373 chunk_373
+theorem inv_375 : ArbEcon.Inv cfg (30000 : ℝ) 187501 s375 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 187001 s374 s375 inv_374 chunk_374
+theorem inv_376 : ArbEcon.Inv cfg (30000 : ℝ) 188001 s376 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 187501 s375 s376 inv_375 chunk_375
+theorem inv_377 : ArbEcon.Inv cfg (30000 : ℝ) 188501 s377 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 188001 s376 s377 inv_376 chunk_376
+theorem inv_378 : ArbEcon.Inv cfg (30000 : ℝ) 189001 s378 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 188501 s377 s378 inv_377 chunk_377
+theorem inv_379 : ArbEcon.Inv cfg (30000 : ℝ) 189501 s379 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 189001 s378 s379 inv_378 chunk_378
+theorem inv_380 : ArbEcon.Inv cfg (30000 : ℝ) 190001 s380 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 189501 s379 s380 inv_379 chunk_379
+theorem inv_381 : ArbEcon.Inv cfg (30000 : ℝ) 190501 s381 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 190001 s380 s381 inv_380 chunk_380
+theorem inv_382 : ArbEcon.Inv cfg (30000 : ℝ) 191001 s382 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 190501 s381 s382 inv_381 chunk_381
+theorem inv_383 : ArbEcon.Inv cfg (30000 : ℝ) 191501 s383 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 191001 s382 s383 inv_382 chunk_382
+theorem inv_384 : ArbEcon.Inv cfg (30000 : ℝ) 192001 s384 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 191501 s383 s384 inv_383 chunk_383
+theorem inv_385 : ArbEcon.Inv cfg (30000 : ℝ) 192501 s385 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 192001 s384 s385 inv_384 chunk_384
+theorem inv_386 : ArbEcon.Inv cfg (30000 : ℝ) 193001 s386 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 192501 s385 s386 inv_385 chunk_385
+theorem inv_387 : ArbEcon.Inv cfg (30000 : ℝ) 193501 s387 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 193001 s386 s387 inv_386 chunk_386
+theorem inv_388 : ArbEcon.Inv cfg (30000 : ℝ) 194001 s388 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 193501 s387 s388 inv_387 chunk_387
+theorem inv_389 : ArbEcon.Inv cfg (30000 : ℝ) 194501 s389 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 194001 s388 s389 inv_388 chunk_388
+theorem inv_390 : ArbEcon.Inv cfg (30000 : ℝ) 195001 s390 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 194501 s389 s390 inv_389 chunk_389
+theorem inv_391 : ArbEcon.Inv cfg (30000 : ℝ) 195501 s391 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 195001 s390 s391 inv_390 chunk_390
+theorem inv_392 : ArbEcon.Inv cfg (30000 : ℝ) 196001 s392 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 195501 s391 s392 inv_391 chunk_391
+theorem inv_393 : ArbEcon.Inv cfg (30000 : ℝ) 196501 s393 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 196001 s392 s393 inv_392 chunk_392
+theorem inv_394 : ArbEcon.Inv cfg (30000 : ℝ) 197001 s394 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 196501 s393 s394 inv_393 chunk_393
+theorem inv_395 : ArbEcon.Inv cfg (30000 : ℝ) 197501 s395 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 197001 s394 s395 inv_394 chunk_394
+theorem inv_396 : ArbEcon.Inv cfg (30000 : ℝ) 198001 s396 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 197501 s395 s396 inv_395 chunk_395
+theorem inv_397 : ArbEcon.Inv cfg (30000 : ℝ) 198501 s397 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 198001 s396 s397 inv_396 chunk_396
+theorem inv_398 : ArbEcon.Inv cfg (30000 : ℝ) 199001 s398 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 198501 s397 s398 inv_397 chunk_397
+theorem inv_399 : ArbEcon.Inv cfg (30000 : ℝ) 199501 s399 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 199001 s398 s399 inv_398 chunk_398
+theorem inv_400 : ArbEcon.Inv cfg (30000 : ℝ) 200001 s400 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 199501 s399 s400 inv_399 chunk_399
+theorem inv_401 : ArbEcon.Inv cfg (30000 : ℝ) 200501 s401 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 200001 s400 s401 inv_400 chunk_400
+theorem inv_402 : ArbEcon.Inv cfg (30000 : ℝ) 201001 s402 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 200501 s401 s402 inv_401 chunk_401
+theorem inv_403 : ArbEcon.Inv cfg (30000 : ℝ) 201501 s403 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 201001 s402 s403 inv_402 chunk_402
+theorem inv_404 : ArbEcon.Inv cfg (30000 : ℝ) 202001 s404 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 201501 s403 s404 inv_403 chunk_403
+theorem inv_405 : ArbEcon.Inv cfg (30000 : ℝ) 202501 s405 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 202001 s404 s405 inv_404 chunk_404
+theorem inv_406 : ArbEcon.Inv cfg (30000 : ℝ) 203001 s406 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 202501 s405 s406 inv_405 chunk_405
+theorem inv_407 : ArbEcon.Inv cfg (30000 : ℝ) 203501 s407 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 203001 s406 s407 inv_406 chunk_406
+theorem inv_408 : ArbEcon.Inv cfg (30000 : ℝ) 204001 s408 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 203501 s407 s408 inv_407 chunk_407
+theorem inv_409 : ArbEcon.Inv cfg (30000 : ℝ) 204501 s409 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 204001 s408 s409 inv_408 chunk_408
+theorem inv_410 : ArbEcon.Inv cfg (30000 : ℝ) 205001 s410 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 204501 s409 s410 inv_409 chunk_409
+theorem inv_411 : ArbEcon.Inv cfg (30000 : ℝ) 205501 s411 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 205001 s410 s411 inv_410 chunk_410
+theorem inv_412 : ArbEcon.Inv cfg (30000 : ℝ) 206001 s412 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 205501 s411 s412 inv_411 chunk_411
+theorem inv_413 : ArbEcon.Inv cfg (30000 : ℝ) 206501 s413 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 206001 s412 s413 inv_412 chunk_412
+theorem inv_414 : ArbEcon.Inv cfg (30000 : ℝ) 207001 s414 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 206501 s413 s414 inv_413 chunk_413
+theorem inv_415 : ArbEcon.Inv cfg (30000 : ℝ) 207501 s415 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 207001 s414 s415 inv_414 chunk_414
+theorem inv_416 : ArbEcon.Inv cfg (30000 : ℝ) 208001 s416 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 207501 s415 s416 inv_415 chunk_415
+theorem inv_417 : ArbEcon.Inv cfg (30000 : ℝ) 208501 s417 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 208001 s416 s417 inv_416 chunk_416
+theorem inv_418 : ArbEcon.Inv cfg (30000 : ℝ) 209001 s418 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 208501 s417 s418 inv_417 chunk_417
+theorem inv_419 : ArbEcon.Inv cfg (30000 : ℝ) 209501 s419 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 209001 s418 s419 inv_418 chunk_418
+theorem inv_420 : ArbEcon.Inv cfg (30000 : ℝ) 210001 s420 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 209501 s419 s420 inv_419 chunk_419
+theorem inv_421 : ArbEcon.Inv cfg (30000 : ℝ) 210501 s421 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 210001 s420 s421 inv_420 chunk_420
+theorem inv_422 : ArbEcon.Inv cfg (30000 : ℝ) 211001 s422 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 210501 s421 s422 inv_421 chunk_421
+theorem inv_423 : ArbEcon.Inv cfg (30000 : ℝ) 211501 s423 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 211001 s422 s423 inv_422 chunk_422
+theorem inv_424 : ArbEcon.Inv cfg (30000 : ℝ) 212001 s424 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 211501 s423 s424 inv_423 chunk_423
+theorem inv_425 : ArbEcon.Inv cfg (30000 : ℝ) 212501 s425 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 212001 s424 s425 inv_424 chunk_424
+theorem inv_426 : ArbEcon.Inv cfg (30000 : ℝ) 213001 s426 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 212501 s425 s426 inv_425 chunk_425
+theorem inv_427 : ArbEcon.Inv cfg (30000 : ℝ) 213501 s427 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 213001 s426 s427 inv_426 chunk_426
+theorem inv_428 : ArbEcon.Inv cfg (30000 : ℝ) 214001 s428 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 213501 s427 s428 inv_427 chunk_427
+theorem inv_429 : ArbEcon.Inv cfg (30000 : ℝ) 214501 s429 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 214001 s428 s429 inv_428 chunk_428
+theorem inv_430 : ArbEcon.Inv cfg (30000 : ℝ) 215001 s430 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 214501 s429 s430 inv_429 chunk_429
+theorem inv_431 : ArbEcon.Inv cfg (30000 : ℝ) 215501 s431 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 215001 s430 s431 inv_430 chunk_430
+theorem inv_432 : ArbEcon.Inv cfg (30000 : ℝ) 216001 s432 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 215501 s431 s432 inv_431 chunk_431
+theorem inv_433 : ArbEcon.Inv cfg (30000 : ℝ) 216501 s433 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 216001 s432 s433 inv_432 chunk_432
+theorem inv_434 : ArbEcon.Inv cfg (30000 : ℝ) 217001 s434 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 216501 s433 s434 inv_433 chunk_433
+theorem inv_435 : ArbEcon.Inv cfg (30000 : ℝ) 217501 s435 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 217001 s434 s435 inv_434 chunk_434
+theorem inv_436 : ArbEcon.Inv cfg (30000 : ℝ) 218001 s436 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 217501 s435 s436 inv_435 chunk_435
+theorem inv_437 : ArbEcon.Inv cfg (30000 : ℝ) 218501 s437 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 218001 s436 s437 inv_436 chunk_436
+theorem inv_438 : ArbEcon.Inv cfg (30000 : ℝ) 219001 s438 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 218501 s437 s438 inv_437 chunk_437
+theorem inv_439 : ArbEcon.Inv cfg (30000 : ℝ) 219501 s439 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 219001 s438 s439 inv_438 chunk_438
+theorem inv_440 : ArbEcon.Inv cfg (30000 : ℝ) 220001 s440 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 219501 s439 s440 inv_439 chunk_439
+theorem inv_441 : ArbEcon.Inv cfg (30000 : ℝ) 220501 s441 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 220001 s440 s441 inv_440 chunk_440
+theorem inv_442 : ArbEcon.Inv cfg (30000 : ℝ) 221001 s442 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 220501 s441 s442 inv_441 chunk_441
+theorem inv_443 : ArbEcon.Inv cfg (30000 : ℝ) 221501 s443 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 221001 s442 s443 inv_442 chunk_442
+theorem inv_444 : ArbEcon.Inv cfg (30000 : ℝ) 222001 s444 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 221501 s443 s444 inv_443 chunk_443
+theorem inv_445 : ArbEcon.Inv cfg (30000 : ℝ) 222501 s445 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 222001 s444 s445 inv_444 chunk_444
+theorem inv_446 : ArbEcon.Inv cfg (30000 : ℝ) 223001 s446 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 222501 s445 s446 inv_445 chunk_445
+theorem inv_447 : ArbEcon.Inv cfg (30000 : ℝ) 223501 s447 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 223001 s446 s447 inv_446 chunk_446
+theorem inv_448 : ArbEcon.Inv cfg (30000 : ℝ) 224001 s448 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 223501 s447 s448 inv_447 chunk_447
+theorem inv_449 : ArbEcon.Inv cfg (30000 : ℝ) 224501 s449 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 224001 s448 s449 inv_448 chunk_448
+theorem inv_450 : ArbEcon.Inv cfg (30000 : ℝ) 225001 s450 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 224501 s449 s450 inv_449 chunk_449
+theorem inv_451 : ArbEcon.Inv cfg (30000 : ℝ) 225501 s451 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 225001 s450 s451 inv_450 chunk_450
+theorem inv_452 : ArbEcon.Inv cfg (30000 : ℝ) 226001 s452 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 225501 s451 s452 inv_451 chunk_451
+theorem inv_453 : ArbEcon.Inv cfg (30000 : ℝ) 226501 s453 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 226001 s452 s453 inv_452 chunk_452
+theorem inv_454 : ArbEcon.Inv cfg (30000 : ℝ) 227001 s454 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 226501 s453 s454 inv_453 chunk_453
+theorem inv_455 : ArbEcon.Inv cfg (30000 : ℝ) 227501 s455 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 227001 s454 s455 inv_454 chunk_454
+theorem inv_456 : ArbEcon.Inv cfg (30000 : ℝ) 228001 s456 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 227501 s455 s456 inv_455 chunk_455
+theorem inv_457 : ArbEcon.Inv cfg (30000 : ℝ) 228501 s457 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 228001 s456 s457 inv_456 chunk_456
+theorem inv_458 : ArbEcon.Inv cfg (30000 : ℝ) 229001 s458 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 228501 s457 s458 inv_457 chunk_457
+theorem inv_459 : ArbEcon.Inv cfg (30000 : ℝ) 229501 s459 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 229001 s458 s459 inv_458 chunk_458
+theorem inv_460 : ArbEcon.Inv cfg (30000 : ℝ) 230001 s460 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 229501 s459 s460 inv_459 chunk_459
+theorem inv_461 : ArbEcon.Inv cfg (30000 : ℝ) 230501 s461 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 230001 s460 s461 inv_460 chunk_460
+theorem inv_462 : ArbEcon.Inv cfg (30000 : ℝ) 231001 s462 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 230501 s461 s462 inv_461 chunk_461
+theorem inv_463 : ArbEcon.Inv cfg (30000 : ℝ) 231501 s463 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 231001 s462 s463 inv_462 chunk_462
+theorem inv_464 : ArbEcon.Inv cfg (30000 : ℝ) 232001 s464 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 231501 s463 s464 inv_463 chunk_463
+theorem inv_465 : ArbEcon.Inv cfg (30000 : ℝ) 232501 s465 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 232001 s464 s465 inv_464 chunk_464
+theorem inv_466 : ArbEcon.Inv cfg (30000 : ℝ) 233001 s466 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 232501 s465 s466 inv_465 chunk_465
+theorem inv_467 : ArbEcon.Inv cfg (30000 : ℝ) 233501 s467 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 233001 s466 s467 inv_466 chunk_466
+theorem inv_468 : ArbEcon.Inv cfg (30000 : ℝ) 234001 s468 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 233501 s467 s468 inv_467 chunk_467
+theorem inv_469 : ArbEcon.Inv cfg (30000 : ℝ) 234501 s469 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 234001 s468 s469 inv_468 chunk_468
+theorem inv_470 : ArbEcon.Inv cfg (30000 : ℝ) 235001 s470 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 234501 s469 s470 inv_469 chunk_469
+theorem inv_471 : ArbEcon.Inv cfg (30000 : ℝ) 235501 s471 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 235001 s470 s471 inv_470 chunk_470
+theorem inv_472 : ArbEcon.Inv cfg (30000 : ℝ) 236001 s472 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 235501 s471 s472 inv_471 chunk_471
+theorem inv_473 : ArbEcon.Inv cfg (30000 : ℝ) 236501 s473 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 236001 s472 s473 inv_472 chunk_472
+theorem inv_474 : ArbEcon.Inv cfg (30000 : ℝ) 237001 s474 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 236501 s473 s474 inv_473 chunk_473
+theorem inv_475 : ArbEcon.Inv cfg (30000 : ℝ) 237501 s475 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 237001 s474 s475 inv_474 chunk_474
+theorem inv_476 : ArbEcon.Inv cfg (30000 : ℝ) 238001 s476 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 237501 s475 s476 inv_475 chunk_475
+theorem inv_477 : ArbEcon.Inv cfg (30000 : ℝ) 238501 s477 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 238001 s476 s477 inv_476 chunk_476
+theorem inv_478 : ArbEcon.Inv cfg (30000 : ℝ) 239001 s478 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 238501 s477 s478 inv_477 chunk_477
+theorem inv_479 : ArbEcon.Inv cfg (30000 : ℝ) 239501 s479 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 239001 s478 s479 inv_478 chunk_478
+theorem inv_480 : ArbEcon.Inv cfg (30000 : ℝ) 240001 s480 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 239501 s479 s480 inv_479 chunk_479
+theorem inv_481 : ArbEcon.Inv cfg (30000 : ℝ) 240501 s481 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 240001 s480 s481 inv_480 chunk_480
+theorem inv_482 : ArbEcon.Inv cfg (30000 : ℝ) 241001 s482 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 240501 s481 s482 inv_481 chunk_481
+theorem inv_483 : ArbEcon.Inv cfg (30000 : ℝ) 241501 s483 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 241001 s482 s483 inv_482 chunk_482
+theorem inv_484 : ArbEcon.Inv cfg (30000 : ℝ) 242001 s484 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 241501 s483 s484 inv_483 chunk_483
+theorem inv_485 : ArbEcon.Inv cfg (30000 : ℝ) 242501 s485 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 242001 s484 s485 inv_484 chunk_484
+theorem inv_486 : ArbEcon.Inv cfg (30000 : ℝ) 243001 s486 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 242501 s485 s486 inv_485 chunk_485
+theorem inv_487 : ArbEcon.Inv cfg (30000 : ℝ) 243501 s487 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 243001 s486 s487 inv_486 chunk_486
+theorem inv_488 : ArbEcon.Inv cfg (30000 : ℝ) 244001 s488 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 243501 s487 s488 inv_487 chunk_487
+theorem inv_489 : ArbEcon.Inv cfg (30000 : ℝ) 244501 s489 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 244001 s488 s489 inv_488 chunk_488
+theorem inv_490 : ArbEcon.Inv cfg (30000 : ℝ) 245001 s490 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 244501 s489 s490 inv_489 chunk_489
+theorem inv_491 : ArbEcon.Inv cfg (30000 : ℝ) 245501 s491 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 245001 s490 s491 inv_490 chunk_490
+theorem inv_492 : ArbEcon.Inv cfg (30000 : ℝ) 246001 s492 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 245501 s491 s492 inv_491 chunk_491
+theorem inv_493 : ArbEcon.Inv cfg (30000 : ℝ) 246501 s493 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 246001 s492 s493 inv_492 chunk_492
+theorem inv_494 : ArbEcon.Inv cfg (30000 : ℝ) 247001 s494 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 246501 s493 s494 inv_493 chunk_493
+theorem inv_495 : ArbEcon.Inv cfg (30000 : ℝ) 247501 s495 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 247001 s494 s495 inv_494 chunk_494
+theorem inv_496 : ArbEcon.Inv cfg (30000 : ℝ) 248001 s496 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 247501 s495 s496 inv_495 chunk_495
+theorem inv_497 : ArbEcon.Inv cfg (30000 : ℝ) 248501 s497 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 248001 s496 s497 inv_496 chunk_496
+theorem inv_498 : ArbEcon.Inv cfg (30000 : ℝ) 249001 s498 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 248501 s497 s498 inv_497 chunk_497
+theorem inv_499 : ArbEcon.Inv cfg (30000 : ℝ) 249501 s499 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 249001 s498 s499 inv_498 chunk_498
+theorem inv_500 : ArbEcon.Inv cfg (30000 : ℝ) 250001 s500 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 249501 s499 s500 inv_499 chunk_499
+theorem inv_501 : ArbEcon.Inv cfg (30000 : ℝ) 250501 s501 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 250001 s500 s501 inv_500 chunk_500
+theorem inv_502 : ArbEcon.Inv cfg (30000 : ℝ) 251001 s502 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 250501 s501 s502 inv_501 chunk_501
+theorem inv_503 : ArbEcon.Inv cfg (30000 : ℝ) 251501 s503 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 251001 s502 s503 inv_502 chunk_502
+theorem inv_504 : ArbEcon.Inv cfg (30000 : ℝ) 252001 s504 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 251501 s503 s504 inv_503 chunk_503
+theorem inv_505 : ArbEcon.Inv cfg (30000 : ℝ) 252501 s505 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 252001 s504 s505 inv_504 chunk_504
+theorem inv_506 : ArbEcon.Inv cfg (30000 : ℝ) 253001 s506 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 252501 s505 s506 inv_505 chunk_505
+theorem inv_507 : ArbEcon.Inv cfg (30000 : ℝ) 253501 s507 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 253001 s506 s507 inv_506 chunk_506
+theorem inv_508 : ArbEcon.Inv cfg (30000 : ℝ) 254001 s508 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 253501 s507 s508 inv_507 chunk_507
+theorem inv_509 : ArbEcon.Inv cfg (30000 : ℝ) 254501 s509 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 254001 s508 s509 inv_508 chunk_508
+theorem inv_510 : ArbEcon.Inv cfg (30000 : ℝ) 255001 s510 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 254501 s509 s510 inv_509 chunk_509
+theorem inv_511 : ArbEcon.Inv cfg (30000 : ℝ) 255501 s511 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 255001 s510 s511 inv_510 chunk_510
+theorem inv_512 : ArbEcon.Inv cfg (30000 : ℝ) 256001 s512 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 255501 s511 s512 inv_511 chunk_511
+theorem inv_513 : ArbEcon.Inv cfg (30000 : ℝ) 256501 s513 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 256001 s512 s513 inv_512 chunk_512
+theorem inv_514 : ArbEcon.Inv cfg (30000 : ℝ) 257001 s514 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 256501 s513 s514 inv_513 chunk_513
+theorem inv_515 : ArbEcon.Inv cfg (30000 : ℝ) 257501 s515 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 257001 s514 s515 inv_514 chunk_514
+theorem inv_516 : ArbEcon.Inv cfg (30000 : ℝ) 258001 s516 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 257501 s515 s516 inv_515 chunk_515
+theorem inv_517 : ArbEcon.Inv cfg (30000 : ℝ) 258501 s517 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 258001 s516 s517 inv_516 chunk_516
+theorem inv_518 : ArbEcon.Inv cfg (30000 : ℝ) 259001 s518 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 258501 s517 s518 inv_517 chunk_517
+theorem inv_519 : ArbEcon.Inv cfg (30000 : ℝ) 259501 s519 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 259001 s518 s519 inv_518 chunk_518
+theorem inv_520 : ArbEcon.Inv cfg (30000 : ℝ) 260001 s520 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 259501 s519 s520 inv_519 chunk_519
+theorem inv_521 : ArbEcon.Inv cfg (30000 : ℝ) 260501 s521 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 260001 s520 s521 inv_520 chunk_520
+theorem inv_522 : ArbEcon.Inv cfg (30000 : ℝ) 261001 s522 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 260501 s521 s522 inv_521 chunk_521
+theorem inv_523 : ArbEcon.Inv cfg (30000 : ℝ) 261501 s523 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 261001 s522 s523 inv_522 chunk_522
+theorem inv_524 : ArbEcon.Inv cfg (30000 : ℝ) 262001 s524 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 261501 s523 s524 inv_523 chunk_523
+theorem inv_525 : ArbEcon.Inv cfg (30000 : ℝ) 262501 s525 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 262001 s524 s525 inv_524 chunk_524
+theorem inv_526 : ArbEcon.Inv cfg (30000 : ℝ) 263001 s526 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 262501 s525 s526 inv_525 chunk_525
+theorem inv_527 : ArbEcon.Inv cfg (30000 : ℝ) 263501 s527 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 263001 s526 s527 inv_526 chunk_526
+theorem inv_528 : ArbEcon.Inv cfg (30000 : ℝ) 264001 s528 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 263501 s527 s528 inv_527 chunk_527
+theorem inv_529 : ArbEcon.Inv cfg (30000 : ℝ) 264501 s529 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 264001 s528 s529 inv_528 chunk_528
+theorem inv_530 : ArbEcon.Inv cfg (30000 : ℝ) 265001 s530 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 264501 s529 s530 inv_529 chunk_529
+theorem inv_531 : ArbEcon.Inv cfg (30000 : ℝ) 265501 s531 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 265001 s530 s531 inv_530 chunk_530
+theorem inv_532 : ArbEcon.Inv cfg (30000 : ℝ) 266001 s532 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 265501 s531 s532 inv_531 chunk_531
+theorem inv_533 : ArbEcon.Inv cfg (30000 : ℝ) 266501 s533 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 266001 s532 s533 inv_532 chunk_532
+theorem inv_534 : ArbEcon.Inv cfg (30000 : ℝ) 267001 s534 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 266501 s533 s534 inv_533 chunk_533
+theorem inv_535 : ArbEcon.Inv cfg (30000 : ℝ) 267501 s535 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 267001 s534 s535 inv_534 chunk_534
+theorem inv_536 : ArbEcon.Inv cfg (30000 : ℝ) 268001 s536 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 267501 s535 s536 inv_535 chunk_535
+theorem inv_537 : ArbEcon.Inv cfg (30000 : ℝ) 268501 s537 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 268001 s536 s537 inv_536 chunk_536
+theorem inv_538 : ArbEcon.Inv cfg (30000 : ℝ) 269001 s538 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 268501 s537 s538 inv_537 chunk_537
+theorem inv_539 : ArbEcon.Inv cfg (30000 : ℝ) 269501 s539 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 269001 s538 s539 inv_538 chunk_538
+theorem inv_540 : ArbEcon.Inv cfg (30000 : ℝ) 270001 s540 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 269501 s539 s540 inv_539 chunk_539
+theorem inv_541 : ArbEcon.Inv cfg (30000 : ℝ) 270501 s541 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 270001 s540 s541 inv_540 chunk_540
+theorem inv_542 : ArbEcon.Inv cfg (30000 : ℝ) 271001 s542 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 270501 s541 s542 inv_541 chunk_541
+theorem inv_543 : ArbEcon.Inv cfg (30000 : ℝ) 271501 s543 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 271001 s542 s543 inv_542 chunk_542
+theorem inv_544 : ArbEcon.Inv cfg (30000 : ℝ) 272001 s544 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 271501 s543 s544 inv_543 chunk_543
+theorem inv_545 : ArbEcon.Inv cfg (30000 : ℝ) 272501 s545 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 272001 s544 s545 inv_544 chunk_544
+theorem inv_546 : ArbEcon.Inv cfg (30000 : ℝ) 273001 s546 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 272501 s545 s546 inv_545 chunk_545
+theorem inv_547 : ArbEcon.Inv cfg (30000 : ℝ) 273501 s547 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 273001 s546 s547 inv_546 chunk_546
+theorem inv_548 : ArbEcon.Inv cfg (30000 : ℝ) 274001 s548 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 273501 s547 s548 inv_547 chunk_547
+theorem inv_549 : ArbEcon.Inv cfg (30000 : ℝ) 274501 s549 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 274001 s548 s549 inv_548 chunk_548
+theorem inv_550 : ArbEcon.Inv cfg (30000 : ℝ) 275001 s550 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 274501 s549 s550 inv_549 chunk_549
+theorem inv_551 : ArbEcon.Inv cfg (30000 : ℝ) 275501 s551 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 275001 s550 s551 inv_550 chunk_550
+theorem inv_552 : ArbEcon.Inv cfg (30000 : ℝ) 276001 s552 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 275501 s551 s552 inv_551 chunk_551
+theorem inv_553 : ArbEcon.Inv cfg (30000 : ℝ) 276501 s553 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 276001 s552 s553 inv_552 chunk_552
+theorem inv_554 : ArbEcon.Inv cfg (30000 : ℝ) 277001 s554 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 276501 s553 s554 inv_553 chunk_553
+theorem inv_555 : ArbEcon.Inv cfg (30000 : ℝ) 277501 s555 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 277001 s554 s555 inv_554 chunk_554
+theorem inv_556 : ArbEcon.Inv cfg (30000 : ℝ) 278001 s556 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 277501 s555 s556 inv_555 chunk_555
+theorem inv_557 : ArbEcon.Inv cfg (30000 : ℝ) 278501 s557 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 278001 s556 s557 inv_556 chunk_556
+theorem inv_558 : ArbEcon.Inv cfg (30000 : ℝ) 279001 s558 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 278501 s557 s558 inv_557 chunk_557
+theorem inv_559 : ArbEcon.Inv cfg (30000 : ℝ) 279501 s559 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 279001 s558 s559 inv_558 chunk_558
+theorem inv_560 : ArbEcon.Inv cfg (30000 : ℝ) 280001 s560 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 279501 s559 s560 inv_559 chunk_559
+theorem inv_561 : ArbEcon.Inv cfg (30000 : ℝ) 280501 s561 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 280001 s560 s561 inv_560 chunk_560
+theorem inv_562 : ArbEcon.Inv cfg (30000 : ℝ) 281001 s562 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 280501 s561 s562 inv_561 chunk_561
+theorem inv_563 : ArbEcon.Inv cfg (30000 : ℝ) 281501 s563 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 281001 s562 s563 inv_562 chunk_562
+theorem inv_564 : ArbEcon.Inv cfg (30000 : ℝ) 282001 s564 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 281501 s563 s564 inv_563 chunk_563
+theorem inv_565 : ArbEcon.Inv cfg (30000 : ℝ) 282501 s565 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 282001 s564 s565 inv_564 chunk_564
+theorem inv_566 : ArbEcon.Inv cfg (30000 : ℝ) 283001 s566 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 282501 s565 s566 inv_565 chunk_565
+theorem inv_567 : ArbEcon.Inv cfg (30000 : ℝ) 283501 s567 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 283001 s566 s567 inv_566 chunk_566
+theorem inv_568 : ArbEcon.Inv cfg (30000 : ℝ) 284001 s568 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 283501 s567 s568 inv_567 chunk_567
+theorem inv_569 : ArbEcon.Inv cfg (30000 : ℝ) 284501 s569 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 284001 s568 s569 inv_568 chunk_568
+theorem inv_570 : ArbEcon.Inv cfg (30000 : ℝ) 285001 s570 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 284501 s569 s570 inv_569 chunk_569
+theorem inv_571 : ArbEcon.Inv cfg (30000 : ℝ) 285501 s571 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 285001 s570 s571 inv_570 chunk_570
+theorem inv_572 : ArbEcon.Inv cfg (30000 : ℝ) 286001 s572 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 285501 s571 s572 inv_571 chunk_571
+theorem inv_573 : ArbEcon.Inv cfg (30000 : ℝ) 286501 s573 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 286001 s572 s573 inv_572 chunk_572
+theorem inv_574 : ArbEcon.Inv cfg (30000 : ℝ) 287001 s574 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 286501 s573 s574 inv_573 chunk_573
+theorem inv_575 : ArbEcon.Inv cfg (30000 : ℝ) 287501 s575 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 287001 s574 s575 inv_574 chunk_574
+theorem inv_576 : ArbEcon.Inv cfg (30000 : ℝ) 288001 s576 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 287501 s575 s576 inv_575 chunk_575
+theorem inv_577 : ArbEcon.Inv cfg (30000 : ℝ) 288501 s577 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 288001 s576 s577 inv_576 chunk_576
+theorem inv_578 : ArbEcon.Inv cfg (30000 : ℝ) 289001 s578 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 288501 s577 s578 inv_577 chunk_577
+theorem inv_579 : ArbEcon.Inv cfg (30000 : ℝ) 289501 s579 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 289001 s578 s579 inv_578 chunk_578
+theorem inv_580 : ArbEcon.Inv cfg (30000 : ℝ) 290001 s580 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 289501 s579 s580 inv_579 chunk_579
+theorem inv_581 : ArbEcon.Inv cfg (30000 : ℝ) 290501 s581 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 290001 s580 s581 inv_580 chunk_580
+theorem inv_582 : ArbEcon.Inv cfg (30000 : ℝ) 291001 s582 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 290501 s581 s582 inv_581 chunk_581
+theorem inv_583 : ArbEcon.Inv cfg (30000 : ℝ) 291501 s583 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 291001 s582 s583 inv_582 chunk_582
+theorem inv_584 : ArbEcon.Inv cfg (30000 : ℝ) 292001 s584 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 291501 s583 s584 inv_583 chunk_583
+theorem inv_585 : ArbEcon.Inv cfg (30000 : ℝ) 292501 s585 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 292001 s584 s585 inv_584 chunk_584
+theorem inv_586 : ArbEcon.Inv cfg (30000 : ℝ) 293001 s586 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 292501 s585 s586 inv_585 chunk_585
+theorem inv_587 : ArbEcon.Inv cfg (30000 : ℝ) 293501 s587 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 293001 s586 s587 inv_586 chunk_586
+theorem inv_588 : ArbEcon.Inv cfg (30000 : ℝ) 294001 s588 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 293501 s587 s588 inv_587 chunk_587
+theorem inv_589 : ArbEcon.Inv cfg (30000 : ℝ) 294501 s589 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 294001 s588 s589 inv_588 chunk_588
+theorem inv_590 : ArbEcon.Inv cfg (30000 : ℝ) 295001 s590 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 294501 s589 s590 inv_589 chunk_589
+theorem inv_591 : ArbEcon.Inv cfg (30000 : ℝ) 295501 s591 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 295001 s590 s591 inv_590 chunk_590
+theorem inv_592 : ArbEcon.Inv cfg (30000 : ℝ) 296001 s592 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 295501 s591 s592 inv_591 chunk_591
+theorem inv_593 : ArbEcon.Inv cfg (30000 : ℝ) 296501 s593 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 296001 s592 s593 inv_592 chunk_592
+theorem inv_594 : ArbEcon.Inv cfg (30000 : ℝ) 297001 s594 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 296501 s593 s594 inv_593 chunk_593
+theorem inv_595 : ArbEcon.Inv cfg (30000 : ℝ) 297501 s595 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 297001 s594 s595 inv_594 chunk_594
+theorem inv_596 : ArbEcon.Inv cfg (30000 : ℝ) 298001 s596 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 297501 s595 s596 inv_595 chunk_595
+theorem inv_597 : ArbEcon.Inv cfg (30000 : ℝ) 298501 s597 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 298001 s596 s597 inv_596 chunk_596
+theorem inv_598 : ArbEcon.Inv cfg (30000 : ℝ) 299001 s598 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 298501 s597 s598 inv_597 chunk_597
+theorem inv_599 : ArbEcon.Inv cfg (30000 : ℝ) 299501 s599 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 299001 s598 s599 inv_598 chunk_598
+theorem inv_600 : ArbEcon.Inv cfg (30000 : ℝ) 300001 s600 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 299501 s599 s600 inv_599 chunk_599
+theorem inv_601 : ArbEcon.Inv cfg (30000 : ℝ) 300501 s601 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 300001 s600 s601 inv_600 chunk_600
+theorem inv_602 : ArbEcon.Inv cfg (30000 : ℝ) 301001 s602 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 300501 s601 s602 inv_601 chunk_601
+theorem inv_603 : ArbEcon.Inv cfg (30000 : ℝ) 301501 s603 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 301001 s602 s603 inv_602 chunk_602
+theorem inv_604 : ArbEcon.Inv cfg (30000 : ℝ) 302001 s604 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 301501 s603 s604 inv_603 chunk_603
+theorem inv_605 : ArbEcon.Inv cfg (30000 : ℝ) 302501 s605 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 302001 s604 s605 inv_604 chunk_604
+theorem inv_606 : ArbEcon.Inv cfg (30000 : ℝ) 303001 s606 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 302501 s605 s606 inv_605 chunk_605
+theorem inv_607 : ArbEcon.Inv cfg (30000 : ℝ) 303501 s607 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 303001 s606 s607 inv_606 chunk_606
+theorem inv_608 : ArbEcon.Inv cfg (30000 : ℝ) 304001 s608 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 303501 s607 s608 inv_607 chunk_607
+theorem inv_609 : ArbEcon.Inv cfg (30000 : ℝ) 304501 s609 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 304001 s608 s609 inv_608 chunk_608
+theorem inv_610 : ArbEcon.Inv cfg (30000 : ℝ) 305001 s610 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 304501 s609 s610 inv_609 chunk_609
+theorem inv_611 : ArbEcon.Inv cfg (30000 : ℝ) 305501 s611 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 305001 s610 s611 inv_610 chunk_610
+theorem inv_612 : ArbEcon.Inv cfg (30000 : ℝ) 306001 s612 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 305501 s611 s612 inv_611 chunk_611
+theorem inv_613 : ArbEcon.Inv cfg (30000 : ℝ) 306501 s613 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 306001 s612 s613 inv_612 chunk_612
+theorem inv_614 : ArbEcon.Inv cfg (30000 : ℝ) 307001 s614 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 306501 s613 s614 inv_613 chunk_613
+theorem inv_615 : ArbEcon.Inv cfg (30000 : ℝ) 307501 s615 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 307001 s614 s615 inv_614 chunk_614
+theorem inv_616 : ArbEcon.Inv cfg (30000 : ℝ) 308001 s616 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 307501 s615 s616 inv_615 chunk_615
+theorem inv_617 : ArbEcon.Inv cfg (30000 : ℝ) 308501 s617 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 308001 s616 s617 inv_616 chunk_616
+theorem inv_618 : ArbEcon.Inv cfg (30000 : ℝ) 309001 s618 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 308501 s617 s618 inv_617 chunk_617
+theorem inv_619 : ArbEcon.Inv cfg (30000 : ℝ) 309501 s619 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 309001 s618 s619 inv_618 chunk_618
+theorem inv_620 : ArbEcon.Inv cfg (30000 : ℝ) 310001 s620 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 309501 s619 s620 inv_619 chunk_619
+theorem inv_621 : ArbEcon.Inv cfg (30000 : ℝ) 310501 s621 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 310001 s620 s621 inv_620 chunk_620
+theorem inv_622 : ArbEcon.Inv cfg (30000 : ℝ) 311001 s622 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 310501 s621 s622 inv_621 chunk_621
+theorem inv_623 : ArbEcon.Inv cfg (30000 : ℝ) 311501 s623 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 311001 s622 s623 inv_622 chunk_622
+theorem inv_624 : ArbEcon.Inv cfg (30000 : ℝ) 312001 s624 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 311501 s623 s624 inv_623 chunk_623
+theorem inv_625 : ArbEcon.Inv cfg (30000 : ℝ) 312501 s625 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 312001 s624 s625 inv_624 chunk_624
+theorem inv_626 : ArbEcon.Inv cfg (30000 : ℝ) 313001 s626 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 312501 s625 s626 inv_625 chunk_625
+theorem inv_627 : ArbEcon.Inv cfg (30000 : ℝ) 313501 s627 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 313001 s626 s627 inv_626 chunk_626
+theorem inv_628 : ArbEcon.Inv cfg (30000 : ℝ) 314001 s628 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 313501 s627 s628 inv_627 chunk_627
+theorem inv_629 : ArbEcon.Inv cfg (30000 : ℝ) 314501 s629 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 314001 s628 s629 inv_628 chunk_628
+theorem inv_630 : ArbEcon.Inv cfg (30000 : ℝ) 315001 s630 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 314501 s629 s630 inv_629 chunk_629
+theorem inv_631 : ArbEcon.Inv cfg (30000 : ℝ) 315501 s631 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 315001 s630 s631 inv_630 chunk_630
+theorem inv_632 : ArbEcon.Inv cfg (30000 : ℝ) 316001 s632 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 315501 s631 s632 inv_631 chunk_631
+theorem inv_633 : ArbEcon.Inv cfg (30000 : ℝ) 316501 s633 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 316001 s632 s633 inv_632 chunk_632
+theorem inv_634 : ArbEcon.Inv cfg (30000 : ℝ) 317001 s634 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 316501 s633 s634 inv_633 chunk_633
+theorem inv_635 : ArbEcon.Inv cfg (30000 : ℝ) 317501 s635 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 317001 s634 s635 inv_634 chunk_634
+theorem inv_636 : ArbEcon.Inv cfg (30000 : ℝ) 318001 s636 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 317501 s635 s636 inv_635 chunk_635
+theorem inv_637 : ArbEcon.Inv cfg (30000 : ℝ) 318501 s637 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 318001 s636 s637 inv_636 chunk_636
+theorem inv_638 : ArbEcon.Inv cfg (30000 : ℝ) 319001 s638 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 318501 s637 s638 inv_637 chunk_637
+theorem inv_639 : ArbEcon.Inv cfg (30000 : ℝ) 319501 s639 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 319001 s638 s639 inv_638 chunk_638
+theorem inv_640 : ArbEcon.Inv cfg (30000 : ℝ) 320001 s640 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 319501 s639 s640 inv_639 chunk_639
+theorem inv_641 : ArbEcon.Inv cfg (30000 : ℝ) 320501 s641 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 320001 s640 s641 inv_640 chunk_640
+theorem inv_642 : ArbEcon.Inv cfg (30000 : ℝ) 321001 s642 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 320501 s641 s642 inv_641 chunk_641
+theorem inv_643 : ArbEcon.Inv cfg (30000 : ℝ) 321501 s643 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 321001 s642 s643 inv_642 chunk_642
+theorem inv_644 : ArbEcon.Inv cfg (30000 : ℝ) 322001 s644 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 321501 s643 s644 inv_643 chunk_643
+theorem inv_645 : ArbEcon.Inv cfg (30000 : ℝ) 322501 s645 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 322001 s644 s645 inv_644 chunk_644
+theorem inv_646 : ArbEcon.Inv cfg (30000 : ℝ) 323001 s646 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 322501 s645 s646 inv_645 chunk_645
+theorem inv_647 : ArbEcon.Inv cfg (30000 : ℝ) 323501 s647 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 323001 s646 s647 inv_646 chunk_646
+theorem inv_648 : ArbEcon.Inv cfg (30000 : ℝ) 324001 s648 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 323501 s647 s648 inv_647 chunk_647
+theorem inv_649 : ArbEcon.Inv cfg (30000 : ℝ) 324501 s649 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 324001 s648 s649 inv_648 chunk_648
+theorem inv_650 : ArbEcon.Inv cfg (30000 : ℝ) 325001 s650 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 324501 s649 s650 inv_649 chunk_649
+theorem inv_651 : ArbEcon.Inv cfg (30000 : ℝ) 325501 s651 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 325001 s650 s651 inv_650 chunk_650
+theorem inv_652 : ArbEcon.Inv cfg (30000 : ℝ) 326001 s652 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 325501 s651 s652 inv_651 chunk_651
+theorem inv_653 : ArbEcon.Inv cfg (30000 : ℝ) 326501 s653 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 326001 s652 s653 inv_652 chunk_652
+theorem inv_654 : ArbEcon.Inv cfg (30000 : ℝ) 327001 s654 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 326501 s653 s654 inv_653 chunk_653
+theorem inv_655 : ArbEcon.Inv cfg (30000 : ℝ) 327501 s655 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 327001 s654 s655 inv_654 chunk_654
+theorem inv_656 : ArbEcon.Inv cfg (30000 : ℝ) 328001 s656 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 327501 s655 s656 inv_655 chunk_655
+theorem inv_657 : ArbEcon.Inv cfg (30000 : ℝ) 328501 s657 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 328001 s656 s657 inv_656 chunk_656
+theorem inv_658 : ArbEcon.Inv cfg (30000 : ℝ) 329001 s658 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 328501 s657 s658 inv_657 chunk_657
+theorem inv_659 : ArbEcon.Inv cfg (30000 : ℝ) 329501 s659 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 329001 s658 s659 inv_658 chunk_658
+theorem inv_660 : ArbEcon.Inv cfg (30000 : ℝ) 330001 s660 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 329501 s659 s660 inv_659 chunk_659
+theorem inv_661 : ArbEcon.Inv cfg (30000 : ℝ) 330501 s661 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 330001 s660 s661 inv_660 chunk_660
+theorem inv_662 : ArbEcon.Inv cfg (30000 : ℝ) 331001 s662 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 330501 s661 s662 inv_661 chunk_661
+theorem inv_663 : ArbEcon.Inv cfg (30000 : ℝ) 331501 s663 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 331001 s662 s663 inv_662 chunk_662
+theorem inv_664 : ArbEcon.Inv cfg (30000 : ℝ) 332001 s664 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 331501 s663 s664 inv_663 chunk_663
+theorem inv_665 : ArbEcon.Inv cfg (30000 : ℝ) 332501 s665 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 332001 s664 s665 inv_664 chunk_664
+theorem inv_666 : ArbEcon.Inv cfg (30000 : ℝ) 333001 s666 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 332501 s665 s666 inv_665 chunk_665
+theorem inv_667 : ArbEcon.Inv cfg (30000 : ℝ) 333501 s667 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 333001 s666 s667 inv_666 chunk_666
+theorem inv_668 : ArbEcon.Inv cfg (30000 : ℝ) 334001 s668 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 333501 s667 s668 inv_667 chunk_667
+theorem inv_669 : ArbEcon.Inv cfg (30000 : ℝ) 334501 s669 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 334001 s668 s669 inv_668 chunk_668
+theorem inv_670 : ArbEcon.Inv cfg (30000 : ℝ) 335001 s670 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 334501 s669 s670 inv_669 chunk_669
+theorem inv_671 : ArbEcon.Inv cfg (30000 : ℝ) 335501 s671 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 335001 s670 s671 inv_670 chunk_670
+theorem inv_672 : ArbEcon.Inv cfg (30000 : ℝ) 336001 s672 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 335501 s671 s672 inv_671 chunk_671
+theorem inv_673 : ArbEcon.Inv cfg (30000 : ℝ) 336501 s673 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 336001 s672 s673 inv_672 chunk_672
+theorem inv_674 : ArbEcon.Inv cfg (30000 : ℝ) 337001 s674 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 336501 s673 s674 inv_673 chunk_673
+theorem inv_675 : ArbEcon.Inv cfg (30000 : ℝ) 337501 s675 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 337001 s674 s675 inv_674 chunk_674
+theorem inv_676 : ArbEcon.Inv cfg (30000 : ℝ) 338001 s676 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 337501 s675 s676 inv_675 chunk_675
+theorem inv_677 : ArbEcon.Inv cfg (30000 : ℝ) 338501 s677 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 338001 s676 s677 inv_676 chunk_676
+theorem inv_678 : ArbEcon.Inv cfg (30000 : ℝ) 339001 s678 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 338501 s677 s678 inv_677 chunk_677
+theorem inv_679 : ArbEcon.Inv cfg (30000 : ℝ) 339501 s679 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 339001 s678 s679 inv_678 chunk_678
+theorem inv_680 : ArbEcon.Inv cfg (30000 : ℝ) 340001 s680 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 339501 s679 s680 inv_679 chunk_679
+theorem inv_681 : ArbEcon.Inv cfg (30000 : ℝ) 340501 s681 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 340001 s680 s681 inv_680 chunk_680
+theorem inv_682 : ArbEcon.Inv cfg (30000 : ℝ) 341001 s682 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 340501 s681 s682 inv_681 chunk_681
+theorem inv_683 : ArbEcon.Inv cfg (30000 : ℝ) 341501 s683 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 341001 s682 s683 inv_682 chunk_682
+theorem inv_684 : ArbEcon.Inv cfg (30000 : ℝ) 342001 s684 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 341501 s683 s684 inv_683 chunk_683
+theorem inv_685 : ArbEcon.Inv cfg (30000 : ℝ) 342501 s685 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 342001 s684 s685 inv_684 chunk_684
+theorem inv_686 : ArbEcon.Inv cfg (30000 : ℝ) 343001 s686 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 342501 s685 s686 inv_685 chunk_685
+theorem inv_687 : ArbEcon.Inv cfg (30000 : ℝ) 343501 s687 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 343001 s686 s687 inv_686 chunk_686
+theorem inv_688 : ArbEcon.Inv cfg (30000 : ℝ) 344001 s688 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 343501 s687 s688 inv_687 chunk_687
+theorem inv_689 : ArbEcon.Inv cfg (30000 : ℝ) 344501 s689 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 344001 s688 s689 inv_688 chunk_688
+theorem inv_690 : ArbEcon.Inv cfg (30000 : ℝ) 345001 s690 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 344501 s689 s690 inv_689 chunk_689
+theorem inv_691 : ArbEcon.Inv cfg (30000 : ℝ) 345501 s691 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 345001 s690 s691 inv_690 chunk_690
+theorem inv_692 : ArbEcon.Inv cfg (30000 : ℝ) 346001 s692 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 345501 s691 s692 inv_691 chunk_691
+theorem inv_693 : ArbEcon.Inv cfg (30000 : ℝ) 346501 s693 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 346001 s692 s693 inv_692 chunk_692
+theorem inv_694 : ArbEcon.Inv cfg (30000 : ℝ) 347001 s694 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 346501 s693 s694 inv_693 chunk_693
+theorem inv_695 : ArbEcon.Inv cfg (30000 : ℝ) 347501 s695 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 347001 s694 s695 inv_694 chunk_694
+theorem inv_696 : ArbEcon.Inv cfg (30000 : ℝ) 348001 s696 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 347501 s695 s696 inv_695 chunk_695
+theorem inv_697 : ArbEcon.Inv cfg (30000 : ℝ) 348501 s697 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 348001 s696 s697 inv_696 chunk_696
+theorem inv_698 : ArbEcon.Inv cfg (30000 : ℝ) 349001 s698 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 348501 s697 s698 inv_697 chunk_697
+theorem inv_699 : ArbEcon.Inv cfg (30000 : ℝ) 349501 s699 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 349001 s698 s699 inv_698 chunk_698
+theorem inv_700 : ArbEcon.Inv cfg (30000 : ℝ) 350001 s700 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 349501 s699 s700 inv_699 chunk_699
+theorem inv_701 : ArbEcon.Inv cfg (30000 : ℝ) 350501 s701 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 350001 s700 s701 inv_700 chunk_700
+theorem inv_702 : ArbEcon.Inv cfg (30000 : ℝ) 351001 s702 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 350501 s701 s702 inv_701 chunk_701
+theorem inv_703 : ArbEcon.Inv cfg (30000 : ℝ) 351501 s703 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 351001 s702 s703 inv_702 chunk_702
+theorem inv_704 : ArbEcon.Inv cfg (30000 : ℝ) 352001 s704 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 351501 s703 s704 inv_703 chunk_703
+theorem inv_705 : ArbEcon.Inv cfg (30000 : ℝ) 352501 s705 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 352001 s704 s705 inv_704 chunk_704
+theorem inv_706 : ArbEcon.Inv cfg (30000 : ℝ) 353001 s706 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 352501 s705 s706 inv_705 chunk_705
+theorem inv_707 : ArbEcon.Inv cfg (30000 : ℝ) 353501 s707 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 353001 s706 s707 inv_706 chunk_706
+theorem inv_708 : ArbEcon.Inv cfg (30000 : ℝ) 354001 s708 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 353501 s707 s708 inv_707 chunk_707
+theorem inv_709 : ArbEcon.Inv cfg (30000 : ℝ) 354501 s709 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 354001 s708 s709 inv_708 chunk_708
+theorem inv_710 : ArbEcon.Inv cfg (30000 : ℝ) 355001 s710 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 354501 s709 s710 inv_709 chunk_709
+theorem inv_711 : ArbEcon.Inv cfg (30000 : ℝ) 355501 s711 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 355001 s710 s711 inv_710 chunk_710
+theorem inv_712 : ArbEcon.Inv cfg (30000 : ℝ) 356001 s712 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 355501 s711 s712 inv_711 chunk_711
+theorem inv_713 : ArbEcon.Inv cfg (30000 : ℝ) 356501 s713 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 356001 s712 s713 inv_712 chunk_712
+theorem inv_714 : ArbEcon.Inv cfg (30000 : ℝ) 357001 s714 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 356501 s713 s714 inv_713 chunk_713
+theorem inv_715 : ArbEcon.Inv cfg (30000 : ℝ) 357501 s715 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 357001 s714 s715 inv_714 chunk_714
+theorem inv_716 : ArbEcon.Inv cfg (30000 : ℝ) 358001 s716 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 357501 s715 s716 inv_715 chunk_715
+theorem inv_717 : ArbEcon.Inv cfg (30000 : ℝ) 358501 s717 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 358001 s716 s717 inv_716 chunk_716
+theorem inv_718 : ArbEcon.Inv cfg (30000 : ℝ) 359001 s718 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 358501 s717 s718 inv_717 chunk_717
+theorem inv_719 : ArbEcon.Inv cfg (30000 : ℝ) 359501 s719 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 359001 s718 s719 inv_718 chunk_718
+theorem inv_720 : ArbEcon.Inv cfg (30000 : ℝ) 360001 s720 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 359501 s719 s720 inv_719 chunk_719
+theorem inv_721 : ArbEcon.Inv cfg (30000 : ℝ) 360501 s721 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 360001 s720 s721 inv_720 chunk_720
+theorem inv_722 : ArbEcon.Inv cfg (30000 : ℝ) 361001 s722 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 360501 s721 s722 inv_721 chunk_721
+theorem inv_723 : ArbEcon.Inv cfg (30000 : ℝ) 361501 s723 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 361001 s722 s723 inv_722 chunk_722
+theorem inv_724 : ArbEcon.Inv cfg (30000 : ℝ) 362001 s724 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 361501 s723 s724 inv_723 chunk_723
+theorem inv_725 : ArbEcon.Inv cfg (30000 : ℝ) 362501 s725 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 362001 s724 s725 inv_724 chunk_724
+theorem inv_726 : ArbEcon.Inv cfg (30000 : ℝ) 363001 s726 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 362501 s725 s726 inv_725 chunk_725
+theorem inv_727 : ArbEcon.Inv cfg (30000 : ℝ) 363501 s727 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 363001 s726 s727 inv_726 chunk_726
+theorem inv_728 : ArbEcon.Inv cfg (30000 : ℝ) 364001 s728 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 363501 s727 s728 inv_727 chunk_727
+theorem inv_729 : ArbEcon.Inv cfg (30000 : ℝ) 364501 s729 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 364001 s728 s729 inv_728 chunk_728
+theorem inv_730 : ArbEcon.Inv cfg (30000 : ℝ) 365001 s730 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 364501 s729 s730 inv_729 chunk_729
+theorem inv_731 : ArbEcon.Inv cfg (30000 : ℝ) 365501 s731 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 365001 s730 s731 inv_730 chunk_730
+theorem inv_732 : ArbEcon.Inv cfg (30000 : ℝ) 366001 s732 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 365501 s731 s732 inv_731 chunk_731
+theorem inv_733 : ArbEcon.Inv cfg (30000 : ℝ) 366501 s733 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 366001 s732 s733 inv_732 chunk_732
+theorem inv_734 : ArbEcon.Inv cfg (30000 : ℝ) 367001 s734 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 366501 s733 s734 inv_733 chunk_733
+theorem inv_735 : ArbEcon.Inv cfg (30000 : ℝ) 367501 s735 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 367001 s734 s735 inv_734 chunk_734
+theorem inv_736 : ArbEcon.Inv cfg (30000 : ℝ) 368001 s736 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 367501 s735 s736 inv_735 chunk_735
+theorem inv_737 : ArbEcon.Inv cfg (30000 : ℝ) 368501 s737 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 368001 s736 s737 inv_736 chunk_736
+theorem inv_738 : ArbEcon.Inv cfg (30000 : ℝ) 369001 s738 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 368501 s737 s738 inv_737 chunk_737
+theorem inv_739 : ArbEcon.Inv cfg (30000 : ℝ) 369501 s739 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 369001 s738 s739 inv_738 chunk_738
+theorem inv_740 : ArbEcon.Inv cfg (30000 : ℝ) 370001 s740 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 369501 s739 s740 inv_739 chunk_739
+theorem inv_741 : ArbEcon.Inv cfg (30000 : ℝ) 370501 s741 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 370001 s740 s741 inv_740 chunk_740
+theorem inv_742 : ArbEcon.Inv cfg (30000 : ℝ) 371001 s742 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 370501 s741 s742 inv_741 chunk_741
+theorem inv_743 : ArbEcon.Inv cfg (30000 : ℝ) 371501 s743 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 371001 s742 s743 inv_742 chunk_742
+theorem inv_744 : ArbEcon.Inv cfg (30000 : ℝ) 372001 s744 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 371501 s743 s744 inv_743 chunk_743
+theorem inv_745 : ArbEcon.Inv cfg (30000 : ℝ) 372501 s745 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 372001 s744 s745 inv_744 chunk_744
+theorem inv_746 : ArbEcon.Inv cfg (30000 : ℝ) 373001 s746 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 372501 s745 s746 inv_745 chunk_745
+theorem inv_747 : ArbEcon.Inv cfg (30000 : ℝ) 373501 s747 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 373001 s746 s747 inv_746 chunk_746
+theorem inv_748 : ArbEcon.Inv cfg (30000 : ℝ) 374001 s748 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 373501 s747 s748 inv_747 chunk_747
+theorem inv_749 : ArbEcon.Inv cfg (30000 : ℝ) 374501 s749 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 374001 s748 s749 inv_748 chunk_748
+theorem inv_750 : ArbEcon.Inv cfg (30000 : ℝ) 375001 s750 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 374501 s749 s750 inv_749 chunk_749
+theorem inv_751 : ArbEcon.Inv cfg (30000 : ℝ) 375501 s751 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 375001 s750 s751 inv_750 chunk_750
+theorem inv_752 : ArbEcon.Inv cfg (30000 : ℝ) 376001 s752 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 375501 s751 s752 inv_751 chunk_751
+theorem inv_753 : ArbEcon.Inv cfg (30000 : ℝ) 376501 s753 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 376001 s752 s753 inv_752 chunk_752
+theorem inv_754 : ArbEcon.Inv cfg (30000 : ℝ) 377001 s754 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 376501 s753 s754 inv_753 chunk_753
+theorem inv_755 : ArbEcon.Inv cfg (30000 : ℝ) 377501 s755 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 377001 s754 s755 inv_754 chunk_754
+theorem inv_756 : ArbEcon.Inv cfg (30000 : ℝ) 378001 s756 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 377501 s755 s756 inv_755 chunk_755
+theorem inv_757 : ArbEcon.Inv cfg (30000 : ℝ) 378501 s757 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 378001 s756 s757 inv_756 chunk_756
+theorem inv_758 : ArbEcon.Inv cfg (30000 : ℝ) 379001 s758 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 378501 s757 s758 inv_757 chunk_757
+theorem inv_759 : ArbEcon.Inv cfg (30000 : ℝ) 379501 s759 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 379001 s758 s759 inv_758 chunk_758
+theorem inv_760 : ArbEcon.Inv cfg (30000 : ℝ) 380001 s760 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 379501 s759 s760 inv_759 chunk_759
+theorem inv_761 : ArbEcon.Inv cfg (30000 : ℝ) 380501 s761 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 380001 s760 s761 inv_760 chunk_760
+theorem inv_762 : ArbEcon.Inv cfg (30000 : ℝ) 381001 s762 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 380501 s761 s762 inv_761 chunk_761
+theorem inv_763 : ArbEcon.Inv cfg (30000 : ℝ) 381501 s763 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 381001 s762 s763 inv_762 chunk_762
+theorem inv_764 : ArbEcon.Inv cfg (30000 : ℝ) 382001 s764 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 381501 s763 s764 inv_763 chunk_763
+theorem inv_765 : ArbEcon.Inv cfg (30000 : ℝ) 382501 s765 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 382001 s764 s765 inv_764 chunk_764
+theorem inv_766 : ArbEcon.Inv cfg (30000 : ℝ) 383001 s766 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 382501 s765 s766 inv_765 chunk_765
+theorem inv_767 : ArbEcon.Inv cfg (30000 : ℝ) 383501 s767 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 383001 s766 s767 inv_766 chunk_766
+theorem inv_768 : ArbEcon.Inv cfg (30000 : ℝ) 384001 s768 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 383501 s767 s768 inv_767 chunk_767
+theorem inv_769 : ArbEcon.Inv cfg (30000 : ℝ) 384501 s769 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 384001 s768 s769 inv_768 chunk_768
+theorem inv_770 : ArbEcon.Inv cfg (30000 : ℝ) 385001 s770 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 384501 s769 s770 inv_769 chunk_769
+theorem inv_771 : ArbEcon.Inv cfg (30000 : ℝ) 385501 s771 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 385001 s770 s771 inv_770 chunk_770
+theorem inv_772 : ArbEcon.Inv cfg (30000 : ℝ) 386001 s772 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 385501 s771 s772 inv_771 chunk_771
+theorem inv_773 : ArbEcon.Inv cfg (30000 : ℝ) 386501 s773 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 386001 s772 s773 inv_772 chunk_772
+theorem inv_774 : ArbEcon.Inv cfg (30000 : ℝ) 387001 s774 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 386501 s773 s774 inv_773 chunk_773
+theorem inv_775 : ArbEcon.Inv cfg (30000 : ℝ) 387501 s775 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 387001 s774 s775 inv_774 chunk_774
+theorem inv_776 : ArbEcon.Inv cfg (30000 : ℝ) 388001 s776 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 387501 s775 s776 inv_775 chunk_775
+theorem inv_777 : ArbEcon.Inv cfg (30000 : ℝ) 388501 s777 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 388001 s776 s777 inv_776 chunk_776
+theorem inv_778 : ArbEcon.Inv cfg (30000 : ℝ) 389001 s778 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 388501 s777 s778 inv_777 chunk_777
+theorem inv_779 : ArbEcon.Inv cfg (30000 : ℝ) 389501 s779 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 389001 s778 s779 inv_778 chunk_778
+theorem inv_780 : ArbEcon.Inv cfg (30000 : ℝ) 390001 s780 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 389501 s779 s780 inv_779 chunk_779
+theorem inv_781 : ArbEcon.Inv cfg (30000 : ℝ) 390501 s781 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 390001 s780 s781 inv_780 chunk_780
+theorem inv_782 : ArbEcon.Inv cfg (30000 : ℝ) 391001 s782 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 390501 s781 s782 inv_781 chunk_781
+theorem inv_783 : ArbEcon.Inv cfg (30000 : ℝ) 391501 s783 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 391001 s782 s783 inv_782 chunk_782
+theorem inv_784 : ArbEcon.Inv cfg (30000 : ℝ) 392001 s784 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 391501 s783 s784 inv_783 chunk_783
+theorem inv_785 : ArbEcon.Inv cfg (30000 : ℝ) 392501 s785 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 392001 s784 s785 inv_784 chunk_784
+theorem inv_786 : ArbEcon.Inv cfg (30000 : ℝ) 393001 s786 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 392501 s785 s786 inv_785 chunk_785
+theorem inv_787 : ArbEcon.Inv cfg (30000 : ℝ) 393501 s787 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 393001 s786 s787 inv_786 chunk_786
+theorem inv_788 : ArbEcon.Inv cfg (30000 : ℝ) 394001 s788 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 393501 s787 s788 inv_787 chunk_787
+theorem inv_789 : ArbEcon.Inv cfg (30000 : ℝ) 394501 s789 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 394001 s788 s789 inv_788 chunk_788
+theorem inv_790 : ArbEcon.Inv cfg (30000 : ℝ) 395001 s790 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 394501 s789 s790 inv_789 chunk_789
+theorem inv_791 : ArbEcon.Inv cfg (30000 : ℝ) 395501 s791 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 395001 s790 s791 inv_790 chunk_790
+theorem inv_792 : ArbEcon.Inv cfg (30000 : ℝ) 396001 s792 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 395501 s791 s792 inv_791 chunk_791
+theorem inv_793 : ArbEcon.Inv cfg (30000 : ℝ) 396501 s793 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 396001 s792 s793 inv_792 chunk_792
+theorem inv_794 : ArbEcon.Inv cfg (30000 : ℝ) 397001 s794 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 396501 s793 s794 inv_793 chunk_793
+theorem inv_795 : ArbEcon.Inv cfg (30000 : ℝ) 397501 s795 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 397001 s794 s795 inv_794 chunk_794
+theorem inv_796 : ArbEcon.Inv cfg (30000 : ℝ) 398001 s796 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 397501 s795 s796 inv_795 chunk_795
+theorem inv_797 : ArbEcon.Inv cfg (30000 : ℝ) 398501 s797 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 398001 s796 s797 inv_796 chunk_796
+theorem inv_798 : ArbEcon.Inv cfg (30000 : ℝ) 399001 s798 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 398501 s797 s798 inv_797 chunk_797
+theorem inv_799 : ArbEcon.Inv cfg (30000 : ℝ) 399501 s799 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 399001 s798 s799 inv_798 chunk_798
+theorem inv_800 : ArbEcon.Inv cfg (30000 : ℝ) 400001 s800 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 399501 s799 s800 inv_799 chunk_799
+theorem inv_801 : ArbEcon.Inv cfg (30000 : ℝ) 400501 s801 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 400001 s800 s801 inv_800 chunk_800
+theorem inv_802 : ArbEcon.Inv cfg (30000 : ℝ) 401001 s802 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 400501 s801 s802 inv_801 chunk_801
+theorem inv_803 : ArbEcon.Inv cfg (30000 : ℝ) 401501 s803 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 401001 s802 s803 inv_802 chunk_802
+theorem inv_804 : ArbEcon.Inv cfg (30000 : ℝ) 402001 s804 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 401501 s803 s804 inv_803 chunk_803
+theorem inv_805 : ArbEcon.Inv cfg (30000 : ℝ) 402501 s805 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 402001 s804 s805 inv_804 chunk_804
+theorem inv_806 : ArbEcon.Inv cfg (30000 : ℝ) 403001 s806 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 402501 s805 s806 inv_805 chunk_805
+theorem inv_807 : ArbEcon.Inv cfg (30000 : ℝ) 403501 s807 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 403001 s806 s807 inv_806 chunk_806
+theorem inv_808 : ArbEcon.Inv cfg (30000 : ℝ) 404001 s808 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 403501 s807 s808 inv_807 chunk_807
+theorem inv_809 : ArbEcon.Inv cfg (30000 : ℝ) 404501 s809 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 404001 s808 s809 inv_808 chunk_808
+theorem inv_810 : ArbEcon.Inv cfg (30000 : ℝ) 405001 s810 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 404501 s809 s810 inv_809 chunk_809
+theorem inv_811 : ArbEcon.Inv cfg (30000 : ℝ) 405501 s811 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 405001 s810 s811 inv_810 chunk_810
+theorem inv_812 : ArbEcon.Inv cfg (30000 : ℝ) 406001 s812 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 405501 s811 s812 inv_811 chunk_811
+theorem inv_813 : ArbEcon.Inv cfg (30000 : ℝ) 406501 s813 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 406001 s812 s813 inv_812 chunk_812
+theorem inv_814 : ArbEcon.Inv cfg (30000 : ℝ) 407001 s814 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 406501 s813 s814 inv_813 chunk_813
+theorem inv_815 : ArbEcon.Inv cfg (30000 : ℝ) 407501 s815 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 407001 s814 s815 inv_814 chunk_814
+theorem inv_816 : ArbEcon.Inv cfg (30000 : ℝ) 408001 s816 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 407501 s815 s816 inv_815 chunk_815
+theorem inv_817 : ArbEcon.Inv cfg (30000 : ℝ) 408501 s817 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 408001 s816 s817 inv_816 chunk_816
+theorem inv_818 : ArbEcon.Inv cfg (30000 : ℝ) 409001 s818 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 408501 s817 s818 inv_817 chunk_817
+theorem inv_819 : ArbEcon.Inv cfg (30000 : ℝ) 409501 s819 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 409001 s818 s819 inv_818 chunk_818
+theorem inv_820 : ArbEcon.Inv cfg (30000 : ℝ) 410001 s820 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 409501 s819 s820 inv_819 chunk_819
+theorem inv_821 : ArbEcon.Inv cfg (30000 : ℝ) 410501 s821 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 410001 s820 s821 inv_820 chunk_820
+theorem inv_822 : ArbEcon.Inv cfg (30000 : ℝ) 411001 s822 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 410501 s821 s822 inv_821 chunk_821
+theorem inv_823 : ArbEcon.Inv cfg (30000 : ℝ) 411501 s823 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 411001 s822 s823 inv_822 chunk_822
+theorem inv_824 : ArbEcon.Inv cfg (30000 : ℝ) 412001 s824 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 411501 s823 s824 inv_823 chunk_823
+theorem inv_825 : ArbEcon.Inv cfg (30000 : ℝ) 412501 s825 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 412001 s824 s825 inv_824 chunk_824
+theorem inv_826 : ArbEcon.Inv cfg (30000 : ℝ) 413001 s826 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 412501 s825 s826 inv_825 chunk_825
+theorem inv_827 : ArbEcon.Inv cfg (30000 : ℝ) 413501 s827 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 413001 s826 s827 inv_826 chunk_826
+theorem inv_828 : ArbEcon.Inv cfg (30000 : ℝ) 414001 s828 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 413501 s827 s828 inv_827 chunk_827
+theorem inv_829 : ArbEcon.Inv cfg (30000 : ℝ) 414501 s829 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 414001 s828 s829 inv_828 chunk_828
+theorem inv_830 : ArbEcon.Inv cfg (30000 : ℝ) 415001 s830 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 414501 s829 s830 inv_829 chunk_829
+theorem inv_831 : ArbEcon.Inv cfg (30000 : ℝ) 415501 s831 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 415001 s830 s831 inv_830 chunk_830
+theorem inv_832 : ArbEcon.Inv cfg (30000 : ℝ) 416001 s832 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 415501 s831 s832 inv_831 chunk_831
+theorem inv_833 : ArbEcon.Inv cfg (30000 : ℝ) 416501 s833 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 416001 s832 s833 inv_832 chunk_832
+theorem inv_834 : ArbEcon.Inv cfg (30000 : ℝ) 417001 s834 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 416501 s833 s834 inv_833 chunk_833
+theorem inv_835 : ArbEcon.Inv cfg (30000 : ℝ) 417501 s835 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 417001 s834 s835 inv_834 chunk_834
+theorem inv_836 : ArbEcon.Inv cfg (30000 : ℝ) 418001 s836 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 417501 s835 s836 inv_835 chunk_835
+theorem inv_837 : ArbEcon.Inv cfg (30000 : ℝ) 418501 s837 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 418001 s836 s837 inv_836 chunk_836
+theorem inv_838 : ArbEcon.Inv cfg (30000 : ℝ) 419001 s838 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 418501 s837 s838 inv_837 chunk_837
+theorem inv_839 : ArbEcon.Inv cfg (30000 : ℝ) 419501 s839 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 419001 s838 s839 inv_838 chunk_838
+theorem inv_840 : ArbEcon.Inv cfg (30000 : ℝ) 420001 s840 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 419501 s839 s840 inv_839 chunk_839
+theorem inv_841 : ArbEcon.Inv cfg (30000 : ℝ) 420501 s841 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 420001 s840 s841 inv_840 chunk_840
+theorem inv_842 : ArbEcon.Inv cfg (30000 : ℝ) 421001 s842 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 420501 s841 s842 inv_841 chunk_841
+theorem inv_843 : ArbEcon.Inv cfg (30000 : ℝ) 421501 s843 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 421001 s842 s843 inv_842 chunk_842
+theorem inv_844 : ArbEcon.Inv cfg (30000 : ℝ) 422001 s844 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 421501 s843 s844 inv_843 chunk_843
+theorem inv_845 : ArbEcon.Inv cfg (30000 : ℝ) 422501 s845 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 422001 s844 s845 inv_844 chunk_844
+theorem inv_846 : ArbEcon.Inv cfg (30000 : ℝ) 423001 s846 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 422501 s845 s846 inv_845 chunk_845
+theorem inv_847 : ArbEcon.Inv cfg (30000 : ℝ) 423501 s847 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 423001 s846 s847 inv_846 chunk_846
+theorem inv_848 : ArbEcon.Inv cfg (30000 : ℝ) 424001 s848 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 423501 s847 s848 inv_847 chunk_847
+theorem inv_849 : ArbEcon.Inv cfg (30000 : ℝ) 424501 s849 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 424001 s848 s849 inv_848 chunk_848
+theorem inv_850 : ArbEcon.Inv cfg (30000 : ℝ) 425001 s850 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 424501 s849 s850 inv_849 chunk_849
+theorem inv_851 : ArbEcon.Inv cfg (30000 : ℝ) 425501 s851 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 425001 s850 s851 inv_850 chunk_850
+theorem inv_852 : ArbEcon.Inv cfg (30000 : ℝ) 426001 s852 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 425501 s851 s852 inv_851 chunk_851
+theorem inv_853 : ArbEcon.Inv cfg (30000 : ℝ) 426501 s853 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 426001 s852 s853 inv_852 chunk_852
+theorem inv_854 : ArbEcon.Inv cfg (30000 : ℝ) 427001 s854 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 426501 s853 s854 inv_853 chunk_853
+theorem inv_855 : ArbEcon.Inv cfg (30000 : ℝ) 427501 s855 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 427001 s854 s855 inv_854 chunk_854
+theorem inv_856 : ArbEcon.Inv cfg (30000 : ℝ) 428001 s856 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 427501 s855 s856 inv_855 chunk_855
+theorem inv_857 : ArbEcon.Inv cfg (30000 : ℝ) 428501 s857 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 428001 s856 s857 inv_856 chunk_856
+theorem inv_858 : ArbEcon.Inv cfg (30000 : ℝ) 429001 s858 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 428501 s857 s858 inv_857 chunk_857
+theorem inv_859 : ArbEcon.Inv cfg (30000 : ℝ) 429501 s859 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 429001 s858 s859 inv_858 chunk_858
+theorem inv_860 : ArbEcon.Inv cfg (30000 : ℝ) 430001 s860 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 429501 s859 s860 inv_859 chunk_859
+theorem inv_861 : ArbEcon.Inv cfg (30000 : ℝ) 430501 s861 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 430001 s860 s861 inv_860 chunk_860
+theorem inv_862 : ArbEcon.Inv cfg (30000 : ℝ) 431001 s862 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 430501 s861 s862 inv_861 chunk_861
+theorem inv_863 : ArbEcon.Inv cfg (30000 : ℝ) 431501 s863 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 431001 s862 s863 inv_862 chunk_862
+theorem inv_864 : ArbEcon.Inv cfg (30000 : ℝ) 432001 s864 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 431501 s863 s864 inv_863 chunk_863
+theorem inv_865 : ArbEcon.Inv cfg (30000 : ℝ) 432501 s865 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 432001 s864 s865 inv_864 chunk_864
+theorem inv_866 : ArbEcon.Inv cfg (30000 : ℝ) 433001 s866 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 432501 s865 s866 inv_865 chunk_865
+theorem inv_867 : ArbEcon.Inv cfg (30000 : ℝ) 433501 s867 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 433001 s866 s867 inv_866 chunk_866
+theorem inv_868 : ArbEcon.Inv cfg (30000 : ℝ) 434001 s868 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 433501 s867 s868 inv_867 chunk_867
+theorem inv_869 : ArbEcon.Inv cfg (30000 : ℝ) 434501 s869 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 434001 s868 s869 inv_868 chunk_868
+theorem inv_870 : ArbEcon.Inv cfg (30000 : ℝ) 435001 s870 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 434501 s869 s870 inv_869 chunk_869
+theorem inv_871 : ArbEcon.Inv cfg (30000 : ℝ) 435501 s871 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 435001 s870 s871 inv_870 chunk_870
+theorem inv_872 : ArbEcon.Inv cfg (30000 : ℝ) 436001 s872 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 435501 s871 s872 inv_871 chunk_871
+theorem inv_873 : ArbEcon.Inv cfg (30000 : ℝ) 436501 s873 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 436001 s872 s873 inv_872 chunk_872
+theorem inv_874 : ArbEcon.Inv cfg (30000 : ℝ) 437001 s874 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 436501 s873 s874 inv_873 chunk_873
+theorem inv_875 : ArbEcon.Inv cfg (30000 : ℝ) 437501 s875 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 437001 s874 s875 inv_874 chunk_874
+theorem inv_876 : ArbEcon.Inv cfg (30000 : ℝ) 438001 s876 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 437501 s875 s876 inv_875 chunk_875
+theorem inv_877 : ArbEcon.Inv cfg (30000 : ℝ) 438501 s877 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 438001 s876 s877 inv_876 chunk_876
+theorem inv_878 : ArbEcon.Inv cfg (30000 : ℝ) 439001 s878 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 438501 s877 s878 inv_877 chunk_877
+theorem inv_879 : ArbEcon.Inv cfg (30000 : ℝ) 439501 s879 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 439001 s878 s879 inv_878 chunk_878
+theorem inv_880 : ArbEcon.Inv cfg (30000 : ℝ) 440001 s880 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 439501 s879 s880 inv_879 chunk_879
+theorem inv_881 : ArbEcon.Inv cfg (30000 : ℝ) 440501 s881 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 440001 s880 s881 inv_880 chunk_880
+theorem inv_882 : ArbEcon.Inv cfg (30000 : ℝ) 441001 s882 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 440501 s881 s882 inv_881 chunk_881
+theorem inv_883 : ArbEcon.Inv cfg (30000 : ℝ) 441501 s883 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 441001 s882 s883 inv_882 chunk_882
+theorem inv_884 : ArbEcon.Inv cfg (30000 : ℝ) 442001 s884 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 441501 s883 s884 inv_883 chunk_883
+theorem inv_885 : ArbEcon.Inv cfg (30000 : ℝ) 442501 s885 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 442001 s884 s885 inv_884 chunk_884
+theorem inv_886 : ArbEcon.Inv cfg (30000 : ℝ) 443001 s886 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 442501 s885 s886 inv_885 chunk_885
+theorem inv_887 : ArbEcon.Inv cfg (30000 : ℝ) 443501 s887 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 443001 s886 s887 inv_886 chunk_886
+theorem inv_888 : ArbEcon.Inv cfg (30000 : ℝ) 444001 s888 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 443501 s887 s888 inv_887 chunk_887
+theorem inv_889 : ArbEcon.Inv cfg (30000 : ℝ) 444501 s889 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 444001 s888 s889 inv_888 chunk_888
+theorem inv_890 : ArbEcon.Inv cfg (30000 : ℝ) 445001 s890 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 444501 s889 s890 inv_889 chunk_889
+theorem inv_891 : ArbEcon.Inv cfg (30000 : ℝ) 445501 s891 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 445001 s890 s891 inv_890 chunk_890
+theorem inv_892 : ArbEcon.Inv cfg (30000 : ℝ) 446001 s892 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 445501 s891 s892 inv_891 chunk_891
+theorem inv_893 : ArbEcon.Inv cfg (30000 : ℝ) 446501 s893 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 446001 s892 s893 inv_892 chunk_892
+theorem inv_894 : ArbEcon.Inv cfg (30000 : ℝ) 447001 s894 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 446501 s893 s894 inv_893 chunk_893
+theorem inv_895 : ArbEcon.Inv cfg (30000 : ℝ) 447501 s895 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 447001 s894 s895 inv_894 chunk_894
+theorem inv_896 : ArbEcon.Inv cfg (30000 : ℝ) 448001 s896 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 447501 s895 s896 inv_895 chunk_895
+theorem inv_897 : ArbEcon.Inv cfg (30000 : ℝ) 448501 s897 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 448001 s896 s897 inv_896 chunk_896
+theorem inv_898 : ArbEcon.Inv cfg (30000 : ℝ) 449001 s898 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 448501 s897 s898 inv_897 chunk_897
+theorem inv_899 : ArbEcon.Inv cfg (30000 : ℝ) 449501 s899 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 449001 s898 s899 inv_898 chunk_898
+theorem inv_900 : ArbEcon.Inv cfg (30000 : ℝ) 450001 s900 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 449501 s899 s900 inv_899 chunk_899
+theorem inv_901 : ArbEcon.Inv cfg (30000 : ℝ) 450501 s901 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 450001 s900 s901 inv_900 chunk_900
+theorem inv_902 : ArbEcon.Inv cfg (30000 : ℝ) 451001 s902 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 450501 s901 s902 inv_901 chunk_901
+theorem inv_903 : ArbEcon.Inv cfg (30000 : ℝ) 451501 s903 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 451001 s902 s903 inv_902 chunk_902
+theorem inv_904 : ArbEcon.Inv cfg (30000 : ℝ) 452001 s904 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 451501 s903 s904 inv_903 chunk_903
+theorem inv_905 : ArbEcon.Inv cfg (30000 : ℝ) 452501 s905 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 452001 s904 s905 inv_904 chunk_904
+theorem inv_906 : ArbEcon.Inv cfg (30000 : ℝ) 453001 s906 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 452501 s905 s906 inv_905 chunk_905
+theorem inv_907 : ArbEcon.Inv cfg (30000 : ℝ) 453501 s907 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 453001 s906 s907 inv_906 chunk_906
+theorem inv_908 : ArbEcon.Inv cfg (30000 : ℝ) 454001 s908 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 453501 s907 s908 inv_907 chunk_907
+theorem inv_909 : ArbEcon.Inv cfg (30000 : ℝ) 454501 s909 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 454001 s908 s909 inv_908 chunk_908
+theorem inv_910 : ArbEcon.Inv cfg (30000 : ℝ) 455001 s910 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 454501 s909 s910 inv_909 chunk_909
+theorem inv_911 : ArbEcon.Inv cfg (30000 : ℝ) 455501 s911 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 455001 s910 s911 inv_910 chunk_910
+theorem inv_912 : ArbEcon.Inv cfg (30000 : ℝ) 456001 s912 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 455501 s911 s912 inv_911 chunk_911
+theorem inv_913 : ArbEcon.Inv cfg (30000 : ℝ) 456501 s913 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 456001 s912 s913 inv_912 chunk_912
+theorem inv_914 : ArbEcon.Inv cfg (30000 : ℝ) 457001 s914 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 456501 s913 s914 inv_913 chunk_913
+theorem inv_915 : ArbEcon.Inv cfg (30000 : ℝ) 457501 s915 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 457001 s914 s915 inv_914 chunk_914
+theorem inv_916 : ArbEcon.Inv cfg (30000 : ℝ) 458001 s916 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 457501 s915 s916 inv_915 chunk_915
+theorem inv_917 : ArbEcon.Inv cfg (30000 : ℝ) 458501 s917 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 458001 s916 s917 inv_916 chunk_916
+theorem inv_918 : ArbEcon.Inv cfg (30000 : ℝ) 459001 s918 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 458501 s917 s918 inv_917 chunk_917
+theorem inv_919 : ArbEcon.Inv cfg (30000 : ℝ) 459501 s919 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 459001 s918 s919 inv_918 chunk_918
+theorem inv_920 : ArbEcon.Inv cfg (30000 : ℝ) 460001 s920 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 459501 s919 s920 inv_919 chunk_919
+theorem inv_921 : ArbEcon.Inv cfg (30000 : ℝ) 460501 s921 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 460001 s920 s921 inv_920 chunk_920
+theorem inv_922 : ArbEcon.Inv cfg (30000 : ℝ) 461001 s922 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 460501 s921 s922 inv_921 chunk_921
+theorem inv_923 : ArbEcon.Inv cfg (30000 : ℝ) 461501 s923 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 461001 s922 s923 inv_922 chunk_922
+theorem inv_924 : ArbEcon.Inv cfg (30000 : ℝ) 462001 s924 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 461501 s923 s924 inv_923 chunk_923
+theorem inv_925 : ArbEcon.Inv cfg (30000 : ℝ) 462501 s925 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 462001 s924 s925 inv_924 chunk_924
+theorem inv_926 : ArbEcon.Inv cfg (30000 : ℝ) 463001 s926 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 462501 s925 s926 inv_925 chunk_925
+theorem inv_927 : ArbEcon.Inv cfg (30000 : ℝ) 463501 s927 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 463001 s926 s927 inv_926 chunk_926
+theorem inv_928 : ArbEcon.Inv cfg (30000 : ℝ) 464001 s928 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 463501 s927 s928 inv_927 chunk_927
+theorem inv_929 : ArbEcon.Inv cfg (30000 : ℝ) 464501 s929 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 464001 s928 s929 inv_928 chunk_928
+theorem inv_930 : ArbEcon.Inv cfg (30000 : ℝ) 465001 s930 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 464501 s929 s930 inv_929 chunk_929
+theorem inv_931 : ArbEcon.Inv cfg (30000 : ℝ) 465501 s931 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 465001 s930 s931 inv_930 chunk_930
+theorem inv_932 : ArbEcon.Inv cfg (30000 : ℝ) 466001 s932 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 465501 s931 s932 inv_931 chunk_931
+theorem inv_933 : ArbEcon.Inv cfg (30000 : ℝ) 466501 s933 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 466001 s932 s933 inv_932 chunk_932
+theorem inv_934 : ArbEcon.Inv cfg (30000 : ℝ) 467001 s934 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 466501 s933 s934 inv_933 chunk_933
+theorem inv_935 : ArbEcon.Inv cfg (30000 : ℝ) 467501 s935 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 467001 s934 s935 inv_934 chunk_934
+theorem inv_936 : ArbEcon.Inv cfg (30000 : ℝ) 468001 s936 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 467501 s935 s936 inv_935 chunk_935
+theorem inv_937 : ArbEcon.Inv cfg (30000 : ℝ) 468501 s937 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 468001 s936 s937 inv_936 chunk_936
+theorem inv_938 : ArbEcon.Inv cfg (30000 : ℝ) 469001 s938 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 468501 s937 s938 inv_937 chunk_937
+theorem inv_939 : ArbEcon.Inv cfg (30000 : ℝ) 469501 s939 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 500 469001 s938 s939 inv_938 chunk_938
+theorem inv_940 : ArbEcon.Inv cfg (30000 : ℝ) 469999 s940 :=
+  ArbEcon.chunk_sound cfg _ 9 valid 498 469501 s939 s940 inv_939 chunk_939
+theorem inv_N : ArbEcon.Inv cfg (30000 : ℝ) 470000 sN :=
+  ArbEcon.chunk_sound cfg _ 9 valid 1 469999 s940 sN inv_940 chunk_N
+
+theorem remainder :
+    ‖riemannZeta (ArbEcon.sOf 30000) - ZetaReflection.emZetaFinite3 (ArbEcon.sOf 30000) 470000‖
+      ≤ (27000000131250 : ℝ) / (180 * (470000 : ℝ) ^ 2 * (685 : ℕ)) :=
+  ArbEcon.em3_remainder_le 30000 470000 (by norm_num) _ (by norm_num) (by norm_num) 685 (by norm_num) (by norm_num)
+
+/-- **Re zeta(1/2 + 30000 i)**, kernel-checked, no hypotheses. -/
+theorem zeta_re : ((38699137 : ℝ) / 100000000) ≤ (riemannZeta ((1 / 2 : ℂ) + ((30000 : ℝ) : ℂ) * Complex.I)).re ∧
+    (riemannZeta ((1 / 2 : ℂ) + ((30000 : ℝ) : ℂ) * Complex.I)).re ≤ ((38903363 : ℝ) / 100000000) :=
+  ArbEcon.zeta_re_bounds cfg 30000 470000 (by norm_num) s940 sN inv_940 inv_N _ remainder ((20293400405640001 : ℝ) / 40608000011280000) ((10599599999999 : ℝ) / 676800000188) ((38699137 : ℝ) / 100000000) ((38903363 : ℝ) / 100000000)
+    (by rw [abs_le]; constructor <;> norm_num) (by rw [abs_le]; constructor <;> norm_num)
+    (by norm_num [s940, sN, cfg]) (by norm_num [s940, sN, cfg])
+
+/-- **Im zeta(1/2 + 30000 i)**, kernel-checked, no hypotheses. -/
+theorem zeta_im : ((3481937 : ℝ) / 4000000) ≤ (riemannZeta ((1 / 2 : ℂ) + ((30000 : ℝ) : ℂ) * Complex.I)).im ∧
+    (riemannZeta ((1 / 2 : ℂ) + ((30000 : ℝ) : ℂ) * Complex.I)).im ≤ ((21813163 : ℝ) / 25000000) :=
+  ArbEcon.zeta_im_bounds cfg 30000 470000 (by norm_num) s940 sN inv_940 inv_N _ remainder ((20293400405640001 : ℝ) / 40608000011280000) ((10599599999999 : ℝ) / 676800000188) ((3481937 : ℝ) / 4000000) ((21813163 : ℝ) / 25000000)
+    (by rw [abs_le]; constructor <;> norm_num) (by rw [abs_le]; constructor <;> norm_num)
+    (by norm_num [s940, sN, cfg]) (by norm_num [s940, sN, cfg])
+
+end ArbEcon.I_T30000

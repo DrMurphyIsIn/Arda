@@ -22,6 +22,7 @@ import EulerFactorOffline
 import SelfInversiveOfflineInstances
 import EulerFactorSectionOffline
 import SatakeDegreeTwo
+import DedekindQuadratic
 
 open Quasicrystal
 
@@ -174,3 +175,20 @@ open Quasicrystal
 #print axioms SatakeDegreeTwo.delta_amplitude_defect_two
 #print axioms SatakeDegreeTwo.delta_rejected_by_B_mult_twisted
 #print axioms SatakeDegreeTwo.delta_rejected_nonvacuous
+
+/-! ### Dedekind product-closure control (2026-09-23) -- DedekindQuadratic.
+zeta_K = zeta * L(chi_-20) is rejected by (B-mult-twisted) while both factors pass.
+Expected: every line prints exactly [propext, Classical.choice, Quot.sound] (the two
+`norm_num` Jacobi-symbol evaluations may print a subset).  conjecture1_proved = False. -/
+#print axioms SatakeDegreeTwo.dedekind_split_rejected
+#print axioms SatakeDegreeTwo.dedekind_inert_rejected
+#print axioms SatakeDegreeTwo.dedekind_ramified_admitted
+#print axioms SatakeDegreeTwo.dedekind_inert_layer_odd
+#print axioms SatakeDegreeTwo.dedekind_inert_layer_even
+#print axioms SatakeDegreeTwo.scalarGenerated_congr
+#print axioms SatakeDegreeTwo.layer_of_product
+#print axioms SatakeDegreeTwo.scalarGenerated_not_closed_under_product
+#print axioms SatakeDegreeTwo.chi_m20_three
+#print axioms SatakeDegreeTwo.chi_m20_eleven
+#print axioms SatakeDegreeTwo.dedekind_at_three_rejected
+#print axioms SatakeDegreeTwo.dedekind_at_eleven_rejected
