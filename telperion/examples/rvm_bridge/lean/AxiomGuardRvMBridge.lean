@@ -175,6 +175,13 @@
       * Zeta23.riemannVonMangoldt_zeta / Zeta23.RvM.zeta_local_zero_count -- the upstream
         unconditional Riemann--von Mangoldt package (dyadic main clause + local count).
       * Zeta23.zetaSeam -- the seam facts (finite windows, reflection symmetry) the bridge uses.
+      * DogfoodComplexReImSplit.{e6b7_*, e6b28_re_pow_*, e6b5_hcast, e6b7_pair_*,
+        e6b11_arch_hcast, e6b14_centre_hcast} -- the Telperion `complex_re_im_split` dogfood
+        (2026-09-22, Probes/Dogfood_complex_re_im_split.lean): emitter-regenerated real/imaginary
+        splits and cast identities of E6Bridge5, 7, 11, 14, 28, each gated against the hand
+        content (tie gates to RvMBridge28.re_pow_*, consumer re-proofs of
+        RvMBridge7.norm_gaussTest / re_gaussTest, verbatim instantiation gates for the cast
+        `have`s).  Finite polynomial bookkeeping, nothing about RH.
 
     Expected: every line reads `[propext, Classical.choice, Quot.sound]`.
     conjecture1_proved = False. -/
@@ -211,6 +218,7 @@ import E6Bridge28
 import E6Bridge29
 import E6Bridge30
 import W2cAssembly
+import Probes.Dogfood_complex_re_im_split
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -1036,3 +1044,18 @@ import W2cAssembly
 #print axioms Zeta23.WeilEF.gammaR_bracket
 #print axioms Zeta23.WeilEF.integrable_mul_logDeriv_Gammaℝ_of_decay
 #print axioms Zeta23.EF.integrable_fourier_of_contDiff_two
+#print axioms DogfoodComplexReImSplit.e6b7_hre
+#print axioms DogfoodComplexReImSplit.e6b7_hsq
+#print axioms DogfoodComplexReImSplit.e6b7_hexp
+#print axioms DogfoodComplexReImSplit.e6b7_hw2re
+#print axioms DogfoodComplexReImSplit.e6b7_hw2im
+#print axioms DogfoodComplexReImSplit.e6b7_heim
+#print axioms DogfoodComplexReImSplit.e6b28_re_pow_two
+#print axioms DogfoodComplexReImSplit.e6b28_re_pow_three
+#print axioms DogfoodComplexReImSplit.e6b28_re_pow_four
+#print axioms DogfoodComplexReImSplit.e6b28_re_pow_five
+#print axioms DogfoodComplexReImSplit.e6b5_hcast
+#print axioms DogfoodComplexReImSplit.e6b7_pair_hcast
+#print axioms DogfoodComplexReImSplit.e6b7_pair_hre
+#print axioms DogfoodComplexReImSplit.e6b11_arch_hcast
+#print axioms DogfoodComplexReImSplit.e6b14_centre_hcast
