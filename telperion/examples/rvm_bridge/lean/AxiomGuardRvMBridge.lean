@@ -175,6 +175,12 @@
       * Zeta23.riemannVonMangoldt_zeta / Zeta23.RvM.zeta_local_zero_count -- the upstream
         unconditional Riemann--von Mangoldt package (dyadic main clause + local count).
       * Zeta23.zetaSeam -- the seam facts (finite windows, reflection symmetry) the bridge uses.
+      * DogfoodZeroSumMajorant.{zbound_regen, polBound_regen, liBound_regen}_{strip, le, summable}
+        and tail_regen_{envelope, rate} -- the Telperion `zero_sum_majorant` emitter's dogfood
+        (2026-09-22, Probes/Dogfood_zero_sum_majorant.lean): the certified strip inequalities and
+        the RvMBridgeXi.zeroBoundAt composites regenerating E6Bridge19 zbound, E6Bridge18 polBound,
+        E6Bridge15 liBound and E6Bridge12 tail_bound_window under new names.  Summability of
+        zero-indexed families; nothing about RH.  conjecture1_proved = False.
 
     Expected: every line reads `[propext, Classical.choice, Quot.sound]`.
     conjecture1_proved = False. -/
@@ -211,6 +217,7 @@ import E6Bridge28
 import E6Bridge29
 import E6Bridge30
 import W2cAssembly
+import Probes.Dogfood_zero_sum_majorant
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -601,6 +608,17 @@ import W2cAssembly
 #print axioms RvMBridgeXi.differentiableAt_of_punctured
 #print axioms RvMBridgeXi.exists_mem_Ioo_notMem_finset
 #print axioms RvMBridgeXi.exists_bound_on_reProdIm
+#print axioms DogfoodZeroSumMajorant.zbound_regen_strip
+#print axioms DogfoodZeroSumMajorant.zbound_regen_le
+#print axioms DogfoodZeroSumMajorant.zbound_regen_summable
+#print axioms DogfoodZeroSumMajorant.polBound_regen_strip
+#print axioms DogfoodZeroSumMajorant.polBound_regen_le
+#print axioms DogfoodZeroSumMajorant.polBound_regen_summable
+#print axioms DogfoodZeroSumMajorant.liBound_regen_strip
+#print axioms DogfoodZeroSumMajorant.liBound_regen_le
+#print axioms DogfoodZeroSumMajorant.liBound_regen_summable
+#print axioms DogfoodZeroSumMajorant.tail_regen_envelope
+#print axioms DogfoodZeroSumMajorant.tail_regen_rate
 #print axioms RvMBridge17.zeroSide_plain_eq
 #print axioms RvMBridge17.theta_eq
 #print axioms RvMBridge17.plainGauss_re_exponent
