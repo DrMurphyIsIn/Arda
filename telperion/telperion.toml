@@ -695,6 +695,11 @@ script = "examples/twofreq_offline/generate.py"
 group = "quick"    # exact off-line displacement certificate (no flint)
 
 [[check]]
+name = "complex_re_im_split"
+script = "examples/complex_re_im_split/generate.py"
+group = "quick"    # dogfood of the complex_re_im_split emitter (sympy only)
+
+[[check]]
 name = "winding_box_zero"
 script = "examples/winding_box_zero/generate.py"
 group = "flint"    # Arb winding-number sidecar; needs python-flint
