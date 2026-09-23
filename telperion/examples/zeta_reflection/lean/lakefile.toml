@@ -2,7 +2,7 @@ name = "ZetaReflectionSpike"
 # The six proved ANDURIL node artifacts are default targets (closure audit C2, 2026-09-22):
 # a bare `lake build` compiles every one of them, and the coverage checker
 # (telperion/src/telperion/missions/coverage.py) can see that it does.
-defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD", "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet", "ReflectedBand_t14_Kernel", "EdgeClearGlue", "BandGlue", "BandGlue_h1000", "HeightFloorCheck", "HeightFloorTrig", "HeightFloorEM", "HeightFloorBoxes", "HeightFloor", "ArbEconomics_Eval", "ArbEconomics_Sound", "ArbEconomics_Zeta", "EMZetaHigh", "EMZetaHighEval", "EMZetaHighCfg64", "EMZetaHighCheck", "EMZetaHighK_T10000", "EMZetaHighK_T30000", "EMZetaHighK_T280000", "AxiomGuardEMZetaHigh", "AxiomGuardHeightFloor"]
+defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD", "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet", "ReflectedBand_t14_Kernel", "EdgeClearGlue", "BandGlue", "BandGlue_h1000", "HeightFloorCheck", "HeightFloorTrig", "HeightFloorEM", "HeightFloorBoxes", "HeightFloor", "ArbEconomics_Eval", "ArbEconomics_Sound", "ArbEconomics_Zeta", "EMZetaHigh", "EMZetaHighEval", "EMZetaHighCfg64", "EMZetaHighCheck", "EMZetaHighK_T10000", "EMZetaHighK_T30000", "EMZetaHighK_T280000", "RSTheta", "AxiomGuardRSTheta", "AxiomGuardEMZetaHigh", "AxiomGuardHeightFloor"]
 
 # Same Mathlib pin as the sibling zeta_zero_localization island (v4.32.0), so the
 # path require below shares the on-disk Mathlib build cache -- `lake exe cache get`
@@ -321,6 +321,23 @@ name = "EMZetaHighK_T280000"
 roots = ["EMZetaHighK_T280000_Cfg", "EMZetaHighK_T280000_P0", "EMZetaHighK_T280000_P1",
          "EMZetaHighK_T280000_P2", "EMZetaHighK_T280000_P3", "EMZetaHighK_T280000_P4",
          "EMZetaHighK_T280000_P5", "EMZetaHighK_T280000"]
+
+# ---------------------------------------------------------------------------------------------
+# Riemann-Siegel brick B0, theta (2026-09-23), promoted from Probes/RSDesign_theta.lean.
+#   RSTheta -- lam_bracket (convex-trapezoid Stirling bracket for the Gauss branch of
+#              Im log Gamma, any x > 0), theta_bracket (every t > 0), and
+#              RSDesignTheta.gaussBranch_theta_sub_thetaMain_le, the proposed AND_theta_branch
+#              statement: |Lam - (t/2) log pi - ZeroFreeBridge.thetaMain t| <= 1/t for all t > 0.
+#              Also the phase box at t = 280000. A default target.
+#   AxiomGuardRSTheta -- prints #print axioms for all 24 theorems of RSTheta (not a default target).
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "RSTheta"
+roots = ["RSTheta"]
+
+[[lean_lib]]
+name = "AxiomGuardRSTheta"
+roots = ["AxiomGuardRSTheta"]
 
 [[lean_lib]]
 name = "AxiomGuardEMZetaHigh"
