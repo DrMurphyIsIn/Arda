@@ -301,17 +301,19 @@ open MeasureTheory Complex WeilExplicit WeilForm
 --
 -- THE SEAM.  Zhu's reduction is NOT one step in Lean.  It is a chain:
 --   RH_limit_explicit_formula (PROVED on main)
---     -> SymbolRepresentation  (eq. 2, the frequency-side rearrangement)   -- UNPROVED
---     -> EnvelopeBound         (Lemma 3.1, the digamma envelope)           -- UNPROVED
---     -> Parseval on the half-line                                         -- UNPROVED
+--     -> SymbolRepresentation  (eq. 2, the frequency-side rearrangement)   -- PROVED 2026-09-23
+--     -> EnvelopeBound         (Lemma 3.1, the digamma envelope)           -- PROVED 2026-09-23
+--     -> Parseval on the half-line                                         -- inside SymbolRepresentation
 --     -> the frequency split (eq. 4)                                       -- provable
---     -> LegendreLocalization  (eqs. 6 and 12, spherical Bessel decay)     -- UNPROVED
+--     -> LegendreLocalization  (eqs. 6 and 12, spherical Bessel decay)     -- eqs. 6/12 PROVED; tail sums numeric
 --     -> the two-block bound (eq. 13)                                      -- PROVABLE, elementary
 --     -> ReducedHeadFloor      (lam0, an Arb/mpmath enclosure)             -- NON-KERNEL TRUST SEAM
 --     -> min(lam0, beta* - epsD) - epsB > 0                                -- norm_num
--- The four UNPROVED links and the trust seam are carried below as OPAQUE named predicates.  They
--- are deliberately not unfolded: giving them fake definitions would let the node be closed for the
--- wrong reason.  A certified NUMBER must not masquerade as a proved THEOREM.
+-- Until 2026-09-23 the four analytic links were carried as OPAQUE predicates.  On 2026-09-23 the
+-- three analytic ones were RE-SPECIFIED as concrete definitions mirrored verbatim from the
+-- rvm_bridge island (ZhuSymbol / ZhuEnvelope / ZhuLegendre / ZhuParity), where two are proved
+-- outright and the third's analytic content is proved; the trust seam ReducedHeadFloor is
+-- untouched and stays opaque, so a certified NUMBER still cannot masquerade as a proved THEOREM.
 --
 -- SCOPE.  `WindowFloor L lam` with `lam > 0` at a FIXED L is a finite fragment of RH.  The
 -- RH-equivalent clause is `WindowFloor L 0` for EVERY L (Weil 1952; Bombieri 2000 on
@@ -340,21 +342,109 @@ noncomputable def combMass (L : ℝ) : ℝ :=
 noncomputable def betaStar (L Tsharp : ℝ) : ℝ :=
   Real.log (Tsharp / (2 * Real.pi)) - 1 / Tsharp - combMass L
 
-/-- Zhu eq. (2), OPAQUE: the geometric side of the explicit formula rearranged in frequency,
-    `Q(f) = 2 F(i/2)² + (1/2π) ∫ |F(t)|² Ψ_L(t) dt` with `Ψ_L` the Weil symbol of eq. (3).  A
-    rearrangement of the PROVED `RH_limit_explicit_formula`, but NOT proved on main; it needs the
-    Fourier-Plancherel bridge for the autocorrelation and the pole identification at `F(i/2)`. -/
-opaque SymbolRepresentation (L : ℝ) : Prop
+-- ===== RE-SPECIFIED 2026-09-23 (opaque -> concrete).  The three analytic inputs below are VERBATIM
+-- mirrors of the rvm_bridge island modules ZhuSymbol.lean (weilSymbol, SymbolRepresentation),
+-- ZhuEnvelope.lean (EnvelopeBound) and ZhuLegendre.lean (legendreP .. LegendreLocalization), plus
+-- ZhuParity.lean (OddSectorFloor, EvenSectorFloor).  SymbolRepresentation and EnvelopeBound are
+-- PROVED there (RvMBridgeZhu.symbolRepresentation, RvMBridgeZhu.envelopeBound); of
+-- LegendreLocalization the analytic content (eqs. 6 and 12) is proved and the tail sums are the
+-- paper's numerically evaluated constants.  ReducedHeadFloor below is UNCHANGED and stays opaque:
+-- it is the Arb trust seam, never asserted by the kernel.  Design doc:
+-- telperion/docs/ZHU_INPUTS_DISCHARGE_2026-09-23.md.  conjecture1_proved = False. =====
 
-/-- Zhu Lemma 3.1, OPAQUE: `Re ψ(1/4 + it/2) - log π ≥ log(t/2π) - 1/t` for `t ≥ 15/4`, by
-    Binet's second formula.  Mathlib's digamma support does not reach it. -/
-opaque EnvelopeBound : Prop
+/-- Zhu eq. (3), the Weil symbol `Ψ_L(t) = Re ψ(1/4 + it/2) - log π - Σ_{log n < 2L} (2Λ(n)/√n)
+    cos(t log n)`.  The comb is a FINITE sum (`n < e^{2L}`) with total mass `combMass L`. -/
+noncomputable def weilSymbol (L : ℝ) (t : ℝ) : ℝ :=
+  (Complex.digamma (1 / 4 + ((t : ℂ) / 2) * Complex.I)).re - Real.log Real.pi
+    - ∑' n : ℕ, if Real.log n < 2 * L then
+        2 * ArithmeticFunction.vonMangoldt n / Real.sqrt n * Real.cos (t * Real.log n) else 0
 
-/-- Zhu eqs. (6) and (12), OPAQUE: the Legendre / spherical-Bessel localization.  With
-    `|j_n(x)| ≤ xⁿ/(2n+1)!!` the `C`-matrix entries decay super-exponentially past order
-    `e L T#/2`, and cutting after `N` even modes leaves a tail-block deviation `epsD` and a
-    leading-tail coupling norm `epsB`.  Spherical Bessel functions are not in Mathlib. -/
-opaque LegendreLocalization (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop
+/-- Zhu eq. (2), CONCRETE: for real even smooth compactly supported `f` supported in `[-L, L]`,
+    `Q(f) = 2 F(i/2)² + (1/2π) ∫ |F(t)|² Ψ_L(t) dt` with `F(t) = weilKernel f (1/2 + it)` and
+    `F(i/2) = weilKernel f 0`.  A rearrangement of the PROVED `RH_limit_explicit_formula`'s
+    primes-side functional. -/
+def SymbolRepresentation (L : ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → (∀ x, (f x).im = 0) → (∀ x, f (-x) = f x) →
+    tsupport f ⊆ Set.Icc (-L) L →
+    (WeilForm.weilForm (WeilForm.autocorr f)).re
+      = 2 * ‖WeilExplicit.weilKernel f 0‖ ^ 2
+        + (1 / (2 * Real.pi)) *
+          ∫ t : ℝ, ‖WeilExplicit.weilKernel f (1 / 2 + (t : ℂ) * Complex.I)‖ ^ 2 * weilSymbol L t
+
+/-- Zhu Lemma 3.1, CONCRETE: `Re ψ(1/4 + it/2) - log π ≥ log(t/2π) - 1/t` for `t ≥ 15/4`.
+    The digamma expression is the one `WeilExplicit.archIntegrand` integrates against. -/
+def EnvelopeBound : Prop :=
+  ∀ t : ℝ, 15 / 4 ≤ t →
+    Real.log (t / (2 * Real.pi)) - 1 / t
+      ≤ (Complex.digamma (1 / 4 + ((t : ℂ) / 2) * Complex.I)).re - Real.log Real.pi
+
+/-- The Legendre polynomial `P_n`, Rodrigues form `P_n = (1/(2^n n!)) D^n (X² - 1)^n`. -/
+noncomputable def legendreP (n : ℕ) : Polynomial ℝ :=
+  Polynomial.C (1 / (2 ^ n * (n.factorial : ℝ)))
+    * (Polynomial.derivative^[n] ((Polynomial.X ^ 2 - 1) ^ n))
+
+/-- The spherical Bessel function `j_n` by the Poisson integral (cosine form, the sine part
+    vanishing by parity): `j_n(x) = x^n/(2^{n+1} n!) ∫_{-1}^{1} (1 - u²)^n cos(xu) du`. -/
+noncomputable def sphericalBessel (n : ℕ) (x : ℝ) : ℝ :=
+  x ^ n / (2 ^ (n + 1) * (n.factorial : ℝ))
+    * ∫ u in (-1 : ℝ)..1, (1 - u ^ 2) ^ n * Real.cos (x * u)
+
+/-- Zhu's orthonormal Legendre mode `T_n(x) = P̄_n(x/L)/√L = sqrt((n+1/2)/L) P_n(x/L)` on
+    `[-L, L]`, extended by zero. -/
+noncomputable def legendreMode (L : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
+  if |x| ≤ L then Real.sqrt ((n + 1 / 2) / L) * (legendreP n).eval (x / L) else 0
+
+/-- The cosine transform `∫ T_n(x) cos(tx) dx`; for even `n` this is the full transform
+    `T̂_n(t) = ∫ T_n(x) e^{itx} dx` of eq. (6). -/
+noncomputable def legendreModeFT (L : ℝ) (n : ℕ) (t : ℝ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.cos (t * x)
+
+/-- The pole vector `p_n = ∫ T_n(x) cosh(x/2) dx` (so `F(i/2) = Σ c_n p_n` for even `f = Σ c_n T_n`). -/
+noncomputable def poleVec (L : ℝ) (n : ℕ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.cosh (x / 2)
+
+/-- Zhu's C-matrix, the operator with symbol `(Ψ_L - β*) χ_[0,T#]` in the Legendre basis:
+    `C_{nm} = (1/π) ∫_0^{T#} (Ψ_L(t) - β*) T̂_n(t) T̂_m(t) dt`. -/
+noncomputable def combMatrix (L Tsharp : ℝ) (n m : ℕ) : ℝ :=
+  (1 / Real.pi) * ∫ t in (0 : ℝ)..Tsharp,
+    (weilSymbol L t - betaStar L Tsharp) * (legendreModeFT L n t * legendreModeFT L m t)
+
+/-- Zhu's reduced matrix `M_R = β* I + 2 p pᵀ + C` on the even modes `0, 2, 4, …`, indexed by
+    `k ↦ 2k`. -/
+noncomputable def reducedMat (L Tsharp : ℝ) (k j : ℕ) : ℝ :=
+  (if k = j then betaStar L Tsharp else 0)
+    + 2 * poleVec L (2 * k) * poleVec L (2 * j) + combMatrix L Tsharp (2 * k) (2 * j)
+
+/-- Zhu eqs. (6), (12), (13), CONCRETE: the tail data of the block decomposition after `N` even
+    modes.  (i) Gershgorin: every tail row `k ≥ N` of `M_R - β* I` has absolute row sum over the
+    tail `≤ epsD` (so `λ_min(D) ≥ β* - epsD`); (ii) Schur: every leading column `j < N` has
+    absolute tail-column sum `≤ epsB` and every tail row `k ≥ N` has absolute leading-row sum
+    `≤ epsB` (so `‖B‖ ≤ epsB`).  Summability is required explicitly so the `tsum`s are honest.
+    In the certified run both constants are below `1e-100` (Zhu Section 5.3). -/
+def LegendreLocalization (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop :=
+  (∀ k, N ≤ k →
+    Summable (fun j : ℕ => if N ≤ j then
+      |reducedMat L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ∧
+    ∑' j : ℕ, (if N ≤ j then
+      |reducedMat L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ≤ epsD) ∧
+  (∀ j, j < N →
+    Summable (fun k : ℕ => if N ≤ k then |reducedMat L Tsharp k j| else 0) ∧
+    ∑' k : ℕ, (if N ≤ k then |reducedMat L Tsharp k j| else 0) ≤ epsB) ∧
+  (∀ k, N ≤ k → ∑ j ∈ Finset.range N, |reducedMat L Tsharp k j| ≤ epsB)
+
+/-- The ODD-sector window floor (Zhu Section 6, eq. (14)): the Weil form of every real ODD smooth
+    test function supported in `[-L, L]` is at least `lam ‖f‖₂²`.  Together with the real even
+    sector this yields `WindowFloor L lam` for complex `f` (Zhu Lemma 6.1, Corollary 6.3). -/
+def OddSectorFloor (L lam : ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → (∀ x, (f x).im = 0) → (∀ x, f (-x) = -f x) →
+    tsupport f ⊆ Set.Icc (-L) L →
+    lam * (∫ x : ℝ, ‖f x‖ ^ 2) ≤ (WeilForm.weilForm (WeilForm.autocorr f)).re
+
+/-- The real EVEN-sector window floor, the sector Zhu Theorem 1.1 certifies. -/
+def EvenSectorFloor (L lam : ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → (∀ x, (f x).im = 0) → (∀ x, f (-x) = f x) →
+    tsupport f ⊆ Set.Icc (-L) L →
+    lam * (∫ x : ℝ, ‖f x‖ ^ 2) ≤ (WeilForm.weilForm (WeilForm.autocorr f)).re
 
 /-- The ARB / MPMATH TRUST SEAM, OPAQUE: the leading `N × N` Legendre block of Zhu's reduced form
     `R` has least eigenvalue at least `lam0`.  In the certified run this is a verified Cholesky

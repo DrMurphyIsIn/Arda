@@ -4,5 +4,16 @@ kind = "lemma"
 name = "RH.weil_window_floor_of_certified_block"
 statement_module = "Statements.RH_weil_window_floor_of_certified_block"
 status = "draft"
-title = "Zhu compact-window reduction (arXiv:2608.24827 Thm 1.1), CONDITIONAL on four named UNDISCHARGED inputs -- the frequency-side symbol representation (eq. 2), the digamma envelope (Lemma 3.1), the Legendre/spherical-Bessel localization (eqs. 6 and 12) and an Arb-certified least-eigenvalue floor lam0 for the finite Legendre head -- concludes a positive window floor min(lam0, beta* - epsD) - epsB for the Weil form on supp f in [-L, L], where beta* = log(T#/2pi) - 1/T# - A_L and A_L is the finite von Mangoldt comb mass; STATED ONLY, not proved. Numerically instantiated at L = 0.8 by Zhu Thm 1.2 (8.9e-18, support 1.6, 2.3x the classical (log 2)/2 range) but the kernel asserts NO number. Route closed by Thm 1.4 at doubly exponential cost; PRE-WALL; conjecture1_proved = False"
-updated = "2026-09-19"
+title = "Zhu compact-window reduction (arXiv:2608.24827 Thm 1.1 + Lemma 6.1), RE-SPECIFIED 2026-09-23 from opaque to concrete inputs: the symbol representation (eq. 2) and the digamma envelope (Lemma 3.1) are PROVED on the rvm_bridge island (ZhuSymbol, ZhuEnvelope) and dropped as hypotheses; the Legendre localization (eqs. 6, 12, 13) is a CONCRETE tail-sum predicate on the reduced matrix beta* I + 2pp^T + C whose analytic inputs eqs. 6 and 12 are PROVED (ZhuLegendre) and whose tail sums stay a hypothesis; the odd parity sector is carried as an explicit concrete hypothesis; the Arb-certified least-eigenvalue floor lam0 stays OPAQUE (the trust seam) -- concludes a positive window floor min(lam0, beta* - epsD) - epsB for the Weil form on supp f in [-L, L], where beta* = log(T#/2pi) - 1/T# - A_L and A_L is the finite von Mangoldt comb mass; STATED ONLY, not proved. Numerically instantiated at L = 0.8 by Zhu Thm 1.2 (8.9e-18, support 1.6, 2.3x the classical (log 2)/2 range) but the kernel asserts NO number. Route closed by Thm 1.4 at doubly exponential cost; PRE-WALL; conjecture1_proved = False"
+updated = "2026-09-23"
+
+# 2026-09-23 RE-SPECIFICATION RECORD (DRAFT node; statement provenance hash changed 8d0bdb0b971ec222 -> see file header).
+# Reason: the four analytic inputs of Zhu Thm 1.1 were opaque placeholders (import memo 2026-09-19,
+# design memo 2026-09-22 sec. 2); on 2026-09-23 the three analytic ones were made concrete
+# (verbatim mirrors of rvm_bridge ZhuSymbol/ZhuEnvelope/ZhuLegendre/ZhuParity) and two of them
+# proved (RvMBridgeZhu.symbolRepresentation, RvMBridgeZhu.envelopeBound), so they are no longer
+# hypotheses; LegendreLocalization is concrete (eqs. 6/12 proved, tail sums numeric, still a
+# hypothesis); hT : 0 < Tsharp and hodd : OddSectorFloor were ADDED (missing side condition; parity
+# gap between real-even Thm 1.1 and complex-f WindowFloor, Zhu Lemma 6.1 / Cor. 6.3).
+# ReducedHeadFloor UNCHANGED and opaque.  Conclusion UNCHANGED.  Doc: telperion/docs/ZHU_INPUTS_DISCHARGE_2026-09-23.md.
+# conjecture1_proved = False.
