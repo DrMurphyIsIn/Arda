@@ -119,6 +119,7 @@ import RvMSpectralCookedControl
 import RvMBlFiniteMultiset
 import LiPositivityBundle
 import LiNegativeControl
+import Probes.Dogfood_enclosure_tree
 
 #print axioms LiPositivity.li_rung_0
 #print axioms LiPositivity.li_rung_19
@@ -869,3 +870,27 @@ import LiNegativeControl
 #print axioms ZeroFreeBridge.zeta_repr_R1
 #print axioms ZeroFreeBridge.zeta_fract_repr
 #print axioms ZeroFreeBridge.norm_deriv_le_of_re_le
+-- SHAPES_AUDIT_48H rank 1 dogfood (`enclosure_tree`, 2026-09-22): the emitted pi-face rate
+-- lemmas that replace the hand `pi_gt_d4` / `pi_gt_d6` steps of li_rungs_of_bands_4000_upto
+-- (and _sharp), the nine LeakageDictionary brackets regenerated on this island's Mathlib, and
+-- one anchor per tactic route.  Finite rational arithmetic facts about real constants;
+-- nothing about RH.  conjecture1_proved = False.
+#print axioms DogfoodEnclosureTree.li_height_rate_4000
+#print axioms DogfoodEnclosureTree.li_height_rate_4000_rate
+#print axioms DogfoodEnclosureTree.li_sharp_rate_4000
+#print axioms DogfoodEnclosureTree.li_sharp_rate_4000_rate
+#print axioms DogfoodEnclosureTree.qc_sqrt_five_bounds
+#print axioms DogfoodEnclosureTree.qc_sqrt_inner_bounds
+#print axioms DogfoodEnclosureTree.qc_dhKappa_bounds
+#print axioms DogfoodEnclosureTree.qc_log_three_halves_bounds
+#print axioms DogfoodEnclosureTree.qc_log_two_bounds
+#print axioms DogfoodEnclosureTree.qc_log_six_bounds
+#print axioms DogfoodEnclosureTree.qc_log_three_bounds
+#print axioms DogfoodEnclosureTree.rt_exp_neg_one
+#print axioms DogfoodEnclosureTree.rt_arctan_half
+#print axioms DogfoodEnclosureTree.rt_arctan_abs
+#print axioms DogfoodEnclosureTree.rt_sqrt5_mul_log2
+#print axioms DogfoodEnclosureTree.rt_pi_sq_div_six
+#print axioms DogfoodEnclosureTree.rt_log_two_split
+#print axioms DogfoodEnclosureTree.rt_log_add_four_le
+#print axioms DogfoodEnclosureTree.rt_log_le_two_sqrt
