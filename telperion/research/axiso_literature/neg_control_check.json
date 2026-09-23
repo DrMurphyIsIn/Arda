@@ -1,0 +1,131 @@
+{
+  "conjecture1_proved": false,
+  "object": "F(s) = zeta(s)(1 + 4*2^{-s} + 2*4^{-s})",
+  "closed_form_mismatches_n_le_4096": [],
+  "Lambda_F_on_powers_of_2": [
+    {
+      "k": 1,
+      "n": 2,
+      "Lambda_F(2^k)/log2": 5,
+      "sign": "positive",
+      "growth_exponent log|v|/log(2^k)": 2.321928094887362
+    },
+    {
+      "k": 2,
+      "n": 4,
+      "Lambda_F(2^k)/log2": -11,
+      "sign": "negative",
+      "growth_exponent log|v|/log(2^k)": 1.7297158093186489
+    },
+    {
+      "k": 3,
+      "n": 8,
+      "Lambda_F(2^k)/log2": 41,
+      "sign": "positive",
+      "growth_exponent log|v|/log(2^k)": 1.7858506682060282
+    },
+    {
+      "k": 4,
+      "n": 16,
+      "Lambda_F(2^k)/log2": -135,
+      "sign": "negative",
+      "growth_exponent log|v|/log(2^k)": 1.769203899262708
+    },
+    {
+      "k": 5,
+      "n": 32,
+      "Lambda_F(2^k)/log2": 465,
+      "sign": "positive",
+      "growth_exponent log|v|/log(2^k)": 1.7722173811990787
+    },
+    {
+      "k": 6,
+      "n": 64,
+      "Lambda_F(2^k)/log2": -1583,
+      "sign": "negative",
+      "growth_exponent log|v|/log(2^k)": 1.7714075900228636
+    },
+    {
+      "k": 7,
+      "n": 128,
+      "Lambda_F(2^k)/log2": 5409,
+      "sign": "positive",
+      "growth_exponent log|v|/log(2^k)": 1.7715923117362142
+    },
+    {
+      "k": 8,
+      "n": 256,
+      "Lambda_F(2^k)/log2": -18463,
+      "sign": "negative",
+      "growth_exponent log|v|/log(2^k)": 1.7715436713707764
+    },
+    {
+      "k": 9,
+      "n": 512,
+      "Lambda_F(2^k)/log2": 63041,
+      "sign": "positive",
+      "growth_exponent log|v|/log(2^k)": 1.7715558666170113
+    },
+    {
+      "k": 10,
+      "n": 1024,
+      "Lambda_F(2^k)/log2": -215231,
+      "sign": "negative",
+      "growth_exponent log|v|/log(2^k)": 1.7715526360534497
+    },
+    {
+      "k": 11,
+      "n": 2048,
+      "Lambda_F(2^k)/log2": 734849,
+      "sign": "positive",
+      "growth_exponent log|v|/log(2^k)": 1.771553482138758
+    },
+    {
+      "k": 12,
+      "n": 4096,
+      "Lambda_F(2^k)/log2": -2508927,
+      "sign": "negative",
+      "growth_exponent log|v|/log(2^k)": 1.771553255323126
+    }
+  ],
+  "negative_indices_n_le_4096": [
+    4,
+    16,
+    64,
+    256,
+    1024,
+    4096
+  ],
+  "limit_exponent log_2(2+sqrt2)": 1.771553303163612,
+  "s0": "(1.771553303163611972643612 + 4.532360141827193809627683j)",
+  "2^{-s0}": "(-0.2928932188134524755991556 - 6.766779738363673502510648e-42j)",
+  "-1+sqrt2/2": "-0.2928932188134524755991556",
+  "|F(s0)|": "1.9301e-41",
+  "|zeta(s0)|": "0.80687727787064496201",
+  "|Lambda_F(1-s0)|": "2.4191e-42",
+  "functional_equation_residuals": [
+    {
+      "s": "(0.3 + 2.0j)",
+      "|Lambda_F(s) - Lambda_F(1-s)|": "2.5669e-41",
+      "|Lambda_F(s)|": "0.96103914"
+    },
+    {
+      "s": "(2.5 - 7.0j)",
+      "|Lambda_F(s) - Lambda_F(1-s)|": "2.5111e-42",
+      "|Lambda_F(s)|": "0.04617164"
+    },
+    {
+      "s": "(-0.7 + 13.0j)",
+      "|Lambda_F(s) - Lambda_F(1-s)|": "4.3896e-45",
+      "|Lambda_F(s)|": "5.9736876e-5"
+    }
+  ],
+  "dirichlet_series_at_3": {
+    "partial_sum_to_M": "1.840649632919379",
+    "M": 200000,
+    "tail_bound": 8.75e-11,
+    "F(3)": "1.8406496329631287495",
+    "|partial - F(3)|": 4.3749670552983844e-11,
+    "consistent": true
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "conjecture1_proved": false,
+  "object": "G(s) = zeta(s/2 + 7/4) * zeta(s/2 - 5/4)",
+  "zeta_zero_1": {
+    "enclosure": "0.50000000000000000000000000000000000000000000000 + [14.134725141734693790457251983562470270784257116 +/- 3.13e-46]j",
+    "method": "acb.zeta_zero(1) (Arb certified isolation)"
+  },
+  "lambda_zeta_sign_change": {
+    "Lambda(1/2+14.1347i)": "[-3.4757556075172569667493028770667627876325e-10 +/- 5.86e-51] + [+/- 2.91e-51]j",
+    "Lambda(1/2+14.1348i)": "[1.03481434716335552298746921349303859632162e-9 +/- 6.14e-51] + [+/- 2.91e-51]j",
+    "opposite_signs": true,
+    "note": "Lambda_zeta(1/2+it) is real (FE + Schwarz reflection); sign change => zero"
+  },
+  "G_zero_from_rho1": {
+    "point_2rho1_plus_5_2": "3.5000000000000000000000000000000000000000000000 + [28.269450283469387580914503967124940541568514231 +/- 4.18e-46]j",
+    "G_enclosure_there": "[+/- 1.34e-46] + [+/- 1.49e-46]j",
+    "re": "7/2 exactly (Re rho_1 = 1/2), so off the critical line"
+  },
+  "winding": {
+    "offline_zero_box": {
+      "box": {
+        "re": [
+          "33/10",
+          "37/10"
+        ],
+        "im": [
+          "281/10",
+          "142/5"
+        ]
+      },
+      "winding": 1,
+      "winding_interval": "[1.00000000000000000000000000000000000000000 +/- 9.79e-44]",
+      "certified_pieces": 109,
+      "prec": 160,
+      "trust": "Arb ball arithmetic, whole-segment enclosures; NOT Lean kernel"
+    },
+    "mirror_zero_box": {
+      "box": {
+        "re": [
+          "-27/10",
+          "-23/10"
+        ],
+        "im": [
+          "-142/5",
+          "-281/10"
+        ]
+      },
+      "winding": 1,
+      "winding_interval": "[1.00000000000000000000000000000000000000000 +/- 2.10e-43]",
+      "certified_pieces": 154,
+      "prec": 160,
+      "trust": "Arb ball arithmetic, whole-segment enclosures; NOT Lean kernel"
+    },
+    "critical_line_control_box": {
+      "box": {
+        "re": [
+          "3/10",
+          "7/10"
+        ],
+        "im": [
+          "281/10",
+          "142/5"
+        ]
+      },
+      "winding": 0,
+      "winding_interval": "[+/- 9.87e-45]",
+      "certified_pieces": 64,
+      "prec": 160,
+      "trust": "Arb ball arithmetic, whole-segment enclosures; NOT Lean kernel"
+    }
+  },
+  "functional_equation_samples": [
+    {
+      "s": "0.3+5.0i",
+      "Lambda_G(s)": "[-0.002029034790966869536291984722329342418863031571 +/- 5.59e-49] + [0.000146066187390180685428916579215023944925403971 +/- 4.42e-49]j",
+      "Lambda_G(1-s)-Lambda_G(s)": "[+/- 2.98e-49] + [+/- 2.79e-49]j",
+      "contains_zero": true
+    },
+    {
+      "s": "2.0+-7.5i",
+      "Lambda_G(s)": "[-0.0006812158615839803698114927679533264375691567047 +/- 7.02e-50] + [0.0004400570031932282195525926334445210433100639721 +/- 3.13e-50]j",
+      "Lambda_G(1-s)-Lambda_G(s)": "[+/- 5.95e-50] + [+/- 6.06e-50]j",
+      "contains_zero": true
+    },
+    {
+      "s": "-1.1+13.25i",
+      "Lambda_G(s)": "[-5.48462094922896336721280362437193154684992875e-5 +/- 2.49e-50] + [5.02549641417669571458901989908504403618218244e-5 +/- 5.89e-50]j",
+      "Lambda_G(1-s)-Lambda_G(s)": "[+/- 2.05e-50] + [+/- 2.03e-50]j",
+      "contains_zero": true
+    },
+    {
+      "s": "0.5+28.0i",
+      "Lambda_G(s)": "[-2.975529806896403881245227705229965788586298101e-9 +/- 3.38e-55] + [+/- 3.42e-55]j",
+      "Lambda_G(1-s)-Lambda_G(s)": "[+/- 6.15e-55] + [+/- 6.83e-55]j",
+      "contains_zero": true
+    }
+  ],
+  "P2_integer_frequency_form": {
+    "N": 2000,
+    "identity": "Lambda_{zeta(w)zeta(w-3)}(n) = Lambda(n) * (1 + n^3)",
+    "mismatches": [],
+    "all_nonnegative": true
+  },
+  "P2_beurling_form_samples": [
+    {
+      "g_prime_power": "(2^(1/2))^1",
+      "log_coefficient": "[2.6757160087561224001143749337610708094091872080 +/- 5.02e-47]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(2^(1/2))^2",
+      "log_coefficient": "[2.8726212985703493178784302210509492220946459969 +/- 4.74e-47]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(2^(1/2))^3",
+      "log_coefficient": "[4.4935402190120370893225767636212420953701830894 +/- 8.67e-47]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(3^(1/2))^1",
+      "log_coefficient": "[4.0944524847410876558820143611462192827202133917 +/- 5.94e-47]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(3^(1/2))^2",
+      "log_coefficient": "[7.8049203057116075572533075882672026411620236746 +/- 3.91e-47]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(3^(1/2))^3",
+      "log_coefficient": "[20.516605811201574350709327412735350318175704483 +/- 7.03e-46]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(5^(1/2))^1",
+      "log_coefficient": "[7.5365578573549515312359709304702035126318371784 +/- 5.37e-47]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(5^(1/2))^2",
+      "log_coefficient": "[27.952638573129371036871798198075937963996081990 +/- 2.47e-46]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(5^(1/2))^3",
+      "log_coefficient": "[139.32096820238711915235611727374613433662054632 +/- 3.60e-45]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(7^(1/2))^1",
+      "log_coefficient": "[11.419231371919148891115590343874561214658880664 +/- 1.46e-46]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(7^(1/2))^2",
+      "log_coefficient": "[64.821458089702016445754913247742396727366095979 +/- 6.09e-46]",
+      "positive": true
+    },
+    {
+      "g_prime_power": "(7^(1/2))^3",
+      "log_coefficient": "[492.03546393842576105807087384933720420722342794 +/- 7.97e-45]",
+      "positive": true
+    }
+  ]
+}

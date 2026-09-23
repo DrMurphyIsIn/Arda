@@ -1,0 +1,46 @@
+Class P constructor seat -- numerical companion (conjecture1_proved = False)
+python 3.9.6, mpmath 1.3.0, sympy 1.14.0, Arb precision 256 bits
+
+== N1  F0: coefficients a0 and the von Mangoldt function Lambda_F0 (exact) ==
+[PASS] N1.a0_values: a0(n) takes values [1, 4, 6] for 1 <= n <= 4096
+[PASS] N1.a0_multiplicative: a0(mn) = a0(m)a0(n) for coprime m,n < 200 (0 failures)
+[PASS] N1.closed_form: exact recursion equals Lambda + geomCoeff(2,1) + geomCoeff(2,2) for all 2 <= n <= 4096 (0 mismatches)
+[PASS] N1.Lambda_F0_4: Lambda_F0(4) = -4 * log 2  (expected -4 log 2)
+[PASS] N1.negative_set: n <= 4096 with Lambda_F0(n) < 0: [4, 16, 64, 256, 1024, 4096] (exactly the even powers of 2)
+[PASS] N1.log_coefficients: b(2^k) = Lambda_F0(2^k)/log(2^k), k=1..6: ['4', '-2', '10/3', '-4', '34/5', '-32/3']
+[PASS] N1.sq_ineq_violated: a0(2)^2 = 16 > 2 a0(4) = 12, so P2_forces_sq_ineq is violated at p = 2
+
+== N2  Lemma C at prime conductor (Arb balls) ==
+[PASS] N2.prime_conductor: for all primes p < 100 and eps = +-1: self-reciprocity holds (max |residual| <= 3.81e-72) and Lambda_F(p^2) = (1-p) log p < 0, convolution recursion = geometric expansion (0 failures)
+
+== N2b Lemma C at conductor p^2 (exact rational arithmetic) ==
+[PASS] N2b.recursion_newton: Lambda_F(p^k)/log p from the convolution recursion equals 1 - s_k (Newton power sums), k <= 8, 6 primes x 5 values of x (0 mismatches)
+[PASS] N2b.sq_family_core_grid: over 21015 exact grid points (primes p < 50, x in [-10,10] step 1/70) the largest value of min_{k<=5}(1 - s_k) is -3/5 at (p, x) = (2, -8/5): always negative
+[PASS] N2b.minus_branch: for the branch 1 - p p^{-2s}: a(p)^2 = 1 > 2 a(p^2) = 2(1-p) for every prime p < 50
+
+== N3  Functional equations Xi(1-s) = Xi(s) (Arb balls) ==
+[PASS] N3.FE_Xi0: 0 in X(s)-X(1-s) at 5 points; max relative radius 7.60e-74
+[PASS] N3.FE_Xi1: 0 in X(s)-X(1-s) at 5 points; max relative radius 1.42e-73
+[PASS] N3.FE_XiE8: 0 in X(s)-X(1-s) at 5 points; max relative radius 9.05e-74
+
+== N4  Explicit zeros off the critical line (rigorous) ==
+[PASS] N4.P0_zero_Re1: P0(1 + i pi/log 2) encloses 0: [+/- 1.00e-76] + [+/- 2.97e-76]j
+[PASS] N4.P0_zero_Re0: P0(i pi/log 2) encloses 0
+[PASS] N4.first_zero: Arb zeta_zero(1) = 0.500000000000 + 14.1347251417j; Z(14.134) = -0.000575119, Z(14.135) = 0.000218012 (sign change: zero on the line in (14.134, 14.135))
+[PASS] N4.F1_offline_zero: F1(2 rho1 + 1/2) encloses 0, point 1.500000000 + 28.26945028j, Re = 3/2
+[PASS] N4.E8_offline_zero: E8 twin at 2 rho1 + 5/2 encloses 0, point 3.500000000 + 28.26945028j, Re = 7/2
+[PASS] N4.F1_line_smoke: min |F1(1/2 + it)| over t = 0.1..79.9 (step 0.1) = 0.1594
+
+== N5  F1: -F1'/F1 = sum b1(n) n^{-s/2}, b1 >= 0 (mpmath) ==
+[PASS] N5.F1_beurling_sum: |(-F1'/F1)(8+3i) - partial sum to 20000| = 2.38e-13 < tail bound 2.42e-11; min b1 = 0.6127 > 0
+[PASS] N5.F1_poles: (s-1/2)F1(s) -> -1.0 (Lean: F1_pole_half, limit -1); (s-5/2)F1(s) -> 3.2898681337 (pi^2/3 = 3.2898681337)
+
+== N6  Cohn-Elkies pair: F[fhat] = f symbolically; pointwise sign facts ==
+[PASS] N6.fourier_pair: sympy: generic branch of 2*int_0^1 fhat(t) cos(2 pi x t) dt - f(x) simplifies to 0; grid max |diff| = 2.7e-51; value at x=0: 1.0 (f(0)=1), at x=1: -1.02e-55 (f(1)=0)
+[PASS] N6.sign_smoke: max f on sampled |x| > 1: -1.084e-24 (<= 0); min fhat on the grid t = 0, 0.001, ..., 0.999: 6.58e-9 (>= 0); fhat(1) = 0 exactly (Lean: ceFhat_eq_zero_of_one_le)
+[PASS] N6.zeta_pairing: for N = sum_{n>=1} delta_n: <nu, f> = 1 = <nu, fhat> (f vanishes on Z\{0})
+
+== N7  Lemma C beyond prime conductor: q = p1 p2, one free real parameter (evidence) ==
+[PASS] N7.lemmaC_two_primes: max over eps = +-1 and x in [-6,6] (step 0.02) of min_{q-smooth n <= 3000} Lambda_F(n)/log n: {6: -2.1885, 10: -2.2327, 15: -1.6141, 14: -3.3327}
+
+26 checks, 0 failed

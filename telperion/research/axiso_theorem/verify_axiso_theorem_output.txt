@@ -1,0 +1,71 @@
+verify_axiso_theorem.py -- conjecture1_proved = False; numerical evidence only
+python 3.9.6, numpy 1.23.5, mpmath 1.3.0, dps 30
+
+== K1 finite-difference rigidity (C3 Step 2) ==
+  Newton identity Delta u(n) = sum_k C(n,k) Delta^(k+1) u(0) (exact, n<=11): True
+  nonconstant periodic u with Delta^k u(0) >= 0 for all 1<=k<=60: 0
+  largest index of the first negative difference: 4 (always <= period: True)
+
+== K2 cumulant rigidity (C3 Step 1) ==
+  nonconstant periodic nonneg moment sequences with all kappa_k >= 0 (k<=16): 0 of 2000
+  cumulants of (1,0,1,0,...) [log cosh]: k1=0, k2=1, k3=0, k4=-2, k5=0, k6=16, k7=0, k8=-272
+  lower bound m_(kt) >= t! kappa_k^t (random nonneg cumulants, exact): True
+
+== C3 Steps 1-4 on periodic coefficient data (exact rationals) ==
+  random nonneg periodic A (40 per q, n <= 1200): {2: {'logpositive': 25, 'violations_of_steps_2_4': 0}, 3: {'logpositive': 16, 'violations_of_steps_2_4': 0}, 4: {'logpositive': 0, 'violations_of_steps_2_4': 0}, 5: {'logpositive': 13, 'violations_of_steps_2_4': 0}, 6: {'logpositive': 0, 'violations_of_steps_2_4': 0}, 7: {'logpositive': 9, 'violations_of_steps_2_4': 0}, 8: {'logpositive': 0, 'violations_of_steps_2_4': 0}, 9: {'logpositive': 0, 'violations_of_steps_2_4': 0}, 10: {'logpositive': 0, 'violations_of_steps_2_4': 0}, 12: {'logpositive': 0, 'violations_of_steps_2_4': 0}}
+  (every log-positive A found is unit-invariant with |P(q)| <= 1, as Steps 2 and 4 require)
+  unit-invariant A, P = F/zeta random on divisors of q, log-positivity on q-smooth n <= 4000:
+    q=  2: 400 log-positive of 400, max |P(q)| = 1  (Step 4 theorem: <= 1; FE needs sqrt(q) = 1.4142)
+    q=  3: 400 log-positive of 400, max |P(q)| = 1  (Step 4 theorem: <= 1; FE needs sqrt(q) = 1.7321)
+    q=  4: 196 log-positive of 400, max |P(q)| = 3/4  (Step 4 theorem: <= 1; FE needs sqrt(q) = 2.0000)
+    q=  6:   4 log-positive of 400, max |P(q)| = 1  (Step 4 theorem: <= 1; FE needs sqrt(q) = 2.4495)
+    q=  8:  73 log-positive of 400, max |P(q)| = 5/8  (Step 4 theorem: <= 1; FE needs sqrt(q) = 2.8284)
+    q=  9: 205 log-positive of 400, max |P(q)| = 3/4  (Step 4 theorem: <= 1; FE needs sqrt(q) = 3.0000)
+    q= 10:  14 log-positive of 400, max |P(q)| = 1  (Step 4 theorem: <= 1; FE needs sqrt(q) = 3.1623)
+    q= 12:   1 log-positive of 400, max |P(q)| = 1/2  (Step 4 theorem: <= 1; FE needs sqrt(q) = 3.4641)
+    q= 30:   0 log-positive of 400, max |P(q)| = 0  (Step 4 theorem: <= 1; FE needs sqrt(q) = 5.4772)
+  C9(i) diagonal f(t) = 1 + 4t + 2t^2: roots [-1.707107 -0.292893]; min |root| = 0.292893 < 1, so Step 4 predicts that log-positivity fails
+  diagonal identity (R) k A_k = sum_j B_j A_(k-j) on q=12 example, k<=8 (exact): True
+
+== C9 negative controls ==
+  (i)  s0 = (1.77155330316 + 4.53236014183j)  Re s0 = log2(2+sqrt2) = 1.77155330316 > 1
+       2^(-s0) = (-0.292893218813 - 1.16002677463e-31j) vs sqrt2/2 - 1 = -0.292893218813
+       |F(s0)| = 2.6771e-31, FE residual max |Lambda(s)-Lambda(1-s)| = 3.6978e-32
+       a(n) >= 0: True; multiplicative (m,n<16): True; b(2)=5, b(4)=-11/2, b(8)=41/3, b(16)=-135/4
+  (ii) KP element F = [zeta(s)(1+5^(1/2-s)) + L(s,(./5))]/2: FE residual 1.7777e-31, |F(3) - sum a_n n^-3| = 1.9722e-31
+       b(36) = -1/2, b(2*7*17*37 = 8806) = -2  (Lean: a5_logcoeff = -2)
+  (iii) G = zeta(s/2+7/4)zeta(s/2-5/4): FE residual 1.9731e-32; zero at 2 rho_1 + 5/2 = (3.5 + 28.26945028j), |G| = 5.5941e-31
+  sharpness control zeta(s)(1+2^(1/2-s)) [q=2, P(2)=sqrt2]: FE residual 2.7562e-32; b(4) = -0.5 (Lean: a2_logcoeff_four = -1/2)
+
+== C5 (paper-proof only): Hermite eigenfunction and Fejer LP identity ==
+  delta=0.1: max |psi_hat - psi| on 5 points = 3.16e-11; psi(0) = -0.1; psi >= 0 for |t| >= t_delta = 0.691228
+  delta=0.01: max |psi_hat - psi| on 5 points = 3.14e-11; psi(0) = -0.01; psi >= 0 for |t| >= t_delta = 0.691012
+  delta=0.001: max |psi_hat - psi| on 5 points = 3.14e-11; psi(0) = -0.001; psi >= 0 for |t| >= t_delta = 0.690991
+  limit t_delta -> sqrt(3/(2 pi)) = 0.690988, q >= 2 pi/3 = 2.094395
+  Fejer identity q=2 example: lhs = 0.7071067812, rhs (N=400000) = 0.7071060647, exact value sqrt2/2 = 0.7071067812
+
+== C6 constants and the digamma bound (analytic inputs are paper-proof only) ==
+  L-constant 3(1-gamma/2)+4+1/3+1/2+1/24-4 log pi = 2.430257 (< 2.44: True)
+  delta* = 2 sqrt3 - 3 = 0.464102; c* = 0.07179677 = 7 - 4 sqrt3 = 0.07179677
+  asymptotic constant 2.5 / c* = 34.8205
+  grid max of delta(1-delta)/(3+delta) = 0.07179677 at delta = 0.46410
+  max[Re psi(z) - log|z|] = -1.852e-08; max[Re psi - log|z| - 1/(12|Im z|)] = -2.780e-05 (<= 0)
+
+== C7(a) mirror identity and C8 RvM main term (paper-proof only) ==
+  xi'/xi(1 - conj s) + conj(xi'/xi(s)) at s = 1.7+9.3i: 3.1182e-31
+  T=50: N_zeta=10 vs main 9.423;  N_F (q=5) = 23 vs (T/2pi)log(qT/(2pi e)) + 7/8 = 22.230
+  T=100: N_zeta=29 vs main 29.002;  N_F (q=5) = 55 vs (T/2pi)log(qT/(2pi e)) + 7/8 = 54.617
+  T=200: N_zeta=79 vs main 79.193;  N_F (q=5) = 130 vs (T/2pi)log(qT/(2pi e)) + 7/8 = 130.423
+  min over x in [1,2] of x/(x^2+1) = 0.400000 (claimed 2/5)
+
+== Self-dual (FE-compatible) periodic nonnegative a mod q: log-positivity (floats) ==
+  q=  2: nonneg self-dual samples 150, best min_n b(n) = -1.8750
+  q=  3: nonneg self-dual samples 150, best min_n b(n) = -4.3333
+  q=  4: nonneg self-dual samples  49, best min_n b(n) = -1.5433
+  q=  5: nonneg self-dual samples  82, best min_n b(n) = -1.7149
+  q=  6: nonneg self-dual samples 129, best min_n b(n) = -2.2441
+  q=  7: nonneg self-dual samples  37, best min_n b(n) = -1.8601
+  q=  8: nonneg self-dual samples  22, best min_n b(n) = -1.5611
+  q=  9: nonneg self-dual samples  21, best min_n b(n) = -2.3884
+  q= 10: nonneg self-dual samples   6, best min_n b(n) = -3.6086
+  q= 12: nonneg self-dual samples   5, best min_n b(n) = -2.4101
