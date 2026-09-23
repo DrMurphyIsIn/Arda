@@ -23,7 +23,13 @@ concurrency:
 jobs:
   lean-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    # A COLD rebuild (no warm .lake/build cache for this ref) is several hours of 4-vCPU wall:
+    # R3Cert.R47PC6Cells alone took 4118-4400 s on the runner, the R7Hyps StarOfHubs chain is
+    # Cells -> Cells2 -> ... -> Cells9 (strictly sequential imports), and R47PC6Reduce sits behind
+    # PC6Cells. 150 min was never enough once those landed (2026-09-09). 350 stays under the
+    # 360-minute hosted-runner cap. The three build stages carry their own step timeouts
+    # (140 + 100 + 90 min) so a stuck stage fails in time for the always() cache save to run.
+    timeout-minutes: 350
     defaults:
       run:
         working-directory: proof/formalization
@@ -44,6 +50,69 @@ jobs:
       - name: Fetch Mathlib olean cache
         run: lake exe cache get
 
+      # WHY (2026-09-23, closure-run finding C4): every run since 2026-09-12 died in the Build step
+      # with "The runner has received a shutdown signal" (exit 143) at 22-130 min -- NOT at the
+      # job timeout -- and on 2026-09-19 the always() save step could not even hash two small
+      # files within 120 s. That is memory exhaustion on the 16 GB runner: every `lean` process
+      # maps the ~5.5 GB Mathlib environment and then elaborates with one thread per core, and
+      # the cold build ran R47PC6Cells, the StarOfHubs chain, R47PC6Reduce and ordinary R3Cert
+      # modules concurrently. Peak private footprint, measured locally with `lean -j 4` (the
+      # shared, file-backed Mathlib mapping excluded): StarOfHubs.Cells5 2.6 GB, R47PC6Cells
+      # 2.0 GB, R47PC6Reduce 18.2 GB (its .olean is 776 MB of proof terms). PC6Reduce alone does
+      # not fit in 16 GB, and fewer threads do not fix it (-j 1: 18.1 GB; -DElab.async=false:
+      # 17.2 GB): the memory is the retained proof terms. So: (1) 16 GB of swap,
+      # so the peak pages out instead of killing the runner; (2) the staged build below, so
+      # PC6Reduce runs with nothing else beside it and the heavy roots never all run at once.
+      - name: Provision swap + install the build-telemetry wrapper
+        run: |
+          set -uo pipefail
+          free -m; df -h / /mnt 2>/dev/null || true
+          # Prefer the runner's scratch disk (/mnt); fall back to a smaller file on /. Never fail
+          # the job over swap: without it the build is merely back to the old risk.
+          SW=""
+          for cand in /mnt/arda-lean.swap:16G /arda-lean.swap:10G; do
+            f=${cand%%:*}; sz=${cand##*:}
+            if sudo fallocate -l "$sz" "$f" 2>/dev/null; then SW=$f; break; fi
+          done
+          if [ -n "$SW" ] && sudo chmod 600 "$SW" && sudo mkswap "$SW" >/dev/null && sudo swapon "$SW"; then
+            echo "extra swap enabled: $SW"
+          else
+            echo "::warning::could not enable extra swap; continuing without it"
+          fi
+          swapon --show || true; free -m
+          # `lakeb <targets...>`: `lake build` plus a once-a-minute memory/swap/disk line in the
+          # step log, so the next resource failure is diagnosable from the log alone. It also
+          # writes `built=<n>` (modules actually compiled) to the step outputs, which gates the
+          # intermediate cache saves (no point re-saving an unchanged warm cache).
+          mkdir -p "$RUNNER_TEMP/bin"
+          cat > "$RUNNER_TEMP/bin/lakeb" <<'SH'
+          #!/usr/bin/env bash
+          set -uo pipefail
+          ( while sleep 60; do
+              echo "[res $(date -u +%H:%M:%S)] $(free -m 2>/dev/null | awk '/^Mem:/{printf "mem_used=%sM avail=%sM", $3, $7} /^Swap:/{printf " swap_used=%sM", $3}') disk_free=$(df -BG --output=avail / 2>/dev/null | tail -1 | tr -d ' ')"
+            done ) &
+          mon=$!
+          trap 'kill "$mon" 2>/dev/null || true' EXIT
+          log=$(mktemp)
+          lake build "$@" 2>&1 | tee "$log"
+          rc=${PIPESTATUS[0]}
+          n=$(grep -cE '\[[0-9]+/[0-9]+\] Built ' "$log" || true)
+          echo "lakeb: $n module(s) compiled by: lake build $*"
+          [ -n "${GITHUB_OUTPUT:-}" ] && echo "built=$n" >> "$GITHUB_OUTPUT"
+          exit "$rc"
+          SH
+          chmod +x "$RUNNER_TEMP/bin/lakeb"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      # Compute the build-cache key ONCE, on an idle machine. The 2026-09-19 run showed that
+      # evaluating hashFiles() inside the final save step, on a thrashing runner, can exceed
+      # GitHub's 120 s limit and kill the save -- so no cache was ever written.
+      - name: Build-cache key
+        id: ckey
+        run: |
+          echo "prefix=lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-" >> "$GITHUB_OUTPUT"
+          echo "run=${{ github.run_id }}-${{ github.run_attempt }}" >> "$GITHUB_OUTPUT"
+
       # Incremental project build cache: restore the most recent prior R3Cert/R7Hyps `.olean`
       # build (same toolchain + deps) so `lake build` only recompiles CHANGED modules, not all
       # ~2575 theorems cold. Rolling key keyed on the RUN ID so EVERY run (push, PR, and the daily
@@ -57,16 +126,54 @@ jobs:
       # and so the next run started cold again -- a self-perpetuating spiral that broke this
       # daily verification from 2026-09-12 onward. Saving unconditionally means a partial
       # build is always kept, so consecutive runs make forward progress until one completes.
+      # (2026-09-23) Caches are scoped per ref: a main run can restore only main's own caches,
+      # and main has not saved one since the 2026-09-18 split (every save was skipped when the
+      # runner died). The staged saves below fix that: each stage that compiled something saves
+      # a checkpoint, so the next run resumes from the last completed stage.
       - name: Restore Lean project build cache (incremental)
         uses: actions/cache/restore@v4
         with:
           path: proof/formalization/.lake/build
-          key: lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-${{ github.run_id }}
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}
           restore-keys: |
-            lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-
+            ${{ steps.ckey.outputs.prefix }}
 
+      # Stage 1: the two heavy, Mathlib-only roots, with nothing else competing for memory.
+      # R47PC6Cells (138 polynomial cells) and the StarOfHubs chain (a strict import chain, so
+      # lake builds one cell at a time) run side by side: at most two heavy `lean` processes.
+      - name: Build stage 1 — heavy certificate roots (R47PC6Cells + the StarOfHubs chain)
+        id: stage1
+        timeout-minutes: 140
+        run: lakeb R3Cert.R47PC6Cells R7Hyps
+
+      - name: Save build-cache checkpoint (stage 1)
+        if: steps.stage1.outcome == 'success' && steps.stage1.outputs.built != '0'
+        uses: actions/cache/save@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-s1
+
+      # Stage 2: R47PC6Reduce (5458 lines at maxHeartbeats 4e6, importing PC6Cells) and the
+      # R3Cert modules it needs. Its deps build first; then it runs ALONE (18.2 GB peak, see the
+      # swap step). It was in flight, sharing memory with the StarOfHubs chain, when the runner
+      # died on 2026-09-20 and 2026-09-22; no CI run has ever finished it.
+      - name: Build stage 2 — R47PC6Reduce and its dependencies
+        id: stage2
+        timeout-minutes: 100
+        run: lakeb R3Cert.R47PC6Reduce
+
+      - name: Save build-cache checkpoint (stage 2)
+        if: steps.stage2.outcome == 'success' && steps.stage2.outputs.built != '0'
+        uses: actions/cache/save@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-s2
+
+      # Stage 3: everything else. This is the same `lake build` as before; stages 1-2 only
+      # reorder the work so that it fits in memory.
       - name: Build (the verification — every R3Cert module compiles, no sorry)
-        run: lake build
+        timeout-minutes: 90
+        run: lakeb
 
       - name: Build the R7' hypothesis layers (star-of-hubs cells + class floors)
         run: lake build R7Hyps R3Cert.HypStar R3Cert.HypFloors
@@ -150,17 +257,67 @@ jobs:
           fi
           echo "OK: every R3Cert/*.lean is built by CI ($(find R3Cert -name '*.lean' | wc -l) modules)."
 
-      - name: Axiom guard (kernel axioms of the anchor theorems — fails on sorry)
+      # Exact-axiom-set guard (closure-run finding C5, 2026-09-22). The old step only grepped
+      # for `sorryAx`, so a self-declared `axiom` (or the auxiliary axiom `native_decide` adds)
+      # inside a guarded cone passed. Now EVERY `#print axioms` report must be a subset of
+      # Lean's three standard axioms -- several structural lemmas legitimately report only
+      # [propext] or [propext, Quot.sound], so the rule is "subset", not "equal". Also:
+      # every directive must produce a report (catches a truncated or reformatted trace),
+      # a floor on the number of reports (catches mass deletion), and the BG mission node
+      # theorems are required BY NAME (catches deleting one node's guard line).
+      - name: Axiom guard (every anchor depends only on propext / Classical.choice / Quot.sound)
         run: |
           set -euo pipefail
           # Runs AFTER `lake build`, so the R3Cert oleans exist and imports resolve.
-          # A guarded theorem that secretly depends on a `sorry` prints `sorryAx`.
           lake env lean AxiomGuard.lean 2>&1 | tee axioms.txt
-          if grep -q 'sorryAx' axioms.txt; then
-            echo "::error::A guarded theorem depends on sorryAx (a hidden sorry). See axiom trace above."
-            exit 1
-          fi
-          echo "Axiom guard OK — no sorryAx in the capstone / Φ≤1 / g-step dependency cones."
+          python3 - AxiomGuard.lean axioms.txt <<'PY'
+          import re, sys
+          guard_path, trace_path = sys.argv[1], sys.argv[2]
+          ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
+          FLOOR = 215  # #print axioms directives in AxiomGuard.lean on 2026-09-23; raise, never lower silently
+          REQUIRED = [  # telperion/missions/bg/nodes/*.toml: the proved nodes + the refuted one
+              "R3Cert.cavity_recursion",                          # BG_cavity_recursion
+              "R3Cert.FractalTail.fractal_tail_as_ratio",         # BG_fractal_asymptote
+              "R3Cert.CappedJointConfig.gstep_le_one_achievable", # BG_gstep_closure
+              "R3Cert.Step3.pi_utree",                            # BG_h1_bridge
+              "R3Cert.validPotentialPlain_holds",                 # BG_lb_classification
+              "R3Cert.Step3.merge_normalForm_perL",               # BG_merge_layer
+              "R3Cert.nearStar_nonpos",                           # BG_near_star_tail
+              "R3Cert.nearStar_tie",                              # BG_near_star_tie
+              "R3Cert.phi_le_one",                                # BG_phi_le_one
+              "R3Cert.Step3.hnorm_capstone_false",                # BG_hnorm_capstone (refuted)
+          ]
+          src = re.sub(r"/-.*?-/", "", open(guard_path, encoding="utf-8").read(), flags=re.S)
+          directives = set(re.findall(r"^#print\s+axioms\s+(\S+)", src, flags=re.M))
+          trace = open(trace_path, encoding="utf-8").read()
+          reports = {}
+          # Joined-line parse: a long axiom list may wrap, so match across newlines.
+          for name, body in re.findall(r"'([^']+)' depends on axioms:\s*\[([^\]]*)\]", trace, flags=re.S):
+              reports.setdefault(name, set()).update(a.strip() for a in body.split(",") if a.strip())
+          for name in re.findall(r"'([^']+)' does not depend on any axioms", trace):
+              reports.setdefault(name, set())
+          errors = []
+          for name, axs in sorted(reports.items()):
+              extra = axs - ALLOWED
+              if extra:
+                  errors.append(f"{name} depends on non-standard axiom(s): {sorted(extra)}")
+          missing = sorted(directives - set(reports))
+          if missing:
+              errors.append(f"{len(missing)} #print axioms directive(s) produced no report: {missing[:10]}")
+          absent = [n for n in REQUIRED if n not in directives or n not in reports]
+          if absent:
+              errors.append(f"required BG node theorem(s) not guarded: {absent}")
+          if len(reports) < FLOOR:
+              errors.append(f"only {len(reports)} axiom reports, floor is {FLOOR}")
+          if "sorryAx" in trace:
+              errors.append("sorryAx appears in the axiom trace (a hidden sorry)")
+          if errors:
+              for e in errors:
+                  print(f"::error::{e}")
+              sys.exit(1)
+          print(f"Axiom guard OK: {len(reports)} reports, all within {sorted(ALLOWED)}; "
+                f"{len(REQUIRED)} BG node theorems present.")
+          PY
 
       - name: Sorry / admit / native_decide scan (repo-wide, gating)
         run: |
@@ -179,13 +336,26 @@ jobs:
             exit 1
           fi
           echo "No genuine sorry/admit/native_decide across R3Cert + R7Hyps."
+          # Declaration-shaped `axiom` scan (C5): the axiom guard above only sees the cones of
+          # the printed anchors; this catches a new axiom declared anywhere in the library.
+          ax=$(grep -rnE "^[[:space:]]*(@\[[^]]*\][[:space:]]*)?((private|protected|noncomputable|unsafe|partial)[[:space:]]+)*axiom[[:space:]]" \
+                 R3Cert R7Hyps R3Cert.lean 2>/dev/null || true)
+          if [ -n "$ax" ]; then
+            echo "::error::axiom declaration(s) found in the R3Cert/R7Hyps library:"
+            echo "$ax"
+            exit 1
+          fi
+          echo "No axiom declarations across R3Cert + R7Hyps."
 
-      # Always save, even when a build step above failed or the job ran out of time: a partial
-      # .lake/build is what lets the NEXT run resume instead of starting cold. Keyed on run_id
-      # so the key is unique per run and the 7-day eviction timer is refreshed every time.
+      # Always save, even when a build step above failed or timed out: a partial .lake/build is
+      # what lets the NEXT run resume instead of starting cold. Keyed on run_id + attempt so the
+      # key is unique per run and the 7-day eviction timer is refreshed every time. The key comes
+      # from the `ckey` step (computed while the machine was idle), not from hashFiles() here.
+      # The per-step timeouts on the three build stages end a stuck stage before the job timeout,
+      # so this step still gets to run.
       - name: Save Lean project build cache (even on failure — breaks the cold-rebuild spiral)
-        if: always()
+        if: always() && steps.ckey.outputs.prefix != ''
         uses: actions/cache/save@v4
         with:
           path: proof/formalization/.lake/build
-          key: lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-${{ github.run_id }}
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}

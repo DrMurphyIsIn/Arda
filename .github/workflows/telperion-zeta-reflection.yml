@@ -1,34 +1,56 @@
-# Telperion -- the zeta_reflection island, weekly / on demand.
+# Telperion -- the zeta_reflection island: the six proved ANDURIL node artifacts.
 #
-# WHY THIS IS NOT IN THE PER-PR PATH. This island is the home of ALL SIX proved anduril
-# node artifacts (CheckBand, EMZetaTail, EMZetaComplex, ForgeFirstZeroKernel,
-# ReflectedBand_t14, StirlingBinet). Until 2026-09-19 no workflow built it at all: six
-# nodes were granted `proved` against Lean that CI never compiled, which is exactly the
-# hole `missions/coverage.py` now refuses.
+# WHAT THIS VERIFIES. The island is the home of ALL SIX proved anduril node artifacts:
 #
-# It cannot simply join `telperion-lean-e2e.yml`, and the first attempt to do so failed.
-# `zeta_reflection/lean/lakefile.toml` path-requires `../../zeta_zero_localization/lean`,
-# whose lakefile is the 54,280-line MONOLITH that the B2 migration deliberately moved out
-# of the per-PR path (E2BIG, and hours of build before a single guard runs). The island
-# genuinely uses it -- CheckBand and the A4 guard import XiLineZeros and DiffractionCore --
-# so the dependency is real and not removable here.
+#   node                    artifact module         theorem asserted below
+#   AND_checkline_correct   CheckBand               ZetaReflection.checkLine_correct
+#   AND_g2_reflected_band   ReflectedBand_t14       ReflectedBand_t14.ok, ReflectedBand_t14.pilot
+#   AND_em_tail3_number     EMZetaTail              ZetaReflection.em_tail3_number
+#   AND_em_zeta_strip       EMZetaComplex           ZetaReflection.em_zeta_strip
+#   AND_first_zero_kernel   ForgeFirstZeroKernel    ForgeFirstZeroKernel.first_zero_kernel
+#   AND_stirling_binet_k1   StirlingBinet           ZetaReflection.logDeriv_gammaR_stirling
 #
-# So it is verified on the same footing as the legacy box certificates: weekly, sharded
-# off the critical path, never blocking a PR. `coverage.py` counts an island as built when
-# ANY workflow runs `lake build` in it, so the six nodes remain covered -- just on a weekly
-# cadence, which is the honest description of what this evidence is.
+# Also built and guarded here (2026-09-23):
+#   AND_g2_reflected_band_kernel  ReflectedBand_t14_Kernel  ReflectedBand_t14_Kernel.pilot_kernel, .okK
+#   AND_theta_branch (proposed)   RSTheta                   RSDesignTheta.gaussBranch_theta_sub_thetaMain_le
 #
+# The job builds these modules and their seven axiom-guard libs, then runs each guard and
+# asserts (1) it elaborated, (2) no `sorryAx`, (3) every printed axiom list is a SUBSET of
+# {propext, Classical.choice, Quot.sound}, (4) at least the expected number of anchors printed,
+# and (5) every registry theorem above is among them.
+#
+# HISTORY (closure audit C2, 2026-09-22). The first version of this workflow could never pass,
+# and never ran:
+#   (a) it ran `lake build AxiomGuardA4 ...`, but the guards were not `lean_lib`s -> "unknown
+#       target"; they are now declared in lean/lakefile.toml;
+#   (b) `lake env lean` could not spawn `lean` ("could not execute external process"): the
+#       island path-required the zeta_zero_localization MONOLITH lakefile (~27k lean_libs), and
+#       Lake v4.32 builds LEAN_SRC_PATH from every lib without deduplication (~2.2 MB, E2BIG).
+#       The island now requires the slim `zzl_core` sub-project instead (same source files,
+#       16 libs), so `lake env` works and nothing here touches the monolith;
+#   (c) its grep demanded the exact line [propext, Classical.choice, Quot.sound] and so rejected
+#       the legitimate strict subset [propext] printed for ReflectedBand_t14.ok and
+#       checkLine_sign_isSome. The check is now subset-of-the-three, on joined lines.
+# `missions/coverage.py` now requires the artifact MODULE to be inside the import closure of a
+# runnable step's build (not merely a `lake build` string under the island directory), and a job
+# whose `lake build` names an undeclared target counts for nothing.
+#
+# Runs on PRs that touch the island, weekly, and on demand. It is not a required check.
 # conjecture1_proved = False.
 name: telperion-zeta-reflection
 
 on:
+  pull_request:
+    paths:
+      - "telperion/examples/zeta_reflection/**"
+      - ".github/workflows/telperion-zeta-reflection.yml"
   workflow_dispatch:
   schedule:
     - cron: "41 4 * * 2"   # Tuesdays 04:41 UTC, off the legacy-boxes slot
 
 concurrency:
-  group: telperion-zeta-reflection
-  cancel-in-progress: false
+  group: telperion-zeta-reflection-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   zeta-reflection-compiles:
@@ -48,44 +70,65 @@ jobs:
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      # The path-require means Lake resolves deps through the sibling island. Share ONE
-      # packages dir between them, the way the ladder job already does for zero_free_bridge,
-      # so the Mathlib cache is fetched once and both packages see it.
-      - name: Wire zeta_reflection to the sibling island's shared deps dir
-        working-directory: telperion/examples
-        run: |
-          set -euo pipefail
-          mkdir -p zeta_zero_localization/lean/.lake/packages
-          mkdir -p zeta_reflection/lean/.lake
-          ln -sfn ../../../zeta_zero_localization/lean/.lake/packages \
-                  zeta_reflection/lean/.lake/packages
-
-      - name: Fetch Mathlib olean cache (once, into the shared deps dir)
-        working-directory: telperion/examples/zeta_zero_localization/lean/zzl_core
+      # zeta_reflection is the root workspace: its path deps (zzl_core, ZeroFreeBridge) resolve
+      # their Mathlib through THIS package's .lake/packages, so one cache fetch serves all three.
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/zeta_reflection/lean
         run: lake exe cache get
 
-      - name: Build the six anduril artifacts through their guards (the actual verification)
+      - name: Build the anduril artifacts and their axiom guards
         working-directory: telperion/examples/zeta_reflection/lean
         run: |
-          lake build AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex \
-                     AxiomGuardFirstZeroKernel AxiomGuardStirling
+          lake build CheckBand ReflectedBand_t14 EMZetaTail EMZetaComplex ForgeFirstZeroKernel StirlingBinet ReflectedBand_t14_Kernel RSTheta HeightFloor EdgeClearGlue BandGlue \
+                     AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue
 
-      - name: "Axiom guard (six anduril artifacts): exact axiom set, no sorryAx, guards actually ran"
+      - name: "Axiom guard (anduril artifacts): axioms within the standard three, no sorryAx, every registry theorem printed"
         working-directory: telperion/examples/zeta_reflection/lean
         shell: bash
         run: |
           set -euo pipefail
-          : > reflect.out
-          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex \
-                   AxiomGuardFirstZeroKernel AxiomGuardStirling; do
-            echo "== $g" | tee -a reflect.out
-            lake env lean "$g.lean" 2>&1 | tee -a reflect.out
+          # (plain functions, not `declare -A`, so the step also runs under bash 3.2 locally)
+          # Anchor floor = the number of `#print axioms` lines in each guard file today.
+          floor() { case "$1" in
+            AxiomGuardA4) echo 8 ;; AxiomGuardEMTail) echo 23 ;; AxiomGuardEMZetaComplex) echo 23 ;;
+            AxiomGuardFirstZeroKernel) echo 1 ;; AxiomGuardStirling) echo 12 ;; AxiomGuardArbKernel) echo 16 ;;
+            AxiomGuardRSTheta) echo 24 ;; AxiomGuardHeightFloor) echo 98 ;; AxiomGuardBandGlue) echo 39 ;; *) echo 999 ;; esac; }
+          # The registry theorems (one per proved node; two for AND_g2_reflected_band).
+          registry() { case "$1" in
+            AxiomGuardA4) echo "ZetaReflection.checkLine_correct ReflectedBand_t14.ok ReflectedBand_t14.pilot" ;;
+            AxiomGuardEMTail) echo "ZetaReflection.em_tail3_number" ;;
+            AxiomGuardEMZetaComplex) echo "ZetaReflection.em_zeta_strip" ;;
+            AxiomGuardFirstZeroKernel) echo "ForgeFirstZeroKernel.first_zero_kernel" ;;
+            AxiomGuardStirling) echo "ZetaReflection.logDeriv_gammaR_stirling" ;;
+            AxiomGuardArbKernel) echo "ReflectedBand_t14_Kernel.pilot_kernel ReflectedBand_t14_Kernel.okK" ;;
+            AxiomGuardRSTheta) echo "RSDesignTheta.gaussBranch_theta_sub_thetaMain_le" ;;
+            AxiomGuardHeightFloor) echo "HeightFloor.height_floor HeightFloor.height_floor_280000" ;;
+            AxiomGuardBandGlue) echo "EdgeClearGlue.hnzl_discharged BandGlue.segBandHyp_of_certs" ;; esac; }
+          total=0
+          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue; do
+            [ -f "$g.lean" ] || { echo "::error::$g.lean is missing"; exit 1; }
+            echo "== $g"
+            rc=0; lake env lean "$g.lean" > "$g.out" 2>&1 || rc=$?
+            cat "$g.out"
+            if [ "$rc" -ne 0 ]; then echo "::error::$g: lean exited $rc"; exit 1; fi
+            if grep -qE '(^|[^A-Za-z])error:' "$g.out"; then echo "::error::$g did not elaborate cleanly"; exit 1; fi
+            if grep -q 'sorryAx' "$g.out"; then echo "::error::$g: a guarded theorem depends on sorry"; exit 1; fi
+            # Join wrapped lines first: Lean wraps a long axiom list over several lines.
+            joined="$(tr '\n' ' ' < "$g.out" | tr -s ' ')"
+            n=$(grep -oE "depends on axioms: \[[^]]*\]|does not depend on any axioms" <<< "$joined" | wc -l)
+            if [ "$n" -lt "$(floor "$g")" ]; then
+              echo "::error::$g printed $n axiom lines, expected at least $(floor "$g") -- the guard did not run or was truncated"; exit 1; fi
+            total=$((total + n))
+            # Every axiom in every list must be one of the standard three (any subset is fine,
+            # e.g. [propext] for a decide-only theorem).
+            bad="$(grep -oE "depends on axioms: \[[^]]*\]" <<< "$joined" \
+                    | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' \
+                    | grep -vxE 'propext|Classical\.choice|Quot\.sound' || true)"
+            if [ -n "$bad" ]; then
+              echo "::error::$g: axiom(s) outside {propext, Classical.choice, Quot.sound}: $(echo $bad)"; exit 1; fi
+            for thm in $(registry "$g"); do
+              grep -qE "'${thm//./\\.}' (depends on axioms: \[[^]]*\]|does not depend on any axioms)" <<< "$joined" \
+                || { echo "::error::$g: registry theorem $thm was not printed"; exit 1; }
+            done
           done
-          n=$(grep -c "depends on axioms" reflect.out || true)
-          if [ "$n" -lt "67" ]; then
-            echo "::error::guards printed $n axiom lines, expected at least 67 -- a guard did not run"; exit 1; fi
-          if grep -q "sorryAx" reflect.out; then echo "::error::sorryAx present"; exit 1; fi
-          if grep -E "depends on axioms" reflect.out | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
-            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-            grep -E "depends on axioms" reflect.out | grep -v "\[propext, Classical.choice, Quot.sound\]"
-            exit 1; fi
+          echo "OK: $total guarded anchors across 9 guards; every axiom list within the standard three; all 14 registry theorems present."

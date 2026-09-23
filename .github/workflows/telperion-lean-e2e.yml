@@ -148,6 +148,37 @@ jobs:
             echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
             exit 1
           fi
+
+      # Closure-run audit C1 (2026-09-22): AxiomGuardZeroFree prints the theorems of the two
+      # proved rh nodes RH_zero_free_polylog and RH_zero_free_gamma5.  It is a lean_lib in
+      # defaultTargets, so `lake build` compiled it -- but NO step ran it, so its `#print axioms`
+      # output was never checked.  It cannot be folded into AxiomGuardLiPositivity: the
+      # `ZeroFreeBridge.zeta_sphere_bound` name clash forbids the co-import.  Same checks as
+      # above, with the exact three-axiom set (both anchors are expected to use all three).
+      - name: Axiom guard for the zero-free-region artifacts (AxiomGuardZeroFree)
+        working-directory: telperion/examples/li_positivity/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          for G in AxiomGuardZeroFree.lean; do
+            lake env lean "$G" 2>&1 | tee "${G%.lean}.out"
+            n=$(grep -cE "depends on axioms|does not depend on any axioms" "${G%.lean}.out" || true)
+            if [ "$n" -lt "2" ]; then
+              echo "::error::$G printed $n axiom lines, expected at least 2 -- the guard did not run"; exit 1; fi
+            if grep -q "sorryAx" "${G%.lean}.out"; then echo "::error::$G depends on sorryAx"; exit 1; fi
+            # Join first (Lean wraps long lists), then every list must be exactly the three.
+            if tr "\n" " " < "${G%.lean}.out" | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
+                 | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
+              echo "::error::$G lists an axiom set other than [propext, Classical.choice, Quot.sound]"; exit 1; fi
+          done
+
+      # Registry-anchored coverage: every PROVED registry node whose artifact lives on this island
+      # must have its theorem printed clean by one of the two guards above.  The floors above only
+      # prove the guards RAN; this proves they cover what the registry calls proved.  The anchor
+      # list is derived from telperion/missions/*/nodes/*.toml, not hand-maintained.
+      - name: Registry anchors (every proved li_positivity node is printed clean)
+        working-directory: telperion/examples/li_positivity/lean
+        run: python ../../../scripts/guard_anchors.py --island li_positivity axioms.out AxiomGuardZeroFree.out
   tangent-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -2127,15 +2158,18 @@ jobs:
       - name: Build ALL zero_free_bridge libraries
         working-directory: telperion/examples/zero_free_bridge/lean
         run: lake build
-      - name: Axiom guards (RH + dVP) -- fail on sorryAx or elaboration error
+      - name: Axiom guards (RH + dVP + Polylog) -- fail on sorryAx or elaboration error
         working-directory: telperion/examples/zero_free_bridge/lean
         run: |
           # This loop already catches an elaboration error, which the two-line guards on
           # other islands did not.  What it did NOT do is assert the axiom SET, or notice
           # a guard that printed nothing at all.  Both are added.
-          for G in AxiomGuardRH.lean AxiomGuardDlvp.lean; do
+          # AxiomGuardPolylog added by closure-run audit C1 (2026-09-22): it existed, ZeroFreePolylog
+          # is in defaultTargets, and no workflow ran it.
+          for G in AxiomGuardRH.lean AxiomGuardDlvp.lean AxiomGuardPolylog.lean; do
             out="$(lake env lean $G 2>&1 || true)"
             echo "$out"
+            echo "$out" > "${G%.lean}.out"
             if echo "$out" | grep -q 'sorryAx'; then echo "::error::$G depends on sorry"; exit 1; fi
             if echo "$out" | grep -qE 'error:'; then echo "::error::$G did not elaborate cleanly"; exit 1; fi
             n=$(echo "$out" | grep -cE "depends on axioms|does not depend on any axioms" || true)
@@ -2146,6 +2180,16 @@ jobs:
               echo "::error::$G lists an axiom outside the three standard ones"; exit 1; fi
           done
           echo "OK: all guarded theorems kernel-clean."
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Registry-anchored coverage (closure run 2026-09-22): every PROVED registry node whose
+      # artifact lives on this island must be printed clean by one of the guards above.
+      - name: Registry anchors (every proved zero_free_bridge node is printed clean)
+        working-directory: telperion/examples/zero_free_bridge/lean
+        run: >-
+          python ../../../scripts/guard_anchors.py --island zero_free_bridge
+          AxiomGuardRH.out AxiomGuardDlvp.out AxiomGuardPolylog.out
   # B2 ladder suite (replaces the monolith `lake build` that hit E2BIG at ~16k targets).
   # Builds zzl_core + ZeroFreeBridge + zzl_aux (height-100 island, Bragg, zoo; the 669 legacy
   # RHInBox_* boxes live in zzl_legacy_boxes and run weekly, see telperion-legacy-boxes.yml) and then the
@@ -2410,6 +2454,14 @@ jobs:
             tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
                | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
             exit 1; fi
+
+      # The step above asserts a FLOOR of 45 axiom lines, which proves the guard ran but not that it
+      # covers the registry (closure-run audit 2026-09-22).  This asserts an exact-clean line for the
+      # theorem of EVERY proved registry node whose artifact is on this island (52 as of 2026-09-22),
+      # derived from telperion/missions/*/nodes/*.toml and the nodes' statement files.
+      - name: Registry anchors (every proved rvm_bridge node is printed clean)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: python ../../../scripts/guard_anchors.py --island rvm_bridge axioms.out
   dbn-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -2463,6 +2515,14 @@ jobs:
             echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
             exit 1
           fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Registry-anchored coverage (closure run 2026-09-22): the floor above proves the guard ran;
+      # this proves it prints, clean, the theorem of every proved registry node on this island.
+      - name: Registry anchors (every proved dbn node is printed clean)
+        working-directory: telperion/examples/dbn/lean
+        run: python ../../../scripts/guard_anchors.py --island dbn axioms.out
   exp-enclosure-compiles:
     runs-on: ubuntu-latest
     timeout-minutes: 180

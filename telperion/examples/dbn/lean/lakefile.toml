@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -17,11 +17,100 @@ name = "DBNDefs"
 
 # Route C / C4 bridge (registry node RH.dbn_rh_iff_H0_real_zeros): RH in the AND-ladder strip
 # grammar <-> every zero of H_0 is real, proved CONDITIONALLY on the C2 representation theorem
-# H_0 = xi/8 (registry node RH.dbn_H0_eq_xi, NOT a theorem here; carried as the named Prop
-# obligation DBN.H0EqXi). The C4 change of variables and the xi-zeros-are-strip-zeros unpacking
-# are unconditional. Nothing here proves RH. conjecture1_proved = False.
+# H_0 = xi/8 (registry node RH.dbn_H0_eq_xi, not proved in this module -- it is DBNXi's
+# dbn_H0_eq_xi; carried here as the named Prop obligation DBN.H0EqXi). The C4 change of variables
+# and the xi-zeros-are-strip-zeros unpacking are unconditional. Nothing here proves RH.
+# conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNRealZerosIff"
+
+# Route C / C2 module A (design memo DESIGN_RH_dbn_H0_eq_xi_2026-09-22.md section 5, new work
+# N1, N2, N5): Riemann's symmetric integral completedRiemannZeta0 s = int_1^oo psi(x) (x^(s/2-1) +
+# x^((1-s)/2-1)) dx for EVERY s, via a general two-Ioi-1-integral formula for any weak FE-pair, plus
+# the psi / evenKernel 0 / thetaMoment 0 vocabulary bridges. Unconditional. It is one input to
+# RH.dbn_H0_eq_xi, which is NOT proved here and is not RH-equivalent. Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNXiRiemann"
+
+# Route C / C2 module C (design memo DESIGN_RH_dbn_H0_eq_xi_2026-09-22.md section 5, row C):
+# the kernel g(u) = e^u psi(e^{4u}) of Riemann's symmetric integral, its closed-form derivatives
+# g', g'', the kernel identity g'' - g = 8 Phi, g'(0) = -1/2, decay bounds, and integrability /
+# boundary limits against exponentially bounded complex weights (the side conditions of the two
+# integrations by parts of module D).  Depends only on DBNDefs.  Not the representation theorem
+# H_0 = xi/8; nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNGKernel"
+
+# Route C / C2 module B (design memo section 5, row B): the change of variables x = e^{4u} in
+# Riemann's symmetric integral, completedRiemannZeta0 (1/2 + iz/2) = 8 int_0^oo g(u) cos(zu) du
+# for every complex z.  Imports modules A and C.  Not RH-equivalent; nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNXiCos"
+
+# Route C / C2 module D (design memo section 5, row D): two integrations by parts,
+# (z^2 + 1) int_0^oo g cos(z.) = -g'(0) - int_0^oo (g'' - g) cos(z.) = 1/2 - 8 H_0(z).  Imports
+# module C only.  Not RH-equivalent; nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNXiIBP"
+
+# Route C / C2 module E (design memo section 5, row E): the representation theorem
+# dbn_H0_eq_xi, H_0(z) = (1/8) xi(1/2 + iz/2) for every complex z (registry node RH.dbn_H0_eq_xi,
+# statement verbatim), plus H 0 I = 1/16.  An identity between two entire functions, NOT
+# RH-equivalent; it says nothing about where any zero lies.  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNXi"
+
+# Route C / C4, unconditional (registry node RH.dbn_rh_iff_H0_real_zeros, statement verbatim):
+# strip-RH <-> every zero of H_0 is real, as the one-line specialisation of DBNRealZerosIff's
+# conditional bridge at the C2 theorem dbn_H0_eq_xi.  An equivalence between two restatements of
+# the same OPEN conjecture; it proves neither side.  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNRealZerosIffFinal"
+
+# Route C / C3 input (registry node RH.dbn_H0_zero_strip): every zero of H_0 lies in the closed
+# strip |Im z| <= 1, proved C2-FREE from the absolutely convergent half-plane Re s > 1
+# (two-sided fold, termwise Gamma integral on the line, Tonelli/Fubini, Euler-product
+# nonvanishing of zeta; DESIGN_RH_dbn_debruijn_real_zeros_2026-09-22.md L1a-L1d).  Says nothing
+# about zeros inside the strip.  Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNStrip"
+
+# Route C / C3 groundwork, obligation L4 of DESIGN_RH_dbn_debruijn_real_zeros_2026-09-22.md: the
+# discrete de Bruijn step (vertical-shift average T_delta contracts a horizontal zero strip by
+# delta^2 in Im^2) against an ABSTRACT even Hadamard product (EvenHadamardData). Pure Mathlib.
+# The Hadamard factorisation itself (L3) is NOT here. Nothing here proves RH.
+[[lean_lib]]
+name = "DBNStep"
+
+# Kernel-checked controls for DBNStep: POSITIVE (1 + z^2: hypotheses satisfiable, bound attained)
+# and NEGATIVE (z^2 - 2i: Hadamard data + strip but NOT real, conclusion fails -> the reality
+# hypothesis is load-bearing). Pure Mathlib. Nothing here proves RH.
+[[lean_lib]]
+name = "DBNStepControls"
+
+# Route C / C3 groundwork, obligation L2e: Hurwitz's theorem (zero-free limits of locally
+# uniformly convergent holomorphic functions), maximum-modulus proof. Pure Mathlib.
+[[lean_lib]]
+name = "DBNHurwitz"
+
+# Route C / C3 groundwork, obligations L2a-d: the de Bruijn approximants
+# G t N z = int_0^inf cosh(u sqrt(2t/N))^N Phi(u) cos(zu) du, the shift identity
+# G = T_delta^N (H 0), locally uniform convergence G t N -> H t, H t 0 > 0, and the Hurwitz
+# transfer to H t. Does NOT state or prove the registry node RH.dbn_debruijn_real_zeros.
+[[lean_lib]]
+name = "DBNHeatApprox"
+
+# Route C / C3 REDUCED to its two open inputs, carried as named Prop obligations (NOT proved):
+# H0ZeroFreeOffStrip (L1, contrapositive of registry lemma RH.dbn_H0_zero_strip) and
+# ApproxHadamard (L3, Hadamard data for every approximant). GIVEN both: zeros of G t N and of
+# H t lie in Im^2 <= max(1 - 2t, 0). CONDITIONAL; the registry node RH.dbn_debruijn_real_zeros is
+# NOT stated. Nothing here proves RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNDeBruijnReduction"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.
