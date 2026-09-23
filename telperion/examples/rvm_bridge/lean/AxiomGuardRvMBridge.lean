@@ -219,6 +219,7 @@ import E6Bridge29
 import E6Bridge30
 import W2cAssembly
 import E6Bridge31
+import E6Bridge32
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
 
@@ -1091,3 +1092,10 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridge31.primeFreeWindow_imp_poleFree
 #print axioms RvMBridge31.poles_vanish
 #print axioms RvMBridge31.archSide_autocorr_poleFree
+
+-- E6Bridge32: u-space part 1 (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge32.integral_expK_mul_cexp
+#print axioms RvMBridge32.pairing
+#print axioms RvMBridge32.integral_hsq_mul_lor
+#print axioms RvMBridge32.psiR_ge_finite
+#print axioms RvMBridge32.re_arch_integral_ge
