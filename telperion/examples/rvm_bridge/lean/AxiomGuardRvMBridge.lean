@@ -219,6 +219,7 @@ import E6Bridge29
 import E6Bridge30
 import W2cAssembly
 import Probes.Dogfood_complex_re_im_split
+import Probes.Dogfood_zero_sum_majorant
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -1059,3 +1060,15 @@ import Probes.Dogfood_complex_re_im_split
 #print axioms DogfoodComplexReImSplit.e6b7_pair_hre
 #print axioms DogfoodComplexReImSplit.e6b11_arch_hcast
 #print axioms DogfoodComplexReImSplit.e6b14_centre_hcast
+
+#print axioms DogfoodZeroSumMajorant.zbound_regen_strip
+#print axioms DogfoodZeroSumMajorant.zbound_regen_le
+#print axioms DogfoodZeroSumMajorant.zbound_regen_summable
+#print axioms DogfoodZeroSumMajorant.polBound_regen_strip
+#print axioms DogfoodZeroSumMajorant.polBound_regen_le
+#print axioms DogfoodZeroSumMajorant.polBound_regen_summable
+#print axioms DogfoodZeroSumMajorant.liBound_regen_strip
+#print axioms DogfoodZeroSumMajorant.liBound_regen_le
+#print axioms DogfoodZeroSumMajorant.liBound_regen_summable
+#print axioms DogfoodZeroSumMajorant.tail_regen_envelope
+#print axioms DogfoodZeroSumMajorant.tail_regen_rate
