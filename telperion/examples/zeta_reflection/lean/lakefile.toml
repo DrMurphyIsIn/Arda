@@ -4,7 +4,7 @@ name = "ZetaReflectionSpike"
 # (telperion/src/telperion/missions/coverage.py) can see that it does.
 defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD",
                   "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet",
-                  "ReflectedBand_t14_Kernel"]
+                  "ReflectedBand_t14_Kernel", "RSTheta"]
 
 # Same Mathlib pin as the sibling zeta_zero_localization island (v4.32.0), so the
 # path require below shares the on-disk Mathlib build cache -- `lake exe cache get`
@@ -303,3 +303,20 @@ roots = ["ReflectedBand_t14_Kernel"]
 [[lean_lib]]
 name = "AxiomGuardArbKernel"
 roots = ["AxiomGuardArbKernel"]
+
+# ---------------------------------------------------------------------------------------------
+# Riemann-Siegel brick B0, theta (2026-09-23), promoted from Probes/RSDesign_theta.lean.
+#   RSTheta -- lam_bracket (convex-trapezoid Stirling bracket for the Gauss branch of
+#              Im log Gamma, any x > 0), theta_bracket (every t > 0), and
+#              RSDesignTheta.gaussBranch_theta_sub_thetaMain_le, the proposed AND_theta_branch
+#              statement: |Lam - (t/2) log pi - ZeroFreeBridge.thetaMain t| <= 1/t for all t > 0.
+#              Also the phase box at t = 280000. A default target.
+#   AxiomGuardRSTheta -- prints #print axioms for all 24 theorems of RSTheta (not a default target).
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "RSTheta"
+roots = ["RSTheta"]
+
+[[lean_lib]]
+name = "AxiomGuardRSTheta"
+roots = ["AxiomGuardRSTheta"]
