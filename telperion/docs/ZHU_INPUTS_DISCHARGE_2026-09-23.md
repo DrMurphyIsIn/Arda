@@ -38,9 +38,9 @@ proof term can use it, and the node stays DRAFT.
 | Arb head floor `lambda_min(A) >= lam0` | `ReducedHeadFloor` | none | **UNTOUCHED, opaque by design** (`hhead`). |
 | parity (Lemma 6.1 / Cor. 6.3), odd sector | `OddSectorFloor`, `EvenSectorFloor` | `ZhuParity.lean` | **DEFINED**; only the trivial directions proved. Carried as the new hypothesis `hodd` (section 3). |
 
-Guard: `AxiomGuardRvMBridge.lean` prints axioms for 13 new anchors (3 envelope, 3 symbol, 5
-Legendre, 2 parity); every one reports `[propext, Classical.choice, Quot.sound]`. Island `lake build`
-8893 jobs green; no `sorry`, `admit`, `native_decide`, `axiom` or `opaque` in the new modules.
+Guard: `AxiomGuardRvMBridge.lean` prints axioms for 15 new anchors (3 envelope, 3 symbol, 5
+Legendre, 2 parity, 2 split); every one reports `[propext, Classical.choice, Quot.sound]`. Island `lake build`
+8897 jobs green; no `sorry`, `admit`, `native_decide`, `axiom` or `opaque` in the new modules.
 
 ## 2. How each proof goes (and what it reuses)
 
@@ -148,11 +148,17 @@ definition could close the node for the wrong reason. The definitions here are t
 objects, two of them are proved, and the seam that actually carries the certified number is
 still opaque, so the node cannot close at all; the memo's concern is honoured, not overridden.
 
+### 2.5 The envelope step of eq. (4) (`ZhuSplit.lean`)
+
+`weilSymbol_ge_betaStar`: for `15/4 <= T# <= t`, `Psi_L(t) >= beta*(L, T#)`, from `envelopeBound`
+and the trivial comb bound `comb_le_combMass` (`P_L(t) <= A_L`: finite sum, nonnegative
+coefficients, `cos <= 1`). This is the inequality Zhu's Section 4 applies on `[T#, oo)`.
+
 ## 4. What remains for a proof of the node (not attempted)
 
-1. The frequency split, eq. (4): from `SymbolRepresentation` and `EnvelopeBound`, with
-   `Psi_L(t) >= beta*` for `t >= T#` (needs `combMass` to bound the comb, `log(t/2pi) - 1/t`
-   increasing, and `T# >= 15/4`, which follows from `beta* > 0` and `A_L >= 0`). Elementary.
+1. The frequency split, eq. (4), assembled: from `SymbolRepresentation`, `weilSymbol_ge_betaStar`,
+   evenness of `|F|^2 Psi_L` and the half-line Parseval `int_0^oo |F|^2 = pi ||f||^2`, plus
+   `T# >= 15/4` from `beta* > 0` and `A_L >= 0`. Elementary.
 2. The Legendre-basis representation of `R`: orthonormality and completeness of the Legendre
    modes in `L^2_even[-L, L]` (Rodrigues + integration by parts for orthogonality; Weierstrass
    density for completeness), `R(f) = c^T M_R c` for the coefficient sequence. Substantial; not in

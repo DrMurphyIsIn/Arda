@@ -221,6 +221,7 @@ import ZhuEnvelope
 import ZhuSymbol
 import ZhuLegendre
 import ZhuParity
+import ZhuSplit
 import W2cAssembly
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
@@ -1097,3 +1098,7 @@ import Probes.Dogfood_zero_sum_majorant
 -- ZhuParity (2026-09-23): sector-floor vocabulary, trivial directions.  conjecture1_proved = False.
 #print axioms RvMBridgeZhu.evenSectorFloor_of_windowFloor
 #print axioms RvMBridgeZhu.oddSectorFloor_of_windowFloor
+
+-- ZhuSplit (2026-09-23): the envelope step of eq. (4), PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.comb_le_combMass
+#print axioms RvMBridgeZhu.weilSymbol_ge_betaStar
