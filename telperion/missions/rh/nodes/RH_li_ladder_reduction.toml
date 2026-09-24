@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "rh-migration-session-2026-09-11"
 date = "2026-09-11"
+independence = "unverified"
 text = "Given nonnegativity of the first N Li coefficients, the Riemann Hypothesis is EQUIVALENT to nonnegativity of the infinite tail from N onward -- the ladder is a reduction of RH to its tail via the upstream li_criterion_rh_iff and proves NEITHER side of RH."

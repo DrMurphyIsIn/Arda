@@ -1,5 +1,5 @@
 name = "Quasicrystal"
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder", "OfflineDiscs", "OfflineDiscsInstances", "EulerFactorOffline", "SelfInversiveOfflineInstances", "EulerFactorSectionOffline", "LeakageDictionary", "LeakageInstances", "LeakageNode", "SatakeDegreeTwo"]
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder", "OfflineDiscs", "OfflineDiscsInstances", "EulerFactorOffline", "SelfInversiveOfflineInstances", "EulerFactorSectionOffline", "LeakageDictionary", "LeakageInstances", "LeakageNode", "SatakeDegreeTwo", "DedekindQuadratic"]
 
 # PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
 # stable-polynomial classification frontier.  conjecture1_proved = False --
@@ -121,3 +121,10 @@ roots = ["LeakageNode"]
 [[lean_lib]]
 name = "SatakeDegreeTwo"
 roots = ["SatakeDegreeTwo"]
+
+# The Dedekind product-closure control (2026-09-23): zeta_K for Q(sqrt(-5)) = zeta * L(chi_-20)
+# is rejected by clause (B-mult-twisted) although both factors pass it.  Python twin:
+# zoo.py `_load_dedekind`.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DedekindQuadratic"
+roots = ["DedekindQuadratic"]

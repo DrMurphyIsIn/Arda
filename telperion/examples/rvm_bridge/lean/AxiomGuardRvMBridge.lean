@@ -217,7 +217,19 @@ import E6Bridge27
 import E6Bridge28
 import E6Bridge29
 import E6Bridge30
+import ZhuEnvelope
+import ZhuSymbol
+import ZhuLegendre
+import ZhuParity
+import ZhuSplit
+import ZhuOrtho
+import ZhuTail
+import ZhuInstance
 import W2cAssembly
+import E6Bridge31
+import E6Bridge32
+import E6Bridge33
+import E6Bridge34
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
 
@@ -1072,3 +1084,95 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms DogfoodZeroSumMajorant.liBound_regen_summable
 #print axioms DogfoodZeroSumMajorant.tail_regen_envelope
 #print axioms DogfoodZeroSumMajorant.tail_regen_rate
+
+-- ZhuEnvelope (2026-09-23): Zhu Lemma 3.1, the digamma envelope, PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.psiR_ge_stirling
+#print axioms RvMBridgeZhu.psiR_ge_envelope
+#print axioms RvMBridgeZhu.envelopeBound
+
+-- ZhuSymbol (2026-09-23): Zhu eq. (2), the symbol representation, PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.autocorr_eq_zero_of_two_mul_le
+#print axioms RvMBridgeZhu.symbol_representation_ofReal
+#print axioms RvMBridgeZhu.symbolRepresentation
+#print axioms RvMBridgeZhu.symbolRepresentationOdd
+
+-- ZhuLegendre (2026-09-23): Zhu eqs. (6) and (12), PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.integral_one_sub_sq_pow
+#print axioms RvMBridgeZhu.sphericalBessel_abs_le
+#print axioms RvMBridgeZhu.integral_legendreP_mul_cos
+#print axioms RvMBridgeZhu.legendreModeFT_eq
+#print axioms RvMBridgeZhu.legendreModeFT_abs_le
+#print axioms RvMBridgeZhu.integral_legendreP_mul_sin
+#print axioms RvMBridgeZhu.legendreModeFTs_eq
+#print axioms RvMBridgeZhu.legendreModeFTs_abs_le
+
+-- ZhuParity (2026-09-23): Zhu Lemma 6.1, parity decoupling, PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.weilForm_eq_zero_of_odd
+#print axioms RvMBridgeZhu.Q_add_of_cross_odd
+#print axioms RvMBridgeZhu.Q_add_I_mul
+#print axioms RvMBridgeZhu.Q_evenPart_add_oddPart
+#print axioms RvMBridgeZhu.windowFloor_of_sectors
+
+-- ZhuSplit (2026-09-23): the envelope step of eq. (4), PROVED.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.comb_le_combMass
+#print axioms RvMBridgeZhu.weilSymbol_ge_betaStar
+
+-- ZhuOrtho (2026-09-23): Legendre orthonormality, uniform bounds, pole vectors.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.integral_legendreP_sq
+#print axioms RvMBridgeZhu.integral_legendreMode_sq
+#print axioms RvMBridgeZhu.legendreModeFT_abs_le_uniform
+#print axioms RvMBridgeZhu.poleVec_abs_le
+#print axioms RvMBridgeZhu.poleVecOdd_abs_le
+
+-- ZhuTail (2026-09-23): the eq. (13) tail data PROVED with closed-form constants.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.abs_weilSymbol_sub_betaStar_le
+#print axioms RvMBridgeZhu.tail_tsum_le
+#print axioms RvMBridgeZhu.localization_of_bounds
+#print axioms RvMBridgeZhu.legendreLocalization_of_cut
+#print axioms RvMBridgeZhu.legendreLocalizationOdd_of_cut
+
+-- ZhuInstance (2026-09-23): the instance L = 4/5, T# = 200, N = 200.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.combMass_L08_le
+#print axioms RvMBridgeZhu.betaStar_L08_T200_ge_half
+#print axioms RvMBridgeZhu.legendreLocalization_L08_T200
+#print axioms RvMBridgeZhu.legendreLocalizationOdd_L08_T200
+#print axioms RvMBridgeZhu.eps_sum_lt_betaStar_L08_T200
+-- E6Bridge31: the prime-free window (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge31.primeSide_autocorr_eq_zero
+#print axioms RvMBridge31.weilForm_autocorr_eq_archSide
+#print axioms RvMBridge31.norm_autocorr_le
+#print axioms RvMBridge31.integral_hsq
+#print axioms RvMBridge31.sq_l1_le
+#print axioms RvMBridge31.hsq_le
+#print axioms RvMBridge31.re_poles_ge
+#print axioms RvMBridge31.re_poles_ge_of_le
+#print axioms RvMBridge31.integral_mul_psiR_ge_bands
+#print axioms RvMBridge31.re_archSide_autocorr_ge
+#print axioms RvMBridge31.weil_positivity_narrow_support_of_nonneg
+#print axioms RvMBridge31.weil_positivity_narrow_support
+#print axioms RvMBridge31.primeFreeWindow_iff_arch
+#print axioms RvMBridge31.primeFreeWindow_imp_poleFree
+#print axioms RvMBridge31.poles_vanish
+#print axioms RvMBridge31.archSide_autocorr_poleFree
+
+-- E6Bridge32: u-space part 1 (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge32.integral_expK_mul_cexp
+#print axioms RvMBridge32.pairing
+#print axioms RvMBridge32.integral_hsq_mul_lor
+#print axioms RvMBridge32.psiR_ge_finite
+#print axioms RvMBridge32.re_arch_integral_ge
+
+-- E6Bridge33: u-space part 2 (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge33.integral_compl_Icc_expK_ge
+#print axioms RvMBridge33.integral_autocorr_mul_expK
+#print axioms RvMBridge33.Eb_eq_half
+#print axioms RvMBridge33.Rfun_ge
+#print axioms RvMBridge33.Eb_ge
+
+-- E6Bridge34: the window at L <= 1/10 (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge34.re_poles_ge_sq
+#print axioms RvMBridge34.arch_ge_series
+#print axioms RvMBridge34.FN_tenth_ge
+#print axioms RvMBridge34.re_archSide_autocorr_ge_tenth
+#print axioms RvMBridge34.weil_positivity_window_tenth_of_nonneg
+#print axioms RvMBridge34.weil_positivity_window_tenth

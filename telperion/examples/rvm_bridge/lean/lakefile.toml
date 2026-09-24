@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -291,6 +291,88 @@ name = "E6Bridge29"
 # (margin 0.052). No zeros involved. conjecture1_proved = False.
 [[lean_lib]]
 name = "E6Bridge30"
+
+# Zhu envelope (2026-09-23): Zhu arXiv:2608.24827 Lemma 3.1, the crude digamma envelope
+# Re psi(1/4 + it/2) - log pi >= log(t/2pi) - 1/t for t >= 15/4, PROVED (Zeta23 Stirling remainder
+# above t = 25/2, eleven monotone bands with rational series floors below).  The registry's
+# WeilWindow.EnvelopeBound, made concrete.  One digamma inequality; nothing about zeros.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "ZhuEnvelope"
+
+# Zhu symbol (2026-09-23): Zhu arXiv:2608.24827 eq. (2), the frequency-side symbol representation
+# Q(f) = 2 F(i/2)^2 + (1/2pi) int |F|^2 Psi_L of the E8 primes-side functional on autocorrelations
+# of real even tests supported in [-L, L], PROVED (transform factorisation, Fourier inversion at 0
+# and at log n, finite comb).  The registry's WeilWindow.SymbolRepresentation, made concrete, with
+# the Weil symbol WeilWindow.weilSymbol of eq. (3).  A rearrangement of a proved identity; nothing
+# about zeros.  conjecture1_proved = False.
+[[lean_lib]]
+name = "ZhuSymbol"
+
+# Zhu Legendre (2026-09-23): Zhu arXiv:2608.24827 eqs. (6) and (12) -- Legendre polynomials
+# (Rodrigues), the spherical Bessel function by its Poisson integral, the Legendre-mode transform
+# identity hat T_{2k}(t) = (-1)^k 2 sqrt(L(2k+1/2)) j_{2k}(tL) (n-fold integration by parts) and the
+# bound |j_n(x)| <= x^n/(2n+1)!! (Wallis integral), all PROVED; the reduced matrix
+# beta* I + 2 p p^T + C and the eq. (13) tail data LegendreLocalization DEFINED concretely (its tail
+# sums are Zhu Section 5.3's numerically evaluated constants and are not proved here).
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "ZhuLegendre"
+
+# Zhu parity (2026-09-23): Zhu Lemma 6.1 PROVED -- the Weil functional vanishes on odd test
+# functions, hence Q(f) = Q(Re f) + Q(Im f) and Q(a) = Q(a_even) + Q(a_odd), and
+# windowFloor_of_sectors: the real even and real odd sector floors give the full (complex-f)
+# WindowFloor.  What lets the rh window node carry the odd sector as its own Arb seam.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "ZhuParity"
+
+# Zhu split (2026-09-23): the envelope step of eq. (4) -- Psi_L(t) >= beta* for 15/4 <= T# <= t
+# (weilSymbol_ge_betaStar), from ZhuEnvelope plus the trivial comb bound P_L(t) <= A_L
+# (comb_le_combMass).  conjecture1_proved = False.
+[[lean_lib]]
+name = "ZhuSplit"
+
+# Zhu orthonormality (2026-09-23): int_{-1}^1 P_n^2 = 2/(2n+1) (Rodrigues + n-fold IBP,
+# D^{2n}(X^2-1)^n = (2n)!), int_{-L}^L T_n^2 = 1, the uniform bounds |hat T_n| <= (1+2L)/2 and
+# |p_n| <= cosh(L/2)(1+2L)/2, and the pole-vector decay via the cosh/sinh Poisson integral.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "ZhuOrtho"
+
+# Zhu tail (2026-09-23): the eq. (13) tail data LegendreLocalization / LegendreLocalizationOdd PROVED
+# for every L > 0, T# >= 1, N >= 1 under the cut e L T#/2 <= 2N with the closed forms epsDfun,
+# epsBfun (Gershgorin rows and Schur sums dominated by a geometric series of ratio 3/10; entry
+# bounds from eqs. 6/12 and the sup |Psi_L - beta*| <= symbolSup on [0, T#]).
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "ZhuTail"
+
+# Zhu instance (2026-09-23): the proved tail constants at Zhu's certified instance L = 4/5, T# = 200,
+# N = 200 (kernel-evaluated 801!! and 803!! by decide), beta*(4/5,200) >= 1/2 with the comb mass
+# re-derived from its definition (n = 2, 3, 4; n = 5 excluded since exp(8/5) < 5), and
+# eps_D + eps_B (both sectors) < beta*.  Numbers proved, never trusted.  conjecture1_proved = False.
+[[lean_lib]]
+name = "ZhuInstance"
+# Prime-free window (2026-09-23): Stage 0 (prime side vanishes for 2L <= log 2), Stage 1
+# (unconditional Weil positivity for supports |u| <= 1/40), the named full-window Props.
+[[lean_lib]]
+name = "E6Bridge31"
+
+# Prime-free window, u-space part 1 (2026-09-23): Lorentzian pair, pairing, digamma-series lower
+# bound of the archimedean integral in exponential-kernel form.
+[[lean_lib]]
+name = "E6Bridge32"
+
+# Prime-free window, u-space part 2 (2026-09-23): the Dirichlet form of one exponential kernel
+# and its lower bound from the support of g (Fubini, symmetrisation, the outer mass).
+[[lean_lib]]
+name = "E6Bridge33"
+
+# Prime-free window at L <= 1/10 (2026-09-23): assembly of the u-space route (refined pole
+# bound, kernel sums by induction, numerics at N = 10).
+[[lean_lib]]
+name = "E6Bridge34"
 
 [[lean_lib]]
 name = "W2cAssembly"

@@ -25,3 +25,5 @@ __pycache__/
 
 # Li-ladder throughput trial files (generate.py --trial N; measured, never committed)
 telperion/examples/li_positivity/lean/LiPositivityTrial*.lean
+# missions-comparator bundles: Lake writes the manifest; only generated challenges are tracked
+telperion/missions/judge/*/lake-manifest.json

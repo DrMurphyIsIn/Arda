@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "workflow campaign-remainder 2026-09-22, two independent skeptics (rebuilt the quasicrystal island, 50-digit numerics, in-kernel probes; CAMPAIGN_REMAINDER_2026-09-22.md section 4)"
 date = "2026-09-22"
+independence = "unverified"
 text = "Read-back: the leakage dictionary (A2b), four conjuncts: a completely multiplicative amplitude forces b n = 0 at every non-prime-power n; the chi_5 instance vanishes at composite n; the Davenport-Heilbronn negative control leaks (b(6) enclosed, kappa numerics to 50 digits); multiplicativity is necessary (falsification twin). Gate mirror MMLeakageStatement.leakage_composite_zero appended to LeakageNode.lean, character-for-character the statement module, discharged by Quasicrystal.leakage_composite_zero; AxiomGuardLeakage 48 lines all [propext, Classical.choice, Quot.sound], 0 sorryAx. Two independent skeptics did not refute. Unconditional; kernel-clean; NOT RH. conjecture1_proved = False."

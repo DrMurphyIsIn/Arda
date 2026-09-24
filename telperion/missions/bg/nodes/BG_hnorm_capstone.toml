@@ -17,4 +17,5 @@ via = "direct"
 [readback]
 auditor = "migration-session-2026-09-12"
 date = "2026-09-11"
+independence = "unverified"
 text = "The tree-to-hub normalization Hnorm: every bare tree would be Aobj-dominated by some balanced capped hub state of exactly its own vertex count -- REFUTED 2026-09-11 by the exact four-core witness T(6,6,6,6) at n = 52 (R47HnormFalse52)."

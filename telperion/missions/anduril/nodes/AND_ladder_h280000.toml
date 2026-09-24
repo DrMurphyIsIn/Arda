@@ -1,5 +1,5 @@
 created = "2026-09-14"
-depends_on = []
+depends_on = ["AND_height_floor_kernel", "AND_edge_clear_glue", "AND_theta_branch"]
 kind = "milestone"
 name = "AND.ladder_h280000"
 statement_module = "Statements.AND_ladder_h280000"
@@ -10,4 +10,5 @@ updated = "2026-09-22"
 [readback]
 auditor = "missions-migration-session-2026-09-14"
 date = "2026-09-14"
-text = "Every zero of the Riemann zeta function in the open critical strip 0 < Re s < 1 whose imaginary part has absolute value at most 280000 lies exactly on the critical line Re s = 1/2. The artifact proves this GIVEN one BandHyp hypothesis per height segment; each BandHyp is discharged by the kernel-checked RHInBoxT band modules of the zeta_zero_localization island (T5 route: RvM edge-decomposition band certificates with statement-match gates). The registry statement is the hypothesis-free conclusion; the artifact-side discharge glue (StripClear two-box capstone) is a named roadmap deliverable, so this node stays open until that glue plus the rh/million-turing -> main reconcile land. Finite verification to a finite height -- NOT a proof of RH."
+independence = "unverified"
+text = "Every zero of the Riemann zeta function in the open critical strip 0 < Re s < 1 whose imaginary part has absolute value at most 280000 lies exactly on the critical line Re s = 1/2. The artifact proves this GIVEN one BandHyp hypothesis per height segment; each BandHyp is discharged by the kernel-checked RHInBoxT band modules of the zeta_zero_localization island (T5 route: RvM edge-decomposition band certificates with statement-match gates). The registry statement is the hypothesis-free conclusion; the artifact-side discharge glue (StripClear two-box capstone) is a named roadmap deliverable, so this node stays open until that glue plus the rh/million-turing -> main reconcile land. Finite verification to a finite height -- NOT a proof of RH. [2026-09-23 Arb discharge] Kernel-proved and granted hypothesis-free: AND_height_floor_kernel discharges hgamma at every height; AND_edge_clear_glue discharges hnzl for all 10,379 bands; AND_theta_branch is the RS theta brick. The capstone conclusion now composes in-kernel from per-box certificates (BandGlue K0, probe). Remaining Arb trust boundary: hLine (10,379) and the remaining hArbT enclosures/slabs (off-line evaluator + compact certificate format needed; see docs/ANDURIL_ARB_DISCHARGE_2026-09-23.md). Statement unchanged (owner ruling: keep hypothesis-free target)."

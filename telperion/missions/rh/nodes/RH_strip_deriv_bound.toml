@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-b7-unconditional-2026-09-21 (AUDIT_TESTIMONY_B7_UNCONDITIONAL_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: Landau's local partial fraction transferred to the derivative of xi'/xi on 1/4 <= Re s <= 9/4, |Im s| >= 5. Audit PASS: the window zeros divided out (double poles cancelled exactly), Cauchy on a zero-free circle, Landau's ball versus the window bounded by the local count, Stirling for the digamma, the functional equation for the left half, the compact bound for |Im s| <= 7; re-derived by hand. Unconditional. conjecture1_proved = False."

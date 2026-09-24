@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-converse-2026-09-20 (AUDIT_TESTIMONY_WEIL_CONVERSE_2026-09-20.md)"
 date = "2026-09-20"
+independence = "unverified"
 text = "Read-back from the converse audit: this obligation is a def : Prop whose printed body never mentions RiemannHypothesis; it is neither trivially provable (simp/aesop make no progress; pathological parameters fail) nor trivially refutable; the tsum it quantifies over is proved summable. Believed true by the Weil/Bombieri argument (O2) resp. by complex-argument Gaussian Fourier analysis (O1'); GaussianTransfer follows from GaussianApprox by the proved gaussianTransfer_of_approx. Open, RH-free, attackable. conjecture1_proved = False."

@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "rh-migration-session-2026-09-11"
 date = "2026-09-11"
+independence = "unverified"
 text = "The fractional-part strip representation zeta(s) = s/(s-1) - s * integral of {x} x^-(s+1) holds UNCONDITIONALLY on the whole punctured right half-plane {0 < Re s} minus {1}, assembled by the identity theorem from the discharged R1 (Abel summation), R2 (differentiation under the integral), and R3 (preconnectedness) inputs."

@@ -988,3 +988,78 @@ correct.
 
 `conjecture1_proved = False.` This falsifies a clause in this program's own working
 definition. It proves nothing about RH.
+
+
+# APPENDIX (v5, Dedekind) -- (B-mult-twisted) IS NOT CLOSED UNDER PRODUCTS
+
+*(PROGRAM MIRRORMERE, 2026-09-23. Appended after the v4 A1b appendix. The Delta
+falsification needed Deligne to certify class membership; this one needs nothing.
+conjecture1_proved = False.)*
+
+## v5.0 The object
+
+`zeta_K(s) = zeta(s) L(s, chi_{-20})` for `K = Q(sqrt(-5))`, discriminant `-20`,
+class number `2`. Its Dirichlet coefficients are the ideal counts
+`a(n) = sum_{d | n} chi_{-20}(d)`, which the zoo RE-DERIVES and cross-checks, at every
+`n <= 60`, against the classical representation-number identity for the two reduced
+forms of discriminant `-20`:
+
+    r_{x^2 + 5y^2}(n) + r_{2x^2 + 2xy + 3y^2}(n) = 2 a(n).
+
+The loader refuses to emit if the two derivations disagree (a planted phantom ideal of
+norm 6 is refused, and that refusal is a test). No coefficient is quoted.
+
+## v5.1 The verdict
+
+The local factor at `p` is `(1 - p^{-s})^{-1} (1 - chi(p) p^{-s})^{-1}`: Satake pair
+`{1, chi(p)}`, unimodular by construction. The prime layer of the log-derivative is
+`b(p^m) = (log p)(1 + chi(p)^m)`:
+
+| prime | `chi_{-20}(p)` | `b(p^m)` | clause (B-mult-twisted) |
+|---|---|---|---|
+| split (3, 7, 23, ...) | `+1` | `2 log p` for every `m` | REJECTED: `|t(p)| = 2 != 1` |
+| inert (11, 13, 17, 19, ...) | `-1` | `0` (odd `m`), `2 log p` (even `m`) | REJECTED: inconsistent vanishing |
+| ramified (2, 5) | `0` | `log p` | admitted (degree-1 fiber) |
+
+The harness trips at the first split prime: `|t(3)| = 2.0000 != 1`. Meanwhile `zeta`
+PASSES the clause and `L(s, chi_{-20})` PASSES it (a real character: twists `+1`/`-1`,
+ramified primes `[2, 5]` reported as atom-free). So the clause admits both factors and
+rejects their product. The Selberg class is closed under products; a predicate meant to
+carve out an arithmetic subclass of it cannot fail closure under products.
+
+Bare (B-iii) positivity also fails `zeta_K`, for a THIRD distinct reason: its layer is
+real and nonnegative (`Lambda_K >= 0`, never sign-varying), but it vanishes at every odd
+power of an inert prime and is doubled at split primes. Half the prime log-lattice
+carries no atom.
+
+## v5.2 The kernel companion
+
+`examples/quasicrystal/lean/DedekindQuadratic.lean` (in the island's default targets
+and axiom guard, three standard axioms):
+
+* `dedekind_split_rejected`, `dedekind_inert_rejected`: the pairs `{1, 1}` and `{1, -1}`
+  are not scalar-generated (instances of `scalarGenerated_powerSum_iff`);
+* `dedekind_ramified_admitted`: the pair `{1, 0}` is (the anti-vacuity fiber);
+* `dedekind_inert_layer_odd` / `_even`: the inert layer is `0` at odd and `2` at even `m`;
+* `layer_of_product` + `scalarGenerated_not_closed_under_product`: the layer of the
+  product is the sum of the factors' layers (for `m >= 1`), each scalar-generated, and
+  the sum is not, for every `chi(p) != 0`;
+* `chi_m20_three = 1`, `chi_m20_eleven = -1` by `norm_num` on the Jacobi symbol, and
+  `dedekind_at_three_rejected` / `dedekind_at_eleven_rejected` instantiate the
+  rejection with the character values computed in-kernel.
+
+## v5.3 The matrix (T = 100) -- zeta_K joins the zoo
+
+Same verdict profile as `zeta`, `l_chi5` and `delta` on every non-arithmetic clause
+(support density PASS, temperedness PASS, pure-point spectrum and defect CONDITIONAL
+on GRH), killed by variant B-mult alone, survives A, C, D. The forged twin that drops
+the `L(chi)` factor (hands the same code path the coefficient vector of `zeta`) flips
+FAIL -> PASS, so the rejection is exactly the second Satake parameter.
+
+## v5.4 What this changes
+
+Nothing about RH. It sharpens A1b: the clause's defect is not an artifact of GL(2)
+automorphic forms or of Deligne's theorem; it already shows up for the simplest
+degree-2 Euler product there is, and it shows up as a failure of product closure. Any
+repaired clause must be checked against `zeta_K` first, because `zeta_K` is the
+cheapest member of the class that a GL(1) predicate rejects.

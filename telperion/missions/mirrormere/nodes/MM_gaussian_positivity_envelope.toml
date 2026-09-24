@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-seam-B-map-2026-09-21 (AUDIT_TESTIMONY_WALL_SEAM_B_MAP_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: for every width lam > 0 and every centre with |c| >= envelopeC(lam) the Gaussian-weighted zero sum is nonnegative. Audit: prime side <= 16 A e^{16 lam} c-uniformly (AM-GM), Re digamma >= log(|r|/2) - 5 for |r| >= 2 (Zeta23 Stirling), bump mass outside |r-c| < 2/sqrt(lam) <= e^{-4} 2 pi 2 sqrt 2 A, closing inequality re-derived. Unconditional large-height positivity; the constant is crude (e^{16 lam}); not RH. conjecture1_proved = False."
