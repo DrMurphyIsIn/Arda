@@ -1,0 +1,14 @@
+created = "2026-09-24"
+depends_on = ["AND_ladder_h1000_kernel", "AND_height_floor_kernel", "AND_edge_clear_glue", "AND_theta_branch"]
+kind = "milestone"
+name = "AND.ladder_h8000_kernel"
+statement_module = "Statements.AND_ladder_h8000_kernel"
+status = "draft"
+title = "Every nontrivial zeta zero with 0 < Im rho <= 8000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, NO Arb or oracle input (Arb4 compact certificates, 8 segments chained by height_chain; 29 MB of certificates). Verified by an independent leanchecker replay of all 164 modules. Finite verification only, NOT RH. conjecture1_proved = False"
+updated = "2026-09-24"
+
+[proof]
+artifact = "../../examples/zeta_reflection/lean/Arb4_h8000.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
