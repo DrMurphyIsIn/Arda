@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-weil-li-2026-09-21 (AUDIT_TESTIMONY_WEIL_LI_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: under Mathlib's RiemannHypothesis every paired Li coefficient liLimit n has nonnegative real part (on the line |1 - 1/rho| = 1, independently re-proved). The converse is on the v4.34 li_positivity island and not re-proved here. Not RH. conjecture1_proved = False."

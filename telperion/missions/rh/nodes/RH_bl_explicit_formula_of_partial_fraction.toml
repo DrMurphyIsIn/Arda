@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-livalue-taylor-2026-09-21 (AUDIT_TESTIMONY_LIVALUE_TAYLOR_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: B7 holds given the derivative partial fraction of xi and no real zero in (0,1); composition of the audited convergence half with the value identity. conjecture1_proved = False."

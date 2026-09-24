@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_zeta_comb_membership_iff_rh",
+  "solution_module": "MissionChallenges.MM_zeta_comb_membership_iff_rh",
+  "theorem_names": [
+    "MissionJudge.MM_zeta_comb_membership_iff_rh"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

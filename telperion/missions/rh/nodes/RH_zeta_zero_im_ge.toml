@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-li-ladder-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: every nontrivial zero has |Im| >= sqrt 3 / 2, hypothesis-free, from zeta_fract_repr with the sharp unit-cell bound |J(s)| <= 1/(2 Re s) and the functional-equation reflection; tight at sigma = 1/2, t^2 = 3/4; the first zero is at 14.13. Not RH. conjecture1_proved = False."

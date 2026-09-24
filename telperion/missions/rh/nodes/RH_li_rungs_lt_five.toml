@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-li-box-rungs-2026-09-21 (AUDIT_TESTIMONY_LI_BOX_RUNGS_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: for n < 5, 0 <= Re(taylorCoeff riemannXi n) with no hypothesis. The pair term at rung n is the Chebyshev-type polynomial Q_{n+1}(z), z = 1/(rho(1-rho)); Box 2 puts z in the closed disk |z - 1/2| <= 1/2; explicit nonnegative certificates for Q_3, Q_4, Q_5 re-derived symbolically; Q_6 is negative on the disk, so five is the ceiling. Li's lambda_1..lambda_5 nonnegative in the kernel; Li's criterion needs every rung; NOT RH. conjecture1_proved = False."

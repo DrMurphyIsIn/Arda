@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
 date = "2026-09-14"
+independence = "unverified"
 text = "For nonzero complex coefficients c1, c2 and distinct real frequencies lam1 /= lam2, every complex zero of F(x) = c1 e^{i lam1 x} + c2 e^{i lam2 x} has zero imaginary part IF AND ONLY IF the norms of c1 and c2 are equal. The reverse-Dyson rigidity base case: an equal-modulus (self-inversive-type) condition on the coefficients alone forces reality of the whole zero set. [Verbatim extract of the proved twoFreq_realRooted_iff; artifact on rh/million-turing, grant deferred to the branch reconcile.]"

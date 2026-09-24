@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.AND_checkline_correct",
+  "solution_module": "MissionChallenges.AND_checkline_correct",
+  "theorem_names": [
+    "MissionJudge.AND_checkline_correct"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

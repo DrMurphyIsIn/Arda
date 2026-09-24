@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-seam-B-map-2026-09-21 (AUDIT_TESTIMONY_WALL_SEAM_B_MAP_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: Mathlib's RiemannHypothesis is equivalent to Gaussian positivity on widths strictly above lam0 = 1e-7; the case split over seam A's iff with the small-width region free. Audit re-composed both directions; deleting the above-threshold hypothesis breaks the converse. An equivalence; neither side asserted; NOT a proof of RH. conjecture1_proved = False."

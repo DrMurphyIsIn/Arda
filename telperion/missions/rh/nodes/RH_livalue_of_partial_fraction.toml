@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-livalue-taylor-2026-09-21 (AUDIT_TESTIMONY_LIVALUE_TAYLOR_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: the Bombieri-Lagarias value identity for every n >= 1 given the derivative partial fraction of xi and no real zero of zeta in (0,1). Audit 8/8: Lambda-form correction carries the product-rule signs; power-sum radius and termwise differentiation correct; the paired first power sum from the FTC on [0,1] and the reflection fold; closed forms via eta_j and the polygamma tower at 1/2 re-derived by hand; assembly matches RHDefs archSide + finiteSide exactly; Li's first four values reproduced to ~1e-30. conjecture1_proved = False."

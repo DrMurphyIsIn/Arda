@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-gauss-window-2026-09-22 (AUDIT_TESTIMONY_GAUSS_WINDOW_2026-09-22.md)"
 date = "2026-09-22"
+independence = "unverified"
 text = "Read-back: the Wall functional F(c, lam) is nonnegative for every centre c and every 0 < lam <= 3/2000, hypothesis-free: pole floor -e^{lam/2}/2, sup cap e^{-1}/(2 lam), window mass rho e^{-1}/lam, digamma monotone in |r| (Zeta23 re_digamma_mono), rational digamma floors by series plus integral tail with gamma <= 0.58112, twelve-band layer cake, E6Bridge11 prime bound; margin +0.052 re-derived; byte-identical statement; kernel-clean; refused at lam <= 1/500 by the assembly. One test function's prime-side functional, no zeros; NOT RH. conjecture1_proved = False."

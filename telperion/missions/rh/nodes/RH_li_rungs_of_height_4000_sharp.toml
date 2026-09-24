@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-li-ladder-sharp-li-2026-09-22 (AUDIT_TESTIMONY_LI_LADDER_SHARP_LI_2026-09-22.md)"
 date = "2026-09-22"
+independence = "unverified"
 text = "Read-back: under the tiled height-4000 capstone's conclusion shape (its 89 Arb band hypotheses and 55/16 floor NOT discharged), every rung n <= 25128 is nonnegative; 25128 is the exact integer reach of 7999 pi (25129 <= 7999 pi via pi_gt_d6, 7999 pi < 25130 via pi_lt_d6, both proved in probes; rung 25129 refused). Conditional. Not RH. conjecture1_proved = False."

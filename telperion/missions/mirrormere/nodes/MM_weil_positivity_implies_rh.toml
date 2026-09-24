@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-converse-2026-09-20 (AUDIT_TESTIMONY_WEIL_CONVERSE_2026-09-20.md)"
 date = "2026-09-20"
+independence = "unverified"
 text = "Read-back: Weil positivity of weilForm on Hermitian autocorrelations over IsWeilTest implies Mathlib's RiemannHypothesis. Classical (Weil 1952; Bombieri 2000). Reduced on 2026-09-20 to the two Gaussian obligations via the granted node MM_weil_positivity_implies_rh_of_gaussian; lands when both obligations are discharged. Not RH-hard. conjecture1_proved = False."

@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_weil_criterion_iff",
+  "solution_module": "MissionChallenges.RH_weil_criterion_iff",
+  "theorem_names": [
+    "MissionJudge.RH_weil_criterion_iff"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

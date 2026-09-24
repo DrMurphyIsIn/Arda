@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_bl_closed_form_five_nonneg",
+  "solution_module": "MissionChallenges.RH_bl_closed_form_five_nonneg",
+  "theorem_names": [
+    "MissionJudge.RH_bl_closed_form_five_nonneg"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

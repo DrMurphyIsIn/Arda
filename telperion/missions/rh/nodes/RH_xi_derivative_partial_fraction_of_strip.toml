@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-b7-last-mile-2026-09-21 (AUDIT_TESTIMONY_B7_LAST_MILE_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: the derivative partial fraction of xi given StripDerivBound alone; composition with the audited local-count sum. conjecture1_proved = False."
