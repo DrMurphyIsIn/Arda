@@ -1,7 +1,7 @@
 created = "2026-09-23"
 depends_on = []
 kind = "lemma"
-name = "AND_edge_clear_glue"
+name = "AND.edge_clear_glue"
 statement_module = "Statements.AND_edge_clear_glue"
 status = "proved"
 title = "Edge-clear glue K1, H2b discharged: riemannZeta(-1 + iy) != 0 for every real y (every band edge), hypothesis-free (zeta_zero_re_mem_strip off the real axis, zeta(-1) = -1/12 on it). Removes the hnzl Arb input from all 10,379 bands. conjecture1_proved = False"

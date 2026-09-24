@@ -1,7 +1,7 @@
 created = "2026-09-23"
 depends_on = []
 kind = "lemma"
-name = "AND_height_floor_kernel"
+name = "AND.height_floor_kernel"
 statement_module = "Statements.AND_height_floor_kernel"
 status = "proved"
 title = "Height floor, hypothesis-free: no zero of riemannZeta has 0 < Im rho < 55/16 (for every height bound H). Kernel-proved (order-3 Euler-Maclaurin at N = 2 plus 32 exact interval boxes); discharges the ladder capstones' hgamma input at every height. Finite verification only, NOT RH. conjecture1_proved = False"
