@@ -201,8 +201,8 @@ theorem bell_lt_zero_of_not_nearStarTie {b : Branch} (h : ¬ IsNearStarTie b) : 
 
 /-- **(T3) The SHARP Brualdi–Goldwasser rate ceiling.**  `bell b ≤ 0` for every planted branch, with
     equality exactly at the near-star tie `node [cherry ×5]`. -/
-theorem bg_sharp : (∀ b, bell b ≤ 0) ∧ (∀ b, bell b = 0 ↔ IsNearStarTie b) :=
-  ⟨bg_ceiling, bell_eq_zero_iff⟩
+theorem bg_sharp : (∀ b : Branch, bell b ≤ 0) ∧ (∀ b : Branch, bell b = 0 ↔ IsNearStarTie b) := by
+  exact ⟨bg_ceiling, bell_eq_zero_iff⟩
 
 end BGSCL
 end R3Cert
