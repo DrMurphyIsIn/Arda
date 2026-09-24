@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-li-ladder-rvm-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_RVM_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: if every nontrivial zero with |Im| <= T (T >= 1) is on the line then 0 <= Re(liLimit N) for N <= 3 pi T / 2; regrouping of the whole tsum over reflect rho -> 1 - conj rho without a fixed-point split, pair term 2 - 2 cosh(N log r) cos(N theta) checked to 1e-38, Lemma B by arctan on |Im| >= 1, factor-3 split exhaustive. Statement byte-identical. Consumes localisation, produces none. Not RH. conjecture1_proved = False."

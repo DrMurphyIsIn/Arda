@@ -1,0 +1,42 @@
+{
+  "island": "dbn",
+  "package": "DBN",
+  "toolchain": "leanprover/lean4:v4.34.0-rc1",
+  "comparator_tag": "v4.34.0-rc1",
+  "not_consumable": [],
+  "nodes": [
+    {
+      "slug": "RH_dbn_H0_eq_xi",
+      "campaign": "rh",
+      "theorem": "dbn_H0_eq_xi",
+      "solution_module": "DBNXi",
+      "challenge_module": "MissionChallenges.RH_dbn_H0_eq_xi",
+      "bridge_theorem": "MissionJudge.RH_dbn_H0_eq_xi",
+      "config": "RH_dbn_H0_eq_xi.comparator.json",
+      "artifact_sha256": "482bd3d1f3c231d22170fc338a9035fea11765b2f33183384808e6badaf07cd2",
+      "statement_sha256": "2b0476d96dccfed7a081527904b3934edf92fff2d6f6f080feb7481a506ccdfa"
+    },
+    {
+      "slug": "RH_dbn_H0_zero_strip",
+      "campaign": "rh",
+      "theorem": "dbn_H0_zero_strip",
+      "solution_module": "DBNStrip",
+      "challenge_module": "MissionChallenges.RH_dbn_H0_zero_strip",
+      "bridge_theorem": "MissionJudge.RH_dbn_H0_zero_strip",
+      "config": "RH_dbn_H0_zero_strip.comparator.json",
+      "artifact_sha256": "45d46b39f5db3fc38339e03301215509d059e78c6d1f5a7e9c1fc8da1e77098e",
+      "statement_sha256": "90e192d5ed99a4424d47e363c6ac25c798e3d5b2a45c18923d870efa1ef5bfd7"
+    },
+    {
+      "slug": "RH_dbn_rh_iff_H0_real_zeros",
+      "campaign": "rh",
+      "theorem": "dbn_rh_iff_H0_real_zeros",
+      "solution_module": "DBNRealZerosIffFinal",
+      "challenge_module": "MissionChallenges.RH_dbn_rh_iff_H0_real_zeros",
+      "bridge_theorem": "MissionJudge.RH_dbn_rh_iff_H0_real_zeros",
+      "config": "RH_dbn_rh_iff_H0_real_zeros.comparator.json",
+      "artifact_sha256": "cc4483fde12753f20b2c121ea4f3a9272fdd36b2b5a2f75cf2b2ca71a1b52498",
+      "statement_sha256": "b53a176ee6cd16a1d34ad24439003569c150bba4500bc2f881692b24cbeb420f"
+    }
+  ]
+}

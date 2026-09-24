@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-effective-O2-2026-09-21 (AUDIT_TESTIMONY_EFFECTIVE_O2_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: for every distance floor y0 in (0, 1/2], count N >= 1, radius D >= 1, tail constant B and target K, some spacing floor xmin > 0 makes the effective dominance threshold exceed K: the short-range clustering control is load-bearing. Audit re-derived (xmin = sqrt(L/(2 max K 1))) and instantiated at K = 1e9. Not RH. conjecture1_proved = False."

@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-xi-partial-fraction-2026-09-21 (AUDIT_TESTIMONY_XI_PARTIAL_FRACTION_2026-09-21.md section 11)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: the derivative partial fraction of xi holds given XiDiffRegular alone (obligation 2 discharged). Composition of audited pieces. conjecture1_proved = False."

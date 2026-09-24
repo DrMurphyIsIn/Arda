@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_xi_growth_of_two",
+  "solution_module": "MissionChallenges.RH_xi_growth_of_two",
+  "theorem_names": [
+    "MissionJudge.RH_xi_growth_of_two"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

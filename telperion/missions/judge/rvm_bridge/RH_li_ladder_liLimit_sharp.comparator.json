@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_li_ladder_liLimit_sharp",
+  "solution_module": "MissionChallenges.RH_li_ladder_liLimit_sharp",
+  "theorem_names": [
+    "MissionJudge.RH_li_ladder_liLimit_sharp"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

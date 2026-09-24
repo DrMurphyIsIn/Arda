@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_effective_threshold_unbounded",
+  "solution_module": "MissionChallenges.MM_effective_threshold_unbounded",
+  "theorem_names": [
+    "MissionJudge.MM_effective_threshold_unbounded"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

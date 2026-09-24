@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "rh-migration-session-2026-09-11"
 date = "2026-09-11"
+independence = "unverified"
 text = "For 1 <= sigma <= 2 and |t| >= 2, the norm of zeta(sigma + it) is at most 6 (1 + log |t|) -- the sharp near-line growth bound with explicit uniform constant 6."

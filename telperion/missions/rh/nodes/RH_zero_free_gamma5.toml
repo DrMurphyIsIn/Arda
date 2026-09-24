@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "rh-migration-session-2026-09-11"
 date = "2026-09-11"
+independence = "unverified"
 text = "There is c > 0 such that every zero beta + i gamma of zeta with gamma >= 2 satisfies beta <= 1 - c / gamma^5 -- the elementary, Hadamard-free, unconditional zero-free region at polynomial rate.  Not a proof of RH."
