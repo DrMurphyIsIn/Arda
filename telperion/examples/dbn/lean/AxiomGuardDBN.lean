@@ -19,6 +19,11 @@
   between two restatements of the same OPEN conjecture: it proves neither side.  NOTHING here is
   de Bruijn's t ≥ 1/2 theorem (registry node RH.dbn_debruijn_real_zeros, a registry STATEMENT,
   not an island theorem) or RH.  conjecture1_proved = False.
+
+  Route C milestone M5 (2026-09-23, lane m5): DBNM5Alpha proves elementary bounds on the explicit
+  Polymath15 quantities (P15 Thm 1.3 (20)-(22), alpha-calculus); DBNM5Target STATES the M5 target
+  `DBNM5.P15Thm13` (NOT proved) and proves only conditional consumers of it (Cor 1.4, and
+  Cor 6.5 => Thm 1.3).  No M5 theorem bounds Lambda.
 -/
 import DBNDefs
 import DBNRealZerosIff
@@ -40,6 +45,8 @@ import DBNHadamardMean
 import DBNHadamardLinear
 import DBNHadamard
 import DBNHadamardApprox
+import DBNM5Alpha
+import DBNM5Target
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -463,3 +470,48 @@ import DBNHadamardApprox
 #print axioms DBN.H_zero_im_sq_le
 #print axioms DBN.H_ne_zero_of_half_le
 #print axioms dbn_debruijn_real_zeros
+-- DBNM5Alpha (Route C M5 brick 1: P15 alpha-calculus and Thm 1.3 bounds (20)-(22))
+#print axioms DBNM5.mem_slitPlane_of_im_ne_zero
+#print axioms DBNM5.ne_zero_of_im_ne_zero
+#print axioms DBNM5.sub_one_ne_zero_of_im_ne_zero
+#print axioms DBNM5.two_pi_ne_zero
+#print axioms DBNM5.log_div_two_pi
+#print axioms DBNM5.hasDerivAt_alpha
+#print axioms DBNM5.hasDerivAt_logM0
+#print axioms DBNM5.hasDerivAt_logMt
+#print axioms DBNM5.M0_eq_p15_eq6
+#print axioms DBNM5.norm_alphaDeriv_le
+#print axioms DBNM5.arg_ne_pi_of_im_ne_zero
+#print axioms DBNM5.alpha_conj
+#print axioms DBNM5.logM0_conj
+#print axioms DBNM5.logMt_conj
+#print axioms DBNM5.norm_Mt
+#print axioms DBNM5.convex_im_eq
+#print axioms DBNM5.norm_alpha_sub_le_of_im_eq
+#print axioms DBNM5.norm_kappa_le
+#print axioms DBNM5.alpha_I_sub_main
+#print axioms DBNM5.p15_eq76_fails_at_200
+#print axioms DBNM5.norm_alpha_sub_main_le
+#print axioms DBNM5.re_alpha_sPlus
+#print axioms DBNM5.rat_part_ge_21
+#print axioms DBNM5.rat_part_ge_66
+#print axioms DBNM5.re_sStar
+#print axioms DBNM5.log_norm_sPlus_ge
+#print axioms DBNM5.re_sStar_ge
+#print axioms DBNM5.re_sStar_ge_prop66
+#print axioms DBNM5.re_alpha_ge_of_im
+#print axioms DBNM5.norm_alpha_le_of_im
+#print axioms DBNM5.gamma_numeric
+#print axioms DBNM5.re_logMtDeriv_ge
+#print axioms DBNM5.hasDerivAt_gLine
+#print axioms DBNM5.norm_gammaP_eq
+#print axioms DBNM5.norm_gammaP_le
+-- DBNM5Target (M5 target P15Thm13 [NOT proved], Cor 1.4 and Cor 6.5 => Thm 1.3, conditional)
+#print axioms DBNM5.Bt_ne_zero
+#print axioms DBNM5.H_ne_zero_of_P15Thm13
+#print axioms DBNM5.conj_sStar_add_kappa
+#print axioms DBNM5.Bt_mul_ft
+#print axioms DBNM5.EA_div_Bt
+#print axioms DBNM5.EB_div_Bt
+#print axioms DBNM5.EC0_div_Bt
+#print axioms DBNM5.P15Thm13_of_P15Cor65

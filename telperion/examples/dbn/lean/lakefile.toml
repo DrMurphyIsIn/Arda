@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM5Alpha", "DBNM5Target", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -141,6 +141,23 @@ name = "DBNHadamard"
 # zeros inside the strip.  Nothing here proves RH.  conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNHadamardApprox"
+
+# Route C milestone M5 (Polymath15 Thm 1.3, effective approximation of H_t), brick 1, Mathlib-only:
+# the Stirling-phase vocabulary alpha / log M_0 / log M_t (P15 (6)-(10)), (log M_0)' = alpha, the
+# alpha' bound (43), M_t = M_t^*, and the explicit parameter bounds (20) |gamma|, (21) Re s_*,
+# (22) |kappa| of Thm 1.3 (= P15 Prop 6.6 (i)-(iii)), plus the corrected (76) and a kernel negative
+# control showing P15's printed (76) is false at x = 200.  Elementary bounds on explicit functions;
+# NOT the analytic content of Thm 1.3.  Nothing here bears on RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM5Alpha"
+
+# M5 target: P15 Thm 1.3 (13) as the named Prop `P15Thm13` and the unnormalized Cor 6.5 as
+# `P15Cor65` (NEITHER proved), their full vocabulary (f_t, e_A, e_B, e_{C,0}, B_t, N, A_{t,N},
+# B_{t,N}, E_A, E_B, E_{C,0}), the proved reduction Cor 6.5 => Thm 1.3 (division by B_t), and
+# P15 Cor 1.4 (non-vanishing criterion) CONDITIONAL on P15Thm13.
+# Nothing here bears on RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM5Target"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.
