@@ -38,3 +38,7 @@ import Statements.MM_gaussian_positivity_envelope_sharp
 import Statements.MM_rh_iff_theta_positivity
 import Statements.MM_theta_heat_monotone
 import Statements.MM_rh_iff_theta_widths
+import Statements.MM_gaussian_positivity_small_lam_3e3
+import Statements.MM_leakage_composite_zero
+import Statements.MM_satake_degree_two_rejects_delta
+import Statements.MM_weil_positivity_window_tenth
