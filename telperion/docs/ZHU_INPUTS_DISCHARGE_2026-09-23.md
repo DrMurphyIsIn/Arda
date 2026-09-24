@@ -115,7 +115,22 @@ majorant for `sum_{j >= N} (T#L)^{2j}/(4j+1)!!`; neither was attempted.
 ## 3. The statement surgery, recorded
 
 The node is DRAFT, so re-specifying its vocabulary is allowed; it changes the statement's
-provenance hash (old `8d0bdb0b971ec222`, new in the file header). What changed in
+provenance hash. The full chain over the three passes of 2026-09-23 is
+`8d0bdb0b971ec222` (the 2026-09-19 registration) `->` `65215e793763e7f3` (pass 1: opaques made
+concrete, `hodd` as an analytic hypothesis) `->` `a170912ee8d3f937` (pass 2: parity decoupling proved,
+odd sector with its own seam, conclusion = min over sectors) `->` `8445ddd44ed00cf1` (pass 3: tail
+sums proved, `hloc`/`hlocOdd` dropped, closed-form eps in the conclusion).
+
+**The CONCLUSION changed, not only the hypotheses.** The 2026-09-19 registration concluded
+`WindowFloor L (min lam0 (beta - epsD) - epsB)` with free reals `epsD`, `epsB` and a single (even)
+block floor `lam0`. The current statement concludes
+`WindowFloor L (min (min lam0 (beta - epsDfun L Tsharp N) - epsBfun L Tsharp N)
+(min lam0odd (beta - epsDfunOdd L Tsharp N) - epsBfunOdd L Tsharp N))`: the min over the even and
+odd parity sectors, each with its own Arb floor, and with the PROVED closed-form tail constants in
+place of the free `epsD`, `epsB`. For `lam0odd = lam0` and the same eps this is literally the old
+expression, and for Zhu's certified numbers the even sector is the binding one, but a reader
+comparing against the 09-19 text should know the claimed floor is now the two-sector one of
+Corollary 6.3, not the single-sector one of Theorem 1.1. What changed in
 `RH_weil_window_floor_of_certified_block.lean`:
 
 * dropped `hQrep : SymbolRepresentation L` and `henv : EnvelopeBound` -- both are now theorems on
