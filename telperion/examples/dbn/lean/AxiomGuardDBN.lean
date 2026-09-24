@@ -44,6 +44,10 @@ import DBNM1Approx
 import DBNM1Parametric
 import DBNM1RHIff
 import DBNM1Controls
+import DBNM4P15Defs
+import DBNM4LocalStep
+import DBNM4HeatUniform
+import DBNM4P15Criterion
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -513,3 +517,37 @@ import DBNM1Controls
 -- lane m1: DBNM1Controls
 #print axioms m1_control_contraction_via_parametric
 #print axioms m1_control_debruijn_via_parametric
+
+-- lane m4 (Route C M4): DBNM4LocalStep
+#print axioms DBN.m4_pair_lt_local
+#print axioms DBN.m4_hadQ_lt_local
+#print axioms DBN.EvenHadamardData.m4_norm_lt_norm_local
+#print axioms DBN.EvenHadamardData.m4_shiftAvg_ne_zero_local
+#print axioms DBN.m4_zero_abs_of_zero
+#print axioms DBN.m4_barrier_induction
+#print axioms DBN.m4_compact_margin
+-- lane m4: DBNM4HeatUniform
+#print axioms DBN.m4_continuous_H_uncurry
+#print axioms DBN.m4_exp_sub_cosh_pow_le
+#print axioms DBN.m4_integrableOn_approxIntegrand
+#print axioms DBN.m4ApproxConst_nonneg
+#print axioms DBN.m4_norm_H_sub_Gδ_le
+-- lane m4: DBNM4P15Criterion (Polymath15 Prop 3.3; Thm 1.2 conclusion conditional on M1aStep)
+#print axioms DBN.m4_H_real
+#print axioms DBN.m4_im_le_sqrt_of_H_eq_zero
+#print axioms DBN.m4_re_add_im_mul_I
+#print axioms DBN.m4_im_add_im_mul_I
+#print axioms DBN.m4_barrier_margin
+#print axioms DBN.m4_rect_margin
+#print axioms DBN.m4_lowered_curve
+#print axioms DBN.m4_path_zero_free
+#print axioms DBN.m4_inner_zero_free
+#print axioms DBN.m4_p15_prop33
+#print axioms DBN.m4_p15_prop33_abs_im_lt
+#print axioms DBN.m4_p15_prop33_upper
+#print axioms DBN.m4_p15_criterion_of_M1aStep
+#print axioms DBN.m4_P15Barrier_of_box
+#print axioms DBN.m4_p15_hyps_satisfiable
+#print axioms DBN.m4_p15_control_instance
+#print axioms m4_dbn_p15_prop33
+#print axioms m4_dbn_p15_criterion_of_parametric
