@@ -93,7 +93,7 @@ jobs:
             if [ -n "$base" ] && files=$(git diff --name-only "$base" HEAD); then
               echo "PR changes $(printf '%s' "$files" | grep -c . || true) file(s) relative to $base"
               if grep -qE "$RELEVANT" <<< "$files"; then
-                printf '%s\n' "$files" | grep -E "$RELEVANT" | head -20
+                printf '%s\n' "$files" | grep -E "$RELEVANT" | head -20 || true
               else
                 run=false
               fi
