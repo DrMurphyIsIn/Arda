@@ -5,7 +5,14 @@ name = "RH.bl_explicit_formula_of_livalue"
 statement_module = "Statements.RH_bl_explicit_formula_of_livalue"
 status = "proved"
 title = "B7 REDUCED (2026-09-21): the node RH_bl_explicit_formula holds verbatim GIVEN the named value obligation LiValue n : liLimit n = archSide n + finiteSide n (Bombieri-Lagarias Thm 2; needs the derivative partial fraction of xi'/xi, in flight as E6Bridge18/19). LiValue is FALSE at n = 0, so the node's 0 < n is load-bearing. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "e33d2e2f42aa30e4ce84cca72fae9b30673568e675f471db686c8b4cd420ac03"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge15.bl_explicit_formula_of"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge15.lean"

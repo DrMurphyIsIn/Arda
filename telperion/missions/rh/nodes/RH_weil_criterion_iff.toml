@@ -5,7 +5,14 @@ name = "RH.weil_criterion_iff"
 statement_module = "Statements.RH_weil_criterion_iff"
 status = "proved"
 title = "WEIL'S CRITERION, in-kernel (routes-roadmap section 1, the Positivity face pinned by theorem, 2026-09-21): Weil positivity of the E8 primes-side functional on Hermitian autocorrelations over IsWeilTest is EQUIVALENT to Mathlib's RiemannHypothesis -- cross-campaign consumption of MIRRORMERE's zeta_comb_membership_iff_rh (E6Bridge5-9, four blind audits). An equivalence; proves NOTHING about whether either side holds. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "83f25395d1251b2e1ba75494effe65d285769c866e88a350a01ffc293a10377c"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge9.zeta_comb_membership_iff_rh"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge9.lean"

@@ -5,7 +5,14 @@ name = "RH.livalue"
 statement_module = "Statements.RH_livalue"
 status = "proved"
 title = "THE BOMBIERI-LAGARIAS VALUE IDENTITY, UNCONDITIONAL (2026-09-21): liLimit n = archSide n + finiteSide n for every n >= 1. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "dab21c2217d3da02a478d2e708ab2b50289d5668a324987f0966d6e1055382dc"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge27.liValue"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge27.lean"

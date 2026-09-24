@@ -5,7 +5,14 @@ name = "MM.rh_iff_gaussian_positivity"
 statement_module = "Statements.MM_rh_iff_gaussian_positivity"
 status = "proved"
 title = "WALL ASSAULT seam A (2026-09-21): the Wall in two real parameters -- Mathlib's RiemannHypothesis is EQUIVALENT to Gaussian positivity: for every centre c and width lam > 0 the Gaussian-weighted zero sum Re Sum_rho m(rho) (gamma_rho - c)^2 exp(-2 lam (gamma_rho - c)^2) is nonnegative. Forward: on-line zeros + summability; converse: MM_gaussian_dominance. The C_c^infinity quantifier is gone; each off-line zero would carve a negative region of the (c, lam) half-plane. An equivalence; proves NOTHING about either side. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "58ca7db520d1288f11da9424ce9563563903891ffe6c31c294e7c1e90db6d550"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge10.rh_iff_gaussian_positivity"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge10.lean"

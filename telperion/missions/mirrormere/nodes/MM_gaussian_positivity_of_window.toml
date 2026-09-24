@@ -5,7 +5,14 @@ name = "MM.gaussian_positivity_of_window"
 statement_module = "Statements.MM_gaussian_positivity_of_window"
 status = "proved"
 title = "WALL ASSAULT seam C (2026-09-21): the ladder-certified region of the two-parameter Wall as a kernel INSTRUMENT -- if every nontrivial zero within D of the centre c is on the line (WindowOnLine c D, the cross-island hypothesis the Turing ladder supplies for |c| <= T - D by registry-level composition, NOT a Lean import) and one certified zero sits at distance in [delta, d] of c with lam above the explicit threshold lamThreshold(c, D, d, delta), then the Gaussian zero sum at c is nonnegative. REGISTERED STATEMENT = this single-near-zero form; the sharper dominance form gaussian_positivity_of_window_dominance (finite certified window sum >= explicit tail envelope, the form the numerics validate) lives in the same artifact but its vocabulary rests on a finiteness THEOREM (zetaSeam.finite_window) and cannot be mirrored as a definition on the v4.32 statement island. The on-line hypothesis is load-bearing (audit probes). Proves NOTHING about RH; certifies a region of the (c, lam) half-plane from finite data. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "a3d868597e06f55d9744d82c180d9359c5d1c22e00f7045b79a396e6eac2c427"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge12.gaussian_positivity_of_window"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge12.lean"

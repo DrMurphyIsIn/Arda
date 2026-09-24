@@ -5,7 +5,14 @@ name = "MM.rh_implies_weil_positivity"
 statement_module = "Statements.MM_rh_implies_weil_positivity"
 status = "proved"
 title = "Weil's criterion, forward half, on the E8 vocabulary: Mathlib's RiemannHypothesis implies Weil positivity of weilForm on Hermitian autocorrelations over IsWeilTest -- discharges the hypothesis hpos that weil_negative_refutes_rh (weil_form_enclosure island) has carried undischarged; proves NOTHING about RH itself. conjecture1_proved = False."
-updated = "2026-09-20"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "56ce428b2c875125128bdd8c9d86b737f2a320ff4e7a57c9121781f50e30dd50"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge5.rh_implies_weil_positivity"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge5.lean"

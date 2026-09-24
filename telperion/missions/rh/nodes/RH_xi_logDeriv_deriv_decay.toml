@@ -5,7 +5,14 @@ name = "RH.xi_logDeriv_deriv_decay"
 statement_module = "Statements.RH_xi_logDeriv_deriv_decay"
 status = "proved"
 title = "XI PARTIAL FRACTION, obligation 2 DISCHARGED (2026-09-21): (log xi)''(sigma) -> 0 along the positive real axis -- termwise differentiation on Re s > 1 (rational terms, the trigamma series with the telescoping bound 1/(x - 1/2), and L(log Lambda)(sigma) -> 0 by Tannery). Unconditional. Nothing about RH. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "dc2b59ea253aae355eb23b92eb634d74e06300ce452da1dcc2ad435183071e95"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge21.xi_logDeriv_deriv_decay"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge21.lean"

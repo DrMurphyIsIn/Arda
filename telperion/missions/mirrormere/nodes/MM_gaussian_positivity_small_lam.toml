@@ -5,7 +5,14 @@ name = "MM.gaussian_positivity_small_lam"
 statement_module = "Statements.MM_gaussian_positivity_small_lam"
 status = "proved"
 title = "WALL ASSAULT seam B, zero-side form, UNCONDITIONAL: for every centre and every width <= lam0 the Gaussian-weighted zero sum is nonnegative (seam A's Gaussian explicit formula discharges seam B's hypothesis). conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "9ba76cde0a3872ea470704a77b60edd1fed1003bc4b3eb3703f7fa3182df01db"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge13.gaussian_positivity_small_lam"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge13.lean"

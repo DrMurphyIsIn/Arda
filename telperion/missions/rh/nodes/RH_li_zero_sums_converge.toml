@@ -5,7 +5,14 @@ name = "RH.li_zero_sums_converge"
 statement_module = "Statements.RH_li_zero_sums_converge"
 status = "proved"
 title = "B7 CONVERGENCE HALF (2026-09-21, open lemma 2): for every n the SYMMETRIC window sums of Li's kernel over the nontrivial zeros converge as T -> infinity, to the absolutely convergent paired sum liLimit n = Sum m(rho) Re(1 - (1 - 1/rho)^n); the pairing rho <-> conj rho is necessary (the unpaired family is not summable) and sufficient (|Re K_n| <= 2^n/|rho|^2 + the local-count majorant). Unconditional. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "e33d2e2f42aa30e4ce84cca72fae9b30673568e675f471db686c8b4cd420ac03"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge15.liZeroSum_tendsto"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge15.lean"

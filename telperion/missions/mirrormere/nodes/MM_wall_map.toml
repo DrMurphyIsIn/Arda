@@ -5,7 +5,14 @@ name = "MM.wall_map"
 statement_module = "Statements.MM_wall_map"
 status = "proved"
 title = "THE WALL MAP (2026-09-21): Mathlib's RiemannHypothesis is EQUIVALENT to Gaussian positivity on widths strictly above lam0 = 1e-7 only; below lam0 positivity is a theorem (MM_gaussian_positivity_small_lam). With MM_gaussian_positivity_of_window certifying |c| <= T - D from ladder data, the residual region {|c| > T - D, lam > lam0} IS the Wall. An equivalence; proves NOTHING about either side. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "9ba76cde0a3872ea470704a77b60edd1fed1003bc4b3eb3703f7fa3182df01db"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge13.rh_iff_gaussian_positivity_above_lam₀"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge13.lean"

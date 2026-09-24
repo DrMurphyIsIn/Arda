@@ -5,7 +5,14 @@ name = "MM.gaussian_explicit_formula"
 statement_module = "Statements.MM_gaussian_explicit_formula"
 status = "proved"
 title = "WALL ASSAULT seam A: the Gaussian explicit formula -- the Gaussian-weighted zero sum equals archSide minus primeSide of the Hermitian autocorrelation of the Gaussian-derivative test gaussPhi (not compactly supported): E8 on the truncations gaussTests, passed to the limit by dominated convergence on all three sides; honest values (integrability/summability proved in the audit probes). Unconditional. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "58ca7db520d1288f11da9424ce9563563903891ffe6c31c294e7c1e90db6d550"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge10.zeroSide_gaussTest_eq"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge10.lean"

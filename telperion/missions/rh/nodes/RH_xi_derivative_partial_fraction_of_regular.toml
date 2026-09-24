@@ -5,7 +5,14 @@ name = "RH.xi_derivative_partial_fraction_of_regular"
 statement_module = "Statements.RH_xi_derivative_partial_fraction_of_regular"
 status = "proved"
 title = "THE XI PARTIAL FRACTION now rests on ONE obligation (2026-09-21): (log xi)'' = -Sum m(rho)/(s-rho)^2 GIVEN XiDiffRegular (equivalently, via E6Bridge20, the log-growth bound on Re s >= 1/2, in flight as E6Bridge22). conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "dc2b59ea253aae355eb23b92eb634d74e06300ce452da1dcc2ad435183071e95"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge21.xi_logDeriv_deriv_eq_of_regular"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge21.lean"

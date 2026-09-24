@@ -5,7 +5,14 @@ name = "RH.xi_derivative_partial_fraction"
 statement_module = "Statements.RH_xi_derivative_partial_fraction"
 status = "proved"
 title = "THE XI PARTIAL FRACTION, DERIVATIVE FORM, UNCONDITIONAL (2026-09-21): (log xi)''(s) = -Sum m(rho)/(s - rho)^2 for every s that is not a nontrivial zero, proved WITHOUT the Hadamard product (entire difference of logarithmic growth is constant, and vanishes on the real axis). An identity valid whether or not RH holds. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "dab21c2217d3da02a478d2e708ab2b50289d5668a324987f0966d6e1055382dc"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge27.xi_logDeriv_deriv_eq"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge27.lean"

@@ -5,7 +5,14 @@ name = "AND.stirling_binet_k1"
 statement_module = "Statements.AND_stirling_binet_k1"
 status = "proved"
 title = "A2 Stirling/Binet K=1: logDeriv_gammaR_stirling -- the Gamma_R logarithmic derivative with explicit Binet remainder on Re z > 0 (serves both the Gamma_R edges and, at K=4 via the tail engine, the A3 theta branch)"
-updated = "2026-09-14"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "4fbeebdc3b84d1b5486cf6a2fd71ccda6200424ca79c96f3cc3a384f4818860f"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "ZetaReflection.logDeriv_gammaR_stirling"
 
 [proof]
 artifact = "../../examples/zeta_reflection/lean/StirlingBinet.lean"

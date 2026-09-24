@@ -5,7 +5,14 @@ name = "MM.rh_iff_theta_widths"
 statement_module = "Statements.MM_rh_iff_theta_widths"
 status = "proved"
 title = "LAMBDA_THETA (2026-09-21): RH is EQUIVALENT to every positive width being Theta-free, i.e. to the de Bruijn-Newman-type constant of the zero measure being infinite; an off-line zero bounds the free widths (not_thetaFree_of_offline, rh_or_thetaWidths_bddAbove). A certified width lam_cert (ladder + envelope) gives Lambda_Theta >= lam_cert and every smaller width -- a wall, not a crossing. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "d7778c3f3df56bbac314b53a0cdc24f02eac6ee1c5abd5bbd0670b09fb780f52"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge17.rh_iff_thetaWidths_eq"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge17.lean"

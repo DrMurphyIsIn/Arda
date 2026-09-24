@@ -5,7 +5,14 @@ name = "RH.bl_explicit_formula_of_partial_fraction"
 statement_module = "Statements.RH_bl_explicit_formula_of_partial_fraction"
 status = "proved"
 title = "B7 (RH_bl_explicit_formula) holds GIVEN the derivative partial fraction of xi and no real zero in (0,1); with E6Bridge22 the partial fraction rests on LocalCountSum + StripDerivBound, so B7 = three named classical facts, all in flight (E6Bridge23/24/25). conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "ad5f083f36efced07f8b3b6a4301f73c13cc5a4b2fac98da6ab7691cf5b85f99"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge19.bl_explicit_formula_of_partialFraction"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge19.lean"

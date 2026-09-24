@@ -5,7 +5,14 @@ name = "RH.corridor_bound"
 statement_module = "Statements.RH_corridor_bound"
 status = "proved"
 title = "The CORRIDOR BOUND (routes-roadmap E7 = A3 = B5 = D6, the unique four-consumer blocker): for every T >= 2 some height T' in [T, T+1] has a zero-free horizontal segment -1 <= sigma <= 2 on which |zeta'/zeta(sigma + iT')| <= C log^2 T; O-form constant, effective form queued"
-updated = "2026-09-18"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "b420c40ad672cf684a847b137462bb602663812f3cb3d6a514f46f3ee7d2cb7f"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge3.corridor_bound"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge3.lean"

@@ -5,7 +5,14 @@ name = "RH.li_forward_half"
 statement_module = "Statements.RH_li_forward_half"
 status = "proved"
 title = "LI'S CRITERION, FORWARD HALF, on the rvm_bridge island (2026-09-21): under Mathlib's RiemannHypothesis every paired Li coefficient is nonnegative (on the line |1 - 1/rho| = 1). The converse lives on the v4.34 li_positivity island (li_criterion_rh_iff) and is not re-proved here. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "e33d2e2f42aa30e4ce84cca72fae9b30673568e675f471db686c8b4cd420ac03"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge15.rh_implies_liLimit_re_nonneg"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge15.lean"

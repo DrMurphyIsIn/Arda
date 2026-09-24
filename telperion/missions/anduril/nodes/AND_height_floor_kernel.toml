@@ -5,7 +5,14 @@ name = "AND_height_floor_kernel"
 statement_module = "Statements.AND_height_floor_kernel"
 status = "proved"
 title = "Height floor, hypothesis-free: no zero of riemannZeta has 0 < Im rho < 55/16 (for every height bound H). Kernel-proved (order-3 Euler-Maclaurin at N = 2 plus 32 exact interval boxes); discharges the ladder capstones' hgamma input at every height. Finite verification only, NOT RH. conjecture1_proved = False"
-updated = "2026-09-23"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "7a44c94b06aabc1c8a43fa7684238986833573ce71a0de68a24c3ab040d41529"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "HeightFloor.height_floor"
 
 [proof]
 artifact = "../../examples/zeta_reflection/lean/HeightFloor.lean"

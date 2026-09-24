@@ -5,7 +5,14 @@ name = "RH.limit_explicit_formula"
 statement_module = "Statements.RH_limit_explicit_formula"
 status = "proved"
 title = "The LIMIT EXPLICIT FORMULA (routes-roadmap E8 = B6 = D6, the T -> infinity Guinand-Weil identity in diffraction form): for every smooth compactly supported g : R -> C, Sum_rho m(rho) H_g(rho) = h(i/2) + h(-i/2) - g(0) log pi + (1/2pi) int h(r) Re psi(1/4+ir/2) dr - Sum_n Lambda(n)/sqrt n (g(log n)+g(-log n)), zero side over ALL nontrivial zeros with the RvMCount multiplicity, stated as HasSum (summability is part of the claim); the limit of rect_explicit_formula, consumes the corridor bound and RvM; Weil 1952 / Iwaniec-Kowalski 5.12 normalisation, no evenness hypothesis"
-updated = "2026-09-18"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "24bb0f8fc324305accd30ba6dd011f11429cef287a871199586ad677a80e7f9a"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge4.limit_explicit_formula"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge4.lean"

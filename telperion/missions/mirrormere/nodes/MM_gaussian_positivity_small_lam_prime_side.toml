@@ -5,7 +5,14 @@ name = "MM.gaussian_positivity_small_lam_prime_side"
 statement_module = "Statements.MM_gaussian_positivity_small_lam_prime_side"
 status = "proved"
 title = "WALL ASSAULT seam B (2026-09-21), UNCONDITIONAL: the small-width region of the two-parameter Wall -- for EVERY real centre c and every width 0 < lam <= lam0 = 1e-7, the archimedean side of the Gaussian-derivative test exceeds its prime side (archimedean dominance: the prime side is exponentially small in 1/lam, the pole terms decay in c, Re digamma bounded below via Zeta23 Stirling). Yoshida-type positivity (Yoshida 1992 primary UNRESOLVED). Nothing about RH: the Wall proper is lam > lam0. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "a0eab11f5cfd9fa375c51dd374fd31e40eef72ee742d338aab4f5746ad02739e"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge11.re_weilForm_gauss_nonneg"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge11.lean"

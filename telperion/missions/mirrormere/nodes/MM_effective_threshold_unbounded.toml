@@ -5,7 +5,14 @@ name = "MM.effective_threshold_unbounded"
 statement_module = "Statements.MM_effective_threshold_unbounded"
 status = "proved"
 title = "OPEN LEMMA 1, the load-bearing hypothesis made explicit (2026-09-21): the spacing floor in effective Gaussian dominance cannot be dropped -- for every distance floor 0 < y0 <= 1/2, window count N >= 1, window half-width D >= 1, tail constant B and every bound K, there is a spacing floor xmin > 0 with effectiveThreshold(y0, xmin, N, B, D) >= K, i.e. the explicit threshold max(1, log(4N(D^2+1/4)/y0^2)/(2 xmin^2), log(4B/y0^2)/(2 y0^2)) is unbounded as xmin -> 0. Pure real arithmetic on the threshold formula; this is why short-range clustering control (the wall sweep's named open input) is exactly the data a consumer must certify. The main theorem RvMBridge14.effective_gaussian_dominance (E6Bridge14, 14 guarded theorems, 3-axiom) IS registered as MM_effective_gaussian_dominance (2026-09-21, zeroWindow mirrored via the zeroFinset sorry-scaffold precedent). Nothing about RH. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "fdfa6ea5470a0d113182a9ad6d7b8e4543203d584314516ea9a01fe8590dbd1e"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge14.effectiveThreshold_unbounded_of_small_spacing"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge14.lean"
