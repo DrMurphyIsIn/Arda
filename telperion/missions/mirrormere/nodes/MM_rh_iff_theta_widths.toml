@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-theta-face-2026-09-21 (AUDIT_TESTIMONY_THETA_FACE_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: RH is equivalent to every positive width being Theta-free (the free widths form an initial segment by heat monotonicity; an off-line zero bounds them). A de Bruijn-Newman-type constant for the zero measure, RH iff it is infinite. An equivalence; a certified width is a wall, not a crossing. conjecture1_proved = False."

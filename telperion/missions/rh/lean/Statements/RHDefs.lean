@@ -283,6 +283,7 @@ end WeilForm
 
 namespace WeilWindow
 open MeasureTheory Complex WeilExplicit WeilForm
+open scoped Nat
 
 -- ===== AUTHORED for the registry (NOT in the island; 2026-09-19, the Zhu compact-window import;
 -- design memo telperion/docs/ZHU_WINDOW_POSITIVITY_IMPORT_2026-09-19.md).  Vocabulary for
@@ -301,17 +302,21 @@ open MeasureTheory Complex WeilExplicit WeilForm
 --
 -- THE SEAM.  Zhu's reduction is NOT one step in Lean.  It is a chain:
 --   RH_limit_explicit_formula (PROVED on main)
---     -> SymbolRepresentation  (eq. 2, the frequency-side rearrangement)   -- UNPROVED
---     -> EnvelopeBound         (Lemma 3.1, the digamma envelope)           -- UNPROVED
---     -> Parseval on the half-line                                         -- UNPROVED
+--     -> SymbolRepresentation  (eq. 2, the frequency-side rearrangement)   -- PROVED 2026-09-23
+--     -> EnvelopeBound         (Lemma 3.1, the digamma envelope)           -- PROVED 2026-09-23
+--     -> Parseval on the half-line                                         -- inside SymbolRepresentation
 --     -> the frequency split (eq. 4)                                       -- provable
---     -> LegendreLocalization  (eqs. 6 and 12, spherical Bessel decay)     -- UNPROVED
+--     -> LegendreLocalization  (eqs. 6 and 12, spherical Bessel decay)     -- PROVED 2026-09-23 (ZhuTail, closed forms)
 --     -> the two-block bound (eq. 13)                                      -- PROVABLE, elementary
 --     -> ReducedHeadFloor      (lam0, an Arb/mpmath enclosure)             -- NON-KERNEL TRUST SEAM
 --     -> min(lam0, beta* - epsD) - epsB > 0                                -- norm_num
--- The four UNPROVED links and the trust seam are carried below as OPAQUE named predicates.  They
--- are deliberately not unfolded: giving them fake definitions would let the node be closed for the
--- wrong reason.  A certified NUMBER must not masquerade as a proved THEOREM.
+-- Until 2026-09-23 the four analytic links were carried as OPAQUE predicates.  On 2026-09-23 the
+-- three analytic ones were RE-SPECIFIED as concrete definitions mirrored verbatim from the
+-- rvm_bridge island (ZhuSymbol / ZhuEnvelope / ZhuLegendre / ZhuParity), for BOTH parity sectors
+-- (Zhu Lemma 6.1, proved: windowFloor_of_sectors), where the symbol representation and the
+-- envelope are proved outright and the localization's analytic content (eqs. 6, 12) is proved;
+-- the trust seams ReducedHeadFloor (even block) and ReducedHeadFloorOdd (odd block, added the
+-- same day) stay opaque, so a certified NUMBER still cannot masquerade as a proved THEOREM.
 --
 -- SCOPE.  `WindowFloor L lam` with `lam > 0` at a FIXED L is a finite fragment of RH.  The
 -- RH-equivalent clause is `WindowFloor L 0` for EVERY L (Weil 1952; Bombieri 2000 on
@@ -340,27 +345,208 @@ noncomputable def combMass (L : ℝ) : ℝ :=
 noncomputable def betaStar (L Tsharp : ℝ) : ℝ :=
   Real.log (Tsharp / (2 * Real.pi)) - 1 / Tsharp - combMass L
 
-/-- Zhu eq. (2), OPAQUE: the geometric side of the explicit formula rearranged in frequency,
-    `Q(f) = 2 F(i/2)² + (1/2π) ∫ |F(t)|² Ψ_L(t) dt` with `Ψ_L` the Weil symbol of eq. (3).  A
-    rearrangement of the PROVED `RH_limit_explicit_formula`, but NOT proved on main; it needs the
-    Fourier-Plancherel bridge for the autocorrelation and the pole identification at `F(i/2)`. -/
-opaque SymbolRepresentation (L : ℝ) : Prop
+-- ===== RE-SPECIFIED 2026-09-23 (opaque -> concrete).  The three analytic inputs below are VERBATIM
+-- mirrors of the rvm_bridge island modules ZhuSymbol.lean (weilSymbol, SymbolRepresentation),
+-- ZhuEnvelope.lean (EnvelopeBound) and ZhuLegendre.lean (legendreP .. LegendreLocalization), plus
+-- ZhuParity.lean (OddSectorFloor, EvenSectorFloor).  SymbolRepresentation and EnvelopeBound are
+-- PROVED there (RvMBridgeZhu.symbolRepresentation, RvMBridgeZhu.envelopeBound); of
+-- LegendreLocalization the analytic content (eqs. 6 and 12) is proved and the tail sums are the
+-- paper's numerically evaluated constants.  ReducedHeadFloor below is UNCHANGED and stays opaque:
+-- it is the Arb trust seam, never asserted by the kernel.  Design doc:
+-- telperion/docs/ZHU_INPUTS_DISCHARGE_2026-09-23.md.  conjecture1_proved = False. =====
 
-/-- Zhu Lemma 3.1, OPAQUE: `Re ψ(1/4 + it/2) - log π ≥ log(t/2π) - 1/t` for `t ≥ 15/4`, by
-    Binet's second formula.  Mathlib's digamma support does not reach it. -/
-opaque EnvelopeBound : Prop
+/-- Zhu eq. (3), the Weil symbol `Ψ_L(t) = Re ψ(1/4 + it/2) - log π - Σ_{log n < 2L} (2Λ(n)/√n)
+    cos(t log n)`.  The comb is a FINITE sum (`n < e^{2L}`) with total mass `combMass L`. -/
+noncomputable def weilSymbol (L : ℝ) (t : ℝ) : ℝ :=
+  (Complex.digamma (1 / 4 + ((t : ℂ) / 2) * Complex.I)).re - Real.log Real.pi
+    - ∑' n : ℕ, if Real.log n < 2 * L then
+        2 * ArithmeticFunction.vonMangoldt n / Real.sqrt n * Real.cos (t * Real.log n) else 0
 
-/-- Zhu eqs. (6) and (12), OPAQUE: the Legendre / spherical-Bessel localization.  With
-    `|j_n(x)| ≤ xⁿ/(2n+1)!!` the `C`-matrix entries decay super-exponentially past order
-    `e L T#/2`, and cutting after `N` even modes leaves a tail-block deviation `epsD` and a
-    leading-tail coupling norm `epsB`.  Spherical Bessel functions are not in Mathlib. -/
-opaque LegendreLocalization (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop
+/-- Zhu eq. (2), CONCRETE: for real even smooth compactly supported `f` supported in `[-L, L]`,
+    `Q(f) = 2 F(i/2)² + (1/2π) ∫ |F(t)|² Ψ_L(t) dt` with `F(t) = weilKernel f (1/2 + it)` and
+    `F(i/2) = weilKernel f 0`.  A rearrangement of the PROVED `RH_limit_explicit_formula`'s
+    primes-side functional. -/
+def SymbolRepresentation (L : ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → (∀ x, (f x).im = 0) → (∀ x, f (-x) = f x) →
+    tsupport f ⊆ Set.Icc (-L) L →
+    (WeilForm.weilForm (WeilForm.autocorr f)).re
+      = 2 * ‖WeilExplicit.weilKernel f 0‖ ^ 2
+        + (1 / (2 * Real.pi)) *
+          ∫ t : ℝ, ‖WeilExplicit.weilKernel f (1 / 2 + (t : ℂ) * Complex.I)‖ ^ 2 * weilSymbol L t
+
+/-- Zhu eq. (2) in the ODD sector (Lemma 6.1): for real ODD smooth compactly supported `f`
+    supported in `[-L, L]`, `Q(f) = -2 F(i/2)² + (1/2π) ∫ |F(t)|² Ψ_L(t) dt`; the pole term
+    changes sign, the multiplier term is parity-blind. -/
+def SymbolRepresentationOdd (L : ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → (∀ x, (f x).im = 0) → (∀ x, f (-x) = -f x) →
+    tsupport f ⊆ Set.Icc (-L) L →
+    (WeilForm.weilForm (WeilForm.autocorr f)).re
+      = -2 * ‖WeilExplicit.weilKernel f 0‖ ^ 2
+        + (1 / (2 * Real.pi)) *
+          ∫ t : ℝ, ‖WeilExplicit.weilKernel f (1 / 2 + (t : ℂ) * Complex.I)‖ ^ 2 * weilSymbol L t
+
+/-- Zhu Lemma 3.1, CONCRETE: `Re ψ(1/4 + it/2) - log π ≥ log(t/2π) - 1/t` for `t ≥ 15/4`.
+    The digamma expression is the one `WeilExplicit.archIntegrand` integrates against. -/
+def EnvelopeBound : Prop :=
+  ∀ t : ℝ, 15 / 4 ≤ t →
+    Real.log (t / (2 * Real.pi)) - 1 / t
+      ≤ (Complex.digamma (1 / 4 + ((t : ℂ) / 2) * Complex.I)).re - Real.log Real.pi
+
+/-- The Legendre polynomial `P_n`, Rodrigues form `P_n = (1/(2^n n!)) D^n (X² - 1)^n`. -/
+noncomputable def legendreP (n : ℕ) : Polynomial ℝ :=
+  Polynomial.C (1 / (2 ^ n * (n.factorial : ℝ)))
+    * (Polynomial.derivative^[n] ((Polynomial.X ^ 2 - 1) ^ n))
+
+/-- The spherical Bessel function `j_n` by the Poisson integral (cosine form, the sine part
+    vanishing by parity): `j_n(x) = x^n/(2^{n+1} n!) ∫_{-1}^{1} (1 - u²)^n cos(xu) du`. -/
+noncomputable def sphericalBessel (n : ℕ) (x : ℝ) : ℝ :=
+  x ^ n / (2 ^ (n + 1) * (n.factorial : ℝ))
+    * ∫ u in (-1 : ℝ)..1, (1 - u ^ 2) ^ n * Real.cos (x * u)
+
+/-- Zhu's orthonormal Legendre mode `T_n(x) = P̄_n(x/L)/√L = sqrt((n+1/2)/L) P_n(x/L)` on
+    `[-L, L]`, extended by zero. -/
+noncomputable def legendreMode (L : ℝ) (n : ℕ) (x : ℝ) : ℝ :=
+  if |x| ≤ L then Real.sqrt ((n + 1 / 2) / L) * (legendreP n).eval (x / L) else 0
+
+/-- The cosine transform `∫ T_n(x) cos(tx) dx`; for even `n` this is the full transform
+    `T̂_n(t) = ∫ T_n(x) e^{itx} dx` of eq. (6). -/
+noncomputable def legendreModeFT (L : ℝ) (n : ℕ) (t : ℝ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.cos (t * x)
+
+/-- The pole vector `p_n = ∫ T_n(x) cosh(x/2) dx` (so `F(i/2) = Σ c_n p_n` for even `f = Σ c_n T_n`). -/
+noncomputable def poleVec (L : ℝ) (n : ℕ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.cosh (x / 2)
+
+/-- Zhu's C-matrix, the operator with symbol `(Ψ_L - β*) χ_[0,T#]` in the Legendre basis:
+    `C_{nm} = (1/π) ∫_0^{T#} (Ψ_L(t) - β*) T̂_n(t) T̂_m(t) dt`. -/
+noncomputable def combMatrix (L Tsharp : ℝ) (n m : ℕ) : ℝ :=
+  (1 / Real.pi) * ∫ t in (0 : ℝ)..Tsharp,
+    (weilSymbol L t - betaStar L Tsharp) * (legendreModeFT L n t * legendreModeFT L m t)
+
+/-- Zhu's reduced matrix `M_R = β* I + 2 p pᵀ + C` on the even modes `0, 2, 4, …`, indexed by
+    `k ↦ 2k`. -/
+noncomputable def reducedMat (L Tsharp : ℝ) (k j : ℕ) : ℝ :=
+  (if k = j then betaStar L Tsharp else 0)
+    + 2 * poleVec L (2 * k) * poleVec L (2 * j) + combMatrix L Tsharp (2 * k) (2 * j)
+
+/-- Zhu eqs. (6), (12), (13), CONCRETE: the tail data of the block decomposition after `N` even
+    modes.  (i) Gershgorin: every tail row `k ≥ N` of `M_R - β* I` has absolute row sum over the
+    tail `≤ epsD` (so `λ_min(D) ≥ β* - epsD`); (ii) Schur: every leading column `j < N` has
+    absolute tail-column sum `≤ epsB` and every tail row `k ≥ N` has absolute leading-row sum
+    `≤ epsB` (so `‖B‖ ≤ epsB`).  Summability is required explicitly so the `tsum`s are honest.
+    In the certified run both constants are below `1e-100` (Zhu Section 5.3). -/
+def LegendreLocalization (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop :=
+  (∀ k, N ≤ k →
+    Summable (fun j : ℕ => if N ≤ j then
+      |reducedMat L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ∧
+    ∑' j : ℕ, (if N ≤ j then
+      |reducedMat L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ≤ epsD) ∧
+  (∀ j, j < N →
+    Summable (fun k : ℕ => if N ≤ k then |reducedMat L Tsharp k j| else 0) ∧
+    ∑' k : ℕ, (if N ≤ k then |reducedMat L Tsharp k j| else 0) ≤ epsB) ∧
+  (∀ k, N ≤ k → ∑ j ∈ Finset.range N, |reducedMat L Tsharp k j| ≤ epsB)
+
+/-- The sine transform `∫ T_n(x) sin(tx) dx`; for odd `n` the full transform is `i` times it, so
+    `|T̂_n(t)|² = (∫ T_n sin(tx))²`. -/
+noncomputable def legendreModeFTs (L : ℝ) (n : ℕ) (t : ℝ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.sin (t * x)
+
+/-- The odd-sector pole vector `s_n = ∫ T_n(x) sinh(x/2) dx` (so `F(i/2) = -Σ c_n s_n` for odd
+    `f = Σ c_n T_n`, and the pole term is `-2 (Σ c_n s_n)²`, Zhu Lemma 6.1). -/
+noncomputable def poleVecOdd (L : ℝ) (n : ℕ) : ℝ :=
+  ∫ x in (-L)..L, legendreMode L n x * Real.sinh (x / 2)
+
+/-- The C-matrix on odd modes: `C_{nm} = (1/π) ∫_0^{T#} (Ψ_L(t) - β*) T̂_n(t) T̂_m(t) dt` with
+    `|T̂_n| = |∫ T_n sin(t·)|`. -/
+noncomputable def combMatrixOdd (L Tsharp : ℝ) (n m : ℕ) : ℝ :=
+  (1 / Real.pi) * ∫ t in (0 : ℝ)..Tsharp,
+    (weilSymbol L t - betaStar L Tsharp) * (legendreModeFTs L n t * legendreModeFTs L m t)
+
+/-- Zhu's ODD-sector reduced matrix `β* I - 2 s sᵀ + C` on the odd modes `1, 3, 5, …`, indexed by
+    `k ↦ 2k + 1` (Section 6: the pole sign is reversed). -/
+noncomputable def reducedMatOdd (L Tsharp : ℝ) (k j : ℕ) : ℝ :=
+  (if k = j then betaStar L Tsharp else 0)
+    - 2 * poleVecOdd L (2 * k + 1) * poleVecOdd L (2 * j + 1)
+    + combMatrixOdd L Tsharp (2 * k + 1) (2 * j + 1)
+
+/-- The eq. (13) tail data of the ODD sector, the same shape as `LegendreLocalization` on
+    `reducedMatOdd` (Zhu Section 6: "the tail and coupling bounds of Section 4 are unchanged"). -/
+def LegendreLocalizationOdd (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop :=
+  (∀ k, N ≤ k →
+    Summable (fun j : ℕ => if N ≤ j then
+      |reducedMatOdd L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ∧
+    ∑' j : ℕ, (if N ≤ j then
+      |reducedMatOdd L Tsharp k j - (if k = j then betaStar L Tsharp else 0)| else 0) ≤ epsD) ∧
+  (∀ j, j < N →
+    Summable (fun k : ℕ => if N ≤ k then |reducedMatOdd L Tsharp k j| else 0) ∧
+    ∑' k : ℕ, (if N ≤ k then |reducedMatOdd L Tsharp k j| else 0) ≤ epsB) ∧
+  (∀ k, N ≤ k → ∑ j ∈ Finset.range N, |reducedMatOdd L Tsharp k j| ≤ epsB)
+
+-- ===== 2026-09-23 (second pass): the PROVED tail constants of ZhuTail.lean, closed forms in
+-- L, T#, N, mirrored verbatim; `open scoped Nat` above supplies the `‼` notation. =====
+
+/-- A crude explicit bound for `sup_{0 ≤ t ≤ T#} |Ψ_L(t) - β*|`: `Re ψ(1/4 + it/2)` lies between
+    `ψ(1/4) ≥ -4.2315` and its Stirling upper bound at `T#`, `|P_L| ≤ A_L`. -/
+noncomputable def symbolSup (L Tsharp : ℝ) : ℝ :=
+  8463 / 2000 + (Real.log (Tsharp / 2) + 13 / Tsharp ^ 2) + Real.log Real.pi + combMass L
+    + |betaStar L Tsharp|
+
+/-- The tail majorant of the even modes: `b_j = 2 sqrt L (j+1) (T# L)^{2j} / (4j+1)!!` bounds
+    `|T̂_{2j}(t)|` on `[0, T#]` and `|p_{2j}| / cosh(L/2)`. -/
+noncomputable def tailMajorant (L Tsharp : ℝ) (j : ℕ) : ℝ :=
+  2 * Real.sqrt L * ((j : ℝ) + 1) * ((Tsharp * L) ^ (2 * j) / ((2 * (2 * j) + 1)‼ : ℕ))
+
+/-- The tail majorant of the odd modes: `2 sqrt L (j+2) (T# L)^{2j+1} / (4j+3)!!`. -/
+noncomputable def tailMajorantOdd (L Tsharp : ℝ) (j : ℕ) : ℝ :=
+  2 * Real.sqrt L * ((j : ℝ) + 2) * ((Tsharp * L) ^ (2 * j + 1) / ((2 * (2 * j + 1) + 1)‼ : ℕ))
+
+/-- The entry constant `K = 2 cosh(L/2)² + T# S / π`: `|M_R(k,j) - β* δ_kj| ≤ K B_k B_j`. -/
+noncomputable def entryConst (L Tsharp : ℝ) : ℝ :=
+  2 * Real.cosh (L / 2) ^ 2 + Tsharp * symbolSup L Tsharp / Real.pi
+
+/-- The proved tail-block deviation, even sector: `eps_D = (10/7) K b_N²`. -/
+noncomputable def epsDfun (L Tsharp : ℝ) (N : ℕ) : ℝ :=
+  (10 / 7) * entryConst L Tsharp * tailMajorant L Tsharp N ^ 2
+
+/-- The proved coupling norm, even sector: `eps_B = (10/7 + N) K ((1+2L)/2) b_N`. -/
+noncomputable def epsBfun (L Tsharp : ℝ) (N : ℕ) : ℝ :=
+  (10 / 7 + (N : ℝ)) * entryConst L Tsharp * ((1 + 2 * L) / 2) * tailMajorant L Tsharp N
+
+/-- The proved tail-block deviation, odd sector. -/
+noncomputable def epsDfunOdd (L Tsharp : ℝ) (N : ℕ) : ℝ :=
+  (10 / 7) * entryConst L Tsharp * tailMajorantOdd L Tsharp N ^ 2
+
+/-- The proved coupling norm, odd sector. -/
+noncomputable def epsBfunOdd (L Tsharp : ℝ) (N : ℕ) : ℝ :=
+  (10 / 7 + (N : ℝ)) * entryConst L Tsharp * ((1 + 2 * L) / 2) * tailMajorantOdd L Tsharp N
+
+/-- The ODD-sector window floor (Zhu Section 6, eq. (14)): the Weil form of every real ODD smooth
+    test function supported in `[-L, L]` is at least `lam ‖f‖₂²`.  Together with the real even
+    sector this yields `WindowFloor L lam` for complex `f` (Zhu Lemma 6.1, Corollary 6.3). -/
+def OddSectorFloor (L lam : ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → (∀ x, (f x).im = 0) → (∀ x, f (-x) = -f x) →
+    tsupport f ⊆ Set.Icc (-L) L →
+    lam * (∫ x : ℝ, ‖f x‖ ^ 2) ≤ (WeilForm.weilForm (WeilForm.autocorr f)).re
+
+/-- The real EVEN-sector window floor, the sector Zhu Theorem 1.1 certifies. -/
+def EvenSectorFloor (L lam : ℝ) : Prop :=
+  ∀ f : ℝ → ℂ, WeilExplicit.IsWeilTest f → (∀ x, (f x).im = 0) → (∀ x, f (-x) = f x) →
+    tsupport f ⊆ Set.Icc (-L) L →
+    lam * (∫ x : ℝ, ‖f x‖ ^ 2) ≤ (WeilForm.weilForm (WeilForm.autocorr f)).re
 
 /-- The ARB / MPMATH TRUST SEAM, OPAQUE: the leading `N × N` Legendre block of Zhu's reduced form
     `R` has least eigenvalue at least `lam0`.  In the certified run this is a verified Cholesky
     residual at 50 digits (Zhu Lemma 5.2 and Section 5.4).  The kernel NEVER asserts it; it enters
     every statement as a hypothesis, exactly as the zero-localization ladder's enclosures do. -/
 opaque ReducedHeadFloor (L Tsharp lam0 : ℝ) (N : ℕ) : Prop
+
+/-- The ODD-sector ARB / MPMATH TRUST SEAM, OPAQUE (added 2026-09-23 on the lead's instruction):
+    the leading `N × N` ODD-mode Legendre block of Zhu's reduced form (`reducedMatOdd`, pole sign
+    reversed, Zhu Section 6.2) has least eigenvalue at least `lam0`.  In the certified run this is
+    the verified Cholesky residual at shift `8.2065e-15` (eq. 14).  A numeric seam of exactly the
+    same kind as `ReducedHeadFloor`: the kernel NEVER asserts it; it enters every statement as a
+    hypothesis, and the complex-`f` window floor is the min over both sectors (Corollary 6.3). -/
+opaque ReducedHeadFloorOdd (L Tsharp lam0 : ℝ) (N : ℕ) : Prop
 
 end WeilWindow
 

@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "migration-session-2026-09-12"
 date = "2026-09-11"
+independence = "unverified"
 text = "Whenever c+k = 5 the near-star N(c,k) has log-amplitude exactly zero -- the six eleven-vertex ties of the rooted invariant."

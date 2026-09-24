@@ -23,6 +23,24 @@ from telperion.missions.statements import write_statement  # noqa: E402
 
 DEMO_FIXTURE = Path(__file__).parent / "fixtures" / "missions" / "demo"
 
+#: A read-back long enough to pass the content check (provenance, 2026-09-23).
+LONG_READBACK = (
+    "The statement quantifies over nothing and asserts a closed equation between two "
+    "literals; it has no hypotheses, no hidden universe variables and no definitional "
+    "unfolding that could make it vacuous. Rendered independently by the auditor."
+)
+
+
+@pytest.fixture(autouse=True)
+def _provenance_env(monkeypatch):
+    """`add`/`audit`/`grant` need a session id and a git identity (2026-09-23). The CLI reads
+    the session from $CLAUDE_SESSION_ID and the identity from `git config user.email`; a
+    CI runner has neither, so pin both here. Individual tests override with --session /
+    --identity where the value matters."""
+    from telperion.missions import provenance
+    monkeypatch.setenv(provenance.SESSION_ENV, "test-session")
+    monkeypatch.setattr(provenance, "git_identity", lambda cwd=None: "tester@example.test")
+
 # ---------------------------------------------------------------------------
 # Shared helpers
 # ---------------------------------------------------------------------------
@@ -186,7 +204,7 @@ def test_audit_records_readback_and_promotes(tmp_path, capsys):
     rc = main([
         "mission", "--missions-root", str(mroot), "audit", "Demo_lemma_b",
         "--campaign", "demo",
-        "--text", "Statement says lemma B holds.",
+        "--text", "This statement says lemma B holds: for every natural number n the trivial equation n = n is satisfied, with no hypotheses and no hidden quantifier. Rendered by the auditor.",
         "--auditor", "operator",
     ])
     assert rc == 0
@@ -204,7 +222,7 @@ def test_audit_already_open_exits1_readback_recorded(tmp_path, capsys):
     rc = main([
         "mission", "--missions-root", str(mroot), "audit", "Demo_lemma_a",
         "--campaign", "demo",
-        "--text", "Re-audit of already-open node.",
+        "--text", "Re-audit of already-open node. " + LONG_READBACK,
         "--auditor", "operator",
     ])
     # promote_to_open rejects non-draft status -> exit 1
@@ -212,7 +230,7 @@ def test_audit_already_open_exits1_readback_recorded(tmp_path, capsys):
     # Readback is durably written even though promote failed
     node = load_node(campaign_root / "nodes" / "Demo_lemma_a.toml")
     assert node.readback is not None
-    assert node.readback.text == "Re-audit of already-open node."
+    assert node.readback.text.startswith("Re-audit of already-open node.")
     # Status must NOT regress
     assert node.status == "open"
 
@@ -236,14 +254,14 @@ def test_audit_proved_node_exits1_status_preserved(tmp_path, capsys):
     rc = main([
         "mission", "--missions-root", str(mroot), "audit", "Demo_lemma_a",
         "--campaign", "demo",
-        "--text", "Audit of a proved node should not regress it.",
+        "--text", "Audit of a proved node should not regress it. " + LONG_READBACK,
         "--auditor", "operator",
     ])
     assert rc == 1
     # Readback written durably
     on_disk = load_node(node_path)
     assert on_disk.readback is not None
-    assert on_disk.readback.text == "Audit of a proved node should not regress it."
+    assert on_disk.readback.text.startswith("Audit of a proved node should not regress it.")
     # Status must stay proved — the guard blocked the regression
     assert on_disk.status == "proved"
 
@@ -328,6 +346,58 @@ def test_verify_clean_fixture(tmp_path, capsys):
     mroot, campaign_root = make_demo_root(tmp_path)
     rc = main(["mission", "--missions-root", str(mroot), "verify", "demo"])
     assert rc == 0
+
+
+def test_verify_exits1_when_statement_not_in_root_import_list(tmp_path, capsys):
+    """Staleness of the package root is a verify failure at the CLI (2026-09-24).
+
+    This is the exact on-disk state fifteen live nodes were in: a well-formed statement
+    file with a current provenance hash that the root Statements.lean never imported, so
+    CI's `lake build` had never elaborated it.  Body-level staleness (regen_diff on the
+    hash) was green for all of them; the import list is now part of the same check.
+    """
+    from telperion.missions.registry import load_campaign
+    from telperion.missions.statements import root_imports, root_module_path
+
+    mroot, campaign_root = make_demo_root(tmp_path)
+    camp = load_campaign(campaign_root)
+    node = camp.nodes["Demo_lemma_a"]
+    write_statement(campaign_root, node, "import Mathlib\ntheorem demo_lemma_a : 1 = 1",
+                    _manifest())
+    assert main(["mission", "--missions-root", str(mroot), "verify", "demo"]) == 0
+
+    # drop the one import line: file untouched, hash still current
+    root_file = root_module_path(campaign_root)
+    root_file.write_text("".join(
+        ln for ln in root_file.read_text().splitlines(keepends=True)
+        if "Demo_lemma_a" not in ln))
+    assert "Statements.Demo_lemma_a" not in root_imports(campaign_root)
+
+    rc = main(["mission", "--missions-root", str(mroot), "verify", "demo"])
+    out = capsys.readouterr().out
+    assert rc == 1
+    assert "does not import Statements.Demo_lemma_a" in out
+    assert "hash mismatch" not in out
+
+
+def test_scaffold_package_root_agrees_with_missing_root_imports(tmp_path):
+    """`scaffold_package` regenerates the root from the files on disk (the generate.py
+    --check idiom); after it runs, the verify-side check must find nothing missing, and
+    before it runs the two must disagree on exactly the unwired module."""
+    from telperion.missions.registry import load_campaign
+    from telperion.missions.statements import (
+        missing_root_imports, root_module_path, scaffold_package,
+    )
+
+    mroot, campaign_root = make_demo_root(tmp_path)
+    camp = load_campaign(campaign_root)
+    for sl in ("Demo_lemma_a", "Demo_lemma_b"):
+        write_statement(campaign_root, camp.nodes[sl],
+                        f"import Mathlib\ntheorem {sl.lower()} : 1 = 1", _manifest())
+    root_module_path(campaign_root).write_text("import Statements.Demo_lemma_a\n")
+    assert missing_root_imports(campaign_root, camp.nodes.values()) == ["Statements.Demo_lemma_b"]
+    scaffold_package(campaign_root, _manifest())
+    assert missing_root_imports(campaign_root, camp.nodes.values()) == []
 
 
 def test_verify_exits1_with_mismatch(tmp_path, capsys):

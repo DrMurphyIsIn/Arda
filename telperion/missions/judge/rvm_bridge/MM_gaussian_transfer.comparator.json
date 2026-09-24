@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_gaussian_transfer",
+  "solution_module": "MissionChallenges.MM_gaussian_transfer",
+  "theorem_names": [
+    "MissionJudge.MM_gaussian_transfer"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

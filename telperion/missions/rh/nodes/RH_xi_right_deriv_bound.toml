@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-xi-growth-2026-09-21 (AUDIT_TESTIMONY_XI_GROWTH_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: on Re s >= 2, (log xi)'' is bounded by an explicit constant (rational terms, the trigamma series bound, the absolutely convergent L-series of log Lambda at 2). Audit 8/8, every constant re-derived. Unconditional. conjecture1_proved = False."

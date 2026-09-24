@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-xi-partial-fraction-2026-09-21 (AUDIT_TESTIMONY_XI_PARTIAL_FRACTION_2026-09-21.md section 11)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: (log xi)''(sigma) -> 0 along the positive real axis. Audit: signs and normalisation read from Zeta23 and Mathlib sources (logDeriv Lambda = logDeriv Gamma_R + logDeriv zeta; L(Lambda) = -zeta'/zeta; deriv of an L-series = -L(logMul)); trigamma extended across the integers by continuity; telescoping bound re-proved; Tannery domination checked; termwise formula confirmed numerically to 1e-27. Unconditional; nothing about RH. conjecture1_proved = False."

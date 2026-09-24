@@ -157,7 +157,7 @@ per-node CLI view renders both.
 | `status [campaign]` | one-glance tree with statuses — the generated successor of PROOF_STATUS.md's tables |
 | `open-leaves [campaign]` | the live frontier: open nodes all of whose dependencies are proved (or which have none), minus fresh claims; `--all` includes claimed |
 | `claim <slug> --session S [--ttl H]` / `release <slug>` | claim protocol (§4) |
-| `add <campaign> <name>` | scaffold node file + statement file (status `draft`) |
+| `add <campaign> <name>` | scaffold node file + statement file (status `draft`) and append `import Statements.<Slug>` to the package root `lean/Statements.lean` (since 2026-09-24; see §11) |
 | `audit <slug>` | record a read-back (§8): `--text` + `--auditor`, or emit the statement for an independent session to render |
 | `link <slug> --artifact PATH --kind K --via V` | attach a proof/disproof artifact; verification happens in `verify`/CI, never here |
 | `attempt <slug> --route R --verdict V --detail D` | ledger append |
@@ -179,7 +179,9 @@ One new CI job, identical to local `mission verify`:
    (normalized comparison; negation for `refuted`); every reduction's
    `closure_clean` flag is recomputed, never trusted.
 5. Statement files carry current provenance headers (regeneration diff
-   is empty).
+   is empty), and every statement module is in the package root's import
+   list (§11, 2026-09-24): a module the root does not name is one CI has
+   never elaborated, whatever its node's status says.
 6. Claims hygiene (warnings): TTL, claimed-but-not-open.
 7. Ledgers parse; every `deprecated` node has a reason.
 
@@ -192,6 +194,19 @@ Before `draft → open`, a node needs a recorded read-back: an independent
 natural-language rendering of what the formal statement actually says,
 stored in the node file (`readback.text/auditor/date`). The renderer must
 not be the statement's author (an independent session, or the operator).
+
+**Enforced since 2026-09-23** (`AUDIT_INDEPENDENCE_2026-09-23.md`): `mission add`
+records `[author] {identity, session, date}`; `mission audit` records the
+auditor as `{auditor_identity, auditor_session}` and REFUSES the author's
+session or identity, a read-back under 120 characters, or one that only
+repeats the title. A subagent spawned by the authoring session is the
+author. A read-back counts as independent only if (i) it comes from a
+different session AND a different identity, or (ii) the `missions-comparator`
+job (openai/ten-proofs Comparator, two kernels, statement taken from the
+registry) passed on the node and the run is recorded with
+`mission comparator-record`. Every read-back recorded before 2026-09-23 is
+labelled `independence = "unverified"`; `mission provenance-report` lists
+the proved nodes that neither (i) nor (ii) covers.
 Where both sides are Lean (statement vs. a source formalization), the
 comparator machinery does the matching mechanically; for
 statement-vs-paper the read-back is prose. This is the gate that catches
@@ -232,6 +247,61 @@ mismatched artifact and a reduction flipping `closure_clean`); CLI tests
 via `main([...])`; DOT export smoke. Statement-package `lake build` and
 artifact checks are CI-tier (like every other Lean gate in the repo),
 with the golden fixture using a stub verifier in unit tests.
+
+## 11. The root import list is part of the gate (2026-09-24)
+
+§2 says "CI builds each statement package: a statement that does not
+elaborate cannot enter the graph." That was true only of statements the
+package root `lean/Statements.lean` imported. `lake build` compiles the
+root's import closure and nothing else; `mission add` wrote
+`Statements/<Slug>.lean` and the node file but never touched the root, and
+nothing checked. On 2026-09-24 fifteen registered modules, most of them
+`status = "proved"`, were on disk with current provenance hashes and had
+never been elaborated by any job:
+
+- rh (11): `RH_bl_closed_form_five_nonneg`, `RH_dbn_H0_zero_strip`,
+  `RH_li_ladder_height`, `RH_li_ladder_height_sharp`,
+  `RH_li_ladder_liLimit`, `RH_li_ladder_liLimit_sharp`,
+  `RH_li_rungs_lt_five`, `RH_li_rungs_of_height_4000`,
+  `RH_li_rungs_of_height_4000_sharp`, `RH_zeta_zero_confined`,
+  `RH_zeta_zero_im_ge`.
+- mirrormere (4): `MM_gaussian_positivity_small_lam_3e3`,
+  `MM_leakage_composite_zero`, `MM_satake_degree_two_rejects_delta`,
+  `MM_weil_positivity_window_tenth` (this one had no `import` line at all).
+
+All fifteen were regenerated through `regenerate_statement` (the
+`write_statement` path, so the sha256 header stays honest: fourteen are
+byte-identical, the window-tenth file gained `import Mathlib` +
+`import Statements.MMDefs` and its hash change is recorded in the node
+file) and imported from their roots. Both packages then built green with
+no vocabulary added to RHDefs/MMDefs: every statement already elaborated
+against the registry definitions; it had simply never been asked to.
+
+What holds from that date:
+
+- `write_statement` inserts the module into the root in sorted position,
+  so `mission add` wires a new node and the list stays alphabetical (one
+  `import` per line). The four live roots were sorted on 2026-09-24.
+  Sorted lists are the merge discipline: parallel branches each add a
+  node to the same root, and a sorted list makes the conflict line-local.
+  Resolve such a conflict by re-sorting (`sort_root_imports`), never by
+  union-merge. Order is not a gate condition: `mission verify` only warns
+  on an unsorted root, so a held branch that appended by hand still
+  passes.
+- `regen_diff` (§7 item 5) reports a statement the root does not import,
+  in the same breath as a stale hash. Every staleness caller sees it.
+- `mission verify` fails on: a node statement the root does not import; a
+  stray `Statements/*.lean` no root names; a root import with no file
+  behind it; a statement file without the standard header (an `import`
+  of `Mathlib` or of the campaign's `*Defs` module, which every live
+  statement already carried except the one above). The check rides the
+  required `unit` job through the missions battery, and
+  `test_missions_root_imports.py` runs it against the live campaigns.
+
+Adding a node by hand (writing the `.lean` and `.toml` yourself instead
+of `mission add`) therefore also means adding the import line, and
+`mission verify` will say so if you forget. `conjecture1_proved = False`;
+this section is about the gate, not about any theorem.
 
 ## Relationship to the paused solver bridge (PR #481)
 

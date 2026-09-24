@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-forward-2026-09-20 (AUDIT_TESTIMONY_WEIL_FORWARD_2026-09-20.md)"
 date = "2026-09-20"
+independence = "unverified"
 text = "Read-back: for every smooth compactly supported complex test function g, IF Mathlib's RiemannHypothesis holds THEN the real part of the primes-side Weil functional archSide - primeSide evaluated at the Hermitian autocorrelation g*g~ is nonnegative. Independently re-derived: E8 HasSum with every term m(rho)|h(gamma)|^2 under RH; hRH is load-bearing (proof fails with the goal RiemannHypothesis left open when removed); test class nonvacuous (ContDiffBump), autocorr of a bump nonzero; simp/aesop/positivity/exact? fail on the hypothesis-free sentence; definitions character-identical to MMDefs; no overclaim. This is the forward half of Weil's criterion only. conjecture1_proved = False."

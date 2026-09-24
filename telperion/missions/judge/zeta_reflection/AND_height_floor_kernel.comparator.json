@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.AND_height_floor_kernel",
+  "solution_module": "MissionChallenges.AND_height_floor_kernel",
+  "theorem_names": [
+    "MissionJudge.AND_height_floor_kernel"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

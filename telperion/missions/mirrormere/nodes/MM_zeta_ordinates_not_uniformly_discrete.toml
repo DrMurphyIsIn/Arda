@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "missions-migration-session-2026-09-14"
 date = "2026-09-14"
+independence = "unverified"
 text = "The unconditional statement: the set of imaginary parts of the nontrivial zeros of zeta is not uniformly discrete -- there are pairs of distinct ordinates at arbitrarily small separation. Follows by composing the conditional brick with the RvM density input once that residual is proved; together with primeLogSpectrum_dense this completes 'zeta escapes the tame class' on BOTH sides (point set and spectrum), fully unconditionally. Open, unlinked, waiting on its two dependencies."
