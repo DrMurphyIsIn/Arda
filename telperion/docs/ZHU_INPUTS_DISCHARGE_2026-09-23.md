@@ -34,12 +34,12 @@ proof term can use it, and the node stays DRAFT.
 | Lemma 3.1, envelope `Re psi(1/4+it/2) - log pi >= log(t/2pi) - 1/t`, `t >= 15/4` | `EnvelopeBound` | `ZhuEnvelope.lean` | **PROVED**: `RvMBridgeZhu.envelopeBound` (:256), via `psiR_ge_envelope` (:230) |
 | eq. (6), Legendre-mode transform `hat T_{2k}(t) = (-1)^k 2 sqrt(L(2k+1/2)) j_{2k}(tL)` | `legendreP`, `sphericalBessel`, `legendreMode`, `legendreModeFT` | `ZhuLegendre.lean` | **PROVED**: `legendreModeFT_eq` (:338), core `integral_legendreP_mul_cos` (:304) |
 | eq. (12), `|j_n(x)| <= x^n/(2n+1)!!` | `sphericalBessel` | `ZhuLegendre.lean` | **PROVED**: `sphericalBessel_abs_le` (:166), from `integral_one_sub_sq_pow` (:146); entry decay `legendreModeFT_abs_le` (:364) |
-| eq. (13) tail data `eps_D`, `eps_B` (Gershgorin / Schur sums on the tail of `M_R = beta* I + 2pp^T + C`) | `poleVec`, `combMatrix`, `reducedMat`, `LegendreLocalization L T# N epsD epsB` | `ZhuLegendre.lean` | **REDUCED, defined concretely, NOT proved.** The tail sums are Zhu Section 5.3's numerically evaluated constants (both `< 1e-100`). Stays the hypothesis `hloc`. |
+| eq. (13) tail data `eps_D`, `eps_B` (Gershgorin / Schur sums on the tail of `M_R = beta* I + 2pp^T + C`) | `poleVec`, `combMatrix`, `reducedMat`, `LegendreLocalization L T# N epsD epsB`; closed forms `symbolSup`, `tailMajorant`, `entryConst`, `epsDfun`, `epsBfun` | `ZhuLegendre.lean`, `ZhuOrtho.lean`, `ZhuTail.lean`, `ZhuInstance.lean` | **PROVED** (third pass, lead's brief): `legendreLocalization_of_cut` for every `L > 0`, `T# ≥ 1`, `N ≥ 1` with `e L T#/2 ≤ 2N`, with the crude explicit constants of section 2.7; at `L = 4/5`, `T# = 200`, `N = 200` the constants sum to `< 1e-90` and `beta* ≥ 1/2` (`eps_sum_lt_betaStar_L08_T200`). No longer a hypothesis. |
 | Arb head floor `lambda_min(A) >= lam0` | `ReducedHeadFloor` | none | **UNTOUCHED, opaque by design** (`hhead`). |
 | parity (Lemma 6.1 / Cor. 6.3) | `WindowFloor`, `OddSectorFloor`, `EvenSectorFloor` | `ZhuParity.lean` | **PROVED**: `windowFloor_of_sectors` (EvenSectorFloor and OddSectorFloor give WindowFloor for complex f), from `weilForm_eq_zero_of_odd` (the Weil functional vanishes on odd tests), `Q_add_I_mul`, `Q_evenPart_add_oddPart`. |
 | eq. (2), ODD sector (Lemma 6.1, pole sign reversed) | `SymbolRepresentationOdd L` | `ZhuSymbol.lean` | **PROVED**: `symbolRepresentationOdd` (the even/odd proofs share `symbol_representation_ofReal` with a sign `ε`, `ε² = 1`). |
 | eq. (6) odd modes `∫ P_{2k+1} sin(xu) = (-1)^k 2 j_{2k+1}(x)` and the odd-mode decay | `legendreModeFTs` | `ZhuLegendre.lean` | **PROVED**: `integral_legendreP_mul_sin`, `legendreModeFTs_eq`, `legendreModeFTs_abs_le`. |
-| eq. (13) tail data, ODD sector | `poleVecOdd` (sinh), `combMatrixOdd`, `reducedMatOdd` (`β* I - 2 s sᵀ + C`), `LegendreLocalizationOdd` | `ZhuLegendre.lean` | **REDUCED, defined concretely, NOT proved** (as the even sector). Hypothesis `hlocOdd`. |
+| eq. (13) tail data, ODD sector | `poleVecOdd` (sinh), `combMatrixOdd`, `reducedMatOdd` (`β* I - 2 s sᵀ + C`), `LegendreLocalizationOdd`; `tailMajorantOdd`, `epsDfunOdd`, `epsBfunOdd` | `ZhuLegendre.lean`, `ZhuTail.lean` | **PROVED**: `legendreLocalizationOdd_of_cut`, same route with the odd majorant. No longer a hypothesis. |
 | Arb head floor, ODD block (eq. 14, `8.2065e-15` at L = 0.8) | `ReducedHeadFloorOdd` | none | **ADDED as a second OPAQUE seam** on the lead's instruction (2026-09-23), same docstring discipline as `ReducedHeadFloor`. Hypothesis `hheadOdd`. |
 
 Guard: `AxiomGuardRvMBridge.lean` prints axioms for 24 new anchors (3 envelope, 4 symbol, 8
@@ -120,7 +120,10 @@ provenance hash (old `8d0bdb0b971ec222`, new in the file header). What changed i
 
 * dropped `hQrep : SymbolRepresentation L` and `henv : EnvelopeBound` -- both are now theorems on
   the island (`symbolRepresentation`, `envelopeBound`), so carrying them would be carrying `True`;
-* `hloc : LegendreLocalization L Tsharp N epsD epsB` kept, now concrete (section 2.4);
+* `hloc : LegendreLocalization L Tsharp N epsD epsB` kept, now concrete (section 2.4) -- and in the
+  third pass DROPPED again, because it is a theorem for the closed-form constants (section 2.7): the
+  statement's `epsD`, `epsB` are now `epsDfun L Tsharp N`, `epsBfun L Tsharp N` themselves (both
+  sectors), and `hL : 0 < L`, `hN : 1 ≤ N` were added with `hT` strengthened to `1 ≤ Tsharp`;
 * `hhead : ReducedHeadFloor L Tsharp lam0 N` kept, opaque, untouched;
 * ADDED `hT : 0 < Tsharp`: the opaque draft did not force the split height positive, and
   `betaStar` with `Tsharp < 0` is `log(|Tsharp|/2pi) + 1/|Tsharp| - A_L`, which can be positive;
@@ -173,6 +176,38 @@ cross term is odd: for `f = a + i b` with `a, b` real, `C(b,a)(u) = C(a,b)(-u)`
 `‖(z+w)/2‖² + ‖(z-w)/2‖² = (‖z‖² + ‖w‖²)/2` and neg-invariance of Lebesgue measure. Assembly:
 `windowFloor_of_sectors : EvenSectorFloor L lam → OddSectorFloor L lam → WindowFloor L lam`.
 
+### 2.7 The tail sums in the kernel (`ZhuOrtho.lean`, `ZhuTail.lean`, `ZhuInstance.lean`)
+
+Zhu evaluates `eps_D`, `eps_B` numerically; the node only needs `eps_D + eps_B < beta*`, so any
+proved bound small enough will do (lead's observation). The proved closed forms, for `L > 0`,
+`T# ≥ 1`, `N ≥ 1` with the cut `e L T#/2 ≤ 2N`:
+
+```
+b_N   = 2 sqrt L (N+1) (T# L)^{2N} / (4N+1)!!                 tail majorant (even modes 2j, j ≥ N)
+S     = 4.2315 + log(T#/2) + 13/T#^2 + log pi + A_L + |beta*|  sup of |Psi_L - beta*| on [0, T#]
+K     = 2 cosh(L/2)^2 + T# S / pi                             entry constant
+U     = (1 + 2L)/2                                            uniform bound on |hat T_n| for ALL n
+eps_D = (10/7) K b_N^2,     eps_B = (10/7 + N) K U b_N        (odd sector: b^odd_N with (N+2), (4N+3)!!)
+```
+
+Ingredients. (i) `S`: `Re psi(1/4 + it/2)` is monotone in `|t|` (E6Bridge30), at least `psi(1/4)
+≥ -4.2315` (E6Bridge30 floor) and at most the Stirling upper bound `log(T#/2) + 13/T#^2` at `T#`
+(Zeta23 remainder); the comb lies in `[-A_L, A_L]`. (ii) Every entry of `M_R - beta* I` is bounded
+by `K B_k B_j` where `B` is the tail majorant for modes above the cut (eq. 6 + eq. 12, and the pole
+entries by the cosh/sinh Poisson integral, `|p_{2j}| ≤ 2 sqrt(L(2j+1/2)) cosh(L/2) (L/2)^{2j}/(4j+1)!!`)
+and `U` for modes below it; `U` comes from `∫_{-L}^{L} T_n^2 = 1` (orthonormality, Rodrigues +
+n-fold integration by parts with `D^{2n}(X^2-1)^n = (2n)!`) via `∫|T_n| ≤ (∫T_n^2 + 2L)/2`.
+(iii) Under the cut `(T# L)^2 ≤ 16 N^2/e^2` (using `e > 2.718`), while `(4j+3)(4j+5) > 16 N^2`
+for `j ≥ N`, so `b_{j+1} ≤ (3/10) b_j` beyond the cut and every tail sum is at most `b_N/(7/10)`
+(`tail_tsum_le`, a shifted geometric series). (iv) The abstract assembly `localization_of_bounds`
+turns entry bounds plus a geometric majorant into exactly the `LegendreLocalization` predicate
+(Summable clauses included), used for both parity sectors.
+
+At the instance `L = 4/5`, `T# = 200`, `N = 200`: `b_N ≤ 402 · 160^400/801!! ≤ 1e-100` with
+`160^400 · 10^103 ≤ 801!!` evaluated by the kernel (`decide`), `K ≤ 1300`, so the four constants sum
+to less than `1e-90`; `beta*(4/5, 200) ≥ 1/2` with the comb mass re-derived from its definition
+(`A_L ≤ 2.943`: `n = 2, 3, 4`, and `n = 5` excluded because `exp(8/5) < 5`, from `Real.exp_bound`).
+
 ### 2.5 The envelope step of eq. (4) (`ZhuSplit.lean`)
 
 `weilSymbol_ge_betaStar`: for `15/4 <= T# <= t`, `Psi_L(t) >= beta*(L, T#)`, from `envelopeBound`
@@ -190,7 +225,8 @@ coefficients, `cos <= 1`). This is the inequality Zhu's Section 4 applies on `[T
    Mathlib.
 3. The two-block bound, eq. (13), on `l^2`: pure linear algebra (the 2026-09-22 memo's Option 2).
 4. (Parity decoupling: DONE, section 2.6.)
-5. Structurally: `hhead` and `hheadOdd` are opaque, so no proof term can use them. The node stays DRAFT until a
+5. Structurally: `hhead` and `hheadOdd` are opaque, so no proof term can use them. (The tail
+   sums, item 3's `eps_D`/`eps_B`, are DONE: section 2.7.) The node stays DRAFT until a
    registry trust-seam policy exists; that is by design and unchanged.
 
 ## 5. Numbers that are NOT theorems

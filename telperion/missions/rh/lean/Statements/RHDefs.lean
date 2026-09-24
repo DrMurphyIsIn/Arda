@@ -283,6 +283,7 @@ end WeilForm
 
 namespace WeilWindow
 open MeasureTheory Complex WeilExplicit WeilForm
+open scoped Nat
 
 -- ===== AUTHORED for the registry (NOT in the island; 2026-09-19, the Zhu compact-window import;
 -- design memo telperion/docs/ZHU_WINDOW_POSITIVITY_IMPORT_2026-09-19.md).  Vocabulary for
@@ -305,7 +306,7 @@ open MeasureTheory Complex WeilExplicit WeilForm
 --     -> EnvelopeBound         (Lemma 3.1, the digamma envelope)           -- PROVED 2026-09-23
 --     -> Parseval on the half-line                                         -- inside SymbolRepresentation
 --     -> the frequency split (eq. 4)                                       -- provable
---     -> LegendreLocalization  (eqs. 6 and 12, spherical Bessel decay)     -- eqs. 6/12 PROVED; tail sums numeric
+--     -> LegendreLocalization  (eqs. 6 and 12, spherical Bessel decay)     -- PROVED 2026-09-23 (ZhuTail, closed forms)
 --     -> the two-block bound (eq. 13)                                      -- PROVABLE, elementary
 --     -> ReducedHeadFloor      (lam0, an Arb/mpmath enclosure)             -- NON-KERNEL TRUST SEAM
 --     -> min(lam0, beta* - epsD) - epsB > 0                                -- norm_num
@@ -480,6 +481,44 @@ def LegendreLocalizationOdd (L Tsharp : ℝ) (N : ℕ) (epsD epsB : ℝ) : Prop 
     Summable (fun k : ℕ => if N ≤ k then |reducedMatOdd L Tsharp k j| else 0) ∧
     ∑' k : ℕ, (if N ≤ k then |reducedMatOdd L Tsharp k j| else 0) ≤ epsB) ∧
   (∀ k, N ≤ k → ∑ j ∈ Finset.range N, |reducedMatOdd L Tsharp k j| ≤ epsB)
+
+-- ===== 2026-09-23 (second pass): the PROVED tail constants of ZhuTail.lean, closed forms in
+-- L, T#, N, mirrored verbatim; `open scoped Nat` above supplies the `‼` notation. =====
+
+/-- A crude explicit bound for `sup_{0 ≤ t ≤ T#} |Ψ_L(t) - β*|`: `Re ψ(1/4 + it/2)` lies between
+    `ψ(1/4) ≥ -4.2315` and its Stirling upper bound at `T#`, `|P_L| ≤ A_L`. -/
+noncomputable def symbolSup (L Tsharp : ℝ) : ℝ :=
+  8463 / 2000 + (Real.log (Tsharp / 2) + 13 / Tsharp ^ 2) + Real.log Real.pi + combMass L
+    + |betaStar L Tsharp|
+
+/-- The tail majorant of the even modes: `b_j = 2 sqrt L (j+1) (T# L)^{2j} / (4j+1)!!` bounds
+    `|T̂_{2j}(t)|` on `[0, T#]` and `|p_{2j}| / cosh(L/2)`. -/
+noncomputable def tailMajorant (L Tsharp : ℝ) (j : ℕ) : ℝ :=
+  2 * Real.sqrt L * ((j : ℝ) + 1) * ((Tsharp * L) ^ (2 * j) / ((2 * (2 * j) + 1)‼ : ℕ))
+
+/-- The tail majorant of the odd modes: `2 sqrt L (j+2) (T# L)^{2j+1} / (4j+3)!!`. -/
+noncomputable def tailMajorantOdd (L Tsharp : ℝ) (j : ℕ) : ℝ :=
+  2 * Real.sqrt L * ((j : ℝ) + 2) * ((Tsharp * L) ^ (2 * j + 1) / ((2 * (2 * j + 1) + 1)‼ : ℕ))
+
+/-- The entry constant `K = 2 cosh(L/2)² + T# S / π`: `|M_R(k,j) - β* δ_kj| ≤ K B_k B_j`. -/
+noncomputable def entryConst (L Tsharp : ℝ) : ℝ :=
+  2 * Real.cosh (L / 2) ^ 2 + Tsharp * symbolSup L Tsharp / Real.pi
+
+/-- The proved tail-block deviation, even sector: `eps_D = (10/7) K b_N²`. -/
+noncomputable def epsDfun (L Tsharp : ℝ) (N : ℕ) : ℝ :=
+  (10 / 7) * entryConst L Tsharp * tailMajorant L Tsharp N ^ 2
+
+/-- The proved coupling norm, even sector: `eps_B = (10/7 + N) K ((1+2L)/2) b_N`. -/
+noncomputable def epsBfun (L Tsharp : ℝ) (N : ℕ) : ℝ :=
+  (10 / 7 + (N : ℝ)) * entryConst L Tsharp * ((1 + 2 * L) / 2) * tailMajorant L Tsharp N
+
+/-- The proved tail-block deviation, odd sector. -/
+noncomputable def epsDfunOdd (L Tsharp : ℝ) (N : ℕ) : ℝ :=
+  (10 / 7) * entryConst L Tsharp * tailMajorantOdd L Tsharp N ^ 2
+
+/-- The proved coupling norm, odd sector. -/
+noncomputable def epsBfunOdd (L Tsharp : ℝ) (N : ℕ) : ℝ :=
+  (10 / 7 + (N : ℝ)) * entryConst L Tsharp * ((1 + 2 * L) / 2) * tailMajorantOdd L Tsharp N
 
 /-- The ODD-sector window floor (Zhu Section 6, eq. (14)): the Weil form of every real ODD smooth
     test function supported in `[-L, L]` is at least `lam ‖f‖₂²`.  Together with the real even

@@ -222,6 +222,9 @@ import ZhuSymbol
 import ZhuLegendre
 import ZhuParity
 import ZhuSplit
+import ZhuOrtho
+import ZhuTail
+import ZhuInstance
 import W2cAssembly
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
@@ -1109,3 +1112,24 @@ import Probes.Dogfood_zero_sum_majorant
 -- ZhuSplit (2026-09-23): the envelope step of eq. (4), PROVED.  conjecture1_proved = False.
 #print axioms RvMBridgeZhu.comb_le_combMass
 #print axioms RvMBridgeZhu.weilSymbol_ge_betaStar
+
+-- ZhuOrtho (2026-09-23): Legendre orthonormality, uniform bounds, pole vectors.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.integral_legendreP_sq
+#print axioms RvMBridgeZhu.integral_legendreMode_sq
+#print axioms RvMBridgeZhu.legendreModeFT_abs_le_uniform
+#print axioms RvMBridgeZhu.poleVec_abs_le
+#print axioms RvMBridgeZhu.poleVecOdd_abs_le
+
+-- ZhuTail (2026-09-23): the eq. (13) tail data PROVED with closed-form constants.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.abs_weilSymbol_sub_betaStar_le
+#print axioms RvMBridgeZhu.tail_tsum_le
+#print axioms RvMBridgeZhu.localization_of_bounds
+#print axioms RvMBridgeZhu.legendreLocalization_of_cut
+#print axioms RvMBridgeZhu.legendreLocalizationOdd_of_cut
+
+-- ZhuInstance (2026-09-23): the instance L = 4/5, T# = 200, N = 200.  conjecture1_proved = False.
+#print axioms RvMBridgeZhu.combMass_L08_le
+#print axioms RvMBridgeZhu.betaStar_L08_T200_ge_half
+#print axioms RvMBridgeZhu.legendreLocalization_L08_T200
+#print axioms RvMBridgeZhu.legendreLocalizationOdd_L08_T200
+#print axioms RvMBridgeZhu.eps_sum_lt_betaStar_L08_T200
