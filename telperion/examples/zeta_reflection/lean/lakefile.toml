@@ -558,3 +558,32 @@ roots = ["RS_Bridge"]
 [[lean_lib]]
 name = "RS_AxiomGuardB3"
 roots = ["RS_AxiomGuardB3"]
+
+# Lane B4: RS4_Eval -- the kernel-decidable interval evaluator for the Riemann-Siegel main term
+# (Dirichlet sum via ArbEcon.run, phase ball via ArbEcon.trig, C0 term, DIntv assembly).
+[[lean_lib]]
+name = "RS4_Eval"
+roots = ["RS4_Eval"]
+
+# Lane B4: RS4_Sound -- soundness of RS4.check: an accepted certificate encloses the Riemann-Siegel
+# main term (verbatim that of RSInt.rs_Z_C0) for EVERY phase in the ball |phi - thetaMain t| <= 1/t.
+[[lean_lib]]
+name = "RS4_Sound"
+roots = ["RS4_Sound"]
+
+# Lane B4: RS4_Z -- RS4.check glued to RSInt.rs_Z_C0: certified enclosure of Hardy's Z and the sign
+# of Re completedRiemannZeta(1/2+it) (rs4_Z_enclosure, rs4_sign_pos, rs4_sign_neg).
+[[lean_lib]]
+name = "RS4_Z"
+roots = ["RS4_Z"]
+
+# Lane B4: RS4_Demo -- worked heights t = 10000.5 (Re Lambda > 0) and t = 10000 (Re Lambda < 0),
+# each a kernel `decide +kernel`, plus three tampered certificates the kernel rejects.
+[[lean_lib]]
+name = "RS4_Demo"
+roots = ["RS4_Demo"]
+
+# Lane B4: the kernel-axiom guard (prints #print axioms for every RS4_ theorem; not a default target).
+[[lean_lib]]
+name = "RS4_AxiomGuard"
+roots = ["RS4_AxiomGuard"]
