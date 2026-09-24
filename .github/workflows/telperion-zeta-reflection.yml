@@ -192,7 +192,99 @@ jobs:
   # the island changes (same always-report path gate), plus the weekly schedule. Segments are built one at a
   # time and swap is added so a 4-vCPU / 16 GB runner never holds several 6-10 GB edge checks at once.
   # conjecture1_proved = False: finite verification of zeros, not RH.
+  # The heavy per-segment leaves (edge / slab / line certificates) are independent, so they are
+  # built in parallel, one runner per segment, and handed to the gate job below as build outputs.
+  # Only the light glue (Arb4_Seg, band glue, the chained capstones Arb4_h$H and the guards) is
+  # built in the gate job, which replays the leaves from the uploaded .olean/.trace files.
+  anduril-ladder-seg:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        H: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Relevant changes? (path gate for pull requests)
+        id: changes
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
+        run: |
+          set -uo pipefail
+          run=true
+          if [ "$EVENT" = "pull_request" ]; then
+            base=""
+            if git rev-parse -q --verify 'HEAD^2^{commit}' >/dev/null; then
+              base=$(git rev-parse -q --verify 'HEAD^1^{commit}' || true)
+            elif [ -n "${BASE_SHA:-}" ] && git fetch -q --no-tags --depth=1 origin "$BASE_SHA"; then
+              base="$BASE_SHA"
+            fi
+            if [ -n "$base" ] && files=$(git diff --name-only "$base" HEAD); then
+              echo "PR changes $(printf '%s' "$files" | grep -c . || true) file(s) relative to $base"
+              if grep -qE "$RELEVANT" <<< "$files"; then
+                printf '%s\n' "$files" | grep -E "$RELEVANT" | head -20 || true
+              else
+                run=false
+              fi
+            else
+              echo "::warning::could not compute the PR diff against its base; running the full job"
+            fi
+          fi
+          echo "run=$run" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Nothing relevant changed -- skipping the ladder build
+        if: steps.changes.outputs.run != 'true'
+        run: echo "::notice::No change to the zeta_reflection island; anduril-kernel-ladder passes without building."
+
+      - name: Add swap (bounds peak memory of the edge decide checks)
+        if: steps.changes.outputs.run == 'true'
+        run: |
+          sudo fallocate -l 24G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2
+          free -g
+
+      - name: Cache elan toolchain
+        if: steps.changes.outputs.run == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_reflection/lean/lean-toolchain') }}
+
+      - name: Install elan
+        if: steps.changes.outputs.run == 'true'
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        run: lake exe cache get
+
+      - name: Build this segment's leaf certificates
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        run: lake build Arb4_H${{ matrix.H }}Edges Arb4_H${{ matrix.H }}Slabs Arb4_H${{ matrix.H }}Lines
+
+      - name: Hand the leaf build outputs to the gate job
+        if: steps.changes.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ladder-seg-${{ matrix.H }}
+          path: telperion/examples/zeta_reflection/lean/.lake/build
+          retention-days: 3
+          if-no-files-found: error
+
+  # The job named by AND.ladder_h8000_kernel's requires_ci_job.  It passes only if every segment
+  # built, and it re-checks every guard itself (the leaves' proofs are replayed from their .olean
+  # files, whose traces lake verifies against the sources).
   anduril-kernel-ladder:
+    needs: anduril-ladder-seg
     runs-on: ubuntu-latest
     timeout-minutes: 350
     steps:
@@ -257,6 +349,14 @@ jobs:
         if: steps.changes.outputs.run == 'true'
         working-directory: telperion/examples/zeta_reflection/lean
         run: lake exe cache get
+
+      - name: Collect the segment leaf builds
+        if: steps.changes.outputs.run == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ladder-seg-*
+          path: telperion/examples/zeta_reflection/lean/.lake/build
+          merge-multiple: true
 
       - name: Build the ladder segment by segment and check every guard
         if: steps.changes.outputs.run == 'true'
