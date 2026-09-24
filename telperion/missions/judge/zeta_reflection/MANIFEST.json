@@ -85,6 +85,17 @@
       "statement_sha256": "e2ac7fbd1f093d2ae3cf91750de382d459be90634ea952617447e4f7633110d4"
     },
     {
+      "slug": "AND_ladder_h1000_kernel",
+      "campaign": "anduril",
+      "theorem": "AllZerosKernel_h1000.all_nontrivial_zeros_up_to_height_1000",
+      "solution_module": "AllZerosKernel_h1000",
+      "challenge_module": "MissionChallenges.AND_ladder_h1000_kernel",
+      "bridge_theorem": "MissionJudge.AND_ladder_h1000_kernel",
+      "config": "AND_ladder_h1000_kernel.comparator.json",
+      "artifact_sha256": "5d1bcfa827c9658d27f48aace0ab5ef32db49529e32044a129ec0450692d0015",
+      "statement_sha256": "1b8be1a9f5ac769dfbe0b53555b57d46db443bae06f705982eb2c0e28b335f32"
+    },
+    {
       "slug": "AND_stirling_binet_k1",
       "campaign": "anduril",
       "theorem": "ZetaReflection.logDeriv_gammaR_stirling",
