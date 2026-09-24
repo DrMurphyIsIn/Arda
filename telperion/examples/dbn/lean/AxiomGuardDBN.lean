@@ -61,6 +61,8 @@ import M6gapDlvpZetaSymmetry
 import M6gapHeightFloor
 import M6gapImAxis
 import M6gapP15ZeroFree
+import DBNM5Alpha
+import DBNM5Target
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -830,3 +832,49 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms m6gap_dbn_H0_zero_free_abs_re_le
 #print axioms m6gap_dbn_p15_prop33_i
 #print axioms m6gap_dbn_p15_prop33_i_of_thm12_i
+
+-- DBNM5Alpha (Route C M5 brick 1: P15 alpha-calculus and Thm 1.3 bounds (20)-(22))
+#print axioms DBNM5.mem_slitPlane_of_im_ne_zero
+#print axioms DBNM5.ne_zero_of_im_ne_zero
+#print axioms DBNM5.sub_one_ne_zero_of_im_ne_zero
+#print axioms DBNM5.two_pi_ne_zero
+#print axioms DBNM5.log_div_two_pi
+#print axioms DBNM5.hasDerivAt_alpha
+#print axioms DBNM5.hasDerivAt_logM0
+#print axioms DBNM5.hasDerivAt_logMt
+#print axioms DBNM5.M0_eq_p15_eq6
+#print axioms DBNM5.norm_alphaDeriv_le
+#print axioms DBNM5.arg_ne_pi_of_im_ne_zero
+#print axioms DBNM5.alpha_conj
+#print axioms DBNM5.logM0_conj
+#print axioms DBNM5.logMt_conj
+#print axioms DBNM5.norm_Mt
+#print axioms DBNM5.convex_im_eq
+#print axioms DBNM5.norm_alpha_sub_le_of_im_eq
+#print axioms DBNM5.norm_kappa_le
+#print axioms DBNM5.alpha_I_sub_main
+#print axioms DBNM5.p15_eq76_fails_at_200
+#print axioms DBNM5.norm_alpha_sub_main_le
+#print axioms DBNM5.re_alpha_sPlus
+#print axioms DBNM5.rat_part_ge_21
+#print axioms DBNM5.rat_part_ge_66
+#print axioms DBNM5.re_sStar
+#print axioms DBNM5.log_norm_sPlus_ge
+#print axioms DBNM5.re_sStar_ge
+#print axioms DBNM5.re_sStar_ge_prop66
+#print axioms DBNM5.re_alpha_ge_of_im
+#print axioms DBNM5.norm_alpha_le_of_im
+#print axioms DBNM5.gamma_numeric
+#print axioms DBNM5.re_logMtDeriv_ge
+#print axioms DBNM5.hasDerivAt_gLine
+#print axioms DBNM5.norm_gammaP_eq
+#print axioms DBNM5.norm_gammaP_le
+-- DBNM5Target (M5 target P15Thm13 [NOT proved], Cor 1.4 and Cor 6.5 => Thm 1.3, conditional)
+#print axioms DBNM5.Bt_ne_zero
+#print axioms DBNM5.H_ne_zero_of_P15Thm13
+#print axioms DBNM5.conj_sStar_add_kappa
+#print axioms DBNM5.Bt_mul_ft
+#print axioms DBNM5.EA_div_Bt
+#print axioms DBNM5.EB_div_Bt
+#print axioms DBNM5.EC0_div_Bt
+#print axioms DBNM5.P15Thm13_of_P15Cor65
