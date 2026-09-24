@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.BG_h1_bridge",
+  "solution_module": "MissionChallenges.BG_h1_bridge",
+  "theorem_names": [
+    "MissionJudge.BG_h1_bridge"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
