@@ -1,0 +1,201 @@
+{
+  "trust_class": "Arb ball arithmetic (python-flint 0.6, prec 200), segment-certified winding numbers; not a Lean kernel proof",
+  "conjecture1_proved": false,
+  "certificates": [
+    {
+      "function": "NEW: Epstein x^2+5y^2, second off-line zero",
+      "located_zero": [
+        "[0.93766690670039937843 +/- 4.21e-21]",
+        "[29.983395235155516660 +/- 1.38e-19]"
+      ],
+      "enclosure_of_f_at_located_point": "[+/- 3.85e-58] + [+/- 3.89e-58]j",
+      "box": {
+        "box": [
+          "9/10",
+          "97/100",
+          "599/20",
+          "1501/50"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000000 +/- 2.06e-55]",
+        "certified_pieces": 63
+      },
+      "seconds": 0.4
+    },
+    {
+      "function": "NEW: Epstein x^2+5y^2, right half-strip [0.52,2]x[20,30.85] contains exactly one zero",
+      "box": {
+        "box": [
+          "13/25",
+          "2",
+          "20",
+          "617/20"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000000 +/- 3.50e-54]",
+        "certified_pieces": 1390
+      },
+      "seconds": 8.2
+    },
+    {
+      "function": "control: Epstein x^2+5y^2, box left of the second zero (no zero)",
+      "box": {
+        "box": [
+          "3/5",
+          "33/50",
+          "599/20",
+          "1501/50"
+        ],
+        "winding": 0,
+        "winding_interval": "[+/- 2.22e-56]",
+        "certified_pieces": 32
+      },
+      "seconds": 0.2
+    },
+    {
+      "function": "positive control of the tool (corpus Build C): Epstein x^2+5y^2 first off-line zero",
+      "located_zero": [
+        "[0.93296969748541410476 +/- 2.83e-21]",
+        "[15.668249531278472362 +/- 3.95e-19]"
+      ],
+      "enclosure_of_f_at_located_point": "[+/- 2.49e-58] + [+/- 2.62e-58]j",
+      "box": {
+        "box": [
+          "9/10",
+          "24/25",
+          "391/25",
+          "157/10"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000000 +/- 1.27e-55]",
+        "certified_pieces": 64
+      },
+      "seconds": 0.4
+    },
+    {
+      "function": "positive control of the tool (corpus): Davenport-Heilbronn off-line zero",
+      "located_zero": [
+        "[0.80851718245663738555 +/- 3.36e-21]",
+        "[85.699348485377592172 +/- 7.10e-20]"
+      ],
+      "enclosure_of_f_at_located_point": "[+/- 9.23e-59] + [+/- 1.91e-58]j",
+      "box": {
+        "box": [
+          "79/100",
+          "83/100",
+          "2142/25",
+          "2143/25"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000000 +/- 4.99e-55]",
+        "certified_pieces": 39
+      },
+      "seconds": 0.1
+    },
+    {
+      "function": "NEW: W2 factor E_a, a=1+1e-4, off-line zero near 162.690",
+      "located_zero": [
+        "[0.50194274587442103736 +/- 2.53e-21]",
+        "[162.69048445954469086 +/- 1.55e-18]"
+      ],
+      "enclosure_of_f_at_located_point": "[+/- 8.66e-59] + [+/- 8.36e-57]j",
+      "box": {
+        "box": [
+          "1001/2000",
+          "63/125",
+          "8133/50",
+          "4068/25"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000 +/- 2.01e-52]",
+        "certified_pieces": 105
+      },
+      "seconds": 0.0
+    },
+    {
+      "function": "NEW: W2 factor E_a, its FE partner 1 - conj(rho) near 162.690",
+      "located_zero": [
+        "[0.49805725412557896264 +/- 2.53e-21]",
+        "[162.69048445954469086 +/- 1.55e-18]"
+      ],
+      "enclosure_of_f_at_located_point": "[+/- 9.92e-59] + [+/- 1.00e-56]j",
+      "box": {
+        "box": [
+          "62/125",
+          "999/2000",
+          "8133/50",
+          "4068/25"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000 +/- 2.00e-52]",
+        "certified_pieces": 99
+      },
+      "seconds": 0.0
+    },
+    {
+      "function": "NEW: W2 factor E_a, off-line zero near 164.053",
+      "located_zero": [
+        "[0.50212089851152945698 +/- 4.51e-21]",
+        "[164.05333813568675946 +/- 2.80e-18]"
+      ],
+      "enclosure_of_f_at_located_point": "[+/- 7.88e-59] + [+/- 9.60e-57]j",
+      "box": {
+        "box": [
+          "1001/2000",
+          "63/125",
+          "8201/50",
+          "4102/25"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000 +/- 1.45e-52]",
+        "certified_pieces": 100
+      },
+      "seconds": 0.0
+    },
+    {
+      "function": "NEW: W2 factor E_a, off-line zero near 165.416",
+      "located_zero": [
+        "[0.50109304565992326176 +/- 3.09e-21]",
+        "[165.41619181182786013 +/- 4.52e-18]"
+      ],
+      "enclosure_of_f_at_located_point": "[+/- 1.34e-58] + [+/- 8.49e-57]j",
+      "box": {
+        "box": [
+          "2501/5000",
+          "503/1000",
+          "8269/50",
+          "4136/25"
+        ],
+        "winding": 1,
+        "winding_interval": "[1.00000000000000000000000000000000000000000000000000 +/- 7.92e-52]",
+        "certified_pieces": 116
+      },
+      "seconds": 0.0
+    },
+    {
+      "function": "W2 factor E_a on [-1/2,3/2] x [1/10,150]: winding vs certified on-line sign changes",
+      "box": {
+        "box": [
+          "-1/2",
+          "3/2",
+          "1/10",
+          "150"
+        ],
+        "winding": 330,
+        "winding_interval": "[330.00000000000000000000000000000000000000000000000000000 +/- 1.09e-54]",
+        "certified_pieces": 1517
+      },
+      "certified_sign_changes_of_f_on_(1/10,150)_grid_1e-3": 330,
+      "grid_points_with_uncertified_sign": 0,
+      "conclusion": "ALL zeros of E_a with 1/10 < Im s < 150 lie on Re s = 1/2 (count = sign changes)",
+      "seconds": 1.1
+    }
+  ],
+  "checks": [
+    {
+      "what": "E_Q(3): genus identity vs direct lattice sum over |x|,|y| <= 150 (non-rigorous truncation, tail ~1e-6)",
+      "genus": "[2.07839686886591 +/- 2.72e-15]",
+      "lattice": "2.07839686834148"
+    }
+  ]
+}

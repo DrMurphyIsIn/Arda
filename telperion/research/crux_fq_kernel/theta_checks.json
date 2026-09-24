@@ -1,0 +1,50 @@
+{
+  "conjecture1_proved": false,
+  "trust": "COMPUTED (mpmath 40 digits), not interval-certified",
+  "a_jacobi_max_defect": "2.3e-41",
+  "b_nup_theta_max_defect": {
+    "W1(29,11/sqrt29)": "2.06e-38",
+    "golden(5,sqrt5)": "9.18e-41",
+    "(2,2.1)": "9.18e-41"
+  },
+  "c_negative_control_defect_over_(sqrt t - 1)": [
+    "1.4705942",
+    "1.8408175",
+    "1.8408175",
+    "1.4705942"
+  ],
+  "c_is_constant": false,
+  "d_growth": [
+    {
+      "i": 0,
+      "theta(4^-i)": "1.086434811",
+      "bound 2^i theta(1)": "1.086434811"
+    },
+    {
+      "i": 1,
+      "theta(4^-i)": "2.000013949",
+      "bound 2^i theta(1)": "2.172869622"
+    },
+    {
+      "i": 2,
+      "theta(4^-i)": "4.0",
+      "bound 2^i theta(1)": "4.345739245"
+    },
+    {
+      "i": 3,
+      "theta(4^-i)": "8.0",
+      "bound 2^i theta(1)": "8.69147849"
+    },
+    {
+      "i": 4,
+      "theta(4^-i)": "16.0",
+      "bound 2^i theta(1)": "17.38295698"
+    },
+    {
+      "i": 5,
+      "theta(4^-i)": "32.0",
+      "bound 2^i theta(1)": "34.76591396"
+    }
+  ],
+  "e_pole_footprint_max_defect": "1.43e-41"
+}

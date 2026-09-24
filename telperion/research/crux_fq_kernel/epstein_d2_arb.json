@@ -1,0 +1,133 @@
+{
+  "conjecture1_proved": false,
+  "function": "Z(s) = zeta(s) L(s,chi_-35) - L(s,chi_-7) L(s,chi_5)  (Epstein zeta of 3m^2+mn+3n^2)",
+  "trust": "Arb ball arithmetic, whole-segment enclosures (arb_winding.py); NOT Lean kernel",
+  "characters_match_kronecker_n_lt_2000": true,
+  "lattice_sum_s3_R300": 0.1762405961698805,
+  "decomposition_s3": 0.17624059617516236,
+  "decomposition_minus_lattice_s3": 5.281858284078567e-12,
+  "completed_FE_defect_at_0.3+7.1i": "[+/- 9.07e-40]",
+  "boxes": [
+    {
+      "box": {
+        "re": [
+          "19/25",
+          "4/5"
+        ],
+        "im": [
+          "193/10",
+          "387/20"
+        ]
+      },
+      "winding": 1,
+      "winding_interval": "[1.000000000000000000000000000000 +/- 2.41e-32]",
+      "certified_pieces": 304,
+      "prec": 128,
+      "trust": "Arb ball arithmetic, whole-segment enclosures; NOT Lean kernel",
+      "name": "rho1",
+      "off_line": true,
+      "seconds": 2.5
+    },
+    {
+      "box": {
+        "re": [
+          "1/5",
+          "6/25"
+        ],
+        "im": [
+          "193/10",
+          "387/20"
+        ]
+      },
+      "winding": 1,
+      "winding_interval": "[1.00000000000000000000000000000 +/- 4.55e-31]",
+      "certified_pieces": 1344,
+      "prec": 128,
+      "trust": "Arb ball arithmetic, whole-segment enclosures; NOT Lean kernel",
+      "name": "rho1_partner",
+      "off_line": true,
+      "seconds": 11.7
+    },
+    {
+      "box": {
+        "re": [
+          "63/100",
+          "67/100"
+        ],
+        "im": [
+          "5587/100",
+          "1398/25"
+        ]
+      },
+      "winding": 1,
+      "winding_interval": "[1.00000000000000000000000000000 +/- 1.38e-31]",
+      "certified_pieces": 497,
+      "prec": 128,
+      "trust": "Arb ball arithmetic, whole-segment enclosures; NOT Lean kernel",
+      "name": "rho2",
+      "off_line": true,
+      "seconds": 5.8
+    },
+    {
+      "box": {
+        "re": [
+          "61/100",
+          "129/200"
+        ],
+        "im": [
+          "7863/100",
+          "7867/100"
+        ]
+      },
+      "winding": 1,
+      "winding_interval": "[1.00000000000000000000000000000 +/- 5.03e-31]",
+      "certified_pieces": 613,
+      "prec": 128,
+      "trust": "Arb ball arithmetic, whole-segment enclosures; NOT Lean kernel",
+      "name": "rho3",
+      "off_line": true,
+      "seconds": 7.3
+    },
+    {
+      "box": {
+        "re": [
+          "81/100",
+          "169/200"
+        ],
+        "im": [
+          "462/5",
+          "1849/20"
+        ]
+      },
+      "winding": 1,
+      "winding_interval": "[1.00000000000000000000000000000 +/- 2.33e-31]",
+      "certified_pieces": 462,
+      "prec": 128,
+      "trust": "Arb ball arithmetic, whole-segment enclosures; NOT Lean kernel",
+      "name": "rho4",
+      "off_line": true,
+      "seconds": 5.9
+    },
+    {
+      "box": {
+        "re": [
+          "14/25",
+          "59/100"
+        ],
+        "im": [
+          "10111/100",
+          "2529/25"
+        ]
+      },
+      "winding": 1,
+      "winding_interval": "[1.00000000000000000000000000000 +/- 1.59e-31]",
+      "certified_pieces": 353,
+      "prec": 128,
+      "trust": "Arb ball arithmetic, whole-segment enclosures; NOT Lean kernel",
+      "name": "rho5",
+      "off_line": true,
+      "seconds": 4.3
+    }
+  ],
+  "total_seconds": 37.7
+}
