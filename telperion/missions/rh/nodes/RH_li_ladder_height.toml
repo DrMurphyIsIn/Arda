@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-li-ladder-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: if every nontrivial zero with |Im| <= T (T >= 1) is on the line then rung n is nonnegative for n + 1 <= 3 pi T / 2; termwise for |Im| >= 2(n+1)/(3 pi) via cosh a cos b <= 1 on |a| <= |b| <= pi/2 and cos <= 0 on [pi/2, 3 pi/2], |log|u|| <= |arg u| <= 1/|Im| for |Im| >= 1 (load-bearing: fails at 0.28). Consumes localisation, produces none. Not RH. conjecture1_proved = False."

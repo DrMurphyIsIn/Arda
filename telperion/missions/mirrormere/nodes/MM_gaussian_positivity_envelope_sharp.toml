@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-sharp-envelope-2026-09-21 (AUDIT_TESTIMONY_SHARP_ENVELOPE_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: for every width lam > 0 and every centre |c| >= envelopeCsharp(lam) = 2 pi e^{primeAbs(lam)+1/2} + small terms, the Gaussian zero sum is nonnegative; primeAbs is the exact absolute prime-side series. Audit 8/8: complex-frequency transform re-derived and checked to 4e-22, pole terms evaluated, prime bound exact up to |cos| <= 1, Stirling remainder 20/r^2, tail e^{-16-2P}, capped floor, every constant re-derived; envelope(0.5) = 6.46e4, envelope(1) = 2.07e11 from the definition; crossings lam_* = 0.597 (T=640000), 1.065 (T=3e12). Unconditional; not RH. conjecture1_proved = False."

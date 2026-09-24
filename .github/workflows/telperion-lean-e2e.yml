@@ -3202,7 +3202,7 @@ jobs:
 
   satake-degree-two-compiles:
     needs: changes
-    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.quasicrystal == 'true')
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.quasicrystal == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -3215,7 +3215,36 @@ jobs:
       # it as "the clause no longer rejects L(s,Delta)" -- a missing dependency read out
       # as a mathematical result.  That is the same shape as finding 8 of the missions
       # audit: a check counting evidence that does not exist.
-      - run: pip install sympy mpmath
+      # python-flint (2026-09-23): zoo.py's zeta row calls telperion.arb_platt.zeta_nzeros,
+      # which loads libflint's Platt entry points (acb_dirichlet_zeta_nzeros,
+      # acb_dirichlet_hardy_z_zeros, acb_dirichlet_platt_scaled_lambda_vec, ...) by ctypes.
+      # Without the wheel every main run since the job was added died with "libflint with
+      # Platt machinery not found". The manylinux wheel of 0.9.0 bundles FLINT 3
+      # (libflint.so.24) under python_flint.libs/, which arb_platt._find_libflint searches,
+      # and every symbol it needs is exported there. Same pin as the other Platt jobs here.
+      - run: pip install sympy mpmath "python-flint==0.9.0"
+
+      # The install must WORK: if arb_platt cannot find the Platt machinery, fail here with
+      # a tooling error rather than let the zoo crash and read as a mathematical result.
+      - name: Platt machinery present (arb_platt must load libflint's Platt entry points)
+        working-directory: telperion
+        shell: bash
+        run: |
+          set -uo pipefail
+          PYTHONPATH=src python - <<'PY'
+          import sys
+          from telperion import arb_platt as a
+          print("libflint:", a._LIB_PATH)
+          print("PLATT_AVAILABLE:", a.PLATT_AVAILABLE, "PLATT_GRID_AVAILABLE:", a.PLATT_GRID_AVAILABLE)
+          if not a.PLATT_AVAILABLE:
+              print("::error::python-flint is installed but arb_platt cannot load libflint's Platt "
+                    "machinery on this runner (TOOLING failure, not a mathematical one). Check the "
+                    "wheel's python_flint.libs/ and arb_platt._find_libflint.")
+              sys.exit(1)
+          lo, hi = a.zeta_nzeros(100, prec=128)
+          print("N(100) enclosure:", lo, hi)
+          assert lo == hi == 29, (lo, hi)
+          PY
 
       # zoo.py had NO CI coverage before this job.  It runs the falsification
       # matrix, whose governance rails include the A1b assertions: Delta must look

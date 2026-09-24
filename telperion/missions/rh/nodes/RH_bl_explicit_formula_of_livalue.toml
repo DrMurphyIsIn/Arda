@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-weil-li-2026-09-21 (AUDIT_TESTIMONY_WEIL_LI_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: the node RH_bl_explicit_formula holds verbatim given the named value obligation LiValue n (liLimit n = archSide n + finiteSide n). Audit: registry statement matches the theorem with exactly one extra hypothesis; LiValue is false at n = 0 (independently re-proved), so 0 < n is load-bearing; automation neither proves nor refutes LiValue 1. A reduction; not RH. conjecture1_proved = False."

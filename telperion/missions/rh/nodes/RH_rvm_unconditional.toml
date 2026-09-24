@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-critical-path 2026-09-17 (independent blind read-back, AUDIT_TESTIMONY_CRITICAL_PATH_2026-09-17.md; statements elaborated at the mission pin, trivial-close probes closed nothing)"
 date = "2026-09-17"
+independence = "unverified"
 text = "There is one constant C > 0 such that for every T >= 2 the number of nontrivial zeta zeros with 0 < Re < 1 and 0 < Im <= T, counted with multiplicity (the divisor of zeta on the open strip, rectangle-based so conjugates are not double counted), differs from (T/2pi) log(T/2pi) - T/2pi + 7/8 by at most C log T. This is the Riemann-von Mangoldt formula, Titchmarsh Thm 9.3 with Backlund's 7/8 (= 1 - 1/8 from theta(T)/pi + 1) carried explicitly. finsum over an infinite support would return 0 and make the statement FALSE for large T, not vacuous, so finiteness of the zero set in the box is implicitly asserted in the safe direction; coercions explicit; T >= 2 load-bearing."

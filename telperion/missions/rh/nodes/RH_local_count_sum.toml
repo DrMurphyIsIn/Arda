@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-b7-last-mile-2026-09-21 (AUDIT_TESTIMONY_B7_LAST_MILE_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: Sum m(rho)/(1 + (Im rho - a)^2) <= C(1 + log(2 + |a|)) for every real a. Audit: Zeta23's per-unit-window count passed verbatim; ceiling fibering matches the left-open window; fiber-weight constant 4 re-proved in both sign cases; the two tail series summable by re-derived comparisons. Unconditional. conjecture1_proved = False."

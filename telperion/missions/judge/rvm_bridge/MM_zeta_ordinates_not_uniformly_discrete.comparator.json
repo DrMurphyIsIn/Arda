@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_zeta_ordinates_not_uniformly_discrete",
+  "solution_module": "MissionChallenges.MM_zeta_ordinates_not_uniformly_discrete",
+  "theorem_names": [
+    "MissionJudge.MM_zeta_ordinates_not_uniformly_discrete"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

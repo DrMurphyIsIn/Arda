@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-effective-O2-2026-09-21 (AUDIT_TESTIMONY_EFFECTIVE_O2_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: an off-line zero of maximal distance y0 within its height window (radius D >= 1), with spacing floor xmin > 0 between distinct ordinates, window multiplicity count <= N and tail constant B, makes the Gaussian zero sum at its ordinate strictly negative for every width above the explicit threshold. Audit 8/8: centre term nonpositive for every same-ordinate zero, competitor bound uses maximality and spacing exactly once each, threshold arithmetic re-proved abstractly, deleting either hypothesis breaks the proof, numeric instance 299.57 in [297, 300]. Not RH. conjecture1_proved = False."

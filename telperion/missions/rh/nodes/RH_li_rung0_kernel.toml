@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-li-ladder-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: 0 <= Re(taylorCoeff riemannXi 0) with no hypothesis; the pair term at N = 1 is 1/(rho(1-rho)) with real part (beta(1-beta)+gamma^2)/|rho(1-rho)|^2 >= 0 for every nontrivial zero, summed through the hypothesis-free paired zero sum (composition of the pinned upstream order theorems). Statement byte-identical to the registry. Li's lambda_1 nonnegative in the kernel; one rung, NOT RH. conjecture1_proved = False."

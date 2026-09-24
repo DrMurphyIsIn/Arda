@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_li_zero_sums_converge",
+  "solution_module": "MissionChallenges.RH_li_zero_sums_converge",
+  "theorem_names": [
+    "MissionJudge.RH_li_zero_sums_converge"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

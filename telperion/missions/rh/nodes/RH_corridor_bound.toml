@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-critical-path 2026-09-17 (independent blind read-back, AUDIT_TESTIMONY_CRITICAL_PATH_2026-09-17.md; statements elaborated at the mission pin, trivial-close probes closed nothing)"
 date = "2026-09-17"
+independence = "unverified"
 text = "There is one constant C > 0 such that for every height T >= 2 some ordinate T' in [T, T+1] is a good height: zeta has no zero on the horizontal segment -1 <= sigma <= 2 at height T', and on that whole segment the logarithmic derivative of zeta is bounded in norm by C (log T)^2. This is the classical good-ordinate lemma (Davenport ch. 17 / Titchmarsh Thm 9.6(A)): the O(log T) zeros in a unit window are dodged at distance >> 1/log T, so the O(log T) local terms 1/(s-rho) sum to O(log^2 T). Exponent 2 and sigma-range correct; pole and trivial zeros off the segment for T' >= 2; the explicit zero-free conjunct keeps the bound meaningful under Lean's logDeriv at zeros; T >= 2 is load-bearing."

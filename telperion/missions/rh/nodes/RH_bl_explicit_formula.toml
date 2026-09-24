@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-b7-unconditional-2026-09-21 (AUDIT_TESTIMONY_B7_UNCONDITIONAL_2026-09-21.md)"
 date = "2026-09-22"
+independence = "unverified"
 text = "Read-back (2026-09-21, the unconditional audit): for every n >= 1 the paired Li zero sums converge, ordered by height, to archSide n + finiteSide n, with NO hypothesis: E6Bridge27.bl_explicit_formula, statement byte-identical, three standard axioms, independent re-composition from LocalCountSum + StripDerivBound + NoRealZeroInUnitInterval, 2000-zero numerics. Identities about zeros and primes; NOT a proof of anything about RH. conjecture1_proved = False."

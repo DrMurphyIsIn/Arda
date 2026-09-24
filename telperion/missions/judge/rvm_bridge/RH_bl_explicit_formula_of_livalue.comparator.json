@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_bl_explicit_formula_of_livalue",
+  "solution_module": "MissionChallenges.RH_bl_explicit_formula_of_livalue",
+  "theorem_names": [
+    "MissionJudge.RH_bl_explicit_formula_of_livalue"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
