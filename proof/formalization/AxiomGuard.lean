@@ -73,6 +73,7 @@ import R3Cert.BGSCLSubactionStrict
 import R3Cert.BGSCLHnormPort
 import R3Cert.BGSCLObligationA
 import R3Cert.BGSCLHdom
+import R3Cert.BGSCLSharp
 import R3Cert.R47HdomBridge
 import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
@@ -245,6 +246,16 @@ import R3Cert.R47BGConjecture
 #print axioms R3Cert.BGSCL.master_ineq_strict_off_deg6
 #print axioms R3Cert.BGSCL.bcc_eq_five_of_bell_eq_zero
 #print axioms R3Cert.BGSCL.strictRootCell_tail
+-- SHARP BG ceiling (2026-09-24): the equality case is EXACTLY the near-star tie node [cherry x5].
+#print axioms R3Cert.BGSCL.bell_nearStarTie
+#print axioms R3Cert.BGSCL.cherry_anchor_lt
+#print axioms R3Cert.BGSCL.phi_lb_d6_strict_of_ne_cherry
+#print axioms R3Cert.BGSCL.strict_tail_d6_of_ne_cherry
+#print axioms R3Cert.BGSCL.isTie_imp_nearStarTie
+#print axioms R3Cert.BGSCL.bell_eq_zero_iff
+#print axioms R3Cert.BGSCL.isTie_iff_bell_eq_zero
+#print axioms R3Cert.BGSCL.bell_lt_zero_of_not_nearStarTie
+#print axioms R3Cert.BGSCL.bg_sharp
 -- Hdom reduced to ONE crisp size-normalized obligation (SharpRateNF); conjecture1 modulo Hnorm+SharpRateNF.
 #print axioms R3Cert.Step3.Hdom_of_sharpRate
 #print axioms R3Cert.Step3.conjecture1_of_Hnorm_sharpRate
