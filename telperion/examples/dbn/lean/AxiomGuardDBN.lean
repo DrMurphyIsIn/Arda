@@ -40,6 +40,10 @@ import DBNHadamardMean
 import DBNHadamardLinear
 import DBNHadamard
 import DBNHadamardApprox
+import DBNM1Approx
+import DBNM1Parametric
+import DBNM1RHIff
+import DBNM1Controls
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -463,3 +467,49 @@ import DBNHadamardApprox
 #print axioms DBN.H_zero_im_sq_le
 #print axioms DBN.H_ne_zero_of_half_le
 #print axioms dbn_debruijn_real_zeros
+-- lane m1: DBNM1Approx
+#print axioms DBN.m1_continuous_WIntegrand
+#print axioms DBN.m1_norm_HIntegrand_le
+#print axioms DBN.m1_norm_WIntegrand
+#print axioms DBN.m1_integrableOn_WIntegrand
+#print axioms DBN.m1_WIntegrand_succ
+#print axioms DBN.m1W_succ
+#print axioms DBN.m1W_zero
+#print axioms DBN.m1W_zero_base
+#print axioms DBN.m1W_eq_iterate
+#print axioms DBN.m1_differentiable_W
+#print axioms DBN.m1W_neg
+#print axioms DBN.m1W_conj
+#print axioms DBN.m1_W_zero_re_pos
+#print axioms DBN.m1_W_zero_ne_zero
+#print axioms DBN.m1_mul_sq_le_exp
+#print axioms DBN.m1_cube_add_le_exp
+#print axioms DBN.m1_norm_WIntegrand_le_rpow
+#print axioms DBN.m1_norm_W_le_exp_rpow
+#print axioms DBN.m1_norm_W_le_exp_rpow_norm
+#print axioms DBN.m1_norm_W_le_growth
+#print axioms DBN.m1_evenHadamardData_W
+#print axioms DBN.m1_continuous_ErrIntegrand
+#print axioms DBN.m1_ErrIntegrand_nonneg
+#print axioms DBN.m1_ErrIntegrand_le
+#print axioms DBN.m1_integrableOn_ErrIntegrand
+#print axioms DBN.m1_tendsto_Err
+#print axioms DBN.m1_HIntegrand_sub_WIntegrand
+#print axioms DBN.m1_norm_H_sub_G_le
+#print axioms DBN.m1_tendstoUniformlyOn_G
+#print axioms DBN.m1_tendstoLocallyUniformly_G
+-- lane m1: DBNM1Parametric
+#print axioms DBN.m1_G_zero_im_sq_le
+#print axioms DBN.m1_H_zero_im_sq_le
+#print axioms DBN.m1_H_zero_im_sq_le_of_le
+#print axioms DBN.m1_H_real_zeros_of_le
+#print axioms DBN.m1_H_real_zeros_of_im_sq_le
+#print axioms DBN.m1_im_sq_le_of_upper_zero_free
+#print axioms DBN.m1_real_zeros_of_upper_zero_free
+#print axioms dbn_debruijn_parametric
+#print axioms dbn_real_zeros_upset
+-- lane m1: DBNM1RHIff
+#print axioms dbn_rh_iff_real_zeros_nonneg_t
+-- lane m1: DBNM1Controls
+#print axioms m1_control_contraction_via_parametric
+#print axioms m1_control_debruijn_via_parametric

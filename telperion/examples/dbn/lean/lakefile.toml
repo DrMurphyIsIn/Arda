@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -141,6 +141,34 @@ name = "DBNHadamard"
 # zeros inside the strip.  Nothing here proves RH.  conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNHadamardApprox"
+
+# Lane m1 (Route C milestone M1, ROUTE_C_SYNTHESIS_2026-09-23.md sections 5.2 / 7.2): the de Bruijn
+# approximants REWEIGHTED at an arbitrary real base time t0,
+# m1W t0 d N z = int_0^oo cosh(du)^N e^{t0 u^2} Phi(u) cos(zu) du: shift identity, entire / even /
+# real, order <= 3/2 for EVERY real t0 (negative included), even Hadamard data, locally uniform
+# convergence to H (t0 + s).  Nothing about zero locations.  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM1Approx"
+
+# M1a/M1b: dbn_debruijn_parametric (de Bruijn 1950 Thm 13 / Polymath15 Thm 3.2, every real t0)
+# and dbn_real_zeros_upset.  CONDITIONAL on the caller's zero bound for H_{t0}; import closure has
+# no DBNStrip / DBNXi.  Says nothing about zeros of H_0 inside the strip; Lambda <= 0 is RH and is
+# not proved.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM1Parametric"
+
+# M1c: dbn_rh_iff_real_zeros_nonneg_t, strip-RH <-> (for all t >= 0 every zero of H_t is real), from
+# C4 + M1b.  The sInf-free C10 wall as an EQUIVALENCE; proves neither side.  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM1RHIff"
+
+# Kernel-checked positive controls for M1a: at (t0, Y) = (0, 1) the hypothesis is the strip node and
+# the parametric theorem reproduces C3 (t >= 1/2, Lambda <= 1/2) by a second route.  Not RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM1Controls"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.
