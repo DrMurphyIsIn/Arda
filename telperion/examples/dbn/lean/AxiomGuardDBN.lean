@@ -40,6 +40,19 @@ import DBNHadamardMean
 import DBNHadamardLinear
 import DBNHadamard
 import DBNHadamardApprox
+import M6gapEMZeta
+import M6gapEMZetaComplex
+import M6gapEMZetaTail
+import M6gapZetaEMSum
+import M6gapHeightFloorCheck
+import M6gapHeightFloorTrig
+import M6gapHeightFloorEM
+import M6gapHeightFloorBoxes
+import M6gapZetaZeroConfinement
+import M6gapDlvpZetaSymmetry
+import M6gapHeightFloor
+import M6gapImAxis
+import M6gapP15ZeroFree
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -463,3 +476,282 @@ import DBNHadamardApprox
 #print axioms DBN.H_zero_im_sq_le
 #print axioms DBN.H_ne_zero_of_half_le
 #print axioms dbn_debruijn_real_zeros
+
+/-! ### Lane m6gap (Route C, M6 gaps; ROUTE_C_SYNTHESIS_2026-09-23 sections 5.2 / 7.2)
+
+  The 55/16 height floor of `AND_height_floor_kernel` rebuilt on this island (M6gapEMZeta ..
+  M6gapHeightFloor, a no-proof-edit port of the zeta_reflection v4.32.0 closure), `H_t(iy) > 0`
+  (M6gapImAxis, from `Φ > 0`), and Polymath15 condition (i) at `X ≤ 55/8` in zeta form (Thm 1.2(i))
+  and H_0 form (Prop 3.3(i), via C2 + the C4 coordinate map; M6gapP15ZeroFree).  Below: verbatim
+  restatements of the proposed registry statements closed by the island theorems (a statement
+  drift fails to elaborate); two NEGATIVE CONTROLS copied from zeta_reflection's
+  AxiomGuardHeightFloor (kernel `decide`, expected `false`: the exact box checker REJECTS the whole
+  rectangle as one box and a 3-slab coarsening, so the 32-box cover is not vacuous); then one
+  `#print axioms` line per public theorem / lemma of the 13 M6gap modules.  Finite low-height
+  verification; no bound on Λ; nothing here proves RH.  conjecture1_proved = False. -/
+
+example (H : ℝ) :
+    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ H → 55 / 16 ≤ |ρ.im| :=
+  m6gap_height_floor H
+
+example : ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.re → ρ.re < 1 → 55 / 16 < |ρ.im| :=
+  m6gap_dbn_zeta_zero_free_low
+
+example : ∀ X y0 : ℝ, X ≤ 55 / 8 → 0 ≤ y0 →
+    ∀ σ T : ℝ, (1 + y0) / 2 ≤ σ → σ ≤ 1 → 0 ≤ T → T ≤ X / 2 →
+      riemannZeta ((σ : ℂ) + (T : ℂ) * Complex.I) ≠ 0 :=
+  m6gap_dbn_p15_thm12_i
+
+example : ∀ t y : ℝ, DBN.H t ((y : ℂ) * Complex.I) ≠ 0 :=
+  m6gap_dbn_H_imag_axis_ne_zero
+
+example : ∀ σ : ℝ, 0 < σ → σ < 1 → riemannZeta (σ : ℂ) ≠ 0 :=
+  m6gap_dbn_no_real_zero_in_unit_interval
+
+example : ∀ z : ℂ, |z.re| ≤ 55 / 8 → DBN.H 0 z ≠ 0 :=
+  m6gap_dbn_H0_zero_free_abs_re_le
+
+example : ∀ X y0 t0 : ℝ, X ≤ 55 / 8 →
+    ∀ x y : ℝ, 0 ≤ x → x ≤ X → Real.sqrt (y0 ^ 2 + 2 * t0) ≤ y → y ≤ 1 →
+      DBN.H 0 ((x : ℂ) + (y : ℂ) * Complex.I) ≠ 0 :=
+  m6gap_dbn_p15_prop33_i
+
+example : ∀ X y0 t0 : ℝ, 0 ≤ t0 →
+    (∀ σ T : ℝ, (1 + y0) / 2 ≤ σ → σ ≤ 1 → 0 ≤ T → T ≤ X / 2 →
+      riemannZeta ((σ : ℂ) + (T : ℂ) * Complex.I) ≠ 0) →
+    ∀ x y : ℝ, 0 ≤ x → x ≤ X → Real.sqrt (y0 ^ 2 + 2 * t0) ≤ y → y ≤ 1 →
+      DBN.H 0 ((x : ℂ) + (y : ℂ) * Complex.I) ≠ 0 :=
+  m6gap_dbn_p15_prop33_i_of_thm12_i
+
+/-- m6gap NEGATIVE CONTROL 1: the whole rectangle `[1/2, 1] × [0, 55/16]` as ONE box is rejected. -/
+example : M6gap.HeightFloor.DI.checkAB
+    (M6gap.HeightFloor.DI.evalAB ⟨2, 4, 2⟩ ⟨0, 880, 8⟩ ⟨2147483648, 3037000500, 32⟩
+      ⟨-3116411797, 4294967296, 32⟩ ⟨0, 4294967296, 32⟩).1
+    (M6gap.HeightFloor.DI.evalAB ⟨2, 4, 2⟩ ⟨0, 880, 8⟩ ⟨2147483648, 3037000500, 32⟩
+      ⟨-3116411797, 4294967296, 32⟩ ⟨0, 4294967296, 32⟩).2 = false := by decide
+
+/-- m6gap NEGATIVE CONTROL 2: `σ ∈ [1/2, 3/4]`, `t ∈ [165/256, 330/256]` (three slabs) is rejected. -/
+example : M6gap.HeightFloor.DI.checkAB
+    (M6gap.HeightFloor.DI.evalAB ⟨2, 3, 2⟩ ⟨165, 330, 8⟩ ⟨2553802833, 3037000500, 32⟩
+      ⟨2691572661, 3873432754, 32⟩ ⟨1855603165, 3346965925, 32⟩).1
+    (M6gap.HeightFloor.DI.evalAB ⟨2, 3, 2⟩ ⟨165, 330, 8⟩ ⟨2553802833, 3037000500, 32⟩
+      ⟨2691572661, 3873432754, 32⟩ ⟨1855603165, 3346965925, 32⟩).2 = false := by decide
+
+-- M6gapEMZeta (11)
+#print axioms M6gap.ZetaReflection.sawBernoulli_zero
+#print axioms M6gap.ZetaReflection.sawBernoulli_measurable
+#print axioms M6gap.ZetaReflection.abs_sawBernoulli_one_le
+#print axioms M6gap.ZetaReflection.sawBernoulli_eq_on_Ico
+#print axioms M6gap.ZetaReflection.sawBernoulli_one_eq_on_Ico
+#print axioms M6gap.ZetaReflection.em_unit_step
+#print axioms M6gap.ZetaReflection.euler_maclaurin_one
+#print axioms M6gap.ZetaReflection.euler_maclaurin_one_window
+#print axioms M6gap.ZetaReflection.em_zeta_partial_real
+#print axioms M6gap.ZetaReflection.em_zeta_remainder_integrableOn
+#print axioms M6gap.ZetaReflection.em_zeta_real
+-- M6gapEMZetaComplex (23)
+#print axioms M6gap.ZetaReflection.em_unit_step_cpow
+#print axioms M6gap.ZetaReflection.euler_maclaurin_one_window_cpow
+#print axioms M6gap.ZetaReflection.hasDerivAt_cpow_neg
+#print axioms M6gap.ZetaReflection.em_cpow_partial
+#print axioms M6gap.ZetaReflection.cpow_neg_integrableOn_Ioi
+#print axioms M6gap.ZetaReflection.em_cpow_remainder_integrableOn
+#print axioms M6gap.ZetaReflection.em_zeta_cpow
+#print axioms M6gap.ZetaReflection.em_zeta_cpow_riemannZeta
+#print axioms M6gap.ZetaReflection.em_cpow_remainder_integrableOn_strip
+#print axioms M6gap.ZetaReflection.emZetaRemainder_bound
+#print axioms M6gap.ZetaReflection.emZetaClosed_eq_riemannZeta_of_one_lt
+#print axioms M6gap.ZetaReflection.log_le_rpow_div
+#print axioms M6gap.ZetaReflection.hasDerivAt_emIntegrand
+#print axioms M6gap.ZetaReflection.emZetaRemainder_hasDerivAt
+#print axioms M6gap.ZetaReflection.emZetaRemainder_differentiableAt
+#print axioms M6gap.ZetaReflection.isPreconnected_rightHalfPlane_diff_one
+#print axioms M6gap.ZetaReflection.emZetaClosed_analyticOnNhd
+#print axioms M6gap.ZetaReflection.riemannZeta_analyticOnNhd_strip
+#print axioms M6gap.ZetaReflection.em_zeta_strip
+#print axioms M6gap.ZetaReflection.em_zeta_strip_enclosure
+#print axioms M6gap.ZetaReflection.re_em_zeta_strip_enclosure
+#print axioms M6gap.ZetaReflection.im_em_zeta_strip_enclosure
+#print axioms M6gap.ZetaReflection.em_zeta_critical_line_enclosure
+-- M6gapEMZetaTail (27)
+#print axioms M6gap.ZetaReflection.sawBernoulli_two_eq_on_Ico
+#print axioms M6gap.ZetaReflection.abs_sawBernoulli_two_le
+#print axioms M6gap.ZetaReflection.bernoulliFun_three
+#print axioms M6gap.ZetaReflection.abs_sawBernoulli_three_le
+#print axioms M6gap.ZetaReflection.sawAntideriv_hasDerivAt_Ioo
+#print axioms M6gap.ZetaReflection.em_saw_step
+#print axioms M6gap.ZetaReflection.em_saw_step_window
+#print axioms M6gap.ZetaReflection.em_tail_integral_bound
+#print axioms M6gap.ZetaReflection.integral_Ioi_shift_rpow
+#print axioms M6gap.ZetaReflection.em_tail_integral_bound_shifted
+#print axioms M6gap.ZetaReflection.em_tail3_bound
+#print axioms M6gap.ZetaReflection.em_tail3_envelope_le
+#print axioms M6gap.ZetaReflection.em_tail3_number
+#print axioms M6gap.ZetaReflection.hasDerivAt_cpow_neg2
+#print axioms M6gap.ZetaReflection.em_saw_step_cpow
+#print axioms M6gap.ZetaReflection.em_saw_step_window_cpow
+#print axioms M6gap.ZetaReflection.em_tail2_integrableOn
+#print axioms M6gap.ZetaReflection.em_tail1_integrableOn
+#print axioms M6gap.ZetaReflection.em_tail2_step
+#print axioms M6gap.ZetaReflection.hasDerivAt_cpow_neg3
+#print axioms M6gap.ZetaReflection.em_tail3_integrableOn
+#print axioms M6gap.ZetaReflection.em_tail3_step
+#print axioms M6gap.ZetaReflection.em_tail_order3_identity
+#print axioms M6gap.ZetaReflection.em_zeta_strip3
+#print axioms M6gap.ZetaReflection.em_zeta_strip3_enclosure
+#print axioms M6gap.ZetaReflection.em_zeta_critical_line3_enclosure
+#print axioms M6gap.ZetaReflection.em_zeta_critical_line3_number
+-- M6gapZetaEMSum (1)
+#print axioms M6gap.ZetaEMSum.emZetaFinite3_eq_dirichlet
+-- M6gapHeightFloorCheck (12)
+#print axioms M6gap.HeightFloor.pow2_cast
+#print axioms M6gap.HeightFloor.DI.two_pow_pos
+#print axioms M6gap.HeightFloor.DI.ofInt_sound
+#print axioms M6gap.HeightFloor.DI.neg_sound
+#print axioms M6gap.HeightFloor.DI.shift_eq
+#print axioms M6gap.HeightFloor.DI.add_sound
+#print axioms M6gap.HeightFloor.DI.corners
+#print axioms M6gap.HeightFloor.DI.mul_sound
+#print axioms M6gap.HeightFloor.DI.gap_sq_le
+#print axioms M6gap.HeightFloor.DI.evalAB_sound
+#print axioms M6gap.HeightFloor.DI.checkAB_sound
+#print axioms M6gap.HeightFloor.DI.box_sound
+-- M6gapHeightFloorTrig (16)
+#print axioms M6gap.HeightFloor.exp_I_partial
+#print axioms M6gap.HeightFloor.cos_sin_taylor
+#print axioms M6gap.HeightFloor.trig_encl
+#print axioms M6gap.HeightFloor.abs_mul_log_two_sub_le
+#print axioms M6gap.HeightFloor.two_rpow_neg_div_pow
+#print axioms M6gap.HeightFloor.le_two_rpow_neg
+#print axioms M6gap.HeightFloor.two_rpow_neg_le
+#print axioms M6gap.HeightFloor.two_rpow_neg_nat
+#print axioms M6gap.HeightFloor.two_rpow_neg_mono
+#print axioms M6gap.HeightFloor.DI.mem_mk
+#print axioms M6gap.HeightFloor.mem_cos
+#print axioms M6gap.HeightFloor.mem_sin_low
+#print axioms M6gap.HeightFloor.sin_anti_of_half_pi
+#print axioms M6gap.HeightFloor.mem_sin_high
+#print axioms M6gap.HeightFloor.mem_sin_mid
+#print axioms M6gap.HeightFloor.mem_m
+-- M6gapHeightFloorEM (8)
+#print axioms M6gap.HeightFloor.G2_eq
+#print axioms M6gap.HeightFloor.norm_le_of_sq
+#print axioms M6gap.HeightFloor.two_rpow_neg_five_halves_le
+#print axioms M6gap.HeightFloor.tail_le
+#print axioms M6gap.HeightFloor.G2_norm_le_of_zero
+#print axioms M6gap.HeightFloor.two_cpow_neg_re_im
+#print axioms M6gap.HeightFloor.G2_re_im
+#print axioms M6gap.HeightFloor.G2_norm_gt_of_AB
+-- M6gapHeightFloorBoxes (56)
+#print axioms M6gap.HeightFloor.Boxes.trig_0
+#print axioms M6gap.HeightFloor.Boxes.trig_1
+#print axioms M6gap.HeightFloor.Boxes.trig_2
+#print axioms M6gap.HeightFloor.Boxes.trig_3
+#print axioms M6gap.HeightFloor.Boxes.trig_4
+#print axioms M6gap.HeightFloor.Boxes.trig_5
+#print axioms M6gap.HeightFloor.Boxes.trig_6
+#print axioms M6gap.HeightFloor.Boxes.trig_7
+#print axioms M6gap.HeightFloor.Boxes.trig_8
+#print axioms M6gap.HeightFloor.Boxes.trig_9
+#print axioms M6gap.HeightFloor.Boxes.trig_10
+#print axioms M6gap.HeightFloor.Boxes.trig_11
+#print axioms M6gap.HeightFloor.Boxes.trig_12
+#print axioms M6gap.HeightFloor.Boxes.trig_13
+#print axioms M6gap.HeightFloor.Boxes.trig_14
+#print axioms M6gap.HeightFloor.Boxes.trig_15
+#print axioms M6gap.HeightFloor.Boxes.trig_16
+#print axioms M6gap.HeightFloor.Boxes.m12_hi
+#print axioms M6gap.HeightFloor.Boxes.m34_lo
+#print axioms M6gap.HeightFloor.Boxes.m34_hi
+#print axioms M6gap.HeightFloor.Boxes.m1_lo
+#print axioms M6gap.HeightFloor.Boxes.box_0_0
+#print axioms M6gap.HeightFloor.Boxes.box_0_1
+#print axioms M6gap.HeightFloor.Boxes.box_0_2
+#print axioms M6gap.HeightFloor.Boxes.box_0_3
+#print axioms M6gap.HeightFloor.Boxes.box_0_4
+#print axioms M6gap.HeightFloor.Boxes.box_0_5
+#print axioms M6gap.HeightFloor.Boxes.box_0_6
+#print axioms M6gap.HeightFloor.Boxes.box_0_7
+#print axioms M6gap.HeightFloor.Boxes.box_0_8
+#print axioms M6gap.HeightFloor.Boxes.box_0_9
+#print axioms M6gap.HeightFloor.Boxes.box_0_10
+#print axioms M6gap.HeightFloor.Boxes.box_0_11
+#print axioms M6gap.HeightFloor.Boxes.box_0_12
+#print axioms M6gap.HeightFloor.Boxes.box_0_13
+#print axioms M6gap.HeightFloor.Boxes.box_0_14
+#print axioms M6gap.HeightFloor.Boxes.box_0_15
+#print axioms M6gap.HeightFloor.Boxes.box_1_0
+#print axioms M6gap.HeightFloor.Boxes.box_1_1
+#print axioms M6gap.HeightFloor.Boxes.box_1_2
+#print axioms M6gap.HeightFloor.Boxes.box_1_3
+#print axioms M6gap.HeightFloor.Boxes.box_1_4
+#print axioms M6gap.HeightFloor.Boxes.box_1_5
+#print axioms M6gap.HeightFloor.Boxes.box_1_6
+#print axioms M6gap.HeightFloor.Boxes.box_1_7
+#print axioms M6gap.HeightFloor.Boxes.box_1_8
+#print axioms M6gap.HeightFloor.Boxes.box_1_9
+#print axioms M6gap.HeightFloor.Boxes.box_1_10
+#print axioms M6gap.HeightFloor.Boxes.box_1_11
+#print axioms M6gap.HeightFloor.Boxes.box_1_12
+#print axioms M6gap.HeightFloor.Boxes.box_1_13
+#print axioms M6gap.HeightFloor.Boxes.box_1_14
+#print axioms M6gap.HeightFloor.Boxes.box_1_15
+#print axioms M6gap.HeightFloor.Boxes.slab_0
+#print axioms M6gap.HeightFloor.Boxes.slab_1
+#print axioms M6gap.HeightFloor.Boxes.G2_norm_gt
+-- M6gapZetaZeroConfinement (4)
+#print axioms M6gap.ZetaZeroConfinement.zeta_zero_iff_completed_zero_of_im_ne
+#print axioms M6gap.ZetaZeroConfinement.zeta_zero_reflect
+#print axioms M6gap.ZetaZeroConfinement.zeta_zero_re_mem_strip
+#print axioms M6gap.ZetaZeroConfinement.no_low_zeros_of_strip_clear
+-- M6gapDlvpZetaSymmetry (5)
+#print axioms M6gap.ZeroFreeBridge.riemannZeta_one_sub_eq_zero
+#print axioms M6gap.ZeroFreeBridge.zeta_zero_on_line_of_right_half_clear
+#print axioms M6gap.ZeroFreeBridge.riemannZeta_conj_eq_zero
+#print axioms M6gap.ZeroFreeBridge.zeta_zero_on_line_of_quarter_clear
+#print axioms M6gap.ZeroFreeBridge.riemannZeta_reflect_line_eq_zero
+-- M6gapHeightFloor (16)
+#print axioms M6gap.HeightFloor.zeta_ne_zero_low_right
+#print axioms M6gap.HeightFloor.strip_clear_low
+#print axioms M6gap.HeightFloor.height_floor
+#print axioms M6gap.HeightFloor.height_floor_280000
+#print axioms M6gap.HeightFloor.im_gt_of_zero
+#print axioms M6gap.HeightFloor.abs_im_gt_of_zero
+#print axioms M6gap.HeightFloor.G2_norm_le_of_zero_of_im_nonneg
+#print axioms M6gap.HeightFloor.zeta_ne_zero_low_right_of_im_nonneg
+#print axioms M6gap.HeightFloor.riemannZeta_ofReal_ne_zero_of_mem_Ico
+#print axioms M6gap.HeightFloor.zeta_ne_zero_of_half_le_of_im_le
+#print axioms M6gap.HeightFloor.strip_clear_low_of_im_nonneg
+#print axioms M6gap.HeightFloor.strip_zero_abs_im_gt
+#print axioms M6gap.HeightFloor.p15_thm12_i_of_le
+#print axioms m6gap_height_floor
+#print axioms m6gap_dbn_zeta_zero_free_low
+#print axioms m6gap_dbn_p15_thm12_i
+-- M6gapImAxis (14)
+#print axioms M6gap.H_conj
+#print axioms M6gap.cos_ofReal_mul_I_mul
+#print axioms M6gap.H_ofReal_mul_I
+#print axioms M6gap.integrableOn_imAxis
+#print axioms M6gap.H_ofReal_mul_I_im
+#print axioms M6gap.H_ofReal_mul_I_re_pos
+#print axioms M6gap.H_ofReal_mul_I_ne_zero
+#print axioms M6gap.H_ne_zero_of_re_eq_zero
+#print axioms M6gap.xiArg_imAxis
+#print axioms M6gap.riemannXi_ofReal_ne_zero
+#print axioms M6gap.riemannZeta_ofReal_ne_zero_of_mem_Ioo
+#print axioms M6gap.riemannZeta_ofReal_ne_zero_of_half_le
+#print axioms m6gap_dbn_H_imag_axis_ne_zero
+#print axioms m6gap_dbn_no_real_zero_in_unit_interval
+-- M6gapP15ZeroFree (12)
+#print axioms M6gap.xiArg_im
+#print axioms M6gap.xiArgInv_re
+#print axioms M6gap.H0_ne_zero_core
+#print axioms M6gap.H0_ne_zero_of_abs_re_le
+#print axioms M6gap.zeta_strip_zero_abs_im_gt
+#print axioms M6gap.p15_prop33_i_of_le
+#print axioms M6gap.xiArg_conj
+#print axioms M6gap.p15_prop33_i_of_thm12_i
+#print axioms M6gap.p15_prop33_i_of_le_via_bridge
+#print axioms m6gap_dbn_H0_zero_free_abs_re_le
+#print axioms m6gap_dbn_p15_prop33_i
+#print axioms m6gap_dbn_p15_prop33_i_of_thm12_i
