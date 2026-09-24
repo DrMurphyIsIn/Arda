@@ -8,6 +8,10 @@ CLAUSE of the live variants A / B / C / D, and each control-zoo OBJECT
     lattice-- a genuine lattice Dirac comb  sum delta_{n alpha}  (Poisson, trivial FQ)
     ksly   -- a Kurasov-Sarnak Lee-Yang FQ (real-rooted exp polynomial; canonical FQ)
     random -- a seeded Poisson-process comb with i.i.d. weights (no atomic spectrum)
+    l_chim20 -- L(s, chi_{-20}), the real quadratic character of Q(sqrt(-5)) (degree 1)
+    dedekind_m20 -- zeta_K for K = Q(sqrt(-5)), D = -20, h = 2: the PRODUCT zeta * L(chi_{-20}),
+              a degree-2 Euler product whose Satake pair {1, chi_{-20}(p)} is unimodular BY
+              CONSTRUCTION (no Deligne input).  The product-closure control for (B-mult-twisted).
 
 run the finite certified check the contract specifies and emit a PASS / FAIL /
 CONDITIONAL verdict.  Results -> `zoo_data/zoo_verdicts.json` + a human table.
@@ -296,6 +300,131 @@ def _load_delta(t_max: float = 100.0, n_coeff: int = 60) -> ZooObject:
     )
 
 
+
+# ===========================================================================
+# The Dedekind column -- zeta_K for K = Q(sqrt(-5)) (product-closure control)
+# ===========================================================================
+# zeta_K(s) = zeta(s) L(s, chi_D) with chi_D the Kronecker symbol (D/.) for D = -20.
+# Its Dirichlet coefficients a(n) = #{ideals of norm n} = sum_{d | n} chi_D(d) are
+# MULTIPLICATIVE but NOT completely multiplicative: the local factor at p is
+#     (1 - p^{-s})^{-1} (1 - chi_D(p) p^{-s})^{-1},
+# a degree-2 Euler factor with Satake pair {1, chi_D(p)}.  Both parameters are
+# unimodular by construction (chi_D(p) in {+1, -1}) or the factor degenerates to
+# degree 1 (chi_D(p) = 0, the ramified primes 2 and 5).  So zeta_K is a tempered
+# degree-2 Selberg element with NO deep input (contrast L(s, Delta), whose
+# temperedness is Deligne's theorem).
+#
+# It is the sharpest available control for clause (B-mult-twisted): zeta PASSES it,
+# L(s, chi_D) PASSES it, and their PRODUCT -- a perfectly good member of the class --
+# FAILS it (the prime layer b(p^m) = (log p)(1 + chi_D(p)^m) is not a single
+# geometric law: it is 2 log p at every split prime and it VANISHES at odd powers of
+# every inert prime).  A class predicate on the Selberg class must be closed under
+# products; this one is not.  Kernel companion: lean/DedekindQuadratic.lean.
+#
+# ANTI-PHANTOM FACE: the coefficient vector is re-derived independently from the
+# classical representation-number identity for the class group of discriminant -20,
+#     r_{x^2+5y^2}(n) + r_{2x^2+2xy+3y^2}(n) = 2 * sum_{d | n} chi_{-20}(d),
+# by brute-force lattice counting, and the loader REFUSES to emit if the two
+# derivations disagree at any n.  No coefficient is quoted.
+#
+# conjecture1_proved = False.
+
+def _kronecker(D: int, n: int) -> int:
+    """The Kronecker symbol (D / n) for n >= 1 (D any integer), via the standard
+    factorization into (D/2) and Jacobi symbols at odd primes.  Written out rather
+    than imported so the harness has no dependency the CI runner may lack."""
+    if n == 1:
+        return 1
+    res = 1
+    m = n
+    # the prime 2
+    while m % 2 == 0:
+        m //= 2
+        if D % 2 == 0:
+            return 0
+        res *= 1 if D % 8 in (1, 7) else -1
+    # odd primes: Jacobi symbol (D / m) by quadratic reciprocity on the odd part
+    a, b = D % m, m
+    while b > 1:
+        if a == 0:
+            return 0
+        t = 0
+        while a % 2 == 0:
+            a //= 2
+            t += 1
+        if t % 2 == 1 and b % 8 in (3, 5):
+            res = -res
+        if a % 4 == 3 and b % 4 == 3:
+            res = -res
+        a, b = b % a, a
+    return res
+
+
+def _dedekind_coeffs(D: int, N: int) -> list:
+    """a(n) = sum_{d | n} chi_D(d) for n = 1..N (a[0] unused)."""
+    a = [0] * (N + 1)
+    for n in range(1, N + 1):
+        a[n] = sum(_kronecker(D, d) for d in range(1, n + 1) if n % d == 0)
+    return a
+
+
+def _form_reps_m20(n: int) -> int:
+    """r_{x^2+5y^2}(n) + r_{2x^2+2xy+3y^2}(n) by brute-force lattice counting: the two
+    reduced forms of discriminant -20 (class number 2), each representation counted
+    with sign, as in the classical Dirichlet identity.  Independent of _kronecker."""
+    B = int(n ** 0.5) + 2
+    r1 = sum(1 for x in range(-B, B + 1) for y in range(-B, B + 1) if x * x + 5 * y * y == n)
+    r2 = sum(1 for x in range(-B - 1, B + 2) for y in range(-B - 1, B + 2)
+             if 2 * x * x + 2 * x * y + 3 * y * y == n)
+    return r1 + r2
+
+
+_CHI_M20 = {r: complex(_kronecker(-20, r)) if r != 0 else 0j for r in range(20)}
+
+
+def _load_l_chim20(t_max: float = 100.0) -> ZooObject:
+    """L(s, chi_{-20}): the degree-1 factor of zeta_K.  A REAL primitive character
+    (values +1/-1 on the units mod 20, 0 on 2 and 5), so its prime-layer twist is
+    t(p) = chi(p) in {+1, -1}: the sign twist of an inert prime is what makes the
+    Dedekind layer vanish at odd powers.  Passes B-mult-twisted like l_chi5."""
+    model = (t_max / (2 * math.pi)) * math.log(20 * t_max / (2 * math.pi)) - t_max / (2 * math.pi)
+    return ZooObject(
+        name="l_chim20", kind="l_function", ordinates=[], offline=[],
+        density_count=max(1, int(round(model))), density_model=model, t_max=t_max,
+        spectrum="prime_log_lattice", weights="twisted_prime",
+        defect_count=0, defect_grows=False, tempered=True,
+        mult_model="euler_product_twisted", mult_coeffs=("cm_char", _CHI_M20, 20),
+    )
+
+
+def _load_dedekind(t_max: float = 100.0, D: int = -20, n_coeff: int = 60) -> ZooObject:
+    """zeta_K for K = Q(sqrt(-5)), D = -20.  See the block comment above."""
+    if D != -20:
+        raise ValueError("the anti-phantom cross-check is wired for D = -20 only")
+    a = _dedekind_coeffs(D, n_coeff)
+    for n in range(1, n_coeff + 1):
+        reps = _form_reps_m20(n)
+        if reps != 2 * a[n]:
+            raise RuntimeError(
+                f"dedekind_m20 REFUSED: ideal count a({n})={a[n]} from the Kronecker "
+                f"divisor sum disagrees with the form-representation count {reps}/2")
+    lam = [complex(x) for x in a]
+    # degree-2 zero-counting model with conductor |D|:
+    #   N_K(T) = N_zeta(T) + N_{L(chi)}(T) ~ (T/pi) log(T/(2 pi e)) + (T/(2 pi)) log |D|
+    model = (t_max / math.pi) * math.log(max(t_max, 2.0) / (2 * math.pi)) - t_max / math.pi \
+        + (t_max / (2 * math.pi)) * math.log(abs(D))
+    model = max(model, 1.0)
+    return ZooObject(
+        name="dedekind_m20", kind="l_function", ordinates=[], offline=[],
+        density_count=max(1, int(round(model))), density_model=model, t_max=t_max,
+        spectrum="prime_log_lattice",   # Euler product => atoms on the prime log-lattice (a SUBSET)
+        weights="nonneg_ideal",         # (log p)(1+chi(p)^m)p^{-m/2}: real, >= 0, vanishes at inert odd m
+        defect_count=0, defect_grows=False, tempered=True,
+        mult_model="dedekind_quadratic",
+        mult_coeffs=("dedekind", lam),
+    )
+
+
 def _load_lattice(t_max: float = 100.0, alpha: float = 1.0) -> ZooObject:
     ords = [alpha * n for n in range(1, int(t_max / alpha) + 1)]
     return ZooObject(
@@ -437,6 +566,16 @@ def check_weight_positivity(obj: ZooObject) -> tuple[str, str]:
         return FAIL, ("GL(2) prime layer (log p)(alpha^m+beta^m)p^{-m/2} is a real but "
                       "SIGN-VARYING Newton power sum (tau(2) < 0), not strictly "
                       "positive: (B-iii) is zeta-unique / over-sharp")
+    if w == "nonneg_ideal":
+        # zeta_K's prime layer (log p)(1 + chi_D(p)^m) p^{-m/2} is REAL and NONNEGATIVE
+        # (Lambda_K >= 0), never sign-varying -- yet bare (B-iii) still fails it: the
+        # amplitude is 2(log p)p^{-m/2} at split primes (wrong normalization) and it
+        # VANISHES at every odd power of an inert prime (half the prime log-lattice
+        # carries no atom).  A third, distinct way (B-iii) is zeta-unique.
+        return FAIL, ("Dedekind prime layer (log p)(1+chi(p)^m)p^{-m/2} is real and >= 0 but "
+                      "not strictly positive of size (log p)p^{-m/2}: doubled at split "
+                      "primes, ZERO at odd powers of inert primes (spectrum is a proper "
+                      "subset of the prime log-lattice)")
     if w == "complex_char_mixed":
         return FAIL, "no Euler product: F'/F mixes chi(p),chi-bar(p) -> complex/sign-varying, positivity fails"
     if w == "quad_form":
@@ -545,6 +684,13 @@ def check_multiplicativity(obj: ZooObject, N: int = 60, tol: float = 1e-6) -> tu
         # lambda(n) are supplied directly and run through the SAME von-Mangoldt
         # recursion as zeta and L(chi) -- deliberately no special-casing, so the
         # FAIL below is a like-for-like verdict and not an artifact of this branch.
+        lam = data
+        for n in range(1, min(N, len(lam) - 1) + 1):
+            a[n] = complex(lam[n])
+    elif kind == "dedekind":
+        # zeta_K (the product-closure control).  The ideal-count coefficients a(n),
+        # RE-DERIVED and cross-checked in the loader, run through the SAME recursion
+        # as every other column -- no special-casing.
         lam = data
         for n in range(1, min(N, len(lam) - 1) + 1):
             a[n] = complex(lam[n])
@@ -791,6 +937,24 @@ def forged_controls() -> list[dict]:
                 "flipped": v == FAIL and genuine_l == PASS,
                 "detail": f"genuine L(chi) B-mult-twisted={genuine_l}; corrupt chi(2)=0.5 -> {v}: {d}"})
 
+    # 6d. DEDEKIND (product-closure control): the genuine zeta_K ideal-count sequence
+    #     FAILS B-mult-twisted.  Drop the L(chi_{-20}) factor -- i.e. hand the SAME
+    #     'dedekind' code path the coefficient vector a(n) = 1 of the degree-1 quotient
+    #     zeta_K / L(chi) = zeta -- and the verdict flips FAIL -> PASS.  So the rejection
+    #     is exactly the second Satake parameter, not an artifact of the branch.
+    genuine_ded, genuine_ded_detail = check_multiplicativity(_load_dedekind())
+    forged_ded = ZooObject(name="forged_dedekind_drop_L_factor", kind="l_function",
+                           spectrum="prime_log_lattice", weights="nonneg_ideal",
+                           density_count=50, density_model=50.0, t_max=100.0,
+                           mult_model="dedekind_quadratic",
+                           mult_coeffs=("dedekind", [0j] + [1 + 0j] * 60))
+    v, d = check_multiplicativity(forged_ded)
+    out.append({"control": "dedekind_drop_L_factor", "clause": "multiplicativity",
+                "genuine": genuine_ded, "forged_verdict": v,
+                "flipped": v == PASS and genuine_ded == FAIL,
+                "detail": f"genuine zeta_K B-mult-twisted={genuine_ded} ({genuine_ded_detail[:60]}); "
+                          f"with the L(chi_-20) factor removed -> {v}"})
+
     # 7. CORRUPTED CERTIFIED INPUT: flip the certified DH off-line flag to on-line;
     #    the defect check must then WRONGLY report bounded (PASS) -- i.e. corrupting the
     #    input FLIPS the DH verdict, proving the verdict is a real function of the data.
@@ -814,6 +978,7 @@ def forged_controls() -> list[dict]:
 def build_matrix(t_max: float = 100.0) -> dict:
     objs = [_load_zeta(t_max), _load_dh(t_max), _load_l_chi5(t_max),
             _load_delta(t_max),
+            _load_l_chim20(t_max), _load_dedekind(t_max),
             _load_lattice(t_max), _load_ksly(t_max), _load_random(t_max)]
     matrix = {}
     for obj in objs:
@@ -949,6 +1114,58 @@ def run_asserts(result: dict) -> tuple[list[str], list[str]]:
             "layer iff the Satake determinant VANISHES, i.e. only in degree <= 1): "
             "lean/SatakeDegreeTwo.lean, node MM_satake_degree_two_rejects_delta. "
             "The clause is a GL(1) predicate mistaken for an arithmetic-class one.")
+
+    # ---- DEDEKIND COLUMN: the product-closure control for (B-mult-twisted) ----
+    # PREDICTION: zeta PASSES, L(s, chi_{-20}) PASSES, and their PRODUCT zeta_K --
+    # the Dedekind zeta of Q(sqrt(-5)), a degree-2 Euler product whose Satake pair
+    # {1, chi(p)} is unimodular BY CONSTRUCTION -- FAILS.  The Selberg class is closed
+    # under products; a class predicate must be too.  Unlike A1b (Delta), this
+    # falsification needs NO deep input (no Deligne): every constant is elementary and
+    # re-derived (the loader cross-checks the ideal counts against representation
+    # numbers of the two forms of discriminant -20).  Kernel companion:
+    # lean/DedekindQuadratic.lean (the sum of two scalar-generated layers is not
+    # scalar-generated; chi_{-20}(3) = +1 and chi_{-20}(11) = -1 by norm_num).
+    if "dedekind_m20" in m and "l_chim20" in m:
+        req(m["l_chim20"]["multiplicativity"]["verdict"] == PASS,
+            "DEDEKIND: the factor L(chi_-20) must PASS B-mult-twisted (real character)")
+        req(m["zeta"]["multiplicativity"]["verdict"] == PASS,
+            "DEDEKIND: the factor zeta must PASS B-mult-twisted")
+        req(m["dedekind_m20"]["multiplicativity"]["verdict"] == FAIL,
+            "DEDEKIND: zeta_K = zeta * L(chi_-20) must FAIL (B-mult-twisted) -- the "
+            "PRODUCT-CLOSURE falsification; if it ever PASSes the clause was repaired")
+        req(vk["Bm"]["dedekind_m20"]["killed"],
+            "DEDEKIND: variant B-mult must KILL zeta_K")
+        # not pathological: the same profile as zeta / L(chi) / Delta everywhere else
+        req(m["dedekind_m20"]["support_density"]["verdict"] == PASS,
+            "DEDEKIND: zeta_K must PASS support density (degree-2 count, conductor 20)")
+        req(m["dedekind_m20"]["temperedness"]["verdict"] == PASS,
+            "DEDEKIND: zeta_K must PASS temperedness (Satake pair {1, chi(p)}, elementary)")
+        req(m["dedekind_m20"]["atomic_spectrum"]["verdict"] == COND,
+            "DEDEKIND: pure-point spectrum must be CONDITIONAL (GRH for zeta_K)")
+        req(m["dedekind_m20"]["defect_bounded"]["verdict"] == COND,
+            "DEDEKIND: defect must be CONDITIONAL (k=0 <=> RH and GRH(chi_-20))")
+        for variant in ("A", "C", "D"):
+            req(vk[variant]["dedekind_m20"]["survives"],
+                f"DEDEKIND: zeta_K must SURVIVE variant {variant} (only the arithmetic "
+                f"clause rejects it)")
+        # the reason must be the degree-2 layer at a SPLIT prime: b(3) = 2 log 3, so
+        # the demanded unimodular twist |t(3)| = 1 is violated by exactly the factor 2
+        # of deg2_amplitude_defect (Satake determinant chi(3) = +1).
+        _d = m["dedekind_m20"]["multiplicativity"]["detail"]
+        req("|t(3)|=2.0000" in _d,
+            f"DEDEKIND: rejection must trip the twist gate at the split prime 3, got: {_d}")
+        # bare (B-iii) fails too, but for a THIRD reason (vanishing inert-prime atoms,
+        # doubled split-prime atoms), never sign variation: Lambda_K >= 0.
+        req(m["dedekind_m20"]["weight_positivity"]["verdict"] == FAIL and
+            "inert" in m["dedekind_m20"]["weight_positivity"]["detail"],
+            "DEDEKIND: bare (B-iii) must FAIL on the inert-prime vanishing, not on sign")
+        findings.append(
+            "DEDEKIND CONTROL CONFIRMED: clause (B-mult-twisted) is NOT CLOSED UNDER "
+            "PRODUCTS -- zeta PASSES, L(s, chi_-20) PASSES, zeta_K = zeta * L(s, chi_-20) "
+            "(Q(sqrt(-5)), h = 2) FAILS. Reason: " + _d + ". No deep input: the Satake "
+            "pair {1, chi(p)} is unimodular by construction, and the ideal counts are "
+            "cross-checked against the two binary quadratic forms of discriminant -20. "
+            "Kernel: lean/DedekindQuadratic.lean.")
 
     # ---- W3c L-FUNCTION COLUMN: the decisive falsification test ----
     # PREDICTION: a genuine L-function (Euler product with unimodular character twist)
@@ -1133,7 +1350,8 @@ def main():
         sys.exit(1)
     else:
         print("GOVERNANCE: all required outcomes hold (DH dies on A/B/D, survives C; "
-              "zeta conditional; forged controls flip).")
+              "zeta conditional; Delta and Dedekind rejected by the arithmetic clause "
+              "alone; forged controls flip).")
     return result
 
 

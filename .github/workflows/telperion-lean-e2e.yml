@@ -4,21 +4,321 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "telperion/**"
-      - ".github/workflows/telperion-lean-e2e.yml"
   pull_request:
-    paths:
-      - "telperion/**"
-      - ".github/workflows/telperion-lean-e2e.yml"
   workflow_dispatch:
+  schedule:
+    # Weekly FULL run (every island, no path filter): the backstop for the job-level path
+    # filter below.  Monday 05:17 UTC.
+    - cron: "17 5 * * 1"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # ---------------------------------------------------------------------------------------
+  # PATH FILTER (2026-09-23).  Every island job below is gated on this job: it runs only when
+  # the change touches its own island directory or an input its steps actually use (the
+  # emitter source under telperion/src for jobs that run generate.py / pytest / a python
+  # module; the missions statement packages for jobs that read the registry; this workflow
+  # and the package config for every job; a test-file edit is covered by the required unit
+  # job, which runs the whole tests tree on every pull request).  A
+  # job skipped by its `if:` reports "skipped", which GitHub counts as passing for a required
+  # status check, so branch protection keeps every island job required while a one-island
+  # pull request pays for one island.  FAIL-OPEN: if this job does not succeed, every island
+  # job runs (the `needs.changes.result != 'success'` clause).  workflow_dispatch and the
+  # weekly schedule run everything.  Pinned by telperion/tests/test_ci_path_filter.py, which
+  # asserts that every job's guard names every island directory and every shared input its
+  # own steps mention, and that the filter list covers every island.
+  # ---------------------------------------------------------------------------------------
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      shared: ${{ steps.f.outputs.shared }}
+      src: ${{ steps.f.outputs.src }}
+      missions: ${{ steps.f.outputs.missions }}
+      achievability: ${{ steps.f.outputs.achievability }}
+      affine_param_endpoint: ${{ steps.f.outputs.affine_param_endpoint }}
+      algebraic_bracket: ${{ steps.f.outputs.algebraic_bracket }}
+      baez_duarte: ${{ steps.f.outputs.baez_duarte }}
+      bagchi_recurrence: ${{ steps.f.outputs.bagchi_recurrence }}
+      bg_arm_balancing: ${{ steps.f.outputs.bg_arm_balancing }}
+      bg_broom_optimum: ${{ steps.f.outputs.bg_broom_optimum }}
+      bg_broom_vs_cherry: ${{ steps.f.outputs.bg_broom_vs_cherry }}
+      bg_caterpillar_concavity: ${{ steps.f.outputs.bg_caterpillar_concavity }}
+      bg_family: ${{ steps.f.outputs.bg_family }}
+      bg_flag_discharge: ${{ steps.f.outputs.bg_flag_discharge }}
+      bg_floor: ${{ steps.f.outputs.bg_floor }}
+      bg_floor_families: ${{ steps.f.outputs.bg_floor_families }}
+      bg_floor_r7_facets: ${{ steps.f.outputs.bg_floor_r7_facets }}
+      bg_hi_degree_tail: ${{ steps.f.outputs.bg_hi_degree_tail }}
+      bg_leaf_exchange: ${{ steps.f.outputs.bg_leaf_exchange }}
+      bg_m3_moment_cut: ${{ steps.f.outputs.bg_m3_moment_cut }}
+      bg_mixed_kkt: ${{ steps.f.outputs.bg_mixed_kkt }}
+      bg_smooth_nogo: ${{ steps.f.outputs.bg_smooth_nogo }}
+      bg_spider_vs_caterpillar: ${{ steps.f.outputs.bg_spider_vs_caterpillar }}
+      bg_tie_cherry_worst: ${{ steps.f.outputs.bg_tie_cherry_worst }}
+      bg_tie_slack: ${{ steps.f.outputs.bg_tie_slack }}
+      bilinear_corner: ${{ steps.f.outputs.bilinear_corner }}
+      borel_caratheodory: ${{ steps.f.outputs.borel_caratheodory }}
+      box_robust: ${{ steps.f.outputs.box_robust }}
+      bragg_amplitude: ${{ steps.f.outputs.bragg_amplitude }}
+      cauchy_deriv: ${{ steps.f.outputs.cauchy_deriv }}
+      cauchy_schwarz: ${{ steps.f.outputs.cauchy_schwarz }}
+      cavity_exchange: ${{ steps.f.outputs.cavity_exchange }}
+      concave_stationary_max: ${{ steps.f.outputs.concave_stationary_max }}
+      curvature_boundary: ${{ steps.f.outputs.curvature_boundary }}
+      dbn: ${{ steps.f.outputs.dbn }}
+      defect_witness: ${{ steps.f.outputs.defect_witness }}
+      disjoint_discs: ${{ steps.f.outputs.disjoint_discs }}
+      disk_coord: ${{ steps.f.outputs.disk_coord }}
+      domination_ratio: ${{ steps.f.outputs.domination_ratio }}
+      dvp_atoms: ${{ steps.f.outputs.dvp_atoms }}
+      dvp_bc_atoms: ${{ steps.f.outputs.dvp_bc_atoms }}
+      dvp_geom_atoms: ${{ steps.f.outputs.dvp_geom_atoms }}
+      exp_enclosure: ${{ steps.f.outputs.exp_enclosure }}
+      finite_argmax: ${{ steps.f.outputs.finite_argmax }}
+      gram_inertia: ${{ steps.f.outputs.gram_inertia }}
+      halfplane_disk: ${{ steps.f.outputs.halfplane_disk }}
+      hinge_floor: ${{ steps.f.outputs.hinge_floor }}
+      hyperbolicity: ${{ steps.f.outputs.hyperbolicity }}
+      integrality_gate: ${{ steps.f.outputs.integrality_gate }}
+      jensen_hyperbolicity: ${{ steps.f.outputs.jensen_hyperbolicity }}
+      leakage_dictionary: ${{ steps.f.outputs.leakage_dictionary }}
+      lehmer_pair: ${{ steps.f.outputs.lehmer_pair }}
+      lfunction_product: ${{ steps.f.outputs.lfunction_product }}
+      li_positivity: ${{ steps.f.outputs.li_positivity }}
+      log_combination: ${{ steps.f.outputs.log_combination }}
+      logderiv_region: ${{ steps.f.outputs.logderiv_region }}
+      magnitude_split: ${{ steps.f.outputs.magnitude_split }}
+      order_balance: ${{ steps.f.outputs.order_balance }}
+      parametric_holomorphy: ${{ steps.f.outputs.parametric_holomorphy }}
+      pe_duality: ${{ steps.f.outputs.pe_duality }}
+      per_size_dominance_sweep: ${{ steps.f.outputs.per_size_dominance_sweep }}
+      polytope_max: ${{ steps.f.outputs.polytope_max }}
+      primality: ${{ steps.f.outputs.primality }}
+      psd_form: ${{ steps.f.outputs.psd_form }}
+      quasicrystal: ${{ steps.f.outputs.quasicrystal }}
+      recursion_closure: ${{ steps.f.outputs.recursion_closure }}
+      robin_growth: ${{ steps.f.outputs.robin_growth }}
+      rvm_bridge: ${{ steps.f.outputs.rvm_bridge }}
+      scale_invariance: ${{ steps.f.outputs.scale_invariance }}
+      second_order: ${{ steps.f.outputs.second_order }}
+      selfinversive_rigidity: ${{ steps.f.outputs.selfinversive_rigidity }}
+      separable_convex: ${{ steps.f.outputs.separable_convex }}
+      speiser_box_probe: ${{ steps.f.outputs.speiser_box_probe }}
+      symmetric_quad: ${{ steps.f.outputs.symmetric_quad }}
+      symmetric_quad_d2: ${{ steps.f.outputs.symmetric_quad_d2 }}
+      tangent_sum: ${{ steps.f.outputs.tangent_sum }}
+      tight_cap_enclosure: ${{ steps.f.outputs.tight_cap_enclosure }}
+      toy_box: ${{ steps.f.outputs.toy_box }}
+      transcendental_enclosure: ${{ steps.f.outputs.transcendental_enclosure }}
+      turan_box: ${{ steps.f.outputs.turan_box }}
+      twofreq_offline: ${{ steps.f.outputs.twofreq_offline }}
+      wall_adversary: ${{ steps.f.outputs.wall_adversary }}
+      wall_barrier: ${{ steps.f.outputs.wall_barrier }}
+      weil_form_enclosure: ${{ steps.f.outputs.weil_form_enclosure }}
+      winding_box_zero: ${{ steps.f.outputs.winding_box_zero }}
+      window_form_floor: ${{ steps.f.outputs.window_form_floor }}
+      xor3_moment: ${{ steps.f.outputs.xor3_moment }}
+      zero_free_bridge: ${{ steps.f.outputs.zero_free_bridge }}
+      zeta_zero_localization: ${{ steps.f.outputs.zeta_zero_localization }}
+    steps:
+      - uses: actions/checkout@v4
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        with:
+          fetch-depth: 0
+      - id: f
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            shared:
+              - '.github/workflows/telperion-lean-e2e.yml'
+              - 'telperion/pyproject.toml'
+              - 'telperion/telperion.toml'
+              - 'telperion/lakefile*'
+            src:
+              - 'telperion/src/**'
+            missions:
+              - 'telperion/missions/**'
+            achievability:
+              - 'telperion/examples/achievability/**'
+            affine_param_endpoint:
+              - 'telperion/examples/affine_param_endpoint/**'
+            algebraic_bracket:
+              - 'telperion/examples/algebraic_bracket/**'
+            baez_duarte:
+              - 'telperion/examples/baez_duarte/**'
+            bagchi_recurrence:
+              - 'telperion/examples/bagchi_recurrence/**'
+            bg_arm_balancing:
+              - 'telperion/examples/bg_arm_balancing/**'
+            bg_broom_optimum:
+              - 'telperion/examples/bg_broom_optimum/**'
+            bg_broom_vs_cherry:
+              - 'telperion/examples/bg_broom_vs_cherry/**'
+            bg_caterpillar_concavity:
+              - 'telperion/examples/bg_caterpillar_concavity/**'
+            bg_family:
+              - 'telperion/examples/bg_family/**'
+            bg_flag_discharge:
+              - 'telperion/examples/bg_flag_discharge/**'
+            bg_floor:
+              - 'telperion/examples/bg_floor/**'
+            bg_floor_families:
+              - 'telperion/examples/bg_floor_families/**'
+            bg_floor_r7_facets:
+              - 'telperion/examples/bg_floor_r7_facets/**'
+            bg_hi_degree_tail:
+              - 'telperion/examples/bg_hi_degree_tail/**'
+            bg_leaf_exchange:
+              - 'telperion/examples/bg_leaf_exchange/**'
+            bg_m3_moment_cut:
+              - 'telperion/examples/bg_m3_moment_cut/**'
+            bg_mixed_kkt:
+              - 'telperion/examples/bg_mixed_kkt/**'
+            bg_smooth_nogo:
+              - 'telperion/examples/bg_smooth_nogo/**'
+            bg_spider_vs_caterpillar:
+              - 'telperion/examples/bg_spider_vs_caterpillar/**'
+            bg_tie_cherry_worst:
+              - 'telperion/examples/bg_tie_cherry_worst/**'
+            bg_tie_slack:
+              - 'telperion/examples/bg_tie_slack/**'
+            bilinear_corner:
+              - 'telperion/examples/bilinear_corner/**'
+            borel_caratheodory:
+              - 'telperion/examples/borel_caratheodory/**'
+            box_robust:
+              - 'telperion/examples/box_robust/**'
+            bragg_amplitude:
+              - 'telperion/examples/bragg_amplitude/**'
+            cauchy_deriv:
+              - 'telperion/examples/cauchy_deriv/**'
+            cauchy_schwarz:
+              - 'telperion/examples/cauchy_schwarz/**'
+            cavity_exchange:
+              - 'telperion/examples/cavity_exchange/**'
+            concave_stationary_max:
+              - 'telperion/examples/concave_stationary_max/**'
+            curvature_boundary:
+              - 'telperion/examples/curvature_boundary/**'
+            dbn:
+              - 'telperion/examples/dbn/**'
+            defect_witness:
+              - 'telperion/examples/defect_witness/**'
+            disjoint_discs:
+              - 'telperion/examples/disjoint_discs/**'
+            disk_coord:
+              - 'telperion/examples/disk_coord/**'
+            domination_ratio:
+              - 'telperion/examples/domination_ratio/**'
+            dvp_atoms:
+              - 'telperion/examples/dvp_atoms/**'
+            dvp_bc_atoms:
+              - 'telperion/examples/dvp_bc_atoms/**'
+            dvp_geom_atoms:
+              - 'telperion/examples/dvp_geom_atoms/**'
+            exp_enclosure:
+              - 'telperion/examples/exp_enclosure/**'
+            finite_argmax:
+              - 'telperion/examples/finite_argmax/**'
+            gram_inertia:
+              - 'telperion/examples/gram_inertia/**'
+            halfplane_disk:
+              - 'telperion/examples/halfplane_disk/**'
+            hinge_floor:
+              - 'telperion/examples/hinge_floor/**'
+            hyperbolicity:
+              - 'telperion/examples/hyperbolicity/**'
+            integrality_gate:
+              - 'telperion/examples/integrality_gate/**'
+            jensen_hyperbolicity:
+              - 'telperion/examples/jensen_hyperbolicity/**'
+            leakage_dictionary:
+              - 'telperion/examples/leakage_dictionary/**'
+            lehmer_pair:
+              - 'telperion/examples/lehmer_pair/**'
+            lfunction_product:
+              - 'telperion/examples/lfunction_product/**'
+            li_positivity:
+              - 'telperion/examples/li_positivity/**'
+            log_combination:
+              - 'telperion/examples/log_combination/**'
+            logderiv_region:
+              - 'telperion/examples/logderiv_region/**'
+            magnitude_split:
+              - 'telperion/examples/magnitude_split/**'
+            order_balance:
+              - 'telperion/examples/order_balance/**'
+            parametric_holomorphy:
+              - 'telperion/examples/parametric_holomorphy/**'
+            pe_duality:
+              - 'telperion/examples/pe_duality/**'
+            per_size_dominance_sweep:
+              - 'telperion/examples/per_size_dominance_sweep/**'
+            polytope_max:
+              - 'telperion/examples/polytope_max/**'
+            primality:
+              - 'telperion/examples/primality/**'
+            psd_form:
+              - 'telperion/examples/psd_form/**'
+            quasicrystal:
+              - 'telperion/examples/quasicrystal/**'
+            recursion_closure:
+              - 'telperion/examples/recursion_closure/**'
+            robin_growth:
+              - 'telperion/examples/robin_growth/**'
+            rvm_bridge:
+              - 'telperion/examples/rvm_bridge/**'
+            scale_invariance:
+              - 'telperion/examples/scale_invariance/**'
+            second_order:
+              - 'telperion/examples/second_order/**'
+            selfinversive_rigidity:
+              - 'telperion/examples/selfinversive_rigidity/**'
+            separable_convex:
+              - 'telperion/examples/separable_convex/**'
+            speiser_box_probe:
+              - 'telperion/examples/speiser_box_probe/**'
+            symmetric_quad:
+              - 'telperion/examples/symmetric_quad/**'
+            symmetric_quad_d2:
+              - 'telperion/examples/symmetric_quad_d2/**'
+            tangent_sum:
+              - 'telperion/examples/tangent_sum/**'
+            tight_cap_enclosure:
+              - 'telperion/examples/tight_cap_enclosure/**'
+            toy_box:
+              - 'telperion/examples/toy_box/**'
+            transcendental_enclosure:
+              - 'telperion/examples/transcendental_enclosure/**'
+            turan_box:
+              - 'telperion/examples/turan_box/**'
+            twofreq_offline:
+              - 'telperion/examples/twofreq_offline/**'
+            wall_adversary:
+              - 'telperion/examples/wall_adversary/**'
+            wall_barrier:
+              - 'telperion/examples/wall_barrier/**'
+            weil_form_enclosure:
+              - 'telperion/examples/weil_form_enclosure/**'
+            winding_box_zero:
+              - 'telperion/examples/winding_box_zero/**'
+            window_form_floor:
+              - 'telperion/examples/window_form_floor/**'
+            xor3_moment:
+              - 'telperion/examples/xor3_moment/**'
+            zero_free_bridge:
+              - 'telperion/examples/zero_free_bridge/**'
+            zeta_zero_localization:
+              - 'telperion/examples/zeta_zero_localization/**'
+
   toy-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.toy_box == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -52,6 +352,8 @@ jobs:
         working-directory: telperion/examples/toy_box/lean
         run: lake build
   jensen-hyperbolicity-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.jensen_hyperbolicity == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -92,6 +394,8 @@ jobs:
   # from the example's own lean-toolchain; the Mathlib olean cache is fetched
   # through the dependency tree as usual.
   li-positivity-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.li_positivity == 'true' || needs.changes.outputs.missions == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -180,6 +484,8 @@ jobs:
         working-directory: telperion/examples/li_positivity/lean
         run: python ../../../scripts/guard_anchors.py --island li_positivity axioms.out AxiomGuardZeroFree.out
   tangent-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.tangent_sum == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -213,6 +519,8 @@ jobs:
         working-directory: telperion/examples/tangent_sum/lean
         run: lake build
   primality-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.primality == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -246,6 +554,8 @@ jobs:
         working-directory: telperion/examples/primality/lean
         run: lake build
   cs-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.cauchy_schwarz == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -279,6 +589,8 @@ jobs:
         working-directory: telperion/examples/cauchy_schwarz/lean
         run: lake build
   bilinear-corner-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bilinear_corner == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -312,6 +624,8 @@ jobs:
         working-directory: telperion/examples/bilinear_corner/lean
         run: lake build
   algebraic-bracket-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.algebraic_bracket == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -345,6 +659,8 @@ jobs:
         working-directory: telperion/examples/algebraic_bracket/lean
         run: lake build
   halfplane-disk-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.halfplane_disk == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -378,6 +694,8 @@ jobs:
         working-directory: telperion/examples/halfplane_disk/lean
         run: lake build
   finite-argmax-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.finite_argmax == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -411,6 +729,8 @@ jobs:
         working-directory: telperion/examples/finite_argmax/lean
         run: lake build
   magnitude-split-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.magnitude_split == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -444,6 +764,8 @@ jobs:
         working-directory: telperion/examples/magnitude_split/lean
         run: lake build
   disk-coord-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.disk_coord == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -477,6 +799,8 @@ jobs:
         working-directory: telperion/examples/disk_coord/lean
         run: lake build
   cauchy-deriv-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.cauchy_deriv == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -510,6 +834,8 @@ jobs:
         working-directory: telperion/examples/cauchy_deriv/lean
         run: lake build
   logderiv-region-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.logderiv_region == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -543,6 +869,8 @@ jobs:
         working-directory: telperion/examples/logderiv_region/lean
         run: lake build
   pe-duality-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.pe_duality == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -576,6 +904,8 @@ jobs:
         working-directory: telperion/examples/pe_duality/lean
         run: lake build
   order-balance-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.order_balance == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -609,6 +939,8 @@ jobs:
         working-directory: telperion/examples/order_balance/lean
         run: lake build
   lfunction-product-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.lfunction_product == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -642,6 +974,8 @@ jobs:
         working-directory: telperion/examples/lfunction_product/lean
         run: lake build
   parametric-holomorphy-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.parametric_holomorphy == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -675,6 +1009,8 @@ jobs:
         working-directory: telperion/examples/parametric_holomorphy/lean
         run: lake build
   symmetric-quad-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.symmetric_quad == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -708,6 +1044,8 @@ jobs:
         working-directory: telperion/examples/symmetric_quad/lean
         run: lake build
   polytope-max-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.polytope_max == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -741,6 +1079,8 @@ jobs:
         working-directory: telperion/examples/polytope_max/lean
         run: lake build
   second-order-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.second_order == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -774,6 +1114,8 @@ jobs:
         working-directory: telperion/examples/second_order/lean
         run: lake build
   integrality-gate-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.integrality_gate == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -807,6 +1149,8 @@ jobs:
         working-directory: telperion/examples/integrality_gate/lean
         run: lake build
   domination-ratio-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.domination_ratio == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -840,6 +1184,8 @@ jobs:
         working-directory: telperion/examples/domination_ratio/lean
         run: lake build
   achievability-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.achievability == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -873,6 +1219,8 @@ jobs:
         working-directory: telperion/examples/achievability/lean
         run: lake build
   separable-convex-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.separable_convex == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -906,6 +1254,8 @@ jobs:
         working-directory: telperion/examples/separable_convex/lean
         run: lake build
   scale-invariance-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.scale_invariance == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -939,6 +1289,8 @@ jobs:
         working-directory: telperion/examples/scale_invariance/lean
         run: lake build
   concave-stationary-max-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.concave_stationary_max == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -972,6 +1324,8 @@ jobs:
         working-directory: telperion/examples/concave_stationary_max/lean
         run: lake build
   symmetric-quad-d2-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.symmetric_quad_d2 == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1005,6 +1359,8 @@ jobs:
         working-directory: telperion/examples/symmetric_quad_d2/lean
         run: lake build
   tight-cap-enclosure-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.tight_cap_enclosure == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1038,6 +1394,8 @@ jobs:
         working-directory: telperion/examples/tight_cap_enclosure/lean
         run: lake build
   affine-param-endpoint-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.affine_param_endpoint == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1071,6 +1429,8 @@ jobs:
         working-directory: telperion/examples/affine_param_endpoint/lean
         run: lake build
   recursion-closure-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.recursion_closure == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1104,6 +1464,8 @@ jobs:
         working-directory: telperion/examples/recursion_closure/lean
         run: lake build
   cavity-exchange-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.cavity_exchange == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1137,6 +1499,8 @@ jobs:
         working-directory: telperion/examples/cavity_exchange/lean
         run: lake build
   per-size-dominance-sweep-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.per_size_dominance_sweep == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1170,6 +1534,8 @@ jobs:
         working-directory: telperion/examples/per_size_dominance_sweep/lean
         run: lake build
   curvature-boundary-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.curvature_boundary == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1203,6 +1569,8 @@ jobs:
         working-directory: telperion/examples/curvature_boundary/lean
         run: lake build
   transcendental-enclosure-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.transcendental_enclosure == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1236,6 +1604,8 @@ jobs:
         working-directory: telperion/examples/transcendental_enclosure/lean
         run: lake build
   log-combination-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.log_combination == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1269,6 +1639,8 @@ jobs:
         working-directory: telperion/examples/log_combination/lean
         run: lake build
   psd-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.psd_form == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1302,6 +1674,8 @@ jobs:
         working-directory: telperion/examples/psd_form/lean
         run: lake build
   xor3-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.xor3_moment == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1335,6 +1709,8 @@ jobs:
         working-directory: telperion/examples/xor3_moment/lean
         run: lake build
   bg-family-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_family == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1368,6 +1744,8 @@ jobs:
         working-directory: telperion/examples/bg_family/lean
         run: lake build
   bg-floor-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_floor == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1395,6 +1773,8 @@ jobs:
         working-directory: telperion/examples/bg_floor/lean
         run: lake build
   bg-floor-families-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_floor_families == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -1422,6 +1802,8 @@ jobs:
         working-directory: telperion/examples/bg_floor_families/lean
         run: lake build
   bg-floor-r7-facets-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_floor_r7_facets == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -1449,6 +1831,8 @@ jobs:
         working-directory: telperion/examples/bg_floor_r7_facets/lean
         run: lake build
   hinge-floor-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.hinge_floor == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1482,6 +1866,8 @@ jobs:
         working-directory: telperion/examples/hinge_floor/lean
         run: lake build
   borel-caratheodory-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.borel_caratheodory == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1506,6 +1892,8 @@ jobs:
         working-directory: telperion/examples/borel_caratheodory/lean
         run: lake build
   bg-flag-discharge-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_flag_discharge == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1539,6 +1927,8 @@ jobs:
         working-directory: telperion/examples/bg_flag_discharge/lean
         run: lake build
   bg-caterpillar-concavity-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_caterpillar_concavity == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1572,6 +1962,8 @@ jobs:
         working-directory: telperion/examples/bg_caterpillar_concavity/lean
         run: lake build
   bg-m3-moment-cut-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_m3_moment_cut == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1605,6 +1997,8 @@ jobs:
         working-directory: telperion/examples/bg_m3_moment_cut/lean
         run: lake build
   bg-arm-balancing-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_arm_balancing == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1638,6 +2032,8 @@ jobs:
         working-directory: telperion/examples/bg_arm_balancing/lean
         run: lake build
   bg-broom-optimum-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_broom_optimum == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1671,6 +2067,8 @@ jobs:
         working-directory: telperion/examples/bg_broom_optimum/lean
         run: lake build
   bg-tie-cherry-worst-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_tie_cherry_worst == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1704,6 +2102,8 @@ jobs:
         working-directory: telperion/examples/bg_tie_cherry_worst/lean
         run: lake build
   bg-tie-slack-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_tie_slack == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1737,6 +2137,8 @@ jobs:
         working-directory: telperion/examples/bg_tie_slack/lean
         run: lake build
   bg-mixed-kkt-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_mixed_kkt == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1770,6 +2172,8 @@ jobs:
         working-directory: telperion/examples/bg_mixed_kkt/lean
         run: lake build
   bg-hi-degree-tail-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_hi_degree_tail == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1803,6 +2207,8 @@ jobs:
         working-directory: telperion/examples/bg_hi_degree_tail/lean
         run: lake build
   bg-smooth-nogo-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_smooth_nogo == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1836,6 +2242,8 @@ jobs:
         working-directory: telperion/examples/bg_smooth_nogo/lean
         run: lake build
   bg-spider-vs-caterpillar-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_spider_vs_caterpillar == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1869,6 +2277,8 @@ jobs:
         working-directory: telperion/examples/bg_spider_vs_caterpillar/lean
         run: lake build
   bg-broom-vs-cherry-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_broom_vs_cherry == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1902,6 +2312,8 @@ jobs:
         working-directory: telperion/examples/bg_broom_vs_cherry/lean
         run: lake build
   bg-leaf-exchange-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bg_leaf_exchange == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1940,6 +2352,8 @@ jobs:
   # assert the KERNEL rejects the forgery while the true atoms compile clean. This is
   # the tier gated OFF locally (SoC hazard); CI is where it runs.
   dvp-atoms-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.dvp_atoms == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -1970,6 +2384,8 @@ jobs:
   # dVP frontier obligation (i) core: the log-derivative partial-fraction split (Herglotz
   # sum + entire part) — logDeriv_sub_zpow / logDeriv_prod_sub_zpow / herglotz_split.
   dvp-bc-atoms-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.dvp_bc_atoms == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2004,6 +2420,8 @@ jobs:
   # Regenerate from the emitter (arb ball enclosure + box-robust certify + emit),
   # drift-check, and kernel-verify via nlinarith.
   box-robust-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.box_robust == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2034,6 +2452,8 @@ jobs:
   # dVP ζ boundary growth LOWER half: ‖ζ(s)‖ ≥ 2 - π²/6 > 0 for Re s ≥ 2 (Dirichlet reverse
   # triangle + Basel tail hasSum_zeta_two). The lower half of the ζ-growth sphere input.
   hyperbolicity-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.hyperbolicity == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2064,6 +2484,8 @@ jobs:
   # dVP ζ zero-factor bound (2) crux: two-scale separation R-R₀ ≤ ‖z-ρ‖ (inner-disk zeros vs outer
   # sphere) + per-zero log-ratio bound + summed (count × constant = O(L)) form.
   turan-box-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.turan_box == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2094,6 +2516,8 @@ jobs:
   # dVP ζ zero-factor (2) log-of-finprod wiring: log‖∏(w-ρ)^m‖ = Σ m·log‖w-ρ‖, composed with the
   # two-scale bound → log‖P c‖ - log‖P z‖ ≤ (Σ m)·(log R₀ - log(R-R₀)) = AP.
   dvp-geom-atoms-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.dvp_geom_atoms == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2139,6 +2563,8 @@ jobs:
   # every guarded anchor elaborates kernel-clean or the job fails).
   # ============================================================================
   zero-free-bridge-suite:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.zero_free_bridge == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -2199,6 +2625,8 @@ jobs:
   # H_CI is a policy dial (telperion/docs/B2_MAIN_CI.md): the climb runs hotter than CI;
   # the paper cites H_CI, campaign_state tracks H.  conjecture1_proved = False.
   zeta-ladder-suite:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.zeta_zero_localization == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
@@ -2284,6 +2712,8 @@ jobs:
           done
           echo "OK: ladder CI-verified to H_CI=$H_CI (kernel-clean, 3 standard axioms, via Guard_h<top> modules)."
   weil-form-enclosure-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.rvm_bridge == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.weil_form_enclosure == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -2346,6 +2776,8 @@ jobs:
           fi
 
   wall-analysis-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.wall_adversary == 'true' || needs.changes.outputs.wall_barrier == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -2392,6 +2824,8 @@ jobs:
             echo "::error::unexpected axiom"; grep -E "depends on axioms" out.txt | grep -v "\[propext, Classical.choice, Quot.sound\]"; exit 1; fi
 
   rvm-bridge-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.missions == 'true' || needs.changes.outputs.rvm_bridge == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -2463,6 +2897,8 @@ jobs:
         working-directory: telperion/examples/rvm_bridge/lean
         run: python ../../../scripts/guard_anchors.py --island rvm_bridge axioms.out
   dbn-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.dbn == 'true' || needs.changes.outputs.missions == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -2524,6 +2960,8 @@ jobs:
         working-directory: telperion/examples/dbn/lean
         run: python ../../../scripts/guard_anchors.py --island dbn axioms.out
   exp-enclosure-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.exp_enclosure == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.zeta_zero_localization == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -2567,6 +3005,8 @@ jobs:
         working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
         run: lake build ExpEnclosureInstances
   disjoint-discs-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.disjoint_discs == 'true' || needs.changes.outputs.quasicrystal == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -2631,6 +3071,8 @@ jobs:
             exit 1
           fi
   gram-inertia-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.gram_inertia == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2688,6 +3130,8 @@ jobs:
             exit 1
           fi
   window-form-floor-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.weil_form_enclosure == 'true' || needs.changes.outputs.window_form_floor == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -2757,6 +3201,8 @@ jobs:
           fi
 
   satake-degree-two-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.quasicrystal == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -2796,6 +3242,9 @@ jobs:
             echo "and the assertions in zoo.py _run_asserts."; exit 1; }
           grep -q "GOVERNANCE: all required outcomes hold" zoo.txt || {
             echo "::error::GOVERNANCE RAIL BROKEN"; exit 1; }
+          grep -q "DEDEKIND CONTROL CONFIRMED" zoo.txt || {
+            echo "::error::DEDEKIND GATE FAILED: zeta_K = zeta * L(chi_-20) is no longer"
+            echo "rejected by (B-mult-twisted) -- the product-closure control regressed."; exit 1; }
 
       - name: Anti-phantom refusal (a corrupted eta exponent must REFUSE, not report)
         working-directory: telperion/examples/quasicrystal
@@ -2837,7 +3286,10 @@ jobs:
           if grep -q "ofReduceBool" guard.txt; then echo "::error::GUARD FAILED: native_decide"; exit 1; fi
           for t in scalarGenerated_powerSum_iff unitary_deg2_not_scalarGenerated \
                    delta_satakeDet_two delta_rejected_by_B_mult_twisted \
-                   delta_rejected_nonvacuous tau_hecke_p2 tau_mult_six; do
+                   delta_rejected_nonvacuous tau_hecke_p2 tau_mult_six \
+                   dedekind_split_rejected dedekind_inert_rejected \
+                   scalarGenerated_not_closed_under_product chi_m20_three chi_m20_eleven \
+                   dedekind_at_three_rejected dedekind_at_eleven_rejected; do
             grep -q "SatakeDegreeTwo.$t" guard.txt || { echo "::error::GUARD FAILED: $t not printed"; exit 1; }
           done
           # Every printed axiom list must be a SUBSET of the three standard axioms.
@@ -2868,6 +3320,8 @@ jobs:
           echo "anti-triviality gate OK: 14/14 trivial-close probes refused"
 
   mission-statements-compile:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.missions == 'true')
     # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
     # statement package: a statement that does not elaborate cannot enter the
     # graph."  This job closes the gap for ALL four campaigns (bg/rh predate it
@@ -2897,6 +3351,8 @@ jobs:
         working-directory: telperion/missions/${{ matrix.campaign }}/lean
         run: lake build
   bragg-amplitude-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bragg_amplitude == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.zeta_zero_localization == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -2940,6 +3396,8 @@ jobs:
         working-directory: telperion/examples/zeta_zero_localization/lean/zzl_aux
         run: lake build BraggAmplitudeInstances
   defect-witness-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.defect_witness == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -2973,6 +3431,8 @@ jobs:
         working-directory: telperion/examples/defect_witness/lean
         run: lake build
   selfinversive-rigidity-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.quasicrystal == 'true' || needs.changes.outputs.selfinversive_rigidity == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -3006,6 +3466,8 @@ jobs:
         working-directory: telperion/examples/quasicrystal/lean
         run: lake build SelfInversiveRigidityInstances
   twofreq-offline-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.quasicrystal == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.twofreq_offline == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -3045,6 +3507,8 @@ jobs:
         working-directory: telperion/examples/quasicrystal/lean
         run: lake build EulerFactorSectionOffline
   winding-box-zero-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.winding_box_zero == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -3066,6 +3530,8 @@ jobs:
         working-directory: telperion
         run: PYTHONPATH=src python -m pytest tests/test_emit_winding_box_zero.py -q
   speiser-box-probe-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.speiser_box_probe == 'true' || needs.changes.outputs.src == 'true')
     # MM_speiser_box_probe (routes-roadmap E9, Face 7 pilot, W4c): a Lipschitz-net
     # ZERO-FREENESS certificate for `deriv riemannZeta` on [1/4, 3/8] x [6, 10].
     # NOT the Speiser wall -- Speiser (1935) makes non-vanishing of zeta' on the WHOLE
@@ -3128,6 +3594,8 @@ jobs:
             exit 1
           fi
   robin-growth-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.robin_growth == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -3164,6 +3632,8 @@ jobs:
         working-directory: telperion/examples/robin_growth/lean
         run: lake build
   baez-duarte-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.baez_duarte == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -3200,6 +3670,8 @@ jobs:
         working-directory: telperion/examples/baez_duarte/lean
         run: lake build
   lehmer-pair-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.lehmer_pair == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -3236,6 +3708,8 @@ jobs:
         working-directory: telperion/examples/lehmer_pair/lean
         run: lake build
   bagchi-recurrence-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bagchi_recurrence == 'true' || needs.changes.outputs.src == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -3273,6 +3747,8 @@ jobs:
         run: lake build
 
   leakage-dictionary-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.leakage_dictionary == 'true' || needs.changes.outputs.quasicrystal == 'true' || needs.changes.outputs.src == 'true')
     # PROGRAM MIRRORMERE, ROUTE A item A2b: the leakage dictionary
     # (completely-multiplicative amplitude => zero COMPOSITE Bragg amplitude) as
     # kernel lemmas, plus the certified Davenport-Heilbronn instance b(6) = +1.9364.
