@@ -63,6 +63,7 @@ import M6gapImAxis
 import M6gapP15ZeroFree
 import DBNM5Alpha
 import DBNM5Target
+import DBNP15Wired
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -878,3 +879,9 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNM5.EB_div_Bt
 #print axioms DBNM5.EC0_div_Bt
 #print axioms DBNM5.P15Thm13_of_P15Cor65
+
+-- Route C: P15 criterion wired (M4 + M1 + M6gap)
+#print axioms dbn_m1aStep_holds
+#print axioms dbn_p15_criterion
+#print axioms dbn_p15ZeroFreeRect_of_le
+#print axioms dbn_p15_criterion_low
