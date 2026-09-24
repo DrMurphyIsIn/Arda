@@ -22,8 +22,12 @@
       bridge, plus the defect/size clauses) is NOT done, so these remain hypotheses;
     * `Hcoverage` -- the Brualdi-Goldwasser exhaustiveness.  Evidence: exhaustive for n <= 15
       (`viable_all`: 1793 defective trees, 0 failures).  Small-n evidence is weak here: the single-hub
-      `Hnorm` also held at small n and first failed at n = 52 (`R47HnormFalse52`); see
-      `proof/docs/BG_HWH_COVERAGE_LARGE_N_2026-09-24.md` for the larger-n check.
+      `Hnorm` also held at small n and first failed at n = 52 (`R47HnormFalse52`).  Larger-n check
+      (`proof/docs/BG_HWH_COVERAGE_LARGE_N_2026-09-24.md`): the single-SPR viability test is
+      exhaustively clean for n <= 23 but FAILS from n = 25 (exact witness, minDefect 1), so a
+      single-SPR move-class family cannot supply `Hcoverage` for all n.  The target itself survives:
+      `BGBackboneConjecture` (equivalently `StraightProgress_sized` at each fixed n) holds exhaustively
+      and exactly for every n <= 100.
   The pinned consumer is `R47BGConjecture.bgBackbone_of_extended_coverage`.  No completeness is claimed:
   `conjecture1_proved = False`.
 
