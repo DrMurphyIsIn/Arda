@@ -1,0 +1,5 @@
+SCHUR a=0.9727 A=1.313 K=2000: path A'=2.756  numerical lam_max=2.3746  Schur Lambda=[3.7093 +/- 1.41e-5]  T_Lambda=257  (T_path=99)
+SCHUR a=1.0391 A=1.379 K=2000: path A'=3.492  numerical lam_max=2.8994  Schur Lambda=[3.5191 +/- 4.32e-5]  T_Lambda=212  (T_path=206)
+SCHUR a=1.1992 A=1.539 K=2000: path A'=5.026  numerical lam_max=3.9125  Schur Lambda=[4.7675 +/- 1.66e-5]  T_Lambda=739  (T_path=957)
+SCHUR a=1.1992 A=1.299 K=2000: path A'=4.826  numerical lam_max=3.1563  Schur Lambda=[4.2905 +/- 1.54e-5]  T_Lambda=459  (T_path=784)
+SCHUR a=1.4000 A=1.740 K=2000: path A'=6.372  numerical lam_max=4.8899  Schur Lambda=[5.8273 +/- 2.47e-5]  T_Lambda=2133  (T_path=3677)

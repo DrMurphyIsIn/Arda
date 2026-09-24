@@ -1,0 +1,56 @@
+[
+ {
+  "L": "2.25",
+  "Aplus": "11.161373010",
+  "R": 442082.74014106515,
+  "m": 1000,
+  "Tm": 513332.9536902817,
+  "log10_eps": -997.3041455274688,
+  "note": "KERNEL-certified A+ (Crux2_verified_window.primeSide_autocorr_le_cert, L'=2.3)"
+ },
+ {
+  "L": "2.25",
+  "Aplus": "11.084",
+  "R": 409167.34605388064,
+  "m": 1100,
+  "Tm": 489958.77493502246,
+  "log10_eps": -1163.407420195548,
+  "note": "builder's float CW value (cw_exact.py)"
+ },
+ {
+  "L": "2.25",
+  "Aplus": "11.37",
+  "R": 544639.2361761774,
+  "m": 500,
+  "Tm": 579922.7187909918,
+  "log10_eps": -473.67478064621946,
+  "note": "robustness threshold quoted by the builder"
+ },
+ {
+  "L": "2.2",
+  "Aplus": "10.603789677",
+  "R": 253133.09432231344,
+  "m": 1700,
+  "Tm": 384667.84225272684,
+  "log10_eps": -1949.6814150311554,
+  "note": "exact-integer Python certificate cert_L225_N900.json"
+ },
+ {
+  "L": "2.0",
+  "Aplus": "8.508782158",
+  "R": 31153.794270339255,
+  "m": 3000,
+  "Tm": 250338.42833301713,
+  "log10_eps": -3065.4989520986796,
+  "note": "exact-integer Python certificate cert_L205_N820.json"
+ },
+ {
+  "L": "1.4166",
+  "Aplus": "4.138132301",
+  "R": 394.8641902840059,
+  "m": 3000,
+  "Tm": 224256.6617236846,
+  "log10_eps": -3234.6713020020275,
+  "note": "exact-integer Python certificate cert_L14666_N600.json"
+ }
+]

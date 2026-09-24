@@ -1,0 +1,59 @@
+/-
+  Crux2_kappa_certify.lean -- buildable core of "kappa_zeta(x) = 0 certified up to x = 11.006 via a
+  window-aware reduction" (lens: kappa-certify, crux round 2).
+
+  conjecture1_proved = False.  RH is open and nothing here moves it.  kappa_zeta(x) is the number of negative
+  squares of the Weil form Q on test functions supported in [-a, a], a = (1/2) log x; by Weil's criterion RH holds
+  iff kappa_zeta(x) = 0 for EVERY x.  This file concerns finitely many windows x <= 11.006, which exclude no zero
+  of zeta.  The same certificate pipeline certifies kappa = 0 for the Davenport-Heilbronn function D (off-line
+  zero at 0.8085 + 85.699i) at x = 6.996 and 11.006 with margins 1e23 and 1e40 times larger than zeta's
+  (negative control, see telperion/research/crux2_kappa-certify/README.md): window certificates at these scales
+  are blind to the Euler product.  Nothing below uses or implies RH.
+
+  Checked by: cd telperion/examples/li_positivity/lean && lake env lean Crux/Crux2_kappa_certify.lean
+  (Lean v4.34.0-rc1, the island's Mathlib).  No `sorry`, `admit`, `native_decide`, `opaque` or new `axiom`.  The
+  #print axioms block at the end reports only propext, Classical.choice, Quot.sound for every theorem.
+
+  WHAT THIS FILE ESTABLISHES (THEOREM-kernel-checked):
+  A. `LemmaA.shift_bound`, `LemmaA.shift_bound_signed`, `LemmaA.comb_bound`, `LemmaA.prime_comb_bound` -- the
+     idea's Lemma A in CONTINUOUS form.  For every real measurable g with g^2 integrable and g = 0 outside [-A, A], shifts tau_i > 0, and real
+     weights c_i:
+        sum_i c_i * int g(u + tau_i) g(u) du  <=  (sum_i |c_i| cos(pi/(floor(2A/tau_i) + 2))) * int g(u)^2 du.
+     With tau_n = log n, c_n = 2 Lambda(n)/sqrt n (prime_comb_bound, Mathlib's vonMangoldt), the left side is
+     <P_A g, g> for the compressed prime comb and the bracket is the constant A'(A) of the window-aware reduction (A' ~ A_L/2 instead of Zhu's Kronecker sup
+     A_L).  Previously only the finite path-graph core was kernel-checked and the orbit decomposition was on
+     paper; the proof here avoids the decomposition: weighted AM-GM with a Perron weight that is constant on the
+     translation cells floor((u + A)/tau), integrated using translation invariance of Lebesgue measure.
+  B. `PathGraph.path_quad_le` (path-graph Perron bound) and `SchurTest.schur_test` (weighted Schur test): the
+     finite cores of Lemma A and of the Fejer-mass heuristic (Lemma A').
+  C. `schur_link`: generic Schur-complement step.  If C is positive definite and the Schur complement
+     A - B C^{-1} B^T lies entrywise within w of a matrix S with S >= delta I and k w < delta, then the block
+     matrix [[A, B], [B^T, C]] is positive semidefinite (C of any finite size).  `block_assembly`: the two-block
+     inequality lam_min >= min(l, d) - e used to add the Legendre tail.
+  D. Four certificate cores, each an EXACT rational congruence Sq - delta I = L D L^T (closed by `ring`) with
+     `core_posdef` (every 8 x 8 matrix in the Arb box around Sq is positive definite) and `core_schur`
+     (instantiation of C: every symmetric block matrix with C > 0 and Schur complement in the box is PSD):
+       Core_x6996_even  x = e^{249/128} = 6.9958, lam0 = 4.39e-28  (Zhu-type reduction, T# = 560, N = 450)
+       Core_x6996_odd   x = 6.9958,               lam0 = 1.25e-24  (T# = 800, N = 620)
+       Core_x11006_even x = e^{307/128} = 11.006, lam0 = 6.6018e-49 (window-aware reduction, N = 2300)
+       Core_x11006_odd  x = 11.006,               lam0 = 4.4579e-45 (window-aware reduction, N = 2300)
+     Instantiated with the block matrix M - lam0 I (M = leading Legendre block of the reduced form), core_schur
+     gives lam_min(M) >= lam0.  Negative controls (a pivot numerator +1, one Schur entry changed in its last digits, delta
+     tripled; applied to Core_x11006_odd) make the kernel reject the core (unsolved goals, sorryAx) --
+     see the research README.
+
+  TRUST BOUNDARY (NOT kernel-checked):
+  - Arb (python-flint 0.6.0) facts entering as the hypotheses of core_schur: C - lam0 I > 0 (verified Cholesky /
+    LDL^T with rigorous residual) and the Schur-complement box `hbox`; and the matrices M themselves (composite
+    Gauss-Legendre with Bernstein-ellipse remainders, spherical Bessel backward recurrences, digamma), the
+    quadrature error bounds, the Legendre-tail bounds eps_B, eps_D, and the scalar constants b', eta, deficit, xi.
+  - Paper lemmas: (P1) Weil's explicit formula, arithmetic side, for smooth compactly supported tests (only this
+    is needed to read Q >= lam ||f||^2 as kappa = 0; a version is kernel-proved on the rvm_bridge island,
+    RvMBridge4.limit_explicit_formula, and the normalisation used here agrees with the zero side over 2000
+    zeros to 5e-25); (P2) the Binet envelope Re psi(1/4 + it/2) - log pi >= log(t/2pi) - 1/t for
+    t >= 3/4; (P3) the reductions Q >= R (Zhu) and Q >= R'' (window-aware: Lemma A + Lemma B), whose comb step
+    is A above and whose remaining analytic step (Lemma B, erf localisation) is on paper.
+
+  DOES NOT ESTABLISH: anything about the zeros of zeta, or kappa_zeta(x) for any x > 11.006 (RH); the analytic
+  reduction Q >= R'' as a Lean theorem; the Fejer-mass conjecture ||P_A|| ~ sum c_n (1 - log n/(2A)).
+-/

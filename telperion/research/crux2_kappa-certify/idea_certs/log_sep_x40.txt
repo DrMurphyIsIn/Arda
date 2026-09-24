@@ -1,0 +1,4 @@
+D   x=40 N=60 even: eig est -0.000258774  certified c^TQc/c^Tc = [-0.00025877383 +/- 2.86e-12]  negative=True
+zeta x=40 N=60 even: lam_min(Galerkin) ~ 1.0645e-109 ; verified LDL^T at 9.580e-110 ok=True resid [3.90e-293 +/- 2.07e-296]
+D   x=40 N=60 odd: eig est -0.00108547  certified c^TQc/c^Tc = [-0.0010854653 +/- 3.38e-11]  negative=True
+zeta x=40 N=60 odd: lam_min(Galerkin) ~ 8.7203e-106 ; verified LDL^T at 7.848e-106 ok=True resid [3.90e-293 +/- 2.11e-296]

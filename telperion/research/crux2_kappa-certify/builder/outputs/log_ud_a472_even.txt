@@ -1,0 +1,7 @@
+a=472/256 x=e^{2a}=[39.944860 +/- 1.25e-7] kind=zeta comb=[2, 3, 4, 5, 7, 8, 9, 11, 13, 16, 17, 19, 23, 25, 27, 29, 31, 32, 37]
+   built even N=20 panels=4 m=78 nin=40 (1.7s)
+  even N= 20  lam_min(Q_N) = 1.1988774441e-33   next = 2.3174e-30   max entry radius 3.7e-139
+   built even N=40 panels=4 m=118 nin=80 (13.0s)
+  even N= 40  lam_min(Q_N) = 8.1589738488e-58   next = 1.6672e-52   max entry radius 3.9e-124
+   built even N=60 panels=4 m=158 nin=120 (36.5s)
+  even N= 60  lam_min(Q_N) = 5.9155252676e-78   next = 4.6691e-72   max entry radius 5.7e-109

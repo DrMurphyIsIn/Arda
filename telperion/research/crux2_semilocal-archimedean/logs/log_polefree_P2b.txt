@@ -1,0 +1,8 @@
+{"P": 2, "x": 3.12, "sector": "even", "smallest": ["8.0254e-51", "0.00078617", "0.60182"], "min_negative": null}
+{"P": 2, "x": 3.12, "sector": "odd", "smallest": ["2.3683e-51", "9.9295e-5", "0.77881"], "min_negative": null}
+{"P": 2, "x": 3.14, "sector": "even", "smallest": ["-1.8299e-52", "0.0007742", "0.59219"], "min_negative": null}
+{"P": 2, "x": 3.14, "sector": "odd", "smallest": ["-0.0054647", "-2.122e-51", "0.77083"], "min_negative": "-0.0054647"}
+{"P": 2, "x": 3.16, "sector": "even", "smallest": ["-1.3841e-50", "0.0007468", "0.58281"], "min_negative": null}
+{"P": 2, "x": 3.16, "sector": "odd", "smallest": ["-0.010727", "-1.0148e-50", "0.76277"], "min_negative": "-0.010727"}
+{"P": 2, "x": 3.18, "sector": "even", "smallest": ["9.8475e-51", "0.00069693", "0.57368"], "min_negative": null}
+{"P": 2, "x": 3.18, "sector": "odd", "smallest": ["-0.015688", "8.9266e-51", "0.7547"], "min_negative": "-0.015688"}

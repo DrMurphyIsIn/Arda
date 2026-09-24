@@ -1,0 +1,88 @@
+PASS N1 (p,c)=(29,11) supp/L=0.7: zero-sum = 2L g(0) (c-independent)  sum=5.4784580498866 2Lg0=5.4784580498866
+PASS N1 (p,c)=(29,11) supp/L=0.7: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=5.4784580498866 formula=5.4784580498866
+PASS N1 (p,c)=(29,11) supp/L=0.99: zero-sum = 2L g(0) (c-independent)  sum=3.8736572069905 2Lg0=3.8736572069905
+PASS N1 (p,c)=(29,11) supp/L=0.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=3.8736572069905 formula=3.8736572069905
+PASS N1 (p,c)=(29,11) supp/L=1.5: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=2.5404284502518 formula=2.5404284502518
+PASS N1 (p,c)=(29,11) supp/L=1.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=1.7379167005785 formula=1.7379167005785
+PASS N1 (p,c)=(29,11) supp/L=2.5: three-point formula FAILS beyond 2L (as stated)  sum=1.0487397397792 formula=1.0484504774344
+PASS N1 (p,c)=(29,11) zeros simple / branches disjoint (sin alpha != 0)  alpha=(3.141592654 - 0.2061504303j)
+PASS N1 (p,c)=(5,5) supp/L=0.7: zero-sum = 2L g(0) (c-independent)  sum=5.4784580498866 2Lg0=5.4784580498866
+PASS N1 (p,c)=(5,5) supp/L=0.7: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=5.4784580498866 formula=5.4784580498866
+PASS N1 (p,c)=(5,5) supp/L=0.99: zero-sum = 2L g(0) (c-independent)  sum=3.8736572069905 2Lg0=3.8736572069905
+PASS N1 (p,c)=(5,5) supp/L=0.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=3.8736572069905 formula=3.8736572069905
+PASS N1 (p,c)=(5,5) supp/L=1.5: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=2.5388958568552 formula=2.5388958568552
+PASS N1 (p,c)=(5,5) supp/L=1.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=1.7200032532446 formula=1.7200032532446
+PASS N1 (p,c)=(5,5) supp/L=2.5: three-point formula FAILS beyond 2L (as stated)  sum=1.0028760545995 formula=1.0024765970757
+PASS N1 (p,c)=(5,5) zeros simple / branches disjoint (sin alpha != 0)  alpha=(3.141592654 - 0.4812118251j)
+PASS N1 (p,c)=(41,13) supp/L=0.7: zero-sum = 2L g(0) (c-independent)  sum=5.4784580498866 2Lg0=5.4784580498866
+PASS N1 (p,c)=(41,13) supp/L=0.7: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=5.4784580498866 formula=5.4784580498866
+PASS N1 (p,c)=(41,13) supp/L=0.99: zero-sum = 2L g(0) (c-independent)  sum=3.8736572069905 2Lg0=3.8736572069905
+PASS N1 (p,c)=(41,13) supp/L=0.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=3.8736572069905 formula=3.8736572069905
+PASS N1 (p,c)=(41,13) supp/L=1.5: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=2.5405266232543 formula=2.5405266232543
+PASS N1 (p,c)=(41,13) supp/L=1.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=1.7390641783859 formula=1.7390641783859
+PASS N1 (p,c)=(41,13) supp/L=2.5: three-point formula FAILS beyond 2L (as stated)  sum=1.0516779594356 formula=1.051395416309
+PASS N1 (p,c)=(41,13) zeros simple / branches disjoint (sin alpha != 0)  alpha=(3.141592654 - 0.1737322963j)
+PASS N1 (p,c)=(7,3) supp/L=0.7: zero-sum = 2L g(0) (c-independent)  sum=5.4784580498866 2Lg0=5.4784580498866
+PASS N1 (p,c)=(7,3) supp/L=0.7: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=5.4784580498866 formula=5.4784580498866
+PASS N1 (p,c)=(7,3) supp/L=0.99: zero-sum = 2L g(0) (c-independent)  sum=3.8736572069905 2Lg0=3.8736572069905
+PASS N1 (p,c)=(7,3) supp/L=0.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=3.8736572069905 formula=3.8736572069905
+PASS N1 (p,c)=(7,3) supp/L=1.5: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=2.5476291415943 formula=2.5476291415943
+PASS N1 (p,c)=(7,3) supp/L=1.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=1.8220807100387 formula=1.8220807100387
+PASS N1 (p,c)=(7,3) supp/L=2.5: three-point formula FAILS beyond 2L (as stated)  sum=1.2643576839288 formula=1.264452792863
+PASS N1 (p,c)=(7,3) zeros simple / branches disjoint (sin alpha != 0)  alpha=2.17359088
+PASS N1 (p,c)=(29,10) supp/L=0.7: zero-sum = 2L g(0) (c-independent)  sum=5.4784580498866 2Lg0=5.4784580498866
+PASS N1 (p,c)=(29,10) supp/L=0.7: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=5.4784580498866 formula=5.4784580498866
+PASS N1 (p,c)=(29,10) supp/L=0.99: zero-sum = 2L g(0) (c-independent)  sum=3.8736572069905 2Lg0=3.8736572069905
+PASS N1 (p,c)=(29,10) supp/L=0.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=3.8736572069905 formula=3.8736572069905
+PASS N1 (p,c)=(29,10) supp/L=1.5: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=2.5418998417392 formula=2.5418998417392
+PASS N1 (p,c)=(29,10) supp/L=1.99: zero-sum = 2L(g0 - c/(2sqrt p)(gL + g-L))  sum=1.7551148002025 formula=1.7551148002025
+PASS N1 (p,c)=(29,10) supp/L=2.5: three-point formula FAILS beyond 2L (as stated)  sum=1.0927812986825 formula=1.0925884571193
+PASS N1 (p,c)=(29,10) zeros simple / branches disjoint (sin alpha != 0)  alpha=2.761086276
+PASS N1b (p,c)=(29,11) positive-type two-bump test: zero-sum = 4 L Phi(0)(1 - c/(2 sqrt p))  sum=-0.32710891236 pred=-0.32710891236
+PASS N1b (p,c)=(29,11) sign: negative iff off-line (c^2 > 4p: True)
+PASS N1b (p,c)=(5,5) positive-type two-bump test: zero-sum = 4 L Phi(0)(1 - c/(2 sqrt p))  sum=-1.81060391632 pred=-1.81060391632
+PASS N1b (p,c)=(5,5) sign: negative iff off-line (c^2 > 4p: True)
+PASS N1b (p,c)=(41,13) positive-type two-bump test: zero-sum = 4 L Phi(0)(1 - c/(2 sqrt p))  sum=-0.232080994912 pred=-0.232080994912
+PASS N1b (p,c)=(41,13) sign: negative iff off-line (c^2 > 4p: True)
+PASS N1b (p,c)=(29,10) positive-type two-bump test: zero-sum = 4 L Phi(0)(1 - c/(2 sqrt p))  sum=1.09714485601 pred=1.09714485601
+PASS N1b (p,c)=(29,10) sign: negative iff off-line (c^2 > 4p: False)
+PASS N1b (p,c)=(7,3) positive-type two-bump test: zero-sum = 4 L Phi(0)(1 - c/(2 sqrt p))  sum=6.64289999882 pred=6.64289999882
+PASS N1b (p,c)=(7,3) sign: negative iff off-line (c^2 > 4p: False)
+PASS N2 (p,c)=(5,5) |c|<p+1: term at p^m <= 2 log p (R/p)^m, R=3.618034 < p  B in [1.835003074, 1.835003074]
+PASS N2 (p,c)=(5,6) |c|>=p+1: defect partial sums grow (divergence)  S50,S100,S200,S400=40.2359, 80.4719, 160.944, 321.888
+PASS N2 (p,c)=(5,-6) |c|>=p+1: defect partial sums grow (divergence)  S50,S100,S200,S400=80.4719, 160.944, 321.888, 643.775
+PASS N2 (p,c)=(29,29) |c|<p+1: term at p^m <= 2 log p (R/p)^m, R=27.962912 < p  B in [44.56983543, 44.5699211]
+PASS N2 (p,c)=(29,30) |c|>=p+1: defect partial sums grow (divergence)  S50,S100,S200,S400=84.1824, 168.365, 336.73, 673.459
+PASS N2 (p,c)=(29,-30) |c|>=p+1: defect partial sums grow (divergence)  S50,S100,S200,S400=168.365, 336.73, 673.459, 1346.92
+PASS N2 (p,c)=(7,3) |c|<p+1: term at p^m <= 2 log p (R/p)^m, R=2.6457513 < p  B in [0.2093286381, 0.2093286381]
+PASS N2 (p,c)=(29,11) |c|<p+1: term at p^m <= 2 log p (R/p)^m, R=6.618034 < p  B in [0.2596691651, 0.2596691651]
+PASS N3 t_m^2 > p^m or |t_2m| >= p^m for all primes p<=29, |c|<=p+1, m<80 (exact)
+PASS N3 on-line (p,c)=(5,0): sup_k |t_k|/p^(k/2) >= 1 (Selberg theta<1/2 fails)  max over k in [101,200] = 2.0
+PASS N3 on-line (p,c)=(5,3): sup_k |t_k|/p^(k/2) >= 1 (Selberg theta<1/2 fails)  max over k in [101,200] = 1.99992
+PASS N3 on-line (p,c)=(7,5): sup_k |t_k|/p^(k/2) >= 1 (Selberg theta<1/2 fails)  max over k in [101,200] = 2.0
+PASS N3 on-line (p,c)=(29,10): sup_k |t_k|/p^(k/2) >= 1 (Selberg theta<1/2 fails)  max over k in [101,200] = 1.99851
+PASS N4 (p,c)=(5,5) L(a_W, 3+2i) = zeta(s)(1 + c p^-s + p p^-2s)  |diff|=1.94e-9 tail<=1.37e-8
+PASS N5 (p,c)=(5,5) a_W multiplicative on coprime pairs < 200
+PASS N4 (p,c)=(29,11) L(a_W, 3+2i) = zeta(s)(1 + c p^-s + p p^-2s)  |diff|=1.25e-9 tail<=5.12e-8
+PASS N5 (p,c)=(29,11) a_W multiplicative on coprime pairs < 200
+PASS N4 (p,c)=(7,-3) L(a_W, 3+2i) = zeta(s)(1 + c p^-s + p p^-2s)  |diff|=6.31e-10 tail<=1.37e-8
+PASS N5 (p,c)=(7,-3) a_W multiplicative on coprime pairs < 200
+PASS N6 c=p+1=6: surg vanishes at s = 1 + i pi/log p (edge fails at Re s = 1)  |surg|=7.4e-43
+PASS N6 c=p+1=30: surg vanishes at s = 1 + i pi/log p (edge fails at Re s = 1)  |surg|=9.19e-41
+PASS N7 p=3, A=7: b(p)=1, b(p^2)=15/2, b(p^3)=1/3 >= 0 > b(p^4)=-61/4
+PASS N7 p=3: Newton power sums = (0 at odd k, 2 t_(k/2) at even k), as in `s4`
+PASS N7 p=3: L(a, 3+i) = zeta(s)(1 + A p^-2s + p^2 p^-4s)  |diff|=2.11e-9
+PASS N7 p=3: completion factor zero at Re s = 0.75924437 in (1/2, 1)  |value|=4.97e-43
+PASS N7 p=5, A=11: b(p)=1, b(p^2)=23/2, b(p^3)=1/3 >= 0 > b(p^4)=-141/4
+PASS N7 p=5: Newton power sums = (0 at odd k, 2 t_(k/2) at even k), as in `s4`
+PASS N7 p=5: L(a, 3+i) = zeta(s)(1 + A p^-2s + p^2 p^-4s)  |diff|=1.65e-9
+PASS N7 p=5: completion factor zero at Re s = 0.63780223 in (1/2, 1)  |value|=3.79e-43
+PASS N7 p=7, A=15: b(p)=1, b(p^2)=31/2, b(p^3)=1/3 >= 0 > b(p^4)=-253/4
+PASS N7 p=7: Newton power sums = (0 at odd k, 2 t_(k/2) at even k), as in `s4`
+PASS N7 p=7: L(a, 3+i) = zeta(s)(1 + A p^-2s + p^2 p^-4s)  |diff|=1.48e-9
+PASS N7 p=7: completion factor zero at Re s = 0.59654867 in (1/2, 1)  |value|=3.18e-43
+PASS N7 p=29, A=59: b(p)=1, b(p^2)=119/2, b(p^3)=1/3 >= 0 > b(p^4)=-3597/4
+PASS N7 p=29: Newton power sums = (0 at odd k, 2 t_(k/2) at even k), as in `s4`
+PASS N7 p=29: L(a, 3+i) = zeta(s)(1 + A p^-2s + p^2 p^-4s)  |diff|=1.2e-9
+PASS N7 p=29: completion factor zero at Re s = 0.5275339 in (1/2, 1)  |value|=1.54e-43
+ALL PASS

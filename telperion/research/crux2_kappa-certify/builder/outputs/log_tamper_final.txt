@@ -1,0 +1,15 @@
+=== tamper pivot (final file content)
+/private/tmp/claude-0/-Users-peterwmurphy/ef083c48-579d-4bec-a689-c30fdccec2a1/scratchpad/Final_tamper_pivot.lean:938:670: error: unsolved goals
+'Crux2KappaCertify.Core_x11006_odd.Sq_ldl' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'Crux2KappaCertify.Core_x11006_odd.core_posdef' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'Crux2KappaCertify.Core_x11006_odd.core_schur' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+=== tamper entry (final file content)
+/private/tmp/claude-0/-Users-peterwmurphy/ef083c48-579d-4bec-a689-c30fdccec2a1/scratchpad/Final_tamper_entry.lean:938:670: error: unsolved goals
+'Crux2KappaCertify.Core_x11006_odd.Sq_ldl' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'Crux2KappaCertify.Core_x11006_odd.core_posdef' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'Crux2KappaCertify.Core_x11006_odd.core_schur' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+=== tamper delta (final file content)
+/private/tmp/claude-0/-Users-peterwmurphy/ef083c48-579d-4bec-a689-c30fdccec2a1/scratchpad/Final_tamper_delta.lean:938:670: error: unsolved goals
+'Crux2KappaCertify.Core_x11006_odd.Sq_ldl' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'Crux2KappaCertify.Core_x11006_odd.core_posdef' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'Crux2KappaCertify.Core_x11006_odd.core_schur' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

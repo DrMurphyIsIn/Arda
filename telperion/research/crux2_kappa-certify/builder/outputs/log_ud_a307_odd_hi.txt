@@ -1,0 +1,11 @@
+a=307/256 x=e^{2a}=[11.005966 +/- 1.17e-7] kind=zeta comb=[2, 3, 4, 5, 7, 8, 9, 11]
+   built odd N=80 panels=4 m=199 nin=161 (97.8s)
+  odd N= 80  lam_min(Q_N) = 5.7792576709e-45   next = 4.1761e-38   max entry radius 1.8e-170
+   built odd N=90 panels=4 m=219 nin=181 (145.5s)
+  odd N= 90  lam_min(Q_N) = 5.3661343865e-45   next = 3.9982e-38   max entry radius 7.2e-163
+   built odd N=100 panels=4 m=239 nin=201 (192.1s)
+  odd N=100  lam_min(Q_N) = 5.3204457460e-45   next = 3.8467e-38   max entry radius 3.2e-155
+   built odd N=110 panels=4 m=259 nin=221 (391.1s)
+  odd N=110  lam_min(Q_N) = 5.2786374141e-45   next = 3.7117e-38   max entry radius 1.2e-147
+   built odd N=120 panels=4 m=279 nin=241 (366.6s)
+  odd N=120  lam_min(Q_N) = 5.2106644470e-45   next = 3.6278e-38   max entry radius 5.5e-140

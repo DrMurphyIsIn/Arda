@@ -1,0 +1,5 @@
+Lambda_DH(2..8) = [0.1969, -0.3121, -1.4422, 0.0, 1.9364, 0.5528, 0.0159]  Lambda_DH(6) = 1.9364
+zeta: L=1.717 N=160 support n<31.0 (17 terms, primes [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]): untwisted lam_max=5.67476; best over 400 random twists (+Nelder-Mead) = 5.67476; excess = +0.00000
+zeta: L=2.3 N=200 support n<99.5 (35 terms, primes [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]): untwisted lam_max=11.05626; best over 150 random twists (+Nelder-Mead) = 11.05626; excess = +0.00000
+DH  : L=1.0 N=120 support n<7.4 (5 terms, primes [2, 3, 7]): untwisted lam_max=1.25306; best over 400 random twists (+Nelder-Mead) = 1.29178; excess = +0.03872
+DH  : L=1.717 N=160 support n<31.0 (23 terms, primes [2, 3, 7, 11, 13, 17, 19, 23, 29, 31]): untwisted lam_max=2.91210; best over 400 random twists (+Nelder-Mead) = 4.45127; excess = +1.53917

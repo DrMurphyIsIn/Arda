@@ -1,0 +1,10 @@
+{
+ "even": {
+  "eig_estimate": "1.6580185e-17",
+  "certified_upper": "[1.6580185e-17 +/- 2.26e-26]"
+ },
+ "odd": {
+  "eig_estimate": "1.6317413e-14",
+  "certified_upper": "[1.6317413e-14 +/- 4.57e-22]"
+ }
+}

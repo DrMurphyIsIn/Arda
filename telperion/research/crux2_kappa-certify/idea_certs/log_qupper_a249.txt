@@ -1,0 +1,6 @@
+zeta x=6.9958177 N=60 even: lam_min(Galerkin Q) in [1.0000e-28, 9.0949e-13]  (0.2s)
+zeta x=6.9958177 N=60 odd: lam_min(Galerkin Q) in [1.0000e-24, 9.0949e-13]  (0.1s)
+zeta x=6.9958177 N=120 even: lam_min(Galerkin Q) in [1.0000e-28, 9.0949e-13]  (0.5s)
+zeta x=6.9958177 N=120 odd: lam_min(Galerkin Q) in [1.0000e-24, 9.0949e-13]  (0.4s)
+zeta x=6.9958177 N=200 even: lam_min(Galerkin Q) in [1.0000e-28, 9.0949e-13]  (1.2s)
+zeta x=6.9958177 N=200 odd: lam_min(Galerkin Q) in [1.0000e-24, 9.0949e-13]  (1.1s)

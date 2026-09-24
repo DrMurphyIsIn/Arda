@@ -1,0 +1,20 @@
+Psi_0(0) = -5.37218341923  (psi(1/4) - log pi)
+Psi_0 at 0,0.1,0.5,1,2,5,10: ['-5.3721834', '-5.2166798', '-3.3320046', '-2.0251462', '-1.1615571', '-0.23011822', '0.46429063']  monotone: True
+t=      3.75: Psi_0 - (log(t/2pi) - 1/t) = 0.263641;  Psi_0 - log(t/2pi) = -0.00302537
+t=         4: Psi_0 - (log(t/2pi) - 1/t) = 0.247355;  Psi_0 - log(t/2pi) = -0.00264462
+t=         5: Psi_0 - (log(t/2pi) - 1/t) = 0.198321;  Psi_0 - log(t/2pi) = -0.00167906
+t=         7: Psi_0 - (log(t/2pi) - 1/t) = 0.142004;  Psi_0 - log(t/2pi) = -0.000853411
+t=        10: Psi_0 - (log(t/2pi) - 1/t) = 0.0995826;  Psi_0 - log(t/2pi) = -0.0004174
+t=        20: Psi_0 - (log(t/2pi) - 1/t) = 0.0498958;  Psi_0 - log(t/2pi) = -0.000104212
+t=        50: Psi_0 - (log(t/2pi) - 1/t) = 0.0199833;  Psi_0 - log(t/2pi) = -1.66678e-5
+t=       100: Psi_0 - (log(t/2pi) - 1/t) = 0.00999583;  Psi_0 - log(t/2pi) = -4.16674e-6
+t=      1000: Psi_0 - (log(t/2pi) - 1/t) = 0.000999958;  Psi_0 - log(t/2pi) = -4.16667e-8
+t=   10000.0: Psi_0 - (log(t/2pi) - 1/t) = 9.99996e-5;  Psi_0 - log(t/2pi) = -4.16667e-10
+t=  100000.0: Psi_0 - (log(t/2pi) - 1/t) = 1.0e-5;  Psi_0 - log(t/2pi) = -4.16667e-12
+t=  440000.0: Psi_0 - (log(t/2pi) - 1/t) = 2.27273e-6;  Psi_0 - log(t/2pi) = -2.1522e-13
+min margin over spot checks: 2.27273e-6
+A+=4.2449: at R=2pi e^A (1+1e-6)=438.24498: log(R/2pi)-1/R - A+ = -0.002281  (Lemma 3.1 alone does NOT suffice); true Psi_0(R) - A+ = 7.831e-7
+A+=8.4612: at R=2pi e^A (1+1e-6)=29705.22: log(R/2pi)-1/R - A+ = -3.266e-5  (Lemma 3.1 alone does NOT suffice); true Psi_0(R) - A+ = 1.0e-6
+A+=10.5269: at R=2pi e^A (1+1e-6)=234398.53: log(R/2pi)-1/R - A+ = -3.266e-6  (Lemma 3.1 alone does NOT suffice); true Psi_0(R) - A+ = 1.0e-6
+A+=11.084: at R=2pi e^A (1+1e-6)=409166.76: log(R/2pi)-1/R - A+ = -1.444e-6  (Lemma 3.1 alone does NOT suffice); true Psi_0(R) - A+ = 1.0e-6
+A+=11.16137301: at R=2pi e^A (1+1e-6)=442082.18: log(R/2pi)-1/R - A+ = -1.262e-6  (Lemma 3.1 alone does NOT suffice); true Psi_0(R) - A+ = 1.0e-6

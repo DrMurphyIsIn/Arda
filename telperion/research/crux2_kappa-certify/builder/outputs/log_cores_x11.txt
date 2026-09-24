@@ -1,0 +1,13 @@
+Wed Sep 23 20:21:52 EDT 2026
+loaded M_wa3_a307_odd_odd.txt: n=2300 (34s)
+C - lam0 I > 0 certified: True [1.65e-67 +/- 2.61e-70]
+S radius 2.976e-61
+lam_min(Sq) ~ 8.758115e-47  delta=4.3791e-47  k*w0=1.838e-59
+wrote builder/schur_core_x11_odd_fixed.json
+Wed Sep 23 20:30:45 EDT 2026
+loaded M_wa3_a307_even_even.txt: n=2300 (20s)
+C - lam0 I > 0 certified: True [1.24e-67 +/- 1.69e-70]
+S radius 1.792e-59
+lam_min(Sq) ~ 1.069106e-50  delta=5.3455e-51  k*w0=1.594e-58
+wrote builder/schur_core_x11_even_fixed.json
+Wed Sep 23 20:39:00 EDT 2026

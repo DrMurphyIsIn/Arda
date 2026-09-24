@@ -1,0 +1,97 @@
+
+
+/-- Perron weight. -/
+noncomputable def w (M : ℕ) (j : ℕ) : ℝ := Real.sin (π * ((j : ℝ) + 1) / ((M : ℝ) + 1))
+
+lemma w_pos (M j : ℕ) (hj : j < M) : 0 < w M j := by
+  unfold w
+  apply Real.sin_pos_of_pos_of_lt_pi
+  · have : (0:ℝ) < (j:ℝ) + 1 := by positivity
+    positivity
+  · have hM : (0:ℝ) < (M:ℝ) + 1 := by positivity
+    rw [div_lt_iff₀ hM]
+    have : ((j:ℝ) + 1) < (M:ℝ) + 1 := by
+      have : (j:ℝ) < (M:ℝ) := by exact_mod_cast hj
+      linarith
+    nlinarith [Real.pi_pos]
+
+lemma w_rec (M j : ℕ) :
+    w M (j + 1) + (if j = 0 then 0 else w M (j - 1)) = 2 * Real.cos (π / ((M:ℝ) + 1)) * w M j := by
+  unfold w
+  have hM : ((M:ℝ) + 1) ≠ 0 := by positivity
+  set θ := π / ((M:ℝ) + 1) with hθ
+  have e1 : π * (((j + 1 : ℕ) : ℝ) + 1) / ((M:ℝ) + 1) = θ * ((j:ℝ) + 1) + θ := by
+    rw [hθ]; push_cast; field_simp
+  have e0 : π * ((j:ℝ) + 1) / ((M:ℝ) + 1) = θ * ((j:ℝ) + 1) := by
+    rw [hθ]; field_simp
+  rcases Nat.eq_zero_or_pos j with h | h
+  · subst h
+    simp only [ite_true]
+    rw [e1, e0]
+    simp only [Nat.cast_zero, zero_add, mul_one]
+    rw [show θ + θ = 2 * θ by ring, Real.sin_two_mul]
+    ring
+  · have hj : j ≠ 0 := Nat.pos_iff_ne_zero.mp h
+    simp only [hj, ite_false]
+    have e2 : π * (((j - 1 : ℕ) : ℝ) + 1) / ((M:ℝ) + 1) = θ * ((j:ℝ) + 1) - θ := by
+      rw [hθ, Nat.cast_sub (Nat.one_le_iff_ne_zero.mpr hj)]; push_cast; field_simp; ring
+    rw [e1, e0, e2, Real.sin_add, Real.sin_sub]
+    ring
+
+
+
+lemma w_last (m : ℕ) : w (m + 1) (m + 1) = 0 := by
+  unfold w
+  have h : π * (((m + 1 : ℕ) : ℝ) + 1) / (((m + 1 : ℕ) : ℝ) + 1) = π := by
+    have : (((m + 1 : ℕ) : ℝ) + 1) ≠ 0 := by positivity
+    field_simp
+  rw [h, Real.sin_pi]
+
+lemma amgm (a b p q : ℝ) (hp : 0 < p) (hq : 0 < q) : 2 * (a * b) ≤ q / p * a ^ 2 + p / q * b ^ 2 := by
+  have h1 : 0 ≤ (q * a - p * b) ^ 2 := sq_nonneg _
+  have h2 : q / p * a ^ 2 + p / q * b ^ 2 - 2 * (a * b) = (q * a - p * b) ^ 2 / (p * q) := by
+    field_simp; ring
+  have h3 : 0 ≤ (q * a - p * b) ^ 2 / (p * q) := div_nonneg h1 (le_of_lt (mul_pos hp hq))
+  linarith
+
+/-- **Path-graph Perron bound.**  `2 sum_{j<M-1} x_j x_{j+1} <= 2 cos(pi/(M+1)) sum_{j<M} x_j^2`. -/
+theorem path_quad_le (M : ℕ) (x : ℕ → ℝ) :
+    2 * ∑ j ∈ Finset.range (M - 1), x j * x (j + 1)
+      ≤ 2 * Real.cos (π / ((M:ℝ) + 1)) * ∑ j ∈ Finset.range M, x j ^ 2 := by
+  rcases M with _ | m
+  · simp
+  · simp only [Nat.add_sub_cancel]
+    set c := 2 * Real.cos (π / (((m + 1 : ℕ) : ℝ) + 1)) with hc
+    -- rewrite c * x_k^2 via the Perron recursion
+    have key : ∀ k ∈ Finset.range (m + 1),
+        c * x k ^ 2 = w (m + 1) (k + 1) / w (m + 1) k * x k ^ 2
+          + (if k = 0 then 0 else w (m + 1) (k - 1) / w (m + 1) k * x k ^ 2) := by
+      intro k hk
+      have hk' : k < m + 1 := Finset.mem_range.mp hk
+      have hwpos := w_pos (m + 1) k hk'
+      have hrec := w_rec (m + 1) k
+      have hne : w (m + 1) k ≠ 0 := ne_of_gt hwpos
+      split_ifs with h0
+      · simp only [h0, ite_true] at hrec
+        rw [h0] at hne ⊢
+        field_simp
+        rw [hc]; push_cast at hrec ⊢; nlinarith [hrec]
+      · simp only [h0, ite_false] at hrec
+        field_simp
+        rw [hc]; push_cast at hrec ⊢; nlinarith [hrec]
+    have hR : c * ∑ j ∈ Finset.range (m + 1), x j ^ 2
+        = ∑ j ∈ Finset.range m, (w (m + 1) (j + 1) / w (m + 1) j * x j ^ 2
+            + w (m + 1) j / w (m + 1) (j + 1) * x (j + 1) ^ 2) := by
+      rw [Finset.mul_sum, Finset.sum_congr rfl key, Finset.sum_add_distrib,
+        Finset.sum_range_succ (fun k => w (m + 1) (k + 1) / w (m + 1) k * x k ^ 2), w_last,
+        Finset.sum_range_succ' (fun k => if k = 0 then 0 else w (m + 1) (k - 1) / w (m + 1) k * x k ^ 2)]
+      simp only [ite_true, Nat.succ_ne_zero, ite_false, Nat.add_sub_cancel, zero_div, zero_mul, add_zero]
+      rw [← Finset.sum_add_distrib]
+    rw [hR, Finset.mul_sum]
+    apply Finset.sum_le_sum
+    intro j hj
+    have hj' : j < m := Finset.mem_range.mp hj
+    have hp := w_pos (m + 1) j (by omega)
+    have hq := w_pos (m + 1) (j + 1) (by omega)
+    exact amgm (x j) (x (j + 1)) (w (m + 1) j) (w (m + 1) (j + 1)) hp hq
+

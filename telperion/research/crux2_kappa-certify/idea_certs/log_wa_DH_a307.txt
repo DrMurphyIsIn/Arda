@@ -1,0 +1,5 @@
+[WA dh] a=307/256 comb=[2, 3, 4, 6, 7, 8, 9, 11] A_L=[7.06112 +/- 2.81e-7]  A'=[4.00582 +/- 6.30e-7] (Mn={2: 5, 3: 3, 4: 3, 6: 2, 7: 2, 8: 2, 9: 2, 11: 2})  Tc=300.0 Tk=828.000 Tmax=1587.000000001  b'=[1.46619 +/- 6.17e-7]  eta=[1.13e-56 +/- 2.22e-59] err=[1.60e-55 +/- 1.06e-58] deficit=[1.92e-58 +/- 8.85e-62] xi=[3.24e-58 +/- 3.91e-61]  b''=[1.46619 +/- 6.17e-7]
+  [WA] leading block even N=1100 nodes=38688 (493.7s)
+  even: {'pd': True, 'lam_min_est': '7.359758e-09', 'tails': 'sharp', 'lam0': 7.2054e-09, 'verified': True, 'resid': '[6.3511e-59 +/- 1.50e-64]', 'quad': '[5.7865e-44 +/- 2.73e-50]', 'epsB': '[2.1082e-42 +/- 2.53e-47]', 'epsD': '[7.2606e-95 +/- 1.59e-100]', 'final_lower': '[7.20540000000e-9 +/- 3e-25]', 'final_positive': True, 'seconds': 549.9}
+  [WA] leading block odd N=1100 nodes=38688 (461.0s)
+  odd: {'pd': True, 'lam_min_est': '7.723204e-06', 'tails': 'sharp', 'lam0': 7.5612e-06, 'verified': True, 'resid': '[6.6592e-59 +/- 3.75e-64]', 'quad': '[5.7891e-44 +/- 2.93e-49]', 'epsB': '[1.2118e-42 +/- 1.31e-47]', 'epsD': '[2.3967e-95 +/- 2.67e-100]', 'final_lower': '[7.56120000000e-6 +/- 5e-22]', 'final_positive': True, 'seconds': 569.4}

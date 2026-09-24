@@ -1,0 +1,134 @@
+[
+ {
+  "kind": "zeta",
+  "x": 9,
+  "N": 12,
+  "sector": "even",
+  "eig_index": 0,
+  "quad": "1.10240616e-25",
+  "zerosum2000": "1.074085949e-25",
+  "rel": "0.0257"
+ },
+ {
+  "kind": "zeta",
+  "x": 9,
+  "N": 12,
+  "sector": "even",
+  "eig_index": 3,
+  "quad": "1.999841083e-11",
+  "zerosum2000": "1.947442617e-11",
+  "rel": "0.0262"
+ },
+ {
+  "kind": "golden",
+  "x": 9,
+  "N": 12,
+  "sector": "even",
+  "eig_index": 0,
+  "quad": "3.218875716",
+  "zerosum": "3.218875716",
+  "fakepart": "3.2188757",
+  "delta": "0.29899372",
+  "rel": "9.79e-28"
+ },
+ {
+  "kind": "golden",
+  "x": 9,
+  "N": 12,
+  "sector": "even",
+  "eig_index": 3,
+  "quad": "1.674745003",
+  "zerosum": "1.674745003",
+  "fakepart": "1.674745",
+  "delta": "0.29899372",
+  "rel": "3.42e-13"
+ },
+ {
+  "kind": "zeta",
+  "x": 9,
+  "N": 12,
+  "sector": "odd",
+  "eig_index": 0,
+  "quad": "7.297066977e-23",
+  "zerosum2000": "7.294388692e-23",
+  "rel": "0.000367"
+ },
+ {
+  "kind": "zeta",
+  "x": 9,
+  "N": 12,
+  "sector": "odd",
+  "eig_index": 3,
+  "quad": "9.574874167e-10",
+  "zerosum2000": "9.574061506e-10",
+  "rel": "8.49e-5"
+ },
+ {
+  "kind": "golden",
+  "x": 9,
+  "N": 12,
+  "sector": "odd",
+  "eig_index": 0,
+  "quad": "3.218883273",
+  "zerosum": "3.218883273",
+  "fakepart": "3.2188833",
+  "delta": "0.29899372",
+  "rel": "8.37e-27"
+ },
+ {
+  "kind": "golden",
+  "x": 9,
+  "N": 12,
+  "sector": "odd",
+  "eig_index": 3,
+  "quad": "4.808086173",
+  "zerosum": "4.808086173",
+  "fakepart": "4.8080862",
+  "delta": "0.29899372",
+  "rel": "1.7e-14"
+ },
+ {
+  "kind": "zeta",
+  "x": 20,
+  "N": 16,
+  "sector": "even",
+  "eig_index": 0,
+  "quad": "-6.041153235e-30",
+  "zerosum2000": "6.399005043e-32",
+  "rel": "1.01"
+ },
+ {
+  "kind": "zeta",
+  "x": 20,
+  "N": 16,
+  "sector": "even",
+  "eig_index": 3,
+  "quad": "1.27150829e-24",
+  "zerosum2000": "1.234397555e-24",
+  "rel": "0.0292"
+ },
+ {
+  "kind": "golden",
+  "x": 20,
+  "N": 16,
+  "sector": "even",
+  "eig_index": 0,
+  "quad": "3.209271914",
+  "zerosum": "3.209271914",
+  "fakepart": "3.2092719",
+  "delta": "0.29899372",
+  "rel": "-2.58e-30"
+ },
+ {
+  "kind": "golden",
+  "x": 20,
+  "N": 16,
+  "sector": "even",
+  "eig_index": 3,
+  "quad": "0.8841047159",
+  "zerosum": "0.8841047159",
+  "fakepart": "0.88410472",
+  "delta": "0.29899372",
+  "rel": "4.62e-26"
+ }
+]

@@ -1,0 +1,6 @@
+L=2.25  A+=11.161373010  R=442083  m=1000  Tm=513333  log10 eps <= -997.3   [KERNEL-certified A+ (Crux2_verified_window.primeSide_autocorr_le_cert, L'=2.3)]
+L=2.25  A+=11.084  R=409167  m=1100  Tm=489959  log10 eps <= -1163.4   [builder's float CW value (cw_exact.py)]
+L=2.25  A+=11.37  R=544639  m=500  Tm=579923  log10 eps <= -473.7   [robustness threshold quoted by the builder]
+L=2.2  A+=10.603789677  R=253133  m=1700  Tm=384668  log10 eps <= -1949.7   [exact-integer Python certificate cert_L225_N900.json]
+L=2.0  A+=8.508782158  R=31153.8  m=3000  Tm=250338  log10 eps <= -3065.5   [exact-integer Python certificate cert_L205_N820.json]
+L=1.4166  A+=4.138132301  R=394.864  m=3000  Tm=224257  log10 eps <= -3234.7   [exact-integer Python certificate cert_L14666_N600.json]

@@ -1,0 +1,5 @@
+loaded M_wa3_a307_even_even.txt: n=2300 (15s)
+C - lam0 I > 0 certified: True [1.24e-67 +/- 1.68e-70]
+S radius 1.792e-59
+lam_min(Sq) ~ 1.069106e-50  delta=5.3455e-51  k*w0=1.594e-58
+wrote schur_core_x11_even.json

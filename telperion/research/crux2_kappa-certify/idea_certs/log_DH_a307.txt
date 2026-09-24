@@ -1,0 +1,6 @@
+[dh] a=307/256 a=307/256 (1.19921875) T#=600.0 N=560 prec=256 primes=[2, 3, 4, 6, 7, 8, 9, 11] A_L=[7.06112028055 +/- 2.84e-12] b*=[-0.894296445973 +/- 6.99e-14]
+Traceback (most recent call last):
+  File "<string>", line 4, in <module>
+  File "/private/tmp/claude-0/crux2/kappa-certify/run_cert.py", line 21, in run
+    assert win.bstar > 0
+AssertionError

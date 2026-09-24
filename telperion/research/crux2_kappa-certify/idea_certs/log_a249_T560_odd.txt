@@ -1,0 +1,3 @@
+a=249/256 (0.97265625) T#=560.0 N=450 prec=256 primes=[2, 3, 4, 5] A_L=[4.38149855633 +/- 8.22e-13] b*=[0.106775446703 +/- 3.14e-13]
+  leading block odd N=450 nodes=14016  (57.8s)
+  odd: lam_est=3.34364e-24  vLDL^T(M - [2.084e-30 +/- 3e-38] I) ok=False resid=negative floating pivot at 32: [-0.28693 +/- 3.37e-6] eta=[1.69e-45 +/- 4.53e-48] epsB=[1.51e-75 +/- 1.02e-78] epsD=[9.76e-157 +/- 4.57e-160]  => lam_min(Q_odd) >= FAIL  (76s)

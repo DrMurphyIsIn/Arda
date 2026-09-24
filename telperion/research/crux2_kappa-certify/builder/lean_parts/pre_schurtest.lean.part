@@ -1,0 +1,51 @@
+
+
+theorem schur_test {n : ℕ} (K : Fin n → Fin n → ℝ) (hK : ∀ i j, 0 ≤ K i j)
+    (hsym : ∀ i j, K i j = K j i) (w : Fin n → ℝ) (hw : ∀ i, 0 < w i) (Lam : ℝ)
+    (hKw : ∀ i, ∑ j, K i j * w j ≤ Lam * w i) (x : Fin n → ℝ) :
+    ∑ i, ∑ j, x i * K i j * x j ≤ Lam * ∑ i, x i ^ 2 := by
+  -- pointwise AM-GM with weights
+  have h1 : ∀ i j, x i * K i j * x j ≤
+      K i j * (x i ^ 2 * (w j / w i)) / 2 + K i j * (x j ^ 2 * (w i / w j)) / 2 := by
+    intro i j
+    have hwi := hw i
+    have hwj := hw j
+    have hsq : 0 ≤ (x i * w j - x j * w i) ^ 2 := sq_nonneg _
+    have key : x i * x j ≤ (x i ^ 2 * (w j / w i) + x j ^ 2 * (w i / w j)) / 2 := by
+      have e : (x i ^ 2 * (w j / w i) + x j ^ 2 * (w i / w j)) / 2 - x i * x j
+          = (x i * w j - x j * w i) ^ 2 / (2 * w i * w j) := by
+        field_simp; ring
+      have : 0 ≤ (x i * w j - x j * w i) ^ 2 / (2 * w i * w j) := by positivity
+      linarith
+    have := mul_le_mul_of_nonneg_left key (hK i j)
+    nlinarith [this]
+  calc ∑ i, ∑ j, x i * K i j * x j
+      ≤ ∑ i, ∑ j, (K i j * (x i ^ 2 * (w j / w i)) / 2 + K i j * (x j ^ 2 * (w i / w j)) / 2) :=
+        Finset.sum_le_sum (fun i _ => Finset.sum_le_sum (fun j _ => h1 i j))
+    _ = ∑ i, ∑ j, K i j * (x i ^ 2 * (w j / w i)) := by
+        have hB : ∑ i, ∑ j, K i j * (x j ^ 2 * (w i / w j))
+            = ∑ i, ∑ j, K i j * (x i ^ 2 * (w j / w i)) := by
+          rw [Finset.sum_comm]
+          refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
+          rw [hsym j i]
+        have hsplit : ∑ i, ∑ j, (K i j * (x i ^ 2 * (w j / w i)) / 2 + K i j * (x j ^ 2 * (w i / w j)) / 2)
+            = (∑ i, ∑ j, K i j * (x i ^ 2 * (w j / w i))) / 2
+              + (∑ i, ∑ j, K i j * (x j ^ 2 * (w i / w j))) / 2 := by
+          simp only [Finset.sum_add_distrib, Finset.sum_div]
+        rw [hsplit, hB]
+        ring
+    _ = ∑ i, x i ^ 2 / w i * ∑ j, K i j * w j := by
+        refine Finset.sum_congr rfl (fun i _ => ?_)
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl (fun j _ => ?_)
+        have := hw i
+        field_simp
+    _ ≤ ∑ i, x i ^ 2 / w i * (Lam * w i) := by
+        refine Finset.sum_le_sum (fun i _ => ?_)
+        exact mul_le_mul_of_nonneg_left (hKw i) (div_nonneg (sq_nonneg _) (le_of_lt (hw i)))
+    _ = Lam * ∑ i, x i ^ 2 := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl (fun i _ => ?_)
+        have := hw i
+        field_simp
+

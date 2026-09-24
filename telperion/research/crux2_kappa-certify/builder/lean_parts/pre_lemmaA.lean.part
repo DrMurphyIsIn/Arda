@@ -1,0 +1,345 @@
+
+
+/-- index of the translation cell of `u` in the window `[-A, A]` for the shift `τ`. -/
+noncomputable def cell (A τ u : ℝ) : ℝ := (⌊(u + A) / τ⌋ : ℝ)
+
+/-- the path-graph angle `θ = π/(K + 2)`, `K = ⌊2A/τ⌋` (orbits have at most `K + 1` points). -/
+noncomputable def θ (A τ : ℝ) : ℝ := π / ((⌊2 * A / τ⌋ : ℝ) + 2)
+
+/-- Perron weight placed on the window: `sin(θ (j(u) + 1))` on `[-A, A]`, zero outside. -/
+noncomputable def W (A τ u : ℝ) : ℝ :=
+  if u ∈ Set.Icc (-A) A then Real.sin (θ A τ * (cell A τ u + 1)) else 0
+
+lemma cell_nonneg {A τ u : ℝ} (hτ : 0 < τ) (hu : u ∈ Set.Icc (-A) A) : 0 ≤ cell A τ u := by
+  unfold cell
+  have : (0:ℝ) ≤ (u + A) / τ := div_nonneg (by linarith [hu.1]) hτ.le
+  exact_mod_cast Int.floor_nonneg.mpr this
+
+lemma cell_le {A τ u : ℝ} (hτ : 0 < τ) (hu : u ∈ Set.Icc (-A) A) :
+    cell A τ u ≤ (⌊2 * A / τ⌋ : ℝ) := by
+  unfold cell
+  have : (u + A) / τ ≤ 2 * A / τ := div_le_div_of_nonneg_right (by linarith [hu.2]) hτ.le
+  exact_mod_cast Int.floor_mono this
+
+lemma K_nonneg {A τ : ℝ} (hτ : 0 < τ) (hA : 0 ≤ A) : (0:ℝ) ≤ (⌊2 * A / τ⌋ : ℝ) := by
+  have : (0:ℝ) ≤ 2 * A / τ := div_nonneg (by linarith) hτ.le
+  exact_mod_cast Int.floor_nonneg.mpr this
+
+lemma cell_add {A τ u : ℝ} (hτ : 0 < τ) : cell A τ (u + τ) = cell A τ u + 1 := by
+  unfold cell
+  have h : (u + τ + A) / τ = (u + A) / τ + 1 := by field_simp; ring
+  rw [h, Int.floor_add_one]
+  push_cast; ring
+
+lemma cell_sub {A τ u : ℝ} (hτ : 0 < τ) : cell A τ (u - τ) = cell A τ u - 1 := by
+  unfold cell
+  have h : (u - τ + A) / τ = (u + A) / τ - 1 := by field_simp; ring
+  rw [h, Int.floor_sub_one]
+  push_cast; ring
+
+lemma θ_pos {A τ : ℝ} (hτ : 0 < τ) (hA : 0 ≤ A) : 0 < θ A τ := by
+  unfold θ
+  have := K_nonneg hτ hA
+  exact div_pos Real.pi_pos (by linarith)
+
+lemma θ_mul {A τ : ℝ} (hτ : 0 < τ) (hA : 0 ≤ A) : θ A τ * ((⌊2 * A / τ⌋ : ℝ) + 2) = π := by
+  unfold θ
+  have := K_nonneg hτ hA
+  field_simp
+
+lemma sin_ge_of_mem {t x : ℝ} (ht : 0 < t) (ht2 : t ≤ π / 2) (hx1 : t ≤ x) (hx2 : x ≤ π - t) :
+    Real.sin t ≤ Real.sin x := by
+  rcases le_total x (π / 2) with h | h
+  · exact Real.sin_le_sin_of_le_of_le_pi_div_two (by linarith) h hx1
+  · rw [← Real.sin_pi_sub x]
+    exact Real.sin_le_sin_of_le_of_le_pi_div_two (by linarith) (by linarith) (by linarith)
+
+lemma W_ge {A τ u : ℝ} (hτ : 0 < τ) (hu : u ∈ Set.Icc (-A) A) :
+    Real.sin (θ A τ) ≤ W A τ u := by
+  have hA : 0 ≤ A := by linarith [hu.1, hu.2]
+  have hθ := θ_pos hτ hA
+  have hθm := θ_mul hτ hA
+  have hK := K_nonneg hτ hA
+  have hc0 := cell_nonneg hτ hu
+  have hc1 := cell_le hτ hu
+  unfold W
+  simp only [hu, ite_true]
+  apply sin_ge_of_mem hθ
+  · -- θ ≤ π/2
+    have : θ A τ * 2 ≤ π := by nlinarith
+    linarith
+  · nlinarith
+  · nlinarith
+
+lemma W_nonneg (A τ u : ℝ) (hτ : 0 < τ) : 0 ≤ W A τ u := by
+  unfold W
+  split_ifs with hu
+  · have hA : 0 ≤ A := by linarith [hu.1, hu.2]
+    have hθ := θ_pos hτ hA
+    have hθm := θ_mul hτ hA
+    have hc0 := cell_nonneg hτ hu
+    have hc1 := cell_le hτ hu
+    apply Real.sin_nonneg_of_nonneg_of_le_pi
+    · positivity
+    · nlinarith
+  · exact le_rfl
+
+lemma W_le_one (A τ u : ℝ) : W A τ u ≤ 1 := by
+  unfold W
+  split_ifs
+  · exact Real.sin_le_one _
+  · norm_num
+
+lemma W_pos {A τ u : ℝ} (hτ : 0 < τ) (hu : u ∈ Set.Icc (-A) A) : 0 < W A τ u := by
+  have hA : 0 ≤ A := by linarith [hu.1, hu.2]
+  have hθ := θ_pos hτ hA
+  have hθm := θ_mul hτ hA
+  have hK := K_nonneg hτ hA
+  have h1 : 0 < Real.sin (θ A τ) := by
+    apply Real.sin_pos_of_pos_of_lt_pi hθ
+    nlinarith
+  exact lt_of_lt_of_le h1 (W_ge hτ hu)
+
+/-- The Perron recursion on the window: `W(u+τ) + W(u-τ) ≤ 2 cos θ W(u)` for `u` in the window. -/
+lemma W_rec {A τ u : ℝ} (hτ : 0 < τ) (hu : u ∈ Set.Icc (-A) A) :
+    W A τ (u + τ) + W A τ (u - τ) ≤ 2 * Real.cos (θ A τ) * W A τ u := by
+  have hA : 0 ≤ A := by linarith [hu.1, hu.2]
+  have hθ := θ_pos hτ hA
+  have hθm := θ_mul hτ hA
+  have hK := K_nonneg hτ hA
+  have hc0 := cell_nonneg hτ hu
+  have hc1 := cell_le hτ hu
+  have hWu : W A τ u = Real.sin (θ A τ * (cell A τ u + 1)) := by
+    unfold W; simp only [hu, ite_true]
+  have hplus : W A τ (u + τ) ≤ Real.sin (θ A τ * (cell A τ u + 2)) := by
+    unfold W
+    split_ifs with h
+    · rw [cell_add hτ]
+      apply le_of_eq; congr 1; ring
+    · apply Real.sin_nonneg_of_nonneg_of_le_pi
+      · positivity
+      · nlinarith
+  have hminus : W A τ (u - τ) ≤ Real.sin (θ A τ * cell A τ u) := by
+    unfold W
+    split_ifs with h
+    · rw [cell_sub hτ]
+      apply le_of_eq; congr 1; ring
+    · apply Real.sin_nonneg_of_nonneg_of_le_pi
+      · positivity
+      · nlinarith
+  have hid : Real.sin (θ A τ * (cell A τ u + 2)) + Real.sin (θ A τ * cell A τ u)
+      = 2 * Real.cos (θ A τ) * Real.sin (θ A τ * (cell A τ u + 1)) := by
+    have e1 : θ A τ * (cell A τ u + 2) = θ A τ * (cell A τ u + 1) + θ A τ := by ring
+    have e2 : θ A τ * cell A τ u = θ A τ * (cell A τ u + 1) - θ A τ := by ring
+    rw [e1, e2, Real.sin_add, Real.sin_sub]
+    ring
+  rw [hWu]
+  linarith
+
+lemma W_measurable (A τ : ℝ) : Measurable (W A τ) := by
+  unfold W
+  refine Measurable.ite measurableSet_Icc ?_ measurable_const
+  unfold cell
+  have h1 : Measurable (fun u : ℝ => ⌊(u + A) / τ⌋) :=
+    ((measurable_id.add_const A).div_const τ).floor
+  have h2 : Measurable (fun u : ℝ => ((⌊(u + A) / τ⌋ : ℤ) : ℝ)) :=
+    (measurable_of_countable (fun n : ℤ => (n : ℝ))).comp h1
+  exact Real.measurable_sin.comp ((h2.add_const 1).const_mul (θ A τ))
+
+lemma amgm_abs (a b p q : ℝ) (hp : 0 < p) (hq : 0 < q) :
+    2 * (|a| * |b|) ≤ p / q * b ^ 2 + q / p * a ^ 2 := by
+  have h1 : 0 ≤ (p * |b| - q * |a|) ^ 2 := sq_nonneg _
+  have h2 : p / q * b ^ 2 + q / p * a ^ 2 - 2 * (|a| * |b|) = (p * |b| - q * |a|) ^ 2 / (p * q) := by
+    have ha : a ^ 2 = |a| ^ 2 := (sq_abs a).symm
+    have hb : b ^ 2 = |b| ^ 2 := (sq_abs b).symm
+    rw [ha, hb]
+    field_simp
+    ring
+  have h3 : 0 ≤ (p * |b| - q * |a|) ^ 2 / (p * q) := div_nonneg h1 (le_of_lt (mul_pos hp hq))
+  linarith
+
+/-- **Lemma A (continuous form, one shift).**  For a real square-integrable `g` vanishing outside
+`[-A, A]` and a shift `τ > 0`,
+  `2 ∫ |g(u+τ)| |g(u)| du ≤ 2 cos(π/(⌊2A/τ⌋ + 2)) ∫ g(u)^2 du`.
+The translation orbits of the window have at most `⌊2A/τ⌋ + 1` points, and on each orbit `S_τ + S_τ^*`
+is a path-graph adjacency; the proof is the weighted AM-GM with the Perron weight `W`, integrated
+(translation invariance of Lebesgue measure), with no orbit decomposition needed. -/
+theorem shift_bound (A τ : ℝ) (hτ : 0 < τ) (g : ℝ → ℝ) (hgm : Measurable g)
+    (hg2 : Integrable (fun u => g u ^ 2)) (hsupp : ∀ u, g u ≠ 0 → u ∈ Set.Icc (-A) A) :
+    2 * ∫ u, |g (u + τ)| * |g u| ≤ 2 * Real.cos (θ A τ) * ∫ u, g u ^ 2 := by
+  by_cases hA : 0 ≤ A
+  swap
+  · have hg0 : ∀ u, g u = 0 := by
+      intro u
+      by_contra h
+      have := hsupp u h
+      exact hA (by linarith [this.1, this.2])
+    simp [hg0]
+  have hθ := θ_pos hτ hA
+  have hθm := θ_mul hτ hA
+  have hK := K_nonneg hτ hA
+  set s := Real.sin (θ A τ) with hs
+  have hspos : 0 < s := by
+    apply Real.sin_pos_of_pos_of_lt_pi hθ
+    nlinarith
+  -- the three auxiliary functions
+  set φ1 : ℝ → ℝ := fun u => W A τ (u + τ) / W A τ u * g u ^ 2 with hφ1
+  set ψ : ℝ → ℝ := fun v => W A τ (v - τ) / W A τ v * g v ^ 2 with hψ
+  set φ2 : ℝ → ℝ := fun u => W A τ u / W A τ (u + τ) * g (u + τ) ^ 2 with hφ2
+  have hWm := W_measurable A τ
+  have hφ1_nn : ∀ u, 0 ≤ φ1 u := fun u =>
+    mul_nonneg (div_nonneg (W_nonneg _ _ _ hτ) (W_nonneg _ _ _ hτ)) (sq_nonneg _)
+  have hψ_nn : ∀ u, 0 ≤ ψ u := fun u =>
+    mul_nonneg (div_nonneg (W_nonneg _ _ _ hτ) (W_nonneg _ _ _ hτ)) (sq_nonneg _)
+  have hφ2_nn : ∀ u, 0 ≤ φ2 u := fun u =>
+    mul_nonneg (div_nonneg (W_nonneg _ _ _ hτ) (W_nonneg _ _ _ hτ)) (sq_nonneg _)
+  -- ratio bound: W(x)/W(u) ≤ 1/s
+  have hratio : ∀ x u, W A τ x / W A τ u ≤ 1 / s := by
+    intro x u
+    by_cases hu : u ∈ Set.Icc (-A) A
+    · have hWu := W_ge hτ hu
+      have hWpos := W_pos hτ hu
+      rw [div_le_div_iff₀ hWpos hspos]
+      have := W_le_one A τ x
+      have := W_nonneg A τ x hτ
+      nlinarith
+    · have : W A τ u = 0 := by unfold W; simp [hu]
+      rw [this, div_zero]
+      positivity
+  have hφ1_le : ∀ u, φ1 u ≤ g u ^ 2 / s := by
+    intro u
+    have := hratio (u + τ) u
+    have hg := sq_nonneg (g u)
+    calc φ1 u = W A τ (u + τ) / W A τ u * g u ^ 2 := rfl
+      _ ≤ 1 / s * g u ^ 2 := mul_le_mul_of_nonneg_right this hg
+      _ = g u ^ 2 / s := by ring
+  have hψ_le : ∀ u, ψ u ≤ g u ^ 2 / s := by
+    intro u
+    have := hratio (u - τ) u
+    have hg := sq_nonneg (g u)
+    calc ψ u = W A τ (u - τ) / W A τ u * g u ^ 2 := rfl
+      _ ≤ 1 / s * g u ^ 2 := mul_le_mul_of_nonneg_right this hg
+      _ = g u ^ 2 / s := by ring
+  -- integrability
+  have hφ1_int : Integrable φ1 := by
+    refine Integrable.mono' (hg2.div_const s) ?_ (Filter.Eventually.of_forall (fun u => ?_))
+    · exact ((hWm.comp (measurable_add_const τ)).div hWm |>.mul (hgm.pow_const 2)).aestronglyMeasurable
+    · rw [Real.norm_eq_abs, abs_of_nonneg (hφ1_nn u)]; exact hφ1_le u
+  have hψ_int : Integrable ψ := by
+    refine Integrable.mono' (hg2.div_const s) ?_ (Filter.Eventually.of_forall (fun u => ?_))
+    · exact ((hWm.comp (measurable_sub_const τ)).div hWm |>.mul (hgm.pow_const 2)).aestronglyMeasurable
+    · rw [Real.norm_eq_abs, abs_of_nonneg (hψ_nn u)]; exact hψ_le u
+  have hφ2_eq : φ2 = fun u => ψ (u + τ) := by
+    funext u
+    simp only [hφ2, hψ, add_sub_cancel_right]
+  have hφ2_int : Integrable φ2 := by
+    rw [hφ2_eq]; exact hψ_int.comp_add_right τ
+  have hL_int : Integrable (fun u => 2 * (|g (u + τ)| * |g u|)) := by
+    refine Integrable.mono' ((hg2.comp_add_right τ).add hg2) ?_ (Filter.Eventually.of_forall (fun u => ?_))
+    · exact (((hgm.comp (measurable_add_const τ)).abs.mul hgm.abs).const_mul 2).aestronglyMeasurable
+    · have h1 : 0 ≤ 2 * (|g (u + τ)| * |g u|) := by positivity
+      rw [Real.norm_eq_abs, abs_of_nonneg h1]
+      have h2 : 0 ≤ (|g (u + τ)| - |g u|) ^ 2 := sq_nonneg _
+      have h3 : g (u + τ) ^ 2 = |g (u + τ)| ^ 2 := (sq_abs _).symm
+      have h4 : g u ^ 2 = |g u| ^ 2 := (sq_abs _).symm
+      simp only [Pi.add_apply]
+      nlinarith
+  -- pointwise AM-GM
+  have hpt : ∀ u, 2 * (|g (u + τ)| * |g u|) ≤ φ1 u + φ2 u := by
+    intro u
+    by_cases h1 : g u = 0
+    · rw [h1, abs_zero, mul_zero, mul_zero]
+      exact add_nonneg (hφ1_nn u) (hφ2_nn u)
+    by_cases h2 : g (u + τ) = 0
+    · rw [h2, abs_zero, zero_mul, mul_zero]
+      exact add_nonneg (hφ1_nn u) (hφ2_nn u)
+    have hu := hsupp u h1
+    have hu' := hsupp (u + τ) h2
+    have hp := W_pos hτ hu'
+    have hq := W_pos hτ hu
+    have := amgm_abs (g (u + τ)) (g u) (W A τ (u + τ)) (W A τ u) hp hq
+    simpa only [hφ1, hφ2] using this
+  -- pointwise Perron recursion
+  have hpt2 : ∀ u, φ1 u + ψ u ≤ 2 * Real.cos (θ A τ) * g u ^ 2 := by
+    intro u
+    by_cases h1 : g u = 0
+    · simp only [hφ1, hψ, h1]; norm_num
+    have hu := hsupp u h1
+    have hq := W_pos hτ hu
+    have hrec := W_rec hτ hu
+    have hsum : φ1 u + ψ u = (W A τ (u + τ) + W A τ (u - τ)) / W A τ u * g u ^ 2 := by
+      simp only [hφ1, hψ]; rw [add_div]; ring
+    rw [hsum]
+    have hg := sq_nonneg (g u)
+    have hdiv : (W A τ (u + τ) + W A τ (u - τ)) / W A τ u ≤ 2 * Real.cos (θ A τ) := by
+      rw [div_le_iff₀ hq]; exact hrec
+    exact mul_le_mul_of_nonneg_right hdiv hg
+  -- integrate
+  have hI2 : ∫ u, φ2 u = ∫ u, ψ u := by
+    rw [hφ2_eq]; exact integral_add_right_eq_self ψ τ
+  calc 2 * ∫ u, |g (u + τ)| * |g u|
+      = ∫ u, 2 * (|g (u + τ)| * |g u|) := (integral_const_mul 2 _).symm
+    _ ≤ ∫ u, (φ1 u + φ2 u) := integral_mono hL_int (hφ1_int.add hφ2_int) hpt
+    _ = (∫ u, φ1 u) + ∫ u, φ2 u := integral_add hφ1_int hφ2_int
+    _ = (∫ u, φ1 u) + ∫ u, ψ u := by rw [hI2]
+    _ = ∫ u, (φ1 u + ψ u) := (integral_add hφ1_int hψ_int).symm
+    _ ≤ ∫ u, 2 * Real.cos (θ A τ) * g u ^ 2 :=
+        integral_mono (hφ1_int.add hψ_int) (hg2.const_mul _) hpt2
+    _ = 2 * Real.cos (θ A τ) * ∫ u, g u ^ 2 := integral_const_mul _ _
+
+/-- Signed form: `|2 ∫ g(u+τ) g(u) du| ≤ 2 cos(π/(⌊2A/τ⌋+2)) ∫ g^2`. -/
+theorem shift_bound_signed (A τ : ℝ) (hτ : 0 < τ) (g : ℝ → ℝ) (hgm : Measurable g)
+    (hg2 : Integrable (fun u => g u ^ 2)) (hsupp : ∀ u, g u ≠ 0 → u ∈ Set.Icc (-A) A) :
+    |∫ u, g (u + τ) * g u| ≤ Real.cos (θ A τ) * ∫ u, g u ^ 2 := by
+  have h := shift_bound A τ hτ g hgm hg2 hsupp
+  have h1 : |∫ u, g (u + τ) * g u| ≤ ∫ u, |g (u + τ)| * |g u| := by
+    have := norm_integral_le_integral_norm (μ := volume) (fun u => g (u + τ) * g u)
+    simpa only [Real.norm_eq_abs, abs_mul] using this
+  linarith
+
+/-- **Lemma A (window-aware comb bound).**  For finitely many shifts `τ_i > 0` with real weights `c_i`,
+and `g` as above,
+  `∑ c_i ∫ g(u + τ_i) g(u) du ≤ (∑ |c_i| cos(π/(⌊2A/τ_i⌋ + 2))) ∫ g^2`.
+With `τ_n = log n`, `c_n = 2Λ(n)/√n` the left side is `<P_A g, g>` for the compressed prime comb
+`P_A = ∑ (c_n/2)(S_{log n} + S_{log n}^*)` on `L^2(-A, A)`, and the bracket is `A'(A)`. -/
+theorem comb_bound {ι : Type*} (s : Finset ι) (c τ : ι → ℝ) (hτ : ∀ i ∈ s, 0 < τ i) (A : ℝ)
+    (g : ℝ → ℝ) (hgm : Measurable g) (hg2 : Integrable (fun u => g u ^ 2))
+    (hsupp : ∀ u, g u ≠ 0 → u ∈ Set.Icc (-A) A) :
+    ∑ i ∈ s, c i * ∫ u, g (u + τ i) * g u
+      ≤ (∑ i ∈ s, |c i| * Real.cos (θ A (τ i))) * ∫ u, g u ^ 2 := by
+  rw [Finset.sum_mul]
+  apply Finset.sum_le_sum
+  intro i hi
+  have h := shift_bound_signed A (τ i) (hτ i hi) g hgm hg2 hsupp
+  calc c i * ∫ u, g (u + τ i) * g u ≤ |c i * ∫ u, g (u + τ i) * g u| := le_abs_self _
+    _ = |c i| * |∫ u, g (u + τ i) * g u| := abs_mul _ _
+    _ ≤ |c i| * (Real.cos (θ A (τ i)) * ∫ u, g u ^ 2) := mul_le_mul_of_nonneg_left h (abs_nonneg _)
+    _ = |c i| * Real.cos (θ A (τ i)) * ∫ u, g u ^ 2 := by ring
+
+/-- **Lemma A for the prime comb.**  With `τ_n = log n` and `c_n = 2Λ(n)/√n` (`n` in `[2, N)`), for every real
+square-integrable `g` vanishing outside `[-A, A]`:
+  `∑ c_n ∫ g(u + log n) g(u) du ≤ A'(A) ∫ g²`,  `A'(A) = ∑ c_n cos(π/(⌊2A/log n⌋ + 2))`,
+i.e. `<P_A g, g> ≤ A'(A) ‖g‖²` for the compressed prime comb (Λ = Mathlib's von Mangoldt function).
+At `x = 11.006`, `A = 307/256 + 0.34`, this is the constant `A' = 5.02558` of the window-aware certificate
+(Zhu's pointwise constant is `A_L = ∑ c_n = 8.52099`). -/
+theorem prime_comb_bound (N : ℕ) (A : ℝ) (g : ℝ → ℝ) (hgm : Measurable g)
+    (hg2 : Integrable (fun u => g u ^ 2)) (hsupp : ∀ u, g u ≠ 0 → u ∈ Set.Icc (-A) A) :
+    ∑ n ∈ Finset.Ico 2 N, (2 * ArithmeticFunction.vonMangoldt n / Real.sqrt n) *
+        ∫ u, g (u + Real.log n) * g u
+      ≤ (∑ n ∈ Finset.Ico 2 N, (2 * ArithmeticFunction.vonMangoldt n / Real.sqrt n) *
+          Real.cos (π / ((⌊2 * A / Real.log n⌋ : ℝ) + 2))) * ∫ u, g u ^ 2 := by
+  have hτ : ∀ n ∈ Finset.Ico 2 N, 0 < Real.log (n : ℝ) := by
+    intro n hn
+    have h2 : (2 : ℕ) ≤ n := (Finset.mem_Ico.mp hn).1
+    apply Real.log_pos
+    exact_mod_cast (show 1 < n by omega)
+  have h := comb_bound (Finset.Ico 2 N) (fun n : ℕ => 2 * ArithmeticFunction.vonMangoldt n / Real.sqrt n)
+    (fun n : ℕ => Real.log n) hτ A g hgm hg2 hsupp
+  have habs : ∀ n : ℕ, |2 * ArithmeticFunction.vonMangoldt n / Real.sqrt n|
+      = 2 * ArithmeticFunction.vonMangoldt n / Real.sqrt n := by
+    intro n
+    apply abs_of_nonneg
+    exact div_nonneg (mul_nonneg (by norm_num) ArithmeticFunction.vonMangoldt_nonneg) (Real.sqrt_nonneg _)
+  simp only [habs] at h
+  exact h
+

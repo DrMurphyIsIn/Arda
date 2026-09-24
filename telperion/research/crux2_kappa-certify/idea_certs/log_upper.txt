@@ -1,0 +1,4 @@
+a=249/256 N=200 even: bottom eig est 7.46493e-28 ; certified Rayleigh quotient (upper bound on lam*) [7.46493e-28 +/- 1.87e-34]  (257.1s)
+a=249/256 N=200 odd: bottom eig est 1.67941e-24 ; certified Rayleigh quotient (upper bound on lam*) [1.67941e-24 +/- 1.15e-30]  (197.2s)
+a=0.8 N=200 even: bottom eig est 1.65802e-17 ; certified Rayleigh quotient (upper bound on lam*) [1.65802e-17 +/- 1.50e-23]  (145.1s)
+a=0.8 N=200 odd: bottom eig est 1.63174e-14 ; certified Rayleigh quotient (upper bound on lam*) [1.63174e-14 +/- 1.35e-20]  (149.7s)

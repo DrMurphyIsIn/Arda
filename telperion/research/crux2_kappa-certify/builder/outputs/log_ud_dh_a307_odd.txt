@@ -1,0 +1,9 @@
+a=307/256 x=e^{2a}=[11.005966 +/- 1.17e-7] kind=dh comb=[2, 3, 4, 6, 7, 8, 9, 11]
+   built odd N=10 panels=4 m=59 nin=21 (0.2s)
+  odd N= 10  lam_min(Q_N) = 1.1876833642e-05   next = 1.3620e-01   max entry radius 1.0e-107
+   built odd N=20 panels=4 m=79 nin=41 (1.7s)
+  odd N= 20  lam_min(Q_N) = 8.3431022304e-06   next = 1.2040e-01   max entry radius 2.2e-100
+   built odd N=30 panels=4 m=99 nin=61 (5.6s)
+  odd N= 30  lam_min(Q_N) = 8.1553065030e-06   next = 1.1790e-01   max entry radius 7.6e-93
+   built odd N=40 panels=4 m=119 nin=81 (12.0s)
+  odd N= 40  lam_min(Q_N) = 8.0821513139e-06   next = 1.1672e-01   max entry radius 2.5e-85

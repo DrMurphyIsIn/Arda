@@ -1,0 +1,8 @@
+{"which": "golden_fine", "x": "5.6", "sector": "even", "N": 28, "l1": "-0.0607612", "l2": "1.35322", "s": 2.6}
+{"which": "golden_fine", "x": "5.6", "sector": "odd", "N": 28, "l1": "0.693532", "l2": "3.21888", "s": 2.8}
+{"which": "golden_fine", "x": "5.7", "sector": "even", "N": 28, "l1": "-0.132575", "l2": "1.0653", "s": 2.6}
+{"which": "golden_fine", "x": "5.7", "sector": "odd", "N": 28, "l1": "0.547617", "l2": "2.12745", "s": 2.6}
+{"which": "golden_fine", "x": "5.8", "sector": "even", "N": 28, "l1": "-0.181258", "l2": "0.910801", "s": 3.2}
+{"which": "golden_fine", "x": "5.8", "sector": "odd", "N": 28, "l1": "0.401107", "l2": "1.32758", "s": 2.6}
+{"which": "golden_fine", "x": "5.9", "sector": "even", "N": 28, "l1": "-0.216769", "l2": "0.804611", "s": 3.1}
+{"which": "golden_fine", "x": "5.9", "sector": "odd", "N": 28, "l1": "0.293308", "l2": "1.18239", "s": 3.0}

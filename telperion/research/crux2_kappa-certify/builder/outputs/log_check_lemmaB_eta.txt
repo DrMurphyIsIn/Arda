@@ -1,0 +1,20 @@
+(1) FT of kcheck vs k:
+   t=  0.0  int kcheck e^{its} = 0.9995930480   k(t) = 0.9995930480
+   t= 10.0  int kcheck e^{its} = 0.9614500073   k(t) = 0.9614500073
+   t= 19.0  int kcheck e^{its} = 0.5701581024   k(t) = 0.5701581024
+   t= 20.0  int kcheck e^{its} = 0.5000000000   k(t) = 0.5000000000
+   t= 21.0  int kcheck e^{its} = 0.4298418976   k(t) = 0.4298418976
+   t= 30.0  int kcheck e^{its} = 0.0385499359   k(t) = 0.0385499359
+(2) leakage vs eta:
+   a=1.00 eps=0.30 w= 8.0 Tk= 20.0 theta=  0.0 : ||leak||/||f|| = 1.683e-03  <=  eta = 1.147e-01  True
+   a=1.00 eps=0.30 w= 8.0 Tk= 20.0 theta=  5.0 : ||leak||/||f|| = 3.170e-04  <=  eta = 1.147e-01  True
+   a=1.00 eps=0.30 w= 8.0 Tk= 20.0 theta= 20.0 : ||leak||/||f|| = 2.214e-03  <=  eta = 1.147e-01  True
+   a=1.00 eps=0.30 w= 8.0 Tk= 20.0 theta= 44.0 : ||leak||/||f|| = 5.434e-04  <=  eta = 1.147e-01  True
+   a=1.00 eps=0.40 w=10.0 Tk= 40.0 theta=  0.0 : ||leak||/||f|| = 3.983e-05  <=  eta = 4.609e-03  True
+   a=1.00 eps=0.40 w=10.0 Tk= 40.0 theta=  5.0 : ||leak||/||f|| = 1.447e-05  <=  eta = 4.609e-03  True
+   a=1.00 eps=0.40 w=10.0 Tk= 40.0 theta= 40.0 : ||leak||/||f|| = 2.051e-05  <=  eta = 4.609e-03  True
+   a=1.00 eps=0.40 w=10.0 Tk= 40.0 theta= 70.0 : ||leak||/||f|| = 3.934e-05  <=  eta = 4.609e-03  True
+   a=0.97 eps=0.34 w=12.0 Tk= 60.0 theta=  0.0 : ||leak||/||f|| = 1.591e-05  <=  eta = 4.107e-03  True
+   a=0.97 eps=0.34 w=12.0 Tk= 60.0 theta=  5.0 : ||leak||/||f|| = 3.289e-06  <=  eta = 4.107e-03  True
+   a=0.97 eps=0.34 w=12.0 Tk= 60.0 theta= 60.0 : ||leak||/||f|| = 2.441e-05  <=  eta = 4.107e-03  True
+   a=0.97 eps=0.34 w=12.0 Tk= 60.0 theta= 96.0 : ||leak||/||f|| = 1.643e-05  <=  eta = 4.107e-03  True

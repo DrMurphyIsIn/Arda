@@ -1,0 +1,5 @@
+a=249/256 (0.97265625) T#=560.0 N=450 prec=256 primes=[2, 3, 4, 5] A_L=[4.38149855633 +/- 8.22e-13] b*=[0.106775446703 +/- 3.14e-13]
+  leading block even N=450 nodes=14016  (41.2s)
+  even: lam_est=4.48421e-28  vLDL^T(M - [4.395e-28 +/- 3e-36] I) ok=True resid=[1.2755e-64 +/- 3.29e-69] eta=[1.68e-45 +/- 3.60e-48] epsB=[5.00e-75 +/- 4.83e-79] epsD=[1.07e-155 +/- 8.50e-159]  => lam_min(Q_even) >= [4.3950000e-28 +/- 3e-40]  (60s)
+  leading block odd N=450 nodes=14016  (44.5s)
+  odd: lam_est=3.34364e-24  vLDL^T(M - [3.277e-24 +/- 3e-32] I) ok=False resid=negative floating pivot at 31: [-0.29403 +/- 4.90e-6] eta=[1.69e-45 +/- 4.53e-48] epsB=[1.51e-75 +/- 1.02e-78] epsD=[9.76e-157 +/- 4.57e-160]  => lam_min(Q_odd) >= FAIL  (61s)

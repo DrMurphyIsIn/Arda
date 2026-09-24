@@ -1,0 +1,9 @@
+prime powers: [2, 3, 4, 5, 7, 8, 9, 11]
+M_n: {2: 5, 3: 3, 4: 3, 5: 2, 7: 2, 8: 2, 9: 2, 11: 2}
+A_L = 8.5209908842487   A'(a+eps) = 5.02557938321984
+Zhu threshold 2 pi e^{A_L} = 31535.461 ; window-aware 2 pi e^{A'} = 956.66803
+even: Tc=1170.0 Tk=1698.0 Tmax=2457.0  b'=0.200447877308  eta=1.1322e-56  err=1.9295e-55  deficit=3.338e-58  xi=4.0424e-58  b''=0.200447877308
+   envelope at Tc: Phi(Tc) = 5.22688193094439 >= log(Tc/2pi) - 1/Tc = 5.22602726052776 : True
+odd: Tc=2000.0 Tk=2528.0 Tmax=3287.0  b'=0.736946009913  eta=1.1322e-56  err=1.9295e-55  deficit=3.507e-58  xi=4.1907e-58  b''=0.736946009913
+   envelope at Tc: Phi(Tc) = 5.76302538271607 >= log(Tc/2pi) - 1/Tc = 5.76252539313274 : True
+envelope grid check t in [0.75, 5000]: min slack 0.000200183 at t = 4995.38 (must be >= 0)

@@ -1,0 +1,7 @@
+a=472/256 x=e^{2a}=[39.944860 +/- 1.25e-7] kind=dh comb=[2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24, 26, 27, 28, 29, 31, 32, 33, 34, 36, 37, 38, 39]
+   built even N=70 panels=4 m=178 nin=140 (54.1s)
+  even N= 70  lam_min(Q_N) = -8.7832704437e-15   next = 3.3988e-38   max entry radius 2.3e-101
+   built even N=90 panels=4 m=218 nin=180 (215.0s)
+  even N= 90  lam_min(Q_N) = -2.2968027338e-02   next = 2.1388e-39   max entry radius 3.7e-86
+   built even N=110 panels=4 m=258 nin=220 (257.5s)
+  even N=110  lam_min(Q_N) = -2.4417874518e-02   next = 1.9027e-39   max entry radius 6.7e-71

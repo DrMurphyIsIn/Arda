@@ -1,0 +1,10 @@
+/-- **Two-block assembly** (step [C6] of every certificate).  With `X = |x_L|`, `Y = |x_T|` (leading and
+tail Legendre coordinates), a leading-block lower bound `l`, a tail-block lower bound `d` and a coupling
+bound `e ≥ 0`:  `l X² - 2 e X Y + d Y² ≥ (min l d - e)(X² + Y²)`. -/
+theorem block_assembly (l d e X Y : ℝ) (he : 0 ≤ e) :
+    (min l d - e) * (X ^ 2 + Y ^ 2) ≤ l * X ^ 2 - 2 * e * X * Y + d * Y ^ 2 := by
+  have h1 : min l d * X ^ 2 ≤ l * X ^ 2 := mul_le_mul_of_nonneg_right (min_le_left l d) (sq_nonneg X)
+  have h2 : min l d * Y ^ 2 ≤ d * Y ^ 2 := mul_le_mul_of_nonneg_right (min_le_right l d) (sq_nonneg Y)
+  have h3 : 2 * e * X * Y ≤ e * (X ^ 2 + Y ^ 2) := by nlinarith [sq_nonneg (X - Y), he]
+  nlinarith
+

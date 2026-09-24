@@ -1,0 +1,6 @@
+  leading block even N=450 nodes=14016  (77.8s)
+C - lam0 I > 1e-40 I certified: True resid [2.86e-72 +/- 6.91e-76]
+Schur complement S (k=8): max radius 4.271e-72
+lam_min(S_mid) ~ 6.310887e-30 ; k*w0 = 1.600e-47
+delta = 3.1554436207999998e-30  k*w0 = 1.6e-47  delta > k w0: True
+exact LDL^T ok; max digits in L, D: 324

@@ -1,0 +1,65 @@
+/-
+  Crux2_verified_window.lean (rvm_bridge island) -- crux2 lens "verified-window": the FORM-LEVEL
+  comb constant for the Weil explicit formula on a fixed window, kernel-certified at L' = 2.3, and the
+  gluing skeleton "verified zeros below T + window arithmetic above T => almost-positivity".
+
+  conjecture1_proved = False.  Nothing here proves, reduces, or is equivalent to RH.  Everything is
+  about a FIXED window [-L', L'] (Weil positivity for all windows is RH; for one window it is not).
+
+  Checked by: cd telperion/examples/rvm_bridge/lean &&
+    leanlock.sh lake env lean Crux/Crux2_verified_window.lean
+  (Lean v4.33.0-rc2, Mathlib 51e6992e, Zeta23 @ fbdc36bb).  No `sorry`, no `admit`, no
+  `native_decide`, no `opaque`, no new `axiom`.  The certificate is evaluated by the KERNEL
+  (`decide +kernel`, pure `Nat` arithmetic).  `#print axioms` at the end: only propext,
+  Classical.choice, Quot.sound.
+
+  CONSUMED (unconditional on this island): RvMBridge4.limit_explicit_formula (the E8 node: Weil /
+  Guinand explicit formula for smooth compactly supported tests), RvMBridge4.zeroMult_eq_zero_of_
+  not_nontrivial, RvMBridge5.isWeilTest_autocorr, RvMBridge5.weilKernel_autocorr_line; Mathlib's
+  Real.log_two_gt_d9 / lt_d9, Real.abs_log_sub_add_sum_range_le, ArithmeticFunction.vonMangoldt.
+
+  WHAT THIS FILE ESTABLISHES (THEOREM-kernel-checked):
+  (A) `schur_twist_bound`: the finite core (discrete Schur test with entrywise domination), ported
+      from the idea-stage CombSchur.lean.
+  (B) `schur_comb`: continuous Schur / Collatz-Wielandt test for a window-compressed positive shift
+      comb:  if w > 0 on W and  Σ_n c_n (1_W w(x - u_n) + 1_W w(x + u_n)) <= lam w(x)  on W, then
+        Σ_n c_n (∫|g(x)||g(x - u_n)| + ∫|g(x)||g(x + u_n)|) <= lam ∫|g|²   (g continuous, supp in W).
+  (C) `primeSide_autocorr_le`: the prime side of the E8 explicit formula on g⋆g~ is bounded by the
+      form-level constant:  ‖Σ_n Λ(n)/√n (g⋆g~(log n) + g⋆g~(-log n))‖ <= lam ‖g‖².  The triangle
+      inequality |∫ g(v) conj g(v - u)| <= ∫|g(v)||g(v - u)| plus Λ >= 0 is the entrywise domination:
+      `primeSide_autocorr_twist_le` gives the SAME bound for every twist g ↦ e^{irx} g, whose prime
+      side is the comb twisted by e^{±ir log n} (`primeSide_autocorr_modulate`), i.e. every
+      high-frequency Rayleigh quotient of the comb symbol P(t + r).
+  (D) An exact-integer certificate (920 cells, 35 prime powers n < 100, rigorous rational enclosures
+      of log p for p <= 97 from Mathlib's log 2 bounds and the log series) checked by the kernel:
+        `primeSide_autocorr_le_cert`: for every continuous compactly supported g vanishing off
+        [-2.3, 2.3],  ‖primeSide(g⋆g~)‖ <= 11.161373010 ‖g‖².
+      `combMass_gt_three_lam`: 3 * 11.161373010 < Σ_{n<100} 2Λ(n)/√n (the pointwise comb constant
+      A_{2.3} ≈ 33.79 = sup_t P_{2.3}(t), the constant of every pointwise-envelope certificate).
+      `weilForm_autocorr_ge_cert`: Re W(g⋆g~) >= Re Arch(g⋆g~) - 11.161373 ‖g‖² on that window.
+  (F) `weil_almost_pos_of_glue` / `weil_almost_pos_cert`: the gluing of Theorem 2 on the real E8
+      explicit formula: with Gφ := g⋆g~ - gH⋆gH~, if |ĝH| <= |ĝ| on R, every nontrivial zero with
+      |Im| <= T is on the line, the unverified-zero tail of Gφ is at most E₁, and Re Arch(gH⋆gH~) >=
+      lam ‖gH‖² - E₂, then Re W(g⋆g~) >= -(E₁ + E₂).
+
+  WHAT IT DOES NOT ESTABLISH:
+  * No RH progress; no exact positivity at any window (only the prime-side constant and the gluing).
+  * The numerical instance of Theorem 2 (with the constant certified here: λ_min(Q_L) >= -10^-997
+    for every L <= 2.25 at T = 640000; research/crux2_verified-window/README.md) is NOT in this
+    file: its three analytic inputs (the multiplier K = 1_{[-T_m,T_m]} * Fejér^m and its tail
+    bounds, the digamma envelope and leakage below R, Trudgian's explicit S(t)) are paper proofs,
+    and the zero hypothesis is the Arb-conditional AllZeros_h640000 of the li_positivity island
+    (a different toolchain; islands compose at registry level, not by import).
+    `weil_almost_pos_cert` takes exactly these as named hypotheses.
+  * The certified 11.161373 is an UPPER bound; the true window norm A_win(2.3) is >= 11.0586
+    (Galerkin, floating point, not kernel-checked).  Sharpness of A_win at high frequency
+    (Kronecker) is a paper proof, not formalized.
+  * The Fourier/Plancherel identity (1/2π)∫|ĝ|² P(t) dt = primeSide(g⋆g~) is used only to READ the
+    result in frequency language; every statement here is in x-space on the island's own vocabulary.
+  * Davenport-Heilbronn: signed coefficients break the Λ >= 0 domination; the theorems in (B) hold
+    with |c_n| but the twisted supremum then genuinely exceeds the untwisted norm (numerical negative
+    control in the research README).
+-/
+import Mathlib
+import E6Bridge5
+

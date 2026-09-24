@@ -1,0 +1,5 @@
+a=249/256 T#=800.0 b*=[0.463986 +/- 1.05e-7] N=535 odd
+  leading block odd N=535 nodes=19776  (60.7s)
+   floating LDL^T(M - 1e-20 I) PD? False
+   floating LDL^T(M - 1e-22 I) PD? False
+   floating LDL^T(M - 1e-24 I) PD? True

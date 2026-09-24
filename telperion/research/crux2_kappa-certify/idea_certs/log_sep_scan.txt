@@ -1,0 +1,15 @@
+x=31 N=10: zeta-even 5.009e-33 | zeta-odd 5.489e-30 | dh-even 1.728e-17 | dh-odd 1.444e-14
+x=31 N=16: zeta-even 2.904e-44 | zeta-odd 4.028e-41 | dh-even 4.186e-22 | dh-odd 8.377e-19
+x=31 N=24: zeta-even 1.481e-57 | zeta-odd 2.675e-54 | dh-even 2.895e-26 | dh-odd 1.086e-22
+x=31 N=40: zeta-even -4.858e-77 | zeta-odd 7.792e-76 | dh-even 1.730e-29 | dh-odd 1.626e-25
+x=31 N=60: zeta-even -1.101e-76 | zeta-odd 4.584e-78 | dh-even -1.874e-31 | dh-odd 1.220e-25
+x=40 N=10: zeta-even 9.865e-34 | zeta-odd 7.977e-31 | dh-even 2.492e-19 | dh-odd 3.060e-16
+x=40 N=16: zeta-even 1.721e-46 | zeta-odd 2.227e-43 | dh-even 6.467e-25 | dh-odd 1.122e-21
+x=40 N=24: zeta-even 4.990e-61 | zeta-odd 1.052e-57 | dh-even 2.216e-30 | dh-odd 8.319e-27
+x=40 N=40: zeta-even -1.792e-76 | zeta-odd -6.745e-77 | dh-even 5.537e-37 | dh-odd 4.708e-33
+x=40 N=60: zeta-even -3.287e-76 | zeta-odd -1.382e-76 | dh-even -2.588e-04 | dh-odd -1.085e-03
+x=60 N=10: zeta-even 2.974e-35 | zeta-odd 3.393e-32 | dh-even 2.884e-21 | dh-odd 3.175e-18
+x=60 N=16: zeta-even 1.798e-49 | zeta-odd 2.444e-46 | dh-even 2.087e-28 | dh-odd 3.294e-25
+x=60 N=24: zeta-even 8.328e-66 | zeta-odd 2.007e-62 | dh-even 2.945e-36 | dh-odd 8.892e-33
+x=60 N=40: zeta-even -7.260e-77 | zeta-odd -1.507e-76 | dh-even 4.421e-47 | dh-odd 3.121e-43
+x=60 N=60: zeta-even -1.943e-76 | zeta-odd -1.720e-76 | dh-even -8.343e-01 | dh-odd -8.424e-01

@@ -1,0 +1,8 @@
+L=2.0 N=1000: lambda_max=9.106863  lambda_max/e^L=1.23248  pointwise mass 2*int_0^(2L) e^(u/2) du /e^L = 3.4587
+L=2.0 N=2000: lambda_max=9.106868  lambda_max/e^L=1.23248  pointwise mass 2*int_0^(2L) e^(u/2) du /e^L = 3.4587
+L=2.3 N=1000: lambda_max=12.221634  lambda_max/e^L=1.22533  pointwise mass 2*int_0^(2L) e^(u/2) du /e^L = 3.5990
+L=2.3 N=2000: lambda_max=12.221643  lambda_max/e^L=1.22533  pointwise mass 2*int_0^(2L) e^(u/2) du /e^L = 3.5990
+L=4.0 N=1000: lambda_max=60.235902  lambda_max/e^L=1.10326  pointwise mass 2*int_0^(2L) e^(u/2) du /e^L = 3.9267
+L=4.0 N=2000: lambda_max=60.236020  lambda_max/e^L=1.10326  pointwise mass 2*int_0^(2L) e^(u/2) du /e^L = 3.9267
+L=8.0 N=1000: lambda_max=2994.889159  lambda_max/e^L=1.00467  pointwise mass 2*int_0^(2L) e^(u/2) du /e^L = 3.9987
+L=8.0 N=2000: lambda_max=2994.913038  lambda_max/e^L=1.00468  pointwise mass 2*int_0^(2L) e^(u/2) du /e^L = 3.9987

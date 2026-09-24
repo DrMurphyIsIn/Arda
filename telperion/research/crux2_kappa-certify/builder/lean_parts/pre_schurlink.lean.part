@@ -1,0 +1,81 @@
+
+
+def qf {n : ℕ} (G : Fin n → Fin n → ℝ) (v : Fin n → ℝ) : ℝ := ∑ i, ∑ j, v i * G i j * v j
+
+lemma qf_sub {n : ℕ} (G S : Fin n → Fin n → ℝ) (v : Fin n → ℝ) :
+    qf G v - qf S v = qf (fun i j => G i j - S i j) v := by
+  unfold qf
+  rw [← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  ring
+
+lemma abs_qf_le {n : ℕ} (E : Fin n → Fin n → ℝ) (w : ℝ) (h : ∀ i j, |E i j| ≤ w)
+    (v : Fin n → ℝ) : |qf E v| ≤ w * (∑ i, |v i|) ^ 2 := by
+  unfold qf
+  calc |∑ i, ∑ j, v i * E i j * v j|
+      ≤ ∑ i, |∑ j, v i * E i j * v j| := Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ i, ∑ j, |v i * E i j * v j| :=
+        Finset.sum_le_sum (fun i _ => Finset.abs_sum_le_sum_abs _ _)
+    _ ≤ ∑ i, ∑ j, w * (|v i| * |v j|) := by
+        refine Finset.sum_le_sum (fun i _ => Finset.sum_le_sum (fun j _ => ?_))
+        rw [abs_mul, abs_mul]
+        have h1 := h i j
+        have h2 : 0 ≤ |v i| * |v j| := mul_nonneg (abs_nonneg _) (abs_nonneg _)
+        calc |v i| * |E i j| * |v j| = |E i j| * (|v i| * |v j|) := by ring
+          _ ≤ w * (|v i| * |v j|) := mul_le_mul_of_nonneg_right h1 h2
+    _ = w * (∑ i, |v i|) ^ 2 := by
+        rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
+        refine Finset.sum_congr rfl (fun i _ => ?_)
+        rw [Finset.mul_sum]
+
+lemma sum_abs_sq_le {n : ℕ} (v : Fin n → ℝ) : (∑ i, |v i|) ^ 2 ≤ (n : ℝ) * ∑ i, v i ^ 2 := by
+  have h := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun _ => (1 : ℝ)) (fun i => |v i|)
+  simpa [sq_abs] using h
+
+theorem posdef_of_box {n : ℕ} (G S : Fin n → Fin n → ℝ) (w δ : ℝ)
+    (hbox : ∀ i j, |G i j - S i j| ≤ w) (hS : ∀ v : Fin n → ℝ, δ * ∑ i, v i ^ 2 ≤ qf S v)
+    (hδ : (n : ℝ) * w < δ) (v : Fin n → ℝ) (hv : v ≠ 0) : 0 < qf G v := by
+  obtain ⟨i0, hi0⟩ := Function.ne_iff.mp hv
+  have hw : 0 ≤ w := le_trans (abs_nonneg _) (hbox i0 i0)
+  have hpos : 0 < ∑ i, v i ^ 2 :=
+    lt_of_lt_of_le (by simpa using pow_pos (abs_pos.mpr hi0) 2)
+      (Finset.single_le_sum (fun j _ => sq_nonneg (v j)) (Finset.mem_univ i0))
+  have h1 := abs_qf_le (fun i j => G i j - S i j) w hbox v
+  have h2 := sum_abs_sq_le v
+  have h3 := hS v
+  have hsub := qf_sub G S v
+  have h4 : -(w * (∑ i, |v i|) ^ 2) ≤ qf (fun i j => G i j - S i j) v := by
+    have := neg_abs_le (qf (fun i j => G i j - S i j) v)
+    linarith
+  have h5 : w * (∑ i, |v i|) ^ 2 ≤ w * ((n : ℝ) * ∑ i, v i ^ 2) := mul_le_mul_of_nonneg_left h2 hw
+  nlinarith
+
+lemma dot_eq_qf {k : ℕ} (G : Matrix (Fin k) (Fin k) ℝ) (x : Fin k → ℝ) :
+    star x ⬝ᵥ (G *ᵥ x) = qf (fun i j => G i j) x := by
+  simp only [star_trivial, dotProduct, Matrix.mulVec, qf, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
+  ring
+
+/-- **Schur-complement link (generic).**  Let `M = [[A, B], [Bᵀ, C]]` be a real symmetric block matrix
+(`A` of size `k`, `C` of any finite size), `C` positive definite, and suppose the Schur complement
+`A - B C⁻¹ Bᵀ` lies entrywise within `w` of a matrix `S` whose form is `≥ δ |v|²` with `k w < δ`.
+Then `M` is positive semidefinite.  (Applied with `M` = the leading Galerkin block minus `λ₀ I`.) -/
+theorem schur_link {k : ℕ} {m : Type*} [Fintype m] [DecidableEq m]
+    (S : Fin k → Fin k → ℝ) (w δ : ℝ) (hS : ∀ v : Fin k → ℝ, δ * ∑ i, v i ^ 2 ≤ qf S v)
+    (hδ : (k : ℝ) * w < δ)
+    (A : Matrix (Fin k) (Fin k) ℝ) (hA : A.IsHermitian) (B : Matrix (Fin k) m ℝ)
+    (C : Matrix m m ℝ) (hC : C.PosDef)
+    (hbox : ∀ i j, |(A - B * C⁻¹ * Bᴴ) i j - S i j| ≤ w) :
+    (Matrix.fromBlocks A B Bᴴ C).PosSemidef := by
+  have : Invertible C := hC.isUnit.invertible
+  rw [Matrix.PosDef.fromBlocks₂₂ A B hC]
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg ?_ ?_
+  · exact hA.sub (Matrix.isHermitian_mul_mul_conjTranspose B hC.1.inv)
+  · intro x
+    rw [dot_eq_qf]
+    by_cases hx : x = 0
+    · subst hx; simp [qf]
+    · exact le_of_lt (posdef_of_box _ S w δ hbox hS hδ x hx)
+

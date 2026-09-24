@@ -1,0 +1,2 @@
+a=133/128 N=200 even: bottom eig est 4.89069e-33 ; certified Rayleigh quotient (upper bound on lam*) [4.89069e-33 +/- 5.62e-40]  (147.5s)
+a=133/128 N=200 odd: bottom eig est 1.40767e-29 ; certified Rayleigh quotient (upper bound on lam*) [1.40767e-29 +/- 3.94e-36]  (144.8s)

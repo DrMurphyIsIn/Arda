@@ -1,0 +1,57 @@
+PASS C1 completion identity p^(s-1/2) P(p^-s) = A_{p,c}(s)  max err 2.57e-43
+PASS C1b A(1-s) = A(s)
+PASS C2 contractivity identity |A(2s)|^2-|A(2s-1)|^2 = (sqrt p-1/sqrt p)(R-1/R)[...]  rel err 3.74e-50
+PASS C2b contractive (|A(2s-1)| <= |A(2s)|) on Re s >= 1/2 whenever |c| <= p+1  min diff 0.1764
+PASS C2c |c| = p+2 violates contractivity somewhere  diff -0.25278
+PASS C3a log(1+cT+pT^2) = -sum t_m T^m/m  (p,c)=(29,11)
+     (p,c)=(29,11): Lambda_W(p^m)/log p for m=1..8: [12, -62, 375, -2286, 14312, -91097, 587060, -3815806]
+PASS C3b sign pattern: >0 at odd m, <0 at even m (c^2>4p, c>0)
+PASS C3a log(1+cT+pT^2) = -sum t_m T^m/m  (p,c)=(5,5)
+     (p,c)=(5,5): Lambda_W(p^m)/log p for m=1..8: [6, -14, 51, -174, 626, -2249, 8126, -29374]
+PASS C3b sign pattern: >0 at odd m, <0 at even m (c^2>4p, c>0)
+PASS C3a log(1+cT+pT^2) = -sum t_m T^m/m  (p,c)=(41,13)
+     (p,c)=(41,13): Lambda_W(p^m)/log p for m=1..8: [14, -86, 599, -4206, 30174, -219761, 1619814, -12047326]
+PASS C3b sign pattern: >0 at odd m, <0 at even m (c^2>4p, c>0)
+PASS C3c every quadratic surgery (c^2<=4p, p<=13) violates Lambda>=0 at some p^m, m<=6  []
+PASS C3d Lambda(p^2) >= 0 <=> c^2 <= 2p+1 < 4p
+     (p,c)=(5,5): Re rho = 1/2 +- 0.29899372 ; lowest height pi/log p = 1.9519813
+     (p,c)=(29,11): Re rho = 1/2 +- 0.06122136 ; lowest height pi/log p = 0.93297198
+     (p,c)=(41,13): Re rho = 1/2 +- 0.046783068 ; lowest height pi/log p = 0.84597595
+PASS C4 explicit zeros 1/2 +- arccosh(c/(2 sqrt p))/log p + i(2k+1)pi/log p
+     (p,c)=(29,11) supp g/L=0.5: zero-sum 3.7795604022 ; Poisson 3.77956040221 ; 2L g(0) = 3.77956040221
+PASS C5 zero-sum over A's zeros = Poisson prediction (supp/L=0.5)
+PASS C5b supp g < log p: zero-sum = 2 log p g(0), independent of c
+     (p,c)=(29,11) supp g/L=0.9: zero-sum 6.80320872398 ; Poisson 6.80320872399 ; 2L g(0) = 6.80320872399
+PASS C5 zero-sum over A's zeros = Poisson prediction (supp/L=0.9)
+PASS C5b supp g < log p: zero-sum = 2 log p g(0), independent of c
+     (p,c)=(29,11) supp g/L=1.5: zero-sum 9.62305582497 ; Poisson 9.62305582497 ; 2L g(0) = 11.3386812066
+PASS C5 zero-sum over A's zeros = Poisson prediction (supp/L=1.5)
+     (p,c)=(5,5) supp g/L=0.5: zero-sum 0.863430131323 ; Poisson 0.863430131327 ; 2L g(0) = 0.863430131327
+PASS C5 zero-sum over A's zeros = Poisson prediction (supp/L=0.5)
+PASS C5b supp g < log p: zero-sum = 2 log p g(0), independent of c
+     (p,c)=(5,5) supp g/L=0.9: zero-sum 1.55417423639 ; Poisson 1.55417423639 ; 2L g(0) = 1.55417423639
+PASS C5 zero-sum over A's zeros = Poisson prediction (supp/L=0.9)
+PASS C5b supp g < log p: zero-sum = 2 log p g(0), independent of c
+     (p,c)=(5,5) supp g/L=1.5: zero-sum 2.16124851232 ; Poisson 2.16124851232 ; 2L g(0) = 2.59029039398
+PASS C5 zero-sum over A's zeros = Poisson prediction (supp/L=1.5)
+     (p,c)=(41,13) supp g/L=0.5: zero-sum 4.59687249818 ; Poisson 4.5968724982 ; 2L g(0) = 4.5968724982
+PASS C5 zero-sum over A's zeros = Poisson prediction (supp/L=0.5)
+PASS C5b supp g < log p: zero-sum = 2 log p g(0), independent of c
+     (p,c)=(41,13) supp g/L=0.9: zero-sum 8.27437049676 ; Poisson 8.27437049676 ; 2L g(0) = 8.27437049676
+PASS C5 zero-sum over A's zeros = Poisson prediction (supp/L=0.9)
+PASS C5b supp g < log p: zero-sum = 2 log p g(0), independent of c
+     (p,c)=(41,13) supp g/L=1.5: zero-sum 11.7166527563 ; Poisson 11.7166527563 ; 2L g(0) = 13.7906174946
+PASS C5 zero-sum over A's zeros = Poisson prediction (supp/L=1.5)
+     (p,c)=(29,11): two-point local form min = -0.29028412 = -2L sinh^2(eta)
+     (p,c)=(5,5): two-point local form min = -0.80471896 = -2L sinh^2(eta)
+     (p,c)=(41,13): two-point local form min = -0.22643732 = -2L sinh^2(eta)
+     (p,c)=(29,10): on-line surgery; two-point local form min = 0.92890919 >= 0
+PASS C6 W(41,13): c^2 > 4p and c < p+1
+PASS C6b lowest zero height pi/log 41 = 0.84597595 < sqrt(3)/2 = 0.8660254
+PASS C6c log 41 > 3 log 2 + 1.58 = 3.6594415 > pi/(sqrt3/2) = 3.6275987
+PASS C7 A_{5,5} = XiA (golden fake = completion factor of W(5,5))
+     (p,c)=(5,5): delta=0.298994 gamma0=1.95198  Box1=True Box2=True LiDisk=True
+     (p,c)=(29,11): delta=0.0612214 gamma0=0.932972  Box1=True Box2=True LiDisk=True
+     (p,c)=(37,12) on-line
+     (p,c)=(41,13): delta=0.0467831 gamma0=0.845976  Box1=False Box2=False LiDisk=False
+ALL PASS

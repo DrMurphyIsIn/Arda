@@ -1,0 +1,40 @@
+{
+ "x": "40",
+ "N": 60,
+ "dh": {
+  "even": {
+   "eig_estimate": "-0.00025877383",
+   "certified_rayleigh_quotient": "[-0.0002587738329 +/- 4.70e-14]",
+   "negative": true,
+   "dim": 61,
+   "seconds": 7.0
+  },
+  "odd": {
+   "eig_estimate": "-0.0010854653",
+   "certified_rayleigh_quotient": "[-0.001085465334 +/- 2.32e-13]",
+   "negative": true,
+   "dim": 60,
+   "seconds": 6.3
+  }
+ },
+ "zeta": {
+  "even": {
+   "lam_min_estimate": "1.064490e-109",
+   "lam0": "9.5804e-110",
+   "verified": true,
+   "resid_fro": "[3.8979e-293 +/- 3.76e-298]",
+   "certified_lower": "[9.5804096e-110 +/- 4.01e-118]",
+   "max_entry_rad": "2.13e-293",
+   "seconds": 4.8
+  },
+  "odd": {
+   "lam_min_estimate": "8.720302e-106",
+   "lam0": "7.8483e-106",
+   "verified": true,
+   "resid_fro": "[3.8979e-293 +/- 8.87e-299]",
+   "certified_lower": "[7.8482716e-106 +/- 2.29e-114]",
+   "max_entry_rad": "2.13e-293",
+   "seconds": 5.0
+  }
+ }
+}
