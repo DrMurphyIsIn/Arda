@@ -2,7 +2,7 @@ name = "ZetaReflectionSpike"
 # The six proved ANDURIL node artifacts are default targets (closure audit C2, 2026-09-22):
 # a bare `lake build` compiles every one of them, and the coverage checker
 # (telperion/src/telperion/missions/coverage.py) can see that it does.
-defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD", "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet", "ReflectedBand_t14_Kernel", "EdgeClearGlue", "BandGlue", "BandGlue_h1000", "HeightFloorCheck", "HeightFloorTrig", "HeightFloorEM", "HeightFloorBoxes", "HeightFloor", "ArbEconomics_Eval", "ArbEconomics_Sound", "ArbEconomics_Zeta", "EMZetaHigh", "EMZetaHighEval", "EMZetaHighCfg64", "EMZetaHighCheck", "EMZetaHighK_T10000", "EMZetaHighK_T30000", "EMZetaHighK_T280000", "RSTheta", "AxiomGuardRSTheta", "AxiomGuardEMZetaHigh", "AxiomGuardHeightFloor"]
+defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD", "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet", "ReflectedBand_t14_Kernel", "EdgeClearGlue", "BandGlue", "BandGlue_h1000", "HeightFloorCheck", "HeightFloorTrig", "HeightFloorEM", "HeightFloorBoxes", "HeightFloor", "ArbEconomics_Eval", "ArbEconomics_Sound", "ArbEconomics_Zeta", "EMZetaHigh", "EMZetaHighEval", "EMZetaHighCfg64", "EMZetaHighCheck", "EMZetaHighK_T10000", "EMZetaHighK_T30000", "EMZetaHighK_T280000", "RSTheta", "RSSeam_B3Bound", "RSSeam_Bridge", "RSSeam_AxiomGuard", "AxiomGuardRSTheta", "AxiomGuardEMZetaHigh", "AxiomGuardHeightFloor"]
 
 # Same Mathlib pin as the sibling zeta_zero_localization island (v4.32.0), so the
 # path require below shares the on-disk Mathlib build cache -- `lake exe cache get`
@@ -334,6 +334,23 @@ roots = ["EMZetaHighK_T280000_Cfg", "EMZetaHighK_T280000_P0", "EMZetaHighK_T2800
 [[lean_lib]]
 name = "RSTheta"
 roots = ["RSTheta"]
+
+# Lane SEAM: RSSeam_B3Bound -- the C0-corrected Riemann-Siegel remainder bound re-derived from
+# t >= 509 (a = sqrt(t/2pi) >= 9): |rsE1| <= (1/4)/a, error (13/20) a^(-3/2) = (13/5) t^(-3/4).
+[[lean_lib]]
+name = "RSSeam_B3Bound"
+roots = ["RSSeam_B3Bound"]
+
+# Lane SEAM: RSSeam_Bridge -- `RSSeam.rs_Z_C0_seam`, Hardy's Z by Riemann-Siegel with the C0 term and
+# remainder (13/5) t^(-3/4) for t >= 509, phase discharged as in RS_Bridge (read-only imports).
+[[lean_lib]]
+name = "RSSeam_Bridge"
+roots = ["RSSeam_Bridge"]
+
+# Lane SEAM: the kernel-axiom guard for RSSeam_B3Bound + RSSeam_Bridge; not a default target.
+[[lean_lib]]
+name = "RSSeam_AxiomGuard"
+roots = ["RSSeam_AxiomGuard"]
 
 [[lean_lib]]
 name = "AxiomGuardRSTheta"
