@@ -6,7 +6,9 @@
   the ZetaReflection block from telperion/examples/zeta_reflection/lean/
   (EMZeta.lean, EMZetaTail.lean, StirlingBinet.lean, CheckBand.lean), the DIntvProd
   block from zeta_reflection/lean/DIntvDef.lean + DIntvCorrect.lean, the XiLineZeros
-  block from zeta_zero_localization/lean/XiLineZeros.lean.  To be regenerated/diffed
+  block from zeta_zero_localization/lean/XiLineZeros.lean; and (added 2026-09-23 for
+  AND_theta_branch) the ThetaGap block from zeta_reflection/lean/ThetaValue.lean and the
+  ZeroFreeBridge block from zero_free_bridge/lean/DlvpTheta.lean.  To be regenerated/diffed
   by missions/anduril/build_anddefs.py (grant-pass deliverable).  This file exists so
   that node statement files elaborate standalone against Mathlib; the *registry
   statements* are the node files, which the verify gate matches against the real
@@ -87,3 +89,19 @@ deriving Repr
 @[inline] def BandData.check (d : BandData) : Bool := checkLine d.boxes
 
 end ZetaReflection
+
+namespace ThetaGap
+
+-- ===== ThetaValue.lean:180-181 (v4.32 zeta_reflection island) =====
+noncomputable def imLnVal (x y : ℝ) (n : ℕ) : ℝ :=
+  y * Real.log n - ∑ k ∈ Finset.range (n+1), Real.arctan (y/(x+k))
+
+end ThetaGap
+
+namespace ZeroFreeBridge
+
+-- ===== zero_free_bridge/lean/DlvpTheta.lean:243-244 (v4.32 zero_free_bridge island) =====
+noncomputable def thetaMain (t : ℝ) : ℝ :=
+  t / 2 * Real.log t - t / 2 * Real.log (2 * Real.pi) - t / 2 - Real.pi / 8
+
+end ZeroFreeBridge

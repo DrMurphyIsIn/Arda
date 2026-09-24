@@ -10,7 +10,11 @@
 #   AND_first_zero_kernel   ForgeFirstZeroKernel    ForgeFirstZeroKernel.first_zero_kernel
 #   AND_stirling_binet_k1   StirlingBinet           ZetaReflection.logDeriv_gammaR_stirling
 #
-# The job builds the six modules and their five axiom-guard libs, then runs each guard and
+# Also built and guarded here (2026-09-23):
+#   AND_g2_reflected_band_kernel  ReflectedBand_t14_Kernel  ReflectedBand_t14_Kernel.pilot_kernel, .okK
+#   AND_theta_branch (proposed)   RSTheta                   RSDesignTheta.gaussBranch_theta_sub_thetaMain_le
+#
+# The job builds these modules and their seven axiom-guard libs, then runs each guard and
 # asserts (1) it elaborated, (2) no `sorryAx`, (3) every printed axiom list is a SUBSET of
 # {propext, Classical.choice, Quot.sound}, (4) at least the expected number of anchors printed,
 # and (5) every registry theorem above is among them.
@@ -31,15 +35,22 @@
 # runnable step's build (not merely a `lake build` string under the island directory), and a job
 # whose `lake build` names an undeclared target counts for nothing.
 #
-# Runs on PRs that touch the island, weekly, and on demand. It is not a required check.
+# Runs on EVERY PR, weekly, and on demand. Intended as a REQUIRED status check (job name
+# `zeta-reflection-compiles`). A required check must always report, so there is no workflow-level
+# `paths:` filter any more (a path-filtered workflow never starts on an unrelated PR, and the
+# required check would then block that PR forever). Instead the first step diffs the PR against
+# its base: if nothing the island BUILDS FROM changed, the heavy steps are skipped and the job
+# passes in under a minute. "Builds from" = this island, this workflow file, the zzl_core
+# sub-project and the ZeroFreeBridge package it path-requires, and the zeta_zero_localization
+# source modules the island compiles (the 16 zzl_core libs + the ZZLSegment_h1000 roots in
+# lean/lakefile.toml, import closure checked 2026-09-23: 42 top-level modules, no subdirectories).
+# The old filter watched only the island directory, so an edit to e.g. LambdaLineReal.lean never
+# re-ran this check. Keep RELEVANT below in step with lean/lakefile.toml.
 # conjecture1_proved = False.
 name: telperion-zeta-reflection
 
 on:
-  pull_request:
-    paths:
-      - "telperion/examples/zeta_reflection/**"
-      - ".github/workflows/telperion-zeta-reflection.yml"
+  pull_request:   # no paths filter: see the header (required-check safety)
   workflow_dispatch:
   schedule:
     - cron: "41 4 * * 2"   # Tuesdays 04:41 UTC, off the legacy-boxes slot
@@ -53,15 +64,58 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
+      # fetch-depth 2: on a pull_request event HEAD is GitHub's test-merge commit, and depth 2
+      # also fetches its parents, so HEAD^1 (the base tip it merged into) is available to diff.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      # Path gate (replaces the old workflow-level `paths:` filter, see the header). run=false
+      # ONLY for a pull_request whose diff against its base touches nothing in RELEVANT; every
+      # other event, and any failure to compute the diff, yields run=true (fail-safe).
+      - name: Relevant changes? (path gate for pull requests)
+        id: changes
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
+        run: |
+          set -uo pipefail
+          run=true
+          if [ "$EVENT" = "pull_request" ]; then
+            base=""
+            if git rev-parse -q --verify 'HEAD^2^{commit}' >/dev/null; then
+              base=$(git rev-parse -q --verify 'HEAD^1^{commit}' || true)
+            elif [ -n "${BASE_SHA:-}" ] && git fetch -q --no-tags --depth=1 origin "$BASE_SHA"; then
+              base="$BASE_SHA"
+            fi
+            if [ -n "$base" ] && files=$(git diff --name-only "$base" HEAD); then
+              echo "PR changes $(printf '%s' "$files" | grep -c . || true) file(s) relative to $base"
+              if grep -qE "$RELEVANT" <<< "$files"; then
+                printf '%s\n' "$files" | grep -E "$RELEVANT" | head -20
+              else
+                run=false
+              fi
+            else
+              echo "::warning::could not compute the PR diff against its base; running the full job"
+            fi
+          fi
+          echo "run=$run" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Nothing relevant changed -- skipping the island build
+        if: steps.changes.outputs.run != 'true'
+        run: echo "::notice::No change to the zeta_reflection island or its path dependencies; zeta-reflection-compiles passes without building."
 
       - name: Cache elan toolchain
+        if: steps.changes.outputs.run == 'true'
         uses: actions/cache@v4
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_reflection/lean/lean-toolchain') }}
 
       - name: Install elan
+        if: steps.changes.outputs.run == 'true'
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
@@ -69,16 +123,19 @@ jobs:
       # zeta_reflection is the root workspace: its path deps (zzl_core, ZeroFreeBridge) resolve
       # their Mathlib through THIS package's .lake/packages, so one cache fetch serves all three.
       - name: Fetch Mathlib olean cache
+        if: steps.changes.outputs.run == 'true'
         working-directory: telperion/examples/zeta_reflection/lean
         run: lake exe cache get
 
-      - name: Build the six anduril artifacts and their five axiom guards
+      - name: Build the anduril artifacts and their axiom guards
+        if: steps.changes.outputs.run == 'true'
         working-directory: telperion/examples/zeta_reflection/lean
         run: |
-          lake build CheckBand ReflectedBand_t14 EMZetaTail EMZetaComplex ForgeFirstZeroKernel StirlingBinet \
-                     AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling
+          lake build CheckBand ReflectedBand_t14 EMZetaTail EMZetaComplex ForgeFirstZeroKernel StirlingBinet ReflectedBand_t14_Kernel RSTheta HeightFloor EdgeClearGlue BandGlue \
+                     AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue
 
-      - name: "Axiom guard (six anduril artifacts): axioms within the standard three, no sorryAx, every registry theorem printed"
+      - name: "Axiom guard (anduril artifacts): axioms within the standard three, no sorryAx, every registry theorem printed"
+        if: steps.changes.outputs.run == 'true'
         working-directory: telperion/examples/zeta_reflection/lean
         shell: bash
         run: |
@@ -87,16 +144,21 @@ jobs:
           # Anchor floor = the number of `#print axioms` lines in each guard file today.
           floor() { case "$1" in
             AxiomGuardA4) echo 8 ;; AxiomGuardEMTail) echo 23 ;; AxiomGuardEMZetaComplex) echo 23 ;;
-            AxiomGuardFirstZeroKernel) echo 1 ;; AxiomGuardStirling) echo 12 ;; *) echo 999 ;; esac; }
+            AxiomGuardFirstZeroKernel) echo 1 ;; AxiomGuardStirling) echo 12 ;; AxiomGuardArbKernel) echo 16 ;;
+            AxiomGuardRSTheta) echo 24 ;; AxiomGuardHeightFloor) echo 98 ;; AxiomGuardBandGlue) echo 39 ;; *) echo 999 ;; esac; }
           # The registry theorems (one per proved node; two for AND_g2_reflected_band).
           registry() { case "$1" in
             AxiomGuardA4) echo "ZetaReflection.checkLine_correct ReflectedBand_t14.ok ReflectedBand_t14.pilot" ;;
             AxiomGuardEMTail) echo "ZetaReflection.em_tail3_number" ;;
             AxiomGuardEMZetaComplex) echo "ZetaReflection.em_zeta_strip" ;;
             AxiomGuardFirstZeroKernel) echo "ForgeFirstZeroKernel.first_zero_kernel" ;;
-            AxiomGuardStirling) echo "ZetaReflection.logDeriv_gammaR_stirling" ;; esac; }
+            AxiomGuardStirling) echo "ZetaReflection.logDeriv_gammaR_stirling" ;;
+            AxiomGuardArbKernel) echo "ReflectedBand_t14_Kernel.pilot_kernel ReflectedBand_t14_Kernel.okK" ;;
+            AxiomGuardRSTheta) echo "RSDesignTheta.gaussBranch_theta_sub_thetaMain_le" ;;
+            AxiomGuardHeightFloor) echo "HeightFloor.height_floor HeightFloor.height_floor_280000" ;;
+            AxiomGuardBandGlue) echo "EdgeClearGlue.hnzl_discharged BandGlue.segBandHyp_of_certs" ;; esac; }
           total=0
-          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling; do
+          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue; do
             [ -f "$g.lean" ] || { echo "::error::$g.lean is missing"; exit 1; }
             echo "== $g"
             rc=0; lake env lean "$g.lean" > "$g.out" 2>&1 || rc=$?
@@ -122,4 +184,4 @@ jobs:
                 || { echo "::error::$g: registry theorem $thm was not printed"; exit 1; }
             done
           done
-          echo "OK: $total guarded anchors across 5 guards; every axiom list within the standard three; all 7 registry theorems present."
+          echo "OK: $total guarded anchors across 9 guards; every axiom list within the standard three; all 14 registry theorems present."

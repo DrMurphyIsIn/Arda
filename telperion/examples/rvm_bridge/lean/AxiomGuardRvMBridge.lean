@@ -229,6 +229,11 @@ import W2cAssembly
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
 import KWin_Window
+import E6Bridge31
+import E6Bridge32
+import E6Bridge33
+import E6Bridge34
+import KWin_Bridge
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -1168,3 +1173,48 @@ import KWin_Window
 #print axioms KWin.windowFloor_L0
 #print axioms KWin.kwin_primeFreeWindow
 #print axioms KWin.kwin_primeFreeWindowArch
+
+-- E6Bridge31: the prime-free window (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge31.primeSide_autocorr_eq_zero
+#print axioms RvMBridge31.weilForm_autocorr_eq_archSide
+#print axioms RvMBridge31.norm_autocorr_le
+#print axioms RvMBridge31.integral_hsq
+#print axioms RvMBridge31.sq_l1_le
+#print axioms RvMBridge31.hsq_le
+#print axioms RvMBridge31.re_poles_ge
+#print axioms RvMBridge31.re_poles_ge_of_le
+#print axioms RvMBridge31.integral_mul_psiR_ge_bands
+#print axioms RvMBridge31.re_archSide_autocorr_ge
+#print axioms RvMBridge31.weil_positivity_narrow_support_of_nonneg
+#print axioms RvMBridge31.weil_positivity_narrow_support
+#print axioms RvMBridge31.primeFreeWindow_iff_arch
+#print axioms RvMBridge31.primeFreeWindow_imp_poleFree
+#print axioms RvMBridge31.poles_vanish
+#print axioms RvMBridge31.archSide_autocorr_poleFree
+
+-- E6Bridge32: u-space part 1 (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge32.integral_expK_mul_cexp
+#print axioms RvMBridge32.pairing
+#print axioms RvMBridge32.integral_hsq_mul_lor
+#print axioms RvMBridge32.psiR_ge_finite
+#print axioms RvMBridge32.re_arch_integral_ge
+
+-- E6Bridge33: u-space part 2 (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge33.integral_compl_Icc_expK_ge
+#print axioms RvMBridge33.integral_autocorr_mul_expK
+#print axioms RvMBridge33.Eb_eq_half
+#print axioms RvMBridge33.Rfun_ge
+#print axioms RvMBridge33.Eb_ge
+
+-- E6Bridge34: the window at L <= 1/10 (2026-09-23). conjecture1_proved = False.
+#print axioms RvMBridge34.re_poles_ge_sq
+#print axioms RvMBridge34.arch_ge_series
+#print axioms RvMBridge34.FN_tenth_ge
+#print axioms RvMBridge34.re_archSide_autocorr_ge_tenth
+#print axioms RvMBridge34.weil_positivity_window_tenth_of_nonneg
+#print axioms RvMBridge34.weil_positivity_window_tenth
+
+-- Mirrormere prime-free window (kernel-native, KWin)
+#print axioms kwin_primeFreeWindowPositivity
+#print axioms kwin_primeFreeWindowArchPositivity
+#print axioms weil_positivity_prime_free_window
