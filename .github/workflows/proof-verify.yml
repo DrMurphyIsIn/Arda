@@ -2,6 +2,8 @@ name: proof-verify
 
 on:
   push:
+    branches:
+      - main   # branch pushes run only through their pull_request (2026-09-24: halves per-push load)
     paths:
       - "proof/verification/**"
       - "proof/verify.py"

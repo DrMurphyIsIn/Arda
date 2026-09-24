@@ -12,3 +12,12 @@ artifact = "../../examples/rvm_bridge/lean/E6Bridge34.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+# 2026-09-24 STATEMENT REGENERATION RECORD (DRAFT node; no status change; provenance hash
+# changed 7b32a808ac3e6c1c -> 453fc3f023904fb0, see the statement file header).
+# Reason: the statement file was written without any `import` line, and the package root
+# lean/Statements.lean never imported the module, so the mission-statements-compile CI job
+# had never elaborated it (fifteen registered statements were in that state; this was the
+# only one whose file itself was malformed).  Regenerated through `regenerate_statement`
+# with `import Mathlib` + `import Statements.MMDefs` prepended; the theorem text is
+# byte-identical.  `mission verify` now fails on any statement the root does not import.
