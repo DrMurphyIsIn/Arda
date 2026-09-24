@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-xi-partial-fraction-2026-09-21 (AUDIT_TESTIMONY_XI_PARTIAL_FRACTION_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: XiDiffRegular follows from a logarithmic growth bound of the entire extension on Re s >= 1/2 (constant C(1 + log 2) from the functional equation and the triangle inequality, re-derived). A reduction; the growth bound is the remaining obligation. conjecture1_proved = False."

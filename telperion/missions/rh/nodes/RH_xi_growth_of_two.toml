@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-xi-growth-2026-09-21 (AUDIT_TESTIMONY_XI_GROWTH_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: the entire extension's logarithmic growth on Re s >= 1/2 follows from LocalCountSum and StripDerivBound (compact rectangle by continuity; strip region inside the closed StripDerivBound region; right half-plane by the right derivative bound plus the local-count sum; continuity across the isolated zeros). Plan correction confirmed: on Re s >= 2 the double-pole sum is O(log t). A reduction. conjecture1_proved = False."

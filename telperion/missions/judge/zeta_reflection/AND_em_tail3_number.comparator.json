@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.AND_em_tail3_number",
+  "solution_module": "MissionChallenges.AND_em_tail3_number",
+  "theorem_names": [
+    "MissionJudge.AND_em_tail3_number"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

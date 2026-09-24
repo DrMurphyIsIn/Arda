@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"
+independence = "unverified"
 text = "For every n and every real n-tuple gamma there is a Hermitian complex matrix whose characteristic polynomial is exactly prod (X - gamma_i) -- TRUE via the diagonal matrix. TRIVIAL (intended): the triviality IS the declared negative-control point, marking finite-operator-with-prescribed-real-spectrum as content-free so the RH difficulty is located in the completion/positivity clause. Flag: TRIVIAL (intended), not a defect."

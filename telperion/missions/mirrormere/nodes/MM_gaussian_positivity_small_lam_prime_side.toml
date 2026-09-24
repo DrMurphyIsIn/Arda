@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-seam-B-map-2026-09-21 (AUDIT_TESTIMONY_WALL_SEAM_B_MAP_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: for EVERY real centre c and every width 0 < lam <= 1e-7, the archimedean side of the Gaussian-derivative test exceeds its prime side. Audit re-derived every constant: c enters only through a modulus-one phase dropped by the majorant; prime side <= 64 A e^{-(log 2)^2/(16 lam)}; pole terms c-free; line transform (r-c)^2 e^{-2 lam (r-c)^2} with mass 2 pi A; Re digamma >= -5 everywhere and >= 2 for |t| >= 20.5 via Zeta23; assembly closes at 0.2487 A. Unconditional; not RH. conjecture1_proved = False."

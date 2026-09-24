@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-xi-partial-fraction-2026-09-21 (AUDIT_TESTIMONY_XI_PARTIAL_FRACTION_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: deriv(logDeriv xi) + Sum m(rho)/(s-rho)^2 extends to an entire function. Audit: order of xi at every point equals the E8 multiplicity (identity theorem + product formula + Zeta23 strip lemma); the double pole at a zero of order m is cancelled EXACTLY by the sum's own term (the sum indexes each point once with the multiplicity weight); value at a zero is the limit, not the junk value; functional equation sign re-proved. Unconditional. conjecture1_proved = False."

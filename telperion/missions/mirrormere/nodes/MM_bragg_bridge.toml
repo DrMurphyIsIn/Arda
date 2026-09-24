@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "registry-catchup-session-2026-09-15 (verbatim-extract precedent)"
 date = "2026-09-15"
+independence = "unverified"
 text = "For a rectangle [sigma0, sigma1] x [T0, T1] with 1 < sigma1, enclosed in a ball avoiding s = 1, with zeta nonvanishing on the bottom, top, and left edges and all ball-divisor zeros interior to the rectangle: 2 pi i times the sum of zeta's divisor multiplicities over the zero finset equals (bottom-edge integral of logDeriv zeta) - (top-edge integral) - i times the tsum over n of braggTerm(sigma1, T0, T1, n) - i times (left-edge integral). braggTerm n is the closed-form difference of von Mangoldt L-series terms at the two heights divided by -(i log n) -- zero unless n is a prime power, so the prime side is literally the Bragg comb at frequencies k log p. Finite height, unconditional, explicit remainders, no limit. [Verbatim extract of the proved rect_explicit_formula_bragg; artifact on rh/million-turing @ 5762a2b8c, grant deferred to the branch reconcile.]"

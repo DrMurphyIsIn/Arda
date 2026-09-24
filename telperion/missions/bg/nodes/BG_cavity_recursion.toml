@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "migration-session-2026-09-12"
 date = "2026-09-11"
+independence = "unverified"
 text = "For a rooted-tree node with finitely many children whose total partition functions are nonzero, the ratio of root-unmatched to total matching partition function equals 1/(1 + sum of edge weight times child cavity ratio) -- the per-node step the tree induction turns into the H2 recursion."

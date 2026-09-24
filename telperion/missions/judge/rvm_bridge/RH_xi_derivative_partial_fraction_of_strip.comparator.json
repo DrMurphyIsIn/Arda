@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_xi_derivative_partial_fraction_of_strip",
+  "solution_module": "MissionChallenges.RH_xi_derivative_partial_fraction_of_strip",
+  "theorem_names": [
+    "MissionJudge.RH_xi_derivative_partial_fraction_of_strip"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

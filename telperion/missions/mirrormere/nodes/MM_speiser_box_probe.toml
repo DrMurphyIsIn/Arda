@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"
+independence = "unverified"
 text = "deriv riemannZeta has no zero in the concrete closed rectangle [1/4, 3/8] x [6, 10], strictly left of the critical line. A single bounded, finitely-checkable winding/argument-principle target -- verifying one box does NOT decide RH; correctly NOT the RH-equivalent Speiser strip statement. Truth rests on actual zeta' zero locations (known to cluster right of the line); the auditor did not compute the winding number. No flags."

@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
 date = "2026-09-14"
+independence = "unverified"
 text = "A genuine CONDITIONAL, hypothesis named honestly: given RvMUnboundedMeanDensity -- the assertion that the mean density of zeta ordinates exceeds every finite bound, the recognizable form of the Riemann-von Mangoldt N(T) ~ (T/2pi) log T growth, which no finite ladder stage can discharge -- the set of ordinates of the nontrivial zeta zeros is not uniformly discrete (gaps go to 0), i.e. the zeta comb fails the point-set side of Bohr discreteness as well. The pigeonhole gaps-to-0 driver is unconditional; only the density input is carried. closure_clean = false until the residual is discharged (the roadmap route: the li-island effective RvM count). [Verbatim extract; artifact on rh/million-turing, grant deferred to the branch reconcile.]"

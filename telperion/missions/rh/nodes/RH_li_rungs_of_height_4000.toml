@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-li-ladder-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: under the exact conclusion shape of the tiled height-4000 certificate (all zeros with 0 < Im <= 4000 on the line; the certificate's 89 band hypotheses and its 55/16 floor are NOT discharged here), rungs 0..18848 are nonnegative; negative Im by conjugation, real zeros by Box 1. Conditional. Not RH. conjecture1_proved = False."

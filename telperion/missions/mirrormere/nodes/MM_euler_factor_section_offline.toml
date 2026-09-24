@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor 2026-09-14 (independent blind read-back, AUDIT_TESTIMONY_ANDURIL_MIRRORMERE_2026-09-14.md)"
 date = "2026-09-14"
+independence = "unverified"
 text = "The theorem asserts it is NOT the case that every complex zero of f(x) = 1 - (1/sqrt 2) e^(-i (log 2) x) is real. The auditor independently solved f(x) = 0: writing x = a + bi, the modulus equation forces b = 1/2 and the phase equation forces a = -2 pi k / log 2 -- EVERY zero has Im x = 1/2, e.g. x = i/2 (verified numerically). The negated universal is therefore TRUE as written; the per-rung real-rootedness genuinely fails, with uniform off-line displacement 1/2. No flags."

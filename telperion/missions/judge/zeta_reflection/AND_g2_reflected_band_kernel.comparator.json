@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.AND_g2_reflected_band_kernel",
+  "solution_module": "MissionChallenges.AND_g2_reflected_band_kernel",
+  "theorem_names": [
+    "MissionJudge.AND_g2_reflected_band_kernel"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

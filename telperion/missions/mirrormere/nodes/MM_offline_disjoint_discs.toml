@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"
+independence = "unverified"
 text = "For any finite set of points each strictly inside the open critical strip, there is one positive radius whose closed balls around distinct members are pairwise disjoint and each contained in the strip. Well-posed elementary metric topology; the z /= w guard is exactly the right distinctness notion; strict interiority avoids the boundary trap; empty/singleton cases benign. No flags."

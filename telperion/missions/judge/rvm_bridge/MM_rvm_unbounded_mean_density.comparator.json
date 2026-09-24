@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_rvm_unbounded_mean_density",
+  "solution_module": "MissionChallenges.MM_rvm_unbounded_mean_density",
+  "theorem_names": [
+    "MissionJudge.MM_rvm_unbounded_mean_density"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
