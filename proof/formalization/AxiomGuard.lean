@@ -124,6 +124,7 @@ import R3Cert.R47Tree
 import R3Cert.NearStar
 import R3Cert.R47MergePerL
 import R3Cert.R47BGConjecture
+import R3Cert.BGGrowthRate
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -527,3 +528,10 @@ import R3Cert.R47BGConjecture
 #print axioms R3Cert.Step3.bgBackbone_of_extended_coverage
 #print axioms R3Cert.Step3.conjecture1_of_bgBackbone
 #print axioms R3Cert.Step3.bgBackbone_of_backboneTie
+-- GROWTH RATE of the BG maximum (2026-09-24, BGGrowthRate): (64/621) rhoB^n <= max pi <= 2 rhoB^(n-1),
+-- so (max pi)^(1/n) -> rhoB = (621/64)^(1/11).  The exact maximizer remains OPEN.
+#print axioms R3Cert.Step3.rhoB_pow_eleven
+#print axioms R3Cert.Step3.Aobj_le_two_rhoB_pow
+#print axioms R3Cert.Step3.perm_ratio_le_two_rhoB_pow
+#print axioms R3Cert.Step3.exists_Aobj_ge
+#print axioms R3Cert.Step3.bg_max_growth
