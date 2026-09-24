@@ -16,7 +16,7 @@ This is stated about Mathlib's `riemannZeta` itself. The route avoids both the r
 
     |2 Re(e^{iφ} R(t)) − (−1)^(N+1) (t/2π)^(−1/4) Ψ(p)| ≤ 2 t^(−3/4)
 
-with `N = ⌊√(t/2π)⌋` and `p = √(t/2π) − N`. The constant 2 is deliberately loose. Untrusted numerics put the true C0-corrected remainder near 0.02·t^(−3/4), and Gabcke's 0.127 is not claimed.
+with `N = ⌊√(t/2π)⌋` and `p = √(t/2π) − N`. The constant 2 is deliberately loose. An independent mpmath check over 40 heights in [10000, 11450] measured the worst C0-corrected remainder at 0.104·t^(−3/4), a margin of about 20× (the lane first estimated 0.02). Gabcke's 0.127 is not claimed. `rsJ_C0` also assumes 0 < p < 1 and cos 2πp ≠ 0, explicitly in its statement.
 
 **Bridge** (`RSInt.rs_Z_C0`, `RS_Bridge.lean`). The phase hypothesis is discharged with no extra assumption, using the already-proved theta branch (`RSDesignTheta`) and the polar form of Γℝ. The result is the Riemann–Siegel formula for Hardy's Z, expressed through Mathlib's `completedRiemannZeta`: the main sum plus the C0 correction approximates `Re Λ(1/2+it)/|Γℝ|` to within `2 t^(−3/4)` for `t ≥ 10000`.
 
