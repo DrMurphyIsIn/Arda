@@ -22,7 +22,11 @@ jobs:
     # 168s ehrhart tests for real, and the slowest matrix cell (py3.12) lands
     # at ~14m47s -- a hair under a 15-min cap and a near-certain flake. 25 gives
     # comfortable headroom without hiding a genuine runaway.
-    timeout-minutes: 25
+    # 40, not 25 (2026-09-24): python-flint is installed below, so the Platt-backed
+    # tests (arb_platt, the quasicrystal zoo) no longer skip; the sympy==1.12 cells
+    # now run pytest in ~22 min (3077 passed) and were cancelled at 25 during the
+    # registry steps that follow. 40 keeps the same headroom ratio.
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
