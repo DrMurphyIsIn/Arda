@@ -1,0 +1,14 @@
+created = "2026-09-24"
+depends_on = ["MM_zeta_comb_membership_iff_rh"]
+kind = "lemma"
+name = "MM.weil_positivity_window_two_fifths"
+statement_module = "Statements.MM_weil_positivity_window_two_fifths"
+status = "draft"
+title = "THE WEIL WINDOW PAST THE PRIME-FREE BOUNDARY, KERNEL-NATIVE (rvm_bridge island, KWin2_*, 2026-09-24): for every Weil test g with tsupport g in [-L, L] and 2L <= 4/5, Re weilForm (autocorr g) >= 0, with WindowFloor(2/5, 1/25000) -- hypothesis-free, no Arb seam; the prime-2 comb term is present (2L = 0.8 > log 2) and accounted exactly; pole terms KEPT (goal-node class; not Connes-Consani). The same pipeline also proves L = 9/20 and L = 1/2 (KWin2_BridgeHeavy) but those need 17-19 GB RAM, above the 16 GB hosted CI runner, so they are NOT registered until CI can build them. Finite window; conjecture1_proved = False"
+updated = "2026-09-24"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/KWin2_Bridge.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
