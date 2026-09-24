@@ -1,11 +1,12 @@
 created = "2026-09-11"
 depends_on = []
+deprecated_reason = "Superseded 2026-09-24: a DEC-model route lemma (PROVISIONAL rendering) toward Phi^11 <= 1. That ceiling is now kernel-proved in the literal model by bg_ceiling (BGSCLSubactionDispatch.lean, subaction route; node BG_rate_ceiling) without this inequality, so it is off every critical path."
 kind = "lemma"
 name = "BG.master_inequality"
 statement_module = "Statements.BG_master_inequality"
-status = "open"
+status = "deprecated"
 title = "Master inequality (arm-maximality; PROVISIONAL rendering): (2+mu_B)^11 F_B <= (64/621) 3^11 with F_B = exp(11 logPhi)"
-updated = "2026-09-12"
+updated = "2026-09-24"
 
 [readback]
 auditor = "blind-renderer-fable-a7835da4 (2026-09-12)"

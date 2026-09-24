@@ -512,6 +512,7 @@ import R3Cert.R47BGConjecture
 -- the conjecture itself is OPEN (conjecture1_proved = False).
 #print axioms R3Cert.Step3.bgBackbone_of_usizeForm
 #print axioms R3Cert.Step3.bgBackbone_of_wholehub
+#print axioms R3Cert.Step3.bgBackbone_of_straightProgress
 #print axioms R3Cert.Step3.bgBackbone_of_extended_coverage
 #print axioms R3Cert.Step3.conjecture1_of_bgBackbone
 #print axioms R3Cert.Step3.bgBackbone_of_backboneTie

@@ -1,0 +1,13 @@
+created = "2026-09-24"
+depends_on = ["BG_rate_ceiling", "BG_tie_root_degree"]
+kind = "milestone"
+name = "BG.rate_sharp"
+statement_module = "Statements.BG_rate_sharp"
+status = "draft"
+title = "Sharp rate ceiling: Phi^11 <= 1 for every rooted tree, with equality exactly at the 5-arm spider rooted at its hub (n = 11)"
+updated = "2026-09-24"
+
+[author]
+date = "2026-09-24"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "77a4c355-8299-40a6-850f-73d6d0c019da"

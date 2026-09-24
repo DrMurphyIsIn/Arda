@@ -1,0 +1,19 @@
+created = "2026-09-24"
+depends_on = []
+kind = "milestone"
+name = "BG.backbone_reduction"
+statement_module = "Statements.BG_backbone_reduction"
+status = "draft"
+title = "One-obligation reduction: the size-preserving straightening StraightProgress_sized implies the pinned conjecture 1"
+updated = "2026-09-24"
+
+[author]
+date = "2026-09-24"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "77a4c355-8299-40a6-850f-73d6d0c019da"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/R47BGConjecture.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

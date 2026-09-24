@@ -55,6 +55,13 @@ theorem bgBackbone_of_usizeForm
     · rw [show backboneU [([], 0)] = UTree.node [] from rfl, ← hb0]; exact hle
   · exact ⟨s, by rw [← usize_backboneU_of_ne_nil hne]; exact hsz, hle⟩
 
+/-- **The one-obligation reduction.**  The size-preserving straightening `StraightProgress_sized`
+    (every tree with positive structural defect admits a same-size, `Aobj`-non-decreasing,
+    defect-lowering step; OPEN) implies the pinned conjecture.  Coverage plus the three move-class
+    interfaces is one way to supply it (`bgBackbone_of_extended_coverage`). -/
+theorem bgBackbone_of_straightProgress (h : StraightProgress_sized) : BGBackboneConjecture :=
+  bgBackbone_of_usizeForm (tree_to_hub_sized h)
+
 /-- The whole-hub straightening `hwh` (open) implies the pinned conjecture. -/
 theorem bgBackbone_of_wholehub
     (hwh : ∀ t : UTree, strDefect t ≠ 0 → RerootMinimal t → (¬ ∃ t', FlpStepAt t t') →

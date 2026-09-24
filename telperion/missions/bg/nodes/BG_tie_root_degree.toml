@@ -1,0 +1,19 @@
+created = "2026-09-24"
+depends_on = []
+kind = "lemma"
+name = "BG.tie_root_degree"
+statement_module = "Statements.BG_tie_root_degree"
+status = "draft"
+title = "Equality forces a degree-6 root: bell b = 0 implies the root has exactly five children"
+updated = "2026-09-24"
+
+[author]
+date = "2026-09-24"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "77a4c355-8299-40a6-850f-73d6d0c019da"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/BGSCLHdom.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
