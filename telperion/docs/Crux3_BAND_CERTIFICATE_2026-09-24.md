@@ -163,7 +163,7 @@ which needs `βL` of order one.
 ### 4.1 Modules
 
 All seven are new, registered as `lean_lib`s, imported by `AxiomGuardRvMBridge`, and printed there.
-The guard gives 1030 reports, 54 of them from Crux3, all within `[propext, Classical.choice, Quot.sound]`,
+The guard gives 1005 reports, 54 of them from Crux3, all within `[propext, Classical.choice, Quot.sound]`,
 with no `sorryAx`.
 
 | module | content |
@@ -326,3 +326,22 @@ numerically in section 3.1: `−0.65464` from the zeros against `−0.65462` fro
   Lipschitz tests). Both links are checked numerically against the zero sides (section 3.1).
 
 `conjecture1_proved = False`.
+
+## Proposed registry nodes (NOT registered)
+
+Nothing is registered by this PR. Any registration goes through `mission add` and the #607 provenance flow: author block, audit, grant, and Comparator.
+
+| proposed node | anchor | scope |
+|---|---|---|
+| `MM.band_certificate_zeta_x57` | `Crux3.band_floor` | 2-mode band instance at x = e^{9π/7}; Lipschitz tests (outside `IsWeilTest`), functional evaluated directly |
+| `MM.band_comb_arch_x57` | `Crux3.band_comb_le` + `Crux3.band_arch_ge` | round-2 form, comb ≤ 1.92 < 2.49 ≤ arch |
+| `RH.negctl_dh_band_x57` | `Crux3.dh_band_negative` + `Crux3.band_separation` + `Crux3.band_separation_cD` | D negative control; only hypothesis is D's −D′/D recursion on [1, 56], discharged by `cD_conv` |
+| (stated only, COMPUTED) `RH.band_horizon_nogo_x40` | none | height-local bands cannot detect D's zero at x = 40 (horizon ≈ 42.1); numerical evidence, not a theorem |
+
+## Review record
+
+- **Lane skeptic:** a subagent of the authoring session, so under #607 it is not independent. It found the work NOT REFUTED. It re-elaborated the files fresh, re-derived D's explicit formula, matched all 40 nonzero entries of `dtab`, and wrote its own mpmath script (`crux3_skeptic_indep.py`, kept in the author's scratchpad).
+- **Peer-session skeptic** (a different session under the same git identity, so also unverified under #607), at 50fd1bc71: NOT REFUTED.
+  - Build: 8782 jobs, 54 Crux3 guard lines, all standard axioms. The only option used is `maxRecDepth`, on the two table decides.
+  - Numerics: its own mpmath reproduces every number, including zeta's least Rayleigh quotient 0.698885, W_D/‖v‖² = −0.654576 at c*, D's functional equation to 1e-29, and D's zero at 0.808517 + 85.699348i.
+  - The dh hypothesis is D's true recursion, and it is unique and non-vacuous.
