@@ -1,0 +1,59 @@
+{
+ "C1_zero_bracket": [
+  28.0,
+  28.05
+ ],
+ "C1_direct": {
+  "region_with_zero": [
+   27.95,
+   28.1,
+   -0.05,
+   0.05
+  ],
+  "must_fail": true,
+  "zero_free_region": [
+   27.95,
+   28.1,
+   0.4,
+   0.4472136
+  ],
+  "must_pass": true
+ },
+ "C2_zero_bracket": [
+  1000.16,
+  1000.18
+ ],
+ "C2_abc": {
+  "region_with_zero": [
+   1000.11,
+   1000.2299999999999,
+   0.0,
+   0.02
+  ],
+  "must_fail": true,
+  "zero_free_region": [
+   1000.11,
+   1000.2299999999999,
+   0.4,
+   0.4472136
+  ],
+  "must_pass": true
+ },
+ "C3_phi": {
+  "region_with_zero": [
+   28.169450283469384,
+   28.369450283469387,
+   -0.05,
+   0.05
+  ],
+  "must_fail": true,
+  "zero_free_region": [
+   28.169450283469384,
+   28.369450283469387,
+   0.3,
+   0.6
+  ],
+  "must_pass": true
+ },
+ "all_controls_behave": true
+}

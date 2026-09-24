@@ -1,0 +1,36 @@
+{
+ "U1_cond_i": {
+  "region": "H_0 on [0, 55/8] x [0, 1]",
+  "boxes": 112,
+  "evals": 112,
+  "ok": true,
+  "audit_violations": 0,
+  "audit_first": null,
+  "min_absH": 0.047165704302904336,
+  "sec": 0.29973506927490234
+ },
+ "U2_barrier": {
+  "region": "H_t on [55/8, 55/8+1] x [0,1] x [0,1/2]",
+  "boxes": 160,
+  "evals": 160,
+  "ok": true,
+  "audit_violations": 0,
+  "audit_first": null,
+  "min_absH": 0.04322256390461099,
+  "sec": 0.436737060546875
+ },
+ "U2prime_barrier_X6.8": {
+  "region": "H_t on [6.8, 7.8] x [0,1] x [0,1/2]  (barrier for X = 6.8 < 55/8, all (t0,y0))",
+  "x_range_doubles": [
+   6.8,
+   7.800000000000001
+  ],
+  "boxes": 200,
+  "evals": 200,
+  "ok": true,
+  "audit_violations": 0,
+  "audit_first": null,
+  "min_absH": 0.043525286734757494,
+  "sec": 0.5463919639587402
+ }
+}

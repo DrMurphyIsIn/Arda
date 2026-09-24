@@ -1,0 +1,63 @@
+{
+ "design": "ladder",
+ "t0": 0.40675,
+ "y0": 0.21,
+ "c0": 0.4288,
+ "primes": [
+  2,
+  3,
+  5,
+  7
+ ],
+ "date": "2026-09-23",
+ "prec_bits": 80,
+ "analytic": {
+  "t0": 0.40675,
+  "y0": 0.21,
+  "primes": [
+   2,
+   3,
+   5,
+   7
+  ],
+  "N_s": 318,
+  "ok": true,
+  "N1": 4226,
+  "far": {
+   "Nlimit": 10000000000000000000000000000000000000000,
+   "rho": 0.002050840987824966,
+   "q": 9.970764865753281,
+   "ok": true
+  },
+  "min_bottom_margin": 0.001365075009608579,
+  "min_top_margin": 0.8250730464553501,
+  "max_crude_rho": 0.9771386776140364,
+  "edge_terms": 982848
+ },
+ "X": 1279991.0,
+ "X_scan_score": 1.0680205661981976,
+ "N_at_canopy_start": 319,
+ "left_edge": {
+  "x_L": 1279991.977701386,
+  "boxes": 16,
+  "evals": 16,
+  "min_margin": 1.0488039510428435,
+  "ok": true
+ },
+ "barrier": {
+  "ok": true,
+  "slabs": 60,
+  "boxes": 544,
+  "evals": 610,
+  "terms": 778360,
+  "cpu_sec": 1.4705708026885986,
+  "min_margin": 0.008651560103940456,
+  "failures": []
+ },
+ "cond_i": {
+  "kind": "ASSUMED: RH verified to height X/2 (Arb-conditional ladder to 640000)",
+  "ok": null
+ },
+ "wall_sec": 16.403879165649414,
+ "all_certified_here": true
+}

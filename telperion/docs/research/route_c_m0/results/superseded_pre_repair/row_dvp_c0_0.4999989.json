@@ -1,0 +1,66 @@
+{
+ "design": "dvp",
+ "t0": 0.4549989,
+ "y0": 0.3,
+ "c0": 0.49999889999999997,
+ "primes": [
+  2,
+  3,
+  5,
+  7
+ ],
+ "date": "2026-09-23",
+ "prec_bits": 80,
+ "analytic": {
+  "t0": 0.4549989,
+  "y0": 0.3,
+  "primes": [
+   2,
+   3,
+   5,
+   7
+  ],
+  "N_s": 140,
+  "ok": true,
+  "N1": 1296,
+  "far": {
+   "Nlimit": 10000000000000000000000000000000000000000,
+   "rho": 0.0009138338100637726,
+   "q": 11.126736844686885,
+   "ok": true
+  },
+  "min_bottom_margin": 0.0017837810784066387,
+  "min_top_margin": 0.7543536395384265,
+  "max_crude_rho": 0.9627356126598651,
+  "edge_terms": 385430
+ },
+ "X": 247102.67774793797,
+ "X_scan_score": 1.1085403923359773,
+ "N_at_canopy_start": 140,
+ "left_edge": {
+  "x_L": 247103.6316871394,
+  "boxes": 14,
+  "evals": 14,
+  "min_margin": 1.087372243539163,
+  "ok": true
+ },
+ "barrier": {
+  "ok": true,
+  "slabs": 40,
+  "boxes": 320,
+  "evals": 320,
+  "terms": 179200,
+  "cpu_sec": 0.3519465923309326,
+  "min_margin": 0.7232880513247234,
+  "failures": []
+ },
+ "cond_i": {
+  "kind": "kernel dVP region (c >= 9/1369088) + height floor + no real zeros in (0,1)",
+  "c0_required_gt": 0.49999887862769843,
+  "c0": 0.49999889999999997,
+  "c0_exact": "[0.49999889999999998058 +/- 1.23e-21]",
+  "ok": true
+ },
+ "wall_sec": 41.65457487106323,
+ "all_certified_here": true
+}

@@ -1,0 +1,26 @@
+{
+ "U1_cond_i": {
+  "region": "H_0 on [0, 55/8] x [0, 1]",
+  "boxes": 112,
+  "evals": 112,
+  "min_absH": 0.047165704302453634,
+  "ok": true,
+  "sec": 0.3001680374145508
+ },
+ "U2_barrier": {
+  "region": "H_t on [55/8, 55/8+1] x [0,1] x [0,1/2]",
+  "boxes": 160,
+  "evals": 160,
+  "min_absH": 0.04322256390461099,
+  "ok": true,
+  "sec": 0.5429301261901855
+ },
+ "U2prime_barrier_X6.8": {
+  "region": "H_t on [6.8, 7.8] x [0,1] x [0,1/2]  (barrier for X = 6.8 < 55/8, all (t0,y0))",
+  "boxes": 160,
+  "evals": 160,
+  "min_absH": 0.04352516113905387,
+  "ok": true,
+  "sec": 0.6081628799438477
+ }
+}

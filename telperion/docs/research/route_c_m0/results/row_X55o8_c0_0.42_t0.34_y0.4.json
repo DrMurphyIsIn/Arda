@@ -1,0 +1,115 @@
+{
+ "design": "X55o8",
+ "t0": "0.34",
+ "y0": "0.4",
+ "c0": 0.42,
+ "c0_exact": "21/50",
+ "params": "t0, y0 exact decimal rationals; all Arb computations use balls containing them",
+ "primes": [
+  2,
+  3,
+  5,
+  7
+ ],
+ "X": 6.875,
+ "X_exact": "55/8",
+ "date": "2026-09-23",
+ "prec_bits": 80,
+ "code": "post-repair (exact cover, README 4.6)",
+ "analytic": {
+  "primes": [
+   2,
+   3,
+   5,
+   7
+  ],
+  "N_s": 408,
+  "ok": true,
+  "N1": 3682,
+  "far": {
+   "Nlimit": 10000000000000000000000000000000000000000,
+   "rho": 0.005659735988813356,
+   "q": 8.528789316179756,
+   "ok": true
+  },
+  "min_bottom_margin": 0.0018756750003778842,
+  "min_top_margin": 0.769929582383959,
+  "max_crude_rho": 0.996165824544061,
+  "edge_terms": 1029839,
+  "n_bottom_pieces": 95,
+  "n_top_pieces": 95,
+  "n_crude_pieces": 124
+ },
+ "left_edge": {
+  "x_L": 2097302.248458961,
+  "float_score": 1.052063829427838,
+  "y_range": [
+   0.39999999999999997,
+   1.0
+  ],
+  "N": 408,
+  "x_L_inside_N_s_segment": true,
+  "boxes": 13,
+  "evals": 13,
+  "ok": true,
+  "audit_violations": 0,
+  "audit_first": null,
+  "min_margin": 1.0270329147395336
+ },
+ "canopy_strip": {
+  "x_start": 7.791515138991167,
+  "x_L": 2097302.248458961,
+  "y_range": [
+   0.39999999999999997,
+   0.5656854249492381
+  ],
+  "x_direct_max": 300.0
+ },
+ "cond_i": {
+  "kind": "certified: H_0 zero-free on [0,X]x[y0,1] (zeta form of Thm 1.2(i))",
+  "boxes": 84,
+  "evals": 84,
+  "ok": true,
+  "audit_violations": 0,
+  "audit_first": null,
+  "min_absH": 0.047207777449437834
+ },
+ "barrier": {
+  "kind": "certified: Phi-integral boxes over the exact P15 (iii) region",
+  "boxes": 160,
+  "evals": 160,
+  "ok": true,
+  "audit_violations": 0,
+  "audit_first": null,
+  "min_absH": 0.04365796522879595,
+  "slabs": 40
+ },
+ "strip": {
+  "boxes": 16050915,
+  "evals": 28305409,
+  "terms": 30361914984,
+  "cpu_sec": 84632.65694570541,
+  "min_margin_abc": 1.8676783294428248e-08,
+  "min_rel_margin_direct": 0.0004449845526003924,
+  "boxes_abc": 16046339,
+  "boxes_direct": 4576,
+  "evals_abc": 28297093,
+  "evals_direct": 8316,
+  "ysplits": 5258837,
+  "failures": [],
+  "min_center_abs_HB": 0.026707081518694376,
+  "audit_violations": 0,
+  "audit_boxes_checked": 16050915,
+  "n_segment_pieces": 1453,
+  "ok": true,
+  "coverage_audit": {
+   "chunk_tiling_xstart_to_xL": true,
+   "violations": 0,
+   "boxes_checked": 16050915,
+   "n_segment_pieces": 1453,
+   "checks": "per box: Arb box contains its float box; per x-box: y-pieces tile [y0, ytop]; per N-piece: x-boxes tile the piece; per chunk: N-pieces satisfy the n_segments lemma; chunks tile [x_start, x_L]"
+  }
+ },
+ "wall_sec": 2883.186542034149,
+ "all_certified_here": true
+}

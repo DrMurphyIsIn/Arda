@@ -1,0 +1,25 @@
+{
+ "row": "row_X55o8_c0_0.48_t0.4_y0.4.json",
+ "strip": [
+  7.791515138991167,
+  423884.4624574159
+ ],
+ "y_range": [
+  0.39999999999999997,
+  0.447213595499958
+ ],
+ "t0": "0.4",
+ "chunks": 261,
+ "chunks_tile_strip": true,
+ "all_chunks_ok": true,
+ "all_chunks_covered": true,
+ "boxes": 1805289,
+ "boxes_in_row_record": 1805289,
+ "x_gaps": 0,
+ "N_segments_uncovered": 0,
+ "x_boxes_with_y_gap": 0,
+ "boxes_missing_t": 0,
+ "builtin_audit_violations": 0,
+ "wall_sec": 1919.6854119300842,
+ "verdict_covered": true
+}

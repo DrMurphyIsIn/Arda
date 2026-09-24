@@ -1,0 +1,91 @@
+{
+ "design": "X55o8",
+ "t0": 0.34,
+ "y0": 0.4,
+ "c0": 0.42000000000000004,
+ "primes": [
+  2,
+  3,
+  5,
+  7
+ ],
+ "X": 6.875,
+ "date": "2026-09-23",
+ "prec_bits": 80,
+ "analytic": {
+  "t0": 0.34,
+  "y0": 0.4,
+  "primes": [
+   2,
+   3,
+   5,
+   7
+  ],
+  "N_s": 408,
+  "ok": true,
+  "N1": 3682,
+  "far": {
+   "Nlimit": 10000000000000000000000000000000000000000,
+   "rho": 0.005659735988813353,
+   "q": 8.528789316179756,
+   "ok": true
+  },
+  "min_bottom_margin": 0.001875675000378107,
+  "min_top_margin": 0.769929582383959,
+  "max_crude_rho": 0.9961658245440607,
+  "edge_terms": 1029839,
+  "n_bottom_pieces": 95,
+  "n_top_pieces": 95,
+  "n_crude_pieces": 124
+ },
+ "left_edge": {
+  "x_L": 2097302.248458961,
+  "float_score": 1.052063829427838,
+  "boxes": 12,
+  "evals": 12,
+  "min_margin": 1.024785223636714,
+  "ok": true
+ },
+ "canopy_strip": {
+  "x_start": 7.791515137991168,
+  "x_L": 2097302.248458961,
+  "y_range": [
+   0.4,
+   0.565685424950238
+  ],
+  "x_direct_max": 300.0
+ },
+ "cond_i": {
+  "kind": "certified: H_0 zero-free on [0,X]x[y0,1] (zeta form of Thm 1.2(i))",
+  "boxes": 84,
+  "evals": 84,
+  "min_absH": 0.04720777744728064,
+  "ok": true
+ },
+ "barrier": {
+  "kind": "certified: Phi-integral boxes over the exact P15 (iii) region",
+  "boxes": 160,
+  "evals": 160,
+  "min_absH": 0.043657965229497865,
+  "ok": true,
+  "slabs": 40
+ },
+ "strip": {
+  "boxes": 16050914,
+  "evals": 28305406,
+  "terms": 30361913376,
+  "cpu_sec": 98496.16531896591,
+  "min_margin_abc": 2.679885040642689e-09,
+  "min_rel_margin_direct": 0.00044499132674300336,
+  "boxes_abc": 16046338,
+  "boxes_direct": 4576,
+  "evals_abc": 28297090,
+  "evals_direct": 8316,
+  "ysplits": 5258836,
+  "failures": [],
+  "min_center_abs_HB": 0.026707081634188536,
+  "ok": true
+ },
+ "wall_sec": 3343.0363590717316,
+ "all_certified_here": true
+}

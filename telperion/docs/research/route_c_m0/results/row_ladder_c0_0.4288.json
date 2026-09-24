@@ -1,0 +1,81 @@
+{
+ "design": "ladder",
+ "t0": "0.40675",
+ "y0": "0.21",
+ "c0": 0.4288,
+ "c0_exact": "268/625",
+ "params": "t0, y0 exact decimal rationals; all Arb computations use balls containing them",
+ "primes": [
+  2,
+  3,
+  5,
+  7
+ ],
+ "date": "2026-09-23",
+ "prec_bits": 80,
+ "code": "post-repair (exact cover, README 4.6)",
+ "analytic": {
+  "primes": [
+   2,
+   3,
+   5,
+   7
+  ],
+  "N_s": 318,
+  "ok": true,
+  "N1": 4226,
+  "far": {
+   "Nlimit": 10000000000000000000000000000000000000000,
+   "rho": 0.002050840987824966,
+   "q": 9.970764865753281,
+   "ok": true
+  },
+  "min_bottom_margin": 0.001365075009608585,
+  "min_top_margin": 0.8250730464553501,
+  "max_crude_rho": 0.9771386776140364,
+  "edge_terms": 982848
+ },
+ "X": 1279991.0,
+ "X_scan_score": 1.0680205661981976,
+ "N_at_canopy_start": 319,
+ "N_at_canopy_start_certified": true,
+ "left_edge": {
+  "x_L": 1279991.977701386,
+  "y_range": [
+   0.21,
+   1.0
+  ],
+  "boxes": 16,
+  "evals": 16,
+  "ok": true,
+  "audit_violations": 0,
+  "audit_first": null,
+  "min_margin": 1.0488039511011054
+ },
+ "barrier": {
+  "ok": true,
+  "slabs": 60,
+  "boxes": 544,
+  "evals": 610,
+  "terms": 778360,
+  "cpu_sec": 1.5547266006469727,
+  "min_margin": 0.008651511381531005,
+  "x_range": [
+   1279991.0,
+   1279991.977701386
+  ],
+  "coverage_audit": {
+   "t_slabs_tile_0_t0": true,
+   "violations": 0,
+   "boxes_checked": 544,
+   "n_segments": 60
+  },
+  "failures": []
+ },
+ "cond_i": {
+  "kind": "ASSUMED: RH verified to height X/2 (Arb-conditional ladder to 640000)",
+  "ok": null
+ },
+ "wall_sec": 12.780041933059692,
+ "all_certified_here": true
+}
