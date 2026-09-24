@@ -20,3 +20,12 @@ theorem weil_positivity_prime_free_window (g : ℝ → ℂ) (hg : WeilExplicit.I
     (hL : 2 * L ≤ Real.log 2) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
     0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re :=
   kwin_primeFreeWindowPositivity g L hg hsupp hL
+
+/-- The L <= 1/10 window (`MM_weil_positivity_window_tenth`, statement verbatim) as a corollary of the full
+    prime-free window: L <= 1/10 gives 2L <= 1/5 <= log 2. -/
+theorem weil_positivity_window_tenth_of_prime_free (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g) (L : ℝ)
+    (hL : L ≤ 1 / 10) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :
+    0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re := by
+  have hlog : (1 : ℝ) / 5 ≤ Real.log 2 := by
+    have := Real.log_two_gt_d9; linarith
+  exact weil_positivity_prime_free_window g hg L (by linarith) hsupp

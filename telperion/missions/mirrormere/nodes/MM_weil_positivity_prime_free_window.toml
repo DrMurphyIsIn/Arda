@@ -1,8 +1,14 @@
 created = "2026-09-24"
 depends_on = ["MM_zeta_comb_membership_iff_rh"]
 kind = "lemma"
-name = "MM_weil_positivity_prime_free_window"
+name = "MM.weil_positivity_prime_free_window"
 statement_module = "Statements.MM_weil_positivity_prime_free_window"
 status = "draft"
-title = "THE FULL PRIME-FREE WINDOW ON THE GOAL NODE'S OWN TEST CLASS, KERNEL-NATIVE (rvm_bridge island, KWin_*, 2026-09-24): for every Weil test g with tsupport g in [-L, L] and 2L <= log 2, Re weilForm (autocorr g) >= 0 -- hypothesis-free, no Arb seam (exact-rational digamma minorant + exact LDL^T head certificates, WindowFloor(log2/2, 9/10000)). Pole terms KEPT: per PR #604 the 1.3e-3 margin is zero content (first 200 zero pairs), so this is NOT Connes-Consani (pole-free class). Contains MM_weil_positivity_window_tenth. Finite window; conjecture1_proved = False"
+title = "THE FULL PRIME-FREE WINDOW ON THE GOAL NODE'S OWN TEST CLASS, KERNEL-NATIVE (rvm_bridge island, KWin_*, 2026-09-24): for every Weil test g with tsupport g in [-L, L] and 2L <= log 2, Re weilForm (autocorr g) >= 0 -- hypothesis-free, no Arb seam (exact-rational digamma minorant + exact LDL^T head certificates, WindowFloor(log2/2, 9/10000)). Pole terms KEPT: per PR #604 the 1.3e-3 margin is zero content (first 200 zero pairs), so this is NOT Connes-Consani (pole-free class). Implies the L <= 1/10 statement of MM_weil_positivity_window_tenth, kernel-checked as weil_positivity_window_tenth_of_prime_free (KWin_Bridge). Finite window; conjecture1_proved = False"
 updated = "2026-09-24"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/KWin_Bridge.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

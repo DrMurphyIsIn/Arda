@@ -1218,3 +1218,4 @@ import KWin_Bridge
 #print axioms kwin_primeFreeWindowPositivity
 #print axioms kwin_primeFreeWindowArchPositivity
 #print axioms weil_positivity_prime_free_window
+#print axioms weil_positivity_window_tenth_of_prime_free
