@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_weil_positivity_window_two_fifths",
+  "solution_module": "MissionChallenges.MM_weil_positivity_window_two_fifths",
+  "theorem_names": [
+    "MissionJudge.MM_weil_positivity_window_two_fifths"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
