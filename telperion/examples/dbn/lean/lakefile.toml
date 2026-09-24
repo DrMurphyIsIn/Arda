@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "M6gapEMZeta", "M6gapEMZetaComplex", "M6gapEMZetaTail", "M6gapZetaEMSum", "M6gapHeightFloorCheck", "M6gapHeightFloorTrig", "M6gapHeightFloorEM", "M6gapHeightFloorBoxes", "M6gapZetaZeroConfinement", "M6gapDlvpZetaSymmetry", "M6gapHeightFloor", "M6gapImAxis", "M6gapP15ZeroFree", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -196,6 +196,61 @@ name = "DBNM4HeatUniform"
 # conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNM4P15Criterion"
+
+# ---- lane m6gap (Route C M6 gaps, ROUTE_C_SYNTHESIS_2026-09-23 sections 5.2 / 7.2) ----
+# Cross-pin port of the AND_height_floor_kernel artifact (zeta_reflection/lean, Lean v4.32.0) onto
+# this island: the Euler-Maclaurin chain and the 32-box certificate, copied with NO proof edits
+# (module names prefixed M6gap, namespaces prefixed M6gap.).  Mathlib-only.  Finite low-height
+# verification (no zeta zero in the open critical strip with |Im| <= 55/16); nothing here proves
+# RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "M6gapEMZeta"
+
+[[lean_lib]]
+name = "M6gapEMZetaComplex"
+
+[[lean_lib]]
+name = "M6gapEMZetaTail"
+
+[[lean_lib]]
+name = "M6gapZetaEMSum"
+
+[[lean_lib]]
+name = "M6gapHeightFloorCheck"
+
+[[lean_lib]]
+name = "M6gapHeightFloorTrig"
+
+[[lean_lib]]
+name = "M6gapHeightFloorEM"
+
+[[lean_lib]]
+name = "M6gapHeightFloorBoxes"
+
+# Mathlib-only functional-equation bookkeeping (li_positivity copies, same pin): the four
+# Mathlib-only theorems of ZetaZeroConfinement and DlvpZetaSymmetry (reflections rho -> 1 - rho,
+# conj rho, 1 - conj rho).
+[[lean_lib]]
+name = "M6gapZetaZeroConfinement"
+
+[[lean_lib]]
+name = "M6gapDlvpZetaSymmetry"
+
+# The height floor on this island (AND_height_floor_kernel's statement, C2-free), extended to the
+# real segment (Im = 0) by the same certificate, and Polymath15 Thm 1.2(i) (zeta form) at X <= 55/8.
+[[lean_lib]]
+name = "M6gapHeightFloor"
+
+# H_t(iy) > 0 for real t, y (from Phi > 0, Polymath15 p.15) and, through C2 + the C4 unpacking,
+# zeta(sigma) != 0 for real 0 < sigma < 1.
+[[lean_lib]]
+name = "M6gapImAxis"
+
+# Polymath15 condition (i) in H_0 form (Prop 3.3(i)) at X <= 55/8, H_0 zero-free on |Re z| <= 55/8,
+# and the P15 p.16 bridge Thm 1.2(i) => Prop 3.3(i) for every X (C2 + C4 coordinate map).  Only the
+# first of P15's three inputs; no bound on Lambda.  conjecture1_proved = False.
+[[lean_lib]]
+name = "M6gapP15ZeroFree"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.
