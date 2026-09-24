@@ -122,6 +122,7 @@ import R3Cert.FractalTail
 import R3Cert.R47Tree
 import R3Cert.NearStar
 import R3Cert.R47MergePerL
+import R3Cert.R47BGConjecture
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -506,3 +507,11 @@ import R3Cert.R47MergePerL
 -- ASSEMBLY reduction (2026-09-12): hwh <= (named move-classes refine to StraightStep) + COVERAGE
 -- (exhaustiveness, the sole open obligation; empirically verified n<=15, viable_all 0 failures).
 #print axioms R3Cert.Step3.hwh_of_extended_coverage
+-- PINNED conjecture 1 (2026-09-24, R47BGConjecture): BGBackboneConjecture = every tree is Aobj-dominated
+-- by a same-size cherry-backbone (the free-`tie` capstone carried no content until pinned). Reductions only;
+-- the conjecture itself is OPEN (conjecture1_proved = False).
+#print axioms R3Cert.Step3.bgBackbone_of_usizeForm
+#print axioms R3Cert.Step3.bgBackbone_of_wholehub
+#print axioms R3Cert.Step3.bgBackbone_of_extended_coverage
+#print axioms R3Cert.Step3.conjecture1_of_bgBackbone
+#print axioms R3Cert.Step3.bgBackbone_of_backboneTie
