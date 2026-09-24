@@ -266,8 +266,15 @@ against the registry definitions; it had simply never been asked to.
 
 What holds from that date:
 
-- `write_statement` appends the module to the root, so `mission add`
-  wires a new node. Appending, not sorting: the diff is the one line.
+- `write_statement` inserts the module into the root in sorted position,
+  so `mission add` wires a new node and the list stays alphabetical (one
+  `import` per line). The four live roots were sorted on 2026-09-24.
+  Sorted lists are the merge discipline: parallel branches each add a
+  node to the same root, and a sorted list makes the conflict line-local.
+  Resolve such a conflict by re-sorting (`sort_root_imports`), never by
+  union-merge. Order is not a gate condition: `mission verify` only warns
+  on an unsorted root, so a held branch that appended by hand still
+  passes.
 - `regen_diff` (§7 item 5) reports a statement the root does not import,
   in the same breath as a stale hash. Every staleness caller sees it.
 - `mission verify` fails on: a node statement the root does not import; a
