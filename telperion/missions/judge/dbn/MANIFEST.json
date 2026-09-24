@@ -28,6 +28,17 @@
       "statement_sha256": "90e192d5ed99a4424d47e363c6ac25c798e3d5b2a45c18923d870efa1ef5bfd7"
     },
     {
+      "slug": "RH_dbn_debruijn_real_zeros",
+      "campaign": "rh",
+      "theorem": "dbn_debruijn_real_zeros",
+      "solution_module": "DBNHadamardApprox",
+      "challenge_module": "MissionChallenges.RH_dbn_debruijn_real_zeros",
+      "bridge_theorem": "MissionJudge.RH_dbn_debruijn_real_zeros",
+      "config": "RH_dbn_debruijn_real_zeros.comparator.json",
+      "artifact_sha256": "65dbfcb59765532efa54f0acfce56f2b56f6d3dc2607adeb3aae9ed873c07147",
+      "statement_sha256": "a8b1e335472a84b4f8cbf8dc3df7b3db76d69212e77ef1f4f7b56118191f7ee2"
+    },
+    {
       "slug": "RH_dbn_rh_iff_H0_real_zeros",
       "campaign": "rh",
       "theorem": "dbn_rh_iff_H0_real_zeros",
