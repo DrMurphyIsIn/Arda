@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "rh-migration-session-2026-09-11"
 date = "2026-09-11"
+independence = "unverified"
 text = "Every zeta-zero beta + i gamma with 3/4 <= beta < 1, |gamma| >= 55/16, and divisor value k >= 1 in the disk of radius 11/8 about 2 + i gamma satisfies beta <= 1 - dlvpRateC / log |gamma|, with dlvpRateC an explicit closed-form positive constant -- the classical de la Vallee Poussin rate made effective; the disk multiplicity datum enters as a hypothesis (discharged by the self-contained v4.32 wrapper node)."

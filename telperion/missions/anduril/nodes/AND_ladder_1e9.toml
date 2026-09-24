@@ -10,4 +10,5 @@ updated = "2026-09-14"
 [readback]
 auditor = "blind-auditor 2026-09-14 (independent blind read-back, AUDIT_TESTIMONY_ANDURIL_MIRRORMERE_2026-09-14.md)"
 date = "2026-09-14"
+independence = "unverified"
 text = "For every complex rho, if riemannZeta rho = 0 and 0 < Im rho <= 1000000000, then Re rho = 1/2 -- the Riemann Hypothesis restricted to zeros with imaginary part in (0, 10^9]. Same verified shape as the other ladder heights; correctly stated, unproven (sorry). No flags."

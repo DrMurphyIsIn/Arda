@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.AND_stirling_binet_k1",
+  "solution_module": "MissionChallenges.AND_stirling_binet_k1",
+  "theorem_names": [
+    "MissionJudge.AND_stirling_binet_k1"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

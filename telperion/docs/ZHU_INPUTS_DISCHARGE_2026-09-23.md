@@ -1,0 +1,251 @@
+# Discharging the analytic inputs of Zhu's window reduction (arXiv:2608.24827, Thm 1.1)
+
+Date: 2026-09-23. Branch `rh/zhu-inputs`. Island: `telperion/examples/rvm_bridge/lean` (Lean
+v4.33.0-rc2 / Mathlib 51e6992e via the Zeta23 pin). Node:
+`missions/rh/nodes/RH_weil_window_floor_of_certified_block.toml` (DRAFT, re-specified today).
+Prior memos: `ZHU_WINDOW_POSITIVITY_IMPORT_2026-09-19.md` (the import and its seam analysis),
+`DESIGN_RH_weil_window_floor_of_certified_block_2026-09-22.md` (why the node was opaque).
+
+**conjecture1_proved = False.** Nothing here is about the zeros of zeta. Two of Zhu's four
+analytic inputs are now kernel theorems and a third is half a theorem; the Riemann Hypothesis is
+exactly as open as it was this morning. A positive window floor at fixed `L` is a finite fragment
+that RH predicts; certifying one confirms nothing, and the pointwise-envelope route to the
+RH-equivalent clause `forall L, WindowFloor L 0` is closed by Zhu's own Theorem 1.4.
+
+## 0. What changed, in one paragraph
+
+Until today the node carried four `opaque ... : Prop` hypotheses (eq. 2, Lemma 3.1, eqs. 6/12,
+and the Arb head floor) and was, by the 2026-09-22 memo's argument, unprovable by construction. The
+team lead authorised re-specifying the three ANALYTIC ones as concrete definitions while leaving
+the numerical trust seam `ReducedHeadFloor` opaque. That is what this branch does: the definitions
+now live on the rvm_bridge island in four new modules and are mirrored verbatim into RHDefs; the
+symbol representation (eq. 2) and the digamma envelope (Lemma 3.1) are **proved** and therefore no
+longer appear as hypotheses; the Legendre localization is a concrete predicate on Zhu's actual
+reduced matrix whose analytic inputs (eqs. 6 and 12) are **proved** and whose tail sums (the
+paper's numerically evaluated `eps_D`, `eps_B`) remain a hypothesis; `ReducedHeadFloor` is
+untouched. A certified NUMBER still cannot masquerade as a proved THEOREM: `hhead` is opaque, no
+proof term can use it, and the node stays DRAFT.
+
+## 1. Per input: proved / reduced / not started
+
+| Zhu input | registry name (RHDefs `WeilWindow`) | island module | status |
+|---|---|---|---|
+| eq. (2), symbol representation `Q(f) = 2F(i/2)^2 + (1/2pi) int |F|^2 Psi_L` | `SymbolRepresentation L`, `weilSymbol L t` (eq. 3) | `ZhuSymbol.lean` | **PROVED** for every `L`: `RvMBridgeZhu.symbolRepresentation` (ZhuSymbol.lean:353); core computation `symbol_representation_ofReal` (:144) |
+| Lemma 3.1, envelope `Re psi(1/4+it/2) - log pi >= log(t/2pi) - 1/t`, `t >= 15/4` | `EnvelopeBound` | `ZhuEnvelope.lean` | **PROVED**: `RvMBridgeZhu.envelopeBound` (:256), via `psiR_ge_envelope` (:230) |
+| eq. (6), Legendre-mode transform `hat T_{2k}(t) = (-1)^k 2 sqrt(L(2k+1/2)) j_{2k}(tL)` | `legendreP`, `sphericalBessel`, `legendreMode`, `legendreModeFT` | `ZhuLegendre.lean` | **PROVED**: `legendreModeFT_eq` (:338), core `integral_legendreP_mul_cos` (:304) |
+| eq. (12), `|j_n(x)| <= x^n/(2n+1)!!` | `sphericalBessel` | `ZhuLegendre.lean` | **PROVED**: `sphericalBessel_abs_le` (:166), from `integral_one_sub_sq_pow` (:146); entry decay `legendreModeFT_abs_le` (:364) |
+| eq. (13) tail data `eps_D`, `eps_B` (Gershgorin / Schur sums on the tail of `M_R = beta* I + 2pp^T + C`) | `poleVec`, `combMatrix`, `reducedMat`, `LegendreLocalization L T# N epsD epsB`; closed forms `symbolSup`, `tailMajorant`, `entryConst`, `epsDfun`, `epsBfun` | `ZhuLegendre.lean`, `ZhuOrtho.lean`, `ZhuTail.lean`, `ZhuInstance.lean` | **PROVED** (third pass, lead's brief): `legendreLocalization_of_cut` for every `L > 0`, `T# ≥ 1`, `N ≥ 1` with `e L T#/2 ≤ 2N`, with the crude explicit constants of section 2.7; at `L = 4/5`, `T# = 200`, `N = 200` the constants sum to `< 1e-90` and `beta* ≥ 1/2` (`eps_sum_lt_betaStar_L08_T200`). No longer a hypothesis. |
+| Arb head floor `lambda_min(A) >= lam0` | `ReducedHeadFloor` | none | **UNTOUCHED, opaque by design** (`hhead`). |
+| parity (Lemma 6.1 / Cor. 6.3) | `WindowFloor`, `OddSectorFloor`, `EvenSectorFloor` | `ZhuParity.lean` | **PROVED**: `windowFloor_of_sectors` (EvenSectorFloor and OddSectorFloor give WindowFloor for complex f), from `weilForm_eq_zero_of_odd` (the Weil functional vanishes on odd tests), `Q_add_I_mul`, `Q_evenPart_add_oddPart`. |
+| eq. (2), ODD sector (Lemma 6.1, pole sign reversed) | `SymbolRepresentationOdd L` | `ZhuSymbol.lean` | **PROVED**: `symbolRepresentationOdd` (the even/odd proofs share `symbol_representation_ofReal` with a sign `ε`, `ε² = 1`). |
+| eq. (6) odd modes `∫ P_{2k+1} sin(xu) = (-1)^k 2 j_{2k+1}(x)` and the odd-mode decay | `legendreModeFTs` | `ZhuLegendre.lean` | **PROVED**: `integral_legendreP_mul_sin`, `legendreModeFTs_eq`, `legendreModeFTs_abs_le`. |
+| eq. (13) tail data, ODD sector | `poleVecOdd` (sinh), `combMatrixOdd`, `reducedMatOdd` (`β* I - 2 s sᵀ + C`), `LegendreLocalizationOdd`; `tailMajorantOdd`, `epsDfunOdd`, `epsBfunOdd` | `ZhuLegendre.lean`, `ZhuTail.lean` | **PROVED**: `legendreLocalizationOdd_of_cut`, same route with the odd majorant. No longer a hypothesis. |
+| Arb head floor, ODD block (eq. 14, `8.2065e-15` at L = 0.8) | `ReducedHeadFloorOdd` | none | **ADDED as a second OPAQUE seam** on the lead's instruction (2026-09-23), same docstring discipline as `ReducedHeadFloor`. Hypothesis `hheadOdd`. |
+
+Guard: `AxiomGuardRvMBridge.lean` prints axioms for 24 new anchors (3 envelope, 4 symbol, 8
+Legendre, 5 parity, 2 split; the two trivial parity directions were replaced by the real theorems); every one reports `[propext, Classical.choice, Quot.sound]`. Island `lake build`
+8897 jobs green; no `sorry`, `admit`, `native_decide`, `axiom` or `opaque` in the new modules.
+
+## 2. How each proof goes (and what it reuses)
+
+### 2.1 Lemma 3.1 (`ZhuEnvelope.lean`, 269 lines)
+
+Zhu proves it from Binet's second formula, which neither Mathlib nor Zeta23 has. The island proof
+uses two ranges:
+
+* `t >= 25/2`: Zeta23's Stirling remainder `StirlingVert.digamma_stirling`,
+  `|psi(w) - log w + 1/(2w)| <= 3/(Im w)^2`, at `w = 1/4 + it/2`. `Re log w >= log(t/2)` since
+  `|w| >= Im w`, and `Re(1/(2w)) = (1/8)/(1/16 + t^2/4) <= 1/(2t^2)`, so the deficit is
+  `25/(2t^2) <= 1/t` exactly when `t >= 25/2`.
+* `15/4 <= t <= 25/2`: eleven bands. `Re psi(1/4 + it/2)` is monotone in `|t|`
+  (`RvMBridge30.psiR_mono`, from Zeta23's vertical-line series), and the right-hand side is
+  increasing, so on a band `[a, b]` it suffices that a rational floor at `a` beats
+  `log(b/2) - 1/b`. Floors come from `RvMBridge30.psiR_ge_rational` (40 series terms, an integral
+  tail, `gamma <= 0.58112`) closed by `norm_num`; the log is bounded above through the degree-11
+  Taylor polynomial of `exp` (`Real.sum_le_exp_of_nonneg`). Band edges (multiples of 1/20, margin
+  `>= 0.002`) were chosen by a script; the true margin is `0.26` at `t = 15/4` and `0.08` at `25/2`.
+
+### 2.2 Eq. (2) (`ZhuSymbol.lean`, 364 lines)
+
+A rearrangement of the E8 primes-side functional `archSide g - primeSide g` for
+`g = autocorr f`, `f` real even smooth with `tsupport f` in `[-L, L]`:
+
+* pole terms: `weilKernel g 0 = weilKernel g 1 = |F(i/2)|^2` by Zeta23's transform factorisation
+  `EF.paperFT_weilTest` (`h_{f*f~}(z) = h_f(z) conj h_f(conj z)`) and evenness
+  (`Taper.paperFT_neg_of_even`); `F(i/2) = weilKernel f 0`;
+* archimedean integral: `weilKernel g (1/2 + it) = |F(t)|^2` (E6Bridge5 `weilKernel_autocorr_line`);
+* the `-g(0) log pi` term: `g(0) = ||f||_2^2 = (1/2pi) int |F|^2` (Plancherel as Fourier inversion
+  of `g` at `0`, E6Bridge4 `inversion_zero`);
+* prime side: `g(log n) = (1/2pi) int |F(t)|^2 cos(t log n) dt` (Fourier inversion, cosine form,
+  Zeta23 `Taper.integral_mul_cos_of_paperFT_eq`), `g` even, and `g(log n) = 0` once
+  `log n >= 2L` because `supp g` is in `[-2L, 2L]` (`autocorr_eq_zero_of_two_mul_le`: the
+  equality case is the null set `{L, -L}`); the comb is a finite sum (`n < e^{2L}`) and passes
+  through the integral.
+
+No Fubini is done here (it sits inside `paperFT_weilTest`), and no L^2 Plancherel is needed:
+inversion at a point suffices because `hat g = |F|^2` is integrable.
+
+### 2.3 Eqs. (6) and (12) (`ZhuLegendre.lean`, 373 lines)
+
+* `legendreP n := (1/(2^n n!)) D^n (X^2-1)^n` (Rodrigues); `sphericalBessel n x :=
+  x^n/(2^{n+1} n!) int_{-1}^1 (1-u^2)^n cos(xu) du` (Poisson, cosine form; the sine part is odd).
+* eq. (12): `|int (1-u^2)^n cos(xu)| <= int (1-u^2)^n = 2^{n+1} n!/(2n+1)!!`, the last by the
+  recurrence `(2n+3) I_{n+1} = (2n+2) I_n` (differentiate `u (1-u^2)^{n+1}`).
+* eq. (6): `D^j (X^2-1)^n = (X^2-1)^{n-j} r_j`, so `D^j (X^2-1)^n` vanishes at `+-1` for `j < n`;
+  one integration by parts moves a derivative off the polynomial onto `cos`/`sin` with no
+  boundary term (`ibp_step`), two of them give `int D^{j+2} q cos = -x^2 int D^j q cos`, and
+  induction gives `int D^{2k} q cos(x.) = (-x^2)^k int (1-u^2)^{2k} cos(x.)`; scale by `L`.
+* the entry decay `|hat T_{2k}(t)| <= 2 sqrt(L(2k+1/2)) (tL)^{2k}/(4k+1)!!` for `t >= 0`.
+
+### 2.4 What `LegendreLocalization` says, exactly
+
+With `M_R(k, j) := beta* delta_{kj} + 2 p_{2k} p_{2j} + C_{2k,2j}` on the even modes:
+
+* Gershgorin: for every tail row `k >= N`, the absolute row sum over the tail of `M_R - beta* I`
+  is summable and `<= eps_D` (so `lambda_min(D) >= beta* - eps_D`);
+* Schur: for every leading column `j < N` the absolute tail-column sum is summable and `<= eps_B`,
+  and for every tail row `k >= N` the absolute leading-row sum is `<= eps_B` (so `||B|| <= eps_B`).
+
+Summability is stated explicitly so that Lean's `tsum` cannot return a junk `0`. This is the data
+Zhu's Section 4 feeds into the two-block bound; Section 5.3 evaluates it from the entry bounds of
+2.3 and finds both constants below `1e-100`. Proving the sums in-kernel would need the explicit
+sup of `|Psi_L - beta*|` on `[0, T#]` (available from `psiR_mono` + Stirling) and a closed-form
+majorant for `sum_{j >= N} (T#L)^{2j}/(4j+1)!!`; neither was attempted.
+
+## 3. The statement surgery, recorded
+
+The node is DRAFT, so re-specifying its vocabulary is allowed; it changes the statement's
+provenance hash. The full chain over the three passes of 2026-09-23 is
+`8d0bdb0b971ec222` (the 2026-09-19 registration) `->` `65215e793763e7f3` (pass 1: opaques made
+concrete, `hodd` as an analytic hypothesis) `->` `a170912ee8d3f937` (pass 2: parity decoupling proved,
+odd sector with its own seam, conclusion = min over sectors) `->` `8445ddd44ed00cf1` (pass 3: tail
+sums proved, `hloc`/`hlocOdd` dropped, closed-form eps in the conclusion).
+
+**The CONCLUSION changed, not only the hypotheses.** The 2026-09-19 registration concluded
+`WindowFloor L (min lam0 (beta - epsD) - epsB)` with free reals `epsD`, `epsB` and a single (even)
+block floor `lam0`. The current statement concludes
+`WindowFloor L (min (min lam0 (beta - epsDfun L Tsharp N) - epsBfun L Tsharp N)
+(min lam0odd (beta - epsDfunOdd L Tsharp N) - epsBfunOdd L Tsharp N))`: the min over the even and
+odd parity sectors, each with its own Arb floor, and with the PROVED closed-form tail constants in
+place of the free `epsD`, `epsB`. For `lam0odd = lam0` and the same eps this is literally the old
+expression, and for Zhu's certified numbers the even sector is the binding one, but a reader
+comparing against the 09-19 text should know the claimed floor is now the two-sector one of
+Corollary 6.3, not the single-sector one of Theorem 1.1. What changed in
+`RH_weil_window_floor_of_certified_block.lean`:
+
+* dropped `hQrep : SymbolRepresentation L` and `henv : EnvelopeBound` -- both are now theorems on
+  the island (`symbolRepresentation`, `envelopeBound`), so carrying them would be carrying `True`;
+* `hloc : LegendreLocalization L Tsharp N epsD epsB` kept, now concrete (section 2.4) -- and in the
+  third pass DROPPED again, because it is a theorem for the closed-form constants (section 2.7): the
+  statement's `epsD`, `epsB` are now `epsDfun L Tsharp N`, `epsBfun L Tsharp N` themselves (both
+  sectors), and `hL : 0 < L`, `hN : 1 ≤ N` were added with `hT` strengthened to `1 ≤ Tsharp`;
+* `hhead : ReducedHeadFloor L Tsharp lam0 N` kept, opaque, untouched;
+* ADDED `hT : 0 < Tsharp`: the opaque draft did not force the split height positive, and
+  `betaStar` with `Tsharp < 0` is `log(|Tsharp|/2pi) + 1/|Tsharp| - A_L`, which can be positive;
+* the PARITY SECTORS (lead's refinement, same day). Theorem 1.1 and the certified even-mode
+  Legendre block cover REAL EVEN `f`; `WindowFloor` quantifies over complex `f`. Zhu Lemma 6.1 is
+  now PROVED (`windowFloor_of_sectors`, section 2.6), so both sectors enter the statement on the
+  same footing: the ODD sector gets its own concrete localization data `hlocOdd :
+  LegendreLocalizationOdd L Tsharp N epsDodd epsBodd` and its own OPAQUE Arb seam `hheadOdd :
+  ReducedHeadFloorOdd L Tsharp lam0odd N` (the certified odd-block Cholesky floor, eq. 14:
+  `8.2065e-15` at `L = 0.8`), modelled exactly like `ReducedHeadFloor`. An earlier version of this
+  branch carried the odd sector as an analytic hypothesis `OddSectorFloor`; the lead's ruling that
+  it is a NUMERIC seam of the same kind as the even one replaced it (the definition remains as
+  vocabulary);
+* conclusion: `WindowFloor L (min (min lam0 (beta - epsD) - epsB) (min lam0odd (beta - epsDodd)
+  - epsBodd))`, the min over the two sectors (Corollary 6.3). This is the one change to the
+  conclusion: for `lam0odd = lam0`, `epsDodd = epsD`, `epsBodd = epsB` it is literally the old
+  one, and for the certified numbers the even sector is the binding one. The proof is still
+  `by sorry`.
+
+In `RHDefs.lean` the three `opaque` declarations were replaced by the verbatim island definitions
+(`weilSymbol`, `SymbolRepresentation`, `EnvelopeBound`, `legendreP`, `sphericalBessel`,
+`legendreMode`, `legendreModeFT`, `poleVec`, `combMatrix`, `reducedMat`, `LegendreLocalization`,
+`OddSectorFloor`, `EvenSectorFloor`); the seam comment block was rewritten to say which links are
+proved. The mirror-drift scan (`telperion.missions.mirrors`) reports all 17 Zhu rows in sync.
+Two tooling touches, both small: `mirrors.py` now treats `opaque`/`axiom` as declaration
+terminators (a `def` followed by an `opaque` used to swallow the opaque's text and report a false
+drift), and the `autocorr` bare-name collision between MMDefs's `WeilExplicit.autocorr` and the
+WeilForm block re-declared in `ZhuSymbol.lean` is exempted like the existing WeilFormDefs entry.
+The `window_form_floor` emitter dogfood (`generate.py --check`) is unaffected: its instances use
+only `WindowFloor` and the rounding lemma, and regenerate byte-for-byte.
+
+The 2026-09-22 memo argued against replacing opaques with definitions on the ground that a fake
+definition could close the node for the wrong reason. The definitions here are the paper's own
+objects, two of them are proved, and the seam that actually carries the certified number is
+still opaque, so the node cannot close at all; the memo's concern is honoured, not overridden.
+
+### 2.6 Parity decoupling, Zhu Lemma 6.1 (`ZhuParity.lean`)
+
+One fact carries everything: `weilForm_eq_zero_of_odd`, the Weil functional `archSide - primeSide`
+vanishes on every ODD test function `k` (the two pole terms are `∫ k(u)(e^{-u/2} + e^{u/2}) du = 0`
+by oddness, `k(0) = 0`, the archimedean integrand `weilKernel k (1/2 + ir) Re psi(1/4 + ir/2)` is
+odd in `r` because the transform is odd and `Re psi` is even (`RvMBridge30.psiR_neg`), and each
+prime term is `k(log n) + k(-log n) = 0`). The autocorrelation is sesquilinear
+(`crossCorr_add_left/right`, `crossCorr_const_mul_left/right`), and in both decompositions the
+cross term is odd: for `f = a + i b` with `a, b` real, `C(b,a)(u) = C(a,b)(-u)`
+(`crossCorr_swap_of_real`) makes `i(C(b,a) - C(a,b))` odd; for `a = a_e + a_o`,
+`crossCorr_neg_of_parity` gives `C(a_e,a_o)(-u) = -C(a_e,a_o)(u)`. With `weilForm_add`
+(additivity on the test class; the prime side is a finitely supported `tsum`) this is
+`Q_add_I_mul` and `Q_evenPart_add_oddPart`. The L² mass splits by the parallelogram identity
+`‖(z+w)/2‖² + ‖(z-w)/2‖² = (‖z‖² + ‖w‖²)/2` and neg-invariance of Lebesgue measure. Assembly:
+`windowFloor_of_sectors : EvenSectorFloor L lam → OddSectorFloor L lam → WindowFloor L lam`.
+
+### 2.7 The tail sums in the kernel (`ZhuOrtho.lean`, `ZhuTail.lean`, `ZhuInstance.lean`)
+
+Zhu evaluates `eps_D`, `eps_B` numerically; the node only needs `eps_D + eps_B < beta*`, so any
+proved bound small enough will do (lead's observation). The proved closed forms, for `L > 0`,
+`T# ≥ 1`, `N ≥ 1` with the cut `e L T#/2 ≤ 2N`:
+
+```
+b_N   = 2 sqrt L (N+1) (T# L)^{2N} / (4N+1)!!                 tail majorant (even modes 2j, j ≥ N)
+S     = 4.2315 + log(T#/2) + 13/T#^2 + log pi + A_L + |beta*|  sup of |Psi_L - beta*| on [0, T#]
+K     = 2 cosh(L/2)^2 + T# S / pi                             entry constant
+U     = (1 + 2L)/2                                            uniform bound on |hat T_n| for ALL n
+eps_D = (10/7) K b_N^2,     eps_B = (10/7 + N) K U b_N        (odd sector: b^odd_N with (N+2), (4N+3)!!)
+```
+
+Ingredients. (i) `S`: `Re psi(1/4 + it/2)` is monotone in `|t|` (E6Bridge30), at least `psi(1/4)
+≥ -4.2315` (E6Bridge30 floor) and at most the Stirling upper bound `log(T#/2) + 13/T#^2` at `T#`
+(Zeta23 remainder); the comb lies in `[-A_L, A_L]`. (ii) Every entry of `M_R - beta* I` is bounded
+by `K B_k B_j` where `B` is the tail majorant for modes above the cut (eq. 6 + eq. 12, and the pole
+entries by the cosh/sinh Poisson integral, `|p_{2j}| ≤ 2 sqrt(L(2j+1/2)) cosh(L/2) (L/2)^{2j}/(4j+1)!!`)
+and `U` for modes below it; `U` comes from `∫_{-L}^{L} T_n^2 = 1` (orthonormality, Rodrigues +
+n-fold integration by parts with `D^{2n}(X^2-1)^n = (2n)!`) via `∫|T_n| ≤ (∫T_n^2 + 2L)/2`.
+(iii) Under the cut `(T# L)^2 ≤ 16 N^2/e^2` (using `e > 2.718`), while `(4j+3)(4j+5) > 16 N^2`
+for `j ≥ N`, so `b_{j+1} ≤ (3/10) b_j` beyond the cut and every tail sum is at most `b_N/(7/10)`
+(`tail_tsum_le`, a shifted geometric series). (iv) The abstract assembly `localization_of_bounds`
+turns entry bounds plus a geometric majorant into exactly the `LegendreLocalization` predicate
+(Summable clauses included), used for both parity sectors.
+
+At the instance `L = 4/5`, `T# = 200`, `N = 200`: `b_N ≤ 402 · 160^400/801!! ≤ 1e-100` with
+`160^400 · 10^103 ≤ 801!!` evaluated by the kernel (`decide`), `K ≤ 1300`, so the four constants sum
+to less than `1e-90`; `beta*(4/5, 200) ≥ 1/2` with the comb mass re-derived from its definition
+(`A_L ≤ 2.943`: `n = 2, 3, 4`, and `n = 5` excluded because `exp(8/5) < 5`, from `Real.exp_bound`).
+
+### 2.5 The envelope step of eq. (4) (`ZhuSplit.lean`)
+
+`weilSymbol_ge_betaStar`: for `15/4 <= T# <= t`, `Psi_L(t) >= beta*(L, T#)`, from `envelopeBound`
+and the trivial comb bound `comb_le_combMass` (`P_L(t) <= A_L`: finite sum, nonnegative
+coefficients, `cos <= 1`). This is the inequality Zhu's Section 4 applies on `[T#, oo)`.
+
+## 4. What remains for a proof of the node (not attempted)
+
+1. The frequency split, eq. (4), assembled: from `SymbolRepresentation`, `weilSymbol_ge_betaStar`,
+   evenness of `|F|^2 Psi_L` and the half-line Parseval `int_0^oo |F|^2 = pi ||f||^2`, plus
+   `T# >= 15/4` from `beta* > 0` and `A_L >= 0`. Elementary.
+2. The Legendre-basis representation of `R` in each sector: orthonormality and completeness of the
+   Legendre modes in `L^2_even[-L, L]` and `L^2_odd[-L, L]` (Rodrigues + integration by parts for orthogonality; Weierstrass
+   density for completeness), `R(f) = c^T M_R c` for the coefficient sequence. Substantial; not in
+   Mathlib.
+3. The two-block bound, eq. (13), on `l^2`: pure linear algebra (the 2026-09-22 memo's Option 2).
+4. (Parity decoupling: DONE, section 2.6.)
+5. Structurally: `hhead` and `hheadOdd` are opaque, so no proof term can use them. (The tail
+   sums, item 3's `eps_D`/`eps_B`, are DONE: section 2.7.) The node stays DRAFT until a
+   registry trust-seam policy exists; that is by design and unchanged.
+
+## 5. Numbers that are NOT theorems
+
+`9e-18`, `8.9e-18`, `8.2065e-15`, `1e-100`, `T# = 200`, `N = 200` appear in comments only. The kernel
+asserts none of them. Grants are frozen campaign-wide; no `mission grant` or `mission audit` was
+run and no node status was changed.

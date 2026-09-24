@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "migration-session-2026-09-12"
 date = "2026-09-11"
+independence = "unverified"
 text = "For every list of achievable cavity messages, the capped-joint g-step value (base^11 times the product of per-child caps over gamma) is at most 1, at every arity."

@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "migration-session-2026-09-12"
 date = "2026-09-11"
+independence = "unverified"
 text = "For every bare rooted tree, the permanent of the Laplacian of its true-degree realization divided by the product of vertex degrees equals the raw matching partition function Aobj -- the machine-checked per(L) bridge (P1 capstone)."

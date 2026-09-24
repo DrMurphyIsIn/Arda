@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-li-ladder-rvm-2026-09-21 (AUDIT_TESTIMONY_LI_LADDER_RVM_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: 0 <= Re(archSide 5 + finiteSide 5) with no hypothesis, through liValue 5 and the unpaired termwise certificate Re K_5 >= 0 on Box 2 (five nonnegative coefficient polynomials in u = beta - 1/2 and e = gamma^2 - 3u^2 - 3/4, re-expanded symbolically). Closed forms N = 1..5 agree with Li's lambda_N by an independent Cauchy integral to 10 digits (0.0231, 0.0923, 0.2076, 0.3688, 0.5755). Rung 6 fails inside Box 2. Not RH. conjecture1_proved = False."

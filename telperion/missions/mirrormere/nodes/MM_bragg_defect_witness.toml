@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
 date = "2026-09-14"
+independence = "unverified"
 text = "Two kernel theorems about the explicit 29+1-configuration defect functional: (i) at off-line displacement 0 (all zeros on the line) the functional is exactly 0 -- unconditional, pure ring arithmetic; (ii) at the synthetic off-line displacement the functional is strictly negative, with the excess bracketed by explicit rationals derived from a certified e^(1/10) enclosure -- this leg CARRIES the Arb exponential-enclosure hypothesis, hence closure_clean = false until that enclosure is itself reflected. Together with offline_pairs_le_defect this instantiates defect exactly 1 on the BraggDefect configuration. [Verbatim extract of the proved defect_witness_online / defect_witness_offline; artifact on rh/million-turing, grant deferred to the branch reconcile.]"

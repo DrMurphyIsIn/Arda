@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-converse-2026-09-20 (AUDIT_TESTIMONY_WEIL_CONVERSE_2026-09-20.md)"
 date = "2026-09-20"
+independence = "unverified"
 text = "Read-back: the goal statement (Weil positivity on autocorrelations over IsWeilTest) is equivalent to Mathlib's RiemannHypothesis. Forward half PROVED and granted (MM_rh_implies_weil_positivity); converse half reduced to the two Gaussian obligations. This is the dictionary theorem, not RH: it becomes proved when the converse lands and says nothing about whether either side holds. conjecture1_proved = False."
