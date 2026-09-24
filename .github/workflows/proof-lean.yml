@@ -5,10 +5,13 @@ on:
     paths:
       - "proof/formalization/**"
       - ".github/workflows/proof-lean.yml"
+  # NO paths filter on pull_request (2026-09-23): `lean-verify` is meant to be a REQUIRED status
+  # check, and a required check whose workflow never starts (path-filtered out) leaves every
+  # unrelated PR blocked on "Expected -- waiting for status to be reported". So the job now
+  # starts on every PR; its first step diffs the PR against its base and, when nothing under
+  # proof/formalization/ (or this file) changed, every heavy step is skipped and the job
+  # reports success in well under a minute. push/schedule/dispatch runs always do the full work.
   pull_request:
-    paths:
-      - "proof/formalization/**"
-      - ".github/workflows/proof-lean.yml"
   workflow_dispatch:
   # Continuous, independent loop: a daily run on the default branch re-verifies the whole
   # R3Cert/R7Hyps layer (no-sorry) AND refreshes the incremental build cache so it never goes
@@ -34,20 +37,65 @@ jobs:
       run:
         working-directory: proof/formalization
     steps:
+      # fetch-depth 2: on a pull_request event HEAD is GitHub's test-merge commit, and depth 2
+      # also fetches its parents, so HEAD^1 (the base tip it merged into) is available to diff.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      # Path gate (replaces the old workflow-level `paths:` filter for PRs, see `on:` above).
+      # run=false ONLY for a pull_request whose diff against its base touches nothing relevant;
+      # every other event, and any failure to compute the diff, yields run=true (fail-safe: an
+      # undecidable diff means the full verification runs, never a silent skip).
+      - name: Relevant changes? (path gate for pull requests)
+        id: changes
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          RELEVANT: '^(proof/formalization/|\.github/workflows/proof-lean\.yml$)'
+        run: |
+          set -uo pipefail
+          run=true
+          if [ "$EVENT" = "pull_request" ]; then
+            base=""
+            if git rev-parse -q --verify 'HEAD^2^{commit}' >/dev/null; then
+              base=$(git rev-parse -q --verify 'HEAD^1^{commit}' || true)
+            elif [ -n "${BASE_SHA:-}" ] && git fetch -q --no-tags --depth=1 origin "$BASE_SHA"; then
+              base="$BASE_SHA"
+            fi
+            if [ -n "$base" ] && files=$(git diff --name-only "$base" HEAD); then
+              echo "PR changes $(printf '%s' "$files" | grep -c . || true) file(s) relative to $base"
+              if grep -qE "$RELEVANT" <<< "$files"; then
+                printf '%s\n' "$files" | grep -E "$RELEVANT" | head -20
+              else
+                run=false
+              fi
+            else
+              echo "::warning::could not compute the PR diff against its base; running the full job"
+            fi
+          fi
+          echo "run=$run" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Nothing relevant changed -- skipping the Lean verification
+        if: steps.changes.outputs.run != 'true'
+        run: echo "::notice::No change under proof/formalization/ or proof-lean.yml; lean-verify passes without building."
 
       - name: Cache elan toolchain
+        if: steps.changes.outputs.run == 'true'
         uses: actions/cache@v4
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain') }}
 
       - name: Install elan
+        if: steps.changes.outputs.run == 'true'
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
       - name: Fetch Mathlib olean cache
+        if: steps.changes.outputs.run == 'true'
         run: lake exe cache get
 
       # WHY (2026-09-23, closure-run finding C4): every run since 2026-09-12 died in the Build step
@@ -64,6 +112,7 @@ jobs:
       # so the peak pages out instead of killing the runner; (2) the staged build below, so
       # PC6Reduce runs with nothing else beside it and the heavy roots never all run at once.
       - name: Provision swap + install the build-telemetry wrapper
+        if: steps.changes.outputs.run == 'true'
         run: |
           set -uo pipefail
           free -m; df -h / /mnt 2>/dev/null || true
@@ -109,6 +158,7 @@ jobs:
       # GitHub's 120 s limit and kill the save -- so no cache was ever written.
       - name: Build-cache key
         id: ckey
+        if: steps.changes.outputs.run == 'true'
         run: |
           echo "prefix=lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-" >> "$GITHUB_OUTPUT"
           echo "run=${{ github.run_id }}-${{ github.run_attempt }}" >> "$GITHUB_OUTPUT"
@@ -131,6 +181,7 @@ jobs:
       # runner died). The staged saves below fix that: each stage that compiled something saves
       # a checkpoint, so the next run resumes from the last completed stage.
       - name: Restore Lean project build cache (incremental)
+        if: steps.changes.outputs.run == 'true'
         uses: actions/cache/restore@v4
         with:
           path: proof/formalization/.lake/build
@@ -143,11 +194,12 @@ jobs:
       # lake builds one cell at a time) run side by side: at most two heavy `lean` processes.
       - name: Build stage 1 — heavy certificate roots (R47PC6Cells + the StarOfHubs chain)
         id: stage1
+        if: steps.changes.outputs.run == 'true'
         timeout-minutes: 140
         run: lakeb R3Cert.R47PC6Cells R7Hyps
 
       - name: Save build-cache checkpoint (stage 1)
-        if: steps.stage1.outcome == 'success' && steps.stage1.outputs.built != '0'
+        if: steps.changes.outputs.run == 'true' && steps.stage1.outcome == 'success' && steps.stage1.outputs.built != '0'
         uses: actions/cache/save@v4
         with:
           path: proof/formalization/.lake/build
@@ -159,11 +211,12 @@ jobs:
       # died on 2026-09-20 and 2026-09-22; no CI run has ever finished it.
       - name: Build stage 2 — R47PC6Reduce and its dependencies
         id: stage2
+        if: steps.changes.outputs.run == 'true'
         timeout-minutes: 100
         run: lakeb R3Cert.R47PC6Reduce
 
       - name: Save build-cache checkpoint (stage 2)
-        if: steps.stage2.outcome == 'success' && steps.stage2.outputs.built != '0'
+        if: steps.changes.outputs.run == 'true' && steps.stage2.outcome == 'success' && steps.stage2.outputs.built != '0'
         uses: actions/cache/save@v4
         with:
           path: proof/formalization/.lake/build
@@ -172,10 +225,12 @@ jobs:
       # Stage 3: everything else. This is the same `lake build` as before; stages 1-2 only
       # reorder the work so that it fits in memory.
       - name: Build (the verification — every R3Cert module compiles, no sorry)
+        if: steps.changes.outputs.run == 'true'
         timeout-minutes: 90
         run: lakeb
 
       - name: Build the R7' hypothesis layers (star-of-hubs cells + class floors)
+        if: steps.changes.outputs.run == 'true'
         run: lake build R7Hyps R3Cert.HypStar R3Cert.HypFloors
 
       # R47 per-rule certificate leaves (R1 spider / R2 legs / R4 Kelmans corners /
@@ -185,6 +240,7 @@ jobs:
       # import env): R47R6DeloadCert carries a local `conjecture1_proved` pin in
       # `R3Cert.Step3`, so co-importing it would collide; separate targets sidestep that.
       - name: Build the R47 per-rule certificate leaves
+        if: steps.changes.outputs.run == 'true'
         run: |
           lake build \
             R3Cert.R47R1SpiderCert \
@@ -242,6 +298,7 @@ jobs:
       # was built by no CI step. Fix an orphan by root-importing it or adding it to a
       # `lake build` step above.
       - name: No orphaned modules (every R3Cert source is CI-built)
+        if: steps.changes.outputs.run == 'true'
         run: |
           set -uo pipefail
           missing=""
@@ -266,6 +323,7 @@ jobs:
       # a floor on the number of reports (catches mass deletion), and the BG mission node
       # theorems are required BY NAME (catches deleting one node's guard line).
       - name: Axiom guard (every anchor depends only on propext / Classical.choice / Quot.sound)
+        if: steps.changes.outputs.run == 'true'
         run: |
           set -euo pipefail
           # Runs AFTER `lake build`, so the R3Cert oleans exist and imports resolve.
@@ -320,6 +378,7 @@ jobs:
           PY
 
       - name: Sorry / admit / native_decide scan (repo-wide, gating)
+        if: steps.changes.outputs.run == 'true'
         run: |
           set -uo pipefail
           # Grep is a coarse second net (the axiom guard above is authoritative). It is
@@ -354,7 +413,7 @@ jobs:
       # The per-step timeouts on the three build stages end a stuck stage before the job timeout,
       # so this step still gets to run.
       - name: Save Lean project build cache (even on failure — breaks the cold-rebuild spiral)
-        if: always() && steps.ckey.outputs.prefix != ''
+        if: always() && steps.changes.outputs.run == 'true' && steps.ckey.outputs.prefix != ''
         uses: actions/cache/save@v4
         with:
           path: proof/formalization/.lake/build
