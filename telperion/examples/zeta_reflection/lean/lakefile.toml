@@ -479,3 +479,82 @@ roots = ["AllZeros_h1000",
 [[lean_lib]]
 name = "AxiomGuardBandGlue"
 roots = ["AxiomGuardBandGlue"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane RS (2026-09-24): ANDURIL Riemann-Siegel brick B2 -- Riemann's integral representation of
+# zeta(s) for general complex s, with the residue bookkeeping (Mathlib-only core).
+#   RS_Strip  -- horizontal-strip Cauchy with decay; slanted line integrals lineUp / lineDn and
+#                their line independence.
+#   (further RS_ modules are appended below as they land; guard: RS_AxiomGuard, not a default target)
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "RS_Strip"
+roots = ["RS_Strip"]
+
+# Lane RS: RS_Kernel -- Riemann's kernels rsG / rsH, difference equations, Gaussian bounds, the
+# Fresnel line integral, pole crossing (no residue theorem: dslope), the Mordell closed form.
+[[lean_lib]]
+name = "RS_Kernel"
+roots = ["RS_Kernel"]
+
+# Lane RS: RS_Mellin -- complex-scaled Gamma integral, the Mellin/Fubini step, the Bose integral
+# (Gamma zeta), the chi-side kernel integral, and the Mellin identity for Re s > 1.
+[[lean_lib]]
+name = "RS_Mellin"
+roots = ["RS_Mellin"]
+
+# Lane RS: RS_Fold -- the chi-side line: continuity at the pole x = 0 (Re s > 2), folding of the
+# line through 0 onto the half-line integral rsHR, and moving it to any c in (0, 1).
+[[lean_lib]]
+name = "RS_Fold"
+roots = ["RS_Fold"]
+
+# Lane RS: RS_Entire -- parametric holomorphy of the two RS line integrals; the chi factor rsChi and
+# its Gamma identities (reflection + duplication).
+[[lean_lib]]
+name = "RS_Entire"
+roots = ["RS_Entire"]
+
+# Lane RS: RS_B2 -- THE HEADLINE of brick B2: `RSInt.riemann_siegel_integral` (Riemann's integral
+# representation of zeta(s) for every complex s outside {1,3,5,...}, with the residue bookkeeping
+# sum_{n<=N} n^-s + chi(s) sum_{m<=M} m^(s-1) + two remainder line integrals), and the exact
+# critical-line forms `completedRiemannZeta_eq_rs` / `completed_re_eq_rs_cos`.
+[[lean_lib]]
+name = "RS_B2"
+roots = ["RS_B2"]
+
+# Lane RS: RS_C0 -- brick B3 part 1: Riemann's Psi (Gabcke's C0) from the tau = 2 Mordell integral:
+# 2 Re(e^{-i pi/8} rsJ p) = cos(2 pi (p^2 - p - 1/16)) / cos(2 pi p) (`RSInt.rsJ_C0`).
+[[lean_lib]]
+name = "RS_C0"
+roots = ["RS_C0"]
+
+# Lane RS: the kernel-axiom guard (prints #print axioms for every RS_ theorem; not a default target).
+[[lean_lib]]
+name = "RS_AxiomGuard"
+roots = ["RS_AxiomGuard"]
+
+# Lane RS: RS_B3 -- brick B3 part 2: the exact saddle-point reduction of the RS remainder
+# (`rsRem_factor`, `rs_phase`, `rs_remainder_exact`).
+[[lean_lib]]
+name = "RS_B3"
+roots = ["RS_B3"]
+
+# Lane RS: RS_B3Bound -- brick B3 part 3: the analytic estimates (Gaussian moments, the saddle-point
+# amplitude near/far bounds, |rsJ| on the midline, |rsE1| <= K/a) and the explicit C0-remainder bound.
+[[lean_lib]]
+name = "RS_B3Bound"
+roots = ["RS_B3Bound"]
+
+# Lane RS: RS_Bridge -- brick B3 part 4: `RSInt.rs_Z_C0`, the Riemann-Siegel formula for Hardy's Z
+# with the C0 term and the explicit remainder 2 t^(-3/4) (t >= 10000), phase supplied hypothesis-free
+# by ThetaConverge / ZeroSignDecomp_t14 / RSTheta (read-only imports).
+[[lean_lib]]
+name = "RS_Bridge"
+roots = ["RS_Bridge"]
+
+# Lane RS: the kernel-axiom guard for bricks B3 parts 2-4 (RS_B3, RS_B3Bound, RS_Bridge); not a
+# default target.
+[[lean_lib]]
+name = "RS_AxiomGuardB3"
+roots = ["RS_AxiomGuardB3"]
