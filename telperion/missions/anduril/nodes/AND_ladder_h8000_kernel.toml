@@ -3,6 +3,7 @@ depends_on = ["AND_ladder_h1000_kernel", "AND_height_floor_kernel", "AND_edge_cl
 kind = "milestone"
 name = "AND.ladder_h8000_kernel"
 statement_module = "Statements.AND_ladder_h8000_kernel"
+requires_ci_job = "telperion-zeta-reflection.yml:anduril-kernel-ladder"
 status = "draft"
 title = "Every nontrivial zeta zero with 0 < Im rho <= 8000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, NO Arb or oracle input (Arb4 compact certificates, 8 segments chained by height_chain; 29 MB of certificates). Verified by an independent leanchecker replay of all 164 modules. Finite verification only, NOT RH. conjecture1_proved = False"
 updated = "2026-09-24"
