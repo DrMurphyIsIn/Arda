@@ -22,7 +22,7 @@
   </div>
   <h1>Telperion Registry Explorer</h1>
   <p class="sub">One registry of formal statements about the Riemann zeta function and its zeros, kept in TOML files and checked by a Lean 4 kernel, with the reverse-Dyson quasicrystal program in front. Every status on this page is read from the registry; nothing is inferred, and nothing here is a proof of the Riemann Hypothesis.</p>
-  <p class="note">The plots are computed live in your browser from bundled data. Where a number is a float-model estimate, an Arb enclosure, or a truncated sum, the plot says so. Where a theorem is conditional, its hypotheses are shown. Every recorded audit is self-attested.</p>
+  <p class="note">The plots are computed live in your browser from bundled data. Where a number is a float-model estimate, an Arb enclosure, or a truncated sum, the plot says so. Where a theorem is conditional, its hypotheses are shown. Every recorded audit is labelled with the independence the registry records: self-attested until an independent Comparator judge run is recorded for the node.</p>
 </header>
 
 <nav class="tabs" role="tablist" aria-label="Sections">
@@ -211,7 +211,7 @@
 <!-- ================================================================ -->
 <section class="panel" id="panel-reg" role="tabpanel" aria-labelledby="tab-reg">
   <h2>The registry</h2>
-  <p>Four campaigns, one schema. A node is <strong>draft</strong> until a readback is recorded, <strong>open</strong> once it is, and <strong>proved</strong> or <strong>refuted</strong> only after the verify gate has matched its verbatim statement against a Lean artifact that carries no <code>sorry</code>, is compiled by a runnable CI step, and prints only the three standard axioms. Goal nodes are drafts by design. Every readback below is self-attested: it was recorded by the same session family that wrote the node.</p>
+  <p>Four campaigns, one schema. A node is <strong>draft</strong> until a readback is recorded, <strong>open</strong> once it is, and <strong>proved</strong> or <strong>refuted</strong> only after the verify gate has matched its verbatim statement against a Lean artifact that carries no <code>sorry</code>, is compiled by a runnable CI step, and prints only the three standard axioms. Goal nodes are drafts by design. Every readback below carries the independence label the registry records: <strong>self-attested</strong> when it was written by the same session family that wrote the node, <strong>judge-verified</strong> when a Comparator run (a separate checker and a second kernel) has re-checked the registered statement against the artifact. Grant digests, judge runs and required CI runs are shown on each card.</p>
   <div class="counts" id="reg-counts"></div>
 
   <div class="step"><div class="letter">a</div><div class="body">
@@ -259,7 +259,7 @@
       <li>The goal node of every campaign: <code>MM_zeta_comb_membership</code>, <code>RH_conjecture</code>, <code>AND_ladder_1e13</code>, <code>BG_conjecture1</code>. All four are drafts.</li>
       <li>Anything that is Arb-conditional: the 20 Li rung certificates, the height-4000 composition, the ladder window hypothesis <code>WindowOnLine</code>, the DH inventory, every zoo verdict. A hypothesis discharged by interval arithmetic outside the kernel is not a kernel theorem.</li>
       <li>Anything this page computes: every plot is a float model over a truncated list of ordinates that are themselves a float model.</li>
-      <li>Independence of any audit. Every readback recorded in the registry to date is self-attested.</li>
+      <li>Independence of any audit beyond what the registry records. A readback is self-attested unless a Comparator judge run is recorded for the node.</li>
       <li>Nodes marked "island-built-only" or "uncovered" below rest on Lean that no runnable CI step is known to compile; their status is what the TOML says, but the evidence behind it is weaker than a green build.</li>
     </ul>
   </div>

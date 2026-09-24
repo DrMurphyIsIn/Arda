@@ -57,11 +57,58 @@ SRC_DIR = HERE / "src"
 OUT_HTML = REPO / "docs" / "explorer" / "index.html"
 CONJECTURE_SENTENCE = "conjecture1_proved = False"
 
-#: Every readback in the registry to date was written and re-read by the same session family
-#: that authored the node (see the campaign manifests and AUDIT_TESTIMONY_* memos, all
-#: same-session).  Until an audit is recorded by an actor outside that family, the honest
-#: label on every readback is this one.
-INDEPENDENCE_LABEL = "self-attested"
+#: Independence labels come from the registry's provenance fields (missions PR #607):
+#: a readback's `independence` is "" or "unverified" for every audit written by the same
+#: session family that authored the node (every audit up to 2026-09-24), and a node carries a
+#: `[comparator]` record only when the independent Comparator judge (a separate checker
+#: binary and a second kernel) has re-checked the registered statement against the artifact.
+#: Nothing here is inferred: the page shows exactly what the TOML records.
+INDEPENDENCE_LABEL = "self-attested"          # the legacy / unverified label
+JUDGE_LABEL = "judge-verified"                # a recorded Comparator pass on the current artifact
+
+
+def independence_label(node) -> str:
+    """The honest label for a node's readback, from the registry's own fields."""
+    comp = getattr(node, "comparator", None)
+    if comp is not None and getattr(comp, "run_id", ""):
+        return JUDGE_LABEL
+    rb = node.readback
+    raw = (getattr(rb, "independence", "") or "").strip().lower() if rb is not None else ""
+    if raw in ("", "unverified", "self-attested"):
+        return INDEPENDENCE_LABEL
+    return raw
+
+
+def provenance_block(node) -> dict:
+    """Digest-pinned grant, Comparator and CI-run records, as the registry stores them.
+    Identities and session ids are deliberately NOT published (they are e-mail addresses
+    and session tokens); only their presence and dates are shown."""
+    out = {}
+    au = getattr(node, "author", None)
+    out["author_recorded"] = bool(au and getattr(au, "identity", ""))
+    g = getattr(node, "grant", None)
+    out["grant"] = None if g is None else {
+        "date": getattr(g, "date", ""),
+        "gate_version": getattr(g, "gate_version", ""),
+        "artifact_sha256": (getattr(g, "artifact_sha256", "") or "")[:16],
+    }
+    c = getattr(node, "comparator", None)
+    out["comparator"] = None if c is None else {
+        "run_id": getattr(c, "run_id", ""),
+        "date": getattr(c, "date", ""),
+        "theorem": getattr(c, "theorem", ""),
+        "run_url": getattr(c, "run_url", ""),
+    }
+    ci = getattr(node, "ci_record", None)
+    out["ci_record"] = None if ci is None else {
+        "workflow": getattr(ci, "workflow", ""),
+        "job": getattr(ci, "job", ""),
+        "run_id": getattr(ci, "run_id", ""),
+        "conclusion": getattr(ci, "conclusion", ""),
+        "date": getattr(ci, "date", ""),
+    }
+    out["requires_ci_job"] = getattr(node, "requires_ci_job", "") or ""
+    return out
 
 STATUS_ORDER = ("proved", "open", "draft", "refuted", "deprecated")
 
@@ -153,7 +200,7 @@ def build_registry() -> dict:
                     "auditor": n.readback.auditor,
                     "date": n.readback.date,
                     "text": n.readback.text,
-                    "independence": INDEPENDENCE_LABEL,
+                    "independence": independence_label(n),
                 }
             statement = _statement_text(camp.root, sl)
             title = n.title
@@ -169,6 +216,7 @@ def build_registry() -> dict:
                 "depends_on": deps,
                 "proof": proof,
                 "readback": readback,
+                "provenance": provenance_block(n),
                 "statement": statement,
                 # Word-boundary matches: "unconditional" must NOT light the conditional badge,
                 # and "arbitrary" must not light the Arb badge.
@@ -198,9 +246,11 @@ def build_registry() -> dict:
     return {
         "conjecture1_proved": False,
         "note": (CONJECTURE_SENTENCE + ". Every status below is read from the registry TOML "
-                 "through telperion.missions; nothing is inferred. Every readback is "
-                 f"{INDEPENDENCE_LABEL}."),
+                 "through telperion.missions; nothing is inferred. A readback is labelled "
+                 f"{INDEPENDENCE_LABEL} unless the registry records a Comparator judge pass "
+                 f"on the current artifact, in which case it is labelled {JUDGE_LABEL}."),
         "independence_label": INDEPENDENCE_LABEL,
+        "judge_label": JUDGE_LABEL,
         "campaigns": campaigns,
         "nodes": nodes,
         "totals": total,

@@ -38,11 +38,11 @@ The page has seven tabs.
 5. **The registry.** Status counts per campaign, a dependency graph in SVG coloured by
    status, and a card per node with its title, kind, verbatim statement (hypotheses
    included), artifact link into GitHub, `closure_clean`, CI coverage label, and the
-   readback with its auditor, date, and the word "self-attested". The "proved only" filter
+   readback with its auditor, date, and its independence label as the registry records it ("self-attested", or "judge-verified" once a Comparator run is recorded), plus the grant digest, judge run and required CI run when present. The "proved only" filter
    is on by default.
 6. **What is known.** A plain list of what the registry holds, followed by the honesty
    footer: RH is not proved, every goal node is a draft, everything Arb-conditional is not a
-   kernel theorem, every plot is a float model, every audit is self-attested.
+   kernel theorem, every plot is a float model, every audit carries the independence label the registry records.
 7. **Compute it yourself.** How to run `telperion mission verify`, build an island with
    `lake build`, read the axiom guard, run the Comparator, run the zoo, and rebuild this
    page.
@@ -104,7 +104,7 @@ The page is downstream of the registry and must stay that way.
   over a truncated list of ordinates that are themselves a float model, and each readout
   says so.
 * No audit is presented as independent. Every readback recorded to date was written by the
-  same session family that wrote the node; the label is "self-attested" on every card.
+  same session family that wrote the node unless a Comparator judge run is recorded; the card shows the label the registry stores.
 * The goal nodes stay drafts on the page because they are drafts in the registry. The
   MIRRORMERE goal is RH by theorem (`MM_zeta_comb_membership_iff_rh`), which is exactly why
   it cannot be anything else.

@@ -516,6 +516,15 @@
       if (n.statement) s += "<details><summary>statement and hypotheses (verbatim registry statement module)</summary><pre>" + escapeHtml(n.statement) + "</pre></details>";
       else s += "<div class=\"note\">no statement module (goal or draft authored without one)</div>";
       if (n.readback) s += "<details><summary>readback: " + escapeHtml(n.readback.auditor) + " (" + n.readback.date + "), <strong>" + n.readback.independence + "</strong></summary><div class=\"rb\">" + escapeHtml(n.readback.text) + "</div></details>";
+      if (n.provenance) {
+        var pv = n.provenance, bits = [];
+        if (pv.grant) bits.push("grant " + escapeHtml(pv.grant.date) + " (gate " + escapeHtml(pv.grant.gate_version) + ", artifact sha256 " + escapeHtml(pv.grant.artifact_sha256) + "...)");
+        else bits.push("grant: legacy (no digest-pinned grant block)");
+        if (pv.comparator) bits.push("Comparator judge run " + (pv.comparator.run_url ? "<a href=\"" + escapeHtml(pv.comparator.run_url) + "\">" + escapeHtml(pv.comparator.run_id) + "</a>" : escapeHtml(pv.comparator.run_id)) + " on " + escapeHtml(pv.comparator.date));
+        else bits.push("Comparator judge: not recorded");
+        if (pv.requires_ci_job) bits.push("requires CI job " + escapeHtml(pv.requires_ci_job) + (pv.ci_record ? " (run " + escapeHtml(pv.ci_record.run_id) + ": " + escapeHtml(pv.ci_record.conclusion) + ")" : " (no record)"));
+        s += "<div class=\"prov\">" + bits.join(" &middot; ") + "</div>";
+      }
       else s += "<div class=\"note\">no readback recorded</div>";
       return s + "</div>";
     }
