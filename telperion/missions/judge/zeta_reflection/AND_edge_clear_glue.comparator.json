@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.AND_edge_clear_glue",
+  "solution_module": "MissionChallenges.AND_edge_clear_glue",
+  "theorem_names": [
+    "MissionJudge.AND_edge_clear_glue"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

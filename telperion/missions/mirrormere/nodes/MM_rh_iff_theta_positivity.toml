@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-theta-face-2026-09-21 (AUDIT_TESTIMONY_THETA_FACE_2026-09-21.md)"
 date = "2026-09-21"
+independence = "unverified"
 text = "Read-back: Mathlib's RiemannHypothesis is equivalent to nonnegativity of the plain Gaussian face Theta at every centre and width. Audit 8/8: forward from on-line zeros; converse = the dominance argument with bracket cos(4 lam x y) and a generic centre avoiding the window ordinates (at an ordinate the summand is positive, independently re-derived). An equivalence; neither side asserted. conjecture1_proved = False."

@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.AND_em_zeta_strip",
+  "solution_module": "MissionChallenges.AND_em_zeta_strip",
+  "theorem_names": [
+    "MissionJudge.AND_em_zeta_strip"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_wall_map",
+  "solution_module": "MissionChallenges.MM_wall_map",
+  "theorem_names": [
+    "MissionJudge.MM_wall_map"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

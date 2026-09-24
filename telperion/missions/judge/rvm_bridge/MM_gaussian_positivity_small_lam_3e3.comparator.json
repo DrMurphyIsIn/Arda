@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_gaussian_positivity_small_lam_3e3",
+  "solution_module": "MissionChallenges.MM_gaussian_positivity_small_lam_3e3",
+  "theorem_names": [
+    "MissionJudge.MM_gaussian_positivity_small_lam_3e3"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

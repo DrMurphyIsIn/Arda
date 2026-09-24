@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_rh_iff_theta_widths",
+  "solution_module": "MissionChallenges.MM_rh_iff_theta_widths",
+  "theorem_names": [
+    "MissionJudge.MM_rh_iff_theta_widths"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

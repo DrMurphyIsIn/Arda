@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "migration-session-2026-09-12"
 date = "2026-09-11"
+independence = "unverified"
 text = "Every balanced capped hub state rewrites by ordered merges to a stuck normal form whose Laplacian-permanent ratio is no smaller -- the certified merge layer in perL form."

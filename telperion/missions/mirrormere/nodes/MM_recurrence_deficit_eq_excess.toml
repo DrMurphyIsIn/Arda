@@ -16,4 +16,5 @@ via = "direct"
 [readback]
 auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
 date = "2026-09-16"
+independence = "unverified"
 text = "The theorem asserts two claims about the authored recurrenceDeficit delta = (e^delta - 1)(1 - e^(-delta)): at delta = 1/10 it equals excess = Aoff - Aon = e^(1/10) + e^(-1/10) - 2 (a TRUE identity -- the product expands to e^delta + e^(-delta) - 2 for all delta, requiring exp_neg/exp_add, NOT rfl), and it is strictly positive for every delta > 0 (both factors strictly positive). No flags."
