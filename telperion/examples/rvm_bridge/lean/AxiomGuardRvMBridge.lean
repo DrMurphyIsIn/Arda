@@ -234,6 +234,9 @@ import E6Bridge32
 import E6Bridge33
 import E6Bridge34
 import KWin_Bridge
+import KWin2_Window25
+import KWin2_Window
+import KWin2_Bridge
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -1219,3 +1222,35 @@ import KWin_Bridge
 #print axioms kwin_primeFreeWindowArchPositivity
 #print axioms weil_positivity_prime_free_window
 #print axioms weil_positivity_window_tenth_of_prime_free
+
+-- KWin2: the window certificate PAST the prime-free boundary (2026-09-24), parametric in the window;
+-- first instance L = 2/5 (2L = 0.8 > log 2: the prime comb term n = 2 is present).  Kernel-native,
+-- no Arb seam.  A finite-window statement, NOT RH; not Connes-Consani (pole terms kept); cf. PR #604.
+-- conjecture1_proved = False.
+#print axioms KWin2.sym_minorant
+#print axioms KWin2.comb_le_combPoly
+#print axioms KWin2.wpoly_le_Psi
+#print axioms KWin2.head_floor
+#print axioms KWin2.Rb_floor
+#print axioms KWin2.weilSymbol_eq_two
+#print axioms KWin2.Q_ge_Rb
+#print axioms KWin2.certE25
+#print axioms KWin2.certO25
+#print axioms KWin2.certE25_negative_control
+#print axioms KWin2.log2_near25
+#print axioms KWin2.c2_near25
+#print axioms KWin2.beta0_le_betaStar25
+#print axioms KWin2.symHyp25
+#print axioms KWin2.evenSectorFloor25
+#print axioms KWin2.oddSectorFloor25
+#print axioms KWin2.windowFloor25
+#print axioms KWin2.weil_positivity_window_two_fifths
+#print axioms KWin2.weil_positivity_prime_free_window_of_two_fifths
+-- KWin2 generic assembly (any window with log 2 < 2L <= log 3) and the rounded PSD checker.
+#print axioms KWin2.windowFloor_of_cert
+#print axioms KWin2.weil_positivity_of_windowFloor
+#print axioms KWin2.headPSD_of_psdCertR
+#print axioms KWin2.gamma_le32
+-- KWin2 registry-shape bridge at L = 2/5 (explicit binders, 2L <= 4/5).
+#print axioms weil_positivity_window_two_fifths
+#print axioms weil_window_floor_two_fifths
