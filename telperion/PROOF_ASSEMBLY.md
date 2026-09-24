@@ -1,6 +1,9 @@
 # Brualdi–Goldwasser ≤-half: structural assembly
 
-Target: `Φ¹¹(T) ≤ 1` for all trees `T` (equality only at the 6 ties).  This file assembles the full logical
+Target: `Φ¹¹(T) ≤ 1` for all trees `T` (equality only at the 6 ties). This is the campaign's sharp rate
+ceiling, not the 1984 question (the maximum of `per(L)/∏deg`; see `STATUS.md`). Update 2026-09-24: the `≤` half is
+kernel-proved in the literal planted model (`bg_ceiling`, subaction route), so the assembly below is historical;
+the live tracking is `telperion/missions/bg/` (`BG_rate_sharp`, goal `BG_backbone_conjecture`).  This file assembles the full logical
 structure and marks every piece **PROVEN** (all n) / **VERIFIED** (exhaustive in a finite range only) /
 **OPEN**.  The honest verdict is at the bottom.  `conjecture1_proved = False`.
 
