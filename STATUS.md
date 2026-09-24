@@ -32,10 +32,10 @@ obligation, the size-preserving straightening `StraightProgress_sized`.
 **Where `Φ¹¹ ≤ 1` fits (a correction, 2026-09-24).** Earlier versions of
 this page presented `Φ¹¹(T) ≤ 1` as "the 1984 conjecture". It isn't. It is
 the campaign's sharp *exponential rate ceiling* on the planted matching sum,
-`total(T, r) ≤ (621/64)^(n/11)` for every rooted tree. Its `≤` half is proved
-and kernel-checked (`bg_ceiling`). The open part is the equality case, and in
-the literal model there is exactly one: the 5-arm spider on 11 vertices
-rooted at its hub (checked exhaustively over all trees up to n = 16). The
+`total(T, r) ≤ (621/64)^(n/11)` for every rooted tree. As of 2026-09-24 it is
+fully proved and kernel-checked, equality case included: `bg_ceiling` gives
+the `≤` half, and `bg_sharp` (`R3Cert/BGSCLSharp.lean`) shows equality holds
+exactly at the 5-arm spider on 11 vertices, rooted at its hub. The
 "six ties `c+k=5`" in the table below come from the older DEC cavity
 parametrization.
 

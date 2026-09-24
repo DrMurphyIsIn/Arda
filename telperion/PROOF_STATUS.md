@@ -3,8 +3,8 @@
 **Attribution correction (2026-09-24).** Brualdi and Goldwasser (1984) asked for the maximum
 Laplacian ratio `per(L(T))/∏deg` over `n`-vertex trees (open; Pant 2026, arXiv:2605.14176). The
 statement tracked in this file is the campaign's sharp *rate ceiling*, not the 1984 question
-itself. Its `≤` half is now kernel-proved in the literal planted model (`bg_ceiling`). Its
-equality case is the 5-arm spider rooted at its hub, the unique tie over all trees n ≤ 16. The
+itself. In the literal planted model it is now fully kernel-proved (2026-09-24): `bg_ceiling` (the `≤`
+half) and `bg_sharp` (equality exactly at the 5-arm spider rooted at its hub, `R3Cert/BGSCLSharp.lean`). The
 1984 problem is tracked as the registry goal `BG_backbone_conjecture` (see `telperion/missions/bg/`).
 
 **Rate ceiling (campaign statement).** For every tree `T` on `n` vertices, `Φ¹¹(T) ≤ 1`, with equality
