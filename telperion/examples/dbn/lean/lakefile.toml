@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -141,6 +141,33 @@ name = "DBNHadamard"
 # zeros inside the strip.  Nothing here proves RH.  conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNHadamardApprox"
+
+# Lane m4 (Route C milestone M4, synthesis 7.2 `RH_dbn_p15_criterion`): the three hypotheses of
+# Polymath15 Prop 3.3 (arXiv:1904.12438v2 p.15) transcribed verbatim as named Props
+# P15ZeroFreeRect / P15Canopy / P15Barrier, and the parametric de Bruijn step (M1a) as the named
+# HYPOTHESIS M1aStep (not proved here; lane m1).  Definitions only.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM4P15Defs"
+
+# Lane m4: the LOCAL discrete de Bruijn step (T_delta f(w) != 0 when every zero zeta of f has
+# (Im zeta)^2 < (Re w - Re zeta)^2 + (Im w)^2 + delta^2), the abstract discrete barrier induction,
+# and a compactness-margin lemma.  Mathlib + DBNStep only.  Nothing here proves RH.
+[[lean_lib]]
+name = "DBNM4LocalStep"
+
+# Lane m4: joint continuity of (t, z) -> H t z and the uniform approximation bound
+# |H(n d^2/2, z) - Gdelta d n z| <= (n d^4/4) C(T, R) along the discrete heat path.
+# Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM4HeatUniform"
+
+# Lane m4: Polymath15 Prop 3.3 (zero-free region criterion) PROVED from its hypotheses (i)-(iii)
+# by a discrete barrier argument on the de Bruijn approximants (no zero dynamics, no Rouche), and
+# the Thm 1.2 conclusion (t >= t0 + y0^2/2 -> real zeros) CONDITIONAL on the named hypothesis
+# M1aStep.  A criterion: verifies none of (i)-(iii), bounds no Lambda.  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM4P15Criterion"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.
