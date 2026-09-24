@@ -1219,3 +1219,19 @@ import KWin_Bridge
 #print axioms kwin_primeFreeWindowArchPositivity
 #print axioms weil_positivity_prime_free_window
 #print axioms weil_positivity_window_tenth_of_prime_free
+
+-- ZhuEnvelope (2026-09-23): Zhu Lemma 3.1, the digamma envelope, PROVED.  conjecture1_proved = False.
+
+-- ZhuSymbol (2026-09-23): Zhu eq. (2), the symbol representation, PROVED.  conjecture1_proved = False.
+
+-- ZhuLegendre (2026-09-23): Zhu eqs. (6) and (12), PROVED.  conjecture1_proved = False.
+
+-- ZhuParity (2026-09-23): Zhu Lemma 6.1, parity decoupling, PROVED.  conjecture1_proved = False.
+
+-- ZhuSplit (2026-09-23): the envelope step of eq. (4), PROVED.  conjecture1_proved = False.
+
+-- ZhuOrtho (2026-09-23): Legendre orthonormality, uniform bounds, pole vectors.  conjecture1_proved = False.
+
+-- ZhuTail (2026-09-23): the eq. (13) tail data PROVED with closed-form constants.  conjecture1_proved = False.
+
+-- ZhuInstance (2026-09-23): the instance L = 4/5, T# = 200, N = 200.  conjecture1_proved = False.
