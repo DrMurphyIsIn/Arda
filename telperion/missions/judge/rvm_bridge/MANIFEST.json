@@ -277,6 +277,7 @@
       "challenge_module": "MissionChallenges.MM_weil_positivity_prime_free_window",
       "bridge_theorem": "MissionJudge.MM_weil_positivity_prime_free_window",
       "config": "MM_weil_positivity_prime_free_window.comparator.json",
+      "nanoda": false,
       "artifact_sha256": "2c4bc212327c00f147b41373496121cf3d54b9471eff6bb820088bbd54acd74f",
       "statement_sha256": "d4ff7d84406ce351f9b9ae81c66a2658ee01b814164581460b452aceb16dabdb"
     },

@@ -1,3 +1,4 @@
+heavy_certificates = true
 created = "2026-09-24"
 depends_on = ["MM_zeta_comb_membership_iff_rh"]
 kind = "lemma"
