@@ -148,7 +148,11 @@ jobs:
             --configs --shard "${{ matrix.shard }}" | tee "$RUNNER_TEMP/nodes.tsv"
           test -s "$RUNNER_TEMP/nodes.tsv"
           # heavy=true iff a node in this shard has heavy_certificates (nanoda off for it)
-          if cut -f6 "$RUNNER_TEMP/nodes.tsv" | grep -q lean-kernel-only; then echo "heavy=true" >> "$GITHUB_OUTPUT"; else echo "heavy=false" >> "$GITHUB_OUTPUT"; fi
+          # Here-string, not a pipe into `grep -q`: under `set -o pipefail` (above) a pipe-fed
+          # `grep -q` short-circuits and SIGPIPEs its producer, so the status stops meaning
+          # "found".  Here it would only fail safe (heavy=false, nanoda runs and fails loudly),
+          # but the shape is the one that silently broke the axiom gates.
+          if grep -q lean-kernel-only <<< "$(cut -f6 "$RUNNER_TEMP/nodes.tsv")"; then echo "heavy=true" >> "$GITHUB_OUTPUT"; else echo "heavy=false" >> "$GITHUB_OUTPUT"; fi
           echo "tag=$(python -c 'import json;print(json.load(open("missions/judge/${{ matrix.island }}/MANIFEST.json"))["comparator_tag"])')" >> "$GITHUB_OUTPUT"
 
       - name: Cache elan toolchain

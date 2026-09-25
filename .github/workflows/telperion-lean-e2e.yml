@@ -470,10 +470,16 @@ jobs:
             if [ "$n" -lt "2" ]; then
               echo "::error::$G printed $n axiom lines, expected at least 2 -- the guard did not run"; exit 1; fi
             if grep -q "sorryAx" "${G%.lean}.out"; then echo "::error::$G depends on sorryAx"; exit 1; fi
-            # Join first (Lean wraps long lists), then every list must be exactly the three.
-            if tr "\n" " " < "${G%.lean}.out" | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-                 | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
-              echo "::error::$G lists an axiom set other than [propext, Classical.choice, Quot.sound]"; exit 1; fi
+            # Join first (Lean wraps long lists), then check the axiom NAMES inside each list.
+            # SUBSET test, not equality: a theorem depending on fewer of the three is strictly
+            # stronger (the rule telperion/scripts/guard_anchors.py already uses).  Never pipe
+            # into `grep -q` here: under `pipefail` it short-circuits, the upstream grep dies of
+            # SIGPIPE, the pipeline status goes non-zero and the `then` branch is SKIPPED, so a
+            # non-standard axiom early in a large guard file would pass silently.
+            if tr "\n" " " < "${G%.lean}.out" | grep -oE "depends on axioms: \[[^]]*\]" \
+                 | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+                 | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+              echo "::error::$G lists an axiom outside [propext, Classical.choice, Quot.sound] (printed above)"; exit 1; fi
           done
 
       # Registry-anchored coverage: every PROVED registry node whose artifact lives on this island
@@ -2596,8 +2602,11 @@ jobs:
             out="$(lake env lean $G 2>&1 || true)"
             echo "$out"
             echo "$out" > "${G%.lean}.out"
-            if echo "$out" | grep -q 'sorryAx'; then echo "::error::$G depends on sorry"; exit 1; fi
-            if echo "$out" | grep -qE 'error:'; then echo "::error::$G did not elaborate cleanly"; exit 1; fi
+            # Here-strings, not `echo ... | grep -q`: a pipe-fed `grep -q` exits at its first
+            # match and, once the producer outruns the 64K pipe buffer, SIGPIPE + `pipefail`
+            # turns the check into a silent pass (measured 2026-09-25 at 1.2 MB of output).
+            if grep -q 'sorryAx' <<< "$out"; then echo "::error::$G depends on sorry"; exit 1; fi
+            if grep -qE 'error:' <<< "$out"; then echo "::error::$G did not elaborate cleanly"; exit 1; fi
             n=$(echo "$out" | grep -cE "depends on axioms|does not depend on any axioms" || true)
             if [ "$n" -lt "1" ]; then echo "::error::$G printed no axiom lines at all"; exit 1; fi
             if echo "$out" | tr "\n" " " | grep -oE "depends on axioms: \[[^]]*\]" \
@@ -2683,12 +2692,12 @@ jobs:
             n=$(grep -cE "depends on axioms|does not depend on any axioms" "$g.out" || true)
             if [ "$n" -lt "${MIN_ANCHORS[$g]}" ]; then
               echo "::error::$g printed $n axiom lines, expected at least ${MIN_ANCHORS[$g]} -- the guard did not run or was silently truncated"; exit 1; fi
-            if tr "\n" " " < "$g.out" | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-                 | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
-              echo "::error::$g: unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-              tr "\n" " " < "$g.out" | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-                 | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
-              exit 1; fi
+            # SUBSET test on the axiom names, and no `grep -q` under `pipefail` (see the
+            # li_positivity guard step: a short-circuiting `grep -q` silently skips the branch).
+            if tr "\n" " " < "$g.out" | grep -oE "depends on axioms: \[[^]]*\]" \
+                 | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+                 | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+              echo "::error::$g: an axiom outside [propext, Classical.choice, Quot.sound] is listed above"; exit 1; fi
           done
       - name: Build the band ladder block-by-block up to H_CI (strict chain; Guard_h<top> is a default target)
         working-directory: telperion/examples/zeta_zero_localization/lean
@@ -2806,8 +2815,14 @@ jobs:
           n=$(grep -c "depends on axioms" out.txt || true)
           if [ "$n" -lt "11" ]; then echo "::error::printed $n axiom lines, expected >= 11"; exit 1; fi
           if grep -q "sorryAx" out.txt; then echo "::error::sorryAx present"; exit 1; fi
-          if grep -E "depends on axioms" out.txt | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
-            echo "::error::unexpected axiom"; grep -E "depends on axioms" out.txt | grep -v "\[propext, Classical.choice, Quot.sound\]"; exit 1; fi
+          # Join first (Lean wraps long axiom lists across lines), then check the axiom NAMES.
+          # SUBSET test, not equality, and no `grep -q`: under `pipefail` a short-circuiting
+          # `grep -q` makes the upstream grep die of SIGPIPE, the pipeline status goes non-zero
+          # and the `then` branch is SKIPPED -- the gate then passes silently.
+          if tr "\n" " " < out.txt | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"; exit 1; fi
 
       - name: Build + axiom-guard wall_adversary (the refutation)
         working-directory: telperion/examples/wall_adversary/lean
@@ -2820,8 +2835,14 @@ jobs:
           n=$(grep -c "depends on axioms" out.txt || true)
           if [ "$n" -lt "8" ]; then echo "::error::printed $n axiom lines, expected >= 8"; exit 1; fi
           if grep -q "sorryAx" out.txt; then echo "::error::sorryAx present"; exit 1; fi
-          if grep -E "depends on axioms" out.txt | grep -vq "\[propext, Classical.choice, Quot.sound\]"; then
-            echo "::error::unexpected axiom"; grep -E "depends on axioms" out.txt | grep -v "\[propext, Classical.choice, Quot.sound\]"; exit 1; fi
+          # Join first (Lean wraps long axiom lists across lines), then check the axiom NAMES.
+          # SUBSET test, not equality, and no `grep -q`: under `pipefail` a short-circuiting
+          # `grep -q` makes the upstream grep die of SIGPIPE, the pipeline status goes non-zero
+          # and the `then` branch is SKIPPED -- the gate then passes silently.
+          if tr "\n" " " < out.txt | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"; exit 1; fi
 
   rvm-bridge-compiles:
     needs: changes
@@ -2878,16 +2899,19 @@ jobs:
           if [ "$n" -lt "45" ]; then
             echo "::error::axiom guard printed $n axiom lines, expected at least 45 -- the guard did not run or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" axioms.out; then echo "::error::sorryAx present"; exit 1; fi
-          # every printed axioms line must be EXACTLY Lean's three standard axioms
-          # Lean WRAPS a long axiom list across lines, so a line-based grep sees a truncated
-          # list and reports a false positive.  Join lines, then extract each complete
-          # "depends on axioms: [...]" group and require it to be exactly the three.
-          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-               | grep -vq "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"; then
-            echo "::error::unexpected axiom beyond [propext, Classical.choice, Quot.sound]"
-            tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" | tr -s " " \
-               | grep -v "^depends on axioms: \[propext, Classical.choice, Quot.sound\]$"
-            exit 1; fi
+          # Every axiom NAMED must be one of Lean's three standard ones.  Lean WRAPS a long
+          # axiom list across lines, so join first, then extract each complete
+          # "depends on axioms: [...]" group and check the names inside it.  SUBSET test, not
+          # equality: a theorem depending on fewer of the three is strictly stronger, and pure
+          # `decide` proofs legitimately print just [propext] (guard_anchors.py already uses the
+          # subset rule).  Never pipe into `grep -q`: under `pipefail` it short-circuits, the
+          # upstream grep dies of SIGPIPE, the pipeline status goes non-zero and the `then`
+          # branch is SKIPPED -- verified 2026-09-25, an offending line early in a large guard
+          # file passed the gate.
+          if tr "\n" " " < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"; exit 1; fi
 
       # The step above asserts a FLOOR of 45 axiom lines, which proves the guard ran but not that it
       # covers the registry (closure-run audit 2026-09-22).  This asserts an exact-clean line for the
