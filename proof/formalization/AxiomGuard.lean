@@ -74,6 +74,9 @@ import R3Cert.BGSCLHnormPort
 import R3Cert.BGSCLObligationA
 import R3Cert.BGSCLHdom
 import R3Cert.BGSCLSharp
+import R3Cert.BGSpiderReduction
+import R3Cert.BGSpiderCells
+import R3Cert.BGSpiderLowDegree
 import R3Cert.R47HdomBridge
 import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
@@ -544,3 +547,23 @@ import R3Cert.BGSpiderOpt
 #print axioms R3Cert.BGSpiderOpt.leaf_count_le_one_of_isMax
 #print axioms R3Cert.BGSpiderOpt.F_leafpair_lt
 #print axioms R3Cert.BGSpiderOpt.F_absorb_sub
+-- Spider reduction B1 (high-degree case): Lagrangian identity, tangent bound, unconditional spider lower
+-- bound, and spider domination for root degree >= 24, n >= 91, conditional on three finite-degree cell cores.
+#print axioms R3Cert.BGSCL.phiRoot_eq
+#print axioms R3Cert.BGSCL.phiRoot_le_tangent
+#print axioms R3Cert.BGSCL.phiRoot_spider_ge
+#print axioms R3Cert.BGSCL.atom_bV_le
+#print axioms R3Cert.BGSCL.armEnv_of_cells
+#print axioms R3Cert.BGSCL.spider_dominates_highDegree
+#print axioms R3Cert.BGSCL.spider_dominates_highDegree_of_cores
+#print axioms R3Cert.BGSCL.surchargeCore_proved
+#print axioms R3Cert.BGSCL.atomCell0Core_proved
+#print axioms R3Cert.BGSCL.atomCellMuCore_proved
+#print axioms R3Cert.BGSCL.spider_dominates_highDegree_uncond
+#print axioms R3Cert.BGSCL.phiRoot_le_taxed
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_of_taxed
+#print axioms R3Cert.BGSCL.bell_add_ρwit_le_rate
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_of_rate
+#print axioms R3Cert.BGSCL.rateCellCap_23
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_uncond
+#print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot
