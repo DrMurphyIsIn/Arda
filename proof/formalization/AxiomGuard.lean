@@ -77,6 +77,7 @@ import R3Cert.BGSCLSharp
 import R3Cert.BGSpiderReduction
 import R3Cert.BGSpiderCells
 import R3Cert.BGSpiderLowDegree
+import R3Cert.BGSpiderBridge
 import R3Cert.R47HdomBridge
 import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
@@ -550,3 +551,5 @@ import R3Cert.R47BGConjecture
 #print axioms R3Cert.BGSCL.rateCellCap_23
 #print axioms R3Cert.BGSCL.spider_dominates_lowDegree_uncond
 #print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot
+#print axioms R3Cert.BGSCL.Aobj_toU_node
+#print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot_Aobj
