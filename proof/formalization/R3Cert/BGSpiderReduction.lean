@@ -713,5 +713,188 @@ theorem spider_dominates_highDegree_of_cores
   spider_dominates_highDegree_of_cells (atomCell0_of_core hA0) (surchargeCell_of_core (by norm_num) hS)
     (atomCellMu_of_core hAm) cs hk hna hN
 
+/-! ### The low-degree case: reduction to a taxed (degree-capped) envelope.
+
+  For trees of maximum degree `≤ D` the arm envelope is too weak (the optimum spider has centre degree
+  `≈ n/10`, so for moderate `n` the relevant root degrees are small and the size-free bound exceeds the
+  spider value).  The natural replacement is a size TAX: degree-capped branches grow at a rate strictly
+  below `F*`.  `TaxedEnv D λ μ W` says `bell b + λ|b| + μ y_b ≤ W` for every branch all of whose vertices
+  have `≤ D − 1` children.  Given it, the root bound loses `λ (n − 1)` (`phiRoot_le_taxed`), which beats
+  the spider for `n` large (`spider_dominates_lowDegree_of_taxed`).  `TaxedEnv` is NOT proved here. -/
+
+mutual
+  /-- Maximum child count over all vertices of a branch. -/
+  def maxCh : Branch → ℕ
+    | .node cs => max cs.length (maxChList cs)
+  /-- Maximum child count over a child list. -/
+  def maxChList : List Branch → ℕ
+    | [] => 0
+    | c :: t => max (maxCh c) (maxChList t)
+end
+
+/-- The taxed envelope for branches of maximum degree `≤ D` (as non-root vertices: `≤ D − 1` children). -/
+def TaxedEnv (D : ℕ) (lam μ W : ℝ) : Prop :=
+  ∀ b, maxCh b + 1 ≤ D → bell b + lam * (bsize b : ℝ) + μ * bY b ≤ W
+
+/-- **Taxed root bound.**  Under `TaxedEnv D λ (1/(k t)) W` for the children of a root with `k` children:
+    `log pi − (n−1)F* ≤ log t + 1/t − 1 + k W − λ (n − 1)`. -/
+theorem phiRoot_le_taxed (cs : List Branch) (hcs : cs ≠ []) {t : ℝ} (ht : 0 < t) {D : ℕ} {lam W : ℝ}
+    (hT : TaxedEnv D lam (1 / ((cs.length : ℝ) * t)) W) (hb : ∀ c ∈ cs, maxCh c + 1 ≤ D) :
+    phiRoot cs ≤ Real.log t + 1 / t - 1 + (cs.length : ℝ) * W - lam * (bsizeList cs : ℝ) := by
+  have htan := phiRoot_le_tangent cs hcs ht
+  set μ := 1 / ((cs.length : ℝ) * t)
+  have key : ∀ l : List Branch, (∀ c ∈ l, maxCh c + 1 ≤ D) →
+      (l.map (bV μ)).sum ≤ (l.length : ℝ) * W - lam * (bsizeList l : ℝ) := by
+    intro l hl
+    induction l with
+    | nil => simp [bsizeList]
+    | cons a r ih =>
+        simp only [List.map_cons, List.sum_cons, List.length_cons, Nat.cast_succ, bsizeList, Nat.cast_add]
+        have ha := hT a (hl a (List.mem_cons.mpr (Or.inl rfl)))
+        have hr := ih (fun c hc => hl c (List.mem_cons.mpr (Or.inr hc)))
+        have hv : bV μ a = bell a + μ * bY a := rfl
+        linarith
+  have := key cs hb
+  linarith
+
+/-- **Low-degree spider domination, conditional on the taxed envelope.**  If the children of a root with
+    `k` children all have maximum degree `≤ D`, `TaxedEnv D λ (1/(k t)) W` holds, `n − 1 = N ≥ 90`, and the
+    taxed bound is below the spider floor, `log t + 1/t − 1 + k W − λ N < log(26/23) − 1/96`, then an
+    arm_5/arm_4 spider of the same size is strictly better. -/
+theorem spider_dominates_lowDegree_of_taxed (cs : List Branch) (hcs : cs ≠ []) {t : ℝ} (ht : 0 < t)
+    {D : ℕ} {lam W : ℝ} (hT : TaxedEnv D lam (1 / ((cs.length : ℝ) * t)) W)
+    (hb : ∀ c ∈ cs, maxCh c + 1 ≤ D) (hN : 90 ≤ bsizeList cs)
+    (hlt : Real.log t + 1 / t - 1 + (cs.length : ℝ) * W - lam * (bsizeList cs : ℝ)
+      < Real.log (26 / 23) - 1 / 96) :
+    ∃ a q : ℕ, q ≤ 10 ∧ bsizeList (spiderB a q) = bsizeList cs ∧ piRoot cs < piRoot (spiderB a q) := by
+  set N := bsizeList cs with hNdef
+  refine ⟨(N - 9 * ((5 * N) % 11)) / 11, (5 * N) % 11, by omega, ?_, ?_⟩
+  · rw [bsizeList_spiderB]; omega
+  · have hsz : bsizeList (spiderB ((N - 9 * ((5 * N) % 11)) / 11) ((5 * N) % 11)) = N := by
+      rw [bsizeList_spiderB]; omega
+    have haq : 1 ≤ (N - 9 * ((5 * N) % 11)) / 11 + (5 * N) % 11 := by omega
+    have hq10 : (((5 * N) % 11 : ℕ) : ℝ) ≤ 10 := by exact_mod_cast (by omega : (5 * N) % 11 ≤ 10)
+    have hlo := phiRoot_spider_ge _ _ haq
+    have hup := phiRoot_le_taxed cs hcs ht hT hb
+    have h4 := bell_arm4_ge
+    have h4' : (-1 / 96 : ℝ) ≤ (((5 * N) % 11 : ℕ) : ℝ) * bell (armB 4) := by
+      have hqnn : (0:ℝ) ≤ (((5 * N) % 11 : ℕ) : ℝ) := Nat.cast_nonneg _
+      nlinarith
+    have hlt' : phiRoot cs < phiRoot (spiderB ((N - 9 * ((5 * N) % 11)) / 11) ((5 * N) % 11)) := by
+      linarith
+    unfold phiRoot at hlt'
+    rw [hsz, ← hNdef] at hlt'
+    exact (Real.log_lt_log_iff (piRoot_pos _) (piRoot_pos _)).mp (by linarith)
+
+/-! ### The low-degree case via a per-vertex RATE cell (bounded degree ⇒ linear deficit).
+
+  With `g(c) := bell c + α|c|` for an atom child and `g(c) := −ρwit c` otherwise, the per-vertex cell
+
+    `RateCell α`:  for a non-atom vertex with `≤ 22` children,
+                   `(log(1 + S/d) − F*) + ρwit(node) + α + Σ_c g(c) ≤ 0`
+
+  telescopes (`bell_add_ρwit_le_rate`) to `bell b + ρwit b ≤ −α |b|` for every non-atom branch all of
+  whose vertices have `≤ 22` children: a LINEAR deficit.  At a root of degree `k ≤ 23` this gives
+  `log pi − (n−1)F* ≤ [log(1 + S/k) + Σ g] − α(n−1)` (`phiRoot_le_rate`), and a root cell bounding the
+  bracket by `R` finishes (`spider_dominates_lowDegree_of_rate`).  `RateCell` and the root cell are NOT
+  proved here; numerically `RateCell` holds for `α ≈ 3.0e-4` (binding at degree 6) and the root bracket is
+  `≤ 0.2082 .. 0.2545` for `k = 5..23`, giving an explicit threshold `N1` (see the doc). -/
+
+open Classical in
+/-- The per-child weight of the rate cell. -/
+noncomputable def rateG (α : ℝ) (c : Branch) : ℝ :=
+  if IsAtom c then bell c + α * (bsize c : ℝ) else -ρwit c
+
+/-- The per-vertex rate cell. -/
+def RateCell (α : ℝ) : Prop :=
+  ∀ cs : List Branch, cs.length ≤ 22 → ¬ IsAtom (Branch.node cs) →
+    (Real.log (1 + (cs.map bY).sum / ((cs.length : ℝ) + 1)) - FSTAR) + ρwit (Branch.node cs) + α
+      + (cs.map (rateG α)).sum ≤ 0
+
+theorem maxCh_node (cs : List Branch) : maxCh (Branch.node cs) = max cs.length (maxChList cs) := by
+  simp [maxCh]
+
+theorem maxCh_le_of_mem {c : Branch} : ∀ {cs : List Branch}, c ∈ cs → maxCh c ≤ maxChList cs
+  | [], h => by simp at h
+  | a :: t, h => by
+      rcases List.mem_cons.mp h with rfl | h'
+      · simp [maxChList]
+      · have := maxCh_le_of_mem h'
+        simp only [maxChList]; omega
+
+/-- `bell c ≤ rateG α c − α|c|` for every child whose non-atom branches satisfy the linear deficit. -/
+theorem bell_le_rateG {α : ℝ} {c : Branch}
+    (h : ¬ IsAtom c → bell c + ρwit c ≤ -α * (bsize c : ℝ)) :
+    bell c ≤ rateG α c - α * (bsize c : ℝ) := by
+  unfold rateG
+  split_ifs with ha
+  · linarith
+  · have := h ha; linarith
+
+theorem sum_bell_le_rateG {α : ℝ} : ∀ (cs : List Branch),
+    (∀ c ∈ cs, ¬ IsAtom c → bell c + ρwit c ≤ -α * (bsize c : ℝ)) →
+    (cs.map bell).sum ≤ (cs.map (rateG α)).sum - α * (bsizeList cs : ℝ)
+  | [], _ => by simp [bsizeList]
+  | a :: t, h => by
+      simp only [List.map_cons, List.sum_cons, bsizeList, Nat.cast_add]
+      have ha := bell_le_rateG (h a (List.mem_cons.mpr (Or.inl rfl)))
+      have ht := sum_bell_le_rateG t (fun c hc => h c (List.mem_cons.mpr (Or.inr hc)))
+      linarith
+
+/-- **Linear deficit for bounded degree, from `RateCell`.** -/
+theorem bell_add_ρwit_le_rate {α : ℝ} (hR : RateCell α) :
+    ∀ b, maxCh b ≤ 22 → ¬ IsAtom b → bell b + ρwit b ≤ -α * (bsize b : ℝ) := by
+  refine scl_of_child_step bsize bchildren
+    (fun b => maxCh b ≤ 22 → ¬ IsAtom b → bell b + ρwit b ≤ -α * (bsize b : ℝ))
+    bchildren_bsize_lt (fun a hIH => ?_)
+  cases a with
+  | node cs =>
+    intro hcap hna
+    rw [maxCh_node] at hcap
+    have hlen : cs.length ≤ 22 := le_trans (le_max_left _ _) hcap
+    have hch : ∀ c ∈ cs, ¬ IsAtom c → bell c + ρwit c ≤ -α * (bsize c : ℝ) := fun c hc =>
+      hIH c (by simpa only [bchildren] using hc)
+        (le_trans (maxCh_le_of_mem hc) (le_trans (le_max_right _ _) hcap))
+    have hsum := sum_bell_le_rateG cs hch
+    have hcell := hR cs hlen hna
+    have hsz : (bsize (Branch.node cs) : ℝ) = 1 + (bsizeList cs : ℝ) := by
+      simp only [bsize]; push_cast; ring
+    rw [bell_node, hsz]
+    linarith
+
+/-- **Root bound under `RateCell`.**  For a root whose children have all vertices with `≤ 22` children:
+    `log pi − (n−1)F* ≤ log(1 + S/k) + Σ rateG α − α (n − 1)`. -/
+theorem phiRoot_le_rate {α : ℝ} (hR : RateCell α) (cs : List Branch) (hcap : ∀ c ∈ cs, maxCh c ≤ 22) :
+    phiRoot cs ≤ Real.log (1 + (cs.map bY).sum / (cs.length : ℝ)) + (cs.map (rateG α)).sum
+      - α * (bsizeList cs : ℝ) := by
+  rw [phiRoot_eq]
+  have := sum_bell_le_rateG cs (fun c hc hna => bell_add_ρwit_le_rate hR c (hcap c hc) hna)
+  linarith
+
+/-- **Low-degree spider domination, conditional on `RateCell α` and a root-cell bound `R`.** -/
+theorem spider_dominates_lowDegree_of_rate {α R : ℝ} (hR : RateCell α) (cs : List Branch)
+    (hcap : ∀ c ∈ cs, maxCh c ≤ 22)
+    (hroot : Real.log (1 + (cs.map bY).sum / (cs.length : ℝ)) + (cs.map (rateG α)).sum ≤ R)
+    (hN : 90 ≤ bsizeList cs) (hlt : R - α * (bsizeList cs : ℝ) < Real.log (26 / 23) - 1 / 96) :
+    ∃ a q : ℕ, q ≤ 10 ∧ bsizeList (spiderB a q) = bsizeList cs ∧ piRoot cs < piRoot (spiderB a q) := by
+  set N := bsizeList cs with hNdef
+  refine ⟨(N - 9 * ((5 * N) % 11)) / 11, (5 * N) % 11, by omega, ?_, ?_⟩
+  · rw [bsizeList_spiderB]; omega
+  · have hsz : bsizeList (spiderB ((N - 9 * ((5 * N) % 11)) / 11) ((5 * N) % 11)) = N := by
+      rw [bsizeList_spiderB]; omega
+    have haq : 1 ≤ (N - 9 * ((5 * N) % 11)) / 11 + (5 * N) % 11 := by omega
+    have hq10 : (((5 * N) % 11 : ℕ) : ℝ) ≤ 10 := by exact_mod_cast (by omega : (5 * N) % 11 ≤ 10)
+    have hlo := phiRoot_spider_ge _ _ haq
+    have hup := phiRoot_le_rate hR cs hcap
+    have h4 := bell_arm4_ge
+    have h4' : (-1 / 96 : ℝ) ≤ (((5 * N) % 11 : ℕ) : ℝ) * bell (armB 4) := by
+      have hqnn : (0:ℝ) ≤ (((5 * N) % 11 : ℕ) : ℝ) := Nat.cast_nonneg _
+      nlinarith
+    have hlt' : phiRoot cs < phiRoot (spiderB ((N - 9 * ((5 * N) % 11)) / 11) ((5 * N) % 11)) := by
+      linarith
+    unfold phiRoot at hlt'
+    rw [hsz, ← hNdef] at hlt'
+    exact (Real.log_lt_log_iff (piRoot_pos _) (piRoot_pos _)).mp (by linarith)
+
 end BGSCL
 end R3Cert

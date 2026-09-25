@@ -542,3 +542,7 @@ import R3Cert.R47BGConjecture
 #print axioms R3Cert.BGSCL.atomCell0Core_proved
 #print axioms R3Cert.BGSCL.atomCellMuCore_proved
 #print axioms R3Cert.BGSCL.spider_dominates_highDegree_uncond
+#print axioms R3Cert.BGSCL.phiRoot_le_taxed
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_of_taxed
+#print axioms R3Cert.BGSCL.bell_add_ρwit_le_rate
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_of_rate
