@@ -51,6 +51,18 @@ name: telperion-zeta-reflection
 
 on:
   pull_request:   # no paths filter: see the header (required-check safety)
+  # Post-merge verification of main (2026-09-25). This island had NO push trigger, so main was
+  # re-verified only by the weekly cron below, and that cron never fired: GitHub dropped the
+  # 2026-09-23 slot. A cron can silently not run, so it must not be the only path. The paths
+  # filter bounds the cost (one ladder run per relevant merge). The cron stays as a backstop.
+  # telperion/tests/test_ci_push_triggers.py requires this trigger.
+  push:
+    branches: [main]
+    paths:
+      - "telperion/examples/zeta_reflection/**"
+      - "telperion/examples/zero_free_bridge/lean/**"
+      - "telperion/examples/zeta_zero_localization/lean/zzl_core/**"
+      - ".github/workflows/telperion-zeta-reflection.yml"
   workflow_dispatch:
   schedule:
     - cron: "41 4 * * 2"   # Tuesdays 04:41 UTC, off the legacy-boxes slot
