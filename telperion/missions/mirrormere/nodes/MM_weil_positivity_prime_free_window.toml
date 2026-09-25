@@ -6,7 +6,15 @@ name = "MM.weil_positivity_prime_free_window"
 statement_module = "Statements.MM_weil_positivity_prime_free_window"
 status = "proved"
 title = "THE FULL PRIME-FREE WINDOW ON THE GOAL NODE'S OWN TEST CLASS, KERNEL-NATIVE (rvm_bridge island, KWin_*, 2026-09-24): for every Weil test g with tsupport g in [-L, L] and 2L <= log 2, Re weilForm (autocorr g) >= 0 -- hypothesis-free, no Arb seam (exact-rational digamma minorant + exact LDL^T head certificates, WindowFloor(log2/2, 9/10000)). Pole terms KEPT: per PR #604 the 1.3e-3 margin is zero content (first 200 zero pairs), so this is NOT Connes-Consani (pole-free class). Implies the L <= 1/10 statement of MM_weil_positivity_window_tenth, kernel-checked as weil_positivity_window_tenth_of_prime_free (KWin_Bridge). Finite window; conjecture1_proved = False"
-updated = "2026-09-24"
+updated = "2026-09-25"
+
+[comparator]
+artifact_sha256 = "2c4bc212327c00f147b41373496121cf3d54b9471eff6bb820088bbd54acd74f"
+date = "2026-09-25"
+run_id = "36169770951"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36169770951"
+second_kernel = "none: heavy_certificates"
+theorem = "weil_positivity_prime_free_window"
 
 [grant]
 artifact_sha256 = "2c4bc212327c00f147b41373496121cf3d54b9471eff6bb820088bbd54acd74f"
