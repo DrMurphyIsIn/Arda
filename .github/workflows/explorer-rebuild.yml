@@ -1,0 +1,65 @@
+name: explorer-rebuild
+
+# Rebuilds the Registry Explorer (docs/explorer/index.html + telperion/explorer/data/*.json)
+# from the missions registry and opens or updates a pull request when the committed build is
+# stale.  The staleness test in the unit job only WARNS (2026-09-24), so this is the mechanism
+# that keeps the published page current without forcing a rebuild push onto every grant PR.
+# The PR is opened with the default token, so its own checks do not start until someone
+# pushes to it or closes and reopens it; that is deliberate (no PAT in this repo).
+
+on:
+  schedule:
+    - cron: "23 6 * * *"   # daily 06:23 UTC
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "telperion/missions/**"
+      - "telperion/explorer/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: explorer-rebuild
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pyyaml tomli-w
+      - name: Rebuild the explorer from the registry
+        working-directory: telperion
+        run: PYTHONPATH=src python explorer/build.py
+      - name: Report staleness
+        id: diff
+        run: |
+          if git diff --quiet -- docs/explorer telperion/explorer/data; then
+            echo "stale=false" >> "$GITHUB_OUTPUT"; echo "explorer build is current"
+          else
+            echo "stale=true" >> "$GITHUB_OUTPUT"; git --no-pager diff --stat -- docs/explorer telperion/explorer/data
+          fi
+      - name: Open or update the rebuild pull request
+        if: steps.diff.outputs.stale == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: bot/explorer-rebuild
+          delete-branch: true
+          title: "docs(explorer): rebuild the Registry Explorer from the current registry"
+          commit-message: |
+            docs(explorer): rebuild the Registry Explorer from the current registry
+
+            Automated rebuild (explorer-rebuild.yml). conjecture1_proved = False.
+          body: |
+            Automated rebuild of `docs/explorer/index.html` and `telperion/explorer/data/*.json` from the missions registry at the current `main`.
+
+            Nothing is inferred: statuses, labels and provenance come from the registry TOML through `telperion.missions`. Push an empty commit or close and reopen to start this PR's checks (it was opened with the default token). `conjecture1_proved = False`.
+          labels: docs

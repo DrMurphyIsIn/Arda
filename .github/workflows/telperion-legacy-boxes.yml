@@ -90,11 +90,19 @@ jobs:
           PY
           out="$(lake env lean /tmp/GuardShard.lean 2>&1 || true)"
           echo "$out" | tail -5
-          if echo "$out" | grep -q 'sorryAx'; then echo "::error::a legacy box depends on sorry"; exit 1; fi
-          if echo "$out" | grep -qE 'error:'; then echo "::error::legacy-box guard did not elaborate"; exit 1; fi
-          bad=$(echo "$out" | grep -c 'depends on axioms' || true)
-          ok=$(echo "$out" | tr -d ' ' | grep -c 'dependsonaxioms:\[propext,Classical.choice,Quot.sound\]' || true)
-          echo "axiom lines: $bad, standard-three: $ok"
-          [ "$bad" = "$ok" ] || { echo "::error::unexpected axiom set in a legacy box"; exit 1; }
+          # Here-strings, not `echo ... | grep -q`: a pipe-fed `grep -q` can pass silently once
+          # the producer outruns the pipe buffer (SIGPIPE + `pipefail`).
+          if grep -q 'sorryAx' <<< "$out"; then echo "::error::a legacy box depends on sorry"; exit 1; fi
+          if grep -qE 'error:' <<< "$out"; then echo "::error::legacy-box guard did not elaborate"; exit 1; fi
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" <<< "$out" || true)
+          if [ "$n" -lt "1" ]; then echo "::error::the legacy-box guard printed no axiom lines"; exit 1; fi
+          # Join first (Lean wraps long axiom lists across lines), then check the axiom NAMES.
+          # SUBSET test, not a count comparison: a legacy box proved by `decide` alone prints
+          # just [propext], which is strictly stronger and must not be a red build.
+          if tr "\n" " " <<< "$out" | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::a legacy box lists an axiom outside [propext, Classical.choice, Quot.sound] (above)"; exit 1; fi
+          echo "axiom lines: $n, every list within the three standard axioms"
         env:
           SHARD: ${{ matrix.shard }}
