@@ -50,3 +50,14 @@ These verdicts OVERRIDE the corresponding ledger wording. Agents must use the co
 - **DH horizon:** unchanged.
   - Even sector 30.5715 +- 0.001; odd sector 31.245 / 31.243.
   - Arb ball at 30.60 = -1.15e-30 (N = 1024, radius 1e-74).
+
+## Wave 5 (verdict 2026-09-25)
+
+**B27 defect_balance_zoo.** All NUMBERS reproduce (own float64 builder; DH at 256 bits). The barrier is an OBSERVED one-member dichotomy, not a theorem.
+- CORRECTED WORDING (use this): "B27: observed. DH's failing direction is 98% in the reference's two low modes but has Rayleigh quotient 0.028 there (NOT near-null). All FE members fail along their own bottom mode. P4 is withdrawn in the narrow sense only: a mechanism that only lower-bounds the genuine form off its near-null subspace cannot exclude DH, so the defect must be controlled on the low modes too."
+- Near-null perturbation is NOT established as a second "regime".
+- rho is |Q_Def(v_cf)|/|lambda_min(Q_Def)|, not an overlap: 0.0106 at N = 128.
+- "Fails inside the cascade" is a support statement, not a Rayleigh statement.
+- Q_ref(v_cf) = 0.028 = 5.5e5 x m_ref.
+- DH is confounded: it is the only member with an FE at x_h/q = 6.
+- The DH "x_h + 0.05" row (30.621) is not past the horizon at N <= 160.
