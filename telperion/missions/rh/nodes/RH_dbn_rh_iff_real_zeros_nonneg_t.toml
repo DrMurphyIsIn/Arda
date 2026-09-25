@@ -5,7 +5,14 @@ name = "RH.dbn_rh_iff_real_zeros_nonneg_t"
 statement_module = "Statements.RH_dbn_rh_iff_real_zeros_nonneg_t"
 status = "proved"
 title = "Route C M1c, the sInf-free statement of the wall clause C10: RH (strip form) iff every zero of H_t is real for every t >= 0 (classically Lambda <= 0). An EQUIVALENCE; proves neither side. conjecture1_proved = False"
-updated = "2026-09-23"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "f3154843d4185264ccbc0dc6fab73de687e2be517454031b7eecd11cd59b8454"
+date = "2026-09-24"
+run_id = "36055781811"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36055781811"
+theorem = "dbn_rh_iff_real_zeros_nonneg_t"
 
 [grant]
 artifact_sha256 = "f3154843d4185264ccbc0dc6fab73de687e2be517454031b7eecd11cd59b8454"
