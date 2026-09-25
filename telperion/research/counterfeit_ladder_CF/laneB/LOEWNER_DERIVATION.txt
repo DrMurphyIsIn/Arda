@@ -1,0 +1,52 @@
+Lane B -- algebraic derivation of the Loewner (partial-fraction) structure of the window Weil form
+=====================================================================================================
+Status: paper-level derivation (P). Not kernel-checked. Numerical checks: r4_loewner_row0.py
+(row-0 form, 96 modes, x in {20,24}, ZK and E, both sectors: max error <= 4.7e-13) and
+t9_formula.py / fullclass.py (Y-closed-form version, 16256 entries interval-overlapping) and the
+skeptic's independent time-domain code (spot checks to n = 20000, ~1e-14).
+
+Setting. Window [-A, A], x = e^{2A}. Q = Pole + L, where L = Arch - Comb is the translation-invariant
+part. Hypothesis (H-freq, paper-level P): for real tests f in H^{1/4}[-A,A] extended by zero,
+    L(f, g) = (1/2pi) int_R F(t) conj(G(t)) Omega(t) dt,   F(t) = int_{-A}^{A} f(u) e^{-itu} du,
+with Omega(t) = Omega_arch(t) - 2 sum_{n<x} (w(n)/sqrt n) cos(t log n); Omega_arch(t) = O(log|t|).
+Pole(f,g) = 2 (int f cosh(u/2))(int g cosh(u/2)) - 2 (int f sinh(u/2))(int g sinh(u/2))
+(= kernel 2cosh((u-v)/2)); it is NOT of the form above (evaluation at t = +-i/2), so it is kept
+separate: on the even sector it is +2 P_i P_n with P_m = int cos(k_m u) cosh(u/2) du
+= (-1)^m sinh(A/2)/(k_m^2 + 1/4); on the odd sector it is -2 P_i P_n with
+P_m = int sin(k_m u) sinh(u/2) du = (-1)^m cosh(A/2)/(k_m^2 + 1/4).
+
+Step 1 (transforms of the Neumann modes; elementary integrals).
+  Even:  phi_m = cos(k_m u), k_m = m pi/A, sin(k_m A) = 0, cos(k_m A) = (-1)^m:
+         Phi_m(t) = 2 (-1)^m t sin(tA) / (t^2 - k_m^2).
+  Odd:   phi_m = sin(k_m u), k_m = (m+1/2) pi/A, cos(k_m A) = 0, sin(k_m A) = (-1)^m:
+         Phi_m(t) = 2 i (-1)^m t cos(tA) / (t^2 - k_m^2).
+  In both cases Phi_i conj(Phi_n) = 4 (-1)^{i+n} t^2 s(t)^2 / ((t^2 - k_i^2)(t^2 - k_n^2)),
+  s = sin(tA) (even) or cos(tA) (odd); s vanishes at t = +-k_m, so there is no singularity.
+
+Step 2 (partial fractions; exact algebra). For k_i != k_n:
+    t^2 / ((t^2 - k_i^2)(t^2 - k_n^2)) = [ k_n^2/(t^2 - k_n^2) - k_i^2/(t^2 - k_i^2) ] / (k_n^2 - k_i^2).
+  Define  G(k) := (k^2/2pi) int_R 4 s(t)^2 Omega(t) / (t^2 - k^2) dt   (k in the sector's frequency set;
+  the integrand is regular at t = +-k since s(+-k) = 0, and it is O(log t / t^2) at infinity, so the
+  integral converges absolutely). Substituting into (H-freq):
+    L_in = (-1)^{i+n} (G(k_n) - G(k_i)) / (k_n^2 - k_i^2)        (i != n).        (LOEWNER)
+  This is the whole identity: L restricted to a Neumann sector is a Loewner (divided-difference)
+  matrix of the single function G, times the sign pattern (-1)^{i+n}. QED modulo (H-freq).
+
+Step 3 (G from row 0; removes any need for a separate closed form of G). Taking i = 0 in (LOEWNER):
+    G(k_n) - G(k_0) = (-1)^n (k_n^2 - k_0^2) L_0n.
+  Hence every off-diagonal entry is determined by row 0:
+    L_in = (-1)^{i+n} [ (-1)^n (k_n^2 - k_0^2) L_0n - (-1)^i (k_i^2 - k_0^2) L_0i ] / (k_n^2 - k_i^2).
+  So the Loewner columns used in fullclass.py for 128 <= n < 16384 are exact consequences of
+  (H-freq) + the Crux3 closed form of the row-0 entries L_0n (the same closed forms used for the
+  head, so no new closed form is introduced).
+
+Step 4 (the Y form used in the lane code). fullclass.py/t9 use G(k) = -k Y(k) + const with
+  Y(k) = Im I(k) - 2 sum_{n<x} (w(n)/sqrt n) sin(k log n), I = Crux3 archimedean function; the
+  constant cancels in (LOEWNER). The identification G(k) = -k Y(k) + const (both the comb part and
+  the archimedean part Im I(k)) is NOT derived here; it is checked only NUMERICALLY (interval overlap
+  of all 16256 head entries at dps 34, and the skeptic's time-domain checks to ~1e-14). A fully rigorous version
+  should use Step 3 instead of Step 4 -- it needs nothing beyond the head closed forms.
+
+Remaining paper-level items (P): (H-freq) on H^{1/4} window tests; the Crux3 closed forms of the
+arch/pole/prime entries (numerically cross-checked by time-domain quadrature to ~1e-15, not proved
+in-lane); convergence of the Neumann expansion in the form norm.
