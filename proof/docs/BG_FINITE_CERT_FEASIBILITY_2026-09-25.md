@@ -221,3 +221,42 @@ Cost of the finite range at N1 = 150 (budget about 1e9 sharded checks):
   - n <= 491 (the current Lean N1): 1.44e9.
   - The inner knapsack scales like (max child size)^2, so n <= 150 should be about 1.4e8. This is
     extrapolated, not run.
+
+## 6. N1 = 150 in Lean (2026-09-25)
+
+`spider_dominates_of_maxDegreeRoot_150`: every max-degree rooting (`maxCh c + 1 <= k` for every child)
+with `n - 1 >= 149` and a non-atom child is strictly beaten by a spider of the same size. It is
+kernel-checked, uses only propext, Classical.choice and Quot.sound, and is in AxiomGuard.
+
+It combines three results:
+- `spider_dominates_lowDegree_mid`: the new result, for `149 <= n - 1 <= 490` and `k <= 23`;
+- `spider_dominates_lowDegree_uncond`: the old result, for `n - 1 >= 491`;
+- `spider_dominates_highDegree_uncond`: for `k >= 24`.
+
+All old theorems are kept. Files:
+- `BGSpiderMid.lean` (generic layer):
+  - credited invariant `bell + ρwit <= -α|b| - κ(bcc)`: `bell_add_ρwit_le_rateKap`;
+  - cap-refined message ranges: `bY_ge_ymin`;
+  - class envelopes `NbK` and `Nb1K` (the latter with a chord of `1/(2+y)`);
+  - generic cells `rate_cell_genericK` and `rate_cell_oneK`;
+  - the root bound through the knapsack `phiRoot_le_dp`;
+  - per-child types `htype_of`;
+  - the cherry/arm_5/arm_4 spiders `spiderC`.
+- `BGSpiderDP.lean`: a max-plus knapsack computed in the kernel, with soundness `dp_sound`.
+- `BGSpiderMidCellsD{2..23}.lean`: 253 credited rate cells, generated.
+- `BGSpiderMidRootK{2..23}.lean`: per root degree, the knapsack types and one kernel check
+  `C + VN + dpRow[k-1][N-3] - alpha*N < LOW(N)` for all N in [149, 490] (`decide +kernel`).
+- `BGSpiderMidSpiders.lean`: LOW(N) for N in [149, 490]:
+  - N <= 273: the exact optimal spider (cherries + arm_5 + arm_4), with a Taylor lower bound on its log;
+  - N >= 274: the arm_5/arm_4 floor.
+- `BGSpiderMidFinal.lean`: assembly.
+
+The generator is `proof/verification/finite_cert/gen_mid_lean.py`
+(`python3 gen_mid_lean.py <R3Cert dir> mid_t.pkl`). It recomputes every rational exactly and asserts
+every cell and root inequality before it emits the Lean files.
+- Rate cells: the tightest has value -8.5e-5 (D = 8, K = 7).
+- Root checks: the smallest integer margin is 4.0e8 in units of 1e-12, i.e. 4.0e-4 (k = 23).
+- Build: the 22 root files build in about 3.7 min wall time in parallel.
+
+Consequence for the finite range: only **n <= 149** remains computational. The interval DP there is about
+58k states at N = 100 and 248k at N = 150.
