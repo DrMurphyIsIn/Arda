@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "KWin_Data", "KWin_Cert", "KWin_Constants", "KWin_Taylor", "KWin_Minorant", "KWin_Head", "KWin_Tail", "KWin_Split", "KWin_Window", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "KWin_Bridge", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "KWin_Data", "KWin_Cert", "KWin_Constants", "KWin_Taylor", "KWin_Minorant", "KWin_Head", "KWin_Tail", "KWin_Split", "KWin_Window", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "KWin_Bridge", "KWin2_Data", "KWin2_Minorant", "KWin2_Round", "KWin2_Head", "KWin2_Tail", "KWin2_Split", "KWin2_Consts", "KWin2_Par25", "KWin2_Cert25", "KWin2_Window25", "KWin2_Window", "KWin2_Bridge", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -431,6 +431,86 @@ name = "E6Bridge34"
 # Mirrormere prime-free window as the E6Bridge31 named Props (KWin kernel-native certificate).
 [[lean_lib]]
 name = "KWin_Bridge"
+
+# KWin2 (2026-09-24): the window certificate PAST the prime-free boundary (the prime comb enters at
+# 2L > log 2), parametric in the window; first instance L = 2/5 (2L = 0.8, comb n = 2).  Kernel-native,
+# no Arb seam.  A finite-window statement, NOT RH; not Connes-Consani (pole terms kept); cf. PR #604.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "KWin2_Data"
+
+[[lean_lib]]
+name = "KWin2_Minorant"
+
+[[lean_lib]]
+name = "KWin2_Round"
+
+[[lean_lib]]
+name = "KWin2_Head"
+
+[[lean_lib]]
+name = "KWin2_Tail"
+
+[[lean_lib]]
+name = "KWin2_Split"
+
+[[lean_lib]]
+name = "KWin2_Consts"
+
+[[lean_lib]]
+name = "KWin2_Par25"
+
+[[lean_lib]]
+name = "KWin2_Cert25"
+
+[[lean_lib]]
+name = "KWin2_Window25"
+
+[[lean_lib]]
+name = "KWin2_Window"
+
+[[lean_lib]]
+name = "KWin2_Bridge"
+
+[[lean_lib]]
+name = "KWin2_Par920"
+
+[[lean_lib]]
+name = "KWin2_Cert920E"
+
+[[lean_lib]]
+name = "KWin2_Cert920O"
+
+[[lean_lib]]
+name = "KWin2_Cert920N"
+
+[[lean_lib]]
+name = "KWin2_Window920"
+
+[[lean_lib]]
+name = "KWin2_Par12"
+
+[[lean_lib]]
+name = "KWin2_Cert12E"
+
+[[lean_lib]]
+name = "KWin2_Cert12O"
+
+[[lean_lib]]
+name = "KWin2_Cert12N"
+
+[[lean_lib]]
+name = "KWin2_Window12"
+
+# The HEAVY KWin2 instances (L = 9/20: ~17 GB peak, ~6 min kernel; L = 1/2: ~19 GB peak per
+# sector, ~50 min kernel CPU) are registered but NOT in defaultTargets and NOT imported by
+# AxiomGuardRvMBridge, so the hosted CI runner (16 GB) never evaluates them; their axioms are
+# printed by this separate guard:  lake build KWin2_GuardHeavy && lake env lean KWin2_GuardHeavy.lean
+[[lean_lib]]
+name = "KWin2_BridgeHeavy"
+
+[[lean_lib]]
+name = "KWin2_GuardHeavy"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]

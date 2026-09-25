@@ -282,6 +282,18 @@
       "statement_sha256": "d4ff7d84406ce351f9b9ae81c66a2658ee01b814164581460b452aceb16dabdb"
     },
     {
+      "slug": "MM_weil_positivity_window_two_fifths",
+      "campaign": "mirrormere",
+      "theorem": "weil_positivity_window_two_fifths",
+      "solution_module": "KWin2_Bridge",
+      "challenge_module": "MissionChallenges.MM_weil_positivity_window_two_fifths",
+      "bridge_theorem": "MissionJudge.MM_weil_positivity_window_two_fifths",
+      "config": "MM_weil_positivity_window_two_fifths.comparator.json",
+      "nanoda": false,
+      "artifact_sha256": "f868b4155ff67f58dac9a00d8b71eb00431ca92686bc884d8c1b0c8cf81003bb",
+      "statement_sha256": "90d7335afab6d23b698eff1321e21528a66624d4b1915c913455e4f7fcd25a00"
+    },
+    {
       "slug": "MM_zeta_comb_membership_iff_rh",
       "campaign": "mirrormere",
       "theorem": "RvMBridge9.zeta_comb_membership_iff_rh",
