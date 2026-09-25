@@ -51,6 +51,15 @@ on:
       - "telperion/src/telperion/missions/judge.py"
       - ".github/workflows/missions-comparator.yml"
   workflow_dispatch:
+    inputs:
+      island:
+        description: "only this island (empty = all)"
+        required: false
+        default: ""
+      shard:
+        description: "only this shard, e.g. 2/4 (empty = all shards of the island)"
+        required: false
+        default: ""
   schedule:
     - cron: "23 5 * * 3"   # Wednesdays 05:23 UTC
 
@@ -105,6 +114,12 @@ jobs:
           - island: zeta_reflection
             shard: "0/1"
     name: judge ${{ matrix.island }} ${{ matrix.shard }}
+    # A manual dispatch may restrict the run to one island (and one shard) to re-judge a
+    # single node without paying for the whole matrix.
+    if: >-
+      github.event_name != 'workflow_dispatch'
+      || inputs.island == ''
+      || (matrix.island == inputs.island && (inputs.shard == '' || matrix.shard == inputs.shard))
     env:
       BUNDLE: telperion/missions/judge/${{ matrix.island }}
     steps:
@@ -122,6 +137,8 @@ jobs:
           PYTHONPATH=src python -m telperion.missions.judge --island "${{ matrix.island }}" \
             --configs --shard "${{ matrix.shard }}" | tee "$RUNNER_TEMP/nodes.tsv"
           test -s "$RUNNER_TEMP/nodes.tsv"
+          # heavy=true iff a node in this shard has heavy_certificates (nanoda off for it)
+          if cut -f6 "$RUNNER_TEMP/nodes.tsv" | grep -q lean-kernel-only; then echo "heavy=true" >> "$GITHUB_OUTPUT"; else echo "heavy=false" >> "$GITHUB_OUTPUT"; fi
           echo "tag=$(python -c 'import json;print(json.load(open("missions/judge/${{ matrix.island }}/MANIFEST.json"))["comparator_tag"])')" >> "$GITHUB_OUTPUT"
 
       - name: Cache elan toolchain
@@ -199,10 +216,36 @@ jobs:
           test -x "$HOME/nanoda/target/release/nanoda_bin"
           echo "COMPARATOR_NANODA=$HOME/nanoda/target/release/nanoda_bin" >> "$GITHUB_ENV"
 
+      # Heavy shards only (2026-09-25, #615 run 36076883673): with the stack limit raised,
+      # nanoda on a KWin exact-certificate node no longer overflows -- it exhausts the 16 GB
+      # runner and the runner is killed ("received a shutdown signal"). Such nodes are judged
+      # Lean-kernel-only (heavy_certificates = true in their toml), and this step gives the
+      # remaining Lean-kernel replay headroom: swap on the scratch disk plus MALLOC_ARENA_MAX
+      # so glibc does not hold one arena per thread. Skipped on ordinary shards.
+      - name: Provision swap for the heavy-certificate replay (this shard has such a node)
+        if: steps.nodes.outputs.heavy == 'true'
+        run: |
+          set -uo pipefail
+          free -m
+          SW=""
+          for cand in /mnt/arda-judge.swap:8G /arda-judge.swap:4G; do
+            f=${cand%%:*}; sz=${cand##*:}
+            if sudo fallocate -l "$sz" "$f" 2>/dev/null; then SW=$f; break; fi
+          done
+          if [ -n "$SW" ] && sudo chmod 600 "$SW" && sudo mkswap "$SW" >/dev/null && sudo swapon "$SW"; then
+            echo "extra swap enabled: $SW"
+          else
+            echo "::warning::could not enable extra swap; the heavy-certificate replay runs on RAM alone"
+          fi
+          swapon --show || true; free -m
+
       - name: Comparator over this shard (statement identity + axiom whitelist + 2 kernels)
         working-directory: ${{ env.BUNDLE }}
         env:
           COMPARATOR_LANDRUN: /home/runner/.local/bin/landrun
+          # one glibc malloc arena per thread multiplies peak RSS on the 4-core runner;
+          # two arenas is enough for the (single-threaded) kernel replays.
+          MALLOC_ARENA_MAX: "2"
         run: |
           set -uo pipefail
           echo "lean4export = $COMPARATOR_LEAN4EXPORT ; nanoda = $COMPARATOR_NANODA"
@@ -221,11 +264,11 @@ jobs:
             echo "| node | theorem | verdict |"
             echo "|---|---|---|"
           } >> "$GITHUB_STEP_SUMMARY"
-          while IFS=$'\t' read -r slug cfg sol thm bridge; do
-            echo "==================== $slug  ($thm in $sol; bridge $bridge) ===================="
+          while IFS=$'\t' read -r slug cfg sol thm bridge kernel; do
+            echo "==================== $slug  ($thm in $sol; bridge $bridge; $kernel) ===================="
             if lake env comparator "$cfg"; then
-              echo "COMPARATOR PASS island=${{ matrix.island }} node=$slug theorem=$thm run=${{ github.run_id }}"
-              echo "| $slug | \`$thm\` | PASS |" >> "$GITHUB_STEP_SUMMARY"
+              echo "COMPARATOR PASS island=${{ matrix.island }} node=$slug theorem=$thm run=${{ github.run_id }} kernel=$kernel"
+              echo "| $slug | \`$thm\` | PASS ($kernel) |" >> "$GITHUB_STEP_SUMMARY"
               pass=$((pass+1))
             else
               echo "::error::COMPARATOR FAIL island=${{ matrix.island }} node=$slug theorem=$thm"
