@@ -5,7 +5,14 @@ name = "AND.edge_clear_glue"
 statement_module = "Statements.AND_edge_clear_glue"
 status = "proved"
 title = "Edge-clear glue K1, H2b discharged: riemannZeta(-1 + iy) != 0 for every real y (every band edge), hypothesis-free (zeta_zero_re_mem_strip off the real axis, zeta(-1) = -1/12 on it). Removes the hnzl Arb input from all 10,379 bands. conjecture1_proved = False"
-updated = "2026-09-23"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "87b49f69b0fc1d45d63554cde4871c0892c47794deaab1ba9dd93a5b963766e4"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "EdgeClearGlue.hnzl_discharged"
 
 [proof]
 artifact = "../../examples/zeta_reflection/lean/EdgeClearGlue.lean"

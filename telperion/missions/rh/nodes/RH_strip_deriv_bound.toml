@@ -5,7 +5,14 @@ name = "RH.strip_deriv_bound"
 statement_module = "Statements.RH_strip_deriv_bound"
 status = "proved"
 title = "STRIP DERIVATIVE BOUND DISCHARGED (2026-09-21): Landau's local partial fraction transferred to the derivative of xi'/xi on 1/4 <= Re s <= 9/4, |Im s| >= 5 -- divide out the window zeros, Cauchy on a zero-free circle of radius in (1/4, 1/2), the symmetric difference of Landau's ball and the window bounded by the local zero count, Stirling for the digamma, the functional equation for the left half, the compact bound for |Im s| <= 7. Unconditional; nothing about RH. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "c4c6fc5c1d844c27e81e7737c5e762de8e990abe276e10cba94ec18093ba6611"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge24.stripDerivBound"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge24.lean"

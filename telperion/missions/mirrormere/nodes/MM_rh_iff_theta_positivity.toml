@@ -5,7 +5,14 @@ name = "MM.rh_iff_theta_positivity"
 statement_module = "Statements.MM_rh_iff_theta_positivity"
 status = "proved"
 title = "THE THETA FACE (2026-09-21): Mathlib's RiemannHypothesis is EQUIVALENT to positivity of the PLAIN Gaussian face Theta(c, lam) = Re Sum m(rho) e^{-2 lam (gamma_rho - c)^2} at every centre and width (F = -(1/2) d Theta/d lam is the Wall face). Converse: the Gaussian-dominance argument with the bracket cos(4 lam x y) and a generic centre off the window ordinates. An equivalence; proves NOTHING about either side. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "d7778c3f3df56bbac314b53a0cdc24f02eac6ee1c5abd5bbd0670b09fb780f52"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge17.rh_iff_theta_positivity"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge17.lean"

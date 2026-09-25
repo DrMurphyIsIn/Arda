@@ -5,7 +5,14 @@ name = "MM.weil_positivity_implies_rh"
 statement_module = "Statements.MM_weil_positivity_implies_rh"
 status = "proved"
 title = "Weil's criterion, converse half (Weil 1952; Bombieri 2000 on C_c^infinity): Weil positivity on Hermitian autocorrelations over IsWeilTest implies Mathlib's RiemannHypothesis -- classical analysis, NOT RH-hard, never before formalized here; an off-line zero must be turned into a test function with strictly negative pairing. conjecture1_proved = False. REDUCED 2026-09-20 to the two Gaussian obligations (see MM_weil_positivity_implies_rh_of_gaussian)."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "83f25395d1251b2e1ba75494effe65d285769c866e88a350a01ffc293a10377c"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge9.weil_positivity_implies_rh"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge9.lean"

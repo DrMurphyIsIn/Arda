@@ -5,7 +5,14 @@ name = "MM.gaussian_transfer"
 statement_module = "Statements.MM_gaussian_transfer"
 status = "proved"
 title = "Obligation O1 (GaussianTransfer): the Gaussian-derivative Hermitian transform G_{c,lam} is a limit of Hermitian transforms of smooth compactly supported Weil tests FOR THE ZERO-SIDE FUNCTIONAL, Re zeroSide (hermitianTransform g_n) -> Re zeroSide G_{c,lam}. Discharged by O1' (MM_gaussian_approx) via the PROVED RvMBridge6.gaussianTransfer_of_approx (Tannery's theorem against the local zero count Sum m(rho)/(1+|gamma_rho|^2) < infinity, Zeta23.WeilEF.zero_sum_inv_sq); so this node closes the moment O1' does. Independent of RH; NOT RH-hard. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "83f25395d1251b2e1ba75494effe65d285769c866e88a350a01ffc293a10377c"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge9.gaussian_transfer"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge9.lean"

@@ -5,7 +5,14 @@ name = "RH.livalue_of_partial_fraction"
 statement_module = "Statements.RH_livalue_of_partial_fraction"
 status = "proved"
 title = "THE BOMBIERI-LAGARIAS VALUE IDENTITY, Taylor bookkeeping PROVED (2026-09-21): LiValue n (liLimit n = archSide n + finiteSide n) for every n >= 1, GIVEN the derivative partial fraction of xi and no real zero of zeta in (0,1). Power sums j >= 2 from the Taylor data of (log xi)'' at 0; the paired first power sum from the FTC on [0,1] and the functional equation; the closed forms through eta_j and the polygamma values at 1/2 (the (1 - 2^{-j}) zeta(j) terms). Numerically checked to 1e-27 against Li's generating function. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "ad5f083f36efced07f8b3b6a4301f73c13cc5a4b2fac98da6ab7691cf5b85f99"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge19.liValue_of"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge19.lean"

@@ -5,7 +5,14 @@ name = "MM.rh_iff_gaussian_prime_le_arch"
 statement_module = "Statements.MM_rh_iff_gaussian_prime_le_arch"
 status = "proved"
 title = "WALL ASSAULT seam A: RH as a PRIME-SIDE inequality with no zeros in it -- for every centre c and width lam > 0, the prime side of the Gaussian-derivative test does not exceed its archimedean side. The Wall is the sign of one explicit function on the (c, lam) half-plane. An equivalence; proves NOTHING about either side. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "58ca7db520d1288f11da9424ce9563563903891ffe6c31c294e7c1e90db6d550"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge10.rh_iff_gaussian_prime_le_arch"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge10.lean"

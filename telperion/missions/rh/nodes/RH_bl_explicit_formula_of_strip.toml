@@ -5,7 +5,14 @@ name = "RH.bl_explicit_formula_of_strip"
 statement_module = "Statements.RH_bl_explicit_formula_of_strip"
 status = "proved"
 title = "B7 (RH_bl_explicit_formula) MODULO STRIPDERIVBOUND ALONE (2026-09-21): the Bombieri-Lagarias explicit formula on Li's class holds given one remaining classical inequality (Landau's local partial fraction transferred to the derivative on the strip, E6Bridge24 in flight). conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "f5c883401a82561922194a5ca55c4a392b0ac483f10589a5277cdecb946a086b"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge26.bl_explicit_formula_of_strip"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge26.lean"

@@ -5,7 +5,14 @@ name = "RH.xi_diff_entire_extension"
 statement_module = "Statements.RH_xi_diff_entire_extension"
 status = "proved"
 title = "XI PARTIAL FRACTION, obligation 1 part A (2026-09-21): deriv(logDeriv xi) + Sum m(rho)/(s-rho)^2 extends to an ENTIRE function (order of xi at every point = the E8 multiplicity; the double pole at a zero of order m is cancelled exactly by its own term; xiDiffExt(1-s) = xiDiffExt(s)). Nothing about RH. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "e398fa71adceb80f40ad6be48b9b8de8e75425693c4dd675ab0ac38549fff749"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge20.xiDiffExt_differentiable"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge20.lean"

@@ -5,7 +5,14 @@ name = "AND.em_tail3_number"
 statement_module = "Statements.AND_em_tail3_number"
 status = "proved"
 title = "Order-K EM tail engine, THE NUMBER: the order-3 Euler-Maclaurin tail remainder is kernel-decided below 10^-3 (em_tail3_number; the shared substrate for Stirling K=4 and the A3 theta branch)"
-updated = "2026-09-14"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "e6bc26aa570d9a5a6b777cb109ca9264fc347bb2ecd9cc97f034aef55ecc1971"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "ZetaReflection.em_tail3_number"
 
 [proof]
 artifact = "../../examples/zeta_reflection/lean/EMZetaTail.lean"

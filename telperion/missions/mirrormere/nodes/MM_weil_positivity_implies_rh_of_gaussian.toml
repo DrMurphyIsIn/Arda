@@ -5,7 +5,14 @@ name = "MM.weil_positivity_implies_rh_of_gaussian"
 statement_module = "Statements.MM_weil_positivity_implies_rh_of_gaussian"
 status = "proved"
 title = "The Weil converse, REDUCED: Weil positivity implies Mathlib's RiemannHypothesis GIVEN the two named analytic obligations GaussianTransfer (transfer of the zero-side functional from the IsWeilTest class to the Gaussian-derivative test) and GaussianDominance (an off-line zero makes some Gaussian-weighted zero sum strictly negative). Kernel-checked reduction; proves nothing about RH; the obligations are their own nodes. conjecture1_proved = False."
-updated = "2026-09-20"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "1b95410ca70ab08f1e2b73ebaea43f97c3becf19b3549f1e496d106e58735294"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge6.weil_positivity_implies_rh_of"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge6.lean"

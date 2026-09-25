@@ -5,7 +5,14 @@ name = "MM.gaussian_positivity_envelope_sharp"
 statement_module = "Statements.MM_gaussian_positivity_envelope_sharp"
 status = "proved"
 title = "SEAM B SHARPENED (2026-09-21), UNCONDITIONAL: the sharp c-uniform envelope of the two-parameter Wall -- for every width lam > 0 the Gaussian-weighted zero sum is nonnegative at every centre |c| >= envelopeCsharp(lam) = 2 pi e^{primeAbs(lam) + 1/2} + small lam-only terms, where primeAbs(lam) is the EXACT absolute prime-side constant (explicit convergent series; 8.74 at lam = 0.5, 23.7 at lam = 1). Consequence: at the ladder height T = 640000 the band T - D < |c| < envelopeCsharp(lam) is EMPTY for lam <= 0.597, and 2 pi e^{primeAbs} is the floor of ANY c-uniform argument (the exact constant is sharp by Bohr almost-periodicity), so envelopeCsharp(1) = 2.07e11 cannot be improved below 1.26e11 by this method. No overlap with the ladder instrument (needs lam >= 1). Nothing about RH. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "6a315fcb7ffa941de6fba72be9245f9776292fc15352785fed42affa015db97b"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge16.gaussian_positivity_envelope_sharp"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge16.lean"

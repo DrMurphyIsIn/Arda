@@ -5,7 +5,14 @@ name = "RH.bl_closed_form_five_nonneg"
 statement_module = "Statements.RH_bl_closed_form_five_nonneg"
 status = "proved"
 title = "BOMBIERI-LAGARIAS CLOSED FORM, RUNG 5, NO HYPOTHESIS (rvm_bridge island, E6Bridge28, 2026-09-21): 0 <= Re(archSide 5 + finiteSide 5), i.e. the explicit expression in gamma, log pi, log 2, zeta(2..5) and the Laurent constants eta_0..eta_4 is nonnegative, unconditionally in the kernel (via liValue and the box-region positivity of the pair terms for N <= 5; rungs 1..4 likewise in the module). Not RH. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "914cd3bb64c69e6849cc76a704cfc2fa6abd99bc26cda441b484f1b47633e59d"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge28.archSide_add_finiteSide_five_re_nonneg"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge28.lean"

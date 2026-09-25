@@ -5,7 +5,14 @@ name = "RH.rvm_unconditional"
 statement_module = "Statements.RH_rvm_unconditional"
 status = "proved"
 title = "Riemann-von Mangoldt UNCONDITIONAL (routes-roadmap A4/D5, the E6 target): |N(T) - (T/2pi log(T/2pi) - T/2pi + 7/8)| <= C log T for all T >= 2, N(T) the multiplicity RECTANGLE count -- no edge/ball/winding hypotheses (contrast nt_count_effective_bound); implies MM_rvm_unbounded_mean_density"
-updated = "2026-09-18"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "952368f82f3a5d67cceec97ba6b705c1b0024ca99b7eec42f4f19539d7717dbe"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge2.rvm_unconditional"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge2.lean"

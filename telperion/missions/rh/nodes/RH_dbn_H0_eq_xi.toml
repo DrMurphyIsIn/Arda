@@ -5,7 +5,14 @@ name = "RH.dbn_H0_eq_xi"
 statement_module = "Statements.RH_dbn_H0_eq_xi"
 status = "proved"
 title = "Route C / C2 representation theorem: H_0(z) = (1/8) xi(1/2 + iz/2) for every complex z -- the heat-flow family at t = 0 is the Riemann xi function (Polymath15 eq. (3), Titchmarsh 10.1). PROVED on the dbn island (DBNXi, modules A-E), an identity between entire functions, not RH-equivalent"
-updated = "2026-09-22"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "482bd3d1f3c231d22170fc338a9035fea11765b2f33183384808e6badaf07cd2"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "dbn_H0_eq_xi"
 
 [proof]
 artifact = "../../examples/dbn/lean/DBNXi.lean"

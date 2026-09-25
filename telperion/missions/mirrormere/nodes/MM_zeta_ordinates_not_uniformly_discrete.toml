@@ -5,7 +5,14 @@ name = "MM.zeta_ordinates_not_uniformly_discrete"
 statement_module = "Statements.MM_zeta_ordinates_not_uniformly_discrete"
 status = "proved"
 title = "W2c target, unconditional form: the zeta ordinates are not uniformly discrete, no hypotheses -- lands when the RvM residual is discharged into the conditional brick"
-updated = "2026-09-18"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "f33ad4e7bdcaeec579597ca18a20cda3d530ee24e1619218416753271f9fa86d"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "RvMBridge.zeta_ordinates_not_uniformly_discrete"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/W2cAssembly.lean"

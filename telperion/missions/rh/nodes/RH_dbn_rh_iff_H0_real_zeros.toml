@@ -5,7 +5,14 @@ name = "RH.dbn_rh_iff_H0_real_zeros"
 statement_module = "Statements.RH_dbn_rh_iff_H0_real_zeros"
 status = "proved"
 title = "Route C / C4: RH (AND_ladder grammar: every nontrivial zero in the open strip has real part 1/2) iff every zero of H_0 is real. PROVED unconditionally as an EQUIVALENCE (DBNRealZerosIffFinal, via C2); proves neither side"
-updated = "2026-09-22"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "cc4483fde12753f20b2c121ea4f3a9272fdd36b2b5a2f75cf2b2ca71a1b52498"
+date = "2026-09-24"
+run_id = "36054938938"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36054938938"
+theorem = "dbn_rh_iff_H0_real_zeros"
 
 [proof]
 artifact = "../../examples/dbn/lean/DBNRealZerosIffFinal.lean"
