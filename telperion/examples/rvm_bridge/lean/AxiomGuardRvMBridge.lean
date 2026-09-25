@@ -236,6 +236,8 @@ import E6Bridge34
 import KWin_Bridge
 import Crux3_BandCert
 import Crux3_BandDH
+import CF_Cert
+import CF_LemmaO
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -1301,3 +1303,17 @@ import Crux3_BandDH
 #print axioms Crux3.dh_band_negative
 #print axioms Crux3.band_separation
 #print axioms Crux3.band_separation_cD
+
+-- Counterfeit ladder (2026-09-25): zeta_K (K = Q(sqrt -5)) vs the Epstein zeta of x^2+5y^2 at
+-- x = e^{18pi/17}; zeta_K positive, E negative on one nonzero test, E's -E'/E recursion discharged
+-- (cE_conv); Lemma O witnesses at n = 6.  conjecture1_proved = False.
+#print axioms CF.zetaK_window_pos
+#print axioms CF.epstein_window_negative
+#print axioms CF.window_separation
+#print axioms CF.window_separation_cE
+#print axioms CF.cE_six
+#print axioms CF.cD_six
+#print axioms CF.dh_orbit_six
+#print axioms CF.epstein_orbit_six
+#print axioms CF.aE_not_mult
+#print axioms CF.aD_not_mult
