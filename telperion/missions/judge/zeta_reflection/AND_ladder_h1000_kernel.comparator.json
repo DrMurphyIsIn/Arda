@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.AND_ladder_h1000_kernel",
+  "solution_module": "MissionChallenges.AND_ladder_h1000_kernel",
+  "theorem_names": [
+    "MissionJudge.AND_ladder_h1000_kernel"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

@@ -40,10 +40,22 @@ def test_workflow_has_no_workflow_level_path_filter():
     assert "schedule" in on and "workflow_dispatch" in on
 
 
+#: Matrix jobs must NOT be path-guarded: a matrix job skipped by `if:` reports a single
+#: unexpanded check, so its expanded required contexts never appear and the PR cannot merge.
+UNGUARDED = {"mission-statements-compile"}
+
+
+def test_matrix_jobs_are_not_guarded():
+    d = _load()
+    for jid, job in d["jobs"].items():
+        if "strategy" in job and "matrix" in (job.get("strategy") or {}):
+            assert jid in UNGUARDED and "if" not in job and job.get("needs") != "changes", jid
+
+
 def test_every_island_job_is_guarded_fail_open():
     d = _load()
     for jid, job in d["jobs"].items():
-        if jid == "changes":
+        if jid == "changes" or jid in UNGUARDED:
             continue
         assert job.get("needs") == "changes", jid
         cond = job.get("if", "")
@@ -56,7 +68,7 @@ def test_every_island_job_is_guarded_fail_open():
 def test_every_job_guard_names_every_island_its_steps_mention():
     d = _load()
     for jid, job in d["jobs"].items():
-        if jid == "changes":
+        if jid == "changes" or jid in UNGUARDED:
             continue
         for island in _islands_in({"steps": job["steps"]}):
             assert f"needs.changes.outputs.{island} == 'true'" in job["if"], (jid, island)
@@ -83,7 +95,7 @@ def test_filter_list_and_outputs_cover_every_island():
 def test_jobs_that_run_python_depend_on_src_and_registry_readers_on_missions():
     d = _load()
     for jid, job in d["jobs"].items():
-        if jid == "changes":
+        if jid == "changes" or jid in UNGUARDED:
             continue
         body = yaml.safe_dump(job["steps"])
         cond = job["if"]

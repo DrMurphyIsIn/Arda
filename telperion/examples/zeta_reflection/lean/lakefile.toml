@@ -2,7 +2,7 @@ name = "ZetaReflectionSpike"
 # The six proved ANDURIL node artifacts are default targets (closure audit C2, 2026-09-22):
 # a bare `lake build` compiles every one of them, and the coverage checker
 # (telperion/src/telperion/missions/coverage.py) can see that it does.
-defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD", "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet", "ReflectedBand_t14_Kernel", "EdgeClearGlue", "BandGlue", "BandGlue_h1000", "HeightFloorCheck", "HeightFloorTrig", "HeightFloorEM", "HeightFloorBoxes", "HeightFloor", "ArbEconomics_Eval", "ArbEconomics_Sound", "ArbEconomics_Zeta", "EMZetaHigh", "EMZetaHighEval", "EMZetaHighCfg64", "EMZetaHighCheck", "EMZetaHighK_T10000", "EMZetaHighK_T30000", "EMZetaHighK_T280000", "RSTheta", "AxiomGuardRSTheta", "AxiomGuardEMZetaHigh", "AxiomGuardHeightFloor"]
+defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD", "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet", "ReflectedBand_t14_Kernel", "EdgeClearGlue", "BandGlue", "BandGlue_h1000", "HeightFloorCheck", "HeightFloorTrig", "HeightFloorEM", "HeightFloorBoxes", "HeightFloor", "ArbEconomics_Eval", "ArbEconomics_Sound", "ArbEconomics_Zeta", "EMZetaHigh", "EMZetaHighEval", "EMZetaHighCfg64", "EMZetaHighCheck", "EMZetaHighK_T10000", "EMZetaHighK_T30000", "EMZetaHighK_T280000", "RSTheta", "H1000Phase", "H1000Point", "H1000Line", "H1000LineBands", "H1000Glue", "H1000Line_All", "EMZetaOfflineCore", "EMZetaOfflineEval", "EMZetaOfflineSound", "EMZetaOfflineCheck", "EMZetaOfflineI_S03_T1000", "EMZetaOfflineI_S12_T1000", "EMZetaOfflineI_SM1_T9995", "EMZetaOfflineSlab", "EMZetaOfflineSlabCheck", "EMZetaOfflineSlabClear", "EMZetaOfflineSlab_T1000", "EMZetaOfflineSlabBand", "EMZetaOffline", "ArgZetaTwo", "ArgGammaR", "ArgHoriz", "ArgChangeGlue", "ArgChangeH1000", "H1000Octant", "H1000Edges", "H1000Slabs", "AllZerosKernel_h1000", "RSSeam_B3Bound", "RSSeam_Bridge", "RSSeam_AxiomGuard", "RS_Strip", "RS_Kernel", "RS_Mellin", "RS_Fold", "RS_Entire", "RS_B2", "RS_C0", "RS_AxiomGuard", "RS_B3", "RS_B3Bound", "RS_Bridge", "RS_AxiomGuardB3", "RS4_Eval", "RS4_Sound", "RS4_Z", "RS4_Demo", "RS4_AxiomGuard", "RS5_Eval", "RS5_Sound", "RS5_Z", "RS5_Band", "RS5_Band_T10000_C0", "RS5_Band_T10000_C1", "RS5_Band_T10000_C2", "RS5_Band_T10000_C3", "RS5_Band_T10000", "RS5_Demo", "RS5_Band_T510_C0", "RS5_Band_T510", "RS5_Band_T1000_C0", "RS5_Band_T1000_C1", "RS5_Band_T1000_C2", "RS5_Band_T1000_C3", "RS5_Band_T1000_C4", "RS5_Band_T1000_C5", "RS5_Band_T1000_C6", "RS5_Band_T1000_C7", "RS5_Band_T1000_C8", "RS5_Band_T1000_C9", "RS5_Band_T1000_C10", "RS5_Band_T1000_C11", "RS5_Band_T1000_C12", "RS5_Band_T1000_C13", "RS5_Band_T1000_C14", "RS5_Band_T1000_C15", "RS5_Band_T1000_C16", "RS5_Band_T1000_C17", "RS5_Band_T1000_C18", "RS5_Band_T1000_C19", "RS5_Band_T1000_C20", "RS5_Band_T1000_C21", "RS5_Band_T1000_C22", "RS5_Band_T1000_C23", "RS5_Band_T1000_C24", "RS5_Band_T1000_C25", "RS5_Band_T1000_C26", "RS5_Band_T1000_C27", "RS5_Band_T1000_C28", "RS5_Band_T1000_C29", "RS5_Band_T1000_C30", "RS5_Band_T1000_C31", "RS5_Band_T1000", "RS5_Band_Joint", "RS5_AxiomGuard", "AxiomGuardRSTheta", "AxiomGuardEMZetaHigh", "AxiomGuardHeightFloor", "AxiomGuardEMZetaOffline", "AxiomGuardArgChange", "AxiomGuardH1000Line", "AxiomGuardAllZerosKernel_h1000"]
 
 # Same Mathlib pin as the sibling zeta_zero_localization island (v4.32.0), so the
 # path require below shares the on-disk Mathlib build cache -- `lake exe cache get`
@@ -335,6 +335,335 @@ roots = ["EMZetaHighK_T280000_Cfg", "EMZetaHighK_T280000_P0", "EMZetaHighK_T2800
 name = "RSTheta"
 roots = ["RSTheta"]
 
+# Lane SEAM: RSSeam_B3Bound -- the C0-corrected Riemann-Siegel remainder bound re-derived from
+# t >= 509 (a = sqrt(t/2pi) >= 9): |rsE1| <= (1/4)/a, error (13/20) a^(-3/2) = (13/5) t^(-3/4).
+[[lean_lib]]
+name = "RSSeam_B3Bound"
+roots = ["RSSeam_B3Bound"]
+
+# Lane SEAM: RSSeam_Bridge -- `RSSeam.rs_Z_C0_seam`, Hardy's Z by Riemann-Siegel with the C0 term and
+# remainder (13/5) t^(-3/4) for t >= 509, phase discharged as in RS_Bridge (read-only imports).
+[[lean_lib]]
+name = "RSSeam_Bridge"
+roots = ["RSSeam_Bridge"]
+
+# Lane SEAM: the kernel-axiom guard for RSSeam_B3Bound + RSSeam_Bridge; not a default target.
+[[lean_lib]]
+name = "RSSeam_AxiomGuard"
+roots = ["RSSeam_AxiomGuard"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane RS (2026-09-24): ANDURIL Riemann-Siegel brick B2 -- Riemann's integral representation of
+# zeta(s) for general complex s, with the residue bookkeeping (Mathlib-only core).
+#   RS_Strip  -- horizontal-strip Cauchy with decay; slanted line integrals lineUp / lineDn and
+#                their line independence.
+#   (further RS_ modules are appended below as they land; guard: RS_AxiomGuard, not a default target)
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "RS_Strip"
+roots = ["RS_Strip"]
+
+# Lane RS: RS_Kernel -- Riemann's kernels rsG / rsH, difference equations, Gaussian bounds, the
+# Fresnel line integral, pole crossing (no residue theorem: dslope), the Mordell closed form.
+[[lean_lib]]
+name = "RS_Kernel"
+roots = ["RS_Kernel"]
+
+# Lane RS: RS_Mellin -- complex-scaled Gamma integral, the Mellin/Fubini step, the Bose integral
+# (Gamma zeta), the chi-side kernel integral, and the Mellin identity for Re s > 1.
+[[lean_lib]]
+name = "RS_Mellin"
+roots = ["RS_Mellin"]
+
+# Lane RS: RS_Fold -- the chi-side line: continuity at the pole x = 0 (Re s > 2), folding of the
+# line through 0 onto the half-line integral rsHR, and moving it to any c in (0, 1).
+[[lean_lib]]
+name = "RS_Fold"
+roots = ["RS_Fold"]
+
+# Lane RS: RS_Entire -- parametric holomorphy of the two RS line integrals; the chi factor rsChi and
+# its Gamma identities (reflection + duplication).
+[[lean_lib]]
+name = "RS_Entire"
+roots = ["RS_Entire"]
+
+# Lane RS: RS_B2 -- THE HEADLINE of brick B2: `RSInt.riemann_siegel_integral` (Riemann's integral
+# representation of zeta(s) for every complex s outside {1,3,5,...}, with the residue bookkeeping
+# sum_{n<=N} n^-s + chi(s) sum_{m<=M} m^(s-1) + two remainder line integrals), and the exact
+# critical-line forms `completedRiemannZeta_eq_rs` / `completed_re_eq_rs_cos`.
+[[lean_lib]]
+name = "RS_B2"
+roots = ["RS_B2"]
+
+# Lane RS: RS_C0 -- brick B3 part 1: Riemann's Psi (Gabcke's C0) from the tau = 2 Mordell integral:
+# 2 Re(e^{-i pi/8} rsJ p) = cos(2 pi (p^2 - p - 1/16)) / cos(2 pi p) (`RSInt.rsJ_C0`).
+[[lean_lib]]
+name = "RS_C0"
+roots = ["RS_C0"]
+
+# Lane RS: the kernel-axiom guard (prints #print axioms for every RS_ theorem; not a default target).
+[[lean_lib]]
+name = "RS_AxiomGuard"
+roots = ["RS_AxiomGuard"]
+
+# Lane RS: RS_B3 -- brick B3 part 2: the exact saddle-point reduction of the RS remainder
+# (`rsRem_factor`, `rs_phase`, `rs_remainder_exact`).
+[[lean_lib]]
+name = "RS_B3"
+roots = ["RS_B3"]
+
+# Lane RS: RS_B3Bound -- brick B3 part 3: the analytic estimates (Gaussian moments, the saddle-point
+# amplitude near/far bounds, |rsJ| on the midline, |rsE1| <= K/a) and the explicit C0-remainder bound.
+[[lean_lib]]
+name = "RS_B3Bound"
+roots = ["RS_B3Bound"]
+
+# Lane RS: RS_Bridge -- brick B3 part 4: `RSInt.rs_Z_C0`, the Riemann-Siegel formula for Hardy's Z
+# with the C0 term and the explicit remainder 2 t^(-3/4) (t >= 10000), phase supplied hypothesis-free
+# by ThetaConverge / ZeroSignDecomp_t14 / RSTheta (read-only imports).
+[[lean_lib]]
+name = "RS_Bridge"
+roots = ["RS_Bridge"]
+
+# Lane RS: the kernel-axiom guard for bricks B3 parts 2-4 (RS_B3, RS_B3Bound, RS_Bridge); not a
+# default target.
+[[lean_lib]]
+name = "RS_AxiomGuardB3"
+roots = ["RS_AxiomGuardB3"]
+
+# Lane B4: RS4_Eval -- the kernel-decidable interval evaluator for the Riemann-Siegel main term
+# (Dirichlet sum via ArbEcon.run, phase ball via ArbEcon.trig, C0 term, DIntv assembly).
+[[lean_lib]]
+name = "RS4_Eval"
+roots = ["RS4_Eval"]
+
+# Lane B4: RS4_Sound -- soundness of RS4.check: an accepted certificate encloses the Riemann-Siegel
+# main term (verbatim that of RSInt.rs_Z_C0) for EVERY phase in the ball |phi - thetaMain t| <= 1/t.
+[[lean_lib]]
+name = "RS4_Sound"
+roots = ["RS4_Sound"]
+
+# Lane B4: RS4_Z -- RS4.check glued to RSInt.rs_Z_C0: certified enclosure of Hardy's Z and the sign
+# of Re completedRiemannZeta(1/2+it) (rs4_Z_enclosure, rs4_sign_pos, rs4_sign_neg).
+[[lean_lib]]
+name = "RS4_Z"
+roots = ["RS4_Z"]
+
+# Lane B4: RS4_Demo -- worked heights t = 10000.5 (Re Lambda > 0) and t = 10000 (Re Lambda < 0),
+# each a kernel `decide +kernel`, plus three tampered certificates the kernel rejects.
+[[lean_lib]]
+name = "RS4_Demo"
+roots = ["RS4_Demo"]
+
+# Lane B4: the kernel-axiom guard (prints #print axioms for every RS4_ theorem; not a default target).
+[[lean_lib]]
+name = "RS4_AxiomGuard"
+roots = ["RS4_AxiomGuard"]
+
+# Lane B5: RS5_Eval -- the t >= 509 variant of RS4.check (floor 509 instead of 10000; all computable
+# pieces reused from RS4_Eval), the t^(-3/4) margin check, and the band checker over dyadic samples.
+[[lean_lib]]
+name = "RS5_Eval"
+roots = ["RS5_Eval"]
+
+# Lane B5: RS5_Sound -- soundness of RS5.check5 (RS4_Sound's proof re-stated for the 509 floor).
+[[lean_lib]]
+name = "RS5_Sound"
+roots = ["RS5_Sound"]
+
+# Lane B5: RS5_Z -- RS5.check5 glued to RSSeam.rs_Z_C0_seam (t >= 509, margin (13/5) t^(-3/4) or its
+# rational bound (13/5) E / 2^P) and the certified sign of one dyadic sample.
+[[lean_lib]]
+name = "RS5_Z"
+roots = ["RS5_Z"]
+
+# Lane B5: RS5_Band -- IVT corollary on Mathlib's riemannZeta and the band certificate soundness
+# (K certified sign changes -> K distinct on-line zeros of riemannZeta inside the band).
+[[lean_lib]]
+name = "RS5_Band"
+roots = ["RS5_Band"]
+
+# Lane B5: band certificate [10000, 11000] -- four kernel-checked chunks (decide +kernel over the
+# emitted dyadic samples) and the glued headline (1182 distinct on-line zeros of riemannZeta).
+[[lean_lib]]
+name = "RS5_Band_T10000_C0"
+roots = ["RS5_Band_T10000_C0"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000_C1"
+roots = ["RS5_Band_T10000_C1"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000_C2"
+roots = ["RS5_Band_T10000_C2"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000_C3"
+roots = ["RS5_Band_T10000_C3"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000"
+roots = ["RS5_Band_T10000"]
+
+# Lane B5: RS5_Demo -- IVT corollary at lane B4's certified heights: a zero of riemannZeta on the
+# critical line with ordinate in (10000, 10000.5).
+[[lean_lib]]
+name = "RS5_Demo"
+roots = ["RS5_Demo"]
+
+# Lane B5: low-height band certificate [510, 520] through the SEAM bound (t >= 509): one chunk + headline.
+[[lean_lib]]
+name = "RS5_Band_T510_C0"
+roots = ["RS5_Band_T510_C0"]
+
+[[lean_lib]]
+name = "RS5_Band_T510"
+roots = ["RS5_Band_T510"]
+
+# Lane B5: band certificate [1000, 10000] -- 32 kernel-checked chunks + glued headline (9493 zeros).
+[[lean_lib]]
+name = "RS5_Band_T1000_C0"
+roots = ["RS5_Band_T1000_C0"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C1"
+roots = ["RS5_Band_T1000_C1"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C2"
+roots = ["RS5_Band_T1000_C2"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C3"
+roots = ["RS5_Band_T1000_C3"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C4"
+roots = ["RS5_Band_T1000_C4"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C5"
+roots = ["RS5_Band_T1000_C5"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C6"
+roots = ["RS5_Band_T1000_C6"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C7"
+roots = ["RS5_Band_T1000_C7"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C8"
+roots = ["RS5_Band_T1000_C8"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C9"
+roots = ["RS5_Band_T1000_C9"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C10"
+roots = ["RS5_Band_T1000_C10"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C11"
+roots = ["RS5_Band_T1000_C11"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C12"
+roots = ["RS5_Band_T1000_C12"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C13"
+roots = ["RS5_Band_T1000_C13"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C14"
+roots = ["RS5_Band_T1000_C14"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C15"
+roots = ["RS5_Band_T1000_C15"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C16"
+roots = ["RS5_Band_T1000_C16"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C17"
+roots = ["RS5_Band_T1000_C17"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C18"
+roots = ["RS5_Band_T1000_C18"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C19"
+roots = ["RS5_Band_T1000_C19"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C20"
+roots = ["RS5_Band_T1000_C20"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C21"
+roots = ["RS5_Band_T1000_C21"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C22"
+roots = ["RS5_Band_T1000_C22"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C23"
+roots = ["RS5_Band_T1000_C23"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C24"
+roots = ["RS5_Band_T1000_C24"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C25"
+roots = ["RS5_Band_T1000_C25"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C26"
+roots = ["RS5_Band_T1000_C26"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C27"
+roots = ["RS5_Band_T1000_C27"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C28"
+roots = ["RS5_Band_T1000_C28"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C29"
+roots = ["RS5_Band_T1000_C29"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C30"
+roots = ["RS5_Band_T1000_C30"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C31"
+roots = ["RS5_Band_T1000_C31"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000"
+roots = ["RS5_Band_T1000"]
+
+# Lane B5: the [1000, 10000] and [10000, 11000] bands glued: 10675 distinct on-line zeros in (1000, 11000).
+[[lean_lib]]
+name = "RS5_Band_Joint"
+roots = ["RS5_Band_Joint"]
+
+# Lane B5: the kernel-axiom guard (#print axioms for every RS5_ headline and every band chunk's
+# ok / count / zeros; not a default target).
+[[lean_lib]]
+name = "RS5_AxiomGuard"
+roots = ["RS5_AxiomGuard"]
+
 [[lean_lib]]
 name = "AxiomGuardRSTheta"
 roots = ["AxiomGuardRSTheta"]
@@ -479,3 +808,570 @@ roots = ["AllZeros_h1000",
 [[lean_lib]]
 name = "AxiomGuardBandGlue"
 roots = ["AxiomGuardBandGlue"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane h1000-prep (2026-09-23): the on-line input H1 (`hLine`) of all 25 bands of the [1, 1000]
+# segment, discharged in the kernel.
+#   H1000Phase -- the RS phase phi = Lam - (t/2) log pi at t = tn/2^tq as integer bounds (scale 2^64):
+#                 RSTheta.theta_bracket + fixed-point log series + log 2 / log pi / pi / arctan.
+#   H1000Line  -- LinePt, ptCheck (Dirichlet chunks + order-13 EM ball + phase + trig + sign test)
+#                 and ptCheck_sound; bandOk and band_sound (the verbatim hLine shape).
+#   H1000Line_Bxx -- GENERATED by ../emit_h1000_line.py: the 675 kernel-checked points, one module
+#                 per band, each ending in `lineHyp` (the band's `hLine`).
+#   H1000Glue  -- integration glue: `segWith i E` (band i with its five enclosures replaced), `PinOk`,
+#                 `valid_of_sqrt` (ball geometry + pins -> Valid), `slab0_band0` (band 0's lower slab by
+#                 the height floor).
+#   H1000Line_All -- GENERATED: `(BandGlue_h1000.seg i).LineHyp` for all i < 25, and the height-1000
+#                 ladder statement from the remaining (off-line) inputs only (`_of_offline`, `_of_certs`,
+#                 and the integration target `_of_encl`).
+#   AxiomGuardH1000Line -- #print axioms of every new theorem (not a default target).
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "H1000Phase"
+roots = ["H1000Phase"]
+
+[[lean_lib]]
+name = "H1000Line"
+roots = ["H1000Line"]
+
+[[lean_lib]]
+name = "H1000Point"
+roots = ["H1000Point"]
+
+[[lean_lib]]
+name = "H1000LineBands"
+roots = ["H1000Line_B00", "H1000Line_B01", "H1000Line_B02", "H1000Line_B03", "H1000Line_B04", "H1000Line_B05", "H1000Line_B06", "H1000Line_B07", "H1000Line_B08", "H1000Line_B09", "H1000Line_B10", "H1000Line_B11", "H1000Line_B12", "H1000Line_B13", "H1000Line_B14", "H1000Line_B15", "H1000Line_B16", "H1000Line_B17", "H1000Line_B18", "H1000Line_B19", "H1000Line_B20", "H1000Line_B21", "H1000Line_B22", "H1000Line_B23", "H1000Line_B24"]
+
+[[lean_lib]]
+name = "H1000Glue"
+roots = ["H1000Glue"]
+
+[[lean_lib]]
+name = "H1000Line_All"
+roots = ["H1000Line_All"]
+
+# Kernel-axiom guard of lane h1000-prep (prints #print axioms of every new theorem; not a default target).
+[[lean_lib]]
+name = "AxiomGuardH1000Line"
+roots = ["AxiomGuardH1000Line"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane offline (2026-09-23; copied unchanged into lane h1000-integrate): the OFF-LINE kernel
+# evaluator of zeta (memo ANDURIL_ARB_DISCHARGE_2026-09-23 brick B6, EM route; edge-clearance input
+# of K1).  conjecture1_proved = False.
+#   EMZetaOfflineCore  -- the order-m EM identity continued to Re s > 1 - m (mellin + identity theorem)
+#                         and the general-K remainder bounds for sigma > 1 - 2K / sigma > -2K.
+#   EMZetaOfflineEval  -- Nat-only evaluator at sigma = (a - b)/q (validated Newton root for m^-sigma),
+#                         p + 1 accumulators of sum (log m)^k m^-s (reuses ArbEcon logInc/trig, cfg64).
+#   EMZetaOfflineSound -- its soundness (chunkO_sound, initO_sound).
+#   EMZetaOfflineCheck -- general-sigma correction factor + odd-saw remainder + kernel checker checkG.
+#   EMZetaOfflineI_{S03_T1000,S12_T1000,SM1_T9995} -- certified enclosures of zeta(0.3 + 1000i),
+#                         zeta(1.2 + 1000i), zeta(-1 + 999.5i) (generated by ../arbecon/gen_offline.py).
+#   EMZetaOfflineSlab / SlabCheck / SlabClear -- Taylor model of the EM finite part, kernel cell
+#                         checker, reflection, packaged zero-free cell.
+#   EMZetaOfflineSlab_T1000 -- SlabClear 1000 (1000 + 5773/100000), hypothesis-free
+#                         (generated by ../arbecon/gen_offline_slab.py); EMZetaOfflineSlabBand: the same as
+#                         band 24's top-edge input of BandGlue_h1000.
+#   EMZetaOffline      -- headline theorems;  AxiomGuardEMZetaOffline -- #print axioms of all 157 new theorems.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "EMZetaOfflineCore"
+roots = ["EMZetaOfflineCore"]
+
+[[lean_lib]]
+name = "EMZetaOfflineEval"
+roots = ["EMZetaOfflineEval"]
+
+[[lean_lib]]
+name = "EMZetaOfflineSound"
+roots = ["EMZetaOfflineSound"]
+
+[[lean_lib]]
+name = "EMZetaOfflineCheck"
+roots = ["EMZetaOfflineCheck"]
+
+[[lean_lib]]
+name = "EMZetaOfflineI_S03_T1000"
+roots = ["EMZetaOfflineI_S03_T1000"]
+
+[[lean_lib]]
+name = "EMZetaOfflineI_S12_T1000"
+roots = ["EMZetaOfflineI_S12_T1000"]
+
+[[lean_lib]]
+name = "EMZetaOfflineI_SM1_T9995"
+roots = ["EMZetaOfflineI_SM1_T9995"]
+
+[[lean_lib]]
+name = "EMZetaOfflineSlab"
+roots = ["EMZetaOfflineSlab"]
+
+[[lean_lib]]
+name = "EMZetaOfflineSlabCheck"
+roots = ["EMZetaOfflineSlabCheck"]
+
+[[lean_lib]]
+name = "EMZetaOfflineSlabClear"
+roots = ["EMZetaOfflineSlabClear"]
+
+[[lean_lib]]
+name = "EMZetaOfflineSlab_T1000"
+roots = ["EMZetaOfflineSlab_T1000"]
+
+[[lean_lib]]
+name = "EMZetaOfflineSlabBand"
+roots = ["EMZetaOfflineSlabBand"]
+
+[[lean_lib]]
+name = "EMZetaOffline"
+roots = ["EMZetaOffline"]
+
+[[lean_lib]]
+name = "AxiomGuardEMZetaOffline"
+roots = ["AxiomGuardEMZetaOffline"]
+
+# ---------------------------------------------------------------------------------------------
+# ANDURIL Arb discharge, argument-change bricks K6a / K6b / K6c (lane argch, copied unchanged into
+# lane h1000-integrate; memo ANDURIL_ARB_DISCHARGE_2026-09-23, section 1.3).
+#   ArgZetaTwo     -- K6a: argChangeVert zeta 2 T0 T1 in [-249/250, 249/250] for EVERY T0, T1.  hAV2 generic.
+#   ArgGammaR      -- K6b + T6 bridge: argChangeVert GammaR sigma T0 T1, sigma in {-1, 2}, exact and in
+#                     closed-form brackets (hAG1, hAG2), hypothesis-free for 0 <= T0, 0 <= T1.
+#   ArgHoriz       -- K6c: half-plane (octant) tracking; argChangeHoriz zeta T 2 (-1) = octAngle at -1
+#                     minus octAngle at 2 for a valid octant certificate.
+#   ArgChangeGlue  -- K6 inside BandGlue: K6Side, HorizHyp, K6Inputs, BoxCert.of_K6, ladder_of_K6.
+#   ArgChangeH1000 -- GENERATED by ../emit_argchange_segment.py: K6 on the real segment [1, 1000].
+#   AxiomGuardArgChange -- #print axioms of every new theorem (319) + binder-form checks.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "ArgZetaTwo"
+roots = ["ArgZetaTwo"]
+
+[[lean_lib]]
+name = "ArgGammaR"
+roots = ["ArgGammaR"]
+
+[[lean_lib]]
+name = "ArgHoriz"
+roots = ["ArgHoriz"]
+
+[[lean_lib]]
+name = "ArgChangeGlue"
+roots = ["ArgChangeGlue"]
+
+[[lean_lib]]
+name = "ArgChangeH1000"
+roots = ["ArgChangeH1000"]
+
+[[lean_lib]]
+name = "AxiomGuardArgChange"
+roots = ["AxiomGuardArgChange"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane h1000-integrate (2026-09-23): EVERY input of the 25 bands of [1, 1000] discharged in the
+# kernel; the height-1000 ladder statement with NO hypotheses.  conjecture1_proved = False.
+#   H1000Octant  -- the octant piece (evaluator side of K6c): generalized EM Taylor model (any real
+#                   part of the center), horizontal remainder, kernel check `checkOct` + soundness,
+#                   `piece_octX_pos`; slab-cell wrapper `cell_zeta_ne_zero_R`; K = 6 closed forms.
+#   H1000Edges   -- GENERATED by ../emit_h1000_offline.py: 27 horizontal argument changes
+#                   `argChangeHoriz riemannZeta T 2 (-1)` (octant certificates, 363 pieces).
+#   H1000Slabs   -- GENERATED: 48 zero-free edge-clearance slabs (147 cells).
+#   AllZerosKernel_h1000 -- GENERATED: enclosure data, pins, K6 side conditions, slabs, and the
+#                   capstone `all_nontrivial_zeros_up_to_height_1000` (no hypotheses).
+#   AxiomGuardAllZerosKernel_h1000 -- `#print axioms` of every new theorem + statement-shape checks
+#                   + kernel negative controls.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "H1000Octant"
+roots = ["H1000Octant"]
+
+[[lean_lib]]
+name = "H1000Edges"
+roots = ["H1000Edge_T1", "H1000Edge_T41", "H1000Edge_T81", "H1000Edge_T121", "H1000Edge_T161", "H1000Edge_T201", "H1000Edge_T241", "H1000Edge_T965_4", "H1000Edge_T281", "H1000Edge_T321", "H1000Edge_T361", "H1000Edge_T401", "H1000Edge_T441", "H1000Edge_T481", "H1000Edge_T520", "H1000Edge_T560", "H1000Edge_T600", "H1000Edge_T640", "H1000Edge_T680", "H1000Edge_T720", "H1000Edge_T760", "H1000Edge_T800", "H1000Edge_T840", "H1000Edge_T880", "H1000Edge_T920", "H1000Edge_T960", "H1000Edge_T1000"]
+
+[[lean_lib]]
+name = "H1000Slabs"
+roots = ["H1000Slab_U41", "H1000Slab_L41", "H1000Slab_U81", "H1000Slab_L81", "H1000Slab_U121", "H1000Slab_L121", "H1000Slab_U161", "H1000Slab_L161", "H1000Slab_U201", "H1000Slab_L201", "H1000Slab_U965_4", "H1000Slab_L241", "H1000Slab_U281", "H1000Slab_L281", "H1000Slab_U321", "H1000Slab_L321", "H1000Slab_U361", "H1000Slab_L361", "H1000Slab_U401", "H1000Slab_L401", "H1000Slab_U441", "H1000Slab_L441", "H1000Slab_U481", "H1000Slab_L481", "H1000Slab_U520", "H1000Slab_L520", "H1000Slab_U560", "H1000Slab_L560", "H1000Slab_U600", "H1000Slab_L600", "H1000Slab_U640", "H1000Slab_L640", "H1000Slab_U680", "H1000Slab_L680", "H1000Slab_U720", "H1000Slab_L720", "H1000Slab_U760", "H1000Slab_L760", "H1000Slab_U800", "H1000Slab_L800", "H1000Slab_U840", "H1000Slab_L840", "H1000Slab_U880", "H1000Slab_L880", "H1000Slab_U920", "H1000Slab_L920", "H1000Slab_U960", "H1000Slab_L960"]
+
+[[lean_lib]]
+name = "AllZerosKernel_h1000"
+roots = ["AllZerosKernel_h1000"]
+
+[[lean_lib]]
+name = "AxiomGuardAllZerosKernel_h1000"
+roots = ["AxiomGuardAllZerosKernel_h1000", "AxiomGuardAllZerosKernel_h1000_0", "AxiomGuardAllZerosKernel_h1000_1", "AxiomGuardAllZerosKernel_h1000_2", "AxiomGuardAllZerosKernel_h1000_3", "AxiomGuardAllZerosKernel_h1000_4", "AxiomGuardAllZerosKernel_h1000_5"]
+
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4 (2026-09-24): COMPACT hypothesis-free ladder segments.  The per-piece / per-cell
+# `norm_num` side conditions of the h1000 certificates (budget, remainder, G certificate, scalar
+# geometry) become Boolean kernel checkers over exact rationals, with soundness proved once; the
+# evaluator states are recomputed inside the same `decide +kernel` instead of being stored.
+#   Arb4_Q    -- unnormalised rationals `n / (dm + 1)` for kernel checkers + value homomorphism.
+#   Arb4_Side -- the octant-piece checker `pieceOK` (evaluator run + checkOct + every side
+#                condition of `H1000Oct.piece_octX_pos`) and its soundness.
+#   Arb4_Edge -- ONE checker `edgeOK` per horizontal edge (pieces, labels, endpoint boxes and
+#                corners, final pi/arctan inequalities) and its soundness `edgeOK_sound`.
+#   Arb4_Slab -- ONE checker `slabOK` per zero-free edge-clearance slab and `slabOK_sound`.
+#   Arb4_Line -- on-line sign points with recomputed evaluator states (`mkPt`) and ONE band
+#                checker `bandB` (+ `bandB_sound`, the band's verbatim hLine).
+#   Arb4_Gamma -- the K6b (Gamma_R) side conditions of a band as ONE checker `k6B` (log / arctan
+#                series brackets, S2 / Sm1 closed forms) and `k6B_sound`.
+#   Arb4_Seg  -- band-level glue: `validB` (ball cover + pins), `k6sideB`, `boxCert_of_parts`.
+# conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_Q"
+roots = ["Arb4_Q"]
+
+[[lean_lib]]
+name = "Arb4_Side"
+roots = ["Arb4_Side"]
+
+[[lean_lib]]
+name = "Arb4_Edge"
+roots = ["Arb4_Edge"]
+
+[[lean_lib]]
+name = "Arb4_Slab"
+roots = ["Arb4_Slab"]
+
+[[lean_lib]]
+name = "Arb4_Line"
+roots = ["Arb4_Line"]
+
+[[lean_lib]]
+name = "Arb4_Gamma"
+roots = ["Arb4_Gamma"]
+
+[[lean_lib]]
+name = "Arb4_Seg"
+roots = ["Arb4_Seg"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4: the COMPACT hypothesis-free [1, 1000] segment, GENERATED by ../Arb4_emit_seg.py --seg 1000
+# (same planners as lanes h1000-integrate / h1000-prep; compact Boolean certificates).
+#   Arb4_H1000Edges -- 27 horizontal argument changes (363 octant pieces), ONE decide per edge.
+#   Arb4_H1000Slabs -- 49 zero-free edge-clearance slabs (150 cells), ONE decide per slab.
+#   Arb4_H1000Lines -- 25 on-line bands (675 sign points), ONE decide per band.
+#   Arb4_h1000      -- per band K6b + Valid (ONE decide) and the box certificate; the capstone
+#                      `Arb4_h1000.all_nontrivial_zeros_up_to_height_1000` (no hypotheses).
+#   Arb4_AxiomGuard_h1000 -- `#print axioms` of every theorem + the capstone statement pin.
+# conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_H1000Edges"
+roots = ["Arb4_H1000Edges_0", "Arb4_H1000Edges_1", "Arb4_H1000Edges_2", "Arb4_H1000Edges_3", "Arb4_H1000Edges_4", "Arb4_H1000Edges_5"]
+
+[[lean_lib]]
+name = "Arb4_H1000Slabs"
+roots = ["Arb4_H1000Slabs_0", "Arb4_H1000Slabs_1", "Arb4_H1000Slabs_2", "Arb4_H1000Slabs_3", "Arb4_H1000Slabs_4"]
+
+[[lean_lib]]
+name = "Arb4_H1000Lines"
+roots = ["Arb4_H1000Lines_0", "Arb4_H1000Lines_1", "Arb4_H1000Lines_2", "Arb4_H1000Lines_3", "Arb4_H1000Lines_4"]
+
+[[lean_lib]]
+name = "Arb4_h1000"
+roots = ["Arb4_h1000"]
+
+[[lean_lib]]
+name = "Arb4_AxiomGuard_h1000"
+roots = ["Arb4_AxiomGuard_h1000"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4: the [1000, 2000] segment.  The zeta_zero_localization band plan of `AllZeros_h2000`
+# (its box table and its 25 emitted band modules, sources unchanged, as ZZLSegment_h1000 does for
+# [1, 1000]) and its K0/K1 band table `Arb4_BandGlue_h2000` (emit_band_glue.py output, namespace
+# prefixed `Arb4.`).  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_ZZLSegment_h2000"
+srcDir = "../../zeta_zero_localization/lean"
+roots = ["AllZeros_h2000", "RHInBoxT_1d4000000_3999999d4000000_1000_1040", "RHInBoxT_1d4000000_3999999d4000000_1040_1080", "RHInBoxT_1d4000000_3999999d4000000_1080_1120", "RHInBoxT_1d4000000_3999999d4000000_1120_1160", "RHInBoxT_1d4000000_3999999d4000000_1160_1200", "RHInBoxT_1d4000000_3999999d4000000_1200_1240", "RHInBoxT_1d4000000_3999999d4000000_1240_1280", "RHInBoxT_1d4000000_3999999d4000000_1280_1320", "RHInBoxT_1d4000000_3999999d4000000_5279d4_1360", "RHInBoxT_1d4000000_3999999d4000000_1360_1400", "RHInBoxT_1d4000000_3999999d4000000_1400_1440", "RHInBoxT_1d4000000_3999999d4000000_1440_1480", "RHInBoxT_1d4000000_3999999d4000000_1480_1520", "RHInBoxT_1d4000000_3999999d4000000_1520_1560", "RHInBoxT_1d4000000_3999999d4000000_1560_6401d4", "RHInBoxT_1d4000000_3999999d4000000_1600_1640", "RHInBoxT_1d4000000_3999999d4000000_1640_6721d4", "RHInBoxT_1d4000000_3999999d4000000_1680_1720", "RHInBoxT_1d4000000_3999999d4000000_1720_1760", "RHInBoxT_1d4000000_3999999d4000000_1760_7201d4", "RHInBoxT_1d4000000_3999999d4000000_1800_1840", "RHInBoxT_1d4000000_3999999d4000000_1840_1880", "RHInBoxT_1d4000000_3999999d4000000_1880_1920", "RHInBoxT_1d4000000_3999999d4000000_7679d4_1960", "RHInBoxT_1d4000000_3999999d4000000_1960_2000"]
+
+[[lean_lib]]
+name = "Arb4_BandGlue_h2000"
+roots = ["Arb4_BandGlue_h2000"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4: the COMPACT hypothesis-free [1000, 2000] segment, GENERATED by
+# ../Arb4_emit_seg.py --seg 2000 (band plan: Arb4_BandGlue_h2000 / AllZeros_h2000).
+#   Arb4_H2000Edges -- 26 horizontal argument changes (the edge at 1000 is Arb4_H1000Edges).
+#   Arb4_H2000Slabs -- 50 zero-free edge-clearance slabs.
+#   Arb4_H2000Lines -- 25 on-line bands.
+#   Arb4_h2000      -- the capstone `Arb4_h2000.all_nontrivial_zeros_up_to_height_2000`
+#                      (height chain: Arb4_h1000 + AllZeros_h2000.segment_1000_2000; no hypotheses).
+#   Arb4_AxiomGuard_h2000 -- `#print axioms` of every theorem + the capstone statement pin.
+# conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_H2000Edges"
+roots = ["Arb4_H2000Edges_0", "Arb4_H2000Edges_1", "Arb4_H2000Edges_2", "Arb4_H2000Edges_3", "Arb4_H2000Edges_4", "Arb4_H2000Edges_5"]
+
+[[lean_lib]]
+name = "Arb4_H2000Slabs"
+roots = ["Arb4_H2000Slabs_0", "Arb4_H2000Slabs_1", "Arb4_H2000Slabs_2", "Arb4_H2000Slabs_3", "Arb4_H2000Slabs_4"]
+
+[[lean_lib]]
+name = "Arb4_H2000Lines"
+roots = ["Arb4_H2000Lines_0", "Arb4_H2000Lines_1", "Arb4_H2000Lines_2", "Arb4_H2000Lines_3", "Arb4_H2000Lines_4"]
+
+[[lean_lib]]
+name = "Arb4_h2000"
+roots = ["Arb4_h2000"]
+
+[[lean_lib]]
+name = "Arb4_AxiomGuard_h2000"
+roots = ["Arb4_AxiomGuard_h2000"]
+
+# Lane Arb4: `#print axioms` of every checker theorem + kernel negative controls on h1000 data.
+[[lean_lib]]
+name = "Arb4_AxiomGuard"
+roots = ["Arb4_AxiomGuard"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4: the COMPACT hypothesis-free [2000, 3000] segment (Arb4_prepare_seg.py 3000 + Arb4_emit_seg.py
+# --seg 3000): zzl band plan sources (unchanged), band table, certificates, capstone
+# `Arb4_h3000.all_nontrivial_zeros_up_to_height_3000` (no hypotheses), guard.  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_ZZLSegment_h3000"
+srcDir = "../../zeta_zero_localization/lean"
+roots = ["AllZeros_h3000", "RHInBoxT_1d4000000_3999999d4000000_2000_2040", "RHInBoxT_1d4000000_3999999d4000000_2040_2080", "RHInBoxT_1d4000000_3999999d4000000_2080_2120", "RHInBoxT_1d4000000_3999999d4000000_2120_2160", "RHInBoxT_1d4000000_3999999d4000000_2160_2200", "RHInBoxT_1d4000000_3999999d4000000_2200_8961d4", "RHInBoxT_1d4000000_3999999d4000000_2240_2280", "RHInBoxT_1d4000000_3999999d4000000_2280_2320", "RHInBoxT_1d4000000_3999999d4000000_2320_2360", "RHInBoxT_1d4000000_3999999d4000000_2360_2400", "RHInBoxT_1d4000000_3999999d4000000_2400_2440", "RHInBoxT_1d4000000_3999999d4000000_9759d4_2480", "RHInBoxT_1d4000000_3999999d4000000_9919d4_2520", "RHInBoxT_1d4000000_3999999d4000000_2520_2560", "RHInBoxT_1d4000000_3999999d4000000_2560_2600", "RHInBoxT_1d4000000_3999999d4000000_2600_10561d4", "RHInBoxT_1d4000000_3999999d4000000_2640_10721d4", "RHInBoxT_1d4000000_3999999d4000000_2680_2720", "RHInBoxT_1d4000000_3999999d4000000_2720_2760", "RHInBoxT_1d4000000_3999999d4000000_2760_11201d4", "RHInBoxT_1d4000000_3999999d4000000_2800_2840", "RHInBoxT_1d4000000_3999999d4000000_2840_2880", "RHInBoxT_1d4000000_3999999d4000000_2880_2920", "RHInBoxT_1d4000000_3999999d4000000_2920_11841d4", "RHInBoxT_1d4000000_3999999d4000000_2960_3000"]
+
+[[lean_lib]]
+name = "Arb4_BandGlue_h3000"
+roots = ["Arb4_BandGlue_h3000"]
+
+[[lean_lib]]
+name = "Arb4_H3000Edges"
+roots = ["Arb4_H3000Edges_0", "Arb4_H3000Edges_1", "Arb4_H3000Edges_2", "Arb4_H3000Edges_3", "Arb4_H3000Edges_4", "Arb4_H3000Edges_5", "Arb4_H3000Edges_6"]
+
+[[lean_lib]]
+name = "Arb4_H3000Slabs"
+roots = ["Arb4_H3000Slabs_0", "Arb4_H3000Slabs_1", "Arb4_H3000Slabs_2", "Arb4_H3000Slabs_3", "Arb4_H3000Slabs_4"]
+
+[[lean_lib]]
+name = "Arb4_H3000Lines"
+roots = ["Arb4_H3000Lines_0", "Arb4_H3000Lines_1", "Arb4_H3000Lines_2", "Arb4_H3000Lines_3", "Arb4_H3000Lines_4"]
+
+[[lean_lib]]
+name = "Arb4_h3000"
+roots = ["Arb4_h3000"]
+
+[[lean_lib]]
+name = "Arb4_AxiomGuard_h3000"
+roots = ["Arb4_AxiomGuard_h3000"]
+
+# Lane Arb4: stacking zero-free slabs (`Arb4.slabClear_join`), for the ROW-split edge-clearance slabs
+# from height about 2500 on (Arb4_emit_seg.py plan_slab_rows).  conjecture1_proved = False.
+[[lean_lib]]
+name = "Arb4_SlabRows"
+roots = ["Arb4_SlabRows"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4: the COMPACT hypothesis-free [3000, 4000] segment (Arb4_prepare_seg.py 4000 + Arb4_emit_seg.py
+# --seg 4000): zzl band plan sources (unchanged), band table, certificates, capstone
+# `Arb4_h4000.all_nontrivial_zeros_up_to_height_4000` (no hypotheses), guard.  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_ZZLSegment_h4000"
+srcDir = "../../zeta_zero_localization/lean"
+roots = ["AllZeros_h4000", "RHInBoxT_1d4000000_3999999d4000000_3000_3040", "RHInBoxT_1d4000000_3999999d4000000_3040_3080", "RHInBoxT_1d4000000_3999999d4000000_3080_3120", "RHInBoxT_1d4000000_3999999d4000000_12479d4_3160", "RHInBoxT_1d4000000_3999999d4000000_3160_3200", "RHInBoxT_1d4000000_3999999d4000000_3200_3240", "RHInBoxT_1d4000000_3999999d4000000_3240_3280", "RHInBoxT_1d4000000_3999999d4000000_3280_3320", "RHInBoxT_1d4000000_3999999d4000000_3320_3360", "RHInBoxT_1d4000000_3999999d4000000_3360_3400", "RHInBoxT_1d4000000_3999999d4000000_3400_3440", "RHInBoxT_1d4000000_3999999d4000000_3440_3480", "RHInBoxT_1d4000000_3999999d4000000_3480_3520", "RHInBoxT_1d4000000_3999999d4000000_3520_14241d4", "RHInBoxT_1d4000000_3999999d4000000_3560_3600", "RHInBoxT_1d4000000_3999999d4000000_3600_3640", "RHInBoxT_1d4000000_3999999d4000000_3640_3680", "RHInBoxT_1d4000000_3999999d4000000_3680_3720", "RHInBoxT_1d4000000_3999999d4000000_3720_3760", "RHInBoxT_1d4000000_3999999d4000000_3760_3800", "RHInBoxT_1d4000000_3999999d4000000_3800_3840", "RHInBoxT_1d4000000_3999999d4000000_15359d4_3880", "RHInBoxT_1d4000000_3999999d4000000_3880_3920", "RHInBoxT_1d4000000_3999999d4000000_3920_15841d4", "RHInBoxT_1d4000000_3999999d4000000_3960_16001d4"]
+
+[[lean_lib]]
+name = "Arb4_BandGlue_h4000"
+roots = ["Arb4_BandGlue_h4000"]
+
+[[lean_lib]]
+name = "Arb4_H4000Edges"
+roots = ["Arb4_H4000Edges_0", "Arb4_H4000Edges_1", "Arb4_H4000Edges_2", "Arb4_H4000Edges_3", "Arb4_H4000Edges_4", "Arb4_H4000Edges_5"]
+
+[[lean_lib]]
+name = "Arb4_H4000Slabs"
+roots = ["Arb4_H4000Slabs_0", "Arb4_H4000Slabs_1", "Arb4_H4000Slabs_2", "Arb4_H4000Slabs_3", "Arb4_H4000Slabs_4"]
+
+[[lean_lib]]
+name = "Arb4_H4000Lines"
+roots = ["Arb4_H4000Lines_0", "Arb4_H4000Lines_1", "Arb4_H4000Lines_2", "Arb4_H4000Lines_3", "Arb4_H4000Lines_4"]
+
+[[lean_lib]]
+name = "Arb4_h4000"
+roots = ["Arb4_h4000"]
+
+[[lean_lib]]
+name = "Arb4_AxiomGuard_h4000"
+roots = ["Arb4_AxiomGuard_h4000"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4: the COMPACT hypothesis-free [4000, 5000] segment (Arb4_prepare_seg.py 5000 + Arb4_emit_seg.py
+# --seg 5000): zzl band plan sources (unchanged), band table, certificates, capstone
+# `Arb4_h5000.all_nontrivial_zeros_up_to_height_5000` (no hypotheses), guard.  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_ZZLSegment_h5000"
+srcDir = "../../zeta_zero_localization/lean"
+roots = ["AllZeros_h5000", "RHInBoxT_1d4000000_3999999d4000000_4000_4040", "RHInBoxT_1d4000000_3999999d4000000_4040_4080", "RHInBoxT_1d4000000_3999999d4000000_4080_4120", "RHInBoxT_1d4000000_3999999d4000000_4120_4160", "RHInBoxT_1d4000000_3999999d4000000_16639d4_4200", "RHInBoxT_1d4000000_3999999d4000000_4200_4240", "RHInBoxT_1d4000000_3999999d4000000_4240_4280", "RHInBoxT_1d4000000_3999999d4000000_4280_4320", "RHInBoxT_1d4000000_3999999d4000000_4320_4360", "RHInBoxT_1d4000000_3999999d4000000_4360_4400", "RHInBoxT_1d4000000_3999999d4000000_4400_4440", "RHInBoxT_1d4000000_3999999d4000000_4440_4480", "RHInBoxT_1d4000000_3999999d4000000_4480_4520", "RHInBoxT_1d4000000_3999999d4000000_4520_4560", "RHInBoxT_1d4000000_3999999d4000000_4560_4600", "RHInBoxT_1d4000000_3999999d4000000_4600_4640", "RHInBoxT_1d4000000_3999999d4000000_4640_4680", "RHInBoxT_1d4000000_3999999d4000000_4680_4720", "RHInBoxT_1d4000000_3999999d4000000_4720_4760", "RHInBoxT_1d4000000_3999999d4000000_4760_4800", "RHInBoxT_1d4000000_3999999d4000000_4800_4840", "RHInBoxT_1d4000000_3999999d4000000_4840_19521d4", "RHInBoxT_1d4000000_3999999d4000000_4880_4920", "RHInBoxT_1d4000000_3999999d4000000_4920_4960", "RHInBoxT_1d4000000_3999999d4000000_4960_5000"]
+
+[[lean_lib]]
+name = "Arb4_BandGlue_h5000"
+roots = ["Arb4_BandGlue_h5000"]
+
+[[lean_lib]]
+name = "Arb4_H5000Edges"
+roots = ["Arb4_H5000Edges_0", "Arb4_H5000Edges_1", "Arb4_H5000Edges_2", "Arb4_H5000Edges_3", "Arb4_H5000Edges_4", "Arb4_H5000Edges_5"]
+
+[[lean_lib]]
+name = "Arb4_H5000Slabs"
+roots = ["Arb4_H5000Slabs_0", "Arb4_H5000Slabs_1", "Arb4_H5000Slabs_2", "Arb4_H5000Slabs_3", "Arb4_H5000Slabs_4"]
+
+[[lean_lib]]
+name = "Arb4_H5000Lines"
+roots = ["Arb4_H5000Lines_0", "Arb4_H5000Lines_1", "Arb4_H5000Lines_2", "Arb4_H5000Lines_3", "Arb4_H5000Lines_4"]
+
+[[lean_lib]]
+name = "Arb4_h5000"
+roots = ["Arb4_h5000"]
+
+[[lean_lib]]
+name = "Arb4_AxiomGuard_h5000"
+roots = ["Arb4_AxiomGuard_h5000"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4: the COMPACT hypothesis-free [5000, 6000] segment (Arb4_prepare_seg.py 6000 + Arb4_emit_seg.py
+# --seg 6000): zzl band plan sources (unchanged), band table, certificates, capstone
+# `Arb4_h6000.all_nontrivial_zeros_up_to_height_6000` (no hypotheses), guard.  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_ZZLSegment_h6000"
+srcDir = "../../zeta_zero_localization/lean"
+roots = ["AllZeros_h6000", "RHInBoxT_1d4000000_3999999d4000000_5000_5040", "RHInBoxT_1d4000000_3999999d4000000_5040_5080", "RHInBoxT_1d4000000_3999999d4000000_5080_5120", "RHInBoxT_1d4000000_3999999d4000000_5120_20641d4", "RHInBoxT_1d4000000_3999999d4000000_5160_5200", "RHInBoxT_1d4000000_3999999d4000000_5200_5240", "RHInBoxT_1d4000000_3999999d4000000_5240_5280", "RHInBoxT_1d4000000_3999999d4000000_5280_5320", "RHInBoxT_1d4000000_3999999d4000000_5320_5360", "RHInBoxT_1d4000000_3999999d4000000_5360_5400", "RHInBoxT_1d4000000_3999999d4000000_5400_5440", "RHInBoxT_1d4000000_3999999d4000000_5440_5480", "RHInBoxT_1d4000000_3999999d4000000_5480_5520", "RHInBoxT_1d4000000_3999999d4000000_5520_5560", "RHInBoxT_1d4000000_3999999d4000000_5560_5600", "RHInBoxT_1d4000000_3999999d4000000_5600_5640", "RHInBoxT_1d4000000_3999999d4000000_5640_5680", "RHInBoxT_1d4000000_3999999d4000000_5680_5720", "RHInBoxT_1d4000000_3999999d4000000_5720_5760", "RHInBoxT_1d4000000_3999999d4000000_5760_23201d4", "RHInBoxT_1d4000000_3999999d4000000_5800_5840", "RHInBoxT_1d4000000_3999999d4000000_5840_5880", "RHInBoxT_1d4000000_3999999d4000000_5880_23681d4", "RHInBoxT_1d4000000_3999999d4000000_5920_5960", "RHInBoxT_1d4000000_3999999d4000000_5960_6000"]
+
+[[lean_lib]]
+name = "Arb4_BandGlue_h6000"
+roots = ["Arb4_BandGlue_h6000"]
+
+[[lean_lib]]
+name = "Arb4_H6000Edges"
+roots = ["Arb4_H6000Edges_0", "Arb4_H6000Edges_1", "Arb4_H6000Edges_2", "Arb4_H6000Edges_3", "Arb4_H6000Edges_4", "Arb4_H6000Edges_5"]
+
+[[lean_lib]]
+name = "Arb4_H6000Slabs"
+roots = ["Arb4_H6000Slabs_0", "Arb4_H6000Slabs_1", "Arb4_H6000Slabs_2", "Arb4_H6000Slabs_3", "Arb4_H6000Slabs_4"]
+
+[[lean_lib]]
+name = "Arb4_H6000Lines"
+roots = ["Arb4_H6000Lines_0", "Arb4_H6000Lines_1", "Arb4_H6000Lines_2", "Arb4_H6000Lines_3", "Arb4_H6000Lines_4"]
+
+[[lean_lib]]
+name = "Arb4_h6000"
+roots = ["Arb4_h6000"]
+
+[[lean_lib]]
+name = "Arb4_AxiomGuard_h6000"
+roots = ["Arb4_AxiomGuard_h6000"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4: the COMPACT hypothesis-free [6000, 7000] segment (Arb4_prepare_seg.py 7000 + Arb4_emit_seg.py
+# --seg 7000): zzl band plan sources (unchanged), band table, certificates, capstone
+# `Arb4_h7000.all_nontrivial_zeros_up_to_height_7000` (no hypotheses), guard.  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_ZZLSegment_h7000"
+srcDir = "../../zeta_zero_localization/lean"
+roots = ["AllZeros_h7000", "RHInBoxT_1d4000000_3999999d4000000_6000_6038", "RHInBoxT_1d4000000_3999999d4000000_6038_6077", "RHInBoxT_1d4000000_3999999d4000000_6077_6115", "RHInBoxT_1d4000000_3999999d4000000_6115_6154", "RHInBoxT_1d4000000_3999999d4000000_6154_6192", "RHInBoxT_1d4000000_3999999d4000000_6192_6231", "RHInBoxT_1d4000000_3999999d4000000_6231_6269", "RHInBoxT_1d4000000_3999999d4000000_6269_6308", "RHInBoxT_1d4000000_3999999d4000000_6308_6346", "RHInBoxT_1d4000000_3999999d4000000_6346_6385", "RHInBoxT_1d4000000_3999999d4000000_25539d4_6423", "RHInBoxT_1d4000000_3999999d4000000_6423_6462", "RHInBoxT_1d4000000_3999999d4000000_6462_26001d4", "RHInBoxT_1d4000000_3999999d4000000_6500_6538", "RHInBoxT_1d4000000_3999999d4000000_6538_6577", "RHInBoxT_1d4000000_3999999d4000000_6577_6615", "RHInBoxT_1d4000000_3999999d4000000_6615_6654", "RHInBoxT_1d4000000_3999999d4000000_26615d4_6692", "RHInBoxT_1d4000000_3999999d4000000_6692_6731", "RHInBoxT_1d4000000_3999999d4000000_26923d4_6769", "RHInBoxT_1d4000000_3999999d4000000_6769_6808", "RHInBoxT_1d4000000_3999999d4000000_6808_6846", "RHInBoxT_1d4000000_3999999d4000000_6846_6885", "RHInBoxT_1d4000000_3999999d4000000_6885_6923", "RHInBoxT_1d4000000_3999999d4000000_6923_6962", "RHInBoxT_1d4000000_3999999d4000000_6962_7000"]
+
+[[lean_lib]]
+name = "Arb4_BandGlue_h7000"
+roots = ["Arb4_BandGlue_h7000"]
+
+[[lean_lib]]
+name = "Arb4_H7000Edges"
+roots = ["Arb4_H7000Edges_0", "Arb4_H7000Edges_1", "Arb4_H7000Edges_2", "Arb4_H7000Edges_3", "Arb4_H7000Edges_4", "Arb4_H7000Edges_5"]
+
+[[lean_lib]]
+name = "Arb4_H7000Slabs"
+roots = ["Arb4_H7000Slabs_0", "Arb4_H7000Slabs_1", "Arb4_H7000Slabs_2", "Arb4_H7000Slabs_3", "Arb4_H7000Slabs_4", "Arb4_H7000Slabs_5"]
+
+[[lean_lib]]
+name = "Arb4_H7000Lines"
+roots = ["Arb4_H7000Lines_0", "Arb4_H7000Lines_1", "Arb4_H7000Lines_2", "Arb4_H7000Lines_3", "Arb4_H7000Lines_4", "Arb4_H7000Lines_5"]
+
+[[lean_lib]]
+name = "Arb4_h7000"
+roots = ["Arb4_h7000"]
+
+[[lean_lib]]
+name = "Arb4_AxiomGuard_h7000"
+roots = ["Arb4_AxiomGuard_h7000"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane Arb4: the COMPACT hypothesis-free [7000, 8000] segment (Arb4_prepare_seg.py 8000 + Arb4_emit_seg.py
+# --seg 8000): zzl band plan sources (unchanged), band table, certificates, capstone
+# `Arb4_h8000.all_nontrivial_zeros_up_to_height_8000` (no hypotheses), guard.  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "Arb4_ZZLSegment_h8000"
+srcDir = "../../zeta_zero_localization/lean"
+roots = ["AllZeros_h8000", "RHInBoxT_1d4000000_3999999d4000000_7000_7037", "RHInBoxT_1d4000000_3999999d4000000_7037_7074", "RHInBoxT_1d4000000_3999999d4000000_7074_7111", "RHInBoxT_1d4000000_3999999d4000000_7111_7148", "RHInBoxT_1d4000000_3999999d4000000_7148_7185", "RHInBoxT_1d4000000_3999999d4000000_7185_7222", "RHInBoxT_1d4000000_3999999d4000000_7222_7259", "RHInBoxT_1d4000000_3999999d4000000_7259_7296", "RHInBoxT_1d4000000_3999999d4000000_7296_7333", "RHInBoxT_1d4000000_3999999d4000000_7333_7370", "RHInBoxT_1d4000000_3999999d4000000_7370_7407", "RHInBoxT_1d4000000_3999999d4000000_7407_7444", "RHInBoxT_1d4000000_3999999d4000000_7444_7481", "RHInBoxT_1d4000000_3999999d4000000_7481_7519", "RHInBoxT_1d4000000_3999999d4000000_30075d4_7556", "RHInBoxT_1d4000000_3999999d4000000_7556_7593", "RHInBoxT_1d4000000_3999999d4000000_7593_7630", "RHInBoxT_1d4000000_3999999d4000000_7630_7667", "RHInBoxT_1d4000000_3999999d4000000_7667_7704", "RHInBoxT_1d4000000_3999999d4000000_7704_7741", "RHInBoxT_1d4000000_3999999d4000000_30963d4_7778", "RHInBoxT_1d4000000_3999999d4000000_7778_7815", "RHInBoxT_1d4000000_3999999d4000000_7815_31409d4", "RHInBoxT_1d4000000_3999999d4000000_7852_7889", "RHInBoxT_1d4000000_3999999d4000000_7889_31705d4", "RHInBoxT_1d4000000_3999999d4000000_7926_7963", "RHInBoxT_1d4000000_3999999d4000000_31851d4_8000"]
+
+[[lean_lib]]
+name = "Arb4_BandGlue_h8000"
+roots = ["Arb4_BandGlue_h8000"]
+
+[[lean_lib]]
+name = "Arb4_H8000Edges"
+roots = ["Arb4_H8000Edges_0", "Arb4_H8000Edges_1", "Arb4_H8000Edges_2", "Arb4_H8000Edges_3", "Arb4_H8000Edges_4", "Arb4_H8000Edges_5", "Arb4_H8000Edges_6"]
+
+[[lean_lib]]
+name = "Arb4_H8000Slabs"
+roots = ["Arb4_H8000Slabs_0", "Arb4_H8000Slabs_1", "Arb4_H8000Slabs_2", "Arb4_H8000Slabs_3", "Arb4_H8000Slabs_4", "Arb4_H8000Slabs_5"]
+
+[[lean_lib]]
+name = "Arb4_H8000Lines"
+roots = ["Arb4_H8000Lines_0", "Arb4_H8000Lines_1", "Arb4_H8000Lines_2", "Arb4_H8000Lines_3", "Arb4_H8000Lines_4", "Arb4_H8000Lines_5"]
+
+[[lean_lib]]
+name = "Arb4_h8000"
+roots = ["Arb4_h8000"]
+
+[[lean_lib]]
+name = "Arb4_AxiomGuard_h8000"
+roots = ["Arb4_AxiomGuard_h8000"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane H11K: all nontrivial zeros up to height 11000 on the critical line, HYPOTHESIS-FREE:
+# Arb4_h8000 + ONE wide Turing band [31851/4, 11004] (sharp-pi pins, H11K_Turing), RS5 on-line
+# zeros, the top edge at 11004 checked per octant piece (H11K_EdgeSplit).  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "H11K_Turing"
+roots = ["H11K_Turing"]
+
+[[lean_lib]]
+name = "H11K_EdgeSplit"
+roots = ["H11K_EdgeSplit"]
+
+[[lean_lib]]
+name = "H11K_Edge_T11004"
+roots = ["H11K_Edge_T11004"]
+
+[[lean_lib]]
+name = "H11K_Slab_U11004"
+roots = ["H11K_Slab_U11004"]
+
+[[lean_lib]]
+name = "RS5_Band_T8000"
+roots = ["RS5_Band_T8000Lo_C0", "RS5_Band_T8000Hi_C0"]
+
+[[lean_lib]]
+name = "H11K_Line"
+roots = ["H11K_Line"]
+
+[[lean_lib]]
+name = "H11K_h11000"
+roots = ["H11K_h11000"]
+
+[[lean_lib]]
+name = "H11K_AxiomGuard"
+roots = ["H11K_AxiomGuard"]

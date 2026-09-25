@@ -1,0 +1,35 @@
+created = "2026-09-23"
+depends_on = ["RH_dbn_rh_iff_H0_real_zeros", "RH_dbn_real_zeros_upset"]
+kind = "milestone"
+name = "RH.dbn_rh_iff_real_zeros_nonneg_t"
+statement_module = "Statements.RH_dbn_rh_iff_real_zeros_nonneg_t"
+status = "proved"
+title = "Route C M1c, the sInf-free statement of the wall clause C10: RH (strip form) iff every zero of H_t is real for every t >= 0 (classically Lambda <= 0). An EQUIVALENCE; proves neither side. conjecture1_proved = False"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "f3154843d4185264ccbc0dc6fab73de687e2be517454031b7eecd11cd59b8454"
+date = "2026-09-24"
+run_id = "36055781811"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36055781811"
+theorem = "dbn_rh_iff_real_zeros_nonneg_t"
+
+[grant]
+artifact_sha256 = "f3154843d4185264ccbc0dc6fab73de687e2be517454031b7eecd11cd59b8454"
+date = "2026-09-24"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "ef083c48-579d-4bec-a689-c30fdccec2a1"
+statement_sha256 = "f4ac36e5dc3b11aff23c3b8be7aab03e39f5a3a045b252592d46a10aa759be6f"
+
+[proof]
+artifact = "../../examples/dbn/lean/DBNM1RHIff.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "blind-auditors A1+A2 (same-session subagents of the author, self-attested, 2026-09-24)"
+date = "2026-09-23"
+independence = "unverified"
+text = "My reading of the registry statement, done before I opened the artifact: strip-form RH over Mathlib `riemannZeta` (every zeta zero with 0 < Re < 1 has Re = 1/2) holds if and only if, for every t >= 0, every zero of `DBN.H t` is real. Here `DBN.H t z = ∫_{(0,∞)} e^{t u^2} Φ(u) cos(z u) du`, where Φ is the standard de Bruijn-Newman Φ. The copy of Φ in RHDefs matches the island's DBNDefs.lean at lines 40-41, 211-214 and 408-413. Classically the right side is Λ <= 0, which is RH restated.\n\nCanonical gate: `load_campaign` finds the node (status draft; it depends on C4 and the up-set node). `statement_matches` returns True against `examples/dbn/lean/DBNM1RHIff.lean`. `artifact_incompleteness_markers` returns [] for the artifact and for all 19 modules in its dbn-island import closure.\n\nBuild: `lake build --no-build` reports \"All targets up-to-date (8807 jobs)\" and exits 0. My probe gives `#print axioms dbn_rh_iff_real_zeros_nonneg_t` = [propext, Classical.choice, Quot.sound], and the same three for `dbn_rh_iff_H0_real_zeros` and `dbn_real_zeros_upset`. An `example` restating the registry statement word for word elaborated, proved by the theorem. I deleted my probe file afterwards; the other auditors' probes in Probes/ are untouched.\n\nThe left side is character-for-character the left side of the C4 registry node and of the island theorem `dbn_rh_iff_H0_real_zeros`. The proof rewrites with C4. The forward direction then uses `dbn_real_zeros_upset 0 t ht`, and the converse is `h 0 le_rfl`. The theorem takes no hypotheses. A grep of the import closure finds no `RiemannHypothesis`, no `axiom` and no input of RH strength; the only `variable` lines are ordinary implicit variables.\n\nEstablishes: strip-RH <-> (for all t >= 0, every zero of H_t is real), with no conditions and only the three standard axioms. It does not prove RH or either side, and it does not define or bound Λ. conjecture1_proved = False.\n\nIndependent second read-back (A2): I read the statement before opening the artifact. It says: (for all rho : C, riemannZeta rho = 0 -> 0 < Re rho -> Re rho < 1 -> Re rho = 1/2) iff (for all t : R, 0 <= t -> for all z : C, DBN.H t z = 0 -> Im z = 0).\n\n- Left side: strip-form RH over Mathlib riemannZeta. It is character-for-character the same as the left side of the C4 node RH_dbn_rh_iff_H0_real_zeros.\n- Right side: every zero of H_t is real for every t >= 0. Classically this is Lambda <= 0, which is RH again.\n- The node is an equivalence between two restatements of one open conjecture.\n- The RHDefs DBN block (thetaMoment, Phi, HIntegrand, H) matches DBNDefs.lean lines 40-41, 211-214, 408-409 and 413. Only the namespace wrapper lines differ.\n\nCanonical gate:\n- statement_matches returned True.\n- The raw theorem header is byte-identical between the statement file and the artifact.\n- artifact_incompleteness_markers returned [] on DBNM1RHIff.lean and on all 19 modules of its dbn-island import closure.\n\nBuild and probe:\n- lake build --no-build reported all targets up to date (8807 jobs).\n- #print axioms dbn_rh_iff_real_zeros_nonneg_t gives only [propext, Classical.choice, Quot.sound]. The C4 and upset theorems give the same three.\n- An example restating the registry statement verbatim, proved by dbn_rh_iff_real_zeros_nonneg_t, elaborates.\n- The constants in the theorem's type are Mathlib's root riemannZeta and the island's DBN.H. Neither is shadowed, and the island has no axiom or opaque.\n\nProves neither side:\n- The proof is rw [dbn_rh_iff_H0_real_zeros], then the forward direction uses dbn_real_zeros_upset 0 t ht h0, and the backward direction specialises at t = 0.\n- C4 and upset carry no hypotheses; I checked their signatures with #check.\n- RiemannHypothesis does not appear in DBNM1RHIff, DBNM1Parametric, DBNRealZerosIff or DBNRealZerosIffFinal.\n\nWhat it establishes: strip-RH is equivalent to \"all zeros of H_t are real for every t >= 0\", with no `sorry`. This is the sInf-free form of the C10 wall.\n\nWhat it does not establish: either side. That means no RH and no Lambda <= 0. Lambda is not defined on the island. conjecture1_proved = False.\n\nMy probe was deleted. Probes from other auditors in Probes/ were left untouched.\n\nTestimony: docs/AUDIT_TESTIMONY_RH_dbn_rh_iff_real_zeros_nonneg_t_2026-09-24_A1.md, _A2.md (both pass, axioms_clean, statement_byte_identical)."

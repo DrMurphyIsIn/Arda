@@ -1,5 +1,5 @@
 name = "Quasicrystal"
-defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder", "OfflineDiscs", "OfflineDiscsInstances", "EulerFactorOffline", "SelfInversiveOfflineInstances", "EulerFactorSectionOffline", "LeakageDictionary", "LeakageInstances", "LeakageNode", "SatakeDegreeTwo", "DedekindQuadratic"]
+defaultTargets = ["LeeYangCore", "KSConstruction", "BoundaryLemmas", "CharacterizationStatements", "TwoFreqRigidity", "RationalFreqReduction", "InvolutionDictionary", "TorusSectionLadder", "OfflineDiscs", "OfflineDiscsInstances", "EulerFactorOffline", "SelfInversiveOfflineInstances", "EulerFactorSectionOffline", "LeakageDictionary", "LeakageInstances", "LeakageNode", "SatakeDegreeTwo", "DedekindQuadratic", "LemmaO", "LemmaOWitnesses"]
 
 # PROGRAM MIRRORMERE (reverse-Dyson) QC-1 island: formalize the Lee-Yang /
 # stable-polynomial classification frontier.  conjecture1_proved = False --
@@ -128,3 +128,19 @@ roots = ["SatakeDegreeTwo"]
 [[lean_lib]]
 name = "DedekindQuadratic"
 roots = ["DedekindQuadratic"]
+
+# LEMMA O (2026-09-25): the log-derivative coefficients are supported on prime powers IFF
+# the amplitude is multiplicative (Mathlib ArithmeticFunction form, abstract completely
+# additive weight, instantiated at Real.log over R and C), plus the generation-law
+# refinement (complete multiplicativity).  Kernel justification of zoo.py
+# `check_multiplicativity`.  conjecture1_proved = False.
+[[lean_lib]]
+name = "LemmaO"
+roots = ["LemmaO"]
+
+# The n = 6 witnesses for Lemma O: zeta (positive control, b(6) = 0), Davenport-Heilbronn
+# (b(6) = (1 + kappa^2) log 6 > 0) and the Epstein form x^2 + 5y^2 (b(6) = 2 log 6), the
+# latter two NOT multiplicative by Lemma O.  conjecture1_proved = False.
+[[lean_lib]]
+name = "LemmaOWitnesses"
+roots = ["LemmaOWitnesses"]
