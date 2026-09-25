@@ -1,0 +1,24 @@
+x=24 K= 2 (even cos modes up to k=2.97)  ZK=+0.01199  E=+0.04819  vE=[ 0.52 -1.  ]
+x=24 K= 3 (even cos modes up to k=4.94)  ZK=+0.00557  E=+0.00594  vE=[ 0.48 -1.   -0.14]
+x=24 K= 4 (even cos modes up to k=6.92)  ZK=+0.00106  E=+0.00389  vE=[-0.47  1.    0.15 -0.03]
+x=24 K= 6 (even cos modes up to k=10.87)  ZK=+0.00106  E=+0.00236  vE=
+x=24 K= 9 (even cos modes up to k=16.80)  ZK=+0.00091  E=+0.00030  vE=
+x=24 K=12 (even cos modes up to k=22.74)  ZK=+0.00089  E=-0.00009  vE=
+x=28 K= 2 (even cos modes up to k=2.83)  ZK=+0.00483  E=+0.08496  vE=[ 0.65 -1.  ]
+x=28 K= 3 (even cos modes up to k=4.71)  ZK=+0.00483  E=+0.00712  vE=[ 0.56 -1.   -0.22]
+x=28 K= 4 (even cos modes up to k=6.60)  ZK=+0.00055  E=+0.00191  vE=[-0.55  1.    0.24 -0.05]
+x=28 K= 6 (even cos modes up to k=10.37)  ZK=+0.00022  E=+0.00037  vE=
+x=28 K= 9 (even cos modes up to k=16.03)  ZK=+0.00010  E=-0.16510  vE=
+x=28 K=12 (even cos modes up to k=21.68)  ZK=+0.00009  E=-0.19583  vE=
+x=32 K= 2 (even cos modes up to k=2.72)  ZK=+0.00584  E=+0.09448  vE=[ 0.77 -1.  ]
+x=32 K= 3 (even cos modes up to k=4.53)  ZK=+0.00374  E=+0.00661  vE=[ 0.64 -1.   -0.28]
+x=32 K= 4 (even cos modes up to k=6.35)  ZK=+0.00050  E=+0.00131  vE=[-0.62  1.    0.31 -0.06]
+x=32 K= 6 (even cos modes up to k=9.97)  ZK=+0.00009  E=+0.00013  vE=
+x=32 K= 9 (even cos modes up to k=15.41)  ZK=+0.00002  E=+0.00002  vE=
+x=32 K=12 (even cos modes up to k=20.85)  ZK=+0.00001  E=-0.11940  vE=
+x=35 K= 2 (even cos modes up to k=2.65)  ZK=+0.00662  E=+0.08519  vE=[ 0.85 -1.  ]
+x=35 K= 3 (even cos modes up to k=4.42)  ZK=+0.00250  E=+0.00518  vE=[-0.7   1.    0.32]
+x=35 K= 4 (even cos modes up to k=6.19)  ZK=+0.00031  E=+0.00097  vE=[-0.67  1.    0.36 -0.06]
+x=35 K= 6 (even cos modes up to k=9.72)  ZK=+0.00005  E=+0.00009  vE=
+x=35 K= 9 (even cos modes up to k=15.02)  ZK=+0.00001  E=+0.00001  vE=
+x=35 K=12 (even cos modes up to k=20.32)  ZK=+0.00000  E=-0.33388  vE=
