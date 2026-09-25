@@ -127,12 +127,21 @@ jobs:
         working-directory: telperion/examples/zeta_reflection/lean
         run: lake exe cache get
 
+      - name: Build the RS5 zero-band certificate chunks one at a time (each peaks at ~7.3 GB)
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in RS5_Band_T*_C*.lean; do lake build "${f%.lean}"; done
+
       - name: Build the anduril artifacts and their axiom guards
         if: steps.changes.outputs.run == 'true'
         working-directory: telperion/examples/zeta_reflection/lean
         run: |
           lake build CheckBand ReflectedBand_t14 EMZetaTail EMZetaComplex ForgeFirstZeroKernel StirlingBinet ReflectedBand_t14_Kernel RSTheta HeightFloor EdgeClearGlue BandGlue AllZerosKernel_h1000 \
-                     AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue AxiomGuardAllZerosKernel_h1000
+                     AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue AxiomGuardAllZerosKernel_h1000 \
+                     RS_AxiomGuard RS_AxiomGuardB3 RSSeam_AxiomGuard RS4_AxiomGuard RS5_AxiomGuard
 
       - name: "Axiom guard (anduril artifacts): axioms within the standard three, no sorryAx, every registry theorem printed"
         if: steps.changes.outputs.run == 'true'
@@ -145,7 +154,8 @@ jobs:
           floor() { case "$1" in
             AxiomGuardA4) echo 8 ;; AxiomGuardEMTail) echo 23 ;; AxiomGuardEMZetaComplex) echo 23 ;;
             AxiomGuardFirstZeroKernel) echo 1 ;; AxiomGuardStirling) echo 12 ;; AxiomGuardArbKernel) echo 16 ;;
-            AxiomGuardRSTheta) echo 24 ;; AxiomGuardHeightFloor) echo 98 ;; AxiomGuardBandGlue) echo 39 ;; AxiomGuardAllZerosKernel_h1000) echo 1 ;; *) echo 999 ;; esac; }
+            AxiomGuardRSTheta) echo 24 ;; AxiomGuardHeightFloor) echo 98 ;; AxiomGuardBandGlue) echo 39 ;; AxiomGuardAllZerosKernel_h1000) echo 1 ;;
+            RS_AxiomGuard) echo 186 ;; RS_AxiomGuardB3) echo 47 ;; RSSeam_AxiomGuard) echo 8 ;; RS4_AxiomGuard) echo 78 ;; RS5_AxiomGuard) echo 213 ;; *) echo 999 ;; esac; }
           # The registry theorems (one per proved node; two for AND_g2_reflected_band).
           registry() { case "$1" in
             AxiomGuardA4) echo "ZetaReflection.checkLine_correct ReflectedBand_t14.ok ReflectedBand_t14.pilot" ;;
@@ -157,9 +167,14 @@ jobs:
             AxiomGuardRSTheta) echo "RSDesignTheta.gaussBranch_theta_sub_thetaMain_le" ;;
             AxiomGuardHeightFloor) echo "HeightFloor.height_floor HeightFloor.height_floor_280000" ;;
             AxiomGuardBandGlue) echo "EdgeClearGlue.hnzl_discharged BandGlue.segBandHyp_of_certs" ;;
-            AxiomGuardAllZerosKernel_h1000) echo "AllZerosKernel_h1000.all_nontrivial_zeros_up_to_height_1000" ;; esac; }
+            AxiomGuardAllZerosKernel_h1000) echo "AllZerosKernel_h1000.all_nontrivial_zeros_up_to_height_1000" ;;
+            RS_AxiomGuard) echo "RSInt.riemann_siegel_integral RSInt.rsJ_C0" ;;
+            RS_AxiomGuardB3) echo "RSInt.rs_remainder_C0 RSInt.rs_Z_C0" ;;
+            RSSeam_AxiomGuard) echo "RSSeam.rs_remainder_C0_seam RSSeam.rs_Z_C0_seam" ;;
+            RS4_AxiomGuard) echo "RS4.check_sound RS4.rs4_Z_enclosure RS4.Demo.sign_A RS4.Demo.sign_B" ;;
+            RS5_AxiomGuard) echo "RS5.check5_sound RS5.exists_zeta_zero_of_signs RS5.band_sound RS5.Demo.zeta_zero_10000 RS5.BandJoint.zeta_zeros_finset" ;; esac; }
           total=0
-          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue AxiomGuardAllZerosKernel_h1000; do
+          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue AxiomGuardAllZerosKernel_h1000 RS_AxiomGuard RS_AxiomGuardB3 RSSeam_AxiomGuard RS4_AxiomGuard RS5_AxiomGuard; do
             [ -f "$g.lean" ] || { echo "::error::$g.lean is missing"; exit 1; }
             echo "== $g"
             rc=0; lake env lean "$g.lean" > "$g.out" 2>&1 || rc=$?
@@ -186,3 +201,213 @@ jobs:
             done
           done
           echo "OK: $total guarded anchors across 10 guards; every axiom list within the standard three; all 15 registry theorems present."
+
+  # The hypothesis-free zero ladder to height 8000 (Arb4_h1000 .. Arb4_h8000, anduril). NOT a required check:
+  # the full ladder is hours of kernel time, so it runs separately from zeta-reflection-compiles and only when
+  # the island changes (same always-report path gate), plus the weekly schedule. Segments are built one at a
+  # time and swap is added so a 4-vCPU / 16 GB runner never holds several 6-10 GB edge checks at once.
+  # conjecture1_proved = False: finite verification of zeros, not RH.
+  # The heavy per-segment leaves (edge / slab / line certificates) are independent, so they are
+  # built in parallel, one runner per segment, and handed to the gate job below as build outputs.
+  # Only the light glue (Arb4_Seg, band glue, the chained capstones Arb4_h$H and the guards) is
+  # built in the gate job, which replays the leaves from the uploaded .olean/.trace files.
+  anduril-ladder-seg:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        H: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Relevant changes? (path gate for pull requests)
+        id: changes
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
+        run: |
+          set -uo pipefail
+          run=true
+          if [ "$EVENT" = "pull_request" ]; then
+            base=""
+            if git rev-parse -q --verify 'HEAD^2^{commit}' >/dev/null; then
+              base=$(git rev-parse -q --verify 'HEAD^1^{commit}' || true)
+            elif [ -n "${BASE_SHA:-}" ] && git fetch -q --no-tags --depth=1 origin "$BASE_SHA"; then
+              base="$BASE_SHA"
+            fi
+            if [ -n "$base" ] && files=$(git diff --name-only "$base" HEAD); then
+              echo "PR changes $(printf '%s' "$files" | grep -c . || true) file(s) relative to $base"
+              if grep -qE "$RELEVANT" <<< "$files"; then
+                printf '%s\n' "$files" | grep -E "$RELEVANT" | head -20 || true
+              else
+                run=false
+              fi
+            else
+              echo "::warning::could not compute the PR diff against its base; running the full job"
+            fi
+          fi
+          echo "run=$run" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Nothing relevant changed -- skipping the ladder build
+        if: steps.changes.outputs.run != 'true'
+        run: echo "::notice::No change to the zeta_reflection island; anduril-kernel-ladder passes without building."
+
+      - name: Add swap (bounds peak memory of the edge decide checks)
+        if: steps.changes.outputs.run == 'true'
+        run: |
+          sudo fallocate -l 24G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2
+          free -g
+
+      - name: Cache elan toolchain
+        if: steps.changes.outputs.run == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_reflection/lean/lean-toolchain') }}
+
+      - name: Install elan
+        if: steps.changes.outputs.run == 'true'
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        run: lake exe cache get
+
+      - name: Build this segment's leaf certificates
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        run: lake build Arb4_H${{ matrix.H }}Edges Arb4_H${{ matrix.H }}Slabs Arb4_H${{ matrix.H }}Lines
+
+      - name: Hand the leaf build outputs to the gate job
+        if: steps.changes.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ladder-seg-${{ matrix.H }}
+          path: telperion/examples/zeta_reflection/lean/.lake/build
+          retention-days: 3
+          if-no-files-found: error
+
+  # The job named by AND.ladder_h8000_kernel's requires_ci_job.  It passes only if every segment
+  # built, and it re-checks every guard itself (the leaves' proofs are replayed from their .olean
+  # files, whose traces lake verifies against the sources).
+  anduril-kernel-ladder:
+    needs: anduril-ladder-seg
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Relevant changes? (path gate for pull requests)
+        id: changes
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
+        run: |
+          set -uo pipefail
+          run=true
+          if [ "$EVENT" = "pull_request" ]; then
+            base=""
+            if git rev-parse -q --verify 'HEAD^2^{commit}' >/dev/null; then
+              base=$(git rev-parse -q --verify 'HEAD^1^{commit}' || true)
+            elif [ -n "${BASE_SHA:-}" ] && git fetch -q --no-tags --depth=1 origin "$BASE_SHA"; then
+              base="$BASE_SHA"
+            fi
+            if [ -n "$base" ] && files=$(git diff --name-only "$base" HEAD); then
+              echo "PR changes $(printf '%s' "$files" | grep -c . || true) file(s) relative to $base"
+              if grep -qE "$RELEVANT" <<< "$files"; then
+                printf '%s\n' "$files" | grep -E "$RELEVANT" | head -20 || true
+              else
+                run=false
+              fi
+            else
+              echo "::warning::could not compute the PR diff against its base; running the full job"
+            fi
+          fi
+          echo "run=$run" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Nothing relevant changed -- skipping the ladder build
+        if: steps.changes.outputs.run != 'true'
+        run: echo "::notice::No change to the zeta_reflection island; anduril-kernel-ladder passes without building."
+
+      - name: Add swap (bounds peak memory of the edge decide checks)
+        if: steps.changes.outputs.run == 'true'
+        run: |
+          sudo fallocate -l 24G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2
+          free -g
+
+      - name: Cache elan toolchain
+        if: steps.changes.outputs.run == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/zeta_reflection/lean/lean-toolchain') }}
+
+      - name: Install elan
+        if: steps.changes.outputs.run == 'true'
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        run: lake exe cache get
+
+      - name: Collect the segment leaf builds
+        if: steps.changes.outputs.run == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ladder-seg-*
+          path: telperion/examples/zeta_reflection/lean/.lake/build
+          merge-multiple: true
+
+      - name: Build the ladder segment by segment and check every guard
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Arb4_AxiomGuard
+          for H in 1000 2000 3000 4000 5000 6000 7000 8000; do
+            echo "== segment to height $H"
+            lake build Arb4_h$H Arb4_AxiomGuard_h$H
+            out="$(lake env lean Arb4_AxiomGuard_h$H.lean 2>&1 | tr '\n' ' ' | tr -s ' ')"
+            if grep -q 'sorryAx' <<< "$out"; then echo "::error::h$H depends on sorry"; exit 1; fi
+            if grep -qE '(^|[^A-Za-z])error:' <<< "$out"; then echo "::error::guard h$H did not elaborate"; exit 1; fi
+            bad="$(grep -oE 'depends on axioms: \[[^]]*\]' <<< "$out" | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' | grep -vxE 'propext|Classical\.choice|Quot\.sound' || true)"
+            if [ -n "$bad" ]; then echo "::error::h$H axiom(s) outside the standard three: $bad"; exit 1; fi
+            grep -qE "'Arb4_h$H\.all_nontrivial_zeros_up_to_height_$H' depends on axioms: \[[^]]*\]" <<< "$out" \
+              || { echo "::error::capstone Arb4_h$H.all_nontrivial_zeros_up_to_height_$H not printed"; exit 1; }
+            echo "OK h$H: $(grep -oE 'depends on axioms' <<< "$out" | wc -l) guarded anchors, all within the standard three"
+          done
+
+      - name: Height 11000 -- one Turing band [31851/4, 11004] on top of the h8000 ladder, and its guard
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          for m in RS5_Band_T1000_C25 RS5_Band_T1000_C26 RS5_Band_T1000_C27 RS5_Band_T1000_C28 RS5_Band_T1000_C29 RS5_Band_T1000_C30 RS5_Band_T1000_C31 RS5_Band_T10000_C0 RS5_Band_T10000_C1 RS5_Band_T10000_C2 RS5_Band_T10000_C3 RS5_Band_T8000Lo_C0 RS5_Band_T8000Hi_C0 H11K_Edge_T11004 H11K_Slab_U11004; do lake build "$m"; done
+          lake build H11K_AxiomGuard
+          out="$(lake env lean H11K_AxiomGuard.lean 2>&1 | tr '\n' ' ' | tr -s ' ')"
+          if grep -q 'sorryAx' <<< "$out"; then echo "::error::h11000 depends on sorry"; exit 1; fi
+          if grep -qE '(^|[^A-Za-z])error:' <<< "$out"; then echo "::error::H11K guard did not elaborate"; exit 1; fi
+          bad="$(grep -oE 'depends on axioms: \[[^]]*\]' <<< "$out" | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' | grep -vxE 'propext|Classical\.choice|Quot\.sound' || true)"
+          if [ -n "$bad" ]; then echo "::error::h11000 axiom(s) outside the standard three: $bad"; exit 1; fi
+          n=$(grep -oE 'depends on axioms|does not depend on any axioms' <<< "$out" | wc -l)
+          if [ "$n" -lt 64 ]; then echo "::error::H11K guard printed $n axiom lines, expected at least 64"; exit 1; fi
+          grep -qE "'H11K_h11000\.all_nontrivial_zeros_up_to_height_11000' depends on axioms: \[[^]]*\]" <<< "$out" \
+            || { echo "::error::capstone all_nontrivial_zeros_up_to_height_11000 not printed"; exit 1; }
+          echo "OK h11000: $n guarded anchors, all within the standard three"
