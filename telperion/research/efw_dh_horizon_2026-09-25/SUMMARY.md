@@ -450,3 +450,30 @@ The increments fit about M^-1.6, not M^-2. The limit is about -1.294e-30, so x_D
 Not independently reproduced: the odd-sector crossing near 31.24, and the zero-side ledger.
 
 Fixes: ["Replace 'lambda_min decays about like e^{-x}' with the measured rate: about e^{-2.3x} to e^{-2.5x} over x = 15..28 (3.8e-13 at 15, 3.5e-18 at 20, 1.2e-23 at 25).", "Replace 'converges like M^-2' with 'about M^-1.6 (fit on M = 3000..8000 at x=30.6: -1.2751, -1.2820, -1.2875, -1.2897 e-30)'. The limit is about -1.294e-30. At x=30.571, M=8000 still gives +1.05e-32, so the best estimate is x_D \u2248 30.5711.", "State explicitly that the 30.571 bracket is a Ritz/Schur statement. Negativity at 30.572 with 4120 modes is an upper-bound-type (non-interval) result. Positivity at 30.571 is extrapolation, not a bound.", "The x=35 value -4.93e-11 and the odd-sector 31.24 crossing are high precision only. Label them that way wherever the 30.60 interval certificate is quoted."]
+## Independent peer-session confirmation (peterwmurphy-95, 2026-09-25; different session, same git identity -> "unverified" under #607)
+
+DH horizon CONFIRMED, independently. Own code, arb balls at 256 bits, nothing imported from efw/.
+- Setup: D = (1-i kappa)/2 L(chi) + (1+i kappa)/2 L(chi-bar), with Conrey character (5,2).
+- Functional equation of Lambda_D: residual 6e-41 to 6e-38 at 5 points. Control: kappa -> -kappa fails at 1.12.
+- Off-line zeros: 0.808517182456637 + 85.699348485377592i and 0.650830080609737 + 114.163342730757i.
+- Explicit formula cross-checked against 61 zeros (argument principle gives 61.000000) to 5.6e-37 on Gaussian tests. Controls: dropping the quadruple gives 2.54; the wrong gamma factor gives 0.61.
+
+Horizon, both sectors:
+| sector / point | peer | ours |
+|---|---|---|
+| even, Galerkin crossing N = 512 | 30.585 | |
+| even, Schur M = 2048 -> 4096 | 30.5725 -> 30.5719 | 30.571 +- 0.002 (stands) |
+| odd | 31.243 | 31.242 |
+
+RIGOROUS value at x = 30.60, even sector: an arb ball -6.906e-31 +- 1e-74. This is a stronger certificate than our -6.2e-32 vector.
+Other values: x = 31 gives -8.02e-30; x = 35 gives -4.80e-11. Decay below the horizon is e^{-2.40x}.
+
+EFW:
+- The circularity argument is logically correct. But the pinning to zeta_K is float SLSQP evidence over self-dual data, with no certificate.
+- The "surviving adversary" L(chi_-4)L(chi_5) + zeta_K's pole kernel is NOT the explicit formula of any L-function, because the pole kernel is indefinite. So its negativity only shows that a residue floor belongs in the constraint set.
+- Its crossing is at 5.0726, with the odd sector binding (ours: 5.07476). L_G's own pole-free form stays positive (1.32e-7 at x = 20).
+
+Caveats:
+- Positive values are Ritz upper bounds only; there is no full-class certificate for "D positive below 30.571".
+- Schur tail solves are float64.
+- The explicit formula for Lipschitz tests is assumed (the same paper-level point as lane B).
