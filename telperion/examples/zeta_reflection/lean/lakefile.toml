@@ -604,3 +604,207 @@ roots = ["RS4_Demo"]
 [[lean_lib]]
 name = "RS4_AxiomGuard"
 roots = ["RS4_AxiomGuard"]
+
+# Lane B5: RS5_Eval -- the t >= 509 variant of RS4.check (floor 509 instead of 10000; all computable
+# pieces reused from RS4_Eval), the t^(-3/4) margin check, and the band checker over dyadic samples.
+[[lean_lib]]
+name = "RS5_Eval"
+roots = ["RS5_Eval"]
+
+# Lane B5: RS5_Sound -- soundness of RS5.check5 (RS4_Sound's proof re-stated for the 509 floor).
+[[lean_lib]]
+name = "RS5_Sound"
+roots = ["RS5_Sound"]
+
+# Lane B5: RS5_Z -- RS5.check5 glued to RSSeam.rs_Z_C0_seam (t >= 509, margin (13/5) t^(-3/4) or its
+# rational bound (13/5) E / 2^P) and the certified sign of one dyadic sample.
+[[lean_lib]]
+name = "RS5_Z"
+roots = ["RS5_Z"]
+
+# Lane B5: RS5_Band -- IVT corollary on Mathlib's riemannZeta and the band certificate soundness
+# (K certified sign changes -> K distinct on-line zeros of riemannZeta inside the band).
+[[lean_lib]]
+name = "RS5_Band"
+roots = ["RS5_Band"]
+
+# Lane B5: band certificate [10000, 11000] -- four kernel-checked chunks (decide +kernel over the
+# emitted dyadic samples) and the glued headline (1182 distinct on-line zeros of riemannZeta).
+[[lean_lib]]
+name = "RS5_Band_T10000_C0"
+roots = ["RS5_Band_T10000_C0"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000_C1"
+roots = ["RS5_Band_T10000_C1"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000_C2"
+roots = ["RS5_Band_T10000_C2"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000_C3"
+roots = ["RS5_Band_T10000_C3"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000"
+roots = ["RS5_Band_T10000"]
+
+# Lane B5: RS5_Demo -- IVT corollary at lane B4's certified heights: a zero of riemannZeta on the
+# critical line with ordinate in (10000, 10000.5).
+[[lean_lib]]
+name = "RS5_Demo"
+roots = ["RS5_Demo"]
+
+# Lane B5: low-height band certificate [510, 520] through the SEAM bound (t >= 509): one chunk + headline.
+[[lean_lib]]
+name = "RS5_Band_T510_C0"
+roots = ["RS5_Band_T510_C0"]
+
+[[lean_lib]]
+name = "RS5_Band_T510"
+roots = ["RS5_Band_T510"]
+
+# Lane B5: band certificate [1000, 10000] -- 32 kernel-checked chunks + glued headline (9493 zeros).
+[[lean_lib]]
+name = "RS5_Band_T1000_C0"
+roots = ["RS5_Band_T1000_C0"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C1"
+roots = ["RS5_Band_T1000_C1"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C2"
+roots = ["RS5_Band_T1000_C2"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C3"
+roots = ["RS5_Band_T1000_C3"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C4"
+roots = ["RS5_Band_T1000_C4"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C5"
+roots = ["RS5_Band_T1000_C5"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C6"
+roots = ["RS5_Band_T1000_C6"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C7"
+roots = ["RS5_Band_T1000_C7"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C8"
+roots = ["RS5_Band_T1000_C8"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C9"
+roots = ["RS5_Band_T1000_C9"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C10"
+roots = ["RS5_Band_T1000_C10"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C11"
+roots = ["RS5_Band_T1000_C11"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C12"
+roots = ["RS5_Band_T1000_C12"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C13"
+roots = ["RS5_Band_T1000_C13"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C14"
+roots = ["RS5_Band_T1000_C14"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C15"
+roots = ["RS5_Band_T1000_C15"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C16"
+roots = ["RS5_Band_T1000_C16"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C17"
+roots = ["RS5_Band_T1000_C17"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C18"
+roots = ["RS5_Band_T1000_C18"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C19"
+roots = ["RS5_Band_T1000_C19"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C20"
+roots = ["RS5_Band_T1000_C20"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C21"
+roots = ["RS5_Band_T1000_C21"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C22"
+roots = ["RS5_Band_T1000_C22"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C23"
+roots = ["RS5_Band_T1000_C23"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C24"
+roots = ["RS5_Band_T1000_C24"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C25"
+roots = ["RS5_Band_T1000_C25"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C26"
+roots = ["RS5_Band_T1000_C26"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C27"
+roots = ["RS5_Band_T1000_C27"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C28"
+roots = ["RS5_Band_T1000_C28"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C29"
+roots = ["RS5_Band_T1000_C29"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C30"
+roots = ["RS5_Band_T1000_C30"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C31"
+roots = ["RS5_Band_T1000_C31"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000"
+roots = ["RS5_Band_T1000"]
+
+# Lane B5: the [1000, 10000] and [10000, 11000] bands glued: 10675 distinct on-line zeros in (1000, 11000).
+[[lean_lib]]
+name = "RS5_Band_Joint"
+roots = ["RS5_Band_Joint"]
+
+# Lane B5: the kernel-axiom guard (#print axioms for every RS5_ headline and every band chunk's
+# ok / count / zeros; not a default target).
+[[lean_lib]]
+name = "RS5_AxiomGuard"
+roots = ["RS5_AxiomGuard"]
