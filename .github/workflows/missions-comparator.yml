@@ -93,33 +93,43 @@ jobs:
             PYTHONPATH=src python -m telperion.missions.judge --island "$isl" --list | tail -1
           done
 
-  judge:
+  # The shard list. A manual dispatch may restrict it to one island (and one shard) to
+  # re-judge a single node without paying for the whole matrix; a job-level `if:` cannot
+  # see `matrix`, so the filtering happens here.
+  plan:
     needs: bundles-in-sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      include: ${{ steps.plan.outputs.include }}
+    steps:
+      - id: plan
+        env:
+          ALL: '[{"island": "dbn", "shard": "0/1"}, {"island": "rvm_bridge", "shard": "0/4"}, {"island": "rvm_bridge", "shard": "1/4"}, {"island": "rvm_bridge", "shard": "2/4"}, {"island": "rvm_bridge", "shard": "3/4"}, {"island": "zeta_reflection", "shard": "0/1"}]'
+          WANT_ISLAND: ${{ inputs.island }}
+          WANT_SHARD: ${{ inputs.shard }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          allm = json.loads(os.environ["ALL"])
+          isl, sh = os.environ.get("WANT_ISLAND", ""), os.environ.get("WANT_SHARD", "")
+          sel = [e for e in allm if not isl or (e["island"] == isl and (not sh or e["shard"] == sh))]
+          if not sel:
+              raise SystemExit(f"::error::no shard matches island={isl!r} shard={sh!r}; known: {allm}")
+          print("shards:", sel)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              fh.write("include=" + json.dumps(sel) + "\n")
+          PY
+
+  judge:
+    needs: [bundles-in-sync, plan]
     runs-on: ubuntu-latest
     timeout-minutes: 300
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - island: dbn
-            shard: "0/1"
-          - island: rvm_bridge
-            shard: "0/4"
-          - island: rvm_bridge
-            shard: "1/4"
-          - island: rvm_bridge
-            shard: "2/4"
-          - island: rvm_bridge
-            shard: "3/4"
-          - island: zeta_reflection
-            shard: "0/1"
+        include: ${{ fromJSON(needs.plan.outputs.include) }}
     name: judge ${{ matrix.island }} ${{ matrix.shard }}
-    # A manual dispatch may restrict the run to one island (and one shard) to re-judge a
-    # single node without paying for the whole matrix.
-    if: >-
-      github.event_name != 'workflow_dispatch'
-      || inputs.island == ''
-      || (matrix.island == inputs.island && (inputs.shard == '' || matrix.shard == inputs.shard))
     env:
       BUNDLE: telperion/missions/judge/${{ matrix.island }}
     steps:
