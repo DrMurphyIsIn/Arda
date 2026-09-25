@@ -76,6 +76,7 @@ import R3Cert.BGSCLHdom
 import R3Cert.BGSCLSharp
 import R3Cert.BGSpiderReduction
 import R3Cert.BGSpiderCells
+import R3Cert.BGSpiderLowDegree
 import R3Cert.R47HdomBridge
 import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
@@ -546,3 +547,6 @@ import R3Cert.R47BGConjecture
 #print axioms R3Cert.BGSCL.spider_dominates_lowDegree_of_taxed
 #print axioms R3Cert.BGSCL.bell_add_ρwit_le_rate
 #print axioms R3Cert.BGSCL.spider_dominates_lowDegree_of_rate
+#print axioms R3Cert.BGSCL.rateCellCap_23
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_uncond
+#print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot

@@ -21,6 +21,9 @@ Subcommands (run from proof/verification/):
                                                      SurchargeCell(23/624): exhaustive checks (see below)
   python3 bg_spider_reduction.py gen-cells          exact re-check of the rational certificates used in
                                                      BGSpiderCells.lean (Taylor log enclosures + 22 cells)
+  python3 bg_spider_reduction.py gen-rate           exact re-check of BGSpiderLowDegree.lean certificates
+  python3 bg_spider_reduction.py certified 520      exhaustive all-tree DP n <= N, float with near-tie
+                                                     retention + EXACT Fraction recheck of all candidates
   python3 bg_spider_reduction.py slack 300           size-free bound X(k) - gap vs the exact spider value;
                                                      gadget (arm_5/arm_4) lower bound per residue
   python3 bg_spider_reduction.py all                 everything at default sizes
@@ -548,6 +551,255 @@ def run_gen_cells():
     print(f"[gen-cells] all 22 certificates hold exactly; tightest margin {float(worst[0]):.3e} at K={worst[1]}")
 
 
+# ============================================================================ certified DP (float + exact recheck)
+def tree_dp_certified(N, KC=None, tol=1e-9, cand_tol=1e-8):
+    """Same exhaustive frontier DP as `tree_dp`, but (i) pruning drops a point only when it is dominated by
+    more than `tol` in log-space (far above accumulated rounding, ~1e-12), so every exact Pareto point
+    survives; (ii) back-pointers are kept; (iii) for each n every root state whose float value is within
+    `cand_tol` of the best is rebuilt and its pi recomputed EXACTLY (Fraction).  Returns
+    {n: (float best Phi, [exact pi of every candidate])}; the claim `max over trees <= M(n)` is then exact:
+    non-candidates are below the float best by > cand_tol >> rounding error, candidates are checked exactly."""
+    KC = KC or N
+    lp_all, R_all, prev_all, item_all = [np.array([0.0])], [np.array([0.0])], [np.array([-1])], [np.array([-1])]
+    tot = [1]
+    store = {"lp": np.array([0.0]), "R": np.array([0.0]), "prev": np.array([-1]), "item": np.array([-1])}
+    cap = [1 << 20]
+    arr = {k: np.empty(cap[0], dtype=(np.int64 if k in ("prev", "item") else float)) for k in store}
+    for k in store:
+        arr[k][0] = store[k][0]
+    n_used = [1]
+
+    def add(lp, R, prev, item):
+        m = len(lp)
+        while n_used[0] + m > cap[0]:
+            cap[0] *= 2
+            for k in arr:
+                new = np.empty(cap[0], dtype=arr[k].dtype)
+                new[:n_used[0]] = arr[k][:n_used[0]]
+                arr[k] = new
+        idx = np.arange(n_used[0], n_used[0] + m)
+        arr["lp"][idx], arr["R"][idx], arr["prev"][idx], arr["item"][idx] = lp, R, prev, item
+        n_used[0] += m
+        return idx
+
+    def prune_state(lp, R, k):
+        D = max(k, 1)
+        v = lp + np.log(D + R)
+        o = np.lexsort((-v, R))
+        v2 = v[o]
+        prevmax = np.concatenate(([-np.inf], np.maximum.accumulate(v2)[:-1]))
+        return o[v2 >= prevmax - tol]
+
+    def prune_front(lt, y):
+        o = np.lexsort((-lt, -y))
+        l2 = lt[o]
+        prevmax = np.concatenate(([-np.inf], np.maximum.accumulate(l2)[:-1]))
+        return o[l2 > prevmax - tol]
+    states = {(0, 0): np.array([0])}
+    items_rep, items_size = [], []
+    t0 = time.time()
+    for m in range(1, N):
+        cl, cy, ce = [], [], []
+        for k in range(0, KC):
+            e = states.get((k, m - 1))
+            if e is None:
+                continue
+            d = k + 1
+            R = arr["R"][e]
+            cl.append(arr["lp"][e] + np.log((d + R) / d))
+            cy.append(1 / (d + R))
+            ce.append(e)
+        cl, cy, ce = np.concatenate(cl), np.concatenate(cy), np.concatenate(ce)
+        keep = prune_front(cl, cy)
+        ids = np.arange(len(items_rep), len(items_rep) + len(keep))
+        items_rep.extend(int(x) for x in ce[keep])
+        items_size.extend([m] * len(keep))
+        Il, Iy = cl[keep], cy[keep]
+        for s in range(0, N - m):
+            for k in range(0, KC):
+                src = states.get((k, s))
+                if src is None:
+                    continue
+                lp = (arr["lp"][src][:, None] + Il[None, :]).ravel()
+                R = (arr["R"][src][:, None] + Iy[None, :]).ravel()
+                prev = np.repeat(src, len(ids))
+                it = np.tile(ids, len(src))
+                key = (k + 1, s + m)
+                old = states.get(key)
+                if old is not None:
+                    alp, aR = np.concatenate((arr["lp"][old], lp)), np.concatenate((arr["R"][old], R))
+                else:
+                    alp, aR = lp, R
+                kp = prune_state(alp, aR, k + 1)
+                no = 0 if old is None else len(old)
+                keep_old = old[kp[kp < no]] if old is not None else np.empty(0, dtype=np.int64)
+                kn = kp[kp >= no] - no
+                newidx = add(lp[kn], R[kn], prev[kn], it[kn]) if len(kn) else np.empty(0, dtype=np.int64)
+                states[key] = np.concatenate((keep_old, newidx))
+        if m % 50 == 0:
+            print(f"  [certified N={N}] m={m} entries={n_used[0]} t={time.time() - t0:.0f}s", flush=True)
+
+    def kids(e):
+        out = []
+        while arr["prev"][e] >= 0:
+            out.append(int(arr["item"][e]))
+            e = int(arr["prev"][e])
+        return out
+    memo = {}
+
+    def exact_item(i):
+        if i in memo:
+            return memo[i]
+        ch = [exact_item(c) for c in kids(items_rep[i])]
+        d = len(ch) + 1
+        P = Fr(1)
+        R = Fr(0)
+        for T, y in ch:
+            P *= T
+            R += y
+        memo[i] = (P * (d + R) / d, 1 / (d + R))
+        return memo[i]
+    out = {}
+    for n in range(2, N + 1):
+        s = n - 1
+        vals = []
+        for k in range(1, min(KC, s) + 1):
+            e = states.get((k, s))
+            if e is None:
+                continue
+            v = arr["lp"][e] + np.log((k + arr["R"][e]) / k) - s * F
+            vals.append((v, e, k))
+        best = max(float(np.max(v)) for v, _, _ in vals)
+        exact = []
+        for v, e, k in vals:
+            for j in np.nonzero(v >= best - cand_tol)[0]:
+                ch = [exact_item(c) for c in kids(int(e[j]))]
+                P, R = Fr(1), Fr(0)
+                for T, y in ch:
+                    P *= T
+                    R += y
+                exact.append(P * (k + R) / k)
+        out[n] = (best, exact)
+    return out
+
+
+def run_certified(N):
+    sp = spider_max(N)
+    t0 = time.time()
+    res = tree_dp_certified(N)
+    bad = [n for n in range(4, N + 1) if max(res[n][1]) > sp[n][0]]
+    ncand = sum(len(res[n][1]) for n in res)
+    print(f"[certified] N={N}: {ncand} candidates rechecked exactly; n with a tree exceeding the exact best "
+          f"spider: {bad if bad else 'NONE'}  ({time.time() - t0:.0f}s)")
+    return bad
+
+
+def run_gen_rate():
+    """Exact re-check of the low-degree certificates in BGSpiderLowDegree.lean: rational bounds on
+    bell(arm_j), j <= 22 (degree-6 Taylor, halved argument for |log| > 1), the 32 rate cells
+    (caps D = 23, 5, 4, 3, 2 with alpha = 1/3700, 1/2100, 1/660, 1/420, 1/135) and the 22 root cells,
+    and the threshold R_k - alpha*491 < log(26/23)_lo - 1/96 for every root degree k = 2..23."""
+    from mpmath import mp, mpf, log as mlog, ceil as mceil, floor as mfloor
+    mp.dps = 50
+
+    def P(c):
+        return 1 + c + c ** 2 / 2 + c ** 3 / 6 + c ** 4 / 24 + c ** 5 / 120, abs(c) ** 6 * Fr(7, 4320)
+
+    def rat(x, up, den=10 ** 7):
+        return Fr(int(mceil(x * den) if up else mfloor(x * den)), den)
+
+    def log_up(xq, halve=False):
+        t = mlog(mpf(xq.numerator) / xq.denominator)
+        for k in range(300):
+            c = rat(t + mpf('1e-7') * 1.5 ** k, True)
+            if halve:
+                p, e = P(c / 2)
+                if abs(c / 2) <= 1 and p - e >= 0 and xq <= (p - e) ** 2:
+                    return c
+            else:
+                p, e = P(c)
+                if abs(c) <= 1 and xq <= p - e:
+                    return c
+        raise ValueError(xq)
+
+    def log_lo(xq):
+        t = mlog(mpf(xq.numerator) / xq.denominator)
+        for k in range(300):
+            c = rat(t - mpf('1e-7') * 1.5 ** k, False)
+            p, e = P(c)
+            if abs(c) <= 1 and p + e <= xq:
+                return c
+        raise ValueError(xq)
+    A_lo = Fr(847797, 110000000)
+    F_lo = (A_lo + Fr(2027323, 5000000)) / 2
+    A_hi = Fr(133, 17061)
+    bj = {5: Fr(0)}
+    for j in list(range(1, 5)) + list(range(6, 23)):
+        T, _ = arm_exact(j)
+        bj[j] = log_up(T ** 11 / Fr(621, 64) ** (2 * j + 1), halve=j > 4) / 11
+
+    def yj(j):
+        return Fr(3, 4 * j + 3)
+
+    def Nb(s):
+        return max(-A_lo - Fr(1, 60) + Fr(2, 5) * s, -A_lo - Fr(1, 24) + s / 2, 0, (s - Fr(1, 32)) / 3,
+                   (s - Fr(1, 384)) / 4, s / 5)
+    CL = [(Fr(2, 5), Fr(1, 2), lambda y: -A_lo - (y - Fr(1, 3)) / 4), (Fr(0), Fr(1, 3), lambda y: -y / 32),
+          (Fr(0), Fr(1, 4), lambda y: -y / 384), (Fr(0), Fr(1, 5), lambda y: Fr(0))]
+
+    def Nb1(s):
+        return max(g(y) + s * y + 1 / (4 * (2 + y)) for lo, hi, g in CL for y in (lo, hi))
+
+    def Hnc(s, al, D):
+        return max([-F_lo + al + s, Nb(s)] + [bj[j] + al * (2 * j + 1) + s * yj(j) for j in range(1, D)])
+
+    def Hc(s, al):
+        return -A_lo + 2 * al + s / 3
+    caps = {23: Fr(1, 3700), 5: Fr(1, 2100), 4: Fr(1, 660), 3: Fr(1, 420), 2: Fr(1, 135)}
+    worst = None
+    for D, al in caps.items():
+        for K in range(1, D):
+            best = None
+            for i in range(0, 400):
+                S0 = Fr(i, 100) * Fr(K, 4) if K > 1 else Fr(i, 400)
+                if K > 1 and S0 > K:
+                    break
+                d = K + 1
+                sg = 1 / (d + S0)
+                try:
+                    ell = log_up((1 + S0 / d) ** 11 * Fr(64, 621)) / 11
+                except ValueError:
+                    continue
+                if K == 1:
+                    u = max([Nb1(sg)] + [sg * yj(j) + 1 / (4 * (2 + yj(j))) + bj[j] + al * (2 * j + 1)
+                                         for j in range(1, D)])
+                    v = u + ell - sg * S0 + A_hi - Fr(1, 12) + al
+                else:
+                    u = Hnc(sg, al, D)
+                    v = (K - 1) * max(Hc(sg, al), u) + u + ell - sg * S0 + al + {2: Fr(1, 96), 3: Fr(1, 1536)}.get(K, 0)
+                if best is None or v < best[0]:
+                    best = (v, S0)
+            assert best[0] <= 0, (D, K)
+            worst = min(worst or (-best[0], D, K), (-best[0], D, K))
+    print(f"[gen-rate] 32 rate cells hold exactly; tightest margin {float(worst[0]):.3e} at (D,K)=({worst[1]},{worst[2]})")
+    L_lo = log_lo(Fr(26, 23))
+    for k in range(2, 24):
+        D = k if k <= 5 else 23
+        al = caps[D]
+        best = None
+        for i in range(1, 340):
+            t = 1 + Fr(i, 200)
+            sg = 1 / (k * t)
+            R = k * max(Hc(sg, al), Hnc(sg, al, D)) + log_up(t) + 1 / t - 1
+            if best is None or R < best:
+                best = R
+        m = L_lo - Fr(1, 96) - (best - al * 491)
+        assert m > 0, k
+        print(f"  root k={k:2d} (D={D}, alpha={al}): R_k={float(best):.5f}, margin at n-1=491: {float(m):.2e}, "
+              f"own threshold n-1 >= {math.floor((best - L_lo + Fr(1, 96)) / al) + 1}")
+    print("[gen-rate] all 22 root cells beat the spider floor for n-1 >= 491")
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
     a = [int(x) for x in sys.argv[2:]]
@@ -563,6 +815,10 @@ if __name__ == "__main__":
         run_envelope(a[0] if a else 80, a[1] if len(a) > 1 else 19)
     elif cmd == "cells":
         run_cells()
+    elif cmd == "certified":
+        run_certified(a[0] if a else 120)
+    elif cmd == "gen-rate":
+        run_gen_rate()
     elif cmd == "gen-cells":
         run_gen_cells()
     elif cmd == "slack":
