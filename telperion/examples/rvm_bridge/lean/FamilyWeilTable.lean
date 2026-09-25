@@ -1,11 +1,17 @@
 /-
   FamilyWeilTable -- the d_min tables (Stage 0 of the quadratic-family programme, 2026-09-25).
 
-  For the cutoff N = 4 (x = 4: primes {2, 3}, atoms n in {2, 3}; the atom 4 sits on the support
-  edge and drops) and N = 7 (x = 6.5: primes {2, 3, 5}, atoms n in {2, ..., 6}; the cells at x = 6.5
-  and at N = 7 coincide since no prime lies in [6.5, 7)), every (pattern, sign) cell is given its
-  minimal fundamental discriminant d_min with a KERNEL-CHECKED proof (`decide +kernel`, Nat/Int
-  arithmetic only) that
+  CUTOFFS.  The cells are cut at an INTEGER N (pattern = (chi_d(p))_{p < N}): N = 4 gives the
+  primes {2, 3} (18 cells), N = 7 the primes {2, 3, 5} (54 cells).  The window statements carry a
+  REAL cutoff X (WindowPosX X d: tests supported in [-L, L] with 2L <= log X) and hold for ANY
+  0 < X <= N: family4_of_* for X <= 4 (atoms n in {2, 3}; at X = 4 the atom 4 sits on the support
+  edge and drops), family7_of_* for X <= 7 (atoms n < 7), in particular X = 6.5, the Stage 1/2
+  cutoff of the scoping memo, whose units (2L <= log 6.5) plug into family7_of_dmins at X = 6.5.
+  For X in (5, 7] the table7 cells are exactly the cells of the primes below X.  The integer
+  corollaries family4_of_dmins_nat / family7_of_dmins_nat are the case X = N.
+
+  Every (pattern, sign) cell is given its minimal fundamental discriminant d_min with a
+  KERNEL-CHECKED proof (`decide +kernel`, Nat/Int arithmetic only) that
     (i)   d_min is a fundamental discriminant,
     (ii)  d_min has the pattern and the sign,
     (iii) no fundamental discriminant of the same sign with smaller |d| has the pattern.
@@ -18,9 +24,11 @@
   DECISION carried: d = 1 (zeta^2) is excluded, so the (+, all +1) cell has d_min = 73 at N = 4
   and 241 at N = 7.
 
-  Family statements: family4_of_dmins / family7_of_dmins -- "for every fundamental d, W(N)"
-  follows from the conjunction of W(N) at the 18 (resp. 54) values of d_min.  Stage 0 proves NO
-  positivity unit.  conjecture1_proved = False.
+  Family statements: family4_of_dmins / family7_of_dmins -- "for every fundamental d, W(X)"
+  follows from the conjunction of W(X) at the 18 (resp. 54) values of d_min, for any real
+  0 < X <= 4 (resp. <= 7).  W(X) here is "Re weilFormQ d >= 0 on the window", a statement about the
+  frequency-side DEFINITION weilFormQ (see FamilyWeilQuad's disclosure); no explicit formula for
+  zeta_K is proved.  Stage 0 proves NO positivity unit.  conjecture1_proved = False.
 -/
 import FamilyWeilQuad
 
@@ -29,7 +37,7 @@ open Zeta23 Complex MeasureTheory
 namespace FamilyWeil
 open WeilExplicit
 
-/-! ## A. The cutoff N = 4 (x = 4): primes {2, 3}, 9 patterns x 2 signs = 18 cells. -/
+/-! ## A. The cells cut at N = 4: primes {2, 3}, 9 patterns x 2 signs = 18 cells (real cutoffs X <= 4). -/
 
 /-- A pattern on the primes `2, 3` as a function on `ℕ`. -/
 def patFun2 (ε : Tri × Tri) : ℕ → ℤ :=
@@ -123,16 +131,16 @@ theorem table4_spec (ε : Tri × Tri) (neg : Bool) : CellEntry 4 (patFun2 ε) ne
   | none => rw [ht] at h; exact h.elim
   | some d => rw [ht] at h; exact isCellMin_of_B4 h
 
-/-- THE REDUCTION at `N = 4`: window positivity at every table value gives it for every
-fundamental discriminant. -/
-theorem family4_of_table
-    (hpos : ∀ (ε : Tri × Tri) (neg : Bool) (d : ℤ), table4 ε neg = some d → WindowPos 4 d) :
-    ∀ d, IsFundDisc d → WindowPos 4 d := by
+/-- THE REDUCTION for the cells cut at `N = 4`, at any real cutoff `0 < X <= 4`: window positivity at
+every table value gives it for every fundamental discriminant. -/
+theorem family4_of_table {X : ℝ} (hX0 : 0 < X) (hXN : X ≤ 4)
+    (hpos : ∀ (ε : Tri × Tri) (neg : Bool) (d : ℤ), table4 ε neg = some d → WindowPosX X d) :
+    ∀ d, IsFundDisc d → WindowPosX X d := by
   intro d hd
   have hcell : InCell 4 (patFun2 (Tri.ofInt (kron2 d), Tri.ofInt (kron3 d))) (decide (d < 0)) d := by
     rw [inCell4_iff]
     exact ⟨rfl, (Tri.toInt_ofInt (kron2_mem d)).symm, (Tri.toInt_ofInt (kron3_mem d)).symm, hd⟩
-  exact reduction_of_entry (by norm_num) (table4_spec _ _) (hpos _ _) d hcell
+  exact reduction_of_entry (by norm_num) hX0 (by exact_mod_cast hXN) (table4_spec _ _) (hpos _ _) d hcell
 
 /-- The 18 values of `d_min` at `N = 4`, in the order of the cells
 `(eps_2, eps_3) in {-1, 0, 1}^2` (lexicographic), sign `+` then `-`. -/
@@ -142,22 +150,29 @@ theorem table4_mem : ∀ a ∈ triList, ∀ b ∈ triList, ∀ neg ∈ [false, t
     ∀ d ∈ table4 (a, b) neg, d ∈ dmins4 := by
   decide +kernel
 
-/-- The family statement at `N = 4` from the conjunction over the 18 cells' `d_min`. -/
-theorem family4_of_dmins (hpos : ∀ d ∈ dmins4, WindowPos 4 d) :
-    ∀ d, IsFundDisc d → WindowPos 4 d :=
-  family4_of_table fun ε neg d hd =>
+/-- The family statement at any real cutoff `0 < X <= 4` from the conjunction over the 18 cells' `d_min`. -/
+theorem family4_of_dmins {X : ℝ} (hX0 : 0 < X) (hXN : X ≤ 4)
+    (hpos : ∀ d ∈ dmins4, WindowPosX X d) :
+    ∀ d, IsFundDisc d → WindowPosX X d :=
+  family4_of_table hX0 hXN fun ε neg d hd =>
     hpos d (table4_mem ε.1 (mem_triList _) ε.2 (mem_triList _) neg (by cases neg <;> simp) d
       (Option.mem_def.mpr hd))
 
-/-- The family statement from the explicit conjunction over the 18 cells' `d_min`. -/
-theorem family4_of_cells (h : WindowPos 4 5 ∧ WindowPos 4 (-19) ∧ WindowPos 4 21 ∧ WindowPos 4 (-3) ∧ WindowPos 4 13 ∧ WindowPos 4 (-11) ∧ WindowPos 4 8 ∧ WindowPos 4 (-4) ∧ WindowPos 4 12 ∧ WindowPos 4 (-24) ∧ WindowPos 4 28 ∧ WindowPos 4 (-8) ∧ WindowPos 4 17 ∧ WindowPos 4 (-7) ∧ WindowPos 4 33 ∧ WindowPos 4 (-15) ∧ WindowPos 4 73 ∧ WindowPos 4 (-23)) :
-    ∀ d, IsFundDisc d → WindowPos 4 d := by
-  refine family4_of_dmins ?_
+/-- The integer-cutoff corollary at `X = 4`. -/
+theorem family4_of_dmins_nat (hpos : ∀ d ∈ dmins4, WindowPos 4 d) :
+    ∀ d, IsFundDisc d → WindowPos 4 d :=
+  family4_of_dmins (by norm_num) (by norm_num) hpos
+
+/-- The family statement at any real cutoff `0 < X <= 4` from the explicit conjunction over the
+18 cells' `d_min`. -/
+theorem family4_of_cells {X : ℝ} (hX0 : 0 < X) (hXN : X ≤ 4) (h : WindowPosX X 5 ∧ WindowPosX X (-19) ∧ WindowPosX X 21 ∧ WindowPosX X (-3) ∧ WindowPosX X 13 ∧ WindowPosX X (-11) ∧ WindowPosX X 8 ∧ WindowPosX X (-4) ∧ WindowPosX X 12 ∧ WindowPosX X (-24) ∧ WindowPosX X 28 ∧ WindowPosX X (-8) ∧ WindowPosX X 17 ∧ WindowPosX X (-7) ∧ WindowPosX X 33 ∧ WindowPosX X (-15) ∧ WindowPosX X 73 ∧ WindowPosX X (-23)) :
+    ∀ d, IsFundDisc d → WindowPosX X d := by
+  refine family4_of_dmins hX0 hXN ?_
   simp only [dmins4, List.forall_mem_cons, List.mem_nil_iff, false_implies, implies_true,
     and_true]
   exact h
 
-/-! ## B. The cutoff N = 7 (x = 6.5): primes {2, 3, 5}, 27 patterns x 2 signs = 54 cells. -/
+/-! ## B. The cells cut at N = 7: primes {2, 3, 5}, 27 patterns x 2 signs = 54 cells (real cutoffs X <= 7, e.g. 6.5). -/
 
 /-- A pattern on the primes `2, 3, 5` as a function on `ℕ`. -/
 def patFun3 (ε : Tri × Tri × Tri) : ℕ → ℤ :=
@@ -214,7 +229,7 @@ theorem isCellMin_of_B7 {ε : Tri × Tri × Tri} {neg : Bool} {d : ℤ} (h : IsC
   rw [hs'] at this
   exact this hd'B
 
-/-- THE TABLE at `N = 7` (x = 6.5): cell `((eps_2, eps_3, eps_5), sign) -> d_min`. -/
+/-- THE TABLE at `N = 7` (primes `{2, 3, 5}`): cell `((eps_2, eps_3, eps_5), sign) -> d_min`. -/
 def table7 : Tri × Tri × Tri → Bool → Option ℤ
   | (.m, .m, .m), false => some 53
   | (.m, .m, .m), true => some (-43)
@@ -293,17 +308,17 @@ theorem table7_spec (ε : Tri × Tri × Tri) (neg : Bool) :
   | none => rw [ht] at h; exact h.elim
   | some d => rw [ht] at h; exact isCellMin_of_B7 h
 
-/-- THE REDUCTION at `N = 7`. -/
-theorem family7_of_table
-    (hpos : ∀ (ε : Tri × Tri × Tri) (neg : Bool) (d : ℤ), table7 ε neg = some d → WindowPos 7 d) :
-    ∀ d, IsFundDisc d → WindowPos 7 d := by
+/-- THE REDUCTION for the cells cut at `N = 7`, at any real cutoff `0 < X <= 7` (e.g. `6.5`). -/
+theorem family7_of_table {X : ℝ} (hX0 : 0 < X) (hXN : X ≤ 7)
+    (hpos : ∀ (ε : Tri × Tri × Tri) (neg : Bool) (d : ℤ), table7 ε neg = some d → WindowPosX X d) :
+    ∀ d, IsFundDisc d → WindowPosX X d := by
   intro d hd
   have hcell : InCell 7 (patFun3 (Tri.ofInt (kron2 d), Tri.ofInt (kron3 d), Tri.ofInt (kron5 d)))
       (decide (d < 0)) d := by
     rw [inCell7_iff]
     exact ⟨rfl, (Tri.toInt_ofInt (kron2_mem d)).symm, (Tri.toInt_ofInt (kron3_mem d)).symm,
       (Tri.toInt_ofInt (kron5_mem d)).symm, hd⟩
-  exact reduction_of_entry (by norm_num) (table7_spec _ _) (hpos _ _) d hcell
+  exact reduction_of_entry (by norm_num) hX0 (by exact_mod_cast hXN) (table7_spec _ _) (hpos _ _) d hcell
 
 /-- The 54 values of `d_min` at `N = 7`, in the order of the cells
 `(eps_2, eps_3, eps_5) in {-1, 0, 1}^3` (lexicographic), sign `+` then `-`. -/
@@ -313,17 +328,25 @@ theorem table7_mem : ∀ a ∈ triList, ∀ b ∈ triList, ∀ c ∈ triList, �
     ∀ d ∈ table7 (a, b, c) neg, d ∈ dmins7 := by
   decide +kernel
 
-/-- The family statement at `N = 7` (x = 6.5) from the conjunction over the 54 cells' `d_min`. -/
-theorem family7_of_dmins (hpos : ∀ d ∈ dmins7, WindowPos 7 d) :
-    ∀ d, IsFundDisc d → WindowPos 7 d :=
-  family7_of_table fun ε neg d hd =>
+/-- The family statement at any real cutoff `0 < X <= 7` (e.g. `X = 6.5`) from the conjunction over
+the 54 cells' `d_min`. -/
+theorem family7_of_dmins {X : ℝ} (hX0 : 0 < X) (hXN : X ≤ 7)
+    (hpos : ∀ d ∈ dmins7, WindowPosX X d) :
+    ∀ d, IsFundDisc d → WindowPosX X d :=
+  family7_of_table hX0 hXN fun ε neg d hd =>
     hpos d (table7_mem ε.1 (mem_triList _) ε.2.1 (mem_triList _) ε.2.2 (mem_triList _) neg
       (by cases neg <;> simp) d (Option.mem_def.mpr hd))
 
-/-- The family statement from the explicit conjunction over the 54 cells' `d_min`. -/
-theorem family7_of_cells (h : WindowPos 7 53 ∧ WindowPos 7 (-43) ∧ WindowPos 7 5 ∧ WindowPos 7 (-115) ∧ WindowPos 7 29 ∧ WindowPos 7 (-19) ∧ WindowPos 7 93 ∧ WindowPos 7 (-3) ∧ WindowPos 7 165 ∧ WindowPos 7 (-195) ∧ WindowPos 7 21 ∧ WindowPos 7 (-51) ∧ WindowPos 7 13 ∧ WindowPos 7 (-83) ∧ WindowPos 7 85 ∧ WindowPos 7 (-35) ∧ WindowPos 7 61 ∧ WindowPos 7 (-11) ∧ WindowPos 7 8 ∧ WindowPos 7 (-52) ∧ WindowPos 7 140 ∧ WindowPos 7 (-40) ∧ WindowPos 7 44 ∧ WindowPos 7 (-4) ∧ WindowPos 7 12 ∧ WindowPos 7 (-132) ∧ WindowPos 7 60 ∧ WindowPos 7 (-120) ∧ WindowPos 7 24 ∧ WindowPos 7 (-24) ∧ WindowPos 7 28 ∧ WindowPos 7 (-8) ∧ WindowPos 7 40 ∧ WindowPos 7 (-20) ∧ WindowPos 7 76 ∧ WindowPos 7 (-56) ∧ WindowPos 7 17 ∧ WindowPos 7 (-7) ∧ WindowPos 7 65 ∧ WindowPos 7 (-55) ∧ WindowPos 7 41 ∧ WindowPos 7 (-31) ∧ WindowPos 7 33 ∧ WindowPos 7 (-87) ∧ WindowPos 7 105 ∧ WindowPos 7 (-15) ∧ WindowPos 7 129 ∧ WindowPos 7 (-39) ∧ WindowPos 7 73 ∧ WindowPos 7 (-23) ∧ WindowPos 7 145 ∧ WindowPos 7 (-95) ∧ WindowPos 7 241 ∧ WindowPos 7 (-71)) :
-    ∀ d, IsFundDisc d → WindowPos 7 d := by
-  refine family7_of_dmins ?_
+/-- The integer-cutoff corollary at `X = 7`. -/
+theorem family7_of_dmins_nat (hpos : ∀ d ∈ dmins7, WindowPos 7 d) :
+    ∀ d, IsFundDisc d → WindowPos 7 d :=
+  family7_of_dmins (by norm_num) (by norm_num) hpos
+
+/-- The family statement at any real cutoff `0 < X <= 7` from the explicit conjunction over the
+54 cells' `d_min`. -/
+theorem family7_of_cells {X : ℝ} (hX0 : 0 < X) (hXN : X ≤ 7) (h : WindowPosX X 53 ∧ WindowPosX X (-43) ∧ WindowPosX X 5 ∧ WindowPosX X (-115) ∧ WindowPosX X 29 ∧ WindowPosX X (-19) ∧ WindowPosX X 93 ∧ WindowPosX X (-3) ∧ WindowPosX X 165 ∧ WindowPosX X (-195) ∧ WindowPosX X 21 ∧ WindowPosX X (-51) ∧ WindowPosX X 13 ∧ WindowPosX X (-83) ∧ WindowPosX X 85 ∧ WindowPosX X (-35) ∧ WindowPosX X 61 ∧ WindowPosX X (-11) ∧ WindowPosX X 8 ∧ WindowPosX X (-52) ∧ WindowPosX X 140 ∧ WindowPosX X (-40) ∧ WindowPosX X 44 ∧ WindowPosX X (-4) ∧ WindowPosX X 12 ∧ WindowPosX X (-132) ∧ WindowPosX X 60 ∧ WindowPosX X (-120) ∧ WindowPosX X 24 ∧ WindowPosX X (-24) ∧ WindowPosX X 28 ∧ WindowPosX X (-8) ∧ WindowPosX X 40 ∧ WindowPosX X (-20) ∧ WindowPosX X 76 ∧ WindowPosX X (-56) ∧ WindowPosX X 17 ∧ WindowPosX X (-7) ∧ WindowPosX X 65 ∧ WindowPosX X (-55) ∧ WindowPosX X 41 ∧ WindowPosX X (-31) ∧ WindowPosX X 33 ∧ WindowPosX X (-87) ∧ WindowPosX X 105 ∧ WindowPosX X (-15) ∧ WindowPosX X 129 ∧ WindowPosX X (-39) ∧ WindowPosX X 73 ∧ WindowPosX X (-23) ∧ WindowPosX X 145 ∧ WindowPosX X (-95) ∧ WindowPosX X 241 ∧ WindowPosX X (-71)) :
+    ∀ d, IsFundDisc d → WindowPosX X d := by
+  refine family7_of_dmins hX0 hXN ?_
   simp only [dmins7, List.forall_mem_cons, List.mem_nil_iff, false_implies, implies_true,
     and_true]
   exact h

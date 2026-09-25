@@ -24,6 +24,11 @@
   (weilFormF_eq_zero_logq_add) and its real-part form on autocorrelations, where f(0) = ||g||^2
   (RvMBridge31.autocorr_zero), hence monotonicity in logq (re_weilFormF_autocorr_mono_logq).
 
+  DISCLOSURE.  weilFormF is a DEFINITION (the arithmetic side of a would-be explicit formula).
+  Only at the zeta data is it tied to anything on the island (weilFormF_zeta, and through it to
+  E6Bridge4's explicit formula for zeta); for any other data no identification with a zero sum
+  is proved here, and the t-side writing of the archimedean term is not proved.
+
   Nothing about positivity is proved.  conjecture1_proved = False.
 -/
 import E6Bridge31

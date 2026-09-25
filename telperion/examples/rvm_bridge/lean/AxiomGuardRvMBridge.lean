@@ -189,9 +189,11 @@
         family4_of_dmins, family7_of_dmins, ...} -- the QUADRATIC FAMILY, Stage 0 (2026-09-25,
         FamilyWeilForm/Disc/Quad/Table): the parametric degree-<= 2 Weil form (= the zeta
         weilForm at the zeta data), zeta_K's instance, monotonicity in log|d| within a
-        (pattern, sign) cell, the kernel-checked d_min tables at N = 4 (18 cells) and N = 7
-        (x = 6.5, 54 cells), and the reduction "W(N) for every fundamental d" <- W(N) at the
-        cells' d_min.  NO positivity unit is proved.  conjecture1_proved = False.
+        (pattern, sign) cell, the kernel-checked d_min tables of the cells cut at N = 4 (18 cells)
+        and N = 7 (primes {2, 3, 5}, 54 cells), and the reduction "W(X) for every fundamental d"
+        <- W(X) at the cells' d_min, at any real cutoff 0 < X <= N (WindowPosX; e.g. X = 6.5 for
+        N = 7; integer corollaries *_nat).  weilFormQ is a frequency-side DEFINITION: no explicit
+        formula for zeta_K is proved.  NO positivity unit is proved.  conjecture1_proved = False.
 
     Expected: every line reads `[propext, Classical.choice, Quot.sound]`.
     conjecture1_proved = False. -/
@@ -1230,7 +1232,10 @@ import FamilyWeilTable
 #print axioms FamilyWeil.re_weilFormQ_autocorr_eq
 #print axioms FamilyWeil.cellForm_eq_of_inCell
 #print axioms FamilyWeil.re_weilFormQ_mono
+#print axioms FamilyWeil.windowPos_iff
+#print axioms FamilyWeil.WindowPosX.mono
 #print axioms FamilyWeil.cell_reduction
+#print axioms FamilyWeil.cell_reduction_nat
 #print axioms FamilyWeil.reduction_of_entry
 
 -- FamilyWeilTable: the kernel-checked d_min tables at N = 4 and N = 7 (2026-09-25). conjecture1_proved = False.
@@ -1241,6 +1246,7 @@ import FamilyWeilTable
 #print axioms FamilyWeil.family4_of_table
 #print axioms FamilyWeil.table4_mem
 #print axioms FamilyWeil.family4_of_dmins
+#print axioms FamilyWeil.family4_of_dmins_nat
 #print axioms FamilyWeil.family4_of_cells
 #print axioms FamilyWeil.inCell7_iff
 #print axioms FamilyWeil.isCellMin_of_B7
@@ -1249,4 +1255,5 @@ import FamilyWeilTable
 #print axioms FamilyWeil.family7_of_table
 #print axioms FamilyWeil.table7_mem
 #print axioms FamilyWeil.family7_of_dmins
+#print axioms FamilyWeil.family7_of_dmins_nat
 #print axioms FamilyWeil.family7_of_cells

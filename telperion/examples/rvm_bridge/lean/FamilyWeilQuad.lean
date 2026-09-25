@@ -18,9 +18,20 @@
   autocorr g 0 = ||g||^2 >= 0, hence for d, d' in the same cell with |d'| <= |d|
       Re weilFormQ d' (autocorr g) <= Re weilFormQ d (autocorr g).
 
-  REDUCTION (cell_reduction, reduction_of_entry): window positivity WindowPos N d of the minimal
-  member d_min of a cell implies it for every member; a table entry is either `some d_min` (with
-  IsCellMin) or `none` (with a proof the cell is empty), and the reduction covers both branches.
+  REDUCTION (cell_reduction, reduction_of_entry): window positivity WindowPosX X d at a REAL cutoff
+  X with 0 < X <= N (tests supported in [-L, L] with 2L <= log X) of the minimal member d_min of a
+  cell at the integer cutoff N implies it for every member; a table entry is either `some d_min`
+  (with IsCellMin) or `none` (with a proof the cell is empty), and the reduction covers both
+  branches.  WindowPos N d is the corollary at X = N (cell_reduction_nat).
+
+  DISCLOSURE.  weilFormQ d is a DEFINITION on the frequency side: the parametric form at the data
+  (weightQ d, [0, mu_d], log|d|).  No explicit formula tying it to the zeros of zeta_K is proved
+  on this island (Mathlib has no Hadamard product / explicit formula for Dirichlet L-functions),
+  and the t-side writing of the archimedean term is not proved either.  "WindowPosX X d" means
+  "Re of this functional >= 0 on the window"; its identification with Weil positivity for zeta_K
+  rests on the zeta anchor weilFormF_zeta (the same functional IS the island's zeta form at the
+  zeta data) plus the hand derivation of the second gamma factor Gamma_R(s + mu_d) and of the
+  weights c_d(p^k) = log p (1 + chi_d(p)^k) (the coefficients of -zeta_K'/zeta_K).
 
   Nothing about positivity is proved.  conjecture1_proved = False.
 -/
@@ -164,36 +175,58 @@ theorem re_weilFormQ_mono {N : ℕ} {ε : ℕ → ℤ} {neg : Bool} {d d' : ℤ}
 
 /-! ## D. Window positivity and the reduction to the minimal member. -/
 
-/-- `W(N)` for `chi_d`: the Weil form of `zeta_K` is nonnegative on every autocorrelation of a
-Weil test supported in `[-L, L]` with `2L <= log N`. -/
-def WindowPos (N : ℕ) (d : ℤ) : Prop :=
-  ∀ (g : ℝ → ℂ) (L : ℝ), IsWeilTest g → tsupport g ⊆ Set.Icc (-L) L → 2 * L ≤ Real.log N →
+/-- `W(X)` for `chi_d` at a REAL cutoff `X`: the (frequency-side) Weil form of `zeta_K` has
+nonnegative real part on every autocorrelation of a Weil test supported in `[-L, L]` with
+`2L <= log X`.  This is a statement about the DEFINITION `weilFormQ`; see the module docstring. -/
+def WindowPosX (X : ℝ) (d : ℤ) : Prop :=
+  ∀ (g : ℝ → ℂ) (L : ℝ), IsWeilTest g → tsupport g ⊆ Set.Icc (-L) L → 2 * L ≤ Real.log X →
     0 ≤ (weilFormQ d (autocorr g)).re
+
+/-- `W(N)` at an integer cutoff: `WindowPosX N`. -/
+def WindowPos (N : ℕ) (d : ℤ) : Prop := WindowPosX (N : ℝ) d
+
+theorem windowPos_iff (N : ℕ) (d : ℤ) : WindowPos N d ↔ WindowPosX (N : ℝ) d := Iff.rfl
+
+/-- A smaller cutoff admits fewer tests: `WindowPosX` is antitone in `X` on `(0, ∞)`. -/
+theorem WindowPosX.mono {X Y : ℝ} (hX : 0 < X) (hXY : X ≤ Y) {d : ℤ} (h : WindowPosX Y d) :
+    WindowPosX X d := fun g L hg hsupp hL =>
+  h g L hg hsupp (le_trans hL (Real.log_le_log hX hXY))
 
 /-- `d` is the member of its cell of least `|d|`. -/
 def IsCellMin (N : ℕ) (ε : ℕ → ℤ) (neg : Bool) (d : ℤ) : Prop :=
   InCell N ε neg d ∧ ∀ d', InCell N ε neg d' → d.natAbs ≤ d'.natAbs
 
-/-- THE CELL REDUCTION: window positivity at the minimal member gives it on the whole cell. -/
-theorem cell_reduction {N : ℕ} (hN : 1 ≤ N) {ε : ℕ → ℤ} {neg : Bool} {dmin : ℤ}
-    (hmin : IsCellMin N ε neg dmin) (hpos : WindowPos N dmin) :
-    ∀ d, InCell N ε neg d → WindowPos N d := by
+/-- THE CELL REDUCTION at a real cutoff `0 < X <= N`: window positivity at the minimal member of
+the cell (cut at `N`) gives it on the whole cell.  (`2L <= log X <= log N` keeps the finite prime
+side over `n < N` and the cell decomposition.) -/
+theorem cell_reduction {N : ℕ} (hN : 1 ≤ N) {X : ℝ} (hX0 : 0 < X) (hXN : X ≤ N)
+    {ε : ℕ → ℤ} {neg : Bool} {dmin : ℤ}
+    (hmin : IsCellMin N ε neg dmin) (hpos : WindowPosX X dmin) :
+    ∀ d, InCell N ε neg d → WindowPosX X d := by
   intro d hd g L hg hsupp hL
+  have hLN : 2 * L ≤ Real.log N := le_trans hL (Real.log_le_log hX0 hXN)
   have h1 := hpos g L hg hsupp hL
-  have h2 := re_weilFormQ_mono hd hmin.1 (hmin.2 d hd) hg hsupp hN hL
+  have h2 := re_weilFormQ_mono hd hmin.1 (hmin.2 d hd) hg hsupp hN hLN
   linarith
+
+/-- The integer-cutoff corollary at `X = N`. -/
+theorem cell_reduction_nat {N : ℕ} (hN : 1 ≤ N) {ε : ℕ → ℤ} {neg : Bool} {dmin : ℤ}
+    (hmin : IsCellMin N ε neg dmin) (hpos : WindowPos N dmin) :
+    ∀ d, InCell N ε neg d → WindowPos N d :=
+  cell_reduction hN (by exact_mod_cast hN) le_rfl hmin hpos
 
 /-- A table entry: `some d` with `d` the minimal member, or `none` with a proof of emptiness. -/
 def CellEntry (N : ℕ) (ε : ℕ → ℤ) (neg : Bool) : Option ℤ → Prop
   | some d => IsCellMin N ε neg d
   | none => ∀ d, ¬ InCell N ε neg d
 
-/-- The reduction through a table entry, both branches. -/
-theorem reduction_of_entry {N : ℕ} (hN : 1 ≤ N) {ε : ℕ → ℤ} {neg : Bool} {e : Option ℤ}
-    (he : CellEntry N ε neg e) (hpos : ∀ d, e = some d → WindowPos N d) :
-    ∀ d, InCell N ε neg d → WindowPos N d := by
+/-- The reduction through a table entry, both branches, at a real cutoff `0 < X <= N`. -/
+theorem reduction_of_entry {N : ℕ} (hN : 1 ≤ N) {X : ℝ} (hX0 : 0 < X) (hXN : X ≤ N)
+    {ε : ℕ → ℤ} {neg : Bool} {e : Option ℤ}
+    (he : CellEntry N ε neg e) (hpos : ∀ d, e = some d → WindowPosX X d) :
+    ∀ d, InCell N ε neg d → WindowPosX X d := by
   cases e with
   | none => exact fun d hd => absurd hd (he d)
-  | some dmin => exact cell_reduction hN he (hpos dmin rfl)
+  | some dmin => exact cell_reduction hN hX0 hXN he (hpos dmin rfl)
 
 end FamilyWeil

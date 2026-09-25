@@ -409,13 +409,15 @@ name = "FamilyWeilForm"
 name = "FamilyWeilDisc"
 
 # Quadratic family, Stage 0: zeta_K's form (weightQ, mu_d, log|d|), the cell form, monotonicity in
-# log|d| within a (pattern, sign) cell, WindowPos, and the reduction to the minimal member (both
-# table branches).  No positivity.  conjecture1_proved = False.
+# log|d| within a (pattern, sign) cell, WindowPosX (real cutoff X, tests with 2L <= log X), and the
+# reduction to the minimal member at any 0 < X <= N (both table branches).  weilFormQ is a
+# frequency-side DEFINITION; no explicit formula for zeta_K is proved.  No positivity.  conjecture1_proved = False.
 [[lean_lib]]
 name = "FamilyWeilQuad"
 
-# Quadratic family, Stage 0: the d_min tables at N = 4 (18 cells) and N = 7 (x = 6.5, 54 cells),
-# kernel-checked (decide) minimality, and the family statements "W(N) for every fundamental d"
+# Quadratic family, Stage 0: the d_min tables of the cells cut at N = 4 (primes {2, 3}, 18 cells)
+# and N = 7 (primes {2, 3, 5}, 54 cells), kernel-checked (decide) minimality, and the family
+# statements "W(X) for every fundamental d" at any real cutoff 0 < X <= N (e.g. X = 6.5 for N = 7)
 # from the conjunction over the cells' d_min.  No positivity.  conjecture1_proved = False.
 [[lean_lib]]
 name = "FamilyWeilTable"
