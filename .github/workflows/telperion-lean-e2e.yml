@@ -2602,8 +2602,11 @@ jobs:
             out="$(lake env lean $G 2>&1 || true)"
             echo "$out"
             echo "$out" > "${G%.lean}.out"
-            if echo "$out" | grep -q 'sorryAx'; then echo "::error::$G depends on sorry"; exit 1; fi
-            if echo "$out" | grep -qE 'error:'; then echo "::error::$G did not elaborate cleanly"; exit 1; fi
+            # Here-strings, not `echo ... | grep -q`: a pipe-fed `grep -q` exits at its first
+            # match and, once the producer outruns the 64K pipe buffer, SIGPIPE + `pipefail`
+            # turns the check into a silent pass (measured 2026-09-25 at 1.2 MB of output).
+            if grep -q 'sorryAx' <<< "$out"; then echo "::error::$G depends on sorry"; exit 1; fi
+            if grep -qE 'error:' <<< "$out"; then echo "::error::$G did not elaborate cleanly"; exit 1; fi
             n=$(echo "$out" | grep -cE "depends on axioms|does not depend on any axioms" || true)
             if [ "$n" -lt "1" ]; then echo "::error::$G printed no axiom lines at all"; exit 1; fi
             if echo "$out" | tr "\n" " " | grep -oE "depends on axioms: \[[^]]*\]" \
