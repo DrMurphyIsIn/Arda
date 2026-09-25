@@ -78,6 +78,7 @@ import R3Cert.BGSpiderReduction
 import R3Cert.BGSpiderCells
 import R3Cert.BGSpiderLowDegree
 import R3Cert.BGSpiderBridge
+import R3Cert.BGSpiderMidFinal
 import R3Cert.R47HdomBridge
 import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
@@ -133,6 +134,7 @@ import R3Cert.BGSpiderOpt
 import R3Cert.BGMaximizer
 import R3Cert.BGSpiderRule
 import R3Cert.BGMaximizerFinal
+import R3Cert.BGMaximizer150
 import R3Cert.BGSpiderCand
 import R3Cert.BGSpiderStruct
 
@@ -605,3 +607,12 @@ import R3Cert.BGSpiderStruct
 -- THE BG MAXIMIZER for n >= 492 (2026-09-25, BGMaximizerFinal): unconditional; W n maximizes per(L)/prod deg.
 #print axioms R3Cert.BGMaximizerFinal.bg_maximizer
 #print axioms R3Cert.BGMaximizerFinal.bg_maximizer_perm
+#print axioms R3Cert.BGSCL.dp_sound
+#print axioms R3Cert.BGSCL.bell_add_ρwit_le_rateKap
+#print axioms R3Cert.BGSCL.rateCellKap_23
+#print axioms R3Cert.BGSCL.midroot_8
+#print axioms R3Cert.BGSCL.spider_low
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_mid
+#print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot_150
+-- Every maximizer on n >= 150 vertices is a spider (2026-09-25, BGMaximizer150; uses spider_dominates_of_maxDegreeRoot_150).
+#print axioms BGMax.maximizer_is_spider_150
