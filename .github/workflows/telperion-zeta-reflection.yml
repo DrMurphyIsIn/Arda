@@ -281,10 +281,25 @@ jobs:
         working-directory: telperion/examples/zeta_reflection/lean
         run: lake exe cache get
 
-      - name: Build this segment's leaf certificates
+      # Edge modules peak at 6-10 GB each (one large decide per edge). Building several at once on the
+      # 16 GB runner pushes it into swap and slows the build ~100x: segment h7000 timed out at 350 min in
+      # CI, while locally it builds in about 14 min. So the edge modules are built ONE AT A TIME (lake's
+      # +Module target). Slabs and lines are small and still build as whole libraries.
+      - name: Build this segment's leaf certificates (edge modules one at a time)
         if: steps.changes.outputs.run == 'true'
         working-directory: telperion/examples/zeta_reflection/lean
-        run: lake build Arb4_H${{ matrix.H }}Edges Arb4_H${{ matrix.H }}Slabs Arb4_H${{ matrix.H }}Lines
+        shell: bash
+        run: |
+          set -euo pipefail
+          H=${{ matrix.H }}
+          lake build Arb4_H${H}Slabs Arb4_H${H}Lines
+          for f in Arb4_H${H}Edges_*.lean; do
+            m="${f%.lean}"
+            echo "== $m"; start=$(date +%s)
+            lake build "+$m"
+            echo "   $m built in $(( $(date +%s) - start )) s"
+          done
+          free -g
 
       - name: Hand the leaf build outputs to the gate job
         if: steps.changes.outputs.run == 'true'
