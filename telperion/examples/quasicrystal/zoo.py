@@ -645,7 +645,11 @@ def check_multiplicativity(obj: ZooObject, N: int = 60, tol: float = 1e-6) -> tu
     coefficient sequence b(n) from the object's Dirichlet coefficients and TEST the
     generation law directly.  lattice/ksly/random have no Dirichlet prime-layer at all
     -> FAIL (B-mult-twisted still carves out the ARITHMETIC FQs, the intended feature;
-    the L-function is the natural non-vacuity positive control W3a flagged)."""
+    the L-function is the natural non-vacuity positive control W3a flagged).
+
+    Kernel theorem: lean/LemmaO.lean `LemmaO.lemmaO_real` (b supported on prime powers
+    IFF a multiplicative; `generation_law_iff_completelyMultiplicative_real` for the
+    b(p^m) law), witnesses at n = 6 in lean/LemmaOWitnesses.lean."""
     if obj.mult_model == "none":
         # No Dirichlet-coefficient / prime-layer structure exists.  A generic FQ
         # (ksly), a plain lattice, or a random comb has amplitudes that are NOT the

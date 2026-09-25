@@ -23,6 +23,8 @@ import SelfInversiveOfflineInstances
 import EulerFactorSectionOffline
 import SatakeDegreeTwo
 import DedekindQuadratic
+import LemmaO
+import LemmaOWitnesses
 
 open Quasicrystal
 
@@ -192,3 +194,84 @@ Expected: every line prints exactly [propext, Classical.choice, Quot.sound] (the
 #print axioms SatakeDegreeTwo.chi_m20_eleven
 #print axioms SatakeDegreeTwo.dedekind_at_three_rejected
 #print axioms SatakeDegreeTwo.dedekind_at_eleven_rejected
+
+/-! ### LEMMA O (2026-09-25) -- LemmaO + LemmaOWitnesses.
+The log-derivative coefficient functional `b` of an amplitude `a` (Mathlib
+`ArithmeticFunction`, abstract completely additive weight) is supported on prime powers
+IFF `a` is multiplicative; among multiplicative `a`, the prime-layer generation law
+`b (p^k) = l p * a p ^ k` holds IFF `a` is completely multiplicative.  Instances at
+`Real.log` over `ℝ` and `ℂ`.  Witnesses at `n = 6`: zeta (`b 6 = 0`), Davenport-Heilbronn
+(`b 6 = (1 + κ²) log 6 > 0`, NOT multiplicative), Epstein `x² + 5y²` (`b 6 = 2 log 6`,
+NOT multiplicative; representation numbers counted by `decide` on a box proved complete).
+Kernel justification of zoo.py `check_multiplicativity`.  Expected: every line prints
+exactly [propext, Classical.choice, Quot.sound] (the `decide`-proved lattice counts and
+divisor sets may print a subset).  conjecture1_proved = False. -/
+#print axioms LemmaO.IsCompletelyAdditive.map_one
+#print axioms LemmaO.IsCompletelyAdditive.map_pow
+#print axioms LemmaO.mul_apply_divisors
+#print axioms LemmaO.IsLogDerivCoeff.sum
+#print axioms LemmaO.IsLogDerivCoeff.peel
+#print axioms LemmaO.IsLogDerivCoeff.one
+#print axioms LemmaO.logDerivCoeff_unique
+#print axioms LemmaO.logDerivCoeffOf_spec
+#print axioms LemmaO.exists_logDerivCoeff
+#print axioms LemmaO.sum_divisors_coprime_split
+#print axioms LemmaO.exists_coprime_factorization
+#print axioms LemmaO.primePow_support_of_isMultiplicative
+#print axioms LemmaO.not_isPrimePow_mul_of_coprime
+#print axioms LemmaO.isMultiplicative_of_primePow_support
+#print axioms LemmaO.lemmaO
+#print axioms LemmaO.not_isMultiplicative_of_composite_leak
+#print axioms LemmaO.IsCompletelyMultiplicative.isMultiplicative
+#print axioms LemmaO.IsCompletelyMultiplicative.map_pow
+#print axioms LemmaO.IsLogDerivCoeff.primePow_sum
+#print axioms LemmaO.generation_law_of_completelyMultiplicative
+#print axioms LemmaO.completelyMultiplicative_of_generation_law
+#print axioms LemmaO.generation_law_iff_completelyMultiplicative
+#print axioms LemmaO.not_completelyMultiplicative_of_generation_law_fails
+#print axioms LemmaO.logWeight_completelyAdditive
+#print axioms LemmaO.logWeight_ne_zero
+#print axioms LemmaO.logWeightC_completelyAdditive
+#print axioms LemmaO.logWeightC_ne_zero
+#print axioms LemmaO.lemmaO_real
+#print axioms LemmaO.lemmaO_complex
+#print axioms LemmaO.generation_law_iff_completelyMultiplicative_real
+#print axioms LemmaO.generation_law_iff_completelyMultiplicative_complex
+-- the n = 6 witnesses
+#print axioms LemmaO.divisors_two
+#print axioms LemmaO.divisors_three
+#print axioms LemmaO.divisors_six
+#print axioms LemmaO.six_not_isPrimePow
+#print axioms LemmaO.b_two
+#print axioms LemmaO.b_three
+#print axioms LemmaO.b_six
+#print axioms LemmaO.zeta_completelyMultiplicative
+#print axioms LemmaO.zeta_logDerivCoeff
+#print axioms LemmaO.zeta_b_six
+#print axioms LemmaO.zeta_functional_eq_vonMangoldt
+#print axioms LemmaO.zeta_generation_law
+#print axioms LemmaO.dhAmp_one
+#print axioms LemmaO.dhAmp_two
+#print axioms LemmaO.dhAmp_three
+#print axioms LemmaO.dhAmp_six
+#print axioms LemmaO.dh_b_six
+#print axioms LemmaO.dh_b_six_pos
+#print axioms LemmaO.dhAmp_not_isMultiplicative
+#print axioms LemmaO.dhAmp_not_isMultiplicative_uncond
+#print axioms LemmaO.boxShift_injective
+#print axioms LemmaO.rep5_eq_card
+#print axioms LemmaO.rep5Set_sound
+#print axioms LemmaO.rep5_box_complete
+#print axioms LemmaO.rep5_one
+#print axioms LemmaO.rep5_two
+#print axioms LemmaO.rep5_three
+#print axioms LemmaO.rep5_six
+#print axioms LemmaO.epsteinAmp_one
+#print axioms LemmaO.epsteinAmp_two
+#print axioms LemmaO.epsteinAmp_three
+#print axioms LemmaO.epsteinAmp_six
+#print axioms LemmaO.epstein_b_six
+#print axioms LemmaO.epstein_b_six_ne_zero
+#print axioms LemmaO.epsteinAmp_not_isMultiplicative
+#print axioms LemmaO.epsteinAmp_not_isMultiplicative_uncond
+#print axioms LemmaO.epsteinAmp_not_isMultiplicative_direct
