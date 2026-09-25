@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_euler_factor_section_offline",
+  "solution_module": "MissionChallenges.MM_euler_factor_section_offline",
+  "theorem_names": [
+    "MissionJudge.MM_euler_factor_section_offline"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

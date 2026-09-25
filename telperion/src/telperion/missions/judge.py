@@ -156,11 +156,51 @@ def module_name_of(lean_dir: Path, artifact: Path) -> str:
 _LIB_RE = re.compile(r'(?ms)^\[\[lean_lib\]\]\s*\nname\s*=\s*"([^"]+)"')
 
 
+#: Islands whose AxiomGuard libs cannot all be imported into one module. li_positivity:
+#: `ZeroFreeBridge.zeta_sphere_bound` is declared in both DlvpZetaDisk (in
+#: AxiomGuardLiPositivity's closure) and ZeroFreeElementary (in AxiomGuardZeroFree's), so a
+#: bridge that imports both fails with "environment already contains". For these islands the
+#: bridge imports only the FIRST guard (sorted) whose import closure contains the artifact,
+#: so the shadowing check covers that guard's closure rather than the whole island. Every
+#: other island imports all of its guards (they co-import; zeta_reflection has ten).
+GUARD_POLICY_ONE_CONTAINING = frozenset({"li_positivity"})
+
+
 def island_guard_modules(lean_dir: Path) -> List[str]:
     """The island's `AxiomGuard*` lean_libs, which by convention import every island module.
     Importing them into a challenge makes a shadowed vocabulary constant a build error."""
     text = (lean_dir / "lakefile.toml").read_text()
     return sorted(m.group(1) for m in _LIB_RE.finditer(text) if m.group(1).startswith("AxiomGuard"))
+
+
+def artifact_imports(text: str) -> List[str]:
+    """The `import` lines of a Lean source (comments stripped)."""
+    ga = _guard_anchors()
+    return [m.group(1) for m in _IMPORT_RE.finditer(ga.strip_lean_comments(text))]
+
+
+def import_closure(lean_dir: Path, module: str, _seen: Optional[set] = None) -> set:
+    """Island-local import closure of `module` (modules whose source is under `lean_dir`;
+    external packages are not followed). Includes `module` itself."""
+    seen = _seen if _seen is not None else set()
+    if module in seen:
+        return seen
+    seen.add(module)
+    src = Path(lean_dir) / (module.replace(".", "/") + ".lean")
+    if src.is_file():
+        for dep in artifact_imports(src.read_text()):
+            import_closure(lean_dir, dep, seen)
+    return seen
+
+
+def guards_for(lean_dir: Path, island: str, guards: Sequence[str], solution_module: str) -> List[str]:
+    """Which guard libs a bridge for `solution_module` imports (see GUARD_POLICY_ONE_CONTAINING)."""
+    if island not in GUARD_POLICY_ONE_CONTAINING:
+        return list(guards)
+    for g in guards:
+        if solution_module in import_closure(lean_dir, g):
+            return [g]
+    return []
 
 
 # ---------------------------------------------------------------------------
@@ -387,8 +427,17 @@ class Bundle:
             "[[lean_lib]]\n"
             'name = "MissionChallenges"\n'
         )
-        files["MissionChallenges.lean"] = "".join(
-            f"import {c.challenge_module}\n" for c in self.challenges)
+        if self.island in GUARD_POLICY_ONE_CONTAINING:
+            # A root that imports every bridge would co-import the guards that cannot coexist
+            # (li_positivity: zeta_sphere_bound). CI builds the bridge modules by name, never
+            # the root, so the root is a comment here rather than a build failure.
+            files["MissionChallenges.lean"] = (
+                f"-- {_SENTINEL}. No root imports on `{self.island}`: its AxiomGuard libs cannot\n"
+                "-- be imported together, so each bridge module imports one of them and is built by\n"
+                "-- name (`lake build MissionChallenges.<Slug>`), never through this root.\n")
+        else:
+            files["MissionChallenges.lean"] = "".join(
+                f"import {c.challenge_module}\n" for c in self.challenges)
         for c in self.challenges:
             files[f"MissionChallenges/{c.slug}.lean"] = c.challenge_text
             files[f"{c.slug}.comparator.json"] = json.dumps(c.config, indent=2) + "\n"
@@ -438,8 +487,8 @@ def build_bundle(telperion_root: Path, island: str, *, enable_nanoda: bool = Tru
         try:
             text = render_challenge(
                 slug=a.node, campaign=a.campaign, theorem=a.theorem, solution_module=sol,
-                guard_modules=guards, statement_text=statement_text,
-                artifact_text=a.artifact.read_text())
+                guard_modules=guards_for(lean_dir, island, guards, sol),
+                statement_text=statement_text, artifact_text=a.artifact.read_text())
         except JudgeError as e:
             problems.append(f"{a.campaign}/{a.node}: {e}")
             continue

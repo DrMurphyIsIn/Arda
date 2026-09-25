@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_li_rungs_lt_five",
+  "solution_module": "MissionChallenges.RH_li_rungs_lt_five",
+  "theorem_names": [
+    "MissionJudge.RH_li_rungs_lt_five"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_companion_bragg_reduction",
+  "solution_module": "MissionChallenges.RH_companion_bragg_reduction",
+  "theorem_names": [
+    "MissionJudge.RH_companion_bragg_reduction"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

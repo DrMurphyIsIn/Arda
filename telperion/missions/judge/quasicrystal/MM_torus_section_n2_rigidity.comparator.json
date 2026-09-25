@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_torus_section_n2_rigidity",
+  "solution_module": "MissionChallenges.MM_torus_section_n2_rigidity",
+  "theorem_names": [
+    "MissionJudge.MM_torus_section_n2_rigidity"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
