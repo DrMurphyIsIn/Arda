@@ -6,7 +6,18 @@ name = "MM.weil_positivity_window_two_fifths"
 statement_module = "Statements.MM_weil_positivity_window_two_fifths"
 status = "proved"
 title = "THE WEIL WINDOW PAST THE PRIME-FREE BOUNDARY, KERNEL-NATIVE (rvm_bridge island, KWin2_*, 2026-09-24): for every Weil test g with tsupport g in [-L, L] and 2L <= 4/5, Re weilForm (autocorr g) >= 0, with WindowFloor(2/5, 1/25000) -- hypothesis-free, no Arb seam; the prime-2 comb term is present (2L = 0.8 > log 2) and accounted exactly; pole terms KEPT (goal-node class; not Connes-Consani). The same pipeline also proves L = 9/20 and L = 1/2 (KWin2_BridgeHeavy) but those need 17-19 GB RAM, above the 16 GB hosted CI runner, so they are NOT registered until CI can build them. Finite window; conjecture1_proved = False"
-updated = "2026-09-24"
+updated = "2026-09-25"
+
+[comparator]
+artifact_sha256 = "f868b4155ff67f58dac9a00d8b71eb00431ca92686bc884d8c1b0c8cf81003bb"
+date = "2026-09-25"
+job_id = "108205123231"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36170028959/job/108205123231"
+kernel_mode = "lean-kernel-only"
+run_id = "36170028959"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36170028959"
+second_kernel = "none: heavy_certificates"
+theorem = "weil_positivity_window_two_fifths"
 
 [grant]
 artifact_sha256 = "f868b4155ff67f58dac9a00d8b71eb00431ca92686bc884d8c1b0c8cf81003bb"
