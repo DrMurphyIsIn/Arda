@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "M6gapEMZeta", "M6gapEMZetaComplex", "M6gapEMZetaTail", "M6gapZetaEMSum", "M6gapHeightFloorCheck", "M6gapHeightFloorTrig", "M6gapHeightFloorEM", "M6gapHeightFloorBoxes", "M6gapZetaZeroConfinement", "M6gapDlvpZetaSymmetry", "M6gapHeightFloor", "M6gapImAxis", "M6gapP15ZeroFree", "DBNM5Alpha", "DBNM5Target", "DBNP15Wired", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -141,6 +141,138 @@ name = "DBNHadamard"
 # zeros inside the strip.  Nothing here proves RH.  conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNHadamardApprox"
+
+# Lane m1 (Route C milestone M1, ROUTE_C_SYNTHESIS_2026-09-23.md sections 5.2 / 7.2): the de Bruijn
+# approximants REWEIGHTED at an arbitrary real base time t0,
+# m1W t0 d N z = int_0^oo cosh(du)^N e^{t0 u^2} Phi(u) cos(zu) du: shift identity, entire / even /
+# real, order <= 3/2 for EVERY real t0 (negative included), even Hadamard data, locally uniform
+# convergence to H (t0 + s).  Nothing about zero locations.  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM1Approx"
+
+# M1a/M1b: dbn_debruijn_parametric (de Bruijn 1950 Thm 13 / Polymath15 Thm 3.2, every real t0)
+# and dbn_real_zeros_upset.  CONDITIONAL on the caller's zero bound for H_{t0}; import closure has
+# no DBNStrip / DBNXi.  Says nothing about zeros of H_0 inside the strip; Lambda <= 0 is RH and is
+# not proved.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM1Parametric"
+
+# M1c: dbn_rh_iff_real_zeros_nonneg_t, strip-RH <-> (for all t >= 0 every zero of H_t is real), from
+# C4 + M1b.  The sInf-free C10 wall as an EQUIVALENCE; proves neither side.  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM1RHIff"
+
+# Kernel-checked positive controls for M1a: at (t0, Y) = (0, 1) the hypothesis is the strip node and
+# the parametric theorem reproduces C3 (t >= 1/2, Lambda <= 1/2) by a second route.  Not RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM1Controls"
+
+# Lane m4 (Route C milestone M4, synthesis 7.2 `RH_dbn_p15_criterion`): the three hypotheses of
+# Polymath15 Prop 3.3 (arXiv:1904.12438v2 p.15) transcribed verbatim as named Props
+# P15ZeroFreeRect / P15Canopy / P15Barrier, and the parametric de Bruijn step (M1a) as the named
+# HYPOTHESIS M1aStep (not proved here; lane m1).  Definitions only.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM4P15Defs"
+
+# Lane m4: the LOCAL discrete de Bruijn step (T_delta f(w) != 0 when every zero zeta of f has
+# (Im zeta)^2 < (Re w - Re zeta)^2 + (Im w)^2 + delta^2), the abstract discrete barrier induction,
+# and a compactness-margin lemma.  Mathlib + DBNStep only.  Nothing here proves RH.
+[[lean_lib]]
+name = "DBNM4LocalStep"
+
+# Lane m4: joint continuity of (t, z) -> H t z and the uniform approximation bound
+# |H(n d^2/2, z) - Gdelta d n z| <= (n d^4/4) C(T, R) along the discrete heat path.
+# Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM4HeatUniform"
+
+# Lane m4: Polymath15 Prop 3.3 (zero-free region criterion) PROVED from its hypotheses (i)-(iii)
+# by a discrete barrier argument on the de Bruijn approximants (no zero dynamics, no Rouche), and
+# the Thm 1.2 conclusion (t >= t0 + y0^2/2 -> real zeros) CONDITIONAL on the named hypothesis
+# M1aStep.  A criterion: verifies none of (i)-(iii), bounds no Lambda.  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM4P15Criterion"
+
+# ---- lane m6gap (Route C M6 gaps, ROUTE_C_SYNTHESIS_2026-09-23 sections 5.2 / 7.2) ----
+# Cross-pin port of the AND_height_floor_kernel artifact (zeta_reflection/lean, Lean v4.32.0) onto
+# this island: the Euler-Maclaurin chain and the 32-box certificate, copied with NO proof edits
+# (module names prefixed M6gap, namespaces prefixed M6gap.).  Mathlib-only.  Finite low-height
+# verification (no zeta zero in the open critical strip with |Im| <= 55/16); nothing here proves
+# RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "M6gapEMZeta"
+
+[[lean_lib]]
+name = "M6gapEMZetaComplex"
+
+[[lean_lib]]
+name = "M6gapEMZetaTail"
+
+[[lean_lib]]
+name = "M6gapZetaEMSum"
+
+[[lean_lib]]
+name = "M6gapHeightFloorCheck"
+
+[[lean_lib]]
+name = "M6gapHeightFloorTrig"
+
+[[lean_lib]]
+name = "M6gapHeightFloorEM"
+
+[[lean_lib]]
+name = "M6gapHeightFloorBoxes"
+
+# Mathlib-only functional-equation bookkeeping (li_positivity copies, same pin): the four
+# Mathlib-only theorems of ZetaZeroConfinement and DlvpZetaSymmetry (reflections rho -> 1 - rho,
+# conj rho, 1 - conj rho).
+[[lean_lib]]
+name = "M6gapZetaZeroConfinement"
+
+[[lean_lib]]
+name = "M6gapDlvpZetaSymmetry"
+
+# The height floor on this island (AND_height_floor_kernel's statement, C2-free), extended to the
+# real segment (Im = 0) by the same certificate, and Polymath15 Thm 1.2(i) (zeta form) at X <= 55/8.
+[[lean_lib]]
+name = "M6gapHeightFloor"
+
+# H_t(iy) > 0 for real t, y (from Phi > 0, Polymath15 p.15) and, through C2 + the C4 unpacking,
+# zeta(sigma) != 0 for real 0 < sigma < 1.
+[[lean_lib]]
+name = "M6gapImAxis"
+
+# Polymath15 condition (i) in H_0 form (Prop 3.3(i)) at X <= 55/8, H_0 zero-free on |Re z| <= 55/8,
+# and the P15 p.16 bridge Thm 1.2(i) => Prop 3.3(i) for every X (C2 + C4 coordinate map).  Only the
+# first of P15's three inputs; no bound on Lambda.  conjecture1_proved = False.
+[[lean_lib]]
+name = "M6gapP15ZeroFree"
+
+# Route C milestone M5 (Polymath15 Thm 1.3, effective approximation of H_t), brick 1, Mathlib-only:
+# the Stirling-phase vocabulary alpha / log M_0 / log M_t (P15 (6)-(10)), (log M_0)' = alpha, the
+# alpha' bound (43), M_t = M_t^*, and the explicit parameter bounds (20) |gamma|, (21) Re s_*,
+# (22) |kappa| of Thm 1.3 (= P15 Prop 6.6 (i)-(iii)), plus the corrected (76) and a kernel negative
+# control showing P15's printed (76) is false at x = 200.  Elementary bounds on explicit functions;
+# NOT the analytic content of Thm 1.3.  Nothing here bears on RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM5Alpha"
+
+# M5 target: P15 Thm 1.3 (13) as the named Prop `P15Thm13` and the unnormalized Cor 6.5 as
+# `P15Cor65` (NEITHER proved), their full vocabulary (f_t, e_A, e_B, e_{C,0}, B_t, N, A_{t,N},
+# B_{t,N}, E_A, E_B, E_{C,0}), the proved reduction Cor 6.5 => Thm 1.3 (division by B_t), and
+# P15 Cor 1.4 (non-vanishing criterion) CONDITIONAL on P15Thm13.
+# Nothing here bears on RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNM5Target"
+
+# Route C: the P15 criterion wired (M4 + M1 + M6gap): at X <= 55/8 only canopy (ii) and barrier (iii)
+# remain. Proves no Lambda bound by itself. conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNP15Wired"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.
