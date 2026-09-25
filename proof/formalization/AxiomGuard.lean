@@ -74,6 +74,7 @@ import R3Cert.BGSCLHnormPort
 import R3Cert.BGSCLObligationA
 import R3Cert.BGSCLHdom
 import R3Cert.BGSCLSharp
+import R3Cert.BGSpiderReduction
 import R3Cert.R47HdomBridge
 import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
@@ -527,3 +528,12 @@ import R3Cert.R47BGConjecture
 #print axioms R3Cert.Step3.bgBackbone_of_extended_coverage
 #print axioms R3Cert.Step3.conjecture1_of_bgBackbone
 #print axioms R3Cert.Step3.bgBackbone_of_backboneTie
+-- Spider reduction B1 (high-degree case): Lagrangian identity, tangent bound, unconditional spider lower
+-- bound, and spider domination for root degree >= 24, n >= 91, conditional on three finite-degree cell cores.
+#print axioms R3Cert.BGSCL.phiRoot_eq
+#print axioms R3Cert.BGSCL.phiRoot_le_tangent
+#print axioms R3Cert.BGSCL.phiRoot_spider_ge
+#print axioms R3Cert.BGSCL.atom_bV_le
+#print axioms R3Cert.BGSCL.armEnv_of_cells
+#print axioms R3Cert.BGSCL.spider_dominates_highDegree
+#print axioms R3Cert.BGSCL.spider_dominates_highDegree_of_cores
