@@ -132,6 +132,7 @@ import R3Cert.BGGrowthRate
 import R3Cert.BGSpiderOpt
 import R3Cert.BGMaximizer
 import R3Cert.BGSpiderRule
+import R3Cert.BGSpiderStruct
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -585,3 +586,11 @@ import R3Cert.BGSpiderRule
 #print axioms R3Cert.BGSpiderRule.Aobj_spiderU
 #print axioms R3Cert.BGSpiderRule.spider_opt_of
 #print axioms R3Cert.BGSpiderRule.bg_maximizer_of
+#print axioms R3Cert.BGSpiderStruct.exch_arm_lt
+#print axioms R3Cert.BGSpiderStruct.exch_six_lt
+#print axioms R3Cert.BGSpiderStruct.exch_four_lt
+#print axioms R3Cert.BGSpiderStruct.exch_cherry_lt
+#print axioms R3Cert.BGSpiderStruct.exch_split_lt
+#print axioms R3Cert.BGSpiderStruct.global_contra
+#print axioms R3Cert.BGSpiderStruct.cand_of_isMax
+#print axioms R3Cert.BGSpiderStruct.structProp_492
