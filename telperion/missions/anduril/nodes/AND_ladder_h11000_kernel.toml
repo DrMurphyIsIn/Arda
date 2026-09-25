@@ -1,0 +1,20 @@
+created = "2026-09-25"
+depends_on = ["AND_ladder_h8000_kernel"]
+kind = "milestone"
+name = "AND.ladder_h11000_kernel"
+statement_module = "Statements.AND_ladder_h11000_kernel"
+requires_ci_job = "telperion-zeta-reflection.yml:anduril-kernel-ladder"
+status = "draft"
+title = "Every nontrivial zeta zero with 0 < Im rho <= 11000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, no Arb or oracle input: the h8000 Arb4 ladder chained (height_chain) with ONE Turing band [31851/4, 11004] holding 3541 zeros (Riemann-Siegel RS5 sign-change lower count + argument-principle upper count with sharp pi pins). Finite verification only, NOT RH. conjecture1_proved = False"
+updated = "2026-09-25"
+
+[author]
+date = "2026-09-25"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "ef083c48-579d-4bec-a689-c30fdccec2a1"
+
+[proof]
+artifact = "../../examples/zeta_reflection/lean/H11K_h11000.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
