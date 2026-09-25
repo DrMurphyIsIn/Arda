@@ -129,6 +129,7 @@ import R3Cert.R47MergePerL
 import R3Cert.R47BGConjecture
 import R3Cert.BGGrowthRate
 import R3Cert.BGSpiderOpt
+import R3Cert.BGMaximizer
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -567,3 +568,9 @@ import R3Cert.BGSpiderOpt
 #print axioms R3Cert.BGSCL.rateCellCap_23
 #print axioms R3Cert.BGSCL.spider_dominates_lowDegree_uncond
 #print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot
+-- SPIDER REDUCTION for actual trees (2026-09-24, BGMaximizer): UTree->BGSCL bridge Aobj = piRoot,
+-- max-degree rerooting, and: every tree on n >= 492 vertices is Aobj-dominated by a same-size spider.
+#print axioms BGMax.Aobj_eq_piRoot
+#print axioms BGMax.exists_maxRooted
+#print axioms BGMax.bg_spider_reduction
+#print axioms BGMax.bg_spider_reduction_perm
