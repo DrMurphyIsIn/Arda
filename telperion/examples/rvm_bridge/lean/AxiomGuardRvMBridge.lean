@@ -183,6 +183,16 @@
         RvMBridge7.norm_gaussTest / re_gaussTest, verbatim instantiation gates for the cast
         `have`s).  Finite polynomial bookkeeping, nothing about RH.
 
+      * FamilyWeil.{weilFormF_zeta, primeSideF_autocorr_eq_fin, re_weilFormF_autocorr_mono_logq,
+        isFundDisc_iff, kronSym_three, kronSym_five, weightQ_prime_pow, weilFormQ_autocorr_eq,
+        re_weilFormQ_mono, cell_reduction, reduction_of_entry, table4_check, table7_check,
+        family4_of_dmins, family7_of_dmins, ...} -- the QUADRATIC FAMILY, Stage 0 (2026-09-25,
+        FamilyWeilForm/Disc/Quad/Table): the parametric degree-<= 2 Weil form (= the zeta
+        weilForm at the zeta data), zeta_K's instance, monotonicity in log|d| within a
+        (pattern, sign) cell, the kernel-checked d_min tables at N = 4 (18 cells) and N = 7
+        (x = 6.5, 54 cells), and the reduction "W(N) for every fundamental d" <- W(N) at the
+        cells' d_min.  NO positivity unit is proved.  conjecture1_proved = False.
+
     Expected: every line reads `[propext, Classical.choice, Quot.sound]`.
     conjecture1_proved = False. -/
 import E6Bridge
@@ -232,6 +242,10 @@ import E6Bridge33
 import E6Bridge34
 import Probes.Dogfood_complex_re_im_split
 import Probes.Dogfood_zero_sum_majorant
+import FamilyWeilForm
+import FamilyWeilDisc
+import FamilyWeilQuad
+import FamilyWeilTable
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -1176,3 +1190,63 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridge34.re_archSide_autocorr_ge_tenth
 #print axioms RvMBridge34.weil_positivity_window_tenth_of_nonneg
 #print axioms RvMBridge34.weil_positivity_window_tenth
+
+-- FamilyWeilForm: the parametric degree-<= 2 Weil form (2026-09-25). conjecture1_proved = False.
+#print axioms FamilyWeil.psiShift_zero
+#print axioms FamilyWeil.psiShift_one
+#print axioms FamilyWeil.symbolArch_zeta
+#print axioms FamilyWeil.weilFormF_zeta
+#print axioms FamilyWeil.autocorr_pair_eq_zero
+#print axioms FamilyWeil.primeSideF_autocorr_eq_fin
+#print axioms FamilyWeil.primeSideF_congr_window
+#print axioms FamilyWeil.archSideF_congr
+#print axioms FamilyWeil.weilFormF_eq_zero_logq_add
+#print axioms FamilyWeil.re_weilFormF_autocorr_eq
+#print axioms FamilyWeil.re_weilFormF_autocorr_mono_logq
+
+-- FamilyWeilDisc: fundamental discriminants, Kronecker symbols (2026-09-25). conjecture1_proved = False.
+#print axioms FamilyWeil.sqfreeChk_iff
+#print axioms FamilyWeil.isFundDisc_iff
+#print axioms FamilyWeil.IsFundDisc.ne_zero
+#print axioms FamilyWeil.IsFundDisc.natAbs_pos
+#print axioms FamilyWeil.kron2_eq_χ₈
+#print axioms FamilyWeil.kronSym_two
+#print axioms FamilyWeil.kronSym_three
+#print axioms FamilyWeil.kronSym_five
+#print axioms FamilyWeil.kron2_mem
+#print axioms FamilyWeil.kron3_mem
+#print axioms FamilyWeil.kron5_mem
+#print axioms FamilyWeil.Tri.toInt_ofInt
+#print axioms FamilyWeil.mem_triList
+#print axioms FamilyWeil.signed_natAbs
+
+-- FamilyWeilQuad: zeta_K's form, log|d| monotonicity, the d_min reduction (2026-09-25). conjecture1_proved = False.
+#print axioms FamilyWeil.weightQ_prime_pow
+#print axioms FamilyWeil.weightQ_eq_cellWeight
+#print axioms FamilyWeil.cellWeight_congr
+#print axioms FamilyWeil.symbolArch_quad
+#print axioms FamilyWeil.cellForm_congr
+#print axioms FamilyWeil.weilFormQ_autocorr_eq
+#print axioms FamilyWeil.re_weilFormQ_autocorr_eq
+#print axioms FamilyWeil.cellForm_eq_of_inCell
+#print axioms FamilyWeil.re_weilFormQ_mono
+#print axioms FamilyWeil.cell_reduction
+#print axioms FamilyWeil.reduction_of_entry
+
+-- FamilyWeilTable: the kernel-checked d_min tables at N = 4 and N = 7 (2026-09-25). conjecture1_proved = False.
+#print axioms FamilyWeil.inCell4_iff
+#print axioms FamilyWeil.isCellMin_of_B4
+#print axioms FamilyWeil.table4_check
+#print axioms FamilyWeil.table4_spec
+#print axioms FamilyWeil.family4_of_table
+#print axioms FamilyWeil.table4_mem
+#print axioms FamilyWeil.family4_of_dmins
+#print axioms FamilyWeil.family4_of_cells
+#print axioms FamilyWeil.inCell7_iff
+#print axioms FamilyWeil.isCellMin_of_B7
+#print axioms FamilyWeil.table7_check
+#print axioms FamilyWeil.table7_spec
+#print axioms FamilyWeil.family7_of_table
+#print axioms FamilyWeil.table7_mem
+#print axioms FamilyWeil.family7_of_dmins
+#print axioms FamilyWeil.family7_of_cells
