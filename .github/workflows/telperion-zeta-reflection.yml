@@ -392,3 +392,22 @@ jobs:
               || { echo "::error::capstone Arb4_h$H.all_nontrivial_zeros_up_to_height_$H not printed"; exit 1; }
             echo "OK h$H: $(grep -oE 'depends on axioms' <<< "$out" | wc -l) guarded anchors, all within the standard three"
           done
+
+      - name: Height 11000 -- one Turing band [31851/4, 11004] on top of the h8000 ladder, and its guard
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          for m in RS5_Band_T1000_C25 RS5_Band_T1000_C26 RS5_Band_T1000_C27 RS5_Band_T1000_C28 RS5_Band_T1000_C29 RS5_Band_T1000_C30 RS5_Band_T1000_C31 RS5_Band_T10000_C0 RS5_Band_T10000_C1 RS5_Band_T10000_C2 RS5_Band_T10000_C3 RS5_Band_T8000Lo_C0 RS5_Band_T8000Hi_C0 H11K_Edge_T11004 H11K_Slab_U11004; do lake build "$m"; done
+          lake build H11K_AxiomGuard
+          out="$(lake env lean H11K_AxiomGuard.lean 2>&1 | tr '\n' ' ' | tr -s ' ')"
+          if grep -q 'sorryAx' <<< "$out"; then echo "::error::h11000 depends on sorry"; exit 1; fi
+          if grep -qE '(^|[^A-Za-z])error:' <<< "$out"; then echo "::error::H11K guard did not elaborate"; exit 1; fi
+          bad="$(grep -oE 'depends on axioms: \[[^]]*\]' <<< "$out" | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' | grep -vxE 'propext|Classical\.choice|Quot\.sound' || true)"
+          if [ -n "$bad" ]; then echo "::error::h11000 axiom(s) outside the standard three: $bad"; exit 1; fi
+          n=$(grep -oE 'depends on axioms|does not depend on any axioms' <<< "$out" | wc -l)
+          if [ "$n" -lt 64 ]; then echo "::error::H11K guard printed $n axiom lines, expected at least 64"; exit 1; fi
+          grep -qE "'H11K_h11000\.all_nontrivial_zeros_up_to_height_11000' depends on axioms: \[[^]]*\]" <<< "$out" \
+            || { echo "::error::capstone all_nontrivial_zeros_up_to_height_11000 not printed"; exit 1; }
+          echo "OK h11000: $n guarded anchors, all within the standard three"

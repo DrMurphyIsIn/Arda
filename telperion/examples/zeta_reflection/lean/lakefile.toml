@@ -1338,3 +1338,40 @@ roots = ["Arb4_h8000"]
 [[lean_lib]]
 name = "Arb4_AxiomGuard_h8000"
 roots = ["Arb4_AxiomGuard_h8000"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane H11K: all nontrivial zeros up to height 11000 on the critical line, HYPOTHESIS-FREE:
+# Arb4_h8000 + ONE wide Turing band [31851/4, 11004] (sharp-pi pins, H11K_Turing), RS5 on-line
+# zeros, the top edge at 11004 checked per octant piece (H11K_EdgeSplit).  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "H11K_Turing"
+roots = ["H11K_Turing"]
+
+[[lean_lib]]
+name = "H11K_EdgeSplit"
+roots = ["H11K_EdgeSplit"]
+
+[[lean_lib]]
+name = "H11K_Edge_T11004"
+roots = ["H11K_Edge_T11004"]
+
+[[lean_lib]]
+name = "H11K_Slab_U11004"
+roots = ["H11K_Slab_U11004"]
+
+[[lean_lib]]
+name = "RS5_Band_T8000"
+roots = ["RS5_Band_T8000Lo_C0", "RS5_Band_T8000Hi_C0"]
+
+[[lean_lib]]
+name = "H11K_Line"
+roots = ["H11K_Line"]
+
+[[lean_lib]]
+name = "H11K_h11000"
+roots = ["H11K_h11000"]
+
+[[lean_lib]]
+name = "H11K_AxiomGuard"
+roots = ["H11K_AxiomGuard"]
