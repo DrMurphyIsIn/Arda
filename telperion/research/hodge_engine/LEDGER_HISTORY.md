@@ -145,3 +145,306 @@ New barriers this wave: 4; new requirements: 4
 - P5 CLOSE RCI AS ZERO READOUT (cheap). Regress the tiny-conductor binding margins (d = -3..13, x in [10,40]) on first-zero height and low-zero counts. If one law fits, file the result under B2 and retire the RCI line entirely.
 - P6 FRESH ANGLES, SCREENED FIRST AGAINST R13-R16 AND THE SIX DEATH CLASSES: arithmetic_siegel_weil_heights_to_L (the only proved intersection-form-to-sign mechanisms: does the height pairing have unbounded rank, as R13 demands?), central_value_nonnegativity_families (a genuine square; does it avoid the no-comparison lemma?), interlacing_families_ramanujan, euler_multivariate_stability, gillet_soule_yuan_zhang_adelic. Each proposal must state its complexity-vs-x profile (R16) and how it sees line-confinement without zero readout (R15).
 - P7 CARRY-OVERS. EFW non-self-dual loophole; Lane A hygiene (Sign Barrier, E_pp, LEB witness, root-number lemma, D positive side); vet Suzuki 2606.09096, Zhu 2608.24827 and the unvetted 2026 RH claim against the battery. Report the three harness doc/battery issues (C11 a-c) to the harness owner. Enforce timestamped PREREG files for every angle.
+
+## After wave 5
+
+Wave 5 ran five angles: cascade_law_slepian, ihara_solved_model_calibration, maass_selberg_schur_barrier, strip_reach_xU_theorem and defect_balance_zoo. All five are dead or non-mechanisms, and conjecture1_proved = False.
+
+Only one new barrier was skeptic-confirmed, in narrowed wording: B27, no uniform counterfeit anatomy. The FE-satisfying DH fails inside its own 5-mode near-null cascade (rho ~0.012), while the other six members balance at O(1). That refutes and withdraws the wave-4 P4 requirement.
+
+The other four claimed barriers were not confirmed:
+- The cascade 'theorem' has a misstated inequality and rests on the unproved lemma L1.
+- C-Ihara makes a category error, and its B19 test was circular.
+- The Maass-Selberg iff theorem is false with 2 or more real poles.
+- The strip-reach brackets were conductor-blindness artefacts. Crediting ramification proves x = 7.0 and 7.25 in the odd sector.
+
+What did survive, as survivors rather than barriers:
+- The empirical cascade law c' (S20): count = e*(x) - ln(1/tau) ln(AT*)/(4pi^2), within +-1, 29/29 out of sample.
+- The cascade is counterfeit-blind; each counterfeit keeps its genuine twin's cascade (S21).
+- Prolate+constraint subspaces reach the full cascade at x=20 (S22).
+- Exact Ihara fiber and rank facts (S23).
+- Maass-Selberg positivity reduces to 'no zeros with Re > 1', which is edge-of-strip only (S24).
+- A balayage floor for zeta (S25).
+
+New requirements: R17 (detect via the added negative index, not the cascade) and R18 (solved-world transfers must carry a proof and name their finite ingredient). Death classes 7-9 were added, and R4, R8, R10, R13, R15 and R16 were sharpened.
+
+Major corrections: the wave-4 cascade counts and zeta's margin values were unconverged. The converged figures are 32/31 at x=36 (not 22), and lambda_1(zeta, 20) <= ~1e-96 (proposer-only). Q8 is prior art (Zhu).
+
+Wave 6 priorities: prove L1; Lean kill-switch lemmas; proof-carrying solved-world calibration (LPS / curves); numerator-in-strip automorphic angles screened against R17/R18.
+
+New barriers this wave: 1; new requirements: 2
+
+### Barriers
+- B1 LINEARITY / CONVERSE BARRIER (the reference counterfeit is E, not D). E = (1/2)sum'(x^2+5y^2)^{-s} = (zeta_K(-20) + L(chi_-4)L(chi_5))/2 lies in M_1(Gamma_0(20), chi_-20) and satisfies every identity linear in a(n)/c(n) on that Hecke-stable space: the FE, all 62 coprime twisted FEs (error <2e-14), and Voronoi. D fails its twisted FEs linearly for r = +-2 mod 5. Only the QUADRATIC Hecke relations catch E (a(6)=2 but a(2)a(3)=0). Linear instances found so far: KS-PSHR, the Odlyzko-Poitou strip functional, and the class-group defect split (all wave 4). Wave 5 adds: the defect_balance split and the strip-reach family route, both linear in c. The graph analogue E_G = (P_G1+P_G2)/2 passes the FE, the trivial zeros and the leading coefficient exactly (Ihara world, skeptic-reproduced). Evidence: root-number identity proved (decidable, Lean pending); the rest is numeric and skeptic-reproduced.
+- B2 CIRCULARITY / ZERO-READOUT. Every single-L RH-equivalent tested flags E and D only by reading their off-line zeros: Li, Gram-Li, Nyman-Beurling, Jensen/GORZ, the Theorem A cone, Edrei, Krein/de Branges/Suzuki, the Pontryagin index, Hilbert-Polya, and the Haynsworth sign(S) predictor. Wave 5 instances, each skeptic-reproduced:
+(a) The near-null cascade departs from the genuine twin exactly at the Weil horizon: E at 19.82 (T*/gamma_off = 0.40), DH at 30.57 (0.45). No precursor exists.
+(b) The Maass-Selberg Gram flags a Lambda-zero with Re > 1 only by localizing at rho/2 (synthetic control).
+(c) Ihara horizons (M*-1)*L*eta_max = 1.5-5.6 read out off-circle roots, for E_G and for genuine non-Ramanujan graphs alike.
+Calibration dictionary: Li goes negative at n=5713 (E) and n=328997 (D); E's Jensen onset is d=381/382.
+- B3 NEAR-NULL / LOSSY-SPLIT. zeta's window form is near-null. Any sufficient condition built from two or more PSD pieces must keep zeta's whole near-null CASCADE null in every piece (see B25 and S20). Instances: PSHR fails at x=3.02; KS-PSHR is certified infeasible at x=5.
+
+Wave 5 correction (C25): the old values 1.5e-38 (x=20, N=16) and 4e-58 (x=36) were unconverged Ritz upper bounds. The proposer's converged mp gives -ln lambda_1 = 74.5 / 122.8 / 171.5 / 220.5 at x = 8 / 12 / 16 / 20, i.e. lambda_1(20) <= ~1e-96. This is proposer-only and not skeptic-reproduced, but it is consistent within 3% with Zhu's law 2pi^2 N(T*)/ln N(T*).
+- B4 LOCAL-EULER BARRIER (LEB). With Gamma_R(s)Gamma_R(s+1), conductor 20, the pole fixed, unit local roots and no FE, some locally pure Euler datum is Weil-negative from x_P = 5.0506 +- 1e-4. Witness: lambda_min(6) = -0.3405 at N=64. Evidence: numeric, two codes plus the harness; no interval certificate.
+- B5 SIGN BARRIER. c_E(n) >= 0 for n < 36 (c_E(36) = -7.167), yet E is Weil-negative from 19.8225. D has negative couplings and stays positive to 30.571. Wave 5 solved-world confirmation (skeptic, exact): the graph counterfeit E_G has N^E_m >= 0 for all m <= 90, yet is exactly Weil-negative at M*=25. Evidence: decidable signs plus a converged threshold.
+- B6 PRIME-POWER SUPPORT ALONE IS INSUFFICIENT. E_pp (E without its non-prime-power block) stays positive past x_E and fails at ~27.76 (odd sector); zeta_K + X is negative at x=15. Evidence: float Galerkin.
+- B7 POLE BLOCK IS INDEFINITE. The pole block is rank-1 hyperbolic per sector. L_G + pole crosses zero at 5.07476. E's pole-free horizons are 23.38/23.50 (even) and 26.16 (odd). The O(1) primitive margins are specific to conductor-20 data; zeta's primitive block is as near-null as Q. Evidence: numeric, reproduced.
+- B8 POLE-RESIDUE FLOOR. Without a residue lower bound, the pole-free L_G is FE-consistent and L_G + pole is negative from 5.07. The admissible residue on the L_G branch decays with X (1e-6 is infeasible at X=25). Evidence: mp SLP, local optimizer.
+- B9 UNIQUENESS COLLAPSE (EFW). Euler shape + Fricke FE + tail bound + Euler completion to X >= 25-50 + residue floor collapse the feasible set to zeta_K, i.e. a finite converse theorem plus inherited GRH. The same collapse appears in RCI and in the class-group split. Evidence: float multistart.
+- B10 FINITE-RELAXATION ADVERSARIES (EFW). A spurious branch B at X <= 20 is negative from x in [7.734, 7.750] and dies at X = 25-30. Evidence: numeric plus the skeptic's global LP.
+- B11 FAMILY AVERAGING / AMPLIFICATION. A positive family average does not force positive members, and the counterfeit horizon moves outward as the family grows. Evidence: numeric, reproduced.
+- B12 MOLLIFIER RESTRICTION LEMMA. W_{LM} = W_L + W_M. The mollified form is a subspace restriction that only delays detection. Evidence: elementary plus numeric.
+- B13 SONINE OUTER-MULTIPLIER LEMMA. Finite primes change only the metric; the semilocal form equals the pole-free W(x). Evidence: proof-level.
+- B14 THETA-KERNEL TOTAL-POSITIVITY BARRIER. PF_inf is impossible (Schoenberg). The PF order tracks conductor and Gamma factor, not arithmetic. Evidence: numeric, reproduced.
+- B15 MOMENT / HERMITE-LIMIT BARRIER (GORZ). Fixed-degree Jensen hyperbolicity is counterfeit-blind. Evidence: proof sketch plus numerics.
+- B16 SCALE-FLOW BARRIER. The Krein/de Branges/Suzuki flow properties hold for every moment sequence, so the flow is counterfeit-blind. Evidence: numeric plus structure.
+- B17 FOUR-FRAMEWORKS-ONE-DICTIONARY. Connes, Deninger, Hilbert-Polya and F1 each prove the explicit formula; none has a positivity source. Wave 5 adds the solved-world view (Ihara, skeptic-narrowed): in lattice-length finite-rank worlds, positivity is ONE global finite unitary operator (spectral data). Zeta has no length lattice and, under RH, no exact null vector at any x (Jensen vs N(T)), so this finite-rank route has no zeta analogue.
+- B18 LOCAL TEMPERANCE IS SCALE-BLIND. The Caratheodory-Toeplitz purity LP separates E and D but knows nothing about x. Wave 5: the Ihara transfer criterion 'local Hashimoto unitarity' IS B18. Run blind on the battery: 165 below-horizon false alarms, 368 misses, useful = False (proposer JSON; script logic checked by the skeptic).
+- B19 RANDOM-EULER TYPICALITY. On the unitary cube, P(pos) -> 0 as GRH plus counting predicts; negative vertices are genuine chi_d with |d| >> 20; 0 RCI violations over 668,931 patterns at x=40. Wave 5 note: the Ihara 'B19 fails (P=1)' result is circular, because it randomized the ZEROS, not the local data. It does NOT weaken B19. The correct graph analogue is Poisson Euler data without FE, which decays: P(PSD) = 0.80 at M=20 and 0.09 at M=40.
+- B20 MARGIN DECAY / PI01 COMPACTNESS. zeta's margin decays superexponentially. Converged proposer mp (not skeptic-reproduced) gives -ln lambda_1 ~ 12.15 x on [8,20], i.e. lambda_1 ~ exp(-12x). Across members, -ln lambda_1 is ~11.2-12.4 per unit RvM excess e*(x): zeta_K(-20)'s 'exp(-x/2)' is really a sqrt(x) law. D decays like e^{-2.3x}..e^{-2.5x}. Window certificates cannot reach all x. Wave 5 instances: the balayage reach law (every genuine L has a finite strip reach; for zeta, (5.1, 5.2) at any window, skeptic-reproduced); the strip family route stalls below x=8 (odd sector). Solved-world contrast: in the Ihara world the finite horizon principle (flat extension: W(q^{2n-1}) => all x) makes R9 vacuous, because finite rank gives a one-shot certificate; this does not transfer to zeta.
+- B21 GALERKIN TRAP (methodological). At |lambda| < ~1e-20, finite Galerkin overestimates horizons, and positive Ritz values prove nothing. Wave 5 additions:
+- Galerkin counts of eigenvalues below tau are rigorous LOWER bounds (min-max; nondecreasing in N).
+- A FAILURE claim for a strip route needs a LOWER bound on the strip minimum. Ritz values are one-sided: at x=8, x'=151 a vertex margin moved from +0.0189 (N=16) to -0.0009 (N=48).
+- The harness Neumann-cosine basis gives near-null Ritz values 20-30% above Legendre at N=24-40, so use a polynomial basis for near-null horizon brackets.
+- In the Ihara world, float64 reports 6-10 spurious 'nulls' at M=68-78, where the exact rank is full.
+- B22 EULER WITHOUT FE FAILS EARLY. zetaK(-20)[a2=-1] 22.474; euler-rand d1 2.164, d2 5.776. Exact Hecke multiplicativity cannot flag these. Graph analogue (Ihara, exact): Poisson Euler data with no FE gives P(PSD) = 0.80 at M=20 and 0.09 at M=40. Evidence: harness float plus the Ihara analogue.
+- B23 RCI BINDING SET = NEAR-NULL TINY CONDUCTORS. Unchanged from wave 4. The conductor shift is exact; RCI binds at the smallest |d| with near-null slack; bulk log N_min is counting-dominated; the all+1 tail is the pseudosquares. Wave 5 addition (skeptic): any family route must credit ramification to the conductor for free, since log|d| >= sum over ramified p of log p. Without that credit the family route fights a strawman (C27).
+- B24 NO-COMPARISON LEMMA. Q_{L1} - Q_{L2} on the pole-free class is a zero-mean-symbol translation kernel, with sup and -inf >= max|dc(n)|/sqrt n (two-bump proof). Wave 5 Ihara world: the exact two-bump identity holds (+-6.342841 = +-L*dw_3 for q=3, skeptic-derived from the fiber formula). Evidence: elementary proof plus two codes.
+- B25 HODGE-SHAPE BLINDNESS + NEAR-NULL CASCADE. The Haynsworth split is W(x) restated; interlacing gives lambda_1(A) <= lambda_{k+1}(Q). Wave 5 cascade counts (C24) are converged per-sector counts below tau=1e-10, reproduced by two independent codes:
+| x | 8 | 12 | 20 | 36 | 64 |
+|---|---|---|---|---|---|
+| count (even/odd) | 4/4 | 8/8 | 16/15 | 32/31 | 58-59 |
+The cascade is archimedean: empirical law c' (S20) with RvM excess e*(x). It is also counterfeit-blind: off-line zeros ADD negative index on top of an unchanged non-negative cascade (S21). The Ihara world shows a genuinely positive near-null cascade (down to 1e-27) BEFORE exact finite-rank nulls in an RH-true world. So the cascade is a structural feature of positivity near resolution thresholds, not a sign of fragility.
+- B26 SPLIT-FAMILY COMPLEXITY BARRIER (KS-PSHR). Feasible for zeta at 3.02; certified infeasible at x=5 for K=16/24 while Q is PD; the required complexity grows with x. Lemma: 0 <= M_p <= Q => dist_{Q^{-1}}(W_p v, span) <= sqrt(v^T Q v). Wave 5 Ihara addition (skeptic, exact rational Farkas): in an RH-TRUE world, per-cycle-length splits with free arch/pole/identity shares and no transfer kernels (a local-PSHR analogue) are infeasible for K=2 at M=9 (n=40), 11 (n=80) and 15-16 (n=200). There T is strongly PD (lambda_min ~14-16). So split failure can come from the poverty of the piece family and not only from near-null approximation; R16's lemma is sufficient, not the only operative cause. Evidence: two Farkas certificates (x=5), no Arb yet; Ihara items exact.
+- B27 NO UNIFORM COUNTERFEIT ANATOMY (new; skeptic-confirmed in narrowed wording; numeric: float N=128/256 plus mp dps 60 N=120/160, independently reproduced with a Legendre basis to ~1e-3). Split each counterfeit as Q_cf = Q_ref + Q_Def against a genuine reference with the same Gamma and q, and measure at the counterfeit's own minimizer v_cf.
+- Six members fail by O(1)-vs-O(1) cancellation: E[1,0,5], E[1,0,6], E[1,1,6], the a2-flip, LEB, and DH(kappa=0,1). Here |Q_Def(v_cf)| = 0.35-4.2 and rho = |Q_Def(v_cf)|/|lambda_min(Q_Def)| = 0.17-0.84.
+- The FE-satisfying, small-conductor DH fails INSIDE a near-null set: Q_Def(v_cf) = -0.0282, rho ~0.012, and 95.6% of v_cf lies on the reference's 5e-8 mode. The defect operator itself is O(1) (spectrum [-2.6, 3.2]).
+- The perturbative anatomy tracks the counterfeit's OWN near-nullness: DH has a 5-mode cascade down to 3.9e-28, which requires its FE. DH(kappa=0,1) have no FE and are balanced. It does NOT track defect locality: the local-defect LEB and a2-flip are balanced, the global-defect DH is perturbative.
+- The classification is a continuum: the weight of v_cf on the reference's low modes runs 0, 0.02, 0.35, 0.45, 0.84, 0.98.
+- R = 1 + lam/|Q_Def| is tautological near the horizon.
+- The anatomy descriptors are reference-dependent (R14).
+Consequence: the wave-4 P4 requirement ('lower-bound the Euler form FAR from the near-null cascade') is WITHDRAWN.
+
+### Requirements
+- R1 COUNTERFEIT-SENSITIVE BY CONSTRUCTION, WITH A SCALE. Exclude E and D at the INPUT level and LOCATE the failure scale. Hard gate: run harness.battery blind; no false alarm on control+; catch the E ladder (19.8225 / 27.627 / 31.770 / 94.44) and DH (30.571) beyond their horizons. Report the below-horizon false-alarm count as a scored quantity. Wave 5 track record: local-unitarity 165 false alarms; the strip route has 0 on controls but gives false '+' on no-FE members; Maass-Selberg is an 'always +' baseline. Note that the cascade departs from the genuine twin only AT the horizon (no precursor), so no cascade-shaped input gives an early scale.
+- R2 NONLINEAR, HECKE-QUADRATIC, INSIDE THE INEQUALITY. E passes every linear identity. Multiplicativity used only as a gate, a lookup, a reference choice (defect_balance) or a residue sign (Maass-Selberg uses L(2) > 0 and Lambda(2s) != 0 only where Re 2s > 1) does not count. The Hecke-quadratic input must act in the critical strip, not only in the region of absolute convergence.
+- R3 USE THE FE AND EULER JOINTLY. Neither alone suffices: LEB fails at 5.05; Euler without FE fails at 2.16-27.76; exact multiplicativity gives defect 0. Wave 5 addition: the FE alone already produces the entire near-null cascade (S20/S21: E and DH have their genuine twin's non-negative cascade). So the Euler product must do its work on the NEGATIVE-index directions that off-line zeros add, not on the cascade.
+- R4 EXACTNESS ON THE WHOLE NEAR-NULL CASCADE. Any PSD decomposition must keep the whole cascade null in every piece. For zeta the per-sector count below 1e-10 is 4/4, 8/8, 16/15, 32/31 and 58-59 at x = 8, 12, 20, 36, 64 (converged, two codes). Empirically this is floor(e*(x) - ln(1/tau) ln(A T*)/(4pi^2)) +-1 (law c', S20), with e*(x) = d(x/q)^{1/d} + (1/4)sum(1/2 - mu_j) - (pole0+pole1)/2. Wave 5 (B27): the counterfeit DH fails INSIDE its own FE-generated 5-mode cascade, so a mechanism cannot restrict attention to directions far from near-null sets.
+- R5 POLE BLOCK EXPLICIT, WITH A QUANTIFIED RESIDUE, NOT THE CRUX. The pole block is rank-1 hyperbolic per sector; for zeta the primitive block is equally near-null. Wave 5: in scattering-type certificates the residue sign at s=1 is the ONLY Euler input that survives, and it lives at the edge of absolute convergence (Maass-Selberg).
+- R6 MUST EXPLAIN WHY THE UNIQUE SURVIVOR IS POSITIVE. A converse theorem or genuine-character lookup plus 'the survivor is positive' is circular. Instances: EFW, RCI, class-group, the member-wise strip route, and the defect_balance reference choice.
+- R7 NO RESTATEMENT on a cone, subspace or lossless split (Haynsworth).
+- R8 PROPER NUMERICS AND PREREG. Full class, both sectors. Report N, sector, precision and basis; mp with dps > -log10|lambda| + 10; Schur tail below 1e-20. PREREG must be a file whose mtime predates every script, with a self-audit list of ALL misses, including minor quantitative ones.
+Wave 5 additions:
+(a) Every headline number needs a saved log/json artifact. The '6.875 FAILS' claim had none and did not reproduce.
+(b) Failure claims for min-over-test-function routes need LOWER bounds on the inner minimum (Ritz is one-sided). State finite-section N and its convergence.
+(c) Use a polynomial (Legendre) basis for near-null brackets; Neumann-cosine runs 20-30% high.
+(d) Anatomy and threshold classifiers must use scale-free normalizations, e.g. rho = |Q_Def(v)|/|lambda_min(Q_Def)|, not absolute thresholds.
+(e) Citations taken from memory are flagged UNVERIFIED and queued for the lit cache.
+- R9 UNIFORM IN x. RH is Pi^0_1 and margins decay like exp(-~12 e*(x)). No per-window certificate family is a mechanism. Finite-rank worlds escape this through a flat-extension one-shot certificate. Zeta has no finite rank (Jensen vs N(T), under RH), so any proposal claiming a finite-horizon principle for zeta must exhibit the finite-dimensional object.
+- R10 GLOBAL, CONSISTENT WITH RCI, EXPLAINING ITS BINDING SET. RCI binds at the tiniest conductors (d = -3, -4, 5, 8, ...) with near-null slack, so the mechanism must explain positivity there. Conductor counting and large sieve cannot be the source. Wave 5: any family-level route must credit ramification to the conductor (log|d| >= sum of log p over ramified p); omitting it produces spurious barriers (C27).
+- R11 NOT DEFEATED BY THE ZOO BARRIERS. Predictions must be negative at the right place for LEB 5.0506, euler-rand d1 2.164 / d2 5.776, a2-flip 22.474, DH(kappa=0) 20.076 and DH(kappa=1) 2.930. Abstaining counts as a miss. Wave 5: strip-positivity routes are UNSOUND on no-FE members (false '+' from the first grid point past the horizon), so they are disqualified.
+- R12 NOT AN EXISTING DEAD CLASS. State which death class the proposal evades, and why. Classes:
+(1) linear/asymptotic;
+(2) circular zero-readout;
+(3) lossy split / restriction / tautology;
+(4) uniqueness collapse;
+(5) no-comparison (B24);
+(6) bounded-complexity family (B26/B20);
+(7, new) archimedean/count-only: uses only (d, q, mu, poles) and the RvM count, so it is counterfeit-blind by construction (cascade);
+(8, new) edge-of-absolute-convergence: positivity certified on Re s > 1/2 of Lambda(2s), or anywhere wider than the line (Maass-Selberg, strip/Poisson, Odlyzko-Poitou; R15);
+(9, new) solved-world transfer requiring finite rank or lattice lengths (Ihara/curves).
+Check against B1-B27.
+- R13 AMPLE RANK MUST MATCH THE CASCADE (quantified). Any split with an ample/pole part of rank k has primitive margin <= lambda_{k+1}(Q). Empirically (S20, 42 member-x rows, 29/29 out of sample) this needs k >= e*(x) - ln(1/eps) ln(A T*)/(4pi^2) - O(1) per sector. For zeta, e*(x) = x - 7/8 (offset not resolved at +-1). This is a THEOREM only modulo lemma L1 (strip leakage with a guard band); until L1 is proved it is numeric.
+- R14 NO COMPARISON PRINCIPLE. No mechanism may rest on ordering Q_L against another L-datum's form with the same Gamma and q (B24). Wave 5: even anatomy descriptors relative to a reference (cos(v_cf, v_ref), sign of Q_Def(v_ref)) are reference-dependent. A complex-character reference Re L(chi) is spectrally a degree-2, conductor-q^2 object, so it is not like-for-like for a self-dual counterfeit.
+- R15 WIDER-THAN-LINE POSITIVITY IS BLIND (sharpened). By balayage, a line zero pairs with its sech(pi(u - gamma)) edge cloud, so certificates on regions wider than the line cannot see closed-strip counterfeits. Wave 5 quantification:
+(a) For each genuine L, the strip route's slack is >= 2pi inf_v sum_gamma sech(pi(gamma - v)) > 0 while the Weil margin -> 0, so it has a finite reach at ANY window. For zeta the floor is 1.3036e-18 and the route fails at x=5.2.
+(b) Maass-Selberg Gram positivity for phi_L = Lambda(2s-1)/Lambda(2s) equals 'no zeros with Re > 1'. Strip zeros enter only as Blaschke zeros.
+A mechanism must see line-confinement itself, and must put the Weil-window L-function's critical strip ON the spectral line, not in a denominator at 2s.
+- R16 SPLIT FAMILIES NEED UNBOUNDED COMPLEXITY, AND RICH PIECES. The approximation lemma (error <= sqrt(lambda(x))) still binds. Wave 5 (Ihara, exact): per-place splits without transfer kernels fail even in an RH-true world at a strongly PD scale (M=9, lambda_min ~15, n=40), and that scale grows with n. So a proposal must also show its piece family is rich enough at O(1) margins, not only near-null.
+- R17 (new) DETECTION MUST COME FROM THE ADDED NEGATIVE INDEX, NOT FROM THE CASCADE. Skeptic-reproduced: E at x=128 has count 9/8 with index 7/7, leaving 2/1 = zeta_K(-20)'s; DH at x=64 leaves 10/9 = L(chi_5)'s. Each counterfeit's non-negative near-null cascade equals its genuine twin's +-1, and off-line zeros add hyperbolic negative directions on top. So any detector based on cascade depletion, near-null counts or Landau-density excess is counterfeit-blind. A mechanism must prove positivity on the ~e*(x)-dimensional cascade using only FE-level data, and must exclude the extra hyperbolic blocks with Euler-product input that acts in the strip.
+- R18 (new) SOLVED-WORLD ANALOGIES MUST CARRY A PROOF AND NAME THEIR FINITE INGREDIENT. A calibration or transfer from a model world (graphs, function fields, random matrices) counts only if that world's RH has a known PROOF (LPS via Deligne / Eichler-Shimura, curves via Weil / Bombieri-Stepanov / Castelnuovo-Severi, MSS existence). The proposal must state which proof step evades which ledger barrier, and whether that step uses finite rank, a length lattice or integrality of traces, none of which zeta has. Random solved worlds (a random Ramanujan graph) calibrate nothing about mechanism existence.
+
+### Survivors
+- S1 (barrier) LEB: Weil-negative from x_P = 5.0506.
+- S2 (barrier) Sign barrier: c_E(n) >= 0 for n < 36 while E is negative from 19.8225. Graph analogue exact: E_G has N^E >= 0 and is negative at M*=25.
+- S3 (equivalence) Theorem A cone criterion; needs Lean.
+- S4 (anatomy) E = (zeta_K + L_G)/2; E_Q = (1/h)sum_psi L(psi), with the exact split Q_E = Q_{zeta_H}/h + Q_Def.
+- S5 (elementary) Haynsworth: neg(Q) = neg(A) + neg(S). Lossless.
+- S6 (anatomy) Conductor-20 pole-block diagnosis: E's primitive horizons are 23.38/23.50/26.16. Does not hold for zeta.
+- S7 (arithmetic fact) Reciprocity kills local counterfeits in the pole class.
+- S8 (reformulation) RCI for all x = RH + GRH for Dirichlet L; binding set = tiny conductors.
+- S9 (numeric) EFW finite-scale uniqueness at conductor 20.
+- S10 (certified) D horizon x_D = 30.571 +- 0.002 (even).
+- S11 (interval, modulo P1-P3) Lane B lower bounds for zeta_K(-20) at x = 20 and 22.
+- S12 (kernel, scratchpad, unmerged, #607-unverified) CF.window_separation_cE at x ~ 27.9.
+- S13 (numeric) Epstein ladder / zoo horizons. E[1,0,5] odd crossing 21.267.
+- S14 (untested candidates) Only the EFW non-self-dual loophole remains. All wave-5 angles were run and are dead as mechanisms.
+- S15 (UPDATED, float N=16 unless stated) Unconditional larger-window strip reach.
+- Arb-certified on the line side, finite-section N=16: blind family route proves W(x) for all 27 degree-2 bases at x=6.5 (both sectors) and 6.75 (even).
+- Ramification-aware route (skeptic): proves x=7.0 odd (x'=37) and 7.25 odd (x'=59).
+- Ramification-aware route, x=8 odd base (-1,1,1,-1): fails at every checkpoint x' <= 151 (N=16; N=32 at 97/151, purely unramified vertices).
+- Open: 7.5 odd; 6.875/7.0 even.
+This is a finite unconditional window, not a mechanism.
+- S16 (elementary theorem, Lean candidate) No-comparison lemma (B24), two-bump proof.
+- S17 (UPDATED; superseded by S20) zeta near-null cascade: converged counts below 1e-10 are 4/4, 8/8, 16/15, 32/31 and 58-59 at x = 8/12/20/36/64. The wave-4 figures (1/3/5/9/13/16/20/22 below 1e-6) were unconverged.
+- S18 (certified modulo Arb) KS-PSHR is infeasible for zeta at x=5 (K=16) while Q is PD.
+- S19 (UPDATED; superseded by B27) E fails by O(1)-vs-O(1) balance (+0.963 / -0.963 at x = 19.87). This holds for 6 members, but NOT for DH (perturbative inside its own cascade).
+- S20 (new, numeric, independently reproduced) CASCADE LAW c'. Per sector:
+count(x, tau) = floor(e*(x) - ln(1/tau) ln(A T*)/(4pi^2)) +- 1,
+with e*(x) = d(x/q)^{1/d} + (1/4)sum(1/2 - mu_j) - (pole0+pole1)/2, A = (1/2)log x, T* = 2pi(x/q)^{1/d}.
+- Fit: 580/580 in sample and 29/29 new (member, x) rows out of sample at tau = 1e-6/1e-10/1e-12.
+- Caveats: post-hoc (the preregistered law (c) FAILED 6/13); the offset and ln(AT*) refinements are only weakly resolved (the no-offset variant fits 552/580).
+- Archimedean: zeta_K(-4) has e* = sqrt(x) - 1, far fewer than either factor, because the constraints add while the PW budget does not.
+- S21 (new, numeric, skeptic-reproduced) The cascade is counterfeit-blind. Each counterfeit's non-negative cascade equals its genuine twin's +-1 (E at x=128: 9/8 minus index 7/7 = 2/1 = zeta_K(-20)'s). Off-line zeros add negative index on top. The departure is exactly at the horizon (no precursor).
+- S22 (new; min-max, mp, not interval) Prolate+constraint subspace (top band-T prolates with F(gamma_j) = 0 for gamma_j <= T) reaches the full cascade for zeta at x=20. It certifies 16 (even) and 15 (odd) eigenvalues below 1e-10, with Rayleigh maxima 2-11x above Ritz. Reproduced within 1.3x.
+- Exact identity: Q_x = the zero sum, confirmed to 1e-14.
+- Provable inequality form: lambda_m <= (2/r^2) sup_V of the integral of M_L(|xi|)|F|^2 over the strip with |xi| > T - r (weight INSIDE the integral).
+- The all-x version needs L1. Used black-box, L1 costs 4-5 dimensions per sector at x=20.
+- S23 (new, exact, skeptic-reproduced) Ihara solved world.
+- Fiber theorem: graph W(x) iff T_{ceil(log x/log q)}(w) is PSD; D T D is an integer matrix, so the question is decidable.
+- For Ramanujan graphs the rank is exactly 2(n-1), with exact nulls from M = 2(n-1)+1 (threshold x > q^{2(n-1)}), preceded by a positive near-null cascade (to ~1e-27).
+- Flat extension: W(q^{2n-1}) implies W at all x.
+- E_G counterfeits are caught only by the exact Toeplitz inertia.
+- Per-cycle-length splits fail at M=9 (n=40), exact Farkas certificate.
+- S24 (new, narrowed B-MS, numeric plus proof of the necessity direction) For phi_L = Lambda_L(2s-1)/Lambda_L(2s) with at most one real simple pole in Re s > 1/2 (all Euler products), the Maass-Selberg Gram is PSD for T > 1 iff Lambda_L has no zeros with Re > 1.
+- Strip zeros become Blaschke zeros of phi_L.
+- Rank-one identity: K(s,w) = phi(s)K(1-s,w).
+- A non-real pole forces K(s,s) ~ -|r|^2 T^{1-2Re p}/((2Re p - 1)|s-p|^2) (confirmed to 4 digits).
+- The Maass-Selberg formula matches brute-force integration over F_T to 1e-14.
+- S25 (new, mp, skeptic-reproduced) Balayage reach floor. For zeta, 2pi sum sech(pi gamma) = 1.3036e-18, the minimum over v in [0,7]. The strip route fails at x=5.2 at every window (Legendre Ritz 9.27e-19 < floor); the success end at 5.1 is not rigorous.
+- S26 (new, mp dps 60, reproduced) DH anatomy. DH's own cascade is 5 modes per sector (even at 30.62: 3.9e-28 ... 4.0e-6, then 0.013). The reference Re L(chi_5, complex) has 2. DH fails with rho ~0.012 on the reference's 5e-8 mode. DH has no zeros with Re > 1 for t <= 400 (argument principle); min |D(1+it)| <= 0.1839.
+
+### Open questions
+- Q1 Only split-SDP question left: strictly LOCAL transfer kernels (support < log 2). Expected dead by B13/B26/R16; run once. Also Arb-certify the x=5, K=16 Farkas dual.
+- Q2 (still unrun) Is the RCI binding margin a pure zero readout? Regress the log margin for d in {-3,-4,5,8,-7,-8,12,13}, x in [10,40], on the first-zero height and the low-zero counts. New handle: use law c' plus -ln lambda_1 ~ 12.2 e*(x) as the null model.
+- Q3 Can a finite truncation of the FE see reciprocity alone? Rerun EFW with the corrected constraint (i).
+- Q4 EFW loophole: non-self-dual Satake data; certified finite-scale uniqueness at X=50; the J -> infinity limit.
+- Q5 (replaces the old Q5; cascade law now numeric, S20) Prove or refute LEMMA L1 in guard-band form: for f in the top (AT/pi - G) band-T prolates with G = O(A), bound sup over |eta| <= 1/2 + r of int_{|xi| > T-r} |F(xi + i eta)|^2 by C e^{2A|eta|}(1 - mu) plus an exponentially small term. Then restate the cascade inequality with M_L(|xi|) INSIDE the integral. Also:
+(a) Is the 1/(4pi^2) width exact? Test the (1-mu)^2 mechanism by regressing log Ritz lambda_k on log(1 - mu_{k+N(T*)}) at x = 20 and 36.
+(b) Is the 7/8 offset (+1/8 Stirling, -1 pole) resolvable beyond +-1? Currently 552/580 entries fit with no offset.
+(c) Does Connes-Consani (Enseign. Math. 69, 2023) already state the small-eigenvalue count?
+- Q6 (replaces the old Q6; the E-anatomy question is resolved by B27) Does the counterfeit's OWN cascade dimension at its horizon predict perturbative vs balanced anatomy? Test FE-satisfying DH-type combinations of complex characters mod 7 and 13, and the kappa family near the FE value. Also test whether Re L(chi) behaves as degree 2 at conductor q^2 (cascade counts at q = 5, 7, 13).
+- Q7 Global infinite divisibility (c >= 0 for ALL n) is untested. L(chi_-4) is positive with c(3) < 0.
+- Q8 (partly answered, proposer-only) -ln lambda_1 is linear in e*(x) with slope 11.2-12.4 across 6 L-functions, and lambda_1(zeta, 20) <= ~1e-96. This is numerically nearly indistinguishable from Zhu's 2pi^2 N(T*)/ln N(T*) on [8,100]. Open: an independent mp reproduction; a range of x that discriminates the linear-in-e* law from Zhu's law; any closed form for ~12.2.
+- Q9 D's positive side below 30.571 is uncertified; the odd crossing is ~31.24. There are battery truth-vs-measurement conflicts at DH x = 31-35 and (new) at E[1,0,14] x=95: metadata -1, N=64 float +1.1e-7, likely finite-N. Report to the harness owner.
+- Q10 Vet Suzuki arXiv:2606.09096 (full text) and the unvetted 2026 RH-proof claim (weil_positivity_window_frontier_2026#6) against the battery and R13-R18. Zhu arXiv:2608.24827 is now verified in the cache and is prior art for Q8 and for variational upper bounds.
+- Q11 Untested leads, to be screened against R12 classes 7-9 and R15-R18 first:
+- central_value_nonnegativity_families: promoted. Rankin-Selberg / triple-product unfolding puts the L-function's strip on the spectral line (numerator, not denominator). Does it avoid B24 and R17?
+- arithmetic_siegel_weil_heights_to_L: does the height pairing have unbounded rank (R13)?
+- euler_multivariate_stability
+- gillet_soule_yuan_zhang_adelic
+- infinite_divisibility_levy
+- Q12 Lean targets:
+- the no-comparison lemma (B24);
+- the split-approximation lemma (R16);
+- Haynsworth + interlacing;
+- (new) the Ihara fiber theorem plus the integer facts 'rank D T_79 D = 78, all leading minors of D T_78 D > 0' for a fixed n=40 graph, as a FiniteDecide showcase;
+- (new) the Maass-Selberg rank-one identity K(s,w) = phi(s)K(1-s,w);
+- (new) the argument-principle certificate that DH has no zeros with Re > 1 for t <= 400.
+- Q13 (narrowed; recommend retiring after one cheap step) Ramification-aware larger-window strip route:
+- x=7.0 and 7.25 odd are PROVED (x' = 37, 59; float N=16);
+- x=8 odd FAILS at every checkpoint to 151 (N=16; N=32 at 97/151);
+- 7.5 odd and 6.875/7.0 even are OPEN.
+The one cheap step: certify the x=8 odd failure at N=32 with interval lower bounds on mu at the failing vertices (Schur tail).
+- Q14 Attribution of the window-class pseudosquare bound (Schinzel 1997; Lamzouri-Li-Soundararajan; CMQR).
+- Q15 (new, low priority) The true Maass-Selberg positivity condition for phi with 2 or more real poles in Re s > 1/2. Presumably a Pick-type matrix condition on r_p and T^{2p-1}; it depends on T. Relevant only if a future proposal uses residual-spectrum scattering (Langlands-Shahidi, Rankin-Selberg Eisenstein). It cannot reach the strip.
+- Q16 (new) Proof-carrying solved-world calibration (R18). For LPS Ramanujan graphs and for curves over F_p, map each proof step (finite H^1 with Frobenius, integrality of traces, tensor-power / Rankin-square amplification over a monodromy family, Castelnuovo-Severi) onto B1-B27. Question: does every evasion use finite rank, a length lattice or integrality? If yes, that is a precise, citable transfer barrier.
+- Q17 (new) DH existence of zeros with Re > 1. The Kronecker count needs >= 20 primes up to 157 simultaneously aligned at sigma = 1, so the first such zero is heuristically at height 1e15-1e34. Verify the existence citation (believed Saias-Weingartner, Acta Arith. 140, 2009; UNVERIFIED). Relevant to any edge-of-strip criterion.
+
+### Corrections
+- C1 D horizon x_D = 30.571 (even; odd ~31.24), not '31-35'.
+- C2 D decays like e^{-2.3x}..e^{-2.5x}.
+- C3 Wave 1's zeta ~1e-16 was the float floor. (Further corrected by C25.)
+- C4 The reference counterfeit is E, not D.
+- C5 EFW statement fixes: (ii) vacuous; (i) needs 'zeta x degree-1 unitary datum'; (iii) needs R0.
+- C6 EFW X=12 horizon and R_max(25) are ball-relaxation only.
+- C7 E threshold converged at 19.8225.
+- C8 LEB witness lambda_min(6) = -0.3405 at N=64.
+- C9 KWin (x=2) is Yoshida 1992 in a pole-kept variant. The 1935 first author is H. S. A. Potter.
+- C10 E's first off-line zero is 0.93297 + 15.66825i.
+- C11 Harness doc/battery issues (report, do not edit):
+(a) the README DH row is stale;
+(b) FormResult.parts is already G^{-1/2}-normalized;
+(c) the DH truth at x = 31-33 conflicts with the N_mp=24 measurement;
+(d) NEW wave 5: E[1,0,14] at x=95 is -1 in the metadata but +1.1e-7 in float at N=64 (finite-N);
+(e) NEW wave 5 (note, not a bug): the Neumann basis runs 20-30% high on near-null Ritz values against Legendre.
+- C12 Lit cache fixes (Bull. LMS 53; Mayer Invent. 114; Connes 2005 title; Weng co-authors).
+Wave-5 CORRECTION: Yoshida 1992 IS in the cache (weil_explicit_positivity#3, bochner_weil_pd#2), and DH 1936 IS in the cache (davenport_heilbronn_epstein_offline#0, Epstein/Hurwitz). Poitou 1976/77: bibliographic data verified on numdam, content unread.
+Still UNVERIFIED and not cached (the web budget was exhausted in all 5 wave-5 angles): Trudgian 2014 S(T) constants; Landau-Widom 1980; Slepian 1965; Iwaniec Spectral Methods Sec. 6.4 (proposition number); Efrat-Sarnak 1985; Sarnak 2004; Gelbart-Lapid 2006; Saias-Weingartner 2009; Ihara 1966; Bass 1992; Hashimoto 1989; Stark-Terras 1996; LPS 1988; Lamzouri-Li-Soundararajan journal.
+- C13 'zeta_K positive to x >= 26' was float-only.
+- C14 O(1) primitive margins hold for zeta_K(-20) but not for zeta.
+- C15 E has index 2 at x=22.
+- C16 E pole-free horizons: 23.38 / 23.50 / 26.16.
+- C17 The cascade is analytic-conductor controlled, not prime-power controlled. Wave 5 strengthens this: purely archimedean, set by the RvM excess e*(x) (S20).
+- C18 RCI framing: the all+1 tail is the pseudosquares and the easiest slice at fixed x.
+- C19 Odlyzko route: larger windows reach beyond x=6. Same-window Delta >= 0 is a tautology.
+- C20 KS-PSHR brackets are loose; the 'dichotomy' is a finite-N artefact.
+- C21 Wave-4 prereg mis-scorings (hodge, class_group, rci).
+- C22 The proposed Hecke-eigen B24 duplicated B22+R3; the ledger's B24 is the no-comparison lemma.
+- C23 D=-56 '+-7' was a Ritz lower bound. The C2 Schur magnitudes are scale-dependent.
+- C24 (new) Cascade counts. The wave-4 B25/S17 counts '1/3/5/9/13/16/20/22 at x = 3..36 below 1e-6' were N-unconverged; '22 at x=36' is badly low. Converged per-sector counts below 1e-10 are 4/4, 8/8, 16/15, 32/31 at x = 8, 12, 20, 36 (two independent codes) and 58-59 at x=64 (a lower bound, still rising). The R13 heuristic 'd*(x/q)^{1/d}' is refined to the RvM excess e*(x) minus a log(1/tau) log(AT*)/(4pi^2) width.
+- C25 (new) zeta margin values. '1.498e-38 at x=20 (N=16)' and 'lambda_A ~5e-53 (N=32)' in B3/B20/B25/C3/C14 were unconverged Ritz upper bounds. The proposer's converged mp (N up to 160, dps up to 191; NOT skeptic-reproduced) gives lambda_1(20) <= ~1e-96, with -ln lambda_1 linear in x at ~12.15 per unit. zeta_K(-20)'s 'exp(-x/2)' is a sqrt(x)-type law in e*. The Q8 hypothesis 'log margin ~ -c*(dim)^2' is not supported; the relation is linear in e*.
+- C26 (new) The cascade proposer's claimed theorem B27 is NOT a theorem. The inequality put M_L(T) outside the height integral (false in general); zeros above 1183 carry 25-40% of the Rayleigh value. The count consequence depends on the unproved L1. The '7/8 offset derived' cannot be resolved at +-1. The Part B prediction miss (1-3 orders predicted, 2-6x actual) was reported as 'better than predicted' instead of as a miss.
+- C27 (new) Strip reach.
+- 'x_U(odd) < 7.25' and 'x=7.25 fails at every window' are conductor-blindness artefacts: with free ramified-conductor credit, 7.25 odd is proved at x'=59 and 7.0 odd at x'=37.
+- 'x=6.875 even FAILS' has no artifact and did not reproduce (the skeptic's B&B found no failing vertex at x' = 79/97/113).
+- The x=8 odd adversary margin at x'=151 is 0.072 converged, not 0.089 (N=16).
+- The prereg P5 item 'ramified patterns lower x_U by at most 0.25' was left unscored.
+- C28 (new) Maass-Selberg.
+- The general theorem 'real simple positive-residue poles <=> PSD for all T > 1' is FALSE with 2 or more real poles. Counterexample: phi_zeta*(s-(1-p))/(s-p), p = 1.5, is not PSD for 1 < T < 1.654 (|s-p|^2 K(s,s) -> -9.2119 at T = 1.01).
+- 'Schur forces r <= 2p-1' is false.
+- 'T > 1 threshold universal' is false.
+- synth_off is still indefinite at T = 1e14, so prediction (b) 'T* small' was a miss reported under prediction_matched=true.
+- min |D(1+it)| on [0,400] is <= 0.1839, not 0.2306 (step too coarse).
+- C29 (new) Ihara.
+- 'B19 fails (P=1)' is circular: it randomized the zeros.
+- 'Barriers do not discriminate RH-true from RH-false worlds, hence are not evidence against a mechanism' is a category error and must NOT enter the ledger.
+- The graph split analogue is local PSHR, not KS-PSHR/B26.
+- 'Exact infeasibility beyond 2(n-1)' is a trivial overdetermined system.
+- 'B20/R9 reclassified as a necessary feature of infinite rank' and 'cascade = not fragility' are overreach or strawman.
+- 'Zeta has no exact null vector (unconditional)' holds only UNDER RH.
+- The flat-extension attribution should be Caratheodory-Fejer / Pisarenko / Iohvidov.
+- The assignment's cascade threshold '2A > n log q' was wrong by a factor of 2; the correct threshold is A > (n-1) log q.
+- C30 (new) Defect balance.
+- 'DH inherits L(chi_5)'s near-null cascade' is backwards: DH has its own, deeper 5-mode cascade, and the reference has 2 modes.
+- The 'two regimes' are a threshold on a continuum.
+- The P4 requirement proposed in wave 4 is withdrawn (B27).
+- Two minor prereg misses went unlisted: the a2-flip R = 0.870, and |Q_ref1 - Q_ref2| up to 2.79.
+- C31 (new) Q8 prior art: Zhu arXiv:2608.24827 (verified, in the cache) already has -ln lambda_min ~ 2pi^2 N(T*)/ln N(T*) and variational upper bounds via prolate test functions vanishing at zeros. The cascade-law novelty is limited to per-sector COUNTS, the 1/(4pi^2) width, and counterfeit-twin equality.
+
+### Calibration
+- K1 Check converse-type lookup first whenever a detector 'works'. Wave 5 instances: the member-wise strip route looks up genuine zeros; the defect_balance reference choice.
+- K2 Tag inherited numbers by provenance. Wave 5 found two inherited ledger numbers badly unconverged: the cascade counts (22 vs 32/31 at x=36) and zeta's margin (1.5e-38 vs <= 1e-96 at x=20). Rule: any count or near-null value entered without an N-convergence statement is provisional.
+- K3 'Dead as a mechanism' does not license a specific failure point (wave-4 KS lesson). Wave 5 confirms it in the other direction: strip_reach predicted failures that were artefacts of an omitted free input (ramification credit).
+- K4 Per-wave 'any angle leads to RH': 5/5 wave-5 angles died (30/30 overall plus EFW). All generators gave <0.1% to <0.05%, which is appropriate. Keep the combined figure < 0.5%.
+- K5 Lane A kernel-certification odds (60-70%) unchanged. Wave 5 produced mp/interval certificates (strip bases at 6.5/6.75, exact Ihara rational inertia and Farkas) but no merged Lean artifacts.
+- K6 Float overconfidence: better in wave 5 (mp dps 60-250, exact rationals in Ihara, LDL certification), but the one-sided Ritz issue bit the strip-route failure claims. Keep the rule: mp plus Schur tail whenever |lambda| < 1e-12, and lower bounds for any 'fails' claim.
+- K7 SKEPTIC SOFTENING RATE: wave 5 had 5 claimed barriers. 4 were NOT confirmed (the cascade 'theorem', C-Ihara, B-MS 'iff theorem', strip-reach brackets); 1 was confirmed only in narrowed wording (defect anatomy). Two skeptics produced outright counterexamples within the wave: the multi-pole Maass-Selberg phi and ramification-aware proofs at 7.0/7.25. Raise the prior that a headline barrier gets softened or refuted to ~80-90%, and use the skeptic's wording only.
+- K8 RCI: stays < 0.5%; no new RCI work this wave.
+- K9 PREREG QUALITY, wave 5. All 5 had timestamped files predating scripts (a first).
+- Honest failures: cascade (law (c) 6/13, prediction_matched=false) and defect_balance (DH miss).
+- Unlabelled misses remain in 4/5: cascade Part B scale; maass (b) T*; strip P5 unscored; defect two minor items.
+Require an explicit per-item scored table.
+- K10 The archimedean conductor law (wave 4: ~40% clean) was CONFIRMED empirically in wave 5 (29/29 out of sample, post-hoc). Upgrade to ~80% that count = e* - ln(1/tau) ln(c*)/(4pi^2) + O(1) is asymptotically right, and ~50% that the 1/(4pi^2) constant is provably exact.
+- K11 (new) cascade_law_slepian stated 85% that the Part B black-box theorem was correct 'modulo the weighted-L1 lemma'. The skeptic found the inequality misstated and L1 non-trivial (guard band). Lesson: odds for 'theorem modulo a lemma to prove' should be capped at the odds of the lemma (~15-30% here).
+- K12 (new) ihara_solved_model_calibration: prediction_matched=true numerically, but the interpretive headline was a category error. Lesson: a calibration world is informative about mechanism existence only if its RH has a proof (R18).
+- K13 (new) maass_selberg_schur_barrier: the death class (B2+R15) and P(surprise) < 2% were correct. The advertised iff theorem fell to a 2-real-pole construction. Lesson: before claiming an abstract iff, try adversarial multi-pole / multi-parameter constructions; they are cheap.
+- K14 (new) strip_reach_xU_theorem: 85% that the headline barrier survives as worded; it did not. Lesson (extends K9): the skeptic's most powerful move is again to vary what the proposer fixed. In wave 4 that was the window; in wave 5 it was free conductor information.
+- K15 (new) defect_balance_zoo: the proposer deliberately deviated from the triage default on LEB and the a2-flip (predicting balanced, 55%) and was right; DH was predicted balanced (60%) and came out perturbative. The skeptic's own side prediction (DH(kappa=0) perturbative) missed and was honestly reported. Good process on both sides.
+- K16 (new) Literature: the web-search budget was exhausted in every wave-5 angle, and ~15 citations were given from memory. Two cache 'absences' asserted by triage (Yoshida 1992, DH 1936) were wrong. Rule: grep lit/index.json before asserting that a citation is missing.
+
+### Priorities next
+- P1 CASCADE THEOREM VIA L1 (highest information per compute). Prove or refute the guard-band strip-leakage lemma L1 (Q5). Restate the cascade inequality with M_L(|xi|) inside the integral. Test the (1-mu)^2 mechanism behind the 1/(4pi^2) width at x = 20 and 36. Check Connes-Consani 2023 for an existing count statement. Success makes R13 an unconditional theorem ('any split needs rank >= e*(x) - O(log(1/eps) log x)'). Reproduce the Q8 mp lambda_1 values independently.
+- P2 KILL-SWITCH LEMMAS IN LEAN: B24 two-bump; R16 approximation lemma; Haynsworth + interlacing. Cheap new FiniteDecide showcases: the Ihara fiber-theorem integer facts at n=40, and the DH no-Re>1-zero argument-principle rectangle. Arb-certify the x=5, K=16 KS dual.
+- P3 PROOF-CARRYING SOLVED-WORLD CALIBRATION (R18, Q16). Take LPS graphs (Deligne via Eichler-Shimura) and curves over F_p (Weil / Bombieri-Stepanov). Map each proof step to B1-B27 and R17. Decide whether every evasion uses finite rank, a length lattice or integrality; that would yield a citable transfer barrier. Replaces the random-graph calibration.
+- P4 FRESH MECHANISM ANGLES that put the L-function's critical strip ON a spectral line in the NUMERATOR, screened first against R12 classes 7-9, R15, R17 and R18:
+- central_value_nonnegativity_families (Rankin-Selberg / triple-product unfolding: genuine squares; does it avoid B24, and how does it act on the e*-dimensional cascade?);
+- arithmetic_siegel_weil_heights_to_L (rank of the height pairing vs R13).
+Each proposal must say how its Euler-product input excludes the hyperbolic blocks added by off-line zeros (R17), not the cascade.
+- P5 ANATOMY vs OWN CASCADE (Q6, cheap; fold into P1). Cascade counts and rho-anatomy for FE-satisfying DH-type combinations mod 7 and 13 and for Re L(chi) at q = 5, 7, 13 (degree 2, conductor q^2?).
+- P6 RETIRE S15/Q13 after one cheap interval certificate of the x=8 odd failure at N=32. Run P5-old (RCI binding margins as zero readout, Q2) using law c' as the null model, then close RCI.
+- P7 CARRY-OVERS AND HYGIENE:
+- Backfill the lit cache for the ~15 UNVERIFIED citations in C12 before any further citation from memory.
+- Report harness issues C11(c-e) to the owner.
+- EFW non-self-dual loophole.
+- Vet Suzuki 2606.09096 and the 2026 RH claim.
+- Enforce timestamped PREREG with full miss lists, and a saved artifact for every headline number.
