@@ -1,0 +1,88 @@
+{
+  "island": "quasicrystal",
+  "package": "Quasicrystal",
+  "toolchain": "leanprover/lean4:v4.32.0",
+  "comparator_tag": "v4.32.0",
+  "not_consumable": [
+    "mirrormere/MM_leakage_composite_zero: statement declares `def` besides its theorem; only a single theorem/lemma can be judged (local definitions would collide with the artifact)"
+  ],
+  "nodes": [
+    {
+      "slug": "MM_euler_factor_section_offline",
+      "campaign": "mirrormere",
+      "theorem": "EulerFactorSectionOffline.euler_factor_section_offline",
+      "solution_module": "EulerFactorSectionOffline",
+      "challenge_module": "MissionChallenges.MM_euler_factor_section_offline",
+      "bridge_theorem": "MissionJudge.MM_euler_factor_section_offline",
+      "config": "MM_euler_factor_section_offline.comparator.json",
+      "artifact_sha256": "f7de3a5ef79bef910bbf2e049f8bf14888560cd9eb44e3b557149c4e9e05e492",
+      "statement_sha256": "5c5a3e23db9076331f26ca4800b72a2561bf7ac003d87c8c79c6df9f19b27733"
+    },
+    {
+      "slug": "MM_nt_brick_conditional",
+      "campaign": "mirrormere",
+      "theorem": "Quasicrystal.zeta_ordinates_not_uniformlyDiscrete_of_unbounded_density",
+      "solution_module": "BoundaryLemmas",
+      "challenge_module": "MissionChallenges.MM_nt_brick_conditional",
+      "bridge_theorem": "MissionJudge.MM_nt_brick_conditional",
+      "config": "MM_nt_brick_conditional.comparator.json",
+      "artifact_sha256": "bb6f0d04dbd6c9d1d103cb08e45866b2162781218e9fef13fb69835b78c7e747",
+      "statement_sha256": "2553bc64cf6d65a87b4877e4ccd3d3ff4e98109dc082857c01e93730f4dc274f"
+    },
+    {
+      "slug": "MM_offline_disjoint_discs",
+      "campaign": "mirrormere",
+      "theorem": "Quasicrystal.offline_disjoint_discs",
+      "solution_module": "OfflineDiscs",
+      "challenge_module": "MissionChallenges.MM_offline_disjoint_discs",
+      "bridge_theorem": "MissionJudge.MM_offline_disjoint_discs",
+      "config": "MM_offline_disjoint_discs.comparator.json",
+      "artifact_sha256": "9c4b6dbf394e0fa2eb385d255bcdd42b42eee72fd598909d4d0094d0872a910c",
+      "statement_sha256": "466a87f6b8bd7afb44a7b5077433e05f65a3aa9257bcc518ed6c19c28113da25"
+    },
+    {
+      "slug": "MM_primelog_spectrum_dense",
+      "campaign": "mirrormere",
+      "theorem": "Quasicrystal.primeLogSpectrum_dense",
+      "solution_module": "BoundaryLemmas",
+      "challenge_module": "MissionChallenges.MM_primelog_spectrum_dense",
+      "bridge_theorem": "MissionJudge.MM_primelog_spectrum_dense",
+      "config": "MM_primelog_spectrum_dense.comparator.json",
+      "artifact_sha256": "bb6f0d04dbd6c9d1d103cb08e45866b2162781218e9fef13fb69835b78c7e747",
+      "statement_sha256": "72fbb2b2835c3660f2cf38ea85712c3b985bc1c6698e03c03d61aecfbbfe2824"
+    },
+    {
+      "slug": "MM_selfinversive_iff_hardyz_real",
+      "campaign": "mirrormere",
+      "theorem": "Quasicrystal.selfInversive_iff_hardyZ_real",
+      "solution_module": "InvolutionDictionary",
+      "challenge_module": "MissionChallenges.MM_selfinversive_iff_hardyz_real",
+      "bridge_theorem": "MissionJudge.MM_selfinversive_iff_hardyz_real",
+      "config": "MM_selfinversive_iff_hardyz_real.comparator.json",
+      "artifact_sha256": "7cbddf365565a23bdb02c9bee84be1e19704b46f28605a7c36e3e939983c7a98",
+      "statement_sha256": "685f95d8ed2ad597264d8d480406db2c8e39531415deccb36a6f26169505a3ea"
+    },
+    {
+      "slug": "MM_torus_section_n2_rigidity",
+      "campaign": "mirrormere",
+      "theorem": "Quasicrystal.torus_section_n2_rigidity",
+      "solution_module": "TorusSectionLadder",
+      "challenge_module": "MissionChallenges.MM_torus_section_n2_rigidity",
+      "bridge_theorem": "MissionJudge.MM_torus_section_n2_rigidity",
+      "config": "MM_torus_section_n2_rigidity.comparator.json",
+      "artifact_sha256": "f36228c7c216b18e2fb15e708135df51d9f7b343082b50ee8e862204f36e56b8",
+      "statement_sha256": "f5ddf09d460e5f3ea5587b4c413b121d341f966817ba7264bd053c12d08141f3"
+    },
+    {
+      "slug": "MM_twofreq_realrooted_iff",
+      "campaign": "mirrormere",
+      "theorem": "Quasicrystal.twoFreq_realRooted_iff",
+      "solution_module": "TwoFreqRigidity",
+      "challenge_module": "MissionChallenges.MM_twofreq_realrooted_iff",
+      "bridge_theorem": "MissionJudge.MM_twofreq_realrooted_iff",
+      "config": "MM_twofreq_realrooted_iff.comparator.json",
+      "artifact_sha256": "5bd27f2c7303e5d5d447b90b41b2a1a3dd931f368ff65bae55c9e33d4e24cf91",
+      "statement_sha256": "c5aeb410defc350df9ec27eec073971bf09894a71d678366359daf45c4c16e02"
+    }
+  ]
+}

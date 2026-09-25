@@ -1,0 +1,273 @@
+{
+  "island": "li_positivity",
+  "package": "LiPositivity",
+  "toolchain": "leanprover/lean4:v4.34.0-rc1",
+  "comparator_tag": "v4.34.0-rc1",
+  "not_consumable": [],
+  "nodes": [
+    {
+      "slug": "MM_bragg_bridge",
+      "campaign": "mirrormere",
+      "theorem": "DiffractionCore.rect_explicit_formula_bragg",
+      "solution_module": "RvMBraggBridge",
+      "challenge_module": "MissionChallenges.MM_bragg_bridge",
+      "bridge_theorem": "MissionJudge.MM_bragg_bridge",
+      "config": "MM_bragg_bridge.comparator.json",
+      "artifact_sha256": "119ae3d24773634211a277a6100dcf864d430becebb49c686336585782c93f74",
+      "statement_sha256": "710d4a1920aaac2dc670cf7a5e0672a2d230ce68567347bf9fb0b3c77a043be8"
+    },
+    {
+      "slug": "MM_rect_trace_reading",
+      "campaign": "mirrormere",
+      "theorem": "DiffractionCore.rect_trace_reading",
+      "solution_module": "RvMTraceReading",
+      "challenge_module": "MissionChallenges.MM_rect_trace_reading",
+      "bridge_theorem": "MissionJudge.MM_rect_trace_reading",
+      "config": "MM_rect_trace_reading.comparator.json",
+      "artifact_sha256": "144f1b7c20eac9e317e2971484fa5909a713384476494cd470d72386e8072fd7",
+      "statement_sha256": "b5168609cd272526bbf0eb831a83bf862f99d074e825dcd27862f5151fd96451"
+    },
+    {
+      "slug": "MM_spectral_cooked_control",
+      "campaign": "mirrormere",
+      "theorem": "spectral_cooked_control",
+      "solution_module": "RvMSpectralCookedControl",
+      "challenge_module": "MissionChallenges.MM_spectral_cooked_control",
+      "bridge_theorem": "MissionJudge.MM_spectral_cooked_control",
+      "config": "MM_spectral_cooked_control.comparator.json",
+      "artifact_sha256": "42d09183dadd1f860f37292e2d392182cf90b22a702626182ab7806c903ef34d",
+      "statement_sha256": "ea1041e357afd946621840b04665906cf208979e16c06951bf1ba9abd2d43f23"
+    },
+    {
+      "slug": "RH_backlund_s_log",
+      "campaign": "rh",
+      "theorem": "Backlund.riemannS_abs_le_log_of_ne_zero",
+      "solution_module": "RvMBacklundLogCont",
+      "challenge_module": "MissionChallenges.RH_backlund_s_log",
+      "bridge_theorem": "MissionJudge.RH_backlund_s_log",
+      "config": "RH_backlund_s_log.comparator.json",
+      "artifact_sha256": "1eb43fc74ba25fe45777dc6de0521e566fa0195e951df62cf6ede13e9ec8106a",
+      "statement_sha256": "5bbeb021e755b3dc618c6c38911ffc358db1acf27c362b01cb985c1fa023195a"
+    },
+    {
+      "slug": "RH_bl_finite_multiset",
+      "campaign": "rh",
+      "theorem": "bl_finite_multiset",
+      "solution_module": "RvMBlFiniteMultiset",
+      "challenge_module": "MissionChallenges.RH_bl_finite_multiset",
+      "bridge_theorem": "MissionJudge.RH_bl_finite_multiset",
+      "config": "RH_bl_finite_multiset.comparator.json",
+      "artifact_sha256": "50da48fdf7fb0327da549f96a3d0cefd3f030642777e87df544d4655b1c86c2c",
+      "statement_sha256": "b22036d8b4a724816c9fc7df2be67aabc6664ec219eb2bfa03795b0e30b248b7"
+    },
+    {
+      "slug": "RH_borel_caratheodory_deriv",
+      "campaign": "rh",
+      "theorem": "ZeroFreeBridge.norm_deriv_le_of_re_le",
+      "solution_module": "DlvpBCDeriv",
+      "challenge_module": "MissionChallenges.RH_borel_caratheodory_deriv",
+      "bridge_theorem": "MissionJudge.RH_borel_caratheodory_deriv",
+      "config": "RH_borel_caratheodory_deriv.comparator.json",
+      "artifact_sha256": "4dc8f213e2592a7deb22958635dfc477dd9a481da3d4ad01ad420da97eabb705",
+      "statement_sha256": "60ef97ef2228012158983410abd5ce07c5d65424352b4b1910474503b9c666eb"
+    },
+    {
+      "slug": "RH_companion_bragg_reduction",
+      "campaign": "rh",
+      "theorem": "RvMWeierstrass.taylorCoeff_companion_bragg_of_exhaustion_limits",
+      "solution_module": "RvMCompanionBraggLimit",
+      "challenge_module": "MissionChallenges.RH_companion_bragg_reduction",
+      "bridge_theorem": "MissionJudge.RH_companion_bragg_reduction",
+      "config": "RH_companion_bragg_reduction.comparator.json",
+      "artifact_sha256": "3ff0bc086401d936059dde249c9ec888ce58ef07feedc28fcc59ecc1f3162e8e",
+      "statement_sha256": "3af9842160ed496a7711db145586fdcc5277b734843e065abf5412a4d0588a7a"
+    },
+    {
+      "slug": "RH_dlvp_region_effective",
+      "campaign": "rh",
+      "theorem": "ZeroFreeBridge.dlvp_zeta_region_rate_effective",
+      "solution_module": "DlvpZetaRateEffective",
+      "challenge_module": "MissionChallenges.RH_dlvp_region_effective",
+      "bridge_theorem": "MissionJudge.RH_dlvp_region_effective",
+      "config": "RH_dlvp_region_effective.comparator.json",
+      "artifact_sha256": "b9b791fefcef87f70abca02438f50feff2468cbb5bf5d87e23eeec769ac1f696",
+      "statement_sha256": "70926b5c4081e2579e2af17309943a0d9842f02c3c03bdbaff1791986afda1e0"
+    },
+    {
+      "slug": "RH_li_ladder_height",
+      "campaign": "rh",
+      "theorem": "LiLadderHeight.li_rung_of_zeros_on_line_below",
+      "solution_module": "LiLadderHeight",
+      "challenge_module": "MissionChallenges.RH_li_ladder_height",
+      "bridge_theorem": "MissionJudge.RH_li_ladder_height",
+      "config": "RH_li_ladder_height.comparator.json",
+      "artifact_sha256": "b87f01ed8f29013b0c8cd6ead9d77ccb8686ea38dea4a03acf344a6cd90909e1",
+      "statement_sha256": "d42f2257a65a0c15480e07dcb6aeab0f7a1718f9109b8cf4a548207ecde7ff50"
+    },
+    {
+      "slug": "RH_li_ladder_height_sharp",
+      "campaign": "rh",
+      "theorem": "LiLadderHeight.li_rung_of_zeros_on_line_below_sharp",
+      "solution_module": "LiLadderSharp",
+      "challenge_module": "MissionChallenges.RH_li_ladder_height_sharp",
+      "bridge_theorem": "MissionJudge.RH_li_ladder_height_sharp",
+      "config": "RH_li_ladder_height_sharp.comparator.json",
+      "artifact_sha256": "356115f9f2c3da563b4afc0e35abf7b6dedcc987b4acc7ecf6c89fc27ee75e03",
+      "statement_sha256": "c556d6f6445f35591ab9de253a251fcaadeec6f74480316a54c5a877f042b819"
+    },
+    {
+      "slug": "RH_li_ladder_reduction",
+      "campaign": "rh",
+      "theorem": "LiPositivity.li_rh_iff_tail",
+      "solution_module": "LiLadder",
+      "challenge_module": "MissionChallenges.RH_li_ladder_reduction",
+      "bridge_theorem": "MissionJudge.RH_li_ladder_reduction",
+      "config": "RH_li_ladder_reduction.comparator.json",
+      "artifact_sha256": "8148230536417e52f0a7042c8e8c6d5bff9018ff42095c6ae281e60703e2e8a8",
+      "statement_sha256": "8873878ead92a881dcc2d244eafae1e8f41980bdd061c0b7f0f46195d2f9aa94"
+    },
+    {
+      "slug": "RH_li_neg_refutes_rh",
+      "campaign": "rh",
+      "theorem": "LiPositivity.li_neg_refutes_rh",
+      "solution_module": "LiPositivity",
+      "challenge_module": "MissionChallenges.RH_li_neg_refutes_rh",
+      "bridge_theorem": "MissionJudge.RH_li_neg_refutes_rh",
+      "config": "RH_li_neg_refutes_rh.comparator.json",
+      "artifact_sha256": "c55d21299fdebbf3c7133e0d81ade237c39f6992a500f8ebff01607ac7c1e8ce",
+      "statement_sha256": "d7a1f9f166c7e2a5b5acbd7b7a34c663b7623c29a6ece7ead2ccd64c3549e7e7"
+    },
+    {
+      "slug": "RH_li_rung0_kernel",
+      "campaign": "rh",
+      "theorem": "li_rung0_kernel",
+      "solution_module": "LiLadderHeight",
+      "challenge_module": "MissionChallenges.RH_li_rung0_kernel",
+      "bridge_theorem": "MissionJudge.RH_li_rung0_kernel",
+      "config": "RH_li_rung0_kernel.comparator.json",
+      "artifact_sha256": "b87f01ed8f29013b0c8cd6ead9d77ccb8686ea38dea4a03acf344a6cd90909e1",
+      "statement_sha256": "1a8eff7cf1bb6fa34019330b675842f7dd261dbba9b4337f259a5ecd1f7220e3"
+    },
+    {
+      "slug": "RH_li_rung_certificates",
+      "campaign": "rh",
+      "theorem": "LiPositivity.li_rung_19",
+      "solution_module": "LiPositivity",
+      "challenge_module": "MissionChallenges.RH_li_rung_certificates",
+      "bridge_theorem": "MissionJudge.RH_li_rung_certificates",
+      "config": "RH_li_rung_certificates.comparator.json",
+      "artifact_sha256": "c55d21299fdebbf3c7133e0d81ade237c39f6992a500f8ebff01607ac7c1e8ce",
+      "statement_sha256": "8c14404d9969e90dc6f316b7d5afe081e1d8201e328c5e814b4848138d8ca665"
+    },
+    {
+      "slug": "RH_li_rungs_lt_five",
+      "campaign": "rh",
+      "theorem": "LowHeightBox.li_rungs_lt_five",
+      "solution_module": "LiBoxRungs",
+      "challenge_module": "MissionChallenges.RH_li_rungs_lt_five",
+      "bridge_theorem": "MissionJudge.RH_li_rungs_lt_five",
+      "config": "RH_li_rungs_lt_five.comparator.json",
+      "artifact_sha256": "e2f64b7c4a120b60e1eca46f9c88e18af65d742345ad854f7e7b3b6443085bb0",
+      "statement_sha256": "87f1a579fbc0223ebddc261ebc587b567b7220b5185189c3df90f83ef7adc27f"
+    },
+    {
+      "slug": "RH_li_rungs_of_height_4000",
+      "campaign": "rh",
+      "theorem": "LiLadderHeight.li_rungs_of_bands_4000_upto",
+      "solution_module": "LiLadderHeight",
+      "challenge_module": "MissionChallenges.RH_li_rungs_of_height_4000",
+      "bridge_theorem": "MissionJudge.RH_li_rungs_of_height_4000",
+      "config": "RH_li_rungs_of_height_4000.comparator.json",
+      "artifact_sha256": "b87f01ed8f29013b0c8cd6ead9d77ccb8686ea38dea4a03acf344a6cd90909e1",
+      "statement_sha256": "915f92e9ae958c1a0654283c7686052291a975a3453320fbc6ffaf41ab588334"
+    },
+    {
+      "slug": "RH_li_rungs_of_height_4000_sharp",
+      "campaign": "rh",
+      "theorem": "LiLadderHeight.li_rungs_of_bands_4000_upto_sharp",
+      "solution_module": "LiLadderSharp",
+      "challenge_module": "MissionChallenges.RH_li_rungs_of_height_4000_sharp",
+      "bridge_theorem": "MissionJudge.RH_li_rungs_of_height_4000_sharp",
+      "config": "RH_li_rungs_of_height_4000_sharp.comparator.json",
+      "artifact_sha256": "356115f9f2c3da563b4afc0e35abf7b6dedcc987b4acc7ecf6c89fc27ee75e03",
+      "statement_sha256": "192da17382d65133d4caf527deecc77e44a66c5e12b73e4e29be8766284fc4f4"
+    },
+    {
+      "slug": "RH_strip_repr",
+      "campaign": "rh",
+      "theorem": "ZeroFreeBridge.zeta_fract_repr",
+      "solution_module": "StripReprAssembled",
+      "challenge_module": "MissionChallenges.RH_strip_repr",
+      "bridge_theorem": "MissionJudge.RH_strip_repr",
+      "config": "RH_strip_repr.comparator.json",
+      "artifact_sha256": "57347940ba4dc5acdf4b442c6400eaffc5c67dc5d2e5f0a7b6569a0d54d524fa",
+      "statement_sha256": "cc08404b957d2543a9c05b4b07cef2ed44b1d8f0b600f3e135dbac5dbe02bcc1"
+    },
+    {
+      "slug": "RH_zero_free_gamma5",
+      "campaign": "rh",
+      "theorem": "ZeroFreeBridge.riemannZeta_zero_free_poly",
+      "solution_module": "ZeroFreeElementary",
+      "challenge_module": "MissionChallenges.RH_zero_free_gamma5",
+      "bridge_theorem": "MissionJudge.RH_zero_free_gamma5",
+      "config": "RH_zero_free_gamma5.comparator.json",
+      "artifact_sha256": "a9e2b823293aca063fc977c08294037e836c5183fd93d8294642b0cfbb1ba58e",
+      "statement_sha256": "6f7294447765d7e470eadcaf90de39056e7e29274f3f8ca8054969bbafe39fbd"
+    },
+    {
+      "slug": "RH_zero_free_polylog",
+      "campaign": "rh",
+      "theorem": "ZeroFreeBridge.riemannZeta_zero_free_polylog",
+      "solution_module": "ZeroFreePolylog",
+      "challenge_module": "MissionChallenges.RH_zero_free_polylog",
+      "bridge_theorem": "MissionJudge.RH_zero_free_polylog",
+      "config": "RH_zero_free_polylog.comparator.json",
+      "artifact_sha256": "8c163fb78beddd71215b29b01b9f807ac91af9821118d40dbbb584350abd75e1",
+      "statement_sha256": "4c6dc5e44c304e8b47ce25e6542a11cae6908352ccdff07c072ef2aabdd9f1fb"
+    },
+    {
+      "slug": "RH_zeta_log_bound",
+      "campaign": "rh",
+      "theorem": "ZeroFreeBridge.zeta_log_bound",
+      "solution_module": "ZetaLogBound",
+      "challenge_module": "MissionChallenges.RH_zeta_log_bound",
+      "bridge_theorem": "MissionJudge.RH_zeta_log_bound",
+      "config": "RH_zeta_log_bound.comparator.json",
+      "artifact_sha256": "d76e727e8d57be281309f9606f17a8e03e9b2c9549f25800ff8bee39dec545de",
+      "statement_sha256": "8ae719eb0c17662b908bfcd6c700f7cd46eeffa3ef41e10c29fc52ac62027bd5"
+    },
+    {
+      "slug": "RH_zeta_repr_R1",
+      "campaign": "rh",
+      "theorem": "ZeroFreeBridge.zeta_repr_R1",
+      "solution_module": "StripReprR1",
+      "challenge_module": "MissionChallenges.RH_zeta_repr_R1",
+      "bridge_theorem": "MissionJudge.RH_zeta_repr_R1",
+      "config": "RH_zeta_repr_R1.comparator.json",
+      "artifact_sha256": "14ffee54e74eefd9f0d5334d21ad23655df49614c82f617b03579ccc8e857c77",
+      "statement_sha256": "506da57caf351cfa3f2664114351fcdec7408c34a8a7e7b5a76f7965dfd14cac"
+    },
+    {
+      "slug": "RH_zeta_zero_confined",
+      "campaign": "rh",
+      "theorem": "LowHeightBox.zeta_zero_confined",
+      "solution_module": "LowHeightBox",
+      "challenge_module": "MissionChallenges.RH_zeta_zero_confined",
+      "bridge_theorem": "MissionJudge.RH_zeta_zero_confined",
+      "config": "RH_zeta_zero_confined.comparator.json",
+      "artifact_sha256": "6410f9321d22a20ed02957fc14b189d58e00ead106344a10d6236f4adde4d057",
+      "statement_sha256": "5c05f145266a10d9cc1fc9565b6804bd0fbb7d545413a9e580feff52545f6669"
+    },
+    {
+      "slug": "RH_zeta_zero_im_ge",
+      "campaign": "rh",
+      "theorem": "LowHeightBox.zeta_zero_im_ge",
+      "solution_module": "LowHeightBox",
+      "challenge_module": "MissionChallenges.RH_zeta_zero_im_ge",
+      "bridge_theorem": "MissionJudge.RH_zeta_zero_im_ge",
+      "config": "RH_zeta_zero_im_ge.comparator.json",
+      "artifact_sha256": "6410f9321d22a20ed02957fc14b189d58e00ead106344a10d6236f4adde4d057",
+      "statement_sha256": "0ee478c2500e8a28c37be1ad20344963217cd62939d2f614ef52be03cb1a3462"
+    }
+  ]
+}

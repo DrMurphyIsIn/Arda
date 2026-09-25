@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_borel_caratheodory_deriv",
+  "solution_module": "MissionChallenges.RH_borel_caratheodory_deriv",
+  "theorem_names": [
+    "MissionJudge.RH_borel_caratheodory_deriv"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

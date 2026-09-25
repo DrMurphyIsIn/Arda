@@ -7,6 +7,9 @@ and holds one bridge module per proved node:
 ```lean
 import <artifact module>            -- the solution
 import <island AxiomGuard modules>  -- the whole island: a shadowed constant is a build error
+                                    -- (li_positivity: only the guard whose closure holds the
+                                    --  artifact; its two guards cannot co-import. quasicrystal:
+                                    --  none; the island has no AxiomGuard lean_lib)
 <the artifact's own `open` lines>
 namespace <the artifact's namespace at the declaration>
 theorem _root_.MissionJudge.<Slug> :

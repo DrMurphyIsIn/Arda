@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_primelog_spectrum_dense",
+  "solution_module": "MissionChallenges.MM_primelog_spectrum_dense",
+  "theorem_names": [
+    "MissionJudge.MM_primelog_spectrum_dense"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

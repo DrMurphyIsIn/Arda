@@ -17,8 +17,8 @@ name: missions-comparator
 # written by the proof's author, which is the point.
 #
 # Sharded per island (`--shard I/N` over slug order; every node lands in exactly one shard).
-# The Comparator tag FOLLOWS THE ISLAND TOOLCHAIN (dbn v4.34.0-rc1, rvm_bridge v4.33.0-rc2,
-# zeta_reflection v4.32.0):
+# The Comparator tag FOLLOWS THE ISLAND TOOLCHAIN (dbn / li_positivity v4.34.0-rc1,
+# rvm_bridge v4.33.0-rc2, zeta_reflection / quasicrystal v4.32.0):
 # the comparator + lean4export must be built with the toolchain whose .olean they export, so
 # the v4.32.0 pin of the BG bridge does not apply here. Landrun (urfave/cli) strips the `--`
 # separator lean4export needs, hence the shim (same as proof-comparator.yml).
@@ -26,8 +26,7 @@ name: missions-comparator
 # Not a required check yet. To make a node's record reflect a pass:
 #   PYTHONPATH=src python -m telperion.cli mission comparator-record <Slug> --run-id <run> \
 #       --theorem <name> --run-url <url>
-# Islands not yet wired: li_positivity (24 nodes, renders; the island build alone is ~1 h),
-# quasicrystal / zero_free_bridge (v4.32.0; their lakefiles path-require other islands), and
+# Islands not yet wired: zero_free_bridge (1 node, v4.32.0; shared-packages wiring) and
 # zeta_zero_localization (monolith lakefile, cannot be path-required: ARG_MAX). BG's nine
 # nodes are judged by proof-comparator.yml in self-check mode. conjecture1_proved = False.
 
@@ -38,6 +37,10 @@ on:
       - "telperion/examples/dbn/**"
       - "telperion/examples/rvm_bridge/**"
       - "telperion/examples/zeta_reflection/**"
+      - "telperion/examples/li_positivity/**"
+      - "telperion/examples/quasicrystal/**"
+      - "telperion/examples/li_positivity/**"
+      - "telperion/examples/quasicrystal/**"
       - "telperion/src/telperion/missions/judge.py"
       - "telperion/src/telperion/comparator.py"
       - "telperion/scripts/guard_anchors.py"
@@ -73,14 +76,14 @@ jobs:
         working-directory: telperion
         run: |
           set -euo pipefail
-          for isl in dbn rvm_bridge zeta_reflection; do
+          for isl in dbn rvm_bridge zeta_reflection li_positivity quasicrystal; do
             PYTHONPATH=src python -m telperion.missions.judge --island "$isl" --check
           done
-      - name: Every wired island still renders (li_positivity is listed, not judged, yet)
+      - name: Every wired island still renders
         working-directory: telperion
         run: |
           set -euo pipefail
-          for isl in dbn rvm_bridge zeta_reflection li_positivity; do
+          for isl in dbn rvm_bridge zeta_reflection li_positivity quasicrystal; do
             PYTHONPATH=src python -m telperion.missions.judge --island "$isl" --list | tail -1
           done
 
@@ -103,6 +106,12 @@ jobs:
           - island: rvm_bridge
             shard: "3/4"
           - island: zeta_reflection
+            shard: "0/1"
+          - island: li_positivity
+            shard: "0/2"
+          - island: li_positivity
+            shard: "1/2"
+          - island: quasicrystal
             shard: "0/1"
     name: judge ${{ matrix.island }} ${{ matrix.shard }}
     env:
