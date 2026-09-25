@@ -111,3 +111,75 @@ What would need exact rechecks in a kernel version:
   methods alone. A realistic target is to lower the analytic threshold N1 (currently 492, set by a weak
   rate alpha = 1/3700 at degree 6 with root degree 6), so that the finite range becomes small enough for
   the existing exact DP to be kernel-checked.
+
+## 5. Lowering N1 (2026-09-25, numbers only, no Lean yet)
+
+Scripts: `rate4.py`, `rate5.py`, `rate6.py`, `rate9.py` and `nonuni.py` in `proof/verification/finite_cert/`.
+The runs used the interval DP `bg_certified_interval.py` from bg/registry-fidelity. All numbers are floats
+and every rate uses a 5% safety factor.
+
+### 5.1 Why the Lean N1 = 492
+In the proven cells (cap D = 23, alpha = 1/3700), the rate binds at a degree-6 vertex with 4 cherries
+plus one degree-3 non-atom child whose message tends to 1/3. That child has two huge children and a
+large slack of its own (about 0.19), but the per-vertex accounting wastes that slack.
+
+### 5.2 Two cheap refinements
+- **(a) Cap-refined message ranges.** In a cap-D tree every branch has y >= 1/(2D-1), so each class has
+  y at most 1/(j+1+j*ymin), not 1/(j+1).
+- **(b) Class credits.** For a non-atom b, use the invariant
+  `bell b + rho b <= -alpha|b| - kappa_{bcc b}`, with kappa_1, kappa_2, kappa_3 >= 0. A vertex pays
+  kappa for its own class and collects kappa from each non-atom child. This moves the slack of degree-3
+  and degree-4 non-atoms up to their parents.
+
+Resulting per-cap rates (D = root degree k) and root thresholds on n. "Threshold" is the largest n <= 520
+that the root bound does not exclude, using exact M(n):
+
+| k | alpha_k | kappa (1,2,3) | R_k | open for n <= |
+|---|---|---|---|---|
+| 2 | 1.07e-2 | (0, .005, .005) | .330 | 8 |
+| 3 | 4.9e-3 | (.012, 0, .005) | .294 | 12 |
+| 4 | 2.5e-3 | (.008, .005, 0) | .277 | 27 |
+| 5 | 1.33e-3 | (.004, .005, .005) | .263 | 76 |
+| 6 | 8.7e-4 | (.004, .005, .005) | .252 | 131 |
+| 7 | 6.9e-4 | (0, .005, .005) | .243 | 165 |
+| 8-13 | 6.5e-4 | (0, .005, .005) | .236-.213 | 164, 151, 133, 116, 98, 109 |
+| 14-22 | 6.1e-4 .. 3.65e-4 | (0, .005, .005) | .216-.211 | 129, 147, 162, 178, 191, 204, 218, 230, 242 |
+| 23 | 3.48e-4 | (0, .005, .005) | .211 | 254 |
+
+**New N1 = 255** (down from 492). The binding case is now large k. For D >= 12 the rate is limited by
+the hub-of-arm_5 vertex (22 arm_5 children): alpha_D is about 0.089/(11(D-1)+1). That is the real
+bounded-degree rate gap, so per-vertex accounting cannot go much further for k near 23. Only cap-refined
+ranges (a) were tried without credits; alone they give N1 = 261.
+
+### 5.3 Hybrid that covers all 7 <= n <= 520 (numerically)
+Root knapsack over child sizes (root at a max-degree vertex, k <= 23), with each child bounded by:
+- an exact atom value for atom children;
+- the exact capped non-atom envelope `W^na_s` for s <= 120 (s <= 170 for caps 6-8), from `front_na.py`;
+- the rate tail `max_class(-rho - kappa + mu*y) - alpha_k*s` for larger non-atoms.
+
+Result: **every 7 <= n <= 520 is excluded**, and **one root price per k is enough for all n in
+[7, 255]**. Needing the exact envelope for every part is essential. With exact values only for one or
+two non-atom parts, or only up to size 40 for all parts, k = 7..9 fail for n in [45, 98]
+(root degree 7-9 with several mid-size non-atom children).
+
+### 5.4 Cost estimates for the finite range
+
+| route | size |
+|---|---|
+| (a) interval DP (`bg_certified_interval.py`) to N | N = 60: 10.8k states; 100: 58.4k; 150: 248k; **255: 1.49M** (cap 23: 1.42M) |
+| (b) Bellman certificate restricted to n <= 255 | still needs uniform H = 100: a non-uniform grid with 47 or 67 points gives 205 or 95 failures. Scaled from section 3: about 4.6e8 inner and 1.4e8 root knapsack checks |
+| (c) hybrid of 5.3 for 100 < n <= 255, interval DP for n <= 100 | 58k DP states, plus exact non-atom envelopes to size 120 (one frontier DP per cap, each about 1e5 states, or one uncapped table, not yet tested), plus 22 root knapsacks (one price each) of about k * 255 * 140 checks each, about 1e7 in total. The per-cap rate cells are about 250 Lean cells in the existing style |
+
+Assessment: none of the routes reaches about 1e6 checks yet.
+- (a) at N1 = 255 is about 1.5M states, roughly 1.5-5x over budget depending on checks per state. It is
+  the simplest, and it is the closest if N1 can be pushed to about 200: for example with better
+  large-k rates, or with degree-k-specific root cells that use exact atom values instead of
+  `bell + alpha*s`.
+- (c) is dominated by the 1e7 root-knapsack checks.
+
+Exact rechecks needed for any of these:
+- all per-cap rate cells, as Lean certificates with rational Taylor enclosures, as for
+  BGSpiderLowDegree;
+- the root cells;
+- the envelope tables as rationals;
+- M(n) exactly.
