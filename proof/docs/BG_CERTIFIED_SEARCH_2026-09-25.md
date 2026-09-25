@@ -81,4 +81,16 @@ spider if some vertex has only leaves, cherries and arms as its branches.
 
 ## Result
 
-RESULT_PLACEHOLDER
+The run was `python3 bg_certified_interval.py 491`, on all trees with no degree cap. It took 952 s on one core
+and kept 12,331,366 states, and it wrote `bg_certified_interval_N491.json`.
+
+- Every n in 2..491 is covered.
+- For every n in 2..491, **every tree attaining the exact maximum of per(L)/∏deg is a spider**. At most 9
+  root states per n reached the final exact recheck.
+- The exact maximum equals the value of the spider-family maximizer from `bg_spider_opt_4_2400.json`, as
+  exact fractions, for every n in 4..491. So the explicit table and rule of
+  `BG_SPIDER_OPTIMIZATION_2026-09-24.md` give the Brualdi-Goldwasser maximizer for all n ≤ 491.
+
+Combined with `BGMax.bg_spider_reduction` (Lean, n ≥ 492), the maximizer is identified for every n. For n ≥ 492 the
+optimal spider is W(n) (`BGSpiderRule`). That optimization is being formalized as `StructProp 492` + `CandProp 492`.
+Until then it rests on the exact computation and certificate of B2.
