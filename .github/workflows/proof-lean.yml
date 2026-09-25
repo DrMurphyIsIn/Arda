@@ -332,7 +332,7 @@ jobs:
           import re, sys
           guard_path, trace_path = sys.argv[1], sys.argv[2]
           ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
-          FLOOR = 274  # #print axioms directives in AxiomGuard.lean on 2026-09-24; raise, never lower silently
+          FLOOR = 284  # #print axioms directives in AxiomGuard.lean on 2026-09-24; raise, never lower silently
           REQUIRED = [  # telperion/missions/bg/nodes/*.toml: the proved nodes + the refuted one
               "R3Cert.cavity_recursion",                          # BG_cavity_recursion
               "R3Cert.FractalTail.fractal_tail_as_ratio",         # BG_fractal_asymptote
@@ -349,6 +349,7 @@ jobs:
               "R3Cert.Step3.perm_ratio_le_rate",                # BG_ratio_rate_bound (2026-09-24 node)
               "R3Cert.Step3.bgBackbone_of_straightProgress",    # BG_backbone_reduction (2026-09-24 node)
               "R3Cert.BGSCL.bg_sharp",                          # BG_rate_sharp (2026-09-24 node)
+              "R3Cert.BGMaximizerFinal.bg_maximizer",          # the BG maximizer, n >= 492
           ]
           src = re.sub(r"/-.*?-/", "", open(guard_path, encoding="utf-8").read(), flags=re.S)
           directives = set(re.findall(r"^#print\s+axioms\s+(\S+)", src, flags=re.M))

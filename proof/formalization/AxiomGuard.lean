@@ -132,7 +132,9 @@ import R3Cert.BGGrowthRate
 import R3Cert.BGSpiderOpt
 import R3Cert.BGMaximizer
 import R3Cert.BGSpiderRule
+import R3Cert.BGMaximizerFinal
 import R3Cert.BGSpiderCand
+import R3Cert.BGSpiderStruct
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -592,3 +594,14 @@ import R3Cert.BGSpiderCand
 #print axioms R3Cert.BGSpiderCand.Φ_le_of_P
 #print axioms R3Cert.BGSpiderCand.cand_counts
 #print axioms R3Cert.BGSpiderCand.candProp_492
+#print axioms R3Cert.BGSpiderStruct.exch_arm_lt
+#print axioms R3Cert.BGSpiderStruct.exch_six_lt
+#print axioms R3Cert.BGSpiderStruct.exch_four_lt
+#print axioms R3Cert.BGSpiderStruct.exch_cherry_lt
+#print axioms R3Cert.BGSpiderStruct.exch_split_lt
+#print axioms R3Cert.BGSpiderStruct.global_contra
+#print axioms R3Cert.BGSpiderStruct.cand_of_isMax
+#print axioms R3Cert.BGSpiderStruct.structProp_492
+-- THE BG MAXIMIZER for n >= 492 (2026-09-25, BGMaximizerFinal): unconditional; W n maximizes per(L)/prod deg.
+#print axioms R3Cert.BGMaximizerFinal.bg_maximizer
+#print axioms R3Cert.BGMaximizerFinal.bg_maximizer_perm
