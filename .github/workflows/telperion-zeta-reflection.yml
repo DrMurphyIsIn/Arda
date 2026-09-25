@@ -127,12 +127,21 @@ jobs:
         working-directory: telperion/examples/zeta_reflection/lean
         run: lake exe cache get
 
+      - name: Build the RS5 zero-band certificate chunks one at a time (each peaks at ~7.3 GB)
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in RS5_Band_T*_C*.lean; do lake build "${f%.lean}"; done
+
       - name: Build the anduril artifacts and their axiom guards
         if: steps.changes.outputs.run == 'true'
         working-directory: telperion/examples/zeta_reflection/lean
         run: |
           lake build CheckBand ReflectedBand_t14 EMZetaTail EMZetaComplex ForgeFirstZeroKernel StirlingBinet ReflectedBand_t14_Kernel RSTheta HeightFloor EdgeClearGlue BandGlue AllZerosKernel_h1000 \
-                     AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue AxiomGuardAllZerosKernel_h1000
+                     AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue AxiomGuardAllZerosKernel_h1000 \
+                     RS_AxiomGuard RS_AxiomGuardB3 RSSeam_AxiomGuard RS4_AxiomGuard RS5_AxiomGuard
 
       - name: "Axiom guard (anduril artifacts): axioms within the standard three, no sorryAx, every registry theorem printed"
         if: steps.changes.outputs.run == 'true'
@@ -145,7 +154,8 @@ jobs:
           floor() { case "$1" in
             AxiomGuardA4) echo 8 ;; AxiomGuardEMTail) echo 23 ;; AxiomGuardEMZetaComplex) echo 23 ;;
             AxiomGuardFirstZeroKernel) echo 1 ;; AxiomGuardStirling) echo 12 ;; AxiomGuardArbKernel) echo 16 ;;
-            AxiomGuardRSTheta) echo 24 ;; AxiomGuardHeightFloor) echo 98 ;; AxiomGuardBandGlue) echo 39 ;; AxiomGuardAllZerosKernel_h1000) echo 1 ;; *) echo 999 ;; esac; }
+            AxiomGuardRSTheta) echo 24 ;; AxiomGuardHeightFloor) echo 98 ;; AxiomGuardBandGlue) echo 39 ;; AxiomGuardAllZerosKernel_h1000) echo 1 ;;
+            RS_AxiomGuard) echo 186 ;; RS_AxiomGuardB3) echo 47 ;; RSSeam_AxiomGuard) echo 8 ;; RS4_AxiomGuard) echo 78 ;; RS5_AxiomGuard) echo 213 ;; *) echo 999 ;; esac; }
           # The registry theorems (one per proved node; two for AND_g2_reflected_band).
           registry() { case "$1" in
             AxiomGuardA4) echo "ZetaReflection.checkLine_correct ReflectedBand_t14.ok ReflectedBand_t14.pilot" ;;
@@ -157,9 +167,14 @@ jobs:
             AxiomGuardRSTheta) echo "RSDesignTheta.gaussBranch_theta_sub_thetaMain_le" ;;
             AxiomGuardHeightFloor) echo "HeightFloor.height_floor HeightFloor.height_floor_280000" ;;
             AxiomGuardBandGlue) echo "EdgeClearGlue.hnzl_discharged BandGlue.segBandHyp_of_certs" ;;
-            AxiomGuardAllZerosKernel_h1000) echo "AllZerosKernel_h1000.all_nontrivial_zeros_up_to_height_1000" ;; esac; }
+            AxiomGuardAllZerosKernel_h1000) echo "AllZerosKernel_h1000.all_nontrivial_zeros_up_to_height_1000" ;;
+            RS_AxiomGuard) echo "RSInt.riemann_siegel_integral RSInt.rsJ_C0" ;;
+            RS_AxiomGuardB3) echo "RSInt.rs_remainder_C0 RSInt.rs_Z_C0" ;;
+            RSSeam_AxiomGuard) echo "RSSeam.rs_remainder_C0_seam RSSeam.rs_Z_C0_seam" ;;
+            RS4_AxiomGuard) echo "RS4.check_sound RS4.rs4_Z_enclosure RS4.Demo.sign_A RS4.Demo.sign_B" ;;
+            RS5_AxiomGuard) echo "RS5.check5_sound RS5.exists_zeta_zero_of_signs RS5.band_sound RS5.Demo.zeta_zero_10000 RS5.BandJoint.zeta_zeros_finset" ;; esac; }
           total=0
-          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue AxiomGuardAllZerosKernel_h1000; do
+          for g in AxiomGuardA4 AxiomGuardEMTail AxiomGuardEMZetaComplex AxiomGuardFirstZeroKernel AxiomGuardStirling AxiomGuardArbKernel AxiomGuardRSTheta AxiomGuardHeightFloor AxiomGuardBandGlue AxiomGuardAllZerosKernel_h1000 RS_AxiomGuard RS_AxiomGuardB3 RSSeam_AxiomGuard RS4_AxiomGuard RS5_AxiomGuard; do
             [ -f "$g.lean" ] || { echo "::error::$g.lean is missing"; exit 1; }
             echo "== $g"
             rc=0; lake env lean "$g.lean" > "$g.out" 2>&1 || rc=$?
@@ -377,3 +392,22 @@ jobs:
               || { echo "::error::capstone Arb4_h$H.all_nontrivial_zeros_up_to_height_$H not printed"; exit 1; }
             echo "OK h$H: $(grep -oE 'depends on axioms' <<< "$out" | wc -l) guarded anchors, all within the standard three"
           done
+
+      - name: Height 11000 -- one Turing band [31851/4, 11004] on top of the h8000 ladder, and its guard
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          for m in RS5_Band_T1000_C25 RS5_Band_T1000_C26 RS5_Band_T1000_C27 RS5_Band_T1000_C28 RS5_Band_T1000_C29 RS5_Band_T1000_C30 RS5_Band_T1000_C31 RS5_Band_T10000_C0 RS5_Band_T10000_C1 RS5_Band_T10000_C2 RS5_Band_T10000_C3 RS5_Band_T8000Lo_C0 RS5_Band_T8000Hi_C0 H11K_Edge_T11004 H11K_Slab_U11004; do lake build "$m"; done
+          lake build H11K_AxiomGuard
+          out="$(lake env lean H11K_AxiomGuard.lean 2>&1 | tr '\n' ' ' | tr -s ' ')"
+          if grep -q 'sorryAx' <<< "$out"; then echo "::error::h11000 depends on sorry"; exit 1; fi
+          if grep -qE '(^|[^A-Za-z])error:' <<< "$out"; then echo "::error::H11K guard did not elaborate"; exit 1; fi
+          bad="$(grep -oE 'depends on axioms: \[[^]]*\]' <<< "$out" | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' | grep -vxE 'propext|Classical\.choice|Quot\.sound' || true)"
+          if [ -n "$bad" ]; then echo "::error::h11000 axiom(s) outside the standard three: $bad"; exit 1; fi
+          n=$(grep -oE 'depends on axioms|does not depend on any axioms' <<< "$out" | wc -l)
+          if [ "$n" -lt 64 ]; then echo "::error::H11K guard printed $n axiom lines, expected at least 64"; exit 1; fi
+          grep -qE "'H11K_h11000\.all_nontrivial_zeros_up_to_height_11000' depends on axioms: \[[^]]*\]" <<< "$out" \
+            || { echo "::error::capstone all_nontrivial_zeros_up_to_height_11000 not printed"; exit 1; }
+          echo "OK h11000: $n guarded anchors, all within the standard three"

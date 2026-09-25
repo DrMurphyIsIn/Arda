@@ -2,7 +2,7 @@ name = "ZetaReflectionSpike"
 # The six proved ANDURIL node artifacts are default targets (closure audit C2, 2026-09-22):
 # a bare `lake build` compiles every one of them, and the coverage checker
 # (telperion/src/telperion/missions/coverage.py) can see that it does.
-defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD", "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet", "ReflectedBand_t14_Kernel", "EdgeClearGlue", "BandGlue", "BandGlue_h1000", "HeightFloorCheck", "HeightFloorTrig", "HeightFloorEM", "HeightFloorBoxes", "HeightFloor", "ArbEconomics_Eval", "ArbEconomics_Sound", "ArbEconomics_Zeta", "EMZetaHigh", "EMZetaHighEval", "EMZetaHighCfg64", "EMZetaHighCheck", "EMZetaHighK_T10000", "EMZetaHighK_T30000", "EMZetaHighK_T280000", "RSTheta", "AxiomGuardRSTheta", "AxiomGuardEMZetaHigh", "AxiomGuardHeightFloor", "H1000Phase", "H1000Point", "H1000Line", "H1000LineBands", "H1000Glue", "H1000Line_All", "EMZetaOfflineCore", "EMZetaOfflineEval", "EMZetaOfflineSound", "EMZetaOfflineCheck", "EMZetaOfflineI_S03_T1000", "EMZetaOfflineI_S12_T1000", "EMZetaOfflineI_SM1_T9995", "EMZetaOfflineSlab", "EMZetaOfflineSlabCheck", "EMZetaOfflineSlabClear", "EMZetaOfflineSlab_T1000", "EMZetaOfflineSlabBand", "EMZetaOffline", "AxiomGuardEMZetaOffline", "ArgZetaTwo", "ArgGammaR", "ArgHoriz", "ArgChangeGlue", "ArgChangeH1000", "AxiomGuardArgChange", "AxiomGuardH1000Line", "H1000Octant", "H1000Edges", "H1000Slabs", "AllZerosKernel_h1000", "AxiomGuardAllZerosKernel_h1000"]
+defaultTargets = ["Spike_DIntvMini", "Spike_Toy", "DIntvDef", "DIntvCorrect", "TaylorKernels", "CertVerify", "Spike_BenchExpD", "CheckBand", "ReflectedBand_t14", "EMZetaTail", "EMZetaComplex", "ForgeFirstZeroKernel", "StirlingBinet", "ReflectedBand_t14_Kernel", "EdgeClearGlue", "BandGlue", "BandGlue_h1000", "HeightFloorCheck", "HeightFloorTrig", "HeightFloorEM", "HeightFloorBoxes", "HeightFloor", "ArbEconomics_Eval", "ArbEconomics_Sound", "ArbEconomics_Zeta", "EMZetaHigh", "EMZetaHighEval", "EMZetaHighCfg64", "EMZetaHighCheck", "EMZetaHighK_T10000", "EMZetaHighK_T30000", "EMZetaHighK_T280000", "RSTheta", "H1000Phase", "H1000Point", "H1000Line", "H1000LineBands", "H1000Glue", "H1000Line_All", "EMZetaOfflineCore", "EMZetaOfflineEval", "EMZetaOfflineSound", "EMZetaOfflineCheck", "EMZetaOfflineI_S03_T1000", "EMZetaOfflineI_S12_T1000", "EMZetaOfflineI_SM1_T9995", "EMZetaOfflineSlab", "EMZetaOfflineSlabCheck", "EMZetaOfflineSlabClear", "EMZetaOfflineSlab_T1000", "EMZetaOfflineSlabBand", "EMZetaOffline", "ArgZetaTwo", "ArgGammaR", "ArgHoriz", "ArgChangeGlue", "ArgChangeH1000", "H1000Octant", "H1000Edges", "H1000Slabs", "AllZerosKernel_h1000", "RSSeam_B3Bound", "RSSeam_Bridge", "RSSeam_AxiomGuard", "RS_Strip", "RS_Kernel", "RS_Mellin", "RS_Fold", "RS_Entire", "RS_B2", "RS_C0", "RS_AxiomGuard", "RS_B3", "RS_B3Bound", "RS_Bridge", "RS_AxiomGuardB3", "RS4_Eval", "RS4_Sound", "RS4_Z", "RS4_Demo", "RS4_AxiomGuard", "RS5_Eval", "RS5_Sound", "RS5_Z", "RS5_Band", "RS5_Band_T10000_C0", "RS5_Band_T10000_C1", "RS5_Band_T10000_C2", "RS5_Band_T10000_C3", "RS5_Band_T10000", "RS5_Demo", "RS5_Band_T510_C0", "RS5_Band_T510", "RS5_Band_T1000_C0", "RS5_Band_T1000_C1", "RS5_Band_T1000_C2", "RS5_Band_T1000_C3", "RS5_Band_T1000_C4", "RS5_Band_T1000_C5", "RS5_Band_T1000_C6", "RS5_Band_T1000_C7", "RS5_Band_T1000_C8", "RS5_Band_T1000_C9", "RS5_Band_T1000_C10", "RS5_Band_T1000_C11", "RS5_Band_T1000_C12", "RS5_Band_T1000_C13", "RS5_Band_T1000_C14", "RS5_Band_T1000_C15", "RS5_Band_T1000_C16", "RS5_Band_T1000_C17", "RS5_Band_T1000_C18", "RS5_Band_T1000_C19", "RS5_Band_T1000_C20", "RS5_Band_T1000_C21", "RS5_Band_T1000_C22", "RS5_Band_T1000_C23", "RS5_Band_T1000_C24", "RS5_Band_T1000_C25", "RS5_Band_T1000_C26", "RS5_Band_T1000_C27", "RS5_Band_T1000_C28", "RS5_Band_T1000_C29", "RS5_Band_T1000_C30", "RS5_Band_T1000_C31", "RS5_Band_T1000", "RS5_Band_Joint", "RS5_AxiomGuard", "AxiomGuardRSTheta", "AxiomGuardEMZetaHigh", "AxiomGuardHeightFloor", "AxiomGuardEMZetaOffline", "AxiomGuardArgChange", "AxiomGuardH1000Line", "AxiomGuardAllZerosKernel_h1000"]
 
 # Same Mathlib pin as the sibling zeta_zero_localization island (v4.32.0), so the
 # path require below shares the on-disk Mathlib build cache -- `lake exe cache get`
@@ -334,6 +334,335 @@ roots = ["EMZetaHighK_T280000_Cfg", "EMZetaHighK_T280000_P0", "EMZetaHighK_T2800
 [[lean_lib]]
 name = "RSTheta"
 roots = ["RSTheta"]
+
+# Lane SEAM: RSSeam_B3Bound -- the C0-corrected Riemann-Siegel remainder bound re-derived from
+# t >= 509 (a = sqrt(t/2pi) >= 9): |rsE1| <= (1/4)/a, error (13/20) a^(-3/2) = (13/5) t^(-3/4).
+[[lean_lib]]
+name = "RSSeam_B3Bound"
+roots = ["RSSeam_B3Bound"]
+
+# Lane SEAM: RSSeam_Bridge -- `RSSeam.rs_Z_C0_seam`, Hardy's Z by Riemann-Siegel with the C0 term and
+# remainder (13/5) t^(-3/4) for t >= 509, phase discharged as in RS_Bridge (read-only imports).
+[[lean_lib]]
+name = "RSSeam_Bridge"
+roots = ["RSSeam_Bridge"]
+
+# Lane SEAM: the kernel-axiom guard for RSSeam_B3Bound + RSSeam_Bridge; not a default target.
+[[lean_lib]]
+name = "RSSeam_AxiomGuard"
+roots = ["RSSeam_AxiomGuard"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane RS (2026-09-24): ANDURIL Riemann-Siegel brick B2 -- Riemann's integral representation of
+# zeta(s) for general complex s, with the residue bookkeeping (Mathlib-only core).
+#   RS_Strip  -- horizontal-strip Cauchy with decay; slanted line integrals lineUp / lineDn and
+#                their line independence.
+#   (further RS_ modules are appended below as they land; guard: RS_AxiomGuard, not a default target)
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "RS_Strip"
+roots = ["RS_Strip"]
+
+# Lane RS: RS_Kernel -- Riemann's kernels rsG / rsH, difference equations, Gaussian bounds, the
+# Fresnel line integral, pole crossing (no residue theorem: dslope), the Mordell closed form.
+[[lean_lib]]
+name = "RS_Kernel"
+roots = ["RS_Kernel"]
+
+# Lane RS: RS_Mellin -- complex-scaled Gamma integral, the Mellin/Fubini step, the Bose integral
+# (Gamma zeta), the chi-side kernel integral, and the Mellin identity for Re s > 1.
+[[lean_lib]]
+name = "RS_Mellin"
+roots = ["RS_Mellin"]
+
+# Lane RS: RS_Fold -- the chi-side line: continuity at the pole x = 0 (Re s > 2), folding of the
+# line through 0 onto the half-line integral rsHR, and moving it to any c in (0, 1).
+[[lean_lib]]
+name = "RS_Fold"
+roots = ["RS_Fold"]
+
+# Lane RS: RS_Entire -- parametric holomorphy of the two RS line integrals; the chi factor rsChi and
+# its Gamma identities (reflection + duplication).
+[[lean_lib]]
+name = "RS_Entire"
+roots = ["RS_Entire"]
+
+# Lane RS: RS_B2 -- THE HEADLINE of brick B2: `RSInt.riemann_siegel_integral` (Riemann's integral
+# representation of zeta(s) for every complex s outside {1,3,5,...}, with the residue bookkeeping
+# sum_{n<=N} n^-s + chi(s) sum_{m<=M} m^(s-1) + two remainder line integrals), and the exact
+# critical-line forms `completedRiemannZeta_eq_rs` / `completed_re_eq_rs_cos`.
+[[lean_lib]]
+name = "RS_B2"
+roots = ["RS_B2"]
+
+# Lane RS: RS_C0 -- brick B3 part 1: Riemann's Psi (Gabcke's C0) from the tau = 2 Mordell integral:
+# 2 Re(e^{-i pi/8} rsJ p) = cos(2 pi (p^2 - p - 1/16)) / cos(2 pi p) (`RSInt.rsJ_C0`).
+[[lean_lib]]
+name = "RS_C0"
+roots = ["RS_C0"]
+
+# Lane RS: the kernel-axiom guard (prints #print axioms for every RS_ theorem; not a default target).
+[[lean_lib]]
+name = "RS_AxiomGuard"
+roots = ["RS_AxiomGuard"]
+
+# Lane RS: RS_B3 -- brick B3 part 2: the exact saddle-point reduction of the RS remainder
+# (`rsRem_factor`, `rs_phase`, `rs_remainder_exact`).
+[[lean_lib]]
+name = "RS_B3"
+roots = ["RS_B3"]
+
+# Lane RS: RS_B3Bound -- brick B3 part 3: the analytic estimates (Gaussian moments, the saddle-point
+# amplitude near/far bounds, |rsJ| on the midline, |rsE1| <= K/a) and the explicit C0-remainder bound.
+[[lean_lib]]
+name = "RS_B3Bound"
+roots = ["RS_B3Bound"]
+
+# Lane RS: RS_Bridge -- brick B3 part 4: `RSInt.rs_Z_C0`, the Riemann-Siegel formula for Hardy's Z
+# with the C0 term and the explicit remainder 2 t^(-3/4) (t >= 10000), phase supplied hypothesis-free
+# by ThetaConverge / ZeroSignDecomp_t14 / RSTheta (read-only imports).
+[[lean_lib]]
+name = "RS_Bridge"
+roots = ["RS_Bridge"]
+
+# Lane RS: the kernel-axiom guard for bricks B3 parts 2-4 (RS_B3, RS_B3Bound, RS_Bridge); not a
+# default target.
+[[lean_lib]]
+name = "RS_AxiomGuardB3"
+roots = ["RS_AxiomGuardB3"]
+
+# Lane B4: RS4_Eval -- the kernel-decidable interval evaluator for the Riemann-Siegel main term
+# (Dirichlet sum via ArbEcon.run, phase ball via ArbEcon.trig, C0 term, DIntv assembly).
+[[lean_lib]]
+name = "RS4_Eval"
+roots = ["RS4_Eval"]
+
+# Lane B4: RS4_Sound -- soundness of RS4.check: an accepted certificate encloses the Riemann-Siegel
+# main term (verbatim that of RSInt.rs_Z_C0) for EVERY phase in the ball |phi - thetaMain t| <= 1/t.
+[[lean_lib]]
+name = "RS4_Sound"
+roots = ["RS4_Sound"]
+
+# Lane B4: RS4_Z -- RS4.check glued to RSInt.rs_Z_C0: certified enclosure of Hardy's Z and the sign
+# of Re completedRiemannZeta(1/2+it) (rs4_Z_enclosure, rs4_sign_pos, rs4_sign_neg).
+[[lean_lib]]
+name = "RS4_Z"
+roots = ["RS4_Z"]
+
+# Lane B4: RS4_Demo -- worked heights t = 10000.5 (Re Lambda > 0) and t = 10000 (Re Lambda < 0),
+# each a kernel `decide +kernel`, plus three tampered certificates the kernel rejects.
+[[lean_lib]]
+name = "RS4_Demo"
+roots = ["RS4_Demo"]
+
+# Lane B4: the kernel-axiom guard (prints #print axioms for every RS4_ theorem; not a default target).
+[[lean_lib]]
+name = "RS4_AxiomGuard"
+roots = ["RS4_AxiomGuard"]
+
+# Lane B5: RS5_Eval -- the t >= 509 variant of RS4.check (floor 509 instead of 10000; all computable
+# pieces reused from RS4_Eval), the t^(-3/4) margin check, and the band checker over dyadic samples.
+[[lean_lib]]
+name = "RS5_Eval"
+roots = ["RS5_Eval"]
+
+# Lane B5: RS5_Sound -- soundness of RS5.check5 (RS4_Sound's proof re-stated for the 509 floor).
+[[lean_lib]]
+name = "RS5_Sound"
+roots = ["RS5_Sound"]
+
+# Lane B5: RS5_Z -- RS5.check5 glued to RSSeam.rs_Z_C0_seam (t >= 509, margin (13/5) t^(-3/4) or its
+# rational bound (13/5) E / 2^P) and the certified sign of one dyadic sample.
+[[lean_lib]]
+name = "RS5_Z"
+roots = ["RS5_Z"]
+
+# Lane B5: RS5_Band -- IVT corollary on Mathlib's riemannZeta and the band certificate soundness
+# (K certified sign changes -> K distinct on-line zeros of riemannZeta inside the band).
+[[lean_lib]]
+name = "RS5_Band"
+roots = ["RS5_Band"]
+
+# Lane B5: band certificate [10000, 11000] -- four kernel-checked chunks (decide +kernel over the
+# emitted dyadic samples) and the glued headline (1182 distinct on-line zeros of riemannZeta).
+[[lean_lib]]
+name = "RS5_Band_T10000_C0"
+roots = ["RS5_Band_T10000_C0"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000_C1"
+roots = ["RS5_Band_T10000_C1"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000_C2"
+roots = ["RS5_Band_T10000_C2"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000_C3"
+roots = ["RS5_Band_T10000_C3"]
+
+[[lean_lib]]
+name = "RS5_Band_T10000"
+roots = ["RS5_Band_T10000"]
+
+# Lane B5: RS5_Demo -- IVT corollary at lane B4's certified heights: a zero of riemannZeta on the
+# critical line with ordinate in (10000, 10000.5).
+[[lean_lib]]
+name = "RS5_Demo"
+roots = ["RS5_Demo"]
+
+# Lane B5: low-height band certificate [510, 520] through the SEAM bound (t >= 509): one chunk + headline.
+[[lean_lib]]
+name = "RS5_Band_T510_C0"
+roots = ["RS5_Band_T510_C0"]
+
+[[lean_lib]]
+name = "RS5_Band_T510"
+roots = ["RS5_Band_T510"]
+
+# Lane B5: band certificate [1000, 10000] -- 32 kernel-checked chunks + glued headline (9493 zeros).
+[[lean_lib]]
+name = "RS5_Band_T1000_C0"
+roots = ["RS5_Band_T1000_C0"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C1"
+roots = ["RS5_Band_T1000_C1"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C2"
+roots = ["RS5_Band_T1000_C2"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C3"
+roots = ["RS5_Band_T1000_C3"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C4"
+roots = ["RS5_Band_T1000_C4"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C5"
+roots = ["RS5_Band_T1000_C5"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C6"
+roots = ["RS5_Band_T1000_C6"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C7"
+roots = ["RS5_Band_T1000_C7"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C8"
+roots = ["RS5_Band_T1000_C8"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C9"
+roots = ["RS5_Band_T1000_C9"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C10"
+roots = ["RS5_Band_T1000_C10"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C11"
+roots = ["RS5_Band_T1000_C11"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C12"
+roots = ["RS5_Band_T1000_C12"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C13"
+roots = ["RS5_Band_T1000_C13"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C14"
+roots = ["RS5_Band_T1000_C14"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C15"
+roots = ["RS5_Band_T1000_C15"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C16"
+roots = ["RS5_Band_T1000_C16"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C17"
+roots = ["RS5_Band_T1000_C17"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C18"
+roots = ["RS5_Band_T1000_C18"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C19"
+roots = ["RS5_Band_T1000_C19"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C20"
+roots = ["RS5_Band_T1000_C20"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C21"
+roots = ["RS5_Band_T1000_C21"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C22"
+roots = ["RS5_Band_T1000_C22"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C23"
+roots = ["RS5_Band_T1000_C23"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C24"
+roots = ["RS5_Band_T1000_C24"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C25"
+roots = ["RS5_Band_T1000_C25"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C26"
+roots = ["RS5_Band_T1000_C26"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C27"
+roots = ["RS5_Band_T1000_C27"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C28"
+roots = ["RS5_Band_T1000_C28"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C29"
+roots = ["RS5_Band_T1000_C29"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C30"
+roots = ["RS5_Band_T1000_C30"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000_C31"
+roots = ["RS5_Band_T1000_C31"]
+
+[[lean_lib]]
+name = "RS5_Band_T1000"
+roots = ["RS5_Band_T1000"]
+
+# Lane B5: the [1000, 10000] and [10000, 11000] bands glued: 10675 distinct on-line zeros in (1000, 11000).
+[[lean_lib]]
+name = "RS5_Band_Joint"
+roots = ["RS5_Band_Joint"]
+
+# Lane B5: the kernel-axiom guard (#print axioms for every RS5_ headline and every band chunk's
+# ok / count / zeros; not a default target).
+[[lean_lib]]
+name = "RS5_AxiomGuard"
+roots = ["RS5_AxiomGuard"]
 
 [[lean_lib]]
 name = "AxiomGuardRSTheta"
@@ -1009,3 +1338,40 @@ roots = ["Arb4_h8000"]
 [[lean_lib]]
 name = "Arb4_AxiomGuard_h8000"
 roots = ["Arb4_AxiomGuard_h8000"]
+
+# ---------------------------------------------------------------------------------------------
+# Lane H11K: all nontrivial zeros up to height 11000 on the critical line, HYPOTHESIS-FREE:
+# Arb4_h8000 + ONE wide Turing band [31851/4, 11004] (sharp-pi pins, H11K_Turing), RS5 on-line
+# zeros, the top edge at 11004 checked per octant piece (H11K_EdgeSplit).  conjecture1_proved = False.
+# ---------------------------------------------------------------------------------------------
+[[lean_lib]]
+name = "H11K_Turing"
+roots = ["H11K_Turing"]
+
+[[lean_lib]]
+name = "H11K_EdgeSplit"
+roots = ["H11K_EdgeSplit"]
+
+[[lean_lib]]
+name = "H11K_Edge_T11004"
+roots = ["H11K_Edge_T11004"]
+
+[[lean_lib]]
+name = "H11K_Slab_U11004"
+roots = ["H11K_Slab_U11004"]
+
+[[lean_lib]]
+name = "RS5_Band_T8000"
+roots = ["RS5_Band_T8000Lo_C0", "RS5_Band_T8000Hi_C0"]
+
+[[lean_lib]]
+name = "H11K_Line"
+roots = ["H11K_Line"]
+
+[[lean_lib]]
+name = "H11K_h11000"
+roots = ["H11K_h11000"]
+
+[[lean_lib]]
+name = "H11K_AxiomGuard"
+roots = ["H11K_AxiomGuard"]
