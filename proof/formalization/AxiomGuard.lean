@@ -125,6 +125,7 @@ import R3Cert.NearStar
 import R3Cert.R47MergePerL
 import R3Cert.R47BGConjecture
 import R3Cert.BGGrowthRate
+import R3Cert.BGSpiderOpt
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -535,3 +536,11 @@ import R3Cert.BGGrowthRate
 #print axioms R3Cert.Step3.perm_ratio_le_two_rhoB_pow
 #print axioms R3Cert.Step3.exists_Aobj_ge
 #print axioms R3Cert.Step3.bg_max_growth
+-- B2 spider optimization (2026-09-24, BGSpiderOpt): exchange inequalities for the closed-form two-level
+-- spider value (model function only, not connected to the tree graph).
+#print axioms R3Cert.BGSpiderOpt.balance_identity
+#print axioms R3Cert.BGSpiderOpt.F_balance_lt
+#print axioms R3Cert.BGSpiderOpt.balanced_of_isMax
+#print axioms R3Cert.BGSpiderOpt.leaf_count_le_one_of_isMax
+#print axioms R3Cert.BGSpiderOpt.F_leafpair_lt
+#print axioms R3Cert.BGSpiderOpt.F_absorb_sub
