@@ -104,6 +104,18 @@
       "statement_sha256": "1b8be1a9f5ac769dfbe0b53555b57d46db443bae06f705982eb2c0e28b335f32"
     },
     {
+      "slug": "AND_ladder_h8000_kernel",
+      "campaign": "anduril",
+      "theorem": "Arb4_h8000.all_nontrivial_zeros_up_to_height_8000",
+      "solution_module": "Arb4_h8000",
+      "challenge_module": "MissionChallenges.AND_ladder_h8000_kernel",
+      "bridge_theorem": "MissionJudge.AND_ladder_h8000_kernel",
+      "config": "AND_ladder_h8000_kernel.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "40a194857dfee5cd49a4b79bb92e728de2b0c9da746122d5f71d894dd70b75ee",
+      "statement_sha256": "62fb58b8bf0275bd63c037aae9d1134fb783b0f56b225282fbc38b8603e017a2"
+    },
+    {
       "slug": "AND_stirling_binet_k1",
       "campaign": "anduril",
       "theorem": "ZetaReflection.logDeriv_gammaR_stirling",
