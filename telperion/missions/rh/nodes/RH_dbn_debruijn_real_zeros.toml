@@ -10,8 +10,8 @@ updated = "2026-09-24"
 [comparator]
 artifact_sha256 = "65dbfcb59765532efa54f0acfce56f2b56f6d3dc2607adeb3aae9ed873c07147"
 date = "2026-09-24"
-run_id = "36055781811"
-run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36055781811"
+run_id = "36059451077"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36059451077"
 theorem = "dbn_debruijn_real_zeros"
 
 [grant]
