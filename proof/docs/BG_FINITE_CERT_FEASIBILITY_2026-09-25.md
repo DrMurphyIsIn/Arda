@@ -183,3 +183,41 @@ Exact rechecks needed for any of these:
 - the root cells;
 - the envelope tables as rationals;
 - M(n) exactly.
+
+### 5.5 Update: a credit for high-degree non-atoms, and the root knapsack gives N1 = 150
+
+This adds a class credit kappa_4 for non-atoms whose root has >= 4 children. The minimal near-atoms
+(for example five cherries + arm_4) have slack at least 0.0145, which pays for it; vertices with one
+non-atom child are neutral; each non-atom child of the root contributes kappa_4 to the root bound. The
+root is then handled by the exact knapsack over child sizes, with atoms at their exact value and
+non-atom children at `max_class(-rho - kappa + mu*y) - alpha*s` (`rate10.py`, `rate11.py`; 5% alpha
+safety factor; exact M(n) up to 520).
+
+| k | alpha_k | kappa (1,2,3,4) | largest open n |
+|---|---|---|---|
+| 2 | 9.8e-3 | (.004,.005,.005,0) | 8 |
+| 3 | 2.44e-3 | (.004,.005,.005,0) | 25 |
+| 4 | 1.58e-3 | (.004,.005,.005,0) | 47 |
+| 5 | 1.33e-3 | (.008,.0075,.005,0) | 47 |
+| 6 | 8.7e-4 | (.004,.0075,.005,0) | 109 |
+| 7 | 6.9e-4 | (0,.005,.005,0) | 147 |
+| 8 | 6.5e-4 | (0,.0025,.005,0) | **149** |
+| 9 | 6.5e-4 | (0,.0025,.005,0) | 138 |
+| 10 | 6.5e-4 | (0,.0025,.005,0) | 122 |
+| 11 | 6.5e-4 | (0,.0025,.005,0) | 100 |
+| 12 | 6.46e-4 | (0,.0025,.005,0) | 76 |
+| 13-23 | 5.6e-4 .. 3.4e-4 | (0,.005,.005,.002) | none (every n <= 520 excluded) |
+
+**N1 = 150**, set by k = 7 and 8. Root degree >= 13 is excluded for every n. Lean formalization has not
+started, pending your confirmation.
+
+Cost of the finite range at N1 = 150 (budget about 1e9 sharded checks):
+- Interval DP: 248k states at N = 150.
+- Bellman certificate from `costmodel.py`, with exact check counts and per-cap size ranges:
+  - n <= 255, uniform H = 100, 11 caps {1..8, 12, 16, 22}: 0 failures, 4.1e8 checks (3.4e8 inner
+    knapsack, 7.1e7 root).
+  - H = 80 or a mixed grid (105 points): fails at n = 23 (-1.2e-4), for about 3.5e8.
+  - Caps {1..8, 11, 14, 18, 22}: 4.7e8, so no better.
+  - n <= 491 (the current Lean N1): 1.44e9.
+  - The inner knapsack scales like (max child size)^2, so n <= 150 should be about 1.4e8. This is
+    extrapolated, not run.
