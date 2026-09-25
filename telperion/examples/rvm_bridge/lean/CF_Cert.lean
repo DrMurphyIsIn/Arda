@@ -30,7 +30,7 @@ Window `A = 9 pi/17` (`x = e^{2A} = e^{18 pi/17} = 27.84`), nine Dirichlet cosin
 
 Both functionals share the SAME arch side `archSideGC` (pole terms kept, `Gamma_C`, conductor 20);
 they differ only in the prime weights.  The identification of `weilFormGC` with the zero sum is the
-classical explicit formula (not formalized); it is checked numerically in LANE_NOTES_CF.md
+classical explicit formula (not formalized); it is checked numerically in telperion/docs/CF_COUNTERFEIT_LADDER_2026-09-25.md
 (arithmetic side vs a sum over E's zeros, off-line quadruples included).
 No `sorry`.
 -/

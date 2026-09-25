@@ -10,7 +10,8 @@ Counterfeit-ladder lane (CF), 2026-09-24, `rvm_bridge` island.
 
 "Lemma O" (textbook): for `F = sum a(n) n^{-s}` with `a(1) = 1` and `-F'/F = sum c(n) n^{-s}`, the weights `c`
 are supported on prime powers iff `a` is multiplicative (iff `F` has an Euler product).  This file does NOT
-formalize Lemma O itself (remaining obligation, see LANE_NOTES_CF.md).  It proves the finite witnesses that
+formalize Lemma O itself; the general theorem (both directions, ArithmeticFunction form) is proved in PR #630
+(quasicrystal island, qc/lemma-o).  See also telperion/docs/CF_COUNTERFEIT_LADDER_2026-09-25.md.  It proves the finite witnesses that
 pin each counterfeit's failure to one orbit, at length `log 6`:
 
 * Davenport-Heilbronn `D` (`Crux3.aD`, `Crux3.cD`):
