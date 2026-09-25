@@ -206,6 +206,14 @@ jobs:
         run: |
           set -uo pipefail
           echo "lean4export = $COMPARATOR_LEAN4EXPORT ; nanoda = $COMPARATOR_NANODA"
+          # Stack (2026-09-24, #615 run 36055910789): nanoda's kernel is recursive and the KWin
+          # artifacts carry large `decide +kernel` LDL^T certificates; replaying them overflowed
+          # the 8 MB MAIN-thread stack ("thread 'main' has overflowed its stack", exit 134).
+          # RUST_MIN_STACK only sizes spawned threads, so raise the process limit here; the
+          # comparator's children (lean4export, nanoda) inherit it. Fall back to 4 GB if the
+          # runner's hard limit refuses unlimited; never let the fallback itself fail the job.
+          ulimit -s unlimited 2>/dev/null || ulimit -s 4194304 2>/dev/null || echo "::warning::could not raise the stack limit (ulimit -s); large certificates may overflow nanoda"
+          echo "stack limit (KB): $(ulimit -s)"
           fail=0; pass=0
           {
             echo "## missions-comparator: ${{ matrix.island }} shard ${{ matrix.shard }} (run ${{ github.run_id }})"
