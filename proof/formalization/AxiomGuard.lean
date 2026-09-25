@@ -131,6 +131,7 @@ import R3Cert.R47BGConjecture
 import R3Cert.BGGrowthRate
 import R3Cert.BGSpiderOpt
 import R3Cert.BGMaximizer
+import R3Cert.BGSpiderRule
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -577,3 +578,10 @@ import R3Cert.BGMaximizer
 #print axioms BGMax.bg_spider_reduction_perm
 #print axioms R3Cert.BGSCL.Aobj_toU_node
 #print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot_Aobj
+-- SPIDER RULE base (2026-09-25, BGSpiderRule): rule winner W n, maximizer existence, Aobj bridge, and the
+-- conditional assembly (StructProp + CandProp hypotheses -> W n maximizes per(L)/prod deg over all trees).
+#print axioms R3Cert.BGSpiderRule.nv_W
+#print axioms R3Cert.BGSpiderRule.exists_isMax
+#print axioms R3Cert.BGSpiderRule.Aobj_spiderU
+#print axioms R3Cert.BGSpiderRule.spider_opt_of
+#print axioms R3Cert.BGSpiderRule.bg_maximizer_of
