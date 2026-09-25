@@ -289,6 +289,7 @@
       "challenge_module": "MissionChallenges.MM_weil_positivity_window_two_fifths",
       "bridge_theorem": "MissionJudge.MM_weil_positivity_window_two_fifths",
       "config": "MM_weil_positivity_window_two_fifths.comparator.json",
+      "nanoda": false,
       "artifact_sha256": "f868b4155ff67f58dac9a00d8b71eb00431ca92686bc884d8c1b0c8cf81003bb",
       "statement_sha256": "90d7335afab6d23b698eff1321e21528a66624d4b1915c913455e4f7fcd25a00"
     },

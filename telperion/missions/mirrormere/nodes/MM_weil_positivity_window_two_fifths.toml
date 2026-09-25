@@ -1,5 +1,6 @@
 created = "2026-09-24"
 depends_on = ["MM_zeta_comb_membership_iff_rh"]
+heavy_certificates = true
 kind = "lemma"
 name = "MM.weil_positivity_window_two_fifths"
 statement_module = "Statements.MM_weil_positivity_window_two_fifths"
