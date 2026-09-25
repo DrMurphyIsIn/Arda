@@ -3349,8 +3349,11 @@ jobs:
           echo "anti-triviality gate OK: 14/14 trivial-close probes refused"
 
   mission-statements-compile:
-    needs: changes
-    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.missions == 'true')
+    # NOT path-filtered (2026-09-25): this is a MATRIX job, and a matrix job skipped by an
+    # `if:` reports ONE check named "mission-statements-compile" instead of the four expanded
+    # contexts "mission-statements-compile (rh)" etc. that branch protection requires, so a
+    # pull request that does not touch the registry could never merge (#605 sat on this for
+    # a day). The statement packages take ~3-4 min each; always run them.
     # Design invariant (MISSIONS_DESIGN_2026-09-11 section 2): "CI builds each
     # statement package: a statement that does not elaborate cannot enter the
     # graph."  This job closes the gap for ALL four campaigns (bg/rh predate it
