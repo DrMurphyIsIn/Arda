@@ -5,7 +5,14 @@ name = "AND.ladder_h1000_kernel"
 statement_module = "Statements.AND_ladder_h1000_kernel"
 status = "proved"
 title = "G0-kernel: every nontrivial zeta zero with 0 < Im rho <= 1000 lies on Re = 1/2 -- the FIRST fully hypothesis-free ladder segment, kernel-checked with no Arb or oracle input (sign points via the on-line EM evaluator + theta; edge slabs via the off-line EM evaluator; argument changes via octant certificates; height floor; hnzl). Finite verification only, NOT RH. conjecture1_proved = False"
-updated = "2026-09-23"
+updated = "2026-09-24"
+
+[comparator]
+artifact_sha256 = "5d1bcfa827c9658d27f48aace0ab5ef32db49529e32044a129ec0450692d0015"
+date = "2026-09-24"
+run_id = "36055574431"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36055574431"
+theorem = "AllZerosKernel_h1000.all_nontrivial_zeros_up_to_height_1000"
 
 [grant]
 artifact_sha256 = "5d1bcfa827c9658d27f48aace0ab5ef32db49529e32044a129ec0450692d0015"
