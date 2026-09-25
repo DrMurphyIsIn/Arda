@@ -23,7 +23,8 @@ NO_PUSH_ALLOWED = {
     "telperion-legacy-boxes.yml": (
         "669 legacy box certificates at ~5.3 core-hours; nothing imports them. Cron + dispatch "
         "only, by cost decision (governance 2026-09-25). Mitigation: the weekly scheduled run "
-        "and the telperion-audit schedule-only watch."
+        "and the ci-schedule-health watch (PR #640), which flags a schedule-only workflow that is "
+        "red or has never fired."
     ),
 }
 
@@ -60,9 +61,74 @@ def test_exemptions_exist():
     assert not stale, f"NO_PUSH_ALLOWED lists workflows that no longer exist: {stale}"
 
 
-def test_zeta_reflection_push_covers_the_island():
-    """Pin the paths filter to the island's sources, so a filter edit cannot silently narrow coverage."""
-    push = _on("telperion-zeta-reflection.yml")["push"]
-    paths = set(push.get("paths", []))
-    for need in ("telperion/examples/zeta_reflection/**", ".github/workflows/telperion-zeta-reflection.yml"):
-        assert need in paths, f"zeta-reflection push filter must include {need}"
+import re as _re
+
+_ZR = "telperion-zeta-reflection.yml"
+
+
+def _glob_to_re(g):
+    """GitHub path-filter glob -> regex: `**` crosses '/', `*` does not."""
+    out, i = "", 0
+    while i < len(g):
+        if g.startswith("**", i):
+            out += ".*"; i += 2
+        elif g[i] == "*":
+            out += "[^/]*"; i += 1
+        else:
+            out += _re.escape(g[i]); i += 1
+    return _re.compile("^" + out + "$")
+
+
+def _relevant():
+    """The job-level RELEVANT regex (declared three times; all copies must agree)."""
+    text = (_WF / _ZR).read_text()
+    found = set(_re.findall(r"RELEVANT: '([^']+)'", text))
+    assert len(found) == 1, f"{_ZR}: RELEVANT regex copies disagree: {len(found)} variants"
+    return found.pop()
+
+
+def _named_modules(rel):
+    m = _re.search(r"zeta_zero_localization/lean/\((.*)\)\\\.lean\$", rel)
+    assert m, "could not find the named-module group in RELEVANT"
+    return m.group(1).split("|")
+
+
+def _samples(rel):
+    """Concrete paths the RELEVANT regex admits, one per alternative, plus every named module."""
+    z = "telperion/examples/zeta_zero_localization/lean/"
+    out = ["telperion/examples/zeta_reflection/lean/Some.lean",
+           "telperion/examples/zeta_reflection/README.md",
+           ".github/workflows/telperion-zeta-reflection.yml",
+           "telperion/examples/zero_free_bridge/lean/Some.lean",
+           "telperion/examples/zeta_zero_localization/lean/zzl_core/Some.lean"]
+    for name in _named_modules(rel):
+        if "[" in name:  # the RHInBoxT_* box-file family: instantiate one member
+            out.append(z + "RHInBoxT_1d4000000_3999999d4000000_12d5_13d5.lean")
+        else:
+            out.append(z + name + ".lean")
+    return out
+
+
+def test_zeta_reflection_push_covers_relevant():
+    """Every path the job treats as relevant must trigger the push run (no silent coverage gap)."""
+    rel = _relevant()
+    globs = [_glob_to_re(g) for g in _on(_ZR)["push"]["paths"]]
+    for path in _samples(rel):
+        assert _re.match(rel, path), f"sample {path} should match RELEVANT (test bug)"
+        assert any(g.match(path) for g in globs), f"{path} is RELEVANT but no push path covers it"
+
+
+def test_zeta_reflection_push_not_broader_than_relevant():
+    """No push path may fire on files the job itself declares irrelevant (e.g. bulk AllZeros_h* bands)."""
+    rel = _relevant()
+    z = "telperion/examples/zeta_zero_localization/lean/"
+    irrelevant = [z + "AllZeros_h5000.lean", z + "AllZeros_h280000.lean", z + "SomethingElse.lean",
+                  "telperion/examples/rvm_bridge/lean/X.lean"]
+    globs = [_glob_to_re(g) for g in _on(_ZR)["push"]["paths"]]
+    for path in irrelevant:
+        assert not _re.match(rel, path), f"sample {path} should NOT match RELEVANT (test bug)"
+        assert not any(g.match(path) for g in globs), f"push paths fire on irrelevant {path}"
+    # and every push glob, instantiated, lands inside RELEVANT
+    for g in _on(_ZR)["push"]["paths"]:
+        inst = g.replace("**", "x/y.lean").replace("*", "12d5_13d5")
+        assert _re.match(rel, inst), f"push path {g} admits {inst}, which RELEVANT rejects"

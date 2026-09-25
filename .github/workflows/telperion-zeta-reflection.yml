@@ -55,13 +55,35 @@ on:
   # re-verified only by the weekly cron below, and that cron never fired: GitHub dropped the
   # 2026-09-23 slot. A cron can silently not run, so it must not be the only path. The paths
   # filter bounds the cost (one ladder run per relevant merge). The cron stays as a backstop.
-  # telperion/tests/test_ci_push_triggers.py requires this trigger.
+  # The filter mirrors the RELEVANT regex below; telperion/tests/test_ci_push_triggers.py requires
+  # this trigger and checks the filter against RELEVANT in both directions.
   push:
     branches: [main]
     paths:
       - "telperion/examples/zeta_reflection/**"
       - "telperion/examples/zero_free_bridge/lean/**"
       - "telperion/examples/zeta_zero_localization/lean/zzl_core/**"
+      # The named top-level zzl modules below mirror the RELEVANT regex exactly (the job's own
+      # declared relevance). NOT a blanket lean/*.lean: that directory holds ~27k AllZeros_h* band
+      # files, and bulk band registrations must not fire the ladder.
+      - "telperion/examples/zeta_zero_localization/lean/LambdaLineReal.lean"
+      - "telperion/examples/zeta_zero_localization/lean/XiLineZeros.lean"
+      - "telperion/examples/zeta_zero_localization/lean/WindingCount.lean"
+      - "telperion/examples/zeta_zero_localization/lean/BoxArgPrinciple.lean"
+      - "telperion/examples/zeta_zero_localization/lean/BoxArgPrincipleZeta.lean"
+      - "telperion/examples/zeta_zero_localization/lean/RigorousWinding.lean"
+      - "telperion/examples/zeta_zero_localization/lean/BlaschkeBox.lean"
+      - "telperion/examples/zeta_zero_localization/lean/BoxLocalization.lean"
+      - "telperion/examples/zeta_zero_localization/lean/RHInBoxCore.lean"
+      - "telperion/examples/zeta_zero_localization/lean/RHInBoxAnalytic.lean"
+      - "telperion/examples/zeta_zero_localization/lean/RHInBox.lean"
+      - "telperion/examples/zeta_zero_localization/lean/RHInBoxBands.lean"
+      - "telperion/examples/zeta_zero_localization/lean/DiffractionCore.lean"
+      - "telperion/examples/zeta_zero_localization/lean/ZetaZeroConfinement.lean"
+      - "telperion/examples/zeta_zero_localization/lean/AllZerosUpToHeight.lean"
+      - "telperion/examples/zeta_zero_localization/lean/TuringBand.lean"
+      - "telperion/examples/zeta_zero_localization/lean/AllZeros_h1000.lean"
+      - "telperion/examples/zeta_zero_localization/lean/RHInBoxT_1d4000000_3999999d4000000_*.lean"
       - ".github/workflows/telperion-zeta-reflection.yml"
   workflow_dispatch:
   schedule:
