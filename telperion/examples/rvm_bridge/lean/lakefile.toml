@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "FamilyWeilForm", "FamilyWeilDisc", "FamilyWeilQuad", "FamilyWeilTable", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "FamilyWeilForm", "FamilyWeilDisc", "FamilyWeilQuad", "FamilyWeilTable", "FamilyWeilDigamma", "FamilyWeilSymbol", "FamilyWeilAtoms", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -421,6 +421,28 @@ name = "FamilyWeilQuad"
 # from the conjunction over the cells' d_min.  No positivity.  conjecture1_proved = False.
 [[lean_lib]]
 name = "FamilyWeilTable"
+
+# Quadratic family, Stage 1a (2026-09-25): the digamma weight of a general admissible gamma shift
+# (abscissa in (0,1)) and in particular the SECOND digamma Re psi(3/4 + i r/2) of Gamma_R(s+1):
+# vertical-line series, rational two-sided truncations, finite Lorentzian minorant, parity,
+# monotonicity, Stirling envelopes, integrability against |g^|^2, kernel-checkable floors/ceilings.
+# Mirrors CF_Arch (unmerged, not imported).  No positivity.  conjecture1_proved = False.
+[[lean_lib]]
+name = "FamilyWeilDigamma"
+
+# Quadratic family, Stage 1a: the frequency-side SYMBOL REPRESENTATION of the parametric form
+# (Zhu eq. (2) generalised to weights + admissible shifts + conductor), the zeta instance recovering
+# Zhu's theorem, the quadratic / cell symbols with their finite-window forms.  No positivity.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "FamilyWeilSymbol"
+
+# Quadratic family, Stage 1a: the atom constants (log 2/3/5, sqrt 2/3/5 and inverses, 16-digit
+# rational enclosures by norm_num), the atom weights c_d(2), c_d(3), c_d(4), c_d(5), the explicit
+# symbols on the x = 4 and x = 7 windows, and the kernel-checked per-cell coefficient tables
+# (18 cells at N = 4, 54 at N = 7).  No positivity.  conjecture1_proved = False.
+[[lean_lib]]
+name = "FamilyWeilAtoms"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]

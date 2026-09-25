@@ -195,6 +195,32 @@
         N = 7; integer corollaries *_nat).  weilFormQ is a frequency-side DEFINITION: no explicit
         formula for zeta_K is proved.  NO positivity unit is proved.  conjecture1_proved = False.
 
+      * FamilyWeil.{psiShift_eq_series, psiShift_ge_rational, psiShift_le_rational,
+        psiShift_ge_finite, psiShift_mono, psiShift_stirling, psiShift_ge_stirling,
+        psiShift_le_stirling, psiShift_le_psiR_add, integrable_hsq_mul_psiShift,
+        integral_hsq_mul_phiShift, psiD_ge_const, psiD_ge_two, psiD_floor_0, ..., psiD_ceil_16,
+        symbol_representation_ofReal_F, symbolRepresentationF, symbolRepresentationF_odd,
+        symbolF_zeta, symbolRepresentation_of_family, symbolRepresentation_agree, symbolQ_eq,
+        weilFormQ_symbol, cellForm_symbol, symbolF_eq_fin, symbolQ_eq_symbolCell_add,
+        log2_bounds, log3_bounds, log5_bounds, sqrt2_bounds, invSqrt3_bounds, invSqrt5_bounds,
+        weightQ_two, weightQ_three, weightQ_four, weightQ_five, symbolQ_window4, symbolQ_window7,
+        cellAtomTable4_check, weightQ_of_table4, symbolQ_window4_of_table4, cellAtomTable7_check,
+        psiD_ge_envelope, symbolArch_quad_ge_envelope, c3_bounds, logPi_le, two_gamma_le, condLo_dm3,
+        comb_le_combMassF, symbolQ_ge_betaStar, combMassF_dm3_window4,
+        ...} -- the QUADRATIC FAMILY, Stage 1a (2026-09-25, FamilyWeilDigamma/Symbol/Atoms):
+        the second digamma Re psi(3/4 + i r/2) (and every admissible shift) with the psiR
+        toolkit reproved (series, rational two-sided truncations, Lorentzian minorant, parity,
+        monotonicity, Stirling, integrability against |g^|^2, kernel-checkable floors/ceilings;
+        mirrors the unmerged CF_Arch, NOT imported); the SYMBOL REPRESENTATION of the parametric
+        form, Zhu eq. (2) generalised to weights + admissible shifts + conductor
+        (Re weilFormF D (autocorr f) = 2 eps |F(i/2)|^2 + (1/2pi) int |F|^2 symbolF D L), with
+        Zhu's zeta theorem recovered as the zetaData instance; the quadratic / cell symbols and
+        their finite-window forms; the atom constants (log 2/3/5, sqrt 2/3/5 and inverses, 16-digit
+        norm_num enclosures), the atom weights c_d(2), c_d(3), c_d(4), c_d(5), the explicit symbols
+        on the x = 4 and x = 7 windows, and the kernel-checked per-cell coefficient tables (18 cells
+        at N = 4, 54 at N = 7).  NO positivity unit is proved; no certificate is cut.
+        conjecture1_proved = False.
+
     Expected: every line reads `[propext, Classical.choice, Quot.sound]`.
     conjecture1_proved = False. -/
 import E6Bridge
@@ -248,6 +274,9 @@ import FamilyWeilForm
 import FamilyWeilDisc
 import FamilyWeilQuad
 import FamilyWeilTable
+import FamilyWeilDigamma
+import FamilyWeilSymbol
+import FamilyWeilAtoms
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -1257,3 +1286,125 @@ import FamilyWeilTable
 #print axioms FamilyWeil.family7_of_dmins
 #print axioms FamilyWeil.family7_of_dmins_nat
 #print axioms FamilyWeil.family7_of_cells
+
+-- FamilyWeilDigamma: the second digamma and every admissible shift (Stage 1a, 2026-09-25). conjecture1_proved = False.
+#print axioms FamilyWeil.psiShift_eq
+#print axioms FamilyWeil.psiShift_eq_series
+#print axioms FamilyWeil.serFa_antitoneOn
+#print axioms FamilyWeil.sum_serFa_ge
+#print axioms FamilyWeil.sum_serFa_le
+#print axioms FamilyWeil.serGa_bounds
+#print axioms FamilyWeil.psiShift_ge_series
+#print axioms FamilyWeil.psiShift_le_series
+#print axioms FamilyWeil.psiShift_ge_rational
+#print axioms FamilyWeil.psiShift_le_rational
+#print axioms FamilyWeil.psiShift_ge_finite
+#print axioms FamilyWeil.psiShift_ge_const
+#print axioms FamilyWeil.psiShift_neg
+#print axioms FamilyWeil.psiShift_abs
+#print axioms FamilyWeil.psiShift_mono
+#print axioms FamilyWeil.continuous_psiShift
+#print axioms FamilyWeil.psiShift_stirling
+#print axioms FamilyWeil.psiShift_ge_log
+#print axioms FamilyWeil.psiShift_le_log
+#print axioms FamilyWeil.psiShift_le_psiR_add
+#print axioms FamilyWeil.integrable_mul_psiShift
+#print axioms FamilyWeil.integrable_hsq_mul_psiShift
+#print axioms FamilyWeil.psiShift_ge_stirling
+#print axioms FamilyWeil.psiShift_le_stirling
+#print axioms FamilyWeil.integrable_hsq_mul_phiShift
+#print axioms FamilyWeil.integral_hsq_mul_phiShift
+#print axioms FamilyWeil.integral_hsq_mul_psiShift_ge
+#print axioms FamilyWeil.psiD_eq_series
+#print axioms FamilyWeil.psiD_ge_const
+#print axioms FamilyWeil.psiD_ge_two
+#print axioms FamilyWeil.psiD_mono
+#print axioms FamilyWeil.psiD_ge_stirling
+#print axioms FamilyWeil.psiD_le_stirling
+#print axioms FamilyWeil.psiD_ge_rational
+#print axioms FamilyWeil.psiD_le_rational
+#print axioms FamilyWeil.psiD_ge_finite
+#print axioms FamilyWeil.eulerMascheroni_ge
+#print axioms FamilyWeil.psiD_floor_0
+#print axioms FamilyWeil.psiD_ceil_0
+#print axioms FamilyWeil.psiD_floor_1
+#print axioms FamilyWeil.psiD_ceil_1
+#print axioms FamilyWeil.psiD_floor_2
+#print axioms FamilyWeil.psiD_ceil_2
+#print axioms FamilyWeil.psiD_floor_4
+#print axioms FamilyWeil.psiD_ceil_4
+#print axioms FamilyWeil.psiD_floor_8
+#print axioms FamilyWeil.psiD_ceil_8
+#print axioms FamilyWeil.psiD_floor_16
+#print axioms FamilyWeil.psiD_ceil_16
+#print axioms FamilyWeil.psiD_ge_series
+#print axioms FamilyWeil.psiD_neg
+#print axioms FamilyWeil.psiD_abs
+#print axioms FamilyWeil.continuous_psiD
+#print axioms FamilyWeil.psiD_band_step
+#print axioms FamilyWeil.psiD_bfloor_0
+#print axioms FamilyWeil.psiD_bfloor_12
+#print axioms FamilyWeil.psiD_brhs_0
+#print axioms FamilyWeil.psiD_brhs_12
+#print axioms FamilyWeil.psiD_ge_envelope
+#print axioms FamilyWeil.symbolArch_quad_ge_envelope
+
+-- FamilyWeilSymbol: the symbol representation of the parametric form (Stage 1a, 2026-09-25). conjecture1_proved = False.
+#print axioms FamilyWeil.symbolF_zeta
+#print axioms FamilyWeil.integrable_mul_symbolArch
+#print axioms FamilyWeil.symbol_representation_ofReal_F
+#print axioms FamilyWeil.symbolRepresentationF
+#print axioms FamilyWeil.symbolRepresentationF_odd
+#print axioms FamilyWeil.symbolRepresentation_of_family
+#print axioms FamilyWeil.symbolRepresentation_agree
+#print axioms FamilyWeil.symbolQ_eq
+#print axioms FamilyWeil.symbolCell_eq
+#print axioms FamilyWeil.weilFormQ_symbol
+#print axioms FamilyWeil.weilFormQ_symbol_odd
+#print axioms FamilyWeil.cellForm_symbol
+#print axioms FamilyWeil.cellForm_symbol_odd
+#print axioms FamilyWeil.symbolF_eq_fin
+#print axioms FamilyWeil.symbolQ_eq_fin
+#print axioms FamilyWeil.symbolQ_eq_symbolCell_add
+
+-- FamilyWeilAtoms: atom constants, atom weights, per-cell coefficient tables (Stage 1a, 2026-09-25). conjecture1_proved = False.
+#print axioms FamilyWeil.log2_series_bound
+#print axioms FamilyWeil.log3_series_bound
+#print axioms FamilyWeil.log5_series_bound
+#print axioms FamilyWeil.log2_bounds
+#print axioms FamilyWeil.log3_bounds
+#print axioms FamilyWeil.log5_bounds
+#print axioms FamilyWeil.sqrt2_bounds
+#print axioms FamilyWeil.sqrt3_bounds
+#print axioms FamilyWeil.sqrt5_bounds
+#print axioms FamilyWeil.invSqrt2_bounds
+#print axioms FamilyWeil.invSqrt3_bounds
+#print axioms FamilyWeil.invSqrt5_bounds
+#print axioms FamilyWeil.weightQ_two
+#print axioms FamilyWeil.weightQ_three
+#print axioms FamilyWeil.weightQ_four
+#print axioms FamilyWeil.weightQ_five
+#print axioms FamilyWeil.weightQ_six
+#print axioms FamilyWeil.symbolQ_window4
+#print axioms FamilyWeil.symbolQ_window7
+#print axioms FamilyWeil.window65
+#print axioms FamilyWeil.cellAtomTable4_check
+#print axioms FamilyWeil.cellAtomTable4_dmins
+#print axioms FamilyWeil.weightQ_of_table4
+#print axioms FamilyWeil.symbolQ_window4_of_table4
+#print axioms FamilyWeil.cellAtomTable7_check
+#print axioms FamilyWeil.cellAtomTable7_dmins
+#print axioms FamilyWeil.weightQ_of_table7
+#print axioms FamilyWeil.symbolQ_window7_of_table7
+#print axioms FamilyWeil.log43_series_bound
+#print axioms FamilyWeil.c3_bounds
+#print axioms FamilyWeil.logPi_le_of_taylor
+#print axioms FamilyWeil.logPi_le
+#print axioms FamilyWeil.logPi_le'
+#print axioms FamilyWeil.two_logPi_le
+#print axioms FamilyWeil.two_gamma_le
+#print axioms FamilyWeil.condLo_dm3
+#print axioms FamilyWeil.combMassF_eq_fin
+#print axioms FamilyWeil.comb_le_combMassF
+#print axioms FamilyWeil.symbolQ_ge_betaStar
+#print axioms FamilyWeil.combMassF_dm3_window4
