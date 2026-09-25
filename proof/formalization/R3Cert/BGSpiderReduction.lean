@@ -34,6 +34,9 @@
       cores `AtomCell0Core (1/75)` (`<= 22` atom children), `AtomCellMuCore (23/624) (1/75)` (`3..22` atom
       children) and `SurchargeCore (23/624)` (`3..6` arbitrary children, entering only via `(bcc, y)`).
 
+  The three cores are PROVED in `BGSpiderCells.lean` (`spider_dominates_highDegree_uncond`), so the
+  high-degree case is unconditional.
+
   What this does NOT cover: trees whose maximum degree is `<= 23` (the root-degree `k <= 23` case) for
   `n > 100`.  See `proof/docs/BG_SPIDER_REDUCTION_2026-09-24.md`.  `conjecture1_proved = False`.
 -/

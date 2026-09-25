@@ -19,6 +19,8 @@ Subcommands (run from proof/verification/):
                                                      cross-checked against brute-force enumeration to size B
   python3 bg_spider_reduction.py cells               AtomCell0(1/75), AtomCellMu(23/624, 1/75),
                                                      SurchargeCell(23/624): exhaustive checks (see below)
+  python3 bg_spider_reduction.py gen-cells          exact re-check of the rational certificates used in
+                                                     BGSpiderCells.lean (Taylor log enclosures + 22 cells)
   python3 bg_spider_reduction.py slack 300           size-free bound X(k) - gap vs the exact spider value;
                                                      gadget (arm_5/arm_4) lower bound per residue
   python3 bg_spider_reduction.py all                 everything at default sizes
@@ -471,6 +473,81 @@ def run_slack(N=300):
     print(f"[slack] exact best spider, n in [91,{N}]: min (Phi_spider - log(26/23)) = {min(r[1] for r in rows):+.5f}")
 
 
+
+# ============================================================================ Lean certificate constants
+def run_gen_cells():
+    """Re-derive and EXACTLY re-check (fractions.Fraction) the rational constants used in
+    proof/formalization/R3Cert/BGSpiderCells.lean: degree-6 Taylor log enclosures
+    (x <= P6(c) - err  =>  log x <= c;  P6(c) + err <= x  =>  c <= log x, err = a^6 * 7/4320), the atom bell
+    upper bounds, and per K = 1..22 the tangent certificate (K-1) umax + unc + l_K - S0/(d+S0) <= -beta_K."""
+    from mpmath import mp, mpf, log as mlog, ceil as mceil, floor as mfloor
+    mp.dps = 50
+
+    def P(c):
+        return 1 + c + c ** 2 / 2 + c ** 3 / 6 + c ** 4 / 24 + c ** 5 / 120, abs(c) ** 6 * Fr(7, 4320)
+
+    def rat(x, up, den=10 ** 7):
+        return Fr(int(mceil(x * den) if up else mfloor(x * den)), den)
+
+    def log_upper(xq):
+        t = mlog(mpf(xq.numerator) / xq.denominator)
+        for k in range(200):
+            c = rat(t + mpf('1e-7') * 1.5 ** k, True)
+            p, e = P(c)
+            if abs(c) <= 1 and xq <= p - e:
+                return c
+        raise ValueError(xq)
+
+    def log_lower(xq):
+        t = mlog(mpf(xq.numerator) / xq.denominator)
+        for k in range(200):
+            c = rat(t - mpf('1e-7') * 1.5 ** k, False)
+            p, e = P(c)
+            if abs(c) <= 1 and p + e <= xq:
+                return c
+        raise ValueError(xq)
+    cA = log_lower(Fr(529, 486))            # 11 A = log(529/486)
+    c32 = log_lower(Fr(3, 2))
+    A_lo, F_lo = cA / 11, (cA / 11 + c32) / 2
+    bj = {}
+    for j in (1, 2, 3, 4):
+        T, _ = arm_exact(j)
+        bj[j] = log_upper(T ** 11 / Fr(621, 64) ** (2 * j + 1)) / 11
+    print(f"[gen-cells] A >= {A_lo} ; log(3/2) >= {c32} ; F* >= {F_lo}")
+    print(f"[gen-cells] bell(arm_j) <= {dict((j, str(b)) for j, b in bj.items())}")
+    Y = {"C": Fr(1, 3), 1: Fr(3, 7), 2: Fr(3, 11), 3: Fr(1, 5), 4: Fr(3, 19), 5: Fr(3, 23)}
+
+    def Vnc1(sg):
+        return max(bj[1] + sg * Y[1], bj[2] + sg * Y[2], bj[3] + sg * Y[3], bj[4] + sg * Y[4], sg * Y[5])
+
+    def Vnc(sg):
+        return max(Vnc1(sg), -F_lo + sg)
+
+    def Vmax(sg):
+        return max(-A_lo + sg * Y["C"], Vnc(sg))
+    MU = Fr(23, 624)
+    choice = {1: 1, 2: 1, 3: 2, 4: 3, 5: 3}
+    worst = None
+    for K in range(1, 23):
+        nc = choice.get(K, 4 if K <= 19 else 5)
+        S0 = Fr(K - 1, 3) + Y[nc]
+        d = K + 1
+        sg = 1 / (d + S0)
+        ell = log_upper((1 + S0 / d) ** 11 * Fr(64, 621)) / 11
+        if K == 1:
+            bound = Vnc1(sg) + ell - sg * S0
+            beta = Fr(1, 75) + Fr(1, 96) + Fr(1, 24)
+        else:
+            bound = (K - 1) * Vmax(sg) + Vnc(sg) + ell - sg * S0
+            rho = {2: Fr(1, 96), 3: Fr(1, 1536)}.get(K, 0)
+            beta = max(Fr(1, 75) + rho, Fr(1, 75) - 3 * MU / 23 + MU / (K + 1))
+        assert bound <= -beta, K
+        margin = -beta - bound
+        worst = min(worst or (margin, K), (margin, K))
+        print(f"  K={K:2d}: S0={S0}, bound={float(bound):+.6f} <= -beta_K={float(-beta):+.6f}  (exact margin {float(margin):.2e})")
+    print(f"[gen-cells] all 22 certificates hold exactly; tightest margin {float(worst[0]):.3e} at K={worst[1]}")
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
     a = [int(x) for x in sys.argv[2:]]
@@ -486,6 +563,8 @@ if __name__ == "__main__":
         run_envelope(a[0] if a else 80, a[1] if len(a) > 1 else 19)
     elif cmd == "cells":
         run_cells()
+    elif cmd == "gen-cells":
+        run_gen_cells()
     elif cmd == "slack":
         run_slack(a[0] if a else 300)
     elif cmd == "all":

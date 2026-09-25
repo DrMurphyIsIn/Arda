@@ -75,6 +75,7 @@ import R3Cert.BGSCLObligationA
 import R3Cert.BGSCLHdom
 import R3Cert.BGSCLSharp
 import R3Cert.BGSpiderReduction
+import R3Cert.BGSpiderCells
 import R3Cert.R47HdomBridge
 import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
@@ -537,3 +538,7 @@ import R3Cert.R47BGConjecture
 #print axioms R3Cert.BGSCL.armEnv_of_cells
 #print axioms R3Cert.BGSCL.spider_dominates_highDegree
 #print axioms R3Cert.BGSCL.spider_dominates_highDegree_of_cores
+#print axioms R3Cert.BGSCL.surchargeCore_proved
+#print axioms R3Cert.BGSCL.atomCell0Core_proved
+#print axioms R3Cert.BGSCL.atomCellMuCore_proved
+#print axioms R3Cert.BGSCL.spider_dominates_highDegree_uncond
