@@ -461,3 +461,27 @@ name = "Crux3_BandDHData"
 
 [[lean_lib]]
 name = "Crux3_BandDH"
+
+# Counterfeit ladder (CF lane, 2026-09-24): the Epstein counterfeit E = (1/2) sum' (x^2+5y^2)^{-s}
+# (no Euler product; off-line zeros) against zeta_K, K = Q(sqrt -5), on a 9-mode Dirichlet-cosine window
+# test at x = e^{18 pi/17} ~ 27.8.  Barrier/calibration certificates, NOT RH.
+[[lean_lib]]
+name = "CF_Test"
+
+[[lean_lib]]
+name = "CF_Arch"
+
+[[lean_lib]]
+name = "CF_EData"
+
+[[lean_lib]]
+name = "CF_Num"
+
+[[lean_lib]]
+name = "CF_Cert"
+
+[[lean_lib]]
+name = "CF_LemmaO"
+
+[[lean_lib]]
+name = "CF_AxiomGuard"
