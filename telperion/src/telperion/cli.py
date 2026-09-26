@@ -1507,17 +1507,100 @@ def cmd_mission_comparator_record(args) -> int:
     if not art.exists():
         print(f"{slug}: artifact {node.proof.artifact!r} does not exist")
         return 1
-    second = "nanoda"
-    if getattr(args, "lean_kernel_only", False):
-        second = "none: heavy_certificates"
-    elif node.heavy_certificates:
+    lean_only = bool(getattr(args, "lean_kernel_only", False))
+    if not lean_only and node.heavy_certificates:
         print(f"{slug}: node declares heavy_certificates = true, so the judge config had "
               "enable_nanoda = false; pass --lean-kernel-only to record that honestly.")
         return 1
+
+    # Read the verdict out of the judge's own job log rather than trusting the arguments.
+    # The JOB, never the run's conclusion: pushing this record to the same pull request
+    # supersedes the run that validated the artifact, so the run can read "cancelled" while
+    # the judging job succeeded (cl/kwin, 2026-09-25).
+    from .missions.judge_log import check as _check_log
+    run_id = str(args.run_id).strip()
+    theorem = args.theorem.strip()
+    job_id = str(getattr(args, "job_id", "") or "").strip()
+    job_url = str(getattr(args, "job_url", "") or "").strip()
+    head_sha = str(getattr(args, "head_sha", "") or "").strip()
+    kernel_mode, log_check, head_check = "", "skipped", "skipped"
+    log_text = None
+    if getattr(args, "log", None):
+        log_text = Path(args.log).read_text(errors="replace")
+        log_check = "verified-offline"
+        # When `gh` is reachable the caller's --head-sha is not taken on trust either.
+        api_sha = _job_head_sha(job_id) if job_id else None
+        if api_sha and head_sha and not (api_sha == head_sha or api_sha.startswith(head_sha)):
+            print(f"{slug}: --head-sha {head_sha} is not the head of job {job_id}, which the "
+                  f"API says is {api_sha}.")
+            return 1
+        if not head_sha:
+            print(f"{slug}: --log needs --head-sha, the commit the judging job checked out, or "
+                  "the artifact-at-that-commit check silently does not happen.  Find it with "
+                  f"`gh api repos/<owner>/<repo>/actions/jobs/<job-id> --jq .head_sha`.")
+            return 1
+    elif not getattr(args, "no_verify", False):
+        found = _fetch_judge_job(run_id, slug)
+        if found is None:
+            print(f"{slug}: could not read the judge logs for run {run_id} (is `gh` installed and "
+                  "authenticated?).  Pass --log FILE with the job log and --head-sha, or "
+                  "--no-verify to record without checking -- which the record will then say.")
+            return 1
+        job, errs = found
+        if errs:
+            for e in errs:
+                print(f"{slug}: {e}")
+            return 1
+        job_id, job_url, head_sha, log_text = job.job_id, job.job_url, job.head_sha, job.log
+        log_check = "verified"
+    if log_text is not None:
+        errs = _check_log(log_text, node=slug, theorem=theorem, run_id=run_id,
+                          expect_lean_kernel_only=lean_only)
+        if errs:
+            for e in errs:
+                print(f"{slug}: {e}")
+            return 1
+        from .missions.judge_log import parse_verdicts as _pv
+        kernel_mode = _pv(log_text)[slug].kernel
+        # The judge saw the artifact as of the job's own head commit, which is not necessarily
+        # the working tree.  Hash the blob there and require it to match, so a PASS on an older
+        # version of the artifact cannot be cited for the current one.
+        at_head = _blob_sha256(head_sha, art)
+        if at_head is None:
+            _try_fetch(art, head_sha)          # a PR head is normally fetchable
+            at_head = _blob_sha256(head_sha, art)
+        # Store the FULL 40-hex commit: a provenance field must not leave a verifier
+        # disambiguating an abbreviation years later.
+        head_sha = _full_sha(art, head_sha) or head_sha
+        here = sha256_file(art)
+        if at_head is None:
+            if not getattr(args, "allow_unresolved_head", False):
+                print(f"{slug}: cannot resolve {art.name} at the judged commit {head_sha[:9]} "
+                      "even after fetching it, so nothing here confirms the judge saw THIS "
+                      "version of the artifact.  Fetch that commit, or pass "
+                      "--allow-unresolved-head, which records head_check = \"unresolved\".")
+                return 1
+            print(f"{slug}: NOTE recording with head_check = \"unresolved\": {art.name} could not "
+                  f"be resolved at {head_sha[:9]}, so the hash below is the working tree's.")
+            head_check = "unresolved"
+        elif at_head != here:
+            print(f"{slug}: the judge saw {art.name} at {at_head[:16]}... but the working "
+                  f"tree has {here[:16]}...; that PASS is for a different version of the "
+                  "artifact and must not be recorded for this one.")
+            return 1
+        else:
+            head_check = "matched"
+    else:
+        print(f"{slug}: WARNING --no-verify: recording without reading the judge log, so the "
+              "theorem name and the kernel mode are unchecked.  The record says "
+              "log_check = \"skipped\".")
+    second = "none: heavy_certificates" if lean_only else "nanoda"
     rec = ComparatorRecord(
-        run_id=str(args.run_id).strip(), date=_date.today().isoformat(),
-        artifact_sha256=sha256_file(art), theorem=args.theorem.strip(),
+        run_id=run_id, date=_date.today().isoformat(),
+        artifact_sha256=sha256_file(art), theorem=theorem,
         run_url=(args.run_url or "").strip(), second_kernel=second,
+        job_id=job_id, job_url=job_url, kernel_mode=kernel_mode,
+        judged_head_sha=head_sha, log_check=log_check, head_check=head_check,
     )
     new_node = _dc.replace(node, comparator=rec, updated=rec.date)
     save_node(new_node, camp_root / "nodes" / f"{slug}.toml")
@@ -1525,6 +1608,143 @@ def cmd_mission_comparator_record(args) -> int:
           f"(artifact sha256 {rec.artifact_sha256[:16]}...; second kernel: {rec.second_kernel})")
     return 0
 
+
+
+
+def _fetch_judge_job(run_id: str, slug: str):
+    """((the job to cite), errors) for `slug` in this run, or None when `gh` cannot be used.
+
+    Reads EVERY job of the run, not the first one that mentions the node: a job whose log we
+    could not download is not a job that said nothing, and a node judged by two shards could
+    pass in one and fail in the other.  `judge_log.choose` applies those rules.
+    """
+    import json
+    import subprocess
+
+    from .missions.judge_log import JobVerdict, choose, failed_nodes, parse_verdicts
+
+    def gh(*a):
+        r = _run_ok(["gh", *a], text=True)
+        return r.stdout if r is not None else None
+
+    out = gh("api", f"repos/{_gh_repo()}/actions/runs/{run_id}/jobs?per_page=100")
+    if out is None:
+        return None
+    try:
+        jobs = json.loads(out).get("jobs", [])
+    except json.JSONDecodeError:
+        return None
+    seen = []
+    for job in jobs:
+        log = gh("api", f"repos/{_gh_repo()}/actions/jobs/{job['id']}/logs")
+        jid = str(job["id"])
+        if log is None:
+            seen.append(JobVerdict(jid, job.get("html_url", ""), str(job.get("head_sha", "")),
+                                   None, False, False))
+            continue
+        v = parse_verdicts(log).get(slug)
+        failed = slug in failed_nodes(log)
+        if v is None and not failed:
+            continue                      # this shard simply did not judge the node
+        seen.append(JobVerdict(jid, job.get("html_url", ""), str(job.get("head_sha", "")),
+                               v, failed, True, log))
+    return choose(seen, slug)
+
+
+
+
+def _run_ok(cmd, **kw):
+    """subprocess.run that returns None when the tool is absent or fails.
+
+    A missing `gh` or `git` must surface as "cannot check", which callers turn into a clean
+    refusal; a traceback out of a provenance command helps nobody.
+    """
+    import subprocess
+
+    try:
+        r = subprocess.run(cmd, capture_output=True, **kw)
+    except (FileNotFoundError, OSError):
+        return None
+    return r if r.returncode == 0 else None
+
+def _full_sha(path: Path, commit: str):
+    """`commit` as a full 40-hex commit id in the artifact's repository, or None."""
+    import subprocess
+
+    if not commit:
+        return None
+    top = _run_ok(["git", "-C", str(path.resolve().parent), "rev-parse", "--show-toplevel"],
+                  text=True)
+    if top is None:
+        return None
+    r = _run_ok(["git", "-C", top.stdout.strip(), "rev-parse", f"{commit}^{{commit}}"], text=True)
+    out = r.stdout.strip() if r is not None else ""
+    return out if len(out) == 40 else None
+
+
+def _job_head_sha(job_id: str):
+    """The head commit GitHub reports for a job, or None when `gh` cannot answer."""
+    import json
+    import subprocess
+
+    r = _run_ok(["gh", "api", f"repos/{_gh_repo()}/actions/jobs/{job_id}"], text=True)
+    if r is None:
+        return None
+    try:
+        return str(json.loads(r.stdout).get("head_sha") or "") or None
+    except json.JSONDecodeError:
+        return None
+
+def _try_fetch(path: Path, commit: str) -> None:
+    """Best-effort `git fetch origin <commit>`, so an unfetched PR head stops being a dead end."""
+    import subprocess
+
+    if not commit:
+        return
+    top = _run_ok(["git", "-C", str(path.resolve().parent), "rev-parse", "--show-toplevel"],
+                  text=True)
+    if top is None:
+        return
+    _run_ok(["git", "-C", top.stdout.strip(), "fetch", "--quiet", "origin", commit])
+
+
+def _gh_repo() -> str:
+    """owner/name of the origin remote, for the GitHub API."""
+    import os
+    import re
+    import subprocess
+
+    env = os.environ.get("GITHUB_REPOSITORY")
+    if env:
+        return env
+    r = _run_ok(["git", "remote", "get-url", "origin"], text=True)
+    m = re.search(r"github\.com[:/](?P<repo>[^/]+/[^/.]+)", (r.stdout if r else "") or "")
+    return m.group("repo") if m else "DrMurphyIsIn/Arda"
+
+
+
+def _blob_sha256(commit: str, path: Path):
+    """sha256 of `path` as of `commit`, or None when it cannot be resolved here."""
+    import hashlib
+    import subprocess
+
+    # Resolve the repository from the ARTIFACT's own location, not the process's cwd: the
+    # registry and the artifact can live in a different checkout than the one we run in
+    # (e.g. `mission --missions-root <other worktree>`), and a cwd-based lookup would then
+    # silently report "cannot check".
+    art = path.resolve()
+    top = _run_ok(["git", "-C", str(art.parent), "rev-parse", "--show-toplevel"], text=True)
+    if top is None:
+        return None
+    root = Path(top.stdout.strip()).resolve()
+    try:
+        rel = art.relative_to(root)
+    except ValueError:
+        return None
+    blob = _run_ok(["git", "-C", str(root), "cat-file", "blob", f"{commit}:{rel.as_posix()}"])
+    if blob is None:
+        return None
+    return hashlib.sha256(blob.stdout).hexdigest()
 
 def cmd_mission_verify(args) -> int:
     from .missions.verify import verify_campaign
@@ -1536,7 +1756,8 @@ def cmd_mission_verify(args) -> int:
     seen_warnings: set[str] = set()
     for camp_root in roots:
         deep = getattr(args, "deep_lean", False)
-        report = verify_campaign(camp_root, deep_lean=deep)
+        report = verify_campaign(camp_root, deep_lean=deep,
+                                 strict_provenance=getattr(args, 'strict_provenance', False))
         if report.errors:
             for e in report.errors:
                 print(f"ERROR [{camp_root.name}]: {e}")
@@ -1962,6 +2183,22 @@ def main(argv=None) -> int:
     p.add_argument("--lean-kernel-only", action="store_true", dest="lean_kernel_only",
                    help="the judge ran with enable_nanoda = false for this node "
                         "(heavy_certificates = true); the record says so")
+    p.add_argument("--job-id", default=None, dest="job_id",
+                   help="the shard job that printed the PASS line (found automatically when the "
+                        "log is fetched; required with --log to make the record point at a job)")
+    p.add_argument("--job-url", default=None, dest="job_url")
+    p.add_argument("--log", default=None,
+                   help="read the judge verdict from this file instead of fetching it (offline); "
+                        "requires --head-sha")
+    p.add_argument("--head-sha", default=None, dest="head_sha",
+                   help="the commit the judging job checked out (with --log); the artifact is "
+                        "hashed at that commit and must match")
+    p.add_argument("--allow-unresolved-head", action="store_true", dest="allow_unresolved_head",
+                   help="record even when the judged commit cannot be resolved here; the record "
+                        "then says head_check = \"unresolved\"")
+    p.add_argument("--no-verify", action="store_true", dest="no_verify",
+                   help="record WITHOUT reading the judge log: the theorem name and the kernel "
+                        "mode are then unchecked.  Last resort; say why in the commit message")
     p.set_defaults(mission_fn=cmd_mission_comparator_record)
 
     # ci-record SLUG [--campaign C] --workflow W --job J --run-id N [--head-sha S] [--conclusion C]
@@ -1988,6 +2225,10 @@ def main(argv=None) -> int:
     p.add_argument("campaign", nargs="?", default=None)
     p.add_argument("--deep-lean", action="store_true", dest="deep_lean",
                    help="run lake build in lean/")
+    p.add_argument("--strict-provenance", action="store_true", dest="strict_provenance",
+                   help="treat a weakly checked Comparator record (written with --no-verify, "
+                        "from a supplied log, or without the artifact check at the judged "
+                        "commit) as an ERROR rather than a warning")
     p.set_defaults(mission_fn=cmd_mission_verify)
 
     # graph [CAMPAIGN]
