@@ -136,6 +136,7 @@ import R3Cert.BGSpiderRule
 import R3Cert.BGMaximizerFinal
 import R3Cert.BGMaximizer150
 import R3Cert.BGMaximizerMid
+import R3Cert.BGMaximizerAll
 import R3Cert.BGSpiderCand
 import R3Cert.BGSpiderStruct
 
@@ -622,3 +623,12 @@ import R3Cert.BGSpiderStruct
 #print axioms R3Cert.BGSpiderTable.spider_opt_table
 #print axioms R3Cert.BGMaximizerMid.exists_max_tree
 #print axioms R3Cert.BGMaximizerMid.bg_maximizer_mid
+-- THE BRUALDI-GOLDWASSER MAXIMIZER FOR EVERY n >= 4 (2026-09-26, BGMaximizerAll): kernel-checked end to end.
+-- n=4..6 BGMaximizerTiny (exact enumeration); 7..149 BGMaximizerSmall (G149 envelope certificate +
+-- BGHighDegreeSmall); 150..491 BGMaximizerMid; >=492 BGMaximizerFinal.
+#print axioms R3Cert.BGMaximizerTiny.bg_maximizer_tiny
+#print axioms R3Cert.BGHighDegreeSmall.highDegree_small
+#print axioms R3Cert.BGMaximizerSmall.maximizer_is_spider_small
+#print axioms R3Cert.BGMaximizerSmall.bg_maximizer_small
+#print axioms R3Cert.BGMaximizerAll.bg_maximizer_all
+#print axioms R3Cert.BGMaximizerAll.bg_maximizer_all_perm
