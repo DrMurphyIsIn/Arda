@@ -135,6 +135,7 @@ import R3Cert.BGMaximizer
 import R3Cert.BGSpiderRule
 import R3Cert.BGMaximizerFinal
 import R3Cert.BGMaximizer150
+import R3Cert.BGMaximizerMid
 import R3Cert.BGSpiderCand
 import R3Cert.BGSpiderStruct
 
@@ -616,3 +617,8 @@ import R3Cert.BGSpiderStruct
 #print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot_150
 -- Every maximizer on n >= 150 vertices is a spider (2026-09-25, BGMaximizer150; uses spider_dominates_of_maxDegreeRoot_150).
 #print axioms BGMax.maximizer_is_spider_150
+-- THE BG MAXIMIZER for 150 <= n <= 491 (2026-09-26, BGMaximizerMid): table spider `tab n` maximizes
+-- per(L)/prod deg; spider-family optimum for 4 <= n <= 491 by an 89-chunk kernel sweep (BGSpiderTable*).
+#print axioms R3Cert.BGSpiderTable.spider_opt_table
+#print axioms R3Cert.BGMaximizerMid.exists_max_tree
+#print axioms R3Cert.BGMaximizerMid.bg_maximizer_mid
