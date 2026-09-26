@@ -13,6 +13,7 @@
       "challenge_module": "MissionChallenges.BG_cavity_recursion",
       "bridge_theorem": "MissionJudge.BG_cavity_recursion",
       "config": "BG_cavity_recursion.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "c5ccc5362761a90caf69e005caf560c5d5d33d55047d1858dbfd741f1062512a",
       "statement_sha256": "758e7d002527bd96aeddc99da97303a5c05bdf063b0c41af764879b146e643e1"
     },
@@ -24,6 +25,7 @@
       "challenge_module": "MissionChallenges.BG_fractal_asymptote",
       "bridge_theorem": "MissionJudge.BG_fractal_asymptote",
       "config": "BG_fractal_asymptote.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "214e39a5bc4b8c2a280153944cd3b6a8d5c6a4221d363bd798b34c9cd0af7dfd",
       "statement_sha256": "854eff909a7b7aebb44377d6d1b0165160d8908dcaec21065c3f40dba9238fe1"
     },
@@ -35,6 +37,7 @@
       "challenge_module": "MissionChallenges.BG_gstep_closure",
       "bridge_theorem": "MissionJudge.BG_gstep_closure",
       "config": "BG_gstep_closure.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "737b9d5709e36db70b28de3aecca1080e3092329b715d7c05f4b44a623361b7a",
       "statement_sha256": "bb17941e51527aa1bd5d2ba3034d78c7cc5bbadd4e9ebcfff6a318c31800614d"
     },
@@ -46,6 +49,7 @@
       "challenge_module": "MissionChallenges.BG_h1_bridge",
       "bridge_theorem": "MissionJudge.BG_h1_bridge",
       "config": "BG_h1_bridge.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "b3f12546e33acb303b3dcf7982bbb129c999433b245d05f92995029a767c9049",
       "statement_sha256": "764d631563460a16fd241814e545dba01440603b72614049785cf6d877bc8990"
     },
@@ -57,6 +61,7 @@
       "challenge_module": "MissionChallenges.BG_lb_classification",
       "bridge_theorem": "MissionJudge.BG_lb_classification",
       "config": "BG_lb_classification.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "3c22b315874e37d7893f173175c8b006b35b17fbf2ce6994081f0f52997f30f7",
       "statement_sha256": "a527c7f09c315f0bd2e8a6f3c73e94c1f0ec0324a15df8ab296cb68f2afcb543"
     },
@@ -68,6 +73,7 @@
       "challenge_module": "MissionChallenges.BG_merge_layer",
       "bridge_theorem": "MissionJudge.BG_merge_layer",
       "config": "BG_merge_layer.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "83d3944323d87ecfe3654137243dce036a175bab44a10e8fbfdc2680ac30fc97",
       "statement_sha256": "b29990352aab1709fa8156b520c2d68d4c81ab78d6a6d84c2bd2eff52f1ec921"
     },
@@ -79,6 +85,7 @@
       "challenge_module": "MissionChallenges.BG_near_star_tail",
       "bridge_theorem": "MissionJudge.BG_near_star_tail",
       "config": "BG_near_star_tail.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "08f16a4d0eefb8bc309e0f8dede777983db84c9c0d520a1bcdaf5c37beacc725",
       "statement_sha256": "8ea58263b7c5ab56fd735e80f3dcf287eeef9186377a5b4b705a4d65a5fd0937"
     },
@@ -90,6 +97,7 @@
       "challenge_module": "MissionChallenges.BG_near_star_tie",
       "bridge_theorem": "MissionJudge.BG_near_star_tie",
       "config": "BG_near_star_tie.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "08f16a4d0eefb8bc309e0f8dede777983db84c9c0d520a1bcdaf5c37beacc725",
       "statement_sha256": "2ca1afbc29bc91ffec3a3cb97e1be66917e580440811fd6f56c040929589d22d"
     },
@@ -101,6 +109,7 @@
       "challenge_module": "MissionChallenges.BG_phi_le_one",
       "bridge_theorem": "MissionJudge.BG_phi_le_one",
       "config": "BG_phi_le_one.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "3c22b315874e37d7893f173175c8b006b35b17fbf2ce6994081f0f52997f30f7",
       "statement_sha256": "9a8ec1f147c266d582ed6671fa3c452cc347719500d0ef37abe4f0f3c58f66e5"
     }
