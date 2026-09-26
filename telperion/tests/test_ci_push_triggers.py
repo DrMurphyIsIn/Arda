@@ -20,6 +20,12 @@ _WF = Path(__file__).resolve().parents[2] / ".github" / "workflows"
 
 #: Workflows allowed to have no push trigger, with the reason. Keep this list short and justified.
 NO_PUSH_ALLOWED = {
+    "missions-comparator-heavy.yml": (
+        "Dispatch-only by design (2026-09-26): it judges one named judge_via = \"heavy\" node at a "
+        "time, building the whole ladder across a matrix (~5.5 runner-hours). Per-merge runs would "
+        "starve the 20-job ceiling. The per-PR missions-comparator covers every other node; "
+        "provenance-report shows heavy nodes as judged here, with or without a recorded run."
+    ),
     "telperion-legacy-boxes.yml": (
         "669 legacy box certificates at ~5.3 core-hours; nothing imports them. Cron + dispatch "
         "only, by cost decision (governance 2026-09-25). Mitigation: the weekly scheduled run "
