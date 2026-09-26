@@ -2,6 +2,10 @@ name: missions-comparator-heavy
 
 # The independent judge for registry nodes marked `judge_via = "heavy"` (2026-09-26).
 #
+# LADDER-SPECIFIC: the body discovers Arb4_h<H>.lean segments on the chosen island. A heavy node on an
+# island with no ladder fails loudly at segment discovery; extend this workflow before using it there.
+# h11000 (RS5/H11K chunks, ~7.4 GB each, built serially inside the 300-min gate job) is UNMEASURED.
+#
 # Why a separate workflow: such a node's challenge cannot be built on one hosted runner.
 # AND_ladder_h8000_kernel's artifact Arb4_h8000 imports every ladder segment's edge
 # certificates. Built in one job they exhaust the 16 GB runner, and built serially they take

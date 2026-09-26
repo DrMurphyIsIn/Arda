@@ -80,3 +80,9 @@ def test_provenance_report_names_the_heavy_workflow():
     text = render_provenance_report(load_campaign(T / "missions" / "anduril"))
     i = text.index(HEAVY)
     assert "judge_via = heavy" in text[i:i + 400] and judge.HEAVY_WORKFLOW in text[i:i + 400]
+
+
+def test_heavy_workflow_constant_names_an_existing_workflow():
+    """provenance-report points readers at judge.HEAVY_WORKFLOW; a rename must not leave it stale."""
+    wf = Path(__file__).resolve().parents[2] / ".github" / "workflows" / judge.HEAVY_WORKFLOW
+    assert wf.is_file(), f"judge.HEAVY_WORKFLOW = {judge.HEAVY_WORKFLOW!r} names no workflow file"
