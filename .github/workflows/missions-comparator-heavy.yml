@@ -1,0 +1,254 @@
+name: missions-comparator-heavy
+
+# The independent judge for registry nodes marked `judge_via = "heavy"` (2026-09-26).
+#
+# Why a separate workflow: such a node's challenge cannot be built on one hosted runner.
+# AND_ladder_h8000_kernel's artifact Arb4_h8000 imports every ladder segment's edge
+# certificates. Built in one job they exhaust the 16 GB runner, and built serially they take
+# ~334 runner-minutes (#635 segment timings), over the 300-min judge timeout. The per-PR
+# missions-comparator bundle therefore EXCLUDES such nodes BY RULE (judge.py; the committed
+# bundle's MANIFEST lists them under "judged_elsewhere"). This workflow judges them instead.
+# It reuses the ladder's per-segment matrix (edge modules one at a time), then one gate job
+# builds only the glue and the single challenge and runs the Comparator.
+#
+# Guarantees:
+#   * It REFUSES any node that is not `judge_via = "heavy"`: judge.py --heavy fails on such a
+#     node, so this can never route an ordinary node around the per-PR judge.
+#   * The heavy bundle is rendered at dispatch time into $RUNNER_TEMP and is never committed.
+#   * Heavy nodes also carry `heavy_certificates = true`, so the challenge config has
+#     enable_nanoda = false. The log prints kernel=lean-kernel-only, which comparator-record
+#     corroborates against the node's own flag.
+#
+# Record a pass with: mission comparator-record <slug> --run-id <this run> --theorem <name>
+#   --lean-kernel-only (the job and head are found in the log automatically).
+
+on:
+  workflow_dispatch:
+    inputs:
+      node:
+        description: "registry node slug with judge_via = \"heavy\" (e.g. AND_ladder_h8000_kernel)"
+        required: true
+      island:
+        description: "the island holding the node's artifact"
+        required: true
+        default: zeta_reflection
+
+concurrency:
+  group: missions-comparator-heavy-${{ inputs.node }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      segments: ${{ steps.plan.outputs.segments }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+      - name: Refuse anything that is not judge_via = "heavy"
+        id: plan
+        working-directory: telperion
+        shell: bash
+        run: |
+          set -euo pipefail
+          # judge.py --heavy refuses (exit 2, with the node's actual judge_via) any node that is
+          # not judge_via = "heavy"; that refusal is the gate.
+          PYTHONPATH=src python -m telperion.missions.judge --island "${{ inputs.island }}" \
+            --heavy --only "${{ inputs.node }}" --configs | tee "$RUNNER_TEMP/nodes.tsv"
+          test "$(wc -l < "$RUNNER_TEMP/nodes.tsv")" -eq 1
+          # The ladder segments present on this island (Arb4_h<H>.lean), for the matrix.
+          segs=$(ls "examples/${{ inputs.island }}/lean" | sed -n 's/^Arb4_h\([0-9]*\)\.lean$/\1/p' | sort -n | paste -sd, -)
+          test -n "$segs" || { echo "::error::no Arb4_h<H> segments on island ${{ inputs.island }}"; exit 1; }
+          echo "segments=[${segs}]" | tee -a "$GITHUB_OUTPUT"
+
+  # Same build as telperion-zeta-reflection's anduril-ladder-seg (kept in step with it by hand;
+  # see #635): slabs and lines as libraries, edge modules ONE AT A TIME.
+  heavy-seg:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: true
+      matrix:
+        H: ${{ fromJSON(needs.validate.outputs.segments) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add swap (bounds peak memory of the edge decide checks)
+        run: |
+          sudo fallocate -l 24G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2
+          free -g
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles(format('telperion/examples/{0}/lean/lean-toolchain', inputs.island)) }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/${{ inputs.island }}/lean
+        run: lake exe cache get
+      - name: Build this segment's leaf certificates (edge modules one at a time)
+        working-directory: telperion/examples/${{ inputs.island }}/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          H=${{ matrix.H }}
+          lake build Arb4_H${H}Slabs Arb4_H${H}Lines
+          for f in Arb4_H${H}Edges_*.lean; do
+            m="${f%.lean}"
+            echo "== $m"; start=$(date +%s)
+            lake build "+$m"
+            echo "   $m built in $(( $(date +%s) - start )) s"
+          done
+      - name: Hand the leaf build outputs to the judge job
+        uses: actions/upload-artifact@v4
+        with:
+          name: heavy-seg-${{ matrix.H }}
+          path: telperion/examples/${{ inputs.island }}/lean/.lake/build
+          retention-days: 3
+          if-no-files-found: error
+
+  judge-heavy:
+    needs: [validate, heavy-seg]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    name: judge-heavy ${{ inputs.node }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+
+      # Same memory treatment as the per-PR heavy shard (#632): swap plus MALLOC_ARENA_MAX
+      # below, since the challenge build is the shape that exhausted the runner.
+      - name: Provision swap
+        run: |
+          sudo fallocate -l 24G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2
+          free -g
+
+      - name: Collect the segment leaf builds into the island
+        uses: actions/download-artifact@v4
+        with:
+          pattern: heavy-seg-*
+          path: telperion/examples/${{ inputs.island }}/lean/.lake/build
+          merge-multiple: true
+
+      - name: Render the heavy bundle for this node only (temp dir, never committed)
+        id: nodes
+        working-directory: telperion
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/heavy-bundle"
+          PYTHONPATH=src python -m telperion.missions.judge --island "${{ inputs.island }}" \
+            --heavy --only "${{ inputs.node }}" --out "$OUT"
+          PYTHONPATH=src python -m telperion.missions.judge --island "${{ inputs.island }}" \
+            --heavy --only "${{ inputs.node }}" --configs | tee "$RUNNER_TEMP/nodes.tsv"
+          test "$(wc -l < "$RUNNER_TEMP/nodes.tsv")" -eq 1
+          echo "BUNDLE=$OUT" >> "$GITHUB_ENV"
+          echo "tag=$(python -c "import json;print(json.load(open('$OUT/MANIFEST.json'))['comparator_tag'])")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles(format('telperion/examples/{0}/lean/lean-toolchain', inputs.island)) }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache (island and bundle)
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd "telperion/examples/${{ inputs.island }}/lean" && lake exe cache get)
+          (cd "$BUNDLE" && lake exe cache get)
+
+      # The leaf certificates were built by heavy-seg and replay from their uploaded
+      # .olean/.trace files; this builds the glue, the chained capstones and the one bridge
+      # module (statement identity). Where the node's closure includes RS5/H11K chunks, build
+      # those one at a time first (each peaks at ~7.4 GB).
+      - name: Build the bridge module (island glue + statement identity)
+        working-directory: telperion/examples/${{ inputs.island }}/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          sol=$(cut -f3 "$RUNNER_TEMP/nodes.tsv")
+          if [[ "$sol" == H11K_* ]]; then
+            for f in RS5_Band_T*_C*.lean H11K_Edge_*.lean H11K_Slab_*.lean; do
+              [ -f "$f" ] || continue; lake build "+${f%.lean}"; done
+          fi
+          cd "$BUNDLE"
+          lake build "MissionChallenges.$(cut -f1 "$RUNNER_TEMP/nodes.tsv")"
+
+      - name: Install landrun shim (preserves `--`)
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cat > "$HOME/.local/bin/landrun" <<'SHIM'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          args=("$@"); i=0; n=${#args[@]}
+          while (( i < n )); do
+            a="${args[$i]}"
+            case "$a" in
+              --ro|--rw|--rwx|--rox|--env|--log-level)
+                v="${args[$((i+1))]:-}"
+                [[ "$a" == "--env" && "$v" == *"="* ]] && export "$v"
+                i=$((i+2)) ;;
+              --env=*) export "${a#--env=}"; i=$((i+1)) ;;
+              --*=*) i=$((i+1)) ;;
+              -*) i=$((i+1)) ;;
+              *) break ;;
+            esac
+          done
+          exec "${args[@]:$i}"
+          SHIM
+          chmod +x "$HOME/.local/bin/landrun"
+
+      - name: Build Comparator + lean4export (tag = the island toolchain)
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.nodes.outputs.tag }}"
+          git clone --depth 1 --branch "$TAG" https://github.com/leanprover/comparator.git "$HOME/comparator"
+          cd "$HOME/comparator"
+          lake build lean4export comparator
+          COMPARATOR_BIN="$(find "$HOME/comparator/.lake" -type f -name comparator -path '*/bin/*' | head -1)"
+          L4X_BIN="$(find "$HOME/comparator/.lake" -type f -name lean4export -path '*/bin/*' | head -1)"
+          test -x "$COMPARATOR_BIN" && test -x "$L4X_BIN"
+          echo "$(dirname "$COMPARATOR_BIN")" >> "$GITHUB_PATH"
+          echo "COMPARATOR_LEAN4EXPORT=$L4X_BIN" >> "$GITHUB_ENV"
+
+      - name: Build nanoda (the config disables it for heavy_certificates nodes; built for parity)
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$HOME/nanoda"
+          cd "$HOME/nanoda"
+          cargo build --release
+          test -x "$HOME/nanoda/target/release/nanoda_bin"
+          echo "COMPARATOR_NANODA=$HOME/nanoda/target/release/nanoda_bin" >> "$GITHUB_ENV"
+
+      - name: Comparator on the heavy node (statement identity + axiom whitelist + Lean kernel)
+        env:
+          COMPARATOR_LANDRUN: /home/runner/.local/bin/landrun
+          MALLOC_ARENA_MAX: "2"
+        shell: bash
+        run: |
+          set -uo pipefail
+          cd "$BUNDLE"
+          ulimit -s unlimited 2>/dev/null || ulimit -s 4194304 2>/dev/null || echo "::warning::could not raise the stack limit"
+          IFS=$'\t' read -r slug cfg sol thm bridge kernel < "$RUNNER_TEMP/nodes.tsv"
+          echo "==================== $slug  ($thm in $sol; bridge $bridge; $kernel) ===================="
+          if lake env comparator "$cfg"; then
+            echo "COMPARATOR PASS island=${{ inputs.island }} node=$slug theorem=$thm run=${{ github.run_id }} kernel=$kernel"
+            echo "| $slug | \`$thm\` | PASS ($kernel, heavy path) |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::COMPARATOR FAIL island=${{ inputs.island }} node=$slug theorem=$thm"
+            exit 1
+          fi
