@@ -1,11 +1,12 @@
 created = "2026-09-11"
 depends_on = []
+deprecated_reason = "Superseded 2026-09-24: a strict Phi^11 < 1 family bound (DEC rendering) on the route to Phi^11 <= 1, which bg_ceiling (node BG_rate_ceiling) now proves for every rooted tree; the strict/equality content for all trees is tracked by BG_rate_sharp. No kernel artifact existed for this node."
 kind = "lemma"
 name = "BG.r2_double_near_star"
 statement_module = "Statements.BG_r2_double_near_star"
-status = "open"
+status = "deprecated"
 title = "R2 double-near-star family bound: logPhi (DN(a,b)) < 0 for all a,b >= 2 (rooted rendering)"
-updated = "2026-09-11"
+updated = "2026-09-24"
 
 [readback]
 auditor = "migration-session-2026-09-12"

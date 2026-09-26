@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.BG_fractal_asymptote",
+  "solution_module": "MissionChallenges.BG_fractal_asymptote",
+  "theorem_names": [
+    "MissionJudge.BG_fractal_asymptote"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
