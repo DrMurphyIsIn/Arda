@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.BG_lb_classification",
+  "solution_module": "MissionChallenges.BG_lb_classification",
+  "theorem_names": [
+    "MissionJudge.BG_lb_classification"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

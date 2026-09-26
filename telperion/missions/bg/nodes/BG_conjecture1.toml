@@ -1,8 +1,9 @@
 created = "2026-09-11"
 depends_on = ["BG_master_inequality", "BG_r2_multihub_ceiling", "BG_phi_le_one", "BG_h1_bridge", "BG_cavity_recursion", "BG_merge_layer", "BG_gstep_closure", "BG_near_star_tail", "BG_near_star_tie", "BG_fractal_asymptote", "BG_lb_classification", "BG_r2_double_near_star"]
+deprecated_reason = "Superseded 2026-09-24 by the two-target restructure. Its first conjunct (forall b, logPhi b <= 0) is exactly the PROVED node BG_phi_le_one, so the node's open content was only the DEC-model equality case. The campaign's Phi^11 is the LITERAL planted matching sum (BGSCL): exhaustively over all trees n <= 16 and all roots, max Phi^11 = 1 is attained only at n = 11 by ONE tree, the 5-arm spider rooted at its hub (the 'six c+k=5 ties' are a DEC-parametrization artifact). The sharp statement now lives in BG_rate_sharp (literal model); the Brualdi-Goldwasser problem itself (maximum of per(L)/prod deg over n-vertex trees, BG 1984; Pant 2026 arXiv 2605.14176) is the new goal BG_backbone_conjecture."
 kind = "goal"
 name = "BG.conjecture1"
 statement_module = "Statements.BG_conjecture1"
-status = "draft"
+status = "deprecated"
 title = "BG <=-half sharp statement (Branch-model rendering): logPhi <= 0 everywhere, = 0 exactly on the near-star tie diagonal c+k=5"
-updated = "2026-09-13"
+updated = "2026-09-24"

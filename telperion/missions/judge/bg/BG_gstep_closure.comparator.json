@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.BG_gstep_closure",
+  "solution_module": "MissionChallenges.BG_gstep_closure",
+  "theorem_names": [
+    "MissionJudge.BG_gstep_closure"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

@@ -1,0 +1,19 @@
+created = "2026-09-24"
+depends_on = ["BG_phi_le_one", "BG_h1_bridge"]
+kind = "lemma"
+name = "BG.ratio_rate_bound"
+statement_module = "Statements.BG_ratio_rate_bound"
+status = "draft"
+title = "Laplacian-ratio rate bound: per(L)/prod deg of a tree rooted with d >= 1 children is at most (d+1)/d * rhoB^n"
+updated = "2026-09-24"
+
+[author]
+date = "2026-09-24"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "77a4c355-8299-40a6-850f-73d6d0c019da"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/BGSCLRealizationBridge.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

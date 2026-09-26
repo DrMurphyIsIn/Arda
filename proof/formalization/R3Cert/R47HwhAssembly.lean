@@ -14,10 +14,21 @@
                     proven, all `k`/hub-sizes: `R47HwhSymStarGenCert.symstar_gen_move_monotone`).
 
   `hwh_of_extended_coverage` shows: if each class refines to a `StraightStep_sized` (the interface
-  hypotheses `hgdom`/`hpiece`/`hsymstar`, discharged by the certificates above modulo the cavity-`Aobj`
-  bridge) and every defective tree is covered (`Hcoverage`), then `hwh` holds.  COVERAGE is the SOLE
-  genuinely-open input -- and it is the open Brualdi-Goldwasser exhaustiveness, empirically verified to
-  n <= 15 (`viable_all`: 1793 defective trees, 0 failures).  No completeness is claimed:
+  hypotheses `hgdom`/`hpiece`/`hsymstar`) and every defective tree is covered (`Hcoverage`), then `hwh`
+  holds.  OPEN INPUTS -- all four hypotheses (correction 2026-09-24; an earlier version of this header
+  called coverage the sole open input):
+    * `hgdom`, `hpiece`, `hsymstar` -- the certificates above prove the `Aobj` inequality on the
+      cavity/closed-form models; wiring each class into `StraightStep_sized` (the cavity-to-`Aobj`
+      bridge, plus the defect/size clauses) is NOT done, so these remain hypotheses;
+    * `Hcoverage` -- the Brualdi-Goldwasser exhaustiveness.  Evidence: exhaustive for n <= 15
+      (`viable_all`: 1793 defective trees, 0 failures).  Small-n evidence is weak here: the single-hub
+      `Hnorm` also held at small n and first failed at n = 52 (`R47HnormFalse52`).  Larger-n check
+      (`proof/docs/BG_HWH_COVERAGE_LARGE_N_2026-09-24.md`): the single-SPR viability test is
+      exhaustively clean for n <= 23 but FAILS from n = 25 (exact witness, minDefect 1), so a
+      single-SPR move-class family cannot supply `Hcoverage` for all n.  The target itself survives:
+      `BGBackboneConjecture` (equivalently `StraightProgress_sized` at each fixed n) holds exhaustively
+      and exactly for every n <= 100.
+  The pinned consumer is `R47BGConjecture.bgBackbone_of_extended_coverage`.  No completeness is claimed:
   `conjecture1_proved = False`.
 
   Kernel-checked, no `sorry`.
@@ -33,7 +44,7 @@ open RTree
 /-- **The `hwh` assembly reduction.**  Given three named straightening-move classes -- each proven to
     refine to a `StraightStep_sized` (`hgdom`, `hpiece`, `hsymstar`) -- and the COVERAGE hypothesis that
     every defective tree lies in at least one class, every tree is `Aobj`-dominated by a hub-backbone of its
-    own vertex count (`hwh`/`Hnorm`).  Coverage (exhaustiveness) is the sole open obligation. -/
+    own vertex count (`hwh`/`Hnorm`).  All four hypotheses are open for general trees (see the header). -/
 theorem hwh_of_extended_coverage
     (P_gdom P_piece P_symstar : UTree → Prop)
     (hgdom    : ∀ t : UTree, P_gdom t    → ∃ t', StraightStep_sized t t')
