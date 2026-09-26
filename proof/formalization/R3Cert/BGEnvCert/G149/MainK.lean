@@ -3,20 +3,40 @@
   Assembled from the 11 cap fragments, the sliced shared checks (SharedAll) and the coverage check.
   No sorry; standard axioms only.
 -/
-import R3Cert.BGEnvCert.G149.Frag1 2 3 4 5 6 7 8 12 16 22
+import R3Cert.BGEnvCert.G149.Frag1
+import R3Cert.BGEnvCert.G149.Frag2
+import R3Cert.BGEnvCert.G149.Frag3
+import R3Cert.BGEnvCert.G149.Frag4
+import R3Cert.BGEnvCert.G149.Frag5
+import R3Cert.BGEnvCert.G149.Frag6
+import R3Cert.BGEnvCert.G149.Frag7
+import R3Cert.BGEnvCert.G149.Frag8
+import R3Cert.BGEnvCert.G149.Frag12
+import R3Cert.BGEnvCert.G149.Frag16
+import R3Cert.BGEnvCert.G149.Frag22
 import R3Cert.BGEnvCert.G149.SharedAll
 import R3Cert.BGEnvCert.AssembleK
 
 namespace R3Cert.EnvCert.G149
 open R3Cert.EnvCert R3Cert.BGSCL
 
-def caps : List CapData := [cap1 2 3 4 5 6 7 8 12 16 22]
+def caps : List CapData := [cap1, cap2, cap3, cap4, cap5, cap6, cap7, cap8, cap12, cap16, cap22]
 
 theorem caps_ok : ∀ d ∈ caps, capCheck tanTab ldTab phiTab d = true ∧ d.C + 1 ≤ DMAX := by
   intro d hd
   simp only [caps, List.mem_cons, List.not_mem_nil, or_false] at hd
-  rcases hd with rfl
-  · exact ⟨cap1 2 3 4 5 6 7 8 12 16 22_ok, by decide⟩
+  rcases hd with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+  · exact ⟨cap1_ok, by decide⟩
+  · exact ⟨cap2_ok, by decide⟩
+  · exact ⟨cap3_ok, by decide⟩
+  · exact ⟨cap4_ok, by decide⟩
+  · exact ⟨cap5_ok, by decide⟩
+  · exact ⟨cap6_ok, by decide⟩
+  · exact ⟨cap7_ok, by decide⟩
+  · exact ⟨cap8_ok, by decide⟩
+  · exact ⟨cap12_ok, by decide⟩
+  · exact ⟨cap16_ok, by decide⟩
+  · exact ⟨cap22_ok, by decide⟩
 
 set_option maxRecDepth 100000 in
 theorem cover_ok : coverOKK caps 7 149 23 = true := by decide +kernel
