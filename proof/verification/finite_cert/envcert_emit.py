@@ -150,7 +150,8 @@ def main():
     Smax = nmax - 1
     R = Smax + 1
     groups = {}
-    for k in range(2, nmax):
+    KMAXCOV = int(os.environ.get('ENVCERT_KMAX', nmax - 1))   # cover root degrees k <= KMAXCOV only
+    for k in range(2, min(nmax, KMAXCOV + 1)):
         groups.setdefault(E.cap_of(k, caps), []).append(k)
     tan_used = set()
     capmods = []
