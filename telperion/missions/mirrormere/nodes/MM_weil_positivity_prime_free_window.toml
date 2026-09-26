@@ -1,0 +1,39 @@
+created = "2026-09-24"
+depends_on = ["MM_zeta_comb_membership_iff_rh"]
+heavy_certificates = true
+kind = "lemma"
+name = "MM.weil_positivity_prime_free_window"
+statement_module = "Statements.MM_weil_positivity_prime_free_window"
+status = "proved"
+title = "THE FULL PRIME-FREE WINDOW ON THE GOAL NODE'S OWN TEST CLASS, KERNEL-NATIVE (rvm_bridge island, KWin_*, 2026-09-24): for every Weil test g with tsupport g in [-L, L] and 2L <= log 2, Re weilForm (autocorr g) >= 0 -- hypothesis-free, no Arb seam (exact-rational digamma minorant + exact LDL^T head certificates, WindowFloor(log2/2, 9/10000)). Pole terms KEPT: per PR #604 the 1.3e-3 margin is zero content (first 200 zero pairs), so this is NOT Connes-Consani (pole-free class). Implies the L <= 1/10 statement of MM_weil_positivity_window_tenth, kernel-checked as weil_positivity_window_tenth_of_prime_free (KWin_Bridge). Finite window; conjecture1_proved = False"
+updated = "2026-09-25"
+
+[comparator]
+artifact_sha256 = "2c4bc212327c00f147b41373496121cf3d54b9471eff6bb820088bbd54acd74f"
+date = "2026-09-25"
+run_id = "36169770951"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36169770951"
+second_kernel = "none: heavy_certificates"
+theorem = "weil_positivity_prime_free_window"
+
+[grant]
+artifact_sha256 = "2c4bc212327c00f147b41373496121cf3d54b9471eff6bb820088bbd54acd74f"
+date = "2026-09-24"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "ef083c48-579d-4bec-a689-c30fdccec2a1"
+statement_sha256 = "d4ff7d84406ce351f9b9ae81c66a2658ee01b814164581460b452aceb16dabdb"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/KWin_Bridge.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "author session (self-attested; not independent)"
+auditor_identity = "dr.murphy.is.in@arda-dao.com"
+auditor_session = "ef083c48-579d-4bec-a689-c30fdccec2a1"
+date = "2026-09-24"
+independence = "unverified"
+text = "Formal statement, read in the author's own session (so this read-back is NOT independent; the Comparator judge is the independent check that the artifact proves exactly this type). For every g : R -> C that is C-infinity with compact support (IsWeilTest), and every real L with 2L <= log 2 and tsupport g inside [-L, L], the real part of weilForm(autocorr g) is >= 0. weilForm f = archSide f - primeSide f with archSide = H_f(0) + H_f(1) - f(0) log pi + (1/2pi) int h_f(r) Re psi(1/4 + ir/2) dr (both pole terms kept) and primeSide = sum_n Lambda(n)/sqrt n (f(log n) + f(-log n)); autocorr g u = int g(v) conj g(v-u) dv. Since autocorr g is supported in [-2L, 2L] within [-log 2, log 2] and vanishes at the endpoints (the overlap is a single point), every prime term is zero, so the claim is positivity of the archimedean Weil functional on autocorrelations: the prime-free window. Not vacuous: the class contains nonzero bump functions for every L > 0, and the conclusion is a genuine inequality on them. It does not imply RH: it covers only support width 2L <= log 2; Weil's criterion needs all L. Pole terms are included, so this is not the pole-free Connes-Consani class."

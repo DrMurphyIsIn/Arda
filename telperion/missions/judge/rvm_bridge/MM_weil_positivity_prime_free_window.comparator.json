@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_weil_positivity_prime_free_window",
+  "solution_module": "MissionChallenges.MM_weil_positivity_prime_free_window",
+  "theorem_names": [
+    "MissionJudge.MM_weil_positivity_prime_free_window"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": false
+}

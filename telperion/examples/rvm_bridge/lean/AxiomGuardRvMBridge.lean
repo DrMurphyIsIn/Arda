@@ -226,12 +226,14 @@ import ZhuOrtho
 import ZhuTail
 import ZhuInstance
 import W2cAssembly
+import Probes.Dogfood_complex_re_im_split
+import Probes.Dogfood_zero_sum_majorant
+import KWin_Window
 import E6Bridge31
 import E6Bridge32
 import E6Bridge33
 import E6Bridge34
-import Probes.Dogfood_complex_re_im_split
-import Probes.Dogfood_zero_sum_majorant
+import KWin_Bridge
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -1137,6 +1139,41 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridgeZhu.legendreLocalization_L08_T200
 #print axioms RvMBridgeZhu.legendreLocalizationOdd_L08_T200
 #print axioms RvMBridgeZhu.eps_sum_lt_betaStar_L08_T200
+
+-- KWin (2026-09-24): the prime-free window at 2L = log 2 on the goal node's FULL class (pole terms
+-- kept), certified with no Arb seam: exact-rational symbol minorant and head certificate evaluated
+-- by the kernel (decide +kernel), projection tail, Zhu split.  WindowFloor(log 2 / 2, 9/10000).
+-- A finite-window statement, NOT RH; PR #604: the 1.3e-3 margin is zero content; not
+-- Connes-Consani (pole-free class).  conjecture1_proved = False.
+#print axioms KWin.gamma_le
+#print axioms KWin.log_pi_le
+#print axioms KWin.beta0_le_betaStar
+#print axioms KWin.combMass_L0
+#print axioms KWin.weilSymbol_L0
+#print axioms KWin.abs_Psi_sub_beta0_le
+#print axioms KWin.psdCert_sound
+#print axioms KWin.cert_even
+#print axioms KWin.cert_odd
+#print axioms KWin.cert_even_negative_control
+#print axioms KWin.ginv_even
+#print axioms KWin.ginv_odd
+#print axioms KWin.piece_ok
+#print axioms KWin.tail_even
+#print axioms KWin.tail_odd
+#print axioms KWin.Tr_sub_le
+#print axioms KWin.Pl_sub_le
+#print axioms KWin.A1_sq_le
+#print axioms KWin.lor_taylor
+#print axioms KWin.wpoly_le_Psi
+#print axioms KWin.head_floor
+#print axioms KWin.Rb_floor
+#print axioms KWin.Q_ge_Rb
+#print axioms KWin.evenSectorFloor
+#print axioms KWin.oddSectorFloor
+#print axioms KWin.windowFloor_L0
+#print axioms KWin.kwin_primeFreeWindow
+#print axioms KWin.kwin_primeFreeWindowArch
+
 -- E6Bridge31: the prime-free window (2026-09-23). conjecture1_proved = False.
 #print axioms RvMBridge31.primeSide_autocorr_eq_zero
 #print axioms RvMBridge31.weilForm_autocorr_eq_archSide
@@ -1176,3 +1213,25 @@ import Probes.Dogfood_zero_sum_majorant
 #print axioms RvMBridge34.re_archSide_autocorr_ge_tenth
 #print axioms RvMBridge34.weil_positivity_window_tenth_of_nonneg
 #print axioms RvMBridge34.weil_positivity_window_tenth
+
+-- Mirrormere prime-free window (kernel-native, KWin)
+#print axioms kwin_primeFreeWindowPositivity
+#print axioms kwin_primeFreeWindowArchPositivity
+#print axioms weil_positivity_prime_free_window
+#print axioms weil_positivity_window_tenth_of_prime_free
+
+-- ZhuEnvelope (2026-09-23): Zhu Lemma 3.1, the digamma envelope, PROVED.  conjecture1_proved = False.
+
+-- ZhuSymbol (2026-09-23): Zhu eq. (2), the symbol representation, PROVED.  conjecture1_proved = False.
+
+-- ZhuLegendre (2026-09-23): Zhu eqs. (6) and (12), PROVED.  conjecture1_proved = False.
+
+-- ZhuParity (2026-09-23): Zhu Lemma 6.1, parity decoupling, PROVED.  conjecture1_proved = False.
+
+-- ZhuSplit (2026-09-23): the envelope step of eq. (4), PROVED.  conjecture1_proved = False.
+
+-- ZhuOrtho (2026-09-23): Legendre orthonormality, uniform bounds, pole vectors.  conjecture1_proved = False.
+
+-- ZhuTail (2026-09-23): the eq. (13) tail data PROVED with closed-form constants.  conjecture1_proved = False.
+
+-- ZhuInstance (2026-09-23): the instance L = 4/5, T# = 200, N = 200.  conjecture1_proved = False.
