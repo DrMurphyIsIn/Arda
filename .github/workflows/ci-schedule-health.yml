@@ -1,0 +1,95 @@
+# Telperion -- who watches the schedules?
+#
+# On 2026-09-25 two verification failures turned out to have been invisible for days,
+# both because nothing watches a cron:
+#   * telperion-legacy-boxes had been RED since its 2026-09-21 scheduled run (all four
+#     shards), on a bug in that workflow's own axiom gate.  It runs weekly and on demand,
+#     so no pull request ever showed the red.
+#   * telperion-zeta-reflection's weekly cron had NEVER fired, although the cron was on
+#     main before its slot.  GitHub runs schedules best-effort and may drop a firing; a
+#     dropped run leaves no mark, so it looks exactly like success.
+#
+# This job reports every CRON-ONLY workflow (a `schedule` trigger and no `push` to main,
+# so nothing automatic re-verifies main after a merge) and FAILS when one of them last
+# ran red -- a red mark someone sees, rather than a warning nobody reads.
+#
+# It runs on every change under .github/workflows (so a trigger that quietly loses its
+# push coverage is caught at review time), daily, and on demand.  Seconds per run.
+# conjecture1_proved = False.
+name: ci-schedule-health
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "43 7 * * *"   # daily 07:43 UTC
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/**"
+      - "telperion/scripts/schedule_health.py"
+      - "telperion/tests/test_schedule_health.py"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  schedule-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+
+      - name: Which workflows can only start on a schedule?
+        id: which
+        run: |
+          set -euo pipefail
+          python telperion/scripts/schedule_health.py --workflows .github/workflows --list \
+            | tee "$RUNNER_TEMP/cron_only.txt"
+
+      - name: Fetch the run history of each of them
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          : > "$RUNNER_TEMP/runs.json"
+          python - "$RUNNER_TEMP/cron_only.txt" "$RUNNER_TEMP/runs.json" <<'PY'
+          import json, subprocess, sys
+          names = [l.strip() for l in open(sys.argv[1]) if l.strip()]
+          repo = "${{ github.repository }}"
+          out = {}
+          for n in names:
+              def last(event=None):
+                  url = f"repos/{repo}/actions/workflows/{n}/runs?per_page=1"
+                  if event:
+                      url += f"&event={event}"
+                  # A failed API call must not be read as "nothing to report".
+                  r = subprocess.run(["gh", "api", url], capture_output=True, text=True)
+                  if r.returncode != 0:
+                      raise SystemExit(f"::error::gh api failed for {n}: {r.stderr.strip()}")
+                  runs = json.loads(r.stdout).get("workflow_runs", [])
+                  if not runs:
+                      return None
+                  k = runs[0]
+                  return {"conclusion": k.get("conclusion"), "status": k.get("status"),
+                          "created_at": k.get("created_at"), "html_url": k.get("html_url")}
+              out[n] = {"last": last(), "last_scheduled": last("schedule")}
+          json.dump(out, open(sys.argv[2], "w"), indent=2)
+          print(json.dumps(out, indent=2))
+          PY
+
+      - name: Report (fails if a cron-only workflow last ran red)
+        run: |
+          set -euo pipefail
+          python telperion/scripts/schedule_health.py \
+            --workflows .github/workflows --runs "$RUNNER_TEMP/runs.json" \
+            | tee -a "$GITHUB_STEP_SUMMARY"
