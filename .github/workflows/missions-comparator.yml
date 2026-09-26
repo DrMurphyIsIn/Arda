@@ -18,7 +18,7 @@ name: missions-comparator
 #
 # Sharded per island (`--shard I/N` over slug order; every node lands in exactly one shard).
 # The Comparator tag FOLLOWS THE ISLAND TOOLCHAIN (dbn v4.34.0-rc1, rvm_bridge v4.33.0-rc2,
-# zeta_reflection v4.32.0):
+# zeta_reflection v4.32.0, bg v4.32.0):
 # the comparator + lean4export must be built with the toolchain whose .olean they export, so
 # the v4.32.0 pin of the BG bridge does not apply here. Landrun (urfave/cli) strips the `--`
 # separator lean4export needs, hence the shim (same as proof-comparator.yml).
@@ -28,8 +28,13 @@ name: missions-comparator
 #       --theorem <name> --run-url <url>
 # Islands not yet wired: li_positivity (24 nodes, renders; the island build alone is ~1 h),
 # quasicrystal / zero_free_bridge (v4.32.0; their lakefiles path-require other islands), and
-# zeta_zero_localization (monolith lakefile, cannot be path-required: ARG_MAX). BG's nine
-# nodes are judged by proof-comparator.yml in self-check mode. conjecture1_proved = False.
+# zeta_zero_localization (monolith lakefile, cannot be path-required: ARG_MAX).
+# bg: the island is the R3Cert package at proof/formalization (judge.OUT_OF_TREE_ISLANDS). Its
+# challenges import the vocabulary mirror's home modules, not the whole island (R47PC6Cells is
+# ~70 min / 18 GB and no node needs it), and the job restores proof-lean.yml's incremental R3Cert
+# build (a path dependency builds in place, into proof/formalization/.lake/build).
+# proof-comparator.yml still runs its three BG anchors in self-check mode; this job judges every
+# proved bg node against its REGISTERED statement. conjecture1_proved = False.
 
 on:
   pull_request:
@@ -38,6 +43,7 @@ on:
       - "telperion/examples/dbn/**"
       - "telperion/examples/rvm_bridge/**"
       - "telperion/examples/zeta_reflection/**"
+      - "proof/formalization/**"
       - "telperion/src/telperion/missions/judge.py"
       - "telperion/src/telperion/comparator.py"
       - "telperion/scripts/guard_anchors.py"
@@ -48,6 +54,7 @@ on:
       - "telperion/missions/**"
       - "telperion/examples/dbn/**"
       - "telperion/examples/rvm_bridge/**"
+      - "proof/formalization/**"
       - "telperion/src/telperion/missions/judge.py"
       - ".github/workflows/missions-comparator.yml"
   workflow_dispatch:
@@ -78,11 +85,11 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install sympy
-      - name: Committed challenge bundles match the registry (dbn, rvm_bridge)
+      - name: Committed challenge bundles match the registry (dbn, rvm_bridge, zeta_reflection, bg)
         working-directory: telperion
         run: |
           set -euo pipefail
-          for isl in dbn rvm_bridge zeta_reflection; do
+          for isl in dbn rvm_bridge zeta_reflection bg; do
             PYTHONPATH=src python -m telperion.missions.judge --island "$isl" --check
           done
       - name: Every wired island still renders (li_positivity is listed, not judged, yet)
@@ -105,7 +112,7 @@ jobs:
     steps:
       - id: plan
         env:
-          ALL: '[{"island": "dbn", "shard": "0/1"}, {"island": "rvm_bridge", "shard": "0/4"}, {"island": "rvm_bridge", "shard": "1/4"}, {"island": "rvm_bridge", "shard": "2/4"}, {"island": "rvm_bridge", "shard": "3/4"}, {"island": "zeta_reflection", "shard": "0/1"}]'
+          ALL: '[{"island": "dbn", "shard": "0/1"}, {"island": "rvm_bridge", "shard": "0/4"}, {"island": "rvm_bridge", "shard": "1/4"}, {"island": "rvm_bridge", "shard": "2/4"}, {"island": "rvm_bridge", "shard": "3/4"}, {"island": "zeta_reflection", "shard": "0/1"}, {"island": "bg", "shard": "0/1"}]'
           WANT_ISLAND: ${{ inputs.island }}
           WANT_SHARD: ${{ inputs.shard }}
         run: |
@@ -172,17 +179,49 @@ jobs:
         working-directory: ${{ env.BUNDLE }}
         run: lake exe cache get
 
+      # bg only. The island is proof/formalization, and a path dependency builds IN PLACE (into
+      # proof/formalization/.lake/build), so restore the incremental R3Cert build proof-lean.yml
+      # and proof-comparator.yml checkpoint (same key prefix; computed once, on an idle machine)
+      # instead of cold-building the ~86 island modules the challenges import.
+      - name: R3Cert build-cache key (bg)
+        id: ckey
+        if: matrix.island == 'bg'
+        run: |
+          echo "prefix=lean-build-${{ runner.os }}-${{ hashFiles('proof/formalization/lean-toolchain', 'proof/formalization/lake-manifest.json') }}-" >> "$GITHUB_OUTPUT"
+          echo "run=${{ github.run_id }}-${{ github.run_attempt }}" >> "$GITHUB_OUTPUT"
+      - name: Restore R3Cert build (bg, incremental)
+        if: matrix.island == 'bg'
+        uses: actions/cache/restore@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}
+          restore-keys: |
+            ${{ steps.ckey.outputs.prefix }}
+
       # Each bridge module imports its artifact AND the island's AxiomGuard modules (the
       # whole island), so this is the island build plus one small module per node. It is
       # ALSO the first half of the verdict: a bridge module elaborates only if the artifact's
       # theorem has exactly the registered statement's type.
       - name: Build this shard's bridge modules (island build + statement identity)
+        id: build
         working-directory: ${{ env.BUNDLE }}
         run: |
           set -euo pipefail
           mods=$(cut -f1 "$RUNNER_TEMP/nodes.tsv" | sed 's/^/MissionChallenges./' | tr '\n' ' ')
           echo "modules: $mods"
-          lake build $mods
+          lake build $mods 2>&1 | tee "$RUNNER_TEMP/build.log"
+          echo "built=$(grep -cE '\[[0-9]+/[0-9]+\] Built ' "$RUNNER_TEMP/build.log" || true)" >> "$GITHUB_OUTPUT"
+
+      # bg only: checkpoint what this job compiled (also after a failed or cancelled build, so
+      # the next run resumes), unless the restored build was already warm.
+      - name: Save R3Cert build checkpoint (bg)
+        if: >-
+          always() && matrix.island == 'bg' && steps.ckey.outputs.prefix != '' &&
+          steps.build.outcome != 'skipped' && steps.build.outputs.built != '0'
+        uses: actions/cache/save@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-judge
 
       - name: Install landrun shim (preserves `--`)
         run: |

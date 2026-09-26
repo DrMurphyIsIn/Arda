@@ -1,0 +1,13 @@
+created = "2026-09-24"
+depends_on = []
+kind = "lemma"
+name = "BG.straight_progress"
+statement_module = "Statements.BG_straight_progress"
+status = "draft"
+title = "Size-preserving straightening: every tree with positive structural defect has a same-size, Aobj-non-decreasing, defect-lowering step"
+updated = "2026-09-24"
+
+[author]
+date = "2026-09-24"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "77a4c355-8299-40a6-850f-73d6d0c019da"

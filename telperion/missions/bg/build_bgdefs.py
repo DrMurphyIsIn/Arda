@@ -97,6 +97,18 @@ namespace R3Cert
     ex("R47Capped.lean", 39, 39),
     "\n-- ===== R47OrderedStep.lean:43-58 (the ordered merge relation) =====",
     ex("R47OrderedStep.lean", 43, 58),
+    "\n-- ===== R47R7Straighten.lean:36-38,41-44,47-48,51,70-72,74-83 (structural defect) =====",
+    ex("R47R7Straighten.lean", 36, 38),
+    ex("R47R7Straighten.lean", 41, 44),
+    ex("R47R7Straighten.lean", 47, 48),
+    ex("R47R7Straighten.lean", 51, 51),
+    ex("R47R7Straighten.lean", 70, 72),
+    ex("R47R7Straighten.lean", 74, 83),
+    "\n-- ===== R47R7Sized.lean:65-66,69-70 (size-preserving straightening) =====",
+    ex("R47R7Sized.lean", 65, 66),
+    ex("R47R7Sized.lean", 69, 70),
+    "\n-- ===== R47BGConjecture.lean:38-39 (the pinned conjecture 1) =====",
+    ex("R47BGConjecture.lean", 38, 39),
     """
 -- ===== PROVISIONAL (registry-only; no proof/ counterpart; used by the DRAFT/deprecated
 -- nodes BG_r2_multihub_maximality [deprecated 2026-09-13] and BG_r2_multihub_ceiling).
@@ -160,6 +172,18 @@ namespace R3Cert.GStepCore
     ex("CappedJointConfig.lean", 46, 46),
     ex("CappedJointAchievable.lean", 30, 30),
     "\nend R3Cert.CappedJointConfig",
+    "\n-- ===== BGSCL literal planted matching-sum model =====",
+    "-- ===== BGSCLInduction.lean:151-152,154-162,192-193,195-206,236,240 / BGSCLHdom.lean:475,482-483 =====",
+    "namespace R3Cert.BGSCL\n",
+    ex("BGSCLInduction.lean", 151, 152),
+    ex("BGSCLInduction.lean", 154, 162),
+    ex("BGSCLInduction.lean", 192, 193),
+    ex("BGSCLInduction.lean", 195, 206),
+    ex("BGSCLInduction.lean", 236, 236),
+    ex("BGSCLInduction.lean", 240, 240),
+    ex("BGSCLHdom.lean", 475, 475),
+    ex("BGSCLHdom.lean", 482, 483),
+    "\nend R3Cert.BGSCL",
 ]
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
