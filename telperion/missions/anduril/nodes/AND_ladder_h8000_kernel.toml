@@ -1,0 +1,41 @@
+created = "2026-09-24"
+depends_on = ["AND_ladder_h1000_kernel", "AND_height_floor_kernel", "AND_edge_clear_glue", "AND_theta_branch"]
+kind = "milestone"
+name = "AND.ladder_h8000_kernel"
+requires_ci_job = "telperion-zeta-reflection.yml:anduril-kernel-ladder"
+statement_module = "Statements.AND_ladder_h8000_kernel"
+status = "proved"
+title = "Every nontrivial zeta zero with 0 < Im rho <= 8000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, NO Arb or oracle input (Arb4 compact certificates, 8 segments chained by height_chain; 29 MB of certificates). Verified by an independent leanchecker replay of all 164 modules. Finite verification only, NOT RH. conjecture1_proved = False"
+updated = "2026-09-25"
+
+[ci_record]
+artifact_sha256 = "40a194857dfee5cd49a4b79bb92e728de2b0c9da746122d5f71d894dd70b75ee"
+conclusion = "success"
+date = "2026-09-25"
+head_sha = "a703613bf10bd4166bfb8449be6d3bf7f61dfabc"
+job = "anduril-kernel-ladder"
+run_id = "36149168418"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36149168418"
+workflow = "telperion-zeta-reflection.yml"
+
+[grant]
+artifact_sha256 = "40a194857dfee5cd49a4b79bb92e728de2b0c9da746122d5f71d894dd70b75ee"
+date = "2026-09-25"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "ef083c48-579d-4bec-a689-c30fdccec2a1"
+statement_sha256 = "62fb58b8bf0275bd63c037aae9d1134fb783b0f56b225282fbc38b8603e017a2"
+
+[proof]
+artifact = "../../examples/zeta_reflection/lean/Arb4_h8000.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "author session (self-attested; not independent)"
+auditor_identity = "dr.murphy.is.in@arda-dao.com"
+auditor_session = "ef083c48-579d-4bec-a689-c30fdccec2a1"
+date = "2026-09-25"
+independence = "unverified"
+text = "Formal statement, read in the author's own session (NOT independent; the Comparator judge and the CI record are the independent checks): for every complex rho, riemannZeta rho = 0 and 0 < rho.im and rho.im <= 8000 imply rho.re = 1/2. riemannZeta is Mathlib's; the condition 0 < Im excludes the trivial zeros and the pole; the statement is hypothesis-free (no Arb or oracle premises). It is a finite verification up to height 8000 and says nothing about RH beyond that height. Non-vacuous: zeta has about 7788 such zeros, all asserted to lie on Re = 1/2."

@@ -15,6 +15,7 @@
       "challenge_module": "MissionChallenges.AND_checkline_correct",
       "bridge_theorem": "MissionJudge.AND_checkline_correct",
       "config": "AND_checkline_correct.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "2d2122b5ea765096f79c75eb7e15e2bca990abde91eeb2892ed60cf3e9003ca9",
       "statement_sha256": "331578949a1efb99f95fc729dd8e9687be40c8e48f97ddcb12d50892c08d8309"
     },
@@ -26,6 +27,7 @@
       "challenge_module": "MissionChallenges.AND_edge_clear_glue",
       "bridge_theorem": "MissionJudge.AND_edge_clear_glue",
       "config": "AND_edge_clear_glue.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "87b49f69b0fc1d45d63554cde4871c0892c47794deaab1ba9dd93a5b963766e4",
       "statement_sha256": "bdf6f1a67b5892136ec04a0670e9e5b119f9024b1176ec58b45ebf6b3ae5ae81"
     },
@@ -37,6 +39,7 @@
       "challenge_module": "MissionChallenges.AND_em_tail3_number",
       "bridge_theorem": "MissionJudge.AND_em_tail3_number",
       "config": "AND_em_tail3_number.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "e6bc26aa570d9a5a6b777cb109ca9264fc347bb2ecd9cc97f034aef55ecc1971",
       "statement_sha256": "b0568323f19782688c3855913ee4aa3fd0fd0b96e3a28f6ae11905eb08631a2d"
     },
@@ -48,6 +51,7 @@
       "challenge_module": "MissionChallenges.AND_em_zeta_strip",
       "bridge_theorem": "MissionJudge.AND_em_zeta_strip",
       "config": "AND_em_zeta_strip.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "ce7031478870c994999a64a2a30b3f5f54fbd0bb0c4e0dc2971bc8481aee4694",
       "statement_sha256": "8f9c3f7f672a06806c42cb5de8833318d7e6bc3f3a47df934959eaffea19bd4b"
     },
@@ -59,6 +63,7 @@
       "challenge_module": "MissionChallenges.AND_first_zero_kernel",
       "bridge_theorem": "MissionJudge.AND_first_zero_kernel",
       "config": "AND_first_zero_kernel.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "006066975be65a7dd48b5abb0d01d8dc48226bf3c7d1a501ac40e25a703c8d2d",
       "statement_sha256": "a97d823d0eff83bb50c13e0dc5b9e3451d0be56af2991d58832b8b17277a565b"
     },
@@ -70,6 +75,7 @@
       "challenge_module": "MissionChallenges.AND_g2_reflected_band_kernel",
       "bridge_theorem": "MissionJudge.AND_g2_reflected_band_kernel",
       "config": "AND_g2_reflected_band_kernel.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "856fe02ed950c1a75152fcbf37e45ac3ef49081f2073ec191d639f666d6e540a",
       "statement_sha256": "a0ec6b907f2412a9f843d66a22ee90a050711803572bbdfd402b1a97b1896aba"
     },
@@ -81,8 +87,33 @@
       "challenge_module": "MissionChallenges.AND_height_floor_kernel",
       "bridge_theorem": "MissionJudge.AND_height_floor_kernel",
       "config": "AND_height_floor_kernel.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "7a44c94b06aabc1c8a43fa7684238986833573ce71a0de68a24c3ab040d41529",
       "statement_sha256": "e2ac7fbd1f093d2ae3cf91750de382d459be90634ea952617447e4f7633110d4"
+    },
+    {
+      "slug": "AND_ladder_h1000_kernel",
+      "campaign": "anduril",
+      "theorem": "AllZerosKernel_h1000.all_nontrivial_zeros_up_to_height_1000",
+      "solution_module": "AllZerosKernel_h1000",
+      "challenge_module": "MissionChallenges.AND_ladder_h1000_kernel",
+      "bridge_theorem": "MissionJudge.AND_ladder_h1000_kernel",
+      "config": "AND_ladder_h1000_kernel.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "5d1bcfa827c9658d27f48aace0ab5ef32db49529e32044a129ec0450692d0015",
+      "statement_sha256": "1b8be1a9f5ac769dfbe0b53555b57d46db443bae06f705982eb2c0e28b335f32"
+    },
+    {
+      "slug": "AND_ladder_h8000_kernel",
+      "campaign": "anduril",
+      "theorem": "Arb4_h8000.all_nontrivial_zeros_up_to_height_8000",
+      "solution_module": "Arb4_h8000",
+      "challenge_module": "MissionChallenges.AND_ladder_h8000_kernel",
+      "bridge_theorem": "MissionJudge.AND_ladder_h8000_kernel",
+      "config": "AND_ladder_h8000_kernel.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "40a194857dfee5cd49a4b79bb92e728de2b0c9da746122d5f71d894dd70b75ee",
+      "statement_sha256": "62fb58b8bf0275bd63c037aae9d1134fb783b0f56b225282fbc38b8603e017a2"
     },
     {
       "slug": "AND_stirling_binet_k1",
@@ -92,6 +123,7 @@
       "challenge_module": "MissionChallenges.AND_stirling_binet_k1",
       "bridge_theorem": "MissionJudge.AND_stirling_binet_k1",
       "config": "AND_stirling_binet_k1.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "4fbeebdc3b84d1b5486cf6a2fd71ccda6200424ca79c96f3cc3a384f4818860f",
       "statement_sha256": "0a3c4c63899dc38d9cd726c5af72f26b3ad33f56a64d91b61920da403930f070"
     },
@@ -103,6 +135,7 @@
       "challenge_module": "MissionChallenges.AND_theta_branch",
       "bridge_theorem": "MissionJudge.AND_theta_branch",
       "config": "AND_theta_branch.comparator.json",
+      "nanoda": true,
       "artifact_sha256": "35c4dcb74e8b56cc7362ac49a664707a786ccce38598355f5dd798fa760cb3c3",
       "statement_sha256": "f2af2e2f8be6285c6f9616100a1b7560ee6478b2f685d2112dd7f51c6d9086eb"
     }
