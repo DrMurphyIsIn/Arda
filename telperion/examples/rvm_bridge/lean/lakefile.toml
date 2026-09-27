@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "FamilyWeilForm", "FamilyWeilDisc", "FamilyWeilQuad", "FamilyWeilTable", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -395,6 +395,32 @@ roots = ["Probes.Dogfood_complex_re_im_split"]
 [[lean_lib]]
 name = "DogfoodZeroSumMajorant"
 roots = ["Probes.Dogfood_zero_sum_majorant"]
+
+# Quadratic family, Stage 0 (2026-09-25): the parametric degree-<= 2 Weil window form
+# (weights, gamma shifts, log-conductor) on the island's frequency side, equal to the zeta
+# weilForm at the zeta data; the prime side on a window 2L <= log N is the finite sum over n < N;
+# the conductor term splits off as ||g||^2 logq.  No positivity.  conjecture1_proved = False.
+[[lean_lib]]
+name = "FamilyWeilForm"
+
+# Quadratic family, Stage 0: fundamental discriminants (kernel-decidable, = Mathlib Squarefree
+# form), Kronecker symbols at 2, 3, 5 (= ZMod.chi_8 / jacobiSym), the Tri value type.
+[[lean_lib]]
+name = "FamilyWeilDisc"
+
+# Quadratic family, Stage 0: zeta_K's form (weightQ, mu_d, log|d|), the cell form, monotonicity in
+# log|d| within a (pattern, sign) cell, WindowPosX (real cutoff X, tests with 2L <= log X), and the
+# reduction to the minimal member at any 0 < X <= N (both table branches).  weilFormQ is a
+# frequency-side DEFINITION; no explicit formula for zeta_K is proved.  No positivity.  conjecture1_proved = False.
+[[lean_lib]]
+name = "FamilyWeilQuad"
+
+# Quadratic family, Stage 0: the d_min tables of the cells cut at N = 4 (primes {2, 3}, 18 cells)
+# and N = 7 (primes {2, 3, 5}, 54 cells), kernel-checked (decide) minimality, and the family
+# statements "W(X) for every fundamental d" at any real cutoff 0 < X <= N (e.g. X = 6.5 for N = 7)
+# from the conjunction over the cells' d_min.  No positivity.  conjecture1_proved = False.
+[[lean_lib]]
+name = "FamilyWeilTable"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]
