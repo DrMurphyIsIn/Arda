@@ -73,6 +73,12 @@ import R3Cert.BGSCLSubactionStrict
 import R3Cert.BGSCLHnormPort
 import R3Cert.BGSCLObligationA
 import R3Cert.BGSCLHdom
+import R3Cert.BGSCLSharp
+import R3Cert.BGSpiderReduction
+import R3Cert.BGSpiderCells
+import R3Cert.BGSpiderLowDegree
+import R3Cert.BGSpiderBridge
+import R3Cert.BGSpiderMidFinal
 import R3Cert.R47HdomBridge
 import R3Cert.BGSCLRealizationBridge
 import R3Cert.BGSCLObligationB
@@ -122,6 +128,17 @@ import R3Cert.FractalTail
 import R3Cert.R47Tree
 import R3Cert.NearStar
 import R3Cert.R47MergePerL
+import R3Cert.R47BGConjecture
+import R3Cert.BGGrowthRate
+import R3Cert.BGSpiderOpt
+import R3Cert.BGMaximizer
+import R3Cert.BGSpiderRule
+import R3Cert.BGMaximizerFinal
+import R3Cert.BGMaximizer150
+import R3Cert.BGMaximizerMid
+import R3Cert.BGMaximizerAll
+import R3Cert.BGSpiderCand
+import R3Cert.BGSpiderStruct
 
 #print axioms R3Cert.Step3.conjecture1_of_layers
 #print axioms R3Cert.phi_le_one
@@ -244,6 +261,16 @@ import R3Cert.R47MergePerL
 #print axioms R3Cert.BGSCL.master_ineq_strict_off_deg6
 #print axioms R3Cert.BGSCL.bcc_eq_five_of_bell_eq_zero
 #print axioms R3Cert.BGSCL.strictRootCell_tail
+-- SHARP BG ceiling (2026-09-24): the equality case is EXACTLY the near-star tie node [cherry x5].
+#print axioms R3Cert.BGSCL.bell_nearStarTie
+#print axioms R3Cert.BGSCL.cherry_anchor_lt
+#print axioms R3Cert.BGSCL.phi_lb_d6_strict_of_ne_cherry
+#print axioms R3Cert.BGSCL.strict_tail_d6_of_ne_cherry
+#print axioms R3Cert.BGSCL.isTie_imp_nearStarTie
+#print axioms R3Cert.BGSCL.bell_eq_zero_iff
+#print axioms R3Cert.BGSCL.isTie_iff_bell_eq_zero
+#print axioms R3Cert.BGSCL.bell_lt_zero_of_not_nearStarTie
+#print axioms R3Cert.BGSCL.bg_sharp
 -- Hdom reduced to ONE crisp size-normalized obligation (SharpRateNF); conjecture1 modulo Hnorm+SharpRateNF.
 #print axioms R3Cert.Step3.Hdom_of_sharpRate
 #print axioms R3Cert.Step3.conjecture1_of_Hnorm_sharpRate
@@ -506,3 +533,102 @@ import R3Cert.R47MergePerL
 -- ASSEMBLY reduction (2026-09-12): hwh <= (named move-classes refine to StraightStep) + COVERAGE
 -- (exhaustiveness, the sole open obligation; empirically verified n<=15, viable_all 0 failures).
 #print axioms R3Cert.Step3.hwh_of_extended_coverage
+-- PINNED conjecture 1 (2026-09-24, R47BGConjecture): BGBackboneConjecture = every tree is Aobj-dominated
+-- by a same-size cherry-backbone (the free-`tie` capstone carried no content until pinned). Reductions only;
+-- the conjecture itself is OPEN (conjecture1_proved = False).
+#print axioms R3Cert.Step3.bgBackbone_of_usizeForm
+#print axioms R3Cert.Step3.bgBackbone_of_wholehub
+#print axioms R3Cert.Step3.bgBackbone_of_straightProgress
+#print axioms R3Cert.Step3.bgBackbone_of_extended_coverage
+#print axioms R3Cert.Step3.conjecture1_of_bgBackbone
+#print axioms R3Cert.Step3.bgBackbone_of_backboneTie
+-- GROWTH RATE of the BG maximum (2026-09-24, BGGrowthRate): (64/621) rhoB^n <= max pi <= 2 rhoB^(n-1),
+-- so (max pi)^(1/n) -> rhoB = (621/64)^(1/11).  The exact maximizer remains OPEN.
+#print axioms R3Cert.Step3.rhoB_pow_eleven
+#print axioms R3Cert.Step3.Aobj_le_two_rhoB_pow
+#print axioms R3Cert.Step3.perm_ratio_le_two_rhoB_pow
+#print axioms R3Cert.Step3.exists_Aobj_ge
+#print axioms R3Cert.Step3.bg_max_growth
+-- B2 spider optimization (2026-09-24, BGSpiderOpt): exchange inequalities for the closed-form two-level
+-- spider value (model function only, not connected to the tree graph).
+#print axioms R3Cert.BGSpiderOpt.balance_identity
+#print axioms R3Cert.BGSpiderOpt.F_balance_lt
+#print axioms R3Cert.BGSpiderOpt.balanced_of_isMax
+#print axioms R3Cert.BGSpiderOpt.leaf_count_le_one_of_isMax
+#print axioms R3Cert.BGSpiderOpt.F_leafpair_lt
+#print axioms R3Cert.BGSpiderOpt.F_absorb_sub
+-- Spider reduction B1 (high-degree case): Lagrangian identity, tangent bound, unconditional spider lower
+-- bound, and spider domination for root degree >= 24, n >= 91, conditional on three finite-degree cell cores.
+#print axioms R3Cert.BGSCL.phiRoot_eq
+#print axioms R3Cert.BGSCL.phiRoot_le_tangent
+#print axioms R3Cert.BGSCL.phiRoot_spider_ge
+#print axioms R3Cert.BGSCL.atom_bV_le
+#print axioms R3Cert.BGSCL.armEnv_of_cells
+#print axioms R3Cert.BGSCL.spider_dominates_highDegree
+#print axioms R3Cert.BGSCL.spider_dominates_highDegree_of_cores
+#print axioms R3Cert.BGSCL.surchargeCore_proved
+#print axioms R3Cert.BGSCL.atomCell0Core_proved
+#print axioms R3Cert.BGSCL.atomCellMuCore_proved
+#print axioms R3Cert.BGSCL.spider_dominates_highDegree_uncond
+#print axioms R3Cert.BGSCL.phiRoot_le_taxed
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_of_taxed
+#print axioms R3Cert.BGSCL.bell_add_ρwit_le_rate
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_of_rate
+#print axioms R3Cert.BGSCL.rateCellCap_23
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_uncond
+#print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot
+-- SPIDER REDUCTION for actual trees (2026-09-24, BGMaximizer): UTree->BGSCL bridge Aobj = piRoot,
+-- max-degree rerooting, and: every tree on n >= 492 vertices is Aobj-dominated by a same-size spider.
+#print axioms BGMax.Aobj_eq_piRoot
+#print axioms BGMax.exists_maxRooted
+#print axioms BGMax.bg_spider_reduction
+#print axioms BGMax.bg_spider_reduction_perm
+#print axioms R3Cert.BGSCL.Aobj_toU_node
+#print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot_Aobj
+-- SPIDER RULE base (2026-09-25, BGSpiderRule): rule winner W n, maximizer existence, Aobj bridge, and the
+-- conditional assembly (StructProp + CandProp hypotheses -> W n maximizes per(L)/prod deg over all trees).
+#print axioms R3Cert.BGSpiderRule.nv_W
+#print axioms R3Cert.BGSpiderRule.exists_isMax
+#print axioms R3Cert.BGSpiderRule.Aobj_spiderU
+#print axioms R3Cert.BGSpiderRule.spider_opt_of
+#print axioms R3Cert.BGSpiderRule.bg_maximizer_of
+-- SPIDER CANDIDATES (2026-09-25, BGSpiderCand, part L2): CandProp 492 -- inside Cand, W n is optimal for
+-- every n >= 492 (189 combos, 223 exact quadratic certificates, generated by bg_spider_cand_certs.py).
+#print axioms R3Cert.BGSpiderCand.F_eq_Φ
+#print axioms R3Cert.BGSpiderCand.Φ_le_of_P
+#print axioms R3Cert.BGSpiderCand.cand_counts
+#print axioms R3Cert.BGSpiderCand.candProp_492
+#print axioms R3Cert.BGSpiderStruct.exch_arm_lt
+#print axioms R3Cert.BGSpiderStruct.exch_six_lt
+#print axioms R3Cert.BGSpiderStruct.exch_four_lt
+#print axioms R3Cert.BGSpiderStruct.exch_cherry_lt
+#print axioms R3Cert.BGSpiderStruct.exch_split_lt
+#print axioms R3Cert.BGSpiderStruct.global_contra
+#print axioms R3Cert.BGSpiderStruct.cand_of_isMax
+#print axioms R3Cert.BGSpiderStruct.structProp_492
+-- THE BG MAXIMIZER for n >= 492 (2026-09-25, BGMaximizerFinal): unconditional; W n maximizes per(L)/prod deg.
+#print axioms R3Cert.BGMaximizerFinal.bg_maximizer
+#print axioms R3Cert.BGMaximizerFinal.bg_maximizer_perm
+#print axioms R3Cert.BGSCL.dp_sound
+#print axioms R3Cert.BGSCL.bell_add_ρwit_le_rateKap
+#print axioms R3Cert.BGSCL.rateCellKap_23
+#print axioms R3Cert.BGSCL.midroot_8
+#print axioms R3Cert.BGSCL.spider_low
+#print axioms R3Cert.BGSCL.spider_dominates_lowDegree_mid
+#print axioms R3Cert.BGSCL.spider_dominates_of_maxDegreeRoot_150
+-- Every maximizer on n >= 150 vertices is a spider (2026-09-25, BGMaximizer150; uses spider_dominates_of_maxDegreeRoot_150).
+#print axioms BGMax.maximizer_is_spider_150
+-- THE BG MAXIMIZER for 150 <= n <= 491 (2026-09-26, BGMaximizerMid): table spider `tab n` maximizes
+-- per(L)/prod deg; spider-family optimum for 4 <= n <= 491 by an 89-chunk kernel sweep (BGSpiderTable*).
+#print axioms R3Cert.BGSpiderTable.spider_opt_table
+#print axioms R3Cert.BGMaximizerMid.exists_max_tree
+#print axioms R3Cert.BGMaximizerMid.bg_maximizer_mid
+-- THE BRUALDI-GOLDWASSER MAXIMIZER FOR EVERY n >= 4 (2026-09-26, BGMaximizerAll): kernel-checked end to end.
+-- n=4..6 BGMaximizerTiny (exact enumeration); 7..149 BGMaximizerSmall (G149 envelope certificate +
+-- BGHighDegreeSmall); 150..491 BGMaximizerMid; >=492 BGMaximizerFinal.
+#print axioms R3Cert.BGMaximizerTiny.bg_maximizer_tiny
+#print axioms R3Cert.BGHighDegreeSmall.highDegree_small
+#print axioms R3Cert.BGMaximizerSmall.maximizer_is_spider_small
+#print axioms R3Cert.BGMaximizerSmall.bg_maximizer_small
+#print axioms R3Cert.BGMaximizerAll.bg_maximizer_all
+#print axioms R3Cert.BGMaximizerAll.bg_maximizer_all_perm

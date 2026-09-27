@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.BG_near_star_tail",
+  "solution_module": "MissionChallenges.BG_near_star_tail",
+  "theorem_names": [
+    "MissionJudge.BG_near_star_tail"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

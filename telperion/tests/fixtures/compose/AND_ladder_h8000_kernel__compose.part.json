@@ -1,0 +1,45 @@
+{
+ "node": "AND_ladder_h8000_kernel",
+ "part": "compose",
+ "slug": "AND_ladder_h8000_kernel__compose",
+ "comparator": "PASS",
+ "run_id": "local",
+ "kernel": "lean-kernel-only",
+ "job": "local",
+ "inspect": {
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "binders": [
+   "AllZeros_h1000.BandHyp",
+   "AllZeros_h2000.BandHyp",
+   "AllZeros_h3000.BandHyp",
+   "AllZeros_h4000.BandHyp",
+   "AllZeros_h5000.BandHyp",
+   "AllZeros_h6000.BandHyp",
+   "AllZeros_h7000.BandHyp",
+   "AllZeros_h8000.BandHyp",
+   "Complex"
+  ],
+  "closure_modules": [
+   "Arb4_Compose_h8000"
+  ],
+  "closure_size": 64906,
+  "theorem": "MissionJudge.AND_ladder_h8000_kernel__compose",
+  "type_const": "",
+  "closure_modules_total": 2088
+ },
+ "statement_exports": {
+  "AllZeros_h1000.BandHyp": "702e6ed9d9ec120d2e2e3a8f9b1f3660232d8487957f449038c44127661b6b0c",
+  "AllZeros_h2000.BandHyp": "cad27a089193aaaacb50a3b9dd64407238a0385b9655c965dfcbf2e936d8102c",
+  "AllZeros_h3000.BandHyp": "80f7ab007087f9fcd18a30aaf03a2491351efff90f9de7993be7133425836117",
+  "AllZeros_h4000.BandHyp": "3a6bfd03cba0b91b1b61ffe3694c939a497d4e5ebb40536f9069b27ab95be359",
+  "AllZeros_h5000.BandHyp": "daeee791fa425a8525696d5b9592594cf18074777bbe0700df994cb7554015bd",
+  "AllZeros_h6000.BandHyp": "f5fa7c588069aaa5d2792bc627f7f033c75e36c1b01c87462380f1da5db45247",
+  "AllZeros_h7000.BandHyp": "efb35e9e3a8eaa3de9ca8cb8864c98679004ee48695c626b75315886b1afae9f",
+  "AllZeros_h8000.BandHyp": "095ec631abd373a3dcdbbf0c55a462c2a0466498e7eab75d55097adb8259d87e"
+ },
+ "_fixture_note": "REAL output of a local run (2026-09-27, ~/arda-heavyjudge): Comparator PASS, ComposeInspect, lean4export sha256. closure_modules trimmed to the Arb4* entries (total kept in closure_modules_total); nothing else edited."
+}

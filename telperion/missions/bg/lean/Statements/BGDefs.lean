@@ -239,6 +239,41 @@ inductive OrderedStep : List Hub → List Hub → Prop
   | tail {h : Hub} {s s' : List Hub} :
       OrderedStep s s' → OrderedStep (h :: s) (h :: s')
 
+-- ===== R47R7Straighten.lean:36-38,41-44,47-48,51,70-72,74-83 (structural defect) =====
+def isLeaf : UTree → Bool
+  | .node [] => true
+  | .node (_ :: _) => false
+def isCherry : UTree → Bool
+  | .node [c] => isLeaf c
+  | .node [] => false
+  | .node (_ :: _ :: _) => false
+def isArm : UTree → Bool
+  | .node cs => cs.all isCherry
+def isPiece (c : UTree) : Bool := isArm c || isCherry c
+def npCount : List UTree → ℕ
+  | [] => 0
+  | c :: rest => (if isPiece c then 0 else 1) + npCount rest
+mutual
+/-- Structural defect: `(#non-piece children - 1)` at this node (a canonical backbone layer has
+    at most one non-piece child, the tail) plus the defects of the non-piece children. -/
+def strDefect : UTree → ℕ
+  | .node cs => (npCount cs - 1) + npDefectSum cs
+/-- Sum of `strDefect` over the non-piece children. -/
+def npDefectSum : List UTree → ℕ
+  | [] => 0
+  | c :: rest => (if isPiece c then 0 else strDefect c) + npDefectSum rest
+end
+
+-- ===== R47R7Sized.lean:65-66,69-70 (size-preserving straightening) =====
+def StraightStep_sized (t t' : UTree) : Prop :=
+  usize t = usize t' ∧ Aobj t ≤ Aobj t' ∧ strDefect t' < strDefect t
+def StraightProgress_sized : Prop :=
+  ∀ t : UTree, strDefect t ≠ 0 → ∃ t', StraightStep_sized t t'
+
+-- ===== R47BGConjecture.lean:38-39 (the pinned conjecture 1) =====
+def BGBackboneConjecture : Prop :=
+  ∀ t : UTree, ∃ s : List Hub, stateSize s = usize t ∧ Aobj t ≤ Aobj (backboneU s)
+
 -- ===== PROVISIONAL (registry-only; no proof/ counterpart; used by the DRAFT/deprecated
 -- nodes BG_r2_multihub_maximality [deprecated 2026-09-13] and BG_r2_multihub_ceiling).
 -- Hub count of a bare rooted tree: vertices of structural degree >= 3 (root degree =
@@ -306,3 +341,40 @@ def prodBcap (l : List ℚ) : ℚ := (l.map Bcap).prod
 def Achievable (μ : ℚ) : Prop := 0 < μ ∧ (μ ≤ 1 / 2 ∨ μ = 1)
 
 end R3Cert.CappedJointConfig
+
+-- ===== BGSCL literal planted matching-sum model =====
+-- ===== BGSCLInduction.lean:151-152,154-162,192-193,195-206,236,240 / BGSCLHdom.lean:475,482-483 =====
+namespace R3Cert.BGSCL
+
+inductive Branch : Type
+  | node : List Branch → Branch
+mutual
+  /-- Vertex count of a branch. -/
+  def bsize : Branch → ℕ
+    | .node cs => 1 + bsizeList cs
+  /-- Vertex count of a child list. -/
+  def bsizeList : List Branch → ℕ
+    | [] => 0
+    | c :: t => bsize c + bsizeList t
+end
+def bcc : Branch → ℕ
+  | .node cs => cs.length
+mutual
+  /-- `(U, total)` of a branch: `U` = root-unmatched weight (= product of child totals), `total` = the full
+      degree-weighted matching sum.  For a hub of children `cs` (degree `d = |cs|+1`):
+      `total = (∏ T_c)·(1 + (Σ_c y_c)/d)`, `y_c = U_c/(T_c·d_c)`, `d_c = bcc c + 1`. -/
+  noncomputable def cav : Branch → ℝ × ℝ
+    | .node cs => ((cavAgg cs).1, (cavAgg cs).1 * (1 + (cavAgg cs).2 / ((cs.length : ℝ) + 1)))
+  /-- Aggregates a child list to `(∏ T_c, Σ y_c)`. -/
+  noncomputable def cavAgg : List Branch → ℝ × ℝ
+    | [] => (1, 0)
+    | c :: t => ((cav c).2 * (cavAgg t).1,
+                 (cav c).1 / ((cav c).2 * ((bcc c : ℝ) + 1)) + (cavAgg t).2)
+end
+noncomputable def FSTAR : ℝ := Real.log (621 / 64) / 11
+noncomputable def bell (b : Branch) : ℝ := Real.log (cav b).2 - (bsize b : ℝ) * FSTAR
+def cherryBranch : Branch := Branch.node [Branch.node []]
+def IsNearStarTie (b : Branch) : Prop :=
+  b = Branch.node [cherryBranch, cherryBranch, cherryBranch, cherryBranch, cherryBranch]
+
+end R3Cert.BGSCL

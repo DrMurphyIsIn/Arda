@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.BG_phi_le_one",
+  "solution_module": "MissionChallenges.BG_phi_le_one",
+  "theorem_names": [
+    "MissionJudge.BG_phi_le_one"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

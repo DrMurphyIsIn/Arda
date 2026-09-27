@@ -16,6 +16,7 @@
     * `HdomMulti` -- the per-size tie dominates every backbone of its size (tautological for the
       multi-hub backbone argmax, analogous to `tieArgmax`/`tie_ge_of_mem`; left here as a
       hypothesis, dischargeable by a finite multi-hub argmax construction).
+      [2026-09-24: `tie` is FREE in these capstones; see R47BGConjecture for the pinned statement.]
     * `conjecture1_of_HnormMulti` -- the broadened reduction: `HnormMulti + HdomMulti => conjecture 1`.
 
   Crucially the n=52 refutation NO LONGER bites: `T52` is itself a hub-backbone, so it witnesses its
@@ -122,10 +123,13 @@ theorem hnormMulti_of_wholehub
     · rw [show backboneU [([], 0)] = UTree.node [] from rfl, ← hb0]; exact hle
   · exact ⟨s, by rw [← usize_backboneU_of_ne_nil hne]; exact hsz, hle⟩
 
-/-- **The broadened capstone, discharged by `hwh` + `HdomMulti`.**  Conjecture 1 (in the `usize`-tie
-    form) follows from the whole-hub straightening `hwh` (the ORIGINAL open object -- unrefuted) together
-    with the per-size backbone-dominating tie `HdomMulti` (tautological for the multi-hub argmax).  This
-    is the honest state of the salvaged program: `hwh` is the sole open mathematical obligation. -/
+/-- **The broadened capstone, discharged by `hwh` + `HdomMulti`.**  The free-`tie` conclusion
+    follows from the whole-hub straightening `hwh` (open, unrefuted) together with `HdomMulti`.
+    CAUTION (2026-09-24): `tie` is a free parameter, and with `tie n` a per-size maximizer over all trees
+    the conclusion holds with no mathematics, so this theorem is only meaningful for a pinned `tie`.
+    The pinned statement is `R47BGConjecture.BGBackboneConjecture` (consumed by
+    `bgBackbone_of_wholehub`); `bgBackbone_of_backboneTie` shows the free-tie form matches it exactly
+    when `tie n` is itself a backbone. -/
 theorem conjecture1_of_HnormMulti_of_wholehub (tie : ℕ → UTree)
     (hwh : ∀ t : UTree, strDefect t ≠ 0 → RerootMinimal t → (¬ ∃ t', FlpStepAt t t') →
         ∃ t', CoverR t t')

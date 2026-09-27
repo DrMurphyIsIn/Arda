@@ -17,7 +17,30 @@ RH and BG campaign tracking now lives in the missions registry (`telperion/missi
 
 ---
 
-## Brualdi–Goldwasser (1984): `Φ¹¹(T) ≤ 1` for all trees, equality only at the six 11-vertex ties
+## Brualdi–Goldwasser (1984): the maximum Laplacian ratio of a tree
+
+**What the problem actually is.** Brualdi and Goldwasser asked for the
+maximum of the Laplacian ratio `π(T) = per(L(T)) / ∏ deg(v)` over trees on
+`n` vertices. It is still open: Wu, Dong and Lai proposed an answer, and Pant
+(2026, arXiv:2605.14176) refuted it with infinite families of multi-hub
+caterpillars. The campaign's working answer ("conjecture 1") is structural:
+at every size, the maximum is attained on a multi-hub *cherry-backbone*. That
+statement is pinned in Lean as `BGBackboneConjecture`
+(`proof/formalization/R3Cert/R47BGConjecture.lean`) and reduced to one open
+obligation, the size-preserving straightening `StraightProgress_sized`.
+
+**Where `Φ¹¹ ≤ 1` fits (a correction, 2026-09-24).** Earlier versions of
+this page presented `Φ¹¹(T) ≤ 1` as "the 1984 conjecture". It isn't. It is
+the campaign's sharp *exponential rate ceiling* on the planted matching sum,
+`total(T, r) ≤ (621/64)^(n/11)` for every rooted tree. As of 2026-09-24 it is
+fully proved and kernel-checked, equality case included: `bg_ceiling` gives
+the `≤` half, and `bg_sharp` (`R3Cert/BGSCLSharp.lean`) shows equality holds
+exactly at the 5-arm spider on 11 vertices, rooted at its hub. The
+"six ties `c+k=5`" in the table below come from the older DEC cavity
+parametrization.
+
+The tracking truth is the missions registry (`telperion/missions/bg/`).
+Everything below records how the rate-ceiling campaign got there.
 
 **The conjecture is NOT claimed proved.** What follows is the enumerated state
 of a campaign in progress. Rigor tags: **PROVEN** (all *n*, machine-checked
