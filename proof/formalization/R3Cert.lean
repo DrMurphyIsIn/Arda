@@ -177,3 +177,7 @@ import R3Cert.R47R6BalanceInduction
 -- decreases under BalanceStep (well-founded), and the 3<=arm floor is preserved. The
 -- termination + floor halves of the Hreach reachability obligation.
 import R3Cert.R47R6BalanceTermination
+
+-- SHARP BG rate ceiling (2026-09-24): bell b <= 0 with equality EXACTLY at the near-star tie
+-- node [cherry x5] (bell_eq_zero_iff, bg_sharp).
+import R3Cert.BGSCLSharp
