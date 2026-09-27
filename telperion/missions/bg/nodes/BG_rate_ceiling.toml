@@ -1,0 +1,19 @@
+created = "2026-09-24"
+depends_on = []
+kind = "milestone"
+name = "BG.rate_ceiling"
+statement_module = "Statements.BG_rate_ceiling"
+status = "draft"
+title = "Literal rate ceiling (Phi^11 <= 1): the planted matching sum of every rooted tree is at most (621/64)^(n/11)"
+updated = "2026-09-24"
+
+[author]
+date = "2026-09-24"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "77a4c355-8299-40a6-850f-73d6d0c019da"
+
+[proof]
+artifact = "../../../proof/formalization/R3Cert/BGSCLSubactionDispatch.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

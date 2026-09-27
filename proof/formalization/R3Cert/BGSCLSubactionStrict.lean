@@ -228,6 +228,10 @@ theorem bell_eq_zero_imp_tie {b : Branch} (h : bell b = 0) : IsTie b := by
 
 /-! ### On the reverse direction (`IsTie → bell = 0`).
 
+  UPDATE 2026-09-24: SUPERSEDED.  `R3Cert.BGSCL.isTie_iff_bell_eq_zero` (`BGSCLSharp`) proves the full
+  `IsTie b ↔ bell b = 0`: a tight degree-6 root cell forces all five children to be cherries
+  (`isTie_imp_nearStarTie`), so the worry below does not materialize.  Original note kept for history:
+
   NOTE — HONEST SCOPE.  The reverse implication `IsTie b → bell b = 0` is NOT proved here, and is
   genuinely FALSE for this purely-local `IsTie` (deg≥5 hub + tight root cell): a deg≥5 hub with a tight
   root cell but a strictly-subordinate child (`bell c < −ρwit c`) still has `bell b < 0`.  A tight ROOT

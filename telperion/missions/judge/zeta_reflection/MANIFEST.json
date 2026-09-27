@@ -127,5 +127,12 @@
       "artifact_sha256": "35c4dcb74e8b56cc7362ac49a664707a786ccce38598355f5dd798fa760cb3c3",
       "statement_sha256": "f2af2e2f8be6285c6f9616100a1b7560ee6478b2f685d2112dd7f51c6d9086eb"
     }
+  ],
+  "judged_elsewhere": [
+    {
+      "node": "anduril/AND_ladder_h8000_kernel",
+      "judge_via": "heavy",
+      "workflow": "missions-comparator-heavy.yml"
+    }
   ]
 }
