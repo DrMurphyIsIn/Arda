@@ -1,12 +1,13 @@
 created = "2026-09-13"
 depends_on = []
+deprecated_reason = "Off critical path 2026-09-24: the quantitative multi-hub bound Phi^11 <= 0.85238 (registry-only phi11R vocabulary) is a strengthening not needed by either target: the <= half is bg_ceiling (BG_rate_ceiling) and the equality case is BG_rate_sharp. Remains a true-looking, uncontradicted claim; revive as its own node if wanted."
 kind = "milestone"
 name = "BG.r2_multihub_ceiling"
 source = "Reformulation target from the 2026-09-13 investigation (see deprecated BG_r2_multihub_maximality): claim (ii) of bg/double_near_star.py's verification — the multi-hub Phi^11 ceiling at the DN-family peak dns_phi11(4,5), verified n<=13, uncontradicted by the large-n forms that refute fixed-n DN-maximality (4-hub[6,6,6,6]@52: 0.5466). Rooted-universal quantification == max-over-roots ceiling. Vocabulary phi11R/cavR is PROVISIONAL, mirrored from telperion/src/telperion/bg/rooted_phi.py::phi11_rooted."
 statement_module = "Statements.BG_r2_multihub_ceiling"
-status = "open"
+status = "deprecated"
 title = "R2 multi-hub CEILING: every rooted representation of a multi-hub tree has rooted Phi^11 <= the DN-family peak Phi11(DN(4,5)) = 0.85238... < 1 (reformulation of the refuted fixed-n DN-maximality)"
-updated = "2026-09-13"
+updated = "2026-09-24"
 
 [readback]
 auditor = "blind-renderer-fable-a94c7541 (2026-09-13)"

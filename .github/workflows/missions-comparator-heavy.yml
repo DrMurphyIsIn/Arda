@@ -1,0 +1,339 @@
+name: missions-comparator-heavy
+
+# The independent judge for registry nodes marked `judge_via = "heavy"` (2026-09-26; compositional
+# 2026-09-27).  DISPATCH-ONLY, NEVER PER-PR: a compositional dispatch is 8 segment builds plus
+# 9 Comparator jobs, roughly ELEVEN RUNNER-HOURS, and would starve the 20-job ceiling if it ran
+# on merges.
+#
+# LADDER-SPECIFIC: the body discovers Arb4_h<H>.lean segments on the chosen island. A heavy node on an
+# island with no ladder fails loudly at segment discovery; extend this workflow before using it there.
+# h11000 (RS5/H11K chunks, ~7.4 GB each, built serially inside the 300-min gate job) is UNMEASURED.
+#
+# Why a separate workflow: such a node's challenge cannot be built on one hosted runner (the
+# per-PR missions-comparator bundle EXCLUDES it BY RULE; its MANIFEST lists "judged_elsewhere").
+#
+# Why COMPOSITIONAL (run 36274981386): the leaf certificates replay fine from the segment jobs'
+# artifacts (the bundle-side build rebuilt no edge module, 38 min), but the Comparator's own
+# kernel replay of the capstone's WHOLE closure is single-threaded and ran > 4 h before the
+# 300-min timeout. So a node with a `[compose]` table is judged in parts (telperion.missions.
+# compose), one Comparator job each:
+#   * judge-part <node>__seg_<H>: `Arb4_h<H>.hbands : AllZeros_h<H>.BandHyp` (one segment's closure);
+#   * judge-part <node>__compose: the implication (eight band hypotheses -> the node statement),
+#     whose closure must contain no certificate module;
+#   * verdict: glues them -- (a) every implication hypothesis is exactly the statement a segment
+#     job judged, identical by lean4export BYTES across the two jobs; (b) every part axiom-clean;
+#     (c) no forbidden (certificate) module in the implication's closure. It prints
+#     `COMPARATOR PASS ... judge=compositional parts=9`, or COMPARATOR FAIL.
+# The capstone is then NOT replayed as one closure, and the record says so (judge_mode).
+#
+# Guarantees:
+#   * It REFUSES any node that is not `judge_via = "heavy"`: judge.py --heavy fails on such a
+#     node, so this can never route an ordinary node around the per-PR judge.
+#   * The heavy bundle is rendered at dispatch time into $RUNNER_TEMP and is never committed.
+#   * Every part is Lean-kernel-only (enable_nanoda = false; kernel=lean-kernel-only), which
+#     comparator-record corroborates against the node's heavy_certificates flag.
+#
+# Record a pass with: mission comparator-record <slug> --run-id <this run>
+#   --theorem <the node's [compose] theorem> --lean-kernel-only
+#   (it finds the verdict job AND every part's job in the run, and pins each part module).
+
+on:
+  workflow_dispatch:
+    inputs:
+      node:
+        description: "registry node slug with judge_via = \"heavy\" (e.g. AND_ladder_h8000_kernel)"
+        required: true
+      island:
+        description: "the island holding the node's artifact"
+        required: true
+        default: zeta_reflection
+
+concurrency:
+  group: missions-comparator-heavy-${{ inputs.node }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      segments: ${{ steps.plan.outputs.segments }}
+      parts: ${{ steps.plan.outputs.parts }}
+      compositional: ${{ steps.plan.outputs.compositional }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+      - name: Refuse anything that is not judge_via = "heavy"
+        id: plan
+        working-directory: telperion
+        shell: bash
+        run: |
+          set -euo pipefail
+          # judge.py --heavy refuses (exit 2, with the node's actual judge_via) any node that is
+          # not judge_via = "heavy"; that refusal is the gate.
+          PYTHONPATH=src python -m telperion.missions.judge --island "${{ inputs.island }}" \
+            --heavy --only "${{ inputs.node }}" --configs | tee "$RUNNER_TEMP/nodes.tsv"
+          test "$(wc -l < "$RUNNER_TEMP/nodes.tsv")" -ge 1
+          # One judge job per rendered challenge: the node itself, or its compositional parts.
+          echo "parts=$(cut -f1 "$RUNNER_TEMP/nodes.tsv" | python -c 'import json,sys;print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))')" | tee -a "$GITHUB_OUTPUT"
+          if cut -f7 "$RUNNER_TEMP/nodes.tsv" | grep -qx compose; then c=true; else c=false; fi
+          echo "compositional=$c" | tee -a "$GITHUB_OUTPUT"
+          # The ladder segments present on this island (Arb4_h<H>.lean), for the matrix.
+          segs=$(ls "examples/${{ inputs.island }}/lean" | sed -n 's/^Arb4_h\([0-9]*\)\.lean$/\1/p' | sort -n | paste -sd, -)
+          test -n "$segs" || { echo "::error::no Arb4_h<H> segments on island ${{ inputs.island }}"; exit 1; }
+          echo "segments=[${segs}]" | tee -a "$GITHUB_OUTPUT"
+
+  # Same build as telperion-zeta-reflection's anduril-ladder-seg (kept in step with it by hand;
+  # see #635): slabs and lines as libraries, edge modules ONE AT A TIME.
+  heavy-seg:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: true
+      matrix:
+        H: ${{ fromJSON(needs.validate.outputs.segments) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add swap (bounds peak memory of the edge decide checks)
+        run: |
+          sudo fallocate -l 24G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2
+          free -g
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles(format('telperion/examples/{0}/lean/lean-toolchain', inputs.island)) }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/${{ inputs.island }}/lean
+        run: lake exe cache get
+      - name: Build this segment's leaf certificates (edge modules one at a time)
+        working-directory: telperion/examples/${{ inputs.island }}/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          H=${{ matrix.H }}
+          lake build Arb4_H${H}Slabs Arb4_H${H}Lines
+          for f in Arb4_H${H}Edges_*.lean; do
+            m="${f%.lean}"
+            echo "== $m"; start=$(date +%s)
+            lake build "+$m"
+            echo "   $m built in $(( $(date +%s) - start )) s"
+          done
+      - name: Hand the leaf build outputs to the judge job
+        uses: actions/upload-artifact@v4
+        with:
+          name: heavy-seg-${{ matrix.H }}
+          path: telperion/examples/${{ inputs.island }}/lean/.lake/build
+          retention-days: 3
+          if-no-files-found: error
+
+  judge-part:
+    needs: [validate, heavy-seg]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    name: judge ${{ matrix.part }}
+    strategy:
+      fail-fast: false
+      matrix:
+        part: ${{ fromJSON(needs.validate.outputs.parts) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+
+      # Same memory treatment as the per-PR heavy shard (#632): swap plus MALLOC_ARENA_MAX
+      # below, since the challenge build is the shape that exhausted the runner.
+      - name: Provision swap
+        run: |
+          sudo fallocate -l 24G /swapfile2 && sudo chmod 600 /swapfile2 && sudo mkswap /swapfile2 && sudo swapon /swapfile2
+          free -g
+
+      - name: Collect the segment leaf builds into the island
+        uses: actions/download-artifact@v4
+        with:
+          pattern: heavy-seg-*
+          path: telperion/examples/${{ inputs.island }}/lean/.lake/build
+          merge-multiple: true
+
+      - name: Render the heavy bundle for this node only (temp dir, never committed)
+        id: nodes
+        working-directory: telperion
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/heavy-bundle"
+          PYTHONPATH=src python -m telperion.missions.judge --island "${{ inputs.island }}" \
+            --heavy --only "${{ inputs.node }}" --out "$OUT"
+          PYTHONPATH=src python -m telperion.missions.judge --island "${{ inputs.island }}" \
+            --heavy --only "${{ inputs.node }}" --configs > "$RUNNER_TEMP/all.tsv"
+          # This job's row only.
+          awk -F'\t' -v s="${{ matrix.part }}" '$1 == s' "$RUNNER_TEMP/all.tsv" | tee "$RUNNER_TEMP/nodes.tsv"
+          test "$(wc -l < "$RUNNER_TEMP/nodes.tsv")" -eq 1
+          echo "BUNDLE=$OUT" >> "$GITHUB_ENV"
+          echo "tag=$(python -c "import json;print(json.load(open('$OUT/MANIFEST.json'))['comparator_tag'])")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles(format('telperion/examples/{0}/lean/lean-toolchain', inputs.island)) }}
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib olean cache (island and bundle)
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd "telperion/examples/${{ inputs.island }}/lean" && lake exe cache get)
+          (cd "$BUNDLE" && lake exe cache get)
+
+      # The leaf certificates were built by heavy-seg and replay from their uploaded
+      # .olean/.trace files; this builds the glue, the chained capstones and the one bridge
+      # module (statement identity). Where the node's closure includes RS5/H11K chunks, build
+      # those one at a time first (each peaks at ~7.4 GB).
+      - name: Build the bridge module (island glue + statement identity)
+        working-directory: telperion/examples/${{ inputs.island }}/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          sol=$(cut -f3 "$RUNNER_TEMP/nodes.tsv")
+          if [[ "$sol" == H11K_* ]]; then
+            for f in RS5_Band_T*_C*.lean H11K_Edge_*.lean H11K_Slab_*.lean; do
+              [ -f "$f" ] || continue; lake build "+${f%.lean}"; done
+          fi
+          cd "$BUNDLE"
+          lake build "MissionChallenges.$(cut -f1 "$RUNNER_TEMP/nodes.tsv")"
+
+      - name: Install landrun shim (preserves `--`)
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cat > "$HOME/.local/bin/landrun" <<'SHIM'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          args=("$@"); i=0; n=${#args[@]}
+          while (( i < n )); do
+            a="${args[$i]}"
+            case "$a" in
+              --ro|--rw|--rwx|--rox|--env|--log-level)
+                v="${args[$((i+1))]:-}"
+                [[ "$a" == "--env" && "$v" == *"="* ]] && export "$v"
+                i=$((i+2)) ;;
+              --env=*) export "${a#--env=}"; i=$((i+1)) ;;
+              --*=*) i=$((i+1)) ;;
+              -*) i=$((i+1)) ;;
+              *) break ;;
+            esac
+          done
+          exec "${args[@]:$i}"
+          SHIM
+          chmod +x "$HOME/.local/bin/landrun"
+
+      - name: Build Comparator + lean4export (tag = the island toolchain)
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.nodes.outputs.tag }}"
+          git clone --depth 1 --branch "$TAG" https://github.com/leanprover/comparator.git "$HOME/comparator"
+          cd "$HOME/comparator"
+          lake build lean4export comparator
+          COMPARATOR_BIN="$(find "$HOME/comparator/.lake" -type f -name comparator -path '*/bin/*' | head -1)"
+          L4X_BIN="$(find "$HOME/comparator/.lake" -type f -name lean4export -path '*/bin/*' | head -1)"
+          test -x "$COMPARATOR_BIN" && test -x "$L4X_BIN"
+          echo "$(dirname "$COMPARATOR_BIN")" >> "$GITHUB_PATH"
+          echo "COMPARATOR_LEAN4EXPORT=$L4X_BIN" >> "$GITHUB_ENV"
+
+      - name: Build nanoda (only when this part's config enables it)
+        if: ${{ !contains(matrix.part, '__') }}
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$HOME/nanoda"
+          cd "$HOME/nanoda"
+          cargo build --release
+          test -x "$HOME/nanoda/target/release/nanoda_bin"
+          echo "COMPARATOR_NANODA=$HOME/nanoda/target/release/nanoda_bin" >> "$GITHUB_ENV"
+
+      - name: Comparator on the heavy node (statement identity + axiom whitelist + Lean kernel)
+        env:
+          COMPARATOR_LANDRUN: /home/runner/.local/bin/landrun
+          MALLOC_ARENA_MAX: "2"
+        shell: bash
+        run: |
+          set -uo pipefail
+          cd "$BUNDLE"
+          ulimit -s unlimited 2>/dev/null || ulimit -s 4194304 2>/dev/null || echo "::warning::could not raise the stack limit"
+          IFS=$'\t' read -r slug cfg sol thm bridge kernel part exports < "$RUNNER_TEMP/nodes.tsv"
+          echo "==================== $slug  ($thm in $sol; bridge $bridge; $kernel; part ${part:--}) ===================="
+          if lake env comparator "$cfg"; then
+            echo "COMPARATOR PASS island=${{ inputs.island }} node=$slug theorem=$thm run=${{ github.run_id }} kernel=$kernel"
+            echo "| $slug | \`$thm\` | PASS ($kernel, heavy path) |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::COMPARATOR FAIL island=${{ inputs.island }} node=$slug theorem=$thm"
+            exit 1
+          fi
+
+      # Only after this part's Comparator PASS: what compose.py needs to glue it -- the judged
+      # theorem's type / hypotheses / axioms / closure modules (ComposeInspect.lean over the same
+      # built modules) and the sha256 of each statement constant's lean4export.
+      - name: Record this compositional part (inspect + statement exports)
+        if: ${{ contains(matrix.part, '__') }}
+        working-directory: telperion
+        env:
+          MALLOC_ARENA_MAX: "2"
+        shell: bash
+        run: |
+          set -euo pipefail
+          IFS=$'\t' read -r slug cfg sol thm bridge kernel part exports < "$RUNNER_TEMP/nodes.tsv"
+          test -n "$part"
+          PYTHONPATH=src python -m telperion.missions.compose part --bundle "$BUNDLE" \
+            --node "${{ inputs.node }}" --part "$part" --slug "$slug" --exports "$exports" \
+            --run-id "${{ github.run_id }}" --kernel "$kernel" --job "judge $slug" \
+            --lean4export "$COMPARATOR_LEAN4EXPORT" --out "$RUNNER_TEMP/$slug.part.json"
+      - name: Hand the part to the verdict job
+        if: ${{ contains(matrix.part, '__') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: compose-part-${{ matrix.part }}
+          path: ${{ runner.temp }}/${{ matrix.part }}.part.json
+          retention-days: 30
+          if-no-files-found: error
+
+  # Glues the parts: prints `COMPARATOR PASS ... judge=compositional parts=N` only when every
+  # check in telperion.missions.compose holds, else COMPARATOR FAIL (and fails the job).
+  verdict:
+    needs: [validate, judge-part]
+    if: ${{ needs.validate.outputs.compositional == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    name: verdict ${{ inputs.node }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: compose-part-*
+          path: ${{ runner.temp }}/parts
+          merge-multiple: true
+      - name: Compose the verdict
+        working-directory: telperion
+        shell: bash
+        run: |
+          set -euo pipefail
+          camp=$(ls missions/*/nodes/"${{ inputs.node }}".toml | head -1 | cut -d/ -f2)
+          PYTHONPATH=src python -m telperion.missions.compose verify --campaign "$camp" \
+            --node "${{ inputs.node }}" --island "${{ inputs.island }}" \
+            --parts "$RUNNER_TEMP/parts" --run-id "${{ github.run_id }}" | tee "$RUNNER_TEMP/verdict.txt"
+          grep -q '^COMPARATOR PASS ' "$RUNNER_TEMP/verdict.txt"
+          grep '^COMPARATOR PASS \|^COMPOSE PART ' "$RUNNER_TEMP/verdict.txt" | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY"
