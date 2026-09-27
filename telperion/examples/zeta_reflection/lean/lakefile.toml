@@ -1339,6 +1339,13 @@ roots = ["Arb4_h8000"]
 name = "Arb4_AxiomGuard_h8000"
 roots = ["Arb4_AxiomGuard_h8000"]
 
+# The height-8000 ladder as an IMPLICATION from its eight segment band hypotheses (no certificate
+# module imported): the compositional independent judge checks it once and each `Arb4_h<H>.hbands`
+# separately (missions-comparator-heavy.yml).  conjecture1_proved = False.
+[[lean_lib]]
+name = "Arb4_Compose_h8000"
+roots = ["Arb4_Compose_h8000"]
+
 # ---------------------------------------------------------------------------------------------
 # Lane H11K: all nontrivial zeros up to height 11000 on the critical line, HYPOTHESIS-FREE:
 # Arb4_h8000 + ONE wide Turing band [31851/4, 11004] (sharp-pi pins, H11K_Turing), RS5 on-line

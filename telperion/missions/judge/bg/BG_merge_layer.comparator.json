@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.BG_merge_layer",
+  "solution_module": "MissionChallenges.BG_merge_layer",
+  "theorem_names": [
+    "MissionJudge.BG_merge_layer"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
