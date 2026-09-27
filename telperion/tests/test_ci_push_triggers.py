@@ -22,7 +22,8 @@ _WF = Path(__file__).resolve().parents[2] / ".github" / "workflows"
 NO_PUSH_ALLOWED = {
     "missions-comparator-heavy.yml": (
         "Dispatch-only by design (2026-09-26): it judges one named judge_via = \"heavy\" node at a "
-        "time, building the whole ladder across a matrix (~5.5 runner-hours). Per-merge runs would "
+        "time, building the whole ladder across a matrix and, for a compositional node, running one "
+        "Comparator job per part (~11 runner-hours in all). Per-merge runs would "
         "starve the 20-job ceiling. The per-PR missions-comparator covers every other node; "
         "provenance-report shows heavy nodes as judged here, with or without a recorded run."
     ),

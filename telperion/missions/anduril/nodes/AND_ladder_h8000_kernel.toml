@@ -8,6 +8,11 @@ requires_ci_job = "telperion-zeta-reflection.yml:anduril-kernel-ladder"
 # build. heavy_certificates: that path runs the Lean kernel only (nanoda off).
 judge_via = "heavy"
 heavy_certificates = true
+# One Comparator run cannot replay this closure (run 36274981386: > 4 h in the kernel replay,
+# cancelled), so the heavy judge checks it COMPOSITIONALLY (telperion.missions.compose): each
+# segment theorem `Arb4_h<H>.hbands : AllZeros_h<H>.BandHyp` in its own job, and once the
+# implication below (eight band hypotheses -> this statement), whose closure must contain no
+# certificate module. The record then says judge_mode = "compositional".
 statement_module = "Statements.AND_ladder_h8000_kernel"
 status = "proved"
 title = "Every nontrivial zeta zero with 0 < Im rho <= 8000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, NO Arb or oracle input (Arb4 compact certificates, 8 segments chained by height_chain; 29 MB of certificates). Verified by an independent leanchecker replay of all 164 modules. Finite verification only, NOT RH. conjecture1_proved = False"
@@ -44,3 +49,12 @@ auditor_session = "ef083c48-579d-4bec-a689-c30fdccec2a1"
 date = "2026-09-25"
 independence = "unverified"
 text = "Formal statement, read in the author's own session (NOT independent; the Comparator judge and the CI record are the independent checks): for every complex rho, riemannZeta rho = 0 and 0 < rho.im and rho.im <= 8000 imply rho.re = 1/2. riemannZeta is Mathlib's; the condition 0 < Im excludes the trivial zeros and the pole; the statement is hypothesis-free (no Arb or oracle premises). It is a finite verification up to height 8000 and says nothing about RH beyond that height. Non-vacuous: zeta has about 7788 such zeros, all asserted to lie on Re = 1/2."
+
+[compose]
+module = "Arb4_Compose_h8000"
+theorem = "Arb4_Compose_h8000.ladder_h8000_of_bands"
+forbidden_modules = "^Arb4_(h[0-9]+|H[0-9]+(Edges|Slabs|Lines)_[0-9]+)$"
+segment_names = ["h1000", "h2000", "h3000", "h4000", "h5000", "h6000", "h7000", "h8000"]
+segment_statements = ["AllZeros_h1000.BandHyp", "AllZeros_h2000.BandHyp", "AllZeros_h3000.BandHyp", "AllZeros_h4000.BandHyp", "AllZeros_h5000.BandHyp", "AllZeros_h6000.BandHyp", "AllZeros_h7000.BandHyp", "AllZeros_h8000.BandHyp"]
+segment_theorems = ["Arb4_h1000.hbands", "Arb4_h2000.hbands", "Arb4_h3000.hbands", "Arb4_h4000.hbands", "Arb4_h5000.hbands", "Arb4_h6000.hbands", "Arb4_h7000.hbands", "Arb4_h8000.hbands"]
+segment_modules = ["Arb4_h1000", "Arb4_h2000", "Arb4_h3000", "Arb4_h4000", "Arb4_h5000", "Arb4_h6000", "Arb4_h7000", "Arb4_h8000"]

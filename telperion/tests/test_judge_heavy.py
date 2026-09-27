@@ -47,10 +47,14 @@ def test_heavy_path_needs_named_nodes():
         judge.build_bundle(T, "zeta_reflection", heavy=True)
 
 
-def test_heavy_render_is_single_node_lean_kernel_only():
+def test_heavy_render_is_lean_kernel_only_and_compositional_for_h8000():
+    """h8000 carries a [compose] table (2026-09-27), so the heavy render is its PARTS -- one per
+    segment plus the implication -- never the one-closure capstone challenge."""
     b = judge.build_bundle(T, "zeta_reflection", heavy=True, only=[HEAVY])
-    assert [c.slug for c in b.challenges] == [HEAVY]
-    assert b.challenges[0].nanoda is False
+    slugs = [c.slug for c in b.challenges]
+    assert HEAVY not in slugs
+    assert slugs == [f"{HEAVY}__seg_h{h}000" for h in range(1, 9)] + [f"{HEAVY}__compose"]
+    assert all(c.nanoda is False for c in b.challenges)
     assert b.excluded == ()
 
 
