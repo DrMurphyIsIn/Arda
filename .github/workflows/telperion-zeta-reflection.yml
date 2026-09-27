@@ -83,6 +83,16 @@ on:
       - "telperion/examples/zeta_zero_localization/lean/AllZerosUpToHeight.lean"
       - "telperion/examples/zeta_zero_localization/lean/TuringBand.lean"
       - "telperion/examples/zeta_zero_localization/lean/AllZeros_h1000.lean"
+      # AllZeros_h2000..h8000: the h8000 implication (Arb4_Compose_h8000) imports them -- they define the
+      # BandHyp constants the compositional judge ties by export hash. Enumerated, never a glob:
+      # the bulk AllZeros_h* bands (~27k) stay irrelevant.
+      - "telperion/examples/zeta_zero_localization/lean/AllZeros_h2000.lean"
+      - "telperion/examples/zeta_zero_localization/lean/AllZeros_h3000.lean"
+      - "telperion/examples/zeta_zero_localization/lean/AllZeros_h4000.lean"
+      - "telperion/examples/zeta_zero_localization/lean/AllZeros_h5000.lean"
+      - "telperion/examples/zeta_zero_localization/lean/AllZeros_h6000.lean"
+      - "telperion/examples/zeta_zero_localization/lean/AllZeros_h7000.lean"
+      - "telperion/examples/zeta_zero_localization/lean/AllZeros_h8000.lean"
       - "telperion/examples/zeta_zero_localization/lean/RHInBoxT_1d4000000_3999999d4000000_*.lean"
       - ".github/workflows/telperion-zeta-reflection.yml"
   workflow_dispatch:
@@ -113,7 +123,7 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
+          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|AllZeros_h2000|AllZeros_h3000|AllZeros_h4000|AllZeros_h5000|AllZeros_h6000|AllZeros_h7000|AllZeros_h8000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
         run: |
           set -uo pipefail
           run=true
@@ -263,7 +273,7 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
+          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|AllZeros_h2000|AllZeros_h3000|AllZeros_h4000|AllZeros_h5000|AllZeros_h6000|AllZeros_h7000|AllZeros_h8000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
         run: |
           set -uo pipefail
           run=true
@@ -362,7 +372,7 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
+          RELEVANT: '^(telperion/examples/zeta_reflection/|\.github/workflows/telperion-zeta-reflection\.yml$|telperion/examples/zero_free_bridge/lean/|telperion/examples/zeta_zero_localization/lean/zzl_core/|telperion/examples/zeta_zero_localization/lean/(LambdaLineReal|XiLineZeros|WindingCount|BoxArgPrinciple|BoxArgPrincipleZeta|RigorousWinding|BlaschkeBox|BoxLocalization|RHInBoxCore|RHInBoxAnalytic|RHInBox|RHInBoxBands|DiffractionCore|ZetaZeroConfinement|AllZerosUpToHeight|TuringBand|AllZeros_h1000|AllZeros_h2000|AllZeros_h3000|AllZeros_h4000|AllZeros_h5000|AllZeros_h6000|AllZeros_h7000|AllZeros_h8000|RHInBoxT_1d4000000_3999999d4000000_[0-9d]+_[0-9d]+)\.lean$)'
         run: |
           set -uo pipefail
           run=true
@@ -441,6 +451,23 @@ jobs:
               || { echo "::error::capstone Arb4_h$H.all_nontrivial_zeros_up_to_height_$H not printed"; exit 1; }
             echo "OK h$H: $(grep -oE 'depends on axioms' <<< "$out" | wc -l) guarded anchors, all within the standard three"
           done
+
+      # The compositional heavy judge (missions-comparator-heavy.yml) checks AND.ladder_h8000_kernel
+      # through this implication. Compile it on every relevant change -- a recorded compositional
+      # verdict must not outlive a module that no longer builds -- and re-check its shape: the
+      # eight band hypotheses in order, axiom-clean, no certificate module in its closure.
+      - name: The h8000 implication for the compositional judge (compile + shape)
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Arb4_Compose_h8000
+          # The telperion package imports sympy at load time; the runner's system python has none
+          # (and is externally managed), so use a throwaway venv.
+          python3 -m venv "$RUNNER_TEMP/venv" && "$RUNNER_TEMP/venv/bin/pip" install -q sympy
+          PYTHONPATH="$GITHUB_WORKSPACE/telperion/src" "$RUNNER_TEMP/venv/bin/python" -m telperion.missions.compose island-check \
+            --campaign anduril --node AND_ladder_h8000_kernel --lean-dir "$PWD"
 
       - name: Height 11000 -- one Turing band [31851/4, 11004] on top of the h8000 ladder, and its guard
         if: steps.changes.outputs.run == 'true'

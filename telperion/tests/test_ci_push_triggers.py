@@ -22,7 +22,8 @@ _WF = Path(__file__).resolve().parents[2] / ".github" / "workflows"
 NO_PUSH_ALLOWED = {
     "missions-comparator-heavy.yml": (
         "Dispatch-only by design (2026-09-26): it judges one named judge_via = \"heavy\" node at a "
-        "time, building the whole ladder across a matrix (~5.5 runner-hours). Per-merge runs would "
+        "time, building the whole ladder across a matrix and, for a compositional node, running one "
+        "Comparator job per part (~11 runner-hours in all). Per-merge runs would "
         "starve the 20-job ceiling. The per-PR missions-comparator covers every other node; "
         "provenance-report shows heavy nodes as judged here, with or without a recorded run."
     ),
@@ -128,8 +129,10 @@ def test_zeta_reflection_push_not_broader_than_relevant():
     """No push path may fire on files the job itself declares irrelevant (e.g. bulk AllZeros_h* bands)."""
     rel = _relevant()
     z = "telperion/examples/zeta_zero_localization/lean/"
-    irrelevant = [z + "AllZeros_h5000.lean", z + "AllZeros_h280000.lean", z + "SomethingElse.lean",
-                  "telperion/examples/rvm_bridge/lean/X.lean"]
+    # AllZeros_h5000 WAS an irrelevant sample until the h8000 implication (#645) made the eight
+    # ladder heights relevant; the bulk bands (h280000) and the rest stay irrelevant.
+    irrelevant = [z + "AllZeros_h280000.lean", z + "AllZeros_h9000.lean", z + "AllZeros_h50000.lean",
+                  z + "SomethingElse.lean", "telperion/examples/rvm_bridge/lean/X.lean"]
     globs = [_glob_to_re(g) for g in _on(_ZR)["push"]["paths"]]
     for path in irrelevant:
         assert not _re.match(rel, path), f"sample {path} should NOT match RELEVANT (test bug)"
@@ -138,3 +141,20 @@ def test_zeta_reflection_push_not_broader_than_relevant():
     for g in _on(_ZR)["push"]["paths"]:
         inst = g.replace("**", "x/y.lean").replace("*", "12d5_13d5")
         assert _re.match(rel, inst), f"push path {g} admits {inst}, which RELEVANT rejects"
+
+
+def test_zeta_reflection_covers_the_ladder_heights_the_implication_imports():
+    """The compositional judge ties each AllZeros_h<H>.BandHyp by export hash, and the h8000
+    implication imports AllZeros_h1000..h8000: an edit to any of them must re-run the ladder job
+    (which compiles and island-checks the implication), both as RELEVANT and as a push path."""
+    rel = _relevant()
+    globs = [_glob_to_re(g) for g in _on(_ZR)["push"]["paths"]]
+    z = "telperion/examples/zeta_zero_localization/lean/"
+    for h in range(1, 9):
+        path = f"{z}AllZeros_h{h}000.lean"
+        assert _re.match(rel, path), f"{path} is imported by the h8000 implication but not RELEVANT"
+        assert any(g.match(path) for g in globs), f"{path} has no push path"
+    imports = _re.findall(r"(?m)^import\s+(AllZeros_h\d+)\s*$", (Path(__file__).resolve().parents[1]
+        / "examples" / "zeta_reflection" / "lean" / "Arb4_Compose_h8000.lean").read_text())
+    for m in imports:
+        assert _re.match(rel, f"{z}{m}.lean"), f"implication import {m} is not RELEVANT"

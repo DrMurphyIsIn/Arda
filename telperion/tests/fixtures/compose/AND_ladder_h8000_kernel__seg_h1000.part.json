@@ -1,0 +1,51 @@
+{
+ "node": "AND_ladder_h8000_kernel",
+ "part": "seg:h1000",
+ "slug": "AND_ladder_h8000_kernel__seg_h1000",
+ "comparator": "PASS",
+ "run_id": "local",
+ "kernel": "lean-kernel-only",
+ "job": "local",
+ "inspect": {
+  "axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "binders": [],
+  "closure_modules": [
+   "Arb4_Edge",
+   "Arb4_Gamma",
+   "Arb4_H1000Edges_0",
+   "Arb4_H1000Edges_1",
+   "Arb4_H1000Edges_2",
+   "Arb4_H1000Edges_3",
+   "Arb4_H1000Edges_4",
+   "Arb4_H1000Edges_5",
+   "Arb4_H1000Lines_0",
+   "Arb4_H1000Lines_1",
+   "Arb4_H1000Lines_2",
+   "Arb4_H1000Lines_3",
+   "Arb4_H1000Lines_4",
+   "Arb4_H1000Slabs_0",
+   "Arb4_H1000Slabs_1",
+   "Arb4_H1000Slabs_2",
+   "Arb4_H1000Slabs_3",
+   "Arb4_H1000Slabs_4",
+   "Arb4_Line",
+   "Arb4_Q",
+   "Arb4_Seg",
+   "Arb4_Side",
+   "Arb4_Slab",
+   "Arb4_h1000"
+  ],
+  "closure_size": 71197,
+  "theorem": "MissionJudge.AND_ladder_h8000_kernel__seg_h1000",
+  "type_const": "AllZeros_h1000.BandHyp",
+  "closure_modules_total": 2226
+ },
+ "statement_exports": {
+  "AllZeros_h1000.BandHyp": "702e6ed9d9ec120d2e2e3a8f9b1f3660232d8487957f449038c44127661b6b0c"
+ },
+ "_fixture_note": "REAL output of a local run (2026-09-27, ~/arda-heavyjudge): Comparator PASS, ComposeInspect, lean4export sha256. closure_modules trimmed to the Arb4* entries (total kept in closure_modules_total); nothing else edited."
+}
