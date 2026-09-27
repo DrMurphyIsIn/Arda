@@ -442,6 +442,20 @@ jobs:
             echo "OK h$H: $(grep -oE 'depends on axioms' <<< "$out" | wc -l) guarded anchors, all within the standard three"
           done
 
+      # The compositional heavy judge (missions-comparator-heavy.yml) checks AND.ladder_h8000_kernel
+      # through this implication. Compile it on every relevant change -- a recorded compositional
+      # verdict must not outlive a module that no longer builds -- and re-check its shape: the
+      # eight band hypotheses in order, axiom-clean, no certificate module in its closure.
+      - name: The h8000 implication for the compositional judge (compile + shape)
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Arb4_Compose_h8000
+          PYTHONPATH="$GITHUB_WORKSPACE/telperion/src" python3 -m telperion.missions.compose island-check \
+            --campaign anduril --node AND_ladder_h8000_kernel --lean-dir "$PWD"
+
       - name: Height 11000 -- one Turing band [31851/4, 11004] on top of the h8000 ladder, and its guard
         if: steps.changes.outputs.run == 'true'
         working-directory: telperion/examples/zeta_reflection/lean

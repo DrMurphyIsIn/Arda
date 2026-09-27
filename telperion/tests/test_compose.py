@@ -193,7 +193,7 @@ def test_d_weak_record_reason_says_compositional():
                         lean_kernel_only=True, log_check="verified", head_check="matched",
                         has_grant=True, judge_via="heavy", judge_mode="compositional", parts=9)
     (r,) = weak_record_reasons(row)
-    assert "not replayed as one closure" in r and "8 Comparator-checked segment" in r
+    assert "capstone's own proof was not replayed" in r and "8 Comparator-checked segment" in r
 
 
 def test_d_staleness_tracks_every_part_module(tmp_path):
@@ -359,3 +359,24 @@ def test_record_rechecks_the_uploaded_parts(record_env):
     assert "re-checking the uploaded parts FAILED" in record_env["run"]()
     record_env["uploaded"]["parts"] = []
     assert "could not download" in record_env["run"]()
+
+
+def test_island_check_on_the_real_implication_report():
+    """The PR-time check the ladder CI job runs after compiling the implication."""
+    ins = copy.deepcopy(json.loads((FIX / f"{NODE}__compose.part.json").read_text())["inspect"])
+    ins["theorem"] = SPEC.theorem
+    assert compose.island_check(SPEC, ins) == []
+    bad = copy.deepcopy(ins); bad["closure_modules"].append("Arb4_H4000Slabs_2")
+    assert any("certificate module" in e for e in compose.island_check(SPEC, bad))
+    bad = copy.deepcopy(ins); bad["binders"] = bad["binders"][1:]
+    assert any("in order" in e for e in compose.island_check(SPEC, bad))
+    bad = copy.deepcopy(ins); bad["axioms"].append("sorryAx")
+    assert any("axioms" in e for e in compose.island_check(SPEC, bad))
+
+
+def test_ladder_ci_compiles_and_checks_the_implication():
+    """A recorded compositional verdict must not outlive a module that no longer builds: the
+    zeta-reflection ladder job compiles the implication and runs island-check on it."""
+    wf = (T.parent / ".github" / "workflows" / "telperion-zeta-reflection.yml").read_text()
+    assert f"lake build {SPEC.module}" in wf
+    assert "telperion.missions.compose island-check" in wf and f"--node {NODE}" in wf
