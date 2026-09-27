@@ -463,7 +463,10 @@ jobs:
         run: |
           set -euo pipefail
           lake build Arb4_Compose_h8000
-          PYTHONPATH="$GITHUB_WORKSPACE/telperion/src" python3 -m telperion.missions.compose island-check \
+          # The telperion package imports sympy at load time; the runner's system python has none
+          # (and is externally managed), so use a throwaway venv.
+          python3 -m venv "$RUNNER_TEMP/venv" && "$RUNNER_TEMP/venv/bin/pip" install -q sympy
+          PYTHONPATH="$GITHUB_WORKSPACE/telperion/src" "$RUNNER_TEMP/venv/bin/python" -m telperion.missions.compose island-check \
             --campaign anduril --node AND_ladder_h8000_kernel --lean-dir "$PWD"
 
       - name: Height 11000 -- one Turing band [31851/4, 11004] on top of the h8000 ladder, and its guard
