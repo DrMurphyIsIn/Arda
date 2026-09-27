@@ -71,6 +71,27 @@ lemma shiftsOK_quad (d : ℤ) : ShiftsOK (quadData d) := by
   · rw [h]; exact shiftOK_zero
   · rw [h]; exact shiftOK_muOf _
 
+/-- The symbol is EVEN in the frequency.  Every ingredient is: each `psiShift` by
+`psiShift_neg` (the digamma of a conjugate pair), and each comb term because `cos` is.
+
+Needed because the envelope bound `symbolQ_ge_betaStar` is stated for `T# <= t` with `t`
+positive, while a window certificate controls the symbol on `|t| >= T#`: without this the
+negative half would have to be re-derived inside every certificate. -/
+theorem symbolF_neg {D : FormData} (hD : ShiftsOK D) (L t : ℝ) :
+    symbolF D L (-t) = symbolF D L t := by
+  unfold symbolF
+  congr 1
+  · congr 1
+    · congr 1
+      unfold symbolArch
+      refine congrArg List.sum (List.map_congr_left ?_)
+      intro μ hμ
+      exact psiShift_neg (hD μ hμ) t
+  · refine tsum_congr fun n => ?_
+    by_cases h : Real.log n < 2 * L
+    · simp only [h, if_true, neg_mul, Real.cos_neg]
+    · simp only [h, if_false]
+
 lemma shiftsOK_cell (N : ℕ) (ε : ℕ → ℤ) (neg : Bool) : ShiftsOK (cellData N ε neg) := by
   intro μ hμ
   simp only [cellData, List.mem_cons, List.not_mem_nil, or_false] at hμ
@@ -418,6 +439,17 @@ theorem symbolRepresentation_agree (L : ℝ) (f : ℝ → ℂ) (hf : IsWeilTest 
 
 /-- The symbol of `zeta_K`, `K = Q(sqrt d)`. -/
 def symbolQ (d : ℤ) (L t : ℝ) : ℝ := symbolF (quadData d) L t
+
+/-- The quadratic symbol is even in the frequency (`symbolF_neg` at `quadData`). -/
+theorem symbolQ_neg (d : ℤ) (L t : ℝ) : symbolQ d L (-t) = symbolQ d L t :=
+  symbolF_neg (shiftsOK_quad d) L t
+
+/-- The symbol at `|t|`: the even extension, so a bound proved for `t >= T#` transfers to the
+whole window `|t| >= T#`. -/
+theorem symbolQ_abs (d : ℤ) (L t : ℝ) : symbolQ d L |t| = symbolQ d L t := by
+  rcases abs_cases t with ⟨h, _⟩ | ⟨h, _⟩
+  · rw [h]
+  · rw [h, symbolQ_neg]
 
 /-- The symbol of a `(pattern, sign)` cell cut at `N`: conductor term `0`, cut weights. -/
 def symbolCell (N : ℕ) (ε : ℕ → ℤ) (neg : Bool) (L t : ℝ) : ℝ := symbolF (cellData N ε neg) L t

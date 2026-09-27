@@ -1407,4 +1407,8 @@ import FamilyWeilAtoms
 #print axioms FamilyWeil.combMassF_eq_fin
 #print axioms FamilyWeil.comb_le_combMassF
 #print axioms FamilyWeil.symbolQ_ge_betaStar
+#print axioms FamilyWeil.symbolF_neg
+#print axioms FamilyWeil.symbolQ_neg
+#print axioms FamilyWeil.symbolQ_abs
+#print axioms FamilyWeil.symbolQ_ge_betaStar_abs
 #print axioms FamilyWeil.combMassF_dm3_window4

@@ -581,6 +581,14 @@ theorem symbolQ_ge_betaStar (d : ℤ) {L Tsharp t : ℝ} (hT : 15 / 4 ≤ Tsharp
   rw [e2]
   linarith
 
+/-- `symbolQ_ge_betaStar` on the WHOLE window: the symbol is even, so the envelope bound holds
+wherever `|t| >= T#`, which is the form a window certificate consumes (the positive-`t` statement
+alone would leave the negative half to be re-derived inside each certificate). -/
+theorem symbolQ_ge_betaStar_abs (d : ℤ) {L Tsharp t : ℝ} (hT : 15 / 4 ≤ Tsharp)
+    (ht : Tsharp ≤ |t|) : betaStarQ d L Tsharp ≤ symbolQ d L t := by
+  rw [← symbolQ_abs d L t]
+  exact symbolQ_ge_betaStar d hT ht
+
 /-- The pilot's comb mass: `d = -3` on the `x = 4` window has the single atom `3` with weight
 `log 3`, so `A = 2 log 3 / sqrt 3` (`c(2) = 0` since `chi_{-3}(2) = -1`). -/
 theorem combMassF_dm3_window4 {L : ℝ} (hL3 : Real.log 3 < 2 * L) (hL4 : 2 * L ≤ Real.log 4) :
