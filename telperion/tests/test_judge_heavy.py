@@ -79,11 +79,19 @@ def test_judge_via_value_is_validated():
 
 
 def test_provenance_report_names_the_heavy_workflow():
+    """Unrecorded: the node is shown as judged elsewhere, not as an oversight.  Recorded (the
+    live state since run 36306561345): covered, and flagged COMPOSITIONAL, never as a plain pass."""
+    import dataclasses
     from telperion.missions.provenance import render_provenance_report
     from telperion.missions.registry import load_campaign
-    text = render_provenance_report(load_campaign(T / "missions" / "anduril"))
+    camp = load_campaign(T / "missions" / "anduril")
+    text = render_provenance_report(camp)
+    assert "COMPOSITIONAL: the capstone's own proof was not replayed" in text
+    camp.nodes[HEAVY] = dataclasses.replace(camp.nodes[HEAVY], comparator=None)
+    text = render_provenance_report(camp)
     i = text.index(HEAVY)
     assert "judge_via = heavy" in text[i:i + 400] and judge.HEAVY_WORKFLOW in text[i:i + 400]
+    assert "no heavy-judge run recorded yet" in text[i:i + 400]
 
 
 def test_heavy_workflow_constant_names_an_existing_workflow():
