@@ -595,6 +595,31 @@ name = "log_combination"
 script = "examples/log_combination/generate.py"
 group = "quick"    # F*-folding: Sum c_i log(r_i) <= q; dogfooded vs BG log74_le_4fstar/log54_sub_fstar_le
 
+[[check]]
+name = "concave_pooled_induction"
+script = "examples/concave_pooled_induction/generate.py"
+group = "quick"    # concave pooled-mean induction on tree recursions (matching-message dogfood)
+
+[[check]]
+name = "gap_budget_multiplicity"
+script = "examples/gap_budget_multiplicity/generate.py"
+group = "quick"    # tangent-gap budget multiplicity caps (max-product dogfood)
+
+[[check]]
+name = "mobius_tangent_cell"
+script = "examples/mobius_tangent_cell/generate.py"
+group = "quick"    # Mobius tangent cells (Pade log bound dogfood)
+
+[[check]]
+name = "pl_node_tail"
+script = "examples/pl_node_tail/generate.py"
+group = "quick"    # piecewise-linear node-condition tail (monotone_tail face)
+
+[[check]]
+name = "quadratic_sign_race"
+script = "examples/quadratic_sign_race/generate.py"
+group = "quick"    # quadratic sign race (eventual_threshold face)
+
 # --- RH-box examples added by parallel RH sessions; manifest was not updated,
 # tripping the completeness gate.  Split by dependency: the three below need
 # only sympy and pass --check in the flint-less telperion-test job (group quick);
