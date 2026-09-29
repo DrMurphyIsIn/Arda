@@ -1,8 +1,8 @@
 # UNTRUSTED writer (lane H11K): band_<tag>.json -> ONE chunk file RS5_Band_<Name>_C0.lean via lane B5's chunk_file.
 import sys, json, os
-sys.path.insert(0, '/Users/peterwmurphy/arda-h11k/telperion/research/rs_b5')
+sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/research/rs_b5'))
 import write_band as W
-W.ISL = '/Users/peterwmurphy/arda-h11k/telperion/examples/zeta_reflection/lean'
+W.ISL = str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection/lean')
 SCR = os.path.dirname(os.path.abspath(__file__))
 tag, name = sys.argv[1], sys.argv[2]
 d = json.load(open(os.path.join(SCR, f'band_{tag}.json')))

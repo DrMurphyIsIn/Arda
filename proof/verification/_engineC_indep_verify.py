@@ -23,7 +23,7 @@ from fractions import Fraction as Fr
 from functools import lru_cache
 import itertools, sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "telperion", "scratch"))
-sys.path.insert(0, "/Users/peterwmurphy/repos/Arda-wt-armrate/telperion/scratch")
+sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parents[2] / "telperion/scratch"))
 
 LEAF = ()
 

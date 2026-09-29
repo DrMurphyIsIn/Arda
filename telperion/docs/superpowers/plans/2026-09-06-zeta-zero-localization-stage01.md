@@ -12,13 +12,13 @@
 
 ## Global Constraints
 
-- **Worktree:** `/Users/peterwmurphy/telperion-zeroloc`, branch `rh/zeta-zero-localization` (off `origin/main`). Do NOT switch branches or touch other worktrees.
-- **Python invocation:** from `/Users/peterwmurphy/telperion-zeroloc/telperion`, use `PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 -m pytest …` (3.14.6; python-flint 0.9.0, mpmath 1.3.0, sympy 1.14.0). Bare `python`/`pytest` do NOT work.
+- **Worktree:** `~/telperion-zeroloc`, branch `rh/zeta-zero-localization` (off `origin/main`). Do NOT switch branches or touch other worktrees.
+- **Python invocation:** from `~/telperion-zeroloc/telperion`, use `PYTHONPATH=src python3 -m pytest …` (3.14.6; python-flint 0.9.0, mpmath 1.3.0, sympy 1.14.0). Bare `python`/`pytest` do NOT work.
 - **Object of study = `completedRiemannZeta` (Λ).** Λ's zeros are exactly the nontrivial zeros of ζ (the Γ factor cancels the trivial zeros). Λ(s) = π^{−s/2}·Γ(s/2)·ζ(s); it has simple poles only at s=0 and s=1 (both off the critical line). Build Λ from `acb` as `acb.pi()**(−s/2) * (s/2).gamma() * s.zeta()`.
 - **Certificate path exact-rational only** (`Fraction`); `float`/`mpmath`/`flint` only in enclosure computation + test oracles, never in emitted Lean literals.
 - **Trust boundary:** enclosure *membership* (true Λ(½+it_i) ∈ box_i) is a documented **non-kernel input** (Arb-certified), carried as Lean *hypotheses*; the kernel proves the *implication* (enclosures + alternating signs ⟹ zeros). `conjecture1_proved = False` on every artifact.
 - **First-class emitter pattern** (see `src/telperion/emit_hyperbolicity.py` / `emit_box_robust.py`): dataclass + `certify_<kind>_point` (raises to refuse) + `<Name>Emitter` with `__post_init__` `self.kind` + `emit_body` + `<kind>_family` + register in `certify.py` `_SPECIAL_KINDS`/`_SPECIAL_DISPATCH` + export from `__init__.py`.
-- **Lean = local warm verify:** copy `lean-toolchain`+`lakefile.toml`+`lake-manifest.json` from `examples/dvp_atoms/lean` (or another Mathlib example on main), run `/Users/peterwmurphy/.elan/bin/lake exe cache get` FIRST (downloads oleans — SoC-safe), then `lake build`. NEVER a from-scratch Mathlib compile.
+- **Lean = local warm verify:** copy `lean-toolchain`+`lakefile.toml`+`lake-manifest.json` from `examples/dvp_atoms/lean` (or another Mathlib example on main), run `~/.elan/bin/lake exe cache get` FIRST (downloads oleans — SoC-safe), then `lake build`. NEVER a from-scratch Mathlib compile.
 - **Kernel bar:** emitted/prelude Lean builds sorry-free, axioms ⊆ `{propext, Classical.choice, Quot.sound}`. Statement-match gate on emitted theorems.
 - **No emoji.** Lean-tactic note: exact statements + Mathlib toolkit given; tactic blocks developed against the kernel; a task is done only on a green `lake build`.
 

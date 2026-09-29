@@ -2,7 +2,7 @@
  "campaign": "Fixed-width survey: synthesis and refutation of the three lenses",
  "date": "2026-09-21",
  "conjecture1_proved": false,
- "worktree": "/Users/peterwmurphy/arda-goal-weil (branch mm/wall-fixed-width)",
+ "worktree": "~/arda-goal-weil (branch mm/wall-fixed-width)",
  "prose": "telperion/docs/FIXED_WIDTH_SURVEY_SYNTHESIS_2026-09-21.md",
  "inputs": [
   "research/FIXED_WIDTH_LENS_DIRICHLET_2026-09-21",

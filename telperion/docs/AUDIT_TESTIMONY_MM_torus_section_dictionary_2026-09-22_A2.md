@@ -3,7 +3,7 @@ The artifact proves a notation-only identity (the island's two-term exponential 
 # Audit testimony: MM_torus_section_dictionary (mirrormere, quasicrystal island), auditor 2 of 2
 
 Auditor: A2 (blind, adversarial, independent of auditor 1; no coordination). Date: 2026-09-22.
-Worktree /Users/peterwmurphy/arda-goal-weil, branch mm/gauss-window. No git command was run.
+Worktree ~/arda-goal-weil, branch mm/gauss-window. No git command was run.
 Island: telperion/examples/quasicrystal/lean, Lean v4.32.0, Mathlib v4.32.0
 (rev 81a5d257c8e410db227a6665ed08f64fea08e997).
 Artifact: TorusSectionLadder.lean (78 lines, namespace Quasicrystal, 3 definitions + 3 theorems,

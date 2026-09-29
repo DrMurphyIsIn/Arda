@@ -1,7 +1,7 @@
 # MM_offline_disjoint_discs -- the E4b isolation lemma, closed (and given a certificate kind)
 
 **Date** 2026-09-18 - **Branch** `mm/offline-disjoint-discs` (base `origin/rh/million-turing`, not pushed)
-**Worktree** `/Users/peterwmurphy/arda-mm-offline-disjoint-discs`
+**Worktree** `~/arda-mm-offline-disjoint-discs`
 **Island** `telperion/examples/quasicrystal/lean` (Lean 4.32.0, Mathlib v4.32.0)
 
 **conjecture1_proved = False.** Nothing here is progress on the Riemann Hypothesis. The lemma proved

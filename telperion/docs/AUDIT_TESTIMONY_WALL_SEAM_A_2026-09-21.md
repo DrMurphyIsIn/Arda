@@ -6,7 +6,7 @@ two-parameter Gaussian positivity statement, and that the Gaussian-weighted zero
 explicit archimedean-minus-prime expression; no side of any `↔` is asserted, and no `=` involves
 RH. conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifact: E6Bridge10.lean (577 lines, namespace
 RvMBridge10, `import E6Bridge9` only) and memo WALL_SEAM_A_GAUSSIAN_IFF_2026-09-21.md.

@@ -2,7 +2,7 @@
   "campaign": "WALL ASSAULT, seam sweep: what the in-kernel Weil criterion changes about the Wall",
   "date": "2026-09-21",
   "conjecture1_proved": false,
-  "worktree": "/Users/peterwmurphy/arda-goal-weil (branch mm/weil-consolidation)",
+  "worktree": "~/arda-goal-weil (branch mm/weil-consolidation)",
   "prose": "telperion/docs/WALL_ASSAULT_SEAMS_2026-09-21.md",
   "taxonomy": ["FOOTHOLD", "COLLAPSE_TO_RH", "COLLAPSE_TO_FREE", "TRANSFER", "UNRESOLVED"],
   "input_theorem": {

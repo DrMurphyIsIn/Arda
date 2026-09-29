@@ -2,7 +2,7 @@
 
 **Auditor:** independent blind read-back, 2026-09-18. No author context; own derivation completed
 before the design memo was opened.
-**Target:** node `RH_bl_explicit_formula`, worktree `/Users/peterwmurphy/arda-b7`, branch
+**Target:** node `RH_bl_explicit_formula`, worktree `~/arda-b7`, branch
 `rh/b7-ef-statement`.
 **Files read:** `telperion/missions/rh/nodes/RH_bl_explicit_formula.toml`,
 `telperion/missions/rh/lean/Statements/RH_bl_explicit_formula.lean`, the `BombieriLagarias` block

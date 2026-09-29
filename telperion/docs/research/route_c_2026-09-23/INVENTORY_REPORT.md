@@ -6,7 +6,7 @@ Raw input to ROUTE_C_SYNTHESIS_2026-09-23.md, committed so that its unanchored e
 
 conjecture1_proved = False. All four Route C registry nodes are proved. Route C does not prove RH. It turns RH into the open claim "every zero of H_0 is real" (Λ ≤ 0), and the island proves only the known half, de Bruijn's Λ ≤ 1/2.
 
-**Worktree:** `/Users/peterwmurphy/arda-routec-syn`, HEAD `b524f7e7d` ("grant(rh): RH_dbn_debruijn_real_zeros -> PROVED"). Its parent is `2f9e83ba2`, the merge of #604 on top of #608 (`dd6ed74c6`, the Hadamard work). The island sources are byte-identical to `/Users/peterwmurphy/arda-grant-c3` (`diff -rq` clean).
+**Worktree:** `~/arda-routec-syn`, HEAD `b524f7e7d` ("grant(rh): RH_dbn_debruijn_real_zeros -> PROVED"). Its parent is `2f9e83ba2`, the merge of #604 on top of #608 (`dd6ed74c6`, the Hadamard work). The island sources are byte-identical to `~/arda-grant-c3` (`diff -rq` clean).
 
 **One side effect:** to run the build check I reflink-copied `.lake` from arda-grant-c3 into `telperion/examples/dbn/lean/.lake`. `.lake` is a gitignored build cache. I made no git writes and no registry edits.
 

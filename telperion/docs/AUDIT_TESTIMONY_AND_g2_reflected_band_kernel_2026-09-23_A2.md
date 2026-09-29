@@ -5,7 +5,7 @@
 - statement_byte_identical: true (identical once whitespace is normalized; the hardened gate passes when given the statement's proposition body; see section 2)
 - conjecture1_proved = False
 
-Worktree: /Users/peterwmurphy/arda-cl-arb (read-only apart from this file and a temporary probe, which has been deleted). I did no git operations and made no registry edits.
+Worktree: ~/arda-cl-arb (read-only apart from this file and a temporary probe, which has been deleted). I did no git operations and made no registry edits.
 
 ## 1. Read-back of the registry statement (written before I read the artifact)
 

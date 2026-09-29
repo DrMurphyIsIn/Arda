@@ -7,7 +7,7 @@ certified near zero (or a finite dominance certificate). That hypothesis is exac
 finite Turing verification supplies for bounded c and nothing supplies beyond; the file asserts
 nothing about zeros outside the window. conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifact: E6Bridge12.lean (476 lines, namespace
 RvMBridge12, imports E6Bridge6 and E6Bridge7) and memo WALL_SEAM_C_LADDER_REGION_2026-09-21.md.

@@ -471,7 +471,7 @@ Would NOT establish:
   will not see them. One build per island; do not start the probe build while
   `zeta_reflection` builds.
 * CI greps for the bare placeholder word in comments; write "no `sorry`" style only.
-* No emoji anywhere; QuantConnect and the CI reject them.
+* No emoji anywhere; the CI rejects them.
 * The `.lake` copies must be reflink (`cp -Rc`) and the manifest revs re-checked before
   trusting the build (done for `arda-gw-finite`: all 11 entries match).
 

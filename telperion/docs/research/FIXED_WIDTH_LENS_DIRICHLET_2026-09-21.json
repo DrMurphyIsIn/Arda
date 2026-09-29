@@ -2,7 +2,7 @@
   "campaign": "FIXED-WIDTH LENS: Dirichlet polynomials, almost periodicity, large values",
   "date": "2026-09-21",
   "conjecture1_proved": false,
-  "worktree": "/Users/peterwmurphy/arda-goal-weil (branch mm/wall-fixed-width, shared, no git state changes)",
+  "worktree": "~/arda-goal-weil (branch mm/wall-fixed-width, shared, no git state changes)",
   "prose": "telperion/docs/research/FIXED_WIDTH_LENS_DIRICHLET_2026-09-21.md",
   "taxonomy": ["FOOTHOLD", "COLLAPSE_TO_RH", "COLLAPSE_TO_FREE", "TRANSFER", "UNRESOLVED"],
   "object": {

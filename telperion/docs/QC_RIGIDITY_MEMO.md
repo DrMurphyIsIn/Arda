@@ -425,7 +425,7 @@ charter); these are drafted statements for the B2 island.
 
 ## §6. In-session numeric verification log
 
-All run in `/Users/peterwmurphy/arda-qc-rigidity` with system Python + numpy.
+All run in `~/arda-qc-rigidity` with system Python + numpy.
 
 - **Theorem A (a),(b):** for `(c1,c2,λ1,λ2) ∈ {(1,1,0,1),(2,1,0,1),(1,1,3,7),
   (1+2i,2+i,-1,2)}`, sampled zeros `k=-2..2` all satisfy `|F(x)|<1e-9` and

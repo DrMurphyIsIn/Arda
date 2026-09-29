@@ -8,7 +8,7 @@ export const meta = {
   ],
 }
 
-const WT = '/Users/peterwmurphy/repos/Arda-wt-armrate'
+const WT = new URL('../..', import.meta.url).pathname.replace(/\/$/, '')  // repo root (this file lives in proof/verification)
 const BASE = [
   'Repo worktree: ' + WT + ' (branch bg/multihub-hnorm). Use exact fractions.Fraction ONLY (no floats). Python3.',
   'Run scripts from the directory that makes relative imports work (a3_derisk lives in telperion/scratch; verification scripts in proof/verification insert that path).',

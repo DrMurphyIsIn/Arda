@@ -1,6 +1,6 @@
 # Blind read-back audit: `RH_limit_explicit_formula` (routes-roadmap E8)
 
-Auditor: independent, no author context before section 7. Worktree `/Users/peterwmurphy/arda-e8`,
+Auditor: independent, no author context before section 7. Worktree `~/arda-e8`,
 branch `rh/e8-statement` @ `6a3aad254`. Island pin `leanprover/lean4:v4.34.0-rc1`,
 Mathlib `de5ce8a9a66a4aa68a9bdbb35b63a06d34d9ca11`. `lake build`: success (8728 jobs, only the
 by-design `sorry` warnings). No registry file was modified. Nothing here is a proof of the node.

@@ -6,7 +6,7 @@
 - conjecture1_proved = False
 
 Auditor A1 worked blind: no author context was consulted, and the design memo's normalisation was
-not relied on. The worktree was `/Users/peterwmurphy/arda-closure`. I ran no git operations and made
+not relied on. The worktree was `~/arda-closure`. I ran no git operations and made
 no registry edits. My probe file was deleted after use.
 
 ## Inputs read

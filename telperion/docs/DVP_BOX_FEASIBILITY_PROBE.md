@@ -164,7 +164,7 @@ substitute, though it remains a valid parallel deliverable.
 
 ```bash
 # Numerics + rational lower bound
-cd telperion && PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 - <<'PY'
+cd telperion && PYTHONPATH=src python3 - <<'PY'
 import mpmath as mp; from fractions import Fraction as F
 mp.mp.dps = 60
 Lr = mp.log(mp.mpf('23')/16/(mp.mpf('11')/8)); M=(8/(3*Lr)+mp.mpf('608')/9)/16
@@ -173,13 +173,13 @@ print('dlvpRateC=',C,'delta_100=',C/mp.log(100))
 PY
 
 # Arb winding at a=1e-6
-cd telperion && PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 - <<'PY'
+cd telperion && PYTHONPATH=src python3 - <<'PY'
 import sys; sys.path.insert(0,'examples/zeta_zero_localization'); import generate
 generate.run_box('1/1000000','999999/1000000','0','100', write=False)
 PY
 
 # Geometry probe (sorry-free except the labeled effective-rate example)
 cd telperion/examples/zeta_zero_localization/lean
-/Users/peterwmurphy/.elan/bin/lake exe cache get
-/Users/peterwmurphy/.elan/bin/lake env lean DvpBoxProbe.lean   # only warning: line ~131 labeled sorry
+~/.elan/bin/lake exe cache get
+~/.elan/bin/lake env lean DvpBoxProbe.lean   # only warning: line ~131 labeled sorry
 ```

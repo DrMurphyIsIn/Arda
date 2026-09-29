@@ -1,10 +1,10 @@
 """UNTRUSTED emitter (lane H11K): the capstone H11K_h11000.lean (values mirrored exactly in Python)."""
 import sys, pickle
-sys.path.insert(0, '/Users/peterwmurphy/arda-h11k/telperion/examples/zeta_reflection')
+sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection'))
 import Arb4_emit_seg as ES
 import Arb4_emit as A
 from fractions import Fraction as Fr
-ISL = '/Users/peterwmurphy/arda-h11k/telperion/examples/zeta_reflection/lean'
+ISL = str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection/lean')
 d = pickle.load(open('encl.pkl', 'rb'))
 L1, H1, L2, H2, L3, H3, L4, H4, L5, H5 = d['E']
 G1 = d['G1']

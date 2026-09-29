@@ -16,61 +16,61 @@
           "corpus_assets": [
             {
               "name": "QC_TORUS_MEMO.md (W3c formulation memo)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_TORUS_MEMO.md",
+              "where": "~/arda-million/telperion/docs/QC_TORUS_MEMO.md",
               "status": "memo; definitions + Selberg-diffraction dictionary (S1-S4 + growth vs five clauses, §2.1) + the classification conjecture §2.2; all non-definitional claims labeled CONJECTURE",
               "serves": "A1's target statement, the honest bridge (§1.3: product structure unconditional, measure-ness of pullback = RH clause), and the §3.2 profinite-limit obstruction analysis"
             },
             {
               "name": "QC_LITERATURE.md",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_LITERATURE.md",
+              "where": "~/arda-million/telperion/docs/QC_LITERATURE.md",
               "status": "verified survey with corrections ledger (Adve attribution refuted; Lev-Olevskii venue corrected); escape table §2",
               "serves": "literature floor for A1 (KS20/OU20/ACV24/AKKV25/Meyer/Lev-Olevskii/Favorov exact statements) and the Alpöge-Furman inertia instrument §1.8 for A2"
             },
             {
               "name": "QC_RIGIDITY_MEMO.md (R1/R2/R3 ladder)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_RIGIDITY_MEMO.md",
+              "where": "~/arda-million/telperion/docs/QC_RIGIDITY_MEMO.md",
               "status": "memo + two proven toys (Thm A n=2; Thm B rational-n reduced to LeeYangCore); R1 explicitly labeled an RH-equivalence; Favorov-Değer prior-art correction §4.2",
               "serves": "A2's decomposition: R2 defect-k is the publishable rung; the conservation-of-difficulty map locates the wall at the rank>=2 rationally-independent frequency transition"
             },
             {
               "name": "QC_AXIOMS_DRAFT.md (variants A-D + B-mult-twisted v3)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_AXIOMS_DRAFT.md",
+              "where": "~/arda-million/telperion/docs/QC_AXIOMS_DRAFT.md",
               "status": "draft axioms; falsification matrix run; DH kill fingerprint b(6)=+1.9364 at composite log 6 (lines 458-546); B-mult-twisted verbatim §W3c.2",
               "serves": "A0 statement authoring and A2b leakage dictionary; the C-variant (positivity dropped) is the certified DEAD control"
             },
             {
               "name": "QC_TORUS_SECTION_LADDER_MEMO_2026-09-14.md",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_TORUS_SECTION_LADDER_MEMO_2026-09-14.md",
+              "where": "~/arda-million/telperion/docs/QC_TORUS_SECTION_LADDER_MEMO_2026-09-14.md",
               "status": "memo; §4 proves the naive finite-prime ladder FALSE at every rung (certified negative control at p=2); T1/T2 registered draft, T3 deliberately unregistered",
               "serves": "A2c's honest boundary: no finite rung owns line membership; defect-in-N instrumentation is the surviving research direction"
             },
             {
               "name": "quasicrystal island (kernel, 3-axiom)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/quasicrystal/lean/ — LeeYangCore.lean (IsSelfInversive:43, IsLeeYangCircle:52, leeYang_root_norm_one:98), TwoFreqRigidity.lean (twoFreq_realRooted_iff:92), InvolutionDictionary.lean (selfInversive_iff_hardyZ_real:167, twoFreq_dictionary:243), BoundaryLemmas.lean (primeLogSpectrum_dense:133, zeta_ordinates_not_uniformlyDiscrete:240), KSConstruction.lean (poisson_shifted_lattice:99), RationalFreqReduction.lean, CharacterizationStatements.lean (zeta_FQ_iff_RH:154 + ACV/KS/OU named Props), AxiomGuardQC.lean",
+              "where": "~/arda-million/telperion/examples/quasicrystal/lean/ — LeeYangCore.lean (IsSelfInversive:43, IsLeeYangCircle:52, leeYang_root_norm_one:98), TwoFreqRigidity.lean (twoFreq_realRooted_iff:92), InvolutionDictionary.lean (selfInversive_iff_hardyZ_real:167, twoFreq_dictionary:243), BoundaryLemmas.lean (primeLogSpectrum_dense:133, zeta_ordinates_not_uniformlyDiscrete:240), KSConstruction.lean (poisson_shifted_lattice:99), RationalFreqReduction.lean, CharacterizationStatements.lean (zeta_FQ_iff_RH:154 + ACV/KS/OU named Props), AxiomGuardQC.lean",
               "status": "kernel-certified (26 anchors, {propext, Classical.choice, Quot.sound}, 0 sorryAx)",
               "serves": "A1a formalization substrate (section theory, d=2 case is a kernel theorem), the terminal Prop, and the S2 dictionary row"
             },
             {
               "name": "defect suite (kernel)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization/lean/ — RHLinalg.lean+RHLinalg/, DefectDictionary.lean (defect:73, defect_le_offline_pairs:237, defect_zero_iff_onLine:275), R2Rigidity.lean (offline_pairs_le_defect:86, defect_eq_offline_pairs:209), BraggDefect.lean (bragg_defect_eq_one:209, defect_eq_two:305, defect_leakage_gap:126)",
+              "where": "~/arda-million/telperion/examples/zeta_zero_localization/lean/ — RHLinalg.lean+RHLinalg/, DefectDictionary.lean (defect:73, defect_le_offline_pairs:237, defect_zero_iff_onLine:275), R2Rigidity.lean (offline_pairs_le_defect:86, defect_eq_offline_pairs:209), BraggDefect.lean (bragg_defect_eq_one:209, defect_eq_two:305, defect_leakage_gap:126)",
               "status": "kernel (BraggDefect carries one Arb e^(1/10) enclosure hypothesis); W2b counting direction proved (offline_pairs_le_defect)",
               "serves": "A2a/A2c: the defect instrument that COUNTS off-line pairs — the finite shadow of the membership clause"
             },
             {
               "name": "RvM Bragg bridge (W3b)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/RvMBraggBridge.lean (braggTerm:52, rect_explicit_formula_bragg) + RvMDiffractionCore + BraggFloor.lean",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/RvMBraggBridge.lean (braggTerm:52, rect_explicit_formula_bragg) + RvMDiffractionCore + BraggFloor.lean",
               "status": "kernel, 7 theorems 3-axiom clean; finite-height, unconditional, no limit; T->infinity half needs the unproved |zeta'/zeta|=O(log^2 T) corridor bound",
               "serves": "A3 and the unconditional floor of the membership statement: the measured quasicrystal is a kernel identity with the primes at finite height"
             },
             {
               "name": "missions registry (mirrormere campaign)",
-              "where": "/Users/peterwmurphy/arda-missions-am/telperion/missions/mirrormere/nodes/ — 13 nodes incl. MM_zeta_comb_membership (goal, draft), MM_offline_pairs_le_defect (milestone, open, proof artifact linked), MM_euler_factor_section_offline (lemma, blind-audited), MM_rvm_unbounded_mean_density, MM_torus_section_dictionary/n2_rigidity (draft)",
+              "where": "~/arda-missions-am/telperion/missions/mirrormere/nodes/ — 13 nodes incl. MM_zeta_comb_membership (goal, draft), MM_offline_pairs_le_defect (milestone, open, proof artifact linked), MM_euler_factor_section_offline (lemma, blind-audited), MM_rvm_unbounded_mean_density, MM_torus_section_dictionary/n2_rigidity (draft)",
               "status": "live registry; statuses as listed per node TOMLs read this session; fidelity gate (proved only via syntactic grant) in force",
               "serves": "route bookkeeping; governs all registry proposals below"
             },
             {
               "name": "DYSON_QUASICRYSTAL_CERTIFICATES.md",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/DYSON_QUASICRYSTAL_CERTIFICATES.md",
+              "where": "~/arda-million/telperion/docs/DYSON_QUASICRYSTAL_CERTIFICATES.md",
               "status": "adversarially verified (24 confirmed, 1 refuted: '{log p^k} support' is RH-conditional); Shaughnessy 2410.03673 v8 assessed NOT established",
               "serves": "category discipline for Route A: (a) genuine iff closes only the analogue class; (c) uniform-amplitude/full-Weil-positivity statements must never be emitted as finite"
             }
@@ -446,19 +446,19 @@
           "corpus_assets": [
             {
               "name": "LI_POSITIVITY_LADDER.md",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/LI_POSITIVITY_LADDER.md",
+              "where": "~/arda-million/telperion/docs/LI_POSITIVITY_LADDER.md",
               "status": "done (2026-09-09 finished-ladder section)",
               "serves": "Route charter: emitter design, flint backend (enclose_li_coeffs, Keiper/Li/Coffey published-value anchor self-check), trust-seam and honest-ceiling statements, CI job li-positivity-compiles"
             },
             {
               "name": "LiPositivity.lean — li_rung_0..19 + li_neg_refutes_rh",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/LiPositivity.lean",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/LiPositivity.lean",
               "status": "generated, CI-green, 3-axiom guarded; each rung conditional on its Arb enclosure hypothesis hlo",
               "serves": "λ₁..λ₂₀ certified positive (rung n certifies λ_{n+1}); li_neg_refutes_rh is the route's genuine one-directional payload"
             },
             {
               "name": "LiLadder.lean — li_rh_iff_tail / li_tail_peel / li_rh_iff_tail_zero",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/LiLadder.lean",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/LiLadder.lean",
               "status": "proved, registry-granted (RH_li_ladder_reduction, status=proved)",
               "serves": "The ladder as reduction-of-RH-to-its-tail: prefix-peeling composes rung-by-rung; states precisely that no finite prefix proves RH"
             },
@@ -470,73 +470,73 @@
             },
             {
               "name": "generate.py + telperion.li_coeff backend",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/generate.py",
+              "where": "~/arda-million/telperion/examples/li_positivity/generate.py",
               "status": "done; drift-checked, negative-control adapter (sign-corrupted lo kernel-rejected)",
               "serves": "Regeneration pipeline for ladder extension (milestone B1); python-flint ball arithmetic, ζ-pole-free series route via functional equation"
             },
             {
               "name": "RvMBraggBridge.lean — rect_explicit_formula_bragg",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/RvMBraggBridge.lean",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/RvMBraggBridge.lean",
               "status": "done (W3b, 5762a2b8c): 7 theorems 3-axiom clean, unconditional, finite height, no limit",
               "serves": "THE finite Weil-form engine: kernel identity zero-count = Bragg comb (supported exactly on prime powers) + explicit edge remainders; the T→∞ half explicitly gated on the |ζ'/ζ|=O(log²T) corridor bound (milestone B5)"
             },
             {
               "name": "BraggFloor.lean — bragg_rung_0..19 + bragg_below_floor_refutes_rh",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/BraggFloor.lean",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/BraggFloor.lean",
               "status": "generated, category-b finite inequalities; the passage to (taylorCoeff zetaPoleCompanion n).re runs through the NEVER-DISCHARGED, corpus-labeled RH-hard hcomp seam (taylorCoeff_companion_bragg_of_exhaustion_limits)",
               "serves": "Route P D3: truncated log-prime amplitude vs explicit archimedean floor — the arithmetic channel of the 2×2 Weil-Gram form"
             },
             {
               "name": "RvMRoutePInertia.lean — weilGram, posIndex dichotomy, (1,1) obstruction",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/RvMRoutePInertia.lean",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/RvMRoutePInertia.lean",
               "status": "done (D4): kernel facts about the finite 2×2 Hermitian form; RH-hard seams carried as explicit named hypotheses",
               "serves": "PARTIAL Weil positivity as inertia: both channels clear ⟹ posIndex=2; sub-floor Bragg ⟹ negIndex≥1 (the (1,1) obstruction), welded to bragg_below_floor_refutes_rh"
             },
             {
               "name": "RvMOnLinePositivity.lean — onLine_liPairedSummand_eq_normSq",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/RvMOnLinePositivity.lean",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/RvMOnLinePositivity.lean",
               "status": "done (#466)",
               "serves": "On-line paired Li summands are perfect squares ‖1−(1−1/ρ)^{n+1}‖² — the manifest nonnegative channel; the structural reason RH ⟹ Li positivity"
             },
             {
               "name": "BraggDefect.lean + R2Rigidity.offline_pairs_le_defect + DefectDictionary",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization/lean/BraggDefect.lean (guard: AxiomGuardDefect.lean)",
+              "where": "~/arda-million/telperion/examples/zeta_zero_localization/lean/BraggDefect.lean (guard: AxiomGuardDefect.lean)",
               "status": "proved on rh/million-turing branch; registry node MM_offline_pairs_le_defect status=open (grant deferred to branch reconcile per fidelity rule)",
               "serves": "The defect instrument COUNTS off-line pairs (p-dim negative-witness subspace ⟹ p ≤ defect = negative index of inertia); certified witness: on-line config defect 0, one synthetic off-line pair (β=3/5, γ=50) drives the functional to ≈−1.00167e-4 with one Arb e^{1/10} enclosure hypothesis; bragg_defect_eq_one = defect EXACTLY 1. Attribution VERIFIED: corpus cites Alpöge–Furman Prop 4.1 (arXiv:2608.13637) for the signature-(1,1) leakage — confirmed this session against the arXiv abstract — with Bombieri (Rend. Lincei 2000) as the classical inertia link; the route brief's 'Alpoge-style' is correct as Alpöge–Furman"
             },
             {
               "name": "RHLinalg prelude (PosIndex/Sylvester/Inertia/HermitianPosPart)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/RHLinalg/ (ported from PR #326, distilled from the zeta-23 Lean corpus)",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/RHLinalg/ (ported from PR #326, distilled from the zeta-23 Lean corpus)",
               "status": "done, kernel-clean",
               "serves": "The inertia arithmetic engine for all Weil-Gram / defect statements"
             },
             {
               "name": "QC_TORUS_MEMO.md §2 — the Selberg dictionary",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_TORUS_MEMO.md",
+              "where": "~/arda-million/telperion/docs/QC_TORUS_MEMO.md",
               "status": "done (memo)",
               "serves": "Isolates the growth/order clause as THE RH-hardness carrier (the R1 temperedness clause, 'named + isolated, NOT discharged') — the wall's temperedness coordinate; also the Alpöge–Furman inertia instrument as the finite defect test"
             },
             {
               "name": "RH_CLOSURE_ROUTES_ASSESSMENT_2026-09-10.md §2.1 + §2.3",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/RH_CLOSURE_ROUTES_ASSESSMENT_2026-09-10.md",
+              "where": "~/arda-million/telperion/docs/RH_CLOSURE_ROUTES_ASSESSMENT_2026-09-10.md",
               "status": "done (13-agent adversarially-verified survey)",
               "serves": "Verified literature base for both axes (Li, Weil positivity); the honesty theorem; Freitas Cor 4.2 delocalization; Groskin/Zhu 2026 finite-reduction specifics"
             },
             {
               "name": "QC_LITERATURE.md §1.8 — Alpöge–Furman verbatim extracts",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_LITERATURE.md",
+              "where": "~/arda-million/telperion/docs/QC_LITERATURE.md",
               "status": "done",
               "serves": "Lemma 3.1 (inertia under pull-back), Lemma 3.2 (rank-trace), Prop 4.1 ((1,1) block) — the wedge instrument's exact statements; flags the second paper arXiv:2609.02882 as a distinct improvement to reconcile"
             },
             {
               "name": "Zero-free regions + log bound (route inputs)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/{ZeroFreePolylog,ZetaLogBound,DlvpZeta*}.lean",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/{ZeroFreePolylog,ZetaLogBound,DlvpZeta*}.lean",
               "status": "done, kernel-clean (β ≤ 1−c/(γ⁴(1+log 2γ)); ‖ζ‖ ≤ 6(1+log|t|))",
               "serves": "Inputs to the corridor bound (B5) and to any effective archimedean-trend work (B8)"
             },
             {
               "name": "Certified zero ladder to T=600,000 (999,508 zeros)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization/ + li island RHInBox_* band certificates",
+              "where": "~/arda-million/telperion/examples/zeta_zero_localization/ + li island RHInBox_* band certificates",
               "status": "done and climbing (ANDÚRIL G1 target 10⁶)",
               "serves": "Ground truth for defect-zero-on-certified-window (B4): the zero-side data of any finite Weil-Gram window below T"
             }
@@ -941,49 +941,49 @@
           "corpus_assets": [
             {
               "name": "RH_MARGINALITY_LEHMER_2026-08-30.md (the route's prior in-house analysis)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/RH_MARGINALITY_LEHMER_2026-08-30.md",
+              "where": "~/arda-million/telperion/docs/RH_MARGINALITY_LEHMER_2026-08-30.md",
               "status": "research artifact, adversarially attacked and corrected; conjecture1_proved = False",
               "serves": "Pre-computed route map: RH-as-marginality framing, the 2-body collision law s* = delta_0^2/8 (verified numerically to ~1%), the Lehmer pair 6709/6710 (delta = 0.0377 at T~7005, 24x tighter than mean), and three load-bearing corrections: (i) the Lambda<=c ladder is genuinely weaker-than-RH (survived attack); (ii) the upper-bound rate is governed by zero-free-region width ~1/log T, NOT by Lehmer gap^2; (iii) GUE min-gap tower is conjectural. CITATION BUG found this session: it cites Rodgers-Tao as Ann. Math. 191(3):1167-1203 — the actual venue is Forum of Mathematics, Pi 8 (2020), e6 (Cambridge page fetched). Flag for doc fix."
             },
             {
               "name": "lehmer_pair island (Face 5 / W4a emitter)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/lehmer_pair/lean/LehmerPair.lean + /Users/peterwmurphy/arda-million/telperion/examples/lehmer_pair/generate.py (emitter: telperion/src emit_lehmer_pair)",
+              "where": "~/arda-million/telperion/examples/lehmer_pair/lean/LehmerPair.lean + ~/arda-million/telperion/examples/lehmer_pair/generate.py (emitter: telperion/src emit_lehmer_pair)",
               "status": "BUILT, 4 theorems, generation-time self-checks passed; Lambda arithmetic explicitly WIP",
               "serves": "Certified Lehmer-pair instrument: lehmer_n186/n453/n693/n922 certify quality delta^2*C_n <= 21/100, 9/100, 67/1000, 9/200 (< 1) from Arb-certified ordinates; lehmer_lambda_bound_wip is the CNV chaining skeleton (honest: CNV constant UNVERIFIED, no numeric Lambda bound is a kernel claim); lehmer_neg_refutes is the falsifiability atom (certified L>0 with L<=Lambda refutes RH through the carried equivalence). This is C1/C5's substrate."
             },
             {
               "name": "Certified zero ladder (ANDURIL, T5 band route)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization/ (TuringBand.lean, AllZeros_h* chain, RHInBoxT bands); registry /Users/peterwmurphy/arda-missions-am/telperion/missions/anduril/nodes/AND_ladder_*.toml",
+              "where": "~/arda-million/telperion/examples/zeta_zero_localization/ (TuringBand.lean, AllZeros_h* chain, RHInBoxT bands); registry ~/arda-missions-am/telperion/missions/anduril/nodes/AND_ladder_*.toml",
               "status": "T = 600,000 (999,508 zeros) kernel-certified as of 2026-09-16; Arb enclosures enter as discharged hypotheses; G1=10^6 wall-clock-only; G4=10^9 needs A3; G5=10^13 draft charter",
               "serves": "THE input data the Polymath15 barrier argument consumes: a barrier at X requires RH verified to height X/2, so every ladder milestone prices a Lambda upper bound directly. Measured T5 costs (MILLION_CAMPAIGN: 4.8 s Lean + 2.3 s driver per band, ~40k bands to 10^6) give the route's concrete cost model."
             },
             {
               "name": "Verified EM/Stirling evaluator (A2 era) + DIntv kernel-interval core",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/zeta_reflection/lean/EMZetaComplex.lean (em_zeta_strip), StirlingBinet.lean (logDeriv_gammaR_stirling, K=1), DIntv core; nodes AND_em_zeta_strip.toml, AND_stirling_binet_k1.toml",
+              "where": "~/arda-million/telperion/examples/zeta_reflection/lean/EMZetaComplex.lean (em_zeta_strip), StirlingBinet.lean (logDeriv_gammaR_stirling, K=1), DIntv core; nodes AND_em_zeta_strip.toml, AND_stirling_binet_k1.toml",
               "status": "em_zeta_strip and Stirling/Binet K=1 kernel-clean (grant deferred to branch reconcile); G0 gate measured: pure-kernel DIntv ~1-2e4 interval-ops/s, Rat NOT kernel-reflectable",
               "serves": "The machinery that would interval-certify H_t evaluations in-kernel: Polymath15's effective A+B-C approximation of H_t is Gamma-factor + finite-Dirichlet-sum shaped — exactly the Stirling/EM object class already verified. G0 throughput says kernel-only is viable for spot-check units; bulk barrier meshes (Gomila used 3.1M windows) need the G4 native_decide dial per charter."
             },
             {
               "name": "first_zero_kernel (trust template)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/zeta_reflection/lean/ForgeFirstZeroKernel.lean (+AxiomGuardFirstZeroKernel.lean)",
+              "where": "~/arda-million/telperion/examples/zeta_reflection/lean/ForgeFirstZeroKernel.lean (+AxiomGuardFirstZeroKernel.lean)",
               "status": "DONE: argument-free, hypothesis-free theorem of a completedRiemannZeta zero in (14,15), evaluated entirely in-kernel over rational certificates, 3-axiom clean",
               "serves": "The rigor standard any certified Lambda bound should meet: hypothesis-free, kernel-computed, axiom-guarded. C8's target is 'first_zero_kernel but for Lambda <= c'."
             },
             {
               "name": "Seven Faces architecture + Face 5 slot",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md (Seven Faces table, row 5)",
+              "where": "~/arda-million/telperion/docs/ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md (Seven Faces table, row 5)",
               "status": "W4a named: 'certified finite Lambda-bounds ride the ladder's certified-zero data (Platt-Trudgian-shaped; our pipeline's kind)'; called the most publishable W4 option",
               "serves": "Program placement: Route C is the officially chartered Face-5 probe; W4 staffing decision gated on Wave 3."
             },
             {
               "name": "Missions registry + statement-authoring discipline",
-              "where": "/Users/peterwmurphy/arda-missions-am/telperion/missions/{anduril,rh,mirrormere}/ (mission.toml, nodes/*.toml, lean/Statements/ with ANDDefs-pattern def modules)",
+              "where": "~/arda-missions-am/telperion/missions/{anduril,rh,mirrormere}/ (mission.toml, nodes/*.toml, lean/Statements/ with ANDDefs-pattern def modules)",
               "status": "LIVE; fidelity rule: proved status only via syntactic grant gate; blind read-back audits per node",
               "serves": "The registration substrate for Route C nodes; the ANDDefs precedent shows defs + statements can be co-authored in one statement module, which is what makes C2/C3/C4 statements authorable now."
             },
             {
               "name": "QC_TORUS_MEMO Selberg dictionary (growth clause isolation)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_TORUS_MEMO.md (rows S1-S4 + growth/order); QC_RIGIDITY_MEMO.md (R1 temperedness clause)",
+              "where": "~/arda-million/telperion/docs/QC_TORUS_MEMO.md (rows S1-S4 + growth/order); QC_RIGIDITY_MEMO.md (R1 temperedness clause)",
               "status": "growth/order named as 'the hardness carrier', NOT discharged",
               "serves": "Names the wall this route hits in its own coordinates: the achievable heat-time t0 at barrier X is set by growth/log-derivative control of zeta at height X — the same R1/temperedness clause; see wall.temperedness_relation."
             }
@@ -1338,55 +1338,55 @@
           "corpus_assets": [
             {
               "name": "rect_explicit_formula_bragg (W3b Bragg bridge)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/RvMBraggBridge.lean (theorem at line 123; registry node MM_bragg_bridge)",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/RvMBraggBridge.lean (theorem at line 123; registry node MM_bragg_bridge)",
               "status": "proved, 3-axiom clean, unconditional, finite height, no limit; T->inf half needs the |zeta'/zeta| = O(log^2 T) corridor bound",
               "serves": "THE finite trace-formula-shaped identity of the route: zeros side = 2*pi*i times box divisor count (a spectral-measure trace of the counting projector), primes side = closed-form Bragg comb supported exactly on prime powers, remainders explicit. It is the box shadow of Tr(pi(g)) = sum g-hat(rho). D1 repackages it; D6 completes it to full Guinand–Weil."
             },
             {
               "name": "offline_pairs_le_defect + defect_eq_offline_pairs (W2b defect instrument)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization/lean/R2Rigidity.lean (lines 86, 209) + BraggDefect.lean + AxiomGuardDefect.lean",
+              "where": "~/arda-million/telperion/examples/zeta_zero_localization/lean/R2Rigidity.lean (lines 86, 209) + BraggDefect.lean + AxiomGuardDefect.lean",
               "status": "proved (abstract Hermitian-inertia rigidity, kernel); BraggDefect certified witness pair carries one Arb e^(1/10) enclosure hypothesis",
               "serves": "The finite POSITIVITY instrument: negative index of inertia of the (Hermitian) Weil-form block counts off-line zero pairs. This is exactly the finite shadow of Weil positivity — the wall's own gauge. D2/D3 extend it to a primes-side-computed Gram matrix."
             },
             {
               "name": "InvolutionDictionary.lean (W2a, selfInversive_iff_hardyZ_real)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/quasicrystal/lean/InvolutionDictionary.lean",
+              "where": "~/arda-million/telperion/examples/quasicrystal/lean/InvolutionDictionary.lean",
               "status": "proved, kernel, finite instances",
               "serves": "Finite symmetry model of the functional equation (sigma_line <-> sigma_circ intertwiner; Hardy-Z reality). In operator language: the finite model of the conjectural operator's PT/time-reversal symmetry class; feeds the D8 Hermite–Biehler dictionary (real spectrum <-> HB structure function)."
             },
             {
               "name": "QC_TORUS_MEMO.md (W3c, Selberg dictionary + Kronecker frame)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_TORUS_MEMO.md",
+              "where": "~/arda-million/telperion/docs/QC_TORUS_MEMO.md",
               "status": "formulation memo; dictionary rows instrumented (S2 kernel, S4 Arb-trust); growth/R1 clause isolated NOT discharged",
               "serves": "The prod_p S^1 Kronecker-flow frame is Route D's configuration space: Berry–Keating/Connes are 'the deepest external incarnations of the same lift' (TORUS_SECTION_LADDER_MEMO section 2). The dictionary isolates growth/temperedness as the RH-hardness carrier — the exact clause Route D's wall restates as positivity."
             },
             {
               "name": "QC_RIGIDITY_MEMO.md (R1 <=> H-temp <=> RH chain; de Branges flag)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_RIGIDITY_MEMO.md (sections 3.3, 4.4)",
+              "where": "~/arda-million/telperion/docs/QC_RIGIDITY_MEMO.md (sections 3.3, 4.4)",
               "status": "honest-equivalence analysis: (H-spec),(H-mult) unconditional; (H-temp) RH-equivalent; de Branges/HB named as R1's structural home, flagged not attempted",
               "serves": "Supplies the wall's temperedness identification and the D8 target: real support <=> operator/positivity condition is precisely the de Branges canonical-system reading of Hilbert–Polya."
             },
             {
               "name": "QC_TORUS_SECTION_LADDER_MEMO_2026-09-14.md (negative controls)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_TORUS_SECTION_LADDER_MEMO_2026-09-14.md",
+              "where": "~/arda-million/telperion/docs/QC_TORUS_SECTION_LADDER_MEMO_2026-09-14.md",
               "status": "memo + registered draft controls (MM_euler_factor_section_offline etc.)",
               "serves": "The route's refutation record: naive finite spectral ladders FAIL provably (Euler-factor sections uniformly off-line at Im x = 1/2 by twoFreq_realRooted_iff; partial sums fail by Turan/Montgomery). Drives the D4 triviality-control design."
             },
             {
               "name": "Certified zero ladder to T=600,000 (999,508 zeros) + first_zero_kernel",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization/ + li_positivity RHInBox_* modules; missions/anduril",
+              "where": "~/arda-million/telperion/examples/zeta_zero_localization/ + li_positivity RHInBox_* modules; missions/anduril",
               "status": "kernel-certified (T5 band certificates; Arb enclosures as discharged hypotheses); first_zero_kernel hypothesis-free",
               "serves": "Ground-truth spectrum data for ANY finite spectral-matching claim (D3, D7, D10): eigenvalue-vs-zero comparisons are certifiable only because the zeros themselves are certified."
             },
             {
               "name": "Li ladder lambda_1..lambda_20 + pinned Li<->RH reduction (nicholasbulka upstream)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/LiLadder.lean, LiPositivity.lean; registry RH_li_ladder_reduction, RH_li_neg_refutes_rh",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/LiLadder.lean, LiPositivity.lean; registry RH_li_ladder_reduction, RH_li_neg_refutes_rh",
               "status": "certified rungs + pinned upstream equivalence",
               "serves": "The Route B wall artifact Route D merges into: Li positivity IS Weil positivity on a countable test family. The D11 wall node can be authored NOW through this reduction."
             },
             {
               "name": "TwoFreqRigidity.lean + KSConstruction.lean (section theory)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/quasicrystal/lean/",
+              "where": "~/arda-million/telperion/examples/quasicrystal/lean/",
               "status": "proved, kernel (twoFreq_realRooted_iff at TwoFreqRigidity.lean:92)",
               "serves": "The d=2 cut-and-project rigidity — the only rigorously-closed instance of 'higher-dimensional parent forces 1-D reality', i.e. the toy of the spectral-realization mechanism; also powers the D4 negative control."
             },
@@ -1758,73 +1758,73 @@
           "corpus_assets": [
             {
               "name": "THE MAP + Seven Faces",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md",
+              "where": "~/arda-million/telperion/docs/ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md",
               "status": "read this session; authoritative program map",
               "serves": "route/face identification; W4a-c probe definitions; the corridor-bound flag on W3b; staffing state"
             },
             {
               "name": "Selberg dictionary (S1-S4 + growth vs five clauses)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_TORUS_MEMO.md §2.1-2.2",
+              "where": "~/arda-million/telperion/docs/QC_TORUS_MEMO.md §2.1-2.2",
               "status": "read; growth clause explicitly 'the hardness carrier, NOT discharged'",
               "serves": "C-wall definition; the one-clause thesis's definitional leg; GL(2)/Satake Wave-4 cost estimate"
             },
             {
               "name": "R1/R2/R3 rigidity ladder + difficulty map",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_RIGIDITY_MEMO.md §3.3, §5",
+              "where": "~/arda-million/telperion/docs/QC_RIGIDITY_MEMO.md §3.3, §5",
               "status": "read; R1 <-> (H-temp) <-> RH chain spelled out; Favorov-Deger positioning correction recorded",
               "serves": "C-wall precise form; the 'twice disguised' finite/arithmetic transition; K1/K2 kernel handoffs"
             },
             {
               "name": "Recurrence dictionary + epsilon_0^2 = |q| identity",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_RECURRENCE_MEMO.md §2, §4, §5",
+              "where": "~/arda-million/telperion/docs/QC_RECURRENCE_MEMO.md §2, §4, §5",
               "status": "read; row-1/row-4 conservation checked on the BraggDefect witness; §4.2 lemma flagged kernel-ready",
               "serves": "B<->D witness-grade identification; E4's exact deliverables; D-wall (§4.5) and tripwire (iv)"
             },
             {
               "name": "Torus-section ladder memo (naive ladder FALSE)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_TORUS_SECTION_LADDER_MEMO_2026-09-14.md §4",
+              "where": "~/arda-million/telperion/docs/QC_TORUS_SECTION_LADDER_MEMO_2026-09-14.md §4",
               "status": "read; three-way refutation (zero-free truncations / Euler-factor sections uniformly at Im x = 1/2 / Turan-Montgomery)",
               "serves": "why_finite_fails evidence; the certified negative control MM_euler_factor_section_offline"
             },
             {
               "name": "ANDURIL program charter (A2/A3/corridor consumers)",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/PROGRAM_ANDURIL_2026-09-12.md",
+              "where": "~/arda-million/telperion/docs/PROGRAM_ANDURIL_2026-09-12.md",
               "status": "read; scout findings incl. no-RS-formalization-anywhere and trust-dial charter",
               "serves": "A-route wall shape; EM/Stirling evaluator as shared instrument; G4/G5 gating"
             },
             {
               "name": "MIRRORMERE charter + difficulty map",
-              "where": "/Users/peterwmurphy/arda-million/telperion/docs/QC_PROGRAM.md",
+              "where": "~/arda-million/telperion/docs/QC_PROGRAM.md",
               "status": "read; 'RH-hardness enters at exactly ONE place, twice disguised' is the thesis under audit",
               "serves": "the conservation-of-difficulty thesis's canonical statement"
             },
             {
               "name": "Bragg bridge kernel identity",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/RvMBraggBridge.lean (+ node MM_bragg_bridge.toml readback)",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/RvMBraggBridge.lean (+ node MM_bragg_bridge.toml readback)",
               "status": "proved, 3-axiom clean, cross-island v4.34; T->inf explicitly blocked on corridor bound",
               "serves": "shared instrument row 3; E7/E8 dependency anchor"
             },
             {
               "name": "Defect instrument triple",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization/lean/{R2Rigidity,BraggDefect,DefectDictionary}.lean",
+              "where": "~/arda-million/telperion/examples/zeta_zero_localization/lean/{R2Rigidity,BraggDefect,DefectDictionary}.lean",
               "status": "kernel (BraggDefect carries 1 Arb exp hypothesis)",
               "serves": "shared instrument row 2; tripwire (iii); E4/E5 substrate"
             },
             {
               "name": "RvM/Backlund per-window machinery",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/RvMBacklund*.lean (17 modules)",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/RvMBacklund*.lean (17 modules)",
               "status": "per-window/conditional per the W2c survey; all-T assembly absent",
               "serves": "E6 native-fallback scope; E7 window-count ingredient"
             },
             {
               "name": "Missions registry + statement-authoring queue",
-              "where": "/Users/peterwmurphy/arda-missions-am/telperion/missions/{mirrormere,rh,anduril}/ (mission.toml queue note; MM_rvm_unbounded_mean_density.toml survey verdict; RH_conjecture.toml draft goal)",
+              "where": "~/arda-missions-am/telperion/missions/{mirrormere,rh,anduril}/ (mission.toml queue note; MM_rvm_unbounded_mean_density.toml survey verdict; RH_conjecture.toml draft goal)",
               "status": "read; corridor bound + R1 temperedness + T3 rungs explicitly QUEUED (statements are the work)",
               "serves": "registry-proposal discipline; E1 lint target; which E-nodes may be authored now vs queued"
             },
             {
               "name": "Li ladder + refutation node",
-              "where": "/Users/peterwmurphy/arda-million/telperion/examples/li_positivity/lean/LiLadder.lean + missions/rh/nodes/RH_li_neg_refutes_rh.toml",
+              "where": "~/arda-million/telperion/examples/li_positivity/lean/LiLadder.lean + missions/rh/nodes/RH_li_neg_refutes_rh.toml",
               "status": "lambda_1..lambda_20 certified; refutation reduction registered",
               "serves": "tripwire (i) end-to-end path; B-route wall instrument"
             }

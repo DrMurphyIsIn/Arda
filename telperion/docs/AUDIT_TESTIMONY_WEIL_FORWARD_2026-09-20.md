@@ -1,7 +1,7 @@
 # Audit testimony: E6Bridge5, the forward half of Weil's criterion (2026-09-20)
 
 Auditor: blind adversarial auditor (separate agent, no prior context on the artifact).
-Worktree: /Users/peterwmurphy/arda-goal-weil, island telperion/examples/rvm_bridge/lean,
+Worktree: ~/arda-goal-weil, island telperion/examples/rvm_bridge/lean,
 Lean v4.33.0-rc2, Zeta23 pinned at fbdc36bbf17d20af3fd0447c6d1a8a02773c9844 (lakefile.toml and
 lake-manifest.json agree). Artifact: E6Bridge5.lean (untracked in git at audit time), 130 lines.
 Probe files written by the auditor: Probes/Audit_Axioms.lean, Probes/Audit_Nonvacuous.lean,

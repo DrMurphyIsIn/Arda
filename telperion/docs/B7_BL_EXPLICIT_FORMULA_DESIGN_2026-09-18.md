@@ -395,7 +395,7 @@ count for step 2) plus the contour bricks E8 consumed; the E8 *statement* is not
 
 ## 8. Registry mechanics done in this change
 
-* Worktree `/Users/peterwmurphy/arda-b7`, branch `rh/b7-ef-statement` from
+* Worktree `~/arda-b7`, branch `rh/b7-ef-statement` from
   `origin/rh/e8-statement` @ `73eaf386d`; `.lake` symlinked to the `arda-grantfix-main` cache
   (no `lake exe cache get`).
 * `build_rhdefs.py`: `BOMBIERI_LAGARIAS_BLOCK` literal added to `parts` after `WEIL_EXPLICIT_BLOCK`;
