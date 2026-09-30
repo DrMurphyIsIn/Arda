@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_backlund_s_log",
+  "solution_module": "MissionChallenges.RH_backlund_s_log",
+  "theorem_names": [
+    "MissionJudge.RH_backlund_s_log"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

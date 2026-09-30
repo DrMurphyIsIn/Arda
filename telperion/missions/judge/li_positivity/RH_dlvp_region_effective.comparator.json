@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_dlvp_region_effective",
+  "solution_module": "MissionChallenges.RH_dlvp_region_effective",
+  "theorem_names": [
+    "MissionJudge.RH_dlvp_region_effective"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

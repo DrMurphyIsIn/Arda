@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_nt_brick_conditional",
+  "solution_module": "MissionChallenges.MM_nt_brick_conditional",
+  "theorem_names": [
+    "MissionJudge.MM_nt_brick_conditional"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
