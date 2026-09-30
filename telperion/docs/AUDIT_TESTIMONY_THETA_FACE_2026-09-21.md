@@ -7,7 +7,7 @@ the dichotomy "RH or the free widths are bounded". No side of any equivalence is
 certified free width bounds Lambda_Theta from below and that is a wall, not a crossing.
 conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifact: E6Bridge17.lean (950 lines, namespace
 RvMBridge17, imports E6Bridge14 plus Mathlib's Gaussian Fourier and Polish-space files); memo

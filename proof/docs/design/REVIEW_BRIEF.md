@@ -5,7 +5,7 @@ checks the PROOFS; your job is the STATEMENTS and DEFINITIONS: do they say what 
 mathematics claims? Work from the files fresh; do not trust docstrings or commit messages.
 Your deliverable is a written report; a "pass" you cannot defend is worse than a fail.
 
-Repo worktree: /Users/peterwmurphy/arda-wt-edit
+Repo worktree: ~/arda-wt-edit
 Formalization root: proof/formalization (Lean lib R3Cert)
 Python ground truth: proof/verification/phibound.py (DEC recursion),
 raw_amplitude_seam.py (S1/S2/V3/S3 statements), branch_multiplicativity.py.

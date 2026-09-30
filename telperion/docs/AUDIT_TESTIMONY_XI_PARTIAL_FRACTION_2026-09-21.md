@@ -9,7 +9,7 @@ the regularised difference across the zeros, its functional equation, and the re
 growth obligation to the half-plane. Nothing is concluded about where the zeros are.
 conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifacts: E6Bridge18.lean (355 lines, RvMBridge18,
 imports E6Bridge6) and E6Bridge20.lean (592 lines, RvMBridge20, imports E6Bridge15, E6Bridge18,

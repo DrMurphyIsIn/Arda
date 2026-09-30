@@ -73,7 +73,7 @@ non-leaf children, the argmax inherits numerical-only status and we land an hone
 - **Local Lean now works** (broke the old CI-only bottleneck): `PATH=$HOME/.elan/bin; cd proof/formalization;
   lake exe cache get; lake build R3Cert.BGSCLStep`. Toolchain `leanprover/lean4:v4.32.0`. The R3Cert lakefile globs
   `R3Cert.+`, so new modules are auto-built + sorry-scanned by `proof-lean.yml` CI.
-- **This is a linked git worktree** (`/Users/peterwmurphy/telperion-work/.git/worktrees/bg-research`) — `.git/` is a
+- **This is a linked git worktree** (`~/telperion-work/.git/worktrees/bg-research`) — `.git/` is a
   file, not a dir; `test -f .git/MERGE_HEAD` LIES. Use `git rev-parse -q --verify MERGE_HEAD` / `--git-path` instead.
 - **CI sorry-scan footgun:** `grep -rnwE sorry|admit` trips on bare `sorry-free` in docstrings — write **"no `sorry`"**
   (backticked), never bare "sorry-free".

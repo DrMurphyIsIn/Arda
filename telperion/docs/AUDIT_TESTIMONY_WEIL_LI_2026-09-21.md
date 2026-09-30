@@ -9,7 +9,7 @@ nonnegative real part; and it states the rh node RH_bl_explicit_formula verbatim
 Nothing here bears on whether RH holds; Li's converse is neither on this island nor claimed.
 conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifact: E6Bridge15.lean (493 lines, namespace
 RvMBridge15, `import E6Bridge6` only); memos WALL_WEIL_LI_DICTIONARY_2026-09-21.md and

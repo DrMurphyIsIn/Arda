@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'b4'))
 import emit as b4
 
 SCR = os.path.dirname(os.path.abspath(__file__))
-ISL = '/Users/peterwmurphy/arda-rs-b5/telperion/examples/zeta_reflection/lean'
+ISL = str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection/lean')
 LOCK = '/private/tmp/claude-0/-Users-peterwmurphy/ef083c48-579d-4bec-a689-c30fdccec2a1/scratchpad/leanlock.sh'
 P = 64; o = 1 << P
 

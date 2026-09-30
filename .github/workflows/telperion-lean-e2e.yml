@@ -35,6 +35,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
+      affine_hull_dominance: ${{ steps.f.outputs.affine_hull_dominance }}
+      concave_pooled_induction: ${{ steps.f.outputs.concave_pooled_induction }}
+      gap_budget_multiplicity: ${{ steps.f.outputs.gap_budget_multiplicity }}
+      mobius_tangent_cell: ${{ steps.f.outputs.mobius_tangent_cell }}
+      pl_node_tail: ${{ steps.f.outputs.pl_node_tail }}
+      quadratic_sign_race: ${{ steps.f.outputs.quadratic_sign_race }}
+      single_crossing_ladder: ${{ steps.f.outputs.single_crossing_ladder }}
       shared: ${{ steps.f.outputs.shared }}
       src: ${{ steps.f.outputs.src }}
       missions: ${{ steps.f.outputs.missions }}
@@ -145,6 +152,8 @@ jobs:
               - 'telperion/missions/**'
             achievability:
               - 'telperion/examples/achievability/**'
+            affine_hull_dominance:
+              - 'telperion/examples/affine_hull_dominance/**'
             affine_param_endpoint:
               - 'telperion/examples/affine_param_endpoint/**'
             algebraic_bracket:
@@ -201,6 +210,8 @@ jobs:
               - 'telperion/examples/cauchy_schwarz/**'
             cavity_exchange:
               - 'telperion/examples/cavity_exchange/**'
+            concave_pooled_induction:
+              - 'telperion/examples/concave_pooled_induction/**'
             concave_stationary_max:
               - 'telperion/examples/concave_stationary_max/**'
             curvature_boundary:
@@ -225,6 +236,8 @@ jobs:
               - 'telperion/examples/exp_enclosure/**'
             finite_argmax:
               - 'telperion/examples/finite_argmax/**'
+            gap_budget_multiplicity:
+              - 'telperion/examples/gap_budget_multiplicity/**'
             gram_inertia:
               - 'telperion/examples/gram_inertia/**'
             halfplane_disk:
@@ -251,6 +264,8 @@ jobs:
               - 'telperion/examples/logderiv_region/**'
             magnitude_split:
               - 'telperion/examples/magnitude_split/**'
+            mobius_tangent_cell:
+              - 'telperion/examples/mobius_tangent_cell/**'
             order_balance:
               - 'telperion/examples/order_balance/**'
             parametric_holomorphy:
@@ -259,12 +274,16 @@ jobs:
               - 'telperion/examples/pe_duality/**'
             per_size_dominance_sweep:
               - 'telperion/examples/per_size_dominance_sweep/**'
+            pl_node_tail:
+              - 'telperion/examples/pl_node_tail/**'
             polytope_max:
               - 'telperion/examples/polytope_max/**'
             primality:
               - 'telperion/examples/primality/**'
             psd_form:
               - 'telperion/examples/psd_form/**'
+            quadratic_sign_race:
+              - 'telperion/examples/quadratic_sign_race/**'
             quasicrystal:
               - 'telperion/examples/quasicrystal/**'
             recursion_closure:
@@ -281,6 +300,8 @@ jobs:
               - 'telperion/examples/selfinversive_rigidity/**'
             separable_convex:
               - 'telperion/examples/separable_convex/**'
+            single_crossing_ladder:
+              - 'telperion/examples/single_crossing_ladder/**'
             speiser_box_probe:
               - 'telperion/examples/speiser_box_probe/**'
             symmetric_quad:
@@ -3905,3 +3926,248 @@ jobs:
             exit 1
           fi
           echo "axiom guard: every printed list is a subset of the three standard axioms"
+  concave-pooled-induction-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.concave_pooled_induction == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/concave_pooled_induction/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/concave_pooled_induction/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/concave_pooled_induction/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- concave pooled-mean induction on tree recursions (matching-message dogfood))
+        working-directory: telperion/examples/concave_pooled_induction/lean
+        run: lake build
+  gap-budget-multiplicity-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.gap_budget_multiplicity == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/gap_budget_multiplicity/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/gap_budget_multiplicity/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/gap_budget_multiplicity/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- tangent-gap budget multiplicity caps (max-product dogfood))
+        working-directory: telperion/examples/gap_budget_multiplicity/lean
+        run: lake build
+  mobius-tangent-cell-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.mobius_tangent_cell == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/mobius_tangent_cell/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/mobius_tangent_cell/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/mobius_tangent_cell/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- Mobius tangent cells (Pade log bound dogfood))
+        working-directory: telperion/examples/mobius_tangent_cell/lean
+        run: lake build
+  pl-node-tail-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.pl_node_tail == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/pl_node_tail/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/pl_node_tail/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/pl_node_tail/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- piecewise-linear node-condition tail (monotone_tail face))
+        working-directory: telperion/examples/pl_node_tail/lean
+        run: lake build
+  quadratic-sign-race-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.quadratic_sign_race == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/quadratic_sign_race/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/quadratic_sign_race/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/quadratic_sign_race/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- quadratic sign race (eventual_threshold face))
+        working-directory: telperion/examples/quadratic_sign_race/lean
+        run: lake build
+  affine-hull-dominance-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.affine_hull_dominance == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/affine_hull_dominance/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/affine_hull_dominance/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/affine_hull_dominance/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- exact tree maxima by affine hull dominance (matching-sum dogfood))
+        working-directory: telperion/examples/affine_hull_dominance/lean
+        run: lake build
+  single-crossing-ladder-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.single_crossing_ladder == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/single_crossing_ladder/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/single_crossing_ladder/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/single_crossing_ladder/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- single crossing, increasing breakpoints and the best-member ladder (arm-ladder dogfood))
+        working-directory: telperion/examples/single_crossing_ladder/lean
+        run: lake build

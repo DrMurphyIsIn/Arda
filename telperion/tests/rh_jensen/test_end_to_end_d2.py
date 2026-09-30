@@ -26,7 +26,7 @@ LEAN_FILE = LEAN_DIR / "JensenHyperbolicity.lean"
 GENERATE_SCRIPT = REPO_ROOT / "examples" / "jensen_hyperbolicity" / "generate.py"
 
 PYTHON = sys.executable
-LAKE = shutil.which("lake") or "/Users/peterwmurphy/.elan/bin/lake"
+LAKE = shutil.which("lake") or __import__("os").path.expanduser("~/.elan/bin/lake")
 
 
 def test_generate_writes_lean_no_sorry() -> None:

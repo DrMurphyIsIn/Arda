@@ -284,7 +284,7 @@ def test_render_status_contains_tree_and_statuses(): ...
 (Write them as real executable tests against the fixture copied into `tmp_path` — `shutil.copytree`; each ellipsis above is filled in with the 3-6 line body implied by its comment.)
 
 - [ ] **Step 2: Run to verify failure.** `ModuleNotFoundError`/`ImportError`.
-- [ ] **Step 3: Implement** `registry.py` (~150 lines): load = read `mission.toml` + every `nodes/*.toml`; DAG check by DFS with an explicit stack; `open_leaves` per the interface; mutators load-modify-save with `updated = date.today().isoformat()`; renders are pure string builders (status glyphs: `draft ·  open ○  proved ✓  refuted ✗  deprecated †` — plus `(reduction, closure_clean=false)` annotation when applicable; note: glyphs in generated OUTPUT strings are fine, they never enter QuantConnect).
+- [ ] **Step 3: Implement** `registry.py` (~150 lines): load = read `mission.toml` + every `nodes/*.toml`; DAG check by DFS with an explicit stack; `open_leaves` per the interface; mutators load-modify-save with `updated = date.today().isoformat()`; renders are pure string builders (status glyphs: `draft ·  open ○  proved ✓  refuted ✗  deprecated †` — plus `(reduction, closure_clean=false)` annotation when applicable; note: glyphs in generated OUTPUT strings are fine, they never enter source code).
 - [ ] **Step 4: Run to verify pass.**
 - [ ] **Step 5: Commit.** `feat(missions): campaign registry, DAG, open-leaves, renders`
 

@@ -7,7 +7,7 @@ Gaussian-derivative autocorrelation is nonnegative for every centre c and every 
 composes this with seam A to state RH as equivalent to Gaussian positivity on widths strictly
 above lam₀. Neither side of the equivalence is asserted. conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifacts: E6Bridge11.lean (1489 lines at audit time,
 namespace RvMBridge11, imports E6Bridge8, E6Bridge10 and four Zeta23 files) and E6Bridge13.lean

@@ -7,7 +7,7 @@ class is EQUIVALENT to Mathlib's `RiemannHypothesis`. Neither side of the equiva
 the MIRRORMERE goal statement is now RH-equivalent BY THEOREM and remains open exactly as RH is.
 conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifacts: E6Bridge8.lean (646 lines, RvMBridge8),
 E6Bridge9.lean (40 lines, RvMBridge9); memos WEIL_O1_GAUSSIAN_APPROX_2026-09-21.md and

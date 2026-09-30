@@ -17,8 +17,8 @@
 - Winding integer `N`, edge non-vanishing, and value enclosures are documented NON-KERNEL Arb input, carried as Lean hypotheses. Kernel proves the implication. `conjecture1_proved = False` in every artifact. No finite box/height is a proof of RH.
 - No emoji anywhere. No `set_option linter.unusedVariables false`. Acceptance for every Lean deliverable: sorry-free, `#print axioms` = `{propext, Classical.choice, Quot.sound}` (no `sorryAx`), and a built lakefile target.
 - Winding remains Arb-carried (do NOT attempt an in-kernel discrete-winding proof over segments — the PR #285 Task-9 ceiling stands).
-- Python: `PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3` (3.14.6; flint 0.9.0). Run from `.../telperion`.
-- Lean: `/Users/peterwmurphy/.elan/bin/lake`; local builds SAFE; ALWAYS `lake exe cache get` before `lake build`; NEVER a cold Mathlib compile.
+- Python: `PYTHONPATH=src python3` (3.14.6; flint 0.9.0). Run from `.../telperion`.
+- Lean: `~/.elan/bin/lake`; local builds SAFE; ALWAYS `lake exe cache get` before `lake build`; NEVER a cold Mathlib compile.
 - Optional-dependency hygiene (per the PR #285 CI fix): every new flint-requiring test carries `@requires_flint` (skipif `not _ae._FLINT_AVAILABLE`); every Lean-build test carries `@requires_lake` (skipif `shutil.which("lake", path=~/.elan/bin:PATH) is None`). Keep `test_every_emitter_is_classified` green for any new emitter.
 - Merged predecessor files on `main` (templates to generalize): `examples/zeta_zero_localization/lean/BoxLocalization.lean` (`exhaustion_by_count`, `box_localization_core`, `zeta_zero_iff_completed_zero`, `all_nontrivial_zeros_in_box_on_critical_line`), `BlaschkeBox.lean` (`zeta_blaschke_split_box` over `ball cB 13`), `BoxArgPrinciple.lean`, `BoxArgPrincipleZeta.lean` (`box_arg_principle_zeta'`).
 

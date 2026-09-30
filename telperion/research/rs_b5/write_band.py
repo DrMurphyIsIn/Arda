@@ -1,7 +1,7 @@
 # UNTRUSTED writer: band_<tag>.json -> RS5_Band_<Name>_C<j>.lean (chunks: data + kernel decides)
 # and RS5_Band_<Name>.lean (glue + headline).  Usage: write_band.py <tag> <Name> <chunk_size>
 import sys, json, os
-ISL = '/Users/peterwmurphy/arda-rs-b5/telperion/examples/zeta_reflection/lean'
+ISL = str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection/lean')
 SCR = os.path.dirname(os.path.abspath(__file__))
 
 

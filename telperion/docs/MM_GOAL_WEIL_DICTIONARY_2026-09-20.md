@@ -171,7 +171,7 @@ AUTHORED defs. Byte-identical def bodies.
 
 ## 4. Commands run, with their verbatim final lines
 
-All from `/Users/peterwmurphy/arda-goal-weil/telperion` unless noted; Python is the system
+All from `~/arda-goal-weil/telperion` unless noted; Python is the system
 `python3` with `PYTHONPATH=src` (the same invocation `telperion-test.yml` uses for the
 registry gate). No `timeout` wrapper anywhere (not installed on this macOS).
 

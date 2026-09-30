@@ -1,9 +1,9 @@
 """UNTRUSTED emitter (lane H11K): the zero-free slab above the top edge, H11K_Slab_U11004.lean."""
 import sys, pickle, os
-sys.path.insert(0, '/Users/peterwmurphy/arda-h11k/telperion/examples/zeta_reflection')
+sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection'))
 import Arb4_emit_seg as ES
 from fractions import Fraction as Fr
-ISL = '/Users/peterwmurphy/arda-h11k/telperion/examples/zeta_reflection/lean'
+ISL = str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection/lean')
 T1 = Fr(11004); cap = Fr(3, 1000)
 sd = pickle.load(open('slab_U11004.pkl', 'rb'))
 sd['alean'], sd['blean'] = ES.upper_forms(T1, cap)

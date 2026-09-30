@@ -8,7 +8,7 @@ fraction, itself reduced by E6Bridge20/21/22 to `LocalCountSum` and `StripDerivB
 `NoRealZeroInUnitInterval`. Nothing is concluded about where the zeros are.
 conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifact: E6Bridge19.lean (1594 lines at audit time,
 namespace RvMBridge19, imports E6Bridge15, E6Bridge20, E6Bridge21 and three Zeta23 files); memo
