@@ -15,9 +15,9 @@
 - Object is `completedRiemannZeta` (Λ), NOT raw ζ. Λ's zeros = nontrivial ζ zeros; Λ real on Re=½; holomorphic away from s=0,1.
 - Box B = rational `[σ0,σ1] × [T0,T1]`, `0 < σ0 < 1/2 < σ1 < 1`, `T0 > 0`. Corners rational (exact literals). Concrete capstone box: `[2/5, 3/5] × [10, 35]`.
 - Enclosure membership (Λ values in rational boxes) is a documented NON-KERNEL input (Arb ball arithmetic), carried as Lean theorem HYPOTHESES. The kernel proves only implications. `conjecture1_proved = False` in every artifact.
-- No emoji anywhere in code (QuantConnect + user global rule).
-- Python invocation: `PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3` (3.14.6; flint 0.9.0, mpmath 1.3.0, sympy 1.14.0). Run from `.../telperion`.
-- Lean: `/Users/peterwmurphy/.elan/bin/lake`. Local builds are operator-confirmed safe (2026-09-04); ALWAYS `lake exe cache get` before `lake build`; NEVER a cold Mathlib compile.
+- No emoji anywhere in code (project rule).
+- Python invocation: `PYTHONPATH=src python3` (3.14.6; flint 0.9.0, mpmath 1.3.0, sympy 1.14.0). Run from `.../telperion`.
+- Lean: `~/.elan/bin/lake`. Local builds are operator-confirmed safe (2026-09-04); ALWAYS `lake exe cache get` before `lake build`; NEVER a cold Mathlib compile.
 - First-class emitter pattern (mirror `emit_xi_line_zeros.py`): dataclass certificate + `certify_<kind>_point` (RAISES to refuse = negative control) + `<Name>Emitter(Emitter)` with `__post_init__` setting `self.kind` + `emit_body` + `<kind>_family` with `special=(kind, spec)`. FIVE registration points: `certify.py` `_SPECIAL_KINDS` + `_SPECIAL_DISPATCH`, `__init__.py` export, `emitter_sensitivity.py` stance (`STRUCTURALLY_NONVACUOUS`), and a `test_certificate_sensitivity`-passing entry.
 - Every emitted theorem carries the `statement_match` gate (emit `example : <type> := <name>`).
 - Merged atoms available on `origin/main` (import via the `dvp_geom_atoms` example, namespaces `RectWinding`, `BoxResidueSum`, `RectArgumentPrinciple`; disk Blaschke split `DlvpBlaschkeSplitExpand.logDeriv_eq_herglotz_add_entire`).
@@ -82,13 +82,13 @@ def test_enclose_lambda_boundary_is_closed_cycle_off_zero():
 ```
 
 - [ ] **Step 2: Run it to verify it fails.**
-Run: `PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 -m pytest tests/test_arb_complex.py::test_enclose_lambda_boundary_is_closed_cycle_off_zero -v`
+Run: `PYTHONPATH=src python3 -m pytest tests/test_arb_complex.py::test_enclose_lambda_boundary_is_closed_cycle_off_zero -v`
 Expected: FAIL (function not defined).
 
 - [ ] **Step 3: Implement `enclose_lambda_boundary`.** Traverse ∂B counter-clockwise: bottom edge (σ0→σ1 at T0), right edge (T0→T1 at σ1), top edge (σ1→σ0 at T1), left edge (T1→T0 at σ0), with `n_per_side` interior sample points per edge (exclude the shared corner from the next edge's start to avoid duplicates, then append the starting point once at the end to close). Each sample calls `enclose_lambda(re, im, prec_bits)`. Use a monotone rational parametrization `param in [0,1)` around the perimeter for ordering. Return the list; convert all coordinates to `Fraction`.
 
 - [ ] **Step 4: Run the test to verify it passes.**
-Run: `PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 -m pytest tests/test_arb_complex.py::test_enclose_lambda_boundary_is_closed_cycle_off_zero -v`
+Run: `PYTHONPATH=src python3 -m pytest tests/test_arb_complex.py::test_enclose_lambda_boundary_is_closed_cycle_off_zero -v`
 Expected: PASS.
 
 - [ ] **Step 5: Add a precision-shrink + python-flint-guard test.**
@@ -159,13 +159,13 @@ def test_winding_count_refuses_box_containing_zero():
 ```
 
 - [ ] **Step 2: Run to verify failure.**
-Run: `PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 -m pytest tests/test_winding_count.py -v`
+Run: `PYTHONPATH=src python3 -m pytest tests/test_winding_count.py -v`
 Expected: FAIL (module missing).
 
 - [ ] **Step 3: Implement the numeric core.** `winding_number`: accumulate the signed argument increment between consecutive box CENTERS (`atan2` on rational-center floats is fine for the integer result — the certificate's exactness lives in the half-plane witnesses, not this float sum), divide the total by 2π, round to nearest int. `_half_plane_witness`: test the fixed rational directions `{1, -1, i, -i, 1+i, 1-i, -1+i, -1-i}` — for each, check all four corners of BOTH boxes have strictly positive real inner product with that direction (exact Fraction arithmetic); return the first that works, else None. `winding_count_certificate`: RAISE if any box contains 0 (both parts straddle) or any consecutive pair returns None from `_half_plane_witness`; else store `n = winding_number(samples)` and the witnesses.
 
 - [ ] **Step 4: Run tests to verify pass.**
-Run: `PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 -m pytest tests/test_winding_count.py -v`
+Run: `PYTHONPATH=src python3 -m pytest tests/test_winding_count.py -v`
 Expected: PASS.
 
 - [ ] **Step 5: Commit.**
@@ -220,7 +220,7 @@ def test_winding_count_emits_boundary_integral_equals_2pi_i_N():
 
 - [ ] **Step 5: Wire generate.py + emit the toy instance and build it.** Add a `winding_count` case to `generate.py` emitting `WindingCount.lean` with the `z^2 → N=2` toy instance FIRST (validates the proof independent of Λ). Build locally:
 ```bash
-cd telperion/examples/zeta_zero_localization/lean && /Users/peterwmurphy/.elan/bin/lake exe cache get && /Users/peterwmurphy/.elan/bin/lake build WindingCount
+cd telperion/examples/zeta_zero_localization/lean && ~/.elan/bin/lake exe cache get && ~/.elan/bin/lake build WindingCount
 ```
 Expected: builds sorry-free. Then `#print axioms winding_z2` = `{propext, Classical.choice, Quot.sound}`.
 
@@ -228,8 +228,8 @@ Expected: builds sorry-free. Then `#print axioms winding_z2` = `{propext, Classi
 
 - [ ] **Step 7: Add drift + registration tests, run the emitter suite.**
 ```bash
-PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 -m pytest tests/test_winding_count.py tests/test_certificate_sensitivity.py -q
-PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 examples/zeta_zero_localization/generate.py --check
+PYTHONPATH=src python3 -m pytest tests/test_winding_count.py tests/test_certificate_sensitivity.py -q
+PYTHONPATH=src python3 examples/zeta_zero_localization/generate.py --check
 ```
 Expected: all pass; `test_every_emitter_is_classified` green with `WindingCountEmitter` present.
 
@@ -277,13 +277,13 @@ def test_box_arg_principle_lambda_builds():
 
 - [ ] **Step 4: Build + axiom check.**
 ```bash
-cd telperion/examples/zeta_zero_localization/lean && /Users/peterwmurphy/.elan/bin/lake build BoxArgPrinciple
+cd telperion/examples/zeta_zero_localization/lean && ~/.elan/bin/lake build BoxArgPrinciple
 ```
 Expected: sorry-free; `#print axioms box_arg_principle_lambda` clean.
 
 - [ ] **Step 5: Run the build test + commit.**
 ```bash
-PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 -m pytest tests/test_zeroloc_end_to_end.py::test_box_arg_principle_lambda_builds -q
+PYTHONPATH=src python3 -m pytest tests/test_zeroloc_end_to_end.py::test_box_arg_principle_lambda_builds -q
 git add telperion/examples/zeta_zero_localization/lean/BoxArgPrinciple.lean telperion/examples/zeta_zero_localization/generate.py telperion/tests/test_zeroloc_end_to_end.py
 git commit -m "feat(zeroloc): box argument principle for Lambda -- total count = winding N (Stage 2C)"
 ```
@@ -331,7 +331,7 @@ def test_box_localization_refuses_n_line_gt_n_total():
 
 - [ ] **Step 5: Build + axiom check.**
 ```bash
-cd telperion/examples/zeta_zero_localization/lean && /Users/peterwmurphy/.elan/bin/lake build BoxLocalization
+cd telperion/examples/zeta_zero_localization/lean && ~/.elan/bin/lake build BoxLocalization
 ```
 Expected: sorry-free; `#print axioms` clean.
 
@@ -341,8 +341,8 @@ Expected: sorry-free; `#print axioms` clean.
 
 - [ ] **Step 8: Run suites + commit.**
 ```bash
-PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 -m pytest tests/test_box_localization.py tests/test_certificate_sensitivity.py tests/test_zeroloc_end_to_end.py -q
-PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3 examples/zeta_zero_localization/generate.py --check
+PYTHONPATH=src python3 -m pytest tests/test_box_localization.py tests/test_certificate_sensitivity.py tests/test_zeroloc_end_to_end.py -q
+PYTHONPATH=src python3 examples/zeta_zero_localization/generate.py --check
 git add -A telperion/ .github/
 git commit -m "feat(zeroloc): RH-in-a-box localization capstone on [10,35] (Stage 3)"
 ```
@@ -381,7 +381,7 @@ def test_lambda_blaschke_split_box_builds():
 
 - [ ] **Step 5: Update STATUS + commit.**
 ```bash
-cd telperion/examples/zeta_zero_localization/lean && /Users/peterwmurphy/.elan/bin/lake build BlaschkeBox BoxArgPrinciple BoxLocalization
+cd telperion/examples/zeta_zero_localization/lean && ~/.elan/bin/lake build BlaschkeBox BoxArgPrinciple BoxLocalization
 git add -A telperion/
 git commit -m "feat(zeroloc): kernel-derive Lambda local Blaschke split over box (Stage 2B); discharge capstone hypothesis"
 ```
@@ -443,7 +443,7 @@ git commit -m "feat(zeroloc): Lambda segment (ball) enclosures + segment winding
 
 - [ ] **Step 5: Build locally + axiom check.**
 ```bash
-cd telperion/examples/zeta_zero_localization/lean && /Users/peterwmurphy/.elan/bin/lake exe cache get && /Users/peterwmurphy/.elan/bin/lake build RigorousWinding
+cd telperion/examples/zeta_zero_localization/lean && ~/.elan/bin/lake exe cache get && ~/.elan/bin/lake build RigorousWinding
 ```
 sorry-free; `#print axioms rigorous_winding_lambda_five` = {propext, Classical.choice, Quot.sound}.
 

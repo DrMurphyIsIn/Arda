@@ -6,7 +6,7 @@ nodes (`RH_conjecture`, `MM_zeta_comb_membership`) are out of scope and are ment
 below only as DAG neighbours.
 
 Blind audit, auditor 1 of 2, independent (no coordination with auditor 2). Worktree
-`/Users/peterwmurphy/arda-goal-weil`, branch `mm/gauss-window`. No git commands were run,
+`~/arda-goal-weil`, branch `mm/gauss-window`. No git commands were run,
 no registry mutation was made (`mission status` and `mission verify` only, both read-only),
 and no file under the worktree was changed except the creation of this testimony.
 
@@ -89,7 +89,7 @@ mechanical one: the recorded readback's own verdict says not to promote.
 
 No built copy of the island exists in this worktree; instead `quasicrystal/lean/.lake`
 here is a root-owned SYMLINK (created 2026-09-22 01:30) to
-`/Users/peterwmurphy/arda-million/telperion/examples/quasicrystal/lean/.lake`, not a
+`~/arda-million/telperion/examples/quasicrystal/lean/.lake`, not a
 reflink copy. That sibling's `lake-manifest.json` is byte-identical to this worktree's,
 its toolchain is `v4.32.0`, and its Mathlib package checkout is at
 `81a5d257c8e410db227a6665ed08f64fea08e997`. However the sibling no longer carries a

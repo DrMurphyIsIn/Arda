@@ -79,7 +79,7 @@ Interpretation:
 ## LLM arm (hybrid, qwen2.5-coder:7b) -- NOT RUN THIS SESSION
 
 Reason: `ollama pull qwen2.5-coder:7b` failed with
-`permission denied on /Users/peterwmurphy/.ollama/models/blobs/...`.
+`permission denied on ~/.ollama/models/blobs/...`.
 The model `qwen2.5:32b` (19 GB) is present locally but is not the target model tag
 configured in EvolveConfig.model_tag. One bounded pull attempt (30 s) was made and
 abandoned after the permission error.

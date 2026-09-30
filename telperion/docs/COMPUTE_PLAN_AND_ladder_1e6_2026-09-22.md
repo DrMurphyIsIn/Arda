@@ -1,6 +1,6 @@
 # COMPUTE JOB PLAN: `AND_ladder_1e6` (Anduril G1, height ladder 640000 -> 1000000)
 
-Date: 2026-09-22. Worktree of record for the JOBS: `/Users/peterwmurphy/arda-million`
+Date: 2026-09-22. Worktree of record for the JOBS: `~/arda-million`
 (production ladder). This document lives in `arda-goal-weil` (branch `mm/gauss-window`)
 and is a plan only: no Lean was written, no job was started, no git command was run.
 
@@ -31,7 +31,7 @@ separate, shared, non-compute obligation.
 
 ## 1. Measured state on 2026-09-22 (corrections to the 09-14/09-18 triage)
 
-Measured directly in `/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization`:
+Measured directly in `~/arda-million/telperion/examples/zeta_zero_localization`:
 
 | Quantity | Triage said | Measured now |
 |---|---|---|
@@ -238,7 +238,7 @@ Reclaiming `arda-b2` alone (18 GB) lifts free space to ~60 GiB and removes the
 ## 4. The per-leg recipe (exact commands)
 
 All commands run from
-`/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization`
+`~/arda-million/telperion/examples/zeta_zero_localization`
 with `A` = leg start, `B = A + 40000`. Legs: (640000,680000), (680000,720000), ...,
 (960000,1000000). Steps are strictly in order within a leg. Only ONE `lake build`
 may run in the `zeta_zero_localization` island at a time; nothing else may build it
@@ -246,7 +246,7 @@ in `arda-million` while a leg build is running.
 
 ### Pre-flight (once, before leg 1)
 
-- `df -h /Users/peterwmurphy` shows >= 20 GiB free (42 GiB today).
+- `df -h ~` shows >= 20 GiB free (42 GiB today).
 - `ls lean/.lake/build/ir` -> does not exist (confirmed today). If it exists from an
   aborted build, `rm -rf lean/.lake/build/ir` first.
 - `ps aux | grep -E "lake build|campaign.py|generate.py"` -> nothing running (confirmed).

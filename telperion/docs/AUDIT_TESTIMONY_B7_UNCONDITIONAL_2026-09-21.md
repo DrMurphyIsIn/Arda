@@ -3,7 +3,7 @@ The artifact is the last obligation discharged and the Bombieri-Lagarias explici
 # Audit testimony: E6Bridge24 (StripDerivBound) + E6Bridge27 (unconditional B7 assembly)
 
 Auditor: auditor-forward (blind, adversarial). Date: 2026-09-21.
-Worktree: /Users/peterwmurphy/arda-goal-weil, island telperion/examples/rvm_bridge/lean,
+Worktree: ~/arda-goal-weil, island telperion/examples/rvm_bridge/lean,
 Lean v4.33.0-rc2, Zeta23 pinned fbdc36bbf17d20af3fd0447c6d1a8a02773c9844.
 Files: E6Bridge24.lean (882 lines, namespace RvMBridge24), E6Bridge27.lean (36 lines, namespace RvMBridge27).
 Probes: Probes/Audit24_Axioms.lean, Probes/Audit24_Probes.lean. conjecture1_proved = False.

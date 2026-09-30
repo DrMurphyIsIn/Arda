@@ -9,7 +9,7 @@ style) and (b) the pushInto-style concentration, and show they move Aobj in OPPO
 directions.
 """
 import sys
-sys.path.insert(0,'/Users/peterwmurphy/repos/Arda-wt-w2a/telperion/scratch')
+sys.path.insert(0,str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'telperion/scratch'))
 from oblA_rootinv import perm_L_over_prod, deg, to_edges
 from oblA_probe import Aobj, pushInto
 from sympy import Rational as R

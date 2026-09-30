@@ -9,7 +9,7 @@ that threshold localises off-line zeros either below a distance floor or into th
 margins. Both are unconditional inequalities about the actual zero set; nothing is concluded
 about where the zeros are. conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifact: E6Bridge14.lean (448 lines, namespace
 RvMBridge14, `import E6Bridge12` only) and memo WALL_EFFECTIVE_O2_2026-09-21.md. Probes:

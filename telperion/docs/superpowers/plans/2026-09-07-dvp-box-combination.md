@@ -15,8 +15,8 @@
 - Object: `riemannZeta`. Nontrivial zeros = zeros in `0 < Re < 1` (Mathlib `riemannZeta_ne_zero_of_one_le_re` gives none with `Re >= 1`; functional equation gives none with `Re <= 0`). Pole at `s=1` excluded from every box.
 - Trust boundary (unchanged from #285/#312): winding integer N, edge non-vanishing, value enclosures = documented NON-KERNEL Arb input (theorem hypotheses). dVP-effective (#316), functional equation, and the multiplicity bridge are KERNEL. The kernel proves the implication. `conjecture1_proved = False` in every artifact. Complete FINITE Turing statement, NOT a proof of RH.
 - No emoji. No `set_option linter.unusedVariables false` (a `maxHeartbeats` budget is allowed). Acceptance for every Lean deliverable: sorry-free, `#print axioms` = `{propext, Classical.choice, Quot.sound}` (no `sorryAx`), built lakefile target.
-- Python: `PYTHONPATH=src /Users/peterwmurphy/arda-trading/.venv/bin/python3` (3.14.6; flint 0.9.0). Run from `.../telperion`.
-- Lean: `/Users/peterwmurphy/.elan/bin/lake`; local builds OK; ALWAYS `lake exe cache get` before `lake build`; NEVER a cold Mathlib compile.
+- Python: `PYTHONPATH=src python3` (3.14.6; flint 0.9.0). Run from `.../telperion`.
+- Lean: `~/.elan/bin/lake`; local builds OK; ALWAYS `lake exe cache get` before `lake build`; NEVER a cold Mathlib compile.
 - Optional-dep hygiene: new flint tests `@requires_flint`; Lean-build tests `@requires_lake`.
 - On-main interfaces (verified):
   - `ZeroFreeBridge.dlvp_zeta_region_rate_effective (β γ : ℝ) (k : ℤ) (h34 : 3/4 ≤ β) (hβ1 : β < 1) (hΓ : 55/16 ≤ |γ|) (hk : 1 ≤ k) (hmρ₀ : MeromorphicOn.divisor riemannZeta (Metric.ball ((2:ℂ)+(γ:ℂ)*I) (11/8)) ((β:ℂ)+(γ:ℂ)*I) = k) : β ≤ 1 - ZeroFreeBridge.dlvpRateC / Real.log |γ|` (in `DlvpZetaRateEffective.lean`). `dlvpRateC : ℝ := 1/(112*16*dlvpRateK)` noncomputable; `dlvpRateC_pos : 0 < dlvpRateC`.

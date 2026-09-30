@@ -8,7 +8,7 @@ composes them with E6Bridge19/22/25 so that the rh node RH_bl_explicit_formula r
 named inequality `StripDerivBound`. Nothing is concluded about where the zeros are.
 conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifacts: E6Bridge23.lean (282 lines, RvMBridge23,
 imports E6Bridge22), E6Bridge25.lean (129 lines, RvMBridge25, imports E6Bridge19, E6Bridge22,

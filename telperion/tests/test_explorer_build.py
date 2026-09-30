@@ -126,7 +126,7 @@ def test_page_is_honest(html):
         for m in re.finditer(re.escape(phrase), lowered):
             context = lowered[max(0, m.start() - 60):m.start()]
             assert any(neg in context for neg in negations), (phrase, context)
-    # no emoji / pictographs anywhere (QuantConnect and repo convention)
+    # no emoji / pictographs anywhere (repo convention)
     assert not re.search(r"[\U0001F300-\U0001FAFF☀-➿]", html)
     # self-contained: no external scripts or stylesheets
     assert not re.search(r"<script[^>]+src=", html)

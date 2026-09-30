@@ -2,7 +2,7 @@
 
 **conjecture1_proved = False.** Nothing in this document, in any artifact it cites, or in any memo it links proves or advances the Riemann Hypothesis. The RH-equivalent nodes (`RH_conjecture`, `MM_zeta_comb_membership`) were out of scope for this run and were not touched.
 
-Scope: the ten remaining nodes of the rh, mirrormere and anduril campaigns, worktree `/Users/peterwmurphy/arda-goal-weil` (branch `mm/gauss-window`). Every agent in the run was read-only on the registry and ran no git commands; the lead owns every commit, audit, link, deprecation and grant listed below. All paths are relative to `/Users/peterwmurphy/arda-goal-weil/telperion/` unless absolute.
+Scope: the ten remaining nodes of the rh, mirrormere and anduril campaigns, worktree `~/arda-goal-weil` (branch `mm/gauss-window`). Every agent in the run was read-only on the registry and ran no git commands; the lead owns every commit, audit, link, deprecation and grant listed below. All paths are relative to `~/arda-goal-weil/telperion/` unless absolute.
 
 Reading the tables: **category** is the triage verdict (grantable / provable / design / compute); **outcome** is what actually happened this run; a node is a **pass** only if a kernel-checked artifact exists on a built island, its statement is contained by the registry gate, and the independent readers did not refute it. An unbuilt island, a design memo, or a conditional reduction whose hypothesis is itself an unproved node is NOT a pass, and the tables say so.
 

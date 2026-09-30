@@ -4,7 +4,7 @@ Build unrooted tree as adjacency, compute per(L)/prod(deg) by brute matching sum
 compare to rooted Aobj at each rooting.
 """
 import sys
-sys.path.insert(0,'/Users/peterwmurphy/repos/Arda-wt-w2a/telperion/scratch')
+sys.path.insert(0,str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'telperion/scratch'))
 from oblA_probe import Aobj, pushInto
 from sympy import Rational as R
 from itertools import combinations

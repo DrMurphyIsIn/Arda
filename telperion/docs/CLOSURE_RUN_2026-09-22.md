@@ -147,7 +147,7 @@ Found by the h280k lane rather than an auditor:
 
 ## 3. Per lane
 
-All lane branches below are ancestors of `rh/closure-base` HEAD `7c116bdef` in `/Users/peterwmurphy/arda-closure`; I checked each with `git merge-base --is-ancestor`. That branch is 22 commits ahead of `origin/main`, its working tree is clean, and `PYTHONPATH=src /usr/bin/python3 -m telperion.cli mission verify` prints OK for anduril, bg, mirrormere and rh. The one WARN lists 10 example islands that no CI builds; none of them is dbn, zeta_reflection, li_positivity or rvm_bridge.
+All lane branches below are ancestors of `rh/closure-base` HEAD `7c116bdef` in `~/arda-closure`; I checked each with `git merge-base --is-ancestor`. That branch is 22 commits ahead of `origin/main`, its working tree is clean, and `PYTHONPATH=src /usr/bin/python3 -m telperion.cli mission verify` prints OK for anduril, bg, mirrormere and rh. The one WARN lists 10 example islands that no CI builds; none of them is dbn, zeta_reflection, li_positivity or rvm_bridge.
 
 ### emit:enclosure_tree (`cl/emit-enclosure-tree` @ a6e7c77a6, merged in 6cf66249c)
 - **Status:** complete.
@@ -223,7 +223,7 @@ All lane branches below are ancestors of `rh/closure-base` HEAD `7c116bdef` in `
   - No `lake build` was run anywhere. CI builds only up to `H_CI = 50000`.
 - **Blocker:**
   - The registered `Statements/AND_ladder_h280000.lean` (12 lines) is hypothesis-free. The artifact is conditional on `hbands` (10,379 literal strip-box claims, each the conclusion of an Arb-conditional band theorem) and on `hγ`.
-  - The proposal `/Users/peterwmurphy/arda-cl-h280k/PROPOSED_AND_ladder_h280000_statement.lean` (about 22.2k lines, uncommitted, at the worktree root) is **weaker** than the registered statement.
+  - The proposal `~/arda-cl-h280k/PROPOSED_AND_ladder_h280000_statement.lean` (about 22.2k lines, uncommitted, at the worktree root) is **weaker** than the registered statement.
   - Adopting it re-quantifies a registry statement, which the house rules forbid without an owner decision.
 - **Skeptic verdicts:** not in my input.
 
@@ -233,10 +233,10 @@ All lane branches below are ancestors of `rh/closure-base` HEAD `7c116bdef` in `
 
 ## 4. Lead op list (in order)
 
-Run all CLI commands from `/Users/peterwmurphy/arda-closure/telperion` as `PYTHONPATH=src /usr/bin/python3 -m telperion.cli ...`. After every registry edit, run `PYTHONPATH=src /usr/bin/python3 -m telperion.cli mission verify` and require OK for all four campaigns.
+Run all CLI commands from `~/arda-closure/telperion` as `PYTHONPATH=src /usr/bin/python3 -m telperion.cli ...`. After every registry edit, run `PYTHONPATH=src /usr/bin/python3 -m telperion.cli mission verify` and require OK for all four campaigns.
 
 **Commits and branches**
-1. **All lane branches are already merged into `rh/closure-base`** (`/Users/peterwmurphy/arda-closure`, HEAD 7c116bdef). There is no further lane merge to do.
+1. **All lane branches are already merged into `rh/closure-base`** (`~/arda-closure`, HEAD 7c116bdef). There is no further lane merge to do.
    - Do not merge `cl/crux`; it is empty.
    - Do not commit the untracked `LANE_NOTES_*.md` or `PROPOSED_AND_ladder_h280000_statement.lean` from the lane worktrees into this branch unless you intend to. The PROPOSED file is an input for the owner decision in step 9.
 2. Commit this file:
@@ -349,7 +349,7 @@ Node counts on `rh/closure-base`:
 7. **Anything outside the four campaigns** (`bg` beyond CI, `li_positivity` nodes on other campaigns, the 10 islands no CI builds) was out of scope.
 8. **Required-check posture.** The audits all found that no island Lean job is a required check and that `enforce_admins` is false. Until the owner changes that, every PROVED status in all four campaigns can be broken on main without CI blocking the merge. This run documented that; it did not change it.
 9. **Environment debris left by verifiers:**
-   - `/Users/peterwmurphy/arda-cl-audit/proof/formalization/.lake`: 672 MB of package clones, gitignored, no build. A verifier's `rm` was denied. The lead should delete it.
+   - `~/arda-cl-audit/proof/formalization/.lake`: 672 MB of package clones, gitignored, no build. A verifier's `rm` was denied. The lead should delete it.
    - One verifier ran `rm -rf` on li_positivity `Probes/` and restored the 6 tracked files. Any untracked probe files another lane had there are gone. None is known to have mattered.
    - Several lanes ran as uid 0. Lake-written `.lake` files may be root-owned in any worktree whose lane did not chown them.
 10. **The gate itself** still has the marker-regex holes listed in 2b, and `coverage.py` still accepts a text match of `lake build`. Every future grant relies on both until the workflow fixes in section 4 land.

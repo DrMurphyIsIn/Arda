@@ -375,7 +375,7 @@ the probes are interderivable" prediction, now checked on the row-4/row-1 pair.
 
 ## §6. In-session numeric verification log
 
-Run in `/Users/peterwmurphy/arda-qc3-recur` with `mpmath` (dps=40) + `flint`.
+Run in `~/arda-qc3-recur` with `mpmath` (dps=40) + `flint`.
 
 - **BraggDefect cross-check.** `δ = 1/10`, `d = e^δ+e^{−δ}−2 = 0.0100083361116`,
   `q = −d² = −1.00166791723·10⁻⁴` — matches `BraggDefect`'s `−1.00167·10⁻⁴`. **PASS.**
