@@ -435,3 +435,29 @@ name = "KWin_Bridge"
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]
 name = "AxiomGuardRvMBridge"
+
+# Crux3 (2026-09-24): the height-local band certificate that Davenport-Heilbronn FAILS (round-2 RH crux
+# section 4.3).  Zeta's Weil functional (archSide - primeSide, no zeros) on the 2-dim band
+# span{cos(763u/9), cos(259u/3)} on [-9pi/14, 9pi/14] (window x = e^{9pi/7} = 56.78) is >= (1/2)||v||^2;
+# D's functional is -0.655||v||^2 there (Arb, research note), and kernel-checked <= -(1/2)||v||^2 at
+# c = (-3, 2) (Crux3_BandDHData + Crux3_BandDH: dh_band_negative, band_separation).  A finite instance, NOT RH.
+[[lean_lib]]
+name = "Crux3_BandAnalytic"
+
+[[lean_lib]]
+name = "Crux3_BandTest"
+
+[[lean_lib]]
+name = "Crux3_BandNum"
+
+[[lean_lib]]
+name = "Crux3_BandTable"
+
+[[lean_lib]]
+name = "Crux3_BandCert"
+
+[[lean_lib]]
+name = "Crux3_BandDHData"
+
+[[lean_lib]]
+name = "Crux3_BandDH"

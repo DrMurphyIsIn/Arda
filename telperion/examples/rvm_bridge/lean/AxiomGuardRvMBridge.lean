@@ -234,6 +234,8 @@ import E6Bridge32
 import E6Bridge33
 import E6Bridge34
 import KWin_Bridge
+import Crux3_BandCert
+import Crux3_BandDH
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -1235,3 +1237,67 @@ import KWin_Bridge
 -- ZhuTail (2026-09-23): the eq. (13) tail data PROVED with closed-form constants.  conjecture1_proved = False.
 
 -- ZhuInstance (2026-09-23): the instance L = 4/5, T# = 200, N = 200.  conjecture1_proved = False.
+
+-- Crux3 (2026-09-24): the height-local band certificate that Davenport-Heilbronn FAILS (round-2 RH crux,
+-- section 4.3).  Zeta's Weil functional (archSide - primeSide, no zeros) on the 2-dim Dirichlet-cosine band
+-- span{cos(763u/9), cos(259u/3)} on [-9pi/14, 9pi/14] (window x = e^{9pi/7} = 56.78, height ~85.6) is
+-- >= (1/2)||v||^2; D's own explicit-formula functional is -0.655||v||^2 on the same span (Arb, research note).
+-- A 2-dimensional finite instance, NOT RH; fooled by every surgery at p > 57.  conjecture1_proved = False.
+#print axioms Crux3.integral_exp_abs_mul_cos
+#print axioms Crux3.integral_mul_lz
+#print axioms Crux3.psiR_ge_lz
+#print axioms Crux3.FreqData.integral_Fsq
+#print axioms Crux3.FreqData.weil_re_ge
+#print axioms Crux3.bandV_freqData
+#print axioms Crux3.norm_paperFT_bandV_le
+#print axioms Crux3.acR_bandV
+#print axioms Crux3.acR_bandV_zero
+#print axioms Crux3.lorTerm_bandV
+#print axioms Crux3.le_log_of
+#print axioms Crux3.log_le_of
+#print axioms Crux3.inv_sqrt_between
+#print axioms Crux3.InB.cos_of
+#print axioms Crux3.InB.sin_of
+#print axioms Crux3.entry_sound
+#print axioms Crux3.tab_ok
+#print axioms Crux3.tab_tamper
+#print axioms Crux3.lam_tab
+#print axioms Crux3.pairHyp0
+#print axioms Crux3.log_pi_le'
+#print axioms Crux3.quad_nonneg
+#print axioms Crux3.Pr_balls
+#print axioms Crux3.twoA_lt_log57
+#print axioms Crux3.form_entries
+#print axioms Crux3.prime_sum_band
+#print axioms Crux3.band_floor
+-- Crux3, the certificate in round-2 form: band comb constant <= 1.92 < 2.49 <= band archimedean floor.
+#print axioms Crux3.FreqData.arch_re_ge
+#print axioms Crux3.FreqData.prime_eq
+#print axioms Crux3.band_prime_eq
+#print axioms Crux3.band_comb_le
+#print axioms Crux3.band_arch_ge
+-- Crux3, the Davenport-Heilbronn side (negative control): on the band test -3 cos(763u/9) + 2 cos(259u/3),
+-- D's explicit-formula functional (weights = coefficients of -D'/D via their defining identity) is
+-- <= -(1/2)||v||^2, while zeta's is >= (1/2)||v||^2 (band_separation).  A finite instance, NOT RH.
+#print axioms Crux3.cD_conv
+#print axioms Crux3.eq_cD_of_conv
+#print axioms Crux3.psiD_le
+#print axioms Crux3.lorTermB_bandV
+#print axioms Crux3.Fsq_mul_sq_le
+#print axioms Crux3.FreqData.archD_re_eq
+#print axioms Crux3.FreqData.primeD_eq
+#print axioms Crux3.archD_band_le
+#print axioms Crux3.kap_InB
+#print axioms Crux3.cdBall_sound
+#print axioms Crux3.dEntry_sound
+#print axioms Crux3.dtab_ok
+#print axioms Crux3.dtab_tamper
+#print axioms Crux3.PD_bounds
+#print axioms Crux3.w_one_of_conv
+#print axioms Crux3.dh_prime_sum
+#print axioms Crux3.log_pi_ge'
+#print axioms Crux3.dh_band_comb_ge
+#print axioms Crux3.dh_band_arch_le
+#print axioms Crux3.dh_band_negative
+#print axioms Crux3.band_separation
+#print axioms Crux3.band_separation_cD
