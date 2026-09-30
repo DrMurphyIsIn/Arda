@@ -607,6 +607,31 @@ theorem combMassF_dm3_window4 {L : ℝ} (hL3 : Real.log 3 < 2 * L) (hL4 : 2 * L 
   push_cast
   norm_num [abs_of_pos h0]
 
+/-- `log 30 = log 2 + log 3 + log 5`. -/
+lemma log30_eq : Real.log 30 = Real.log 2 + Real.log 3 + Real.log 5 := by
+  rw [show (30 : ℝ) = 2 * 3 * 5 by norm_num, Real.log_mul (by norm_num) (by norm_num),
+    Real.log_mul (by norm_num) (by norm_num)]
+
+/-- **The pilot's provable threshold, in exact rationals**: for `d = -3` on the `x = 4` window
+(`log 3 < 2L <= log 4`) at `T# = 30`, `betaStarQ (-3) L 30 >= 2.890`.  Here
+`betaStarQ = 3 log 3 + 2 log 5 - 2 log pi - 1/15 - 2 log 3/sqrt 3 = 2.8900180...`, so the margin
+is only `1.8e-5`: every atom enters through its rational enclosure (`log3_bounds`, `log5_bounds`,
+`logPi_le'`, `c3_bounds`).  A threshold, not positivity.  conjecture1_proved = False. -/
+theorem betaStarQ_dm3_T30_ge {L : ℝ} (hL3 : Real.log 3 < 2 * L) (hL4 : 2 * L ≤ Real.log 4) :
+    (2890 / 1000 : ℝ) ≤ betaStarQ (-3) L 30 := by
+  unfold betaStarQ
+  rw [combMassF_dm3_window4 hL3 hL4]
+  have hpi : 0 < Real.pi := Real.pi_pos
+  have hdiv : Real.log (30 / (2 * Real.pi)) = Real.log 30 - (Real.log 2 + Real.log Real.pi) := by
+    rw [Real.log_div (by norm_num) (by positivity), Real.log_mul (by norm_num) hpi.ne']
+  have hd : (((-3 : ℤ).natAbs : ℕ) : ℝ) = 3 := by norm_num
+  rw [hdiv, log30_eq, hd]
+  have h3 := log3_bounds
+  have h5 := log5_bounds
+  have hp := logPi_le'
+  have hc := c3_bounds
+  linarith [h3.1, h5.1, hp, hc.2]
+
 end FamilyWeil
 
 end

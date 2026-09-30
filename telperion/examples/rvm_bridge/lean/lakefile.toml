@@ -437,7 +437,7 @@ name = "FamilyWeilDigamma"
 [[lean_lib]]
 name = "FamilyWeilSymbol"
 
-# Quadratic family, Stage 1a: the atom constants (log 2/3/5, sqrt 2/3/5 and inverses, 16-digit
+# Quadratic family, Stage 1a: the atom constants (log 2/3/5, sqrt 2/3/5 and inverses; log 2/3 to 19 digits, log 5 to 17, the rest 16 digits;
 # rational enclosures by norm_num), the atom weights c_d(2), c_d(3), c_d(4), c_d(5), the explicit
 # symbols on the x = 4 and x = 7 windows, and the kernel-checked per-cell coefficient tables
 # (18 cells at N = 4, 54 at N = 7).  No positivity.  conjecture1_proved = False.

@@ -206,7 +206,7 @@
         weightQ_two, weightQ_three, weightQ_four, weightQ_five, symbolQ_window4, symbolQ_window7,
         cellAtomTable4_check, weightQ_of_table4, symbolQ_window4_of_table4, cellAtomTable7_check,
         psiD_ge_envelope, symbolArch_quad_ge_envelope, c3_bounds, logPi_le, two_gamma_le, condLo_dm3,
-        comb_le_combMassF, symbolQ_ge_betaStar, combMassF_dm3_window4,
+        comb_le_combMassF, symbolQ_ge_betaStar, combMassF_dm3_window4, betaStarQ_dm3_T30_ge,
         ...} -- the QUADRATIC FAMILY, Stage 1a (2026-09-25, FamilyWeilDigamma/Symbol/Atoms):
         the second digamma Re psi(3/4 + i r/2) (and every admissible shift) with the psiR
         toolkit reproved (series, rational two-sided truncations, Lorentzian minorant, parity,
@@ -215,7 +215,7 @@
         form, Zhu eq. (2) generalised to weights + admissible shifts + conductor
         (Re weilFormF D (autocorr f) = 2 eps |F(i/2)|^2 + (1/2pi) int |F|^2 symbolF D L), with
         Zhu's zeta theorem recovered as the zetaData instance; the quadratic / cell symbols and
-        their finite-window forms; the atom constants (log 2/3/5, sqrt 2/3/5 and inverses, 16-digit
+        their finite-window forms; the atom constants (log 2/3/5, sqrt 2/3/5 and inverses; log 2/3 to 19 digits, log 5 to 17, the rest 16 digits;
         norm_num enclosures), the atom weights c_d(2), c_d(3), c_d(4), c_d(5), the explicit symbols
         on the x = 4 and x = 7 windows, and the kernel-checked per-cell coefficient tables (18 cells
         at N = 4, 54 at N = 7).  NO positivity unit is proved; no certificate is cut.
@@ -1412,3 +1412,5 @@ import FamilyWeilAtoms
 #print axioms FamilyWeil.symbolQ_abs
 #print axioms FamilyWeil.symbolQ_ge_betaStar_abs
 #print axioms FamilyWeil.combMassF_dm3_window4
+#print axioms FamilyWeil.log30_eq
+#print axioms FamilyWeil.betaStarQ_dm3_T30_ge
