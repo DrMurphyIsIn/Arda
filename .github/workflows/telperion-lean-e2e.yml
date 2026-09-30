@@ -35,6 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
+      affine_hull_dominance: ${{ steps.f.outputs.affine_hull_dominance }}
       concave_pooled_induction: ${{ steps.f.outputs.concave_pooled_induction }}
       gap_budget_multiplicity: ${{ steps.f.outputs.gap_budget_multiplicity }}
       mobius_tangent_cell: ${{ steps.f.outputs.mobius_tangent_cell }}
@@ -150,6 +151,8 @@ jobs:
               - 'telperion/missions/**'
             achievability:
               - 'telperion/examples/achievability/**'
+            affine_hull_dominance:
+              - 'telperion/examples/affine_hull_dominance/**'
             affine_param_endpoint:
               - 'telperion/examples/affine_param_endpoint/**'
             algebraic_bracket:
@@ -4094,4 +4097,39 @@ jobs:
 
       - name: Build the emitted Lean (the actual verification -- quadratic sign race (eventual_threshold face))
         working-directory: telperion/examples/quadratic_sign_race/lean
+        run: lake build
+  affine-hull-dominance-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.affine_hull_dominance == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/affine_hull_dominance/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/affine_hull_dominance/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/affine_hull_dominance/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- exact tree maxima by affine hull dominance (matching-sum dogfood))
+        working-directory: telperion/examples/affine_hull_dominance/lean
         run: lake build
