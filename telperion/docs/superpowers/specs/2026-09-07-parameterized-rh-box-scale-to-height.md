@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-07
 **Status:** Design (pre-plan)
-**Branch:** `rh/parameterized-box-scale` (worktree `/Users/peterwmurphy/telperion-zeroloc`, off `origin/main`)
+**Branch:** `rh/parameterized-box-scale` (worktree `~/telperion-zeroloc`, off `origin/main`)
 **Predecessor:** `2026-09-06-zeta-box-localization-stage23-design.md` (RH-in-a-box for the fixed box `[2/5,3/5]x[10,35]`, MERGED as PR #285).
 **Honesty flag:** `conjecture1_proved = False`. This extends the *verified range* of RH (Turing's method, kernel-checked) to arbitrary finite boxes and larger heights. **No finite box or height is a proof of RH.**
 

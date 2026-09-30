@@ -1,5 +1,5 @@
 import sys, time, pickle
-sys.path.insert(0, '/Users/peterwmurphy/arda-h11k/telperion/examples/zeta_reflection')
+sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection'))
 import Arb4_emit_seg as ES
 OFF = ES.OFF
 from fractions import Fraction as Fr

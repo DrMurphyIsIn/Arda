@@ -1,9 +1,9 @@
 """UNTRUSTED emitter (lane H11K): the top edge of the band as H11K_Edge_T<T>.lean, per-piece decides."""
 import sys, pickle, os
-sys.path.insert(0, '/Users/peterwmurphy/arda-h11k/telperion/examples/zeta_reflection')
+sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection'))
 import Arb4_emit as A
 from fractions import Fraction as Fr
-ISL = '/Users/peterwmurphy/arda-h11k/telperion/examples/zeta_reflection/lean'
+ISL = str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection/lean')
 T = sys.argv[1]; out = sys.argv[2]; which = sys.argv[3] if len(sys.argv) > 3 else 'all'
 e = pickle.load(open('edge_%s.pkl' % T, 'rb'))
 name = 'E_' + A.edge_tag(e['T'])

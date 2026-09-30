@@ -2,7 +2,7 @@
   "campaign": "Fixed-width residual survey, finder thread: heat flow and orthogonal readings",
   "date": "2026-09-21",
   "conjecture1_proved": false,
-  "worktree": "/Users/peterwmurphy/arda-goal-weil (branch mm/wall-fixed-width, shared, no git state changed)",
+  "worktree": "~/arda-goal-weil (branch mm/wall-fixed-width, shared, no git state changed)",
   "prose": "telperion/docs/research/FIXED_WIDTH_LENS_HEAT_2026-09-21.md",
   "scratch": ["scratchpad/heat_lens.py", "scratchpad/heat_lens2.py"],
   "taxonomy": ["FOOTHOLD", "COLLAPSE_TO_RH", "COLLAPSE_TO_FREE", "TRANSFER", "UNRESOLVED", "RECORDED"],

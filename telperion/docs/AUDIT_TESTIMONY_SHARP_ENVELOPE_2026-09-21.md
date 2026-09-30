@@ -6,7 +6,7 @@ width lam > 0 once |c| ≥ envelopeCsharp lam, an explicit threshold whose only 
 ingredient is the convergent series primeAbs lam; and two height corollaries restating this for
 |c| ≥ T. Nothing is concluded about where the zeros are. conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifact: E6Bridge16.lean (877 lines, namespace
 RvMBridge16, imports E6Bridge10 and E6Bridge11) and memo WALL_SHARP_ENVELOPE_2026-09-21.md.

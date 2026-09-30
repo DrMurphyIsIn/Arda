@@ -71,7 +71,7 @@ theorem zeta_comb_membership :
 all-support ⟺ RH." Its corpus face is a Lean proposition that is not merely formalizable
 but **already formalized**, as the right-hand side of an unconditional pinned iff. Read
 in this session at
-`/Users/peterwmurphy/arda-gw-finite/telperion/examples/li_positivity/lean/.lake/packages/LiCriterion/Lc/LiCriterion/XiOrderBridge.lean:68`:
+`~/arda-gw-finite/telperion/examples/li_positivity/lean/.lake/packages/LiCriterion/Lc/LiCriterion/XiOrderBridge.lean:68`:
 
 ```lean
 theorem li_criterion_rh_iff :
@@ -257,7 +257,7 @@ their own words, because the case where a barrier is refuted is exactly the case
 is tempted to quietly drop.
 
 **BARRIER ATTEMPT (verbatim, `wall/barrier`, Lean at
-`/Users/peterwmurphy/arda-wall-barrier/telperion/examples/wall_barrier/lean/`,
+`~/arda-wall-barrier/telperion/examples/wall_barrier/lean/`,
 `WallBarrierAM.lean` + `FEUniformBarrierAM.lean`, status `sketched`):**
 
 > "A real barrier theorem IS available to this program, but it is relativization-grade,
@@ -492,7 +492,7 @@ They are the run's real product and they are cheap to land. **Each is a theorem 
 instrument, not about zeta, and each node title must say so.**
 
 **F2-1. Register the rate-frontier no-go.** Artifact:
-`/Users/peterwmurphy/arda-wall-rate-frontier/telperion/examples/li_positivity/lean/RateFrontierNoGo.lean`
+`~/arda-wall-rate-frontier/telperion/examples/li_positivity/lean/RateFrontierNoGo.lean`
 (`wall/rate-frontier` @ `e363d520b`, elaborated with `lake env lean` at the v4.34 pin, no
 island build). Statement to register, verbatim from the artifact:
 
@@ -518,7 +518,7 @@ mission grant RH_rate_shape_no_quasi
 rate improvement as progress toward RH, with a kernel theorem rather than prose.
 
 **F2-2. Register the heat-flow robustness no-go.** Artifact:
-`/Users/peterwmurphy/arda-wall-route-c-debruijn/telperion/examples/dbn/lean/DBNFlowNoGo.lean`
+`~/arda-wall-route-c-debruijn/telperion/examples/dbn/lean/DBNFlowNoGo.lean`
 (`wall/route-c-debruijn` @ `2bc20cab1`; nine theorems, all `[propext, Classical.choice,
 Quot.sound]`, no sorry; guard module `AxiomGuardDBNFlowNoGo.lean` included). Register
 `uniform_robust_cannot_reach_wall` — a uniformly δ-robust sound scheme certifies no

@@ -8,7 +8,7 @@ conjecture1_proved = False. Nothing below proves RH or moves Route C's wall. Eve
 
 ## 0. Corrections found this session
 
-1. **Wrong path in the brief.** `/Users/peterwmurphy/arda-routec-syn/telperion/docs/RH_CRUX_RESEARCH_2026-09-22.md` does not exist. The document is at `/Users/peterwmurphy/arda-crux2/telperion/docs/RH_CRUX_RESEARCH_2026-09-22.md`, with an identical copy (both 927 lines) under `arda-cl-crux`.
+1. **Wrong path in the brief.** `~/arda-routec-syn/telperion/docs/RH_CRUX_RESEARCH_2026-09-22.md` does not exist. The document is at `~/arda-crux2/telperion/docs/RH_CRUX_RESEARCH_2026-09-22.md`, with an identical copy (both 927 lines) under `arda-cl-crux`.
 2. **The wall map is stale on Route C.** `WALL_BACKLOG_MAP_2026-09-18.md:48-50` still lists the dbn nodes as BLOCKED with no readback, and `:274-277` says "Route C currently has *zero* workable nodes". On the current branch, all four dbn nodes are `status = "proved"` with two blind readbacks each: `missions/rh/nodes/RH_dbn_{H0_eq_xi,H0_zero_strip,rh_iff_H0_real_zeros,debruijn_real_zeros}.toml`, the last granted 2026-09-23 in commit b524f7e7d.
 3. **Platt–Trudgian states Λ ≤ 0.2 themselves.** `RH_ROADMAP_CLAIMS_VERIFICATION_2026-09-17.md:29` says their abstract does not mention Λ. That is true of the abstract, but the paper body does: arXiv:2004.09765v1 §3.4, "Corollary 2. We have Λ ≤ 0.2", obtained from P15 Table 1 row 2 once H > 2.51·10^12.
 4. **A web summary invented a result.** It gave Platt–Trudgian "Theorem 1: Λ ≤ 0.2" and "4×10^12 flops". Both are wrong. The PDF text says Theorem 1 is RH up to 3,000,175,332,800, and the compute was about 7.5 million core-hours.

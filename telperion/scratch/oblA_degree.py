@@ -1,6 +1,6 @@
 """Does Obligation A's sign flip with root degree (# siblings)?"""
 import sys
-sys.path.insert(0, '/Users/peterwmurphy/repos/Arda-wt-w2a/telperion/scratch')
+sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'telperion/scratch'))
 from oblA_probe import Aobj, pushInto, isPiece, strDefect
 from sympy import Rational as R
 

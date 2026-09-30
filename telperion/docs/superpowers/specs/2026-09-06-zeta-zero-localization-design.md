@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-06
 **Status:** Design (pre-plan)
-**Branch:** `rh/zeta-zero-localization` (worktree `/Users/peterwmurphy/telperion-zeroloc`, off `origin/main`)
+**Branch:** `rh/zeta-zero-localization` (worktree `~/telperion-zeroloc`, off `origin/main`)
 **Honesty flag:** `conjecture1_proved = False`. This *verifies* RH region-by-region for finitely many zeros; it does **not** prove RH.
 
 ---

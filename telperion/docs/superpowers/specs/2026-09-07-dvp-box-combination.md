@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-07
 **Status:** Design (pre-plan)
-**Branch:** `rh/dvp-box-combination` (worktree `/Users/peterwmurphy/telperion-zeroloc`, off `origin/main`)
+**Branch:** `rh/dvp-box-combination` (worktree `~/telperion-zeroloc`, off `origin/main`)
 **Predecessors (all merged):** PR #285 (RH-in-a-box fixed box), PR #312 (parameterized RH-in-a-box + T=100 milestone), PR #316 (EFFECTIVE dVP rate `dlvp_zeta_region_rate_effective`, explicit `dlvpRateC`).
 **Honesty flag:** `conjecture1_proved = False`. This is the COMPLETE finite Turing statement -- all nontrivial zeros up to a finite height T lie on Re=1/2 -- kernel-verified. It is NOT a proof of RH.
 

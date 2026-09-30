@@ -13,7 +13,7 @@ module, no `E6Bridge4WIP.lean` was needed.
 **No RH progress is claimed.** This is the classical explicit formula, machine-checked; the zero
 side is summed over the zeros wherever they are. `conjecture1_proved = False`.
 
-Branch `rh/e8-proof` (worktree `/Users/peterwmurphy/arda-e8proof`), forked from
+Branch `rh/e8-proof` (worktree `~/arda-e8proof`), forked from
 `rh/corridor-bound`; not pushed, no PR, `telperion/missions/` untouched.
 
 ## 1. What was proved

@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-06
 **Status:** Design (pre-plan)
-**Branch:** `rh/zeta-box-localization` (worktree `/Users/peterwmurphy/telperion-zeroloc`, off `origin/main`)
+**Branch:** `rh/zeta-box-localization` (worktree `~/telperion-zeroloc`, off `origin/main`)
 **Predecessor:** `2026-09-06-zeta-zero-localization-design.md` (Stage 0 + Stage 1, MERGED as PR #265). This spec builds Stages 2-3, which that spec scoped and gated.
 **Honesty flag:** `conjecture1_proved = False`. This *verifies* RH inside a specific finite box (all nontrivial zeros there are simple and on the critical line); it does **not** prove RH.
 

@@ -8,7 +8,7 @@ three-region assembly, so that `XiDiffExtGrowthRight` and hence the derivative p
 `XiLogDerivDerivEq` (through E6Bridge18/20/21) rest on `LocalCountSum` and `StripDerivBound`
 alone. Nothing is concluded about where the zeros are. conjecture1_proved = False.
 
-Auditor: blind adversarial auditor (separate agent). Worktree /Users/peterwmurphy/arda-goal-weil,
+Auditor: blind adversarial auditor (separate agent). Worktree ~/arda-goal-weil,
 island telperion/examples/rvm_bridge/lean, Lean v4.33.0-rc2, Zeta23 pinned at
 fbdc36bbf17d20af3fd0447c6d1a8a02773c9844. Artifact: E6Bridge22.lean (484 lines, namespace
 RvMBridge22, imports E6Bridge20 and E6Bridge21); memo XI_DIFF_GROWTH_2026-09-21.md. Probes:

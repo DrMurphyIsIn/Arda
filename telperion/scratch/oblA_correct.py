@@ -10,7 +10,7 @@ NEW CHILD of a LOW-degree descendant leaf (extend a path). Test several precise 
 to find one that is monotone AND size-preserving AND drops strDefect.
 """
 import sys
-sys.path.insert(0,'/Users/peterwmurphy/repos/Arda-wt-w2a/telperion/scratch')
+sys.path.insert(0,str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'telperion/scratch'))
 from oblA_probe import Aobj
 from sympy import Rational as R
 LEAF=();

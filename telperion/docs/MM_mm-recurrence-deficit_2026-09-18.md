@@ -8,11 +8,11 @@
 > Bagchi recurrence **is** RH and is untouched here.
 
 **Agent:** `mm-recurrence-deficit` (MIRRORMERE prover).
-**Branch:** `mm/recurrence-deficit` (worktree `/Users/peterwmurphy/arda-mm-recurrence-deficit`),
+**Branch:** `mm/recurrence-deficit` (worktree `~/arda-mm-recurrence-deficit`),
 base `origin/rh/million-turing`. **Not pushed; no PR.**
 **Island:** `telperion/examples/zeta_zero_localization` (v4.32.0, shard `zzl_aux`),
 `.lake` symlinked to the built cache at
-`/Users/peterwmurphy/arda-million/telperion/examples/zeta_zero_localization/lean/.lake`
+`~/arda-million/telperion/examples/zeta_zero_localization/lean/.lake`
 (and `zzl_aux/.lake` to the matching shard cache). No `lake exe cache get` was run.
 
 ---

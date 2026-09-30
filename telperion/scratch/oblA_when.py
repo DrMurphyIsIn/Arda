@@ -5,7 +5,7 @@ Key hypothesis: the move helps only when it EQUALIZES, i.e. removing from a HIGH
 and adding to a LOW-degree deep hub. Test high-root, low-hub configs.
 """
 import sys
-sys.path.insert(0,'/Users/peterwmurphy/repos/Arda-wt-w2a/telperion/scratch')
+sys.path.insert(0,str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'telperion/scratch'))
 from oblA_probe import Aobj, pushInto, isPiece, strDefect
 from sympy import Rational as R
 LEAF=();

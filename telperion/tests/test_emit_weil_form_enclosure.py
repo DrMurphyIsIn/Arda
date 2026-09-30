@@ -194,7 +194,7 @@ def test_emitted_lean_carries_no_emoji():
     body, _ = _emit_one(_gram_data(), "wf_gram")
     text = body + weil_form_prelude_lean()
     assert all(ord(ch) < 0x2190 or ch in "≤≥∧∨¬→ℝℂℕ∞⊤⟨⟩←↑↓∫∑′·√ρψγΓΛπ" for ch in text), \
-        "QuantConnect/Lean house rule: no emoji in emitted code"
+        "house rule: no emoji in emitted code"
 
 
 # --- layer 3: the Arb evaluator ---------------------------------------------------------

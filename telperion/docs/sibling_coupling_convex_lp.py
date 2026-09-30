@@ -4,8 +4,13 @@ Tests whether a DECOUPLED invariant `x >= phi(mu)` with CONVEX phi can close the
 Jensen-reduced inductive condition
     G(j,S) = c0 - 11 log(1 + S/(j+1)) + j*phi(S/j) - phi(1/(j+1+S)) >= 0 ,
 with c0 = log(621/64), over all integer j>=1 and real S in (0, j].  Maximizes the worst-case slack t over
-convex phi (phi(3/23)=0, phi>=0, phi(1)<=c0).  Result: t* ~ -5.2 < 0 -> INFEASIBLE, so no single-variable
-convex invariant exists.  Run: `python docs/sibling_coupling_convex_lp.py`.
+convex phi (phi(3/23)=0, phi>=0, phi(1)<=c0).  Run: `python docs/sibling_coupling_convex_lp.py`.
+
+CORRECTED 2026-09-29.  The first version added the convexity rows as `second difference <= 0`, which
+forces CONCAVE phi, and reported t* ~ -5.2 ("infeasible").  With the sign fixed the LP is feasible:
+t* ~ +0.009 on this grid (the S-grid misses the tie S = 5/3; the exact optimum is 0, tight at the ties).
+A convex single-variable invariant exists: phi = -11 U, U the concave witness of Theorem 4.1 of the
+concave-witness draft (28 Sep 2026; communicated by J. L. Goldwasser).
 """
 import math
 
@@ -40,7 +45,7 @@ def solve(ngrid=240, jmax=40, sgrid=60):
     for i in range(N - 2):                                   # convexity: slopes nondecreasing
         d1 = G[i + 1] - G[i]; d2 = G[i + 2] - G[i + 1]
         row = np.zeros(nv); row[i] += 1 / d1; row[i + 1] += -1 / d1 - 1 / d2; row[i + 2] += 1 / d2
-        A.append(row); b.append(0.0)
+        A.append(-row); b.append(0.0)                         # -(second difference) <= 0, i.e. convex
     for i in range(N):                                        # phi >= 0
         row = np.zeros(nv); row[i] = -1.0; A.append(row); b.append(0.0)
     row = np.zeros(nv); row[:N] = interp(1.0); A.append(row); b.append(c0)   # phi(1) <= c0

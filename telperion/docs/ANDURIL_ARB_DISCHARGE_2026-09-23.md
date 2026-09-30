@@ -21,7 +21,7 @@ The skeptics did not refute the pilot or the economics seat. The RS-design seat'
 did not reach this memo because the orchestrator's input was truncated. To cover that, this author
 re-elaborated its Lean file independently; see section 4.0 and section 6.
 
-**Location.** Worktree `/Users/peterwmurphy/arda-cl-arb`, branch `cl/arb-discharge` on
+**Location.** Worktree `~/arda-cl-arb`, branch `cl/arb-discharge` on
 `ci/hardening`.
 - Island: `telperion/examples/zeta_reflection/lean`, Lean and Mathlib v4.32.0.
 - Machine: 32 cores, 96 GB RAM, about 42 GB of free disk.
