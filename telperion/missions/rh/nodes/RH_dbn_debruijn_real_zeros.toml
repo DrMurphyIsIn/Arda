@@ -5,13 +5,18 @@ name = "RH.dbn_debruijn_real_zeros"
 statement_module = "Statements.RH_dbn_debruijn_real_zeros"
 status = "proved"
 title = "Route C / C3, de Bruijn 1950: for every t >= 1/2 every zero of H_t is real (Lambda <= 1/2). PROVED on the dbn island (DBNHadamardApprox: Hadamard factorisation of order < 2 proved (L3, PR #608) + heat-flow approximants + Hurwitz + the C2-free zero strip). The known half of de Bruijn-Newman, NOT RH (RH is Lambda <= 0)"
-updated = "2026-09-24"
+updated = "2026-09-30"
 
 [comparator]
 artifact_sha256 = "65dbfcb59765532efa54f0acfce56f2b56f6d3dc2607adeb3aae9ed873c07147"
-date = "2026-09-24"
-run_id = "36059451077"
-run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36059451077"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795198"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795198"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
 theorem = "dbn_debruijn_real_zeros"
 
 [grant]

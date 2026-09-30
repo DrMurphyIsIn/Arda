@@ -5,7 +5,19 @@ name = "AND.checkline_correct"
 statement_module = "Statements.AND_checkline_correct"
 status = "proved"
 title = "A4 reflection core: checkLine_correct -- the once-proven correctness theorem for the Boolean band checker over dyadic-interval sign boxes (BandData -> Bool; per-band certificates become data discharged by decide, not tactic scripts)"
-updated = "2026-09-14"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "2d2122b5ea765096f79c75eb7e15e2bca990abde91eeb2892ed60cf3e9003ca9"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795185"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795185"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "ZetaReflection.checkLine_correct"
 
 [proof]
 artifact = "../../examples/zeta_reflection/lean/CheckBand.lean"

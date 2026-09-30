@@ -5,7 +5,19 @@ name = "BG.near_star_tie"
 statement_module = "Statements.BG_near_star_tie"
 status = "proved"
 title = "Near-star tie diagonal: logPhi (N(c,k)) = 0 when c+k = 5 (the six 11-vertex ties)"
-updated = "2026-09-11"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "08f16a4d0eefb8bc309e0f8dede777983db84c9c0d520a1bcdaf5c37beacc725"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795268"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795268"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "R3Cert.nearStar_tie"
 
 [proof]
 artifact = "../../../proof/formalization/R3Cert/NearStar.lean"

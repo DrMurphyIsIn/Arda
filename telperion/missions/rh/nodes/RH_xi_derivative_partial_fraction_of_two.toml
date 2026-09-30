@@ -5,7 +5,19 @@ name = "RH.xi_derivative_partial_fraction_of_two"
 statement_module = "Statements.RH_xi_derivative_partial_fraction_of_two"
 status = "proved"
 title = "THE XI PARTIAL FRACTION, full chain (2026-09-21): (log xi)'' = -Sum m(rho)/(s-rho)^2 GIVEN only LocalCountSum and StripDerivBound (Liouville with log growth + entire extension + real-axis decay all proved). conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "a69865ddcb587d059c1935397bd7cd4e8f22aede32abc7d27fb34452a9c6bca2"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795203"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795203"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "RvMBridge22.xiLogDerivDerivEq_of_two"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge22.lean"

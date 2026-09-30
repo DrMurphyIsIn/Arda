@@ -5,7 +5,19 @@ name = "RH.local_count_sum"
 statement_module = "Statements.RH_local_count_sum"
 status = "proved"
 title = "LOCAL COUNT SUM DISCHARGED (2026-09-21): Sum m(rho)/(1 + (Im rho - a)^2) <= C(1 + log(2 + |a|)) for every real a -- finite partial sums regrouped on integer ceilings, each fiber bounded by Zeta23's per-unit-window zero count, two absolute constants from the integer p-series. Unconditional; nothing about RH. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "aa492e5e013618bcafd0695a1db03ba728ba50f7e35cd6e114104c4033ff0c07"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795190"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795190"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "RvMBridge23.local_count_sum"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge23.lean"
