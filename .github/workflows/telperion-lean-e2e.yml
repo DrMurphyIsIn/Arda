@@ -45,6 +45,7 @@ jobs:
       factored_endpoint_enclosure: ${{ steps.f.outputs.factored_endpoint_enclosure }}
       typed_cavity_induction: ${{ steps.f.outputs.typed_cavity_induction }}
       anchored_monotone_extension: ${{ steps.f.outputs.anchored_monotone_extension }}
+      rational_identity: ${{ steps.f.outputs.rational_identity }}
       shared: ${{ steps.f.outputs.shared }}
       src: ${{ steps.f.outputs.src }}
       missions: ${{ steps.f.outputs.missions }}
@@ -311,6 +312,8 @@ jobs:
               - 'telperion/examples/typed_cavity_induction/**'
             anchored_monotone_extension:
               - 'telperion/examples/anchored_monotone_extension/**'
+            rational_identity:
+              - 'telperion/examples/rational_identity/**'
             speiser_box_probe:
               - 'telperion/examples/speiser_box_probe/**'
             symmetric_quad:
@@ -3951,6 +3954,7 @@ jobs:
         working-directory: telperion
         run: |
           python examples/concave_pooled_induction/generate.py --check
+          python examples/concave_pooled_induction/generate_ext.py --check
 
       - name: Cache elan toolchain
         uses: actions/cache@v4
@@ -3967,7 +3971,7 @@ jobs:
         working-directory: telperion/examples/concave_pooled_induction/lean
         run: lake exe cache get
 
-      - name: Build the emitted Lean (the actual verification -- concave pooled-mean induction on tree recursions (matching-message dogfood))
+      - name: Build the emitted Lean (the actual verification -- concave pooled-mean induction on tree recursions (matching-message dogfood; leaf-exempt and log-profit extensions))
         working-directory: telperion/examples/concave_pooled_induction/lean
         run: lake build
   gap-budget-multiplicity-compiles:
@@ -4284,4 +4288,40 @@ jobs:
 
       - name: Build the emitted Lean (the actual verification -- derivative prelude, two-row invariant and anchored extension (hard-core / matching-type dogfood))
         working-directory: telperion/examples/anchored_monotone_extension/lean
+        run: lake build
+  rational-identity-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.rational_identity == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definitions
+        working-directory: telperion
+        run: |
+          python examples/rational_identity/generate.py --check
+          python examples/rational_identity/generate_ext.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/rational_identity/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/rational_identity/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- multivariate rational identities and identities modulo a minimal polynomial)
+        working-directory: telperion/examples/rational_identity/lean
         run: lake build

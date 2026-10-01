@@ -189,3 +189,22 @@ recomputation; a mode that does not match its `m`; a polynomial of degree above 
 
 Tests: `tests/test_emit_concave_pooled_induction.py` and
 `tests/test_negctrl_concave_pooled_induction.py`.
+
+## Addendum 2026-10-01: leaf-exempt children and log terms in g
+
+Two backward-compatible extensions; the full note is
+[`EMITTER_EXTENSIONS_BUNDLE_DESIGN_2026-10-01.md`](EMITTER_EXTENSIONS_BUNDLE_DESIGN_2026-10-01.md) (section 2).
+
+- **Leaf-exempt** (`exempt_leaves=True`): leaf children enter exactly and are excluded from the
+  Jensen pooling (`exempt_induction_core`, `minPieces_jensen_on`); the claim is for every
+  non-leaf tree of child count `<= M`. Dogfood: `sum_u (1 - y_u) >= (27/100)|T| - 83/500` for the
+  matching message on non-leaf trees of child count `<= 2`, a bound the single leaf violates, so
+  no pooled certificate can give it.
+- **Log terms in g**: `kappa log(a0 + b1 R)` with `kappa > 0`, replaced per cell by its tangent
+  majorant, `log u <= H` from the mobius_tangent_cell Taylor box. Dogfood:
+  `g = -1/(1+R) + (1/5) log(1 + R/2)`, alpha = 1/2, every tree.
+
+The original example regenerates to the same Lean apart from the input-hash header. The new
+instances are in `examples/concave_pooled_induction/lean/ConcavePooledInductionExt.lean`, a second
+`lean_lib` written by `generate_ext.py`.
+
