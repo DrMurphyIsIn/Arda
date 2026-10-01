@@ -630,6 +630,11 @@ name = "single_crossing_ladder"
 script = "examples/single_crossing_ladder/generate.py"
 group = "quick"    # single crossing + increasing breakpoints + best-member ladder (arm-ladder dogfood)
 
+[[check]]
+name = "factored_endpoint_enclosure"
+script = "examples/factored_endpoint_enclosure/generate.py"
+group = "quick"    # factorization + box sign through a singular endpoint (log / rational / Pade near 0)
+
 # --- RH-box examples added by parallel RH sessions; manifest was not updated,
 # tripping the completeness gate.  Split by dependency: the three below need
 # only sympy and pass --check in the flint-less telperion-test job (group quick);
