@@ -5,7 +5,19 @@ name = "BG.fractal_asymptote"
 statement_module = "Statements.BG_fractal_asymptote"
 status = "proved"
 title = "Near-star asymptote arithmetic core: (3/2)^11 < (621/64)^2, i.e. D_infinity < 1"
-updated = "2026-09-11"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "214e39a5bc4b8c2a280153944cd3b6a8d5c6a4221d363bd798b34c9cd0af7dfd"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795268"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795268"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "R3Cert.FractalTail.fractal_tail_as_ratio"
 
 [proof]
 artifact = "../../../proof/formalization/R3Cert/FractalTail.lean"

@@ -5,7 +5,19 @@ name = "BG.lb_classification"
 statement_module = "Statements.BG_lb_classification"
 status = "proved"
 title = "(L)/(B) classification capstone: Pval is a valid plain potential"
-updated = "2026-09-11"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "3c22b315874e37d7893f173175c8b006b35b17fbf2ce6994081f0f52997f30f7"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795268"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795268"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "R3Cert.validPotentialPlain_holds"
 
 [proof]
 artifact = "../../../proof/formalization/R3Cert/PotentialFinal.lean"

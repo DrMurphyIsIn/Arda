@@ -5,7 +5,19 @@ name = "RH.no_real_zero_unit_interval"
 statement_module = "Statements.RH_no_real_zero_unit_interval"
 status = "proved"
 title = "NO REAL ZERO IN (0,1) DISCHARGED (2026-09-21): Re zeta(sigma) < 0 for 0 < sigma < 1, from the summation-by-parts representation zeta(s) = 1/2 + 1/(s-1) + s J(s) with the sharp bound |J(sigma)| <= 1/(2 sigma) (the eta-series continuation, absent from this pin, is avoided). Unconditional; nothing about RH. conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "87f364039398bb3de29908dedaa9aea9cdcd4f984be09c7668122412b40b845d"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795203"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795203"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "RvMBridge25.noRealZeroInUnitInterval"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge25.lean"

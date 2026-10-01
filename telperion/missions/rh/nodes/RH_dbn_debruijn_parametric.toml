@@ -5,13 +5,18 @@ name = "RH.dbn_debruijn_parametric"
 statement_module = "Statements.RH_dbn_debruijn_parametric"
 status = "proved"
 title = "Route C M1a, parametric de Bruijn (de Bruijn 1950 Thm 13 / P15 Thm 3.2): if every zero of H_t0 has (Im z)^2 <= Y then for t >= t0 every zero of H_t has (Im z)^2 <= max(Y - 2(t - t0), 0); for EVERY real t0. Proved on the dbn island. conjecture1_proved = False"
-updated = "2026-09-24"
+updated = "2026-09-30"
 
 [comparator]
 artifact_sha256 = "ab2642ddc8988aaadadf3ea91b84008ddc435f4479e7a1474c879defeb852d17"
-date = "2026-09-24"
-run_id = "36055781811"
-run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36055781811"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795198"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795198"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
 theorem = "dbn_debruijn_parametric"
 
 [grant]

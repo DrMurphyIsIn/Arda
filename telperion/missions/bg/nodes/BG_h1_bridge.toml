@@ -5,7 +5,19 @@ name = "BG.h1_bridge"
 statement_module = "Statements.BG_h1_bridge"
 status = "proved"
 title = "P1 bridge capstone: Aobj IS the Laplacian permanent ratio of the realized tree (pi_utree)"
-updated = "2026-09-11"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "b3f12546e33acb303b3dcf7982bbb129c999433b245d05f92995029a767c9049"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795268"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795268"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "R3Cert.Step3.pi_utree"
 
 [proof]
 artifact = "../../../proof/formalization/R3Cert/R47Tree.lean"

@@ -5,7 +5,19 @@ name = "BG.gstep_closure"
 statement_module = "Statements.BG_gstep_closure"
 status = "proved"
 title = "Capped-joint g-step closure: the config g-step is <= 1 at every arity over achievable messages"
-updated = "2026-09-11"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "737b9d5709e36db70b28de3aecca1080e3092329b715d7c05f4b44a623361b7a"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795268"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795268"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "R3Cert.CappedJointConfig.gstep_le_one_achievable"
 
 [proof]
 artifact = "../../../proof/formalization/R3Cert/CappedJointClosure.lean"

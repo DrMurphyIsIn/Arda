@@ -5,7 +5,19 @@ name = "RH.xi_diff_regular_of_growth"
 statement_module = "Statements.RH_xi_diff_regular_of_growth"
 status = "proved"
 title = "XI PARTIAL FRACTION, obligation 1 reduced (2026-09-21): XiDiffRegular follows from a logarithmic growth bound on Re s >= 1/2 (XiDiffExtGrowthRight: Landau + Cauchy + Stirling on the strip, Dirichlet-series and digamma bounds on Re s >= 2 -- in flight as E6Bridge22). conjecture1_proved = False."
-updated = "2026-09-21"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "e398fa71adceb80f40ad6be48b9b8de8e75425693c4dd675ab0ac38549fff749"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795172"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795172"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "RvMBridge20.xiDiffRegular_of_right"
 
 [proof]
 artifact = "../../examples/rvm_bridge/lean/E6Bridge20.lean"

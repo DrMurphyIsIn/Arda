@@ -5,7 +5,19 @@ name = "RH.dbn_H0_zero_strip"
 statement_module = "Statements.RH_dbn_H0_zero_strip"
 status = "proved"
 title = "Route C, the C2-free zero strip: every zero of H_0 lies in the strip |Im z| <= 1. PROVED on the dbn island (DBNStrip) from the absolutely convergent half-plane via the Euler product and reflection; no theta FE, no Hadamard; says nothing about zeros inside the strip"
-updated = "2026-09-22"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "45d46b39f5db3fc38339e03301215509d059e78c6d1f5a7e9c1fc8da1e77098e"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795198"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795198"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "dbn_H0_zero_strip"
 
 [proof]
 artifact = "../../examples/dbn/lean/DBNStrip.lean"

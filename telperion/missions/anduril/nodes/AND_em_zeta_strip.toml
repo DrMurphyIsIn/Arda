@@ -5,7 +5,19 @@ name = "AND.em_zeta_strip"
 statement_module = "Statements.AND_em_zeta_strip"
 status = "proved"
 title = "A2 E-track headliner: the verified Euler-Maclaurin representation of zeta continued into the critical strip -- zeta(s) = 1/(s-1) + 1/2 + integral of sawBernoulli-weighted power tail, for 0 < Re s, s /= 1 (em_zeta_strip, E3 of the em-complex agent)"
-updated = "2026-09-14"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "ce7031478870c994999a64a2a30b3f5f54fbd0bb0c4e0dc2971bc8481aee4694"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795185"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795185"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "ZetaReflection.em_zeta_strip"
 
 [proof]
 artifact = "../../examples/zeta_reflection/lean/EMZetaComplex.lean"

@@ -5,7 +5,19 @@ name = "BG.merge_layer"
 statement_module = "Statements.BG_merge_layer"
 status = "proved"
 title = "Certified merge layer capstone: every Balanced+Capped state ordered-merges to a perL-non-decreasing normal form"
-updated = "2026-09-11"
+updated = "2026-09-30"
+
+[comparator]
+artifact_sha256 = "83d3944323d87ecfe3654137243dce036a175bab44a10e8fbfdc2680ac30fc97"
+date = "2026-09-30"
+head_check = "matched"
+job_id = "109867795268"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/36707277853/job/109867795268"
+judged_head_sha = "acfb0ee57108a185c484409cd91ac5621ce2d13e"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "36707277853"
+theorem = "R3Cert.Step3.merge_normalForm_perL"
 
 [proof]
 artifact = "../../../proof/formalization/R3Cert/R47MergePerL.lean"
