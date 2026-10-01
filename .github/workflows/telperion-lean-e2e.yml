@@ -44,6 +44,7 @@ jobs:
       single_crossing_ladder: ${{ steps.f.outputs.single_crossing_ladder }}
       factored_endpoint_enclosure: ${{ steps.f.outputs.factored_endpoint_enclosure }}
       typed_cavity_induction: ${{ steps.f.outputs.typed_cavity_induction }}
+      anchored_monotone_extension: ${{ steps.f.outputs.anchored_monotone_extension }}
       shared: ${{ steps.f.outputs.shared }}
       src: ${{ steps.f.outputs.src }}
       missions: ${{ steps.f.outputs.missions }}
@@ -308,6 +309,8 @@ jobs:
               - 'telperion/examples/factored_endpoint_enclosure/**'
             typed_cavity_induction:
               - 'telperion/examples/typed_cavity_induction/**'
+            anchored_monotone_extension:
+              - 'telperion/examples/anchored_monotone_extension/**'
             speiser_box_probe:
               - 'telperion/examples/speiser_box_probe/**'
             symmetric_quad:
@@ -4246,4 +4249,39 @@ jobs:
 
       - name: Build the emitted Lean (the actual verification -- a type table as an inductive invariant over all trees (BBG Randic R_-1 dogfood + synthetic band and tail))
         working-directory: telperion/examples/typed_cavity_induction/lean
+        run: lake build
+  anchored-monotone-extension-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.anchored_monotone_extension == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the emitted Lean from the family definition
+        working-directory: telperion
+        run: |
+          python examples/anchored_monotone_extension/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/anchored_monotone_extension/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/anchored_monotone_extension/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- derivative prelude, two-row invariant and anchored extension (hard-core / matching-type dogfood))
+        working-directory: telperion/examples/anchored_monotone_extension/lean
         run: lake build

@@ -640,6 +640,11 @@ name = "typed_cavity_induction"
 script = "examples/typed_cavity_induction/generate.py"
 group = "quick"    # a type table as an inductive invariant over all trees (BBG R_{-1} dogfood + synthetic)
 
+[[check]]
+name = "anchored_monotone_extension"
+script = "examples/anchored_monotone_extension/generate.py"
+group = "quick"    # derivative prelude + two-row invariant + anchored extension (hard-core / matching-type dogfood)
+
 # --- RH-box examples added by parallel RH sessions; manifest was not updated,
 # tripping the completeness gate.  Split by dependency: the three below need
 # only sympy and pass --check in the flint-less telperion-test job (group quick);
