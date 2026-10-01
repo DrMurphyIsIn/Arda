@@ -22,8 +22,13 @@ expression over a box, kernel-checked via Mathlib.  This serves TWO fronts:
     bound that does not — the trig face is DEFERRED as a follow-on and is NOT
     emitted here.  The log face (BG-critical) ships alone and green.
 
-Three self-contained theorems per instance (only ``import Mathlib``): the tangent
+Three self-contained theorems per log-face instance (only ``import Mathlib``): the tangent
 UPPER bound, the rational LOWER bound over the box, and the packaged enclosure.
+
+The ``log_taylor`` face (instance 2) adds the signed-remainder Taylor bounds valid on all of
+``[0, oo)``: ``log(1+u) <= T_n(u)`` for odd ``n``, ``T_n(u) <= log(1+u)`` for even ``n``, proved
+once for every ``n`` (derivative ``-(-t)^n/(1+t)`` + mean value theorem), then stated
+explicitly for orders 1..5.  The ``factored_endpoint_enclosure`` emitter reuses this section.
 
 conjecture1_proved=False.
 """
@@ -48,18 +53,21 @@ from telperion.lean import LeanProfile  # noqa: E402
 # spec: pt -> {"face": "log", "x0": ..., "x1": ..., "L": ..., "U": ...}.
 # Instance 0: nontrivial box [1/4, 1/2], L = 1/5 (exp(1/5) ≤ 5/4), U = 1/2.
 # Instance 1: box [0, 1/2], L = 0 (trivial floor via exp(0)=1 ≤ 1), U = 1/2.
+# Instance 2 (face log_taylor, 2026-10-01): log(1+u) between its Taylor polynomials of
+#   orders 1..5 for EVERY u >= 0, remainder sign proved once for all orders.
 _SPECS = {
     0: {"face": "log", "x0": "1/4", "x1": "1/2", "L": "1/5", "U": "1/2"},
     1: {"face": "log", "x0": "0", "x1": "1/2", "L": "0", "U": "1/2"},
+    2: {"face": "log_taylor", "orders": [1, 2, 3, 4, 5]},
 }
-_NAMES = {0: "log1p_encl_qtr_half", 1: "log1p_encl_zero_half"}
+_NAMES = {0: "log1p_encl_qtr_half", 1: "log1p_encl_zero_half", 2: "log1p_taylor"}
 _OUT = Path(__file__).resolve().parent / "lean" / "TranscendentalEnclosure.lean"
 
 
 def build() -> str:
     fam = transcendental_enclosure_family(
         "TranscendentalEnclosure",
-        GridSpec([("case", [0, 1])]),
+        GridSpec([("case", [0, 1, 2])]),
         lambda pt: _NAMES[pt["case"]],
         spec=lambda pt: _SPECS[pt["case"]],
     )
