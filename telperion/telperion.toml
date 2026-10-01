@@ -358,6 +358,11 @@ script = "examples/rational_identity/generate.py"
 group = "quick"    # rational-function identities on a ray (knapsack Gram-bridge shapes); ~0.3 s
 
 [[check]]
+name = "rational_identity_ext"
+script = "examples/rational_identity/generate_ext.py"
+group = "quick"    # extension 2026-10-01: multivariate identities + identities modulo a minimal polynomial
+
+[[check]]
 name = "primality"
 script = "examples/primality/generate.py"
 group = "quick"    # Pratt/Lucas primality certificates via Mathlib lucas_primality
@@ -606,6 +611,11 @@ script = "examples/concave_pooled_induction/generate.py"
 group = "quick"    # concave pooled-mean induction on tree recursions (matching-message dogfood)
 
 [[check]]
+name = "concave_pooled_induction_ext"
+script = "examples/concave_pooled_induction/generate_ext.py"
+group = "quick"    # extension 2026-10-01: leaf-exempt children + log term in g
+
+[[check]]
 name = "gap_budget_multiplicity"
 script = "examples/gap_budget_multiplicity/generate.py"
 group = "quick"    # tangent-gap budget multiplicity caps (max-product dogfood)
@@ -629,6 +639,21 @@ group = "quick"    # quadratic sign race (eventual_threshold face)
 name = "single_crossing_ladder"
 script = "examples/single_crossing_ladder/generate.py"
 group = "quick"    # single crossing + increasing breakpoints + best-member ladder (arm-ladder dogfood)
+
+[[check]]
+name = "factored_endpoint_enclosure"
+script = "examples/factored_endpoint_enclosure/generate.py"
+group = "quick"    # factorization + box sign through a singular endpoint (log / rational / Pade near 0)
+
+[[check]]
+name = "typed_cavity_induction"
+script = "examples/typed_cavity_induction/generate.py"
+group = "quick"    # a type table as an inductive invariant over all trees (BBG R_{-1} dogfood + synthetic)
+
+[[check]]
+name = "anchored_monotone_extension"
+script = "examples/anchored_monotone_extension/generate.py"
+group = "quick"    # derivative prelude + two-row invariant + anchored extension (hard-core / matching-type dogfood)
 
 # --- RH-box examples added by parallel RH sessions; manifest was not updated,
 # tripping the completeness gate.  Split by dependency: the three below need
