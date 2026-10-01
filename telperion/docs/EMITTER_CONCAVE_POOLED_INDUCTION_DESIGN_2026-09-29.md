@@ -8,19 +8,15 @@ says nothing about the Brualdi-Goldwasser conjecture, RH, or any other open prob
 
 ## Credit
 
-The method is **concave-witness induction**, from the draft *"The maximum Laplacian ratio of a tree
-for all n >= 303: concave witnesses and one-variable certificates"* (28 September 2026). It was
-communicated to us by **Professor John L. Goldwasser**; the author is his London colleague, and
-their name will be added once they give permission. The draft uses the induction to close the
-Brualdi-Goldwasser ceiling. This kind packages the method generically. We have not formalized the
-Laplacian-ratio instance (the draft's Sections 4-9); that is on hold until the author agrees. None
-of the draft's data is in this repository.
+The method is **concave-witness induction**, from unpublished work communicated by **Professor
+John L. Goldwasser**. This kind packages the method generically; only the generic shape is taken.
+No data from that work is in this repository.
 
 ## Why this kind exists
 
 The 2026-09-29 corrections to `bg/envelope.py` and `bg/sibling_coupling.py` withdrew an earlier
-claim that no single-variable envelope can be inductive for a branching recursion. The draft's
-concave witness is a counterexample to that claim. `super_solution.py` now says when a local pass
+claim that no single-variable envelope can be inductive for a branching recursion. A concave
+witness is a counterexample to that claim. `super_solution.py` now says when a local pass
 is also a global certificate: the potential depends on one scalar message, it is concave in that
 message, and the per-node inequality holds at the pooled mean for every child count. Jensen then
 gives `sum_c U(y_c) <= m U(mean)`, and induction from the leaves closes the argument. This kind
@@ -88,9 +84,7 @@ things follow:
    unbounded cell uses the Taylor expansion at `s`, `N(s + u) = sum_i c_i u^i`, with every
    `c_i >= 0`.
 
-   This tail is **not** the node-condition tail of the draft's Lemma 3.4, which uses `U = 0` near
-   the small messages that large `m` produces. It is our own sufficient condition, and it is the
-   one the certificate checks. Without a tail (`tail=False`, required whenever `h` or `g` depends
+   This tail is our own sufficient condition, and it is the one the certificate checks. Without a tail (`tail=False`, required whenever `h` or `g` depends
    on `m`), the conclusion carries `b.AllDeg (fun m => m <= M)`, and nothing is claimed beyond `M`.
 
 ## The Lean
