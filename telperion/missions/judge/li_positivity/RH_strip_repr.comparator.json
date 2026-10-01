@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_strip_repr",
+  "solution_module": "MissionChallenges.RH_strip_repr",
+  "theorem_names": [
+    "MissionJudge.RH_strip_repr"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

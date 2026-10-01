@@ -1,0 +1,3 @@
+-- DO NOT EDIT BY HAND. No root imports on `li_positivity`: its AxiomGuard libs cannot
+-- be imported together, so each bridge module imports one of them and is built by
+-- name (`lake build MissionChallenges.<Slug>`), never through this root.

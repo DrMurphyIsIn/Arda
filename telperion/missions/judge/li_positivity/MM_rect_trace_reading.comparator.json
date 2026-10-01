@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_rect_trace_reading",
+  "solution_module": "MissionChallenges.MM_rect_trace_reading",
+  "theorem_names": [
+    "MissionJudge.MM_rect_trace_reading"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

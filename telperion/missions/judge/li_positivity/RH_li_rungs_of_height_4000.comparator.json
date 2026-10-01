@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_li_rungs_of_height_4000",
+  "solution_module": "MissionChallenges.RH_li_rungs_of_height_4000",
+  "theorem_names": [
+    "MissionJudge.RH_li_rungs_of_height_4000"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

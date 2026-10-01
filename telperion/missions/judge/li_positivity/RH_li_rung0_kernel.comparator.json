@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_li_rung0_kernel",
+  "solution_module": "MissionChallenges.RH_li_rung0_kernel",
+  "theorem_names": [
+    "MissionJudge.RH_li_rung0_kernel"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

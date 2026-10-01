@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_zeta_log_bound",
+  "solution_module": "MissionChallenges.RH_zeta_log_bound",
+  "theorem_names": [
+    "MissionJudge.RH_zeta_log_bound"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

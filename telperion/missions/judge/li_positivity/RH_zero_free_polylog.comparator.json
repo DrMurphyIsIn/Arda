@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.RH_zero_free_polylog",
+  "solution_module": "MissionChallenges.RH_zero_free_polylog",
+  "theorem_names": [
+    "MissionJudge.RH_zero_free_polylog"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
