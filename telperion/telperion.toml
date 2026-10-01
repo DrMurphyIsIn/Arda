@@ -358,6 +358,11 @@ script = "examples/rational_identity/generate.py"
 group = "quick"    # rational-function identities on a ray (knapsack Gram-bridge shapes); ~0.3 s
 
 [[check]]
+name = "rational_identity_ext"
+script = "examples/rational_identity/generate_ext.py"
+group = "quick"    # extension 2026-10-01: multivariate identities + identities modulo a minimal polynomial
+
+[[check]]
 name = "primality"
 script = "examples/primality/generate.py"
 group = "quick"    # Pratt/Lucas primality certificates via Mathlib lucas_primality
@@ -604,6 +609,11 @@ group = "quick"    # exact tree maxima by affine hull dominance (matching-sum do
 name = "concave_pooled_induction"
 script = "examples/concave_pooled_induction/generate.py"
 group = "quick"    # concave pooled-mean induction on tree recursions (matching-message dogfood)
+
+[[check]]
+name = "concave_pooled_induction_ext"
+script = "examples/concave_pooled_induction/generate_ext.py"
+group = "quick"    # extension 2026-10-01: leaf-exempt children + log term in g
 
 [[check]]
 name = "gap_budget_multiplicity"
