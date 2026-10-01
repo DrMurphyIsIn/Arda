@@ -5,10 +5,9 @@ rational data. Nothing here says anything about the zeros of zeta, and nothing h
 Brualdi-Goldwasser maximizer question; the dogfood deliberately uses unrelated classical bounds.
 
 **Acknowledgement.** The technique (tangent-line cells, a Mobius term kept when convex and linearised
-when concave, a convex majorant checked at the two cell endpoints) is Lemma 3.3 of a draft
-communicated by Professor John L. Goldwasser: "The maximum Laplacian ratio of a tree for all
-n >= 303: concave witnesses and one-variable certificates", 28 Sep 2026 (author: his London
-colleague, name to be added). No text or data from the draft is reproduced in the repository.
+when concave, a convex majorant checked at the two cell endpoints) is from unpublished work
+communicated by Professor John L. Goldwasser. No text or data from that work is reproduced in the
+repository.
 
 Module: `src/telperion/emit_mobius_tangent_cell.py`. Kind: `mobius_tangent_cell`.
 

@@ -4,11 +4,9 @@
 inequality per instance. It says nothing about the zeros of zeta or about the Brualdi-Goldwasser
 Laplacian-ratio problem. The dogfood is a classical toy problem.
 
-Acknowledgement: the tangent-gap pricing pattern comes from a draft communicated by Professor John
-L. Goldwasser ("The maximum Laplacian ratio of a tree for all n >= 303: concave witnesses and
-one-variable certificates", 28 Sep 2026; author: his London colleague, name to be added). Nothing
-from that draft, text or data, is reproduced here. Formalizing its Section 9 is on hold until the
-author gives permission.
+Acknowledgement: the tangent-gap pricing pattern comes from unpublished work communicated by
+Professor John L. Goldwasser. Only the generic pattern is taken; nothing from that work, text or
+data, is reproduced here.
 
 Module: `src/telperion/emit_gap_budget_multiplicity.py`. Dogfood:
 `examples/gap_budget_multiplicity/` (`generate.py`, `lean/GapBudgetMultiplicity.lean`).
