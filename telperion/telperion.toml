@@ -630,6 +630,11 @@ name = "single_crossing_ladder"
 script = "examples/single_crossing_ladder/generate.py"
 group = "quick"    # single crossing + increasing breakpoints + best-member ladder (arm-ladder dogfood)
 
+[[check]]
+name = "anchored_monotone_extension"
+script = "examples/anchored_monotone_extension/generate.py"
+group = "quick"    # derivative prelude + two-row invariant + anchored extension (hard-core / matching-type dogfood)
+
 # --- RH-box examples added by parallel RH sessions; manifest was not updated,
 # tripping the completeness gate.  Split by dependency: the three below need
 # only sympy and pass --check in the flint-less telperion-test job (group quick);
