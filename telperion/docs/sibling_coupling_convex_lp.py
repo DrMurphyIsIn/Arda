@@ -9,8 +9,7 @@ convex phi (phi(3/23)=0, phi>=0, phi(1)<=c0).  Run: `python docs/sibling_couplin
 CORRECTED 2026-09-29.  The first version added the convexity rows as `second difference <= 0`, which
 forces CONCAVE phi, and reported t* ~ -5.2 ("infeasible").  With the sign fixed the LP is feasible:
 t* ~ +0.009 on this grid (the S-grid misses the tie S = 5/3; the exact optimum is 0, tight at the ties).
-A convex single-variable invariant exists: phi = -11 U, U a concave witness from unpublished work
-communicated privately.
+A convex single-variable invariant exists: phi = -11 U, U a concave witness.
 """
 import math
 

@@ -4,10 +4,8 @@
 rational data. Nothing here says anything about the zeros of zeta, and nothing here is a step on the
 Brualdi-Goldwasser maximizer question; the dogfood deliberately uses unrelated classical bounds.
 
-**Acknowledgement.** The technique (tangent-line cells, a Mobius term kept when convex and linearised
-when concave, a convex majorant checked at the two cell endpoints) is from unpublished work
-communicated privately. No text or data from that work is reproduced in the
-repository.
+**Technique.** Tangent-line cells, a Mobius term kept when convex and linearised when concave, and a
+convex majorant checked at the two cell endpoints.
 
 Module: `src/telperion/emit_mobius_tangent_cell.py`. Kind: `mobius_tangent_cell`.
 
