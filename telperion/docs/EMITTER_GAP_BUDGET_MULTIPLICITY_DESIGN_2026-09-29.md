@@ -4,8 +4,7 @@
 inequality per instance. It says nothing about the zeros of zeta or about the Brualdi-Goldwasser
 Laplacian-ratio problem. The dogfood is a classical toy problem.
 
-Acknowledgement: the tangent-gap pricing pattern comes from unpublished work communicated by
-Professor John L. Goldwasser. Only the generic pattern is taken; nothing from that work, text or
+Acknowledgement: the tangent-gap pricing pattern comes from unpublished work communicated privately. Only the generic pattern is taken; nothing from that work, text or
 data, is reproduced here.
 
 Module: `src/telperion/emit_gap_budget_multiplicity.py`. Dogfood:

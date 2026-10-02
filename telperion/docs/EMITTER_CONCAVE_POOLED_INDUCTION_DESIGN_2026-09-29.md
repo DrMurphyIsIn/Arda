@@ -8,8 +8,7 @@ says nothing about the Brualdi-Goldwasser conjecture, RH, or any other open prob
 
 ## Credit
 
-The method is **concave-witness induction**, from unpublished work communicated by **Professor
-John L. Goldwasser**. This kind packages the method generically; only the generic shape is taken.
+The method is **concave-witness induction**, from unpublished work communicated privately. This kind packages the method generically; only the generic shape is taken.
 No data from that work is in this repository.
 
 ## Why this kind exists

@@ -136,7 +136,7 @@ siblings attain their per-message maxima on incompatible subtrees, invisible to 
 over siblings -- PROOF_STATUS dead-end #1 (collective / non-local) at the finest recursive resolution. A
 reasoned dead-end that rules out the per-message envelope class. conjecture1_proved = False.
 **CORRECTION 2026-09-29:** the last three sentences are wrong. A larger `h` also raises `h(mu_v)`, and the
-concave witness `h = exp(11U)` (from unpublished work communicated by J. L. Goldwasser) is inductive
+concave witness `h = exp(11U)` (from unpublished work communicated privately) is inductive
 for every child count. Only the tight envelope `h*` fails.
 
 **LEWIS-RIESENFELD DEEP DIVE (`sibling_coupling.py`, `SiblingCouplingCertificate`).** Reformulate in log
@@ -150,7 +150,7 @@ invariant `x >= phi(mu)` is then tested: for CONVEX `phi`, Jensen reduces the j-
 LP -- worst-case slack `t* ~ -5.2 < 0`, INFEASIBLE (reproducible: `docs/sibling_coupling_convex_lp.py`). So
 NO single-variable invariant closes it (convex via LP, non-convex via the envelope).
 **[RETRACTED 2026-09-29: the LP had a sign error (it searched concave phi); fixed, it is feasible, and
-phi = -11U (a concave witness from unpublished work communicated by J. L. Goldwasser) closes the
+phi = -11U (a concave witness from unpublished work communicated privately) closes the
 ceiling induction. The multi-variable conclusion below
 does not follow.]** The coupling is
 irreducibly JOINT over siblings; a closing invariant must be genuinely MULTI-VARIABLE (a quadratic/Gaussian
