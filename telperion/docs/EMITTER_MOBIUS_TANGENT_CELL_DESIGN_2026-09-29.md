@@ -6,7 +6,7 @@ Brualdi-Goldwasser maximizer question; the dogfood deliberately uses unrelated c
 
 **Acknowledgement.** The technique (tangent-line cells, a Mobius term kept when convex and linearised
 when concave, a convex majorant checked at the two cell endpoints) is from unpublished work
-communicated by Professor John L. Goldwasser. No text or data from that work is reproduced in the
+communicated privately. No text or data from that work is reproduced in the
 repository.
 
 Module: `src/telperion/emit_mobius_tangent_cell.py`. Kind: `mobius_tangent_cell`.

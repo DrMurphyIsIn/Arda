@@ -10,7 +10,7 @@ CORRECTED 2026-09-29.  The first version added the convexity rows as `second dif
 forces CONCAVE phi, and reported t* ~ -5.2 ("infeasible").  With the sign fixed the LP is feasible:
 t* ~ +0.009 on this grid (the S-grid misses the tie S = 5/3; the exact optimum is 0, tight at the ties).
 A convex single-variable invariant exists: phi = -11 U, U a concave witness from unpublished work
-communicated by Professor John L. Goldwasser.
+communicated privately.
 """
 import math
 
