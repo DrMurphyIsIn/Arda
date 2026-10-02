@@ -6,10 +6,9 @@
 `conjecture1_proved = False`. This kind certifies bounds for explicit rational tree recursions. It
 says nothing about the Brualdi-Goldwasser conjecture, RH, or any other open problem.
 
-## Credit
+## Method
 
-The method is **concave-witness induction**, from unpublished work communicated privately. This kind packages the method generically; only the generic shape is taken.
-No data from that work is in this repository.
+The method is **concave-witness induction**. This kind packages the method generically.
 
 ## Why this kind exists
 
