@@ -15,6 +15,7 @@ on:
   push:
     paths:
       - "telperion/examples/oai_qrh_bridge/**"
+      - "telperion/examples/dbn/lean/DBN*.lean"
 jobs:
   build-and-judge:
     runs-on: ubuntu-latest
@@ -41,9 +42,11 @@ jobs:
         working-directory: telperion/examples/oai_qrh_bridge/work/oai
         shell: bash
         run: |
-          lake build ArdaQRHBridge AxiomGuardQRHBridge
+          lake build ArdaQRHBridge AxiomGuardQRHBridge ArdaDBNUnconditional ArdaDBNChallenge
           lake env lean AxiomGuardQRHBridge.lean | tee axioms.out
           ! grep -q sorryAx axioms.out
           grep -q "'qrh_seven_eighths' depends on axioms: \[propext, Classical.choice, Quot.sound\]" axioms.out
+          lake env lean AxiomGuardDBNUnconditional.lean | tee axioms2.out
+          ! grep -q sorryAx axioms2.out
       # Comparator (nanoda on) would follow here with the tag matching v4.34.1; wire it the
       # same way missions-comparator.yml does for the other islands.

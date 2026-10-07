@@ -50,6 +50,11 @@ lean/ArdaQRHBridge.lean          the re-export (one theorem)
 lean/AxiomGuardQRHBridge.lean    #print axioms for it and for OpenAI's theorem
 lean/lakefile-stanza.lean        the two lean_lib lines appended to OpenAI's lakefile
 lean/*.comparator.json           Comparator configs, nanoda ON
+lean/ArdaDBNUnconditional.lean   the unconditional 9/32 theorem (single pin)
+lean/ArdaDBNChallenge.lean       its Comparator challenge (Mathlib + transcribed DBN.H only)
+lean/negative_control/           tampered challenge that Comparator must reject
+dbn_port/                        patches + LiCriterion modules for the single-pin port
+logs/                            trimmed Comparator logs
 fidelity/                        the cross-pin check of riemannZeta (see below)
 ```
 
@@ -82,7 +87,27 @@ were compiled.
 The independent replay of OpenAI's four family-003 Comparator challenges, with nanoda on, was
 done earlier the same day. Lean's kernel and nanoda accepted all four.
 
-## The seam this island cannot close
+## The single-pin port: Λ ≤ 9/32 in one environment
+
+The island also builds the dbn island's corollary at OpenAI's pin and closes it:
+
+```lean
+theorem dbn_real_zeros_of_qrh_unconditional :
+    ∀ t : ℝ, 9 / 32 ≤ t → ∀ z : ℂ, DBN.H t z = 0 → z.im = 0 :=
+  dbn_real_zeros_of_qrh qrh_seven_eighths
+```
+
+`materialize.sh` copies the 19 dbn modules straight from `../dbn/lean`, so nothing is duplicated
+in git. It applies the two one-line patches in `dbn_port/patches`, which Mathlib renames forced.
+It adds `dbn_port/Lc`: LiCriterion's `XiZeros.lean` unchanged, and a three-declaration trim of
+its `Basic.lean`. Everything else is byte-identical.
+
+Comparator, run locally with nanoda on, accepts the theorem against `lean/ArdaDBNChallenge.lean`.
+That challenge imports only Mathlib plus a verbatim transcription of `DBN.H`. A tampered copy in
+`lean/negative_control/` is rejected. The full record, including every change and why, is
+section 6 of `telperion/docs/QRH_DBN_BRIDGE_2026-10-07.md`.
+
+## The seam this island cannot close (for the rc1 artifacts)
 
 The kernel checks `qrh_seven_eighths` against Mathlib d13f23b. It checks `dbn_real_zeros_of_qrh`
 against Mathlib de5ce8a9. No single kernel run sees both, so "plug one into the other" is a

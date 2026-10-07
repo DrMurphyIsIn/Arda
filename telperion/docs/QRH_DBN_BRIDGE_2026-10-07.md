@@ -28,6 +28,23 @@ Three pieces now exist.
 
 A zero-free half-plane is not RH. RH is θ = 1/2, which would give Λ ≤ 0.
 
+**Update, later on 2026-10-07: the seam is closed for this theorem.** The dbn closure of the
+corollary (19 modules) is now ported to OpenAI's exact pin, inside the same materialized
+workspace. Two one-line patches were needed. The unconditional theorem is one kernel term in one
+environment:
+
+```lean
+theorem dbn_real_zeros_of_qrh_unconditional :
+    ∀ t : ℝ, 9 / 32 ≤ t → ∀ z : ℂ, DBN.H t z = 0 → z.im = 0 :=
+  dbn_real_zeros_of_qrh qrh_seven_eighths
+```
+
+Its axioms are `[propext, Classical.choice, Quot.sound]`. Comparator, run locally with nanoda on,
+accepts it against a challenge that imports only Mathlib. A tampered challenge is rejected. See
+section 6. **Section 6 supersedes the seam caveat of section 3 for this theorem.** Section 3
+still applies to the original v4.34.0-rc1 dbn-island artifacts, which pair with the bridge only
+across pins.
+
 ## 1. The corollary (dbn island)
 
 File: `telperion/examples/dbn/lean/DBNZeroFreeHalfplane.lean`. The island is on Lean v4.34.0-rc1 and
@@ -277,7 +294,96 @@ Open governance questions for the owner. The tooling does not decide these.
 2. Should the oai-qrh-bridge CI job be activated, given its hours-long cold build?
 3. Should the unconditional 9/32 milestone wait for a single-pin port (section 3, option 1)?
 
-## 6. Commits on `rh/qrh-dbn-9-32`
+## 6. Single-pin port: the unconditional theorem in one environment
+
+**Where.** The port lives in `telperion/examples/oai_qrh_bridge`. `materialize.sh` puts it into the
+same unmodified openai/math checkout (adc7f124, Lean v4.34.1, Mathlib d13f23b):
+- It copies the 19 dbn modules **from the dbn island sources**. Nothing is duplicated in git.
+- It applies `dbn_port/patches/*.patch`.
+- It adds `dbn_port/Lc/` and the new `lean/` files.
+- New lean_libs: `ArdaDBNPort`, `ArdaLiCriterionShim`, `ArdaDBNUnconditional`
+  (with `AxiomGuardDBNUnconditional`), `ArdaDBNChallenge` and `ArdaDBNNegativeControl`.
+- The dbn island itself is untouched. Its corollary commit stays as it is.
+
+**The closure that was ported.** It is the import closure of `DBNZeroFreeHalfplane` on the dbn
+island: 19 modules, 5,512 lines (DBNZeroFreeHalfplane, DBNRealZerosIffFinal, DBNRealZerosIff,
+DBNDefs, DBNXi, DBNXiIBP, DBNGKernel, DBNXiCos, DBNXiRiemann, DBNM1Parametric, DBNM1Approx,
+DBNHadamard, DBNHadamardLinear, DBNHadamardMean, DBNHadamardProduct, DBNHadamardCount, DBNStep,
+DBNHeatApprox, DBNHurwitz). Two LiCriterion modules come with it.
+
+**Byte identity, with every change and its reason.**
+
+| File | Change | Reason (Mathlib d13f23b vs de5ce8a9) |
+|---|---|---|
+| 17 of the 19 DBN modules | none, byte-identical (checked with `cmp`) | |
+| `DBNHadamardProduct.lean:207` | `Finset.prod_le_prod` becomes `Finset.prod_le_prod₀` | Mathlib renamed the nonnegative-factor lemma to `prod_le_prod₀` on 2026-09-01. The old name now denotes the ordered-monoid lemma (former `prod_le_prod'`), which takes one argument. |
+| `DBNHadamardMean.lean:116` | `(norm_nonneg _)` becomes `(neg_one_lt_zero.le.trans (norm_nonneg _))` | `Real.posLog_le_posLog` now assumes `-1 ≤ x` instead of `0 ≤ x`. The weaker hypothesis is derived from the old one. |
+| `Lc/XiZeros.lean` (LiCriterion @ 35df682f) | none, byte-identical | |
+| `Lc/LiCriterion/Basic.lean` (LiCriterion @ 35df682f) | trimmed to 3 declarations copied verbatim (`NontrivialZero`, `riemannXi`, `xi_zeros_are_nontrivial_zeros`), with upstream's `open` lines and namespace | The closure uses only these three. Upstream's 5,159-line file pulls in a 23k-line Hadamard/genus-one stack that is not needed. Keeping the module name lets `DBNDefs` port byte-identically. The trimmed file also leaves out upstream's literature axioms, which no dbn theorem used anyway (the dbn guard was already clean). Apache-2.0 modification notice in the header. |
+| build options | `ArdaDBNPort` sets `autoImplicit := true`. The LiCriterion shim sets `autoImplicit := false, maxSynthPendingDepth := 3` | These restore each source package's own options. OpenAI's package default is `autoImplicit := false`. |
+
+The two patches are the whole diff. Both are proof-term repairs inside proofs. No statement, and
+no definition, changed.
+
+**Results.** All of these were run locally on 2026-10-07.
+
+| Check | Result |
+|---|---|
+| `lake build ArdaLiCriterionShim ArdaDBNPort` after a fresh materialize | green, no warnings |
+| full rebuild, fresh materialize: `ArdaQRHBridge AxiomGuardQRHBridge ArdaDBNUnconditional ArdaDBNChallenge ArdaDBNNegativeControl` | green, 11,900 jobs, 94 s wall (port compiled, OpenAI closure replayed) |
+| `#print axioms dbn_real_zeros_of_qrh_unconditional` | `[propext, Classical.choice, Quot.sound]` |
+| `#print axioms` for `dbn_real_zeros_of_qrh`, `dbn_real_zeros_of_zeta_halfplane`, `qrh_seven_eighths`, `dbn_debruijn_parametric`, `dbn_H0_eq_xi`, `LiCriterion.xi_zeros_are_nontrivial_zeros`, `DBN.H_neg` | all `[propext, Classical.choice, Quot.sound]` |
+| Comparator, nanoda ON, challenge `ArdaDBNChallenge` (imports only Mathlib) vs solution `ArdaDBNUnconditional` | "nanoda kernel accepts", "Lean default kernel accepts", "Your solution is okay!", EXIT 0. 473 s, 9.1 GB |
+| Negative control: the same challenge with `Φ`'s `e^{9u}` changed to `e^{8u}` | rejected: `Const does not match between challenge and target 'DBN.Φ'`, EXIT 1 |
+
+The trimmed log is at `oai_qrh_bridge/logs/comparator_2026-10-07.txt`. Not sandboxed: landrun is
+Linux-only, so a pass-through shim was used.
+
+**The challenge.** `lean/ArdaDBNChallenge.lean` imports only `Mathlib`. It transcribes `DBN.Φ`,
+`DBN.HIntegrand` and `DBN.H` verbatim from DBNDefs, under DBNDefs' `open` line and namespace.
+Comparator's export comparison therefore forces the solution's `DBN.H` to be exactly this term.
+The theorem body is `sorry`, by the Comparator challenge convention.
+
+One footgun is worth recording. The first run was rejected with `Const does not match … 'DBN.Φ'`.
+Under `pp.all`, the only difference was the auxiliary proof of the `Nat.AtLeastTwo 4` instance
+inside `Φ`. DBNDefs elaborates `thetaMoment` first. Lean abstracts that instance proof into
+`DBN.thetaMoment._proof_1` and *reuses* it in `Φ`. The challenge, without `thetaMoment`,
+generated `DBN.Φ._proof_5` instead. Transcribing `thetaMoment` verbatim as well fixed it, and the
+`pp.all` dumps are then identical. So a transcribed challenge must also reproduce the earlier
+definitions whose auxiliary lemmas the target reuses, not only the definitions the statement
+mentions.
+
+**What this does and does not establish.** One Lean environment now contains, at once:
+- the de Bruijn-Newman machinery, ported with the two patches above;
+- the representation H_0 = ξ/8;
+- OpenAI's ζ ≠ 0 on Re s > 7/8;
+- the composition of all three.
+
+So "every zero of H_t is real for t ≥ 9/32", which is classically Λ ≤ 9/32, is a single
+kernel-checked theorem on Mathlib's `riemannZeta`. Nanoda independently re-checked it, and no
+cross-pin identification is involved. It is still not RH. 9/32 is weaker than the numerical
+bounds 0.22 and 0.2.
+
+**What remains.**
+- The rc1 dbn-island artifacts still pair with the bridge only across pins (section 3).
+- The single-pin artifacts are not built by CI. The section 2 draft workflow would need the
+  `ArdaDBNUnconditional ArdaDBNChallenge` targets added.
+- Nothing is registered.
+
+**Registration option this enables** (prepared, NOT executed). Add one node,
+`RH_dbn_real_zeros_nine_thirtyseconds`, with this statement:
+`theorem dbn_real_zeros_of_qrh_unconditional : ∀ t : ℝ, 9 / 32 ≤ t → ∀ z : ℂ, DBN.H t z = 0 → z.im = 0`.
+- Its artifact is `../../examples/oai_qrh_bridge/lean/ArdaDBNUnconditional.lean`, `--via direct`.
+- That replaces the reduction route in the section 5 table. No reduction node and no cross-pin
+  grant are needed.
+- It needs the same CI coverage before the gate will grant.
+- `RH.dbn_H0_eq_xi`'s mirror of `DBN.H` in `Statements/RHDefs.lean` is on de5ce8a9. The registry
+  statement match is syntactic, so it matches. The independent judge for this node is the
+  single-pin Comparator run above, re-run by the independent session:
+  `lake env comparator dbn_real_zeros_of_qrh_unconditional.comparator.json` inside the
+  materialized workspace.
+
+## 7. Commits on `rh/qrh-dbn-9-32`
 
 The commit hashes are in the final hand-off message and in `git log`. Nothing has been pushed.
 
