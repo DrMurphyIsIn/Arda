@@ -1,0 +1,49 @@
+# DRAFT, NOT ACTIVE.  To activate, an owner copies this file to
+# .github/workflows/oai-qrh-bridge.yml.  Until a workflow like this runs `lake build` on the
+# bridge, `mission verify` treats telperion/examples/oai_qrh_bridge as an orphan island, and the
+# gate refuses to grant any node whose artifact lives there.
+#
+# Cost: OpenAI's QRH closure is about 2,924 modules (486k lines) on top of Mathlib.  Without a
+# cache, expect several CPU-hours and a .lake of about 19 GB.  That is why the trigger is manual
+# plus a weekly schedule, not every push.  Mathlib comes from `lake exe cache get`; OpenAI's own
+# modules are compiled.  The actions/cache step keeps .lake between runs.
+name: oai-qrh-bridge
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * 0"
+  push:
+    paths:
+      - "telperion/examples/oai_qrh_bridge/**"
+jobs:
+  build-and-judge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 600
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Materialize openai/math at the pinned commit
+        working-directory: telperion/examples/oai_qrh_bridge
+        run: ./materialize.sh
+      - uses: actions/cache@v4
+        with:
+          path: telperion/examples/oai_qrh_bridge/work/oai/.lake
+          key: oai-qrh-${{ hashFiles('telperion/examples/oai_qrh_bridge/OAI_PIN') }}
+      - name: Resolve and patch OpenAI's dependencies, fetch Mathlib oleans
+        working-directory: telperion/examples/oai_qrh_bridge/work/oai
+        run: |
+          lake update
+          lake exe cache get
+      - name: Build the bridge (lake build ArdaQRHBridge AxiomGuardQRHBridge)
+        working-directory: telperion/examples/oai_qrh_bridge/work/oai
+        shell: bash
+        run: |
+          lake build ArdaQRHBridge AxiomGuardQRHBridge
+          lake env lean AxiomGuardQRHBridge.lean | tee axioms.out
+          ! grep -q sorryAx axioms.out
+          grep -q "'qrh_seven_eighths' depends on axioms: \[propext, Classical.choice, Quot.sound\]" axioms.out
+      # Comparator (nanoda on) would follow here with the tag matching v4.34.1; wire it the
+      # same way missions-comparator.yml does for the other islands.

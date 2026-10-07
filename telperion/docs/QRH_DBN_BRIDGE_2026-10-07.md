@@ -1,0 +1,284 @@
+# Λ ≤ 9/32 from OpenAI's quasi-Riemann hypothesis: the dbn corollary, the bridge, and the cross-pin seam
+
+Date: 2026-10-07. Branch `rh/qrh-dbn-9-32`, worktree `~/arda-qrh`, local commits only. The authoring
+session did not run `mission add`, `mission audit` or `mission grant`, and changed no registry file.
+conjecture1_proved = False.
+
+## The short version
+
+OpenAI's `openai/math` release of 2026-10-06 proves in Lean that ζ(s) ≠ 0 for Re s > 7/8.
+Earlier today we replayed that proof through Comparator with nanoda switched on, and both kernels
+accepted it. Combined with de Bruijn's heat-flow theorem, which the dbn island already proves in
+parametric form, it says that every zero of H_t is real once t ≥ 9/32. Classically that is
+Λ ≤ 9/32 = 0.28125. That is weaker than the numerical bounds (Polymath15 0.22, Platt-Trudgian 0.2).
+As far as we know it would be the first machine-checked bound below de Bruijn's 1/2.
+
+Three pieces now exist.
+
+1. **The corollary, on the dbn island, conditional.** If ζ has no zero in Re s > θ, then every zero
+   of H_t is real for every t ≥ 2(θ − 1/2)². At θ = 7/8 the hypothesis is written exactly as
+   OpenAI's theorem. Kernel-checked, standard axioms only.
+2. **The bridge, a new island pinned to OpenAI's toolchain.** It re-exports OpenAI's theorem in
+   exactly that form. Kernel-checked, and Comparator-accepted with nanoda on (locally).
+3. **The seam between them.** The two islands use different Mathlib pins, and `riemannZeta`
+   is *not* the same closed term at the two pins. The statement expression is identical. 267
+   definitions underneath it differ, because of six weeks of Mathlib refactoring. Plugging
+   piece 2 into piece 1 is therefore a mathematical identification, not a kernel check. Details
+   are in section 3.
+
+A zero-free half-plane is not RH. RH is θ = 1/2, which would give Λ ≤ 0.
+
+## 1. The corollary (dbn island)
+
+File: `telperion/examples/dbn/lean/DBNZeroFreeHalfplane.lean`. The island is on Lean v4.34.0-rc1 and
+Mathlib de5ce8a9a66a4aa68a9bdbb35b63a06d34d9ca11, which we verified in `lean-toolchain` and
+`lake-manifest.json`.
+
+```lean
+theorem dbn_real_zeros_of_zeta_halfplane (θ : ℝ)
+    (hfree : ∀ s : ℂ, θ < s.re → riemannZeta s ≠ 0) :
+    ∀ t : ℝ, 2 * (θ - 1 / 2) ^ 2 ≤ t → ∀ z : ℂ, DBN.H t z = 0 → z.im = 0
+
+theorem dbn_real_zeros_of_qrh
+    (hqrh : ∀ s : ℂ, (7 / 8 : ℝ) < s.re → riemannZeta s ≠ 0) :
+    ∀ t : ℝ, 9 / 32 ≤ t → ∀ z : ℂ, DBN.H t z = 0 → z.im = 0
+
+theorem dbn_H0_im_sq_le_of_qrh
+    (hqrh : ∀ s : ℂ, (7 / 8 : ℝ) < s.re → riemannZeta s ≠ 0) :
+    ∀ z : ℂ, DBN.H 0 z = 0 → z.im ^ 2 ≤ 9 / 16
+```
+
+The helpers are `DBN.H0_neg_im_le_of_zeta_halfplane` and `DBN.H0_im_sq_le_of_zeta_halfplane`.
+
+How the proof goes. A zero z of H_0 gives a zero s = 1/2 + iz/2 of ξ, because H_0 = ξ(1/2 + iz/2)/8
+(`dbn_H0_eq_xi`). That s is a strip zero of ζ (`riemannXi_eq_zero_iff_strip_zero`), with
+Re s = 1/2 − Im z/2 (`xiArg_re`). The half-plane hypothesis gives Re s ≤ θ, so −Im z ≤ 2θ − 1.
+Evenness (`H_neg`) gives the same bound for −z, hence (Im z)² ≤ (2θ − 1)². Then
+`m1_H_real_zeros_of_im_sq_le`, the machinery behind `dbn_debruijn_parametric` (heat-flow
+contraction plus Hurwitz), closes the strip at t = (2θ − 1)²/2 = 2(θ − 1/2)². No side condition
+on θ is needed. For θ < 1/2 the two one-sided bounds contradict each other, so the conclusion is
+vacuous there.
+
+**Λ is not defined on the island.** That is deliberate: DBNDefs avoids the `sInf` trap. So the
+bound is stated in sInf-free form: "every zero of H_t is real for every t ≥ 9/32".
+
+**The hypothesis matches OpenAI's statement.** `OAI.riemannZeta_ne_zero_of_seven_eighths_lt_re`
+is stated as `{s : ℂ} (hs : (7 / 8 : ℝ) < s.re) : riemannZeta s ≠ 0`. Our hypothesis closes that
+implicit binder: `∀ s : ℂ, (7 / 8 : ℝ) < s.re → riemannZeta s ≠ 0`.
+
+**Axioms.** All five theorems give `[propext, Classical.choice, Quot.sound]`. They were added to
+`AxiomGuardDBN.lean`. The full island build of 8,809 jobs is green locally, the guard has 654
+entries, and there are 0 `sorryAx`.
+
+## 2. The bridge island (`telperion/examples/oai_qrh_bridge`)
+
+```lean
+-- lean/ArdaQRHBridge.lean, built inside openai/math @ adc7f1241b42e322a6451854ab7e4b4c146bf78a
+-- (Lean v4.34.1, Mathlib d13f23b723b8a846827a245b89c10fc7d3f11612)
+import OAI.NumberTheory.DirichletL.Nonvanishing
+theorem qrh_seven_eighths : ∀ s : ℂ, (7 / 8 : ℝ) < s.re → riemannZeta s ≠ 0 :=
+  fun _ hs ↦ OAI.riemannZeta_ne_zero_of_seven_eighths_lt_re hs
+```
+
+The proof is entirely OpenAI's, from https://github.com/openai/math under the Apache License 2.0.
+The README and the file headers say so.
+
+**Why it is a recipe and not a Lake dependency.** We tried
+`require OAI from git "https://github.com/openai/math.git" @ "adc7f124…" / "lean"`. `lake update`
+ran for 5 min 51 s and then failed with
+`error: iut: Lake resolved an unexpected checkout at …/.lake/packages/iut`. OpenAI's lakefile
+patches 23 of its dependencies. It does this in a `run_cmd` during lakefile elaboration and in a
+`post_update` hook, and both assume OpenAI's package is the workspace root. Vendoring the closure
+is the other option: about 2,924 modules and 486k lines, plus PNT+ Wiener and one Rellich file.
+We rejected it as a maintenance burden.
+
+What we built instead: `materialize.sh` checks out OpenAI's `lean/` directory, unmodified, at the
+pinned commit into `work/oai` (gitignored). It copies in our two `.lean` files and the Comparator
+configs, and appends two `lean_lib` lines to OpenAI's lakefile. OpenAI stays the root.
+`--from-local DIR` reflinks an already-built copy, after a file-by-file diff against the pinned
+git checkout. That is how we built locally from `~/oai-replay`, whose sources diff clean against
+adc7f124.
+
+| Measurement (this Mac, 2026-10-07) | Value |
+|---|---|
+| Materialize from the replay build (APFS reflink) | 81 s, 21 GB apparent, about 0 GB new disk |
+| `lake build ArdaQRHBridge AxiomGuardQRHBridge` | 45 s, 7,065 jobs, only the 2 new modules compiled |
+| `#print axioms qrh_seven_eighths` | `[propext, Classical.choice, Quot.sound]` |
+| Comparator on `qrh_seven_eighths`, nanoda ON | "nanoda kernel accepts", "Lean default kernel accepts", "Your solution is okay!", EXIT 0 |
+| Comparator wall time and peak RSS | 516 s, 9.4 GB |
+| From-scratch build, extrapolated from the replay | about 11.9k jobs for the closure, `.lake` about 19 GB, several CPU-hours |
+
+The Comparator run was local and not sandboxed. landrun is Linux-only, so we used a pass-through
+shim, as in our BG replays. The config was self-check (challenge module = solution module =
+`ArdaQRHBridge`), as the missions judge does. The statement's Mathlib-only reading was already
+checked by the replay of OpenAI's own challenge
+(`ComparatorChallenges/QuasiRiemannHypothesis.lean`, `import Mathlib` only). The bridge adds
+only the closure over `{s}`. `lean/QuasiRiemannHypothesis.comparator.json` re-runs that replay
+inside the materialized workspace.
+
+**CI.** No workflow builds this island yet. We wrote a draft at
+`oai_qrh_bridge/ci/oai-qrh-bridge.yml.draft`. It is inactive: it is not under `.github/workflows`.
+Until something like it runs, `mission verify` lists `oai_qrh_bridge` as an orphan island. That
+is a warning. The grant gate (`verify.py:581`, `artifact_coverage_error`) refuses any node whose
+artifact lives there. Turning the workflow on is the owner's call, because a cold build costs
+hours of runner time.
+
+## 3. Cross-pin fidelity: is `riemannZeta` the same at both pins?
+
+**Verdict: no, not as a closed term.** The two statements are syntactically identical at the top
+level. They use the same constants, the same instance terms, and the same numerals. But the
+definitions those constants unfold to differ between Mathlib de5ce8a9 and d13f23b, and the
+Lean cores (v4.34.0-rc1 and v4.34.1) differ too.
+
+**Method** (`oai_qrh_bridge/fidelity/`, reproducible with `run_fidelity.sh`):
+- In each environment we copy the *elaborated* statement into a definition `QRHFidelity.stmt`. On
+  the dbn side it is the hypothesis of `dbn_real_zeros_of_qrh`. On the bridge side it is the type
+  of `qrh_seven_eighths`.
+- We export each with lean4export (format 3.1.0). The dbn side used lean4export at tag
+  v4.34.0-rc1, which we built for this job. The bridge side used Comparator's copy on v4.34.1.
+- `compare_exports.py` hashes every constant structurally and walks the *meaning closure*: types
+  everywhere, values of definitions, opaques and recursor rules, but not theorem proofs, which
+  are irrelevant by proof irrelevance.
+- It then normalizes three kinds of noise:
+  - universe-parameter renaming;
+  - hygienic, private and auxiliary names, which are compared by content because they embed module
+    paths (`Mathlib/Data/Real/Basic` moved to `Mathlib/Basic/Real/Basic`);
+  - references to theorems, which are compared by statement.
+
+| | dbn side | bridge side |
+|---|---|---|
+| Lean | v4.34.0-rc1 (3447a668) | v4.34.1 (5045d005) |
+| constants exported | 53,251 | 53,309 |
+| meaning closure | 4,978 | 4,982 |
+
+Normalized results (`fidelity/RESULT_2026-10-07.json`):
+
+- **The statement itself is identical.** The normalized root digest is
+  `a8dc112e9afc62ef99b1f82e87e196e7` on both sides.
+- **267 named definitions in the closure differ, and 87 theorem statements differ.** Six named
+  definitions appear only on the dbn side and twenty only on the bridge side.
+- **27 root causes** are differing definitions whose own named dependencies agree. They are listed
+  with term excerpts in `fidelity/root_causes_2026-10-07.txt`. They fall into these groups:
+  - The algebraic hierarchy refactor. `AddMonoid.mk`, `Monoid.mk`, `AddZeroClass.mk` and
+    `MulOneClass.mk` have different parents and field orders, for example `AddMonoid` now takes
+    `Zero`, `Add` and `add_assoc` directly instead of `AddSemigroup`. Their projections
+    (`toZero`, `toNSMul`, `toAddSemigroup`, `toOne`, `toNPow`, …) change accordingly.
+  - `WellFoundedLT` is `IsWellFounded` at de5ce8a9 and `WellFounded` at d13f23b.
+  - `MeasureTheory.eLpNorm` gained a `[TopologicalSpace]` argument. ζ is defined through
+    Mellin-transform integrals, so measure theory is in the closure.
+  - Core `Bool.and` is defined through `match_1` in rc1 and directly through `Bool.rec` in v4.34.1.
+  - Content changes behind private or auxiliary constants: `Real.instMax`/`instMin` (private
+    `Real.sup`/`inf`), `Nat.findX`, `instLEENat`, `instLTENat`, `ENNReal.instLE`,
+    `WithTop.instLE`/`instLT`, `NNReal.instSemilatticeSup`, `Semiring.toModule`,
+    `StrictMono.orderIsoOfSurjective`.
+  - One normalizer artifact: `Finsupp` differs only by `max u v` against `max v u` in its universe.
+- **The fresh elaboration differs from the theorem-derived statement only in a proof.** In both
+  environments, `QRHFidelity.stmtMathlib` (the text re-elaborated) differs from `QRHFidelity.stmt`
+  only in how the `Nat.AtLeastTwo` instance proofs for the numerals 7 and 8 are given: an
+  auxiliary `_proof_N` constant or an inline term. That is a proof-level difference with no
+  effect on meaning.
+
+**What this means.** No single kernel run checks "OpenAI's ζ is our ζ", and with these pins none
+can. The identification rests on mathematics:
+- ζ is pinned down by its Dirichlet series on Re s > 1, together with its holomorphy on ℂ \ {1}
+  and the identity theorem.
+- ℝ, ℂ and the integrals are pinned down by their characterizing properties.
+- The refactors above are meant to preserve all of those.
+
+That argument is standard. It is not machine-checked across the pins. A grant ledger entry must
+say so in words.
+
+**Closing the seam completely** requires a single pin. Two options:
+1. Port the dbn Λ closure to d13f23b and v4.34.1, building it inside the materialized OpenAI
+   workspace. The closure is DBNDefs, Step, Hurwitz, HeatApprox, Hadamard*, M1Approx,
+   M1Parametric, the DBNXi* modules, DBNRealZerosIff* and LiCriterion. This is moderate work,
+   because six weeks of Mathlib renames apply.
+2. Wait for both to meet on a later common Mathlib.
+
+Either way, `dbn_real_zeros_of_qrh qrh_seven_eighths` becomes a one-line, single-kernel term.
+
+## 4. Feasibility of reusing OpenAI's LogarithmicControl.lean
+
+`OAI/NumberTheory/DirichletL/LogarithmicControl.lean` has 547 lines, imports only Mathlib, and
+lives in `namespace OAI.SevenEighths.LogarithmicControl`. We compiled it **unmodified**:
+- On the rvm_bridge pin (Lean v4.33.0-rc2, Mathlib 51e6992e): 0 errors, 0 warnings, about 20 s.
+- On the dbn pin (v4.34.0-rc1, Mathlib de5ce8a9): 0 errors.
+
+`#print axioms` for `logarithmic_control`, `zero_free_disk_logarithm` and `three_circles` gives
+the three standard axioms. All eight imports exist at both pins, and so do the key lemmas
+`Complex.exists_continuousOn_eqOn_exp_comp`, `contractibleSpace_ball` and `borelCaratheodory`.
+
+So the port costs nothing beyond copying the file with its Apache-2.0 header and NOTICE
+attribution. The real work is deciding what consumes it on rvm_bridge: its holomorphic-logarithm,
+Borel-Carathéodory-on-closed-balls and three-circles lemmas, and the log-derivative bound in a
+zero-free disk. We did not add it to any island.
+
+## 5. Registration: prepared, NOT executed
+
+Repo convention (`MISSIONS_DESIGN_2026-09-11.md` §2, and node `RH_dlvp_zero_free_region`):
+- A proved artifact on another island discharges a node through a *syntactic* statement match.
+- It is recorded `via = "direct"`, and `closure_clean` is computed by the gate.
+- Independence comes either from an audit by a different session and identity, or from a passing
+  `missions-comparator` run that has been recorded (`AUDIT_INDEPENDENCE_2026-09-23.md`).
+- No campaign has a `via = "reduction"` node yet, so the reduction path below would be its first
+  use.
+
+Proposed nodes, all in campaign `rh` (statement package on v4.34.0-rc1, de5ce8a9, `import Statements.RHDefs`):
+
+| Slug | Statement (registered text) | Artifact | Notes |
+|---|---|---|---|
+| `RH_dbn_real_zeros_of_zeta_halfplane` | `theorem dbn_real_zeros_of_zeta_halfplane (θ : ℝ) (hfree : ∀ s : ℂ, θ < s.re → riemannZeta s ≠ 0) : ∀ t : ℝ, 2 * (θ - 1 / 2) ^ 2 ≤ t → ∀ z : ℂ, DBN.H t z = 0 → z.im = 0` | `../../examples/dbn/lean/DBNZeroFreeHalfplane.lean`, direct | dbn island, CI-built, judge-able. deps: `RH_dbn_debruijn_parametric`, `RH_dbn_H0_eq_xi` |
+| `RH_dbn_real_zeros_of_qrh` | `theorem dbn_real_zeros_of_qrh (hqrh : ∀ s : ℂ, (7 / 8 : ℝ) < s.re → riemannZeta s ≠ 0) : ∀ t : ℝ, 9 / 32 ≤ t → ∀ z : ℂ, DBN.H t z = 0 → z.im = 0` | same file, direct | conditional 9/32 |
+| `RH_zeta_zero_free_seven_eighths` | `theorem qrh_seven_eighths : ∀ s : ℂ, (7 / 8 : ℝ) < s.re → riemannZeta s ≠ 0` | `../../examples/oai_qrh_bridge/lean/ArdaQRHBridge.lean`, direct | BLOCKED: no CI covers it, so the gate refuses. Cross-pin. OpenAI authorship must be in the readback |
+| `RH_dbn_real_zeros_nine_thirtyseconds` (milestone) | `theorem dbn_real_zeros_nine_thirtyseconds : ∀ t : ℝ, 9 / 32 ≤ t → ∀ z : ℂ, DBN.H t z = 0 → z.im = 0` | reduction proof `dbn_real_zeros_of_qrh qrh_seven_eighths` in the rh statement package | needs both deps proved first. The first reduction node in the repo |
+
+Commands. The **author side** may be run by this session or by the parent, since adding a node
+is authoring:
+
+```sh
+cd ~/arda-qrh/telperion
+telperion mission add rh RH.dbn_real_zeros_of_zeta_halfplane --kind lemma \
+  --title "Zero-free half-plane theta => every zero of H_t real for t >= 2(theta-1/2)^2 (conditional; not RH). conjecture1_proved = False" \
+  --deps RH_dbn_debruijn_parametric,RH_dbn_H0_eq_xi --statement-file <file with the statement above>
+telperion mission add rh RH.dbn_real_zeros_of_qrh --kind lemma \
+  --title "QRH hypothesis (zeta != 0 on Re s > 7/8) => every zero of H_t real for t >= 9/32 (conditional; not RH). conjecture1_proved = False" \
+  --deps RH_dbn_real_zeros_of_zeta_halfplane --statement-file <...>
+telperion mission add rh RH.zeta_zero_free_seven_eighths --kind lemma \
+  --title "zeta != 0 on Re s > 7/8 (OpenAI openai/math family 003, Apache-2.0; cross-pin bridge). Not RH. conjecture1_proved = False" \
+  --statement-file <...>
+telperion mission link RH_dbn_real_zeros_of_zeta_halfplane --artifact ../../examples/dbn/lean/DBNZeroFreeHalfplane.lean --kind lean_module --via direct
+telperion mission link RH_dbn_real_zeros_of_qrh --artifact ../../examples/dbn/lean/DBNZeroFreeHalfplane.lean --kind lean_module --via direct
+telperion mission link RH_zeta_zero_free_seven_eighths --artifact ../../examples/oai_qrh_bridge/lean/ArdaQRHBridge.lean --kind lean_module --via direct
+python -m telperion.missions.judge --island dbn      # regenerates telperion/missions/judge/dbn with the 2 new bridges
+```
+
+The **independent session** must have a different session id and a different git identity from
+the author:
+
+```sh
+# 1. read-backs (each >= 120 chars, rendering the FORMAL statement, written before reading the artifact)
+telperion mission audit RH_dbn_real_zeros_of_zeta_halfplane --text "<own rendering>"
+telperion mission audit RH_dbn_real_zeros_of_qrh --text "<own rendering>"
+telperion mission audit RH_zeta_zero_free_seven_eighths --text "<own rendering; must state the cross-pin seam and OpenAI authorship>"
+# 2. after missions-comparator passes the dbn shard on the pushed branch:
+telperion mission comparator-record RH_dbn_real_zeros_of_zeta_halfplane --run-id <run> --theorem dbn_real_zeros_of_zeta_halfplane
+telperion mission comparator-record RH_dbn_real_zeros_of_qrh --run-id <run> --theorem dbn_real_zeros_of_qrh
+# 3. grants (dbn nodes now; the QRH node only after an oai-qrh-bridge workflow covers its artifact)
+telperion mission grant RH_dbn_real_zeros_of_zeta_halfplane
+telperion mission grant RH_dbn_real_zeros_of_qrh
+telperion mission grant RH_zeta_zero_free_seven_eighths      # refused until CI covers oai_qrh_bridge
+telperion mission verify rh
+```
+
+Open governance questions for the owner. The tooling does not decide these.
+1. Should a node whose kernel authority is a different Mathlib pin be grantable at all, given that
+   section 3 shows the terms are not identical? The precedent `RH_dlvp_zero_free_region` was
+   cross-*island*, not demonstrably cross-*meaning*.
+2. Should the oai-qrh-bridge CI job be activated, given its hours-long cold build?
+3. Should the unconditional 9/32 milestone wait for a single-pin port (section 3, option 1)?
+
+## 6. Commits on `rh/qrh-dbn-9-32`
+
+The commit hashes are in the final hand-off message and in `git log`. Nothing has been pushed.
+
+conjecture1_proved = False.
