@@ -64,6 +64,7 @@ import M6gapP15ZeroFree
 import DBNM5Alpha
 import DBNM5Target
 import DBNP15Wired
+import DBNZeroFreeHalfplane
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -885,3 +886,11 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms dbn_p15_criterion
 #print axioms dbn_p15ZeroFreeRect_of_le
 #print axioms dbn_p15_criterion_low
+
+-- Route C: zero-free half-plane for zeta => real zeros of H_t for t >= 2(theta - 1/2)^2;
+-- theta = 7/8 (OpenAI QRH statement as an explicit HYPOTHESIS) gives t >= 9/32.  Not RH.
+#print axioms DBN.H0_neg_im_le_of_zeta_halfplane
+#print axioms DBN.H0_im_sq_le_of_zeta_halfplane
+#print axioms dbn_real_zeros_of_zeta_halfplane
+#print axioms dbn_real_zeros_of_qrh
+#print axioms dbn_H0_im_sq_le_of_qrh
