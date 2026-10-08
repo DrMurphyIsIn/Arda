@@ -1,0 +1,299 @@
+name: proof-lean-heavy
+
+# The heavy BG modules that do not fit on GitHub's 16 GB hosted runner, built on the
+# self-hosted Mac (2026-10-08, PR #665). proof-lean.yml (hosted) builds and checks every R3Cert
+# module EXCEPT the heavy set computed by ci/heavy_bg.py: the G149 envelope fragments
+# R3Cert.BGEnvCert.G149.Frag<C> and every module importing one transitively (today:
+# Frag1-8/12/16/22, G149.MainK, BGMaximizerSmall, BGMaximizerAll). Each Frag is ONE
+# `decide +kernel` capCheck whose retained kernel reduction needs far more than 16 GB
+# (measured locally, /usr/bin/time -l, lean -j 4: Frag6 25.4 GB, Frag7 28.4 GB,
+# Frag12 42.2 GB max RSS; Frag16/Frag22 larger). This workflow builds that set ONE MODULE AT A
+# TIME, then the full library, then runs the FULL, unfiltered checks (orphan check over every
+# module, AxiomGuard.lean as committed with its full floor and REQUIRED list, sorry/axiom
+# scan) -- the same steps proof-lean.yml ran before the split.
+#
+# SECURITY: this repository is public. A self-hosted runner must never execute code from a
+# fork's pull request, so there is deliberately NO pull_request / pull_request_target trigger:
+# only pushes to main, manual dispatch (write access required) and a weekly schedule.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "proof/formalization/**"
+      - ".github/workflows/proof-lean-heavy.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "41 7 * * 0"   # weekly, Sunday 07:41 UTC
+
+# One heavy run at a time on the shared Mac (peak ~42+ GB for one Frag); never cancel a
+# long run in progress -- a new one queues behind it.
+concurrency:
+  group: proof-lean-heavy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  lean-verify-heavy:
+    runs-on: [self-hosted, macOS, ARM64, arda-lean]
+    # Cold, everything here is several hours; warm (the .lake/build in the runner's
+    # workspace persists between runs, no cache upload) it is the changed modules only.
+    timeout-minutes: 900
+    defaults:
+      run:
+        shell: bash
+        working-directory: proof/formalization
+    steps:
+      # clean: false keeps the persistent proof/formalization/.lake (ignored by git) between
+      # runs, which is this runner's incremental build cache. Tracked files are still reset to
+      # the checked-out commit.
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Toolchain (elan in the runner user's home)
+        run: |
+          set -euo pipefail
+          if ! [ -x "$HOME/.elan/bin/elan" ]; then
+            curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          fi
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          rm -f AxiomGuardHosted.lean heavy-dropped.txt   # hosted-only artifacts, never used here
+
+      - name: Fetch Mathlib olean cache
+        run: lake exe cache get
+
+      # The same staging as the hosted workflow, so no two heavy lean processes ever run side
+      # by side on the shared machine.
+      - name: Build stage 1 — heavy certificate roots (R47PC6Cells + the StarOfHubs chain)
+        timeout-minutes: 240
+        run: lake build R3Cert.R47PC6Cells R7Hyps
+
+      - name: Build stage 2 — R47PC6Reduce and its dependencies
+        timeout-minutes: 120
+        run: lake build R3Cert.R47PC6Reduce
+
+      - name: Build stage 2b — BG spider-table chunks, one at a time
+        timeout-minutes: 200
+        run: |
+          set -euo pipefail
+          for m in $(find R3Cert -maxdepth 1 -name 'BGSpiderTableChunk_*.lean' | sort | sed -e 's|^R3Cert/|R3Cert.|' -e 's|\.lean$||'); do
+            t0=$SECONDS; lake build "$m"; echo "chunk $m: $((SECONDS - t0)) s"
+          done
+
+      - name: Build stage 2c — BG spider mid-root certificates K2..K23, one at a time
+        timeout-minutes: 90
+        run: |
+          set -euo pipefail
+          for m in $(find R3Cert -maxdepth 1 -name 'BGSpiderMidRootK*.lean' | sed -e 's|^R3Cert/BGSpiderMidRootK||' -e 's|\.lean$||' | sort -n | sed 's|^|R3Cert.BGSpiderMidRootK|'); do
+            t0=$SECONDS; lake build "$m"; echo "midroot $m: $((SECONDS - t0)) s"
+          done
+
+      # The heavy BG set, in dependency order (Frags by cap, then MainK, BGMaximizerSmall,
+      # BGMaximizerAll), one `lake build` per module so at most one heavy lean process runs.
+      # The first call also builds the light G149 dependencies (Common, Cap*, Shared*).
+      # Peak RSS per module is logged (/usr/bin/time -l).
+      - name: Build stage H — heavy BG set (G149 fragments and dependents), one at a time
+        timeout-minutes: 300
+        run: |
+          set -euo pipefail
+          heavy=$(python3 ci/heavy_bg.py heavy)
+          echo "$(printf '%s\n' "$heavy" | grep -c .) heavy module(s):"; printf '%s\n' "$heavy" | sed 's/^/  /'
+          for m in $heavy; do
+            t0=$SECONDS
+            /usr/bin/time -l lake build "$m" 2> "$RUNNER_TEMP/heavy-time.txt" || { cat "$RUNNER_TEMP/heavy-time.txt"; exit 1; }
+            rss=$(awk '/maximum resident set size/{printf "%.1f", $1/1e9}' "$RUNNER_TEMP/heavy-time.txt")
+            echo "heavy $m: $((SECONDS - t0)) s, max RSS ${rss} GB"
+          done
+
+      # Everything else in parallel (all light by now): the full library, as the hosted
+      # workflow did before the split.
+      - name: Build (the verification — every R3Cert module compiles, no sorry)
+        timeout-minutes: 120
+        run: lake build
+
+      # ---- Below: the checks exactly as in proof-lean.yml before the heavy/hosted split
+      # ---- (every module, the committed AxiomGuard.lean, the full floor and REQUIRED list).
+      - name: Build the R7' hypothesis layers (star-of-hubs cells + class floors)
+        run: lake build R7Hyps R3Cert.HypStar R3Cert.HypFloors
+
+      # R47 per-rule certificate leaves (R1 spider / R2 legs / R4 Kelmans corners /
+      # R5 tiebreak / R6 deload / root-invariance / collapse-floor profile). NONE of these
+      # is root-imported into R3Cert.lean, so `lake build` above never built them -- this
+      # step is what CI-verifies the family. Built as SEPARATE targets (not a shared
+      # import env): R47R6DeloadCert carries a local `conjecture1_proved` pin in
+      # `R3Cert.Step3`, so co-importing it would collide; separate targets sidestep that.
+      - name: Build the R47 per-rule certificate leaves
+        run: |
+          lake build \
+            R3Cert.R47R1SpiderCert \
+            R3Cert.R47R2LegsCert R3Cert.R47R2Legs34Cert \
+            R3Cert.R47R4KelmansCornerCert R3Cert.R47R4KelmansC1Cert \
+            R3Cert.R47R4KelmansC2Cert R3Cert.R47R4KelmansC3Cert \
+            R3Cert.R47R5TiebreakCert R3Cert.R47R5Tiebreak2Cert \
+            R3Cert.R47R6DeloadCert \
+            R3Cert.R47RootInvariance \
+            R3Cert.BridgeStep4l \
+            R3Cert.R47CampaignBrick \
+            R3Cert.R47BroadenedTieWitness \
+            R3Cert.R47TieBroadened \
+            R3Cert.R47R7TwoHubBridge \
+            R3Cert.R47SingleHub2D \
+            R3Cert.R47SharpRate \
+            R3Cert.R47SingleHubResidue \
+            R3Cert.BGSCLFlpMove \
+            R3Cert.BGSCLFlpDeepLift \
+            R3Cert.BGSCLFlpStepAt \
+            R3Cert.R47R7StuckChar \
+            R3Cert.R47WPairLift \
+            R3Cert.R47MHubTelescope \
+            R3Cert.R47WPair6 \
+            R3Cert.R47PC6Cells \
+            R3Cert.R47PC6Bridge \
+            R3Cert.R47PC6Transport \
+            R3Cert.R47PC6Reduce \
+            R3Cert.R47PC6Assemble \
+            R3Cert.R47PC6Final \
+            R3Cert.R47TieArgmax \
+            R3Cert.R47AdjLeafStruct \
+            R3Cert.R47AdjLeafGains \
+            R3Cert.R47AdjLeafStep \
+            R3Cert.R47CoverRelation \
+            R3Cert.R47RootShift \
+            R3Cert.R47AlignedMinSize \
+            R3Cert.R47HnormFalse52 \
+            R3Cert.R47HnormMulti \
+            R3Cert.R47HwhLeafDecomp \
+            R3Cert.R47HwhPieceDecomp \
+            R3Cert.R47HwhAdjDecomp \
+            R3Cert.R47HwhAdjPieceDecomp \
+            R3Cert.R47HwhB1Partial \
+            R3Cert.R47MatchingSum \
+            R3Cert.R47HwhSymStarCert \
+            R3Cert.R47HwhSymStar3Cert \
+            R3Cert.R47HwhSymStarGenCert \
+            R3Cert.R47HwhAssembly
+
+      # Guard against the recurring blind spot: a cert file committed under R3Cert/ but
+      # imported by NOBODY (not root-imported into R3Cert.lean, not named in any build
+      # step above) is never compiled -- it silently ships UNVERIFIED. This step runs
+      # after all builds and fails if any R3Cert/*.lean has no corresponding olean, i.e.
+      # was built by no CI step. Fix an orphan by root-importing it or adding it to a
+      # `lake build` step above.
+      - name: No orphaned modules (every R3Cert source is CI-built)
+        run: |
+          set -uo pipefail
+          missing=""
+          while IFS= read -r src; do
+            mod="${src#R3Cert/}"; mod="${mod%.lean}"
+            [ -f ".lake/build/lib/lean/R3Cert/${mod}.olean" ] || missing="${missing}  ${src}"$'\n'
+          done < <(find R3Cert -name '*.lean' | sort)
+          if [ -n "$missing" ]; then
+            echo "::error::Orphaned R3Cert modules -- committed but compiled by NO CI step:"
+            printf '%s' "$missing"
+            echo "Wire each into R3Cert.lean (root import) or a 'lake build' step above."
+            exit 1
+          fi
+          echo "OK: every R3Cert/*.lean is built by CI ($(find R3Cert -name '*.lean' | wc -l) modules)."
+
+      # Exact-axiom-set guard (closure-run finding C5, 2026-09-22). The old step only grepped
+      # for `sorryAx`, so a self-declared `axiom` (or the auxiliary axiom `native_decide` adds)
+      # inside a guarded cone passed. Now EVERY `#print axioms` report must be a subset of
+      # Lean's three standard axioms -- several structural lemmas legitimately report only
+      # [propext] or [propext, Quot.sound], so the rule is "subset", not "equal". Also:
+      # every directive must produce a report (catches a truncated or reformatted trace),
+      # a floor on the number of reports (catches mass deletion), and the BG mission node
+      # theorems are required BY NAME (catches deleting one node's guard line).
+      - name: Axiom guard (every anchor depends only on propext / Classical.choice / Quot.sound)
+        run: |
+          set -euo pipefail
+          # Runs AFTER `lake build`, so the R3Cert oleans exist and imports resolve.
+          lake env lean AxiomGuard.lean 2>&1 | tee axioms.txt
+          python3 - AxiomGuard.lean axioms.txt <<'PY'
+          import re, sys
+          guard_path, trace_path = sys.argv[1], sys.argv[2]
+          ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
+          FLOOR = 301  # #print axioms directives in AxiomGuard.lean on 2026-09-24; raise, never lower silently
+          REQUIRED = [  # telperion/missions/bg/nodes/*.toml: the proved nodes + the refuted one
+              "R3Cert.cavity_recursion",                          # BG_cavity_recursion
+              "R3Cert.FractalTail.fractal_tail_as_ratio",         # BG_fractal_asymptote
+              "R3Cert.CappedJointConfig.gstep_le_one_achievable", # BG_gstep_closure
+              "R3Cert.Step3.pi_utree",                            # BG_h1_bridge
+              "R3Cert.validPotentialPlain_holds",                 # BG_lb_classification
+              "R3Cert.Step3.merge_normalForm_perL",               # BG_merge_layer
+              "R3Cert.nearStar_nonpos",                           # BG_near_star_tail
+              "R3Cert.nearStar_tie",                              # BG_near_star_tie
+              "R3Cert.phi_le_one",                                # BG_phi_le_one
+              "R3Cert.Step3.hnorm_capstone_false",                # BG_hnorm_capstone (refuted)
+              "R3Cert.BGSCL.bg_ceiling",                        # BG_rate_ceiling (2026-09-24 node)
+              "R3Cert.BGSCL.bcc_eq_five_of_bell_eq_zero",       # BG_tie_root_degree (2026-09-24 node)
+              "R3Cert.Step3.perm_ratio_le_rate",                # BG_ratio_rate_bound (2026-09-24 node)
+              "R3Cert.Step3.bgBackbone_of_straightProgress",    # BG_backbone_reduction (2026-09-24 node)
+              "R3Cert.BGSCL.bg_sharp",                          # BG_rate_sharp (2026-09-24 node)
+              "R3Cert.BGMaximizerFinal.bg_maximizer",          # the BG maximizer, n >= 492
+              "R3Cert.BGMaximizerMid.bg_maximizer_mid",        # the BG maximizer, 150 <= n <= 491
+              "R3Cert.BGMaximizerAll.bg_maximizer_all",        # the BG maximizer, every n >= 4
+          ]
+          src = re.sub(r"/-.*?-/", "", open(guard_path, encoding="utf-8").read(), flags=re.S)
+          directives = set(re.findall(r"^#print\s+axioms\s+(\S+)", src, flags=re.M))
+          trace = open(trace_path, encoding="utf-8").read()
+          reports = {}
+          # Joined-line parse: a long axiom list may wrap, so match across newlines.
+          for name, body in re.findall(r"'([^']+)' depends on axioms:\s*\[([^\]]*)\]", trace, flags=re.S):
+              reports.setdefault(name, set()).update(a.strip() for a in body.split(",") if a.strip())
+          for name in re.findall(r"'([^']+)' does not depend on any axioms", trace):
+              reports.setdefault(name, set())
+          errors = []
+          for name, axs in sorted(reports.items()):
+              extra = axs - ALLOWED
+              if extra:
+                  errors.append(f"{name} depends on non-standard axiom(s): {sorted(extra)}")
+          missing = sorted(directives - set(reports))
+          if missing:
+              errors.append(f"{len(missing)} #print axioms directive(s) produced no report: {missing[:10]}")
+          absent = [n for n in REQUIRED if n not in directives or n not in reports]
+          if absent:
+              errors.append(f"required BG node theorem(s) not guarded: {absent}")
+          if len(reports) < FLOOR:
+              errors.append(f"only {len(reports)} axiom reports, floor is {FLOOR}")
+          if "sorryAx" in trace:
+              errors.append("sorryAx appears in the axiom trace (a hidden sorry)")
+          if errors:
+              for e in errors:
+                  print(f"::error::{e}")
+              sys.exit(1)
+          print(f"Axiom guard OK: {len(reports)} reports, all within {sorted(ALLOWED)}; "
+                f"{len(REQUIRED)} BG node theorems present.")
+          PY
+
+      - name: Sorry / admit / native_decide scan (repo-wide, gating)
+        run: |
+          set -uo pipefail
+          # Grep is a coarse second net (the axiom guard above is authoritative). It is
+          # filtered to drop docstring mentions: backtick-quoted `sorry`, the English word
+          # "admits", "no sorry"/"no-sorry" prose, and lines that begin with a comment
+          # marker. Scans R7Hyps too (the informational predecessor did not).
+          hits=$(grep -rnwE "sorry|admit|native_decide" R3Cert R7Hyps R3Cert.lean 2>/dev/null \
+                   | grep -v '`' \
+                   | grep -viE "admits|no.?sorry|no-sorry" \
+                   | grep -vE ":[0-9]+:[[:space:]]*(--|/-|\*|-/)" || true)
+          if [ -n "$hits" ]; then
+            echo "::error::Genuine sorry/admit/native_decide found (docstring mentions filtered):"
+            echo "$hits"
+            exit 1
+          fi
+          echo "No genuine sorry/admit/native_decide across R3Cert + R7Hyps."
+          # Declaration-shaped `axiom` scan (C5): the axiom guard above only sees the cones of
+          # the printed anchors; this catches a new axiom declared anywhere in the library.
+          ax=$(grep -rnE "^[[:space:]]*(@\[[^]]*\][[:space:]]*)?((private|protected|noncomputable|unsafe|partial)[[:space:]]+)*axiom[[:space:]]" \
+                 R3Cert R7Hyps R3Cert.lean 2>/dev/null || true)
+          if [ -n "$ax" ]; then
+            echo "::error::axiom declaration(s) found in the R3Cert/R7Hyps library:"
+            echo "$ax"
+            exit 1
+          fi
+          echo "No axiom declarations across R3Cert + R7Hyps."
+
