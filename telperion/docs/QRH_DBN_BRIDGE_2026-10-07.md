@@ -429,6 +429,10 @@ workspace with the island's own `materialize.sh` and restores `oai-qrh-bridge.ym
 checkpoint under the same cache key, read-only. It then installs the bundle, builds the bridge
 modules by name, and runs the Comparator on each. `ELAN_TOOLCHAIN` is pinned to v4.34.1 for
 the whole job, because the runner has no elan default (the 60b2cade9 fix).
+GitHub's Actions cache is branch-scoped, and this job only restores, never saves. So until
+`oai-qrh-bridge.yml` has saved a checkpoint on `main` (or on the branch being run), the judge
+job on any other branch does a cold build of OpenAI's closure first (about 80 minutes on the
+runner) before the Comparator stage.
 
 **The grant order, exactly.** Every local session shares the identity
 `dr.murphy.is.in@arda-dao.com`, and `mission audit` refuses an auditor with the author's
