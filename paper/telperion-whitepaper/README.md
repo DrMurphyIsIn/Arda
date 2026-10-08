@@ -8,6 +8,11 @@ Brualdi–Goldwasser formalization as an **honestly-scoped, in-progress** case s
 > **Status: first draft.** Every `\todo{...}` is a placeholder needing the author's
 > input or a fact to verify before submission — see the checklist below. The paper
 > is deliberately explicit that the BG conjecture is **not** proved.
+>
+> **Note (2026-10-07).** That framing predates the answer. The Brualdi–Goldwasser
+> problem is now solved and kernel-checked (not yet refereed): see
+> [`../../STATUS.md`](../../STATUS.md) and [DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser).
+> The case-study framing needs revising before submission.
 
 ## Build
 

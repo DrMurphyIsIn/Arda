@@ -4,7 +4,13 @@ A navigable summary of where the Brualdi–Goldwasser proof campaign, the
 Telperion engine, and the proof-complexity arc stand. This page is
 deliberately **thin**: each row points to the canonical document that owns the
 detail, so nothing here can silently drift out of sync with the proof.
-`conjecture1_proved = False`.
+
+**Headline: the Brualdi–Goldwasser problem is solved and kernel-checked** (not
+yet refereed by humans); see the next section. The flag
+`conjecture1_proved = False` that appears throughout this repository tracks
+the campaign's own first, conditional route (`conjecture1_of_layers`,
+`BGBackboneConjecture`), which is still open. It is not a statement about the
+1984 problem.
 
 Source-of-truth documents:
 - [`telperion/PROOF_STATUS.md`](telperion/PROOF_STATUS.md) — the honest map: proven, ruled-out (with reasons), and the live leads.
@@ -21,13 +27,35 @@ RH and BG campaign tracking now lives in the missions registry (`telperion/missi
 
 **What the problem actually is.** Brualdi and Goldwasser asked for the
 maximum of the Laplacian ratio `π(T) = per(L(T)) / ∏ deg(v)` over trees on
-`n` vertices. It is still open: Wu, Dong and Lai proposed an answer, and Pant
-(2026, arXiv:2605.14176) refuted it with infinite families of multi-hub
-caterpillars. The campaign's working answer ("conjecture 1") is structural:
-at every size, the maximum is attained on a multi-hub *cherry-backbone*. That
-statement is pinned in Lean as `BGBackboneConjecture`
-(`proof/formalization/R3Cert/R47BGConjecture.lean`) and reduced to one open
-obligation, the size-preserving straightening `StraightProgress_sized`.
+`n` vertices. Wu, Dong and Lai proposed an answer, and Pant (2026,
+arXiv:2605.14176) refuted it with infinite families of multi-hub caterpillars.
+
+**Status: SOLVED, kernel-checked, not yet refereed.** For every `n ≥ 4` the
+maximizer is an explicit spider of cherry arms (almost every arm a vertex
+carrying five cherries); the growth constant of the maximum is
+`ρ = (621/64)^(1/11)`. The public, self-contained release is
+[DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser),
+concept DOI [10.5281/zenodo.22983412](https://doi.org/10.5281/zenodo.22983412).
+A paper is in preparation.
+
+| Result | Status | Where |
+|---|---|---|
+| Maximum value and a maximizer, every `n ≥ 4` | **Lean kernel-checked**, standard axioms only | here: `bg_maximizer_all` / `bg_maximizer_all_perm` in `proof/formalization/R3Cert/BGMaximizerAll.lean` (guarded in `AxiomGuard.lean`); release: `formalization/`, which adds `Statement.lean`, the same theorem in Mathlib's vocabulary |
+| The same statement, second kernel | **Comparator passed**: Lean's kernel and nanoda both accept | release: `formalization/comparator/` |
+| Uniqueness up to isomorphism, every `n ≥ 4` except `n = 21` (exactly `T(3,3,3)` and `S(21,10)` there) | **Lean kernel-checked**; Comparator confirmed only the statement match, no second-kernel verdict | release: `formalization/BGUnique/` |
+| λ-family uniform theorem, parts (A) and (B) with equality clauses | **Lean kernel-checked** | release: `formalization/cherry/` |
+| Human refereeing | **not yet** | review welcome |
+
+**How it relates to the flag.** `conjecture1_proved = False` tracks the
+campaign's first route: the conditional top capstone
+`R3Cert.Step3.conjecture1_of_layers` (still conditional on the open layers
+Hnorm/Hdom) and the pinned `BGBackboneConjecture`
+(`proof/formalization/R3Cert/R47BGConjecture.lean`, reduced to the open
+obligation `StraightProgress_sized`). The answer above was reached by a
+different route (a reduction to spiders, envelope certificates for small
+`n`, and an exact optimization over spiders) and
+has not been wired back into those statements, so the flag, and the tests
+that assert it, are deliberately unchanged.
 
 **Where `Φ¹¹ ≤ 1` fits (a correction, 2026-09-24).** Earlier versions of
 this page presented `Φ¹¹(T) ≤ 1` as "the 1984 conjecture". It isn't. It is
@@ -35,15 +63,18 @@ the campaign's sharp *exponential rate ceiling* on the planted matching sum,
 `total(T, r) ≤ (621/64)^(n/11)` for every rooted tree. As of 2026-09-24 it is
 fully proved and kernel-checked, equality case included: `bg_ceiling` gives
 the `≤` half, and `bg_sharp` (`R3Cert/BGSCLSharp.lean`) shows equality holds
-exactly at the 5-arm spider on 11 vertices, rooted at its hub. The
-"six ties `c+k=5`" in the table below come from the older DEC cavity
-parametrization.
+exactly at the 5-arm spider on 11 vertices, rooted at its hub. It is part of
+the route that led to the final proof. The "six ties `c+k=5`" in the table below
+come from the older DEC cavity parametrization.
 
-The tracking truth is the missions registry (`telperion/missions/bg/`).
-Everything below records how the rate-ceiling campaign got there.
+The missions registry (`telperion/missions/bg/`) still carries the first
+route's goal node `BG_backbone_conjecture` as a draft; it has not been
+updated to record the answer. Everything below is the history of that
+route, kept as it was written.
 
-**The conjecture is NOT claimed proved.** What follows is the enumerated state
-of a campaign in progress. Rigor tags: **PROVEN** (all *n*, machine-checked
+**Historical: the first route's ledger.** "Conjecture" in this table means
+the campaign's own conjecture 1 on that route, which is not claimed proved.
+What follows is the enumerated state of that route as it stood. Rigor tags: **PROVEN** (all *n*, machine-checked
 where noted) · **VERIFIED** (exhaustive in a finite range only) · **OPEN**.
 
 | Stratum | Statement | Status | Canonical detail |
@@ -58,8 +89,8 @@ where noted) · **VERIFIED** (exhaustive in a finite range only) · **OPEN**.
 | **Two hardest near-1 families** | tie-recursive `hub + k·N(0,5)`; double-near-star — both strictly `< 1` | **PROVEN** | PROOF_ASSEMBLY |
 | **The crux** | general competitor extremality (collective + archimedean-aware + integrality-based) | **OPEN** — unified 2026-08-21: every open thread (R3 branching tail, homogeneous face, g-step tight content) is one object, the **master inequality** (`proof/docs/GSTEP_STEP1_IS_THE_CRUX.md`); the sharp-side live lead is a 23-gate-strictness lemma | PROOF_STATUS §Open |
 
-**Honest verdict** (PROOF_ASSEMBLY): the analytic content is proven; the
-structural assembly is not complete. The wall is no longer an unbroken analytic
+**Honest verdict on the first route** (PROOF_ASSEMBLY, as written then): the
+analytic content is proven; the structural assembly is not complete. The wall is no longer an unbroken analytic
 inequality — it is the completion of a strong-induction scaffold whose base and
 every analytic step are individually sound, awaiting (1) the R1 leaf-child
 all-n rigor plus composition of the landed config-model g-step closure
@@ -75,7 +106,9 @@ lemmas (42+55 certificates); the capped-joint g-step layer
 (`CappedJointAchievable.lean`, `GLemmaAssembly.lean` — the achievability
 correction plus the any-arity reduction to the g-lemma). Open there: the
 honest-conditional `R7'` assembly and independent review
-(`proof/docs/design/R7_ARCHITECTURE.md`).
+(`proof/docs/design/R7_ARCHITECTURE.md`). That assembly is still open; the
+problem itself was settled by the route summarized at the top of this
+section.
 
 ---
 

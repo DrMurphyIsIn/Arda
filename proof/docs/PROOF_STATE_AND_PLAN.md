@@ -1,5 +1,9 @@
 # Brualdi–Goldwasser proof effort: state, gaps, and completion plan
 
+> **Note (2026-10-07).** Historical document, kept as written. The Brualdi–Goldwasser problem has since
+> been solved and kernel-checked (not yet refereed); see [`STATUS.md`](../../STATUS.md) and
+> [DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser).
+
 **`conjecture1_proved = False`.** This is a whole-campaign map for all sessions: what is proven,
 the exact remaining gaps, and a completion plan per gap. Built from the authoritative
 `proof/verification/conjecture1_status.py` (the R-ladder aggregator) and this arc's localization work.

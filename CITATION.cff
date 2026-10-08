@@ -1,9 +1,9 @@
 cff-version: 1.2.0
 message: "If you use this repository, please cite it as below."
 title: >-
-  Arda: machine-checked progress on the Brualdi-Goldwasser (1984)
-  Laplacian-ratio maximizer for trees, and Telperion, a sympy-to-Lean
-  certificate pipeline
+  Arda: the research campaign behind the kernel-checked answer to the
+  Brualdi-Goldwasser (1984) Laplacian-ratio maximizer problem for trees, and
+  Telperion, a sympy-to-Lean certificate pipeline
 version: "2026.09.05"
 date-released: "2026-09-05"
 authors:
@@ -27,5 +27,9 @@ abstract: >-
   permanent-to-matching bridge, the certified merge layer), the Python
   verification harnesses (exact rational arithmetic, every claim an assert),
   and Telperion, the reusable pipeline that batch-compiles sympy-certified
-  rational-inequality families into kernel-checked Lean. The conjecture itself
-  is not claimed proved; the honest status ledger is part of the artifact.
+  rational-inequality families into kernel-checked Lean. The campaign ended
+  with a complete answer (for every n >= 4 the maximizer is an explicit spider
+  of cherry arms), kernel-checked in Lean 4 / Mathlib and not yet refereed;
+  its standalone release is https://github.com/DrMurphyIsIn/brualdi-goldwasser
+  (doi:10.5281/zenodo.22983412). The honest status ledger, including the
+  campaign's open first route, is part of the artifact.

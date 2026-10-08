@@ -3,6 +3,14 @@
 This directory accumulates the campaign's working documents. They fall into
 four kinds; this index says which is which and where to start.
 
+> **Note (2026-10-07).** The Brualdi–Goldwasser problem is now solved and
+> kernel-checked (not yet refereed): see [`../../STATUS.md`](../../STATUS.md)
+> and the public release [DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser).
+> The documents below are the campaign's working record. Most were written
+> while the problem was open and are kept as written; where they say "open",
+> they mean open at the time, or open on the campaign's first route
+> (`conjecture1_proved = False`).
+
 ## Start here (the load-bearing maps)
 
 | Document | Role |

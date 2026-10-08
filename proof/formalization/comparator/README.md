@@ -38,6 +38,16 @@ review and by the anchors being the named capstone / cruxes.
 
 ## Scope honesty
 
+These three anchors belong to the campaign's first, conditional route. They
+are **not** the Brualdi–Goldwasser answer. The answer, `bg_maximizer_all`
+(`R3Cert/BGMaximizerAll.lean`), was re-checked separately: in the standalone
+release [DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser), a genuine challenge/solution pair states the theorem in
+Mathlib's vocabulary, and Comparator reported that both Lean's kernel and
+nanoda accept it. That run is recorded in the release's
+`formalization/comparator/README.md`, not in this directory's CI. (For the
+release's uniqueness theorem Comparator confirmed only the statement match; no
+second-kernel verdict is recorded.)
+
 Comparator re-verifies what is **already proved**: the anchors are kernel-clean and
 `conjecture1_of_layers` is the *conditional* reduction. It does **not** close the
 two open layers **Hnorm** and **Hdom** — those remain research-open (full Hnorm

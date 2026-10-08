@@ -4,24 +4,40 @@
 [![proof-verify](https://github.com/DrMurphyIsIn/Arda/actions/workflows/proof-verify.yml/badge.svg)](https://github.com/DrMurphyIsIn/Arda/actions/workflows/proof-verify.yml)
 [![telperion-lean-e2e](https://github.com/DrMurphyIsIn/Arda/actions/workflows/telperion-lean-e2e.yml/badge.svg)](https://github.com/DrMurphyIsIn/Arda/actions/workflows/telperion-lean-e2e.yml)
 
-> **TL;DR** — A Lean 4 / Mathlib formalization of the machine-checkable core of a
-> 42-year-old extremal-graph-theory problem (the Brualdi–Goldwasser tree maximizer,
-> `per(L(T))/∏deg`), the reusable certificate engine — [**Telperion**](telperion/) —
-> that generated it, and a second front in proof complexity. Everything is checked
-> by the Lean kernel with **no `sorry`, no added axioms**, and an *executable* honesty
-> ledger. **The conjecture is not claimed proved.** New here? Start at
+> **TL;DR** — The Brualdi–Goldwasser problem (1984: which tree on `n` vertices
+> maximizes the Laplacian ratio `per(L(T))/∏deg`?) is **solved, and the answer is
+> kernel-checked in Lean 4 / Mathlib**: for every `n ≥ 4` the maximizer is an
+> explicit spider of cherry arms. The self-contained release lives in
+> [**DrMurphyIsIn/brualdi-goldwasser**](https://github.com/DrMurphyIsIn/brualdi-goldwasser)
+> ([doi:10.5281/zenodo.22983412](https://doi.org/10.5281/zenodo.22983412)); it has
+> not yet been refereed by humans. This repository is where that proof was built:
+> the research campaign that got there (dead ends included), the reusable
+> certificate engine — [**Telperion**](telperion/) — that produced and packaged
+> its certificates, and a second front in proof complexity. Everything is
+> checked by the Lean kernel with **no `sorry`, no added axioms**. New here? Start at
 > **[STATUS.md](STATUS.md)** for the proven-vs-open map, then see
 > [Verifying the claims](#verifying-the-claims) to re-run the kernel checks yourself.
 > Want to use the engine on your own problem? See
 > [`telperion/docs/GETTING_STARTED.md`](telperion/docs/GETTING_STARTED.md).
 
 This repository is a working research program, kept honest in public form:
-machine-checked progress on a 42-year-old open problem in extremal graph
-theory, the general-purpose proof engine that campaign forged, and — most
-recently — a second front in proof complexity built with the same discipline.
-Nothing here is presented as more finished than it is. The status flags
-(`conjecture1_proved = False`) are load-bearing, the dead ends are documented
-with reasons, and every "proven" comes with the artifact that proves it.
+the campaign on a 42-year-old problem in extremal graph theory, which ended
+with a complete, kernel-checked answer; the general-purpose proof engine that
+campaign forged; and a second front in proof complexity built with the same
+discipline. Nothing here is presented as more finished than it is. The dead
+ends are documented with reasons, and every "proven" comes with the artifact
+that proves it.
+
+A word about the flag you will see everywhere: `conjecture1_proved = False`.
+It does **not** say the Brualdi–Goldwasser problem is open. It tracks the
+campaign's *own* first route to the answer, the conditional capstone
+`R3Cert.Step3.conjecture1_of_layers` and the pinned `BGBackboneConjecture`
+(the claim that every tree is beaten by a same-size multi-hub
+cherry-backbone). Those still rest on named open hypotheses (Hnorm/Hdom, and
+the straightening obligation `StraightProgress_sized`), and nothing has wired
+the final answer back into them, so the flag stays `False` and the tests that
+assert it stay green. The problem itself was settled by a different route,
+described below.
 
 ## The problem
 
@@ -41,24 +57,87 @@ identically zero — `det(I - P) = 0` for every graph — so every tool that
 works through determinants sees nothing at all. The entire content of the
 problem lives in exactly the sign cancellations that the determinant
 destroys. Permanents don't factor, don't telescope, and don't respect the
-spectral theorem, and this conjecture sits right where those failures bite.
+spectral theorem, and this problem sits right where those failures bite.
 
-The conjectured maximizer is a *near-star* (a hub carrying cherries), with
-equality — remarkably — exactly at six eleven-vertex trees where the
-normalized invariant `Φ¹¹` hits `1` on the nose, via the integer identity
-`64·243·23 = 621·576`. That an extremal problem over all trees ties at an
-exact integer coincidence is the first hint of what the campaign eventually
-established in detail: the obstruction is *arithmetic*, not analytic. There
-is provably no smooth certificate — the continuous relaxation of the
-near-star envelope exceeds `1` between integers — so the proof has to be
-integer-tight, and that is what makes it interesting.
+For a long time the working guess inside this campaign was a *near-star*
+(a hub carrying cherries). The first real clue was arithmetic: the
+normalized invariant `Φ¹¹` hits `1` on the nose at an eleven-vertex block,
+via the integer identity `64·243·23 = 621·576`. That an extremal problem over
+all trees ties at an exact integer coincidence told us early that the
+obstruction is *arithmetic*, not analytic. There is provably no smooth
+certificate (the continuous relaxation of the near-star envelope exceeds `1`
+between integers), so the proof had to be integer-tight. Meanwhile the
+literature moved too: Wu, Dong and Lai proposed an answer, and Pant (2026,
+arXiv:2605.14176) refuted it with caterpillars of hubs.
 
-**The conjecture is NOT claimed proved.** What follows is what is actually
-in hand.
+## The answer: solved, and kernel-checked
 
-## Where the proof stands
+The eleven-vertex block turned out to be the whole story. For every `n ≥ 4`
+the maximizer is a **spider of cherry arms**: one centre, and hanging from it
+only *arms*, each arm a vertex carrying some number of cherries (pendant paths
+of length two). Almost every arm carries **five** cherries. An arm with five
+cherries is exactly that eleven-vertex block, contributing `621/64 = ρ¹¹` to
+the ratio, and `ρ = (621/64)^(1/11) ≈ 1.2295` is the exact exponential growth
+rate of the maximum. For `n ≥ 492` the shape follows a short rule in
+`6(n − 1) mod 11`; for `4 ≤ n ≤ 491` it comes from an explicit,
+kernel-checked table (at `n = 21` two different trees tie).
 
-The campaign runs on two complementary tracks that meet in the middle.
+Here is what is established, and how strongly:
+
+- **The maximum value and a maximizer, for every `n ≥ 4`**, are kernel-checked
+  in Lean 4 / Mathlib using only Lean's three standard axioms (`propext`,
+  `Classical.choice`, `Quot.sound`; no `sorry`, no `native_decide`). The
+  headline theorem is `R3Cert.BGMaximizerAll.bg_maximizer_all`. It was built
+  here, in [`proof/formalization/R3Cert/BGMaximizerAll.lean`](proof/formalization/R3Cert/BGMaximizerAll.lean),
+  and its axioms are guarded by name in
+  [`proof/formalization/AxiomGuard.lean`](proof/formalization/AxiomGuard.lean).
+- **A second kernel.** In the standalone release, the same statement, written
+  purely in Mathlib's vocabulary, was re-checked by the Lean FRO's
+  [Comparator](https://github.com/leanprover/comparator): both Lean's kernel
+  and [nanoda](https://github.com/ammkrn/nanoda_lib), an independent kernel
+  written in Rust, accepted the proof.
+- **Uniqueness up to graph isomorphism**, for every `n ≥ 4` except `n = 21`,
+  where there are exactly two maximizers (`T(3,3,3)` and the subdivided star
+  `S(21,10)`), is formalized in `formalization/BGUnique` of the release. It is
+  checked by Lean's kernel. Comparator confirmed only that its statement
+  matches; the second-kernel replay for uniqueness has **not** been completed,
+  so no two-kernel claim is made for it.
+- **The λ-family.** Weighting each matched edge by `λ` gives a family of
+  ratios with `λ = 1` as the original. Its uniform theorem, parts (A) and (B)
+  with their equality clauses, is kernel-checked in `formalization/cherry` of
+  the release.
+
+The public, self-contained home of all of this is
+**[DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser)**,
+archived on Zenodo under the concept DOI
+[10.5281/zenodo.22983412](https://doi.org/10.5281/zenodo.22983412) (which
+always resolves to the latest release; v1.4.1 is
+[10.5281/zenodo.23210967](https://doi.org/10.5281/zenodo.23210967)). It carries
+the Mathlib-vocabulary statement, the certificates and their byte-for-byte
+regeneration, the Comparator record, and build instructions. Start there if
+you want to check the answer.
+
+What a kernel cannot do is tell you that the statement says what we think it
+says. The result **has not yet been refereed by humans**: the statement, the
+definitions, and the correspondence between the formal ratio and
+`per(L(T))/∏deg` all deserve independent scrutiny, and review is very
+welcome. The release repository includes a public preprint
+([`paper/paper.pdf`](https://github.com/DrMurphyIsIn/brualdi-goldwasser/blob/main/paper/paper.pdf)),
+archived with its Zenodo releases, and a paper is in preparation.
+
+## How the campaign got there
+
+What follows is the story of the campaign's first route, the one the
+`conjecture1_proved` flag still tracks. It is worth reading because most of
+the final proof's machinery was forged here, and because it shows honestly
+where that route stalled. The route that finally closed the problem (a
+reduction to spiders, envelope certificates for small `n`, and an exact
+optimization over spiders) is summarized in
+[STATUS.md](STATUS.md) and laid out in full in the
+[brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser)
+release.
+
+The first route ran on two complementary tracks that meet in the middle.
 
 **The Lean track** ([`proof/`](proof/)) is the peer-review package: a single
 Lean 4 library (`R3Cert`, whose modules live under
@@ -96,8 +175,11 @@ bottom to top, the kernel has verified:
   `CappedJointClosure.lean:gstep_le_one_achievable`, the config g-step `≤ 1`
   at **every arity**, unconditionally over achievable messages.
 
-What remains open on this track is the final honest-conditional assembly
-(`R7'`) and independent review; the named-gap ledger lives in
+What remained open on this route is the final honest-conditional assembly
+(`R7'`), and it still is: `conjecture1_of_layers` is conditional on the two
+named layers Hnorm/Hdom, which were never discharged (an early form of Hnorm
+was even refuted in the kernel). The problem was answered around it, not
+through it; the named-gap ledger lives in
 [`proof/docs/design/R7_ARCHITECTURE.md`](proof/docs/design/R7_ARCHITECTURE.md)
 and `proof/verification/conjecture1_status.py` — which is executable: the
 status file calls the certificates it cites, so it cannot silently drift.
@@ -119,19 +201,23 @@ status file calls the certificates it cites, so it cannot silently drift.
 - **R2** the double-near-star family bound `Φ¹¹(DN(a,b))<1 ∀a,b≥2` —
   **PROVEN**; multi-hub *maximality* verified n≤13, **OPEN**.
 
-And the crux? As of 2026-08-21 the campaign knows something sharper about
+And the crux? As of 2026-08-21 the campaign knew something sharper about
 it: every remaining open thread — the R3 branching tail, the homogeneous
 face, the g-step's tight content — has been shown to be **one and the same
 object**, the master inequality: an integer-tight, non-monotone arithmetic
 core, tight exactly at the arm
 ([`proof/docs/GSTEP_STEP1_IS_THE_CRUX.md`](proof/docs/GSTEP_STEP1_IS_THE_CRUX.md)).
-One crux, many costumes. It remains open, and it is genuinely hard for a
-reason the campaign can now state precisely: it needs an argument that is
-simultaneously collective (not a sum of local terms), archimedean-aware (it
-is a growth rate), and integrality-based (the exact-1 locus is carved by a
-23-adic gate).
+One crux, many costumes. At the time it was genuinely hard for a reason the
+campaign could state precisely: it needed an argument that is simultaneously
+collective (not a sum of local terms), archimedean-aware (it is a growth
+rate), and integrality-based (the exact-1 locus is carved by a 23-adic gate).
+The campaign later got past it in two steps: the sharp rate ceiling
+`Φ¹¹ ≤ 1` was proved through an additive subaction (`bg_ceiling`, with its
+equality case `bg_sharp`), part of the route that led to the final proof; and
+the maximizer itself was pinned down by reducing to spiders and optimizing
+over them exactly.
 
-For the enumerated, tagged state of both tracks, start at
+For the enumerated, tagged state of both tracks (and of the final answer), start at
 **[`STATUS.md`](STATUS.md)** — the one-glance index — with piece-by-piece
 detail in [`telperion/PROOF_STATUS.md`](telperion/PROOF_STATUS.md) and
 [`telperion/PROOF_ASSEMBLY.md`](telperion/PROOF_ASSEMBLY.md).
@@ -178,10 +264,11 @@ door, with the pipeline write-up and the honest novelty positioning, is
 | Path | What it is |
 |---|---|
 | [`STATUS.md`](STATUS.md) | **One-glance index** — enumerated, tagged state of the proof, the engine, and the proof-complexity arc, each row linking to the document that owns the detail. Start here. |
-| [`proof/`](proof/) | The BG peer-review package: Lean 4 formalization ([`proof/formalization/`](proof/formalization/)), exact-arithmetic Python verification harnesses ([`proof/verification/`](proof/verification/), entry point [`proof/verify.py`](proof/verify.py)), design/review documents, technical notes, figures. See [`proof/README.md`](proof/README.md). |
+| [`proof/`](proof/) | The BG campaign's working package, where the kernel-checked answer (`R3Cert/BGMaximizerAll.lean`) was built: Lean 4 formalization ([`proof/formalization/`](proof/formalization/)), exact-arithmetic Python verification harnesses ([`proof/verification/`](proof/verification/), entry point [`proof/verify.py`](proof/verify.py)), design/review documents, technical notes, figures. See [`proof/README.md`](proof/README.md). |
 | [`telperion/`](telperion/) | **Telperion** — the general-purpose sympy → Lean certificate engine described above. Start at [`telperion/README.md`](telperion/README.md). BG proof-state maps: [`PROOF_STATUS.md`](telperion/PROOF_STATUS.md), [`PROOF_ASSEMBLY.md`](telperion/PROOF_ASSEMBLY.md). |
 | [`proof-complexity/`](proof-complexity/) | **The P-vs-NP certificate ladder** — index of the kernel-checked proof-complexity arc: the Grigoriev knapsack pipeline paper, the 3XOR structure theorem, the Petersen certificate, and the emitter shapes the arc fed back into the engine. |
 | [`PUBLICATION_LEDGER.md`](PUBLICATION_LEDGER.md) | Conservative, provisional novelty tally — what could plausibly stand up in a venue, and what is explicitly still open. |
+| [brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser) (separate repository) | The standalone, public release of the answer: Mathlib-vocabulary statement, certificates, Comparator record, uniqueness, and the λ-family. Concept DOI [10.5281/zenodo.22983412](https://doi.org/10.5281/zenodo.22983412). |
 | [`CITATION.cff`](CITATION.cff) | How to cite. |
 
 ## Verifying the claims
@@ -202,6 +289,14 @@ cd proof && python3 -m pytest verification/tests -q
 ```
 
 All of it also runs in CI on every push (`.github/workflows/`).
+
+To check the Brualdi–Goldwasser answer itself, the shortest path is the
+standalone release,
+[brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser): its
+README walks through building the proof, printing the axioms of every headline
+theorem, regenerating every certificate byte for byte, and running the
+Comparator second-kernel check. Fair warning: the heaviest certificate file
+alone needs about 63 GB of memory.
 
 ## Trust model
 

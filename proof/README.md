@@ -3,8 +3,24 @@
 Peer-review materials for the campaign on the Brualdi–Goldwasser (1984)
 Laplacian-ratio maximizer. This document maps what is machine-checked, what is
 certified at exact-arithmetic rigor in Python, and what is named-open.
-`conjecture1_proved = False` throughout — the status ledger is executable
-(`verification/conjecture1_status.py` calls the certificates it cites).
+
+**The problem is solved.** The campaign ended with a complete answer, built in
+this directory: for every `n ≥ 4` an explicit spider of cherry arms maximizes
+`per(L(T))/∏deg`, kernel-checked in Lean 4 / Mathlib with standard axioms only
+(`formalization/R3Cert/BGMaximizerAll.lean:bg_maximizer_all`, guarded by name
+in `formalization/AxiomGuard.lean`). It has not yet been refereed by humans.
+The standalone public release, with the Mathlib-vocabulary statement, the
+Comparator second-kernel record, uniqueness, and the λ-family, is
+[DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser) (concept DOI
+[10.5281/zenodo.22983412](https://doi.org/10.5281/zenodo.22983412)).
+
+`conjecture1_proved = False` throughout this directory, and that is still
+accurate for what it tracks: the campaign's first, conditional route
+(`conjecture1_of_layers` and the pinned `BGBackboneConjecture`), which rests
+on open hypotheses and is not wired to the answer above. The status ledger for
+that route is executable (`verification/conjecture1_status.py` calls the
+certificates it cites). Most of what follows describes that route, which
+supplied much of the machinery the final proof reuses.
 
 ## Layout
 
