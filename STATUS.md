@@ -52,8 +52,8 @@ campaign's first route: the conditional top capstone
 Hnorm/Hdom) and the pinned `BGBackboneConjecture`
 (`proof/formalization/R3Cert/R47BGConjecture.lean`, reduced to the open
 obligation `StraightProgress_sized`). The answer above was reached by a
-different route (the additive subaction ceiling, a reduction to spiders,
-envelope certificates for small `n`, and an exact spider optimization) and
+different route (a reduction to spiders, envelope certificates for small
+`n`, and an exact optimization over spiders) and
 has not been wired back into those statements, so the flag, and the tests
 that assert it, are deliberately unchanged.
 
@@ -63,8 +63,8 @@ the campaign's sharp *exponential rate ceiling* on the planted matching sum,
 `total(T, r) ≤ (621/64)^(n/11)` for every rooted tree. As of 2026-09-24 it is
 fully proved and kernel-checked, equality case included: `bg_ceiling` gives
 the `≤` half, and `bg_sharp` (`R3Cert/BGSCLSharp.lean`) shows equality holds
-exactly at the 5-arm spider on 11 vertices, rooted at its hub. It is the
-ceiling the final proof stands on. The "six ties `c+k=5`" in the table below
+exactly at the 5-arm spider on 11 vertices, rooted at its hub. It is part of
+the route that led to the final proof. The "six ties `c+k=5`" in the table below
 come from the older DEC cavity parametrization.
 
 The missions registry (`telperion/missions/bg/`) still carries the first

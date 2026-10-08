@@ -121,16 +121,18 @@ What a kernel cannot do is tell you that the statement says what we think it
 says. The result **has not yet been refereed by humans**: the statement, the
 definitions, and the correspondence between the formal ratio and
 `per(L(T))/∏deg` all deserve independent scrutiny, and review is very
-welcome. A paper is in preparation.
+welcome. The release repository includes a public preprint
+([`paper/paper.pdf`](https://github.com/DrMurphyIsIn/brualdi-goldwasser/blob/main/paper/paper.pdf)),
+archived with its Zenodo releases, and a paper is in preparation.
 
 ## How the campaign got there
 
 What follows is the story of the campaign's first route, the one the
 `conjecture1_proved` flag still tracks. It is worth reading because most of
 the final proof's machinery was forged here, and because it shows honestly
-where that route stalled. The route that finally closed the problem (an
-additive *subaction* ceiling, a reduction to spiders, envelope certificates
-for small `n`, and an exact spider optimization) is summarized in
+where that route stalled. The route that finally closed the problem (a
+reduction to spiders, envelope certificates for small `n`, and an exact
+optimization over spiders) is summarized in
 [STATUS.md](STATUS.md) and laid out in full in the
 [brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser)
 release.
@@ -209,10 +211,11 @@ One crux, many costumes. At the time it was genuinely hard for a reason the
 campaign could state precisely: it needed an argument that is simultaneously
 collective (not a sum of local terms), archimedean-aware (it is a growth
 rate), and integrality-based (the exact-1 locus is carved by a 23-adic gate).
-The eventual answer met all three demands differently: the sharp rate
-ceiling `Φ¹¹ ≤ 1` was proved through an additive subaction (`bg_ceiling`,
-with its equality case `bg_sharp`), and the maximizer itself was pinned down
-by reducing to spiders and optimizing over them exactly.
+The campaign later got past it in two steps: the sharp rate ceiling
+`Φ¹¹ ≤ 1` was proved through an additive subaction (`bg_ceiling`, with its
+equality case `bg_sharp`), part of the route that led to the final proof; and
+the maximizer itself was pinned down by reducing to spiders and optimizing
+over them exactly.
 
 For the enumerated, tagged state of both tracks (and of the final answer), start at
 **[`STATUS.md`](STATUS.md)** — the one-glance index — with piece-by-piece

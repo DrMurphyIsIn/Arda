@@ -3,7 +3,7 @@
 > **Note (2026-10-07).** The Brualdi–Goldwasser problem itself (the maximum of `per(L(T))/∏deg`) is
 > now solved and kernel-checked, not yet refereed: see [`../STATUS.md`](../STATUS.md) and
 > [DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser) (doi:10.5281/zenodo.22983412). The
-> statement tracked below is the rate ceiling, which the final proof uses; `conjecture1_proved = False`
+> statement tracked below is the rate ceiling (`bg_ceiling`), part of the route that led to the final proof; `conjecture1_proved = False`
 > in this file refers to the campaign's first, conditional route.
 
 **Attribution correction (2026-09-24).** Brualdi and Goldwasser (1984) asked for the maximum
