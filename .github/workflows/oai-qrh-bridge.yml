@@ -98,6 +98,10 @@ jobs:
       # lines are the coverage gate's evidence for the artifacts (see the header).
       - name: Re-elaborate the committed artifacts (coverage evidence)
         working-directory: telperion/examples/oai_qrh_bridge/lean
+        # This directory has no lean-toolchain file (the workspace is work/oai), so pin elan's
+        # choice explicitly; the runner has no default toolchain (run 37721400676 failed here).
+        env:
+          ELAN_TOOLCHAIN: leanprover/lean4:v4.34.1
         run: |
           lake --dir ../work/oai env lean ArdaQRHBridge.lean
           lake --dir ../work/oai env lean ArdaDBNUnconditional.lean
