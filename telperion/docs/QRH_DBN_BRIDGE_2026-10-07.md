@@ -277,15 +277,19 @@ the author:
 telperion mission audit RH_dbn_real_zeros_of_zeta_halfplane --text "<own rendering>"
 telperion mission audit RH_dbn_real_zeros_of_qrh --text "<own rendering>"
 telperion mission audit RH_zeta_zero_free_seven_eighths --text "<own rendering; must state the cross-pin seam and OpenAI authorship>"
-# 2. after missions-comparator passes the dbn shard on the pushed branch:
-telperion mission comparator-record RH_dbn_real_zeros_of_zeta_halfplane --run-id <run> --theorem dbn_real_zeros_of_zeta_halfplane
-telperion mission comparator-record RH_dbn_real_zeros_of_qrh --run-id <run> --theorem dbn_real_zeros_of_qrh
-# 3. grants (dbn nodes now; the QRH node only after an oai-qrh-bridge workflow covers its artifact)
+# 2. grants (dbn nodes now; the QRH node only after an oai-qrh-bridge workflow covers its artifact)
 telperion mission grant RH_dbn_real_zeros_of_zeta_halfplane
 telperion mission grant RH_dbn_real_zeros_of_qrh
 telperion mission grant RH_zeta_zero_free_seven_eighths      # refused until CI covers oai_qrh_bridge
+# 3. after missions-comparator passes on the pushed, GRANTED registry (record refuses a non-proved node):
+telperion mission comparator-record RH_dbn_real_zeros_of_zeta_halfplane --run-id <run> --theorem dbn_real_zeros_of_zeta_halfplane
+telperion mission comparator-record RH_dbn_real_zeros_of_qrh --run-id <run> --theorem dbn_real_zeros_of_qrh
 telperion mission verify rh
 ```
+
+(Corrected 2026-10-08: an earlier version of this block put `comparator-record` before the
+grant. `comparator-record` refuses a node that is not proved, so the order is the one in
+section 8.)
 
 Open governance questions for the owner. The tooling does not decide these.
 1. Should a node whose kernel authority is a different Mathlib pin be grantable at all, given that
@@ -385,6 +389,77 @@ bounds 0.22 and 0.2.
 
 ## 7. Commits on `rh/qrh-dbn-9-32`
 
-The commit hashes are in `git log`. The branch was pushed on 2026-10-07 at the owner's request and is draft PR #662 (no grant). An independent session audited it (commit 4f4588fae, `QRH_DBN_AUDIT_2026-10-07_e9.md`): every result reproduced, including Comparator with nanoda on (unconditional theorem accepted, tampered control rejected, `qrh_seven_eighths` accepted). Registry independence still needs the missions-comparator CI path, because both sessions share one git identity; the CI job above is a draft.
+The commit hashes are in `git log`. The branch was pushed on 2026-10-07 at the owner's request and is draft PR #662 (no grant). An independent session audited it (commit 4f4588fae, `QRH_DBN_AUDIT_2026-10-07_e9.md`): every result reproduced, including Comparator with nanoda on (unconditional theorem accepted, tampered control rejected, `qrh_seven_eighths` accepted). Registry independence still needs the operator's read-back and the missions-comparator CI path, because both sessions share one git identity (section 8).
 
-conjecture1_proved = False.
+## 8. The missions judge on `oai_qrh_bridge` (2026-10-08)
+
+**What was added.** The independent missions judge (`telperion/src/telperion/missions/judge.py`)
+now covers the materialized island. Two of the four nodes registered in 12009b447 have their
+artifact here. The other two are on the dbn island and use the dbn bundle.
+
+| Node | Island | Artifact theorem | Bridge theorem |
+|---|---|---|---|
+| `RH_zeta_zero_free_seven_eighths` | oai_qrh_bridge | `qrh_seven_eighths` (ArdaQRHBridge) | `MissionJudge.RH_zeta_zero_free_seven_eighths` |
+| `RH_dbn_real_zeros_nine_thirtyseconds` | oai_qrh_bridge | `dbn_real_zeros_of_qrh_unconditional` (ArdaDBNUnconditional) | `MissionJudge.RH_dbn_real_zeros_nine_thirtyseconds` |
+| `RH_dbn_real_zeros_of_zeta_halfplane` | dbn | `dbn_real_zeros_of_zeta_halfplane` | dbn bundle |
+| `RH_dbn_real_zeros_of_qrh` | dbn | `dbn_real_zeros_of_qrh` | dbn bundle |
+
+**How it works.** OpenAI's package has to stay the workspace root, so the judge cannot
+path-require the island as it does everywhere else. The bundle in
+`telperion/missions/judge/oai_qrh_bridge/` carries a lakefile stanza instead of a lakefile.
+`telperion/scripts/judge_materialize.sh` installs it into a materialized `work/oai`: it copies
+the bridge modules and Comparator configs in and appends one `lean_lib MissionChallenges`.
+Each bridge imports its artifact plus both island guards (AxiomGuardDBNUnconditional and
+AxiomGuardQRHBridge), and states the registered statement verbatim as the type of
+`MissionJudge.<Slug> := <artifact theorem>`. The Comparator is tag v4.34.0 built with toolchain
+v4.34.1, nanoda on, axioms `[propext, Quot.sound, Classical.choice]`.
+
+The reviewing session built exactly these two bridge theorems at OpenAI's pin, as an appended
+lean_lib, with standard axioms only. The three imports co-import cleanly.
+
+**Why the committed bundle is empty.** Both nodes are draft. The judge renders proved nodes
+only, and `mission comparator-record` refuses a node that is not proved. So before the grant
+there is nothing to record and nothing to judge in CI. For local pre-grant checking only,
+`--pending --out <scratch>` renders the draft nodes into a scratch directory. It is never
+committed and never runs in CI.
+
+**CI.** `missions-comparator.yml` has a new job, `judge-oai-qrh-bridge`. It lists the island's
+proved nodes and exits with a notice when there are none. Otherwise it materializes the
+workspace with the island's own `materialize.sh` and restores `oai-qrh-bridge.yml`'s build
+checkpoint under the same cache key, read-only. It then installs the bundle, builds the bridge
+modules by name, and runs the Comparator on each. `ELAN_TOOLCHAIN` is pinned to v4.34.1 for
+the whole job, because the runner has no elan default (the 60b2cade9 fix).
+GitHub's Actions cache is branch-scoped, and this job only restores, never saves. So until
+`oai-qrh-bridge.yml` has saved a checkpoint on `main` (or on the branch being run), the judge
+job on any other branch does a cold build of OpenAI's closure first (about 80 minutes on the
+runner) before the Comparator stage.
+
+**The grant order, exactly.** Every local session shares the identity
+`dr.murphy.is.in@arda-dao.com`, and `mission audit` refuses an auditor with the author's
+session or identity. So the read-back has to come from the operator, as
+`MISSIONS_DESIGN_2026-09-11.md` section 8 allows.
+
+1. The **operator** (the user, under their own identity, not an arda-dao.com one, and their
+   own session id) writes a read-back for each of the four nodes:
+   ```sh
+   telperion mission audit RH_dbn_real_zeros_of_zeta_halfplane --text "<own rendering>" --identity <email> --session <id>
+   telperion mission audit RH_dbn_real_zeros_of_qrh --text "<own rendering>" --identity <email> --session <id>
+   telperion mission audit RH_zeta_zero_free_seven_eighths --text "<own rendering; cross-pin seam and OpenAI authorship>" --identity <email> --session <id>
+   telperion mission audit RH_dbn_real_zeros_nine_thirtyseconds --text "<own rendering>" --identity <email> --session <id>
+   ```
+   This moves each node from draft to open.
+2. `telperion mission grant <slug>` for each node. The gate still requires CI coverage of the
+   artifact (oai-qrh-bridge.yml covers both oai_qrh_bridge artifacts).
+3. Regenerate the bundles (`python -m telperion.missions.judge --island oai_qrh_bridge`, and
+   `--island dbn`), push, and let a **missions-comparator** CI run judge the now-proved nodes.
+4. `telperion mission comparator-record <slug> --run-id <run> --theorem <theorem> --run-url <url>`
+   for each node that passed.
+
+Never run `comparator-record` before the grant. The tool refuses it, and a pass on a pending
+bundle is not a recordable run.
+
+**What it does not establish.** The shadowing guard covers the island's own modules, not the
+roughly 2,900 OpenAI modules outside the guards' import closure. The judge resolves the
+statement in the artifact's environment at OpenAI's pin, so whether the rh campaign's
+vocabulary mirror (on de5ce8a9) means the same thing is still section 3's question. It is not
+RH. conjecture1_proved = False.

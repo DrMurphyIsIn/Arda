@@ -1,0 +1,2 @@
+-- DO NOT EDIT BY HAND. No proved registry node has its artifact on `oai_qrh_bridge` yet,
+-- so there is nothing to judge; a grant adds one bridge module per node.
