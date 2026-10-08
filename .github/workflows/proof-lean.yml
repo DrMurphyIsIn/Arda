@@ -34,6 +34,7 @@ jobs:
     # PC6Cells. 150 min was never enough once those landed (2026-09-09). 350 stays under the
     # 360-minute hosted-runner cap. The three build stages carry their own step timeouts
     # (140 + 100 + 90 min) so a stuck stage fails in time for the always() cache save to run.
+    # Stage 2b (spider-table chunks, serial, 200 min) is resumable across runs the same way.
     timeout-minutes: 350
     defaults:
       run:
@@ -223,6 +224,44 @@ jobs:
         with:
           path: proof/formalization/.lake/build
           key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-s2
+
+      # Stage 2b (2026-10-07): the 89 generated R3Cert.BGSpiderTableChunk_* modules (PR #642,
+      # commit 5b6f3a2b7), ONE lean process at a time. Each chunk is a single
+      # `decide +kernel` sweep of the spider-table check, and the kernel retains its whole
+      # reduction, so one chunk peaks at 11-14 GB private memory on top of the ~5.5 GB Mathlib
+      # mapping (measured locally, /usr/bin/time -l: Chunk_4_105 16.4 GB max RSS, Chunk_490_491
+      # 19.1 GB, a bare `import R3Cert.BGSpiderTableData` 5.5 GB). All 89 depend only on
+      # BGSpiderTableData, so a plain `lake build` (no job limit) launches them together; two
+      # side by side already reached 35.6 GB RSS locally. On the 16 GB runner that is what killed
+      # every scheduled run since 2026-09-27 (exit 143, mem_used ~15.5 GB, swap ~19 GB, right
+      # after BGSpiderLowDegree). Building them one per `lake build` call keeps the peak to one
+      # chunk. The step is resumable: chunks already in the restored cache are replayed in
+      # seconds, and a step timeout still leaves the finished oleans for the always() save.
+      - name: Build stage 2b — BG spider-table chunks, one at a time
+        id: stage2b
+        if: steps.changes.outputs.run == 'true'
+        timeout-minutes: 200
+        shell: bash
+        run: |
+          set -euo pipefail
+          total=0
+          mods=$(find R3Cert -maxdepth 1 -name 'BGSpiderTableChunk_*.lean' | sort | sed -e 's|^R3Cert/|R3Cert.|' -e 's|\.lean$||')
+          echo "$(printf '%s\n' "$mods" | grep -c .) spider-table chunk module(s)"
+          for m in $mods; do
+            t0=$SECONDS
+            lakeb "$m" 2>&1 | tee "$RUNNER_TEMP/chunk.log"
+            n=$(sed -n 's/^lakeb: \([0-9][0-9]*\) module.*/\1/p' "$RUNNER_TEMP/chunk.log" | tail -1)
+            total=$((total + ${n:-0}))
+            echo "chunk $m: $((SECONDS - t0)) s"
+          done
+          echo "built=$total" >> "$GITHUB_OUTPUT"
+
+      - name: Save build-cache checkpoint (stage 2b)
+        if: steps.changes.outputs.run == 'true' && steps.stage2b.outcome == 'success' && steps.stage2b.outputs.built != '0'
+        uses: actions/cache/save@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-s2b
 
       # Stage 3: everything else. This is the same `lake build` as before; stages 1-2 only
       # reorder the work so that it fits in memory.
