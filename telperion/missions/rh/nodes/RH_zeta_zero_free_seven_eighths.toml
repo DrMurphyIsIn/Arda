@@ -1,0 +1,19 @@
+created = "2026-10-07"
+depends_on = []
+kind = "lemma"
+name = "RH.zeta_zero_free_seven_eighths"
+statement_module = "Statements.RH_zeta_zero_free_seven_eighths"
+status = "draft"
+title = "zeta != 0 on Re s > 7/8. Proof entirely OpenAI's (openai/math adc7f124, family 003, Apache-2.0), re-exported on the oai_qrh_bridge island at OpenAI's pin (Lean v4.34.1, Mathlib d13f23b); cross-pin vs the campaign environment. Not RH. conjecture1_proved = False"
+updated = "2026-10-07"
+
+[author]
+date = "2026-10-07"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+
+[proof]
+artifact = "../../examples/oai_qrh_bridge/lean/ArdaQRHBridge.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
