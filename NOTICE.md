@@ -152,6 +152,11 @@ above and in the emitter's docstring.
 
 ## A note on scope
 
-`conjecture1_proved = False`. Nothing in this file's attributions implies a
-completed proof of the Brualdi–Goldwasser conjecture or of the Riemann
-Hypothesis; see [`STATUS.md`](STATUS.md) for the honest, per-result state.
+`conjecture1_proved = False` (that flag tracks the Brualdi–Goldwasser
+campaign's own first, conditional route). Nothing in this file's attributions
+bears on the status of any result, and nothing here implies a proof of the
+Riemann Hypothesis. The Brualdi–Goldwasser problem itself is solved and
+kernel-checked, not yet refereed; its public release is
+[DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser)
+(doi:10.5281/zenodo.22983412). See [`STATUS.md`](STATUS.md) for the honest,
+per-result state.

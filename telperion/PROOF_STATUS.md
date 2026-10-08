@@ -1,7 +1,13 @@
 # Brualdi–Goldwasser proof status
 
+> **Note (2026-10-07).** The Brualdi–Goldwasser problem itself (the maximum of `per(L(T))/∏deg`) is
+> now solved and kernel-checked, not yet refereed: see [`../STATUS.md`](../STATUS.md) and
+> [DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser) (doi:10.5281/zenodo.22983412). The
+> statement tracked below is the rate ceiling, which the final proof uses; `conjecture1_proved = False`
+> in this file refers to the campaign's first, conditional route.
+
 **Attribution correction (2026-09-24).** Brualdi and Goldwasser (1984) asked for the maximum
-Laplacian ratio `per(L(T))/∏deg` over `n`-vertex trees (open; Pant 2026, arXiv:2605.14176). The
+Laplacian ratio `per(L(T))/∏deg` over `n`-vertex trees (open at the time of this correction; Pant 2026, arXiv:2605.14176; since solved, see the note above). The
 statement tracked in this file is the campaign's sharp *rate ceiling*, not the 1984 question
 itself. In the literal planted model it is now fully kernel-proved (2026-09-24): `bg_ceiling` (the `≤`
 half) and `bg_sharp` (equality exactly at the 5-arm spider rooted at its hub, `R3Cert/BGSCLSharp.lean`). The

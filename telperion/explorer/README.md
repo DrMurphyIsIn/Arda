@@ -1,7 +1,10 @@
 # The Telperion Registry Explorer
 
 `conjecture1_proved = False`. Start there, because this whole directory exists to say
-that sentence in pictures without ever contradicting it.
+that sentence in pictures without ever contradicting it. (For the Brualdi–Goldwasser
+campaign the flag tracks the registry's goal node, the campaign's own first route; the
+1984 problem itself is solved and kernel-checked outside the registry, see
+[`../../STATUS.md`](../../STATUS.md).)
 
 ## What this is
 

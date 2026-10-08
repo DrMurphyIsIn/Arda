@@ -8,8 +8,19 @@ green `lake build` compiles everything; there are no orphaned files).
 > added axioms, no `native_decide`; `#print axioms` on the capstones reports
 > only `[propext, Classical.choice, Quot.sound]`. Remaining hypotheses are
 > named `Prop`s carried explicitly (never axioms).
-> `conjecture1_proved = False`: this library formalizes the layers listed
-> below, not the whole conjecture.
+> **The Brualdi–Goldwasser maximizer is proved here** for every `n ≥ 4`:
+> `R3Cert/BGMaximizerAll.lean:bg_maximizer_all` (and `bg_maximizer_all_perm`,
+> the same inequality on `per L/∏deg` of the realized graphs), axioms guarded by
+> name in `AxiomGuard.lean`. Not yet refereed by humans. Its self-contained
+> public release is [DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser)
+> (doi:10.5281/zenodo.22983412), which also carries the second-kernel
+> Comparator record.
+>
+> `conjecture1_proved = False` refers to the campaign's first, conditional
+> route (`R3Cert.Step3.conjecture1_of_layers`, conditional on the open layers
+> Hnorm/Hdom, and the pinned `BGBackboneConjecture`). That route is still
+> open; the answer was reached by a different one. Most of the module map below
+> describes the first route's layers.
 
 ## Module map (bottom to top)
 

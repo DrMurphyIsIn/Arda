@@ -1,5 +1,9 @@
 # Laplacian-Ratio Maximizer Hunt: a branching-backbone tree beats every spider
 
+> **Note (2026-10-07).** Historical document, kept as written. The Brualdi–Goldwasser problem has since
+> been solved and kernel-checked (not yet refereed); see [`STATUS.md`](../../STATUS.md) and
+> [DrMurphyIsIn/brualdi-goldwasser](https://github.com/DrMurphyIsIn/brualdi-goldwasser).
+
 ## The open problem
 
 Brualdi & Goldwasser (1984) asked for the tree on `n` vertices **maximizing** the
