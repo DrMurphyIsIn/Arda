@@ -34,6 +34,8 @@ jobs:
     # PC6Cells. 150 min was never enough once those landed (2026-09-09). 350 stays under the
     # 360-minute hosted-runner cap. The three build stages carry their own step timeouts
     # (140 + 100 + 90 min) so a stuck stage fails in time for the always() cache save to run.
+    # Stage 2b (spider-table chunks, serial, 200 min) and stage 2c (mid-root certificates
+    # K2..K23, serial, 60 min) are resumable across runs the same way.
     timeout-minutes: 350
     defaults:
       run:
@@ -224,12 +226,102 @@ jobs:
           path: proof/formalization/.lake/build
           key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-s2
 
-      # Stage 3: everything else. This is the same `lake build` as before; stages 1-2 only
-      # reorder the work so that it fits in memory.
-      - name: Build (the verification — every R3Cert module compiles, no sorry)
+      # Stage 2b (2026-10-07): the 89 generated R3Cert.BGSpiderTableChunk_* modules (PR #642,
+      # commit 5b6f3a2b7), ONE lean process at a time. Each chunk is a single
+      # `decide +kernel` sweep of the spider-table check, and the kernel retains its whole
+      # reduction, so one chunk peaks at 11-14 GB private memory on top of the ~5.5 GB Mathlib
+      # mapping (measured locally, /usr/bin/time -l: Chunk_4_105 16.4 GB max RSS, Chunk_490_491
+      # 19.1 GB, a bare `import R3Cert.BGSpiderTableData` 5.5 GB). All 89 depend only on
+      # BGSpiderTableData, so a plain `lake build` (no job limit) launches them together; two
+      # side by side already reached 35.6 GB RSS locally. On the 16 GB runner that is what killed
+      # every scheduled run since 2026-09-27 (exit 143, mem_used ~15.5 GB, swap ~19 GB, right
+      # after BGSpiderLowDegree). Building them one per `lake build` call keeps the peak to one
+      # chunk. The step is resumable: chunks already in the restored cache are replayed in
+      # seconds, and a step timeout still leaves the finished oleans for the always() save.
+      - name: Build stage 2b — BG spider-table chunks, one at a time
+        id: stage2b
+        if: steps.changes.outputs.run == 'true'
+        timeout-minutes: 200
+        shell: bash
+        run: |
+          set -euo pipefail
+          total=0
+          mods=$(find R3Cert -maxdepth 1 -name 'BGSpiderTableChunk_*.lean' | sort | sed -e 's|^R3Cert/|R3Cert.|' -e 's|\.lean$||')
+          echo "$(printf '%s\n' "$mods" | grep -c .) spider-table chunk module(s)"
+          for m in $mods; do
+            t0=$SECONDS
+            lakeb "$m" 2>&1 | tee "$RUNNER_TEMP/chunk.log"
+            n=$(sed -n 's/^lakeb: \([0-9][0-9]*\) module.*/\1/p' "$RUNNER_TEMP/chunk.log" | tail -1)
+            total=$((total + ${n:-0}))
+            echo "chunk $m: $((SECONDS - t0)) s"
+          done
+          echo "built=$total" >> "$GITHUB_OUTPUT"
+
+      - name: Save build-cache checkpoint (stage 2b)
+        if: steps.changes.outputs.run == 'true' && steps.stage2b.outcome == 'success' && steps.stage2b.outputs.built != '0'
+        uses: actions/cache/save@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-s2b
+
+      # Stage 2c (2026-10-08): the 22 generated R3Cert.BGSpiderMidRootK<k> root certificates
+      # (k = 2..23), ONE lean process at a time. Each is a `decide +kernel` DP sweep whose
+      # retained reduction grows with k. Peak RSS measured locally (/usr/bin/time -l, lean -j 4,
+      # one module at a time; ~5.5 GB of it is the shared Mathlib mapping): K2 7.0 GB, K10 8.5,
+      # K16 11.4, K20 14.7, K22 16.4, K23 17.3 GB; 35-85 s each, 787 s for all 22. In rerun
+      # 37766885897 the final `lakeb` ran K10-K16 side by side: memory sat at 15.6 GB with
+      # 19 GB of swap, K16 took 1991 s (44 s alone), and the runner was killed (exit 143) as
+      # K17-K23 started. They depend only on BGSpiderMidCellsD<k> + BGSpiderMidSpiders (light,
+      # built by the first call), and nothing heavy depends on another K, so ascending k is a
+      # dependency order. Resumable like 2b: already-cached modules replay in seconds.
+      - name: Build stage 2c — BG spider mid-root certificates K2..K23, one at a time
+        id: stage2c
+        if: steps.changes.outputs.run == 'true'
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          set -euo pipefail
+          total=0
+          mods=$(find R3Cert -maxdepth 1 -name 'BGSpiderMidRootK*.lean' | sed -e 's|^R3Cert/BGSpiderMidRootK||' -e 's|\.lean$||' | sort -n | sed 's|^|R3Cert.BGSpiderMidRootK|')
+          echo "$(printf '%s\n' "$mods" | grep -c .) mid-root certificate module(s)"
+          for m in $mods; do
+            t0=$SECONDS
+            lakeb "$m" 2>&1 | tee "$RUNNER_TEMP/midroot.log"
+            n=$(sed -n 's/^lakeb: \([0-9][0-9]*\) module.*/\1/p' "$RUNNER_TEMP/midroot.log" | tail -1)
+            total=$((total + ${n:-0}))
+            echo "midroot $m: $((SECONDS - t0)) s"
+          done
+          echo "built=$total" >> "$GITHUB_OUTPUT"
+
+      - name: Save build-cache checkpoint (stage 2c)
+        if: steps.changes.outputs.run == 'true' && steps.stage2c.outcome == 'success' && steps.stage2c.outputs.built != '0'
+        uses: actions/cache/save@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-s2c
+
+      # Stage 3: everything else, EXCEPT the heavy BG set. Stages 1-2c only reorder the work so
+      # that it fits in memory. The heavy set (2026-10-08) is the G149 envelope fragments
+      # R3Cert.BGEnvCert.G149.Frag<C> and every module importing one transitively (computed by
+      # ci/heavy_bg.py from the import lines; today Frag1-8/12/16/22, G149.MainK,
+      # BGMaximizerSmall, BGMaximizerAll). Each Frag is ONE `decide +kernel` capCheck whose
+      # retained reduction does not fit on this 16 GB runner even alone (measured locally,
+      # /usr/bin/time -l, lean -j 4: Frag6 25.4 GB, Frag7 28.4 GB, Frag12 42.2 GB max RSS;
+      # Frag16/22 larger). That set is built and checked -- one module at a time, then the
+      # FULL library, the FULL axiom guard, orphan check and sorry scan -- by
+      # proof-lean-heavy.yml on the self-hosted Mac runner. Here we build the explicit list of
+      # every OTHER R3Cert module, so nothing else loses hosted coverage.
+      - name: Build (the verification — every R3Cert module except the heavy BG set compiles, no sorry)
         if: steps.changes.outputs.run == 'true'
         timeout-minutes: 90
-        run: lakeb
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Heavy BG set (built by proof-lean-heavy.yml on the self-hosted runner, NOT here):"
+          python3 ci/heavy_bg.py heavy | sed 's/^/  /'
+          python3 ci/heavy_bg.py hosted-targets > "$RUNNER_TEMP/hosted-targets.txt"
+          echo "$(wc -l < "$RUNNER_TEMP/hosted-targets.txt") hosted target module(s)"
+          lakeb $(cat "$RUNNER_TEMP/hosted-targets.txt")
 
       - name: Build the R7' hypothesis layers (star-of-hubs cells + class floors)
         if: steps.changes.outputs.run == 'true'
@@ -303,9 +395,14 @@ jobs:
         if: steps.changes.outputs.run == 'true'
         run: |
           set -uo pipefail
+          # The heavy BG set (see the Build step) is compiled by proof-lean-heavy.yml, whose
+          # orphan check covers EVERY module; only exactly that set is skipped here.
+          heavy=$(python3 ci/heavy_bg.py heavy)
+          echo "Skipped here (orphan-checked by proof-lean-heavy.yml):"; printf '%s\n' "$heavy" | sed 's/^/  /'
           missing=""
           while IFS= read -r src; do
             mod="${src#R3Cert/}"; mod="${mod%.lean}"
+            if grep -qxF "R3Cert.${mod//\//.}" <<< "$heavy"; then continue; fi
             [ -f ".lake/build/lib/lean/R3Cert/${mod}.olean" ] || missing="${missing}  ${src}"$'\n'
           done < <(find R3Cert -name '*.lean' | sort)
           if [ -n "$missing" ]; then
@@ -329,12 +426,23 @@ jobs:
         run: |
           set -euo pipefail
           # Runs AFTER `lake build`, so the R3Cert oleans exist and imports resolve.
-          lake env lean AxiomGuard.lean 2>&1 | tee axioms.txt
-          python3 - AxiomGuard.lean axioms.txt <<'PY'
+          # Hosted variant (2026-10-08): the heavy BG set is not built here, so the guard runs on
+          # AxiomGuardHosted.lean = AxiomGuard.lean with each heavy import replaced by the
+          # non-heavy modules it reaches, and with exactly the directives whose declaration lives
+          # in a heavy module removed (listed below). Those directives -- and the full,
+          # unmodified AxiomGuard.lean -- are checked by proof-lean-heavy.yml. Any other
+          # unresolved name still fails `lean` here; nothing else is relaxed.
+          python3 ci/heavy_bg.py hosted-guard AxiomGuard.lean AxiomGuardHosted.lean heavy-dropped.txt
+          echo "Directives moved to proof-lean-heavy.yml ($(grep -c . heavy-dropped.txt || true)):"
+          sed 's/^/  /' heavy-dropped.txt
+          lake env lean AxiomGuardHosted.lean 2>&1 | tee axioms.txt
+          python3 - AxiomGuardHosted.lean axioms.txt heavy-dropped.txt <<'PY'
           import re, sys
           guard_path, trace_path = sys.argv[1], sys.argv[2]
+          DROPPED = set(open(sys.argv[3], encoding="utf-8").read().split())
           ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
           FLOOR = 301  # #print axioms directives in AxiomGuard.lean on 2026-09-24; raise, never lower silently
+          FLOOR -= len(DROPPED)  # hosted only: the moved directives are counted by proof-lean-heavy.yml
           REQUIRED = [  # telperion/missions/bg/nodes/*.toml: the proved nodes + the refuted one
               "R3Cert.cavity_recursion",                          # BG_cavity_recursion
               "R3Cert.FractalTail.fractal_tail_as_ratio",         # BG_fractal_asymptote
@@ -355,6 +463,10 @@ jobs:
               "R3Cert.BGMaximizerMid.bg_maximizer_mid",        # the BG maximizer, 150 <= n <= 491
               "R3Cert.BGMaximizerAll.bg_maximizer_all",        # the BG maximizer, every n >= 4
           ]
+          moved = [n for n in REQUIRED if n in DROPPED]
+          if moved:
+              print(f"required BG node theorem(s) checked by proof-lean-heavy.yml instead: {moved}")
+          REQUIRED = [n for n in REQUIRED if n not in DROPPED]
           src = re.sub(r"/-.*?-/", "", open(guard_path, encoding="utf-8").read(), flags=re.S)
           directives = set(re.findall(r"^#print\s+axioms\s+(\S+)", src, flags=re.M))
           trace = open(trace_path, encoding="utf-8").read()

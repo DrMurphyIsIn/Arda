@@ -1,3 +1,7 @@
 /.lake/
 /lake-packages/
 lakefile.olean
+# CI-generated (proof-lean.yml axiom guard)
+/AxiomGuardHosted.lean
+/heavy-dropped.txt
+/axioms.txt
