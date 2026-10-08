@@ -1,0 +1,19 @@
+created = "2026-10-07"
+depends_on = ["RH_dbn_real_zeros_of_zeta_halfplane"]
+kind = "lemma"
+name = "RH.dbn_real_zeros_of_qrh"
+statement_module = "Statements.RH_dbn_real_zeros_of_qrh"
+status = "draft"
+title = "QRH hypothesis (zeta != 0 on Re s > 7/8, OpenAI's statement with the binder closed) => every zero of H_t is real for t >= 9/32 (conditional; not RH). dbn island. conjecture1_proved = False"
+updated = "2026-10-07"
+
+[author]
+date = "2026-10-07"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+
+[proof]
+artifact = "../../examples/dbn/lean/DBNZeroFreeHalfplane.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
