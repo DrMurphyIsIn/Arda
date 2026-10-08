@@ -42,11 +42,26 @@ jobs:
         working-directory: telperion/examples/oai_qrh_bridge/work/oai
         shell: bash
         run: |
-          lake build ArdaQRHBridge AxiomGuardQRHBridge ArdaDBNUnconditional ArdaDBNChallenge
+          lake build ArdaQRHBridge AxiomGuardQRHBridge ArdaDBNUnconditional ArdaDBNChallenge ArdaDBNChallengeTampered
           lake env lean AxiomGuardQRHBridge.lean | tee axioms.out
           ! grep -q sorryAx axioms.out
           grep -q "'qrh_seven_eighths' depends on axioms: \[propext, Classical.choice, Quot.sound\]" axioms.out
           lake env lean AxiomGuardDBNUnconditional.lean | tee axioms2.out
           ! grep -q sorryAx axioms2.out
-      # Comparator (nanoda on) would follow here with the tag matching v4.34.1; wire it the
-      # same way missions-comparator.yml does for the other islands.
+      # Comparator (nanoda on), with a comparator build whose tag matches v4.34.1; wire the binaries
+      # the same way missions-comparator.yml does for the other islands. The positive challenges must be
+      # accepted, and the negative control (lean/negative_control/, a tampered DBN.Phi) must be REJECTED:
+      # a run that accepts it means the challenge no longer pins the definitions, and the job fails.
+      - name: Comparator (nanoda on), positive challenges and negative control
+        working-directory: telperion/examples/oai_qrh_bridge/work/oai
+        shell: bash
+        run: |
+          for cfg in qrh_seven_eighths dbn_real_zeros_of_qrh_unconditional; do
+            lake env comparator $cfg.comparator.json 2>&1 | tee cmp_$cfg.out
+            grep -q "Your solution is okay!" cmp_$cfg.out
+          done
+          if lake env comparator tampered.comparator.json > cmp_tampered.out 2>&1 \
+             && grep -q "Your solution is okay!" cmp_tampered.out; then
+            echo "negative control was ACCEPTED: the challenge does not pin DBN.Phi"; exit 1
+          fi
+          grep -q "does not match" cmp_tampered.out

@@ -385,6 +385,6 @@ bounds 0.22 and 0.2.
 
 ## 7. Commits on `rh/qrh-dbn-9-32`
 
-The commit hashes are in the final hand-off message and in `git log`. Nothing has been pushed.
+The commit hashes are in `git log`. The branch was pushed on 2026-10-07 at the owner's request and is draft PR #662 (no grant). An independent session audited it (commit 4f4588fae, `QRH_DBN_AUDIT_2026-10-07_e9.md`): every result reproduced, including Comparator with nanoda on (unconditional theorem accepted, tampered control rejected, `qrh_seven_eighths` accepted). Registry independence still needs the missions-comparator CI path, because both sessions share one git identity; the CI job above is a draft.
 
 conjecture1_proved = False.
