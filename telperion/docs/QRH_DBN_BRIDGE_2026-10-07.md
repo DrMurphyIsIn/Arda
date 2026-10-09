@@ -467,6 +467,11 @@ with `log_check = "verified"`, `head_check = "matched"` (PR #669). All four node
 `proved` on main and no longer appear in `mission provenance-report`. The explorer labels
 them judge-verified. Nothing here is RH. conjecture1_proved = False.
 
+**Paper and archive (2026-10-09).** The result, the port, the verification chain and the registry
+trail are written up as a standalone paper and released with the Lean sources at
+https://github.com/DrMurphyIsIn/qrh-debruijn-newman (v1.0.0), archived at Zenodo: DOI 10.5281/zenodo.23269135 (this version),
+10.5281/zenodo.23269134 (all versions).
+
 **What it does not establish.** The shadowing guard covers the island's own modules, not the
 roughly 2,900 OpenAI modules outside the guards' import closure. The judge resolves the
 statement in the artifact's environment at OpenAI's pin, so whether the rh campaign's

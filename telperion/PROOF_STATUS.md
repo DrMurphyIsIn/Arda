@@ -299,7 +299,8 @@ one Lean environment at OpenAI's pin). Classically `Λ ≤ 9/32 = 0.28125`: the 
 bound below de Bruijn's 1/2, weaker than the numerical 0.22 (Polymath15) and 0.2
 (Platt–Trudgian). RH is `Λ = 0`. Design, audit, judge and grant trail:
 `docs/QRH_DBN_BRIDGE_2026-10-07.md`, `docs/QRH_DBN_AUDIT_2026-10-07_e9.md`,
-`docs/JUDGE_OAI_BRIDGE_REVIEW_2026-10-08_e9.md`.
+`docs/JUDGE_OAI_BRIDGE_REVIEW_2026-10-08_e9.md`. Paper and release: https://github.com/DrMurphyIsIn/qrh-debruijn-newman,
+Zenodo DOI 10.5281/zenodo.23269134.
 
 Migration notes (2026-09-11, findings in the task-10 report): the Li rungs are each
 CONDITIONAL on their Arb enclosure hypothesis (the documented trust seam) and the rungs

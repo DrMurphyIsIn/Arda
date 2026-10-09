@@ -256,7 +256,9 @@ constant below de Bruijn's 1/2, `Λ ≤ 9/32`, obtained by composing OpenAI's ke
 quasi-Riemann hypothesis (`ζ(s) ≠ 0` for `Re s > 7/8`, [openai/math](https://github.com/openai/math),
 Apache-2.0) with de Bruijn's heat-flow theorem in one Lean environment, then judged by an
 independent Comparator run with two kernels. It is weaker than the numerical 0.22 and it
-is not a proof of the Riemann Hypothesis; `conjecture1_proved = False` throughout.
+is not a proof of the Riemann Hypothesis; `conjecture1_proved = False` throughout. The paper and
+the Lean sources are released at [DrMurphyIsIn/qrh-debruijn-newman](https://github.com/DrMurphyIsIn/qrh-debruijn-newman)
+(Zenodo DOI [10.5281/zenodo.23269134](https://doi.org/10.5281/zenodo.23269134)).
 
 ## The third arc: proof complexity
 
