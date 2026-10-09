@@ -429,6 +429,275 @@
     drawers.li = function () { drawLi(); drawRate(); };
   })();
 
+  // ================================================================== DE BRUIJN-NEWMAN
+  // Every curve here is a float model of a stated bound. Blue = kernel-checked in this registry,
+  // orange = a model or our own finding, gray = a published result not kernel-checked here.
+  (function dbnTab() {
+    var D = PLOTS.dbn;
+    var byId = {}; REG.nodes.forEach(function (n) { byId[n.id] = n; });
+    var thSl = document.getElementById("dbn-theta"), tSl = document.getElementById("dbn-t");
+    var y0Sl = document.getElementById("dbn-y0"), pushSl = document.getElementById("dbn-push");
+    var bounds = {}; D.bounds.forEach(function (b) { bounds[b.key] = b; });
+    function lamOf(theta) { return 2 * (theta - 0.5) * (theta - 0.5); }
+    function thetaTxt(th) {
+      var named = [[1, "1"], [0.875, "7/8"], [5 / 6, "5/6"], [0.5, "1/2"]];
+      for (var i = 0; i < named.length; i++) if (Math.abs(th - named[i][0]) < 0.002) return named[i][1] + " = " + fmt(named[i][0], 4);
+      return fmt(th, 4);
+    }
+    function surfaceRing(ctx, x, y, r, fill) {
+      ctx.fillStyle = cssVar("--surface"); ctx.beginPath(); ctx.arc(x, y, r + 2, 0, 2 * Math.PI); ctx.fill();
+      ctx.fillStyle = fill; ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * Math.PI); ctx.fill();
+    }
+    Array.prototype.forEach.call(document.querySelectorAll(".dbn-preset"), function (b) {
+      b.addEventListener("click", function () { thSl.value = b.dataset.theta; drawAll(); });
+    });
+
+    // ---- (a) the strip in the s-plane
+    function drawSplane() {
+      var th = +thSl.value, cv = setupCanvas("dbn-splane"), ctx = cv.ctx;
+      var ax = axes(cv, -0.15, 1.15, 0, 52, { xlabel: "Re s", ylabel: "Im s", xticks: [0, 0.25, 0.5, 0.75, 1], mb: 32 });
+      var top = ax.Y(52), bot = ax.Y(0);
+      ctx.fillStyle = cssVar("--sunk"); ctx.fillRect(ax.X(0), top, ax.X(1) - ax.X(0), bot - top);
+      ctx.fillStyle = cssVar("--dbn-k-soft");
+      ctx.fillRect(ax.X(th), top, ax.X(1) - ax.X(th), bot - top);
+      ctx.fillRect(ax.X(0), top, ax.X(1 - th) - ax.X(0), bot - top);
+      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1;
+      [0, 1].forEach(function (x) { ctx.beginPath(); ctx.moveTo(ax.X(x), top); ctx.lineTo(ax.X(x), bot); ctx.stroke(); });
+      ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(ax.X(0.5), top); ctx.lineTo(ax.X(0.5), bot); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = cssVar("--dbn-k"); ctx.lineWidth = 2;
+      [th, 1 - th].forEach(function (x) { ctx.beginPath(); ctx.moveTo(ax.X(x), top); ctx.lineTo(ax.X(x), bot); ctx.stroke(); });
+      for (var z = 0; z < ZEROS.length && ZEROS[z] <= 52; z++) surfaceRing(ctx, ax.X(0.5), ax.Y(ZEROS[z]), 4, cssVar("--faint"));
+      ctx.fillStyle = cssVar("--ink"); ctx.textBaseline = "top";
+      ctx.textAlign = "left"; ctx.fillText("Re s = theta", ax.X(th) + 5, top + 4);
+      ctx.textAlign = "right"; ctx.fillText("Re s = 1 - theta", ax.X(1 - th) - 5, top + 4);
+      ctx.textAlign = "center"; ctx.textBaseline = "bottom"; ctx.fillStyle = cssVar("--muted");
+      if (th - 0.5 > 0.04) ctx.fillText("not excluded", ax.X(0.5), bot - 4);
+      else ctx.fillText(th === 0.5 ? "theta = 1/2: only the line is left. That is RH." : "only a thin band is left", ax.X(0.5) + 120, bot - 4);
+    }
+
+    // ---- (a) the Lambda number line
+    var lineHit = [];
+    function drawLine(hoverKey) {
+      var th = +thSl.value, lam = lamOf(th), cv = setupCanvas("dbn-line"), ctx = cv.ctx, W = cv.W, H = cv.H;
+      var ml = 56, mr = 24, lo = -0.05, hi = 0.55, ay = Math.round(H * 0.42);
+      var X = function (v) { return ml + (v - lo) / (hi - lo) * (W - ml - mr); };
+      // where Lambda can still be, given the chosen theta and Rodgers-Tao's published Lambda >= 0
+      ctx.fillStyle = cssVar("--sunk"); ctx.fillRect(X(0), ay - 10, X(lam) - X(0), 20);
+      ctx.strokeStyle = cssVar("--muted"); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(X(lo), ay); ctx.lineTo(X(hi), ay); ctx.stroke();
+      ctx.fillStyle = cssVar("--muted"); ctx.textAlign = "center"; ctx.textBaseline = "top";
+      [0, 0.1, 0.2, 0.3, 0.4, 0.5].forEach(function (v) { ctx.beginPath(); ctx.moveTo(X(v), ay); ctx.lineTo(X(v), ay + 4); ctx.stroke(); });
+      ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillText("Lambda", 4, ay);
+      // markers: [key, row (negative = above the axis), colour]
+      // [key, row (negative = above the axis), colour, label alignment]: rows chosen so no two labels overlap
+      var spec = [["debruijn", -2, "--dbn-k", "right"], ["qrh", -1, "--dbn-k", "left"], ["floor", -2, "--dbn-m", "right"],
+                  ["p15", 1, "--faint", "right"], ["pt", 2, "--faint", "right"], ["rt", 3, "--faint", "left"]];
+      lineHit = [];
+      spec.forEach(function (s) {
+        var b = bounds[s[0]], x = X(b.value), row = s[1], col = cssVar(s[2]);
+        var ly = ay + row * 26 + (row < 0 ? -6 : 6);
+        ctx.strokeStyle = col; ctx.lineWidth = hoverKey === s[0] ? 3 : 2;
+        if (b.kind === "published" || b.kind === "published lower bound") ctx.setLineDash([3, 3]);
+        ctx.beginPath(); ctx.moveTo(x, ay); ctx.lineTo(x, ly); ctx.stroke(); ctx.setLineDash([]);
+        surfaceRing(ctx, x, ay, 4, col);
+        var txt = b.exact + "  " + (b.kind === "kernel-checked" ? "kernel-checked" : b.kind === "architecture floor" ? "architecture floor (theta = 5/6)" : b.label.replace(/: Lambda >= 0$/, ", lower bound"));
+        if (b.kind === "published") txt = b.exact + "  " + b.label + ", published";
+        if (s[0] === "debruijn") txt = "1/2  de Bruijn 1950, kernel-checked";
+        if (s[0] === "qrh") txt = "9/32  QRH route, kernel-checked";
+        ctx.fillStyle = cssVar("--ink"); ctx.textBaseline = row < 0 ? "bottom" : "top";
+        ctx.textAlign = s[3]; var tx = s[3] === "right" ? x - 4 : x + 4;
+        ctx.fillText(txt, tx, ly);
+        lineHit.push({ key: s[0], x: x });
+      });
+      // the slider's theta
+      var sx = X(lam);
+      ctx.fillStyle = cssVar("--ink"); ctx.beginPath(); ctx.moveTo(sx, ay - 3); ctx.lineTo(sx - 6, ay - 15); ctx.lineTo(sx + 6, ay - 15); ctx.closePath(); ctx.fill();
+      ctx.textAlign = lam > 0.4 ? "right" : "left"; ctx.textBaseline = "bottom";
+      ctx.fillText("theta = " + thetaTxt(th) + " gives Lambda <= " + fmt(lam, 5), lam > 0.4 ? sx - 8 : sx + 8, 14);
+      var rd = "theta = " + thetaTxt(th) + ": Delta = 2(theta - 1/2) = " + fmt(2 * (th - 0.5), 4) + ", so every zero of H_0 has |Im z| <= " + fmt(2 * (th - 0.5), 4) +
+        ", and every zero of H_t is real for t >= 2(theta - 1/2)^2 = " + fmt(lam, 5) + ".\n";
+      if (th === 0.5) rd += "theta = 1/2 is RH itself, and the bound becomes Lambda <= 0.";
+      else if (lam > 0.22) rd += "This is weaker than the published 0.22 (Polymath15) and 0.2 (Platt-Trudgian).";
+      else if (lam > 0.2) rd += "This would beat Polymath15's published 0.22 but not Platt-Trudgian's 0.2.";
+      else rd += "This would beat every published upper bound; no half-plane this far left is known.";
+      if (th < 5 / 6 - 1e-9 && th > 0.5) rd += " It is below the sextic-sparsity floor theta = 5/6, so that architecture cannot reach it.";
+      rd += "\nOnly theta = 1 (the trivial strip) and theta = 7/8 (OpenAI's QRH) are kernel-checked half-planes in this registry; every other slider position is hypothetical. The gray band is where Lambda can still lie, given the published Lambda >= 0.";
+      if (hoverKey) { var hb = bounds[hoverKey]; rd += "\n" + hb.label + ": " + hb.exact + " (" + hb.kind + "). " + hb.where + "."; }
+      document.getElementById("dbn-theta-val").textContent = "theta = " + thetaTxt(th);
+      document.getElementById("dbn-line-readout").textContent = rd;
+    }
+    var lineCv = document.getElementById("dbn-line");
+    lineCv.addEventListener("pointermove", function (e) {
+      var r = lineCv.getBoundingClientRect(), x = e.clientX - r.left, best = null, bd = 14;
+      lineHit.forEach(function (h) { var d = Math.abs(h.x - x); if (d < bd) { bd = d; best = h.key; } });
+      drawLine(best);
+    });
+    lineCv.addEventListener("pointerleave", function () { drawLine(null); });
+
+    // ---- (b) the flow
+    var X0 = 70;     // the toy pair's real part, between the images of the 4th and 5th zeros
+    function toy(t, y0, k) {   // (z - X0)^2 + y0^2 - 2 (1 + k) t = 0
+      var q = y0 * y0 - 2 * (1 + k) * t;
+      return q >= 0 ? { im: Math.sqrt(q), re: 0 } : { im: 0, re: Math.sqrt(-q) };
+    }
+    function env(t, Delta) { return Math.sqrt(Math.max(Delta * Delta - 2 * t, 0)); }
+    var hoverT = null;
+    function drawFlow() {
+      var th = +thSl.value, Delta = 2 * (th - 0.5), t = hoverT === null ? +tSl.value : hoverT;
+      var f = +y0Sl.value, k = +pushSl.value, y0 = f * Delta, tStar = Delta * Delta / 2;
+      document.getElementById("dbn-t-val").textContent = "t = " + fmt(+tSl.value, 4);
+      document.getElementById("dbn-y0-val").textContent = fmt(f, 2) + " Delta";
+      document.getElementById("dbn-push-val").textContent = k === 0 ? "none (exact quadratic)" : "x " + fmt(1 + k, 2);
+      var cv = setupCanvas("dbn-flow"), ctx = cv.ctx;
+      var ax = axes(cv, 0, 0.55, 0, 1.08, { xlabel: "time t", ylabel: "|Im z|", xticks: [0, 0.1, 0.2, 0.28125, 0.4, 0.5], xfmt: function (v) { return v === 0.28125 ? "9/32" : String(v); } });
+      var M = 400, pk = [], p1 = [], pt = [];
+      for (var i = 0; i <= M; i++) {
+        var tt = 0.55 * i / M;
+        pk.push([ax.X(tt), ax.Y(env(tt, Delta))]); p1.push([ax.X(tt), ax.Y(env(tt, 1))]); pt.push([ax.X(tt), ax.Y(toy(tt, y0, k).im)]);
+      }
+      ctx.setLineDash([5, 4]); polyline(ctx, p1, cssVar("--faint"), 1.5); ctx.setLineDash([]);
+      polyline(ctx, pk, cssVar("--dbn-k"), 2);
+      polyline(ctx, pt, cssVar("--dbn-m"), 2);
+      // the time all zeros are real
+      ctx.strokeStyle = cssVar("--dbn-k"); ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(ax.X(tStar), ax.Y(0)); ctx.lineTo(ax.X(tStar), ax.Y(1.08)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = cssVar("--ink"); ctx.textAlign = tStar > 0.35 ? "right" : "left"; ctx.textBaseline = "top";
+      ctx.fillText("all zeros real from t = 2(theta - 1/2)^2 = " + fmt(tStar, 5), ax.X(tStar) + (tStar > 0.35 ? -6 : 6), ax.Y(1.08) + 4);
+      ctx.textAlign = "left"; ctx.textBaseline = "bottom"; ctx.fillStyle = cssVar("--muted");
+      ctx.fillText("theta = 1 envelope", ax.X(0.02), ax.Y(env(0.02, 1)) - 4);
+      // hairline at the chosen time, with markers
+      ctx.strokeStyle = cssVar("--ink"); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax.X(t), ax.Y(0)); ctx.lineTo(ax.X(t), ax.Y(1.08)); ctx.stroke();
+      var e = env(t, Delta), ty = toy(t, y0, k);
+      surfaceRing(ctx, ax.X(t), ax.Y(e), 4, cssVar("--dbn-k"));
+      surfaceRing(ctx, ax.X(t), ax.Y(ty.im), 4, cssVar("--dbn-m"));
+      // z-plane snapshot
+      var zv = setupCanvas("dbn-zplane"), zc = zv.ctx;
+      var zx = axes(zv, 0, 130, -1.08, 1.08, { xlabel: "Re z", ylabel: "Im z", yticks: [-1, -0.5, 0, 0.5, 1], mb: 30 });
+      zc.fillStyle = cssVar("--dbn-k-soft"); zc.fillRect(zx.X(0), zx.Y(e), zx.X(130) - zx.X(0), zx.Y(-e) - zx.Y(e));
+      zc.strokeStyle = cssVar("--dbn-k"); zc.lineWidth = 2;
+      [e, -e].forEach(function (v) { zc.beginPath(); zc.moveTo(zx.X(0), zx.Y(v)); zc.lineTo(zx.X(130), zx.Y(v)); zc.stroke(); });
+      zc.strokeStyle = cssVar("--line"); zc.lineWidth = 1; zc.beginPath(); zc.moveTo(zx.X(0), zx.Y(0)); zc.lineTo(zx.X(130), zx.Y(0)); zc.stroke();
+      for (var z = 0; z < ZEROS.length && 2 * ZEROS[z] <= 130; z++) surfaceRing(zc, zx.X(2 * ZEROS[z]), zx.Y(0), 4, cssVar("--faint"));
+      var pair = ty.im > 0 ? [[X0, ty.im], [X0, -ty.im]] : [[X0 - ty.re, 0], [X0 + ty.re, 0]];
+      pair.forEach(function (p) { surfaceRing(zc, zx.X(p[0]), zx.Y(p[1]), 5, cssVar("--dbn-m")); });
+      zc.fillStyle = cssVar("--ink"); zc.textAlign = "left"; zc.textBaseline = "bottom";
+      zc.fillText("toy pair (model)", zx.X(X0) + 9, zx.Y(Math.max(ty.im, 0)) - 4);
+      zc.fillStyle = cssVar("--muted"); zc.textBaseline = "top";
+      zc.fillText("z = 2 gamma at t = 0 (float model)", zx.X(2 * ZEROS[0]) - 20, zx.Y(0) + 8);
+      zc.textAlign = "right"; zc.textBaseline = "bottom"; zc.fillStyle = cssVar("--ink");
+      zc.fillText(e > 0 ? "allowed band |Im z| <= " + fmt(e, 4) : "band closed: every zero is real", zx.X(130) - 6, zx.Y(Math.max(e, 0)) - 4);
+      document.getElementById("dbn-flow-readout").textContent = "t = " + fmt(t, 4) + (hoverT === null ? "" : " (hover)") +
+        ": envelope |Im z| <= sqrt(max(Delta^2 - 2t, 0)) = " + fmt(e, 4) + " with Delta = " + fmt(Delta, 4) + " from theta = " + thetaTxt(th) +
+        ". Toy pair: " + (ty.im > 0 ? "Re z = " + X0 + ", |Im z| = " + fmt(ty.im, 4) : "collided at t = " + fmt(y0 * y0 / (2 * (1 + k)), 4) + "; now two real zeros at Re z = " + X0 + " +/- " + fmt(ty.re, 4)) + ".\n" +
+        "With no extra push the toy is the exact flow of the quadratic (z - " + X0 + ")^2 + y0^2 - 2t under the same heat equation dH/dt = -d^2H/dz^2 that H_t satisfies, so it moves at exactly the bound's rate; a push imitates crowding by neighbours. It is a model of the bound, not a zero of zeta. Float model.";
+    }
+    var flowCv = document.getElementById("dbn-flow");
+    flowCv.addEventListener("pointermove", function (e) {
+      var r = flowCv.getBoundingClientRect(), x = e.clientX - r.left, ml = 56, mr = 14;
+      var t = (x - ml) / (r.width - ml - mr) * 0.55;
+      hoverT = t < 0 || t > 0.55 ? null : t; drawFlow();
+    });
+    flowCv.addEventListener("pointerleave", function () { hoverT = null; drawFlow(); });
+
+    // ---- (c) Lambda_min(X)
+    var C = D.lambda_curve, hoverPt = null, ptHit = [];
+    function fitAt(X) { return C.fit.a / Math.log(X / (4 * Math.PI)) + C.fit.b; }
+    function drawHeight() {
+      var cv = setupCanvas("dbn-height"), ctx = cv.ctx;
+      var x0 = 4, x1 = 11.3;
+      var ax = axes(cv, x0, x1, 0, 0.75, { xlabel: "barrier height X (log10)", ylabel: "Lambda", xticks: [4, 5, 6, 7, 8, 9, 10, 11],
+        xfmt: function (v) { return "1e" + v; }, yticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7] });
+      var feas = Math.log10(2 * 6.4e5);
+      ctx.fillStyle = cssVar("--sunk"); ctx.fillRect(ax.X(x0) + 1, ax.Y(0.75) + 1, ax.X(feas) - ax.X(x0), ax.Y(0) - ax.Y(0.75) - 2);
+      ctx.fillStyle = cssVar("--muted"); ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+      ctx.fillText("kernel-feasible heights", ax.X(x0) + 6, ax.Y(0) - 4);
+      // kernel-checked lines
+      [[9 / 32, "9/32 = 0.28125, kernel-checked (QRH route, every height at once)", [], "left"], [0.5, "1/2, kernel-checked (de Bruijn 1950)", [6, 4], "right"]].forEach(function (l) {
+        ctx.strokeStyle = cssVar("--dbn-k"); ctx.lineWidth = 2; ctx.setLineDash(l[2]);
+        ctx.beginPath(); ctx.moveTo(ax.X(x0), ax.Y(l[0])); ctx.lineTo(ax.X(x1), ax.Y(l[0])); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = cssVar("--ink"); ctx.textAlign = l[3]; ctx.textBaseline = "bottom";
+        ctx.fillText(l[1], l[3] === "left" ? ax.X(x0) + 6 : ax.X(x1) - 6, ax.Y(l[0]) - 3);
+      });
+      // the fit
+      var pf = [];
+      for (var i = 0; i <= 200; i++) { var lx = x0 + (x1 - x0) * i / 200, v = fitAt(Math.pow(10, lx)); if (v <= 0.75) pf.push([ax.X(lx), ax.Y(v)]); }
+      ctx.setLineDash([5, 4]); polyline(ctx, pf, cssVar("--muted"), 1.5); ctx.setLineDash([]);
+      // height needed for 9/32 (fit)
+      var need = Math.log10(C.needed_for_nine_thirtyseconds_X);
+      ctx.strokeStyle = cssVar("--muted"); ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(ax.X(need), ax.Y(9 / 32)); ctx.lineTo(ax.X(need), ax.Y(0)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = cssVar("--muted"); ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+      ctx.fillText("X ~ 3.9e8 to match 9/32", ax.X(need) + 5, ax.Y(0.1));
+      // the published Polymath15 point
+      var pp = C.p15_point, px = ax.X(Math.log10(pp.X)), py = ax.Y(pp.lambda);
+      surfaceRing(ctx, px, py, 5, cssVar("--faint"));
+      ctx.fillStyle = cssVar("--ink"); ctx.textAlign = "right"; ctx.textBaseline = "top"; ctx.fillText("Polymath15: 0.22 at X ~ 6e10 (published)", px - 8, py + 6);
+      // our points
+      ptHit = [];
+      C.points.forEach(function (p, j) {
+        var x = ax.X(Math.log10(p.X)), y = ax.Y(p.lambda);
+        surfaceRing(ctx, x, y, hoverPt === j ? 6 : 4.5, cssVar("--dbn-m"));
+        ptHit.push({ j: j, x: x, y: y });
+      });
+      ctx.fillStyle = cssVar("--ink"); ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+      var first = C.points[0]; ctx.fillText("Lambda_min(X), floating numerics", ax.X(Math.log10(first.X)) + 8, ax.Y(first.lambda) - 4);
+      ptHit.push({ j: "p15", x: px, y: py });
+      var rd = C.trust + ". Fit: " + C.fit.formula + ". Source: " + C.source + ".";
+      if (hoverPt !== null) {
+        if (hoverPt === "p15") rd = pp.label + ": Lambda <= 0.22 at X ~ 6e10, from a large published computation; not kernel-checked here.\n" + rd;
+        else { var q = C.points[hoverPt]; rd = "X/2 = " + sci(q.X_half) + " (barrier X = " + sci(q.X) + ", " + q.row + "): Lambda_min = " + q.lambda + " at t0 = " + q.t0 + ", y0 = " + q.y0 + "; fit gives " + fmt(fitAt(q.X), 4) + ".\n" + rd; }
+      }
+      document.getElementById("dbn-height-readout").textContent = rd;
+    }
+    var hCv = document.getElementById("dbn-height");
+    hCv.addEventListener("pointermove", function (e) {
+      var r = hCv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, best = null, bd = 400;
+      ptHit.forEach(function (h) { var d = (h.x - x) * (h.x - x) + (h.y - y) * (h.y - y); if (d < bd) { bd = d; best = h.j; } });
+      if (best !== hoverPt) { hoverPt = best; drawHeight(); }
+    });
+    hCv.addEventListener("pointerleave", function () { hoverPt = null; drawHeight(); });
+    (function table() {
+      var h = "<thead><tr><th>X/2</th><th>barrier X</th><th>t0</th><th>y0</th><th>Lambda_min (floating)</th><th>row</th></tr></thead><tbody>";
+      C.points.forEach(function (p) { h += "<tr><td>" + sci(p.X_half) + "</td><td>" + sci(p.X) + "</td><td>" + p.t0 + "</td><td>" + p.y0 + "</td><td>" + p.lambda + "</td><td>" + escapeHtml(p.row) + "</td></tr>"; });
+      h += "<tr><td>" + sci(C.p15_point.X / 2) + "</td><td>" + sci(C.p15_point.X) + "</td><td>0.20</td><td>0.20</td><td>0.22</td><td>" + escapeHtml(C.p15_point.label) + "</td></tr>";
+      document.getElementById("dbn-height-table").innerHTML = h + "</tbody>";
+    })();
+
+    // ---- (d) the nodes, read from the registry data
+    (function nodes() {
+      var box = document.getElementById("dbn-nodes"), out = "";
+      D.node_ids.forEach(function (id) {
+        var n = byId[id]; if (!n) return;
+        var pv = n.provenance || {}, comp = pv.comparator;
+        var pills = "<span class=\"pill " + n.status + "\">" + n.status + "</span><span class=\"pill tag\">" + escapeHtml(n.kind) + "</span>";
+        if (n.readback) pills += "<span class=\"pill tag\">" + escapeHtml(n.readback.independence) + "</span>";
+        if (n.conditional) pills += "<span class=\"pill warnp\">conditional: see hypotheses</span>";
+        if (id === D.headline_id) pills += "<span class=\"pill tag\">headline: Lambda &le; 9/32</span>";
+        var s = "<div class=\"card\"><h4>" + escapeHtml(n.id) + "</h4><div class=\"meta\">" + pills + "</div><div class=\"title\">" + escapeHtml(n.title) + "</div>";
+        if (n.proof) s += "<div class=\"meta\">artifact <a href=\"" + escapeHtml(n.proof.artifact_url) + "\">" + escapeHtml(n.proof.artifact) + "</a>" + (n.coverage.jobs.length ? "; compiled by " + escapeHtml(n.coverage.jobs.join(", ")) : "") + "</div>";
+        var bits = [];
+        if (comp) bits.push("Comparator judge run " + (comp.run_url ? "<a href=\"" + escapeHtml(comp.run_url) + "\">" + escapeHtml(comp.run_id) + "</a>" : escapeHtml(comp.run_id)) + " on " + escapeHtml(comp.date) + ", theorem <code>" + escapeHtml(comp.theorem) + "</code>");
+        else bits.push("Comparator judge: not recorded");
+        if (n.readback) bits.push("readback by " + escapeHtml(n.readback.auditor) + " on " + escapeHtml(n.readback.date));
+        s += "<div class=\"note\">" + bits.join(" &middot; ") + "</div>";
+        if (n.statement) s += "<details><summary>statement and hypotheses (verbatim registry statement module)</summary><pre>" + escapeHtml(n.statement) + "</pre></details>";
+        out += s + "</div>";
+      });
+      box.innerHTML = out;
+      document.getElementById("dbn-support").innerHTML = "These rest on the dbn island's " + D.support_ids.map(function (id) {
+        var n = byId[id]; return "<code>" + escapeHtml(id) + "</code> (" + (n ? n.status + (n.readback ? ", " + escapeHtml(n.readback.independence) : "") : "not in registry") + ")";
+      }).join(", ") + ". The flow theorem is <code>" + escapeHtml(D.flow_theorem) + "</code>; <code>H_t</code> is defined in <code>" + escapeHtml(D.definitions) + "</code>.";
+      var R = D.release;
+      document.getElementById("dbn-repo").href = R.repo;
+      document.getElementById("dbn-doi").href = "https://doi.org/" + R.doi_version;
+    })();
+
+    function drawAll() { drawSplane(); drawLine(null); drawFlow(); drawHeight(); }
+    thSl.addEventListener("input", drawAll);
+    [tSl, y0Sl, pushSl].forEach(function (el) { el.addEventListener("input", drawFlow); });
+    drawers.dbn = drawAll;
+  })();
+
   // ================================================================== REGISTRY
   (function registryTab() {
     var byId = {}; REG.nodes.forEach(function (n) { byId[n.id] = n; });

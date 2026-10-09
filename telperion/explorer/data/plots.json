@@ -1,5 +1,149 @@
 {
  "conjecture1_proved": false,
+ "dbn": {
+  "bounds": [
+   {
+    "exact": "1/2",
+    "key": "debruijn",
+    "kind": "kernel-checked",
+    "label": "de Bruijn 1950, trivial strip theta = 1",
+    "theta": 1.0,
+    "value": 0.5,
+    "where": "rh:RH_dbn_debruijn_real_zeros"
+   },
+   {
+    "exact": "9/32",
+    "key": "qrh",
+    "kind": "kernel-checked",
+    "label": "OpenAI's QRH, theta = 7/8",
+    "theta": 0.875,
+    "value": 0.28125,
+    "where": "rh:RH_dbn_real_zeros_nine_thirtyseconds"
+   },
+   {
+    "exact": "2/9",
+    "key": "floor",
+    "kind": "architecture floor",
+    "label": "sextic-sparsity architecture floor, theta = 5/6",
+    "theta": 0.8333333333333334,
+    "value": 0.2222222222222222,
+    "where": "our team's ceiling finding: that route cannot push theta below 5/6, so it cannot give Lambda below 2/9"
+   },
+   {
+    "exact": "0.22",
+    "key": "p15",
+    "kind": "published",
+    "label": "Polymath15 (2019)",
+    "value": 0.22,
+    "where": "published result, relies on a large computation; not kernel-checked here"
+   },
+   {
+    "exact": "0.2",
+    "key": "pt",
+    "kind": "published",
+    "label": "Platt-Trudgian (2021)",
+    "value": 0.2,
+    "where": "published result, relies on a large computation; not kernel-checked here"
+   },
+   {
+    "exact": "0",
+    "key": "rt",
+    "kind": "published lower bound",
+    "label": "Rodgers-Tao (2020): Lambda >= 0",
+    "value": 0.0,
+    "where": "published result; not in this registry. RH is Lambda <= 0, so RH is Lambda = 0"
+   }
+  ],
+  "conjecture1_proved": false,
+  "definitions": "telperion/examples/dbn/lean/DBNDefs.lean (DBN.H)",
+  "flow_theorem": "dbn_debruijn_parametric",
+  "headline_id": "rh:RH_dbn_real_zeros_nine_thirtyseconds",
+  "headline_theorem": "dbn_real_zeros_of_qrh_unconditional",
+  "lambda_curve": {
+   "fit": {
+    "a": 5.06,
+    "b": -0.012,
+    "formula": "Lambda_min(X) ~ 5.06 / log(X / 4 pi) - 0.012"
+   },
+   "needed_for_nine_thirtyseconds_X": 390000000.0,
+   "p15_point": {
+    "X": 60000000000.0,
+    "label": "Polymath15's own point (published)",
+    "lambda": 0.22
+   },
+   "points": [
+    {
+     "X": 19832.0,
+     "X_half": 10000.0,
+     "lambda": 0.6777,
+     "row": "kernel-feasible height",
+     "t0": 0.4977,
+     "y0": 0.6
+    },
+    {
+     "X": 199875.0,
+     "X_half": 100000.0,
+     "lambda": 0.5099,
+     "row": "kernel-feasible height",
+     "t0": 0.4707,
+     "y0": 0.28
+    },
+    {
+     "X": 1279870.0,
+     "X_half": 640000.0,
+     "lambda": 0.4287,
+     "row": "kernel-feasible height",
+     "t0": 0.4045,
+     "y0": 0.22
+    },
+    {
+     "X": 12566400.0,
+     "X_half": 6283190.0,
+     "lambda": 0.3558,
+     "row": "fit point (N = 1000)",
+     "t0": 0.3446,
+     "y0": 0.15
+    },
+    {
+     "X": 113097000.0,
+     "X_half": 56548700.0,
+     "lambda": 0.3044,
+     "row": "fit point (N = 3000)",
+     "t0": 0.2931,
+     "y0": 0.15
+    },
+    {
+     "X": 1256640000.0,
+     "X_half": 628319000.0,
+     "lambda": 0.2616,
+     "row": "fit point (N = 10000)",
+     "t0": 0.2566,
+     "y0": 0.1
+    }
+   ],
+   "source": "dbn-scoper Lambda_min(X) table, 2026-10-07 (bundled in telperion/explorer/build.py)",
+   "trust": "floating numerics (IEEE double plus mpmath) from our scoping run of the Polymath15 criterion; NOT Arb-rigorous, NOT kernel-checked"
+  },
+  "node_ids": [
+   "rh:RH_zeta_zero_free_seven_eighths",
+   "rh:RH_dbn_real_zeros_of_zeta_halfplane",
+   "rh:RH_dbn_real_zeros_of_qrh",
+   "rh:RH_dbn_real_zeros_nine_thirtyseconds"
+  ],
+  "release": {
+   "credit": "openai/math (Apache-2.0): the quasi-Riemann hypothesis, zeta(s) != 0 for Re s > 7/8, and its Lean proof are entirely OpenAI's",
+   "credit_url": "https://github.com/openai/math",
+   "doi_concept": "10.5281/zenodo.23269134",
+   "doi_version": "10.5281/zenodo.23269135",
+   "repo": "https://github.com/DrMurphyIsIn/qrh-debruijn-newman"
+  },
+  "support_ids": [
+   "rh:RH_dbn_debruijn_parametric",
+   "rh:RH_dbn_debruijn_real_zeros",
+   "rh:RH_dbn_H0_eq_xi"
+  ],
+  "trust": "Plots on this tab are float models of the stated bounds; the toy trajectory is a model of the bound, not a zero of zeta."
+ },
  "dh": {
   "density_model_formula": "(T/2pi)log(5T/2pi) - T/2pi (DH conductor-5 RvM count)",
   "off_line_attempts": [
