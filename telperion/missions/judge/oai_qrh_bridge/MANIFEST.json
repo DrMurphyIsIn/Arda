@@ -19,5 +19,30 @@
     "install": "telperion/scripts/judge_materialize.sh telperion/missions/judge/oai_qrh_bridge <materialized workspace>"
   },
   "not_consumable": [],
-  "nodes": []
+  "nodes": [
+    {
+      "slug": "RH_dbn_real_zeros_nine_thirtyseconds",
+      "campaign": "rh",
+      "theorem": "dbn_real_zeros_of_qrh_unconditional",
+      "solution_module": "ArdaDBNUnconditional",
+      "challenge_module": "MissionChallenges.RH_dbn_real_zeros_nine_thirtyseconds",
+      "bridge_theorem": "MissionJudge.RH_dbn_real_zeros_nine_thirtyseconds",
+      "config": "RH_dbn_real_zeros_nine_thirtyseconds.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "9270f4841484e772273854b80d3ca7538b33b43bedcc28f3123a4e5cb75f6042",
+      "statement_sha256": "7d44a8ddf6de9fcde729fdd6e28af50d5cf8c9a88c0f4eaf82bd3c94d5640c09"
+    },
+    {
+      "slug": "RH_zeta_zero_free_seven_eighths",
+      "campaign": "rh",
+      "theorem": "qrh_seven_eighths",
+      "solution_module": "ArdaQRHBridge",
+      "challenge_module": "MissionChallenges.RH_zeta_zero_free_seven_eighths",
+      "bridge_theorem": "MissionJudge.RH_zeta_zero_free_seven_eighths",
+      "config": "RH_zeta_zero_free_seven_eighths.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "74592f889651447b2c71f0c96f4eb950307ad3ca1456b060c445f9e2422928cd",
+      "statement_sha256": "c4e411e8a0c8374f0170400f03847db55963d8b21c0f02dc88592434dff7e3c1"
+    }
+  ]
 }

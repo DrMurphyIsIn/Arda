@@ -1,2 +1,2 @@
--- DO NOT EDIT BY HAND. No proved registry node has its artifact on `oai_qrh_bridge` yet,
--- so there is nothing to judge; a grant adds one bridge module per node.
+import MissionChallenges.RH_dbn_real_zeros_nine_thirtyseconds
+import MissionChallenges.RH_zeta_zero_free_seven_eighths
