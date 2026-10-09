@@ -54,6 +54,30 @@
       "statement_sha256": "a8b1e335472a84b4f8cbf8dc3df7b3db76d69212e77ef1f4f7b56118191f7ee2"
     },
     {
+      "slug": "RH_dbn_real_zeros_of_qrh",
+      "campaign": "rh",
+      "theorem": "dbn_real_zeros_of_qrh",
+      "solution_module": "DBNZeroFreeHalfplane",
+      "challenge_module": "MissionChallenges.RH_dbn_real_zeros_of_qrh",
+      "bridge_theorem": "MissionJudge.RH_dbn_real_zeros_of_qrh",
+      "config": "RH_dbn_real_zeros_of_qrh.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "a0670d8da5fc7e0f16be2de469674bb5ee9ae95af545c0b208e4fad973ff2f8a",
+      "statement_sha256": "3ac9c650e0b63ef2f4a980c9fcdc4b370aa3ca4e2af067edfdb8ed8170dc7026"
+    },
+    {
+      "slug": "RH_dbn_real_zeros_of_zeta_halfplane",
+      "campaign": "rh",
+      "theorem": "dbn_real_zeros_of_zeta_halfplane",
+      "solution_module": "DBNZeroFreeHalfplane",
+      "challenge_module": "MissionChallenges.RH_dbn_real_zeros_of_zeta_halfplane",
+      "bridge_theorem": "MissionJudge.RH_dbn_real_zeros_of_zeta_halfplane",
+      "config": "RH_dbn_real_zeros_of_zeta_halfplane.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "a0670d8da5fc7e0f16be2de469674bb5ee9ae95af545c0b208e4fad973ff2f8a",
+      "statement_sha256": "f4b99b7ad3ab58de22ce2ac791ddb2bd5573c9f10eeda53c9bd7ff2fa5ea3ff9"
+    },
+    {
       "slug": "RH_dbn_real_zeros_upset",
       "campaign": "rh",
       "theorem": "dbn_real_zeros_upset",
