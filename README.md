@@ -250,7 +250,8 @@ not its scope: start at [`telperion/README.md`](telperion/README.md).
 
 Telperion also keeps a **missions registry** of formal statements about the
 Riemann zeta function (`telperion/missions/`), with a browsable
-[Registry Explorer](docs/explorer/index.html) built from it. Its
+[Registry Explorer](https://drmurphyisin.github.io/Arda/explorer/) built from it
+(source: [`docs/explorer/index.html`](docs/explorer/index.html)). Its
 headline as of 2026-10-09: the first machine-checked bound on the de Bruijn–Newman
 constant below de Bruijn's 1/2, `Λ ≤ 9/32`, obtained by composing OpenAI's kernel-checked
 quasi-Riemann hypothesis (`ζ(s) ≠ 0` for `Re s > 7/8`, [openai/math](https://github.com/openai/math),
