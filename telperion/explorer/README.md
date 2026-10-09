@@ -8,7 +8,8 @@ campaign the flag tracks the registry's goal node, the campaign's own first rout
 
 ## What this is
 
-A single static web page, `docs/explorer/index.html`, that shows what the Telperion
+A single static web page, `docs/explorer/index.html`, served by GitHub Pages at
+<https://drmurphyisin.github.io/Arda/explorer/> (enabled 2026-10-09 from `main:/docs`), that shows what the Telperion
 missions registry currently holds, with the reverse-Dyson quasicrystal program
 (campaign `mirrormere`) in front. It is modelled on the presentation of Alvaro
 Lozano-Robledo's [Riemann Hypothesis Explorer](https://alozanoroble.github.io/riemann-hypothesis-explorer/)
