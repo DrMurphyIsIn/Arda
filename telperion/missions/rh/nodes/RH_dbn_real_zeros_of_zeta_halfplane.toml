@@ -3,9 +3,9 @@ depends_on = ["RH_dbn_debruijn_parametric", "RH_dbn_H0_eq_xi"]
 kind = "lemma"
 name = "RH.dbn_real_zeros_of_zeta_halfplane"
 statement_module = "Statements.RH_dbn_real_zeros_of_zeta_halfplane"
-status = "draft"
+status = "open"
 title = "Zero-free half-plane theta for zeta => every zero of H_t is real for t >= 2(theta-1/2)^2 (conditional on the half-plane; not RH). dbn island, Route C. conjecture1_proved = False"
-updated = "2026-10-07"
+updated = "2026-10-09"
 
 [author]
 date = "2026-10-07"
@@ -17,3 +17,11 @@ artifact = "../../examples/dbn/lean/DBNZeroFreeHalfplane.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "petermurphy@mountainviewdirectcare.com"
+auditor_identity = "petermurphy@mountainviewdirectcare.com"
+auditor_session = "operator-2026-10-09"
+date = "2026-10-09"
+independence = "independent"
+text = "Operator read-back. For any real theta: if the Riemann zeta function has no zero whose real part exceeds theta, then for every real t at least 2(theta - 1/2)^2 and every complex z with H_t(z) = 0, the imaginary part of z is zero. Conditional on the half-plane hypothesis; not RH."

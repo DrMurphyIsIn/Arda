@@ -3,9 +3,9 @@ depends_on = ["RH_dbn_real_zeros_of_zeta_halfplane"]
 kind = "lemma"
 name = "RH.dbn_real_zeros_of_qrh"
 statement_module = "Statements.RH_dbn_real_zeros_of_qrh"
-status = "draft"
+status = "open"
 title = "QRH hypothesis (zeta != 0 on Re s > 7/8, OpenAI's statement with the binder closed) => every zero of H_t is real for t >= 9/32 (conditional; not RH). dbn island. conjecture1_proved = False"
-updated = "2026-10-07"
+updated = "2026-10-09"
 
 [author]
 date = "2026-10-07"
@@ -17,3 +17,11 @@ artifact = "../../examples/dbn/lean/DBNZeroFreeHalfplane.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "petermurphy@mountainviewdirectcare.com"
+auditor_identity = "petermurphy@mountainviewdirectcare.com"
+auditor_session = "operator-2026-10-09"
+date = "2026-10-09"
+independence = "independent"
+text = "Operator read-back. If zeta has no zero with real part greater than 7/8 (OpenAI's quasi-Riemann hypothesis with its implicit binder closed), then for every real t at least 9/32 and every complex z with H_t(z) = 0, Im z = 0. Conditional; not RH."
