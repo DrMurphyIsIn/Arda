@@ -3,7 +3,7 @@ depends_on = ["RH_dbn_debruijn_parametric", "RH_dbn_H0_eq_xi"]
 kind = "lemma"
 name = "RH.dbn_real_zeros_of_zeta_halfplane"
 statement_module = "Statements.RH_dbn_real_zeros_of_zeta_halfplane"
-status = "open"
+status = "proved"
 title = "Zero-free half-plane theta for zeta => every zero of H_t is real for t >= 2(theta-1/2)^2 (conditional on the half-plane; not RH). dbn island, Route C. conjecture1_proved = False"
 updated = "2026-10-09"
 
@@ -12,10 +12,18 @@ date = "2026-10-07"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_01T6sQ9By6CuBoffW7BYPHJT"
 
+[grant]
+artifact_sha256 = "a0670d8da5fc7e0f16be2de469674bb5ee9ae95af545c0b208e4fad973ff2f8a"
+date = "2026-10-09"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "f4b99b7ad3ab58de22ce2ac791ddb2bd5573c9f10eeda53c9bd7ff2fa5ea3ff9"
+
 [proof]
 artifact = "../../examples/dbn/lean/DBNZeroFreeHalfplane.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]
