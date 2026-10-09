@@ -458,6 +458,15 @@ session or identity. So the read-back has to come from the operator, as
 Never run `comparator-record` before the grant. The tool refuses it, and a pass on a pending
 bundle is not a recordable run.
 
+**Status, 2026-10-09: the chain is closed.** The operator recorded the four read-backs under
+their own identity (118d2d42d, `independence = "independent"`); session e9 granted all four
+through the gate (PR #667); `missions-comparator` run 37955041118 passed every node with
+nanoda on (dbn shard for the two conditional nodes, `judge-oai-qrh-bridge` for the two bridge
+nodes; the bridge pair also passed on main's run 37955332482); and the records were written
+with `log_check = "verified"`, `head_check = "matched"` (PR #669). All four nodes are
+`proved` on main and no longer appear in `mission provenance-report`. The explorer labels
+them judge-verified. Nothing here is RH. conjecture1_proved = False.
+
 **What it does not establish.** The shadowing guard covers the island's own modules, not the
 roughly 2,900 OpenAI modules outside the guards' import closure. The judge resolves the
 statement in the artifact's environment at OpenAI's pin, so whether the rh campaign's

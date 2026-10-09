@@ -20,6 +20,7 @@ Source-of-truth documents:
 - [`proof/`](proof/) — the Lean 4 formalization (R3Cert / R47 / Φ≤1 / capped-joint) and exact-arithmetic verification harnesses.
 
 RH and BG campaign tracking now lives in the missions registry (`telperion/missions/`; see [`telperion/docs/MISSIONS_HOWTO.md`](telperion/docs/MISSIONS_HOWTO.md)).
+Riemann registry headline (2026-10-09): `Λ ≤ 9/32` for the de Bruijn–Newman constant, kernel-checked and judge-verified, from OpenAI's quasi-Riemann hypothesis (`Re s > 7/8`) composed with de Bruijn's theorem; weaker than the numerical 0.22, not RH. See [`telperion/PROOF_STATUS.md`](telperion/PROOF_STATUS.md) and [`telperion/docs/QRH_DBN_BRIDGE_2026-10-07.md`](telperion/docs/QRH_DBN_BRIDGE_2026-10-07.md).
 
 ---
 
