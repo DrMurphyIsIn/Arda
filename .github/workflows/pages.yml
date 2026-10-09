@@ -1,0 +1,40 @@
+# Publish the Registry Explorer to GitHub Pages at https://drmurphyisin.github.io/Arda/explorer/.
+# Pages is configured for Actions deployment (build_type = workflow): the legacy Jekyll builder clones the
+# whole repository (about 90,000 files) and never finished. This job uploads ONLY docs/explorer, keeping the
+# /explorer/ path, and deploys it. The page itself is prebuilt and committed by explorer-rebuild.yml.
+name: pages
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["docs/explorer/**", ".github/workflows/pages.yml"]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}explorer/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: docs/explorer
+      - name: Stage the site (explorer only, under /explorer/)
+        run: |
+          mkdir -p site/explorer
+          cp -R docs/explorer/. site/explorer/
+          printf '<!doctype html><meta http-equiv="refresh" content="0; url=explorer/"><a href="explorer/">Registry Explorer</a>\n' > site/index.html
+          touch site/.nojekyll
+          ls -la site site/explorer | head
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
