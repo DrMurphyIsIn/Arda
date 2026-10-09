@@ -41,7 +41,7 @@ The page has seven tabs.
 5. **The registry.** Status counts per campaign, a dependency graph in SVG coloured by
    status, and a card per node with its title, kind, verbatim statement (hypotheses
    included), artifact link into GitHub, `closure_clean`, CI coverage label, and the
-   readback with its auditor, date, and its independence label as the registry records it ("self-attested", or "judge-verified" once a Comparator run is recorded), plus the grant digest, judge run and required CI run when present. The "proved only" filter
+   readback with its auditor, date, and its independence label as the registry records it ("self-attested"; "independent read-back" when `mission audit` accepted a different session and identity, such as the operator; or "judge-verified" once a Comparator run is recorded), plus the grant digest, judge run and required CI run when present. The "proved only" filter
    is on by default.
 6. **What is known.** A plain list of what the registry holds, followed by the honesty
    footer: RH is not proved, every goal node is a draft, everything Arb-conditional is not a

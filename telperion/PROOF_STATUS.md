@@ -210,29 +210,96 @@ audit.
 <!-- missions:bg:end -->
 
 <!-- missions:rh:begin -->
-The missions registry (`telperion/missions/rh/`) is now the tracking truth for the RH
-campaign; this block is generated (`telperion mission status rh`, 2026-09-11). Every
-`proved` status below was earned through the registry's verify gate against the named
-island artifact (v4.34 li_positivity island; one cross-island grant against the v4.32
-zero_free_bridge island); the goal node is `draft` — **RH is NOT claimed proved**,
-`conjecture1_proved = False`.
+The missions registry (`telperion/missions/rh/`) is the tracking truth for the RH campaign;
+this block was regenerated with `telperion mission status rh` on 2026-10-09. Every `proved`
+status below was earned through the registry's verify gate against the named island artifact
+(the v4.34 li_positivity island; the dbn and rvm_bridge islands; one cross-island grant
+against the v4.32 zero_free_bridge island; and, since 2026-10-09, the oai_qrh_bridge island,
+a materialized checkout of openai/math at Lean v4.34.1 / Mathlib d13f23b). The goal node is
+`draft` — **RH is NOT claimed proved**, `conjecture1_proved = False`.
 
 ```
 Riemann Hypothesis campaign: unconditional zero-free regions, the sharp zeta log bound, the effective dVP rate, and the Li-criterion ladder (v4.34 island, #483 unification)
 
+  ✓ RH_backlund_s_log  (milestone, proved)
+  ✓ RH_bl_closed_form_five_nonneg  (lemma, proved)  -> RH_livalue
+  ✓ RH_bl_explicit_formula  (milestone, proved)  -> RH_limit_explicit_formula, RH_bl_finite_multiset, RH_bl_explicit_formula_of_livalue, RH_li_zero_sums_converge, RH_bl_explicit_formula_of_partial_fraction, RH_bl_explicit_formula_of_strip
+  ✓ RH_bl_explicit_formula_of_livalue  (lemma, proved)  -> RH_li_zero_sums_converge
+  ✓ RH_bl_explicit_formula_of_partial_fraction  (lemma, proved)  -> RH_livalue_of_partial_fraction, RH_xi_derivative_partial_fraction_of_two
+  ✓ RH_bl_explicit_formula_of_strip  (lemma, proved)  -> RH_no_real_zero_unit_interval, RH_xi_derivative_partial_fraction_of_strip, RH_bl_explicit_formula_of_partial_fraction
+  ✓ RH_bl_finite_multiset  (lemma, proved)
   ✓ RH_borel_caratheodory_deriv  (lemma, proved)
-  · RH_conjecture  (goal, draft)  -> RH_zeta_repr_R1, RH_strip_repr, RH_zeta_log_bound, RH_zero_free_gamma5, RH_zero_free_polylog, RH_borel_caratheodory_deriv, RH_dlvp_region_effective, RH_dlvp_zero_free_region, RH_li_rung_certificates, RH_li_ladder_reduction, RH_li_neg_refutes_rh
+  ✓ RH_companion_bragg_reduction  (lemma, proved)
+  · RH_conjecture  (goal, draft)  -> RH_zeta_repr_R1, RH_strip_repr, RH_zeta_log_bound, RH_zero_free_gamma5, RH_zero_free_polylog, RH_borel_caratheodory_deriv, RH_dlvp_region_effective, RH_dlvp_zero_free_region, RH_li_rung_certificates, RH_li_ladder_reduction, RH_li_neg_refutes_rh, RH_backlund_s_log, RH_companion_bragg_reduction, RH_bl_finite_multiset, RH_li_rung0_kernel, RH_rvm_unconditional, RH_corridor_bound
+  ✓ RH_corridor_bound  (milestone, proved)  -> RH_rvm_unconditional
+  ✓ RH_dbn_H0_eq_xi  (lemma, proved)
+  ✓ RH_dbn_H0_zero_strip  (lemma, proved)
+  ✓ RH_dbn_debruijn_parametric  (lemma, proved)  -> RH_dbn_debruijn_real_zeros
+  ✓ RH_dbn_debruijn_real_zeros  (milestone, proved)  -> RH_dbn_H0_zero_strip
+  ✓ RH_dbn_real_zeros_nine_thirtyseconds  (milestone, proved)  -> RH_dbn_real_zeros_of_qrh, RH_zeta_zero_free_seven_eighths
+  ✓ RH_dbn_real_zeros_of_qrh  (lemma, proved)  -> RH_dbn_real_zeros_of_zeta_halfplane
+  ✓ RH_dbn_real_zeros_of_zeta_halfplane  (lemma, proved)  -> RH_dbn_debruijn_parametric, RH_dbn_H0_eq_xi
+  ✓ RH_dbn_real_zeros_upset  (lemma, proved)  -> RH_dbn_debruijn_parametric
+  ✓ RH_dbn_rh_iff_H0_real_zeros  (milestone, proved)  -> RH_dbn_H0_eq_xi
+  ✓ RH_dbn_rh_iff_real_zeros_nonneg_t  (milestone, proved)  -> RH_dbn_rh_iff_H0_real_zeros, RH_dbn_real_zeros_upset
   ✓ RH_dlvp_region_effective  (milestone, proved)  -> RH_borel_caratheodory_deriv, RH_strip_repr
   ✓ RH_dlvp_zero_free_region  (milestone, proved)  -> RH_dlvp_region_effective
+  ✓ RH_li_forward_half  (lemma, proved)
+  ✓ RH_li_ladder_height  (lemma, proved)
+  ✓ RH_li_ladder_height_sharp  (lemma, proved)  -> RH_li_ladder_height
+  ✓ RH_li_ladder_liLimit  (lemma, proved)  -> RH_li_zero_sums_converge
+  ✓ RH_li_ladder_liLimit_sharp  (lemma, proved)  -> RH_li_ladder_liLimit
   ✓ RH_li_ladder_reduction  (lemma, proved)
   ✓ RH_li_neg_refutes_rh  (lemma, proved)
+  ✓ RH_li_rung0_kernel  (lemma, proved)  -> RH_li_rung_certificates
   ✓ RH_li_rung_certificates  (lemma, proved)
+  ✓ RH_li_rungs_lt_five  (lemma, proved)  -> RH_zeta_zero_confined
+  ✓ RH_li_rungs_of_height_4000  (lemma, proved)  -> RH_li_ladder_height, RH_zeta_zero_im_ge
+  ✓ RH_li_rungs_of_height_4000_sharp  (lemma, proved)  -> RH_li_ladder_height_sharp, RH_zeta_zero_im_ge
+  ✓ RH_li_zero_sums_converge  (lemma, proved)
+  ✓ RH_limit_explicit_formula  (milestone, proved)  -> RH_rvm_unconditional, RH_corridor_bound
+  ✓ RH_livalue  (lemma, proved)  -> RH_xi_derivative_partial_fraction, RH_no_real_zero_unit_interval, RH_livalue_of_partial_fraction
+  ✓ RH_livalue_of_partial_fraction  (lemma, proved)  -> RH_bl_explicit_formula_of_livalue
+  ✓ RH_local_count_sum  (lemma, proved)
+  ✓ RH_no_real_zero_unit_interval  (lemma, proved)
+  ✓ RH_rvm_unconditional  (milestone, proved)  -> RH_backlund_s_log
+  ✓ RH_strip_deriv_bound  (lemma, proved)  -> RH_local_count_sum
   ✓ RH_strip_repr  (milestone, proved)  -> RH_zeta_repr_R1
+  ✓ RH_weil_criterion_iff  (lemma, proved)
+  · RH_weil_window_floor_of_certified_block  (lemma, draft)  -> RH_limit_explicit_formula
+  ✓ RH_xi_derivative_partial_fraction  (lemma, proved)  -> RH_strip_deriv_bound, RH_xi_derivative_partial_fraction_of_strip
+  ✓ RH_xi_derivative_partial_fraction_of  (lemma, proved)
+  ✓ RH_xi_derivative_partial_fraction_of_regular  (lemma, proved)  -> RH_xi_logDeriv_deriv_decay, RH_xi_derivative_partial_fraction_of
+  ✓ RH_xi_derivative_partial_fraction_of_strip  (lemma, proved)  -> RH_local_count_sum, RH_xi_derivative_partial_fraction_of_two
+  ✓ RH_xi_derivative_partial_fraction_of_two  (lemma, proved)  -> RH_xi_growth_of_two, RH_xi_derivative_partial_fraction_of_regular
+  ✓ RH_xi_diff_entire_extension  (lemma, proved)
+  ✓ RH_xi_diff_regular_of_growth  (lemma, proved)  -> RH_xi_diff_entire_extension
+  ✓ RH_xi_growth_of_two  (lemma, proved)  -> RH_xi_right_deriv_bound, RH_xi_diff_regular_of_growth
+  ✓ RH_xi_logDeriv_deriv_decay  (lemma, proved)
+  ✓ RH_xi_right_deriv_bound  (lemma, proved)
   ✓ RH_zero_free_gamma5  (milestone, proved)  -> RH_strip_repr
   ✓ RH_zero_free_polylog  (milestone, proved)  -> RH_zero_free_gamma5, RH_zeta_log_bound
   ✓ RH_zeta_log_bound  (milestone, proved)  -> RH_strip_repr
   ✓ RH_zeta_repr_R1  (lemma, proved)
+  ✓ RH_zeta_zero_confined  (lemma, proved)
+  ✓ RH_zeta_zero_free_seven_eighths  (lemma, proved)
+  ✓ RH_zeta_zero_im_ge  (lemma, proved)
 ```
+
+**2026-10-09: the de Bruijn–Newman bound `Λ ≤ 9/32`.** Four nodes were registered, read back
+by the operator under their own identity, granted through the gate, and judge-verified by the
+`missions-comparator` Comparator job (run 37955041118, Lean kernel + nanoda):
+`RH_dbn_real_zeros_of_zeta_halfplane` (a zero-free half-plane `Re s > θ` makes every zero of
+`H_t` real for `t ≥ 2(θ − 1/2)²`; dbn island), `RH_dbn_real_zeros_of_qrh` (the instance
+`θ = 7/8`, `t ≥ 9/32`, conditional; dbn island), `RH_zeta_zero_free_seven_eighths` (OpenAI's
+kernel-checked quasi-Riemann hypothesis `ζ(s) ≠ 0` for `Re s > 7/8`, openai/math adc7f124,
+Apache-2.0, re-exported on the oai_qrh_bridge island; cross-pin against the campaign
+environment), and `RH_dbn_real_zeros_nine_thirtyseconds` (the composition, UNCONDITIONAL in
+one Lean environment at OpenAI's pin). Classically `Λ ≤ 9/32 = 0.28125`: the first kernel-checked
+bound below de Bruijn's 1/2, weaker than the numerical 0.22 (Polymath15) and 0.2
+(Platt–Trudgian). RH is `Λ = 0`. Design, audit, judge and grant trail:
+`docs/QRH_DBN_BRIDGE_2026-10-07.md`, `docs/QRH_DBN_AUDIT_2026-10-07_e9.md`,
+`docs/JUDGE_OAI_BRIDGE_REVIEW_2026-10-08_e9.md`.
 
 Migration notes (2026-09-11, findings in the task-10 report): the Li rungs are each
 CONDITIONAL on their Arb enclosure hypothesis (the documented trust seam) and the rungs
