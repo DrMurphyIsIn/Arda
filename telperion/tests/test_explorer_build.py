@@ -67,13 +67,20 @@ def test_readback_labels_come_from_the_registry(registry):
         node = by_id[n["id"]]
         expected = explorer_build.independence_label(node)
         assert n["readback"]["independence"] == expected, n["id"]
-        assert n["readback"]["independence"] in (explorer_build.INDEPENDENCE_LABEL, explorer_build.JUDGE_LABEL), n["id"]
+        assert n["readback"]["independence"] in (
+            explorer_build.INDEPENDENCE_LABEL, explorer_build.JUDGE_LABEL,
+            explorer_build.INDEPENDENT_LABEL), n["id"]
+        if n["readback"]["independence"] == explorer_build.INDEPENDENT_LABEL:
+            # only `mission audit`'s own verdict may say so, never a hand-written field
+            assert (node.readback.independence or "").strip().lower() == "independent", n["id"]
         comp = getattr(node, "comparator", None)
         if comp is not None and getattr(comp, "run_id", ""):
             assert n["provenance"]["comparator"]["run_id"] == comp.run_id
     assert registry["independence_label"] == explorer_build.INDEPENDENCE_LABEL
     dumped = json.dumps(registry)
-    assert "@" not in "".join(n["readback"]["auditor"] for n in with_rb) or True  # auditor is a label, not an identity
+    # the auditor is a display label, never an identity: an e-mail auditor label (the CLI's
+    # default for an operator read-back) is published as "operator"
+    assert "@" not in "".join(n["readback"]["auditor"] for n in with_rb)
     for key in ("auditor_identity", "auditor_session", "identity\":", "session\":"):
         assert key not in dumped, f"provenance identity field leaked into the page data: {key}"
 

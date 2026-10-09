@@ -65,6 +65,9 @@ CONJECTURE_SENTENCE = "conjecture1_proved = False"
 #: Nothing here is inferred: the page shows exactly what the TOML records.
 INDEPENDENCE_LABEL = "self-attested"          # the legacy / unverified label
 JUDGE_LABEL = "judge-verified"                # a recorded Comparator pass on the current artifact
+INDEPENDENT_LABEL = "independent read-back"   # `mission audit` accepted a different principal
+                                              # (session AND identity differ from the author's)
+OPERATOR_AUDITOR = "operator"                 # shown in place of an auditor label that is an e-mail
 
 
 def independence_label(node) -> str:
@@ -74,9 +77,19 @@ def independence_label(node) -> str:
         return JUDGE_LABEL
     rb = node.readback
     raw = (getattr(rb, "independence", "") or "").strip().lower() if rb is not None else ""
-    if raw in ("", "unverified", "self-attested"):
+    if raw in ("", "unverified", "self-attested", "self"):
         return INDEPENDENCE_LABEL
+    if raw == "independent":
+        return INDEPENDENT_LABEL
     return raw
+
+
+def auditor_label(rb) -> str:
+    """The read-back's display label. `mission audit` defaults the label to the auditor's
+    identity, which is an e-mail address; the page never publishes identities, so an
+    address becomes the neutral word "operator" (the independence label says the rest)."""
+    label = (getattr(rb, "auditor", "") or "").strip() if rb is not None else ""
+    return OPERATOR_AUDITOR if "@" in label else label
 
 
 def provenance_block(node) -> dict:
@@ -197,7 +210,7 @@ def build_registry() -> dict:
             readback = None
             if n.readback is not None:
                 readback = {
-                    "auditor": n.readback.auditor,
+                    "auditor": auditor_label(n.readback),
                     "date": n.readback.date,
                     "text": n.readback.text,
                     "independence": independence_label(n),
@@ -251,6 +264,7 @@ def build_registry() -> dict:
                  f"on the current artifact, in which case it is labelled {JUDGE_LABEL}."),
         "independence_label": INDEPENDENCE_LABEL,
         "judge_label": JUDGE_LABEL,
+        "independent_label": INDEPENDENT_LABEL,
         "campaigns": campaigns,
         "nodes": nodes,
         "totals": total,
