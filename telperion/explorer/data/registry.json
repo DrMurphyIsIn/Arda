@@ -5242,7 +5242,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-09",
+     "run_id": "37955041118",
+     "run_url": "https://github.com/DrMurphyIsIn/Arda/actions/runs/37955041118",
+     "theorem": "dbn_real_zeros_of_qrh_unconditional"
+    },
     "grant": {
      "artifact_sha256": "9270f4841484e772",
      "date": "2026-10-09",
@@ -5253,7 +5258,7 @@
    "readback": {
     "auditor": "operator",
     "date": "2026-10-09",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "Operator read-back. For every real t at least 9/32 and every complex z, if H_t(z) = 0 then Im z = 0, where H_t(z) is the integral over u > 0 of exp(t u^2) Phi(u) cos(z u) and Phi is the Polymath15 series. Unconditional, in one environment at OpenAI's pin."
    },
    "refutation_statement": "",
@@ -5295,7 +5300,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-09",
+     "run_id": "37955041118",
+     "run_url": "https://github.com/DrMurphyIsIn/Arda/actions/runs/37955041118",
+     "theorem": "dbn_real_zeros_of_qrh"
+    },
     "grant": {
      "artifact_sha256": "a0670d8da5fc7e0f",
      "date": "2026-10-09",
@@ -5306,7 +5316,7 @@
    "readback": {
     "auditor": "operator",
     "date": "2026-10-09",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "Operator read-back. If zeta has no zero with real part greater than 7/8 (OpenAI's quasi-Riemann hypothesis with its implicit binder closed), then for every real t at least 9/32 and every complex z with H_t(z) = 0, Im z = 0. Conditional; not RH."
    },
    "refutation_statement": "",
@@ -5349,7 +5359,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-09",
+     "run_id": "37955041118",
+     "run_url": "https://github.com/DrMurphyIsIn/Arda/actions/runs/37955041118",
+     "theorem": "dbn_real_zeros_of_zeta_halfplane"
+    },
     "grant": {
      "artifact_sha256": "a0670d8da5fc7e0f",
      "date": "2026-10-09",
@@ -5360,7 +5375,7 @@
    "readback": {
     "auditor": "operator",
     "date": "2026-10-09",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "Operator read-back. For any real theta: if the Riemann zeta function has no zero whose real part exceeds theta, then for every real t at least 2(theta - 1/2)^2 and every complex z with H_t(z) = 0, the imaginary part of z is zero. Conditional on the half-plane hypothesis; not RH."
    },
    "refutation_statement": "",
@@ -7612,7 +7627,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-09",
+     "run_id": "37955041118",
+     "run_url": "https://github.com/DrMurphyIsIn/Arda/actions/runs/37955041118",
+     "theorem": "qrh_seven_eighths"
+    },
     "grant": {
      "artifact_sha256": "74592f889651447b",
      "date": "2026-10-09",
@@ -7623,7 +7643,7 @@
    "readback": {
     "auditor": "operator",
     "date": "2026-10-09",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "Operator read-back. For every complex s with real part greater than 7/8, zeta(s) is nonzero. The proof is entirely OpenAI's (openai/math adc7f124, Apache-2.0), re-exported inside OpenAI's own workspace at Lean v4.34.1 / Mathlib d13f23b, a different pin from the campaign environment; riemannZeta is not the same closed term across the pins. Not RH."
    },
    "refutation_statement": "",
