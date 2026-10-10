@@ -3,7 +3,7 @@ depends_on = []
 kind = "milestone"
 name = "RH.dbn_newman"
 statement_module = "Statements.RH_dbn_newman"
-status = "open"
+status = "proved"
 title = "Newman's conjecture (Rodgers-Tao 2018), after Dobner 2020: for every t < 0 the heat-flowed H_t has a NON-REAL zero, i.e. Lambda >= 0 in the island's sInf-free vocabulary. PROVED on the dbn island (DBNNewman: Bohr almost periodicity + Hadamard exp-polynomial + complex Stirling + Gaussian convolution of H_0 + saddle-point Theorem 4 + Hurwitz). With de Bruijn (Lambda <= 1/2) and the judged QRH bridge (Lambda <= 9/32) the kernel-checked picture is 0 <= Lambda <= 9/32. Lambda = 0 is RH and is NOT proved. conjecture1_proved = False"
 updated = "2026-10-10"
 
@@ -12,10 +12,18 @@ date = "2026-10-10"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_01T6sQ9By6CuBoffW7BYPHJT"
 
+[grant]
+artifact_sha256 = "599c6e89ed3f1864fa44b4dd8e6c43656056b240f9524dbdf7d4ef8dfc3d9eb4"
+date = "2026-10-10"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "7e7eadd96e36441101642873dfaabccf62e8fcca8df98ce03ba2ef65d187b49e"
+
 [proof]
 artifact = "../../examples/dbn/lean/DBNNewman.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]

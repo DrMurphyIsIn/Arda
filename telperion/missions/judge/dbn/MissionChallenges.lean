@@ -2,6 +2,7 @@ import MissionChallenges.RH_dbn_H0_eq_xi
 import MissionChallenges.RH_dbn_H0_zero_strip
 import MissionChallenges.RH_dbn_debruijn_parametric
 import MissionChallenges.RH_dbn_debruijn_real_zeros
+import MissionChallenges.RH_dbn_newman
 import MissionChallenges.RH_dbn_real_zeros_of_qrh
 import MissionChallenges.RH_dbn_real_zeros_of_zeta_halfplane
 import MissionChallenges.RH_dbn_real_zeros_upset
