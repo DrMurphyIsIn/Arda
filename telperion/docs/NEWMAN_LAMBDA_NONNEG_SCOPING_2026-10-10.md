@@ -114,3 +114,52 @@ reusable analytic infrastructure (complex Stirling, Bohr, the contour-shift repr
 that any future work on H_t will need; (c) exercising the registry and judge on a multi-node analytic proof
 whose inputs are all classical. It is the right next project for the dbn island if the project wants one.
 conjecture1_proved = False.
+
+## 6. Progress and refined architecture (2026-10-10, branch rh/newman-dobner)
+
+Steps 1-3 are kernel-checked on the dbn island (pin de5ce8a9, axioms `[propext, Classical.choice,
+Quot.sound]`, all in `AxiomGuardDBN`):
+
+| Module | Statement | Lines |
+|---|---|---|
+| `DBNBohr` | `exists_shifts_tendstoLocallyUniformly`: everywhere absolutely convergent Dirichlet series has integer vertical shifts `τ_j → ∞` along which `s ↦ F(s + iτ_j) → F` locally uniformly (sequential compactness of the unit-twist vectors; no Diophantine approximation theorem) | 307 |
+| `DBNFtZero` | `exists_zero`: `F c s = ∑ exp(-c log²n) n^{-s}` has a zero (entire, finite order, `Hadamard.entire_no_zeros_is_exp_polynomial`, `F' = F g'`, `g'` polynomial `O(2^{-σ})` on the real axis so `g' = 0`, but `F'(0) ≠ 0`) | 276 |
+| `DBNFtZeroHigh` | `exists_zero_im_ge`: zeros of `F c` at arbitrarily large height (Bohr + `DBN.hurwitz_ne_zero`; Rouché not needed) | 60 |
+| `DBNStirling` | `Gamma_eq_exp_L`: `Γ z = exp((z-1/2) Log z - z + ½ log 2π + R z)`, `‖R z‖ ≤ 1/(4‖z‖)`, `digamma_eq`: `ψ z = Log z - 1/(2z) + R' z`, `‖R' z‖ ≤ 1/(2‖z‖²)`, all on `Re z > 0` (Euler's product + second-order Euler-Maclaurin on unit cells + real Stirling; first kernel-clean complex Stirling in the project) | 655 |
+
+What changed against sections 3-4 above after reading the island:
+
+* **The Dirichlet-series expansion of `H_t` for `t < 0` needs no contour of `ξ` and no `ζ`-vocabulary.**
+  `DBNStrip` already has the two-sided fold `H_0(z) = ½ ∫_ℝ Φ(u) e^{izu} du` and the termwise Gamma
+  evaluation `∫_ℝ a_n(u) e^{izu} du = (1/8) s(s-1) π^{-s/2} Γ(s/2) n^{-s}` for `Im z < -1`. The heat factor
+  `e^{-cu²}` is the Fourier transform of a Gaussian, so (Fubini) `H_{-c}(z) = (4πc)^{-1/2} ∫_ℝ e^{-ω²/4c}
+  H_0(z+ω) dω`; one Cauchy-rectangle shift of the real `ω`-line into `Im z + β < -1` lands where the
+  island's series converges absolutely. In the variable `s = ½ + iz/2` this is exactly Dobner's (9):
+  `ξ_c(s) := H_{-c}(-i(2s-1)) = ∑_n B_n(s)`, `B_n(s) = (πc)^{-1/2} ∫_ℝ γ(a+iτ) n^{-(a+iτ)} e^{(a+iτ-s)²/c} dτ`,
+  any `a > 1`, with `γ(v) = (1/16) v(v-1) π^{-v/2} Γ(v/2)`. Module `DBNGaussConv` (step 4).
+* **Only the digamma asymptotic is needed, not `log Γ` itself.** Writing `γ(v) = (1/16) v(v-1) exp G₀(v)`,
+  `G₀(v) = -(v/2) log π + L(v/2)` with `DBNStirling.L`, the saddle-point analysis of `B_n` uses
+  `G₀(s+δ) - G₀(s) - δ ℓ(s)` with `ℓ(s) = ½ Log(s/2π)`, which is explicit: `(s/2)(Log(1+δ/s) - δ/s) +
+  ((δ-1)/2) Log(1+δ/s) + R((s+δ)/2) - R(s/2)`, bounded by `C(|δ|²+|δ|+1)/|s|` for `|δ| ≤ |s|/2`.
+* **Contours stay in `Re v ≥ 1`.** Dobner's saddle for the `n`-th term is at `Re v = x + (c/2) log n`. We
+  use the line `Re v = x + h + M` with a constant `M` chosen so that it is `≥ 1` on the whole strip
+  `|Re s - x₀| ≤ 1` (the Gaussian algebra absorbs any constant shift exactly: the main term is still
+  `γ_t(s) e^{hℓ(s)}`, the error picks up the fixed factor `e^{M²/c}`). So no poles of `γ` are ever
+  crossed and the strip may sit anywhere, including `x₀ ≤ -2`; the qualitative Theorem 4 is unconditional
+  on the location of the zero `s₀` of `F_t` supplied by `DBNFtZero`.
+* **Error accounting (step 5 target).** With `a_n = exp(-c log²n/4)`, `h_n = (c/2) log n`,
+  `E(s,h) := e^{-hℓ(s)} γ_c(J(s)+h)/γ_t(s) - 1`, the needed statement is
+  `∑_n a_n n^{-x} |E(s, h_n)| → 0` uniformly for `|x - x₀| ≤ 1` as `y → ∞`. Near field (`|σ| ≤ |s|/2` on
+  the saddle line): `|E| ≤ e^{C(h²+h)/y} C'(h²+h+1)/y`; far field: Gaussian tail `e^{-y²/32c}` against the
+  crude `|γ(v)| ≤ poly · Γ(Re v/2)` (needs `‖Γ(a+ib)‖ ≤ Γ(a)`, 25 lines from the integral) and the lower
+  bound `log|γ(s)| ≥ -πy/4 - C log y` from `DBNStirling`. All three regimes of `n` (small, medium, large)
+  are covered by the single bound `a_n |E| ≤ e^{-h²/2c} (e^{h} C'(h²+h+1)/y + e^{-y²/32c} C'')`, summable
+  in `n` with total `O(1/y)`. No `y^{-1/5}` rate, no `|x| ≤ C y^{1/4}` region.
+* **Transfer (step 6)** as in section 1 item 5, with `J(s) = s + (c/4) Log(s/2π)` and
+  `h(s) = ξ_c(J(s))/γ_t(s)`; Hurwitz on the disc `|s - s₀| < 1` around the Bohr-shifted zeros of `F_c`
+  (the strip is `|x - x₀| ≤ 1`), then `Re J(s₀ + iτ_m + o(1)) = x₀ + (c/4) log(τ_m/2π) + o(1) → ∞ ≠ ½`,
+  i.e. `Im z ≠ 0` for the corresponding zero of `H_{-c}`. Registry node
+  `dbn_newman : ∀ t < 0, ∃ z, DBN.H t z = 0 ∧ z.im ≠ 0`.
+
+Remaining estimate: `DBNGaussConv` ~600 lines, the saddle-point module ~2-3k, the transfer ~500.
+conjecture1_proved = False.
