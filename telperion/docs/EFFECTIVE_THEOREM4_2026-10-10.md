@@ -18,7 +18,7 @@ about `t >= 0`, where "all zeros real" is RH. conjecture1_proved = False.
   Dirichlet series by domination with `sum 1/n^2 = pi^2/6`). `#print axioms`:
   `[propext, Classical.choice, Quot.sound]` for all four. Compiled with
   `ARDA_LEAN_SLOTS=1 ~/hodge-engine/leanlock.sh lake env lean DBNTheorem4Effective.lean` (about 30 s,
-  swap used 715 MB throughout). Not wired into `lakefile.toml` or `AxiomGuardDBN` (parent's job).
+  swap used 715 MB throughout). Wired into `lakefile.toml` (defaultTargets) and `AxiomGuardDBN` on branch `rh/selberg-newman`.
 * **The rate.** `log Yexp = A(x0)/c + O(log(1/eps)) + O(1)` as `c = |t| -> 0`, with
   `A(x0) = (11/3)(3 - x0)^2 + 7/16` (`A(1/2) = 23.35`); for `c -> infinity`, `log Yexp ~ (20/3) c`. The
   constants are crude by many orders of magnitude (section 2.6) but every loss is labelled and none is
