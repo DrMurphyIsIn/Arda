@@ -844,3 +844,95 @@ noncomputable def flow (t : ℝ) (z : ℂ) : ℂ :=
 end ExtSelbergData
 
 end DBNSelberg
+
+/-
+  ===== S^# VOCABULARY MIRROR (2026-10-10, programme item 3, closing the honest gap) =====
+  Verbatim copies of the dbn-island declarations the node RH_dbn_selberg_newman_sharp states
+  Newman's conjecture in: the structure `DBNSelberg.SelbergSharp` (the extended Selberg class as
+  Kaczorowski-Perelli define it: Dirichlet series, meromorphic continuation with (s-1)^m F extending
+  to an entire function, Gamma data, root number, functional equation on the critical strip, finite
+  order on the right half-plane), the chosen entire extension `G`, the glued completed function `xi`,
+  and its backward heat flow `sharpFlow` (Gaussian convolution, as for `ExtSelbergData.flow`).
+  Design: telperion/docs/SELBERG_NEWMAN_DESIGN_2026-10-10.md section 5.  conjecture1_proved = False.
+-/
+namespace DBNSelberg
+
+open Complex
+open scoped Real
+
+-- ===== examples/dbn/lean/DBNSelbergSharp.lean:39-75 (v4.34 dbn island) =====
+/-- An element of the extended Selberg class `S^#`, as the island states it. -/
+structure SelbergSharp where
+  /-- Dirichlet coefficients; `a 0` is ignored by `LSeries`. -/
+  a : ℕ → ℂ
+  a_one : a 1 = 1
+  nonconst : ∃ n : ℕ, 2 ≤ n ∧ a n ≠ 0
+  summable : ∀ s : ℂ, 1 < s.re → LSeriesSummable a s
+  /-- The meromorphic continuation of the Dirichlet series (values at poles are irrelevant). -/
+  F : ℂ → ℂ
+  F_eq : ∀ s : ℂ, 1 < s.re → F s = LSeries a s
+  /-- Order of the pole at `s = 1` (`m = 0` if `F` is entire). -/
+  m : ℕ
+  /-- `(s - 1)^m F(s)` extends to an entire function. (Stated as an extension, not as
+  `Differentiable (fun s => (s-1)^m * F s)`: the value of `F` AT the pole is junk, e.g. Mathlib's
+  `riemannZeta 1`, so the product's value at `s = 1` need not be the limit.) -/
+  pole_entire : ∃ G : ℂ → ℂ, Differentiable ℂ G ∧ ∀ s : ℂ, s ≠ 1 → G s = (s - 1) ^ m * F s
+  /-- Number of Gamma factors. -/
+  r : ℕ
+  Q : ℝ
+  Q_pos : 0 < Q
+  lam : Fin r → ℝ
+  lam_pos : ∀ j, 0 < lam j
+  deg_pos : 0 < ∑ j, lam j
+  mu : Fin r → ℂ
+  mu_re_nonneg : ∀ j, 0 ≤ (mu j).re
+  /-- The root number. -/
+  ω : ℂ
+  ω_norm : ‖ω‖ = 1
+  /-- The functional equation on the critical strip, where both sides are holomorphic. -/
+  functional_equation : ∀ s : ℂ, 0 < s.re → s.re < 1 →
+    ((Q : ℝ) : ℂ) ^ s * (∏ j, Complex.Gamma (lam j * s + mu j)) * F s =
+      ω * (starRingEnd ℂ) (((Q : ℝ) : ℂ) ^ (1 - (starRingEnd ℂ) s) *
+        (∏ j, Complex.Gamma (lam j * (1 - (starRingEnd ℂ) s) + mu j)) * F (1 - (starRingEnd ℂ) s))
+  /-- Finite order of the completed function on the right half-plane. -/
+  finite_order : ∃ ρ₀ R₀ : ℝ, ∀ s : ℂ, 1 / 2 ≤ s.re → R₀ ≤ ‖s‖ →
+    ‖(s * (s - 1)) ^ m * ((Q : ℝ) : ℂ) ^ s * (∏ j, Complex.Gamma (lam j * s + mu j)) * F s‖ ≤
+      Real.exp (‖s‖ ^ ρ₀)
+
+namespace SelbergSharp
+
+variable (S : SelbergSharp)
+
+-- ===== examples/dbn/lean/DBNSelbergSharp.lean:85-86 (v4.34 dbn island) =====
+/-- The entire extension of `(s - 1)^m F(s)` (chosen from `pole_entire`). -/
+noncomputable def G : ℂ → ℂ := Classical.choose S.pole_entire
+
+-- ===== examples/dbn/lean/DBNSelbergSharp.lean:93-96 (v4.34 dbn island) =====
+/-- `ξ_F(s) = s^m Q^s ∏ Γ(λ_j s + μ_j) G(s)`, i.e. `(s(s-1))^m Φ(s)` with the pole removed; holomorphic
+on the right half-plane `Re s > 0`. -/
+noncomputable def xiRight (s : ℂ) : ℂ :=
+  s ^ S.m * ((S.Q : ℝ) : ℂ) ^ s * (∏ j, Complex.Gamma (S.lam j * s + S.mu j)) * S.G s
+
+-- ===== examples/dbn/lean/DBNSelbergSharp.lean:103-105 (v4.34 dbn island) =====
+/-- The reflected expression `ω conj(ξ_F(1 - conj s))`, holomorphic on `Re s < 1`. -/
+noncomputable def xiLeft (s : ℂ) : ℂ :=
+  S.ω * (starRingEnd ℂ) (S.xiRight (1 - (starRingEnd ℂ) s))
+
+-- ===== examples/dbn/lean/DBNSelbergSharp.lean:107-110 (v4.34 dbn island) =====
+/-- The completed function `ξ_F`, glued: the right expression on `Re s ≥ 1/2`, the reflected one
+on `Re s < 1/2`. DBNSelbergSharpXi proves it is entire (the two agree on `0 < Re s < 1` by the
+functional equation) and of finite order. -/
+noncomputable def xi (s : ℂ) : ℂ := if 1 / 2 ≤ s.re then S.xiRight s else S.xiLeft s
+
+-- ===== examples/dbn/lean/DBNSelbergSharp.lean:112-118 (v4.34 dbn island) =====
+/-- The backward heat flow of `ξ_F` for `t < 0`, in the island's `z`-variable (`s = 1/2 + iz/2`):
+the Gaussian convolution `(4π|t|)^{-1/2} ∫ e^{-ω²/(4|t|)} ξ_F(1/2 + i(z+ω)/2) dω`. This is
+`(toExtSelbergData S).flow t z` definitionally (DBNSelbergSharpStrip); it is the function whose
+non-real zeros `selberg_newman_sharp` exhibits. -/
+noncomputable def sharpFlow (t : ℝ) (z : ℂ) : ℂ :=
+  (1 / ((Real.sqrt (4 * π * (-t)) : ℝ) : ℂ)) *
+    ∫ ω : ℝ, DBNGaussConv.gaussKer (-t) ω * S.xi (1 / 2 + I * (z + ω) / 2)
+
+end SelbergSharp
+
+end DBNSelberg

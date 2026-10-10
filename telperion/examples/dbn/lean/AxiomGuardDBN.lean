@@ -84,6 +84,10 @@ import DBNSelbergFtZero
 import DBNSelbergSaddleSum
 import DBNSelbergNewman
 import DBNSelbergZeta
+import DBNGammaVertical
+import DBNSelbergSharp
+import DBNSelbergSharpXi
+import DBNSelbergSharpStrip
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -1011,3 +1015,14 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNSelberg.zetaData_flow_eq
 #print axioms selberg_newman
 #print axioms dbn_newman_of_selberg
+
+-- S^# itself (SelbergSharp: meromorphic F, functional equation on the strip, finite order on the right
+-- half-plane) yields an ExtSelbergData: Gamma decay on vertical strips, the glued entire xi, the
+-- Phragmen-Lindelof strip bound; hence Newman for every S^# element as the island states it.
+#print axioms DBNStirling.norm_Gamma_le_vertical
+#print axioms DBNSelberg.SelbergSharp.differentiable_xi
+#print axioms DBNSelberg.SelbergSharp.xi_functional_equation
+#print axioms DBNSelberg.SelbergSharp.hasFiniteOrder_xi
+#print axioms DBNSelberg.SelbergSharp.exists_bound_xi_vertical
+#print axioms selberg_newman_sharp_ext
+#print axioms selberg_newman_sharp

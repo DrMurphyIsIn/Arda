@@ -1,0 +1,19 @@
+created = "2026-10-10"
+depends_on = ["RH_dbn_selberg_newman"]
+kind = "milestone"
+name = "RH.dbn_selberg_newman_sharp"
+statement_module = "Statements.RH_dbn_selberg_newman_sharp"
+status = "draft"
+title = "Newman's conjecture for the extended Selberg class S^# itself (Dobner 2020, Theorem 1): for every SelbergSharp S (Dirichlet series absolutely convergent on Re s > 1 with a(1) = 1 and a second nonzero term; meromorphic continuation F with (s-1)^m F extending to an entire function; Gamma data Q > 0, lam_j > 0, Re mu_j >= 0, sum lam_j > 0; root number |omega| = 1; functional equation Phi(s) = omega conj Phi(1 - conj s) on 0 < Re s < 1; finite order of (s(s-1))^m Phi on Re s >= 1/2) and every t < 0, the heat flow sharpFlow t of the completed xi_S has a NON-REAL zero, i.e. Lambda_S >= 0. Derives the ExtSelbergData fields (xi entire via the functional equation; strip bound via Gamma decay + Phragmen-Lindelof) and applies RH_dbn_selberg_newman. Remaining simplification vs the textbook: finite order is assumed for (s(s-1))^m Phi on the right half-plane rather than for (s-1)^m F alone. Lambda_S = 0 (generalized RH) is NOT touched. conjecture1_proved = False"
+updated = "2026-10-10"
+
+[author]
+date = "2026-10-10"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+
+[proof]
+artifact = "../../examples/dbn/lean/DBNSelbergSharpStrip.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

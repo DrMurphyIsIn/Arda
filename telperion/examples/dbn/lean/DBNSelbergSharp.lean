@@ -109,6 +109,14 @@ on `Re s < 1/2`. DBNSelbergSharpXi proves it is entire (the two agree on `0 < Re
 functional equation) and of finite order. -/
 noncomputable def xi (s : ℂ) : ℂ := if 1 / 2 ≤ s.re then S.xiRight s else S.xiLeft s
 
+/-- The backward heat flow of `ξ_F` for `t < 0`, in the island's `z`-variable (`s = 1/2 + iz/2`):
+the Gaussian convolution `(4π|t|)^{-1/2} ∫ e^{-ω²/(4|t|)} ξ_F(1/2 + i(z+ω)/2) dω`. This is
+`(toExtSelbergData S).flow t z` definitionally (DBNSelbergSharpStrip); it is the function whose
+non-real zeros `selberg_newman_sharp` exhibits. -/
+noncomputable def sharpFlow (t : ℝ) (z : ℂ) : ℂ :=
+  (1 / ((Real.sqrt (4 * π * (-t)) : ℝ) : ℂ)) *
+    ∫ ω : ℝ, DBNGaussConv.gaussKer (-t) ω * S.xi (1 / 2 + I * (z + ω) / 2)
+
 /-- The pole-removing polynomial `(X(X-1))^m`. -/
 noncomputable def P : Polynomial ℂ := (Polynomial.X * (Polynomial.X - 1)) ^ S.m
 

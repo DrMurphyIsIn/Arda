@@ -357,6 +357,13 @@ end DBNSelberg
 /-- **Newman's conjecture for the extended Selberg class `S^#`** (Dobner's theorem): for every
 element `S` of the class, as `DBNSelberg.SelbergSharp` states it, and every `t < 0`, the backward
 heat flow of its completed function has a non-real zero. -/
-theorem selberg_newman_sharp (S : DBNSelberg.SelbergSharp) :
+theorem selberg_newman_sharp_ext (S : DBNSelberg.SelbergSharp) :
     ∀ t : ℝ, t < 0 → ∃ z : ℂ, S.toExtSelbergData.flow t z = 0 ∧ z.im ≠ 0 :=
   selberg_newman S.toExtSelbergData
+
+/-- **Newman's conjecture for the extended Selberg class** (Dobner), in the registry's shape: for every
+`S : SelbergSharp` and every `t < 0`, the heat flow of `ξ_S` has a non-real zero. `sharpFlow` is
+`toExtSelbergData.flow` definitionally. The registered statement of node `RH_dbn_selberg_newman_sharp`. -/
+theorem selberg_newman_sharp (S : DBNSelberg.SelbergSharp) :
+    ∀ t : ℝ, t < 0 → ∃ z : ℂ, S.sharpFlow t z = 0 ∧ z.im ≠ 0 :=
+  selberg_newman_sharp_ext S
