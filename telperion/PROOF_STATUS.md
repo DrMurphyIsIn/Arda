@@ -286,6 +286,27 @@ Riemann Hypothesis campaign: unconditional zero-free regions, the sharp zeta log
   ✓ RH_zeta_zero_im_ge  (lemma, proved)
 ```
 
+**2026-10-10: Newman's conjecture `Λ ≥ 0` kernel-checked (branch rh/newman-dobner).** On the dbn
+island (Lean v4.34.0-rc1, Mathlib de5ce8a9), `dbn_newman : ∀ t < 0, ∃ z, DBN.H t z = 0 ∧
+z.im ≠ 0` — for every `t < 0` the heat-flowed `H_t` has a non-real zero, which in the island's
+sInf-free vocabulary is `Λ ≥ 0` (Rodgers–Tao 2018). The proof follows Dobner (arXiv:2005.05142) and
+uses no information about the zeros of ζ: nine new modules, all `[propext, Classical.choice,
+Quot.sound]` — `DBNBohr` (Bohr almost periodicity for everywhere-convergent Dirichlet series, by
+sequential compactness), `DBNFtZero` (the Gaussian-weighted series `∑ e^{-c log²n} n^{-s}` has a
+zero, via LiCriterion's Hadamard exp-polynomial theorem), `DBNFtZeroHigh` (zeros at every height,
+Hurwitz instead of Rouché), `DBNStirling` (complex Stirling with remainder and the digamma
+asymptotic, from Euler's product + second-order Euler–Maclaurin + real Stirling; first kernel-clean
+complex Stirling in the project), `DBNGaussConv` (`H_{-c}` as a Gaussian convolution of `H_0`, the
+Cauchy line shift, and Dobner's eq. (9) from the island's own `Φ`-series expansion), `DBNSaddleAlg`
+/ `DBNSaddleBounds` / `DBNSaddleSum` / `DBNTheorem4` (the saddle-point analysis: exact
+bookkeeping, near-field and global estimates, Gaussian integration and summation, Theorem 4 in
+qualitative form), `DBNNewman` (the transfer). Registry node `RH_dbn_newman` is DRAFT: it needs the
+operator's independent read-back and the gate before any grant, then the `missions-comparator`
+judge. Together with `RH_dbn_debruijn_real_zeros` (`Λ ≤ 1/2`) and `RH_dbn_real_zeros_nine_thirtyseconds`
+(`Λ ≤ 9/32`, cross-pin) the kernel-checked picture of the de Bruijn–Newman constant is
+`0 ≤ Λ ≤ 9/32`. `Λ = 0` is RH and is NOT proved. conjecture1_proved = False. Design:
+`telperion/docs/NEWMAN_LAMBDA_NONNEG_SCOPING_2026-10-10.md` §6–7.
+
 **2026-10-09: the de Bruijn–Newman bound `Λ ≤ 9/32`.** Four nodes were registered, read back
 by the operator under their own identity, granted through the gate, and judge-verified by the
 `missions-comparator` Comparator job (run 37955041118, Lean kernel + nanoda):

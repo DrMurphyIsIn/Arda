@@ -260,6 +260,11 @@ independent Comparator run with two kernels. It is weaker than the numerical 0.2
 is not a proof of the Riemann Hypothesis; `conjecture1_proved = False` throughout. The paper and
 the Lean sources are released at [DrMurphyIsIn/qrh-debruijn-newman](https://github.com/DrMurphyIsIn/qrh-debruijn-newman)
 (Zenodo DOI [10.5281/zenodo.23269134](https://doi.org/10.5281/zenodo.23269134)).
+The other half of the picture followed on 2026-10-10 (branch `rh/newman-dobner`, registry node
+still a draft pending the operator's read-back): Newman's conjecture `Λ ≥ 0` (Rodgers–Tao 2018),
+kernel-checked on the dbn island along Dobner's 2020 proof — for every `t < 0` the heat-flowed
+`H_t` has a non-real zero, with no information about the zeros of ζ used — so the machine-checked
+range for the de Bruijn–Newman constant is `0 ≤ Λ ≤ 9/32`. RH is `Λ = 0`, and remains open.
 
 ## The third arc: proof complexity
 

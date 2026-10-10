@@ -54,6 +54,18 @@
       "statement_sha256": "a8b1e335472a84b4f8cbf8dc3df7b3db76d69212e77ef1f4f7b56118191f7ee2"
     },
     {
+      "slug": "RH_dbn_newman",
+      "campaign": "rh",
+      "theorem": "dbn_newman",
+      "solution_module": "DBNNewman",
+      "challenge_module": "MissionChallenges.RH_dbn_newman",
+      "bridge_theorem": "MissionJudge.RH_dbn_newman",
+      "config": "RH_dbn_newman.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "599c6e89ed3f1864fa44b4dd8e6c43656056b240f9524dbdf7d4ef8dfc3d9eb4",
+      "statement_sha256": "7e7eadd96e36441101642873dfaabccf62e8fcca8df98ce03ba2ef65d187b49e"
+    },
+    {
       "slug": "RH_dbn_real_zeros_of_qrh",
       "campaign": "rh",
       "theorem": "dbn_real_zeros_of_qrh",

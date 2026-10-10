@@ -92,14 +92,14 @@
     "deprecated": 0,
     "draft": 2,
     "open": 0,
-    "proved": 61,
+    "proved": 62,
     "refuted": 0
    },
    "description": "Migration of the RH campaign prose tracking (telperion/docs/RH_* handoffs, STATUS.md, PROOF_STATUS pointers) into the missions registry. The registry is the tracking truth; RH is NOT claimed proved -- the goal node is draft and conjecture1_proved = False throughout. Environment = the v4.34 li_positivity island (unified by #483); one granted node's artifact lives on the v4.32 zero_free_bridge island (cross-island grant per design section 2).",
    "dir": "rh",
    "goal_node": "RH_conjecture",
    "mathlib_rev": "de5ce8a9",
-   "n_nodes": 63,
+   "n_nodes": 64,
    "name": "RH.conjecture",
    "sources": [
     "Riemann, B. (1859), Ueber die Anzahl der Primzahlen unter einer gegebenen Groesse",
@@ -5215,6 +5215,62 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:dbn-compiles"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-10",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "rh:RH_dbn_newman",
+   "is_goal": false,
+   "kind": "milestone",
+   "name": "RH.dbn_newman",
+   "proof": {
+    "artifact": "telperion/examples/dbn/lean/DBNNewman.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/dbn/lean/DBNNewman.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-10",
+     "run_id": "38062595826",
+     "run_url": "https://github.com/DrMurphyIsIn/Arda/actions/runs/38062595826",
+     "theorem": "dbn_newman"
+    },
+    "grant": {
+     "artifact_sha256": "599c6e89ed3f1864",
+     "date": "2026-10-10",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "operator",
+    "date": "2026-10-10",
+    "independence": "judge-verified",
+    "text": "Read-back of Statements.RH_dbn_newman (theorem dbn_newman): for every real number t with t < 0, there exists a complex number z such that DBN.H t z = 0 and the imaginary part of z is nonzero. Here DBN.H t z is the Lebesgue integral over the open half-line u > 0 of exp(t u^2) * Phi(u) * cos(z u), with the real factors exp(t u^2) and Phi(u) cast to the complexes and cos the complex cosine. Phi(u) is the Polymath15 series: the tsum over positive naturals n of (2 pi^2 n^4 exp(9u) - 3 pi n^2 exp(5u)) * exp(-pi n^2 exp(4u)). In words: for every negative time t the heat-flowed function H_t has a non-real zero, i.e. Newman's conjecture Lambda >= 0 stated without sInf. This does not assert Lambda = 0 (RH)."
+   },
+   "refutation_statement": "",
+   "slug": "RH_dbn_newman",
+   "statement": "theorem dbn_newman :\n    ∀ t : ℝ, t < 0 → ∃ z : ℂ, DBN.H t z = 0 ∧ z.im ≠ 0",
+   "status": "proved",
+   "title": "Newman's conjecture (Rodgers-Tao 2018), after Dobner 2020: for every t < 0 the heat-flowed H_t has a NON-REAL zero, i.e. Lambda >= 0 in the island's sInf-free vocabulary. PROVED on the dbn island (DBNNewman: Bohr almost periodicity + Hadamard exp-polynomial + complex Stirling + Gaussian convolution of H_0 + saddle-point Theorem 4 + Hurwitz). With de Bruijn (Lambda <= 1/2) and the judged QRH bridge (Lambda <= 9/32) the kernel-checked picture is 0 <= Lambda <= 9/32. Lambda = 0 is RH and is NOT proved. conjecture1_proved = False",
+   "updated": "2026-10-10"
+  },
+  {
+   "arb": false,
+   "campaign": "rh",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
      "oai-qrh-bridge.yml:build-and-judge"
     ],
     "label": "module-covered"
@@ -7706,7 +7762,7 @@
   "deprecated": 6,
   "draft": 14,
   "open": 4,
-  "proved": 122,
+  "proved": 123,
   "refuted": 1
  }
 }

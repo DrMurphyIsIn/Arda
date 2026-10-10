@@ -65,6 +65,16 @@ import DBNM5Alpha
 import DBNM5Target
 import DBNP15Wired
 import DBNZeroFreeHalfplane
+import DBNBohr
+import DBNFtZero
+import DBNFtZeroHigh
+import DBNStirling
+import DBNGaussConv
+import DBNSaddleAlg
+import DBNSaddleBounds
+import DBNSaddleSum
+import DBNTheorem4
+import DBNNewman
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -894,3 +904,76 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms dbn_real_zeros_of_zeta_halfplane
 #print axioms dbn_real_zeros_of_qrh
 #print axioms dbn_H0_im_sq_le_of_qrh
+
+-- Newman / Lambda >= 0 programme, step 1 (DBNBohr): Bohr almost periodicity for everywhere
+-- absolutely convergent Dirichlet series, qualitative form (pure Mathlib; Dobner Thm 5 input).
+-- Says nothing about zeta zeros.  Nothing here proves RH.  conjecture1_proved = False.
+#print axioms DBNBohr.exists_twist_close
+#print axioms DBNBohr.norm_LSeries_shift_sub_le
+#print axioms DBNBohr.exists_shifts_tendstoLocallyUniformly
+
+-- Newman / Lambda >= 0 programme, step 2 (DBNFtZero): the Gaussian-weighted Dirichlet series
+-- F c s = sum exp(-c (log n)^2) n^(-s) is entire of finite order and HAS A ZERO (Dobner Lemma 3,
+-- qualitative), via Hadamard.entire_no_zeros_is_exp_polynomial.  Nothing here proves RH.
+#print axioms DBNFtZero.lseriesSummable
+#print axioms DBNFtZero.hasFiniteOrder_F
+#print axioms DBNFtZero.exists_zero
+
+-- Newman step 2b (DBNFtZeroHigh): F c has zeros of arbitrarily large imaginary part
+-- (Bohr shifts + Hurwitz zero-free form; no Rouche).  Nothing here proves RH.
+#print axioms DBNFtZero.exists_zero_im_ge
+
+-- Newman step 3 (DBNStirling): complex Stirling with remainder, Gamma z = exp (L z) on Re z > 0,
+-- ||R z|| <= 1/(4||z||), psi z = log z - 1/(2z) + R' z with ||R' z|| <= 1/(2||z||^2).  Pure Mathlib
+-- (Euler's product + second-order Euler-Maclaurin + real Stirling).  Nothing here proves RH.
+#print axioms DBNStirling.sum_log_eq
+#print axioms DBNStirling.Gamma_eq_exp_L
+#print axioms DBNStirling.norm_R_le
+#print axioms DBNStirling.hasDerivAt_R
+#print axioms DBNStirling.norm_R'_le
+#print axioms DBNStirling.digamma_eq
+#print axioms DBNStirling.norm_digamma_sub_log_le
+
+-- Newman step 4 (DBNGaussConv): H_{-c} as a Gaussian convolution of H_0, the Cauchy shift of the
+-- Gaussian line, and Dobner's (9): H_{-c}(-i(2s-1)) = sum_n B_n(s) with B_n the Gaussian-convolved
+-- n-th Dirichlet term on Re v = a > 1.  Nothing here proves RH.  conjecture1_proved = False.
+#print axioms DBNGaussConv.norm_Gamma_le_Gamma_re
+#print axioms DBNGaussConv.H_neg_eq_gauss
+#print axioms DBNGaussConv.shift_line
+#print axioms DBNGaussConv.H_zero_eq_tsum
+#print axioms DBNGaussConv.xi_eq_tsum_B
+
+-- Newman step 5a (DBNSaddleAlg): the exact saddle-point bookkeeping for Dobner's Theorem 4:
+-- gamma(b+delta) = gamma(b) rho(delta) exp(Q(delta) + delta l(b)) via Stirling's L, the contour of B
+-- may be moved (Cauchy), B_n(J(s)) = gamma_t(s) a_n n^{-s} (1 + E_n(s)) exactly, and
+-- xi_c(J(s)) = gamma_t(s) (F_{c/4}(s) + sum_n a_n n^{-s} E_n(s)) given convergence of the error
+-- series.  No estimates yet.  Nothing here proves RH.  conjecture1_proved = False.
+#print axioms DBNSaddle.γ_add_eq
+#print axioms DBNSaddle.B_J_eq
+#print axioms DBNSaddle.B_shift
+#print axioms DBNSaddle.tsum_coef_eq_F
+#print axioms DBNSaddle.xi_J_eq
+
+-- Newman step 5b (DBNSaddleBounds): the pointwise estimates behind Theorem 4 -- ||exp Q - 1|| <=
+-- ||Q|| e^{||Q||}, the branch-free split Log((b+d)/2) = Log(b/2) + Log(1+d/b), the near-field bound
+-- ||K - 1|| <= 8P/||b|| e^{2P/||b||}, and the global bound on ||K||.  Nothing here proves RH.
+#print axioms DBNSaddle.norm_exp_sub_one_le_mul_exp
+#print axioms DBNSaddle.log_half_add_eq
+#print axioms DBNSaddle.norm_K_sub_one_le
+#print axioms DBNSaddle.norm_K_le
+
+-- Newman step 5c/5 (DBNSaddleSum, DBNTheorem4): the unified pointwise bound integrated against the
+-- Gaussian and summed over n -- the error series is uniformly small on the strip -- and Dobner's
+-- Theorem 4 in qualitative form: xi_c(J(s))/gamma_t(s) - F_{c/4}(s) -> 0 as Im s -> oo, uniformly for
+-- |Re s - x_0| <= 1.  Nothing here proves RH.  conjecture1_proved = False.
+#print axioms DBNSaddle.norm_K_sub_one_le_unified
+#print axioms DBNSaddle.norm_E_le
+#print axioms DBNSaddle.error_sum_small
+#print axioms DBNSaddle.theorem4
+
+-- Newman step 6 (DBNNewman): NEWMAN'S CONJECTURE (Rodgers-Tao's theorem) on this island, after Dobner --
+-- for every t < 0, H_t has a non-real zero: dbn_newman : forall t < 0, exists z, H t z = 0 and z.im != 0.
+-- In the island's sInf-free vocabulary this is Lambda >= 0.  Lambda = 0 is RH and is NOT proved.
+-- conjecture1_proved = False.
+#print axioms DBNSaddle.dbn_newman_of_neg
+#print axioms dbn_newman

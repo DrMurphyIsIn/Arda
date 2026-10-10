@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "M6gapEMZeta", "M6gapEMZetaComplex", "M6gapEMZetaTail", "M6gapZetaEMSum", "M6gapHeightFloorCheck", "M6gapHeightFloorTrig", "M6gapHeightFloorEM", "M6gapHeightFloorBoxes", "M6gapZetaZeroConfinement", "M6gapDlvpZetaSymmetry", "M6gapHeightFloor", "M6gapImAxis", "M6gapP15ZeroFree", "DBNM5Alpha", "DBNM5Target", "DBNP15Wired", "DBNZeroFreeHalfplane", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "M6gapEMZeta", "M6gapEMZetaComplex", "M6gapEMZetaTail", "M6gapZetaEMSum", "M6gapHeightFloorCheck", "M6gapHeightFloorTrig", "M6gapHeightFloorEM", "M6gapHeightFloorBoxes", "M6gapZetaZeroConfinement", "M6gapDlvpZetaSymmetry", "M6gapHeightFloor", "M6gapImAxis", "M6gapP15ZeroFree", "DBNM5Alpha", "DBNM5Target", "DBNP15Wired", "DBNZeroFreeHalfplane", "DBNBohr", "DBNFtZero", "DBNFtZeroHigh", "DBNStirling", "DBNGaussConv", "DBNSaddleAlg", "DBNSaddleBounds", "DBNSaddleSum", "DBNTheorem4", "DBNNewman", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -280,6 +280,79 @@ name = "DBNP15Wired"
 # half-plane is NOT RH.  Nothing here proves RH.  conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNZeroFreeHalfplane"
+
+# Newman / Lambda >= 0 programme (NEWMAN_LAMBDA_NONNEG_SCOPING_2026-10-10.md), step 1: Bohr almost
+# periodicity for everywhere absolutely convergent Dirichlet series, qualitative form (a strictly
+# increasing sequence of integer vertical shifts along which the series converges to itself locally
+# uniformly), via sequential compactness of the unit-twist vectors.  Pure Mathlib.  Nothing here
+# proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNBohr"
+
+# Newman step 2: F c s = sum exp(-c (log n)^2) n^(-s) (Dobner's F_t at c = |t|/4) converges
+# absolutely everywhere, is entire of finite order, and has a zero (Dobner Lemma 3, qualitative):
+# zero-free would make it exp(polynomial) by LiCriterion's Hadamard theorem, but F' = F g' is
+# O(2^(-sigma)) on the real axis while F' 0 = -sum log n a_n < 0.  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNFtZero"
+
+# Newman step 2b: F c has zeros at arbitrarily large height -- Bohr's shifts (DBNBohr) move the zero
+# of DBNFtZero up the strip; Hurwitz's zero-free form (DBNHurwitz) replaces Rouche.  Nothing here
+# proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNFtZeroHigh"
+
+# Newman step 3: Stirling's formula for the complex Gamma function with an explicit remainder,
+# Gamma z = exp((z - 1/2) Log z - z + (1/2) log 2pi + R z) with ||R z|| <= 1/(4||z||) on Re z > 0, and
+# the digamma asymptotic psi z = Log z - 1/(2z) + O(1/||z||^2).  Euler's limit formula (Mathlib
+# GammaSeq) + second-order Euler-Maclaurin on each unit cell + real Stirling.  Pure Mathlib,
+# reusable.  Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNStirling"
+
+# Newman step 4: for c > 0, H_{-c}(z) = (4 pi c)^{-1/2} int e^{-w^2/4c} H_0(z + w) dw (Fubini with the
+# Gaussian Fourier transform), the Gaussian line may be moved vertically (Cauchy on rectangles, H_0
+# bounded on horizontal strips), and in s = 1/2 + iz/2: H_{-c}(-i(2s-1)) = sum_n B_n(s), B_n the
+# Gaussian-convolved n-th term gamma(v) n^{-v} on Re v = a > 1 (Dobner's (9)).  Uses DBNStrip's
+# termwise Gamma evaluation.  Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNGaussConv"
+
+# Newman step 5a: the exact saddle-point bookkeeping of Dobner's Theorem 4 (gamma through Stirling's
+# L, the contour shift of B by Cauchy, B_n(J(s)) = gamma_t(s) a_n n^{-s} (1 + E_n(s)), and
+# xi_c(J(s)) = gamma_t(s)(F_{c/4}(s) + sum a_n n^{-s} E_n(s)) given convergence).  Algebra only; the
+# estimates on E_n are the next module.  Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNSaddleAlg"
+
+# Newman step 5b: the pointwise estimates of Dobner's Theorem 4 -- near field ||K-1|| <= 8P/|b|
+# e^{2P/|b|} (branch-free logarithm split in the upper half-plane, Mathlib's Log(1+u) bounds,
+# DBNStirling's remainder), global ||K|| <= poly * exp(linear).  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNSaddleBounds"
+
+# Newman step 5c: the unified pointwise bound on K_n - 1, integrated against the Gaussian weight and
+# summed over n with the coefficients a_n = exp(-h_n^2/c): the error series is <= C_1/y + C_2 e^{-y^2/32c+pi y}
+# on the strip, uniformly.  Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNSaddleSum"
+
+# Newman step 5: Dobner's Theorem 4, qualitative form -- xi_c(J(s))/gamma_t(s) - F_{c/4}(s) -> 0 as
+# Im s -> oo uniformly on |Re s - x_0| <= 1 (eq. (14) of arXiv:2005.05142).  Nothing here proves RH.
+# conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNTheorem4"
+
+# Newman step 6: NEWMAN'S CONJECTURE on this island (Rodgers-Tao 2018; proof after Dobner 2020):
+# dbn_newman : for every t < 0, H_t has a non-real zero -- Hurwitz on the Bohr-shifted discs around a
+# zero of F_{c/4}, Theorem 4 transferring the zeros to xi_c(J(.)), Re J -> oo moving them off the line.
+# Lambda >= 0 in the sInf-free vocabulary; with the registry's de Bruijn (Lambda <= 1/2) and the judged
+# QRH bridge (Lambda <= 9/32) the kernel-checked picture is 0 <= Lambda <= 9/32.  Lambda = 0 is RH and
+# is NOT proved.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNNewman"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.
