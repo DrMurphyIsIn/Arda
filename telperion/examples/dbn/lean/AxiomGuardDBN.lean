@@ -66,6 +66,7 @@ import DBNM5Target
 import DBNP15Wired
 import DBNZeroFreeHalfplane
 import DBNBohr
+import DBNFtZero
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -902,3 +903,10 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNBohr.exists_twist_close
 #print axioms DBNBohr.norm_LSeries_shift_sub_le
 #print axioms DBNBohr.exists_shifts_tendstoLocallyUniformly
+
+-- Newman / Lambda >= 0 programme, step 2 (DBNFtZero): the Gaussian-weighted Dirichlet series
+-- F c s = sum exp(-c (log n)^2) n^(-s) is entire of finite order and HAS A ZERO (Dobner Lemma 3,
+-- qualitative), via Hadamard.entire_no_zeros_is_exp_polynomial.  Nothing here proves RH.
+#print axioms DBNFtZero.lseriesSummable
+#print axioms DBNFtZero.hasFiniteOrder_F
+#print axioms DBNFtZero.exists_zero
