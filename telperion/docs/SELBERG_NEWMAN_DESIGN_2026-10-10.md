@@ -96,3 +96,34 @@ Registry: draft node `RH_dbn_selberg_newman` (statement `selberg_newman (F : DBN
 RHDefs mirrors `gaussKer`, `ExtSelbergData`, `flow`), artifact linked, `mission verify rh` OK, judge bundle
 unchanged (drafts are not judged). The grant waits for the operator's independent read-back, as for
 `RH_dbn_newman`. The ζ control `dbn_newman_of_selberg` is a kernel-checked second proof of `dbn_newman`.
+
+## 5. Closing the honest gap: `S^#` itself (started 2026-10-10, same branch)
+
+Section 1 took the entire continuation and the strip bound as fields of `ExtSelbergData`. The next layer
+states the class as Kaczorowski–Perelli do and DERIVES those two fields:
+
+* `DBNSelbergSharp.lean`: `structure SelbergSharp` with the Dirichlet series (`a`, `summable` on `Re s > 1`,
+  `a 1 = 1`, not a single term), the meromorphic continuation `F : ℂ → ℂ` with `(s-1)^m F` entire and
+  `F = LSeries a` on `Re s > 1`, Gamma data `Q, λ_j, μ_j`, root number `|ω| = 1`, the functional equation
+  `Φ(s) = ω conj Φ(1 − conj s)` on the open strip `0 < Re s < 1` (where both sides are holomorphic; by the
+  identity theorem this is the identity of meromorphic functions), and finite order of `ξ_F = (s(s−1))^m Φ`
+  on the right half-plane `Re s ≥ 1/2` (the class's "`(s−1)^m F` of finite order" combined with Stirling for
+  the Gamma factors; the island takes the combination as the axiom — the one remaining simplification).
+  Defines `Phi`, `xiRight`, `xiLeft` (the reflected expression) and the glued `xi`.
+* `DBNSelbergSharpXi.lean`: `xi` is entire (the two expressions agree on the strip by the functional
+  equation; holomorphic on `Re s > 0` and on `Re s < 1`), satisfies the functional equation everywhere, has
+  finite order everywhere (left half-plane by reflection), and equals the Gamma-weighted Dirichlet series on
+  `Re s > 1`.
+* `DBNGammaVertical.lean`: `‖Γ(σ+iτ)‖ ≤ C (1+|τ|)^{σ₁} e^{−π|τ|/2}` on `σ₀ ≤ σ ≤ σ₁`, `σ₀ > 0`, from
+  `DBNStirling` (`Re L(w) ≤ (σ−½) log‖w‖ − τ arg w − σ + …` with `arg w ≥ π/2 − σ/τ`).
+* `DBNSelbergSharpStrip.lean`: `xi` is bounded on every vertical strip. On `Re s = 2` the Dirichlet series is
+  bounded and the Gamma product decays like `e^{−(π/2)(∑λ_j)|τ|}`, beating `(s(s−1))^m`; on `Re s = −1` by
+  the functional equation; between them by Phragmén–Lindelöf (`PhragmenLindelof.vertical_strip`, growth
+  `exp(B exp(c|τ|))` from finite order); outside `[−1, 2]` directly / by reflection. Then
+  `toExtSelbergData : SelbergSharp → ExtSelbergData` (with `Ξ z := xi (1/2 + iz/2)`) and
+  `selberg_newman_sharp (S : SelbergSharp) : ∀ t < 0, ∃ z, S.toExtSelbergData.flow t z = 0 ∧ z.im ≠ 0`.
+
+Instances: ζ as a `SelbergSharp` (Mathlib's `completedRiemannZeta`, `completedRiemannZeta_one_sub`,
+`differentiable_completedZeta₀`; finite order from LiCriterion's `riemannXi` bounds) is the natural control and
+is deferred; Dirichlet `L` (`DirichletCharacter.completedLFunction`, `completedLFunction_one_sub` for primitive
+characters) needs a finite-order bound Mathlib does not have.
