@@ -806,3 +806,9 @@ script = "examples/leakage_dictionary/generate.py"
 group = "quick"    # MIRRORMERE ROUTE A item A2b: re-derived log-derivative coefficient rows at the
                    # composite frequency log 6 (chi_5 vanishes, Davenport-Heilbronn leaks); exact
                    # sympy + a 50-digit mpmath re-derivation of the published b(n) row, no flint; ~1 s
+
+[[check]]
+name = "scaled_interval_eval"
+script = "examples/scaled_interval_eval/generate.py"
+group = "quick"    # fixed-point integer interval evaluator (prototype, PR #676): 4 instances, 136 theorems;
+                   # pure-Python regeneration, ~1 s
