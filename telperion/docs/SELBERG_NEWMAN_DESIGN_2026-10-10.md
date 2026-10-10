@@ -127,3 +127,38 @@ Instances: ζ as a `SelbergSharp` (Mathlib's `completedRiemannZeta`, `completedR
 `differentiable_completedZeta₀`; finite order from LiCriterion's `riemannXi` bounds) is the natural control and
 is deferred; Dirichlet `L` (`DirichletCharacter.completedLFunction`, `completedLFunction_one_sub` for primitive
 characters) needs a finite-order bound Mathlib does not have.
+
+### 5.1 Status (2026-10-10, later the same day): the `S^#` layer is proved
+
+Full island `lake build` 8,859 jobs; AxiomGuardDBN standard for every line.
+
+| module | lines | main statements |
+|---|---|---|
+| DBNGammaVertical | 192 | `DBNStirling.norm_Gamma_le_vertical`: `‖Γ(σ+iτ)‖ ≤ C (1+|τ|)^{σ₁} e^{−π|τ|/2}` on `σ₀ ≤ σ ≤ σ₁` |
+| DBNSelbergSharp | 139 | `SelbergSharp`, `G` (the chosen entire extension of `(s−1)^m F`), `xiRight`, `xiLeft`, `xi`, `sharpFlow`, `P` |
+| DBNSelbergSharpXi | 259 | `differentiable_xi`, `xi_functional_equation`, `xi_eq_tsum'`, `hasFiniteOrder_xi` |
+| DBNSelbergSharpStrip | 369 | `exists_bound_xi_vertical`, `toExtSelbergData`, `selberg_newman_sharp_ext`, **`selberg_newman_sharp`** |
+| DBNSelbergSharpZeta | 348 | `conj_completedRiemannZeta`, `differentiable_zetaG`, `zetaSharp : SelbergSharp` (m = 1), `zetaSharp_xi_eq_H_all : zetaSharp.xi s = 16 H₀(−i(2s−1))`, `zetaSharp_sharpFlow_eq : zetaSharp.sharpFlow t = 16 H_t`, **`dbn_newman_of_sharp`** |
+
+```lean
+theorem selberg_newman_sharp (S : DBNSelberg.SelbergSharp) :
+    ∀ t : ℝ, t < 0 → ∃ z : ℂ, S.sharpFlow t z = 0 ∧ z.im ≠ 0
+theorem dbn_newman_of_sharp : ∀ t : ℝ, t < 0 → ∃ z : ℂ, DBN.H t z = 0 ∧ z.im ≠ 0
+```
+
+Two corrections the formalization forced on the textbook statement. (i) The pole axiom is an EXTENSION,
+`∃ G entire, ∀ s ≠ 1, G s = (s−1)^m F s`, not `Differentiable (fun s ↦ (s−1)^m F s)`: Mathlib's `riemannZeta 1`
+is a junk value, so the latter is literally false for ζ with `m = 1` (the product is `0` at `1`, the limit is `1`);
+`ξ_F` is defined through the chosen `G`, and for ζ the chosen `G` takes the residue value `1` at `s = 1`.
+(ii) The identity `ξ_ζ = 16 H₀` holds for `xiRight` only on `Re s > 0`: on the left half-plane `Gammaℝ` vanishes
+at the trivial zeros and kills `xiRight` while `s(s−1)Λ(s)` does not vanish; the glued `xi` (reflected on
+`Re s < 1/2`) equals `16 H₀` everywhere, by the conjugation symmetry of `H₀` (`H_conj`, from the real
+integrand), and that is what `dbn_newman_of_sharp` uses. The one remaining simplification against the textbook
+definition is that finite order is assumed for `(s(s−1))^m Φ` on `Re s ≥ 1/2` rather than for `(s−1)^m F` alone
+(the two are equivalent by Stirling; not proved here).
+
+Registry: draft node `RH_dbn_selberg_newman_sharp` (depends on `RH_dbn_selberg_newman`), statement in
+`Statements/RH_dbn_selberg_newman_sharp.lean`, artifact DBNSelbergSharpStrip.lean carrying it verbatim, RHDefs
+mirroring `SelbergSharp`, `G`, `xiRight`, `xiLeft`, `xi`, `sharpFlow`; `mission verify rh` OK. Both Selberg nodes wait
+for the operator's read-back. Dirichlet `L` as a `SelbergSharp` instance remains undone (needs the conjugation
+symmetry of the completed `L` for a real character or the general `L(χ̄)` form, and a finite-order bound).

@@ -297,7 +297,15 @@ bounded on horizontal strips), with `flow t` the Gaussian-convolution heat flow.
 from the general theorem as the control. HONEST SCOPE: the structure's entire-continuation and strip-bound
 fields are theorems for honest `S^#` elements (Phragmén–Lindelöf + Stirling) and are NOT derived here; Dirichlet
 `L` and Davenport–Heilbronn instances are not attempted. Node `RH_dbn_selberg_newman` is DRAFT pending the
-operator's read-back. Design: `docs/SELBERG_NEWMAN_DESIGN_2026-10-10.md`. (4) *Effective Theorem 4.*
+operator's read-back. Design: `docs/SELBERG_NEWMAN_DESIGN_2026-10-10.md`. LATER THE SAME DAY the gap was closed:
+`DBNSelberg.SelbergSharp` states the class itself (meromorphic `F` with `(s−1)^m F` extending to an entire
+function, Gamma data, root number, functional equation `Φ(s) = ω conj Φ(1 − conj s)` on `0 < Re s < 1`, finite
+order of `(s(s−1))^m Φ` on `Re s ≥ 1/2`); `xi_F` is glued and proved entire, of finite order, and bounded on every
+vertical strip (Gamma decay from Stirling + `PhragmenLindelof.vertical_strip`), so `selberg_newman_sharp (S) :
+∀ t < 0, ∃ z, S.sharpFlow t z = 0 ∧ z.im ≠ 0` for every `S : SelbergSharp` (five more modules, 1.3k lines,
+axiom-clean). ζ is an honest instance (`zetaSharp`, `m = 1`, conjugation symmetry of `Λ` from the island's
+integral representation, finite order from LiCriterion) with `zetaSharp.sharpFlow t = 16 H_t`, and
+`dbn_newman_of_sharp` recovers `dbn_newman` from the class theorem. Draft node `RH_dbn_selberg_newman_sharp`. (4) *Effective Theorem 4.*
 `DBNTheorem4Effective` (408 lines): `theorem4_explicit` with the explicit height
 `Y = max {2, 8c, 64πc, 2S₁/ε, 8√(c log⁺(2S₂/ε))}` and `theorem4_fully_explicit` with closed-form constants
 (`log Y ≈ 23.4/c` at `x₀ = 1/2`). Verdict in `docs/EFFECTIVE_THEOREM4_2026-10-10.md`: item done; an EFFECTIVE

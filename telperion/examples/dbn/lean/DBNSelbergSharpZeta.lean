@@ -21,6 +21,10 @@ The two analytic fields are classical facts about `ζ`:
 `ξ_{zetaSharp}(s) = s(s-1) Λ(s) = 16 H_0(-i(2s-1))` (the C2 representation theorem `dbn_H0_eq_xi`
 in the variable `s = 1/2 + iz/2`).
 
+`zetaSharp_sharpFlow_eq` identifies the structure's Gaussian flow with the island's `H_t` for
+`t < 0` (`sharpFlow t = 16 H_t`), so `selberg_newman_sharp` at `zetaSharp` recovers `dbn_newman`
+(`dbn_newman_of_sharp`): the zeta control of the `S^#` theorem.
+
 Nothing here is about the zeros of `ζ`; `conjecture1_proved = False`.
 -/
 import Mathlib
@@ -28,7 +32,10 @@ import DBNDefs
 import DBNXiRiemann
 import DBNXi
 import DBNSelbergSharp
+import DBNSelbergSharpXi
+import DBNSelbergSharpStrip
 import DBNSelbergZeta
+import DBNGaussConv
 import Lc.LiCriterion.XiGrowth
 
 open Complex Filter Topology MeasureTheory Set
@@ -283,4 +290,59 @@ theorem zetaSharp_xi_eq_H {s : ℂ} (h : 1 / 2 ≤ s.re) :
   rw [SelbergSharp.xi, ite_eq_left h]
   exact zetaSharp_xiRight_eq_H (by linarith)
 
+/-! ### `ξ_{zetaSharp} = 16 H_0` everywhere, and the flow -/
+
+/-- `conj H_t(z) = H_t(conj z)`: the integrand `e^{tu²} Φ(u) cos(zu)` has real coefficients. -/
+lemma H_conj (t : ℝ) (z : ℂ) : conj (DBN.H t z) = DBN.H t (conj z) := by
+  unfold DBN.H DBN.HIntegrand
+  rw [← integral_conj]
+  refine setIntegral_congr_fun measurableSet_Ioi fun u _ => ?_
+  simp only [map_mul, Complex.conj_ofReal, ← Complex.cos_conj]
+
+lemma H_zero_conj (z : ℂ) : conj (DBN.H 0 z) = DBN.H 0 (conj z) := H_conj 0 z
+
+/-- The glued completed function `zetaSharp.xi` is `16 H_0(-i(2s-1))` for EVERY `s` (the left
+half-plane through the reflected branch `xiLeft`, `ω = 1`, and `conj H_0 = H_0 ∘ conj`). -/
+theorem zetaSharp_xi_eq_H_all (s : ℂ) : zetaSharp.xi s = 16 * DBN.H 0 (-I * (2 * s - 1)) := by
+  by_cases h : 1 / 2 ≤ s.re
+  · exact zetaSharp_xi_eq_H h
+  · rw [SelbergSharp.xi, ite_eq_right h, SelbergSharp.xiLeft, zetaSharp_ω, one_mul]
+    have hre : 0 < (1 - conj s).re := by
+      simp only [sub_re, one_re, conj_re]
+      linarith
+    rw [zetaSharp_xiRight_eq_H hre, map_mul, map_ofNat, H_zero_conj]
+    congr 2
+    rw [map_mul, map_neg, Complex.conj_I, map_sub, map_mul, map_sub, map_one, conj_conj,
+      map_ofNat]
+    ring
+
+/-- The structure's Gaussian flow of `zetaSharp` is `16 H_t` for `t < 0`. -/
+theorem zetaSharp_sharpFlow_eq {t : ℝ} (ht : t < 0) (z : ℂ) :
+    zetaSharp.sharpFlow t z = 16 * DBN.H t z := by
+  have hc : 0 < -t := by linarith
+  have hH := DBNGaussConv.H_neg_eq_gauss hc z
+  rw [neg_neg] at hH
+  have harg : ∀ ω : ℝ, -I * (2 * (1 / 2 + I * (z + ω) / 2) - 1) = z + ω := fun ω => by
+    linear_combination (-(z + ω)) * Complex.I_mul_I
+  unfold SelbergSharp.sharpFlow
+  simp_rw [zetaSharp_xi_eq_H_all, harg]
+  rw [hH, show (∫ ω : ℝ, DBNGaussConv.gaussKer (-t) ω * (16 * DBN.H 0 (z + ω))) =
+      16 * ∫ ω : ℝ, DBNGaussConv.gaussKer (-t) ω * DBN.H 0 (z + ω) from by
+    rw [← integral_const_mul]
+    congr 1
+    ext ω
+    ring]
+  ring
+
 end DBNSelberg
+
+/-- **The ζ control for the `S^#` theorem**: `selberg_newman_sharp` applied to `zetaSharp` recovers
+`dbn_newman` (for every `t < 0`, `H_t` has a non-real zero), because
+`zetaSharp.sharpFlow t = 16 · H_t` for `t < 0`.  `Λ ≥ 0` in the sInf-free vocabulary; `Λ = 0` is
+RH and is NOT proved.  conjecture1_proved = False. -/
+theorem dbn_newman_of_sharp : ∀ t : ℝ, t < 0 → ∃ z : ℂ, DBN.H t z = 0 ∧ z.im ≠ 0 := by
+  intro t ht
+  obtain ⟨z, hz, him⟩ := selberg_newman_sharp DBNSelberg.zetaSharp t ht
+  refine ⟨z, ?_, him⟩
+  rw [DBNSelberg.zetaSharp_sharpFlow_eq ht] at hz
+  simpa using hz
