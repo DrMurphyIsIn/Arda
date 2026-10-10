@@ -71,6 +71,7 @@ import DBNFtZeroHigh
 import DBNStirling
 import DBNGaussConv
 import DBNSaddleAlg
+import DBNSaddleBounds
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -949,3 +950,11 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNSaddle.B_shift
 #print axioms DBNSaddle.tsum_coef_eq_F
 #print axioms DBNSaddle.xi_J_eq
+
+-- Newman step 5b (DBNSaddleBounds): the pointwise estimates behind Theorem 4 -- ||exp Q - 1|| <=
+-- ||Q|| e^{||Q||}, the branch-free split Log((b+d)/2) = Log(b/2) + Log(1+d/b), the near-field bound
+-- ||K - 1|| <= 8P/||b|| e^{2P/||b||}, and the global bound on ||K||.  Nothing here proves RH.
+#print axioms DBNSaddle.norm_exp_sub_one_le_mul_exp
+#print axioms DBNSaddle.log_half_add_eq
+#print axioms DBNSaddle.norm_K_sub_one_le
+#print axioms DBNSaddle.norm_K_le
