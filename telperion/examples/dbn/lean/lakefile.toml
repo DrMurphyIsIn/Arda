@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "M6gapEMZeta", "M6gapEMZetaComplex", "M6gapEMZetaTail", "M6gapZetaEMSum", "M6gapHeightFloorCheck", "M6gapHeightFloorTrig", "M6gapHeightFloorEM", "M6gapHeightFloorBoxes", "M6gapZetaZeroConfinement", "M6gapDlvpZetaSymmetry", "M6gapHeightFloor", "M6gapImAxis", "M6gapP15ZeroFree", "DBNM5Alpha", "DBNM5Target", "DBNP15Wired", "DBNZeroFreeHalfplane", "DBNBohr", "DBNFtZero", "DBNFtZeroHigh", "DBNStirling", "DBNGaussConv", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "M6gapEMZeta", "M6gapEMZetaComplex", "M6gapEMZetaTail", "M6gapZetaEMSum", "M6gapHeightFloorCheck", "M6gapHeightFloorTrig", "M6gapHeightFloorEM", "M6gapHeightFloorBoxes", "M6gapZetaZeroConfinement", "M6gapDlvpZetaSymmetry", "M6gapHeightFloor", "M6gapImAxis", "M6gapP15ZeroFree", "DBNM5Alpha", "DBNM5Target", "DBNP15Wired", "DBNZeroFreeHalfplane", "DBNBohr", "DBNFtZero", "DBNFtZeroHigh", "DBNStirling", "DBNGaussConv", "DBNSaddleAlg", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -318,6 +318,13 @@ name = "DBNStirling"
 # termwise Gamma evaluation.  Nothing here proves RH.  conjecture1_proved = False.
 [[lean_lib]]
 name = "DBNGaussConv"
+
+# Newman step 5a: the exact saddle-point bookkeeping of Dobner's Theorem 4 (gamma through Stirling's
+# L, the contour shift of B by Cauchy, B_n(J(s)) = gamma_t(s) a_n n^{-s} (1 + E_n(s)), and
+# xi_c(J(s)) = gamma_t(s)(F_{c/4}(s) + sum a_n n^{-s} E_n(s)) given convergence).  Algebra only; the
+# estimates on E_n are the next module.  Nothing here proves RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "DBNSaddleAlg"
 
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 # It is still run separately via `lake env lean AxiomGuardDBN.lean` for the #print axioms check.

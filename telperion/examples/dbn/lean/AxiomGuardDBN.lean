@@ -70,6 +70,7 @@ import DBNFtZero
 import DBNFtZeroHigh
 import DBNStirling
 import DBNGaussConv
+import DBNSaddleAlg
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -937,3 +938,14 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNGaussConv.shift_line
 #print axioms DBNGaussConv.H_zero_eq_tsum
 #print axioms DBNGaussConv.xi_eq_tsum_B
+
+-- Newman step 5a (DBNSaddleAlg): the exact saddle-point bookkeeping for Dobner's Theorem 4:
+-- gamma(b+delta) = gamma(b) rho(delta) exp(Q(delta) + delta l(b)) via Stirling's L, the contour of B
+-- may be moved (Cauchy), B_n(J(s)) = gamma_t(s) a_n n^{-s} (1 + E_n(s)) exactly, and
+-- xi_c(J(s)) = gamma_t(s) (F_{c/4}(s) + sum_n a_n n^{-s} E_n(s)) given convergence of the error
+-- series.  No estimates yet.  Nothing here proves RH.  conjecture1_proved = False.
+#print axioms DBNSaddle.γ_add_eq
+#print axioms DBNSaddle.B_J_eq
+#print axioms DBNSaddle.B_shift
+#print axioms DBNSaddle.tsum_coef_eq_F
+#print axioms DBNSaddle.xi_J_eq
