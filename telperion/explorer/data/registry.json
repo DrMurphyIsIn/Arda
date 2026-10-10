@@ -5239,7 +5239,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-10",
+     "run_id": "38062595826",
+     "run_url": "https://github.com/DrMurphyIsIn/Arda/actions/runs/38062595826",
+     "theorem": "dbn_newman"
+    },
     "grant": {
      "artifact_sha256": "599c6e89ed3f1864",
      "date": "2026-10-10",
@@ -5250,7 +5255,7 @@
    "readback": {
     "auditor": "operator",
     "date": "2026-10-10",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "Read-back of Statements.RH_dbn_newman (theorem dbn_newman): for every real number t with t < 0, there exists a complex number z such that DBN.H t z = 0 and the imaginary part of z is nonzero. Here DBN.H t z is the Lebesgue integral over the open half-line u > 0 of exp(t u^2) * Phi(u) * cos(z u), with the real factors exp(t u^2) and Phi(u) cast to the complexes and cos the complex cosine. Phi(u) is the Polymath15 series: the tsum over positive naturals n of (2 pi^2 n^4 exp(9u) - 3 pi n^2 exp(5u)) * exp(-pi n^2 exp(4u)). In words: for every negative time t the heat-flowed function H_t has a non-real zero, i.e. Newman's conjecture Lambda >= 0 stated without sInf. This does not assert Lambda = 0 (RH)."
    },
    "refutation_statement": "",
