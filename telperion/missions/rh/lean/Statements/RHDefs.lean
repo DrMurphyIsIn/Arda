@@ -780,3 +780,67 @@ end RvMBridge19
 namespace RvMBridge15.BombieriLagarias
 export _root_.BombieriLagarias (liZeroSum archSide finiteSide)
 end RvMBridge15.BombieriLagarias
+
+/-
+  ===== EXTENDED SELBERG CLASS VOCABULARY MIRROR (2026-10-10, programme item 3) =====
+  Verbatim copies of the dbn-island declarations that the node RH_dbn_selberg_newman states
+  Newman's conjecture in: the Gaussian kernel, the structure `DBNSelberg.ExtSelbergData` (the data
+  of an extended-Selberg-class element that Dobner's argument consumes: coefficients, Gamma-factor
+  data, entire completed function with a strip bound), and the backward heat flow for t < 0 as the
+  Gaussian convolution (`DBNGaussConv.H_neg_eq_gauss` proves this is `DBN.H t` when `Ξ = H 0`).
+  Design: telperion/docs/SELBERG_NEWMAN_DESIGN_2026-10-10.md.  conjecture1_proved = False.
+-/
+namespace DBNGaussConv
+
+-- ===== examples/dbn/lean/DBNGaussConv.lean:92 (v4.34 dbn island) =====
+noncomputable def gaussKer (c : ℝ) (ω : ℝ) : ℂ := ((Real.exp (-ω ^ 2 / (4 * c)) : ℝ) : ℂ)
+
+end DBNGaussConv
+
+namespace DBNSelberg
+
+open Complex DBNGaussConv
+open scoped Real
+
+-- ===== examples/dbn/lean/DBNSelbergData.lean:41-67 (v4.34 dbn island) =====
+/-- The data of an element of the extended Selberg class that Dobner's proof uses. -/
+structure ExtSelbergData where
+  /-- Dirichlet coefficients; `a 0` is ignored by `LSeries`. -/
+  a : ℕ → ℂ
+  a_one : a 1 = 1
+  nonconst : ∃ n : ℕ, 2 ≤ n ∧ a n ≠ 0
+  summable : ∀ s : ℂ, 1 < s.re → LSeriesSummable a s
+  /-- Number of Gamma factors. -/
+  r : ℕ
+  /-- The conductor-type constant `Q > 0`. -/
+  Q : ℝ
+  Q_pos : 0 < Q
+  lam : Fin r → ℝ
+  lam_pos : ∀ j, 0 < lam j
+  deg_pos : 0 < ∑ j, lam j
+  mu : Fin r → ℂ
+  mu_re_nonneg : ∀ j, 0 ≤ (mu j).re
+  /-- The polynomial removing the poles of `F`. -/
+  P : Polynomial ℂ
+  P_ne_zero : P ≠ 0
+  /-- The completed function, in the island's `z`-variable (`z = -i(2s-1)`, `s = 1/2 + iz/2`). -/
+  Ξ : ℂ → ℂ
+  Ξ_differentiable : Differentiable ℂ Ξ
+  Ξ_eq_tsum : ∀ s : ℂ, 1 < s.re →
+    Ξ (-I * (2 * s - 1)) = ∑' n : ℕ+, a n *
+      (P.eval s * ((Q : ℝ) : ℂ) ^ s * ∏ j, Complex.Gamma (lam j * s + mu j)) * (1 / (n : ℂ) ^ s)
+  Ξ_strip_bounded : ∀ B : ℝ, ∃ C : ℝ, ∀ w : ℂ, |w.im| ≤ B → ‖Ξ w‖ ≤ C
+
+namespace ExtSelbergData
+
+variable (F : ExtSelbergData)
+
+-- ===== examples/dbn/lean/DBNSelbergData.lean:166-169 (v4.34 dbn island) =====
+/-- `flow t z = (4π|t|)^{-1/2} ∫ e^{-ω²/(4|t|)} Ξ(z + ω) dω` for `t < 0` (junk for `t ≥ 0`).
+This is the island's `H_t` when `Ξ = H_0` (`DBNGaussConv.H_neg_eq_gauss`). -/
+noncomputable def flow (t : ℝ) (z : ℂ) : ℂ :=
+  (1 / ((Real.sqrt (4 * π * (-t)) : ℝ) : ℂ)) * ∫ ω : ℝ, gaussKer (-t) ω * F.Ξ (z + ω)
+
+end ExtSelbergData
+
+end DBNSelberg
