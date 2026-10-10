@@ -90,7 +90,7 @@
   {
    "counts": {
     "deprecated": 0,
-    "draft": 2,
+    "draft": 3,
     "open": 0,
     "proved": 61,
     "refuted": 0
@@ -99,7 +99,7 @@
    "dir": "rh",
    "goal_node": "RH_conjecture",
    "mathlib_rev": "de5ce8a9",
-   "n_nodes": 63,
+   "n_nodes": 64,
    "name": "RH.conjecture",
    "sources": [
     "Riemann, B. (1859), Ueber die Anzahl der Primzahlen unter einer gegebenen Groesse",
@@ -5215,6 +5215,48 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:dbn-compiles"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-10",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "rh:RH_dbn_newman",
+   "is_goal": false,
+   "kind": "milestone",
+   "name": "RH.dbn_newman",
+   "proof": {
+    "artifact": "telperion/examples/dbn/lean/DBNNewman.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/dbn/lean/DBNNewman.lean",
+    "closure_clean": false,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": null,
+    "requires_ci_job": ""
+   },
+   "readback": null,
+   "refutation_statement": "",
+   "slug": "RH_dbn_newman",
+   "statement": "theorem dbn_newman :\n    ∀ t : ℝ, t < 0 → ∃ z : ℂ, DBN.H t z = 0 ∧ z.im ≠ 0",
+   "status": "draft",
+   "title": "Newman's conjecture (Rodgers-Tao 2018), after Dobner 2020: for every t < 0 the heat-flowed H_t has a NON-REAL zero, i.e. Lambda >= 0 in the island's sInf-free vocabulary. PROVED on the dbn island (DBNNewman: Bohr almost periodicity + Hadamard exp-polynomial + complex Stirling + Gaussian convolution of H_0 + saddle-point Theorem 4 + Hurwitz). With de Bruijn (Lambda <= 1/2) and the judged QRH bridge (Lambda <= 9/32) the kernel-checked picture is 0 <= Lambda <= 9/32. Lambda = 0 is RH and is NOT proved. conjecture1_proved = False",
+   "updated": "2026-10-10"
+  },
+  {
+   "arb": false,
+   "campaign": "rh",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
      "oai-qrh-bridge.yml:build-and-judge"
     ],
     "label": "module-covered"
@@ -7704,7 +7746,7 @@
  "note": "conjecture1_proved = False. Every status below is read from the registry TOML through telperion.missions; nothing is inferred. A readback is labelled self-attested unless the registry records a Comparator judge pass on the current artifact, in which case it is labelled judge-verified.",
  "totals": {
   "deprecated": 6,
-  "draft": 14,
+  "draft": 15,
   "open": 4,
   "proved": 122,
   "refuted": 1

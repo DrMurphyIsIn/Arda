@@ -21,6 +21,7 @@ Source-of-truth documents:
 
 RH and BG campaign tracking now lives in the missions registry (`telperion/missions/`; see [`telperion/docs/MISSIONS_HOWTO.md`](telperion/docs/MISSIONS_HOWTO.md)).
 Riemann registry headline (2026-10-09): `Λ ≤ 9/32` for the de Bruijn–Newman constant, kernel-checked and judge-verified, from OpenAI's quasi-Riemann hypothesis (`Re s > 7/8`) composed with de Bruijn's theorem; weaker than the numerical 0.22, not RH. See [`telperion/PROOF_STATUS.md`](telperion/PROOF_STATUS.md) and [`telperion/docs/QRH_DBN_BRIDGE_2026-10-07.md`](telperion/docs/QRH_DBN_BRIDGE_2026-10-07.md).
+Riemann registry update (2026-10-10, branch `rh/newman-dobner`, draft node): Newman's conjecture `Λ ≥ 0` (Rodgers–Tao's theorem) is kernel-checked on the dbn island after Dobner's proof (`DBNSaddle.dbn_newman`: for every `t < 0`, `H_t` has a non-real zero; no zeta-zero information used), so the kernel-checked picture is `0 ≤ Λ ≤ 9/32`. `Λ = 0` is RH and is not proved. Design: [`telperion/docs/NEWMAN_LAMBDA_NONNEG_SCOPING_2026-10-10.md`](telperion/docs/NEWMAN_LAMBDA_NONNEG_SCOPING_2026-10-10.md).
 
 ---
 

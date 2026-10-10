@@ -14,6 +14,7 @@ import Statements.RH_dbn_H0_eq_xi
 import Statements.RH_dbn_H0_zero_strip
 import Statements.RH_dbn_debruijn_parametric
 import Statements.RH_dbn_debruijn_real_zeros
+import Statements.RH_dbn_newman
 import Statements.RH_dbn_real_zeros_nine_thirtyseconds
 import Statements.RH_dbn_real_zeros_of_qrh
 import Statements.RH_dbn_real_zeros_of_zeta_halfplane

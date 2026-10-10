@@ -163,3 +163,33 @@ What changed against sections 3-4 above after reading the island:
 
 Remaining estimate: `DBNGaussConv` ~600 lines, the saddle-point module ~2-3k, the transfer ~500.
 conjecture1_proved = False.
+
+## 7. Done (2026-10-10, same session)
+
+All six steps are kernel-checked on the dbn island, branch `rh/newman-dobner`:
+
+| Step | Module | Main statement | Lines |
+|---|---|---|---|
+| 4 | `DBNGaussConv` | `H_neg_eq_gauss`, `shift_line`, `H_zero_eq_tsum`, `xi_eq_tsum_B` (Dobner's (9) on `Re v = a > 1`) | 615 |
+| 5a | `DBNSaddleAlg` | `γ_add_eq`, `B_J_eq` (`B_n(J(s)) = γ_t a_n n^{-s}(1+E_n)` exactly), `B_shift`, `xi_J_eq` | 511 |
+| 5b | `DBNSaddleBounds` | `norm_exp_sub_one_le_mul_exp`, `log_half_add_eq`, `norm_K_sub_one_le` (near), `norm_K_le` (global) | 333 |
+| 5c | `DBNSaddleSum` | `norm_K_sub_one_le_unified`, `norm_E_le`, `summable_weight`, `error_sum_small` | ~600 |
+| 5 | `DBNTheorem4` | `theorem4`: `ξ_c(J(s))/γ_t(s) − F_{c/4}(s) → 0`, uniformly on `|Re s − x₀| ≤ 1` | 45 |
+| 6 | `DBNNewman` | `dbn_newman : ∀ t < 0, ∃ z, DBN.H t z = 0 ∧ z.im ≠ 0` | 260 |
+
+Total new Lean: about 3,900 lines over the island's 8.6k; `AxiomGuardDBN` prints 687 theorems, all
+`[propext, Classical.choice, Quot.sound]`; the full island builds (8,829 jobs). What made it
+shorter than the 8–15k estimate: (i) the island's `DBNStrip` already had the termwise Gamma
+evaluation of the `Φ`-series, so no `ζ`/`ξ` vocabulary and no contour integral of `ξ` was needed;
+(ii) only the digamma asymptotic (from Stirling's `L`) enters the saddle-point analysis, with the
+contour placed at `Re v = Re s + M₀ + h_n ≥ 2` so no pole of `γ` is ever crossed; (iii) one
+pointwise bound for every `n` and `σ` (the Gaussian factor `e^{((h+|σ|)²−y²/4)/8c} ≥ 1` replaces the
+indicator of the far region), so there is no small/medium/large-`n` case split; (iv) summability in
+`n` reduces to the everywhere-convergent Gaussian Dirichlet series of step 2.
+
+Registry: `RH_dbn_newman` registered as DRAFT (author this session), artifact linked, `mission
+verify` OK, `judge --check` OK (the judge consumes proved nodes only). Next: operator read-back
+(`telperion mission audit rh RH_dbn_newman --identity <operator> --session <id> --text ...`), gate,
+then the `missions-comparator` run and `comparator-record`, as for the 9/32 nodes.
+
+Not proved and not claimed: any rate in Theorem 4; `Λ = 0`. conjecture1_proved = False.
