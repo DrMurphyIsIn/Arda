@@ -75,6 +75,7 @@ import DBNSaddleBounds
 import DBNSaddleSum
 import DBNTheorem4
 import DBNNewman
+import DBNTheorem4Effective
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -977,3 +978,10 @@ example : M6gap.HeightFloor.DI.checkAB
 -- conjecture1_proved = False.
 #print axioms DBNSaddle.dbn_newman_of_neg
 #print axioms dbn_newman
+
+-- Effective Theorem 4 (item 4): explicit Y(c, x0, eps); tsums kept as constants in theorem4_explicit,
+-- fully closed-form in theorem4_fully_explicit. Not an effective Newman theorem (see the note).
+#print axioms DBNSaddle.theorem4_explicit
+#print axioms DBNSaddle.theorem4_fully_explicit
+#print axioms DBNSaddle.C₁_eq
+#print axioms DBNSaddle.C₂_eq
