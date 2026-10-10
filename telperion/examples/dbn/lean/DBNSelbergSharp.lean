@@ -9,7 +9,7 @@ Kaczorowski–Perelli's definition of `S^#` as the island can state it:
 * a Dirichlet series `F(s) = ∑ a(n) n^{-s}`, absolutely convergent for `Re s > 1`, normalized
   `a(1) = 1`, not a single term;
 * a meromorphic continuation with at most a pole at `s = 1` of order `m`: `F : ℂ → ℂ` with
-  `(s - 1)^m F(s)` entire and `F = LSeries a` on `Re s > 1`;
+  `(s - 1)^m F(s)` extending to an entire function `G` and `F = LSeries a` on `Re s > 1`;
 * Gamma data `Q > 0`, `λ_j > 0`, `Re μ_j ≥ 0`, `d_F = 2 ∑ λ_j > 0`, a root number `|ω| = 1`;
 * the functional equation `Φ(s) = ω conj(Φ(1 - conj s))` for `Φ(s) = Q^s ∏ Γ(λ_j s + μ_j) F(s)`,
   stated on the open strip `0 < Re s < 1` where both sides are holomorphic (no pole of `F` or of
@@ -48,7 +48,10 @@ structure SelbergSharp where
   F_eq : ∀ s : ℂ, 1 < s.re → F s = LSeries a s
   /-- Order of the pole at `s = 1` (`m = 0` if `F` is entire). -/
   m : ℕ
-  pole_entire : Differentiable ℂ (fun s : ℂ => (s - 1) ^ m * F s)
+  /-- `(s - 1)^m F(s)` extends to an entire function. (Stated as an extension, not as
+  `Differentiable (fun s => (s-1)^m * F s)`: the value of `F` AT the pole is junk, e.g. Mathlib's
+  `riemannZeta 1`, so the product's value at `s = 1` need not be the limit.) -/
+  pole_entire : ∃ G : ℂ → ℂ, Differentiable ℂ G ∧ ∀ s : ℂ, s ≠ 1 → G s = (s - 1) ^ m * F s
   /-- Number of Gamma factors. -/
   r : ℕ
   Q : ℝ
@@ -79,8 +82,23 @@ variable (S : SelbergSharp)
 noncomputable def Phi (s : ℂ) : ℂ :=
   ((S.Q : ℝ) : ℂ) ^ s * (∏ j, Complex.Gamma (S.lam j * s + S.mu j)) * S.F s
 
-/-- `ξ_F(s) = (s(s-1))^m Φ(s)` on the right half-plane `Re s > 0` (where it is holomorphic). -/
-noncomputable def xiRight (s : ℂ) : ℂ := (s * (s - 1)) ^ S.m * S.Phi s
+/-- The entire extension of `(s - 1)^m F(s)` (chosen from `pole_entire`). -/
+noncomputable def G : ℂ → ℂ := Classical.choose S.pole_entire
+
+lemma differentiable_G : Differentiable ℂ S.G := (Classical.choose_spec S.pole_entire).1
+
+lemma G_eq {s : ℂ} (hs : s ≠ 1) : S.G s = (s - 1) ^ S.m * S.F s :=
+  (Classical.choose_spec S.pole_entire).2 s hs
+
+/-- `ξ_F(s) = s^m Q^s ∏ Γ(λ_j s + μ_j) G(s)`, i.e. `(s(s-1))^m Φ(s)` with the pole removed; holomorphic
+on the right half-plane `Re s > 0`. -/
+noncomputable def xiRight (s : ℂ) : ℂ :=
+  s ^ S.m * ((S.Q : ℝ) : ℂ) ^ s * (∏ j, Complex.Gamma (S.lam j * s + S.mu j)) * S.G s
+
+lemma xiRight_eq_Phi {s : ℂ} (hs : s ≠ 1) : S.xiRight s = (s * (s - 1)) ^ S.m * S.Phi s := by
+  unfold xiRight Phi
+  rw [S.G_eq hs, mul_pow]
+  ring
 
 /-- The reflected expression `ω conj(ξ_F(1 - conj s))`, holomorphic on `Re s < 1`. -/
 noncomputable def xiLeft (s : ℂ) : ℂ :=

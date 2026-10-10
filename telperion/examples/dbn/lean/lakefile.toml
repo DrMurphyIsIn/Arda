@@ -5,7 +5,7 @@ name = "DBN"
 # xi vocabulary across the two islands. AxiomGuardDBN is a defaultTarget so bare `lake build`
 # compiles the guard and, transitively, every module it imports (cf. the li_positivity lakefile
 # rationale, #448/#451).
-defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "M6gapEMZeta", "M6gapEMZetaComplex", "M6gapEMZetaTail", "M6gapZetaEMSum", "M6gapHeightFloorCheck", "M6gapHeightFloorTrig", "M6gapHeightFloorEM", "M6gapHeightFloorBoxes", "M6gapZetaZeroConfinement", "M6gapDlvpZetaSymmetry", "M6gapHeightFloor", "M6gapImAxis", "M6gapP15ZeroFree", "DBNM5Alpha", "DBNM5Target", "DBNP15Wired", "DBNZeroFreeHalfplane", "DBNBohr", "DBNFtZero", "DBNFtZeroHigh", "DBNStirling", "DBNGaussConv", "DBNSaddleAlg", "DBNSaddleBounds", "DBNSaddleSum", "DBNTheorem4", "DBNNewman", "DBNTheorem4Effective", "DBNSelbergData", "DBNSelbergGauss", "DBNSelbergSaddleAlg", "DBNSelbergSaddleBounds", "DBNSelbergFtZero", "DBNSelbergSaddleSum", "DBNSelbergNewman", "DBNSelbergZeta", "DBNGammaVertical", "DBNSelbergSharp", "DBNSelbergSharpXi", "DBNSelbergSharpStrip", "AxiomGuardDBN"]
+defaultTargets = ["DBNDefs", "DBNRealZerosIff", "DBNXiRiemann", "DBNGKernel", "DBNXiCos", "DBNXiIBP", "DBNXi", "DBNRealZerosIffFinal", "DBNStrip", "DBNStep", "DBNStepControls", "DBNHurwitz", "DBNHeatApprox", "DBNDeBruijnReduction", "DBNHadamardCount", "DBNHadamardProduct", "DBNHadamardMean", "DBNHadamardLinear", "DBNHadamard", "DBNHadamardApprox", "DBNM1Approx", "DBNM1Parametric", "DBNM1RHIff", "DBNM1Controls", "DBNM4P15Defs", "DBNM4LocalStep", "DBNM4HeatUniform", "DBNM4P15Criterion", "M6gapEMZeta", "M6gapEMZetaComplex", "M6gapEMZetaTail", "M6gapZetaEMSum", "M6gapHeightFloorCheck", "M6gapHeightFloorTrig", "M6gapHeightFloorEM", "M6gapHeightFloorBoxes", "M6gapZetaZeroConfinement", "M6gapDlvpZetaSymmetry", "M6gapHeightFloor", "M6gapImAxis", "M6gapP15ZeroFree", "DBNM5Alpha", "DBNM5Target", "DBNP15Wired", "DBNZeroFreeHalfplane", "DBNBohr", "DBNFtZero", "DBNFtZeroHigh", "DBNStirling", "DBNGaussConv", "DBNSaddleAlg", "DBNSaddleBounds", "DBNSaddleSum", "DBNTheorem4", "DBNNewman", "DBNTheorem4Effective", "DBNSelbergData", "DBNSelbergGauss", "DBNSelbergSaddleAlg", "DBNSelbergSaddleBounds", "DBNSelbergFtZero", "DBNSelbergSaddleSum", "DBNSelbergNewman", "DBNSelbergZeta", "DBNGammaVertical", "DBNSelbergSharp", "DBNSelbergSharpXi", "DBNSelbergSharpStrip", "DBNSelbergSharpZeta", "AxiomGuardDBN"]
 
 [[require]]
 name = "LiCriterion"
@@ -408,3 +408,6 @@ name = "DBNSelbergSharpXi"
 
 [[lean_lib]]
 name = "DBNSelbergSharpStrip"
+
+[[lean_lib]]
+name = "DBNSelbergSharpZeta"
