@@ -975,4 +975,5 @@ example : M6gap.HeightFloor.DI.checkAB
 -- for every t < 0, H_t has a non-real zero: dbn_newman : forall t < 0, exists z, H t z = 0 and z.im != 0.
 -- In the island's sInf-free vocabulary this is Lambda >= 0.  Lambda = 0 is RH and is NOT proved.
 -- conjecture1_proved = False.
-#print axioms DBNSaddle.dbn_newman
+#print axioms DBNSaddle.dbn_newman_of_neg
+#print axioms dbn_newman

@@ -73,7 +73,7 @@ lemma im_Z {c M₀ : ℝ} (w : ℂ) : (-I * (2 * J c M₀ w - 1)).im = 1 - 2 * (
 
 /-- **Newman's conjecture on the dbn island** (Rodgers-Tao 2018; proof after Dobner 2020):
 for every `t < 0`, `H_t` has a non-real zero. -/
-theorem dbn_newman {t : ℝ} (ht : t < 0) : ∃ z : ℂ, DBN.H t z = 0 ∧ z.im ≠ 0 := by
+theorem dbn_newman_of_neg {t : ℝ} (ht : t < 0) : ∃ z : ℂ, DBN.H t z = 0 ∧ z.im ≠ 0 := by
   set c : ℝ := -t with hcdef
   have hc : 0 < c := by linarith
   have hc4 : 0 < c / 4 := by positivity
@@ -213,3 +213,8 @@ theorem dbn_newman {t : ℝ} (ht : t < 0) : ∃ z : ℂ, DBN.H t z = 0 ∧ z.im 
   linarith
 
 end DBNSaddle
+
+/-- Registry node `RH_dbn_newman`, statement verbatim (`Statements.RH_dbn_newman`). -/
+theorem dbn_newman :
+    ∀ t : ℝ, t < 0 → ∃ z : ℂ, DBN.H t z = 0 ∧ z.im ≠ 0 :=
+  fun _ ht => DBNSaddle.dbn_newman_of_neg ht

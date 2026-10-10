@@ -287,7 +287,7 @@ Riemann Hypothesis campaign: unconditional zero-free regions, the sharp zeta log
 ```
 
 **2026-10-10: Newman's conjecture `Λ ≥ 0` kernel-checked (branch rh/newman-dobner).** On the dbn
-island (Lean v4.34.0-rc1, Mathlib de5ce8a9), `DBNSaddle.dbn_newman : ∀ t < 0, ∃ z, DBN.H t z = 0 ∧
+island (Lean v4.34.0-rc1, Mathlib de5ce8a9), `dbn_newman : ∀ t < 0, ∃ z, DBN.H t z = 0 ∧
 z.im ≠ 0` — for every `t < 0` the heat-flowed `H_t` has a non-real zero, which in the island's
 sInf-free vocabulary is `Λ ≥ 0` (Rodgers–Tao 2018). The proof follows Dobner (arXiv:2005.05142) and
 uses no information about the zeros of ζ: nine new modules, all `[propext, Classical.choice,
