@@ -265,6 +265,10 @@ still a draft pending the operator's read-back): Newman's conjecture `Λ ≥ 0` 
 kernel-checked on the dbn island along Dobner's 2020 proof — for every `t < 0` the heat-flowed
 `H_t` has a non-real zero, with no information about the zeros of ζ used — so the machine-checked
 range for the de Bruijn–Newman constant is `0 ≤ Λ ≤ 9/32`. RH is `Λ = 0`, and remains open.
+Dobner's theorem was then formalized in full (PR #682): Newman's conjecture for every element of the extended
+Selberg class, as the structure `ExtSelbergData` on the dbn island, with ζ as the control instance
+(`selberg_newman`; design in
+[`telperion/docs/SELBERG_NEWMAN_DESIGN_2026-10-10.md`](telperion/docs/SELBERG_NEWMAN_DESIGN_2026-10-10.md)).
 
 ## The third arc: proof complexity
 
