@@ -89,22 +89,22 @@ theorem H_eq_half_integral {t : ℝ} (ht : t ≤ 0) (z : ℂ) :
 /-! ### The Gaussian representation -/
 
 /-- The real Gaussian kernel `e^{-ω²/(4c)}` (as a complex number). -/
-noncomputable def gaussK (c : ℝ) (ω : ℝ) : ℂ := ((Real.exp (-ω ^ 2 / (4 * c)) : ℝ) : ℂ)
+noncomputable def gaussKer (c : ℝ) (ω : ℝ) : ℂ := ((Real.exp (-ω ^ 2 / (4 * c)) : ℝ) : ℂ)
 
-lemma gaussK_eq (c : ℝ) (ω : ℝ) : gaussK c ω = cexp (-(1 / (4 * c) : ℂ) * (ω : ℂ) ^ 2) := by
-  rw [gaussK, Complex.ofReal_exp]
+lemma gaussK_eq (c : ℝ) (ω : ℝ) : gaussKer c ω = cexp (-(1 / (4 * c) : ℂ) * (ω : ℂ) ^ 2) := by
+  rw [gaussKer, Complex.ofReal_exp]
   congr 1
   push_cast
   ring
 
-lemma integrable_gaussK {c : ℝ} (hc : 0 < c) : Integrable (gaussK c) := by
+lemma integrable_gaussK {c : ℝ} (hc : 0 < c) : Integrable (gaussKer c) := by
   have h := integrable_cexp_neg_mul_sq (b := (1 / (4 * c) : ℂ)) (by simp; positivity)
   exact h.congr (ae_of_all _ fun ω => (gaussK_eq c ω).symm)
 
 /-- `e^{-cu²} = (4πc)^{-1/2} ∫_ℝ e^{-ω²/(4c)} e^{iωu} dω`. -/
 lemma heat_eq_gauss_integral {c : ℝ} (hc : 0 < c) (u : ℝ) :
     ((Real.exp (-c * u ^ 2) : ℝ) : ℂ) =
-      (1 / ((Real.sqrt (4 * π * c) : ℝ) : ℂ)) * ∫ ω : ℝ, gaussK c ω * cexp (I * ω * u) := by
+      (1 / ((Real.sqrt (4 * π * c) : ℝ) : ℂ)) * ∫ ω : ℝ, gaussKer c ω * cexp (I * ω * u) := by
   have hb : (0 : ℝ) < (1 / (4 * c) : ℂ).re := by simp; positivity
   have h := fourierIntegral_gaussian hb (u : ℂ)
   simp_rw [gaussK_eq]
@@ -127,17 +127,17 @@ lemma heat_eq_gauss_integral {c : ℝ} (hc : 0 < c) (u : ℝ) :
 /-- **The Gaussian representation**: `H_{-c}(z) = (4πc)^{-1/2} ∫_ℝ e^{-ω²/(4c)} H_0(z + ω) dω`. -/
 theorem H_neg_eq_gauss {c : ℝ} (hc : 0 < c) (z : ℂ) :
     DBN.H (-c) z =
-      (1 / ((Real.sqrt (4 * π * c) : ℝ) : ℂ)) * ∫ ω : ℝ, gaussK c ω * DBN.H 0 (z + ω) := by
+      (1 / ((Real.sqrt (4 * π * c) : ℝ) : ℂ)) * ∫ ω : ℝ, gaussKer c ω * DBN.H 0 (z + ω) := by
   set S : ℂ := 1 / ((Real.sqrt (4 * π * c) : ℝ) : ℂ) with hS
   have h1 : ∀ u : ℝ, heatIntegrand (-c) z u =
-      S * ∫ ω : ℝ, gaussK c ω * cexp (I * ω * u) * DBN.expIntegrand z u := by
+      S * ∫ ω : ℝ, gaussKer c ω * cexp (I * ω * u) * DBN.expIntegrand z u := by
     intro u
     rw [heatIntegrand, heat_eq_gauss_integral hc u, mul_assoc, ← integral_mul_const]
   have hcont : Continuous fun p : ℝ × ℝ =>
-      gaussK c p.2 * cexp (I * p.2 * p.1) * DBN.expIntegrand z p.1 := by
-    unfold gaussK
+      gaussKer c p.2 * cexp (I * p.2 * p.1) * DBN.expIntegrand z p.1 := by
+    unfold gaussKer
     fun_prop
-  have hF : Integrable (fun p : ℝ × ℝ => gaussK c p.2 * cexp (I * p.2 * p.1) * DBN.expIntegrand z p.1)
+  have hF : Integrable (fun p : ℝ × ℝ => gaussKer c p.2 * cexp (I * p.2 * p.1) * DBN.expIntegrand z p.1)
       (volume.prod volume) := by
     have hprod := (DBN.integrable_expIntegrand z).norm.mul_prod (integrable_gaussK hc).norm
     refine hprod.mono' hcont.aestronglyMeasurable (ae_of_all _ fun p => ?_)
@@ -145,11 +145,11 @@ theorem H_neg_eq_gauss {c : ℝ} (hc : 0 < c) (z : ℂ) :
     have : (I * (p.2 : ℂ) * (p.1 : ℂ)).re = 0 := by simp
     rw [this, Real.exp_zero, mul_one]
     exact le_of_eq (mul_comm _ _)
-  have h2 : ∀ ω : ℝ, ∫ u : ℝ, gaussK c ω * cexp (I * ω * u) * DBN.expIntegrand z u =
-      2 * (gaussK c ω * DBN.H 0 (z + ω)) := by
+  have h2 : ∀ ω : ℝ, ∫ u : ℝ, gaussKer c ω * cexp (I * ω * u) * DBN.expIntegrand z u =
+      2 * (gaussKer c ω * DBN.H 0 (z + ω)) := by
     intro ω
-    rw [DBN.H_zero_eq_half_integral, show (2 : ℂ) * (gaussK c ω * ((1 / 2 : ℂ) *
-      ∫ u : ℝ, DBN.expIntegrand (z + ω) u)) = gaussK c ω * ∫ u : ℝ, DBN.expIntegrand (z + ω) u by
+    rw [DBN.H_zero_eq_half_integral, show (2 : ℂ) * (gaussKer c ω * ((1 / 2 : ℂ) *
+      ∫ u : ℝ, DBN.expIntegrand (z + ω) u)) = gaussKer c ω * ∫ u : ℝ, DBN.expIntegrand (z + ω) u by
       ring, ← integral_const_mul]
     congr 1
     funext u
@@ -251,7 +251,7 @@ lemma integrable_shiftIntegrand_line {c : ℝ} (hc : 0 < c) (z : ℂ) (β : ℝ)
     (by rw [hB]; exact le_add_of_nonneg_right (abs_nonneg _)) x β
     (by rw [hB]; exact le_add_of_nonneg_left (abs_nonneg _))
   refine h.trans (le_of_eq ?_)
-  rw [gaussK, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
+  rw [gaussKer, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
     show (β ^ 2 - x ^ 2) / (4 * c) = β ^ 2 / (4 * c) + -x ^ 2 / (4 * c) by ring, Real.exp_add]
   ring
 
@@ -337,7 +337,7 @@ theorem H_neg_eq_gauss_shift {c : ℝ} (hc : 0 < c) (z : ℂ) (β : ℝ) :
   congr 1
   have h := shift_line hc z β
   unfold shiftIntegrand at h
-  have e1 : (fun ω : ℝ => gaussK c ω * DBN.H 0 (z + ω)) =
+  have e1 : (fun ω : ℝ => gaussKer c ω * DBN.H 0 (z + ω)) =
       fun x : ℝ => cexp (-(x : ℂ) ^ 2 / (4 * c)) * DBN.H 0 (z + x) := by
     funext ω; rw [gaussK_eq]; congr 2; ring
   have e2 : (fun ω : ℝ => cexp (-((ω : ℂ) + β * I) ^ 2 / (4 * c)) * DBN.H 0 (z + ω + β * I)) =
