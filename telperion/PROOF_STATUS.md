@@ -286,7 +286,7 @@ Riemann Hypothesis campaign: unconditional zero-free regions, the sharp zeta log
   ✓ RH_zeta_zero_im_ge  (lemma, proved)
 ```
 
-**2026-10-10: Newman's conjecture `Λ ≥ 0` kernel-checked (branch rh/newman-dobner).** On the dbn
+**2026-10-10: Newman's conjecture `Λ ≥ 0` kernel-checked, judged and released (PR #679, main ddf2ecff0).** On the dbn
 island (Lean v4.34.0-rc1, Mathlib de5ce8a9), `dbn_newman : ∀ t < 0, ∃ z, DBN.H t z = 0 ∧
 z.im ≠ 0` — for every `t < 0` the heat-flowed `H_t` has a non-real zero, which in the island's
 sInf-free vocabulary is `Λ ≥ 0` (Rodgers–Tao 2018). The proof follows Dobner (arXiv:2005.05142) and
@@ -300,9 +300,13 @@ complex Stirling in the project), `DBNGaussConv` (`H_{-c}` as a Gaussian convolu
 Cauchy line shift, and Dobner's eq. (9) from the island's own `Φ`-series expansion), `DBNSaddleAlg`
 / `DBNSaddleBounds` / `DBNSaddleSum` / `DBNTheorem4` (the saddle-point analysis: exact
 bookkeeping, near-field and global estimates, Gaussian integration and summation, Theorem 4 in
-qualitative form), `DBNNewman` (the transfer). Registry node `RH_dbn_newman` is DRAFT: it needs the
-operator's independent read-back and the gate before any grant, then the `missions-comparator`
-judge. Together with `RH_dbn_debruijn_real_zeros` (`Λ ≤ 1/2`) and `RH_dbn_real_zeros_nine_thirtyseconds`
+qualitative form), `DBNNewman` (the transfer). Registry node `RH_dbn_newman` is PROVED: operator
+read-back (petermurphy@mountainviewdirectcare.com, session operator-2026-10-10, independent), grant
+through gate 2026-09-23.1 (the artifact carries the registered statement verbatim as the root-level
+`dbn_newman`), `missions-comparator` judge PASS with nanoda (run 38062595826, job 114244014550, and
+again on main, run 38070548082), `comparator-record` written. Released as
+https://github.com/DrMurphyIsIn/newman-lambda-nonneg (v1.0.0, Zenodo DOI 10.5281/zenodo.23287833, concept 10.5281/zenodo.23287832) with the paper (14 pp), the vendored modules,
+the judge bundle, both CI transcripts and a materialize-and-verify workflow. Together with `RH_dbn_debruijn_real_zeros` (`Λ ≤ 1/2`) and `RH_dbn_real_zeros_nine_thirtyseconds`
 (`Λ ≤ 9/32`, cross-pin) the kernel-checked picture of the de Bruijn–Newman constant is
 `0 ≤ Λ ≤ 9/32`. `Λ = 0` is RH and is NOT proved. conjecture1_proved = False. Design:
 `telperion/docs/NEWMAN_LAMBDA_NONNEG_SCOPING_2026-10-10.md` §6–7.

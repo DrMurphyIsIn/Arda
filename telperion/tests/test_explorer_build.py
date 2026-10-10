@@ -163,14 +163,16 @@ def test_dbn_tab_exists_and_reads_the_registry(registry, plots, html):
     by_id = {n["id"]: n for n in registry["nodes"]}
     for nid in d["node_ids"] + d["support_ids"]:
         assert nid in by_id, nid
-    assert len(d["node_ids"]) == 4
+    assert len(d["node_ids"]) == 5
     head = by_id[d["headline_id"]]
     assert head["status"] == "proved"
     assert head["provenance"]["comparator"]["run_id"]          # the judge run comes from the TOML
     assert head["provenance"]["comparator"]["theorem"] == d["headline_theorem"]
-    # bounds: only 1/2 and 9/32 are kernel-checked; the rest are labelled as what they are
+    # bounds: only 1/2, 9/32 and the lower bound 0 are kernel-checked; the rest are labelled as what they are
     kinds = {b["key"]: b["kind"] for b in d["bounds"]}
-    assert [k for k, v in kinds.items() if v == "kernel-checked"] == ["debruijn", "qrh"]
+    assert [k for k, v in kinds.items() if v == "kernel-checked"] == ["debruijn", "qrh", "newman"]
+    newman = by_id["rh:RH_dbn_newman"]
+    assert newman["status"] == "proved" and newman["provenance"]["comparator"]["theorem"] == "dbn_newman"
     assert kinds["p15"] == kinds["pt"] == "published"
     vals = {b["key"]: b["value"] for b in d["bounds"]}
     assert vals["qrh"] == 9 / 32 and vals["debruijn"] == 0.5 and abs(vals["floor"] - 2 / 9) < 1e-15
@@ -190,6 +192,7 @@ def test_dbn_tab_exists_and_reads_the_registry(registry, plots, html):
         fit = c["fit"]["a"] / math.log(p["X"] / (4 * math.pi)) + c["fit"]["b"]
         assert abs(fit - p["lambda"]) < 0.02, p
     assert d["release"]["doi_version"] == "10.5281/zenodo.23269135"
+    assert d["release"]["newman_doi_version"] == "10.5281/zenodo.23287833"
 
 
 def test_dbn_tab_is_honest(html):
@@ -203,3 +206,4 @@ def test_dbn_tab_is_honest(html):
     assert "not a zero of zeta" in panel
     assert "openai/math" in panel and "Apache-2.0" in panel
     assert "qrh-debruijn-newman" in panel and "10.5281/zenodo.23269135" in panel
+    assert "newman-lambda-nonneg" in panel and "10.5281/zenodo.23287833" in panel
