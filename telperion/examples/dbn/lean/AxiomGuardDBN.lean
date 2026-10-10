@@ -69,6 +69,7 @@ import DBNBohr
 import DBNFtZero
 import DBNFtZeroHigh
 import DBNStirling
+import DBNGaussConv
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -927,3 +928,12 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNStirling.norm_R'_le
 #print axioms DBNStirling.digamma_eq
 #print axioms DBNStirling.norm_digamma_sub_log_le
+
+-- Newman step 4 (DBNGaussConv): H_{-c} as a Gaussian convolution of H_0, the Cauchy shift of the
+-- Gaussian line, and Dobner's (9): H_{-c}(-i(2s-1)) = sum_n B_n(s) with B_n the Gaussian-convolved
+-- n-th Dirichlet term on Re v = a > 1.  Nothing here proves RH.  conjecture1_proved = False.
+#print axioms DBNGaussConv.norm_Gamma_le_Gamma_re
+#print axioms DBNGaussConv.H_neg_eq_gauss
+#print axioms DBNGaussConv.shift_line
+#print axioms DBNGaussConv.H_zero_eq_tsum
+#print axioms DBNGaussConv.xi_eq_tsum_B
