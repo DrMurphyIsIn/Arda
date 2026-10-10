@@ -72,6 +72,8 @@ import DBNStirling
 import DBNGaussConv
 import DBNSaddleAlg
 import DBNSaddleBounds
+import DBNSaddleSum
+import DBNTheorem4
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -958,3 +960,12 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNSaddle.log_half_add_eq
 #print axioms DBNSaddle.norm_K_sub_one_le
 #print axioms DBNSaddle.norm_K_le
+
+-- Newman step 5c/5 (DBNSaddleSum, DBNTheorem4): the unified pointwise bound integrated against the
+-- Gaussian and summed over n -- the error series is uniformly small on the strip -- and Dobner's
+-- Theorem 4 in qualitative form: xi_c(J(s))/gamma_t(s) - F_{c/4}(s) -> 0 as Im s -> oo, uniformly for
+-- |Re s - x_0| <= 1.  Nothing here proves RH.  conjecture1_proved = False.
+#print axioms DBNSaddle.norm_K_sub_one_le_unified
+#print axioms DBNSaddle.norm_E_le
+#print axioms DBNSaddle.error_sum_small
+#print axioms DBNSaddle.theorem4
