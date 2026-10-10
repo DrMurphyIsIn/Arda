@@ -20,7 +20,10 @@ reverse-Dyson quasicrystal program (MIRRORMERE) in front.  It renders
   * the 20 Arb-conditional Li rung lower bounds parsed out of the emitted
     `examples/li_positivity/lean/LiPositivity.lean`,
   * the wall constants (the hypothesis-free width 3/2000 from the registry statement of
-    MM_gaussian_positivity_small_lam_3e3; the sharp envelope of E6Bridge16).
+    MM_gaussian_positivity_small_lam_3e3; the sharp envelope of E6Bridge16),
+  * the de Bruijn-Newman tab's bounds (only 1/2 and 9/32 kernel-checked here; the others
+    labelled published or our architecture floor) and the scoping run's Lambda_min(X) points
+    (floating numerics, NOT Arb-rigorous).
 
 WHAT IT MUST NEVER DO.  Invent a status; present an Arb-conditional or conditional theorem
 as a proof; drop the sentence `conjecture1_proved = False`.  The page and every data file
@@ -418,6 +421,93 @@ def build_plots() -> dict:
 
 
 # ---------------------------------------------------------------------------
+# de Bruijn-Newman tab
+# ---------------------------------------------------------------------------
+
+#: The registry nodes the de Bruijn-Newman tab shows. Only the ids live here; status, judge run
+#: and readback are read from the registry (build_registry) at page time, never restated.
+DBN_NODE_IDS = [
+    "rh:RH_zeta_zero_free_seven_eighths",        # OpenAI's QRH, replayed on the oai_qrh_bridge island
+    "rh:RH_dbn_real_zeros_of_zeta_halfplane",    # half-plane theta  =>  real zeros for t >= 2(theta-1/2)^2
+    "rh:RH_dbn_real_zeros_of_qrh",               # the QRH hypothesis  =>  real zeros for t >= 9/32
+    "rh:RH_dbn_real_zeros_nine_thirtyseconds",   # unconditional, one environment: Lambda <= 9/32
+]
+#: Supporting dbn-island nodes drawn on (de Bruijn's flow and the classical 1/2).
+DBN_SUPPORT_IDS = [
+    "rh:RH_dbn_debruijn_parametric",
+    "rh:RH_dbn_debruijn_real_zeros",
+    "rh:RH_dbn_H0_eq_xi",
+]
+DBN_HEADLINE_ID = "rh:RH_dbn_real_zeros_nine_thirtyseconds"
+
+
+def build_dbn() -> dict:
+    """Data for the de Bruijn-Newman tab.
+
+    The bounds are a short list of fixed literature and registry values. Only 1/2 and 9/32 are
+    kernel-checked in this registry; every other value is labelled as published or as our own
+    floating numerics. The Lambda_min(X) points are the dbn-scoper's 2026-10-07 table
+    (Polymath15 criterion at kernel-feasible heights, IEEE double plus mpmath, NOT Arb-rigorous),
+    bundled here because the scoping workspace is not part of the repository.
+    """
+    lam_points = [
+        # X/2, barrier X used, t0, y0, Lambda_min ("pure" canopy variant)
+        {"X_half": 1e4, "X": 19832.0, "t0": 0.4977, "y0": 0.60, "lambda": 0.6777, "row": "kernel-feasible height"},
+        {"X_half": 1e5, "X": 199875.0, "t0": 0.4707, "y0": 0.28, "lambda": 0.5099, "row": "kernel-feasible height"},
+        {"X_half": 6.4e5, "X": 1279865.5, "t0": 0.4045, "y0": 0.22, "lambda": 0.4287, "row": "kernel-feasible height"},
+        {"X_half": 2 * math.pi * 1000 ** 2, "X": 4 * math.pi * 1000 ** 2, "t0": 0.3446, "y0": 0.15, "lambda": 0.3558, "row": "fit point (N = 1000)"},
+        {"X_half": 2 * math.pi * 3000 ** 2, "X": 4 * math.pi * 3000 ** 2, "t0": 0.2931, "y0": 0.15, "lambda": 0.3044, "row": "fit point (N = 3000)"},
+        {"X_half": 2 * math.pi * 10000 ** 2, "X": 4 * math.pi * 10000 ** 2, "t0": 0.2566, "y0": 0.10, "lambda": 0.2616, "row": "fit point (N = 10000)"},
+    ]
+    for p in lam_points:
+        p["X_half"] = float(f"{p['X_half']:.6g}")
+        p["X"] = float(f"{p['X']:.6g}")
+    return {
+        "conjecture1_proved": False,
+        "node_ids": DBN_NODE_IDS,
+        "support_ids": DBN_SUPPORT_IDS,
+        "headline_id": DBN_HEADLINE_ID,
+        "headline_theorem": "dbn_real_zeros_of_qrh_unconditional",
+        "flow_theorem": "dbn_debruijn_parametric",
+        "definitions": "telperion/examples/dbn/lean/DBNDefs.lean (DBN.H)",
+        "bounds": [
+            {"key": "debruijn", "label": "de Bruijn 1950, trivial strip theta = 1", "value": 0.5, "exact": "1/2",
+             "theta": 1.0, "kind": "kernel-checked", "where": "rh:RH_dbn_debruijn_real_zeros"},
+            {"key": "qrh", "label": "OpenAI's QRH, theta = 7/8", "value": 9 / 32, "exact": "9/32",
+             "theta": 7 / 8, "kind": "kernel-checked", "where": DBN_HEADLINE_ID},
+            {"key": "floor", "label": "sextic-sparsity architecture floor, theta = 5/6", "value": 2 / 9, "exact": "2/9",
+             "theta": 5 / 6, "kind": "architecture floor",
+             "where": "our team's ceiling finding: that route cannot push theta below 5/6, so it cannot give Lambda below 2/9"},
+            {"key": "p15", "label": "Polymath15 (2019)", "value": 0.22, "exact": "0.22",
+             "kind": "published", "where": "published result, relies on a large computation; not kernel-checked here"},
+            {"key": "pt", "label": "Platt-Trudgian (2021)", "value": 0.2, "exact": "0.2",
+             "kind": "published", "where": "published result, relies on a large computation; not kernel-checked here"},
+            {"key": "rt", "label": "Rodgers-Tao (2020): Lambda >= 0", "value": 0.0, "exact": "0",
+             "kind": "published lower bound", "where": "published result; not in this registry. RH is Lambda <= 0, so RH is Lambda = 0"},
+        ],
+        "lambda_curve": {
+            "points": lam_points,
+            "fit": {"a": 5.06, "b": -0.012, "formula": "Lambda_min(X) ~ 5.06 / log(X / 4 pi) - 0.012"},
+            "p15_point": {"X": 6.0e10, "lambda": 0.22, "label": "Polymath15's own point (published)"},
+            "needed_for_nine_thirtyseconds_X": 3.9e8,
+            "trust": "floating numerics (IEEE double plus mpmath) from our scoping run of the Polymath15 "
+                     "criterion; NOT Arb-rigorous, NOT kernel-checked",
+            "source": "dbn-scoper Lambda_min(X) table, 2026-10-07 (bundled in telperion/explorer/build.py)",
+        },
+        "release": {
+            "repo": "https://github.com/DrMurphyIsIn/qrh-debruijn-newman",
+            "doi_version": "10.5281/zenodo.23269135",
+            "doi_concept": "10.5281/zenodo.23269134",
+            "credit": "openai/math (Apache-2.0): the quasi-Riemann hypothesis, zeta(s) != 0 for Re s > 7/8, "
+                      "and its Lean proof are entirely OpenAI's",
+            "credit_url": "https://github.com/openai/math",
+        },
+        "trust": "Plots on this tab are float models of the stated bounds; the toy trajectory is a model of "
+                 "the bound, not a zero of zeta.",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Bundle
 # ---------------------------------------------------------------------------
 
@@ -446,6 +536,11 @@ def render_html(registry: dict, plots: dict) -> str:
 def build_all() -> Dict[str, str]:
     registry = build_registry()
     plots = build_plots()
+    plots["dbn"] = build_dbn()
+    ids = {n["id"] for n in registry["nodes"]}
+    missing = [i for i in DBN_NODE_IDS + DBN_SUPPORT_IDS if i not in ids]
+    if missing:
+        raise SystemExit("de Bruijn-Newman tab names nodes the registry does not hold: " + ", ".join(missing))
     files = {
         str(DATA_DIR / "registry.json"): json.dumps(registry, indent=1, ensure_ascii=False, sort_keys=True) + "\n",
         str(DATA_DIR / "plots.json"): json.dumps(plots, indent=1, ensure_ascii=False, sort_keys=True) + "\n",
