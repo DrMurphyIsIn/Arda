@@ -74,6 +74,7 @@ import DBNSaddleAlg
 import DBNSaddleBounds
 import DBNSaddleSum
 import DBNTheorem4
+import DBNNewman
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -969,3 +970,9 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNSaddle.norm_E_le
 #print axioms DBNSaddle.error_sum_small
 #print axioms DBNSaddle.theorem4
+
+-- Newman step 6 (DBNNewman): NEWMAN'S CONJECTURE (Rodgers-Tao's theorem) on this island, after Dobner --
+-- for every t < 0, H_t has a non-real zero: dbn_newman : forall t < 0, exists z, H t z = 0 and z.im != 0.
+-- In the island's sInf-free vocabulary this is Lambda >= 0.  Lambda = 0 is RH and is NOT proved.
+-- conjecture1_proved = False.
+#print axioms DBNSaddle.dbn_newman
