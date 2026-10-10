@@ -3,7 +3,7 @@ depends_on = []
 kind = "milestone"
 name = "RH.dbn_newman"
 statement_module = "Statements.RH_dbn_newman"
-status = "draft"
+status = "open"
 title = "Newman's conjecture (Rodgers-Tao 2018), after Dobner 2020: for every t < 0 the heat-flowed H_t has a NON-REAL zero, i.e. Lambda >= 0 in the island's sInf-free vocabulary. PROVED on the dbn island (DBNNewman: Bohr almost periodicity + Hadamard exp-polynomial + complex Stirling + Gaussian convolution of H_0 + saddle-point Theorem 4 + Hurwitz). With de Bruijn (Lambda <= 1/2) and the judged QRH bridge (Lambda <= 9/32) the kernel-checked picture is 0 <= Lambda <= 9/32. Lambda = 0 is RH and is NOT proved. conjecture1_proved = False"
 updated = "2026-10-10"
 
@@ -17,3 +17,11 @@ artifact = "../../examples/dbn/lean/DBNNewman.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "petermurphy@mountainviewdirectcare.com"
+auditor_identity = "petermurphy@mountainviewdirectcare.com"
+auditor_session = "operator-2026-10-10"
+date = "2026-10-10"
+independence = "independent"
+text = "Read-back of Statements.RH_dbn_newman (theorem dbn_newman): for every real number t with t < 0, there exists a complex number z such that DBN.H t z = 0 and the imaginary part of z is nonzero. Here DBN.H t z is the Lebesgue integral over the open half-line u > 0 of exp(t u^2) * Phi(u) * cos(z u), with the real factors exp(t u^2) and Phi(u) cast to the complexes and cos the complex cosine. Phi(u) is the Polymath15 series: the tsum over positive naturals n of (2 pi^2 n^4 exp(9u) - 3 pi n^2 exp(5u)) * exp(-pi n^2 exp(4u)). In words: for every negative time t the heat-flowed function H_t has a non-real zero, i.e. Newman's conjecture Lambda >= 0 stated without sInf. This does not assert Lambda = 0 (RH)."
