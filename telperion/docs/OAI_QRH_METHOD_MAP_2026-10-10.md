@@ -176,3 +176,54 @@ data point on how this method scales; that is worth having and is honestly descr
   (the order of choices as a structure); Detector/FinalAssemblyUnconditional.lean (the top);
   Nonvanishing.lean (the exported statements).
 - Ours: telperion/examples/oai_qrh_bridge (the composition), docs/QRH_DBN_BRIDGE_2026-10-07.md.
+
+## 5. Model results (2026-10-10, same day): 7/8 is exact in the Stage II framework, and the low side is what pins it
+
+The model is in `telperion/research/qrh_stage3/` (`stage2_model.py` reproduces every §20 certificate at
+the paper's values, symbolically where the paper gives an identity; `stage3_search.py` varies the boundary,
+the previous-stage input and the geometry). Reading §15 supplied the piece section 4 above said was missing,
+and it turns out to be the whole answer.
+
+**The low side.** Prop. 15.3 bounds the modified probe directly by Z^{l_x/2 + b/12}, and the continuation
+principle needs that exponent to be at most C(sigma_0) = sigma_0 + l_x/2 - 1 + h/6 (Lemma 10.4's
+normalization, eq. 15.9). With the geometry relations l_y = l_x + b, h = 1 - l_x + ell and
+l_x + l_y + ell = 1, i.e. l_x = (1 - b - ell)/2 and h = (1 + b + 3 ell)/2, this is
+
+    sigma_0  >=  1 - h/6 + b/12  =  11/12 - ell/4          (b cancels).
+
+At ell = 0 (no prime compensation) it is 11/12: Stage I recovered, which is the model's own sanity check.
+Each unit of slot length buys one quarter. And ell is capped: Lemma 15.1's completed-row norm has exponent
+M' + ((5 ell - 1 + d)/4)_+ for 0 <= d <= ell, and its proof needs M' = 1 - ell - 2d >= 1/2 at d = ell;
+both conditions say 6 ell <= 1. So
+
+    sigma_0  >=  11/12 - (1/4)(1/6)  =  7/8,     with equality at the paper's point (C-low = 0 exactly).
+
+The constant 1/6 is the sextic structure (sixth-power rows, Gauss sums of order six), not a tuning choice;
+the three "remaining length inequalities" in the proof of Prop. 15.3 are also all tight at the paper's
+values, so the geometry sits at a vertex of the low-side polytope. 7/8 is the exact optimum of Stage II.
+
+**The high side.** At the paper's point the row-exponent system closes with its worst case at the floor bin,
+E = -7/1200 (eq. 20.5), after the model's two parameters that the paper chooses "sufficiently small"
+(the extension zeta and the detector width) are taken small. Lowering sigma_0 at fixed geometry raises every
+exponent by the same amount, so the high side alone tolerates about 0.006 of descent; with the Stage III
+inputs (beta_in = 7/8, so alpha = 3/4 and a better baseline capacity) and the best b at ell = 1/6 it
+tolerates about 0.010, to sigma_0 ~ 0.865, and then the floor bin fails. The floor bin (a = 51/100, trivial
+row count R = 1) does not depend on alpha or on the capacity constant, so a Stage III gains nothing there.
+Raising ell above 1/6 (ignoring the cap) helps the low side by ell/4 but the high side fails faster than that
+(at ell = 1/5, sigma_0 = 13/15, the best geometry is +0.026 short; at ell = 1/4 it is +0.08 short), because
+h = (1 + b + 3 ell)/2 grows with ell and the h(z_0 - 1/6) and d R terms grow with h.
+
+**Conclusion.** Within the Stage II framework as the paper presents it, 7/8 is exact and pinned from BELOW by
+the low estimate, not from above by the row counts; the high side has about 0.01 of room and the low side
+has none. There is no parameter route to 0.8317, with or without a Stage III. The 11/12 - ell/4 law says
+exactly what an improvement would have to be: either a larger admissible slot length (an improved completed
+-row norm bound, Lemma 15.1, or a weaker requirement than M' >= 1/2), or a smaller Gram exponent than b/12
+(Prop. 15.2's P_a^{1/6}), or a different normalization than h/6; all three are the sextic 1/6 in different
+clothes. And to reach 0.8317 by the first lever alone would need ell >= 1/3, at which the high side is 0.19
+short at the best geometry. So the honest reading is: this method is at its natural boundary at 7/8, and
+the gap to a kernel-checked Lambda record is a new estimate, not a new choice of constants.
+
+**What the model does not cover**, repeated: the validity ranges of Lemmas 8.1-8.3, 10.3-10.6 (stated for
+sigma_0 in [7/8, 1)), 17.1 and 18.1; the principal-term normalization (§20.1); the constants 3/16, 5/16,
+1/12 in Prop. 15.3's proof are treated as the paper's numeric facts. None of these can make the bound
+better than the low-side law; they could only make the picture worse. conjecture1_proved = False.
