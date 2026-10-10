@@ -4,7 +4,7 @@
 `DBNSelbergSharp.SelbergSharp` states the extended Selberg class: the functional equation is given
 only on the open critical strip `0 < Re s < 1`, and finite order only on the right half-plane
 `Re s ≥ 1/2`. This module glues the two expressions `xiRight` (holomorphic on `Re s > 0`, thanks to
-`pole_entire` and the Gamma factors having no pole there) and `xiLeft = ω conj(xiRight(1 - conj s))`
+the entire extension `G` of `(s-1)^m F` and the Gamma factors having no pole there) and `xiLeft = ω conj(xiRight(1 - conj s))`
 (holomorphic on `Re s < 1`, Mathlib's `DifferentiableAt.conj_conj`) into the entire function `xi`:
 
 * `xi_eq_xiRight`, `xi_eq_xiLeft`: the two expressions agree on the strip (the functional equation),
@@ -62,21 +62,15 @@ lemma differentiableAt_gammaProd {v : ℂ} (hv : 0 < v.re) :
     funext v; simp [Finset.prod_apply]
   rwa [heq] at h3'
 
-/-- `ξ_F(s) = (s^m Q^s ∏Γ) · ((s-1)^m F(s))`: the second factor is `pole_entire`. -/
-lemma xiRight_eq_regroup (s : ℂ) :
-    S.xiRight s = (s ^ S.m * ((S.Q : ℝ) : ℂ) ^ s * ∏ j, Complex.Gamma (S.lam j * s + S.mu j)) *
-      ((s - 1) ^ S.m * S.F s) := by
-  unfold xiRight Phi
-  rw [mul_pow]
-  ring
+lemma ne_one_of_re_ne {s : ℂ} (hs : s.re ≠ 1) : s ≠ 1 := by
+  intro h
+  rw [h] at hs
+  exact hs Complex.one_re
 
 lemma differentiableAt_xiRight {s : ℂ} (hs : 0 < s.re) : DifferentiableAt ℂ S.xiRight s := by
-  have heq : S.xiRight = fun s =>
-      (s ^ S.m * ((S.Q : ℝ) : ℂ) ^ s * ∏ j, Complex.Gamma (S.lam j * s + S.mu j)) *
-        ((s - 1) ^ S.m * S.F s) := funext S.xiRight_eq_regroup
-  rw [heq]
+  unfold xiRight
   refine DifferentiableAt.mul (DifferentiableAt.mul (DifferentiableAt.mul ?_ ?_)
-    (S.differentiableAt_gammaProd hs)) (S.pole_entire s)
+    (S.differentiableAt_gammaProd hs)) (S.differentiable_G s)
   · fun_prop
   · apply DifferentiableAt.const_cpow differentiableAt_id
     left
@@ -106,8 +100,10 @@ lemma differentiableOn_xiLeft : DifferentiableOn ℂ S.xiLeft {s | s.re < 1} :=
 /-! ### The two expressions agree on the strip -/
 
 lemma xiLeft_eq_xiRight {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1) : S.xiLeft s = S.xiRight s := by
-  unfold xiLeft xiRight
-  rw [map_mul, map_pow, S.functional_equation_Phi h0 h1]
+  have hs1 : s ≠ 1 := ne_one_of_re_ne h1.ne
+  have hw1 : 1 - conj s ≠ 1 := ne_one_of_re_ne (by rw [re_one_sub_conj]; linarith)
+  unfold xiLeft
+  rw [S.xiRight_eq_Phi hs1, S.xiRight_eq_Phi hw1, map_mul, map_pow, S.functional_equation_Phi h0 h1]
   have hc : conj ((1 - conj s) * (1 - conj s - 1)) = s * (s - 1) := by
     simp only [map_mul, map_sub, map_one, Complex.conj_conj]
     ring
@@ -160,7 +156,7 @@ theorem xi_functional_equation (s : ℂ) :
 theorem xi_eq_tsum {s : ℂ} (hs : 1 < s.re) :
     S.xi s = (s * (s - 1)) ^ S.m * ((S.Q : ℝ) : ℂ) ^ s *
       (∏ j, Complex.Gamma (S.lam j * s + S.mu j)) * LSeries S.a s := by
-  rw [S.xi_eq_xiRight (by linarith), xiRight, Phi, S.F_eq s hs]
+  rw [S.xi_eq_xiRight (by linarith), S.xiRight_eq_Phi (ne_one_of_re_ne hs.ne'), Phi, S.F_eq s hs]
   ring
 
 /-- `LSeries` as a sum over `ℕ+` (the `n = 0` term vanishes). -/
@@ -188,12 +184,16 @@ theorem xi_eq_tsum' {s : ℂ} (hs : 1 < s.re) :
 lemma norm_xiRight_le : ∃ ρ₀ R₀ : ℝ, ∀ s : ℂ, 1 / 2 ≤ s.re → R₀ ≤ ‖s‖ →
     ‖S.xiRight s‖ ≤ Real.exp (‖s‖ ^ ρ₀) := by
   obtain ⟨ρ₀, R₀, h⟩ := S.finite_order
-  refine ⟨ρ₀, R₀, fun s h1 h2 => ?_⟩
+  refine ⟨ρ₀, max R₀ 2, fun s h1 h2 => ?_⟩
+  have hs1 : s ≠ 1 := by
+    intro hs
+    rw [hs, norm_one] at h2
+    linarith [le_max_right R₀ 2]
   have e : S.xiRight s = (s * (s - 1)) ^ S.m * ((S.Q : ℝ) : ℂ) ^ s *
       (∏ j, Complex.Gamma (S.lam j * s + S.mu j)) * S.F s := by
-    unfold xiRight Phi; ring
+    rw [S.xiRight_eq_Phi hs1, Phi]; ring
   rw [e]
-  exact h s h1 h2
+  exact h s h1 (le_trans (le_max_left _ _) h2)
 
 /-- `‖xi s‖ = ‖xi (1 - conj s)‖`. -/
 lemma norm_xi_reflect (s : ℂ) : ‖S.xi s‖ = ‖S.xi (1 - conj s)‖ := by
