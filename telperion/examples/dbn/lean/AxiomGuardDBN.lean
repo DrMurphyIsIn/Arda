@@ -65,6 +65,7 @@ import DBNM5Alpha
 import DBNM5Target
 import DBNP15Wired
 import DBNZeroFreeHalfplane
+import DBNBohr
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -894,3 +895,10 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms dbn_real_zeros_of_zeta_halfplane
 #print axioms dbn_real_zeros_of_qrh
 #print axioms dbn_H0_im_sq_le_of_qrh
+
+-- Newman / Lambda >= 0 programme, step 1 (DBNBohr): Bohr almost periodicity for everywhere
+-- absolutely convergent Dirichlet series, qualitative form (pure Mathlib; Dobner Thm 5 input).
+-- Says nothing about zeta zeros.  Nothing here proves RH.  conjecture1_proved = False.
+#print axioms DBNBohr.exists_twist_close
+#print axioms DBNBohr.norm_LSeries_shift_sub_le
+#print axioms DBNBohr.exists_shifts_tendstoLocallyUniformly
