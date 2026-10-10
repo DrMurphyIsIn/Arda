@@ -67,6 +67,7 @@ import DBNP15Wired
 import DBNZeroFreeHalfplane
 import DBNBohr
 import DBNFtZero
+import DBNFtZeroHigh
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -910,3 +911,7 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNFtZero.lseriesSummable
 #print axioms DBNFtZero.hasFiniteOrder_F
 #print axioms DBNFtZero.exists_zero
+
+-- Newman step 2b (DBNFtZeroHigh): F c has zeros of arbitrarily large imaginary part
+-- (Bohr shifts + Hurwitz zero-free form; no Rouche).  Nothing here proves RH.
+#print axioms DBNFtZero.exists_zero_im_ge
