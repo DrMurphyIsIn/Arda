@@ -68,6 +68,7 @@ import DBNZeroFreeHalfplane
 import DBNBohr
 import DBNFtZero
 import DBNFtZeroHigh
+import DBNStirling
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -915,3 +916,14 @@ example : M6gap.HeightFloor.DI.checkAB
 -- Newman step 2b (DBNFtZeroHigh): F c has zeros of arbitrarily large imaginary part
 -- (Bohr shifts + Hurwitz zero-free form; no Rouche).  Nothing here proves RH.
 #print axioms DBNFtZero.exists_zero_im_ge
+
+-- Newman step 3 (DBNStirling): complex Stirling with remainder, Gamma z = exp (L z) on Re z > 0,
+-- ||R z|| <= 1/(4||z||), psi z = log z - 1/(2z) + R' z with ||R' z|| <= 1/(2||z||^2).  Pure Mathlib
+-- (Euler's product + second-order Euler-Maclaurin + real Stirling).  Nothing here proves RH.
+#print axioms DBNStirling.sum_log_eq
+#print axioms DBNStirling.Gamma_eq_exp_L
+#print axioms DBNStirling.norm_R_le
+#print axioms DBNStirling.hasDerivAt_R
+#print axioms DBNStirling.norm_R'_le
+#print axioms DBNStirling.digamma_eq
+#print axioms DBNStirling.norm_digamma_sub_log_le
