@@ -90,7 +90,7 @@
   {
    "counts": {
     "deprecated": 0,
-    "draft": 2,
+    "draft": 3,
     "open": 0,
     "proved": 62,
     "refuted": 0
@@ -99,7 +99,7 @@
    "dir": "rh",
    "goal_node": "RH_conjecture",
    "mathlib_rev": "de5ce8a9",
-   "n_nodes": 64,
+   "n_nodes": 65,
    "name": "RH.conjecture",
    "sources": [
     "Riemann, B. (1859), Ueber die Anzahl der Primzahlen unter einer gegebenen Groesse",
@@ -5618,6 +5618,48 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:dbn-compiles"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-10",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "rh:RH_dbn_selberg_newman",
+   "is_goal": false,
+   "kind": "milestone",
+   "name": "RH.dbn_selberg_newman",
+   "proof": {
+    "artifact": "telperion/examples/dbn/lean/DBNSelbergNewman.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/dbn/lean/DBNSelbergNewman.lean",
+    "closure_clean": false,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": null,
+    "requires_ci_job": ""
+   },
+   "readback": null,
+   "refutation_statement": "",
+   "slug": "RH_dbn_selberg_newman",
+   "statement": "theorem selberg_newman (F : DBNSelberg.ExtSelbergData) :\n    ∀ t : ℝ, t < 0 → ∃ z : ℂ, F.flow t z = 0 ∧ z.im ≠ 0",
+   "status": "draft",
+   "title": "Newman's conjecture for the extended Selberg class (Dobner 2020, Theorem 1 in the form the dbn island states it): for every ExtSelbergData F (coefficients absolutely convergent on Re s > 1, a(1) = 1, not a single term; Gamma factor P(v) Q^v prod Gamma(lam_j v + mu_j) with lam_j > 0, Re mu_j >= 0, sum lam_j > 0; entire completed function Xi equal to sum a(n) gamma_F(s) n^-s on Re s > 1 and bounded on horizontal strips) and every t < 0, the Gaussian-convolution heat flow F.flow t has a NON-REAL zero, i.e. Lambda_F >= 0. The structure's fields are the hypotheses; for an honest S^# element the entire-continuation and strip-bound fields are theorems (Phragmen-Lindelof + Stirling) NOT proved here. zeta is an instance (DBNSelbergZeta) and recovers RH_dbn_newman as the control. Lambda_F = 0 (generalized RH) is NOT touched. conjecture1_proved = False",
+   "updated": "2026-10-10"
+  },
+  {
+   "arb": false,
+   "campaign": "rh",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
      "telperion-lean-e2e.yml:li-positivity-compiles"
     ],
     "label": "module-covered"
@@ -7760,7 +7802,7 @@
  "note": "conjecture1_proved = False. Every status below is read from the registry TOML through telperion.missions; nothing is inferred. A readback is labelled self-attested unless the registry records a Comparator judge pass on the current artifact, in which case it is labelled judge-verified.",
  "totals": {
   "deprecated": 6,
-  "draft": 14,
+  "draft": 15,
   "open": 4,
   "proved": 123,
   "refuted": 1

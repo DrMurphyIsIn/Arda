@@ -286,6 +286,28 @@ Riemann Hypothesis campaign: unconditional zero-free regions, the sharp zeta log
   ✓ RH_zeta_zero_im_ge  (lemma, proved)
 ```
 
+**2026-10-10 (later): the RH programme's items 2-4 (branch rh/selberg-newman).** (3) *Newman for the extended
+Selberg class.* `selberg_newman (F : DBNSelberg.ExtSelbergData) : ∀ t < 0, ∃ z, F.flow t z = 0 ∧ z.im ≠ 0` is
+kernel-checked: Dobner's theorem for every instance of the structure `ExtSelbergData` (coefficients absolutely
+convergent on `Re s > 1`, `a(1) = 1`, not a single term; Gamma factor `P(v) Q^v ∏ Γ(λ_j v + μ_j)`, `λ_j > 0`,
+`Re μ_j ≥ 0`, `∑ λ_j > 0`; entire completed `Ξ` equal to the Gamma-weighted Dirichlet series on `Re s > 1` and
+bounded on horizontal strips), with `flow t` the Gaussian-convolution heat flow. Eight new modules
+(DBNSelberg*, ~3.6k lines, all `[propext, Classical.choice, Quot.sound]`); ζ is an instance (`zetaData`,
+`zetaData_flow_eq : zetaData.flow t = DBN.H t` for `t < 0`) and `dbn_newman_of_selberg` recovers `dbn_newman`
+from the general theorem as the control. HONEST SCOPE: the structure's entire-continuation and strip-bound
+fields are theorems for honest `S^#` elements (Phragmén–Lindelöf + Stirling) and are NOT derived here; Dirichlet
+`L` and Davenport–Heilbronn instances are not attempted. Node `RH_dbn_selberg_newman` is DRAFT pending the
+operator's read-back. Design: `docs/SELBERG_NEWMAN_DESIGN_2026-10-10.md`. (4) *Effective Theorem 4.*
+`DBNTheorem4Effective` (408 lines): `theorem4_explicit` with the explicit height
+`Y = max {2, 8c, 64πc, 2S₁/ε, 8√(c log⁺(2S₂/ε))}` and `theorem4_fully_explicit` with closed-form constants
+(`log Y ≈ 23.4/c` at `x₀ = 1/2`). Verdict in `docs/EFFECTIVE_THEOREM4_2026-10-10.md`: item done; an EFFECTIVE
+Newman theorem as `t → 0⁻` is NO-GO on this route (Bohr step doubly exponential in `1/|t|`; the zero of `F_t`
+has no explicit location). (2) *Mathlib upstreaming.* Five branches on `DrMurphyIsIn/mathlib4` (complex Stirling
+with remainder + digamma asymptotic, `‖Γ v‖ ≤ Γ(Re v)`, Bohr almost periodicity for `LSeries`,
+Gaussian-polynomial majorants, and an optional `‖exp x − 1‖` corollary), each building and lint-clean against
+master `30a8d74c`; no PRs opened (the operator decides): `docs/MATHLIB_UPSTREAM_2026-10-10.md`. None of this
+is about `Λ = 0` or `Λ_F = 0`. conjecture1_proved = False.
+
 **2026-10-10: Newman's conjecture `Λ ≥ 0` kernel-checked (branch rh/newman-dobner).** On the dbn
 island (Lean v4.34.0-rc1, Mathlib de5ce8a9), `dbn_newman : ∀ t < 0, ∃ z, DBN.H t z = 0 ∧
 z.im ≠ 0` — for every `t < 0` the heat-flowed `H_t` has a non-real zero, which in the island's

@@ -11,3 +11,9 @@ updated = "2026-10-10"
 date = "2026-10-10"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+
+[proof]
+artifact = "../../examples/dbn/lean/DBNSelbergNewman.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

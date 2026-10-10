@@ -33,6 +33,8 @@ import DBNSelbergFtZero
 import DBNBohr
 import DBNHurwitz
 import DBNSaddleAlg
+import DBNSelbergSaddleSum
+import DBNSelbergZeta
 
 open Complex Filter Topology Metric MeasureTheory
 open scoped Real
@@ -379,3 +381,21 @@ theorem selberg_newman_of (herr : F.ErrorSumSmall) :
 end ExtSelbergData
 
 end DBNSelberg
+
+/-! ### The unconditional theorem and the ζ control
+
+`DBNSelbergSaddleSum.error_sum_small` is exactly `ErrorSumSmall F`, so the registered statement
+follows. `zetaData` (DBNSelbergZeta) is the ζ instance; its flow is `DBN.H t` for `t < 0`, so the
+general theorem recovers `dbn_newman` (DBNNewman) as a corollary: the control that the
+generalization specializes to the proved ζ case. Nothing here is about `Λ_F = 0`. -/
+
+/-- **Newman's conjecture for the extended Selberg class** (Dobner's theorem, in the form the dbn
+island states it): for every `F : ExtSelbergData` and every `t < 0`, the heat flow `F.flow t` has a
+non-real zero. The registered statement of node `RH_dbn_selberg_newman`. -/
+theorem selberg_newman (F : DBNSelberg.ExtSelbergData) :
+    ∀ t : ℝ, t < 0 → ∃ z : ℂ, F.flow t z = 0 ∧ z.im ≠ 0 :=
+  F.selberg_newman_of F.error_sum_small
+
+/-- The ζ control: the general theorem applied to `zetaData` recovers `dbn_newman`. -/
+theorem dbn_newman_of_selberg : ∀ t : ℝ, t < 0 → ∃ z : ℂ, DBN.H t z = 0 ∧ z.im ≠ 0 :=
+  DBNSelberg.dbn_newman_of_zetaData_newman (selberg_newman DBNSelberg.zetaData)

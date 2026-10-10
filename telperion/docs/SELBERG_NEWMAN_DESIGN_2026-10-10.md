@@ -67,3 +67,32 @@ the class in the literature; instantiating them on the island requires their com
 and strip bounds, which Mathlib has in part (`DirichletCharacter.completedLFunction`) and which
 are not attempted in this campaign. Newman's conjecture for `S^#` is Dobner's theorem; the
 contribution is the formalization. `Λ_F = 0` for any `F` (the generalized RH) is not touched.
+
+## 4. Status (2026-10-10, same day)
+
+Built and kernel-checked on branch `rh/selberg-newman` (full island `lake build`, 8,847 jobs; AxiomGuardDBN
+prints `[propext, Classical.choice, Quot.sound]` for every Selberg declaration):
+
+| module | lines | main statements |
+|---|---|---|
+| DBNSelbergData | 253 | `ExtSelbergData`, `flow`, `Ft`, `Bn`, saddle vocabulary, `gammaF_eq_exp`, `gammaF_add_eq` |
+| DBNSelbergGauss | 511 | `shift_line`, `flow_neg_eq_gauss_shift`, `xi_eq_tsum_Bn` (Dobner's (9)) |
+| DBNSelbergSaddleAlg | 548 | `BInt_J_eq`, `Bn_J_eq`, `Bn_shift`, `tsum_coef_eq_Ft`, `tsum_Bn_J_eq` |
+| DBNSelbergSaddleBounds | 879 | `P_eval_ne_zero`, `norm_KF_sub_one_le`, `norm_KF_le`, `norm_KF_sub_one_le_unified` |
+| DBNSelbergFtZero | 377 | `lseriesSummable_Ft`, `hasFiniteOrder_Ft`, `exists_zero_Ft`, `exists_zero_im_ge_Ft` |
+| DBNSelbergSaddleSum | 549 | `norm_EF_le`, `norm_term_le_weights`, `error_sum_small` |
+| DBNSelbergNewman | 401 | `differentiable_flow`, `theorem4_of`, `selberg_newman_of`, `selberg_newman`, `dbn_newman_of_selberg` |
+| DBNSelbergZeta | 127 | `zetaData`, `zetaData_flow_eq`, `dbn_newman_of_zetaData_newman` |
+
+Two places where the general data forced a different estimate than the ζ template (recorded in
+DBNSelbergSaddleBounds): the near-field log split works at ratio 2/3 rather than 1/2 because `Im μ_j` may be
+nonzero, and the global bound carries a `½ log(‖w‖/‖w+v‖)` term because `Re(w+v) − ½` can be negative when
+`λ_j < 1/4`; both are absorbed into the constants `CN`, `CG`, `Y₀`. `differentiable_flow` (the Gaussian
+convolution of an entire function bounded on strips is entire) is the one analytic lemma that was free for ζ
+(`DBN.differentiable_H`) and had to be proved here by differentiation under the integral with a Cauchy estimate.
+
+Registry: draft node `RH_dbn_selberg_newman` (statement `selberg_newman (F : DBNSelberg.ExtSelbergData) :
+∀ t : ℝ, t < 0 → ∃ z : ℂ, F.flow t z = 0 ∧ z.im ≠ 0`, carried verbatim by the artifact DBNSelbergNewman.lean;
+RHDefs mirrors `gaussKer`, `ExtSelbergData`, `flow`), artifact linked, `mission verify rh` OK, judge bundle
+unchanged (drafts are not judged). The grant waits for the operator's independent read-back, as for
+`RH_dbn_newman`. The ζ control `dbn_newman_of_selberg` is a kernel-checked second proof of `dbn_newman`.
