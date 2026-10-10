@@ -17,7 +17,7 @@ Lozano-Robledo's [Riemann Hypothesis Explorer](https://alozanoroble.github.io/ri
 in the browser, and plain "What is known" and "Compute it yourself" sections at the end. We
 borrowed the shape and the manners, not the code; the footer says so.
 
-The page has seven tabs.
+The page has eight tabs.
 
 1. **The quasicrystal.** What a Fourier quasicrystal is, the Guinand-Weil dual comb
    picture, Dyson's 2009 suggestion, the reverse-Dyson framing, the axiom variants
@@ -39,15 +39,26 @@ The page has seven tabs.
    tail, with rungs 0..4 highlighted as kernel and hypothesis-free, the 20 Arb-conditional
    certified lower bounds drawn as ticks, and the exchange rate `n + 1 <= 2 pi (T - 1/2)`
    drawn against the heights that exist.
-5. **The registry.** Status counts per campaign, a dependency graph in SVG coloured by
+5. **de Bruijn-Newman.** The newly proved, judge-verified `Lambda <= 9/32` and where it sits.
+   Non-claims first: 9/32 is weaker than the published 0.22 (Polymath15) and 0.2
+   (Platt-Trudgian), and it is not RH (`Lambda = 0`). Then a `theta` slider that maps a
+   zero-free half-plane `Re s > theta` to `Lambda <= 2 (theta - 1/2)^2` on a number line, with
+   the kernel-checked values (1/2, 9/32), our sextic-sparsity architecture floor (theta = 5/6,
+   2/9) and the published bounds drawn as published; the heat-flow envelope
+   `sqrt(max(Delta^2 - 2t, 0))` with a toy off-line pair labelled as a model of the bound; the
+   `Lambda_min(X)` curve of the Polymath15 criterion at kernel-feasible heights (floating numerics
+   bundled in `build.py`) against the 9/32 line, which explains the `1 / log X` barrier; and the
+   four registry nodes of the chain with their judge runs, read through the loader, plus the
+   release repository, the Zenodo DOI and the credit to OpenAI's `openai/math` (Apache-2.0).
+6. **The registry.** Status counts per campaign, a dependency graph in SVG coloured by
    status, and a card per node with its title, kind, verbatim statement (hypotheses
    included), artifact link into GitHub, `closure_clean`, CI coverage label, and the
    readback with its auditor, date, and its independence label as the registry records it ("self-attested"; "independent read-back" when `mission audit` accepted a different session and identity, such as the operator; or "judge-verified" once a Comparator run is recorded), plus the grant digest, judge run and required CI run when present. The "proved only" filter
    is on by default.
-6. **What is known.** A plain list of what the registry holds, followed by the honesty
+7. **What is known.** A plain list of what the registry holds, followed by the honesty
    footer: RH is not proved, every goal node is a draft, everything Arb-conditional is not a
    kernel theorem, every plot is a float model, every audit carries the independence label the registry records.
-7. **Compute it yourself.** How to run `telperion mission verify`, build an island with
+8. **Compute it yourself.** How to run `telperion mission verify`, build an island with
    `lake build`, read the axiom guard, run the Comparator, run the zoo, and rebuild this
    page.
 
@@ -68,7 +79,10 @@ The page has seven tabs.
   the certified Arb ladder needs python-flint and this build does not require it); the 20
   `hlo` bounds parsed out of `examples/li_positivity/lean/LiPositivity.lean`; and the sharp
   envelope of E6Bridge16 evaluated on a grid of widths, with `primeAbs(lam)` summed over the
-  prime powers up to two million. The test suite checks those `primeAbs` values against the
+  prime powers up to two million; and, for the de Bruijn-Newman tab, a short list of bounds
+  (only 1/2 and 9/32 kernel-checked) and the scoping run's `Lambda_min(X)` points, which are
+  floating numerics and labelled so. The tab's node cards name registry ids only; the build
+  refuses to run if the registry stops holding them. The test suite checks those `primeAbs` values against the
   numbers printed in the Lean docstring.
 * It inlines `src/index.html`, `src/explorer.css`, `src/explorer.js`, and the two JSON
   files into one HTML file. No CDN, no fonts fetched, no library. Plots are plain canvas;

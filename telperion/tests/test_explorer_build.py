@@ -152,3 +152,54 @@ def test_committed_build_is_current(built):
     if stale:
         warnings.warn("explorer build is stale (not a failure): run `python telperion/explorer/build.py` "
                       "and commit: " + ", ".join(stale), UserWarning)
+
+
+def test_dbn_tab_exists_and_reads_the_registry(registry, plots, html):
+    """The de Bruijn-Newman tab: present, its data bundled, its nodes read from the registry
+    (never restated), and its honesty strings on the page."""
+    assert 'data-panel="dbn"' in html and 'id="panel-dbn"' in html
+    d = plots["dbn"]
+    assert d["conjecture1_proved"] is False
+    by_id = {n["id"]: n for n in registry["nodes"]}
+    for nid in d["node_ids"] + d["support_ids"]:
+        assert nid in by_id, nid
+    assert len(d["node_ids"]) == 4
+    head = by_id[d["headline_id"]]
+    assert head["status"] == "proved"
+    assert head["provenance"]["comparator"]["run_id"]          # the judge run comes from the TOML
+    assert head["provenance"]["comparator"]["theorem"] == d["headline_theorem"]
+    # bounds: only 1/2 and 9/32 are kernel-checked; the rest are labelled as what they are
+    kinds = {b["key"]: b["kind"] for b in d["bounds"]}
+    assert [k for k, v in kinds.items() if v == "kernel-checked"] == ["debruijn", "qrh"]
+    assert kinds["p15"] == kinds["pt"] == "published"
+    vals = {b["key"]: b["value"] for b in d["bounds"]}
+    assert vals["qrh"] == 9 / 32 and vals["debruijn"] == 0.5 and abs(vals["floor"] - 2 / 9) < 1e-15
+    for b in d["bounds"]:
+        if "theta" in b:
+            assert abs(2 * (b["theta"] - 0.5) ** 2 - b["value"]) < 1e-12, b["key"]
+    # the Lambda_min(X) numerics are floating and say so; the fit reproduces them
+    c = d["lambda_curve"]
+    assert "floating" in c["trust"] and "NOT kernel-checked" in c["trust"]
+    lams = [p["lambda"] for p in c["points"]]
+    assert lams == sorted(lams, reverse=True)
+    # the page says every kernel-feasible height is worse than 9/32 (the larger fit points need not be)
+    feasible = [p["lambda"] for p in c["points"] if p["row"] == "kernel-feasible height"]
+    assert len(feasible) == 3 and min(feasible) > 9 / 32
+    import math
+    for p in c["points"]:
+        fit = c["fit"]["a"] / math.log(p["X"] / (4 * math.pi)) + c["fit"]["b"]
+        assert abs(fit - p["lambda"]) < 0.02, p
+    assert d["release"]["doi_version"] == "10.5281/zenodo.23269135"
+
+
+def test_dbn_tab_is_honest(html):
+    panel = html.split('id="panel-dbn"')[1].split("</section>")[0]
+    assert "conjecture1_proved = False" in panel
+    assert "What this tab does not claim" in panel
+    assert "weaker than the published bounds" in panel
+    assert "It is not RH" in panel
+    assert "not kernel-checked here" in panel
+    assert "float model" in panel
+    assert "not a zero of zeta" in panel
+    assert "openai/math" in panel and "Apache-2.0" in panel
+    assert "qrh-debruijn-newman" in panel and "10.5281/zenodo.23269135" in panel
