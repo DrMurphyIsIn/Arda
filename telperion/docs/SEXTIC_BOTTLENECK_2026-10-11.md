@@ -251,7 +251,26 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   (LowNominalGeometry.lean:21-24) from `sum ell = 1/6`; no low-side Lean statement has `ell` or `M` as a variable, so a
   Stage III at `ell = 1/5` would re-prove those modules with `ell` generalised. Unread by the audit: Part I lemma
   proofs (statements only), section 16 past l. 8794, section 20. So the remaining gate for 13/15 is purely the HIGH
-  side (follow-up (a), running).
+  side (follow-up (a)).
+  Follow-up (a), the high-side sweep, has landed (`~/arda-research/followups/highside_sweep_ell_1_6_to_1_5.md`, scripts
+  in `followups/highside/`; modelled, not proved; reproduces `-7/1200`, `-49/14400`, `sigma_low = 7/8` and the
+  `2.28e-4` high slack at the paper's point). VERDICT: no `ell in (1/6, 1/5]` gives `sigma0 < 7/8` with proved inputs
+  beyond a hair. The binding high constraint for every `ell > 1/6` is NOT the floor bin but the balanced witness-count
+  bin of Lemma 20.2 (l. 15994, 15962; Prop. 19.2 l. 15185) at `x = q/delta = 1/2`, `delta = 49/48 - sqrt(921)/48 =
+  0.3886`, `d = h`, where `R_* = 2/3` exactly and the asymmetry `b` cancels out of `E(h)`, so no re-tuning of `b, l_x,
+  l_y, M` helps. The b-free high law is `sigma0 > 0.87477 + 1.0829 (ell - 1/6)`; it crosses the corrected low side at
+  `ell = 0.16684`, `sigma0 = 0.874957`: exactly Liu's `B_new` (section 9), gain `4.3e-5`, `Lambda <= 0.28119`. Table of
+  `sigma0_min(ell)`: 0.17 -> 0.87838, 0.18 -> 0.88921, 0.19 -> 0.90004, 0.20 -> 0.91087. At `ell = 1/5` the balanced
+  bin is `+0.0442` short in exponent (floor bin `+0.038`). Correction to this project's own model: `stage3_search.py`
+  used `alpha = 2 beta_in - 1 = 3/4`, but the paper fixes `alpha = 5/6` (l. 15101); with that the shortfall at
+  `ell = 1/5` is 0.044, not the 0.026 quoted in the method map, and the binding bin moves from the floor to the witness
+  count. Even with ideal row counts everywhere the floor bin caps at 0.8700 (`ell = 0.1875`), and 13/15 would
+  additionally need `delta0 -> 0` or floor `R <= 0.98`. Reconciliation with the ledger: its 13/15 keeps `R = 1` at the
+  floor but sends `delta0 -> 0` (worth 0.016) and ignores the witness-count bins (worth 0.044), which are what bind;
+  its scenarios A (0.87498) and D (0.8701) agree with the sweep. NET: the artefact finding stands but buys almost
+  nothing. 7/8 is a two-sided vertex (low side `5 ell <= 1` from the sharp cubic sieve, high side Lemma 20.2's witness
+  count), and the only honest number below it is the `0.874957` crossing that Liu has already claimed and formalized.
+  The `Lambda <= 121/450` possibility raised above is withdrawn.
 
 ## 8. Verdict
 
@@ -260,8 +279,11 @@ geometry route. The sextic order is forced by Hasse-Davenport duplication (needs
 an explicit theta formula (needs `k/2 <= 3`), leaving `k = 6`; the only specified input that would have moved the
 constant below 0.85 is now expected to be false (dFDH Conjecture 1.8); and the quartic apparatus that does exist
 (DDHL 2026) carries the same `X^{5/6}` bottleneck. Replacing the sextic structure is a question about
-metaplectic forms, for a specialist, not for this project. 7/8 stands; `0 <= Lambda <= 9/32` is the
-kernel-checked picture; `Lambda = 0` is untouched. conjecture1_proved = False.
+metaplectic forms, for a specialist, not for this project. Within `k = 6`, the parameter space has been swept on both sides
+(section 7): the optimum is Liu's 0.874957, a two-sided vertex to within `4e-5`, and nothing in it reaches 0.87.
+7/8 stands as the published bound, 0.874957 as the formalized optimum of the method; `0 <= Lambda <= 9/32` is the
+kernel-checked picture until Liu's theorem is composed through the bridge; `Lambda = 0` is untouched.
+conjecture1_proved = False.
 
 ## 9. Postscript (2026-10-11): the first step past 1/6 has been taken
 

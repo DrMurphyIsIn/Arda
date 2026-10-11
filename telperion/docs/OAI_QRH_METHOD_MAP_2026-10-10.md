@@ -198,8 +198,9 @@ exponent M' + ((5 ell - 1 + d)/4)_+ for 0 <= d <= ell, which vanishes for all d 
 condition "M' >= 1/2" that was read here as a second cap is an artefact of Prop 15.3's proof (it only makes
 Q >= 1 for large Z; any M' > 0 works). Past 6 ell = 1 the excess COSTS (5 ell - 1)/8 on the low side through
 Prop 15.3's -d slack rather than forbidding, so the low floor is 11/12 - ell/4 + (5 ell - 1)_+/8, minimised at
-ell = 1/5: 13/15 (the thread-C ledger's floor), after which the HIGH side binds (open: the floor-bin-only
-check passes, this file's full row-count model is about 0.026 short at ell = 1/5). At the paper's own ell = 1/6:
+ell = 1/5: 13/15 (the thread-C ledger's floor), after which the HIGH side binds: the full row-count system is 0.044 short at ell = 1/5 (this file's earlier
+0.026 used alpha = 2 beta_in - 1 = 3/4 where the paper fixes alpha = 5/6, l. 15101), the binding bin being Lemma 20.2's
+balanced witness count, not the floor bin; the two sides cross at ell = 0.16684, sigma0 = 0.874957 = Liu's B_new. At the paper's own ell = 1/6:
 
     sigma_0  >=  11/12 - (1/4)(1/6)  =  7/8,     with equality at the paper's point (C-low = 0 exactly);
 

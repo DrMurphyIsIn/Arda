@@ -12,3 +12,9 @@ Companion to `telperion/docs/OAI_QRH_METHOD_MAP_2026-10-10.md` (section 5, "Mode
 
 Both need only Python 3 + sympy (the e9 venv has them). What the model covers and what it does not is
 stated at the top of each file and in the map. conjecture1_proved = False.
+
+**Correction (2026-10-11):** `stage3_search.py` sets the bin ceiling `alpha = 2 beta_in - 1`; the paper FIXES
+`alpha = 5/6` (paper.tex l. 15101) independently of the previous stage. With `alpha = 5/6` the high-side shortfall at
+`ell = 1/5` is 0.044 (not 0.026) and the binding bin is Lemma 20.2's balanced witness count. See
+`~/arda-research/followups/highside_sweep_ell_1_6_to_1_5.md` and SEXTIC_BOTTLENECK_2026-10-11.md section 7. The scripts
+here are left as they were; `kmodel_heuristic.py` inherits the same `alpha` and the same caveat.
