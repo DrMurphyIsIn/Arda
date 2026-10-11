@@ -68,7 +68,6 @@ Over S6's abstract `ProjPair S` and `ProlateBasis S ι` (`[Countable ι]`), with
 structure Scaling (S : ProjPair H) where          -- θ t = ϑ(e^t)
   θ : ℝ → H →L[ℂ] H
   norm_θ : ∀ t x, ‖θ t x‖ = ‖x‖
-  adj : ∀ t x y, ⟪θ t x, y⟫ = ⟪x, θ (-t) y⟫        -- unitary
   F_θ_F : ∀ t x, S.F (θ t (S.F x)) = θ (-t) x      -- ϑ(ρ) = F⁻¹ ϑ(ρ⁻¹) F
   P₁_θ : ∀ t, 0 ≤ t → ∀ x, S.P₁ x = x → S.P₁ (θ (-t) x) = θ (-t) x   -- ϑ(ρ⁻¹) shrinks supports
   cont : ∀ x y, Continuous fun t => ⟪x, θ t y⟫
