@@ -600,3 +600,6 @@ name = "ArchS6_Fourier"
 
 [[lean_lib]]
 name = "ArchS6_Proj"
+
+[[lean_lib]]
+name = "ArchS6_Kernel"
