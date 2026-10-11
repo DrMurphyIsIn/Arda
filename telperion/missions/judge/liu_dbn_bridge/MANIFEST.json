@@ -22,5 +22,42 @@
     "install": "telperion/scripts/judge_materialize.sh telperion/missions/judge/liu_dbn_bridge <materialized workspace>"
   },
   "not_consumable": [],
-  "nodes": []
+  "nodes": [
+    {
+      "slug": "RH_dbn_real_zeros_ge_2811857",
+      "campaign": "rh",
+      "theorem": "dbn_real_zeros_ge_2811857",
+      "solution_module": "ArdaDBNLiu",
+      "challenge_module": "MissionChallenges.RH_dbn_real_zeros_ge_2811857",
+      "bridge_theorem": "MissionJudge.RH_dbn_real_zeros_ge_2811857",
+      "config": "RH_dbn_real_zeros_ge_2811857.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "1dcf6f08e6b1111f5e0dad8266a6934b93718f3fc7bbba6d7611c680381f9b0c",
+      "statement_sha256": "cb97f854e4797b6e455b345c3f741e1d236106f9796c9d1173be22f3ebf7e539"
+    },
+    {
+      "slug": "RH_dbn_real_zeros_of_liu_unconditional",
+      "campaign": "rh",
+      "theorem": "dbn_real_zeros_of_liu_unconditional",
+      "solution_module": "ArdaDBNLiu",
+      "challenge_module": "MissionChallenges.RH_dbn_real_zeros_of_liu_unconditional",
+      "bridge_theorem": "MissionJudge.RH_dbn_real_zeros_of_liu_unconditional",
+      "config": "RH_dbn_real_zeros_of_liu_unconditional.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "1dcf6f08e6b1111f5e0dad8266a6934b93718f3fc7bbba6d7611c680381f9b0c",
+      "statement_sha256": "edfd4fe45278da31864d1dd438f6e0dda3a8ba12a78e6f88aa882f909c559923"
+    },
+    {
+      "slug": "RH_zeta_zero_free_liu",
+      "campaign": "rh",
+      "theorem": "liu_zeta_zero_free",
+      "solution_module": "ArdaLiuBridge",
+      "challenge_module": "MissionChallenges.RH_zeta_zero_free_liu",
+      "bridge_theorem": "MissionJudge.RH_zeta_zero_free_liu",
+      "config": "RH_zeta_zero_free_liu.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "fa2fed1454b88c21248f6ea8c665c1ee1ffe49c48d3d0bf7e7a18ee028c97abc",
+      "statement_sha256": "4871719234b501a483444c3fd6f60ed9e767e38f12824dc6928e94d7c3651ff8"
+    }
+  ]
 }
