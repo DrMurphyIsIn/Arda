@@ -101,11 +101,48 @@ would not have objected to any of them. The boundary of the method is therefore 
 satisfaction, in two theorems about Gauss sums and metaplectic theta functions, not in the exponent system,
 and not in any constant Telperion could certify or any geometry it could search.
 
-## 6. Reading pass on the source
+## 6. Reading pass on the source (`SEXTIC_ORIGIN_READING_2026-10-11.md`, line references to paper.tex)
 
-PENDING: line references from the independent reading pass (`SEXTIC_ORIGIN_REPORT.md`) to be added here;
-the ledger's `paper2.tex` references (Steps 3-4, l. 301-420; identity l. 322; Patterson's formula l. 363) are
-the primary ones.
+An independent reading pass over the September 30 source, done without the ledger, lands in the same place
+and adds the mechanism on the reflection side:
+
+- The sextic symbol is introduced at l. 628-631 with no motivation beyond `q_p = 1 mod 6`. The theta input is
+  cubic (l. 1895-1900); its coefficients are cubic Gauss sums, `gamma_2 = (sextic Gauss sum)^2` (l. 1992-2001);
+  the completed index is `c n^3`.
+- The quadratic part is forced by the reflection formula: after reflecting a sextic twist of exponent `j`
+  the local column factor is `chi^{-j-2}` (l. 1783-1789), so a squarefree row (`j = 1`) reflects to `chi^3`,
+  the QUADRATIC symbol. The paper says so itself: "The reason for the quadratic sieve is already visible for
+  squarefree rows ... `chi_R(nb)^3`" (l. 2848-2856), and then applies the Goldmakher-Louvel quadratic large
+  sieve with its clean `U + V` bound (l. 2644-2650) to get reflected energy `Z^{1+eps}` (l. 2866-2871). A cubic
+  twist would reflect to a cubic kernel and need the cubic large sieve, whose `(KD)^{2/3}` term gives
+  `Z^{4/3}` at balanced lengths and breaks the low estimate. This is the reflection-side face of the ledger's
+  Mobius-absorption argument: the sextic twist is exactly the twist that the cubic Gauss-sum reflection turns
+  into a quadratic character.
+- The paper contains no remark on the choice of order: no "quartic", "biquadratic", "Kazhdan", "metaplectic
+  cover" beyond the citation line l. 121, no "other fields".
+- Sextic-origin constants: `z = 1/6` (pole of `zeta_F^S(6z)` from rows `u a^6`, l. 3758, 4045, 6270),
+  `q_p^{-5/6}` and `Z^{-ell/6}` (slot factor at `z = 1/6`, l. 15562-15583), `h/6` in `C(s)` and hence `2/3` in
+  `C_I` and `11/16` in `C_II` (l. 6316, 8794), the Gram count `K^{1/6}` (valuations divisible by six,
+  l. 8535-8545), the `4/3 - delta` Stage I row envelope (sextic sieve `(KD)^{2/3}`, l. 5192), `1 - 2 delta/3` and
+  `alpha = 5/6` (sixth-power amplification `e(r) = max{1, (1+5r)/6}`, l. 12363-12395, 15103). Not sextic: the
+  detector floor `51/100` (l. 4214) and `76/75` (bookkeeping so `R = 1` at `delta = 1/50`, l. 16148-16153).
+  Uncertain: `17/50`, `7/37`, `1/(6 kappa)` (the paper says the `5M/6` threshold comes from "counting their
+  sixth-power form", l. 12590-12595). The slot cap `ell = 1/6` comes from the cube plus the mean square
+  (l. 8300-8320), as section 2 says, with one caveat the reading pass adds: the "3" there is the THETA order,
+  so with a k-th order theta the cap itself would move; section 2's table holds the cap fixed and is to that
+  extent conservative or wrong in a direction that does not matter, since every row except `k = 6` is blocked
+  anyway (section 5).
+- Stage I's 11/12: the principal row carries `zeta_F^S(6z) zeta_F^S(w) / L(s, eta)` (l. 6227); the double
+  residue at `w = 1`, `z = 1/6` has outside power `X^{1/3} Z^{s - 5/6}` (l. 6299-6300), `Z^{s - 2/3}` at
+  `X = Z^{1/2}` (l. 5547); equating with the low bound `Z^{1/4}` (l. 6692-6693) gives 11/12. The 1/12 is `h/6`
+  at `h = 1/2`: the density of sixth powers among the Poisson frequencies, the same sextic 1/6 as the pole.
+- The pass's own reading of the alternatives (inference, flagged as such): `k = 3` without the quadratic factor
+  is blocked because the reflected kernel is then cubic and the cubic large sieve's `(KD)^{2/3}` term is, to its
+  recollection, sharp on GRH (Dunn-Radziwill, the paper's reference [DR], l. 16521); `k = 4` over `Q(i)` would
+  have the quadratic factor built in (`lcm(2,4) = 4`) and would give the 13/16 law in principle, but is blocked
+  by the open problem of the Fourier coefficients of quartic Kubota-Patterson theta functions, which are not
+  Gauss sums (Kazhdan-Patterson; Eckhardt-Patterson), so no completed reflection identity exists. Both
+  recollections are unchecked against sources, as is the ledger's.
 
 ## 7. Verdict
 
