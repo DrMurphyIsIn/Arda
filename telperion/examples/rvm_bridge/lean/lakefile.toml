@@ -546,3 +546,6 @@ name = "AxiomGuardRvMBridge"
 # defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS5_Guard.lean
 [[lean_lib]]
 name = "ArchS5_KernelOp"
+
+[[lean_lib]]
+name = "ArchS5_Adjoint"
