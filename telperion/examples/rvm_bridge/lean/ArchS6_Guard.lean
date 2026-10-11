@@ -14,6 +14,7 @@ import ArchS6_Sobolev
 import ArchS6_Bounds
 import ArchS6_ProlateData
 import ArchS6_Trace
+import ArchS6_L1
 
 /-! ArchS6_Guard: `#print axioms` for every top-level theorem of stage S6.
 Required output: exactly `[propext, Classical.choice, Quot.sound]` on every line.
@@ -372,3 +373,9 @@ conjecture1_proved = False. -/
 #print axioms ArchS6.tsum_abs_mu_le
 #print axioms ArchS6.summable_abs_tau
 #print axioms ArchS6.prolateData
+-- ArchS6_L1
+#print axioms ArchS6.integrableOn_e
+#print axioms ArchS6.integrableOn_phiR
+#print axioms ArchS6.integral_sq_e
+#print axioms ArchS6.integral_abs_e_le_one
+#print axioms ArchS6.integral_abs_phiR_le_one

@@ -13,7 +13,7 @@ self-adjoint operator.
 
 * 16 Lean files plus the guard, 3,865 lines in total, all built with `lake build`. The branch
   includes a merge of `mm/archimedean-rung` (S5's HS files, S8, S9).
-* `ArchS6_Guard.lean` prints `#print axioms` for 337 declarations: every top-level theorem plus the
+* `ArchS6_Guard.lean` prints `#print axioms` for 342 declarations: every top-level theorem plus the
   `prolateData` instance. Every line is exactly `[propext, Classical.choice, Quot.sound]`. There is
   no `sorry` and no `axiom`.
 * The L² Fourier link that the brief allowed to stay open is **proved** (`fourier_ae_eq`).
@@ -26,7 +26,7 @@ self-adjoint operator.
 ```
 cd telperion/examples/rvm_bridge/lean
 lake build ArchS6_Trace ArchS6_Bridge       # builds the whole chain
-lake env lean ArchS6_Guard.lean             # 337 lines, all [propext, Classical.choice, Quot.sound]
+lake env lean ArchS6_Guard.lean             # 342 lines, all [propext, Classical.choice, Quot.sound]
 ```
 
 | file | lines | thms | content |
@@ -273,6 +273,23 @@ against `ip`/`T` (both are `rfl` after unfolding `K`). S9 states `horth` with `[
 `fourier_ξ_ae_real`). `coeFn_ξ_real` and `coeFn_ζ_real` here state the same facts with indicators.
 So S7's obligation O4 is fully discharged by S6, and the abstract API in `ArchS6_Abstract` is
 unchanged.
+
+### Status of the `ProlateData` instance after the 2026-10-11 S8 rewrite
+
+The lead removed S8's `M n`/`summable_wMN` obligation. S8 is replacing those fields with pointwise
+ℓ² fields that S10 discharges, and has generalised `ProlateData` to an index type `ι`.
+`ArchS6_ProlateData` targets the earlier ℕ-indexed `ProlateData`, so at merge it either needs
+adapting or can be dropped. `ArchS6_Sobolev`, `ArchS6_Bounds`, `ArchS6_Enum` and `ArchS6_Trace` are
+standalone results and stay valid.
+
+What S8 and S10 now need from S6:
+* **`ArchS6_L1`.** `integrableOn_e`, `integrableOn_phiR`, `integral_abs_e_le_one` and
+  `integral_abs_phiR_le_one` give ∫_{[0,1]} \|e_i\| ≤ 1. The proof uses \|e\| ≤ (e² + 1)/2.
+* **`ArchS6_Bridge.exists_S9_family`.** It gives orthonormal continuous eigenfunctions of S9's T
+  with the eigen-relation at every ω. On `mm/archimedean-rung` this is composed with S9's
+  `prolate_spectrum_complete`, which identifies the 13 windows.
+* **`phiR bR i = cosPhi (bR.μ i) (bR.e i)`** holds by `rfl` (S8's check), so S8's
+  `outer_of_cosPhi` gives N_i = 4π/\|μ_i\|.
 
 ## Open items
 

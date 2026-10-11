@@ -737,4 +737,7 @@ name = "ArchS6_ProlateData"
 name = "ArchS6_Trace"
 
 [[lean_lib]]
+name = "ArchS6_L1"
+
+[[lean_lib]]
 name = "ArchS6_Guard"
