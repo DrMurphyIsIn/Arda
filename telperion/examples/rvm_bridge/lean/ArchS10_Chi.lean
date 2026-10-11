@@ -2,7 +2,7 @@
   ArchS10_Chi -- stage S10 of the archimedean conceptual blueprint (2026-10-11), the assembly:
   a CERTIFIED ENCLOSURE OF CONNES-CONSANI'S KERNEL χ ON [0, log 2] (arXiv:2006.13771, (104)).
 
-  Input: S8's abstract `D : ArchS8.ProlateData` together with `CertBasis D`, which says that the
+  Input: S8's abstract `D : ArchS8.ProlateDataNat` (= ProlateData ℕ) together with `CertBasis D`, which says that the
   `D.phi n` are an orthonormal family (on [0,1]) of everywhere-eigenfunctions of S9's operator
   T f(ω) = ∫_0^1 2cos(2πxω) f(x) dx with eigenvalues `D.lam n`, the first 13 of which lie in S9's
   windows (n ≤ 12), and that `D.T > log 2`.  This is exactly what S6's eigenbasis, enumerated with
