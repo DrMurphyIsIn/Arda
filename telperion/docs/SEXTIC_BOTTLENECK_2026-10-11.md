@@ -59,46 +59,60 @@ corrects section 5 of the map on one point: raising `ell` past 1/6 at `k = 6` fa
 (that finding stands), but changing `k` is a different move and the high side has nothing to say about it.
 The question is therefore entirely whether an apparatus with `k = 4` or `k = 3` exists.
 
-## 4. Where the 6 comes from, structurally
+## 4. Where the 6 comes from, structurally (the team ledger already has this)
 
-(Filled from the source by a reading pass; see section 6 for what the paper says and what is inference.)
+The Riemann session's thread-C ledger, `~/rh-team/C/loss_ledger.md` (with `C/scripts/exact_bookkeeping.py`,
+which re-derives 11/12 and 7/8 exactly), answers the question this note was heading toward, and section 5.2
+of it should be cited rather than redone. In its terms:
 
-The twist is `chi_n(u) = (u/n)_6` and the rows are `u a^6`. Patterson's cubic theta function has Fourier
-coefficients that are cubic Gauss sums, with twisted multiplicativity in the CUBIC residue symbol; that is
-the `3`. The reflection side works with a quadratic mean square (the Goldmakher-Louvel / BGL "paired residue
-characters" large sieve, specialized to the sextic case in the paper's Lemma `sextic-large-sieve`); that
-pairing supplies the `2`. The sextic character is the product, and "at each good prime the sextic residue
-character has exact order six, since the residue multiplicative group is cyclic" (l. 4807). So `6 = 3 x 2`:
-the cubic structure of the theta function times the quadratic structure of the mean square.
+- The identity `sigma0 = 5/6 + (M - 2 ell)/12 + excess/2` (b drops out), with `M` the reflected-energy
+  length; the proved lemmas force `M + ell <= 1` and `2M >= 1 + 3 ell`, which gives the **13/15 floor** for
+  proved inputs (at the triple point `ell = 1/5`, `M = 4/5`), and idealising everything except sixth-power
+  sparsity gives the **5/6 = 1 - 1/k architecture floor**. Our law `1 - (1 + 3 ell)/(2k)` is the same
+  bookkeeping with `M = 1 - ell` substituted (the paper's choice), and the two agree: 7/8 at `ell = 1/6`,
+  13/15 at `ell = 1/5`.
+- **Why k = 6 is forced (ledger section 5.2).** Two things must hold at once. (a) After Poisson summation the
+  dual coefficients are `mu(n) gamma_{-1}(n)` with an order-k Gauss sum, and Mobius has to be absorbed into a
+  Gauss sum with a known theta formula. For `k = 2m` the Hasse-Davenport duplication
+  `gamma_{-1} gamma_{m-1} = (ray) gamma_{-2} gamma_m` does this; for `m = 3` it turns `mu(n) gamma_{-1}(n)` into a
+  ray-class factor times the cubic Gauss sum `gamma_2(n)` (paper2.tex:322); for `m = 2`, i.e. `k = 4`, the
+  relation degenerates to `|g|^2 = |g|^2` and carries no information; for odd `k` there is no quadratic
+  character in the family and `mu` survives, which rules out `k = 3`. (b) The absorbed coefficient must be a
+  theta coefficient with an explicit formula: Patterson's `c_theta(n b^3) = 3^{5/2} |b| chibar_n(lambda)^2
+  gamma_2(n)` (paper2.tex:363). Explicit squarefree-index coefficients of the m-fold metaplectic theta on
+  GL_2 are known only for `m = 2, 3` (Kazhdan-Patterson uniqueness of the Whittaker model; the ledger flags
+  this as from memory, unchecked against a source; so does this note).
+- **k = 2 is circular**, not sieve-limited: the dual family is again a Mobius sum twisted by quadratic
+  characters, the only theta is the classical one whose transformation law is Poisson summation itself, and
+  the needed bound including the square rows is equivalent to the conclusion. The cubic theta is what breaks
+  the circularity (its residue is the sparse `X^{5/6}` term, Heath-Brown-Patterson).
 
-## 5. What would have to be true for k = 4 or k = 3
+So the "6" is `2 x 3` in a precise sense: the `2` is the quadratic character needed for Hasse-Davenport
+duplication to absorb Mobius, the `3` is the only odd `m` for which the resulting Gauss sum is a theta
+coefficient with a formula. Neither factor is a tuning choice.
 
-- `k = 3` (cubic rows and cubic symbol, no quadratic factor): the mean-square step would have to be run
-  against a CUBIC large sieve rather than a quadratic one. Heath-Brown's cubic large sieve (2000) exists and
-  the paper already cites "Heath-Brown's cubic estimate" for another purpose, so the question is whether the
-  quadratic pairing on the reflection side is essential to the theta transformation or only to the sieve.
-  This is the question the reading pass in section 6 addresses.
-- `k = 4` (quartic rows, quartic symbol): would need a quartic analogue of Patterson's theory, i.e. theta
-  functions on the 4-fold metaplectic cover with Fourier coefficients given by quartic Gauss sums. As far as
-  this author recalls, this is exactly where the subject stops: Kazhdan-Patterson showed that for covers of
-  degree n >= 4 the Fourier coefficients of the theta function are NOT determined by Gauss sums (the
-  "theta function problem"; Patterson's conjectures, partial results for n = 4 by Suzuki and by
-  Eckhardt-Patterson). If that recollection is right, `k = 4` is blocked by an open problem in the theory of
-  metaplectic forms, not by an estimate. This needs checking against the literature before it is repeated.
+## 5. What the k-general table in section 2 actually means
 
-In the model's terms: `k = 3` would give `sigma0 = 3/4` and `Lambda <= 1/8`, `k = 4` would give 13/16 and
-`Lambda <= 25/128 < 0.2`. Both are far beyond anything a Stage III could do at `k = 6` (section 5 of the map:
-at most about 0.01).
+Read against section 4, the rows `k = 5, 4, 3, 2` of the table are counterfactuals, each blocked at a named
+step: `k = 4` at the duplication identity (degenerate), `k = 3` and `k = 5` at the absence of a quadratic
+character (Mobius survives), `k = 2` by circularity, `k = 2m` with `m >= 5` at the theta formula (and worse
+sparsity). The heuristic screen of section 3 adds one honest fact to that: the high side of the argument
+would not have objected to any of them. The boundary of the method is therefore located, to this note's
+satisfaction, in two theorems about Gauss sums and metaplectic theta functions, not in the exponent system,
+and not in any constant Telperion could certify or any geometry it could search.
 
-## 6. Reading pass on the source (what the paper says)
+## 6. Reading pass on the source
 
-PENDING: filled in from `SEXTIC_ORIGIN_REPORT.md` when the reading pass completes.
+PENDING: line references from the independent reading pass (`SEXTIC_ORIGIN_REPORT.md`) to be added here;
+the ledger's `paper2.tex` references (Steps 3-4, l. 301-420; identity l. 322; Patterson's formula l. 363) are
+the primary ones.
 
 ## 7. Verdict
 
-The sextic bottleneck is real and it is the symbol order, not a tuning constant: the low-side law is
-`1 - (1 + 3 ell)/(2k)` with the cubic cap `ell <= 1/6`, and the high side would accept any `k`. Lowering `k`
-is therefore the one move that would change the constant by more than a hair, and it is a question about
-metaplectic theta functions, not about this exponent system. It is not something Telperion can certify;
-it is something to put to a number theorist who works on higher-order Gauss sums. Until then, 7/8 stands,
-`0 <= Lambda <= 9/32` is the kernel-checked picture, and `Lambda = 0` is untouched.
+Agrees with the ledger's gate recommendation: NO-GO for a parameter or geometry route; the one input that
+would move the constant below 0.85 is an open conjecture (the `K + D` sextic large sieve on the unreflected
+row), and even it stops at the 5/6 architecture floor, i.e. `Lambda <= 2/9 > 0.22`. The sextic order is
+forced by Hasse-Davenport duplication (needs `k` even) plus the existence of an explicit theta formula (needs
+`k/2 <= 3`), which together leave `k = 6` as the only choice; replacing it is a question about metaplectic
+forms, for a specialist, not for this project. 7/8 stands; `0 <= Lambda <= 9/32` is the kernel-checked
+picture; `Lambda = 0` is untouched. conjecture1_proved = False.
