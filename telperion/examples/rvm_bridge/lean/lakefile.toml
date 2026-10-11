@@ -544,3 +544,6 @@ name = "AxiomGuardRvMBridge"
 # ---- archimedean stage S9 (certified prolate engine) ----
 [[lean_lib]]
 name = "ArchS9_Pi"
+
+[[lean_lib]]
+name = "ArchS9_Analysis"
