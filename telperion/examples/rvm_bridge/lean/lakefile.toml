@@ -564,3 +564,27 @@ name = "ArchS3_Delta"
 
 [[lean_lib]]
 name = "ArchS3_Guard"
+
+# Stage S5 (archimedean conceptual plan, 2026-10-11): integral operators with L2 kernels,
+# compactness, self-adjointness, Rayleigh top eigenvalue, Weyl perturbation.  Not in
+# defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS5_Guard.lean
+[[lean_lib]]
+name = "ArchS5_KernelOp"
+
+[[lean_lib]]
+name = "ArchS5_Adjoint"
+
+[[lean_lib]]
+name = "ArchS5_Compact"
+
+[[lean_lib]]
+name = "ArchS5_Rayleigh"
+
+[[lean_lib]]
+name = "ArchS5_MinMax"
+
+[[lean_lib]]
+name = "ArchS5_Spectral"
+
+[[lean_lib]]
+name = "ArchS5_Guard"
