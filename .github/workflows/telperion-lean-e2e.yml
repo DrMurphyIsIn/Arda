@@ -75,6 +75,7 @@ jobs:
       borel_caratheodory: ${{ steps.f.outputs.borel_caratheodory }}
       box_robust: ${{ steps.f.outputs.box_robust }}
       bragg_amplitude: ${{ steps.f.outputs.bragg_amplitude }}
+      bragg_defect_sie: ${{ steps.f.outputs.bragg_defect_sie }}
       cauchy_deriv: ${{ steps.f.outputs.cauchy_deriv }}
       cauchy_schwarz: ${{ steps.f.outputs.cauchy_schwarz }}
       cavity_exchange: ${{ steps.f.outputs.cavity_exchange }}
@@ -208,6 +209,8 @@ jobs:
               - 'telperion/examples/box_robust/**'
             bragg_amplitude:
               - 'telperion/examples/bragg_amplitude/**'
+            bragg_defect_sie:
+              - 'telperion/examples/bragg_defect_sie/**'
             cauchy_deriv:
               - 'telperion/examples/cauchy_deriv/**'
             cauchy_schwarz:
@@ -348,7 +351,6 @@ jobs:
               - 'telperion/examples/zero_free_bridge/**'
             zeta_zero_localization:
               - 'telperion/examples/zeta_zero_localization/**'
-              - 'telperion/examples/bragg_defect_sie/**'
 
   toy-compiles:
     needs: changes
@@ -3019,7 +3021,7 @@ jobs:
         run: python ../../../scripts/guard_anchors.py --island dbn axioms.out
   exp-enclosure-compiles:
     needs: changes
-    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.exp_enclosure == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.zeta_zero_localization == 'true')
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.exp_enclosure == 'true' || needs.changes.outputs.bragg_defect_sie == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.zeta_zero_localization == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
