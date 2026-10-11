@@ -1,4 +1,5 @@
 import ArchS5_Spectral
+import ArchS5_HSRank
 
 /-! Stage S5 axiom guard: every top-level theorem of ArchS5_*.lean must print exactly
     [propext, Classical.choice, Quot.sound].
@@ -115,3 +116,35 @@ import ArchS5_Spectral
 #print axioms ArchS5.abs_minmaxEig_kernelOfContinuous_sub_le
 #print axioms ArchS5.isHermitianKernel_kernelOfContinuous
 #print axioms ArchS5.intOp_kernelOfContinuous_compact_selfAdjoint
+-- ArchS5_HS
+#print axioms ArchS5.kernelApply_eq_inner_sectionConj
+#print axioms ArchS5.norm_sectionConj
+#print axioms ArchS5.enorm_kernelApply_sq_eq
+#print axioms ArchS5.ofReal_norm_sectionConj_sq
+#print axioms ArchS5.sum_enorm_kernelApply_sq_le
+#print axioms ArchS5.sum_eLpNorm_intOp_sq_le
+#print axioms ArchS5.norm_sq_eq_toReal_eLpNorm
+#print axioms ArchS5.sum_norm_intOp_sq_le
+#print axioms ArchS5.summable_norm_intOp_sq
+#print axioms ArchS5.tsum_norm_intOp_sq_le
+#print axioms ArchS5.hasSum_norm_inner_sq
+#print axioms ArchS5.tsum_enorm_kernelApply_sq_eq
+#print axioms ArchS5.tsum_eLpNorm_intOp_sq_eq
+#print axioms ArchS5.hasSum_norm_intOp_sq
+#print axioms ArchS5.norm_eigen
+#print axioms ArchS5.sum_eigenvalue_sq_le
+#print axioms ArchS5.summable_eigenvalue_sq
+#print axioms ArchS5.tsum_eigenvalue_sq_le
+#print axioms ArchS5.tsum_real_eigenvalue_sq_le
+#print axioms ArchS5.card_mul_sq_le_of_eigen
+#print axioms ArchS5.tsum_eigenvalue_sq_compl_le
+-- ArchS5_HSRank
+#print axioms ArchS5.re_inner_sum_eigen
+#print axioms ArchS5.norm_sum_sq_orthonormal
+#print axioms ArchS5.card_le_of_eigen_gt
+#print axioms ArchS5.card_le_of_eigen_gt_intOp
+#print axioms ArchS5.tensorKernel_ae_eq
+#print axioms ArchS5.intOp_tensorKernel
+#print axioms ArchS5.intOp_tensorKernel_mem_span
+#print axioms ArchS5.intOp_sum_tensorKernel_mem_span
+#print axioms ArchS5.card_le_of_eigen_gt_tensor
