@@ -540,3 +540,9 @@ name = "KWin2_GuardHeavy"
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]
 name = "AxiomGuardRvMBridge"
+
+# Stage S5 (archimedean conceptual plan, 2026-10-11): integral operators with L2 kernels,
+# compactness, self-adjointness, Rayleigh top eigenvalue, Weyl perturbation.  Not in
+# defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS5_Guard.lean
+[[lean_lib]]
+name = "ArchS5_KernelOp"
