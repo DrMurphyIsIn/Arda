@@ -1,6 +1,8 @@
 import ArchS7_Term
+import ArchS7_HS
 import ArchS7_Abstract
 import ArchS7_Concrete
+import ArchS7_Dilation
 
 /-! Axiom guard for stage S7 (CC Thm 4.7).  Every line must print
 `[propext, Classical.choice, Quot.sound]`.  conjecture1_proved = False. -/
@@ -61,3 +63,32 @@ import ArchS7_Concrete
 #print axioms ArchS7.hreal_of_pointwise
 #print axioms ArchS7.thm47_concrete
 #print axioms ArchS7.thm47_concrete_nonneg
+#print axioms ArchS7.thF_congr
+#print axioms ArchS7.memLp_comp_mul
+#print axioms ArchS7.memLp_thF
+#print axioms ArchS7.exp_half_sq
+#print axioms ArchS7.integral_thF
+#print axioms ArchS7.coeFn_thRaw
+#print axioms ArchS7.inner_thRaw
+#print axioms ArchS7.thL_apply
+#print axioms ArchS7.coeFn_thL
+#print axioms ArchS7.thL_add
+#print axioms ArchS7.thL_zero
+#print axioms ArchS7.thL_neg_thL
+#print axioms ArchS7.inner_thL_left
+#print axioms ArchS7.reflect_thL
+#print axioms ArchS7.thL_mem_evenL2
+#print axioms ArchS7.P1_thL_neg
+#print axioms ArchS7.fourier_congr_ae
+#print axioms ArchS7.fourier_thF
+#print axioms ArchS7.integrable_thF
+#print axioms ArchS7.fourier_thL
+#print axioms ArchS7.fourier_thL_fourier
+#print axioms ArchS7.norm_sq_eq_integral
+#print axioms ArchS7.continuous_thF_apply
+#print axioms ArchS7.continuous_thL_of_compact
+#print axioms ArchS7.continuous_thL
+#print axioms ArchS7.coe_thE
+#print axioms ArchS7.scalingEven_θ
+#print axioms ArchS7.isPointwise_scalingEven
+#print axioms ArchS7.thm47_even

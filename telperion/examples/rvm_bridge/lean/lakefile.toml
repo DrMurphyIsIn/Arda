@@ -674,4 +674,7 @@ name = "ArchS7_Abstract"
 name = "ArchS7_Concrete"
 
 [[lean_lib]]
+name = "ArchS7_Dilation"
+
+[[lean_lib]]
 name = "ArchS7_Guard"
