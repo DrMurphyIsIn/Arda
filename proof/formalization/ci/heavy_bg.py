@@ -17,6 +17,16 @@ unfiltered checks.
       `#print axioms <name>` whose declaration lives in a HEAVY module (name starts with
       `<module>.`) removed. The removed names go to DROPPED. Anything else unresolved still
       makes `lean OUT` fail, so this cannot hide a missing declaration.
+  heavy_bg.py serial-plan MOD...
+      For a consumer that builds only some R3Cert modules (missions-comparator.yml's bg judge
+      shard): the SERIAL modules in the import closure of MOD..., in dependency order, one per
+      line. SERIAL = the modules proof-lean.yml builds in stages of their own because two side
+      by side (or one beside ordinary modules) exhaust the 16 GB hosted runner: R47PC6Cells and
+      R47PC6Reduce (stages 1/2; PC6Reduce 18.2 GB peak), the BGSpiderTableChunk_* (stage 2b,
+      11-14 GB each) and the BGSpiderMidRootK* (stage 2c, up to 17.3 GB). Building each one
+      with its own `lake build`, in this order, means each runs with nothing heavy beside it.
+      Exits 3 (names on stderr) if the closure reaches a HEAVY module: those do not fit in
+      16 GB even alone, so a hosted job must not try to build them.
 """
 import os
 import re
@@ -25,6 +35,11 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SEED = re.compile(r"^R3Cert\.BGEnvCert\.G149\.Frag\d+$")
 IMPORT = re.compile(r"^import\s+(\S+)", re.M)
+SERIAL = re.compile(r"^R3Cert\.(R47PC6Cells|R47PC6Reduce|BGSpiderTableChunk_\d+_\d+|BGSpiderMidRootK\d+)$")
+
+
+def natural(s):
+    return [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", s)]
 
 
 def graph():
@@ -62,9 +77,26 @@ def heavy(g):
                 visit(i)
         order.append(m)
 
-    for m in sorted(hv, key=lambda s: [int(t) if t.isdigit() else t for t in re.split(r"(\d+)", s)]):
+    for m in sorted(hv, key=natural):
         visit(m)
     return order
+
+
+def serial_plan(g, hv, targets):
+    """(SERIAL modules in the closure of `targets`, dependency order; HEAVY ones reached)."""
+    hs, order, seen = set(hv), [], set()
+
+    def visit(m):
+        if m in seen or m not in g:
+            return
+        seen.add(m)
+        for i in sorted(g[m], key=natural):
+            visit(i)
+        order.append(m)
+
+    for t in sorted(targets, key=natural):
+        visit(t)
+    return [m for m in order if SERIAL.match(m)], [m for m in order if m in hs]
 
 
 def frontier(g, hv, m, acc):
@@ -112,6 +144,17 @@ def main():
             fh.write("\n".join(lines) + "\n")
         with open(dropped_path, "w", encoding="utf-8") as fh:
             fh.write("".join(n + "\n" for n in dropped))
+    elif cmd == "serial-plan":
+        unknown = [m for m in sys.argv[2:] if m not in g]
+        if unknown:
+            sys.exit(f"serial-plan: not R3Cert modules: {unknown}")
+        plan, reached = serial_plan(g, hv, sys.argv[2:])
+        if reached:
+            print("serial-plan: the closure reaches HEAVY module(s), which do not fit on a 16 GB "
+                  "hosted runner even alone (built by proof-lean-heavy.yml on the self-hosted "
+                  "runner):\n  " + "\n  ".join(reached), file=sys.stderr)
+            sys.exit(3)
+        print("\n".join(plan))
     else:
         sys.exit(__doc__)
 
