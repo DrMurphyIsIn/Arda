@@ -790,4 +790,7 @@ name = "ArchS7_Kappa"
 name = "ArchS7_PFP"
 
 [[lean_lib]]
+name = "ArchS7_Density"
+
+[[lean_lib]]
 name = "ArchS7_Guard"
