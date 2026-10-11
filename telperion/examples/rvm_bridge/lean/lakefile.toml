@@ -606,3 +606,6 @@ name = "ArchS6_Kernel"
 
 [[lean_lib]]
 name = "ArchS6_Eigen"
+
+[[lean_lib]]
+name = "ArchS6_Even"
