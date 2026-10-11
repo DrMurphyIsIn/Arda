@@ -588,3 +588,9 @@ name = "ArchS5_Spectral"
 
 [[lean_lib]]
 name = "ArchS5_Guard"
+
+# Stage S6 (archimedean conceptual plan, 2026-10-11): Sonin/prolate structure (CC Prop 4.5, (81)),
+# L2 Fourier link, sinc kernel.  Not in defaultTargets; the coordinator wires them at merge.
+# Guard: lake env lean ArchS6_Guard.lean
+[[lean_lib]]
+name = "ArchS6_Abstract"
