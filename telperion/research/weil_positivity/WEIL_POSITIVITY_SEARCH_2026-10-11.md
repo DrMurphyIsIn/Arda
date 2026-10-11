@@ -672,3 +672,92 @@ Legendre basis) in the box against real sign changes on a 0.005 grid. Sources:
 * **This is not a test of RH.** The zeros of xi-hat are not the zeta zeros. The ones near
   the zeta ordinates are pinned there by the explicit formula (section 5, 3a(i)).
 
+
+---
+
+## 11. Normalisation cross-check against Connes-Consani, and CC1's eigenvector zeta
+
+Scripts: `cc_followup.py cc_crosscheck`, `zerosum_min.py`, and `cc1_zeta.py`. Results:
+`results/cc_crosscheck_log2.csv`, `results/cc_zero_sum_check_log2.txt` and
+`results/cc1_zeta_comparison.txt`. Nothing here is progress on RH.
+`conjecture1_proved = False`.
+
+### 11.1 The 1.33e-3 value: agreement, factor 1
+
+Variables match term by term. The reading notes check CC1 App. A and CC2 (2.5)-(2.11):
+* our support variable x is their log u, and supp f is [-L, L] with a = L;
+* the measures match, since dx = d*u;
+* W matches: CC2 (2.8) is our POLE - PRIME - CONST + ARCH.
+
+At 2L = log 2, i.e. a = log(2)/2, no prime enters. Legendre basis, K = 40, 50 digits:
+
+| form at 2L = log 2 | smallest eigenvalue, even sector | odd sector |
+|---|---|---|
+| poles + W_inf (= full Weil form here) | **0.00132936** | 0.0731 |
+| W_inf alone | -1.28575 | 0.0849 |
+| W_inf on ghat(+-i/2) = 0 (pole terms vanish) | 0.54704 | 0.84335 |
+| W_inf on ghat(+-i/2) = 0 and ghat(0) = 0 | 1.06258 | 0.84335 |
+
+* **The match is the first row.** The 1.33e-3 of CC2 Fig. 5 and of the team's reconcile.py
+  is the archimedean place *with* the pole terms and no primes. The reading notes call it
+  the "full form", and reconcile.py's "arch only Q" is defined as equal to the Weil form
+  while 2L <= log 2. Ours is 0.0013294, so **the normalisations agree with factor 1**.
+* **The side-condition rows are not that number.** With CC1's side conditions the
+  archimedean form is far from 1.33e-3 (0.547, or 1.063 with ghat(0) = 0 as well). Their
+  numbers are consistent with CC1 Thm 6.11.
+* **Independent check by the zero sum.** For the minimising f (||f|| = 1), sum over
+  gamma of |F(1/2 + i gamma)|^2 over 20000 zeros is 0.00132853. F comes from exact
+  spherical-Bessel transforms. A C/t^2 tail adds 8.7e-7, for a total of 0.0013294, against
+  the Gram eigenvalue 0.0013294. That ties the scale of W to the zeros directly, with no
+  free factor.
+* **The thresholds are therefore comparable.** The A-alone threshold, a = 0.3716 or
+  mu = 2.1027 (odd sector, section 10.2), is in the same normalisation as CC2's "fails a
+  little past log 2". The spline extrapolation 0.372 of section 4 agrees with it.
+
+### 11.2 CC1's eigenvector zeta (Lemma 6.4), reconstructed inside the window
+
+The CC1 text was obtained from arXiv as PDF and converted with pdftotext. zeta is
+(approximately) the top eigenvector of the compact operator K_I of CC1 Prop. 5.5 (104).
+Its kernel is chi(|x - y|) on L2(I), with I = [-log2/2, log2/2] and
+chi(x) = (Q eps)(e^x)/(2 eps'(1+)). Here Q = -d^2/dx^2 + 1/4, and eps comes from the
+c = 2 pi prolates through the formula in the proof of Lemma 5.4. CC1's zeta is the exact
+top eigenvector of the finite-rank model T (m = 1732), which is within 0.00122 of K_I in
+norm. I diagonalised K_I directly by Nystrom discretisation (N = 200, 400, 800).
+
+**Reconstruction checks** (CC1 values in brackets):
+
+| quantity | ours | CC1 |
+|---|---|---|
+| lambda(0..5) | 0.999971, -0.979485, 0.524086, -0.0589766, 0.00273233, -7.63e-5 | identical |
+| t(0..4) | 11.9719, 8.77574, 2.20528, 0.0433983, 0.000125459 | identical |
+| eps'(1+) | 22.996476 | 22.9965 |
+| sum of lambda^2 xi_n(1)^2 | 2.000000 | 2 |
+| (Q eps)(1) | -4e-7 | 0 |
+| top eigenvalues of K_I (N = 800) | 1.051555, 0.686509, 0.028753 | T: 1.05158, 0.686494, 0.0288921 |
+| <xi_0 \| zeta> | 0.95108 | Fact 6.5: 0.94865 |
+
+The last row is consistent with the K_I vs T difference: 0.00122 divided by the spectral
+gap 0.365 is about 0.003. Our zeta(0) = 1.63 and zeta(0.34) = 0.51 match the shape of
+CC1 Fig. 14, read off the plot.
+
+**Comparison with our eigenvectors** (even sector, a = log(2)/2, Legendre K = 40):
+
+| our eigenvector | eigenvalue | \|<v, zeta>\| |
+|---|---|---|
+| full form (poles + W_inf), lowest | 0.00132936 | **0.98776** |
+| full form, 2nd | 0.6607 | 0.129 |
+| full form, 3rd | 1.1916 | 0.064 |
+| W_inf alone, lowest | -1.28575 | 0.98738 |
+| W_inf alone, 2nd | 0.5822 | 0.157 |
+| W_inf on ghat(+-i/2) = 0, lowest | 0.54704 | 0.293 |
+| baseline: constant function xi_0 | | 0.95108 |
+
+* **zeta is essentially the lowest even eigenvector of the Weil form inside the window.**
+  The overlap is 0.988, against 0.951 for the constant function and 0.89 between that
+  eigenvector and the constant function. All three are low-frequency bumps, so this is
+  the expected kind of agreement.
+* **It is not the same object.** zeta diagonalises the eps-part of CC1's decomposition,
+  W_inf(f) = Tr(theta(f) S) - int f(rho^{-1}) eps(rho) d*rho. Our vectors diagonalise
+  the whole form.
+* **Under CC1's side conditions zeta is far from the minimiser** (0.29). CC1's argument
+  conditions on xi_0 (ghat(0)) precisely to get past this direction.

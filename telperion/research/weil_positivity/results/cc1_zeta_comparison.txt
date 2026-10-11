@@ -1,0 +1,15 @@
+lambda(n) = 0.999971 -0.979485 0.524086 -0.0589766 0.00273233 -7.62914e-05 1.43947e-06   (CC1: 0.999971 -0.979485 0.524086 -0.0589766 0.00273233 -7.6e-5)
+t(n) = 11.9719 8.77574 2.20528 0.0433983 0.000125459 1.21656e-07 5.16836e-11   (CC1: 11.9719 8.77574 2.20528 0.0433983 0.000125459)
+eps'(1+) = 22.996476 (CC1 ~ 22.9965);  (Q eps)(1) = -4.147e-07 (CC1 Remark 5.6: 0);  sum lambda^2 xi(1)^2 = 2.000000 (CC1: 2)
+Nystrom N=200: top eigenvalues of K_I 1.051438 0.686437 0.028738 -0.000000 ; <xi_0|zeta> = 0.95108  (CC1: lambda_max(T)=1.05158, lambda_2=0.686494, lambda_3=0.0288921; Fact 6.5: 0.94865)
+Nystrom N=400: top eigenvalues of K_I 1.051532 0.686494 0.028750 -0.000000 ; <xi_0|zeta> = 0.95108  (CC1: lambda_max(T)=1.05158, lambda_2=0.686494, lambda_3=0.0288921; Fact 6.5: 0.94865)
+Nystrom N=800: top eigenvalues of K_I 1.051555 0.686509 0.028753 -0.000000 ; <xi_0|zeta> = 0.95108  (CC1: lambda_max(T)=1.05158, lambda_2=0.686494, lambda_3=0.0288921; Fact 6.5: 0.94865)
+full form (poles + W_inf; = G here), even eigvec #0 (eig 0.00132936): |<v, zeta>| = 0.98776
+full form (poles + W_inf; = G here), even eigvec #1 (eig 0.660651): |<v, zeta>| = 0.12945
+full form (poles + W_inf; = G here), even eigvec #2 (eig 1.19164): |<v, zeta>| = 0.06415
+W_inf alone, even eigvec #0 (eig -1.28575): |<v, zeta>| = 0.98738
+W_inf alone, even eigvec #1 (eig 0.582214): |<v, zeta>| = 0.15701
+W_inf alone, even eigvec #2 (eig 1.17533): |<v, zeta>| = 0.01845
+W_inf on ghat(+-i/2)=0, lowest even eigvec (eig 0.54704): |<v, zeta>| = 0.29308
+constant function (xi_0): |<xi_0, zeta>| = 0.95108
+zeta samples x=0, +-0.1, +-0.2, +-0.3, +-0.34: 1.6279 1.4640 1.0660 0.6436 0.5092
