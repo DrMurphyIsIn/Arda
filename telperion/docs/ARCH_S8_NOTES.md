@@ -256,3 +256,64 @@ To instantiate `ProlateData` for c = 2π, even prolates:
 * **`HasCompactSupport.intro` needs `[R1Space]`.**  It is the additive form of `HasCompactMulSupport.intro`, and ℝ × ℝ is an R1 space.
 * **Replayed warnings.**  `lake build ArchS8_Kernel` replays upstream warnings: Zeta23 deprecations and a `ring` "Try this" from an E6Bridge module.
   None come from S8.  Grep the output for `ArchS8`.
+
+## Decision record: the summability interface (2026-10-11)
+
+**Decision.**  Keep the `ProlateData` fields `M`, `N`, `bound_inner`, `bound_outer` and
+`summable_wMN` as they are, over the index type ι.  The team lead chose this (option (a)) after
+the exchange recorded below.  S10's `ArchS10_Summable.lean` (`sum_wMN_le`, `toProlateData`)
+discharges these fields from the eigen-relation alone:
+* Taylor-expanding the kernel 2cos(2πxω) in ω gives |T f(ω)| and |Td f(ω)| ≤ s_X(f), uniformly
+  for 0 ≤ ω ≤ X.
+* Bessel for each monomial gives Σ_n s_X(e_n)² ≤ (Σγ)².
+* M_n = N_n = s_X(e_n)/|λ_n| then gives Σ w_n M_n N_n = Σ s_X(e_n)²/(1 − λ_n²) < ∞.
+
+When this record was written, S10 was finishing that file against the ι-generalised structure.
+
+**Rejected alternative: pointwise ℓ² fields on φ and φ' only.**  The proposal was to replace the
+sup bounds by fields of the form
+"for x ∈ [e^{−T}, e^T] and finite S, Σ_{k∈S} w_k (φ_k(x)² + φ_k'(x)²) ≤ L"
+(S10's frame and Bessel bounds have this shape).  Such fields do NOT suffice for S8's theorems.
+
+* **What they do give.**  The finite-sum bounds make Σ w_n |kn_n(t)|, Σ w_n |kn1_n(t)| and
+  Σ w_n |kn2_n(t)| bounded uniformly in t, because each term is a product X_n(s)·Y_n(u) of additive
+  images bounded by AM-GM:
+  Σ_S w |X_n(s) Y_n(u)| ≤ ½(Σ_S w X_n(s)² + Σ_S w Y_n(u)²).
+  The mean value theorem applied to the signed finite sums Σ_S σ_n(…) then gives
+  eps' = eps1 everywhere on (−T, T), and eps1 Lipschitz.
+* **What they do not give.**  They do not give eps1' = eps2, nor continuity of eps2, and so not
+  continuity of Qε = −eps2 + eps/4.
+  * eq102 needs both: it integrates by parts against eps1 → eps2 at every point.
+  * prop55 and prop55_KI need the continuous kernel Qε(|y − x|) for Fubini.
+  * S10's χ enclosure is pointwise and unaffected; only the structural theorems break.
+* **Counterexample in the abstract.**  Choose terms whose b_n' (the b-side derivative,
+  b_n(u) = e^{u/2} φ_n(e^u)) are narrow bumps of height ~1 with disjoint supports accumulating at a
+  point t*.  Keep b_n itself small, with tiny weights w_n arranged so that
+  Σ_S w (φ_n² + φ_n'²) stays bounded pointwise.  Then Σ_n w_n φ_n(1)·b_n'(t), the boundary piece
+  A_n(0)·b_n'(t) of eps2, converges pointwise to a function with a jump at t*.
+  * The point is that pointwise ℓ² bounds control size but not modulus of continuity.
+  * Continuity of eps2 needs an ℓ² control of the oscillation of φ_n', which is a second derivative.
+
+**The φ'' variant that would work** (not implemented).  The fields would be:
+```lean
+phi_contDiff : ∀ n, ContDiff ℝ 2 (phi n)
+L : ℝ
+sq_sum_le : ∀ x ∈ Icc (Real.exp (-T)) (Real.exp T), ∀ S : Finset ι,
+  ∑ k ∈ S, lam k ^ 2 / (1 - lam k ^ 2)
+    * (phi k x ^ 2 + deriv (phi k) x ^ 2 + deriv (deriv (phi k)) x ^ 2) ≤ L
+```
+* **Proof route.**  The additive images satisfy
+  A'' s = e^{−s/2}(φ/4 + 2xφ' + x²φ''), with x = e^{−s}.
+  Together with A and A', each is bounded by e^{T/2}(1 + e^T)²(|φ| + |φ'| + |φ''|).
+  * The same AM-GM bound then holds for kn3 = A(0) b''(t) + A''(t) b(0) + A'(t) b'(0) + volt A' b''.
+  * A termwise-derivative lemma applies at two levels.  If Σ_S |g|, Σ_S |g'| and Σ_S |g''| are
+    bounded on an interval, then (Σ g)' = Σ g' there, and Σ g' is Lipschitz.  The proof uses the
+    signed finite sums R_S, R_S(t) = R_S'(t) = 0 and |R_S''| ≤ C, with the mean value theorem twice.
+    No countability of ι is needed.
+  * This yields eps' = eps1, eps1' = eps2, and eps2 Lipschitz.
+* **Discharge by S6.**  Plain Bessel suffices, with no frame:
+  * λ_k φ_k^{(j)}(x) = ⟨∂_x^j K_x, e_k⟩ with K_x(v) = 2cos(2πxv);
+  * ‖K_x‖ ≤ 2, ‖∂K_x‖ ≤ 4π, ‖∂²K_x‖ ≤ 8π² in L²[0,1];
+  * so L = (4 + 16π² + 64π⁴)/(1 − sup_k λ_k²), given sup_k λ_k² < 1.
+* **Estimated size.**  300–400 changed lines in `ArchS8_ProlateData`.  `ArchS8_Kernel` would be
+  unchanged.
