@@ -73,6 +73,8 @@ import ArchS8_Kernel
 #print axioms ArchS8.ProlateData.epsMul_eq
 #print axioms ArchS8.ProlateData.epsMul_hasDerivWithinAt
 #print axioms ArchS8.ProlateData.cc84_term
+#print axioms ArchS8.cosPhi_bound
+#print axioms ArchS8.outer_of_cosPhi
 
 -- ArchS8_Kernel.lean
 #print axioms ArchS8.corr_self_eq_autocorr

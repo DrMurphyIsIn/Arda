@@ -7,16 +7,16 @@ Source: Connes-Consani arXiv:2006.13771 ("CC"), sections 4-5 and Appendix F, rea
 
 ## What S8 proves
 
-All 82 top-level theorems print exactly `[propext, Classical.choice, Quot.sound]`.
+All 84 top-level theorems print exactly `[propext, Classical.choice, Quot.sound]`.
 Check with `lake build ArchS8_Kernel && lake env lean ArchS8_Guard.lean`.
 There is no `sorry` and no `axiom`.
 
 | file | lines | content |
 |---|---|---|
 | `ArchS8_Volterra.lean` | 393 | the Volterra rule; CC Lemma 5.2 (96); the core of Lemma 5.1 |
-| `ArchS8_ProlateData.lean` | 419 | the interface; ε (84); Prop 5.3 (97)/(99); Lemma 5.4; Rem 5.6 |
+| `ArchS8_ProlateData.lean` | 499 | the interface; ε (84); Prop 5.3 (97)/(99); Lemma 5.4; Rem 5.6 |
 | `ArchS8_Kernel.lean` | 575 | CC (102); Lemma 5.1 (correlation form); Prop 5.5; χ(0) = 0; the S2 bridge |
-| `ArchS8_Guard.lean` | 96 | `#print axioms` for all 82 theorems |
+| `ArchS8_Guard.lean` | 98 | `#print axioms` for all 84 theorems |
 
 Each module builds in about 33 s on the loaded machine.
 
@@ -58,23 +58,28 @@ theorem lemma52 {ξ ζ : ℝ → ℝ} (hξ : ContDiff ℝ 1 ξ) (hζ : ContDiff 
 * `lemma51_scaling` is the pointwise core: (−∂_t² + 1/4)(e^{t/2} ξ(e^t x)) = −e^{t/2} (Dξ)(e^t x), with (Dξ)(y) = y²ξ''(y) + 2yξ'(y).
 * `lemma51_corr` is the integrated additive form: Q₊(η* ∗ ξ) = η* ∗ (Q₊ ξ).
 
-**The interface.**
+**The interface.**  The index type is arbitrary (generalised 2026-10-11 so that S6's abstract
+eigenbasis index can be used directly; no countability is needed, since `tsum`,
+`hasDerivAt_tsum_of_isPreconnected` and `continuousOn_tsum` work over any type).
 ```lean
-structure ProlateData where
-  lam : ℕ → ℝ
+structure ProlateData (ι : Type*) where
+  lam : ι → ℝ
   lam_sq_lt_one : ∀ n, lam n ^ 2 < 1
-  phi : ℕ → ℝ → ℝ                         -- ξ_n^an
+  phi : ι → ℝ → ℝ                         -- ξ_n^an
   phi_contDiff : ∀ n, ContDiff ℝ 1 (phi n)
   T : ℝ
   T_pos : 0 < T
-  M : ℕ → ℝ
-  N : ℕ → ℝ
+  M : ι → ℝ
+  N : ι → ℝ
   bound_inner : ∀ n, ∀ x ∈ Icc (Real.exp (-T)) 1, |phi n x| ≤ M n ∧ |deriv (phi n) x| ≤ M n
   bound_outer : ∀ n, ∀ x ∈ Icc 1 (Real.exp T), |phi n x| ≤ N n ∧ |deriv (phi n) x| ≤ N n
   summable_wMN : Summable fun n => lam n ^ 2 / (1 - lam n ^ 2) * (M n * N n)
 ```
 
-**Definitions over `D : ProlateData`.**  Here t = log ρ.
+`abbrev ProlateDataNat := ProlateData ℕ` is the original ℕ-indexed type.  All theorem names are
+unchanged and take `ι` implicitly from `D : ProlateData ι`.
+
+**Definitions over `D : ProlateData ι`.**  Here t = log ρ.
 * `w n = λ²/(1 − λ²)`.
 * `kn n = kM (phi n) (phi n)`.
 * `eps t = ∑' n, w n * kn n t`.  This is CC's ε for ρ ≥ 1, in the form used in the proof of Lemma 5.4.
@@ -147,6 +152,29 @@ So `prop55_lift` is CC's "E∘Q(ξ∗ξ*) = ⟨ξ|N_I ξ⟩" composed with Prop 
 
 ## What S6 and S9 must supply
 
+**Normalisation rule (corrected 2026-10-11).**  Instantiate `phi n := phiR bR n` with NO factor.
+S6's `phiR = λ⁻¹ ∫_0^1 2cos(2πwv) e_n(v) dv` with `e_n` orthonormal in `L2IR 0 1` (Lebesgue on
+[0,1]), so `∫_0^1 e_n² = 1`: this is CC's normalisation (16), and `phiR` is CC's `ξ_n^an` exactly.
+The factor `c2 = 1/√2` relates only S6's L²(ℝ) vectors (`ξ_n(S6) = c2·1_{[-1,1]}·φ_n`, likewise
+`ζ_n`) to CC's.  An earlier S8 message to S6 said `phi n := √2 · phiR n` (claiming ε, ε'(1⁺) and N_I
+would halve otherwise); that was WRONG and was retracted to S6 and the lead.  With the wrong factor,
+ε and ε'(1⁺) would double; χ = Qε/(2ε'(1⁺)) is scale-invariant in any case.
+
+**Provided: the outer bound** (`ArchS8.cosPhi_bound`, `ArchS8.outer_of_cosPhi`).
+```lean
+def cosPhi (lam : ℝ) (e : ℝ → ℝ) (w : ℝ) : ℝ :=
+  lam⁻¹ * ∫ v in Icc (0 : ℝ) 1, 2 * Real.cos (2 * Real.pi * w * v) * e v
+theorem cosPhi_bound {e : ℝ → ℝ} (he : IntegrableOn e (Icc 0 1))
+    (h1 : ∫ v in Icc (0 : ℝ) 1, |e v| ≤ 1) {lam : ℝ} (hlam : lam ≠ 0) (w : ℝ) :
+    |cosPhi lam e w| ≤ 4 * Real.pi / |lam| ∧ |deriv (cosPhi lam e) w| ≤ 4 * Real.pi / |lam|
+theorem outer_of_cosPhi ... (S : Set ℝ) :
+    ∀ x ∈ S, |cosPhi lam e x| ≤ 4 * Real.pi / |lam| ∧ |deriv (cosPhi lam e) x| ≤ 4 * Real.pi / |lam|
+```
+`phiR bR i = cosPhi (bR.μ i) (bR.e i)` holds by `rfl` (checked against the merged S6).  So
+`N i := 4π/|μ_i|` with `S := Icc 1 (exp T)` gives `bound_outer`, once S6 supplies
+`IntegrableOn (bR.e i) (Icc 0 1)` and `∫_{[0,1]} |e_i| ≤ 1` (Cauchy-Schwarz from ‖e_i‖ = 1) and
+`μ_i ≠ 0` (S6 has `abs_μ_lt_one` and nonvanishing).
+
 To instantiate `ProlateData` for c = 2π, even prolates:
 
 1. **`lam n`** is the n-th eigenvalue of P₁F P₁ on even L² (CC (68)-(69)), with λ² < 1.
@@ -163,7 +191,7 @@ To instantiate `ProlateData` for c = 2π, even prolates:
    * The numerical values of χ on [0, log 2] use ξ_n and ξ_n' only on [1/2, 2].
      That is exactly S9's range.
    * The range beyond 2 enters only through the structural bounds N_n.
-4. **`N n`**, the outer bound on [1, e^T].  Take N_n = 4π/|λ_n| for λ_n ≠ 0.
+4. **`N n`**, the outer bound on [1, e^T].  Take N_n = 4π/|λ_n| (now provided, see above).
    * |η_n| ≤ 2∫_0^1 |ξ_n| ≤ 2 and |η_n'| ≤ 4π∫_0^1 x|ξ_n| ≤ 4π hold for every x, so this bound is uniform in T.
    * When λ_n = 0 the weight w_n vanishes, and any finite N_n works.
 5. **`M n`**, the inner bound on [e^{−T}, 1] for |ξ_n| and |ξ_n'|.  **This is the one substantive analytic obligation.**
@@ -204,6 +232,7 @@ To instantiate `ProlateData` for c = 2π, even prolates:
   * The Lean series converges uniformly with derivatives on (−T, T) under `summable_wMN`.
   * An explicit remainder Σ_{n>N} w_n·B_n with B_n = (2 + T)·2M_n·e^{T/2}(1 + e^T)N_n is available from `abs_kn_le`, but not packaged.
   * S10 will want that packaged.
+* **New theorems are not yet in `AxiomGuardRvMBridge`.**  `cosPhi_bound` and `outer_of_cosPhi` (added after the coordinator wired S8) are only in `ArchS8_Guard`.
 * **Wiring was left to the coordinator.**  `defaultTargets` and `AxiomGuardRvMBridge.lean` are untouched.
   The four `[[lean_lib]]` stanzas (`ArchS8_Volterra`, `ArchS8_ProlateData`, `ArchS8_Kernel`, `ArchS8_Guard`) are at the end of `lakefile.toml`.
 
@@ -227,3 +256,64 @@ To instantiate `ProlateData` for c = 2π, even prolates:
 * **`HasCompactSupport.intro` needs `[R1Space]`.**  It is the additive form of `HasCompactMulSupport.intro`, and ℝ × ℝ is an R1 space.
 * **Replayed warnings.**  `lake build ArchS8_Kernel` replays upstream warnings: Zeta23 deprecations and a `ring` "Try this" from an E6Bridge module.
   None come from S8.  Grep the output for `ArchS8`.
+
+## Decision record: the summability interface (2026-10-11)
+
+**Decision.**  Keep the `ProlateData` fields `M`, `N`, `bound_inner`, `bound_outer` and
+`summable_wMN` as they are, over the index type ι.  The team lead chose this (option (a)) after
+the exchange recorded below.  S10's `ArchS10_Summable.lean` (`sum_wMN_le`, `toProlateData`)
+discharges these fields from the eigen-relation alone:
+* Taylor-expanding the kernel 2cos(2πxω) in ω gives |T f(ω)| and |Td f(ω)| ≤ s_X(f), uniformly
+  for 0 ≤ ω ≤ X.
+* Bessel for each monomial gives Σ_n s_X(e_n)² ≤ (Σγ)².
+* M_n = N_n = s_X(e_n)/|λ_n| then gives Σ w_n M_n N_n = Σ s_X(e_n)²/(1 − λ_n²) < ∞.
+
+When this record was written, S10 was finishing that file against the ι-generalised structure.
+
+**Rejected alternative: pointwise ℓ² fields on φ and φ' only.**  The proposal was to replace the
+sup bounds by fields of the form
+"for x ∈ [e^{−T}, e^T] and finite S, Σ_{k∈S} w_k (φ_k(x)² + φ_k'(x)²) ≤ L"
+(S10's frame and Bessel bounds have this shape).  Such fields do NOT suffice for S8's theorems.
+
+* **What they do give.**  The finite-sum bounds make Σ w_n |kn_n(t)|, Σ w_n |kn1_n(t)| and
+  Σ w_n |kn2_n(t)| bounded uniformly in t, because each term is a product X_n(s)·Y_n(u) of additive
+  images bounded by AM-GM:
+  Σ_S w |X_n(s) Y_n(u)| ≤ ½(Σ_S w X_n(s)² + Σ_S w Y_n(u)²).
+  The mean value theorem applied to the signed finite sums Σ_S σ_n(…) then gives
+  eps' = eps1 everywhere on (−T, T), and eps1 Lipschitz.
+* **What they do not give.**  They do not give eps1' = eps2, nor continuity of eps2, and so not
+  continuity of Qε = −eps2 + eps/4.
+  * eq102 needs both: it integrates by parts against eps1 → eps2 at every point.
+  * prop55 and prop55_KI need the continuous kernel Qε(|y − x|) for Fubini.
+  * S10's χ enclosure is pointwise and unaffected; only the structural theorems break.
+* **Counterexample in the abstract.**  Choose terms whose b_n' (the b-side derivative,
+  b_n(u) = e^{u/2} φ_n(e^u)) are narrow bumps of height ~1 with disjoint supports accumulating at a
+  point t*.  Keep b_n itself small, with tiny weights w_n arranged so that
+  Σ_S w (φ_n² + φ_n'²) stays bounded pointwise.  Then Σ_n w_n φ_n(1)·b_n'(t), the boundary piece
+  A_n(0)·b_n'(t) of eps2, converges pointwise to a function with a jump at t*.
+  * The point is that pointwise ℓ² bounds control size but not modulus of continuity.
+  * Continuity of eps2 needs an ℓ² control of the oscillation of φ_n', which is a second derivative.
+
+**The φ'' variant that would work** (not implemented).  The fields would be:
+```lean
+phi_contDiff : ∀ n, ContDiff ℝ 2 (phi n)
+L : ℝ
+sq_sum_le : ∀ x ∈ Icc (Real.exp (-T)) (Real.exp T), ∀ S : Finset ι,
+  ∑ k ∈ S, lam k ^ 2 / (1 - lam k ^ 2)
+    * (phi k x ^ 2 + deriv (phi k) x ^ 2 + deriv (deriv (phi k)) x ^ 2) ≤ L
+```
+* **Proof route.**  The additive images satisfy
+  A'' s = e^{−s/2}(φ/4 + 2xφ' + x²φ''), with x = e^{−s}.
+  Together with A and A', each is bounded by e^{T/2}(1 + e^T)²(|φ| + |φ'| + |φ''|).
+  * The same AM-GM bound then holds for kn3 = A(0) b''(t) + A''(t) b(0) + A'(t) b'(0) + volt A' b''.
+  * A termwise-derivative lemma applies at two levels.  If Σ_S |g|, Σ_S |g'| and Σ_S |g''| are
+    bounded on an interval, then (Σ g)' = Σ g' there, and Σ g' is Lipschitz.  The proof uses the
+    signed finite sums R_S, R_S(t) = R_S'(t) = 0 and |R_S''| ≤ C, with the mean value theorem twice.
+    No countability of ι is needed.
+  * This yields eps' = eps1, eps1' = eps2, and eps2 Lipschitz.
+* **Discharge by S6.**  Plain Bessel suffices, with no frame:
+  * λ_k φ_k^{(j)}(x) = ⟨∂_x^j K_x, e_k⟩ with K_x(v) = 2cos(2πxv);
+  * ‖K_x‖ ≤ 2, ‖∂K_x‖ ≤ 4π, ‖∂²K_x‖ ≤ 8π² in L²[0,1];
+  * so L = (4 + 16π² + 64π⁴)/(1 − sup_k λ_k²), given sup_k λ_k² < 1.
+* **Estimated size.**  300–400 changed lines in `ArchS8_ProlateData`.  `ArchS8_Kernel` would be
+  unchanged.
