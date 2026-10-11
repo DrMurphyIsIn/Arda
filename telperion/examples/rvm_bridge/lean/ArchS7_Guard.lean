@@ -1,5 +1,6 @@
 import ArchS7_Term
 import ArchS7_Abstract
+import ArchS7_Concrete
 
 /-! Axiom guard for stage S7 (CC Thm 4.7).  Every line must print
 `[propext, Classical.choice, Quot.sound]`.  conjecture1_proved = False. -/
@@ -43,3 +44,20 @@ import ArchS7_Abstract
 #print axioms ArchS7.hasSum_of_tsum_ofReal
 #print axioms ArchS7.ProlateBasis.thm47
 #print axioms ArchS7.ProlateBasis.thm47_nonneg
+#print axioms ArchS7.ae_ne_real
+#print axioms ArchS7.ae_comp_mul
+#print axioms ArchS7.cosTransR_neg
+#print axioms ArchS7.phiR_neg
+#print axioms ArchS7.phiR_abs
+#print axioms ArchS7.c2_eq
+#print axioms ArchS7.xi_ae
+#print axioms ArchS7.zeta_ae
+#print axioms ArchS7.inner_evenL2
+#print axioms ArchS7.inner_dil
+#print axioms ArchS7.εS_term
+#print axioms ArchS7.εS_eq_eps
+#print axioms ArchS7.integral_εS_eq_Eplus
+#print axioms ArchS7.xiRep_conj
+#print axioms ArchS7.hreal_of_pointwise
+#print axioms ArchS7.thm47_concrete
+#print axioms ArchS7.thm47_concrete_nonneg

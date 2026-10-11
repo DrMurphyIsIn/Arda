@@ -110,18 +110,57 @@ Remarks.
   integration over the group enters.
 * Summability Σ|τ_n| < ∞ implies Σλ_n² < ∞ (`lam_sq_le_abs_τ`), so a single B3-type hypothesis suffices.
 
-### M3 (planned): specialisation
+### M3 (done, modulo O1-O4): specialisation to S6's concrete basis (`ArchS7_Concrete.lean`)
 
-W = `ArchS3.archW g` (W∞(g∗g*) in the island's conventions, = Re weilForm on the pole-free window),
-f = `WeilExplicit.autocorr g`, εS|x| = `D.eps |x|` via M1, so ∫ f εS|x| = `D.Eplus (autocorr g)`.
+Merged S6 through b765d5bbd (concrete `realProlateBasis bR`, `phiR`, `fourier_ξ_ae_real`).
 
-## 4. Interface obligations (hypotheses of S7's theorems, not proved here)
+| theorem | content |
+|---|---|
+| `ae_ne_real`, `ae_comp_mul` | null points; a.e. equality survives v ↦ cv |
+| `cosTransR_neg`, `phiR_neg`, `phiR_abs`, `c2_eq` | phiR is even |
+| `xi_ae` | S6's ξ_n =ᵐ `xiRep (phiR bR n)` |
+| `zeta_ae` | CC's ζ_n =ᵐ `zetaRep τ_n (phiR bR n)` (from ζ = s⁻¹(Fξ − P₁Fξ) and S6's Fξ = c2·λ·phiR) |
+| `inner_evenL2`, `inner_dil` | for a pointwise scaling, ⟨a|ϑ(e^{-t})b⟩ = ∫ conj A · dil t B |
+| `εS_term`, `εS_eq_eps`, `integral_εS_eq_Eplus` | **CC's ε = S8's `D.eps`; E(f) = `D.Eplus f`** (S8 open item 1 closed for the concrete basis) |
+| `xiRep_conj`, `hreal_of_pointwise` | the reality hypothesis `hreal`, by the substitution v = e^t w |
+| `thm47_concrete` | **CC Thm 4.7**: ‖S ϑ(g)‖²_HS = `ArchS3.archW g` + Re `D.Eplus (autocorr g)` |
+| `thm47_concrete_nonneg` | **CC (83)**: archW g + Re D.Eplus(autocorr g) ≥ 0 |
 
-* **O1 (S3 M2, CC (85)).**  ‖P̂ P ϑ(g)‖²_HS = archW g + D(g∗g*).  S3 stopped before M2.
-* **O2 (Lemma 4.1 + (79), CC (75)).**  The kernel of D is the prolate series:
-  δ(e^t) = Σ λ_n ⟨ξ_n|ϑ(e^{-t})η_n⟩ for t ≥ 0, where δ(e^{|u|}) = `ArchS3.deltaK u`.
-  (79) is S6's; the trace identity (63) is not in Lean.
-* **O3 (S6).**  The concrete scaling θ on `evenL2` with the `Scaling` fields, ϑ(g) as an operator and the
-  coefficient formula `hcoef`.
-* **O4 (S6).**  The concrete `ProlateBasis evenPair ℕ`, with ξ_n =ᵐ `xiRep (phi n)` and
-  ζ_n =ᵐ `zetaRep τ_n (phi n)` for S8's `ProlateData` phi, and Σ|τ_n| < ∞ (B3).
+```lean
+def IsPointwise (T : Scaling evenPair) : Prop :=
+  ∀ t (f : evenL2), (T.θ t f : ℝ → ℂ) =ᵐ fun v ↦ (exp (-t/2) : ℂ) * (f : ℝ → ℂ) (exp (-t) * v)
+
+theorem thm47_concrete {ι} (bR : EigenBasis CopR ι) (T : Scaling evenPair) (hT : IsPointwise T)
+    (D : ProlateData) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
+    (hDphi : ∀ n, D.phi n = phiR bR (σ n)) (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
+    (g : ℝ → ℂ) (hf : Integrable (autocorr g)) (V : evenL2 →L[ℂ] evenL2)
+    (hcoef : ∀ v, ((‖V† v‖ ^ 2 : ℝ) : ℂ) = ∫ x, autocorr g x * ⟪v, T.θ x v⟫)
+    (e : HilbertBasis κ ℂ evenL2)
+    (h85 : HasSum (fun k ↦ ‖P̂ (P (V (e k)))‖ ^ 2) (archW g + (∫ x, autocorr g x * δS b T |x|).re)) :
+    HasSum (fun k ↦ ‖soninProj (V (e k))‖ ^ 2) (archW g + (D.Eplus (autocorr g)).re)
+```
+
+## 4. Interface obligations (hypotheses of `thm47_concrete`, not proved here)
+
+* **O1 + O2 (S3 M2 and CC Lemma 4.1), the hypothesis `h85`.**  ‖P̂ P ϑ(g)‖²_HS = archW g + ∫ f δS(|x|), with
+  δS the prolate series (75).  It splits as O1: ‖P̂ P ϑ(g)‖²_HS = archW g + Dfun g (CC (85), S3's stopped M2), and
+  O2: δS(t) = `ArchS3.deltaK t` for t ≥ 0 (CC (63), the trace identity δ(ρ) = Tr(ϑ(ρ⁻¹)P̂₁P₁), then (79)).
+  Under B1, O2 is an HS inner product ⟨A*, B⟩_HS of two continuous-kernel operators on [−1, 1], so it is an
+  explicit double integral that should reduce to CC (48); not attempted.
+* **O3 (the scaling and ϑ(g)).**  A `Scaling evenPair` that `IsPointwise` (isometric dilation preserving
+  evenness, F ϑ(ρ) F = ϑ(ρ⁻¹) on L², support shrinking for ρ ≥ 1, continuous matrix coefficients), and
+  V = ϑ(g) with `hcoef` (ϑ(g∗g*) = ϑ(g)ϑ(g)† and ⟨v|ϑ(f)v⟩ = ∫ f(x)⟨v|ϑ(e^x)v⟩dx).
+* **O4 (S6/S9 data).**  An enumeration σ : ℕ ≃ ι of S6's eigenbasis, S8's `ProlateData D` with
+  `D.lam = μ ∘ σ`, `D.phi = phiR ∘ σ` (S8 obligation 5: the sup bounds M_n), and Σ|τ_n| < ∞ (B3).
+  Countability of ι is derived from σ.
+
+## 5. Lean footguns
+
+* Dot notation `b.foo` for a lemma `ArchS7.ProlateBasis.foo` about `b : ArchS6.ProlateBasis S ι` fails:
+  the projection looks in `ArchS6.ProlateBasis`.  Call `foo b` inside `namespace ArchS7.ProlateBasis`.
+* `RCLike.inner_apply` is `⟪x, y⟫ = y * conj x` at this pin; `RCLike.inner_apply'` is `conj x * y`.
+* `ENNReal.top_add` does not exist; use the root `top_add`.
+* `integral_comp_mul_left` lives in `MeasureTheory.Measure`.
+* After `rw [h] at e` with `e : ofReal (∑' a) = ∑' ofReal a`, `e` is already oriented `ofReal (∑' a) = ofReal c`.
+* Lake: the S6 merge conflicted only in `lakefile.toml` (both stages append stanzas); resolve as the union and
+  keep the S7 stanzas last.

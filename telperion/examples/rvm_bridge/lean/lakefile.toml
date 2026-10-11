@@ -644,20 +644,6 @@ name = "ArchS8_Kernel"
 [[lean_lib]]
 name = "ArchS8_Guard"
 
-# Stage S7 (archimedean conceptual blueprint): CC Thm 4.7, SoninTr = W∞ + E (HS form, bypass B1).
-# Not in defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS7_Guard.lean
-[[lean_lib]]
-name = "ArchS7_Term"
-
-[[lean_lib]]
-name = "ArchS7_HS"
-
-[[lean_lib]]
-name = "ArchS7_Abstract"
-
-[[lean_lib]]
-name = "ArchS7_Guard"
-
 [[lean_lib]]
 name = "ArchS6_Even"
 
@@ -672,3 +658,20 @@ name = "ArchS6_Real"
 
 [[lean_lib]]
 name = "ArchS6_Guard"
+
+# Stage S7 (archimedean conceptual blueprint): CC Thm 4.7, SoninTr = W∞ + E (HS form, bypass B1).
+# Not in defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS7_Guard.lean
+[[lean_lib]]
+name = "ArchS7_Term"
+
+[[lean_lib]]
+name = "ArchS7_HS"
+
+[[lean_lib]]
+name = "ArchS7_Abstract"
+
+[[lean_lib]]
+name = "ArchS7_Concrete"
+
+[[lean_lib]]
+name = "ArchS7_Guard"
