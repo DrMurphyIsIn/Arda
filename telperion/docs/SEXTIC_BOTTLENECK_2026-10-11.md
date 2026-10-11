@@ -172,7 +172,7 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   replacing BGL's `(AB)^{2/3}`. Plugged into a copy of the ledger's optimiser it gives `sigma0 = 1` on the
   unreflected branch for all `ell`, `M` (the `A^{5/6}` mixed term is exactly neutral against the Mellin `+M/12`;
   modelled, not proved), and it does not touch Lemma 15.1's reflected cap. So the ledger's one "specified input
-  below 0.85" is, as of October 2026, expected not to exist.
+  below 0.85" is, as of October 2026, expected not to exist (and, per (c') below, would not have reached 0.85 anyway).
 - **(d) A quartic Patterson-type reflection over `Q(i)` EXISTS in some form.** David-Dunn-Hamieh-Lin
   (arXiv:2306.11875, v5 January 2026), Theorem 1.1, unconditional: `sum g~_4(c) (c/|c|)^l Lambda(c) R(Nc/X) <<
   X^{5/6+eps} + X^{3/4+eps}|l|^{3/2+eps}`, improving Patterson 1987. Mechanism: twisted multiplicativity
@@ -188,9 +188,11 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   and, after a reduction costing `Z^eps` on columns with the exact factorisation `m = m_1 m_2^6` on rows, to the
   unreflected completed row (l. 8078-8110); the modelled no-gain result `sigma0 = 1` stands for every `ell`, `M`.
   Extra finding: the completed-row probe sums over ALL `m` prime to `S` (l. 3406-3412), so any sieve over it,
-  including a hypothetical `K + D` one, carries an inherent `Q^{1/6} N` term that the ledger's scenario C omits;
-  with it, scenario C's 0.85 becomes `14/15 - ell/15` (0.8667 at `ell = 1`). So even the conjectural input would
-  not have reached 0.85.
+  including a hypothetical `K + D` one, carries an inherent `Q^{1/6} N` term that the ledger's scenario C originally
+  omitted. The ledger has since been CORRECTED (addendum in `~/rh-team/C/loss_ledger.md`, confirmed by its author and
+  re-run): scenario C gives `sigma0 = 14/15 - ell/15` (0.8667 at `ell = 1`; 0.85 would need `ell = 5/4`; the 5/6 floor
+  at `ell = 3/2`), not "0.85 at `ell = 0.8`". The 13/15 and 5/6 floors and the NO-GO are unchanged. So even the
+  conjectural input would not have reached 0.85 at any prime length the paper's machinery was checked for.
 - **Open discrepancy to settle:** the method map derives the cap `ell <= 1/6` from Lemma 15.1's `M' >= 1/2`; the
   ledger derives `ell <= 1/5` (the 13/15 floor) from the reflected-energy range `M + ell <= 1`, `2M >= 1 + 3 ell`.
   Neither examined whether `M' >= 1/2` is essential. The survey ranks reading section 15 to settle this as its
