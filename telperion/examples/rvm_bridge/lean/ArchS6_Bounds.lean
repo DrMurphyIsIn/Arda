@@ -343,7 +343,7 @@ theorem summable_mu_sq_mul_S : Summable fun i ↦ bR.μ i ^ 2 * Sint bR i := by
         kInt k2 (bR.e i) t ^ 2)
       ≤ ∫ _ in aW..bW, (2 ^ 2 + (4 * π) ^ 2 + (8 * π ^ 2) ^ 2 : ℝ) :=
         intervalIntegral.integral_mono_on aW_lt_bW.le
-          ((continuous_finset_sum _ fun i _ ↦ hcont i).intervalIntegrable _ _)
+          ((continuous_finsetSum _ fun i _ ↦ hcont i).intervalIntegrable _ _)
           intervalIntegrable_const fun t _ ↦ hb t
     _ = (bW - aW) * (2 ^ 2 + (4 * π) ^ 2 + (8 * π ^ 2) ^ 2) := by
         rw [intervalIntegral.integral_const, smul_eq_mul]
