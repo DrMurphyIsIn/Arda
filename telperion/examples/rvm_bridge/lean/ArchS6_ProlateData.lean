@@ -72,7 +72,7 @@ theorem summable_wMN_aux (σ : ℕ ≃ ι) :
     _ = 2 * cW * (bR.μ (σ n) ^ 2 * Sint bR (σ n)) := by ring
 
 /-- **S6's prolates as S8's `ProlateData`.** -/
-def prolateData (σ : ℕ ≃ ι) : ArchS8.ProlateData where
+def prolateData (σ : ℕ ≃ ι) : ArchS8.ProlateDataNat where
   lam n := bR.μ (σ n)
   lam_sq_lt_one n := mu_sq_lt_one bR (σ n)
   phi n := phiR bR (σ n)
@@ -99,7 +99,7 @@ theorem prolateData_T (σ : ℕ ≃ ι) : (prolateData bR σ).T = Real.log 3 := 
 with `D.lam = μ ∘ σ` and `D.phi = phiR ∘ σ` (the hypotheses `hDlam`, `hDphi` of S7's
 `thm47_concrete`). -/
 theorem exists_prolateData :
-    ∃ (ι : Type) (bR : EigenBasis CopR ι) (σ : ℕ ≃ ι) (D : ArchS8.ProlateData),
+    ∃ (ι : Type) (bR : EigenBasis CopR ι) (σ : ℕ ≃ ι) (D : ArchS8.ProlateDataNat),
       (∀ n, D.lam n = bR.μ (σ n)) ∧ (∀ n, D.phi n = phiR bR (σ n)) := by
   obtain ⟨ι, bR, -⟩ := exists_eigenBasis_CopR
   obtain ⟨σ⟩ := exists_equiv_nat bR
