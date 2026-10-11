@@ -5,6 +5,9 @@ Branch `mm/arch-s7c` (base `mm/archimedean-rung` 4f761c6e8, all of S1-S10, S7b m
 Source: Connes-Consani arXiv:2006.13771 ("CC"), (43)/(85), Prop 2.2(iii), Thm 4.7.
 `conjecture1_proved = False`.  Nothing here is RH progress.  No registry nodes touched.
 
+**Superseded (2026-10-11):** S7 proved the same bridge independently (`ArchS7.hasSum_hatP_P_theta`, `ArchS7.cc_thm47`, `cc_thm47_nonneg`; mm/arch-s7 7359f3787), merged on mm/archimedean-rung.
+This branch (M1-M3, incl. the independent `ArchS7c.thm47_unconditional`, 9fb173301) stays as a cross-check only and will not be merged.
+
 ## 0. What is missing
 
 `ArchS7.thm47_weil'` has one analytic hypothesis left (S7 O1):
