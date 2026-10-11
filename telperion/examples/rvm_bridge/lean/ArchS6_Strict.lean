@@ -6,7 +6,7 @@ import ArchS6_Kernel
 `eq_zero_of_P1_fourier`: if `f ∈ L²(ℝ)` has `P₁ f = f` and `P₁ 𝓕 f = 𝓕 f` then `f = 0`.
 Proof: `𝓕 f` is a.e. the restriction to `ℝ` of the entire function
 `z ↦ ∫_{-1}^{1} e^{-2πizv} f(v) dv` (`entireFT`, differentiated under the integral sign); it vanishes on
-`(1, ∞)`, hence everywhere (identity theorem), so `‖f‖ = ‖𝓕 f‖ = 0`.
+an open interval, hence everywhere (identity theorem), so `‖f‖ = ‖𝓕 f‖ = 0`.
 
 `abs_lt_one_of_eigen`: a unit `ξ ∈ ran P₁` with `P₁ 𝓕 ξ = λ ξ` has `|λ| < 1`.  This is what makes
 CC's `ζ_n = ψ_n/√(1 - λ(n)²)` well defined (CC Prop 4.5 (iii)); CC use it implicitly.
@@ -91,25 +91,25 @@ theorem entireFT_ofReal (h : L2I (-1) 1) (w : ℝ) :
   congr 2
   push_cast; ring
 
-theorem tendsto_two_add_inv :
-    Tendsto (fun n : ℕ ↦ (((2 : ℝ) + 1 / ((n : ℝ) + 1) : ℝ) : ℂ)) atTop (𝓝[≠] (2 : ℂ)) := by
+theorem tendsto_add_inv (m c : ℝ) (hc : 0 < c) :
+    Tendsto (fun n : ℕ ↦ ((m + c * (1 / ((n : ℝ) + 1)) : ℝ) : ℂ)) atTop (𝓝[≠] (m : ℂ)) := by
   rw [tendsto_nhdsWithin_iff]
   constructor
-  · have h : Tendsto (fun n : ℕ ↦ ((2 : ℝ) + 1 / ((n : ℝ) + 1))) atTop (𝓝 (2 + 0)) :=
-      tendsto_const_nhds.add tendsto_one_div_add_atTop_nhds_zero_nat
-    rw [add_zero] at h
-    have := (Complex.continuous_ofReal.tendsto 2).comp h
-    rw [Complex.ofReal_ofNat] at this
-    exact this
+  · have h : Tendsto (fun n : ℕ ↦ (m + c * (1 / ((n : ℝ) + 1)))) atTop (𝓝 (m + c * 0)) :=
+      tendsto_const_nhds.add (tendsto_one_div_add_atTop_nhds_zero_nat.const_mul c)
+    rw [mul_zero, add_zero] at h
+    exact (Complex.continuous_ofReal.tendsto m).comp h
   · refine Eventually.of_forall fun n ↦ ?_
     simp only [mem_compl_iff, mem_singleton_iff]
     intro heq
-    have : ((2 : ℝ) + 1 / ((n : ℝ) + 1)) = 2 := by exact_mod_cast heq
-    have hpos : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
+    have : m + c * (1 / ((n : ℝ) + 1)) = m := by exact_mod_cast heq
+    have hpos : (0 : ℝ) < c * (1 / ((n : ℝ) + 1)) := by positivity
     linarith
 
-/-- **No nonzero `f ∈ L²(ℝ)` has both `f` and `𝓕 f` supported in `[-1, 1]`.** -/
-theorem eq_zero_of_P1_fourier {f : L2R} (h1 : P1 f = f) (h2 : P1 (𝓕 f) = 𝓕 f) : f = 0 := by
+/-- **Uniqueness**: if `f` is supported in `[-1, 1]` and `𝓕 f` vanishes a.e. on a nonempty open
+interval, then `f = 0` (`𝓕 f` extends to an entire function). -/
+theorem eq_zero_of_fourier_ae_zero_Ioo {f : L2R} (h1 : P1 f = f) {a b : ℝ} (hab : a < b)
+    (hz : ∀ᵐ w ∂volume, w ∈ Ioo a b → ((𝓕 f : L2R) : ℝ → ℂ) w = 0) : f = 0 := by
   set h := restrictIcc (-1) 1 f
   have hf : extendIcc (-1) 1 h = f := h1
   set G : ℝ → ℂ := fun w ↦ ∫ v in Icc (-1 : ℝ) 1, fourierK (w, v) * h v with hGdef
@@ -122,25 +122,27 @@ theorem eq_zero_of_P1_fourier {f : L2R} (h1 : P1 f = f) (h2 : P1 (𝓕 f) = 𝓕
     rw [this]
     exact VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar continuous_inner
       (integrable_extendIcc _ _ h)
-  have hsupp : ∀ᵐ w ∂volume, w ∈ Ioi (1 : ℝ) → G w = 0 := by
-    have := coeFn_P1 (𝓕 f)
-    rw [h2] at this
-    filter_upwards [this, hFG] with w e1 e2 hw
-    rw [← e2, e1, indicator_of_notMem]
-    intro h'; exact absurd h'.2 (not_le.2 hw)
-  have hG0 : EqOn G 0 (Ioi 1) := by
-    refine Measure.eqOn_open_of_ae_eq (μ := volume) ?_ isOpen_Ioi hGcont.continuousOn continuousOn_const
-    rw [EventuallyEq, ae_restrict_iff' measurableSet_Ioi]
-    filter_upwards [hsupp] with w hw hw'
-    exact hw hw'
+  have hG0 : EqOn G 0 (Ioo a b) := by
+    refine Measure.eqOn_open_of_ae_eq (μ := volume) ?_ isOpen_Ioo hGcont.continuousOn
+      continuousOn_const
+    rw [EventuallyEq, ae_restrict_iff' measurableSet_Ioo]
+    filter_upwards [hz, hFG] with w hw e hw'
+    rw [← e]; exact hw hw'
   have han : AnalyticOnNhd ℂ (entireFT h) univ := fun z _ ↦ (differentiable_entireFT h).analyticAt z
-  have hfreq : ∃ᶠ z in 𝓝[≠] (2 : ℂ), entireFT h z = 0 := by
-    refine tendsto_two_add_inv.frequently (Frequently.of_forall fun n ↦ ?_)
+  set m := (a + b) / 2
+  set c := (b - a) / 4
+  have hc : 0 < c := by simp only [c]; linarith
+  have hfreq : ∃ᶠ z in 𝓝[≠] (m : ℂ), entireFT h z = 0 := by
+    refine (tendsto_add_inv m c hc).frequently (Frequently.of_forall fun n ↦ ?_)
     rw [entireFT_ofReal]
-    have hpos : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
-    exact hG0 (show (1 : ℝ) < 2 + 1 / ((n : ℝ) + 1) by linarith)
+    have hpos : (0 : ℝ) < c * (1 / ((n : ℝ) + 1)) := by positivity
+    have hle : c * (1 / ((n : ℝ) + 1)) ≤ c := by
+      have : 1 / ((n : ℝ) + 1) ≤ 1 := by
+        rw [div_le_one (by positivity)]; linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
+      nlinarith
+    exact hG0 ⟨by simp only [m]; linarith, by simp only [m, c] at hle ⊢; linarith⟩
   have hall := han.eqOn_zero_of_preconnected_of_frequently_eq_zero isPreconnected_univ
-    (mem_univ 2) hfreq
+    (mem_univ _) hfreq
   have hG : ∀ w, G w = 0 := fun w ↦ by
     have := hall (mem_univ (w : ℂ))
     rw [entireFT_ofReal] at this
@@ -151,6 +153,23 @@ theorem eq_zero_of_P1_fourier {f : L2R} (h1 : P1 f = f) (h2 : P1 (𝓕 f) = 𝓕
     rw [e1, e2, hG]; rfl
   have : ‖f‖ = 0 := by rw [← Lp.norm_fourier_eq, hF0, norm_zero]
   exact norm_eq_zero.1 this
+
+/-- **No nonzero `f ∈ L²(ℝ)` has both `f` and `𝓕 f` supported in `[-1, 1]`.** -/
+theorem eq_zero_of_P1_fourier {f : L2R} (h1 : P1 f = f) (h2 : P1 (𝓕 f) = 𝓕 f) : f = 0 := by
+  refine eq_zero_of_fourier_ae_zero_Ioo h1 (a := 1) (b := 2) (by norm_num) ?_
+  have := coeFn_P1 (𝓕 f)
+  rw [h2] at this
+  filter_upwards [this] with w e1 hw
+  rw [e1, indicator_of_notMem]
+  intro h'; exact absurd h'.2 (not_le.2 hw.1)
+
+/-- If `f` is supported in `[-1, 1]` and `𝓕 f` vanishes on `[-1, 1]`, then `f = 0`. -/
+theorem eq_zero_of_P1_fourier_eq_zero {f : L2R} (h1 : P1 f = f) (h2 : P1 (𝓕 f) = 0) : f = 0 := by
+  refine eq_zero_of_fourier_ae_zero_Ioo h1 (a := -1) (b := 1) (by norm_num) ?_
+  have := (P1_eq_zero_iff _).1 h2
+  rw [EventuallyEq, ae_restrict_iff' measurableSet_Icc] at this
+  filter_upwards [this] with w hw hw'
+  exact hw (Ioo_subset_Icc_self hw')
 
 /-- **`|λ| < 1`** for every eigenvalue of `P₁ F P₁` on `ran P₁`. -/
 theorem abs_lt_one_of_eigen {ξ : L2R} (hξ : ‖ξ‖ = 1) (hP : P1 ξ = ξ) {c : ℝ}
@@ -165,6 +184,15 @@ theorem abs_lt_one_of_eigen {ξ : L2R} (hξ : ‖ξ‖ = 1) (hP : P1 ξ = ξ) {c
   have h0 : ‖(𝓕 ξ : L2R) - P1 (𝓕 ξ)‖ = 0 := by nlinarith [norm_nonneg ((𝓕 ξ : L2R) - P1 (𝓕 ξ))]
   have hfix : P1 (𝓕 ξ) = 𝓕 ξ := (sub_eq_zero.1 (norm_eq_zero.1 h0)).symm
   have := eq_zero_of_P1_fourier hP hfix
+  rw [this, norm_zero] at hξ
+  exact zero_ne_one hξ
+
+/-- Every eigenvalue of `P₁ F P₁` on `ran P₁` is nonzero (no eigenvalue `0`). -/
+theorem ne_zero_of_eigen {ξ : L2R} (hξ : ‖ξ‖ = 1) (hP : P1 ξ = ξ) {c : ℝ}
+    (heig : P1 (𝓕 ξ) = (c : ℂ) • ξ) : c ≠ 0 := by
+  intro hc
+  rw [hc, Complex.ofReal_zero, zero_smul] at heig
+  have := eq_zero_of_P1_fourier_eq_zero hP heig
   rw [this, norm_zero] at hξ
   exact zero_ne_one hξ
 
