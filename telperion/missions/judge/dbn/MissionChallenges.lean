@@ -8,3 +8,5 @@ import MissionChallenges.RH_dbn_real_zeros_of_zeta_halfplane
 import MissionChallenges.RH_dbn_real_zeros_upset
 import MissionChallenges.RH_dbn_rh_iff_H0_real_zeros
 import MissionChallenges.RH_dbn_rh_iff_real_zeros_nonneg_t
+import MissionChallenges.RH_dbn_selberg_newman
+import MissionChallenges.RH_dbn_selberg_newman_sharp
