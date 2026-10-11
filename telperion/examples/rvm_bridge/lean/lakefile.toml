@@ -807,3 +807,12 @@ name = "ArchS6_Trace"
 [[lean_lib]]
 name = "ArchS6_L1"
 
+
+[[lean_lib]]
+name = "ArchS7c_Decay"
+
+[[lean_lib]]
+name = "ArchS7c_FourierH"
+
+[[lean_lib]]
+name = "ArchS7c_Guard"
