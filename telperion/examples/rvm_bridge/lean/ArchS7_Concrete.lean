@@ -160,7 +160,7 @@ theorem inner_dil {T : Scaling evenPair} (hT : IsPointwise T) (t : ℝ) {a b : e
 section Identification
 
 variable {ι : Type*} (bR : EigenBasis CopR ι) (T : Scaling evenPair) (hT : IsPointwise T)
-  (D : ProlateData) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
+  (D : ProlateDataNat) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
   (hDphi : ∀ n, D.phi n = phiR bR (σ n))
 
 include hT hDlam hDphi in
@@ -235,7 +235,7 @@ For the real prolate basis `bR` of S6 (indexed by `ℕ` through `σ`), a pointwi
 in Hilbert–Schmidt form with W∞ = `ArchS3.archW g` (O1, O2):
 `Tr(ϑ(g∗g*) S) = ‖S ϑ(g)‖²_HS = archW g + Re (D.Eplus (autocorr g))`. -/
 theorem thm47_concrete {ι : Type*} (bR : EigenBasis CopR ι) (T : Scaling evenPair)
-    (hT : IsPointwise T) (D : ProlateData) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
+    (hT : IsPointwise T) (D : ProlateDataNat) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
     (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     (g : ℝ → ℂ) (hf : Integrable (WeilExplicit.autocorr g)) (V : evenL2 →L[ℂ] evenL2)
@@ -254,7 +254,7 @@ theorem thm47_concrete {ι : Type*} (bR : EigenBasis CopR ι) (T : Scaling evenP
 
 /-- **CC (83), concrete**: `archW g + Re (D.Eplus (autocorr g)) ≥ 0`. -/
 theorem thm47_concrete_nonneg {ι : Type*} (bR : EigenBasis CopR ι) (T : Scaling evenPair)
-    (hT : IsPointwise T) (D : ProlateData) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
+    (hT : IsPointwise T) (D : ProlateDataNat) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
     (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     (g : ℝ → ℂ) (hf : Integrable (WeilExplicit.autocorr g)) (V : evenL2 →L[ℂ] evenL2)

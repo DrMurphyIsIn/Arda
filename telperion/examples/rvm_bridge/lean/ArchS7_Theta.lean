@@ -183,7 +183,7 @@ end Theta
 `g∗g*` integrable, the real prolate basis `bR` enumerated by `σ`, any S8 `ProlateData D` with the same
 `λ_n, phi_n`, Σ|τ_n| < ∞, and CC (85) (`h85`, interface O1 + O2):
 `Tr(ϑ(g∗g*) S) = ‖S ϑ(g)‖²_HS = archW g + Re (D.Eplus (g∗g*))`. -/
-theorem thm47_theta {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateData) (σ : ℕ ≃ ι)
+theorem thm47_theta {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateDataNat) (σ : ℕ ≃ ι)
     (hDlam : ∀ n, D.lam n = bR.μ (σ n)) (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     (g : ℝ → ℂ) (hg : Integrable g) (hgc : Continuous g)
@@ -197,7 +197,7 @@ theorem thm47_theta {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateData) (σ
   thm47_even bR D σ hDlam hDphi hτ g hf (theta g hg) (hcoef_theta g hg hgc) e h85
 
 /-- **CC (83)**: `archW g + Re (D.Eplus (g∗g*)) ≥ 0` under the same hypotheses. -/
-theorem thm47_theta_nonneg {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateData) (σ : ℕ ≃ ι)
+theorem thm47_theta_nonneg {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateDataNat) (σ : ℕ ≃ ι)
     (hDlam : ∀ n, D.lam n = bR.μ (σ n)) (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     (g : ℝ → ℂ) (hg : Integrable g) (hgc : Continuous g)
@@ -211,7 +211,7 @@ theorem thm47_theta_nonneg {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateDa
 
 /-- **CC Theorem 4.7 for the island's test class** (`IsWeilTest g`: smooth, compact support).
 Remaining hypotheses: O4 (`D`, `σ`, `hτ`) and CC (85) (`h85`, O1 + O2). -/
-theorem thm47_weil {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateData) (σ : ℕ ≃ ι)
+theorem thm47_weil {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateDataNat) (σ : ℕ ≃ ι)
     (hDlam : ∀ n, D.lam n = bR.μ (σ n)) (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     {g : ℝ → ℂ} (hW : WeilExplicit.IsWeilTest g)

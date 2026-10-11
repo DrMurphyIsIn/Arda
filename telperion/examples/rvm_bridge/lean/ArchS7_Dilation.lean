@@ -380,7 +380,7 @@ open ArchS6 ArchS8
 
 /-- **CC Theorem 4.7 with the concrete scaling** (`scalingEven`, so O3's scaling half is discharged):
 `‖S ϑ(g)‖²_HS = archW g + Re (D.Eplus (autocorr g))`. -/
-theorem thm47_even {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateData) (σ : ℕ ≃ ι)
+theorem thm47_even {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateDataNat) (σ : ℕ ≃ ι)
     (hDlam : ∀ n, D.lam n = bR.μ (σ n)) (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     (g : ℝ → ℂ) (hf : MeasureTheory.Integrable (WeilExplicit.autocorr g)) (V : evenL2 →L[ℂ] evenL2)

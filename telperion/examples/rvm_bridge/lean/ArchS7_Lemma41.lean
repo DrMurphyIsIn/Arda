@@ -288,7 +288,7 @@ theorem δS_abs_eq_deltaK {ι : Type*} [Countable ι] (bR : EigenBasis CopR ι) 
 /-- **CC Theorem 4.7 for `IsWeilTest g`, with (85) stated in S3's own terms**:
 if `‖P̂ P ϑ(g)‖²_HS = archW g + Dfun g` (CC Prop 2.2(iii)/(85) = S3's M2, interface O1), then
 `‖S ϑ(g)‖²_HS = archW g + Re (D.Eplus (autocorr g))`. -/
-theorem thm47_weil' {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateData) (σ : ℕ ≃ ι)
+theorem thm47_weil' {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateDataNat) (σ : ℕ ≃ ι)
     (hDlam : ∀ n, D.lam n = bR.μ (σ n)) (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     {g : ℝ → ℂ} (hW : WeilExplicit.IsWeilTest g)
@@ -309,7 +309,7 @@ theorem thm47_weil' {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateData) (σ
   rwa [hD]
 
 /-- **CC (83) for `IsWeilTest g`**, from S3's (85). -/
-theorem thm47_weil'_nonneg {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateData) (σ : ℕ ≃ ι)
+theorem thm47_weil'_nonneg {ι : Type*} (bR : EigenBasis CopR ι) (D : ProlateDataNat) (σ : ℕ ≃ ι)
     (hDlam : ∀ n, D.lam n = bR.μ (σ n)) (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     {g : ℝ → ℂ} (hW : WeilExplicit.IsWeilTest g)

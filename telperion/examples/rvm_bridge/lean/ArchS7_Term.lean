@@ -89,7 +89,7 @@ theorem integral_coeff (phi : ℝ → ℝ) (c : ℝ) {t : ℝ} (ht : 0 ≤ t) :
 
 /-- **CC (84) termwise = S8.**  With CC's `ζ_n = τ_n ξ_n^an` on `[1,∞)`, the n-th term of (84),
 `τ_n ⟨ξ_n | ϑ(e^{-t}) ζ_n⟩`, is `w_n · kn_n(t)`. -/
-theorem cc84_coeff (D : ProlateData) (n : ℕ) {t : ℝ} (ht : 0 ≤ t) :
+theorem cc84_coeff (D : ProlateDataNat) (n : ℕ) {t : ℝ} (ht : 0 ≤ t) :
     ((D.lam n / Real.sqrt (1 - D.lam n ^ 2) : ℝ) : ℂ)
         * ∫ v, conj (xiRep (D.phi n) v)
             * dil t (zetaRep (D.lam n / Real.sqrt (1 - D.lam n ^ 2)) (D.phi n)) v
@@ -98,7 +98,7 @@ theorem cc84_coeff (D : ProlateData) (n : ℕ) {t : ℝ} (ht : 0 ≤ t) :
 
 /-- **S8's `ε` is CC's series (84)** on `t ≥ 0`, with the matrix coefficients written as integrals
 over `ℝ` in S6's normalisation. -/
-theorem eps_eq_tsum (D : ProlateData) {t : ℝ} (ht : 0 ≤ t) :
+theorem eps_eq_tsum (D : ProlateDataNat) {t : ℝ} (ht : 0 ≤ t) :
     ((D.eps t : ℝ) : ℂ) = ∑' n, ((D.lam n / Real.sqrt (1 - D.lam n ^ 2) : ℝ) : ℂ)
         * ∫ v, conj (xiRep (D.phi n) v)
             * dil t (zetaRep (D.lam n / Real.sqrt (1 - D.lam n ^ 2)) (D.phi n)) v := by
@@ -106,7 +106,7 @@ theorem eps_eq_tsum (D : ProlateData) {t : ℝ} (ht : 0 ≤ t) :
   rw [ProlateData.eps, Complex.ofReal_tsum]
 
 /-- Even form used by `Eplus`: for every real `v`, `ε(|v|)` is CC's (84) at `ρ = e^{|v|}`. -/
-theorem eps_abs_eq_tsum (D : ProlateData) (v : ℝ) :
+theorem eps_abs_eq_tsum (D : ProlateDataNat) (v : ℝ) :
     ((D.eps |v| : ℝ) : ℂ) = ∑' n, ((D.lam n / Real.sqrt (1 - D.lam n ^ 2) : ℝ) : ℂ)
         * ∫ x, conj (xiRep (D.phi n) x)
             * dil |v| (zetaRep (D.lam n / Real.sqrt (1 - D.lam n ^ 2)) (D.phi n)) x :=
