@@ -1,6 +1,6 @@
 /- ArchS4_Guard: #print axioms for every top-level S4 and S4' declaration.  Required output for each:
    [propext, Classical.choice, Quot.sound].  conjecture1_proved = False. -/
-import ArchS4_Rung
+import ArchS4_Bridge
 
 #print axioms ArchS4.integral_sq_pow
 #print axioms ArchS4.abs_mom_le
@@ -81,3 +81,11 @@ import ArchS4_Rung
 #print axioms ArchS4.autocorr_pairing_eq_box
 #print axioms ArchS4.jump_lemma_window
 #print axioms ArchS4.jump_lemma_poleFree
+
+-- ArchS4_Bridge (S3 <-> S4 identification)
+#print axioms ArchS4.ccS_eq_sincInt
+#print axioms ArchS4.deltaK_eq_deltaE
+#print axioms ArchS4.S3_Dfun_eq
+#print axioms ArchS4.S3_Dfun_nonpos_poleFree
+#print axioms ArchS4.weil_nonneg_of_Lfun_nonneg
+#print axioms ArchS4.weil_nonneg_of_ell_nonneg

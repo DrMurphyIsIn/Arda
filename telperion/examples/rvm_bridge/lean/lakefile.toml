@@ -606,5 +606,9 @@ name = "ArchS4_Jump"
 [[lean_lib]]
 name = "ArchS4_Rung"
 
+# S4 bridge to S3's delta (deltaK = deltaE ∘ abs, Dfun agreement, rung with S3's hypothesis).
+[[lean_lib]]
+name = "ArchS4_Bridge"
+
 [[lean_lib]]
 name = "ArchS4_Guard"

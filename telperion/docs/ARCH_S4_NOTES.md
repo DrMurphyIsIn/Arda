@@ -169,3 +169,20 @@ The bounds |S₁| ≤ 1/4 and |C₂| ≤ 1/9 come from the square moments ∫∫
 * **`integral_add` after `.neg`.**  Pass `(f := …) (g := …)` explicitly; otherwise the pattern contains `(-fun u => …) a`.
 * **`HasCompactSupport.comp_left (g := …) (by simp)` inline** hit a `whnf` heartbeat timeout once.  State the composed function `(fun z => ‖z‖ ^ 2) ∘ h` in a `have` first.
 * **Parametric smoothness.**  Mathlib has no `contDiff_parametric_integral` and no `contDiff_sinc`.  Integrating over the unit square with the finite measure `sq` and constant domination by 1 makes `hasDerivAt_integral_of_dominated_loc_of_deriv_le` a one-liner per derivative.
+
+## 5. Bridge to S3 (`ArchS4_Bridge.lean`, 79 lines, added after merging mm/archimedean-rung)
+
+S3's δ and S4's δ are the same function.  The guard now has 85 lines, all `[propext, Classical.choice, Quot.sound]`.
+```lean
+theorem ccS_eq_sincInt (a : ℝ) : ccS a = ArchS3.sincInt a
+theorem deltaK_eq_deltaE (u : ℝ) : ArchS3.deltaK u = deltaE |u|
+theorem S3_Dfun_eq (g : ℝ → ℂ) : ArchS3.Dfun g = (Dfun (autocorr g)).re
+theorem S3_Dfun_nonpos_poleFree (hg : IsWeilTest g) (hL0 : 0 ≤ L) (hL : L ≤ 1 / 80)
+    (hsupp : tsupport g ⊆ Icc (-L) L) (h0 : paperFT g (I / 2) = 0) : ArchS3.Dfun g ≤ 0
+theorem weil_nonneg_of_Lfun_nonneg (hg) (hL0) (hL : L ≤ 1 / 80) (hsupp) (h0)
+    (hLf : 0 ≤ ArchS3.Lfun g) : 0 ≤ (weilForm (autocorr g)).re
+theorem weil_nonneg_of_ell_nonneg (hell : ∀ r, 0 ≤ ArchS3.ell r) (hg) (hL0) (hL : L ≤ 1 / 80)
+    (hsupp) (h0) : 0 ≤ (weilForm (autocorr g)).re
+```
+Once S3's M3 proves `∀ r, 0 ≤ ArchS3.ell r`, one application of `weil_nonneg_of_ell_nonneg` makes the L ≤ 1/80 rung unconditional.
+Open item 1 of section 3 is now closed on the definitional side.  The remaining dependence is S3's M3.
