@@ -540,3 +540,7 @@ name = "KWin2_GuardHeavy"
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]
 name = "AxiomGuardRvMBridge"
+
+# ---- archimedean stage S9 (certified prolate engine) ----
+[[lean_lib]]
+name = "ArchS9_Pi"
