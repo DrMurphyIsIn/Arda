@@ -7,8 +7,11 @@
   Weil form IS the zero sum (explicit formula), and over the first 200 zero pairs that sum is
   0.001301 against a least eigenvalue of 0.001329, so certifying the margin says nothing new about
   the zeros.  Nor is this Connes-Consani (arXiv 2006.13771, Theorem 1) or Yoshida (1992): their
-  theorem is for the POLE-FREE class paperFT g (i/2) = 0 (margin 0.547 here); the statement below
-  keeps the pole terms, i.e. it is the goal node's full class.
+  theorem is for a POLE-FREE class (Theorem 1 imposes paperFT g (i/2) = 0 and paperFT g 0 = 0).
+  Numerical margins at this window: 0.547 on the class paperFT g (±i/2) = 0
+  (PRIME_FREE_WINDOW_PLAN_2026-09-23.md table), 0.0723 on the one-condition class
+  paperFT g (i/2) = 0, which stays positive to L ~ 0.3716 (2026-10-11 numerics).  The statement
+  below keeps the pole terms, i.e. it is the goal node's full class.
 
   PROVED HERE, hypothesis-free (every numeric fact kernel-checked; the guard prints only Lean's
   three standard foundations propext / Classical.choice / Quot.sound):
