@@ -284,7 +284,7 @@ theorem integral_δS_eq_Dfun [Countable ι] (hT : IsPointwise T) (g : ℝ → �
 /-- **CC Thm 4.7, concrete, with O2 discharged.**  The remaining hypotheses are O1 in S3's form
 (`‖P̂ P ϑ(g)‖²_HS = archW g + Dfun g`, CC (85)), O3 (`T`, `V`, `hcoef`) and O4 (`D`, `σ`, `hτ`). -/
 theorem thm47_concrete_O1 {ι : Type*} (bR : EigenBasis CopR ι) (T : Scaling evenPair)
-    (hT : IsPointwise T) (D : ArchS8.ProlateData) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
+    (hT : IsPointwise T) (D : ArchS8.ProlateDataNat) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
     (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     (g : ℝ → ℂ) (hf : Integrable (WeilExplicit.autocorr g)) (V : evenL2 →L[ℂ] evenL2)
@@ -300,7 +300,7 @@ theorem thm47_concrete_O1 {ι : Type*} (bR : EigenBasis CopR ι) (T : Scaling ev
 
 /-- **CC (83), concrete, with O2 discharged**: `archW g + Re D.Eplus(autocorr g) ≥ 0` given O1, O3, O4. -/
 theorem thm47_concrete_O1_nonneg {ι : Type*} (bR : EigenBasis CopR ι) (T : Scaling evenPair)
-    (hT : IsPointwise T) (D : ArchS8.ProlateData) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
+    (hT : IsPointwise T) (D : ArchS8.ProlateDataNat) (σ : ℕ ≃ ι) (hDlam : ∀ n, D.lam n = bR.μ (σ n))
     (hDphi : ∀ n, D.phi n = phiR bR (σ n))
     (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|)
     (g : ℝ → ℂ) (hf : Integrable (WeilExplicit.autocorr g)) (V : evenL2 →L[ℂ] evenL2)
