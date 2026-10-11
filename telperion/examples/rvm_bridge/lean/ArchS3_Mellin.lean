@@ -233,42 +233,52 @@ theorem integral_cosD {ε : ℝ} (hε : 0 < ε) {z : ℂ} (hz : 0 < z.re) :
   rw [gInt_eq hz (by rw [rM_re]; exact hε), gInt_eq hz (by rw [rP_re]; exact hε), PsiE]
   ring
 
+/-- The log-weighted Gamma integrand is integrable (Re z > 0, Re r > 0). -/
+lemma integrableOn_log_gInt {z r : ℂ} (hz : 0 < z.re) (hr : 0 < r.re) :
+    IntegrableOn (fun s : ℝ => (s : ℂ) ^ (z - 1) * ((Real.log s : ℂ) * cexp (-(r * s)))) (Ioi 0) := by
+  set f : ℝ → ℂ := fun s => cexp (-(r * s))
+  have hnorm : (fun s : ℝ => ‖f s‖) = fun s => Real.exp (-r.re * s) := by
+    funext s; simp [f, Complex.norm_exp, Complex.mul_re]
+  have hfc : LocallyIntegrableOn f (Ioi 0) :=
+    (by fun_prop : Continuous f).locallyIntegrable.locallyIntegrableOn _
+  have htop : f =O[atTop] (· ^ (-(z.re + 1))) := by
+    rw [← isBigO_norm_left, hnorm]
+    exact (isLittleO_exp_neg_mul_rpow_atTop hr _).isBigO
+  have hbot : f =O[𝓝[>] 0] (· ^ (-(0 : ℝ))) := by
+    refine IsBigO.of_bound 1 ?_
+    filter_upwards [self_mem_nhdsWithin] with s hs
+    have hs' : (0 : ℝ) < s := hs
+    rw [neg_zero, Real.rpow_zero, norm_one, one_mul]
+    simp only [f, Complex.norm_exp]
+    rw [show (-(r * (s : ℂ))).re = -(r.re * s) by simp [Complex.mul_re]]
+    exact Real.exp_le_one_iff.mpr (by nlinarith)
+  obtain ⟨hconv, -⟩ := mellin_hasDerivAt_of_isBigO_rpow hfc htop (by linarith) hbot hz
+  have := hconv
+  unfold MellinConvergent at this
+  refine this.congr_fun (fun s _ => ?_) measurableSet_Ioi
+  simp [f, smul_eq_mul, Complex.real_smul]
+
 /-- ∫_0^∞ log s · s^{z-1} 2cos(2 pi s) e^{-eps s} ds = dPsiE eps z. -/
 theorem integral_log_cosD {ε : ℝ} (hε : 0 < ε) {z : ℂ} (hz : 0 < z.re) :
     ∫ s in Ioi (0 : ℝ), (s : ℂ) ^ (z - 1) * ((Real.log s : ℂ) * cosD ε s) = dPsiE ε z := by
   have hM : 0 < (rM ε).re := by rw [rM_re]; exact hε
   have hP : 0 < (rP ε).re := by rw [rP_re]; exact hε
-  -- integrability of each log-weighted piece (from the Mellin derivative lemma's convergence)
   have hint : ∀ r : ℂ, 0 < r.re →
-      IntegrableOn (fun s : ℝ => (s : ℂ) ^ (z - 1) * ((Real.log s : ℂ) * cexp (-(r * s)))) (Ioi 0) := by
-    intro r hr
-    set f : ℝ → ℂ := fun s => cexp (-(r * s))
-    have hnorm : (fun s : ℝ => ‖f s‖) = fun s => Real.exp (-r.re * s) := by
-      funext s; simp [f, Complex.norm_exp, Complex.mul_re]
-    have hfc : LocallyIntegrableOn f (Ioi 0) :=
-      (by fun_prop : Continuous f).locallyIntegrable.locallyIntegrableOn _
-    have htop : f =O[atTop] (· ^ (-(z.re + 1))) := by
-      rw [← isBigO_norm_left, hnorm]
-      exact (isLittleO_exp_neg_mul_rpow_atTop hr _).isBigO
-    have hbot : f =O[𝓝[>] 0] (· ^ (-(0 : ℝ))) := by
-      refine IsBigO.of_bound 1 ?_
-      filter_upwards [self_mem_nhdsWithin] with s hs
-      have hs' : (0 : ℝ) < s := hs
-      rw [neg_zero, Real.rpow_zero, norm_one, one_mul]
-      simp only [f, Complex.norm_exp]
-      rw [show (-(r * (s : ℂ))).re = -(r.re * s) by simp [Complex.mul_re]]
-      exact Real.exp_le_one_iff.mpr (by nlinarith)
-    obtain ⟨hconv, -⟩ := mellin_hasDerivAt_of_isBigO_rpow hfc htop (by linarith) hbot hz
-    have := hconv
-    unfold MellinConvergent at this
-    refine this.congr_fun (fun s _ => ?_) measurableSet_Ioi
-    simp [f, smul_eq_mul, Complex.real_smul]
+      IntegrableOn (fun s : ℝ => (s : ℂ) ^ (z - 1) * ((Real.log s : ℂ) * cexp (-(r * s)))) (Ioi 0) :=
+    fun r hr => integrableOn_log_gInt hz hr
   have e : (fun s : ℝ => (s : ℂ) ^ (z - 1) * ((Real.log s : ℂ) * cosD ε s))
       = fun s : ℝ => (s : ℂ) ^ (z - 1) * ((Real.log s : ℂ) * cexp (-(rM ε * s)))
           + (s : ℂ) ^ (z - 1) * ((Real.log s : ℂ) * cexp (-(rP ε * s))) := by
     funext s; rw [cosD_eq]; ring
   rw [e, integral_add (hint _ hM) (hint _ hP), integral_log_gInt hz hM, integral_log_gInt hz hP, dPsiE]
   ring
+
+lemma integrableOn_log_cosD {ε : ℝ} (hε : 0 < ε) {z : ℂ} (hz : 0 < z.re) :
+    IntegrableOn (fun s : ℝ => (s : ℂ) ^ (z - 1) * ((Real.log s : ℂ) * cosD ε s)) (Ioi 0) := by
+  have h1 := integrableOn_log_gInt hz (r := rM ε) (by rw [rM_re]; exact hε)
+  have h2 := integrableOn_log_gInt hz (r := rP ε) (by rw [rP_re]; exact hε)
+  refine (h1.add h2).congr_fun (fun s _ => ?_) measurableSet_Ioi
+  simp only [cosD_eq, Pi.add_apply]; ring
 
 lemma one_div_rM_mem_slitPlane (ε : ℝ) : 1 / rM ε ∈ slitPlane := by
   rw [mem_slitPlane_iff]; right
