@@ -566,4 +566,7 @@ name = "ArchS3_Delta"
 name = "ArchS3_Mellin"
 
 [[lean_lib]]
+name = "ArchS3_Phi"
+
+[[lean_lib]]
 name = "ArchS3_Guard"
