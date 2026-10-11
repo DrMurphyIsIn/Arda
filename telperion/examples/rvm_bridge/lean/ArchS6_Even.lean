@@ -35,7 +35,7 @@ set_option linter.unusedSectionVars false
 
 theorem ae_ne_zero_real : ∀ᵐ x : ℝ, x ≠ 0 := by
   rw [ae_iff]
-  simp only [ne_eq, not_not, Set.setOf_eq_eq_singleton, measure_singleton]
+  simp only [ne_eq, not_not, Set.ofPred_eq_eq_singleton, measure_singleton]
 
 /-- `1/√2` as a complex number. -/
 def c2 : ℂ := ((Real.sqrt 2)⁻¹ : ℝ)

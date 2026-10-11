@@ -35,7 +35,7 @@ structure EigenBasis (T : E →L[ℂ] E) (ι : Type*) where
 theorem isClosed_eigenspace (T : E →L[ℂ] E) (c : ℂ) :
     IsClosed (eigenspace (T : E →ₗ[ℂ] E) c : Set E) := by
   have : (eigenspace (T : E →ₗ[ℂ] E) c : Set E) = {x | T x = c • x} := by
-    ext x; simp [mem_eigenspace_iff]
+    ext x; simp
   rw [this]
   exact isClosed_eq T.continuous (continuous_const_smul c)
 
