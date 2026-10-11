@@ -14,7 +14,7 @@ Section 5 of the map established, inside the paper's own exponent system, that 7
     sigma0  >=  1 - h/6 + b/12,     h = (1 + b + 3 ell)/2,     6 ell <= 1        =>   sigma0 >= 11/12 - ell/4 >= 7/8,
 
 with equality at the paper's point, while the high side (the row-exponent system of section 20) has about
-0.01 of room. The map's closing line was that "all three levers are the sextic 1/6 in different clothes".
+0.01 of room. (Section 7 refines this: `6 ell <= 1` is a cost threshold, not a cap, and the true low floor is 13/15.) The map's closing line was that "all three levers are the sextic 1/6 in different clothes".
 That sentence was too quick. Reading section 15 of the source separates three different sixes.
 
 ## 2. Three sixes, two of them sextic
@@ -23,9 +23,9 @@ That sentence was too quick. Reading section 15 of the source separates three di
 |---|---|---|---|
 | `h/6` in `C(sigma0) = sigma0 + l_x/2 - 1 + h/6` | the normalization every exponent is measured against (Lemma 10.4, l. 6139-6150) | the scalar factor `zeta_F^S(6 z_0)`: the principal row sum over SIXTH-POWER rows `u = a^6` is a Dirichlet series in `6 z_0` | yes: `6` = order of the symbol / power of the rows |
 | `b/12` in the low estimate `Z^{l_x/2 + b/12}` | Prop. 15.2 (quantitative Gram bound), l. 8540-8560 | the count of `a_1` with `q_{a_1} <= K_R^{1/6}`: a SIXTH-ROOT count, giving `P_a^{1/6}` and after the square root `P_a^{1/12}` | yes: sixth roots |
-| the slot cap `6 ell <= 1` | Lemma 15.1 (compensated completed-row norm), l. 8300-8320 | the row-energy algebra `1 + 3 ell' - 2 M'` with `M' = 1 - ell - 2d`, `ell' = ell - d`: the exponent is `M' + ((5 ell - 1 + d)/4)_+`, and it must vanish for all `0 <= d <= ell`; at `d = ell` this is `6 ell <= 1` | NO: the `3` is the CUBE in the rows `c n^3` (Patterson's cubic theta), the `2` is the mean square; the symbol order does not appear |
+| the slot threshold `6 ell <= 1` | Lemma 15.1 (compensated completed-row norm), l. 8300-8320 | the row-energy algebra `1 + 3 ell' - 2 M'` with `M' = 1 - ell - 2d`, `ell' = ell - d`: the exponent is `M' + ((5 ell - 1 + d)/4)_+`; it vanishes for all `0 <= d <= ell` iff `6 ell <= 1`, and past that it COSTS `(5 ell - 1)/8` on the low side rather than forbidding (section 7, last item) | NO: the `3` is the CUBE in the rows `c n^3` (Patterson's cubic theta), the `2` is the mean square; the symbol order does not appear |
 
-So the slot length cap is cubic-plus-mean-square, and the two constants that set the LAW are sextic. Writing
+So the slot threshold is cubic-plus-mean-square (and, as section 7 settles, a cost rather than a cap), and the two constants that set the LAW are sextic. Writing
 `k` for the power of the rows / order of the symbol and keeping the cubic-energy cap, the law would read
 
     sigma0_low(k)  =  1 - h/k + b/(2k)  =  1 - (1 + 3 ell)/(2k)      (b cancels as before),
@@ -198,11 +198,29 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   Neither examined whether `M' >= 1/2` is essential. The survey ranks reading section 15 to settle this as its
   action #1. It changes nothing about the verdict (13/15 versus 7/8 is the difference between `Lambda <= 0.27`
   and `0.28`), but the note should not claim more precision than the two readings jointly support.
-  Partial answer from the source: the proof of Prop. 15.3 uses the condition explicitly ("this is possible because
-  `M' >= 1/2` and ...", paper.tex l. 8593, in the tuple-ratio step), and at the paper's point it binds exactly
-  (`M' = M - 2d = 5/6 - 1/3 = 1/2` at `d = ell = 1/6`). So for the paper's proof AS WRITTEN the cap is `ell <= 1/6` and
-  7/8 is exact; the ledger's `ell <= 1/5` (13/15) is what the reflected-energy range alone would allow if that
-  step were re-proved without `M' >= 1/2`. Whether it can be is not known to either session.
+  SETTLED by a dedicated reading (`~/arda-research/followups/lemma151_Mprime_half.md`, reading not verification):
+  `M' >= 1/2` is an ARTEFACT, and this note's earlier paragraph mis-attributed it. It does not occur in Lemma 15.1
+  (l. 8106-8332); it occurs once, in Prop. 15.3's proof (l. 8591-8594), only to guarantee `Q = q_{b*} Z^{M'}/r_J^2 >= 1`
+  for large `Z` (Prop. 15.2's stated range, l. 8343-8346); any `M' > 0` suffices by enlarging the `Z` threshold, and
+  `1/2` is just `5/6 - 2/6` at the fixed geometry. In the Lean, `Parameters.lean`'s `compensated_geometry` proves
+  `1/2 <= 5/6 - 2d` as a conclusion, not a hypothesis. The real low-side constraints inside Lemma 15.1 are the
+  dual-length identity `M' + ell' - 1 = -3d` (l. 8246, i.e. `M + ell = 1`) and the second-branch excess
+  `M' + (1 + 3 ell' - 2M')/4 = ((5 ell - 1 + d)/4)_+` at `M = 1 - ell` (l. 8302-8311). So `6 ell <= 1` is NOT a cap: it is
+  where the excess starts to cost. Relaxing `ell` past 1/6, nothing in sections 15-20 breaks until `ell = 1/3`; the next
+  binding constraint is that excess through Prop. 15.3 (the `-d` tuple slack at l. 8630-8633 absorbs `d`), giving the
+  low floor
+
+      sigma0_low(ell) = 11/12 - ell/4 + (5 ell - 1)_+ / 8,     minimised at ell = 1/5:  13/15 = 0.8667.
+
+  This is the ledger's 13/15 (items 6-7), derived now from the proof itself; the method map's "both readings say
+  `6 ell <= 1`" and this note's "7/8 is exact for the proof as written" are corrected accordingly: 7/8 is exact only
+  with `ell` held at 1/6, and Liu's 0.874957 (section 9) is the first step past it. After the low side, the HIGH side
+  binds, and there the ledger (floor bin only, ideal `R = 1`: fine) and the method map's model (full row-count system
+  (20.4)-(20.11): about +0.026 short at `ell = 1/5`) genuinely disagree; NOT settled. Two bounded follow-ups are running
+  (session peterwmurphy-23): (a) a sympy sweep of the full high-side system with proved inputs over `ell in (1/6, 1/5]`
+  to name the binding row and the shortfall; (b) an audit of section 14's upstream lemmas for hidden dependence on
+  `M = 5/6`, `ell = 1/6`, and whether Lemma 15.1 is `d`-general in the Lean. If 13/15 survived both, the converter would
+  give `Lambda <= 2 (13/15 - 1/2)^2 = 121/450 = 0.2689`, a real improvement on 9/32 (still above 0.22).
 
 ## 8. Verdict
 
@@ -213,3 +231,16 @@ constant below 0.85 is now expected to be false (dFDH Conjecture 1.8); and the q
 (DDHL 2026) carries the same `X^{5/6}` bottleneck. Replacing the sextic structure is a question about
 metaplectic forms, for a specialist, not for this project. 7/8 stands; `0 <= Lambda <= 9/32` is the
 kernel-checked picture; `Lambda = 0` is untouched. conjecture1_proved = False.
+
+## 9. Postscript (2026-10-11): the first step past 1/6 has been taken
+
+The zero-free watcher's first poll (PR #686) found Baiying Liu, arXiv:2610.12234 (8 October 2026), "Slightly improved
+zero-free half-planes for the quasi-Riemann hypothesis": varying `b` and `ell` in OpenAI's argument gives
+`B_r = 34999/40000 = 0.874975` (`ell = 1/6 + 1/10000`) and `B_new = (1507 - 2 sqrt 921)/1653 = 0.874957...`
+(`ell_new = (33 + 8 sqrt 921)/1653`), with a Lean formalization at OpenAI's exact pin. Both satisfy `B = 11/12 - ell/4`
+(Liu's `rational_boundary`, `algebraic_boundary`), i.e. they live on the low-side law of section 1 just past
+`ell = 1/6`, exactly where section 7 says the proof allows it at a small cost; the ledger's prediction that
+re-optimising the geometry reaches 0.87498 is confirmed independently. Through the dbn converter, `B_new` gives
+`Lambda <= 2 (B_new - 1/2)^2 = 0.281186 < 9/32`; the replay of Liu's Lean and the bridge composition are in progress
+(`project_liu_qrh_improvement`). None of this changes the verdict on k: the lever that moves the constant by more
+than hairs remains the symbol order, and that remains blocked.
