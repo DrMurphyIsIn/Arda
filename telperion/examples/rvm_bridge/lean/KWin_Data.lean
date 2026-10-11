@@ -5,7 +5,8 @@
   conjecture1_proved = False.  A finite-window Weil positivity statement is NOT RH.  PR #604
   found that the 1.3e-3 full-class margin at this window is zero content (the zero sum over the
   first 200 zero pairs is 0.001301 against a least eigenvalue of 0.001329), and Connes-Consani's
-  theorem is for the pole-free class (margin 0.547 here), so nothing below is their result.
+  theorem is for a pole-free class (margin 0.547 on paperFT g (±i/2) = 0, 0.0723 on the
+  one-condition class paperFT g (i/2) = 0), so nothing below is their result.
 
   WHAT THIS FILE IS.  Computable definitions over `ℚ` / `ℕ`, evaluated by the Lean kernel itself
   (`decide +kernel`: the kernel reduces the Boolean checker; no compiled-code evaluation and no
