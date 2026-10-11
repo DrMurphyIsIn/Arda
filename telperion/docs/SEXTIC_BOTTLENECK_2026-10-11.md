@@ -221,6 +221,18 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   to name the binding row and the shortfall; (b) an audit of section 14's upstream lemmas for hidden dependence on
   `M = 5/6`, `ell = 1/6`, and whether Lemma 15.1 is `d`-general in the Lean. If 13/15 survived both, the converter would
   give `Lambda <= 2 (13/15 - 1/2)^2 = 121/450 = 0.2689`, a real improvement on 9/32 (still above 0.22).
+  Two more details from the revised reading. (i) Mechanism of the artefact step: with `r_J` in a fixed compact
+  (l. 8581-8583) the three threshold inequalities are `P_a >= 1` (needs `b > 0`), `Y' >= 1` (needs `l_y - d > 0`) and
+  `Q >= 1` (needs `M' > 0` and `Z^{M'} >= C_J^2/q_{b*}`); Prop. 15.2 uses `Q` only as the Poisson prefactor `Q/Y'^3`
+  (l. 8373-8377) and in the diagonal `O(Q/Y')` (l. 8446-8451), so re-proving needs only `M' >= 1 - 3 ell > 0`. (ii) What
+  actually caps `ell` after that: the second-branch excess `M' + (1 + 3 ell' - 2M')/4` (l. 8302-8311), whose `1/4`
+  comes from `s_hyb >= v/2`, i.e. the `(v + z_a)/3` entry at l. 7780, i.e. the `(NL)^{2/3}` term of `lem:hybrid-energy`
+  (l. 7560), i.e. Heath-Brown's cubic large sieve `U + V + (UV)^{2/3}` (l. 7497-7500); through Prop. 15.3's `-d` slack
+  this gives `5 ell <= 1` and the floor 13/15. That `(UV)^{2/3}` term is now unconditionally sharp for arbitrary
+  coefficients (dFDH 2607.07911, Thm 1.1), so beating 13/15 on the LOW side needs either a sieve exploiting the
+  product-form slot coefficients (sequence-specific, the Dunn-Radziwill corrected-sieve route, whose input is
+  GRH-type, i.e. circular) or a reflected-energy bound valid for `M + ell > 1` (ledger item 5, open). The sextic
+  symbol order (section 4) and the cubic sieve's `2/3` are thus the two walls, one on each side of 13/15.
 
 ## 8. Verdict
 

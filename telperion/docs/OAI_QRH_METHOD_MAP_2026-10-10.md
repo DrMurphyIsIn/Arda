@@ -192,11 +192,18 @@ l_x + l_y + ell = 1, i.e. l_x = (1 - b - ell)/2 and h = (1 + b + 3 ell)/2, this 
     sigma_0  >=  1 - h/6 + b/12  =  11/12 - ell/4          (b cancels).
 
 At ell = 0 (no prime compensation) it is 11/12: Stage I recovered, which is the model's own sanity check.
-Each unit of slot length buys one quarter. And ell is capped: Lemma 15.1's completed-row norm has exponent
-M' + ((5 ell - 1 + d)/4)_+ for 0 <= d <= ell, and its proof needs M' = 1 - ell - 2d >= 1/2 at d = ell;
-both conditions say 6 ell <= 1. So
+Each unit of slot length buys one quarter. And ell is capped, but less tightly than this section first said
+(CORRECTED 2026-10-11, see SEXTIC_BOTTLENECK_2026-10-11.md section 7): Lemma 15.1's completed-row norm has
+exponent M' + ((5 ell - 1 + d)/4)_+ for 0 <= d <= ell, which vanishes for all d only if 6 ell <= 1; the
+condition "M' >= 1/2" that was read here as a second cap is an artefact of Prop 15.3's proof (it only makes
+Q >= 1 for large Z; any M' > 0 works). Past 6 ell = 1 the excess COSTS (5 ell - 1)/8 on the low side through
+Prop 15.3's -d slack rather than forbidding, so the low floor is 11/12 - ell/4 + (5 ell - 1)_+/8, minimised at
+ell = 1/5: 13/15 (the thread-C ledger's floor), after which the HIGH side binds (open: the floor-bin-only
+check passes, this file's full row-count model is about 0.026 short at ell = 1/5). At the paper's own ell = 1/6:
 
-    sigma_0  >=  11/12 - (1/4)(1/6)  =  7/8,     with equality at the paper's point (C-low = 0 exactly).
+    sigma_0  >=  11/12 - (1/4)(1/6)  =  7/8,     with equality at the paper's point (C-low = 0 exactly);
+
+Liu (arXiv:2610.12234, 8 Oct 2026) took the first step past it to 0.874957 with a Lean formalization.
 
 The constant 1/6 is the sextic structure (sixth-power rows, Gauss sums of order six), not a tuning choice;
 the three "remaining length inequalities" in the proof of Prop. 15.3 are also all tight at the paper's
