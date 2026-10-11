@@ -864,3 +864,16 @@ name = "ArchS11_KI"
 
 [[lean_lib]]
 name = "ArchS11_Guard"
+
+# ---- Stage S12 (final assembly: S12a one-condition at |I| = 1/2, S12b CC Thm 1 at |I| = log 2) ----
+[[lean_lib]]
+name = "ArchS12_Index"
+
+[[lean_lib]]
+name = "ArchS12_Bridge"
+
+[[lean_lib]]
+name = "ArchS12_Main"
+
+[[lean_lib]]
+name = "ArchS12_Guard"
