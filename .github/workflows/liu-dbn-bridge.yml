@@ -27,6 +27,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "47 7 * * 0"
+  # Pull requests touching the island run it too, so a change is judged before it merges. A PR run
+  # can read main's caches, so it gets the oai-qrh checkpoint like a main run.
+  pull_request:
+    paths:
+      - ".github/workflows/liu-dbn-bridge.yml"
+      - "telperion/examples/liu_dbn_bridge/**"
   push:
     branches: [main]
     paths:
