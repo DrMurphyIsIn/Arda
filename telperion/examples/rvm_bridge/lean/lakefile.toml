@@ -594,3 +594,6 @@ name = "ArchS5_Guard"
 # Guard: lake env lean ArchS6_Guard.lean
 [[lean_lib]]
 name = "ArchS6_Abstract"
+
+[[lean_lib]]
+name = "ArchS6_Fourier"
