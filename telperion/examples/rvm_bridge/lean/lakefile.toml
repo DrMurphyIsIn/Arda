@@ -668,3 +668,13 @@ name = "ArchS9_CertRes"
 
 [[lean_lib]]
 name = "ArchS9_Bridge"
+
+# ---- archimedean stage S10 (certified kernel chi on [0, log 2]) ----
+[[lean_lib]]
+name = "ArchS10_Exact"
+
+[[lean_lib]]
+name = "ArchS10_Data"
+
+[[lean_lib]]
+name = "ArchS10_Cert"
