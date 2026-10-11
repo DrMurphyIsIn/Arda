@@ -35,7 +35,7 @@ def CC (f f' : ℝ → ℝ) (t : ℝ) : ℝ :=
     + Real.exp (-(3 / 2) * t) * f' (Real.exp (-t)) * f 1
     - Real.exp ((3 / 2) * t) * f 1 * f' (Real.exp t)
 
-theorem Cn_eq_CC {ι : Type*} (D : ArchS8.ProlateData ι) (n : ι) (t : ℝ) :
+theorem Cn_eq_CC (D : ArchS8.ProlateDataNat) (n : ℕ) (t : ℝ) :
     D.Cn n t = CC (D.phi n) (deriv (D.phi n)) t := rfl
 
 theorem CC_smul (c : ℝ) (f f' : ℝ → ℝ) (t : ℝ) :
