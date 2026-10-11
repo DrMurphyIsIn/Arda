@@ -760,6 +760,27 @@ name = "ArchS10_Summable"
 [[lean_lib]]
 name = "ArchS10_Guard"
 
+[[lean_lib]]
+name = "ArchS6_Enum"
+
+[[lean_lib]]
+name = "ArchS6_Sobolev"
+
+[[lean_lib]]
+name = "ArchS6_Bounds"
+
+[[lean_lib]]
+name = "ArchS6_ProlateData"
+
+[[lean_lib]]
+name = "ArchS6_Trace"
+
+[[lean_lib]]
+name = "ArchS6_L1"
+
+[[lean_lib]]
+name = "ArchS7b_Guard"
+
 # Stage S7 (archimedean conceptual blueprint): CC Thm 4.7, SoninTr = W∞ + E (HS form, bypass B1).
 # Not in defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS7_Guard.lean
 [[lean_lib]]
@@ -784,26 +805,22 @@ name = "ArchS7_Theta"
 name = "ArchS7_Lemma41"
 
 [[lean_lib]]
+name = "ArchS7_LogMap"
+
+[[lean_lib]]
+name = "ArchS7_Kappa"
+
+[[lean_lib]]
+name = "ArchS7_PFP"
+
+[[lean_lib]]
+name = "ArchS7_Density"
+
+[[lean_lib]]
+name = "ArchS7_H85"
+
+[[lean_lib]]
+name = "ArchS7_Final"
+
+[[lean_lib]]
 name = "ArchS7_Guard"
-
-[[lean_lib]]
-name = "ArchS7b_Guard"
-
-[[lean_lib]]
-name = "ArchS6_Enum"
-
-[[lean_lib]]
-name = "ArchS6_Sobolev"
-
-[[lean_lib]]
-name = "ArchS6_Bounds"
-
-[[lean_lib]]
-name = "ArchS6_ProlateData"
-
-[[lean_lib]]
-name = "ArchS6_Trace"
-
-[[lean_lib]]
-name = "ArchS6_L1"
-
