@@ -37,13 +37,17 @@ Liu's θ, to 8 digits. So Liu's half-plane is the proved-input optimum of that a
   at commit `7d10420de90efa2f082a06a342fc7accbd57ab37` (paper: arXiv:2610.12234).
 - **OpenAI.** Liu's proof imports 2,925 modules of https://github.com/openai/math at commit
   `adc7f1241b42e322a6451854ab7e4b4c146bf78a`, released under the Apache License, Version 2.0.
-- **No license on Liu's repository.** As of 2026-10-11 it has no LICENSE file. Without one we have
-  no right to redistribute it. So this directory contains none of Liu's files. `liu_materialize.sh`
+- **Licence basis: owner decision 2026-10-11, no author grant on file.** Liu's repository has no
+  LICENSE file and no licence or copyright line in any file. It is a derivative overlay on
+  openai/math, whose Apache-2.0 grant covers OpenAI's code, not Liu's additions. The Arda owner
+  ruled on 2026-10-11 that Liu's code is to be treated as Apache-2.0. Liu has granted nothing in
+  writing. Attribution to Baiying Liu is kept everywhere. This directory still contains none of
+  Liu's files. `liu_materialize.sh`
   fetches the pinned commit at build time into `work/`, which is gitignored. The only things we
   commit about Liu's code are its commit hash, a list of sha256 hashes of its files
   (`liu_sources.sha256`), the layout rule, and the names of the `OAI.*` declarations it adds.
-- **Public release is on hold** until Liu chooses a license. The CI workflow is a draft for the
-  same reason (`ci/liu-dbn-bridge.yml.draft`).
+- **Release and CI** no longer wait on a licence. They wait on an independent replay and the
+  missions governance path. The CI workflow stays a draft until then (`ci/liu-dbn-bridge.yml.draft`).
 
 ## Files
 

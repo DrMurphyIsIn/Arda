@@ -6,8 +6,10 @@
 #   (b) the 19-module single-pin port of the Arda dbn island (same recipe as oai_qrh_bridge);
 #   (c) our own modules from lean/ and one appended lakefile stanza.
 #
-# LICENSE NOTE.  Liu's repository carries NO license.  Nothing of it is committed to Arda: this
-# script fetches it at build time into work/ (gitignored).  Do not copy work/ anywhere public.
+# LICENSE NOTE.  Licence basis: owner decision 2026-10-11, no author grant on file.  Liu's
+# repository has no LICENSE file; the Arda owner ruled it is to be treated as Apache-2.0, with
+# attribution to Baiying Liu kept.  Nothing of it is committed to Arda: this script fetches it at
+# build time into work/ (gitignored).
 #
 # Usage: liu_materialize.sh [--from-local OAI_DIR] [--liu-local LIU_GIT_DIR]
 #   --from-local OAI_DIR  reflink-copy (cp -c, APFS) an already-built copy of openai/math's lean/

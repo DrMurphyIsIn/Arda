@@ -1,10 +1,10 @@
-# DRAFT, NOT ACTIVE.  Do not copy this to .github/workflows until the license question is settled.
+# DRAFT, NOT ACTIVE.  Do not copy this to .github/workflows until the independent replay is done.
 #
-# Why it is held: Baiying Liu's repository (arXiv:2610.12234) has NO LICENSE.  A CI job that
-# clones it and builds it in public is a redistribution question we have not resolved.  The job
-# never commits Liu's files, but its caches and logs would hold them.  Activate only after Liu
-# grants a license (or confirms in writing that this use is fine), and record that in
-# telperion/docs/LIU_DBN_BRIDGE_2026-10-11.md.
+# Licence basis: owner decision 2026-10-11, no author grant on file.  Baiying Liu's repository
+# (arXiv:2610.12234) has no LICENSE file.  The Arda owner ruled that it is to be treated as
+# Apache-2.0 (details in telperion/docs/LIU_DBN_BRIDGE_2026-10-11.md, section 3).  The job never
+# commits Liu's files; its caches and logs hold them under that ruling.  Activation still waits on
+# an independent replay and the missions governance path.
 #
 # Cost: same as oai-qrh-bridge.yml (OpenAI's closure, about 2,925 modules on top of Mathlib), plus
 # Liu's 219 modules (about 5 minutes on a fast machine) and the 19-module dbn port.

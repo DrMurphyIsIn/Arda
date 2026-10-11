@@ -1,7 +1,7 @@
 
 -- ===== Arda liu_dbn_bridge (appended by telperion/examples/liu_dbn_bridge/liu_materialize.sh) =====
 -- Baiying Liu's overlay (arXiv:2610.12234, commit 7d10420), fetched at build time, NOT vendored
--- (the repository has no license).  Three libraries, matching Liu's own lakefile, with Liu's own
+-- (licence basis: owner decision 2026-10-11, no author grant on file).  Three libraries, matching Liu's own lakefile, with Liu's own
 -- package options (autoImplicit false, warningAsError true).  The layout fix in the script puts
 -- analytic_high_v2/* under RHZeroFreeExtension/analytic_high/ as the import graph requires.
 lean_lib LiuRHZeroFreeExtension where

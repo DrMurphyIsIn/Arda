@@ -72,9 +72,13 @@ input, not more tuning.
 
 ## 3. Provenance and license
 
-**Liu's repository has no license.** As of 2026-10-11,
+**Licence basis: owner decision 2026-10-11, no author grant on file.** As of 2026-10-11,
 github.com/liubaiying101/Slightly-improved-zero-free-half-planes-for-the-quasi-Riemann-hypothesis
-has no LICENSE file. We therefore commit none of Liu's files. The island holds only:
+has no LICENSE file, and no licence or copyright line appears in its README or in any Lean file.
+It is a derivative overlay on openai/math. openai/math's Apache-2.0 grant covers OpenAI's code,
+not Liu's additions. On 2026-10-11 the Arda owner ruled that Liu's code is to be treated as
+Apache-2.0. Liu has granted nothing in writing. Author attribution to Baiying Liu is kept in
+every file that touches the work. We still commit none of Liu's files. The island holds only:
 
 - `LIU_PIN`: repository URL, commit `7d10420de90efa2f082a06a342fc7accbd57ab37`, paper id, counts;
 - `liu_sources.sha256`: the sha256 of each of Liu's files that the recipe uses;
@@ -82,8 +86,9 @@ has no LICENSE file. We therefore commit none of Liu's files. The island holds o
 - `liu_oai_declarations.txt`: the names of the `OAI.*` declarations Liu's modules add (section 4).
 
 `liu_materialize.sh` fetches the pinned commit at build time into `work/`, which is gitignored.
-Public release of anything built from it, and activation of `ci/liu-dbn-bridge.yml.draft`, are
-held until Liu chooses a license.
+Public release of anything built from it, and activation of `ci/liu-dbn-bridge.yml.draft`, no
+longer wait on a licence (owner decision above). They wait on an independent replay and the
+missions governance path.
 
 **Liu's repository is not self-verifying as shipped.** Its `verify.py` expects `vendor/`,
 `verification/` and `vendor/LICENSE`. Its root module refers to `check_extension.sh` and
@@ -230,7 +235,8 @@ targets the exact theorem and adds the tampered control.
   the kernel, which accepted them.
 - **No human referee.** Nobody here has read Liu's TeX against Liu's Lean. Kernel acceptance says
   the Lean statements are proved, not that they match the paper's prose.
-- **Not registered.** No missions node was created or edited. Registering one needs the license
-  question settled first, because the gate requires CI coverage and the CI draft is held.
+- **Not registered.** No missions node was created or edited. The licence question is settled by owner
+  decision (section 3). Registering a node still needs an independent replay, CI coverage (the CI
+  draft is still held) and the operator read-back.
 
 conjecture1_proved = False.

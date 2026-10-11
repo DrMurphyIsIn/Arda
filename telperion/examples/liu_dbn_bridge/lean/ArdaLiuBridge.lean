@@ -8,7 +8,9 @@
   at commit 7d10420de90efa2f082a06a342fc7accbd57ab37), which bootstraps on OpenAI's 7/8 theorem from
   github.com/openai/math at adc7f1241b42e322a6451854ab7e4b4c146bf78a (Apache-2.0).
 
-  LICENSE / PROVENANCE.  Liu's repository carries NO license.  None of Liu's files is vendored into
+  LICENSE / PROVENANCE.  Licence basis: owner decision 2026-10-11, no author grant on file (Liu's
+  repository has no LICENSE file; the Arda owner ruled it is to be treated as Apache-2.0; author
+  attribution to Baiying Liu kept).  None of Liu's files is vendored into
   Arda: ../liu_materialize.sh fetches the pinned commit at build time and lays it out inside an
   unmodified openai/math workspace.  This file adds only (i) the closure over Liu's pole
   hypothesis `s ≠ 1` (discharged by Mathlib's `riemannZeta_one_ne_zero`), with Liu's boundary
