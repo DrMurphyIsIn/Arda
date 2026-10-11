@@ -755,6 +755,9 @@ name = "ArchS10_Tail"
 name = "ArchS10_Chi"
 
 [[lean_lib]]
+name = "ArchS10_Summable"
+
+[[lean_lib]]
 name = "ArchS10_Guard"
 
 # Stage S7 (archimedean conceptual blueprint): CC Thm 4.7, SoninTr = W∞ + E (HS form, bypass B1).
