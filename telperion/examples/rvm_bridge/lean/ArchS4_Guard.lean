@@ -1,7 +1,28 @@
-/- ArchS4_Guard: #print axioms for every top-level S4 declaration.  Required output for each:
+/- ArchS4_Guard: #print axioms for every top-level S4 and S4' declaration.  Required output for each:
    [propext, Classical.choice, Quot.sound].  conjecture1_proved = False. -/
-import ArchS4_Jump
+import ArchS4_Rung
 
+#print axioms ArchS4.integral_sq_pow
+#print axioms ArchS4.abs_mom_le
+#print axioms ArchS4.abs_Sm_one
+#print axioms ArchS4.abs_Cm_two
+#print axioms ArchS4.hasDerivAt_alphaE
+#print axioms ArchS4.hasDerivAt_betaE
+#print axioms ArchS4.hasDerivAt_FE
+#print axioms ArchS4.hasDerivAt_FE1
+#print axioms ArchS4.deltaE_eq_FE
+#print axioms ArchS4.hasDerivAt_expHalfR
+#print axioms ArchS4.deriv_deltaE_eq
+#print axioms ArchS4.deriv_deriv_deltaE
+#print axioms ArchS4.kappaD_eq
+#print axioms ArchS4.exp_le_of_small
+#print axioms ArchS4.abs_kappaD_le
+#print axioms ArchS4.integrable_normSq_test
+#print axioms ArchS4.norm_autocorr_le
+#print axioms ArchS4.autocorr_eq_zero_of_far
+#print axioms ArchS4.DQ_nonpos
+#print axioms ArchS4.DQ_nonpos_poleFree
+#print axioms ArchS4.weil_nonneg_of_CC_cor23
 #print axioms ArchS4.ae_sq
 #print axioms ArchS4.continuous_momIntegrand
 #print axioms ArchS4.norm_momIntegrand_le
