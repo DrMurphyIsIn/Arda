@@ -11,15 +11,22 @@ self-adjoint operator.
 
 ## Status
 
-* 11 Lean files plus the guard, 2,903 lines in total, all built with `lake build`.
-* `ArchS6_Guard.lean` prints `#print axioms` for all 256 top-level theorems. Every line is exactly
-  `[propext, Classical.choice, Quot.sound]`. There is no `sorry` and no `axiom`.
+* 16 Lean files plus the guard, 3,865 lines in total, all built with `lake build`. The branch
+  includes a merge of `mm/archimedean-rung` (S5's HS files, S8, S9).
+* `ArchS6_Guard.lean` prints `#print axioms` for 342 declarations: every top-level theorem plus the
+  `prolateData` instance. Every line is exactly `[propext, Classical.choice, Quot.sound]`. There is
+  no `sorry` and no `axiom`.
 * The L² Fourier link that the brief allowed to stay open is **proved** (`fourier_ae_eq`).
+* **S8's `ProlateData` is instantiated with no extra hypotheses** (`ArchS6_ProlateData`). That
+  includes S8's "one substantive analytic obligation", the sup bound `M n`. It is proved by
+  pointwise Bessel plus a Sobolev inequality, with no prolate ODE (see "How M n is obtained").
+* **Trace class.** Σ\|λ_n\| ≤ 2cosh 2π (`tsum_abs_mu_le`), hence S7's hypothesis
+  Σ\|τ_n\| < ∞ (`summable_abs_tau`).
 
 ```
 cd telperion/examples/rvm_bridge/lean
-lake build ArchS6_Functions ArchS6_Bridge   # builds the whole chain
-lake env lean ArchS6_Guard.lean             # 256 lines, all [propext, Classical.choice, Quot.sound]
+lake build ArchS6_Trace ArchS6_Bridge       # builds the whole chain
+lake env lean ArchS6_Guard.lean             # 342 lines, all [propext, Classical.choice, Quot.sound]
 ```
 
 | file | lines | thms | content |
@@ -35,11 +42,18 @@ lake env lean ArchS6_Guard.lean             # 256 lines, all [propext, Classical
 | ArchS6_Real | 212 | 22 | real-valued prolates via the real operator C_ℝ, real φ_n |
 | ArchS6_Bridge | 122 | 11 | S9 interface: continuous orthonormal eigenfamily with Parseval |
 | ArchS6_Functions | 171 | 14 | ξ_n, η_n, ψ_n, ζ_n as explicit functions; φ_n is C^∞ |
-| ArchS6_Guard | 283 | – | `#print axioms` for every theorem |
+| ArchS6_Enum | 130 | 10 | the eigenbasis index type is countable and infinite, so ≃ ℕ |
+| ArchS6_Sobolev | 75 | 1 | f(x)² ≤ (∫f²)/(b−a) + 2∫(f² + f'²) on [a, b] |
+| ArchS6_Bounds | 354 | 41 | φ', φ'' under the integral; pointwise Bessel; sup bounds Q_n; Σλ²S < ∞ |
+| ArchS6_ProlateData | 108 | 9 | **S8's `ProlateData` instance**, `exists_prolateData` |
+| ArchS6_Trace | 204 | 19 | Σ\|λ_n\| ≤ 2cosh 2π; Σ\|τ_n\| < ∞ (S7's `hτ`) |
+| ArchS6_Guard | 374 | – | `#print axioms` for every theorem and the instance |
 
 Import graph: `Abstract`, `Fourier` and `Eigen` import only Mathlib.
 `Proj` imports `ArchS5_Spectral`, `Abstract` and `Fourier`. The rest is a chain:
 `Kernel → Even`, `Kernel → Strict`, `Even + Eigen + Strict → Prolate → Real → {Bridge, Functions}`.
+`Sobolev` imports only Mathlib. `Bridge + Functions + Sobolev → Bounds`, then
+`Bounds + Enum + ArchS5_HS + ArchS8_ProlateData → ProlateData → Trace`.
 
 ## Conventions (fixed once)
 
@@ -178,6 +192,45 @@ functions (`L2R_eq_of_integrable`).
   * **`contDiff_phiR`**: φ_n is C^N for every N ≤ ∞, via `Real.contDiff_fourier`, because E₊e_n has
     compact support and so finite moments.
 
+### Enumeration, sup bounds, `ProlateData`, trace class
+
+* **`ArchS6_Enum`.** `countable_of_orthonormal` uses disjoint balls of radius 1/2 in the separable
+  space L²([0,1]; ℝ). `infinite_of_complete` uses the indicators of (1/(n+2), 1/(n+1)), which are
+  infinitely many orthogonal nonzero vectors. Together these give **`exists_equiv_nat`**: every
+  real eigenbasis of C_ℝ has an enumeration σ : ℕ ≃ ι.
+* **`ArchS6_Sobolev`.** `sq_le_sobolev`: for f with continuous derivative and x ∈ [a, b],
+  f(x)² ≤ (∫_a^b f²)/(b − a) + 2∫_a^b (f² + f'²).
+* **`ArchS6_Bounds`.**
+  * `hasDerivAt_kInt` differentiates ∫₀¹ g(x, y) e(y) dy under the integral sign.
+  * `hasDerivAt_phiR` and `hasDerivAt_dphiR` give φ' = μ⁻¹F₁ and φ'' = μ⁻¹F₂, with
+    F_k = ∫₀¹ ∂ₓᵏ 2cos(2πxy) e(y) dy.
+  * `sum_sq_kInt_le` is pointwise Bessel. `abs_phiR_le_Q` and `abs_deriv_phiR_le_Q` give the sup
+    bounds on [1/3, 3]. `summable_mu_sq_mul_S` gives Σ μ²S < ∞.
+* **`ArchS6_ProlateData`.** `prolateData bR σ : ArchS8.ProlateData` and **`exists_prolateData`**.
+* **`ArchS6_Trace`.** `hasSum_mu`: λ_i = Σ_j a_j c_ij², with a_j the coefficients of 2cos(2πt) in
+  t² and c_ij = ∫₀¹ x^{2j} e_i. Then `sum_abs_mu_le`, `summable_abs_mu`,
+  **`tsum_abs_mu_le`** (Σ\|λ_i\| ≤ 2cosh 2π), and **`summable_abs_tau`**.
+
+### How `M n` is obtained (S8 obligation 5)
+
+S8 needs sup bounds M_n on \|φ_n\| and \|φ_n'\| over [e^{−T}, 1], and N_n over [1, e^T], with
+Σ λ_n²/(1 − λ_n²)·M_n·N_n < ∞. The eigen-relation alone gives only M_n ~ 1/\|λ_n\|, which is too
+weak. The proof here works in three steps and does not use the prolate ODE.
+
+1. **Pointwise Bessel.** λ_n φ_n(x) = ∫₀¹ 2cos(2πxy) e_n(y) dy = ⟨e_n, k_x⟩ for every real x. The
+   same holds for λ_n φ_n' and λ_n φ_n'' with ∂ₓk_x and ∂ₓ²k_x. These kernels are bounded by 2, 4π
+   and 8π² on y ∈ [0, 1]. Bessel over the orthonormal e_n gives, for every x,
+   Σ_n λ_n²(φ_n² + φ_n'² + φ_n''²)(x) ≤ 4 + 16π² + 64π⁴.
+2. **Sobolev on [a, b] = [1/3, 3] = [e^{−T}, e^T] with T = log 3.** Put
+   S_n = ∫_a^b (φ_n² + φ_n'² + φ_n''²) and Q_n = √(C·S_n), where C = 1/(b − a) + 2. Then
+   \|φ_n(x)\| ≤ Q_n and \|φ_n'(x)\| ≤ Q_n on all of [a, b].
+3. **Summability.** Integrating step 1 over [a, b] gives Σ_n λ_n² S_n ≤ (b − a)(4 + 16π² + 64π⁴).
+   With M_n = N_n = Q_n, each summand λ²/(1−λ²)·Q² = C·λ²S/(1−λ²) is at most 2C·λ²S once λ² ≤ 1/2.
+   That holds for all large n because Σλ² < ∞ (S5's `tsum_real_eigenvalue_sq_le`).
+
+Polynomial bounds in n, as in CC (100)/(166), are not needed and not proved. The bound Q_n is not
+explicit per n; only its square-summability against λ_n² is.
+
 ## Correspondence with S8 and S9
 
 | CC (§4) | S6 (Lean) | S8 (`ArchS8_ProlateData`) | S9 (`ArchS9_*`) |
@@ -202,31 +255,53 @@ windows each contain exactly one eigenvalue of the complete spectrum. At merge, 
 against `ip`/`T` (both are `rfl` after unfolding `K`). S9 states `horth` with `[DecidableEq ι]`; use
 `classical`.
 
-**S8.** These are the `ProlateData` fields S6 now covers, for every n:
-* `lam_sq_lt_one` from `abs_μ_lt_one`;
-* `phi` = `phiR`, real, C^∞ (`contDiff_phiR`), equal to e_n on [0,1] (`ae_eq_phiR`), with
-  F ξ_n = λ φ_n/√2 (`fourier_ξ_ae_real`, which is CC's λ ξ_n^an in CC normalisation).
+**S8.** `prolateData bR σ` fills every `ProlateData` field:
+* `lam n = μ_{σ n}` with `lam_sq_lt_one`;
+* `phi n = phiR bR (σ n)`, which is C^∞ (`contDiff_phiR`);
+* `T = log 3`;
+* `M n = N n = Q_{σ n}` with `bound_inner` and `bound_outer`;
+* `summable_wMN`.
 
-These are NOT covered (see open items 1-3): the ℕ-indexing, the sup bounds `M n` and `N n`, and
-`summable_wMN`.
+**Normalisation: `phi n = phiR`, not √2·phiR.** e_n is a unit vector of L²([0,1]), so
+∫₀¹ phiR² = 1, which is CC's normalisation (16). The 1/√2 appears only in the L²(ℝ) vectors
+ξ_n = J e_n.
+
+**S7.** `exists_prolateData` provides (ι, bR, σ, D) with `D.lam n = bR.μ (σ n)` and
+`D.phi n = phiR bR (σ n)`, which are the hypotheses `hDlam` and `hDphi` of S7's `thm47_concrete`.
+`summable_abs_tau bR` is its `hτ`. S7 itself proved that S6's ξ_n and ζ_n are a.e. equal to
+`xiRep (phiR bR n)` and `zetaRep τ_n (phiR bR n)` (`ArchS7_Concrete.xi_ae`, `zeta_ae`, using
+`fourier_ξ_ae_real`). `coeFn_ξ_real` and `coeFn_ζ_real` here state the same facts with indicators.
+So S7's obligation O4 is fully discharged by S6, and the abstract API in `ArchS6_Abstract` is
+unchanged.
+
+### Status of the `ProlateData` instance after the 2026-10-11 S8 rewrite
+
+The lead removed S8's `M n`/`summable_wMN` obligation. S8 is replacing those fields with pointwise
+ℓ² fields that S10 discharges, and has generalised `ProlateData` to an index type `ι`.
+`ArchS6_ProlateData` targets the earlier ℕ-indexed `ProlateData`, so at merge it either needs
+adapting or can be dropped. `ArchS6_Sobolev`, `ArchS6_Bounds`, `ArchS6_Enum` and `ArchS6_Trace` are
+standalone results and stay valid.
+
+What S8 and S10 now need from S6:
+* **`ArchS6_L1`.** `integrableOn_e`, `integrableOn_phiR`, `integral_abs_e_le_one` and
+  `integral_abs_phiR_le_one` give ∫_{[0,1]} \|e_i\| ≤ 1. The proof uses \|e\| ≤ (e² + 1)/2.
+* **`ArchS6_Bridge.exists_S9_family`.** It gives orthonormal continuous eigenfunctions of S9's T
+  with the eigen-relation at every ω. On `mm/archimedean-rung` this is composed with S9's
+  `prolate_spectrum_complete`, which identifies the 13 windows.
+* **`phiR bR i = cosPhi (bR.μ i) (bR.e i)`** holds by `rfl` (S8's check), so S8's
+  `outer_of_cosPhi` gives N_i = 4π/\|μ_i\|.
 
 ## Open items
 
-1. **ℕ-indexing.** The basis is indexed by an abstract type ι (Σ c, chosen Hilbert-basis index
-   sets), while S8 wants `lam : ℕ → ℝ`. ι is countable (L²[0,1] is separable) and infinite (all
-   eigenvalues are nonzero and ran P₁ is infinite-dimensional), but neither fact is proved here. An
-   ordering by \|λ\| is also not proved, and S8 does not need one.
-2. **S8's inner bound `M n`.** This is a sup bound on \|ξ_n\| and \|ξ_n'\| over [e^{-T}, 1] that beats
-   1/\|λ_n\|. S8 calls it its one substantive analytic obligation, and it is not done. It needs either
-   the prolate ODE or Legendre coefficient decay. S9 covers n ≤ 12 numerically. The outer bound
-   N_n = 4π/\|λ_n\| (\|λφ\| ≤ 2, \|λφ'\| ≤ 4π) is elementary but not stated here.
-3. **Eigenvalue tail (B3).** The bound Σ_{k≥n} λ_k² ≤ ‖e^{2πixy} − T_n‖² and the Hilbert–Schmidt
-   inequality Σ λ_n² ≤ ‖K‖² are not proved here. The HS inequality is being added on `mm/arch-s5`.
-   With `EigenBasis.hasSum_inner_mul_inner` it should be about 100 lines on top of S5.
-4. **Not needed, not done.** Simplicity of the spectrum, identification with Slepian's
-   PS_{2n,0}(2π,·), and the odd part of ran P₁.
-5. **Thm 4.7 and ϑ.** The scaling action and the trace identity are S7's. S6 gives S7 the abstract
-   (77) (`inner_ξ_A_ξ`), the function forms of ξ_n and ζ_n, and (81).
+1. **Ordering by S9's windows.** σ is an arbitrary enumeration. Indexing n ≤ 12 by S9's certified
+   windows is a one-line composition after merge with S9: `exists_S9_family` feeds
+   `prolate_spectrum_complete`, see arch-s9's note. Nothing in S7 or S8 needs it.
+2. **Per-index decay.** The per-index decay of λ_n (|λ_n| ≤ 2(2π)^n/n! for the n-th largest) is
+   not proved. Only the unordered Σ|λ| ≤ 2cosh 2π is proved, and that is all S7 and S8 use.
+3. **Not needed, not done.** Simplicity of the spectrum, identification with Slepian's
+   PS_{2n,0}(2π,·), explicit polynomial bounds on ξ_n(1), and the odd part of ran P₁.
+4. **Thm 4.7 and ϑ.** These are S7's (its O1-O3). S6 gives S7 the abstract (77), the function
+   forms of ξ_n and ζ_n, (81), `exists_prolateData` and `summable_abs_tau`.
 
 ## Lean footguns met on this pin
 
@@ -255,4 +330,12 @@ These are NOT covered (see open items 1-3): the ℕ-indexing, the sup bounds `M 
 * **Convenient tools.** `Integrable.bdd_mul` takes an a.e. bound, which is convenient on `volI`.
   `ae_eq_restrict_iff_indicator_ae_eq` converts between a.e. on `volI a b` and a.e. indicator
   equality on ℝ.
+* **More footguns.** `Fact ((2 : ℝ≥0∞) ≠ ⊤)` is not an instance at this pin. Add it with
+  `have` before `infer_instance` for `SeparableSpace (Lp ℝ 2 (volI 0 1))` (`Lp.SecondCountableTopology`).
+* **`norm_tsum_le_tsum_norm` speaks of `‖·‖`.** For real `|·|`, rewrite with `← Real.norm_eq_abs`
+  first.
+* **`(hf.pow 2).intervalIntegrable`** has the function `f ^ 2` (Pi form), which does not match
+  `fun t ↦ f t ^ 2` in `integral_add`. Use a `have` with the lambda type.
+* **`intervalIntegral.integral_finset_sum`** is deprecated; use `integral_finsetSum` with explicit
+  `(f := fun i t ↦ …)`.
 * **Build times.** Each `lake build ArchS6_*` step takes about 30-45 s at the current load.

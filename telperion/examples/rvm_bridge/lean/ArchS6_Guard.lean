@@ -9,6 +9,12 @@ import ArchS6_Prolate
 import ArchS6_Real
 import ArchS6_Bridge
 import ArchS6_Functions
+import ArchS6_Enum
+import ArchS6_Sobolev
+import ArchS6_Bounds
+import ArchS6_ProlateData
+import ArchS6_Trace
+import ArchS6_L1
 
 /-! ArchS6_Guard: `#print axioms` for every top-level theorem of stage S6.
 Required output: exactly `[propext, Classical.choice, Quot.sound]` on every line.
@@ -281,3 +287,95 @@ conjecture1_proved = False. -/
 #print axioms ArchS6.contDiff_cosTrans
 #print axioms ArchS6.contDiff_phi
 #print axioms ArchS6.contDiff_phiR
+-- ArchS6_Enum
+#print axioms ArchS6.separableSpace_L2IR
+#print axioms ArchS6.countable_of_orthonormal
+#print axioms ArchS6.bumpSet_subset
+#print axioms ArchS6.bumpSet_lt
+#print axioms ArchS6.disjoint_bumpSet
+#print axioms ArchS6.volI_bumpSet_pos
+#print axioms ArchS6.bump_ne_zero
+#print axioms ArchS6.inner_bump
+#print axioms ArchS6.infinite_of_complete
+#print axioms ArchS6.exists_equiv_nat
+-- ArchS6_Sobolev
+#print axioms ArchS6.sq_le_sobolev
+-- ArchS6_Bounds
+#print axioms ArchS6.exists_bound_compact
+#print axioms ArchS6.integrable_kernel_mul
+#print axioms ArchS6.hasDerivAt_kInt
+#print axioms ArchS6.continuous_k0
+#print axioms ArchS6.continuous_k1
+#print axioms ArchS6.continuous_k2
+#print axioms ArchS6.continuous_k3
+#print axioms ArchS6.hasDerivAt_arg
+#print axioms ArchS6.hasDerivAt_k0
+#print axioms ArchS6.hasDerivAt_k1
+#print axioms ArchS6.hasDerivAt_k2
+#print axioms ArchS6.abs_k0_le
+#print axioms ArchS6.abs_k1_le
+#print axioms ArchS6.abs_k2_le
+#print axioms ArchS6.cosTransR_eq_kInt
+#print axioms ArchS6.phiR_eq
+#print axioms ArchS6.hasDerivAt_phiR
+#print axioms ArchS6.hasDerivAt_dphiR
+#print axioms ArchS6.continuous_kInt_k2
+#print axioms ArchS6.continuous_kInt_k1
+#print axioms ArchS6.continuous_kInt_k0
+#print axioms ArchS6.deriv_phiR
+#print axioms ArchS6.continuous_section
+#print axioms ArchS6.kInt_eq_inner
+#print axioms ArchS6.norm_toL2_sq_le
+#print axioms ArchS6.sum_sq_kInt_le
+#print axioms ArchS6.aW_lt_bW
+#print axioms ArchS6.cW_pos
+#print axioms ArchS6.continuous_dphi
+#print axioms ArchS6.continuous_ddphi
+#print axioms ArchS6.continuous_phiR'
+#print axioms ArchS6.intervalIntegrable_sq
+#print axioms ArchS6.Sint_nonneg
+#print axioms ArchS6.continuous_Sint_integrand
+#print axioms ArchS6.le_Sint
+#print axioms ArchS6.sobolev_to_Q
+#print axioms ArchS6.abs_phiR_le_Q
+#print axioms ArchS6.abs_deriv_phiR_le_Q
+#print axioms ArchS6.mu_sq_mul_Sint
+#print axioms ArchS6.summable_mu_sq_mul_S
+#print axioms ArchS6.Qb_sq
+-- ArchS6_ProlateData
+#print axioms ArchS6.exp_neg_log_three
+#print axioms ArchS6.exp_log_three
+#print axioms ArchS6.summable_mu_sq
+#print axioms ArchS6.mu_sq_lt_one
+#print axioms ArchS6.summable_wMN_aux
+#print axioms ArchS6.prolateData_lam
+#print axioms ArchS6.prolateData_phi
+#print axioms ArchS6.prolateData_T
+#print axioms ArchS6.exists_prolateData
+-- ArchS6_Trace
+#print axioms ArchS6.abs_aC
+#print axioms ArchS6.hasSum_abs_aC
+#print axioms ArchS6.summable_abs_aC
+#print axioms ArchS6.hasSum_cosKR
+#print axioms ArchS6.integrable_e
+#print axioms ArchS6.integrable_mom
+#print axioms ArchS6.abs_cMom_le
+#print axioms ArchS6.integrable_Fterm
+#print axioms ArchS6.integral_Fterm
+#print axioms ArchS6.integral_norm_Fterm
+#print axioms ArchS6.integral_abs_mom_le
+#print axioms ArchS6.summable_integral_norm_Fterm
+#print axioms ArchS6.mu_eq_integral
+#print axioms ArchS6.hasSum_mu
+#print axioms ArchS6.sum_cMom_sq_le
+#print axioms ArchS6.sum_abs_mu_le
+#print axioms ArchS6.summable_abs_mu
+#print axioms ArchS6.tsum_abs_mu_le
+#print axioms ArchS6.summable_abs_tau
+#print axioms ArchS6.prolateData
+-- ArchS6_L1
+#print axioms ArchS6.integrableOn_e
+#print axioms ArchS6.integrableOn_phiR
+#print axioms ArchS6.integral_sq_e
+#print axioms ArchS6.integral_abs_e_le_one
+#print axioms ArchS6.integral_abs_phiR_le_one
