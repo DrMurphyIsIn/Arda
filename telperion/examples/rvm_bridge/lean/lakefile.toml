@@ -658,6 +658,22 @@ name = "ArchS8_Kernel"
 name = "ArchS8_Guard"
 
 
+[[lean_lib]]
+name = "ArchS6_Even"
+
+[[lean_lib]]
+name = "ArchS6_Strict"
+
+[[lean_lib]]
+name = "ArchS6_Prolate"
+
+[[lean_lib]]
+name = "ArchS6_Real"
+
+[[lean_lib]]
+name = "ArchS6_Guard"
+
+
 # ---- archimedean stage S9 (certified prolate engine) ----
 [[lean_lib]]
 name = "ArchS9_Pi"
@@ -708,8 +724,10 @@ name = "ArchPipeline_Rung80"
 # Stage S6 (archimedean conceptual plan, 2026-10-11): Sonin/prolate structure (CC Prop 4.5, (81)),
 # L2 Fourier link, sinc kernel.  Not in defaultTargets; the coordinator wires them at merge.
 # Guard: lake env lean ArchS6_Guard.lean
+
+# Stage S7b: CC Lemma 4.1 / (75), the prolate series of delta (S7 obligation O2).
 [[lean_lib]]
-name = "ArchS6_Even"
+name = "ArchS7b_Lemma41"
 
 [[lean_lib]]
 name = "ArchS6_Strict"
@@ -775,6 +793,25 @@ name = "ArchS7_Theta"
 
 [[lean_lib]]
 name = "ArchS7_Lemma41"
+
+[[lean_lib]]
+name = "ArchS7_Guard"
+
+name = "ArchS7b_Guard"
+
+# Stage S7 (archimedean conceptual blueprint): CC Thm 4.7, SoninTr = W∞ + E (HS form, bypass B1).
+# Not in defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS7_Guard.lean
+[[lean_lib]]
+name = "ArchS7_Term"
+
+[[lean_lib]]
+name = "ArchS7_HS"
+
+[[lean_lib]]
+name = "ArchS7_Abstract"
+
+[[lean_lib]]
+name = "ArchS7_Concrete"
 
 [[lean_lib]]
 name = "ArchS7_Guard"
