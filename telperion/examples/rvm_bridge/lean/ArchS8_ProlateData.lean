@@ -28,6 +28,7 @@
     epsMul_hasDerivWithinAt : the same as a right derivative at ρ = 1 of ε(ρ) = eps |log ρ|
     Qeps_zero    : Qeps 0 = 0                                               (CC Rem 5.6: Tr K_I = 0)
     eps_zero     : eps 0 = 0
+    eps1_zero_nonneg, eps1_zero_pos : ε'(1⁺) ≥ 0, and > 0 once one term λ²/(1-λ²) ξ_n(1)² is > 0
   No sorry, no axiom.  conjecture1_proved = False.  Nothing here is RH progress.
 -/
 import ArchS8_Volterra
@@ -352,6 +353,22 @@ theorem eps1_zero : D.eps1 0 = ∑' n, D.w n * D.phi n 1 ^ 2 := by simp [eps1]
 derivative of `ε` in `log ρ` at `ρ = 1` (see `epsMul_hasDerivWithinAt` for the `ρ`-derivative). -/
 theorem lemma54 : HasDerivAt D.eps (∑' n, D.w n * D.phi n 1 ^ 2) 0 := by
   rw [← D.eps1_zero]; exact D.hasDerivAt_eps D.zero_mem_Ioo
+
+theorem summable_w_phi_one : Summable fun n => D.w n * D.phi n 1 ^ 2 := by
+  refine Summable.of_norm_bounded D.summable_wB fun n => ?_
+  have := (D.norm_w_le n D.zero_mem_Ioo).2.1
+  rwa [D.kn1_zero] at this
+
+/-- `ε'(1⁺) ≥ 0`: every term `λ²/(1-λ²) ξ_n(1)²` is nonnegative. -/
+theorem eps1_zero_nonneg : 0 ≤ D.eps1 0 := by
+  rw [D.eps1_zero]
+  exact tsum_nonneg fun n => mul_nonneg (D.w_nonneg n) (sq_nonneg _)
+
+/-- `ε'(1⁺) > 0` as soon as one term is nonzero, i.e. `λ(n) ≠ 0` and `ξ_n(1) ≠ 0` for some `n`
+(CC: `t(0) = 11.9719`, so `n = 0` works once S9 certifies `λ(0)` and `ξ_0(1)`). -/
+theorem eps1_zero_pos {n : ℕ} (hn : 0 < D.w n * D.phi n 1 ^ 2) : 0 < D.eps1 0 := by
+  rw [D.eps1_zero]
+  exact D.summable_w_phi_one.tsum_pos (fun n => mul_nonneg (D.w_nonneg n) (sq_nonneg _)) n hn
 
 /-- **CC Remark 5.6** (the kernel of `K_I` has zero diagonal, "Tr K_I = 0"): `(Qε)(1) = 0`. -/
 @[simp] theorem Qeps_zero : D.Qeps 0 = 0 := by simp [Qeps, eps2]

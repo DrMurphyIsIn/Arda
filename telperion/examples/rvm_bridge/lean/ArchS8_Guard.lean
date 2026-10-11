@@ -65,6 +65,9 @@ import ArchS8_Kernel
 #print axioms ArchS8.ProlateData.eps_zero
 #print axioms ArchS8.ProlateData.eps1_zero
 #print axioms ArchS8.ProlateData.lemma54
+#print axioms ArchS8.ProlateData.summable_w_phi_one
+#print axioms ArchS8.ProlateData.eps1_zero_nonneg
+#print axioms ArchS8.ProlateData.eps1_zero_pos
 #print axioms ArchS8.ProlateData.Qeps_zero
 #print axioms ArchS8.ProlateData.epsMul_inv
 #print axioms ArchS8.ProlateData.epsMul_eq
@@ -89,3 +92,5 @@ import ArchS8_Kernel
 #print axioms ArchS8.ProlateData.prop55
 #print axioms ArchS8.ProlateData.prop55_KI
 #print axioms ArchS8.ProlateData.prop55_autocorr
+#print axioms ArchS8.corr_lift
+#print axioms ArchS8.ProlateData.prop55_lift

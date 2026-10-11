@@ -19,7 +19,9 @@
     prop55_KI      : the same as  -2 ε'(1⁺) (⟨η|ξ⟩ - ⟨η|K_I ξ⟩),  K_I with kernel χ(y - x),
                      χ(v) = (Qε)(e^{|v|}) / (2 ε'(1⁺)), when ε'(1⁺) ≠ 0.
     chi_zero       : χ(0) = 0, the diagonal of K_I vanishes (CC Rem 5.6, "Tr K_I = 0").
-    prop55_autocorr: the quadratic form for an `IsWeilTest` h (the S12-facing statement).
+    prop55_autocorr: the quadratic form for an `IsWeilTest` h, written with `autocorr`.
+    corr_lift      : for S2's lift g = h' - h/2:  g ∗ g* = Q₊ (h ∗ h*)   (CC Lemma 3.3 / Prop 3.5).
+    prop55_lift    : E₊(g ∗ g*) = ⟨h | N_I h⟩ for pole-free g = h' - h/2 (the S12-facing statement).
   CC's restriction |I| ≤ log 2 becomes ℓ < T, where T is the range of the prolate bounds.
   No sorry, no axiom.  conjecture1_proved = False.  Nothing here is RH progress.
 -/
@@ -478,6 +480,94 @@ theorem prop55_autocorr {h : ℝ → ℂ} (hh : WeilExplicit.IsWeilTest h) {α �
       = -2 * (D.eps1 0 : ℂ) * (∫ x, conj (h x) * h x)
         + ∫ x, ∫ y, conj (h x) * h y * (D.Qeps |y - x| : ℂ) := by
   rw [← corr_self_eq_autocorr]
+  exact D.prop55 hℓ hh.1.continuous hh.1 hs hs
+
+end ProlateData
+
+/-! ## The bridge to S2: `autocorr (h' - h/2) = Q₊ (autocorr h)` -/
+
+/-- For the S2 lift `g = h' - h/2` (`ArchS2.poleFree_iff_exists_lift`), the autocorrelation of `g`
+is `Q₊` applied to that of `h`: `g ∗ g* = -(h ∗ h*)'' + (h ∗ h*)/4` (CC Lemma 3.3 / Prop 3.5:
+the pole-free `f = g ∗ g*` are exactly the `Q f₀` with `f₀ = h ∗ h*`).  Two integrations by parts. -/
+theorem corr_lift {h : ℝ → ℂ} {α ℓ : ℝ} (hh : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) h)
+    (hs : tsupport h ⊆ Icc α (α + ℓ)) (v : ℝ) :
+    corr (fun u => deriv h u - h u / 2) (fun u => deriv h u - h u / 2) v
+      = -corr h (deriv (deriv h)) v + corr h h v / 4 := by
+  have hS := smoothOn_of_contDiff hh hs
+  have hc0 : HasCompactSupport h := isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) hs
+  have hc1 : HasCompactSupport (deriv h) := hc0.deriv
+  have ch : Continuous h := continuous_iff_continuousAt.2 fun x => (hS.d0 x).continuousAt
+  have c1 : Continuous (deriv h) := continuous_iff_continuousAt.2 fun x => (hS.d1 x).continuousAt
+  have c2 : Continuous (deriv (deriv h)) :=
+    continuous_iff_continuousAt.2 fun x => (hS.d2 x).continuousAt
+  obtain ⟨C0, hC0⟩ := hS.b0
+  obtain ⟨C1, hC1⟩ := hS.b1
+  obtain ⟨C2, hC2⟩ := hS.b2
+  have iA := integrable_corr_integrand ch hc0 c1 hC1 v
+  have iB := integrable_corr_integrand c1 hc1 ch hC0 v
+  have iC := integrable_corr_integrand ch hc0 ch hC0 v
+  have iD := integrable_corr_integrand c1 hc1 c1 hC1 v
+  have iE := integrable_corr_integrand ch hc0 c2 hC2 v
+  have hconj : ∀ x, HasDerivAt (fun x => conj (h x)) (conj (deriv h x)) x :=
+    fun x => (hS.d0 x).star
+  have hconj1 : ∀ x, HasDerivAt (fun x => conj (deriv h x)) (conj (deriv (deriv h) x)) x :=
+    fun x => (hS.d1 x).star
+  have IBP1 : ∫ x, conj (h x) * deriv h (x + v) = -∫ x, conj (deriv h x) * h (x + v) :=
+    integral_mul_deriv_eq_deriv_mul_of_integrable (u := fun x => conj (h x))
+      (u' := fun x => conj (deriv h x)) (v := fun x => h (x + v)) (v' := fun x => deriv h (x + v))
+      (fun x _ => hconj x) (fun x _ => (hS.d0 (x + v)).comp_add_const x v) iA iB iC
+  have IBP2 : ∫ x, conj (deriv h x) * deriv h (x + v)
+      = -∫ x, conj (h x) * deriv (deriv h) (x + v) := by
+    have := integral_mul_deriv_eq_deriv_mul_of_integrable (u := fun x => conj (h x))
+      (u' := fun x => conj (deriv h x)) (v := fun x => deriv h (x + v))
+      (v' := fun x => deriv (deriv h) (x + v))
+      (fun x _ => hconj x) (fun x _ => (hS.d1 (x + v)).comp_add_const x v) iE iD iA
+    rw [this, neg_neg]
+  have hexp : corr (fun u => deriv h u - h u / 2) (fun u => deriv h u - h u / 2) v
+      = (∫ x, conj (deriv h x) * deriv h (x + v)) - (1 / 2) * (∫ x, conj (deriv h x) * h (x + v))
+        - (1 / 2) * (∫ x, conj (h x) * deriv h (x + v)) + (1 / 4) * ∫ x, conj (h x) * h (x + v) := by
+    have hc : corr (fun u => deriv h u - h u / 2) (fun u => deriv h u - h u / 2) v
+        = ∫ x, (((conj (deriv h x) * deriv h (x + v)) - (1 / 2) * (conj (deriv h x) * h (x + v)))
+            - (1 / 2) * (conj (h x) * deriv h (x + v))) + (1 / 4) * (conj (h x) * h (x + v)) := by
+      simp only [corr]
+      refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+      simp only [map_sub, map_div₀, map_ofNat]
+      ring
+    rw [hc, integral_add, integral_sub, integral_sub, integral_const_mul, integral_const_mul,
+      integral_const_mul]
+    · exact iD
+    · exact iB.const_mul _
+    · exact iD.sub (iB.const_mul _)
+    · exact iA.const_mul _
+    · exact (iD.sub (iB.const_mul _)).sub (iA.const_mul _)
+    · exact iC.const_mul _
+  rw [hexp]
+  unfold corr
+  linear_combination IBP2 - (1 / 2 : ℂ) * IBP1
+
+namespace ProlateData
+
+variable (D : ProlateData)
+
+/-- **E∘Q on the pole-free class** (CC Prop 3.5 + Prop 5.5 in the island's variables).  If `h` is
+an island test function supported in an interval of length `ℓ < T` and `g = h' - h/2` is its
+S2 image (so `g` is pole-free), then
+
+  E₊(g ∗ g*) = -2 ε'(1⁺) ‖h‖² + ∫∫ conj h(x) h(y) (Qε)(e^{|y-x|}) dx dy = ⟨h | N_I h⟩. -/
+theorem prop55_lift {h : ℝ → ℂ} (hh : WeilExplicit.IsWeilTest h) {α ℓ : ℝ} (hℓ : ℓ < D.T)
+    (hs : tsupport h ⊆ Icc α (α + ℓ)) :
+    D.Eplus (WeilExplicit.autocorr fun u => deriv h u - h u / 2)
+      = -2 * (D.eps1 0 : ℂ) * (∫ x, conj (h x) * h x)
+        + ∫ x, ∫ y, conj (h x) * h y * (D.Qeps |y - x| : ℂ) := by
+  have hc0 : HasCompactSupport h := isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) hs
+  obtain ⟨h1, h2, -⟩ := deriv_corr hh.1.continuous hc0 (smoothOn_of_contDiff hh.1 hs)
+  have hd1 : deriv (corr h h) = corr h (deriv h) := funext fun v => (h1 v).deriv
+  have e : WeilExplicit.autocorr (fun u => deriv h u - h u / 2)
+      = fun v => -(deriv (deriv (corr h h)) v) + corr h h v / 4 := by
+    rw [← corr_self_eq_autocorr]
+    funext v
+    rw [corr_lift hh.1 hs v, hd1, (h2 v).deriv]
+  rw [e]
   exact D.prop55 hℓ hh.1.continuous hh.1 hs hs
 
 end ProlateData
