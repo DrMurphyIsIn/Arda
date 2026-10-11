@@ -20,6 +20,7 @@ Files in this directory:
 | `task6_offline_signature.csv` | task 6 |
 | `F_grid_zeta_smooth.csv` | F_t(u) on u in [0,5] at t = 0, 0.2, 0.5, 1 |
 | `results_summary.txt` | full console output of `diffraction_flow.py` |
+| `anchors_dh.py`, `anchors_results.txt`, `anchors_landau_residual.csv`, `anchors_dh_control.csv`, `dh_online_ordinates.txt` | section 7: certified anchors, Landau residuals, the Davenport-Heilbronn control |
 
 Reproduce: `python3 heat_flow_ode.py all` then `python3 diffraction_flow.py` and `python3 diffraction_flow.py nprime`
 (trajectories go to the session scratchpad; set `HEATFLOW_SCRATCH` to relocate).
@@ -353,7 +354,88 @@ further backward times of 2, 4, 6, 8 and 10 × 10⁻⁴. This is the local squar
 Δ² ∝ 8(t − t_c) of the pair. RH failure would show in F_t as an **exponentially growing envelope at large u, of
 order 1/δ**, not as any change at u = log p, where it is suppressed by about δ²u²/2.
 
-## 7. Verdict
+## 7. Certified anchors, Landau normalization, and the Davenport-Heilbronn control
+
+This section was added after the island owner supplied certified anchors. It uses the island convention
+F_T(u) = Σ_{0<γ≤T} cos(γu): one-sided, unweighted, no normalization. The script is `anchors_dh.py` and the
+output is `anchors_results.txt`. The island files were read only.
+
+**First validation: BraggH100 reproduces.** With the 29 zeros below T = 100 at u2 = 693147/10⁶, the computed
+value is F_100(u2) = −7.07807476640591. That lies inside the certified interval
+[−7.0780948677, −7.0780546651] of `bragg_amplitude_h100`. The Landau peak is −(100/2π)·log 2/√2 = −7.8006.
+
+**Landau normalization at t = 0.** The prediction is F_T(log n) ≈ −(T/2π)Λ(n)/√n + O(log T), in Gonek's uniform
+form; no explicit constant exists in the project. The table shows the ratio to the Landau peak, the residual R,
+and R_sm, which is R minus the smooth gamma-factor and Gibbs term of the explicit formula (section 2).
+
+| T | log T | n=2 ratio | R | R_sm | n=3 ratio | R | R_sm | n=5 ratio | R | R_sm |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 100 | 4.61 | 0.907 | +0.72 | −0.00 | 0.925 | +0.76 | −0.11 | 0.958 | +0.48 | −0.45 |
+| 500 | 6.21 | 0.974 | +1.03 | −0.41 | 0.971 | +1.45 | +0.34 | 0.969 | +1.76 | +0.45 |
+| 1000 | 6.91 | 0.981 | +1.48 | −0.16 | 0.994 | +0.64 | +0.40 | 0.984 | +1.82 | +0.30 |
+| 2000 | 7.60 | 1.002 | −0.31 | +0.11 | 0.999 | +0.20 | +0.17 | 0.992 | +1.77 | +0.12 |
+| 3500 | 8.16 | 0.993 | +1.86 | +0.32 | 0.997 | +1.07 | +0.38 | 0.999 | +0.24 | −0.76 |
+
+At t = 0, |R| ≤ 2.2, well inside O(log T). Most of R is the explicit-formula smooth term: after subtracting it,
+|R_sm| ≤ 0.8 for every n in the table. All n up to 11 are in `anchors_landau_residual.csv`.
+
+**Landau normalization along the flow, T = 3500.** The table shows the ratio F_t(log n)/Landau and R/log T.
+
+| t | n=2 ratio | R/logT | n=3 | R/logT | n=5 | R/logT | n=7 | R/logT |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 0.993 | +0.23 | 0.997 | +0.13 | 0.999 | +0.03 | 0.996 | +0.20 |
+| 0.1 | 0.916 | +2.81 | 0.887 | +4.89 | 0.859 | +6.93 | 0.843 | +7.89 |
+| 0.2 | 0.844 | +5.20 | 0.788 | +9.17 | 0.737 | +12.94 | 0.710 | +14.53 |
+| 0.5 | 0.660 | +11.38 | 0.550 | +19.50 | 0.458 | +26.64 | 0.417 | +29.28 |
+| 1.0 | 0.434 | +18.95 | 0.296 | +30.50 | 0.197 | +39.45 | 0.159 | +42.24 |
+
+These are the H1 numbers in the owner's normalization, with the same conclusion. The departure from Landau along
+the flow is of order T, not O(log T). By t = 0.1 the residual is already 3-8 times log T. This is the
+finite-height form of the section 4 statement: per zero, the Bragg weight scales like T^{1−(t/4) log n}.
+
+**Davenport-Heilbronn comb as a fourth control.** `telperion.arb_dh` needs libflint, which is not installed. I
+therefore re-implemented D(s) = 5^{−s}[ζ(s,1/5) + κζ(s,2/5) − κζ(s,3/5) − ζ(s,4/5)] in mpmath Hurwitz zeta,
+with the island's κ and gamma factor (π/5)^{−(1+s)/2}Γ((1+s)/2). I refined all 204 certified on-line boxes of
+`dh_zeros.json` to ordinates by a sign change of the real Z_D inside each box; every root lies inside its box.
+
+The implementation passes both certified ZooDH checks:
+
+| quantity | computed | certified box |
+|---|---|---|
+| F_on,100(u2) | −0.156521 | [−0.170181, −0.152173] |
+| F_on,100(u5) | −2.198128 | [−2.254028, −2.031779] |
+
+At t = 0 and T = 250, the DH comb has Bragg weights at log n equal to the −D'/D coefficients Λ_D(n). These are
+not prime-supported: they are large at n = 4, 6, 9, 12 and zero at n = 5. The on-line comb alone undershoots
+them by about 25%. Adding the 4 off-line pairs as 2cosh(δu)cos(γu) closes the gap. The entry at γ = 166.5,
+δ = 0.1 is used as given; it is flagged as unverified.
+
+| n | Λ(n) | zeta Λ̂ | Λ_D(n) | DH on-line only | DH + 4 off-line pairs | GUE sd | Poisson sd |
+|---|---|---|---|---|---|---|---|
+| 2 | 0.693 | 0.699 | 0.197 | −0.096 | 0.153 | 0.035 | 0.186 |
+| 4 | 0.693 | 0.613 | −1.442 | −1.118 | −1.346 | 0.156 | 0.132 |
+| 5 | 1.609 | 1.541 | 0 | −0.019 | −0.068 | 0.465 | 0.617 |
+| 6 | 0 | −0.017 | 1.936 | 1.297 | 1.777 | 0.400 | 0.534 |
+| 9 | 1.099 | 0.962 | −2.286 | −1.689 | −2.083 | 0.242 | 0.308 |
+| 11 | 2.398 | 2.223 | 2.398 | 1.867 | 2.432 | 0.166 | 0.742 |
+| 12 | 0 | −0.004 | −0.763 | −0.066 | −0.611 | 0.491 | 0.287 |
+
+At this small height, the off-line zeros carry a visible share of DH's Bragg weight even at u = log 2, where
+cosh(δu) − 1 is small. That is because each off-line pair contributes about 2, against a total of order T/2π.
+
+I evolved the on-line DH comb under the same ODE, with a conductor-5 mean-field tail. Its peaks, which are not
+prime-supported (n = 4, 6, 9, 11), also decay monotonically. For example, at n = 6 the weight falls from 1.30 to
+0.99, 0.64 and 0.29 at t = 0.2, 0.5 and 1. This is the same universal phonon damping as for zeta. The decay
+therefore does not distinguish a prime-supported (Euler product) comb from a non-Euler one. This supports the
+verdict below: the monotonicity is not arithmetic.
+
+This evolved comb is not the heat flow of the DH function: its 4 off-line pairs, which are complex in z, are
+left out. So the DH heuristic prediction is not expected to match along t, and it does not, being off by factors
+up to 2. At T = 250 the zeta heuristic is also only good to 5-40%, versus 1-7% at T = 3534, because the
+effective-Dirichlet-series picture fails at low heights. Full rows are in `anchors_results.txt` and
+`anchors_dh_control.csv`.
+
+## 8. Verdict
 
 The brief asked whether some functional both carries the primes and is monotone. Measured against that:
 
@@ -372,6 +454,7 @@ The brief asked whether some functional both carries the primes and is monotone.
 - **The genuinely arithmetic dynamical content** is the exact quadratic evolution law. Through the explicit
   formula it produces the source term (1/4) log N (Λ*Λ)(N). That source term carries no sign and gives birth to
   composite Bragg peaks rather than controlling a Lyapunov quantity.
+- **The DH control confirms this.** A comb whose peaks are not prime-supported decays the same way.
 - **No candidate sees the events that matter for Λ.** Collisions and off-line pairs are invisible at log p and
   appear only at frequencies of order 1/δ.
 

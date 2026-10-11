@@ -214,8 +214,10 @@ def log_gas_energy(z):
 class Tail:
     """Mean-field continuum beyond Z_c, rigidly translated by s(t) = pi t / 4."""
 
-    def __init__(self, Zc: float, drift: bool = True, enabled: bool = True):
+    def __init__(self, Zc: float, drift: bool = True, enabled: bool = True, conductor: float = 1.0):
+        """conductor q: tail density (1/4pi) log(q w / 4pi) (q = 1 zeta, q = 5 Davenport-Heilbronn)."""
         self.Zc = Zc
+        self.a = FOURPI / conductor
         self.drift = drift
         self.enabled = enabled
         # panels on y = w - Zc: [0,0.5],[0.5,1],[1,2],... doubling up to W - Zc
@@ -229,13 +231,13 @@ class Tail:
             ws.append(Zc + a + (b - a) * (xg + 1) / 2)
             wts.append(wg * (b - a) / 2)
         self.w = np.concatenate(ws)
-        self.wt = np.concatenate(wts) * np.log(self.w / FOURPI) / FOURPI  # rho(w) * weight
+        self.wt = np.concatenate(wts) * np.log(self.w / self.a) / FOURPI  # rho(w) * weight
 
     def shift(self, t):
         return math.pi * t / 4.0 if self.drift else 0.0
 
     def _far(self, p):
-        W, a = self.W, FOURPI
+        W, a = self.W, self.a
         # int_W^inf log(w/a)/(4pi) w^{-p} dw
         return W ** (1 - p) * (math.log(W / a) / (p - 1) + 1.0 / (p - 1) ** 2) / FOURPI
 
