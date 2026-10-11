@@ -188,6 +188,11 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   Neither examined whether `M' >= 1/2` is essential. The survey ranks reading section 15 to settle this as its
   action #1. It changes nothing about the verdict (13/15 versus 7/8 is the difference between `Lambda <= 0.27`
   and `0.28`), but the note should not claim more precision than the two readings jointly support.
+  Partial answer from the source: the proof of Prop. 15.3 uses the condition explicitly ("this is possible because
+  `M' >= 1/2` and ...", paper.tex l. 8593, in the tuple-ratio step), and at the paper's point it binds exactly
+  (`M' = M - 2d = 5/6 - 1/3 = 1/2` at `d = ell = 1/6`). So for the paper's proof AS WRITTEN the cap is `ell <= 1/6` and
+  7/8 is exact; the ledger's `ell <= 1/5` (13/15) is what the reflected-energy range alone would allow if that
+  step were re-proved without `M' >= 1/2`. Whether it can be is not known to either session.
 
 ## 8. Verdict
 
