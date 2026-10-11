@@ -588,3 +588,9 @@ name = "ArchS5_Spectral"
 
 [[lean_lib]]
 name = "ArchS5_Guard"
+
+[[lean_lib]]
+name = "ArchS5_HS"
+
+[[lean_lib]]
+name = "ArchS5_HSRank"

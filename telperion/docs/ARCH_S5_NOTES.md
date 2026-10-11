@@ -11,8 +11,8 @@ The setting is a pair of measure spaces `(α, μ)` and `(β, ν)`. Boundedness a
 `SFinite`. Compactness needs `IsFiniteMeasure`. A kernel is an element `K : Lp 𝕜 2 (μ.prod ν)`, and its
 operator is `intOp K : Lp 𝕜 2 ν →L[𝕜] Lp 𝕜 2 μ`.
 
-All five Lean files plus the guard build. The guard prints exactly `[propext, Classical.choice, Quot.sound]`
-for all 105 top-level theorems. There is no `sorry` and no `axiom`.
+All Lean files plus the guard build. The guard prints exactly `[propext, Classical.choice, Quot.sound]`
+for all 135 top-level theorems. There is no `sorry` and no `axiom`.
 
 | file | lines | content |
 |---|---|---|
@@ -22,7 +22,9 @@ for all 105 top-level theorems. There is no `sorry` and no `axiom`.
 | ArchS5_Rayleigh.lean | 296 | `topEig`, variational bounds, Weyl k = 1, attainment for compact symmetric operators |
 | ArchS5_MinMax.lean | 185 | `minmaxEig`, Weyl for every k, the two Courant-Fischer bounds, `minmaxEig T 1 = topEig T` |
 | ArchS5_Spectral.lean | 193 | spectral package for `intOp`, continuous kernels on `[a, b]` |
-| ArchS5_Guard.lean | 117 | `#print axioms` for every theorem |
+| ArchS5_HS.lean | 231 | Bessel/Parseval: Hilbert-Schmidt identity, Σ λ² ≤ ‖K‖² |
+| ArchS5_HSRank.lean | 168 | eigenvalue counting against finite-rank (tensor) kernels |
+| ArchS5_Guard.lean | 150 | `#print axioms` for every theorem (135) |
 
 Build and check:
 
@@ -199,6 +201,72 @@ theorem intOp_kernelOfContinuous_compact_selfAdjoint (hk) (hsymm) :
       IsSelfAdjoint (intOp (kernelOfContinuous a b k hk))
 ```
 
+## Follow-up: Hilbert-Schmidt (ArchS5_HS, 231 lines) and rank counting (ArchS5_HSRank, 168 lines)
+
+The guard now prints 135 lines, all `[propext, Classical.choice, Quot.sound]`. Build with
+`lake build ArchS5_HSRank`, which also builds `ArchS5_HS`.
+
+Proof route: for a.e. x the section K(x, ·) is in L²(ν). Then (T_K f)(x) = ⟪conj K(x, ·), f⟫.
+Bessel's inequality in y, then Tonelli in x, gives the bound. Parseval gives equality for a basis.
+
+```lean
+-- [SFinite ν], K : Lp 𝕜 2 (μ.prod ν)
+def sectionConj (K) (x : α) (hx : MemLp (fun y ↦ K (x, y)) 2 ν) : Lp 𝕜 2 ν
+theorem kernelApply_eq_inner_sectionConj (K) (x) (hx) (f : Lp 𝕜 2 ν) :
+    kernelApply ν K f x = ⟪sectionConj K x hx, f⟫_𝕜
+-- Bessel, any orthonormal family v : ι → Lp 𝕜 2 ν (any index type)
+theorem sum_eLpNorm_intOp_sq_le (K) (hv : Orthonormal 𝕜 v) (s : Finset ι) :
+    ∑ i ∈ s, eLpNorm (intOp K (v i)) 2 μ ^ 2 ≤ eLpNorm K 2 (μ.prod ν) ^ 2
+theorem sum_norm_intOp_sq_le (K) (hv) (s) : ∑ i ∈ s, ‖intOp K (v i)‖ ^ 2 ≤ ‖K‖ ^ 2
+theorem summable_norm_intOp_sq (K) (hv) : Summable fun i ↦ ‖intOp K (v i)‖ ^ 2
+theorem tsum_norm_intOp_sq_le (K) (hv) : ∑' i, ‖intOp K (v i)‖ ^ 2 ≤ ‖K‖ ^ 2
+-- (a) Hilbert-Schmidt identity, countable Hilbert basis b of L²(ν)
+theorem tsum_eLpNorm_intOp_sq_eq [Countable ι] (K) (b : HilbertBasis ι 𝕜 (Lp 𝕜 2 ν)) :
+    ∑' i, eLpNorm (intOp K (b i)) 2 μ ^ 2 = eLpNorm K 2 (μ.prod ν) ^ 2
+theorem hasSum_norm_intOp_sq [Countable ι] (K) (b : HilbertBasis ι 𝕜 (Lp 𝕜 2 ν)) :
+    HasSum (fun i ↦ ‖intOp K (b i)‖ ^ 2) (‖K‖ ^ 2)
+-- (b) eigenvalues; [SFinite μ], K : Lp 𝕜 2 (μ.prod μ), v : ι → Lp 𝕜 2 μ orthonormal
+theorem sum_eigenvalue_sq_le (K) (hv) (hc : ∀ i, intOp K (v i) = c i • v i) (s : Finset ι) :
+    ∑ i ∈ s, ‖c i‖ ^ 2 ≤ ‖K‖ ^ 2
+theorem summable_eigenvalue_sq (K) (hv) (hc) : Summable fun i ↦ ‖c i‖ ^ 2
+theorem tsum_eigenvalue_sq_le (K) (hv) (hc) : ∑' i, ‖c i‖ ^ 2 ≤ ‖K‖ ^ 2
+theorem tsum_real_eigenvalue_sq_le (K) (hv) {lam : ι → ℝ}
+    (hc : ∀ i, intOp K (v i) = (lam i : 𝕜) • v i) :
+    Summable (fun i ↦ lam i ^ 2) ∧ ∑' i, lam i ^ 2 ≤ ‖K‖ ^ 2
+theorem tsum_eigenvalue_sq_compl_le (K) (hv) (hc) (s : Finset ι) :
+    ∑' i : {i // i ∉ s}, ‖c i‖ ^ 2 ≤ ‖K‖ ^ 2 - ∑ i ∈ s, ‖c i‖ ^ 2
+theorem card_mul_sq_le_of_eigen (K) (hv) (hc) (hε : 0 ≤ ε) (s : Finset ι)
+    (hs : ∀ i ∈ s, ε ≤ ‖c i‖) : (s.card : ℝ) * ε ^ 2 ≤ ‖K‖ ^ 2
+-- rank counting (ArchS5_HSRank)
+theorem card_le_of_eigen_gt (T F : E →L[𝕜] E) (U) [FiniteDimensional 𝕜 U] (hF : ∀ x, F x ∈ U)
+    {v : Fin m → E} (hv : Orthonormal 𝕜 v) (hT : ∀ i, T (v i) = (lam i : 𝕜) • v i)
+    (hgt : ∀ i, ‖T - F‖ < lam i) : m ≤ finrank 𝕜 U
+theorem card_le_of_eigen_gt_intOp [SFinite μ] (K K' : Lp 𝕜 2 (μ.prod μ)) (U) [FiniteDimensional 𝕜 U]
+    (hF : ∀ f, intOp K' f ∈ U) (hv) (hT) (hgt : ∀ i, ‖K - K'‖ < lam i) : m ≤ finrank 𝕜 U
+def tensorKernel (g : Lp 𝕜 2 μ) (f : Lp 𝕜 2 ν) : Lp 𝕜 2 (μ.prod ν)       -- (x, y) ↦ g x * f y
+theorem tensorKernel_ae_eq (g f) : tensorKernel g f =ᵐ[μ.prod ν] fun p ↦ g p.1 * f p.2
+theorem intOp_tensorKernel (g) (f h : Lp 𝕜 2 ν) : intOp (tensorKernel g f) h = (∫ y, f y * h y ∂ν) • g
+theorem intOp_sum_tensorKernel_mem_span (g : Fin n → Lp 𝕜 2 μ) (f : Fin n → Lp 𝕜 2 ν) (h) :
+    intOp (∑ j, tensorKernel (g j) (f j)) h ∈ Submodule.span 𝕜 (Set.range g)
+theorem card_le_of_eigen_gt_tensor [SFinite μ] (K) (g f : Fin n → Lp 𝕜 2 μ) (hv) (hT)
+    (hgt : ∀ i, ‖K - ∑ j, tensorKernel (g j) (f j)‖ < lam i) : m ≤ n
+```
+
+How to use these for an orthonormal eigenbasis of a compact self-adjoint `intOp K`: take the
+eigenbasis from `intOp_orthogonalComplement_iSup_eigenspaces_eq_bot`, then apply
+`tsum_real_eigenvalue_sq_le`. Self-adjointness and completeness are not needed for the bound,
+because any orthonormal family of eigenvectors works. For B3's Taylor truncation K_n = Σ_{j<n} g_j ⊗ f_j,
+`card_le_of_eigen_gt_tensor` gives the per-index decay: λ_{n+1} ≤ ‖K − K_n‖₂. For the negative
+eigenvalues, apply it to −K. Summing those per-index bounds bounds the tail.
+
+Footguns met in the follow-up:
+* `ofReal_norm_eq_enorm` is deprecated. Use `ofReal_norm`.
+* `ContinuousLinearMap.sum_apply` is deprecated. Use `_root_.sum_apply`.
+* `push_neg` is deprecated. Use `push Not`.
+* `finrank_range_le_card` states its bound with `Set.finrank`. Pin the type with a `have` first.
+* `FiniteDimensional` of `span (range v)` is not found by instance search. Supply
+  `FiniteDimensional.span_of_finite 𝕜 (Set.finite_range v)` by hand.
+
 ## How the later stages consume this
 
 * **S6 and bypass B2.** The prolate operator P₁FP₁ restricted to L²([-1, 1]) has the continuous
@@ -221,11 +289,11 @@ theorem intOp_kernelOfContinuous_compact_selfAdjoint (hk) (hsymm) :
    ordered enumeration of the spectrum, which Mathlib lacks. `le_minmaxEig` and `minmaxEig_le` give both
    directions whenever explicit eigenvectors or explicit complements are at hand, and that is what a
    certificate uses. Estimated cost: 300-500 lines on top of `orthogonalComplement_iSup_eigenspaces_eq_bot`.
-2. **Hilbert-Schmidt identity.** It is not proved that Σ_n ‖T_K e_n‖² = ‖K‖²_{L²} for an orthonormal
-   basis, nor that Σ λ_n² ≤ ‖K‖². B3's tail bound for the prolate series needs this second inequality.
-   Route: Parseval on the sections K(x, ·), then monotone convergence. It needs a `HilbertBasis` of
-   L²(ν), which exists via separability, and the island has `Lp.SecondCountableTopology`. Estimated
-   cost: 250-400 lines.
+2. **Hilbert-Schmidt identity: CLOSED (follow-up, 2026-10-11).** See the section on
+   `ArchS5_HS` and `ArchS5_HSRank` below. Still open here is the Eckart-Young-Mirsky tail
+   Σ_{k>n} λ_k² ≤ ‖K − K_n‖²₂ for a rank-n kernel K_n. The per-index version is proved:
+   at most n eigenvalues exceed ‖K − K_n‖₂. Mirsky needs the finite-dimensional Eckart-Young
+   inequality. Estimated cost: 400-700 lines.
 3. **Compactness beyond finite measures.** `isCompactOperator_intOp` assumes `IsFiniteMeasure` on both
    factors. The σ-finite case follows by truncating K to E_n × F_n, using `norm_intOp_sub_le` and dominated
    convergence. This is not done because every planned use is on a bounded interval.
