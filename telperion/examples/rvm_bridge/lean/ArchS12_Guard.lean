@@ -6,6 +6,7 @@
 -/
 import ArchS12_Index
 import ArchS12_Bridge
+import ArchS12_Main
 
 -- A3: the certified enumeration
 #print axioms ArchS12.disjOK_eq
@@ -39,3 +40,15 @@ import ArchS12_Bridge
 #print axioms ArchS12.inner_one_translate
 #print axioms ArchS12.form_chi_half
 #print axioms ArchS12.form_chi_log2
+
+-- S12a / S12b: the assembly
+#print axioms ArchS12.re_integral_conj_mul_nonneg
+#print axioms ArchS12.re_Eplus_lift
+#print axioms ArchS12.eps1_bounds
+#print axioms ArchS12.sonin_hasSum_lift
+#print axioms ArchS12.weil_positivity_one_condition_quarter_sonin
+#print axioms ArchS12.weil_positivity_one_condition_quarter
+#print axioms ArchS12.full_window_core
+#print axioms ArchS12.cc_thm1
+#print axioms ArchS12.weil_positivity_cc_class
+#print axioms ArchS12.cc_thm611

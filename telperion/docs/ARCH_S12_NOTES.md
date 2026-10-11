@@ -63,3 +63,71 @@ for random lifts h.  Every sample has E < 0 and SoninTr > 0; at |I| = 1/2, B/‖
   * `form_chi_half`: tsupport h ⊆ [−1/4, 1/4] ⇒ re ∫∫ conj h(x) h(y) χ(y−x) ≤ 0.95921 · re ∫ conj h·h.
   * `form_chi_log2`: tsupport h ⊆ [−log2/2, log2/2] ⇒ re ∫∫ … ≤ 0.9995 · re ∫ conj h·h + 0.058‖∫h‖²/log 2.
 * S8's `[α, α+ℓ]` intervals need no separate translation: `prop55_lift` is applied directly with α = −L.
+
+## 3. S12a and S12b (done): `ArchS12_Main.lean`
+
+Every statement uses the project definitions (`IsWeilTest`, `weilForm`, `autocorr`, `paperFT`, S3's `archW`,
+S6's `soninProj`, S7's `theta`, S2's `qLift`).  The prolate data are existential inside the proofs
+(`exists_certified_prolate`); the statements do not mention them, because the Sonin projection does not
+depend on the basis.  In what follows SoninTr is `Σ_k ‖soninProj (theta g _ (e k))‖²` for ANY Hilbert basis e of
+L²(ℝ)_ev, and h = `ArchS2.qLift g L` with ‖h‖² written `(∫ conj h · h).re`.
+
+```lean
+-- S12a: one condition (Yoshida's class), L ≤ 1/4 (|I| = 1/2)
+theorem ArchS12.weil_positivity_one_condition_quarter_sonin (hg : IsWeilTest g) (hL : L ≤ 1/4)
+    (hsupp : tsupport g ⊆ Icc (-L) L) (h0 : paperFT g (I/2) = 0) (e : HilbertBasis κ ℂ evenL2) :
+    ∃ s, HasSum (fun k ↦ ‖soninProj (theta g _ (e k))‖ ^ 2) s ∧ 0 ≤ s ∧
+      s + 1.87 * ‖h‖² ≤ (weilForm (autocorr g)).re
+theorem ArchS12.weil_positivity_one_condition_quarter (…same hypotheses…) : 0 ≤ (weilForm (autocorr g)).re
+
+-- S12b: CC Theorem 1, two conditions, 2L ≤ log 2 (|I| = log 2)
+theorem ArchS12.cc_thm1 (hg) (hL : 2 * L ≤ log 2) (hsupp) (h0) (hz : paperFT g 0 = 0) (e) :
+    ∃ s, HasSum (…) s ∧ 0 ≤ s ∧ s + 0.0229 * ‖h‖² ≤ ArchS3.archW g          -- W∞ ≥ SoninTr ≥ 0
+theorem ArchS12.weil_positivity_cc_class (hg) (hL) (hsupp) (h0) (hz) : 0 ≤ (weilForm (autocorr g)).re
+
+-- CC Theorem 6.11 form: one condition, full window
+theorem ArchS12.cc_thm611 (hg) (hL : 2 * L ≤ log 2) (hsupp) (h0) (e) :
+    ∃ s, HasSum (…) s ∧ 0 ≤ s ∧ s - 15.4 * ‖paperFT g 0‖ ^ 2 ≤ ArchS3.archW g
+```
+
+* **Margins.**  1.87 = 2·22.99·(1 − 0.95921) rounded down.  0.0229 = 2·22.99·(1 − 0.9995) rounded down.
+* **The 6.11 constant.**  Exactly c = 8·0.058·ε'(1⁺)/log 2 = 4γ/log 2, with γ = 2ε'(1⁺)·0.058 ≈ 2.6676.
+  So c ≈ 15.394.  The statement uses c = 15.4, from ε' ≤ 22.997 and log 2 > 0.6931.
+  CC have γ ≈ 2.944 and c ≈ 16.99, and Rem 6.12 gives 13 < c_best < 17.
+* **What is NEW against KWin.**  S12a's 0 ≤ Re weilForm is a special case of `KWin_Bridge.weil_positivity_prime_free_window`.
+  The structural content is the Sonin lower bound and its proof route.
+  S12b's W∞ ≥ SoninTr is not implied by KWin.
+* **What is NOT proved.**  The one-condition statement (Y) at the full window is not proved by this route.
+  It is covered by KWin only; see blueprint §2.2 and CC Rem 6.12.
+  The conceptual one-condition route reaches 2L ≤ a* ≈ 0.558 [N-here], and only |I| = 1/2 is certified here.
+  The mass identity ‖g‖² = ‖h'‖² + ¼‖h‖² (S2 open item) is not proved, so the margins are stated in ‖h‖², not ‖g‖².
+
+Supporting theorems: `re_Eplus_lift` (−Re E = 2ε'(‖h‖² − re B), from `prop55_lift` with Qε = 2ε'χ),
+`eps1_bounds` (22.99 ≤ ε'(1⁺) ≤ 22.997 from S10), `sonin_hasSum_lift` (SoninTr = archW − 2ε'(‖h‖² − re B)
+for certified D), and `full_window_core`.
+
+## 4. Files, sizes, axioms
+
+| module | lines | content | `lake build` |
+|---|---|---|---|
+| ArchS12_Index | 169 | A3: window disjointness (`decide +kernel`), S9 completeness for a given bR, enumeration, `CertBasis` | ~32 s |
+| ArchS12_Bridge | 226 | A1 + A2: Lp-to-function bridge, translation, χ on [−L, L], `form_chi_half`, `form_chi_log2` | ~35 s |
+| ArchS12_Main | 247 | S12a, S12b, 6.11 | ~40 s |
+| ArchS12_Guard | 54 | 39 `#print axioms` | |
+
+* `lake build ArchS12_Guard` rebuilt from clean: all `ArchS12_*` oleans were deleted first, and the build finished with 8852 jobs.
+* All 39 theorems print exactly `[propext, Classical.choice, Quot.sound]`.  There is no `sorry` and no `axiom`.
+* **Wiring.**  `defaultTargets` and `AxiomGuardRvMBridge.lean` are untouched.
+  The five `[[lean_lib]]` stanzas are at the end of `lakefile.toml`: ArchS12_Index, _Bridge, _Main, _Guard.
+
+## 5. Lean footguns met
+
+* **`Cardinal.eq` across universes.**  ℕ is in `Type 0`, while ι may be in any universe.
+  Use `Cardinal.lift_mk_eq'` with `Cardinal.lift_aleph0` on both sides.
+* **`if σ n = σ m` vs `if n = m`.**  After rewriting with `σ.injective.eq_iff`, the `Decidable` instances differ.
+  Use `by_cases` with `if_neg` instead.
+* **`psiS` vs `psi Data.Jd BR`.**  `simpa [ipS9, ip]` leaves one side unfolded; add `psiS` to the simp set.
+* **`inner_self_eq_norm_sq_to_K` and `integral_ofReal` on ℂ.**  They use `RCLike.ofReal`, which does not match `Complex.ofReal` syntactically.
+  Use `show … from by rw [inner_self_eq_norm_sq_to_K]; norm_cast`, and `integral_complex_ofReal`.
+* **`HasCompactSupport.intro`.**  Give both `isCompact_Icc` factors explicit endpoints.
+* **`rw [Measure.volume_eq_prod, integral_prod …]`.**  It leaves the goal with `(x, y).1` redexes; close it with `rfl`.
