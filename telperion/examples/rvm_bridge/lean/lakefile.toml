@@ -557,3 +557,13 @@ name = "ArchS2_QTrick"
 
 [[lean_lib]]
 name = "ArchS2_Guard"
+
+# Stage S4 (archimedean conceptual blueprint): the jump lemma D∘Q = -2 Id + K^δ (CC Thm 3.6 / Rem 3.7).
+[[lean_lib]]
+name = "ArchS4_Delta"
+
+[[lean_lib]]
+name = "ArchS4_Jump"
+
+[[lean_lib]]
+name = "ArchS4_Guard"
