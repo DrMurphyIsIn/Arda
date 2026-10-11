@@ -5,7 +5,7 @@ name = "RH.dbn_selberg_newman_sharp"
 statement_module = "Statements.RH_dbn_selberg_newman_sharp"
 status = "proved"
 title = "Newman's conjecture for the extended Selberg class S^# itself (Dobner 2020, Theorem 1): for every SelbergSharp S (Dirichlet series absolutely convergent on Re s > 1 with a(1) = 1 and a second nonzero term; meromorphic continuation F with (s-1)^m F extending to an entire function; Gamma data Q > 0, lam_j > 0, Re mu_j >= 0, sum lam_j > 0; root number |omega| = 1; functional equation Phi(s) = omega conj Phi(1 - conj s) on 0 < Re s < 1; finite order of (s(s-1))^m Phi on Re s >= 1/2) and every t < 0, the heat flow sharpFlow t of the completed xi_S has a NON-REAL zero, i.e. Lambda_S >= 0. Derives the ExtSelbergData fields (xi entire via the functional equation; strip bound via Gamma decay + Phragmen-Lindelof) and applies RH_dbn_selberg_newman. Remaining simplification vs the textbook: finite order is assumed for (s(s-1))^m Phi on the right half-plane rather than for (s-1)^m F alone. Lambda_S = 0 (generalized RH) is NOT touched. conjecture1_proved = False"
-updated = "2026-10-10"
+updated = "2026-10-11"
 
 [author]
 date = "2026-10-10"
@@ -14,15 +14,15 @@ session = "session_01T6sQ9By6CuBoffW7BYPHJT"
 
 [comparator]
 artifact_sha256 = "d439ab6ed356348b7354348e1a699753745b6e74ed25c4c3775d115b066db7f4"
-date = "2026-10-10"
+date = "2026-10-11"
 head_check = "matched"
-job_id = "114334641124"
-job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/38093443787/job/114334641124"
-judged_head_sha = "eb5fbfa5d63770d21cf03c45693d1949a09dbed1"
+job_id = "114452417059"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/38133404121/job/114452417059"
+judged_head_sha = "51e14c566df265314eb8ee78aa06f25389502f3a"
 kernel_mode = "nanoda"
-log_check = "verified-offline"
-run_id = "38093443787"
-run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/38093443787"
+log_check = "verified"
+run_id = "38133404121"
+run_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/38133404121"
 theorem = "selberg_newman_sharp"
 
 [grant]

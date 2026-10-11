@@ -34,9 +34,12 @@ name: missions-comparator
 # Islands not yet wired: zero_free_bridge (1 node, v4.32.0; shared-packages wiring) and
 # zeta_zero_localization (monolith lakefile, cannot be path-required: ARG_MAX).
 # bg: the island is the R3Cert package at proof/formalization (judge.OUT_OF_TREE_ISLANDS). Its
-# challenges import the vocabulary mirror's home modules, not the whole island (R47PC6Cells is
-# ~70 min / 18 GB and no node needs it), and the job restores proof-lean.yml's incremental R3Cert
-# build (a path dependency builds in place, into proof/formalization/.lake/build).
+# challenges import the vocabulary mirror's home modules, not the whole island (161 modules, NOT
+# the spider tables, mid-root certificates or the G149 heavy set), and the job restores
+# proof-lean.yml's incremental R3Cert build (a path dependency builds in place, into
+# proof/formalization/.lake/build). That closure DOES contain R47PC6Cells and R47PC6Reduce
+# (18.2 GB peak), so on a cache miss the shard builds them the way proof-lean.yml stages 1/2 do:
+# one `lake build` each, on 16 GB of swap, before the light modules (2026-10-11, see the steps).
 # proof-comparator.yml still runs its three BG anchors in self-check mode; this job judges every
 # proved bg node against its REGISTERED statement.
 # oai_qrh_bridge (judge.MATERIALIZED_ROOT_ISLANDS; job judge-oai-qrh-bridge): the island is a
@@ -220,6 +223,97 @@ jobs:
           restore-keys: |
             ${{ steps.ckey.outputs.prefix }}
 
+      # bg only (2026-10-11). Runs 38070548082, 38093443787 and 38108898132 died here with
+      # "The runner has received a shutdown signal" (exit 143) ~56 min in: the restore above
+      # MISSED (no lean-build-* cache was left on main: the repo's 10 GB cache budget is mostly
+      # the two 3.9 GB oai-qrh checkpoints, so main's R3Cert checkpoint is evicted within hours),
+      # and the cold `lake build` of the bridge modules ran the whole 161-module closure at once.
+      # R47PC6Cells finished at [8809/8825] after 1374-1687 s; the next heavy one is R47PC6Reduce,
+      # which peaks at 18.2 GB alone (proof-lean.yml, swap step) and was started beside the
+      # remaining modules with only the runner's default swap. Same fix as proof-lean.yml
+      # (PR #665): 16 GB of swap, a once-a-minute memory line in the log, and every SERIAL module
+      # in the shard's closure (ci/heavy_bg.py serial-plan: PC6Cells/PC6Reduce, the spider-table
+      # chunks, the mid-root certificates) built by its own `lake build`, in dependency order, so
+      # nothing heavy runs beside it. With a warm cache each call replays in seconds.
+      - name: Provision swap + install the build-telemetry wrapper (bg)
+        if: matrix.island == 'bg'
+        run: |
+          set -uo pipefail
+          free -m; df -h / /mnt 2>/dev/null || true
+          SW=""
+          for cand in /mnt/arda-judge-build.swap:16G /arda-judge-build.swap:10G; do
+            f=${cand%%:*}; sz=${cand##*:}
+            if sudo fallocate -l "$sz" "$f" 2>/dev/null; then SW=$f; break; fi
+          done
+          if [ -n "$SW" ] && sudo chmod 600 "$SW" && sudo mkswap "$SW" >/dev/null && sudo swapon "$SW"; then
+            echo "extra swap enabled: $SW"
+          else
+            echo "::warning::could not enable extra swap; continuing without it"
+          fi
+          swapon --show || true; free -m
+          # `lakeb <targets...>`: proof-lean.yml's wrapper (lake build + a resource line every
+          # minute + "lakeb: <n> module(s) compiled"), except that the monitor's `sleep` holds
+          # no copy of the output pipe, so a call returns as soon as lake does instead of up to
+          # 60 s later (in proof-lean.yml every warm per-chunk call takes exactly a minute).
+          mkdir -p "$RUNNER_TEMP/bin"
+          cat > "$RUNNER_TEMP/bin/lakeb" <<'SH'
+          #!/usr/bin/env bash
+          set -uo pipefail
+          ( while :; do
+              sleep 60 </dev/null >/dev/null 2>&1 & wait $!
+              echo "[res $(date -u +%H:%M:%S)] $(free -m 2>/dev/null | awk '/^Mem:/{printf "mem_used=%sM avail=%sM", $3, $7} /^Swap:/{printf " swap_used=%sM", $3}') disk_free=$(df -BG --output=avail / 2>/dev/null | tail -1 | tr -d ' ')"
+            done ) &
+          mon=$!
+          trap 'kill "$mon" 2>/dev/null || true' EXIT
+          log=$(mktemp)
+          lake build "$@" 2>&1 | tee "$log"
+          rc=${PIPESTATUS[0]}
+          n=$(grep -cE '\[[0-9]+/[0-9]+\] Built ' "$log" || true)
+          echo "lakeb: $n module(s) compiled by: lake build $*"
+          exit "$rc"
+          SH
+          chmod +x "$RUNNER_TEMP/bin/lakeb"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      # bg only: the SERIAL modules of this shard's closure, one `lake build` each. The plan is
+      # computed from the import lines of exactly the challenge modules built below, so it
+      # follows the registry. If the closure reaches the G149 heavy set (does not fit in 16 GB
+      # even alone; proof-lean-heavy.yml builds it on the self-hosted runner), the step FAILS
+      # with that reason instead of letting the runner die: it never skips a node.
+      - name: Build the memory-heavy R3Cert modules one at a time (bg)
+        id: serial
+        if: matrix.island == 'bg'
+        timeout-minutes: 200
+        working-directory: ${{ env.BUNDLE }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          imports=$(cut -f1 "$RUNNER_TEMP/nodes.tsv" | sed 's|^|MissionChallenges/|; s|$|.lean|' | xargs sed -n 's/^import \(R3Cert\.[^ ]*\).*/\1/p' | sort -u)
+          echo "$(printf '%s\n' "$imports" | grep -c .) R3Cert module(s) imported by this shard's challenges"
+          if ! plan=$(python3 "$GITHUB_WORKSPACE/proof/formalization/ci/heavy_bg.py" serial-plan $imports); then
+            echo "::error::this bg shard's closure cannot be built on the 16 GB hosted runner (see above); judge it on the self-hosted runner instead"
+            exit 1
+          fi
+          echo "serial plan: $(printf '%s\n' "$plan" | grep -c .) module(s)"; printf '%s\n' "$plan" | sed 's/^/  /'
+          total=0
+          for m in $plan; do
+            t0=$SECONDS
+            lakeb "$m" 2>&1 | tee "$RUNNER_TEMP/serial.log"
+            n=$(sed -n 's/^lakeb: \([0-9][0-9]*\) module.*/\1/p' "$RUNNER_TEMP/serial.log" | tail -1)
+            total=$((total + ${n:-0}))
+            echo "serial $m: $((SECONDS - t0)) s"
+          done
+          echo "built=$total" >> "$GITHUB_OUTPUT"
+
+      - name: Save R3Cert build checkpoint (bg, serial stage)
+        if: >-
+          always() && matrix.island == 'bg' && steps.ckey.outputs.prefix != '' &&
+          steps.serial.outcome != 'skipped' && steps.serial.outputs.built != '0'
+        uses: actions/cache/save@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-judge-serial
+
       # Each bridge module imports its artifact AND the island's AxiomGuard modules (the
       # whole island; on li_positivity the one guard whose closure holds the artifact, on
       # quasicrystal none), so this is the island build plus one small module per node. It is
@@ -228,12 +322,15 @@ jobs:
       # shard's node list, never through the bundle root (empty on li_positivity).
       - name: Build this shard's bridge modules (island build + statement identity)
         id: build
+        # bg: what is left after the serial stage is light; end in time for the always() save.
+        timeout-minutes: ${{ matrix.island == 'bg' && 80 || 290 }}
         working-directory: ${{ env.BUNDLE }}
         run: |
           set -euo pipefail
           mods=$(cut -f1 "$RUNNER_TEMP/nodes.tsv" | sed 's/^/MissionChallenges./' | tr '\n' ' ')
           echo "modules: $mods"
-          lake build $mods 2>&1 | tee "$RUNNER_TEMP/build.log"
+          LAKE=(lake build); [ "${{ matrix.island }}" = bg ] && LAKE=(lakeb)
+          "${LAKE[@]}" $mods 2>&1 | tee "$RUNNER_TEMP/build.log"
           echo "built=$(grep -cE '\[[0-9]+/[0-9]+\] Built ' "$RUNNER_TEMP/build.log" || true)" >> "$GITHUB_OUTPUT"
 
       # bg only: checkpoint what this job compiled (also after a failed or cancelled build, so
