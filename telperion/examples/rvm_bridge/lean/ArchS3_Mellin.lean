@@ -421,7 +421,7 @@ def zt (t : ℝ) : ℂ := 1 / 2 + (t : ℂ) * I
 lemma zt_re (t : ℝ) : (zt t).re = 1 / 2 := by simp [zt]
 
 lemma one_sub_zt (t : ℝ) : 1 - zt t = conj (zt t) := by
-  apply Complex.ext <;> simp [zt] <;> norm_num
+  apply Complex.ext <;> simp [zt]; norm_num
 
 lemma conj_two : conj (2 : ℂ) = 2 := by apply Complex.ext <;> simp
 
@@ -487,7 +487,7 @@ theorem re_dPsi_mul_conj_Psi (t : ℝ) :
   set L1 := -Complex.log Real.pi / 2 + digamma ((1 - z) / 2) / 2
   have hD : dPsi z = Psi z * (Lz + L1) := by
     rw [← huniq, Psi_eq_Gammaℝ hz]
-    simp only [Function.comp, id]
+    simp only [Function.comp]
     field_simp
     ring
   have hn : Psi z * conj (Psi z) = 1 := by

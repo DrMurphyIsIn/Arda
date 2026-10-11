@@ -1,9 +1,9 @@
 /-
   ArchS3_Guard -- axiom guard for stage S3 (structural positivity L = W_inf + D >= 0, CC Cor 2.3).
   Required output for every line: [propext, Classical.choice, Quot.sound].
-  Run:  lake build ArchS3_Quadrant && lake env lean ArchS3_Guard.lean
+  Run:  lake build ArchS3_Limits && lake env lean ArchS3_Guard.lean
 -/
-import ArchS3_Quadrant
+import ArchS3_Limits
 
 -- M1: the kernel delta (CC (48)/(49)) and its properties
 #print axioms ArchS3.integral_cos_mul_neg_log
@@ -53,3 +53,21 @@ import ArchS3_Quadrant
 #print axioms ArchS3.stepC2
 #print axioms ArchS3.stepB
 #print axioms ArchS3.damped_identity
+-- M2c part 2: the limit eps -> 0
+#print axioms ArchS3.integral_cos_exp
+#print axioms ArchS3.Jd_eq
+#print axioms ArchS3.log_mul_jfun_le
+#print axioms ArchS3.tendsto_R
+#print axioms ArchS3.logcos_bound
+#print axioms ArchS3.norm_Id_le
+#print axioms ArchS3.tendsto_D
+#print axioms ArchS3.Dlimit_value
+#print axioms ArchS3.tendsto_N
+#print axioms ArchS3.tendsto_A
+-- THE MANIFEST-POSITIVITY IDENTITY and M3 (CC Corollary 2.3)
+#print axioms ArchS3.ell_eq_Nnorm
+#print axioms ArchS3.ell_nonneg
+#print axioms ArchS3.Lfun_eq_integral_Nnorm
+#print axioms ArchS3.cc_cor_2_3
+#print axioms ArchS3.cc_cor_2_3_dirichlet
+#print axioms ArchS3.weilForm_add_Dfun_nonneg

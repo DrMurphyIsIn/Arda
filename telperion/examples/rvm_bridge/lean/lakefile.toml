@@ -572,4 +572,7 @@ name = "ArchS3_Phi"
 name = "ArchS3_Quadrant"
 
 [[lean_lib]]
+name = "ArchS3_Limits"
+
+[[lean_lib]]
 name = "ArchS3_Guard"

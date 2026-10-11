@@ -340,7 +340,7 @@ lemma hasDerivAt_Gpart {t ε a : ℝ} (hε : 0 ≤ ε) (ha : 0 < a) :
     ((continuousOn_pD t ε).stronglyMeasurableAtFilter isOpen_Ioi a ha)
     ((continuousOn_pD t ε).continuousAt (Ioi_mem_nhds ha))
 
-lemma continuousOn_Phi (t : ℝ) : ContinuousOn (Phi t) (Ioi 0) := fun a ha =>
+lemma continuousOn_Phi (t : ℝ) : ContinuousOn (Phi t) (Ioi 0) := fun _ ha =>
   (continuousAt_const.sub (hasDerivAt_Gpart (t := t) le_rfl ha).continuousAt).continuousWithinAt
 
 /-- a |-> |Phi_t(a)|^2 / a is integrable on (1, ∞). -/

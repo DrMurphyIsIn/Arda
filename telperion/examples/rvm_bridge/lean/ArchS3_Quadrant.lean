@@ -32,7 +32,7 @@ namespace ArchS3
 lemma conj_cosD (ε s : ℝ) : conj (cosD ε s) = cosD ε s := Complex.conj_ofReal _
 
 lemma zt_add_conj (t : ℝ) : zt t + conj (zt t) = 1 := by
-  apply Complex.ext <;> simp [zt] <;> norm_num
+  apply Complex.ext <;> simp [zt]; norm_num
 
 /-- Q = conj P. -/
 def Qd (t ε s : ℝ) : ℂ := conj (pD t ε s)
@@ -70,7 +70,7 @@ lemma hasDerivAt_PhiE {t ε a : ℝ} (hε : 0 < ε) (ha : 0 < a) :
   exact PhiE_eq hε hb
 
 lemma continuousOn_PhiE {t ε : ℝ} (hε : 0 < ε) : ContinuousOn (PhiE t ε) (Ioi 0) :=
-  fun a ha => (hasDerivAt_PhiE hε ha).continuousAt.continuousWithinAt
+  fun _ ha => (hasDerivAt_PhiE hε ha).continuousAt.continuousWithinAt
 
 /-- Phi_eps is bounded on (0, ∞). -/
 lemma norm_PhiE_le_M {t ε a : ℝ} (hε : 0 < ε) (ha : 0 < a) :
