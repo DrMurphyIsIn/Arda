@@ -557,3 +557,16 @@ name = "ArchS2_QTrick"
 
 [[lean_lib]]
 name = "ArchS2_Guard"
+
+# Stage S8 (archimedean conceptual blueprint): E∘Q kernel, CC Lemmas 5.1-5.2, Props 5.3/5.5, abstract.
+[[lean_lib]]
+name = "ArchS8_Volterra"
+
+[[lean_lib]]
+name = "ArchS8_ProlateData"
+
+[[lean_lib]]
+name = "ArchS8_Kernel"
+
+[[lean_lib]]
+name = "ArchS8_Guard"
