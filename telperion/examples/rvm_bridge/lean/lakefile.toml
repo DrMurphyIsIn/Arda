@@ -623,4 +623,7 @@ name = "ArchS6_Real"
 name = "ArchS6_Bridge"
 
 [[lean_lib]]
+name = "ArchS6_Functions"
+
+[[lean_lib]]
 name = "ArchS6_Guard"

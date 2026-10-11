@@ -8,6 +8,7 @@ import ArchS6_Strict
 import ArchS6_Prolate
 import ArchS6_Real
 import ArchS6_Bridge
+import ArchS6_Functions
 
 /-! ArchS6_Guard: `#print axioms` for every top-level theorem of stage S6.
 Required output: exactly `[propext, Classical.choice, Quot.sound]` on every line.
@@ -265,3 +266,13 @@ conjecture1_proved = False. -/
 #print axioms ArchS6.T_phiR
 #print axioms ArchS6.parseval_ip
 #print axioms ArchS6.exists_S9_family
+-- ArchS6_Functions
+#print axioms ArchS6.phi_neg
+#print axioms ArchS6.coeFn_ξ
+#print axioms ArchS6.coeFn_η
+#print axioms ArchS6.coe_ψ
+#print axioms ArchS6.coeFn_ψ
+#print axioms ArchS6.coeFn_ζ
+#print axioms ArchS6.phiR_neg
+#print axioms ArchS6.coeFn_ξ_real
+#print axioms ArchS6.coeFn_ζ_real
