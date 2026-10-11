@@ -382,10 +382,10 @@ section CC
 open ArchS8
 
 /-- CC's kernel `χ(y - x)` on `[0, log 2]²`, clamped so as to be continuous on `ℝ²`. -/
-def chiK (D : ProlateData) (p : ℝ × ℝ) : 𝕜 :=
+def chiK (D : ProlateDataNat) (p : ℝ × ℝ) : 𝕜 :=
   ((D.Qeps (min |p.2 - p.1| (Real.log 2)) / (2 * D.eps1 0) : ℝ) : 𝕜)
 
-theorem chiK_approx {D : ProlateData} (hB : ArchS10.CertBasis D) {ℓ : ℝ} (hℓ : ℓ ≤ Real.log 2) :
+theorem chiK_approx {D : ProlateDataNat} (hB : ArchS10.CertBasis D) {ℓ : ℝ} (hℓ : ℓ ≤ Real.log 2) :
     ChiApprox ℓ (ArchS10.Data.deltaChi : ℝ) (chiK (𝕜 := 𝕜) D) where
   cont := by
     refine RCLike.continuous_ofReal.comp (Continuous.div_const ?_ _)
@@ -408,7 +408,7 @@ theorem chiK_approx {D : ProlateData} (hB : ArchS10.CertBasis D) {ℓ : ℝ} (h�
     exact ArchS10.chi_enclosure hB hv
 
 /-- **S11, T1 for CC's χ**: at `|I| = 1/2`, `0.95920 ≤ λ_max(K_I) ≤ 0.95921`. -/
-theorem KI_chi_half {D : ProlateData} (hB : ArchS10.CertBasis D) :
+theorem KI_chi_half {D : ProlateDataNat} (hB : ArchS10.CertBasis D) :
     0.95920 ≤ topEig (KI (𝕜 := 𝕜) (1 / 2) (chiK D) (chiK_approx hB (by
         linarith [Real.log_two_gt_d9])).cont) ∧
       topEig (KI (𝕜 := 𝕜) (1 / 2) (chiK D) (chiK_approx hB (by
@@ -421,7 +421,7 @@ theorem KI_chi_half {D : ProlateData} (hB : ArchS10.CertBasis D) :
 
 /-- **S11, T2 for CC's χ**: at `|I| = log 2`, `1.05156 ≤ λ_max(K_I) ≤ 1.0516`, `λ₂ ≤ 0.6866`,
 `re ⟪K_I f, f⟫ ≤ 0.9995 ‖f‖² + 0.058 |⟨ξ₀|f⟩|²`. -/
-theorem KI_chi_log2 {D : ProlateData} (hB : ArchS10.CertBasis D) :
+theorem KI_chi_log2 {D : ProlateDataNat} (hB : ArchS10.CertBasis D) :
     1.05156 ≤ topEig (KI (𝕜 := 𝕜) (Real.log 2) (chiK D) (chiK_approx hB le_rfl).cont) ∧
     topEig (KI (𝕜 := 𝕜) (Real.log 2) (chiK D) (chiK_approx hB le_rfl).cont) ≤ 1.0516 ∧
     minmaxEig (KI (𝕜 := 𝕜) (Real.log 2) (chiK D) (chiK_approx hB le_rfl).cont) 2 ≤ 0.6866 ∧
