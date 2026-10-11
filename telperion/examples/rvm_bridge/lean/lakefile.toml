@@ -788,3 +788,23 @@ name = "ArchS7_Guard"
 
 [[lean_lib]]
 name = "ArchS7b_Guard"
+
+name = "ArchS6_Enum"
+
+[[lean_lib]]
+name = "ArchS6_Sobolev"
+
+[[lean_lib]]
+name = "ArchS6_Bounds"
+
+[[lean_lib]]
+name = "ArchS6_ProlateData"
+
+[[lean_lib]]
+name = "ArchS6_Trace"
+
+[[lean_lib]]
+name = "ArchS6_L1"
+
+[[lean_lib]]
+name = "ArchS6_Guard"
