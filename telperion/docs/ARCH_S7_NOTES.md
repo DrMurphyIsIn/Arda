@@ -168,18 +168,35 @@ theorem thm47_weil {ι} (bR : EigenBasis CopR ι) (D : ProlateData) (σ : ℕ �
 
 Totals: 7 files, about 1610 lines, 103 guarded theorems, all `[propext, Classical.choice, Quot.sound]`.
 
-## 4. Interface obligations still open (hypotheses of `thm47_weil`)
+### O2 discharged: CC Lemma 4.1 + (75) without trace class (`ArchS7_Lemma41.lean`)
 
-* **O1 + O2, the hypothesis `h85` (CC (85) with δ written as (75)).**
-  * O1 (S3 M2, CC Prop 2.2(iii)/Cor 2.3): ‖P̂ P ϑ(g)‖²_HS = archW g + Dfun g.  S3 stopped before M2.
-  * O2 (CC Lemma 4.1 (63) + (79)): δS(t) = Σ λ_n⟨ξ_n|ϑ(e^{−t})η_n⟩ equals `ArchS3.deltaK t` for t ≥ 0.
-    Under B1 this is the HS pairing of two continuous-kernel operators on [−1, 1] and should reduce to CC (48)
-    by an explicit double integral; not attempted.  With O2, `h85` becomes exactly O1.
+| theorem | content |
+|---|---|
+| `integral_cos_mul`, `integral_square_cos` | ∫₀¹cos(ay) = sinc a; ∫₀¹∫₀¹ cos(cxy) = S3's `sincInt c` |
+| `hasSum_inner_intOp` | Σ_i ⟨T_{K₁} b_i, T_{K₂} b_i⟩ = ⟨K₁, K₂⟩ for a Hilbert basis (polarised S5 `hasSum_norm_intOp_sq`) |
+| `ktK`, `K0`, `Kt`, `coeFn_intOp_Kt` | C_t has kernel e^{t/2}·2cos(2πe^t xy) on [0,1]²; C = S9's/S6's `Cop` |
+| `hbOf`, `inner_reflect_left`, `inner_J_even` | Hilbert basis from S6's complete eigenbasis; ⟨J e, X⟩ = √2⟨e, X|_{[0,1]}⟩ for even X |
+| `term_eq` | λ_n⟨ξ_n|ϑ(e^{-t})η_n⟩ = ⟨C e_n, C_t e_n⟩ |
+| `conj_cosK_mul_ktK`, `integral_kprod`, `inner_K0_Kt` | ⟨K, K_t⟩ = ∫∫ 4e^{t/2}cos(2πxy)cos(2πe^t xy) = `ArchS3.deltaK t` (t ≥ 0) |
+| `hasSum_δS`, `δS_eq_deltaK`, `δS_abs_eq_deltaK` | **CC (75) = CC (48)/(49)**: Σ λ_n⟨ξ_n|ϑ(e^{-t})η_n⟩ = deltaK t, i.e. δ(ρ) = Tr(ϑ(ρ⁻¹)P̂₁P₁) in HS form |
+| `thm47_weil'`, `thm47_weil'_nonneg` | Thm 4.7 and (83) with `h85` in S3's own terms: ‖P̂ P ϑ(g)‖²_HS = `archW g + Dfun g` |
+
+The −log t of CC (48) never appears: ∫∫_{[0,1]²}cos(cxy) is integrated in y first, giving sinc, which is
+S3's (49) form directly.
+
+Totals: 8 files, about 1960 lines, 121 guarded theorems, all `[propext, Classical.choice, Quot.sound]`.
+
+## 4. Interface obligations still open (hypotheses of `thm47_weil'`)
+
+* **O1 (S3 M2, CC (85) = Prop 2.2(iii)/Cor 2.3).**  `h85 : HasSum (k ↦ ‖P̂ (P (ϑ(g) e_k))‖²) (archW g + Dfun g)`,
+  i.e. Tr(ϑ(g∗g*) P P̂ P) = W∞ + D.  This is exactly the identity S3 stopped on (Mellin transform of cos on
+  the critical line, oscillatory limits).  Everything else in Thm 4.7 is now kernel-checked.
 * **O4 (S6/S8/S9 data).**
-  * an enumeration σ : ℕ ≃ ι of S6's eigenbasis (ι is countable since L² is separable; not proved here);
-  * a `ProlateData D` with `D.lam = μ ∘ σ`, `D.phi = phiR ∘ σ` (S8's obligation 5, the sup bounds M_n);
-  * Σ|τ_n| < ∞ (B3 decay; `card_le_of_eigen_gt_tensor` gives the per-index bound).
-* **O3 is closed** (`scalingEven`, `theta`, `hcoef_theta`).
+  * an enumeration σ : ℕ ≃ ι of S6's eigenbasis (ι is countable because L²[0,1] is separable and the
+    eigenvalues are nonzero; not proved here);
+  * a `ProlateData D` with `D.lam = μ ∘ σ`, `D.phi = phiR ∘ σ` (S8's obligation 5: the sup bounds M_n);
+  * Σ|τ_n| < ∞ (B3 decay; S5's `card_le_of_eigen_gt_tensor` gives the per-index bound).
+* **O2 and O3 are closed.**
 
 ## 5. Lean footguns
 

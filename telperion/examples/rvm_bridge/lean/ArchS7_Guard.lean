@@ -4,6 +4,7 @@ import ArchS7_Abstract
 import ArchS7_Concrete
 import ArchS7_Dilation
 import ArchS7_Theta
+import ArchS7_Lemma41
 
 /-! Axiom guard for stage S7 (CC Thm 4.7).  Every line must print
 `[propext, Classical.choice, Quot.sound]`.  conjecture1_proved = False. -/
@@ -111,3 +112,21 @@ import ArchS7_Theta
 #print axioms ArchS7.thm47_theta
 #print axioms ArchS7.thm47_theta_nonneg
 #print axioms ArchS7.thm47_weil
+#print axioms ArchS7.integral_cos_mul
+#print axioms ArchS7.integral_square_cos
+#print axioms ArchS7.hasSum_inner_intOp
+#print axioms ArchS7.continuous_ktK
+#print axioms ArchS7.coeFn_intOp_Kt
+#print axioms ArchS7.hbOf_apply
+#print axioms ArchS7.inner_reflect_left
+#print axioms ArchS7.inner_J_even
+#print axioms ArchS7.term_eq
+#print axioms ArchS7.conj_cosK_mul_ktK
+#print axioms ArchS7.continuous_kprod
+#print axioms ArchS7.integral_kprod
+#print axioms ArchS7.inner_K0_Kt
+#print axioms ArchS7.hasSum_δS
+#print axioms ArchS7.δS_eq_deltaK
+#print axioms ArchS7.δS_abs_eq_deltaK
+#print axioms ArchS7.thm47_weil'
+#print axioms ArchS7.thm47_weil'_nonneg
