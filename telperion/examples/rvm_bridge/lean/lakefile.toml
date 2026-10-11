@@ -686,4 +686,7 @@ name = "ArchS10_Tail"
 name = "ArchS10_Chi"
 
 [[lean_lib]]
+name = "ArchS10_Summable"
+
+[[lean_lib]]
 name = "ArchS10_Guard"
