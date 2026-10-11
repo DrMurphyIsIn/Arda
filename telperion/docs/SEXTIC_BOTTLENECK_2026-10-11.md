@@ -144,12 +144,57 @@ and adds the mechanism on the reflection side:
   Gauss sums (Kazhdan-Patterson; Eckhardt-Patterson), so no completed reflection identity exists. Both
   recollections are unchecked against sources, as is the ledger's.
 
-## 7. Verdict
+## 7. Literature check (session peterwmurphy-23's survey, 2026-10-11)
 
-Agrees with the ledger's gate recommendation: NO-GO for a parameter or geometry route; the one input that
-would move the constant below 0.85 is an open conjecture (the `K + D` sextic large sieve on the unreflected
-row), and even it stops at the 5/6 architecture floor, i.e. `Lambda <= 2/9 > 0.22`. The sextic order is
-forced by Hasse-Davenport duplication (needs `k` even) plus the existence of an explicit theta formula (needs
-`k/2 <= 3`), which together leave `k = 6` as the only choice; replacing it is a question about metaplectic
-forms, for a specialist, not for this project. 7/8 stands; `0 <= Lambda <= 9/32` is the kernel-checked
-picture; `Lambda = 0` is untouched. conjecture1_proved = False.
+The three "from memory" claims above were checked by an independent survey (`~/arda-research/reports/Narrowing
+the zeta zero free strip.md`, 56 sources; twist-order notes in `~/arda-research/research_notes/.../higher_order_
+twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings, as relayed:
+
+- **(a) Metaplectic theta coefficients: correct in substance, sharper wording.** Hecke relations plus
+  Kazhdan-Patterson periodicity reduce the coefficients of the n-fold cover of GL_2 to those at
+  `1, pi, ..., pi^{n-1}`, leaving `n/2 - 1` (n even) or `(n-1)/2 - 1` (n odd) undetermined coefficients: n = 3
+  gives 0, n = 4 gives 1, n = 6 gives 2 (David-Dunn-Hamieh-Lin, arXiv:2306.11875 section 1.2, after Hoffstein 1993
+  and Broker-Hoffstein 2016). Chinta-Friedberg-Hoffstein 2011: "the Fourier coefficients of these mysterious
+  functions have not been determined beyond n = 3"; non-uniqueness of the Whittaker functional for n > 3 is the
+  reason. Quartic status: Suzuki 1983 gives the coefficients at squares (biquadrates, cubes known); the prime
+  coefficients are unknown; Patterson's 1984 quartic conjecture (corrected by Eckhardt-Patterson 1992) is proved
+  only over `F_q(T)` (Hoffstein 1992). de Faveri-Dunn-Hoffstein, arXiv:2607.07911, section 1.2: "No such
+  evaluation is available for n >= 4, and this is the main obstruction."
+- **(b) Sharpness of the cubic sieve's `(KD)^{2/3}`: correct, and now unconditional.** Dunn-Radziwill, Annals
+  200 (2024), Theorem 1.4: under GRH for Hecke L-functions over `Q(omega)`, `(AB)^{2/3} << B(A,B) << (AB)^{2/3+eps}`
+  with only the lower bound needing GRH, extremal sequence the normalised cubic Gauss sums; de Faveri-Dunn-
+  Hoffstein (July 2026) Theorem 1.1 makes the lower bound unconditional for n = 3 and proves the quartic lower
+  bound `A + B + A^{3/4}B^{1/2} + A^{1/2}B^{3/4}`.
+- **(c) The `K + D` sextic sieve: expected FALSE for arbitrary coefficients.** dFDH Conjecture 1.8: for every
+  n >= 3, `Xi_n(A,B) = (AB)^{o(1)}(A + B + A^{1-1/n}B^{2/n} + A^{2/n}B^{1-1/n})`, two-sided; the sextic family
+  contains the cubic characters and inherits the `X^{5/6}` bias. Best proved sextic upper bound: de Faveri,
+  arXiv:2610.04045 (2 October 2026), `A + B + A^{5/6}B^{1/3} + A^{1/3}B^{5/6}` over the sixth-power-free kernel,
+  replacing BGL's `(AB)^{2/3}`. Plugged into a copy of the ledger's optimiser it gives `sigma0 = 1` on the
+  unreflected branch for all `ell`, `M` (the `A^{5/6}` mixed term is exactly neutral against the Mellin `+M/12`;
+  modelled, not proved), and it does not touch Lemma 15.1's reflected cap. So the ledger's one "specified input
+  below 0.85" is, as of October 2026, expected not to exist.
+- **(d) A quartic Patterson-type reflection over `Q(i)` EXISTS in some form.** David-Dunn-Hamieh-Lin
+  (arXiv:2306.11875, v5 January 2026), Theorem 1.1, unconditional: `sum g~_4(c) (c/|c|)^l Lambda(c) R(Nc/X) <<
+  X^{5/6+eps} + X^{3/4+eps}|l|^{3/2+eps}`, improving Patterson 1987. Mechanism: twisted multiplicativity
+  `g~_4(ab) = g~_4(a) g~_4(b) (a/b)_2` reduces Type II to a QUADRATIC large sieve over `Q(i)` (Onodera 2009,
+  Goldmakher-Louvel 2013), with "the `X^{5/6+eps}` bottleneck in Type II"; Type I uses Suzuki's squares formula.
+  Two cautions: the same `X^{5/6}` appears, so k = 4 does not obviously beat the sextic cost; and the ledger's
+  algebraic point that the Hasse-Davenport absorption degenerates at k = 4 was not independently checked by
+  the survey. This is the one place where section 5's "blocked" might be too strong: there is a quartic
+  apparatus for prime sums, just not (yet) one that absorbs Mobius or yields a completed reflection identity.
+  No paper treats Mobius-weighted cubic, quartic or sextic sums at all.
+- **Open discrepancy to settle:** the method map derives the cap `ell <= 1/6` from Lemma 15.1's `M' >= 1/2`; the
+  ledger derives `ell <= 1/5` (the 13/15 floor) from the reflected-energy range `M + ell <= 1`, `2M >= 1 + 3 ell`.
+  Neither examined whether `M' >= 1/2` is essential. The survey ranks reading section 15 to settle this as its
+  action #1. It changes nothing about the verdict (13/15 versus 7/8 is the difference between `Lambda <= 0.27`
+  and `0.28`), but the note should not claim more precision than the two readings jointly support.
+
+## 8. Verdict
+
+Agrees with the ledger's gate recommendation and is strengthened by the survey: NO-GO for any parameter or
+geometry route. The sextic order is forced by Hasse-Davenport duplication (needs `k` even) plus the existence of
+an explicit theta formula (needs `k/2 <= 3`), leaving `k = 6`; the only specified input that would have moved the
+constant below 0.85 is now expected to be false (dFDH Conjecture 1.8); and the quartic apparatus that does exist
+(DDHL 2026) carries the same `X^{5/6}` bottleneck. Replacing the sextic structure is a question about
+metaplectic forms, for a specialist, not for this project. 7/8 stands; `0 <= Lambda <= 9/32` is the
+kernel-checked picture; `Lambda = 0` is untouched. conjecture1_proved = False.
