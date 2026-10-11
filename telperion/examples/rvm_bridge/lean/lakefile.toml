@@ -787,4 +787,7 @@ name = "ArchS7_LogMap"
 name = "ArchS7_Kappa"
 
 [[lean_lib]]
+name = "ArchS7_PFP"
+
+[[lean_lib]]
 name = "ArchS7_Guard"
