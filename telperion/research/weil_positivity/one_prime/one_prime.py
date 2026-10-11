@@ -447,6 +447,280 @@ def ccplus(a, n):
 
 
 # ----------------------------------------------------------------------------------------------
+# POLYNOMIAL (KWin2-style) basis, mpmath.  Sector par in {0, 1}: phi_k(x) = P_{2k+par}(x/a), k < N
+# (same span as the island's monomials (x/l)^(2k+par)).  Same construction as the island's
+# prime_free_window_numerics.gram_uspace (read, not imported), in 60-digit arithmetic:
+#   W = POLE - CONST*M + ARCH - sum_n c_n/sqrt n (F(log n) + F(log n)^T),
+#   F_jk(t) = int phi_j(v) phi_k(v - t) dv  (polynomial in t on [0, 2a]),
+#   ARCH = int_0^{2a} [2 e^{-2t} M - e^{-e t}(F(t) + F(t)^T)] / (1 - e^{-2t}) dt - M log(1 - e^{-4a}),
+# e = 1/2 for zeta, 3/2 for Davenport-Heilbronn.  Symbol form (lead's convention):
+#   W = (1/2pi) int |g^(t)|^2 [Psi(t) - sum c_n/sqrt n * 2 cos(t log n)] dt + poles, so the prime 2
+#   carries multiplier weight c_mult = 2 * log2/sqrt2 = sqrt2 log 2 = 0.98026 on cos(t log 2).
+# ----------------------------------------------------------------------------------------------
+def legendre_vals(D, u):
+    """P_0..P_D at u (mpf)."""
+    v = [mp.mpf(1), u]
+    for k in range(1, D):
+        v.append(((2 * k + 1) * u * v[k] - k * v[k - 1]) / (k + 1))
+    return v[:D + 1]
+
+
+class PolyForm:
+    def __init__(self, a, N, par, nt=None, dps=60, vanish=0):
+        mp.mp.dps = dps
+        self.a = a_ = mp.mpf(a)
+        self.N, self.par, self.vanish = N, par, vanish
+        self.degs = [2 * k + par for k in range(N)]
+        D = self.degs[-1] + 2 * vanish
+        self.nv = D + 3
+        xs, ws = wf.gl_nodes(self.nv)
+        self.xs, self.ws = xs, ws
+        # mass matrix and pole vectors on [-a, a]
+        Phi = [self.phi(a_ * x) for x in xs]
+        self.M = mp.matrix(N, N)
+        gp = [mp.mpf(0)] * N
+        gm = [mp.mpf(0)] * N
+        for x, w, ph in zip(xs, ws, Phi):
+            ww = w * a_
+            ex = mp.exp(a_ * x / 2)
+            for j in range(N):
+                gp[j] += ww * ph[j] * ex
+                gm[j] += ww * ph[j] / ex
+                for k in range(j, N):
+                    self.M[j, k] += ww * ph[j] * ph[k]
+        for j in range(N):
+            for k in range(j):
+                self.M[j, k] = self.M[k, j]
+        self.gp, self.gm = gp, gm
+        # t-quadrature nodes on [0, 2a]: F(t) at each node
+        self.nt = nt or (2 * D + 40)
+        ts, wt = wf.gl_nodes(self.nt)
+        self.tn = [a_ * (t + 1) for t in ts]
+        self.tw = [a_ * w for w in wt]
+        self.Ft = [self.corr(t) for t in self.tn]
+
+    def phi(self, x):
+        u = x / self.a
+        P = legendre_vals(self.degs[-1] + 1, u)
+        fac = (1 - u * u) ** self.vanish if self.vanish else 1
+        return [P[d] * fac for d in self.degs]
+
+    def corr(self, t):
+        """F_jk(t) = int_{t-a}^{a} phi_j(v) phi_k(v - t) dv for 0 <= t <= 2a."""
+        a_ = self.a
+        lo, hi = t - a_, a_
+        N = self.N
+        F = mp.matrix(N, N)
+        if hi <= lo:
+            return F
+        half, mid = (hi - lo) / 2, (hi + lo) / 2
+        for x, w in zip(self.xs, self.ws):
+            v = half * x + mid
+            p1 = self.phi(v)
+            p2 = self.phi(v - t)
+            ww = w * half
+            for j in range(N):
+                c = ww * p1[j]
+                for k in range(N):
+                    F[j, k] += c * p2[k]
+        return F
+
+    def pole(self):
+        N = self.N
+        P = mp.matrix(N, N)
+        for j in range(N):
+            for k in range(N):
+                P[j, k] = self.gm[j] * self.gp[k] + self.gp[j] * self.gm[k]
+        return P
+
+    def arch(self, e=mp.mpf(1) / 2):
+        N = self.N
+        A = mp.matrix(N, N)
+        for t, w, F in zip(self.tn, self.tw, self.Ft):
+            with mp.extradps(30):
+                e2 = mp.exp(-2 * t)
+                den = -mp.expm1(-2 * t)
+                ee = mp.exp(-e * t)
+                for j in range(N):
+                    for k in range(j, N):
+                        v = (2 * e2 * self.M[j, k] - ee * (F[j, k] + F[k, j])) / den
+                        A[j, k] += w * v
+        for j in range(N):
+            for k in range(j):
+                A[j, k] = A[k, j]
+        return A - self.M * mp.log(-mp.expm1(-4 * self.a))
+
+    def lag(self, ell):
+        """Q_ell = F(ell) + F(ell)^T  (= the multiplier 2 cos(t ell) on |g^|^2/(2pi))."""
+        F = self.corr(mp.mpf(ell))
+        return F + F.T
+
+
+def poly_forms(a, N, par, nt=None, dps=60, vanish=0, primes=None):
+    """Return dict with M, A (= POLE - CONST + ARCH), K (= ARCH - CONST), Q2 = Q_{log 2},
+    PR (full prime matrix sum_{log n < 2a} Lambda(n)/sqrt n Q_{log n}), G = A - PR, and DH pieces."""
+    pf = PolyForm(a, N, par, nt, dps, vanish)
+    M = pf.M
+    const = (mp.log(mp.pi) + mp.euler)
+    ar = pf.arch()
+    K = ar - const * M
+    A = pf.pole() + K
+    PR = mp.matrix(N, N)
+    a_ = mp.mpf(a)
+    for nn, Lam in wf.prime_powers(mp.exp(2 * a_)):
+        ln = mp.log(nn)
+        if ln < 2 * a_:
+            PR += (Lam / mp.sqrt(nn)) * pf.lag(ln)
+    out = dict(pf=pf, M=M, A=A, K=K, PR=PR, G=A - PR, Q2=pf.lag(mp.log(2)))
+    return out
+
+
+def poly_dh(pf):
+    """Davenport-Heilbronn A part (no pole) on the same basis."""
+    lf = dh_lfun()
+    return pf.arch(e=lf["arch_exp"]) - lf["const_coef"] * pf.M
+
+
+def poly_validate():
+    """(1) reconcile.py cross-check (arch-only and full form, K = 40 Legendre = N 20 per sector);
+    (2) zero-sum check of the minimiser at a = 0.5 against E1's zeros; (3) nt convergence."""
+    for a in ("0.36", "0.38", "0.5"):
+        r = {}
+        for par in (0, 1):
+            F = poly_forms(a, 20, par)
+            evA, _ = pencil(F["A"], F["M"])
+            evG, _ = pencil(F["G"], F["M"])
+            r[par] = (evA[0], evG[0])
+        print("a=%s N=20/sector: lam_min A = %s, lam_min G = %s   (reconcile.py K=40: 0.36 A 1.0835e-3; 0.38 A -2.3583e-2; 0.5 G 9.3766e-7)"
+              % (a, mp.nstr(min(r[0][0], r[1][0]), 6), mp.nstr(min(r[0][1], r[1][1]), 6)), flush=True)
+    # nt convergence
+    F1 = poly_forms("0.549", 16, 0)
+    F2 = poly_forms("0.549", 16, 0, nt=2 * F1["pf"].nt)
+    d = max(abs(F1["G"][i, j] - F2["G"][i, j]) for i in range(16) for j in range(16))
+    print("nt doubling at a=0.549 N=16 even: max entry change %s" % mp.nstr(d, 4), flush=True)
+    # zero side: minimiser at a = 0.5, even sector, N = 20, exact transform of Legendre polynomials:
+    # int_{-a}^{a} P_d(x/a) e^{i g x} dx = 2 a i^d j_d(a g)  (spherical Bessel), via scipy in float64
+    import numpy as np
+    from scipy.special import spherical_jn
+    F = poly_forms("0.5", 20, 0)
+    ev, V = pencil(F["G"], F["M"])
+    pf = F["pf"]
+    a_ = float(pf.a)
+    c = np.array([float(V[r, 0]) for r in range(20)])
+    z = np.array([float(g) for g in wf.load_zeros(20000)])
+    fh = np.zeros_like(z)
+    for ck, d in zip(c, pf.degs):
+        fh += ck * 2 * a_ * ((-1) ** (d // 2)) * spherical_jn(d, a_ * z)
+    terms = 2 * fh ** 2
+    cs = np.cumsum(terms)
+    print("a=0.5 even minimiser: lam_min G = %s; zero side partial sums (both signs): "
+          "100: %.6e, 1000: %.6e, 5000: %.6e, 20000: %.6e; last-5000 block %.2e"
+          % (mp.nstr(ev[0], 10), cs[99], cs[999], cs[4999], cs[-1], cs[-1] - cs[-5001]), flush=True)
+
+
+def poly_lagscan(N="24", alist="0.45,0.50,0.549"):
+    """q-window around 2 (natural weight log q/sqrt q at lag log q) keeping A - w_q Q_q PSD, polynomial
+    basis; 60-digit matrices, float64 eigenvalue bisection, 60-digit confirmation at the endpoints."""
+    import numpy as np
+    import scipy.linalg as sl
+    N = int(N)
+    out = ["# lag tolerance, polynomial basis N=%d per sector (both sectors)" % N, "",
+           "| a | q_lo | q_hi | 2 - q_lo | q_hi - 2 | 60-digit lambda_min at q_lo -/+ 5e-8, q_hi -/+ 5e-8 |", "|---|---|---|---|---|---|"]
+    for a in alist.split(","):
+        secs = [poly_forms(a, N, par) for par in (0, 1)]
+
+        def lam(q, prec=False):
+            q = mp.mpf(q)
+            lagv = mp.log(q)
+            wq = lagv / mp.sqrt(q)
+            vals = []
+            for F in secs:
+                X = F["A"] - wq * F["pf"].lag(lagv)
+                if prec:
+                    vals.append(pencil(X, F["M"])[0][0])
+                else:
+                    vals.append(sl.eigh(to_np(X), to_np(F["M"]), eigvals_only=True)[0])
+            return min(vals)
+
+        def edge(lo, hi):
+            for _ in range(40):
+                mid = (lo + hi) / 2
+                if lam(mid) > 0:
+                    lo = mid
+                else:
+                    hi = mid
+            return lo
+
+        def bracket(sg):
+            d = 1e-8
+            while d < 0.5:
+                if lam(2 + sg * d) <= 0:
+                    return d
+                d *= 2
+        qlo = edge(2.0, 2 - bracket(-1))
+        qhi = edge(2.0, 2 + bracket(1))
+        chk = [mp.nstr(lam(mp.mpf(q), prec=True), 3) for q in (qlo - 5e-8, qlo + 5e-8, qhi - 5e-8, qhi + 5e-8)]
+        out.append("| %s | %.10f | %.10f | %.3e | %.3e | %s |" % (a, qlo, qhi, 2 - qlo, qhi - 2, ", ".join(chk)))
+        print(out[-1], flush=True)
+    open(os.path.join(RES, "poly_lag_tolerance_N%d.md" % N), "w").write("\n".join(out) + "\n")
+
+
+def poly_case(a, N, cq="1", nt=None):
+    """Floor per sector, c-interval for the prime-2 multiplier weight, controls; JSON record."""
+    N = int(N)
+    t0 = time.time()
+    rec = dict(a=a, N=N)
+    w = w2()
+    for par in (0, 1):
+        F = poly_forms(a, N, par, nt=int(nt) if nt else None)
+        M, A, G, Q2, PR = F["M"], F["A"], F["G"], F["Q2"], F["PR"]
+        sec = "even" if par == 0 else "odd"
+        evG, _ = pencil(G, M)
+        evA, _ = pencil(A, M)
+        r = dict(minG=evG[0], minG2=evG[1], minA=evA[0])
+        only2 = mp.log(3) >= 2 * mp.mpf(a)
+        r["only_prime_2"] = bool(only2)
+        if only2 and mp.mpf(a) > mp.log(2) / 2:
+            mu, _ = pencil(Q2, G)
+            r["cQ_lo"] = w + 1 / mu[0] if mu[0] < 0 else -mp.inf
+            r["cQ_hi"] = w + 1 / mu[-1] if mu[-1] > 0 else mp.inf
+            r["mu_top"] = [mu[-1], mu[-2]]
+            r["mu_bot"] = [mu[0], mu[1]]
+            r["rankQ2"], _ = numrank(Q2, M, tol=mp.mpf("1e-30"))
+        if cq == "1" and only2:
+            ctl = {}
+            for q in ("1.8", "2.2", "2.5"):
+                lag = mp.log(mp.mpf(q))
+                if lag >= 2 * mp.mpf(a):
+                    ctl[q] = dict(active=False)
+                    continue
+                Qq = F["pf"].lag(lag)
+                wq = lag / mp.sqrt(mp.mpf(q))
+                ev, _ = pencil(A - wq * Qq, M)
+                it = interval_general(A, Qq, M, w=wq)
+                ctl[q] = dict(active=True, w=wq, minG=ev[0], **{k: v for k, v in it.items() if k != "mu"})
+            D = poly_dh(F["pf"])
+            wdh = dh_kappa() * mp.log(2) / mp.sqrt(2)
+            evD, _ = pencil(D, M)
+            ev, _ = pencil(D - wdh * Q2, M)
+            it = interval_general(D, Q2, M, w=wdh)
+            ctl["DH"] = dict(active=True, w=wdh, minA=evD[0], minG=ev[0], **{k: v for k, v in it.items() if k != "mu"})
+            r["controls"] = ctl
+        rec[sec] = r
+    rec["minG"] = min(rec["even"]["minG"], rec["odd"]["minG"])
+    if "cQ_lo" in rec["even"]:
+        rec["cQ_lo"] = max(rec["even"]["cQ_lo"], rec["odd"]["cQ_lo"])
+        rec["cQ_hi"] = min(rec["even"]["cQ_hi"], rec["odd"]["cQ_hi"])
+        rec["cmult_lo"], rec["cmult_hi"] = 2 * rec["cQ_lo"], 2 * rec["cQ_hi"]
+    rec["seconds"] = round(time.time() - t0, 1)
+    json.dump(jsonable(rec), open(os.path.join(SCR, "poly_a%s_N%d%s.json" % (a, N, "" if not nt else "_nt" + nt)), "w"), indent=1)
+    msg = "a=%s N=%d floor=%s (even %s, odd %s)" % (a, N, mp.nstr(rec["minG"], 8), mp.nstr(rec["even"]["minG"], 6), mp.nstr(rec["odd"]["minG"], 6))
+    if "cmult_lo" in rec:
+        msg += " c_mult in [%s, %s]" % (mp.nstr(rec["cmult_lo"], 12), mp.nstr(rec["cmult_hi"], 12))
+    print(msg + " (%.0fs)" % rec["seconds"], flush=True)
+
+
+# ----------------------------------------------------------------------------------------------
 # tables
 # ----------------------------------------------------------------------------------------------
 A_GRID = ["0.30", "0.3466", "0.36", "0.38", "0.40", "0.42", "0.45", "0.48", "0.50", "0.52", "0.54", "0.549"]

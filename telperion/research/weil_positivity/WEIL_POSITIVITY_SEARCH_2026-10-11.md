@@ -55,6 +55,18 @@ part of this work.
   "a little past log 2". The even sector fails later, at mu = 2.2710. Beyond that, A has a negative eigenvalue
   of size ~ e^a coming from the rank-2 pole term in the odd sector. G stays positive only
   because the prime operator cancels it, leaving eigenvalues of order 1e-11 ... 1e-16.
+* **Connes-Consani setup (section 10).**
+  - **Normalisation reconciled.** At 2L = log 2 the full-form even minimum is 0.0013294,
+    which matches CC2 and the team's 1.33e-3.
+  - **CC1's side conditions checked.** W_inf alone is indefinite there (-1.286). On
+    ghat(+-i/2) = 0 its minimum is 0.547, and adding ghat(0) = 0 raises it to 1.063.
+  - **CC2 section 3 subspace claim reproduces beyond the window.** At mu = 3.5, 5 and 7
+    every eigenvector with eigenvalue below about 1e-4 lies in the span of the E-mapped
+    prolate differences to 6 or more digits. The one-to-one pairing does not match.
+  - **CvS real-zeros test (reconstructed from the abstract).** It passes once K is
+    converged, but fails in two under-resolved compressions (a = 1.5, K = 40 and 48).
+  - **CC1's eigenvector zeta was not compared.** Its defining formulas are not in the
+    reading notes.
 
 ---
 
@@ -479,9 +491,13 @@ Nothing here is progress on RH. **conjecture1_proved = False.**
 * Positivity of finite Gram matrices for zeta is implied by RH for zeros up to roughly the
   basis bandwidth, plus decay. It cannot detect a hypothetical off-line zero far above that
   bandwidth (the DH control needed a >= 2 and bandwidth ~ 150 to see a zero at height 86).
+* Smallest-eigenvalue values from the spline basis (sections 3-5) are upper bounds that
+  converge like 1/n, because the basis vanishes at the endpoints. The Legendre values of
+  section 10 are the converged ones: at log(2)/2 the even minimum is 0.0013294, not the
+  spline's 0.0026. Signs and qualitative conclusions are unchanged.
 * The A-alone threshold a*(n) depends on n like 1/n. The limit 0.3717 is an extrapolation
-  from n <= 180 (0.3714 - 0.3720 across fit models), not a computed infimum over
-  L^2[-a, a].
+  from n <= 180 (0.3714 - 0.3720 across fit models). The Legendre bisection of section 10.2
+  (0.37159 - 0.37162, the same for K = 20, 30, 40) confirms it.
 
 ## 9. Reproduction
 
@@ -494,6 +510,11 @@ Nothing here is progress on RH. **conjecture1_proved = False.**
     $PY gram_experiments.py exp3_ccm; $PY gram_experiments.py exp3_prolate; $PY gram_experiments.py exp3_prolate2
     $PY gram_experiments.py exp3_th; $PY gram_experiments.py exp3_jacobi; $PY rank_prediction.py
     $PY gram_experiments.py exp4_fake; $PY dh_control.py validate; $PY dh_control.py gram; $PY dh_control.py gram_scan
+    # section 10 (Connes-Consani setup)
+    $PY cc_followup.py check; $PY cc_followup.py cc_crosscheck; $PY cc_followup.py a_sweep
+    for K in 20 30 40; do $PY cc_followup.py bisect_A $K 0; $PY cc_followup.py bisect_A $K 1; done
+    $PY cc_followup.py cc2_prolate; $PY cc_followup.py cvs
+    $PY cvs_count.py 1.5 56 70 32.37      # etc., one line per (a, K, digits, T) row of 10.4
 
 The 20000-zero list `zeros20000.json` (534 KB) was computed by `zeros_compute.py`
 (mpmath.zetazero, 12 processes, about 35 minutes on the loaded machine). It is monotone,
@@ -616,4 +637,38 @@ int phi_j(x) e^{izx} dx is entire. The test counts its zeros in the box |Re z| <
 |Im z| < 3 by the argument principle (6000 boundary points) and compares that count with
 the real sign changes in (-T, T).
 
-CVS_BLOCK
+The table counts zeros of xi-hat (lowest even eigenvector of the full Weil Gram matrix,
+Legendre basis) in the box against real sign changes on a 0.005 grid. Sources:
+`results/cvs_zero_counts_K_convergence.txt`, made with `cvs_count.py`, plus
+`results/cvs_real_zeros_test.txt`.
+
+| a | K (digits) | lowest eig / next | zeros in box | real sign changes | non-real |
+|---|---|---|---|---|---|
+| log(2)/2 | 24 (40) | 1.3e-3 / 0.66 | 12 | 12 | 0 |
+| 0.5 | 30 (40) | 9.4e-7 / 1.8e-2 | 18 | 18 | 0 |
+| 1 | 40 (50) | 1.0e-23 / 5.4e-18 | 14 | 14 | 0 |
+| 1 | 56 (70) | 1.7e-26 / 7.0e-21 | 12 | 12 | 0 |
+| **1.5** | **40 (50)** | 7.0e-31 / 4.6e-25 | 16 | 12 | **4** |
+| **1.5** | **48 (40 and 60)** | 1.2e-34 / 1.1e-28 | 14 | 10 | **4** |
+| 1.5 | 56 (70) | 3.0e-39 / 4.0e-34 | 12 | 12 | 0 |
+| 1.5 | 64 (80) | 1.8e-42 / 4.5e-38 | 10 | 10 | 0 |
+| 2 | 64 (80) | 1.7e-52 / 9.7e-46 | 14 | 14 | 0 |
+
+* **Non-real zeros appear in two compressions.** At a = 1.5 and K = 48 the four non-real
+  zeros were located at +-21.1564 +- 1.9367i (`results/cvs_root_locations.txt`). The count
+  is the same at 40 and 60 digits, so this is not rounding.
+* **They vanish as K grows.** At K = 56 and 64 all zeros in the box are real.
+* **Which zeros move.** The real zeros at the zeta ordinates (14.13, 21.02, 25.01, 30.42,
+  32.94) are stable in K. The remaining "free" zeros move with K (18.04, 24.58, 27.75,
+  27.82, 27.95, 28.05). At K = 40 and 48 a pair of these collides and leaves the axis.
+* **Reading.** Our reconstruction is consistent with the CvS statement for the converged
+  eigenvector: K >= 56 at a = 1.5, and every K tried at the other supports. It also shows
+  that the property is not inherited by every finite compression. The free zeros sit where
+  |xi-hat| is already tiny, and they are ill-conditioned. A real-zeros test on finite Gram
+  eigenvectors therefore needs a convergence-in-K check before it means anything.
+* **Controls.** The prime-free A has a negative lowest eigenvalue and an odd lowest
+  eigenvector, so the hypothesis does not apply to it. It has 19 zeros against 17 real
+  sign changes at a = 0.5, and all-real zeros at a = 1 and 1.5.
+* **This is not a test of RH.** The zeros of xi-hat are not the zeta zeros. The ones near
+  the zeta ordinates are pinned there by the explicit formula (section 5, 3a(i)).
+

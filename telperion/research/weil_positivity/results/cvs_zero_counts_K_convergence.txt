@@ -1,0 +1,8 @@
+a 1.0 K 40 dps 50 lowest eig 1.0437e-23 next 5.3664e-18 | zeros in box |Re|<40.37 |Im|<3: 14.0 | real sign changes in (-T,T): 14
+a 1.0 K 56 dps 70 lowest eig 1.6743e-26 next 7.0466e-21 | zeros in box |Re|<40.37 |Im|<3: 12.0 | real sign changes in (-T,T): 12
+a 1.5 K 40 dps 50 lowest eig 7.0086e-31 next 4.5799e-25 | zeros in box |Re|<32.37 |Im|<3: 16.0 | real sign changes in (-T,T): 12
+a 1.5 K 48 dps 40 lowest eig 1.1626e-34 next 1.0876e-28 | zeros in box |Re|<32.37 |Im|<3: 14.0 | real sign changes in (-T,T): 10
+a 1.5 K 48 dps 60 lowest eig 1.1626e-34 next 1.0876e-28 | zeros in box |Re|<32.37 |Im|<3: 14.0 | real sign changes in (-T,T): 10
+a 1.5 K 56 dps 70 lowest eig 2.9561e-39 next 4.0109e-34 | zeros in box |Re|<32.37 |Im|<3: 12.0 | real sign changes in (-T,T): 12
+a 1.5 K 64 dps 80 lowest eig 1.8418e-42 next 4.4554e-38 | zeros in box |Re|<32.37 |Im|<3: 10.0 | real sign changes in (-T,T): 10
+a 2.0 K 64 dps 80 lowest eig 1.7215e-52 next 9.6884e-46 | zeros in box |Re|<30.37 |Im|<3: 14.0 | real sign changes in (-T,T): 14
