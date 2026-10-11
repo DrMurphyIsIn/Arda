@@ -625,3 +625,46 @@ name = "ArchS8_Kernel"
 
 [[lean_lib]]
 name = "ArchS8_Guard"
+
+# ---- archimedean stage S9 (certified prolate engine) ----
+[[lean_lib]]
+name = "ArchS9_Pi"
+
+[[lean_lib]]
+name = "ArchS9_Analysis"
+
+[[lean_lib]]
+name = "ArchS9_Frame"
+
+[[lean_lib]]
+name = "ArchS9_Data"
+
+[[lean_lib]]
+name = "ArchS9_CertGram1"
+
+[[lean_lib]]
+name = "ArchS9_CertGram2"
+
+[[lean_lib]]
+name = "ArchS9_CertGram3"
+
+[[lean_lib]]
+name = "ArchS9_CertGram4"
+
+[[lean_lib]]
+name = "ArchS9_CertE"
+
+[[lean_lib]]
+name = "ArchS9_CertMisc"
+
+[[lean_lib]]
+name = "ArchS9_Prolate"
+
+[[lean_lib]]
+name = "ArchS9_Guard"
+
+[[lean_lib]]
+name = "ArchS9_CertRes"
+
+[[lean_lib]]
+name = "ArchS9_Bridge"
