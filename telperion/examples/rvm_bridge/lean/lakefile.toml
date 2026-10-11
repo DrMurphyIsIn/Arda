@@ -650,4 +650,10 @@ name = "ArchS8_Guard"
 name = "ArchS7_Term"
 
 [[lean_lib]]
+name = "ArchS7_HS"
+
+[[lean_lib]]
+name = "ArchS7_Abstract"
+
+[[lean_lib]]
 name = "ArchS7_Guard"
