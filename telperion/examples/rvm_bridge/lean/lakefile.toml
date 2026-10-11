@@ -728,4 +728,7 @@ name = "ArchS6_Enum"
 name = "ArchS6_Sobolev"
 
 [[lean_lib]]
+name = "ArchS6_Bounds"
+
+[[lean_lib]]
 name = "ArchS6_Guard"
