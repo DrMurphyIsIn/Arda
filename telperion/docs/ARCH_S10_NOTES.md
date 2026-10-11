@@ -7,13 +7,13 @@ Plan: `ARCHIMEDEAN_CONCEPTUAL_BLUEPRINT_2026-10-11.md`, section 4 row S10 and by
 ## 1. What is certified
 
 Every theorem below is kernel-checked.  `lake env lean ArchS10_Guard.lean` prints exactly
-`[propext, Classical.choice, Quot.sound]` for 88 declarations.  The 89th, `NH_eq`, depends on no axioms.
+`[propext, Classical.choice, Quot.sound]` for 118 declarations.  The 119th, `NH_eq`, depends on no axioms (clean rebuild after merging S8's `ProlateData (ι : Type*)`).
 There is no `sorry` and no `axiom`.
 
-The input is S8's abstract `D : ArchS8.ProlateData` plus one hypothesis bundle, `ArchS10.CertBasis D`:
+The input is S8's abstract `D : ArchS8.ProlateDataNat` (= `ProlateData ℕ`) plus one hypothesis bundle, `ArchS10.CertBasis D`:
 
 ```lean
-structure CertBasis (D : ArchS8.ProlateData) : Prop where
+structure CertBasis (D : ArchS8.ProlateDataNat) : Prop where
   eig : ∀ n ω, T (D.phi n) ω = D.lam n * D.phi n ω            -- S9's T, on all of ℝ
   orth : ∀ n m, ip (D.phi n) (D.phi m) = if n = m then 1 else 0   -- orthonormal on [0,1]
   window : ∀ n ≤ Data.NCw, |D.lam n - thR n| ≤ (Data.w0q n : ℝ)  -- n ≤ 12 in S9's windows
@@ -116,30 +116,84 @@ No bound on the eigenfunctions of index n > 12 is assumed.  Their eigenvalues ar
 * **ε'(1⁺).**  `eps1_pos` / `eps1_ne_zero` discharge `prop55_KI`'s hypothesis ε'(1⁺) ≠ 0.  `eps1_enclosure` gives the value 22.99647568387053 ± 1.2e-22, so S12 can unfold N_I = −2ε'(1⁺)(Id − K_I) numerically.
 * **Hypothesis bundle.**  Every result takes `hB : CertBasis D`.
 
-## 4. What S6 must supply
+## 4. What S6 must supply, and S8's `summable_wMN` (module `ArchS10_Summable`)
 
-`CertBasis D` together with `D` itself:
+**`summable_wMN` is a theorem, not an obligation.**
+* `ArchS10.EigenFamily.toProlateData` builds a full S8 `ProlateData` from this weaker structure:
 
-1. **The eigenbasis.**
-   * An orthonormal family of continuous eigenfunctions of T, every-ω eigen-relation (S9's `continuous_representative` turns an L² eigenvector into one).
-   * Enumerated so that indices 0..12 sit in S9's windows.  Given an eigenbasis, S9's `prolate_spectrum_complete` says each window holds exactly one index.
-   * The function D.phi n is this eigenfunction itself, which is its own analytic continuation T ξ/λ.
-   * Completeness of the family is NOT needed by S10.  The tail bound holds for any orthonormal eigenfamily.
-2. **`D.T > log 2`**, for example T = log 3.
-3. **The remaining fields of `ProlateData`.**  These are `phi_contDiff`, M, N, `bound_inner/outer`, `summable_wMN`.
-   * S10 does not discharge `summable_wMN`, which is S8's open item 5.  It is needed for the very definition of ε, Qε as termwise-differentiated series (S8's `prop53`).
-   * S10's Bessel bounds are uniform in ω, but they bound Σ_k (λ_k e_k(ω))² pointwise, not Σ_k sup_ω.  So they do not give `summable_wMN` as stated.
-   * Possible route for S6: restate S8's summability through these pointwise Bessel bounds, plus an equicontinuity argument.  Or use dominated termwise differentiation with the pointwise ℓ² bound.  This is not attempted here.
+```lean
+structure EigenFamily (ι : Type*) where
+  lam : ι → ℝ
+  phi : ι → ℝ → ℝ
+  cont : ∀ n, Continuous (phi n)
+  eig : ∀ n ω, T (phi n) ω = lam n * phi n ω                 -- S9's T, every ω ∈ ℝ
+  ne : ∀ n, lam n ≠ 0
+  unit : ∀ n, ip (phi n) (phi n) = 1
+  orthog : ∀ n m, n ≠ m → ip (phi n) (phi m) = 0
+  c : ℝ
+  c_lt : c < 1
+  lam_sq_le : ∀ n, lam n ^ 2 ≤ c
+def EigenFamily.toProlateData {ι} (F : EigenFamily ι) (T0 : ℝ) (hT : 0 < T0) : ArchS8.ProlateData ι
+  -- lam := F.lam, phi := F.phi, T := T0, M = N := s_{e^{T0}}(φ_n)/|λ_n|
+def EigenFamily.ofS9 {ι} (lam phi) (cont eig ne unit orthog) : EigenFamily ι   -- c := 0.99995
+theorem lam_sq_le_c0 : continuous unit ξ, T ξ = λ ξ  →  λ² ≤ 0.99995           -- S9 localization
+theorem certBasis_toProlateData (F : EigenFamily ℕ) (hT0 : log 2 < T0)
+    (hwin : ∀ n ≤ 12, |F.lam n - θ_n| ≤ w0q n) : CertBasis (F.toProlateData T0 _)
+```
+
+* `ofS9` takes exactly the properties of S6's `ArchS6.exists_S9_family` (continuous, orthonormal in `ip`, T e = λe everywhere, λ ≠ 0), with any index type.
+  * S6 states them with `ipS9`/`TS9`, its verbatim copies of S9's `ip`/`T`.
+  * S6's orthonormality is the `if j = k` form; `unit`/`orthog` are its two cases, which avoids `DecidableEq` instance mismatches.
+* So **S8's ProlateData part of O4 is closed**: `EigenFamily.ofS9 … |>.toProlateData T0 hT` is a `ProlateData ι` with no further analytic input.
+
+* The construction needs any T0 > 0, so CC's T0 = log 3 is covered.
+* `phi_contDiff` comes from the eigen-relation, `bound_inner/outer` from `abs_T_le_s` / `abs_Td_le_s`, and `summable_wMN` from `sum_wMN_le`.
+
+**The mathematics.**
+1. **An ω-free bound** (`abs_T_le_s`, `abs_Td_le_s`).  Expand 2cos(2πxω) in ω, using S9's `T_sub_le`/`Td_sub_le` with J → ∞.  For 0 ≤ ω ≤ X, X ≥ 1 and continuous f:
+
+       |T f(ω)|, |Td f(ω)| ≤ s_X(f) := Σ'_j γ_j |⟨x^{2j}, f⟩|,     γ_j = 4(4πX)^{2j}/(2j)!.
+
+2. **Bessel in every moment** (`sum_sq_s_le`).  Apply Bessel to each x^{2j}, which has ‖x^{2j}‖ ≤ 1, then Cauchy–Schwarz in j.  For every orthonormal family and every finite S:
+
+       Σ_{n∈S} s_X(e_n)² ≤ (Σ'_j γ_j)² ≤ 16 cosh(4πX)².
+
+3. **The weighted sum** (`EigenFamily.sum_wMN_le`).  With λ_nξ_n = Tξ_n, λ_nξ_n' = Tdξ_n and M_n = N_n = s_X(ξ_n)/|λ_n|:
+
+       Σ_{n∈S} λ_n²/(1−λ_n²)·M_n·N_n = Σ_{n∈S} s_X(ξ_n)²/(1−λ_n²) ≤ (Σ'γ)²/(1 − c).
+
+* So the trick is not to bound sup|ξ_n| better than 1/|λ_n|.
+* Instead it bounds sup|λ_nξ_n| = sup_ω|⟨K_ω, ξ_n⟩| by an ω-free quantity, and that quantity is square-summable in n by Bessel.
+* S8's own `abs_kn_le` and `summable_wB` then give, uniformly on |t| < T:
+
+      Σ_n w_n·sup|kn|, sup|kn1|, sup|kn2| ≤ (2+T)·2e^{T/2}(1+e^T)·(Σ'γ)²/(1−c),
+
+  and the same for Σ_n w_n sup|C_n| = Σ_n w_n sup|−kn2 + kn/4|.
+* This is a convergence statement only.  The certified numerics of sections 1-2 use the sharper S9-frame tail of `ArchS10_Tail`.
+
+**Recommendation for the S8 refactor.**
+* Option A, no refactor: keep `ProlateData` as is, and S6 calls `EigenFamily.toProlateData`.
+* Option B: replace the five fields M, N, `bound_inner`, `bound_outer`, `summable_wMN` with `orth`, `eig`, `ne`, and `c < 1`, `lam n ^ 2 ≤ c`.  Then derive the old fields inside S8 by this module.
+* Either way, **S6's obligation becomes exactly `EigenFamily`**, plus `CertBasis.window` (n ≤ 12 in S9's windows) for S10's numbers.
+  * `c` is now proved (`lam_sq_le_c0`): every eigenvalue of T has λ² ≤ 0.99995.
+  * This is by S9's localization: |λ| ≤ d0Q, or |λ − θ_n| ≤ w2q n with (|θ_n| + w2q n)² ≤ 0.99995, checked by `c0_ok`.
+  * For S10's χ theorems, the ℕ-indexed family must put the window eigenvalues at n = 0..12 (`certBasis_toProlateData`).  S9's `prolate_spectrum_complete` (given S6's Parseval) says each window holds exactly one index.
+* **`ne : λ_n ≠ 0`.**  It is needed for `phi_contDiff`, since a kernel vector of T need not be C¹.
+  * T on L²(0,1) is injective: Tf ≡ 0 makes the Fourier transform of the even extension vanish.  So an eigenbasis has no zero eigenvalues.
+  * That injectivity is not proved here.  If S6 enumerates only eigenvectors of nonzero eigenvalues, nothing is lost for S8: w_n = 0 there.  S7's Sonin trace may need completeness separately.
+* Completeness of the family is NOT needed by S8 or S10.
 
 ## 5. Open items
 
-1. **`summable_wMN`** (S8 item 5) is untouched.  See section 4, item 3.
+1. **`summable_wMN`** (S8 item 5) is now derived from `EigenFamily` (section 4), including the c-bound.
+   * Re-indexing S6's arbitrary ι to ℕ with windows first is not done.  It is needed only for the χ theorems, not for `toProlateData`.
+   * S6 already gives λ ≠ 0.
 2. **Tail precision.**  The tail dominates the error budget: tauQ = 6.4e-6 on Qε, versus 3.3e-20 for the head.
    * It comes from the coefficient-sum bound |θ_13|·Σ_k|B_{13,k}|4^k ≈ 7e-5 for |θ_13 ψ_13| on [0, 2].  A rough estimate of the true sup is 1e-7 [C, not computed].
    * Splitting the integral's inner factor to [0, 1] would need an errdF bound on [0, 1], which S9 does not export.  It would bring χ to about 1e-15.
    * Not needed for any current target.
 3. **Low-degree / piecewise version** of chiPoly (section 3) is not certified.
-4. **Wiring.**  `defaultTargets` and `AxiomGuardRvMBridge.lean` are untouched.  The six `[[lean_lib]]` stanzas are at the end of `lakefile.toml`: ArchS10_Exact, _Data, _Cert, _Tail, _Chi, _Guard.
+4. **Wiring.**  `defaultTargets` and `AxiomGuardRvMBridge.lean` are untouched.  The seven `[[lean_lib]]` stanzas are at the end of `lakefile.toml`: ArchS10_Exact, _Data, _Cert, _Tail, _Chi, _Summable, _Guard.
 
 ## 6. Files, sizes, build times (shared machine, load ~20)
 
@@ -150,7 +204,8 @@ No bound on the eigenfunctions of index n > 12 is assumed.  Their eigenvalues ar
 | ArchS10_Cert | 25 | 6 `decide +kernel` checks, about 30 s of kernel time | 41 s |
 | ArchS10_Tail | 517 | Bessel tail through S9's frame | 38 s |
 | ArchS10_Chi | 643 | head, assembly, main theorems | 44 s |
-| ArchS10_Guard | 96 | 89 `#print axioms` | 43 s (`lake env lean`) |
+| ArchS10_Summable | 415 | `summable_wMN` from the eigen-relation; `EigenFamily.toProlateData` / `ofS9`; `lam_sq_le_c0`; `certBasis_toProlateData` | 39 s |
+| ArchS10_Guard | 126 | 119 `#print axioms` | 7.8 s (`lake build`) |
 
 * The generator `telperion/research/arch_rung/s10/gen_s10.py` (319 lines) runs in 1.6 s.
 * It reads S9's rational data directly from `ArchS9_Data.lean` and `ArchS9_CertRes.lean`.
