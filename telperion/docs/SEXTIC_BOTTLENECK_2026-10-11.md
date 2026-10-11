@@ -183,6 +183,14 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   the survey. This is the one place where section 5's "blocked" might be too strong: there is a quartic
   apparatus for prime sums, just not (yet) one that absorbs Mobius or yields a completed reflection identity.
   No paper treats Mobius-weighted cubic, quartic or sextic sums at all.
+- **(c') de Faveri's bound applied to the paper's own sums** (`~/arda-research/followups/defaveri_vs_row_family.md`):
+  it applies verbatim to the sextic large sieve of Lemma 9.1 (paper.tex l. 4707; non-binding, no change to `sigma0`)
+  and, after a reduction costing `Z^eps` on columns with the exact factorisation `m = m_1 m_2^6` on rows, to the
+  unreflected completed row (l. 8078-8110); the modelled no-gain result `sigma0 = 1` stands for every `ell`, `M`.
+  Extra finding: the completed-row probe sums over ALL `m` prime to `S` (l. 3406-3412), so any sieve over it,
+  including a hypothetical `K + D` one, carries an inherent `Q^{1/6} N` term that the ledger's scenario C omits;
+  with it, scenario C's 0.85 becomes `14/15 - ell/15` (0.8667 at `ell = 1`). So even the conjectural input would
+  not have reached 0.85.
 - **Open discrepancy to settle:** the method map derives the cap `ell <= 1/6` from Lemma 15.1's `M' >= 1/2`; the
   ledger derives `ell <= 1/5` (the 13/15 floor) from the reflected-energy range `M + ell <= 1`, `2M >= 1 + 3 ell`.
   Neither examined whether `M' >= 1/2` is essential. The survey ranks reading section 15 to settle this as its
