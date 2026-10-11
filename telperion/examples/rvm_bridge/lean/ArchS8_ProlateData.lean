@@ -301,14 +301,14 @@ theorem hasDerivAt_eps {t : ℝ} (ht : t ∈ Ioo (-D.T) D.T) : HasDerivAt D.eps 
   hasDerivAt_tsum_of_isPreconnected (u := fun n => D.w n * D.B n)
     (g := fun n t => D.w n * D.kn n t) (g' := fun n t => D.w n * D.kn1 n t)
     D.summable_wB isOpen_Ioo isPreconnected_Ioo
-    (fun n y _ => (D.hasDerivAt_kn n y).const_mul (D.w n)) (fun n y hy => (D.norm_w_le n hy).2.1)
+    (fun n y _ => (D.hasDerivAt_kn n y).const_mul (D.w n)) (fun n _ hy => (D.norm_w_le n hy).2.1)
     D.zero_mem_Ioo (by simp) ht
 
 theorem hasDerivAt_eps1 {t : ℝ} (ht : t ∈ Ioo (-D.T) D.T) : HasDerivAt D.eps1 (D.eps2 t) t :=
   hasDerivAt_tsum_of_isPreconnected (u := fun n => D.w n * D.B n)
     (g := fun n t => D.w n * D.kn1 n t) (g' := fun n t => D.w n * D.kn2 n t)
     D.summable_wB isOpen_Ioo isPreconnected_Ioo
-    (fun n y _ => (D.hasDerivAt_kn1 n y).const_mul (D.w n)) (fun n y hy => (D.norm_w_le n hy).2.2)
+    (fun n y _ => (D.hasDerivAt_kn1 n y).const_mul (D.w n)) (fun n _ hy => (D.norm_w_le n hy).2.2)
     D.zero_mem_Ioo
     (Summable.of_norm_bounded D.summable_wB fun n => (D.norm_w_le n D.zero_mem_Ioo).2.1) ht
 
