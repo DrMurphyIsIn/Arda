@@ -62,3 +62,4 @@ import ArchS9_Bridge
 #print axioms ArchS9.prolate_spectrum_complete
 #print axioms ArchS9.Data.lam_ok
 #print axioms ArchS9.prolate_S8_fields
+#print axioms ArchS9.prolate_phi_values

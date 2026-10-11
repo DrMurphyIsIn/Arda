@@ -149,6 +149,13 @@ The bounds are crude.  They use absolute coefficient sums of ψ_n at 2, roughly 
 S8's finiteness and summability on the head, not for numerics.  S10 should evaluate the explicit
 polynomials θ_n ψ_n, whose error is below 2e-25, instead of these sup bounds.
 
+**In S8's variable (`prolate_phi_values`).**
+* S8 defines phi n := λ⁻¹ · 2∫₀¹ ξ_n(y) cos(2πxy) dy, which is `fun x => T ξ x / λ`.
+* For the eigenfunction of window n, Lean proves phi = ξ.  On [1/2, 2], the range S10's kernel χ
+  on [0, log 2] uses, \|λ phi(x) − s θ_n ψ_n(x)\| ≤ Vq n and \|λ phi′(x) − s θ_n ψ_n′(x)\| ≤ Vdq n.
+* phi_n(1) is the case x = 1.  The weight w_n = λ²/(1 − λ²) uses λ² < 1 from `prolate_S8_fields`.
+* So S10 can read off phi_n and phi_n′ directly as ±θ_n ψ_n/λ, up to errors below 2e-25/\|λ\|.
+
 **Still open.**
 * The eigenbasis or Parseval input above (stage S6).
 * The tail n > 12 of S8's `summable_wMN` and of CC's series (99).  S9 bounds every eigenvalue

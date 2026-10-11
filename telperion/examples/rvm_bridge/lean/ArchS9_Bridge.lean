@@ -353,6 +353,37 @@ theorem prolate_S8_fields {ξ : ℝ → ℝ} {lam : ℝ} (hξ : Continuous ξ)
       refine this.trans (le_of_eq ?_)
       unfold Data.MdQ thR; push_cast; rfl
 
+/-! ## 6. In S8's variable: `phi n x = λ⁻¹ · 2 ∫_0^1 ξ(y) cos(2πxy) dy = T ξ x / λ`. -/
+
+/-- **The certified values in S8's form.**  For the eigenfunction of window n, S8's
+`phi = fun x => T ξ x / λ` (CC's ξ_n^an) equals ξ, and on [1/2, 2] (the range used by the kernel χ
+on [0, log 2]) its values and derivative are certified:
+|λ phi(x) - s θ_n ψ_n(x)| ≤ Vq n and |λ phi'(x) - s θ_n ψ_n'(x)| ≤ Vdq n, with λ within w2q n of
+θ_n.  S8's weight is w_n = λ²/(1-λ²) with λ² < 1 (`prolate_S8_fields`); phi(1) is the case x = 1. -/
+theorem prolate_phi_values {ξ : ℝ → ℝ} {lam : ℝ} (hξ : Continuous ξ)
+    (heig : ∀ ω, T ξ ω = lam * ξ ω) (hn : ip ξ ξ = 1) {n : ℕ} (hnN : n ≤ Data.NCw)
+    (hw : |lam - thR n| ≤ (Data.w0q n : ℝ)) :
+    (fun x => T ξ x / lam) = ξ ∧ |lam - thR n| ≤ (Data.w2q n : ℝ) ∧
+      ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ x ∈ Icc (1 / 2 : ℝ) 2,
+        |lam * (T ξ x / lam) - s * thR n * psiS n x| ≤ (Data.Vq n : ℝ) ∧
+        |lam * deriv (fun y => T ξ y / lam) x - s * thR n * psidS n x| ≤ (Data.Vdq n : ℝ) := by
+  have hlam : lam ≠ 0 := by
+    intro h0
+    have hW := window_facts hnN
+    simp only [Data.windowOK, Data.roundOK, Bool.and_eq_true, decide_eq_true_eq, and_assoc] at hW
+    obtain ⟨-, -, l1, -⟩ := hW
+    obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hz0⟩ := const_facts
+    have hl1 : (0 : ℝ) < |thR n| - Data.w0q n - Data.zeta1Q := by unfold thR; exact_mod_cast l1
+    have hz : (0 : ℝ) ≤ Data.zeta1Q := by exact_mod_cast hz0
+    rw [h0, zero_sub, abs_neg] at hw
+    linarith
+  have hphi : (fun x => T ξ x / lam) = ξ := funext fun x => by rw [heig]; field_simp
+  obtain ⟨hw2, -, s, hs, hval⟩ := prolate_window hξ heig hn hnN hw
+  refine ⟨hphi, hw2, s, hs, fun x hx => ?_⟩
+  have e : T ξ x / lam = ξ x := congrFun hphi x
+  rw [e, hphi]
+  exact hval x (by linarith [hx.1]) hx.2
+
 end ArchS9
 
 end
