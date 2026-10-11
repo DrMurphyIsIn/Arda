@@ -272,6 +272,87 @@ theorem prolate_spectrum_complete {ι : Type*} [DecidableEq ι] (e : ι → ℝ 
   rw [horth, if_neg hlk] at this
   exact this rfl
 
+/-! ## 5. The fields of S8's `ProlateData` (arda-arch-s8, ArchS8_ProlateData.lean), n ≤ 12. -/
+
+/-- Kernel check: every certified eigenvalue has |θ n| + w2q n < 1, so λ(n)² < 1. -/
+def Data.lamOK : Bool :=
+  (List.range (Data.NCw + 1)).all fun n => decide (|Data.thq n| + Data.w2q n < 1)
+
+set_option maxRecDepth 100000 in
+theorem Data.lam_ok : Data.lamOK = true := by decide +kernel
+
+/-- Sup bound for |ξ| on [0, 2] in window n. -/
+def Data.MxQ (n : ℕ) : ℚ := (|Data.thq n| * Data.PsiQ n + Data.Vq n) / (|Data.thq n| - Data.w0q n)
+/-- Sup bound for |ξ'| on [0, 2] in window n. -/
+def Data.MdQ (n : ℕ) : ℚ := (|Data.thq n| * Data.PsidQ n + Data.Vdq n) / (|Data.thq n| - Data.w0q n)
+
+/-- **S8 interface.**  A continuous unit eigenfunction ξ of `T` with eigenvalue in window n
+(n ≤ 12) supplies the S8 fields: λ² < 1, ξ is C¹ on ℝ (it is its own analytic continuation
+T ξ / λ), and on [0, 2] (which contains [e^{-T}, 1] ∪ [1, e^T] for T ≤ log 2)
+|ξ| ≤ MxQ n and |ξ'| ≤ MdQ n. -/
+theorem prolate_S8_fields {ξ : ℝ → ℝ} {lam : ℝ} (hξ : Continuous ξ)
+    (heig : ∀ ω, T ξ ω = lam * ξ ω) (hn : ip ξ ξ = 1) {n : ℕ} (hnN : n ≤ Data.NCw)
+    (hw : |lam - thR n| ≤ (Data.w0q n : ℝ)) :
+    lam ^ 2 < 1 ∧ ContDiff ℝ 1 ξ ∧
+      ∀ x ∈ Icc (0 : ℝ) 2, |ξ x| ≤ (Data.MxQ n : ℝ) ∧ |deriv ξ x| ≤ (Data.MdQ n : ℝ) := by
+  obtain ⟨hw2, -, s, hs, hval⟩ := prolate_window hξ heig hn hnN hw
+  have hW := window_facts hnN
+  simp only [Data.windowOK, Data.roundOK, Bool.and_eq_true, decide_eq_true_eq, and_assoc] at hW
+  obtain ⟨-, -, l1, -⟩ := hW
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hz0⟩ := const_facts
+  have hl1 : (0 : ℝ) < |thR n| - Data.w0q n - Data.zeta1Q := by unfold thR; exact_mod_cast l1
+  have hz : (0 : ℝ) ≤ Data.zeta1Q := by exact_mod_cast hz0
+  have hden : (0 : ℝ) < |thR n| - Data.w0q n := by linarith
+  have hlow : |thR n| - Data.w0q n ≤ |lam| := by
+    have := abs_sub_abs_le_abs_sub (thR n) lam
+    rw [abs_sub_comm] at this; linarith
+  have hlam : lam ≠ 0 := fun h0 => by rw [h0, abs_zero] at hlow; linarith
+  have hs1 : |s| = 1 := by rcases hs with h | h <;> simp [h]
+  refine ⟨?_, ?_, fun x hx => ?_⟩
+  · have hlt := Data.lam_ok
+    simp only [Data.lamOK, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hlt
+    have h1 : |thR n| + Data.w2q n < 1 := by
+      have := hlt n (Nat.lt_succ_of_le hnN); unfold thR; exact_mod_cast this
+    have h2 : |lam| < 1 := by
+      have := abs_sub_abs_le_abs_sub lam (thR n); linarith
+    have h3 := abs_nonneg lam
+    nlinarith [sq_abs lam]
+  · rw [contDiff_one_iff_deriv]
+    have hd : deriv ξ = fun ω => Td ξ ω / lam :=
+      funext fun ω => (hasDerivAt_eig hξ hlam heig ω).deriv
+    exact ⟨fun ω => (hasDerivAt_eig hξ hlam heig ω).differentiableAt,
+      by rw [hd]; exact (continuous_Td hξ).div_const lam⟩
+  · have hxa : |x| ≤ 2 := by rw [abs_of_nonneg hx.1]; exact hx.2
+    obtain ⟨hv, hvd⟩ := hval x hx.1 hx.2
+    have hψ : |psiS n x| ≤ (Data.PsiQ n : ℝ) := by
+      refine (abs_psi_le Data.Jd BR n hxa).trans (le_of_eq ?_)
+      unfold Data.PsiQ BR; push_cast
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [pow_mul]; norm_num
+    have hψd : |psidS n x| ≤ (Data.PsidQ n : ℝ) := by
+      refine (abs_psid_le Data.Jd BR n hxa).trans (le_of_eq ?_)
+      unfold Data.PsidQ BR; push_cast
+      refine Finset.sum_congr rfl fun k _ => ?_
+      ring
+    have key : ∀ {v a B V : ℝ}, |lam * v - s * thR n * a| ≤ V → |a| ≤ B →
+        |v| ≤ (|thR n| * B + V) / (|thR n| - Data.w0q n) := fun {v a B V} h1 h2 => by
+      rw [le_div_iff₀ hden]
+      have e1 : |lam * v| ≤ |thR n| * B + V := by
+        have : |s * thR n * a| ≤ |thR n| * B := by
+          rw [abs_mul, abs_mul, hs1, one_mul]
+          exact mul_le_mul_of_nonneg_left h2 (abs_nonneg _)
+        have := abs_sub_abs_le_abs_sub (lam * v) (s * thR n * a)
+        linarith
+      rw [abs_mul] at e1
+      nlinarith [abs_nonneg v]
+    constructor
+    · have := key hv hψ
+      refine this.trans (le_of_eq ?_)
+      unfold Data.MxQ thR; push_cast; rfl
+    · have := key hvd hψd
+      refine this.trans (le_of_eq ?_)
+      unfold Data.MdQ thR; push_cast; rfl
+
 end ArchS9
 
 end

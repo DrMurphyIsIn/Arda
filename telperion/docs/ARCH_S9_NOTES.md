@@ -96,27 +96,101 @@ remains open between the certified data and T**:
 The truncated W matrix is used only as a cross-check.  `prolate_cc.py` (Legendre/W route) and the
 Galerkin route agree on λ_0..λ_10 to all 15 printed digits.
 
-## 3. What is open (for S6 / S10)
+## 3. Interface with S5-S10 (module `ArchS9_Bridge`), and what is still open
 
-* **Existence of the eigenfunctions** is not proved here.  The theorems are a-posteriori: every
-  eigenfunction is localized, and within a window it is unique up to sign and certified.  That
-  each window actually contains an eigenvalue needs the spectral theorem for the compact
-  self-adjoint operator T (or for P₁P̂₁P₁), which is stage S6.  The certificate gives S6 what it
-  needs to conclude: once an orthonormal eigenbasis {ξ_k} with Σ λ_k² = ∫∫K² is available, an
-  empty window n would put θ_n's mass on eigenvalues of size at most d0Q.  (P2) together with
-  the residual of ψ_n excludes that.  That short argument has not been written in Lean.
-* **Regularity hypothesis.**  The theorems assume ξ is continuous on ℝ.  Any L² eigenfunction with
-  λ ≠ 0 has the continuous (indeed entire) representative T ξ/λ, so S6 must hand over that
-  representative.
-* **Slepian's PS_{2n,0}(2π, ·)** and the differential eigenvalues χ_n are not identified with these
-  eigenfunctions.  CC's proof does not need either.
-* **The tail n > 12.**  `prolate_localization` bounds every other eigenvalue by
-  \|λ\| ≤ 9.70e-22.  That is the input S10 needs for the B3-type tail of the series (99).
-  Bounds on λ_n ξ_n for n > 12 come from the eigen-relation (\|λξ(ω)\| ≤ 2 ∫\|ξ\|), as `abs_T_le`.
+**From L² to continuous: proved.**
+* `continuous_representative`: suppose ξ is only interval-integrable on [0,1], for example any
+  representative of an element of `Lp 2` on (0,1) as S5/S6 produce.  Suppose also T ξ = λ ξ a.e.
+  on (0,1] with λ ≠ 0.
+* Then ξc := T ξ / λ is continuous, satisfies T ξc = λ ξc **everywhere**, equals ξ a.e. on
+  (0,1], and has ip ξc ξc = ip ξ ξ.
+* The continuity step is `continuous_T_of_integrable` (dominated convergence; the kernel is
+  continuous and bounded by 2).
+* So every theorem below applies to S6's eigenvectors through ξc.  ξc is also CC's ξ_n^an: it
+  equals ξ_n on [0,1] and is λ⁻¹ F ξ_n on (1,∞).
+
+**Dictionary to CC (arXiv:2006.13771 (66)-(68)).**
+* CC's even prolate PS on [−1,1] satisfies ∫_{-1}^{1} PS(x) e^{2πixω} dx = λ(n) PS(ω).  Restricted
+  to [0,1] it is an eigenfunction of `T` with eigenvalue λ(n), because for even PS the integral
+  equals ∫_0^1 2cos(2πxω) PS(x) dx.
+* CC's ξ_n = PS/‖PS‖ with ‖·‖² = ∫_0^1 \|·\|² is our normalisation `ip ξ ξ = 1`.
+* The θ_n are CC's **signed** λ(n): θ_0 > 0, θ_1 < 0, and so on.  They are not λ(n)².
+  P₁P̂₁P₁ on even functions has the eigenvalues λ(n)² with the same eigenvectors (CC after (68)),
+  and that is the operator S6 diagonalises.
+* S7/S8/S10 consume λ(n)²/(1−λ(n)²), ξ_n, ξ_n′ on [1/2, 2], and ξ_n(1).  All of these are
+  covered by `prolate_window` and `prolate_S8_fields`.
+
+**Symmetry of T: proved.**  `T_symm` gives ip (T f) g = ip f (T g) for continuous f and g, by
+Fubini on [0,1]².
+
+**Completeness: proved, given S6's Parseval.**
+* `psi_residual`: sup_[0,1] \|T ψ_n − θ_n ψ_n\| ≤ rhoQ = 6.72e-43, using the kernel check
+  `res_ok`.
+* `prolate_window_occupied`: for any orthonormal family of continuous eigenfunctions (e_k, λ_k)
+  in which ψ_n satisfies Parseval (`HasSum (fun k => ip ψ_n (e k)²) (ip ψ_n ψ_n)`), some λ_k
+  lies in window n.  The proof is Bessel plus T_symm: an empty window would force
+  ‖ψ_n‖² ≤ ρ²/w0² < 1 − γ.
+* `prolate_spectrum_complete` assembles three facts for such a family:
+  1. every λ_k is either at most d0Q ≈ 9.70e-22 in absolute value, or lies in a window;
+  2. each of the 13 windows contains **exactly one** k, so no eigenvalue is missing or doubled;
+  3. that λ_k is within w2q n ≈ 6.7e-43 of θ_n.
+* Parseval for ψ_n holds when the e_k form a complete orthonormal basis of L²(0,1).  That is
+  S6's spectral theorem for the compact self-adjoint T.  **This is the only remaining input.**
+  S9 does not prove that an eigenbasis exists.
+
+**S8's `ProlateData` fields (`prolate_S8_fields`), for n ≤ 12.**  For the eigenfunction ξ of
+window n:
+* λ² < 1 (kernel check `lam_ok`: \|θ_n\| + w2q n < 1);
+* ξ is C¹ on ℝ;
+* on [0, 2] ⊇ [e^{−T}, e^T] (for T ≤ log 2), \|ξ\| ≤ MxQ n and \|ξ′\| ≤ MdQ n.
+
+The bounds are crude.  They use absolute coefficient sums of ψ_n at 2, roughly 1e3 to 1e17
+(n = 0 to 12; for example MxQ 10 ≈ 2.6e13 against a true sup of about 4.4e10).  They are good for
+S8's finiteness and summability on the head, not for numerics.  S10 should evaluate the explicit
+polynomials θ_n ψ_n, whose error is below 2e-25, instead of these sup bounds.
+
+**Still open.**
+* The eigenbasis or Parseval input above (stage S6).
+* The tail n > 12 of S8's `summable_wMN` and of CC's series (99).  S9 bounds every eigenvalue
+  outside the windows by 9.70e-22.  Uniform bounds on ξ_n^an for n > 12 must come from the
+  eigen-relation (\|λ ξ(ω)\| ≤ 2∫\|ξ\| ≤ 2, `abs_T_le`, and likewise for ξ′ with 4π) plus a
+  B3-type bound on Σ_{n>12} λ_n².  That is S10's job; nothing in S9 blocks it.
+* Slepian's PS_{2n,0}(2π,·) and the differential eigenvalues χ_n are not identified with these
+  eigenfunctions.  CC's proof does not need them.  The W matrix is used only in the generator, as
+  a cross-check that agrees to 15 digits.
 
 ## 4. Kernel and build times (shared machine, load about 20)
 
-Filled in from the build log; see the table at the end of this file.
+The kernel checks are split into small modules.  Each module is built alone with
+`lake build <M>`.  The times are lake's per-module build times, including about 25 s of Mathlib
+import overhead.  No single check comes near 10 minutes, so no precision reduction was needed.
+
+| module | content | build time |
+|---|---|---|
+| ArchS9_Pi | 45-digit π bounds (80 witness steps each, norm_num) | 39 s |
+| ArchS9_Analysis | analytic core | 49 s |
+| ArchS9_Frame | generic frame | 42 s |
+| ArchS9_Data | data elaboration (166 KB of literals) | 43 s |
+| ArchS9_CertMisc | constants, 13 windows, localization, negative control | 38 s |
+| ArchS9_CertE | 40 rows of E | 46 s |
+| ArchS9_CertGram1 | Gram rows 0-5 (225 entries) | 87 s |
+| ArchS9_CertGram2 | Gram rows 6-12 (217 entries) | 73 s |
+| ArchS9_CertGram3 | Gram rows 13-21 (207 entries) | 82 s |
+| ArchS9_CertGram4 | Gram rows 22-39 (171 entries) | 90 s |
+| ArchS9_CertRes | residual constant ρ | 16 s |
+| ArchS9_Prolate | soundness and main theorems | 37 s |
+| ArchS9_Bridge | bridge, completeness, S8 fields (includes `lam_ok`) | 18-29 s |
+| ArchS9_Guard | 51 `#print axioms` | 31-35 s |
+
+The total is about 10 minutes of sequential builds.  A profiled single Gram row of 40 entries
+spends 12.2 s in the kernel.  Peak memory was never an issue.
+
+**Axioms.**  `lake env lean ArchS9_Guard.lean` prints exactly
+[propext, Classical.choice, Quot.sound] for 50 declarations.  `Data.lc_ok` depends on no axioms.
+
+**Size.**  The Lean code is 2595 lines over 15 modules; ArchS9_Data has 191 lines and 166 KB of
+generated literals.  The generators are gen_s9.py (298 lines), gen_pi.py (41) and gen_s9_res.py
+(12).
 
 ## 5. Lean footguns met
 
