@@ -1,4 +1,4 @@
-import ArchS7c_RowAll
+import ArchS7c_Main
 
 /-! Axiom guard for stage S7c (hypothesis-free CC Thm 4.7).  Expected: [propext, Classical.choice, Quot.sound]. -/
 
@@ -89,3 +89,22 @@ import ArchS7c_RowAll
 #print axioms ArchS7c.tendsto_rowF
 #print axioms ArchS7c.rowF_congr
 #print axioms ArchS7c.coeFn_Q
+#print axioms ArchS7c.countable_of_hilbertBasis
+#print axioms ArchS7c.memLp_conj_Mk
+#print axioms ArchS7c.rowVec_mem
+#print axioms ArchS7c.inner_rowE
+#print axioms ArchS7c.norm_rowE_sq
+#print axioms ArchS7c.hs_eq_lintegral
+#print axioms ArchS7c.measurable_intervalIntegral_pD
+#print axioms ArchS7c.measurable_PhiM
+#print axioms ArchS7c.measurable_hsq
+#print axioms ArchS7c.Nnorm_neg
+#print axioms ArchS7c.lintegral_w
+#print axioms ArchS7c.hs_Q_eq
+#print axioms ArchS7c.norm_F_eq
+#print axioms ArchS7c.norm_hatP_eq
+#print axioms ArchS7c.hasSum_h85
+#print axioms ArchS7c.thm47_of_data
+#print axioms ArchS7c.thm47_of_data_nonneg
+#print axioms ArchS7c.thm47_unconditional
+#print axioms ArchS7c.thm47_unconditional_nonneg

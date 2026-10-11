@@ -825,3 +825,9 @@ name = "ArchS7c_Row"
 
 [[lean_lib]]
 name = "ArchS7c_RowAll"
+
+[[lean_lib]]
+name = "ArchS7c_HS"
+
+[[lean_lib]]
+name = "ArchS7c_Main"
