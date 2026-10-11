@@ -1,0 +1,208 @@
+# liu_dbn_bridge island: Baiying Liu's zero-free half-plane Re s > B_new = (1507 - 2 sqrt 921)/1653
+# (arXiv:2610.12234, Lean on OpenAI's pin) composed with the dbn converter, giving the unconditional
+# de Bruijn-Newman bound `dbn_real_zeros_of_liu_unconditional` (every zero of H_t is real for
+# t >= 2 (B_new - 1/2)^2 ~ 0.2811856). Design: telperion/docs/LIU_DBN_BRIDGE_2026-10-11.md. Not RH.
+# conjecture1_proved = False.
+#
+# LICENCE BASIS: owner decision 2026-10-11, no author grant on file. Liu's repository has no LICENSE
+# file; the Arda owner ruled it is to be treated as Apache-2.0, with attribution to Baiying Liu kept.
+# Nothing of Liu's is committed: liu_materialize.sh fetches the pinned commit at build time and
+# checks every file against liu_sources.sha256.
+#
+# WORKSPACE. One Lake workspace rooted at an unmodified openai/math (OAI_PIN), plus Liu's overlay,
+# the single-pin dbn port and our modules (liu_materialize.sh). Everything runs inside it. The two
+# `lake --dir ../work/oai env lean <file>` lines re-elaborate the committed artifact files; they
+# are the coverage gate's evidence for the artifacts (as in oai-qrh-bridge.yml).
+#
+# CACHE. This job SAVES NOTHING. It restores oai-qrh-bridge.yml's checkpoint read-only (the same
+# openai/math build, about 3.9 GB) and moves it into this workspace, then builds only Liu's 219
+# modules and our bridge on top. A Liu checkpoint of its own would be another ~4 GB and push the
+# repository over the 10 GB Actions cache limit (see the oai-qrh prune step).
+#
+# The Comparator (nanoda on) judges the unconditional theorem against a Mathlib-only challenge and
+# REQUIRES the tampered negative control (Phi with e^{8u}) to be rejected. There is no v4.34.1
+# Comparator tag; v4.34.0 is built with its toolchain file set to v4.34.1.
+name: liu-dbn-bridge
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "47 7 * * 0"
+  # Pull requests touching the island run it too, so a change is judged before it merges. A PR run
+  # can read main's caches, so it gets the oai-qrh checkpoint like a main run.
+  pull_request:
+    paths:
+      - ".github/workflows/liu-dbn-bridge.yml"
+      - "telperion/examples/liu_dbn_bridge/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/liu-dbn-bridge.yml"
+      - "telperion/examples/liu_dbn_bridge/**"
+      - "telperion/examples/oai_qrh_bridge/OAI_PIN"
+      - "telperion/examples/oai_qrh_bridge/dbn_port/**"
+      - "telperion/examples/dbn/lean/DBN*.lean"
+concurrency:
+  group: liu-dbn-bridge-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build-and-judge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Free disk space (the materialized workspace needs about 25 GB)
+        run: |
+          df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL || true
+          sudo docker image prune --all --force > /dev/null 2>&1 || true
+          df -h / | tail -1
+
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Materialize openai/math + Liu at the pinned commits (verifies every hash)
+        working-directory: telperion/examples/liu_dbn_bridge
+        run: ./liu_materialize.sh
+
+      # Byte-for-byte oai-qrh-bridge.yml's key prefix, so this restores that workflow's checkpoint.
+      - name: Cache key (shared with oai-qrh-bridge.yml)
+        id: ckey
+        working-directory: telperion/examples/oai_qrh_bridge
+        run: |
+          echo "prefix=oai-qrh-$(sha256sum OAI_PIN lean/lakefile-stanza.lean | sha256sum | cut -c1-16)-" >> "$GITHUB_OUTPUT"
+
+      # The cache is keyed by its path, so it is restored where oai-qrh-bridge.yml saved it and
+      # then moved into this workspace (same openai/math sources, same dbn port).
+      - name: Restore the oai-qrh-bridge build checkpoint (read-only)
+        uses: actions/cache/restore@v4
+        with:
+          path: telperion/examples/oai_qrh_bridge/work/oai/.lake
+          key: ${{ steps.ckey.outputs.prefix }}${{ github.run_id }}
+          restore-keys: |
+            ${{ steps.ckey.outputs.prefix }}
+
+      - name: Move the checkpoint into the Liu workspace
+        run: |
+          src=telperion/examples/oai_qrh_bridge/work/oai/.lake
+          dst=telperion/examples/liu_dbn_bridge/work/oai/.lake
+          if [ -d "$src" ]; then rm -rf "$dst"; mv "$src" "$dst"; echo "checkpoint moved"; else echo "::notice::no oai-qrh checkpoint; cold build"; fi
+
+      - name: Resolve and patch OpenAI's dependencies, fetch Mathlib oleans
+        working-directory: telperion/examples/liu_dbn_bridge/work/oai
+        run: |
+          lake update
+          lake exe cache get
+
+      - name: Build Liu's overlay, the dbn port, the bridge and the challenges (one workspace; a duplicate OAI.* declaration fails here)
+        working-directory: telperion/examples/liu_dbn_bridge/work/oai
+        run: |
+          lake build ArdaLiuBridge ArdaDBNLiu AxiomGuardLiuBridge ArdaDBNLiuChallenge ArdaDBNLiuChallengeTampered
+          df -h / | tail -1
+
+      # Re-elaborate the two committed artifact files against the built workspace. These two
+      # lines are the coverage gate's evidence for the artifacts (see the header).
+      - name: Re-elaborate the committed artifacts (coverage evidence)
+        working-directory: telperion/examples/liu_dbn_bridge/lean
+        env:
+          ELAN_TOOLCHAIN: leanprover/lean4:v4.34.1
+        run: |
+          lake --dir ../work/oai env lean ArdaLiuBridge.lean
+          lake --dir ../work/oai env lean ArdaDBNLiu.lean
+
+      - name: Axiom guards (no sorryAx; the three standard axioms on every printed constant)
+        working-directory: telperion/examples/liu_dbn_bridge/work/oai
+        run: |
+          lake env lean AxiomGuardLiuBridge.lean | tee axioms.out
+          ! grep -q sorryAx axioms.out
+          test "$(grep -c "depends on axioms: \[propext, Classical.choice, Quot.sound\]" axioms.out)" -eq "$(grep -c '^#print axioms' AxiomGuardLiuBridge.lean)"
+          grep -q "'dbn_real_zeros_of_liu_unconditional' depends on axioms: \[propext, Classical.choice, Quot.sound\]" axioms.out
+          lake env lean LiuOAIDeclarations.lean > liu_oai_decls.out
+          tail -1 liu_oai_decls.out
+
+      - name: Install landrun shim (preserves `--`; same shim as missions-comparator.yml)
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cat > "$HOME/.local/bin/landrun" <<'SHIM'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          args=("$@"); i=0; n=${#args[@]}
+          while (( i < n )); do
+            a="${args[$i]}"
+            case "$a" in
+              --ro|--rw|--rwx|--rox|--env|--log-level)
+                v="${args[$((i+1))]:-}"
+                [[ "$a" == "--env" && "$v" == *"="* ]] && export "$v"
+                i=$((i+2)) ;;
+              --env=*) export "${a#--env=}"; i=$((i+1)) ;;
+              --*=*) i=$((i+1)) ;;
+              -*) i=$((i+1)) ;;
+              *) break ;;
+            esac
+          done
+          exec "${args[@]:$i}"
+          SHIM
+          chmod +x "$HOME/.local/bin/landrun"
+
+      - name: Build Comparator + lean4export (v4.34.0 tag, toolchain v4.34.1)
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch v4.34.0 https://github.com/leanprover/comparator.git "$HOME/comparator"
+          cd "$HOME/comparator"
+          echo "leanprover/lean4:v4.34.1" > lean-toolchain
+          lake build lean4export comparator
+          COMPARATOR_BIN="$(find "$HOME/comparator/.lake" -type f -name comparator -path '*/bin/*' | head -1)"
+          L4X_BIN="$(find "$HOME/comparator/.lake" -type f -name lean4export -path '*/bin/*' | head -1)"
+          test -x "$COMPARATOR_BIN" && test -x "$L4X_BIN"
+          echo "$(dirname "$COMPARATOR_BIN")" >> "$GITHUB_PATH"
+          echo "COMPARATOR_LEAN4EXPORT=$L4X_BIN" >> "$GITHUB_ENV"
+
+      - name: Build nanoda (2nd kernel)
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$HOME/nanoda"
+          cd "$HOME/nanoda"
+          cargo build --release
+          test -x "$HOME/nanoda/target/release/nanoda_bin"
+          echo "COMPARATOR_NANODA=$HOME/nanoda/target/release/nanoda_bin" >> "$GITHUB_ENV"
+
+      - name: "Comparator (nanoda on): positive challenge accepted, negative control REJECTED"
+        working-directory: telperion/examples/liu_dbn_bridge/work/oai
+        env:
+          COMPARATOR_LANDRUN: /home/runner/.local/bin/landrun
+          MALLOC_ARENA_MAX: "2"
+        run: |
+          set -uo pipefail
+          ulimit -s unlimited 2>/dev/null || ulimit -s 4194304 2>/dev/null || true
+          fail=0
+          echo "==================== dbn_real_zeros_of_liu_unconditional (must be ACCEPTED) ===================="
+          if lake env comparator dbn_real_zeros_of_liu_unconditional.comparator.json 2>&1 | tee cmp_pos.out && grep -q "Your solution is okay!" cmp_pos.out; then
+            echo "ACCEPTED"
+          else
+            echo "::error::Comparator did not accept dbn_real_zeros_of_liu_unconditional"; fail=1
+          fi
+          echo "==================== tampered (must be REJECTED) ===================="
+          if lake env comparator liu_tampered.comparator.json > cmp_tampered.out 2>&1 && grep -q "Your solution is okay!" cmp_tampered.out; then
+            echo "::error::Comparator ACCEPTED the tampered negative control; the challenge does not pin DBN.Phi"; fail=1
+          elif grep -q "does not match" cmp_tampered.out; then
+            echo "REJECTED as required: $(grep -m1 'does not match' cmp_tampered.out)"
+          else
+            echo "::error::tampered control neither accepted nor rejected for the expected reason"; cat cmp_tampered.out; fail=1
+          fi
+          exit $fail
+
+      - name: Upload Comparator and axiom logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: liu-dbn-bridge-logs
+          path: |
+            telperion/examples/liu_dbn_bridge/work/oai/cmp_*.out
+            telperion/examples/liu_dbn_bridge/work/oai/axioms.out
+            telperion/examples/liu_dbn_bridge/work/oai/liu_oai_decls.out
+          if-no-files-found: ignore

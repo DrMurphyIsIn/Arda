@@ -1,0 +1,29 @@
+# Zero-free-strip watcher: goes RED when openai/math or arXiv math.NT shows a new item the dbn converter
+# could consume (a fixed zero-free strip, anything on the de Bruijn-Newman constant) or an input the 7/8
+# method is bottlenecked on. The seen-list is COMMITTED (telperion/research/watch/zero_free_seen.json);
+# triage = read the hit, act or not, then run `python -m telperion.zero_free_watch --update` and commit.
+# Rationale: RH_PROGRAM_2026-10-10.md, SEXTIC_BOTTLENECK_2026-10-11.md ("be the fastest verifier").
+# conjecture1_proved = False.
+name: zero-free-watch
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * *"   # daily 06:17 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Poll openai/math preprints and arXiv math.NT against the committed seen-list
+        env:
+          PYTHONPATH: telperion/src
+        run: python -m telperion.zero_free_watch --state telperion/research/watch/zero_free_seen.json --fail-on-new

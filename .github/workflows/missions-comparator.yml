@@ -34,9 +34,12 @@ name: missions-comparator
 # Islands not yet wired: zero_free_bridge (1 node, v4.32.0; shared-packages wiring) and
 # zeta_zero_localization (monolith lakefile, cannot be path-required: ARG_MAX).
 # bg: the island is the R3Cert package at proof/formalization (judge.OUT_OF_TREE_ISLANDS). Its
-# challenges import the vocabulary mirror's home modules, not the whole island (R47PC6Cells is
-# ~70 min / 18 GB and no node needs it), and the job restores proof-lean.yml's incremental R3Cert
-# build (a path dependency builds in place, into proof/formalization/.lake/build).
+# challenges import the vocabulary mirror's home modules, not the whole island (161 modules, NOT
+# the spider tables, mid-root certificates or the G149 heavy set), and the job restores
+# proof-lean.yml's incremental R3Cert build (a path dependency builds in place, into
+# proof/formalization/.lake/build). That closure DOES contain R47PC6Cells and R47PC6Reduce
+# (18.2 GB peak), so on a cache miss the shard builds them the way proof-lean.yml stages 1/2 do:
+# one `lake build` each, on 16 GB of swap, before the light modules (2026-10-11, see the steps).
 # proof-comparator.yml still runs its three BG anchors in self-check mode; this job judges every
 # proved bg node against its REGISTERED statement.
 # oai_qrh_bridge (judge.MATERIALIZED_ROOT_ISLANDS; job judge-oai-qrh-bridge): the island is a
@@ -58,6 +61,7 @@ on:
       - "telperion/examples/li_positivity/**"
       - "telperion/examples/quasicrystal/**"
       - "telperion/examples/oai_qrh_bridge/**"
+      - "telperion/examples/liu_dbn_bridge/**"
       - "proof/formalization/**"
       - "telperion/src/telperion/missions/judge.py"
       - "telperion/src/telperion/comparator.py"
@@ -71,6 +75,7 @@ on:
       - "telperion/examples/dbn/**"
       - "telperion/examples/rvm_bridge/**"
       - "telperion/examples/oai_qrh_bridge/**"
+      - "telperion/examples/liu_dbn_bridge/**"
       - "proof/formalization/**"
       - "telperion/src/telperion/missions/judge.py"
       - "telperion/scripts/judge_materialize.sh"
@@ -103,18 +108,18 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install sympy
-      - name: Committed challenge bundles match the registry (dbn, rvm_bridge, zeta_reflection, li_positivity, quasicrystal, bg, oai_qrh_bridge)
+      - name: Committed challenge bundles match the registry (dbn, rvm_bridge, zeta_reflection, li_positivity, quasicrystal, bg, oai_qrh_bridge, liu_dbn_bridge)
         working-directory: telperion
         run: |
           set -euo pipefail
-          for isl in dbn rvm_bridge zeta_reflection li_positivity quasicrystal bg oai_qrh_bridge; do
+          for isl in dbn rvm_bridge zeta_reflection li_positivity quasicrystal bg oai_qrh_bridge liu_dbn_bridge; do
             PYTHONPATH=src python -m telperion.missions.judge --island "$isl" --check
           done
       - name: Every wired island still renders
         working-directory: telperion
         run: |
           set -euo pipefail
-          for isl in dbn rvm_bridge zeta_reflection li_positivity quasicrystal bg oai_qrh_bridge; do
+          for isl in dbn rvm_bridge zeta_reflection li_positivity quasicrystal bg oai_qrh_bridge liu_dbn_bridge; do
             PYTHONPATH=src python -m telperion.missions.judge --island "$isl" --list | tail -1
           done
 
@@ -139,8 +144,9 @@ jobs:
           allm = json.loads(os.environ["ALL"])
           isl, sh = os.environ.get("WANT_ISLAND", ""), os.environ.get("WANT_SHARD", "")
           sel = [e for e in allm if not isl or (e["island"] == isl and (not sh or e["shard"] == sh))]
-          # oai_qrh_bridge is judged by its own job (judge-oai-qrh-bridge), not this matrix
-          if not sel and isl == "oai_qrh_bridge":
+          # oai_qrh_bridge and liu_dbn_bridge are judged by their own jobs (judge-oai-qrh-bridge,
+          # judge-liu-dbn-bridge), not this matrix
+          if not sel and isl in ("oai_qrh_bridge", "liu_dbn_bridge"):
               sel = []
           elif not sel:
               raise SystemExit(f"::error::no shard matches island={isl!r} shard={sh!r}; known: {allm}")
@@ -220,6 +226,97 @@ jobs:
           restore-keys: |
             ${{ steps.ckey.outputs.prefix }}
 
+      # bg only (2026-10-11). Runs 38070548082, 38093443787 and 38108898132 died here with
+      # "The runner has received a shutdown signal" (exit 143) ~56 min in: the restore above
+      # MISSED (no lean-build-* cache was left on main: the repo's 10 GB cache budget is mostly
+      # the two 3.9 GB oai-qrh checkpoints, so main's R3Cert checkpoint is evicted within hours),
+      # and the cold `lake build` of the bridge modules ran the whole 161-module closure at once.
+      # R47PC6Cells finished at [8809/8825] after 1374-1687 s; the next heavy one is R47PC6Reduce,
+      # which peaks at 18.2 GB alone (proof-lean.yml, swap step) and was started beside the
+      # remaining modules with only the runner's default swap. Same fix as proof-lean.yml
+      # (PR #665): 16 GB of swap, a once-a-minute memory line in the log, and every SERIAL module
+      # in the shard's closure (ci/heavy_bg.py serial-plan: PC6Cells/PC6Reduce, the spider-table
+      # chunks, the mid-root certificates) built by its own `lake build`, in dependency order, so
+      # nothing heavy runs beside it. With a warm cache each call replays in seconds.
+      - name: Provision swap + install the build-telemetry wrapper (bg)
+        if: matrix.island == 'bg'
+        run: |
+          set -uo pipefail
+          free -m; df -h / /mnt 2>/dev/null || true
+          SW=""
+          for cand in /mnt/arda-judge-build.swap:16G /arda-judge-build.swap:10G; do
+            f=${cand%%:*}; sz=${cand##*:}
+            if sudo fallocate -l "$sz" "$f" 2>/dev/null; then SW=$f; break; fi
+          done
+          if [ -n "$SW" ] && sudo chmod 600 "$SW" && sudo mkswap "$SW" >/dev/null && sudo swapon "$SW"; then
+            echo "extra swap enabled: $SW"
+          else
+            echo "::warning::could not enable extra swap; continuing without it"
+          fi
+          swapon --show || true; free -m
+          # `lakeb <targets...>`: proof-lean.yml's wrapper (lake build + a resource line every
+          # minute + "lakeb: <n> module(s) compiled"), except that the monitor's `sleep` holds
+          # no copy of the output pipe, so a call returns as soon as lake does instead of up to
+          # 60 s later (in proof-lean.yml every warm per-chunk call takes exactly a minute).
+          mkdir -p "$RUNNER_TEMP/bin"
+          cat > "$RUNNER_TEMP/bin/lakeb" <<'SH'
+          #!/usr/bin/env bash
+          set -uo pipefail
+          ( while :; do
+              sleep 60 </dev/null >/dev/null 2>&1 & wait $!
+              echo "[res $(date -u +%H:%M:%S)] $(free -m 2>/dev/null | awk '/^Mem:/{printf "mem_used=%sM avail=%sM", $3, $7} /^Swap:/{printf " swap_used=%sM", $3}') disk_free=$(df -BG --output=avail / 2>/dev/null | tail -1 | tr -d ' ')"
+            done ) &
+          mon=$!
+          trap 'kill "$mon" 2>/dev/null || true' EXIT
+          log=$(mktemp)
+          lake build "$@" 2>&1 | tee "$log"
+          rc=${PIPESTATUS[0]}
+          n=$(grep -cE '\[[0-9]+/[0-9]+\] Built ' "$log" || true)
+          echo "lakeb: $n module(s) compiled by: lake build $*"
+          exit "$rc"
+          SH
+          chmod +x "$RUNNER_TEMP/bin/lakeb"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      # bg only: the SERIAL modules of this shard's closure, one `lake build` each. The plan is
+      # computed from the import lines of exactly the challenge modules built below, so it
+      # follows the registry. If the closure reaches the G149 heavy set (does not fit in 16 GB
+      # even alone; proof-lean-heavy.yml builds it on the self-hosted runner), the step FAILS
+      # with that reason instead of letting the runner die: it never skips a node.
+      - name: Build the memory-heavy R3Cert modules one at a time (bg)
+        id: serial
+        if: matrix.island == 'bg'
+        timeout-minutes: 200
+        working-directory: ${{ env.BUNDLE }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          imports=$(cut -f1 "$RUNNER_TEMP/nodes.tsv" | sed 's|^|MissionChallenges/|; s|$|.lean|' | xargs sed -n 's/^import \(R3Cert\.[^ ]*\).*/\1/p' | sort -u)
+          echo "$(printf '%s\n' "$imports" | grep -c .) R3Cert module(s) imported by this shard's challenges"
+          if ! plan=$(python3 "$GITHUB_WORKSPACE/proof/formalization/ci/heavy_bg.py" serial-plan $imports); then
+            echo "::error::this bg shard's closure cannot be built on the 16 GB hosted runner (see above); judge it on the self-hosted runner instead"
+            exit 1
+          fi
+          echo "serial plan: $(printf '%s\n' "$plan" | grep -c .) module(s)"; printf '%s\n' "$plan" | sed 's/^/  /'
+          total=0
+          for m in $plan; do
+            t0=$SECONDS
+            lakeb "$m" 2>&1 | tee "$RUNNER_TEMP/serial.log"
+            n=$(sed -n 's/^lakeb: \([0-9][0-9]*\) module.*/\1/p' "$RUNNER_TEMP/serial.log" | tail -1)
+            total=$((total + ${n:-0}))
+            echo "serial $m: $((SECONDS - t0)) s"
+          done
+          echo "built=$total" >> "$GITHUB_OUTPUT"
+
+      - name: Save R3Cert build checkpoint (bg, serial stage)
+        if: >-
+          always() && matrix.island == 'bg' && steps.ckey.outputs.prefix != '' &&
+          steps.serial.outcome != 'skipped' && steps.serial.outputs.built != '0'
+        uses: actions/cache/save@v4
+        with:
+          path: proof/formalization/.lake/build
+          key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}-judge-serial
+
       # Each bridge module imports its artifact AND the island's AxiomGuard modules (the
       # whole island; on li_positivity the one guard whose closure holds the artifact, on
       # quasicrystal none), so this is the island build plus one small module per node. It is
@@ -228,12 +325,15 @@ jobs:
       # shard's node list, never through the bundle root (empty on li_positivity).
       - name: Build this shard's bridge modules (island build + statement identity)
         id: build
+        # bg: what is left after the serial stage is light; end in time for the always() save.
+        timeout-minutes: ${{ matrix.island == 'bg' && 80 || 290 }}
         working-directory: ${{ env.BUNDLE }}
         run: |
           set -euo pipefail
           mods=$(cut -f1 "$RUNNER_TEMP/nodes.tsv" | sed 's/^/MissionChallenges./' | tr '\n' ' ')
           echo "modules: $mods"
-          lake build $mods 2>&1 | tee "$RUNNER_TEMP/build.log"
+          LAKE=(lake build); [ "${{ matrix.island }}" = bg ] && LAKE=(lakeb)
+          "${LAKE[@]}" $mods 2>&1 | tee "$RUNNER_TEMP/build.log"
           echo "built=$(grep -cE '\[[0-9]+/[0-9]+\] Built ' "$RUNNER_TEMP/build.log" || true)" >> "$GITHUB_OUTPUT"
 
       # bg only: checkpoint what this job compiled (also after a failed or cancelled build, so
@@ -537,6 +637,200 @@ jobs:
               pass=$((pass+1))
             else
               echo "::error::COMPARATOR FAIL island=oai_qrh_bridge node=$slug theorem=$thm"
+              echo "| $slug | \`$thm\` | **FAIL** |" >> "$GITHUB_STEP_SUMMARY"
+              fail=1
+            fi
+          done < "$RUNNER_TEMP/nodes.tsv"
+          echo "passed: $pass"
+          if [ "$fail" -ne 0 ]; then
+            echo "::error::at least one registry node did not pass the independent judge (see above)"
+            exit 1
+          fi
+          echo "Record a pass with: mission comparator-record <Slug> --run-id ${{ github.run_id }} --theorem <name> --run-url ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+  # liu_dbn_bridge: a MATERIALIZED island, the same openai/math workspace plus Baiying Liu's
+  # overlay (arXiv:2610.12234; fetched at build time, never vendored; licence basis: owner
+  # decision 2026-10-11, no author grant on file), built by liu_materialize.sh. Same verdict as
+  # judge-oai-qrh-bridge. It restores oai-qrh-bridge.yml's checkpoint read-only, moves it into the
+  # Liu workspace and builds Liu's modules on top; it never saves a cache.
+  judge-liu-dbn-bridge:
+    needs: bundles-in-sync
+    if: github.event_name != 'workflow_dispatch' || inputs.island == '' || inputs.island == 'liu_dbn_bridge'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    defaults:
+      run:
+        shell: bash
+    env:
+      BUNDLE: telperion/missions/judge/liu_dbn_bridge
+      RECIPE: telperion/examples/liu_dbn_bridge
+      # The runner has no elan default toolchain, and several steps run outside a directory
+      # with a lean-toolchain file (60b2cade9). Everything here is the island pin, v4.34.1.
+      ELAN_TOOLCHAIN: leanprover/lean4:v4.34.1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy
+
+      # PROVED nodes only (never --pending in CI). Empty before the island's first grant: then
+      # every later step is skipped and the job passes with a notice.
+      - name: Proved nodes on liu_dbn_bridge
+        id: nodes
+        working-directory: telperion
+        run: |
+          set -euo pipefail
+          PYTHONPATH=src python -m telperion.missions.judge --island liu_dbn_bridge --configs | tee "$RUNNER_TEMP/nodes.tsv"
+          if [ -s "$RUNNER_TEMP/nodes.tsv" ]; then
+            echo "any=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "any=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::liu_dbn_bridge: no PROVED node yet (its nodes are draft until the operator's audit and the grant); nothing to judge"
+            echo "## missions-comparator: liu_dbn_bridge: no proved node yet, nothing judged" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          test "$(python -c 'import json;print(json.load(open("missions/judge/liu_dbn_bridge/MANIFEST.json"))["comparator_tag"])')" = "v4.34.0"
+
+      - name: Free disk space (the materialized workspace needs about 25 GB)
+        if: steps.nodes.outputs.any == 'true'
+        run: |
+          df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL || true
+          sudo docker image prune --all --force > /dev/null 2>&1 || true
+          df -h / | tail -1
+
+      - name: Install elan
+        if: steps.nodes.outputs.any == 'true'
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Materialize openai/math + Liu at the pinned commits (the island recipe; verifies every hash)
+        if: steps.nodes.outputs.any == 'true'
+        working-directory: ${{ env.RECIPE }}
+        run: ./liu_materialize.sh
+
+      # Byte-for-byte oai-qrh-bridge.yml's key, so this job restores that workflow's checkpoint.
+      - name: Cache key (shared with oai-qrh-bridge.yml)
+        if: steps.nodes.outputs.any == 'true'
+        id: ckey
+        working-directory: telperion/examples/oai_qrh_bridge
+        run: |
+          echo "prefix=oai-qrh-$(sha256sum OAI_PIN lean/lakefile-stanza.lean | sha256sum | cut -c1-16)-" >> "$GITHUB_OUTPUT"
+
+      - name: Restore the oai-qrh-bridge build checkpoint (read-only)
+        if: steps.nodes.outputs.any == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: telperion/examples/oai_qrh_bridge/work/oai/.lake
+          key: ${{ steps.ckey.outputs.prefix }}${{ github.run_id }}
+          restore-keys: |
+            ${{ steps.ckey.outputs.prefix }}
+
+      - name: Move the checkpoint into the Liu workspace
+        if: steps.nodes.outputs.any == 'true'
+        run: |
+          src=telperion/examples/oai_qrh_bridge/work/oai/.lake
+          dst="$RECIPE/work/oai/.lake"
+          if [ -d "$src" ]; then rm -rf "$dst"; mv "$src" "$dst"; echo "checkpoint moved"; else echo "::notice::no oai-qrh checkpoint; cold build"; fi
+
+      - name: Resolve and patch OpenAI's dependencies, fetch Mathlib oleans
+        if: steps.nodes.outputs.any == 'true'
+        working-directory: ${{ env.RECIPE }}/work/oai
+        run: |
+          lake update
+          lake exe cache get
+
+      - name: Install the judge bundle inside the workspace
+        if: steps.nodes.outputs.any == 'true'
+        run: telperion/scripts/judge_materialize.sh "$BUNDLE" "$RECIPE/work/oai"
+
+      # Statement identity: a bridge module elaborates only if the artifact's theorem has
+      # exactly the registered statement's type. Built BY NAME from the node list.
+      - name: Build the bridge modules (island build + statement identity)
+        if: steps.nodes.outputs.any == 'true'
+        working-directory: ${{ env.RECIPE }}/work/oai
+        run: |
+          set -euo pipefail
+          mods=$(cut -f1 "$RUNNER_TEMP/nodes.tsv" | sed 's/^/MissionChallenges./' | tr '\n' ' ')
+          echo "modules: $mods"
+          lake build $mods
+          df -h / | tail -1
+
+      - name: Install landrun shim (preserves `--`)
+        if: steps.nodes.outputs.any == 'true'
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cat > "$HOME/.local/bin/landrun" <<'SHIM'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          args=("$@"); i=0; n=${#args[@]}
+          while (( i < n )); do
+            a="${args[$i]}"
+            case "$a" in
+              --ro|--rw|--rwx|--rox|--env|--log-level)
+                v="${args[$((i+1))]:-}"
+                [[ "$a" == "--env" && "$v" == *"="* ]] && export "$v"
+                i=$((i+2)) ;;
+              --env=*) export "${a#--env=}"; i=$((i+1)) ;;
+              --*=*) i=$((i+1)) ;;
+              -*) i=$((i+1)) ;;
+              *) break ;;
+            esac
+          done
+          exec "${args[@]:$i}"
+          SHIM
+          chmod +x "$HOME/.local/bin/landrun"
+
+      - name: Build Comparator + lean4export (v4.34.0 tag, toolchain v4.34.1)
+        if: steps.nodes.outputs.any == 'true'
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch v4.34.0 https://github.com/leanprover/comparator.git "$HOME/comparator"
+          cd "$HOME/comparator"
+          echo "leanprover/lean4:v4.34.1" > lean-toolchain
+          lake build lean4export comparator
+          COMPARATOR_BIN="$(find "$HOME/comparator/.lake" -type f -name comparator -path '*/bin/*' | head -1)"
+          L4X_BIN="$(find "$HOME/comparator/.lake" -type f -name lean4export -path '*/bin/*' | head -1)"
+          test -x "$COMPARATOR_BIN" && test -x "$L4X_BIN"
+          echo "$(dirname "$COMPARATOR_BIN")" >> "$GITHUB_PATH"
+          echo "COMPARATOR_LEAN4EXPORT=$L4X_BIN" >> "$GITHUB_ENV"
+
+      - name: Build nanoda (2nd kernel)
+        if: steps.nodes.outputs.any == 'true'
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/ammkrn/nanoda_lib.git "$HOME/nanoda"
+          cd "$HOME/nanoda"
+          cargo build --release
+          test -x "$HOME/nanoda/target/release/nanoda_bin"
+          echo "COMPARATOR_NANODA=$HOME/nanoda/target/release/nanoda_bin" >> "$GITHUB_ENV"
+
+      - name: Comparator over the proved liu_dbn_bridge nodes (statement identity + axiom whitelist + 2 kernels)
+        if: steps.nodes.outputs.any == 'true'
+        working-directory: ${{ env.RECIPE }}/work/oai
+        env:
+          COMPARATOR_LANDRUN: /home/runner/.local/bin/landrun
+          MALLOC_ARENA_MAX: "2"
+        run: |
+          set -uo pipefail
+          ulimit -s unlimited 2>/dev/null || ulimit -s 4194304 2>/dev/null || echo "::warning::could not raise the stack limit (ulimit -s)"
+          echo "lean4export = $COMPARATOR_LEAN4EXPORT ; nanoda = $COMPARATOR_NANODA"
+          fail=0; pass=0
+          {
+            echo "## missions-comparator: liu_dbn_bridge (run ${{ github.run_id }})"
+            echo
+            echo "| node | theorem | verdict |"
+            echo "|---|---|---|"
+          } >> "$GITHUB_STEP_SUMMARY"
+          while IFS=$'\t' read -r slug cfg sol thm bridge kernel _rest; do
+            echo "==================== $slug  ($thm in $sol; bridge $bridge; $kernel) ===================="
+            if lake env comparator "$cfg"; then
+              echo "COMPARATOR PASS island=liu_dbn_bridge node=$slug theorem=$thm run=${{ github.run_id }} kernel=$kernel"
+              echo "| $slug | \`$thm\` | PASS ($kernel) |" >> "$GITHUB_STEP_SUMMARY"
+              pass=$((pass+1))
+            else
+              echo "::error::COMPARATOR FAIL island=liu_dbn_bridge node=$slug theorem=$thm"
               echo "| $slug | \`$thm\` | **FAIL** |" >> "$GITHUB_STEP_SUMMARY"
               fail=1
             fi

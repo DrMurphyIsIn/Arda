@@ -30,6 +30,10 @@
         adjoined is < 0 in [A',B'] with B' < 0 <= A: the measured, machine-checked (1,1) leakage.
       * BraggDefect.defect_leakage_gap     -- the two enclosures are separated (B' < A): the defect
         is a kernel-observable, not a rounding artifact.
+      * BraggDefect.hexp_sie / defect_witness_offline_sie / bragg_defect_witness_sie /
+        defect_leakage_gap_sie -- the same results with NO `hexp` binder: the Arb seam discharged by
+        the scaled_interval_eval emitter (BraggDefectSIE.sie_defect_offline encloses the off-line
+        defect bracket directly; BraggDefectSIE.sie_exp_tenth proves hexp itself).
 
     Expected on all: {propext, Classical.choice, Quot.sound} -- no sorryAx, no ofReduceBool.
 
@@ -74,6 +78,14 @@ import QuadrupleDefect
 #print axioms BraggDefect.defect_witness_online
 #print axioms BraggDefect.defect_witness_offline
 #print axioms BraggDefect.defect_leakage_gap
+
+/-! ### The hexp seam discharged by the scaled_interval_eval emitter (BraggDefectSIE) -/
+#print axioms BraggDefectSIE.sie_defect_offline
+#print axioms BraggDefectSIE.sie_exp_tenth
+#print axioms BraggDefect.hexp_sie
+#print axioms BraggDefect.defect_witness_offline_sie
+#print axioms BraggDefect.bragg_defect_witness_sie
+#print axioms BraggDefect.defect_leakage_gap_sie
 
 /-! ### The 2-channel signature bridge (29 certified zeros + 1 synthetic pair) -/
 #print axioms BraggDefect.defect_two_channel_online

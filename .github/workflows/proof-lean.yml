@@ -141,7 +141,8 @@ jobs:
           cat > "$RUNNER_TEMP/bin/lakeb" <<'SH'
           #!/usr/bin/env bash
           set -uo pipefail
-          ( while sleep 60; do
+          ( while :; do
+              sleep 60 </dev/null >/dev/null 2>&1 & wait $!
               echo "[res $(date -u +%H:%M:%S)] $(free -m 2>/dev/null | awk '/^Mem:/{printf "mem_used=%sM avail=%sM", $3, $7} /^Swap:/{printf " swap_used=%sM", $3}') disk_free=$(df -BG --output=avail / 2>/dev/null | tail -1 | tr -d ' ')"
             done ) &
           mon=$!

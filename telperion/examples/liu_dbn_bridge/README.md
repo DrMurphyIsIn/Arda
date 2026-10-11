@@ -46,8 +46,9 @@ Liu's θ, to 8 digits. So Liu's half-plane is the proved-input optimum of that a
   fetches the pinned commit at build time into `work/`, which is gitignored. The only things we
   commit about Liu's code are its commit hash, a list of sha256 hashes of its files
   (`liu_sources.sha256`), the layout rule, and the names of the `OAI.*` declarations it adds.
-- **Release and CI** no longer wait on a licence. They wait on an independent replay and the
-  missions governance path. The CI workflow stays a draft until then (`ci/liu-dbn-bridge.yml.draft`).
+- **CI is active** (`.github/workflows/liu-dbn-bridge.yml`, plus the `judge-liu-dbn-bridge` job in
+  `missions-comparator.yml`). Both restore oai-qrh-bridge's build checkpoint read-only and save no
+  cache of their own. Release waits on the missions governance path.
 
 ## Files
 
@@ -64,7 +65,6 @@ lean/LiuOAIClashCheck.lean    scans every built OpenAI .olean for a name Liu als
 lean/ArdaDBNLiuChallenge.lean Comparator challenge (Mathlib only + transcribed DBN.H)
 lean/negative_control/        tampered challenge that Comparator must reject
 lean/lakefile-stanza.lean     the lean_lib lines appended to OpenAI's lakefile
-ci/liu-dbn-bridge.yml.draft   inactive CI draft
 logs/                         recipe, axiom, clash-scan and Comparator logs
 ```
 

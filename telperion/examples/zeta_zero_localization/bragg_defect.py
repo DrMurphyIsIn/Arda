@@ -105,6 +105,21 @@ def exp_lo_hi(t: F, n: int = N_TAYLOR) -> tuple[F, F]:
     return lo, hi
 
 
+def compute() -> tuple:
+    """The exact rationals the emitted Lean quotes (no printing, no writing)."""
+    elo, ehi = exp_lo_hi(UEXP)
+    einv_lo, einv_hi = F(1) / ehi, F(1) / elo
+    Aoff_lo, Aoff_hi = elo + einv_lo, ehi + einv_hi
+    d_lo, d_hi = Aoff_lo - 2, Aoff_hi - 2
+    off_lo, off_hi = -(d_hi ** 2), -(d_lo ** 2)
+    return elo, ehi, einv_lo, einv_hi, Aoff_lo, Aoff_hi, d_lo, d_hi, off_lo, off_hi
+
+
+def render() -> str:
+    """The full BraggDefect.lean text (used by --check here and in bragg_defect_sie/generate.py)."""
+    return _render(*compute())
+
+
 def main() -> None:
     # amplification factor of the off-line pair: A_off = x^{delta} + x^{-delta} = e^{u delta}+e^{-u delta}
     #                                            A_on  = 2  (beta = 1/2 gives delta = 0)
@@ -160,12 +175,13 @@ def main() -> None:
     print("    defect_eq_two is PARAMETRIC in the two excesses (only d1,d2 != 0 needed): the count is")
     print("    structural -- two pairs on orthogonal channels leak two independent negative directions.")
 
-    _emit(elo, ehi, einv_lo, einv_hi, Aoff_lo, Aoff_hi, d_lo, d_hi, off_lo, off_hi)
+    assert (elo, ehi, einv_lo, einv_hi, Aoff_lo, Aoff_hi, d_lo, d_hi, off_lo, off_hi) == compute()
+    OUT.write_text(render())
     print(f"\n  emitted {OUT}")
 
 
-def _emit(elo, ehi, einv_lo, einv_hi, Aoff_lo, Aoff_hi, d_lo, d_hi, off_lo, off_hi) -> None:
-    """Emit BraggDefect.lean: the two kernel witness theorems + the leakage-gap theorem.
+def _render(elo, ehi, einv_lo, einv_hi, Aoff_lo, Aoff_hi, d_lo, d_hi, off_lo, off_hi) -> str:
+    """Render BraggDefect.lean: the two kernel witness theorems + the leakage-gap theorem.
 
     The emitted Lean does NOT re-derive e^{1/10} inside the kernel (that would need the corpus exp
     brackets wired in); instead it takes the certified exp enclosure as a NAMED, norm_num-checkable
@@ -215,6 +231,7 @@ defect EXACTLY 1) and `defect_eq_two` (two synthetic pairs on orthogonal channel
 import Mathlib
 import DefectDictionary
 import R2Rigidity
+import BraggDefectSIE
 
 namespace BraggDefect
 
@@ -298,6 +315,17 @@ theorem defect_witness_offline
   · -- -excess^2 <= off_hi = -d_lo^2, i.e. excess^2 >= d_lo^2
     nlinarith [hd_lo, hd_pos]
 
+/-- **`bragg_defect_witness`** -- the two kernel witnesses packaged as one declaration, in the exact
+form the MIRRORMERE registry node `MM_bragg_defect_witness` states (its grant gate is syntactic
+containment of the node statement in this artifact): the on-line configuration's defect functional
+is exactly `0`, AND the off-line configuration's is bracketed strictly below `0`.  Carries the same
+`e^(1/10)` enclosure hypothesis as `defect_witness_offline`. -/
+theorem bragg_defect_witness
+    (hexp : expLo ≤ Real.exp (1 / 10) ∧ Real.exp (1 / 10) ≤ expHi) :
+    defectFunctional 0 = 0 ∧
+    ({q(off_lo)} ≤ defectFunctional excess ∧ defectFunctional excess ≤ {q(off_hi)}) :=
+  ⟨defect_witness_online, defect_witness_offline hexp⟩
+
 /-- **`defect_leakage_gap`** -- the two enclosures are SEPARATED: the off-line functional's upper
 bound is strictly below the on-line functional's value (`B' < A`).  The defect is a kernel-observable
 quantity, not a rounding artifact: no test vector can read the off-line configuration as crystalline.
@@ -306,6 +334,48 @@ theorem defect_leakage_gap
     (hexp : expLo ≤ Real.exp (1 / 10) ∧ Real.exp (1 / 10) ≤ expHi) :
     defectFunctional excess ≤ {q(off_hi)} ∧ ({q(off_hi)} : ℝ) < defectFunctional 0 := by
   refine ⟨(defect_witness_offline hexp).2, ?_⟩
+  rw [defect_witness_online]
+  norm_num
+
+/-! ## The `hexp` seam discharged by the scaled_interval_eval emitter
+
+`BraggDefectSIE` is emitted by `telperion/examples/bragg_defect_sie/generate.py` against the
+`ScaledInterval` prelude (a drift-checked copy of the scaled_interval_eval prelude).  At scale
+`S = 10^40` it encloses `-(e^(1/10) + e^(-1/10) - 2)^2` in the off-line bracket above, and `e^(1/10)`
+in `[expLo, expHi]`; every intermediate integer box is recomputed by `decide +kernel`.  The
+declarations below carry NO `hexp` binder.  The off-line ones do not route through `hexp` at all:
+the defect bracket itself is enclosed, and the bridge is only the rewrite `(-1)/10 = -(1/10)` plus
+unfolding `defectFunctional`, `excess`, `Aoff` and `Aon`.  `hexp_sie` proves the hypothesis itself,
+so `defect_witness_offline hexp_sie` etc. are unconditional too.  (The `exp_enclosure` route,
+`ExpEnclosureInstances.bragg_defect_witness_unconditional`, is an independent second discharge.)
+conjecture1_proved = False. -/
+
+/-- **`hexp_sie`** -- the `hexp` hypothesis as a kernel-checked theorem: `expLo <= e^(1/10) <= expHi`. -/
+theorem hexp_sie : expLo ≤ Real.exp (1 / 10) ∧ Real.exp (1 / 10) ≤ expHi := by
+  obtain ⟨h1, h2⟩ := BraggDefectSIE.sie_exp_tenth
+  unfold expLo expHi
+  constructor <;> linarith
+
+/-- **`defect_witness_offline_sie`** -- `defect_witness_offline` with no `hexp`: the off-line defect
+functional lies in the same bracket, by the scaled_interval_eval enclosure of the bracketed
+quantity itself. -/
+theorem defect_witness_offline_sie :
+    {q(off_lo)} ≤ defectFunctional excess ∧ defectFunctional excess ≤ {q(off_hi)} := by
+  obtain ⟨h1, h2⟩ := BraggDefectSIE.sie_defect_offline
+  rw [show ((-1 : ℝ) / 10) = -(1 / 10) by norm_num] at h1 h2
+  unfold defectFunctional excess Aoff Aon
+  constructor <;> linarith
+
+/-- **`bragg_defect_witness_sie`** -- `bragg_defect_witness` with no `hexp`. -/
+theorem bragg_defect_witness_sie :
+    defectFunctional 0 = 0 ∧
+    ({q(off_lo)} ≤ defectFunctional excess ∧ defectFunctional excess ≤ {q(off_hi)}) :=
+  ⟨defect_witness_online, defect_witness_offline_sie⟩
+
+/-- **`defect_leakage_gap_sie`** -- `defect_leakage_gap` with no `hexp`. -/
+theorem defect_leakage_gap_sie :
+    defectFunctional excess ≤ {q(off_hi)} ∧ ({q(off_hi)} : ℝ) < defectFunctional 0 := by
+  refine ⟨defect_witness_offline_sie.2, ?_⟩
   rw [defect_witness_online]
   norm_num
 
@@ -488,8 +558,15 @@ theorem defect_eq_two (f₁ f₂ : ℝ) {{d₁ d₂ : ℝ}} (hd₁ : d₁ ≠ 0)
 
 end BraggDefect
 '''
-    OUT.write_text(src)
+    return src
 
 
 if __name__ == "__main__":
+    import sys
+    if "--check" in sys.argv[1:]:
+        if OUT.read_text() != render():
+            print(f"DRIFT: {OUT.name} does not match regeneration")
+            raise SystemExit(1)
+        print("check: OK (regeneration matches frozen output byte-for-byte)")
+        raise SystemExit(0)
     main()

@@ -90,9 +90,11 @@ every file that touches the work. We still commit none of Liu's files. The islan
 - `liu_oai_declarations.txt`: the names of the `OAI.*` declarations Liu's modules add (section 4).
 
 `liu_materialize.sh` fetches the pinned commit at build time into `work/`, which is gitignored.
-Public release of anything built from it, and activation of `ci/liu-dbn-bridge.yml.draft`, no
-longer wait on a licence (owner decision above). They wait on an independent replay and the
-missions governance path.
+CI is active as `.github/workflows/liu-dbn-bridge.yml`. It builds and judges the island on every
+relevant push to main and weekly, and the Comparator judge job `judge-liu-dbn-bridge` in
+`missions-comparator.yml` covers granted nodes. Public release waits on the missions governance
+path. peterwmurphy-e9's independent replay of Liu's upload passed the build and axiom checks on
+2026-10-11.
 
 **Liu's repository is not self-verifying as shipped.** Its `verify.py` expects `vendor/`,
 `verification/` and `vendor/LICENSE`. Its root module refers to `check_extension.sh` and
@@ -239,8 +241,8 @@ targets the exact theorem and adds the tampered control.
   the kernel, which accepted them.
 - **No human referee.** Nobody here has read Liu's TeX against Liu's Lean. Kernel acceptance says
   the Lean statements are proved, not that they match the paper's prose.
-- **Not registered.** No missions node was created or edited. The licence question is settled by owner
-  decision (section 3). Registering a node still needs an independent replay, CI coverage (the CI
-  draft is still held) and the operator read-back.
+- **Registration in progress.** Three draft nodes are in PR #693, stacked on this branch. The
+  licence question is settled by owner decision (section 3), and CI coverage is now active.
+  Granting still needs the operator read-back and the Comparator judge record.
 
 conjecture1_proved = False.

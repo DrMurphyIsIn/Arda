@@ -348,6 +348,7 @@ jobs:
               - 'telperion/examples/zero_free_bridge/**'
             zeta_zero_localization:
               - 'telperion/examples/zeta_zero_localization/**'
+              - 'telperion/examples/bragg_defect_sie/**'
 
   toy-compiles:
     needs: changes
@@ -2715,7 +2716,7 @@ jobs:
           # silently-truncated guard cannot pass as a green one, and joins wrapped lines first
           # (Lean wraps a long axiom list, and a line-based grep then reads a truncated list
           # as an unexpected axiom -- a false positive that cost a CI round on #562).
-          declare -A MIN_ANCHORS=( [AxiomGuardBragg]=16 [AxiomGuardDefect]=21 [AxiomGuardZoo]=5 )
+          declare -A MIN_ANCHORS=( [AxiomGuardBragg]=16 [AxiomGuardDefect]=27 [AxiomGuardZoo]=5 )
           for g in AxiomGuardBragg AxiomGuardDefect AxiomGuardZoo; do
             [ -f "../$g.lean" ] || { echo "::error::$g.lean is missing"; exit 1; }
             echo "== $g"
@@ -3032,6 +3033,11 @@ jobs:
         working-directory: telperion
         run: |
           python examples/exp_enclosure/generate.py --check
+
+      - name: Regenerate the BraggDefect scaled-interval-eval instances (+ prelude copy, + BraggDefect driver)
+        working-directory: telperion
+        run: |
+          python examples/bragg_defect_sie/generate.py --check
 
       - name: Cache elan toolchain
         uses: actions/cache@v4
