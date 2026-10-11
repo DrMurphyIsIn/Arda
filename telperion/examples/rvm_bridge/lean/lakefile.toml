@@ -678,3 +678,12 @@ name = "ArchS10_Data"
 
 [[lean_lib]]
 name = "ArchS10_Cert"
+
+[[lean_lib]]
+name = "ArchS10_Tail"
+
+[[lean_lib]]
+name = "ArchS10_Chi"
+
+[[lean_lib]]
+name = "ArchS10_Guard"
