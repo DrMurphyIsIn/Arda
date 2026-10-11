@@ -1,0 +1,143 @@
+mu=3.50 (a=L=0.62638, lambda=1.8708, c=2 pi mu=21.991, K=40 Legendre, nu=6 prolate differences)
+  even sector: 6 Gram-Schmidt E-functions; smallest Gram eigenvalues 2.514e-10 1.879e-5 0.08903 0.8782 1.022 1.328
+    k=0: |<GS_k, v_k>| = 0.679945 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=1: |<GS_k, v_k>| = 0.516578 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=2: |<GS_k, v_k>| = 0.000250 ; norm of projection of v_k onto span(E-functions) = 0.996060
+    k=3: |<GS_k, v_k>| = 0.189260 ; norm of projection of v_k onto span(E-functions) = 0.624380
+    k=4: |<GS_k, v_k>| = 0.107353 ; norm of projection of v_k onto span(E-functions) = 0.624973
+    k=5: |<GS_k, v_k>| = 0.087928 ; norm of projection of v_k onto span(E-functions) = 0.422684
+    min principal-angle cosine, span(v_0..v_{m-1}) vs span(E), m=1..: 1.000000 1.000000 0.996060 0.623096 0.092196 0.070740
+    E-function Rayleigh quotients (G | A-only | L2 residual outside Legendre space):
+      GS_0: 7.982e-02 | 7.131e-01 | 7.5e-08
+      GS_1: 6.886e-02 | -6.117e-02 | 4.0e-06
+      GS_2: 1.842e+00 | 1.969e+00 | 6.1e-01
+      GS_3: 2.024e-01 | 6.544e-01 | 2.7e-02
+      GS_4: 1.885e+00 | 1.826e+00 | 4.4e-01
+      GS_5: 1.053e+00 | 1.238e+00 | 9.4e-02
+    control: random even function in the same Legendre space, projection norm = 0.5275
+  odd sector: 6 Gram-Schmidt E-functions; smallest Gram eigenvalues 9.443e-8 0.002182 0.5604 0.8965 1.337 1.422
+    k=0: |<GS_k, v_k>| = 0.691854 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=1: |<GS_k, v_k>| = 0.016273 ; norm of projection of v_k onto span(E-functions) = 0.999928
+    k=2: |<GS_k, v_k>| = 0.230527 ; norm of projection of v_k onto span(E-functions) = 0.657672
+    k=3: |<GS_k, v_k>| = 0.047271 ; norm of projection of v_k onto span(E-functions) = 0.101938
+    k=4: |<GS_k, v_k>| = 0.275874 ; norm of projection of v_k onto span(E-functions) = 0.684880
+    k=5: |<GS_k, v_k>| = 0.372867 ; norm of projection of v_k onto span(E-functions) = 0.813061
+    min principal-angle cosine, span(v_0..v_{m-1}) vs span(E), m=1..: 1.000000 0.999928 0.657633 0.085983 0.084747 0.083128
+    E-function Rayleigh quotients (G | A-only | L2 residual outside Legendre space):
+      GS_0: 1.584e-01 | -5.252e-01 | 7.5e-08
+      GS_1: 1.794e+00 | 2.034e+00 | 5.5e-01
+      GS_2: 1.469e-01 | 3.448e-01 | 5.8e-03
+      GS_3: 1.873e+00 | 1.883e+00 | 5.4e-01
+      GS_4: 9.078e-01 | 1.119e+00 | 2.6e-02
+      GS_5: 1.764e+00 | 1.717e+00 | 5.0e-01
+    control: random odd function in the same Legendre space, projection norm = 0.6129
+  (24s)
+
+mu=5.00 (a=L=0.80472, lambda=2.2361, c=2 pi mu=31.416, K=48 Legendre, nu=9 prolate differences)
+  even sector: 9 Gram-Schmidt E-functions; smallest Gram eigenvalues 9.697e-18 5.661e-12 4.298e-7 0.0025 0.6098 0.8582
+    k=0: |<GS_k, v_k>| = 0.590151 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=1: |<GS_k, v_k>| = 0.356582 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=2: |<GS_k, v_k>| = 0.010562 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=3: |<GS_k, v_k>| = 0.326508 ; norm of projection of v_k onto span(E-functions) = 0.999891
+    k=4: |<GS_k, v_k>| = 0.077896 ; norm of projection of v_k onto span(E-functions) = 0.501428
+    k=5: |<GS_k, v_k>| = 0.015726 ; norm of projection of v_k onto span(E-functions) = 0.372903
+    k=6: |<GS_k, v_k>| = 0.192270 ; norm of projection of v_k onto span(E-functions) = 0.586564
+    k=7: |<GS_k, v_k>| = 0.585552 ; norm of projection of v_k onto span(E-functions) = 0.774133
+    k=8: |<GS_k, v_k>| = 0.273718 ; norm of projection of v_k onto span(E-functions) = 0.492838
+    min principal-angle cosine, span(v_0..v_{m-1}) vs span(E), m=1..: 1.000000 1.000000 1.000000 0.999891 0.501419 0.280881 0.117365 0.048011 0.009797
+    E-function Rayleigh quotients (G | A-only | L2 residual outside Legendre space):
+      GS_0: 1.188e-01 | 1.219e+00 | 3.2e-08
+      GS_1: 6.357e-02 | -3.059e-01 | 2.6e-08
+      GS_2: 2.424e+00 | 2.597e+00 | 8.1e-01
+      GS_3: 1.051e-01 | 3.081e-01 | 1.2e-02
+      GS_4: 2.624e+00 | 2.386e+00 | 6.8e-01
+      GS_5: 2.973e-01 | 8.308e-01 | 2.1e-02
+      GS_6: 2.167e+00 | 2.175e+00 | 5.8e-01
+      GS_7: 8.262e-01 | 1.220e+00 | 6.5e-03
+      GS_8: 1.644e+00 | 2.001e+00 | 5.6e-01
+    control: random even function in the same Legendre space, projection norm = 0.6421
+  odd sector: 9 Gram-Schmidt E-functions; smallest Gram eigenvalues 1.061e-14 1.91e-9 5.151e-5 0.0834 0.7838 0.8537
+    k=0: |<GS_k, v_k>| = 0.575822 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=1: |<GS_k, v_k>| = 0.007714 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=2: |<GS_k, v_k>| = 0.312724 ; norm of projection of v_k onto span(E-functions) = 0.999999
+    k=3: |<GS_k, v_k>| = 0.026741 ; norm of projection of v_k onto span(E-functions) = 0.997385
+    k=4: |<GS_k, v_k>| = 0.100413 ; norm of projection of v_k onto span(E-functions) = 0.638104
+    k=5: |<GS_k, v_k>| = 0.166581 ; norm of projection of v_k onto span(E-functions) = 0.359476
+    k=6: |<GS_k, v_k>| = 0.042787 ; norm of projection of v_k onto span(E-functions) = 0.360932
+    k=7: |<GS_k, v_k>| = 0.332576 ; norm of projection of v_k onto span(E-functions) = 0.569913
+    k=8: |<GS_k, v_k>| = 0.116109 ; norm of projection of v_k onto span(E-functions) = 0.148181
+    min principal-angle cosine, span(v_0..v_{m-1}) vs span(E), m=1..: 1.000000 1.000000 0.999999 0.997385 0.637478 0.346598 0.061328 0.049219 0.015266
+    E-function Rayleigh quotients (G | A-only | L2 residual outside Legendre space):
+      GS_0: 5.753e-02 | -8.807e-01 | 2.6e-08
+      GS_1: 2.335e+00 | 2.616e+00 | 8.0e-01
+      GS_2: 2.917e-02 | 1.009e-01 | 2.0e-02
+      GS_3: 2.585e+00 | 2.517e+00 | 7.5e-01
+      GS_4: 6.620e-02 | 5.286e-01 | 1.1e-02
+      GS_5: 2.444e+00 | 2.262e+00 | 6.1e-01
+      GS_6: 1.668e-01 | 1.143e+00 | 1.7e-02
+      GS_7: 1.981e+00 | 2.113e+00 | 5.8e-01
+      GS_8: 1.390e+00 | 1.542e+00 | 1.8e-01
+    control: random odd function in the same Legendre space, projection norm = 0.6162
+  (31s)
+
+mu=7.00 (a=L=0.97296, lambda=2.6458, c=2 pi mu=43.982, K=56 Legendre, nu=13 prolate differences)
+  even sector: 12 Gram-Schmidt E-functions; smallest Gram eigenvalues 7.663e-26 1.938e-20 2.885e-15 1.059e-10 1.489e-6 0.003452
+    k=0: |<GS_k, v_k>| = 0.523126 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=1: |<GS_k, v_k>| = 0.267914 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=2: |<GS_k, v_k>| = 0.289783 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=3: |<GS_k, v_k>| = 0.003431 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=4: |<GS_k, v_k>| = 0.343622 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=5: |<GS_k, v_k>| = 0.003426 ; norm of projection of v_k onto span(E-functions) = 0.999779
+    k=6: |<GS_k, v_k>| = 0.091340 ; norm of projection of v_k onto span(E-functions) = 0.394057
+    k=7: |<GS_k, v_k>| = 0.011104 ; norm of projection of v_k onto span(E-functions) = 0.123675
+    k=8: |<GS_k, v_k>| = 0.202278 ; norm of projection of v_k onto span(E-functions) = 0.442541
+    k=9: |<GS_k, v_k>| = 0.149309 ; norm of projection of v_k onto span(E-functions) = 0.195883
+    k=10: |<GS_k, v_k>| = 0.108703 ; norm of projection of v_k onto span(E-functions) = 0.340519
+    k=11: |<GS_k, v_k>| = 0.272066 ; norm of projection of v_k onto span(E-functions) = 0.336961
+    min principal-angle cosine, span(v_0..v_{m-1}) vs span(E), m=1..: 1.000000 1.000000 1.000000 1.000000 1.000000 0.999779 0.393863 0.101055 0.024982 0.023167 0.013608 0.005170
+    E-function Rayleigh quotients (G | A-only | L2 residual outside Legendre space):
+      GS_0: 1.063e-01 | 1.799e+00 | 1.1e-08
+      GS_1: 3.977e-02 | -4.651e-01 | 3.0e-08
+      GS_2: 5.054e-02 | 1.430e-01 | 3.8e-08
+      GS_3: 3.246e+00 | 2.999e+00 | 9.3e-01
+      GS_4: 9.223e-02 | 4.837e-01 | 9.2e-03
+      GS_5: 3.175e+00 | 2.956e+00 | 9.4e-01
+      GS_6: 1.222e-01 | 9.408e-01 | 5.8e-03
+      GS_7: 2.275e+00 | 2.745e+00 | 8.9e-01
+      GS_8: 4.612e-01 | 1.263e+00 | 1.5e-02
+      GS_9: 2.315e+00 | 2.570e+00 | 8.8e-01
+      GS_10: 1.005e+00 | 1.504e+00 | 3.3e-02
+      GS_11: 1.891e+00 | 2.171e+00 | 7.9e-01
+    control: random even function in the same Legendre space, projection norm = 0.5821
+  odd sector: 13 Gram-Schmidt E-functions; smallest Gram eigenvalues 2.402e-23 7.911e-18 7.056e-13 1.166e-8 0.0001177 0.09273
+    k=0: |<GS_k, v_k>| = 0.497160 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=1: |<GS_k, v_k>| = 0.023439 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=2: |<GS_k, v_k>| = 0.237254 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=3: |<GS_k, v_k>| = 0.003204 ; norm of projection of v_k onto span(E-functions) = 1.000000
+    k=4: |<GS_k, v_k>| = 0.228982 ; norm of projection of v_k onto span(E-functions) = 0.999997
+    k=5: |<GS_k, v_k>| = 0.003343 ; norm of projection of v_k onto span(E-functions) = 0.995901
+    k=6: |<GS_k, v_k>| = 0.074851 ; norm of projection of v_k onto span(E-functions) = 0.451960
+    k=7: |<GS_k, v_k>| = 0.012737 ; norm of projection of v_k onto span(E-functions) = 0.474710
+    k=8: |<GS_k, v_k>| = 0.004818 ; norm of projection of v_k onto span(E-functions) = 0.265782
+    k=9: |<GS_k, v_k>| = 0.105095 ; norm of projection of v_k onto span(E-functions) = 0.504194
+    k=10: |<GS_k, v_k>| = 0.005175 ; norm of projection of v_k onto span(E-functions) = 0.297186
+    k=11: |<GS_k, v_k>| = 0.071409 ; norm of projection of v_k onto span(E-functions) = 0.366584
+    k=12: |<GS_k, v_k>| = 0.009279 ; norm of projection of v_k onto span(E-functions) = 0.168839
+    min principal-angle cosine, span(v_0..v_{m-1}) vs span(E), m=1..: 1.000000 1.000000 1.000000 1.000000 0.999997 0.995900 0.450532 0.070905 0.053987 0.018114 0.016299 0.006151 0.004935
+    E-function Rayleigh quotients (G | A-only | L2 residual outside Legendre space):
+      GS_0: 4.813e-02 | -1.217e+00 | 2.1e-08
+      GS_1: 2.775e+00 | 3.034e+00 | 9.5e-01
+      GS_2: 1.555e-02 | -3.418e-02 | 1.5e-02
+      GS_3: 3.229e+00 | 3.136e+00 | 9.4e-01
+      GS_4: 2.548e-02 | 3.073e-01 | 3.2e-02
+      GS_5: 3.365e+00 | 2.918e+00 | 9.4e-01
+      GS_6: 4.213e-02 | 7.475e-01 | 1.3e-02
+      GS_7: 2.575e+00 | 2.861e+00 | 9.1e-01
+      GS_8: 8.206e-02 | 9.848e-01 | 2.8e-02
+      GS_9: 2.056e+00 | 2.648e+00 | 8.3e-01
+      GS_10: 1.741e-01 | 1.519e+00 | 3.1e-02
+      GS_11: 2.341e+00 | 2.423e+00 | 8.6e-01
+      GS_12: 1.254e+00 | 1.734e+00 | 1.8e-01
+    control: random odd function in the same Legendre space, projection norm = 0.7441
+  (47s)
+

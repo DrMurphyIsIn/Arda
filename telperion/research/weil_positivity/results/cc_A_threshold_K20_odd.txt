@@ -1,0 +1,1 @@
+K=20 sector=odd: A alone PSD at a=0.3715917, not at a=0.3716169 (2a in [0.743183,0.743234], mu in [2.10262,2.10272])

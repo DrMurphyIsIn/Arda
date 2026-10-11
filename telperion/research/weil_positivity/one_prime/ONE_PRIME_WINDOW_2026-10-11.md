@@ -385,3 +385,21 @@ The column caches live in the scratchpad (`.../scratchpad/one_prime/cols`, regen
 15 minutes on 8 cores). Per-case results are copied to `results/records/`.
 
 Nothing here is progress on RH. **conjecture1_proved = False.**
+
+## Addendum (2026-10-11, after review by the Riemann session)
+
+- **The window "knows" the prime 2, one-sidedly.** At a = 0.549 positivity survives only for prime locations
+  q ∈ [2 − 6.5e-7, 2 + 2.9e-5] (weight log q/√q): a window about 45 times tighter below 2 than above.
+- **One knife edge, seen two ways.** The upper c-margin at a = 0.549 (c_hi − w2 = 1.6e-6, set by the even sector)
+  and the even-sector Schur scalar (ρ = −1.000000057, margin 5.7e-8 to −1) measure the distance from the same point
+  (w2, even sector) to the same boundary of the even-sector PSD cone, along two different directions: raising the
+  prime weight, versus the pole functional at fixed weight. They are the same constraint; their ratio is the slope
+  dρ/dc ≈ 0.036 at that point. We agree with the reviewer's reading.
+- **Decision recorded by the island owner** (`~/rh-team/gates/kwin2_one_prime_decision.md`): no monolithic kernel
+  certificate at 2L ≤ 1.098 (floor 5.6e-8, 6-7x below the 19 GB L = 1/2 certificate; and rungs below L ≈ 1.86 cannot
+  separate zeta from DH, so the extra window carries no information about the zeros). Queued instead: a probe that
+  re-emits L = 1/2 in the split form (LDL^T of K − w2Q on the pole hyperplane, the tail condition, and one exact
+  rational check of the Schur scalar) to compare peak memory; if far below 19 GB, 0.549 becomes cheap.
+- **Correction to E1.** E1's note says the infimum of the Weil form over L²[−a, a] "is 0". At fixed a the data here
+  show λ_min converging in n to a positive limit (as Beurling's sampling theorem predicts under RH); E1's statement
+  should be read as a large-a statement. Fixed in the E1 note.

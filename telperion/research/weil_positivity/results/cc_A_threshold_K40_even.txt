@@ -1,0 +1,1 @@
+K=40 sector=even: A alone PSD at a=0.410089, not at a=0.4101143 (2a in [0.820178,0.820229], mu in [2.2709,2.27102])

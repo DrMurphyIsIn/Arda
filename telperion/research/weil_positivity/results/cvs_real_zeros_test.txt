@@ -1,0 +1,8 @@
+a=0.3466 K=24 weil G: lowest eig 0.0013285 (even sector; next in that sector 0.66059), zeros of xihat in box |Re|<60,|Im|<3: 12.0 ; real sign changes: 12
+a=0.3466 K=24 control A only (no primes): lowest eig 0.0013286 (even sector; next in that sector 0.6606), zeros of xihat in box |Re|<60,|Im|<3: 12.0 ; real sign changes: 12
+a=0.5 K=30 weil G: lowest eig 9.412e-7 (even sector; next in that sector 0.01812), zeros of xihat in box |Re|<60,|Im|<3: 18.0 ; real sign changes: 18
+a=0.5 K=30 control A only (no primes): lowest eig -0.32223 (odd sector; next in that sector 0.55682), zeros of xihat in box |Re|<60,|Im|<3: 19.0 ; real sign changes: 17
+a=1 K=40 weil G: lowest eig 1.0437e-23 (even sector; next in that sector 5.3664e-18), zeros of xihat in box |Re|<40,|Im|<3: 14.0 ; real sign changes: 14
+a=1 K=40 control A only (no primes): lowest eig -1.3241 (odd sector; next in that sector -0.15898), zeros of xihat in box |Re|<40,|Im|<3: 25.0 ; real sign changes: 25
+a=1.5 K=48 weil G: lowest eig 1.1626e-34 (even sector; next in that sector 1.0876e-28), zeros of xihat in box |Re|<32,|Im|<3: 14.0 ; real sign changes: 10
+a=1.5 K=48 control A only (no primes): lowest eig -2.6504 (odd sector; next in that sector -0.59739), zeros of xihat in box |Re|<32,|Im|<3: 29.0 ; real sign changes: 29

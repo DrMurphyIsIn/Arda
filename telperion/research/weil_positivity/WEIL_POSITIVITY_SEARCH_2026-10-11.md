@@ -48,8 +48,11 @@ part of this work.
   coefficients of G are irregular; those of the prime-free form are smooth and geometric,
   so the primes destroy, rather than create, simple tridiagonal structure.
 * A structural fact worth keeping: the archimedean+pole part A alone stays positive only up
-  to a*(n). That is 0.3947 at n = 30 and 0.3757 at n = 180, extrapolating to about 0.372,
-  against log(2)/2 = 0.3466. Beyond that, A has a negative eigenvalue
+  to a = 0.37159-0.37162, i.e. 2a = 0.7432 and mu = e^{2a} = 2.1027, against
+  log(2)/2 = 0.3466. That value is from the endpoint-free Legendre basis of section 10, and
+  it is stable for K = 20, 30, 40. The spline basis extrapolated to the same value.
+  It is a direct check of CC2 section 2.2's plot reading that the archimedean form fails
+  "a little past log 2". The even sector fails later, at mu = 2.2710. Beyond that, A has a negative eigenvalue
   of size ~ e^a coming from the rank-2 pole term in the odd sector. G stays positive only
   because the prime operator cancels it, leaving eigenvalues of order 1e-11 ... 1e-16.
 
@@ -260,11 +263,13 @@ differs most.)
   measurement is 0.37566. The extrapolated limit is 0.3714 - 0.3720 depending on the
   model. That is numerical extrapolation, not a bound, and it sits above
   log(2)/2 = 0.34657.
-  For a <= log(2)/2 no prime enters and G = A. That is the Connes-Consani regime (Selecta
-  Math. 2021: positivity for test functions supported in [2^{-1/2}, 2^{1/2}] needs only the
-  archimedean place). Numerically, the archimedean+pole form stays positive a bit further,
-  to about 0.372 extrapolated. There the prime 2 is already present in G, but it is not
-  yet needed.
+  For a <= log(2)/2 no prime enters and G = A. This is not literally the Connes-Consani
+  theorem. CC1 (arXiv 2006.13771, Thm 1 / Thm 6.11) proves positivity of the archimedean
+  part W_inf alone on that window, only for test functions with ghat(+-i/2) = 0, which
+  kills the pole terms. It also needs ghat(0) = 0, or else subtracts c|ghat(0)|^2 with
+  13 < c < 17. See section 10 for that exact setup. Numerically, the archimedean+pole form
+  stays positive somewhat further, to a = 0.3716 (Legendre, section 10). There the prime 2
+  is already present in G, but it is not yet needed.
 * **Where A fails.** By parity sector:
   * In the even sector, the pole term is rank 1 and positive. It rescues the archimedean
     symbol Re psi(1/4 + it/2) - log pi. That symbol is -5.37 at t = 0 and negative for
@@ -303,6 +308,11 @@ so the minimiser makes |F| vanish where the weights sit. The extra Fourier zeros
 about pi/a, are unconstrained, and removing the primes destroys the match.
 
 ### 3a(ii). Prolate overlaps (`results/exp3a_prolate_overlaps.txt`, `exp3a_prolate_bandwidth_scan.txt`)
+
+*Caveat added after reading CC1/CC2.* This compares eigenvectors with Slepian functions in
+the log-variable u. That is NOT the comparison Connes-Consani make. CC1 makes none. CC2
+section 3 uses prolates in the additive variable q = e^u at c = 2 pi e^{2L}, pushed through
+the map E. That comparison is done in section 10.3.
 
 PSWFs on [-1, 1] at bandwidth c come from the Bouwkamp tridiagonal matrix in the
 normalised Legendre basis. Weil eigenvectors are rescaled to [-1, 1], and overlaps are
@@ -413,10 +423,14 @@ critical eps is exact: 1/mu_max (and 1/mu_min for negative eps), where mu solves
 
 (At a = 0.5 only n = 2 enters, and chi_-4(2) = 0, so nothing changes there.) |eps_crit|
 roughly tracks the smallest eigenvalue of G. Positivity of the finite Gram matrices is a
-knife-edge: the infimum of B(f,f)/||f||^2 over L^2[-a, a] is 0, as shown by the
-prolate-like functions concentrated in the zero-free window. So any perturbation of the
-prime weights is detected once n is large enough. The test is sensitive. The flip side is
-that "positivity holds with margin" is never available at finite a; the margin goes to 0.
+knife-edge: the smallest eigenvalue is tiny, driven by the prolate-like functions concentrated
+in the zero-free window, and it shrinks rapidly as a grows. So a small perturbation of the
+prime weights is detected. The test is sensitive. CORRECTED 2026-10-11 (one-prime-window
+experiment, ONE_PRIME_WINDOW_2026-10-11.md section 2): an earlier version said the infimum of
+B(f,f)/||f||^2 over L^2[-a, a] "is 0" at finite a. That is wrong as an n -> infinity statement at
+fixed a: lambda_min converges in n to a positive limit (e.g. ~9.6e-7 at a = 0.50, ~5.6e-8 at
+a = 0.549), as Beurling's sampling theorem predicts under RH. The margin is positive at each
+finite a and goes to 0 only as a grows (roughly like e^{-55a} on the one-prime window).
 
 ---
 
@@ -485,3 +499,121 @@ The 20000-zero list `zeros20000.json` (534 KB) was computed by `zeros_compute.py
 (mpmath.zetazero, 12 processes, about 35 minutes on the loaded machine). It is monotone,
 and the Riemann-von Mangoldt count at the last ordinate is 19999.4. If the file is absent,
 `weil_form.py` falls back to `../zeros2000.json`.
+
+---
+
+## 10. Follow-up: the Connes-Consani setup
+
+This section answers the team lead's corrections, which were based on the sourced reading
+`~/rh-team/B/connes_consani_reading.md`. Code: `cc_followup.py`. As before, nothing here is
+progress on RH. `conjecture1_proved = False`.
+
+**Basis change.** The cubic-spline basis vanishes to second order at +-a. Its smallest
+eigenvalues converge only like 1/n and sit above the true infimum, because they are
+Rayleigh quotients on a subspace. At a = log(2)/2 and n = 30 the spline value was 0.0026,
+about twice the converged one. All of section 10 therefore uses L2-normalised Legendre
+polynomials on [-a, a], with the same validated functional W:
+
+* correlations by exact Gauss-Legendre (the integrand is a polynomial);
+* ARCH on Gauss-Legendre panels, with the removable part split off analytically.
+
+Checks (`results/cc_legendre_check.txt`): five entries agree with the generic
+`W_components` (tanh-sinh quadrature) to 1e-38, and doubling the panels changes nothing
+above 1.6e-39. Each run below used one fixed working precision, either 40, 50 or 60
+digits.
+
+### 10.1 Cross-check at 2L = log 2 (`results/cc_crosscheck_log2.csv`)
+
+Here a = L = log(2)/2 and no prime enters, so G = POLE - CONST + ARCH. W_inf = ARCH - CONST.
+
+| K | full form, even | full form, odd | W_inf alone, even / odd | W_inf on ghat(+-i/2)=0, even / odd | also ghat(0)=0, even / odd |
+|---|---|---|---|---|---|
+| 10 | 0.00133085 | 0.0732778 | -1.2856 / 0.0851 | 0.54728 / 0.84354 | 1.06365 / 0.84354 |
+| 20 | 0.00132964 | 0.0731343 | -1.2857 / 0.0850 | 0.54707 / 0.84338 | 1.06262 / 0.84338 |
+| 30 | 0.00132942 | 0.0731148 | -1.2858 / 0.0849 | 0.54705 / 0.84336 | 1.06259 / 0.84336 |
+| 40 | **0.00132936** | 0.0731092 | -1.2858 / 0.0849 | 0.54704 / 0.84335 | 1.06258 / 0.84335 |
+
+* **Normalisation reconciled.** The full-form even-sector minimum, 0.0013294, matches the
+  CC2 Fig. 5 value and the team's reconcile.py value of 1.33e-3. Our normalisation is the
+  same. The earlier spline figure of 0.0026 was a basis artefact.
+* **The CC1 statement checks out numerically.** W_inf alone is indefinite: -1.286 on the
+  even sector, carried by the low frequencies the pole term normally rescues. Restricted to
+  ghat(+-i/2) = 0 it is positive, at 0.547 even and 0.843 odd. With ghat(0) = 0 added as
+  well it is 1.063 even. In the odd sector ghat(0) = 0 holds automatically, so the odd
+  value does not change.
+* **CC1's eigenvector zeta was not compared.** zeta = psi/||psi|| (Lemma 6.4) is built from
+  an infinite product h and from the kernel (Q epsilon)(e^{|x-y|}), with epsilon given by
+  CC1 eq. (84). The reading notes do not give those formulas, and I did not reconstruct
+  them. This item stays open.
+
+### 10.2 Where the archimedean+pole form alone stops being positive (`results/cc_A_alone_sweep.csv`, `cc_A_threshold_K*_*.txt`)
+
+Bisection on the smallest eigenvalue of A = POLE - CONST + ARCH (no primes), for each
+sector, with K = 20, 30 and 40 giving identical brackets:
+
+| sector | A PSD up to a | 2a | mu = e^{2a} |
+|---|---|---|---|
+| odd | 0.37159 - 0.37162 | 0.7432 | **2.1027** |
+| even | 0.41009 - 0.41011 | 0.8202 | 2.2710 |
+
+* **CC2 section 2.2 confirmed.** The archimedean form fails a little past log 2, at
+  mu = 2.10, first in the odd sector. Whether CC2's "archimedean contribution" includes the
+  pole term is ambiguous in their text. Our A does include it, and without the pole term
+  W_inf is already indefinite at log 2.
+* **The spline extrapolation was right.** It gave 0.3714 - 0.3720, against the Legendre
+  value 0.3716.
+* **With the CC1 side conditions, W_inf stays positive throughout the sweep.** On
+  ghat(+-i/2) = 0 the minimum falls smoothly, from 0.547 at log 2 to 0.178 (even) and
+  0.476 (odd) at a = 0.5, i.e. mu = e. So the loss of positivity just past log 2 comes
+  entirely from the pole directions.
+
+### 10.3 CC2 section 3 prolate comparison, beyond the window (`results/cc2_prolate_comparison.txt`)
+
+This is an extension of CC2's numerics, not of any theorem. The setup is reconstructed
+from the reading notes, not from the paper's code:
+
+1. Take the full semilocal Gram matrix on [-L, L], with lambda = e^L and mu = e^{2L}.
+2. Take prolates psi_m(q) = PS_{2m,0}(c = 2 pi mu, q/lambda) for q in [-lambda, lambda].
+3. Form phi_n = psi_n psi_0(0) - psi_0 psi_n(0) for n = 1..nu, with nu = floor(2 mu - 1).
+4. Map through E(phi)(u) = u^{1/2} sum_{1 <= r < lambda/u} phi(r u) on [1/lambda, lambda],
+   with our x = log u.
+5. Split by x -> -x parity, Gram-Schmidt in L2(dx), and compare with the eigenvectors of
+   the smallest Gram eigenvalues in the same sector.
+
+The matching measure is the smallest principal-angle cosine between span(v_0..v_{m-1}) and
+span(E-functions):
+
+| mu (a) | sector | smallest Gram eigenvalues | cosine for m = 1, 2, ... | random function's projection |
+|---|---|---|---|---|
+| 3.5 (0.626) | even | 2.5e-10, 1.9e-5, 0.089, 0.88 | 1.000000, 1.000000, 0.996, 0.62, 0.09 | 0.53 |
+| 3.5 | odd | 9.4e-8, 2.2e-3, 0.56 | 1.000000, 0.99993, 0.66, 0.09 | 0.61 |
+| 5 (0.805) | even | 9.7e-18, 5.7e-12, 4.3e-7, 2.5e-3, 0.61 | 1, 1, 1, 0.99989, 0.50, 0.28 | 0.64 |
+| 5 | odd | 1.1e-14, 1.9e-9, 5.2e-5, 0.083 | 1, 1, 0.999999, 0.9974, 0.64 | 0.62 |
+| 7 (0.973) | even | 7.7e-26 ... 1.5e-6, then 3.5e-3 | 1 (x5), 0.99978, 0.39 | 0.58 |
+| 7 | odd | 2.4e-23 ... 1.2e-4, then 0.093 | 1 (x4), 0.999997, 0.9959, 0.45 | 0.74 |
+
+* **The subspace claim reproduces.** Every eigenvector whose eigenvalue is below about
+  1e-4 lies inside span(E) to 6 or more digits. That is 2 per sector at mu = 3.5, 3-4 at
+  mu = 5, and 5-6 at mu = 7. The next eigenvectors, at eigenvalues of 1e-3 and above, do
+  not. A random function in the same space projects only 0.53-0.74.
+* **The individual pairing does not.** Gram-Schmidt function k against eigenvector k
+  overlaps only 0.00-0.69. The E-functions are not eigenvectors one by one; their span
+  contains the low eigenspace.
+* **The E-functions themselves are not small for the form.** Their Rayleigh quotients
+  under G are 0.016-3.4. Every other one has an L2 residual of 0.44-0.95 (relative norm) outside the
+  K-term Legendre space. They jump where r u crosses lambda, which our polynomial basis cannot
+  represent.
+* **Mechanism.** E(phi) has Mellin transform ~ zeta(1/2 - is) times a transform of phi. That
+  is why its span is adapted to the near-kernel of the Weil form. The match is a property of
+  the explicit formula seen through the zeta factor, and it says nothing beyond RH for the
+  low zeros.
+
+### 10.4 Connes-van Suijlekom real-zeros test (arXiv 2511.23257, abstract only; `results/cvs_real_zeros_test.txt`)
+
+Reconstructed from the abstract: if the lowest eigenvalue is simple and isolated with an
+even eigenvector xi, all zeros of xi-hat should be real. Here xi-hat(z) = sum c_j
+int phi_j(x) e^{izx} dx is entire. The test counts its zeros in the box |Re z| < T,
+|Im z| < 3 by the argument principle (6000 boundary points) and compares that count with
+the real sign changes in (-T, T).
+
+CVS_BLOCK
