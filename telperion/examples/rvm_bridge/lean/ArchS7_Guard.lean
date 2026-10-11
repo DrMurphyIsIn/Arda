@@ -5,6 +5,11 @@ import ArchS7_Concrete
 import ArchS7_Dilation
 import ArchS7_Theta
 import ArchS7_Lemma41
+import ArchS7_LogMap
+import ArchS7_Kappa
+import ArchS7_PFP
+import ArchS7_Density
+import ArchS7_H85
 
 /-! Axiom guard for stage S7 (CC Thm 4.7).  Every line must print
 `[propext, Classical.choice, Quot.sound]`.  conjecture1_proved = False. -/
@@ -130,3 +135,96 @@ import ArchS7_Lemma41
 #print axioms ArchS7.δS_abs_eq_deltaK
 #print axioms ArchS7.thm47_weil'
 #print axioms ArchS7.thm47_weil'_nonneg
+#print axioms ArchS7.exp_image_univ
+#print axioms ArchS7.lintegral_comp_exp
+#print axioms ArchS7.integral_comp_exp'
+#print axioms ArchS7.integrable_comp_exp_iff
+#print axioms ArchS7.ae_comp_exp
+#print axioms ArchS7.logF_congr
+#print axioms ArchS7.sqrt2_exp_sq
+#print axioms ArchS7.conj_logF_mul
+#print axioms ArchS7.norm_logF_sq
+#print axioms ArchS7.aestronglyMeasurable_logF
+#print axioms ArchS7.integrable_norm_logF_sq
+#print axioms ArchS7.memLp_logF
+#print axioms ArchS7.coeFn_logRaw
+#print axioms ArchS7.inner_logRaw
+#print axioms ArchS7.norm_logRaw_sq
+#print axioms ArchS7.norm_logRaw_le
+#print axioms ArchS7.logL_apply
+#print axioms ArchS7.coeFn_logL
+#print axioms ArchS7.integral_even_eq
+#print axioms ArchS7.even_ae
+#print axioms ArchS7.inner_even_eq
+#print axioms ArchS7.inner_logL_even
+#print axioms ArchS7.coeFn_transL
+#print axioms ArchS7.ae_comp_sub
+#print axioms ArchS7.logL_thL
+#print axioms ArchS7.norm_mo
+#print axioms ArchS7.continuous_mo
+#print axioms ArchS7.memLp_mo_mul
+#print axioms ArchS7.coeFn_modL
+#print axioms ArchS7.fourier_comp_sub
+#print axioms ArchS7.fourier_transL
+#print axioms ArchS7.mellinL_apply
+#print axioms ArchS7.inner_thE_spectral
+#print axioms ArchS7.norm_sq_adjoint_theta_spectral
+#print axioms ArchS7.norm_mz
+#print axioms ArchS7.measurableSet_one_lt_abs
+#print axioms ArchS7.kapF_neg
+#print axioms ArchS7.norm_kapF_sq
+#print axioms ArchS7.kd_neg
+#print axioms ArchS7.continuousOn_kapG
+#print axioms ArchS7.aestronglyMeasurable_kapF
+#print axioms ArchS7.integrableOn_kd_Ioi
+#print axioms ArchS7.integrable_kd
+#print axioms ArchS7.memLp_kapF
+#print axioms ArchS7.coeFn_kap
+#print axioms ArchS7.kap_mem_evenL2
+#print axioms ArchS7.integral_even_eq_real
+#print axioms ArchS7.norm_kap_sq
+#print axioms ArchS7.ofReal_exp_cpow
+#print axioms ArchS7.norm_fourier_le
+#print axioms ArchS7.cexp_add_cexp_neg
+#print axioms ArchS7.norm_Gpart_le
+#print axioms ArchS7.integrable_phi
+#print axioms ArchS7.norm_fourier_phi_le
+#print axioms ArchS7.fourier_phi_eq_cos
+#print axioms ArchS7.continuousOn_cpow_zt
+#print axioms ArchS7.continuous_fourier_phi
+#print axioms ArchS7.integrableOn_Gm
+#print axioms ArchS7.inner_subst
+#print axioms ArchS7.integral_Gm_eq
+#print axioms ArchS7.integrable_betaF
+#print axioms ArchS7.fourier_betaF
+#print axioms ArchS7.tendsto_trunc
+#print axioms ArchS7.inner_kap_phi
+#print axioms ArchS7.fourier_betaF_eq_inner
+#print axioms ArchS7.SmoothClass.memLp
+#print axioms ArchS7.Tpf_apply
+#print axioms ArchS7.mellin_PFP_smooth
+#print axioms ArchS7.chi_nonneg
+#print axioms ArchS7.chi_le_one
+#print axioms ArchS7.chi_zero
+#print axioms ArchS7.chi_neg
+#print axioms ArchS7.contDiff_chi
+#print axioms ArchS7.tendsto_chi
+#print axioms ArchS7.norm_le_of_ae_mul
+#print axioms ArchS7.memLp_chi_mul
+#print axioms ArchS7.tendsto_chi_mul
+#print axioms ArchS7.exists_smooth_near
+#print axioms ArchS7.inner_kap_P1
+#print axioms ArchS7.mellin_PFP_of_P1
+#print axioms ArchS7.countable_of_orthonormal_evenL2
+#print axioms ArchS7.exists_countable_hilbertBasis
+#print axioms ArchS7.norm_hatP_P
+#print axioms ArchS7.adjoint_PFP_comp
+#print axioms ArchS7.coe_PFP
+#print axioms ArchS7.mellin_PFP_even
+#print axioms ArchS7.norm_paperFT_le
+#print axioms ArchS7.hsq_le_sq
+#print axioms ArchS7.ofReal_norm_adjoint_PFP
+#print axioms ArchS7.tsum_inner_kap
+#print axioms ArchS7.integrable_hsq_mul_Nnorm
+#print axioms ArchS7.hasSum_hatP_P_theta
+#print axioms ArchS7.thm47_weil_O1
