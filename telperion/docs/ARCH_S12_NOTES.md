@@ -118,7 +118,7 @@ for certified D), and `full_window_core`.
 * `lake build ArchS12_Guard` rebuilt from clean: all `ArchS12_*` oleans were deleted first, and the build finished with 8852 jobs.
 * All 39 theorems print exactly `[propext, Classical.choice, Quot.sound]`.  There is no `sorry` and no `axiom`.
 * **Wiring.**  `defaultTargets` and `AxiomGuardRvMBridge.lean` are untouched.
-  The five `[[lean_lib]]` stanzas are at the end of `lakefile.toml`: ArchS12_Index, _Bridge, _Main, _Guard.
+  The four `[[lean_lib]]` stanzas are at the end of `lakefile.toml`: ArchS12_Index, _Bridge, _Main, _Guard.
 
 ## 5. Lean footguns met
 
