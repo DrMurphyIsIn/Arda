@@ -606,3 +606,40 @@ name = "ArchS6_Kernel"
 
 [[lean_lib]]
 name = "ArchS6_Eigen"
+
+[[lean_lib]]
+name = "ArchS5_HS"
+
+[[lean_lib]]
+name = "ArchS5_HSRank"
+
+# Stage S4 (archimedean conceptual blueprint): the jump lemma D∘Q = -2 Id + K^δ (CC Thm 3.6 / Rem 3.7).
+[[lean_lib]]
+name = "ArchS4_Delta"
+
+[[lean_lib]]
+name = "ArchS4_Jump"
+
+# Stage S4' (pipeline test): delta rung, D∘Q ≤ 0 for L ≤ 1/80 (CC Cor 3.8, crude sup bound).
+[[lean_lib]]
+name = "ArchS4_Rung"
+
+# S4 bridge to S3's delta (deltaK = deltaE ∘ abs, Dfun agreement, rung with S3's hypothesis).
+[[lean_lib]]
+name = "ArchS4_Bridge"
+
+[[lean_lib]]
+name = "ArchS4_Guard"
+
+# Stage S8 (archimedean conceptual blueprint): E∘Q kernel, CC Lemmas 5.1-5.2, Props 5.3/5.5, abstract.
+[[lean_lib]]
+name = "ArchS8_Volterra"
+
+[[lean_lib]]
+name = "ArchS8_ProlateData"
+
+[[lean_lib]]
+name = "ArchS8_Kernel"
+
+[[lean_lib]]
+name = "ArchS8_Guard"
