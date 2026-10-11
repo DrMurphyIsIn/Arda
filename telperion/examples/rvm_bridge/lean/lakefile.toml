@@ -557,3 +557,10 @@ name = "ArchS2_QTrick"
 
 [[lean_lib]]
 name = "ArchS2_Guard"
+
+# Stage S3 (archimedean conceptual blueprint): structural positivity L = W_inf + D >= 0 (CC Cor 2.3).
+[[lean_lib]]
+name = "ArchS3_Delta"
+
+[[lean_lib]]
+name = "ArchS3_Guard"
