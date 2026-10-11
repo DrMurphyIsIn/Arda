@@ -74,7 +74,7 @@ Remaining obligations of Thm 4.7: O1, O3, O4 (S7 §4).  O2 is closed.
 
 `lake build ArchS7b_Lemma41` (8796 jobs, ~47 s for the module) and `lake env lean ArchS7b_Guard.lean`:
 26 theorems, every one `[propext, Classical.choice, Quot.sound]`.  No `sorry`, no `axiom`.
-Files: `ArchS7b_Lemma41.lean` (≈350 lines), `ArchS7b_Guard.lean`.  Lakefile: two stanzas at the end.
+Files: `ArchS7b_Lemma41.lean` (314 lines), `ArchS7b_Guard.lean`.  Lakefile: two stanzas at the end.
 
 ## 6. Lean footguns
 
