@@ -563,6 +563,18 @@ name = "ArchS2_Guard"
 name = "ArchS3_Delta"
 
 [[lean_lib]]
+name = "ArchS3_Mellin"
+
+[[lean_lib]]
+name = "ArchS3_Phi"
+
+[[lean_lib]]
+name = "ArchS3_Quadrant"
+
+[[lean_lib]]
+name = "ArchS3_Limits"
+
+[[lean_lib]]
 name = "ArchS3_Guard"
 
 # Stage S5 (archimedean conceptual plan, 2026-10-11): integral operators with L2 kernels,
