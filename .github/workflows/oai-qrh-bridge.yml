@@ -37,6 +37,10 @@ concurrency:
 jobs:
   build-and-judge:
     runs-on: ubuntu-latest
+    # actions: write is needed only by the prune step (deleting stale oai-qrh-* cache entries).
+    permissions:
+      contents: read
+      actions: write
     timeout-minutes: 360
     defaults:
       run:
@@ -65,9 +69,14 @@ jobs:
         working-directory: telperion/examples/oai_qrh_bridge
         run: |
           echo "prefix=oai-qrh-$(sha256sum OAI_PIN lean/lakefile-stanza.lean | sha256sum | cut -c1-16)-" >> "$GITHUB_OUTPUT"
-          echo "run=${{ github.run_id }}" >> "$GITHUB_OUTPUT"
+          # The suffix is a hash of the sources this job builds (our lean files and the ported dbn
+          # modules), NOT the run id: an unchanged tree hits the exact key and saves nothing, so the
+          # repository keeps ONE ~3.9 GB checkpoint instead of one per run (the Actions cache limit
+          # is 10 GB for the whole repository; see the prune step below).
+          echo "run=$(cat lean/*.lean ../dbn/lean/DBN*.lean | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
 
       - name: Restore build checkpoint (incremental across runs)
+        id: restore
         uses: actions/cache/restore@v4
         with:
           path: telperion/examples/oai_qrh_bridge/work/oai/.lake
@@ -89,11 +98,27 @@ jobs:
           df -h / | tail -1
 
       - name: Save build checkpoint (also after a failed build, so the next run resumes)
-        if: always() && steps.build.outcome != 'skipped'
+        id: save
+        # Skipped on an exact hit: the sources are unchanged, so the checkpoint is already current.
+        if: always() && steps.build.outcome != 'skipped' && steps.restore.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: telperion/examples/oai_qrh_bridge/work/oai/.lake
           key: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}
+
+      - name: Prune older oai-qrh checkpoints (keep only the one just saved)
+        if: always() && steps.save.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEEP: ${{ steps.ckey.outputs.prefix }}${{ steps.ckey.outputs.run }}
+        run: |
+          gh api --paginate "repos/${{ github.repository }}/actions/caches?key=oai-qrh-&per_page=100" \
+            --jq '.actions_caches[] | "\(.id) \(.key)"' | while read -r id key; do
+            if [ "$key" != "$KEEP" ]; then
+              echo "deleting stale checkpoint $key"
+              gh api -X DELETE "repos/${{ github.repository }}/actions/caches/$id" || true
+            fi
+          done
 
       # Re-elaborate the two committed artifact files against the built workspace. These two
       # lines are the coverage gate's evidence for the artifacts (see the header).
