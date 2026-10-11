@@ -1,0 +1,67 @@
+# DRAFT, NOT ACTIVE.  Do not copy this to .github/workflows until the license question is settled.
+#
+# Why it is held: Baiying Liu's repository (arXiv:2610.12234) has NO LICENSE.  A CI job that
+# clones it and builds it in public is a redistribution question we have not resolved.  The job
+# never commits Liu's files, but its caches and logs would hold them.  Activate only after Liu
+# grants a license (or confirms in writing that this use is fine), and record that in
+# telperion/docs/LIU_DBN_BRIDGE_2026-10-11.md.
+#
+# Cost: same as oai-qrh-bridge.yml (OpenAI's closure, about 2,925 modules on top of Mathlib), plus
+# Liu's 219 modules (about 5 minutes on a fast machine) and the 19-module dbn port.
+name: liu-dbn-bridge
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "telperion/examples/liu_dbn_bridge/**"
+      - "telperion/examples/oai_qrh_bridge/OAI_PIN"
+      - "telperion/examples/oai_qrh_bridge/dbn_port/**"
+      - "telperion/examples/dbn/lean/DBN*.lean"
+jobs:
+  build-and-judge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 600
+    env:
+      ELAN_TOOLCHAIN: leanprover/lean4:v4.34.1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Materialize openai/math + Liu at the pinned commits (verifies all hashes)
+        working-directory: telperion/examples/liu_dbn_bridge
+        run: ./liu_materialize.sh
+      - uses: actions/cache@v4
+        with:
+          path: telperion/examples/liu_dbn_bridge/work/oai/.lake
+          key: liu-dbn-${{ hashFiles('telperion/examples/oai_qrh_bridge/OAI_PIN', 'telperion/examples/liu_dbn_bridge/LIU_PIN') }}
+      - name: Resolve and patch OpenAI's dependencies, fetch Mathlib oleans
+        working-directory: telperion/examples/liu_dbn_bridge/work/oai
+        run: |
+          lake update
+          lake exe cache get
+      - name: Build (one workspace; a duplicate OAI.* declaration would fail here)
+        working-directory: telperion/examples/liu_dbn_bridge/work/oai
+        shell: bash
+        run: |
+          lake build ArdaLiuBridge ArdaDBNLiu AxiomGuardLiuBridge ArdaDBNLiuChallenge ArdaDBNLiuChallengeTampered
+          lake env lean AxiomGuardLiuBridge.lean | tee axioms.out
+          ! grep -q sorryAx axioms.out
+          test "$(grep -c "depends on axioms: \[propext, Classical.choice, Quot.sound\]" axioms.out)" -eq "$(grep -c '^#print axioms' AxiomGuardLiuBridge.lean)"
+          lake env lean LiuOAIDeclarations.lean > liu_oai_decls.out
+          tail -1 liu_oai_decls.out
+      # Comparator (nanoda on), built at a tag compatible with v4.34.1, wired as in
+      # missions-comparator.yml.  The positive challenge must be accepted; the tampered challenge
+      # (Φ with e^{8u}) must be REJECTED, otherwise the challenge does not pin DBN.H.
+      - name: Comparator (nanoda on), positive challenge and negative control
+        working-directory: telperion/examples/liu_dbn_bridge/work/oai
+        shell: bash
+        run: |
+          lake env comparator dbn_real_zeros_of_liu_unconditional.comparator.json 2>&1 | tee cmp_pos.out
+          grep -q "Your solution is okay!" cmp_pos.out
+          if lake env comparator liu_tampered.comparator.json > cmp_neg.out 2>&1 \
+             && grep -q "Your solution is okay!" cmp_neg.out; then
+            echo "negative control was ACCEPTED: the challenge does not pin DBN.Phi"; exit 1
+          fi
+          grep -q "does not match" cmp_neg.out
