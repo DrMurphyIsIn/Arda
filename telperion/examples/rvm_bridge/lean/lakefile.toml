@@ -552,3 +552,6 @@ name = "ArchS5_Adjoint"
 
 [[lean_lib]]
 name = "ArchS5_Compact"
+
+[[lean_lib]]
+name = "ArchS5_Rayleigh"
