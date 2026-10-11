@@ -255,6 +255,7 @@ import FamilyWeilQuad
 import FamilyWeilTable
 import ArchS1_Identity
 import ArchS2_QTrick
+import ArchS10_Summable
 import ArchS7_Term
 import ArchS7_HS
 import ArchS7_Abstract
@@ -2348,3 +2349,35 @@ import ArchPipeline_Rung80
 #print axioms ArchS10.chi_zero_consistent
 #print axioms ArchS8.cosPhi_bound
 #print axioms ArchS8.outer_of_cosPhi
+
+-- Archimedean programme: S10 summability (EigenFamily.toProlateData).
+#print axioms ArchS10.gam_nonneg
+#print axioms ArchS10.summable_pow_two_mul
+#print axioms ArchS10.summable_gam
+#print axioms ArchS10.abs_aC
+#print axioms ArchS10.aC_term_le
+#print axioms ArchS10.aCd_term_le
+#print axioms ArchS10.summable_gam_mom
+#print axioms ArchS10.sX_nonneg
+#print axioms ArchS10.partial_le_sX
+#print axioms ArchS10.tendsto_pow_div_fact_two
+#print axioms ArchS10.tendsto_pow_div_fact_odd
+#print axioms ArchS10.abs_T_le_s
+#print axioms ArchS10.abs_Td_le_s
+#print axioms ArchS10.tsum_sq_le
+#print axioms ArchS10.ip_mono_self_le
+#print axioms ArchS10.sum_sq_s_le
+#print axioms ArchS10.EigenFamily.deriv_eq
+#print axioms ArchS10.EigenFamily.contDiff
+#print axioms ArchS10.EigenFamily.bound
+#print axioms ArchS10.EigenFamily.wMN_eq
+#print axioms ArchS10.EigenFamily.sum_wMN_le
+#print axioms ArchS10.EigenFamily.toProlateData_lam
+#print axioms ArchS10.EigenFamily.toProlateData_phi
+#print axioms ArchS10.EigenFamily.toProlateData_T
+#print axioms ArchS10.c0_ok
+#print axioms ArchS10.lam_sq_le_c0
+#print axioms ArchS10.c0_lt_one
+#print axioms ArchS10.certBasis_toProlateData
+#print axioms ArchS10.EigenFamily.toProlateData
+#print axioms ArchS10.EigenFamily.ofS9
