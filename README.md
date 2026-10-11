@@ -268,6 +268,11 @@ about the zeros of ζ used — so the machine-checked range for the de Bruijn–
 `0 ≤ Λ ≤ 9/32`. The paper and Lean sources are released at
 [DrMurphyIsIn/newman-lambda-nonneg](https://github.com/DrMurphyIsIn/newman-lambda-nonneg) (Zenodo DOI
 [10.5281/zenodo.23287832](https://doi.org/10.5281/zenodo.23287832)). RH is `Λ = 0`, and remains open.
+Dobner's theorem was then formalized in full (PR #682): Newman's conjecture for every element of the extended
+Selberg class — first for the abstract data `ExtSelbergData`, then for the class `SelbergSharp` itself, with its
+completed function proved entire and bounded on strips — with ζ as the control instance recovering `dbn_newman`
+(`selberg_newman`, `selberg_newman_sharp`, `dbn_newman_of_sharp`; design in
+[`telperion/docs/SELBERG_NEWMAN_DESIGN_2026-10-10.md`](telperion/docs/SELBERG_NEWMAN_DESIGN_2026-10-10.md)).
 
 ## The third arc: proof complexity
 
