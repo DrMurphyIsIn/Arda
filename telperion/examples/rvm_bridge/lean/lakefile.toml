@@ -541,6 +541,16 @@ name = "KWin2_GuardHeavy"
 [[lean_lib]]
 name = "AxiomGuardRvMBridge"
 
+# Stage S1 of the archimedean conceptual blueprint (2026-10-11): the exact u-space Weil identity.
+[[lean_lib]]
+name = "ArchS1_Kernel"
+
+[[lean_lib]]
+name = "ArchS1_Identity"
+
+[[lean_lib]]
+name = "ArchS1_Guard"
+
 # Stage S2 (archimedean conceptual blueprint): pole-free parametrisation g = h' - h/2.
 [[lean_lib]]
 name = "ArchS2_QTrick"
