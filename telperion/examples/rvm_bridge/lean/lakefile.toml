@@ -870,4 +870,7 @@ name = "ArchS11_Guard"
 name = "ArchS12_Index"
 
 [[lean_lib]]
+name = "ArchS12_Bridge"
+
+[[lean_lib]]
 name = "ArchS12_Guard"

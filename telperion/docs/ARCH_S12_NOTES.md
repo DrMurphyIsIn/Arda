@@ -48,3 +48,18 @@ for random lifts h.  Every sample has E < 0 and SoninTr > 0; at |I| = 1/2, B/‖
   gives exactly one index per window; `disjOK_eq` (`decide +kernel`) shows the 13 windows are pairwise
   disjoint, so the window indices are distinct; `exists_equiv_prefix` builds an `ℕ ≃ ι` with prescribed
   values on `{0..12}` (`Equiv.sumCompl` + `Cardinal.lift_mk_eq'` on the countably infinite complements).
+
+### A1 + A2 (done): S11's form on [−L, L] as a function-level double integral (`ArchS12_Bridge.lean`)
+
+* `re_inner_toLpI` (A2): for continuous F vanishing off [0, ℓ] and any continuous kernel κ,
+  re⟪T_κ f, f⟫ = re ∫∫ conj F(x) κ(x, y) F(y) over ℝ², where f = `toLpI ℓ hF` is F in L²([0, ℓ]).
+  Also `norm_sq_toLpI` (‖f‖² = ∫ conj F·F) and `inner_one_toLpI` (⟪1, f⟫ = ∫ F).
+  Proof: S5's `inner_intOp_eq_integral`, a.e. identification through `quasiMeasurePreserving_fst/snd`,
+  `volI_prod`, the vanishing off Icc², `integral_prod`.
+* `double_integral_translate` (A1): ∫∫ conj h(x−L) k(y−x) h(y−L) = ∫∫ conj h(x) k(y−x) h(y)
+  (`integral_sub_right_eq_self` twice).  F = h(· − L) is h moved from [−L, L] to [0, 2L].
+* `double_chi_eq_chiT`: on [−L, L]² with 2L ≤ log 2, S8's χ(y − x) equals S11's clamped `chiK D`.
+* Results, for `CertBasis D`, continuous h:
+  * `form_chi_half`: tsupport h ⊆ [−1/4, 1/4] ⇒ re ∫∫ conj h(x) h(y) χ(y−x) ≤ 0.95921 · re ∫ conj h·h.
+  * `form_chi_log2`: tsupport h ⊆ [−log2/2, log2/2] ⇒ re ∫∫ … ≤ 0.9995 · re ∫ conj h·h + 0.058‖∫h‖²/log 2.
+* S8's `[α, α+ℓ]` intervals need no separate translation: `prop55_lift` is applied directly with α = −L.
