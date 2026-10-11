@@ -1,9 +1,9 @@
 /-
   ArchS3_Guard -- axiom guard for stage S3 (structural positivity L = W_inf + D >= 0, CC Cor 2.3).
   Required output for every line: [propext, Classical.choice, Quot.sound].
-  Run:  lake build ArchS3_Delta && lake env lean ArchS3_Guard.lean
+  Run:  lake build ArchS3_Mellin && lake env lean ArchS3_Guard.lean
 -/
-import ArchS3_Delta
+import ArchS3_Mellin
 
 -- M1: the kernel delta (CC (48)/(49)) and its properties
 #print axioms ArchS3.integral_cos_mul_neg_log
@@ -23,3 +23,15 @@ import ArchS3_Delta
 #print axioms ArchS3.re_archSide_eq_poles_add_archW
 #print axioms ArchS3.re_weilForm_eq_archW
 #print axioms ArchS3.Lfun_nonneg_of_ell_nonneg
+-- M2a: the Mellin transform of cos on the critical strip
+#print axioms ArchS3.gInt_eq
+#print axioms ArchS3.integral_log_gInt
+#print axioms ArchS3.integral_cosD
+#print axioms ArchS3.integral_log_cosD
+#print axioms ArchS3.tendsto_PsiE
+#print axioms ArchS3.tendsto_dPsiE
+#print axioms ArchS3.hasDerivAt_PsiE
+#print axioms ArchS3.Psi_eq_Gammaℂ
+#print axioms ArchS3.Psi_eq_Gammaℝ
+#print axioms ArchS3.norm_Psi_zt
+#print axioms ArchS3.re_dPsi_mul_conj_Psi

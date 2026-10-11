@@ -563,4 +563,7 @@ name = "ArchS2_Guard"
 name = "ArchS3_Delta"
 
 [[lean_lib]]
+name = "ArchS3_Mellin"
+
+[[lean_lib]]
 name = "ArchS3_Guard"

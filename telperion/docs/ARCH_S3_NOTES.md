@@ -131,6 +131,47 @@ integrals.  Its core step has no rigorous source proof to transcribe.  Under the
 
 Given M2 it is one line: `Lfun_nonneg_of_ell_nonneg` with `ell r = ∫ |Φ_r|² ≥ 0`.
 
+### M2 resumed (lead, 2026-10-11): the stop rule is lifted; rigorous route found
+
+**Proof sketch of (★)** (z = ½ + it, w = z̄ = 1 − z, C(s) = 2cos 2πs, C_ε(s) = C(s)e^{−εs}, ε ∈ (0,1]).
+Every integral below converges absolutely because of the damping; ε → 0 is taken only at the end.
+
+* Damped objects: P(a) = a^{z−1}C_ε(a), Q = conj P, Φ_ε(a) = ∫_a^∞ P, Ψ_ε = ∫_0^∞ P,
+  Ψ'_ε = ∫_0^∞ log·P.  Closed forms: Ψ_ε = Γ(z)((ε−2πi)^{−z} + (ε+2πi)^{−z}) (complex Gamma integral,
+  by analytic continuation in r from Mathlib's real-r formula), Ψ'_ε = its z-derivative (Mellin derivative).
+* (A) IBP on (1,∞) with v = log a: N_ε := ∫₁^∞|Φ_ε|² da/a = 2Re U(1,∞), where U(A) = ∫_A log a·P(a)·conj Φ_ε(a) da.
+* (B) Quadrant symmetry: Ψ'_ε conj Ψ_ε = U(0,∞) + U₂, U₂ = ∫ log a P(a) ∫_0^a Q; swapping the order gives
+  conj U₂ = V := ∫ P(a) ∫_a^∞ log s Q(s).  Hence 2Re U(0,∞) = Re(Ψ'_ε conj Ψ_ε) + Re(U(0,∞) − V).
+* (C1) Substituting s = ρa: U(0,∞) − V = ∫₁^∞ (−log ρ) ρ^{w−1} J_ε(ρ) dρ with
+  J_ε(ρ) = ∫₀^∞ C_ε(a)C_ε(ρa) da = 2κ/(κ² + 4π²(ρ−1)²) + 2κ/(κ² + 4π²(ρ+1)²), κ = ε(1+ρ).
+  Call its real part R_ε.
+* (C2) The same substitution: 2Re U(0,1) = −2Re∫₁^∞ ρ^{w−1} I_ε(ρ) dρ, I_ε(ρ) = ∫₀¹ (−log a) C_ε(a)C_ε(ρa) da.
+* Assembly: N_ε = Re(Ψ'_ε conj Ψ_ε) + R_ε + 2Re∫₁^∞ ρ^{w−1} I_ε(ρ) dρ  (exact, every ε > 0).
+* Limits ε → 0:
+  * N_ε → N = ∫₁^∞|Φ_t|² d*a by dominated convergence, |Φ_ε(a)| ≤ (2 + 2|z−1|)/π · a^{−1/2} (one IBP).
+  * Re(Ψ'_ε conj Ψ_ε) → Re(Ψ' conj Ψ) = psiR t − log π, because Ψ = Γℝ(z)/Γℝ(1−z) has |Ψ| = 1 on the line
+    and its log-derivative is −log π + (ψ(z/2) + ψ((1−z)/2))/2.
+  * R_ε → 0 by dominated convergence: log ρ · J_ε(ρ) ≤ (1 + 5 log ρ)/ρ, and → 0 pointwise for ρ > 1.
+  * I_ε(ρ) → ccDelta(ρ)/√ρ, dominated via |∫₀¹(−log a)cos(ωa)e^{−κa}da| ≤ 4(2/ω)^{3/4}; then
+    2Re∫₁^∞ ρ^{−½−it} ccDelta(ρ)ρ^{−½} dρ = deltaHat t by ρ = e^u and evenness.
+  * Hence N = psiR t − log π + deltaHat t = ell t.
+* Undamped Φ_t(a) := Ψ − ∫₀^a s^{z−1}C(s) ds equals lim_{R→∞} ∫_a^R s^{z−1}C(s) ds (the improper integral A e_t).
+
+Numerical checks of every new identity [N-here, mpmath]:
+
+| identity | t, ε | left | right |
+|---|---|---|---|
+| ∫₀¹(1 − \|Φ_t\|²) d*a = δ̂(t) (undamped Δ part) | 0 | 5.421254 | 5.421255 |
+| same | 0.5 | 3.381329 | 3.381328 |
+| same | 2 | 1.214903 | 1.214901 |
+| N_ε − L_ε = Re(Ψ'_εΨ̄_ε) + R_ε (L_ε = ∫₀¹(\|Ψ_ε\|² − \|Φ_ε\|²) d*a) | 0.5, 0.3 | −3.3172521366 | −3.3172521364 |
+| same | 0, 0.5 | −5.8806021445 | −5.8806021447 |
+| L_ε = 2Re∫₁^∞ ρ^{−z} I_ε(ρ) dρ | 0.5, 0.3 | 3.33017865 | 3.33017865 |
+| same | 0, 0.5 | 5.88721659 | 5.88721659 |
+
+(The first attempt at a damped-Δ check used a crude oscillatory quadrature truncated at ρ = 100 and did not agree.
+Redone with the closed form ∫₀¹(−log a)e^{ca} da = −Ein(−c)/c it agrees to 1e-9.)
+
 ## 3. The S3' alternative (estimate only, not started)
 
 S3' proves `∀ r, 0 ≤ ell r` by certified numerics plus large-r asymptotics.  M1 already reduces CC Cor 2.3 to
