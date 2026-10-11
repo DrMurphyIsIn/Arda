@@ -824,3 +824,43 @@ name = "ArchS7_Final"
 
 [[lean_lib]]
 name = "ArchS7_Guard"
+
+# ---- archimedean stage S11 (spectral certificate for K_I) ----
+[[lean_lib]]
+name = "ArchS11_Data"
+
+[[lean_lib]]
+name = "ArchS11_CertPsi"
+
+[[lean_lib]]
+name = "ArchS11_Cert"
+
+[[lean_lib]]
+name = "ArchS11_Poly"
+
+[[lean_lib]]
+name = "ArchS11_Galerkin"
+
+[[lean_lib]]
+name = "ArchS11_Lp"
+
+[[lean_lib]]
+name = "ArchS11_CertT1"
+
+[[lean_lib]]
+name = "ArchS11_CertT2a"
+
+[[lean_lib]]
+name = "ArchS11_CertT2b"
+
+[[lean_lib]]
+name = "ArchS11_Final"
+
+[[lean_lib]]
+name = "ArchS11_Bound"
+
+[[lean_lib]]
+name = "ArchS11_KI"
+
+[[lean_lib]]
+name = "ArchS11_Guard"
