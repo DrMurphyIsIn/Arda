@@ -5,3 +5,5 @@ liu_toolchain=leanprover/lean4:v4.34.1
 liu_manifest_oai_commit=adc7f1241b42e322a6451854ab7e4b4c146bf78a
 liu_manifest_modules=2925
 liu_lean_modules=219
+# Workspace toolchain, read by missions/judge.py (read_pin) for the Comparator build. Same as OAI_PIN.
+toolchain=leanprover/lean4:v4.34.1
