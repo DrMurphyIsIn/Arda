@@ -7,16 +7,16 @@ Source: Connes-Consani arXiv:2006.13771 ("CC"), sections 4-5 and Appendix F, rea
 
 ## What S8 proves
 
-All 82 top-level theorems print exactly `[propext, Classical.choice, Quot.sound]`.
+All 84 top-level theorems print exactly `[propext, Classical.choice, Quot.sound]`.
 Check with `lake build ArchS8_Kernel && lake env lean ArchS8_Guard.lean`.
 There is no `sorry` and no `axiom`.
 
 | file | lines | content |
 |---|---|---|
 | `ArchS8_Volterra.lean` | 393 | the Volterra rule; CC Lemma 5.2 (96); the core of Lemma 5.1 |
-| `ArchS8_ProlateData.lean` | 419 | the interface; ε (84); Prop 5.3 (97)/(99); Lemma 5.4; Rem 5.6 |
+| `ArchS8_ProlateData.lean` | 499 | the interface; ε (84); Prop 5.3 (97)/(99); Lemma 5.4; Rem 5.6 |
 | `ArchS8_Kernel.lean` | 575 | CC (102); Lemma 5.1 (correlation form); Prop 5.5; χ(0) = 0; the S2 bridge |
-| `ArchS8_Guard.lean` | 96 | `#print axioms` for all 82 theorems |
+| `ArchS8_Guard.lean` | 98 | `#print axioms` for all 84 theorems |
 
 Each module builds in about 33 s on the loaded machine.
 
@@ -58,23 +58,28 @@ theorem lemma52 {ξ ζ : ℝ → ℝ} (hξ : ContDiff ℝ 1 ξ) (hζ : ContDiff 
 * `lemma51_scaling` is the pointwise core: (−∂_t² + 1/4)(e^{t/2} ξ(e^t x)) = −e^{t/2} (Dξ)(e^t x), with (Dξ)(y) = y²ξ''(y) + 2yξ'(y).
 * `lemma51_corr` is the integrated additive form: Q₊(η* ∗ ξ) = η* ∗ (Q₊ ξ).
 
-**The interface.**
+**The interface.**  The index type is arbitrary (generalised 2026-10-11 so that S6's abstract
+eigenbasis index can be used directly; no countability is needed, since `tsum`,
+`hasDerivAt_tsum_of_isPreconnected` and `continuousOn_tsum` work over any type).
 ```lean
-structure ProlateData where
-  lam : ℕ → ℝ
+structure ProlateData (ι : Type*) where
+  lam : ι → ℝ
   lam_sq_lt_one : ∀ n, lam n ^ 2 < 1
-  phi : ℕ → ℝ → ℝ                         -- ξ_n^an
+  phi : ι → ℝ → ℝ                         -- ξ_n^an
   phi_contDiff : ∀ n, ContDiff ℝ 1 (phi n)
   T : ℝ
   T_pos : 0 < T
-  M : ℕ → ℝ
-  N : ℕ → ℝ
+  M : ι → ℝ
+  N : ι → ℝ
   bound_inner : ∀ n, ∀ x ∈ Icc (Real.exp (-T)) 1, |phi n x| ≤ M n ∧ |deriv (phi n) x| ≤ M n
   bound_outer : ∀ n, ∀ x ∈ Icc 1 (Real.exp T), |phi n x| ≤ N n ∧ |deriv (phi n) x| ≤ N n
   summable_wMN : Summable fun n => lam n ^ 2 / (1 - lam n ^ 2) * (M n * N n)
 ```
 
-**Definitions over `D : ProlateData`.**  Here t = log ρ.
+`abbrev ProlateDataNat := ProlateData ℕ` is the original ℕ-indexed type.  All theorem names are
+unchanged and take `ι` implicitly from `D : ProlateData ι`.
+
+**Definitions over `D : ProlateData ι`.**  Here t = log ρ.
 * `w n = λ²/(1 − λ²)`.
 * `kn n = kM (phi n) (phi n)`.
 * `eps t = ∑' n, w n * kn n t`.  This is CC's ε for ρ ≥ 1, in the form used in the proof of Lemma 5.4.
@@ -147,6 +152,29 @@ So `prop55_lift` is CC's "E∘Q(ξ∗ξ*) = ⟨ξ|N_I ξ⟩" composed with Prop 
 
 ## What S6 and S9 must supply
 
+**Normalisation rule (corrected 2026-10-11).**  Instantiate `phi n := phiR bR n` with NO factor.
+S6's `phiR = λ⁻¹ ∫_0^1 2cos(2πwv) e_n(v) dv` with `e_n` orthonormal in `L2IR 0 1` (Lebesgue on
+[0,1]), so `∫_0^1 e_n² = 1`: this is CC's normalisation (16), and `phiR` is CC's `ξ_n^an` exactly.
+The factor `c2 = 1/√2` relates only S6's L²(ℝ) vectors (`ξ_n(S6) = c2·1_{[-1,1]}·φ_n`, likewise
+`ζ_n`) to CC's.  An earlier S8 message to S6 said `phi n := √2 · phiR n` (claiming ε, ε'(1⁺) and N_I
+would halve otherwise); that was WRONG and was retracted to S6 and the lead.  With the wrong factor,
+ε and ε'(1⁺) would double; χ = Qε/(2ε'(1⁺)) is scale-invariant in any case.
+
+**Provided: the outer bound** (`ArchS8.cosPhi_bound`, `ArchS8.outer_of_cosPhi`).
+```lean
+def cosPhi (lam : ℝ) (e : ℝ → ℝ) (w : ℝ) : ℝ :=
+  lam⁻¹ * ∫ v in Icc (0 : ℝ) 1, 2 * Real.cos (2 * Real.pi * w * v) * e v
+theorem cosPhi_bound {e : ℝ → ℝ} (he : IntegrableOn e (Icc 0 1))
+    (h1 : ∫ v in Icc (0 : ℝ) 1, |e v| ≤ 1) {lam : ℝ} (hlam : lam ≠ 0) (w : ℝ) :
+    |cosPhi lam e w| ≤ 4 * Real.pi / |lam| ∧ |deriv (cosPhi lam e) w| ≤ 4 * Real.pi / |lam|
+theorem outer_of_cosPhi ... (S : Set ℝ) :
+    ∀ x ∈ S, |cosPhi lam e x| ≤ 4 * Real.pi / |lam| ∧ |deriv (cosPhi lam e) x| ≤ 4 * Real.pi / |lam|
+```
+`phiR bR i = cosPhi (bR.μ i) (bR.e i)` holds by `rfl` (checked against the merged S6).  So
+`N i := 4π/|μ_i|` with `S := Icc 1 (exp T)` gives `bound_outer`, once S6 supplies
+`IntegrableOn (bR.e i) (Icc 0 1)` and `∫_{[0,1]} |e_i| ≤ 1` (Cauchy-Schwarz from ‖e_i‖ = 1) and
+`μ_i ≠ 0` (S6 has `abs_μ_lt_one` and nonvanishing).
+
 To instantiate `ProlateData` for c = 2π, even prolates:
 
 1. **`lam n`** is the n-th eigenvalue of P₁F P₁ on even L² (CC (68)-(69)), with λ² < 1.
@@ -163,7 +191,7 @@ To instantiate `ProlateData` for c = 2π, even prolates:
    * The numerical values of χ on [0, log 2] use ξ_n and ξ_n' only on [1/2, 2].
      That is exactly S9's range.
    * The range beyond 2 enters only through the structural bounds N_n.
-4. **`N n`**, the outer bound on [1, e^T].  Take N_n = 4π/|λ_n| for λ_n ≠ 0.
+4. **`N n`**, the outer bound on [1, e^T].  Take N_n = 4π/|λ_n| (now provided, see above).
    * |η_n| ≤ 2∫_0^1 |ξ_n| ≤ 2 and |η_n'| ≤ 4π∫_0^1 x|ξ_n| ≤ 4π hold for every x, so this bound is uniform in T.
    * When λ_n = 0 the weight w_n vanishes, and any finite N_n works.
 5. **`M n`**, the inner bound on [e^{−T}, 1] for |ξ_n| and |ξ_n'|.  **This is the one substantive analytic obligation.**
@@ -204,6 +232,7 @@ To instantiate `ProlateData` for c = 2π, even prolates:
   * The Lean series converges uniformly with derivatives on (−T, T) under `summable_wMN`.
   * An explicit remainder Σ_{n>N} w_n·B_n with B_n = (2 + T)·2M_n·e^{T/2}(1 + e^T)N_n is available from `abs_kn_le`, but not packaged.
   * S10 will want that packaged.
+* **New theorems are not yet in `AxiomGuardRvMBridge`.**  `cosPhi_bound` and `outer_of_cosPhi` (added after the coordinator wired S8) are only in `ArchS8_Guard`.
 * **Wiring was left to the coordinator.**  `defaultTargets` and `AxiomGuardRvMBridge.lean` are untouched.
   The four `[[lean_lib]]` stanzas (`ArchS8_Volterra`, `ArchS8_ProlateData`, `ArchS8_Kernel`, `ArchS8_Guard`) are at the end of `lakefile.toml`.
 
