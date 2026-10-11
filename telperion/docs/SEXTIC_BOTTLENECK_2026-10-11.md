@@ -14,7 +14,7 @@ Section 5 of the map established, inside the paper's own exponent system, that 7
     sigma0  >=  1 - h/6 + b/12,     h = (1 + b + 3 ell)/2,     6 ell <= 1        =>   sigma0 >= 11/12 - ell/4 >= 7/8,
 
 with equality at the paper's point, while the high side (the row-exponent system of section 20) has about
-0.01 of room. (Section 7 refines this: `6 ell <= 1` is a cost threshold, not a cap, and the true low floor is 13/15.) The map's closing line was that "all three levers are the sextic 1/6 in different clothes".
+0.01 of room. (Section 7 refines this: `6 ell <= 1` is a cost threshold, not a cap; the LOW-side floor alone would be 13/15, but the high side binds first, and the proved-input optimum of the whole architecture is 0.87495707, Liu's `B_new` exactly.) The map's closing line was that "all three levers are the sextic 1/6 in different clothes".
 That sentence was too quick. Reading section 15 of the source separates three different sixes.
 
 ## 2. Three sixes, two of them sextic
@@ -66,9 +66,10 @@ which re-derives 11/12 and 7/8 exactly), answers the question this note was head
 of it should be cited rather than redone. In its terms:
 
 - The identity `sigma0 = 5/6 + (M - 2 ell)/12 + excess/2` (b drops out), with `M` the reflected-energy
-  length; the proved lemmas force `M + ell <= 1` and `2M >= 1 + 3 ell`, which gives the **13/15 floor** for
-  proved inputs (at the triple point `ell = 1/5`, `M = 4/5`), and idealising everything except sixth-power
-  sparsity gives the **5/6 = 1 - 1/k architecture floor**. Our law `1 - (1 + 3 ell)/(2k)` is the same
+  length; the proved lemmas force `M + ell <= 1` and `2M >= 1 + 3 ell`, which gives **13/15** at the triple point `ell = 1/5`, `M = 4/5` (RELABELLED in the ledger's Addendum 2, after the
+  high-side sweep: a LOW-side idealisation without the witness-count bins, not a proved-input floor; the proved-input
+  optimum of the architecture is 0.87495707 = Liu's `B_new`), and idealising everything except sixth-power sparsity
+  gives the **5/6 = 1 - 1/k architecture floor**. Our law `1 - (1 + 3 ell)/(2k)` is the same
   bookkeeping with `M = 1 - ell` substituted (the paper's choice), and the two agree: 7/8 at `ell = 1/6`,
   13/15 at `ell = 1/5`.
 - **Why k = 6 is forced (ledger section 5.2).** Two things must hold at once. (a) After Poisson summation the
@@ -191,7 +192,7 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   including a hypothetical `K + D` one, carries an inherent `Q^{1/6} N` term that the ledger's scenario C originally
   omitted. The ledger has since been CORRECTED (addendum in `~/rh-team/C/loss_ledger.md`, confirmed by its author and
   re-run): scenario C gives `sigma0 = 14/15 - ell/15` (0.8667 at `ell = 1`; 0.85 would need `ell = 5/4`; the 5/6 floor
-  at `ell = 3/2`), not "0.85 at `ell = 0.8`". The 13/15 and 5/6 floors and the NO-GO are unchanged. So even the
+  at `ell = 3/2`), not "0.85 at `ell = 0.8`". The 5/6 architecture floor and the NO-GO are unchanged (13/15 is relabelled below). So even the
   conjectural input would not have reached 0.85 at any prime length the paper's machinery was checked for.
 - **Open discrepancy to settle:** the method map derives the cap `ell <= 1/6` from Lemma 15.1's `M' >= 1/2`; the
   ledger derives `ell <= 1/5` (the 13/15 floor) from the reflected-energy range `M + ell <= 1`, `2M >= 1 + 3 ell`.
@@ -212,7 +213,7 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
 
       sigma0_low(ell) = 11/12 - ell/4 + (5 ell - 1)_+ / 8,     minimised at ell = 1/5:  13/15 = 0.8667.
 
-  This is the ledger's 13/15 (items 6-7), derived now from the proof itself; the method map's "both readings say
+  This is the ledger's 13/15 (items 6-7), derived now from the proof itself, as the LOW-side limit only; the method map's "both readings say
   `6 ell <= 1`" and this note's "7/8 is exact for the proof as written" are corrected accordingly: 7/8 is exact only
   with `ell` held at 1/6, and Liu's 0.874957 (section 9) is the first step past it. After the low side, the HIGH side
   binds, and there the ledger (floor bin only, ideal `R = 1`: fine) and the method map's model (full row-count system
@@ -271,6 +272,12 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   nothing. 7/8 is a two-sided vertex (low side `5 ell <= 1` from the sharp cubic sieve, high side Lemma 20.2's witness
   count), and the only honest number below it is the `0.874957` crossing that Liu has already claimed and formalized.
   The `Lambda <= 121/450` possibility raised above is withdrawn.
+  Ledger Addendum 2 (`~/rh-team/C/loss_ledger.md`; gate record `~/rh-team/gates/gate0.md`), with the sweep re-run by
+  the Riemann session: the proved-input optimum of OpenAI's architecture is `sigma0 = 0.87495707`, and this is Liu's
+  `B_new = (1507 - 2 sqrt 921)/1653` EXACTLY, the same `sqrt 921` arising from the binding witness-count bin
+  `delta = 49/48 - sqrt(921)/48` with `R_* = 2/3`. Liu's result is therefore this route's limit, and
+  `Lambda <= 2 (B_new - 1/2)^2 = 0.2811856` is the best the method can give. The ledger's 13/15 is relabelled an
+  idealisation without witness bins, not a proved-input floor; this note uses the same label throughout.
 
 ## 8. Verdict
 
