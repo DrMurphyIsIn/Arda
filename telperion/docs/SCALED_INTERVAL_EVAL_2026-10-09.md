@@ -127,11 +127,11 @@ plus kernel time. The kernel share alone is in parentheses.
 - **Scaling.** Sharding at about 200 nodes per file, as OAI does, is not implemented. The emitter
   refuses instances above 2000 nodes.
 
-## Discharging an Arb seam: the BraggDefect off-line defect (proposal, not implemented)
+## Discharging an Arb seam: the BraggDefect off-line defect (implemented 2026-10-11)
 
-**Target.** In `examples/zeta_zero_localization/lean/BraggDefect.lean`, `bragg_defect_witness`
-and `defect_leakage_gap` both take the hypothesis below. It is the Arb enclosure of `e^{1/10}`,
-`expLo` and `expHi`, and it is documented as a non-kernel input.
+**Target.** In `examples/zeta_zero_localization/lean/BraggDefect.lean`, `defect_witness_offline`,
+`bragg_defect_witness` and `defect_leakage_gap` all take the hypothesis below. It is the Arb
+enclosure of `e^{1/10}`, `expLo` and `expHi`, and it is documented as a non-kernel input.
 
 ```lean
 hexp : expLo ≤ Real.exp (1/10) ∧ Real.exp (1/10) ≤ expHi
@@ -145,21 +145,45 @@ one elementary expression:
 -(exp(1/10) + exp(-1/10) - 2)^2
 ```
 
-**Checked in Python today.** I ran `scaled_interval_eval_certificate` on that expression with the
-island's own 150-digit constants `L` and `U` as the claim. It certifies at `S = 10^30` and at
-`S = 10^40`. The DAG has 9 nodes and two exp nodes with `k = 0`. The root box width is 3 ulp,
-far inside `[L, U]`.
+**What landed.** The three steps of the plan were carried out as follows.
 
-**The discharge would take three steps.**
+1. `examples/bragg_defect_sie/generate.py` emits two files into the zeta island. The first is
+   `ScaledInterval.lean`, a copy of the prelude. It is written from the same Python string as this
+   island's copy, and both generators `--check` it byte for byte, so there is one source of truth.
+   A copy was chosen over a `[[require]]` because the zeta island is sharded into path packages
+   that share one deps directory in CI, and the RHLinalg prelude is reused the same way. The second
+   file is `BraggDefectSIE.lean`, with two instances at `S = 10^40`:
+   - `sie_defect_offline` encloses the expression above in `[L, U]`. It has 9 nodes and two exp
+     nodes with `k = 0`.
+   - `sie_exp_tenth` encloses `exp(1/10)` in `[expLo, expHi]`.
 
-1. Add an instance to the zeta island. This needs a `[[require]]` on `ScaledInterval` from the
-   island's lakefile, or a copy of the prelude onto the island's toolchain.
-2. Emit `defect_offline_sie : L ≤ -((Real.exp (1/10) + Real.exp (-(1/10)) - 2)^2) ∧ ... ≤ U`.
-   There is one subtlety: sympy writes `exp(-1/10)` with the constant `-1/10`, while the island
-   writes `-(1/10)`. The bridge must equate the two forms with a short `norm_num` rewrite.
-3. Write a two-line bridge that unfolds `defectFunctional`, `excess`, `Aoff` and `Aon`. It
-   rewrites the goal to the emitted statement, proving `defect_witness_offline` with no `hexp`.
-   `bragg_defect_witness` and `defect_leakage_gap` then follow unconditionally.
+   The claims `L`, `U`, `expLo` and `expHi` are read verbatim out of BraggDefect.lean at
+   generation time, so a drift there breaks `--check`.
+2. The `exp(-1/10)` versus `-(1/10)` subtlety is one rewrite,
+   `show ((-1 : ℝ) / 10) = -(1 / 10) by norm_num`, applied to the emitted bounds.
+3. The bridge unfolds `defectFunctional`, `excess`, `Aoff` and `Aon` and closes with `linarith`.
+   The new declarations sit next to the `hexp`-taking originals, which are unchanged:
+
+```lean
+theorem hexp_sie : expLo ≤ Real.exp (1 / 10) ∧ Real.exp (1 / 10) ≤ expHi
+theorem defect_witness_offline_sie : L ≤ defectFunctional excess ∧ defectFunctional excess ≤ U
+theorem bragg_defect_witness_sie :
+    defectFunctional 0 = 0 ∧ (L ≤ defectFunctional excess ∧ defectFunctional excess ≤ U)
+theorem defect_leakage_gap_sie : defectFunctional excess ≤ U ∧ (U : ℝ) < defectFunctional 0
+```
+
+All four, and both emitted instances, print `[propext, Classical.choice, Quot.sound]` in
+`AxiomGuardDefect.lean`. The off-line results do not route through `hexp`: the defect bracket is
+enclosed directly. Because `hexp_sie` proves the hypothesis itself, the original theorems are
+unconditional too, for example `defect_witness_offline hexp_sie`.
+
+**Checks.** `tests/test_bragg_defect_sie.py` covers the drift gate, the prelude copy and a Layer 1
+refusal of a claim one ulp inside the box. Two Lean-gated controls run on the real instance through
+the negative-control harness. In one, the root box is shrunk by one ulp. In the other, the claimed
+upper end is moved one ulp below the computed box. The kernel rejects both, and the honest twin
+compiles. The driver `bragg_defect.py` had drifted from the committed BraggDefect.lean, since
+`bragg_defect_witness` was added by hand. It now renders the file byte for byte and has its own
+`--check`, which `bragg_defect_sie/generate.py --check` also runs.
 
 **Why bother when `exp_enclosure` already exists?** The `exp_enclosure` bridge discharges `hexp`
 itself, through `norm_num` on Taylor sums. This route discharges the downstream bracket directly,

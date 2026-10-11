@@ -812,3 +812,9 @@ name = "scaled_interval_eval"
 script = "examples/scaled_interval_eval/generate.py"
 group = "quick"    # fixed-point integer interval evaluator (prototype, PR #676): 4 instances, 136 theorems;
                    # pure-Python regeneration, ~1 s
+
+[[check]]
+name = "bragg_defect_sie"
+script = "examples/bragg_defect_sie/generate.py"
+group = "quick"    # BraggDefect hexp seam via scaled_interval_eval: 2 instances + the prelude copy, emitted
+                   # INTO the zeta_zero_localization island; --check also re-renders BraggDefect.lean; ~1 s

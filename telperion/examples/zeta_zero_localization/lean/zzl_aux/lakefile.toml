@@ -1,5 +1,5 @@
 name = "zzl_aux"
-defaultTargets = ["AllZeros_h100", "AllZeros_h200", "AxiomGuardDefect", "BraggAmplitudeInstances", "BraggDefect", "BraggH100", "BraggSupport", "CosEnclosure", "DefectDictionary", "ExpLaurentDeficit", "QuadrupleDefect", "NoZerosInBox_0_1d1000_0_55d16", "NoZerosInBox_1d1000_999d1000_0_55d16", "R2Rigidity", "RecurrenceDeficit", "RHInBox_1d1000000_999999d1000000_0_100", "RHInBox_1d1000000_999999d1000000_100_200", "RHLinalg", "StripClear", "ZooDH", "ExpEnclosureInstances"]
+defaultTargets = ["AllZeros_h100", "AllZeros_h200", "AxiomGuardDefect", "BraggAmplitudeInstances", "BraggDefect", "BraggH100", "BraggSupport", "CosEnclosure", "DefectDictionary", "ExpLaurentDeficit", "QuadrupleDefect", "NoZerosInBox_0_1d1000_0_55d16", "NoZerosInBox_1d1000_999d1000_0_55d16", "R2Rigidity", "RecurrenceDeficit", "RHInBox_1d1000000_999999d1000000_0_100", "RHInBox_1d1000000_999999d1000000_100_200", "RHLinalg", "StripClear", "ZooDH", "ExpEnclosureInstances", "ScaledInterval", "BraggDefectSIE"]
 srcDir = ".."
 
 [[require]]
@@ -57,3 +57,7 @@ name = "RHLinalg"
 name = "StripClear"
 [[lean_lib]]
 name = "ZooDH"
+[[lean_lib]]
+name = "ScaledInterval"
+[[lean_lib]]
+name = "BraggDefectSIE"

@@ -31,6 +31,15 @@ name = "R2Rigidity"
 [[lean_lib]]
 name = "BraggDefect"
 
+# The BraggDefect hexp seam discharged by the scaled_interval_eval emitter:
+# ScaledInterval = drift-checked copy of the emitter prelude, BraggDefectSIE = the
+# emitted instances (both written by examples/bragg_defect_sie/generate.py).
+[[lean_lib]]
+name = "ScaledInterval"
+
+[[lean_lib]]
+name = "BraggDefectSIE"
+
 [[lean_lib]]
 name = "QuadrupleDefect"
 
