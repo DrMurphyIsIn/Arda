@@ -177,7 +177,7 @@ theorem lemma51_corr {η ξ : ℝ → ℂ} {α ℓ : ℝ} (hη : Continuous η) 
 
 namespace ProlateData
 
-variable (D : ProlateData)
+variable {ι : Type*} (D : ProlateData ι)
 
 /-- CC (101): `E₊(f) = ∫ f(x) ε(exp|x|) dx`. -/
 def Eplus (f : ℝ → ℂ) : ℂ := ∫ v, f v * (D.eps |v| : ℂ)
@@ -383,7 +383,7 @@ theorem integral_corr_mul {η ξ q : ℝ → ℂ} {α ℓ : ℝ} (hη : Continuo
 
 namespace ProlateData
 
-variable (D : ProlateData)
+variable {ι : Type*} (D : ProlateData ι)
 
 /-- **CC Proposition 5.5**, as an identity of sesquilinear forms.  Let `η` be continuous and `ξ`
 smooth, both supported in an interval `I = [α, α + ℓ]` with `ℓ < T` (CC: `|I| ≤ log 2`).  Then
@@ -547,7 +547,7 @@ theorem corr_lift {h : ℝ → ℂ} {α ℓ : ℝ} (hh : ContDiff ℝ ((⊤ : �
 
 namespace ProlateData
 
-variable (D : ProlateData)
+variable {ι : Type*} (D : ProlateData ι)
 
 /-- **E∘Q on the pole-free class** (CC Prop 3.5 + Prop 5.5 in the island's variables).  If `h` is
 an island test function supported in an interval of length `ℓ < T` and `g = h' - h/2` is its
