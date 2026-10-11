@@ -53,6 +53,10 @@ converter wants no pole hypothesis. At s = 1 we use Mathlib's `riemannZeta_one_n
 (NumberTheory/Harmonic/ZetaAsymp.lean). Lean accepts Liu's term as the converter's hypothesis
 directly, which confirms at kernel level that Liu's `riemannZeta` is Mathlib's.
 
+The s = 1 step is a precaution and is not needed. peterwmurphy-e9's independent replay found that
+Liu's proof never uses `hpole`. It is bound as `_hpole`, and Liu's transfer step handles s = 1
+itself through `riemannZeta_one_ne_zero`.
+
 ## 2. Gain, and why this is the end of this route
 
 | bound | θ | Λ threshold |
