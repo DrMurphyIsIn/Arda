@@ -99,37 +99,12 @@ theorem Lfun_nonneg_of_ell_nonneg (hell : ∀ r, 0 ≤ ell r) (hg) : 0 ≤ Lfun 
 
 Hypotheses are only `IsWeilTest g`; no support bound is needed except in `re_weilForm_eq_archW`.
 
-### M2: STOPPED by the decision rule (not started in Lean)
+### M2 (first pass): stopped by the original decision rule, then resumed
 
-M2 is (★) for every t (or its integrated HS form).  It needs three things.
-
-1. **Ψ as an integral.**  Ψ(z) = 2∫₀^∞ s^{z−1}cos(2πs) ds = Gammaℂ(z)cos(πz/2) on 0 < Re z < 1.
-   * Mathlib has the algebraic identity `Gammaℝ s / Gammaℝ (1 - s) = Gammaℂ s * cos (π s / 2)` (Deligne.lean).
-   * The Mellin transform of cos on the critical strip is ABSENT.  Only `GammaIntegral` (e^{−x}) and
-     `integral_cpow_mul_exp_neg_mul_Ioi` (Re r > 0) exist.  Getting to Re r = 0 needs contour rotation or an
-     Abel limit of conditionally convergent improper integrals.  Estimate 500-800 lines.
-2. **The phase derivative.**  (log Ψ)' = psiR − log π on the line.  It is cheap from the Gammaℝ identity and
-   `Complex.digamma`, about 150-250 lines.
-3. **The oscillatory identity itself:** ∫₁^∞|Φ_t|² d*a = (log Ψ)'(½+it) + δ̂(t).  This is the analytic heart.
-   * CC's own derivation is not rigorous here.  (38) → (39) uses the distributional Fourier transform of −log|t|
-     "with this definition of the principal value".  The identification of W_R with ∫f̂·2θ' is (163), quoted
-     from Connes-Marcolli [18].
-   * So a rigorous proof has to be written before it can be formalised.
-   * My first attempt split it into the Δ square, ∫₀¹|G_t|² d*a with G_t(a) = 2∫₀^a s^{−½+it}cos(2πs) ds,
-     plus the rest.  That split is FALSE.  At t = 0, ∫₀¹|G_t|² d*a = 5.2326 but δ̂(0) = 5.4213 [N-here].
-     The reason is that (48) is valid only for ρ ≥ 1, and the symmetric extension δ(1/ρ) is not (48) at 1/ρ.
-   * Any rigorous route found so far needs a cutoff limit R → ∞ of conditionally convergent oscillatory double
-     integrals, with Si asymptotics (Si(x) → π/2, which is itself absent from Mathlib).
-   * Estimate 1500-3000 lines, high variance, and no paper proof in hand.
-
-**M2 total: about 2700-4500 lines, centred near the 4000 threshold.**  It needs absent Mathlib infrastructure:
-the Mellin transform of cos on the critical strip, the Dirichlet integral, and limits of oscillatory improper
-integrals.  Its core step has no rigorous source proof to transcribe.  Under the decision rule
-(stop if M2 > ~4000 lines or needs absent infrastructure) this is a STOP.
-
-### M3: not started
-
-Given M2 it is one line: `Lfun_nonneg_of_ell_nonneg` with `ell r = ∫ |Φ_r|² ≥ 0`.
+The first pass stopped after M1 (commit 86e71feac).  The 2-D HS identity needed infrastructure absent from Mathlib,
+and CC's (38)-(39) has no rigorous proof to transcribe (formal principal value; (163) quoted from Connes-Marcolli).
+The lead then lifted the 4000-line rule and asked for the conceptual M2.  The rigorous route below needs no
+principal value, no Si asymptotics and no contour rotation.
 
 ### M2 resumed (lead, 2026-10-11): the stop rule is lifted; rigorous route found
 
@@ -172,7 +147,72 @@ Numerical checks of every new identity [N-here, mpmath]:
 (The first attempt at a damped-Δ check used a crude oscillatory quadrature truncated at ρ = 100 and did not agree.
 Redone with the closed form ∫₀¹(−log a)e^{ca} da = −Ein(−c)/c it agrees to 1e-9.)
 
-## 3. The S3' alternative (estimate only, not started)
+### M2a, M2b, M2c, M3: DONE
+
+All kernel-checked, axioms exactly `[propext, Classical.choice, Quot.sound]`
+(`lake build ArchS3_Limits && lake env lean ArchS3_Guard.lean`, 59 guard lines). No `sorry`, no `axiom`, no warnings
+in the ArchS3 modules.
+
+| milestone | file | lines | commit | content |
+|---|---|---|---|---|
+| M1 | `ArchS3_Delta.lean` | 571 | f1d6cd7ee | δ via CC (48), L = W∞ + D in Fourier and u-space form |
+| M2a | `ArchS3_Mellin.lean` | 508 | 4430d82f7 | complex-rate Gamma integral, damped Mellin transforms of cos, Ψ = Γℝ(z)/Γℝ(1−z), \|Ψ\| = 1, Re(Ψ'Ψ̄) = psiR − log π |
+| M2b | `ArchS3_Phi.lean` | 376 | ede4639ea | Φ_t as the improper integral A e_t, tail bound K_t a^{−1/2}, square-integrability |
+| M2c.1 | `ArchS3_Quadrant.lean` | 595 | dc9c34f8d | the exact damped identity (IBP, quadrant swap, s = ρa substitution + Fubini) |
+| M2c.2 + M3 | `ArchS3_Limits.lean` | 757 | 8fb7b4f80 | ε → 0 limits, ell = ∫\|Φ\|², CC Cor 2.3 |
+| guard | `ArchS3_Guard.lean` | 73 | | 59 `#print axioms` lines |
+
+M2 + M3: 2236 lines.  M1 + M2 + M3: 2807 lines (guard excluded).  The blueprint estimated 2500-4000 for S3.
+
+Main statements (namespace `ArchS3`, `zt t = 1/2 + t I`):
+
+```lean
+-- M2a
+theorem gInt_eq (hz : 0 < z.re) (hr : 0 < r.re) :
+    ∫ s in Ioi 0, (s:ℂ)^(z-1) * cexp (-(r*s)) = (1/r)^z * Gamma z            -- complex rate r
+theorem integral_cosD (hε : 0 < ε) (hz : 0 < z.re) :
+    ∫ s in Ioi 0, (s:ℂ)^(z-1) * cosD ε s = PsiE ε z                          -- cosD ε s = 2cos(2πs)e^{-εs}
+theorem integral_log_cosD ... = dPsiE ε z
+theorem Psi_eq_Gammaℝ (hz : 0 < z.re) : Psi z = Gammaℝ z / Gammaℝ (1 - z)
+theorem norm_Psi_zt (t) : ‖Psi (zt t)‖ = 1
+theorem re_dPsi_mul_conj_Psi (t) : (dPsi (zt t) * conj (Psi (zt t))).re = psiR t - log π
+-- M2b
+def Phi (t a : ℝ) : ℂ := Psi (zt t) - ∫ s in 0..a, (s:ℂ)^(zt t - 1) * cosD 0 s
+theorem tendsto_integral_Phi (ha : 0 < a) :
+    Tendsto (fun R => ∫ s in a..R, (s:ℂ)^(zt t - 1) * cosD 0 s) atTop (𝓝 (Phi t a))
+theorem tendsto_integral_Psi (t) : Tendsto (fun R => ∫ s in 0..R, ...) atTop (𝓝 (Psi (zt t)))
+theorem norm_Phi_le (ha : 0 < a) : ‖Phi t a‖ ≤ Kt t * a ^ (-1/2 : ℝ)
+def Nnorm (t : ℝ) : ℝ := ∫ a in Ioi 1, ‖Phi t a‖ ^ 2 / a
+-- M2c
+theorem damped_identity (hε : 0 < ε) :
+    ∫ a in Ioi 1, ‖PhiE t ε a‖^2 / a
+      = (dPsiE ε (zt t) * conj (PsiE ε (zt t))).re
+        + (∫ ρ in Ioi 1, (-(log ρ:ℂ)) * (ρ:ℂ)^(conj (zt t) - 1) * Jd ε ρ).re
+        + 2 * (∫ ρ in Ioi 1, (ρ:ℂ)^(conj (zt t) - 1) * Id ε ρ).re
+theorem ell_eq_Nnorm (t : ℝ) : ell t = Nnorm t           -- psiR t − log π + δ̂(t) = ∫_1^∞ |Φ_t|² da/a
+-- M3
+theorem ell_nonneg (t : ℝ) : 0 ≤ ell t
+theorem Lfun_eq_integral_Nnorm (hg : IsWeilTest g) : Lfun g = (1/(2π)) * ∫ r, hsq g r * Nnorm r
+theorem cc_cor_2_3 (hg : IsWeilTest g) : 0 ≤ Lfun g     -- CC Corollary 2.3, any support
+theorem cc_cor_2_3_dirichlet (hg) :
+    0 ≤ (psiR 0 - log π) * mass g + ½ ∫∫ |g v - g w|² archK (v - w) + Dfun g
+theorem weilForm_add_Dfun_nonneg (hg) (hsupp : tsupport g ⊆ Icc (-L) L) (hL : 2L ≤ log 2)
+    (h0 : paperFT g (I/2) = 0) : 0 ≤ (weilForm (autocorr g)).re + Dfun g
+```
+
+**What this is.**
+* `ell_eq_Nnorm` is CC Prop 2.2(iii) and formula (52), made rigorous pointwise in the Mellin variable:
+  2θ'(t) + δ̂(t) is the squared norm of A e_t, with A = (1 − P)uP.
+* `Lfun_eq_integral_Nnorm` is the HS identity ‖A T_g‖²_HS = W∞ + D in its Mellin-diagonal form.
+* `cc_cor_2_3` is CC Corollary 2.3, proved structurally rather than numerically: W∞ + D ≥ 0 for every test function
+  of any support.
+
+**What this is NOT.**
+* It is not Weil positivity.  D is an extra positive-type term that the Weil form does not contain.
+* W∞ ≥ 0 on the pole-free window still needs S4 (D∘Q = −2·Id + K^δ) and spectral information on K_I (S5-S11).
+* `conjecture1_proved = False`.
+
+## 3. The S3' alternative (estimate only; superseded, since S3 itself is done)
 
 S3' proves `∀ r, 0 ≤ ell r` by certified numerics plus large-r asymptotics.  M1 already reduces CC Cor 2.3 to
 exactly this one-variable statement (`Lfun_nonneg_of_ell_nonneg`).  So S3' needs no further plumbing.
@@ -191,13 +231,35 @@ This matches the blueprint's 1500-line estimate.
 
 ## 4. Open items
 
-* M2 and M3 (above).
+* M2 and M3 are done.
+* Not done: the 2-D HS form ‖A T_g‖²_HS as a double integral.  The Mellin-diagonal form `Lfun_eq_integral_Nnorm`
+  replaces it.
+* Not done: Ψ as an improper integral off the critical line.  Only Re z = 1/2 is stated, although M2a has the
+  damped transform for every Re z > 0.
 * Not wired: `defaultTargets` and `AxiomGuardRvMBridge.lean` are untouched, per the conventions.
   `ArchS3_Delta` and `ArchS3_Guard` are registered as their own `lean_lib`s at the end of the lakefile.
 * Not proved: δ > 0 (needs Si > 0), the derivative jump δ'(1⁺) = 1 (S4 wants it), and evenness of
   `ccDelta` under ρ ↦ 1/ρ (we define the kernel through e^{|u|}, so it is not needed).
 
 ## 5. Lean footguns hit
+
+M2/M3:
+* Mathlib's `integral_cpow_mul_exp_neg_mul_Ioi` only takes a REAL rate.  The complex-rate version follows from
+  `AnalyticOnNhd.eqOn_of_preconnected_of_frequently_eq` on Re r > 0.  Analyticity comes from
+  `hasDerivAt_integral_of_dominated_loc_of_deriv_le`, agreement near 1 from `Tendsto.frequently` along `ofReal`.
+* `Integrable.const_mul`, `.sub` and `.norm` return `Integrable`, not `IntegrableOn`.  So `.mono_set` and
+  `.congr_fun` fail by dot notation.  Call `IntegrableOn.mono_set (…) h` and `IntegrableOn.congr_fun (…) h hs` explicitly.
+* `∫ s in A, f s + g s` parses with the integral swallowing `+ g s`.  Parenthesise `(c * ∫ s in A, f s) + …`.
+* `ContinuousAt.comp` with a product-variable inner function mis-unifies (`HMul.hMul p.1`).  Pass `(g := …)` and a
+  separate `have` for the inner `ContinuousAt (fun q => q.1 * q.2) p`.
+* `(by fun_prop : Continuous f).intervalIntegrable` has type `∀ a b, …`; apply it to the endpoints.
+* `HasDerivAt.norm_sq` gives `2 * ⟪f x, f'⟫_ℝ`.  For ℂ, `Complex.inner w z = (z * conj w).re`.
+* `integral_comp_exp_Ioi` (IntegralEqImproper) does the ρ = e^u substitution on (1, ∞) directly.
+* `integral_re` is stated with `RCLike.re`.  `simp only [RCLike.re_to_complex] at h` turns it into `.re`.
+* In `by rw [norm_one]; linarith` used as the argument of `.trans`, the target has a metavariable.  `rw` closes it by
+  unification and `linarith` then fails with "no goals".  State the intermediate bound with an explicit `have`.
+
+M1:
 
 * `hasDerivAt_id t` is stated for `id`, not `fun s => s`.  After rewriting a function to `fun s => s`, use
   `(hasDerivAt_id' t).congr_deriv (by simp)`.
