@@ -276,3 +276,8 @@ conjecture1_proved = False. -/
 #print axioms ArchS6.phiR_neg
 #print axioms ArchS6.coeFn_ξ_real
 #print axioms ArchS6.coeFn_ζ_real
+#print axioms ArchS6.cosTrans_eq_fourier
+#print axioms ArchS6.integrable_moment_Eplus
+#print axioms ArchS6.contDiff_cosTrans
+#print axioms ArchS6.contDiff_phi
+#print axioms ArchS6.contDiff_phiR

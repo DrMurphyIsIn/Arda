@@ -123,4 +123,49 @@ theorem coeFn_ζ_real (bR : EigenBasis CopR ι) (i : ι) :
     push_cast; ring
   · rw [indicator_of_notMem hm, indicator_of_notMem hm, Complex.ofReal_zero, mul_zero]
 
+/-! ### Smoothness of `φ_n` (S8's `phi_contDiff`) -/
+
+theorem cosTrans_eq_fourier (h : L2I 0 1) :
+    cosTrans h = fun w ↦ 𝓕 (Eplus h : ℝ → ℂ) w + 𝓕 (Eplus h : ℝ → ℂ) (-w) := by
+  funext w
+  rw [fourier_extendIcc_eq, fourier_extendIcc_eq,
+    ← integral_add (integrable_fourierK_mul 0 1 w h) (integrable_fourierK_mul 0 1 (-w) h)]
+  unfold cosTrans
+  congr 1; funext v
+  rw [← add_mul, fourierK_add_neg]
+
+/-- All moments of `E₊ h` are finite (compact support). -/
+theorem integrable_moment_Eplus (h : L2I 0 1) (n : ℕ) :
+    Integrable (fun v : ℝ ↦ ‖v‖ ^ n * ‖(Eplus h : ℝ → ℂ) v‖) := by
+  refine (integrable_extendIcc 0 1 h).norm.mono' ?_ ?_
+  · exact (continuous_norm.pow n).aestronglyMeasurable.mul
+      (Lp.aestronglyMeasurable _).norm
+  · filter_upwards [coeFn_extendIcc 0 1 h] with v hv
+    rw [norm_mul, norm_norm, norm_pow, norm_norm, hv]
+    by_cases hm : v ∈ Icc (0 : ℝ) 1
+    · rw [indicator_of_mem hm]
+      have h1 : ‖v‖ ^ n ≤ 1 := by
+        rw [Real.norm_eq_abs, abs_of_nonneg hm.1]; exact pow_le_one₀ hm.1 hm.2
+      calc ‖v‖ ^ n * ‖(h : ℝ → ℂ) v‖ ≤ 1 * ‖(h : ℝ → ℂ) v‖ :=
+            mul_le_mul_of_nonneg_right h1 (norm_nonneg _)
+        _ = _ := one_mul _
+    · rw [indicator_of_notMem hm, norm_zero, mul_zero]
+
+/-- `C h` (as a function on `ℝ`) is `C^∞`. -/
+theorem contDiff_cosTrans (h : L2I 0 1) (N : ℕ∞) : ContDiff ℝ N (cosTrans h) := by
+  have hG : ContDiff ℝ N (𝓕 (Eplus h : ℝ → ℂ)) :=
+    Real.contDiff_fourier fun n _ ↦ integrable_moment_Eplus h n
+  rw [cosTrans_eq_fourier]
+  exact hG.add (hG.comp contDiff_neg)
+
+theorem contDiff_phi (i : ι) (N : ℕ∞) : ContDiff ℝ N (phi b i) :=
+  contDiff_const.mul (contDiff_cosTrans _ N)
+
+/-- **`φ_n` is `C^∞` on `ℝ`** (S8's `ProlateData.phi_contDiff`, for every `n`). -/
+theorem contDiff_phiR (bR : EigenBasis CopR ι) (i : ι) (N : ℕ∞) : ContDiff ℝ N (phiR bR i) := by
+  have h := Complex.reCLM.contDiff.comp (contDiff_phi (complexify bR) i N)
+  have : phiR bR i = Complex.reCLM ∘ phi (complexify bR) i := by
+    funext w; simp [phi_complexify]
+  rw [this]; exact h
+
 end ArchS6
