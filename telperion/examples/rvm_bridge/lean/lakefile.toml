@@ -540,3 +540,10 @@ name = "KWin2_GuardHeavy"
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]
 name = "AxiomGuardRvMBridge"
+
+# Stage S2 (archimedean conceptual blueprint): pole-free parametrisation g = h' - h/2.
+[[lean_lib]]
+name = "ArchS2_QTrick"
+
+[[lean_lib]]
+name = "ArchS2_Guard"
