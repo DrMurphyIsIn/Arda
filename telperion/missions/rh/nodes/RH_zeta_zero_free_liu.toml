@@ -1,0 +1,13 @@
+created = "2026-10-11"
+depends_on = ["RH_zeta_zero_free_seven_eighths"]
+kind = "lemma"
+name = "RH.zeta_zero_free_liu"
+statement_module = "Statements.RH_zeta_zero_free_liu"
+status = "draft"
+title = "Liu's zero-free half-plane for zeta (arXiv:2610.12234, 8 Oct 2026): riemannZeta s != 0 for Re s > B_new = (1507 - 2 sqrt 921)/1653 = 0.874957069..., the proved-input optimum of OpenAI's cubic-theta architecture (thread-C ledger Addendum 2: the same sqrt 921 arises from the binding witness-count bin). Liu's Lean (repo liubaiying101/Slightly-improved-zero-free-half-planes-for-the-quasi-Riemann-hypothesis @ 7d10420, Lean v4.34.1, Mathlib d13f23b, vendored openai/math closure @ adc7f124) is MATERIALIZED at pin, never vendored; the artifact re-exports CombinedPaper.algebraic_zeta_nonzero with the unused s != 1 hypothesis removed (Mathlib riemannZeta_one_ne_zero). Licence: Liu's repo carries no LICENSE; treated as Apache-2.0 by owner decision 2026-10-11, no grant from the author on file (LICENSE requested, issue #1 on his repo). Replayed independently by two sessions (Lean + nanoda). Not RH: 0.874957 < 1 is a strip, not the line. conjecture1_proved = False"
+updated = "2026-10-11"
+
+[author]
+date = "2026-10-11"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"

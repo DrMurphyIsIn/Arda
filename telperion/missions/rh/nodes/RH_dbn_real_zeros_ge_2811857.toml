@@ -1,0 +1,13 @@
+created = "2026-10-11"
+depends_on = ["RH_dbn_real_zeros_of_liu_unconditional"]
+kind = "milestone"
+name = "RH.dbn_real_zeros_ge_2811857"
+statement_module = "Statements.RH_dbn_real_zeros_ge_2811857"
+status = "draft"
+title = "Rational headline: every zero of H_t is real for t >= 2811857/10^7 = 0.2811857 (> 2(B_new - 1/2)^2 = 0.2811856...), i.e. Lambda <= 0.2811857, kernel-checked, from RH_dbn_real_zeros_of_liu_unconditional by monotonicity in t. Replaces 9/32 = 0.28125 as the kernel-checked upper bound on the de Bruijn-Newman constant by 6.4e-5. Not RH (Lambda = 0). conjecture1_proved = False"
+updated = "2026-10-11"
+
+[author]
+date = "2026-10-11"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"

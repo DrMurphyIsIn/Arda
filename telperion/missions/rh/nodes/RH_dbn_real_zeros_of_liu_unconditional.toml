@@ -1,0 +1,13 @@
+created = "2026-10-11"
+depends_on = ["RH_zeta_zero_free_liu", "RH_dbn_real_zeros_of_zeta_halfplane"]
+kind = "milestone"
+name = "RH.dbn_real_zeros_of_liu_unconditional"
+statement_module = "Statements.RH_dbn_real_zeros_of_liu_unconditional"
+status = "draft"
+title = "Lambda <= 2(B_new - 1/2)^2 = (1867057 - 10888 sqrt 921)/5464818 = 0.2811856... for the de Bruijn-Newman constant, UNCONDITIONAL in one Lean environment at OpenAI's pin: Liu's half-plane (RH_zeta_zero_free_liu) composed with de Bruijn's heat-flow theorem (RH_dbn_real_zeros_of_zeta_halfplane, the dbn port). Every zero of H_t is real for t >= 2(B_new - 1/2)^2, below 9/32 = 0.28125 (RH_dbn_real_zeros_nine_thirtyseconds). This is the LIMIT of the cubic-theta method with proved inputs (ledger Addendum 2; SEXTIC_BOTTLENECK_2026-10-11.md section 7). Weaker than the numerical 0.22 (Polymath15) and 0.2 (Platt-Trudgian). RH is Lambda = 0 and is NOT proved. conjecture1_proved = False"
+updated = "2026-10-11"
+
+[author]
+date = "2026-10-11"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
