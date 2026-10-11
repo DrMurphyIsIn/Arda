@@ -594,3 +594,17 @@ name = "ArchS5_HS"
 
 [[lean_lib]]
 name = "ArchS5_HSRank"
+
+# Stage S4 (archimedean conceptual blueprint): the jump lemma D∘Q = -2 Id + K^δ (CC Thm 3.6 / Rem 3.7).
+[[lean_lib]]
+name = "ArchS4_Delta"
+
+[[lean_lib]]
+name = "ArchS4_Jump"
+
+# Stage S4' (pipeline test): delta rung, D∘Q ≤ 0 for L ≤ 1/80 (CC Cor 3.8, crude sup bound).
+[[lean_lib]]
+name = "ArchS4_Rung"
+
+[[lean_lib]]
+name = "ArchS4_Guard"
