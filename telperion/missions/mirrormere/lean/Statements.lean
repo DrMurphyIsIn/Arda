@@ -1,6 +1,7 @@
 import Statements.MMDefs
 import Statements.MM_bragg_bridge
 import Statements.MM_bragg_defect_witness
+import Statements.MM_cc_cor_2_3
 import Statements.MM_effective_gaussian_dominance
 import Statements.MM_effective_threshold_unbounded
 import Statements.MM_euler_factor_section_offline

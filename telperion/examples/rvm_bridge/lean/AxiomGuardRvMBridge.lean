@@ -294,6 +294,7 @@ import ArchS6_Bridge
 import ArchS6_Functions
 import ArchPipeline_ProlateComplete
 import ArchS3_Limits
+import ArchRegistry_CCCor23
 import ArchS4_Bridge
 import ArchS5_Spectral
 import ArchS5_HSRank
@@ -1510,6 +1511,7 @@ import ArchPipeline_Rung80
 #print axioms ArchS3.Lfun_eq_integral_Nnorm
 #print axioms ArchS3.cc_cor_2_3
 #print axioms ArchS3.cc_cor_2_3_dirichlet
+#print axioms cc_cor_2_3
 #print axioms ArchS3.weilForm_add_Dfun_nonneg
 #print axioms ArchS4.integral_sq_pow
 #print axioms ArchS4.abs_mom_le

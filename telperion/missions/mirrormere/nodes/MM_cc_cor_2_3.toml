@@ -1,0 +1,19 @@
+created = "2026-10-11"
+depends_on = []
+kind = "lemma"
+name = "MM.cc_cor_2_3"
+statement_module = "Statements.MM_cc_cor_2_3"
+status = "draft"
+title = "CONNES-CONSANI COROLLARY 2.3, KERNEL-CHECKED, ANY SUPPORT (rvm_bridge island, ArchS3_*, 2026-10-11): for EVERY Weil test g (smooth, compact support of any width, no window hypothesis, no vanishing hypothesis), archW g + Dfun g >= 0, where archW g = (1/2pi) int |g^(r)|^2 (Re digamma(1/4 + ir/2) - log pi) dr is the archimedean Weil functional on g * g^* and Dfun g = Re int (g * g^*)(u) delta(e^{|u|}) du is CC's explicit delta-correction (CC (48)/(49) kernel, sinc closed form). Structural proof via the manifest-positivity identity ell(t) = int_1^inf |Phi_t(a)|^2 da/a (damped identity, eps -> 0 limits), no numerical certificate, standard axioms only. NOT Weil positivity: there is no prime side and the delta-correction is added, not bounded. NOT RH and does not imply it. conjecture1_proved = False"
+updated = "2026-10-11"
+
+[author]
+date = "2026-10-11"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01GdU4sR3VVeEfVS1Dtg5pEt"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/ArchRegistry_CCCor23.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
