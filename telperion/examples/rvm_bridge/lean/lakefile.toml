@@ -684,3 +684,42 @@ name = "ArchS9_Bridge"
 # Archimedean programme: end-to-end conceptual pipeline rung (S3 + S4), L <= 1/80, pole-free class.
 [[lean_lib]]
 name = "ArchPipeline_Rung80"
+
+# Stage S6 (archimedean conceptual plan, 2026-10-11): Sonin/prolate structure (CC Prop 4.5, (81)),
+# L2 Fourier link, sinc kernel.  Not in defaultTargets; the coordinator wires them at merge.
+# Guard: lake env lean ArchS6_Guard.lean
+[[lean_lib]]
+name = "ArchS6_Abstract"
+
+[[lean_lib]]
+name = "ArchS6_Fourier"
+
+[[lean_lib]]
+name = "ArchS6_Proj"
+
+[[lean_lib]]
+name = "ArchS6_Kernel"
+
+[[lean_lib]]
+name = "ArchS6_Eigen"
+
+[[lean_lib]]
+name = "ArchS6_Even"
+
+[[lean_lib]]
+name = "ArchS6_Strict"
+
+[[lean_lib]]
+name = "ArchS6_Prolate"
+
+[[lean_lib]]
+name = "ArchS6_Real"
+
+[[lean_lib]]
+name = "ArchS6_Bridge"
+
+[[lean_lib]]
+name = "ArchS6_Functions"
+
+[[lean_lib]]
+name = "ArchS6_Guard"
