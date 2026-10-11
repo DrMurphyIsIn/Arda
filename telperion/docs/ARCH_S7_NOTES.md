@@ -186,17 +186,43 @@ S3's (49) form directly.
 
 Totals: 8 files, about 1960 lines, 121 guarded theorems, all `[propext, Classical.choice, Quot.sound]`.
 
-## 4. Interface obligations still open (hypotheses of `thm47_weil'`)
+### O1 discharged: CC (85) from S3's Mellin-diagonal identity (`ArchS7_LogMap`, `_Kappa`, `_PFP`, `_Density`, `_H85`)
 
-* **O1 (S3 M2, CC (85) = Prop 2.2(iii)/Cor 2.3).**  `h85 : HasSum (k ↦ ‖P̂ (P (ϑ(g) e_k))‖²) (archW g + Dfun g)`,
-  i.e. Tr(ϑ(g∗g*) P P̂ P) = W∞ + D.  This is exactly the identity S3 stopped on (Mellin transform of cos on
-  the critical line, oscillatory limits).  Everything else in Thm 4.7 is now kernel-checked.
-* **O4 (S6/S8/S9 data).**
-  * an enumeration σ : ℕ ≃ ι of S6's eigenbasis (ι is countable because L²[0,1] is separable and the
-    eigenvalues are nonzero; not proved here);
-  * a `ProlateData D` with `D.lam = μ ∘ σ`, `D.phi = phiR ∘ σ` (S8's obligation 5: the sup bounds M_n);
-  * Σ|τ_n| < ∞ (B3 decay; S5's `card_le_of_eigen_gt_tensor` gives the per-index bound).
-* **O2 and O3 are closed.**
+Correction: S3 did not stop.  Its M2/M3 (`ArchS3.Lfun_eq_integral_Nnorm`, `ell_eq_Nnorm`) are merged in the
+rung; the earlier note "O1 = S3's stopped M2" was wrong.  S3 proved the identity in its Mellin-diagonal form
+`Lfun g = (1/2π) ∫ hsq g r · Nnorm r dr`, `Nnorm t = ∫₁^∞ |Φ_t(a)|² da/a`.  The bridge to the operator sum:
+
+| file | content |
+|---|---|
+| `ArchS7_LogMap` | log map `Λf(u) = √2 e^{u/2} f(e^u)` (isometric on L²(ℝ)_ev), `Λθ(s) = translation`, `𝓕` of a translation on L², `mellinL = 𝓕∘Λ`; **`norm_sq_adjoint_theta_spectral`**: ‖ϑ(g)†y‖² = ∫ hsq g(−2πw) \|𝓕Λy(w)\|² dw |
+| `ArchS7_Kappa` | `κ_t(v) = conj(\|v\|^{-z}Φ_t(\|v\|))/√2` on \|v\| > 1; `kap t ∈ L²(ℝ)_ev`, **‖κ_t‖² = Nnorm t** |
+| `ArchS7_PFP` | for even C¹ compactly supported φ vanishing on [−1,1]: **𝓕Λ(P F φ)(w) = ⟨κ_{−2πw}, φ⟩** pointwise (decay of 𝓕φ by one IBP, truncation at Y, Fubini, s = xy, S3's `tendsto_integral_Psi`, dominated convergence) |
+| `ArchS7_Density` | density of that class in {a ∈ L²(ℝ)_ev : P₁a = 0} (smooth cutoff × even part of a smooth approximant); **`mellin_PFP_of_P1`**: the identity a.e. for every such a (L² convergence + a.e. subsequence) |
+| `ArchS7_H85` | countable Hilbert basis of L²(ℝ)_ev (separability), ‖P̂Pz‖ = ‖PFPz‖, (PFPV)† = V†PFP, Parseval for κ; **`hasSum_hatP_P_theta`**: Σ_k ‖P̂ P ϑ(g) e_k‖² = `Lfun g` = archW g + Dfun g, every Hilbert basis e; `thm47_weil_O1` |
+| `ArchS7_Final` | **`cc_thm47`**, `cc_thm47_nonneg`: no interface hypotheses |
+
+O2 (CC Lemma 4.1) is proved twice: `ArchS7_Lemma41` (this branch) and `ArchS7b_Lemma41` (mm/arch-s7b, merged).
+O4 is discharged by S6 (`prolateData bR σ`, `exists_equiv_nat`, `summable_abs_tau`).
+
+## 4. The final statement
+
+```lean
+theorem ArchS7.cc_thm47 {ι : Type*} (bR : EigenBasis CopR ι) (σ : ℕ ≃ ι)
+    {g : ℝ → ℂ} (hW : WeilExplicit.IsWeilTest g) {κ : Type*} (e : HilbertBasis κ ℂ evenL2) :
+    HasSum (fun k ↦ ‖ArchS6.ProlateBasis.soninProj (S := evenPair)
+        (theta g (hW.1.continuous.integrable_of_hasCompactSupport hW.2) (e k))‖ ^ 2)
+      (ArchS3.archW g + ((prolateData bR σ).Eplus (WeilExplicit.autocorr g)).re)
+theorem ArchS7.cc_thm47_nonneg (bR) (σ) (hW) :
+    0 ≤ ArchS3.archW g + ((prolateData bR σ).Eplus (WeilExplicit.autocorr g)).re
+theorem ArchS7.exists_prolate_enumeration : ∃ (ι : Type) (_ : EigenBasis CopR ι), Nonempty (ℕ ≃ ι)
+```
+
+That is Tr(ϑ(g∗g*)S) = W∞(g∗g*) + E(g∗g*), with S the projection on Sonin's space, W∞ = `archW`
+(= Re weilForm on the pole-free window, S3's `re_weilForm_eq_archW`), E = S8's `Eplus` with ε = CC (84).
+Hypotheses: only `IsWeilTest g`; bR and σ exist (`exists_prolate_enumeration`) and any choice works.
+
+Totals: 15 files, about 3500 lines, 217 guarded theorems, all `[propext, Classical.choice, Quot.sound]`,
+no `sorry`, no `axiom`.
 
 ## 5. Lean footguns
 
@@ -210,6 +236,13 @@ Totals: 8 files, about 1960 lines, 121 guarded theorems, all `[propext, Classica
   progress; the term-mode lemma works.  Fix: restate them for `evenL2` (`inner_smul_right_E`, `inner_conj_symm_E`,
   `inner_self_E`) and rewrite with those.
 * `integral_add_right_eq_self` needs `(μ := volume)` explicitly, otherwise `IsAddRightInvariant ?m` is stuck.
+* `simp_rw [h]` / `rw [h]` with `h` about `ContinuousLinearMap.adjoint Z` for a `set`-bound `Z` may make no
+  progress on the goal produced by a generic lemma (instance paths differ); state the target equality with
+  `tsum_congr` and close by `refine key.trans ?_` (defeq unification).
+* Name clash: inside `namespace ArchS7`, `Kt` is S7's kernel abbrev; S3's constant is `ArchS3.Kt`.
+* `IntegrableOn` is a def: `h.congr_fun` fails by dot notation; call `IntegrableOn.congr_fun h ...`.
+* Lake: every merge of the rung conflicts in `lakefile.toml`; resolve as the union, dedupe `lean_lib` names
+  (duplicate names are a hard error) and keep the S7 group last.
 * `first | ring | tac` on a function-equality goal: `ring` "succeeds" via `ring_nf` fallback without closing it;
   put the other alternative first.
 * After `rw [h] at e` with `e : ofReal (∑' a) = ∑' ofReal a`, `e` is already oriented `ofReal (∑' a) = ofReal c`.

@@ -10,6 +10,7 @@ import ArchS7_Kappa
 import ArchS7_PFP
 import ArchS7_Density
 import ArchS7_H85
+import ArchS7_Final
 
 /-! Axiom guard for stage S7 (CC Thm 4.7).  Every line must print
 `[propext, Classical.choice, Quot.sound]`.  conjecture1_proved = False. -/
@@ -228,3 +229,6 @@ import ArchS7_H85
 #print axioms ArchS7.integrable_hsq_mul_Nnorm
 #print axioms ArchS7.hasSum_hatP_P_theta
 #print axioms ArchS7.thm47_weil_O1
+#print axioms ArchS7.cc_thm47
+#print axioms ArchS7.cc_thm47_nonneg
+#print axioms ArchS7.exists_prolate_enumeration
