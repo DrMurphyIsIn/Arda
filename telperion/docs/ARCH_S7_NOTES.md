@@ -140,19 +140,46 @@ theorem thm47_concrete {ι} (bR : EigenBasis CopR ι) (T : Scaling evenPair) (hT
     HasSum (fun k ↦ ‖soninProj (V (e k))‖ ^ 2) (archW g + (D.Eplus (autocorr g)).re)
 ```
 
-## 4. Interface obligations (hypotheses of `thm47_concrete`, not proved here)
+### O3 discharged: the concrete ϑ and ϑ(g) (`ArchS7_Dilation.lean`, `ArchS7_Theta.lean`)
 
-* **O1 + O2 (S3 M2 and CC Lemma 4.1), the hypothesis `h85`.**  ‖P̂ P ϑ(g)‖²_HS = archW g + ∫ f δS(|x|), with
-  δS the prolate series (75).  It splits as O1: ‖P̂ P ϑ(g)‖²_HS = archW g + Dfun g (CC (85), S3's stopped M2), and
-  O2: δS(t) = `ArchS3.deltaK t` for t ≥ 0 (CC (63), the trace identity δ(ρ) = Tr(ϑ(ρ⁻¹)P̂₁P₁), then (79)).
-  Under B1, O2 is an HS inner product ⟨A*, B⟩_HS of two continuous-kernel operators on [−1, 1], so it is an
-  explicit double integral that should reduce to CC (48); not attempted.
-* **O3 (the scaling and ϑ(g)).**  A `Scaling evenPair` that `IsPointwise` (isometric dilation preserving
-  evenness, F ϑ(ρ) F = ϑ(ρ⁻¹) on L², support shrinking for ρ ≥ 1, continuous matrix coefficients), and
-  V = ϑ(g) with `hcoef` (ϑ(g∗g*) = ϑ(g)ϑ(g)† and ⟨v|ϑ(f)v⟩ = ∫ f(x)⟨v|ϑ(e^x)v⟩dx).
-* **O4 (S6/S9 data).**  An enumeration σ : ℕ ≃ ι of S6's eigenbasis, S8's `ProlateData D` with
-  `D.lam = μ ∘ σ`, `D.phi = phiR ∘ σ` (S8 obligation 5: the sup bounds M_n), and Σ|τ_n| < ∞ (B3).
-  Countability of ι is derived from σ.
+| theorem / def | content |
+|---|---|
+| `thF`, `thL t : L²(ℝ) →ₗᵢ L²(ℝ)`, `coeFn_thL` | (θ t f)(v) = e^{−t/2} f(e^{−t}v), CC (61) with λ = e^t; isometry by `integral_comp_mul_left` |
+| `thL_add`, `thL_zero`, `thL_neg_thL`, `inner_thL_left` | group law; θ(t)† = θ(−t) |
+| `reflect_thL`, `thL_mem_evenL2` | θ preserves L²(ℝ)_ev |
+| `P1_thL_neg` | CC (82): θ(−t) maps ran P₁ into itself for t ≥ 0 |
+| `fourier_thF`, `fourier_thL`, `fourier_thL_fourier` | 𝓕 θ(t) = θ(−t) 𝓕 on L²(ℝ) (pointwise on L¹ ∩ L², then S6's density lemma); F θ(t) F = θ(−t) on evens |
+| `norm_sq_eq_integral`, `continuous_thL_of_compact`, `continuous_thL` | strong continuity: dominated convergence on C_c, then uniform approximation |
+| `thE`, `scalingEven`, `isPointwise_scalingEven` | **the `Scaling evenPair` exists and acts pointwise** |
+| `thm47_even` | `thm47_concrete` with T = `scalingEven` |
+| `theta g hg` (`= ∫ g(x) θ(x) dx`, Bochner), `adjoint_theta`, `inner_adjoint_theta` | ϑ(g) on L²(ℝ)_ev, ‖ϑ(g)‖ ≤ ‖g‖₁, ϑ(g)† w = ∫ conj g(x) θ(−x) w |
+| `hcoef_theta` | **the coefficient formula**: ‖ϑ(g)† w‖² = ∫ autocorr g (u) ⟨w, θ(u) w⟩ du (Fubini + translation) |
+| `thm47_theta`, `thm47_theta_nonneg` | Thm 4.7 and (83) with the concrete ϑ(g), g continuous and integrable |
+| `thm47_weil` | Thm 4.7 for `IsWeilTest g` |
+
+```lean
+theorem thm47_weil {ι} (bR : EigenBasis CopR ι) (D : ProlateData) (σ : ℕ ≃ ι)
+    (hDlam : ∀ n, D.lam n = bR.μ (σ n)) (hDphi : ∀ n, D.phi n = phiR bR (σ n))
+    (hτ : Summable fun i ↦ |(realProlateBasis bR).τ i|) {g} (hW : IsWeilTest g) (e : HilbertBasis κ ℂ evenL2)
+    (h85 : HasSum (fun k ↦ ‖P̂ (P (theta g _ (e k)))‖ ^ 2)
+      (archW g + (∫ x, autocorr g x * δS (realProlateBasis bR) scalingEven |x|).re)) :
+    HasSum (fun k ↦ ‖soninProj (theta g _ (e k))‖ ^ 2) (archW g + (D.Eplus (autocorr g)).re)
+```
+
+Totals: 7 files, about 1610 lines, 103 guarded theorems, all `[propext, Classical.choice, Quot.sound]`.
+
+## 4. Interface obligations still open (hypotheses of `thm47_weil`)
+
+* **O1 + O2, the hypothesis `h85` (CC (85) with δ written as (75)).**
+  * O1 (S3 M2, CC Prop 2.2(iii)/Cor 2.3): ‖P̂ P ϑ(g)‖²_HS = archW g + Dfun g.  S3 stopped before M2.
+  * O2 (CC Lemma 4.1 (63) + (79)): δS(t) = Σ λ_n⟨ξ_n|ϑ(e^{−t})η_n⟩ equals `ArchS3.deltaK t` for t ≥ 0.
+    Under B1 this is the HS pairing of two continuous-kernel operators on [−1, 1] and should reduce to CC (48)
+    by an explicit double integral; not attempted.  With O2, `h85` becomes exactly O1.
+* **O4 (S6/S8/S9 data).**
+  * an enumeration σ : ℕ ≃ ι of S6's eigenbasis (ι is countable since L² is separable; not proved here);
+  * a `ProlateData D` with `D.lam = μ ∘ σ`, `D.phi = phiR ∘ σ` (S8's obligation 5, the sup bounds M_n);
+  * Σ|τ_n| < ∞ (B3 decay; `card_le_of_eigen_gt_tensor` gives the per-index bound).
+* **O3 is closed** (`scalingEven`, `theta`, `hcoef_theta`).
 
 ## 5. Lean footguns
 
@@ -161,6 +188,13 @@ theorem thm47_concrete {ι} (bR : EigenBasis CopR ι) (T : Scaling evenPair) (hT
 * `RCLike.inner_apply` is `⟪x, y⟫ = y * conj x` at this pin; `RCLike.inner_apply'` is `conj x * y`.
 * `ENNReal.top_add` does not exist; use the root `top_add`.
 * `integral_comp_mul_left` lives in `MeasureTheory.Measure`.
+* On `↥evenL2` (a `Submodule` of `Lp`), `rw [inner_smul_right]`, `rw [inner_conj_symm]` and
+  `rw [inner_self_eq_norm_sq_to_K]` fail to find the pattern (instance path mismatch), and `simp only` makes no
+  progress; the term-mode lemma works.  Fix: restate them for `evenL2` (`inner_smul_right_E`, `inner_conj_symm_E`,
+  `inner_self_E`) and rewrite with those.
+* `integral_add_right_eq_self` needs `(μ := volume)` explicitly, otherwise `IsAddRightInvariant ?m` is stuck.
+* `first | ring | tac` on a function-equality goal: `ring` "succeeds" via `ring_nf` fallback without closing it;
+  put the other alternative first.
 * After `rw [h] at e` with `e : ofReal (∑' a) = ∑' ofReal a`, `e` is already oriented `ofReal (∑' a) = ofReal c`.
 * Lake: the S6 merge conflicted only in `lakefile.toml` (both stages append stanzas); resolve as the union and
   keep the S7 stanzas last.
