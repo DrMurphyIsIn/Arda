@@ -558,3 +558,6 @@ name = "ArchS5_Rayleigh"
 
 [[lean_lib]]
 name = "ArchS5_MinMax"
+
+[[lean_lib]]
+name = "ArchS5_Spectral"
