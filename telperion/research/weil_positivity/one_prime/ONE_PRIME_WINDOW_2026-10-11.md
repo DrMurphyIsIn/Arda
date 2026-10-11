@@ -297,3 +297,21 @@ measurement is basis-dependent and is not a reduction.
     # spline appendix: build / analyse / ccplus / tables / extrap / rates / cctable / lagscan (see docstrings)
 
 Nothing here is progress on RH. **conjecture1_proved = False.**
+
+## Addendum (2026-10-11, after review by the Riemann session; restored after the Legendre revision)
+
+- **The window "knows" the prime 2, one-sidedly.** At L = 0.549 positivity survives only for prime locations
+  q ∈ [2 − 4.9e-7, 2 + 2.2e-5] in the Legendre basis ([2 − 6.5e-7, 2 + 2.9e-5] in the spline appendix): about 45
+  times tighter below 2 than above.
+- **One knife edge, seen two ways.** The upper c-margin at L = 0.549 (3.1e-6 in c = √2 log 2 units, i.e. 1.6e-6 in
+  w2 = c/2 units; set by the even sector) and the even-sector Schur scalar of the pole reduction (margin 5.7e-8 to −1)
+  measure the distance from the same point to the same boundary of the even-sector PSD cone, along two directions
+  (raising the prime weight versus the pole functional at fixed weight). They are the same constraint.
+- **Decision recorded by the island owner** (`~/rh-team/gates/kwin2_one_prime_decision.md`): no monolithic kernel
+  certificate at 2L ≤ 1.098; rungs below L ≈ 1.86 cannot separate zeta from DH, so the extra window carries no
+  information about the zeros. Queued: a probe re-emitting L = 1/2 in the split form (hyperplane LDL^T + tail + one
+  exact Schur-scalar check) to compare peak memory. This revision adds the binding cost: the Psi_0 minorant gap
+  (~1.2e-7, `KWin2_Par12.lean` header) is already twice the whole floor at 0.549, so the minorant must tighten before
+  any extension, split or not.
+- **E1 correction** stands: the infimum at fixed L is positive (spline floors converge from above like 1/n; the
+  Legendre floor at 0.549 is converged to 1%).
