@@ -47,11 +47,12 @@
    },
    {
     "exact": "0",
-    "key": "rt",
-    "kind": "published lower bound",
-    "label": "Rodgers-Tao (2020): Lambda >= 0",
+    "key": "newman",
+    "kind": "kernel-checked",
+    "label": "Newman's conjecture (Rodgers-Tao 2018): Lambda >= 0",
+    "note": "lower bound, proved on the dbn island along Dobner's proof; RH is Lambda <= 0, so RH is Lambda = 0",
     "value": 0.0,
-    "where": "published result; not in this registry. RH is Lambda <= 0, so RH is Lambda = 0"
+    "where": "rh:RH_dbn_newman"
    }
   ],
   "conjecture1_proved": false,
@@ -128,13 +129,18 @@
    "rh:RH_zeta_zero_free_seven_eighths",
    "rh:RH_dbn_real_zeros_of_zeta_halfplane",
    "rh:RH_dbn_real_zeros_of_qrh",
-   "rh:RH_dbn_real_zeros_nine_thirtyseconds"
+   "rh:RH_dbn_real_zeros_nine_thirtyseconds",
+   "rh:RH_dbn_newman"
   ],
   "release": {
    "credit": "openai/math (Apache-2.0): the quasi-Riemann hypothesis, zeta(s) != 0 for Re s > 7/8, and its Lean proof are entirely OpenAI's",
    "credit_url": "https://github.com/openai/math",
    "doi_concept": "10.5281/zenodo.23269134",
    "doi_version": "10.5281/zenodo.23269135",
+   "newman_credit": "the theorem is Rodgers-Tao's (2018) and the proof formalized is Dobner's (arXiv:2005.05142)",
+   "newman_doi_concept": "10.5281/zenodo.23287832",
+   "newman_doi_version": "10.5281/zenodo.23287833",
+   "newman_repo": "https://github.com/DrMurphyIsIn/newman-lambda-nonneg",
    "repo": "https://github.com/DrMurphyIsIn/qrh-debruijn-newman"
   },
   "support_ids": [

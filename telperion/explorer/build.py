@@ -21,7 +21,7 @@ reverse-Dyson quasicrystal program (MIRRORMERE) in front.  It renders
     `examples/li_positivity/lean/LiPositivity.lean`,
   * the wall constants (the hypothesis-free width 3/2000 from the registry statement of
     MM_gaussian_positivity_small_lam_3e3; the sharp envelope of E6Bridge16),
-  * the de Bruijn-Newman tab's bounds (only 1/2 and 9/32 kernel-checked here; the others
+  * the de Bruijn-Newman tab's bounds (only 1/2, 9/32 and the lower bound 0 kernel-checked here; the others
     labelled published or our architecture floor) and the scoping run's Lambda_min(X) points
     (floating numerics, NOT Arb-rigorous).
 
@@ -431,6 +431,7 @@ DBN_NODE_IDS = [
     "rh:RH_dbn_real_zeros_of_zeta_halfplane",    # half-plane theta  =>  real zeros for t >= 2(theta-1/2)^2
     "rh:RH_dbn_real_zeros_of_qrh",               # the QRH hypothesis  =>  real zeros for t >= 9/32
     "rh:RH_dbn_real_zeros_nine_thirtyseconds",   # unconditional, one environment: Lambda <= 9/32
+    "rh:RH_dbn_newman",                          # Newman's conjecture, Lambda >= 0, along Dobner's proof
 ]
 #: Supporting dbn-island nodes drawn on (de Bruijn's flow and the classical 1/2).
 DBN_SUPPORT_IDS = [
@@ -482,8 +483,9 @@ def build_dbn() -> dict:
              "kind": "published", "where": "published result, relies on a large computation; not kernel-checked here"},
             {"key": "pt", "label": "Platt-Trudgian (2021)", "value": 0.2, "exact": "0.2",
              "kind": "published", "where": "published result, relies on a large computation; not kernel-checked here"},
-            {"key": "rt", "label": "Rodgers-Tao (2020): Lambda >= 0", "value": 0.0, "exact": "0",
-             "kind": "published lower bound", "where": "published result; not in this registry. RH is Lambda <= 0, so RH is Lambda = 0"},
+            {"key": "newman", "label": "Newman's conjecture (Rodgers-Tao 2018): Lambda >= 0", "value": 0.0, "exact": "0",
+             "kind": "kernel-checked", "where": "rh:RH_dbn_newman",
+             "note": "lower bound, proved on the dbn island along Dobner's proof; RH is Lambda <= 0, so RH is Lambda = 0"},
         ],
         "lambda_curve": {
             "points": lam_points,
@@ -501,6 +503,10 @@ def build_dbn() -> dict:
             "credit": "openai/math (Apache-2.0): the quasi-Riemann hypothesis, zeta(s) != 0 for Re s > 7/8, "
                       "and its Lean proof are entirely OpenAI's",
             "credit_url": "https://github.com/openai/math",
+            "newman_repo": "https://github.com/DrMurphyIsIn/newman-lambda-nonneg",
+            "newman_doi_version": "10.5281/zenodo.23287833",
+            "newman_doi_concept": "10.5281/zenodo.23287832",
+            "newman_credit": "the theorem is Rodgers-Tao's (2018) and the proof formalized is Dobner's (arXiv:2005.05142)",
         },
         "trust": "Plots on this tab are float models of the stated bounds; the toy trajectory is a model of "
                  "the bound, not a zero of zeta.",
