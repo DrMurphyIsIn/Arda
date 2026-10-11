@@ -657,3 +657,18 @@ name = "ArchS7_Abstract"
 
 [[lean_lib]]
 name = "ArchS7_Guard"
+
+[[lean_lib]]
+name = "ArchS6_Even"
+
+[[lean_lib]]
+name = "ArchS6_Strict"
+
+[[lean_lib]]
+name = "ArchS6_Prolate"
+
+[[lean_lib]]
+name = "ArchS6_Real"
+
+[[lean_lib]]
+name = "ArchS6_Guard"
