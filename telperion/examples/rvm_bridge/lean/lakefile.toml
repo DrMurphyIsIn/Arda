@@ -816,3 +816,12 @@ name = "ArchS7c_FourierH"
 
 [[lean_lib]]
 name = "ArchS7c_Guard"
+
+[[lean_lib]]
+name = "ArchS7c_Plancherel"
+
+[[lean_lib]]
+name = "ArchS7c_Row"
+
+[[lean_lib]]
+name = "ArchS7c_RowAll"

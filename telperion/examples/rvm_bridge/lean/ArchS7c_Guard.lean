@@ -1,4 +1,4 @@
-import ArchS7c_FourierH
+import ArchS7c_RowAll
 
 /-! Axiom guard for stage S7c (hypothesis-free CC Thm 4.7).  Expected: [propext, Classical.choice, Quot.sound]. -/
 
@@ -37,3 +37,55 @@ import ArchS7c_FourierH
 #print axioms ArchS7c.trunc_eq
 #print axioms ArchS7c.intervalIntegrable_cw_exp
 #print axioms ArchS7c.fourier_Hw
+#print axioms ArchS7c.fourier_eq_transform
+#print axioms ArchS7c.plancherel
+#print axioms ArchS7c.normSq_cpow_neg_zt
+#print axioms ArchS7c.normSq_fourier_Hw
+#print axioms ArchS7c.integrable_hsq_Phi
+#print axioms ArchS7c.integral_normSq_Hw
+#print axioms ArchS7c.one_lt_exp_iff'
+#print axioms ArchS7c.mk_neg
+#print axioms ArchS7c.mk_neg_w
+#print axioms ArchS7c.Mk_neg
+#print axioms ArchS7c.Mk_neg_w
+#print axioms ArchS7c.mk_zero
+#print axioms ArchS7c.Mk_zero
+#print axioms ArchS7c.mk_eq
+#print axioms ArchS7c.Mk_eq
+#print axioms ArchS7c.measurable_mk
+#print axioms ArchS7c.aestronglyMeasurable_Mk
+#print axioms ArchS7c.normSq_Mk_le
+#print axioms ArchS7c.memLp_Mk
+#print axioms ArchS7c.memLp_Mk'
+#print axioms ArchS7c.integral_normSq_Mk_eq_Hw
+#print axioms ArchS7c.integral_normSq_Mk
+#print axioms ArchS7c.integral_norm_thF
+#print axioms ArchS7c.measurable_thF_prod
+#print axioms ArchS7c.integrable_thF_prod
+#print axioms ArchS7c.integrable_g_exp
+#print axioms ArchS7c.integrable_Vp
+#print axioms ArchS7c.coeFn_theta
+#print axioms ArchS7c.measurable_bW
+#print axioms ArchS7c.norm_bW_le
+#print axioms ArchS7c.measurable_mkE
+#print axioms ArchS7c.norm_mkE_le
+#print axioms ArchS7c.mkE_add_neg
+#print axioms ArchS7c.integrable_g_mkE
+#print axioms ArchS7c.MkE_add_neg
+#print axioms ArchS7c.norm_MkE_le
+#print axioms ArchS7c.aestronglyMeasurable_MkE
+#print axioms ArchS7c.integral_bW_thF
+#print axioms ArchS7c.integral_bW_Vp
+#print axioms ArchS7c.integral_MkE_eq
+#print axioms ArchS7c.Qop_apply
+#print axioms ArchS7c.coeFn_evenP
+#print axioms ArchS7c.even_ae
+#print axioms ArchS7c.coeFn_Q_integrable
+#print axioms ArchS7c.memLp_truncFun
+#print axioms ArchS7c.integrable_truncFun
+#print axioms ArchS7c.truncL_mem
+#print axioms ArchS7c.coeFn_truncE
+#print axioms ArchS7c.tendsto_truncE
+#print axioms ArchS7c.tendsto_rowF
+#print axioms ArchS7c.rowF_congr
+#print axioms ArchS7c.coeFn_Q
