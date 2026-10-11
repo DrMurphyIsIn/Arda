@@ -9,6 +9,16 @@ Run: `PYTHONPATH=telperion/src python -m telperion.zero_free_watch` (add `--upda
   whitelist). ACTION: replay through Comparator, then compose with the dbn bridge at `theta = B_new`
   (`Lambda <= 2 (B_new - 1/2)^2 ~ 0.28119`, below the kernel-checked 9/32). Owner: e9 (replay); bridge composition to
   be coordinated with the Riemann session. The first live poll found this; it is exactly what the watcher is for.
+- 2026-10-11 **arxiv:2610.04045v1** [input] de Faveri, "Optimal large sieve for fixed order characters" (2 Oct 2026): the
+  best proved sextic/n-th order large sieve, already in SEXTIC_BOTTLENECK section 7 (it does not move the 7/8 boundary).
+  No further action.
+- 2026-10-11 **openai:An-unconditional-first-moment-for-cubic-Gauss-sums-September-25-2026** [input] OpenAI's cubic
+  first moment (cited by the 7/8 paper as not used). Known. No action.
+- 2026-10-11 **arxiv:2609.39706v1** [input] sixth moment of a degree two L-function (large sieve). Not on the sextic
+  bottleneck. No action.
+- 2026-10-11 **arxiv:2608.10121v2** [input] Fourier summation formulas on a strip ("Selberg class"). No action.
+- 2026-10-11 **arxiv:2608.20654v1** [input] curves y^3 = x^{(q^2+1)/2} + x ("cubic Gauss sum", finite fields). False
+  positive. No action.
 - 2026-10-11 **openai:The-Quasi-Riemann-Hypothesis-October-5-2026** [strip] the simplified 11/12 paper (paper2). Known;
   see OAI_QRH_METHOD_MAP_2026-10-10.md.
 - 2026-10-11 **openai:The-Quasi-Riemann-Hypothesis-September-30-2026** [strip] the 7/8 paper. Known; converted to
