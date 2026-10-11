@@ -233,6 +233,25 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   product-form slot coefficients (sequence-specific, the Dunn-Radziwill corrected-sieve route, whose input is
   GRH-type, i.e. circular) or a reflected-energy bound valid for `M + ell > 1` (ledger item 5, open). The sextic
   symbol order (section 4) and the cubic sieve's `2/3` are thus the two walls, one on each side of 13/15.
+  Follow-up (b), the section 14 audit, has landed (`~/arda-research/followups/sec14_hidden_dependence_audit.md`,
+  reading not verification): the low side EXTENDS to `ell in (1/6, 1/5]` conditionally. Nothing Lemma 15.1 or Prop. 15.3
+  cites upstream (section 14, l. 7249-8060, and the Part I lemmas gaussian-annular, smooth-calculus,
+  reflection-row-sectors, reflected-energy, hybrid-energy, completed-reflection, common-profile, lattice-kernel-tail,
+  completed-quadratic-reduction) uses a numerical value of `ell, M, d, h, b, l_x, l_y`; section 14's only numerals are
+  `1/81`, `27 q_lambda^{4/3}` and Heath-Brown's `2/3`, and the sextic `6` is the residue symbol's order, nowhere tied to
+  `ell = 1/6`. The hypotheses for the extension: (1) `M + ell <= 1` (l. 8246); (2) `M >= 2 ell`, strict for `Q >= 1`
+  (l. 8203, 8593); (3) Lemma 15.1 restated with excess `((1 + 3 ell - 2M + d)/4)_+` (general form l. 8302-8305; the
+  `= Z^{M'+eps}` at l. 8117 is the one step sharp at `6 ell <= 1`), absorbed by Prop. 15.3's `-d` slack (l. 8632) iff
+  `2M >= 1 + 3 ell`, i.e. `5 ell <= 1`; (4) `0 < b <= 3(M - 2 ell)/8` (l. 8590, 8597-8605; `3/20` at `ell = 1/5`);
+  (5) the target read with `h = 1 - l_x + ell`. In OpenAI's Lean the low-side bookkeeping
+  (`compensated_reflected_exponent`, Detector/LowReflectedExponent.lean:28-35; `_with_length`,
+  LowReflectedLength.lean:8-16; `low_selected_physical_energy`, LowSelectedBound.lean:28-41 over
+  `original_surviving_low_energy_sum`, Reflection/LowBranchSum.lean:15-49) takes `d` as a variable with `0 <= d <= 1/6`
+  but has `M' = 5/6 - 2d` and `ell' = 1/6 - d` as literals and no excess term, `d` capped by `lowLength_bounds`
+  (LowNominalGeometry.lean:21-24) from `sum ell = 1/6`; no low-side Lean statement has `ell` or `M` as a variable, so a
+  Stage III at `ell = 1/5` would re-prove those modules with `ell` generalised. Unread by the audit: Part I lemma
+  proofs (statements only), section 16 past l. 8794, section 20. So the remaining gate for 13/15 is purely the HIGH
+  side (follow-up (a), running).
 
 ## 8. Verdict
 
