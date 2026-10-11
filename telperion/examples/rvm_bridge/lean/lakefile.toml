@@ -547,3 +547,6 @@ name = "ArchS9_Pi"
 
 [[lean_lib]]
 name = "ArchS9_Analysis"
+
+[[lean_lib]]
+name = "ArchS9_Frame"
