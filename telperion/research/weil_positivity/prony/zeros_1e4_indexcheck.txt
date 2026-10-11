@@ -1,0 +1,19 @@
+brackets 10508 up to T=10310.0 in 2.1s
+refined in 666.8s
+  k=     1 mine=14.134725141735 zetazero=14.134725141735 diff=0.00e+00
+  k=     2 mine=21.022039638772 zetazero=21.022039638772 diff=0.00e+00
+  k=    10 mine=49.773832477672 zetazero=49.773832477672 diff=0.00e+00
+  k=   100 mine=236.524229665816 zetazero=236.524229665816 diff=0.00e+00
+  k=   500 mine=811.184358846506 zetazero=811.184358846506 diff=0.00e+00
+  k=  1000 mine=1419.422480945996 zetazero=1419.422480945996 diff=0.00e+00
+  k=  2000 mine=2515.286482924713 zetazero=2515.286482924713 diff=0.00e+00
+  k=  3000 mine=3533.328243395820 zetazero=3533.328243395820 diff=0.00e+00
+  k=  4000 mine=4506.311496728825 zetazero=4506.311496728825 diff=0.00e+00
+  k=  5000 mine=5447.861998301300 zetazero=5447.861998301300 diff=0.00e+00
+  k=  6000 mine=6365.852321021016 zetazero=6365.852321021016 diff=0.00e+00
+  k=  7000 mine=7264.748248090300 zetazero=7264.748248090300 diff=0.00e+00
+  k=  8000 mine=8148.188405804627 zetazero=8148.188405804627 diff=0.00e+00
+  k=  9000 mine=9018.424475610378 zetazero=9018.424475610378 diff=0.00e+00
+  k= 10000 mine=9877.782654005501 zetazero=9877.782654005501 diff=0.00e+00
+second pass: 46 zeros sitting on RS grid nodes re-refined (max move 4.29e-03); max |Z| on 300 random others 1.1e-11; max |z-zetazero| over first 300 = 0.0e+00
+second pass: 46 zeros sitting on RS grid nodes re-refined (max move 4.29e-03, 43 moved); max |Z| at 300 random other zeros 1.1e-11; at fixed suspects 2.4e-12; max |z - zetazero| over first 300 = 0.0e+00

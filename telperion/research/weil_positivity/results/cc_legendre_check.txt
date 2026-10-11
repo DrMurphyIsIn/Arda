@@ -1,0 +1,6 @@
+Legendre Gram cross-check, a=0.59657359, K=12: panel-doubling change 1.607e-39
+  entry (0,0): Legendre-Gram 0.074765852309572031476   generic W_components 0.074765852309572031476   diff 1.171e-39
+  entry (1,1): Legendre-Gram 0.25448498284859241805   generic W_components 0.25448498284859241805   diff 2.296e-41
+  entry (2,0): Legendre-Gram 0.15018302159194421336   generic W_components 0.15018302159194421336   diff 2.79e-39
+  entry (5,3): Legendre-Gram 0.76599480878259316262   generic W_components 0.76599480878259316262   diff -7.955e-39
+  entry (11,11): Legendre-Gram 2.0700374393495005232   generic W_components 2.0700374393495005232   diff -1.203e-38

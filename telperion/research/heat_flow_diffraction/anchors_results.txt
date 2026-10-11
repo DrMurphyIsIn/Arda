@@ -1,0 +1,73 @@
+anchors + DH control, 2026-10-11.  SEARCH, not proof.  conjecture1_proved = False
+== A. certified anchor: BraggH100 (29 zeros, T = 100) ==
+F_100(u2) = -7.07807476640591   certified [-7.0780948677, -7.0780546651]   inside: True
+Landau peak at u = log 2: -(100/2pi) log2/sqrt2 = -7.8006; F_100(log 2) = -7.078065938
+
+== B. Landau normalisation, unweighted one-sided F_T (island convention) ==
+t = 0:  residual R = F_T(log n) - Landau;  R_sm = R - (smooth gamma-factor term + Gibbs, from the explicit formula)
+     T    log T   n=2: ratio   R      R_sm   n=3: ratio   R      R_sm   n=4: ratio   R      R_sm   n=5: ratio   R      R_sm 
+    100   4.61      0.907   +0.72  -0.00    0.925   +0.76  -0.11    0.715   +1.57  +0.46    0.958   +0.48  -0.45
+    200   5.30      0.946   +0.85  -0.06    0.977   +0.46  -0.28    0.938   +0.69  -0.59    0.945   +1.25  -0.19
+    500   6.21      0.974   +1.03  -0.41    0.971   +1.45  +0.34    0.920   +2.20  +0.77    0.969   +1.76  +0.45
+   1000   6.91      0.981   +1.48  -0.16    0.994   +0.64  +0.40    0.992   +0.46  -0.08    0.984   +1.82  +0.30
+   2000   7.60      1.002   -0.31  +0.11    0.999   +0.20  +0.17    0.984   +1.79  +0.15    0.992   +1.77  +0.12
+   3500   8.16      0.993   +1.86  +0.32    0.997   +1.07  +0.38    0.995   +1.01  -0.69    0.999   +0.24  -0.76
+(full table incl. n = 7, 8, 9, 11 in anchors_landau_residual.csv)
+
+Along the flow, T = 3500 (particles with gamma_k(0) <= T): F_t(log n) / Landau(T, n)  and residual R / log T
+   t     n=2  ratio  R/logT  n=3  ratio  R/logT  n=4  ratio  R/logT  n=5  ratio  R/logT  n=7  ratio  R/logT
+  0.00     0.993   +0.23    0.997   +0.13    0.995   +0.12    0.999   +0.03    0.996   +0.20
+  0.10     0.916   +2.81    0.887   +4.89    0.886   +2.69    0.859   +6.93    0.843   +7.89
+  0.20     0.844   +5.20    0.788   +9.17    0.787   +5.04    0.737  +12.94    0.710  +14.53
+  0.50     0.660  +11.38    0.550  +19.50    0.542  +10.84    0.458  +26.64    0.417  +29.28
+  1.00     0.434  +18.95    0.296  +30.50    0.275  +17.14    0.197  +39.45    0.159  +42.24
+
+== C. Davenport-Heilbronn on-line comb (fourth control) ==
+204 on-line ordinates refined inside their certified boxes (gamma_1 = 5.0941598446, gamma_max = 299.806872)
+F_on,100(u2) = -0.156521   certified ZooDH box [-0.170181, -0.152173]   inside: True
+F_on,100(u5) = -2.198128   certified ZooDH box [-2.254028, -2.031779]   inside: True
+  off-line gamma~85.699, delta~0.310: term 2cosh(delta u)cos(gamma u) at log 2 = -1.9619
+  off-line gamma~114.163, delta~0.150: term 2cosh(delta u)cos(gamma u) at log 2 = -1.6687
+  off-line gamma~166.5, delta~0.100: term 2cosh(delta u)cos(gamma u) at log 2 = -1.3531  (UNVERIFIED: suspiciously round entry)
+  off-line gamma~176.702, delta~0.240: term 2cosh(delta u)cos(gamma u) at log 2 = -2.0260
+
+T = 250.0 (sharp, one-sided): DH uses 161 on-line zeros, zeta 108 zeros.
+t = 0 effective weights LamHat(n) = -2 pi sqrt(n) F(log n) / T (no background subtraction; T is small, so O(log T)/T ~ 0.1 errors)
+   n   Lambda(n)  zeta LamHat   Lambda_D(n)  DH LamHat(on-line)  DH LamHat(+4 off-line pairs)   GUE sd   Poisson sd
+   2   0.6931     +0.6990      +0.1969      -0.0960             +0.1531                     0.035    0.186
+   3   1.0986     +1.1014      -0.3121      +0.1239             -0.1917                     0.275    0.501
+   4   0.6931     +0.6129      -1.4422      -1.1180             -1.3457                     0.156    0.132
+   5   1.6094     +1.5412      +0.0000      -0.0186             -0.0679                     0.465    0.617
+   6   0.0000     -0.0172      +1.9364      +1.2968             +1.7766                     0.400    0.534
+   7   1.9459     +1.8863      +0.5528      +0.0333             +0.4196                     0.384    0.404
+   8   0.6931     +0.6299      +0.0159      -0.1947             -0.0695                     0.324    0.083
+   9   1.0986     +0.9623      -2.2859      -1.6892             -2.0832                     0.242    0.308
+  10   0.0000     -0.1031      +0.0000      +0.0958             +0.0065                     0.730    0.713
+  11   2.3979     +2.2228      +2.3979      +1.8669             +2.4320                     0.166    0.742
+  12   0.0000     -0.0036      -0.7629      -0.0657             -0.6106                     0.491    0.287
+
+Along the flow (T = 250): Re LamHat_t(n), measured vs heuristic prediction Lambda_{c b}(n) n^{-i pi t/8} <(q gamma/2pi)^{-(t/4) log n}>  (q = 1 zeta, q = 5 DH)
+   t     n   zeta meas  zeta pred   DH meas   DH pred
+  0.20   2   +0.6498   +0.6464    -0.0891   +0.1737
+  0.20   3   +1.0012   +1.0048    +0.1353   -0.2613
+  0.20   5   +1.3865   +1.4694    -0.0273   +0.0000
+  0.20   6   +0.0792   +0.1206    +0.9874   +1.5305
+  0.20   7   +1.7111   +1.7991    -0.0599   +0.4370
+  0.20  10   +0.0895   +0.2305    +0.0714   +0.0000
+  0.20  11   +2.0230   +2.2940    +1.4134   +1.8915
+  0.50   2   +0.5801   +0.5803    -0.0793   +0.1434
+  0.50   3   +0.8600   +0.8723    +0.1372   -0.1987
+  0.50   5   +1.1573   +1.2617    -0.0299   +0.0000
+  0.50   6   +0.1651   +0.2460    +0.6360   +1.0554
+  0.50   7   +1.4213   +1.5635    -0.1297   +0.3003
+  0.50  10   +0.2578   +0.4757    +0.0405   +0.0000
+  0.50  11   +1.6515   +2.0758    +0.8338   +1.2814
+  1.00   2   +0.4750   +0.4810    -0.0641   +0.1034
+  1.00   3   +0.6514   +0.6764    +0.1172   -0.1235
+  1.00   5   +0.8044   +0.9431    -0.0230   +0.0000
+  1.00   6   +0.1881   +0.3358    +0.2896   +0.5442
+  1.00   7   +0.9213   +1.1748    -0.1077   +0.1525
+  1.00  10   +0.2693   +0.6477    -0.0372   +0.0000
+  1.00  11   +0.9399   +1.6300    +0.1751   +0.6211
+
+Note: the DH on-line comb misses the 4 off-line zeros (complex in z) and is evolved as a real comb only.

@@ -1,0 +1,71 @@
+relative Frobenius residual of best Toeplitz+Hankel fit (and Toeplitz-only fit), Hermite basis
+a0.5_n40     G                                                       T+H residual = 1.196e-01   T-only residual = 1.687e-01
+a0.5_n40     A                                                       T+H residual = 1.196e-01   T-only residual = 1.687e-01
+a0.5_n40     P                                                       T+H residual = 3.389e-01   T-only residual = 9.919e-01
+a0.5_n40     control: same spectrum, random eigenbasis               T+H residual = 3.039e-01   T-only residual = 3.178e-01
+a0.5_n40     control: multiplication by log(1+r^2) in frequency      T+H residual = 7.390e-02   T-only residual = 1.079e-01
+a0.5_n60     G                                                       T+H residual = 1.189e-01   T-only residual = 1.553e-01
+a0.5_n60     A                                                       T+H residual = 1.189e-01   T-only residual = 1.553e-01
+a0.5_n60     P                                                       T+H residual = 4.891e-01   T-only residual = 9.957e-01
+a0.5_n60     control: same spectrum, random eigenbasis               T+H residual = 2.908e-01   T-only residual = 2.998e-01
+a0.5_n60     control: multiplication by log(1+r^2) in frequency      T+H residual = 7.575e-02   T-only residual = 1.015e-01
+a1.5_n40     G                                                       T+H residual = 3.549e-01   T-only residual = 3.840e-01
+a1.5_n40     A                                                       T+H residual = 2.350e-01   T-only residual = 2.753e-01
+a1.5_n40     P                                                       T+H residual = 9.867e-01   T-only residual = 9.918e-01
+a1.5_n40     control: same spectrum, random eigenbasis               T+H residual = 4.869e-01   T-only residual = 5.140e-01
+a1.5_n40     control: multiplication by log(1+r^2) in frequency      T+H residual = 9.557e-02   T-only residual = 1.366e-01
+a1.5_n60     G                                                       T+H residual = 3.580e-01   T-only residual = 3.764e-01
+a1.5_n60     A                                                       T+H residual = 2.153e-01   T-only residual = 2.463e-01
+a1.5_n60     P                                                       T+H residual = 9.920e-01   T-only residual = 9.937e-01
+a1.5_n60     control: same spectrum, random eigenbasis               T+H residual = 4.734e-01   T-only residual = 4.910e-01
+a1.5_n60     control: multiplication by log(1+r^2) in frequency      T+H residual = 9.660e-02   T-only residual = 1.274e-01
+a1_n40       G                                                       T+H residual = 2.150e-01   T-only residual = 2.536e-01
+a1_n40       A                                                       T+H residual = 1.664e-01   T-only residual = 2.150e-01
+a1_n40       P                                                       T+H residual = 9.980e-01   T-only residual = 9.989e-01
+a1_n40       control: same spectrum, random eigenbasis               T+H residual = 3.863e-01   T-only residual = 4.093e-01
+a1_n40       control: multiplication by log(1+r^2) in frequency      T+H residual = 8.629e-02   T-only residual = 1.249e-01
+a1_n60       G                                                       T+H residual = 2.194e-01   T-only residual = 2.465e-01
+a1_n60       A                                                       T+H residual = 1.593e-01   T-only residual = 1.955e-01
+a1_n60       P                                                       T+H residual = 9.982e-01   T-only residual = 9.993e-01
+a1_n60       control: same spectrum, random eigenbasis               T+H residual = 3.759e-01   T-only residual = 3.898e-01
+a1_n60       control: multiplication by log(1+r^2) in frequency      T+H residual = 8.774e-02   T-only residual = 1.168e-01
+a2_n40       G                                                       T+H residual = 5.007e-01   T-only residual = 5.167e-01
+a2_n40       A                                                       T+H residual = 3.375e-01   T-only residual = 3.675e-01
+a2_n40       P                                                       T+H residual = 9.848e-01   T-only residual = 9.891e-01
+a2_n40       control: same spectrum, random eigenbasis               T+H residual = 5.907e-01   T-only residual = 6.180e-01
+a2_n40       control: multiplication by log(1+r^2) in frequency      T+H residual = 1.035e-01   T-only residual = 1.460e-01
+a2_n60       G                                                       T+H residual = 4.919e-01   T-only residual = 5.044e-01
+a2_n60       A                                                       T+H residual = 3.005e-01   T-only residual = 3.246e-01
+a2_n60       P                                                       T+H residual = 9.879e-01   T-only residual = 9.903e-01
+a2_n60       control: same spectrum, random eigenbasis               T+H residual = 5.754e-01   T-only residual = 5.979e-01
+a2_n60       control: multiplication by log(1+r^2) in frequency      T+H residual = 1.040e-01   T-only residual = 1.359e-01
+a3_n40       G                                                       T+H residual = 7.032e-01   T-only residual = 7.122e-01
+a3_n40       A                                                       T+H residual = 6.264e-01   T-only residual = 6.427e-01
+a3_n40       P                                                       T+H residual = 9.714e-01   T-only residual = 9.779e-01
+a3_n40       control: same spectrum, random eigenbasis               T+H residual = 7.212e-01   T-only residual = 7.596e-01
+a3_n40       control: multiplication by log(1+r^2) in frequency      T+H residual = 1.171e-01   T-only residual = 1.612e-01
+a3_n60       G                                                       T+H residual = 6.927e-01   T-only residual = 6.991e-01
+a3_n60       A                                                       T+H residual = 5.687e-01   T-only residual = 5.825e-01
+a3_n60       P                                                       T+H residual = 9.779e-01   T-only residual = 9.827e-01
+a3_n60       control: same spectrum, random eigenbasis               T+H residual = 7.254e-01   T-only residual = 7.501e-01
+a3_n60       control: multiplication by log(1+r^2) in frequency      T+H residual = 1.166e-01   T-only residual = 1.496e-01
+a4_n40       G                                                       T+H residual = 8.130e-01   T-only residual = 8.192e-01
+a4_n40       A                                                       T+H residual = 8.526e-01   T-only residual = 8.646e-01
+a4_n40       P                                                       T+H residual = 9.637e-01   T-only residual = 9.732e-01
+a4_n40       control: same spectrum, random eigenbasis               T+H residual = 7.977e-01   T-only residual = 8.477e-01
+a4_n40       control: multiplication by log(1+r^2) in frequency      T+H residual = 1.290e-01   T-only residual = 1.736e-01
+a4_n60       G                                                       T+H residual = 8.041e-01   T-only residual = 8.090e-01
+a4_n60       A                                                       T+H residual = 8.260e-01   T-only residual = 8.354e-01
+a4_n60       P                                                       T+H residual = 9.719e-01   T-only residual = 9.787e-01
+a4_n60       control: same spectrum, random eigenbasis               T+H residual = 8.162e-01   T-only residual = 8.439e-01
+a4_n60       control: multiplication by log(1+r^2) in frequency      T+H residual = 1.275e-01   T-only residual = 1.607e-01
+a5_n40       G                                                       T+H residual = 8.784e-01   T-only residual = 8.827e-01
+a5_n40       A                                                       T+H residual = 9.400e-01   T-only residual = 9.503e-01
+a5_n40       P                                                       T+H residual = 9.665e-01   T-only residual = 9.765e-01
+a5_n40       control: same spectrum, random eigenbasis               T+H residual = 8.532e-01   T-only residual = 9.005e-01
+a5_n40       control: multiplication by log(1+r^2) in frequency      T+H residual = 1.398e-01   T-only residual = 1.843e-01
+a5_n60       G                                                       T+H residual = 8.606e-01   T-only residual = 8.628e-01
+a5_n60       A                                                       T+H residual = 9.391e-01   T-only residual = 9.461e-01
+a5_n60       P                                                       T+H residual = 9.754e-01   T-only residual = 9.814e-01
+a5_n60       control: same spectrum, random eigenbasis               T+H residual = 8.553e-01   T-only residual = 8.890e-01
+a5_n60       control: multiplication by log(1+r^2) in frequency      T+H residual = 1.372e-01   T-only residual = 1.704e-01

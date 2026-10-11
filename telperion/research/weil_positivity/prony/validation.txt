@@ -1,0 +1,17 @@
+zeros used: 10000 (gamma_K = 9877.782654); zero list: zeros_rs.py (RS bracket + siegelz refine, index-checked vs mpmath.zetazero)
+A=  2.0  prime side W = -0.00001062757664082918053447169   zero side (K=10000) = -0.00001062757664082839204057859   diff = -7.8849e-19
+         parts: F(0)+F(1) = 3.1221638856460649114  Arch = -1.1817066775051777098  primes = 0.79573794986812785669
+A=  6.0  prime side W = 3.738401633235737273588158e-8   zero side (K=10000) = 3.738401633232925261486102e-8   diff = 2.812e-20
+         parts: F(0)+F(1) = 12.801035773775611345  Arch = -2.700479745480585836  primes = 8.9558261050616090028
+A= 12.0  prime side W = 1.107338665512106927700926e-9   zero side (K=10000) = 1.107338665518682020266471e-9   diff = -6.5751e-21
+         parts: F(0)+F(1) = 68.103147325948768503  Arch = -3.5240529121788418894  primes = 63.434364526813187774
+Arch x-form vs r-form (A=2, r-integral truncated at 600): -1.18170667750517771 vs -1.18170667750539002  diff 2.1231e-13
+
+Gram matrix: prime-side closed form vs zero side (10^4 zeros + smooth-density tail with N0(T) boundary correction)
+a,N,max|G_prime-G_zero|,max|G|,max|K_prime-K_zero|,max|K|
+1.0,30,2.415e-08,3.691e+00,4.551e-06,3.353e+02
+2.0,30,3.626e-08,4.182e+00,3.417e-06,1.720e+02
+3.0,30,1.694e-08,6.065e+00,1.065e-06,1.850e+02
+4.0,30,2.586e-08,8.013e+00,1.219e-06,1.406e+02
+5.0,30,4.024e-07,4.133e+00,1.517e-05,5.855e+01
+6.0,30,4.386e-09,1.201e+01,1.378e-07,1.698e+02
