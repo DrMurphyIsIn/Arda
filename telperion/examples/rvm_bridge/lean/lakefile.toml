@@ -603,3 +603,6 @@ name = "ArchS6_Proj"
 
 [[lean_lib]]
 name = "ArchS6_Kernel"
+
+[[lean_lib]]
+name = "ArchS6_Eigen"
