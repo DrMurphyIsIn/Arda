@@ -43,13 +43,18 @@ Neither the squares nor the operator has been exhibited.
 2. **Structure in the Gram matrices.** Compute the Weil form on natural bases in exact arithmetic and look for
    a factorization PATTERN as the dimension grows (SOS / Positivstellensatz tooling), compared against the
    prolate spheroidal operator (Connes-Consani 2022-23) and against Toeplitz-plus-Hankel and Jacobi shapes.
-   Likely outcome: noise. If not noise, it points at the operator. Started 2026-10-11 as
-   `telperion/research/weil_positivity/` (one-session spike, note `WEIL_POSITIVITY_SEARCH_2026-10-11.md`).
+   Likely outcome: noise. If not noise, it points at the operator. DONE 2026-10-11:
+   `telperion/research/weil_positivity/` (Gram matrices; zeros recovered from the prime side in `prony/`; the
+   one-prime window in `one_prime/`). Positivity is real, sharp, and an exact cancellation between the archimedean
+   side and the primes, tight at the pole; controls fail where they should; no Hilbert-Polya structure.
 3. **An arithmetic Lyapunov function for the heat flow.** Rodgers-Tao's energy uses the zeros alone and so,
    by the Davenport-Heilbronn test, cannot reach `Lambda <= 0`. Whether a prime-weighted functional of the
    zeros of `H_t` is monotone along the flow is testable numerically on the island. Caveat found at design
    time: `H_t` for `t > 0` has no Euler product, so the "prime side" of such a functional is not canonical;
-   the experiment needs a definition before it needs a computation. Not started.
+   the experiment needs a definition before it needs a computation. DONE 2026-10-11 in Dyson's quasicrystal form
+   (`telperion/research/heat_flow_diffraction/`): the monotone log-prime Bragg weight is universal log-gas damping
+   (also on GUE and Davenport-Heilbronn combs), diverges at t = 0+ as T grows, and is blind to collisions and
+   off-line pairs. NEGATIVE.
 
 ## 4. What not to do
 
