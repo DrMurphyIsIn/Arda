@@ -143,7 +143,7 @@ theorem ae_eq_phi {ι : Type*} (b : EigenBasis Cop ι) (i : ι) :
     (b.e i : ℝ → ℂ) =ᵐ[volI 0 1] phi b i := by
   have hne : (b.μ i : ℂ) ≠ 0 := by exact_mod_cast prolateBasisOf_lam_ne_zero b i
   have h1 := coeFn_Cop (b.e i)
-  rw [b.eigen i] at h1
+  rw [show Cop (b.e i) = ((b.μ i : ℂ)) • b.e i from b.eigen i] at h1
   filter_upwards [h1, Lp.coeFn_smul ((b.μ i : ℂ)) (b.e i)] with w e1 e2
   rw [e2, Pi.smul_apply, smul_eq_mul] at e1
   rw [phi, ← e1, ← mul_assoc, inv_mul_cancel₀ hne, one_mul]
