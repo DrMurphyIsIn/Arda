@@ -12,15 +12,18 @@
      The right side does not depend on ω.
   2. (`sum_sq_s_le`)  Bessel for each monomial x^{2j}, and Cauchy-Schwarz in j:
          Σ_{n∈S} s_X(e_n)²  ≤  (Σ'_j γ_j)²       for every finite S, any orthonormal family e_n.
-  3. (`EigenFamily.toProlateData`)  Hence with M_n = N_n = s_X(ξ_n)/|λ_n| (X = e^T), and λξ = Tξ,
+  3. (`EigenFamily.toProlateData`, any index type ι)  Hence with M_n = N_n = s_X(ξ_n)/|λ_n| (X = e^T), and λξ = Tξ,
      λξ' = Tdξ, the fields `bound_inner`, `bound_outer`, `summable_wMN` all hold, with
          Σ_n λ_n²/(1-λ_n²) M_n N_n ≤ (Σ'γ)²/(1 - c)       (`sum_wMN_le`).
   So S8's series for ε, ε', ε'' and Qε converge uniformly on |t| < T with NO separate analytic
   input: S8's own `abs_kn_le` turns `sum_wMN_le` into Σ_n w_n sup|kn|, sup|kn1|, sup|kn2| < ∞.
+  4. (`EigenFamily.ofS9`)  sup λ² ≤ c0 = 0.99995 holds for EVERY eigenvalue of T with a continuous
+     unit eigenfunction (S9 localization: |λ| ≤ 9.7e-22 or in a window), so S6's family
+     (`ArchS6.exists_S9_family`: continuous, orthonormal, T e = λ e everywhere, λ ≠ 0) is an
+     `EigenFamily` with no further input.  (`certBasis_toProlateData`) then connects to ArchS10_Chi.
   No sorry, no axiom.  conjecture1_proved = False.
 -/
-import ArchS9_Bridge
-import ArchS8_ProlateData
+import ArchS10_Chi
 
 open MeasureTheory Set Finset Filter Topology
 
@@ -211,13 +214,19 @@ lemma ip_mono_self_le (j : ℕ) : ip (fun x => x ^ (2 * j)) (fun x => x ^ (2 * j
 
 /-- **Bessel in every moment**: for an orthonormal continuous family and every finite S,
 `Σ_{n∈S} s_X(e_n)² ≤ (Σ'_j γ_j)²`. -/
-theorem sum_sq_s_le {X : ℝ} (hX : 0 ≤ X) (e : ℕ → ℝ → ℝ) (he : ∀ k, Continuous (e k))
-    (horth : ∀ k l, ip (e k) (e l) = if k = l then 1 else 0) (S : Finset ℕ) :
+theorem sum_sq_s_le {ι : Type*} {X : ℝ} (hX : 0 ≤ X) (e : ι → ℝ → ℝ) (he : ∀ k, Continuous (e k))
+    (hunit : ∀ k, ip (e k) (e k) = 1) (horthog : ∀ k l, k ≠ l → ip (e k) (e l) = 0)
+    (S : Finset ι) :
     ∑ n ∈ S, sX X (e n) ^ 2 ≤ (∑' j, gam X j) ^ 2 := by
+  classical
+  have horth : ∀ k l, ip (e k) (e l) = if k = l then 1 else 0 := fun k l => by
+    split_ifs with h
+    · subst h; exact hunit k
+    · exact horthog k l h
   have hg := gam_nonneg hX
   have hgs := summable_gam X
   have hL : ∀ n, L1 (e n) ≤ 1 := fun n => by
-    have := L1_le_sqrt (he n); rw [horth, if_pos rfl, Real.sqrt_one] at this; exact this
+    have := L1_le_sqrt (he n); rw [hunit, Real.sqrt_one] at this; exact this
   have hm : ∀ n j, |mom j (e n)| ≤ 1 := fun n j => (abs_mom_le j (he n)).trans (hL n)
   have hsq : ∀ n j, mom j (e n) ^ 2 ≤ 1 := fun n j => by
     rw [← sq_abs]; nlinarith [hm n j, abs_nonneg (mom j (e n))]
@@ -243,36 +252,37 @@ theorem sum_sq_s_le {X : ℝ} (hX : 0 ≤ X) (e : ℕ → ℝ → ℝ) (he : ∀
 
 /-! ## The constructor. -/
 
-/-- The data of an orthonormal family of continuous everywhere-eigenfunctions of `T` with nonzero
-eigenvalues bounded away from ±1.  This is all S8's `ProlateData` needs. -/
-structure EigenFamily where
-  lam : ℕ → ℝ
-  phi : ℕ → ℝ → ℝ
+/-- An orthonormal family (over any index type) of continuous everywhere-eigenfunctions of `T`
+with nonzero eigenvalues and `sup λ² ≤ c < 1`.  This is all S8's `ProlateData` needs. -/
+structure EigenFamily (ι : Type*) where
+  lam : ι → ℝ
+  phi : ι → ℝ → ℝ
   cont : ∀ n, Continuous (phi n)
   eig : ∀ n ω, T (phi n) ω = lam n * phi n ω
   ne : ∀ n, lam n ≠ 0
-  orth : ∀ n m, ip (phi n) (phi m) = if n = m then 1 else 0
+  unit : ∀ n, ip (phi n) (phi n) = 1
+  orthog : ∀ n m, n ≠ m → ip (phi n) (phi m) = 0
   c : ℝ
   c_lt : c < 1
   lam_sq_le : ∀ n, lam n ^ 2 ≤ c
 
 namespace EigenFamily
 
-variable (F : EigenFamily)
+variable {ι : Type*} (F : EigenFamily ι)
 
-lemma deriv_eq (n : ℕ) (x : ℝ) : deriv (F.phi n) x = Td (F.phi n) x / F.lam n :=
+lemma deriv_eq (n : ι) (x : ℝ) : deriv (F.phi n) x = Td (F.phi n) x / F.lam n :=
   (hasDerivAt_eig (F.cont n) (F.ne n) (F.eig n) x).deriv
 
-lemma contDiff (n : ℕ) : ContDiff ℝ 1 (F.phi n) := by
+lemma contDiff (n : ι) : ContDiff ℝ 1 (F.phi n) := by
   rw [contDiff_one_iff_deriv]
   refine ⟨fun x => (hasDerivAt_eig (F.cont n) (F.ne n) (F.eig n) x).differentiableAt, ?_⟩
   rw [show deriv (F.phi n) = fun x => Td (F.phi n) x / F.lam n from funext (F.deriv_eq n)]
   exact (continuous_Td (F.cont n)).div_const _
 
 /-- `M_n = N_n = s_X(ξ_n)/|λ_n|`. -/
-def Mb (X : ℝ) (n : ℕ) : ℝ := sX X (F.phi n) / |F.lam n|
+def Mb (X : ℝ) (n : ι) : ℝ := sX X (F.phi n) / |F.lam n|
 
-lemma bound {X : ℝ} (hX : 1 ≤ X) (n : ℕ) {x : ℝ} (hx0 : 0 ≤ x) (hxX : x ≤ X) :
+lemma bound {X : ℝ} (hX : 1 ≤ X) (n : ι) {x : ℝ} (hx0 : 0 ≤ x) (hxX : x ≤ X) :
     |F.phi n x| ≤ F.Mb X n ∧ |deriv (F.phi n) x| ≤ F.Mb X n := by
   have hl : 0 < |F.lam n| := abs_pos.2 (F.ne n)
   unfold Mb
@@ -282,7 +292,7 @@ lemma bound {X : ℝ} (hX : 1 ≤ X) (n : ℕ) {x : ℝ} (hx0 : 0 ≤ x) (hxX : 
   · rw [F.deriv_eq, abs_div, div_le_div_iff_of_pos_right hl]
     exact abs_Td_le_s hX (F.cont n) hx0 hxX
 
-lemma wMN_eq (X : ℝ) (n : ℕ) :
+lemma wMN_eq (X : ℝ) (n : ι) :
     F.lam n ^ 2 / (1 - F.lam n ^ 2) * (F.Mb X n * F.Mb X n)
       = sX X (F.phi n) ^ 2 / (1 - F.lam n ^ 2) := by
   unfold Mb
@@ -293,7 +303,7 @@ lemma wMN_eq (X : ℝ) (n : ℕ) :
 
 /-- **The bound behind `summable_wMN`**: every finite partial sum of `w_n M_n N_n` is at most
 `(Σ'γ)²/(1 - c)`. -/
-theorem sum_wMN_le {X : ℝ} (hX : 0 ≤ X) (S : Finset ℕ) :
+theorem sum_wMN_le {X : ℝ} (hX : 0 ≤ X) (S : Finset ι) :
     ∑ n ∈ S, F.lam n ^ 2 / (1 - F.lam n ^ 2) * (F.Mb X n * F.Mb X n)
       ≤ (∑' j, gam X j) ^ 2 / (1 - F.c) := by
   have hc : 0 < 1 - F.c := by linarith [F.c_lt]
@@ -302,10 +312,11 @@ theorem sum_wMN_le {X : ℝ} (hX : 0 ≤ X) (S : Finset ℕ) :
       ≤ ∑ n ∈ S, sX X (F.phi n) ^ 2 / (1 - F.c) := Finset.sum_le_sum fun n _ =>
         div_le_div_of_nonneg_left (sq_nonneg _) hc (by linarith [F.lam_sq_le n])
     _ = (∑ n ∈ S, sX X (F.phi n) ^ 2) / (1 - F.c) := by rw [Finset.sum_div]
-    _ ≤ _ := div_le_div_of_nonneg_right (sum_sq_s_le hX F.phi F.cont F.orth S) hc.le
+    _ ≤ _ := div_le_div_of_nonneg_right (sum_sq_s_le hX F.phi F.cont F.unit F.orthog S) hc.le
 
-/-- **S8's `ProlateData` from an eigenfamily**: no separate sup bound `M_n` is needed. -/
-def toProlateData (T0 : ℝ) (hT : 0 < T0) : ArchS8.ProlateData where
+/-- **S8's `ProlateData ι` from an eigenfamily**: no separate sup bound `M_n` is needed.
+`M_n = N_n = s_{e^T}(ξ_n)/|λ_n|`. -/
+def toProlateData (T0 : ℝ) (hT : 0 < T0) : ArchS8.ProlateData ι where
   lam := F.lam
   lam_sq_lt_one n := lt_of_le_of_lt (F.lam_sq_le n) F.c_lt
   phi := F.phi
@@ -331,5 +342,74 @@ def toProlateData (T0 : ℝ) (hT : 0 < T0) : ArchS8.ProlateData where
 @[simp] lemma toProlateData_T (T0 : ℝ) (hT : 0 < T0) : (F.toProlateData T0 hT).T = T0 := rfl
 
 end EigenFamily
+
+/-! ## The uniform bound `sup λ² ≤ 0.99995` from S9's localization. -/
+
+/-- The constant `c0 = 0.99995`. -/
+def c0Q : ℚ := 99995 / 100000
+
+def c0OK : Bool :=
+  ((List.range (Data.NCw + 1)).all fun n => decide ((|Data.thq n| + Data.w2q n) ^ 2 ≤ c0Q)) &&
+  decide (Data.d0Q ^ 2 ≤ c0Q) && decide (c0Q < 1)
+
+set_option maxRecDepth 100000 in
+theorem c0_ok : c0OK = true := by decide +kernel
+
+/-- **Every** eigenvalue of `T` with a continuous unit eigenfunction has `λ² ≤ 0.99995`. -/
+theorem lam_sq_le_c0 {ξ : ℝ → ℝ} {lam : ℝ} (hξ : Continuous ξ) (heig : ∀ ω, T ξ ω = lam * ξ ω)
+    (hn : ip ξ ξ = 1) : lam ^ 2 ≤ (c0Q : ℝ) := by
+  have h := c0_ok
+  simp only [c0OK, Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true, List.mem_range] at h
+  obtain ⟨⟨hw, hd⟩, -⟩ := h
+  rcases prolate_localization hξ heig hn with h0 | ⟨n, hn', hw0⟩
+  · have hd' : ((Data.d0Q : ℝ)) ^ 2 ≤ c0Q := by exact_mod_cast hd
+    have : lam ^ 2 ≤ (Data.d0Q : ℝ) ^ 2 := by
+      rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) h0 2
+    linarith
+  · have h2 := (prolate_window hξ heig hn hn' hw0).1
+    have hc : ((|Data.thq n| + Data.w2q n) ^ 2 : ℚ) ≤ c0Q := hw n (Nat.lt_succ_of_le hn')
+    have hc' : (|thR n| + (Data.w2q n : ℝ)) ^ 2 ≤ c0Q := by unfold thR; exact_mod_cast hc
+    have habs : |lam| ≤ |thR n| + Data.w2q n := by
+      have := abs_sub_abs_le_abs_sub lam (thR n); linarith
+    have : lam ^ 2 ≤ (|thR n| + (Data.w2q n : ℝ)) ^ 2 := by
+      rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) habs 2
+    linarith
+
+lemma c0_lt_one : (c0Q : ℝ) < 1 := by
+  have h := c0_ok
+  simp only [c0OK, Bool.and_eq_true, decide_eq_true_eq] at h
+  exact_mod_cast h.2
+
+/-- **The S6 → S8 constructor.**  Any family with S6's `exists_S9_family` properties
+(continuous, `T e_k = λ_k e_k` everywhere, `λ_k ≠ 0`, orthonormal in `ip`) is an `EigenFamily`
+with `c = 0.99995`, by S9's localization. -/
+def EigenFamily.ofS9 {ι : Type*} (lam : ι → ℝ) (phi : ι → ℝ → ℝ)
+    (cont : ∀ n, Continuous (phi n)) (eig : ∀ n ω, T (phi n) ω = lam n * phi n ω)
+    (ne : ∀ n, lam n ≠ 0) (unit : ∀ n, ip (phi n) (phi n) = 1)
+    (orthog : ∀ n m, n ≠ m → ip (phi n) (phi m) = 0) : EigenFamily ι where
+  lam := lam
+  phi := phi
+  cont := cont
+  eig := eig
+  ne := ne
+  unit := unit
+  orthog := orthog
+  c := c0Q
+  c_lt := c0_lt_one
+  lam_sq_le n := lam_sq_le_c0 (cont n) (eig n) (unit n)
+
+/-- **End to end**: an ℕ-indexed eigenfamily whose first 13 eigenvalues lie in S9's windows gives a
+`ProlateDataNat` satisfying `CertBasis` (for any `T0 > log 2`), so every theorem of ArchS10_Chi
+(the certified χ and ε'(1⁺)) applies to it. -/
+theorem certBasis_toProlateData (F : EigenFamily ℕ) {T0 : ℝ} (hT0 : Real.log 2 < T0)
+    (hwin : ∀ n ≤ Data.NCw, |F.lam n - thR n| ≤ (Data.w0q n : ℝ)) :
+    CertBasis (F.toProlateData T0 (lt_trans (Real.log_pos (by norm_num)) hT0)) where
+  eig := F.eig
+  orth n m := by
+    split_ifs with h
+    · subst h; exact F.unit n
+    · exact F.orthog n m h
+  window := hwin
+  T_gt := hT0
 
 end ArchS10

@@ -1,9 +1,8 @@
 /-
-  ArchS10_Guard -- `#print axioms` for every top-level theorem/lemma of stage S10.
+  ArchS10_Guard -- `#print axioms` for every top-level theorem/lemma/def-with-proof of stage S10.
   Required output for each: [propext, Classical.choice, Quot.sound] (no sorryAx, no new axioms).
   Check: `lake env lean ArchS10_Guard.lean`.  conjecture1_proved = False.
 -/
-import ArchS10_Chi
 import ArchS10_Summable
 
 #print axioms ArchS10.Cn_eq_CC
@@ -119,4 +118,9 @@ import ArchS10_Summable
 #print axioms ArchS10.EigenFamily.toProlateData_lam
 #print axioms ArchS10.EigenFamily.toProlateData_phi
 #print axioms ArchS10.EigenFamily.toProlateData_T
+#print axioms ArchS10.c0_ok
+#print axioms ArchS10.lam_sq_le_c0
+#print axioms ArchS10.c0_lt_one
+#print axioms ArchS10.certBasis_toProlateData
 #print axioms ArchS10.EigenFamily.toProlateData
+#print axioms ArchS10.EigenFamily.ofS9

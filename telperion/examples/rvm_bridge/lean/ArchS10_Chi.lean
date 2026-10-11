@@ -2,7 +2,7 @@
   ArchS10_Chi -- stage S10 of the archimedean conceptual blueprint (2026-10-11), the assembly:
   a CERTIFIED ENCLOSURE OF CONNES-CONSANI'S KERNEL χ ON [0, log 2] (arXiv:2006.13771, (104)).
 
-  Input: S8's abstract `D : ArchS8.ProlateData` together with `CertBasis D`, which says that the
+  Input: S8's abstract `D : ArchS8.ProlateDataNat` (index type ℕ) together with `CertBasis D`, which says that the
   `D.phi n` are an orthonormal family (on [0,1]) of everywhere-eigenfunctions of S9's operator
   T f(ω) = ∫_0^1 2cos(2πxω) f(x) dx with eigenvalues `D.lam n`, the first 13 of which lie in S9's
   windows (n ≤ 12), and that `D.T > log 2`.  This is exactly what S6's eigenbasis, enumerated with
@@ -38,13 +38,13 @@ open ArchS9
 
 /-- What S6 (+ S9 completeness) must supply about `D`: an orthonormal family of eigenfunctions of
 `T`, the first 13 in S9's windows, and the additive range covering `[0, log 2]`. -/
-structure CertBasis (D : ArchS8.ProlateData) : Prop where
+structure CertBasis (D : ArchS8.ProlateDataNat) : Prop where
   eig : ∀ n ω, T (D.phi n) ω = D.lam n * D.phi n ω
   orth : ∀ n m, ip (D.phi n) (D.phi m) = if n = m then 1 else 0
   window : ∀ n ≤ Data.NCw, |D.lam n - thR n| ≤ (Data.w0q n : ℝ)
   T_gt : Real.log 2 < D.T
 
-variable {D : ArchS8.ProlateData}
+variable {D : ArchS8.ProlateDataNat}
 
 namespace CertBasis
 
@@ -280,7 +280,7 @@ theorem head_eps_term (hB : CertBasis D) {n : ℕ} (hn : n ≤ Data.NCw) :
 
 /-! ## The series. -/
 
-lemma summable_wC (D : ArchS8.ProlateData) {t : ℝ} (ht : t ∈ Ioo (-D.T) D.T) :
+lemma summable_wC {ι : Type*} (D : ArchS8.ProlateData ι) {t : ℝ} (ht : t ∈ Ioo (-D.T) D.T) :
     Summable fun n => D.w n * D.Cn n t := by
   refine Summable.of_norm_bounded (D.summable_wB.mul_left (5 / 4)) fun n => ?_
   obtain ⟨h0, -, h2⟩ := D.norm_w_le n ht
