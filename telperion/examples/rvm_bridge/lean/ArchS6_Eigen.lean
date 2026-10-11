@@ -127,18 +127,29 @@ namespace EigenBasis
 
 variable {T : E →L[𝕜] E} {ι : Type*} (b : EigenBasis T ι)
 
-/-- Expansion of every vector along the eigenbasis. -/
-theorem hasSum (x : E) : HasSum (fun i ↦ ⟪b.e i, x⟫_𝕜 • b.e i) x := by
-  classical
-  let hb := HilbertBasis.mkOfOrthogonalEqBot b.orthonormal (by
+/-- The eigenbasis as a Mathlib `HilbertBasis`. -/
+def toHilbertBasis : HilbertBasis ι 𝕜 E :=
+  HilbertBasis.mkOfOrthogonalEqBot b.orthonormal (by
     rw [Submodule.eq_bot_iff]
     intro x hx
     apply b.complete
     intro i
     rw [Submodule.mem_orthogonal'] at hx
     rw [← inner_conj_symm, hx (b.e i) (Submodule.subset_span ⟨i, rfl⟩), map_zero])
-  have := hb.hasSum_repr x
-  simpa [hb, HilbertBasis.repr_apply_apply] using this
+
+theorem coe_toHilbertBasis : ⇑b.toHilbertBasis = b.e :=
+  HilbertBasis.coe_mkOfOrthogonalEqBot _ _
+
+/-- Expansion of every vector along the eigenbasis. -/
+theorem hasSum (x : E) : HasSum (fun i ↦ ⟪b.e i, x⟫_𝕜 • b.e i) x := by
+  have := b.toHilbertBasis.hasSum_repr x
+  simpa [coe_toHilbertBasis, HilbertBasis.repr_apply_apply] using this
+
+/-- Parseval: `Σ ⟪x, e_i⟫ ⟪e_i, y⟫ = ⟪x, y⟫`. -/
+theorem hasSum_inner_mul_inner (x y : E) :
+    HasSum (fun i ↦ ⟪x, b.e i⟫_𝕜 * ⟪b.e i, y⟫_𝕜) ⟪x, y⟫_𝕜 := by
+  have := b.toHilbertBasis.hasSum_inner_mul_inner x y
+  simpa [coe_toHilbertBasis] using this
 
 /-- Eigenvalues are bounded by the operator norm. -/
 theorem abs_μ_le (i : ι) : |b.μ i| ≤ ‖T‖ := by

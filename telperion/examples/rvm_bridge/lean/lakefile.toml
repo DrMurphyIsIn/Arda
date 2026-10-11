@@ -620,4 +620,7 @@ name = "ArchS6_Prolate"
 name = "ArchS6_Real"
 
 [[lean_lib]]
+name = "ArchS6_Bridge"
+
+[[lean_lib]]
 name = "ArchS6_Guard"

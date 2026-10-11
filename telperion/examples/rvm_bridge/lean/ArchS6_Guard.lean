@@ -7,6 +7,7 @@ import ArchS6_Even
 import ArchS6_Strict
 import ArchS6_Prolate
 import ArchS6_Real
+import ArchS6_Bridge
 
 /-! ArchS6_Guard: `#print axioms` for every top-level theorem of stage S6.
 Required output: exactly `[propext, Classical.choice, Quot.sound]` on every line.
@@ -173,7 +174,9 @@ conjecture1_proved = False. -/
 #print axioms ArchS6.norm_eigIdx
 #print axioms ArchS6.eigenvalue_real
 #print axioms ArchS6.exists_eigenBasis
+#print axioms ArchS6.EigenBasis.coe_toHilbertBasis
 #print axioms ArchS6.EigenBasis.hasSum
+#print axioms ArchS6.EigenBasis.hasSum_inner_mul_inner
 #print axioms ArchS6.EigenBasis.abs_μ_le
 #print axioms ArchS6.EigenBasis.μ_eq_inner
 -- ArchS6_Even
@@ -250,3 +253,15 @@ conjecture1_proved = False. -/
 #print axioms ArchS6.continuous_phiR
 #print axioms ArchS6.ae_eq_phiR
 #print axioms ArchS6.fourier_ξ_ae_real
+-- ArchS6_Bridge
+#print axioms ArchS6.intervalIntegral_eq_Icc
+#print axioms ArchS6.memLp_continuous
+#print axioms ArchS6.coeFn_toL2
+#print axioms ArchS6.inner_L2IR
+#print axioms ArchS6.inner_eq_ipS9
+#print axioms ArchS6.ip_phiR
+#print axioms ArchS6.ne_zero_μ
+#print axioms ArchS6.abs_μ_lt_one
+#print axioms ArchS6.T_phiR
+#print axioms ArchS6.parseval_ip
+#print axioms ArchS6.exists_S9_family
