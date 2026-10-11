@@ -727,3 +727,22 @@ name = "ArchS6_Guard"
 # Archimedean programme: S6 + S9 composed, certified prolate spectrum with no remaining hypothesis.
 [[lean_lib]]
 name = "ArchPipeline_ProlateComplete"
+
+# ---- archimedean stage S10 (certified kernel chi on [0, log 2]) ----
+[[lean_lib]]
+name = "ArchS10_Exact"
+
+[[lean_lib]]
+name = "ArchS10_Data"
+
+[[lean_lib]]
+name = "ArchS10_Cert"
+
+[[lean_lib]]
+name = "ArchS10_Tail"
+
+[[lean_lib]]
+name = "ArchS10_Chi"
+
+[[lean_lib]]
+name = "ArchS10_Guard"
