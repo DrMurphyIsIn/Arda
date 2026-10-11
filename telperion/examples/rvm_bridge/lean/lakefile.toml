@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "FamilyWeilForm", "FamilyWeilDisc", "FamilyWeilQuad", "FamilyWeilTable", "KWin_Data", "KWin_Cert", "KWin_Constants", "KWin_Taylor", "KWin_Minorant", "KWin_Head", "KWin_Tail", "KWin_Split", "KWin_Window", "KWin_Bridge", "KWin2_Data", "KWin2_Minorant", "KWin2_Round", "KWin2_Head", "KWin2_Tail", "KWin2_Split", "KWin2_Consts", "KWin2_Par25", "KWin2_Cert25", "KWin2_Window25", "KWin2_Window", "KWin2_Bridge", "ArchS1_Kernel", "ArchS1_Identity", "ArchS2_QTrick", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "FamilyWeilForm", "FamilyWeilDisc", "FamilyWeilQuad", "FamilyWeilTable", "KWin_Data", "KWin_Cert", "KWin_Constants", "KWin_Taylor", "KWin_Minorant", "KWin_Head", "KWin_Tail", "KWin_Split", "KWin_Window", "KWin_Bridge", "KWin2_Data", "KWin2_Minorant", "KWin2_Round", "KWin2_Head", "KWin2_Tail", "KWin2_Split", "KWin2_Consts", "KWin2_Par25", "KWin2_Cert25", "KWin2_Window25", "KWin2_Window", "KWin2_Bridge", "ArchS1_Kernel", "ArchS1_Identity", "ArchS2_QTrick", "ArchS3_Limits", "ArchS4_Bridge", "ArchS5_Spectral", "ArchS5_HSRank", "ArchS8_Kernel", "ArchS9_Bridge", "ArchPipeline_Rung80", "ArchS6_Abstract", "ArchS6_Fourier", "ArchS6_Proj", "ArchS6_Kernel", "ArchS6_Eigen", "ArchS6_Even", "ArchS6_Strict", "ArchS6_Prolate", "ArchS6_Real", "ArchS6_Bridge", "ArchS6_Functions", "ArchPipeline_ProlateComplete", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -563,6 +563,18 @@ name = "ArchS2_Guard"
 name = "ArchS3_Delta"
 
 [[lean_lib]]
+name = "ArchS3_Mellin"
+
+[[lean_lib]]
+name = "ArchS3_Phi"
+
+[[lean_lib]]
+name = "ArchS3_Quadrant"
+
+[[lean_lib]]
+name = "ArchS3_Limits"
+
+[[lean_lib]]
 name = "ArchS3_Guard"
 
 # Stage S5 (archimedean conceptual plan, 2026-10-11): integral operators with L2 kernels,
@@ -607,6 +619,7 @@ name = "ArchS6_Kernel"
 [[lean_lib]]
 name = "ArchS6_Eigen"
 
+
 [[lean_lib]]
 name = "ArchS5_HS"
 
@@ -644,6 +657,57 @@ name = "ArchS8_Kernel"
 [[lean_lib]]
 name = "ArchS8_Guard"
 
+
+# ---- archimedean stage S9 (certified prolate engine) ----
+[[lean_lib]]
+name = "ArchS9_Pi"
+
+[[lean_lib]]
+name = "ArchS9_Analysis"
+
+[[lean_lib]]
+name = "ArchS9_Frame"
+
+[[lean_lib]]
+name = "ArchS9_Data"
+
+[[lean_lib]]
+name = "ArchS9_CertGram1"
+
+[[lean_lib]]
+name = "ArchS9_CertGram2"
+
+[[lean_lib]]
+name = "ArchS9_CertGram3"
+
+[[lean_lib]]
+name = "ArchS9_CertGram4"
+
+[[lean_lib]]
+name = "ArchS9_CertE"
+
+[[lean_lib]]
+name = "ArchS9_CertMisc"
+
+[[lean_lib]]
+name = "ArchS9_Prolate"
+
+[[lean_lib]]
+name = "ArchS9_Guard"
+
+[[lean_lib]]
+name = "ArchS9_CertRes"
+
+[[lean_lib]]
+name = "ArchS9_Bridge"
+
+# Archimedean programme: end-to-end conceptual pipeline rung (S3 + S4), L <= 1/80, pole-free class.
+[[lean_lib]]
+name = "ArchPipeline_Rung80"
+
+# Stage S6 (archimedean conceptual plan, 2026-10-11): Sonin/prolate structure (CC Prop 4.5, (81)),
+# L2 Fourier link, sinc kernel.  Not in defaultTargets; the coordinator wires them at merge.
+# Guard: lake env lean ArchS6_Guard.lean
 [[lean_lib]]
 name = "ArchS6_Even"
 
@@ -657,7 +721,37 @@ name = "ArchS6_Prolate"
 name = "ArchS6_Real"
 
 [[lean_lib]]
+name = "ArchS6_Bridge"
+
+[[lean_lib]]
+name = "ArchS6_Functions"
+
+[[lean_lib]]
 name = "ArchS6_Guard"
+
+
+# Archimedean programme: S6 + S9 composed, certified prolate spectrum with no remaining hypothesis.
+[[lean_lib]]
+name = "ArchPipeline_ProlateComplete"
+
+# ---- archimedean stage S10 (certified kernel chi on [0, log 2]) ----
+[[lean_lib]]
+name = "ArchS10_Exact"
+
+[[lean_lib]]
+name = "ArchS10_Data"
+
+[[lean_lib]]
+name = "ArchS10_Cert"
+
+[[lean_lib]]
+name = "ArchS10_Tail"
+
+[[lean_lib]]
+name = "ArchS10_Chi"
+
+[[lean_lib]]
+name = "ArchS10_Guard"
 
 # Stage S7 (archimedean conceptual blueprint): CC Thm 4.7, SoninTr = W∞ + E (HS form, bypass B1).
 # Not in defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS7_Guard.lean

@@ -42,21 +42,24 @@ namespace ArchS8
 
 /-- The data CC sections 4-5 use about the even prolate functions (see the module header and
 ARCH_S8_NOTES.md for what S6/S9 must supply). -/
-structure ProlateData where
+structure ProlateData (ι : Type*) where
   /-- λ(n), the eigenvalues of `P₁ F P₁` on even functions (CC (68)-(69)). -/
-  lam : ℕ → ℝ
+  lam : ι → ℝ
   lam_sq_lt_one : ∀ n, lam n ^ 2 < 1
   /-- ξ_n^an: the normalised even prolate on [0,1], continued analytically past 1. -/
-  phi : ℕ → ℝ → ℝ
+  phi : ι → ℝ → ℝ
   phi_contDiff : ∀ n, ContDiff ℝ 1 (phi n)
   /-- The additive range: statements hold for |log ρ| < T. -/
   T : ℝ
   T_pos : 0 < T
-  M : ℕ → ℝ
-  N : ℕ → ℝ
+  M : ι → ℝ
+  N : ι → ℝ
   bound_inner : ∀ n, ∀ x ∈ Icc (Real.exp (-T)) 1, |phi n x| ≤ M n ∧ |deriv (phi n) x| ≤ M n
   bound_outer : ∀ n, ∀ x ∈ Icc 1 (Real.exp T), |phi n x| ≤ N n ∧ |deriv (phi n) x| ≤ N n
   summable_wMN : Summable fun n => lam n ^ 2 / (1 - lam n ^ 2) * (M n * N n)
+
+/-- The original ℕ-indexed interface; every theorem below applies to it unchanged. -/
+abbrev ProlateDataNat : Type := ProlateData ℕ
 
 /-- Bounds `α` on `[0, T]` and `β` on `[-T, 0]`. -/
 def Bdd (T α β : ℝ) (X : ℝ → ℝ) : Prop :=
@@ -105,24 +108,24 @@ theorem bOf'_eq_aOf' (φ : ℝ → ℝ) (u : ℝ) : bOf' φ u = -aOf' φ (-u) :=
 
 namespace ProlateData
 
-variable (D : ProlateData)
+variable {ι : Type*} (D : ProlateData ι)
 
 /-- The weights λ(n)²/(1 - λ(n)²) of (97)-(99) and Lemma 5.4. -/
-def w (n : ℕ) : ℝ := D.lam n ^ 2 / (1 - D.lam n ^ 2)
+def w (n : ι) : ℝ := D.lam n ^ 2 / (1 - D.lam n ^ 2)
 
-theorem w_nonneg (n : ℕ) : 0 ≤ D.w n :=
+theorem w_nonneg (n : ι) : 0 ≤ D.w n :=
   div_nonneg (sq_nonneg _) (by linarith [D.lam_sq_lt_one n])
 
 /-- The n-th matrix coefficient `ρ^{1/2} ∫_{ρ⁻¹}^1 ξ_n^an(x) ξ_n^an(ρx) dx` at `ρ = e^t`. -/
-def kn (n : ℕ) (t : ℝ) : ℝ := kM (D.phi n) (D.phi n) t
+def kn (n : ι) (t : ℝ) : ℝ := kM (D.phi n) (D.phi n) t
 /-- Its first derivative in `t` (`ρ∂_ρ`). -/
-def kn1 (n : ℕ) (t : ℝ) : ℝ := kM1 (D.phi n) (D.phi n) t
+def kn1 (n : ι) (t : ℝ) : ℝ := kM1 (D.phi n) (D.phi n) t
 /-- Its second derivative in `t` (`(ρ∂_ρ)²`). -/
-def kn2 (n : ℕ) (t : ℝ) : ℝ := kM2 (D.phi n) (D.phi n) t
+def kn2 (n : ι) (t : ℝ) : ℝ := kM2 (D.phi n) (D.phi n) t
 
 /-- **CC (99)**: `C_n(ρ)` at `ρ = e^t`, with `ξ_n^an = phi n`:
 `ρ^{1/2}∫_{ρ⁻¹}^1 x ξ'(x) ρx ξ'(ρx) dx + ρ^{-3/2} ξ'(ρ⁻¹) ξ(1) - ρ^{3/2} ξ(1) ξ'(ρ)`. -/
-def Cn (n : ℕ) (t : ℝ) : ℝ :=
+def Cn (n : ι) (t : ℝ) : ℝ :=
   Real.exp (t / 2) * (∫ x in (Real.exp (-t))..1,
       (x * deriv (D.phi n) x) * (Real.exp t * x * deriv (D.phi n) (Real.exp t * x)))
     + Real.exp (-(3 / 2) * t) * deriv (D.phi n) (Real.exp (-t)) * D.phi n 1
@@ -142,33 +145,33 @@ def epsMul (ρ : ℝ) : ℝ := D.eps |Real.log ρ|
 
 /-! ### Termwise facts -/
 
-theorem cont_phi (n : ℕ) : Continuous (D.phi n) := (D.phi_contDiff n).continuous
-theorem cont_dphi (n : ℕ) : Continuous (deriv (D.phi n)) :=
+theorem cont_phi (n : ι) : Continuous (D.phi n) := (D.phi_contDiff n).continuous
+theorem cont_dphi (n : ι) : Continuous (deriv (D.phi n)) :=
   (D.phi_contDiff n).continuous_deriv le_rfl
-theorem diff_phi (n : ℕ) : Differentiable ℝ (D.phi n) :=
+theorem diff_phi (n : ι) : Differentiable ℝ (D.phi n) :=
   (D.phi_contDiff n).differentiable (by norm_num)
 
-theorem hasDerivAt_kn (n : ℕ) (t : ℝ) : HasDerivAt (D.kn n) (D.kn1 n t) t :=
+theorem hasDerivAt_kn (n : ι) (t : ℝ) : HasDerivAt (D.kn n) (D.kn1 n t) t :=
   (lemma52 (D.phi_contDiff n) (D.phi_contDiff n) t).1
 
-theorem hasDerivAt_kn1 (n : ℕ) (t : ℝ) : HasDerivAt (D.kn1 n) (D.kn2 n t) t :=
+theorem hasDerivAt_kn1 (n : ι) (t : ℝ) : HasDerivAt (D.kn1 n) (D.kn2 n t) t :=
   (lemma52 (D.phi_contDiff n) (D.phi_contDiff n) t).2.1
 
-theorem continuous_kn2 (n : ℕ) : Continuous (D.kn2 n) := by
+theorem continuous_kn2 (n : ι) : Continuous (D.kn2 n) := by
   have ha' := continuous_aOf' (D.cont_phi n) (D.cont_dphi n)
   have hb := continuous_bOf (D.cont_phi n)
   have hb' := continuous_bOf' (D.cont_phi n) (D.cont_dphi n)
   exact (continuous_const.mul hb').add ((ha'.mul continuous_const).add (continuous_volt ha' hb'))
 
-@[simp] theorem kn_zero (n : ℕ) : D.kn n 0 = 0 := by simp [kn, kM]
+@[simp] theorem kn_zero (n : ι) : D.kn n 0 = 0 := by simp [kn, kM]
 
-@[simp] theorem kn1_zero (n : ℕ) : D.kn1 n 0 = D.phi n 1 ^ 2 := by simp [kn1, kM1, sq]
+@[simp] theorem kn1_zero (n : ι) : D.kn1 n 0 = D.phi n 1 ^ 2 := by simp [kn1, kM1, sq]
 
-@[simp] theorem kn2_zero (n : ℕ) : D.kn2 n 0 = 0 := by
+@[simp] theorem kn2_zero (n : ι) : D.kn2 n 0 = 0 := by
   simp [kn2, kM2, aOf', bOf']; ring
 
 /-- **CC Prop 5.3, termwise**: `Q` applied to the n-th coefficient is CC's `C_n` (99). -/
-theorem Qkn_eq_Cn (n : ℕ) (t : ℝ) : -(D.kn2 n t) + D.kn n t / 4 = D.Cn n t := by
+theorem Qkn_eq_Cn (n : ι) (t : ℝ) : -(D.kn2 n t) + D.kn n t / 4 = D.Cn n t := by
   have h := (lemma52 (D.phi_contDiff n) (D.phi_contDiff n) t).2.2
   have e1 : Real.exp (-t / 2) * Real.exp (-t) = Real.exp (-(3 / 2) * t) := by
     rw [← Real.exp_add]; ring_nf
@@ -183,21 +186,21 @@ theorem Qkn_eq_Cn (n : ℕ) (t : ℝ) : -(D.kn2 n t) + D.kn n t / 4 = D.Cn n t :
 /-! ### Uniform bounds on (-T, T) -/
 
 /-- `α n = 2 M n` bounds the a-side on `[0, T]`. -/
-def alpha (n : ℕ) : ℝ := 2 * D.M n
+def alpha (n : ι) : ℝ := 2 * D.M n
 /-- `β n = e^{T/2}(1 + e^T) N n` bounds the a-side on `[-T, 0]`. -/
-def beta (n : ℕ) : ℝ := Real.exp (D.T / 2) * (1 + Real.exp D.T) * D.N n
+def beta (n : ι) : ℝ := Real.exp (D.T / 2) * (1 + Real.exp D.T) * D.N n
 /-- The uniform bound for `kn`, `kn1`, `kn2` on `(-T, T)`. -/
-def B (n : ℕ) : ℝ := (2 + D.T) * (D.alpha n * D.beta n)
+def B (n : ι) : ℝ := (2 + D.T) * (D.alpha n * D.beta n)
 
-theorem M_nonneg (n : ℕ) : 0 ≤ D.M n :=
+theorem M_nonneg (n : ι) : 0 ≤ D.M n :=
   (abs_nonneg _).trans (D.bound_inner n 1 ⟨Real.exp_le_one_iff.2 (by linarith [D.T_pos]),
     le_rfl⟩).1
 
-theorem N_nonneg (n : ℕ) : 0 ≤ D.N n :=
+theorem N_nonneg (n : ι) : 0 ≤ D.N n :=
   (abs_nonneg _).trans (D.bound_outer n 1 ⟨le_rfl,
     Real.one_le_exp_iff.2 D.T_pos.le⟩).1
 
-theorem bdd_aOf (n : ℕ) :
+theorem bdd_aOf (n : ι) :
     Bdd D.T (D.alpha n) (D.beta n) (aOf (D.phi n)) ∧
       Bdd D.T (D.alpha n) (D.beta n) (aOf' (D.phi n)) := by
   have hM := D.M_nonneg n
@@ -232,7 +235,7 @@ theorem bdd_aOf (n : ℕ) :
   exact ⟨⟨fun s hs => (hpos s hs).1, fun s hs => (hneg s hs).1⟩,
     ⟨fun s hs => (hpos s hs).2, fun s hs => (hneg s hs).2⟩⟩
 
-theorem alpha_beta_nonneg (n : ℕ) : 0 ≤ D.alpha n * D.beta n := by
+theorem alpha_beta_nonneg (n : ι) : 0 ≤ D.alpha n * D.beta n := by
   unfold alpha beta
   have := D.M_nonneg n
   have := D.N_nonneg n
@@ -244,7 +247,7 @@ theorem summable_wB : Summable fun n => D.w n * D.B n := by
   unfold w B alpha beta
   ring
 
-theorem abs_kn_le (n : ℕ) {t : ℝ} (ht : t ∈ Ioo (-D.T) D.T) :
+theorem abs_kn_le (n : ι) {t : ℝ} (ht : t ∈ Ioo (-D.T) D.T) :
     |D.kn n t| ≤ D.B n ∧ |D.kn1 n t| ≤ D.B n ∧ |D.kn2 n t| ≤ D.B n := by
   obtain ⟨hA, hA'⟩ := D.bdd_aOf n
   have hab := D.alpha_beta_nonneg n
@@ -285,7 +288,7 @@ theorem abs_kn_le (n : ℕ) {t : ℝ} (ht : t ∈ Ioo (-D.T) D.T) :
     have := abs_add_le (aOf' φ t * bOf φ 0) (volt (aOf' φ) (bOf' φ) t)
     nlinarith
 
-theorem norm_w_le (n : ℕ) {t : ℝ} (ht : t ∈ Ioo (-D.T) D.T) :
+theorem norm_w_le (n : ι) {t : ℝ} (ht : t ∈ Ioo (-D.T) D.T) :
     ‖D.w n * D.kn n t‖ ≤ D.w n * D.B n ∧ ‖D.w n * D.kn1 n t‖ ≤ D.w n * D.B n ∧
       ‖D.w n * D.kn2 n t‖ ≤ D.w n * D.B n := by
   obtain ⟨h0, h1, h2⟩ := D.abs_kn_le n ht
@@ -366,7 +369,7 @@ theorem eps1_zero_nonneg : 0 ≤ D.eps1 0 := by
 
 /-- `ε'(1⁺) > 0` as soon as one term is nonzero, i.e. `λ(n) ≠ 0` and `ξ_n(1) ≠ 0` for some `n`
 (CC: `t(0) = 11.9719`, so `n = 0` works once S9 certifies `λ(0)` and `ξ_0(1)`). -/
-theorem eps1_zero_pos {n : ℕ} (hn : 0 < D.w n * D.phi n 1 ^ 2) : 0 < D.eps1 0 := by
+theorem eps1_zero_pos {n : ι} (hn : 0 < D.w n * D.phi n 1 ^ 2) : 0 < D.eps1 0 := by
   rw [D.eps1_zero]
   exact D.summable_w_phi_one.tsum_pos (fun n => mul_nonneg (D.w_nonneg n) (sq_nonneg _)) n hn
 
@@ -397,7 +400,7 @@ theorem epsMul_hasDerivWithinAt : HasDerivWithinAt D.epsMul (D.eps1 0) (Ici 1) 1
 
 /-- The link to CC (84): with `ζ_n = λ(n)/√(1-λ(n)²) · ξ_n^an` on `[1,∞)` (CC, after (98)),
 the n-th term `λ(n)/√(1-λ(n)²) ⟨ξ_n | ϑ(ρ⁻¹) ζ_n⟩` of (84) is `w n · kn n`. -/
-theorem cc84_term (n : ℕ) (t : ℝ) :
+theorem cc84_term (n : ι) (t : ℝ) :
     D.lam n / Real.sqrt (1 - D.lam n ^ 2)
         * kM (D.phi n) (fun x => D.lam n / Real.sqrt (1 - D.lam n ^ 2) * D.phi n x) t
       = D.w n * D.kn n t := by
@@ -415,5 +418,82 @@ theorem cc84_term (n : ℕ) (t : ℝ) :
   ring
 
 end ProlateData
+
+/-! ### The outer bound `N n = 4π/|λ_n|` from the Fourier relation -/
+
+/-- The shape of S6's `phiR`: `λ⁻¹ ∫_0^1 2cos(2πwv) e(v) dv` (CC's `ξ_n^an = λ⁻¹ F ξ_n`). -/
+def cosPhi (lam : ℝ) (e : ℝ → ℝ) (w : ℝ) : ℝ :=
+  lam⁻¹ * ∫ v in Icc (0 : ℝ) 1, 2 * Real.cos (2 * Real.pi * w * v) * e v
+
+/-- **Outer bound.**  If `∫_0^1 |e| ≤ 1` (true for `‖e‖_{L²[0,1]} = 1` by Cauchy-Schwarz), then
+`|φ|, |φ'| ≤ 4π/|λ|` on all of ℝ, so `N n := 4π/|λ_n|` satisfies `bound_outer` for every `T`. -/
+theorem cosPhi_bound {e : ℝ → ℝ} (he : IntegrableOn e (Icc 0 1))
+    (h1 : ∫ v in Icc (0 : ℝ) 1, |e v| ≤ 1) {lam : ℝ} (hlam : lam ≠ 0) (w : ℝ) :
+    |cosPhi lam e w| ≤ 4 * Real.pi / |lam| ∧ |deriv (cosPhi lam e) w| ≤ 4 * Real.pi / |lam| := by
+  set μ : Measure ℝ := volume.restrict (Icc (0 : ℝ) 1)
+  have hπ := Real.pi_pos
+  have hae : ∀ᵐ v ∂μ, v ∈ Icc (0 : ℝ) 1 := ae_restrict_mem measurableSet_Icc
+  have hei : Integrable e μ := he
+  have hF : ∀ w : ℝ, AEStronglyMeasurable (fun v => 2 * Real.cos (2 * Real.pi * w * v) * e v) μ :=
+    fun w => (by fun_prop : Continuous fun v : ℝ => 2 * Real.cos (2 * Real.pi * w * v)).aestronglyMeasurable.mul
+      hei.aestronglyMeasurable
+  have hF' : ∀ w : ℝ, AEStronglyMeasurable
+      (fun v => -(2 * Real.sin (2 * Real.pi * w * v) * (2 * Real.pi * v)) * e v) μ :=
+    fun w => (by fun_prop : Continuous fun v : ℝ =>
+      -(2 * Real.sin (2 * Real.pi * w * v) * (2 * Real.pi * v))).aestronglyMeasurable.mul
+      hei.aestronglyMeasurable
+  have bF : ∀ w : ℝ, ∀ᵐ v ∂μ, ‖2 * Real.cos (2 * Real.pi * w * v) * e v‖ ≤ 2 * |e v| :=
+    fun w => Eventually.of_forall fun v => by
+      rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_two]
+      exact mul_le_mul_of_nonneg_right (by nlinarith [Real.abs_cos_le_one (2 * Real.pi * w * v)])
+        (abs_nonneg _)
+  have bF' : ∀ᵐ v ∂μ, ∀ w ∈ (univ : Set ℝ),
+      ‖-(2 * Real.sin (2 * Real.pi * w * v) * (2 * Real.pi * v)) * e v‖ ≤ 4 * Real.pi * |e v| := by
+    filter_upwards [hae] with v hv w _
+    rw [Real.norm_eq_abs, abs_mul, abs_neg, abs_mul, abs_mul, abs_mul, abs_two,
+      abs_of_nonneg (by positivity : (0 : ℝ) ≤ 2 * Real.pi), abs_of_nonneg hv.1]
+    have hs := Real.abs_sin_le_one (2 * Real.pi * w * v)
+    have : 2 * |Real.sin (2 * Real.pi * w * v)| * (2 * Real.pi * v) ≤ 4 * Real.pi := by
+      have h2 := mul_le_mul (mul_le_mul_of_nonneg_left hs (by norm_num : (0 : ℝ) ≤ 2))
+        (show 2 * Real.pi * v ≤ 2 * Real.pi * 1 by nlinarith [hv.2]) (mul_nonneg (by positivity) hv.1)
+        (by norm_num)
+      linarith
+    exact mul_le_mul_of_nonneg_right this (abs_nonneg _)
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := μ) (x₀ := w)
+    (F := fun w v => 2 * Real.cos (2 * Real.pi * w * v) * e v)
+    (F' := fun w v => -(2 * Real.sin (2 * Real.pi * w * v) * (2 * Real.pi * v)) * e v)
+    (bound := fun v => 4 * Real.pi * |e v|) Filter.univ_mem (Eventually.of_forall hF)
+    (Integrable.mono' (hei.abs.const_mul 2) (hF w) (bF w)) (hF' w) bF'
+    (hei.abs.const_mul _)
+    (Eventually.of_forall fun v w _ => by
+      have h1 : HasDerivAt (fun w : ℝ => 2 * Real.pi * w * v) (2 * Real.pi * 1 * v) w :=
+        ((hasDerivAt_id w).const_mul (2 * Real.pi)).mul_const v
+      exact ((h1.cos.const_mul 2).mul_const (e v)).congr_deriv (by ring))
+  have hd : deriv (cosPhi lam e) w
+      = lam⁻¹ * ∫ v in Icc (0 : ℝ) 1, -(2 * Real.sin (2 * Real.pi * w * v) * (2 * Real.pi * v)) * e v :=
+    (key.2.const_mul lam⁻¹).deriv
+  have hl : 0 < |lam| := abs_pos.2 hlam
+  have hI0 : |∫ v in Icc (0 : ℝ) 1, 2 * Real.cos (2 * Real.pi * w * v) * e v| ≤ 2 := by
+    have := norm_integral_le_of_norm_le (hei.abs.const_mul 2) (bF w)
+    rw [Real.norm_eq_abs, integral_const_mul] at this
+    linarith [mul_le_mul_of_nonneg_left h1 (by norm_num : (0 : ℝ) ≤ 2)]
+  have hI1 : |∫ v in Icc (0 : ℝ) 1,
+      -(2 * Real.sin (2 * Real.pi * w * v) * (2 * Real.pi * v)) * e v| ≤ 4 * Real.pi := by
+    have := norm_integral_le_of_norm_le (hei.abs.const_mul (4 * Real.pi))
+      (bF'.mono fun v hv => hv w (mem_univ w))
+    rw [Real.norm_eq_abs, integral_const_mul] at this
+    linarith [mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ 4 * Real.pi)]
+  constructor
+  · rw [cosPhi, abs_mul, abs_inv, inv_mul_eq_div]
+    exact div_le_div_of_nonneg_right (hI0.trans (by linarith [Real.pi_gt_three])) hl.le
+  · rw [hd, abs_mul, abs_inv, inv_mul_eq_div]
+    exact div_le_div_of_nonneg_right hI1 hl.le
+
+/-- `bound_outer` in the form `ProlateData` asks for, with `N = 4π/|λ|` and any range. -/
+theorem outer_of_cosPhi {e : ℝ → ℝ} (he : IntegrableOn e (Icc 0 1))
+    (h1 : ∫ v in Icc (0 : ℝ) 1, |e v| ≤ 1) {lam : ℝ} (hlam : lam ≠ 0) (S : Set ℝ) :
+    ∀ x ∈ S, |cosPhi lam e x| ≤ 4 * Real.pi / |lam| ∧
+      |deriv (cosPhi lam e) x| ≤ 4 * Real.pi / |lam| :=
+  fun x _ => cosPhi_bound he h1 hlam x
 
 end ArchS8
