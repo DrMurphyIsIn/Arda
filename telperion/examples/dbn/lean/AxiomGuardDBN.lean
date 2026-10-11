@@ -88,6 +88,7 @@ import DBNGammaVertical
 import DBNSelbergSharp
 import DBNSelbergSharpXi
 import DBNSelbergSharpStrip
+import DBNSelbergSharpZeta
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -1026,3 +1027,8 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNSelberg.SelbergSharp.exists_bound_xi_vertical
 #print axioms selberg_newman_sharp_ext
 #print axioms selberg_newman_sharp
+#print axioms DBNSelberg.conj_completedRiemannZeta
+#print axioms DBNSelberg.differentiable_zetaG
+#print axioms DBNSelberg.zetaSharp_xi_eq_H_all
+#print axioms DBNSelberg.zetaSharp_sharpFlow_eq
+#print axioms dbn_newman_of_sharp
