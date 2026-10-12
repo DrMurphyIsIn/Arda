@@ -67,7 +67,7 @@ theorem ldlOK_sound {A : List (List ℚ)} {L : List (ℚ × List ℚ)} {n : ℕ}
 
 theorem psiOK_sound {E : List ℚ} {Psi : List (List ℚ)} (h : psiOK E Psi = true) :
     Psi.length = NG ∧ ∀ m < NG, hatT E (unitL m) = Psi.getD m [] := by
-  simpa only [psiOK, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] using h
+  simpa only [psiOK, psiRow, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] using h
 
 theorem lenOK_sound {Psi : List (List ℚ)} (h : lenOK Psi = true) :
     ∀ m < NG, (Psi.getD m []).length ≤ DL := by
@@ -75,22 +75,22 @@ theorem lenOK_sound {Psi : List (List ℚ)} (h : lenOK Psi = true) :
 
 theorem uOK_sound {Psi : List (List ℚ)} {c0 : ℚ} {U : List (List ℚ)} (h : uOK Psi c0 U = true) :
     U.length = NG ∧ ∀ j < NG, U.getD j [] = lc (ucoef c0 j) (Psi ++ [[1]]) DL := by
-  simpa only [uOK, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] using h
+  simpa only [uOK, uRow, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] using h
 
 theorem rhoOK_sound {U B rho : List (List ℚ)} (h : rhoOK U B rho = true) :
     ∀ j < NG, rho.getD j [] = lc (1 :: (List.range NG).map fun l => -mget B j l) (U.getD j [] :: PhiL) DL := by
-  simp only [rhoOK, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at h
+  simp only [rhoOK, rhoRow, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at h
   exact h.2
 
 theorem dOK_sound {rho : List (List ℚ)} {al dh : List ℚ} (h : dOK rho al dh = true) :
     ∀ j < NG, 0 < al.getD j 0 ∧
       mom (rho.getD j []) (rho.getD j []) * (∑ k ∈ range NG, al.getD k 0) / al.getD j 0 ≤ dh.getD j 0 := by
-  simpa only [dOK, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] using h
+  simpa only [dOK, dRow, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] using h
 
 theorem qmatOK_sound {U Q : List (List ℚ)} {dh : List ℚ} {lam t : ℚ} (h : qmatOK U Q dh lam t = true) :
     ∀ j < NG, ∀ l < NG, mget Q j l = lam * mom (Phi j) (Phi l) - mom (U.getD j []) (Phi l)
       - (if j = l then t * dh.getD j 0 else 0) := by
-  simpa only [qmatOK, List.all_eq_true, List.mem_range, decide_eq_true_eq] using h
+  simpa only [qmatOK, qRow, List.all_eq_true, List.mem_range, decide_eq_true_eq] using h
 
 theorem tailOK_sound {E : List ℚ} {c0 : ℚ} {U : List (List ℚ)} {lam t q : ℚ}
     (h : tailOK E c0 U lam t q = true) :

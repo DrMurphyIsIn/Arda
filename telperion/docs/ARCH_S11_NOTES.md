@@ -117,3 +117,49 @@ Scalars are any `RCLike 𝕜`, so the results hold over ℝ and ℂ.
   Do not open `intervalIntegral` in files that use Bochner integrals.
 * **`RCLike.continuous_ofReal.comp hF` gets stuck** in a statement.  Use a helper with 𝕜 fixed by its type (`continuous_ofReal_comp`).
 * **`Set.mem_prod` with `simp`.**  Plain `simp` turns `Icc ×ˢ Icc` into `Icc (0,0) (b,b)`.  Use `simp only` with `Set.mem_prod`.
+
+## 6. S11-lite (2026-10-11): bounded memory for CI
+
+The GitHub runner has 16 GB and builds 4 modules in parallel.  The original certificate modules peaked at
+11 to 15.5 GB each.  Each `ok*` checker was one `decide +kernel` performing 16 exact moments of long
+polynomials, and the kernel caches grow with the number of operations in one declaration.
+
+**What changed.**  No theorem statement, and no theorem or module name used downstream, changed.
+`final_facts`, `KI_*`, `chiK*` and `ok*_ok` are all the same, and S12 builds unchanged.
+* `ArchS11_Data` now defines per-row checkers (`psiRow`, `uRow`, `rhoRow`, `dRow`, `qRow`).
+  `psiOK`, `uOK`, ... are `List.all` of these rows.  It also stores the exact tail moments `uu*`.
+* Each row is its own `decide +kernel` theorem.  The rows live in 37 generated part modules:
+  `ArchS11_CPsi{A,H,L}{0..3}`, and `ArchS11_C{T1,Top,Gam,Lam2,Ovl}_{U,R,D,UU,Q}`.
+* `ArchS11_Split` holds the assembly lemmas: `rows8`, `uOK_of`, ..., `and6`, and `q2val_eq`.
+  `q2val_eq` rewrites the tail through the diagonal moments, using the kernel-checked orthogonality of the Legendre basis.
+* `ArchS11_CertPsi`, `ArchS11_CertT1`, `_T2a` and `_T2b` are now cheap assemblies that keep the old theorem names.
+* The rounded data uses 16 significant digits instead of 24 to 30 (E, B, test vectors).
+  All certified values are unchanged at the printed precision, and all margins hold.
+  The data file went from 462 KB to 369 KB.
+* `chico.py` keys its cache on the SHA-256 of `ArchS10_Data.lean`.  If S10 is regenerated (for example by S9-lite),
+  rerun `gen_s11.py`.  The kernel check `roundOK` fails loudly on stale data.
+
+**Peak RSS, each module built alone** (`/usr/bin/time -l lake build`, macOS, Mathlib-load baseline about 5.9 GB):
+
+| module(s) | peak RSS | time |
+|---|---|---|
+| ArchS11_CPsi{A,H,L}0 .. 3 (12 modules) | 6.55 to 7.02 GB | 8 to 32 s |
+| ArchS11_C*_U (5) | 6.65 to 6.75 GB | about 8 s |
+| ArchS11_C*_R (5) | 6.43 to 6.49 GB | about 5 s |
+| ArchS11_C*_D (5) | 6.70 to 6.76 GB | 19 to 43 s |
+| ArchS11_C*_UU (5) | 6.76 to 6.82 GB | 20 to 46 s |
+| ArchS11_C*_Q (5) | 6.89 to 6.98 GB | 13 to 37 s |
+| ArchS11_CertPsi | 6.12 GB | 4 s |
+| ArchS11_CertT1, _CertT2a, _CertT2b | 5.85 GB | about 4 s |
+| ArchS11_Cert | 6.58 GB | 10 s |
+| ArchS11_Final | 5.86 GB | 4 s |
+| ArchS11_Bound + ArchS11_KI | 6.16 GB | 15 s |
+
+Before the change: CertT1 15.2 GB, CertT2a 15.5 GB, CertT2b 15.5 GB, CertPsi 11.1 GB (lead's measurement).
+
+**Guards.**  `ArchS11_Guard` now lists 390 theorems, including every row theorem.  Each depends only on axioms
+among [propext, Classical.choice, Quot.sound], and `and6` depends on none.
+`ArchS12_Guard` has 39 theorems, all printing [propext, Classical.choice, Quot.sound].
+
+**Footgun.**  Memory is roughly freed between declarations.  Eight heavy moments as separate theorems in one file
+peak at 6.6 GB, against 8 GB or more inside a single `decide`.  Split kernel checks by declaration, not only by module.

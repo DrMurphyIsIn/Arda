@@ -882,3 +882,118 @@ name = "ArchS12_Main"
 
 [[lean_lib]]
 name = "ArchS12_Guard"
+
+# ---- S11-lite: split certificate modules (bounded memory) ----
+[[lean_lib]]
+name = "ArchS11_Split"
+
+[[lean_lib]]
+name = "ArchS11_CPsiA0"
+
+[[lean_lib]]
+name = "ArchS11_CPsiA1"
+
+[[lean_lib]]
+name = "ArchS11_CPsiA2"
+
+[[lean_lib]]
+name = "ArchS11_CPsiA3"
+
+[[lean_lib]]
+name = "ArchS11_CPsiH0"
+
+[[lean_lib]]
+name = "ArchS11_CPsiH1"
+
+[[lean_lib]]
+name = "ArchS11_CPsiH2"
+
+[[lean_lib]]
+name = "ArchS11_CPsiH3"
+
+[[lean_lib]]
+name = "ArchS11_CPsiL0"
+
+[[lean_lib]]
+name = "ArchS11_CPsiL1"
+
+[[lean_lib]]
+name = "ArchS11_CPsiL2"
+
+[[lean_lib]]
+name = "ArchS11_CPsiL3"
+
+[[lean_lib]]
+name = "ArchS11_CT1_U"
+
+[[lean_lib]]
+name = "ArchS11_CT1_R"
+
+[[lean_lib]]
+name = "ArchS11_CT1_D"
+
+[[lean_lib]]
+name = "ArchS11_CT1_UU"
+
+[[lean_lib]]
+name = "ArchS11_CT1_Q"
+
+[[lean_lib]]
+name = "ArchS11_CTop_U"
+
+[[lean_lib]]
+name = "ArchS11_CTop_R"
+
+[[lean_lib]]
+name = "ArchS11_CTop_D"
+
+[[lean_lib]]
+name = "ArchS11_CTop_UU"
+
+[[lean_lib]]
+name = "ArchS11_CTop_Q"
+
+[[lean_lib]]
+name = "ArchS11_CGam_U"
+
+[[lean_lib]]
+name = "ArchS11_CGam_R"
+
+[[lean_lib]]
+name = "ArchS11_CGam_D"
+
+[[lean_lib]]
+name = "ArchS11_CGam_UU"
+
+[[lean_lib]]
+name = "ArchS11_CGam_Q"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_U"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_R"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_D"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_UU"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_Q"
+
+[[lean_lib]]
+name = "ArchS11_COvl_U"
+
+[[lean_lib]]
+name = "ArchS11_COvl_R"
+
+[[lean_lib]]
+name = "ArchS11_COvl_D"
+
+[[lean_lib]]
+name = "ArchS11_COvl_UU"
+
+[[lean_lib]]
+name = "ArchS11_COvl_Q"
