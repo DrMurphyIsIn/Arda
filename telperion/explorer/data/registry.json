@@ -92,14 +92,14 @@
     "deprecated": 0,
     "draft": 2,
     "open": 0,
-    "proved": 64,
+    "proved": 67,
     "refuted": 0
    },
    "description": "Migration of the RH campaign prose tracking (telperion/docs/RH_* handoffs, STATUS.md, PROOF_STATUS pointers) into the missions registry. The registry is the tracking truth; RH is NOT claimed proved -- the goal node is draft and conjecture1_proved = False throughout. Environment = the v4.34 li_positivity island (unified by #483); one granted node's artifact lives on the v4.32 zero_free_bridge island (cross-island grant per design section 2).",
    "dir": "rh",
    "goal_node": "RH_conjecture",
    "mathlib_rev": "de5ce8a9",
-   "n_nodes": 66,
+   "n_nodes": 69,
    "name": "RH.conjecture",
    "sources": [
     "Riemann, B. (1859), Ueber die Anzahl der Primzahlen unter einer gegebenen Groesse",
@@ -174,6 +174,7 @@
   "lehmer_pair",
   "lfunction_product",
   "li_positivity",
+  "liu_dbn_bridge",
   "log_combination",
   "logderiv_region",
   "magnitude_split",
@@ -5271,6 +5272,64 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "liu-dbn-bridge.yml:build-and-judge"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-11",
+   "depends_on": [
+    "rh:RH_dbn_real_zeros_of_liu_unconditional"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "rh:RH_dbn_real_zeros_ge_2811857",
+   "is_goal": false,
+   "kind": "milestone",
+   "name": "RH.dbn_real_zeros_ge_2811857",
+   "proof": {
+    "artifact": "telperion/examples/liu_dbn_bridge/lean/ArdaDBNLiu.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/liu_dbn_bridge/lean/ArdaDBNLiu.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-11",
+     "run_id": "38179118143",
+     "run_url": "https://github.com/DrMurphyIsIn/Arda/actions/runs/38179118143",
+     "theorem": "dbn_real_zeros_ge_2811857"
+    },
+    "grant": {
+     "artifact_sha256": "1dcf6f08e6b1111f",
+     "date": "2026-10-11",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "operator",
+    "date": "2026-10-11",
+    "independence": "judge-verified",
+    "text": "Read back by the operator from Statements/RH_dbn_real_zeros_ge_2811857.lean (rendering drafted by the authoring session, checked by me). For every real t at least 2811857/10000000 = 0.2811857 and every complex z with DBN.H t z = 0, z has imaginary part 0: all zeros of H_t are real from t = 0.2811857 on, the rational headline Lambda <= 0.2811857 for the de Bruijn-Newman constant. Not RH."
+   },
+   "refutation_statement": "",
+   "slug": "RH_dbn_real_zeros_ge_2811857",
+   "statement": "theorem dbn_real_zeros_ge_2811857 :\n    ∀ t : ℝ, (2811857 / 10000000 : ℝ) ≤ t → ∀ z : ℂ, DBN.H t z = 0 → z.im = 0",
+   "status": "proved",
+   "title": "Rational headline: every zero of H_t is real for t >= 2811857/10^7 = 0.2811857 (> 2(B_new - 1/2)^2 = 0.2811856...), i.e. Lambda <= 0.2811857, kernel-checked, from RH_dbn_real_zeros_of_liu_unconditional by monotonicity in t. Replaces 9/32 = 0.28125 as the kernel-checked upper bound on the de Bruijn-Newman constant by 6.4e-5. Not RH (Lambda = 0). conjecture1_proved = False",
+   "updated": "2026-10-11"
+  },
+  {
+   "arb": false,
+   "campaign": "rh",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
      "oai-qrh-bridge.yml:build-and-judge"
     ],
     "label": "module-covered"
@@ -5323,6 +5382,65 @@
    "status": "proved",
    "title": "Every zero of H_t is real for every t >= 9/32 (classically Lambda <= 9/32), UNCONDITIONAL in one environment: the dbn closure ported to OpenAI's pin composed with OpenAI's 7/8 half-plane (oai_qrh_bridge island, Lean v4.34.1 / Mathlib d13f23b). Weaker than 0.22; not RH. conjecture1_proved = False",
    "updated": "2026-10-09"
+  },
+  {
+   "arb": false,
+   "campaign": "rh",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "liu-dbn-bridge.yml:build-and-judge"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-11",
+   "depends_on": [
+    "rh:RH_zeta_zero_free_liu",
+    "rh:RH_dbn_real_zeros_of_zeta_halfplane"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "rh:RH_dbn_real_zeros_of_liu_unconditional",
+   "is_goal": false,
+   "kind": "milestone",
+   "name": "RH.dbn_real_zeros_of_liu_unconditional",
+   "proof": {
+    "artifact": "telperion/examples/liu_dbn_bridge/lean/ArdaDBNLiu.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/liu_dbn_bridge/lean/ArdaDBNLiu.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-11",
+     "run_id": "38179118143",
+     "run_url": "https://github.com/DrMurphyIsIn/Arda/actions/runs/38179118143",
+     "theorem": "dbn_real_zeros_of_liu_unconditional"
+    },
+    "grant": {
+     "artifact_sha256": "1dcf6f08e6b1111f",
+     "date": "2026-10-11",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "operator",
+    "date": "2026-10-11",
+    "independence": "judge-verified",
+    "text": "Read back by the operator from Statements/RH_dbn_real_zeros_of_liu_unconditional.lean (rendering drafted by the authoring session, checked by me). For every real t at least 2((1507 - 2 sqrt 921)/1653 - 1/2)^2 = 0.2811856..., and every complex z with DBN.H t z = 0, the imaginary part of z is 0: every zero of the heat-flowed xi function H_t is real for t at or above that threshold, i.e. the de Bruijn-Newman constant satisfies Lambda <= 0.2811856. Unconditional; not RH, which is Lambda = 0."
+   },
+   "refutation_statement": "",
+   "slug": "RH_dbn_real_zeros_of_liu_unconditional",
+   "statement": "theorem dbn_real_zeros_of_liu_unconditional :\n    ∀ t : ℝ, 2 * ((1507 - 2 * Real.sqrt 921) / 1653 - 1 / 2) ^ 2 ≤ t →\n      ∀ z : ℂ, DBN.H t z = 0 → z.im = 0",
+   "status": "proved",
+   "title": "Lambda <= 2(B_new - 1/2)^2 = (1867057 - 10888 sqrt 921)/5464818 = 0.2811856... for the de Bruijn-Newman constant, UNCONDITIONAL in one Lean environment at OpenAI's pin: Liu's half-plane (RH_zeta_zero_free_liu) composed with de Bruijn's heat-flow theorem (RH_dbn_real_zeros_of_zeta_halfplane, the dbn port). Every zero of H_t is real for t >= 2(B_new - 1/2)^2, below 9/32 = 0.28125 (RH_dbn_real_zeros_nine_thirtyseconds). This is the LIMIT of the cubic-theta method with proved inputs (ledger Addendum 2; SEXTIC_BOTTLENECK_2026-10-11.md section 7). Weaker than the numerical 0.22 (Polymath15) and 0.2 (Platt-Trudgian). RH is Lambda = 0 and is NOT proved. conjecture1_proved = False",
+   "updated": "2026-10-11"
   },
   {
    "arb": false,
@@ -7773,6 +7891,64 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "liu-dbn-bridge.yml:build-and-judge"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-11",
+   "depends_on": [
+    "rh:RH_zeta_zero_free_seven_eighths"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "rh:RH_zeta_zero_free_liu",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "RH.zeta_zero_free_liu",
+   "proof": {
+    "artifact": "telperion/examples/liu_dbn_bridge/lean/ArdaLiuBridge.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/liu_dbn_bridge/lean/ArdaLiuBridge.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-11",
+     "run_id": "38179118143",
+     "run_url": "https://github.com/DrMurphyIsIn/Arda/actions/runs/38179118143",
+     "theorem": "liu_zeta_zero_free"
+    },
+    "grant": {
+     "artifact_sha256": "fa2fed1454b88c21",
+     "date": "2026-10-11",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "operator",
+    "date": "2026-10-11",
+    "independence": "judge-verified",
+    "text": "Read back by the operator from Statements/RH_zeta_zero_free_liu.lean (rendering drafted by the authoring session, checked by me). For every complex s whose real part exceeds (1507 - 2 sqrt 921)/1653 = 0.874957..., the Riemann zeta function (Mathlib's riemannZeta) does not vanish at s. No hypothesis excludes s = 1. This is Liu's zero-free half-plane (arXiv:2610.12234), re-exported from his Lean at a pinned commit; licence basis is my owner decision of 2026-10-11 with no grant from the author on file."
+   },
+   "refutation_statement": "",
+   "slug": "RH_zeta_zero_free_liu",
+   "statement": "theorem liu_zeta_zero_free :\n    ∀ s : ℂ, (1507 - 2 * Real.sqrt 921) / 1653 < s.re → riemannZeta s ≠ 0",
+   "status": "proved",
+   "title": "Liu's zero-free half-plane for zeta (arXiv:2610.12234, 8 Oct 2026): riemannZeta s != 0 for Re s > B_new = (1507 - 2 sqrt 921)/1653 = 0.874957069..., the proved-input optimum of OpenAI's cubic-theta architecture (thread-C ledger Addendum 2: the same sqrt 921 arises from the binding witness-count bin). Liu's Lean (repo liubaiying101/Slightly-improved-zero-free-half-planes-for-the-quasi-Riemann-hypothesis @ 7d10420, Lean v4.34.1, Mathlib d13f23b, vendored openai/math closure @ adc7f124) is MATERIALIZED at pin, never vendored; the artifact re-exports CombinedPaper.algebraic_zeta_nonzero with the unused s != 1 hypothesis removed (Mathlib riemannZeta_one_ne_zero). Licence: Liu's repo carries no LICENSE; treated as Apache-2.0 by owner decision 2026-10-11, no grant from the author on file (LICENSE requested, issue #1 on his repo). Replayed independently by two sessions (Lean + nanoda). Not RH: 0.874957 < 1 is a strip, not the line. conjecture1_proved = False",
+   "updated": "2026-10-11"
+  },
+  {
+   "arb": false,
+   "campaign": "rh",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
      "oai-qrh-bridge.yml:build-and-judge"
     ],
     "label": "module-covered"
@@ -7876,7 +8052,7 @@
   "deprecated": 6,
   "draft": 14,
   "open": 4,
-  "proved": 125,
+  "proved": 128,
   "refuted": 1
  }
 }

@@ -29,7 +29,11 @@ lean_lib ArdaLiCriterionShim where
   leanOptions := #[⟨`autoImplicit, false⟩, ⟨`maxSynthPendingDepth, .ofNat 3⟩]
 -- Our modules.
 lean_lib ArdaLiuBridge where
-  roots := #[`ArdaLiuBridge, `ArdaDBNLiu, `AxiomGuardLiuBridge]
+  roots := #[`ArdaLiuBridge, `ArdaDBNLiu]
+-- The axiom guard is its own lean_lib (as AxiomGuardQRHBridge in ../oai_qrh_bridge): the judge's
+-- telperion/scripts/judge_materialize.sh requires a `lean_lib AxiomGuard...` line in the workspace.
+lean_lib AxiomGuardLiuBridge where
+  roots := #[`AxiomGuardLiuBridge]
 lean_lib ArdaDBNLiuChallenge where
   roots := #[`ArdaDBNLiuChallenge]
 -- Negative control: the challenge with Φ altered (e^{9u} -> e^{8u}); Comparator must reject it.
