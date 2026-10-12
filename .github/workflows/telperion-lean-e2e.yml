@@ -3037,7 +3037,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          lake build Hodge1_Guard
           lake env lean Hodge1_Guard.lean 2>&1 | tee hodge1_axioms.out
           n=$(grep -cE "depends on axioms|does not depend on any axioms" hodge1_axioms.out || true)
           if [ "$n" -lt "25" ]; then
