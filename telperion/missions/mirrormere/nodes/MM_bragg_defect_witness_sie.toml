@@ -3,7 +3,7 @@ depends_on = ["MM_bragg_defect_witness"]
 kind = "lemma"
 name = "MM.bragg_defect_witness_sie"
 statement_module = "Statements.MM_bragg_defect_witness_sie"
-status = "open"
+status = "proved"
 title = "The certified defect witness pair with NO hypothesis (zeta_zero_localization island, BraggDefect.lean, 2026-10-11): the all-on-line configuration has defect functional exactly 0, and the synthetic off-line pair drives it into an explicit negative bracket (~ -1.00167e-4). Same statement as MM_bragg_defect_witness without its Arb hypothesis hexp: the e^(1/10) enclosure is discharged inside the kernel by the scaled_interval_eval emitter (BraggDefectSIE.sie_defect_offline, PR #689)"
 updated = "2026-10-12"
 
@@ -12,10 +12,18 @@ date = "2026-10-12"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_013hB6k9ssUSET4joVJgNy51"
 
+[grant]
+artifact_sha256 = "ed982ab4f086e44e291ba6968629338974457ec125920035b73921841f25cf70"
+date = "2026-10-12"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "09216809e5ea69939cef50eb4da73f9e55b1630817f2d5e37f4a4cb1c19d839a"
+
 [proof]
 artifact = "../../examples/zeta_zero_localization/lean/BraggDefect.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]
