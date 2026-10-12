@@ -1034,4 +1034,4 @@ name = "ArchS11_Split"
 # wires it at merge.  Guard: lake env lean Hodge1_Guard.lean
 [[lean_lib]]
 name = "Hodge1"
-roots = ["Hodge1_Strip", "Hodge1_Reduction"]
+roots = ["Hodge1_Strip", "Hodge1_Reduction", "Hodge1_KPen", "Hodge1_HeadP", "Hodge1_TailP", "Hodge1_ArchSplit", "Hodge1_ArchSectors", "Hodge1_Par45", "Hodge1_Cert45E", "Hodge1_Cert45O", "Hodge1_Window45"]
