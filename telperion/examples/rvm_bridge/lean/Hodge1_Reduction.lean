@@ -28,6 +28,15 @@
     * normalisation: primeSide weights n by Λ(n)/sqrt n with Λ(2) = log 2, so w2 = log 2/sqrt 2,
       as in the plan.
 
+  THE CLASS THE STRIP ROUTE NEEDS (added 2026-10-12 after the adversary's check): the theorems
+  above are true on the one-condition class, but the prime-free inequality hArch FAILS there
+  (-0.547 at L = 0.45: cross-sector g with ĝ_even(i/2) = -ĝ_odd(i/2) ≠ 0 are allowed).  Step 2
+  is to be proved on the two-condition class
+      PoleFree2 g :  paperFT g (I/2) = 0 ∧ paperFT g (-I/2) = 0,
+  i.e. ∫ g e^{-u/2} = 0 and ∫ g e^{u/2} = 0 (paperFT g z = ∫ g(u) e^{i z u}; see
+  paperFT_I_half, paperFT_neg_I_half), and weil_positivity_pole_free2_of_arch is the form a
+  future discharge of hArch on that class plugs into.
+
   Nothing here involves the zeros; no RH progress is claimed.  conjecture1_proved = False.
 -/
 import Hodge1_Strip
@@ -79,5 +88,44 @@ theorem weil_positivity_pole_free_of_arch {g : ℝ → ℂ} (hg : IsWeilTest g) 
     (hArch : (Real.log 2 / Real.sqrt 2) * ∫ u in stripSet L, ‖g u‖ ^ 2 ≤ ArchS3.archW g) :
     0 ≤ (weilForm (autocorr g)).re := by
   linarith [weilForm_ge_archW_sub_strip hg hsupp hL h0]
+
+/-! ## The two-condition pole-free class (the class step 2 is proved on). -/
+
+/-- H = {∫ g e^{u/2} = ∫ g e^{-u/2} = 0}: both pole functionals vanish. -/
+def PoleFree2 (g : ℝ → ℂ) : Prop := paperFT g (I / 2) = 0 ∧ paperFT g (-I / 2) = 0
+
+/-- paperFT g (i/2) = ∫ g(u) e^{-u/2} du. -/
+lemma paperFT_I_half (g : ℝ → ℂ) :
+    paperFT g (I / 2) = ∫ u : ℝ, g u * Complex.exp (-(u : ℂ) / 2) := by
+  unfold paperFT
+  refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+  simp only
+  congr 2
+  linear_combination ((u : ℂ) / 2) * I_sq
+
+/-- paperFT g (-i/2) = ∫ g(u) e^{u/2} du. -/
+lemma paperFT_neg_I_half (g : ℝ → ℂ) :
+    paperFT g (-I / 2) = ∫ u : ℝ, g u * Complex.exp ((u : ℂ) / 2) := by
+  unfold paperFT
+  refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+  simp only
+  congr 2
+  linear_combination (-(u : ℂ) / 2) * I_sq
+
+/-- COROLLARY on the two-condition class: hArch on PoleFree2 gives Weil positivity
+(the extra condition h1 is not used by the reduction; it fixes the class hArch is proved on). -/
+theorem weil_positivity_pole_free2_of_arch {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ}
+    (hsupp : tsupport g ⊆ Set.Icc (-L) L) (hL : 2 * L ≤ Real.log 3)
+    (h0 : paperFT g (I / 2) = 0) (_h1 : paperFT g (-I / 2) = 0)
+    (hArch : (Real.log 2 / Real.sqrt 2) * ∫ u in stripSet L, ‖g u‖ ^ 2 ≤ ArchS3.archW g) :
+    0 ≤ (weilForm (autocorr g)).re :=
+  weil_positivity_pole_free_of_arch hg hsupp hL h0 hArch
+
+/-- The same corollary with the class as a predicate. -/
+theorem weil_positivity_poleFree2_of_arch {g : ℝ → ℂ} (hg : IsWeilTest g) {L : ℝ}
+    (hsupp : tsupport g ⊆ Set.Icc (-L) L) (hL : 2 * L ≤ Real.log 3) (hP : PoleFree2 g)
+    (hArch : (Real.log 2 / Real.sqrt 2) * ∫ u in stripSet L, ‖g u‖ ^ 2 ≤ ArchS3.archW g) :
+    0 ≤ (weilForm (autocorr g)).re :=
+  weil_positivity_pole_free2_of_arch hg hsupp hL hP.1 hP.2 hArch
 
 end Hodge1

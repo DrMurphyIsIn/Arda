@@ -9,3 +9,7 @@ import Hodge1_Reduction
 #print axioms Hodge1.re_weilForm_eq_archW_sub_prime
 #print axioms Hodge1.weilForm_ge_archW_sub_strip
 #print axioms Hodge1.weil_positivity_pole_free_of_arch
+#print axioms Hodge1.paperFT_I_half
+#print axioms Hodge1.paperFT_neg_I_half
+#print axioms Hodge1.weil_positivity_pole_free2_of_arch
+#print axioms Hodge1.weil_positivity_poleFree2_of_arch
