@@ -1028,3 +1028,10 @@ name = "ArchS11_CTop_UU"
 
 [[lean_lib]]
 name = "ArchS11_Split"
+
+# HODGE-1 Phase 1 (2026-10-12): the one-prime pole-free reduction (strip lemma, n = 2 prime side,
+# Re weilForm >= archW - (log 2/sqrt 2) * stripEnergy).  Not in defaultTargets; the coordinator
+# wires it at merge.  Guard: lake env lean Hodge1_Guard.lean
+[[lean_lib]]
+name = "Hodge1"
+roots = ["Hodge1_Strip", "Hodge1_Reduction"]
