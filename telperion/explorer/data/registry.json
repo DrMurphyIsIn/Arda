@@ -57,8 +57,8 @@
    "counts": {
     "deprecated": 1,
     "draft": 3,
-    "open": 2,
-    "proved": 41,
+    "open": 1,
+    "proved": 42,
     "refuted": 0
    },
    "description": "Migration of PROGRAM MIRRORMERE (telperion/docs/QC_PROGRAM.md, ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md) into the missions registry: the reverse-Dyson program -- classify 1-D Fourier quasicrystals, locate the zeta point set, extract zero-localization -- built as finite, unconditional instruments (axioms + falsification zoo, the rigidity ladder R1/R2/R3, the defect-k instrument, the N(T) brick). NOTHING here proves or claims RH and conjecture1_proved = False throughout; the goal node is the program's honest RH-hard membership target and is draft. The known difficulty map: RH-hardness enters at exactly one place, twice disguised (FQ-grade temperedness of the dual comb; the rational -> irrational frequency transition); everything registered below is unconditional or carries its named hypothesis explicitly. FIDELITY NOTE (design section 9, UPDATED 2026-09-18): the rh/million-turing line is now merged into main (#506), so the linked artifacts are on main and the deferred `mission grant` pass is unblocked -- nine nodes still carry a [proof] link at status=open and are awaiting it. One node IS proved: MM_rvm_unbounded_mean_density, granted via the cross-island rvm_bridge discharge (#553). The original wording -- no node enters as proved, grant deferred to the branch reconcile -- described the pre-reconcile state and no longer holds. Environment = v4.32.0 (quasicrystal island); two nodes' artifacts live on the zeta_zero_localization island (same pin, cross-island grant per design section 2). W3b IS REGISTERED (MM_bragg_bridge, 2026-09-15): the gw-finite agent proved rect_explicit_formula_bragg on the v4.34 li island -- cross-island node per design section 2. Statement-authoring queue (nodes NOT yet registered because their authoritative formal statements ARE the work; specs in RH_ROUTES_ROADMAP_2026-09-16 section 9): the T->inf corridor bound |zeta'/zeta| = O(log^2 T) (effective-constant form must be pinned against its four consumers -- W3b limit, B6, D6, A3), the A0 REGULARIZED membership statement (the naive clause list '|mu-hat| tempered for the (log p)p^{-m/2} dual comb' is UNCONDITIONALLY FALSE -- sum_{n<=e^R} Lambda(n) n^{-1/2} ~ 2 e^{R/2} by PNT, and mu-hat carries an absolutely-continuous archimedean component; only the Guinand-Weil-regularized triple can carry membership, and authoring it is open formulation work), the W_temp precise wall statement (QC_LITERATURE section 1.7 grades it a program conjecture), R1 crystalline rigidity with the isolated temperedness clause, W3c infinite-torus log-density FQ axioms, A3-adjacent W4 face probes, the torus-section ladder's T3 defect-instrumentation rungs, MM_leakage_composite_zero (the content is the log-derivative coefficient functional; the Lambda-support direction is rfl-bait), and MM_ks_forward_smallN (the island's FQ vocabulary is deliberately abstract; a concrete faithful statement is W3c formulation work). UPDATE 2026-09-21 (PR #593): the goal statement was re-authored from the 2026-09-14 placeholder (Mathlib RiemannHypothesis via the opaque-variable def zeta_FQ_iff_RH, an identification by fiat) to Weil positivity of weilForm on autocorr g over IsWeilTest, and its RH-equivalence is now the PROVED node MM_zeta_comb_membership_iff_rh (Weil criterion in-kernel, E6Bridge5-9 on the rvm_bridge island, four blind audits); the Gaussian obligations MM_gaussian_dominance / MM_gaussian_approx / MM_gaussian_transfer and the converse MM_weil_positivity_implies_rh are proved. The goal node stays draft: it is RH by theorem.",
@@ -2265,7 +2265,7 @@
     "artifact_exists": true,
     "artifact_kind": "lean_module",
     "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/ArchRegistry_CCCor23.lean",
-    "closure_clean": false,
+    "closure_clean": true,
     "fidelity_note": "",
     "via": "direct"
    },
@@ -2273,7 +2273,11 @@
     "author_recorded": true,
     "ci_record": null,
     "comparator": null,
-    "grant": null,
+    "grant": {
+     "artifact_sha256": "215931fac0e2ccde",
+     "date": "2026-10-12",
+     "gate_version": "2026-09-23.1"
+    },
     "requires_ci_job": ""
    },
    "readback": {
@@ -2285,7 +2289,7 @@
    "refutation_statement": "",
    "slug": "MM_cc_cor_2_3",
    "statement": "theorem cc_cor_2_3 (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g) :\n    0 ≤ ArchS3.archW g + ArchS3.Dfun g",
-   "status": "open",
+   "status": "proved",
    "title": "CONNES-CONSANI COROLLARY 2.3, KERNEL-CHECKED, ANY SUPPORT (rvm_bridge island, ArchS3_*, 2026-10-11): for EVERY Weil test g (smooth, compact support of any width, no window hypothesis, no vanishing hypothesis), archW g + Dfun g >= 0, where archW g = (1/2pi) int |g^(r)|^2 (Re digamma(1/4 + ir/2) - log pi) dr is the archimedean Weil functional on g * g^* and Dfun g = Re int (g * g^*)(u) delta(e^{|u|}) du is CC's explicit delta-correction (CC (48)/(49) kernel, sinc closed form). Structural proof via the manifest-positivity identity ell(t) = int_1^inf |Phi_t(a)|^2 da/a (damped identity, eps -> 0 limits), no numerical certificate, standard axioms only. NOT Weil positivity: there is no prime side and the delta-correction is added, not bounded. NOT RH and does not imply it. conjecture1_proved = False",
    "updated": "2026-10-12"
   },
@@ -8208,8 +8212,8 @@
  "totals": {
   "deprecated": 6,
   "draft": 14,
-  "open": 5,
-  "proved": 129,
+  "open": 4,
+  "proved": 130,
   "refuted": 1
  }
 }

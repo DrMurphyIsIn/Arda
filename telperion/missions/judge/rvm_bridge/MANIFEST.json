@@ -6,6 +6,18 @@
   "not_consumable": [],
   "nodes": [
     {
+      "slug": "MM_cc_cor_2_3",
+      "campaign": "mirrormere",
+      "theorem": "cc_cor_2_3",
+      "solution_module": "ArchRegistry_CCCor23",
+      "challenge_module": "MissionChallenges.MM_cc_cor_2_3",
+      "bridge_theorem": "MissionJudge.MM_cc_cor_2_3",
+      "config": "MM_cc_cor_2_3.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "215931fac0e2ccded8b5bdcecb0b96db858197b031f75781ed9077fcbc6eccc0",
+      "statement_sha256": "8c8ff6622f1012dd19e64f3cfee2fe7182ab5e8557a5b8357498e29f44be3447"
+    },
+    {
       "slug": "MM_effective_gaussian_dominance",
       "campaign": "mirrormere",
       "theorem": "RvMBridge14.effective_gaussian_dominance",
