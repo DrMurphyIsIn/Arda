@@ -1,10 +1,19 @@
 /-
   Hodge1_Guard -- axiom guard for the HODGE-1 Phase 1 modules (Hodge1_Strip, Hodge1_Reduction) and the
-  Phase 1b-A strip certificate (Hodge1_KPen ... Hodge1_Window45).
+  Phase 1b-A strip certificate (Hodge1_KPen ... Hodge1_Window45) and the Phase 1b-B direct pole-free
+  certificate (Hodge1_PoleFreeWindow ... Hodge1_Window5493, with its three negative controls).
   Run: lake env lean Hodge1_Guard.lean.  Expected for every line: [propext, Classical.choice, Quot.sound].
+  NOTE for replay audits: the Phase 1b-B kernel-evaluation declarations (Hodge1_Rows5493E/O, the row blocks
+  of Hodge1_Cert5493E/O/N/Q/W) carry `set_option maxHeartbeats 0`, because the kernel enforces the
+  heartbeat budget on `decide +kernel` and these evaluations exceed the default.  It lifts a resource
+  limit only; the kernel still checks every reduction step, and no axiom is added.
 -/
 import Hodge1_Reduction
 import Hodge1_Window45
+import Hodge1_Window5493
+import Hodge1_Ldl5493N
+import Hodge1_Ldl5493Q
+import Hodge1_Ldl5493W
 
 #print axioms Hodge1.re_autocorr_pair_le_stripEnergy
 #print axioms Hodge1.primeSide_autocorr_eq_two
@@ -33,3 +42,16 @@ import Hodge1_Window45
 #print axioms Hodge1.arch_strip_window45
 #print axioms Hodge1.hArch_window45
 #print axioms Hodge1.weil_positivity_poleFree2_window45
+
+-- Phase 1b-B: the direct pole-free certificate at L = 5493/10000.
+#print axioms Hodge1.poleFree_sector_floor
+#print axioms Hodge1.poleFree2_floor_of_sectors
+#print axioms Hodge1.poleFree2_floor_of_cert
+#print axioms Hodge1.certE5493
+#print axioms Hodge1.certO5493
+#print axioms Hodge1.certE5493_negative_control_lam
+#print axioms Hodge1.certE5493_negative_control_q21
+#print axioms Hodge1.certE5493_negative_control_w105
+#print axioms Hodge1.twoL_le_log_three_5493
+#print axioms Hodge1.poleFree2_floor5493
+#print axioms Hodge1.weil_positivity_poleFree2_window5493
