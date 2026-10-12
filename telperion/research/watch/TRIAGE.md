@@ -1,8 +1,16 @@
 # Zero-free watch: triage log
 
 One line per hit, newest first. The seen-list `zero_free_seen.json` is updated only after the hit is triaged here.
-Run: `PYTHONPATH=telperion/src python -m telperion.zero_free_watch` (add `--update` after triage). conjecture1_proved = False.
+Run: `python telperion/src/telperion/zero_free_watch.py` (stdlib only; the package import needs sympy) (add `--update` after triage). conjecture1_proved = False.
 
+- 2026-10-12 **arxiv:2610.12803v1** [dbn] Hakimoglu-Brown, "A conditional bound Lambda <= 0.13963 for the de
+  Bruijn--Newman constant" (8 Oct 2026): ASSUMES the 7/8 half-plane (OpenAI) and feeds it into a Polymath-15-style
+  barrier argument (published Polymath numerics, Riemann-Siegel coefficient bounds, 24 strip-comparison steps,
+  polynomial certificates). Not a new strip. Its input is now proved (Liu's B_new > 7/8 is kernel-checked), so the
+  bound would be unconditional modulo its numerics; nothing is Lean and the Polymath numerics are far outside the
+  dbn island. Recorded only; the kernel-checked picture stays 0 <= Lambda <= 0.2811857. No action now.
+- 2026-10-12 **arxiv:2609.23222v2** [strip] Fiori, Jaskari, "Explicit bounds for the prime number theorem" (v2,
+  8 Oct 2026): USES the 7/8 half-plane for explicit psi(x) - x bounds. Consumer, not a new strip. No action.
 - 2026-10-11 **arxiv:2610.12234v1** [strip] Baiying Liu, "Slightly improved zero-free half-planes for the quasi-Riemann
   hypothesis" (8 Oct 2026): varies OpenAI's `b, ell`; `B_new = (1507 - 2 sqrt 921)/1653 = 0.874957...` with a Lean
   formalization at OpenAI's pin (Mathlib d13f23b, vendored OAI closure at adc7f124, verify.py with the standard axiom
