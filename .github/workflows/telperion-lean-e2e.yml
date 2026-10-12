@@ -2954,6 +2954,66 @@ jobs:
       - name: Registry anchors (every proved rvm_bridge node is printed clean)
         working-directory: telperion/examples/rvm_bridge/lean
         run: python ../../../scripts/guard_anchors.py --island rvm_bridge axioms.out
+  rvm-bridge-arch-heavy:
+    # Archimedean Connes-Consani programme (PR #699): the certificate-heavy modules (S9 prolate certificates,
+    # S10 chi, S11 K_I spectrum, S12 final assembly) are NOT in defaultTargets, because lake's default parallel
+    # build of several of their `decide +kernel` checks exceeds the 16 GB runner.  Build them ONE AT A TIME in
+    # dependency order (arch_heavy_modules.txt), so each lake call compiles a single module, then run their guard.
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.rvm_bridge == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/rvm_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache (through the Zeta23 dependency)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the light island (defaultTargets)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake build
+
+      - name: Build the heavy archimedean modules one at a time
+        working-directory: telperion/examples/rvm_bridge/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          while read -r m; do
+            [ -z "$m" ] && continue
+            echo "::group::lake build $m"
+            /usr/bin/time -v lake build "$m" 2> >(tee "time_$m.txt" >&2)
+            grep -E "Maximum resident set size" "time_$m.txt" || true
+            echo "::endgroup::"
+          done < arch_heavy_modules.txt
+
+      - name: "Axiom guard (archimedean heavy modules): subset of standard axioms, no sorryAx, guard actually ran"
+        working-directory: telperion/examples/rvm_bridge/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build ArchHeavy_Guard
+          lake env lean ArchHeavy_Guard.lean 2>&1 | tee heavy_axioms.out
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" heavy_axioms.out || true)
+          if [ "$n" -lt "300" ]; then
+            echo "::error::heavy guard printed $n axiom lines, expected at least 300 -- the guard did not run or was silently truncated"; exit 1; fi
+          if grep -q "sorryAx" heavy_axioms.out; then echo "::error::sorryAx present"; exit 1; fi
+          if tr "\n" " " < heavy_axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"; exit 1; fi
+
   dbn-compiles:
     needs: changes
     if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.dbn == 'true' || needs.changes.outputs.missions == 'true')

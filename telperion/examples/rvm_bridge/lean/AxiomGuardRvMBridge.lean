@@ -255,10 +255,6 @@ import FamilyWeilQuad
 import FamilyWeilTable
 import ArchS1_Identity
 import ArchS2_QTrick
-import ArchS12_Index
-import ArchS12_Bridge
-import ArchS12_Main
-import ArchS11_KI
 import ArchS7_LogMap
 import ArchS7_Kappa
 import ArchS7_PFP
@@ -271,7 +267,6 @@ import ArchS6_Bounds
 import ArchS6_ProlateData
 import ArchS6_Trace
 import ArchS6_L1
-import ArchS10_Summable
 import ArchS7_Term
 import ArchS7_HS
 import ArchS7_Abstract
@@ -280,7 +275,6 @@ import ArchS7_Dilation
 import ArchS7_Theta
 import ArchS7_Lemma41
 import ArchS7b_Lemma41
-import ArchS10_Chi
 import ArchS6_Abstract
 import ArchS6_Fourier
 import ArchS6_Proj
@@ -292,14 +286,12 @@ import ArchS6_Prolate
 import ArchS6_Real
 import ArchS6_Bridge
 import ArchS6_Functions
-import ArchPipeline_ProlateComplete
 import ArchS3_Limits
 import ArchRegistry_CCCor23
 import ArchS4_Bridge
 import ArchS5_Spectral
 import ArchS5_HSRank
 import ArchS8_Kernel
-import ArchS9_Bridge
 import ArchPipeline_Rung80
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
@@ -1815,58 +1807,6 @@ import ArchPipeline_Rung80
 #print axioms ArchS8.ProlateData.prop55_autocorr
 #print axioms ArchS8.corr_lift
 #print axioms ArchS8.ProlateData.prop55_lift
-#print axioms ArchS9.pi_gt_d45
-#print axioms ArchS9.pi_lt_d45
-#print axioms ArchS9.ip_sq_le
-#print axioms ArchS9.L1_sq_le
-#print axioms ArchS9.sqrt_ip_add_le
-#print axioms ArchS9.T_sub_le
-#print axioms ArchS9.Td_sub_le
-#print axioms ArchS9.hasDerivAt_T
-#print axioms ArchS9.continuous_T
-#print axioms ArchS9.ip_psi_psi
-#print axioms ArchS9.rankJ_identity
-#print axioms ArchS9.abs_errF_le
-#print axioms ArchS9.abs_errdF_le
-#print axioms ArchS9.P1
-#print axioms ArchS9.P2
-#print axioms ArchS9.P3
-#print axioms ArchS9.hasDerivAt_eig
-#print axioms ArchS9.round_step
-#print axioms ArchS9.localize
-#print axioms ArchS9.value_bound
-#print axioms ArchS9.ip_ne_zero_of_overlap
-#print axioms ArchS9.Data.gram_rows_1
-#print axioms ArchS9.Data.gram_rows_2
-#print axioms ArchS9.Data.gram_rows_3
-#print axioms ArchS9.Data.gram_rows_4
-#print axioms ArchS9.Data.e_rows_1
-#print axioms ArchS9.Data.e_rows_2
-#print axioms ArchS9.Data.lc_ok
-#print axioms ArchS9.Data.const_ok
-#print axioms ArchS9.Data.windows_ok
-#print axioms ArchS9.Data.loc_ok
-#print axioms ArchS9.Data.window_negative_control
-#print axioms ArchS9.gram_sound
-#print axioms ArchS9.Em_eq
-#print axioms ArchS9.dA_sound
-#print axioms ArchS9.errF_le_one
-#print axioms ArchS9.errF_le_two
-#print axioms ArchS9.errdF_le_two
-#print axioms ArchS9.prolate_localization
-#print axioms ArchS9.prolate_window
-#print axioms ArchS9.prolate_simple
-#print axioms ArchS9.Data.res_ok
-#print axioms ArchS9.continuous_T_of_integrable
-#print axioms ArchS9.continuous_representative
-#print axioms ArchS9.T_symm
-#print axioms ArchS9.psi_residual
-#print axioms ArchS9.bessel_finite
-#print axioms ArchS9.prolate_window_occupied
-#print axioms ArchS9.prolate_spectrum_complete
-#print axioms ArchS9.Data.lam_ok
-#print axioms ArchS9.prolate_S8_fields
-#print axioms ArchS9.prolate_phi_values
 #print axioms ArchPipeline.weil_nonneg_pole_free_eightieth
 
 -- Archimedean programme: S6 (Sonin/prolate structure) and the S6+S9 certified prolate spectrum (2026-10-11).
@@ -2126,7 +2066,6 @@ import ArchPipeline_Rung80
 #print axioms ArchS6.contDiff_cosTrans
 #print axioms ArchS6.contDiff_phi
 #print axioms ArchS6.contDiff_phiR
-#print axioms ArchPipeline.prolate_spectrum_certified
 
 -- Archimedean programme: S7 (CC Thm 4.7), S7b (CC Lemma 4.1), S10 (certified chi), S8 update (2026-10-11).
 #print axioms ArchS7.integrand_eq
@@ -2276,129 +2215,10 @@ import ArchPipeline_Rung80
 #print axioms ArchS7b.integral_δS_eq_Dfun
 #print axioms ArchS7b.thm47_concrete_O1
 #print axioms ArchS7b.thm47_concrete_O1_nonneg
-#print axioms ArchS10.Cn_eq_CC
-#print axioms ArchS10.CC_smul
-#print axioms ArchS10.x_psid
-#print axioms ArchS10.psi_one
-#print axioms ArchS10.bdry_lo
-#print axioms ArchS10.bdry_hi
-#print axioms ArchS10.term_id
-#print axioms ArchS10.integral_part
-#print axioms ArchS10.CC_psi
-#print axioms ArchS10.abs_exp_sub_taylor_le
-#print axioms ArchS10.exp_mul_le_two_pow
-#print axioms ArchS10.abs_ex_le
-#print axioms ArchS10.exp_le_two
-#print axioms ArchS10.half_le_exp_neg
-#print axioms ArchS10.exp_half_le_two
-#print axioms ArchS10.exp_three_half_le_four
-#print axioms ArchS10.exp_neg_three_half_le_one
-#print axioms ArchS10.abs_mul_sub_mul_le
-#print axioms ArchS10.abs_CC_sub_le
-#print axioms ArchS10.abs_CC_le
-#print axioms ArchS10.Data.round_ok
-#print axioms ArchS10.Data.epsHead_ok
-#print axioms ArchS10.Data.head_ok
-#print axioms ArchS10.Data.tail_ok
-#print axioms ArchS10.Data.poly_ok
-#print axioms ArchS10.Data.total_ok
-#print axioms ArchS10.Abnd_cast
-#print axioms ArchS10.tail_facts
-#print axioms ArchS10.continuous_psiS
-#print axioms ArchS10.continuous_res
-#print axioms ArchS10.ip_res_self
-#print axioms ArchS10.ip_res_eig
-#print axioms ArchS10.continuous_Erow
-#print axioms ArchS10.continuous_Edrow
-#print axioms ArchS10.errF_eq_ip
-#print axioms ArchS10.errdF_eq_ip
-#print axioms ArchS10.ip_le_sq_of
-#print axioms ArchS10.sum_sq_mul_le
-#print axioms ArchS10.tail_sum_le
-#print axioms ArchS10.abs_psiS_le_two
-#print axioms ArchS10.abs_psidS_le_two
-#print axioms ArchS10.abs_psiS_le_one
-#print axioms ArchS10.T_eq_frame
-#print axioms ArchS10.Td_eq_frame
-#print axioms ArchS10.ip_Erow_two
-#print axioms ArchS10.ip_Erow_one
-#print axioms ArchS10.ip_Edrow_two
-#print axioms ArchS10.tail_T_sq_two
-#print axioms ArchS10.tail_Td_sq_two
-#print axioms ArchS10.tail_T_sq_one
-#print axioms ArchS10.sum_abs_mul_le
-#print axioms ArchS10.abs_CC_pieces
-#print axioms ArchS10.tail_CC_sum_le
-#print axioms ArchS10.tail_eps_sum_le
-#print axioms ArchS10.CertBasis.cont
-#print axioms ArchS10.CertBasis.unit
-#print axioms ArchS10.CertBasis.lam_deriv
-#print axioms ArchS10.CertBasis.wC_eq
-#print axioms ArchS10.CertBasis.w_phi_one
-#print axioms ArchS10.CertBasis.tail_small
-#print axioms ArchS10.CertBasis.tailFam
-#print axioms ArchS10.div_perturb
-#print axioms ArchS10.head_facts
-#print axioms ArchS10.hhq_cast
-#print axioms ArchS10.round_facts
-#print axioms ArchS10.abs_psidS_le_two'
-#print axioms ArchS10.head_term
-#print axioms ArchS10.head_eps_term
-#print axioms ArchS10.summable_wC
-#print axioms ArchS10.NH_eq
-#print axioms ArchS10.head_sum
-#print axioms ArchS10.total_facts
-#print axioms ArchS10.mem_Ioo_T
-#print axioms ArchS10.Qeps_expsum
-#print axioms ArchS10.eps1_enclosure
-#print axioms ArchS10.eps1_pos
-#print axioms ArchS10.eps1_ne_zero
-#print axioms ArchS10.chiPoly_eq
-#print axioms ArchS10.chiPoly_zero
-#print axioms ArchS10.poly_facts
-#print axioms ArchS10.log_two_le_bQ
-#print axioms ArchS10.taylor_diff
-#print axioms ArchS10.expsum_sub_poly
-#print axioms ArchS10.abs_Ppoly_le
-#print axioms ArchS10.Qeps_poly
-#print axioms ArchS10.chi_enclosure
-#print axioms ArchS10.chi_neg
-#print axioms ArchS10.chi_L1
-#print axioms ArchS10.chi_zero_consistent
 #print axioms ArchS8.cosPhi_bound
 #print axioms ArchS8.outer_of_cosPhi
 
 -- Archimedean programme: S10 summability (EigenFamily.toProlateData).
-#print axioms ArchS10.gam_nonneg
-#print axioms ArchS10.summable_pow_two_mul
-#print axioms ArchS10.summable_gam
-#print axioms ArchS10.abs_aC
-#print axioms ArchS10.aC_term_le
-#print axioms ArchS10.aCd_term_le
-#print axioms ArchS10.summable_gam_mom
-#print axioms ArchS10.sX_nonneg
-#print axioms ArchS10.partial_le_sX
-#print axioms ArchS10.tendsto_pow_div_fact_two
-#print axioms ArchS10.tendsto_pow_div_fact_odd
-#print axioms ArchS10.abs_T_le_s
-#print axioms ArchS10.abs_Td_le_s
-#print axioms ArchS10.tsum_sq_le
-#print axioms ArchS10.ip_mono_self_le
-#print axioms ArchS10.sum_sq_s_le
-#print axioms ArchS10.EigenFamily.deriv_eq
-#print axioms ArchS10.EigenFamily.contDiff
-#print axioms ArchS10.EigenFamily.bound
-#print axioms ArchS10.EigenFamily.wMN_eq
-#print axioms ArchS10.EigenFamily.sum_wMN_le
-#print axioms ArchS10.EigenFamily.toProlateData_lam
-#print axioms ArchS10.EigenFamily.toProlateData_phi
-#print axioms ArchS10.EigenFamily.toProlateData_T
-#print axioms ArchS10.c0_ok
-#print axioms ArchS10.lam_sq_le_c0
-#print axioms ArchS10.c0_lt_one
-#print axioms ArchS10.certBasis_toProlateData
-#print axioms ArchS10.EigenFamily.toProlateData
-#print axioms ArchS10.EigenFamily.ofS9
 
 -- Archimedean programme: S6 follow-ups (enumeration, M_n bounds, trace class, L1) and S10 ι-generic summability.
 #print axioms ArchS6.separableSpace_L2IR
@@ -2587,183 +2407,5 @@ import ArchPipeline_Rung80
 #print axioms ArchS7.exists_prolate_enumeration
 
 -- Archimedean programme: S11 spectral certificate for K_I (2026-10-11).
-#print axioms ArchS11.pv_eq_range
-#print axioms ArchS11.continuous_pv
-#print axioms ArchS11.getD_map_range
-#print axioms ArchS11.lc_length
-#print axioms ArchS11.pv_lc
-#print axioms ArchS11.pv_unitL
-#print axioms ArchS11.pv_one
-#print axioms ArchS11.intervalIntegrable_pow_mul
-#print axioms ArchS11.integral_pv_mul_pv
-#print axioms ArchS11.binOK_sound
-#print axioms ArchS11.binom_eq
-#print axioms ArchS11.sg_eq
-#print axioms ArchS11.sub_pow_expand
-#print axioms ArchS11.sub_pow_expand'
-#print axioms ArchS11.integral_poly_piece
-#print axioms ArchS11.integral_abs_pow_mul_pow
-#print axioms ArchS11.hatT_length
-#print axioms ArchS11.hatT_getD
-#print axioms ArchS11.pv_hatT
-#print axioms ArchS11.integral_abs_pow
-#print axioms ArchS11.continuous_gpow
-#print axioms ArchS11.integral_gpow
-#print axioms ArchS11.integral_integral_abs_pow
-#print axioms ArchS11.integral_sum_abs
-#print axioms ArchS11.continuous_sum_abs
-#print axioms ArchS11.integral_sum_gpow
-#print axioms ArchS11.continuous_sum_gpow
-#print axioms ArchS11.pv_sq_expand
-#print axioms ArchS11.KKh_eq
-#print axioms ArchS11.re_conj_mul
-#print axioms ArchS11.qf_eq
-#print axioms ArchS11.inner_sum_smul
-#print axioms ArchS11.re_inner_sum_smul
-#print axioms ArchS11.qf_nonneg
-#print axioms ArchS11.qf_sub_smul
-#print axioms ArchS11.galerkin_form
-#print axioms ArchS11.qf_dg
-#print axioms ArchS11.norm_sum_sq_le_weighted
-#print axioms ArchS11.integral_volI_eq
-#print axioms ArchS11.integral_volI_scale
-#print axioms ArchS11.integrable_volI_prod
-#print axioms ArchS11.integrable_volI
-#print axioms ArchS11.integral_volI_prod_scale
-#print axioms ArchS11.memLp_volI
-#print axioms ArchS11.continuous_polyFun
-#print axioms ArchS11.polyLp_ae
-#print axioms ArchS11.inner_polyLp_left
-#print axioms ArchS11.inner_polyLp
-#print axioms ArchS11.norm_polyLp_sq
-#print axioms ArchS11.polyLp_eq_sum
-#print axioms ArchS11.polyLp_sub_eq_sum
-#print axioms ArchS11.polyLp_mem_span
-#print axioms ArchS11.continuous_kR
-#print axioms ArchS11.kR_symm
-#print axioms ArchS11.continuous_kerF
-#print axioms ArchS11.kerF_symm
-#print axioms ArchS11.isHermitian_kerLp
-#print axioms ArchS11.intOp_kerLp_symm
-#print axioms ArchS11.intOp_kerLp_polyLp
-#print axioms ArchS11.continuous_ofReal_comp
-#print axioms ArchS11.norm_sq_kernelOfContinuous_real
-#print axioms ArchS11.continuous_tR
-#print axioms ArchS11.continuous_tailF
-#print axioms ArchS11.norm_sq_ker_sub_tail
-#print axioms ArchS11.inner_tail_eq_zero
-#print axioms ArchS11.re_inner_intOp_swap
-#print axioms ArchS11.inner_one_eq_integral
-#print axioms ArchS11.inner_kerLp_const
-#print axioms ArchS11.volI_restrict_of_le
-#print axioms ArchS11.memLp_ext
-#print axioms ArchS11.extL_ae
-#print axioms ArchS11.integral_extL
-#print axioms ArchS11.inner_extL
-#print axioms ArchS11.norm_extL
-#print axioms ArchS11.inner_one_extL
-#print axioms ArchS11.inner_intOp_extL
-#print axioms ArchS11.re_inner_intOp_extL
-#print axioms ArchS11.sum_quad_cert
-#print axioms ArchS11.ldlOK_sound
-#print axioms ArchS11.psiOK_sound
-#print axioms ArchS11.lenOK_sound
-#print axioms ArchS11.uOK_sound
-#print axioms ArchS11.rhoOK_sound
-#print axioms ArchS11.dOK_sound
-#print axioms ArchS11.qmatOK_sound
-#print axioms ArchS11.tailOK_sound
-#print axioms ArchS11.phi_len
-#print axioms ArchS11.integral_kR_mul_pv
-#print axioms ArchS11.pv_U_of_uOK
-#print axioms ArchS11.pv_rho_of_rhoOK
-#print axioms ArchS11.U_len_of_uOK
-#print axioms ArchS11.q2val_cast
-#print axioms ArchS11.form_bound_of_cert
-#print axioms ArchS11.form_lower_of_test
-#print axioms ArchS11.abs_chiPoly_sub_pv
-#print axioms ArchS11.abs_re_inner_sub_le
-#print axioms ArchS11.final_facts
-#print axioms ArchS11.aA_real
-#print axioms ArchS11.aH_real
-#print axioms ArchS11.aL_real
-#print axioms ArchS11.log_two_le_aH
-#print axioms ArchS11.aL_le_log_two
-#print axioms ArchS11.kerF_close
-#print axioms ArchS11.form_upper
-#print axioms ArchS11.topEig_lower
-#print axioms ArchS11.KI_half_form
-#print axioms ArchS11.KI_half_topEig_le
-#print axioms ArchS11.KI_half_topEig_ge
-#print axioms ArchS11.log_two_pos'
-#print axioms ArchS11.KI_log2_form_of
-#print axioms ArchS11.KI_log2_topEig_le
-#print axioms ArchS11.KI_log2_topEig_ge
-#print axioms ArchS11.KI_log2_form_gamma
-#print axioms ArchS11.KI_log2_NI
-#print axioms ArchS11.one_ne_zero_log2
-#print axioms ArchS11.KI_log2_lambda2
-#print axioms ArchS11.KI_log2_overlap
-#print axioms ArchS11.chiK_approx
-#print axioms ArchS11.KI_chi_half
-#print axioms ArchS11.KI_chi_log2
-#print axioms ArchS11.Data.bin_ok
-#print axioms ArchS11.Data.psiA_ok
-#print axioms ArchS11.Data.psiH_ok
-#print axioms ArchS11.Data.psiL_ok
-#print axioms ArchS11.Data.lenA_ok
-#print axioms ArchS11.Data.lenH_ok
-#print axioms ArchS11.Data.lenL_ok
-#print axioms ArchS11.Data.roundA_ok
-#print axioms ArchS11.Data.roundH_ok
-#print axioms ArchS11.Data.roundL_ok
-#print axioms ArchS11.Data.ortho_ok
-#print axioms ArchS11.Data.okT1lo_ok
-#print axioms ArchS11.Data.okToplo_ok
-#print axioms ArchS11.Data.okT1_ok
-#print axioms ArchS11.Data.okTop_ok
-#print axioms ArchS11.Data.okGam_ok
-#print axioms ArchS11.Data.okLam2_ok
-#print axioms ArchS11.Data.okOvl_ok
-#print axioms ArchS11.Data.final_ok
 
 -- Archimedean programme: S12 final assembly -- CC Theorem 1, Thm 6.11, conceptual one-condition rung (2026-10-11).
-#print axioms ArchS12.disjOK_eq
-#print axioms ArchS12.window_sep
-#print axioms ArchS12.window_unique
-#print axioms ArchS12.T_phiR'
-#print axioms ArchS12.ip_phiR'
-#print axioms ArchS12.window_existsUnique
-#print axioms ArchS12.winIdx_spec
-#print axioms ArchS12.winIdx_injective
-#print axioms ArchS12.exists_equiv_prefix
-#print axioms ArchS12.exists_certBasis_enumeration
-#print axioms ArchS12.exists_certified_prolate
-#print axioms ArchS12.toLpI_ae
-#print axioms ArchS12.integral_volI_of_vanish
-#print axioms ArchS12.inner_one_toLpI
-#print axioms ArchS12.norm_sq_toLpI
-#print axioms ArchS12.integrable_double
-#print axioms ArchS12.re_inner_toLpI
-#print axioms ArchS12.double_integral_translate
-#print axioms ArchS12.integral_translate
-#print axioms ArchS12.integral_conj_mul_translate
-#print axioms ArchS12.chiK_eq_chiT
-#print axioms ArchS12.vanish_of_tsupport
-#print axioms ArchS12.double_chi_eq_chiT
-#print axioms ArchS12.vanish_translate
-#print axioms ArchS12.re_double_chi_eq_inner
-#print axioms ArchS12.norm_sq_translate
-#print axioms ArchS12.inner_one_translate
-#print axioms ArchS12.form_chi_half
-#print axioms ArchS12.form_chi_log2
-#print axioms ArchS12.re_integral_conj_mul_nonneg
-#print axioms ArchS12.re_Eplus_lift
-#print axioms ArchS12.eps1_bounds
-#print axioms ArchS12.sonin_hasSum_lift
-#print axioms ArchS12.weil_positivity_one_condition_quarter_sonin
-#print axioms ArchS12.weil_positivity_one_condition_quarter
-#print axioms ArchS12.full_window_core
-#print axioms ArchS12.cc_thm1
-#print axioms ArchS12.weil_positivity_cc_class
-#print axioms ArchS12.cc_thm611
