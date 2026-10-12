@@ -3,7 +3,7 @@ depends_on = ["MM_bragg_defect_witness"]
 kind = "lemma"
 name = "MM.bragg_defect_witness_sie"
 statement_module = "Statements.MM_bragg_defect_witness_sie"
-status = "draft"
+status = "open"
 title = "The certified defect witness pair with NO hypothesis (zeta_zero_localization island, BraggDefect.lean, 2026-10-11): the all-on-line configuration has defect functional exactly 0, and the synthetic off-line pair drives it into an explicit negative bracket (~ -1.00167e-4). Same statement as MM_bragg_defect_witness without its Arb hypothesis hexp: the e^(1/10) enclosure is discharged inside the kernel by the scaled_interval_eval emitter (BraggDefectSIE.sie_defect_offline, PR #689)"
 updated = "2026-10-12"
 
@@ -17,3 +17,11 @@ artifact = "../../examples/zeta_zero_localization/lean/BraggDefect.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs"
+auditor_identity = "claude-ai-readback+session23@anthropic-ai.invalid"
+auditor_session = "session_01GdU4sR3VVeEfVS1Dtg5pEt"
+date = "2026-10-12"
+independence = "independent"
+text = "AI read-back of theorem bragg_defect_witness_sie (namespace BraggDefect, registry definitions checked against the island BraggDefect.lean): Aon = 2; Aoff = exp(1/10) + exp(-1/10); excess = Aoff - Aon, i.e. 2cosh(1/10) - 2, about 0.0100083361; defectFunctional d = -(d^2). With no hypotheses the theorem asserts a conjunction of two facts. (1) defectFunctional 0 = 0: the all-on-line configuration has defect exactly zero. (2) defectFunctional excess lies in the closed interval between two explicit negative rationals, lo about -1.00166791722900687180258e-4 and hi about -1.00166791722900687179608e-4 (width about 6.5e-25). Since defectFunctional excess = -(2cosh(0.1) - 2)^2, about -1.001667917229006871800e-4, this is a certified enclosure of that one real number; in particular the synthetic off-line configuration has strictly negative defect. It concerns these explicit numbers only and says nothing about zeros of zeta or about RH."
