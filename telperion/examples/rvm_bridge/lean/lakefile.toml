@@ -693,6 +693,33 @@ name = "ArchS9_Frame"
 name = "ArchS9_Data"
 
 [[lean_lib]]
+name = "ArchS9_GramChunk"
+
+[[lean_lib]]
+name = "ArchS9_CertGram1a"
+
+[[lean_lib]]
+name = "ArchS9_CertGram1b"
+
+[[lean_lib]]
+name = "ArchS9_CertGram2a"
+
+[[lean_lib]]
+name = "ArchS9_CertGram2b"
+
+[[lean_lib]]
+name = "ArchS9_CertGram3a"
+
+[[lean_lib]]
+name = "ArchS9_CertGram3b"
+
+[[lean_lib]]
+name = "ArchS9_CertGram4a"
+
+[[lean_lib]]
+name = "ArchS9_CertGram4b"
+
+[[lean_lib]]
 name = "ArchS9_CertGram1"
 
 [[lean_lib]]
