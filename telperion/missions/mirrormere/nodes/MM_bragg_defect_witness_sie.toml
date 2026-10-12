@@ -1,0 +1,19 @@
+created = "2026-10-12"
+depends_on = ["MM_bragg_defect_witness"]
+kind = "lemma"
+name = "MM.bragg_defect_witness_sie"
+statement_module = "Statements.MM_bragg_defect_witness_sie"
+status = "draft"
+title = "The certified defect witness pair with NO hypothesis (zeta_zero_localization island, BraggDefect.lean, 2026-10-11): the all-on-line configuration has defect functional exactly 0, and the synthetic off-line pair drives it into an explicit negative bracket (~ -1.00167e-4). Same statement as MM_bragg_defect_witness without its Arb hypothesis hexp: the e^(1/10) enclosure is discharged inside the kernel by the scaled_interval_eval emitter (BraggDefectSIE.sie_defect_offline, PR #689)"
+updated = "2026-10-12"
+
+[author]
+date = "2026-10-12"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_013hB6k9ssUSET4joVJgNy51"
+
+[proof]
+artifact = "../../examples/zeta_zero_localization/lean/BraggDefect.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
