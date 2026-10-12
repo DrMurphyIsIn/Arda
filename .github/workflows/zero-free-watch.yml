@@ -24,6 +24,6 @@ jobs:
         with:
           python-version: "3.12"
       - name: Poll openai/math preprints and arXiv math.NT against the committed seen-list
-        env:
-          PYTHONPATH: telperion/src
-        run: python -m telperion.zero_free_watch --state telperion/research/watch/zero_free_seen.json --fail-on-new
+        # Run the module as a standalone script: importing the `telperion` package pulls in sympy
+        # (telperion/__init__.py), which this stdlib-only watcher does not need.
+        run: python telperion/src/telperion/zero_free_watch.py --state telperion/research/watch/zero_free_seen.json --fail-on-new
