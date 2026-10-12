@@ -57,15 +57,15 @@
    "counts": {
     "deprecated": 1,
     "draft": 3,
-    "open": 1,
-    "proved": 40,
+    "open": 2,
+    "proved": 41,
     "refuted": 0
    },
    "description": "Migration of PROGRAM MIRRORMERE (telperion/docs/QC_PROGRAM.md, ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md) into the missions registry: the reverse-Dyson program -- classify 1-D Fourier quasicrystals, locate the zeta point set, extract zero-localization -- built as finite, unconditional instruments (axioms + falsification zoo, the rigidity ladder R1/R2/R3, the defect-k instrument, the N(T) brick). NOTHING here proves or claims RH and conjecture1_proved = False throughout; the goal node is the program's honest RH-hard membership target and is draft. The known difficulty map: RH-hardness enters at exactly one place, twice disguised (FQ-grade temperedness of the dual comb; the rational -> irrational frequency transition); everything registered below is unconditional or carries its named hypothesis explicitly. FIDELITY NOTE (design section 9, UPDATED 2026-09-18): the rh/million-turing line is now merged into main (#506), so the linked artifacts are on main and the deferred `mission grant` pass is unblocked -- nine nodes still carry a [proof] link at status=open and are awaiting it. One node IS proved: MM_rvm_unbounded_mean_density, granted via the cross-island rvm_bridge discharge (#553). The original wording -- no node enters as proved, grant deferred to the branch reconcile -- described the pre-reconcile state and no longer holds. Environment = v4.32.0 (quasicrystal island); two nodes' artifacts live on the zeta_zero_localization island (same pin, cross-island grant per design section 2). W3b IS REGISTERED (MM_bragg_bridge, 2026-09-15): the gw-finite agent proved rect_explicit_formula_bragg on the v4.34 li island -- cross-island node per design section 2. Statement-authoring queue (nodes NOT yet registered because their authoritative formal statements ARE the work; specs in RH_ROUTES_ROADMAP_2026-09-16 section 9): the T->inf corridor bound |zeta'/zeta| = O(log^2 T) (effective-constant form must be pinned against its four consumers -- W3b limit, B6, D6, A3), the A0 REGULARIZED membership statement (the naive clause list '|mu-hat| tempered for the (log p)p^{-m/2} dual comb' is UNCONDITIONALLY FALSE -- sum_{n<=e^R} Lambda(n) n^{-1/2} ~ 2 e^{R/2} by PNT, and mu-hat carries an absolutely-continuous archimedean component; only the Guinand-Weil-regularized triple can carry membership, and authoring it is open formulation work), the W_temp precise wall statement (QC_LITERATURE section 1.7 grades it a program conjecture), R1 crystalline rigidity with the isolated temperedness clause, W3c infinite-torus log-density FQ axioms, A3-adjacent W4 face probes, the torus-section ladder's T3 defect-instrumentation rungs, MM_leakage_composite_zero (the content is the log-derivative coefficient functional; the Lambda-support direction is rfl-bait), and MM_ks_forward_smallN (the island's FQ vocabulary is deliberately abstract; a concrete faithful statement is W3c formulation work). UPDATE 2026-09-21 (PR #593): the goal statement was re-authored from the 2026-09-14 placeholder (Mathlib RiemannHypothesis via the opaque-variable def zeta_FQ_iff_RH, an identification by fiat) to Weil positivity of weilForm on autocorr g over IsWeilTest, and its RH-equivalence is now the PROVED node MM_zeta_comb_membership_iff_rh (Weil criterion in-kernel, E6Bridge5-9 on the rvm_bridge island, four blind audits); the Gaussian obligations MM_gaussian_dominance / MM_gaussian_approx / MM_gaussian_transfer and the converse MM_weil_positivity_implies_rh are proved. The goal node stays draft: it is RH by theorem.",
    "dir": "mirrormere",
    "goal_node": "MM_zeta_comb_membership",
    "mathlib_rev": "v4.32.0",
-   "n_nodes": 45,
+   "n_nodes": 47,
    "name": "MM.reverse_dyson",
    "sources": [
     "Dyson, F. (2009), Birds and frogs, Notices AMS 56 -- the reverse proposal",
@@ -2188,11 +2188,114 @@
    "updated": "2026-09-14"
   },
   {
+   "arb": true,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:exp-enclosure-compiles",
+     "telperion-lean-e2e.yml:zeta-ladder-suite"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-12",
+   "depends_on": [
+    "mirrormere:MM_bragg_defect_witness"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_bragg_defect_witness_sie",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.bragg_defect_witness_sie",
+   "proof": {
+    "artifact": "telperion/examples/zeta_zero_localization/lean/BraggDefect.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/zeta_zero_localization/lean/BraggDefect.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": {
+     "artifact_sha256": "ed982ab4f086e44e",
+     "date": "2026-10-12",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-12",
+    "independence": "independent read-back",
+    "text": "AI read-back of theorem bragg_defect_witness_sie (namespace BraggDefect, registry definitions checked against the island BraggDefect.lean): Aon = 2; Aoff = exp(1/10) + exp(-1/10); excess = Aoff - Aon, i.e. 2cosh(1/10) - 2, about 0.0100083361; defectFunctional d = -(d^2). With no hypotheses the theorem asserts a conjunction of two facts. (1) defectFunctional 0 = 0: the all-on-line configuration has defect exactly zero. (2) defectFunctional excess lies in the closed interval between two explicit negative rationals, lo about -1.00166791722900687180258e-4 and hi about -1.00166791722900687179608e-4 (width about 6.5e-25). Since defectFunctional excess = -(2cosh(0.1) - 2)^2, about -1.001667917229006871800e-4, this is a certified enclosure of that one real number; in particular the synthetic off-line configuration has strictly negative defect. It concerns these explicit numbers only and says nothing about zeros of zeta or about RH."
+   },
+   "refutation_statement": "",
+   "slug": "MM_bragg_defect_witness_sie",
+   "statement": "theorem bragg_defect_witness_sie :\n    defectFunctional 0 = 0 ∧\n    ((-1957503930982498711627558116252003079150110082803036995985602456729126067929069837779873677055641334915004924707647824293913235373458273903210508792181881 / 19542444130562717342736579894714125276139669165907166175656490622972757664768900000000000000000000000000000000000000000000000000000000000000000000000000000000 : ℝ) ≤ defectFunctional excess ∧ defectFunctional excess ≤ (-1957503930982498711614926803795741251867682177931660778058090203284392257792384397626586656512971699612677910422316624293913235373458273903210508792181881 / 19542444130562717342737210934295300643770643047158621178046789521488913388427220640000000000000000000000000000000000000000000000000000000000000000000000000000 : ℝ))",
+   "status": "proved",
+   "title": "The certified defect witness pair with NO hypothesis (zeta_zero_localization island, BraggDefect.lean, 2026-10-11): the all-on-line configuration has defect functional exactly 0, and the synthetic off-line pair drives it into an explicit negative bracket (~ -1.00167e-4). Same statement as MM_bragg_defect_witness without its Arb hypothesis hexp: the e^(1/10) enclosure is discharged inside the kernel by the scaled_interval_eval emitter (BraggDefectSIE.sie_defect_offline, PR #689)",
+   "updated": "2026-10-12"
+  },
+  {
    "arb": false,
    "campaign": "mirrormere",
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-11",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_cc_cor_2_3",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.cc_cor_2_3",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/ArchRegistry_CCCor23.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/ArchRegistry_CCCor23.lean",
+    "closure_clean": false,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": null,
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (Riemann session), NOT an operator read-back; requested by the operator 2026-10-12",
+    "date": "2026-10-12",
+    "independence": "independent read-back",
+    "text": "For every function g from the reals to the complex numbers that is infinitely differentiable with compact support (IsWeilTest; no bound on the support width and no vanishing condition at any point), the real number archW g + Dfun g is at least 0. Here archW g = (1/(2 pi)) times the integral over all real r of |G(r)|^2 (Re digamma(1/4 + i r/2) - log pi), where G(r) = integral of g(u) exp(i r u) du; and Dfun g = the real part of the integral over all real u of (g * g~)(u) K(u), where (g * g~)(u) = integral of g(v) conj(g(v - u)) dv and K(u) = 2 exp(|u|/2) (S(2 pi (e^|u| + 1)) + S(2 pi (e^|u| - 1))) with S(c) = integral from 0 to 1 of sinc(c t) dt. So the archimedean Weil functional plus this explicit kernel correction is nonnegative on every test function."
+   },
+   "refutation_statement": "",
+   "slug": "MM_cc_cor_2_3",
+   "statement": "theorem cc_cor_2_3 (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g) :\n    0 ≤ ArchS3.archW g + ArchS3.Dfun g",
+   "status": "open",
+   "title": "CONNES-CONSANI COROLLARY 2.3, KERNEL-CHECKED, ANY SUPPORT (rvm_bridge island, ArchS3_*, 2026-10-11): for EVERY Weil test g (smooth, compact support of any width, no window hypothesis, no vanishing hypothesis), archW g + Dfun g >= 0, where archW g = (1/2pi) int |g^(r)|^2 (Re digamma(1/4 + ir/2) - log pi) dr is the archimedean Weil functional on g * g^* and Dfun g = Re int (g * g^*)(u) delta(e^{|u|}) du is CC's explicit delta-correction (CC (48)/(49) kernel, sinc closed form). Structural proof via the manifest-positivity identity ell(t) = int_1^inf |Phi_t(a)|^2 da/a (damped identity, eps -> 0 limits), no numerical certificate, standard axioms only. NOT Weil positivity: there is no prime side and the delta-correction is added, not bounded. NOT RH and does not imply it. conjecture1_proved = False",
+   "updated": "2026-10-12"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2248,6 +2351,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2352,6 +2456,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2404,6 +2509,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2456,6 +2562,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2508,6 +2615,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2562,6 +2670,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2617,6 +2726,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2671,6 +2781,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2726,6 +2837,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2780,6 +2892,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -2832,6 +2945,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -3230,6 +3344,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -3282,6 +3397,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -3337,6 +3453,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -3391,6 +3508,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -3446,6 +3564,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -3498,6 +3617,7 @@
    "conditional": true,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -3732,6 +3852,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -3938,6 +4059,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -3993,6 +4115,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4049,6 +4172,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4104,6 +4228,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4162,6 +4287,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4206,6 +4332,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4314,6 +4441,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4369,6 +4497,7 @@
    "conditional": true,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4471,6 +4600,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4525,6 +4655,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4584,6 +4715,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4638,6 +4770,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4693,6 +4826,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -4942,6 +5076,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -5953,6 +6088,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6101,6 +6237,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6155,6 +6292,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6548,6 +6686,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6600,6 +6739,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6655,6 +6795,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6711,6 +6852,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6765,6 +6907,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6817,6 +6960,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6869,6 +7013,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -6923,6 +7068,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7026,6 +7172,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7112,6 +7259,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7167,6 +7315,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7219,6 +7368,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7274,6 +7424,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7329,6 +7480,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7384,6 +7536,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7436,6 +7589,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7490,6 +7644,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7545,6 +7700,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -7597,6 +7753,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
      "telperion-lean-e2e.yml:rvm-bridge-compiles"
     ],
     "label": "module-covered"
@@ -8051,8 +8208,8 @@
  "totals": {
   "deprecated": 6,
   "draft": 14,
-  "open": 4,
-  "proved": 128,
+  "open": 5,
+  "proved": 129,
   "refuted": 1
  }
 }
