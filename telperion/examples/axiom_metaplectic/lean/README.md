@@ -19,4 +19,9 @@ lake exe cache get
 LEAN_NUM_THREADS=8 lake build
 ```
 
+Comparator note: in the library's import closure `NormedCommRing ℂ` elaborates via `instCommCStarAlgebraComplex`, so a
+Mathlib-only challenge and a solution importing this island differ syntactically and Comparator rejects the pair. Add
+`attribute [-instance] instCommCStarAlgebraComplex` to the solution module (found by the Riemann session's independent
+replay of the library, 2026-10-12).
+
 conjecture1_proved = False. Nothing here is progress on RH.
