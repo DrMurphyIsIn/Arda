@@ -6,7 +6,7 @@ name = "RvMBridge"
 # v4.32.0 islands (mirrormere, main) nor the v4.34.0-rc1 islands (missions/rh, li_positivity).
 # AxiomGuardRvMBridge is in defaultTargets so bare `lake build` compiles the guard and every
 # module it imports before CI runs `lake env lean AxiomGuardRvMBridge.lean` (cf. #448/#451).
-defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "FamilyWeilForm", "FamilyWeilDisc", "FamilyWeilQuad", "FamilyWeilTable", "KWin_Data", "KWin_Cert", "KWin_Constants", "KWin_Taylor", "KWin_Minorant", "KWin_Head", "KWin_Tail", "KWin_Split", "KWin_Window", "KWin_Bridge", "KWin2_Data", "KWin2_Minorant", "KWin2_Round", "KWin2_Head", "KWin2_Tail", "KWin2_Split", "KWin2_Consts", "KWin2_Par25", "KWin2_Cert25", "KWin2_Window25", "KWin2_Window", "KWin2_Bridge", "AxiomGuardRvMBridge"]
+defaultTargets = ["E6Bridge", "E6Bridge2", "E6Bridge3", "E6Bridge4", "E6Bridge5", "RvMBridgeGauss", "E6Bridge6", "E6Bridge7", "E6Bridge8", "E6Bridge9", "E6Bridge10", "E6Bridge11", "E6Bridge12", "E6Bridge13", "E6Bridge14", "E6Bridge15", "E6Bridge16", "E6Bridge18", "RvMBridgeXi", "E6Bridge17", "E6Bridge20", "E6Bridge21", "E6Bridge22", "E6Bridge19", "E6Bridge23", "E6Bridge25", "E6Bridge26", "E6Bridge24", "E6Bridge27", "E6Bridge28", "E6Bridge29", "E6Bridge30", "E6Bridge31", "E6Bridge32", "E6Bridge33", "E6Bridge34", "ZhuEnvelope", "ZhuSymbol", "ZhuLegendre", "ZhuParity", "ZhuSplit", "ZhuOrtho", "ZhuTail", "ZhuInstance", "W2cAssembly", "DogfoodComplexReImSplit", "DogfoodZeroSumMajorant", "FamilyWeilForm", "FamilyWeilDisc", "FamilyWeilQuad", "FamilyWeilTable", "KWin_Data", "KWin_Cert", "KWin_Constants", "KWin_Taylor", "KWin_Minorant", "KWin_Head", "KWin_Tail", "KWin_Split", "KWin_Window", "KWin_Bridge", "KWin2_Data", "KWin2_Minorant", "KWin2_Round", "KWin2_Head", "KWin2_Tail", "KWin2_Split", "KWin2_Consts", "KWin2_Par25", "KWin2_Cert25", "KWin2_Window25", "KWin2_Window", "KWin2_Bridge", "ArchS1_Kernel", "ArchS1_Identity", "ArchS2_QTrick", "ArchS3_Limits", "ArchS4_Bridge", "ArchS5_Spectral", "ArchS5_HSRank", "ArchS8_Kernel", "ArchPipeline_Rung80", "ArchS6_Abstract", "ArchS6_Fourier", "ArchS6_Proj", "ArchS6_Kernel", "ArchS6_Eigen", "ArchS6_Even", "ArchS6_Strict", "ArchS6_Prolate", "ArchS6_Real", "ArchS6_Bridge", "ArchS6_Functions", "ArchS7_Term", "ArchS7_HS", "ArchS7_Abstract", "ArchS7_Concrete", "ArchS7_Dilation", "ArchS7_Theta", "ArchS7_Lemma41", "ArchS7b_Lemma41", "ArchS6_Enum", "ArchS6_Sobolev", "ArchS6_Bounds", "ArchS6_ProlateData", "ArchS6_Trace", "ArchS6_L1", "ArchS7_LogMap", "ArchS7_Kappa", "ArchS7_PFP", "ArchS7_Density", "ArchS7_H85", "ArchS7_Final", "ArchRegistry_CCCor23", "AxiomGuardRvMBridge"]
 
 # anthropics/zeta-23-lean redirects to anthropics/formal-math; the Lean project is the
 # `zeta23/` subdirectory (package name `Zeta23`). Pinned to the exact commit that the E6 probe
@@ -540,3 +540,491 @@ name = "KWin2_GuardHeavy"
 # The CI axiom guard, declared as a lib so `lake build` compiles it (and thus all its imports).
 [[lean_lib]]
 name = "AxiomGuardRvMBridge"
+
+# Stage S1 of the archimedean conceptual blueprint (2026-10-11): the exact u-space Weil identity.
+[[lean_lib]]
+name = "ArchS1_Kernel"
+
+[[lean_lib]]
+name = "ArchS1_Identity"
+
+[[lean_lib]]
+name = "ArchS1_Guard"
+
+# Stage S2 (archimedean conceptual blueprint): pole-free parametrisation g = h' - h/2.
+[[lean_lib]]
+name = "ArchS2_QTrick"
+
+[[lean_lib]]
+name = "ArchS2_Guard"
+
+# Stage S3 (archimedean conceptual blueprint): structural positivity L = W_inf + D >= 0 (CC Cor 2.3).
+[[lean_lib]]
+name = "ArchS3_Delta"
+
+[[lean_lib]]
+name = "ArchS3_Mellin"
+
+[[lean_lib]]
+name = "ArchS3_Phi"
+
+[[lean_lib]]
+name = "ArchS3_Quadrant"
+
+[[lean_lib]]
+name = "ArchS3_Limits"
+
+# Registry shape of CC Cor 2.3 for mirrormere node MM_cc_cor_2_3 (statement verbatim).
+# CC Cor 2.3 is NOT Weil positivity and NOT RH.  conjecture1_proved = False.
+[[lean_lib]]
+name = "ArchRegistry_CCCor23"
+
+[[lean_lib]]
+name = "ArchS3_Guard"
+
+# Stage S5 (archimedean conceptual plan, 2026-10-11): integral operators with L2 kernels,
+# compactness, self-adjointness, Rayleigh top eigenvalue, Weyl perturbation.  Not in
+# defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS5_Guard.lean
+[[lean_lib]]
+name = "ArchS5_KernelOp"
+
+[[lean_lib]]
+name = "ArchS5_Adjoint"
+
+[[lean_lib]]
+name = "ArchS5_Compact"
+
+[[lean_lib]]
+name = "ArchS5_Rayleigh"
+
+[[lean_lib]]
+name = "ArchS5_MinMax"
+
+[[lean_lib]]
+name = "ArchS5_Spectral"
+
+[[lean_lib]]
+name = "ArchS5_Guard"
+
+# Stage S6 (archimedean conceptual plan, 2026-10-11): Sonin/prolate structure (CC Prop 4.5, (81)),
+# L2 Fourier link, sinc kernel.  Not in defaultTargets; the coordinator wires them at merge.
+# Guard: lake env lean ArchS6_Guard.lean
+[[lean_lib]]
+name = "ArchS6_Abstract"
+
+[[lean_lib]]
+name = "ArchS6_Fourier"
+
+[[lean_lib]]
+name = "ArchS6_Proj"
+
+[[lean_lib]]
+name = "ArchS6_Kernel"
+
+[[lean_lib]]
+name = "ArchS6_Eigen"
+
+
+[[lean_lib]]
+name = "ArchS5_HS"
+
+[[lean_lib]]
+name = "ArchS5_HSRank"
+
+# Stage S4 (archimedean conceptual blueprint): the jump lemma D∘Q = -2 Id + K^δ (CC Thm 3.6 / Rem 3.7).
+[[lean_lib]]
+name = "ArchS4_Delta"
+
+[[lean_lib]]
+name = "ArchS4_Jump"
+
+# Stage S4' (pipeline test): delta rung, D∘Q ≤ 0 for L ≤ 1/80 (CC Cor 3.8, crude sup bound).
+[[lean_lib]]
+name = "ArchS4_Rung"
+
+# S4 bridge to S3's delta (deltaK = deltaE ∘ abs, Dfun agreement, rung with S3's hypothesis).
+[[lean_lib]]
+name = "ArchS4_Bridge"
+
+[[lean_lib]]
+name = "ArchS4_Guard"
+
+# Stage S8 (archimedean conceptual blueprint): E∘Q kernel, CC Lemmas 5.1-5.2, Props 5.3/5.5, abstract.
+[[lean_lib]]
+name = "ArchS8_Volterra"
+
+[[lean_lib]]
+name = "ArchS8_ProlateData"
+
+[[lean_lib]]
+name = "ArchS8_Kernel"
+
+[[lean_lib]]
+name = "ArchS8_Guard"
+
+
+[[lean_lib]]
+name = "ArchS6_Even"
+
+[[lean_lib]]
+name = "ArchS6_Strict"
+
+[[lean_lib]]
+name = "ArchS6_Prolate"
+
+[[lean_lib]]
+name = "ArchS6_Real"
+
+[[lean_lib]]
+name = "ArchS6_Guard"
+
+
+# ---- archimedean stage S9 (certified prolate engine) ----
+[[lean_lib]]
+name = "ArchS9_Pi"
+
+[[lean_lib]]
+name = "ArchS9_Analysis"
+
+[[lean_lib]]
+name = "ArchS9_Frame"
+
+[[lean_lib]]
+name = "ArchS9_Data"
+
+[[lean_lib]]
+name = "ArchS9_GramChunk"
+
+[[lean_lib]]
+name = "ArchS9_CertGram1a"
+
+[[lean_lib]]
+name = "ArchS9_CertGram1b"
+
+[[lean_lib]]
+name = "ArchS9_CertGram2a"
+
+[[lean_lib]]
+name = "ArchS9_CertGram2b"
+
+[[lean_lib]]
+name = "ArchS9_CertGram3a"
+
+[[lean_lib]]
+name = "ArchS9_CertGram3b"
+
+[[lean_lib]]
+name = "ArchS9_CertGram4a"
+
+[[lean_lib]]
+name = "ArchS9_CertGram4b"
+
+[[lean_lib]]
+name = "ArchS9_CertGram1"
+
+[[lean_lib]]
+name = "ArchS9_CertGram2"
+
+[[lean_lib]]
+name = "ArchS9_CertGram3"
+
+[[lean_lib]]
+name = "ArchS9_CertGram4"
+
+[[lean_lib]]
+name = "ArchS9_CertE"
+
+[[lean_lib]]
+name = "ArchS9_CertMisc"
+
+[[lean_lib]]
+name = "ArchS9_Prolate"
+
+[[lean_lib]]
+name = "ArchS9_Guard"
+
+[[lean_lib]]
+name = "ArchS9_CertRes"
+
+[[lean_lib]]
+name = "ArchS9_Bridge"
+
+# Archimedean programme: end-to-end conceptual pipeline rung (S3 + S4), L <= 1/80, pole-free class.
+[[lean_lib]]
+name = "ArchPipeline_Rung80"
+
+# Stage S6 (archimedean conceptual plan, 2026-10-11): Sonin/prolate structure (CC Prop 4.5, (81)),
+# L2 Fourier link, sinc kernel.  Not in defaultTargets; the coordinator wires them at merge.
+# Guard: lake env lean ArchS6_Guard.lean
+
+# Stage S7b: CC Lemma 4.1 / (75), the prolate series of delta (S7 obligation O2).
+[[lean_lib]]
+name = "ArchS7b_Lemma41"
+
+[[lean_lib]]
+name = "ArchS6_Bridge"
+
+[[lean_lib]]
+name = "ArchS6_Functions"
+
+[[lean_lib]]
+name = "ArchPipeline_ProlateComplete"
+
+# ---- archimedean stage S10 (certified kernel chi on [0, log 2]) ----
+[[lean_lib]]
+name = "ArchS10_Exact"
+
+[[lean_lib]]
+name = "ArchS10_Data"
+
+[[lean_lib]]
+name = "ArchS10_Cert"
+
+[[lean_lib]]
+name = "ArchS10_Tail"
+
+[[lean_lib]]
+name = "ArchS10_Chi"
+
+[[lean_lib]]
+name = "ArchS10_Summable"
+
+[[lean_lib]]
+name = "ArchS10_Guard"
+
+[[lean_lib]]
+name = "ArchS6_Enum"
+
+[[lean_lib]]
+name = "ArchS6_Sobolev"
+
+[[lean_lib]]
+name = "ArchS6_Bounds"
+
+[[lean_lib]]
+name = "ArchS6_ProlateData"
+
+[[lean_lib]]
+name = "ArchS6_Trace"
+
+[[lean_lib]]
+name = "ArchS6_L1"
+
+[[lean_lib]]
+name = "ArchS7b_Guard"
+
+# Stage S7 (archimedean conceptual blueprint): CC Thm 4.7, SoninTr = W∞ + E (HS form, bypass B1).
+# Not in defaultTargets; the coordinator wires them at merge.  Guard: lake env lean ArchS7_Guard.lean
+[[lean_lib]]
+name = "ArchS7_Term"
+
+[[lean_lib]]
+name = "ArchS7_HS"
+
+[[lean_lib]]
+name = "ArchS7_Abstract"
+
+[[lean_lib]]
+name = "ArchS7_Concrete"
+
+[[lean_lib]]
+name = "ArchS7_Dilation"
+
+[[lean_lib]]
+name = "ArchS7_Theta"
+
+[[lean_lib]]
+name = "ArchS7_Lemma41"
+
+[[lean_lib]]
+name = "ArchS7_LogMap"
+
+[[lean_lib]]
+name = "ArchS7_Kappa"
+
+[[lean_lib]]
+name = "ArchS7_PFP"
+
+[[lean_lib]]
+name = "ArchS7_Density"
+
+[[lean_lib]]
+name = "ArchS7_H85"
+
+[[lean_lib]]
+name = "ArchS7_Final"
+
+[[lean_lib]]
+name = "ArchS7_Guard"
+
+# ---- archimedean stage S11 (spectral certificate for K_I) ----
+[[lean_lib]]
+name = "ArchS11_Data"
+
+[[lean_lib]]
+name = "ArchS11_CertPsi"
+
+[[lean_lib]]
+name = "ArchS11_Cert"
+
+[[lean_lib]]
+name = "ArchS11_Poly"
+
+[[lean_lib]]
+name = "ArchS11_Galerkin"
+
+[[lean_lib]]
+name = "ArchS11_Lp"
+
+[[lean_lib]]
+name = "ArchS11_CertT1"
+
+[[lean_lib]]
+name = "ArchS11_CertT2a"
+
+[[lean_lib]]
+name = "ArchS11_CertT2b"
+
+[[lean_lib]]
+name = "ArchS11_Final"
+
+[[lean_lib]]
+name = "ArchS11_Bound"
+
+[[lean_lib]]
+name = "ArchS11_KI"
+
+[[lean_lib]]
+name = "ArchS11_Guard"
+
+# ---- Stage S12 (final assembly: S12a one-condition at |I| = 1/2, S12b CC Thm 1 at |I| = log 2) ----
+[[lean_lib]]
+name = "ArchS12_Index"
+
+[[lean_lib]]
+name = "ArchS12_Bridge"
+
+[[lean_lib]]
+name = "ArchS12_Main"
+
+[[lean_lib]]
+name = "ArchS12_Guard"
+
+# Archimedean programme: guard for the certificate-heavy modules (NOT in defaultTargets; CI job rvm-bridge-arch-heavy).
+[[lean_lib]]
+name = "ArchHeavy_Guard"
+
+# S11-lite: per-row certificate part modules (heavy; not in defaultTargets).
+[[lean_lib]]
+name = "ArchS11_CGam_D"
+
+[[lean_lib]]
+name = "ArchS11_CGam_Q"
+
+[[lean_lib]]
+name = "ArchS11_CGam_R"
+
+[[lean_lib]]
+name = "ArchS11_CGam_U"
+
+[[lean_lib]]
+name = "ArchS11_CGam_UU"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_D"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_Q"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_R"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_U"
+
+[[lean_lib]]
+name = "ArchS11_CLam2_UU"
+
+[[lean_lib]]
+name = "ArchS11_COvl_D"
+
+[[lean_lib]]
+name = "ArchS11_COvl_Q"
+
+[[lean_lib]]
+name = "ArchS11_COvl_R"
+
+[[lean_lib]]
+name = "ArchS11_COvl_U"
+
+[[lean_lib]]
+name = "ArchS11_COvl_UU"
+
+[[lean_lib]]
+name = "ArchS11_CPsiA0"
+
+[[lean_lib]]
+name = "ArchS11_CPsiA1"
+
+[[lean_lib]]
+name = "ArchS11_CPsiA2"
+
+[[lean_lib]]
+name = "ArchS11_CPsiA3"
+
+[[lean_lib]]
+name = "ArchS11_CPsiH0"
+
+[[lean_lib]]
+name = "ArchS11_CPsiH1"
+
+[[lean_lib]]
+name = "ArchS11_CPsiH2"
+
+[[lean_lib]]
+name = "ArchS11_CPsiH3"
+
+[[lean_lib]]
+name = "ArchS11_CPsiL0"
+
+[[lean_lib]]
+name = "ArchS11_CPsiL1"
+
+[[lean_lib]]
+name = "ArchS11_CPsiL2"
+
+[[lean_lib]]
+name = "ArchS11_CPsiL3"
+
+[[lean_lib]]
+name = "ArchS11_CT1_D"
+
+[[lean_lib]]
+name = "ArchS11_CT1_Q"
+
+[[lean_lib]]
+name = "ArchS11_CT1_R"
+
+[[lean_lib]]
+name = "ArchS11_CT1_U"
+
+[[lean_lib]]
+name = "ArchS11_CT1_UU"
+
+[[lean_lib]]
+name = "ArchS11_CTop_D"
+
+[[lean_lib]]
+name = "ArchS11_CTop_Q"
+
+[[lean_lib]]
+name = "ArchS11_CTop_R"
+
+[[lean_lib]]
+name = "ArchS11_CTop_U"
+
+[[lean_lib]]
+name = "ArchS11_CTop_UU"
+
+[[lean_lib]]
+name = "ArchS11_Split"

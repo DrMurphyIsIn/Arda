@@ -611,4 +611,66 @@ def ThetaWidths : Set ℝ := {lam : ℝ | 0 < lam ∧ ThetaFree lam}
 
 end RvMBridge17
 
+
+/-
+  ===== CROSS-ISLAND VOCABULARY MIRROR (2026-10-11, archimedean rung: CC Cor 2.3) =====
+  VERBATIM from telperion/examples/rvm_bridge/lean/ (v4.33 island), each def mirrored inside
+  its source namespace so the qualified names match, with the source file's opens restored:
+    * RvMBridge11.psiR   -- E6Bridge11.lean:728 (Re digamma(1/4 + i r/2));
+    * RvMBridge31.hsq    -- E6Bridge31.lean:236 (|paperFT g r|^2);
+    * ArchS3.sincInt, ArchS3.deltaK, ArchS3.archW, ArchS3.Dfun -- ArchS3_Delta.lean:101, 109,
+      483, 486 (Connes-Consani (49) kernel delta(e^{|u|}) in sinc form, the archimedean Weil
+      functional (1/2pi) int |g^|^2 (psiR - log pi), and D(g * g^*) = Re int (g * g^*) delta).
+  Vocabulary for MM_cc_cor_2_3 (CC Corollary 2.3: archW g + Dfun g >= 0 for every Weil test).
+  `ArchS4.Dfun` (ArchS4_Rung.lean) is a DIFFERENT object with the same bare name, exempted in
+  missions/mirrors.py NOT_MIRRORS.  Nothing here proves anything about RH.
+  conjecture1_proved = False.
+-/
+namespace RvMBridge11
+open Zeta23 Complex MeasureTheory Filter Topology
+open scoped ComplexConjugate
+open WeilExplicit
+
+-- ===== E6Bridge11.lean:727-728 =====
+/-- psi(r) := Re digamma(1/4 + i r/2), the archimedean weight of archIntegrand. -/
+def psiR (r : ℝ) : ℝ := (Complex.digamma (1 / 4 + ((r : ℂ) / 2) * I)).re
+
+end RvMBridge11
+
+namespace RvMBridge31
+open Zeta23 Complex MeasureTheory
+open scoped ComplexConjugate
+open WeilExplicit RvMBridge11
+
+-- ===== E6Bridge31.lean:235-236 =====
+/-- The square transform h(r) = |ĝ(r)|^2, as a real function. -/
+def hsq (g : ℝ → ℂ) (r : ℝ) : ℝ := ‖paperFT g r‖ ^ 2
+
+end RvMBridge31
+
+namespace ArchS3
+open MeasureTheory Filter Topology Complex
+open scoped ComplexConjugate
+open WeilExplicit Zeta23 RvMBridge11 RvMBridge31
+
+-- ===== ArchS3_Delta.lean:100-101 =====
+/-- sincInt c = ∫_0^1 sinc(c t) dt = Si(c)/c (and = 1 at c = 0). -/
+def sincInt (c : ℝ) : ℝ := ∫ t in (0 : ℝ)..1, Real.sinc (c * t)
+
+-- ===== ArchS3_Delta.lean:108-111 =====
+/-- The additive-variable kernel delta(e^{|u|}), written in the closed form (49). -/
+def deltaK (u : ℝ) : ℝ :=
+  2 * Real.exp (|u| / 2) * (sincInt (2 * Real.pi * (Real.exp |u| + 1))
+    + sincInt (2 * Real.pi * (Real.exp |u| - 1)))
+
+-- ===== ArchS3_Delta.lean:482-483 =====
+/-- W_inf(g * g^*) = (1/2pi) ∫ |g^|^2 (psiR - log pi)  (CC (52): 2 theta' = psiR - log pi). -/
+def archW (g : ℝ → ℂ) : ℝ := (1 / (2 * Real.pi)) * ∫ r : ℝ, hsq g r * (psiR r - Real.log Real.pi)
+
+-- ===== ArchS3_Delta.lean:485-486 =====
+/-- D(g * g^*) = Re ∫ (g * g^*)(u) delta(e^{|u|}) du = <g, K_delta g>. -/
+def Dfun (g : ℝ → ℂ) : ℝ := (∫ u : ℝ, autocorr g u * (deltaK u : ℂ)).re
+
+end ArchS3
+
 end
