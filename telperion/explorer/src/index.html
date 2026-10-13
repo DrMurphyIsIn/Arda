@@ -33,6 +33,7 @@
   <button class="tab" role="tab" id="tab-dbn" aria-selected="false" data-panel="dbn">de Bruijn-Newman</button>
   <button class="tab" role="tab" id="tab-reg" aria-selected="false" data-panel="reg">The registry</button>
   <button class="tab" role="tab" id="tab-known" aria-selected="false" data-panel="known">What is known</button>
+  <button class="tab" role="tab" id="tab-surface" aria-selected="false" data-panel="surface">The missing surface</button>
   <button class="tab" role="tab" id="tab-compute" aria-selected="false" data-panel="compute">Compute it yourself</button>
 </nav>
 
@@ -318,8 +319,9 @@
     <li><strong>The wall in two parameters.</strong> RH is equivalent to Gaussian positivity above width <code>3/2000</code>; below that width positivity is a theorem with no zeros involved (<code>MM_wall_map</code>, <code>MM_gaussian_positivity_small_lam_3e3</code>). Beyond an explicit envelope in the centre, positivity is also a theorem (<code>MM_gaussian_positivity_envelope_sharp</code>). The Theta face is heat-monotone in the width (<code>MM_theta_heat_monotone</code>).</li>
     <li><strong>Li rungs.</strong> Rungs 0..4 nonnegative with no hypothesis (<code>RH_li_rungs_lt_five</code>); rungs 0..19 nonnegative modulo an Arb enclosure hypothesis each; every rung up to <code>2 pi (T - 1/2)</code> nonnegative given zeros on the line up to height <code>T</code>, with <code>T = 4000</code> conditional on Arb band hypotheses.</li>
     <li><strong>Zero-free regions.</strong> The de la Vallee Poussin region with an effective rate, the sharp zeta log bound, the elementary and polylog zero-free regions (rh campaign, granted 2026-09-11).</li>
-    <li><strong>The de Bruijn-Newman constant: Lambda &le; 9/32, machine-checked.</strong> OpenAI's quasi-Riemann hypothesis, <code>riemannZeta s &ne; 0</code> for <code>Re s &gt; 7/8</code> (openai/math, 2026-10-06, Apache-2.0; replayed here through Comparator with nanoda on, node <code>RH_zeta_zero_free_seven_eighths</code>), composed with de Bruijn's heat-flow theorem on the dbn island (<code>RH_dbn_real_zeros_of_zeta_halfplane</code>: a zero-free half-plane at <code>theta</code> makes every zero of <code>H_t</code> real for <code>t &ge; 2(theta - 1/2)^2</code>). At <code>theta = 7/8</code> this is <code>t &ge; 9/32</code>, stated and proved in one Lean environment at OpenAI's pin (<code>RH_dbn_real_zeros_nine_thirtyseconds</code>, unconditional, both kernels, judge-verified 2026-10-09). Classically <code>Lambda &le; 9/32 = 0.28125</code>: the first bound below de Bruijn's 1/2 that is kernel-checked end to end, and weaker than the numerical bounds 0.22 (Polymath15) and 0.2 (Platt-Trudgian). RH is <code>Lambda = 0</code>; the conversion from a half-plane is lossy, and a half-plane at about <code>0.83</code> would be needed to beat 0.22 by this route. Paper and Lean sources: <a href="https://github.com/DrMurphyIsIn/qrh-debruijn-newman">qrh-debruijn-newman</a>, Zenodo DOI <a href="https://doi.org/10.5281/zenodo.23269134">10.5281/zenodo.23269134</a> (all versions; v1.0.0 is <a href="https://doi.org/10.5281/zenodo.23269135">10.5281/zenodo.23269135</a>). The de Bruijn-Newman tab draws the half-plane-to-Lambda map, the heat-flow envelope and the height barrier.</li>
+    <li><strong>The de Bruijn-Newman constant: Lambda &le; 0.2811857, machine-checked (first 9/32).</strong> Liu's refinement of OpenAI's zero-free half-plane, Re s &gt; 0.874957, composed through the same converter, gives every zero of H_t real for t &ge; 0.2811857 (one kernel environment, judged with nanoda). The first bound was 9/32: OpenAI's quasi-Riemann hypothesis, <code>riemannZeta s &ne; 0</code> for <code>Re s &gt; 7/8</code> (openai/math, 2026-10-06, Apache-2.0; replayed here through Comparator with nanoda on, node <code>RH_zeta_zero_free_seven_eighths</code>), composed with de Bruijn's heat-flow theorem on the dbn island (<code>RH_dbn_real_zeros_of_zeta_halfplane</code>: a zero-free half-plane at <code>theta</code> makes every zero of <code>H_t</code> real for <code>t &ge; 2(theta - 1/2)^2</code>). At <code>theta = 7/8</code> this is <code>t &ge; 9/32</code>, stated and proved in one Lean environment at OpenAI's pin (<code>RH_dbn_real_zeros_nine_thirtyseconds</code>, unconditional, both kernels, judge-verified 2026-10-09). Classically <code>Lambda &le; 9/32 = 0.28125</code>: the first bound below de Bruijn's 1/2 that is kernel-checked end to end, and weaker than the numerical bounds 0.22 (Polymath15) and 0.2 (Platt-Trudgian). RH is <code>Lambda = 0</code>; the conversion from a half-plane is lossy, and a half-plane at about <code>0.83</code> would be needed to beat 0.22 by this route. Paper and Lean sources: <a href="https://github.com/DrMurphyIsIn/qrh-debruijn-newman">qrh-debruijn-newman</a>, Zenodo DOI <a href="https://doi.org/10.5281/zenodo.23269134">10.5281/zenodo.23269134</a> (all versions; v1.0.0 is <a href="https://doi.org/10.5281/zenodo.23269135">10.5281/zenodo.23269135</a>). The de Bruijn-Newman tab draws the half-plane-to-Lambda map, the heat-flow envelope and the height barrier.</li>
     <li><strong>Newman's conjecture: Lambda &ge; 0, machine-checked.</strong> Rodgers-Tao's 2018 theorem, formalized on the dbn island along Dobner's 2020 proof, which uses no information about the zeros of zeta: for every <code>t &lt; 0</code> the heat-flowed <code>H_t</code> has a non-real zero (<code>RH_dbn_newman</code>, theorem <code>dbn_newman</code>, axioms <code>[propext, Classical.choice, Quot.sound]</code>; operator read-back, gate 2026-09-23.1, Comparator with nanoda, run 38062595826, judge-verified 2026-10-10). The route: <code>H_t</code> as a Gaussian convolution of <code>H_0</code>, a saddle-point approximation at great height by an everywhere-convergent Dirichlet series (Dobner's Theorem 4), a zero of that series by Hadamard, zeros at every height by Bohr almost periodicity, and Hurwitz to transfer. New kernel-checked infrastructure along the way: complex Stirling with an explicit remainder, the digamma asymptotic, Bohr almost periodicity. With <code>Lambda &le; 9/32</code> the kernel-checked picture is <code>0 &le; Lambda &le; 9/32</code>; RH is <code>Lambda = 0</code> and is not proved. Paper and Lean sources: <a href="https://github.com/DrMurphyIsIn/newman-lambda-nonneg">newman-lambda-nonneg</a>, Zenodo DOI <a href="https://doi.org/10.5281/zenodo.23287832">10.5281/zenodo.23287832</a> (all versions; v1.0.0 is <a href="https://doi.org/10.5281/zenodo.23287833">10.5281/zenodo.23287833</a>).</li>
+    <li><strong>Weil positivity with the prime 2 inside (HODGE-1).</strong> On the pole-free class (<code>paperFT g (&plusmn;i/2) = 0</code>), positivity for every support half-width up to <code>5493/10000</code>, just below <code>log 3/2</code>, by kernel certificate, with kernel-checked negative controls (prime at 2.1, weight &times;1.05); the exact one-prime identity; and <code>RH &harr;</code> pole-free positivity outside that window. Nodes <code>MM_hodge1_*</code>; see the missing-surface tab.</li>
     <li><strong>Finite instruments of the quasicrystal program.</strong> Two-frequency rigidity, the Kurasov-Sarnak one-frequency construction, self-inversive polynomials versus the reality of Hardy's Z, the density of the prime-log spectrum and the resulting non-uniform-discreteness, the leakage dictionary (complete multiplicativity forces zero composite Bragg amplitude), the torus-section rung at <code>n = 2</code>, the Satake degree-two instrument that falsifies the multiplicative-twist clause on <code>L(s, Delta)</code>.</li>
     <li><strong>The ladder track (ANDURIL).</strong> Six proved nodes on the verified-evaluator reflection track; the ladder heights themselves (<code>h280000</code>, <code>10^6</code>, <code>10^9</code>) are open, and their island had no working CI at the last closure audit.</li>
     <li><strong>The Brualdi-Goldwasser campaign.</strong> Nine proved lemmas and one refuted capstone; the registry goal (the campaign's own conjecture 1, the cherry-backbone statement) is a draft. The 1984 problem itself is solved outside the registry: the maximizer for every n &ge; 4 is kernel-checked in Lean (not yet refereed), released at <a href="https://github.com/DrMurphyIsIn/brualdi-goldwasser">github.com/DrMurphyIsIn/brualdi-goldwasser</a>.</li>
@@ -329,7 +331,7 @@
     <ul>
       <li>The Riemann Hypothesis. <code>conjecture1_proved = False</code> in every campaign manifest and in this page.</li>
       <li>The goal node of every campaign: <code>MM_zeta_comb_membership</code>, <code>RH_conjecture</code>, <code>AND_ladder_1e13</code>, <code>BG_conjecture1</code>. All four are drafts.</li>
-      <li>Anything on the de Bruijn-Newman side beyond <code>0 &le; Lambda &le; 9/32</code>. The numerical bounds 0.22 and 0.2 are not in the kernel, and <code>Lambda = 0</code> is RH. Both kernel-checked halves were theorems before (de Bruijn 1950 plus OpenAI 2026; Rodgers-Tao 2018); the registry adds the verification, not the mathematics.</li>
+      <li>Anything on the de Bruijn-Newman side beyond <code>0 &le; Lambda &le; 0.2811857</code>. The numerical bounds 0.22 and 0.2 are not in the kernel, and <code>Lambda = 0</code> is RH. Both kernel-checked halves were theorems before (de Bruijn 1950 plus OpenAI 2026; Rodgers-Tao 2018); the registry adds the verification, not the mathematics.</li>
       <li>Anything that is Arb-conditional: the 20 Li rung certificates, the height-4000 composition, the ladder window hypothesis <code>WindowOnLine</code>, the DH inventory, every zoo verdict. A hypothesis discharged by interval arithmetic outside the kernel is not a kernel theorem.</li>
       <li>Anything this page computes: every plot is a float model over a truncated list of ordinates that are themselves a float model.</li>
       <li>Independence of any audit beyond what the registry records. A readback is self-attested unless the registry records a different principal (independent read-back) or a Comparator judge run (judge-verified) for the node.</li>
@@ -349,6 +351,150 @@
     <li>In the repository: <code>telperion/docs/QC_AXIOMS_DRAFT.md</code>, <code>QC_PROGRAM.md</code>, <code>QC_LITERATURE.md</code>, <code>ARITHMETIC_FQ_MEMBERSHIP_SPEC_2026-09-16.md</code>, <code>RH_ROUTES_ROADMAP_2026-09-16.md</code>, <code>WALL_MAP_2026-09-21.md</code>, <code>WALL_THETA_FACE_2026-09-21.md</code>.</li>
   </ul>
 </section>
+
+<section class="panel" id="panel-surface" role="tabpanel" aria-labelledby="tab-surface">
+  <p class="sf-eyebrow">Arda RH programme &middot; research report &middot; updated 13 October 2026</p>
+  <h2>Riemann's missing surface</h2>
+  <p class="sf-dek">What the programme has proved, what it has ruled out, and the one piece of mathematics that is still missing: a geometry in which Weil's explicit formula becomes an intersection pairing with a sign.</p>
+
+  <div class="honesty"><strong>Status.</strong> <code>conjecture1_proved = False</code>. The Riemann hypothesis is not proved here, and nothing on this tab is progress toward it. It is a map of where the missing structure cannot be, and a sharp statement of what it would have to do. Almost all of it is AI work by research agents of three coordinated Claude sessions. Independent review is marked where it happened, and each claim is labelled by how it is known.</div>
+
+  <div class="sf-legend" aria-label="Claim labels">
+    <span><span class="sf-tag sf-proved">Proved</span>kernel-checked or proved in a memo</span>
+    <span><span class="sf-tag sf-computed">Computed</span>numerical, reproducible</span>
+    <span><span class="sf-tag sf-conj">Conjectured</span>supported, not proved</span>
+    <span><span class="sf-tag sf-spec">Speculative</span>a lead</span>
+  </div>
+
+  <h3>How far we have come</h3>
+  <p>We have not proved RH, and nothing built here is close to a proof. What exists is a sizeable body of kernel-checked results around RH, a precise Lean statement of what is still open, and a verification pipeline that has held up under independent checks.</p>
+  <ul>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>0 &le; &Lambda; &le; 0.2811857</strong> for the de Bruijn-Newman constant, in the kernel and judged by two independent kernels.
+      <ul>
+        <li>&Lambda; &ge; 0 is Newman's conjecture, along Dobner's route. It extends to the whole Selberg class.</li>
+        <li>The upper bound came first as &Lambda; &le; 9/32, from OpenAI's zero-free half-plane Re s &gt; 7/8.</li>
+        <li>It improved to 0.2811857 from Liu's half-plane. That half-plane is the exact optimum of OpenAI's method, a constant our sextic-bottleneck analysis predicted to eight digits.</li>
+        <li>Both bounds are released with DOIs.</li>
+      </ul></li>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>Weil positivity on short windows.</strong> It holds for every test function up to support half-width 1/2, by kernel certificate (KWin2). Connes-Consani's archimedean positivity is proved their own conceptual way (Theorem 1, Theorem 4.7 and Corollary 2.3; about 24,500 Lean lines, PR #699).</li>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>HODGE-1: Weil positivity with the prime 2 inside.</strong>
+      <ul>
+        <li>An exact Lean identity for the Weil form with one prime: Re W(g) = archW(g) &minus; (log 2/&radic;2) Re(f(log 2) + f(&minus;log 2)) on the pole-free class, for 2L &le; log 3.</li>
+        <li>Positivity on the pole-free class up to half-width 5493/10000, just short of where the prime 3 enters (log 3/2 = 0.549306). That is a new range past 1/2, proved by certificate.</li>
+        <li>The result is specific to the prime: the kernel checks that the certificate fails when the prime is moved to 2.1 or its weight is raised by 5%.</li>
+        <li>All four HODGE-1 results are proved registry nodes (PRs #704, #710, #713 and #714 to #722).</li>
+      </ul></li>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>RH stated exactly as what remains.</strong> e9's pole-free converse plus HODGE-1 give a Lean theorem: RH holds if and only if Weil positivity holds for every pole-free test function whose support is not inside [&minus;0.5493, 0.5493]. This is a reformulation, not progress.</li>
+  </ul>
+  <p><strong>What has been ruled out, each with evidence:</strong></p>
+  <ul>
+    <li>Pushing the zero-free half-plane further with OpenAI's method. 7/8 is a two-sided limit of the method, and Liu's value is its exact optimum.</li>
+    <li>Reaching &Lambda; &le; 0.22 by this route. It would need zero computations far beyond what the kernel can check.</li>
+    <li>Getting RH from finite windows. The Weil floor shrinks like exp(&minus;c L&sup2;), and the Davenport-Heilbronn counterexample, which has zeros off the line, stays positive up to half-width about 1.713, so finite windows cannot tell &zeta; from it.</li>
+    <li>A structural proof of the pole step, even with one prime. Everything prime-specific sits in one scalar whose margin shrinks to about 4&times;10<sup>&minus;8</sup>.</li>
+    <li>Several candidate structures: a heat-flow Lyapunov function, cone geometry, interpolation bases, polarized dynamics, a Hecke-only sign, and a positive-subspace relaxation. Each failed or explained nothing new (the eight gates below).</li>
+  </ul>
+  <p><strong>The honest bottom line.</strong> The work has moved from "here are some bounds" to an exact Lean statement of what RH requires, on a small, well-tested foundation. The remaining step is the open core of the problem: a geometry in which Weil positivity with the primes inside holds at every scale.</p>
+
+  <h3>The short version of the missing piece</h3>
+  <p>We know why the gamma factor and the Euler product fit together. Tate's thesis makes each local factor the Mellin transform of a self-dual function at its place, glued by one global Poisson summation. What is missing is the geometry in which that fit becomes a positive pairing, the analogue of the Hodge index theorem on a curve times itself. Three results make the gap precise.</p>
+  <ul>
+    <li><strong>The missing piece is archimedean.</strong> Every local term of Weil's form is a positive transverse weight off the diagonal plus a finite part on it, at every prime and at infinity. All the negativity at infinity sits in one diagonal constant. The function-field evidence says the sign must come from the continuous scaling direction, not from discrete Hecke data.</li>
+    <li><strong>Existing geometry is quantised.</strong> Every automorphic constant term reaches &zeta; through the trivial, non-tempered representation, with a shift of exactly 1 between the two &xi; arguments. Positivity at any smaller shift is equivalent to a zero-free half-plane, so no existing structure can supply it.</li>
+    <li><strong>Weil's proof breaks at one step.</strong> Transported line by line, it first fails at the Hodge index. On the available span that step is RH itself, but it splits into a half we have and a missing Riemann-Roch identity on a constructed square: Conjecture RR-&square;.</li>
+  </ul>
+
+  <h3>The eight gates</h3>
+  <div class="tablewrap"><table class="plain sf-gates">
+    <thead><tr><th>Gate</th><th>Question</th><th>Verdict</th><th>What it established</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>Can a Weil-positivity ladder reach RH?</td><td class="sf-v sf-bar">No</td><td>Rungs are RH verified to height about e<sup>2L</sup>. Positivity is a global consistency of all coefficients, not a local mechanism.</td></tr>
+      <tr><td>1</td><td>Function-field control, cone geometry, interpolation</td><td class="sf-v sf-part">Mixed</td><td>On a curve the Hodge index gives semidefiniteness, not a margin. The positivity cone around &Lambda; shows no Euler-product signal. Interpolation bases restate RH.</td></tr>
+      <tr><td>2</td><td>Stack of norms, polarized dynamics, Div&sup1;</td><td class="sf-v sf-part">Partial</td><td>Each captures the prime side or the local shape; none gives the archimedean term with a sign.</td></tr>
+      <tr><td>3</td><td>An archimedean polarization coupled to the primes</td><td class="sf-v sf-part">Partial</td><td>W<sub>&infin;</sub> is Burnol's log|x| + log|&xi;|. One form carries the true W<sub>&infin;</sub> and Weil's primes, but its positivity comes only from a divergent scalar. The p-adic local term is a genuine fixed-point term.</td></tr>
+      <tr><td>4</td><td>Unitary axis at &frac12;, Hecke sign</td><td class="sf-v sf-bar">Barrier</td><td>Every structure gives two of three requirements. &zeta; enters through the trivial, non-tempered representation, in the pole slot.</td></tr>
+      <tr><td>5</td><td>The d-ladder: can the shift move below 1?</td><td class="sf-v sf-bar">Barrier</td><td>Constant terms give only whole-number shifts. Positivity below 1 is the zero-free half-plane. The genus grows with the scale.</td></tr>
+      <tr><td>6</td><td>Where exactly does Weil's proof fail over &#8474;?</td><td class="sf-v sf-part">Located</td><td>At the Hodge index. Over &#8474; the missing piece is a Riemann-Roch identity on a constructed surface.</td></tr>
+      <tr><td>7</td><td>Can local pieces with one positive direction each carry the sign?</td><td class="sf-v sf-bar">Reduces</td><td>Places, short windows, the prime-edge complex and the prime graph's sign all reduce to Weil's criterion.</td></tr>
+      <tr><td>8</td><td>Does Connes and Consani's square satisfy RR-&square;?</td><td class="sf-v sf-bar">No</td><td>Only formally. The content-carrying axioms are undefined there, and its pairing is defined to match Weil's form.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>The d-ladder</h3>
+  <p>For a shift 0 &lt; d &le; 1, put &sigma; = (1+d)/2. By the functional equation the ratio below has modulus 1, and its time delay is a single real function. Shift 1 is Eisenstein scattering on the modular surface; positivity at every shift is RH.</p>
+  <div class="sf-formula">&xi;((1&minus;d)/2 + it) / &xi;(&sigma; + it),&nbsp;&nbsp;&tau;<sub>d</sub>(t) = 2 Re &xi;&prime;/&xi;(&sigma; + it)</div>
+  <figure class="sf-fig">
+    <div class="tablewrap">
+    <svg viewBox="0 0 720 250" role="img" aria-labelledby="sfLadderT sfLadderD">
+      <title id="sfLadderT">The d-ladder across the critical strip</title>
+      <desc id="sfLadderD">Real part sigma from one half to 1.05, shift d equal to 2 sigma minus 1. Positivity is proved from sigma 0.874957 up to 1; Eisenstein scattering sits at sigma 1; Davenport-Heilbronn has zeros at real parts 0.8085 and 0.8695 and beyond 1; RH is the limit at sigma one half.</desc>
+      <rect x="482.7" y="52" width="141" height="120" fill="var(--cool-soft)"/>
+      <line x1="60" y1="172" x2="680" y2="172" stroke="var(--muted)"/>
+      <g font-size="12" text-anchor="middle" fill="var(--ink)"><text x="60" y="194">0.5</text><text x="172.7" y="194">0.6</text><text x="285.5" y="194">0.7</text><text x="398.2" y="194">0.8</text><text x="510.9" y="194">0.9</text><text x="623.6" y="194">1.0</text></g>
+      <g font-size="11" text-anchor="middle" fill="var(--muted)"><text x="60" y="211">d = 0</text><text x="172.7" y="211">0.2</text><text x="285.5" y="211">0.4</text><text x="398.2" y="211">0.6</text><text x="510.9" y="211">0.8</text><text x="623.6" y="211">1.0</text></g>
+      <text x="370" y="236" font-size="12" text-anchor="middle" fill="var(--muted)">real part &sigma; (shift d = 2&sigma; &minus; 1)</text>
+      <line x1="60" y1="40" x2="60" y2="172" stroke="var(--cool)" stroke-width="2"/>
+      <text x="66" y="48" font-size="12" font-weight="600" fill="var(--cool)">RH: every d &gt; 0</text>
+      <line x1="623.6" y1="40" x2="623.6" y2="172" stroke="var(--ink)" stroke-width="2"/>
+      <text x="617" y="34" font-size="12" font-weight="600" text-anchor="end" fill="var(--ink)">Eisenstein, d = 1</text>
+      <line x1="482.7" y1="52" x2="482.7" y2="172" stroke="var(--proved)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="490" y="70" font-size="11.5" fill="var(--proved)">proved positive</text>
+      <text x="490" y="85" font-size="11.5" fill="var(--proved)">Liu, d &gt; 0.7499</text>
+      <circle cx="407.8" cy="140" r="5" fill="var(--refuted)"/><text x="400" y="128" font-size="11" text-anchor="end" fill="var(--refuted)">DH zero 0.8085</text>
+      <circle cx="476.6" cy="120" r="5" fill="var(--refuted)"/><text x="470" y="108" font-size="11" text-anchor="end" fill="var(--refuted)">DH 0.8695</text>
+      <path d="M650 150 L676 150" stroke="var(--refuted)" stroke-width="2"/><path d="M676 150 L670 146 L670 154 Z" fill="var(--refuted)"/>
+      <text x="664" y="168" font-size="11" text-anchor="middle" fill="var(--refuted)">&beta; &gt; 1</text>
+    </svg>
+    </div>
+    <figcaption class="note">Shaded: the shifts where positivity is proved, from Liu's zero-free half-plane. Davenport-Heilbronn has zeros at real parts 0.8085 (height 85.7), 0.8695 (height 240.4) and beyond 1, so it fails every rung. A geometric system at any shift below 0.75, for every height, would be a new zero-free half-plane.</figcaption>
+  </figure>
+  <ul>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>Positivity is innerness.</strong> Every rung has modulus 1, so modulus carries no sign. What matters is that &xi;(w&minus;d)/&xi;(w) is bounded by 1 to the right of the line, which holds exactly when &zeta; has no zeros there. de Branges spaces and Lax-Phillips systems below shift 1 exist exactly under innerness, so they record a zero-free region and cannot produce one.</li>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>Theorem Q, quantisation.</strong> For degenerate data on any split group, the constant term on the unitary axis reduces to whole-number shifts d &ge; 1; the 1 is the degree of Haar measure on the unipotent radical. <span class="sf-tag sf-conj">Conjectured</span>in general. <span class="sf-tag sf-computed">Computed</span>exactly on 56 cases, including the cubic cover, whose normalizer is kernel-checked in AxiomMath's library.</li>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>Continuous shifts exist only without a sign.</strong> Rankin-Selberg periods move &zeta;'s arguments continuously but enter only as moduli; a non-unitary family reaches every shift, but its only invariant form is indefinite.</li>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>For &zeta;, degree and genus grow at the same scale,</strong> so the regime that makes the curve proof work never arrives. All the log&sup2; growth of the weighted genus comes from the archimedean place.</li>
+  </ul>
+
+  <h3>Where Weil's proof breaks</h3>
+  <ul>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>On curves the dictionary is exact.</strong> The restricted Weil form is minus the intersection form on the Frobenius graphs, orthogonal to the fibres; the explicit formula is the Lefschetz formula. Checked exactly on 20 curves.</li>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>The sign has one source:</strong> the ampleness of the two fibre classes, carried into positivity by Riemann-Roch on the surface.</li>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>Over &#8474;, the first step that fails is the Hodge index.</strong> It splits into an available half (positive local weights at every place, where the Euler product enters) and a missing Riemann-Roch index identity on a constructed surface.</li>
+  </ul>
+  <div class="honesty">
+    <p><strong>Conjecture RR-&square; (a sharpened form of Connes's programme).</strong> There is a square of Spec &#8484;, built without reference to the zeros of &zeta;, with divisors containing the scaling graphs, principal divisors and real-dimensional section spaces, satisfying a Riemann-Roch index identity whose leading term is Weil's form, with positive graphs and no zero divisors.</p>
+    <p><span class="sf-tag sf-proved">Proved</span>RR-&square; on windows covering every pole-free test implies RH, kernel-checked (PRs #711 and #712). The open content is the construction. In Connes and Consani's characteristic-one framework, "no zero divisors" holds automatically; the surface, its Riemann-Roch identity and the positivity of graphs remain open.</p>
+  </div>
+
+  <h3>Tests any candidate must pass</h3>
+  <ol class="sf-criteria">
+    <li><strong>Euler product.</strong> It must use Hecke multiplicativity, so that Davenport-Heilbronn falls out at construction time.</li>
+    <li><strong>Eigenvalue positions.</strong> In its function-field version, its sign must depend on where the Frobenius eigenvalues sit, not only on how many there are.</li>
+    <li><strong>Existence without zeros.</strong> Its positivity must be proved without reference to the zeros.</li>
+    <li><strong>Shift below 1.</strong> Its time delay must be &tau;<sub>d</sub> for some d &lt; 1 at every height, which no constant term can give.</li>
+    <li><strong>Genus.</strong> Its degree must be separable from the scale, with a genus growing slower than exponentially in log x.</li>
+  </ol>
+
+  <h3>Built along the way</h3>
+  <ul>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>The p-adic local term.</strong> Connes's p-adic weight 1/|1&minus;u<sup>&minus;1</sup>|<sub>p</sub>, conductor included, is a Lefschetz-Verdier fixed-point term on the Banach-Colmez space behind Div&sup1;, modulo one unwritten formal lemma (open restriction of local terms). Refereed by two agents of the authoring session and one independent agent session; not by a human.</li>
+    <li><span class="sf-tag sf-proved">Proved</span><strong>Complementary-series positivity for PGL<sub>2</sub>(&#8450;)</strong> for every 0 &lt; &nu; &lt; 1 (27 Lean declarations, PR #706).</li>
+    <li><span class="sf-tag sf-computed">Computed</span><strong>Independent replays of others' Lean proofs.</strong> OpenAI's 7/8 and Liu's refinement replay under two kernels. Cureton-Thorner's Dedekind-zeta zero-free region replays too, but its shipped Comparator pairing fails from an instance-path mismatch, fixed by one line.</li>
+    <li><strong>Infrastructure.</strong> A Comparator judge with a second kernel and tampered negative controls on every headline; a provenance-gated registry with operator and independent AI read-backs; a heavy judge path for certificate nodes.</li>
+  </ul>
+
+  <h3>Open leads</h3>
+  <ul>
+    <li><span class="sf-tag sf-spec">Speculative</span>Conjecture RR-&square; is the sharpest target. No known square of Spec &#8484; has divisors or section spaces.</li>
+    <li><span class="sf-tag sf-spec">Speculative</span>A tropical route that skips Riemann-Roch, after Cartwright's tropical Hodge index: each place would contribute exactly one positive direction. The naive local terms fail this; no place has exactly one.</li>
+    <li><span class="sf-tag sf-conj">Conjectured</span>Theorem Q beyond degenerate data; a Lean statement for SL<sub>2</sub> and GL<sub>n</sub> would make the barrier kernel-checked.</li>
+    <li><span class="sf-tag sf-spec">Speculative</span>Something outside reductive groups: a unipotent-type object of non-integral Haar degree, or a Riemann-Roch theorem whose degree is independent of the scale. No construction is known; this is where new mathematics would have to begin.</li>
+  </ul>
+
+  <h3>Provenance</h3>
+  <p class="note">Research memos are kept in the programme's research archive (gates 0 to 8 and the running RH assessment), and Lean results are in this repository: PRs #699, #704, #706, #710 to #722. The positions filter, Bombieri-Stepanov template and weighted genus are AI work by one session, not reviewed. Some citations were checked only against arXiv or Crossref listings; each memo marks which. Prepared by Claude for the Arda programme owner.</p>
+</section>
+
 
 <!-- ================================================================ -->
 <section class="panel" id="panel-compute" role="tabpanel" aria-labelledby="tab-compute">

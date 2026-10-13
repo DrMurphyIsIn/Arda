@@ -189,3 +189,22 @@ footer.bottom p { max-width: 80ch; }
   .controls input[type="range"] { width: 120px; }
   table.matrix th.clause { max-width: 12ch; font-size: 0.75rem; }
 }
+
+/* "The missing surface" tab (research report, merged 2026-10-13). Uses the explorer's own tokens. */
+#panel-surface .sf-eyebrow { font: 600 0.76rem/1.3 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--cool); margin: 1.2em 0 0.3em; }
+#panel-surface .sf-dek { font-family: var(--serif); font-size: 1.15rem; line-height: 1.45; color: var(--muted); max-width: 72ch; }
+#panel-surface .sf-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; font-size: 0.85rem; color: var(--muted); margin: 0.6rem 0 1rem; }
+#panel-surface .sf-tag { display: inline-block; font: 600 0.66rem/1 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; padding: 0.26rem 0.42rem; border-radius: 3px; vertical-align: 0.12em; margin-right: 0.35rem; white-space: nowrap; }
+#panel-surface .sf-proved { color: var(--pass-ink); background: var(--pass); }
+#panel-surface .sf-computed { color: var(--cool); background: var(--cool-soft); }
+#panel-surface .sf-conj { color: var(--cond-ink); background: var(--cond); }
+#panel-surface .sf-spec { color: var(--accent); background: var(--accent-soft); }
+#panel-surface .sf-gates { min-width: 36rem; }
+#panel-surface .sf-v { white-space: nowrap; font-weight: 600; }
+#panel-surface .sf-bar { color: var(--refuted); }
+#panel-surface .sf-part { color: var(--open); }
+#panel-surface .sf-formula { font-family: var(--mono); font-size: 0.92rem; background: var(--surface); border: 1px solid var(--line); padding: 0.7rem 1rem; overflow-x: auto; white-space: nowrap; margin: 0.8rem 0; }
+#panel-surface .sf-fig { margin: 1.2rem 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.8rem 0.8rem 0.5rem; }
+#panel-surface .sf-fig svg { display: block; width: 100%; min-width: 34rem; height: auto; font-family: var(--sans); }
+#panel-surface .sf-criteria li { margin: 0.5rem 0; }
+#panel-surface ul ul { margin-top: 0.3rem; }

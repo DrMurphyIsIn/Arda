@@ -58,14 +58,14 @@
     "deprecated": 1,
     "draft": 3,
     "open": 1,
-    "proved": 42,
+    "proved": 46,
     "refuted": 0
    },
    "description": "Migration of PROGRAM MIRRORMERE (telperion/docs/QC_PROGRAM.md, ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md) into the missions registry: the reverse-Dyson program -- classify 1-D Fourier quasicrystals, locate the zeta point set, extract zero-localization -- built as finite, unconditional instruments (axioms + falsification zoo, the rigidity ladder R1/R2/R3, the defect-k instrument, the N(T) brick). NOTHING here proves or claims RH and conjecture1_proved = False throughout; the goal node is the program's honest RH-hard membership target and is draft. The known difficulty map: RH-hardness enters at exactly one place, twice disguised (FQ-grade temperedness of the dual comb; the rational -> irrational frequency transition); everything registered below is unconditional or carries its named hypothesis explicitly. FIDELITY NOTE (design section 9, UPDATED 2026-09-18): the rh/million-turing line is now merged into main (#506), so the linked artifacts are on main and the deferred `mission grant` pass is unblocked -- nine nodes still carry a [proof] link at status=open and are awaiting it. One node IS proved: MM_rvm_unbounded_mean_density, granted via the cross-island rvm_bridge discharge (#553). The original wording -- no node enters as proved, grant deferred to the branch reconcile -- described the pre-reconcile state and no longer holds. Environment = v4.32.0 (quasicrystal island); two nodes' artifacts live on the zeta_zero_localization island (same pin, cross-island grant per design section 2). W3b IS REGISTERED (MM_bragg_bridge, 2026-09-15): the gw-finite agent proved rect_explicit_formula_bragg on the v4.34 li island -- cross-island node per design section 2. Statement-authoring queue (nodes NOT yet registered because their authoritative formal statements ARE the work; specs in RH_ROUTES_ROADMAP_2026-09-16 section 9): the T->inf corridor bound |zeta'/zeta| = O(log^2 T) (effective-constant form must be pinned against its four consumers -- W3b limit, B6, D6, A3), the A0 REGULARIZED membership statement (the naive clause list '|mu-hat| tempered for the (log p)p^{-m/2} dual comb' is UNCONDITIONALLY FALSE -- sum_{n<=e^R} Lambda(n) n^{-1/2} ~ 2 e^{R/2} by PNT, and mu-hat carries an absolutely-continuous archimedean component; only the Guinand-Weil-regularized triple can carry membership, and authoring it is open formulation work), the W_temp precise wall statement (QC_LITERATURE section 1.7 grades it a program conjecture), R1 crystalline rigidity with the isolated temperedness clause, W3c infinite-torus log-density FQ axioms, A3-adjacent W4 face probes, the torus-section ladder's T3 defect-instrumentation rungs, MM_leakage_composite_zero (the content is the log-derivative coefficient functional; the Lambda-support direction is rfl-bait), and MM_ks_forward_smallN (the island's FQ vocabulary is deliberately abstract; a concrete faithful statement is W3c formulation work). UPDATE 2026-09-21 (PR #593): the goal statement was re-authored from the 2026-09-14 placeholder (Mathlib RiemannHypothesis via the opaque-variable def zeta_FQ_iff_RH, an identification by fiat) to Weil positivity of weilForm on autocorr g over IsWeilTest, and its RH-equivalence is now the PROVED node MM_zeta_comb_membership_iff_rh (Weil criterion in-kernel, E6Bridge5-9 on the rvm_bridge island, four blind audits); the Gaussian obligations MM_gaussian_dominance / MM_gaussian_approx / MM_gaussian_transfer and the converse MM_weil_positivity_implies_rh are proved. The goal node stays draft: it is RH by theorem.",
    "dir": "mirrormere",
    "goal_node": "MM_zeta_comb_membership",
    "mathlib_rev": "v4.32.0",
-   "n_nodes": 47,
+   "n_nodes": 51,
    "name": "MM.reverse_dyson",
    "sources": [
     "Dyson, F. (2009), Birds and frogs, Notices AMS 56 -- the reverse proposal",
@@ -2248,7 +2248,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2272,7 +2273,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-12",
+     "run_id": "38278712834",
+     "run_url": "",
+     "theorem": "cc_cor_2_3"
+    },
     "grant": {
      "artifact_sha256": "215931fac0e2ccde",
      "date": "2026-10-12",
@@ -2283,7 +2289,7 @@
    "readback": {
     "auditor": "AI read-back by Claude (Riemann session), NOT an operator read-back; requested by the operator 2026-10-12",
     "date": "2026-10-12",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "For every function g from the reals to the complex numbers that is infinitely differentiable with compact support (IsWeilTest; no bound on the support width and no vanishing condition at any point), the real number archW g + Dfun g is at least 0. Here archW g = (1/(2 pi)) times the integral over all real r of |G(r)|^2 (Re digamma(1/4 + i r/2) - log pi), where G(r) = integral of g(u) exp(i r u) du; and Dfun g = the real part of the integral over all real u of (g * g~)(u) K(u), where (g * g~)(u) = integral of g(v) conj(g(v - u)) dv and K(u) = 2 exp(|u|/2) (S(2 pi (e^|u| + 1)) + S(2 pi (e^|u| - 1))) with S(c) = integral from 0 to 1 of sinc(c t) dt. So the archimedean Weil functional plus this explicit kernel correction is nonnegative on every test function."
    },
    "refutation_statement": "",
@@ -2300,7 +2306,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2356,7 +2363,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2461,7 +2469,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2514,7 +2523,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2567,7 +2577,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2620,7 +2631,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2675,7 +2687,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2731,7 +2744,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2786,7 +2800,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2842,7 +2857,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2897,7 +2913,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2950,7 +2967,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -2997,6 +3015,216 @@
    "status": "proved",
    "title": "Obligation O1 (GaussianTransfer): the Gaussian-derivative Hermitian transform G_{c,lam} is a limit of Hermitian transforms of smooth compactly supported Weil tests FOR THE ZERO-SIDE FUNCTIONAL, Re zeroSide (hermitianTransform g_n) -> Re zeroSide G_{c,lam}. Discharged by O1' (MM_gaussian_approx) via the PROVED RvMBridge6.gaussianTransfer_of_approx (Tannery's theorem against the local zero count Sum m(rho)/(1+|gamma_rho|^2) < infinity, Zeta23.WeilEF.zero_sum_inv_sq); so this node closes the moment O1' does. Independent of RH; NOT RH-hard. conjecture1_proved = False.",
    "updated": "2026-09-30"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-13",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_hodge1_one_prime_identity",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.hodge1_one_prime_identity",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/Hodge1_RegOnePrime.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/Hodge1_RegOnePrime.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": {
+     "artifact_sha256": "c132c4cffadd5667",
+     "date": "2026-10-13",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-13",
+    "independence": "independent read-back",
+    "text": "AI read-back of theorem re_weilForm_eq_archW_sub_prime. Registry definitions checked verbatim against the rvm_bridge island (IsWeilTest, weilKernel, archIntegrand, archSide, primeSide as in E6Bridge4; autocorr and weilForm as in E6Bridge5; Zeta23.paperFT; hsq from E6Bridge31; psiR from E6Bridge11; archW from ArchS3_Delta), and the island theorem in Hodge1_Reduction.lean has the same type. Hypotheses: g : R -> C is smooth with compact support; its topological support lies in [-L, L]; 2L <= log 3; and paperFT g (i/2) = integral of g(u) e^(-u/2) du = 0. Let f = autocorr g, f(u) = integral of g(v) conj(g(v - u)) dv. Conclusion: Re weilForm f, i.e. Re(archSide f - primeSide f), equals archW g - (log 2 / sqrt 2) Re(f(log 2) + f(-log 2)), where archW g = (1/(2 pi)) times the integral over real r of |paperFT g r|^2 (Re digamma(1/4 + i r/2) - log pi). Reading: f is supported in [-2L, 2L], inside [-log 3, log 3], so in primeSide only n = 2 contributes (Lambda(2)/sqrt 2 = log 2/sqrt 2); the two pole terms weilKernel f 0 and weilKernel f 1 each carry the factor paperFT g (i/2) and vanish; and the -f(0) log pi term together with the digamma integral is archW g by Plancherel. It is an exact identity on this pole-free one-prime window, makes no positivity claim, and says nothing about zeros of zeta or about RH."
+   },
+   "refutation_statement": "",
+   "slug": "MM_hodge1_one_prime_identity",
+   "statement": "theorem re_weilForm_eq_archW_sub_prime {g : ℝ → ℂ} (hg : WeilExplicit.IsWeilTest g) {L : ℝ}\n    (hsupp : tsupport g ⊆ Set.Icc (-L) L) (hL : 2 * L ≤ Real.log 3)\n    (h0 : Zeta23.paperFT g (Complex.I / 2) = 0) :\n    (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re\n      = ArchS3.archW g - (Real.log 2 / Real.sqrt 2)\n          * (WeilExplicit.autocorr g (Real.log 2) + WeilExplicit.autocorr g (-Real.log 2)).re",
+   "status": "proved",
+   "title": "THE EXACT ONE-PRIME WEIL IDENTITY ON THE POLE-FREE WINDOW (rvm_bridge island, Hodge1_Reduction, HODGE-1 Phase 1, 2026-10-12): for every Weil test g supported in [-L, L] with 2L <= log 3, so that p = 2 is the only prime term, and paperFT g (i/2) = 0, so that both pole terms of autocorr g vanish, Re weilForm(autocorr g) = archW g - (log 2/sqrt 2) Re(f(log 2) + f(-log 2)), f = autocorr g. Exact, no numerics. The first statement in the registry of the Weil form with a prime inside.",
+   "updated": "2026-10-13"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-13",
+   "depends_on": [
+    "mirrormere:MM_hodge1_window5493"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_hodge1_rh_reduction",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.hodge1_rh_reduction",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/Hodge1_RegRH.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/Hodge1_RegRH.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": {
+     "artifact_sha256": "ccc5a9557ef510ae",
+     "date": "2026-10-13",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-13",
+    "independence": "independent read-back",
+    "text": "AI read-back of theorem rh_iff_poleFree_outside_window5493. Vocabulary as in MMDefs and checked against the rvm_bridge island: IsWeilTest g means g : R -> C is smooth (C^infinity) with compact support; autocorr g (u) = integral of g(v) conj(g(v - u)) dv; weilForm f = archSide f - primeSide f, with archSide the two pole terms weilKernel f 0 + weilKernel f 1, minus f(0) log pi, plus (1/(2 pi)) times the integral of the transform against Re digamma(1/4 + i r/2), and primeSide = sum over n of Lambda(n)/sqrt n (f(log n) + f(-log n)); Zeta23.paperFT g z = integral of g(u) e^(i z u) du, so the hypothesis paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 says the integrals of g(u) e^(-u/2) and g(u) e^(u/2) both vanish (pole-free; Hodge1.PoleFree2 unfolds to exactly this). Statement: Mathlib's RiemannHypothesis (not redefined in MMDefs) holds if and only if, for every smooth compactly supported g with both pole conditions whose topological support is NOT contained in [-0.5493, 0.5493], the real part of weilForm(autocorr g) is >= 0. Combined with MM_hodge1_window5493, which covers the tests supported inside that window, this says RH is equivalent to pole-free Weil positivity for all tests; the theorem is a reformulation that isolates the part not yet proved (supports reaching beyond half-width 0.5493). It is not progress on RH. The statement is identical to the island wrapper Hodge1_RegRH, proved from Hodge1.rh_iff_poleFree2_outside_window5493 (heavy job)."
+   },
+   "refutation_statement": "",
+   "slug": "MM_hodge1_rh_reduction",
+   "statement": "theorem rh_iff_poleFree_outside_window5493 :\n    RiemannHypothesis ↔\n      ∀ g : ℝ → ℂ, WeilExplicit.IsWeilTest g →\n        (Zeta23.paperFT g (Complex.I / 2) = 0 ∧ Zeta23.paperFT g (-Complex.I / 2) = 0) →\n        ¬ (tsupport g ⊆ Set.Icc (-(5493 / 10000 : ℝ)) (5493 / 10000)) →\n        0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
+   "status": "proved",
+   "title": "RH IFF POLE-FREE WEIL POSITIVITY OUTSIDE THE HODGE-1 WINDOW (rvm_bridge, kernel-checked): RiemannHypothesis holds iff 0 <= Re weilForm(autocorr g) for every pole-free Weil test g whose support is NOT inside [-5493/10000, 5493/10000]. Combines e9's pole-free converse with the HODGE-1 window theorem. A reformulation of the open content, not progress on RH.",
+   "updated": "2026-10-13"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-13",
+   "depends_on": [
+    "mirrormere:MM_hodge1_one_prime_identity"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_hodge1_window45",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.hodge1_window45",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/Hodge1_RegWindow45.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/Hodge1_RegWindow45.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": {
+     "artifact_sha256": "f1fc3f5a30c1a7a5",
+     "date": "2026-10-13",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-13",
+    "independence": "independent read-back",
+    "text": "AI read-back of theorem weil_positivity_poleFree_window45. Vocabulary as in MMDefs and checked against the rvm_bridge island: IsWeilTest g means g : R -> C is smooth (C^infinity) with compact support; autocorr g (u) = integral of g(v) conj(g(v - u)) dv; weilForm f = archSide f - primeSide f, with archSide the two pole terms weilKernel f 0 + weilKernel f 1, minus f(0) log pi, plus (1/(2 pi)) times the integral of the transform against Re digamma(1/4 + i r/2), and primeSide = sum over n of Lambda(n)/sqrt n (f(log n) + f(-log n)); Zeta23.paperFT g z = integral of g(u) e^(i z u) du, so the hypothesis paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 says the integrals of g(u) e^(-u/2) and g(u) e^(u/2) both vanish (pole-free; Hodge1.PoleFree2 unfolds to exactly this). Statement: for every such g with both pole conditions, every real L <= 9/20, and topological support of g inside [-L, L], the real part of weilForm(autocorr g) is >= 0. So Weil positivity holds for pole-free tests on windows of half-width up to 0.45; since autocorr g is then supported in [-0.9, 0.9], which contains log 2 but not log 3, only the prime 2 enters. The registered statement is identical to the island wrapper Hodge1_RegWindow45, which is proved from Hodge1.weil_positivity_poleFree2_window45 (certificate-based; built in the heavy job). It is a finite-window verification statement: no conceptual content beyond the window, and nothing about RH."
+   },
+   "refutation_statement": "",
+   "slug": "MM_hodge1_window45",
+   "statement": "theorem weil_positivity_poleFree_window45 (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g)\n    (hP : Zeta23.paperFT g (Complex.I / 2) = 0 ∧ Zeta23.paperFT g (-Complex.I / 2) = 0) (L : ℝ) (hL : L ≤ 9 / 20) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :\n    0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
+   "status": "proved",
+   "title": "POLE-FREE ONE-PRIME WEIL POSITIVITY, L <= 9/20 (rvm_bridge, HODGE-1 Phase 1, kernel certificate): for every Weil test g with paperFT g (+-i/2) = 0 supported in [-L, L], L <= 9/20, Re weilForm(autocorr g) >= 0. Proof: the strip lemma bounds the p = 2 term by the energy of g on the two end strips, then a KWin2-style certificate proves the prime-free inequality archW >= (log 2/sqrt 2) strip energy with margin 3/100. Not a new range (KWin2 covers the full class to 1/2) and not prime-specific.",
+   "updated": "2026-10-13"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-13",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_hodge1_window5493",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.hodge1_window5493",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/Hodge1_RegWindow5493.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/Hodge1_RegWindow5493.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": {
+     "artifact_sha256": "156668c5b3bd05e4",
+     "date": "2026-10-13",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-13",
+    "independence": "independent read-back",
+    "text": "AI read-back of theorem weil_positivity_poleFree_window5493. Vocabulary as in MMDefs and checked against the rvm_bridge island: IsWeilTest g means g : R -> C is smooth (C^infinity) with compact support; autocorr g (u) = integral of g(v) conj(g(v - u)) dv; weilForm f = archSide f - primeSide f, with archSide the two pole terms weilKernel f 0 + weilKernel f 1, minus f(0) log pi, plus (1/(2 pi)) times the integral of the transform against Re digamma(1/4 + i r/2), and primeSide = sum over n of Lambda(n)/sqrt n (f(log n) + f(-log n)); Zeta23.paperFT g z = integral of g(u) e^(i z u) du, so the hypothesis paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 says the integrals of g(u) e^(-u/2) and g(u) e^(u/2) both vanish (pole-free; Hodge1.PoleFree2 unfolds to exactly this). Statement: for every such g with both pole conditions, every real L <= 5493/10000, and topological support of g inside [-L, L], the real part of weilForm(autocorr g) is >= 0. Since log 3 / 2 = 0.549306..., autocorr g is supported strictly inside (-log 3, log 3), so only the prime 2 enters; this extends the window of MM_hodge1_window45 and goes past the half-width 1/2 of the KWin2 result. The statement is identical to the island wrapper Hodge1_RegWindow5493, proved from Hodge1.weil_positivity_poleFree2_window5493 (certificate-based; heavy job). A finite-window verification statement with no conceptual content beyond the window; nothing about RH."
+   },
+   "refutation_statement": "",
+   "slug": "MM_hodge1_window5493",
+   "statement": "theorem weil_positivity_poleFree_window5493 (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g)\n    (hP : Zeta23.paperFT g (Complex.I / 2) = 0 ∧ Zeta23.paperFT g (-Complex.I / 2) = 0) (L : ℝ) (hL : L ≤ 5493 / 10000) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :\n    0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
+   "status": "proved",
+   "title": "POLE-FREE ONE-PRIME WEIL POSITIVITY, L <= 5493/10000 (rvm_bridge, HODGE-1 Phase 1b-B, kernel certificate): for every Weil test g with paperFT g (+-i/2) = 0 supported in [-L, L], L <= 5493/10000 (just below (log 3)/2, so p = 2 is the only prime), Re weilForm(autocorr g) >= 0. A NEW range past KWin2's 1/2 on this class. Direct certificate with the p = 2 comb inside the symbol; floor (1/2000)||g||^2. Kernel-checked negative controls: prime moved to 2.1, weight 1.05 c2.",
+   "updated": "2026-10-13"
   },
   {
    "arb": false,
@@ -3349,7 +3577,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -3402,7 +3631,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -3458,7 +3688,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -3513,7 +3744,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -3569,7 +3801,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -3622,7 +3855,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -3857,7 +4091,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4064,7 +4299,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4120,7 +4356,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4177,7 +4414,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4233,7 +4471,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4292,7 +4531,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4337,7 +4577,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4446,7 +4687,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4502,7 +4744,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4605,7 +4848,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4660,7 +4904,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4720,7 +4965,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4775,7 +5021,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -4831,7 +5078,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -5081,7 +5329,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -6093,7 +6342,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -6242,7 +6492,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -6297,7 +6548,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -6691,7 +6943,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -6744,7 +6997,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -6800,7 +7054,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -6857,7 +7112,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -6912,7 +7168,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -6965,7 +7222,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7018,7 +7276,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7073,7 +7332,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7177,7 +7437,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7264,7 +7525,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7320,7 +7582,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7373,7 +7636,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7429,7 +7693,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7485,7 +7750,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7541,7 +7807,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7594,7 +7861,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7649,7 +7917,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7705,7 +7974,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -7758,7 +8028,8 @@
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
-     "telperion-lean-e2e.yml:rvm-bridge-compiles"
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
     ],
     "label": "module-covered"
    },
@@ -8213,7 +8484,7 @@
   "deprecated": 6,
   "draft": 14,
   "open": 4,
-  "proved": 130,
+  "proved": 134,
   "refuted": 1
  }
 }
