@@ -1,0 +1,27 @@
+name = "AxiomMetaplectic"
+# Axiom metaplectic island (2026-10-12, owner-approved): imports narrow pieces of the AxiomMath Lean library
+# behind Cureton-Thorner, "A quasi-Riemann hypothesis for Dedekind zeta functions" (hexagon:2610.00200v1),
+# for the gate-4 complementary-series lead (~/arda-research ASSESSMENT_RH_2026-10-12 section 9).
+# SEPARATE toolchain island by necessity: the library pins Lean v4.35.0-rc3 / Mathlib 0493595e, 1,418 Mathlib
+# commits ahead of rvm_bridge; porting is not feasible (glean/g_port.md). We depend on it, we do not vendor it.
+# Not in CI yet: the dependency closure is ~5,300 modules (~1.2M lines) and needs 25-60 GB RAM uncapped.
+defaultTargets = ["AxiomProbe", "CompSeriesPositivity", "AxiomGuardMetaplectic"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+# AxiomMath/DedekindZetaZeroFree, Apache-2.0, pinned to the published commit (package name `dedekind_zeta`).
+[[require]]
+name = "dedekind_zeta"
+git = "https://github.com/AxiomMath/DedekindZetaZeroFree"
+rev = "284348a4f46a7f1ed8cc20964c157d7a0e88439d"
+
+[[lean_lib]]
+name = "AxiomProbe"
+
+[[lean_lib]]
+name = "CompSeriesPositivity"
+
+[[lean_lib]]
+name = "AxiomGuardMetaplectic"
