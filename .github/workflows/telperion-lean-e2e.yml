@@ -2970,9 +2970,11 @@ jobs:
       # covers the registry (closure-run audit 2026-09-22).  This asserts an exact-clean line for the
       # theorem of EVERY proved registry node whose artifact is on this island (52 as of 2026-09-22),
       # derived from telperion/missions/*/nodes/*.toml and the nodes' statement files.
-      - name: Registry anchors (every proved rvm_bridge node is printed clean)
+      # --exclude-heavy: judge_via = "heavy" nodes (the HODGE-1 certificates) are never imported by
+      # AxiomGuardRvMBridge; their anchors are checked by rvm-bridge-hodge1-heavy (--only-heavy).
+      - name: Registry anchors (every proved non-heavy rvm_bridge node is printed clean)
         working-directory: telperion/examples/rvm_bridge/lean
-        run: python ../../../scripts/guard_anchors.py --island rvm_bridge axioms.out
+        run: python ../../../scripts/guard_anchors.py --island rvm_bridge --exclude-heavy axioms.out
   rvm-bridge-arch-heavy:
     # Archimedean Connes-Consani programme (PR #699): the certificate-heavy modules (S9 prolate certificates,
     # S10 chi, S11 K_I spectrum, S12 final assembly) are NOT in defaultTargets, because lake's default parallel
@@ -3089,13 +3091,23 @@ jobs:
           set -euo pipefail
           lake env lean Hodge1_Guard.lean 2>&1 | tee hodge1_axioms.out
           n=$(grep -cE "depends on axioms|does not depend on any axioms" hodge1_axioms.out || true)
-          if [ "$n" -lt "38" ]; then
-            echo "::error::HODGE-1 guard printed $n axiom lines, expected at least 38 -- the guard did not run or was silently truncated"; exit 1; fi
+          if [ "$n" -lt "41" ]; then
+            echo "::error::HODGE-1 guard printed $n axiom lines, expected at least 41 -- the guard did not run or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" hodge1_axioms.out; then echo "::error::sorryAx present"; exit 1; fi
           if tr "\n" " " < hodge1_axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
                | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
                | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
             echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"; exit 1; fi
+
+      # The judge_via = "heavy" half of the registry split: every proved heavy rvm_bridge node's theorem
+      # (the Hodge1_Reg* registry shapes) must be printed clean by Hodge1_Guard.  The ordinary rvm_bridge
+      # job checks the rest against AxiomGuardRvMBridge (--exclude-heavy).
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Registry anchors (every proved heavy rvm_bridge node is printed clean by Hodge1_Guard)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: python ../../../scripts/guard_anchors.py --island rvm_bridge --only-heavy hodge1_axioms.out
 
   dbn-compiles:
     needs: changes

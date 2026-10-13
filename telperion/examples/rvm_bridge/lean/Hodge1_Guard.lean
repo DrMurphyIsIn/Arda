@@ -15,6 +15,9 @@ import Hodge1_Ldl5493N
 import Hodge1_Ldl5493Q
 import Hodge1_Ldl5493W
 import Hodge1_RHReduction
+import Hodge1_RegWindow45
+import Hodge1_RegWindow5493
+import Hodge1_RegRH
 
 #print axioms Hodge1.re_autocorr_pair_le_stripEnergy
 #print axioms Hodge1.primeSide_autocorr_eq_two
@@ -58,3 +61,8 @@ import Hodge1_RHReduction
 #print axioms Hodge1.weil_positivity_poleFree2_window5493
 #print axioms Hodge1.poleFree2_iff_poleFree
 #print axioms Hodge1.rh_iff_poleFree2_outside_window5493
+
+-- Registry shapes (MMDefs vocabulary, root level) of the heavy mirrormere HODGE-1 nodes.
+#print axioms weil_positivity_poleFree_window45
+#print axioms weil_positivity_poleFree_window5493
+#print axioms rh_iff_poleFree_outside_window5493

@@ -61,7 +61,7 @@ def test_targets_plan_is_exactly_the_listed_modules_in_order(tmp_path):
                                            heavy_build_targets=HODGE1_TARGETS))
     plan = judge.heavy_build_plan(root, "rvm_bridge", "HODGE1_window_5493")
     assert plan == {"mode": "targets", "targets": HODGE1_TARGETS, "segments": []}
-    assert plan["targets"][-1] == "Hodge1_Window5493"
+    assert "Hodge1_Window5493" in plan["targets"]
 
 
 def test_workflow_builds_targets_one_at_a_time_in_order_then_the_challenge(tmp_path):
