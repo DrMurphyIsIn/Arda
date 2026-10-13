@@ -3033,9 +3033,42 @@ jobs:
                | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
             echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"; exit 1; fi
 
-      # HODGE-1 (one-prime pole-free Weil positivity, L <= 9/20): its window theorem imports the H45 kernel
-      # certificates (Hodge1_Cert45E/O, about 13 GB each on macOS), so the whole Hodge1 chain is built here,
-      # one module at a time, and not in defaultTargets. Separate list and guard from the archimedean ones.
+  rvm-bridge-hodge1-heavy:
+    # HODGE-1 (one-prime pole-free Weil positivity): the window theorems import kernel certificates that are
+    # NOT in defaultTargets (Hodge1_Cert45E/O at l = 9/20; the staged direct certificate at l = 5493/10000:
+    # Hodge1_Rows5493E/O, Hodge1_Cert5493E/O/N/Q/W (moment-transform and head row blocks) and the exact LDL
+    # steps Hodge1_Ldl5493E/O/N/Q/W).  Every declaration is kept well under the 16 GB runner; the modules are
+    # built ONE AT A TIME in dependency order (hodge1_heavy_modules.txt), then the HODGE-1 guard runs.
+    # Measured on macOS (2026-10-12): every module <= 10.4 GB RSS; the 1b-B (l = 5493/10000) modules total
+    # about 17 min, the 1b-A ones about 6 min.  The kernel-evaluation declarations carry
+    # `set_option maxHeartbeats 0`: the kernel enforces maxHeartbeats on `decide +kernel`; lifting it is a
+    # resource limit only, the kernel still checks every reduction step.
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.rvm_bridge == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/rvm_bridge/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache (through the Zeta23 dependency)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake exe cache get
+
+      - name: Build the light island (defaultTargets)
+        working-directory: telperion/examples/rvm_bridge/lean
+        run: lake build
+
       - name: Build the HODGE-1 modules one at a time
         working-directory: telperion/examples/rvm_bridge/lean
         shell: bash
@@ -3056,8 +3089,8 @@ jobs:
           set -euo pipefail
           lake env lean Hodge1_Guard.lean 2>&1 | tee hodge1_axioms.out
           n=$(grep -cE "depends on axioms|does not depend on any axioms" hodge1_axioms.out || true)
-          if [ "$n" -lt "25" ]; then
-            echo "::error::HODGE-1 guard printed $n axiom lines, expected at least 25 -- the guard did not run or was silently truncated"; exit 1; fi
+          if [ "$n" -lt "36" ]; then
+            echo "::error::HODGE-1 guard printed $n axiom lines, expected at least 36 -- the guard did not run or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" hodge1_axioms.out; then echo "::error::sorryAx present"; exit 1; fi
           if tr "\n" " " < hodge1_axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
                | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
