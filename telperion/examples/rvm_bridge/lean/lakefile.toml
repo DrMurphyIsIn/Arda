@@ -1035,3 +1035,16 @@ name = "ArchS11_Split"
 [[lean_lib]]
 name = "Hodge1"
 roots = ["Hodge1_Strip", "Hodge1_Reduction", "Hodge1_KPen", "Hodge1_HeadP", "Hodge1_TailP", "Hodge1_ArchSplit", "Hodge1_ArchSectors", "Hodge1_Par45", "Hodge1_Cert45E", "Hodge1_Cert45O", "Hodge1_Window45"]
+
+# Pole-free Weil converse (e9, 2026-10-12): Weil positivity on PoleFree2 tests (both pole functionals
+# vanish) implies Mathlib's RiemannHypothesis, unconditionally on this island; plus the RR-square
+# composition.  A: pole-free tests t_n = g_n'' - g_n/4 and the weighted strip approximation;
+# B: weighted Gaussian dominance; C: assembly + RR-square.  Light modules.  conjecture1_proved = False.
+[[lean_lib]]
+name = "PFConverseA"
+
+[[lean_lib]]
+name = "PFConverseB"
+
+[[lean_lib]]
+name = "PFConverseC"
