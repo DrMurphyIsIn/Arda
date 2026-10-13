@@ -293,6 +293,7 @@ import ArchS5_Spectral
 import ArchS5_HSRank
 import ArchS8_Kernel
 import ArchPipeline_Rung80
+import PFConverseC
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -2409,3 +2410,13 @@ import ArchPipeline_Rung80
 -- Archimedean programme: S11 spectral certificate for K_I (2026-10-11).
 
 -- Archimedean programme: S12 final assembly -- CC Theorem 1, Thm 6.11, conceptual one-condition rung (2026-10-11).
+
+-- Pole-free Weil converse (e9, 2026-10-12): Weil positivity on PoleFree2 tests implies RH,
+-- unconditionally on this island; plus the RR-square composition (RR-square on every window => RH).
+#print axioms RvMBridgePF.weighted_approx
+#print axioms RvMBridgePF.weighted_dominance
+#print axioms RvMBridgePF.weil_positivity_poleFree_implies_rh
+#print axioms RvMBridgePF.rh_iff_poleFree_weil_positivity
+#print axioms RvMBridgePF.RRSquare.hodge_index
+#print axioms RvMBridgePF.RRSquare.hodge_index_of_domain
+#print axioms RvMBridgePF.rh_of_rr_windows
