@@ -677,5 +677,22 @@
       "artifact_sha256": "a69865ddcb587d059c1935397bd7cd4e8f22aede32abc7d27fb34452a9c6bca2",
       "statement_sha256": "5e618302a94c5bb25dd994c9bcb6e4f9403e031cdfbc56e688bb3a9c5d27e08d"
     }
+  ],
+  "judged_elsewhere": [
+    {
+      "node": "mirrormere/MM_hodge1_rh_reduction",
+      "judge_via": "heavy",
+      "workflow": "missions-comparator-heavy.yml"
+    },
+    {
+      "node": "mirrormere/MM_hodge1_window45",
+      "judge_via": "heavy",
+      "workflow": "missions-comparator-heavy.yml"
+    },
+    {
+      "node": "mirrormere/MM_hodge1_window5493",
+      "judge_via": "heavy",
+      "workflow": "missions-comparator-heavy.yml"
+    }
   ]
 }
