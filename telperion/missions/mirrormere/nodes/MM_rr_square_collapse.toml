@@ -3,7 +3,7 @@ depends_on = ["MM_rr_square_hodge_index"]
 kind = "lemma"
 name = "MM.rr_square_collapse"
 statement_module = "Statements.MM_rr_square_collapse"
-status = "draft"
+status = "open"
 title = "RR-SQUARE COLLAPSE (rvm_bridge RegRRChain, kernel-checked): with Div = V (iota = id), for symmetric B with B f f > 0, data satisfying the bounded RR axioms EXIST iff the Hodge index holds (B v f = 0 => B v v <= 0). So a bare existence statement of RR-square is circular (under RH it holds trivially); its content must be a construction without reference to the zeros. Not progress on RH."
 updated = "2026-10-13"
 
@@ -17,3 +17,11 @@ artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "AI read-back by Claude (session 23), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs"
+auditor_identity = "claude-ai-readback+session23@anthropic-ai.invalid"
+auditor_session = "session_01GdU4sR3VVeEfVS1Dtg5pEt"
+date = "2026-10-13"
+independence = "independent"
+text = "AI read-back of theorem rr_square_collapse (artifact RegRRChain.lean; statement identical to the island theorem; in AxiomGuardRvMBridge). For a real vector space V, a SYMMETRIC bilinear form B and f with B f f > 0: there exist data deg (with deg v = B v f), Prin (deg vanishing on it), h0, h1 >= 0, K, a, chi and beta satisfying the RR identity, the effectivity clause (h0 X > 0 gives X congruent mod Prin to E with deg E > 0 or E principal), compatibility (principal v has B v v = 0) and the degree bound, all with Div = V and iota the identity, IF AND ONLY IF the Hodge index holds: B v f = 0 implies B v v <= 0. Meaning: the abstract axioms on the test space alone are equivalent to the sign they are meant to produce, so an existence statement of this kind is circular; any non-circular use needs a constructed Div strictly larger than V. This is the guard against misreading the chain."
