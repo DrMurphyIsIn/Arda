@@ -162,6 +162,18 @@
       "statement_sha256": "03d4e6617bdd7fe836bf107085c771c9e3080583bc9f7eb41982dd1c9e28e035"
     },
     {
+      "slug": "MM_hodge1_one_prime_identity",
+      "campaign": "mirrormere",
+      "theorem": "re_weilForm_eq_archW_sub_prime",
+      "solution_module": "Hodge1_RegOnePrime",
+      "challenge_module": "MissionChallenges.MM_hodge1_one_prime_identity",
+      "bridge_theorem": "MissionJudge.MM_hodge1_one_prime_identity",
+      "config": "MM_hodge1_one_prime_identity.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "c132c4cffadd566768a7849620a30f0d324e2e574f08cfbf8b2597c7a646be51",
+      "statement_sha256": "848562762821cca89cc961015c3393a208a69b2d286a9a85f5aeea96d3307798"
+    },
+    {
       "slug": "MM_rh_iff_gaussian_positivity",
       "campaign": "mirrormere",
       "theorem": "RvMBridge10.rh_iff_gaussian_positivity",
