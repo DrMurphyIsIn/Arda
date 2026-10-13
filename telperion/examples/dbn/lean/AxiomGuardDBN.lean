@@ -89,6 +89,7 @@ import DBNSelbergSharp
 import DBNSelbergSharpXi
 import DBNSelbergSharpStrip
 import DBNSelbergSharpZeta
+import DBNWeakFESelfDual
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -1032,3 +1033,7 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNSelberg.zetaSharp_xi_eq_H_all
 #print axioms DBNSelberg.zetaSharp_sharpFlow_eq
 #print axioms dbn_newman_of_sharp
+
+-- self-dual weak FE-pairs (internal copy of closed Mathlib PR #44807)
+#print axioms WeakFEPair.symm_Λ_eq_of_selfDual
+#print axioms WeakFEPair.functional_equation_of_selfDual
