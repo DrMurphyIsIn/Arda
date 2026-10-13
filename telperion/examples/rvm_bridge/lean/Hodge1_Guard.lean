@@ -14,6 +14,7 @@ import Hodge1_Window5493
 import Hodge1_Ldl5493N
 import Hodge1_Ldl5493Q
 import Hodge1_Ldl5493W
+import Hodge1_RHReduction
 
 #print axioms Hodge1.re_autocorr_pair_le_stripEnergy
 #print axioms Hodge1.primeSide_autocorr_eq_two
@@ -55,3 +56,5 @@ import Hodge1_Ldl5493W
 #print axioms Hodge1.twoL_le_log_three_5493
 #print axioms Hodge1.poleFree2_floor5493
 #print axioms Hodge1.weil_positivity_poleFree2_window5493
+#print axioms Hodge1.poleFree2_iff_poleFree
+#print axioms Hodge1.rh_iff_poleFree2_outside_window5493
