@@ -13,7 +13,7 @@ identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_013hB6k9ssUSET4joVJgNy51"
 
 [proof]
-artifact = "../../examples/rvm_bridge/lean/Hodge1_Reduction.lean"
+artifact = "../../examples/rvm_bridge/lean/Hodge1_RegOnePrime.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
