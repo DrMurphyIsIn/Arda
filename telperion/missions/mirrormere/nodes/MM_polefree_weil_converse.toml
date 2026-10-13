@@ -3,7 +3,7 @@ depends_on = []
 kind = "lemma"
 name = "MM.polefree_weil_converse"
 statement_module = "Statements.MM_polefree_weil_converse"
-status = "draft"
+status = "open"
 title = "POLE-FREE WEIL CONVERSE (rvm_bridge RegRRChain / PFConverseC, kernel-checked): if 0 <= Re weilForm(autocorr g) for every Weil test g with paperFT g (I/2) = 0 and paperFT g (-I/2) = 0 (the same pole-free class as the HODGE-1 nodes), then Mathlib's RiemannHypothesis holds. Weil's criterion restricted to pole-free tests. Not progress on RH."
 updated = "2026-10-13"
 
@@ -17,3 +17,11 @@ artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "AI read-back by Claude (session 23), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs"
+auditor_identity = "claude-ai-readback+session23@anthropic-ai.invalid"
+auditor_session = "session_01GdU4sR3VVeEfVS1Dtg5pEt"
+date = "2026-10-13"
+independence = "independent"
+text = "AI read-back of theorem polefree_weil_converse (artifact RegRRChain.lean, proved from RvMBridgePF.weil_positivity_poleFree_implies_rh; statement identical to the island theorem; in AxiomGuardRvMBridge). Vocabulary as in MMDefs (IsWeilTest: smooth, compactly supported g : R -> C; autocorr g(u) = integral of g(v) conj g(v - u) dv; weilForm = archSide - primeSide; Zeta23.paperFT g z = integral of g(u) e^(i z u) du). Hypothesis: for every such g with BOTH pole conditions paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 (the same pole-free class as the HODGE-1 nodes; RvMBridgePF.PoleFree is this conjunction), Re weilForm(autocorr g) >= 0. Conclusion: Mathlib's RiemannHypothesis. This is Weil's criterion in pole-free form (the direction positivity implies RH); a reformulation, not progress on RH."

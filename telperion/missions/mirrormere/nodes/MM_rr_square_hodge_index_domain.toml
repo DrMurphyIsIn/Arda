@@ -3,7 +3,7 @@ depends_on = []
 kind = "lemma"
 name = "MM.rr_square_hodge_index_domain"
 statement_module = "Statements.MM_rr_square_hodge_index_domain"
-status = "draft"
+status = "open"
 title = "RR-SQUARE HODGE INDEX, NO-ZERO-DIVISOR FORM (rvm_bridge RegRRChain, kernel-checked; CONDITIONAL REDUCTION ingredient): as MM_rr_square_hodge_index with the degree bound replaced by h0 X > 0 => h0 Y <= h0 (X + Y) (automatic in Connes-Consani's characteristic-one setting). Not progress on RH."
 updated = "2026-10-13"
 
@@ -17,3 +17,11 @@ artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "AI read-back by Claude (session 23), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs"
+auditor_identity = "claude-ai-readback+session23@anthropic-ai.invalid"
+auditor_session = "session_01GdU4sR3VVeEfVS1Dtg5pEt"
+date = "2026-10-13"
+independence = "independent"
+text = "AI read-back of theorem rr_square_hodge_index_domain (artifact RegRRChain.lean, proved by RvMBridgePF.RRSquare.hodge_index_of_domain; statement identical to the island theorem; in AxiomGuardRvMBridge). Data: real vector spaces V (tests) and Div (divisors), a bilinear form B on V, a vector f in V (the fibre class), a linear map iota: V -> Div, a linear degree deg: Div -> R with deg(iota v) = B v f, a subspace Prin of principal divisors on which deg vanishes, functions h0, h1: Div -> R with h0, h1 >= 0, a class K, a function a: V -> R and a constant chi. Axioms: (RR) for every v and natural n, h0(iota(n v)) - h1(iota(n v)) + h0(K - iota(n v)) = (1/2) n^2 B v v - (1/2) n a(v) + chi; (eff) if h0 X > 0 then X is congruent mod Prin to some E with deg E > 0 or E principal, which (since deg vanishes on Prin) says exactly: a divisor with sections has positive degree or is principal; there is no separate effective predicate; (compat) if iota v is principal then B v v = 0. Extra hypothesis, replacing the degree bound: no zero divisors in the form h0 X > 0 implies h0 Y <= h0(X + Y) for all X, Y. Conclusion: for every v with B v f = 0, B v v <= 0. An abstract implication; it constructs nothing and says nothing about zeta or RH by itself."

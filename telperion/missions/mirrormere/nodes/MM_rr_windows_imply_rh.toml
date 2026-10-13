@@ -3,7 +3,7 @@ depends_on = ["MM_polefree_weil_converse", "MM_rr_square_hodge_index", "MM_rr_sq
 kind = "lemma"
 name = "MM.rr_windows_imply_rh"
 statement_module = "Statements.MM_rr_windows_imply_rh"
-status = "draft"
+status = "open"
 title = "RR-SQUARE WINDOWS IMPLY RH, CONDITIONAL REDUCTION (rvm_bridge RegRRChain, kernel-checked): a family of windows i, each with V i, Div i, B i, f i, iota i, deg, Prin, h0, h1, K, a, chi satisfying the RR index identity, effectivity, compatibility and (degree bound OR no zero divisors), test maps tau i with B v v = -(c * Re weilForm(autocorr (tau v))), c > 0, and pole-free tests of degree 0, which covers every pole-free Weil test, implies Mathlib's RiemannHypothesis. Under RH such windows exist trivially (MM_rr_square_collapse); all content is the construction without reference to the zeros. Not progress on RH."
 updated = "2026-10-13"
 
@@ -17,3 +17,11 @@ artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "AI read-back by Claude (session 23), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs"
+auditor_identity = "claude-ai-readback+session23@anthropic-ai.invalid"
+auditor_session = "session_01GdU4sR3VVeEfVS1Dtg5pEt"
+date = "2026-10-13"
+independence = "independent"
+text = "AI read-back of theorem rr_windows_imply_rh (artifact RegRRChain.lean; statement identical to the island theorem; in AxiomGuardRvMBridge). An index type of windows i; for each i the data and axioms of rr_square_hodge_index on (V i, Div i, B i, f i, iota i, deg i, Prin i, h0 i, h1 i, K i, a i, chi i), with the effectivity and compatibility clauses as there, and for each i EITHER a degree bound OR no zero divisors. Further, maps tau i from V i to test functions R -> C, constants c i > 0, the link B i v v = -(c i Re weilForm(autocorr(tau i v))), the condition that pole-free tau i v (both paperFT conditions at +-i/2) has degree zero (B i v (f i) = 0), and covering: every smooth compactly supported pole-free g equals tau i v for some i and v. Conclusion: Mathlib's RiemannHypothesis. Weil positivity is NOT a hypothesis: the proof derives it on each window from the Hodge index (hodge_index or hodge_index_of_domain, via rh_of_rr_windows) and concludes through the pole-free converse. A CONDITIONAL REDUCTION: by rr_square_collapse such windows exist trivially if RH holds, so the content lies entirely in constructing them independently of the zeros; not progress on RH."
