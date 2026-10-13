@@ -6,7 +6,7 @@ judge_via = "heavy"
 kind = "lemma"
 name = "MM.hodge1_rh_reduction"
 statement_module = "Statements.MM_hodge1_rh_reduction"
-status = "open"
+status = "proved"
 title = "RH IFF POLE-FREE WEIL POSITIVITY OUTSIDE THE HODGE-1 WINDOW (rvm_bridge, kernel-checked): RiemannHypothesis holds iff 0 <= Re weilForm(autocorr g) for every pole-free Weil test g whose support is NOT inside [-5493/10000, 5493/10000]. Combines e9's pole-free converse with the HODGE-1 window theorem. A reformulation of the open content, not progress on RH."
 updated = "2026-10-13"
 
@@ -15,10 +15,18 @@ date = "2026-10-13"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_013hB6k9ssUSET4joVJgNy51"
 
+[grant]
+artifact_sha256 = "ccc5a9557ef510aecb9843b8615f36abac94b2085f48c1f28555adcf094aa1a0"
+date = "2026-10-13"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "eb2968e1823bcdbdf28ca363ad4c7b6d594da5b3ad81a35367f6c6b688a43116"
+
 [proof]
 artifact = "../../examples/rvm_bridge/lean/Hodge1_RegRH.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]

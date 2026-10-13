@@ -6,7 +6,7 @@ judge_via = "heavy"
 kind = "lemma"
 name = "MM.hodge1_window45"
 statement_module = "Statements.MM_hodge1_window45"
-status = "open"
+status = "proved"
 title = "POLE-FREE ONE-PRIME WEIL POSITIVITY, L <= 9/20 (rvm_bridge, HODGE-1 Phase 1, kernel certificate): for every Weil test g with paperFT g (+-i/2) = 0 supported in [-L, L], L <= 9/20, Re weilForm(autocorr g) >= 0. Proof: the strip lemma bounds the p = 2 term by the energy of g on the two end strips, then a KWin2-style certificate proves the prime-free inequality archW >= (log 2/sqrt 2) strip energy with margin 3/100. Not a new range (KWin2 covers the full class to 1/2) and not prime-specific."
 updated = "2026-10-13"
 
@@ -15,10 +15,18 @@ date = "2026-10-13"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_013hB6k9ssUSET4joVJgNy51"
 
+[grant]
+artifact_sha256 = "f1fc3f5a30c1a7a585be1fb7ad8ddbc60750ccc5dadf68aa6bbea8b1ad207e36"
+date = "2026-10-13"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "b45b3dd21fc231719e160e05a93242cb060bd162804cdb73b2361a337e51bde1"
+
 [proof]
 artifact = "../../examples/rvm_bridge/lean/Hodge1_RegWindow45.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]
