@@ -1,0 +1,22 @@
+created = "2026-10-13"
+depends_on = []
+heavy_build_targets = ["Hodge1_KPen", "Hodge1_HeadP", "Hodge1_TailP", "Hodge1_ArchSplit", "Hodge1_Strip", "Hodge1_Reduction", "Hodge1_ArchSectors", "Hodge1_PoleFreeWindow", "Hodge1_KPenM", "Hodge1_Par5493", "Hodge1_Rows5493", "Hodge1_Rows5493E", "Hodge1_Rows5493O", "Hodge1_B5493", "Hodge1_KPenW", "Hodge1_WB5493", "Hodge1_Cert5493E", "Hodge1_Ldl5493E", "Hodge1_Cert5493O", "Hodge1_Ldl5493O", "Hodge1_Window5493", "Hodge1_RegWindow5493"]
+heavy_certificates = true
+judge_via = "heavy"
+kind = "lemma"
+name = "MM.hodge1_window5493"
+statement_module = "Statements.MM_hodge1_window5493"
+status = "draft"
+title = "POLE-FREE ONE-PRIME WEIL POSITIVITY, L <= 5493/10000 (rvm_bridge, HODGE-1 Phase 1b-B, kernel certificate): for every Weil test g with paperFT g (+-i/2) = 0 supported in [-L, L], L <= 5493/10000 (just below (log 3)/2, so p = 2 is the only prime), Re weilForm(autocorr g) >= 0. A NEW range past KWin2's 1/2 on this class. Direct certificate with the p = 2 comb inside the symbol; floor (1/2000)||g||^2. Kernel-checked negative controls: prime moved to 2.1, weight 1.05 c2."
+updated = "2026-10-13"
+
+[author]
+date = "2026-10-13"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_013hB6k9ssUSET4joVJgNy51"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/Hodge1_RegWindow5493.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

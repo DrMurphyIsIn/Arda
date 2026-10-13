@@ -17,6 +17,9 @@ import Statements.MM_gaussian_positivity_small_lam_3e3
 import Statements.MM_gaussian_positivity_small_lam_prime_side
 import Statements.MM_gaussian_transfer
 import Statements.MM_hodge1_one_prime_identity
+import Statements.MM_hodge1_rh_reduction
+import Statements.MM_hodge1_window45
+import Statements.MM_hodge1_window5493
 import Statements.MM_leakage_composite_zero
 import Statements.MM_nt_brick_conditional
 import Statements.MM_offline_disjoint_discs
