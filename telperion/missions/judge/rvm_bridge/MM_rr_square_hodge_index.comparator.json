@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_rr_square_hodge_index",
+  "solution_module": "MissionChallenges.MM_rr_square_hodge_index",
+  "theorem_names": [
+    "MissionJudge.MM_rr_square_hodge_index"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

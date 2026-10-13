@@ -3,7 +3,7 @@ depends_on = []
 kind = "lemma"
 name = "MM.rr_square_hodge_index_domain"
 statement_module = "Statements.MM_rr_square_hodge_index_domain"
-status = "open"
+status = "proved"
 title = "RR-SQUARE HODGE INDEX, NO-ZERO-DIVISOR FORM (rvm_bridge RegRRChain, kernel-checked; CONDITIONAL REDUCTION ingredient): as MM_rr_square_hodge_index with the degree bound replaced by h0 X > 0 => h0 Y <= h0 (X + Y) (automatic in Connes-Consani's characteristic-one setting). Not progress on RH."
 updated = "2026-10-13"
 
@@ -12,10 +12,18 @@ date = "2026-10-13"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_01T6sQ9By6CuBoffW7BYPHJT"
 
+[grant]
+artifact_sha256 = "6893602adc32e7787bdfe3b00e031f1eaca057b062d0a76bd4095fedf30a341b"
+date = "2026-10-13"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "11228d7bf54715b2f4e65fe15be186298fb59f39e6c8b2590e5c8ab69772cd6a"
+
 [proof]
 artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]

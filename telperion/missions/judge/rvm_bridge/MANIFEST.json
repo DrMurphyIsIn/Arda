@@ -174,6 +174,18 @@
       "statement_sha256": "848562762821cca89cc961015c3393a208a69b2d286a9a85f5aeea96d3307798"
     },
     {
+      "slug": "MM_polefree_weil_converse",
+      "campaign": "mirrormere",
+      "theorem": "polefree_weil_converse",
+      "solution_module": "RegRRChain",
+      "challenge_module": "MissionChallenges.MM_polefree_weil_converse",
+      "bridge_theorem": "MissionJudge.MM_polefree_weil_converse",
+      "config": "MM_polefree_weil_converse.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "6893602adc32e7787bdfe3b00e031f1eaca057b062d0a76bd4095fedf30a341b",
+      "statement_sha256": "7ab2c84bc7213cf8bfbb25919bcc5a10cfbe26fe741e8306a02ff3417ef95f4b"
+    },
+    {
       "slug": "MM_rh_iff_gaussian_positivity",
       "campaign": "mirrormere",
       "theorem": "RvMBridge10.rh_iff_gaussian_positivity",
@@ -232,6 +244,54 @@
       "nanoda": true,
       "artifact_sha256": "56ce428b2c875125128bdd8c9d86b737f2a320ff4e7a57c9121781f50e30dd50",
       "statement_sha256": "5616868fad3f98abe32bf0c6b47f14731c945c7ab89e5532ea02bc954a40a11c"
+    },
+    {
+      "slug": "MM_rr_square_collapse",
+      "campaign": "mirrormere",
+      "theorem": "rr_square_collapse",
+      "solution_module": "RegRRChain",
+      "challenge_module": "MissionChallenges.MM_rr_square_collapse",
+      "bridge_theorem": "MissionJudge.MM_rr_square_collapse",
+      "config": "MM_rr_square_collapse.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "6893602adc32e7787bdfe3b00e031f1eaca057b062d0a76bd4095fedf30a341b",
+      "statement_sha256": "b62bf4c264cf55b9080e04f446fcdd24809ff40ca3f33be8830c115e8c9d89d1"
+    },
+    {
+      "slug": "MM_rr_square_hodge_index",
+      "campaign": "mirrormere",
+      "theorem": "rr_square_hodge_index",
+      "solution_module": "RegRRChain",
+      "challenge_module": "MissionChallenges.MM_rr_square_hodge_index",
+      "bridge_theorem": "MissionJudge.MM_rr_square_hodge_index",
+      "config": "MM_rr_square_hodge_index.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "6893602adc32e7787bdfe3b00e031f1eaca057b062d0a76bd4095fedf30a341b",
+      "statement_sha256": "633bed4098bbf49dbcbd79f5a94706737800c3ce6e79bd632608ff48fdf80746"
+    },
+    {
+      "slug": "MM_rr_square_hodge_index_domain",
+      "campaign": "mirrormere",
+      "theorem": "rr_square_hodge_index_domain",
+      "solution_module": "RegRRChain",
+      "challenge_module": "MissionChallenges.MM_rr_square_hodge_index_domain",
+      "bridge_theorem": "MissionJudge.MM_rr_square_hodge_index_domain",
+      "config": "MM_rr_square_hodge_index_domain.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "6893602adc32e7787bdfe3b00e031f1eaca057b062d0a76bd4095fedf30a341b",
+      "statement_sha256": "11228d7bf54715b2f4e65fe15be186298fb59f39e6c8b2590e5c8ab69772cd6a"
+    },
+    {
+      "slug": "MM_rr_windows_imply_rh",
+      "campaign": "mirrormere",
+      "theorem": "rr_windows_imply_rh",
+      "solution_module": "RegRRChain",
+      "challenge_module": "MissionChallenges.MM_rr_windows_imply_rh",
+      "bridge_theorem": "MissionJudge.MM_rr_windows_imply_rh",
+      "config": "MM_rr_windows_imply_rh.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "6893602adc32e7787bdfe3b00e031f1eaca057b062d0a76bd4095fedf30a341b",
+      "statement_sha256": "c272367a23111e020ea1f12f39ea1bcdfee723c8dd4ac868f96a7602cec23d98"
     },
     {
       "slug": "MM_rvm_unbounded_mean_density",
