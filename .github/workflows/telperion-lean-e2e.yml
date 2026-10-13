@@ -2820,6 +2820,23 @@ jobs:
             exit 1
           fi
 
+      - name: Axiom guard for RR-square (13 anchors)
+        working-directory: telperion/examples/weil_form_enclosure/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean AxiomGuardRRSquare.lean 2>&1 | tee rr_axioms.out
+          n=$(grep -cE "depends on axioms|does not depend on any axioms" rr_axioms.out || true)
+          if [ "$n" -lt "13" ]; then
+            echo "::error::RR-square guard printed $n axiom lines, expected 13"; exit 1; fi
+          ! grep -q "sorryAx" rr_axioms.out
+          if tr "\n" " " < rr_axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
+               | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
+               | grep -vE "^$|^propext$|^Classical\.choice$|^Quot\.sound$" ; then
+            echo "::error::an axiom outside [propext, Classical.choice, Quot.sound] is listed above"
+            exit 1
+          fi
+
   wall-analysis-compiles:
     needs: changes
     if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.wall_adversary == 'true' || needs.changes.outputs.wall_barrier == 'true')

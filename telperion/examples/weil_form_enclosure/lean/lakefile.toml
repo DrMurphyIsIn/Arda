@@ -1,5 +1,5 @@
 name = "WeilFormEnclosure"
-defaultTargets = ["WeilFormDefs", "WeilFormEnclosure", "WindowFormFloorInstances", "AxiomGuardWeilForm", "AxiomGuardWindowFormFloor"]
+defaultTargets = ["WeilFormDefs", "WeilFormEnclosure", "WindowFormFloorInstances", "AxiomGuardWeilForm", "AxiomGuardWindowFormFloor", "RRSquare", "RRSquareFF", "RRSquareLink", "AxiomGuardRRSquare"]
 
 # Telperion weil_form_enclosure dogfood island (2026-09-18): the E8 Weil pairing
 # (RH_limit_explicit_formula / WeilExplicit) evaluated by Arb and emitted as a
@@ -40,3 +40,20 @@ roots = ["AxiomGuardWeilForm"]
 [[lean_lib]]
 name = "AxiomGuardWindowFormFloor"
 roots = ["AxiomGuardWindowFormFloor"]
+
+# RR-square (e9, 2026-10-12): Conjecture RR-square made precise. Abstract Grothendieck argument (degree-bound and
+# no-zero-divisor forms), the countermodel showing the degree-bound/domain clause is load-bearing, the collapse lemma
+# (Div = V version <=> Hodge index), function-field instances (genus-2 over F_5 and two fakes; RRSquareFF is generated
+# by ../rr_square/gen_lean.py), and the link to Weil positivity via this island's WeilFormDefs.
+# Research statement, AI work, not reviewed. Not progress on RH. conjecture1_proved = False.
+[[lean_lib]]
+name = "RRSquare"
+
+[[lean_lib]]
+name = "RRSquareFF"
+
+[[lean_lib]]
+name = "RRSquareLink"
+
+[[lean_lib]]
+name = "AxiomGuardRRSquare"
