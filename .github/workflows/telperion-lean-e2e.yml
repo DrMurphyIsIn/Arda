@@ -3089,8 +3089,8 @@ jobs:
           set -euo pipefail
           lake env lean Hodge1_Guard.lean 2>&1 | tee hodge1_axioms.out
           n=$(grep -cE "depends on axioms|does not depend on any axioms" hodge1_axioms.out || true)
-          if [ "$n" -lt "36" ]; then
-            echo "::error::HODGE-1 guard printed $n axiom lines, expected at least 36 -- the guard did not run or was silently truncated"; exit 1; fi
+          if [ "$n" -lt "38" ]; then
+            echo "::error::HODGE-1 guard printed $n axiom lines, expected at least 38 -- the guard did not run or was silently truncated"; exit 1; fi
           if grep -q "sorryAx" hodge1_axioms.out; then echo "::error::sorryAx present"; exit 1; fi
           if tr "\n" " " < hodge1_axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
                | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
