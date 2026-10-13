@@ -1,0 +1,19 @@
+created = "2026-10-13"
+depends_on = []
+kind = "lemma"
+name = "MM.hodge1_one_prime_identity"
+statement_module = "Statements.MM_hodge1_one_prime_identity"
+status = "draft"
+title = "THE EXACT ONE-PRIME WEIL IDENTITY ON THE POLE-FREE WINDOW (rvm_bridge island, Hodge1_Reduction, HODGE-1 Phase 1, 2026-10-12): for every Weil test g supported in [-L, L] with 2L <= log 3, so that p = 2 is the only prime term, and paperFT g (i/2) = 0, so that both pole terms of autocorr g vanish, Re weilForm(autocorr g) = archW g - (log 2/sqrt 2) Re(f(log 2) + f(-log 2)), f = autocorr g. Exact, no numerics. The first statement in the registry of the Weil form with a prime inside."
+updated = "2026-10-13"
+
+[author]
+date = "2026-10-13"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_013hB6k9ssUSET4joVJgNy51"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/Hodge1_Reduction.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
