@@ -294,6 +294,7 @@ import ArchS5_HSRank
 import ArchS8_Kernel
 import ArchPipeline_Rung80
 import PFConverseC
+import Hodge1_RegOnePrime
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -2420,3 +2421,4 @@ import PFConverseC
 #print axioms RvMBridgePF.RRSquare.hodge_index
 #print axioms RvMBridgePF.RRSquare.hodge_index_of_domain
 #print axioms RvMBridgePF.rh_of_rr_windows
+#print axioms re_weilForm_eq_archW_sub_prime
