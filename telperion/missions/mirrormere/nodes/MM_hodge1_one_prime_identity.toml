@@ -3,7 +3,7 @@ depends_on = []
 kind = "lemma"
 name = "MM.hodge1_one_prime_identity"
 statement_module = "Statements.MM_hodge1_one_prime_identity"
-status = "draft"
+status = "open"
 title = "THE EXACT ONE-PRIME WEIL IDENTITY ON THE POLE-FREE WINDOW (rvm_bridge island, Hodge1_Reduction, HODGE-1 Phase 1, 2026-10-12): for every Weil test g supported in [-L, L] with 2L <= log 3, so that p = 2 is the only prime term, and paperFT g (i/2) = 0, so that both pole terms of autocorr g vanish, Re weilForm(autocorr g) = archW g - (log 2/sqrt 2) Re(f(log 2) + f(-log 2)), f = autocorr g. Exact, no numerics. The first statement in the registry of the Weil form with a prime inside."
 updated = "2026-10-13"
 
@@ -17,3 +17,11 @@ artifact = "../../examples/rvm_bridge/lean/Hodge1_Reduction.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs"
+auditor_identity = "claude-ai-readback+session23@anthropic-ai.invalid"
+auditor_session = "session_01GdU4sR3VVeEfVS1Dtg5pEt"
+date = "2026-10-13"
+independence = "independent"
+text = "AI read-back of theorem re_weilForm_eq_archW_sub_prime. Registry definitions checked verbatim against the rvm_bridge island (IsWeilTest, weilKernel, archIntegrand, archSide, primeSide as in E6Bridge4; autocorr and weilForm as in E6Bridge5; Zeta23.paperFT; hsq from E6Bridge31; psiR from E6Bridge11; archW from ArchS3_Delta), and the island theorem in Hodge1_Reduction.lean has the same type. Hypotheses: g : R -> C is smooth with compact support; its topological support lies in [-L, L]; 2L <= log 3; and paperFT g (i/2) = integral of g(u) e^(-u/2) du = 0. Let f = autocorr g, f(u) = integral of g(v) conj(g(v - u)) dv. Conclusion: Re weilForm f, i.e. Re(archSide f - primeSide f), equals archW g - (log 2 / sqrt 2) Re(f(log 2) + f(-log 2)), where archW g = (1/(2 pi)) times the integral over real r of |paperFT g r|^2 (Re digamma(1/4 + i r/2) - log pi). Reading: f is supported in [-2L, 2L], inside [-log 3, log 3], so in primeSide only n = 2 contributes (Lambda(2)/sqrt 2 = log 2/sqrt 2); the two pole terms weilKernel f 0 and weilKernel f 1 each carry the factor paperFT g (i/2) and vanish; and the -f(0) log pi term together with the digamma integral is archW g by Plancherel. It is an exact identity on this pole-free one-prime window, makes no positivity claim, and says nothing about zeros of zeta or about RH."
