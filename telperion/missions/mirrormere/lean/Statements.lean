@@ -24,6 +24,7 @@ import Statements.MM_leakage_composite_zero
 import Statements.MM_nt_brick_conditional
 import Statements.MM_offline_disjoint_discs
 import Statements.MM_offline_pairs_le_defect
+import Statements.MM_polefree_weil_converse
 import Statements.MM_primelog_spectrum_dense
 import Statements.MM_rect_trace_reading
 import Statements.MM_recurrence_deficit_eq_excess
@@ -32,6 +33,10 @@ import Statements.MM_rh_iff_gaussian_prime_le_arch
 import Statements.MM_rh_iff_theta_positivity
 import Statements.MM_rh_iff_theta_widths
 import Statements.MM_rh_implies_weil_positivity
+import Statements.MM_rr_square_collapse
+import Statements.MM_rr_square_hodge_index
+import Statements.MM_rr_square_hodge_index_domain
+import Statements.MM_rr_windows_imply_rh
 import Statements.MM_rvm_unbounded_mean_density
 import Statements.MM_satake_degree_two_rejects_delta
 import Statements.MM_selfinversive_iff_hardyz_real

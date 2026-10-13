@@ -1,0 +1,19 @@
+created = "2026-10-13"
+depends_on = ["MM_rr_square_hodge_index"]
+kind = "lemma"
+name = "MM.rr_square_collapse"
+statement_module = "Statements.MM_rr_square_collapse"
+status = "draft"
+title = "RR-SQUARE COLLAPSE (rvm_bridge RegRRChain, kernel-checked): with Div = V (iota = id), for symmetric B with B f f > 0, data satisfying the bounded RR axioms EXIST iff the Hodge index holds (B v f = 0 => B v v <= 0). So a bare existence statement of RR-square is circular (under RH it holds trivially); its content must be a construction without reference to the zeros. Not progress on RH."
+updated = "2026-10-13"
+
+[author]
+date = "2026-10-13"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

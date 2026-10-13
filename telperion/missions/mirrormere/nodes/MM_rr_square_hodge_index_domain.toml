@@ -1,0 +1,19 @@
+created = "2026-10-13"
+depends_on = []
+kind = "lemma"
+name = "MM.rr_square_hodge_index_domain"
+statement_module = "Statements.MM_rr_square_hodge_index_domain"
+status = "draft"
+title = "RR-SQUARE HODGE INDEX, NO-ZERO-DIVISOR FORM (rvm_bridge RegRRChain, kernel-checked; CONDITIONAL REDUCTION ingredient): as MM_rr_square_hodge_index with the degree bound replaced by h0 X > 0 => h0 Y <= h0 (X + Y) (automatic in Connes-Consani's characteristic-one setting). Not progress on RH."
+updated = "2026-10-13"
+
+[author]
+date = "2026-10-13"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
