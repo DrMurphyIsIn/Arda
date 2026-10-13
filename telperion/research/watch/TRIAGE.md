@@ -3,6 +3,17 @@
 One line per hit, newest first. The seen-list `zero_free_seen.json` is updated only after the hit is triaged here.
 Run: `python telperion/src/telperion/zero_free_watch.py` (stdlib only; the package import needs sympy) (add `--update` after triage). conjecture1_proved = False.
 
+- 2026-10-12 **hexagon:2610.00200v1** [strip, number fields; NOT found by the watcher] Cureton, Thorner, "A
+  quasi-Riemann hypothesis for Dedekind zeta functions" (Axiom Math, Lean repo AxiomMath/DedekindZetaZeroFree
+  @284348a4): zeta_K has no zeros with Re s > 1 - 1/6000 for every number field K. For zeta itself this is far
+  weaker than the proved 7/8 and Liu's 0.874957, so it moves no Lambda bound. Replay (Riemann session, AI, not
+  sandboxed, independent of Axiom; ~/rh-team/papers/2610.00200/REPLAY_REPORT.md): the proof replays (14301 jobs,
+  `#print axioms main` = the standard three). The shipped Comparator pair is REJECTED for statement mismatch: the
+  Solution's import closure resolves `NormedCommRing ℂ` through the C*-algebra instance, so the statements are
+  defeq but not syntactically equal. Adding `attribute [-instance] instCommCStarAlgebraComplex` to the Solution
+  (statement and proof unchanged) makes nanoda and the Lean kernel accept; the tampered control (bound 1/2) is
+  rejected. Reporting the packaging defect to Axiom is the owner's call; nothing posted. Gap: hexagonmath.org
+  is not a watcher source. Follow-up: axiom_metaplectic island (draft PR #706).
 - 2026-10-12 **arxiv:2610.12803v1** [dbn] Hakimoglu-Brown, "A conditional bound Lambda <= 0.13963 for the de
   Bruijn--Newman constant" (8 Oct 2026): ASSUMES the 7/8 half-plane (OpenAI) and feeds it into a Polymath-15-style
   barrier argument (published Polymath numerics, Riemann-Siegel coefficient bounds, 24 strip-comparison steps,
