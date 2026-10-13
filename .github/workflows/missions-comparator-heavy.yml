@@ -5,8 +5,15 @@ name: missions-comparator-heavy
 # 9 Comparator jobs, roughly ELEVEN RUNNER-HOURS, and would starve the 20-job ceiling if it ran
 # on merges.
 #
-# LADDER-SPECIFIC: the body discovers Arb4_h<H>.lean segments on the chosen island. A heavy node on an
-# island with no ladder fails loudly at segment discovery; extend this workflow before using it there.
+# WHAT IT BUILDS before the challenge (`judge.py --heavy --build-plan`, 2026-10-13):
+#   * mode "segments" (the node sets no `heavy_build_targets`): the Arb4_h<H>.lean ladder segments on
+#     the chosen island, one heavy-seg job each -- exactly the behaviour before the field existed. An
+#     island with no ladder and no heavy_build_targets fails loudly at the plan.
+#   * mode "targets" (the node sets `heavy_build_targets = [..]`, e.g. the HODGE-1 certificates on
+#     rvm_bridge, 13.4 GB peak on the 16 GB runner): no heavy-seg matrix; the judge job builds exactly
+#     those modules, in the listed order, ONE `lake build <m>` AT A TIME, then the challenge.
+# Every heavy build and the Comparator run are wrapped in /usr/bin/time -v; each prints a
+# `PEAK RSS <label> <kB> kB` line so comparator-record's log carries the measured peak.
 # h11000 (RS5/H11K chunks, ~7.4 GB each, built serially inside the 300-min gate job) is UNMEASURED.
 #
 # Why a separate workflow: such a node's challenge cannot be built on one hosted runner (the
@@ -57,6 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
+      mode: ${{ steps.plan.outputs.mode }}
       segments: ${{ steps.plan.outputs.segments }}
       parts: ${{ steps.plan.outputs.parts }}
       compositional: ${{ steps.plan.outputs.compositional }}
@@ -81,15 +89,24 @@ jobs:
           echo "parts=$(cut -f1 "$RUNNER_TEMP/nodes.tsv" | python -c 'import json,sys;print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))')" | tee -a "$GITHUB_OUTPUT"
           if cut -f7 "$RUNNER_TEMP/nodes.tsv" | grep -qx compose; then c=true; else c=false; fi
           echo "compositional=$c" | tee -a "$GITHUB_OUTPUT"
-          # The ladder segments present on this island (Arb4_h<H>.lean), for the matrix.
-          segs=$(ls "examples/${{ inputs.island }}/lean" | sed -n 's/^Arb4_h\([0-9]*\)\.lean$/\1/p' | sort -n | paste -sd, -)
-          test -n "$segs" || { echo "::error::no Arb4_h<H> segments on island ${{ inputs.island }}"; exit 1; }
-          echo "segments=[${segs}]" | tee -a "$GITHUB_OUTPUT"
+          # What to build before the challenge: the node's heavy_build_targets (mode=targets, built
+          # one at a time in the judge job), else the island's Arb4_h<H> ladder segments
+          # (mode=segments, the heavy-seg matrix). Fails loudly when neither exists.
+          PYTHONPATH=src python -m telperion.missions.judge --island "${{ inputs.island }}" \
+            --heavy --only "${{ inputs.node }}" --build-plan | tee "$RUNNER_TEMP/plan.json"
+          python - "$RUNNER_TEMP/plan.json" >> "$GITHUB_OUTPUT" <<'PY'
+          import json, sys
+          plan = json.load(open(sys.argv[1]))
+          print(f"mode={plan['mode']}")
+          print(f"segments={json.dumps(plan['segments'], separators=(',', ':'))}")
+          PY
+          cat "$GITHUB_OUTPUT"
 
   # Same build as telperion-zeta-reflection's anduril-ladder-seg (kept in step with it by hand;
   # see #635): slabs and lines as libraries, edge modules ONE AT A TIME.
   heavy-seg:
     needs: validate
+    if: ${{ needs.validate.outputs.mode == 'segments' }}
     runs-on: ubuntu-latest
     timeout-minutes: 350
     strategy:
@@ -124,7 +141,8 @@ jobs:
           for f in Arb4_H${H}Edges_*.lean; do
             m="${f%.lean}"
             echo "== $m"; start=$(date +%s)
-            lake build "+$m"
+            /usr/bin/time -v -o "$RUNNER_TEMP/time_$m.txt" lake build "+$m"
+            echo "PEAK RSS $m $(sed -n 's/.*Maximum resident set size (kbytes): *//p' "$RUNNER_TEMP/time_$m.txt") kB"
             echo "   $m built in $(( $(date +%s) - start )) s"
           done
       - name: Hand the leaf build outputs to the judge job
@@ -137,6 +155,8 @@ jobs:
 
   judge-part:
     needs: [validate, heavy-seg]
+    # heavy-seg is SKIPPED in mode=targets; run then, but never after a failed or cancelled segment.
+    if: ${{ !cancelled() && needs.validate.result == 'success' && (needs.heavy-seg.result == 'success' || (needs.validate.outputs.mode == 'targets' && needs.heavy-seg.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 300
     name: judge ${{ matrix.part }}
@@ -159,6 +179,7 @@ jobs:
           free -g
 
       - name: Collect the segment leaf builds into the island
+        if: ${{ needs.validate.outputs.mode == 'segments' }}
         uses: actions/download-artifact@v4
         with:
           pattern: heavy-seg-*
@@ -179,6 +200,11 @@ jobs:
           # This job's row only.
           awk -F'\t' -v s="${{ matrix.part }}" '$1 == s' "$RUNNER_TEMP/all.tsv" | tee "$RUNNER_TEMP/nodes.tsv"
           test "$(wc -l < "$RUNNER_TEMP/nodes.tsv")" -eq 1
+          # mode=targets: the node's heavy_build_targets, one per line, in build order.
+          PYTHONPATH=src python -m telperion.missions.judge --island "${{ inputs.island }}" \
+            --heavy --only "${{ inputs.node }}" --build-plan \
+            | python -c 'import json,sys;[print(m) for m in json.load(sys.stdin)["targets"]]' \
+            | tee "$RUNNER_TEMP/heavy_targets.txt"
           echo "BUNDLE=$OUT" >> "$GITHUB_ENV"
           echo "tag=$(python -c "import json;print(json.load(open('$OUT/MANIFEST.json'))['comparator_tag'])")" >> "$GITHUB_OUTPUT"
 
@@ -198,10 +224,13 @@ jobs:
           (cd "telperion/examples/${{ inputs.island }}/lean" && lake exe cache get)
           (cd "$BUNDLE" && lake exe cache get)
 
-      # The leaf certificates were built by heavy-seg and replay from their uploaded
-      # .olean/.trace files; this builds the glue, the chained capstones and the one bridge
-      # module (statement identity). Where the node's closure includes RS5/H11K chunks, build
-      # those one at a time first (each peaks at ~7.4 GB).
+      # mode=segments: the leaf certificates were built by heavy-seg and replay from their
+      # uploaded .olean/.trace files; this builds the glue, the chained capstones and the one
+      # bridge module (statement identity). Where the node's closure includes RS5/H11K chunks,
+      # build those one at a time first (each peaks at ~7.4 GB).
+      # mode=targets: build the node's heavy_build_targets first, in order, ONE `lake build`
+      # EACH (as telperion-lean-e2e's rvm-bridge-hodge1-heavy does), so no two certificate
+      # modules are ever elaborated at once; then the bridge module.
       - name: Build the bridge module (island glue + statement identity)
         working-directory: telperion/examples/${{ inputs.island }}/lean
         shell: bash
@@ -212,6 +241,14 @@ jobs:
             for f in RS5_Band_T*_C*.lean H11K_Edge_*.lean H11K_Slab_*.lean; do
               [ -f "$f" ] || continue; lake build "+${f%.lean}"; done
           fi
+          while read -r m; do
+            [ -z "$m" ] && continue
+            echo "::group::lake build $m"; start=$(date +%s)
+            /usr/bin/time -v -o "$RUNNER_TEMP/time_$m.txt" lake build "$m"
+            echo "::endgroup::"
+            echo "PEAK RSS $m $(sed -n 's/.*Maximum resident set size (kbytes): *//p' "$RUNNER_TEMP/time_$m.txt") kB"
+            echo "   $m built in $(( $(date +%s) - start )) s"
+          done < "$RUNNER_TEMP/heavy_targets.txt"
           cd "$BUNDLE"
           lake build "MissionChallenges.$(cut -f1 "$RUNNER_TEMP/nodes.tsv")"
 
@@ -273,10 +310,12 @@ jobs:
           ulimit -s unlimited 2>/dev/null || ulimit -s 4194304 2>/dev/null || echo "::warning::could not raise the stack limit"
           IFS=$'\t' read -r slug cfg sol thm bridge kernel part exports < "$RUNNER_TEMP/nodes.tsv"
           echo "==================== $slug  ($thm in $sol; bridge $bridge; $kernel; part ${part:--}) ===================="
-          if lake env comparator "$cfg"; then
+          if /usr/bin/time -v -o "$RUNNER_TEMP/time_comparator.txt" lake env comparator "$cfg"; then
+            echo "PEAK RSS comparator:$slug $(sed -n 's/.*Maximum resident set size (kbytes): *//p' "$RUNNER_TEMP/time_comparator.txt") kB"
             echo "COMPARATOR PASS island=${{ inputs.island }} node=$slug theorem=$thm run=${{ github.run_id }} kernel=$kernel"
             echo "| $slug | \`$thm\` | PASS ($kernel, heavy path) |" >> "$GITHUB_STEP_SUMMARY"
           else
+            echo "PEAK RSS comparator:$slug $(sed -n 's/.*Maximum resident set size (kbytes): *//p' "$RUNNER_TEMP/time_comparator.txt" 2>/dev/null) kB"
             echo "::error::COMPARATOR FAIL island=${{ inputs.island }} node=$slug theorem=$thm"
             exit 1
           fi
