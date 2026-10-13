@@ -61,7 +61,7 @@ def test_targets_plan_is_exactly_the_listed_modules_in_order(tmp_path):
                                            heavy_build_targets=HODGE1_TARGETS))
     plan = judge.heavy_build_plan(root, "rvm_bridge", "HODGE1_window_5493")
     assert plan == {"mode": "targets", "targets": HODGE1_TARGETS, "segments": []}
-    assert plan["targets"][-1] == "Hodge1_Window5493"
+    assert "Hodge1_Window5493" in plan["targets"]
 
 
 def test_workflow_builds_targets_one_at_a_time_in_order_then_the_challenge(tmp_path):
@@ -201,9 +201,16 @@ def _imports(lean_dir: Path, mod: str):
     return re.findall(r"(?m)^import\s+([\w.]+)", f.read_text())
 
 
+#: The only Hodge1 modules allowed in the AxiomGuard* closure: the light registry shape of the
+#: one-prime identity (#717, imported by AxiomGuardRvMBridge for its guard anchor) and its light
+#: imports. None of them touches a certificate.
+LIGHT_HODGE1_IN_GUARD = {"Hodge1_RegOnePrime", "Hodge1_Reduction", "Hodge1_Strip"}
+
+
 def test_no_axiomguard_module_pulls_in_hodge1():
     """The per-PR judge imports every AxiomGuard* lib into rvm_bridge challenges; a HODGE-1
-    certificate in that closure would put 13.4 GB builds back on the per-PR path."""
+    certificate in that closure would put 13.4 GB builds back on the per-PR path. Only the
+    light modules in LIGHT_HODGE1_IN_GUARD may appear."""
     guards = judge.island_guard_modules(RVM)
     assert guards and not any("Hodge1" in g for g in guards)
     seen, todo = set(), list(guards)
@@ -213,4 +220,7 @@ def test_no_axiomguard_module_pulls_in_hodge1():
             continue
         seen.add(m)
         todo += [i for i in _imports(RVM, m) if (RVM / (i.replace(".", "/") + ".lean")).is_file()]
-    assert not [m for m in seen if m.startswith("Hodge1")]
+    hodge1 = {m for m in seen if m.startswith("Hodge1")}
+    assert hodge1 <= LIGHT_HODGE1_IN_GUARD, sorted(hodge1 - LIGHT_HODGE1_IN_GUARD)
+    heavy = {l.strip() for l in (RVM / "hodge1_heavy_modules.txt").read_text().splitlines() if l.strip()}
+    assert not ({m for m in heavy if "Cert" in m or "Ldl" in m or "Window" in m} & seen)

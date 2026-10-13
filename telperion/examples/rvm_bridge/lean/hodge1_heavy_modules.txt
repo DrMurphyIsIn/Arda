@@ -9,6 +9,7 @@ Hodge1_Par45
 Hodge1_Cert45E
 Hodge1_Cert45O
 Hodge1_Window45
+Hodge1_RegWindow45
 Hodge1_PoleFreeWindow
 Hodge1_KPenM
 Hodge1_Par5493
@@ -29,4 +30,6 @@ Hodge1_Ldl5493Q
 Hodge1_Cert5493W
 Hodge1_Ldl5493W
 Hodge1_Window5493
+Hodge1_RegWindow5493
 Hodge1_RHReduction
+Hodge1_RegRH
