@@ -1,0 +1,22 @@
+created = "2026-10-13"
+depends_on = ["MM_hodge1_window5493"]
+heavy_build_targets = ["Hodge1_KPen", "Hodge1_HeadP", "Hodge1_TailP", "Hodge1_ArchSplit", "Hodge1_Strip", "Hodge1_Reduction", "Hodge1_ArchSectors", "Hodge1_PoleFreeWindow", "Hodge1_KPenM", "Hodge1_Par5493", "Hodge1_Rows5493", "Hodge1_Rows5493E", "Hodge1_Rows5493O", "Hodge1_B5493", "Hodge1_KPenW", "Hodge1_WB5493", "Hodge1_Cert5493E", "Hodge1_Ldl5493E", "Hodge1_Cert5493O", "Hodge1_Ldl5493O", "Hodge1_Window5493", "Hodge1_RHReduction", "Hodge1_RegRH"]
+heavy_certificates = true
+judge_via = "heavy"
+kind = "lemma"
+name = "MM.hodge1_rh_reduction"
+statement_module = "Statements.MM_hodge1_rh_reduction"
+status = "draft"
+title = "RH IFF POLE-FREE WEIL POSITIVITY OUTSIDE THE HODGE-1 WINDOW (rvm_bridge, kernel-checked): RiemannHypothesis holds iff 0 <= Re weilForm(autocorr g) for every pole-free Weil test g whose support is NOT inside [-5493/10000, 5493/10000]. Combines e9's pole-free converse with the HODGE-1 window theorem. A reformulation of the open content, not progress on RH."
+updated = "2026-10-13"
+
+[author]
+date = "2026-10-13"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_013hB6k9ssUSET4joVJgNy51"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/Hodge1_RegRH.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
