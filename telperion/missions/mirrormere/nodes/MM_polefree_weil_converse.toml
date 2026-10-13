@@ -1,0 +1,19 @@
+created = "2026-10-13"
+depends_on = []
+kind = "lemma"
+name = "MM.polefree_weil_converse"
+statement_module = "Statements.MM_polefree_weil_converse"
+status = "draft"
+title = "POLE-FREE WEIL CONVERSE (rvm_bridge RegRRChain / PFConverseC, kernel-checked): if 0 <= Re weilForm(autocorr g) for every Weil test g with paperFT g (I/2) = 0 and paperFT g (-I/2) = 0 (the same pole-free class as the HODGE-1 nodes), then Mathlib's RiemannHypothesis holds. Weil's criterion restricted to pole-free tests. Not progress on RH."
+updated = "2026-10-13"
+
+[author]
+date = "2026-10-13"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

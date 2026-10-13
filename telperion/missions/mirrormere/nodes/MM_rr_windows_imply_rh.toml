@@ -1,0 +1,19 @@
+created = "2026-10-13"
+depends_on = ["MM_polefree_weil_converse", "MM_rr_square_hodge_index", "MM_rr_square_hodge_index_domain"]
+kind = "lemma"
+name = "MM.rr_windows_imply_rh"
+statement_module = "Statements.MM_rr_windows_imply_rh"
+status = "draft"
+title = "RR-SQUARE WINDOWS IMPLY RH, CONDITIONAL REDUCTION (rvm_bridge RegRRChain, kernel-checked): a family of windows i, each with V i, Div i, B i, f i, iota i, deg, Prin, h0, h1, K, a, chi satisfying the RR index identity, effectivity, compatibility and (degree bound OR no zero divisors), test maps tau i with B v v = -(c * Re weilForm(autocorr (tau v))), c > 0, and pole-free tests of degree 0, which covers every pole-free Weil test, implies Mathlib's RiemannHypothesis. Under RH such windows exist trivially (MM_rr_square_collapse); all content is the construction without reference to the zeros. Not progress on RH."
+updated = "2026-10-13"
+
+[author]
+date = "2026-10-13"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"
