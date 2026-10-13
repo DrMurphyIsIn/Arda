@@ -3,7 +3,7 @@ depends_on = []
 kind = "lemma"
 name = "MM.polefree_weil_converse"
 statement_module = "Statements.MM_polefree_weil_converse"
-status = "open"
+status = "proved"
 title = "POLE-FREE WEIL CONVERSE (rvm_bridge RegRRChain / PFConverseC, kernel-checked): if 0 <= Re weilForm(autocorr g) for every Weil test g with paperFT g (I/2) = 0 and paperFT g (-I/2) = 0 (the same pole-free class as the HODGE-1 nodes), then Mathlib's RiemannHypothesis holds. Weil's criterion restricted to pole-free tests. Not progress on RH."
 updated = "2026-10-13"
 
@@ -12,10 +12,18 @@ date = "2026-10-13"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_01T6sQ9By6CuBoffW7BYPHJT"
 
+[grant]
+artifact_sha256 = "6893602adc32e7787bdfe3b00e031f1eaca057b062d0a76bd4095fedf30a341b"
+date = "2026-10-13"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "7ab2c84bc7213cf8bfbb25919bcc5a10cfbe26fe741e8306a02ff3417ef95f4b"
+
 [proof]
 artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]

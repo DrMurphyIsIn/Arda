@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.MM_polefree_weil_converse",
+  "solution_module": "MissionChallenges.MM_polefree_weil_converse",
+  "theorem_names": [
+    "MissionJudge.MM_polefree_weil_converse"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

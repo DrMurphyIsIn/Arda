@@ -3,7 +3,7 @@ depends_on = ["MM_rr_square_hodge_index"]
 kind = "lemma"
 name = "MM.rr_square_collapse"
 statement_module = "Statements.MM_rr_square_collapse"
-status = "open"
+status = "proved"
 title = "RR-SQUARE COLLAPSE (rvm_bridge RegRRChain, kernel-checked): with Div = V (iota = id), for symmetric B with B f f > 0, data satisfying the bounded RR axioms EXIST iff the Hodge index holds (B v f = 0 => B v v <= 0). So a bare existence statement of RR-square is circular (under RH it holds trivially); its content must be a construction without reference to the zeros. Not progress on RH."
 updated = "2026-10-13"
 
@@ -12,10 +12,18 @@ date = "2026-10-13"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_01T6sQ9By6CuBoffW7BYPHJT"
 
+[grant]
+artifact_sha256 = "6893602adc32e7787bdfe3b00e031f1eaca057b062d0a76bd4095fedf30a341b"
+date = "2026-10-13"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "b62bf4c264cf55b9080e04f446fcdd24809ff40ca3f33be8830c115e8c9d89d1"
+
 [proof]
 artifact = "../../examples/rvm_bridge/lean/RegRRChain.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]
