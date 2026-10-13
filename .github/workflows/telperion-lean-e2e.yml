@@ -49,6 +49,7 @@ jobs:
       shared: ${{ steps.f.outputs.shared }}
       src: ${{ steps.f.outputs.src }}
       missions: ${{ steps.f.outputs.missions }}
+      hodge1_registry: ${{ steps.f.outputs.hodge1_registry }}
       achievability: ${{ steps.f.outputs.achievability }}
       affine_param_endpoint: ${{ steps.f.outputs.affine_param_endpoint }}
       algebraic_bracket: ${{ steps.f.outputs.algebraic_bracket }}
@@ -155,6 +156,13 @@ jobs:
               - 'telperion/src/**'
             missions:
               - 'telperion/missions/**'
+            # NARROW registry filter (2026-10-13): only the HODGE-1 nodes and their statements.  It
+            # triggers rvm-bridge-hodge1-heavy (~25 min), whose --only-heavy anchor check is the only
+            # place a judge_via = "heavy" HODGE-1 node's theorem is checked (the ordinary rvm_bridge job
+            # passes --exclude-heavy).  Other missions changes do not pay for the heavy build.
+            hodge1_registry:
+              - 'telperion/missions/mirrormere/nodes/MM_hodge1_*'
+              - 'telperion/missions/mirrormere/lean/Statements/MM_hodge1_*'
             achievability:
               - 'telperion/examples/achievability/**'
             affine_hull_dominance:
@@ -3046,7 +3054,7 @@ jobs:
     # `set_option maxHeartbeats 0`: the kernel enforces maxHeartbeats on `decide +kernel`; lifting it is a
     # resource limit only, the kernel still checks every reduction step.
     needs: changes
-    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.rvm_bridge == 'true')
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.rvm_bridge == 'true' || needs.changes.outputs.hodge1_registry == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 150
     steps:
