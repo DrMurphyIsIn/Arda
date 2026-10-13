@@ -6,7 +6,7 @@ judge_via = "heavy"
 kind = "lemma"
 name = "MM.hodge1_window45"
 statement_module = "Statements.MM_hodge1_window45"
-status = "draft"
+status = "open"
 title = "POLE-FREE ONE-PRIME WEIL POSITIVITY, L <= 9/20 (rvm_bridge, HODGE-1 Phase 1, kernel certificate): for every Weil test g with paperFT g (+-i/2) = 0 supported in [-L, L], L <= 9/20, Re weilForm(autocorr g) >= 0. Proof: the strip lemma bounds the p = 2 term by the energy of g on the two end strips, then a KWin2-style certificate proves the prime-free inequality archW >= (log 2/sqrt 2) strip energy with margin 3/100. Not a new range (KWin2 covers the full class to 1/2) and not prime-specific."
 updated = "2026-10-13"
 
@@ -20,3 +20,11 @@ artifact = "../../examples/rvm_bridge/lean/Hodge1_RegWindow45.lean"
 artifact_kind = "lean_module"
 closure_clean = false
 via = "direct"
+
+[readback]
+auditor = "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs"
+auditor_identity = "claude-ai-readback+session23@anthropic-ai.invalid"
+auditor_session = "session_01GdU4sR3VVeEfVS1Dtg5pEt"
+date = "2026-10-13"
+independence = "independent"
+text = "AI read-back of theorem weil_positivity_poleFree_window45. Vocabulary as in MMDefs and checked against the rvm_bridge island: IsWeilTest g means g : R -> C is smooth (C^infinity) with compact support; autocorr g (u) = integral of g(v) conj(g(v - u)) dv; weilForm f = archSide f - primeSide f, with archSide the two pole terms weilKernel f 0 + weilKernel f 1, minus f(0) log pi, plus (1/(2 pi)) times the integral of the transform against Re digamma(1/4 + i r/2), and primeSide = sum over n of Lambda(n)/sqrt n (f(log n) + f(-log n)); Zeta23.paperFT g z = integral of g(u) e^(i z u) du, so the hypothesis paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 says the integrals of g(u) e^(-u/2) and g(u) e^(u/2) both vanish (pole-free; Hodge1.PoleFree2 unfolds to exactly this). Statement: for every such g with both pole conditions, every real L <= 9/20, and topological support of g inside [-L, L], the real part of weilForm(autocorr g) is >= 0. So Weil positivity holds for pole-free tests on windows of half-width up to 0.45; since autocorr g is then supported in [-0.9, 0.9], which contains log 2 but not log 3, only the prime 2 enters. The registered statement is identical to the island wrapper Hodge1_RegWindow45, which is proved from Hodge1.weil_positivity_poleFree2_window45 (certificate-based; built in the heavy job). It is a finite-window verification statement: no conceptual content beyond the window, and nothing about RH."
