@@ -3,7 +3,7 @@ depends_on = ["MM_polefree_weil_semibounded"]
 kind = "lemma"
 name = "MM.polefree_weil_shift_semibounded"
 statement_module = "Statements.MM_polefree_weil_shift_semibounded"
-status = "draft"
+status = "proved"
 title = "DELTA-SHIFT DOES NOT DECIDE RH (rvm_bridge RegSemibounded / PFSemibounded, kernel-checked): for every real c, Mathlib's RiemannHypothesis holds iff the shifted form Re weilForm(autocorr g) + c * integral ||g||^2 is bounded below by -C * integral ||g||^2 on pole-free Weil tests. Gate 12.1 dichotomy with hypothesis (F) removed; RH-equivalent, not progress on RH."
 updated = "2026-10-14"
 
@@ -11,3 +11,25 @@ updated = "2026-10-14"
 date = "2026-10-14"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+
+[grant]
+artifact_sha256 = "12d8546f189472f018569f6ffb5017f71ce60cfe9b94da9f75ef58eac7be3511"
+date = "2026-10-14"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "78e61f593ffaf44ec620fc697726719d20c34fa79a1ef4eb0c3622c77e9fdc0b"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/RegSemibounded.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
+
+[readback]
+auditor = "AI read-back by Claude (Riemann session), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs"
+auditor_identity = "claude-ai-readback+riemann-session@anthropic-ai.invalid"
+auditor_session = "session_013hB6k9ssUSET4joVJgNy51"
+date = "2026-10-14"
+independence = "independent"
+text = "For every real number c (quantified outside the equivalence), Mathlib's RiemannHypothesis is equivalent to: there exists a real C such that for every smooth compactly supported pole-free g (paperFT g at I/2 and at -I/2 both zero), -C times integral |g|^2 is at most Re weilForm(autocorr g) + c times integral |g|^2. Since integral |g|^2 = (autocorr g)(0), the shift is a c-delta at u = 0; the statement says the delta coefficient does not decide RH. Given the unshifted node it is immediate (take C' = C + c); RH-equivalent, not progress on RH."

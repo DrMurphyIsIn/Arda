@@ -186,6 +186,30 @@
       "statement_sha256": "7ab2c84bc7213cf8bfbb25919bcc5a10cfbe26fe741e8306a02ff3417ef95f4b"
     },
     {
+      "slug": "MM_polefree_weil_semibounded",
+      "campaign": "mirrormere",
+      "theorem": "polefree_weil_semibounded_iff_rh",
+      "solution_module": "RegSemibounded",
+      "challenge_module": "MissionChallenges.MM_polefree_weil_semibounded",
+      "bridge_theorem": "MissionJudge.MM_polefree_weil_semibounded",
+      "config": "MM_polefree_weil_semibounded.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "12d8546f189472f018569f6ffb5017f71ce60cfe9b94da9f75ef58eac7be3511",
+      "statement_sha256": "47fd393598f1f8f1e2e94a4f0936b5046486439c0317d535540dc3711811fbfd"
+    },
+    {
+      "slug": "MM_polefree_weil_shift_semibounded",
+      "campaign": "mirrormere",
+      "theorem": "polefree_weil_shift_semibounded_iff_rh",
+      "solution_module": "RegSemibounded",
+      "challenge_module": "MissionChallenges.MM_polefree_weil_shift_semibounded",
+      "bridge_theorem": "MissionJudge.MM_polefree_weil_shift_semibounded",
+      "config": "MM_polefree_weil_shift_semibounded.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "12d8546f189472f018569f6ffb5017f71ce60cfe9b94da9f75ef58eac7be3511",
+      "statement_sha256": "78e61f593ffaf44ec620fc697726719d20c34fa79a1ef4eb0c3622c77e9fdc0b"
+    },
+    {
       "slug": "MM_rh_iff_gaussian_positivity",
       "campaign": "mirrormere",
       "theorem": "RvMBridge10.rh_iff_gaussian_positivity",
