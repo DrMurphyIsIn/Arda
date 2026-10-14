@@ -22,9 +22,7 @@ Deliverable module: `telperion/src/telperion/arb_dh.py`.
 > nodes. Every ball value was rigorous, but nothing bounded how far the
 > argument of D could turn *between* two nodes. Two zeros sitting close to an
 > edge, between nodes, can add a full turn without changing a single sampled
-> quadrant. An independent audit
-> (`~/e9-research/review_telperion_winding/REVIEW_telperion_winding_2026-10-14.md`)
-> built exactly that: a zero pair at x = 1/7, about 1e-9 above the bottom edge
+> quadrant. An independent AI audit (2026-10-14) built exactly that: a zero pair at x = 1/7, about 1e-9 above the bottom edge
 > of the unit square, which the node count reports as 1 instead of 2 at every
 > density. Doubling the density does not help, because 1/7 is never a node.
 > The sentence in §4 that "a wrong evaluation yields an abort or a mismatched

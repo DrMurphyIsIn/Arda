@@ -77,8 +77,7 @@ All kernel claims: axioms exactly {propext, Classical.choice, Quot.sound},
 - **DH winding counts and inventory (2026-10-14).** The DH counts were first
   made with a node-sampling routine (`arb_dh.winding_number`, now
   `winding_number_sampled_heuristic`) and described as rigorous.  An
-  independent audit (`~/e9-research/review_telperion_winding/REVIEW_telperion_winding_2026-10-14.md`)
-  showed the count is a heuristic: the ball values at the nodes are rigorous,
+  independent AI audit (2026-10-14) showed the count is a heuristic: the ball values at the nodes are rigorous,
   but nothing bounds the argument between nodes, and a zero pair near an edge
   can be missed at every density.  Every DH box was re-certified with the
   segment-enclosure method (`telperion/src/telperion/arb_winding.py`); all 208
