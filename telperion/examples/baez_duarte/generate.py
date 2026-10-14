@@ -17,9 +17,10 @@ larger upper bound is still valid).  The file also carries ``bd_neg_refutes``,
 the falsifiability face.
 
 The certified bounds are 0.30685, 0.09575, 0.06595, 0.03632, 0.03621, 0.02439
-for N = 2..7, each within 10⁻⁹ of the true d²_N and non-increasing in N (as the
-nested spans force; tested over every rung).  N = 2 is the closed form
-d²_2 = 1 − ln 2.
+for N = 2..7, non-increasing in N (as the nested spans force; tested over every
+rung).  Only the upper bounds are certified; for N ≥ 3 they are COMPUTED
+(mpmath) to be within 10⁻⁹ of the true d²_N.  At N = 2 the gap is certified
+two-sided: d²_2 = 1 − ln 2 exactly and U_2 exceeds it by 6.25·10⁻¹².
 
 EARLIER VERSIONS (main before 2026-10-14) used {1/(kx)} without the −{1/x}/k
 term.  That family is not an RH criterion: its d²_N ≥ 1/2 − (ln 2)² ≈ 0.019547
