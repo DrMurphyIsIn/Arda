@@ -3,7 +3,7 @@ depends_on = []
 kind = "lemma"
 name = "RH.dbn_euler_model_zero_free"
 statement_module = "Statements.RH_dbn_euler_model_zero_free"
-status = "open"
+status = "proved"
 title = "EULER-PRODUCT MODEL ZERO-FREE NEAR THE LINE ABOVE AN EXPLICIT HEIGHT -- a MODEL (finite Euler product + χ), NOT ζ; folklore-grade companion to Gonek 2012 Thm 6.2 (dbn RegEulerModel / DBNEulerModelRH, kernel-checked): for Z_X(s) = E_X(s) + chi(s) E_X(1-s), E_X(s) = prod_{p <= X} (1 - p^{-s})^{-1}, chi(s) = pi^{s-1/2} Gamma((1-s)/2) / Gamma(s/2), and y < 1/2, t > 0 with log(t/2pi) - 1/t - 2/t^2 > Lambda_X(y) = (1/y) sum_{p <= X} log[(1 - p^{-1/2-y}) / (1 - p^{-1/2+y})]: Z_X(sigma + it) != 0 whenever 0 < |sigma - 1/2| <= y. Says nothing about the zeros of zeta; nothing here bears on RH. conjecture1_proved = False."
 updated = "2026-10-14"
 
@@ -11,6 +11,20 @@ updated = "2026-10-14"
 date = "2026-10-14"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_013hB6k9ssUSET4joVJgNy51"
+
+[grant]
+artifact_sha256 = "8c8403d4cc85ac15a7176235dd7cfdbd095db14a3330a73d67624810bbff4fc7"
+date = "2026-10-14"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "e3c0f6a65743b5b3b8c36805bf3245c41349a224d25394b0294ec555b63a4cba"
+
+[proof]
+artifact = "../../examples/dbn/lean/RegEulerModel.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
 
 [readback]
 auditor = "AI read-back by Claude (e9 session), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs; owner approved e9 doing this read-back directly in the e9 session 2026-10-14"

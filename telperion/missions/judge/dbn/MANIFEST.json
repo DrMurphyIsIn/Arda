@@ -54,6 +54,18 @@
       "statement_sha256": "a8b1e335472a84b4f8cbf8dc3df7b3db76d69212e77ef1f4f7b56118191f7ee2"
     },
     {
+      "slug": "RH_dbn_euler_model_zero_free",
+      "campaign": "rh",
+      "theorem": "euler_model_ZX_ne_zero",
+      "solution_module": "RegEulerModel",
+      "challenge_module": "MissionChallenges.RH_dbn_euler_model_zero_free",
+      "bridge_theorem": "MissionJudge.RH_dbn_euler_model_zero_free",
+      "config": "RH_dbn_euler_model_zero_free.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "8c8403d4cc85ac15a7176235dd7cfdbd095db14a3330a73d67624810bbff4fc7",
+      "statement_sha256": "e3c0f6a65743b5b3b8c36805bf3245c41349a224d25394b0294ec555b63a4cba"
+    },
+    {
       "slug": "RH_dbn_newman",
       "campaign": "rh",
       "theorem": "dbn_newman",

@@ -24,6 +24,7 @@ import MissionChallenges.MM_rr_square_collapse
 import MissionChallenges.MM_rr_square_hodge_index
 import MissionChallenges.MM_rr_square_hodge_index_domain
 import MissionChallenges.MM_rr_windows_imply_rh
+import MissionChallenges.MM_rr_windows_of_rh
 import MissionChallenges.MM_rvm_unbounded_mean_density
 import MissionChallenges.MM_theta_heat_monotone
 import MissionChallenges.MM_wall_map
