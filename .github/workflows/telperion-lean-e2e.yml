@@ -2828,15 +2828,15 @@ jobs:
             exit 1
           fi
 
-      - name: Axiom guard for RR-square (13 anchors)
+      - name: Axiom guard for RR-square (17 anchors, 13 RR-square + 4 LemmaSCore)
         working-directory: telperion/examples/weil_form_enclosure/lean
         shell: bash
         run: |
           set -euo pipefail
           lake env lean AxiomGuardRRSquare.lean 2>&1 | tee rr_axioms.out
           n=$(grep -cE "depends on axioms|does not depend on any axioms" rr_axioms.out || true)
-          if [ "$n" -lt "13" ]; then
-            echo "::error::RR-square guard printed $n axiom lines, expected 13"; exit 1; fi
+          if [ "$n" -lt "17" ]; then
+            echo "::error::RR-square guard printed $n axiom lines, expected 17"; exit 1; fi
           ! grep -q "sorryAx" rr_axioms.out
           if tr "\n" " " < rr_axioms.out | grep -oE "depends on axioms: \[[^]]*\]" \
                | sed -E "s/depends on axioms: \[|\]//g" | tr "," "\n" | tr -d " " \
