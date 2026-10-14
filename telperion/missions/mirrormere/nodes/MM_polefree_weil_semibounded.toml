@@ -1,0 +1,13 @@
+created = "2026-10-14"
+depends_on = []
+kind = "lemma"
+name = "MM.polefree_weil_semibounded"
+statement_module = "Statements.MM_polefree_weil_semibounded"
+status = "draft"
+title = "POLE-FREE WEIL FORM SEMIBOUNDED IFF RH (rvm_bridge RegSemibounded / PFSemibounded, kernel-checked): Mathlib's RiemannHypothesis holds iff there is a real C with -C * integral ||g||^2 <= Re weilForm(autocorr g) for every Weil test g with paperFT g (I/2) = 0 and paperFT g (-I/2) = 0. A soft (semibounded) form of Weil's criterion; RH-equivalent, not progress on RH."
+updated = "2026-10-14"
+
+[author]
+date = "2026-10-14"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"

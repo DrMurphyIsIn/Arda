@@ -297,6 +297,8 @@ import PFConverseC
 import PFConverseD
 import Hodge1_RegOnePrime
 import RegRRChain
+import PFSemibounded
+import RegSemibounded
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -2435,3 +2437,12 @@ import RegRRChain
 #print axioms rr_square_collapse
 #print axioms polefree_weil_converse
 #print axioms rr_windows_imply_rh
+
+-- Semibounded pole-free Weil form (e9, 2026-10-14): RH iff bounded below; delta-shift independent.
+#print axioms RvMBridgePF.integral_norm_sq_eq
+#print axioms RvMBridgePF.weighted_dominance_unbounded
+#print axioms RvMBridgePF.weil_semibounded_poleFree_implies_rh
+#print axioms RvMBridgePF.rh_iff_poleFree_weil_semibounded
+#print axioms RvMBridgePF.rh_iff_poleFree_weil_shift_semibounded
+#print axioms polefree_weil_semibounded_iff_rh
+#print axioms polefree_weil_shift_semibounded_iff_rh
