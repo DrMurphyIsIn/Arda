@@ -7,11 +7,43 @@ libflint; no Lean.  `conjecture1_proved = False`.
 
 **Verdict: GO.** The shim evaluates D(s) in rigorous ball arithmetic, reproduces
 the published on-line and off-line zeros, and certifies the crown off-line zero
-by a rigorous argument-principle winding count on a rational-cornered rectangle
+by an argument-principle winding count on a rational-cornered rectangle
 strictly off Re = 1/2. Per-eval cost is sub-ms to a few ms; a fully-certified
 T ≤ 1000 zero inventory is ~10 minutes of single-thread work.
 
 Deliverable module: `telperion/src/telperion/arb_dh.py`.
+
+> **Correction, 2026-10-14 — please read this before the rest.**
+>
+> When this scout was written, the winding count it describes in §4 was called
+> rigorous. It was not. The routine (`arb_dh.winding_number` at the time, now
+> renamed `winding_number_sampled_heuristic`) evaluated D in Arb balls at the
+> boundary *nodes* only and added up the quadrant steps between neighbouring
+> nodes. Every ball value was rigorous, but nothing bounded how far the
+> argument of D could turn *between* two nodes. Two zeros sitting close to an
+> edge, between nodes, can add a full turn without changing a single sampled
+> quadrant. An independent AI audit (2026-10-14) built exactly that: a zero pair at x = 1/7, about 1e-9 above the bottom edge
+> of the unit square, which the node count reports as 1 instead of 2 at every
+> density. Doubling the density does not help, because 1/7 is never a node.
+> The sentence in §4 that "a wrong evaluation yields an abort or a mismatched
+> count, never a false certified count" was therefore false.
+>
+> Since 2026-10-14 every count uses the segment-enclosure method in
+> `telperion/src/telperion/arb_winding.py` (`arb_dh.winding_number_rigorous`).
+> It encloses D and D' on every boundary *segment*, so the argument change
+> along the whole segment is bounded, and it bisects or refuses when it cannot
+> certify a segment. All the boxes in this scout were re-run with it, at
+> prec 96 and again at prec 144 with a different subdivision, and every
+> integer stood: the three on-line boxes of §3(d) give 1, the crown box of §4
+> gives 1, and both negative controls give 0. So the facts below hold; it is
+> only the method description that was wrong, and it is corrected in place.
+>
+> The audit also found that the T ≤ 300 inventory built on this scout
+> (`examples/quasicrystal/zoo_data/dh_zeros.json`) had missed an off-line zero
+> ρ ≈ 0.86953 + 240.40467i, because its off-line list was seeded from the
+> literature and the promised off-line scan was never written. The re-issued
+> inventory has that scan, lists 5 off-line zeros, and proves itself complete
+> to height 300 (214 = 204 + 2·5). See `examples/quasicrystal/dh_inventory.py`.
 
 ---
 
@@ -74,8 +106,10 @@ multiplies in via `acb_mul_arb`.  Endpoints are extracted dyadically with
 
     dh_eval(s_re, s_im, prec=128) -> (re_lo, re_hi, im_lo, im_hi)
     dh_kappa_interval(prec=128)  -> (lo, hi)
-    winding_number(re0, re1, im0, im1, prec, n_per_side) -> int
+    winding_number_rigorous(re0, re1, im0, im1, prec, init_per_side) -> int
     certify_offline_zero(re0, re1, im0, im1, prec, n_per_side) -> dict
+    winding_number_sampled_heuristic(re0, re1, im0, im1, prec, n_per_side) -> int   # NOT rigorous
+    winding_number(...)   # deprecated alias: warns, delegates to winding_number_rigorous
 
 ---
 
@@ -92,7 +126,8 @@ agrees with every shim box to all printed digits at s = 3, 1/2+20i,
 4/5 + 85.7i.
 
 **(d) On-line zeros reproduced.** Three critical-line zeros certified by a
-winding-1 box straddling Re = 1/2:
+winding-1 box straddling Re = 1/2 (first found with the node-sampling count;
+re-certified with the segment method on 2026-10-14, winding 1 each):
 
 | Im (approx) | box Re      | box Im             | winding |
 |-------------|-------------|--------------------|---------|
@@ -107,12 +142,17 @@ winding-1 box straddling Re = 1/2:
 Published off-line zero (Franca–LeClair Table IX, matching Balanzario–
 Sánchez-Ortiz): **ρ\* = 0.8085171825 + i·85.6993484854**.
 
-`certify_offline_zero` performs a rigorous argument-principle winding count: it
-walks the rectangle boundary through `4·n_per_side` rational nodes, encloses D
-in a ball at each, classifies each value-box into a strict quadrant (aborting if
-any box straddles an axis, i.e. sign-ambiguous), and sums signed quadrant
-advances (aborting on any diagonal / ±π-ambiguous jump).  A returned integer is
-therefore a **rigorous** zero count for the open rectangle.
+`certify_offline_zero` performs an argument-principle winding count.  As first
+written it walked the rectangle boundary through `4·n_per_side` rational nodes,
+enclosed D in a ball at each, classified each value-box into a strict quadrant,
+and summed signed quadrant advances.  That is a **heuristic** count (see the
+correction at the top): the ball values are rigorous, but the path between
+nodes is not controlled.  Since 2026-10-14 it uses the segment-enclosure
+method of `arb_winding` instead: on each boundary segment D and D' are enclosed
+over an Arb ball covering the segment, the image is shown to stay in a disc
+that avoids 0, and the argument change along that segment is then exact up to
+the endpoint balls.  A returned integer from that method is an Arb-trust-class
+zero count for the open rectangle.
 
 **Certified box (exact rationals), strictly right of Re = 1/2:**
 
@@ -120,20 +160,23 @@ therefore a **rigorous** zero count for the open rectangle.
     Im ∈ [8568/100, 8572/100]  (= [85.68, 85.72])
     winding number = 1   ⇒   exactly ONE zero of D in the open box, off-line.
 
-**Independent re-check (charter requirement):** re-run at **doubled precision
-and doubled boundary density** (prec = 440, n_per_side = 48) → winding = 1
-again.
+**Re-check (charter requirement):** the original run was repeated at **doubled
+precision and doubled boundary density** (prec = 440, n_per_side = 48) → winding
+= 1 again.  That recheck did not make the count rigorous, since it shares the
+node-sampling flaw.  **Re-certified 2026-10-14** with the segment method: winding
+1 at prec 96 (32 segments) and at prec 144 (52 segments).
 
 **Negative controls (PASS):**
 - Box left of ρ\* with no zero, Re ∈ [0.60, 0.70], Im ∈ [85.68, 85.72] →
   winding = 0.
 - Empty region far from any zero, Re ∈ [1.5, 1.6], Im ∈ [20, 21] → winding = 0.
 
-**Trust label.** This is **Arb-interval (argument-principle) evidence**, the
-same trust class as `arb_platt` / `arb_enclosure` — a rigorous interval
-computation, **NOT a Lean-kernel proof**.  A wrong evaluation yields an abort
-(refine request) or a mismatched count, never a false certified count.
-`conjecture1_proved = False`.
+**Trust label.** With the segment method this is **Arb-interval
+(argument-principle) evidence**, the same trust class as `arb_platt` /
+`arb_enclosure` — an interval computation, **NOT a Lean-kernel proof**.  The
+original text here said "a wrong evaluation yields an abort or a mismatched
+count, never a false certified count"; for the node-sampling count that was
+false (correction at the top).  `conjecture1_proved = False`.
 
 ---
 
@@ -170,15 +213,19 @@ and height, as expected.)
   the "real on the real axis" sanity check exact.
 - **The Ferry paper is skeptical** — it argues some *published* off-line points
   are approximation artifacts.  That does NOT affect ρ\* = 0.8085+85.699i, which
-  this shim certifies rigorously by winding number, independent of any published
-  numeric.  Trust the winding integer, not the literature decimals.
+  this shim certifies by winding number (segment method since 2026-10-14),
+  independent of any published numeric.  Trust the winding integer, not the
+  literature decimals — and do not trust a literature *list* to be complete
+  either: the inventory seeded from it missed the zero ρ ≈ 0.86953 + 240.40467i.
 - **No Hurwitz precomputation API needed.** `acb_dirichlet_hurwitz` is a direct
   per-call evaluation; there is no shared-context/precompute step to manage
   (unlike Platt multieval).  Each D(s) is four independent Hurwitz calls.
-- **Winding aborts are features.** If a value box straddles an axis (a zero may
-  sit on the contour) or a step jumps diagonally, `winding_number` raises with a
-  "raise n_per_side/prec" message rather than guessing — the count is only
-  emitted when every step is rigorous.  For B1, retry with `n_per_side *= 2`.
+- **Winding refusals are features.** If a boundary segment cannot be certified
+  zero-free within the bisection depth (a zero may sit on or very near the
+  contour), `winding_number_rigorous` raises rather than guessing; move the box
+  edge.  (The original node-sampling routine also raised on a straddling or
+  diagonal step, but it could return a wrong integer WITHOUT raising, so its
+  aborts were not a guarantee.)
 - **acb/arb struct sizes** (96 / 48 bytes, flint 18.x, 64-bit) are hard-coded to
   match `arb_platt`; if the bundled libflint is ever bumped, re-verify the
   layout before trusting endpoint extraction.
@@ -189,8 +236,9 @@ and height, as expected.)
 
 ## 7. GO/NO-GO
 
-**GO for B1 (qc-zoo).**  The rigorous DH driver exists, is cross-validated,
+**GO for B1 (qc-zoo).**  The rigorous DH evaluator exists, is cross-validated,
 certifies both on-line and off-line zeros, and prices a full T ≤ 1000 inventory
 at ~10 minutes.  The certified off-line zero box (§4) is the control the
 falsification matrix needs: any candidate log-lattice FQ axiom that D's zero
-comb satisfies is dead, because that comb provably contains an off-line point.
+comb satisfies is dead, because that comb provably contains an off-line point
+(Arb trust class; re-certified with the segment method on 2026-10-14).

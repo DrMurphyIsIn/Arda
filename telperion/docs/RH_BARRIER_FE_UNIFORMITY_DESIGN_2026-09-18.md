@@ -128,11 +128,14 @@ arithmetic. The Li ladder transmits the POSITIONS of the zeros and adds nothing 
 
 **Trust boundary.** The Davenport-Heilbronn off-line zero enters as an explicit hypothesis
 (`hz`, `hoff`) of every theorem, exactly as the Arb enclosures enter the zero-localization
-ladder. Its discharge is `QC_DH_SCOUT` section 4: a rigorous argument-principle winding
+ladder. Its discharge is `QC_DH_SCOUT` section 4: an argument-principle winding
 count, winding number 1 on the rational box `Re ∈ [79/100, 83/100]`,
-`Im ∈ [8568/100, 8572/100]`, re-checked at doubled precision and doubled boundary density,
-with two negative controls. That is Arb-interval trust, not Lean-kernel trust, and it is
-labelled as such.
+`Im ∈ [8568/100, 8572/100]`, with two negative controls. That is Arb-interval trust, not
+Lean-kernel trust, and it is labelled as such. (Correction 2026-10-14: the count was first
+made by sampling D at boundary nodes, which is a heuristic even when re-checked at doubled
+precision and density. It has been re-certified with the segment-enclosure method of
+`telperion/src/telperion/arb_winding.py`; the winding is still 1 and the negative controls
+are still 0.)
 
 ## 3. Barrier II -- the dual ceiling (Beurling; Diamond-Montgomery-Vorhauer)
 

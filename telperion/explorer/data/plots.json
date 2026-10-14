@@ -156,29 +156,39 @@
    {
     "beta": 0.808517,
     "certified": true,
-    "gamma": 85.699348
+    "gamma": 85.699348,
+    "source": "literature seed"
    },
    {
     "beta": 0.65083,
     "certified": true,
-    "gamma": 114.163331
+    "gamma": 114.163331,
+    "source": "literature seed"
    },
    {
     "beta": 0.6,
     "certified": true,
-    "gamma": 166.5
+    "gamma": 166.5,
+    "source": "literature seed"
    },
    {
     "beta": 0.741732,
     "certified": true,
-    "gamma": 176.702461
+    "gamma": 176.702461,
+    "source": "literature seed"
+   },
+   {
+    "beta": 0.87,
+    "certified": true,
+    "gamma": 240.405,
+    "source": "off-line scan (2026-10-14)"
    }
   ],
-  "off_line_count": 4,
+  "off_line_count": 5,
   "on_line_count": 204,
   "source": "telperion/examples/quasicrystal/zoo_data/dh_zeros.json",
   "t_max": 300,
-  "trust": "arb-interval (argument-principle winding); NOT kernel",
+  "trust": "arb-interval (segment-enclosure argument principle); NOT kernel",
   "zeros": [
    {
     "beta": 0.5,
@@ -2389,6 +2399,20 @@
     "re": [
      "2/5",
      "3/5"
+    ],
+    "winding": 1
+   },
+   {
+    "beta": 0.87,
+    "gamma": 240.405,
+    "im": [
+     "48073/200",
+     "48089/200"
+    ],
+    "on_line": false,
+    "re": [
+     "83/100",
+     "91/100"
     ],
     "winding": 1
    },
@@ -5655,7 +5679,7 @@
      "verdict": "PASS"
     },
     "defect_bounded": {
-     "detail": "unbounded defect: 4 off-line pairs certified, k(T)->inf",
+     "detail": "unbounded defect: 5 off-line pairs certified, k(T)->inf",
      "name": "(D-ii) bounded defect k",
      "variants": [
       "D"

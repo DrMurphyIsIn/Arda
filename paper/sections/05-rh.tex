@@ -677,13 +677,30 @@ a dual-side condition, in the smallest honest instance; the
 rationally-dependent case reduces, in kernel, to Lee--Yang-on-the-circle.
 
 Two further instruments discipline the search for axioms. A \emph{certified
-control zoo}: a rigorous Davenport--Heilbronn driver (ball-arithmetic Hurwitz
-evaluation, the mixing constant enclosed from integer surds) yields a
-winding-certified zero inventory to height $300$---$204$ on-line, $4$
-off-line, correcting two published values along the way (the off-line zero
-near $\gamma \approx 166.5$ has $\beta \approx 0.60$, not the tabulated
-$0.785$, which our winding count rejects; the tabulated off-line zero near
-$\gamma \approx 243.1$ does not exist)---and a mechanized falsification
+control zoo}: a rigorous Davenport--Heilbronn evaluator (ball-arithmetic
+Hurwitz evaluation, the mixing constant enclosed from integer surds) yields a
+zero inventory to height $300$, each zero in a box whose winding number is
+computed by the argument principle with Arb enclosures of $D$ and $D'$ on
+every boundary segment (Arb trust class, not kernel)---$204$ on-line and $5$
+off-line, and complete: the winding number of $[-1,2]\times[1/20,300]$ is
+$214 = 204 + 2\cdot 5$, which leaves no room for another zero, because the
+listed boxes are disjoint, the on-line boxes are symmetric about the line,
+each off-line zero brings its mirror $1-\bar\rho$ in no listed box,
+$\operatorname{Re} s \ge 2$ is zero-free by the dominant term, and a small
+box about the real axis excludes $0 < \operatorname{Im} s < 1/20$. Along the way it checks two published values. The
+off-line zero near $\gamma \approx 166.5$ has $\beta \approx 0.60$, not the
+tabulated $0.785$ (a box at $0.785$ has winding number $0$). There is no
+off-line zero near $\gamma \approx 243.1$, but there is one at
+$\rho \approx 0.86953 + 240.40467i$; the tabulated entry may be a garbled
+version of it, which we have not verified.\footnote{An earlier version of this
+paragraph, in the releases \texttt{newman-v1.0.0}, \texttt{newman-v1.1.0} and
+\texttt{qrh-liu-v1.1.0}, reported $4$ off-line zeros, said the tabulated zero
+near $\gamma \approx 243.1$ does not exist, and called the winding count
+rigorous. That count sampled $D$ only at boundary nodes, which is a
+heuristic; an independent audit (2026-10-14) found that it can miss zeros
+near an edge, and that the inventory had missed the zero $\rho \approx 0.86953 + 240.40467i$.
+Every box was re-certified with the segment method; the $208$ earlier boxes
+all stand.} The zoo's other half is a mechanized falsification
 harness that runs candidate axiom sets against certified data. Its verdict:
 the clause that kills DH (which has off-line zeros, so every admissible axiom
 set \emph{must} kill it) while zeta's unconditionally-checkable clauses pass
