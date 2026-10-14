@@ -12,6 +12,18 @@ date = "2026-10-14"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_01T6sQ9By6CuBoffW7BYPHJT"
 
+[comparator]
+artifact_sha256 = "12d8546f189472f018569f6ffb5017f71ce60cfe9b94da9f75ef58eac7be3511"
+date = "2026-10-14"
+head_check = "matched"
+job_id = "115950164918"
+job_url = "https://github.com/DrMurphyIsIn/Arda/actions/runs/38573910121/job/115950164918"
+judged_head_sha = "1d9c9052289c99f96753c38d52a35848de5699f6"
+kernel_mode = "nanoda"
+log_check = "verified"
+run_id = "38573910121"
+theorem = "polefree_weil_semibounded_iff_rh"
+
 [grant]
 artifact_sha256 = "12d8546f189472f018569f6ffb5017f71ce60cfe9b94da9f75ef58eac7be3511"
 date = "2026-10-14"
