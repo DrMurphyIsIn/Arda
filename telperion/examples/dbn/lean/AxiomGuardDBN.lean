@@ -91,6 +91,7 @@ import DBNSelbergSharpStrip
 import DBNSelbergSharpZeta
 import DBNWeakFESelfDual
 import DBNEulerModelRH
+import RegEulerModel
 
 -- theta moments
 #print axioms DBN.summable_thetaTerm
@@ -1063,3 +1064,4 @@ example : M6gap.HeightFloor.DI.checkAB
 #print axioms DBNEulerModel.LamX_two_lt
 #print axioms DBNEulerModel.height_gt_five
 #print axioms DBNEulerModel.ZX_two_ne_zero
+#print axioms euler_model_ZX_ne_zero

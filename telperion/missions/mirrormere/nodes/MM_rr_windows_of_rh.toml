@@ -1,0 +1,13 @@
+created = "2026-10-14"
+depends_on = ["MM_rr_square_collapse", "MM_rh_implies_weil_positivity"]
+kind = "lemma"
+name = "MM.rr_windows_of_rh"
+statement_module = "Statements.MM_rr_windows_of_rh"
+status = "draft"
+title = "RH GIVES RR-SQUARE WINDOWS, the trivial direction; shows the existence form is circular; not progress on RH (rvm_bridge RegRRConverse / PFConverseD, kernel-checked): Mathlib's RiemannHypothesis implies there exist an index type and, for each index i, windows V i, Div i with B i, f i, iota i, deg, Prin, h0, h1, K, a, chi satisfying the RR index identity, effectivity, compatibility and (degree bound OR no zero divisors), test maps tau i with B v v = -(c * Re weilForm(autocorr (tau v))), c > 0, and pole-free tests of degree 0, covering every pole-free Weil test: exactly the hypotheses of MM_rr_windows_imply_rh, so together they give RH iff such windows exist. The windows are the collapse model read off from Weil positivity (V = Div = R, f = 0, h0 = 0; cf. MM_rr_square_collapse): no geometry, so the content of RR-square is a construction without reference to the zeros."
+updated = "2026-10-14"
+
+[author]
+date = "2026-10-14"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_013hB6k9ssUSET4joVJgNy51"

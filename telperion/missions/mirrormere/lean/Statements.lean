@@ -39,6 +39,7 @@ import Statements.MM_rr_square_collapse
 import Statements.MM_rr_square_hodge_index
 import Statements.MM_rr_square_hodge_index_domain
 import Statements.MM_rr_windows_imply_rh
+import Statements.MM_rr_windows_of_rh
 import Statements.MM_rvm_unbounded_mean_density
 import Statements.MM_satake_degree_two_rejects_delta
 import Statements.MM_selfinversive_iff_hardyz_real

@@ -936,3 +936,41 @@ noncomputable def sharpFlow (t : ℝ) (z : ℂ) : ℂ :=
 end SelbergSharp
 
 end DBNSelberg
+
+/-
+  ===== EULER-PRODUCT MODEL VOCABULARY MIRROR (2026-10-14, LY-1/E) =====
+  VERBATIM copies of the dbn-island declarations the node RH_dbn_euler_model_zero_free states its
+  theorem in: `primesUpTo` (the primes p <= X), `eulerX` (the truncated Euler product
+  E_X(s) = prod_{p <= X} (1 - p^{-s})^{-1}), `chiM` (the functional-equation factor
+  chi(s) = pi^{s-1/2} Gamma((1-s)/2) / Gamma(s/2)), `ZX` (the MODEL Z_X(s) = E_X(s) + chi(s) E_X(1-s))
+  and `LamX` (the threshold Lambda_X(y)).  The island file's `open` line (DBNEulerModelRH.lean:26) is
+  restated inside the namespace so that `Gamma` resolves to `Complex.Gamma` as it does there.
+  The mirror is VERBATIM, nothing AUTHORED; flagged for the read-back all the same.
+  A MODEL, NOT zeta: nothing here bears on RH.  conjecture1_proved = False.
+-/
+namespace DBNEulerModel
+
+-- ===== examples/dbn/lean/DBNEulerModelRH.lean:26 (v4.34 dbn island; context line) =====
+open Complex Filter Topology Set
+
+-- ===== examples/dbn/lean/DBNEulerModelRH.lean:30-47 (v4.34 dbn island) =====
+/-- The primes `p ≤ X`. -/
+def primesUpTo (X : ℕ) : Finset ℕ := (Finset.range (X + 1)).filter Nat.Prime
+
+/-- The truncated Euler product `E_X(s) = ∏_{p ≤ X} (1 - p^{-s})⁻¹`. -/
+noncomputable def eulerX (X : ℕ) (s : ℂ) : ℂ :=
+  ∏ p ∈ primesUpTo X, (1 - (p : ℂ) ^ (-s))⁻¹
+
+/-- The functional-equation factor `χ(s) = π^{s-1/2} Γ((1-s)/2) / Γ(s/2)`. -/
+noncomputable def chiM (s : ℂ) : ℂ :=
+  (Real.pi : ℂ) ^ (s - 1 / 2) * Gamma ((1 - s) / 2) / Gamma (s / 2)
+
+/-- The model `Z_X(s) = E_X(s) + χ(s) E_X(1-s)`. -/
+noncomputable def ZX (X : ℕ) (s : ℂ) : ℂ := eulerX X s + chiM s * eulerX X (1 - s)
+
+/-- `Λ_X(y) = (1/y) Σ_{p ≤ X} log [(1 - p^{-1/2-y}) / (1 - p^{-1/2+y})]`. -/
+noncomputable def LamX (X : ℕ) (y : ℝ) : ℝ :=
+  (1 / y) * ∑ p ∈ primesUpTo X,
+    Real.log ((1 - (p : ℝ) ^ (-1 / 2 - y)) / (1 - (p : ℝ) ^ (-1 / 2 + y)))
+
+end DBNEulerModel
