@@ -3,7 +3,7 @@ depends_on = ["MM_rr_square_collapse", "MM_rh_implies_weil_positivity"]
 kind = "lemma"
 name = "MM.rr_windows_of_rh"
 statement_module = "Statements.MM_rr_windows_of_rh"
-status = "open"
+status = "proved"
 title = "RH GIVES RR-SQUARE WINDOWS, the trivial direction; shows the existence form is circular; not progress on RH (rvm_bridge RegRRConverse / PFConverseD, kernel-checked): Mathlib's RiemannHypothesis implies there exist an index type and, for each index i, windows V i, Div i with B i, f i, iota i, deg, Prin, h0, h1, K, a, chi satisfying the RR index identity, effectivity, compatibility and (degree bound OR no zero divisors), test maps tau i with B v v = -(c * Re weilForm(autocorr (tau v))), c > 0, and pole-free tests of degree 0, covering every pole-free Weil test: exactly the hypotheses of MM_rr_windows_imply_rh, so together they give RH iff such windows exist. The windows are the collapse model read off from Weil positivity (V = Div = R, f = 0, h0 = 0; cf. MM_rr_square_collapse): no geometry, so the content of RR-square is a construction without reference to the zeros."
 updated = "2026-10-14"
 
@@ -11,6 +11,20 @@ updated = "2026-10-14"
 date = "2026-10-14"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_013hB6k9ssUSET4joVJgNy51"
+
+[grant]
+artifact_sha256 = "b741a3494d99299bf6f0b3ff19a87176d522a875cec8325ff18b2184cebfaf56"
+date = "2026-10-14"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+statement_sha256 = "4eca6d5162067bf5f1778514de5a0bba8fc2d928e94b0998c1c7109446f57e53"
+
+[proof]
+artifact = "../../examples/rvm_bridge/lean/RegRRConverse.lean"
+artifact_kind = "lean_module"
+closure_clean = true
+via = "direct"
 
 [readback]
 auditor = "AI read-back by Claude (e9 session), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs; owner approved e9 doing this read-back directly in the e9 session 2026-10-14"

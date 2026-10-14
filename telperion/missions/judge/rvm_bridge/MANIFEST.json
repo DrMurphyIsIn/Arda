@@ -318,6 +318,18 @@
       "statement_sha256": "c272367a23111e020ea1f12f39ea1bcdfee723c8dd4ac868f96a7602cec23d98"
     },
     {
+      "slug": "MM_rr_windows_of_rh",
+      "campaign": "mirrormere",
+      "theorem": "rh_implies_rr_windows",
+      "solution_module": "RegRRConverse",
+      "challenge_module": "MissionChallenges.MM_rr_windows_of_rh",
+      "bridge_theorem": "MissionJudge.MM_rr_windows_of_rh",
+      "config": "MM_rr_windows_of_rh.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "b741a3494d99299bf6f0b3ff19a87176d522a875cec8325ff18b2184cebfaf56",
+      "statement_sha256": "4eca6d5162067bf5f1778514de5a0bba8fc2d928e94b0998c1c7109446f57e53"
+    },
+    {
       "slug": "MM_rvm_unbounded_mean_density",
       "campaign": "mirrormere",
       "theorem": "RvMBridge.rvm_unbounded_mean_density",
