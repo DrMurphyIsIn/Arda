@@ -3272,6 +3272,8 @@
         "abs_D": "5.8e-30",
         "how": "mpmath findroot at dps 30 (float locator; lies strictly inside every recorded box)"
       },
+      "beta": "0.8695305796",
+      "gamma": "240.4046723514",
       "audit_box": {
         "re": [
           "35610821/40960000",

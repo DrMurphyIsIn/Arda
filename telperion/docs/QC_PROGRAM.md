@@ -66,7 +66,7 @@ All kernel claims: axioms exactly {propext, Classical.choice, Quot.sound},
 5. **Literature checks from certified winding integers**: the published DH
    off-line zero at γ≈166.5 has true β≈0.60 (a box at the tabulated 0.785 has
    winding 0).  Near γ≈243.1 there is no off-line zero, but that is true only
-   narrowly: the 240–250 strip holds an off-line zero at ρ ≈ 0.8695305796 + 240.4046723514i,
+   narrowly: the 240–250 strip holds an off-line zero at ρ ≈ 0.86953 + 240.40467i,
    which the literature-seeded inventory missed (see the ledger).  The
    tabulated 243.1 entry may be a garbled version of that zero; that is
    UNVERIFIED.  The earlier wording here, "the tabulated off-line zero at

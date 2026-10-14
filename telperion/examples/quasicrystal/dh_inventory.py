@@ -48,7 +48,7 @@ HISTORY.  The first issue of this file (commit 5f7cf159c) counted with the
 node-sampling `arb_dh.winding_number`, now `winding_number_sampled_heuristic`:
 its ball values were rigorous but its COUNT WAS A HEURISTIC, and its docstring
 called it rigorous.  It also promised an off-line SCAN that had no code, and it
-missed the off-line zero rho ~ 0.8695305796 + 240.4046723514i (the 2026-10-14 audit, REVIEW_
+missed the off-line zero rho ~ 0.86953 + 240.40467i (the 2026-10-14 audit, REVIEW_
 telperion_winding_2026-10-14.md).  The 2026-10-14 re-issue re-certifies every
 box rigorously (all 208 old brackets unchanged), adds that fifth off-line zero
 from the scan, and adds the completeness check.  conjecture1_proved = False.
@@ -265,6 +265,8 @@ def scan_offline(off: list[dict], log=print) -> tuple[list[dict], dict]:
             if not _strictly_inside(pt, _box(rec)):
                 raise RuntimeError(f"scan: zero {pt} not strictly inside the inventory box")
             rec["zero_approx"] = za
+            rec["beta"] = _decimal(pt[0], 10)    # the zero itself (10 digits); the box is the certificate
+            rec["gamma"] = _decimal(pt[1], 10)
             for ab in AUDIT_BOXES:
                 abox = _box(ab)
                 if not _strictly_inside(pt, abox):
@@ -308,6 +310,13 @@ def _zero_approx(tight: tuple) -> dict:
     return {"beta": mp.nstr(r.real, 12), "gamma": mp.nstr(r.imag, 14), "abs_D": mp.nstr(res, 3),
             "how": "mpmath findroot at dps 30 (float locator; lies strictly inside every recorded box)",
             "_exact": (beta, gamma)}
+
+
+def _decimal(x: F, digits: int) -> str:
+    """x rounded to ``digits`` decimals, as an exact decimal string."""
+    n = round(x * 10 ** digits)
+    sign, n = ("-" if n < 0 else ""), abs(n)
+    return f"{sign}{n // 10 ** digits}.{n % 10 ** digits:0{digits}d}"
 
 
 def _strictly_inside(pt: tuple, box: tuple) -> bool:

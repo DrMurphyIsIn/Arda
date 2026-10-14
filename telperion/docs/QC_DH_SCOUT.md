@@ -42,7 +42,7 @@ Deliverable module: `telperion/src/telperion/arb_dh.py`.
 >
 > The audit also found that the T ≤ 300 inventory built on this scout
 > (`examples/quasicrystal/zoo_data/dh_zeros.json`) had missed an off-line zero
-> ρ ≈ 0.8695305796 + 240.4046723514i, because its off-line list was seeded from the
+> ρ ≈ 0.86953 + 240.40467i, because its off-line list was seeded from the
 > literature and the promised off-line scan was never written. The re-issued
 > inventory has that scan, lists 5 off-line zeros, and proves itself complete
 > to height 300 (214 = 204 + 2·5). See `examples/quasicrystal/dh_inventory.py`.
