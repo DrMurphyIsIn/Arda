@@ -1,0 +1,13 @@
+created = "2026-10-14"
+depends_on = []
+kind = "lemma"
+name = "RH.dbn_euler_model_zero_free"
+statement_module = "Statements.RH_dbn_euler_model_zero_free"
+status = "draft"
+title = "EULER-PRODUCT MODEL ZERO-FREE NEAR THE LINE ABOVE AN EXPLICIT HEIGHT -- a MODEL (finite Euler product + χ), NOT ζ; folklore-grade companion to Gonek 2012 Thm 6.2 (dbn RegEulerModel / DBNEulerModelRH, kernel-checked): for Z_X(s) = E_X(s) + chi(s) E_X(1-s), E_X(s) = prod_{p <= X} (1 - p^{-s})^{-1}, chi(s) = pi^{s-1/2} Gamma((1-s)/2) / Gamma(s/2), and y < 1/2, t > 0 with log(t/2pi) - 1/t - 2/t^2 > Lambda_X(y) = (1/y) sum_{p <= X} log[(1 - p^{-1/2-y}) / (1 - p^{-1/2+y})]: Z_X(sigma + it) != 0 whenever 0 < |sigma - 1/2| <= y. Says nothing about the zeros of zeta; nothing here bears on RH. conjecture1_proved = False."
+updated = "2026-10-14"
+
+[author]
+date = "2026-10-14"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_013hB6k9ssUSET4joVJgNy51"

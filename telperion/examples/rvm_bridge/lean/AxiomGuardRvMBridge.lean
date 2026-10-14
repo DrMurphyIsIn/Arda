@@ -300,6 +300,7 @@ import RegRRChain
 import PFSemibounded
 import RegSemibounded
 import SemilocalWeil
+import RegRRConverse
 
 #print axioms RvMBridge.rvm_unbounded_mean_density
 #print axioms RvMBridge.eventually_Ncount_ge
@@ -2455,3 +2456,4 @@ import SemilocalWeil
 #print axioms RvMBridgePF.semilocalPositive_mono_shift
 #print axioms RvMBridgePF.semilocalHodgeIndex_iff
 #print axioms RvMBridgePF.rh_iff_semilocal_hodge_index
+#print axioms rh_implies_rr_windows
