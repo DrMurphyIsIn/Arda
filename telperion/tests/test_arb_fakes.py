@@ -74,3 +74,16 @@ def test_node_sampling_undercount_vs_rigorous(monkeypatch):
     assert sampled(0, 1, 0, 1, prec=256, n_per_side=48) == 1
     assert rigorous_winding(f, 0, 1, 0, 1, prec=128) == 2
 
+
+def test_pole_guard():
+    """A box whose closure contains the declared pole s = 1 is refused unless the pole is passed explicitly."""
+    from telperion.arb_fakes import count_offline
+    with pytest.raises(ValueError, match="pole"):
+        certify_zero_box("EP5", "1/2", "3/2", "-1/2", "1/2", expected=0)
+    with pytest.raises(ValueError, match="pole"):
+        count_offline("EP5", "3/5", "8/5", "0", "5", cuts=[])   # pole on the bottom edge (closure)
+    # acknowledged: winding = zeros - poles; EP5 has no zeros near s = 1, so the zero count is 0
+    c = certify_zero_box("EP5", "9/10", "11/10", "-1/10", "1/10", expected=0, poles=[(1, 0)])
+    assert c["winding"] == -1 and c["zeros_in_box"] == 0
+    # DH is entire: no guard
+    assert certify_zero_box("DH", "9/10", "11/10", "-1/10", "1/10", expected=0)["winding"] == 0
