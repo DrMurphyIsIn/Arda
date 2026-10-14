@@ -707,7 +707,7 @@ group = "flint"    # 20 Li-criterion rungs + refutation atom; Arb enclosures nee
 [[check]]
 name = "baez_duarte"
 script = "examples/baez_duarte/generate.py"
-group = "flint"    # Baez-Duarte criterion instance; Arb enclosures need python-flint
+group = "flint"    # Baez-Duarte / Bagchi criterion rungs; generator needs mpmath, tests use python-flint
 
 [[check]]
 name = "bagchi_recurrence"

@@ -1,4 +1,4 @@
-/- telperion 0.1.6 | family BaezDuarte | input-hash 2e543a425e3ba0f7
+/- telperion 0.1.6 | family BaezDuarte | input-hash b87f2efd512bda8c
    6 theorems, 6 generation-time self-checks passed.
    Regenerate & verify:  forge diff --family <module:attr> --manifest <manifest.json> --check
    DO NOT EDIT BY HAND — edits are flagged by the regeneration diff.  -/
@@ -7,60 +7,77 @@ import Mathlib
 
 namespace BaezDuarte
 
--- bd_neg_refutes: the falsifiability face.  RH forces d²_N → 0; a certified
--- LOWER bound L ≤ d²_N with the RH-tolerance ε ≤ L contradicts d²_N < ε,
--- hence ¬RH through the Báez-Duarte equivalence (carried as hRH : RH →
--- d²_N < ε).  Not expected to fire; makes the sequence falsifiable.
+-- bd_neg_refutes: the falsifiability face.  Generic in P, dN2, L, eps: a
+-- certified LOWER bound L ≤ dN2 with eps ≤ L contradicts hRH : P → dN2 < eps.
+-- Intended instance: P = RH and dN2 = the Báez-Duarte / Bagchi d²_N of THIS
+-- file (g_k = {1/(kx)} − {1/x}/k, k ≥ 2, in L²(0,1)), where RH ⟹ d²_N → 0 is
+-- a theorem (Báez-Duarte 2003; Bagchi 2006, Thm 2 / Thm 7); hRH at fixed N needs N
+-- past an inexplicit N₀(eps), so it is an external hypothesis.  Do NOT use the
+-- pre-2026-10-14 family {1/(kx)} without the −{1/x}/k term: its d²_N is
+-- ≥ 1/2 − (ln 2)² ≈ 0.019547 for every N, so hRH is false for eps ≤ 0.01954.
+-- Not expected to fire; makes the sequence falsifiable.
 theorem bd_neg_refutes {P : Prop} (dN2 L eps : ℝ)
     (hRH : P → dN2 < eps) (hLo : L ≤ dN2) (hbad : eps ≤ L) : ¬P :=
   fun hP => absurd (hRH hP) (not_lt.mpr (le_trans hbad hLo))
 
--- bd_N2: Báez-Duarte rung N=2 — d²_N ≤ 257863420939/500000000000.
--- d²_N = inf_c ‖1 − Σ c_k·{(1/k)/x}‖²_{L²(0,1)} (RH ⟺ d²_N → 0).
--- Witnessing coefficient vector: c_2=1208921/870662.  Its form value Q(c) ≥ d²_N is
--- Arb-enclosed to Uexact = 22433941021568810609428182259729628875803499247232014542945296702201807898257823569070544398111387/43499657570428572883305227315730232005771048802361340721419875507865139086461067420721815006216192 (the trust seam, hypothesis hval).
+-- bd_N2: Báez-Duarte rung N=2 — d²_N ≤ 306852819447/1000000000000.
+-- d²_N = inf_c ‖1 − Σ_{k=2}^N c_k·g_k‖²_{L²(0,1)}, g_k(x) = {1/(kx)} − {1/x}/k
+-- (RH ⟺ d²_N → 0: Báez-Duarte 2003; Bagchi 2006, Thm 2, in L²(0,1) as Thm 7).
+-- Witnessing coefficient vector: c_2=2.  Its form value
+-- Q(c) = Σ_n (1 − Σ c_k{n/k})²/(n(n+1)) ≥ d²_N is certified ≤ Uexact
+-- (the trust seam, hypothesis hval).
 -- Kernel proves d²_N ≤ Uexact ≤ U (norm_num).  A finite spectral rung; NOT RH.
-theorem bd_N2 (dN2 : ℝ) (hval : dN2 ≤ ((22433941021568810609428182259729628875803499247232014542945296702201807898257823569070544398111387 / 43499657570428572883305227315730232005771048802361340721419875507865139086461067420721815006216192) : ℝ)) : dN2 ≤ ((257863420939 / 500000000000) : ℝ) :=
+theorem bd_N2 (dN2 : ℝ) (hval : dN2 ≤ ((104416603697551955386467185954184854095 / 340282366920938463463374607431768211456) : ℝ)) : dN2 ≤ ((306852819447 / 1000000000000) : ℝ) :=
   le_trans hval (by norm_num)
 
--- bd_N3: Báez-Duarte rung N=3 — d²_N ≤ 75460641007/200000000000.
--- d²_N = inf_c ‖1 − Σ c_k·{(1/k)/x}‖²_{L²(0,1)} (RH ⟺ d²_N → 0).
--- Witnessing coefficient vector: c_2=750363/987950, c_3=782327/892980.  Its form value Q(c) ≥ d²_N is
--- Arb-enclosed to Uexact = 2053738650672139003653167000379530811833991583044548206383509739024496957360488249219106370387888671480177879/5443204890047104788224371126469578475123906730568049463889664521256115780808819329901179860117955910041600000 (the trust seam, hypothesis hval).
+-- bd_N3: Báez-Duarte rung N=3 — d²_N ≤ 957477839437/10000000000000.
+-- d²_N = inf_c ‖1 − Σ_{k=2}^N c_k·g_k‖²_{L²(0,1)}, g_k(x) = {1/(kx)} − {1/x}/k
+-- (RH ⟺ d²_N → 0: Báez-Duarte 2003; Bagchi 2006, Thm 2, in L²(0,1) as Thm 7).
+-- Witnessing coefficient vector: c_2=25342123/21907823, c_3=3909695/2844439.  Its form value
+-- Q(c) = Σ_n (1 − Σ c_k{n/k})²/(n(n+1)) ≥ d²_N is certified ≤ Uexact
+-- (the trust seam, hypothesis hval).
 -- Kernel proves d²_N ≤ Uexact ≤ U (norm_num).  A finite spectral rung; NOT RH.
-theorem bd_N3 (dN2 : ℝ) (hval : dN2 ≤ ((2053738650672139003653167000379530811833991583044548206383509739024496957360488249219106370387888671480177879 / 5443204890047104788224371126469578475123906730568049463889664521256115780808819329901179860117955910041600000) : ℝ)) : dN2 ≤ ((75460641007 / 200000000000) : ℝ) :=
+theorem bd_N3 (dN2 : ℝ) (hval : dN2 ≤ ((32581282547771005811770524566122408227 / 340282366920938463463374607431768211456) : ℝ)) : dN2 ≤ ((957477839437 / 10000000000000) : ℝ) :=
   le_trans hval (by norm_num)
 
--- bd_N4: Báez-Duarte rung N=4 — d²_N ≤ 78216452163/250000000000.
--- d²_N = inf_c ‖1 − Σ c_k·{(1/k)/x}‖²_{L²(0,1)} (RH ⟺ d²_N → 0).
--- Witnessing coefficient vector: c_2=561402/917299, c_3=459225/638717, c_4=271347/670979.  Its form value Q(c) ≥ d²_N is
--- Arb-enclosed to Uexact = 420815328654253848785180164179687456369996090903329994651875209764448259564813984539428199776614076677790417061427190709201/1345034570789805581590740039978596589960660789993294984767077613666370270767425092441469081058231486712926577131127329259520 (the trust seam, hypothesis hval).
+-- bd_N4: Báez-Duarte rung N=4 — d²_N ≤ 329758471231/5000000000000.
+-- d²_N = inf_c ‖1 − Σ_{k=2}^N c_k·g_k‖²_{L²(0,1)}, g_k(x) = {1/(kx)} − {1/x}/k
+-- (RH ⟺ d²_N → 0: Báez-Duarte 2003; Bagchi 2006, Thm 2, in L²(0,1) as Thm 7).
+-- Witnessing coefficient vector: c_2=26818141/31055408, c_3=98458465/92782516, c_4=3271669/4606334.  Its form value
+-- Q(c) = Σ_n (1 − Σ c_k{n/k})²/(n(n+1)) ≥ d²_N is certified ≤ Uexact
+-- (the trust seam, hypothesis hval).
 -- Kernel proves d²_N ≤ Uexact ≤ U (norm_num).  A finite spectral rung; NOT RH.
-theorem bd_N4 (dN2 : ℝ) (hval : dN2 ≤ ((420815328654253848785180164179687456369996090903329994651875209764448259564813984539428199776614076677790417061427190709201 / 1345034570789805581590740039978596589960660789993294984767077613666370270767425092441469081058231486712926577131127329259520) : ℝ)) : dN2 ≤ ((78216452163 / 250000000000) : ℝ) :=
+theorem bd_N4 (dN2 : ℝ) (hval : dN2 ≤ ((22442198620519439488459306399494758975 / 340282366920938463463374607431768211456) : ℝ)) : dN2 ≤ ((329758471231 / 5000000000000) : ℝ) :=
   le_trans hval (by norm_num)
 
--- bd_N5: Báez-Duarte rung N=5 — d²_N ≤ 53895872193/200000000000.
--- d²_N = inf_c ‖1 − Σ c_k·{(1/k)/x}‖²_{L²(0,1)} (RH ⟺ d²_N → 0).
--- Witnessing coefficient vector: c_2=117733/198488, c_3=167254/272975, c_4=152587/802171, c_5=289709/662208.  Its form value Q(c) ≥ d²_N is
--- Arb-enclosed to Uexact = 406567437750036598801410381499153116774144270762517989325690472233246842387408830505912787860331241632969498189446434408463629629/1508714568327393328741485131320597686559620004817834459873496159856423468765730322203968152308585014105172449163245959669350400000 (the trust seam, hypothesis hval).
+-- bd_N5: Báez-Duarte rung N=5 — d²_N ≤ 181595090343/5000000000000.
+-- d²_N = inf_c ‖1 − Σ_{k=2}^N c_k·g_k‖²_{L²(0,1)}, g_k(x) = {1/(kx)} − {1/x}/k
+-- (RH ⟺ d²_N → 0: Báez-Duarte 2003; Bagchi 2006, Thm 2, in L²(0,1) as Thm 7).
+-- Witnessing coefficient vector: c_2=49039331/56792348, c_3=80840245/93154498, c_4=27622042/92675263, c_5=19871120/26286597.  Its form value
+-- Q(c) = Σ_n (1 − Σ c_k{n/k})²/(n(n+1)) ≥ d²_N is certified ≤ Uexact
+-- (the trust seam, hypothesis hval).
 -- Kernel proves d²_N ≤ Uexact ≤ U (norm_num).  A finite spectral rung; NOT RH.
-theorem bd_N5 (dN2 : ℝ) (hval : dN2 ≤ ((406567437750036598801410381499153116774144270762517989325690472233246842387408830505912787860331241632969498189446434408463629629 / 1508714568327393328741485131320597686559620004817834459873496159856423468765730322203968152308585014105172449163245959669350400000) : ℝ)) : dN2 ≤ ((53895872193 / 200000000000) : ℝ) :=
+theorem bd_N5 (dN2 : ℝ) (hval : dN2 ≤ ((12358721432619032332123258234782891697 / 340282366920938463463374607431768211456) : ℝ)) : dN2 ≤ ((181595090343 / 5000000000000) : ℝ) :=
   le_trans hval (by norm_num)
 
--- bd_N6: Báez-Duarte rung N=6 — d²_N ≤ 10807207659/40000000000.
--- d²_N = inf_c ‖1 − Σ c_k·{(1/k)/x}‖²_{L²(0,1)} (RH ⟺ d²_N → 0).
--- Witnessing coefficient vector: c_2=575191/963332, c_3=496471/758144, c_4=192945/937138, c_5=400671/772675, c_6=-41938/273773.  Its form value Q(c) ≥ d²_N is
--- Arb-enclosed to Uexact = 2978399753563147725185415197920790566812863771336947154114409240240217118917697616062591250630401345652616667494769023168884807100601428430251369/11023753211912507960903913477119426695156832230038805980491841253470831408671748957871228936331117867051896262001329039301678072741954060288000000 (the trust seam, hypothesis hval).
+-- bd_N6: Báez-Duarte rung N=6 — d²_N ≤ 362080347681/10000000000000.
+-- d²_N = inf_c ‖1 − Σ_{k=2}^N c_k·g_k‖²_{L²(0,1)}, g_k(x) = {1/(kx)} − {1/x}/k
+-- (RH ⟺ d²_N → 0: Báez-Duarte 2003; Bagchi 2006, Thm 2, in L²(0,1) as Thm 7).
+-- Witnessing coefficient vector: c_2=49521001/57097290, c_3=64755984/73209283, c_4=26714755/87837628, c_5=61190701/78336520, c_6=-360582/6133885.  Its form value
+-- Q(c) = Σ_n (1 − Σ c_k{n/k})²/(n(n+1)) ≥ d²_N is certified ≤ Uexact
+-- (the trust seam, hypothesis hval).
 -- Kernel proves d²_N ≤ Uexact ≤ U (norm_num).  A finite spectral rung; NOT RH.
-theorem bd_N6 (dN2 : ℝ) (hval : dN2 ≤ ((2978399753563147725185415197920790566812863771336947154114409240240217118917697616062591250630401345652616667494769023168884807100601428430251369 / 11023753211912507960903913477119426695156832230038805980491841253470831408671748957871228936331117867051896262001329039301678072741954060288000000) : ℝ)) : dN2 ≤ ((10807207659 / 40000000000) : ℝ) :=
+theorem bd_N6 (dN2 : ℝ) (hval : dN2 ≤ ((12320955772437730932024545741797685617 / 340282366920938463463374607431768211456) : ℝ)) : dN2 ≤ ((362080347681 / 10000000000000) : ℝ) :=
   le_trans hval (by norm_num)
 
--- bd_N7: Báez-Duarte rung N=7 — d²_N ≤ 57802076187/200000000000.
--- d²_N = inf_c ‖1 − Σ c_k·{(1/k)/x}‖²_{L²(0,1)} (RH ⟺ d²_N → 0).
--- Witnessing coefficient vector: c_2=389909/645978, c_3=285145/433996, c_4=59869/395152, c_5=122799/258920, c_6=-263315/768136, c_7=163175/476768.  Its form value Q(c) ≥ d²_N is
--- Arb-enclosed to Uexact = 3582700569891911346919746739620973278825743259214774177054876535601586245218199165416426602370257897909047677971766289123371428304666667444492036096347/12396442502519996557460185545442195623756591102567379694951055622148926293548099122901257752870180224471380316901551780901080078376629681137196728320000 (the trust seam, hypothesis hval).
+-- bd_N7: Báez-Duarte rung N=7 — d²_N ≤ 121941843667/5000000000000.
+-- d²_N = inf_c ‖1 − Σ_{k=2}^N c_k·g_k‖²_{L²(0,1)}, g_k(x) = {1/(kx)} − {1/x}/k
+-- (RH ⟺ d²_N → 0: Báez-Duarte 2003; Bagchi 2006, Thm 2, in L²(0,1) as Thm 7).
+-- Witnessing coefficient vector: c_2=81289225/90927768, c_3=70139742/78212591, c_4=3427723/17501491, c_5=18225184/26968917, c_6=-16651485/41658562, c_7=41437131/67232510.  Its form value
+-- Q(c) = Σ_n (1 − Σ c_k{n/k})²/(n(n+1)) ≥ d²_N is certified ≤ Uexact
+-- (the trust seam, hypothesis hval).
 -- Kernel proves d²_N ≤ Uexact ≤ U (norm_num).  A finite spectral rung; NOT RH.
-theorem bd_N7 (dN2 : ℝ) (hval : dN2 ≤ ((3582700569891911346919746739620973278825743259214774177054876535601586245218199165416426602370257897909047677971766289123371428304666667444492036096347 / 12396442502519996557460185545442195623756591102567379694951055622148926293548099122901257752870180224471380316901551780901080078376629681137196728320000) : ℝ)) : dN2 ≤ ((57802076187 / 200000000000) : ℝ) :=
+theorem bd_N7 (dN2 : ℝ) (hval : dN2 ≤ ((4149465918955040022088048550354818853 / 170141183460469231731687303715884105728) : ℝ)) : dN2 ≤ ((121941843667 / 5000000000000) : ℝ) :=
   le_trans hval (by norm_num)
 
 end BaezDuarte

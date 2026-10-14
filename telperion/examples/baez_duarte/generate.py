@@ -3,22 +3,36 @@
     python examples/baez_duarte/generate.py           # write lean/BaezDuarte.lean
     python examples/baez_duarte/generate.py --check    # drift check (no write)
 
-The Nyman–Beurling–Báez-Duarte criterion: RH ⟺ d²_N → 0, where
-d²_N = inf_c ‖1 − Σ_{k=2}^N c_k·{(1/k)/x}‖²_{L²(0,1)}.  Per rung N the emitter
-proves ``d²_N ≤ U`` from an explicit rational coefficient vector whose quadratic
-form value Q(c) ≥ d²_N is RIGOROUSLY enclosed (exact piecewise integral on [δ,1]
-+ flint/Arb ln-values + a [0,δ] tail bound) to ``Uexact``; the emitted readable
-``U ≥ Uexact`` is rounded UP to 12 significant decimals (a larger upper bound is
-still valid).  The file also carries ``bd_neg_refutes``, the falsifiability face.
+The Báez-Duarte / Bagchi criterion: RH ⟺ d²_N → 0, where
+d²_N = inf_c ‖1 − Σ_{k=2}^N c_k·g_k‖²_{L²(0,1)} and g_k(x) = {1/(kx)} − {1/x}/k
+(Báez-Duarte 2003, arXiv:math/0202141; Bagchi, Proc. Indian Acad. Sci. 116
+(2006), Thm 7 in this L²(0,1) form, Thm 1 in the unitarily equivalent weighted
+ℓ² form, both reduced to Thm 2 in H²(Re s > 1/2)).  Per rung N the emitter
+proves ``d²_N ≤ U`` from an explicit rational coefficient vector (the normal
+equations solved on the exact Gram) whose form value
+Q(c) = Σ_n (1 − Σ c_k{n/k})²/(n(n+1)) ≥ d²_N is RIGOROUSLY bounded to ``Uexact``
+(exact rational head n < Y rounded up term by term + a rational tail bound);
+the emitted readable ``U ≥ Uexact`` is rounded UP to 12 significant decimals (a
+larger upper bound is still valid).  The file also carries ``bd_neg_refutes``,
+the falsifiability face.
 
-The sequence of bounds is DECREASING (0.52, 0.38, 0.31, 0.27, … as N grows) —
-finite, certified evidence consistent with the spectral face's d²_N → 0.
+The certified bounds are 0.30685, 0.09575, 0.06595, 0.03632, 0.03621, 0.02439
+for N = 2..7, non-increasing in N (as the nested spans force; tested over every
+rung).  Only the upper bounds are certified; for N ≥ 3 they are COMPUTED
+(mpmath) to be within 10⁻⁹ of the true d²_N.  At N = 2 the gap is certified
+two-sided: d²_2 = 1 − ln 2 exactly and U_2 exceeds it by 6.25·10⁻¹².
+
+EARLIER VERSIONS (main before 2026-10-14) used {1/(kx)} without the −{1/x}/k
+term.  That family is not an RH criterion: its d²_N ≥ 1/2 − (ln 2)² ≈ 0.019547
+for every N, unconditionally.  The theorem names bd_N2..bd_N7 and bd_neg_refutes
+are unchanged; their numbers and meaning changed.
 
 HONEST SCOPE: each rung is a finite NECESSARY-condition check; the uniform
-d²_N → 0 IS RH and nothing here approaches it.  The enclosure hypotheses
-``hval`` are the documented Arb trust seam.  conjecture1_proved = False.
+d²_N → 0 IS RH and nothing here approaches it.  The hypotheses ``hval`` are the
+documented trust seam.  conjecture1_proved = False.
 
-Dependency: python-flint + mpmath (see the `flint` manifest group in telperion.toml).
+Dependency: mpmath for the Gram (python-flint is in the `flint` manifest group
+of telperion.toml, but this generator no longer needs Arb: the logs cancel).
 """
 import argparse
 import sys
@@ -39,7 +53,7 @@ from telperion.family import GridSpec  # noqa: E402
 from telperion.lean import LeanProfile  # noqa: E402
 
 RUNGS = [2, 3, 4, 5, 6, 7]
-PREC_BITS = 256
+PREC_BITS = 128
 _OUT = Path(__file__).resolve().parent / "lean" / "BaezDuarte.lean"
 
 
