@@ -67,6 +67,10 @@ def test_node_sampling_undercount_vs_rigorous(monkeypatch):
         return (*_frac_interval(v.real), *_frac_interval(v.imag))
 
     monkeypatch.setattr(arb_dh, "dh_eval", ev)
-    assert arb_dh.winding_number(0, 1, 0, 1, prec=128, n_per_side=24) == 1
-    assert arb_dh.winding_number(0, 1, 0, 1, prec=256, n_per_side=48) == 1
+    # after fix/arb-winding-rigor, winding_number delegates to the rigorous method; the node sampler keeps
+    # the name winding_number_sampled_heuristic.  Fall back to the old name on bases without the fix.
+    sampled = getattr(arb_dh, "winding_number_sampled_heuristic", None) or arb_dh.winding_number
+    assert sampled(0, 1, 0, 1, prec=128, n_per_side=24) == 1
+    assert sampled(0, 1, 0, 1, prec=256, n_per_side=48) == 1
     assert rigorous_winding(f, 0, 1, 0, 1, prec=128) == 2
+
