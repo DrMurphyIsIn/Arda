@@ -3,7 +3,7 @@ depends_on = []
 kind = "lemma"
 name = "RH.dbn_euler_model_zero_free"
 statement_module = "Statements.RH_dbn_euler_model_zero_free"
-status = "draft"
+status = "open"
 title = "EULER-PRODUCT MODEL ZERO-FREE NEAR THE LINE ABOVE AN EXPLICIT HEIGHT -- a MODEL (finite Euler product + χ), NOT ζ; folklore-grade companion to Gonek 2012 Thm 6.2 (dbn RegEulerModel / DBNEulerModelRH, kernel-checked): for Z_X(s) = E_X(s) + chi(s) E_X(1-s), E_X(s) = prod_{p <= X} (1 - p^{-s})^{-1}, chi(s) = pi^{s-1/2} Gamma((1-s)/2) / Gamma(s/2), and y < 1/2, t > 0 with log(t/2pi) - 1/t - 2/t^2 > Lambda_X(y) = (1/y) sum_{p <= X} log[(1 - p^{-1/2-y}) / (1 - p^{-1/2+y})]: Z_X(sigma + it) != 0 whenever 0 < |sigma - 1/2| <= y. Says nothing about the zeros of zeta; nothing here bears on RH. conjecture1_proved = False."
 updated = "2026-10-14"
 
@@ -11,3 +11,11 @@ updated = "2026-10-14"
 date = "2026-10-14"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_013hB6k9ssUSET4joVJgNy51"
+
+[readback]
+auditor = "AI read-back by Claude (e9 session), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs; owner approved e9 doing this read-back directly in the e9 session 2026-10-14"
+auditor_identity = "claude-ai-readback+e9-session@anthropic-ai.invalid"
+auditor_session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+date = "2026-10-14"
+independence = "independent"
+text = "A statement about a MODEL, not about zeta. For a natural number X let E_X(s) be the product over primes p <= X of (1 - p^(-s))^(-1), chi(s) = pi^(s - 1/2) Gamma((1 - s)/2) / Gamma(s/2) (complex Gamma), Z_X(s) = E_X(s) + chi(s) E_X(1 - s), and Lambda_X(y) = (1/y) times the sum over primes p <= X of log((1 - p^(-1/2 - y)) / (1 - p^(-1/2 + y))). If y < 1/2, t > 0 and log(t/(2 pi)) - 1/t - 2/t^2 > Lambda_X(y), then Z_X(sigma + i t) is nonzero for every real sigma with 0 < |sigma - 1/2| <= y (which forces y > 0). The vocabulary block primesUpTo/eulerX/chiM/ZX/LamX in RHDefs is verbatim DBNEulerModelRH.lean lines 30-47, with the island's open line restated inside namespace DBNEulerModel so Gamma is Complex.Gamma (checked by string comparison). Says nothing about the zeros of zeta; nothing here bears on RH. Checked by rebuilding RegEulerModel and AxiomGuardDBN locally: standard axioms, no sorryAx."

@@ -3,7 +3,7 @@ depends_on = ["MM_rr_square_collapse", "MM_rh_implies_weil_positivity"]
 kind = "lemma"
 name = "MM.rr_windows_of_rh"
 statement_module = "Statements.MM_rr_windows_of_rh"
-status = "draft"
+status = "open"
 title = "RH GIVES RR-SQUARE WINDOWS, the trivial direction; shows the existence form is circular; not progress on RH (rvm_bridge RegRRConverse / PFConverseD, kernel-checked): Mathlib's RiemannHypothesis implies there exist an index type and, for each index i, windows V i, Div i with B i, f i, iota i, deg, Prin, h0, h1, K, a, chi satisfying the RR index identity, effectivity, compatibility and (degree bound OR no zero divisors), test maps tau i with B v v = -(c * Re weilForm(autocorr (tau v))), c > 0, and pole-free tests of degree 0, covering every pole-free Weil test: exactly the hypotheses of MM_rr_windows_imply_rh, so together they give RH iff such windows exist. The windows are the collapse model read off from Weil positivity (V = Div = R, f = 0, h0 = 0; cf. MM_rr_square_collapse): no geometry, so the content of RR-square is a construction without reference to the zeros."
 updated = "2026-10-14"
 
@@ -11,3 +11,11 @@ updated = "2026-10-14"
 date = "2026-10-14"
 identity = "dr.murphy.is.in@arda-dao.com"
 session = "session_013hB6k9ssUSET4joVJgNy51"
+
+[readback]
+auditor = "AI read-back by Claude (e9 session), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs; owner approved e9 doing this read-back directly in the e9 session 2026-10-14"
+auditor_identity = "claude-ai-readback+e9-session@anthropic-ai.invalid"
+auditor_session = "session_01T6sQ9By6CuBoffW7BYPHJT"
+date = "2026-10-14"
+independence = "independent"
+text = "Assuming Mathlib's RiemannHypothesis, there exist an index type (in Type) and for each index i real vector spaces V i and Div i (instances supplied as existential data) with a bilinear form B i, a vector f i, a linear map iota i : V i -> Div i, a linear degree deg i, a submodule Prin i, functions h0, h1 >= 0, a class K i, a function a i, a constant chi i, test maps tau i : V i -> (R -> C) and constants c i > 0, satisfying: deg(iota v) = B(v, f); deg vanishes on Prin; the Riemann-Roch identity h0(n v) - h1(n v) + h0(K - n v) = n^2 B(v,v)/2 - n a(v)/2 + chi for every natural n; effectivity (h0 X > 0 gives E with X - E principal and deg E > 0 or E principal); principal classes have B(v,v) = 0; a degree bound on h0 OR the no-zero-divisor clause; B(v,v) = -(c * Re weilForm(autocorr(tau v))); pole-free tau v (paperFT at I/2 and -I/2 both zero) has B(v, f) = 0; and every pole-free Weil test g equals some tau i v. Clause by clause these are exactly the hypotheses of rr_windows_imply_rh (MM_rr_windows_imply_rh), in the same order, so together the two nodes say RH iff such windows exist. This is the trivial direction (the collapse windows read off from Weil positivity carry no geometry); not progress on RH. Checked by rebuilding RegRRConverse and AxiomGuardRvMBridge locally: standard axioms, no sorryAx."
