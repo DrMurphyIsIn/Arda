@@ -1,0 +1,13 @@
+created = "2026-10-14"
+depends_on = ["MM_polefree_weil_semibounded"]
+kind = "lemma"
+name = "MM.polefree_weil_shift_semibounded"
+statement_module = "Statements.MM_polefree_weil_shift_semibounded"
+status = "draft"
+title = "DELTA-SHIFT DOES NOT DECIDE RH (rvm_bridge RegSemibounded / PFSemibounded, kernel-checked): for every real c, Mathlib's RiemannHypothesis holds iff the shifted form Re weilForm(autocorr g) + c * integral ||g||^2 is bounded below by -C * integral ||g||^2 on pole-free Weil tests. Gate 12.1 dichotomy with hypothesis (F) removed; RH-equivalent, not progress on RH."
+updated = "2026-10-14"
+
+[author]
+date = "2026-10-14"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01T6sQ9By6CuBoffW7BYPHJT"

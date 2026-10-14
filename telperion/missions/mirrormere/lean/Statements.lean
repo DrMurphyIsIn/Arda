@@ -25,6 +25,8 @@ import Statements.MM_nt_brick_conditional
 import Statements.MM_offline_disjoint_discs
 import Statements.MM_offline_pairs_le_defect
 import Statements.MM_polefree_weil_converse
+import Statements.MM_polefree_weil_semibounded
+import Statements.MM_polefree_weil_shift_semibounded
 import Statements.MM_primelog_spectrum_dense
 import Statements.MM_rect_trace_reading
 import Statements.MM_recurrence_deficit_eq_excess
