@@ -34,8 +34,8 @@ re-verified in the canonical worktree)
 | Literature ground truth + zeta-escape table | `telperion/docs/QC_LITERATURE.md` | survey (2 corrections applied post-hoc, see below) |
 | Axiom variants A–D + falsification matrix + mechanization contract | `telperion/docs/QC_AXIOMS_DRAFT.md` | draft axioms |
 | Rigidity ladder R1/R2/R3 + difficulty map | `telperion/docs/QC_RIGIDITY_MEMO.md` | memo + proofs |
-| Rigorous DH driver (`acb_dirichlet_hurwitz`, surd-only κ) | `telperion/src/telperion/arb_dh.py` | Arb |
-| Certified DH inventory T≤300: 204 on-line + 4 off-line | `telperion/examples/quasicrystal/zoo_data/dh_zeros.json` | Arb (winding=1 boxes) |
+| Rigorous DH evaluator (`acb_dirichlet_hurwitz`, surd-only κ) | `telperion/src/telperion/arb_dh.py` | Arb |
+| Certified DH inventory T≤300: 204 on-line + 5 off-line, proved complete (214 = 204 + 2·5); re-issued 2026-10-14, see the ledger | `telperion/examples/quasicrystal/zoo_data/dh_zeros.json` | Arb (segment-enclosure winding=1 boxes) |
 | Certified DH diffraction + off-line cosh signature | zeta island `ZooDH.lean` (5 anchors) | **kernel** |
 | Falsification harness (matrix + 7 forged-input controls) | `telperion/examples/quasicrystal/zoo.py` + tests | mechanized |
 | QC-1 island: Lee–Yang core, KS construction, boundary lemmas, characterization Props, **TwoFreqRigidity**, RationalFreqReduction | `telperion/examples/quasicrystal/lean/` (26 anchors) | **kernel** |
@@ -63,11 +63,32 @@ All kernel claims: axioms exactly {propext, Classical.choice, Quot.sound},
 4. **Boundary theorems** (kernel): `primeLogSpectrum_dense` (unconditional —
    the prime-log spectrum is not Bohr-discrete) + the pigeonhole gaps→0 driver:
    "zeta escapes the tame class" is now a theorem, not folklore.
-5. **Two literature corrections from certified winding integers**: the
-   published DH off-line zero at γ≈166.5 has true β≈0.60 (tabulated 0.785
-   winds to 0); the tabulated off-line zero at γ≈243.1 is a phantom.
+5. **Literature checks from certified winding integers**: the published DH
+   off-line zero at γ≈166.5 has true β≈0.60 (a box at the tabulated 0.785 has
+   winding 0).  Near γ≈243.1 there is no off-line zero, but that is true only
+   narrowly: the 240–250 strip holds an off-line zero at ≈ 0.8698 + 240.405i,
+   which the literature-seeded inventory missed (see the ledger).  The
+   tabulated 243.1 entry may be a garbled version of that zero; that is
+   UNVERIFIED.  The earlier wording here, "the tabulated off-line zero at
+   γ≈243.1 is a phantom", overstated what was checked.
 
 ## Corrections ledger (referee-grade honesty)
+
+- **DH winding counts and inventory (2026-10-14).** The DH counts were first
+  made with a node-sampling routine (`arb_dh.winding_number`, now
+  `winding_number_sampled_heuristic`) and described as rigorous.  An
+  independent audit (`~/e9-research/review_telperion_winding/REVIEW_telperion_winding_2026-10-14.md`)
+  showed the count is a heuristic: the ball values at the nodes are rigorous,
+  but nothing bounds the argument between nodes, and a zero pair near an edge
+  can be missed at every density.  Every DH box was re-certified with the
+  segment-enclosure method (`telperion/src/telperion/arb_winding.py`); all 208
+  brackets stood unchanged, so the ZooDH/AxiomGuardZoo hypotheses did not move.
+  The same audit found the inventory had missed the off-line zero near
+  0.8698 + 240.405i (the off-line list was literature-seeded and the promised
+  scan had no code).  The re-issued `dh_zeros.json` has the scan, 5 off-line
+  zeros, and a completeness proof to T = 300.  The released tags
+  `newman-v1.0.0`, `newman-v1.1.0` and `qrh-liu-v1.1.0` carry the old text
+  ("4 off-line", "rigorous winding", "γ≈243.1 does not exist").
 
 - "Adve" 1-D characterization attribution: FALSE (arXiv 2203.06733 is
   Favorov, sole author). Corrected in `QC_LITERATURE.md`.

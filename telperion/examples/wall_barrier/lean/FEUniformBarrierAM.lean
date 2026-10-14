@@ -13,10 +13,13 @@
 
   The class contains the Davenport-Heilbronn function D (a period-5 Dirichlet series with
   the Riemann-type functional equation `xi(s) = xi(1-s)` and NO Euler product), and D has
-  zeros off the critical line -- a fact this repository already certifies rigorously by an
-  Arb argument-principle winding count (telperion/src/telperion/arb_dh.py;
-  telperion/docs/QC_DH_SCOUT.md section 4: winding number 1 on the rational box
-  Re in [79/100, 83/100], Im in [8568/100, 8572/100], re-checked at doubled precision).
+  zeros off the critical line -- a fact this repository certifies by an Arb
+  argument-principle winding count (Arb trust class, not kernel): winding number 1 on the
+  rational box Re in [79/100, 83/100], Im in [8568/100, 8572/100]
+  (telperion/docs/QC_DH_SCOUT.md section 4).  The count was first made by sampling D at
+  boundary nodes, which is a heuristic; it was re-certified on 2026-10-14 with the
+  segment-enclosure method (telperion/src/telperion/arb_winding.py via
+  arb_dh.certify_offline_zero: winding 1 at prec 96 and again at prec 144).
 
   Therefore NO FE-uniform argument can prove any route's wall clause: one witness refutes
   all four routes at once.  The wall clauses are not four independent targets; they are
