@@ -1,0 +1,23 @@
+{
+ "box": {
+  "im0": "61139/1000",
+  "im1": "122283/2000",
+  "re0": "1599/2000",
+  "re1": "15999/20000"
+ },
+ "conjecture1_proved": false,
+ "gap_to_sigma_0.8": "1/20000",
+ "kind": "winding_box_zero",
+ "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+ "min_segment": "9/160000",
+ "named_zero": "0.79977772+61.14026i",
+ "object": "EP5",
+ "off_line": true,
+ "prec": 128,
+ "recheck_prec": 192,
+ "recheck_segments": 53,
+ "segments": 35,
+ "status": "ARB-CANDIDATE (soundness audit pending: ~/e9-research/review_telperion_winding/)",
+ "trust_class": "arb",
+ "winding": 1
+}

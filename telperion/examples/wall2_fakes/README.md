@@ -19,6 +19,10 @@ through the emitters that make RH-shaped claims.
 
 ## What was certified, and how far to trust it
 
+**Status: every winding-based certificate here is ARB-CANDIDATE (soundness audit pending).** The auditor bb
+is reviewing both `arb_dh.winding_number` and `arb_fakes.count_offline`; the report will be in
+`~/e9-research/review_telperion_winding/`. Each sidecar carries a `status` field that says so.
+
 Everything here is **trust class arb**: python-flint ball arithmetic. It is rigorous if Arb and our code are right,
 but it is not a Lean kernel theorem. The one exception is `lean/Ramification.lean`, which the kernel checks with
 `decide` (see the last section).
@@ -41,14 +45,50 @@ That segment rule is the point. The older `arb_dh.winding_number` looks only at 
    the number of *all* zeros with Re s > σ₀ in that height range. Every strip matches track C's list. For EP5 at
    T = 200 the counts are 31/22/15 at σ₀ = 0.6/0.7/0.8. That includes the knife-edge zero at 0.79977772 + 61.14026i,
    which correctly falls outside the σ₀ = 0.8 box; the contour there needed segments as short as 1.5e-4.
+   A separate certificate (`certs/EP5_knife_edge.cert.json`) puts that zero, with winding 1, in
+   [0.7995, 0.79995] × [61.139, 61.1415]. That box lies strictly left of σ = 0.8, with a certified gap of 5e-5,
+   so the σ₀ = 0.8 cut is kept.
 3. **Li coefficients** (`certs/li_fakes_summary.cert.json`). `enclose_li_fake` builds each completed function from
    its functional-equation data, written out in the module docstring and self-checked to 1e-35. EPQ2's λ_n is
    certified negative from n = 246, and EP5's from n = 5713. DH's and ζ's are positive for every n ≤ 3000.
+   Track H finds DH's first negative at n = 328997, by two independent float methods. That is not Arb-checked:
+   at N of about 3.3e5 the series route would need roughly 3.3e5-bit precision.
 4. **Negative controls** (`certs/negative_controls.json`). Each fake was offered to the RH-type emitters'
    certification layer. Every claim that is false for the fake was refused, and no emitter accepted a false
    statement. Several instruments accept statements that are *true* of the fakes, which means they cannot tell the
    fakes apart from ζ: finite Li positivity, finite Bagchi recurrence, and the on-line zero counts. That is expected,
    and it is recorded.
+
+## Exactly what `rigorous_winding` / `count_offline` certify
+
+**The theorem used.** This is the argument principle. Suppose f is holomorphic on a neighbourhood of a closed
+rectangle R, has no poles in R, and has no zeros on ∂R. Then the number of zeros in R, counted with multiplicity,
+is (1/2π) Δ_∂R arg f. The fakes' only pole is s = 1, which is on the real axis, and every box here has Im s ≥ 1/20.
+
+**What is certified on each segment.** Each edge of R starts as 8 equal axis-parallel segments with rational
+endpoints. Take a segment [p, q] with midpoint m and half-length r.
+
+1. B is an Arb ball that contains the whole segment: centre m, radius r(1 + 2⁻⁴⁰) in the moving coordinate.
+2. D is an Arb upper bound for |f′| over all of B, from an `acb_series` jet (f, f′) evaluated on the ball B.
+   Arb's guarantee is that the ball result encloses f′(z) for every z in B, not just at its centre.
+3. c is the exact rational centre of the Arb box for f(m). Let ρ = r·D + (half-width of Re f(m)) + (half-width of
+   Im f(m)).
+4. By the mean value inequality, |f(z) − f(m)| ≤ |z − m| · sup|f′| ≤ r·D. So |f(z) − c| ≤ ρ for every z on the
+   segment.
+5. The segment is accepted only if 4ρ² < |c|², checked in exact Fractions. Then, on the WHOLE segment,
+   |f| ≥ |c| − ρ > |c|/2 > 0, which certifies the edge zero-free with an explicit lower bound. Also, f/c stays in the
+   disc |w − 1| ≤ 1/2, where the principal Arg is continuous and lies in [−π/6, π/6]. So the continuous change of
+   arg f along the segment is exactly Arg(f(q)/c) − Arg(f(p)/c), and both terms are computed as Arb balls.
+
+**How segment lengths are chosen.** A segment that fails step 5 is bisected, adaptively. After 40 bisections, a
+length of edge/(8·2⁴⁰), the routine REFUSES rather than guess.
+
+**How the integer is read off.** The Arb sum of all segment changes is divided by 2π. The result is accepted only
+if the whole ball lies within 1/4 of a single integer, again checked in exact Fractions. `certify_zero_box`
+repeats the count at 1.5× precision with 13 initial pieces per edge, and both runs must agree.
+
+**What is trusted, not checked.** Arb's ball semantics for `acb_series.zeta(s, a)` with ball inputs, the
+python-flint bindings, and the outward conversion of arb balls to Fractions.
 
 ## The soundness finding
 
@@ -60,7 +100,9 @@ The demo uses f(z) = (z − a)(z − b), with both zeros inside the unit box, 1e
 the same pair of nodes. The true count is 2. The node routine returns 1, and still returns 1 at doubled density.
 `winding_box_zero_certificate` therefore issues a trust-class-arb sidecar that says "exactly 1 zero", which is false.
 
-The function is contrived, but the algorithm is generic. ζ's main RH-in-box driver is not affected, because it uses
+The missing step is precise. The node routine has no bound on how far arg f moves *between* consecutive nodes,
+and no lower bound on |f| along a segment. It only knows the quadrant at each node. The function is contrived,
+but the algorithm is generic. ζ's main RH-in-box driver is not affected, because it uses
 `segment_winding_certificate` on segment enclosures. Whether earlier sidecars came from the node backend has not
 been audited here.
 

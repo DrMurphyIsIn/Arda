@@ -524,6 +524,7 @@
   "trust_class": "arb"
  },
  "sigma_right": "5/2",
+ "status": "ARB-CANDIDATE (soundness audit pending: ~/e9-research/review_telperion_winding/)",
  "t0": "1/20",
  "trust_class": "arb"
 }
