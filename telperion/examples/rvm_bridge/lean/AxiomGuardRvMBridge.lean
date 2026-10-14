@@ -2453,3 +2453,5 @@ import SemilocalWeil
 #print axioms RvMBridgePF.weilFormS_zero_eq_of_window
 #print axioms RvMBridgePF.rh_iff_semilocal_positive
 #print axioms RvMBridgePF.semilocalPositive_mono_shift
+#print axioms RvMBridgePF.semilocalHodgeIndex_iff
+#print axioms RvMBridgePF.rh_iff_semilocal_hodge_index

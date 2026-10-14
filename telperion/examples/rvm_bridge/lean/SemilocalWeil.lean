@@ -118,4 +118,40 @@ theorem semilocalPositive_mono_shift {S : Finset ℕ} {L dc dc' : ℝ} (h : Semi
   have := RvMBridge31.mass_nonneg g
   nlinarith
 
+/-! ## Hodge-index phrasing on the pole-free span (Riemann session's specification, 2026-10-14).
+
+Classes x = a F₊ + b F₋ + Γ_g with g a pole-free Weil test in the window.  Pairings: F₊·F₋ = 1, F₊² = F₋² = 0,
+Γ_g·F± = paperFT g (±i/2) = 0 (pole-free), Γ_g² = -Re weilFormS S dc (g ⋆ g~).  H = F₊ + F₋ (H² = 2 > 0), and
+x ∈ H^⊥ iff a + b = 0.  The diagonal Δ is NOT derived: its self-intersection (the delta-mass at u = 1, gates 11/12)
+enters only through the INPUT parameter dc.  That is why this Prop is RH-equivalent, not a construction. -/
+
+/-- The self-intersection of x = a F₊ + b F₋ + Γ_g on the pole-free span. -/
+def selfIntS (S : Finset ℕ) (dc a b : ℝ) (g : ℝ → ℂ) : ℝ :=
+  2 * a * b - (weilFormS S dc (autocorr g)).re
+
+/-- Semilocal Hodge index on the pole-free span: B(x, x) <= 0 for every x ⊥ H = F₊ + F₋. -/
+def SemilocalHodgeIndex (S : Finset ℕ) (L dc : ℝ) : Prop :=
+  ∀ a b : ℝ, ∀ g : ℝ → ℂ, IsWeilTest g → PoleFree g → tsupport g ⊆ Set.Icc (-L) L →
+    a + b = 0 → selfIntS S dc a b g ≤ 0
+
+theorem semilocalHodgeIndex_iff (S : Finset ℕ) (L dc : ℝ) :
+    SemilocalHodgeIndex S L dc ↔ SemilocalPositive S L dc := by
+  constructor
+  · intro h g hg hpf hs
+    have := h 0 0 g hg hpf hs (by ring)
+    unfold selfIntS at this
+    linarith
+  · intro h a b g hg hpf hs hab
+    have := h g hg hpf hs
+    have hb : b = -a := by linarith
+    unfold selfIntS
+    rw [hb]
+    nlinarith [sq_nonneg a]
+
+/-- **RH iff the semilocal Hodge index holds on every window** (S = primes <= e^{2L}, dc = 0). -/
+theorem rh_iff_semilocal_hodge_index :
+    RiemannHypothesis ↔ ∀ L : ℝ, SemilocalHodgeIndex (windowPrimes L) L 0 := by
+  rw [rh_iff_semilocal_positive]
+  exact forall_congr' fun L => (semilocalHodgeIndex_iff _ L 0).symm
+
 end RvMBridgePF
