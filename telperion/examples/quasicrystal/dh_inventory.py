@@ -48,8 +48,8 @@ HISTORY.  The first issue of this file (commit 5f7cf159c) counted with the
 node-sampling `arb_dh.winding_number`, now `winding_number_sampled_heuristic`:
 its ball values were rigorous but its COUNT WAS A HEURISTIC, and its docstring
 called it rigorous.  It also promised an off-line SCAN that had no code, and it
-missed the off-line zero rho ~ 0.86953 + 240.40467i (the 2026-10-14 audit, REVIEW_
-telperion_winding_2026-10-14.md).  The 2026-10-14 re-issue re-certifies every
+missed the off-line zero rho ~ 0.86953 + 240.40467i (found by an independent AI
+audit, 2026-10-14).  The 2026-10-14 re-issue re-certifies every
 box rigorously (all 208 old brackets unchanged), adds that fifth off-line zero
 from the scan, and adds the completeness check.  conjecture1_proved = False.
 """
@@ -77,14 +77,13 @@ OFFLINE_RE0 = F(51, 100)
 OFFLINE_RE1 = F(2)      # Re >= 2 is zero-free by the dominant term
 STRIP = 10              # height of the scan / completeness slices
 
-# Independent localisations of scan-found zeros, re-certified here as given.  The 2026-10-14 audit
-# localised the zero the literature seed missed to this box (REVIEW_telperion_winding_2026-10-14.md,
-# dh_243.out).  rho sits only ~8.5e-6 above the box's lower Im edge, so it is checked to lie strictly
+# Independent localisations of scan-found zeros, re-certified here as given.  An independent AI audit
+# (2026-10-14) localised the zero the literature seed missed to this box.  rho sits only ~8.5e-6 above the box's lower Im edge, so it is checked to lie strictly
 # inside every box recorded for it.
 AUDIT_BOXES = [
     {"re": ["35610821/40960000", "1782031077/2048000000"],
      "im": ["19693950062217/81920000000", "2461750006093/10240000000"],
-     "source": "2026-10-14 audit (dh_243.py)"},
+     "source": "independent AI audit, 2026-10-14"},
 ]
 SCAN_STEP = F(1, 40)    # 0.025 grid on the critical line
 MAG_FLOOR = 0.55        # local-minimum magnitude threshold for an on-line candidate
@@ -267,6 +266,8 @@ def scan_offline(off: list[dict], log=print) -> tuple[list[dict], dict]:
             rec["zero_approx"] = za
             rec["beta"] = _decimal(pt[0], 10)    # the zero itself (10 digits); the box is the certificate
             rec["gamma"] = _decimal(pt[1], 10)
+            rec["beta_gamma_kind"] = ("float estimate (mpmath findroot, dps 30), NOT certified digits; "
+                                      "certified only to the boxes")
             for ab in AUDIT_BOXES:
                 abox = _box(ab)
                 if not _strictly_inside(pt, abox):
