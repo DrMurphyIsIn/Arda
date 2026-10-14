@@ -1,0 +1,529 @@
+{
+ "T": 200,
+ "conjecture1_proved": false,
+ "counts": {
+  "3/5": {
+   "mismatches": [],
+   "seconds": 66,
+   "strips": [
+    {
+     "im0": "1/20",
+     "im1": "10",
+     "min_segment": "19/2560",
+     "segments": 544,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "10",
+     "im1": "20",
+     "min_segment": "5/256",
+     "segments": 454,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "20",
+     "im1": "30",
+     "min_segment": "5/256",
+     "segments": 519,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "30",
+     "im1": "40",
+     "min_segment": "19/1280",
+     "segments": 520,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "40",
+     "im1": "50",
+     "min_segment": "19/1280",
+     "segments": 480,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "50",
+     "im1": "60",
+     "min_segment": "5/512",
+     "segments": 566,
+     "trackC": 2,
+     "winding": 2
+    },
+    {
+     "im0": "60",
+     "im1": "70",
+     "min_segment": "5/256",
+     "segments": 550,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "70",
+     "im1": "80",
+     "min_segment": "5/256",
+     "segments": 597,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "80",
+     "im1": "90",
+     "min_segment": "5/512",
+     "segments": 677,
+     "trackC": 2,
+     "winding": 2
+    },
+    {
+     "im0": "90",
+     "im1": "100",
+     "min_segment": "5/512",
+     "segments": 582,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "100",
+     "im1": "110",
+     "min_segment": "5/512",
+     "segments": 578,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "110",
+     "im1": "120",
+     "min_segment": "5/512",
+     "segments": 660,
+     "trackC": 2,
+     "winding": 2
+    },
+    {
+     "im0": "120",
+     "im1": "130",
+     "min_segment": "19/1280",
+     "segments": 583,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "130",
+     "im1": "140",
+     "min_segment": "5/512",
+     "segments": 626,
+     "trackC": 2,
+     "winding": 2
+    },
+    {
+     "im0": "140",
+     "im1": "150",
+     "min_segment": "5/2048",
+     "segments": 644,
+     "trackC": 3,
+     "winding": 3
+    },
+    {
+     "im0": "150",
+     "im1": "160",
+     "min_segment": "5/512",
+     "segments": 588,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "160",
+     "im1": "170",
+     "min_segment": "5/512",
+     "segments": 625,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "170",
+     "im1": "180",
+     "min_segment": "5/512",
+     "segments": 639,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "180",
+     "im1": "190",
+     "min_segment": "19/1280",
+     "segments": 612,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "190",
+     "im1": "200",
+     "min_segment": "5/1024",
+     "segments": 671,
+     "trackC": 1,
+     "winding": 1
+    }
+   ],
+   "total": 23,
+   "trackC_total": 23
+  },
+  "4/5": {
+   "mismatches": [],
+   "seconds": 49,
+   "strips": [
+    {
+     "im0": "1/20",
+     "im1": "10",
+     "min_segment": "17/2560",
+     "segments": 439,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "10",
+     "im1": "20",
+     "min_segment": "5/128",
+     "segments": 344,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "20",
+     "im1": "30",
+     "min_segment": "5/128",
+     "segments": 438,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "30",
+     "im1": "40",
+     "min_segment": "5/128",
+     "segments": 424,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "40",
+     "im1": "50",
+     "min_segment": "5/256",
+     "segments": 394,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "50",
+     "im1": "60",
+     "min_segment": "5/512",
+     "segments": 460,
+     "trackC": 2,
+     "winding": 2
+    },
+    {
+     "im0": "60",
+     "im1": "70",
+     "min_segment": "17/640",
+     "segments": 447,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "70",
+     "im1": "80",
+     "min_segment": "17/640",
+     "segments": 446,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "80",
+     "im1": "90",
+     "min_segment": "5/256",
+     "segments": 514,
+     "trackC": 2,
+     "winding": 2
+    },
+    {
+     "im0": "90",
+     "im1": "100",
+     "min_segment": "5/256",
+     "segments": 444,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "100",
+     "im1": "110",
+     "min_segment": "5/256",
+     "segments": 454,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "110",
+     "im1": "120",
+     "min_segment": "5/256",
+     "segments": 491,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "120",
+     "im1": "130",
+     "min_segment": "5/256",
+     "segments": 422,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "130",
+     "im1": "140",
+     "min_segment": "5/256",
+     "segments": 490,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "140",
+     "im1": "150",
+     "min_segment": "5/256",
+     "segments": 477,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "150",
+     "im1": "160",
+     "min_segment": "5/256",
+     "segments": 426,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "160",
+     "im1": "170",
+     "min_segment": "5/256",
+     "segments": 478,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "170",
+     "im1": "180",
+     "min_segment": "5/256",
+     "segments": 466,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "180",
+     "im1": "190",
+     "min_segment": "5/128",
+     "segments": 437,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "190",
+     "im1": "200",
+     "min_segment": "5/256",
+     "segments": 482,
+     "trackC": 1,
+     "winding": 1
+    }
+   ],
+   "total": 18,
+   "trackC_total": 18
+  },
+  "7/10": {
+   "mismatches": [],
+   "seconds": 55,
+   "strips": [
+    {
+     "im0": "1/20",
+     "im1": "10",
+     "min_segment": "9/1280",
+     "segments": 495,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "10",
+     "im1": "20",
+     "min_segment": "5/128",
+     "segments": 405,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "20",
+     "im1": "30",
+     "min_segment": "5/128",
+     "segments": 460,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "30",
+     "im1": "40",
+     "min_segment": "9/320",
+     "segments": 450,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "40",
+     "im1": "50",
+     "min_segment": "5/256",
+     "segments": 426,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "50",
+     "im1": "60",
+     "min_segment": "5/256",
+     "segments": 504,
+     "trackC": 2,
+     "winding": 2
+    },
+    {
+     "im0": "60",
+     "im1": "70",
+     "min_segment": "9/320",
+     "segments": 492,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "70",
+     "im1": "80",
+     "min_segment": "5/256",
+     "segments": 510,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "80",
+     "im1": "90",
+     "min_segment": "5/256",
+     "segments": 566,
+     "trackC": 2,
+     "winding": 2
+    },
+    {
+     "im0": "90",
+     "im1": "100",
+     "min_segment": "5/256",
+     "segments": 491,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "100",
+     "im1": "110",
+     "min_segment": "5/256",
+     "segments": 491,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "110",
+     "im1": "120",
+     "min_segment": "5/1024",
+     "segments": 598,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "120",
+     "im1": "130",
+     "min_segment": "9/640",
+     "segments": 465,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "130",
+     "im1": "140",
+     "min_segment": "5/512",
+     "segments": 535,
+     "trackC": 2,
+     "winding": 2
+    },
+    {
+     "im0": "140",
+     "im1": "150",
+     "min_segment": "5/512",
+     "segments": 524,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "150",
+     "im1": "160",
+     "min_segment": "5/512",
+     "segments": 479,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "160",
+     "im1": "170",
+     "min_segment": "5/256",
+     "segments": 512,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "170",
+     "im1": "180",
+     "min_segment": "5/256",
+     "segments": 535,
+     "trackC": 1,
+     "winding": 1
+    },
+    {
+     "im0": "180",
+     "im1": "190",
+     "min_segment": "5/256",
+     "segments": 483,
+     "trackC": 0,
+     "winding": 0
+    },
+    {
+     "im0": "190",
+     "im1": "200",
+     "min_segment": "5/256",
+     "segments": 559,
+     "trackC": 1,
+     "winding": 1
+    }
+   ],
+   "total": 19,
+   "trackC_total": 19
+  }
+ },
+ "kind": "offline_zero_count",
+ "method": "arb_fakes.rigorous_winding (segment enclosure)",
+ "object": "EPQ2",
+ "right_edge_certificate": {
+  "a_n0": 2,
+  "certified": true,
+  "claim": "EPQ2(s) != 0 for all Re s >= 5/2",
+  "conjecture1_proved": false,
+  "kind": "dominant_term_nonvanishing",
+  "n0": 2,
+  "object": "EPQ2",
+  "sigma": "5/2",
+  "tail_upper": "1338533667001547868326698752609546782539773349/713623846352979940529142984724747568191373312",
+  "tail_upper_float": 1.875685172016335,
+  "trust_class": "arb"
+ },
+ "sigma_right": "5/2",
+ "t0": "1/20",
+ "trust_class": "arb"
+}
