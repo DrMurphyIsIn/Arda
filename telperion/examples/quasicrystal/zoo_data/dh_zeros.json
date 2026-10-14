@@ -3266,6 +3266,27 @@
           "47606152681144/198024577081"
         ]
       },
+      "zero_approx": {
+        "beta": "0.869530579641",
+        "gamma": "240.40467235144",
+        "abs_D": "5.8e-30",
+        "how": "mpmath findroot at dps 30 (float locator; lies strictly inside every recorded box)"
+      },
+      "audit_box": {
+        "re": [
+          "35610821/40960000",
+          "1782031077/2048000000"
+        ],
+        "im": [
+          "19693950062217/81920000000",
+          "2461750006093/10240000000"
+        ],
+        "source": "2026-10-14 audit (dh_243.py)",
+        "winding": 1,
+        "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+        "prec": 96,
+        "recheck_prec": 144
+      },
       "idx": 159
     },
     {

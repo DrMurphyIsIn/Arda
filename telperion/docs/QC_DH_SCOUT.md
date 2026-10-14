@@ -42,7 +42,7 @@ Deliverable module: `telperion/src/telperion/arb_dh.py`.
 >
 > The audit also found that the T ≤ 300 inventory built on this scout
 > (`examples/quasicrystal/zoo_data/dh_zeros.json`) had missed an off-line zero
-> near 0.8698 + 240.405i, because its off-line list was seeded from the
+> ρ ≈ 0.8695305796 + 240.4046723514i, because its off-line list was seeded from the
 > literature and the promised off-line scan was never written. The re-issued
 > inventory has that scan, lists 5 off-line zeros, and proves itself complete
 > to height 300 (214 = 204 + 2·5). See `examples/quasicrystal/dh_inventory.py`.
@@ -218,7 +218,7 @@ and height, as expected.)
   this shim certifies by winding number (segment method since 2026-10-14),
   independent of any published numeric.  Trust the winding integer, not the
   literature decimals — and do not trust a literature *list* to be complete
-  either: the inventory seeded from it missed the zero near 0.8698 + 240.405i.
+  either: the inventory seeded from it missed the zero ρ ≈ 0.86953 + 240.40467i.
 - **No Hurwitz precomputation API needed.** `acb_dirichlet_hurwitz` is a direct
   per-call evaluation; there is no shared-context/precompute step to manage
   (unlike Platt multieval).  Each D(s) is four independent Hurwitz calls.

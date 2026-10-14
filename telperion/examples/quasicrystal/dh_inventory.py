@@ -48,7 +48,7 @@ HISTORY.  The first issue of this file (commit 5f7cf159c) counted with the
 node-sampling `arb_dh.winding_number`, now `winding_number_sampled_heuristic`:
 its ball values were rigorous but its COUNT WAS A HEURISTIC, and its docstring
 called it rigorous.  It also promised an off-line SCAN that had no code, and it
-missed the off-line zero near 0.8698 + 240.405i (the 2026-10-14 audit, REVIEW_
+missed the off-line zero rho ~ 0.8695305796 + 240.4046723514i (the 2026-10-14 audit, REVIEW_
 telperion_winding_2026-10-14.md).  The 2026-10-14 re-issue re-certifies every
 box rigorously (all 208 old brackets unchanged), adds that fifth off-line zero
 from the scan, and adds the completeness check.  conjecture1_proved = False.
@@ -65,7 +65,7 @@ _HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(_HERE.parent.parent / "src"))
 
 from telperion.arb_dh import (  # noqa: E402
-    dh_analytic, dh_eval, dh_right_halfplane_nonvanishing, winding_number_rigorous,
+    certify_offline_zero, dh_analytic, dh_eval, dh_right_halfplane_nonvanishing, winding_number_rigorous,
 )
 from telperion.arb_winding import METHOD, _cut, count_strips, localise_zero  # noqa: E402
 
@@ -76,6 +76,16 @@ IM_FLOOR = F(1, 20)     # bottom of the counted region (0 < Im < 1/20 is checked
 OFFLINE_RE0 = F(51, 100)
 OFFLINE_RE1 = F(2)      # Re >= 2 is zero-free by the dominant term
 STRIP = 10              # height of the scan / completeness slices
+
+# Independent localisations of scan-found zeros, re-certified here as given.  The 2026-10-14 audit
+# localised the zero the literature seed missed to this box (REVIEW_telperion_winding_2026-10-14.md,
+# dh_243.out).  rho sits only ~8.5e-6 above the box's lower Im edge, so it is checked to lie strictly
+# inside every box recorded for it.
+AUDIT_BOXES = [
+    {"re": ["35610821/40960000", "1782031077/2048000000"],
+     "im": ["19693950062217/81920000000", "2461750006093/10240000000"],
+     "source": "2026-10-14 audit (dh_243.py)"},
+]
 SCAN_STEP = F(1, 40)    # 0.025 grid on the critical line
 MAG_FLOOR = 0.55        # local-minimum magnitude threshold for an on-line candidate
 HALF = F(1, 2)
@@ -179,7 +189,7 @@ def certify_offline(gamma: float, beta: float) -> dict | None:
 #     (a box around 0.785 has rigorous winding 0 -- a bad decimal).
 #   * gamma~243.1 ("beta~0.718 off-line" in some tables): there is no off-line
 #     zero near gamma~243.1; the nearest zero there is ON the line near 243.6.
-#     But the off-line SCAN finds an off-line zero near 0.8698 + 240.405i that
+#     But the off-line SCAN finds an off-line zero rho ~ 0.86953 + 240.40467i that
 #     this literature list never had.  The tabulated 243.1 entry MAY be a garbled
 #     version of that zero; that is UNVERIFIED.
 # This list is only a seed: completeness comes from scan_offline and
@@ -250,7 +260,21 @@ def scan_offline(off: list[dict], log=print) -> tuple[list[dict], dict]:
                 raise RuntimeError(f"scan: inventory box {rec['re']}x{rec['im']} misses the localised zero")
             rec["source"] = "off-line scan (2026-10-14)"
             rec["localised_box"] = {"re": [str(tight[0]), str(tight[1])], "im": [str(tight[2]), str(tight[3])]}
-            log(f"  scan: NEW off-line zero ~ {bt:.4f} + {g:.4f}i, box Re {rec['re']} Im {rec['im']}")
+            za = _zero_approx(tight)
+            pt = za.pop("_exact")
+            if not _strictly_inside(pt, _box(rec)):
+                raise RuntimeError(f"scan: zero {pt} not strictly inside the inventory box")
+            rec["zero_approx"] = za
+            for ab in AUDIT_BOXES:
+                abox = _box(ab)
+                if not _strictly_inside(pt, abox):
+                    continue
+                cert = certify_offline_zero(*abox)   # rigorous, prec 96 + recheck 144
+                rec["audit_box"] = {"re": ab["re"], "im": ab["im"], "source": ab["source"],
+                                    "winding": cert["winding"], "method": cert["method"],
+                                    "prec": cert["prec"], "recheck_prec": cert["recheck_prec"]}
+            log(f"  scan: NEW off-line zero rho ~ {za['beta']} + {za['gamma']}i, "
+                f"box Re {rec['re']} Im {rec['im']}")
             found.append(rec)
     summary = {
         "region": {"re0": str(OFFLINE_RE0), "re1": str(OFFLINE_RE1), "im0": str(IM_FLOOR), "im1": str(T_MAX)},
@@ -262,6 +286,32 @@ def scan_offline(off: list[dict], log=print) -> tuple[list[dict], dict]:
         "prec": CERT_PREC,
     }
     return found, summary
+
+
+def _zero_approx(tight: tuple) -> dict:
+    """The zero itself, by mpmath findroot (dps 30) seeded at the centre of the rigorous winding-1 box
+    ``tight`` (a FLOAT locator, not a certificate: the box is the certificate).  Refuses unless the root
+    lies strictly inside ``tight`` and |D| there is tiny."""
+    import mpmath as mp
+    with mp.workdps(30):
+        k = (mp.sqrt(10 - 2 * mp.sqrt(5)) - 2) / (mp.sqrt(5) - 1)
+
+        def D(s):
+            z = [mp.zeta(s, mp.mpf(a) / 5) for a in (1, 2, 3, 4)]
+            return 5 ** (-s) * (z[0] - z[3] + k * (z[1] - z[2]))
+        c = mp.mpc(float((tight[0] + tight[1]) / 2), float((tight[2] + tight[3]) / 2))
+        r = mp.findroot(D, c)
+        res = abs(D(r))
+        beta, gamma = F(mp.nstr(r.real, 25)), F(mp.nstr(r.imag, 25))
+    if not (tight[0] < beta < tight[1] and tight[2] < gamma < tight[3]) or res > 1e-20:
+        raise RuntimeError(f"zero_approx: findroot left the certified box or |D| = {res}")
+    return {"beta": mp.nstr(r.real, 12), "gamma": mp.nstr(r.imag, 14), "abs_D": mp.nstr(res, 3),
+            "how": "mpmath findroot at dps 30 (float locator; lies strictly inside every recorded box)",
+            "_exact": (beta, gamma)}
+
+
+def _strictly_inside(pt: tuple, box: tuple) -> bool:
+    return box[0] < pt[0] < box[1] and box[2] < pt[1] < box[3]
 
 
 def _isolate(re0: F, re1: F, im0: F, im1: F, count: int, depth: int = 0) -> list[tuple]:
