@@ -70,9 +70,17 @@ The rh-team's gate analysis, `~/rh-team/gates/gate0.md` Addendum 2 (2026-10-11),
 found that the best you can do inside OpenAI's quasi-Riemann-hypothesis architecture, using only
 proved inputs, is exactly Liu's θ. For ell > 1/6 the binding high-side constraint is the balanced
 witness-count bin. It crosses the low-side bound 11/12 − ell/4 at sigma0 = 0.87495707, which
-equals Liu's B_new to 8 digits. So this theorem is the proved-input optimum of the QRH route. The
-earlier 13/15 figure was an idealisation, not a floor. A better Λ along these lines needs a new
-input, not more tuning.
+equals Liu's B_new to 8 digits. So this theorem is the optimum of the QRH route at κ = 3/4 (the value
+fixed in Liu's and OpenAI's architecture). The earlier 13/15 figure was an idealisation, not a floor. A
+better Λ along these lines needs a new input, not more tuning at κ = 3/4.
+
+*Correction (2026-10-15).* An earlier version of this paragraph called the theorem "the proved-input
+optimum" without qualification. R. Mori (Zenodo 10.5281/zenodo.23355293, 2026-10-14; rational certificate
+10.5281/zenodo.23356078) frees κ: with κ* = 37495707/50000000 < 3/4, the same machinery and Liu's Thm 21.1
+as premise, he claims θ = 43747851/50000000 = 0.874957020, about 5e−8 below B_new. That claim is unrefereed
+and not machine-checked (only its terminal rational algebra has a checker), and we have not verified it. It
+does show that the optimum is not universal across κ; the statement above is therefore scoped to κ = 3/4. The
+kernel-checked theorem `liu_zeta_zero_free` is unaffected.
 
 ## 3. Provenance and license
 

@@ -27,8 +27,11 @@ to real zeros of H_t (the dbn island) and the two lines that join the pieces.
 The rh-team's gate analysis (`~/rh-team/gates/gate0.md`, Addendum 2, 2026-10-11; see also PR
 #684) found that when you push every parameter in OpenAI's quasi-Riemann-hypothesis argument as
 far as its proved inputs allow, the binding constraint crosses the low-side bound at exactly
-Liu's θ, to 8 digits. So Liu's half-plane is the proved-input optimum of that architecture, and
-Λ ≤ 0.2811856 is the limit of this route. Going further needs a new idea, not better tuning.
+Liu's θ, to 8 digits. So Liu's half-plane is the optimum of that architecture at κ = 3/4, and
+Λ ≤ 0.2811856 is the limit of this route at that κ. Going further needs a new idea, not better tuning at
+κ = 3/4. (Correction 2026-10-15: an earlier version said "the proved-input optimum" without the κ = 3/4
+qualifier; Mori, Zenodo 10.5281/zenodo.23355293, claims a ~5e−8 improvement by freeing κ, unrefereed and not
+machine-checked. See LIU_DBN_BRIDGE_2026-10-11.md §2.)
 
 ## Credit, license and why nothing of Liu's is in this directory
 
