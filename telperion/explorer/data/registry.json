@@ -58,14 +58,14 @@
     "deprecated": 1,
     "draft": 3,
     "open": 1,
-    "proved": 46,
+    "proved": 54,
     "refuted": 0
    },
    "description": "Migration of PROGRAM MIRRORMERE (telperion/docs/QC_PROGRAM.md, ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md) into the missions registry: the reverse-Dyson program -- classify 1-D Fourier quasicrystals, locate the zeta point set, extract zero-localization -- built as finite, unconditional instruments (axioms + falsification zoo, the rigidity ladder R1/R2/R3, the defect-k instrument, the N(T) brick). NOTHING here proves or claims RH and conjecture1_proved = False throughout; the goal node is the program's honest RH-hard membership target and is draft. The known difficulty map: RH-hardness enters at exactly one place, twice disguised (FQ-grade temperedness of the dual comb; the rational -> irrational frequency transition); everything registered below is unconditional or carries its named hypothesis explicitly. FIDELITY NOTE (design section 9, UPDATED 2026-09-18): the rh/million-turing line is now merged into main (#506), so the linked artifacts are on main and the deferred `mission grant` pass is unblocked -- nine nodes still carry a [proof] link at status=open and are awaiting it. One node IS proved: MM_rvm_unbounded_mean_density, granted via the cross-island rvm_bridge discharge (#553). The original wording -- no node enters as proved, grant deferred to the branch reconcile -- described the pre-reconcile state and no longer holds. Environment = v4.32.0 (quasicrystal island); two nodes' artifacts live on the zeta_zero_localization island (same pin, cross-island grant per design section 2). W3b IS REGISTERED (MM_bragg_bridge, 2026-09-15): the gw-finite agent proved rect_explicit_formula_bragg on the v4.34 li island -- cross-island node per design section 2. Statement-authoring queue (nodes NOT yet registered because their authoritative formal statements ARE the work; specs in RH_ROUTES_ROADMAP_2026-09-16 section 9): the T->inf corridor bound |zeta'/zeta| = O(log^2 T) (effective-constant form must be pinned against its four consumers -- W3b limit, B6, D6, A3), the A0 REGULARIZED membership statement (the naive clause list '|mu-hat| tempered for the (log p)p^{-m/2} dual comb' is UNCONDITIONALLY FALSE -- sum_{n<=e^R} Lambda(n) n^{-1/2} ~ 2 e^{R/2} by PNT, and mu-hat carries an absolutely-continuous archimedean component; only the Guinand-Weil-regularized triple can carry membership, and authoring it is open formulation work), the W_temp precise wall statement (QC_LITERATURE section 1.7 grades it a program conjecture), R1 crystalline rigidity with the isolated temperedness clause, W3c infinite-torus log-density FQ axioms, A3-adjacent W4 face probes, the torus-section ladder's T3 defect-instrumentation rungs, MM_leakage_composite_zero (the content is the log-derivative coefficient functional; the Lambda-support direction is rfl-bait), and MM_ks_forward_smallN (the island's FQ vocabulary is deliberately abstract; a concrete faithful statement is W3c formulation work). UPDATE 2026-09-21 (PR #593): the goal statement was re-authored from the 2026-09-14 placeholder (Mathlib RiemannHypothesis via the opaque-variable def zeta_FQ_iff_RH, an identification by fiat) to Weil positivity of weilForm on autocorr g over IsWeilTest, and its RH-equivalence is now the PROVED node MM_zeta_comb_membership_iff_rh (Weil criterion in-kernel, E6Bridge5-9 on the rvm_bridge island, four blind audits); the Gaussian obligations MM_gaussian_dominance / MM_gaussian_approx / MM_gaussian_transfer and the converse MM_weil_positivity_implies_rh are proved. The goal node stays draft: it is RH by theorem.",
    "dir": "mirrormere",
    "goal_node": "MM_zeta_comb_membership",
    "mathlib_rev": "v4.32.0",
-   "n_nodes": 51,
+   "n_nodes": 59,
    "name": "MM.reverse_dyson",
    "sources": [
     "Dyson, F. (2009), Birds and frogs, Notices AMS 56 -- the reverse proposal",
@@ -92,14 +92,14 @@
     "deprecated": 0,
     "draft": 2,
     "open": 0,
-    "proved": 67,
+    "proved": 68,
     "refuted": 0
    },
    "description": "Migration of the RH campaign prose tracking (telperion/docs/RH_* handoffs, STATUS.md, PROOF_STATUS pointers) into the missions registry. The registry is the tracking truth; RH is NOT claimed proved -- the goal node is draft and conjecture1_proved = False throughout. Environment = the v4.34 li_positivity island (unified by #483); one granted node's artifact lives on the v4.32 zero_free_bridge island (cross-island grant per design section 2).",
    "dir": "rh",
    "goal_node": "RH_conjecture",
    "mathlib_rev": "de5ce8a9",
-   "n_nodes": 69,
+   "n_nodes": 70,
    "name": "RH.conjecture",
    "sources": [
     "Riemann, B. (1859), Ueber die Anzahl der Primzahlen unter einer gegebenen Groesse",
@@ -3048,7 +3048,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-13",
+     "run_id": "38402969515",
+     "run_url": "",
+     "theorem": "re_weilForm_eq_archW_sub_prime"
+    },
     "grant": {
      "artifact_sha256": "c132c4cffadd5667",
      "date": "2026-10-13",
@@ -3059,7 +3064,7 @@
    "readback": {
     "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs",
     "date": "2026-10-13",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "AI read-back of theorem re_weilForm_eq_archW_sub_prime. Registry definitions checked verbatim against the rvm_bridge island (IsWeilTest, weilKernel, archIntegrand, archSide, primeSide as in E6Bridge4; autocorr and weilForm as in E6Bridge5; Zeta23.paperFT; hsq from E6Bridge31; psiR from E6Bridge11; archW from ArchS3_Delta), and the island theorem in Hodge1_Reduction.lean has the same type. Hypotheses: g : R -> C is smooth with compact support; its topological support lies in [-L, L]; 2L <= log 3; and paperFT g (i/2) = integral of g(u) e^(-u/2) du = 0. Let f = autocorr g, f(u) = integral of g(v) conj(g(v - u)) dv. Conclusion: Re weilForm f, i.e. Re(archSide f - primeSide f), equals archW g - (log 2 / sqrt 2) Re(f(log 2) + f(-log 2)), where archW g = (1/(2 pi)) times the integral over real r of |paperFT g r|^2 (Re digamma(1/4 + i r/2) - log pi). Reading: f is supported in [-2L, 2L], inside [-log 3, log 3], so in primeSide only n = 2 contributes (Lambda(2)/sqrt 2 = log 2/sqrt 2); the two pole terms weilKernel f 0 and weilKernel f 1 each carry the factor paperFT g (i/2) and vanish; and the -f(0) log pi term together with the digamma integral is archW g by Plancherel. It is an exact identity on this pole-free one-prime window, makes no positivity claim, and says nothing about zeros of zeta or about RH."
    },
    "refutation_statement": "",
@@ -3101,7 +3106,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-13",
+     "run_id": "38404699182",
+     "run_url": "",
+     "theorem": "rh_iff_poleFree_outside_window5493"
+    },
     "grant": {
      "artifact_sha256": "ccc5a9557ef510ae",
      "date": "2026-10-13",
@@ -3112,7 +3122,7 @@
    "readback": {
     "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs",
     "date": "2026-10-13",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "AI read-back of theorem rh_iff_poleFree_outside_window5493. Vocabulary as in MMDefs and checked against the rvm_bridge island: IsWeilTest g means g : R -> C is smooth (C^infinity) with compact support; autocorr g (u) = integral of g(v) conj(g(v - u)) dv; weilForm f = archSide f - primeSide f, with archSide the two pole terms weilKernel f 0 + weilKernel f 1, minus f(0) log pi, plus (1/(2 pi)) times the integral of the transform against Re digamma(1/4 + i r/2), and primeSide = sum over n of Lambda(n)/sqrt n (f(log n) + f(-log n)); Zeta23.paperFT g z = integral of g(u) e^(i z u) du, so the hypothesis paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 says the integrals of g(u) e^(-u/2) and g(u) e^(u/2) both vanish (pole-free; Hodge1.PoleFree2 unfolds to exactly this). Statement: Mathlib's RiemannHypothesis (not redefined in MMDefs) holds if and only if, for every smooth compactly supported g with both pole conditions whose topological support is NOT contained in [-0.5493, 0.5493], the real part of weilForm(autocorr g) is >= 0. Combined with MM_hodge1_window5493, which covers the tests supported inside that window, this says RH is equivalent to pole-free Weil positivity for all tests; the theorem is a reformulation that isolates the part not yet proved (supports reaching beyond half-width 0.5493). It is not progress on RH. The statement is identical to the island wrapper Hodge1_RegRH, proved from Hodge1.rh_iff_poleFree2_outside_window5493 (heavy job)."
    },
    "refutation_statement": "",
@@ -3154,7 +3164,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-13",
+     "run_id": "38404702485",
+     "run_url": "",
+     "theorem": "weil_positivity_poleFree_window45"
+    },
     "grant": {
      "artifact_sha256": "f1fc3f5a30c1a7a5",
      "date": "2026-10-13",
@@ -3165,7 +3180,7 @@
    "readback": {
     "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs",
     "date": "2026-10-13",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "AI read-back of theorem weil_positivity_poleFree_window45. Vocabulary as in MMDefs and checked against the rvm_bridge island: IsWeilTest g means g : R -> C is smooth (C^infinity) with compact support; autocorr g (u) = integral of g(v) conj(g(v - u)) dv; weilForm f = archSide f - primeSide f, with archSide the two pole terms weilKernel f 0 + weilKernel f 1, minus f(0) log pi, plus (1/(2 pi)) times the integral of the transform against Re digamma(1/4 + i r/2), and primeSide = sum over n of Lambda(n)/sqrt n (f(log n) + f(-log n)); Zeta23.paperFT g z = integral of g(u) e^(i z u) du, so the hypothesis paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 says the integrals of g(u) e^(-u/2) and g(u) e^(u/2) both vanish (pole-free; Hodge1.PoleFree2 unfolds to exactly this). Statement: for every such g with both pole conditions, every real L <= 9/20, and topological support of g inside [-L, L], the real part of weilForm(autocorr g) is >= 0. So Weil positivity holds for pole-free tests on windows of half-width up to 0.45; since autocorr g is then supported in [-0.9, 0.9], which contains log 2 but not log 3, only the prime 2 enters. The registered statement is identical to the island wrapper Hodge1_RegWindow45, which is proved from Hodge1.weil_positivity_poleFree2_window45 (certificate-based; built in the heavy job). It is a finite-window verification statement: no conceptual content beyond the window, and nothing about RH."
    },
    "refutation_statement": "",
@@ -3205,7 +3220,12 @@
    "provenance": {
     "author_recorded": true,
     "ci_record": null,
-    "comparator": null,
+    "comparator": {
+     "date": "2026-10-13",
+     "run_id": "38404695545",
+     "run_url": "",
+     "theorem": "weil_positivity_poleFree_window5493"
+    },
     "grant": {
      "artifact_sha256": "156668c5b3bd05e4",
      "date": "2026-10-13",
@@ -3216,7 +3236,7 @@
    "readback": {
     "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs",
     "date": "2026-10-13",
-    "independence": "independent read-back",
+    "independence": "judge-verified",
     "text": "AI read-back of theorem weil_positivity_poleFree_window5493. Vocabulary as in MMDefs and checked against the rvm_bridge island: IsWeilTest g means g : R -> C is smooth (C^infinity) with compact support; autocorr g (u) = integral of g(v) conj(g(v - u)) dv; weilForm f = archSide f - primeSide f, with archSide the two pole terms weilKernel f 0 + weilKernel f 1, minus f(0) log pi, plus (1/(2 pi)) times the integral of the transform against Re digamma(1/4 + i r/2), and primeSide = sum over n of Lambda(n)/sqrt n (f(log n) + f(-log n)); Zeta23.paperFT g z = integral of g(u) e^(i z u) du, so the hypothesis paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 says the integrals of g(u) e^(-u/2) and g(u) e^(u/2) both vanish (pole-free; Hodge1.PoleFree2 unfolds to exactly this). Statement: for every such g with both pole conditions, every real L <= 5493/10000, and topological support of g inside [-L, L], the real part of weilForm(autocorr g) is >= 0. Since log 3 / 2 = 0.549306..., autocorr g is supported strictly inside (-log 3, log 3), so only the prime 2 enters; this extends the window of MM_hodge1_window45 and goes past the half-width 1/2 of the KWin2 result. The statement is identical to the island wrapper Hodge1_RegWindow5493, proved from Hodge1.weil_positivity_poleFree2_window5493 (certificate-based; heavy job). A finite-window verification statement with no conceptual content beyond the window; nothing about RH."
    },
    "refutation_statement": "",
@@ -3422,6 +3442,182 @@
    "status": "proved",
    "title": "W2b, the CONDITIONAL rigidity direction: a p-dimensional negative-definite witness subspace forces p <= defect (offline_pairs_le_defect). The witness is load-bearing and is NOT supplied by the off-line pair count -- one functional-equation quadruple carries p = 2 sigma-pairs but can leak only ONE negative direction (QuadrupleDefect.quadruple_witness_dimension_not_determined), so the defect does not unconditionally COUNT off-line pairs; unconditionally defect <= p",
    "updated": "2026-09-19"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-13",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_polefree_weil_converse",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.polefree_weil_converse",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-13",
+     "run_id": "38457305451",
+     "run_url": "",
+     "theorem": "polefree_weil_converse"
+    },
+    "grant": {
+     "artifact_sha256": "6893602adc32e778",
+     "date": "2026-10-13",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-13",
+    "independence": "judge-verified",
+    "text": "AI read-back of theorem polefree_weil_converse (artifact RegRRChain.lean, proved from RvMBridgePF.weil_positivity_poleFree_implies_rh; statement identical to the island theorem; in AxiomGuardRvMBridge). Vocabulary as in MMDefs (IsWeilTest: smooth, compactly supported g : R -> C; autocorr g(u) = integral of g(v) conj g(v - u) dv; weilForm = archSide - primeSide; Zeta23.paperFT g z = integral of g(u) e^(i z u) du). Hypothesis: for every such g with BOTH pole conditions paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 (the same pole-free class as the HODGE-1 nodes; RvMBridgePF.PoleFree is this conjunction), Re weilForm(autocorr g) >= 0. Conclusion: Mathlib's RiemannHypothesis. This is Weil's criterion in pole-free form (the direction positivity implies RH); a reformulation, not progress on RH."
+   },
+   "refutation_statement": "",
+   "slug": "MM_polefree_weil_converse",
+   "statement": "theorem polefree_weil_converse\n    (hpos : ∀ g : ℝ → ℂ, WeilExplicit.IsWeilTest g → Zeta23.paperFT g (Complex.I / 2) = 0 →\n      Zeta23.paperFT g (-Complex.I / 2) = 0 → 0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re) :\n    RiemannHypothesis",
+   "status": "proved",
+   "title": "POLE-FREE WEIL CONVERSE (rvm_bridge RegRRChain / PFConverseC, kernel-checked): if 0 <= Re weilForm(autocorr g) for every Weil test g with paperFT g (I/2) = 0 and paperFT g (-I/2) = 0 (the same pole-free class as the HODGE-1 nodes), then Mathlib's RiemannHypothesis holds. Weil's criterion restricted to pole-free tests. Not progress on RH.",
+   "updated": "2026-10-13"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-14",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_polefree_weil_semibounded",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.polefree_weil_semibounded",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/RegSemibounded.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/RegSemibounded.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-14",
+     "run_id": "38573910121",
+     "run_url": "",
+     "theorem": "polefree_weil_semibounded_iff_rh"
+    },
+    "grant": {
+     "artifact_sha256": "12d8546f189472f0",
+     "date": "2026-10-14",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (Riemann session), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-14",
+    "independence": "judge-verified",
+    "text": "Mathlib's RiemannHypothesis is equivalent to: there exists a real constant C (of either sign) such that for every complex-valued g on R that is smooth with compact support (IsWeilTest) and pole-free (paperFT g (I/2) = 0 and paperFT g (-I/2) = 0, the same two conditions as MM_polefree_weil_converse), the real part of the Weil functional weilForm (archSide minus primeSide) evaluated at the Hermitian autocorrelation autocorr g is at least -C times the L2 norm squared, integral of |g x|^2. This is a soft (semibounded) form of Weil's criterion: C = 0 recovers positivity. RH-equivalent, not progress on RH."
+   },
+   "refutation_statement": "",
+   "slug": "MM_polefree_weil_semibounded",
+   "statement": "theorem polefree_weil_semibounded_iff_rh :\n    RiemannHypothesis ↔ ∃ C : ℝ, ∀ g : ℝ → ℂ, WeilExplicit.IsWeilTest g →\n      Zeta23.paperFT g (Complex.I / 2) = 0 → Zeta23.paperFT g (-Complex.I / 2) = 0 →\n      -C * ∫ x, ‖g x‖ ^ 2 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
+   "status": "proved",
+   "title": "POLE-FREE WEIL FORM SEMIBOUNDED IFF RH (rvm_bridge RegSemibounded / PFSemibounded, kernel-checked): Mathlib's RiemannHypothesis holds iff there is a real C with -C * integral ||g||^2 <= Re weilForm(autocorr g) for every Weil test g with paperFT g (I/2) = 0 and paperFT g (-I/2) = 0. A soft (semibounded) form of Weil's criterion; RH-equivalent, not progress on RH.",
+   "updated": "2026-10-14"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-14",
+   "depends_on": [
+    "mirrormere:MM_polefree_weil_semibounded"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_polefree_weil_shift_semibounded",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.polefree_weil_shift_semibounded",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/RegSemibounded.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/RegSemibounded.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-14",
+     "run_id": "38573910121",
+     "run_url": "",
+     "theorem": "polefree_weil_shift_semibounded_iff_rh"
+    },
+    "grant": {
+     "artifact_sha256": "12d8546f189472f0",
+     "date": "2026-10-14",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (Riemann session), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-14",
+    "independence": "judge-verified",
+    "text": "For every real number c (quantified outside the equivalence), Mathlib's RiemannHypothesis is equivalent to: there exists a real C such that for every smooth compactly supported pole-free g (paperFT g at I/2 and at -I/2 both zero), -C times integral |g|^2 is at most Re weilForm(autocorr g) + c times integral |g|^2. Since integral |g|^2 = (autocorr g)(0), the shift is a c-delta at u = 0; the statement says the delta coefficient does not decide RH. Given the unshifted node it is immediate (take C' = C + c); RH-equivalent, not progress on RH."
+   },
+   "refutation_statement": "",
+   "slug": "MM_polefree_weil_shift_semibounded",
+   "statement": "theorem polefree_weil_shift_semibounded_iff_rh (c : ℝ) :\n    RiemannHypothesis ↔ ∃ C : ℝ, ∀ g : ℝ → ℂ, WeilExplicit.IsWeilTest g →\n      Zeta23.paperFT g (Complex.I / 2) = 0 → Zeta23.paperFT g (-Complex.I / 2) = 0 →\n      -C * ∫ x, ‖g x‖ ^ 2\n        ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re + c * ∫ x, ‖g x‖ ^ 2",
+   "status": "proved",
+   "title": "DELTA-SHIFT DOES NOT DECIDE RH (rvm_bridge RegSemibounded / PFSemibounded, kernel-checked): for every real c, Mathlib's RiemannHypothesis holds iff the shifted form Re weilForm(autocorr g) + c * integral ||g||^2 is bounded below by -C * integral ||g||^2 on pole-free Weil tests. Gate 12.1 dichotomy with hypothesis (F) removed; RH-equivalent, not progress on RH.",
+   "updated": "2026-10-14"
   },
   {
    "arb": false,
@@ -3847,6 +4043,305 @@
    "status": "proved",
    "title": "Weil's criterion, forward half, on the E8 vocabulary: Mathlib's RiemannHypothesis implies Weil positivity of weilForm on Hermitian autocorrelations over IsWeilTest -- discharges the hypothesis hpos that weil_negative_refutes_rh (weil_form_enclosure island) has carried undischarged; proves NOTHING about RH itself. conjecture1_proved = False.",
    "updated": "2026-09-30"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-13",
+   "depends_on": [
+    "mirrormere:MM_rr_square_hodge_index"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_rr_square_collapse",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.rr_square_collapse",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-13",
+     "run_id": "38457305451",
+     "run_url": "",
+     "theorem": "rr_square_collapse"
+    },
+    "grant": {
+     "artifact_sha256": "6893602adc32e778",
+     "date": "2026-10-13",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-13",
+    "independence": "judge-verified",
+    "text": "AI read-back of theorem rr_square_collapse (artifact RegRRChain.lean; statement identical to the island theorem; in AxiomGuardRvMBridge). For a real vector space V, a SYMMETRIC bilinear form B and f with B f f > 0: there exist data deg (with deg v = B v f), Prin (deg vanishing on it), h0, h1 >= 0, K, a, chi and beta satisfying the RR identity, the effectivity clause (h0 X > 0 gives X congruent mod Prin to E with deg E > 0 or E principal), compatibility (principal v has B v v = 0) and the degree bound, all with Div = V and iota the identity, IF AND ONLY IF the Hodge index holds: B v f = 0 implies B v v <= 0. Meaning: the abstract axioms on the test space alone are equivalent to the sign they are meant to produce, so an existence statement of this kind is circular; any non-circular use needs a constructed Div strictly larger than V. This is the guard against misreading the chain."
+   },
+   "refutation_statement": "",
+   "slug": "MM_rr_square_collapse",
+   "statement": "theorem rr_square_collapse {V : Type} [AddCommGroup V] [Module ℝ V] (B : LinearMap.BilinForm ℝ V)\n    (hB : ∀ x y, B x y = B y x) (f : V) (hf : 0 < B f f) :\n    (∃ (deg : V →ₗ[ℝ] ℝ) (Prin : Submodule ℝ V) (h0 h1 : V → ℝ) (K : V) (a : V → ℝ) (χ : ℝ) (β : ℝ → ℝ),\n      (∀ v, deg v = B v f) ∧ (∀ X ∈ Prin, deg X = 0) ∧ (∀ X, 0 ≤ h0 X) ∧ (∀ X, 0 ≤ h1 X) ∧\n      (∀ (v : V) (n : ℕ), h0 ((n : ℝ) • v) - h1 ((n : ℝ) • v) + h0 (K - (n : ℝ) • v)\n        = (1 / 2) * (n : ℝ) ^ 2 * B v v - (1 / 2) * (n : ℝ) * a v + χ) ∧\n      (∀ X, 0 < h0 X → ∃ E, X - E ∈ Prin ∧ (0 < deg E ∨ E ∈ Prin)) ∧\n      (∀ v, v ∈ Prin → B v v = 0) ∧ (∀ X, h0 X ≤ β (deg X))) ↔\n    ∀ v, B v f = 0 → B v v ≤ 0",
+   "status": "proved",
+   "title": "RR-SQUARE COLLAPSE (rvm_bridge RegRRChain, kernel-checked): with Div = V (iota = id), for symmetric B with B f f > 0, data satisfying the bounded RR axioms EXIST iff the Hodge index holds (B v f = 0 => B v v <= 0). So a bare existence statement of RR-square is circular (under RH it holds trivially); its content must be a construction without reference to the zeros. Not progress on RH.",
+   "updated": "2026-10-13"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": true,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-13",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_rr_square_hodge_index",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.rr_square_hodge_index",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-13",
+     "run_id": "38457305451",
+     "run_url": "",
+     "theorem": "rr_square_hodge_index"
+    },
+    "grant": {
+     "artifact_sha256": "6893602adc32e778",
+     "date": "2026-10-13",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-13",
+    "independence": "judge-verified",
+    "text": "AI read-back of theorem rr_square_hodge_index (artifact RegRRChain.lean, proved by RvMBridgePF.RRSquare.hodge_index; statement identical to the island theorem; in AxiomGuardRvMBridge). Data: real vector spaces V (tests) and Div (divisors), a bilinear form B on V, a vector f in V (the fibre class), a linear map iota: V -> Div, a linear degree deg: Div -> R with deg(iota v) = B v f, a subspace Prin of principal divisors on which deg vanishes, functions h0, h1: Div -> R with h0, h1 >= 0, a class K, a function a: V -> R and a constant chi. Axioms: (RR) for every v and natural n, h0(iota(n v)) - h1(iota(n v)) + h0(K - iota(n v)) = (1/2) n^2 B v v - (1/2) n a(v) + chi; (eff) if h0 X > 0 then X is congruent mod Prin to some E with deg E > 0 or E principal, which (since deg vanishes on Prin) says exactly: a divisor with sections has positive degree or is principal; there is no separate effective predicate; (compat) if iota v is principal then B v v = 0. Extra hypothesis: a degree bound, h0 X <= beta(deg X) for some function beta. Conclusion: for every v with B v f = 0, B v v <= 0 (the Hodge index on the part orthogonal to f). An abstract implication about real-valued data; it constructs nothing and says nothing about zeta or RH by itself."
+   },
+   "refutation_statement": "",
+   "slug": "MM_rr_square_hodge_index",
+   "statement": "theorem rr_square_hodge_index {V Div : Type} [AddCommGroup V] [Module ℝ V] [AddCommGroup Div] [Module ℝ Div]\n    (B : LinearMap.BilinForm ℝ V) (f : V) (ι : V →ₗ[ℝ] Div) (deg : Div →ₗ[ℝ] ℝ)\n    (hdeg : ∀ v, deg (ι v) = B v f) (Prin : Submodule ℝ Div) (hprin : ∀ X ∈ Prin, deg X = 0)\n    (h0 h1 : Div → ℝ) (h0nn : ∀ X, 0 ≤ h0 X) (h1nn : ∀ X, 0 ≤ h1 X) (K : Div) (a : V → ℝ) (χ : ℝ)\n    (rr : ∀ (v : V) (n : ℕ), h0 (ι ((n : ℝ) • v)) - h1 (ι ((n : ℝ) • v)) + h0 (K - ι ((n : ℝ) • v))\n      = (1 / 2) * (n : ℝ) ^ 2 * B v v - (1 / 2) * (n : ℝ) * a v + χ)\n    (eff : ∀ X, 0 < h0 X → ∃ E, X - E ∈ Prin ∧ (0 < deg E ∨ E ∈ Prin))\n    (compat : ∀ v, ι v ∈ Prin → B v v = 0)\n    (β : ℝ → ℝ) (bound : ∀ X, h0 X ≤ β (deg X)) (v : V) (hv : B v f = 0) : B v v ≤ 0",
+   "status": "proved",
+   "title": "RR-SQUARE HODGE INDEX, DEGREE-BOUND FORM (rvm_bridge RegRRChain, kernel-checked; CONDITIONAL REDUCTION ingredient): for a real form B on V, a degree class f, divisors Div with principal divisors, real-valued section dimensions h0, h1 >= 0, an RR index identity with Serre duality, effectivity, compatibility and the degree bound h0 <= beta(deg), every v with B v f = 0 has B v v <= 0 (Grothendieck's argument). By MM_rr_square_collapse such data exist trivially under RH; the content is a construction. Not progress on RH.",
+   "updated": "2026-10-13"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": true,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-13",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_rr_square_hodge_index_domain",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.rr_square_hodge_index_domain",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-13",
+     "run_id": "38457305451",
+     "run_url": "",
+     "theorem": "rr_square_hodge_index_domain"
+    },
+    "grant": {
+     "artifact_sha256": "6893602adc32e778",
+     "date": "2026-10-13",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-13",
+    "independence": "judge-verified",
+    "text": "AI read-back of theorem rr_square_hodge_index_domain (artifact RegRRChain.lean, proved by RvMBridgePF.RRSquare.hodge_index_of_domain; statement identical to the island theorem; in AxiomGuardRvMBridge). Data: real vector spaces V (tests) and Div (divisors), a bilinear form B on V, a vector f in V (the fibre class), a linear map iota: V -> Div, a linear degree deg: Div -> R with deg(iota v) = B v f, a subspace Prin of principal divisors on which deg vanishes, functions h0, h1: Div -> R with h0, h1 >= 0, a class K, a function a: V -> R and a constant chi. Axioms: (RR) for every v and natural n, h0(iota(n v)) - h1(iota(n v)) + h0(K - iota(n v)) = (1/2) n^2 B v v - (1/2) n a(v) + chi; (eff) if h0 X > 0 then X is congruent mod Prin to some E with deg E > 0 or E principal, which (since deg vanishes on Prin) says exactly: a divisor with sections has positive degree or is principal; there is no separate effective predicate; (compat) if iota v is principal then B v v = 0. Extra hypothesis, replacing the degree bound: no zero divisors in the form h0 X > 0 implies h0 Y <= h0(X + Y) for all X, Y. Conclusion: for every v with B v f = 0, B v v <= 0. An abstract implication; it constructs nothing and says nothing about zeta or RH by itself."
+   },
+   "refutation_statement": "",
+   "slug": "MM_rr_square_hodge_index_domain",
+   "statement": "theorem rr_square_hodge_index_domain {V Div : Type} [AddCommGroup V] [Module ℝ V] [AddCommGroup Div] [Module ℝ Div]\n    (B : LinearMap.BilinForm ℝ V) (f : V) (ι : V →ₗ[ℝ] Div) (deg : Div →ₗ[ℝ] ℝ)\n    (hdeg : ∀ v, deg (ι v) = B v f) (Prin : Submodule ℝ Div) (hprin : ∀ X ∈ Prin, deg X = 0)\n    (h0 h1 : Div → ℝ) (h0nn : ∀ X, 0 ≤ h0 X) (h1nn : ∀ X, 0 ≤ h1 X) (K : Div) (a : V → ℝ) (χ : ℝ)\n    (rr : ∀ (v : V) (n : ℕ), h0 (ι ((n : ℝ) • v)) - h1 (ι ((n : ℝ) • v)) + h0 (K - ι ((n : ℝ) • v))\n      = (1 / 2) * (n : ℝ) ^ 2 * B v v - (1 / 2) * (n : ℝ) * a v + χ)\n    (eff : ∀ X, 0 < h0 X → ∃ E, X - E ∈ Prin ∧ (0 < deg E ∨ E ∈ Prin))\n    (compat : ∀ v, ι v ∈ Prin → B v v = 0)\n    (domain : ∀ X Y, 0 < h0 X → h0 Y ≤ h0 (X + Y)) (v : V) (hv : B v f = 0) : B v v ≤ 0",
+   "status": "proved",
+   "title": "RR-SQUARE HODGE INDEX, NO-ZERO-DIVISOR FORM (rvm_bridge RegRRChain, kernel-checked; CONDITIONAL REDUCTION ingredient): as MM_rr_square_hodge_index with the degree bound replaced by h0 X > 0 => h0 Y <= h0 (X + Y) (automatic in Connes-Consani's characteristic-one setting). Not progress on RH.",
+   "updated": "2026-10-13"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": true,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-13",
+   "depends_on": [
+    "mirrormere:MM_polefree_weil_converse",
+    "mirrormere:MM_rr_square_hodge_index",
+    "mirrormere:MM_rr_square_hodge_index_domain"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_rr_windows_imply_rh",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.rr_windows_imply_rh",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/RegRRChain.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-13",
+     "run_id": "38457305451",
+     "run_url": "",
+     "theorem": "rr_windows_imply_rh"
+    },
+    "grant": {
+     "artifact_sha256": "6893602adc32e778",
+     "date": "2026-10-13",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (session 23), NOT an operator read-back; requested by the e9 session under the owner's 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-13",
+    "independence": "judge-verified",
+    "text": "AI read-back of theorem rr_windows_imply_rh (artifact RegRRChain.lean; statement identical to the island theorem; in AxiomGuardRvMBridge). An index type of windows i; for each i the data and axioms of rr_square_hodge_index on (V i, Div i, B i, f i, iota i, deg i, Prin i, h0 i, h1 i, K i, a i, chi i), with the effectivity and compatibility clauses as there, and for each i EITHER a degree bound OR no zero divisors. Further, maps tau i from V i to test functions R -> C, constants c i > 0, the link B i v v = -(c i Re weilForm(autocorr(tau i v))), the condition that pole-free tau i v (both paperFT conditions at +-i/2) has degree zero (B i v (f i) = 0), and covering: every smooth compactly supported pole-free g equals tau i v for some i and v. Conclusion: Mathlib's RiemannHypothesis. Weil positivity is NOT a hypothesis: the proof derives it on each window from the Hodge index (hodge_index or hodge_index_of_domain, via rh_of_rr_windows) and concludes through the pole-free converse. A CONDITIONAL REDUCTION: by rr_square_collapse such windows exist trivially if RH holds, so the content lies entirely in constructing them independently of the zeros; not progress on RH."
+   },
+   "refutation_statement": "",
+   "slug": "MM_rr_windows_imply_rh",
+   "statement": "theorem rr_windows_imply_rh {ι' : Type} (V Div : ι' → Type) [∀ i, AddCommGroup (V i)] [∀ i, Module ℝ (V i)]\n    [∀ i, AddCommGroup (Div i)] [∀ i, Module ℝ (Div i)]\n    (B : ∀ i, LinearMap.BilinForm ℝ (V i)) (f : ∀ i, V i) (ι : ∀ i, V i →ₗ[ℝ] Div i)\n    (deg : ∀ i, Div i →ₗ[ℝ] ℝ) (hdeg : ∀ i v, deg i (ι i v) = B i v (f i))\n    (Prin : ∀ i, Submodule ℝ (Div i)) (hprin : ∀ i, ∀ X ∈ Prin i, deg i X = 0)\n    (h0 h1 : ∀ i, Div i → ℝ) (h0nn : ∀ i X, 0 ≤ h0 i X) (h1nn : ∀ i X, 0 ≤ h1 i X)\n    (K : ∀ i, Div i) (a : ∀ i, V i → ℝ) (χ : ι' → ℝ)\n    (rr : ∀ i (v : V i) (n : ℕ), h0 i (ι i ((n : ℝ) • v)) - h1 i (ι i ((n : ℝ) • v)) + h0 i (K i - ι i ((n : ℝ) • v))\n      = (1 / 2) * (n : ℝ) ^ 2 * B i v v - (1 / 2) * (n : ℝ) * a i v + χ i)\n    (eff : ∀ i X, 0 < h0 i X → ∃ E, X - E ∈ Prin i ∧ (0 < deg i E ∨ E ∈ Prin i))\n    (compat : ∀ i v, ι i v ∈ Prin i → B i v v = 0)\n    (clause : ∀ i, (∃ β : ℝ → ℝ, ∀ X, h0 i X ≤ β (deg i X)) ∨ (∀ X Y, 0 < h0 i X → h0 i Y ≤ h0 i (X + Y)))\n    (τ : ∀ i, V i → ℝ → ℂ) (c : ι' → ℝ) (hc : ∀ i, 0 < c i)\n    (hdiag : ∀ i v, B i v v = -(c i * (WeilExplicit.weilForm (WeilExplicit.autocorr (τ i v))).re))\n    (hpole : ∀ i v, Zeta23.paperFT (τ i v) (Complex.I / 2) = 0 → Zeta23.paperFT (τ i v) (-Complex.I / 2) = 0 →\n      B i v (f i) = 0)\n    (hcover : ∀ g : ℝ → ℂ, WeilExplicit.IsWeilTest g → Zeta23.paperFT g (Complex.I / 2) = 0 →\n      Zeta23.paperFT g (-Complex.I / 2) = 0 → ∃ i, ∃ v : V i, τ i v = g) :\n    RiemannHypothesis",
+   "status": "proved",
+   "title": "RR-SQUARE WINDOWS IMPLY RH, CONDITIONAL REDUCTION (rvm_bridge RegRRChain, kernel-checked): a family of windows i, each with V i, Div i, B i, f i, iota i, deg, Prin, h0, h1, K, a, chi satisfying the RR index identity, effectivity, compatibility and (degree bound OR no zero divisors), test maps tau i with B v v = -(c * Re weilForm(autocorr (tau v))), c > 0, and pole-free tests of degree 0, which covers every pole-free Weil test, implies Mathlib's RiemannHypothesis. Under RH such windows exist trivially (MM_rr_square_collapse); all content is the construction without reference to the zeros. Not progress on RH.",
+   "updated": "2026-10-13"
+  },
+  {
+   "arb": false,
+   "campaign": "mirrormere",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
+     "telperion-lean-e2e.yml:rvm-bridge-compiles",
+     "telperion-lean-e2e.yml:rvm-bridge-hodge1-heavy"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-14",
+   "depends_on": [
+    "mirrormere:MM_rr_square_collapse",
+    "mirrormere:MM_rh_implies_weil_positivity"
+   ],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "mirrormere:MM_rr_windows_of_rh",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "MM.rr_windows_of_rh",
+   "proof": {
+    "artifact": "telperion/examples/rvm_bridge/lean/RegRRConverse.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/rvm_bridge/lean/RegRRConverse.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-14",
+     "run_id": "38573910121",
+     "run_url": "",
+     "theorem": "rh_implies_rr_windows"
+    },
+    "grant": {
+     "artifact_sha256": "b741a3494d99299b",
+     "date": "2026-10-14",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (e9 session), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs; owner approved e9 doing this read-back directly in the e9 session 2026-10-14",
+    "date": "2026-10-14",
+    "independence": "judge-verified",
+    "text": "Assuming Mathlib's RiemannHypothesis, there exist an index type (in Type) and for each index i real vector spaces V i and Div i (instances supplied as existential data) with a bilinear form B i, a vector f i, a linear map iota i : V i -> Div i, a linear degree deg i, a submodule Prin i, functions h0, h1 >= 0, a class K i, a function a i, a constant chi i, test maps tau i : V i -> (R -> C) and constants c i > 0, satisfying: deg(iota v) = B(v, f); deg vanishes on Prin; the Riemann-Roch identity h0(n v) - h1(n v) + h0(K - n v) = n^2 B(v,v)/2 - n a(v)/2 + chi for every natural n; effectivity (h0 X > 0 gives E with X - E principal and deg E > 0 or E principal); principal classes have B(v,v) = 0; a degree bound on h0 OR the no-zero-divisor clause; B(v,v) = -(c * Re weilForm(autocorr(tau v))); pole-free tau v (paperFT at I/2 and -I/2 both zero) has B(v, f) = 0; and every pole-free Weil test g equals some tau i v. Clause by clause these are exactly the hypotheses of rr_windows_imply_rh (MM_rr_windows_imply_rh), in the same order, so together the two nodes say RH iff such windows exist. This is the trivial direction (the collapse windows read off from Weil positivity carry no geometry); not progress on RH. Checked by rebuilding RegRRConverse and AxiomGuardRvMBridge locally: standard axioms, no sorryAx."
+   },
+   "refutation_statement": "",
+   "slug": "MM_rr_windows_of_rh",
+   "statement": "theorem rh_implies_rr_windows (hRH : RiemannHypothesis) :\n    ∃ (ι' : Type) (V Div : ι' → Type) (_ : ∀ i, AddCommGroup (V i)) (_ : ∀ i, Module ℝ (V i))\n      (_ : ∀ i, AddCommGroup (Div i)) (_ : ∀ i, Module ℝ (Div i))\n      (B : ∀ i, LinearMap.BilinForm ℝ (V i)) (f : ∀ i, V i) (ι : ∀ i, V i →ₗ[ℝ] Div i)\n      (deg : ∀ i, Div i →ₗ[ℝ] ℝ) (Prin : ∀ i, Submodule ℝ (Div i)) (h0 h1 : ∀ i, Div i → ℝ)\n      (K : ∀ i, Div i) (a : ∀ i, V i → ℝ) (χ : ι' → ℝ) (τ : ∀ i, V i → ℝ → ℂ) (c : ι' → ℝ),\n      (∀ i v, deg i (ι i v) = B i v (f i)) ∧ (∀ i, ∀ X ∈ Prin i, deg i X = 0) ∧\n      (∀ i X, 0 ≤ h0 i X) ∧ (∀ i X, 0 ≤ h1 i X) ∧\n      (∀ i (v : V i) (n : ℕ), h0 i (ι i ((n : ℝ) • v)) - h1 i (ι i ((n : ℝ) • v)) + h0 i (K i - ι i ((n : ℝ) • v))\n        = (1 / 2) * (n : ℝ) ^ 2 * B i v v - (1 / 2) * (n : ℝ) * a i v + χ i) ∧\n      (∀ i X, 0 < h0 i X → ∃ E, X - E ∈ Prin i ∧ (0 < deg i E ∨ E ∈ Prin i)) ∧\n      (∀ i v, ι i v ∈ Prin i → B i v v = 0) ∧\n      (∀ i, (∃ β : ℝ → ℝ, ∀ X, h0 i X ≤ β (deg i X)) ∨ (∀ X Y, 0 < h0 i X → h0 i Y ≤ h0 i (X + Y))) ∧\n      (∀ i, 0 < c i) ∧\n      (∀ i v, B i v v = -(c i * (WeilExplicit.weilForm (WeilExplicit.autocorr (τ i v))).re)) ∧\n      (∀ i v, Zeta23.paperFT (τ i v) (Complex.I / 2) = 0 → Zeta23.paperFT (τ i v) (-Complex.I / 2) = 0 →\n        B i v (f i) = 0) ∧\n      (∀ g : ℝ → ℂ, WeilExplicit.IsWeilTest g → Zeta23.paperFT g (Complex.I / 2) = 0 →\n        Zeta23.paperFT g (-Complex.I / 2) = 0 → ∃ i, ∃ v : V i, τ i v = g)",
+   "status": "proved",
+   "title": "RH GIVES RR-SQUARE WINDOWS, the trivial direction; shows the existence form is circular; not progress on RH (rvm_bridge RegRRConverse / PFConverseD, kernel-checked): Mathlib's RiemannHypothesis implies there exist an index type and, for each index i, windows V i, Div i with B i, f i, iota i, deg, Prin, h0, h1, K, a, chi satisfying the RR index identity, effectivity, compatibility and (degree bound OR no zero divisors), test maps tau i with B v v = -(c * Re weilForm(autocorr (tau v))), c > 0, and pole-free tests of degree 0, covering every pole-free Weil test: exactly the hypotheses of MM_rr_windows_imply_rh, so together they give RH iff such windows exist. The windows are the collapse model read off from Weil positivity (V = Div = R, f = 0, h0 = 0; cf. MM_rr_square_collapse): no geometry, so the content of RR-square is a construction without reference to the zeros.",
+   "updated": "2026-10-14"
   },
   {
    "arb": false,
@@ -5597,6 +6092,62 @@
    "status": "proved",
    "title": "Route C / C3, de Bruijn 1950: for every t >= 1/2 every zero of H_t is real (Lambda <= 1/2). PROVED on the dbn island (DBNHadamardApprox: Hadamard factorisation of order < 2 proved (L3, PR #608) + heat-flow approximants + Hurwitz + the C2-free zero strip). The known half of de Bruijn-Newman, NOT RH (RH is Lambda <= 0)",
    "updated": "2026-09-30"
+  },
+  {
+   "arb": false,
+   "campaign": "rh",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-lean-e2e.yml:dbn-compiles"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-14",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "rh:RH_dbn_euler_model_zero_free",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "RH.dbn_euler_model_zero_free",
+   "proof": {
+    "artifact": "telperion/examples/dbn/lean/RegEulerModel.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/dbn/lean/RegEulerModel.lean",
+    "closure_clean": true,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": {
+     "date": "2026-10-14",
+     "run_id": "38573910121",
+     "run_url": "",
+     "theorem": "euler_model_ZX_ne_zero"
+    },
+    "grant": {
+     "artifact_sha256": "8c8403d4cc85ac15",
+     "date": "2026-10-14",
+     "gate_version": "2026-09-23.1"
+    },
+    "requires_ci_job": ""
+   },
+   "readback": {
+    "auditor": "AI read-back by Claude (e9 session), NOT an operator read-back; requested by the Riemann session under the owner's 2026-10-12 decision accepting AI read-backs; owner approved e9 doing this read-back directly in the e9 session 2026-10-14",
+    "date": "2026-10-14",
+    "independence": "judge-verified",
+    "text": "A statement about a MODEL, not about zeta. For a natural number X let E_X(s) be the product over primes p <= X of (1 - p^(-s))^(-1), chi(s) = pi^(s - 1/2) Gamma((1 - s)/2) / Gamma(s/2) (complex Gamma), Z_X(s) = E_X(s) + chi(s) E_X(1 - s), and Lambda_X(y) = (1/y) times the sum over primes p <= X of log((1 - p^(-1/2 - y)) / (1 - p^(-1/2 + y))). If y < 1/2, t > 0 and log(t/(2 pi)) - 1/t - 2/t^2 > Lambda_X(y), then Z_X(sigma + i t) is nonzero for every real sigma with 0 < |sigma - 1/2| <= y (which forces y > 0). The vocabulary block primesUpTo/eulerX/chiM/ZX/LamX in RHDefs is verbatim DBNEulerModelRH.lean lines 30-47, with the island's open line restated inside namespace DBNEulerModel so Gamma is Complex.Gamma (checked by string comparison). Says nothing about the zeros of zeta; nothing here bears on RH. Checked by rebuilding RegEulerModel and AxiomGuardDBN locally: standard axioms, no sorryAx."
+   },
+   "refutation_statement": "",
+   "slug": "RH_dbn_euler_model_zero_free",
+   "statement": "theorem euler_model_ZX_ne_zero (X : ℕ) {y t : ℝ} (hy : y < 1 / 2) (ht : 0 < t)\n    (hK : Real.log (t / (2 * Real.pi)) - 1 / t - 2 / t ^ 2 > DBNEulerModel.LamX X y)\n    {σ : ℝ} (hσ : 0 < |σ - 1 / 2|) (hσy : |σ - 1 / 2| ≤ y) :\n    DBNEulerModel.ZX X ((σ : ℂ) + t * Complex.I) ≠ 0",
+   "status": "proved",
+   "title": "EULER-PRODUCT MODEL ZERO-FREE NEAR THE LINE ABOVE AN EXPLICIT HEIGHT -- a MODEL (finite Euler product + χ), NOT ζ; folklore-grade companion to Gonek 2012 Thm 6.2 (dbn RegEulerModel / DBNEulerModelRH, kernel-checked): for Z_X(s) = E_X(s) + chi(s) E_X(1-s), E_X(s) = prod_{p <= X} (1 - p^{-s})^{-1}, chi(s) = pi^{s-1/2} Gamma((1-s)/2) / Gamma(s/2), and y < 1/2, t > 0 with log(t/2pi) - 1/t - 2/t^2 > Lambda_X(y) = (1/y) sum_{p <= X} log[(1 - p^{-1/2-y}) / (1 - p^{-1/2+y})]: Z_X(sigma + it) != 0 whenever 0 < |sigma - 1/2| <= y. Says nothing about the zeros of zeta; nothing here bears on RH. conjecture1_proved = False.",
+   "updated": "2026-10-14"
   },
   {
    "arb": false,
@@ -8372,8 +8923,8 @@
    "slug": "RH_zeta_zero_free_liu",
    "statement": "theorem liu_zeta_zero_free :\n    ∀ s : ℂ, (1507 - 2 * Real.sqrt 921) / 1653 < s.re → riemannZeta s ≠ 0",
    "status": "proved",
-   "title": "Liu's zero-free half-plane for zeta (arXiv:2610.12234, 8 Oct 2026): riemannZeta s != 0 for Re s > B_new = (1507 - 2 sqrt 921)/1653 = 0.874957069..., the proved-input optimum of OpenAI's cubic-theta architecture (thread-C ledger Addendum 2: the same sqrt 921 arises from the binding witness-count bin). Liu's Lean (repo liubaiying101/Slightly-improved-zero-free-half-planes-for-the-quasi-Riemann-hypothesis @ 7d10420, Lean v4.34.1, Mathlib d13f23b, vendored openai/math closure @ adc7f124) is MATERIALIZED at pin, never vendored; the artifact re-exports CombinedPaper.algebraic_zeta_nonzero with the unused s != 1 hypothesis removed (Mathlib riemannZeta_one_ne_zero). Licence: Liu's repo carries no LICENSE; treated as Apache-2.0 by owner decision 2026-10-11, no grant from the author on file (LICENSE requested, issue #1 on his repo). Replayed independently by two sessions (Lean + nanoda). Not RH: 0.874957 < 1 is a strip, not the line. conjecture1_proved = False",
-   "updated": "2026-10-11"
+   "title": "Liu's zero-free half-plane for zeta (arXiv:2610.12234, 8 Oct 2026): riemannZeta s != 0 for Re s > B_new = (1507 - 2 sqrt 921)/1653 = 0.874957069..., the optimum of OpenAI's cubic-theta architecture at kappa = 3/4 (thread-C ledger Addendum 2: the same sqrt 921 arises from the binding witness-count bin; Mori 2026-10-14 claims a ~5e-8 improvement by freeing kappa, unrefereed, not machine-checked). Liu's Lean (repo liubaiying101/Slightly-improved-zero-free-half-planes-for-the-quasi-Riemann-hypothesis @ 7d10420, Lean v4.34.1, Mathlib d13f23b, vendored openai/math closure @ adc7f124) is MATERIALIZED at pin, never vendored; the artifact re-exports CombinedPaper.algebraic_zeta_nonzero with the unused s != 1 hypothesis removed (Mathlib riemannZeta_one_ne_zero). Licence: Liu's repo carries no LICENSE; treated as Apache-2.0 by owner decision 2026-10-11, no grant from the author on file (LICENSE requested, issue #1 on his repo). Replayed independently by two sessions (Lean + nanoda). Not RH: 0.874957 < 1 is a strip, not the line. conjecture1_proved = False",
+   "updated": "2026-10-15"
   },
   {
    "arb": false,
@@ -8484,7 +9035,7 @@
   "deprecated": 6,
   "draft": 14,
   "open": 4,
-  "proved": 134,
+  "proved": 143,
   "refuted": 1
  }
 }
