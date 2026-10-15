@@ -8,7 +8,7 @@ tag, name = sys.argv[1], sys.argv[2]
 d = json.load(open(os.path.join(SCR, f'band_{tag}.json')))
 rep, S = d['report'], d['samples']
 assert S[0]['tn'] == rep['tn0'] and S[-1]['tn'] == rep['tn1'] and not rep['dropped'] if 'dropped' in rep else True
-mod, K, lo, hi = W.chunk_file(name, 0, S, rep)
+mod, K, lo, hi = W.chunk_file(name, 0, S, rep, sharp=rep.get('sharp_margin', False))
 p = os.path.join(W.ISL, mod + '.lean')
 t = open(p).read()
 t = t.replace(f'-- lane B5: chunk 0 of the band certificate {name}', f'-- lane H11K (RS5 format): the band certificate {name}')

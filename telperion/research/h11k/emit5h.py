@@ -18,6 +18,10 @@ SCR = os.path.dirname(os.path.abspath(__file__))
 ISL = str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection/lean')
 LOCK = '/private/tmp/claude-0/-Users-peterwmurphy/ef083c48-579d-4bec-a689-c30fdccec2a1/scratchpad/leanlock.sh'
 P = 64; o = 1 << P
+# RSC0 Phase 3 (Tier 0): a band WHOLLY at t >= SHARP_T is certified with the sharpened margin (3/5) t^(-3/4)
+# (RSInt.rs_Z_C0', RS_BridgeSharp; kernel predicate RS5.bandOK', RS5_EvalSharp).  Straddling or lower bands keep
+# the seam margin (13/5) t^(-3/4) (RSSeam.rs_Z_C0_seam; RS5.bandOK).  Committed certificates are not re-emitted.
+SHARP_T = 4250
 
 
 def Z_np(t):
@@ -119,24 +123,27 @@ def main():
         boxes += reduce_boxes(certs[bi:bi + B], f'{tag}_{bi // B}')
     samples = []
     dropped = []
+    sharp = tn0 >= SHARP_T * (1 << tq)   # the whole band [tn0, tn1] lies in t >= SHARP_T
+    num, den = (3, 5) if sharp else (13, 5)
     for (tn, tq_, c), (lo, hi), zg in zip(certs, boxes, zs):
         c = list(c)
         c[17], c[18] = lo, hi
         E = margin_E(tn, tq_)
         pos = lo > 0
-        ok = (13 * E * o < 5 * lo) if pos else (5 * hi < -(13 * E * o))
+        ok = (num * E * o < den * lo) if pos else (den * hi < -(num * E * o))
         t = tn / (1 << tq_)
         if not ok:
-            dropped.append(dict(t=t, Z=zg, lo=lo / o / o, hi=hi / o / o, margin=13 / 5 * E / o))
+            dropped.append(dict(t=t, Z=zg, lo=lo / o / o, hi=hi / o / o, margin=num / den * E / o))
             continue
         samples.append(dict(tn=tn, tq=tq_, E=E, cert=c, pos=pos, t=t, Z=zg,
-                            hw=(hi - lo) / 2 / o / o, margin=13 / 5 * E / o))
+                            hw=(hi - lo) / 2 / o / o, margin=num / den * E / o))
     K = sum(1 for a, b in zip(samples, samples[1:]) if a['pos'] != b['pos'])
     first_ok = samples[0]['tn'] == tn0
     last_ok = samples[-1]['tn'] == tn1
     rep = dict(T0=str(T0), T1=str(T1), tn0=tn0, tn1=tn1, tq=tq, n_samples=len(samples), K=K, grid_changes=K_grid,
                mpmath_count=Nd, sharp=(K == Nd), dropped=dropped, endpoints_kept=(first_ok and last_ok),
-               max_hw=max(s['hw'] for s in samples), min_absZ=min(abs(s['Z']) for s in samples))
+               max_hw=max(s['hw'] for s in samples), min_absZ=min(abs(s['Z']) for s in samples),
+               sharp_margin=sharp, margin_const=f'{num}/{den}', predicate=("bandOK'" if sharp else 'bandOK'))
     print(json.dumps({k: v for k, v in rep.items() if k != 'dropped'}), file=sys.stderr)
     if dropped:
         print('DROPPED', dropped, file=sys.stderr)

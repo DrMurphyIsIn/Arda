@@ -14,7 +14,10 @@ def rat(s):
     return f"({s['tn']} / {1 << s['tq']} : ℝ)"
 
 
-def chunk_file(name, j, S, rep):
+def chunk_file(name, j, S, rep, sharp=False):
+    # sharp=True (RSC0 Phase 3): every sample at t >= 4250, kernel predicate RS5.bandOK' (margin 3/5); default unchanged.
+    if sharp:
+        assert all(s['tn'] >= 4250 * (1 << s['tq']) for s in S)
     K = sum(1 for a, b in zip(S, S[1:]) if a['pos'] != b['pos'])
     mod = f'RS5_Band_{name}_C{j}'
     ns = f'RS5.Band{name}.C{j}'
@@ -22,13 +25,13 @@ def chunk_file(name, j, S, rep):
     txt = f'''/-  {mod}.lean -- lane B5: chunk {j} of the band certificate {name} ({rep['T0']} .. {rep['T1']}).
 
     {len(S)} dyadic sample heights from t = {lo['tn']}/2^{lo['tq']} to t = {hi['tn']}/2^{hi['tq']}, each with an RS4
-    certificate (P = 64) and the seam margin (13/5) E / 2^64 >= (13/5) t^(-3/4).  Emitted by the UNTRUSTED
-    pipeline scratchpad/b5/emit5.py; re-checked here by `decide +kernel` (`RS5.bandOK`).
+    certificate (P = 64) and the @MARGIN@.  Emitted by the UNTRUSTED
+    pipeline scratchpad/b5/emit5.py; re-checked here by `decide +kernel` (`@PRED@`).
     Certified: {K} adjacent sign changes, hence `BandZeros lo hi {K}`.
 
     conjecture1_proved = False.
 -/
-import RS5_Band
+import @IMP@
 
 open Complex
 
@@ -43,7 +46,7 @@ noncomputable def rest : List Sample := [
 ''' + ',\n'.join('  ' + lean_sample(s) for s in S[1:]) + f''']
 
 /-- The kernel accepts the chunk ({len(S)} samples). -/
-theorem ok : bandOK (s0 :: rest) = true := by decide +kernel
+theorem ok : @OKP@ (s0 :: rest) = true := by decide +kernel
 
 theorem count : chgBy Sample.pos (s0 :: rest) = {K} := by decide +kernel
 
@@ -60,12 +63,19 @@ theorem t1_eq : (lastOf s0 rest).t = {rat(hi)} := by
 
 /-- **{K} distinct on-line zeros of `riemannZeta` in this chunk.** -/
 theorem zeros : BandZeros {rat(lo)} {rat(hi)} {K} := by
-  have h := bandZeros_of_ok s0 rest ok
+  have h := @BZ@ s0 rest ok
   rw [count, t0_eq, t1_eq] at h
   exact h
 
 end {ns}
 '''
+    if sharp:
+        txt = (txt.replace('@MARGIN@', 'sharpened margin (3/5) E / 2^64 >= (3/5) t^(-3/4) (RSInt.rs_Z_C0\', t >= 4250)')
+               .replace('@PRED@', "RS5.bandOK'").replace('@IMP@', 'RS5_BandSharp')
+               .replace('@OKP@', "bandOK'").replace('@BZ@', "bandZeros_of_ok'"))
+    else:
+        txt = (txt.replace('@MARGIN@', 'seam margin (13/5) E / 2^64 >= (13/5) t^(-3/4)').replace('@PRED@', 'RS5.bandOK')
+               .replace('@IMP@', 'RS5_Band').replace('@OKP@', 'bandOK').replace('@BZ@', 'bandZeros_of_ok'))
     open(os.path.join(ISL, mod + '.lean'), 'w').write(txt)
     return mod, K, lo, hi
 
