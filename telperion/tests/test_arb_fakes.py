@@ -87,3 +87,14 @@ def test_pole_guard():
     assert c["winding"] == -1 and c["zeros_in_box"] == 0
     # DH is entire: no guard
     assert certify_zero_box("DH", "9/10", "11/10", "-1/10", "1/10", expected=0)["winding"] == 0
+
+
+def test_rigorous_winding_pole_guard():
+    """rigorous_winding itself refuses a closed box containing a declared pole unless it is acknowledged
+    strictly inside; then it returns zeros - poles.  Default poles=() keeps pole-free callers unchanged."""
+    with pytest.raises(ValueError, match="pole"):
+        rigorous_winding("EP5", "9/10", "11/10", "-1/10", "1/10")
+    with pytest.raises(ValueError, match="pole"):
+        rigorous_winding("EP5", "1", "11/10", "-1/10", "1/10", poles=[(1, 0)])   # pole on the boundary
+    assert rigorous_winding("EP5", "9/10", "11/10", "-1/10", "1/10", poles=[(1, 0)]) == -1
+    assert rigorous_winding("EP5", "923/1000", "943/1000", "7829/500", "7839/500") == 1

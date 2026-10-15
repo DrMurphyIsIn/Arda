@@ -7,7 +7,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "box_localization: n_line (0) != n_total (2) \u2014 without equality the on-line zeros do not exhaust the divisor; no localization claim may be emitted; refused"
+   "detail": "box_localization: n_line (0) != n_total (2) \u2014 without equality the on-line zeros do not exhaust the divisor; no localization claim may be emitted; refused",
+   "function_level": false
   },
   {
    "emitter": "box_localization.empty_band",
@@ -16,7 +17,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "empty_band_certificate: n_total (2) != 0 \u2014 a nonzero boundary winding means the box contains a zero to exhibit (use the count-matching localization path); the empty band requires winding N == 0; refused"
+   "detail": "empty_band_certificate: n_total (2) != 0 \u2014 a nonzero boundary winding means the box contains a zero to exhibit (use the count-matching localization path); the empty band requires winding N == 0; refused",
+   "function_level": false
   },
   {
    "emitter": "box_localization",
@@ -25,7 +27,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "box_localization: n_line (0) != n_total (2) \u2014 without equality the on-line zeros do not exhaust the divisor; no localization claim may be emitted; refused"
+   "detail": "box_localization: n_line (0) != n_total (2) \u2014 without equality the on-line zeros do not exhaust the divisor; no localization claim may be emitted; refused",
+   "function_level": false
   },
   {
    "emitter": "box_localization.empty_band",
@@ -34,7 +37,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "empty_band_certificate: n_total (2) != 0 \u2014 a nonzero boundary winding means the box contains a zero to exhibit (use the count-matching localization path); the empty band requires winding N == 0; refused"
+   "detail": "empty_band_certificate: n_total (2) != 0 \u2014 a nonzero boundary winding means the box contains a zero to exhibit (use the count-matching localization path); the empty band requires winding N == 0; refused",
+   "function_level": false
   },
   {
    "emitter": "box_localization",
@@ -43,7 +47,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "box_localization: n_line (0) != n_total (2) \u2014 without equality the on-line zeros do not exhaust the divisor; no localization claim may be emitted; refused"
+   "detail": "box_localization: n_line (0) != n_total (2) \u2014 without equality the on-line zeros do not exhaust the divisor; no localization claim may be emitted; refused",
+   "function_level": false
   },
   {
    "emitter": "box_localization.empty_band",
@@ -52,7 +57,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "empty_band_certificate: n_total (2) != 0 \u2014 a nonzero boundary winding means the box contains a zero to exhibit (use the count-matching localization path); the empty band requires winding N == 0; refused"
+   "detail": "empty_band_certificate: n_total (2) != 0 \u2014 a nonzero boundary winding means the box contains a zero to exhibit (use the count-matching localization path); the empty band requires winding N == 0; refused",
+   "function_level": false
   },
   {
    "emitter": "winding_box_zero[arb_fakes backend]",
@@ -61,7 +67,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 0 \u2014 the argument principle does not support this count (the negative control); refused"
+   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 0 \u2014 the argument principle does not support this count (the negative control); refused",
+   "function_level": true
   },
   {
    "emitter": "winding_box_zero[arb_fakes backend]",
@@ -70,7 +77,8 @@
    "claim_true_for_fake": true,
    "outcome": "ACCEPTED",
    "verdict": "OK (true of the fake: non-discriminating)",
-   "detail": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'box': {'re0': '923/1000', 're1': '943/1000', 'im0': '7829/500', 'im1': '7839/500'}, 'prec': 96, 'n_per_side': 24, 'edge_samples': 96, 'winding': 1}"
+   "detail": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'box': {'re0': '923/1000', 're1': '943/1000', 'im0': '7829/500', 'im1': '7839/500'}, 'prec': 96, 'n_per_side': 24, 'edge_samples': 96, 'winding': 1}",
+   "function_level": true
   },
   {
    "emitter": "winding_box_zero[arb_fakes backend]",
@@ -79,7 +87,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 2 \u2014 the argument principle does not support this count (the negative control); refused"
+   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 2 \u2014 the argument principle does not support this count (the negative control); refused",
+   "function_level": true
   },
   {
    "emitter": "winding_box_zero[arb_fakes backend]",
@@ -88,7 +97,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 0 \u2014 the argument principle does not support this count (the negative control); refused"
+   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 0 \u2014 the argument principle does not support this count (the negative control); refused",
+   "function_level": true
   },
   {
    "emitter": "winding_box_zero[arb_fakes backend]",
@@ -97,7 +107,8 @@
    "claim_true_for_fake": true,
    "outcome": "ACCEPTED",
    "verdict": "OK (true of the fake: non-discriminating)",
-   "detail": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'box': {'re0': '213/250', 're1': '109/125', 'im0': '41757/1000', 'im1': '41777/1000'}, 'prec': 96, 'n_per_side': 24, 'edge_samples': 96, 'winding': 1}"
+   "detail": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'box': {'re0': '213/250', 're1': '109/125', 'im0': '41757/1000', 'im1': '41777/1000'}, 'prec': 96, 'n_per_side': 24, 'edge_samples': 96, 'winding': 1}",
+   "function_level": true
   },
   {
    "emitter": "winding_box_zero[arb_fakes backend]",
@@ -106,7 +117,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 2 \u2014 the argument principle does not support this count (the negative control); refused"
+   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 2 \u2014 the argument principle does not support this count (the negative control); refused",
+   "function_level": true
   },
   {
    "emitter": "winding_box_zero[arb_fakes backend]",
@@ -115,7 +127,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 0 \u2014 the argument principle does not support this count (the negative control); refused"
+   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 0 \u2014 the argument principle does not support this count (the negative control); refused",
+   "function_level": true
   },
   {
    "emitter": "winding_box_zero[arb_fakes backend]",
@@ -124,7 +137,8 @@
    "claim_true_for_fake": true,
    "outcome": "ACCEPTED",
    "verdict": "OK (true of the fake: non-discriminating)",
-   "detail": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'box': {'re0': '799/1000', 're1': '819/1000', 'im0': '85689/1000', 'im1': '85709/1000'}, 'prec': 96, 'n_per_side': 24, 'edge_samples': 96, 'winding': 1}"
+   "detail": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'box': {'re0': '799/1000', 're1': '819/1000', 'im0': '85689/1000', 'im1': '85709/1000'}, 'prec': 96, 'n_per_side': 24, 'edge_samples': 96, 'winding': 1}",
+   "function_level": true
   },
   {
    "emitter": "winding_box_zero[arb_fakes backend]",
@@ -133,7 +147,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 2 \u2014 the argument principle does not support this count (the negative control); refused"
+   "detail": "winding_box_zero: computed winding 1 \u2260 claimed 2 \u2014 the argument principle does not support this count (the negative control); refused",
+   "function_level": true
   },
   {
    "emitter": "grid_modulus_nonvanishing[fake backend]",
@@ -142,7 +157,9 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "grid_modulus_nonvanishing: gap condition fails, M*delta = 562484316050371014841163/14169341000000000000000000 >= L = 940117/975765862; the net cannot exclude a zero; refused"
+   "detail": "grid_modulus_nonvanishing: gap condition fails, M*delta = 562484316050371014841163/14169341000000000000000000 >= L = 940117/975765862; the net cannot exclude a zero; refused",
+   "trust_class": "numeric (mpmath sweep), not Arb",
+   "function_level": true
   },
   {
    "emitter": "grid_modulus_nonvanishing[fake backend]",
@@ -151,7 +168,9 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "grid_modulus_nonvanishing: gap condition fails, M*delta = 10535363929188012341296743/416150401000000000000000000 >= L = 345837/378648194; the net cannot exclude a zero; refused"
+   "detail": "grid_modulus_nonvanishing: gap condition fails, M*delta = 10535363929188012341296743/416150401000000000000000000 >= L = 345837/378648194; the net cannot exclude a zero; refused",
+   "trust_class": "numeric (mpmath sweep), not Arb",
+   "function_level": true
   },
   {
    "emitter": "grid_modulus_nonvanishing[fake backend]",
@@ -160,7 +179,9 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (refused)",
-   "detail": "grid_modulus_nonvanishing: gap condition fails, M*delta = 656245094634754914827847/51437729000000000000000000 >= L = 721712/965257245; the net cannot exclude a zero; refused"
+   "detail": "grid_modulus_nonvanishing: gap condition fails, M*delta = 656245094634754914827847/51437729000000000000000000 >= L = 721712/965257245; the net cannot exclude a zero; refused",
+   "trust_class": "numeric (mpmath sweep), not Arb",
+   "function_level": true
   },
   {
    "emitter": "li_positivity.li_rung_certificate",
@@ -168,7 +189,7 @@
    "claim": "rung n=9 with lo = EP5's lambda_10 lower bound 14.7205 (emitted as a riemannXi rung)",
    "claim_true_for_fake": null,
    "outcome": "ACCEPTED",
-   "verdict": "PROVENANCE GAP (kernel-sound): li_rung_certificate accepts any positive lo with no binding to zeta; the emitted theorem is about riemannXi with hypothesis hlo, which is FALSE for this lo, so the theorem is vacuous, not false. Bind lo to li_coeff.enclose_li_coeffs (anchored) at certify time.",
+   "verdict": "PROVENANCE GAP: the emitted object is a zeta theorem (taylorCoeff riemannXi) with a FALSE hypothesis hlo, hence vacuous; it is not a statement true of the fake. Bind lo to li_coeff.enclose_li_coeffs at certify time.",
    "detail": "LiRungCert(n=9, lo=197369579201505021049881535827471615083344927668025387945877025178483391914002996754192577896790223400833255734926487376367558756098197637151516481564563755/13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084096)"
   },
   {
@@ -177,7 +198,7 @@
    "claim": "rung n=9 with lo = EPQ2's lambda_10 lower bound 9.7502 (emitted as a riemannXi rung)",
    "claim_true_for_fake": null,
    "outcome": "ACCEPTED",
-   "verdict": "PROVENANCE GAP (kernel-sound): li_rung_certificate accepts any positive lo with no binding to zeta; the emitted theorem is about riemannXi with hypothesis hlo, which is FALSE for this lo, so the theorem is vacuous, not false. Bind lo to li_coeff.enclose_li_coeffs (anchored) at certify time.",
+   "verdict": "PROVENANCE GAP: the emitted object is a zeta theorem (taylorCoeff riemannXi) with a FALSE hypothesis hlo, hence vacuous; it is not a statement true of the fake. Bind lo to li_coeff.enclose_li_coeffs at certify time.",
    "detail": "LiRungCert(n=9, lo=130728427199803141540682304810162677031342063400281647235173890745541031652714290235995113765913642447659777223246856603577315470450747843476713028553934371/13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084096)"
   },
   {
@@ -186,7 +207,7 @@
    "claim": "rung n=9 with lo = DH's lambda_10 lower bound 8.4897 (emitted as a riemannXi rung)",
    "claim_true_for_fake": null,
    "outcome": "ACCEPTED",
-   "verdict": "PROVENANCE GAP (kernel-sound): li_rung_certificate accepts any positive lo with no binding to zeta; the emitted theorem is about riemannXi with hypothesis hlo, which is FALSE for this lo, so the theorem is vacuous, not false. Bind lo to li_coeff.enclose_li_coeffs (anchored) at certify time.",
+   "verdict": "PROVENANCE GAP: the emitted object is a zeta theorem (taylorCoeff riemannXi) with a FALSE hypothesis hlo, hence vacuous; it is not a statement true of the fake. Bind lo to li_coeff.enclose_li_coeffs at certify time.",
    "detail": "LiRungCert(n=9, lo=3642514517887271393767144712983968601576936089286392784024843852646515190975660387574982117523528467338337341086338387933534910172246594499094344441927130645/429049853758163107186368799942587076079339706258956588087153966199096448962353503257659977541340909686081019461967553627320124249982290238285876768194691072)"
   },
   {
@@ -205,7 +226,8 @@
    "claim_true_for_fake": true,
    "outcome": "ACCEPTED",
    "verdict": "OK (true of the fake: non-discriminating)",
-   "detail": "a finite recurrence observation is certifiable for the fake too; the instrument does not discriminate"
+   "detail": "a finite recurrence observation is certifiable for the fake too; the instrument does not discriminate",
+   "function_level": false
   },
   {
    "emitter": "zero_free_region (3-4-1 input)",
@@ -214,7 +236,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (template input Arb-certified FALSE for the fake; the dVP template cannot be instantiated)",
-   "detail": "the positivity hypothesis of the dVP template is Arb-certified FALSE for DH"
+   "detail": "the positivity hypothesis of the dVP template is Arb-certified FALSE for DH",
+   "function_level": false
   },
   {
    "emitter": "zero_free_region (3-4-1 input)",
@@ -223,7 +246,8 @@
    "claim_true_for_fake": false,
    "outcome": "REFUSED",
    "verdict": "OK (template input Arb-certified FALSE for the fake; the dVP template cannot be instantiated)",
-   "detail": "found by a double-precision search over s in (1,3), t < 600 (the minimum, about 0.98960); Arb-confirmed below 1"
+   "detail": "found by a double-precision search over s in (1,3), t < 600 (the minimum, about 0.98960); Arb-confirmed below 1",
+   "function_level": false
   }
  ],
  "localization_detail": {
@@ -258,5 +282,6 @@
    "n_line_lower_bound_arb": 0
   }
  },
- "conjecture1_proved": false
+ "conjecture1_proved": false,
+ "summary": "The two function-level emitters (winding_box_zero, grid_modulus_nonvanishing) rejected every fake; the others are not function-level tests. grid_modulus_nonvanishing is a numeric (mpmath) kind, not Arb."
 }

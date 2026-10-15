@@ -19,9 +19,10 @@ through the emitters that make RH-shaped claims.
 
 ## What was certified, and how far to trust it
 
-**Status: every winding-based certificate here is ARB-CANDIDATE (soundness audit pending).** The auditor bb
-is reviewing both `arb_dh.winding_number` and `arb_fakes.count_offline`; the report will be in
-`~/e9-research/review_telperion_winding/`. Each sidecar carries a `status` field that says so.
+**Status: ARB (bb-reviewed).** The zero boxes, counts, knife-edge certificate and negative Li coefficients were
+reviewed by the auditor bb, who judged the core SOUND (`~/e9-research/review_telperion_winding/`,
+`~/e9-research/review_wall2_T/REVIEW_wall2_T_2026-10-14.md`). That review covers commits up to d75bf8a86; the
+later s = 1 pole guard was not part of it. Each sidecar carries a `status` field that says so.
 
 Everything here is **trust class arb**: python-flint ball arithmetic. It is rigorous if Arb and our code are right,
 but it is not a Lean kernel theorem. The one exception is `lean/Ramification.lean`, which the kernel checks with
@@ -54,10 +55,14 @@ That segment rule is the point. The older `arb_dh.winding_number` looks only at 
    Track H finds DH's first negative at n = 328997, by two independent float methods. That is not Arb-checked:
    at N of about 3.3e5 the series route would need roughly 3.3e5-bit precision.
 4. **Negative controls** (`certs/negative_controls.json`). Each fake was offered to the RH-type emitters'
-   certification layer. Every claim that is false for the fake was refused, and no emitter accepted a false
-   statement. Several instruments accept statements that are *true* of the fakes, which means they cannot tell the
-   fakes apart from ζ: finite Li positivity, finite Bagchi recurrence, and the on-line zero counts. That is expected,
-   and it is recorded.
+   certification layer. The two function-level emitters, winding_box_zero and grid_modulus_nonvanishing,
+   rejected every fake. The others are not function-level tests: they take numbers or counts handed to them, so
+   their refusals test only their own bookkeeping. grid_modulus_nonvanishing is a numeric (mpmath) kind, not an
+   Arb one. li_rung_certificate accepted a fake's lower bound. What it then emits is a ζ theorem whose
+   hypothesis is false, so the theorem is vacuous but not "true of the fake". That is a provenance gap.
+   Some finite instruments cannot tell the fakes from ζ at all: finite Bagchi recurrence, and on-line zero
+   counts. Finite Li positivity holds for EP5 up to n = 5712 and for DH up to n = 3000. That is expected, and it is
+   recorded.
 
 ## Exactly what `rigorous_winding` / `count_offline` certify
 
@@ -108,15 +113,19 @@ been audited here.
 
 ## The kernel-checked file
 
-`lean/Ramification.lean` is core Lean, with no Mathlib. For Q(i), Q(√5), Q(∛2) and Q(ζ₅), and every prime p < 30,
-`decide` checks four things:
+`lean/Ramification.lean` is core Lean, with no Mathlib. For Q(i), Q(√5), Q(∛2) and Q(ζ₅), each theorem covers
+an explicit list of rows (p, factors). The generator lists the primes p < 30. For each listed row, `decide`
+checks four things:
 
-- the factorisation of a monogenic generator mod p;
-- that each factor is irreducible (no roots, and for the quartic no quadratic factor either);
-- that Σ e·f = n;
-- that ramified ⇔ p | disc.
+- that the product of factor^e equals the generator mod p, as coefficient lists;
+- that each factor passes a root test: no root mod p for degrees 2 and 3, and for the quartic no root and no
+  quadratic divisor either;
+- that Σ e·deg = n;
+- that (some e > 1) holds exactly when p | disc.
 
-Dedekind–Kummer and disc = d_K are cited, not checked. A negative-control theorem confirms that a false row is
+Lean does NOT check that the listed p are prime, and the root tests mean "irreducible" only when p is prime. It
+also does not check that the list contains every prime below 30, or that the factors are distinct. Those facts
+come from the sympy generator. Dedekind–Kummer and disc = d_K are cited, not checked. A negative-control theorem confirms that a false row is
 rejected.
 
 To check it: `lean lean/Ramification.lean` (about 6 s).

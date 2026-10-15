@@ -1,6 +1,7 @@
 /- WALL-2 / T: ramification bookkeeping for corollary_fix.md section 4 (generated; do not edit).
-   Core Lean only (no Mathlib).  conjecture1_proved = False.  Kernel checks polynomial arithmetic mod p;
-   Dedekind-Kummer (Z[alpha] = O_K for these generators) and disc(g) = d_K are CITED, not checked. -/
+   Core Lean only (no Mathlib).  conjecture1_proved = False.  Kernel checks, for each LISTED row only, the polynomial
+   arithmetic mod p described at `rowOK`.  NOT checked: primality of the listed p, that the list is all p < 30,
+   distinctness of factors; Dedekind-Kummer (Z[alpha] = O_K) and disc(g) = d_K are CITED. -/
 
 def pmod (p : Nat) (l : List Nat) : List Nat := l.map (· % p)
 
@@ -55,7 +56,7 @@ def irred (p : Nat) (f : List Nat) : Bool :=
   | 4 => noRoot p f && noQuadFactor p f
   | _ => false
 
-/-- a row: prime p and the factorisation (monic factor, multiplicity) of g mod p -/
+/-- a row: a modulus p (primality NOT checked) and a list (monic factor, multiplicity) claimed to factor g mod p -/
 def rowOK (g : List Int) (n : Nat) (disc : Int) (row : Nat × List (List Nat × Nat)) : Bool :=
   let p := row.1
   let fs := row.2
@@ -67,26 +68,30 @@ def rowOK (g : List Int) (n : Nat) (disc : Int) (row : Nat × List (List Nat × 
 
 def Qi_g : List Int := [1, 0, 1]
 def Qi_rows : List (Nat × List (List Nat × Nat)) := [(2, [([1, 1], 2)]), (3, [([1, 0, 1], 1)]), (5, [([2, 1], 1), ([3, 1], 1)]), (7, [([1, 0, 1], 1)]), (11, [([1, 0, 1], 1)]), (13, [([5, 1], 1), ([8, 1], 1)]), (17, [([4, 1], 1), ([13, 1], 1)]), (19, [([1, 0, 1], 1)]), (23, [([1, 0, 1], 1)]), (29, [([12, 1], 1), ([17, 1], 1)])]
-/-- Qi: for every prime p < 30, g mod p = prod of irreducible factors^e, sum e f = 2, and
-    (ramified, some e > 1) iff p | disc(g) = -4. -/
+/-- Qi: for each LISTED row (the generator lists the primes p < 30; primality, completeness of the list and
+    distinctness of factors are NOT checked here): g mod p = prod factor^e as coefficient lists, each factor passes
+    `irred`, sum e * deg = 2, and (some e > 1) == (p | -4). -/
 theorem Qi_bookkeeping : Qi_rows.all (rowOK Qi_g 2 (-4)) = true := by decide
 
 def Qsqrt5_g : List Int := [-1, -1, 1]
 def Qsqrt5_rows : List (Nat × List (List Nat × Nat)) := [(2, [([1, 1, 1], 1)]), (3, [([2, 2, 1], 1)]), (5, [([2, 1], 2)]), (7, [([6, 6, 1], 1)]), (11, [([3, 1], 1), ([7, 1], 1)]), (13, [([12, 12, 1], 1)]), (17, [([16, 16, 1], 1)]), (19, [([4, 1], 1), ([14, 1], 1)]), (23, [([22, 22, 1], 1)]), (29, [([5, 1], 1), ([23, 1], 1)])]
-/-- Qsqrt5: for every prime p < 30, g mod p = prod of irreducible factors^e, sum e f = 2, and
-    (ramified, some e > 1) iff p | disc(g) = 5. -/
+/-- Qsqrt5: for each LISTED row (the generator lists the primes p < 30; primality, completeness of the list and
+    distinctness of factors are NOT checked here): g mod p = prod factor^e as coefficient lists, each factor passes
+    `irred`, sum e * deg = 2, and (some e > 1) == (p | 5). -/
 theorem Qsqrt5_bookkeeping : Qsqrt5_rows.all (rowOK Qsqrt5_g 2 (5)) = true := by decide
 
 def Qcbrt2_g : List Int := [-2, 0, 0, 1]
 def Qcbrt2_rows : List (Nat × List (List Nat × Nat)) := [(2, [([0, 1], 3)]), (3, [([1, 1], 3)]), (5, [([2, 1], 1), ([4, 3, 1], 1)]), (7, [([5, 0, 0, 1], 1)]), (11, [([4, 1], 1), ([5, 7, 1], 1)]), (13, [([11, 0, 0, 1], 1)]), (17, [([9, 1], 1), ([13, 8, 1], 1)]), (19, [([17, 0, 0, 1], 1)]), (23, [([7, 1], 1), ([3, 16, 1], 1)]), (29, [([3, 1], 1), ([9, 26, 1], 1)])]
-/-- Qcbrt2: for every prime p < 30, g mod p = prod of irreducible factors^e, sum e f = 3, and
-    (ramified, some e > 1) iff p | disc(g) = -108. -/
+/-- Qcbrt2: for each LISTED row (the generator lists the primes p < 30; primality, completeness of the list and
+    distinctness of factors are NOT checked here): g mod p = prod factor^e as coefficient lists, each factor passes
+    `irred`, sum e * deg = 3, and (some e > 1) == (p | -108). -/
 theorem Qcbrt2_bookkeeping : Qcbrt2_rows.all (rowOK Qcbrt2_g 3 (-108)) = true := by decide
 
 def Qzeta5_g : List Int := [1, 1, 1, 1, 1]
 def Qzeta5_rows : List (Nat × List (List Nat × Nat)) := [(2, [([1, 1, 1, 1, 1], 1)]), (3, [([1, 1, 1, 1, 1], 1)]), (5, [([4, 1], 4)]), (7, [([1, 1, 1, 1, 1], 1)]), (11, [([2, 1], 1), ([6, 1], 1), ([7, 1], 1), ([8, 1], 1)]), (13, [([1, 1, 1, 1, 1], 1)]), (17, [([1, 1, 1, 1, 1], 1)]), (19, [([1, 5, 1], 1), ([1, 15, 1], 1)]), (23, [([1, 1, 1, 1, 1], 1)]), (29, [([1, 6, 1], 1), ([1, 24, 1], 1)])]
-/-- Qzeta5: for every prime p < 30, g mod p = prod of irreducible factors^e, sum e f = 4, and
-    (ramified, some e > 1) iff p | disc(g) = 125. -/
+/-- Qzeta5: for each LISTED row (the generator lists the primes p < 30; primality, completeness of the list and
+    distinctness of factors are NOT checked here): g mod p = prod factor^e as coefficient lists, each factor passes
+    `irred`, sum e * deg = 4, and (some e > 1) == (p | 125). -/
 theorem Qzeta5_bookkeeping : Qzeta5_rows.all (rowOK Qzeta5_g 4 (125)) = true := by decide
 
 /-- negative control: a FALSE row (Q(i) at p = 5 claimed inert) is rejected -/

@@ -1,13 +1,17 @@
 """(4) Kernel-checkable bookkeeping for thmN_gap/corollary_fix.md section 4.  conjecture1_proved = False.
 
-For K = Q(i), Q(sqrt5), Q(cbrt2), Q(zeta5), with monogenic generators g whose Z[alpha] = O_K, and every prime
-p < 30, this script factors g mod p with sympy and emits a CORE-Lean file (no Mathlib, no lake; Nat arithmetic
-mod p).  For each (K, p) it states a record (p, factors with multiplicities e and degrees f), and `decide` checks:
-  (1) the product of factor^e equals g mod p, as coefficient lists;
-  (2) each factor is irreducible mod p: degree 1 is trivial; degrees 2 and 3 have no root mod p; degree 4 has
-      no root and no monic quadratic factor (remainder of g by every x^2 + a x + b is nonzero);
-  (3) sum e*f = n = [K:Q];
-  (4) (some e > 1) <-> p | disc(g), with disc(g) = d_K here.
+For K = Q(i), Q(sqrt5), Q(cbrt2), Q(zeta5), with monogenic generators g whose Z[alpha] = O_K, this script takes
+the primes p < 30 (chosen in PYTHON by sympy.primerange), factors g mod p with sympy, and emits a CORE-Lean file
+(no Mathlib, no lake; Nat arithmetic mod p).  Each theorem asserts `rowOK` for every row of an explicit list of
+records (p, [(monic factor, e)]).  For each LISTED row, `decide` checks exactly:
+  (1) the product of factor^e equals g mod p, as coefficient lists (trailing zeros trimmed);
+  (2) each factor passes the test `irred`: degree 1 always; degrees 2 and 3 have no root in {0..p-1} mod p;
+      degree 4 has no root and no remainder-zero division by any x^2 + a x + b (a, b < p); other degrees fail;
+  (3) sum e*deg = n = [K:Q];
+  (4) (some e > 1) == (p | disc(g)), with disc(g) as the stated integer.
+What Lean does NOT assert: that the listed p are prime (the root tests mean "irreducible" only when p is prime),
+that the list is all primes < 30, that the factors are pairwise distinct, or that factor coefficients are < p.
+Those are generator facts (sympy), not kernel facts.
 What the kernel does NOT check: Dedekind-Kummer (factorisation type of g mod p = splitting of p, valid because
 Z[alpha] = O_K, i.e. p does not divide the index), and disc(g) = d_K.  Those are CITED (standard).  So the kernel
 facts are the polynomial arithmetic; the reading "e(P|p), f(P|p)" is via the cited theorem.
@@ -50,8 +54,9 @@ for name, (g, disc) in FIELDS.items():
 
 L = []
 L.append("""/- WALL-2 / T: ramification bookkeeping for corollary_fix.md section 4 (generated; do not edit).
-   Core Lean only (no Mathlib).  conjecture1_proved = False.  Kernel checks polynomial arithmetic mod p;
-   Dedekind-Kummer (Z[alpha] = O_K for these generators) and disc(g) = d_K are CITED, not checked. -/
+   Core Lean only (no Mathlib).  conjecture1_proved = False.  Kernel checks, for each LISTED row only, the polynomial
+   arithmetic mod p described at `rowOK`.  NOT checked: primality of the listed p, that the list is all p < 30,
+   distinctness of factors; Dedekind-Kummer (Z[alpha] = O_K) and disc(g) = d_K are CITED. -/
 
 def pmod (p : Nat) (l : List Nat) : List Nat := l.map (· % p)
 
@@ -106,7 +111,7 @@ def irred (p : Nat) (f : List Nat) : Bool :=
   | 4 => noRoot p f && noQuadFactor p f
   | _ => false
 
-/-- a row: prime p and the factorisation (monic factor, multiplicity) of g mod p -/
+/-- a row: a modulus p (primality NOT checked) and a list (monic factor, multiplicity) claimed to factor g mod p -/
 def rowOK (g : List Int) (n : Nat) (disc : Int) (row : Nat × List (List Nat × Nat)) : Bool :=
   let p := row.1
   let fs := row.2
@@ -124,8 +129,9 @@ for name, (g, disc) in FIELDS.items():
     L.append(f"""
 def {name}_g : List Int := {gl}
 def {name}_rows : List (Nat × List (List Nat × Nat)) := [{rl}]
-/-- {name}: for every prime p < 30, g mod p = prod of irreducible factors^e, sum e f = {n}, and
-    (ramified, some e > 1) iff p | disc(g) = {disc}. -/
+/-- {name}: for each LISTED row (the generator lists the primes p < 30; primality, completeness of the list and
+    distinctness of factors are NOT checked here): g mod p = prod factor^e as coefficient lists, each factor passes
+    `irred`, sum e * deg = {n}, and (some e > 1) == (p | {disc}). -/
 theorem {name}_bookkeeping : {name}_rows.all (rowOK {name}_g {n} ({disc})) = true := by decide
 """)
 L.append("""
