@@ -20,6 +20,17 @@ When you quote a number in your report, name the class it rests on.
 - **KERNEL.** Lean `decide` / `norm_num` on a finite fact, checked by T alone via `leanlock.sh`. Use it only for
   small finite bookkeeping.
 
+## Binding rule from the auditor (bb, via the lead)
+
+**Only certify with arb_fakes at 72470dd5f (guarded) or later.**
+- Use `rigorous_winding` or `certify_zero_box`.
+- Wherever a box contains s = 1, acknowledge the pole with `poles=`.
+- **Never** use `arb_dh.winding_number_sampled_heuristic`, formerly `arb_dh.winding_number`, for a certificate. It
+  samples at nodes only and can undercount.
+
+T's WALL-3 helpers (t3tools) are on branch `wall3/telperion-certs` at 7898d97dc. That branch is cut from 72470dd5f
+and is unpushed. `wall2/telperion-fakes` itself is PR #741, and T adds no commits to it.
+
 ## Setup
 
 ```sh
