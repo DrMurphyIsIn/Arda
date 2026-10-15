@@ -56,5 +56,12 @@
  "n_d_nonneg_d_le_1500": true,
  "min_n_d": 0,
  "tail_bound_first_d": 11,
- "tail_bound_holds_d0_to_199": true
+ "tail_bound_holds_d0_to_199": true,
+ "kernel": {
+  "trust_class": "KERNEL (finite arithmetic on local definitions)",
+  "file": "~/rh-team/wall3/T/lean/FFFake.lean (core Lean v4.32.0, decide, axioms [propext])",
+  "certifies": "the local integer recurrences psums, mu (local table), N m = q^m+1-p_m, msum, and their outputs: FE relations, N1=2, N2=24, d*n_d for d<=12, n_d>=0 for d<=12",
+  "does_not_certify": "that psums are P's inverse-root power sums, that mu is Moebius, or anything about Z(T); these links are definitional and unchecked against Mathlib",
+  "auditor": "bb reviewed; values match bb's independent computation"
+ }
 }

@@ -1,11 +1,12 @@
-/- WALL-3 / T: kernel check of finite facts about track E's function-field fake (E/e3_ff_fake.py, fe.md sec 3.3).
+/- WALL-3 / T: KERNEL (finite arithmetic on local definitions) check of finite facts about track E's function-field fake (E/e3_ff_fake.py, fe.md sec 3.3).
    Core Lean only (no Mathlib).  conjecture1_proved = False.
    P(T) = 1 - 2T + 9T^2 - 6T^3 + 9T^4, q = 3.  Kernel-checked by `decide`:
      * the FE coefficient relations c4 = q^2 c0 and c3 = q c1;
      * with power sums p_m of the inverse roots (Newton's identities, exact Int recurrence), N_m = q^m + 1 - p_m and
        d * n_d = sum_{e | d} mu(d/e) N_e, the place counts n_d for d = 1..12 are the listed non-negative integers
        (and d divides the Mobius sum).
-   NOT checked here: that the Newton recurrence gives the power sums of P's inverse roots (standard algebra), the root
+   NOT checked here (definitional links, unchecked against Mathlib): that psums are P's inverse-root power sums, that
+   mu is Moebius, anything about Z(T); also the root
    moduli (Arb, certs/E_ff_fake.cert.json), and n_d >= 0 for d > 12 (exact Python to 1500 + elementary tail bound). -/
 
 def c : List Int := [1, -2, 9, -6, 9]
