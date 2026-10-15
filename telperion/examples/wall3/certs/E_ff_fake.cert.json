@@ -62,6 +62,7 @@
   "file": "~/rh-team/wall3/T/lean/FFFake.lean (core Lean v4.32.0, decide, axioms [propext])",
   "certifies": "the local integer recurrences psums, mu (local table), N m = q^m+1-p_m, msum, and their outputs: FE relations, N1=2, N2=24, d*n_d for d<=12, n_d>=0 for d<=12",
   "does_not_certify": "that psums are P's inverse-root power sums, that mu is Moebius, or anything about Z(T); these links are definitional and unchecked against Mathlib",
-  "auditor": "bb reviewed; values match bb's independent computation"
+  "auditor": "bb reviewed; values match bb's independent computation",
+  "source": "STATIC: this block is written by the script verbatim; it describes the Lean runs lean/FFFake.lean -> lean/run1.log, lean/run2.log (core Lean v4.32.0, decide). It is NOT computed by this script."
  }
 }

@@ -10,7 +10,7 @@
  "a_zero_box": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function zetaP at 0x109f9e840>",
+  "object": "<function zetaP at 0x10b21a840>",
   "box": {
    "re0": "21/25",
    "re1": "43/50",

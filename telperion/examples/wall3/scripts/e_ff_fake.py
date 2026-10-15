@@ -67,7 +67,7 @@ out["min_n_d"] = min(nd)
 # tail: |alpha| < 2.62 (ARB above); for d > DMAX the q^d term dominates by a huge margin; check the elementary bound
 # at d = 7..DMAX+1 exactly with 2.62 -> 262/100 (it is increasing in d once positive).
 A = F(262, 100)
-assert all(float(r["abs_alpha"].split("+/-")[0].strip("[ ")) < 2.62 for r in rows)
+assert all(abs(1 / rr) < arb("2.62") for rr, _ in roots)   # certain arb comparison on the root balls, not a float midpoint
 def tail_ok(d):
     lhs = F(q) ** d - 2 - 4 * A ** d
     rhs = sum(F(q) ** ee + 1 + 4 * A ** ee for ee in range(1, d // 2 + 1))
@@ -78,4 +78,5 @@ out["tail_bound_holds_d0_to_199"] = True
 # for d >= 200: 4 (A/3)^d < 1/2 and 1.5*3^(d/2) + d/2 + 4*A^(d/2+1)/(A-1) + 2 < 3^d/2 (elementary), so n_d > 0.
 print("FE:", out["FE_relations_exact"], "n_d:", nd[:12], "nonneg<=%d:" % DMAX, out["n_d_nonneg_d_le_%d" % DMAX],
       "tail bound from d =", d0)
+out["kernel"] = {'trust_class': 'KERNEL (finite arithmetic on local definitions)', 'file': '~/rh-team/wall3/T/lean/FFFake.lean (core Lean v4.32.0, decide, axioms [propext])', 'certifies': 'the local integer recurrences psums, mu (local table), N m = q^m+1-p_m, msum, and their outputs: FE relations, N1=2, N2=24, d*n_d for d<=12, n_d>=0 for d<=12', 'does_not_certify': "that psums are P's inverse-root power sums, that mu is Moebius, or anything about Z(T); these links are definitional and unchecked against Mathlib", 'auditor': "bb reviewed; values match bb's independent computation", 'source': 'STATIC: this block is written by the script verbatim; it describes the Lean runs lean/FFFake.lean -> lean/run1.log, lean/run2.log (core Lean v4.32.0, decide). It is NOT computed by this script.'}
 json.dump(out, open(cert_path("E_ff_fake.cert.json"), "w"), indent=1)

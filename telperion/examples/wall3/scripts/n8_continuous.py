@@ -24,7 +24,8 @@ ctx.prec = 128
 
 def _ein_taylor(w):
     """(Ein(w), Ein'(w)) by Taylor series with a rigorous tail bound."""
-    R = float(abs(w).upper())
+    Ra = abs(w).upper()            # rigorous upper bound for |w| (arb); R (float) only sizes K and the precision
+    R = float(Ra)
     K = int(3 * R) + 60   # R^K/K! < e^-60 or so: tail negligible
     old = ctx.prec
     ctx.prec = old + int(1.5 * R) + 30
@@ -41,7 +42,7 @@ def _ein_taylor(w):
             d += (term if k % 2 == 0 else -term) / (k + 1)
             term = term * w / (k + 1)
         # tails: sum_{k>K} R^k/(k k!) and sum_{k>K} R^k/(k+1)!  <=  R^{K+1}/(K+1)! / (1 - R/(K+2))
-        tb = arb(R) ** (K + 1) / arb(K + 1).fac() / (1 - arb(R) / (K + 2))
+        tb = Ra ** (K + 1) / arb(K + 1).fac() / (1 - Ra / (K + 2))
         e = arb(0, tb.upper())
         return s0 + acb(e, e), d + acb(e, e)
     finally:
@@ -83,7 +84,7 @@ def _sup_d1_d2(B):
 def _ein(w):
     """(Ein(w), Ein'(w)) as balls valid on the whole ball w: value at the centre plus radius * sup|derivative|."""
     c = acb(w.real.mid(), w.imag.mid())
-    r = (w.real.rad() ** 2 + w.imag.rad() ** 2).sqrt() if False else arb(float(w.real.rad()) + float(w.imag.rad()))
+    r = arb(w.real.rad()) + arb(w.imag.rad())   # |w - c| <= rad_re + rad_im, summed in arb (outward), not in floats
     v, d = _ein_point(c)
     if r == 0:
         return v, d

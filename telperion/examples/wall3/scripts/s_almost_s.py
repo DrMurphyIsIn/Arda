@@ -108,7 +108,7 @@ for p in range(2, 102):
         neg.append(p)
     elif not ap > 0:
         undecided.append(p)
-assert 2 * 102 ** -0.15 < 1
+assert 2 * (arb("-0.15") * arb(102).log()).exp() < 1   # certain arb comparison (margin ~6e-4), not floats
 out["S_TW0_negative_prime_weights"] = {"negative": neg, "undecided": undecided, "S_claim": [23, 53],
                                        "agrees": neg == [23, 53] and not undecided}
 print("TW0 negative prime weights:", neg, "undecided:", undecided)
