@@ -16,7 +16,7 @@ for f in sorted(glob.glob(str(rh("wall3/B/out/tw_REAL_*.json")))):
         if p < x1 and fmpz(p).is_prime():
             lp = acb(p).log()
             A = A / ((1 - ((rho - 2) * lp).exp()) * (1 - ((rhob - 2) * lp).exp()))
-    ok = bool(abs(A.real - arb(BA)).upper() <= A.real.rad() + 1e-14)
+    ok = bool(abs(arb(A.real.mid()) - arb(BA)).upper() <= A.real.rad() + 1e-14)
     rows.append({"file": f.split("/")[-1], "beta0": b0, "gamma0": g0, "A_arb": A.real.str(16), "A_B": BA,
                  "B_inside_ball_plus_1e-14": ok})
     print(rows[-1]["file"], rows[-1]["A_arb"], BA, ok)

@@ -76,6 +76,6 @@ for p in SMALL:
 _bf = rh("wall3/B/out/tw_REAL_b0.85_g14.134725_s0_X1e+09.json")
 _BA = json.load(open(_bf))["A"]
 out["residue_A"] = {"arb": A.str(25), "B_file": shown(_bf), "B_float": _BA,
-                    "contains_B_float": bool(abs(A.real - arb(_BA)).upper() < 1e-14)}
+                    "contains_B_float": bool(abs(arb(A.real.mid()) - arb(_BA)).upper() <= A.real.rad() + 1e-14)}
 print("A =", A.str(25), out["residue_A"]["contains_B_float"])
 json.dump(out, open(cert_path("B_twist_REAL.cert.json"), "w"), indent=1, default=str)

@@ -86,3 +86,19 @@ def test_committed_wall3_scripts_have_no_stale_reference_literals():
 def test_no_absolute_home_paths_in_wall3_sources():
     for f in sorted((WALL3 / "scripts").glob("*.py")) + [WALL3 / "TOOLS3.md", WALL3 / "t3tools.py"]:
         assert "/Users/" not in f.read_text(), f.name
+
+
+def test_compare_ball_uses_the_radius(tmp_path):
+    """Regression (bb, PR #744 review): a ball of nonzero radius contains every value within its radius (+ slack),
+    and nothing beyond it."""
+    pytest.importorskip("flint")
+    from flint import arb
+    p = tmp_path / "ref.json"
+    ball = arb("1", "0.1")                       # [0.9, 1.1]
+    for v, slack, want in ((1.05, 0.0, True), (1.09, 0.0, True), (0.95, 0.0, True), (1.25, 0.2, True),
+                           (1.11, 0.0, False), (0.85, 0.0, False), (1.35, 0.2, False)):
+        p.write_text(json.dumps({"A": v}))
+        got = compare_ball(ball, read_reference(p, "A"), slack=slack)["contains"]
+        assert got is want, (v, slack)
+        if want:
+            assert arb(ball.mid(), ball.rad() + slack).contains(arb(repr(v)))
