@@ -1,0 +1,60 @@
+{
+ "object": "B REAL twist, rho0 = 0.85 + 14.134725i",
+ "trust_class": "arb",
+ "conjecture1_proved": false,
+ "provenance": "arb_fakes @ 72470dd5f (guarded) via callable; unpushed branch wall3/telperion-certs",
+ "zero_box": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "<function zetaP at 0x109bd60c0>",
+  "box": {
+   "re0": "21/25",
+   "re1": "43/50",
+   "im0": "353/25",
+   "im1": "283/20"
+  },
+  "winding": 1,
+  "zeros_in_box": 1,
+  "poles_in_box": 0,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 128,
+  "recheck_prec": 192,
+  "segments": 78,
+  "recheck_segments": 78,
+  "min_segment": "3/3200",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "count_0.7_1.5_x_0.05_100": {
+  "winding": 1,
+  "segments": 14132,
+  "min_segment": "1999/327680"
+ },
+ "zeta_zero_free_for_pole_exclusion": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "zeta",
+  "box": {
+   "re0": "17/20",
+   "re1": "33/20",
+   "im0": "-141/10",
+   "im1": "571/5"
+  },
+  "winding": -1,
+  "zeros_in_box": 0,
+  "poles_in_box": 1,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 96,
+  "recheck_prec": 144,
+  "segments": 1047,
+  "recheck_segments": 1143,
+  "min_segment": "1283/40960",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "residue_A": {
+  "arb": "[1.03767012136161 +/- 8.70e-15] + [+/- 8.67e-15]j",
+  "B_float": 1.0376701213616086,
+  "contains_B_float": true
+ }
+}
