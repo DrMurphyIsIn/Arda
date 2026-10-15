@@ -60,10 +60,15 @@ jobs:
         # test id on any future native crash (the scs/MKL abort above surfaced only
         # after this was added). test_bellman_rigidity's two value_function(max_size
         # =14) tests are intractable in CI (super-exponential enumeration) -- deselected.
+        # TELPERION_REQUIRE_FLINT (2026-10-15): python-flint is installed above, so
+        # tests/test_flint_required.py turns a missing flint or an unfound libflint (the
+        # arb_dh ctypes shim) into a FAILURE rather than letting the rigorous winding
+        # regression tests (#740) skip silently. -rs lists every skip reason in the log.
         env:
           PYTHONFAULTHANDLER: "1"
+          TELPERION_REQUIRE_FLINT: "1"
         run: >-
-          python -X faulthandler -m pytest tests -q
+          python -X faulthandler -m pytest tests -q -rs
           --deselect tests/test_bellman_rigidity.py::test_value_function_and_sub_hull_gap
           --deselect tests/test_bellman_rigidity.py::test_cramer_rate_positive_below_hull
       - name: Manifest verify, quick group (drift net + byte-stability across sympy versions)
