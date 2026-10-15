@@ -1,0 +1,117 @@
+[
+ {
+  "box": {
+   "im0": "7829/500",
+   "im1": "7839/500",
+   "re0": "923/1000",
+   "re1": "943/1000"
+  },
+  "conjecture1_proved": false,
+  "kind": "winding_box_zero",
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "min_segment": "1/400",
+  "named_zero": "0.932969697485+15.668249531278i",
+  "object": "EP5",
+  "off_line": true,
+  "prec": 96,
+  "recheck_prec": 144,
+  "recheck_segments": 52,
+  "seconds": 0.2,
+  "segments": 32,
+  "status": "ARB (bb-reviewed: ~/e9-research/review_wall2_T/REVIEW_wall2_T_2026-10-14.md; review covers through d75bf8a86)",
+  "trust_class": "arb",
+  "winding": 1
+ },
+ {
+  "box": {
+   "im0": "29973/1000",
+   "im1": "29993/1000",
+   "re0": "116/125",
+   "re1": "237/250"
+  },
+  "conjecture1_proved": false,
+  "kind": "winding_box_zero",
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "min_segment": "1/400",
+  "named_zero": "0.93766690670+29.98339523516i",
+  "object": "EP5",
+  "off_line": true,
+  "prec": 96,
+  "recheck_prec": 144,
+  "recheck_segments": 52,
+  "seconds": 0.2,
+  "segments": 32,
+  "status": "ARB (bb-reviewed: ~/e9-research/review_wall2_T/REVIEW_wall2_T_2026-10-14.md; review covers through d75bf8a86)",
+  "trust_class": "arb",
+  "winding": 1
+ },
+ {
+  "box": {
+   "im0": "41757/1000",
+   "im1": "41777/1000",
+   "re0": "213/250",
+   "re1": "109/125"
+  },
+  "conjecture1_proved": false,
+  "kind": "winding_box_zero",
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "min_segment": "1/400",
+  "named_zero": "0.86238551488+41.76697325913i",
+  "object": "EPQ2",
+  "off_line": true,
+  "prec": 96,
+  "recheck_prec": 144,
+  "recheck_segments": 52,
+  "seconds": 0.3,
+  "segments": 32,
+  "status": "ARB (bb-reviewed: ~/e9-research/review_wall2_T/REVIEW_wall2_T_2026-10-14.md; review covers through d75bf8a86)",
+  "trust_class": "arb",
+  "winding": 1
+ },
+ {
+  "box": {
+   "im0": "56173/1000",
+   "im1": "56193/1000",
+   "re0": "827/1000",
+   "re1": "847/1000"
+  },
+  "conjecture1_proved": false,
+  "kind": "winding_box_zero",
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "min_segment": "1/400",
+  "named_zero": "0.83666006753+56.18314506997i",
+  "object": "EPQ2",
+  "off_line": true,
+  "prec": 96,
+  "recheck_prec": 144,
+  "recheck_segments": 52,
+  "seconds": 0.3,
+  "segments": 32,
+  "status": "ARB (bb-reviewed: ~/e9-research/review_wall2_T/REVIEW_wall2_T_2026-10-14.md; review covers through d75bf8a86)",
+  "trust_class": "arb",
+  "winding": 1
+ },
+ {
+  "box": {
+   "im0": "85689/1000",
+   "im1": "85709/1000",
+   "re0": "799/1000",
+   "re1": "819/1000"
+  },
+  "conjecture1_proved": false,
+  "kind": "winding_box_zero",
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "min_segment": "1/400",
+  "named_zero": "0.808517+85.699348i",
+  "object": "DH",
+  "off_line": true,
+  "prec": 96,
+  "recheck_prec": 144,
+  "recheck_segments": 52,
+  "seconds": 0.1,
+  "segments": 32,
+  "status": "ARB (bb-reviewed: ~/e9-research/review_wall2_T/REVIEW_wall2_T_2026-10-14.md; review covers through d75bf8a86)",
+  "trust_class": "arb",
+  "winding": 1
+ }
+]
