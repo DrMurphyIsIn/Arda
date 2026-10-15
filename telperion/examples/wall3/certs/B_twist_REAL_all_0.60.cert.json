@@ -1,0 +1,50 @@
+{
+ "b0.60_g14.134725": {
+  "rho0": "0.60 + 14.134725 i",
+  "x1": 5.656854249492381,
+  "n_small_primes": 3,
+  "conjecture1_proved": false,
+  "zero_box": {
+   "kind": "winding_box_zero",
+   "trust_class": "arb",
+   "object": "<function zetaP at 0x10bb23100>",
+   "box": {
+    "re0": "59/100",
+    "re1": "61/100",
+    "im0": "564989/40000",
+    "im1": "565789/40000"
+   },
+   "winding": 1,
+   "zeros_in_box": 1,
+   "poles_in_box": 0,
+   "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+   "prec": 128,
+   "recheck_prec": 192,
+   "segments": 64,
+   "recheck_segments": 53,
+   "min_segment": "1/800",
+   "off_line": true,
+   "conjecture1_proved": false
+  },
+  "zero_box_seconds": 0.1,
+  "count": {
+   "box": [
+    "14/25",
+    "3/2",
+    "1/20",
+    "100"
+   ],
+   "winding": 1,
+   "segments": 7744
+  },
+  "pole_exclusion_zeta_box": {
+   "re0": "24/25",
+   "re1": "19/10",
+   "im0": "-563789/40000",
+   "im1": "4565789/40000"
+  },
+  "zeros_in_count_box": 1,
+  "residue_A": "[1.22846832475753 +/- 8.60e-16]",
+  "seconds": 9.5
+ }
+}

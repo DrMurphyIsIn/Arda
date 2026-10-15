@@ -1,0 +1,98 @@
+{
+ "b0.85_g30.424876": {
+  "rho0": "0.85 + 30.424876 i",
+  "x1": 101.59366732596473,
+  "n_small_primes": 26,
+  "conjecture1_proved": false,
+  "zero_box": {
+   "kind": "winding_box_zero",
+   "trust_class": "arb",
+   "object": "<function zetaP at 0x10d733100>",
+   "box": {
+    "re0": "21/25",
+    "re1": "43/50",
+    "im0": "7603719/250000",
+    "im1": "7608719/250000"
+   },
+   "winding": 1,
+   "zeros_in_box": 1,
+   "poles_in_box": 0,
+   "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+   "prec": 128,
+   "recheck_prec": 192,
+   "segments": 64,
+   "recheck_segments": 80,
+   "min_segment": "1/800",
+   "off_line": true,
+   "conjecture1_proved": false
+  },
+  "zero_box_seconds": 0.2,
+  "count": {
+   "box": [
+    "7/10",
+    "3/2",
+    "1/20",
+    "100"
+   ],
+   "winding": 1,
+   "segments": 11420
+  },
+  "pole_exclusion_zeta_box": {
+   "re0": "17/20",
+   "re1": "33/20",
+   "im0": "-7596219/250000",
+   "im1": "32608719/250000"
+  },
+  "zeros_in_count_box": 1,
+  "residue_A": "[1.03536161314144 +/- 4.36e-15]",
+  "seconds": 19.9
+ },
+ "b0.85_g50": {
+  "rho0": "0.85 + 50 i",
+  "x1": 101.59366732596473,
+  "n_small_primes": 26,
+  "conjecture1_proved": false,
+  "zero_box": {
+   "kind": "winding_box_zero",
+   "trust_class": "arb",
+   "object": "<function zetaP at 0x1047320c0>",
+   "box": {
+    "re0": "21/25",
+    "re1": "43/50",
+    "im0": "4999/100",
+    "im1": "5001/100"
+   },
+   "winding": 1,
+   "zeros_in_box": 1,
+   "poles_in_box": 0,
+   "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+   "prec": 128,
+   "recheck_prec": 192,
+   "segments": 64,
+   "recheck_segments": 52,
+   "min_segment": "1/800",
+   "off_line": true,
+   "conjecture1_proved": false
+  },
+  "zero_box_seconds": 0.1,
+  "count": {
+   "box": [
+    "7/10",
+    "3/2",
+    "1/20",
+    "100"
+   ],
+   "winding": 1,
+   "segments": 13812
+  },
+  "pole_exclusion_zeta_box": {
+   "re0": "17/20",
+   "re1": "33/20",
+   "im0": "-1249/25",
+   "im1": "15001/100"
+  },
+  "zeros_in_count_box": 1,
+  "residue_A": "[0.997616362392190 +/- 4.42e-17]",
+  "seconds": 24.3
+ }
+}
