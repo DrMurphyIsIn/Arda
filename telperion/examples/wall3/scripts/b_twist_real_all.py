@@ -8,7 +8,7 @@ x1 = 2^(1/(1-beta0)): closed form, no Euler-product tail.  Per object:
   (3) residue A at s = 1.
 ARB.  Provenance: arb_fakes, Arda main 2dfc6eeee (guarded) via callable; script on unpushed branch
 wall3/telperion-certs.  conjecture1_proved = False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, sys, time
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, ctx, fmpz

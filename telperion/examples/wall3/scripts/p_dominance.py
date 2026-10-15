@@ -8,7 +8,7 @@ Rigorous route (no zero list, no tail): xi is entire of order 1, so for nu >= 2
 computed as an Arb power series of xi'/xi at s1; rho0 is enclosed in a certified tiny zero box (arb_fakes,
 guarded, 72470dd5f); others = G_nu - (s1-rho0)^-nu as a ball.  Trust: ARB.
 """
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, sys
 from fractions import Fraction as F
 from flint import acb, acb_series, arb, ctx

@@ -6,7 +6,7 @@ conjecture1_proved = False.  Independent of E's code in three places:
     at an off-zero test point near each zero (same branch-free identity F(s) = chi(s) F(1-s));
   * zero boxes: re-certified here at h = 1e-6 with arb_fakes.certify_zero_box (guarded, 72470dd5f).
 Then M, R, |M+R| are recomputed and checked to OVERLAP E's printed intervals.  ARB."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, math
 from fractions import Fraction as F
 from flint import acb, arb, ctx

@@ -102,3 +102,26 @@ def test_compare_ball_uses_the_radius(tmp_path):
         assert got is want, (v, slack)
         if want:
             assert arb(ball.mid(), ball.rad() + slack).contains(arb(repr(v)))
+
+
+def _load_paths(monkeypatch, **env):
+    import importlib.util
+    for k in ("TELPERION_WALL3_CERTS", "TELPERION_WRITE_COMMITTED_CERTS"):
+        monkeypatch.delenv(k, raising=False)
+    for k, v in env.items():
+        monkeypatch.setenv(k, v)
+    spec = importlib.util.spec_from_file_location("_paths_under_test", WALL3 / "scripts" / "_paths.py")
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def test_wall3_scripts_do_not_overwrite_committed_certs_by_default(monkeypatch, tmp_path):
+    """bb (PR #744 review): _paths used to default the write dir to the committed certs, so any rerun overwrote them."""
+    committed = (WALL3 / "certs").resolve()
+    m = _load_paths(monkeypatch)
+    assert m.CERTS.resolve() != committed
+    assert m.cert_read("P_dominance_ratios.cert.json").resolve().parent in (committed, m.CERTS.resolve())
+    assert _load_paths(monkeypatch, TELPERION_WRITE_COMMITTED_CERTS="1").CERTS.resolve() == committed
+    m = _load_paths(monkeypatch, TELPERION_WALL3_CERTS=str(tmp_path), TELPERION_WRITE_COMMITTED_CERTS="1")
+    assert m.CERTS == tmp_path and m.cert_path("x.json") == tmp_path / "x.json"

@@ -1,5 +1,5 @@
 """Track T: Arb zero box for EP5's zero at ~1.011049+1193.946405i (claimed by track P / wall1 C). conjecture1_proved=False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, time
 from telperion.arb_fakes import certify_zero_box, fake_eval
 t=time.time()

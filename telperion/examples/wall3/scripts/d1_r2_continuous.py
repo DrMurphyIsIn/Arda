@@ -1,7 +1,7 @@
 """Track T: wall5/D1/T_REQUEST.md R2 -- A, zeta_Pi(0), zeta_Pi'(rho0) (and a zero box) for the continuous planted
 system at (beta0, u0) = (0.85, 103) and (0.70, 11), gamma0 = 14.134725.  Reuses the rigorous Ein/E1 machinery of
 n8_continuous.py (same file, constants swapped).  ARB.  conjecture1_proved = False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 from pathlib import Path
 SCRIPTS = Path(__file__).resolve().parent
 import json

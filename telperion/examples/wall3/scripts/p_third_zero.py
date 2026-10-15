@@ -1,6 +1,6 @@
 """Track T: locate the third zero in [1/20,19/20] x [gamma0-2, gamma0+2] and decide whether it lies in P's disc
 |s - s1| <= 2.  ARB. conjecture1_proved=False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json
 from fractions import Fraction as F
 from flint import acb, arb, ctx

@@ -1,7 +1,7 @@
 """Track T: wall4/S/T_REQUEST.md -- recheck S's four EXACT boxes with T's own callables (Hurwitz-zeta chi_-4, own
 factor code), arb_fakes (Arda main 2dfc6eeee).  TW here is S's UNTWISTED quotient with S's full-precision gamma0.
 ARB.  conjecture1_proved = False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 from pathlib import Path
 SCRIPTS = Path(__file__).resolve().parent
 import json, sys

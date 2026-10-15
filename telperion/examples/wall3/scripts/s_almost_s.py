@@ -5,7 +5,7 @@ evaluation at the claimed point, this uses the argument principle on a box inste
   SH  = L(s+3/10, chi_-4) L(s-3/10, chi_-4).
   SYM = zeta(s) / [zeta(s+1-r0) zeta(s+1-r0b) zeta(s+r0-1) zeta(s+r0b-1)], r0 = 0.85 + 14.1347 i (S's r0 string).
 Poles of callables are not declared: each box below is accompanied by a pole-exclusion certificate where needed."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, math
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, ctx

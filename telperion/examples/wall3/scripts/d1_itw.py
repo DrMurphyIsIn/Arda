@@ -6,7 +6,7 @@ s2 = r0+r1b-1; (c) windings: zeta_P has winding -1 on small boxes around s1 and 
 count on [0.3,1.5] x [1,60] equals #zeros - #poles = (13 zeta zeros + rho0 + rho1) - 2 = 13, with the 13 zeta zeros
 certified separately.  ARB.  Provenance: arb_fakes, Arda main 2dfc6eeee; unpushed branch wall3/telperion-certs.
 conjecture1_proved = False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, time
 from flint import acb, arb, acb_series, ctx, fmpz
 from telperion.arb_fakes import rigorous_winding, certify_zero_box, count_offline

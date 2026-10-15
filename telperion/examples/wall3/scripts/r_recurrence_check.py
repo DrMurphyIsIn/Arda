@@ -4,7 +4,7 @@ Method independent of F1/R's arc-ball Rouche code: Newton from rho0 + i tau, the
 1e-10 box, then exact check that the box lies inside the open disc |s - rho0 - i tau0| < 0.04 for every tau0 in R's
 rational tau (R/out/arb_rouche_new.txt).  Erratum fix: the first version used the scan floats 652.065/666.390/932.725
 instead of R's certified rationals; bb flagged the 666.389 distance (0.0027, not 0.0023).  ARB.  conjecture1_proved = False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json
 from fractions import Fraction as F
 from flint import acb, arb, ctx

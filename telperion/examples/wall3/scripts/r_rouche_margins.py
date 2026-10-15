@@ -2,7 +2,7 @@
 f1_arb_rouche (read-only) but re-running the arc loop to record min over accepted arcs of (lo - du)/lo, where
 lo = lower|EP5(B_j)|, du = upper|EP5(B_j + i tau) - EP5(B_j)|.  Comparisons here are on the exact arb endpoints
 (arb < arb), not float().  ARB.  conjecture1_proved = False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import sys, json
 from fractions import Fraction
 sys.path.insert(0, str(rh("wall2/F1")))

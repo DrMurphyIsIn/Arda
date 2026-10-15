@@ -1,7 +1,7 @@
 """Track T: cross-wiring audit of the B REAL-twist residue comparisons.  For every TW run in B/out/tw_REAL_*.json,
 recompute A = 1/(zeta(2-rho0) zeta(2-conj rho0)) * prod_{p<x1} [(1-p^(rho0-2))(1-p^(conj rho0-2))]^-1 in Arb and
 compare with the A stored in THAT file (matched by its own beta0, gamma0 fields).  ARB.  conjecture1_proved = False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import glob, json
 from flint import acb, arb, ctx, fmpz
 ctx.prec = 128

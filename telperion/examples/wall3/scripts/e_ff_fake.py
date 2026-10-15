@@ -7,7 +7,7 @@ Z(T) = P(T)/((1-T)(1-qT)), q = 3, P(T) = 1 - 2T + 9T^2 - 6T^3 + 9T^4,  T = q^-s.
     identities), are non-negative integers for d <= DMAX; and (PROVED-elementary, checked here in exact arithmetic) the
     tail d > DMAX is non-negative because q^d - 2 - 4*(2.62)^d - sum_{e<=d/2} (q^e + 1 + 4*2.62^e) > 0 for d >= 7.
 conjecture1_proved = False."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, math
 from fractions import Fraction as F
 from flint import fmpz_poly, arb, acb, ctx

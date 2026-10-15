@@ -5,7 +5,7 @@ Coefficients are the exact local Taylor coefficients from an acb_series expansio
 radius can cross a singularity such as DH's trivial zero at s = -1; the old float values used an FFT circle of
 radius ~4 around 3/2, which encloses s = -1).  ARB.  conjecture1_proved = False.
 Provenance: arb_fakes, Arda main 2dfc6eeee; script on unpushed branch wall3/telperion-certs."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json
 from flint import acb, arb, acb_series, ctx
 from telperion.arb_fakes import fake_series

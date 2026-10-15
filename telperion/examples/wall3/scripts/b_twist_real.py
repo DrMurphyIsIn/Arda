@@ -12,7 +12,7 @@ needs a zeta zero with real part in (0.85, 1) -- excluded for |Im| <= 3e12 by th
 exactly 1 with the explicit zero rho0 present is what we certify; see the caveat in the report).
 Certificates: (1) zero box around rho0 (winding 1); (2) rigorous count in [7/10, 3/2] x [1/20, 100]: the only zero
 is rho0; (3) Re s >= 3/2 has no zeros (all factors are nonzero and finite there: Re(s+1-rho0) >= 1.65).  ARB."""
-from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, time
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, fmpz
