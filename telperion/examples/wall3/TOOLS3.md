@@ -14,9 +14,9 @@ When you quote a number in your report, name the class it rests on.
 - **EXACT.** Exact rational arithmetic in Python `Fraction`s. It is rigorous if the script is right, but it is not
   a kernel theorem.
 - **ARB.** A python-flint ball certificate, stored as a `.cert.json` sidecar. It is rigorous if Arb and the code
-  are right, but it is not a kernel theorem. Write "Arb-certified", never "proved". All arb_fakes code lives on the
-  UNPUSHED branch `wall2/telperion-fakes` (~/arda-wall2-telperion, HEAD 72470dd5f). bb audited its winding and
-  judged it SOUND, apart from the pole guard, which has since been added (ea1797f97, 72470dd5f).
+  are right, but it is not a kernel theorem. Write "Arb-certified", never "proved". arb_fakes, with the pole guard, is MERGED: cite
+  it as "arb_fakes, Arda main 2dfc6eeee" (PR #741; the arb_fakes.py there is byte-identical to 72470dd5f). bb
+  audited its winding and judged it SOUND, apart from the pole guard, which has since been added.
 - **KERNEL.** Lean `decide` / `norm_num` on a finite fact, checked by T alone via `leanlock.sh`. Use it only for
   small finite bookkeeping.
 
@@ -28,8 +28,8 @@ When you quote a number in your report, name the class it rests on.
 - **Never** use `arb_dh.winding_number_sampled_heuristic`, formerly `arb_dh.winding_number`, for a certificate. It
   samples at nodes only and can undercount.
 
-T's WALL-3 helpers (t3tools) are on branch `wall3/telperion-certs` at 7898d97dc. That branch is cut from 72470dd5f
-and is unpushed. `wall2/telperion-fakes` itself is PR #741, and T adds no commits to it.
+T's WALL-3 helpers (t3tools, scripts, certs) are on the UNPUSHED local branch `wall3/telperion-certs`, which is cut
+from 72470dd5f, an ancestor of Arda main 2dfc6eeee. Cite them as "t3tools, unpushed branch wall3/telperion-certs".
 
 ## Setup
 

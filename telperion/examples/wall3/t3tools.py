@@ -4,8 +4,8 @@ conjecture1_proved = False.  Nothing here is progress on RH.  Trust class of eve
 ball arithmetic) or EXACT (Fractions); neither is a kernel theorem.  The Beurling enclosure is CONDITIONAL on the
 caller's remainder hypothesis |N(x) - A x| <= C x^theta for x >= X, which the sidecar records verbatim.
 
-Run with ~/rh-team/wall2/T/venv/bin/python (it has python-flint and telperion from the unpushed branch
-wall2/telperion-fakes).
+Run with ~/rh-team/wall2/T/venv/bin/python (it has python-flint and telperion; arb_fakes is on Arda main 2dfc6eeee, and t3tools is on the unpushed branch
+wall3/telperion-certs).
 """
 from __future__ import annotations
 

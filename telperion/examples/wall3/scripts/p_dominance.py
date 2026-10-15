@@ -33,7 +33,7 @@ def frac_of(x):
 
 
 out = {"kind": "turan_dominance_ratio", "trust_class": "arb", "conjecture1_proved": False,
-       "provenance": "arb_fakes @ 72470dd5f (guarded) on unpushed branch wall3/telperion-certs; script " + __file__,
+       "provenance": "arb_fakes, Arda main 2dfc6eeee (= 72470dd5f, guarded); script on unpushed branch wall3/telperion-certs; script " + __file__,
        "objects": {}}
 for name, (re0, im0) in OBJ.items():
     r = refine(name, re0, im0)

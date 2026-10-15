@@ -45,7 +45,7 @@ def _zetaP(s):
 
 
 out = {"object": "B REAL twist, rho0 = 0.85 + 14.134725i", "trust_class": "arb", "conjecture1_proved": False,
-       "provenance": "arb_fakes @ 72470dd5f (guarded) via callable; unpushed branch wall3/telperion-certs"}
+       "provenance": "arb_fakes, Arda main 2dfc6eeee (guarded), via callable; script on unpushed branch wall3/telperion-certs"}
 t = time.time()
 out["zero_box"] = certify_zero_box(zetaP, "0.84", "0.86", "14.12", "14.15", expected=1, prec=128)
 print("zero box:", out["zero_box"]["zeros_in_box"], time.time() - t)
