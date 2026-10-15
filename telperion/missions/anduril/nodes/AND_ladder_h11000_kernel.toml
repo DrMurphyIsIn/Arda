@@ -1,5 +1,7 @@
 created = "2026-09-25"
 depends_on = ["AND_ladder_h8000_kernel"]
+heavy_certificates = true
+judge_via = "heavy"
 kind = "milestone"
 name = "AND.ladder_h11000_kernel"
 requires_ci_job = "telperion-zeta-reflection.yml:anduril-kernel-ladder"
