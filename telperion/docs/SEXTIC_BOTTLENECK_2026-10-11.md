@@ -67,8 +67,8 @@ of it should be cited rather than redone. In its terms:
 
 - The identity `sigma0 = 5/6 + (M - 2 ell)/12 + excess/2` (b drops out), with `M` the reflected-energy
   length; the proved lemmas force `M + ell <= 1` and `2M >= 1 + 3 ell`, which gives **13/15** at the triple point `ell = 1/5`, `M = 4/5` (RELABELLED in the ledger's Addendum 2, after the
-  high-side sweep: a LOW-side idealisation without the witness-count bins, not a proved-input floor; the proved-input
-  optimum of the architecture is 0.87495707 = Liu's `B_new`), and idealising everything except sixth-power sparsity
+  high-side sweep: a LOW-side idealisation without the witness-count bins, not a proved-input floor; the optimum of the
+  architecture at `kappa = 3/4` is 0.87495707 = Liu's `B_new`, see the correction at line 17), and idealising everything except sixth-power sparsity
   gives the **5/6 = 1 - 1/k architecture floor**. Our law `1 - (1 + 3 ell)/(2k)` is the same
   bookkeeping with `M = 1 - ell` substituted (the paper's choice), and the two agree: 7/8 at `ell = 1/6`,
   13/15 at `ell = 1/5`.
