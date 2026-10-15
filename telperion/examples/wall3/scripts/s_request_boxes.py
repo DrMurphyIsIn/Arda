@@ -1,12 +1,15 @@
 """Track T: wall4/S/T_REQUEST.md -- recheck S's four EXACT boxes with T's own callables (Hurwitz-zeta chi_-4, own
 factor code), arb_fakes (Arda main 2dfc6eeee).  TW here is S's UNTWISTED quotient with S's full-precision gamma0.
 ARB.  conjecture1_proved = False."""
+from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from pathlib import Path
+SCRIPTS = Path(__file__).resolve().parent
 import json, sys
-sys.path.insert(0, "/Users/peterwmurphy/rh-team/wall3/T/scripts")
+sys.path.insert(0, str(SCRIPTS))
 from flint import acb, arb, acb_series, ctx
 from telperion.arb_fakes import certify_zero_box
 import importlib.util
-spec = importlib.util.spec_from_file_location("sas", "/Users/peterwmurphy/rh-team/wall3/T/scripts/s_almost_s.py")
+spec = importlib.util.spec_from_file_location("sas", str(SCRIPTS / "s_almost_s.py"))
 R0 = acb(arb("0.85"), arb("14.134725141734693790457251983562"))
 
 
@@ -44,4 +47,4 @@ pe2 = certify_zero_box("zeta", "0.99", "1.01", "28.259", "28.280", expected=0, p
 out["TW_pole_exclusion"] = {"zeta zeros in [0.99,1.01]x[-0.01,0.01] (pole s=1 ack)": pe1,
                             "zeta zeros in [0.99,1.01]x[28.259,28.280]": pe2}
 print("TW pole exclusion", out["TW_pole_exclusion"])
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/S_request_boxes.cert.json", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("S_request_boxes.cert.json"), "w"), indent=1, default=str)

@@ -1,8 +1,11 @@
 """Track T: wall5/D1/T_REQUEST.md R2 -- A, zeta_Pi(0), zeta_Pi'(rho0) (and a zero box) for the continuous planted
 system at (beta0, u0) = (0.85, 103) and (0.70, 11), gamma0 = 14.134725.  Reuses the rigorous Ein/E1 machinery of
 n8_continuous.py (same file, constants swapped).  ARB.  conjecture1_proved = False."""
+from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
+from pathlib import Path
+SCRIPTS = Path(__file__).resolve().parent
 import json
-SRC = open("/Users/peterwmurphy/rh-team/wall3/T/scripts/n8_continuous.py").read().split("res = {")[0]
+SRC = open(str(SCRIPTS / "n8_continuous.py")).read().split("res = {")[0]
 out = {"trust_class": "arb", "conjecture1_proved": False, "cases": []}
 for b0, u0, fl in (("0.85", 103, {"A": 0.122010758984, "z0": -8.14032808e-14, "dz": [8.0879161, 0.2576544]}),
                    ("0.70", 11, {"A": 0.238588309151, "z0": -1.65919263e-3, "dz": [4.0490081, 0.2054351]})):
@@ -22,4 +25,4 @@ for b0, u0, fl in (("0.85", 103, {"A": 0.122010758984, "z0": -8.14032808e-14, "d
            "zero_box_winding": box["winding"], "D1_floats": fl}
     out["cases"].append(row)
     print(b0, u0, "A", A.str(12), "z(0)", z0.str(10), "z'(rho0)", dz.str(12), "box", box["winding"], flush=True)
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/D1_R2_continuous.cert.json", "w"), indent=1)
+json.dump(out, open(cert_path("D1_R2_continuous.cert.json"), "w"), indent=1)

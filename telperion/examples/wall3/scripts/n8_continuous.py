@@ -8,6 +8,7 @@ Ein(w) is evaluated rigorously: Taylor series with explicit tail bound for |w| <
 negative real axis), else Ein = E1 + log w + gamma via acb.expint(1) (ball strictly off the cut).  The callable
 supports jets of order <= 1 (ctx.cap <= 2), which is what arb_fakes.rigorous_winding uses.  ARB.  conjecture1_proved = False.
 Provenance: arb_fakes, Arda main 2dfc6eeee; script on unpushed branch wall3/telperion-certs."""
+from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
 import json, math, time
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, ctx
@@ -175,4 +176,4 @@ dz = EG * V0 * (RHO - RHOB) / (RHO - 1) * (Ea0 - Ebb0).exp()
 res["residue_A"] = A.str(15); res["zetaP_prime_rho0"] = dz.str(15)
 res["D1_floats"] = {"A": 0.122010758984, "zetaP_prime_rho0": [8.0879161, 0.2576544]}
 print("A =", A.str(12), " zeta_P'(rho0) =", dz.str(12), flush=True)
-json.dump(res, open("/Users/peterwmurphy/rh-team/wall3/T/certs/N8_continuous.cert.json", "w"), indent=1, default=str)
+json.dump(res, open(cert_path("N8_continuous.cert.json"), "w"), indent=1, default=str)
