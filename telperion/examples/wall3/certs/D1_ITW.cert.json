@@ -1,0 +1,50 @@
+{
+ "object": "D1 ITW, r0 = 0.75 + 14.134725i, r1 = 0.70 + 21.02204i, x1 = 336",
+ "trust_class": "arb",
+ "conjecture1_proved": false,
+ "A": "[1.01066767422616 +/- 1.33e-15] + [+/- 3.88e-36]j",
+ "R1": "[0.332257552238376 +/- 3.26e-16] + [0.0772020162847715 +/- 9.05e-18]j",
+ "R2": "[0.118037211742843 +/- 1.37e-16] + [-0.0455535475739848 +/- 4.14e-17]j",
+ "D1_floats": {
+  "A": 1.0106676742,
+  "R1": [
+   0.332257552238,
+   0.077202016284
+  ],
+  "R2": [
+   0.118037211743,
+   -0.045553547574
+  ]
+ },
+ "pole_box_s1": {
+  "centre": [
+   0.45,
+   35.156765
+  ],
+  "half": 0.01,
+  "winding_zetaP": -1
+ },
+ "pole_box_conj_s2": {
+  "centre": [
+   0.45,
+   6.887315
+  ],
+  "half": 0.01,
+  "winding_zetaP": -1
+ },
+ "count": {
+  "box": [
+   "0.3",
+   "1.5",
+   "1",
+   "60"
+  ],
+  "winding_zetaP": 13,
+  "zeta_zeros_in_box": 13,
+  "rho0_box_zeros": 1,
+  "rho1_box_zeros": 1,
+  "segments": 160758,
+  "implied_poles_consistency_number": 2,
+  "note": "winding = zeros - poles; implied_poles_consistency_number = (certified zeta zeros + rho0 + rho1) - winding.  It is a CONSISTENCY number (= 2 expected: s1 and conj(s2)), not a certificate that zeta_P has no other zeros or poles in the box: an extra zero and an extra pole would cancel."
+ }
+}
