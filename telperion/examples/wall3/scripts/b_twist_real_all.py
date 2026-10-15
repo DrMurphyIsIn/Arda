@@ -8,6 +8,7 @@ x1 = 2^(1/(1-beta0)): closed form, no Euler-product tail.  Per object:
   (3) residue A at s = 1.
 ARB.  Provenance: arb_fakes, Arda main 2dfc6eeee (guarded) via callable; script on unpushed branch
 wall3/telperion-certs.  conjecture1_proved = False."""
+from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
 import json, sys, time
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, ctx, fmpz
@@ -17,7 +18,7 @@ CASES = [("0.60", "14.134725", True), ("0.75", "14.134725", True), ("0.85", "30.
          ("0.85", "50", True), ("0.95", "14.134725", False)]
 if len(sys.argv) > 1:
     CASES = [c for c in CASES if c[0] == sys.argv[1] and (len(sys.argv) < 3 or c[1] == sys.argv[2])]
-B = json.load(open("/Users/peterwmurphy/rh-team/wall3/B/out/summary.json")) if False else None
+B = None  # (was: B/out/summary.json, unused)
 results = {}
 for bs, gs, count in CASES:
     ctx.prec = 128
@@ -65,5 +66,5 @@ for bs, gs, count in CASES:
     r["seconds"] = round(time.time() - t, 1)
     results[key] = r
     print(key, "box ok", r.get("count", {}).get("winding"), "A =", r["residue_A"], r["seconds"], "s", flush=True)
-    json.dump(results, open(f"/Users/peterwmurphy/rh-team/wall3/T/certs/B_twist_REAL_all{'_' + sys.argv[1] if len(sys.argv) > 1 else ''}.cert.json", "w"),
+    json.dump(results, open(cert_path(f"B_twist_REAL_all{'_' + sys.argv[1] if len(sys.argv) > 1 else ''}.cert.json"), "w"),
               indent=1, default=str)

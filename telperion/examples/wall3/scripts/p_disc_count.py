@@ -1,10 +1,11 @@
 """Track T: the disc |s - s1| <= 2 (s1 = 3/2 + i gamma0) holds exactly the 2 zeros rho0, 1-conj(rho0) (P section B).
 Rectangles [1/20, 8/5] and [19/20, 8/5] x [gamma0-2, gamma0+2] + FE mirror cover the disc minus {Re s >= 8/5}; the latter is zero-free (dominant-term
 cert, arb_fakes.right_halfplane_nonvanishing).  ARB. conjecture1_proved=False."""
+from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
 import json
 from fractions import Fraction as F
 from telperion.arb_fakes import count_offline, right_halfplane_nonvanishing
-cert = json.load(open("/Users/peterwmurphy/rh-team/wall3/T/certs/P_dominance_ratios.cert.json"))
+cert = json.load(open(cert_path("P_dominance_ratios.cert.json")))
 out = {}
 for name in ("EP5", "DH"):
     b = cert["objects"][name]["rho0_box"]
@@ -19,4 +20,4 @@ for name in ("EP5", "DH"):
     rh = right_halfplane_nonvanishing(name, F(8, 5))
     out[name] = {"rect_count": c, "right_halfplane": rh}
     print(name, "rect total", c["total"], "| Re s >= 8/5 zero-free:", rh["certified"])
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/P_disc_count.cert.json", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("P_disc_count.cert.json"), "w"), indent=1, default=str)

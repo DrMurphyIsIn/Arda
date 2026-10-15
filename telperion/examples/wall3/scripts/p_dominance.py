@@ -8,6 +8,7 @@ Rigorous route (no zero list, no tail): xi is entire of order 1, so for nu >= 2
 computed as an Arb power series of xi'/xi at s1; rho0 is enclosed in a certified tiny zero box (arb_fakes,
 guarded, 72470dd5f); others = G_nu - (s1-rho0)^-nu as a ball.  Trust: ARB.
 """
+from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
 import json, sys
 from fractions import Fraction as F
 from flint import acb, acb_series, arb, ctx
@@ -64,4 +65,4 @@ for name, (re0, im0) in OBJ.items():
     out["objects"][name] = {"rho0_box": box["box"], "rho0_box_winding": box["winding"], "s1": f"3/2 + i*{float(gam)!r}",
                             "rows": rows}
     ctx.cap = 10
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/P_dominance_ratios.cert.json", "w"), indent=1)
+json.dump(out, open(cert_path("P_dominance_ratios.cert.json"), "w"), indent=1)

@@ -2,9 +2,10 @@
 f1_arb_rouche (read-only) but re-running the arc loop to record min over accepted arcs of (lo - du)/lo, where
 lo = lower|EP5(B_j)|, du = upper|EP5(B_j + i tau) - EP5(B_j)|.  Comparisons here are on the exact arb endpoints
 (arb < arb), not float().  ARB.  conjecture1_proved = False."""
+from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
 import sys, json
 from fractions import Fraction
-sys.path.insert(0, "/Users/peterwmurphy/rh-team/wall2/F1")
+sys.path.insert(0, str(rh("wall2/F1")))
 import numpy as np
 from flint import acb, arb
 import f1_arb_rouche as F
@@ -35,4 +36,4 @@ for tau in (Fraction(652063, 1000), Fraction(666389, 1000), Fraction(37309, 40))
                  "min_rel_margin": float(worst.lower()) if worst is not None else None})
     print(rows[-1], flush=True)
 json.dump({"kind": "R_rouche_margins", "trust_class": "arb", "rows": rows, "conjecture1_proved": False},
-          open("/Users/peterwmurphy/rh-team/wall3/T/certs/R_rouche_margins.cert.json", "w"), indent=1)
+          open(cert_path("R_rouche_margins.cert.json"), "w"), indent=1)

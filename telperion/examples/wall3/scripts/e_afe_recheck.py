@@ -6,6 +6,7 @@ conjecture1_proved = False.  Independent of E's code in three places:
     at an off-zero test point near each zero (same branch-free identity F(s) = chi(s) F(1-s));
   * zero boxes: re-certified here at h = 1e-6 with arb_fakes.certify_zero_box (guarded, 72470dd5f).
 Then M, R, |M+R| are recomputed and checked to OVERLAP E's printed intervals.  ARB."""
+from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
 import json, math
 from fractions import Fraction as F
 from flint import acb, arb, ctx
@@ -13,7 +14,7 @@ from telperion.arb_fakes import certify_zero_box, fake_series, _kappa
 from flint import acb_series
 ctx.prec = 160
 PI = arb.pi()
-E = json.load(open("/Users/peterwmurphy/rh-team/wall3/E/out/e4_arb.cert.json"))
+E = json.load(open(rh("wall3/E/out/e4_arb.cert.json")))
 
 
 def coeffs(name, N):
@@ -82,4 +83,4 @@ for e in E:
     print(name, f"{re:.6f}+{im:.4f}i", "chi-id", row["chi_identity_ok"], f"{row['chi_identity_err']:.1e}",
           "|M+R|", [f"{v:.6g}" for v in row["M+R"]], "E:", e["E"], row["overlap_E"])
 json.dump({"kind": "afe_recheck_of_E_e4", "trust_class": "arb", "rows": rows, "conjecture1_proved": False},
-          open("/Users/peterwmurphy/rh-team/wall3/T/certs/E_e4_recheck.cert.json", "w"), indent=1)
+          open(cert_path("E_e4_recheck.cert.json"), "w"), indent=1)

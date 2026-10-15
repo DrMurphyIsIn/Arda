@@ -12,6 +12,7 @@ needs a zeta zero with real part in (0.85, 1) -- excluded for |Im| <= 3e12 by th
 exactly 1 with the explicit zero rho0 present is what we certify; see the caveat in the report).
 Certificates: (1) zero box around rho0 (winding 1); (2) rigorous count in [7/10, 3/2] x [1/20, 100]: the only zero
 is rho0; (3) Re s >= 3/2 has no zeros (all factors are nonzero and finite there: Re(s+1-rho0) >= 1.65).  ARB."""
+from _paths import cert_path, rh, shown  # noqa: F401  (TELPERION_RH_TEAM / TELPERION_WALL3_CERTS)
 import json, time
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, fmpz
@@ -55,7 +56,7 @@ st = {}
 w = rigorous_winding(zetaP, "0.7", "1.5", "1/20", "100", prec=128, stats=st)
 out["count_0.7_1.5_x_0.05_100"] = {"winding": w, "segments": st["segments"], "min_segment": str(st["min_segment"])}
 print("winding [0.7,1.5]x[1/20,100]:", w, st["segments"], time.time() - t)
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/B_twist_REAL_g%s.cert.json" % GS + "", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)
 
 # (4) no poles of zeta_P in the counted box: a pole needs zeta(w) = 0 with w = s + 1 - rho0 or s + 1 - conj rho0,
 # w in [0.85, 1.65] x [-14.084725, 114.134725].  Certify zeta has no zeros there (pole s=1 acknowledged).
@@ -64,9 +65,9 @@ out["zeta_zero_free_for_pole_exclusion"] = certify_zero_box("zeta", "0.85", "1.6
                                                             poles=[(1, 0)], prec=96)
 print("zeta zero-free in [0.85,1.65]x[-14.1,114.2]:", out["zeta_zero_free_for_pole_exclusion"]["zeros_in_box"],
       time.time() - t)
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/B_twist_REAL_g%s.cert.json" % GS + "", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)
 
-# (5) the residue A at s = 1 (B uses A = 1.0376701213616086 with "no fitting")
+# (5) the residue A at s = 1, compared with the A in B's output file for THIS gamma0 (below)
 from flint import ctx
 ctx.prec = 128
 A = 1 / ((2 - RHO).zeta() * (2 - RHOB).zeta())
@@ -75,9 +76,9 @@ for p in SMALL:
     A = A / ((1 - ((RHO - 2) * lp).exp()) * (1 - ((RHOB - 2) * lp).exp()))
 # compare with B's float for THIS (beta0, gamma0): read it from B's own output file (bug fix: this used to be a
 # hard-coded gamma0 = 14.134725 value, so the gamma0 = 21.02204 cert compared against the wrong residue; found by bb)
-_bf = f"/Users/peterwmurphy/rh-team/wall3/B/out/tw_REAL_b{float('0.85')}_g{float(GS)}_s0_X1e+09.json"
+_bf = rh(f"wall3/B/out/tw_REAL_b{float('0.85')}_g{float(GS)}_s0_X1e+09.json")
 _BA = json.load(open(_bf))["A"]
-out["residue_A"] = {"arb": A.str(25), "B_file": _bf, "B_float": _BA,
+out["residue_A"] = {"arb": A.str(25), "B_file": shown(_bf), "B_float": _BA,
                     "contains_B_float": bool(abs(A.real - arb(_BA)).upper() <= A.real.rad() + 1e-14)}
 print("A =", A.str(25), out["residue_A"]["contains_B_float"])
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/B_twist_REAL_g%s.cert.json" % GS + "", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)
