@@ -130,6 +130,11 @@
   ],
   "judged_elsewhere": [
     {
+      "node": "anduril/AND_ladder_h11000_kernel",
+      "judge_via": "heavy",
+      "workflow": "missions-comparator-heavy.yml"
+    },
+    {
       "node": "anduril/AND_ladder_h8000_kernel",
       "judge_via": "heavy",
       "workflow": "missions-comparator-heavy.yml"
