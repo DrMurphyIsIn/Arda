@@ -73,7 +73,11 @@ A = 1 / ((2 - RHO).zeta() * (2 - RHOB).zeta())
 for p in SMALL:
     lp = acb(p).log()
     A = A / ((1 - ((RHO - 2) * lp).exp()) * (1 - ((RHOB - 2) * lp).exp()))
-out["residue_A"] = {"arb": A.str(25), "B_float": 1.0376701213616086,
-                    "contains_B_float": bool(abs(A.real - arb(1.0376701213616086)).upper() < 1e-14)}
+# compare with B's float for THIS (beta0, gamma0): read it from B's own output file (bug fix: this used to be a
+# hard-coded gamma0 = 14.134725 value, so the gamma0 = 21.02204 cert compared against the wrong residue; found by bb)
+_bf = f"/Users/peterwmurphy/rh-team/wall3/B/out/tw_REAL_b{float('0.85')}_g{float(GS)}_s0_X1e+09.json"
+_BA = json.load(open(_bf))["A"]
+out["residue_A"] = {"arb": A.str(25), "B_file": _bf, "B_float": _BA,
+                    "contains_B_float": bool(abs(A.real - arb(_BA)).upper() <= A.real.rad() + 1e-14)}
 print("A =", A.str(25), out["residue_A"]["contains_B_float"])
 json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/B_twist_REAL_g%s.cert.json" % GS + "", "w"), indent=1, default=str)

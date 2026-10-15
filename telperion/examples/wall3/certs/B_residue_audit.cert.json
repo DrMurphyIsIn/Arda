@@ -1,0 +1,63 @@
+{
+ "kind": "B_residue_crosswire_audit",
+ "trust_class": "arb",
+ "rows": [
+  {
+   "file": "tw_REAL_b0.6_g14.134725_s0_X1e+09.json",
+   "beta0": 0.6,
+   "gamma0": 14.134725,
+   "A_arb": "[1.228468324757529 +/- 1.41e-16]",
+   "A_B": 1.228468324757529,
+   "B_inside_ball_plus_1e-14": true
+  },
+  {
+   "file": "tw_REAL_b0.75_g14.134725_s0_X1e+09.json",
+   "beta0": 0.75,
+   "gamma0": 14.134725,
+   "A_arb": "[1.113256706297309 +/- 1.35e-16]",
+   "A_B": 1.1132567062973089,
+   "B_inside_ball_plus_1e-14": true
+  },
+  {
+   "file": "tw_REAL_b0.85_g14.134725_s0_X1e+09.json",
+   "beta0": 0.85,
+   "gamma0": 14.134725,
+   "A_arb": "[1.037670121361609 +/- 3.08e-16]",
+   "A_B": 1.0376701213616086,
+   "B_inside_ball_plus_1e-14": true
+  },
+  {
+   "file": "tw_REAL_b0.85_g21.02204_s0_X1e+09.json",
+   "beta0": 0.85,
+   "gamma0": 21.02204,
+   "A_arb": "[1.040160210666479 +/- 3.74e-16]",
+   "A_B": 1.0401602106664787,
+   "B_inside_ball_plus_1e-14": true
+  },
+  {
+   "file": "tw_REAL_b0.85_g30.424876_s0_X1e+09.json",
+   "beta0": 0.85,
+   "gamma0": 30.424876,
+   "A_arb": "[1.035361613141436 +/- 3.53e-16]",
+   "A_B": 1.0353616131414356,
+   "B_inside_ball_plus_1e-14": true
+  },
+  {
+   "file": "tw_REAL_b0.85_g50.0_s0_X1e+09.json",
+   "beta0": 0.85,
+   "gamma0": 50.0,
+   "A_arb": "[0.9976163623921900 +/- 4.42e-17]",
+   "A_B": 0.9976163623921901,
+   "B_inside_ball_plus_1e-14": true
+  },
+  {
+   "file": "tw_REAL_b0.95_g14.134725_s0_X1e+09.json",
+   "beta0": 0.95,
+   "gamma0": 14.134725,
+   "A_arb": "[1.004803134525077 +/- 3.34e-16]",
+   "A_B": 1.0048031345250767,
+   "B_inside_ball_plus_1e-14": true
+  }
+ ],
+ "conjecture1_proved": false
+}
