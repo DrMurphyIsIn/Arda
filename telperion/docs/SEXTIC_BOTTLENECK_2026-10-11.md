@@ -273,7 +273,7 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   count), and the only honest number below it is the `0.874957` crossing that Liu has already claimed and formalized.
   The `Lambda <= 121/450` possibility raised above is withdrawn.
   Ledger Addendum 2 (`~/rh-team/C/loss_ledger.md`; gate record `~/rh-team/gates/gate0.md`), with the sweep re-run by
-  the Riemann session: the proved-input optimum of OpenAI's architecture is `sigma0 = 0.87495707`, and this is Liu's
+  the Riemann session: the optimum of OpenAI's architecture at κ = 3/4 is `sigma0 = 0.87495707`, and this is Liu's
   `B_new = (1507 - 2 sqrt 921)/1653` EXACTLY, the same `sqrt 921` arising from the binding witness-count bin
   `delta = 49/48 - sqrt(921)/48` with `R_* = 2/3`. Liu's result is therefore this route's limit, and
   `Lambda <= 2 (B_new - 1/2)^2 = 0.2811856` is the best the method can give. The ledger's 13/15 is relabelled an
