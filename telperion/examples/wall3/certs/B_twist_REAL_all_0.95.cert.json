@@ -26,8 +26,8 @@
    "off_line": true,
    "conjecture1_proved": false
   },
-  "zero_box_seconds": 319.1,
+  "zero_box_seconds": 301.6,
   "residue_A": "[1.00480313452508 +/- 3.34e-15]",
-  "seconds": 319.3
+  "seconds": 301.8
  }
 }

@@ -2,7 +2,7 @@
  "kind": "turan_dominance_ratio",
  "trust_class": "arb",
  "conjecture1_proved": false,
- "provenance": "arb_fakes, Arda main 2dfc6eeee (= 72470dd5f, guarded); script on unpushed branch wall3/telperion-certs; script /Users/peterwmurphy/rh-team/wall3/T/scripts/p_dominance.py",
+ "provenance": "arb_fakes, Arda main 2dfc6eeee (= 72470dd5f, guarded); script examples/wall3/scripts/p_dominance.py",
  "objects": {
   "EP5": {
    "rho0_box": {

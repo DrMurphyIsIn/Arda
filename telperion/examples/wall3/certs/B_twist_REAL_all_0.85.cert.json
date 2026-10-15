@@ -45,7 +45,7 @@
   },
   "zeros_in_count_box": 1,
   "residue_A": "[1.03536161314144 +/- 4.36e-15]",
-  "seconds": 20.6
+  "seconds": 19.6
  },
  "b0.85_g50": {
   "rho0": "0.85 + 50 i",
@@ -93,6 +93,6 @@
   },
   "zeros_in_count_box": 1,
   "residue_A": "[0.997616362392190 +/- 4.42e-17]",
-  "seconds": 25.1
+  "seconds": 23.9
  }
 }

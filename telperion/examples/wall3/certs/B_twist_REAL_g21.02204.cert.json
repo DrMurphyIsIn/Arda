@@ -54,7 +54,7 @@
  },
  "residue_A": {
   "arb": "[1.04016021066648 +/- 8.81e-15] + [+/- 8.29e-15]j",
-  "B_file": "/Users/peterwmurphy/rh-team/wall3/B/out/tw_REAL_b0.85_g21.02204_s0_X1e+09.json",
+  "B_file": "rh-team:wall3/B/out/tw_REAL_b0.85_g21.02204_s0_X1e+09.json",
   "B_float": 1.0401602106664787,
   "B_float_within_ball_plus_1e-14": true
  }
