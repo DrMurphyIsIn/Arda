@@ -6,7 +6,7 @@ s1 = 3/2 + i gamma0, where rho runs over ALL zeros of the completed xi (multipli
 Rigorous route (no zero list, no tail): xi is entire of order 1, so for nu >= 2
     G_nu(s1) = sum_rho (s1-rho)^-nu = (-1)^(nu-1) nu [z^nu] log xi(s1+z)   (Hadamard; absolutely convergent)
 computed as an Arb power series of xi'/xi at s1; rho0 is enclosed in a certified tiny zero box (arb_fakes,
-guarded, 72470dd5f); others = G_nu - (s1-rho0)^-nu as a ball.  Trust: ARB.
+guarded; Arda main 2dfc6eeee); others = G_nu - (s1-rho0)^-nu as a ball.  Trust: ARB.
 """
 from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, sys
@@ -62,7 +62,7 @@ for name, (re0, im0) in OBJ.items():
                      "abs_others_upper": hi_other.str(12), "ratio_lower": ratio_lo.str(6),
                      "ratio_upper": (abs(term).upper() / abs(other).lower()).str(6) if abs(other).lower() > 0 else "inf"})
         print(name, nu, "ratio in [", ratio_lo.str(6), ",", rows[-1]["ratio_upper"], "]")
-    out["objects"][name] = {"rho0_box": box["box"], "rho0_box_winding": box["winding"], "s1": f"3/2 + i*{float(gam)!r}",
+    out["objects"][name] = {"rho0_box": box["box"], "rho0_box_winding": box["winding"], "s1": f"3/2 + i*{float(gam)!r}", "s1_im_exact": f"{gam.numerator}/{gam.denominator}",
                             "rows": rows}
     ctx.cap = 10
 json.dump(out, open(cert_path("P_dominance_ratios.cert.json"), "w"), indent=1)
