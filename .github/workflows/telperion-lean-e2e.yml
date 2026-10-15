@@ -3790,7 +3790,12 @@ jobs:
 
       - name: Unit tests (self-check pass + negative-control refusals + rigorous winding)
         working-directory: telperion
-        run: PYTHONPATH=src python -m pytest tests/test_emit_winding_box_zero.py tests/test_arb_winding.py -q
+        # TELPERION_REQUIRE_FLINT (2026-10-15, mirrors telperion-test.yml / #742): python-flint is
+        # installed in this job, so tests/test_flint_required.py turns a missing flint or an unfound
+        # libflint into a FAILURE instead of letting the rigorous tests skip silently; -rs lists skips.
+        env:
+          TELPERION_REQUIRE_FLINT: "1"
+        run: PYTHONPATH=src python -m pytest tests/test_flint_required.py tests/test_emit_winding_box_zero.py tests/test_arb_winding.py -q -rs
   speiser-box-probe-compiles:
     needs: changes
     if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.speiser_box_probe == 'true' || needs.changes.outputs.src == 'true')
@@ -3869,7 +3874,12 @@ jobs:
 
       - name: Emitter self-check / negative-control tests (RH Face 2)
         working-directory: telperion
-        run: PYTHONPATH=src python -m pytest tests/test_emit_robin_growth.py -q
+        # TELPERION_REQUIRE_FLINT (2026-10-15, mirrors telperion-test.yml / #742): python-flint is
+        # installed in this job, so tests/test_flint_required.py turns a missing flint or an unfound
+        # libflint into a FAILURE instead of letting the rigorous tests skip silently; -rs lists skips.
+        env:
+          TELPERION_REQUIRE_FLINT: "1"
+        run: PYTHONPATH=src python -m pytest tests/test_flint_required.py tests/test_emit_robin_growth.py -q -rs
 
       - name: Regenerate RobinGrowth Lean from the family definition
         working-directory: telperion
@@ -3907,7 +3917,12 @@ jobs:
 
       - name: Emitter self-check / negative-control tests (RH Face 6)
         working-directory: telperion
-        run: PYTHONPATH=src python -m pytest tests/test_emit_baez_duarte.py -q
+        # TELPERION_REQUIRE_FLINT (2026-10-15, mirrors telperion-test.yml / #742): python-flint is
+        # installed in this job, so tests/test_flint_required.py turns a missing flint or an unfound
+        # libflint into a FAILURE instead of letting the rigorous tests skip silently; -rs lists skips.
+        env:
+          TELPERION_REQUIRE_FLINT: "1"
+        run: PYTHONPATH=src python -m pytest tests/test_flint_required.py tests/test_emit_baez_duarte.py -q -rs
 
       - name: Regenerate BaezDuarte Lean from the family definition
         working-directory: telperion
@@ -3945,7 +3960,12 @@ jobs:
 
       - name: Emitter self-check / negative-control tests (RH Face 5)
         working-directory: telperion
-        run: PYTHONPATH=src python -m pytest tests/test_emit_lehmer_pair.py -q
+        # TELPERION_REQUIRE_FLINT (2026-10-15, mirrors telperion-test.yml / #742): python-flint is
+        # installed in this job, so tests/test_flint_required.py turns a missing flint or an unfound
+        # libflint into a FAILURE instead of letting the rigorous tests skip silently; -rs lists skips.
+        env:
+          TELPERION_REQUIRE_FLINT: "1"
+        run: PYTHONPATH=src python -m pytest tests/test_flint_required.py tests/test_emit_lehmer_pair.py -q -rs
 
       - name: Regenerate LehmerPair Lean from the family definition
         working-directory: telperion
@@ -3983,7 +4003,12 @@ jobs:
 
       - name: Emitter self-check / negative-control tests (RH Face 4)
         working-directory: telperion
-        run: PYTHONPATH=src python -m pytest tests/test_emit_bagchi_recurrence.py -q
+        # TELPERION_REQUIRE_FLINT (2026-10-15, mirrors telperion-test.yml / #742): python-flint is
+        # installed in this job, so tests/test_flint_required.py turns a missing flint or an unfound
+        # libflint into a FAILURE instead of letting the rigorous tests skip silently; -rs lists skips.
+        env:
+          TELPERION_REQUIRE_FLINT: "1"
+        run: PYTHONPATH=src python -m pytest tests/test_flint_required.py tests/test_emit_bagchi_recurrence.py -q -rs
 
       - name: Regenerate BagchiRecurrence Lean from the family definition
         working-directory: telperion
