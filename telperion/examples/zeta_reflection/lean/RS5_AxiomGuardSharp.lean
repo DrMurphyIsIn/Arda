@@ -1,6 +1,6 @@
 /-  RS5_AxiomGuardSharp.lean -- kernel-axiom guard of the RSC0 Phase 3 modules (RS5_EvalSharp: the
     sharpened band predicate; RS5_ZSharp: its sign lemmas via `RSInt.rs_Z_C0'`; RS5_BandSharp: band
-    soundness; RS5_DemoSharp: the read-back controls).
+    soundness; RS5_DemoSharp: the read-back controls; RS5_HardPairsSharp: the two hard close pairs).
 
     Not yet a `lean_lib` (lakefile.toml untouched).  Run, after writing the oleans to `.lake/rsc0_side`
     with `lake env lean -o`, as
@@ -13,6 +13,7 @@
     conjecture1_proved = False.
 -/
 import RS5_DemoSharp
+import RS5_HardPairsSharp
 
 /-! ### RS5_EvalSharp (0 theorems; definitions: HeightOK, PosOK', NegOK', sampleOK', bandAux', bandOK') -/
 
@@ -60,3 +61,15 @@ import RS5_DemoSharp
 #print axioms RS5.DemoSharp.negs_NegOK'
 #print axioms RS5.DemoSharp.negs_accepted
 #print axioms RS5.DemoSharp.neg_sign
+
+/-! ### RS5_HardPairsSharp (10 theorems; definitions: p87761, p95248, p87761f) -/
+#print axioms RS5.HardPairsSharp.p87761_old_rejected
+#print axioms RS5.HardPairsSharp.p87761_new_accepted
+#print axioms RS5.HardPairsSharp.p87761_pos
+#print axioms RS5.HardPairsSharp.p87761_sign
+#print axioms RS5.HardPairsSharp.p95248_old_rejected
+#print axioms RS5.HardPairsSharp.p95248_new_accepted
+#print axioms RS5.HardPairsSharp.p95248_pos
+#print axioms RS5.HardPairsSharp.p95248_sign
+#print axioms RS5.HardPairsSharp.p87761f_old_accepted
+#print axioms RS5.HardPairsSharp.p87761f_new_accepted

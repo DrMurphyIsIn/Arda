@@ -129,6 +129,9 @@ def main():
             continue
         samples.append(dict(tn=tn, tq=tq_, E=E, cert=c, pos=pos, t=t, Z=zg,
                             hw=(hi - lo) / 2 / o / o, margin=13 / 5 * E / o))
+    if not samples:
+        print('DROPPED', dropped, file=sys.stderr)
+        raise SystemExit('every sample of the band was dropped by the 13/5 test')
     K = sum(1 for a, b in zip(samples, samples[1:]) if a['pos'] != b['pos'])
     first_ok = samples[0]['tn'] == T0 << tq
     last_ok = samples[-1]['tn'] == T1 << tq

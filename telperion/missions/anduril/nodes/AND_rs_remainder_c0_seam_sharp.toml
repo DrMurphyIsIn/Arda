@@ -1,0 +1,19 @@
+created = "2026-10-15"
+depends_on = []
+kind = "lemma"
+name = "AND.rs_remainder_c0_seam_sharp"
+statement_module = "Statements.AND_rs_remainder_c0_seam_sharp"
+status = "draft"
+title = "Sharpened Riemann-Siegel C0 remainder from the seam (RSC0 Phase 2): for t >= 509 the C0-corrected RS remainder is at most (21/25) t^(-3/4) (was 13/5). Explicit finite-height inequality, NOT RH. conjecture1_proved = False. DRAFT: kernel-checked artifact on lean/rs-c0-sharper (local), no read-back, no grant."
+updated = "2026-10-15"
+
+[author]
+date = "2026-10-15"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01TeEsdE4SroprJqfYm9qcKc"
+
+[proof]
+artifact = "../../examples/zeta_reflection/lean/RS_B3Sharp.lean"
+artifact_kind = "lean_module"
+closure_clean = false
+via = "direct"

@@ -113,21 +113,28 @@ def main():
     args = sys.argv[1:]
     margin = 'auto'
     if '--out' in args:
-        i = args.index('--out'); OUT = args[i + 1]; del args[i:i + 2]
+        i = args.index('--out'); OUT = os.path.abspath(args[i + 1]); del args[i:i + 2]
         os.makedirs(OUT, exist_ok=True)
     if '--margin' in args:
         i = args.index('--margin'); margin = args[i + 1]; del args[i:i + 2]
     if margin not in ('auto', '13/5', '3/5'):
         raise SystemExit(f'--margin must be auto, 13/5 or 3/5, not {margin}')
     tn0, tn1, tq, tag = int(args[0]), int(args[1]), int(args[2]), args[3]
+    if margin == '3/5' and tn0 < SHARP_T * (1 << tq):   # refuse before any Lean run
+        raise SystemExit(f'--margin 3/5 needs the whole band at t >= {SHARP_T} (tn0 >= {SHARP_T << tq})')
     T0 = mp.mpf(tn0) / (1 << tq); T1 = mp.mpf(tn1) / (1 << tq)
     mp.mp.dps = 30
     tns, zs, K_grid = select(tn0, tn1, tq)
     Nd = int(mp.nzeros(T1)) - int(mp.nzeros(T0))
     print(f'band [{T0},{T1}] grid 2^-{tq}: samples {len(tns)}, grid changes {K_grid}, '
           f'mpmath N(T1)-N(T0) = {Nd}', file=sys.stderr)
-    certs = [(tn, tq, c) for tn, c in zip(tns, rs4_certgen.certs([(tn, tq) for tn in tns], workdir=OUT,
-                                                                   tag=f'{tag}_certs', lock=LOCK, isl=ISL))]
+    skipped = []
+    cs = rs4_certgen.certs([(tn, tq) for tn in tns], workdir=OUT, tag=f'{tag}_certs', lock=LOCK, isl=ISL, skipped=skipped)
+    if skipped:
+        print('SKIPPED (degenerate certificate points)', skipped, file=sys.stderr)
+    keep = [i for i, c in enumerate(cs) if c is not None]
+    tns, zs = [tns[i] for i in keep], [zs[i] for i in keep]
+    certs = [(tns[j], tq, cs[i]) for j, i in enumerate(keep)]
     boxes = []
     B = 1500
     for bi in range(0, len(certs), B):
@@ -135,7 +142,7 @@ def main():
     samples = []
     dropped = []
     whole = tn0 >= SHARP_T * (1 << tq)   # the whole band [tn0, tn1] lies in t >= SHARP_T
-    straddles = tn0 < SHARP_T * (1 << tq) <= tn1
+    straddles = tn0 < SHARP_T * (1 << tq) < tn1
     if margin == '3/5' and not whole:
         raise SystemExit(f'--margin 3/5 needs the whole band at t >= {SHARP_T} (tn0 >= {SHARP_T << tq})')
     use_3_5 = whole if margin == 'auto' else (margin == '3/5')
@@ -158,7 +165,7 @@ def main():
     if not samples:
         print('DROPPED', dropped, file=sys.stderr)
         json.dump(dict(report=dict(tn0=tn0, tn1=tn1, tq=tq, n_samples=0, dropped=dropped), samples=[]),
-                  open(os.path.join(OUT, f'band_{tag}.json'), 'w'))
+                  open(os.path.join(OUT, f'band_{tag}.dropped.json'), 'w'))   # never overwrite band_<tag>.json
         raise SystemExit(f'every sample of the band was dropped by the {num}/{den} test')
     K = sum(1 for a, b in zip(samples, samples[1:]) if a['pos'] != b['pos'])
     first_ok = samples[0]['tn'] == tn0

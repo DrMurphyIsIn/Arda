@@ -1382,3 +1382,49 @@ roots = ["H11K_h11000"]
 [[lean_lib]]
 name = "H11K_AxiomGuard"
 roots = ["H11K_AxiomGuard"]
+
+# RSC0 Phase 2 (2026-10-15): the sharpened Riemann-Siegel C0 remainder, (3/5) t^(-3/4) from t >= 4250 and
+# (21/25) t^(-3/4) from t >= 509, beside RS_B3Bound / RSSeam_B3Bound (read-only imports; nothing existing changed).
+[[lean_lib]]
+name = "RS_B3Sharp"
+roots = ["RS_B3Sharp"]
+
+# RSC0 Phase 2: rs_Z_C0' / rs_Z_C0_seam', the Z formula with the sharpened remainders (phase discharged as RS_Bridge).
+[[lean_lib]]
+name = "RS_BridgeSharp"
+roots = ["RS_BridgeSharp"]
+
+# RSC0 Phase 2: kernel-axiom guard of RS_B3Sharp + RS_BridgeSharp (71 theorems); not a default target.
+[[lean_lib]]
+name = "RS_AxiomGuardSharp"
+roots = ["RS_AxiomGuardSharp"]
+
+# RSC0 Phase 3: lane B5 band predicate with the sharpened margin, bandOK' (3/5, t >= 4250), beside RS5_Eval.
+[[lean_lib]]
+name = "RS5_EvalSharp"
+roots = ["RS5_EvalSharp"]
+
+# RSC0 Phase 3: sign lemmas for sampleOK' via RSInt.rs_Z_C0'.
+[[lean_lib]]
+name = "RS5_ZSharp"
+roots = ["RS5_ZSharp"]
+
+# RSC0 Phase 3: band soundness over bandOK' (BandZeros, glues with RS5_Band).
+[[lean_lib]]
+name = "RS5_BandSharp"
+roots = ["RS5_BandSharp"]
+
+# RSC0 Phase 3: read-back controls for bandOK' (knife edge, E-decrement, height boundary, PosOK' threshold, NegOK').
+[[lean_lib]]
+name = "RS5_DemoSharp"
+roots = ["RS5_DemoSharp"]
+
+# RSC0 Phase 3: kernel-axiom guard of the RS5 *Sharp modules (39 theorems); not a default target.
+[[lean_lib]]
+name = "RS5_AxiomGuardSharp"
+roots = ["RS5_AxiomGuardSharp"]
+
+# RSC0 Phase 4: the Tier-1 payoff at the two hard close pairs (n = 87761, 95248), kernel-decided under bandOK''s sampleOK'.
+[[lean_lib]]
+name = "RS5_HardPairsSharp"
+roots = ["RS5_HardPairsSharp"]

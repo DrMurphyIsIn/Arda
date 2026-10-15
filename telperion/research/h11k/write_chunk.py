@@ -10,7 +10,8 @@ JSON_DIR = SCR
 if '--json-dir' in args:
     i = args.index('--json-dir'); JSON_DIR = args[i + 1]; del args[i:i + 2]
 if '--out' in args:
-    i = args.index('--out'); W.ISL = args[i + 1]; del args[i:i + 2]
+    i = args.index('--out'); W.ISL = os.path.abspath(args[i + 1]); del args[i:i + 2]
+    os.makedirs(W.ISL, exist_ok=True)
 tag, name = args[0], args[1]
 d = json.load(open(os.path.join(JSON_DIR, f'band_{tag}.json')))
 rep, S = d['report'], d['samples']

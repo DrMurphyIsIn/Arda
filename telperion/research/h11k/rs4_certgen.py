@@ -96,10 +96,38 @@ def lean_reduce(lines, workdir=None, tag='rs4cg', lock=None, isl=None):
     return out
 
 
-def certs(pts, workdir=None, tag='rs4cg', lock=None, isl=None):
+def _bool(tok):
+    if tok not in ('true', 'false'):
+        raise RuntimeError(f'unexpected Bool token {tok!r} in #reduce output')
+    return tok == 'true'
+
+
+def certs(pts, workdir=None, tag='rs4cg', lock=None, isl=None, skipped=None):
     """Certificates for a list of (tn, tq), batched in ONE Lean run.  Returns a list of 19-field lists in RS4.Cert order
-    with the box fields zlo = zhi = 0 (placeholders for the caller's exact `RS4.zBox`)."""
-    C = [stage1(tn, tq) for tn, tq in pts]
+    with the box fields zlo = zhi = 0 (placeholders for the caller's exact `RS4.zBox`).
+
+    skipped: if a list is passed, a degenerate point (a = sqrt(t/2pi) too close to an integer, or a cos(2 pi p) ball
+    containing 0) yields None in the result and (tn, tq, reason) is appended to `skipped`, instead of aborting the batch."""
+    if skipped is None:
+        C = [stage1(tn, tq) for tn, tq in pts]
+    else:
+        C = []
+        for tn, tq in pts:
+            try:
+                C.append(stage1(tn, tq))
+            except ValueError as exc:
+                C.append(None); skipped.append((tn, tq, str(exc)))
+    live = [(p, c) for p, c in zip(pts, C) if c is not None]
+    res_all = _certs_live(live, workdir, tag, lock, isl, skipped)
+    it = iter(res_all)
+    return [None if c is None else next(it) for c in C]
+
+
+def _certs_live(live, workdir, tag, lock, isl, skipped):
+    if not live:
+        return []
+    pts = [p for p, _ in live]
+    C = [c for _, c in live]
     lines = []
     for (tn, tq), c in zip(pts, C):
         cfg = f'(ArbEcon.OrderK.cfg64 {tn} {tq})'
@@ -115,8 +143,8 @@ def certs(pts, workdir=None, tag='rs4cg', lock=None, isl=None):
         Q = 1 << tq
         llo, lhi = int(tup[3 * i][0]), int(tup[3 * i][1])
         U, V = tup[3 * i + 1], tup[3 * i + 2]
-        Ucm, Ucs, Ucr = int(U[0]), U[1] == 'true', int(U[2])
-        Vcm, Vcs, Vcr = int(V[0]), V[1] == 'true', int(V[2])
+        Ucm, Ucs, Ucr = int(U[0]), _bool(U[1]), int(U[2])
+        Vcm, Vcs, Vcr = int(V[0]), _bool(V[1]), int(V[2])
         c['TH0'] = (4 * tn * tn * (llo + c['LG0']) - 2 * tn * tn * o - tn * Q * (hp + rp) - 4 * o * Q * Q) // (4 * tn * Q)
         c['TH1'] = _cdiv(4 * tn * tn * (lhi + c['LG1']) + 4 * o * Q * Q - 2 * tn * tn * o - tn * Q * (hp - rp),
                          4 * tn * Q)
@@ -130,7 +158,9 @@ def certs(pts, workdir=None, tag='rs4cg', lock=None, isl=None):
             c['F0'] = min((Nm + rN) * o // (D - rD), (Nm + rN) * o // (D + rD))
             c['F1'] = max(_cdiv((Nm - rN) * o, D - rD), _cdiv((Nm - rN) * o, D + rD))
         else:
-            raise ValueError(f'cos(2 pi p) ball contains 0 at tn={tn}, tq={tq}')
+            if skipped is None:
+                raise ValueError(f'cos(2 pi p) ball contains 0 at tn={tn}, tq={tq}')
+            skipped.append((tn, tq, 'cos(2 pi p) ball contains 0')); res.append(None); continue
         res.append([c[k] for k in FIELDS])
     return res
 
@@ -143,8 +173,8 @@ def cert(tn, tq):
 
 def E_min(tn, tq):
     """The least margin numerator E with RS5.MarginOK: one^4 (2^tq)^3 <= E^4 tn^3, i.e. E >= 2^P t^(-3/4)."""
-    t = mp.mpf(tn) / (1 << tq)
     with mp.workdps(40):
+        t = mp.mpf(tn) / (1 << tq)
         E = max(1, int(mp.floor(o * t ** mp.mpf(-0.75))) - 2)
     while not (o ** 4 * (1 << tq) ** 3 <= E ** 4 * tn ** 3):
         E += 1
