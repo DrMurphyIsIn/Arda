@@ -1,0 +1,61 @@
+{
+ "object": "B REAL twist, rho0 = 0.85 + 21.02204i",
+ "trust_class": "arb",
+ "conjecture1_proved": false,
+ "provenance": "arb_fakes, Arda main 2dfc6eeee (guarded), via callable; script on unpushed branch wall3/telperion-certs",
+ "zero_box": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "<function zetaP at 0x1060560c0>",
+  "box": {
+   "re0": "21/25",
+   "re1": "43/50",
+   "im0": "65647/3125",
+   "im1": "262963/12500"
+  },
+  "winding": 1,
+  "zeros_in_box": 1,
+  "poles_in_box": 0,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 128,
+  "recheck_prec": 192,
+  "segments": 67,
+  "recheck_segments": 75,
+  "min_segment": "3/3200",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "count_0.7_1.5_x_0.05_100": {
+  "winding": 1,
+  "segments": 13440,
+  "min_segment": "1999/655360"
+ },
+ "zeta_zero_free_for_pole_exclusion": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "zeta",
+  "box": {
+   "re0": "17/20",
+   "re1": "33/20",
+   "im0": "-524551/25000",
+   "im1": "3027301/25000"
+  },
+  "winding": -1,
+  "zeros_in_box": 0,
+  "poles_in_box": 1,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 96,
+  "recheck_prec": 144,
+  "segments": 1114,
+  "recheck_segments": 1319,
+  "min_segment": "887963/25600000",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "residue_A": {
+  "arb": "[1.04016021066648 +/- 8.81e-15] + [+/- 8.29e-15]j",
+  "B_file": "/Users/peterwmurphy/rh-team/wall3/B/out/tw_REAL_b0.85_g21.02204_s0_X1e+09.json",
+  "B_float": 1.0401602106664787,
+  "contains_B_float": true
+ }
+}

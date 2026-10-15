@@ -1,0 +1,154 @@
+{
+ "right_strip": {
+  "EP5": {
+   "kind": "offline_zero_count",
+   "trust_class": "arb",
+   "object": "EP5",
+   "box": {
+    "re0": "19/20",
+    "re1": "8/5",
+    "im0": "54673/4000",
+    "im1": "70673/4000"
+   },
+   "strips": [
+    {
+     "im0": "54673/4000",
+     "im1": "62673/4000",
+     "winding": 0,
+     "segments": 67,
+     "min_segment": "1/128"
+    },
+    {
+     "im0": "62673/4000",
+     "im1": "70673/4000",
+     "winding": 0,
+     "segments": 74,
+     "min_segment": "1/128"
+    }
+   ],
+   "total": 0,
+   "prec": 96,
+   "conjecture1_proved": false
+  },
+  "DH": {
+   "kind": "offline_zero_count",
+   "trust_class": "arb",
+   "object": "DH",
+   "box": {
+    "re0": "19/20",
+    "re1": "8/5",
+    "im0": "20924837/250000",
+    "im1": "21924837/250000"
+   },
+   "strips": [
+    {
+     "im0": "20924837/250000",
+     "im1": "21424837/250000",
+     "winding": 0,
+     "segments": 41,
+     "min_segment": "1/16"
+    },
+    {
+     "im0": "21424837/250000",
+     "im1": "21924837/250000",
+     "winding": 0,
+     "segments": 42,
+     "min_segment": "1/16"
+    }
+   ],
+   "total": 0,
+   "prec": 96,
+   "conjecture1_proved": false
+  }
+ },
+ "EP5": {
+  "rect_count": {
+   "kind": "offline_zero_count",
+   "trust_class": "arb",
+   "object": "EP5",
+   "box": {
+    "re0": "1/20",
+    "re1": "8/5",
+    "im0": "54673/4000",
+    "im1": "70673/4000"
+   },
+   "strips": [
+    {
+     "im0": "54673/4000",
+     "im1": "62673/4000",
+     "winding": 2,
+     "segments": 248,
+     "min_segment": "31/83886080"
+    },
+    {
+     "im0": "62673/4000",
+     "im1": "70673/4000",
+     "winding": 1,
+     "segments": 268,
+     "min_segment": "31/83886080"
+    }
+   ],
+   "total": 3,
+   "prec": 96,
+   "conjecture1_proved": false
+  },
+  "right_halfplane": {
+   "kind": "dominant_term_nonvanishing",
+   "trust_class": "arb",
+   "object": "EP5",
+   "sigma": "8/5",
+   "n0": 1,
+   "a_n0": 2,
+   "tail_upper": "921613258246387570734977864077239839118039043/713623846352979940529142984724747568191373312",
+   "tail_upper_float": 1.2914552434820539,
+   "certified": true,
+   "claim": "EP5(s) != 0 for all Re s >= 8/5",
+   "conjecture1_proved": false
+  }
+ },
+ "DH": {
+  "rect_count": {
+   "kind": "offline_zero_count",
+   "trust_class": "arb",
+   "object": "DH",
+   "box": {
+    "re0": "1/20",
+    "re1": "8/5",
+    "im0": "20924837/250000",
+    "im1": "21924837/250000"
+   },
+   "strips": [
+    {
+     "im0": "20924837/250000",
+     "im1": "21424837/250000",
+     "winding": 0,
+     "segments": 164,
+     "min_segment": "31/83886080"
+    },
+    {
+     "im0": "21424837/250000",
+     "im1": "21924837/250000",
+     "winding": 3,
+     "segments": 174,
+     "min_segment": "31/83886080"
+    }
+   ],
+   "total": 3,
+   "prec": 96,
+   "conjecture1_proved": false
+  },
+  "right_halfplane": {
+   "kind": "dominant_term_nonvanishing",
+   "trust_class": "arb",
+   "object": "DH",
+   "sigma": "8/5",
+   "n0": 1,
+   "a_n0": 1,
+   "tail_upper": "821654607705737095827523052659402460999698681/1427247692705959881058285969449495136382746624",
+   "tail_upper_float": 0.5756916699917297,
+   "certified": true,
+   "claim": "DH(s) != 0 for all Re s >= 8/5",
+   "conjecture1_proved": false
+  }
+ }
+}

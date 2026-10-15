@@ -1,0 +1,25 @@
+{
+ "kind": "R_rouche_margins",
+ "trust_class": "arb",
+ "rows": [
+  {
+   "tau": "652063/1000",
+   "arcs": 1221,
+   "failing_arcs_exact": 0,
+   "min_rel_margin": 0.0007339192225521989
+  },
+  {
+   "tau": "666389/1000",
+   "arcs": 653,
+   "failing_arcs_exact": 0,
+   "min_rel_margin": 0.0012751391897388475
+  },
+  {
+   "tau": "37309/40",
+   "arcs": 901,
+   "failing_arcs_exact": 0,
+   "min_rel_margin": 0.0005575083238484983
+  }
+ ],
+ "conjecture1_proved": false
+}

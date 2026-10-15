@@ -1,0 +1,107 @@
+{
+ "object": "N8 continuous Beurling: exp(E1((s-1)v0) - E1((s-rho0)v0) - E1((s-rhob)v0)), v0 = log 103, rho0 = 0.85 + 14.134725 i",
+ "trust_class": "arb",
+ "conjecture1_proved": false,
+ "check_Re_s_2": {
+  "closed_form": "[0.99951680984146025193 +/- 4.50e-21] + [-0.00044671018172039440368 +/- 3.93e-24]j",
+  "direct_E1": "[0.999516809841 +/- 6.80e-13] + [-0.000446710182 +/- 4.99e-13]j",
+  "overlap": true
+ },
+ "a_zero_box": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "<function zetaP at 0x109f9e840>",
+  "box": {
+   "re0": "21/25",
+   "re1": "43/50",
+   "im0": "353/25",
+   "im1": "283/20"
+  },
+  "winding": 1,
+  "zeros_in_box": 1,
+  "poles_in_box": 0,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 128,
+  "recheck_prec": 192,
+  "segments": 32,
+  "recheck_segments": 52,
+  "min_segment": "1/400",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "b_count": {
+  "box": [
+   "0.3",
+   "1.5",
+   "1/20",
+   "100"
+  ],
+  "winding": 1,
+  "segments": 1215,
+  "note": "closed box excludes s = 1 (Im >= 1/20): winding = zeros"
+ },
+ "b_count_with_pole": {
+  "box": [
+   "0.3",
+   "1.5",
+   "-1",
+   "100"
+  ],
+  "winding": 0,
+  "poles_in_box": 1,
+  "zeros_in_box": 1,
+  "recheck_prec192_winding": 0,
+  "segments": 1302
+ },
+ "c_vertical": [
+  {
+   "sigma": "0.6",
+   "t": "50",
+   "abs_zetaP_minus_1": "[0.05534780814 +/- 4.99e-12]"
+  },
+  {
+   "sigma": "0.6",
+   "t": "200",
+   "abs_zetaP_minus_1": "[0.01308731640 +/- 3.53e-12]"
+  },
+  {
+   "sigma": "0.6",
+   "t": "1000",
+   "abs_zetaP_minus_1": "[0.002610543701 +/- 3.92e-13]"
+  },
+  {
+   "sigma": "0.6",
+   "t": "5000",
+   "abs_zetaP_minus_1": "[0.0005214034375 +/- 3.37e-14]"
+  },
+  {
+   "sigma": "0",
+   "t": "50",
+   "abs_zetaP_minus_1": "[1.137218119 +/- 2.75e-10]"
+  },
+  {
+   "sigma": "0",
+   "t": "200",
+   "abs_zetaP_minus_1": "[0.2148669493 +/- 3.45e-11]"
+  },
+  {
+   "sigma": "0",
+   "t": "1000",
+   "abs_zetaP_minus_1": "[0.04276266135 +/- 2.92e-12]"
+  },
+  {
+   "sigma": "0",
+   "t": "5000",
+   "abs_zetaP_minus_1": "[0.008380046848 +/- 4.80e-13]"
+  }
+ ],
+ "residue_A": "[0.122010758984379 +/- 1.53e-16] + [+/- 9.33e-44]j",
+ "zetaP_prime_rho0": "[8.08791607143056 +/- 1.73e-15] + [0.257654404781671 +/- 3.15e-16]j",
+ "D1_floats": {
+  "A": 0.122010758984,
+  "zetaP_prime_rho0": [
+   8.0879161,
+   0.2576544
+  ]
+ }
+}

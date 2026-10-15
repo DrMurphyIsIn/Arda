@@ -1,0 +1,126 @@
+{
+ "conjecture1_proved": false,
+ "trust_class": "arb",
+ "provenance": "arb_fakes, Arda main 2dfc6eeee; script on unpushed branch wall3/telperion-certs",
+ "ZP_zero_box": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "<function ZP at 0x1073560c0>",
+  "box": {
+   "re0": "3665374713521335/4503599627370496",
+   "re1": "3755446706068745/4503599627370496",
+   "im0": "5097354361926247/562949953421312",
+   "im1": "5108613360994673/562949953421312"
+  },
+  "winding": 1,
+  "zeros_in_box": 1,
+  "poles_in_box": 0,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 128,
+  "recheck_prec": 192,
+  "segments": 32,
+  "recheck_segments": 52,
+  "min_segment": "5629499534213/2251799813685248",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "ZP_count": {
+  "box": [
+   "0.7",
+   "3/2",
+   "1/20",
+   "100"
+  ],
+  "winding": 11,
+  "expected_from_factor": 11,
+  "segments": 1659,
+  "note": "ZP has no poles in this box (zeta's pole s=1 has Im 0); zeta has no zeros there (classical RH verification at this height, and in any case they would add, not cancel); the factor contributes k = 1..11"
+ },
+ "SH_zero_box": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "<function SH at 0x10b402520>",
+  "box": {
+   "re0": "79/100",
+   "re1": "81/100",
+   "im0": "939210766359/156250000000",
+   "im1": "942335766359/156250000000"
+  },
+  "winding": 1,
+  "zeros_in_box": 1,
+  "poles_in_box": 0,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 128,
+  "recheck_prec": 192,
+  "segments": 32,
+  "recheck_segments": 52,
+  "min_segment": "1/400",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "SYM_zero_box": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "<function SYM at 0x10b402660>",
+  "box": {
+   "re0": "21/25",
+   "re1": "43/50",
+   "im0": "141247/10000",
+   "im1": "141447/10000"
+  },
+  "winding": 1,
+  "zeros_in_box": 1,
+  "poles_in_box": 0,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 128,
+  "recheck_prec": 192,
+  "segments": 64,
+  "recheck_segments": 52,
+  "min_segment": "1/800",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "SYM_pole_exclusion_zeta_zero_free": {
+  "w=s+r0-1": 0,
+  "w=s+r0b-1": 0,
+  "w=s+1-r0b": 0
+ },
+ "ZP5_zero_box": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "<function ZP5 at 0x10b402e80>",
+  "box": {
+   "re0": "7106623627258201/9007199254740992",
+   "re1": "7286767612353021/9007199254740992",
+   "im0": "8768424103294601/2251799813685248",
+   "im1": "8813460099568305/2251799813685248"
+  },
+  "winding": 1,
+  "zeros_in_box": 1,
+  "poles_in_box": 0,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 128,
+  "recheck_prec": 192,
+  "segments": 32,
+  "recheck_segments": 52,
+  "min_segment": "5629499534213/2251799813685248",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "ZP5_centre_float": [
+  0.7989937178327201,
+  3.903962531662343
+ ],
+ "S_TW0_negative_prime_weights": {
+  "negative": [
+   23,
+   53
+  ],
+  "undecided": [],
+  "S_claim": [
+   23,
+   53
+  ],
+  "agrees": true
+ }
+}
