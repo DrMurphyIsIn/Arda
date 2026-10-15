@@ -31,7 +31,7 @@ import RS5_DemoSharp
 #print axioms RS5.band_sound'
 #print axioms RS5.bandZeros_of_ok'
 
-/-! ### RS5_DemoSharp (14 theorems; definitions: knife, knife_Edec, low) -/
+/-! ### RS5_DemoSharp (28 theorems; definitions: knife, knife_Edec, low, at4250, below4250, knife_E35, knife_E35m, negs) -/
 #print axioms RS5.DemoSharp.knife_height
 #print axioms RS5.DemoSharp.knife_tight
 #print axioms RS5.DemoSharp.knife_old_rejected
@@ -46,3 +46,17 @@ import RS5_DemoSharp
 #print axioms RS5.DemoSharp.low_old_accepted
 #print axioms RS5.DemoSharp.low_height_fails
 #print axioms RS5.DemoSharp.low_refused
+#print axioms RS5.DemoSharp.at4250_height
+#print axioms RS5.DemoSharp.at4250_accepted
+#print axioms RS5.DemoSharp.below4250_height_fails
+#print axioms RS5.DemoSharp.below4250_old_accepted
+#print axioms RS5.DemoSharp.below4250_refused
+#print axioms RS5.DemoSharp.knife_E35_margin
+#print axioms RS5.DemoSharp.knife_E35_PosOK'_false
+#print axioms RS5.DemoSharp.knife_E35_rejected
+#print axioms RS5.DemoSharp.knife_E35m_PosOK'_true
+#print axioms RS5.DemoSharp.knife_E35m_accepted
+#print axioms RS5.DemoSharp.negs_pos
+#print axioms RS5.DemoSharp.negs_NegOK'
+#print axioms RS5.DemoSharp.negs_accepted
+#print axioms RS5.DemoSharp.neg_sign

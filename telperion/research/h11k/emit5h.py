@@ -4,19 +4,21 @@
 #                    one sample per sign-constancy run = the grid point of max |Z| in the run (the
 #                    endpoints T0 and T1 are forced samples).  Cross-check the change count against
 #                    mpmath nzeros(T1) - nzeros(T0).
-# Stage 2 (certs):   RS4 certificate per sample (lane B4 emitter, placeholder z box) and margin E.
+# Stage 2 (certs):   RS4 certificate per sample (rs4_certgen.py, in this directory; placeholder z box), batched in one
+#                    Lean run, and margin E.  (The original lane-B4 emitter lived in a vanished session scratchpad.)
 # Stage 3 (boxes):   the EXACT assembled box (RS4.zBox) of every sample is obtained by `#reduce` in Lean
 #                    (the evaluator is Nat.rec-based and cannot be #eval-compiled); zlo/zhi := box.
 # Stage 4 (lean):    write the band file.
 import sys, json, math, subprocess, os
 import numpy as np
 import mpmath as mp
-sys.path.insert(0, '/private/tmp/claude-0/-Users-peterwmurphy/ef083c48-579d-4bec-a689-c30fdccec2a1/scratchpad/b4')
-import emit as b4
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rs4_certgen
 
 SCR = os.path.dirname(os.path.abspath(__file__))
 ISL = str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection/lean')
-LOCK = '/private/tmp/claude-0/-Users-peterwmurphy/ef083c48-579d-4bec-a689-c30fdccec2a1/scratchpad/leanlock.sh'
+LOCK = os.environ.get('ARDA_LEANLOCK', os.path.expanduser('~/hodge-engine/leanlock.sh'))
+OUT = SCR  # where reduce_*.lean and band_<tag>.json go; override with --out DIR (keep scratch out of the repo)
 P = 64; o = 1 << P
 # RSC0 Phase 3 (Tier 0): a band WHOLLY at t >= SHARP_T is certified with the sharpened margin (3/5) t^(-3/4)
 # (RSInt.rs_Z_C0', RS_BridgeSharp; kernel predicate RS5.bandOK', RS5_EvalSharp).  Straddling or lower bands keep
@@ -76,7 +78,7 @@ def lean_cert(c):
 
 def reduce_boxes(certs, tag):
     """certs: list of (tn, tq, cert list).  Returns list of (lo, hi) from Lean #reduce."""
-    fn = os.path.join(SCR, f'reduce_{tag}.lean')
+    fn = os.path.join(OUT, f'reduce_{tag}.lean')
     with open(fn, 'w') as f:
         f.write('import RS5_Eval\nopen RS4\nset_option maxRecDepth 100000\nset_option format.width 100000\n')
         for (tn, tq, c) in certs:
@@ -106,25 +108,41 @@ def reduce_boxes(certs, tag):
 
 
 def main():
-    tn0, tn1, tq, tag = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
+    # usage: emit5h.py tn0 tn1 tq tag [--out DIR] [--margin auto|13/5|3/5]
+    global OUT
+    args = sys.argv[1:]
+    margin = 'auto'
+    if '--out' in args:
+        i = args.index('--out'); OUT = args[i + 1]; del args[i:i + 2]
+        os.makedirs(OUT, exist_ok=True)
+    if '--margin' in args:
+        i = args.index('--margin'); margin = args[i + 1]; del args[i:i + 2]
+    if margin not in ('auto', '13/5', '3/5'):
+        raise SystemExit(f'--margin must be auto, 13/5 or 3/5, not {margin}')
+    tn0, tn1, tq, tag = int(args[0]), int(args[1]), int(args[2]), args[3]
     T0 = mp.mpf(tn0) / (1 << tq); T1 = mp.mpf(tn1) / (1 << tq)
     mp.mp.dps = 30
     tns, zs, K_grid = select(tn0, tn1, tq)
     Nd = int(mp.nzeros(T1)) - int(mp.nzeros(T0))
     print(f'band [{T0},{T1}] grid 2^-{tq}: samples {len(tns)}, grid changes {K_grid}, '
           f'mpmath N(T1)-N(T0) = {Nd}', file=sys.stderr)
-    certs = []
-    for tn in tns:
-        c, info = b4.cert(tn, tq)
-        certs.append((tn, tq, c))
+    certs = [(tn, tq, c) for tn, c in zip(tns, rs4_certgen.certs([(tn, tq) for tn in tns], workdir=OUT,
+                                                                   tag=f'{tag}_certs', lock=LOCK, isl=ISL))]
     boxes = []
     B = 1500
     for bi in range(0, len(certs), B):
         boxes += reduce_boxes(certs[bi:bi + B], f'{tag}_{bi // B}')
     samples = []
     dropped = []
-    sharp = tn0 >= SHARP_T * (1 << tq)   # the whole band [tn0, tn1] lies in t >= SHARP_T
-    num, den = (3, 5) if sharp else (13, 5)
+    whole = tn0 >= SHARP_T * (1 << tq)   # the whole band [tn0, tn1] lies in t >= SHARP_T
+    straddles = tn0 < SHARP_T * (1 << tq) <= tn1
+    if margin == '3/5' and not whole:
+        raise SystemExit(f'--margin 3/5 needs the whole band at t >= {SHARP_T} (tn0 >= {SHARP_T << tq})')
+    use_3_5 = whole if margin == 'auto' else (margin == '3/5')
+    if straddles:
+        print(f'WARNING: band straddles t = {SHARP_T} (tn = {SHARP_T << tq}); it keeps 13/5 throughout. '
+              f'Split it at tn = {SHARP_T << tq} to certify the upper part with 3/5 (RS5.bandOK\').', file=sys.stderr)
+    num, den = (3, 5) if use_3_5 else (13, 5)
     for (tn, tq_, c), (lo, hi), zg in zip(certs, boxes, zs):
         c = list(c)
         c[17], c[18] = lo, hi
@@ -137,17 +155,23 @@ def main():
             continue
         samples.append(dict(tn=tn, tq=tq_, E=E, cert=c, pos=pos, t=t, Z=zg,
                             hw=(hi - lo) / 2 / o / o, margin=num / den * E / o))
+    if not samples:
+        print('DROPPED', dropped, file=sys.stderr)
+        json.dump(dict(report=dict(tn0=tn0, tn1=tn1, tq=tq, n_samples=0, dropped=dropped), samples=[]),
+                  open(os.path.join(OUT, f'band_{tag}.json'), 'w'))
+        raise SystemExit(f'every sample of the band was dropped by the {num}/{den} test')
     K = sum(1 for a, b in zip(samples, samples[1:]) if a['pos'] != b['pos'])
     first_ok = samples[0]['tn'] == tn0
     last_ok = samples[-1]['tn'] == tn1
     rep = dict(T0=str(T0), T1=str(T1), tn0=tn0, tn1=tn1, tq=tq, n_samples=len(samples), K=K, grid_changes=K_grid,
                mpmath_count=Nd, sharp=(K == Nd), dropped=dropped, endpoints_kept=(first_ok and last_ok),
                max_hw=max(s['hw'] for s in samples), min_absZ=min(abs(s['Z']) for s in samples),
-               sharp_margin=sharp, margin_const=f'{num}/{den}', predicate=("bandOK'" if sharp else 'bandOK'))
+               sharp_margin=use_3_5, margin_const=f'{num}/{den}', predicate=("bandOK'" if use_3_5 else 'bandOK'),
+               straddles_sharp_threshold=straddles, cert_generator='rs4_certgen')
     print(json.dumps({k: v for k, v in rep.items() if k != 'dropped'}), file=sys.stderr)
     if dropped:
         print('DROPPED', dropped, file=sys.stderr)
-    json.dump(dict(report=rep, samples=samples), open(os.path.join(SCR, f'band_{tag}.json'), 'w'))
+    json.dump(dict(report=rep, samples=samples), open(os.path.join(OUT, f'band_{tag}.json'), 'w'))
 
 
 if __name__ == '__main__':
