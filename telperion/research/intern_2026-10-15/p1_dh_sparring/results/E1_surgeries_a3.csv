@@ -1,0 +1,9 @@
+coefficients,min_eig,n_negative(<-1e-10*max),sum_negative,peak_t_of_min_eigvec
+DH,-3.585008e+00,6,8.241079e+00,86.44
+sibling L(chi),-7.743789e-14,0,0.000000e+00,1.90
+DH on prime powers only,-1.539251e+00,20,1.473894e+01,15.78
+DH off prime powers only,-4.160247e+00,22,2.905731e+01,85.02
+Euler product of DH's a(p) (no FE),-1.250040e+00,11,4.668705e+00,0.50
+sibling at primes, DH elsewhere,-4.044553e+00,36,1.734819e+01,86.44
+DH at primes, sibling elsewhere,-3.587634e-01,14,2.037110e+00,3.02
+no primes at all,-4.998986e-01,2,7.115338e-01,0.50

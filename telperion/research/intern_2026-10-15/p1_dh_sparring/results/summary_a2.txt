@@ -1,0 +1,35 @@
+a = 2, n = 188, h = 0.02094, prime-side n <= 54 (53 nonzero P_n); built in 0s
+E0 reproduce: DH min eigenvalue -6.397875e-01 (dh_control.py mp value at a=2: -0.639788)
+E1 surgeries (min eig | #neg | sum|neg| | peak t of the min eigenvector's transform):
+   DH                                       -6.3979e-01     2  1.1515e+00  t=84.52
+   sibling L(chi)                           +1.3223e-11     0  0.0000e+00  t=0.50
+   DH on prime powers only                  -7.6973e-01     6  3.2391e+00  t=15.80
+   DH off prime powers only                 -1.4038e+00     3  3.4200e+00  t=4.06
+   Euler product of DH's a(p) (no FE)       -8.2900e-01     3  1.4093e+00  t=0.50
+   sibling at primes, DH elsewhere          -4.7208e-01     6  1.2765e+00  t=84.55
+   DH at primes, sibling elsewhere          -2.2122e-01     4  4.6845e-01  t=2.87
+   no primes at all                         -3.9746e-01     1  3.9746e-01  t=0.50
+E2 interpolation c = (1-theta) c_DH + theta c_sib (theta, min eig, #neg, peak t):
+   theta=0.000  -6.3979e-01    2  t=84.52
+   theta=0.125  -2.1772e-01    2  t=84.52
+   theta=0.250  +6.4817e-08    0  t=0.50
+   theta=0.375  +8.4902e-08    0  t=0.50
+   theta=0.500  +9.5665e-08    0  t=0.50
+   theta=0.625  +9.6664e-08    0  t=0.50
+   theta=0.750  +8.6444e-08    0  t=0.50
+   theta=0.875  +6.2394e-08    0  t=0.50
+   theta=1.000  +1.3223e-11    0  t=0.50
+   theta=0.975  +2.9996e-08    0  t=0.50
+   onset of positivity theta* = 0.193737 (bisection); witness-only estimate -W_DH(v)/(W_sib(v) - W_DH(v)) = 0.187751
+E3 at the DH witness v (||v|| = 1):  arch+const = 4.163391,  W_DH(v) = -0.639788,  W_sib(v) = 2.767842
+   W_DH(v) - W_sib(v) = -3.407630, by group of n:
+      non prime powers             -2.747139
+      prime powers p^k, k >= 2     -0.478500
+      primes = +-2 mod 5           -0.181990
+      p = 5                        +0.000000
+      primes = +-1 mod 5           +0.000000
+   most negative single-n contributions -(c_DH - c_sib)(n) v^T P_n v:
+      n=18: -0.1044, n=12: -0.1062, n=17: -0.1211, n=13: -0.1491, n=4: -0.1578, n=39: -0.1790, n=34: -0.2741, n=9: -0.2819, n=26: -0.3048, n=6: -0.4786, n=21: -0.5006, n=14: -0.5709
+E5 sparse repair (replace c_DH(n) -> c_sib(n) on a set S; target lambda_min >= -1.0e-08): 34 coefficients differ
+   greedy: |S| = 34 reaches lambda_min = 1.323e-11; trajectory (|S|, lambda_min) = (0, -6.40e-01), (2, -3.22e-01), (4, -2.17e-01), (6, -1.54e-01), (8, -1.44e-01), (10, -1.40e-01), (12, -1.40e-01), (14, -1.40e-01), (16, -1.53e-01), (18, -1.83e-01), (20, -2.07e-01), (22, -1.69e-01), (24, -1.74e-01), (26, -2.94e-01), (28, -3.64e-01), (30, -4.82e-01), (32, -2.68e-01), (34, 1.32e-11), (34, 1.32e-11)
+   GA (40 pop, 60 gens, seed 1): best |S| = 22 with lambda_min = -1.956e-03 (feasible: False)

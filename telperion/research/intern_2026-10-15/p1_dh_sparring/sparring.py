@@ -95,6 +95,8 @@ def coeff_sets(N):
         "Euler product of DH's a(p) (no FE)": c_euler_dh,
         "sibling at primes, DH elsewhere": np.where(is_p, c_sib, c_dh),
         "DH at primes, sibling elsewhere": np.where(is_p, c_dh, c_sib),
+        "sibling + DH's p^k (k>=2) terms": np.where(is_pp & ~is_p, c_dh, c_sib),
+        "sibling + DH's non-prime-power terms": np.where(is_pp, c_sib, c_dh),
         "no primes at all": np.zeros(N + 1),
     }
     meta = dict(lam=lam, is_pp=is_pp, is_p=is_p, rechi=rechi)
@@ -316,6 +318,25 @@ def analyse(a, ga_seed=1):
     rep.append("E2 interpolation c = (1-theta) c_DH + theta c_sib (theta, min eig, #neg, peak t):")
     for r in rows[::5] + [rows[-2]]:
         rep.append("   theta=%.3f  %+.4e  %3d  t=%.2f" % (r[0], r[1], r[2], r[4]))
+    # G(theta) = (1 - theta) G_DH + theta G_sib (shared archimedean part), so lambda_min is concave in
+    # theta; bisect for the onset of positivity and compare with the rank-one estimate at DH's witness.
+    lo, hi = 0.0, 1.0
+    for th in (r[0] for r in rows):
+        if rows[[x[0] for x in rows].index(th)][1] >= 0:
+            hi = th
+            break
+        lo = th
+    for _ in range(50):
+        mid = (lo + hi) / 2
+        if np.linalg.eigvalsh(pen.form((1 - mid) * sets["DH"] + mid * sets["sibling L(chi)"]))[0] >= 0:
+            hi = mid
+        else:
+            lo = mid
+    v0 = UDH[:, 0]
+    wd = float(v0 @ pen.form(sets["DH"]) @ v0)
+    ws = float(v0 @ pen.form(sets["sibling L(chi)"]) @ v0)
+    rep.append("   onset of positivity theta* = %.6f (bisection); witness-only estimate -W_DH(v)/(W_sib(v) - W_DH(v)) = %.6f"
+               % (hi, -wd / (ws - wd)))
 
     # E3: witness attribution.  v = DH's minimal eigenvector (orthonormal coordinates)
     v = UDH[:, 0]

@@ -1,0 +1,10 @@
+DH                                       -6.398e-01 @ t=84.5; -5.117e-01 @ t=84.5
+sibling L(chi)                           none
+DH on prime powers only                  -7.697e-01 @ t=15.8; -7.591e-01 @ t=1.9; -6.057e-01 @ t=15.9; -5.720e-01 @ t=1.8; -3.244e-01 @ t=7.1; -2.080e-01 @ t=7.1
+DH off prime powers only                 -1.404e+00 @ t=4.1; -1.271e+00 @ t=0.5; -7.456e-01 @ t=0.5
+Euler product of DH's a(p) (no FE)       -8.290e-01 @ t=0.5; -3.962e-01 @ t=3.0; -1.841e-01 @ t=3.1
+sibling at primes, DH elsewhere          -4.721e-01 @ t=84.5; -3.475e-01 @ t=84.5; -2.462e-01 @ t=7.8; -1.648e-01 @ t=7.8; -3.735e-02 @ t=1.9; -8.597e-03 @ t=24.8
+DH at primes, sibling elsewhere          -2.212e-01 @ t=2.9; -1.650e-01 @ t=2.6; -7.497e-02 @ t=0.5; -7.301e-03 @ t=1.3
+sibling + DH's p^k (k>=2) terms          -7.158e-01 @ t=1.9; -5.545e-01 @ t=1.7; -4.535e-01 @ t=15.8; -3.446e-01 @ t=15.9; -1.697e-01 @ t=7.2; -6.742e-02 @ t=7.2
+sibling + DH's non-prime-power terms     -6.450e-01 @ t=0.5; -3.403e-01 @ t=7.9; -2.360e-01 @ t=8.0; -5.054e-02 @ t=84.6
+no primes at all                         -3.975e-01 @ t=0.5

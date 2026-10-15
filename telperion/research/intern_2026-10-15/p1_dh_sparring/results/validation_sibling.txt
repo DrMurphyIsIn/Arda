@@ -1,0 +1,7 @@
+L(s, chi mod 5), chi(2) = i: root number eps = (0.850650808352 + 0.525731112119j) (|eps| = 1.0); |Im(eps^-1/2 Lambda)|/|Lambda| at t=7.7: 2.18e-31
+zeros on the line with |t| < 40: 31 (22s); first positive: ['6.18357819545', '8.45722917442', '12.674946417']; first negative: ['-11.2828964416', '-9.44293112973', '-4.13290370521']
+count check: 31 zeros vs (T/pi) log(5T/(2 pi e)) = 31.33 (+O(log T))
+gaussian s=0.7 d=0: formula side=0.02686424662088824532376 zero side=0.02686424662088824532376 diff=-4.314e-32 (tail<~4.01e-169)
+gaussian s=0.7 d=0.9: formula side=-0.02226158444260777385716 zero side=-0.02226158444260777385716 diff=-2.65e-30 (tail<~4.01e-169)
+gaussian s=0.6 d=-1.3: formula side=0.04234892848116417929234 zero side=0.04234892848116417929234 diff=1.701e-30 (tail<~5.04e-124)
+gaussian s=0.8 d=0.4: formula side=-0.0007052757059952201995559 zero side=-0.0007052757059952201995559 diff=2.578e-30 (tail<~3.51e-221)
