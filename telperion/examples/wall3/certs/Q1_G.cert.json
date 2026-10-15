@@ -5,7 +5,7 @@
  "a_box": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function G at 0x1009be0c0>",
+  "object": "callable:G",
   "box": {
    "re0": "8747/10000",
    "re1": "8749/10000",
@@ -27,7 +27,7 @@
  "a_box_conj": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function G at 0x1009be0c0>",
+  "object": "callable:G",
   "box": {
    "re0": "8747/10000",
    "re1": "8749/10000",

@@ -20,7 +20,7 @@ for tau in (F(652063, 1000), F(666389, 1000), F(37309, 40)):   # R's certified r
     cr, ci = F(s.real.mid().str(25, radius=False)), F(s.imag.mid().str(25, radius=False))
     h = F(1, 10**10)
     c = certify_zero_box("EP5", cr - h, cr + h, ci - h, ci + h)
-    # farthest box corner from the disc centre, worst case over tau0 in [t0-1e-4, t0+1e-4] (rough: add 1e-4 to dy)
+    # farthest box corner from the exact disc centre rho0 + i tau (tau = R's certified rational)
     dx = abs(cr - RHO[0]) + h
     dy = abs(ci - RHO[1] - tau) + h   # exact disc centre rho0 + i tau, tau = R's rational
     d2 = dx * dx + dy * dy

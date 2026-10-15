@@ -1,0 +1,119 @@
+[
+ {
+  "name": "zeta",
+  "rho": [
+   0.5,
+   14.134725141734696
+  ],
+  "cert": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'object': 'zeta', 'box': {'re0': '499999/1000000', 're1': '500001/1000000', 'im0': '3217146802795336327/227605913673000000', 'im1': '3217147258007163673/227605913673000000'}, 'winding': 1, 'zeros_in_box': 1, 'poles_in_box': 0, 'method': 'segment-enclosure (centred form, |f - c| <= |c|/2 per segment)', 'prec': 96, 'recheck_prec': 144, 'segments': 32, 'recheck_segments': 52, 'min_segment': '1/4000000', 'off_line': False, 'conjecture1_proved': False}",
+  "x": 1,
+  "chi": "[0.99998, 1.00002]",
+  "M": "[1, 1]",
+  "R": "[0.99998, 1.00002]",
+  "E": "[0.31442, 0.314456]"
+ },
+ {
+  "name": "zeta",
+  "rho": [
+   0.5,
+   812.7711083891093
+  ],
+  "cert": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'object': 'zeta', 'box': {'re0': '499999/1000000', 're1': '500001/1000000', 'im0': '158557338017600100323/195082399677000000', 'im1': '158557338407764899677/195082399677000000'}, 'winding': 1, 'zeros_in_box': 1, 'poles_in_box': 0, 'method': 'segment-enclosure (centred form, |f - c| <= |c|/2 per segment)', 'prec': 96, 'recheck_prec': 144, 'segments': 32, 'recheck_segments': 52, 'min_segment': '1/4000000', 'off_line': False, 'conjecture1_proved': False}",
+  "x": 11,
+  "chi": "[0.999979, 1.00002]",
+  "M": "[1.71854, 1.71857]",
+  "R": "[1.7185, 1.71861]",
+  "E": "[0.122046, 0.122181]"
+ },
+ {
+  "name": "zeta",
+  "rho": [
+   0.5,
+   1981.748768897264
+  ],
+  "cert": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'object': 'zeta', 'box': {'re0': '499999/1000000', 're1': '500001/1000000', 'im0': '1566680813304546294639/790554705361000000', 'im1': '1566680814885655705361/790554705361000000'}, 'winding': 1, 'zeros_in_box': 1, 'poles_in_box': 0, 'method': 'segment-enclosure (centred form, |f - c| <= |c|/2 per segment)', 'prec': 96, 'recheck_prec': 144, 'segments': 32, 'recheck_segments': 52, 'min_segment': '1/4000000', 'off_line': False, 'conjecture1_proved': False}",
+  "x": 17,
+  "chi": "[0.999979, 1.00002]",
+  "M": "[0.215095, 0.21515]",
+  "R": "[0.215084, 0.215161]",
+  "E": "[0.120786, 0.120922]"
+ },
+ {
+  "name": "DH",
+  "rho": [
+   0.600018110701,
+   8116.170611068882
+  ],
+  "cert": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'object': 'DH', 'box': {'re0': '534085793570394943/890117605057000000', 're1': '534087573805605057/890117605057000000', 'im0': '4700596252018869702223/579164297777000000', 'im1': '4700596253177198297777/579164297777000000'}, 'winding': 1, 'zeros_in_box': 1, 'poles_in_box': 0, 'method': 'segment-enclosure (centred form, |f - c| <= |c|/2 per segment)', 'prec': 96, 'recheck_prec': 144, 'segments': 32, 'recheck_segments': 52, 'min_segment': '1/4000000', 'off_line': True, 'conjecture1_proved': False}",
+  "x": 80,
+  "chi": "[0.415819, 0.415843]",
+  "M": "[0.6623, 0.662368]",
+  "R": "[0.657351, 0.657458]",
+  "E": "[0.0394817, 0.0396732]"
+ },
+ {
+  "name": "DH",
+  "rho": [
+   0.70540729616,
+   7121.018044951027
+  ],
+  "cert": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'object': 'DH', 'box': {'re0': '141448829594423899/200521076101000000', 're1': '141449230636576101/200521076101000000', 'im0': '4085989036694217178317/573792821683000000', 'im1': '4085989037841802821683/573792821683000000'}, 'winding': 1, 'zeros_in_box': 1, 'poles_in_box': 0, 'method': 'segment-enclosure (centred form, |f - c| <= |c|/2 per segment)', 'prec': 96, 'recheck_prec': 144, 'segments': 32, 'recheck_segments': 52, 'min_segment': '1/4000000', 'off_line': True, 'conjecture1_proved': False}",
+  "x": 75,
+  "chi": "[0.169443, 0.169454]",
+  "M": "[0.286197, 0.286254]",
+  "R": "[0.265741, 0.265816]",
+  "E": "[0.0248689, 0.0249887]"
+ },
+ {
+  "name": "DH",
+  "rho": [
+   0.897750154977,
+   2442.530292468486
+  ],
+  "cert": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'object': 'DH', 'box': {'re0': '3806736036338533/4240311467000000', 're1': '3806744516961467/4240311467000000', 'im0': '95786257214388004379/39215995621000000', 'im1': '95786257292819995621/39215995621000000'}, 'winding': 1, 'zeros_in_box': 1, 'poles_in_box': 0, 'method': 'segment-enclosure (centred form, |f - c| <= |c|/2 per segment)', 'prec': 96, 'recheck_prec': 144, 'segments': 32, 'recheck_segments': 52, 'min_segment': '1/4000000', 'off_line': True, 'conjecture1_proved': False}",
+  "x": 44,
+  "chi": "[0.0491965, 0.0491994]",
+  "M": "[0.14281, 0.142829]",
+  "R": "[0.171522, 0.171544]",
+  "E": "[0.0293058, 0.0293536]"
+ },
+ {
+  "name": "EP5",
+  "rho": [
+   0.600423714801,
+   493.226808149317
+  ],
+  "cert": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'object': 'EP5', 'box': {'re0': '428314798705578649/713355421351000000', 're1': '428316225416421351/713355421351000000', 'im0': '458020891257260755943/928621244057000000', 'im1': '458020893114503244057/928621244057000000'}, 'winding': 1, 'zeros_in_box': 1, 'poles_in_box': 0, 'method': 'segment-enclosure (centred form, |f - c| <= |c|/2 per segment)', 'prec': 96, 'recheck_prec': 144, 'segments': 32, 'recheck_segments': 52, 'min_segment': '1/4000000', 'off_line': True, 'conjecture1_proved': False}",
+  "x": 351,
+  "chi": "[0.308136, 0.308171]",
+  "M": "[1.11652, 1.11723]",
+  "R": "[1.12029, 1.12116]",
+  "E": "[0.319197, 0.320803]"
+ },
+ {
+  "name": "EP5",
+  "rho": [
+   0.724850262595,
+   64.991944796817
+  ],
+  "cert": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'object': 'EP5', 'box': {'re0': '654617415790657933/903108342067000000', 're1': '654619222007342067/903108342067000000', 'im0': '522883099390347471/8045352529000000', 'im1': '522883115481052529/8045352529000000'}, 'winding': 1, 'zeros_in_box': 1, 'poles_in_box': 0, 'method': 'segment-enclosure (centred form, |f - c| <= |c|/2 per segment)', 'prec': 96, 'recheck_prec': 144, 'segments': 32, 'recheck_segments': 52, 'min_segment': '1/4000000', 'off_line': True, 'conjecture1_proved': False}",
+  "x": 46,
+  "chi": "[0.178296, 0.178313]",
+  "M": "[0.935501, 0.935617]",
+  "R": "[0.956839, 0.957053]",
+  "E": "[0.0240227, 0.0243234]"
+ },
+ {
+  "name": "EP5",
+  "rho": [
+   1.011049334044,
+   1193.946404528846
+  ],
+  "cert": "{'kind': 'winding_box_zero', 'trust_class': 'arb', 'object': 'EP5', 'box': {'re0': '825776021779730129/816752269871000000', 're1': '825777655284269871/816752269871000000', 'im0': '10255921512666424783/8589934592000000', 'im1': '10255921529846293967/8589934592000000'}, 'winding': 1, 'zeros_in_box': 1, 'poles_in_box': 0, 'method': 'segment-enclosure (centred form, |f - c| <= |c|/2 per segment)', 'prec': 96, 'recheck_prec': 144, 'segments': 32, 'recheck_segments': 52, 'min_segment': '1/4000000', 'off_line': True, 'conjecture1_proved': False}",
+  "x": 849,
+  "chi": "[0.00101372, 0.00101385]",
+  "M": "[0.120122, 0.120245]",
+  "R": "[0.114838, 0.114905]",
+  "E": "[0.0208617, 0.0210853]"
+ }
+]

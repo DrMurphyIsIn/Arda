@@ -7,6 +7,7 @@ evaluation at the claimed point, this uses the argument principle on a box inste
 Poles of callables are not declared: each box below is accompanied by a pole-exclusion certificate where needed."""
 from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, math
+from t3tools import scrub_callables  # names, not 0x addresses (t3tools is on sys.path via _paths)
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, ctx
 from telperion.arb_fakes import certify_zero_box, rigorous_winding
@@ -77,7 +78,7 @@ pe = {"w=s+r0-1": certify_zero_box("zeta", "0.68", "0.72", "28.25", "28.29", exp
                                    prec=96)["zeros_in_box"]}
 out["SYM_pole_exclusion_zeta_zero_free"] = pe
 print("SYM box ok; pole exclusion", pe)
-json.dump(out, open(cert_path("S_almost_s.cert.json"), "w"), indent=1, default=str)
+json.dump(scrub_callables(out), open(cert_path("S_almost_s.cert.json"), "w"), indent=1, default=str)
 
 # ZP5 = zeta(s) (1 - 5*5^-s + 5*25^-s) (S's s2_arb_boxes.py): factor zeros at 5^s = alpha = (5 + sqrt5)/2 * ... ;
 # 1 - 5T + 5T^2 = 0 -> T = (5 - sqrt5)/10, alpha = 1/T = (5 + sqrt5)/2 = 3.618..., Re s = log_5 alpha
@@ -95,7 +96,7 @@ r5, i5 = math.log(a5) / math.log(5), 2 * math.pi / math.log(5)
 out["ZP5_zero_box"] = certify_zero_box(ZP5, r5 - 0.01, r5 + 0.01, i5 - 0.01, i5 + 0.01, expected=1, prec=128)
 out["ZP5_centre_float"] = [r5, i5]
 print("ZP5 box ok at", r5, i5)
-json.dump(out, open(cert_path("S_almost_s.cert.json"), "w"), indent=1, default=str)
+json.dump(scrub_callables(out), open(cert_path("S_almost_s.cert.json"), "w"), indent=1, default=str)
 
 # S's s3_tw_coeffs: the untwisted quotient TW0 = zeta/(zeta(s+1-r0) zeta(s+1-r0b)) has prime weights
 # a(p) = 1 - 2 p^(b0-1) cos(g0 log p).  Claim: a(p) < 0 exactly for p in {23, 53}.  For p >= 102, 2 p^-0.15 < 1, so
@@ -116,4 +117,4 @@ assert 2 * (arb("-0.15") * arb(102).log()).exp() < 1   # certain arb comparison 
 out["S_TW0_negative_prime_weights"] = {"negative": neg, "undecided": undecided, "S_claim": [23, 53],
                                        "agrees": neg == [23, 53] and not undecided}
 print("TW0 negative prime weights:", neg, "undecided:", undecided)
-json.dump(out, open(cert_path("S_almost_s.cert.json"), "w"), indent=1, default=str)
+json.dump(scrub_callables(out), open(cert_path("S_almost_s.cert.json"), "w"), indent=1, default=str)

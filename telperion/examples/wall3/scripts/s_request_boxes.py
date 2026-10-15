@@ -5,11 +5,8 @@ from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: i
 from pathlib import Path
 SCRIPTS = Path(__file__).resolve().parent
 import json, sys
-sys.path.insert(0, str(SCRIPTS))
 from flint import acb, arb, acb_series, ctx
 from telperion.arb_fakes import certify_zero_box
-import importlib.util
-spec = importlib.util.spec_from_file_location("sas", str(SCRIPTS / "s_almost_s.py"))
 R0 = acb(arb("0.85"), arb("14.134725141734693790457251983562"))
 
 

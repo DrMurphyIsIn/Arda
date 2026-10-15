@@ -194,3 +194,15 @@ def integers_from_primes(log_primes, X, limit=2_000_000):
 
     rec(0, 0.0, arb(0))
     return out
+
+
+def scrub_callables(obj):
+    """Copy of a cert dict with every callable replaced by 'callable:<name>' (json default=str would otherwise record a
+    run-dependent '<function ... at 0x...>' address)."""
+    if callable(obj):
+        return f"callable:{getattr(obj, '__name__', type(obj).__name__)}"
+    if isinstance(obj, dict):
+        return {k: scrub_callables(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [scrub_callables(v) for v in obj]
+    return obj

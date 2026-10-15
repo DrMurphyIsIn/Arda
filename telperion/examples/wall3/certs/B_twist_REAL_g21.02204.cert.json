@@ -6,7 +6,7 @@
  "zero_box": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function zetaP at 0x104d260c0>",
+  "object": "callable:zetaP",
   "box": {
    "re0": "21/25",
    "re1": "43/50",

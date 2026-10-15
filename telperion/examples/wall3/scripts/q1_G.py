@@ -5,6 +5,7 @@ Lambda(s) = pi^(-s/2) Gamma(s/2) 3^s G(s) = Lambda(1-s).  Poles (s=1 double, 1 +
 Re s in {0, 1}: none in the closed boxes used.  ARB; arb_fakes (Arda main 2dfc6eeee); unpushed branch
 wall3/telperion-certs.  conjecture1_proved = False."""
 import json
+import sys as _sys; _sys.path.insert(0, "/Users/peterwmurphy/rh-team/wall3/T"); from t3tools import scrub_callables  # names, not 0x addresses
 from flint import acb, arb, acb_series, ctx
 from telperion.arb_fakes import certify_zero_box, rigorous_winding
 
@@ -50,4 +51,4 @@ for sr, si in (("0.3", "7.1"), ("0.9", "23.4"), ("0.874", "1.18"), ("2", "5")):
                  "rel_diff_upper": float(abs(d).upper()) / float(abs(a).lower())})
     print("(c)", rows[-1]["s"], rows[-1]["diff_contains_0"], f'{rows[-1]["rel_diff_upper"]:.1e}', flush=True)
 out["c_FE"] = rows
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/Q1_G.cert.json", "w"), indent=1, default=str)
+json.dump(scrub_callables(out), open("/Users/peterwmurphy/rh-team/wall3/T/certs/Q1_G.cert.json", "w"), indent=1, default=str)

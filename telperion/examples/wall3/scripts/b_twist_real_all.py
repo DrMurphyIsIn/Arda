@@ -10,6 +10,7 @@ ARB.  Provenance: arb_fakes, Arda main 2dfc6eeee (guarded) via callable; script 
 wall3/telperion-certs.  conjecture1_proved = False."""
 from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, sys, time
+from t3tools import scrub_callables  # names, not 0x addresses (t3tools is on sys.path via _paths)
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, ctx, fmpz
 from telperion.arb_fakes import rigorous_winding, certify_zero_box
@@ -18,7 +19,6 @@ CASES = [("0.60", "14.134725", True), ("0.75", "14.134725", True), ("0.85", "30.
          ("0.85", "50", True), ("0.95", "14.134725", False)]
 if len(sys.argv) > 1:
     CASES = [c for c in CASES if c[0] == sys.argv[1] and (len(sys.argv) < 3 or c[1] == sys.argv[2])]
-B = None  # (was: B/out/summary.json, unused)
 results = {}
 for bs, gs, count in CASES:
     ctx.prec = 128
@@ -66,5 +66,5 @@ for bs, gs, count in CASES:
     r["seconds"] = round(time.time() - t, 1)
     results[key] = r
     print(key, "box ok", r.get("count", {}).get("winding"), "A =", r["residue_A"], r["seconds"], "s", flush=True)
-    json.dump(results, open(cert_path(f"B_twist_REAL_all{'_' + sys.argv[1] if len(sys.argv) > 1 else ''}.cert.json"), "w"),
+    json.dump(scrub_callables(results), open(cert_path(f"B_twist_REAL_all{'_' + sys.argv[1] if len(sys.argv) > 1 else ''}.cert.json"), "w"),
               indent=1, default=str)
