@@ -217,6 +217,8 @@ No Comparator record exists for h11000. The node has no `[comparator]` block, an
 - an `H11K_Compose` implication (eight BandHyps + the [8000, 11004] box or segment → 11000) with no certificate import;
 - a separate part whose closure is `H11K_h11000.box` (or the segment).
 
+**Judge routing (added after the grant PR's CI run).** The node is `judge_via = "heavy"` with `heavy_certificates = true`, as h8000, so the per-PR Comparator bundle excludes it by rule. Unlike h8000 it has NO `[compose]` block and no `[comparator]` record, so no feasible judge path exists today: a segments-mode dispatch of missions-comparator-heavy.yml on this node would attempt the monolithic replay of the H11K closure, which is the mode ComposeSpec's own docstring records as infeasible (h8000 monolithic, > 4 h, cancelled), and the workflow header lists h11000 as UNMEASURED. Do NOT dispatch the heavy judge on this node until an H11K_Compose module and a `[compose]` block exist. The generated provenance line "judged by missions-comparator-heavy.yml" and the MANIFEST's "judged_elsewhere" entry therefore overstate; the node title's "NOT Comparator-recorded; needs H11K_Compose" is the operative statement. Tooling follow-up (not this PR): the heavy plan should refuse a `judge_via = heavy` node that has neither `[compose]` nor `heavy_build_targets`.
+
 ### 6.2 Cost accounting: fixed read-back overhead versus the band
 Sources: the per-module "Built X (t)" durations in my 65 build logs, and the sequential wall times in the driver log.
 - **Classification.** Modules are split by import closure:
