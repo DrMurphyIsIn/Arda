@@ -199,6 +199,7 @@ footer.bottom p { max-width: 80ch; }
 #panel-surface .sf-computed { color: var(--cool); background: var(--cool-soft); }
 #panel-surface .sf-conj { color: var(--cond-ink); background: var(--cond); }
 #panel-surface .sf-spec { color: var(--accent); background: var(--accent-soft); }
+#panel-surface .sf-closed { color: var(--muted); background: var(--line); }
 #panel-surface .sf-gates { min-width: 36rem; }
 #panel-surface .sf-v { white-space: nowrap; font-weight: 600; }
 #panel-surface .sf-bar { color: var(--refuted); }
