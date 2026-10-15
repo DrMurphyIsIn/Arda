@@ -10,6 +10,7 @@ supports jets of order <= 1 (ctx.cap <= 2), which is what arb_fakes.rigorous_win
 Provenance: arb_fakes, Arda main 2dfc6eeee; script on unpushed branch wall3/telperion-certs."""
 from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, math, time
+from t3tools import scrub_callables  # names, not 0x addresses (t3tools is on sys.path via _paths)
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, ctx
 from telperion.arb_fakes import certify_zero_box, rigorous_winding
@@ -24,7 +25,8 @@ ctx.prec = 128
 
 def _ein_taylor(w):
     """(Ein(w), Ein'(w)) by Taylor series with a rigorous tail bound."""
-    R = float(abs(w).upper())
+    Ra = abs(w).upper()            # rigorous upper bound for |w| (arb); R (float) only sizes K and the precision
+    R = float(Ra)
     K = int(3 * R) + 60   # R^K/K! < e^-60 or so: tail negligible
     old = ctx.prec
     ctx.prec = old + int(1.5 * R) + 30
@@ -41,7 +43,7 @@ def _ein_taylor(w):
             d += (term if k % 2 == 0 else -term) / (k + 1)
             term = term * w / (k + 1)
         # tails: sum_{k>K} R^k/(k k!) and sum_{k>K} R^k/(k+1)!  <=  R^{K+1}/(K+1)! / (1 - R/(K+2))
-        tb = arb(R) ** (K + 1) / arb(K + 1).fac() / (1 - arb(R) / (K + 2))
+        tb = Ra ** (K + 1) / arb(K + 1).fac() / (1 - Ra / (K + 2))
         e = arb(0, tb.upper())
         return s0 + acb(e, e), d + acb(e, e)
     finally:
@@ -83,7 +85,7 @@ def _sup_d1_d2(B):
 def _ein(w):
     """(Ein(w), Ein'(w)) as balls valid on the whole ball w: value at the centre plus radius * sup|derivative|."""
     c = acb(w.real.mid(), w.imag.mid())
-    r = (w.real.rad() ** 2 + w.imag.rad() ** 2).sqrt() if False else arb(float(w.real.rad()) + float(w.imag.rad()))
+    r = arb(w.real.rad()) + arb(w.imag.rad())   # |w - c| <= rad_re + rad_im, summed in arb (outward), not in floats
     v, d = _ein_point(c)
     if r == 0:
         return v, d
@@ -176,4 +178,4 @@ dz = EG * V0 * (RHO - RHOB) / (RHO - 1) * (Ea0 - Ebb0).exp()
 res["residue_A"] = A.str(15); res["zetaP_prime_rho0"] = dz.str(15)
 res["D1_floats"] = {"A": 0.122010758984, "zetaP_prime_rho0": [8.0879161, 0.2576544]}
 print("A =", A.str(12), " zeta_P'(rho0) =", dz.str(12), flush=True)
-json.dump(res, open(cert_path("N8_continuous.cert.json"), "w"), indent=1, default=str)
+json.dump(scrub_callables(res), open(cert_path("N8_continuous.cert.json"), "w"), indent=1, default=str)

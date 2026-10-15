@@ -19,7 +19,7 @@
  "min_segment": "1/800",
  "off_line": true,
  "conjecture1_proved": false,
- "note": "box strictly inside Re s > 1 (re0 = 1.006); arb_fakes @ 72470dd5f (guarded), branch wall3/telperion-certs",
+ "note": "box strictly inside Re s > 1 (re0 = 1.006); arb_fakes, Arda main 2dfc6eeee (guarded); script on branch wall3/telperion-certs",
  "seconds": 1.3,
  "value_at_C_float_point": [
   1.89433026587895e-12,

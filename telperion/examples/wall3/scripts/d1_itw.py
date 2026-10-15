@@ -86,6 +86,9 @@ rb0 = certify_zero_box(zP, "0.74", "0.76", "14.12", "14.15", expected=1, prec=12
 rb1 = certify_zero_box(zP, "0.69", "0.71", "21.01", "21.03", expected=1, prec=128)["zeros_in_box"]
 out["count"] = {"box": ["0.3", "1.5", "1", "60"], "winding_zetaP": w, "zeta_zeros_in_box": nz,
                 "rho0_box_zeros": rb0, "rho1_box_zeros": rb1, "segments": st["segments"],
-                "implied_poles": nz + rb0 + rb1 - w}
-print("count: winding", w, "zeta zeros", nz, "-> implied #poles =", nz + rb0 + rb1 - w, round(time.time() - t, 1))
+                "implied_poles_consistency_number": nz + rb0 + rb1 - w,
+                "note": "winding = zeros - poles; implied_poles_consistency_number = (certified zeta zeros + rho0 + rho1) - "
+                        "winding.  It is a CONSISTENCY number (= 2 expected: s1 and conj(s2)), not a certificate that "
+                        "zeta_P has no other zeros or poles in the box: an extra zero and an extra pole would cancel."}
+print("count: winding", w, "zeta zeros", nz, "-> implied #poles (consistency) =", nz + rb0 + rb1 - w, round(time.time() - t, 1))
 json.dump(out, open(cert_path("D1_ITW.cert.json"), "w"), indent=1, default=str)

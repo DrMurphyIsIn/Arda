@@ -98,3 +98,12 @@ def test_rigorous_winding_pole_guard():
         rigorous_winding("EP5", "1", "11/10", "-1/10", "1/10", poles=[(1, 0)])   # pole on the boundary
     assert rigorous_winding("EP5", "9/10", "11/10", "-1/10", "1/10", poles=[(1, 0)]) == -1
     assert rigorous_winding("EP5", "923/1000", "943/1000", "7829/500", "7839/500") == 1
+
+
+def test_wide_box_left_of_zero_does_not_crash():
+    """Arb's Hurwitz-zeta series is non-finite on wide balls at Re s < 0 (WALL-6 Q4).  A non-finite segment
+    enclosure must make the segment fail (bisect), not crash.  The box [-0.6, 0.4] x [10, 20] is the mirror of
+    [0.6, 1.6] x [10, 20] under s -> 1 - conj(s), so by the functional equation both windings agree."""
+    w_left = rigorous_winding("EP5", "-0.6", "0.4", "10", "20")
+    w_right = rigorous_winding("EP5", "0.6", "1.6", "10", "20")
+    assert w_left == w_right >= 1

@@ -14,6 +14,7 @@ Certificates: (1) zero box around rho0 (winding 1); (2) rigorous count in [7/10,
 is rho0; (3) Re s >= 3/2 has no zeros (all factors are nonzero and finite there: Re(s+1-rho0) >= 1.65).  ARB."""
 from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, time
+from t3tools import scrub_callables  # names, not 0x addresses (t3tools is on sys.path via _paths)
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, fmpz
 from telperion.arb_fakes import rigorous_winding, certify_zero_box
@@ -56,7 +57,7 @@ st = {}
 w = rigorous_winding(zetaP, "0.7", "1.5", "1/20", "100", prec=128, stats=st)
 out["count_0.7_1.5_x_0.05_100"] = {"winding": w, "segments": st["segments"], "min_segment": str(st["min_segment"])}
 print("winding [0.7,1.5]x[1/20,100]:", w, st["segments"], time.time() - t)
-json.dump(out, open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)
+json.dump(scrub_callables(out), open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)
 
 # (4) no poles of zeta_P in the counted box: a pole needs zeta(w) = 0 with w = s + 1 - rho0 or s + 1 - conj rho0,
 # w in [0.85, 1.65] x [-14.084725, 114.134725].  Certify zeta has no zeros there (pole s=1 acknowledged).
@@ -65,7 +66,7 @@ out["zeta_zero_free_for_pole_exclusion"] = certify_zero_box("zeta", "0.85", "1.6
                                                             poles=[(1, 0)], prec=96)
 print("zeta zero-free in [0.85,1.65]x[-14.1,114.2]:", out["zeta_zero_free_for_pole_exclusion"]["zeros_in_box"],
       time.time() - t)
-json.dump(out, open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)
+json.dump(scrub_callables(out), open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)
 
 # (5) the residue A at s = 1, compared with the A in B's output file for THIS gamma0 (below)
 from flint import ctx
@@ -78,7 +79,8 @@ for p in SMALL:
 # hard-coded gamma0 = 14.134725 value, so the gamma0 = 21.02204 cert compared against the wrong residue; found by bb)
 _bf = rh(f"wall3/B/out/tw_REAL_b{float('0.85')}_g{float(GS)}_s0_X1e+09.json")
 _BA = json.load(open(_bf))["A"]
+# a tolerance test (|mid(A) - B| <= rad(A) + 1e-14), not a containment test -- hence the name
 out["residue_A"] = {"arb": A.str(25), "B_file": shown(_bf), "B_float": _BA,
-                    "contains_B_float": bool(abs(arb(A.real.mid()) - arb(_BA)).upper() <= A.real.rad() + 1e-14)}
-print("A =", A.str(25), out["residue_A"]["contains_B_float"])
-json.dump(out, open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)
+                    "B_float_within_ball_plus_1e-14": bool(abs(arb(A.real.mid()) - arb(_BA)).upper() <= A.real.rad() + 1e-14)}
+print("A =", A.str(25), out["residue_A"]["B_float_within_ball_plus_1e-14"])
+json.dump(scrub_callables(out), open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)

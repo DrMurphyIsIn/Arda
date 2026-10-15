@@ -6,7 +6,7 @@
  "zero_box": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function zetaP at 0x1060560c0>",
+  "object": "callable:zetaP",
   "box": {
    "re0": "21/25",
    "re1": "43/50",
@@ -54,8 +54,8 @@
  },
  "residue_A": {
   "arb": "[1.04016021066648 +/- 8.81e-15] + [+/- 8.29e-15]j",
-  "B_file": "/Users/peterwmurphy/rh-team/wall3/B/out/tw_REAL_b0.85_g21.02204_s0_X1e+09.json",
+  "B_file": "rh-team:wall3/B/out/tw_REAL_b0.85_g21.02204_s0_X1e+09.json",
   "B_float": 1.0401602106664787,
-  "contains_B_float": true
+  "B_float_within_ball_plus_1e-14": true
  }
 }

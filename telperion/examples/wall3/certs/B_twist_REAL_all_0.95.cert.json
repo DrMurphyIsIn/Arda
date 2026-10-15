@@ -7,7 +7,7 @@
   "zero_box": {
    "kind": "winding_box_zero",
    "trust_class": "arb",
-   "object": "<function zetaP at 0x10d4cb100>",
+   "object": "callable:zetaP",
    "box": {
     "re0": "47/50",
     "re1": "24/25",
@@ -26,8 +26,8 @@
    "off_line": true,
    "conjecture1_proved": false
   },
-  "zero_box_seconds": 306.7,
+  "zero_box_seconds": 301.6,
   "residue_A": "[1.00480313452508 +/- 3.34e-15]",
-  "seconds": 306.8
+  "seconds": 301.8
  }
 }

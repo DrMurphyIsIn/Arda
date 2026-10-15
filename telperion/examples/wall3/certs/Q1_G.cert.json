@@ -1,0 +1,90 @@
+{
+ "object": "Q1 G = zeta(s) Z_fake(3^-s)",
+ "trust_class": "arb",
+ "conjecture1_proved": false,
+ "a_box": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "callable:G",
+  "box": {
+   "re0": "8747/10000",
+   "re1": "8749/10000",
+   "im0": "1481/1250",
+   "im1": "237/200"
+  },
+  "winding": 1,
+  "zeros_in_box": 1,
+  "poles_in_box": 0,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 128,
+  "recheck_prec": 192,
+  "segments": 32,
+  "recheck_segments": 52,
+  "min_segment": "1/40000",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "a_box_conj": {
+  "kind": "winding_box_zero",
+  "trust_class": "arb",
+  "object": "callable:G",
+  "box": {
+   "re0": "8747/10000",
+   "re1": "8749/10000",
+   "im0": "-237/200",
+   "im1": "-1481/1250"
+  },
+  "winding": 1,
+  "zeros_in_box": 1,
+  "poles_in_box": 0,
+  "method": "segment-enclosure (centred form, |f - c| <= |c|/2 per segment)",
+  "prec": 128,
+  "recheck_prec": 192,
+  "segments": 32,
+  "recheck_segments": 52,
+  "min_segment": "1/40000",
+  "off_line": true,
+  "conjecture1_proved": false
+ },
+ "b_count": {
+  "box": [
+   "3/5",
+   "19/20",
+   "1/20",
+   "13"
+  ],
+  "winding": 5,
+  "recheck_192": 5,
+  "segments": 682
+ },
+ "c_FE": [
+  {
+   "s": "0.3+7.1i",
+   "Lambda(s)": "[0.00351730853242 +/- 4.57e-15] + [0.000761884532433 +/- 5.69e-16]j",
+   "Lambda(1-s)": "[0.00351730853242 +/- 4.49e-15] + [0.000761884532433 +/- 4.97e-16]j",
+   "diff_contains_0": true,
+   "rel_diff_upper": 1.1879709382229396e-13
+  },
+  {
+   "s": "0.9+23.4i",
+   "Lambda(s)": "[-1.74708848116e-8 +/- 5.34e-20] + [9.48551508565e-8 +/- 5.03e-20]j",
+   "Lambda(1-s)": "[-1.74708848116e-8 +/- 6.03e-20] + [9.48551508565e-8 +/- 5.71e-20]j",
+   "diff_contains_0": true,
+   "rel_diff_upper": 3.3188324658014803e-13
+  },
+  {
+   "s": "0.874+1.18i",
+   "Lambda(s)": "[-0.00619843494012 +/- 5.39e-15] + [0.00709762061329 +/- 6.47e-15]j",
+   "Lambda(1-s)": "[-0.00619843494012 +/- 7.79e-15] + [0.00709762061329 +/- 8.53e-15]j",
+   "diff_contains_0": true,
+   "rel_diff_upper": 1.695533626516047e-12
+  },
+  {
+   "s": "2+5i",
+   "Lambda(s)": "[-0.195479923404 +/- 3.44e-13] + [-0.0996920417098 +/- 4.79e-14]j",
+   "Lambda(1-s)": "[-0.195479923404 +/- 3.52e-13] + [-0.0996920417098 +/- 5.56e-14]j",
+   "diff_contains_0": true,
+   "rel_diff_upper": 6.266596716244481e-14
+  }
+ ]
+}

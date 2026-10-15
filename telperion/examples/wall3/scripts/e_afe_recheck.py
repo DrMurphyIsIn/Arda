@@ -4,7 +4,7 @@ conjecture1_proved = False.  Independent of E's code in three places:
   * coefficients: EP5's r_Q(n) by exact lattice count (E took them from the float harness);
   * chi: E uses exp(lgamma(1-s) - lgamma(s) + ...); T checks it against chi = F(s)/F(1-s) from arb_fakes' F
     at an off-zero test point near each zero (same branch-free identity F(s) = chi(s) F(1-s));
-  * zero boxes: re-certified here at h = 1e-6 with arb_fakes.certify_zero_box (guarded, 72470dd5f).
+  * zero boxes: re-certified here at h = 1e-6 with arb_fakes.certify_zero_box (guarded; Arda main 2dfc6eeee).
 Then M, R, |M+R| are recomputed and checked to OVERLAP E's printed intervals.  ARB."""
 from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, math
