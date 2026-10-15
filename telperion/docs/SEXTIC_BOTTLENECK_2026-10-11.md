@@ -14,7 +14,7 @@ Section 5 of the map established, inside the paper's own exponent system, that 7
     sigma0  >=  1 - h/6 + b/12,     h = (1 + b + 3 ell)/2,     6 ell <= 1        =>   sigma0 >= 11/12 - ell/4 >= 7/8,
 
 with equality at the paper's point, while the high side (the row-exponent system of section 20) has about
-0.01 of room. (Section 7 refines this: `6 ell <= 1` is a cost threshold, not a cap; the LOW-side floor alone would be 13/15, but the high side binds first, and the optimum of the whole architecture at `kappa = 3/4` is 0.87495707, Liu's `B_new` exactly. Correction 2026-10-15: an earlier version of this line said "the proved-input optimum" without the `kappa = 3/4` qualifier; Mori, Zenodo 10.5281/zenodo.23355293, 2026-10-14, claims a ~5e-8 improvement by freeing `kappa`, unrefereed and not machine-checked, see LIU_DBN_BRIDGE_2026-10-11.md section 2. Also for the record: this eight-digit value was REPRODUCED by the sweep re-run after Liu's paper appeared on 2026-10-11, not predicted; the ledger's pre-Liu prediction was scenario A's 0.87498.) The map's closing line was that "all three levers are the sextic 1/6 in different clothes".
+0.01 of room. (Section 7 refines this: `6 ell <= 1` is a cost threshold, not a cap; the LOW-side floor alone would be 13/15, but the high side binds first, and the optimum of the whole architecture at `kappa = 3/4` is 0.87495707, Liu's `B_new` exactly. Correction 2026-10-15: an earlier version of this line said "the proved-input optimum" without the `kappa = 3/4` qualifier; Mori, Zenodo 10.5281/zenodo.23355293, 2026-10-14, claims a ~5e-8 improvement by freeing `kappa`, unrefereed, not machine-checked (only its terminal rational algebra has a checker), see LIU_DBN_BRIDGE_2026-10-11.md section 2. Also for the record: this eight-digit value was REPRODUCED by the sweep re-run after Liu's paper appeared on 2026-10-11, not predicted; the ledger's pre-Liu prediction was scenario A's 0.87498.) The map's closing line was that "all three levers are the sextic 1/6 in different clothes".
 That sentence was too quick. Reading section 15 of the source separates three different sixes.
 
 ## 2. Three sixes, two of them sextic
@@ -184,7 +184,7 @@ twists_inputs.md`, every claim tagged proved / GRH / conjectured). Its findings,
   the survey. (Update 2026-10-15: PROVED, elementary, by two independent AI sessions, the contrarian and the
   auditor. For `chi` of order 4, `gamma_{-1} gamma_1 = g(chibar) g(chi) = chi(-1) N(p)` and
   `gamma_{-2} gamma_2 = g(chi^2)^2 = chi^2(-1) N(p)`, so both sides of the duplication identity are `+-N(p)`
-  and the identity reduces to `chi(-1) = (2/p)`, a tautology for `p = 1 mod 4`: it says nothing about `g(chi)`
+  and the identity reduces to `chi(-1) = (2/p)`, an identity for `p = 1 mod 4` (both equal `(-1)^((p-1)/4)` by the supplementary law): it says nothing about `g(chi)`
   beyond `|g(chi)|^2 = p`. Checked numerically with explicit Gauss sums at `p = 13, 17, 29, 37`. At `k = 6` the
   same identity writes the sextic sum through the cubic sum and `g(rho)`, which is what the absorption uses. The
   degeneracy flag is therefore lifted; the k = 4 block rests on (b), the quartic theta coefficients.) This is the one place where section 5's "blocked" might be too strong: there is a quartic
