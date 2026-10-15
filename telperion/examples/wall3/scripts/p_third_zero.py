@@ -5,7 +5,7 @@ import json
 from fractions import Fraction as F
 from flint import acb, arb, ctx
 from telperion.arb_fakes import fake_jet, certify_zero_box
-cert = json.load(open("/Users/peterwmurphy/rh-team/wall3/T/certs/P_dominance_ratios.cert.json"))
+cert = json.load(open(cert_read("P_dominance_ratios.cert.json")))
 out = {}
 for name in ("EP5", "DH"):
     g = F(cert["objects"][name]["s1_im_exact"])   # s1 = 3/2 + i g, the one s1 of all P scripts (p_dominance)

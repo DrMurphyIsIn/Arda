@@ -1,6 +1,8 @@
 """Where the WALL-3 track-T scripts read and write.  No absolute home paths in the repo (PR #743 cleanup).
 
-  TELPERION_RH_TEAM                 the rh-team checkout whose track outputs the scripts read (default ~/rh-team)
+  TELPERION_RH_TEAM                 the rh-team checkout whose track outputs the scripts read (default ~/rh-team).
+                                    Unless it is set explicitly, rh() prefers the copy vendored under ../inputs/
+                                    (same relative layout), so the scripts rerun from the repo alone.
   TELPERION_WALL3_CERTS             where certificates are WRITTEN (default ~/.cache/telperion/wall3-certs, a
                                     scratch dir outside the repo)
   TELPERION_WRITE_COMMITTED_CERTS=1 write into ../certs, OVERWRITING the committed copies (deliberate regeneration
@@ -28,7 +30,16 @@ if str(WALL3) not in sys.path:
 _announced = False
 
 
+VENDORED = WALL3 / "inputs"
+_RH_EXPLICIT = bool(os.environ.get("TELPERION_RH_TEAM"))
+
+
 def rh(rel):
+    """An rh-team input: the vendored copy ../inputs/<rel> if it exists (and TELPERION_RH_TEAM is not set
+    explicitly), else RH_TEAM/<rel>.  Globs are resolved against the same choice of root."""
+    v = VENDORED / rel
+    if not _RH_EXPLICIT and (v.exists() or (any(ch in rel for ch in "*?[") and v.parent.is_dir())):
+        return v
     return RH_TEAM / rel
 
 
@@ -50,8 +61,11 @@ def cert_read(name):
 
 
 def shown(p):
-    """'rh-team:<relative path>' for a path under RH_TEAM, else the path as given."""
-    try:
-        return "rh-team:" + str(Path(p).resolve().relative_to(RH_TEAM.resolve()))
-    except ValueError:
-        return str(p)
+    """'rh-team:<relative path>' for a path under RH_TEAM or under the vendored ../inputs/ mirror of it, else the
+    path as given."""
+    for root in (RH_TEAM, VENDORED):
+        try:
+            return "rh-team:" + str(Path(p).resolve().relative_to(root.resolve()))
+        except ValueError:
+            pass
+    return str(p)
