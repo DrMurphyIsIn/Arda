@@ -7,6 +7,7 @@ Z(T) = P(T)/((1-T)(1-qT)), q = 3, P(T) = 1 - 2T + 9T^2 - 6T^3 + 9T^4,  T = q^-s.
     identities), are non-negative integers for d <= DMAX; and (PROVED-elementary, checked here in exact arithmetic) the
     tail d > DMAX is non-negative because q^d - 2 - 4*(2.62)^d - sum_{e<=d/2} (q^e + 1 + 4*2.62^e) > 0 for d >= 7.
 conjecture1_proved = False."""
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, math
 from fractions import Fraction as F
 from flint import fmpz_poly, arb, acb, ctx
@@ -77,4 +78,4 @@ out["tail_bound_holds_d0_to_199"] = True
 # for d >= 200: 4 (A/3)^d < 1/2 and 1.5*3^(d/2) + d/2 + 4*A^(d/2+1)/(A-1) + 2 < 3^d/2 (elementary), so n_d > 0.
 print("FE:", out["FE_relations_exact"], "n_d:", nd[:12], "nonneg<=%d:" % DMAX, out["n_d_nonneg_d_le_%d" % DMAX],
       "tail bound from d =", d0)
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/E_ff_fake.cert.json", "w"), indent=1)
+json.dump(out, open(cert_path("E_ff_fake.cert.json"), "w"), indent=1)

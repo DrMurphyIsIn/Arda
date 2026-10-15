@@ -42,7 +42,7 @@ PY=~/rh-team/wall2/T/venv/bin/python
 Do not `pip install` into that venv. The WALL-3 helpers live in `~/rh-team/wall3/T/t3tools.py`. Import them like this:
 
 ```python
-import sys; sys.path.insert(0, "/Users/peterwmurphy/rh-team/wall3/T")
+import sys, os; sys.path.insert(0, os.path.expanduser("~/rh-team/wall3/T"))   # or this checkout's examples/wall3
 from t3tools import powersum_certify, BeurlingZeta, integers_from_primes
 ```
 

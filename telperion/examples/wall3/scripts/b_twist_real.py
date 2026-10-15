@@ -12,6 +12,7 @@ needs a zeta zero with real part in (0.85, 1) -- excluded for |Im| <= 3e12 by th
 exactly 1 with the explicit zero rho0 present is what we certify; see the caveat in the report).
 Certificates: (1) zero box around rho0 (winding 1); (2) rigorous count in [7/10, 3/2] x [1/20, 100]: the only zero
 is rho0; (3) Re s >= 3/2 has no zeros (all factors are nonzero and finite there: Re(s+1-rho0) >= 1.65).  ARB."""
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, time
 from fractions import Fraction as F
 from flint import acb, arb, acb_series, fmpz
@@ -53,7 +54,7 @@ st = {}
 w = rigorous_winding(zetaP, "0.7", "1.5", "1/20", "100", prec=128, stats=st)
 out["count_0.7_1.5_x_0.05_100"] = {"winding": w, "segments": st["segments"], "min_segment": str(st["min_segment"])}
 print("winding [0.7,1.5]x[1/20,100]:", w, st["segments"], time.time() - t)
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/B_twist_REAL.cert.json", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("B_twist_REAL.cert.json"), "w"), indent=1, default=str)
 
 # (4) no poles of zeta_P in the counted box: a pole needs zeta(w) = 0 with w = s + 1 - rho0 or s + 1 - conj rho0,
 # w in [0.85, 1.65] x [-14.084725, 114.134725].  Certify zeta has no zeros there (pole s=1 acknowledged).
@@ -62,16 +63,19 @@ out["zeta_zero_free_for_pole_exclusion"] = certify_zero_box("zeta", "0.85", "1.6
                                                             poles=[(1, 0)], prec=96)
 print("zeta zero-free in [0.85,1.65]x[-14.1,114.2]:", out["zeta_zero_free_for_pole_exclusion"]["zeros_in_box"],
       time.time() - t)
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/B_twist_REAL.cert.json", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("B_twist_REAL.cert.json"), "w"), indent=1, default=str)
 
-# (5) the residue A at s = 1 (B uses A = 1.0376701213616086 with "no fitting")
+# (5) the residue A at s = 1, compared with B's value read from B's own output file for this (beta0, gamma0)
+# (cross-wiring rule: never a literal; see telperion.reference_values)
 from flint import ctx
 ctx.prec = 128
 A = 1 / ((2 - RHO).zeta() * (2 - RHOB).zeta())
 for p in SMALL:
     lp = acb(p).log()
     A = A / ((1 - ((RHO - 2) * lp).exp()) * (1 - ((RHOB - 2) * lp).exp()))
-out["residue_A"] = {"arb": A.str(25), "B_float": 1.0376701213616086,
-                    "contains_B_float": bool(abs(A.real - arb(1.0376701213616086)).upper() < 1e-14)}
+_bf = rh("wall3/B/out/tw_REAL_b0.85_g14.134725_s0_X1e+09.json")
+_BA = json.load(open(_bf))["A"]
+out["residue_A"] = {"arb": A.str(25), "B_file": shown(_bf), "B_float": _BA,
+                    "contains_B_float": bool(abs(arb(A.real.mid()) - arb(_BA)).upper() <= A.real.rad() + 1e-14)}
 print("A =", A.str(25), out["residue_A"]["contains_B_float"])
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/B_twist_REAL.cert.json", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("B_twist_REAL.cert.json"), "w"), indent=1, default=str)

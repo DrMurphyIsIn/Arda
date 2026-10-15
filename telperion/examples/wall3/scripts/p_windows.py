@@ -1,11 +1,11 @@
 """Track T: Arb check of P's section-B local Turan windows (two-zero discs: rho0 and 1-conj(rho0)).
 max_{nu in window} |sum_j (z_j/|z_1|)^nu|, z_j = 1/(s1 - rho_j); rho0 from the certified tiny box. ARB. conjecture1_proved=False."""
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, sys
 from fractions import Fraction as F
-sys.path.insert(0, "/Users/peterwmurphy/rh-team/wall3/T")
 from flint import acb, arb, ctx
 from t3tools import powersum_certify
-cert = json.load(open("/Users/peterwmurphy/rh-team/wall3/T/certs/P_dominance_ratios.cert.json"))
+cert = json.load(open(cert_read("P_dominance_ratios.cert.json")))
 ctx.prec = 320
 res = {}
 for name, claimed in (("EP5", [1.3957, 1.0620, 1.0002, 1.0000]), ("DH", [1.5284, 1.1476, 1.0032, 1.0000])):
@@ -25,4 +25,4 @@ for name, claimed in (("EP5", [1.3957, 1.0620, 1.0002, 1.0000]), ("DH", [1.5284,
         print(name, rows[-1])
     res[name] = rows
 json.dump({"kind": "turan_local_windows", "trust_class": "arb", "rows": res, "conjecture1_proved": False},
-          open("/Users/peterwmurphy/rh-team/wall3/T/certs/P_local_windows.cert.json", "w"), indent=1)
+          open(cert_path("P_local_windows.cert.json"), "w"), indent=1)

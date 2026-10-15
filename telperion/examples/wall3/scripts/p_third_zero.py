@@ -1,5 +1,6 @@
 """Track T: locate the third zero in [1/20,19/20] x [gamma0-2, gamma0+2] and decide whether it lies in P's disc
 |s - s1| <= 2.  ARB. conjecture1_proved=False."""
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json
 from fractions import Fraction as F
 from flint import acb, arb, ctx
@@ -17,4 +18,4 @@ for name, g in (("EP5", F(15668250, 10**6)), ("DH", F(85699348, 10**6))):
     d2_lo = (F(3, 2) - (cr + h)) ** 2 + ((ci - h) - (g + F(1, 10**5))) ** 2
     out[name] = {"zero_box": box["box"], "dist2_lower_to_s1": float(d2_lo), "in_disc": d2_lo <= 4}
     print(name, float(cr), float(ci), "delta =", float(ci - g), "dist^2 >=", float(d2_lo))
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/P_third_zero.cert.json", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("P_third_zero.cert.json"), "w"), indent=1, default=str)

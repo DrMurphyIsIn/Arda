@@ -6,6 +6,7 @@ s2 = r0+r1b-1; (c) windings: zeta_P has winding -1 on small boxes around s1 and 
 count on [0.3,1.5] x [1,60] equals #zeros - #poles = (13 zeta zeros + rho0 + rho1) - 2 = 13, with the 13 zeta zeros
 certified separately.  ARB.  Provenance: arb_fakes, Arda main 2dfc6eeee; unpushed branch wall3/telperion-certs.
 conjecture1_proved = False."""
+from _paths import cert_path, cert_read, rh, shown  # noqa: F401  (see _paths: inputs, scratch/committed certs)
 import json, time
 from flint import acb, arb, acb_series, ctx, fmpz
 from telperion.arb_fakes import rigorous_winding, certify_zero_box, count_offline
@@ -87,4 +88,4 @@ out["count"] = {"box": ["0.3", "1.5", "1", "60"], "winding_zetaP": w, "zeta_zero
                 "rho0_box_zeros": rb0, "rho1_box_zeros": rb1, "segments": st["segments"],
                 "implied_poles": nz + rb0 + rb1 - w}
 print("count: winding", w, "zeta zeros", nz, "-> implied #poles =", nz + rb0 + rb1 - w, round(time.time() - t, 1))
-json.dump(out, open("/Users/peterwmurphy/rh-team/wall3/T/certs/D1_ITW.cert.json", "w"), indent=1, default=str)
+json.dump(out, open(cert_path("D1_ITW.cert.json"), "w"), indent=1, default=str)
