@@ -76,7 +76,7 @@ def powersum_certify(b, z, nus, lower=None, mode="min", prec=256, exact=False):
             Z = [_acb(x) for x in z]
             for nu in nus:
                 s = sum((bj * zj ** nu for bj, zj in zip(B, Z)), acb(0))
-                m2 = s.real ** 2 + s.imag ** 2
+                m2 = s.real * s.real + s.imag * s.imag  # not ** 2: arb pow on a ball containing 0 is nan
                 lo, hi = _frac(m2)
                 rows.append((nu, max(lo, Fraction(0)), hi))
         finally:

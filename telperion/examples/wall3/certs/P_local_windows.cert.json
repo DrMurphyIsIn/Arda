@@ -1,0 +1,75 @@
+{
+ "kind": "turan_local_windows",
+ "trust_class": "arb",
+ "rows": {
+  "EP5": [
+   {
+    "window": [
+     1,
+     2
+    ],
+    "certified_max_lower": 1.3957029262444383,
+    "P_float": 1.3957
+   },
+   {
+    "window": [
+     3,
+     4
+    ],
+    "certified_max_lower": 1.0619594830639716,
+    "P_float": 1.062
+   },
+   {
+    "window": [
+     9,
+     10
+    ],
+    "certified_max_lower": 1.0002378610639688,
+    "P_float": 1.0002
+   },
+   {
+    "window": [
+     41,
+     42
+    ],
+    "certified_max_lower": 1.0,
+    "P_float": 1.0
+   }
+  ],
+  "DH": [
+   {
+    "window": [
+     1,
+     2
+    ],
+    "certified_max_lower": 1.5284476404392018,
+    "P_float": 1.5284
+   },
+   {
+    "window": [
+     3,
+     4
+    ],
+    "certified_max_lower": 1.1475726544713356,
+    "P_float": 1.1476
+   },
+   {
+    "window": [
+     9,
+     10
+    ],
+    "certified_max_lower": 1.003213791277722,
+    "P_float": 1.0032
+   },
+   {
+    "window": [
+     41,
+     42
+    ],
+    "certified_max_lower": 1.0000000000043963,
+    "P_float": 1.0
+   }
+  ]
+ },
+ "conjecture1_proved": false
+}
