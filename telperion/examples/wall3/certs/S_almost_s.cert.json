@@ -5,7 +5,7 @@
  "ZP_zero_box": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function ZP at 0x1005ee0c0>",
+  "object": "<function ZP at 0x100cce0c0>",
   "box": {
    "re0": "3665374713521335/4503599627370496",
    "re1": "3755446706068745/4503599627370496",
@@ -39,7 +39,7 @@
  "SH_zero_box": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function SH at 0x1097a2520>",
+  "object": "<function SH at 0x109d76520>",
   "box": {
    "re0": "79/100",
    "re1": "81/100",
@@ -61,7 +61,7 @@
  "SYM_zero_box": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function SYM at 0x1097a2660>",
+  "object": "<function SYM at 0x109d76660>",
   "box": {
    "re0": "21/25",
    "re1": "43/50",
@@ -83,12 +83,13 @@
  "SYM_pole_exclusion_zeta_zero_free": {
   "w=s+r0-1": 0,
   "w=s+r0b-1": 0,
-  "w=s+1-r0b": 0
+  "w=s+1-r0b": 0,
+  "w=s+1-r0": 0
  },
  "ZP5_zero_box": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function ZP5 at 0x1097a2e80>",
+  "object": "<function ZP5 at 0x109d76e80>",
   "box": {
    "re0": "7106623627258201/9007199254740992",
    "re1": "7286767612353021/9007199254740992",

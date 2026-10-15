@@ -70,7 +70,11 @@ out["SYM_zero_box"] = certify_zero_box(SYM, b - h, b + h, gg - h, gg + h, expect
 # w = s + 1 - r0 in [0.99, 1.01] x [-0.01, 0.01] (pole of zeta at 1 -> the zero), w = s + 1 - r0b in [0.99,1.01] x [28.26, 28.28]
 pe = {"w=s+r0-1": certify_zero_box("zeta", "0.68", "0.72", "28.25", "28.29", expected=0, prec=96)["zeros_in_box"],
       "w=s+r0b-1": certify_zero_box("zeta", "0.68", "0.72", "-0.02", "0.02", expected=0, prec=96)["zeros_in_box"],
-      "w=s+1-r0b": certify_zero_box("zeta", "0.98", "1.02", "28.25", "28.29", expected=0, prec=96)["zeros_in_box"]}
+      "w=s+1-r0b": certify_zero_box("zeta", "0.98", "1.02", "28.25", "28.29", expected=0, prec=96)["zeros_in_box"],
+      # 4th shift w = s + 1 - r0 in [0.99, 1.01] x [-0.01, 0.01]: zeta's pole at w = 1 is what gives SYM its zero; zeta
+      # has no zeros there (certified here; the same box is pe1 in s_request_boxes.py)
+      "w=s+1-r0": certify_zero_box("zeta", "0.98", "1.02", "-0.02", "0.02", expected=0, poles=[(1, 0)],
+                                   prec=96)["zeros_in_box"]}
 out["SYM_pole_exclusion_zeta_zero_free"] = pe
 print("SYM box ok; pole exclusion", pe)
 json.dump(out, open(cert_path("S_almost_s.cert.json"), "w"), indent=1, default=str)

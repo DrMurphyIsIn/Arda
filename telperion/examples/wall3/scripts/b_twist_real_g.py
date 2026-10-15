@@ -78,7 +78,8 @@ for p in SMALL:
 # hard-coded gamma0 = 14.134725 value, so the gamma0 = 21.02204 cert compared against the wrong residue; found by bb)
 _bf = rh(f"wall3/B/out/tw_REAL_b{float('0.85')}_g{float(GS)}_s0_X1e+09.json")
 _BA = json.load(open(_bf))["A"]
+# a tolerance test (|mid(A) - B| <= rad(A) + 1e-14), not a containment test -- hence the name
 out["residue_A"] = {"arb": A.str(25), "B_file": shown(_bf), "B_float": _BA,
-                    "contains_B_float": bool(abs(arb(A.real.mid()) - arb(_BA)).upper() <= A.real.rad() + 1e-14)}
-print("A =", A.str(25), out["residue_A"]["contains_B_float"])
+                    "B_float_within_ball_plus_1e-14": bool(abs(arb(A.real.mid()) - arb(_BA)).upper() <= A.real.rad() + 1e-14)}
+print("A =", A.str(25), out["residue_A"]["B_float_within_ball_plus_1e-14"])
 json.dump(out, open(cert_path("B_twist_REAL_g%s.cert.json" % GS), "w"), indent=1, default=str)

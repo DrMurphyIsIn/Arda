@@ -2,11 +2,11 @@
  "object": "B REAL twist, rho0 = 0.85 + 14.134725i",
  "trust_class": "arb",
  "conjecture1_proved": false,
- "provenance": "arb_fakes @ 72470dd5f (guarded) via callable; unpushed branch wall3/telperion-certs",
+ "provenance": "arb_fakes, Arda main 2dfc6eeee (guarded), via callable; script on unpushed branch wall3/telperion-certs",
  "zero_box": {
   "kind": "winding_box_zero",
   "trust_class": "arb",
-  "object": "<function zetaP at 0x109bd60c0>",
+  "object": "<function zetaP at 0x105ed20c0>",
   "box": {
    "re0": "21/25",
    "re1": "43/50",
@@ -55,6 +55,6 @@
  "residue_A": {
   "arb": "[1.03767012136161 +/- 8.70e-15] + [+/- 8.67e-15]j",
   "B_float": 1.0376701213616086,
-  "contains_B_float": true
+  "B_float_within_1e-14": true
  }
 }
