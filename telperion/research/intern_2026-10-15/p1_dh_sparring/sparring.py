@@ -320,23 +320,26 @@ def analyse(a, ga_seed=1):
         rep.append("   theta=%.3f  %+.4e  %3d  t=%.2f" % (r[0], r[1], r[2], r[4]))
     # G(theta) = (1 - theta) G_DH + theta G_sib (shared archimedean part), so lambda_min is concave in
     # theta; bisect for the onset of positivity and compare with the rank-one estimate at DH's witness.
+    # float64 cannot resolve floors below ~1e-13 (the sibling's true floor at a = 3 is below that and
+    # reads as -7.7e-14), so 'PSD' means lambda_min >= -psd_tol.
+    psd_tol = 1e-12 * scale
     lo, hi = 0.0, 1.0
     for th in (r[0] for r in rows):
-        if rows[[x[0] for x in rows].index(th)][1] >= 0:
+        if rows[[x[0] for x in rows].index(th)][1] >= -psd_tol:
             hi = th
             break
         lo = th
     for _ in range(50):
         mid = (lo + hi) / 2
-        if np.linalg.eigvalsh(pen.form((1 - mid) * sets["DH"] + mid * sets["sibling L(chi)"]))[0] >= 0:
+        if np.linalg.eigvalsh(pen.form((1 - mid) * sets["DH"] + mid * sets["sibling L(chi)"]))[0] >= -psd_tol:
             hi = mid
         else:
             lo = mid
     v0 = UDH[:, 0]
     wd = float(v0 @ pen.form(sets["DH"]) @ v0)
     ws = float(v0 @ pen.form(sets["sibling L(chi)"]) @ v0)
-    rep.append("   onset of positivity theta* = %.6f (bisection); witness-only estimate -W_DH(v)/(W_sib(v) - W_DH(v)) = %.6f"
-               % (hi, -wd / (ws - wd)))
+    rep.append("   onset of positivity (lambda_min >= -%.0e) theta* = %.6f (bisection); witness-only estimate -W_DH(v)/(W_sib(v) - W_DH(v)) = %.6f"
+               % (psd_tol, hi, -wd / (ws - wd)))
 
     # E3: witness attribution.  v = DH's minimal eigenvector (orthonormal coordinates)
     v = UDH[:, 0]

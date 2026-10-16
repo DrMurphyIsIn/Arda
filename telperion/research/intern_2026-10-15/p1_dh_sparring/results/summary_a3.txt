@@ -1,0 +1,39 @@
+a = 3, n = 284, h = 0.02091, prime-side n <= 403 (402 nonzero P_n); built in 2s
+E0 reproduce: DH min eigenvalue -3.585008e+00 (dh_control.py mp value at a=2: -0.639788)
+E1 surgeries (min eig | #neg | sum|neg| | peak t of the min eigenvector's transform):
+   DH                                       -3.5850e+00     6  8.2411e+00  t=86.44
+   sibling L(chi)                           -7.7438e-14     0  0.0000e+00  t=1.90
+   DH on prime powers only                  -1.5393e+00    20  1.4739e+01  t=15.78
+   DH off prime powers only                 -4.1602e+00    22  2.9057e+01  t=85.02
+   Euler product of DH's a(p) (no FE)       -1.2500e+00    11  4.6687e+00  t=0.50
+   sibling at primes, DH elsewhere          -4.0446e+00    36  1.7348e+01  t=86.44
+   DH at primes, sibling elsewhere          -3.5876e-01    14  2.0371e+00  t=3.02
+   no primes at all                         -4.9990e-01     2  7.1153e-01  t=0.50
+E2 interpolation c = (1-theta) c_DH + theta c_sib (theta, min eig, #neg, peak t):
+   theta=0.000  -3.5850e+00    6  t=86.44
+   theta=0.125  -2.6458e+00    4  t=86.42
+   theta=0.250  -1.7269e+00    2  t=86.42
+   theta=0.375  -8.4907e-01    2  t=86.42
+   theta=0.500  -8.1114e-02    2  t=86.39
+   theta=0.625  -3.9168e-14    0  t=1.32
+   theta=0.750  -3.9274e-14    0  t=1.32
+   theta=0.875  -4.4497e-14    0  t=1.35
+   theta=1.000  -7.7438e-14    0  t=1.90
+   theta=0.975  -5.0001e-14    0  t=1.35
+   onset of positivity theta* = 1.000000 (bisection); witness-only estimate -W_DH(v)/(W_sib(v) - W_DH(v)) = 0.473576
+E3 at the DH witness v (||v|| = 1):  arch+const = 4.223037,  W_DH(v) = -3.585008,  W_sib(v) = 3.985077
+   W_DH(v) - W_sib(v) = -7.570085, by group of n:
+      non prime powers             -7.994947
+      prime powers p^k, k >= 2     -0.000079
+      p = 5                        +0.000000
+      primes = +-1 mod 5           +0.000000
+      primes = +-2 mod 5           +0.424940
+   most negative single-n contributions -(c_DH - c_sib)(n) v^T P_n v:
+      n=141: -0.2775, n=51: -0.2864, n=42: -0.2987, n=14: -0.3322, n=91: -0.3677, n=94: -0.3705, n=126: -0.3758, n=34: -0.4134, n=84: -0.4570, n=21: -0.4877, n=26: -0.5090, n=39: -0.5340
+E5 sparse repair (replace c_DH(n) -> c_sib(n) on a set S; target lambda_min >= -1.7e-08): 189 coefficients differ
+   greedy: |S| = 189 reaches lambda_min = -8.834e-14; trajectory (|S|, lambda_min) = (0, -3.59e+00), (15, -8.98e-01), (30, -8.78e-01), (45, -8.81e-01), (60, -8.56e-01), (75, -8.38e-01), (90, -8.68e-01), (105, -8.77e-01), (120, -8.29e-01), (135, -8.75e-01), (150, -1.01e+00), (165, -7.88e-01), (180, -5.32e-01), (189, -8.83e-14)
+   GA (40 pop, 60 gens, seed 1): best |S| = 168 with lambda_min = -6.699e-04 (feasible: False)
+
+CORRECTION (2026-10-16): the theta* line above is a float64 artifact (the sibling floor at a = 3 is below
+float64 resolution and reads -7.7e-14). With PSD meaning lambda_min >= -1e-12 * max|eig| (now in sparring.py):
+theta* = 0.517442 at a = 3 (0.193737 at a = 2).
