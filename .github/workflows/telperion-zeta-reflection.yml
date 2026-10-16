@@ -246,6 +246,40 @@ jobs:
           done
           echo "OK: $total guarded anchors across 10 guards; every axiom list within the standard three; all 15 registry theorems present."
 
+      # RSC0 (2026-10-15): the sharpened Riemann-Siegel C0 remainder (RS_B3Sharp, RS_BridgeSharp: 3/5 t^(-3/4) from
+      # t >= 4250, 21/25 from t >= 509) and the bandOK' lane (RS5_*Sharp). Additive step: the step above is unchanged.
+      - name: "Build and axiom-guard the RSC0 sharpened modules (RS_*Sharp, RS5_*Sharp)"
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build RS_B3Sharp RS_BridgeSharp RS_AxiomGuardSharp RS5_EvalSharp RS5_ZSharp RS5_BandSharp RS5_DemoSharp RS5_HardPairsSharp RS5_AxiomGuardSharp
+          floor() { case "$1" in RS_AxiomGuardSharp) echo 71 ;; RS5_AxiomGuardSharp) echo 49 ;; *) echo 999 ;; esac; }
+          anchors() { case "$1" in
+            RS_AxiomGuardSharp) echo "RSInt.rs_remainder_C0' RSSeam.rs_remainder_C0_seam' RSInt.rs_Z_C0' RSSeam.rs_Z_C0_seam'" ;;
+            RS5_AxiomGuardSharp) echo "RS5.band_sound' RS5.sampleOK'_sign RS5.DemoSharp.knife_sign RS5.HardPairsSharp.p87761_sign RS5.HardPairsSharp.p95248_sign" ;; esac; }
+          for g in RS_AxiomGuardSharp RS5_AxiomGuardSharp; do
+            echo "== $g"
+            rc=0; lake env lean "$g.lean" > "$g.out" 2>&1 || rc=$?
+            cat "$g.out"
+            if [ "$rc" -ne 0 ]; then echo "::error::$g: lean exited $rc"; exit 1; fi
+            if grep -qE '(^|[^A-Za-z])error:' "$g.out"; then echo "::error::$g did not elaborate cleanly"; exit 1; fi
+            if grep -q 'sorryAx' "$g.out"; then echo "::error::$g: a guarded theorem depends on sorry"; exit 1; fi
+            joined="$(tr '\n' ' ' < "$g.out" | tr -s ' ')"
+            n=$(grep -oE "depends on axioms: \[[^]]*\]|does not depend on any axioms" <<< "$joined" | wc -l)
+            if [ "$n" -lt "$(floor "$g")" ]; then echo "::error::$g printed $n axiom lines, expected at least $(floor "$g")"; exit 1; fi
+            bad="$(grep -oE "depends on axioms: \[[^]]*\]" <<< "$joined" \
+                    | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' \
+                    | grep -vxE 'propext|Classical\.choice|Quot\.sound' || true)"
+            if [ -n "$bad" ]; then echo "::error::$g: axiom(s) outside {propext, Classical.choice, Quot.sound}: $(echo $bad)"; exit 1; fi
+            for thm in $(anchors "$g"); do
+              grep -qE "'${thm//./\\.}' (depends on axioms: \[[^]]*\]|does not depend on any axioms)" <<< "$joined" \
+                || { echo "::error::$g: anchor $thm was not printed"; exit 1; }
+            done
+          done
+          echo "OK: RSC0 guards clean (71 + 49 anchors; every axiom list within the standard three)."
+
   # The hypothesis-free zero ladder to height 8000 (Arb4_h1000 .. Arb4_h8000, anduril). NOT a required check:
   # the full ladder is hours of kernel time, so it runs separately from zeta-reflection-compiles and only when
   # the island changes (same always-report path gate), plus the weekly schedule. Segments are built one at a

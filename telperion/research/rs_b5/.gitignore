@@ -1,0 +1,4 @@
+# emitter scratch (reduce_*.lean, band_*.json): written next to the script unless --out is given (RSC0 Phase 4, bb nit 5)
+reduce_*.lean
+band_*.json
+__pycache__/

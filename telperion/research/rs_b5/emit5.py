@@ -4,19 +4,20 @@
 #                    one sample per sign-constancy run = the grid point of max |Z| in the run (the
 #                    endpoints T0 and T1 are forced samples).  Cross-check the change count against
 #                    mpmath nzeros(T1) - nzeros(T0).
-# Stage 2 (certs):   RS4 certificate per sample (lane B4 emitter, placeholder z box) and margin E.
+# Stage 2 (certs):   RS4 certificate per sample (../h11k/rs4_certgen.py; placeholder z box), batched in one Lean run,
+#                    and margin E.  (The original lane-B4 emitter, ../b4/emit.py, was never committed and is lost.)
 # Stage 3 (boxes):   the EXACT assembled box (RS4.zBox) of every sample is obtained by `#reduce` in Lean
 #                    (the evaluator is Nat.rec-based and cannot be #eval-compiled); zlo/zhi := box.
 # Stage 4 (lean):    write the band file.
 import sys, json, math, subprocess, os
 import numpy as np
 import mpmath as mp
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'b4'))
-import emit as b4
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'h11k'))
+import rs4_certgen
 
 SCR = os.path.dirname(os.path.abspath(__file__))
 ISL = str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'telperion/examples/zeta_reflection/lean')
-LOCK = '/private/tmp/claude-0/-Users-peterwmurphy/ef083c48-579d-4bec-a689-c30fdccec2a1/scratchpad/leanlock.sh'
+LOCK = os.environ.get('ARDA_LEANLOCK', os.path.expanduser('~/hodge-engine/leanlock.sh'))
 P = 64; o = 1 << P
 
 
@@ -108,10 +109,8 @@ def main():
     Nd = int(mp.nzeros(T1)) - int(mp.nzeros(T0))
     print(f'band [{T0},{T1}] grid 2^-{tq}: samples {len(tns)}, grid changes {K_grid}, '
           f'mpmath N(T1)-N(T0) = {Nd}', file=sys.stderr)
-    certs = []
-    for tn in tns:
-        c, info = b4.cert(tn, tq)
-        certs.append((tn, tq, c))
+    certs = [(tn, tq, c) for tn, c in zip(tns, rs4_certgen.certs([(tn, tq) for tn in tns], workdir=SCR,
+                                                                   tag=f'{tag}_certs', lock=LOCK, isl=ISL))]
     boxes = []
     B = 1500
     for bi in range(0, len(certs), B):
@@ -130,6 +129,9 @@ def main():
             continue
         samples.append(dict(tn=tn, tq=tq_, E=E, cert=c, pos=pos, t=t, Z=zg,
                             hw=(hi - lo) / 2 / o / o, margin=13 / 5 * E / o))
+    if not samples:
+        print('DROPPED', dropped, file=sys.stderr)
+        raise SystemExit('every sample of the band was dropped by the 13/5 test')
     K = sum(1 for a, b in zip(samples, samples[1:]) if a['pos'] != b['pos'])
     first_ok = samples[0]['tn'] == T0 << tq
     last_ok = samples[-1]['tn'] == T1 << tq

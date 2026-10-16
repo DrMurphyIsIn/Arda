@@ -14,7 +14,16 @@ def rat(s):
     return f"({s['tn']} / {1 << s['tq']} : ℝ)"
 
 
-def chunk_file(name, j, S, rep):
+PROVENANCE_B5 = 'pipeline scratchpad/b5/emit5.py'
+
+
+def chunk_file(name, j, S, rep, sharp=False, provenance=PROVENANCE_B5):
+    # sharp=True (RSC0 Phase 3): every sample at t >= 4250, kernel predicate RS5.bandOK' (margin 3/5); default unchanged.
+    # provenance: the 'pipeline ...' phrase of the header (default: the historical lane-B5 text, byte-identical output).
+    if sharp:
+        low = [s['tn'] for s in S if s['tn'] < 4250 * (1 << s['tq'])]
+        if low:
+            raise ValueError(f'sharp chunk with samples below t = 4250 (bandOK\' would refuse them): tn = {low[:5]}')
     K = sum(1 for a, b in zip(S, S[1:]) if a['pos'] != b['pos'])
     mod = f'RS5_Band_{name}_C{j}'
     ns = f'RS5.Band{name}.C{j}'
@@ -22,13 +31,13 @@ def chunk_file(name, j, S, rep):
     txt = f'''/-  {mod}.lean -- lane B5: chunk {j} of the band certificate {name} ({rep['T0']} .. {rep['T1']}).
 
     {len(S)} dyadic sample heights from t = {lo['tn']}/2^{lo['tq']} to t = {hi['tn']}/2^{hi['tq']}, each with an RS4
-    certificate (P = 64) and the seam margin (13/5) E / 2^64 >= (13/5) t^(-3/4).  Emitted by the UNTRUSTED
-    pipeline scratchpad/b5/emit5.py; re-checked here by `decide +kernel` (`RS5.bandOK`).
+    certificate (P = 64) and the @MARGIN@.  Emitted by the UNTRUSTED
+    @PROV@; re-checked here by `decide +kernel` (`@PRED@`).
     Certified: {K} adjacent sign changes, hence `BandZeros lo hi {K}`.
 
     conjecture1_proved = False.
 -/
-import RS5_Band
+import @IMP@
 
 open Complex
 
@@ -43,7 +52,7 @@ noncomputable def rest : List Sample := [
 ''' + ',\n'.join('  ' + lean_sample(s) for s in S[1:]) + f''']
 
 /-- The kernel accepts the chunk ({len(S)} samples). -/
-theorem ok : bandOK (s0 :: rest) = true := by decide +kernel
+theorem ok : @OKP@ (s0 :: rest) = true := by decide +kernel
 
 theorem count : chgBy Sample.pos (s0 :: rest) = {K} := by decide +kernel
 
@@ -60,12 +69,20 @@ theorem t1_eq : (lastOf s0 rest).t = {rat(hi)} := by
 
 /-- **{K} distinct on-line zeros of `riemannZeta` in this chunk.** -/
 theorem zeros : BandZeros {rat(lo)} {rat(hi)} {K} := by
-  have h := bandZeros_of_ok s0 rest ok
+  have h := @BZ@ s0 rest ok
   rw [count, t0_eq, t1_eq] at h
   exact h
 
 end {ns}
 '''
+    txt = txt.replace('@PROV@', provenance)
+    if sharp:
+        txt = (txt.replace('@MARGIN@', 'sharpened margin (3/5) E / 2^64 >= (3/5) t^(-3/4) (RSInt.rs_Z_C0\', t >= 4250)')
+               .replace('@PRED@', "RS5.bandOK'").replace('@IMP@', 'RS5_BandSharp')
+               .replace('@OKP@', "bandOK'").replace('@BZ@', "bandZeros_of_ok'"))
+    else:
+        txt = (txt.replace('@MARGIN@', 'seam margin (13/5) E / 2^64 >= (13/5) t^(-3/4)').replace('@PRED@', 'RS5.bandOK')
+               .replace('@IMP@', 'RS5_Band').replace('@OKP@', 'bandOK').replace('@BZ@', 'bandZeros_of_ok'))
     open(os.path.join(ISL, mod + '.lean'), 'w').write(txt)
     return mod, K, lo, hi
 
@@ -74,6 +91,7 @@ def main():
     tag, name, csz = sys.argv[1], sys.argv[2], int(sys.argv[3])
     d = json.load(open(os.path.join(SCR, f'band_{tag}.json')))
     rep, S = d['report'], d['samples']
+    sharp = rep.get('sharp_margin', False)   # RSC0 Phase 3: chunks over RS5.bandOK' (3/5, t >= 4250)
     T0, T1, K, tq = rep['T0'], rep['T1'], rep['K'], rep['tq']
     assert S[0]['tn'] == T0 << tq and S[-1]['tn'] == T1 << tq
     n = len(S)
@@ -81,7 +99,7 @@ def main():
     cuts = [round(i * (n - 1) / nch) for i in range(nch + 1)]
     chunks = []
     for j in range(nch):
-        chunks.append(chunk_file(name, j, S[cuts[j]:cuts[j + 1] + 1], rep))
+        chunks.append(chunk_file(name, j, S[cuts[j]:cuts[j + 1] + 1], rep, sharp=sharp))
     assert sum(c[1] for c in chunks) == K
     mod = f'RS5_Band_{name}'
     imports = '\n'.join(f'import {c[0]}' for c in chunks)
@@ -93,7 +111,7 @@ def main():
     txt = f'''/-  {mod}.lean -- lane B5: the band certificate on [{T0}, {T1}] (headline; glues {nch} kernel-checked chunks).
 
     {n} dyadic sample heights t_i = tn_i / 2^{tq}, t_0 = {T0}, t_k = {T1}, emitted by the UNTRUSTED pipeline
-    scratchpad/b5/emit5.py and re-checked chunk by chunk by `decide +kernel` (`RS5.bandOK`), chunks
+    scratchpad/b5/emit5.py and re-checked chunk by chunk by `decide +kernel` (`{"RS5.bandOK'" if sharp else 'RS5.bandOK'}`), chunks
     {', '.join(c[0] for c in chunks)}.  Per-chunk sign-change counts {Ks} = {K}.
 
     Result: {K} DISTINCT zeros of Mathlib's `riemannZeta` on the critical line with ordinates in ({T0}, {T1}).
