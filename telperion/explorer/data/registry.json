@@ -3,9 +3,9 @@
   {
    "counts": {
     "deprecated": 0,
-    "draft": 3,
+    "draft": 1,
     "open": 3,
-    "proved": 13,
+    "proved": 15,
     "refuted": 0
    },
    "description": "Migration of PROGRAM ANDURIL (telperion/docs/PROGRAM_ANDURIL_2026-09-12.md, ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md) into the missions registry: the kernel-certified Turing ladder (every nontrivial zeta zero to height T verified on the critical line, T -> 10^13) plus the verified-evaluator reflection track (A2 Euler-Maclaurin era, A4 checkBand, A3 Riemann-Siegel to come). The registry is the tracking truth. NOTHING here is a proof of RH and conjecture1_proved = False throughout: the ladder is finite verification; the goal node is the 10^13 finite-verification target, itself draft. FIDELITY NOTE (design section 9): all artifacts live on the rh/million-turing line, which is NOT merged into main; therefore no node enters as proved -- nodes with kernel-checked artifacts on that line enter as open with the artifact linked, and `mission grant` is deferred until the branch reconcile lands the artifacts on this line. Environment = the zeta islands' shared pin (v4.32.0); artifacts verify in their home islands (zeta_zero_localization, zeta_reflection) per design section 2. [2026-09-23] Update: six nodes are PROVED (granted 2026-09-18 after the million-turing reconcile); the earlier sentence that no node enters as proved is historical. Their island has no working CI (see CLOSURE_RUN_2026-09-22.md).",
@@ -1017,7 +1017,7 @@
     "artifact_exists": true,
     "artifact_kind": "lean_module",
     "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/zeta_reflection/lean/RS_B3Sharp.lean",
-    "closure_clean": false,
+    "closure_clean": true,
     "fidelity_note": "",
     "via": "direct"
    },
@@ -1025,16 +1025,25 @@
     "author_recorded": true,
     "ci_record": null,
     "comparator": null,
-    "grant": null,
+    "grant": {
+     "artifact_sha256": "f3868fac11ad46ad",
+     "date": "2026-10-17",
+     "gate_version": "2026-09-23.1"
+    },
     "requires_ci_job": ""
    },
-   "readback": null,
+   "readback": {
+    "auditor": "AI read-back by Claude (bb session, Riemann Auditor), NOT an operator read-back; under the owner 2026-10-12 decision accepting AI read-backs; second reading by the Riemann contrarian session (session_01226mK3JtJ3FbUCTnaHwXWj), textual and CI-log only",
+    "date": "2026-10-17",
+    "independence": "independent read-back",
+    "text": "Formal statement, rendered by the auditor from the statement file and the nine definitions of Statements/ANDDefsRS.lean (not from the title): for every real t >= 509 with p := rsFrac t = sqrt(t/(2 pi)) - N > 0 and cos(2 pi p) != 0, and every real phi with |phi - thetaMain t| <= 1/t, |2 Re(e^(i phi) rsRem t) - (-1)^(N+1) (t/(2 pi))^(-1/4) Psi(p)| <= (21/25) t^(-3/4), where N = floor(sqrt(t/(2 pi))), Psi(p) = cos(2 pi (p^2 - p - 1/16)) / cos(2 pi p), thetaMain t = (t/2) log t - (t/2) log(2 pi) - t/2 - pi/8, and rsRem t = -(integral over real v of G(z) z^(-1/2 - i t) (1 + i)) with z = N + 1/2 + v (1 + i) and G(x) = e^(pi i x^2) / (e^(pi i x) - e^(-pi i x)) (principal complex power; Lean Bochner integral). Excluded: p = 0 and p in {1/4, 3/4}. It bounds the Riemann-Siegel contour-integral remainder rsRem only and is NOT by itself a bound on zeta or Hardy's Z: the link is RSSeam.rs_Z_C0_seam' in RS_BridgeSharp, which is not a registry node. Artifact theorem RSSeam.rs_remainder_C0_seam' (inside namespace RSSeam with open RSInt, so every name resolves to the RSInt definition) in RS_B3Sharp.lean (constant was 13/5). Checked by the auditor, in the auditor's own detached worktree ~/arda-bb-rsc0: the nine RSC0 lake targets rebuilt at 8efa32574 (8790 jobs, exit 0, 2026-10-16); at 101a42b42 and at 2c6950d1b, whose Lean files and island lakefile match 8efa32574 except a lakefile comment, and whose Lean matches main d612435cb, lake build --no-build reports all 8790 jobs up to date (2026-10-17); RS_AxiomGuardSharp (71 lines) and RS5_AxiomGuardSharp (49) print only propext, Classical.choice and Quot.sound, no sorryAx, and RSSeam.rs_remainder_C0_seam' depends on exactly those three; statement_matches against RS_B3Sharp.lean is True, and tampered copies (threshold, constant, phase ball 1/t to 2/t, exponent -3/4 to -1/2, 0 < p to 0 <= p) are all False; the statement and ANDDefsRS elaborate against the island's Mathlib v4.32.0 with only the expected sorry warning; the nine definitions are verbatim copies of the island's (tests/test_missions_mirror_drift.py, telperion.missions.mirrors, 8 tests pass including an rsAlpha tamper control; it runs in the path-filtered unit job, which is not a required check), each defined once in the island, so no name is shadowed; ANDDefs.lean is byte-identical to pre-PR main; at 2c6950d1b mission verify anduril --strict-provenance OK and judge --check OK (10 challenges). Not run by the auditor: Comparator (the lead's PASS used a reduced bridge, 7 of the judge's 14 AxiomGuard imports). Second reading: the Riemann contrarian session's textual and CI-log read-back, READBACK_RSC0_PR751_contrarian_2026-10-16.md (PASS)."
+   },
    "refutation_statement": "",
    "slug": "AND_rs_remainder_c0_seam_sharp",
    "statement": "theorem rs_remainder_C0_seam' {t : ℝ} (ht : 509 ≤ t) (hp : 0 < rsFrac t)\n    (hcos : Real.cos (2 * π * rsFrac t) ≠ 0) {φ : ℝ} (hφ : |φ - rsThetaMain t| ≤ 1 / t) :\n    |2 * (cexp (I * φ) * rsRem t).re -\n        (-1 : ℝ) ^ (rsNn t + 1) * (t / (2 * π)) ^ (-(1 / 4 : ℝ)) * rsPsi (rsFrac t)| ≤\n      21 / 25 * t ^ (-(3 / 4 : ℝ))",
-   "status": "draft",
-   "title": "Sharpened Riemann-Siegel C0 remainder from the seam (RSC0 Phase 2): for t >= 509 the C0-corrected RS remainder is at most (21/25) t^(-3/4) (was 13/5). Explicit finite-height inequality, NOT RH. conjecture1_proved = False. DRAFT: kernel-checked artifact on lean/rs-c0-sharper (local), no read-back, no grant.",
-   "updated": "2026-10-15"
+   "status": "proved",
+   "title": "Sharpened Riemann-Siegel C0 remainder from the seam (RSC0 Phase 2): for t >= 509, 0 < p, cos(2 pi p) != 0 and every phase within 1/t of thetaMain, the C0-corrected RS remainder satisfies |2 Re(e^{i phi} rsRem t) - (-1)^(N+1) (t/2pi)^(-1/4) Psi(p)| <= (21/25) t^(-3/4) (was 13/5). A bound on the Riemann-Siegel contour-integral remainder rsRem (definitions mirrored verbatim in Statements/ANDDefsRS.lean, drift-gated by tests/test_missions_mirror_drift.py), NOT by itself a bound on zeta: the link to Hardy's Z is RSInt.rs_Z_C0' / RSSeam.rs_Z_C0_seam' (RS_BridgeSharp), which is not a registry node. Explicit finite-height inequality, NOT RH. conjecture1_proved = False. Kernel-checked artifact on main (PR #751, merge d612435cb). PROVENANCE (2026-10-17): kernel-checked in CI (zeta-reflection-compiles; guards RS_AxiomGuardSharp 71 + RS5_AxiomGuardSharp 49 anchors, standard three axioms only); independent AI read-back by the bb session (Riemann Auditor), which rebuilt the artifact in its own worktree, NOT an operator read-back; second, textual and CI-log reading by the contrarian session; no Comparator record yet (the per-PR judge bundle now carries this node).",
+   "updated": "2026-10-17"
   },
   {
    "arb": false,
@@ -1059,7 +1068,7 @@
     "artifact_exists": true,
     "artifact_kind": "lean_module",
     "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/zeta_reflection/lean/RS_B3Sharp.lean",
-    "closure_clean": false,
+    "closure_clean": true,
     "fidelity_note": "",
     "via": "direct"
    },
@@ -1067,16 +1076,25 @@
     "author_recorded": true,
     "ci_record": null,
     "comparator": null,
-    "grant": null,
+    "grant": {
+     "artifact_sha256": "f3868fac11ad46ad",
+     "date": "2026-10-17",
+     "gate_version": "2026-09-23.1"
+    },
     "requires_ci_job": ""
    },
-   "readback": null,
+   "readback": {
+    "auditor": "AI read-back by Claude (bb session, Riemann Auditor), NOT an operator read-back; under the owner 2026-10-12 decision accepting AI read-backs; second reading by the Riemann contrarian session (session_01226mK3JtJ3FbUCTnaHwXWj), textual and CI-log only",
+    "date": "2026-10-17",
+    "independence": "independent read-back",
+    "text": "Formal statement, rendered by the auditor from the statement file and the nine definitions of Statements/ANDDefsRS.lean (not from the title): for every real t >= 4250 with p := rsFrac t = sqrt(t/(2 pi)) - N > 0 and cos(2 pi p) != 0, and every real phi with |phi - thetaMain t| <= 1/t, |2 Re(e^(i phi) rsRem t) - (-1)^(N+1) (t/(2 pi))^(-1/4) Psi(p)| <= (3/5) t^(-3/4), where N = floor(sqrt(t/(2 pi))), Psi(p) = cos(2 pi (p^2 - p - 1/16)) / cos(2 pi p), thetaMain t = (t/2) log t - (t/2) log(2 pi) - t/2 - pi/8, and rsRem t = -(integral over real v of G(z) z^(-1/2 - i t) (1 + i)) with z = N + 1/2 + v (1 + i) and G(x) = e^(pi i x^2) / (e^(pi i x) - e^(-pi i x)) (principal complex power; Lean Bochner integral). Excluded: p = 0 and p in {1/4, 3/4}. It bounds the Riemann-Siegel contour-integral remainder rsRem only and is NOT by itself a bound on zeta or Hardy's Z: the link is RSInt.rs_Z_C0' in RS_BridgeSharp, which is not a registry node. Artifact theorem RSInt.rs_remainder_C0' in RS_B3Sharp.lean (constant was 2, for t >= 10000). Checked by the auditor, in the auditor's own detached worktree ~/arda-bb-rsc0: the nine RSC0 lake targets rebuilt at 8efa32574 (8790 jobs, exit 0, 2026-10-16); at 101a42b42 and at 2c6950d1b, whose Lean files and island lakefile match 8efa32574 except a lakefile comment, and whose Lean matches main d612435cb, lake build --no-build reports all 8790 jobs up to date (2026-10-17); RS_AxiomGuardSharp (71 lines) and RS5_AxiomGuardSharp (49) print only propext, Classical.choice and Quot.sound, no sorryAx, and RSInt.rs_remainder_C0' depends on exactly those three; statement_matches against RS_B3Sharp.lean is True, and tampered copies (threshold, constant, phase ball 1/t to 2/t, exponent -3/4 to -1/2, 0 < p to 0 <= p) are all False; the statement and ANDDefsRS elaborate against the island's Mathlib v4.32.0 with only the expected sorry warning; the nine definitions are verbatim copies of the island's (tests/test_missions_mirror_drift.py, telperion.missions.mirrors, 8 tests pass including an rsAlpha tamper control; it runs in the path-filtered unit job, which is not a required check), each defined once in the island, so no name is shadowed; ANDDefs.lean is byte-identical to pre-PR main; at 2c6950d1b mission verify anduril --strict-provenance OK and judge --check OK (10 challenges). Not run by the auditor: Comparator (the lead's PASS used a reduced bridge, 7 of the judge's 14 AxiomGuard imports). Second reading: the Riemann contrarian session's textual and CI-log read-back, READBACK_RSC0_PR751_contrarian_2026-10-16.md (PASS)."
+   },
    "refutation_statement": "",
    "slug": "AND_rs_remainder_c0_sharp",
    "statement": "theorem rs_remainder_C0' {t : ℝ} (ht : 4250 ≤ t) (hp : 0 < rsFrac t)\n    (hcos : Real.cos (2 * π * rsFrac t) ≠ 0) {φ : ℝ} (hφ : |φ - rsThetaMain t| ≤ 1 / t) :\n    |2 * (cexp (I * φ) * rsRem t).re -\n        (-1 : ℝ) ^ (rsNn t + 1) * (t / (2 * π)) ^ (-(1 / 4 : ℝ)) * rsPsi (rsFrac t)| ≤\n      3 / 5 * t ^ (-(3 / 4 : ℝ))",
-   "status": "draft",
-   "title": "Sharpened Riemann-Siegel C0 remainder (RSC0 Phase 2): for t >= 4250, 0 < p, cos(2 pi p) != 0 and every phase within 1/t of thetaMain, the C0-corrected RS remainder is at most (3/5) t^(-3/4) (was 2 from t >= 10000). Explicit finite-height inequality, NOT RH. conjecture1_proved = False. DRAFT: kernel-checked artifact on lean/rs-c0-sharper (local), no read-back, no grant.",
-   "updated": "2026-10-15"
+   "status": "proved",
+   "title": "Sharpened Riemann-Siegel C0 remainder (RSC0 Phase 2): for t >= 4250, 0 < p, cos(2 pi p) != 0 and every phase within 1/t of thetaMain, the C0-corrected RS remainder satisfies |2 Re(e^{i phi} rsRem t) - (-1)^(N+1) (t/2pi)^(-1/4) Psi(p)| <= (3/5) t^(-3/4) (was 2 from t >= 10000). A bound on the Riemann-Siegel contour-integral remainder rsRem (definitions mirrored verbatim in Statements/ANDDefsRS.lean, drift-gated by tests/test_missions_mirror_drift.py), NOT by itself a bound on zeta: the link to Hardy's Z is RSInt.rs_Z_C0' / RSSeam.rs_Z_C0_seam' (RS_BridgeSharp), which is not a registry node. Explicit finite-height inequality, NOT RH. conjecture1_proved = False. Kernel-checked artifact on main (PR #751, merge d612435cb). PROVENANCE (2026-10-17): kernel-checked in CI (zeta-reflection-compiles; guards RS_AxiomGuardSharp 71 + RS5_AxiomGuardSharp 49 anchors, standard three axioms only); independent AI read-back by the bb session (Riemann Auditor), which rebuilt the artifact in its own worktree, NOT an operator read-back; second, textual and CI-log reading by the contrarian session; no Comparator record yet (the per-PR judge bundle now carries this node).",
+   "updated": "2026-10-17"
   },
   {
    "arb": false,
@@ -9126,9 +9144,9 @@
  "note": "conjecture1_proved = False. Every status below is read from the registry TOML through telperion.missions; nothing is inferred. A readback is labelled self-attested unless the registry records a Comparator judge pass on the current artifact, in which case it is labelled judge-verified.",
  "totals": {
   "deprecated": 6,
-  "draft": 15,
+  "draft": 13,
   "open": 4,
-  "proved": 144,
+  "proved": 146,
   "refuted": 1
  }
 }
