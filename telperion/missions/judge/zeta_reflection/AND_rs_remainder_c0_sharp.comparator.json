@@ -1,0 +1,13 @@
+{
+  "challenge_module": "MissionChallenges.AND_rs_remainder_c0_sharp",
+  "solution_module": "MissionChallenges.AND_rs_remainder_c0_sharp",
+  "theorem_names": [
+    "MissionJudge.AND_rs_remainder_c0_sharp"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

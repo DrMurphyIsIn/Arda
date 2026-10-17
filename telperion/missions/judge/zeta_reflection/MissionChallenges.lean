@@ -6,5 +6,7 @@ import MissionChallenges.AND_first_zero_kernel
 import MissionChallenges.AND_g2_reflected_band_kernel
 import MissionChallenges.AND_height_floor_kernel
 import MissionChallenges.AND_ladder_h1000_kernel
+import MissionChallenges.AND_rs_remainder_c0_seam_sharp
+import MissionChallenges.AND_rs_remainder_c0_sharp
 import MissionChallenges.AND_stirling_binet_k1
 import MissionChallenges.AND_theta_branch
