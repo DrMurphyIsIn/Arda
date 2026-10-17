@@ -280,6 +280,37 @@ jobs:
           done
           echo "OK: RSC0 guards clean (71 + 49 anchors; every axiom list within the standard three)."
 
+      # MM_speiser_box_probe (2026-10-17): deriv riemannZeta has no zero on [1/4, 3/8] x [6, 10] (SpeiserDerivCore,
+      # SpeiserDerivBox). NOT the Speiser wall (zeta' zero-free on the whole open left strip is RH, Speiser 1935); nothing
+      # about zeros of zeta. conjecture1_proved = False. Additive step: the steps above are unchanged.
+      - name: "Build and axiom-guard the zeta' zero-free box probe (SpeiserDeriv*)"
+        if: steps.changes.outputs.run == 'true'
+        working-directory: telperion/examples/zeta_reflection/lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 ../arbecon/gen_speiser_box.py --check   # generator vs committed SpeiserDerivBox.lean, byte-identical
+          lake build SpeiserDerivCore SpeiserDerivBox AxiomGuardSpeiserDeriv
+          g=AxiomGuardSpeiserDeriv
+          echo "== $g"
+          rc=0; lake env lean "$g.lean" > "$g.out" 2>&1 || rc=$?
+          cat "$g.out"
+          if [ "$rc" -ne 0 ]; then echo "::error::$g: lean exited $rc"; exit 1; fi
+          if grep -qE '(^|[^A-Za-z])error:' "$g.out"; then echo "::error::$g did not elaborate cleanly"; exit 1; fi
+          if grep -q 'sorryAx' "$g.out"; then echo "::error::$g: a guarded theorem depends on sorry"; exit 1; fi
+          joined="$(tr '\n' ' ' < "$g.out" | tr -s ' ')"
+          n=$(grep -oE "depends on axioms: \[[^]]*\]|does not depend on any axioms" <<< "$joined" | wc -l)
+          if [ "$n" -lt 11 ]; then echo "::error::$g printed $n axiom lines, expected at least 11"; exit 1; fi
+          bad="$(grep -oE "depends on axioms: \[[^]]*\]" <<< "$joined" \
+                  | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' \
+                  | grep -vxE 'propext|Classical\.choice|Quot\.sound' || true)"
+          if [ -n "$bad" ]; then echo "::error::$g: axiom(s) outside {propext, Classical.choice, Quot.sound}: $(echo $bad)"; exit 1; fi
+          for thm in speiser_box_probe ArbEcon.Off.SpD.cell_deriv_ne_zero ArbEcon.Off.SpeiserBox.check0_neg ArbEcon.Off.SpeiserBox.check0_corrupt; do
+            grep -qE "'${thm//./\\.}' (depends on axioms: \[[^]]*\]|does not depend on any axioms)" <<< "$joined" \
+              || { echo "::error::$g: anchor $thm was not printed"; exit 1; }
+          done
+          echo "OK: speiser box guard clean (11 anchors; every axiom list within the standard three)."
+
   # The hypothesis-free zero ladder to height 8000 (Arb4_h1000 .. Arb4_h8000, anduril). NOT a required check:
   # the full ladder is hours of kernel time, so it runs separately from zeta-reflection-compiles and only when
   # the island changes (same always-report path gate), plus the weekly schedule. Segments are built one at a

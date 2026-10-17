@@ -22,6 +22,7 @@ import AxiomGuardFirstZeroKernel
 import AxiomGuardH1000Line
 import AxiomGuardHeightFloor
 import AxiomGuardRSTheta
+import AxiomGuardSpeiserDeriv
 import AxiomGuardStirling
 
 namespace RSSeam
