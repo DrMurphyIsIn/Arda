@@ -207,3 +207,61 @@ def test_dbn_tab_is_honest(html):
     assert "openai/math" in panel and "Apache-2.0" in panel
     assert "qrh-debruijn-newman" in panel and "10.5281/zenodo.23269135" in panel
     assert "newman-lambda-nonneg" in panel and "10.5281/zenodo.23287833" in panel
+
+
+def test_speiser_tab_exists_and_reads_the_registry(registry, plots, html):
+    """The zeta' box tab: present, its node read from the registry (status never hard-coded), its
+    exact half equal to the generator's arithmetic, its float half labelled, and the Lean lines it
+    quotes cut at the right place."""
+    assert 'data-panel="zeta-prime"' in html and 'id="panel-zeta-prime"' in html
+    S = plots["speiser"]
+    assert S["conjecture1_proved"] is False
+    by_id = {n["id"]: n for n in registry["nodes"]}
+    node = by_id[S["node_id"]]
+    uni = load_universe(TELPERION / "missions")
+    assert node["status"] == uni.campaigns["mirrormere"].nodes["MM_speiser_box_probe"].status
+    assert node["statement"].startswith("theorem speiser_box_probe")
+    # exact half: eight discs, every kernel test true, every negative control false
+    E = S["exact"]
+    assert len(E["discs"]) == 8 and [d["i"] for d in E["discs"]] == list(range(8))
+    assert all(d["checkD"] and not d["checkD_F_tiny"] for d in E["discs"])
+    assert E["forged_disc0"]["checkD"] is False and E["forged_disc0"]["abs_Mp0"] < 1e-15
+    assert E["params"]["r"] == "13/50" and E["params"]["rho"] == "1/20" and E["params"]["F"] == "1/100"
+    assert E["params"]["row_half_diagonal"] < 13 / 50
+    for d in E["discs"]:
+        assert d["abs_Mp0"] - d["r_pnub"] > 1 / 100           # the derivative test, as a float view
+        assert d["budget_float"] <= 1 / 2000                   # the budget test, as a float view
+        assert len(d["M_exact"]) == E["params"]["degree_M"] + 1
+        assert all("/" in c[0] or c[0].lstrip("-").isdigit() for c in d["M_exact"])
+    # the margins printed in the generated Lean header are the generator's margins
+    header = [float(x) for x in re.findall(r"\d\.\d{3}", S["lean"]["header_margins"])]
+    assert header == [round(d["margin"], 3) for d in E["discs"]]
+    # float half: labelled, consistent, and below the certified budget as it must be
+    Fd = S["float"]
+    assert "float model" in Fd["trust"] and "not a certificate" in Fd["trust"]
+    g = Fd["grid"]
+    assert len(g["log10_abs_dzeta"]) == g["ncols"] * g["nrows"] == len(g["log10_abs_zeta"])
+    assert any(abs(z["re"] - 2.46316) < 1e-4 and abs(z["im"] - 23.2983) < 1e-3 for z in Fd["dzeta_zeros"])
+    for d, fd in zip(E["discs"], Fd["discs"]):
+        assert fd["boundary_max_err"] < d["budget_float"]
+        assert fd["inner_min_abs_Mp"] > d["abs_Mp0"] - d["r_pnub"]
+    # the quoted Lean lines stop at the first tactic line and say what the kernel decided
+    L = S["lean"]
+    assert L["statement_matches_registry"] is True
+    assert L["statement"].count("\n") == 3 and L["statement"].endswith("intro s h1 h2 h3 h4")
+    for k in ("check0_neg", "check0_corrupt"):
+        assert L[k].endswith("= false := by\n  decide +kernel"), k
+    assert L["check0"].endswith("= true := by\n  decide +kernel")
+    assert L["guard_anchor_count"] == 11
+    assert S["ci"]["step"].startswith('      - name: "Build and axiom-guard') and "lake build SpeiserDerivCore" in S["ci"]["step"]
+
+
+def test_speiser_tab_is_honest(html):
+    panel = html.split('id="panel-zeta-prime"')[1].split("</section>")[0]
+    assert "conjecture1_proved = False" in panel
+    assert "What this tab does not claim" in panel
+    assert "not the Speiser wall" in panel
+    assert "nothing about zeros of zeta" in panel
+    assert "float model" in panel
+    assert "decide +kernel" in panel
+    assert "no read-back of this artifact" in panel

@@ -698,6 +698,377 @@
     drawers.dbn = drawAll;
   })();
 
+  // ================================================================== THE ZETA' BOX
+  // Blue = kernel-checked, orange = model (the de Bruijn-Newman pair). Every grid drawn here is a float
+  // model: mpmath values bundled at build time, or double arithmetic on the exact coefficients of M. The
+  // kernel's own numbers (budgets, derivative tests) are the rationals in PLOTS.speiser.exact.
+  (function speiserTab() {
+    var S = PLOTS.speiser, E = S.exact, Fd = S.float, P = E.params, G = Fd.grid;
+    var byId = {}; REG.nodes.forEach(function (n) { byId[n.id] = n; });
+    var r = P.r_float, rho = P.rho_float, R = r + rho, F = P.F_float, sig = P.sigma_float;
+    var FR = P.F_rho_float;
+    var discSl = document.getElementById("sp-disc");
+
+    // ---- colours: a sequential ramp --sunk -> --cool -> --ink, lightness-monotone in both themes
+    function rgb(s) {
+      s = s.trim();
+      if (s[0] === "#") { var h = s.length === 4 ? s.replace(/[0-9a-f]/gi, function (c) { return c + c; }) : s; return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+      var m = s.match(/[\d.]+/g); return m ? [+m[0], +m[1], +m[2]] : [128, 128, 128];
+    }
+    function ramp() {
+      var a = rgb(cssVar("--sunk")), b = rgb(cssVar("--cool")), c = rgb(cssVar("--ink"));
+      return function (t) {
+        t = t < 0 ? 0 : t > 1 ? 1 : t;
+        var p = t < 0.5 ? a : b, q = t < 0.5 ? b : c, u = t < 0.5 ? t * 2 : (t - 0.5) * 2;
+        return "rgb(" + Math.round(p[0] + (q[0] - p[0]) * u) + "," + Math.round(p[1] + (q[1] - p[1]) * u) + "," + Math.round(p[2] + (q[2] - p[2]) * u) + ")";
+      };
+    }
+    function ring(ctx, x, y, rad, fill) {
+      ctx.fillStyle = cssVar("--surface"); ctx.beginPath(); ctx.arc(x, y, rad + 2, 0, 2 * Math.PI); ctx.fill();
+      ctx.fillStyle = fill; ctx.beginPath(); ctx.arc(x, y, rad, 0, 2 * Math.PI); ctx.fill();
+    }
+    function halo(ctx, text, x, y) {   // a label legible over coloured cells: a surface-coloured pill behind it
+      var w = ctx.measureText(text).width + 6, h = 15;
+      var x0 = ctx.textAlign === "center" ? x - w / 2 : ctx.textAlign === "right" ? x - w + 3 : x - 3;
+      var y0 = ctx.textBaseline === "middle" ? y - h / 2 : ctx.textBaseline === "bottom" ? y - h + 2 : y - 2;
+      var fill = ctx.fillStyle; ctx.globalAlpha = 0.85; ctx.fillStyle = cssVar("--surface"); ctx.fillRect(x0, y0, w, h); ctx.globalAlpha = 1;
+      ctx.fillStyle = fill; ctx.fillText(text, x, y);
+    }
+    function circle(ctx, x, y, rad, stroke, width, dash) {
+      ctx.strokeStyle = stroke; ctx.lineWidth = width || 1.5; ctx.setLineDash(dash || []);
+      ctx.beginPath(); ctx.arc(x, y, rad, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]);
+    }
+    // a canvas whose height follows the data (equal-aspect plots), then the shared setup
+    function sized(id, aspect) {
+      var c = document.getElementById(id), w = +c.getAttribute("width");
+      c.setAttribute("height", Math.round(w * aspect)); return setupCanvas(id);
+    }
+    function inv(cv, ax, xmin, xmax, ymin, ymax) {
+      return {
+        x: function (px) { return xmin + (px - ax.ml) / (cv.W - ax.ml - ax.mr) * (xmax - xmin); },
+        y: function (py) { return ymin + (cv.H - ax.mb - py) / (cv.H - ax.mt - ax.mb) * (ymax - ymin); }
+      };
+    }
+    function pos(cvEl, e) { var b = cvEl.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; }
+
+    // ---- the bundled grid of log10 |zeta'| and log10 |zeta| (float model)
+    var dRe = (G.re1 - G.re0) / (G.ncols - 1), dIm = (G.im1 - G.im0) / (G.nrows - 1);
+    function gridAt(re, im) {
+      var i = Math.round((re - G.re0) / dRe), j = Math.round((im - G.im0) / dIm);
+      if (i < 0 || i >= G.ncols || j < 0 || j >= G.nrows) return null;
+      var k = j * G.ncols + i;
+      return { re: G.re0 + i * dRe, im: G.im0 + j * dIm, lz: G.log10_abs_zeta[k] / G.scale, ldz: G.log10_abs_dzeta[k] / G.scale,
+               clipped: Math.abs(G.log10_abs_dzeta[k]) >= G.clip || Math.abs(G.log10_abs_zeta[k]) >= G.clip };
+    }
+    function inBox(re, im) { return re >= 0.25 && re <= 0.375 && im >= 6 && im <= 10; }
+    function discOf(re, im, rad) {
+      for (var i = 0; i < E.discs.length; i++) { var d = E.discs[i], dx = re - sig, dy = im - d.tc_float; if (dx * dx + dy * dy <= rad * rad) return i; }
+      return -1;
+    }
+    function gridText(g) {
+      if (!g) return "";
+      return " |zeta'| ~ " + (g.clipped ? "(clipped)" : sci(Math.pow(10, g.ldz))) + ", |zeta| ~ " + (g.clipped ? "(clipped)" : sci(Math.pow(10, g.lz))) + " at the nearest grid point " + fmt(g.re, 4) + " + " + fmt(g.im, 3) + " i (mpmath, float model)";
+    }
+
+    // ---- complex polynomials from the exported coefficients (double arithmetic)
+    function peval(coef, hre, him) {
+      var ar = 0, ai = 0;
+      for (var k = coef.length - 1; k >= 0; k--) { var tr = ar * hre - ai * him, ti = ar * him + ai * hre; ar = coef[k][0] + tr; ai = coef[k][1] + ti; }
+      return [ar, ai];
+    }
+    function pderiv(coef) { var out = []; for (var k = 1; k < coef.length; k++) out.push([coef[k][0] * k, coef[k][1] * k]); return out; }
+    function pabs(coef, hre, him) { var v = peval(coef, hre, him); return Math.sqrt(v[0] * v[0] + v[1] * v[1]); }
+    var MP = E.discs.map(function (d) { return pderiv(d.M_float); });
+    var MP_FORGED = pderiv(E.forged_disc0.M_float);
+
+    // ---- (a) statement, axioms and the node card, read from the registry
+    (function stepA() {
+      var node = byId[S.node_id], L = S.lean;
+      document.getElementById("sp-statement").textContent = node && node.statement ? node.statement : "(statement module missing in this checkout)";
+      document.getElementById("sp-axioms").textContent = S.axioms;
+      var a = document.getElementById("sp-artifact-link"); a.href = L.artifact_url; a.textContent = L.artifact;
+      if (!node) { document.getElementById("sp-node").innerHTML = "<div class=\"card\">The registry does not hold " + escapeHtml(S.node_id) + ".</div>"; return; }
+      var pv = node.provenance || {}, comp = pv.comparator;
+      var pills = "<span class=\"pill " + node.status + "\">" + node.status + "</span><span class=\"pill tag\">" + escapeHtml(node.kind) + "</span><span class=\"pill tag\">" + escapeHtml(node.campaign) + "</span>";
+      if (node.readback) pills += "<span class=\"pill tag\">" + escapeHtml(node.readback.independence) + "</span>";
+      if (node.proof) pills += "<span class=\"pill tag\">closure_clean " + node.proof.closure_clean + "</span><span class=\"pill " + (node.coverage.label === "module-covered" ? "tag" : "warnp") + "\">CI " + escapeHtml(node.coverage.label) + "</span>";
+      var s = "<div class=\"card\"><h4>" + escapeHtml(node.id) + "</h4><div class=\"meta\">" + pills + "</div><div class=\"title\">" + escapeHtml(node.title) + "</div>";
+      if (node.proof) s += "<div class=\"meta\">artifact <a href=\"" + escapeHtml(node.proof.artifact_url) + "\">" + escapeHtml(node.proof.artifact) + "</a>" + (node.proof.artifact_exists ? "" : " (missing in this checkout)") + (node.coverage.jobs.length ? "; compiled by " + escapeHtml(node.coverage.jobs.join(", ")) : "") + "</div>";
+      var bits = [];
+      bits.push(pv.grant ? "grant " + escapeHtml(pv.grant.date) + " (gate " + escapeHtml(pv.grant.gate_version) + ")" : "grant: none recorded");
+      bits.push(comp ? "Comparator judge run " + escapeHtml(comp.run_id) + " on " + escapeHtml(comp.date) : "Comparator judge: not recorded");
+      if (node.readback) bits.push("readback by " + escapeHtml(node.readback.auditor) + " on " + escapeHtml(node.readback.date) + " (of the statement; no read-back of the artifact is recorded)");
+      s += "<div class=\"note\">" + bits.join(" &middot; ") + "</div>";
+      if (node.readback) s += "<details><summary>the recorded read-back</summary><div class=\"rb\">" + escapeHtml(node.readback.text) + "</div></details>";
+      s += "<div class=\"note\">" + (L.statement_matches_registry ? "The artifact's theorem <code>speiser_box_probe</code> matches the registered statement word for word (compared at build time)." : "WARNING: the artifact's theorem text differs from the registered statement.") + "</div>";
+      document.getElementById("sp-node").innerHTML = s + "</div>";
+    })();
+
+    // ---- (b) where the box sits
+    var planeMap = null;
+    function drawPlane(hover) {
+      var cv = setupCanvas("sp-plane"), ctx = cv.ctx;
+      var x0 = -0.5, x1 = 3, y0 = 0, y1 = 30;
+      var ax = axes(cv, x0, x1, y0, y1, { xlabel: "Re s", ylabel: "Im s", xticks: [-0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3], mb: 32 });
+      planeMap = { cv: cv, ax: ax, inv: inv(cv, ax, x0, x1, y0, y1) };
+      var top = ax.Y(y1), bot = ax.Y(y0);
+      ctx.fillStyle = cssVar("--sunk"); ctx.fillRect(ax.X(0), top, ax.X(1) - ax.X(0), bot - top);
+      ctx.fillStyle = cssVar("--cool-soft"); ctx.fillRect(ax.X(0), top, ax.X(0.5) - ax.X(0), bot - top);
+      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1;
+      [0, 1].forEach(function (x) { ctx.beginPath(); ctx.moveTo(ax.X(x), top); ctx.lineTo(ax.X(x), bot); ctx.stroke(); });
+      ctx.strokeStyle = cssVar("--faint"); ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(ax.X(0.5), top); ctx.lineTo(ax.X(0.5), bot); ctx.stroke(); ctx.setLineDash([]);
+      // the box
+      ctx.fillStyle = cssVar("--dbn-k-soft"); ctx.fillRect(ax.X(0.25), ax.Y(10), ax.X(0.375) - ax.X(0.25), ax.Y(6) - ax.Y(10));
+      ctx.strokeStyle = cssVar("--dbn-k"); ctx.lineWidth = 2; ctx.strokeRect(ax.X(0.25), ax.Y(10), ax.X(0.375) - ax.X(0.25), ax.Y(6) - ax.Y(10));
+      // zeros of zeta on the line (bundled ordinates), the pole, the zero of zeta'
+      for (var z = 0; z < ZEROS.length && ZEROS[z] <= y1; z++) ring(ctx, ax.X(0.5), ax.Y(ZEROS[z]), 4, cssVar("--faint"));
+      ctx.strokeStyle = cssVar("--accent"); ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(ax.X(1) - 5, ax.Y(0) - 5); ctx.lineTo(ax.X(1) + 5, ax.Y(0) + 5); ctx.moveTo(ax.X(1) - 5, ax.Y(0) + 5); ctx.lineTo(ax.X(1) + 5, ax.Y(0) - 5); ctx.stroke();
+      Fd.dzeta_zeros.forEach(function (q) { ring(ctx, ax.X(q.re), ax.Y(q.im), 5, cssVar("--dbn-m")); });
+      // labels
+      ctx.fillStyle = cssVar("--ink"); ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      ctx.fillText("the box [1/4, 3/8] x [6, 10]: zeta' has no zero here (kernel)", ax.X(0.375) + 8, ax.Y(8));
+      ctx.fillText("zeta zeros 1/2 + i gamma (float model)", ax.X(0.5) + 8, ax.Y(ZEROS[0]));
+      Fd.dzeta_zeros.forEach(function (q) { ctx.textAlign = "right"; ctx.fillText("zeta' zero " + fmt(q.re, 3) + " + " + fmt(q.im, 3) + " i (float model)", ax.X(q.re) - 9, ax.Y(q.im)); });
+      ctx.textAlign = "left"; ctx.fillStyle = cssVar("--muted"); ctx.fillText("pole s = 1", ax.X(1) + 8, ax.Y(0) - 8);
+      ctx.save(); ctx.translate(ax.X(0.25) - 6, ax.Y(19)); ctx.rotate(-Math.PI / 2); ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+      ctx.fillText("Speiser's region 0 < Re s < 1/2", 0, 0); ctx.restore();
+      ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillText("Re s = 1/2", ax.X(0.5), top + 4);
+      var rd = "The box has width 1/8 and height 4; its area is 1/2. Speiser's region is the open half-strip of infinite height. Everything drawn is a float model except the box, whose zeta'-freeness is the kernel theorem speiser_box_probe.";
+      if (hover) {
+        var g = gridAt(hover[0], hover[1]);
+        rd = "s = " + fmt(hover[0], 4) + " + " + fmt(hover[1], 3) + " i" + (inBox(hover[0], hover[1]) ? " (inside the box: zeta'(s) != 0 is a kernel theorem)" : hover[0] > 0 && hover[0] < 0.5 ? " (in Speiser's region, outside the box: nothing is certified here)" : "") + ";" + gridText(g) + "\n" + rd;
+      }
+      document.getElementById("sp-plane-readout").textContent = rd;
+    }
+    var planeEl = document.getElementById("sp-plane");
+    planeEl.addEventListener("pointermove", function (e) { if (!planeMap) return; var p = pos(planeEl, e); drawPlane([planeMap.inv.x(p[0]), planeMap.inv.y(p[1])]); });
+    planeEl.addEventListener("pointerleave", function () { drawPlane(null); });
+
+    // ---- (c) the heat map of log10 |zeta'| with the discs
+    var heatMap = null, heatC = document.getElementById("sp-heat-c"), heatW = document.getElementById("sp-heat-w");
+    var heatInner = document.getElementById("sp-heat-inner"), heatOuter = document.getElementById("sp-heat-outer");
+    var HI_CAP = 2;   // the pole at s = 1 is clipped out of the colour range
+    function drawHeat(hover) {
+      var w = +heatW.value, tc = +heatC.value;
+      var t0 = Math.max(G.im0, Math.min(tc - w / 2, G.im1 - w)), t1 = t0 + w;
+      heatC.disabled = w >= 30;
+      document.getElementById("sp-heat-c-val").textContent = "Im s in [" + fmt(t0, 2) + ", " + fmt(t1, 2) + "]";
+      var el = document.getElementById("sp-heat"), ml = 56, mr = 14, mt = 12, mb = 32;
+      var W = el.clientWidth || 1000, scale = (W - ml - mr) / w;
+      var aspect = Math.min(1.1, ((G.re1 - G.re0) * scale + mt + mb) / W);
+      var cv = sized("sp-heat", aspect), ctx = cv.ctx;
+      var ax = axes(cv, t0, t1, G.re0, G.re1, { xlabel: "Im s (height)", ylabel: "Re s", yticks: [0, 0.5, 1, 1.5, 2, 2.5], ml: ml, mr: mr, mt: mt, mb: mb });
+      heatMap = { cv: cv, ax: ax, inv: inv(cv, ax, t0, t1, G.re0, G.re1) };
+      var col = ramp();
+      ctx.save(); ctx.beginPath(); ctx.rect(ax.X(t0), ax.Y(G.re1), ax.X(t1) - ax.X(t0), ax.Y(G.re0) - ax.Y(G.re1)); ctx.clip();
+      var j0 = Math.max(0, Math.floor((t0 - G.im0) / dIm) - 1), j1 = Math.min(G.nrows - 1, Math.ceil((t1 - G.im0) / dIm) + 1);
+      // the colour range follows the window (the landscape is flat near the box and steep near the pole)
+      var LO = Infinity, HI = -Infinity, j, i, v;
+      for (j = j0; j <= j1; j++) for (i = 0; i < G.ncols; i++) { v = G.log10_abs_dzeta[j * G.ncols + i] / G.scale; if (v < LO) LO = v; if (v > HI && v < HI_CAP) HI = v; }
+      if (!(HI > LO)) { LO = -2; HI = 1; }
+      for (j = j0; j <= j1; j++) {
+        var im = G.im0 + j * dIm, px = ax.X(im - dIm / 2), pw = ax.X(im + dIm / 2) - px + 0.5;
+        for (i = 0; i < G.ncols; i++) {
+          var re = G.re0 + i * dRe; v = G.log10_abs_dzeta[j * G.ncols + i] / G.scale;
+          ctx.fillStyle = col((v - LO) / (HI - LO));
+          var py = ax.Y(re + dRe / 2); ctx.fillRect(px, py, pw, ax.Y(re - dRe / 2) - py + 0.5);
+        }
+      }
+      // overlays: strip edges, critical line, zeros, the box, the discs
+      ctx.strokeStyle = cssVar("--faint"); ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(ax.X(t0), ax.Y(0.5)); ctx.lineTo(ax.X(t1), ax.Y(0.5)); ctx.stroke(); ctx.setLineDash([]);
+      [0, 1].forEach(function (x) { ctx.beginPath(); ctx.moveTo(ax.X(t0), ax.Y(x)); ctx.lineTo(ax.X(t1), ax.Y(x)); ctx.stroke(); });
+      for (var z = 0; z < ZEROS.length && ZEROS[z] <= t1; z++) if (ZEROS[z] >= t0) ring(ctx, ax.X(ZEROS[z]), ax.Y(0.5), 3.5, cssVar("--faint"));
+      Fd.dzeta_zeros.forEach(function (q) { if (q.im >= t0 && q.im <= t1) ring(ctx, ax.X(q.im), ax.Y(q.re), 4, cssVar("--dbn-m")); });
+      ctx.strokeStyle = cssVar("--dbn-k"); ctx.lineWidth = 2; ctx.strokeRect(ax.X(6), ax.Y(0.375), ax.X(10) - ax.X(6), ax.Y(0.25) - ax.Y(0.375));
+      E.discs.forEach(function (d) {
+        var cx = ax.X(d.tc_float), cy = ax.Y(sig);
+        if (heatOuter.checked) circle(ctx, cx, cy, ax.X(d.tc_float + R) - cx, cssVar("--dbn-m"), 1.2, [3, 3]);
+        if (heatInner.checked) circle(ctx, cx, cy, ax.X(d.tc_float + r) - cx, cssVar("--dbn-k"), 1.2);
+      });
+      ctx.restore();
+      ctx.fillStyle = cssVar("--ink"); ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+      if (t0 <= 10 && t1 >= 6) ctx.fillText("the box", ax.X(Math.max(6, t0)) + 4, ax.Y(0.375 + (w <= 6 ? 0.3 : 0.08)) - 2);
+      var rd = "Colour range in this window: log10 |zeta'| from " + fmt(LO, 2) + " (dark) to " + fmt(HI, 2) + " (light), the pole clipped; grid step 1/32 in Re s and 1/8 in Im s; " + Fd.trust + ".";
+      if (hover) {
+        var g = gridAt(hover[1], hover[0]), din = discOf(hover[1], hover[0], r), dout = discOf(hover[1], hover[0], R);
+        rd = "s = " + fmt(hover[1], 4) + " + " + fmt(hover[0], 3) + " i;" + gridText(g) +
+          (din >= 0 ? "\ninside inner disc " + din + " (centre 5/16 + " + E.discs[din].tc + " i): |M'| > F certified there" : dout >= 0 ? "\ninside outer disc " + dout + " only: |zeta - M| <= F rho certified there, |M'| not" : "") +
+          (inBox(hover[1], hover[0]) ? "; in the box" : "") + "\n" + rd;
+      }
+      document.getElementById("sp-heat-readout").textContent = rd;
+    }
+    var heatEl = document.getElementById("sp-heat");
+    heatEl.addEventListener("pointermove", function (e) { if (!heatMap) return; var p = pos(heatEl, e); drawHeat([heatMap.inv.x(p[0]), heatMap.inv.y(p[1])]); });
+    heatEl.addEventListener("pointerleave", function () { drawHeat(null); });
+    [heatC, heatW, heatInner, heatOuter].forEach(function (el) { el.addEventListener("input", function () { drawHeat(null); }); el.addEventListener("change", function () { drawHeat(null); }); });
+
+    // ---- (d) and (f): the two certificate plots for one disc, with the thresholds as parameters
+    // mpId: |M'(h)| on the inner disc, red where |M'| <= Ffail.  errId: log10 |zeta - M| on the outer disc
+    // (mpmath polar samples), red where the sample exceeds threshold.
+    function drawMp(mpId, coef, Ffail) {
+      var cv = sized(mpId, 1), ctx = cv.ctx, m = 8, side = Math.min(cv.W, cv.H) - 2 * m, cx = cv.W / 2, cy = cv.H / 2 - 12, sc = side / (2 * r * 1.22);
+      var n = 90, cell = 2 * r / n, vmax = 0, vmin = Infinity, vals = [], red = 0, tot = 0;
+      for (var a = 0; a < n; a++) for (var b = 0; b < n; b++) {
+        var hr = -r + (a + 0.5) * cell, hi = -r + (b + 0.5) * cell;
+        if (hr * hr + hi * hi > r * r) { vals.push(-1); continue; }
+        var v = pabs(coef, hr, hi); vals.push(v); tot++;
+        if (v > vmax) vmax = v; if (v < vmin) vmin = v; if (v <= Ffail) red++;
+      }
+      var col = ramp(), span = vmax - vmin || 1;
+      ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r * sc, 0, 2 * Math.PI); ctx.clip();
+      for (a = 0; a < n; a++) for (b = 0; b < n; b++) {
+        var v2 = vals[a * n + b]; if (v2 < 0) continue;
+        ctx.fillStyle = v2 <= Ffail ? cssVar("--refuted") : col((v2 - vmin) / span);
+        ctx.fillRect(cx + (-r + a * cell) * sc, cy - (-r + (b + 1) * cell) * sc, cell * sc + 0.6, cell * sc + 0.6);
+      }
+      ctx.restore();
+      circle(ctx, cx, cy, r * sc, cssVar("--dbn-k"), 2);
+      ring(ctx, cx, cy, 3, cssVar("--ink"));
+      ctx.fillStyle = cssVar("--ink"); ctx.textAlign = "left"; ctx.textBaseline = "middle"; halo(ctx, "h = 0 (the centre c)", cx + 8, cy);
+      ctx.fillStyle = cssVar("--muted"); ctx.textAlign = "center"; ctx.textBaseline = "bottom"; ctx.fillText("|h| = r", cx, cy - r * sc - 4);
+      ctx.textBaseline = "top"; ctx.fillText("colour: |M'| from " + fmt(vmin, 4) + " (dark) to " + fmt(vmax, 4) + " (light)", cx, cy + r * sc + 6);
+      ctx.fillText("sampled grid, float; F = " + Ffail, cx, cy + r * sc + 20);
+      return { vmax: vmax, vmin: vmin, red: red, tot: tot };
+    }
+    function drawErr(errId, fd, threshold) {
+      var cv = sized(errId, 1), ctx = cv.ctx, m = 8, side = Math.min(cv.W, cv.H) - 2 * m, cx = cv.W / 2, cy = cv.H / 2 - 12, sc = side / (2 * R * 1.22);
+      var col = ramp(), red = 0, tot = 0, lt = Math.log10(threshold), eps = 0.006;
+      var centre = fd.centre_log10_err / G.scale, ELO = centre, EHI = centre;
+      fd.log10_err.forEach(function (q) { q /= G.scale; if (q < ELO) ELO = q; if (q > EHI) EHI = q; });
+      var espan = EHI - ELO || 1;
+      for (var k = fd.nrad; k >= 1; k--) for (var mm = 0; mm < fd.nang; mm++) {
+        var v = fd.log10_err[(k - 1) * fd.nang + mm] / G.scale, a0 = (mm - 0.5) * 2 * Math.PI / fd.nang - eps, a1 = (mm + 0.5) * 2 * Math.PI / fd.nang + eps;
+        var r0 = (k - 1) * R / fd.nrad * sc, r1 = k * R / fd.nrad * sc; tot++;
+        var bad = v > lt; if (bad) red++;
+        ctx.fillStyle = bad ? cssVar("--refuted") : col((v - ELO) / espan);
+        ctx.beginPath(); ctx.arc(cx, cy, r1 + 0.6, -a1, -a0, false); ctx.arc(cx, cy, Math.max(r0 - 0.6, 0), -a0, -a1, true); ctx.closePath(); ctx.fill();
+      }
+      ctx.fillStyle = centre > lt ? cssVar("--refuted") : col((centre - ELO) / espan);
+      ctx.beginPath(); ctx.arc(cx, cy, R / fd.nrad * sc * 0.5, 0, 2 * Math.PI); ctx.fill();
+      circle(ctx, cx, cy, R * sc, cssVar("--dbn-m"), 2); circle(ctx, cx, cy, r * sc, cssVar("--dbn-k"), 1.5, [4, 3]);
+      ctx.fillStyle = cssVar("--muted"); ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+      ctx.fillText("|z - c| = r + rho", cx, cy - R * sc - 4); halo(ctx, "|z - c| = r", cx, cy - r * sc - 4);
+      ctx.textBaseline = "top"; ctx.fillText("colour: log10 |zeta - M| from " + fmt(ELO, 1) + " (dark) to " + fmt(EHI, 1) + " (light)", cx, cy + R * sc + 6);
+      ctx.fillText("boundary max " + sci(fd.boundary_max_err) + " (mpmath, float); threshold " + sci(threshold), cx, cy + R * sc + 20);
+      return { red: red, tot: tot };
+    }
+    function kv(rows) { return rows.map(function (q) { return "<tr><td>" + escapeHtml(q[0]) + "</td><td>" + q[1] + "</td></tr>"; }).join(""); }
+    function drawDisc() {
+      var i = +discSl.value, d = E.discs[i], fd = Fd.discs[i];
+      document.getElementById("sp-disc-val").textContent = "disc " + i + ", centre c = 5/16 + " + d.tc + " i";
+      var mp = drawMp("sp-mp", MP[i], F), er = drawErr("sp-err", fd, FR);
+      var lower = d.abs_Mp0 - d.r_pnub;
+      document.getElementById("sp-disc-table").innerHTML = kv([
+        ["centre c", "5/16 + " + escapeHtml(d.tc) + " i = " + fmt(sig, 4) + " + " + fmt(d.tc_float, 2) + " i"],
+        ["|M'(0)|  (exact coefficients)", fmt(d.abs_Mp0, 6)],
+        ["r ub  (the rest of M' on |h| <= r, bounded coefficient by coefficient)", fmt(d.r_pnub, 6)],
+        ["kernel test  (r ub + F)^2 < |M'(0)|^2", "(" + fmt(d.deriv_bound, 6) + ")^2 < (" + fmt(d.abs_Mp0, 6) + ")^2: <strong>true</strong> (check" + i + ", decide +kernel)"],
+        ["certified lower bound of |M'| on the disc", "|M'(0)| - r ub = " + fmt(lower, 6) + " > F = " + F],
+        ["design margin |M'(0)| - r ub - F  (generator and Lean header)", fmt(d.margin, 4)],
+        ["float min |M'(h)| on the disc (browser grid / mpmath grid)", fmt(mp.vmin, 6) + " / " + fmt(fd.inner_min_abs_Mp, 6) + " (float model; above the certified bound, as expected)"],
+        ["float min |zeta'(s)| on the disc (mpmath)", fmt(fd.inner_min_abs_dzeta, 6) + " (float model)"],
+        ["budget G  (exact rational, the kernel's number)", sci(d.budget_float) + " (" + d.budget_exact.length + "-character rational in explorer_data.json)"],
+        ["kernel test  G <= F rho", sci(d.budget_float) + " <= " + sci(FR) + ": <strong>true</strong>"],
+        ["float max |zeta - M| on the sampled outer boundary (mpmath)", sci(fd.boundary_max_err) + " (float model; " + fmt(d.budget_float / fd.boundary_max_err, 0) + " times below the certified budget)"],
+        ["zeta'(c)  (mpmath)", fmt(fd.dzeta_at_centre[0], 6) + (fd.dzeta_at_centre[1] < 0 ? " - " : " + ") + fmt(Math.abs(fd.dzeta_at_centre[1]), 6) + " i (float model; M'(0) is the kernel's rational approximation of it)"]
+      ]);
+      document.getElementById("sp-disc-readout").textContent = "Left: " + mp.red + " of " + mp.tot + " sampled cells have |M'| <= F (red). Right: " + er.red + " of " + er.tot + " polar samples exceed F rho (red). " +
+        "The certified facts are the two kernel tests in the table; the coloured plots are float pictures of the same quantities. Degree of M: " + P.degree_M + "; N = " + P.N + " Euler-Maclaurin terms; p = " + P.p + ", K = " + P.K + ", J = " + P.J + ".";
+    }
+    discSl.addEventListener("input", function () { drawDisc(); drawCauchy(); drawNeg(); });
+
+    // ---- (e) the Cauchy estimate, with a draggable point
+    var hPt = [0.12, 0.09], dragging = false, cauchyMap = null;
+    function drawCauchy() {
+      var i = +discSl.value, d = E.discs[i];
+      var cv = setupCanvas("sp-cauchy"), ctx = cv.ctx;
+      var pad = 0.06, x0 = sig - R - pad, x1 = sig + R + pad, y0 = d.tc_float - R - pad, y1 = d.tc_float + R + pad;
+      // equal aspect: the plot square sits on the left, text on the right
+      var ml = 56, mb = 32, mt = 12, side = cv.H - mt - mb, mr = cv.W - ml - side;
+      if (mr < 14) { mr = 14; side = cv.W - ml - mr; }
+      var ax = axes(cv, x0, x1, y0, y1, { xlabel: "Re s", ylabel: "Im s", ml: ml, mr: mr, mt: mt, mb: mb, xticks: [sig - 0.3, sig - 0.15, sig, sig + 0.15, sig + 0.3].map(function (v) { return +v.toFixed(4); }), yticks: [d.tc_float - 0.3, d.tc_float - 0.15, d.tc_float, d.tc_float + 0.15, d.tc_float + 0.3],
+        xfmt: function (v) { return fmt(v, 3); }, yfmt: function (v) { return fmt(v, 2); } });
+      cauchyMap = { cv: cv, ax: ax, inv: inv(cv, ax, x0, x1, y0, y1) };
+      var cx = ax.X(sig), cy = ax.Y(d.tc_float), sc = (ax.X(sig + 1) - cx);
+      ctx.fillStyle = cssVar("--sunk"); ctx.beginPath(); ctx.arc(cx, cy, R * sc, 0, 2 * Math.PI); ctx.fill();
+      circle(ctx, cx, cy, R * sc, cssVar("--dbn-m"), 2);
+      ctx.fillStyle = cssVar("--dbn-k-soft"); ctx.beginPath(); ctx.arc(cx, cy, r * sc, 0, 2 * Math.PI); ctx.fill();
+      circle(ctx, cx, cy, r * sc, cssVar("--dbn-k"), 2);
+      // the point and its Cauchy circle
+      var sx = cx + hPt[0] * sc, sy = cy - hPt[1] * sc;
+      ctx.fillStyle = cssVar("--dbn-k-soft"); ctx.beginPath(); ctx.arc(sx, sy, rho * sc, 0, 2 * Math.PI); ctx.fill();
+      circle(ctx, sx, sy, rho * sc, cssVar("--ink"), 2);
+      ctx.strokeStyle = cssVar("--faint"); ctx.lineWidth = 1; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(sx, sy); ctx.stroke(); ctx.setLineDash([]);
+      ring(ctx, cx, cy, 3, cssVar("--muted")); ring(ctx, sx, sy, 5, cssVar("--ink"));
+      ctx.fillStyle = cssVar("--ink"); ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+      ctx.fillText("s = c + h (drag me)", sx + 8, sy - 6);
+      ctx.fillStyle = cssVar("--muted"); ctx.fillText("c", cx + 6, cy - 4);
+      ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillText("outer disc, radius r + rho = " + fmt(R, 2), cx, cy + R * sc + 4);
+      ctx.textBaseline = "bottom"; ctx.fillText("inner disc, radius r = " + r, cx, cy - r * sc - 4);
+      // the chain, on the right
+      var habs = Math.sqrt(hPt[0] * hPt[0] + hPt[1] * hPt[1]), mph = pabs(MP[i], hPt[0], hPt[1]), lower = d.abs_Mp0 - d.r_pnub;
+      var lines = [
+        ["|h| = " + fmt(habs, 4) + " <= r = " + r, "--ink"],
+        ["|h| + rho = " + fmt(habs + rho, 4) + " <= r + rho = " + fmt(R, 2) + ": the circle stays in the outer disc", "--ink"],
+        ["on it  |zeta - M| <= G = " + sci(d.budget_float) + " <= F rho = " + sci(FR) + "   (kernel)", "--dbn-k"],
+        ["Cauchy:  |zeta'(s) - M'(h)| <= G / rho <= F = " + F, "--dbn-k"],
+        ["|M'(h)| = " + fmt(mph, 4) + " (float)  >=  |M'(0)| - r ub = " + fmt(lower, 4) + " (kernel)  > F", "--dbn-k"],
+        ["so  |zeta'(s)| >= |M'(h)| - F > " + fmt(lower - F, 4) + " > 0", "--ink"]
+      ];
+      var tx = ax.X(x1) + 18, ty = mt + 24;
+      if (cv.W - tx > 220) {
+        ctx.textAlign = "left"; ctx.textBaseline = "top";
+        lines.forEach(function (l, k) { ctx.fillStyle = cssVar(l[1]); ctx.fillText(l[0], tx, ty + k * 22); });
+      }
+      document.getElementById("sp-cauchy-readout").textContent = lines.map(function (l) { return l[0]; }).join("\n") +
+        "\nDisc " + i + ". The circle picture is exact geometry; G, F rho, F and the lower bound are the kernel's rationals (floats shown); |M'(h)| is a double evaluation of the exact coefficients (float model). zeta is holomorphic on the whole outer disc because its only pole, s = 1, is at height 0.";
+    }
+    var cauchyEl = document.getElementById("sp-cauchy");
+    function setH(e) {
+      if (!cauchyMap) return;
+      var p = pos(cauchyEl, e), i = +discSl.value, d = E.discs[i];
+      var hx = cauchyMap.inv.x(p[0]) - sig, hy = cauchyMap.inv.y(p[1]) - d.tc_float, n = Math.sqrt(hx * hx + hy * hy);
+      if (n > r) { hx *= r / n; hy *= r / n; }
+      hPt = [hx, hy]; drawCauchy();
+    }
+    cauchyEl.addEventListener("pointerdown", function (e) { dragging = true; cauchyEl.setPointerCapture && cauchyEl.setPointerCapture(e.pointerId); setH(e); });
+    cauchyEl.addEventListener("pointermove", function (e) { if (dragging) setH(e); });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) { cauchyEl.addEventListener(ev, function () { dragging = false; }); });
+
+    // ---- (f) the negative controls
+    var negMode = document.getElementById("sp-neg-mode");
+    function drawNeg() {
+      var i = +discSl.value, L = S.lean, rd;
+      if (negMode.value === "forged") {
+        var fg = E.forged_disc0;
+        document.getElementById("sp-neg-cap-l").textContent = "|M'(h)| with disc 0's k = 1 accumulator forged so that M'(0) = 0 (float evaluation of the forged rationals)";
+        document.getElementById("sp-neg-cap-r").textContent = "|zeta(z) - M(z - c)| on disc 0's outer disc against F rho = 1/2000: the budget still passes";
+        var mp = drawMp("sp-neg-mp", MP_FORGED, F), er = drawErr("sp-neg-err", Fd.discs[0], FR);
+        rd = "Forged accumulator, disc 0: |M'(0)| = " + sci(fg.abs_Mp0) + " and r ub = " + fmt(fg.r_pnub, 4) + ", so (r ub + F)^2 < |M'(0)|^2 is false and the derivative test fails; " + mp.red + " of " + mp.tot + " sampled cells have |M'| <= F (red, around the centre). " +
+          "The budget G = " + sci(fg.budget_float) + " <= F rho still holds (" + er.red + " red samples on the right). Kernel verdict: check0_corrupt = false (decide +kernel). " + fg.what + ".";
+      } else {
+        var d = E.discs[i], ft = P.F_tiny_rho_float;
+        document.getElementById("sp-neg-cap-l").textContent = "|M'(h)| on disc " + i + " against F = 10^-9: the derivative test still passes, trivially";
+        document.getElementById("sp-neg-cap-r").textContent = "|zeta(z) - M(z - c)| on disc " + i + " against F rho = 5 x 10^-11: every sample is above it";
+        var mp2 = drawMp("sp-neg-mp", MP[i], 1e-9), er2 = drawErr("sp-neg-err", Fd.discs[i], ft);
+        rd = "F = 10^-9, disc " + i + ": the budget G = " + sci(d.budget_float) + " is the kernel's own error bound and it exceeds F rho = " + sci(ft) + ", so checkD is false; " + er2.red + " of " + er2.tot + " polar samples are red. " +
+          "The derivative test alone would pass (" + mp2.red + " red cells on the left), which is the point: the budget half of the check is what refuses an impossible precision claim. Kernel verdict: check" + i + "_neg = false (decide +kernel); the source quotes check0_neg below, and check1_neg to check7_neg are the same theorem for the other discs.";
+      }
+      document.getElementById("sp-neg-readout").textContent = rd + " Both refusals are theorems of the artifact and anchors of its axiom guard.";
+      document.getElementById("sp-neg-lean").textContent = L.check0_neg + "\n\n" + L.check0_corrupt;
+    }
+    negMode.addEventListener("change", drawNeg);
+
+    // ---- (g) the guard and the CI step, verbatim
+    document.getElementById("sp-guard").textContent = S.lean.guard;
+    document.getElementById("sp-ci-workflow").textContent = S.ci.workflow;
+    document.getElementById("sp-ci-step").textContent = S.ci.step;
+
+    drawers["zeta-prime"] = function () { drawPlane(null); drawHeat(null); drawDisc(); drawCauchy(); drawNeg(); };
+  })();
+
   // ================================================================== REGISTRY
   (function registryTab() {
     var byId = {}; REG.nodes.forEach(function (n) { byId[n.id] = n; });
