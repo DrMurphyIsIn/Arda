@@ -104,6 +104,30 @@
       "statement_sha256": "1b8be1a9f5ac769dfbe0b53555b57d46db443bae06f705982eb2c0e28b335f32"
     },
     {
+      "slug": "AND_rs_remainder_c0_seam_sharp",
+      "campaign": "anduril",
+      "theorem": "RSSeam.rs_remainder_C0_seam'",
+      "solution_module": "RS_B3Sharp",
+      "challenge_module": "MissionChallenges.AND_rs_remainder_c0_seam_sharp",
+      "bridge_theorem": "MissionJudge.AND_rs_remainder_c0_seam_sharp",
+      "config": "AND_rs_remainder_c0_seam_sharp.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "f3868fac11ad46ad96575606e38c1351dcdffddcd5bc34fcc8588c24ff831681",
+      "statement_sha256": "97749c46ac9dc15646eefe8b7280cc177059bfdaadd2d6799fb4078a5dea9483"
+    },
+    {
+      "slug": "AND_rs_remainder_c0_sharp",
+      "campaign": "anduril",
+      "theorem": "RSInt.rs_remainder_C0'",
+      "solution_module": "RS_B3Sharp",
+      "challenge_module": "MissionChallenges.AND_rs_remainder_c0_sharp",
+      "bridge_theorem": "MissionJudge.AND_rs_remainder_c0_sharp",
+      "config": "AND_rs_remainder_c0_sharp.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "f3868fac11ad46ad96575606e38c1351dcdffddcd5bc34fcc8588c24ff831681",
+      "statement_sha256": "8992955768de19b1013a71546a7dc7ad50576bd77d5e14a2e62a02c13ea6f7f6"
+    },
+    {
       "slug": "AND_stirling_binet_k1",
       "campaign": "anduril",
       "theorem": "ZetaReflection.logDeriv_gammaR_stirling",

@@ -1419,7 +1419,7 @@ roots = ["RS5_BandSharp"]
 name = "RS5_DemoSharp"
 roots = ["RS5_DemoSharp"]
 
-# RSC0 Phase 3: kernel-axiom guard of the RS5 *Sharp modules (39 theorems); not a default target.
+# RSC0 Phase 3: kernel-axiom guard of the RS5 *Sharp modules (49 theorems; CI enforces 49); not a default target.
 [[lean_lib]]
 name = "RS5_AxiomGuardSharp"
 roots = ["RS5_AxiomGuardSharp"]
