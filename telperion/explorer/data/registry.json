@@ -3,16 +3,16 @@
   {
    "counts": {
     "deprecated": 0,
-    "draft": 2,
+    "draft": 3,
     "open": 3,
-    "proved": 12,
+    "proved": 13,
     "refuted": 0
    },
    "description": "Migration of PROGRAM ANDURIL (telperion/docs/PROGRAM_ANDURIL_2026-09-12.md, ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md) into the missions registry: the kernel-certified Turing ladder (every nontrivial zeta zero to height T verified on the critical line, T -> 10^13) plus the verified-evaluator reflection track (A2 Euler-Maclaurin era, A4 checkBand, A3 Riemann-Siegel to come). The registry is the tracking truth. NOTHING here is a proof of RH and conjecture1_proved = False throughout: the ladder is finite verification; the goal node is the 10^13 finite-verification target, itself draft. FIDELITY NOTE (design section 9): all artifacts live on the rh/million-turing line, which is NOT merged into main; therefore no node enters as proved -- nodes with kernel-checked artifacts on that line enter as open with the artifact linked, and `mission grant` is deferred until the branch reconcile lands the artifacts on this line. Environment = the zeta islands' shared pin (v4.32.0); artifacts verify in their home islands (zeta_zero_localization, zeta_reflection) per design section 2. [2026-09-23] Update: six nodes are PROVED (granted 2026-09-18 after the million-turing reconcile); the earlier sentence that no node enters as proved is historical. Their island has no working CI (see CLOSURE_RUN_2026-09-22.md).",
    "dir": "anduril",
    "goal_node": "AND_ladder_1e13",
    "mathlib_rev": "v4.32.0",
-   "n_nodes": 17,
+   "n_nodes": 19,
    "name": "AND.ladder",
    "sources": [
     "Turing, A. M. (1953), Some calculations of the Riemann zeta-function, Proc. LMS",
@@ -852,7 +852,7 @@
     "artifact_exists": true,
     "artifact_kind": "lean_module",
     "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/zeta_reflection/lean/H11K_h11000.lean",
-    "closure_clean": false,
+    "closure_clean": true,
     "fidelity_note": "",
     "via": "direct"
    },
@@ -866,16 +866,25 @@
      "workflow": "telperion-zeta-reflection.yml"
     },
     "comparator": null,
-    "grant": null,
+    "grant": {
+     "artifact_sha256": "757836b9800c189d",
+     "date": "2026-10-15",
+     "gate_version": "2026-09-23.1"
+    },
     "requires_ci_job": "telperion-zeta-reflection.yml:anduril-kernel-ladder"
    },
-   "readback": null,
+   "readback": {
+    "auditor": "AI read-back by Claude (Riemann session, subagent h11000-readback), NOT an operator read-back; under the owner 2026-10-12 decision accepting AI read-backs; second reading by session peterwmurphy-bb",
+    "date": "2026-10-15",
+    "independence": "independent read-back",
+    "text": "Formal statement, read before the artifact by an AI session distinct from the author's (author session ef083c48; auditing session 43fb6f48-008b-48a7-abad-ad5db918fecf (local) = session_01TeEsdE4SroprJqfYm9qcKc (claude.ai), subagent h11000-readback): for every complex rho, if Mathlib's riemannZeta rho = 0 and 0 < Im rho and Im rho <= 11000, then Re rho = 1/2. Im rho > 0 excludes the trivial zeros and s = 1; riemannZeta is Mathlib's (no local shadowing in the 532-module import closure; a pure-Mathlib restatement typechecks against the capstone). This is finite verification to height 11000 (the artifact proves 11004), NOT RH; conjecture1_proved = False. Kernel: rebuilt from source in a fresh origin/main worktree (36f821b5), 9190 jobs in 9438 s; capstone axioms [propext, Classical.choice, Quot.sound]; the guard's 5 negative controls and 6 own tamper controls (wrong-height Gamma certificates at both ends, edge at 11005, edge Hi lowered 1/10, slab stretched +0.1, old 3.14 pin) are rejected by the kernel; bad restatements (n = 3542, height 11005) fail to elaborate. Numerics (own mpmath): N(7962.75) = 7788, N(11004) = 11329, band 3541 = 277 + 2077 + 1182 + 5; T = 11004 sits in a gap 0.72/0.78 from its neighbours; edge argument changes 1.067683 and -0.074537 lie inside the certified enclosures; total/2pi = 3541.000; slab U11004 zero-free (min |zeta| 2.94 on the grid). Second reading: session peterwmurphy-bb concurs (statement checked on main; mpmath N(7962.75) = 7788, N(11004) = 11329, band 3541). NOT Comparator-recorded: H11K_h11000 uses the monolithic Arb4_h8000.all_nontrivial_zeros_up_to_height_8000, which no judge replayed, and imports Arb4_h8000 (compose forbidden regex); a compositional judge needs a new H11K_Compose (8 BandHyps + the [8000, 11004] band). closure_clean = false was the default for a never-granted node. Testimony: telperion/docs/AUDIT_TESTIMONY_AND_ladder_h11000_kernel_2026-10-15_A1.md."
+   },
    "refutation_statement": "",
    "slug": "AND_ladder_h11000_kernel",
    "statement": "theorem all_nontrivial_zeros_up_to_height_11000 :\n    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 11000 → ρ.re = 1 / 2",
-   "status": "draft",
-   "title": "Every nontrivial zeta zero with 0 < Im rho <= 11000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, no Arb or oracle input: the h8000 Arb4 ladder chained (height_chain) with ONE Turing band [31851/4, 11004] holding 3541 zeros (Riemann-Siegel RS5 sign-change lower count + argument-principle upper count with sharp pi pins). Finite verification only, NOT RH. conjecture1_proved = False",
-   "updated": "2026-09-25"
+   "status": "proved",
+   "title": "Every nontrivial zeta zero with 0 < Im rho <= 11000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, no Arb or oracle input: the h8000 Arb4 ladder chained (height_chain) with ONE Turing band [31851/4, 11004] holding 3541 zeros (Riemann-Siegel RS5 sign-change lower count + argument-principle upper count with sharp pi pins). Finite verification only, NOT RH. conjecture1_proved = False. PROVENANCE (2026-10-15): KERNEL (rebuilt from source in a fresh worktree, 9190 jobs, standard axioms only); independent AI read-back A1 (session 43fb6f48, subagent h11000-readback) + second reading by session peterwmurphy-bb; NOT Comparator-recorded (H11K uses the monolithic Arb4_h8000 theorem, which no judge replayed; a compositional judge needs a new H11K_Compose; judge_via = heavy with NO [compose] block: do NOT dispatch missions-comparator-heavy.yml on this node until H11K_Compose and a [compose] block exist, since a dispatch today would attempt the infeasible monolithic replay). First use of the wide sharp-pi Turing band template (H11K_Turing); the h8000 ladder already uses the older 3.14-pin TuringBand template.",
+   "updated": "2026-10-15"
   },
   {
    "arb": true,
@@ -984,6 +993,90 @@
    "status": "proved",
    "title": "Every nontrivial zeta zero with 0 < Im rho <= 8000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, NO Arb or oracle input (Arb4 compact certificates, 8 segments chained by height_chain; 29 MB of certificates). Verified by an independent leanchecker replay of all 164 modules. Finite verification only, NOT RH. conjecture1_proved = False",
    "updated": "2026-09-27"
+  },
+  {
+   "arb": false,
+   "campaign": "anduril",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-zeta-reflection.yml:zeta-reflection-compiles"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-15",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "anduril:AND_rs_remainder_c0_seam_sharp",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "AND.rs_remainder_c0_seam_sharp",
+   "proof": {
+    "artifact": "telperion/examples/zeta_reflection/lean/RS_B3Sharp.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/zeta_reflection/lean/RS_B3Sharp.lean",
+    "closure_clean": false,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": null,
+    "requires_ci_job": ""
+   },
+   "readback": null,
+   "refutation_statement": "",
+   "slug": "AND_rs_remainder_c0_seam_sharp",
+   "statement": "theorem rs_remainder_C0_seam' {t : ℝ} (ht : 509 ≤ t) (hp : 0 < rsFrac t)\n    (hcos : Real.cos (2 * π * rsFrac t) ≠ 0) {φ : ℝ} (hφ : |φ - rsThetaMain t| ≤ 1 / t) :\n    |2 * (cexp (I * φ) * rsRem t).re -\n        (-1 : ℝ) ^ (rsNn t + 1) * (t / (2 * π)) ^ (-(1 / 4 : ℝ)) * rsPsi (rsFrac t)| ≤\n      21 / 25 * t ^ (-(3 / 4 : ℝ))",
+   "status": "draft",
+   "title": "Sharpened Riemann-Siegel C0 remainder from the seam (RSC0 Phase 2): for t >= 509 the C0-corrected RS remainder is at most (21/25) t^(-3/4) (was 13/5). Explicit finite-height inequality, NOT RH. conjecture1_proved = False. DRAFT: kernel-checked artifact on lean/rs-c0-sharper (local), no read-back, no grant.",
+   "updated": "2026-10-15"
+  },
+  {
+   "arb": false,
+   "campaign": "anduril",
+   "conditional": false,
+   "coverage": {
+    "jobs": [
+     "telperion-zeta-reflection.yml:zeta-reflection-compiles"
+    ],
+    "label": "module-covered"
+   },
+   "created": "2026-10-15",
+   "depends_on": [],
+   "deprecated_reason": "",
+   "extra_keys": [],
+   "id": "anduril:AND_rs_remainder_c0_sharp",
+   "is_goal": false,
+   "kind": "lemma",
+   "name": "AND.rs_remainder_c0_sharp",
+   "proof": {
+    "artifact": "telperion/examples/zeta_reflection/lean/RS_B3Sharp.lean",
+    "artifact_exists": true,
+    "artifact_kind": "lean_module",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/zeta_reflection/lean/RS_B3Sharp.lean",
+    "closure_clean": false,
+    "fidelity_note": "",
+    "via": "direct"
+   },
+   "provenance": {
+    "author_recorded": true,
+    "ci_record": null,
+    "comparator": null,
+    "grant": null,
+    "requires_ci_job": ""
+   },
+   "readback": null,
+   "refutation_statement": "",
+   "slug": "AND_rs_remainder_c0_sharp",
+   "statement": "theorem rs_remainder_C0' {t : ℝ} (ht : 4250 ≤ t) (hp : 0 < rsFrac t)\n    (hcos : Real.cos (2 * π * rsFrac t) ≠ 0) {φ : ℝ} (hφ : |φ - rsThetaMain t| ≤ 1 / t) :\n    |2 * (cexp (I * φ) * rsRem t).re -\n        (-1 : ℝ) ^ (rsNn t + 1) * (t / (2 * π)) ^ (-(1 / 4 : ℝ)) * rsPsi (rsFrac t)| ≤\n      3 / 5 * t ^ (-(3 / 4 : ℝ))",
+   "status": "draft",
+   "title": "Sharpened Riemann-Siegel C0 remainder (RSC0 Phase 2): for t >= 4250, 0 < p, cos(2 pi p) != 0 and every phase within 1/t of thetaMain, the C0-corrected RS remainder is at most (3/5) t^(-3/4) (was 2 from t >= 10000). Explicit finite-height inequality, NOT RH. conjecture1_proved = False. DRAFT: kernel-checked artifact on lean/rs-c0-sharper (local), no read-back, no grant.",
+   "updated": "2026-10-15"
   },
   {
    "arb": false,
@@ -9033,9 +9126,9 @@
  "note": "conjecture1_proved = False. Every status below is read from the registry TOML through telperion.missions; nothing is inferred. A readback is labelled self-attested unless the registry records a Comparator judge pass on the current artifact, in which case it is labelled judge-verified.",
  "totals": {
   "deprecated": 6,
-  "draft": 14,
+  "draft": 15,
   "open": 4,
-  "proved": 143,
+  "proved": 144,
   "refuted": 1
  }
 }
