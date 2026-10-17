@@ -4,8 +4,8 @@ kind = "lemma"
 name = "AND.rs_remainder_c0_sharp"
 statement_module = "Statements.AND_rs_remainder_c0_sharp"
 status = "draft"
-title = "Sharpened Riemann-Siegel C0 remainder (RSC0 Phase 2): for t >= 4250, 0 < p, cos(2 pi p) != 0 and every phase within 1/t of thetaMain, the C0-corrected RS remainder is at most (3/5) t^(-3/4) (was 2 from t >= 10000). Explicit finite-height inequality, NOT RH. conjecture1_proved = False. DRAFT: kernel-checked artifact on lean/rs-c0-sharper (local), no read-back, no grant."
-updated = "2026-10-15"
+title = "Sharpened Riemann-Siegel C0 remainder (RSC0 Phase 2): for t >= 4250, 0 < p, cos(2 pi p) != 0 and every phase within 1/t of thetaMain, the C0-corrected RS remainder satisfies |2 Re(e^{i phi} rsRem t) - (-1)^(N+1) (t/2pi)^(-1/4) Psi(p)| <= (3/5) t^(-3/4) (was 2 from t >= 10000). A bound on the Riemann-Siegel contour-integral remainder rsRem (definitions mirrored verbatim in Statements/ANDDefsRS.lean, drift-gated by tests/test_missions_mirror_drift.py), NOT by itself a bound on zeta: the link to Hardy's Z is RSInt.rs_Z_C0' / RSSeam.rs_Z_C0_seam' (RS_BridgeSharp), which is not a registry node. Explicit finite-height inequality, NOT RH. conjecture1_proved = False. Kernel-checked artifact on main (PR #751, merge d612435cb)."
+updated = "2026-10-17"
 
 [author]
 date = "2026-10-15"
