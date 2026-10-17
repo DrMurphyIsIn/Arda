@@ -1428,3 +1428,17 @@ roots = ["RS5_AxiomGuardSharp"]
 [[lean_lib]]
 name = "RS5_HardPairsSharp"
 roots = ["RS5_HardPairsSharp"]
+
+# MM_speiser_box_probe (2026-10-15): the kernel-checked zeta'-zero-free box [1/4, 3/8] x [6, 10].
+# NOT the Speiser wall; conjecture1_proved = False.
+[[lean_lib]]
+name = "SpeiserDerivCore"
+roots = ["SpeiserDerivCore"]
+
+[[lean_lib]]
+name = "SpeiserDerivBox"
+roots = ["SpeiserDerivBox"]
+
+[[lean_lib]]
+name = "AxiomGuardSpeiserDeriv"
+roots = ["AxiomGuardSpeiserDeriv"]
