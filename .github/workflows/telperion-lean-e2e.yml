@@ -479,12 +479,15 @@ jobs:
         run: |
           set -euo pipefail
           lake env lean AxiomGuardLiPositivity.lean 2>&1 | tee axioms.out
-          # 163 `#print axioms` anchors in AxiomGuardLiPositivity.lean as of 2026-09-20.
-          # Without a floor, a guard that elaborates to NOTHING passes the checks
-          # below, because `! grep -q sorryAx` is satisfied by an empty file.
+          # Floor = the number of `#print axioms` lines in AxiomGuardLiPositivity.lean
+          # (264 since 2026-09-22; CI printed exactly 264 on 2026-10-16). Without a floor, a
+          # guard that elaborates to NOTHING passes the checks below, because
+          # `! grep -q sorryAx` is satisfied by an empty file; with a stale floor (it was
+          # 146 until 2026-10-17) a guard could lose 118 anchors and stay green.
+          # tests/test_li_positivity_guard_floor.py pins this number to the file's count.
           n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
-          if [ "$n" -lt "146" ]; then
-            echo "::error::guard printed $n axiom lines, expected at least 146 --"
+          if [ "$n" -lt "264" ]; then
+            echo "::error::guard printed $n axiom lines, expected at least 264 --"
             echo "::error::the guard did not run, or was silently truncated"; exit 1; fi
           ! grep -q "sorryAx" axioms.out
           # Every printed axiom list must be a SUBSET of the three standard axioms.
