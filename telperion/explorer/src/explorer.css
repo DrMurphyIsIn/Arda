@@ -183,6 +183,19 @@ footer.bottom p { max-width: 80ch; }
 
 .dbn-preset { padding: 2px 8px; margin-left: 2px; }
 
+/* The zeta' box tab: two plots side by side (the inner-disc derivative test and the outer-disc error),
+   each shrinking to a full row on phones. Colours reuse the de Bruijn-Newman pair (blue = kernel-checked,
+   orange = model); the heat ramps run from --sunk through --cool to --ink, so they stay lightness-monotone
+   in both themes. */
+.sp-pair { display: flex; flex-wrap: wrap; gap: 10px; }
+.sp-pair > div { flex: 1 1 300px; min-width: 0; }
+.sp-pair canvas { width: 100%; height: auto; display: block; }
+.sp-pair .cap { font-size: 0.85rem; color: var(--muted); margin: 2px 0 4px; }
+#sp-cauchy { cursor: crosshair; touch-action: none; }
+.sp-kv { font-family: var(--mono); font-size: 0.85rem; border-collapse: collapse; margin: 0.4em 0 0.8em; }
+.sp-kv td { padding: 2px 10px 2px 0; vertical-align: top; border-bottom: 1px solid var(--line); }
+.sp-kv td:first-child { color: var(--muted); white-space: nowrap; }
+
 @media (max-width: 640px) {
   h1 { font-size: 1.6rem; }
   .step { grid-template-columns: 1.8em 1fr; }

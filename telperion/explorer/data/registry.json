@@ -4649,7 +4649,7 @@
    "conditional": false,
    "coverage": {
     "jobs": [
-     "telperion-lean-e2e.yml:speiser-box-probe-compiles"
+     "telperion-zeta-reflection.yml:zeta-reflection-compiles"
     ],
     "label": "module-covered"
    },
@@ -4662,10 +4662,10 @@
    "kind": "milestone",
    "name": "MM.speiser_box_probe",
    "proof": {
-    "artifact": "telperion/examples/speiser_box_probe/lean/SpeiserBoxProbe/SpeiserBox.lean",
+    "artifact": "telperion/examples/zeta_reflection/lean/SpeiserDerivBox.lean",
     "artifact_exists": true,
     "artifact_kind": "lean_module",
-    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/speiser_box_probe/lean/SpeiserBoxProbe/SpeiserBox.lean",
+    "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/zeta_reflection/lean/SpeiserDerivBox.lean",
     "closure_clean": false,
     "fidelity_note": "",
     "via": "direct"
@@ -4688,7 +4688,7 @@
    "statement": "theorem speiser_box_probe :\n    ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 8 → 6 ≤ s.im → s.im ≤ 10 →\n      deriv riemannZeta s ≠ 0",
    "status": "open",
    "title": "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)",
-   "updated": "2026-09-20"
+   "updated": "2026-10-17"
   },
   {
    "arb": false,

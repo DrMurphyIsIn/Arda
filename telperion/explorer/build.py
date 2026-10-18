@@ -23,7 +23,11 @@ reverse-Dyson quasicrystal program (MIRRORMERE) in front.  It renders
     MM_gaussian_positivity_small_lam_3e3; the sharp envelope of E6Bridge16),
   * the de Bruijn-Newman tab's bounds (only 1/2, 9/32 and the lower bound 0 kernel-checked here; the others
     labelled published or our architecture floor) and the scoping run's Lambda_min(X) points
-    (floating numerics, NOT Arb-rigorous).
+    (floating numerics, NOT Arb-rigorous),
+  * the zeta' box tab's data (`research/speiser_box/explorer_data.json`): the exact model polynomials
+    and budgets of MM_speiser_box_probe, recomputed here from `gen_speiser_box.py` and compared, plus
+    mpmath grids of |zeta'| and |zeta| that are a FLOAT MODEL; the Lean lines it quotes are read from
+    `SpeiserDerivBox.lean`.  NOT the Speiser wall; nothing about zeros of zeta.
 
 WHAT IT MUST NEVER DO.  Invent a status; present an Arb-conditional or conditional theorem
 as a proof; drop the sentence `conjecture1_proved = False`.  The page and every data file
@@ -514,6 +518,124 @@ def build_dbn() -> dict:
 
 
 # ---------------------------------------------------------------------------
+# The zeta' box tab (MM_speiser_box_probe)
+# ---------------------------------------------------------------------------
+
+#: The registry node the tab shows. Only the id lives here; status, readback and provenance are read
+#: from the registry at page time. The build refuses to run if the registry stops holding it.
+SPEISER_NODE_ID = "mirrormere:MM_speiser_box_probe"
+SPEISER_DATA = TELPERION / "research" / "speiser_box" / "explorer_data.json"
+SPEISER_LEAN = TELPERION / "examples" / "zeta_reflection" / "lean" / "SpeiserDerivBox.lean"
+SPEISER_GUARD = TELPERION / "examples" / "zeta_reflection" / "lean" / "AxiomGuardSpeiserDeriv.lean"
+SPEISER_WORKFLOW = REPO / ".github" / "workflows" / "telperion-zeta-reflection.yml"
+SPEISER_CI_STEP = "Build and axiom-guard the zeta' zero-free box probe (SpeiserDeriv*)"
+
+
+def _lean_theorem(src: str, name: str) -> str:
+    """The verbatim text of `theorem <name> ...`: its statement and, for a tactic proof, the first
+    tactic line; for a term proof, the whole term (up to the next declaration or blank line)."""
+    lines = src.splitlines()
+    start = [i for i, ln in enumerate(lines) if re.match(r"theorem " + re.escape(name) + r"\b", ln)]
+    if not start:
+        raise SystemExit(f"SpeiserDerivBox.lean no longer states theorem {name}")
+    out = [lines[start[0]]]
+    for ln in lines[start[0] + 1:]:
+        if not ln.strip() or re.match(r"(theorem|def|/--|/-!|end|open)\b", ln):
+            break
+        out.append(ln)
+        if out[-2].rstrip().endswith(":= by") or ":= by " in out[-2]:
+            break
+    return "\n".join(out)
+
+
+def _workflow_step(text: str, name: str) -> str:
+    """The lines of the named step of a GitHub workflow, verbatim, from `- name:` to the next step."""
+    lines = text.splitlines()
+    start = None
+    for i, ln in enumerate(lines):
+        if ln.strip() == f'- name: "{name}"':
+            start = i
+            break
+    if start is None:
+        raise SystemExit(f"workflow step not found: {name}")
+    indent = len(lines[start]) - len(lines[start].lstrip())
+    out = [lines[start]]
+    for ln in lines[start + 1:]:
+        if ln.strip() and (len(ln) - len(ln.lstrip())) <= indent:
+            break
+        out.append(ln)
+    return "\n".join(out).rstrip()
+
+
+def build_speiser() -> dict:
+    """Data for the zeta' box tab.
+
+    The exact half (model polynomials, derivative tests, budgets) is the generator's own arithmetic,
+    exported by research/speiser_box/make_explorer_data.py; this build recomputes it from the
+    generator and refuses to run if the committed JSON disagrees, the same convention as an emitter
+    island's `generate.py --check`. The float half (mpmath grids) is bundled as committed and
+    labelled a float model. The Lean lines quoted on the page are read from the artifact, never
+    retyped.
+    """
+    data = _load_json(SPEISER_DATA)
+    sys.path.insert(0, str(SPEISER_DATA.parent))
+    import make_explorer_data as mk  # noqa: E402
+    fresh = json.loads(json.dumps(mk.exact_data()))
+    if fresh != data["exact"]:
+        raise SystemExit("research/speiser_box/explorer_data.json disagrees with gen_speiser_box.py; "
+                         "run `python telperion/research/speiser_box/make_explorer_data.py` and commit")
+    src = SPEISER_LEAN.read_text(encoding="utf-8")
+    header = src.split("-/", 1)[0]
+    margins = [ln.strip() for ln in header.splitlines() if "Design margins" in ln]
+    lean = {
+        "statement": _lean_theorem(src, "speiser_box_probe"),
+        "disc0": _lean_theorem(src, "disc0"),
+        "check0": _lean_theorem(src, "check0"),
+        "check0_neg": _lean_theorem(src, "check0_neg"),
+        "check0_corrupt": _lean_theorem(src, "check0_corrupt"),
+        "header_margins": margins[0] if margins else "",
+        "guard": SPEISER_GUARD.read_text(encoding="utf-8").rstrip(),
+        "guard_anchor_count": sum(1 for ln in SPEISER_GUARD.read_text(encoding="utf-8").splitlines()
+                                  if ln.startswith("#print axioms")),
+        "artifact": _rel(SPEISER_LEAN),
+        "artifact_url": GITHUB_BLOB + _rel(SPEISER_LEAN),
+        "core": "telperion/examples/zeta_reflection/lean/SpeiserDerivCore.lean",
+        "generator": "telperion/examples/zeta_reflection/arbecon/gen_speiser_box.py",
+    }
+    # does the artifact prove the registered statement, word for word (modulo the registry's `:= by sorry`)?
+    reg_stmt = _statement_text(TELPERION / "missions" / "mirrormere", "MM_speiser_box_probe")
+    art_stmt = lean["statement"].split(":= by")[0]
+    lean["statement_matches_registry"] = " ".join(reg_stmt.split()) == " ".join(art_stmt.split())
+    ci = {
+        "workflow": _rel(SPEISER_WORKFLOW),
+        "step_name": SPEISER_CI_STEP,
+        "step": _workflow_step(SPEISER_WORKFLOW.read_text(encoding="utf-8"), SPEISER_CI_STEP),
+    }
+    return {
+        "conjecture1_proved": False,
+        "node_id": SPEISER_NODE_ID,
+        "theorem": "speiser_box_probe",
+        "axioms": "[propext, Classical.choice, Quot.sound]",
+        "not_claims": [
+            "NOT the Speiser wall. Speiser (1935): zeta' zero-free on the whole open strip 0 < Re s < 1/2 is "
+            "equivalent to RH. One closed box, or any finite union of boxes, decides nothing about RH.",
+            "Nothing about zeros of zeta. The theorem is about deriv riemannZeta only; no zero of zeta is "
+            "located, counted or excluded.",
+            "The registry node's status is whatever the registry says; no read-back of this artifact and no "
+            "grant are recorded.",
+            "Every plot on this tab is a float model unless it is labelled as the kernel's own number.",
+        ],
+        "exact": data["exact"],
+        "float": data["float"],
+        "lean": lean,
+        "ci": ci,
+        "data_source": "telperion/research/speiser_box/explorer_data.json (make_explorer_data.py; "
+                       "mpmath float model plus the generator's exact rationals)",
+        "trust": "float model (mpmath), not a certificate",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Bundle
 # ---------------------------------------------------------------------------
 
@@ -543,10 +665,13 @@ def build_all() -> Dict[str, str]:
     registry = build_registry()
     plots = build_plots()
     plots["dbn"] = build_dbn()
+    plots["speiser"] = build_speiser()
     ids = {n["id"] for n in registry["nodes"]}
     missing = [i for i in DBN_NODE_IDS + DBN_SUPPORT_IDS if i not in ids]
     if missing:
         raise SystemExit("de Bruijn-Newman tab names nodes the registry does not hold: " + ", ".join(missing))
+    if SPEISER_NODE_ID not in ids:
+        raise SystemExit("the zeta' box tab names a node the registry does not hold: " + SPEISER_NODE_ID)
     files = {
         str(DATA_DIR / "registry.json"): json.dumps(registry, indent=1, ensure_ascii=False, sort_keys=True) + "\n",
         str(DATA_DIR / "plots.json"): json.dumps(plots, indent=1, ensure_ascii=False, sort_keys=True) + "\n",

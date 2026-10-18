@@ -17,7 +17,7 @@ Lozano-Robledo's [Riemann Hypothesis Explorer](https://alozanoroble.github.io/ri
 in the browser, and plain "What is known" and "Compute it yourself" sections at the end. We
 borrowed the shape and the manners, not the code; the footer says so.
 
-The page has eight tabs.
+The page has ten tabs.
 
 1. **The quasicrystal.** What a Fourier quasicrystal is, the Guinand-Weil dual comb
    picture, Dyson's 2009 suggestion, the reverse-Dyson framing, the axiom variants
@@ -50,15 +50,32 @@ The page has eight tabs.
    bundled in `build.py`) against the 9/32 line, which explains the `1 / log X` barrier; and the
    four registry nodes of the chain with their judge runs, read through the loader, plus the
    release repository, the Zenodo DOI and the credit to OpenAI's `openai/math` (Apache-2.0).
-6. **The registry.** Status counts per campaign, a dependency graph in SVG coloured by
+6. **The zeta' box.** The kernel-checked theorem `speiser_box_probe` (PR #753): `deriv riemannZeta`
+   has no zero on the closed box `[1/4, 3/8] x [6, 10]`, left of the critical line. Non-claims
+   first: it is NOT the Speiser wall (Speiser 1935: zeta' zero-free on the whole open strip
+   `0 < Re s < 1/2` is RH; one box decides nothing), it says nothing about zeros of zeta, and the
+   node `MM_speiser_box_probe` is shown with whatever status the registry holds (read through the
+   loader; no read-back of the artifact and no grant are recorded). Then: the registered statement
+   verbatim and the node card; a figure of the strip with Speiser's region, the box, zeta's first
+   zeros and the one zero of zeta' below height 30 (float); a heat map of `log10 |zeta'|` with the
+   eight discs overlaid (mpmath, float model, bundled from
+   `research/speiser_box/explorer_data.json`); a per-disc certificate explorer that evaluates the
+   exact model polynomial `M` in the browser (`|M'| > F` on the inner disc, `|zeta - M| <= F rho`
+   on the outer one) beside the kernel's exact budget and derivative test; the Cauchy estimate
+   with a draggable point; the two negative controls (`F = 1e-9`, a forged accumulator) drawn as
+   the same plots failing, with the kernel's `= false` verdicts quoted from the Lean source; and
+   the build, axiom-guard, generator `--check` and CI commands.
+7. **The registry.** Status counts per campaign, a dependency graph in SVG coloured by
    status, and a card per node with its title, kind, verbatim statement (hypotheses
    included), artifact link into GitHub, `closure_clean`, CI coverage label, and the
    readback with its auditor, date, and its independence label as the registry records it ("self-attested"; "independent read-back" when `mission audit` accepted a different session and identity, such as the operator; or "judge-verified" once a Comparator run is recorded), plus the grant digest, judge run and required CI run when present. The "proved only" filter
    is on by default.
-7. **What is known.** A plain list of what the registry holds, followed by the honesty
+8. **What is known.** A plain list of what the registry holds, followed by the honesty
    footer: RH is not proved, every goal node is a draft, everything Arb-conditional is not a
    kernel theorem, every plot is a float model, every audit carries the independence label the registry records.
-8. **Compute it yourself.** How to run `telperion mission verify`, build an island with
+9. **The missing surface.** The RH programme's research report (gates 0 to 12), each claim
+   labelled by how it is known; static text and SVG, merged 2026-10-13.
+10. **Compute it yourself.** How to run `telperion mission verify`, build an island with
    `lake build`, read the axiom guard, run the Comparator, run the zoo, and rebuild this
    page.
 
@@ -83,7 +100,14 @@ The page has eight tabs.
   (only 1/2 and 9/32 kernel-checked) and the scoping run's `Lambda_min(X)` points, which are
   floating numerics and labelled so. The tab's node cards name registry ids only; the build
   refuses to run if the registry stops holding them. The test suite checks those `primeAbs` values against the
-  numbers printed in the Lean docstring.
+  numbers printed in the Lean docstring. For the zeta' box tab it reads
+  `research/speiser_box/explorer_data.json`, written once by `make_explorer_data.py` (mpmath at a
+  fixed precision on fixed grids, no randomness, rounded): the `float` half is the picture, the
+  `exact` half is the generator's own rational arithmetic (model polynomials, derivative tests,
+  budgets), which the build recomputes by importing `gen_speiser_box.py` and refuses to run if the
+  committed file disagrees. The Lean lines the tab quotes (the theorem, the `= false` negative
+  controls, the axiom guard) and the CI step are read from the sources, never retyped, and the
+  node id `mirrormere:MM_speiser_box_probe` is guarded like the de Bruijn-Newman ids.
 * It inlines `src/index.html`, `src/explorer.css`, `src/explorer.js`, and the two JSON
   files into one HTML file. No CDN, no fonts fetched, no library. Plots are plain canvas;
   the dependency graph is plain SVG. Light and dark follow `prefers-color-scheme`, with a

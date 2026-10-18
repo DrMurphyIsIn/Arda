@@ -31,6 +31,7 @@
   <button class="tab" role="tab" id="tab-wall" aria-selected="false" data-panel="wall">The wall</button>
   <button class="tab" role="tab" id="tab-li" aria-selected="false" data-panel="li">Li face</button>
   <button class="tab" role="tab" id="tab-dbn" aria-selected="false" data-panel="dbn">de Bruijn-Newman</button>
+  <button class="tab" role="tab" id="tab-zeta-prime" aria-selected="false" data-panel="zeta-prime">The &zeta;&prime; box</button>
   <button class="tab" role="tab" id="tab-reg" aria-selected="false" data-panel="reg">The registry</button>
   <button class="tab" role="tab" id="tab-known" aria-selected="false" data-panel="known">What is known</button>
   <button class="tab" role="tab" id="tab-surface" aria-selected="false" data-panel="surface">The missing surface</button>
@@ -277,6 +278,109 @@
     <div class="claim cool">
       <p><strong>Release and credit.</strong> Paper and Lean sources: <a id="dbn-repo" href="https://github.com/DrMurphyIsIn/qrh-debruijn-newman">github.com/DrMurphyIsIn/qrh-debruijn-newman</a>, archived on Zenodo as DOI <a id="dbn-doi" href="https://doi.org/10.5281/zenodo.23269135">10.5281/zenodo.23269135</a> (this version; all versions: <a href="https://doi.org/10.5281/zenodo.23269134">10.5281/zenodo.23269134</a>). The quasi-Riemann hypothesis and its Lean proof are entirely OpenAI's, from <a href="https://github.com/openai/math">openai/math</a> (Apache-2.0); this registry replays it and composes it with de Bruijn's flow. The lower half, Newman's conjecture <code>Lambda &ge; 0</code> (node <code>RH_dbn_newman</code>, proved along Dobner's proof, read back by the operator and judged with nanoda 2026-10-10), is released at <a id="dbn-newman-repo" href="https://github.com/DrMurphyIsIn/newman-lambda-nonneg">github.com/DrMurphyIsIn/newman-lambda-nonneg</a>, Zenodo DOI <a id="dbn-newman-doi" href="https://doi.org/10.5281/zenodo.23287833">10.5281/zenodo.23287833</a> (this version; all versions: <a href="https://doi.org/10.5281/zenodo.23287832">10.5281/zenodo.23287832</a>). The theorem is Rodgers-Tao's and the proof is Dobner's.</p>
     </div>
+  </div></div>
+</section>
+
+<!-- ================================================================ -->
+<section class="panel" id="panel-zeta-prime" role="tabpanel" aria-labelledby="tab-zeta-prime">
+  <h2>The &zeta;&prime; box</h2>
+  <p>A small, finished, kernel-checked fact about the derivative of zeta: <code>&zeta;&prime;(s)</code> has no zero in the closed box <code>1/4 &le; Re s &le; 3/8</code>, <code>6 &le; Im s &le; 10</code>, which lies strictly left of the critical line. The proof covers the box with eight discs, fits an exact polynomial to zeta on each, and lets the kernel check one Boolean per disc with <code>decide +kernel</code>. This tab shows where the box sits, what the kernel actually decided, and what it would have refused.</p>
+  <div class="warn"><strong>What this tab does not claim.</strong> It is <strong>not the Speiser wall</strong>. Speiser (1935) proved that RH is equivalent to <code>&zeta;&prime;</code> having no zero in the whole open strip <code>0 &lt; Re s &lt; 1/2</code>; one closed box, or any finite union of boxes, decides nothing about RH. It says <strong>nothing about zeros of zeta</strong>: the theorem is about <code>deriv riemannZeta</code> only, and no zero of zeta is located, counted or excluded. The registry node's status is whatever the registry says below (read through the same loader as the registry tab); no read-back of this artifact and no grant are recorded, and the artifact is not judge-verified. Every plot on this tab is a <strong>float model</strong> (mpmath, or double arithmetic in your browser) unless it is labelled as the kernel's own number. <code>conjecture1_proved = False</code>.</div>
+
+  <div class="step"><div class="letter">a</div><div class="body">
+    <h3>What is proved, and what is not</h3>
+    <p>The registered statement, verbatim from <code>missions/mirrormere/lean/Statements/MM_speiser_box_probe.lean</code> (hypotheses included; there are none beyond the box):</p>
+    <pre id="sp-statement"></pre>
+    <p>The artifact <a id="sp-artifact-link" href="#">SpeiserDerivBox.lean</a> proves exactly this theorem, and the axiom guard prints <code id="sp-axioms"></code> for it and for ten of the lemmas it rests on: no <code>sorryAx</code>, no <code>native_decide</code>. The route, from the artifact's own header: eight discs with centres <code>5/16 + i t</code>, <code>t = 25/4, 27/4, ..., 39/4</code>, radius <code>r = 13/50</code>. Each disc covers one row of the box, because a row <code>[1/4, 3/8] x [t - 1/4, t + 1/4]</code> has half-diagonal <code>sqrt(17)/16 = 0.2577 &lt; 0.26</code>. On each disc the off-line Euler-Maclaurin evaluator (<code>N = 10</code> terms) yields a polynomial <code>M</code> of degree 17 with exact Gaussian-rational coefficients, and one kernel check certifies that <code>M</code> is uniformly within <code>F rho</code> of zeta on the slightly larger disc of radius <code>r + rho</code>, and that <code>|M&prime;| &gt; F</code> on the disc itself (<code>F = 1/100</code>, <code>rho = 1/20</code>). Cauchy's estimate on a circle of radius <code>rho</code> then gives <code>|&zeta;&prime; - M&prime;| &le; F</code>, so <code>&zeta;&prime; &ne; 0</code>.</p>
+    <p>The node, as the registry holds it today (status, read-back and provenance come from the TOML; nothing on this card is typed by hand):</p>
+    <div class="cards" id="sp-node"></div>
+  </div></div>
+
+  <div class="step"><div class="letter">b</div><div class="body">
+    <h3>Where the box sits</h3>
+    <p>The critical strip, with Speiser's region <code>0 &lt; Re s &lt; 1/2</code> shaded, the box, the first zeros of zeta on the line (bundled ordinates, a float model), the pole at <code>s = 1</code>, and the only zero of <code>&zeta;&prime;</code> below height 30, which sits far to the right at about <code>2.463 + 23.298 i</code> (mpmath, float model). Zeros of <code>&zeta;&prime;</code> are known to cluster right of the line; Speiser's theorem says RH is the statement that none of them ever lands in the shaded region. The box is a tiny, finite piece of that region. Hover for <code>s</code> and the float values of <code>|&zeta;(s)|</code> and <code>|&zeta;&prime;(s)|</code> from the bundled grid.</p>
+    <div class="plotwrap">
+      <canvas id="sp-plane" width="1000" height="520" role="img" aria-label="The critical strip between Re s = 0 and 1 up to height 30, with the box [1/4, 3/8] x [6, 10] drawn left of the critical line"></canvas>
+      <div class="legend"><span><span class="sw" style="background:var(--cool-soft);border:1px solid var(--cool)"></span>Speiser's region 0 &lt; Re s &lt; 1/2 (zeta' zero-free there is RH)</span><span><span class="sw" style="background:var(--dbn-k-soft);border:1px solid var(--dbn-k)"></span>the box: kernel-checked zeta'-free</span><span><span class="sw" style="background:var(--faint)"></span>zeros of zeta on the line (float model)</span><span><span class="sw" style="background:var(--dbn-m)"></span>zero of zeta' (float model)</span></div>
+      <div class="readout" id="sp-plane-readout"></div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="letter">c</div><div class="body">
+    <h3>The landscape of |&zeta;&prime;(s)|</h3>
+    <p>A heat map of <code>log10 |&zeta;&prime;(s)|</code> over the same region, computed once with mpmath on a grid of 97 x 241 points and bundled; <strong>float model (mpmath), not a certificate</strong>. Height runs left to right, real part bottom to top, and the aspect is true, so the discs are circles. Narrow the height window to the box to see the eight discs: the inner discs of radius <code>r</code>, where <code>|M&prime;| &gt; F</code> is certified, and the outer discs of radius <code>r + rho</code>, where <code>|&zeta; - M| &le; F rho</code> is certified. Dark means small. The zeros of <code>&zeta;&prime;</code> are the darkest spots; none is near the box.</p>
+    <div class="plotwrap">
+      <div class="controls">
+        <label>window centre <input type="range" id="sp-heat-c" min="3" max="27" step="0.25" value="8"> <span class="mono" id="sp-heat-c-val"></span></label>
+        <label>window width <select id="sp-heat-w"><option value="30">30 (whole range)</option><option value="12">12</option><option value="6" selected>6</option><option value="3">3</option></select></label>
+        <label><input type="checkbox" id="sp-heat-inner" checked> inner discs (radius r)</label>
+        <label><input type="checkbox" id="sp-heat-outer" checked> outer discs (radius r + rho)</label>
+      </div>
+      <canvas id="sp-heat" width="1000" height="400" role="img" aria-label="Heat map of log10 of the modulus of zeta prime over the critical strip with the box and its eight discs overlaid"></canvas>
+      <div class="legend"><span>colour: log10 |zeta'(s)|, dark = small, light = large (float model)</span><span><span class="sw" style="background:var(--dbn-k)"></span>box and inner discs</span><span><span class="sw" style="background:var(--dbn-m)"></span>outer discs</span><span><span class="sw" style="background:var(--faint)"></span>critical line</span></div>
+      <div class="readout" id="sp-heat-readout"></div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="letter">d</div><div class="body">
+    <h3>The certificate, one disc at a time</h3>
+    <p>Pick a disc. On the left, <code>|M&prime;(h)|</code> over the inner disc <code>|h| &le; r</code>, evaluated in your browser from the exact coefficients of <code>M</code> (exported from the generator's own arithmetic, so the polynomial is the kernel's; its evaluation here is double arithmetic, a float model). Any cell with <code>|M&prime;(h)| &le; F</code> would be drawn in red; there is none. What the kernel decides is cruder and certified: <code>(r ub + F)^2 &lt; |M&prime;(0)|^2</code>, where <code>ub</code> bounds the rest of <code>M&prime;</code> on the disc coefficient by coefficient, so <code>|M&prime;(h)| &ge; |M&prime;(0)| - r ub &gt; F</code> everywhere on the disc. On the right, <code>|&zeta;(z) - M(z - c)|</code> on the outer disc <code>|z - c| &le; r + rho</code>, sampled by mpmath on a polar grid (float model). The kernel's number is the exact budget <code>G</code>, which it checks against <code>F rho = 1/2000</code>; the float samples lie far below it, as they must if the budget is honest.</p>
+    <div class="plotwrap">
+      <div class="controls">
+        <label>disc <input type="range" id="sp-disc" min="0" max="7" step="1" value="0"> <span class="mono" id="sp-disc-val"></span></label>
+      </div>
+      <div class="sp-pair">
+        <div><div class="cap">|M'(h)| on the inner disc, |h| &lt;= r = 13/50 (exact coefficients, float evaluation)</div><canvas id="sp-mp" width="500" height="500" role="img" aria-label="Modulus of M prime over the inner disc, with the F contour where present"></canvas></div>
+        <div><div class="cap">|zeta(z) - M(z - c)| on the outer disc, |z - c| &lt;= r + rho = 31/100 (mpmath, float model)</div><canvas id="sp-err" width="500" height="500" role="img" aria-label="Modulus of zeta minus the model polynomial over the outer disc on a polar grid"></canvas></div>
+      </div>
+      <div class="legend"><span>left colour: |M'(h)| (dark = small)</span><span><span class="sw" style="background:var(--refuted)"></span>|M'(h)| &lt;= F or |zeta - M| &gt; F rho: the check would fail there</span><span>right colour: log10 |zeta - M| (dark = small)</span></div>
+      <table class="sp-kv" id="sp-disc-table"></table>
+      <div class="readout" id="sp-disc-readout"></div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="letter">e</div><div class="body">
+    <h3>The Cauchy estimate</h3>
+    <p>Why a bound on <code>&zeta; - M</code> on the larger disc controls <code>&zeta;&prime; - M&prime;</code> on the smaller one. Drag the point <code>s = c + h</code> anywhere in the inner disc. The circle of radius <code>rho</code> around it stays inside the outer disc, because <code>|h| + rho &le; r + rho</code>. On that circle <code>f = &zeta; - M(. - c)</code> is holomorphic (zeta's only pole is at <code>s = 1</code>, far away) and <code>|f| &le; G &le; F rho</code>, so Cauchy's estimate gives <code>|f&prime;(s)| &le; G / rho &le; F</code>. Since <code>|M&prime;(h)| &gt; F</code>, <code>&zeta;&prime;(s) = M&prime;(h) + f&prime;(s)</code> cannot vanish. The disc follows the slider in step d.</p>
+    <div class="plotwrap">
+      <canvas id="sp-cauchy" width="1000" height="440" role="img" aria-label="The inner and outer discs around the centre c with a draggable point and the circle of radius rho around it"></canvas>
+      <div class="legend"><span><span class="sw" style="background:var(--dbn-k-soft);border:1px solid var(--dbn-k)"></span>inner disc, |M'| &gt; F certified</span><span><span class="sw" style="background:var(--sunk);border:1px solid var(--dbn-m)"></span>outer disc, |zeta - M| &lt;= F rho certified</span><span><span class="sw" style="background:var(--ink)"></span>the Cauchy circle of radius rho around s</span></div>
+      <div class="readout" id="sp-cauchy-readout"></div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="letter">f</div><div class="body">
+    <h3>The negative controls</h3>
+    <p>A certificate checker that never says no is worthless, so the artifact also asks the kernel to refuse two forgeries, and both refusals are theorems (<code>= false</code> by <code>decide +kernel</code>). First, the same data with an impossible budget <code>F = 10^-9</code>: the error bound <code>G</code> is then far above <code>F rho = 5 x 10^-11</code>, and every cell of the right-hand plot turns red; this is checked on all eight discs. Second, disc 0's data with one accumulator forged so that <code>M&prime;(0)</code> is cancelled exactly: the budget still passes, but <code>|M&prime;|</code> now has a zero at the centre, the <code>F</code> contour appears, and the derivative test fails. The plots below are the plots of step d run on the forged inputs; the kernel's verdicts, quoted from the Lean source, are underneath.</p>
+    <div class="plotwrap">
+      <div class="controls">
+        <label>control <select id="sp-neg-mode"><option value="tiny">F = 10^-9 on the chosen disc</option><option value="forged">forged accumulator on disc 0</option></select></label>
+      </div>
+      <div class="sp-pair">
+        <div><div class="cap" id="sp-neg-cap-l"></div><canvas id="sp-neg-mp" width="500" height="500" role="img" aria-label="Modulus of M prime over the inner disc for the negative control"></canvas></div>
+        <div><div class="cap" id="sp-neg-cap-r"></div><canvas id="sp-neg-err" width="500" height="500" role="img" aria-label="Modulus of zeta minus the model polynomial over the outer disc against the negative control's budget"></canvas></div>
+      </div>
+      <div class="readout" id="sp-neg-readout"></div>
+      <p class="note">The kernel's verdicts, verbatim from <code>SpeiserDerivBox.lean</code> (long lines; the <code>= false</code> at the end is the point):</p>
+      <pre id="sp-neg-lean"></pre>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="letter">g</div><div class="body">
+    <h3>How to check it yourself</h3>
+    <p>The island is <code>telperion/examples/zeta_reflection/lean</code> (Lean 4, Mathlib pinned by its lakefile; a full Mathlib build the first time). Three commands build the core, the generated box and the axiom guard, and print the guard:</p>
+    <pre>cd telperion/examples/zeta_reflection/lean
+lake exe cache get
+lake build SpeiserDerivCore SpeiserDerivBox AxiomGuardSpeiserDeriv
+lake env lean AxiomGuardSpeiserDeriv.lean   # 11 lines, each: [propext, Classical.choice, Quot.sound]</pre>
+    <p>The guard file itself:</p>
+    <pre id="sp-guard"></pre>
+    <p>The generated file must be byte-identical to what the generator emits, which also re-runs the Python mirror of the kernel check and refuses to emit a failing certificate:</p>
+    <pre>cd telperion/examples/zeta_reflection/lean
+python3 ../arbecon/gen_speiser_box.py --check   # prints the eight margins and "no drift"</pre>
+    <p>CI runs the same three things in <code id="sp-ci-workflow"></code>, as an additive step that leaves the island's other guards untouched:</p>
+    <pre id="sp-ci-step"></pre>
+    <p>The data behind this tab is regenerated by <code>python telperion/research/speiser_box/make_explorer_data.py</code> (mpmath, fixed precision, no randomness) and the page by <code>python telperion/explorer/build.py</code>, which recomputes the exact half from the generator and refuses to build if the committed data disagrees. <code>conjecture1_proved = False</code>.</p>
   </div></div>
 </section>
 
