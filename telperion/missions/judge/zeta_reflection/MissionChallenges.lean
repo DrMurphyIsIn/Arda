@@ -10,3 +10,4 @@ import MissionChallenges.AND_rs_remainder_c0_seam_sharp
 import MissionChallenges.AND_rs_remainder_c0_sharp
 import MissionChallenges.AND_stirling_binet_k1
 import MissionChallenges.AND_theta_branch
+import MissionChallenges.MM_speiser_box_probe

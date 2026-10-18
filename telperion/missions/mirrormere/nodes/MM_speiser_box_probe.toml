@@ -3,18 +3,28 @@ depends_on = []
 kind = "milestone"
 name = "MM.speiser_box_probe"
 statement_module = "Statements.MM_speiser_box_probe"
-status = "open"
-title = "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)"
+status = "proved"
+title = "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9). PROVENANCE (2026-10-17): kernel-checked in CI (zeta-reflection-compiles, SpeiserDeriv* step; guard AxiomGuardSpeiserDeriv, 11 lines, standard three axioms only); independent AI read-back by the bb session (Riemann Auditor), which rebuilt the artifact in its own worktree, NOT an operator read-back (recorded independence unverified only because the node predates the [author] field); no Comparator record yet (the per-PR judge bundle now carries this node). One box, NOT RH; conjecture1_proved = False."
 updated = "2026-10-17"
+
+[grant]
+artifact_sha256 = "653616d313383f250346abea4465ba7610269648fd112ea877e57aeed2513772"
+date = "2026-10-17"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01TeEsdE4SroprJqfYm9qcKc"
+statement_sha256 = "5f12d440a2ae26bfa1c14efc279f630094caf42a3a04181a9a4e241e182efbf3"
 
 [proof]
 artifact = "../../examples/zeta_reflection/lean/SpeiserDerivBox.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]
-auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)"
-date = "2026-09-16"
+auditor = "AI read-back by Claude (bb session, Riemann Auditor), NOT an operator read-back; under the owner 2026-10-12 decision accepting AI read-backs"
+auditor_identity = "claude-ai-readback+bb-session@anthropic-ai.invalid"
+auditor_session = "session_01HosT9Zt8q86r49TvoLukmr"
+date = "2026-10-17"
 independence = "unverified"
-text = "deriv riemannZeta has no zero in the concrete closed rectangle [1/4, 3/8] x [6, 10], strictly left of the critical line. A single bounded, finitely-checkable winding/argument-principle target -- verifying one box does NOT decide RH; correctly NOT the RH-equivalent Speiser strip statement. Truth rests on actual zeta' zero locations (known to cluster right of the line); the auditor did not compute the winding number. No flags."
+text = "Formal statement, rendered by the auditor from the statement file Statements/MM_speiser_box_probe.lean (not from the title): for every complex s with 1/4 <= Re s <= 3/8 and 6 <= Im s <= 10, deriv riemannZeta s != 0 (Mathlib's riemannZeta and deriv; a closed box strictly left of the critical line). It is one finitely-checkable box and NOT the Speiser wall (zeta' zero-free on the whole open strip 0 < Re s < 1/2 is equivalent to RH, Speiser 1935); it says nothing about RH. Artifact theorem speiser_box_probe in SpeiserDerivBox.lean (:288), over SpeiserDerivCore.lean. Eight discs of radius 13/50 centred at 5/16 + i(25/4 + k/2), k = 0..7, cover the box by the proved lemma dist_le_of_row and a case split on Im s, so the cover is a theorem, not an assumption. On each disc, ArbEcon.Off.SpD.cell_deriv_ne_zero turns a kernel-checked (decide +kernel) certificate for a model polynomial M into zeta' != 0: a uniform bound |zeta - M| <= budget on the disc of radius r + rho, Cauchy's estimate giving |(zeta - M)'| <= budget/rho <= F on the inner disc, and |M'| > F there. Checked by the auditor in its own detached worktree ~/arda-bb-speiser at main 8f5c830c8 (the #753 merge): lake build SpeiserDerivCore SpeiserDerivBox AxiomGuardSpeiserDeriv, 3227 jobs, exit 0, both modules freshly built (2026-10-17); all 11 lines of AxiomGuardSpeiserDeriv print exactly [propext, Classical.choice, Quot.sound], with no sorryAx or ofReduceBool, and neither file contains sorry, axiom, native_decide, implemented_by or extern; statement_matches against SpeiserDerivBox.lean is True, and tampered copies (1/4 to 1/5, 3/8 to 1/2, 6 to 5, 10 to 11, != to =, deriv riemannZeta to riemannZeta) are all False; in a root-namespace file with import Mathlib and no open, speiser_box_probe closes the statement as elaborated there (standard three axioms), while the riemannZeta variant without deriv is rejected by the type checker; the statement file elaborates against the island's Mathlib v4.32.0 with only the expected sorry warning; the negative controls are kernel-checked and exercise the checker: check0_neg (F = 1/10^9) fails at the budget clause, and check0_corrupt (an accumulator centre shifted to cancel M'(0)) fails at the derivative test with the budget still satisfied (|M'(0)|^2 = 0.0408 honest, 0.0000 corrupted); gen_speiser_box.py --check reproduces SpeiserDerivBox.lean byte-identically; CI: telperion-zeta-reflection job zeta-reflection-compiles succeeded on the #753 head 31caf3276 (run 39061047205, job 117478908333), including the step that builds and axiom-guards SpeiserDeriv*, whose guard output matches the auditor's (31caf3276 is the merge's second parent, and the island, the workflow and the mirrormere files are identical to 8f5c830c8); the main push run 39080020504 on 8f5c830c8 was still in progress when read; mission verify mirrormere --strict-provenance OK, and judge --check for zeta_reflection OK (12 challenges). Independent numeric sanity check (mpmath, not part of the proof): |zeta'(5/16 + 6.25i)| = 0.201982 against the certified model's |M'(0)| = 0.201983, and the minimum of |zeta'| over a 13 x 161 grid of the box is 0.191. Not run by the auditor: Comparator. The node is not yet in the zeta_reflection judge bundle and appears only in its pending render, so the bundle must be regenerated when the node is granted."

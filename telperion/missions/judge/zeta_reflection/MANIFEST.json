@@ -150,6 +150,18 @@
       "nanoda": true,
       "artifact_sha256": "35c4dcb74e8b56cc7362ac49a664707a786ccce38598355f5dd798fa760cb3c3",
       "statement_sha256": "f2af2e2f8be6285c6f9616100a1b7560ee6478b2f685d2112dd7f51c6d9086eb"
+    },
+    {
+      "slug": "MM_speiser_box_probe",
+      "campaign": "mirrormere",
+      "theorem": "speiser_box_probe",
+      "solution_module": "SpeiserDerivBox",
+      "challenge_module": "MissionChallenges.MM_speiser_box_probe",
+      "bridge_theorem": "MissionJudge.MM_speiser_box_probe",
+      "config": "MM_speiser_box_probe.comparator.json",
+      "nanoda": true,
+      "artifact_sha256": "653616d313383f250346abea4465ba7610269648fd112ea877e57aeed2513772",
+      "statement_sha256": "5f12d440a2ae26bfa1c14efc279f630094caf42a3a04181a9a4e241e182efbf3"
     }
   ],
   "judged_elsewhere": [
