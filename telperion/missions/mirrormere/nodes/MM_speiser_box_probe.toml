@@ -3,14 +3,22 @@ depends_on = []
 kind = "milestone"
 name = "MM.speiser_box_probe"
 statement_module = "Statements.MM_speiser_box_probe"
-status = "open"
-title = "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)"
+status = "proved"
+title = "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9). PROVENANCE (2026-10-17): kernel-checked in CI (zeta-reflection-compiles, SpeiserDeriv* step; guard AxiomGuardSpeiserDeriv, 11 lines, standard three axioms only); independent AI read-back by the bb session (Riemann Auditor), which rebuilt the artifact in its own worktree, NOT an operator read-back (recorded independence unverified only because the node predates the [author] field); no Comparator record yet (the per-PR judge bundle now carries this node). One box, NOT RH; conjecture1_proved = False."
 updated = "2026-10-17"
+
+[grant]
+artifact_sha256 = "653616d313383f250346abea4465ba7610269648fd112ea877e57aeed2513772"
+date = "2026-10-17"
+gate_version = "2026-09-23.1"
+identity = "dr.murphy.is.in@arda-dao.com"
+session = "session_01TeEsdE4SroprJqfYm9qcKc"
+statement_sha256 = "5f12d440a2ae26bfa1c14efc279f630094caf42a3a04181a9a4e241e182efbf3"
 
 [proof]
 artifact = "../../examples/zeta_reflection/lean/SpeiserDerivBox.lean"
 artifact_kind = "lean_module"
-closure_clean = false
+closure_clean = true
 via = "direct"
 
 [readback]
