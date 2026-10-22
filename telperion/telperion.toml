@@ -829,3 +829,9 @@ name = "bragg_defect_sie"
 script = "examples/bragg_defect_sie/generate.py"
 group = "quick"    # BraggDefect hexp seam via scaled_interval_eval: 2 instances + the prelude copy, emitted
                    # INTO the zeta_zero_localization island; --check also re-renders BraggDefect.lean; ~1 s
+
+[[check]]
+name = "closure_audit"
+script = "examples/closure_audit/generate.py"
+group = "quick"    # pipeline TOOL example (not an emitter): the two closure-audit specs and their
+                   # rendered Lean metaprograms (PASS on Example.lean, FAIL on Tainted.lean); ~0.1 s
