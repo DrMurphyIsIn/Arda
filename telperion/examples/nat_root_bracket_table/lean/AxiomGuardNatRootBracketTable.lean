@@ -3,9 +3,10 @@ Axiom guard for the nat-root-bracket-table island.
 
 Run AFTER `lake build` (CI does): it prints the axiom dependencies of the NatRootBracket
 transport lemmas and of every emitted bracket.  A clean run shows nothing beyond Mathlib's
-three axioms `[propext, Classical.choice, Quot.sound]`; CI additionally fails the job if
-`sorryAx` (or `Lean.ofReduceBool`, the native_decide axiom) appears anywhere in the output.
-`decide +kernel` adds no axiom: the kernel evaluates `Decidable.decide` itself.
+three axioms `[propext, Classical.choice, Quot.sound]`; CI additionally fails the job unless EVERY
+`depends on axioms` line lists a subset of those three (an allow-list: `sorryAx`, and the
+per-theorem `<thm>._native.native_decide.ax_1_1` axiom that `native_decide` produces on this pin,
+both fail it).  `decide +kernel` adds no axiom: the kernel evaluates `Decidable.decide` itself.
 
 This file is HAND-WRITTEN (it is not emitted, so it is not part of the generate.py drift check)
 and lists the capstones by name: adding an instance without adding its guard line is a visible

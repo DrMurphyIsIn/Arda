@@ -167,7 +167,7 @@ wall time is `lake env lean` on a warm Mathlib, this machine):
 
 | K | `List ℕ` (default options) | wall time | `Array ℕ` (default options) |
 |---|---|---|---|
-| 200 | PASS | about 6 s (the CN-1 default; a first run showed 1073 s, which was time spent queued behind another builder on the shared Lean slot, not elaboration; re-timed below) | PASS, 6.6 s |
+| 200 | PASS | 23.1 s and 40.0 s re-timed on a loaded machine (the CN-1 default; a first run logged 1073 s, which was time spent queued behind another builder on the shared Lean slot, not elaboration) | PASS, 6.6 s |
 | 300 | PASS | 6.7 s | -- |
 | 500 | PASS | 11.3 s | PASS, 16.1 s |
 | 1000 | PASS | 34.4 s | -- |
@@ -198,7 +198,11 @@ FALSE twin: the honest table for `∑_{i<40} (i+1)^(-3/4)` at scale `10^10` in t
 the entry `n = 7` of the second block's `lo` list raised by 1 (block sum and total recomputed so the
 forgery is internally consistent), hand-minted past Layer 1 with `dataclasses.replace`. The tightest
 `lo` satisfies `lo^4 m^3 <= 10^40 < (lo+1)^4 m^3` at `m = 28`, so the block's `∀`-fact is FALSE and
-`decide +kernel` fails on `_lo_1_fact`; the final theorem loses its hypothesis with it. TRUE twin:
+`decide +kernel` fails on `_lo_1_fact`; the final theorem loses its hypothesis with it. The forged
+CLAIM stays TRUE: the forged lower total `66495196525/10^10 = 6.6495196525` is still below the true
+sum `6.64951965419698...` (COMPUTED, mpmath at 50 digits; pinned by
+`test_adapter_twins_differ_by_one_entry_only`), so what the kernel rejects is a corrupted WITNESS
+under a true claim, which is what CERTIFICATE_SENSITIVE requires. TRUE twin:
 the honest certificate, compiles over `import Mathlib` plus the spliced prelude, with
 `[propext, Classical.choice, Quot.sound]`. The emitted texts differ in the forged list, its block
 sum and the totals in the final statements (`test_adapter_twins_differ_by_one_entry_only` pins
@@ -237,7 +241,7 @@ self-checks); `--check` pins both byte for byte and `telperion.toml` lists it in
 | instance | statement | kernel work |
 |---|---|---|
 | `sum_neg34_400` | `144528468361/10^10 <= ∑_{i<400} (i+1)^(-3/4) <= 144528468758/10^10` | 2 blocks of 200: 4 `decide +kernel` block facts + 4 block sums |
-| `sum_neg78_400` | `94886213312/10^10 <= ∑_{i<400} (i+1)^(-7/8) <= 94886213715/10^10` | the same at `q = 8` |
+| `sum_neg78_400` | `94886213312/10^10 <= ∑_{i<400} (i+1)^(-7/8) <= 94886213710/10^10` | the same at `q = 8` |
 | `pow_1001_pos14` | `5624818578328/10^12 <= 1001^(1/4) <= 5624818578329/10^12` | 2 facts |
 | `rat_64003_8_neg58` | `3635432077/10^12 <= (64003/8)^(-5/8) <= 3635432078/10^12` | 2 facts |
 
@@ -246,7 +250,8 @@ The first sigma = 3/4 block reproduces the CN-1 `ZetaTables.lean` `zlo34_0_sum /
 CN-1 `n1001_quarter` and `g_hA` endpoints, from an independent generator. `lake build` of the
 emitted file takes about 34 s on v4.32.0 after the prelude (COMPUTED, this machine); the axiom guard
 `AxiomGuardNatRootBracketTable.lean` prints the three Mathlib axioms for every capstone and the CI
-job `nat-root-bracket-table-compiles` fails on `sorryAx` or `Lean.ofReduceBool`.
+job `nat-root-bracket-table-compiles` fails unless every `depends on axioms` line lists a subset of
+those three (an allow-list; see the last section).
 
 ## What this does NOT guarantee
 
@@ -265,4 +270,17 @@ job `nat-root-bracket-table-compiles` fails on `sorryAx` or `Lean.ofReduceBool`.
   `10^-12` must ask for `scale = 10^12`; the emitter never widens a claim and never rounds a total.
 * **The example compiles in CI; a user's instance is checked when the user builds it.** Nothing in
   the Python layer is trusted: a Layer-1 refusal is a convenience, and the kernel is the arbiter.
+* **The CI axiom guard is an allow-list, and only that.** It fails the job unless every
+  `depends on axioms` line of `AxiomGuardNatRootBracketTable.lean` lists a subset of `propext`,
+  `Classical.choice`, `Quot.sound`. A deny-list for `sorryAx | ofReduceBool` would NOT catch
+  `native_decide` on this pin, which produces a per-theorem axiom `<thm>._native.native_decide.ax_1_1`
+  rather than `Lean.ofReduceBool` (REVIEW_PR765 C1), and Lean wraps a long axiom list one axiom per
+  line, so a line-based check reads only `[propext,` and accepts the hidden axiom (REVIEW_PR766
+  Add.1, demonstrated on real v4.32.0 output). The step therefore joins the lines, parses every closed
+  `depends on axioms: [...]` list whole, requires one closed list per header and exactly ten anchors,
+  and allow-lists with fixed strings (`grep -vxF`; with `-E` the dot in `Classical.choice` matches a
+  look-alike). `test_ci_axiom_guard_is_an_allow_list` EXECUTES the step's run block against fixtures
+  under `tests/fixtures/nat_root_bracket_table/`: the real guard output (accept), the real wrapped
+  `native_decide` output (reject), a wrapped `sorryAx` (reject), a look-alike axiom name (reject) and
+  ten axiom-free declarations (accept). The guard covers the declarations it names and no others.
 * **Nothing about zeta or class numbers.** `conjecture1_proved = False`.
