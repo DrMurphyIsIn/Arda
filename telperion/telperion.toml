@@ -819,6 +819,13 @@ group = "quick"    # fixed-point integer interval evaluator (prototype, PR #676)
                    # pure-Python regeneration, ~1 s
 
 [[check]]
+name = "quadratic_order_root_table"
+script = "examples/quadratic_order_root_table/generate.py"
+group = "quick"    # Kummer-Dedekind split / inert / ramified faces of monogenic quadratic orders (CN-1
+                   # survey N3): 5 orders, kernel-decided faces + class-number witnesses; also writes the
+                   # QuadraticOrderRoot prelude; pure-Python regeneration, ~0.1 s
+
+[[check]]
 name = "nat_root_bracket_table"
 script = "examples/nat_root_bracket_table/generate.py"
 group = "quick"    # kernel-decided q-th-root brackets (CN-1 survey N1): 2 blocked sum tables (M = 400,
