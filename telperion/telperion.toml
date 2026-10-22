@@ -814,6 +814,13 @@ group = "quick"    # fixed-point integer interval evaluator (prototype, PR #676)
                    # pure-Python regeneration, ~1 s
 
 [[check]]
+name = "nat_root_bracket_table"
+script = "examples/nat_root_bracket_table/generate.py"
+group = "quick"    # kernel-decided q-th-root brackets (CN-1 survey N1): 2 blocked sum tables (M = 400,
+                   # K = 200) + 2 single brackets, and the NatRootBracket prelude; exact-integer
+                   # regeneration, ~0.1 s
+
+[[check]]
 name = "bragg_defect_sie"
 script = "examples/bragg_defect_sie/generate.py"
 group = "quick"    # BraggDefect hexp seam via scaled_interval_eval: 2 instances + the prelude copy, emitted
