@@ -140,6 +140,7 @@ jobs:
       xor3_moment: ${{ steps.f.outputs.xor3_moment }}
       zero_free_bridge: ${{ steps.f.outputs.zero_free_bridge }}
       zeta_zero_localization: ${{ steps.f.outputs.zeta_zero_localization }}
+      nat_root_bracket_table: ${{ steps.f.outputs.nat_root_bracket_table }}
     steps:
       - uses: actions/checkout@v4
         if: github.event_name == 'push' || github.event_name == 'pull_request'
@@ -368,6 +369,8 @@ jobs:
               - 'telperion/examples/zero_free_bridge/**'
             zeta_zero_localization:
               - 'telperion/examples/zeta_zero_localization/**'
+            nat_root_bracket_table:
+              - 'telperion/examples/nat_root_bracket_table/**'
 
   toy-compiles:
     needs: changes
@@ -774,6 +777,66 @@ jobs:
       - name: Build the emitted Lean (the actual verification -- Real.Gamma ratio enclosures by the kernel)
         working-directory: telperion/examples/bohr_mollerup_gamma_ratio/lean
         run: lake build
+  nat-root-bracket-table-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.nat_root_bracket_table == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the nat_root_bracket_table Lean (prelude + tables) and check byte-stability
+        working-directory: telperion
+        run: |
+          python examples/nat_root_bracket_table/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/nat_root_bracket_table/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/nat_root_bracket_table/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- kernel-decided root brackets and block sums)
+        working-directory: telperion/examples/nat_root_bracket_table/lean
+        run: lake build
+
+      - name: Axiom guard (prelude lemmas + the four emitted brackets; ALLOW-LIST of Mathlib's three axioms)
+        working-directory: telperion/examples/nat_root_bracket_table/lean
+        run: |
+          set -euo pipefail
+          lake env lean AxiomGuardNatRootBracketTable.lean 2>&1 | tee axioms.out
+          # Allow-list, not a deny-list (REVIEW_PR765 C1, REVIEW_PR766 Add.1).  On this pin native_decide
+          # yields a per-theorem axiom `<thm>._native.native_decide.ax_1_1`, not Lean.ofReduceBool, and
+          # Lean WRAPS a long axiom list one axiom per line, so the lines are joined and every closed
+          # `depends on axioms: [...]` list is parsed whole; the allow-list is fixed-string (-F).
+          # Pinned by tests/test_emit_nat_root_bracket_table.py against real wrapped output.
+          heads=$(grep -c "depends on axioms: \[" axioms.out || true)
+          noax=$(grep -c "does not depend on any axioms" axioms.out || true)
+          if [ "$((heads + noax))" != "10" ]; then
+            echo "::error::expected 10 #print axioms anchors, saw $heads with axioms + $noax without"; exit 1; fi
+          joined="$(tr '\n' ' ' < axioms.out | tr -s ' ')"
+          lists=$({ grep -oE "depends on axioms: \[[^]]*\]" <<< "$joined" || true; } | wc -l | tr -d ' ')
+          if [ "$heads" != "$lists" ]; then
+            echo "::error::$heads axiom headers but $lists closed lists"; exit 1; fi
+          bad="$(grep -oE "depends on axioms: \[[^]]*\]" <<< "$joined" \
+                  | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' \
+                  | grep -vxF -e propext -e Classical.choice -e Quot.sound || true)"
+          if [ -n "$bad" ]; then
+            echo "::error::axiom(s) outside {propext, Classical.choice, Quot.sound}: $(echo $bad)"; exit 1; fi
+          echo "axiom allow-list OK"
   cs-compiles:
     needs: changes
     if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.cauchy_schwarz == 'true' || needs.changes.outputs.src == 'true')
