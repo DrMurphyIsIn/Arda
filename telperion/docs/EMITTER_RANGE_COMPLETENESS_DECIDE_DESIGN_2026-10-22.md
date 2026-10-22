@@ -48,18 +48,27 @@ optionally the surrogate pair. Output, per instance `nm`:
 With all three companions the four theorems say "L is exactly the guarded set and has |L|
 elements", which is the list-completeness claim one wants for a published table.
 
-## Why the bound K^2 > N, and why the emitter refuses without it
+## The bound K^2 > N: a sufficient policy, not the exact condition
 
 The bridge is sound for every `K`: it is the direction `P → P'`, and the coverage theorem with
 `P'` as hypothesis is weaker than one with `P`, so the consumer theorem follows for any `K`. The
-bound is about meaning, not soundness. A non-squarefree `m < N` has a square factor `p^2 ≤ m < N`
-with `p` prime, so `p < sqrt N`. With `K^2 > N` every such `p` is at most `K`, so `SqfBelow K`
-rejects exactly the non-squarefree numbers of the range and the two predicates agree there.
-Without the bound `SqfBelow K` is strictly weaker on the range, the coverage theorem forces `L`
-to contain non-squarefree numbers, and "the squarefree numbers below N" would be a lie about
-what `L` is. So `range_completeness_certificate` refuses `K^2 ≤ N` (the example's negative
-check: `K = 14` against `N = 200`, since `196 ≤ 200`), and as a self-check it also compares the
-surrogate with exact `Squarefree` at every `m < N`.
+bound is about meaning, not soundness. `SqfBelow K` agrees with `Squarefree` on `[0, N)` exactly
+when `K ≥ 2` and every prime `p` with `p^2 ≤ N - 1` is at most `K` (`K ≥ isqrt(N - 1)` suffices; the exact
+minimum is the largest prime `≤ isqrt(N - 1)`, e.g. 13, 23, 67 for N = 200, 653, 4778). If some
+such `p` exceeds `K`, `SqfBelow K` is strictly weaker on the range, the coverage theorem forces
+`L` to contain non-squarefree numbers, and "the squarefree numbers below N" would be a lie
+about what `L` is.
+
+`K^2 > N` is a simpler SUFFICIENT condition (a non-squarefree `m < N` has a square factor
+`p^2 ≤ m < N`, so `p < sqrt N ≤ K`), and the emitter enforces it as a stated POLICY: the
+decision taken after review (REVIEW_PR762, D1) was to keep the simple bound rather than relax
+it to the exact one. So `range_completeness_certificate` refuses `K^2 ≤ N` even where a smaller
+`K` would still be exact: the example's bound check uses `K = 14` against `N = 200`
+(`196 ≤ 200`), and `K = 14` or `K = 13` would in fact agree with `Squarefree` on `[0, 200)`,
+since the largest prime whose square is below 200 is 13. The refusal message says so and names
+the smallest `K` the policy accepts. The authority on agreement is not the bound but the
+per-`m` cross-check of the surrogate against exact `Squarefree` over the whole range, which
+runs on every certificate.
 
 ## The certificate (Layer 1, in Python)
 
@@ -89,9 +98,15 @@ follows both.
 * The AST extension lives in `emit_finite_decide.py`: `ForallRange`, `ForallIcc`, `Not`, `And`,
   `Mem`, `NotMem`, the expression node `Mod`, and the comparison `dvd`. The evaluator and the
   renderer were extended in place, so `FiniteDecideEmitter` can state a range coverage by
-  plain `decide` (a test pins this), and the pre-existing nodes render byte for byte as before
-  (the `finite_decide` example's drift check still passes; a second test pins the unchanged
-  `Imp` rendering).
+  plain `decide` (a test pins this). Evaluation of the pre-existing nodes is unchanged, and
+  their text is byte-identical whenever every `Imp` hypothesis is a `Cmp`, the only form
+  existing callers use (the `finite_decide` example's drift check still passes; a test pins
+  the unchanged `Imp`-of-`Cmp` rendering). The one rendering change is a FIX: an `Imp` whose
+  hypothesis is itself an `Imp` or a `ForallIn` is now parenthesised, `(∀ v ∈ T, a) → b`. The
+  old text `∀ v ∈ T, a → b` was re-associated by Lean as `∀ v ∈ T, (a → b)`, a different
+  proposition from the one Python evaluated, a latent text/semantics divergence found in review
+  (bb rendered 3,000 old-node ASTs with both modules: evaluation agreed in all, text in all
+  2,057 with comparison hypotheses).
 * The bundle around the coverage theorem is a sibling module. `FiniteDecideEmitter.emit_body`
   emits one `theorem … := by decide` per instance and nothing else; the N6 instance is a list
   definition, a `decide +kernel` theorem under `set_option maxRecDepth`, a tactic-proved
@@ -138,6 +153,10 @@ dataclass with the same five members; the emitter does not know which one it hol
 
   The whole example module (`lake build`, 10 theorems) built in 30 s, of which about 5.3 s is
   kernel type checking and the rest is loading Mathlib.
+
+  All of these numbers are on Lean v4.32.0 / Mathlib v4.32.0, the island toolchain. The CN-1
+  proof itself is on v4.34.1 / Mathlib d13f23b; neither the depth behaviour nor the timings
+  were re-measured there (the survey's open check 1 stays open for that toolchain).
 * Precedence: `¬ (k * k) ∣ m` parses as `¬ ((k * k) ∣ m)`; a binder under `∧` or as an `→`
   hypothesis is parenthesised by the renderer; an atomic comparison is not, so pre-existing
   `finite_decide` output is unchanged.
@@ -171,9 +190,11 @@ demonstrated, not inferred:
 * **Registered adapter** (`negctrl_adapters/adapter_range_completeness.py`). The true twin is
   the 30 squarefree `m < 60` outside the seven Heegner radicands below 60, `K = 8`. The forgery
   drops the largest element, 59 (prime, squarefree, not excluded), by editing the frozen
-  dataclass, bypassing Layer 1, which on its own refuses it naming `m = 59`. Only the coverage
-  theorem is emitted for the control, so the rejection is pinned to the coverage `decide` and
-  not to a companion that would also be false. The two emitted texts differ in exactly one
+  dataclass, bypassing Layer 1, which on its own refuses it naming `m = 59`. No length, nodup
+  or soundness companion is emitted for the control, so the rejection is pinned to the coverage
+  `decide` and not to a companion that would also be false. The bridge and the consumer theorem
+  are emitted with it; in the false twin the bridge compiles and the consumer inherits
+  `sorryAx` from the rejected coverage theorem. The two emitted texts differ in exactly one
   line, the list literal.
 * **Result.** The kernel rejects the forged theorem (`decide +kernel` reports the proposition
   false) and the true twin compiles axiom-clean; the two-sided check `generic_negative_control`
@@ -187,7 +208,8 @@ demonstrated, not inferred:
 * The kind proves what the kernel decides. It does not prove that the list is "the squarefree
   numbers" unless the soundness companion is requested; without it the theorem is one-sided
   (coverage only), and the length companion then counts a superset.
-* Kernel time is linear in `N × K`; the probe stops at N = 2000. The CN-1 size (N = 653) is
-  comfortable; tables in the tens of thousands were not measured.
+* Kernel time is roughly quadratic in `N` (about N^2.1 on the table: the per-step list scan
+  of length about 0.6 N dominates the K trial divisions); the probe stops at N = 2000. The
+  CN-1 size (N = 653) is comfortable; tables in the tens of thousands were not measured.
 * The bridge uses `Nat.isUnit_iff`, `Finset.mem_Icc`, `Finset.mem_range` and `omega`; a
   Mathlib rename would break the bridge, not the kernel fact, and the compile gate would catch it.
