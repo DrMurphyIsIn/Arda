@@ -654,8 +654,14 @@ jobs:
           n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
           if [ "$n" -lt "12" ]; then
             echo "::error::guard printed $n axiom lines, expected at least 12"; exit 1; fi
-          ! grep -q "sorryAx" axioms.out
-          ! grep -q "ofReduceBool" axioms.out
+          # ALLOW-LIST (REVIEW_PR766 C1): every axiom named on a "depends on axioms" line must be one
+          # of Mathlib's three.  A deny-list of sorryAx / ofReduceBool would miss the per-theorem
+          # `_native.native_decide.ax_n` axioms that native_decide produces on v4.32.0.
+          awk -F"depends on axioms: " '/depends on axioms/ {print $2}' axioms.out \
+            | tr -d '[]' | tr ',' '\n' | sed 's/^ *//; s/ *$//' | grep -v '^$' | sort -u > axset.txt
+          if grep -vxE 'propext|Classical.choice|Quot.sound' axset.txt; then
+            echo "::error::non-standard axiom in the guard output (see above)"; exit 1; fi
+          echo "axiom allow-list OK: $(tr '\n' ' ' < axset.txt)"
   cs-compiles:
     needs: changes
     if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.cauchy_schwarz == 'true' || needs.changes.outputs.src == 'true')

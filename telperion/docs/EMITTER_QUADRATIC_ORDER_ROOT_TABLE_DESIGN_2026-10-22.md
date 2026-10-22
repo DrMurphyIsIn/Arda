@@ -99,8 +99,10 @@ under the same name; no statement was weakened to make anything compile.
 | `not_absNorm_eq_of_no_root`, `QuadInt.not_absNorm_eq_of_no_root` | Finite/Converse.lean:110 | verbatim, plus the `QuadInt` wrapper |
 | `classNumber_ne_one_of_witness`, `classNumber_ne_one_of_isWitness` | Finite/SplitPrime.lean:72, :133 | casts for `t c : ℕ` |
 
-Not ported: `absNorm_maximal_cases`, `le_two_thirds_sqrt_of_le_minkowski`, `exists_theta` and
-`classNumber_eq_one_of_mem_nine` (Converse.lean). Those are survey item E5, `minkowski_pid_witness`,
+"Minkowski" in this note means one lemma only: `not_absNorm_eq_of_no_root`, the residue-field
+argument that a no-root prime has no ideal of norm `p`. The Minkowski bound itself and the converse
+are NOT ported: `absNorm_maximal_cases`, `le_two_thirds_sqrt_of_le_minkowski`, `exists_theta` and
+`classNumber_eq_one_of_mem_nine` (Converse.lean) stay in CN-1. Those are survey item E5, `minkowski_pid_witness`,
 whose table is the INERT faces emitted here together with a cutoff `4d < 9B^2`; the consumer that
 turns them into `classNumber K = 1` is a different kind and is not built. `Splitting.lean`'s
 character-side theorems (`kroneckerChar_eq_one_iff_exists_root` and the `ncard_primesOver_eq_two_iff`
@@ -223,7 +225,10 @@ practical limit is not the kernel but Lean's default elaboration recursion depth
 `maxRecDepth 512` the `decide` fails with "maximum recursion depth has been reached" for `p = 193`
 and `p = 199` (it passes at `p = 101`). So for `p > 100` the INERT face is emitted under
 `set_option maxRecDepth 8192 in` (an elaboration depth, not a kernel one; CN-1 used the same idiom
-for its 50-way `rcases`), and with it every prime through 1013 passes. The default cap is
+for its 50-way `rcases`), and with it every prime through 1013 passes. The rule is
+`p > INERT_RECDEPTH_PRIME = 100`: 101 is wrapped although it passes without the knob, because the
+band 102..192 is unmeasured and the knob changes nothing but the elaborator's budget
+(`tests/test_emit_quadratic_order_root_table.py` pins the rule). The default cap is
 `MAX_INERT_PRIME = 1024`, and `inert_cap` raises it explicitly; above that the measurement stops,
 not the method. The Legendre-symbol route the survey names as a fallback (a `norm_num` extension
 for `jacobiSym`) was not needed at these sizes; nothing here precludes adding it as a second proof
@@ -238,7 +243,9 @@ of the same statement for much larger `p`.
   `classNumber K = 1` (that is E5, not built). `not_form_eq_prime` is about the principal form only
   and does not generalise to non-principal forms without new Lean.
 * The faces are about the order given by `(t, c)`, which must be the maximal order for the `_kd`
-  statements to be about `𝓞 K`; `QuadInt.adjoin_eq_top` carries that.
+  statements to be about `𝓞 K`; `QuadInt.adjoin_eq_top` carries that. The `_kd` statements are
+  about `primesOver (span {(p : ℤ)}) (𝓞 K)` under that hypothesis, and the emitter does not check
+  that `K` is imaginary: for `t in {0, 1}` and `c >= 1`, `d = 4c - t^2 > 0` already forces it.
 * `t` is restricted to `{0, 1}`. A monogenic quadratic order always has such a reduced form (shift
   `θ`), but the emitter does not perform the shift.
 * Primality of `p` is exact trial division up to `10^6`; larger primes are refused, not tested.
