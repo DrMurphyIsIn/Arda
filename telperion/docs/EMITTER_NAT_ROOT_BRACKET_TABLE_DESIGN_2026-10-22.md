@@ -279,7 +279,7 @@ those three (an allow-list; see the last section).
   Add.1, demonstrated on real v4.32.0 output). The step therefore joins the lines, parses every closed
   `depends on axioms: [...]` list whole, requires one closed list per header and exactly ten anchors,
   and allow-lists with fixed strings (`grep -vxF`; with `-E` the dot in `Classical.choice` matches a
-  look-alike). `test_ci_axiom_guard_is_an_allow_list` EXECUTES the step's run block against fixtures
+  look-alike). The five `test_ci_axiom_guard_*` tests (real guard output, ten axiom-free declarations, real wrapped native_decide, wrapped sorry and look-alike, anchor-count and closed-list pins) EXECUTE the step's run block against fixtures
   under `tests/fixtures/nat_root_bracket_table/`: the real guard output (accept), the real wrapped
   `native_decide` output (reject), a wrapped `sorryAx` (reject), a look-alike axiom name (reject) and
   ten axiom-free declarations (accept). The guard covers the declarations it names and no others.
