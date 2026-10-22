@@ -111,6 +111,7 @@ jobs:
       per_size_dominance_sweep: ${{ steps.f.outputs.per_size_dominance_sweep }}
       polytope_max: ${{ steps.f.outputs.polytope_max }}
       primality: ${{ steps.f.outputs.primality }}
+      closure_audit: ${{ steps.f.outputs.closure_audit }}
       range_completeness_decide: ${{ steps.f.outputs.range_completeness_decide }}
       bohr_mollerup_gamma_ratio: ${{ steps.f.outputs.bohr_mollerup_gamma_ratio }}
       psd_form: ${{ steps.f.outputs.psd_form }}
@@ -139,6 +140,7 @@ jobs:
       xor3_moment: ${{ steps.f.outputs.xor3_moment }}
       zero_free_bridge: ${{ steps.f.outputs.zero_free_bridge }}
       zeta_zero_localization: ${{ steps.f.outputs.zeta_zero_localization }}
+      nat_root_bracket_table: ${{ steps.f.outputs.nat_root_bracket_table }}
       quadratic_order_root_table: ${{ steps.f.outputs.quadratic_order_root_table }}
     steps:
       - uses: actions/checkout@v4
@@ -298,6 +300,8 @@ jobs:
               - 'telperion/examples/polytope_max/**'
             primality:
               - 'telperion/examples/primality/**'
+            closure_audit:
+              - 'telperion/examples/closure_audit/**'
             range_completeness_decide:
               - 'telperion/examples/range_completeness_decide/**'
             bohr_mollerup_gamma_ratio:
@@ -366,6 +370,8 @@ jobs:
               - 'telperion/examples/zero_free_bridge/**'
             zeta_zero_localization:
               - 'telperion/examples/zeta_zero_localization/**'
+            nat_root_bracket_table:
+              - 'telperion/examples/nat_root_bracket_table/**'
             quadratic_order_root_table:
               - 'telperion/examples/quadratic_order_root_table/**'
 
@@ -615,6 +621,95 @@ jobs:
       - name: Build the emitted Lean (the actual verification — Lucas/Pratt primality)
         working-directory: telperion/examples/primality/lean
         run: lake build
+  # Pipeline tools T4 (closure audit) + T5 (frozen-tree manifest), 2026-10-22.  Not an emitter:
+  # the island is a hand-written target library (four honest theorems + a negative-control
+  # module with an axiom, a `sorry` and a `native_decide`, + a control that re-declares a
+  # target's name by `native_decide`).  The job freezes the tree, builds it, runs the
+  # kernel-level closure audit on the honest theorems (must PASS with the tainted module
+  # imported but absent from the closure), runs it on the tainted theorems (must FAIL), runs it
+  # with the re-declaring control imported (must FAIL on the closure axiom AND as an
+  # inconsistent environment), and verifies the tree did not change under the chain.  The
+  # axiom checks read the JSON, not `#print axioms` text, so Lean's line wrapping cannot hide
+  # an axiom from them.
+  closure-audit-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.closure_audit == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the audit specs and scripts (byte-stability)
+        working-directory: telperion
+        run: |
+          python examples/closure_audit/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/closure_audit/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/closure_audit/lean
+        run: lake exe cache get
+
+      - name: Freeze the source tree (T5) before the chain
+        working-directory: telperion
+        run: |
+          PYTHONPATH=src python -m telperion.cli freeze-manifest --project examples/closure_audit/lean \
+            --extra clean_spec=../audit.spec.json --extra tainted_spec=../audit_tainted.spec.json \
+            --extra redeclare_spec=../audit_redeclare.spec.json \
+            --out /tmp/closure_audit_manifest.json --text /tmp/closure_audit_manifest.txt
+          cat /tmp/closure_audit_manifest.txt
+
+      - name: Build the target library
+        working-directory: telperion/examples/closure_audit/lean
+        run: lake build
+
+      - name: Closure audit of the honest theorems (T4; must PASS)
+        working-directory: telperion
+        run: |
+          PYTHONPATH=src python -m telperion.cli audit-closure --project examples/closure_audit/lean \
+            --spec examples/closure_audit/audit.spec.json --json /tmp/audit_clean.json
+          python -c "import json; d=json.load(open('/tmp/audit_clean.json')); assert d['ok'], d['failures']; assert d['absent_modules']['ClosureAuditExample.Tainted'] == 0; assert d['absent_constants']['sorryAx'] is False; assert 'ClosureAuditExample.Tainted' in d['unused_nonlib_modules']; assert d['axioms_consistent'] is True; assert set(d['closure_axioms']) <= {'propext', 'Classical.choice', 'Quot.sound'}, d['closure_axioms']; print('clean audit PASS,', d['closure_size'], 'constants; closure axioms', d['closure_axioms'])"
+
+      - name: Closure audit of the tainted theorems (negative control; must FAIL)
+        working-directory: telperion
+        run: |
+          set +e
+          PYTHONPATH=src python -m telperion.cli audit-closure --project examples/closure_audit/lean \
+            --spec examples/closure_audit/audit_tainted.spec.json --json /tmp/audit_tainted.json
+          rc=$?
+          set -e
+          test "$rc" -eq 1 || { echo "expected exit 1 (FAIL), got $rc"; exit 1; }
+          python -c "import json; d=json.load(open('/tmp/audit_tainted.json')); assert d['verdict'] == 'FAIL'; assert d['absent_constants']['sorryAx'] is True; assert d['absent_modules']['ClosureAuditExample.Tainted'] > 0; ax={t['name']: t['axioms'] for t in d['targets']}; assert any('native_decide' in a or a == 'Lean.ofReduceBool' for a in ax['ClosureAuditExample.NegControl.via_native']), ax; assert 'ClosureAuditExample.NegControl.fake_fact' in ax['ClosureAuditExample.NegControl.via_axiom']; assert 'ClosureAuditExample.NegControl.fake_fact' in d['closure_axioms'] and 'sorryAx' in d['closure_axioms'], d['closure_axioms']; assert any(f.startswith('closure contains non-allowed axioms') for f in d['failures']), d['failures']; print('tainted audit FAIL as required:', d['failures'])"
+
+      - name: Closure audit with a re-declared target name (negative control; must FAIL as inconsistent)
+        working-directory: telperion
+        run: |
+          set +e
+          PYTHONPATH=src python -m telperion.cli audit-closure --project examples/closure_audit/lean \
+            --spec examples/closure_audit/audit_redeclare.spec.json --json /tmp/audit_redeclare.json
+          rc=$?
+          set -e
+          test "$rc" -eq 1 || { echo "expected exit 1 (FAIL), got $rc"; exit 1; }
+          python -c "import json; d=json.load(open('/tmp/audit_redeclare.json')); assert d['verdict'] == 'FAIL'; assert any('native_decide' in a for a in d['closure_axioms']), d['closure_axioms']; assert any(f.startswith('closure contains non-allowed axioms') for f in d['failures']), d['failures']; assert d['axioms_consistent'] is False; assert any(f.startswith('inconsistent environment') for f in d['failures']), d['failures']; print('re-declaration control FAIL as required (closure axiom + inconsistent environment):', d['failures'])"
+
+      - name: Verify the tree did not change under the chain (T5)
+        working-directory: telperion
+        run: |
+          PYTHONPATH=src python -m telperion.cli verify-manifest --project examples/closure_audit/lean \
+            --manifest /tmp/closure_audit_manifest.json
   range-completeness-decide-compiles:
     needs: changes
     if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.range_completeness_decide == 'true' || needs.changes.outputs.src == 'true')
@@ -685,6 +780,66 @@ jobs:
       - name: Build the emitted Lean (the actual verification -- Real.Gamma ratio enclosures by the kernel)
         working-directory: telperion/examples/bohr_mollerup_gamma_ratio/lean
         run: lake build
+  nat-root-bracket-table-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.nat_root_bracket_table == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the nat_root_bracket_table Lean (prelude + tables) and check byte-stability
+        working-directory: telperion
+        run: |
+          python examples/nat_root_bracket_table/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/nat_root_bracket_table/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/nat_root_bracket_table/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- kernel-decided root brackets and block sums)
+        working-directory: telperion/examples/nat_root_bracket_table/lean
+        run: lake build
+
+      - name: Axiom guard (prelude lemmas + the four emitted brackets; ALLOW-LIST of Mathlib's three axioms)
+        working-directory: telperion/examples/nat_root_bracket_table/lean
+        run: |
+          set -euo pipefail
+          lake env lean AxiomGuardNatRootBracketTable.lean 2>&1 | tee axioms.out
+          # Allow-list, not a deny-list (REVIEW_PR765 C1, REVIEW_PR766 Add.1).  On this pin native_decide
+          # yields a per-theorem axiom `<thm>._native.native_decide.ax_1_1`, not Lean.ofReduceBool, and
+          # Lean WRAPS a long axiom list one axiom per line, so the lines are joined and every closed
+          # `depends on axioms: [...]` list is parsed whole; the allow-list is fixed-string (-F).
+          # Pinned by tests/test_emit_nat_root_bracket_table.py against real wrapped output.
+          heads=$(grep -c "depends on axioms: \[" axioms.out || true)
+          noax=$(grep -c "does not depend on any axioms" axioms.out || true)
+          if [ "$((heads + noax))" != "10" ]; then
+            echo "::error::expected 10 #print axioms anchors, saw $heads with axioms + $noax without"; exit 1; fi
+          joined="$(tr '\n' ' ' < axioms.out | tr -s ' ')"
+          lists=$({ grep -oE "depends on axioms: \[[^]]*\]" <<< "$joined" || true; } | wc -l | tr -d ' ')
+          if [ "$heads" != "$lists" ]; then
+            echo "::error::$heads axiom headers but $lists closed lists"; exit 1; fi
+          bad="$(grep -oE "depends on axioms: \[[^]]*\]" <<< "$joined" \
+                  | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' \
+                  | grep -vxF -e propext -e Classical.choice -e Quot.sound || true)"
+          if [ -n "$bad" ]; then
+            echo "::error::axiom(s) outside {propext, Classical.choice, Quot.sound}: $(echo $bad)"; exit 1; fi
+          echo "axiom allow-list OK"
   quadratic-order-root-table-compiles:
     needs: changes
     if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.quadratic_order_root_table == 'true' || needs.changes.outputs.src == 'true')

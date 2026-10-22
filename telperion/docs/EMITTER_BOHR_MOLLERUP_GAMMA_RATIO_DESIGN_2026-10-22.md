@@ -132,7 +132,7 @@ tactics try to normalise the thousand-digit product and hit `maxRecDepth` or the
 (`irreducible_def` does not help; `decide +kernel` then gets stuck). And the products are defined in
 blocks, because the kernel's recursion depth is bounded by the block, not by `n`; the hand-built proof set
 `maxRecDepth 4000` "defensively, not needed", and at `K = 200` nothing here needs it, so the emitted file
-sets no options.
+sets no options (the opt-in `decide_rec_depth` exists for the negative controls' failure messages, below).
 
 `decide +kernel` appears six times per instance (the two comparisons and the four root inequalities);
 no `native_decide`, no `sorry`, no `axiom`, no heartbeat override.
@@ -166,17 +166,40 @@ The hand-built generator's control (`LO = 2.1754` at `n = 8000`; REVIEW_E C6 not
 `generate.py` exits nonzero and nothing is written. `tests/test_emit_bohr_mollerup_gamma_ratio.py` pins
 that exact instance, and pins that the refusal predicate is the emitted comparison.
 
-## Negative control (`negctrl_adapters/adapter_bohr_mollerup_gamma_ratio.py`)
+## Negative controls (`negctrl_adapters/adapter_bohr_mollerup_gamma_ratio.py`)
 
-Stance CERTIFICATE_SENSITIVE: the four bracket integers and the two comparisons ARE the witness. The
-adapter takes the honest `Gamma(3/8)/Gamma(7/8)` certificate at `n = 200` (certified `[2.173540, 2.177274]`, claims `2.173 .. 2.178`) and
-forges `LO := HI = 2.178` by `dataclasses.replace`, past Layer 1 (which refuses it). Since `HI` is at or
-above the certified upper bound it is strictly above the true value `2.17540591...`, so the forged
-statement is a FALSE theorem, not merely an unprovable one; and `LO <= lo` fails exactly, so
-`negctrl_forged_false_key_lo : 1089 * 103133853772125 * gB ≤ 500 * 200 * 36420658219 * gA` is a false
-`Nat` inequality and `decide +kernel` reports it. The TRUE twin is the unmodified certificate. The two
-texts differ only in the lines that carry the lower claim (the test pins this). Both elaborate over
-`import Mathlib` with the prelude body spliced in, so the generic harness needs no island.
+Stance CERTIFICATE_SENSITIVE: the four bracket integers and the two comparisons ARE the witness, so
+the registered control forges the WITNESS with the statement unchanged (the independent review of the
+first version pointed out that a claim forgery alone only shows the kernel rejecting a false theorem,
+which is what a structurally-nonvacuous control shows too).
+
+**Registered control, a witness forgery.** The honest `Gamma(3/8)/Gamma(7/8)` certificate at `n = 200`
+(certified `[2.173540, 2.177274]`, claims `2.173 .. 2.178`) with `l1` raised by one,
+`36420658219 -> 36420658220`, both claims unchanged, by `dataclasses.replace` (Layer 1 cannot mint it:
+`l1` is computed, and its exactness is asserted). `l1` is the LARGEST `L` with `L^8 (8n+3)^5 <= 8^5 S^8`,
+so `l1 + 1` violates the root inequality that `_hA`'s `decide +kernel` decides, while `key_lo` stays
+true (a larger `l1` only enlarges its right-hand side): the rejection is the bracket's alone. The twins
+differ only in the lines that carry `l1` (`key_lo`; `_hA` and its transport call; `_aux`'s `key_lo`
+hypothesis, its `hkey1` and the calc step that uses `l1`; the test pins this).
+
+**Second control, a claim forgery** (exported, not registered: the harness keys one adapter per
+emitter). `LO := HI = 2.178`, which is at or above the certified upper bound and so strictly above the
+true value `2.17540591...`: the forged statement is a FALSE theorem, not merely an unprovable one, and
+`key_lo` is a false `Nat` inequality. Layer 1 refuses it. The twins differ only in the lines carrying
+the lower claim.
+
+**What the rejection looks like.** In both cases `decide +kernel` evaluates the `Nat` proposition to
+`false`, Lean reports the error, and `lean` exits 1; that error plus the exit code is the signal the
+harness reads. The failed lemma and the final theorem are still ADDED by Lean's error recovery and then
+depend on `sorryAx`, which is what the harness's axiom check sees. The adapter renders both twins with
+`BohrMollerupGammaRatioEmitter(decide_rec_depth=10000)`, which prefixes the six `decide` lemmas with
+`set_option maxRecDepth 10000 in`: the proofs do not need it, but under the default depth a FAILING
+`key_lo` exhausts the recursion limit while FORMATTING its message (the proposition itself is short, it
+names `twin_gA` and `twin_gB` without expanding them) and the recorded text is then only "maximum
+recursion depth has been reached". With the depth raised the message is the readable one, recorded in
+the measurements section below. (The witness forgery's failing root bracket prints readably at either
+depth; the option is set for both twins so they stay one rendering.) Both twins elaborate over `import Mathlib` with the prelude body
+spliced in, so the generic harness needs no island.
 
 ## Dogfood (`examples/bohr_mollerup_gamma_ratio`)
 
@@ -213,17 +236,28 @@ So the kernel's own share at the hand-built `n = 8000` is about 3 s of user time
 record on v4.34.1 says about 10 s; the products have 34,977 digits either way), and at `n = 400` it is
 about a second. Width achieved: `1.87e-3` at `n = 400`, `9.35e-5` at `n = 8000` (table above).
 
-The negative control's rejection, verbatim (the forged `key_lo` at line 210 of the spliced file):
+The two controls' rejections, verbatim (`lake env lean` on the spliced twin files, `decide_rec_depth = 10000`;
+`lean` exits 1 in both cases, and the true twin compiles with no output):
 
 ```
-scratch/NegCtrlForged.lean:210:2: error: [Error pretty printing: maximum recursion depth has been reached
-use `set_option maxRecDepth <num>` to increase limit
-use `set_option diagnostics true` to get diagnostic information]
+WitnessForged.lean:221:64: error: Tactic `decide` proved that the proposition
+  36420658220 ^ 8 * 1603 ^ 5 ≤ 8 ^ 5 * 1000000000000 ^ 8
+is false
 ```
 
-`decide +kernel` evaluated the comparison to `false` and then tried to print the thousand-digit
-proposition in its failure message, which is what exhausts the pretty-printer's recursion depth; the
-declaration is not added and `lean` exits 1. The true twin compiles with no output and exits 0.
+```
+ClaimForged.lean:211:2: error: Tactic `decide` proved that the proposition
+  1089 * 103133853772125 * twin_gB ≤ 500 * 200 * 36420658219 * twin_gA
+is false
+```
+
+The first is `_hA`'s root inequality with `l1 + 1` (`1603 = 8 * 200 + 3`); the second is `key_lo` with the
+forged `LO = 1089/500`. In both, `#print axioms` after the error shows the failed lemma and `twin`
+depending on `[propext, sorryAx, Classical.choice, Quot.sound]` (the other lemma stays clean: `key_lo`
+in the witness twin, `_hA` in the claim twin). Under the default `maxRecDepth` the witness failure prints
+the same readable message, while the claim failure prints only "[Error pretty printing: maximum
+recursion depth has been reached ...]", the pretty-printer running out while formatting the message;
+the rejection, the exit code and the `sorryAx` are the same either way.
 
 ## What it does NOT do
 

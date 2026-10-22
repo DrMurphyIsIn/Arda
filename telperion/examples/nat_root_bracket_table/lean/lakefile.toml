@@ -1,0 +1,17 @@
+name = "NatRootBracketTable"
+defaultTargets = ["NatRootBracket", "NatRootBracketTable"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+# NatRootBracket: the once-proved transport lemmas (integer root inequality -> real rpow
+# bracket; block of brackets -> block of a range sum; range sum -> C blocks of K).  Emitted by
+# telperion.nat_root_bracket_prelude_lean and drift-checked by generate.py --check.
+[[lean_lib]]
+name = "NatRootBracket"
+
+# NatRootBracketTable: the emitted tables, kernel-decided facts and real brackets.
+[[lean_lib]]
+name = "NatRootBracketTable"
