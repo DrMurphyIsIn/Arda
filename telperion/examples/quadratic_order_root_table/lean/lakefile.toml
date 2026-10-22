@@ -1,0 +1,18 @@
+name = "QuadraticOrderRootTable"
+defaultTargets = ["QuadraticOrderRoot", "QuadraticOrderRootTable"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+# QuadraticOrderRoot: the prelude (the QuadInt interface, the decidable faces, the
+# Kummer-Dedekind split / inert / ramified consumers and the Rabinowitsch class-number lemma),
+# ported from the kernel-checked CN-1 Lean.  Emitted by
+# telperion.quadratic_order_root_prelude_lean and drift-checked by generate.py --check.
+[[lean_lib]]
+name = "QuadraticOrderRoot"
+
+# QuadraticOrderRootTable: the emitted per-order face tables and their consumers.
+[[lean_lib]]
+name = "QuadraticOrderRootTable"
