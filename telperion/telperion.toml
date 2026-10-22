@@ -455,6 +455,11 @@ script = "examples/algebraic_bracket/generate.py"
 group = "quick"    # rational sqrt enclosure; ~0.1 s
 
 [[check]]
+name = "bohr_mollerup_gamma_ratio"
+script = "examples/bohr_mollerup_gamma_ratio/generate.py"
+group = "quick"    # Bohr-Mollerup Real.Gamma ratio enclosures: 3 instances at n = 400 + the prelude; ~0.5 s
+
+[[check]]
 name = "halfplane_disk"
 script = "examples/halfplane_disk/generate.py"
 group = "quick"    # Borel-Caratheodory Moebius positivity core; ~0.1 s

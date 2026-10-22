@@ -73,6 +73,7 @@ jobs:
       bg_tie_cherry_worst: ${{ steps.f.outputs.bg_tie_cherry_worst }}
       bg_tie_slack: ${{ steps.f.outputs.bg_tie_slack }}
       bilinear_corner: ${{ steps.f.outputs.bilinear_corner }}
+      bohr_mollerup_gamma_ratio: ${{ steps.f.outputs.bohr_mollerup_gamma_ratio }}
       borel_caratheodory: ${{ steps.f.outputs.borel_caratheodory }}
       box_robust: ${{ steps.f.outputs.box_robust }}
       bragg_amplitude: ${{ steps.f.outputs.bragg_amplitude }}
@@ -211,6 +212,8 @@ jobs:
               - 'telperion/examples/bg_tie_slack/**'
             bilinear_corner:
               - 'telperion/examples/bilinear_corner/**'
+            bohr_mollerup_gamma_ratio:
+              - 'telperion/examples/bohr_mollerup_gamma_ratio/**'
             borel_caratheodory:
               - 'telperion/examples/borel_caratheodory/**'
             box_robust:
@@ -605,6 +608,41 @@ jobs:
 
       - name: Build the emitted Lean (the actual verification — Lucas/Pratt primality)
         working-directory: telperion/examples/primality/lean
+        run: lake build
+  bohr-mollerup-gamma-ratio-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.bohr_mollerup_gamma_ratio == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the Bohr-Mollerup Gamma-ratio Lean (certify -> emit; the prelude too)
+        working-directory: telperion
+        run: |
+          python examples/bohr_mollerup_gamma_ratio/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/bohr_mollerup_gamma_ratio/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/bohr_mollerup_gamma_ratio/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- Real.Gamma ratio enclosures by the kernel)
+        working-directory: telperion/examples/bohr_mollerup_gamma_ratio/lean
         run: lake build
   cs-compiles:
     needs: changes
