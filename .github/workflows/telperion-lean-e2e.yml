@@ -645,21 +645,31 @@ jobs:
         working-directory: telperion/examples/quadratic_order_root_table/lean
         run: lake build
 
-      - name: Axiom guard (fails on sorryAx or ofReduceBool anywhere in the anchors)
+      - name: Axiom guard (allow-list; exactly 24 anchors, each a subset of Mathlib's three axioms)
         working-directory: telperion/examples/quadratic_order_root_table/lean
         shell: bash
         run: |
           set -euo pipefail
           lake env lean AxiomGuardQuadraticOrderRootTable.lean 2>&1 | tee axioms.out
+          # PIN: the guard lists exactly 24 anchors (tests/test_emit_quadratic_order_root_table.py
+          # pins the file's count); a guard that elaborates to nothing must not pass.
           n=$(grep -cE "depends on axioms|does not depend on any axioms" axioms.out || true)
-          if [ "$n" -lt "12" ]; then
-            echo "::error::guard printed $n axiom lines, expected at least 12"; exit 1; fi
-          # ALLOW-LIST (REVIEW_PR766 C1): every axiom named on a "depends on axioms" line must be one
-          # of Mathlib's three.  A deny-list of sorryAx / ofReduceBool would miss the per-theorem
-          # `_native.native_decide.ax_n` axioms that native_decide produces on v4.32.0.
-          awk -F"depends on axioms: " '/depends on axioms/ {print $2}' axioms.out \
-            | tr -d '[]' | tr ',' '\n' | sed 's/^ *//; s/ *$//' | grep -v '^$' | sort -u > axset.txt
-          if grep -vxE 'propext|Classical.choice|Quot.sound' axset.txt; then
+          if [ "$n" != "24" ]; then
+            echo "::error::guard printed $n axiom lines, expected exactly 24"; exit 1; fi
+          # ALLOW-LIST (REVIEW_PR766 C1 and Add.1).  Lean wraps a long axiom list one axiom per
+          # line, so the lists are parsed whole after joining the lines; the number of closed
+          # lists must equal the number of headers; every axiom must be one of Mathlib's three,
+          # matched as a fixed string (with -E the "." in Classical.choice matches look-alikes).
+          # A deny-list of sorryAx / ofReduceBool would miss native_decide's per-theorem
+          # `_native.native_decide.ax_n` axioms on v4.32.0.
+          heads=$(grep -c "depends on axioms: \[" axioms.out || true)
+          tr '\n' ' ' < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" > axlists.txt || true
+          lists=$(wc -l < axlists.txt | tr -d ' ')
+          if [ "$heads" != "$lists" ]; then
+            echo "::error::$heads axiom headers but $lists closed lists"; exit 1; fi
+          sed 's/^depends on axioms: \[//; s/\]$//' axlists.txt | tr ',' '\n' | sed 's/^ *//; s/ *$//' \
+            | { grep -v '^$' || true; } | sort -u > axset.txt
+          if grep -vxF -e propext -e Classical.choice -e Quot.sound axset.txt; then
             echo "::error::non-standard axiom in the guard output (see above)"; exit 1; fi
           echo "axiom allow-list OK: $(tr '\n' ' ' < axset.txt)"
   cs-compiles:
