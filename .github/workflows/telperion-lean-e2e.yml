@@ -111,7 +111,7 @@ jobs:
       per_size_dominance_sweep: ${{ steps.f.outputs.per_size_dominance_sweep }}
       polytope_max: ${{ steps.f.outputs.polytope_max }}
       primality: ${{ steps.f.outputs.primality }}
-      nat_root_bracket_table: ${{ steps.f.outputs.nat_root_bracket_table }}
+      range_completeness_decide: ${{ steps.f.outputs.range_completeness_decide }}
       psd_form: ${{ steps.f.outputs.psd_form }}
       quasicrystal: ${{ steps.f.outputs.quasicrystal }}
       recursion_closure: ${{ steps.f.outputs.recursion_closure }}
@@ -138,6 +138,7 @@ jobs:
       xor3_moment: ${{ steps.f.outputs.xor3_moment }}
       zero_free_bridge: ${{ steps.f.outputs.zero_free_bridge }}
       zeta_zero_localization: ${{ steps.f.outputs.zeta_zero_localization }}
+      nat_root_bracket_table: ${{ steps.f.outputs.nat_root_bracket_table }}
     steps:
       - uses: actions/checkout@v4
         if: github.event_name == 'push' || github.event_name == 'pull_request'
@@ -296,8 +297,8 @@ jobs:
               - 'telperion/examples/polytope_max/**'
             primality:
               - 'telperion/examples/primality/**'
-            nat_root_bracket_table:
-              - 'telperion/examples/nat_root_bracket_table/**'
+            range_completeness_decide:
+              - 'telperion/examples/range_completeness_decide/**'
             psd_form:
               - 'telperion/examples/psd_form/**'
             quadratic_sign_race:
@@ -362,6 +363,8 @@ jobs:
               - 'telperion/examples/zero_free_bridge/**'
             zeta_zero_localization:
               - 'telperion/examples/zeta_zero_localization/**'
+            nat_root_bracket_table:
+              - 'telperion/examples/nat_root_bracket_table/**'
 
   toy-compiles:
     needs: changes
@@ -608,6 +611,41 @@ jobs:
 
       - name: Build the emitted Lean (the actual verification — Lucas/Pratt primality)
         working-directory: telperion/examples/primality/lean
+        run: lake build
+  range-completeness-decide-compiles:
+    needs: changes
+    if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.range_completeness_decide == 'true' || needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install sympy pytest
+
+      - name: Regenerate the range-completeness Lean (exact Python re-evaluation -> emit -> drift check)
+        working-directory: telperion
+        run: |
+          python examples/range_completeness_decide/generate.py --check
+
+      - name: Cache elan toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('telperion/examples/range_completeness_decide/lean/lean-toolchain') }}
+
+      - name: Install elan
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch Mathlib olean cache
+        working-directory: telperion/examples/range_completeness_decide/lean
+        run: lake exe cache get
+
+      - name: Build the emitted Lean (the actual verification -- kernel-decided list coverage)
+        working-directory: telperion/examples/range_completeness_decide/lean
         run: lake build
   nat-root-bracket-table-compiles:
     needs: changes
