@@ -1,6 +1,6 @@
 """Cross-wiring regression: comparison values come from the referenced artefact, never from a literal.
 
-conjecture1_proved = False.  Reproduces the WALL-3 T bug (545b21697, found by bb): b_twist_real_g.py, a parametrised
+conjecture1_proved = False.  Reproduces the WALL-3 T bug (545b21697, found in review): b_twist_real_g.py, a parametrised
 copy of b_twist_real.py, compared its gamma0 = 21.02204 residue against the literal 1.0376701213616086, which is
 track B's residue for gamma0 = 14.134725.
 """
@@ -25,7 +25,7 @@ out["residue_A"] = {"arb": A.str(25), "B_float": 1.0376701213616086,
 
 FIXED_COPY = '''
 GS = sys.argv[1] if len(sys.argv) > 1 else "14.134725"
-ref = read_reference(rh(f"wall3/B/out/tw_REAL_b0.85_g{float(GS)}_s0_X1e+09.json"), "A")
+ref = read_reference(Path("internal output (not public)"), "A")
 out["residue_A"] = compare_ball(A.real, ref)
 '''
 
@@ -89,7 +89,7 @@ def test_no_absolute_home_paths_in_wall3_sources():
 
 
 def test_compare_ball_uses_the_radius(tmp_path):
-    """Regression (bb, PR #744 review): a ball of nonzero radius contains every value within its radius (+ slack),
+    """Regression (PR #744 review): a ball of nonzero radius contains every value within its radius (+ slack),
     and nothing beyond it."""
     pytest.importorskip("flint")
     from flint import arb
@@ -117,7 +117,7 @@ def _load_paths(monkeypatch, **env):
 
 
 def test_wall3_scripts_do_not_overwrite_committed_certs_by_default(monkeypatch, tmp_path):
-    """bb (PR #744 review): _paths used to default the write dir to the committed certs, so any rerun overwrote them."""
+    """PR #744 review: _paths used to default the write dir to the committed certs, so any rerun overwrote them."""
     committed = (WALL3 / "certs").resolve()
     m = _load_paths(monkeypatch)
     assert m.CERTS.resolve() != committed
