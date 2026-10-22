@@ -40,8 +40,12 @@ whole round trip, with an optional command prefix for a build lock or a sandbox.
 
 The spec:
 
-- `imports`: the modules to import so the targets exist. Import the negative-control module
-  too, when there is one: that is what makes the absence check below non-vacuous.
+- `imports`: the modules to import so the targets exist. A negative-control module may be
+  imported too, so that the absence check below is non-vacuous, ON ONE CONDITION: it must
+  not re-declare any target's name. Lean imports two modules declaring the same constant
+  without complaint, and the audit then sees one module's proof and the other module's cached
+  axiom record (the consistency check below fails on it, but a failure is all it can give;
+  see "The re-declaration hazard"). Give controls their own names.
 - `targets`: the theorems (or definitions) whose closure is taken. Several targets give the
   closure of their union; axioms are reported per target.
 - `library_roots`: root modules whose constants are *counted*, not listed. Default: `Init`,
@@ -56,11 +60,51 @@ The spec:
 - `absent_constants` (default `sorryAx`) and `absent_module_prefixes`: must not be in the
   closure. A present one is a failure.
 - `allowed_axioms` (default `propext`, `Quot.sound`, `Classical.choice`, the same
-  `CLEAN_AXIOMS` the Comparator bridge uses): `collectAxioms` per target, any other axiom is
-  a failure. `native_decide` shows up here as an axiom outside the set (on v4.32.0 a
-  generated per-theorem axiom named `<theorem>._native.native_decide.ax_1_1`, as the example's
-  negative control records; on later toolchains `Lean.ofReduceBool`); a smuggled `axiom`
-  shows up by name.
+  `CLEAN_AXIOMS` the Comparator bridge uses). Two checks, and they must agree:
+  1. **the closure's axioms**: every `axiomInfo` the walk reached. Any one outside the set is
+     a failure. This is the independent check: it follows the values the environment holds.
+  2. **`collectAxioms` per target**, the machine-checked form of `#print axioms`. Any axiom
+     outside the set is a failure. For an *imported* declaration this does not re-walk the
+     proof: on v4.32.0 and v4.34.1 (`Lean/Util/CollectAxioms.lean`, the `extFind?` branch) it
+     reads the axioms the declaring module recorded at compile time, looked up through
+     `getModuleIdxFor?`. It is the compiler's cached record.
+  3. **consistency**: the union of the per-target records must equal the closure's axioms,
+     else the audit fails with "inconsistent environment (duplicate declaration or stale
+     .olean)".
+
+  `native_decide` shows up as an axiom outside the set: on v4.32.0 and v4.34.1 a generated
+  per-theorem axiom named `<theorem>._native.native_decide.ax_1_1` (the example's negative
+  control and the independent reviewer's CN-1 control both record it); `Lean.ofReduceBool` on
+  older toolchains. A smuggled `axiom` shows up by name.
+
+### The re-declaration hazard (why check 1 and check 3 exist)
+
+The first cut of this tool had check 2 only, and an independent reviewer showed it could pass
+a tainted proof. The scenario: a control module that RE-DECLARES the target theorem's name
+with a `native_decide` proof, imported beside the real module. Lean accepts both imports.
+`env.find?` returns the control's proof (its value mentions the `native_decide` axiom);
+`getModuleIdxFor?` says the real module; `#print axioms` prints the real module's cached
+three. The audit's own closure listing contained the `native_decide` axiom while its axiom
+verdict said clean; only the module-prefix check caught it, and only because the reviewer had
+set one. This is not hypothetical: two negative controls in the CN-1 record re-declared the
+main theorem's name.
+
+Check 1 fails on the axiom in the closure regardless of the cache; check 3 fails on the
+disagreement between the two lists. The example reproduces the scenario in
+`Redeclare.lean` (a separate build root, since the umbrella module cannot import it beside
+`Example.lean`); its audit must FAIL. The rule for authors: a control never re-declares a
+target's name.
+
+### Protocol integrity (the run is unsandboxed)
+
+`lake env lean` runs inside the audited project with the caller's privileges, and imported
+modules' initializers run at import time, so a hostile project could print protocol lines of
+its own. The runner renders every script with a fresh random nonce; every `@@` line carries
+it; the parser ignores lines without it, requires exactly one `protocol` line and exactly one
+`verdict` line, and requires a `PASS` to come with no `failure` line, otherwise the result is
+a FAIL with an `integrity:` failure. That stops a stray or forged line from being read as
+ours. It does not contain a hostile project: the `--wrapper` argument is where a sandbox
+goes, and without one the audit trusts the project it runs in.
 - `include_recursors`: see below.
 - `closure_out`: optionally write the full `module<TAB>constant` listing to a file.
 
@@ -90,15 +134,20 @@ happens to reach; it adds no recursor on its own. Both walks are rendered into e
 and `include_recursors` chooses at run time (`--no-recursors` on the CLI). Measured on the
 same one-theorem Mathlib target:
 
-| Lean | recursors on | recursors off |
-| --- | --- | --- |
-| v4.32.0 | 629 (three-target run; two targets missing) | 571 |
-| v4.34.1 | 630 | 573 |
+| Lean | target(s) | recursors on | recursors off |
+| --- | --- | --- | --- |
+| v4.32.0 | `Nat.Prime.two_le` | 629 | 571 |
+| v4.32.0 | `Nat.Prime.two_le` + two names absent from the import (FAIL fixture) | 629 | not run |
+| v4.34.1 | `Nat.Prime.two_le` | 630 | 573 |
 
-Same verdict, same axioms, smaller count without the recursors. The default keeps them: a
-recursor is a kernel constant the inductive brings along, and the larger number is the
-honest size of what the kernel has to trust. Use the other mode to compare with a reviewer
-who used `getUsedConstantsAsSet`.
+Same verdict, same axioms, smaller count without the recursors. On the CN-1 theorem itself
+the independent reviewer ran this tool on v4.34.1 and reproduced the record root for root:
+129,170 constants with recursors on (Mathlib 92,527; OAI 26,740; Init 8,088; CN1 1,028;
+PrimeNumberTheoremAnd 375; Batteries 215; RellichKondrachov 191; Aesop 3; Std 2; Lean 1) and
+128,146 off, matching the reviewer's own `getUsedConstantsAsSet` audit. The default keeps the
+recursors: a recursor is a kernel constant the inductive brings along, and the larger number
+is the honest size of what the kernel has to trust. Use the other mode to compare with a
+reviewer who used `getUsedConstantsAsSet`.
 
 ### Version range
 
@@ -117,11 +166,18 @@ Guarantees, for the environment it ran in:
 - every constant outside the library roots is listed by name and module;
 - a listed absent constant or module prefix is genuinely not reachable from the targets
   through types and values;
-- the per-target axiom list is what `#print axioms` would print, compared mechanically to
-  the allowed list.
+- every axiom in the closure is listed and compared to the allowed list; the per-target
+  axiom list is what `#print axioms` would print, compared to the same list; and the two
+  agree, or the audit fails.
 
 Not guaranteed:
 
+- **The per-target axiom list is the compiler's cached record from the `.olean`**; the
+  closure-based list is the independent one. The consistency check turns a disagreement into
+  a failure; it cannot say which proof the author meant.
+- **Unsandboxed: the audit trusts the project it runs in**, and the optional wrapper is where
+  a sandbox goes (see "Protocol integrity"). The nonce and the one-verdict rule defend the
+  *reading* of the output, not the machine.
 - **It audits the elaborated environment of this build, not an exporter's or a second
   kernel's view.** Comparator and `lean4export` read the same `.olean` files only if the
   tree did not change between the two runs. That is a *condition*, and the manifest below is
@@ -152,8 +208,8 @@ Not guaranteed:
   CN-1 manifest did by hand for its one symlinked file.
 - `lake_files`: `lakefile.lean` / `lakefile.toml`, `lake-manifest.json`, `lean-toolchain`.
 - `toolchain`: the `lean-toolchain` string and, when the named elan toolchain is installed,
-  the sha256 of its `lean` binary. The CN-1 manifest hashed only the file; its review noted
-  that the binary was unpinned. Off with `--no-toolchain-binary`.
+  the sha256 of its `lean` and `lake` binaries. The CN-1 manifest hashed only the file; its
+  review noted that the binary was unpinned. Off with `--no-toolchain-binary`.
 - `dependencies`: every package in `lake-manifest.json` (type, url, rev, inputRev) and, for
   each package directory present: git HEAD; whether tracked files are modified; the sha256 of
   `git diff HEAD` when they are; every untracked file (`git ls-files --others
@@ -179,6 +235,27 @@ diff (added / removed / changed entries, old and new digest). The CLI exits 1 on
 The pattern this supports is the one the CN-1 chain used: freeze, run (build, independent
 check, closure audit), verify, keep all three. The CI job for the example does exactly that
 around its own build and audits.
+
+Pinning is OPT-IN beyond the project's own files: nothing outside the tree is hashed unless
+named. The standard recipe for a Comparator verdict-of-record chain names every tool and
+config it uses (paths are illustrative; use labels and relative paths for anything committed):
+
+```
+telperion freeze-manifest --project lean \
+  --tool comparator=tools/comparator/.lake/build/bin/comparator \
+  --tool lean4export=tools/comparator/.lake/packages/lean4export/.lake/build/bin/lean4export \
+  --tool nanoda=tools/nanoda/target/release/nanoda_bin \
+  --tool landrun_shim=tools/bin/landrun \
+  --extra real_cfg=comparator/real.comparator.json \
+  --extra neg_a_cfg=comparator/neg_a.comparator.json \
+  --patch PrimeNumberTheoremAnd=patches/PrimeNumberTheoremAnd-lean4341.patch \
+  --include-ignored --out manifest_before.json --text manifest_before.txt
+# ... lake build, lake exe comparator, telperion audit-closure ...
+telperion verify-manifest --project lean --manifest manifest_before.json
+```
+
+The example's own manifest has no tools and three extras (its spec files), which is all it
+uses.
 
 ### What it guarantees, and does not
 
@@ -213,15 +290,28 @@ renders two specs and two scripts:
   imported-but-unused.
 - `AuditTainted.lean`: the three tainted theorems. Must FAIL on three independent counts:
   `sorryAx` in the closure, constants from the forbidden module in the closure, and axioms
-  `fake_fact`, `sorryAx` and the `native_decide` axiom outside the allowed list.
+  `fake_fact`, `sorryAx` and the `native_decide` axiom outside the allowed list (in the
+  closure and per target).
+- `AuditRedeclare.lean`: `prime_101` with `Redeclare.lean` (which re-declares that name by
+  `native_decide`) imported beside `Example.lean`. Must FAIL: the closure holds the
+  `native_decide` axiom; the per-target record is the clean cached one; the two disagree.
 
-Run locally on v4.32.0 (the log is kept with the PR notes): the clean audit PASSED with
-3228 constants (Init 2775, Mathlib 447, Batteries 1, ClosureAuditExample 5), `sorryAx`
-absent, 0 Tainted constants, Tainted listed as imported-but-unused; the tainted audit
-FAILED with five failure lines (`sorryAx` present; 5 Tainted constants; `via_axiom` uses
-`fake_fact`; `via_sorry` uses `sorryAx`; `via_native` uses
-`via_native._native.native_decide.ax_1_1`); the manifest taken before the chain verified
-UNCHANGED after it.
+The committed scripts carry the placeholder nonce `EXAMPLE` and are there to be read; the
+runner always renders its own copy with a fresh nonce into a temp file it removes.
+
+Run locally on v4.32.0 (the logs are kept with the PR notes): the clean audit PASSED with
+3228 constants (Init 2775, Mathlib 447, Batteries 1, ClosureAuditExample 5), closure axioms
+exactly the three standard ones and consistent with the per-target records, `sorryAx`
+absent, 0 Tainted constants, Tainted listed as imported-but-unused. The tainted audit FAILED
+with six failure lines (`sorryAx` present; 5 Tainted constants; the closure contains
+`fake_fact`, the `native_decide` axiom and `sorryAx`; and the three per-target lines
+`via_axiom` uses `fake_fact`, `via_sorry` uses `sorryAx`, `via_native` uses
+`via_native._native.native_decide.ax_1_1`), with the two axiom lists consistent, since every
+tainted theorem is declared once. The re-declaration audit FAILED exactly as the reviewer's
+scenario predicts: per-target record `[Classical.choice, Quot.sound, propext]` (the cached
+clean one), closure axioms the same three plus
+`ClosureAuditExample.prime_101._native.native_decide.ax_1_1`, consistency false. The
+manifest taken before the chain verified UNCHANGED after it.
 
 Locally the library was built against an existing v4.32.0 Mathlib through a local-only
 symlink of `.lake/packages` (never committed); the committed `lake-manifest.json` pins the
