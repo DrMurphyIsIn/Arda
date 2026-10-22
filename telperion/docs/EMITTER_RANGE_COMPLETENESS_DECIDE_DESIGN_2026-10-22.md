@@ -53,7 +53,8 @@ elements", which is the list-completeness claim one wants for a published table.
 The bridge is sound for every `K`: it is the direction `P → P'`, and the coverage theorem with
 `P'` as hypothesis is weaker than one with `P`, so the consumer theorem follows for any `K`. The
 bound is about meaning, not soundness. `SqfBelow K` agrees with `Squarefree` on `[0, N)` exactly
-when every prime `p` with `p^2 ≤ N - 1` is at most `K`, that is `K ≥ isqrt(N - 1)`. If some
+when `K ≥ 2` and every prime `p` with `p^2 ≤ N - 1` is at most `K` (`K ≥ isqrt(N - 1)` suffices; the exact
+minimum is the largest prime `≤ isqrt(N - 1)`, e.g. 13, 23, 67 for N = 200, 653, 4778). If some
 such `p` exceeds `K`, `SqfBelow K` is strictly weaker on the range, the coverage theorem forces
 `L` to contain non-squarefree numbers, and "the squarefree numbers below N" would be a lie
 about what `L` is.
