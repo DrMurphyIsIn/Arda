@@ -739,15 +739,16 @@ jobs:
           # A deny-list of sorryAx / ofReduceBool would miss native_decide's per-theorem
           # `_native.native_decide.ax_n` axioms on v4.32.0.
           heads=$(grep -c "depends on axioms: \[" axioms.out || true)
-          tr '\n' ' ' < axioms.out | grep -oE "depends on axioms: \[[^]]*\]" > axlists.txt || true
-          lists=$(wc -l < axlists.txt | tr -d ' ')
+          joined="$(tr '\n' ' ' < axioms.out | tr -s ' ')"
+          lists=$({ grep -oE "depends on axioms: \[[^]]*\]" <<< "$joined" || true; } | wc -l | tr -d ' ')
           if [ "$heads" != "$lists" ]; then
             echo "::error::$heads axiom headers but $lists closed lists"; exit 1; fi
-          sed 's/^depends on axioms: \[//; s/\]$//' axlists.txt | tr ',' '\n' | sed 's/^ *//; s/ *$//' \
-            | { grep -v '^$' || true; } | sort -u > axset.txt
-          if grep -vxF -e propext -e Classical.choice -e Quot.sound axset.txt; then
-            echo "::error::non-standard axiom in the guard output (see above)"; exit 1; fi
-          echo "axiom allow-list OK: $(tr '\n' ' ' < axset.txt)"
+          bad="$(grep -oE "depends on axioms: \[[^]]*\]" <<< "$joined" \
+                  | sed -E 's/^depends on axioms: \[//; s/\]$//' | tr ',' '\n' | tr -d ' ' \
+                  | grep -vxF -e propext -e Classical.choice -e Quot.sound || true)"
+          if [ -n "$bad" ]; then
+            echo "::error::axiom(s) outside {propext, Classical.choice, Quot.sound}: $(echo $bad)"; exit 1; fi
+          echo "axiom allow-list OK"
   cs-compiles:
     needs: changes
     if: always() && (needs.changes.result != 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || needs.changes.outputs.shared == 'true' || needs.changes.outputs.cauchy_schwarz == 'true' || needs.changes.outputs.src == 'true')
