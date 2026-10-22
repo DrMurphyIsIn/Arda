@@ -819,6 +819,12 @@ group = "quick"    # fixed-point integer interval evaluator (prototype, PR #676)
                    # pure-Python regeneration, ~1 s
 
 [[check]]
+name = "range_completeness_decide"
+script = "examples/range_completeness_decide/generate.py"
+group = "quick"    # kernel-decided list coverage of a guarded range (CN-1 survey N6, a face of
+                   # finite_decide): 2 instances, 10 theorems; exact Python re-evaluation, ~0.3 s
+
+[[check]]
 name = "bragg_defect_sie"
 script = "examples/bragg_defect_sie/generate.py"
 group = "quick"    # BraggDefect hexp seam via scaled_interval_eval: 2 instances + the prelude copy, emitted
