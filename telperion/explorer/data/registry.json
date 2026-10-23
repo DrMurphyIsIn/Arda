@@ -57,8 +57,8 @@
    "counts": {
     "deprecated": 1,
     "draft": 3,
-    "open": 1,
-    "proved": 54,
+    "open": 0,
+    "proved": 55,
     "refuted": 0
    },
    "description": "Migration of PROGRAM MIRRORMERE (telperion/docs/QC_PROGRAM.md, ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md) into the missions registry: the reverse-Dyson program -- classify 1-D Fourier quasicrystals, locate the zeta point set, extract zero-localization -- built as finite, unconditional instruments (axioms + falsification zoo, the rigidity ladder R1/R2/R3, the defect-k instrument, the N(T) brick). NOTHING here proves or claims RH and conjecture1_proved = False throughout; the goal node is the program's honest RH-hard membership target and is draft. The known difficulty map: RH-hardness enters at exactly one place, twice disguised (FQ-grade temperedness of the dual comb; the rational -> irrational frequency transition); everything registered below is unconditional or carries its named hypothesis explicitly. FIDELITY NOTE (design section 9, UPDATED 2026-09-18): the rh/million-turing line is now merged into main (#506), so the linked artifacts are on main and the deferred `mission grant` pass is unblocked -- nine nodes still carry a [proof] link at status=open and are awaiting it. One node IS proved: MM_rvm_unbounded_mean_density, granted via the cross-island rvm_bridge discharge (#553). The original wording -- no node enters as proved, grant deferred to the branch reconcile -- described the pre-reconcile state and no longer holds. Environment = v4.32.0 (quasicrystal island); two nodes' artifacts live on the zeta_zero_localization island (same pin, cross-island grant per design section 2). W3b IS REGISTERED (MM_bragg_bridge, 2026-09-15): the gw-finite agent proved rect_explicit_formula_bragg on the v4.34 li island -- cross-island node per design section 2. Statement-authoring queue (nodes NOT yet registered because their authoritative formal statements ARE the work; specs in RH_ROUTES_ROADMAP_2026-09-16 section 9): the T->inf corridor bound |zeta'/zeta| = O(log^2 T) (effective-constant form must be pinned against its four consumers -- W3b limit, B6, D6, A3), the A0 REGULARIZED membership statement (the naive clause list '|mu-hat| tempered for the (log p)p^{-m/2} dual comb' is UNCONDITIONALLY FALSE -- sum_{n<=e^R} Lambda(n) n^{-1/2} ~ 2 e^{R/2} by PNT, and mu-hat carries an absolutely-continuous archimedean component; only the Guinand-Weil-regularized triple can carry membership, and authoring it is open formulation work), the W_temp precise wall statement (QC_LITERATURE section 1.7 grades it a program conjecture), R1 crystalline rigidity with the isolated temperedness clause, W3c infinite-torus log-density FQ axioms, A3-adjacent W4 face probes, the torus-section ladder's T3 defect-instrumentation rungs, MM_leakage_composite_zero (the content is the log-derivative coefficient functional; the Lambda-support direction is rfl-bait), and MM_ks_forward_smallN (the island's FQ vocabulary is deliberately abstract; a concrete faithful statement is W3c formulation work). UPDATE 2026-09-21 (PR #593): the goal statement was re-authored from the 2026-09-14 placeholder (Mathlib RiemannHypothesis via the opaque-variable def zeta_FQ_iff_RH, an identification by fiat) to Weil positivity of weilForm on autocorr g over IsWeilTest, and its RH-equivalence is now the PROVED node MM_zeta_comb_membership_iff_rh (Weil criterion in-kernel, E6Bridge5-9 on the rvm_bridge island, four blind audits); the Gaussian obligations MM_gaussian_dominance / MM_gaussian_approx / MM_gaussian_transfer and the converse MM_weil_positivity_implies_rh are proved. The goal node stays draft: it is RH by theorem.",
@@ -144,12 +144,14 @@
   "bg_tie_cherry_worst",
   "bg_tie_slack",
   "bilinear_corner",
+  "bohr_mollerup_gamma_ratio",
   "borel_caratheodory",
   "box_robust",
   "bridge",
   "cauchy_deriv",
   "cauchy_schwarz",
   "cavity_exchange",
+  "closure_audit",
   "concave_pooled_induction",
   "concave_stationary_max",
   "curvature_boundary",
@@ -179,6 +181,7 @@
   "logderiv_region",
   "magnitude_split",
   "mobius_tangent_cell",
+  "nat_root_bracket_table",
   "oai_qrh_bridge",
   "order_balance",
   "parametric_holomorphy",
@@ -189,8 +192,10 @@
   "primality",
   "proof_audit",
   "psd_form",
+  "quadratic_order_root_table",
   "quadratic_sign_race",
   "quasicrystal",
+  "range_completeness_decide",
   "rational_identity",
   "recursion_closure",
   "robin_growth",
@@ -4666,7 +4671,7 @@
     "artifact_exists": true,
     "artifact_kind": "lean_module",
     "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/zeta_reflection/lean/SpeiserDerivBox.lean",
-    "closure_clean": false,
+    "closure_clean": true,
     "fidelity_note": "",
     "via": "direct"
    },
@@ -4674,20 +4679,24 @@
     "author_recorded": false,
     "ci_record": null,
     "comparator": null,
-    "grant": null,
+    "grant": {
+     "artifact_sha256": "653616d313383f25",
+     "date": "2026-10-17",
+     "gate_version": "2026-09-23.1"
+    },
     "requires_ci_job": ""
    },
    "readback": {
-    "auditor": "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)",
-    "date": "2026-09-16",
+    "auditor": "AI read-back by Claude (bb session, Riemann Auditor), NOT an operator read-back; under the owner 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-17",
     "independence": "self-attested",
-    "text": "deriv riemannZeta has no zero in the concrete closed rectangle [1/4, 3/8] x [6, 10], strictly left of the critical line. A single bounded, finitely-checkable winding/argument-principle target -- verifying one box does NOT decide RH; correctly NOT the RH-equivalent Speiser strip statement. Truth rests on actual zeta' zero locations (known to cluster right of the line); the auditor did not compute the winding number. No flags."
+    "text": "Formal statement, rendered by the auditor from the statement file Statements/MM_speiser_box_probe.lean (not from the title): for every complex s with 1/4 <= Re s <= 3/8 and 6 <= Im s <= 10, deriv riemannZeta s != 0 (Mathlib's riemannZeta and deriv; a closed box strictly left of the critical line). It is one finitely-checkable box and NOT the Speiser wall (zeta' zero-free on the whole open strip 0 < Re s < 1/2 is equivalent to RH, Speiser 1935); it says nothing about RH. Artifact theorem speiser_box_probe in SpeiserDerivBox.lean (:288), over SpeiserDerivCore.lean. Eight discs of radius 13/50 centred at 5/16 + i(25/4 + k/2), k = 0..7, cover the box by the proved lemma dist_le_of_row and a case split on Im s, so the cover is a theorem, not an assumption. On each disc, ArbEcon.Off.SpD.cell_deriv_ne_zero turns a kernel-checked (decide +kernel) certificate for a model polynomial M into zeta' != 0: a uniform bound |zeta - M| <= budget on the disc of radius r + rho, Cauchy's estimate giving |(zeta - M)'| <= budget/rho <= F on the inner disc, and |M'| > F there. Checked by the auditor in its own detached worktree ~/arda-bb-speiser at main 8f5c830c8 (the #753 merge): lake build SpeiserDerivCore SpeiserDerivBox AxiomGuardSpeiserDeriv, 3227 jobs, exit 0, both modules freshly built (2026-10-17); all 11 lines of AxiomGuardSpeiserDeriv print exactly [propext, Classical.choice, Quot.sound], with no sorryAx or ofReduceBool, and neither file contains sorry, axiom, native_decide, implemented_by or extern; statement_matches against SpeiserDerivBox.lean is True, and tampered copies (1/4 to 1/5, 3/8 to 1/2, 6 to 5, 10 to 11, != to =, deriv riemannZeta to riemannZeta) are all False; in a root-namespace file with import Mathlib and no open, speiser_box_probe closes the statement as elaborated there (standard three axioms), while the riemannZeta variant without deriv is rejected by the type checker; the statement file elaborates against the island's Mathlib v4.32.0 with only the expected sorry warning; the negative controls are kernel-checked and exercise the checker: check0_neg (F = 1/10^9) fails at the budget clause, and check0_corrupt (an accumulator centre shifted to cancel M'(0)) fails at the derivative test with the budget still satisfied (|M'(0)|^2 = 0.0408 honest, 0.0000 corrupted); gen_speiser_box.py --check reproduces SpeiserDerivBox.lean byte-identically; CI: telperion-zeta-reflection job zeta-reflection-compiles succeeded on the #753 head 31caf3276 (run 39061047205, job 117478908333), including the step that builds and axiom-guards SpeiserDeriv*, whose guard output matches the auditor's (31caf3276 is the merge's second parent, and the island, the workflow and the mirrormere files are identical to 8f5c830c8); the main push run 39080020504 on 8f5c830c8 was still in progress when read; mission verify mirrormere --strict-provenance OK, and judge --check for zeta_reflection OK (12 challenges). Independent numeric sanity check (mpmath, not part of the proof): |zeta'(5/16 + 6.25i)| = 0.201982 against the certified model's |M'(0)| = 0.201983, and the minimum of |zeta'| over a 13 x 161 grid of the box is 0.191. Not run by the auditor: Comparator. The node is not yet in the zeta_reflection judge bundle and appears only in its pending render, so the bundle must be regenerated when the node is granted."
    },
    "refutation_statement": "",
    "slug": "MM_speiser_box_probe",
    "statement": "theorem speiser_box_probe :\n    ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 8 → 6 ≤ s.im → s.im ≤ 10 →\n      deriv riemannZeta s ≠ 0",
-   "status": "open",
-   "title": "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)",
+   "status": "proved",
+   "title": "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9). PROVENANCE (2026-10-17): kernel-checked in CI (zeta-reflection-compiles, SpeiserDeriv* step; guard AxiomGuardSpeiserDeriv, 11 lines, standard three axioms only); independent AI read-back by the bb session (Riemann Auditor), which rebuilt the artifact in its own worktree, NOT an operator read-back (recorded independence unverified only because the node predates the [author] field); no Comparator record yet (the per-PR judge bundle now carries this node). One box, NOT RH; conjecture1_proved = False.",
    "updated": "2026-10-17"
   },
   {
@@ -9145,8 +9154,8 @@
  "totals": {
   "deprecated": 6,
   "draft": 13,
-  "open": 4,
-  "proved": 146,
+  "open": 3,
+  "proved": 147,
   "refuted": 1
  }
 }
