@@ -18,3 +18,14 @@ auditor = "registry-catchup-session-2026-09-15 (verbatim-extract precedent)"
 date = "2026-09-15"
 independence = "unverified"
 text = "For a rectangle [sigma0, sigma1] x [T0, T1] with 1 < sigma1, enclosed in a ball avoiding s = 1, with zeta nonvanishing on the bottom, top, and left edges and all ball-divisor zeros interior to the rectangle: 2 pi i times the sum of zeta's divisor multiplicities over the zero finset equals (bottom-edge integral of logDeriv zeta) - (top-edge integral) - i times the tsum over n of braggTerm(sigma1, T0, T1, n) - i times (left-edge integral). braggTerm n is the closed-form difference of von Mangoldt L-series terms at the two heights divided by -(i log n) -- zero unless n is a prime power, so the prime side is literally the Bragg comb at frequencies k log p. Finite height, unconditional, explicit remainders, no limit. [Verbatim extract of the proved rect_explicit_formula_bragg; artifact on rh/million-turing @ 5762a2b8c, grant deferred to the branch reconcile.]"
+
+[rejudge]
+artifact_sha256 = "119ae3d24773634211a277a6100dcf864d430becebb49c686336585782c93f74"
+date = "2026-11-07"
+log_sha256 = "48260930176105a01835bb9ce3fe3f2ba260b7e81d2d4f9440ea036a9e1da966"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS nanoda-direct second-kernel audit (AUDIT_2026-11, phase B): lean4export v4.34.0-rc1 (rev b18d673b, the rev Comparator v4.34.0-rc1 pins) + nanoda 37cb87b7 on the node's registered theorem; exported closure axioms exactly propext, Quot.sound, Classical.choice; nanoda checked 61156 declarations (equal to the export's declaration count); export 425560618 bytes; NO Comparator statement-identity step. 2026-11-07T20:14:16Z .. 2026-11-07T20:15:23Z, wall 67 s. Controls: planted literal rejected by nanoda's type checker, sorry export rejected, no-axiom run rejected, empty export classified FAIL. Reviewed post hoc by an independent AI auditor session (bb), which reproduced the verdict from the saved export. artifact_sha256 hashed against this branch's artifact. Source: telperion/missions/judge/AUDIT_2026-11.md. PHASE B PROCESS BREACHES ON RECORD (judged acceptable by the owner after bb confirmed the evidence): run restarted without the reviewer's pre-run OK; 2 Lean jobs at once against the 1-job rule."
+peak_rss_kb = 1183280
+route = "nanoda-direct"
+verdict = "pass"

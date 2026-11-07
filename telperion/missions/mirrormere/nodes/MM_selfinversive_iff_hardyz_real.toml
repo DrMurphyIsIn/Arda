@@ -18,3 +18,14 @@ auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
 date = "2026-09-14"
 independence = "unverified"
 text = "If a complex polynomial p satisfies the self-inversive identity z^deg(p) * conj(p(1/conj z)) = phase * p(z) for all nonzero z, and u is a unit-norm square root of the phase, then for every real omega and x the finite Hardy-Z analogue hardyZ p u omega x (the half-degree-phase-normalized exponential sum) has zero imaginary part. This is the functional-equation <-> self-inversive dictionary's reality theorem: conjugation composed with the self-inversive identity fixes Z on the unit circle's preimage, the exact finite model of the completed zeta being real on Re s = 1/2, with u^2 = phase the finite analogue of the archimedean completion factor. [Verbatim extract of the proved selfInversive_iff_hardyZ_real; artifact on rh/million-turing, grant deferred to the branch reconcile.]"
+
+[rejudge]
+artifact_sha256 = "7cbddf365565a23bdb02c9bee84be1e19704b46f28605a7c36e3e939983c7a98"
+date = "2026-11-07"
+log_sha256 = "dfe032e34f348e34a671a913566095cf7d6755e9e6c650a5585d99e8ddb423de"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS nanoda-direct second-kernel audit (AUDIT_2026-11, phase A): lean4export v4.32.0 (rev 4e791520) + nanoda 37cb87b7 on the node's registered theorem; exported closure axioms exactly propext, Quot.sound, Classical.choice; nanoda checked 13609 declarations (equal to the export's declaration count); export 55353254 bytes; NO Comparator statement-identity step. 2026-11-07T19:35:06Z .. 2026-11-07T19:35:14Z, wall 8 s. Controls: planted literal rejected by nanoda's type checker, sorry export rejected, no-axiom run rejected, empty export classified FAIL. Reviewed post hoc by an independent AI auditor session (bb), which reproduced the verdict from the saved export. artifact_sha256 hashed against this branch's artifact. Source: telperion/missions/judge/AUDIT_2026-11.md."
+peak_rss_kb = 152448
+route = "nanoda-direct"
+verdict = "pass"

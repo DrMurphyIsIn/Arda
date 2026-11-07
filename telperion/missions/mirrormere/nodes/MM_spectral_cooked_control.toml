@@ -18,3 +18,14 @@ auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIM
 date = "2026-09-16"
 independence = "unverified"
 text = "For every n and every real n-tuple gamma there is a Hermitian complex matrix whose characteristic polynomial is exactly prod (X - gamma_i) -- TRUE via the diagonal matrix. TRIVIAL (intended): the triviality IS the declared negative-control point, marking finite-operator-with-prescribed-real-spectrum as content-free so the RH difficulty is located in the completion/positivity clause. Flag: TRIVIAL (intended), not a defect."
+
+[rejudge]
+artifact_sha256 = "42d09183dadd1f860f37292e2d392182cf90b22a702626182ab7806c903ef34d"
+date = "2026-11-07"
+log_sha256 = "5dd00b28c53dd82bae7746dace5371aeeefdbbaf1b988a2cf1a018f57c11cd25"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS nanoda-direct second-kernel audit (AUDIT_2026-11, phase B): lean4export v4.34.0-rc1 (rev b18d673b, the rev Comparator v4.34.0-rc1 pins) + nanoda 37cb87b7 on the node's registered theorem; exported closure axioms exactly propext, Quot.sound, Classical.choice; nanoda checked 10570 declarations (equal to the export's declaration count); export 42860058 bytes; NO Comparator statement-identity step. 2026-11-07T20:27:14Z .. 2026-11-07T20:28:07Z, wall 53 s. Controls: planted literal rejected by nanoda's type checker, sorry export rejected, no-axiom run rejected, empty export classified FAIL. Reviewed post hoc by an independent AI auditor session (bb), which reproduced the verdict from the saved export. artifact_sha256 hashed against this branch's artifact. Source: telperion/missions/judge/AUDIT_2026-11.md. PHASE B PROCESS BREACHES ON RECORD (judged acceptable by the owner after bb confirmed the evidence): run restarted without the reviewer's pre-run OK; 2 Lean jobs at once against the 1-job rule."
+peak_rss_kb = 91792
+route = "nanoda-direct"
+verdict = "pass"

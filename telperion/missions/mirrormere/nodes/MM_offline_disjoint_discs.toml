@@ -18,3 +18,14 @@ auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIM
 date = "2026-09-16"
 independence = "unverified"
 text = "For any finite set of points each strictly inside the open critical strip, there is one positive radius whose closed balls around distinct members are pairwise disjoint and each contained in the strip. Well-posed elementary metric topology; the z /= w guard is exactly the right distinctness notion; strict interiority avoids the boundary trap; empty/singleton cases benign. No flags."
+
+[rejudge]
+artifact_sha256 = "9c4b6dbf394e0fa2eb385d255bcdd42b42eee72fd598909d4d0094d0872a910c"
+date = "2026-11-07"
+log_sha256 = "fdad523df146cbebc81831c5d305267902abfb36b784331d3cd6a28a967e1553"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS nanoda-direct second-kernel audit (AUDIT_2026-11, phase A): lean4export v4.32.0 (rev 4e791520) + nanoda 37cb87b7 on the node's registered theorem; exported closure axioms exactly propext, Quot.sound, Classical.choice; nanoda checked 15002 declarations (equal to the export's declaration count); export 60210432 bytes; NO Comparator statement-identity step. 2026-11-07T19:35:15Z .. 2026-11-07T19:35:25Z, wall 10 s. Controls: planted literal rejected by nanoda's type checker, sorry export rejected, no-axiom run rejected, empty export classified FAIL. Reviewed post hoc by an independent AI auditor session (bb), which reproduced the verdict from the saved export. artifact_sha256 hashed against this branch's artifact. Source: telperion/missions/judge/AUDIT_2026-11.md."
+peak_rss_kb = 162368
+route = "nanoda-direct"
+verdict = "pass"

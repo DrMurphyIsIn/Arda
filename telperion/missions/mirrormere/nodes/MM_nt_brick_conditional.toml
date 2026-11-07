@@ -18,3 +18,14 @@ auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
 date = "2026-09-14"
 independence = "unverified"
 text = "A genuine CONDITIONAL, hypothesis named honestly: given RvMUnboundedMeanDensity -- the assertion that the mean density of zeta ordinates exceeds every finite bound, the recognizable form of the Riemann-von Mangoldt N(T) ~ (T/2pi) log T growth, which no finite ladder stage can discharge -- the set of ordinates of the nontrivial zeta zeros is not uniformly discrete (gaps go to 0), i.e. the zeta comb fails the point-set side of Bohr discreteness as well. The pigeonhole gaps-to-0 driver is unconditional; only the density input is carried. closure_clean = false until the residual is discharged (the roadmap route: the li-island effective RvM count). [Verbatim extract; artifact on rh/million-turing, grant deferred to the branch reconcile.]"
+
+[rejudge]
+artifact_sha256 = "bb6f0d04dbd6c9d1d103cb08e45866b2162781218e9fef13fb69835b78c7e747"
+date = "2026-11-07"
+log_sha256 = "87c9daea8b949e9dbd0bc90a256416e60fc0fb6ce94d32ff293b5488b094939e"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS nanoda-direct second-kernel audit (AUDIT_2026-11, phase A): lean4export v4.32.0 (rev 4e791520) + nanoda 37cb87b7 on the node's registered theorem; exported closure axioms exactly propext, Quot.sound, Classical.choice; nanoda checked 8134 declarations (equal to the export's declaration count); export 31877483 bytes; NO Comparator statement-identity step. 2026-11-07T19:35:36Z .. 2026-11-07T19:36:39Z, wall 63 s. Controls: planted literal rejected by nanoda's type checker, sorry export rejected, no-axiom run rejected, empty export classified FAIL. Reviewed post hoc by an independent AI auditor session (bb), which reproduced the verdict from the saved export. artifact_sha256 hashed against this branch's artifact. Source: telperion/missions/judge/AUDIT_2026-11.md."
+peak_rss_kb = 80528
+route = "nanoda-direct"
+verdict = "pass"

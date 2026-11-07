@@ -4,8 +4,8 @@ kind = "milestone"
 name = "AND.ladder_1e9"
 statement_module = "Statements.AND_ladder_1e9"
 status = "open"
-title = "G4: every nontrivial zeta zero with |Im rho| <= 10^9 lies on Re = 1/2, kernel-only (3-axiom decide; charter gates this on the A3 Riemann-Siegel era -- theta branch + RS main sum + Gabcke C0 remainder, nodes to be authored at A3 staffing)"
-updated = "2026-09-14"
+title = "G4: every nontrivial zeta zero with |Im rho| <= 10^9 lies on Re = 1/2, kernel-only (3-axiom decide; charter gates this on the A3 Riemann-Siegel era -- theta branch + RS main sum + Gabcke C0 remainder, nodes to be authored at A3 staffing). STATUS 2026-11-07: the theta branch (AND_theta_branch) and the Gabcke C0 remainder (AND_rs_remainder_c0_sharp, AND_rs_remainder_c0_seam_sharp, granted 2026-10-17) are now proved nodes; the deciding costs are compute and an off-line edge evaluator that is not Euler-Maclaurin, which is unauthored. conjecture1_proved = False"
+updated = "2026-11-07"
 
 [readback]
 auditor = "blind-auditor 2026-09-14 (independent blind read-back, AUDIT_TESTIMONY_ANDURIL_MIRRORMERE_2026-09-14.md)"
