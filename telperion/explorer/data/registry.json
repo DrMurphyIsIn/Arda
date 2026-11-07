@@ -55,10 +55,10 @@
   },
   {
    "counts": {
-    "deprecated": 1,
-    "draft": 3,
-    "open": 1,
-    "proved": 54,
+    "deprecated": 2,
+    "draft": 2,
+    "open": 0,
+    "proved": 55,
     "refuted": 0
    },
    "description": "Migration of PROGRAM MIRRORMERE (telperion/docs/QC_PROGRAM.md, ROADMAP_ANDURIL_MIRRORMERE_2026-09-14.md) into the missions registry: the reverse-Dyson program -- classify 1-D Fourier quasicrystals, locate the zeta point set, extract zero-localization -- built as finite, unconditional instruments (axioms + falsification zoo, the rigidity ladder R1/R2/R3, the defect-k instrument, the N(T) brick). NOTHING here proves or claims RH and conjecture1_proved = False throughout; the goal node is the program's honest RH-hard membership target and is draft. The known difficulty map: RH-hardness enters at exactly one place, twice disguised (FQ-grade temperedness of the dual comb; the rational -> irrational frequency transition); everything registered below is unconditional or carries its named hypothesis explicitly. FIDELITY NOTE (design section 9, UPDATED 2026-09-18): the rh/million-turing line is now merged into main (#506), so the linked artifacts are on main and the deferred `mission grant` pass is unblocked -- nine nodes still carry a [proof] link at status=open and are awaiting it. One node IS proved: MM_rvm_unbounded_mean_density, granted via the cross-island rvm_bridge discharge (#553). The original wording -- no node enters as proved, grant deferred to the branch reconcile -- described the pre-reconcile state and no longer holds. Environment = v4.32.0 (quasicrystal island); two nodes' artifacts live on the zeta_zero_localization island (same pin, cross-island grant per design section 2). W3b IS REGISTERED (MM_bragg_bridge, 2026-09-15): the gw-finite agent proved rect_explicit_formula_bragg on the v4.34 li island -- cross-island node per design section 2. Statement-authoring queue (nodes NOT yet registered because their authoritative formal statements ARE the work; specs in RH_ROUTES_ROADMAP_2026-09-16 section 9): the T->inf corridor bound |zeta'/zeta| = O(log^2 T) (effective-constant form must be pinned against its four consumers -- W3b limit, B6, D6, A3), the A0 REGULARIZED membership statement (the naive clause list '|mu-hat| tempered for the (log p)p^{-m/2} dual comb' is UNCONDITIONALLY FALSE -- sum_{n<=e^R} Lambda(n) n^{-1/2} ~ 2 e^{R/2} by PNT, and mu-hat carries an absolutely-continuous archimedean component; only the Guinand-Weil-regularized triple can carry membership, and authoring it is open formulation work), the W_temp precise wall statement (QC_LITERATURE section 1.7 grades it a program conjecture), R1 crystalline rigidity with the isolated temperedness clause, W3c infinite-torus log-density FQ axioms, A3-adjacent W4 face probes, the torus-section ladder's T3 defect-instrumentation rungs, MM_leakage_composite_zero (the content is the log-derivative coefficient functional; the Lambda-support direction is rfl-bait), and MM_ks_forward_smallN (the island's FQ vocabulary is deliberately abstract; a concrete faithful statement is W3c formulation work). UPDATE 2026-09-21 (PR #593): the goal statement was re-authored from the 2026-09-14 placeholder (Mathlib RiemannHypothesis via the opaque-variable def zeta_FQ_iff_RH, an identification by fiat) to Weil positivity of weilForm on autocorr g over IsWeilTest, and its RH-equivalence is now the PROVED node MM_zeta_comb_membership_iff_rh (Weil criterion in-kernel, E6Bridge5-9 on the rvm_bridge island, four blind audits); the Gaussian obligations MM_gaussian_dominance / MM_gaussian_approx / MM_gaussian_transfer and the converse MM_weil_positivity_implies_rh are proved. The goal node stays draft: it is RH by theorem.",
@@ -144,12 +144,14 @@
   "bg_tie_cherry_worst",
   "bg_tie_slack",
   "bilinear_corner",
+  "bohr_mollerup_gamma_ratio",
   "borel_caratheodory",
   "box_robust",
   "bridge",
   "cauchy_deriv",
   "cauchy_schwarz",
   "cavity_exchange",
+  "closure_audit",
   "concave_pooled_induction",
   "concave_stationary_max",
   "curvature_boundary",
@@ -179,6 +181,7 @@
   "logderiv_region",
   "magnitude_split",
   "mobius_tangent_cell",
+  "nat_root_bracket_table",
   "oai_qrh_bridge",
   "order_balance",
   "parametric_holomorphy",
@@ -189,8 +192,10 @@
   "primality",
   "proof_audit",
   "psd_form",
+  "quadratic_order_root_table",
   "quadratic_sign_race",
   "quasicrystal",
+  "range_completeness_decide",
   "rational_identity",
   "recursion_closure",
   "robin_growth",
@@ -506,7 +511,9 @@
     "anduril:AND_checkline_correct"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "anduril:AND_g2_reflected_band",
    "is_goal": false,
    "kind": "milestone",
@@ -538,7 +545,7 @@
    "statement": "namespace ReflectedBand_t14\n\ndef d : BandData := ⟨[⟨-1044698152212676548522446602224124909281741004027039251959375928821234953705152350605, -1044698152212676548522446602224124909281741004027039251959375928821234953704683566707, -298⟩, ⟨99717822596094950620729602861100111464133505311626406978039488235919103314107209029, 99717822596094950620729602861100111464133505311626406978039488235919103314206485179, -293⟩, ⟨-1038697258148445978346843730799869702389672245413623774565910343656944450297462331107, -1038697258148445978346843730799869702389672245413623774565910343656944450296258423069, -304⟩]⟩\n\ntheorem ok : checkLine d.boxes = true := by decide\n\ndef grid : Fin 3 → ℝ := ![(14 : ℝ), (15 : ℝ), (22 : ℝ)]\n\ntheorem pilot\n    (hmem0 : DIntvProd.DIntv.memR (gLine (14 : ℝ)) (d.boxes.get ⟨0, by decide⟩))\n    (hmem1 : DIntvProd.DIntv.memR (gLine (15 : ℝ)) (d.boxes.get ⟨1, by decide⟩))\n    (hmem2 : DIntvProd.DIntv.memR (gLine (22 : ℝ)) (d.boxes.get ⟨2, by decide⟩))\n    : ∃ xs : List ℝ, xs.length = 2 ∧ xs.IsChain (· < ·) ∧\n        (∀ t ∈ xs, (14 : ℝ) ≤ t ∧ t ≤ (22 : ℝ)) ∧\n        (∀ t ∈ xs, completedRiemannZeta (1 / 2 + (t : ℂ) * Complex.I) = 0)",
    "status": "proved",
    "title": "G2: THE FIRST REFLECTED BAND (ReflectedBand_t14) -- a band certificate proved by kernel decide through checkLine rather than emitted norm_num, consumed by the height chain interchangeably with T5 bands (pilot carries three Arb gLine-enclosure hypotheses hmem0/hmem1/hmem2; only `ok` is kernel-decided; closure_clean = false per the MM_bragg_defect_witness ruling)",
-   "updated": "2026-09-14"
+   "updated": "2026-11-07"
   },
   {
    "arb": true,
@@ -663,8 +670,7 @@
     "anduril:AND_em_zeta_strip",
     "anduril:AND_em_tail3_number",
     "anduril:AND_stirling_binet_k1",
-    "anduril:AND_checkline_correct",
-    "anduril:AND_g2_reflected_band"
+    "anduril:AND_checkline_correct"
    ],
    "deprecated_reason": "",
    "extra_keys": [],
@@ -686,12 +692,12 @@
    "statement": "theorem all_nontrivial_zeros_up_to_height_1e13 :\n    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 10000000000000 → ρ.re = 1 / 2",
    "status": "draft",
    "title": "G5: every nontrivial zeta zero with |Im rho| <= 10^13 lies on Re = 1/2 -- the campaign goal (finite verification target, NOT RH; charter: native_decide era, flagged sibling island, external compute). CHARTER CORRECTION 2026-09-22 (lead decision D1): the registered statement is at HEIGHT 10^13, which is about 4.31e13 zeros; the charter's '10^13 zeros' reading corresponds to height about 2.445e12 instead. The statement, not the prose, is authoritative: this node means height. conjecture1_proved = False.",
-   "updated": "2026-09-22"
+   "updated": "2026-11-07"
   },
   {
-   "arb": false,
+   "arb": true,
    "campaign": "anduril",
-   "conditional": false,
+   "conditional": true,
    "coverage": {
     "jobs": [],
     "label": "no-artifact"
@@ -724,8 +730,8 @@
    "slug": "AND_ladder_1e6",
    "statement": "theorem all_nontrivial_zeros_up_to_height_1e6 :\n    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 1000000 → ρ.re = 1 / 2",
    "status": "open",
-   "title": "G1: every nontrivial zeta zero with |Im rho| <= 10^6 lies on Re = 1/2 (~1.8M zeros; roadmap: nothing structural remains on current T5 machinery, wall-clock only)",
-   "updated": "2026-09-14"
+   "title": "G1: every nontrivial zeta zero with |Im rho| <= 10^6 lies on Re = 1/2 (~1.8M zeros). ROUTE UPDATE 2026-11-07: the 2026-09-14 roadmap note 'nothing structural remains on current T5 machinery, wall-clock only' is superseded. T5 is the Arb-conditional route, which cannot be linked (see AND_ladder_h280000); the hypothesis-free route is the RS5 kernel route of AND_ladder_h11000_kernel, whose structural item above T ~ 1.2e5 was the edge evaluator (a chunked evaluator exists on a local branch, NOT on main). No proof is linked. Finite verification only, NOT RH. conjecture1_proved = False",
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -764,8 +770,8 @@
    "slug": "AND_ladder_1e9",
    "statement": "theorem all_nontrivial_zeros_up_to_height_1e9 :\n    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 1000000000 → ρ.re = 1 / 2",
    "status": "open",
-   "title": "G4: every nontrivial zeta zero with |Im rho| <= 10^9 lies on Re = 1/2, kernel-only (3-axiom decide; charter gates this on the A3 Riemann-Siegel era -- theta branch + RS main sum + Gabcke C0 remainder, nodes to be authored at A3 staffing)",
-   "updated": "2026-09-14"
+   "title": "G4: every nontrivial zeta zero with |Im rho| <= 10^9 lies on Re = 1/2, kernel-only (3-axiom decide; charter gates this on the A3 Riemann-Siegel era -- theta branch + RS main sum + Gabcke C0 remainder, nodes to be authored at A3 staffing). STATUS 2026-11-07: the theta branch (AND_theta_branch) and the Gabcke C0 remainder (AND_rs_remainder_c0_sharp, AND_rs_remainder_c0_seam_sharp, granted 2026-10-17) are now proved nodes; the deciding costs are compute and an off-line edge evaluator that is not Euler-Maclaurin, which is unauthored. conjecture1_proved = False",
+   "updated": "2026-11-07"
   },
   {
    "arb": true,
@@ -842,7 +848,9 @@
     "anduril:AND_ladder_h8000_kernel"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "anduril:AND_ladder_h11000_kernel",
    "is_goal": false,
    "kind": "milestone",
@@ -883,8 +891,8 @@
    "slug": "AND_ladder_h11000_kernel",
    "statement": "theorem all_nontrivial_zeros_up_to_height_11000 :\n    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 11000 → ρ.re = 1 / 2",
    "status": "proved",
-   "title": "Every nontrivial zeta zero with 0 < Im rho <= 11000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, no Arb or oracle input: the h8000 Arb4 ladder chained (height_chain) with ONE Turing band [31851/4, 11004] holding 3541 zeros (Riemann-Siegel RS5 sign-change lower count + argument-principle upper count with sharp pi pins). Finite verification only, NOT RH. conjecture1_proved = False. PROVENANCE (2026-10-15): KERNEL (rebuilt from source in a fresh worktree, 9190 jobs, standard axioms only); independent AI read-back A1 (session 43fb6f48, subagent h11000-readback) + second reading by session peterwmurphy-bb; NOT Comparator-recorded (H11K uses the monolithic Arb4_h8000 theorem, which no judge replayed; a compositional judge needs a new H11K_Compose; judge_via = heavy with NO [compose] block: do NOT dispatch missions-comparator-heavy.yml on this node until H11K_Compose and a [compose] block exist, since a dispatch today would attempt the infeasible monolithic replay). First use of the wide sharp-pi Turing band template (H11K_Turing); the h8000 ladder already uses the older 3.14-pin TuringBand template.",
-   "updated": "2026-10-15"
+   "title": "Every nontrivial zeta zero with 0 < Im rho <= 11000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, no Arb or oracle input: the h8000 Arb4 ladder chained (height_chain) with ONE Turing band [31851/4, 11004] holding 3541 zeros (Riemann-Siegel RS5 sign-change lower count + argument-principle upper count with sharp pi pins). Finite verification only, NOT RH. conjecture1_proved = False. PROVENANCE (2026-10-15): KERNEL (rebuilt from source in a fresh worktree, 9190 jobs, standard axioms only); independent AI read-back A1 (session 43fb6f48, subagent h11000-readback) + second reading by session peterwmurphy-bb; NOT judged by Comparator in CI (H11K uses the monolithic Arb4_h8000 theorem; a compositional CI judge needs a new H11K_Compose; judge_via = heavy with NO [compose] block: do NOT dispatch missions-comparator-heavy.yml on this node until H11K_Compose and a [compose] block exist, since a dispatch would attempt the monolithic replay on a hosted runner). FIRST INDEPENDENT JUDGE (2026-10-28, local, telperion/missions/judge/REJUDGE_2026-10.md): one monolithic Comparator closure (v4.32.0) accepted by the Lean kernel AND by nanoda pinned at 37cb87b7, 3 standard axioms, 28,234 s at a 13,877,872 kB peak on a 96 GiB Mac Studio, PASS; the landrun shim there is UNSANDBOXED. Recorded in [rejudge]. First use of the wide sharp-pi Turing band template (H11K_Turing); the h8000 ladder already uses the older 3.14-pin TuringBand template.",
+   "updated": "2026-11-07"
   },
   {
    "arb": true,
@@ -924,8 +932,8 @@
    "slug": "AND_ladder_h280000",
    "statement": "theorem all_nontrivial_zeros_up_to_height_280000 :\n    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 280000 → ρ.re = 1 / 2",
    "status": "open",
-   "title": "Current certified height: every nontrivial zeta zero with |Im rho| <= 280000 lies on Re = 1/2 (432,474 zeros, leg 17). REGISTRY-SHAPE MISMATCH, corrected 2026-09-22: this node's registered statement is hypothesis-free, but the artifact all_nontrivial_zeros_up_to_height_280000_of_bands carries 280 BandHyp binders plus hgamma, and zero of its 642 band files discharge a BandHyp -- every one consumes Arb enclosures. Those binders ARE the Arb trust boundary, not glue: no Lean work discharges them, and the grant gate fails on the artifact. The node needs re-registering in the Arb-conditional shape (DESIGN_AND_ladder_h280000_2026-09-22.md route A2) before it can be linked and granted. The hypothesis-free form is a separate multi-quarter interval-arithmetic program. conjecture1_proved = False.",
-   "updated": "2026-09-22"
+   "title": "Every nontrivial zeta zero with |Im rho| <= 280000 lies on Re = 1/2 (432,474 zeros; the Arb-conditional T5 ladder's leg 17). REGISTRY-SHAPE MISMATCH, corrected 2026-09-22: this node's registered statement is hypothesis-free, but the artifact all_nontrivial_zeros_up_to_height_280000_of_bands carries 280 BandHyp binders plus hgamma, and zero of its 642 band files discharge a BandHyp -- every one consumes Arb enclosures. Those binders ARE the Arb trust boundary, not glue: no Lean work discharges them, and the grant gate fails on the artifact. The T5 artifact stays unlinkable. ROUTE UPDATE 2026-11-07: the 2026-09-22 options (re-register in the Arb-conditional shape, DESIGN_AND_ladder_h280000_2026-09-22.md route A2; or a separate multi-quarter interval-arithmetic program) are overtaken. A hypothesis-free kernel route now exists to height 11000 (AND_ladder_h11000_kernel, proved 2026-10-15: RS5 sign-change lower counts + one sharp-pi Turing band), and the statement here stays hypothesis-free. That route's one structural blocker above T ~ 1.2e5, the edge evaluator's N-cliff, is addressed by a chunked edge evaluator on a local branch, NOT on main. No proof is linked. conjecture1_proved = False.",
+   "updated": "2026-11-07"
   },
   {
    "arb": true,
@@ -945,7 +953,9 @@
     "anduril:AND_theta_branch"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "anduril:AND_ladder_h8000_kernel",
    "is_goal": false,
    "kind": "milestone",
@@ -992,7 +1002,7 @@
    "statement": "theorem all_nontrivial_zeros_up_to_height_8000 :\n    ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.im → ρ.im ≤ 8000 → ρ.re = 1 / 2",
    "status": "proved",
    "title": "Every nontrivial zeta zero with 0 < Im rho <= 8000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, NO Arb or oracle input (Arb4 compact certificates, 8 segments chained by height_chain; 29 MB of certificates). Verified by an independent leanchecker replay of all 164 modules. Finite verification only, NOT RH. conjecture1_proved = False",
-   "updated": "2026-09-27"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -1007,7 +1017,9 @@
    "created": "2026-10-15",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "anduril:AND_rs_remainder_c0_seam_sharp",
    "is_goal": false,
    "kind": "lemma",
@@ -1058,7 +1070,9 @@
    "created": "2026-10-15",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "anduril:AND_rs_remainder_c0_sharp",
    "is_goal": false,
    "kind": "lemma",
@@ -2214,7 +2228,9 @@
    "created": "2026-09-15",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_bragg_bridge",
    "is_goal": false,
    "kind": "milestone",
@@ -2264,7 +2280,9 @@
     "mirrormere:MM_offline_pairs_le_defect"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_bragg_defect_witness",
    "is_goal": false,
    "kind": "lemma",
@@ -2296,7 +2314,7 @@
    "statement": "theorem bragg_defect_witness\n    (hexp : expLo ≤ Real.exp (1 / 10) ∧ Real.exp (1 / 10) ≤ expHi) :\n    defectFunctional 0 = 0 ∧\n    ((-1957503930982498711627558116252003079150110082803036995985602456729126067929069837779873677055641334915004924707647824293913235373458273903210508792181881 / 19542444130562717342736579894714125276139669165907166175656490622972757664768900000000000000000000000000000000000000000000000000000000000000000000000000000000 : ℝ) ≤ defectFunctional excess ∧ defectFunctional excess ≤ (-1957503930982498711614926803795741251867682177931660778058090203284392257792384397626586656512971699612677910422316624293913235373458273903210508792181881 / 19542444130562717342737210934295300643770643047158621178046789521488913388427220640000000000000000000000000000000000000000000000000000000000000000000000000000 : ℝ))",
    "status": "proved",
    "title": "The certified defect witness pair: the all-on-line configuration has defect functional exactly 0 (defect_witness_online, unconditional) while one synthetic off-line pair drives it strictly negative (defect_witness_offline, ~ -1.00167e-4; carries one Arb exp-enclosure hypothesis) -- the Alpoge-Furman signature-(1,1) leakage as a measured theorem object",
-   "updated": "2026-09-14"
+   "updated": "2026-11-07"
   },
   {
    "arb": true,
@@ -2314,7 +2332,9 @@
     "mirrormere:MM_bragg_defect_witness"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_bragg_defect_witness_sie",
    "is_goal": false,
    "kind": "lemma",
@@ -2350,7 +2370,7 @@
    "statement": "theorem bragg_defect_witness_sie :\n    defectFunctional 0 = 0 ∧\n    ((-1957503930982498711627558116252003079150110082803036995985602456729126067929069837779873677055641334915004924707647824293913235373458273903210508792181881 / 19542444130562717342736579894714125276139669165907166175656490622972757664768900000000000000000000000000000000000000000000000000000000000000000000000000000000 : ℝ) ≤ defectFunctional excess ∧ defectFunctional excess ≤ (-1957503930982498711614926803795741251867682177931660778058090203284392257792384397626586656512971699612677910422316624293913235373458273903210508792181881 / 19542444130562717342737210934295300643770643047158621178046789521488913388427220640000000000000000000000000000000000000000000000000000000000000000000000000000 : ℝ))",
    "status": "proved",
    "title": "The certified defect witness pair with NO hypothesis (zeta_zero_localization island, BraggDefect.lean, 2026-10-11): the all-on-line configuration has defect functional exactly 0, and the synthetic off-line pair drives it into an explicit negative bracket (~ -1.00167e-4). Same statement as MM_bragg_defect_witness without its Arb hypothesis hexp: the e^(1/10) enclosure is discharged inside the kernel by the scaled_interval_eval emitter (BraggDefectSIE.sie_defect_offline, PR #689)",
-   "updated": "2026-10-12"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -2539,7 +2559,9 @@
     "mirrormere:MM_twofreq_realrooted_iff"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_euler_factor_section_offline",
    "is_goal": false,
    "kind": "lemma",
@@ -3200,7 +3222,9 @@
     "mirrormere:MM_hodge1_window5493"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_hodge1_rh_reduction",
    "is_goal": false,
    "kind": "lemma",
@@ -3241,7 +3265,7 @@
    "statement": "theorem rh_iff_poleFree_outside_window5493 :\n    RiemannHypothesis ↔\n      ∀ g : ℝ → ℂ, WeilExplicit.IsWeilTest g →\n        (Zeta23.paperFT g (Complex.I / 2) = 0 ∧ Zeta23.paperFT g (-Complex.I / 2) = 0) →\n        ¬ (tsupport g ⊆ Set.Icc (-(5493 / 10000 : ℝ)) (5493 / 10000)) →\n        0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
    "status": "proved",
    "title": "RH IFF POLE-FREE WEIL POSITIVITY OUTSIDE THE HODGE-1 WINDOW (rvm_bridge, kernel-checked): RiemannHypothesis holds iff 0 <= Re weilForm(autocorr g) for every pole-free Weil test g whose support is NOT inside [-5493/10000, 5493/10000]. Combines e9's pole-free converse with the HODGE-1 window theorem. A reformulation of the open content, not progress on RH.",
-   "updated": "2026-10-13"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -3258,7 +3282,9 @@
     "mirrormere:MM_hodge1_one_prime_identity"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_hodge1_window45",
    "is_goal": false,
    "kind": "lemma",
@@ -3299,7 +3325,7 @@
    "statement": "theorem weil_positivity_poleFree_window45 (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g)\n    (hP : Zeta23.paperFT g (Complex.I / 2) = 0 ∧ Zeta23.paperFT g (-Complex.I / 2) = 0) (L : ℝ) (hL : L ≤ 9 / 20) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :\n    0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
    "status": "proved",
    "title": "POLE-FREE ONE-PRIME WEIL POSITIVITY, L <= 9/20 (rvm_bridge, HODGE-1 Phase 1, kernel certificate): for every Weil test g with paperFT g (+-i/2) = 0 supported in [-L, L], L <= 9/20, Re weilForm(autocorr g) >= 0. Proof: the strip lemma bounds the p = 2 term by the energy of g on the two end strips, then a KWin2-style certificate proves the prime-free inequality archW >= (log 2/sqrt 2) strip energy with margin 3/100. Not a new range (KWin2 covers the full class to 1/2) and not prime-specific.",
-   "updated": "2026-10-13"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -3314,7 +3340,9 @@
    "created": "2026-10-13",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_hodge1_window5493",
    "is_goal": false,
    "kind": "lemma",
@@ -3355,7 +3383,7 @@
    "statement": "theorem weil_positivity_poleFree_window5493 (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g)\n    (hP : Zeta23.paperFT g (Complex.I / 2) = 0 ∧ Zeta23.paperFT g (-Complex.I / 2) = 0) (L : ℝ) (hL : L ≤ 5493 / 10000) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :\n    0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
    "status": "proved",
    "title": "POLE-FREE ONE-PRIME WEIL POSITIVITY, L <= 5493/10000 (rvm_bridge, HODGE-1 Phase 1b-B, kernel certificate): for every Weil test g with paperFT g (+-i/2) = 0 supported in [-L, L], L <= 5493/10000 (just below (log 3)/2, so p = 2 is the only prime), Re weilForm(autocorr g) >= 0. A NEW range past KWin2's 1/2 on this class. Direct certificate with the p = 2 comb inside the symbol; floor (1/2000)||g||^2. Kernel-checked negative controls: prime moved to 2.1, weight 1.05 c2.",
-   "updated": "2026-10-13"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -3372,7 +3400,9 @@
    "created": "2026-09-20",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_leakage_composite_zero",
    "is_goal": false,
    "kind": "lemma",
@@ -3404,7 +3434,7 @@
    "statement": "open Finset\n\n/-- A completely multiplicative amplitude sequence (the Dirichlet-coefficient form\n    of \"the series has an Euler product with degree-1 local factors\"). -/\ndef CompletelyMultiplicative (a : ℕ → ℝ) : Prop :=\n  a 1 = 1 ∧ ∀ m n : ℕ, a (m * n) = a m * a n\n\n/-- `b` is THE log-derivative coefficient functional of `a`: the Dirichlet\n    coefficients of `-F'/F` for `F (s) = ∑ a n * n ^ (-s)`, pinned by the divisor\n    recursion.  These are the Bragg amplitudes of the comb. -/\ndef IsLogDerivCoeff (a b : ℕ → ℝ) : Prop :=\n  ∀ n : ℕ, 0 < n → a n * Real.log n = ∑ d ∈ n.divisors, b d * a (n / d)\n\n/-- The exact Davenport-Heilbronn constant `κ = (√(10 − 2√5) − 2)/(√5 − 1)`. -/\nnoncomputable def dhKappa : ℝ := (Real.sqrt (10 - 2 * Real.sqrt 5) - 2) / (Real.sqrt 5 - 1)\n\n/-- The Davenport-Heilbronn amplitude: period 5, `[1, κ, −κ, −1, 0]`.  DH satisfies a\n    Riemann-type functional equation but has NO Euler product, and has zeros off the\n    critical line: this program's standing negative control. -/\nnoncomputable def leak_dh_amp : ℕ → ℝ := fun n =>\n  if n % 5 = 1 then 1 else\n  if n % 5 = 2 then dhKappa else\n  if n % 5 = 3 then -dhKappa else\n  if n % 5 = 4 then -1 else 0\n\ntheorem leakage_composite_zero :\n    -- (i) THE DICTIONARY.  A completely multiplicative amplitude has ZERO Bragg\n    --     amplitude at every COMPOSITE (non-prime-power) frequency `log n`.\n    (∀ a b : ℕ → ℝ, CompletelyMultiplicative a → IsLogDerivCoeff a b →\n        ∀ n : ℕ, 0 < n → ¬ IsPrimePow n → b n = 0)\n    -- (ii) NON-VACUITY.  The hypotheses of (i) are inhabited by a functional that is\n    --      NOT identically zero, so its conclusion is not the trivial `b = 0`.\n    ∧ (∃ a b : ℕ → ℝ, CompletelyMultiplicative a ∧ IsLogDerivCoeff a b ∧\n        b 2 ≠ 0 ∧ b 6 = 0)\n    -- (iii) THE CERTIFIED DAVENPORT-HEILBRONN INSTANCE.  The DH amplitude LEAKS at\n    --       the first composite frequency `log 6` -- its functional exists and is\n    --       pinned to the published `b(6) = +1.9364` -- and DH is thereby REFUSED\n    --       complete multiplicativity.\n    ∧ (∃ b : ℕ → ℝ, IsLogDerivCoeff leak_dh_amp b ∧\n        (1.93635 : ℝ) < b 6 ∧ b 6 < (1.93636 : ℝ) ∧\n        ¬ CompletelyMultiplicative leak_dh_amp)\n    -- (iv) THE FALSIFICATION TWIN.  Statement (i) WITHOUT its multiplicativity\n    --      hypothesis is FALSE.  So the hypothesis is load-bearing, and (i) is not\n    --      the `rfl`-grade von Mangoldt support fact in disguise: a support-level\n    --      reading admits no counterexample.\n    ∧ ¬ (∀ a b : ℕ → ℝ, a 1 = 1 → IsLogDerivCoeff a b →\n        ∀ n : ℕ, 0 < n → ¬ IsPrimePow n → b n = 0)",
    "status": "proved",
    "title": "A2b, a FORMALIZATION win, not new mathematics: for a completely multiplicative normalized amplitude a, the Dirichlet coefficients b of -F'/F vanish at every non-prime-power index -- the classical identity -F'/F = sum Lambda(n) a(n) n^-s, Apostol-grade, whose content here is the kernel proof rather than the theorem. NOT the rfl-grade von Mangoldt support fact: unfolding both definitions leaves the goal untouched, and the proof is a real strong induction over the divisor recursion plus a well-founded construction of b. Carries a certified Davenport-Heilbronn counterexample at n = 6 showing the multiplicativity hypothesis is NECESSARY, and the only clause with numerical content is the kernel enclosure 1.93635 < b(6) < 1.93636, built from proved boxes for two square roots and two logarithms. NOTE the enclosure does NOT contain the published 4-dp figure 1.9364; it ROUNDS to it, proved in-kernel. Blind read-back 2026-09-20 verdict: CONTENTFUL, MODEST, CLASSICAL",
-   "updated": "2026-09-22"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -3423,7 +3453,9 @@
     "mirrormere:MM_rvm_unbounded_mean_density"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_nt_brick_conditional",
    "is_goal": false,
    "kind": "lemma",
@@ -3472,7 +3504,9 @@
    "created": "2026-09-16",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_offline_disjoint_discs",
    "is_goal": false,
    "kind": "lemma",
@@ -3520,7 +3554,9 @@
    "created": "2026-09-14",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_offline_pairs_le_defect",
    "is_goal": false,
    "kind": "milestone",
@@ -3552,7 +3588,7 @@
    "statement": "theorem offline_pairs_le_defect {𝕜 : Type*} [RCLike 𝕜]\n    {n : Type*} [Fintype n] [DecidableEq n]\n    {A : Matrix n n 𝕜} (hA : A.IsHermitian) {p : ℕ}\n    (hwit : NegativeWitness hA p) :\n    p ≤ defect hA",
    "status": "proved",
    "title": "W2b, the CONDITIONAL rigidity direction: a p-dimensional negative-definite witness subspace forces p <= defect (offline_pairs_le_defect). The witness is load-bearing and is NOT supplied by the off-line pair count -- one functional-equation quadruple carries p = 2 sigma-pairs but can leak only ONE negative direction (QuadrupleDefect.quadruple_witness_dimension_not_determined), so the defect does not unconditionally COUNT off-line pairs; unconditionally defect <= p",
-   "updated": "2026-09-19"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -3745,7 +3781,9 @@
    "created": "2026-09-14",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_primelog_spectrum_dense",
    "is_goal": false,
    "kind": "milestone",
@@ -3794,7 +3832,9 @@
     "mirrormere:MM_bragg_bridge"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_rect_trace_reading",
    "is_goal": false,
    "kind": "lemma",
@@ -3843,7 +3883,9 @@
     "mirrormere:MM_bragg_defect_witness"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_recurrence_deficit_eq_excess",
    "is_goal": false,
    "kind": "lemma",
@@ -3875,7 +3917,7 @@
    "statement": "theorem recurrence_deficit_eq_excess :\n    recurrenceDeficit (1 / 10) = excess ∧\n    ∀ δ : ℝ, 0 < δ → 0 < recurrenceDeficit δ",
    "status": "proved",
    "title": "Routes-roadmap E4a (Face 4 <-> Face 1 witness bridge): the Bagchi recurrence deficit (e^delta - 1)(1 - e^(-delta)) equals the Bragg amplification excess at the certified displacement delta = 1/10, and is strictly positive for every positive displacement -- the recurrence and defect instruments measure the same off-line signal. Discharge: Real.exp ring algebra + strict monotonicity; QC_RECURRENCE section 4.2 says kernel-ready now (RH_ROUTES_ROADMAP_2026-09-16 section 9)",
-   "updated": "2026-09-18"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -4457,7 +4499,7 @@
   {
    "arb": false,
    "campaign": "mirrormere",
-   "conditional": true,
+   "conditional": false,
    "coverage": {
     "jobs": [
      "telperion-lean-e2e.yml:rvm-bridge-arch-heavy",
@@ -4505,8 +4547,8 @@
    "slug": "MM_rvm_unbounded_mean_density",
    "statement": "theorem rvm_unbounded_mean_density : RvMUnboundedMeanDensity zetaOrdinates",
    "status": "proved",
-   "title": "The W2c residual, named: RvMUnboundedMeanDensity -- the zeta-ordinate mean density exceeds every finite bound (Riemann-von Mangoldt growth input). 2026-09-15 SURVEY VERDICT (W2c agent, d859b064): NO unconditional kernel proof exists in corpus or Mathlib -- Mathlib has only discreteness, the li-island RvM machinery is per-window/conditional, and linear zero-count bounds provably do NOT suffice (they give constant gaps, not gaps -> 0). Discharge = a FUTURE BRICK from the RvM box-counting engine + zero-free edges, not a cross-island grant",
-   "updated": "2026-09-30"
+   "title": "The W2c residual, named: RvMUnboundedMeanDensity -- the zeta-ordinate mean density exceeds every finite bound (Riemann-von Mangoldt growth input). PROVED 2026-09-17 by a cross-island grant (attempts.jsonl): rvm_bridge island (v4.33.0-rc2, #547), RvMBridge.rvm_unbounded_mean_density in E6Bridge.lean, proof link #548; the load-bearing input is zeta-23-lean Theorem A (>= 2/3 of zeros simple and on the line => superlinear distinct ordinates), NOT the RvM formula. This overtakes the 2026-09-15 survey verdict (W2c agent, d859b064) that no unconditional kernel proof existed in corpus or Mathlib and that discharge would be a future RvM box-counting brick, not a cross-island grant; that verdict was right about the corpus of its day",
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -4562,7 +4604,9 @@
    "created": "2026-09-14",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_selfinversive_iff_hardyz_real",
    "is_goal": false,
    "kind": "milestone",
@@ -4609,7 +4653,9 @@
    "created": "2026-09-16",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_spectral_cooked_control",
    "is_goal": false,
    "kind": "lemma",
@@ -4656,7 +4702,9 @@
    "created": "2026-09-16",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_speiser_box_probe",
    "is_goal": false,
    "kind": "milestone",
@@ -4666,7 +4714,7 @@
     "artifact_exists": true,
     "artifact_kind": "lean_module",
     "artifact_url": "https://github.com/DrMurphyIsIn/Arda/blob/main/telperion/examples/zeta_reflection/lean/SpeiserDerivBox.lean",
-    "closure_clean": false,
+    "closure_clean": true,
     "fidelity_note": "",
     "via": "direct"
    },
@@ -4674,20 +4722,24 @@
     "author_recorded": false,
     "ci_record": null,
     "comparator": null,
-    "grant": null,
+    "grant": {
+     "artifact_sha256": "653616d313383f25",
+     "date": "2026-10-17",
+     "gate_version": "2026-09-23.1"
+    },
     "requires_ci_job": ""
    },
    "readback": {
-    "auditor": "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIMONY_ROUTES_2026-09-16.md)",
-    "date": "2026-09-16",
+    "auditor": "AI read-back by Claude (bb session, Riemann Auditor), NOT an operator read-back; under the owner 2026-10-12 decision accepting AI read-backs",
+    "date": "2026-10-17",
     "independence": "self-attested",
-    "text": "deriv riemannZeta has no zero in the concrete closed rectangle [1/4, 3/8] x [6, 10], strictly left of the critical line. A single bounded, finitely-checkable winding/argument-principle target -- verifying one box does NOT decide RH; correctly NOT the RH-equivalent Speiser strip statement. Truth rests on actual zeta' zero locations (known to cluster right of the line); the auditor did not compute the winding number. No flags."
+    "text": "Formal statement, rendered by the auditor from the statement file Statements/MM_speiser_box_probe.lean (not from the title): for every complex s with 1/4 <= Re s <= 3/8 and 6 <= Im s <= 10, deriv riemannZeta s != 0 (Mathlib's riemannZeta and deriv; a closed box strictly left of the critical line). It is one finitely-checkable box and NOT the Speiser wall (zeta' zero-free on the whole open strip 0 < Re s < 1/2 is equivalent to RH, Speiser 1935); it says nothing about RH. Artifact theorem speiser_box_probe in SpeiserDerivBox.lean (:288), over SpeiserDerivCore.lean. Eight discs of radius 13/50 centred at 5/16 + i(25/4 + k/2), k = 0..7, cover the box by the proved lemma dist_le_of_row and a case split on Im s, so the cover is a theorem, not an assumption. On each disc, ArbEcon.Off.SpD.cell_deriv_ne_zero turns a kernel-checked (decide +kernel) certificate for a model polynomial M into zeta' != 0: a uniform bound |zeta - M| <= budget on the disc of radius r + rho, Cauchy's estimate giving |(zeta - M)'| <= budget/rho <= F on the inner disc, and |M'| > F there. Checked by the auditor in its own detached worktree ~/arda-bb-speiser at main 8f5c830c8 (the #753 merge): lake build SpeiserDerivCore SpeiserDerivBox AxiomGuardSpeiserDeriv, 3227 jobs, exit 0, both modules freshly built (2026-10-17); all 11 lines of AxiomGuardSpeiserDeriv print exactly [propext, Classical.choice, Quot.sound], with no sorryAx or ofReduceBool, and neither file contains sorry, axiom, native_decide, implemented_by or extern; statement_matches against SpeiserDerivBox.lean is True, and tampered copies (1/4 to 1/5, 3/8 to 1/2, 6 to 5, 10 to 11, != to =, deriv riemannZeta to riemannZeta) are all False; in a root-namespace file with import Mathlib and no open, speiser_box_probe closes the statement as elaborated there (standard three axioms), while the riemannZeta variant without deriv is rejected by the type checker; the statement file elaborates against the island's Mathlib v4.32.0 with only the expected sorry warning; the negative controls are kernel-checked and exercise the checker: check0_neg (F = 1/10^9) fails at the budget clause, and check0_corrupt (an accumulator centre shifted to cancel M'(0)) fails at the derivative test with the budget still satisfied (|M'(0)|^2 = 0.0408 honest, 0.0000 corrupted); gen_speiser_box.py --check reproduces SpeiserDerivBox.lean byte-identically; CI: telperion-zeta-reflection job zeta-reflection-compiles succeeded on the #753 head 31caf3276 (run 39061047205, job 117478908333), including the step that builds and axiom-guards SpeiserDeriv*, whose guard output matches the auditor's (31caf3276 is the merge's second parent, and the island, the workflow and the mirrormere files are identical to 8f5c830c8); the main push run 39080020504 on 8f5c830c8 was still in progress when read; mission verify mirrormere --strict-provenance OK, and judge --check for zeta_reflection OK (12 challenges). Independent numeric sanity check (mpmath, not part of the proof): |zeta'(5/16 + 6.25i)| = 0.201982 against the certified model's |M'(0)| = 0.201983, and the minimum of |zeta'| over a 13 x 161 grid of the box is 0.191. Not run by the auditor: Comparator. The node is not yet in the zeta_reflection judge bundle and appears only in its pending render, so the bundle must be regenerated when the node is granted."
    },
    "refutation_statement": "",
    "slug": "MM_speiser_box_probe",
    "statement": "theorem speiser_box_probe :\n    ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 8 → 6 ≤ s.im → s.im ≤ 10 →\n      deriv riemannZeta s ≠ 0",
-   "status": "open",
-   "title": "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9)",
+   "status": "proved",
+   "title": "Routes-roadmap E9 (Face 7 pilot, W4c): a concrete zeta'-zero-free box left of the critical line -- deriv riemannZeta nonvanishing on [1/4, 3/8] x [6, 10]. NOT the Speiser wall (zeta' nonvanishing on the whole open left strip IS RH via Speiser 1935): a single finitely-checkable box in the exact T5 winding-certificate shape, retargeted at zeta'. Discharge: winding-box certificate via the derivative variant of the A2 EM evaluator (second-derivative machinery needed for the winding integrand -- E9 hidden-cost caveat honored, RH_ROUTES_ROADMAP_2026-09-16 sections 5, 9). PROVENANCE (2026-10-17): kernel-checked in CI (zeta-reflection-compiles, SpeiserDeriv* step; guard AxiomGuardSpeiserDeriv, 11 lines, standard three axioms only); independent AI read-back by the bb session (Riemann Auditor), which rebuilt the artifact in its own worktree, NOT an operator read-back (recorded independence unverified only because the node predates the [author] field); no Comparator record yet (the per-PR judge bundle now carries this node). One box, NOT RH; conjecture1_proved = False.",
    "updated": "2026-10-17"
   },
   {
@@ -4813,7 +4865,9 @@
     "mirrormere:MM_twofreq_realrooted_iff"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_torus_section_n2_rigidity",
    "is_goal": false,
    "kind": "lemma",
@@ -4864,7 +4918,9 @@
    "created": "2026-09-14",
    "depends_on": [],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_twofreq_realrooted_iff",
    "is_goal": false,
    "kind": "milestone",
@@ -5087,7 +5143,9 @@
     "mirrormere:MM_zeta_comb_membership_iff_rh"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_weil_positivity_prime_free_window",
    "is_goal": false,
    "kind": "lemma",
@@ -5128,7 +5186,7 @@
    "statement": "theorem weil_positivity_prime_free_window (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g) (L : ℝ)\n    (hL : 2 * L ≤ Real.log 2) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :\n    0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
    "status": "proved",
    "title": "THE FULL PRIME-FREE WINDOW ON THE GOAL NODE'S OWN TEST CLASS, KERNEL-NATIVE (rvm_bridge island, KWin_*, 2026-09-24): for every Weil test g with tsupport g in [-L, L] and 2L <= log 2, Re weilForm (autocorr g) >= 0 -- hypothesis-free, no Arb seam (exact-rational digamma minorant + exact LDL^T head certificates, WindowFloor(log2/2, 9/10000)). Pole terms KEPT: per PR #604 the 1.3e-3 margin is zero content (first 200 zero pairs), so this is NOT Connes-Consani (pole-free class). Implies the L <= 1/10 statement of MM_weil_positivity_window_tenth, kernel-checked as weil_positivity_window_tenth_of_prime_free (KWin_Bridge). Finite window; conjecture1_proved = False",
-   "updated": "2026-09-30"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -5146,7 +5204,7 @@
    "depends_on": [
     "mirrormere:MM_zeta_comb_membership_iff_rh"
    ],
-   "deprecated_reason": "",
+   "deprecated_reason": "Superseded 2026-09-24: implied by the PROVED node MM_weil_positivity_prime_free_window (granted 2026-09-24), which has the same conclusion on the same test class under 2L <= log 2, i.e. L <= 0.3466..., a range containing L <= 1/10. The implication is kernel-checked on main as weil_positivity_window_tenth_of_prime_free (examples/rvm_bridge/lean/KWin_Bridge.lean:26, whose statement is this node's verbatim; axiom guard AxiomGuardRvMBridge.lean:1288). This node's title sentence 'The full window 2L <= log 2 is NOT proved' was written 2026-09-23 and is false since the 2026-09-24 grant; the title is kept as the historical record. A finite window; no information about zeros. conjecture1_proved = False.",
    "extra_keys": [],
    "id": "mirrormere:MM_weil_positivity_window_tenth",
    "is_goal": false,
@@ -5172,9 +5230,9 @@
    "refutation_statement": "",
    "slug": "MM_weil_positivity_window_tenth",
    "statement": "theorem weil_positivity_window_tenth (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g) (L : ℝ)\n    (hL : L ≤ 1 / 10) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :\n    0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
-   "status": "draft",
+   "status": "deprecated",
    "title": "THE PRIME-FREE WINDOW AT L <= 1/10 ON THE GOAL NODE'S OWN TEST CLASS (rvm_bridge island, E6Bridge31-34, 2026-09-23): for every smooth compactly supported g with tsupport g in [-L, L], L <= 1/10, the Weil functional Re weilForm (autocorr g) is nonnegative, hypothesis-free. Stage 0: for 2L <= log 2 the prime side of autocorr g vanishes, so this is positivity of the archimedean side alone. Route (u-space): the digamma series paired with the Lorentzian pair e^{-b|u|} <-> 2b/(b^2+r^2) writes the archimedean integral as exponential-kernel Dirichlet forms (1/2) intint |g(v)-g(w)|^2 e^{-b|v-w|}, each bounded below from the support of g (outer mass 2e^{-bL}/b by AM-GM, kernel >= e^{-2bL} on the square), the pole terms by polarisation, eleven exponentials by (1-x/16)^16 <= e^{-x}; certified margin 0.134 ||g||^2. The r-space layer-cake route of E6Bridge31 gives L <= 1/14. The full window 2L <= log 2 is NOT proved: numerically its margin is 1.3e-3 (the floor of the zero sum sum_rho |ghat(gamma_rho)|^2 over window tests), and the literature theorem (Yoshida 1992, Connes-Consani 2021) is for the pole-free class ghat(i/2) = 0 (named Prop PrimeFreeWindowPositivityPoleFree). A statement about the archimedean functional on a region of the goal node's test class; involves no zeros; NOT a proof of anything about RH. conjecture1_proved = False.",
-   "updated": "2026-09-23"
+   "updated": "2026-11-07"
   },
   {
    "arb": true,
@@ -5193,7 +5251,9 @@
     "mirrormere:MM_zeta_comb_membership_iff_rh"
    ],
    "deprecated_reason": "",
-   "extra_keys": [],
+   "extra_keys": [
+    "rejudge"
+   ],
    "id": "mirrormere:MM_weil_positivity_window_two_fifths",
    "is_goal": false,
    "kind": "lemma",
@@ -5234,7 +5294,7 @@
    "statement": "theorem weil_positivity_window_two_fifths (g : ℝ → ℂ) (hg : WeilExplicit.IsWeilTest g) (L : ℝ)\n    (hL : 2 * L ≤ 4 / 5) (hsupp : tsupport g ⊆ Set.Icc (-L) L) :\n    0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
    "status": "proved",
    "title": "THE WEIL WINDOW PAST THE PRIME-FREE BOUNDARY, KERNEL-NATIVE (rvm_bridge island, KWin2_*, 2026-09-24): for every Weil test g with tsupport g in [-L, L] and 2L <= 4/5, Re weilForm (autocorr g) >= 0, with WindowFloor(2/5, 1/25000) -- hypothesis-free, no Arb seam; the prime-2 comb term is present (2L = 0.8 > log 2) and accounted exactly; pole terms KEPT (goal-node class; not Connes-Consani). The same pipeline also proves L = 9/20 and L = 1/2 (KWin2_BridgeHeavy) but those need 17-19 GB RAM, above the 16 GB hosted CI runner, so they are NOT registered until CI can build them. Finite window; conjecture1_proved = False",
-   "updated": "2026-09-30"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -5250,11 +5310,9 @@
     "mirrormere:MM_primelog_spectrum_dense",
     "mirrormere:MM_selfinversive_iff_hardyz_real",
     "mirrormere:MM_offline_pairs_le_defect",
-    "mirrormere:MM_bragg_defect_witness",
     "mirrormere:MM_nt_brick_conditional",
     "mirrormere:MM_rvm_unbounded_mean_density",
     "mirrormere:MM_zeta_ordinates_not_uniformly_discrete",
-    "mirrormere:MM_torus_section_dictionary",
     "mirrormere:MM_torus_section_n2_rigidity",
     "mirrormere:MM_euler_factor_section_offline",
     "mirrormere:MM_bragg_bridge",
@@ -5284,7 +5342,7 @@
    "statement": "theorem zeta_comb_membership :\n    ∀ g : ℝ → ℂ, WeilExplicit.IsWeilTest g →\n      0 ≤ (WeilExplicit.weilForm (WeilExplicit.autocorr g)).re",
    "status": "draft",
    "title": "The W3c membership goal: defect-0 membership of the Guinand-Weil REGULARIZED TRIPLE (zero comb against h, prime comb against g, archimedean density against h) stated as Weil positivity of the primes-side functional weilForm on Hermitian autocorrelations autocorr g over the E8 test class IsWeilTest -- roadmap A5 = D11 wall form, made concrete by the kernel-checked E8 limit explicit formula (RH_limit_explicit_formula / RvMBridge4.limit_explicit_formula). RH-EQUIVALENT by Weil 1952 / Bombieri 2000: RH-hard, NOT claimed, never attempted, decomposition refused. Replaces the 2026-09-14 placeholder (Mathlib RiemannHypothesis via zeta_FQ_iff_RH); kind=goal, status=draft permanently. conjecture1_proved = False. The RH-equivalence is NOT assumed: it is registered as the three dictionary nodes MM_rh_implies_weil_positivity, MM_weil_positivity_implies_rh, MM_zeta_comb_membership_iff_rh (2026-09-20).",
-   "updated": "2026-09-20"
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -5397,8 +5455,8 @@
    "slug": "MM_zeta_ordinates_not_uniformly_discrete",
    "statement": "theorem zeta_ordinates_not_uniformly_discrete :\n    ¬ IsUniformlyDiscrete zetaOrdinates",
    "status": "proved",
-   "title": "W2c target, unconditional form: the zeta ordinates are not uniformly discrete, no hypotheses -- lands when the RvM residual is discharged into the conditional brick",
-   "updated": "2026-09-30"
+   "title": "W2c target, unconditional form: the zeta ordinates are not uniformly discrete, no hypotheses -- PROVED 2026-09-18 (cross-island grant, W2cAssembly.lean on the rvm_bridge island, #567) by composing MM_rvm_unbounded_mean_density with the conditional quasicrystal brick MM_nt_brick_conditional",
+   "updated": "2026-11-07"
   },
   {
    "arb": false,
@@ -9143,10 +9201,10 @@
  ],
  "note": "conjecture1_proved = False. Every status below is read from the registry TOML through telperion.missions; nothing is inferred. A readback is labelled self-attested unless the registry records a Comparator judge pass on the current artifact, in which case it is labelled judge-verified.",
  "totals": {
-  "deprecated": 6,
-  "draft": 13,
-  "open": 4,
-  "proved": 146,
+  "deprecated": 7,
+  "draft": 12,
+  "open": 3,
+  "proved": 147,
   "refuted": 1
  }
 }
