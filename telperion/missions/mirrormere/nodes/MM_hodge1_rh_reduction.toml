@@ -8,7 +8,7 @@ name = "MM.hodge1_rh_reduction"
 statement_module = "Statements.MM_hodge1_rh_reduction"
 status = "proved"
 title = "RH IFF POLE-FREE WEIL POSITIVITY OUTSIDE THE HODGE-1 WINDOW (rvm_bridge, kernel-checked): RiemannHypothesis holds iff 0 <= Re weilForm(autocorr g) for every pole-free Weil test g whose support is NOT inside [-5493/10000, 5493/10000]. Combines e9's pole-free converse with the HODGE-1 window theorem. A reformulation of the open content, not progress on RH."
-updated = "2026-10-13"
+updated = "2026-11-07"
 
 [author]
 date = "2026-10-13"
@@ -49,3 +49,14 @@ auditor_session = "session_01GdU4sR3VVeEfVS1Dtg5pEt"
 date = "2026-10-13"
 independence = "independent"
 text = "AI read-back of theorem rh_iff_poleFree_outside_window5493. Vocabulary as in MMDefs and checked against the rvm_bridge island: IsWeilTest g means g : R -> C is smooth (C^infinity) with compact support; autocorr g (u) = integral of g(v) conj(g(v - u)) dv; weilForm f = archSide f - primeSide f, with archSide the two pole terms weilKernel f 0 + weilKernel f 1, minus f(0) log pi, plus (1/(2 pi)) times the integral of the transform against Re digamma(1/4 + i r/2), and primeSide = sum over n of Lambda(n)/sqrt n (f(log n) + f(-log n)); Zeta23.paperFT g z = integral of g(u) e^(i z u) du, so the hypothesis paperFT g (i/2) = 0 and paperFT g (-i/2) = 0 says the integrals of g(u) e^(-u/2) and g(u) e^(u/2) both vanish (pole-free; Hodge1.PoleFree2 unfolds to exactly this). Statement: Mathlib's RiemannHypothesis (not redefined in MMDefs) holds if and only if, for every smooth compactly supported g with both pole conditions whose topological support is NOT contained in [-0.5493, 0.5493], the real part of weilForm(autocorr g) is >= 0. Combined with MM_hodge1_window5493, which covers the tests supported inside that window, this says RH is equivalent to pole-free Weil positivity for all tests; the theorem is a reformulation that isolates the part not yet proved (supports reaching beyond half-width 0.5493). It is not progress on RH. The statement is identical to the island wrapper Hodge1_RegRH, proved from Hodge1.rh_iff_poleFree2_outside_window5493 (heavy job)."
+
+[rejudge]
+artifact_sha256 = "ccc5a9557ef510aecb9843b8615f36abac94b2085f48c1f28555adcf094aa1a0"
+comparator_tag = "v4.33.0-rc2"
+date = "2026-10-27"
+log_sha256 = "ff1615cb31f5df669cd3d5e2bcff52e1f025f6f0de769e0153a97b6d25981246"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS re-judge, Comparator v4.33.0-rc2 with nanoda 37cb87b7 ON, 3 standard axioms, landrun shim (UNSANDBOXED); 2026-10-27T18:38:30Z .. 2026-10-27T19:00:06Z, wall 1296 s. Transcribed by hand 2026-11-07 from the standalone branch's rejudge-record table WITHOUT its closure binding (closure_sha256, closure_files, second_kernel_route: Ruling 0b-9 schema, not on main), so main's CLI neither models nor checks this table; artifact_sha256 was re-hashed against main's artifact and matches. Source: telperion/missions/judge/REJUDGE_2026-10.md (md5 889e671ae21ce3f935636dfa57c82105, first written on the local docs/telperion-standalone-spec branch)."
+peak_rss_kb = 7831104
+verdict = "pass"

@@ -4,8 +4,8 @@ kind = "milestone"
 name = "AND.ladder_1e6"
 statement_module = "Statements.AND_ladder_1e6"
 status = "open"
-title = "G1: every nontrivial zeta zero with |Im rho| <= 10^6 lies on Re = 1/2 (~1.8M zeros; roadmap: nothing structural remains on current T5 machinery, wall-clock only)"
-updated = "2026-09-14"
+title = "G1: every nontrivial zeta zero with |Im rho| <= 10^6 lies on Re = 1/2 (~1.8M zeros). ROUTE UPDATE 2026-11-07: the 2026-09-14 roadmap note 'nothing structural remains on current T5 machinery, wall-clock only' is superseded. T5 is the Arb-conditional route, which cannot be linked (see AND_ladder_h280000); the hypothesis-free route is the RS5 kernel route of AND_ladder_h11000_kernel, whose structural item above T ~ 1.2e5 was the edge evaluator (a chunked evaluator exists on a local branch, NOT on main). No proof is linked. Finite verification only, NOT RH. conjecture1_proved = False"
+updated = "2026-11-07"
 
 [readback]
 auditor = "blind-auditor 2026-09-14 (independent blind read-back, AUDIT_TESTIMONY_ANDURIL_MIRRORMERE_2026-09-14.md)"

@@ -4,8 +4,8 @@ kind = "lemma"
 name = "MM.rvm_unbounded_mean_density"
 statement_module = "Statements.MM_rvm_unbounded_mean_density"
 status = "proved"
-title = "The W2c residual, named: RvMUnboundedMeanDensity -- the zeta-ordinate mean density exceeds every finite bound (Riemann-von Mangoldt growth input). 2026-09-15 SURVEY VERDICT (W2c agent, d859b064): NO unconditional kernel proof exists in corpus or Mathlib -- Mathlib has only discreteness, the li-island RvM machinery is per-window/conditional, and linear zero-count bounds provably do NOT suffice (they give constant gaps, not gaps -> 0). Discharge = a FUTURE BRICK from the RvM box-counting engine + zero-free edges, not a cross-island grant"
-updated = "2026-09-30"
+title = "The W2c residual, named: RvMUnboundedMeanDensity -- the zeta-ordinate mean density exceeds every finite bound (Riemann-von Mangoldt growth input). PROVED 2026-09-17 by a cross-island grant (attempts.jsonl): rvm_bridge island (v4.33.0-rc2, #547), RvMBridge.rvm_unbounded_mean_density in E6Bridge.lean, proof link #548; the load-bearing input is zeta-23-lean Theorem A (>= 2/3 of zeros simple and on the line => superlinear distinct ordinates), NOT the RvM formula. This overtakes the 2026-09-15 survey verdict (W2c agent, d859b064) that no unconditional kernel proof existed in corpus or Mathlib and that discharge would be a future RvM box-counting brick, not a cross-island grant; that verdict was right about the corpus of its day"
+updated = "2026-11-07"
 
 [comparator]
 artifact_sha256 = "537b9d4c5ce5512d5bf20d4af47cc3251749b3b96c162b54dd497ecda8243d82"

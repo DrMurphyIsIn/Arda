@@ -6,7 +6,7 @@ name = "MM.weil_positivity_prime_free_window"
 statement_module = "Statements.MM_weil_positivity_prime_free_window"
 status = "proved"
 title = "THE FULL PRIME-FREE WINDOW ON THE GOAL NODE'S OWN TEST CLASS, KERNEL-NATIVE (rvm_bridge island, KWin_*, 2026-09-24): for every Weil test g with tsupport g in [-L, L] and 2L <= log 2, Re weilForm (autocorr g) >= 0 -- hypothesis-free, no Arb seam (exact-rational digamma minorant + exact LDL^T head certificates, WindowFloor(log2/2, 9/10000)). Pole terms KEPT: per PR #604 the 1.3e-3 margin is zero content (first 200 zero pairs), so this is NOT Connes-Consani (pole-free class). Implies the L <= 1/10 statement of MM_weil_positivity_window_tenth, kernel-checked as weil_positivity_window_tenth_of_prime_free (KWin_Bridge). Finite window; conjecture1_proved = False"
-updated = "2026-09-30"
+updated = "2026-11-07"
 
 [comparator]
 artifact_sha256 = "2c4bc212327c00f147b41373496121cf3d54b9471eff6bb820088bbd54acd74f"
@@ -42,3 +42,14 @@ auditor_session = "ef083c48-579d-4bec-a689-c30fdccec2a1"
 date = "2026-09-24"
 independence = "unverified"
 text = "Formal statement, read in the author's own session (so this read-back is NOT independent; the Comparator judge is the independent check that the artifact proves exactly this type). For every g : R -> C that is C-infinity with compact support (IsWeilTest), and every real L with 2L <= log 2 and tsupport g inside [-L, L], the real part of weilForm(autocorr g) is >= 0. weilForm f = archSide f - primeSide f with archSide = H_f(0) + H_f(1) - f(0) log pi + (1/2pi) int h_f(r) Re psi(1/4 + ir/2) dr (both pole terms kept) and primeSide = sum_n Lambda(n)/sqrt n (f(log n) + f(-log n)); autocorr g u = int g(v) conj g(v-u) dv. Since autocorr g is supported in [-2L, 2L] within [-log 2, log 2] and vanishes at the endpoints (the overlap is a single point), every prime term is zero, so the claim is positivity of the archimedean Weil functional on autocorrelations: the prime-free window. Not vacuous: the class contains nonzero bump functions for every L > 0, and the conclusion is a genuine inequality on them. It does not imply RH: it covers only support width 2L <= log 2; Weil's criterion needs all L. Pole terms are included, so this is not the pole-free Connes-Consani class."
+
+[rejudge]
+artifact_sha256 = "2c4bc212327c00f147b41373496121cf3d54b9471eff6bb820088bbd54acd74f"
+comparator_tag = "v4.33.0-rc2"
+date = "2026-10-27"
+log_sha256 = "cb433b3f9a8982872b13f1892557de477dd6f0ed491093d02a4e2e3289054503"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS re-judge, Comparator v4.33.0-rc2 with nanoda 37cb87b7 ON, 3 standard axioms, landrun shim (UNSANDBOXED); 2026-10-27T17:38:28Z .. 2026-10-27T17:50:14Z, wall 706 s. Transcribed by hand 2026-11-07 from the standalone branch's rejudge-record table WITHOUT its closure binding (closure_sha256, closure_files, second_kernel_route: Ruling 0b-9 schema, not on main), so main's CLI neither models nor checks this table; artifact_sha256 was re-hashed against main's artifact and matches. Source: telperion/missions/judge/REJUDGE_2026-10.md (md5 889e671ae21ce3f935636dfa57c82105, first written on the local docs/telperion-standalone-spec branch)."
+peak_rss_kb = 6828976
+verdict = "pass"

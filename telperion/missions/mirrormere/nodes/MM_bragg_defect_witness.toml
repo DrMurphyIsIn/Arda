@@ -5,7 +5,7 @@ name = "MM.bragg_defect_witness"
 statement_module = "Statements.MM_bragg_defect_witness"
 status = "proved"
 title = "The certified defect witness pair: the all-on-line configuration has defect functional exactly 0 (defect_witness_online, unconditional) while one synthetic off-line pair drives it strictly negative (defect_witness_offline, ~ -1.00167e-4; carries one Arb exp-enclosure hypothesis) -- the Alpoge-Furman signature-(1,1) leakage as a measured theorem object"
-updated = "2026-09-14"
+updated = "2026-11-07"
 
 [proof]
 artifact = "../../examples/zeta_zero_localization/lean/BraggDefect.lean"
@@ -18,3 +18,14 @@ auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
 date = "2026-09-14"
 independence = "unverified"
 text = "Two kernel theorems about the explicit 29+1-configuration defect functional: (i) at off-line displacement 0 (all zeros on the line) the functional is exactly 0 -- unconditional, pure ring arithmetic; (ii) at the synthetic off-line displacement the functional is strictly negative, with the excess bracketed by explicit rationals derived from a certified e^(1/10) enclosure -- this leg CARRIES the Arb exponential-enclosure hypothesis, hence closure_clean = false until that enclosure is itself reflected. Together with offline_pairs_le_defect this instantiates defect exactly 1 on the BraggDefect configuration. [Verbatim extract of the proved defect_witness_online / defect_witness_offline; artifact on rh/million-turing, grant deferred to the branch reconcile.]"
+
+[rejudge]
+artifact_sha256 = "ed982ab4f086e44e291ba6968629338974457ec125920035b73921841f25cf70"
+date = "2026-10-28"
+log_sha256 = "91edae45f4c929e6d441e59aa47a04df6cc6f0e668512d43f613d809d98d3b53"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS nanoda-direct re-judge: lean4export + nanoda_bin 37cb87b7 on the node's registered theorem, 3 standard axioms, NO Comparator statement-identity step; 2026-10-28T17:58:20Z .. 2026-10-28T18:01:18Z, wall 178 s. Transcribed by hand 2026-11-07 from the standalone branch's rejudge-record table WITHOUT its closure binding (closure_sha256, closure_files, second_kernel_route: Ruling 0b-9 schema, not on main), so main's CLI neither models nor checks this table; artifact_sha256 was re-hashed against main's artifact and matches. Source: telperion/missions/judge/REJUDGE_2026-10.md (md5 889e671ae21ce3f935636dfa57c82105, first written on the local docs/telperion-standalone-spec branch)."
+peak_rss_kb = 160480
+route = "nanoda-direct"
+verdict = "pass"

@@ -8,7 +8,7 @@ requires_ci_job = "telperion-zeta-reflection.yml:anduril-kernel-ladder"
 statement_module = "Statements.AND_ladder_h11000_kernel"
 status = "proved"
 title = "Every nontrivial zeta zero with 0 < Im rho <= 11000 lies on Re = 1/2 -- hypothesis-free, kernel-checked, no Arb or oracle input: the h8000 Arb4 ladder chained (height_chain) with ONE Turing band [31851/4, 11004] holding 3541 zeros (Riemann-Siegel RS5 sign-change lower count + argument-principle upper count with sharp pi pins). Finite verification only, NOT RH. conjecture1_proved = False. PROVENANCE (2026-10-15): KERNEL (rebuilt from source in a fresh worktree, 9190 jobs, standard axioms only); independent AI read-back A1 (session 43fb6f48, subagent h11000-readback) + second reading by session peterwmurphy-bb; NOT Comparator-recorded (H11K uses the monolithic Arb4_h8000 theorem, which no judge replayed; a compositional judge needs a new H11K_Compose; judge_via = heavy with NO [compose] block: do NOT dispatch missions-comparator-heavy.yml on this node until H11K_Compose and a [compose] block exist, since a dispatch today would attempt the infeasible monolithic replay). First use of the wide sharp-pi Turing band template (H11K_Turing); the h8000 ladder already uses the older 3.14-pin TuringBand template."
-updated = "2026-10-15"
+updated = "2026-11-07"
 
 [author]
 date = "2026-09-25"
@@ -46,3 +46,14 @@ auditor_session = "session_01TeEsdE4SroprJqfYm9qcKc"
 date = "2026-10-15"
 independence = "independent"
 text = "Formal statement, read before the artifact by an AI session distinct from the author's (author session ef083c48; auditing session 43fb6f48-008b-48a7-abad-ad5db918fecf (local) = session_01TeEsdE4SroprJqfYm9qcKc (claude.ai), subagent h11000-readback): for every complex rho, if Mathlib's riemannZeta rho = 0 and 0 < Im rho and Im rho <= 11000, then Re rho = 1/2. Im rho > 0 excludes the trivial zeros and s = 1; riemannZeta is Mathlib's (no local shadowing in the 532-module import closure; a pure-Mathlib restatement typechecks against the capstone). This is finite verification to height 11000 (the artifact proves 11004), NOT RH; conjecture1_proved = False. Kernel: rebuilt from source in a fresh origin/main worktree (36f821b5), 9190 jobs in 9438 s; capstone axioms [propext, Classical.choice, Quot.sound]; the guard's 5 negative controls and 6 own tamper controls (wrong-height Gamma certificates at both ends, edge at 11005, edge Hi lowered 1/10, slab stretched +0.1, old 3.14 pin) are rejected by the kernel; bad restatements (n = 3542, height 11005) fail to elaborate. Numerics (own mpmath): N(7962.75) = 7788, N(11004) = 11329, band 3541 = 277 + 2077 + 1182 + 5; T = 11004 sits in a gap 0.72/0.78 from its neighbours; edge argument changes 1.067683 and -0.074537 lie inside the certified enclosures; total/2pi = 3541.000; slab U11004 zero-free (min |zeta| 2.94 on the grid). Second reading: session peterwmurphy-bb concurs (statement checked on main; mpmath N(7962.75) = 7788, N(11004) = 11329, band 3541). NOT Comparator-recorded: H11K_h11000 uses the monolithic Arb4_h8000.all_nontrivial_zeros_up_to_height_8000, which no judge replayed, and imports Arb4_h8000 (compose forbidden regex); a compositional judge needs a new H11K_Compose (8 BandHyps + the [8000, 11004] band). closure_clean = false was the default for a never-granted node. Testimony: telperion/docs/AUDIT_TESTIMONY_AND_ladder_h11000_kernel_2026-10-15_A1.md."
+
+[rejudge]
+artifact_sha256 = "757836b9800c189d4a3570597f09f60f7832e84a9bd84f99e9db8890878bac7d"
+comparator_tag = "v4.32.0"
+date = "2026-10-28"
+log_sha256 = "d522bcb8127ecc59e03754a9c9e91036bbd908f8133bd2903965025352a73a09"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS re-judge, Comparator v4.32.0 with nanoda 37cb87b7 ON, 3 standard axioms, landrun shim (UNSANDBOXED), one monolithic closure; the node's first independent judge; 2026-10-28T05:41:43Z .. 2026-10-28T13:32:17Z, wall 28234 s. Transcribed by hand 2026-11-07 from the standalone branch's rejudge-record table WITHOUT its closure binding (closure_sha256, closure_files, second_kernel_route: Ruling 0b-9 schema, not on main), so main's CLI neither models nor checks this table; artifact_sha256 was re-hashed against main's artifact and matches. Source: telperion/missions/judge/REJUDGE_2026-10.md (md5 889e671ae21ce3f935636dfa57c82105, first written on the local docs/telperion-standalone-spec branch)."
+peak_rss_kb = 13877872
+verdict = "pass"
