@@ -18,3 +18,14 @@ auditor = "missions-migration-session-2026-09-14 (verbatim-extract precedent)"
 date = "2026-09-14"
 independence = "unverified"
 text = "For nonzero complex coefficients c1, c2 and distinct real frequencies lam1 /= lam2, every complex zero of F(x) = c1 e^{i lam1 x} + c2 e^{i lam2 x} has zero imaginary part IF AND ONLY IF the norms of c1 and c2 are equal. The reverse-Dyson rigidity base case: an equal-modulus (self-inversive-type) condition on the coefficients alone forces reality of the whole zero set. [Verbatim extract of the proved twoFreq_realRooted_iff; artifact on rh/million-turing, grant deferred to the branch reconcile.]"
+
+[rejudge]
+artifact_sha256 = "5bd27f2c7303e5d5d447b90b41b2a1a3dd931f368ff65bae55c9e33d4e24cf91"
+date = "2026-11-07"
+log_sha256 = "16751f7b4241ed894d036d9fb9342929a7f353fd086b748915cdf01d75f7e384"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS nanoda-direct second-kernel audit (AUDIT_2026-11, phase A): lean4export v4.32.0 (rev 4e791520) + nanoda 37cb87b7 on the node's registered theorem; exported closure axioms exactly propext, Quot.sound, Classical.choice; nanoda checked 17045 declarations (equal to the export's declaration count); export 71535946 bytes; NO Comparator statement-identity step. 2026-11-07T19:34:29Z .. 2026-11-07T19:34:40Z, wall 11 s. Controls: planted literal rejected by nanoda's type checker, sorry export rejected, no-axiom run rejected, empty export classified FAIL. Reviewed post hoc by an independent AI auditor session (bb), which reproduced the verdict from the saved export. artifact_sha256 hashed against this branch's artifact. Source: telperion/missions/judge/AUDIT_2026-11.md."
+peak_rss_kb = 177872
+route = "nanoda-direct"
+verdict = "pass"

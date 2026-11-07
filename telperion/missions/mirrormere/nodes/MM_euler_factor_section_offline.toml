@@ -18,3 +18,14 @@ auditor = "blind-auditor 2026-09-14 (independent blind read-back, AUDIT_TESTIMON
 date = "2026-09-14"
 independence = "unverified"
 text = "The theorem asserts it is NOT the case that every complex zero of f(x) = 1 - (1/sqrt 2) e^(-i (log 2) x) is real. The auditor independently solved f(x) = 0: writing x = a + bi, the modulus equation forces b = 1/2 and the phase equation forces a = -2 pi k / log 2 -- EVERY zero has Im x = 1/2, e.g. x = i/2 (verified numerically). The negated universal is therefore TRUE as written; the per-rung real-rootedness genuinely fails, with uniform off-line displacement 1/2. No flags."
+
+[rejudge]
+artifact_sha256 = "f7de3a5ef79bef910bbf2e049f8bf14888560cd9eb44e3b557149c4e9e05e492"
+date = "2026-11-07"
+log_sha256 = "eabd8f319d16c2e6efef39715930614b34bcd4f159a9937f81473f85e4ab4922"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS nanoda-direct second-kernel audit (AUDIT_2026-11, phase A): lean4export v4.32.0 (rev 4e791520) + nanoda 37cb87b7 on the node's registered theorem; exported closure axioms exactly propext, Quot.sound, Classical.choice; nanoda checked 17073 declarations (equal to the export's declaration count); export 71739523 bytes; NO Comparator statement-identity step. 2026-11-07T19:34:54Z .. 2026-11-07T19:35:05Z, wall 11 s. Controls: planted literal rejected by nanoda's type checker, sorry export rejected, no-axiom run rejected, empty export classified FAIL. Reviewed post hoc by an independent AI auditor session (bb), which reproduced the verdict from the saved export. artifact_sha256 hashed against this branch's artifact. Source: telperion/missions/judge/AUDIT_2026-11.md."
+peak_rss_kb = 177152
+route = "nanoda-direct"
+verdict = "pass"

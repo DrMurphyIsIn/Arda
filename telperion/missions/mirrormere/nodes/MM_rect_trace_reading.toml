@@ -18,3 +18,14 @@ auditor = "blind-auditor-2 2026-09-16 (independent blind read-back, AUDIT_TESTIM
 date = "2026-09-16"
 independence = "unverified"
 text = "Under an identical hypothesis block to MM_bragg_bridge, the sum of zeta divisor multiplicities over the zero finset equals 1/(2 pi i) times the same right-hand bracket (bottom - top - i Bragg comb - i left). Verified against MM_bragg_bridge line by line: EXACTLY that equation divided through by 2 pi i (nonzero), identical hypotheses, identical vocabulary, identical bracket term-by-term -- no drift. No flags."
+
+[rejudge]
+artifact_sha256 = "144f1b7c20eac9e317e2971484fa5909a713384476494cd470d72386e8072fd7"
+date = "2026-11-07"
+log_sha256 = "fa168380ad45f83e34b764bc2707b2bf0d8096a2320ed295257f6b82278a90b4"
+machine = "96 GiB / 32-core Mac Studio"
+nanoda_rev = "37cb87b7e6cd6862ef2bd121faa9f4604f59fe96"
+note = "local macOS nanoda-direct second-kernel audit (AUDIT_2026-11, phase B): lean4export v4.34.0-rc1 (rev b18d673b, the rev Comparator v4.34.0-rc1 pins) + nanoda 37cb87b7 on the node's registered theorem; exported closure axioms exactly propext, Quot.sound, Classical.choice; nanoda checked 61157 declarations (equal to the export's declaration count); export 425568873 bytes; NO Comparator statement-identity step. 2026-11-07T20:15:54Z .. 2026-11-07T20:27:07Z, wall 673 s. Controls: planted literal rejected by nanoda's type checker, sorry export rejected, no-axiom run rejected, empty export classified FAIL. Reviewed post hoc by an independent AI auditor session (bb), which reproduced the verdict from the saved export. artifact_sha256 hashed against this branch's artifact. Source: telperion/missions/judge/AUDIT_2026-11.md. PHASE B PROCESS BREACHES ON RECORD (judged acceptable by the owner after bb confirmed the evidence): run restarted without the reviewer's pre-run OK; 2 Lean jobs at once against the 1-job rule."
+peak_rss_kb = 1186384
+route = "nanoda-direct"
+verdict = "pass"
